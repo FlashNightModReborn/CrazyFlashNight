@@ -14,7 +14,10 @@
             target.基础韧性系数 = isFinite(Number(target.韧性系数)) ? Number(target.韧性系数) : 1;
         }
         if (!isFinite(Number(target.韧性系数))) target.韧性系数 = target.基础韧性系数;
-        if (isNaN(target.命中率)) target.命中率 = 10;
+        if (!isFinite(Number(target.基础命中率)) || Number(target.基础命中率) <= 0) {
+            target.基础命中率 = (isFinite(Number(target.命中率)) && Number(target.命中率) > 0) ? Number(target.命中率) : 10;
+        }
+        if (!isFinite(Number(target.命中率)) || Number(target.命中率) <= 0) target.命中率 = target.基础命中率;
         if (!isFinite(Number(target.基础躲闪率))) {
             target.基础躲闪率 = isFinite(Number(target.躲闪率)) ? Number(target.躲闪率) : 999;
         }

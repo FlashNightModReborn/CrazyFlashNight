@@ -703,7 +703,9 @@ _root.初始化敌人模板 = function() {
     this.攻击欲望 = !isNaN(this.攻击欲望) ? this.攻击欲望 : 5;
 
     //以下是可以自定义的新增参数
-    this.命中率 = !isNaN(this.命中率) ? this.命中率 : 10;
+    this.命中率 = (isFinite(Number(this.命中率)) && Number(this.命中率) > 0) ? Number(this.命中率) : ((isFinite(Number(this.基础命中率)) && Number(this.基础命中率) > 0) ? Number(this.基础命中率) : 10);
+    if (!isFinite(Number(this.基础命中率)) || Number(this.基础命中率) <= 0)
+        this.基础命中率 = this.命中率;
     this.免疫击退 = this.免疫击退 ? true : false;
     this.锁定方向 = this.锁定方向 ? true : false;
     this.奔跑速度倍率 = !isNaN(this.奔跑速度倍率) ? this.奔跑速度倍率 : 2;

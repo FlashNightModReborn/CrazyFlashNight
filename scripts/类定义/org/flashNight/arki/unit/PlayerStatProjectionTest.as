@@ -26,6 +26,7 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
             testAiAuxiliaryIsolation();
             testRuntimeSources();
             testWeaponModes();
+            testDressupEnemyHitAndDodgeGuard();
         } catch (error) {
             check(false,"suite exception: " + error);
         } finally {
@@ -373,5 +374,94 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
         check(HealApplier.settleHpAfterMaxChange(1300,1000,800) == 1200,"existing overflow keeps absolute amount within cap");
         check(HealApplier.settleHpAfterMaxChange(0,1000,800) == 0,"projection does not revive");
         check(HealApplier.settleMpAfterMaxChange(900,800) == 800,"MP clamps without overflow entitlement");
+    }
+
+    private static function testDressupEnemyHitAndDodgeGuard():Void {
+        var paramApi:Object = org.flashNight.arki.unit.UnitComponent.Initializer.ParameterInitializer;
+        var dressApi:Object = org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+        var shootApi:Object = org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
+        var bulletApi:Object = org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer;
+        var dodgeApi:Object = org.flashNight.arki.component.StatHandler.DodgeHandler;
+
+        var prodModeCallback:Function = function(攻击模式:String):Void {
+            this.伤害类型 = this[攻击模式 + "伤害类型"] ? (this[攻击模式 + "伤害类型"] || "物理") : (this.基础伤害类型 || "物理");
+            this.魔法伤害属性 = this[攻击模式 + "魔法伤害属性"] ? this[攻击模式 + "魔法伤害属性"] : this.基础魔法伤害属性;
+            this.毒 = (this.基础毒 ? Number(this.基础毒) : 0) + (this[攻击模式 + "毒"] ? Number(this[攻击模式 + "毒"]) : 0);
+            this.吸血 = (this.基础吸血 ? Number(this.基础吸血) : 0) + (this[攻击模式 + "吸血"] ? Number(this[攻击模式 + "吸血"]) : 0);
+            this.击溃 = (this.基础击溃 ? Number(this.基础击溃) : 0) + (this[攻击模式 + "击溃"] ? Number(this[攻击模式 + "击溃"]) : 0);
+            this.命中加成 = (this.基础命中加成 ? Number(this.基础命中加成) : 0) + (this[攻击模式 + "命中加成"] ? Number(this[攻击模式 + "命中加成"]) : 0);
+            this.暴击 = this[攻击模式 + "暴击"] ? this[攻击模式 + "暴击"] : undefined;
+            this.斩杀 = (this.基础斩杀 ? Number(this.基础斩杀) : 0) + (this[攻击模式 + "斩杀"] ? Number(this[攻击模式 + "斩杀"]) : 0);
+            if (!isFinite(Number(this.基础命中率)) || Number(this.基础命中率) <= 0) {
+                var fallbackHitRate:Number = Number(this.命中率);
+                var defaultHitRate:Number = isFinite(Number(dodgeApi.DEFAULT_HIT_RATE)) ? Number(dodgeApi.DEFAULT_HIT_RATE) : 10;
+                this.基础命中率 = (isFinite(fallbackHitRate) && fallbackHitRate > 0) ? fallbackHitRate : defaultHitRate;
+            }
+            if (!isFinite(Number(this.命中加成))) {
+                this.命中加成 = 0;
+            }
+            this.命中率 = Math.max(this.基础命中率 * (1 + this.命中加成 / 100), dodgeApi.HIT_RATE_LIMIT);
+        };
+
+        var cf6Enemy:Object = persistentFixture();
+        cf6Enemy._name = "cf6-enemy"; cf6Enemy.是否为敌人 = true;
+        cf6Enemy.根据模式重新读取武器加成 = prodModeCallback;
+        delete cf6Enemy.基础命中率; cf6Enemy.命中率 = 20;
+        delete cf6Enemy.基础躲闪率; cf6Enemy.躲闪率 = 9.83050847457627;
+        paramApi.initialize(cf6Enemy);
+        dressApi.applyPersistentSnapshot(cf6Enemy, dressApi.buildPersistentSnapshot(cf6Enemy));
+        check(cf6Enemy.基础命中率 == 20 && cf6Enemy.命中率 == 20 && isFinite(cf6Enemy.躲闪率),
+            "CF6 enemy captures base hit rate 20 before DressupInitializer projection");
+        var cf6BulletProps:Object = shootApi.generateBulletProps(cf6Enemy, "长枪", cf6Enemy.长枪属性, {});
+        var cf6SubBullet:Object = {}; bulletApi.setDefaults(cf6SubBullet, cf6Enemy);
+        check(cf6BulletProps.命中率 == 20 && cf6SubBullet.命中率 == 20,
+            "CF6 enemy primary and default bullets inherit finite hit rate 20");
+
+        cf6Enemy.__persistentEquipmentInputV1.slots.头部装备.data.accuracy = 10;
+        dressApi.applyPersistentSnapshot(cf6Enemy, dressApi.buildPersistentSnapshot(cf6Enemy));
+        var cf6ArmorBullet:Object = shootApi.generateBulletProps(cf6Enemy, "长枪", cf6Enemy.长枪属性, {});
+        var cf6ArmorSubBullet:Object = {}; bulletApi.setDefaults(cf6ArmorSubBullet, cf6Enemy);
+        check(cf6Enemy.基础命中加成 == 10 && cf6Enemy.命中加成 == 10 && cf6Enemy.命中率 == 22 && cf6ArmorBullet.命中率 == 22 && cf6ArmorSubBullet.命中率 == 22,
+            "CF6 enemy with +10% armor accuracy aligns liveHit/primaryBullet/defaultBullet at 22");
+
+        var missingBaseEnemy:Object = persistentFixture();
+        missingBaseEnemy._name = "cf6-missing-base"; missingBaseEnemy.是否为敌人 = true;
+        missingBaseEnemy.根据模式重新读取武器加成 = prodModeCallback;
+        delete missingBaseEnemy.基础命中率; missingBaseEnemy.命中率 = 20;
+        dressApi.applyPersistentSnapshot(missingBaseEnemy, dressApi.buildPersistentSnapshot(missingBaseEnemy));
+        check(missingBaseEnemy.基础命中率 == 20 && missingBaseEnemy.命中率 == 20,
+            "missing-base-hit recovery branch preserves hit rate 20 before production mode callback runs");
+
+        var plainEnemy:Object = persistentFixture();
+        plainEnemy._name = "plain-dressup-enemy"; plainEnemy.是否为敌人 = true;
+        delete plainEnemy.根据模式重新读取武器加成;
+        delete plainEnemy.基础命中率; delete plainEnemy.命中率;
+        paramApi.initialize(plainEnemy);
+        dressApi.applyPersistentSnapshot(plainEnemy, dressApi.buildPersistentSnapshot(plainEnemy));
+        check(plainEnemy.基础命中率 == 10 && plainEnemy.命中率 == 10 && isFinite(plainEnemy.躲闪率),
+            "plain dressup enemy without mode callback defaults to finite hit rate 10");
+        plainEnemy.__persistentEquipmentInputV1.slots.头部装备.data.accuracy = 10;
+        dressApi.applyPersistentSnapshot(plainEnemy, dressApi.buildPersistentSnapshot(plainEnemy));
+        var plainBulletProps:Object = shootApi.generateBulletProps(plainEnemy, "长枪", plainEnemy.长枪属性, {});
+        var plainSubBullet:Object = {}; bulletApi.setDefaults(plainSubBullet, plainEnemy);
+        check(plainEnemy.基础命中加成 == 10 && plainEnemy.命中加成 == 10 && plainEnemy.命中率 == 11 && plainBulletProps.命中率 == 11 && plainSubBullet.命中率 == 11,
+            "plain dressup enemy without mode callback projects +10% armor accuracy to liveHit/primaryBullet/defaultBullet 11");
+
+        var badHitRates:Array = [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, 0, -3];
+        for (var j:Number = 0; j < badHitRates.length; j++) {
+            var badTarget:Object = {命中率: badHitRates[j], 躲闪率: 9.83050847457627, 等级: 20, 防御力: 100, 装备防御力: 0};
+            paramApi.initialize(badTarget);
+            check(badTarget.基础命中率 == 10,
+                "ParameterInitializer guards non-finite or non-positive hitRate case=" + j);
+        }
+
+        var baselineDodge:Number = dodgeApi.calcDodgeRateByLevel(60, 60, 9.83050847457627, dodgeApi.DEFAULT_HIT_RATE);
+        check(isFinite(baselineDodge) && baselineDodge > dodgeApi.DODGE_RATE_LIMIT,
+            "DodgeHandler baseline dodge rate is finite");
+        for (var i:Number = 0; i < badHitRates.length; i++) {
+            var rate:Number = dodgeApi.calcDodgeRateByLevel(60, 60, 9.83050847457627, badHitRates[i]);
+            check(isFinite(rate) && Math.abs(rate - baselineDodge) < 0.000001,
+                "DodgeHandler.calcDodgeRateByLevel guards invalid hitRate case=" + i);
+        }
     }
 }

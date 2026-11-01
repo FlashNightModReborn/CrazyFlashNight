@@ -1268,6 +1268,14 @@ _root.主角函数.根据模式重新读取武器加成 = function(模式) {
     }
     // 斩杀 = 非武器装备(项链/防具等)的基础斩杀 + 当前武器模式斩杀；字段缺失时按 0 处理，避免 undefined 参与运算得到 NaN
     this.斩杀 = (this.基础斩杀 ? Number(this.基础斩杀) : 0) + (this[模式 + "斩杀"] ? Number(this[模式 + "斩杀"]) : 0);
+    if (!isFinite(Number(this.基础命中率)) || Number(this.基础命中率) <= 0) {
+        var fallbackHitRate = Number(this.命中率);
+        var defaultHitRate = isFinite(Number(DodgeHandler.DEFAULT_HIT_RATE)) ? Number(DodgeHandler.DEFAULT_HIT_RATE) : 10;
+        this.基础命中率 = (isFinite(fallbackHitRate) && fallbackHitRate > 0) ? fallbackHitRate : defaultHitRate;
+    }
+    if (!isFinite(Number(this.命中加成))) {
+        this.命中加成 = 0;
+    }
     this.命中率 = Math.max(this.基础命中率 * (1 + this.命中加成 / 100), DodgeHandler.HIT_RATE_LIMIT);
 }
 

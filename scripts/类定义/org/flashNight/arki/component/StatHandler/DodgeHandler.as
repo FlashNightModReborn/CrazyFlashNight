@@ -19,6 +19,7 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
     public static var DODGE_SYSTEM_MAX:Number = 0.5 * 100;      // 闪避系统闪避率上限(50%)
     public static var BASE_DODGE_RATE:Number  = 3;              // 基准躲闪率
     public static var BASE_HIT_RATE:Number    = 10;             // 基准命中率
+    public static var DEFAULT_HIT_RATE:Number = 10;             // 默认命中率
 
     // 重量参考常量
     public static var JUMP_BOUNCE_BASE_WEIGHT:Number = 100;     // 跳弹基准重量
@@ -166,9 +167,13 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
     public static function calcDodgeRateByLevel(attackerLevel:Number, dodgerLevel:Number, dodgeRate:Number, hitRate:Number):Number
     {
         // 边界/异常处理
-        if (dodgeRate < DODGE_RATE_LIMIT || isNaN(dodgeRate))
+        if (dodgeRate < DODGE_RATE_LIMIT || isNaN(dodgeRate) || !isFinite(dodgeRate))
         {
             return 0;
+        }
+        if (isNaN(hitRate) || !isFinite(hitRate) || hitRate <= 0)
+        {
+            hitRate = DEFAULT_HIT_RATE;
         }
 
         // 公式计算

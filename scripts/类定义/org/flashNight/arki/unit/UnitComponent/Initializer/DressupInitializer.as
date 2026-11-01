@@ -310,7 +310,22 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             c.手枪属性=dominator;c.__modeWeaponWrites.手枪=dominator;
             c.手枪伤害类型=mode=="分解模式" ? "真伤" : "物理";
         }
-        c.根据模式重新读取武器加成(c.攻击模式);
+        var modeKey:String = c.攻击模式;
+        c.伤害类型 = c[modeKey + "伤害类型"] ? (c[modeKey + "伤害类型"] || "物理") : (c.基础伤害类型 || "物理");
+        c.魔法伤害属性 = c[modeKey + "魔法伤害属性"] ? c[modeKey + "魔法伤害属性"] : c.基础魔法伤害属性;
+        c.毒 = (c.基础毒 ? Number(c.基础毒) : 0) + (c[modeKey + "毒"] ? Number(c[modeKey + "毒"]) : 0);
+        c.吸血 = (c.基础吸血 ? Number(c.基础吸血) : 0) + (c[modeKey + "吸血"] ? Number(c[modeKey + "吸血"]) : 0);
+        c.击溃 = (c.基础击溃 ? Number(c.基础击溃) : 0) + (c[modeKey + "击溃"] ? Number(c[modeKey + "击溃"]) : 0);
+        c.命中加成 = (c.基础命中加成 ? Number(c.基础命中加成) : 0) + (c[modeKey + "命中加成"] ? Number(c[modeKey + "命中加成"]) : 0);
+        c.暴击 = c[modeKey + "暴击"] ? c[modeKey + "暴击"] : undefined;
+        c.斩杀 = (c.基础斩杀 ? Number(c.基础斩杀) : 0) + (c[modeKey + "斩杀"] ? Number(c[modeKey + "斩杀"]) : 0);
+        if (typeof c.根据模式重新读取武器加成 == "function") {
+            c.根据模式重新读取武器加成(c.攻击模式);
+        }
+        if (!isFinite(Number(c.命中加成))) {
+            c.命中加成 = 0;
+        }
+        c.命中率 = Math.max(c.基础命中率 * (1 + c.命中加成 / 100), DodgeHandler.HIT_RATE_LIMIT);
     }
 
     public static function calculateMusicMode(kind:String,ref:Object,raw:Object,gunBonus:Number,bladeBonus:Number):Object {
@@ -382,6 +397,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         if (input == null) throw new Error("stat_source_missing_or_stale");
         var c:Object = {};
         for (var i:Number=0; i<persistentInputKeys.length; i++) c[persistentInputKeys[i]] = target[persistentInputKeys[i]];
+        if (!isFinite(Number(c.基础命中率)) || Number(c.基础命中率) <= 0) {
+            c.命中率 = target.命中率;
+        }
         if (!isFinite(Number(c.hp基本满血值)) || !isFinite(Number(c.mp基本满血值))) throw new Error("stat_base_missing");
         c.label = target.label;
         c.被动技能=passiveInput==undefined ? target.被动技能 : passiveInput;
@@ -526,6 +544,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
                     if(record.gunBonus>0) {target.buff.buff加算.手枪威力=record.gunBonus;target.buff.buff加算.手枪2威力=record.gunBonus;}
                     else {delete target.buff.buff加算.手枪威力;delete target.buff.buff加算.手枪2威力;}
                 }
+            }
+            if (!isFinite(Number(target.基础命中率)) || Number(target.基础命中率) <= 0) {
+                target.基础命中率 = c.基础命中率;
             }
             for (var i:Number=0; i<persistentNumberKeys.length; i++) {
                 var key:String = persistentNumberKeys[i];
@@ -920,7 +941,25 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             }
         }
 
-        target.根据模式重新读取武器加成(target.攻击模式);
+        if (!isFinite(Number(target.基础命中率)) || Number(target.基础命中率) <= 0) {
+            var fallbackHitRate:Number = Number(target.命中率);
+            var defaultHitRate:Number = isFinite(Number(DodgeHandler.DEFAULT_HIT_RATE)) ? Number(DodgeHandler.DEFAULT_HIT_RATE) : 10;
+            target.基础命中率 = (isFinite(fallbackHitRate) && fallbackHitRate > 0) ? fallbackHitRate : defaultHitRate;
+        }
+
+        var modeKey:String = target.攻击模式;
+        target.伤害类型 = target[modeKey + "伤害类型"] ? (target[modeKey + "伤害类型"] || "物理") : (target.基础伤害类型 || "物理");
+        target.魔法伤害属性 = target[modeKey + "魔法伤害属性"] ? target[modeKey + "魔法伤害属性"] : target.基础魔法伤害属性;
+        target.毒 = (target.基础毒 ? Number(target.基础毒) : 0) + (target[modeKey + "毒"] ? Number(target[modeKey + "毒"]) : 0);
+        target.吸血 = (target.基础吸血 ? Number(target.基础吸血) : 0) + (target[modeKey + "吸血"] ? Number(target[modeKey + "吸血"]) : 0);
+        target.击溃 = (target.基础击溃 ? Number(target.基础击溃) : 0) + (target[modeKey + "击溃"] ? Number(target[modeKey + "击溃"]) : 0);
+        target.命中加成 = (target.基础命中加成 ? Number(target.基础命中加成) : 0) + (target[modeKey + "命中加成"] ? Number(target[modeKey + "命中加成"]) : 0);
+        target.暴击 = target[modeKey + "暴击"] ? target[modeKey + "暴击"] : undefined;
+        target.斩杀 = (target.基础斩杀 ? Number(target.基础斩杀) : 0) + (target[modeKey + "斩杀"] ? Number(target[modeKey + "斩杀"]) : 0);
+
+        if (typeof target.根据模式重新读取武器加成 == "function") {
+            target.根据模式重新读取武器加成(target.攻击模式);
+        }
 
         target.hp满血值 = target.hp基本满血值 + target.hp满血值装备加层;
         target.mp满血值 = target.mp基本满血值 + target.mp满血值装备加层;
@@ -934,6 +973,14 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         
         target.防御力 = target.基本防御力 + target.装备防御力;
 
+        if (!isFinite(Number(target.基础命中率)) || Number(target.基础命中率) <= 0) {
+            var postFallbackHitRate:Number = Number(target.命中率);
+            var postDefaultHitRate:Number = isFinite(Number(DodgeHandler.DEFAULT_HIT_RATE)) ? Number(DodgeHandler.DEFAULT_HIT_RATE) : 10;
+            target.基础命中率 = (isFinite(postFallbackHitRate) && postFallbackHitRate > 0) ? postFallbackHitRate : postDefaultHitRate;
+        }
+        if (!isFinite(Number(target.命中加成))) {
+            target.命中加成 = 0;
+        }
         target.命中率 = Math.max(target.基础命中率 * (1 + target.命中加成 / 100), DodgeHandler.HIT_RATE_LIMIT);
         target.韧性系数 = target.基础韧性系数 * (1 + target.韧性加成 / 100);
 

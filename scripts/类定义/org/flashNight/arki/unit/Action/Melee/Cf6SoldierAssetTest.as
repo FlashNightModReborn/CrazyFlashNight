@@ -37,6 +37,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
     private static var grenadeXml:XML;
     private static var completionCases:Array;
     private static var reviewQueue:Array,reviewUnits:Array,reviewIndex:Number,reviewStage:Number,reviewDone:Boolean;
+    private static var fullChainUnits:Array,tacticalPanelLogs:Array;
     private static var link:String="敌人-CF6特种兵";
 
     private static function check(ok:Boolean,label:String):Void {
@@ -59,7 +60,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             +" count="+u.soldierReloadCount+" error="+u.soldierWeaponError);
     }
     public static function runAllTests():Void {
-        passed=failed=ticks=0;ready=finished=false;reviewDone=false;cases=[];probes=[];images={};phases=[];elites=[];lanes=[];pairs=[];roles=[];tactics=[];completionCases=[];
+        passed=failed=ticks=0;ready=finished=false;reviewDone=false;cases=[];probes=[];images={};phases=[];elites=[];lanes=[];pairs=[];roles=[];tactics=[];completionCases=[];fullChainUnits=[];tacticalPanelLogs=[];
         _root.cf6InventoryReads=0;_root.cf6InventoryWrites=0;
         ItemUtil.singleContain=function():Object {_root.cf6InventoryReads++;return null;};
         ItemUtil.getTotal=function():Number {_root.cf6InventoryReads++;return 0;};
@@ -79,6 +80,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         _root.敌人函数={配置音效:function():Void {},
             标准击杀:KillEventComponent.onKill,
             行走:_root.士兵测试标准行走,
+            魔法伤害种类:["基础","电","热","冷","波","蚀","毒","冲","人类"],
             大学军校学员随机兵器表:["M4A1改","AK74战术版","M4A1战术版","DD MK18战术版"],
             状态改变:function(state:String):Void {if(this.状态==state)return;this.状态=state;this.gotoAndStop(state);}};
         _root.主角函数={长枪射击:WeaponFireCore.LONG_GUN_SHOOT,
@@ -126,13 +128,40 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 this.gotoAndPlay(unit.soldierAttackOwner.reloadPair===true?"双枪同步换弹匣":"双枪换弹匣");
             },
             清理射击任务:function(unit:MovieClip,preserve:Boolean):Void {ShootCore.cleanup(unit,preserve);},
-            根据模式重新读取武器加成:function():Void {},
+            创建主动战技槽位表:function():Object {return {};},
+            获取装备主动战技种类:function(equipType:String,useType:String):String {return null;},
+            根据模式重新读取武器加成:function(攻击模式:String):Void {
+                this.伤害类型=this[攻击模式+"伤害类型"]?(this[攻击模式+"伤害类型"]||"物理"):(this.基础伤害类型||"物理");
+                this.魔法伤害属性=this[攻击模式+"魔法伤害属性"]?this[攻击模式+"魔法伤害属性"]:this.基础魔法伤害属性;
+                this.毒=(this.基础毒?Number(this.基础毒):0)+(this[攻击模式+"毒"]?Number(this[攻击模式+"毒"]):0);
+                this.吸血=(this.基础吸血?Number(this.基础吸血):0)+(this[攻击模式+"吸血"]?Number(this[攻击模式+"吸血"]):0);
+                this.击溃=(this.基础击溃?Number(this.基础击溃):0)+(this[攻击模式+"击溃"]?Number(this[攻击模式+"击溃"]):0);
+                this.命中加成=(this.基础命中加成?Number(this.基础命中加成):0)+(this[攻击模式+"命中加成"]?Number(this[攻击模式+"命中加成"]):0);
+                this.暴击=this[攻击模式+"暴击"]?this[攻击模式+"暴击"]:undefined;
+                this.斩杀=(this.基础斩杀?Number(this.基础斩杀):0)+(this[攻击模式+"斩杀"]?Number(this[攻击模式+"斩杀"]):0);
+                if(!isFinite(Number(this.基础命中率))||Number(this.基础命中率)<=0){
+                    var fallbackHitRate:Number=Number(this.命中率);
+                    var defaultHitRate:Number=isFinite(Number(org.flashNight.arki.component.StatHandler.DodgeHandler.DEFAULT_HIT_RATE))?Number(org.flashNight.arki.component.StatHandler.DodgeHandler.DEFAULT_HIT_RATE):10;
+                    this.基础命中率=(isFinite(fallbackHitRate)&&fallbackHitRate>0)?fallbackHitRate:defaultHitRate;
+                }
+                if(!isFinite(Number(this.命中加成)))this.命中加成=0;
+                this.命中率=Math.max(this.基础命中率*(1+this.命中加成/100),org.flashNight.arki.component.StatHandler.DodgeHandler.HIT_RATE_LIMIT);
+            },
             初始化换弹负担:ReloadManager.initReloadBurden,
             双枪初始化换弹负担:ReloadManager.initDualGunReloadBurden,
             换弹门禁:ReloadManager.handleReloadGate,双枪换弹门禁:ReloadManager.handleDualGunReloadGate,
             换弹帧率控制:ReloadManager.controlReloadFrameRate};
         _root.装备引用配置={配置装扮:DressupReferenceManager.attach,刷新所有装扮:DressupReferenceManager.refreshAll};
-        _root.帧计时器={当前帧数:0};
+        _root.帧计时器={当前帧数:0,unitUpdateWheel:{add:function():Number {return 1;},remove:function():Void {}}};
+        _root.天气系统={无限过图:false};_root.场景={状态:1};_root.音效列表={};
+        _root.服务器={发布服务器消息:function(msg:String):Void {
+            if(msg!=null && msg.indexOf("[CF6-TACTICAL-PANEL]")==0){
+                Cf6SoldierAssetTest.tacticalPanelLogs.push(msg);
+                trace(msg);
+            }
+        }};
+        org.flashNight.gesh.depth.DepthManager.instance=new org.flashNight.gesh.depth.DepthManager(library);
+        _root.根据等级计算值=function(minVal:Number,maxVal:Number,lv:Number):Number {return minVal+(maxVal-minVal)/59*(lv-1);};
         _root.soundEffectManager={playSound:function():Void {}};
         _root.对象浅拷贝=function(source:Object):Object {var copy:Object={};for(var k:String in source)copy[k]=source[k];return copy;};
         _root.初始化思考标签=function(mc:MovieClip):Void {mc._name="思考标签";mc.stop();mc._visible=false;};
@@ -175,7 +204,49 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             this.斗兽标定隔离=true;
             this.dispatcher.subscribe("death",function():Void {this.fixtureRecord.deaths++;},this);
             this.fixtureRecord.deaths=0;
-            this.基础命中率=20;this.基础命中加成=0;this.version=1;
+            this.命中率=(isFinite(Number(this.命中率)) && Number(this.命中率)>0)?Number(this.命中率):((isFinite(Number(this.基础命中率)) && Number(this.基础命中率)>0)?Number(this.基础命中率):10);
+            if(!isFinite(Number(this.基础命中率)) || Number(this.基础命中率)<=0)this.基础命中率=this.命中率;
+            this.躲闪率=!isNaN(this.躲闪率)?this.躲闪率:10;
+            if(!isFinite(Number(this.基础躲闪率)))this.基础躲闪率=this.躲闪率;
+            this.韧性系数=!isNaN(this.韧性系数)?this.韧性系数:1;
+            if(!isFinite(Number(this.基础韧性系数)))this.基础韧性系数=this.韧性系数;
+            if(this.fixtureFullProductionInit===true){
+                this.兵种=this.兵种 || "敌人-CF6特种兵";
+                this.名字=this.名字 || "CF6特种兵";
+                this.性别=this.性别 || "男";
+                this.称号=this.称号 || "";
+                this.身高=!isNaN(this.身高)?this.身高:175;
+                this.重量=!isNaN(this.重量)?this.重量:60;
+                this.体重=!isNaN(this.体重)?this.体重:60;
+                this.等级=!isNaN(this.等级)?this.等级:60;
+                this.hp_min=380;this.hp_max=4600;
+                this.速度_min=40;this.速度_max=80;
+                this.空手攻击力_min=24;this.空手攻击力_max=580;
+                this.躲闪率_min=20;this.躲闪率_max=9.83050847457627;
+                this.基本防御力_min=30;this.基本防御力_max=220;
+                this.装备防御力=!isNaN(this.装备防御力)?this.装备防御力:0;
+                this.韧性系数=1.5;this.基础韧性系数=1.5;
+                this.奔跑速度倍率=2;
+                this.label=this.label || {};
+                this.魔法抗性=this.魔法抗性 || {基础:40};
+                this.已加经验值=false;
+                this.hp满血值=_root.根据等级计算值(this.hp_min,this.hp_max,this.等级);
+                this.hp=this.hp满血值;this.mp=this.mp满血值=100;
+                this.空手攻击力=_root.根据等级计算值(this.空手攻击力_min,this.空手攻击力_max,this.等级);
+                this.基本空手攻击力=this.空手攻击力;
+                this.行走X速度=_root.根据等级计算值(this.速度_min,this.速度_max,this.等级)/10;
+                this.基本速度=this.行走X速度;this.起跳速度=-10;
+                this.基本防御力=_root.根据等级计算值(this.基本防御力_min,this.基本防御力_max,this.等级);
+                this.防御力=this.基本防御力+this.装备防御力;
+                this.躲闪率=_root.根据等级计算值(this.躲闪率_min,this.躲闪率_max,this.等级);
+                this.基础躲闪率=this.躲闪率;
+                this.unitAI.destroy=function():Void {};
+                this.aabbCollider={updateFromUnitArea:function():Void {},getFactory:function():Object {return {releaseCollider:function():Void {}};}};
+                org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer.initializeUnit(this);
+                this.stop();
+                return;
+            }
+            this.基础命中加成=0;this.version=1;
             DressupInitializer.loadEquipmentData(this,"长枪",DressupInitializer.loadEquipment,1);
             for(var pistolIndex:Number=0;pistolIndex<2;pistolIndex++){
                 var pistolSlot:String=pistolIndex==0?"手枪":"手枪2";
@@ -238,6 +309,12 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             for(var i:Number=0;i<parsed.item.length;i++){
                 var item:Object=parsed.item[i];ItemUtil.itemDataDict[item.name]=item;
             }
+            var goggleItem:Object={
+                name:"复镕望远热感仪",displayname:"复镕望远热感仪",type:"防具",use:"头部装备",
+                data:{level:20,weight:1,dressup:"男变装-复镕望远热感仪",hp:20,mp:60,damage:50,knifepower:10,defence:80,accuracy:10}
+            };
+            ItemUtil.itemDataDict["复镕望远热感仪"]=goggleItem;
+            ItemUtil.equipmentDict["复镕望远热感仪"]=true;
             Cf6SoldierAssetTest.loadNextLibrary();
         };
     }
@@ -282,6 +359,14 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         }
         defaults=[];
         for(var di:Number=0;di<6;di++)defaults.push(library.attachMovie(link,"soldierDefault"+di,library.getNextHighestDepth(),{fixtureRecord:record()}));
+        fullChainUnits=[
+            library.attachMovie(link,"soldierFullChain0",library.getNextHighestDepth(),{
+                fixtureRecord:record(),fixtureFullProductionInit:true,特种兵战术诊断:true,长枪:"M4A1战术版"
+            }),
+            library.attachMovie(link,"soldierFullChainArmor",library.getNextHighestDepth(),{
+                fixtureRecord:record(),fixtureFullProductionInit:true,特种兵战术诊断:true,长枪:"M4A1战术版",头部装备:"复镕望远热感仪"
+            })
+        ];
         var phaseMoves:Array=["stand","shoot","knife","hit","break","breakReload"];
         for(var ps:Number=0;ps<2;ps++)for(var pm:Number=0;pm<phaseMoves.length;pm++){
             var phaseRec:Object=record();
@@ -312,6 +397,90 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         }
         createLaneCases();createPairCases();createRoleCases();createTacticalCases();createCompletionCases();
         ready=true;ticks=0;
+    }
+    private static function validateDressupHitAndDodgeContract():Void {
+        var paramInit:Object=org.flashNight.arki.unit.UnitComponent.Initializer.ParameterInitializer;
+        var bulletInit:Object=org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer;
+        var dodgeApi:Object=org.flashNight.arki.component.StatHandler.DodgeHandler;
+        var deinitApi:Object=org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer;
+
+        var u0:MovieClip=fullChainUnits[0];
+        var uArmor:MovieClip=fullChainUnits[1];
+        check(u0!=null && u0.__unitInitializedVersion!=null && u0.__unitInitializedVersion==u0.version,
+            "CF6 soldier full chain completes StaticInitializer.initializeUnit latch");
+        check(u0.hasDressup===true && isFinite(u0.基础命中率) && u0.基础命中率==20 && isFinite(u0.命中率) && u0.命中率==20,
+            "CF6 soldier full chain preserves baseHit=20 and liveHit=20");
+        check(isFinite(u0.基础躲闪率) && isFinite(u0.躲闪率) && u0.躲闪率>0,
+            "CF6 soldier full chain preserves finite positive dodge rate");
+        var u0Primary:Object=ShootInitCore.generateBulletProps(u0,"长枪",u0.长枪属性,{});
+        var u0Default:Object={};bulletInit.setDefaults(u0Default,u0);
+        check(u0Primary.命中率==20 && u0Default.命中率==20,
+            "CF6 soldier full chain primary and default bullets inherit hit=20");
+
+        check(uArmor!=null && uArmor.__unitInitializedVersion!=null && uArmor.__unitInitializedVersion==uArmor.version,
+            "CF6 soldier with goggle armor completes StaticInitializer.initializeUnit latch");
+        check(uArmor.基础命中率==20 && uArmor.基础命中加成==10 && uArmor.命中加成==10 && uArmor.命中率==22,
+            "CF6 soldier with +10% goggle armor computes baseHit=20, bonus=10, liveHit=22");
+        var uArmorPrimary:Object=ShootInitCore.generateBulletProps(uArmor,"长枪",uArmor.长枪属性,{});
+        var uArmorDefault:Object={};bulletInit.setDefaults(uArmorDefault,uArmor);
+        check(uArmorPrimary.命中率==22 && uArmorDefault.命中率==22,
+            "CF6 soldier with +10% goggle armor aligns primary and default bullets at hit=22");
+
+        tacticalPanelLogs.length=0;
+        u0.soldierClock=6;u0.soldierTacticalObserve();
+        uArmor.soldierClock=6;uArmor.soldierTacticalObserve();
+        check(tacticalPanelLogs.length==2
+            && tacticalPanelLogs[0].indexOf("hit=20 ")>=0 && tacticalPanelLogs[0].indexOf("hit=NaN")<0
+            && tacticalPanelLogs[1].indexOf("hit=22 ")>=0 && tacticalPanelLogs[1].indexOf("hit=NaN")<0,
+            "CF6 tactical panel diagnostic emits finite hit=20 and hit=22 without hit=NaN");
+
+        delete u0.基础命中率;u0.命中率=20;
+        DressupInitializer.initialize(u0);
+        check(u0.基础命中率==20 && u0.命中率==20,
+            "missing-base-hit recovery branch preserves hit=20 with real production mode callback");
+
+        var plainEnemy:MovieClip=library.createEmptyMovieClip("plainDressupEnemyProbe",library.getNextHighestDepth());
+        plainEnemy.fixtureRecord=record();plainEnemy.fixtureFullProductionInit=true;
+        plainEnemy.兵种="敌人-通用换装杂兵";plainEnemy.名字="通用换装杂兵";
+        plainEnemy.hasDressup=true;plainEnemy.enableShoot=true;plainEnemy.攻击模式="长枪";
+        plainEnemy.长枪="AK47";plainEnemy.头部装备="复镕望远热感仪";
+        delete plainEnemy.根据模式重新读取武器加成;
+        delete plainEnemy.基础命中率;delete plainEnemy.命中率;
+        _root.初始化敌人模板.call(plainEnemy);
+        check(plainEnemy.__unitInitializedVersion!=null && plainEnemy.__unitInitializedVersion==plainEnemy.version
+            && plainEnemy.根据模式重新读取武器加成==undefined,
+            "plain dressup enemy without mode callback completes full StaticInitializer.initializeUnit");
+        var plainPrimaryBullet:Object=ShootInitCore.generateBulletProps(plainEnemy,"长枪",plainEnemy.长枪属性,{});
+        var plainDefaultBullet:Object={};bulletInit.setDefaults(plainDefaultBullet,plainEnemy);
+        check(plainEnemy.基础命中率==10 && plainEnemy.基础命中加成==10 && plainEnemy.命中加成==10
+            && plainEnemy.命中率==11 && plainPrimaryBullet.命中率==11 && plainDefaultBullet.命中率==11
+            && isFinite(plainEnemy.躲闪率),
+            "plain dressup enemy without mode callback aligns liveHit/primaryBullet/defaultBullet at 11 with +10% armor");
+
+        var invalidHitRates:Array=[Number.NaN,Number.POSITIVE_INFINITY,Number.NEGATIVE_INFINITY,0,-5];
+        for(var ti:Number=0;ti<invalidHitRates.length;ti++){
+            var badEnemy:MovieClip=library.createEmptyMovieClip("badHitEnemyProbe"+ti,library.getNextHighestDepth());
+            badEnemy.fixtureRecord=record();badEnemy.命中率=invalidHitRates[ti];
+            delete badEnemy.基础命中率;
+            _root.初始化敌人模板.call(badEnemy);
+            check(isFinite(badEnemy.基础命中率) && badEnemy.基础命中率==10 && isFinite(badEnemy.命中率) && badEnemy.命中率==10,
+                "enemy template initialization rejects invalid hitRate index="+ti);
+            badEnemy.removeMovieClip();
+        }
+
+        deinitApi.deInitializeUnit(plainEnemy);plainEnemy.removeMovieClip();
+        deinitApi.deInitializeUnit(u0);u0.removeMovieClip();
+        deinitApi.deInitializeUnit(uArmor);uArmor.removeMovieClip();
+        fullChainUnits.length=0;
+
+        var expectedDodgeRate:Number=dodgeApi.calcDodgeRateByLevel(60,60,9.83050847457627,dodgeApi.DEFAULT_HIT_RATE);
+        check(isFinite(expectedDodgeRate) && expectedDodgeRate>dodgeApi.DODGE_RATE_LIMIT && expectedDodgeRate<=dodgeApi.DODGE_SYSTEM_MAX,
+            "DodgeHandler baseline level dodge rate is finite and within bounds");
+        for(var hi:Number=0;hi<invalidHitRates.length;hi++){
+            var guardedRate:Number=dodgeApi.calcDodgeRateByLevel(60,60,9.83050847457627,invalidHitRates[hi]);
+            check(isFinite(guardedRate) && Math.abs(guardedRate-expectedDodgeRate)<0.000001,
+                "DodgeHandler.calcDodgeRateByLevel falls back to DEFAULT_HIT_RATE for invalid hitRate index="+hi);
+        }
     }
     private static function validateEliteEquipment(c:Object,u:MovieClip):Void {
             var mainName:String=c.move=="externalPair"?"短HK53":"FR506";
@@ -793,6 +962,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 for(var pi:Number=0;pi<_root.敌人函数.大学军校学员随机兵器表.length;pi++)if(du.长枪.name==_root.敌人函数.大学军校学员随机兵器表[pi])allowed=true;
                 check(allowed && du.长枪 instanceof BaseItem,"omitted primary resolves shared cadet pool "+di2);
             }
+            validateDressupHitAndDodgeContract();
             var standing:MovieClip=probes[0].actor;standing.man.gotoAndStop(1);limbCoverage(standing);render(standing,"stand");
             var dying:MovieClip=cases[7].actor,oldFrame:Number=dying.man._currentframe;dying.man.gotoAndStop(1);
             var a:Object=standing.man.getBounds(library),b:Object=dying.man.getBounds(library);
@@ -904,7 +1074,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 check(u.hp满血值==1000 && u.空手攻击力==100,"elite inherits fixture panel "+i);
                 u.方向改变(c.side==0?"右":"左");
                 if(c.move=="break"){
-                    check(u.名字=="CF6特种兵·持盾一阶段" && u.damageTakenMultiplier==0.25,"elite hidden shield identity "+i);
+                    check(u.名字=="攻坚盾卫" && u.damageTakenMultiplier==0.25,"elite hidden shield identity "+i);
                     c.weapon=u.长枪;c.pistol=u.手枪;c.sidearm=u.手枪2;c.version=u.version;
                     u.长枪.value.shot=2;u.手枪.value.shot=2;u.手枪2.value.shot=3;u.hp=0;
                 }else{
@@ -1040,7 +1210,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     "elite phase preserves weapon and initialization identities "+i);
                 check(u.长枪.value.shot==2 && u.手枪.value.shot==2 && u.手枪2.value.shot==3,"elite phase preserves all three ammunition states "+i);
                 check(!u.刚体 && !u.无敌 && u.damageTakenMultiplier==1,"elite adds no armor after break "+i);
-                check(u.名字=="CF6特种精英·二阶段","elite identity revealed after break "+i);
+                check(u.名字=="机动特勤","elite identity revealed after break "+i);
                 render(u,"elite-break-"+c.side);
             }
             if(ticks==300 && c.move!="break"){
