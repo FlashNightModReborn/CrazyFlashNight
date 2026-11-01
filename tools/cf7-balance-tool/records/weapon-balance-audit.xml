@@ -11239,19 +11239,19 @@
       <damageType>1</damageType>
       <shotgun>20</shotgun>
       <magPrice>1000</magPrice>
-      <weightLayers>0</weightLayers>
+      <weightLayers>1</weightLayers>
       <category>1</category>
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:24661fe8</inputDigest>
+      <inputDigest>fnv1a32:a4dfad5d</inputDigest>
       <sourceDigest>sha256:2abe095cb26f42f3776e3c281415457f5654e18aa68a8bc4f7996ea9babae1f2</sourceDigest>
       <budgetBreakdown>
         <entry>
-          <code>acquisition.gold-standard</code>
-          <delta>0</delta>
-          <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>data/shops/npcs/King.json</evidenceRef>
+          <code>acquisition.high-price</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-001</ruleRef>
+          <evidenceRef>UNRESOLVED: data/shops/npcs/King.json 现价 296000（推荐金币价 124800，priceRatio=2.37），按 1 层高价基底标定（averageDPS=6986.71 vs weightedDPS=6877.59，残差 +1.59%），WBR-MAP-002 价格层映射待独立确认</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -11263,17 +11263,17 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=横向联弹-加强普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=加强普通子弹/chainTemplate=横向联弹→非穿刺 pierce=1</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=SPAS12-B2/data;无 damagetype/magictype，默认物理=1</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=SPAS12-B2/data;bullet=横向联弹-加强普通子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-002</id>
           <target>input.shotgun</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=SPAS12-B2/data/split=20；横向/纵向/连发语义未裁定，按 split 直录待复核</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=SPAS12-B2/data/split=20;bullet=横向联弹-加强普通子弹→每发消耗1弹容同次生成20颗非穿刺弹丸判定，shotgun=20</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AMMO-001</id>
@@ -11281,9 +11281,9 @@
           <evidenceRef>data/items/消耗品_弹夹.xml#item=00号鹿弹/price=1000</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-WL-003</id>
+          <id>WBR-WL-001</id>
           <target>input.weightLayers</target>
-          <evidenceRef>data/shops/npcs/King.json</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/shops/npcs/King.json；高价金币基底 +1 层（残差 +1.59%），WBR-MAP-002 价格层映射待独立确认</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -11296,7 +11296,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；全部输入待人工复核后方可 confirmed</note>
+      <note>30级双连发霰弹手枪（split=20，power=350，interval=850，capacity=4）；按高价金币基底 weightLayers=1 标定（averageDPS=6986.71，weightedDPS=6877.59，残差 +1.59%）；售价 296000 超出 1 层推荐价审计带（priceRatio=2.37），保留 unresolved</note>
     </record>
     <record>
       <auditRef>weapon:SAPS12:data</auditRef>
@@ -11305,21 +11305,27 @@
       <dualWield>2</dualWield>
       <pierce>2</pierce>
       <damageType>1</damageType>
-      <shotgun>11</shotgun>
+      <shotgun>8</shotgun>
       <magPrice>1000</magPrice>
-      <weightLayers>1</weightLayers>
+      <weightLayers>3</weightLayers>
       <category>1</category>
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:b0f91e15</inputDigest>
-      <sourceDigest>sha256:f75462989df4a7bcb1f4f5fedf1009f4b139a15e97ce2502e4f1e71b59b758b5</sourceDigest>
+      <inputDigest>fnv1a32:c836e798</inputDigest>
+      <sourceDigest>sha256:0a92f411c758e0f9fb7e0073f71f00d47725cbb1ffe3e4b4803a8a102b002372</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.crafting</code>
           <delta>1</delta>
           <ruleRef>WBR-WL-001</ruleRef>
-          <evidenceRef>data/crafting/武器合成.json</evidenceRef>
+          <evidenceRef>data/crafting/武器合成.json#craft.weapon.009</evidenceRef>
+        </entry>
+        <entry>
+          <code>acquisition.unverified</code>
+          <delta>2</delta>
+          <ruleRef>WBR-WL-005</ruleRef>
+          <evidenceRef>UNRESOLVED: data/crafting/武器合成.json#craft.weapon.009 由高价基底 SPAS12-B2（296000）+ 磁稳贯穿弹 + 强化金属管 + 高强度合金 + 枪械内构强化套件 + 加长弹匣合成，叠加高价基底与进阶改装预算共 2 层（总 weightLayers=3，averageDPS=10862.99 vs weightedDPS=10856.98，残差 +0.06%），跨层预算继承口径按 WBR-WL-005 保留 unresolved</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -11331,17 +11337,17 @@
         <ref>
           <id>WBR-PIERCE-003</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=横向联弹-穿刺子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=穿刺子弹/chainTemplate=横向联弹→普通穿刺 pierce=2（Flash CS6 TestLoader HorizontalPierceProbeTest RunId=d6606bcb544f4fb193c75a6a72600e10 实测 velocity=25 贴脸稳定 2 帧穿刺、60~70px 稳定 2~3 帧穿刺）</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=SAPS12/data;无 damagetype/magictype，默认物理=1</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=SAPS12/data;bullet=横向联弹-穿刺子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-002</id>
           <target>input.shotgun</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=SAPS12/data/split=11；横向/纵向/连发语义未裁定，按 split 直录待复核</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=SAPS12/data/split=8;bullet=横向联弹-穿刺子弹→每发消耗1弹容同次生成8颗穿刺弹丸判定，shotgun=8</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AMMO-001</id>
@@ -11349,9 +11355,9 @@
           <evidenceRef>data/items/消耗品_弹夹.xml#item=00号鹿弹/price=1000</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-WL-001</id>
+          <id>WBR-WL-005</id>
           <target>input.weightLayers</target>
-          <evidenceRef>data/crafting/武器合成.json</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/crafting/武器合成.json#craft.weapon.009；合成 +1 层叠加高价基底/进阶改装 +2 层共 weightLayers=3（残差 +0.06%）</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -11364,7 +11370,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；全部输入待人工复核后方可 confirmed</note>
+      <note>Issue #188 方案3重标定：37级半自动穿甲霰弹手枪（split=8，power=395，interval=650，capacity=8，velocity=25，pierce=2，shotgun=8，weightLayers=3）；averageDPS=10862.99，weightedDPS=10856.98，残差 +0.06%；CS6 实机探针（RunId d6606bcb544f4fb193c75a6a72600e10）验证弹速 25 下贴脸稳定 2 帧穿刺、中近距 2~3 帧穿刺；合成跨层预算继承保留 unresolved</note>
     </record>
     <record>
       <auditRef>weapon:战术版莫斯伯格590:data</auditRef>

@@ -378,12 +378,12 @@
             <damageType>1</damageType>
             <shotgun>20</shotgun>
             <magPrice>1000</magPrice>
-            <weightLayers>0</weightLayers>
+            <weightLayers>1</weightLayers>
             <category>1</category>
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:24661fe8</inputDigest>
+            <inputDigest>fnv1a32:a4dfad5d</inputDigest>
             <auditRef>weapon:SPAS12-B2:data</auditRef>
           </data>
         </profiles>
@@ -409,11 +409,11 @@
         <dressup>枪-手枪-SPAS12</dressup>
         <capacity>8</capacity>
       <overload><chamber>1</chamber><ghost>1</ghost></overload>
-        <split>11</split>
+        <split>8</split>
         <diffusion>14</diffusion>
-        <interval>500</interval>
+        <interval>650</interval>
         <singleshoot>true</singleshoot>
-        <velocity>35</velocity>
+        <velocity>25</velocity>
         <bullet>横向联弹-穿刺子弹</bullet>
         <bulletrename>穿刺子弹</bulletrename>
         <sound>SPAS12F.wav</sound>
@@ -421,7 +421,7 @@
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>30</bulletsize>
-        <power>110</power>
+        <power>395</power>
         <impact>15</impact>
         <reloadType>tube</reloadType>
         <reloadPenalty>0</reloadPenalty>
@@ -435,14 +435,14 @@
             <dualWield>2</dualWield>
             <pierce>2</pierce>
             <damageType>1</damageType>
-            <shotgun>11</shotgun>
+            <shotgun>8</shotgun>
             <magPrice>1000</magPrice>
-            <weightLayers>1</weightLayers>
+            <weightLayers>3</weightLayers>
             <category>1</category>
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:b0f91e15</inputDigest>
+            <inputDigest>fnv1a32:c836e798</inputDigest>
             <auditRef>weapon:SAPS12:data</auditRef>
           </data>
         </profiles>
