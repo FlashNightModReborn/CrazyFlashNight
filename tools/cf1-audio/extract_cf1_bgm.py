@@ -3,7 +3,9 @@
 
 The original Flash 5 SWF stores background music as SoundStreamBlock tags inside
 the music sprites. No FFDec/JRE is required: this walks the SWF tag stream and
-concatenates each sprite's blocks into a standalone MP3.
+concatenates each sprite's blocks into a standalone MP3 under
+tools/cf1-audio/original. The runtime copies in sounds/cf1 are normalized to
+44.1 kHz so the native decoder can play them.
 
 Usage:
     python tools/cf1-audio/extract_cf1_bgm.py
@@ -21,7 +23,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "flashswf" / "originals" / "crazy-flasher-1.swf"
-OUTPUT_DIR = ROOT / "sounds" / "cf1"
+# Original extraction is kept outside sounds/ because the playable copies in
+# sounds/cf1 are normalized to 44.1 kHz for the native audio decoder.
+OUTPUT_DIR = ROOT / "tools" / "cf1-audio" / "original"
 MANIFEST = OUTPUT_DIR / "manifest.json"
 
 

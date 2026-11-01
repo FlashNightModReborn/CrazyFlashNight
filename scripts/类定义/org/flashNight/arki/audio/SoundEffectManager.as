@@ -47,6 +47,10 @@ class org.flashNight.arki.audio.SoundEffectManager {
     private var _sequences:Object;          // sequenceId → {id, mode, tracks:[title,...]}
     private var _sequenceCursor:Object;     // "source|sequenceId" → 下一次 advance 的索引
     private var _currentSequence:String;    // 当前实际生效的序列；普通单曲/专辑为 null
+    private var _currentSequenceTitle:String; // 当前序列曲目标题
+    private var _currentSequenceIndex:Number; // 当前序列曲目索引
+    private var _sequenceTimer:Number;        // 当前序列曲目的结束定时器
+    private var _sequenceTimerToken:Number;   // 定时器代次，防止旧回调生效
 
     // ── 被压制意图 ──
     private var _suppressedScene:Object;    // {type:"single"|"album", title, album, loop, defaultTitle}
@@ -76,6 +80,10 @@ class org.flashNight.arki.audio.SoundEffectManager {
         _sequences = {};
         _sequenceCursor = {};
         _currentSequence = null;
+        _currentSequenceTitle = null;
+        _currentSequenceIndex = -1;
+        _sequenceTimer = null;
+        _sequenceTimerToken = 0;
         _suppressedScene = null;
         _suppressedStage = null;
 
@@ -153,7 +161,8 @@ class org.flashNight.arki.audio.SoundEffectManager {
             if (tracks.length == 0) continue;
             var mode:String = item.mode != undefined ? String(item.mode).toLowerCase() : "order";
             if (mode != "order" && mode != "random") mode = "order";
-            _sequences[id] = {id:id, mode:mode, tracks:tracks};
+            var auto:Boolean = item.auto !== false && String(item.auto) != "false";
+            _sequences[id] = {id:id, mode:mode, tracks:tracks, auto:auto};
             loaded++;
         }
         trace("[SoundEffectManager] BGM sequences loaded: " + loaded);
@@ -366,14 +375,22 @@ class org.flashNight.arki.audio.SoundEffectManager {
             _bgmSource = source;
             _currentAlbum = bgm.album;
             _currentLoop = loop;
-            _currentSequence = sequenceId != null && sequenceId != "" ? sequenceId : null;
+            if (sequenceId != null && sequenceId != "") {
+                _currentSequence = sequenceId;
+            } else {
+                clearSequenceState();
+            }
             // 其它调用不改变 _sceneIsAlbumMode（由 playAlbumBGM 调用）
             if (source == "scene") _sceneIsAlbumMode = false;
             trace("[BGM] source=" + source + " title=" + title
                 + " result=requested requestId=" + requestId);
         } else if (bgm.url == currentBGMUrl) {
             // 同一曲目已在播放：更新 source/sequence 归属，避免重新起播。
-            _currentSequence = sequenceId != null && sequenceId != "" ? sequenceId : null;
+            if (sequenceId != null && sequenceId != "") {
+                _currentSequence = sequenceId;
+            } else {
+                clearSequenceState();
+            }
             if (source != _bgmSource) {
                 _bgmSource = source;
                 _currentAlbum = bgm.album;
@@ -432,7 +449,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
      * index 显式选择（越界按序列长度回绕）；省略 index 时 advance=true 取游标下一首，
      * mode=random 随机一首，order 从第一首开始。同一 source 的序列已经在播时，
      * 未显式指定 index/advance 会保持当前曲目，不重新随机或打断。
-     * 序列本身不改变 loop 语义，loop 仍由 BGM.Loop 控制。
+     * auto 序列由单曲结束事件续播下一首，此时原生 loop 固定为 false。
      */
     public function playSequenceBGM(sequenceId:String, source:String, loop:Boolean,
             index:Number, advance:Boolean):Void {
@@ -458,6 +475,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
                 + " result=preserved");
             return;
         }
+        clearSequenceTimer();
         var key:String = String(source) + "|" + sequenceId;
         var selected:Number = 0;
         if (hasIndex) {
@@ -471,9 +489,84 @@ class org.flashNight.arki.audio.SoundEffectManager {
         }
         _sequenceCursor[key] = (selected + 1) % len;
         var title:String = String(tracks[selected]);
+        _currentSequenceTitle = title;
+        _currentSequenceIndex = selected;
+        var nativeLoop:Boolean = seq.auto === true ? true : loop;
         trace("[BGM] sequence=" + sequenceId + " index=" + selected
             + " title=" + title + " source=" + source);
-        playBGMWithSource(title, source, loop, null, sequenceId);
+        playBGMWithSource(title, source, nativeLoop, null, sequenceId);
+        scheduleSequenceTimer(sequenceId, title);
+    }
+
+    private function scheduleSequenceTimer(sequenceId:String, title:String):Void {
+        clearSequenceTimer();
+        var seq:Object = _sequences[sequenceId];
+        if (seq == null || seq.auto !== true) return;
+        var bgm:Object = bgmList[title];
+        if (bgm == null) return;
+        var duration:Number = Number(bgm.duration);
+        if (isNaN(duration) || !isFinite(duration) || duration <= 0) return;
+        var token:Number = _sequenceTimerToken;
+        var self:SoundEffectManager = this;
+        _sequenceTimer = setTimeout(function():Void {
+            self.onSequenceTimer(token);
+        }, Math.round(duration * 1000));
+    }
+
+    private function clearSequenceTimer():Void {
+        _sequenceTimerToken++;
+        if (_sequenceTimer != null) {
+            clearTimeout(_sequenceTimer);
+            _sequenceTimer = null;
+        }
+    }
+
+    private function onSequenceTimer(token:Number):Void {
+        if (token != _sequenceTimerToken) return;
+        _sequenceTimer = null;
+        advanceSequence();
+    }
+
+    /**
+     * 序列曲目结束入口。Host 的 bgmTrackEnd 命令也可调用；
+     * 普通单曲/专辑/点歌器和已不在播放的序列会被忽略。
+     */
+    public function onBgmTrackEnd():Void {
+        clearSequenceTimer();
+        advanceSequence();
+    }
+
+    private function advanceSequence():Void {
+        if (_currentSequence == null || _currentSequenceTitle == null) return;
+        if (_bgmSource != "scene" && _bgmSource != "stage") return;
+        if (_pendingBGMUrl != null || currentBGMUrl == null) return;
+        var seq:Object = _sequences[_currentSequence];
+        if (seq == null || seq.auto !== true) return;
+        var tracks:Array = seq.tracks;
+        var len:Number = tracks.length;
+        if (len == 0) return;
+        var source:String = _bgmSource;
+        var selected:Number = _currentSequenceIndex;
+        if (len > 1) {
+            var attempts:Number = 0;
+            do {
+                selected = Math.floor(Math.random() * len);
+                attempts++;
+            } while (selected == _currentSequenceIndex && attempts < 12);
+            if (selected == _currentSequenceIndex) selected = (selected + 1) % len;
+        } else {
+            selected = 0;
+        }
+        trace("[BGM] sequence=" + _currentSequence + " auto-next index=" + selected
+            + " source=" + source);
+        playSequenceBGM(_currentSequence, source, false, selected, false);
+    }
+
+    private function clearSequenceState():Void {
+        clearSequenceTimer();
+        _currentSequence = null;
+        _currentSequenceTitle = null;
+        _currentSequenceIndex = -1;
     }
 
     public function resetSequence(sequenceId:String, source:String):Void {
@@ -778,6 +871,13 @@ class org.flashNight.arki.audio.SoundEffectManager {
             _currentLoop = context.loop;
             _currentSequence = context.sequence != null && context.sequence != ""
                 ? context.sequence : null;
+            if (_currentSequence == null) {
+                _currentSequenceTitle = null;
+                _currentSequenceIndex = -1;
+                clearSequenceTimer();
+            } else {
+                scheduleSequenceTimer(_currentSequence, context.title);
+            }
             org.flashNight.arki.render.FrameBroadcaster.pushUiState(
                 "bgm:" + context.title);
             org.flashNight.arki.render.FrameBroadcaster.pushUiState(
@@ -786,7 +886,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
                 + " requestId=" + result.requestId + " result=started");
         } else {
             if (context.sequence != null && context.sequence == _currentSequence) {
-                _currentSequence = null;
+                clearSequenceState();
             }
             trace("[BGM] requestId=" + result.requestId
                 + " result=" + result.completionState
@@ -871,7 +971,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         currentBGMUrl = null;
         _bgmSource = null;
         _currentAlbum = null;
-        _currentSequence = null;
+        clearSequenceState();
         if (requestId == null) {
             _pendingBGMRequestId = null;
             org.flashNight.arki.render.FrameBroadcaster.pushUiState("bgm:");
@@ -885,7 +985,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         currentBGMUrl = null;
         _bgmSource = null;
         _currentAlbum = null;
-        _currentSequence = null;
+        clearSequenceState();
         org.flashNight.arki.render.FrameBroadcaster.pushUiState("bgm:");
         trace("[BGM] bridge reset reason=" + reason);
     }
@@ -900,7 +1000,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         _suppressedStage = null;
         if (_bgmSource == "stage") {
             _bgmSource = null;
-            _currentSequence = null;
+            clearSequenceState();
         }
         if (hadStage) {
             trace("[BGM] notifyLeaveBattle: stage context cleared");

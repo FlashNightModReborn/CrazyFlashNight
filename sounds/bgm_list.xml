@@ -55,6 +55,7 @@
     </music>
     <music>
         <title>Dialtone</title>
+        <duration>320.3134583</duration>
         <url>sounds/TFR/TFR_mu_tfr_dialtone.mp3</url>
     </music>
     <music>
@@ -396,25 +397,29 @@
     <!-- CF1 原生 BGM（flashswf/originals/crazy-flasher-1.swf 的 SoundStreamBlock） -->
     <music>
         <title>CF1-BGM-1</title>
+        <duration>8.150204</duration>
         <url>sounds/cf1/cf1-bgm-1.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>
     <music>
         <title>CF1-BGM-2</title>
+        <duration>24.137143</duration>
         <url>sounds/cf1/cf1-bgm-2.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>
     <music>
         <title>CF1-BGM-3</title>
+        <duration>53.237551</duration>
         <url>sounds/cf1/cf1-bgm-3.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>
     <music>
         <title>CF1-BGM-4</title>
+        <duration>54.804898</duration>
         <url>sounds/cf1/cf1-bgm-4.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>
-    <sequence id="cf1" mode="order">
+    <sequence id="cf1" mode="random">
         <track>CF1-BGM-1</track>
         <track>CF1-BGM-2</track>
         <track>CF1-BGM-3</track>
@@ -423,36 +428,43 @@
     <!-- 基地1层随机 BGM：原 Dialtone + 闪客快打7原版 gk-10..16 -->
     <music>
         <title>gk-10</title>
+        <duration>281.051375</duration>
         <url>sounds/闪客快打7原版bgm/gk-10.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>
     <music>
         <title>gk-11</title>
+        <duration>269.1395416</duration>
         <url>sounds/闪客快打7原版bgm/gk-11.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>
     <music>
         <title>gk-12</title>
+        <duration>128.8425416</duration>
         <url>sounds/闪客快打7原版bgm/gk-12.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>
     <music>
         <title>gk-13</title>
+        <duration>306.8343125</duration>
         <url>sounds/闪客快打7原版bgm/gk-13.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>
     <music>
         <title>gk-14</title>
+        <duration>76.2775</duration>
         <url>sounds/闪客快打7原版bgm/gk-14.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>
     <music>
         <title>gk-15</title>
+        <duration>202.313225</duration>
         <url>sounds/闪客快打7原版bgm/gk-15.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>
     <music>
         <title>gk-16</title>
+        <duration>223.4775</duration>
         <url>sounds/闪客快打7原版bgm/gk-16.mp3</url>
         <fadeDuration>1</fadeDuration>
     </music>

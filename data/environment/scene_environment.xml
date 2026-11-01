@@ -56,7 +56,7 @@
             <Initial>1</Initial>
             <Entrance>7</Entrance>
         </MercenaryRefresh>
-        <BGM>Dialtone</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <Environment>
         <BackgroundURL>健身房</BackgroundURL>

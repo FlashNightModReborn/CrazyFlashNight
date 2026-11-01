@@ -148,12 +148,15 @@ sounds/
     <fadeDuration>20</fadeDuration> <!-- 可选，淡出帧数（30fps），默认 20 -->
     <baseVolume>100</baseVolume>    <!-- 可选，基础音量，默认 100 -->
     <weight>100</weight>            <!-- 可选，专辑内随机权重，默认 100 -->
+    <duration>180.0</duration>      <!-- auto 序列必填：曲目秒数；用于播完续播 -->
 </music>
 ```
 
 未在 XML 中注册、但位于自动发现边界内的文件会使用默认参数。XML 中的配置优先级高于自动发现；注册不等于可播放，物理文件缺失或 probe 不成立时仍按上述状态 fail-closed。
 
 ### BGM 序列
+
+`CF1-BGM-1`～`CF1-BGM-4` 的播放副本位于 `sounds/cf1/`，为兼容原生解码器已转为 44.1 kHz；原始 SWF 提取物保留在 `tools/cf1-audio/original/`。
 
 把同一场景/关卡的多首 BGM 按顺序注册为序列：
 
@@ -168,15 +171,17 @@ sounds/
 
 `mode="order"` 按 `track` 顺序；`mode="random"` 在序列首次激活时随机选一首。序列已经在同一 `source` 播放时，不会因为再次进入同序列场景而重新随机。
 
+序列默认 `auto="true"`：按 `duration` 到点后，从序列中随机挑选一首**不同于当前**的曲目继续播放。`auto` 序列保持原生循环以避免曲末静音，`Loop` 不参与续播判断；每个 track 必须在 `<music>` 中提供 `<duration>`（秒），缺失时不会自动续播。`auto="false"` 才恢复旧的 `Loop` 行为。
+
 #### 同序列跨场景/关卡保持
 
-同一 `source`（`scene` 或 `stage`）下，当前 sequence 已经生效时，再进入相同 sequence 的场景/关卡，只要不写 `Index`、不写 `Advance`，就保持当前曲目，不重新选曲、不淡出、不打断。`Loop` 仍由配置决定，保持播放时通常写 `true`。
+同一 `source`（`scene` 或 `stage`）下，当前 sequence 已经生效时，再进入相同 sequence 的场景/关卡，只要不写 `Index`、不写 `Advance`，就保持当前曲目，不重新选曲、不淡出、不打断。当前曲目自然播完后由 `auto` 续播。
 
 基地场景在 `data/environment/scene_environment.xml` 中统一写同一个序列，不要写 `Index`：
 
 ```xml
 <!-- 所有需要连成一片的基地/和平场景都写同一 sequence -->
-<BGM sequence="base" loop="true"/>
+<BGM sequence="base"/>
 ```
 
 首次进入时随机选一首：
@@ -191,7 +196,7 @@ sounds/
 书中地图可直接把序列挂到每个 map，且同样不要写 `index`/`advance`：
 
 ```json
-"bgm": {"sequence": "base", "loop": true}
+"bgm": {"sequence": "base"}
 ```
 
 关卡/子关卡 XML 也可以写成：
@@ -200,7 +205,6 @@ sounds/
 <BGM>
     <Command>play</Command>
     <Sequence>base</Sequence>
-    <Loop>true</Loop>
 </BGM>
 ```
 
@@ -211,7 +215,7 @@ sounds/
 | `Index` / `<Index>` | 显式指定该场景/关卡的曲目；同序列已播放时也允许切到该曲，属于主动换曲 |
 | `Advance` / `<Advance>` | 同一 `source+sequence` 的后续调用按游标取下一首，用于逐图推进；同样属于主动换曲 |
 
-`Index` 和 `Advance` 都会打破“同序列保持”，不要在需要连续播放的场景/关卡上填写。当前 `repair-campus` 各 map 写了 `index: 0..6`，因此会按图换曲；若希望整局保持同一首，删除各 map 的 `index`，只保留 `sequence`。
+`Index` 和 `Advance` 都会打破“同序列保持”，不要在需要连续播放的场景/关卡上填写。当前 `repair-campus` 各 map 只保留 `sequence`，因此整局沿用同一序列，首曲随机，之后每首播完继续随机；只有显式写 `Index` 才会在换图时强制切换。
 
 场景与关卡是两个独立播放通道：从基地进入关卡时由关卡 BGM 接管，离开关卡后场景会按自己的配置重新选择；同序列保持只保证同一通道内。
 

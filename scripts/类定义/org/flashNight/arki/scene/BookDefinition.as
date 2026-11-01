@@ -439,8 +439,7 @@ class org.flashNight.arki.scene.BookDefinition {
             title: "上学路上",
             background: "gk12_1_BG.swf",
             bgm: {
-                sequence: "cf1",
-                index: 0
+                sequence: "cf1"
             },
             enemies: [
                 44,
@@ -501,8 +500,7 @@ class org.flashNight.arki.scene.BookDefinition {
             title: "校门口的混混",
             background: "gk13_1_BG.swf",
             bgm: {
-                sequence: "cf1",
-                index: 1
+                sequence: "cf1"
             },
             enemies: [
                 48,
@@ -570,8 +568,7 @@ class org.flashNight.arki.scene.BookDefinition {
             title: "拦路的一伙",
             background: "gk13_2_BG.swf",
             bgm: {
-                sequence: "cf1",
-                index: 2
+                sequence: "cf1"
             },
             enemies: [
                 447,
@@ -643,8 +640,7 @@ class org.flashNight.arki.scene.BookDefinition {
             title: "没完没了",
             background: "gk12_3_BG.swf",
             bgm: {
-                sequence: "cf1",
-                index: 3
+                sequence: "cf1"
             },
             enemies: [
                 436,
@@ -705,8 +701,7 @@ class org.flashNight.arki.scene.BookDefinition {
             title: "还有下一组",
             background: "gk12_2_BG.swf",
             bgm: {
-                sequence: "cf1",
-                index: 4
+                sequence: "cf1"
             },
             enemies: [
                 449,
@@ -780,8 +775,7 @@ class org.flashNight.arki.scene.BookDefinition {
             title: "谁在记分",
             background: "gk12_4_BG.swf",
             bgm: {
-                sequence: "cf1",
-                index: 5
+                sequence: "cf1"
             },
             enemies: [
                 444,
@@ -850,8 +844,7 @@ class org.flashNight.arki.scene.BookDefinition {
             title: "最后一堂体育课",
             background: "gk12_5_BG.swf",
             bgm: {
-                sequence: "cf1",
-                index: 6
+                sequence: "cf1"
             },
             enemies: [
                 455
