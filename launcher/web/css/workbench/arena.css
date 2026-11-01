@@ -3532,3 +3532,360 @@
    arena-tt-rich/intel-tt-rich 是 "本面板上下文" 语义类，按设计系统约定
    只允许 override 视觉 token（--tt-divider-color / --tt-icon-glow 等），
    不要 override 尺寸/间距类变量。 ── */
+/* ════════════════════════════════════════════════════════════════════════════
+   P5 / C 方案：DEATH MATCH「地下拳场 · 生死合约」主题包装
+   - 只增强现有 Workbench/DualPane 的视觉语义，不改壳级 grid / 信息架构
+   - 色值只消费 --arena-* / --wb-* token；无新 keyframes、无 !important、
+     无 outline、无本地 reduced-motion 块（沿用 motion.css 根级关闭）
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* 场边灯 / 铁笼网格：放在壳内容之后，不参与命中 */
+.arena-panel .workbench-shell { isolation: isolate; }
+.arena-panel .workbench-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(68% 42% at 10% -8%, rgba(var(--arena-accent-rgb),0.13), transparent 64%),
+        radial-gradient(62% 38% at 90% -8%, rgba(var(--arena-danger-rgb),0.08), transparent 62%),
+        repeating-linear-gradient(90deg, transparent 0 79px, rgba(var(--arena-white-rgb),0.012) 79px 80px);
+}
+
+/* 场次警戒线：贴在 header 下沿 */
+.arena-panel .workbench-header { position: relative; }
+.arena-panel .workbench-header::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 0;
+    height: 2px;
+    pointer-events: none;
+    background: repeating-linear-gradient(90deg,
+        rgba(var(--arena-accent-rgb),0.42) 0 12px,
+        transparent 12px 22px);
+    opacity: 0.28;
+}
+
+/* 标题：拳场招牌的橙金光，不额外加字避免 header 挤压 */
+.arena-panel .workbench-title {
+    text-shadow: 0 0 18px rgba(var(--arena-accent-rgb),0.20);
+}
+
+/* 模式 tab：像赛事押注板的分格；active 增加纸张/灯箱感 */
+.arena-panel .arena-mode-tab-active {
+    background:
+        linear-gradient(180deg, rgba(var(--arena-accent-rgb),0.16), rgba(var(--arena-accent-rgb),0.035));
+    box-shadow: inset 0 0 0 1px rgba(var(--arena-accent-rgb),0.10);
+}
+
+/* 目录 / 决策面：微弱合约纸横线，不遮住内容 */
+.arena-panel .arena-catalog {
+    background:
+        repeating-linear-gradient(180deg,
+            transparent 0 27px,
+            rgba(var(--arena-white-rgb),0.016) 27px 28px);
+}
+.arena-panel .arena-decision {
+    background:
+        repeating-linear-gradient(180deg,
+            transparent 0 31px,
+            rgba(var(--arena-white-rgb),0.018) 31px 32px);
+}
+
+/* 卡面：石板 + 横线 + 顶部场灯，保持头像/数值可读 */
+.arena-panel .arena-card {
+    background:
+        radial-gradient(120% 80% at 50% -18%, rgba(var(--arena-accent-rgb),0.075), transparent 58%),
+        repeating-linear-gradient(180deg,
+            transparent 0 23px,
+            rgba(var(--arena-white-rgb),0.017) 23px 24px),
+        var(--arena-stone);
+    border-color: rgba(var(--arena-white-rgb),0.10);
+}
+.arena-panel .arena-card:hover {
+    box-shadow:
+        0 8px 24px rgba(var(--arena-black-rgb),0.48),
+        0 0 22px rgba(var(--arena-accent-rgb),0.12);
+}
+.arena-panel .arena-card.arena-card-selected {
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--wb-role-selected) 58%, transparent),
+        0 0 26px rgba(var(--arena-accent-rgb),0.20),
+        0 10px 26px rgba(var(--arena-black-rgb),0.42);
+}
+
+/* 卡角合约章：普通卡「合约」，d5/d6 换「高危」红章 */
+.arena-panel .arena-card-frame::before {
+    content: '合约';
+    position: absolute;
+    right: 6px;
+    bottom: 5px;
+    padding: 1px 5px;
+    border: 1px solid rgba(var(--arena-accent-rgb),0.26);
+    color: rgba(var(--arena-accent-2-rgb),0.58);
+    background: rgba(var(--arena-black-rgb),0.12);
+    font-family: var(--cf7-font-web-workbench-title);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1.2;
+    transform: rotate(-7deg);
+    opacity: 0.72;
+    pointer-events: none;
+}
+.arena-panel .arena-card-d5 .arena-card-frame::before,
+.arena-panel .arena-card-d6 .arena-card-frame::before {
+    content: '高危';
+    border-color: rgba(var(--arena-danger-rgb),0.55);
+    color: rgba(var(--arena-error-text-rgb),0.92);
+    background: rgba(var(--arena-danger-rgb),0.10);
+}
+
+/* 选中后把同一枚角章改成「已签」，避免占用右上难度标签位置 */
+.arena-panel .arena-card-selected .arena-card-frame::before {
+    content: '已签';
+    border-color: rgba(var(--arena-gold-rgb),0.62);
+    color: rgba(var(--arena-gold-2-rgb),0.96);
+    background: rgba(var(--arena-ink-rgb),0.62);
+    opacity: 1;
+}
+
+/* 右栏：血战合约纸的 VS 水印 */
+.arena-panel .arena-decision-head {
+    position: relative;
+    overflow: hidden;
+}
+.arena-panel .arena-decision-head::after {
+    content: 'VS';
+    position: absolute;
+    right: 82px;
+    top: 50%;
+    z-index: 0;
+    color: rgba(var(--arena-accent-rgb),0.075);
+    font-family: var(--cf7-font-web-workbench-title);
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1;
+    transform: translateY(-50%) rotate(-7deg);
+    pointer-events: none;
+}
+.arena-panel .arena-detail-title-block,
+.arena-panel .arena-detail-roll {
+    position: relative;
+    z-index: 1;
+}
+
+/* 未选空态/加载态：像一张未签的空白合约 */
+.arena-panel .arena-decision-empty,
+.arena-panel .arena-opponents-loading,
+.arena-panel .arena-opponents-error {
+    background:
+        repeating-linear-gradient(180deg,
+            transparent 0 25px,
+            rgba(var(--arena-white-rgb),0.015) 25px 26px),
+        var(--arena-stone-soft);
+}
+
+/* CommitBar：下方合约签字栏 + 低对比「生死状」水印 */
+.arena-panel .workbench-commit-bar {
+    position: relative;
+    overflow: hidden;
+    border-top: 1px dashed rgba(var(--arena-gold-rgb),0.24);
+    background:
+        linear-gradient(0deg, rgba(var(--arena-accent-rgb),0.06), transparent),
+        repeating-linear-gradient(90deg,
+            transparent 0 31px,
+            rgba(var(--arena-white-rgb),0.012) 31px 32px);
+}
+.arena-panel .workbench-commit-bar::before {
+    content: '生死状';
+    position: absolute;
+    right: 16px;
+    bottom: 1px;
+    z-index: 0;
+    color: rgba(var(--arena-accent-rgb),0.055);
+    font-family: var(--cf7-font-web-workbench-title);
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 8px;
+    pointer-events: none;
+}
+.arena-panel .arena-detail-confirm {
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(var(--arena-gold-rgb),0.22);
+}
+
+/* 结算页：奖金清算单的纸张与盖章感 */
+.arena-panel .arena-custom-result-panel {
+    background:
+        radial-gradient(100% 70% at 50% -12%, rgba(var(--arena-accent-rgb),0.08), transparent 62%),
+        repeating-linear-gradient(180deg,
+            transparent 0 27px,
+            rgba(var(--arena-white-rgb),0.017) 27px 28px),
+        var(--arena-stone-soft);
+    border-color: rgba(var(--arena-gold-rgb),0.18);
+}
+.arena-panel .arena-custom-result-header {
+    position: relative;
+}
+.arena-panel .arena-custom-result-header::after {
+    content: '奖金清算';
+    position: absolute;
+    top: 10px;
+    right: 148px;
+    color: rgba(var(--arena-gold-rgb),0.24);
+    font-family: var(--cf7-font-web-workbench-title);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    transform: rotate(-5deg);
+    pointer-events: none;
+}
+/* P5 / C 强化对比：第一版压得太暗，补足“拳场招牌/合约/护栏”识别锚点 */
+.arena-panel .workbench-title {
+    font-size: 18px;
+    letter-spacing: 4px;
+    color: rgb(var(--arena-warm-text-rgb));
+    text-shadow:
+        0 0 22px rgba(var(--arena-accent-rgb),0.34),
+        0 1px 0 rgba(var(--arena-black-rgb),0.72);
+}
+.arena-panel .workbench-header::after {
+    height: 4px;
+    opacity: 0.58;
+    background: repeating-linear-gradient(135deg,
+        rgba(var(--arena-accent-rgb),0.60) 0 10px,
+        rgba(var(--arena-ink-rgb),0.18) 10px 20px);
+}
+
+/* 铁笼上沿 / 拳台护栏 */
+.arena-panel .workbench-body::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    height: 7px;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(135deg,
+            rgba(var(--arena-accent-rgb),0.34) 0 9px,
+            transparent 9px 18px);
+    opacity: 0.34;
+}
+
+/* 卡片：左侧危险色钢条 + 更明显的合约纸面 */
+.arena-panel .arena-card {
+    border-left: 3px solid var(--d-color);
+    background:
+        radial-gradient(130% 90% at 50% -18%, rgba(var(--arena-accent-rgb),0.115), transparent 60%),
+        repeating-linear-gradient(180deg,
+            transparent 0 22px,
+            rgba(var(--arena-white-rgb),0.026) 22px 23px),
+        var(--arena-stone);
+}
+.arena-panel .arena-card::after {
+    height: 3px;
+    opacity: 1;
+    background: linear-gradient(90deg,
+        var(--d-color),
+        rgba(var(--arena-accent-rgb),0.22) 72%,
+        transparent 100%);
+}
+.arena-panel .arena-card:hover {
+    border-color: rgba(var(--arena-accent-rgb),0.66);
+}
+
+/* 合约 / 高危 / 已签：提高对比，不再像低透明度水印 */
+.arena-panel .arena-card-frame::before {
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 2px 7px;
+    border-width: 1px;
+    opacity: 0.95;
+    box-shadow: 0 0 12px rgba(var(--arena-black-rgb),0.28);
+}
+.arena-panel .arena-card-selected .arena-card-frame::before {
+    font-size: 11px;
+    box-shadow:
+        0 0 0 1px rgba(var(--arena-gold-rgb),0.16),
+        0 0 14px rgba(var(--arena-gold-rgb),0.18);
+}
+
+/* 右栏空态：拳台中央的 VS 印章，而不是一块空白石板 */
+.arena-panel .arena-decision-empty {
+    position: relative;
+    overflow: hidden;
+    border-style: dashed;
+    border-color: rgba(var(--arena-accent-rgb),0.22);
+}
+.arena-panel .arena-decision-empty::before {
+    content: 'VS';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    z-index: 0;
+    color: rgba(var(--arena-accent-rgb),0.15);
+    font-family: var(--cf7-font-web-workbench-title);
+    font-size: 86px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1;
+    transform: translateY(-50%) rotate(-8deg);
+    pointer-events: none;
+}
+.arena-panel .arena-decision-empty::after {
+    content: '未签约';
+    position: absolute;
+    left: 20px;
+    bottom: 14px;
+    color: rgba(var(--arena-gold-rgb),0.30);
+    font-family: var(--cf7-font-web-workbench-title);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    transform: rotate(-4deg);
+    pointer-events: none;
+}
+.arena-panel .arena-decision-empty > * {
+    position: relative;
+    z-index: 1;
+}
+.arena-panel .arena-decision-head::after {
+    color: rgba(var(--arena-accent-rgb),0.13);
+    font-size: 56px;
+}
+
+/* CTA：更像一张带斜纹的入场券 */
+.arena-panel .arena-detail-confirm {
+    background:
+        repeating-linear-gradient(135deg,
+            rgba(var(--arena-ink-rgb),0.10) 0 9px,
+            transparent 9px 18px),
+        linear-gradient(180deg, var(--arena-accent-2), var(--arena-accent));
+    box-shadow:
+        0 0 0 1px rgba(var(--arena-gold-rgb),0.26),
+        0 0 22px rgba(var(--arena-accent-rgb),0.18),
+        0 3px 14px rgba(var(--arena-accent-rgb),0.30);
+}
+
+/* 结算页盖章再抬一档 */
+.arena-panel .arena-custom-result-header::after {
+    color: rgba(var(--arena-gold-rgb),0.38);
+    font-size: 14px;
+    letter-spacing: 4px;
+}
+/* 合约章移到卡头中央，避开底部队列摘要 */
+.arena-panel .arena-card-frame::before {
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    top: 4px;
+    transform: translateX(-50%) rotate(-6deg);
+}

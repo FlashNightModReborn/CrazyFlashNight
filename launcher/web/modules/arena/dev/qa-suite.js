@@ -495,7 +495,7 @@ var ArenaHarnessQA = (function() {
                 var primary = commitPrimary();
                 api.assert(!!primary, '右栏应有 CommitBar 主 CTA');
                 api.assertEqual(primary.disabled, true, '未选中时主 CTA 应禁用');
-                api.assert(commitStatusText().indexOf('选择左侧挑战') >= 0, '未选中状态文案应引导选择');
+                api.assert(commitStatusText().indexOf('选择左侧合约') >= 0, '未选中状态文案应引导选择');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
@@ -1199,7 +1199,7 @@ var ArenaHarnessQA = (function() {
                 api.assertEqual(window.ArenaPanel.getState().selectedCardIdx, -1, '全部重抽应清空选中');
                 var primary = commitPrimary();
                 api.assert(!!primary && primary.disabled, '全部重抽后 CommitBar 应禁用');
-                api.assert(commitStatusText().indexOf('选择左侧挑战') >= 0, '全部重抽后决策面应归空态');
+                api.assert(commitStatusText().indexOf('选择左侧合约') >= 0, '全部重抽后决策面应归空态');
                 return api.waitFor(function() {
                     return host.previewMessages.length >= before + expectedPreviewCount;
                 }, 3000, '全部重抽应重发公开卡 AS2 preview');

@@ -83,7 +83,7 @@
         // 目录级操作只剩「全部重抽」；「换一批」作用对象是右栏选中卡，迁右栏决策头（控件归位）
         var catalogHint = document.createElement('span');
         catalogHint.className = 'arena-catalog-hint';
-        catalogHint.textContent = '点击卡片选中挑战，右栏核对阵容后确认';
+        catalogHint.textContent = '从悬赏板挑选合约，右栏核对阵容后签字';
         controls.appendChild(catalogHint);
         S._rerollAllBtn = document.createElement('button');
         S._rerollAllBtn.type = 'button';
@@ -136,8 +136,8 @@
         S._detailOpponentsEl.setAttribute('tabindex', '0');
         S._decisionRoot.appendChild(S._detailOpponentsEl);
         S._commitBar = new WorkbenchComponents.CommitBar({
-            label: '⚔ 开始挑战',
-            status: '选择左侧挑战后确认',
+            label: '⚔ 签下生死状',
+            status: '选择左侧合约后签字',
             disabled: true,
             onCommit: commitSelectedChallenge
         });
@@ -519,14 +519,14 @@
     // 右栏决策面空态（{kind, statement, nextStep} 语义）：未选卡 / 选择失效后的归宿
     function renderDecisionEmpty() {
         S._previewOpponents = null;
-        if (S._detailTitleEl) S._detailTitleEl.textContent = '选择挑战';
+        if (S._detailTitleEl) S._detailTitleEl.textContent = '选择合约';
         if (S._detailMetaEl) S._detailMetaEl.innerHTML = '';
         if (S._detailOpponentsEl) {
             releaseBrowseTooltips(S._detailOpponentsEl);
             S._detailOpponentsEl.innerHTML =
                 '<div class="arena-decision-empty">' +
-                    '<div class="arena-decision-empty-statement">从左侧目录选择一场挑战</div>' +
-                    '<div class="arena-decision-empty-next">阵容、风险、押金与奖励在确认前于此核对</div>' +
+                    '<div class="arena-decision-empty-statement">从左侧悬赏板挑选一份合约</div>' +
+                    '<div class="arena-decision-empty-next">阵容、风险、押金与奖金在签字前于此核对</div>' +
                 '</div>';
         }
         updateCommitBar();
@@ -593,11 +593,11 @@
             S._rollOneBtn.disabled = S._busy || !card || card.isCustom || !!card.isHiddenChallenge;
         }
         if (S._busy) {
-            S._commitBar.update({ busy: true, status: '挑战发起中…', state: 'busy' });
+            S._commitBar.update({ busy: true, status: '合约生效中…', state: 'busy' });
             return;
         }
         if (!card || card.isCustom) {
-            S._commitBar.update({ status: '选择左侧挑战后确认', canCommit: false, state: '', busy: false });
+            S._commitBar.update({ status: '选择左侧合约后签字', canCommit: false, state: '', busy: false });
             return;
         }
         if (S._previewError[idx]) {
@@ -728,13 +728,13 @@
 
         S._busy = true;
         updateCardStates(); // _busy → CommitBar busy 投影 + 重抽控件禁用
-        if (S._shell) S._shell.setStatus('挑战发起中', Workbench.WorkbenchState.PENDING);
+        if (S._shell) S._shell.setStatus('签约中', Workbench.WorkbenchState.PENDING);
 
         var reqId = 'arena_ent_' + (++S._reqSeq) + '_' + S._session;
         S._pendingReq[reqId] = function(data) {
             S._busy = false;
             updateCardStates();
-            if (S._shell) S._shell.setStatus('待命', Workbench.WorkbenchState.IDLE);
+            if (S._shell) S._shell.setStatus('接单中', Workbench.WorkbenchState.IDLE);
             if (!data.success) {
                 cue('rejected'); // 权威回包明确失败（契约 §2 结果音）
                 ArenaCore.showToast(data.error || '挑战发起失败');

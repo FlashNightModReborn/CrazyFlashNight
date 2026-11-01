@@ -91,9 +91,9 @@
         S._shell = new Workbench.DualPaneShell({
             profile: 'catalog-decision',
             title: 'DEATH MATCH',
-            subtitle: '角斗场 · 生死竞技',
+            subtitle: '地下拳场',
             eyebrow: '竞技场',
-            status: '待命',
+            status: '接单中',
             leftLabel: '挑战目录',
             rightLabel: '挑战决策',
             flowLabel: '竞技',
@@ -199,11 +199,11 @@
     function helpSpec() {
         return {
             kind: 'workbench-help',
-            kicker: '竞技场',
-            title: '角斗场帮助',
-            ariaLabel: '角斗场帮助',
-            message: '左侧目录点击卡片选中挑战，右栏持续预览阵容、等级带、押金与奖金；'
-                + '「⚔ 开始挑战」是唯一确认入口，已选中卡片上按 Enter/Space 等价触发。'
+            kicker: '地下拳场',
+            title: '生死合约帮助',
+            ariaLabel: '生死合约帮助',
+            message: '左侧悬赏板点击卡片选中挑战，右栏持续预览阵容、等级带、押金与奖金；'
+                + '「⚔ 签下生死状」是唯一确认入口，已选中卡片上按 Enter/Space 等价触发。'
                 + '「↻ 换一批」只重抽选中挑战的对手（免费），新对手到达前该卡不可确认；'
                 + '「↻ 全部重抽」重抽当前模式全部卡片并清空选择。'
                 + '方向键在目录中上下移动选择。堕落/爬升按势力出卡，对手为本地采样的真实兵种阵容。',
@@ -287,7 +287,7 @@
         S._ttCache = {};
         // batch preview 缓存清空：每次 panel reopen = 新 session，旧 lineup 与当前 _root.可雇佣兵 pool 可能不一致
         ArenaChallengeBrowser.resetCardRuntimeState();
-        if (S._shell) S._shell.setStatus('读取中', Workbench.WorkbenchState.LOADING);
+        if (S._shell) S._shell.setStatus('翻查悬赏', Workbench.WorkbenchState.LOADING);
         S._knownEnemies = {};
         S._knownEnemyCount = 0;
         S._customResult = ArenaResult.normalizeCustomResultInitData(initData);
