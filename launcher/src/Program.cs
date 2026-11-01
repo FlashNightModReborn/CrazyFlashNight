@@ -2411,6 +2411,15 @@ class Program
         webOverlay.SetBookComicTask(bookComicTask);
         SleepTask sleepTask = new SleepTask(socketServer);
         ModifierTask modifierTask = new ModifierTask(socketServer);
+        ModifierOverlay modifierOverlay = new ModifierOverlay(form, webDir,
+            Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile-modifier"),
+            modifierTask, () => webOverlay.SendModifierPanelClosed());
+        commandRouter.SetModifierOverlay(modifierOverlay);
+        webOverlay.SetModifierOverlay(modifierOverlay);
+        if (form.BootstrapPanel != null)
+            form.BootstrapPanel.InitialNavigationCompleted += () => form.BeginInvoke(new Action(modifierOverlay.Prewarm));
+        else
+            try { form.BeginInvoke(new Action(modifierOverlay.Prewarm)); } catch { modifierOverlay.Prewarm(); }
         BookshelfTask bookshelfTask = new BookshelfTask(socketServer);
         bookshelfTask.SetPermanentSlotApplied(delegate(string slotKey)
         {
@@ -3104,7 +3113,6 @@ class Program
         webOverlay.SetSubwaySelectTask(subwaySelectTask);
         webOverlay.SetEggStageSelectTask(eggStageSelectTask);
         webOverlay.SetSleepTask(sleepTask);
-        webOverlay.SetModifierTask(modifierTask);
         webOverlay.SetBookshelfTask(bookshelfTask);
         webOverlay.SetGymTrainingTask(gymTrainingTask);
         webOverlay.SetSettingsTask(settingsTask);
@@ -3263,7 +3271,7 @@ class Program
             materialShopAccessTask.Dispose();
             npcShopTask.Dispose();
             craftingTask.Dispose();
-            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); modifierTask.Dispose(); bookComicTask.Dispose();
+            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); modifierOverlay.Dispose(); modifierTask.Dispose(); bookComicTask.Dispose();
             bookshelfTask.Dispose(); gymTrainingTask.Dispose();
             settingsTask.Dispose();
             stageOutcomeTask.Dispose();
@@ -3346,7 +3354,7 @@ class Program
             try { materialShopAccessTask.Dispose(); } catch { }
             try { npcShopTask.Dispose(); } catch { }
             try { craftingTask.Dispose(); } catch { }
-            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); modifierTask.Dispose();
+            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); modifierOverlay.Dispose(); modifierTask.Dispose();
             bookshelfTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
             try { settingsTask.Dispose(); } catch { }
             try { stageOutcomeTask.Dispose(); } catch { }
@@ -4318,7 +4326,7 @@ class Program
         try { materialShopAccessTask.Dispose(); } catch { }
         try { npcShopTask.Dispose(); } catch { }
         try { craftingTask.Dispose(); } catch { }
-        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); modifierTask.Dispose();
+        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); modifierOverlay.Dispose(); modifierTask.Dispose();
             bookshelfTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
         try { worldCompositor.Dispose(); } catch { }
         try { settingsTask.Dispose(); } catch { }

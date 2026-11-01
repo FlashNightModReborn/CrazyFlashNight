@@ -19,7 +19,7 @@ class org.flashNight.arki.ui.ModifierPanelService {
     private static var _order:Array = [];
     private static var _maxSafe:Number = 9007199254740991;
     private static var _itemPageSize:Number = 64;
-    private static var _unitPageSize:Number = 24;
+    private static var _unitPageSize:Number = 8;
     private static var _maxSessions:Number = 128;
 
     public static function install():Void {

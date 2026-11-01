@@ -32,6 +32,8 @@ namespace CF7Launcher.Guardian
         internal bool AllowTutorialPreference;
         internal bool AcceptsPanelResponses;
         internal bool DelegateCloseToAuthority;
+        internal bool AcceptsPanelRequests;
+        internal bool AllowNativeDrag;
 
         internal static readonly CompositionPanelProfile Help = new CompositionPanelProfile
         {
@@ -54,6 +56,20 @@ namespace CF7Launcher.Guardian
             LogTag = "[IntelligenceSurface]",
             AcceptsPanelResponses = true,
             DelegateCloseToAuthority = true
+        };
+
+        internal static readonly CompositionPanelProfile Modifier = new CompositionPanelProfile
+        {
+            PanelName = "modifier",
+            HostName = "cf7-modifier.local",
+            PageUrl = "https://cf7-modifier.local/composition-modifier.html",
+            ReadyMessageType = "composition_modifier_ready",
+            WindowTitle = "CF7 Modifier",
+            LogTag = "[ModifierSurface]",
+            AcceptsPanelResponses = true,
+            DelegateCloseToAuthority = true,
+            AcceptsPanelRequests = true,
+            AllowNativeDrag = true
         };
     }
 
@@ -301,6 +317,19 @@ namespace CF7Launcher.Guardian
             return true;
         }
 
+        internal void SuspendPanel()
+        {
+            if (_disposed || _transition) return;
+            _active = false;
+            _committed = Rectangle.Empty;
+            _panelInstance = "";
+            _pressedButtons = 0;
+            _capturedButton = false;
+            Capture = false;
+            if (Visible) Hide();
+            SyncViewport();
+        }
+
         internal void Retire()
         {
             if (_disposed) return;
@@ -485,6 +514,20 @@ namespace CF7Launcher.Guardian
                     RequestClose("page_close",message);
                 return;
             }
+            if (_profile.AcceptsPanelRequests && Active && _panelInstance.Length > 0)
+            {
+                if (type == "panel"
+                    && message["panel"]?.Type == JTokenType.String
+                    && (string)message["panel"] == _profile.PanelName
+                    && message["panelInstanceId"]?.Type == JTokenType.String
+                    && (string)message["panelInstanceId"] == _panelInstance
+                    && message["domain"]?.Type == JTokenType.String
+                    && (string)message["domain"] == "modifier")
+                {
+                    InboundPanelMessage?.Invoke(message);
+                    return;
+                }
+            }
             // 委托面板（intelligence）的其余入站消息：查询、精确实例导航与 panel-toast，
             // 绑定当前面板名与活跃会话后交给 controller 配置的既有 Web 权威。
             if (_profile.DelegateCloseToAuthority && Active && _panelInstance.Length > 0) {
@@ -617,11 +660,26 @@ namespace CF7Launcher.Guardian
                 or WmLButtonDoubleClick or WmRButtonDoubleClick;
             if (input && (!Active || _committed.IsEmpty || _closePending))
             { base.WndProc(ref m); return; }
+            if (_profile.AllowNativeDrag && m.Msg == WmLButtonDown && Active && !_committed.IsEmpty)
+            {
+                long packed = m.LParam.ToInt64();
+                int x = (short)(packed & 0xFFFF);
+                int y = (short)((packed >> 16) & 0xFFFF);
+                // 原修改器只在左上拖拽条上抓取；页签与关闭按钮保持可点击。
+                int dragH = (int)(ClientSize.Height * (30.0 / 400.0));
+                int dragW = (int)(ClientSize.Width * (80.0 / 550.0));
+                if (x >= 0 && x < dragW && y >= 0 && y < dragH)
+                {
+                    ReleaseCapture();
+                    SendMessage(Handle, 0x00A1, new IntPtr(2), IntPtr.Zero); // WM_NCLBUTTONDOWN / HTCAPTION
+                    return;
+                }
+            }
             switch (m.Msg) {
                 case WmMouseActivate:
                     // 外部首击只激活并吞掉；不向页面伪造 click/up。
                     if (GetAncestor(GetForegroundWindow(), 2) != Handle) {
-                        m.Result = new IntPtr(MaActivateAndEat);
+                        m.Result = new IntPtr(_profile.AllowNativeDrag ? 1 : MaActivateAndEat);
                         return;
                     }
                     break;
@@ -777,5 +835,7 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")] private static extern IntPtr GetAncestor(IntPtr hwnd, uint flags);
         [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint pid);
         [DllImport("user32.dll")] private static extern short GetAsyncKeyState(int key);
+        [DllImport("user32.dll")] private static extern bool ReleaseCapture();
+        [DllImport("user32.dll")] private static extern IntPtr SendMessage(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam);
     }
 }

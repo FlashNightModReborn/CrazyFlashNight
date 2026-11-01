@@ -179,7 +179,9 @@ namespace CF7Launcher.Guardian
         private readonly bool _preparationNavigationV1;
         private PanelHostController _panelHost;
         private BookComicTask _bookComicTask;
+        private ModifierOverlay _modifierOverlay;
         public void SetBookComicTask(BookComicTask task) { _bookComicTask = task; }
+        internal void SetModifierOverlay(ModifierOverlay overlay) { _modifierOverlay = overlay; }
         public string TryOpenBookComic(JObject request) {
             var data = BookComicTask.BuildOpenData(request.Value<string>("source"), request["initData"]?.ToString(Formatting.None));
             bool accepted = data != null && _bookComicTask != null && _panelHost != null
@@ -4326,7 +4328,17 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[Router] modifier rejected invalid source or token");
                 return;
             }
-            OpenPanel("modifier", data.ToString(Formatting.None));
+            if (_panelHost != null && _panelHost.IsPanelOpen)
+            {
+                LogManager.Log("[Router] modifier rejected while another panel is active");
+                TrySendGameCommand("modifierPanelClosed");
+                return;
+            }
+            if (_modifierOverlay == null || !_modifierOverlay.Open(data))
+            {
+                LogManager.Log("[Router] modifier surface unavailable or not ready");
+                TrySendGameCommand("modifierPanelClosed");
+            }
         }
 
         private void OpenSettingsPanel(string source)

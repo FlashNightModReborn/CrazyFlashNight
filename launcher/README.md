@@ -401,7 +401,6 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `hairdresser` | 业务 Panel | `modules/hairdresser.js` |
 | `surgery` | [医务室整形](../docs/医务室整形-Web面板与外观共享-2026-09-08.md) | `modules/plastic-surgery.js` |
 | `garage` | [车库购车](../agentsDoc/as2-web-panel-migration.md#u13-garage-purchase) | `modules/garage-purchase.js` |
-| `modifier` | [修改器四页 Web 化](../docs/修改器-Web迁移-施工与验证-2026-11-01.md)；AS2 保留写权威与未知写收据 | `modules/modifier-panel.js` |
 | `subway` | U7 地铁线路选关（隧道据点入口）；门槛与进关权威在 AS2 | `modules/subway-select.js` |
 | `egg-stage-select` | U7 彩蛋地图选关（彩蛋地图电脑入口）；彩蛋进度门权威在 AS2 | `modules/egg-stage-select.js` |
 | `sleep` | [床铺睡眠与拨针闹钟](../docs/U3睡眠面板-Web闹钟迁移-2026-09-19.md)；候选人验通过，发布状态见专项 | `modules/sleep-panel.js` |
@@ -432,6 +431,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `team` | 工作台 | `modules/team/team-panel.js` |
 | `tasks` | 业务 Panel | `modules/tasks/task-panel.js` |
 <!-- launcher-panel-registry:end -->
+- `modifier` 不注册为普通 Panel：由 `ModifierOverlay` 使用 550×400 独立 composition 浮窗承载，不申请面板暂停、不进入全屏 backdrop；入口与四页协议见[修改器 Web 迁移](../docs/修改器-Web迁移-施工与验证-2026-11-01.md)。
 - 所有 Panel：Host 拥有 open/admission、实例和跨 Panel 导航；Web 只消费授权 initData/snapshot。素材工作台从 **其他 → 工具** 打开，当前实例调用固定 Python 内核，候选图片映射 `asset-workbench.local`；旧 `icon_bake` 和三项旧烘焙菜单已退役。
 - NPC 店级资格由 `NpcShopAccessPolicy` 读取 [remote-access.json](../data/shops/remote-access.json)，复用地图地点/驻点规则并随现役事实桥返回；AS2 在来源导航和交易执行前复证当前角色上下文。书中与真实现场 NPC 的资格仍归 AS2，见 [店级资格](../agentsDoc/as2-web-panel-migration.md#npc-商店的店级资格issue-152)。
 - NPC 商店价格 wire 使用整数 `buyRatePermille` 与 safe-integer 金额；AS2/Host 按 `floor((basePrice × quantity) × rate / 1000)` 的同一顺序复验，Web 不重算价格。旧浮点 `buyMultiplier` 不兼容，Host、asLoader、Web 与 harness 必须进入同一 immutable candidate 原子交付；完整字段与 blocked-preview 边界见 [AS2 UI → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md)。

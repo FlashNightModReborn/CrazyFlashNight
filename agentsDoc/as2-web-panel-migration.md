@@ -549,7 +549,7 @@ NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影
 <a id="u13-garage-purchase"></a>
 ### U11 修改工具四页 Web 化（2026-11-01 源码施工）
 
-U11 从“是否迁移待选择”进入源码施工：NativeHud `SETTINGS` 改为 AS2 `openModifier`，由 AS2 生成会话 token 并发 `panel_request panel="modifier" source="nativehud_modifier"`。Host `OpenModifierPanel` 只接受该 exact source 与只含 `token` 的 initData；Web 只能消费授权目录和发白名单命令，AS2 保留全部写权威与 dirty 语义。旧 Flash `修改工具界面` 继续保留，不删除 placement、不重发主 SWF、不宣称已退役。
+U11 从“是否迁移待选择”进入源码施工：NativeHud `SETTINGS` 改为 AS2 `openModifier`，由 AS2 生成会话 token 并发 `panel_request panel="modifier" source="nativehud_modifier"`。Host `OpenModifierPanel` 只接受该 exact source 与只含 `token` 的 initData，再由 `ModifierOverlay` 在 550×400 独立 composition 浮窗中承载：不注册普通 Panel、不申请面板暂停，保留旧修改器的浮动尺寸、四页布局与左上拖拽条。Web 只能消费授权目录和发白名单命令，AS2 保留全部写权威与 dirty 语义。旧 Flash `修改工具界面` 继续保留，不删除 placement、不宣称已退役。
 
 | Web cmd | C# action | AS2 handler | AS2 response task | 写状态 |
 |---|---|---|---|---|
@@ -565,7 +565,7 @@ U11 从“是否迁移待选择”进入源码施工：NativeHud `SETTINGS` 改�
 | `spawnUnit` | `modifierSpawnUnit` | `applySpawnUnit` | `modifier_response` | 场景单位 |
 | `spawnMerc` | `modifierSpawnMerc` | `applySpawnMerc` | `modifier_response` | 雇佣池 + 场景佣兵 |
 
-写策略：Web 生成 `mod.<...>` operationId，AS2 先写 `applying` 收据再执行，同 operationId 只回缓存；Host 单写飞行，超时/断线/无法验证的写保留 `recoveryToken/recoveryOperationId`，后续写只返回 `reconcile_required`，只能 `query`。普通关闭发送 `modifierPanelClosed`；`finish_stage` / `test_space` 先返回 `closeAfter`，由关闭命令在面板退出后执行。挑战模式拒绝打开与写入。协议字段 `levelAction` 不得改回 `action`，因为后者是 Host 可信信封保留键。
+写策略：Web 生成 `mod.<...>` operationId，AS2 先写 `applying` 收据再执行，同 operationId 只回缓存；Host 单写飞行，超时/断线/无法验证的写保留 `recoveryToken/recoveryOperationId`，后续写只返回 `reconcile_required`，只能 `query`。浮窗 exact close 由 `ModifierOverlay` 发送 `modifierPanelClosed`；`finish_stage` / `test_space` 先返回 `closeAfter`，由关闭命令在浮窗退出后执行。挑战模式拒绝打开与写入。协议字段 `levelAction` 不得改回 `action`，因为后者是 Host 可信信封保留键。
 
 施工与验证状态见[修改器 Web 迁移](../docs/修改器-Web迁移-施工与验证-2026-11-01.md)：C# 构建与定向测试、Web runtime 测试、AS2 BOM/生成链、CS6 publish（Compiler 0/0，asLoader.swf 已刷新）已过；真实游戏旅程、candidate、正式入口和旧 Flash 修改器退役均未执行。
 
