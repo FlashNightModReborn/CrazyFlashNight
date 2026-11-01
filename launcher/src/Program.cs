@@ -2410,6 +2410,7 @@ class Program
         panelHost?.SetBookComicTask(bookComicTask);
         webOverlay.SetBookComicTask(bookComicTask);
         SleepTask sleepTask = new SleepTask(socketServer);
+        ModifierTask modifierTask = new ModifierTask(socketServer);
         BookshelfTask bookshelfTask = new BookshelfTask(socketServer);
         bookshelfTask.SetPermanentSlotApplied(delegate(string slotKey)
         {
@@ -3080,7 +3081,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, subwaySelectTask, eggStageSelectTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask, meridiansTask, npcItemExchangeTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, subwaySelectTask, eggStageSelectTask, sleepTask, modifierTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask, meridiansTask, npcItemExchangeTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -3103,6 +3104,7 @@ class Program
         webOverlay.SetSubwaySelectTask(subwaySelectTask);
         webOverlay.SetEggStageSelectTask(eggStageSelectTask);
         webOverlay.SetSleepTask(sleepTask);
+        webOverlay.SetModifierTask(modifierTask);
         webOverlay.SetBookshelfTask(bookshelfTask);
         webOverlay.SetGymTrainingTask(gymTrainingTask);
         webOverlay.SetSettingsTask(settingsTask);
@@ -3261,7 +3263,7 @@ class Program
             materialShopAccessTask.Dispose();
             npcShopTask.Dispose();
             craftingTask.Dispose();
-            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); bookComicTask.Dispose();
+            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); modifierTask.Dispose(); bookComicTask.Dispose();
             bookshelfTask.Dispose(); gymTrainingTask.Dispose();
             settingsTask.Dispose();
             stageOutcomeTask.Dispose();
@@ -3344,7 +3346,7 @@ class Program
             try { materialShopAccessTask.Dispose(); } catch { }
             try { npcShopTask.Dispose(); } catch { }
             try { craftingTask.Dispose(); } catch { }
-            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose();
+            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); modifierTask.Dispose();
             bookshelfTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
             try { settingsTask.Dispose(); } catch { }
             try { stageOutcomeTask.Dispose(); } catch { }
@@ -4316,7 +4318,7 @@ class Program
         try { materialShopAccessTask.Dispose(); } catch { }
         try { npcShopTask.Dispose(); } catch { }
         try { craftingTask.Dispose(); } catch { }
-        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose();
+        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); modifierTask.Dispose();
             bookshelfTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
         try { worldCompositor.Dispose(); } catch { }
         try { settingsTask.Dispose(); } catch { }

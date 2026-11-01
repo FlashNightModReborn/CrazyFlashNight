@@ -3012,7 +3012,10 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[Router] WAREHOUSE clicked -> web inventory workbench");
                     OpenInventoryWorkbench("nativehud", "{\"profile\":\"battlebox\",\"view\":\"storage\"}");
                     break;
-                case "SETTINGS": SendGameCommand("toggleSettings"); break;
+                case "SETTINGS":
+                    if (!TrySendGameCommand("openModifier"))
+                        PostToWeb("{\"type\":\"toast\",\"text\":\"修改器暂时不可用\"}");
+                    break;
                 case "SHOP":
                     LogManager.Log("[Router] SHOP clicked");
                     if (TrySendGameCommand("shopPanelOpen"))
@@ -3417,6 +3420,11 @@ namespace CF7Launcher.Guardian
             if (string.Equals(panelName, "hairdresser", StringComparison.OrdinalIgnoreCase))
             {
                 OpenHairdresserPanel(safeSource);
+                return;
+            }
+            if (string.Equals(panelName, "modifier", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenModifierPanel(safeSource, initDataExtrasJson);
                 return;
             }
             if (string.Equals(panelName, "settings", StringComparison.OrdinalIgnoreCase))
@@ -4308,6 +4316,17 @@ namespace CF7Launcher.Guardian
                 ["debug"] = false
             };
             OpenPanel("hairdresser", initData.ToString(Formatting.None));
+        }
+
+        private void OpenModifierPanel(string source, string initDataExtrasJson)
+        {
+            JObject data = ModifierTask.BuildOpenData(source, initDataExtrasJson);
+            if (data == null)
+            {
+                LogManager.Log("[Router] modifier rejected invalid source or token");
+                return;
+            }
+            OpenPanel("modifier", data.ToString(Formatting.None));
         }
 
         private void OpenSettingsPanel(string source)

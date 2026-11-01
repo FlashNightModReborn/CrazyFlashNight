@@ -466,6 +466,7 @@ namespace CF7Launcher.Bus
             SubwaySelectTask subwaySelectTask,
             EggStageSelectTask eggStageSelectTask,
             SleepTask sleepTask,
+            ModifierTask modifierTask,
             BookshelfTask bookshelfTask,
             GymTrainingTask gymTrainingTask,
             SettingsTask settingsTask,
@@ -589,6 +590,8 @@ namespace CF7Launcher.Bus
                 router.RegisterAsync("egg_select_response", eggStageSelectTask.HandleFlashResponse);
             if (sleepTask != null)
                 router.RegisterAsync("sleep_response", sleepTask.HandleFlashResponse);
+            if (modifierTask != null)
+                router.RegisterAsync("modifier_response", modifierTask.HandleFlashResponse);
             if (bookshelfTask != null)
                 router.RegisterAsync("bookshelf_response", bookshelfTask.HandleFlashResponse);
             if (gymTrainingTask != null)
@@ -970,6 +973,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "egg_select_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "bookshelf_response", "json_async", "AS2->C#", false, first);
             first = AppendTask(sb, "sleep_response", "json_async", "AS2<->C#", false, first);
+            first = AppendTask(sb, "modifier_response", "json_async", "AS2<->C#", false, first);
             first = AppendTask(sb, "gym_training_response", "json_async", "AS2<->C#", false, first);
             first = AppendTask(sb, "settings_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "equipment_tuning_response","json_async","AS2<->C#",false, first);

@@ -338,6 +338,7 @@ _root.__boot.f38 = function() {
     #include "../逻辑/功能函数/功能函数_fs_状态机用函数.as"
     #include "../逻辑/功能函数/功能函数_fs_导弹模板.as"
     #include "../逻辑/功能函数/功能函数_fs_新弹壳系统.as"
+    #include "../逻辑/功能函数/功能函数_fs_修改器初始化.as"
 };
 // 关卡进入与场景建立。
 _root.__boot.f39_1 = function() {

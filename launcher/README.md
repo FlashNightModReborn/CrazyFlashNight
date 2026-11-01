@@ -401,6 +401,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `hairdresser` | 业务 Panel | `modules/hairdresser.js` |
 | `surgery` | [医务室整形](../docs/医务室整形-Web面板与外观共享-2026-09-08.md) | `modules/plastic-surgery.js` |
 | `garage` | [车库购车](../agentsDoc/as2-web-panel-migration.md#u13-garage-purchase) | `modules/garage-purchase.js` |
+| `modifier` | [修改器四页 Web 化](../docs/修改器-Web迁移-施工与验证-2026-11-01.md)；AS2 保留写权威与未知写收据 | `modules/modifier-panel.js` |
 | `subway` | U7 地铁线路选关（隧道据点入口）；门槛与进关权威在 AS2 | `modules/subway-select.js` |
 | `egg-stage-select` | U7 彩蛋地图选关（彩蛋地图电脑入口）；彩蛋进度门权威在 AS2 | `modules/egg-stage-select.js` |
 | `sleep` | [床铺睡眠与拨针闹钟](../docs/U3睡眠面板-Web闹钟迁移-2026-09-19.md)；候选人验通过，发布状态见专项 | `modules/sleep-panel.js` |

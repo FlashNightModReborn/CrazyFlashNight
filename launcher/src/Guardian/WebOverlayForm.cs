@@ -404,6 +404,7 @@ namespace CF7Launcher.Guardian
         {
             if (panel == "kshop") return "shopPanelClose";
             if (panel == "map") return "mapPanelClose";
+            if (panel == "modifier") return "modifierPanelClosed";
             if (panel == "stage-select") return "stageSelectPanelClose";
             if (panel == "tasks") return "taskPanelClose";
             // team / arena / pets / mercs 故意留 null：普通关闭没有需要 AS2 清理的状态，
@@ -458,6 +459,7 @@ namespace CF7Launcher.Guardian
             PlasticSurgery,
             GaragePurchase,
             Sleep,
+            Modifier,
             Bookshelf,
             BookComic,
             Gym,
@@ -485,6 +487,7 @@ namespace CF7Launcher.Guardian
             if (domain == "surgery") return PanelDomainRoute.PlasticSurgery;
             if (domain == "garage") return PanelDomainRoute.GaragePurchase;
             if (domain == "sleep") return PanelDomainRoute.Sleep;
+            if (domain == "modifier") return PanelDomainRoute.Modifier;
             if (domain == "bookshelf") return PanelDomainRoute.Bookshelf;
             if (domain == "book-comic") return PanelDomainRoute.BookComic;
             if (domain == "gym") return PanelDomainRoute.Gym;
@@ -1371,6 +1374,7 @@ namespace CF7Launcher.Guardian
         private PlasticSurgeryTask _plasticSurgeryTask;
         private GaragePurchaseTask _garagePurchaseTask;
         private SleepTask _sleepTask;
+        private ModifierTask _modifierTask;
         private SubwaySelectTask _subwaySelectTask;
         private EggStageSelectTask _eggStageSelectTask;
         private BookComicTask _bookComicTask;
@@ -5019,6 +5023,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetModifierTask(ModifierTask task)
+        {
+            _modifierTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetGymTrainingTask(GymTrainingTask task)
         {
             _gymTrainingTask = task;
@@ -7796,6 +7807,17 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "bookshelf_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.Modifier)
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "modifier"))
+                {
+                    RespondPanelDomainError(parsed, "panel_instance_expired");
+                    return;
+                }
+                if (_modifierTask != null) _modifierTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "modifier_unavailable");
+                return;
+            }
             if (domainRoute == PanelDomainRoute.Sleep)
             {
                 if (!HasExactActivePanelOwnerBinding(parsed, "sleep"))
@@ -9282,6 +9304,8 @@ namespace CF7Launcher.Guardian
             // Host accepts the close, so a close/reopen cannot replay a card from the old DOM.
             if (panel == "arena" && _arenaTask != null)
                 _arenaTask.ClearPending();
+            if (panel == "modifier" && _modifierTask != null)
+                _modifierTask.ClearPending();
             // stage-select 同位（P3）：close 接受即按精确实例清在途请求，不等 Host 泵执行；
             // Host 路径下观察器随后以同实例幂等重放。
             if (panel == "stage-select" && _stageSelectTask != null)
@@ -9758,6 +9782,7 @@ namespace CF7Launcher.Guardian
             if (_plasticSurgeryTask != null) _plasticSurgeryTask.ClearPending();
             if (_garagePurchaseTask != null) _garagePurchaseTask.ClearPending();
             if (_sleepTask != null) _sleepTask.ClearPending();
+            if (_modifierTask != null) _modifierTask.ClearPending();
             if (_subwaySelectTask != null) _subwaySelectTask.ClearPending();
             if (_eggStageSelectTask != null) _eggStageSelectTask.ClearPending();
             _bookComicTask?.OnDisconnected();

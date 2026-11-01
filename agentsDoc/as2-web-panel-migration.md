@@ -547,6 +547,28 @@ NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影
 只有 Armed 且收到 `sv:2` 的 Done 状态才能签发一次 `EXIT_CONFIRM` capability；Router 必须调用 widget 的 one-shot consume 后才执行普通退出。raw、重放、未 Arm、Saving、Failed 或已消费的 `EXIT_CONFIRM` 一律拒绝。Failed 只显示取消/重试，重试只重新派发 `SAFEEXIT`；Done 无操作自动收起也不得退出。Ctrl+Q 等明确 emergency、Flash 僵尸进程和 fatal shutdown 是独立止损路径，不继承 Done capability，也不能被写成普通安全退出成功。
 
 <a id="u13-garage-purchase"></a>
+### U11 修改工具四页 Web 化（2026-11-01 源码施工）
+
+U11 从“是否迁移待选择”进入源码施工：NativeHud `SETTINGS` 改为 AS2 `openModifier`，由 AS2 生成会话 token 并发 `panel_request panel="modifier" source="nativehud_modifier"`。Host `OpenModifierPanel` 只接受该 exact source 与只含 `token` 的 initData；Web 只能消费授权目录和发白名单命令，AS2 保留全部写权威与 dirty 语义。旧 Flash `修改工具界面` 继续保留，不删除 placement、不重发主 SWF、不宣称已退役。
+
+| Web cmd | C# action | AS2 handler | AS2 response task | 写状态 |
+|---|---|---|---|---|
+| `snapshot` | `modifierSnapshot` | `readSnapshot` | `modifier_response` | 读 |
+| `items` | `modifierItems` | `readItems` | `modifier_response` | 读 |
+| `units` | `modifierUnits` | `readUnits` | `modifier_response` | 读 |
+| `query` | `modifierQuery` | `readQuery` | `modifier_response` | 对账 |
+| `grantMoney` | `modifierGrantMoney` | `applyGrantMoney` | `modifier_response` | 金币 +100000 |
+| `grantKCoin` | `modifierGrantKCoin` | `applyGrantKCoin` | `modifier_response` | K点 +100000 |
+| `spawnItem` | `modifierSpawnItem` | `applySpawnItem` | `modifier_response` | 世界拾取物 |
+| `levelAction` | `modifierLevelAction` | `applyLevelAction` | `modifier_response` | 关卡调试 |
+| `grantTask` | `modifierGrantTask` | `applyGrantTask` | `modifier_response` | 主线任务 |
+| `spawnUnit` | `modifierSpawnUnit` | `applySpawnUnit` | `modifier_response` | 场景单位 |
+| `spawnMerc` | `modifierSpawnMerc` | `applySpawnMerc` | `modifier_response` | 雇佣池 + 场景佣兵 |
+
+写策略：Web 生成 `mod.<...>` operationId，AS2 先写 `applying` 收据再执行，同 operationId 只回缓存；Host 单写飞行，超时/断线/无法验证的写保留 `recoveryToken/recoveryOperationId`，后续写只返回 `reconcile_required`，只能 `query`。普通关闭发送 `modifierPanelClosed`；`finish_stage` / `test_space` 先返回 `closeAfter`，由关闭命令在面板退出后执行。挑战模式拒绝打开与写入。协议字段 `levelAction` 不得改回 `action`，因为后者是 Host 可信信封保留键。
+
+施工与验证状态见[修改器 Web 迁移](../docs/修改器-Web迁移-施工与验证-2026-11-01.md)：C# 构建与定向测试、Web runtime 测试、AS2 BOM/生成链、CS6 publish（Compiler 0/0，asLoader.swf 已刷新）已过；真实游戏旅程、candidate、正式入口和旧 Flash 修改器退役均未执行。
+
 ### U13 车库购车（2026-09-30 本地施工）
 
 车库三个车辆按钮统一调用 `_root.打开车库购车(vehicleId)`；根桥与 `GaragePurchasePanelService` 编进 asLoader，独立基地 SWF 不复制服务类。已拥有车辆继续走原 `openWebMap`：自行车打开 defense，摩托车与越野车打开 faction。主时间轴不再放置旧确认实例，原确认库元件保留编辑源。
