@@ -190,8 +190,17 @@ _root.配置场景环境信息 = function(){
 		}
 		// 一次性场景加载快照，给标定看 area/mult/target
 		org.flashNight.arki.merc.MercBudget.emitLoad();
-		//播放场景bgm（支持单曲/专辑两种模式）
-		if(typeof 环境信息.BGM == "object" && 环境信息.BGM.album != undefined){
+		//播放场景bgm（支持单曲/专辑/序列两种模式）
+		if(typeof 环境信息.BGM == "object" && (环境信息.BGM.sequence != undefined || 环境信息.BGM.Sequence != undefined)){
+			var sceneSequence:String = String(环境信息.BGM.sequence != undefined ? 环境信息.BGM.sequence : 环境信息.BGM.Sequence);
+			var sceneIndex:Number = Number(环境信息.BGM.index != undefined ? 环境信息.BGM.index : 环境信息.BGM.Index);
+			if(isNaN(sceneIndex)) sceneIndex = undefined;
+			var sceneLoopValue:Object = 环境信息.BGM.loop != undefined ? 环境信息.BGM.loop : 环境信息.BGM.Loop;
+			var sceneLoop:Boolean = sceneLoopValue === true || String(sceneLoopValue) == "true";
+			var sceneAdvanceValue:Object = 环境信息.BGM.advance != undefined ? 环境信息.BGM.advance : 环境信息.BGM.Advance;
+			var sceneAdvance:Boolean = sceneAdvanceValue === true || String(sceneAdvanceValue) == "true";
+			_root.soundEffectManager.playSequenceBGM(sceneSequence, "scene", sceneLoop, sceneIndex, sceneAdvance);
+		} else if(typeof 环境信息.BGM == "object" && 环境信息.BGM.album != undefined){
 			// 专辑模式: <BGM album="TFR"/> 或 <BGM album="TFR" default="Dialtone"/>
 			_root.soundEffectManager.playAlbumBGM(环境信息.BGM.album, "scene", true, 环境信息.BGM["default"]);
 		} else if(环境信息.BGM != null){

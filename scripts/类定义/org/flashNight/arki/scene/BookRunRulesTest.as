@@ -665,6 +665,11 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         run.elapsedMs = 86400000;
         check(BookRunRules.reward(run, {}).sp == 0, "stale day-long result rejected");
         check(codec.stringifySafe(BookRunRules.stages(Number.NaN, 0)) == codec.stringifySafe(BookRunRules.stages(1, 0)), "invalid seed normalized");
+        var bgmPlan:Array = BookRunRules.stages(1, 0, "repair-campus");
+        check(bgmPlan.length >= 6 && bgmPlan[0].BasicInformation.BGM.Sequence == "cf1"
+                && Number(bgmPlan[0].BasicInformation.BGM.Index) == 0
+                && Number(bgmPlan[4].BasicInformation.BGM.Index) == 4,
+            "campus BGM selects the CF1 sequence by map index");
         testCf6();
         trace("BookRunRulesTest Tests Passed: " + passed);
         trace("BookRunRulesTest Tests Failed: " + failed);

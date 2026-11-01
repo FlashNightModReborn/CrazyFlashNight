@@ -1,0 +1,55 @@
+{
+  "schema": "cf1-bgm-extraction.v1",
+  "source": "flashswf/originals/crazy-flasher-1.swf",
+  "sourceSha256": "aa1cb17a60b9efaffe8e969bb33d77342657728af0203f8bb0b5fcf07b145a00",
+  "tracks": [
+    {
+      "title": "CF1-BGM-1",
+      "file": "cf1-bgm-1.mp3",
+      "sourceSprite": "sprite4",
+      "sourceSoundFormat": 2,
+      "bytes": 16880,
+      "sha256": "9864a79c7593db853a93bdfbe399b6c7cc0e872412b59b5074f65dbfa6c7ed9d",
+      "mp3Frames": 77,
+      "durationSeconds": 7.886,
+      "sampleRate": 11025,
+      "bitrateKbps": 16
+    },
+    {
+      "title": "CF1-BGM-2",
+      "file": "cf1-bgm-2.mp3",
+      "sourceSprite": "sprite35",
+      "sourceSoundFormat": 2,
+      "bytes": 50240,
+      "sha256": "c65002b54d46fb256143d29a3b746ce75fa307ea9763cbab11039e13934ae4d9",
+      "mp3Frames": 226,
+      "durationSeconds": 23.161,
+      "sampleRate": 11025,
+      "bitrateKbps": 16
+    },
+    {
+      "title": "CF1-BGM-3",
+      "file": "cf1-bgm-3.mp3",
+      "sourceSprite": "sprite210",
+      "sourceSoundFormat": 2,
+      "bytes": 110968,
+      "sha256": "e04dcbff65a2e7878152e6e8493baf6af289153fc7408d8f87cc334488c21dc0",
+      "mp3Frames": 504,
+      "durationSeconds": 51.986,
+      "sampleRate": 11025,
+      "bitrateKbps": 16
+    },
+    {
+      "title": "CF1-BGM-4",
+      "file": "cf1-bgm-4.mp3",
+      "sourceSprite": "sprite211",
+      "sourceSoundFormat": 2,
+      "bytes": 114228,
+      "sha256": "524628791da777d3552c8f4fa8cdc98d2598ba32e3c3402d77a98eaf292c8b04",
+      "mp3Frames": 519,
+      "durationSeconds": 53.996,
+      "sampleRate": 11025,
+      "bitrateKbps": 16
+    }
+  ]
+}

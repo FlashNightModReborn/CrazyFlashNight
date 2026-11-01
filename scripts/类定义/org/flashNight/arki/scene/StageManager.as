@@ -487,10 +487,18 @@ class org.flashNight.arki.scene.StageManager {
 
         //播放场景bgm
         if(!isWarlordAction && basicInfo.BGM){
-            if(basicInfo.BGM.Command == "play"){
-                _root.soundEffectManager.playBGMWithSource(basicInfo.BGM.Title, "stage", basicInfo.BGM.Loop, null);
-            }else if (basicInfo.BGM.Command == "stop"){
+            var bgmConfig:Object = basicInfo.BGM;
+            var bgmLoop:Boolean = bgmConfig.Loop === true || String(bgmConfig.Loop) == "true";
+            if(bgmConfig.Command == "stop"){
                 _root.soundEffectManager.stopBGMWithSource("stage");
+            }else if(bgmConfig.Sequence != undefined && String(bgmConfig.Sequence) != ""){
+                var bgmIndex:Number = Number(bgmConfig.Index);
+                if(isNaN(bgmIndex)) bgmIndex = undefined;
+                var bgmAdvance:Boolean = bgmConfig.Advance === true || String(bgmConfig.Advance) == "true";
+                _root.soundEffectManager.playSequenceBGM(String(bgmConfig.Sequence),
+                    "stage", bgmLoop, bgmIndex, bgmAdvance);
+            }else if(bgmConfig.Command == "play"){
+                _root.soundEffectManager.playBGMWithSource(bgmConfig.Title, "stage", bgmLoop, null);
             }
         }
 

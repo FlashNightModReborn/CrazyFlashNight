@@ -91,7 +91,7 @@
             <Initial>8</Initial>
             <Entrance>10</Entrance>
         </MercenaryRefresh>
-        <BGM>Dialtone</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <Environment>
         <BackgroundURL>地下2层</BackgroundURL>
@@ -108,7 +108,7 @@
         <MercenaryRefresh>
             <Entrance>20</Entrance>
         </MercenaryRefresh>
-        <BGM>stop</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <Environment>
         <BackgroundURL>武器库</BackgroundURL>
@@ -155,7 +155,7 @@
             <Initial>8</Initial>
             <Entrance>15</Entrance>
         </MercenaryRefresh>
-        <BGM>Dialtone</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <Environment>
         <BackgroundURL>基地1层</BackgroundURL>
@@ -178,7 +178,7 @@
             <AreaMultiplier>1.2</AreaMultiplier>
             <Entrance>10</Entrance>
         </MercenaryRefresh>
-        <BGM>Dialtone</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <Environment>
         <BackgroundURL>佣兵酒吧</BackgroundURL>
@@ -246,7 +246,7 @@
             <Initial>8</Initial>
             <Entrance>10</Entrance>
         </MercenaryRefresh>
-        <BGM>Dialtone</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <Environment>
         <BackgroundURL>基地房顶</BackgroundURL>
@@ -313,7 +313,7 @@
             <Initial>8</Initial>
             <Entrance>7</Entrance>
         </MercenaryRefresh>
-        <BGM>Dialtone</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <Environment>
         <BackgroundURL>基地车库</BackgroundURL>
@@ -366,7 +366,7 @@
             <Point>1090,650</Point>
             <Point>940,650</Point>
         </Collision>
-        <BGM>Dialtone</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <Environment>
         <BackgroundURL>基地门口</BackgroundURL>
@@ -390,7 +390,7 @@
             <Initial>8</Initial>
             <Entrance>7</Entrance>
         </MercenaryRefresh>
-        <BGM>Dialtone</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <!-- 外部地图-->
     <!-- 
@@ -776,7 +776,7 @@
             <Point>1255,540</Point>
             <Point>1255,230</Point>
         </Collision>
-        <BGM>Dialtone</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <Environment>
         <BackgroundURL>地图-食堂</BackgroundURL>
@@ -809,7 +809,7 @@
             <Point>1200,810</Point>
             <Point>1020,810</Point>
         </Collision>
-        <BGM>Dialtone</BGM>
+        <BGM sequence="base1-random" loop="true"/>
     </Environment>
     <Environment>
         <BackgroundURL>地图-实验室</BackgroundURL>

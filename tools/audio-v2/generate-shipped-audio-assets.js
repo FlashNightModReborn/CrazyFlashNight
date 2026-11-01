@@ -32,15 +32,15 @@ const SOURCE_PATHS = Object.freeze({
 });
 const EXPECTED = Object.freeze({
     catalogDiscovered: 4,
-    catalogRegistered: 86,
-    codec: Object.freeze({ aac_lc_or_he_aac: 11, mpeg_audio_layer_iii: 756, pcm_s16le: 60 }),
-    container: Object.freeze({ iso_bmff: 11, mpeg_audio: 756, riff_wave: 60 }),
-    extension: Object.freeze({ ".m4a": 11, ".mp3": 215, ".wav": 599, ".waz": 2 }),
+    catalogRegistered: 97,
+    codec: Object.freeze({ aac_lc_or_he_aac: 11, mpeg_audio_layer_iii: 767, pcm_s16le: 60 }),
+    container: Object.freeze({ iso_bmff: 11, mpeg_audio: 767, riff_wave: 60 }),
+    extension: Object.freeze({ ".m4a": 11, ".mp3": 226, ".wav": 599, ".waz": 2 }),
     missingLatentReferences: 1,
     missingRegisteredReferences: 1,
     outside: Object.freeze({ musicRoot: 29, obsolete: 0, ownedException: 29, runtimeReachable: 0, soundsRecoveryLibrary: 32, sourceOnly: 32, total: 61 }),
     preloadSfx: 676,
-    total: 827
+    total: 838
 });
 
 class InventoryError extends Error {
@@ -517,7 +517,7 @@ function buildInventory(root) {
     expectCounts(countBy(assets, "extension"), EXPECTED.extension, "extension counts");
     expectCounts(countBy(assets, "container"), EXPECTED.container, "container counts");
     expectCounts(countBy(assets, "codec"), EXPECTED.codec, "codec counts");
-    expectCounts(countBy(assets, "repositoryState"), { ignored_source: 32, tracked: 795 }, "repository-state counts");
+    expectCounts(countBy(assets, "repositoryState"), { ignored_source: 32, tracked: 806 }, "repository-state counts");
 
     const missingRegisteredReferences = [];
     registrations.forEach((registration, key) => {
@@ -562,7 +562,7 @@ function buildInventory(root) {
             sha256: sha256(producerBytes)
         },
         qualificationScope: {
-            h2CompleteGitInventoryTotal: 795,
+            h2CompleteGitInventoryTotal: 806,
             ignoredSourceOnlyExcluded: 32,
             outsideDiscoveryExceptionsAreDecodeOrSignalWaivers: false,
             physicalCorpusTotal: assets.length,
@@ -575,7 +575,7 @@ function buildInventory(root) {
             byCodec: EXPECTED.codec,
             byContainer: EXPECTED.container,
             byExtension: EXPECTED.extension,
-            byRepositoryState: { ignoredSource: 32, tracked: 795 },
+            byRepositoryState: { ignoredSource: 32, tracked: 806 },
             catalogDiscovered: discovered,
             catalogRegistered: registered,
             missingLatentReferences: missingLatentReferences.length,

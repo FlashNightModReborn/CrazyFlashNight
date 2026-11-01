@@ -393,4 +393,77 @@
         <title>Full Stop</title>
         <url>sounds/other/Frank Klepacki,The Tiberian Sons - Warfare  Full Stop (Remastered).mp3</url>
     </music>
+    <!-- CF1 原生 BGM（flashswf/originals/crazy-flasher-1.swf 的 SoundStreamBlock） -->
+    <music>
+        <title>CF1-BGM-1</title>
+        <url>sounds/cf1/cf1-bgm-1.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <music>
+        <title>CF1-BGM-2</title>
+        <url>sounds/cf1/cf1-bgm-2.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <music>
+        <title>CF1-BGM-3</title>
+        <url>sounds/cf1/cf1-bgm-3.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <music>
+        <title>CF1-BGM-4</title>
+        <url>sounds/cf1/cf1-bgm-4.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <sequence id="cf1" mode="order">
+        <track>CF1-BGM-1</track>
+        <track>CF1-BGM-2</track>
+        <track>CF1-BGM-3</track>
+        <track>CF1-BGM-4</track>
+    </sequence>
+    <!-- 基地1层随机 BGM：原 Dialtone + 闪客快打7原版 gk-10..16 -->
+    <music>
+        <title>gk-10</title>
+        <url>sounds/闪客快打7原版bgm/gk-10.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <music>
+        <title>gk-11</title>
+        <url>sounds/闪客快打7原版bgm/gk-11.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <music>
+        <title>gk-12</title>
+        <url>sounds/闪客快打7原版bgm/gk-12.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <music>
+        <title>gk-13</title>
+        <url>sounds/闪客快打7原版bgm/gk-13.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <music>
+        <title>gk-14</title>
+        <url>sounds/闪客快打7原版bgm/gk-14.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <music>
+        <title>gk-15</title>
+        <url>sounds/闪客快打7原版bgm/gk-15.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <music>
+        <title>gk-16</title>
+        <url>sounds/闪客快打7原版bgm/gk-16.mp3</url>
+        <fadeDuration>1</fadeDuration>
+    </music>
+    <sequence id="base1-random" mode="random">
+        <track>Dialtone</track>
+        <track>gk-10</track>
+        <track>gk-11</track>
+        <track>gk-12</track>
+        <track>gk-13</track>
+        <track>gk-14</track>
+        <track>gk-15</track>
+        <track>gk-16</track>
+    </sequence>
 </data>

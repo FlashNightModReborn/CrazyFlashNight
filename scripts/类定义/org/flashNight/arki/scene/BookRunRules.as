@@ -23,6 +23,26 @@ class org.flashNight.arki.scene.BookRunRules {
     private static function integer(state:Object, lo:Number, hi:Number):Number {
         return lo + Math.floor(next(state) * (hi - lo + 1));
     }
+    /** 地图 BGM：单曲、序列或 stop；缺省保持既有 Bulletproof，避免空配置退化为静音。 */
+    private static function mapBgm(map:Object):Object {
+        var spec:Object = map.bgm;
+        if (spec == null) return {Command:"play", Title:"Bulletproof", Loop:true};
+        if (typeof spec == "string") {
+            return String(spec) == "stop" ? {Command:"stop"} : {Command:"play", Title:String(spec), Loop:true};
+        }
+        if (spec.command != undefined && String(spec.command) == "stop") return {Command:"stop"};
+        if (spec.sequence != undefined && String(spec.sequence) != "") {
+            var index:Number = Number(spec.index);
+            if (isNaN(index)) index = undefined;
+            return {Command:"play", Sequence:String(spec.sequence), Index:index,
+                Loop:spec.loop !== false, Advance:spec.advance === true};
+        }
+        if (spec.title != undefined && String(spec.title) != "") {
+            return {Command:"play", Title:String(spec.title), Loop:spec.loop !== false};
+        }
+        return {Command:"play", Title:"Bulletproof", Loop:true};
+    }
+
     public static function stages(seed:Number, startAt:Number, bookId:String, routeId:String):Array {
         var config:Object = org.flashNight.arki.scene.BookDefinition.get(bookId,routeId);
         if (config == null) return [];
@@ -98,7 +118,7 @@ class org.flashNight.arki.scene.BookRunRules {
             var trainer:Object = {};
             for (var s:Number = 0; s < config.skills.length; s++) trainer[String(s)] = config.skills[s];
             var stage:Object = {BasicInformation:{Background:"flashswf/backgrounds/" + map.background,
-                    EndFrame:"房间", BGM:{Command:"play", Title:"Bulletproof", Loop:true}},
+                    EndFrame:"房间", BGM:mapBgm(map)},
                 Wave:{SubWave:waves}, Event:[{EventName:"Start", Callback:{Name:"书中章节", Parameter:[i]}, Message:"修理大学 · " + (i + 1) + "/7 · " + map.title
                     + (i == 0 ? "。先找迷之盔甲君选择武器和技能；初始 " + config.startingSkillPoints + " SP。弹药补给包需在背包打开并领取。" : "")
                     + (choice != null ? "。末波掉落自选配给包：从背包打开，选定后技能直接获得，物品到暂存领取；K点仅在确认付费卡时扣除。" : "")

@@ -153,9 +153,72 @@ sounds/
 
 未在 XML 中注册、但位于自动发现边界内的文件会使用默认参数。XML 中的配置优先级高于自动发现；注册不等于可播放，物理文件缺失或 probe 不成立时仍按上述状态 fail-closed。
 
+### BGM 序列
+
+把同一场景/关卡的多首 BGM 按顺序注册为序列：
+
+```xml
+<sequence id="cf1" mode="order">
+    <track>CF1-BGM-1</track>
+    <track>CF1-BGM-2</track>
+    <track>CF1-BGM-3</track>
+    <track>CF1-BGM-4</track>
+</sequence>
+```
+
+`mode="order"` 按 `track` 顺序；`mode="random"` 在序列首次激活时随机选一首。序列已经在同一 `source` 播放时，不会因为再次进入同序列场景而重新随机。
+
+#### 同序列跨场景/关卡保持
+
+同一 `source`（`scene` 或 `stage`）下，当前 sequence 已经生效时，再进入相同 sequence 的场景/关卡，只要不写 `Index`、不写 `Advance`，就保持当前曲目，不重新选曲、不淡出、不打断。`Loop` 仍由配置决定，保持播放时通常写 `true`。
+
+基地场景在 `data/environment/scene_environment.xml` 中统一写同一个序列，不要写 `Index`：
+
+```xml
+<!-- 所有需要连成一片的基地/和平场景都写同一 sequence -->
+<BGM sequence="base" loop="true"/>
+```
+
+首次进入时随机选一首：
+
+```xml
+<sequence id="base" mode="random">
+    <track>某一首</track>
+    <track>另一首</track>
+</sequence>
+```
+
+书中地图可直接把序列挂到每个 map，且同样不要写 `index`/`advance`：
+
+```json
+"bgm": {"sequence": "base", "loop": true}
+```
+
+关卡/子关卡 XML 也可以写成：
+
+```xml
+<BGM>
+    <Command>play</Command>
+    <Sequence>base</Sequence>
+    <Loop>true</Loop>
+</BGM>
+```
+
+需要明确换曲时才使用以下字段：
+
+| 字段 | 效果 |
+|------|------|
+| `Index` / `<Index>` | 显式指定该场景/关卡的曲目；同序列已播放时也允许切到该曲，属于主动换曲 |
+| `Advance` / `<Advance>` | 同一 `source+sequence` 的后续调用按游标取下一首，用于逐图推进；同样属于主动换曲 |
+
+`Index` 和 `Advance` 都会打破“同序列保持”，不要在需要连续播放的场景/关卡上填写。当前 `repair-campus` 各 map 写了 `index: 0..6`，因此会按图换曲；若希望整局保持同一首，删除各 map 的 `index`，只保留 `sequence`。
+
+场景与关卡是两个独立播放通道：从基地进入关卡时由关卡 BGM 接管，离开关卡后场景会按自己的配置重新选择；同序列保持只保证同一通道内。
+
+
 ## 场景专辑配置
 
-在 `data/environment/scene_environment.xml` 中，场景 BGM 支持两种写法：
+在 `data/environment/scene_environment.xml` 中，场景 BGM 支持以下写法（序列写法见上）：
 
 ```xml
 <!-- 单曲模式（传统） -->
