@@ -533,6 +533,31 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="星座靶标图标" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" duration="28">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="zodiacSign">
+                  <matrix>
+                    <Matrix a="0.75" d="0.35" tx="-6.7" ty="-0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.45" redOffset="40" greenMultiplier="1" greenOffset="60" blueMultiplier="1" blueOffset="80" alphaMultiplier="0.92" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="地面预警靶标" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">

@@ -4,7 +4,8 @@ elderAttackCount=0;elderHitCount=0;elderFxMask=0;elderIdentity={};
 elderCombatReported=false;elderReactiveShield=-1;elderReactiveState=null;elderPendingBurstSubmode="";
 elderCombatStats={decisionChecks:0,rangeOutsideChecks:0,burstStarts:0,burstContacts:0,retreat_burstStarts:0,retreat_burstContacts:0,stabStarts:0,stabContacts:0,
     reactiveLostHp:0,reactiveForced:0,reactivePulses:0,reactiveGranted:0,reactiveAbsorbed:0,reactiveLeechHits:0,reactiveRageLeechHits:0,reactiveCrumbleHits:0,reactiveRageSources:{},
-    beamStarts:0,beamContacts:0,beamHits:0,beamHitPower:0,beamShieldSpent:0,beamShieldUnused:0,beamShieldSamples:0,heavyBeamStarts:0,heavyBeamContacts:0,heavyBeamHits:0,heavyBeamHitPower:0,slamHeavyStarts:0,kicksStarts:0,kicksContacts:0,slamStarts:0,slamContacts:0,slamAntiairContacts:0,slamShellContacts:0,kicksShieldGrants:0,slamShieldGrants:0,kicksShieldAbsorbed:0,slamShieldAbsorbed:0};
+    beamStarts:0,beamContacts:0,beamHits:0,beamHitPower:0,beamShieldSpent:0,beamShieldUnused:0,beamShieldSamples:0,heavyBeamStarts:0,heavyBeamContacts:0,heavyBeamHits:0,heavyBeamHitPower:0,slamHeavyStarts:0,kicksStarts:0,kicksContacts:0,slamStarts:0,slamContacts:0,slamAntiairContacts:0,slamShellContacts:0,kicksShieldGrants:0,slamShieldGrants:0,kicksShieldAbsorbed:0,slamShieldAbsorbed:0,
+    phaseTransitions:0,phaseShieldGrants:0,phaseShieldRemoved:0,phase_antiairStarts:0,phase_antiairShells:0,phase_sweepBeamStarts:0,phase_sweepBeamContacts:0,phase_sweepBeamHits:0,phase_sweepBeamHitPower:0,phase_pummelStarts:0,phase_pummelContacts:0,phase_pummelMissiles:0,phase_quakeStarts:0,phase_quakeContacts:0,sfxPlayed:0};
 elderAlignZ=false;elderApproachX=false;elderMovementTarget="";
 elderTuning={shootRange:elderForm=="human"?500:750,approachStopRange:elderForm=="human"?330:430,
     laneRange:30,laneStopRange:10,reactionFrames:6,recoveryFrames:6,maximumTargetHeight:140,
@@ -24,10 +25,35 @@ elderTuning.stabLifeSteal=35;elderTuning.stabKnockback=24;elderTuning.humanCombo
 elderTuning.beamCooldown=80;elderTuning.comboWindow=75;elderTuning.heavyBeamCooldown=600;
 elderTuning.slamHeavyWindow=180;
 elderTuning.slamAntiairFrame=20;elderTuning.slamAntiairPower=3;elderTuning.slamShellPower=4;elderTuning.slamShellDelay=25;elderTuning.slamBombardRange=460;
+elderTuning.phaseAntiairShellCount=12;elderTuning.phaseAntiairInterval=4;elderTuning.phaseAntiairShellPower=2.2;elderTuning.phaseAntiairShellDelay=24;
+elderTuning.phaseSweepAngularSpeed=4.05;elderTuning.phaseSweepDuration=136;elderTuning.phaseSweepPulseInterval=4;elderTuning.phaseSweepMinAngle=-90;elderTuning.phaseSweepMaxAngle=90;
+elderTuning.phasePummelLoops=4;elderTuning.phasePummelPellets=2;elderTuning.phasePummelMissilePower=0.45;
+elderTuning.phaseQuakeChargeHold=16;elderTuning.phaseQuakePower=24;
+if(elderForm=="robot"){
+    elderActions.phase_antiair={totalFrames:71,state:"重击",hits:[],power:0,isPhaseMove:true};
+    elderActions.phase_sweepBeam={totalFrames:106,state:"蓄能重束",hits:[],power:1.5,damage:"魔法",attribute:"波",isPhaseMove:true};
+    elderActions.phase_pummel={totalFrames:40,state:"近战",hits:[9,26],power:1,isPhaseMove:true};
+    elderActions.phase_quake={totalFrames:71,state:"重击",hits:[37],power:24,isPhaseMove:true};
+    if(老头五阶段==undefined)老头五阶段=true;
+    else if(老头五阶段===true || 老头五阶段===1 || 老头五阶段==="true" || 老头五阶段==="1")老头五阶段=true;
+    else if(老头五阶段===false || 老头五阶段===0 || 老头五阶段==="false" || 老头五阶段==="0")老头五阶段=false;
+    else {trace("[CF6_ELDER_CONFIG_ERROR] invalid 老头五阶段="+老头五阶段);老头五阶段=false;}
+}else{
+    老头五阶段=false;
+}
+elderPhase=1;elderPhaseFloorHp=0;elderInPhaseTransition=false;elderPendingPhaseAction="";elderActivePhaseAction="";elderPhaseShield=-1;
+elderPhasePrevRigid=false;elderPhasePrevImmune=false;elderPhasePrevLockDir=false;elderRetired=false;
+elderPhaseThresholds=[0.8,0.6,0.4,0.2];
+elderPhaseMoves=["phase_antiair","phase_sweepBeam","phase_pummel","phase_quake"];
 // elderActions 由装配器从同一动作表生成；帧位与逐段倍率不在此另写一份。
 
 elderClearMovement=function():Void {
     this.左行=this.右行=this.上行=this.下行=false;this.elderAlignZ=this.elderApproachX=false;
+};
+elderPlaySfx=function(soundId:String):Void {
+    if(soundId==undefined || soundId=="")return;
+    this.elderCombatStats.sfxPlayed=(this.elderCombatStats.sfxPlayed|0)+1;
+    if(typeof _root.播放音效=="function")_root.播放音效(soundId,this._name);
 };
 // 以本形态初始化满血值固定损血门槛；同一笔已观察 HP 下降只入账一次。
 // 命中后事件负责立即补盾，私有帧时钟负责周期补充；伤害与吸血结算仍由通用管线执行。
@@ -139,13 +165,16 @@ elderRecordBeamShield=function():Void {
 };
 elderCancelAttack=function():Void {
     this.elderRecordBeamShield();
+    this.elderClearZodiacAstrolabe();
+    if(this.man!=null && this.man.elderHeavyBeamRay!=null)this.man.elderHeavyBeamRay._rotation=0;
     if(this.elderAttackOwner!=null){
-        if(this.elderAttackOwner.ownsRigid)this.刚体=this.elderAttackOwner.previousRigid;
-        if(this.elderAttackOwner.ownsImmune)this.免疫击退=this.elderAttackOwner.previousImmune;
+        if(this.elderAttackOwner.ownsRigid)this.刚体=this.elderInPhaseTransition?true:this.elderAttackOwner.previousRigid;
+        if(this.elderAttackOwner.ownsImmune)this.免疫击退=this.elderInPhaseTransition?true:this.elderAttackOwner.previousImmune;
+        if(this.elderAttackOwner.ownsLockDir)this.锁定方向=this.elderInPhaseTransition?true:this.elderAttackOwner.previousLockDir;
         this.elderAttackOwner.active=false;
     }
     this.elderAttackOwner=null;this.动作A=false;
-    if(!(this.hp>0)){this.elderSlamHeavyWindow=null;this.elderClearReactiveShield();}
+    if(!(this.hp>0)){this.elderSlamHeavyWindow=null;this.elderClearReactiveShield();this.elderFinishPhaseTransition();}
     if(this.elderBeamShield>=0){
         _root.护盾函数.移除护盾(this,this.elderBeamShield);this.elderBeamShield=-1;
     }
@@ -170,7 +199,7 @@ elderRageSourceSummary=function():String {
 };
 elderReportCombat=function():Void {
     if(this.elderCombatReported)return;
-    this.elderCombatReported=true;this.elderRecordBeamShield();this.elderClearReactiveShield();
+    this.elderCombatReported=true;this.elderRecordBeamShield();this.elderClearReactiveShield();this.elderClearPhaseShield();
     var target:MovieClip=_root.gameworld[this.攻击目标],stats:Object=this.elderCombatStats;
     var message:String="[CF6_ELDER_COMBAT_END] unit="+this._name+" form="+this.elderForm+" level="+this.等级
         +" clock="+this.elderClock+" starts="+this.elderAttackCount+" contacts="+this.elderHitCount
@@ -182,6 +211,9 @@ elderReportCombat=function():Void {
         +" incomingLeech="+stats.reactiveLeechHits+" rageLeech="+stats.reactiveRageLeechHits+" rageSources="+this.elderRageSourceSummary()+" incomingCrumble="+stats.reactiveCrumbleHits+" kicks="+stats.kicksStarts+"/"+stats.kicksContacts
         +" slam="+stats.slamStarts+"/"+stats.slamContacts+" kicksShield="+stats.kicksShieldGrants+" slamShield="+stats.slamShieldGrants
         +" meleeShieldAbsorbed="+stats.kicksShieldAbsorbed+"/"+stats.slamShieldAbsorbed
+        +" phase="+this.elderPhase+" phaseTrans="+stats.phaseTransitions+" phaseShield="+stats.phaseShieldGrants+"/"+stats.phaseShieldRemoved
+        +" phaseAa="+stats.phase_antiairStarts+"/"+stats.phase_antiairShells+" phaseSweep="+stats.phase_sweepBeamStarts+"/"+stats.phase_sweepBeamContacts+"/"+stats.phase_sweepBeamHits
+        +" phasePummel="+stats.phase_pummelStarts+"/"+stats.phase_pummelContacts+"/"+stats.phase_pummelMissiles+" phaseQuake="+stats.phase_quakeStarts+"/"+stats.phase_quakeContacts
         +" burst="+stats.burstStarts+"/"+stats.burstContacts
         +" stab="+stats.stabStarts+"/"+stats.stabContacts+" x="+this._x+" z="+this.Z轴坐标
         +" target="+this.攻击目标+" targetHp="+target.hp+" targetX="+target._x+" targetZ="+target.Z轴坐标;
@@ -189,13 +221,21 @@ elderReportCombat=function():Void {
     if(typeof _root.服务器.发布服务器消息=="function")_root.服务器.发布服务器消息(message);
 };
 状态改变=function(next:String):Void {
-    if(next=="消失")this.elderClearReactiveShield();
+    if(next=="消失"){
+        this.elderRetired=true;
+        this.__elderBypassPhaseLock=true;
+        this.elderPhaseFloorHp=0;
+        this.hp=0;
+        this.elderClearReactiveShield();
+        this.elderFinishPhaseTransition();
+    }
     if(this.elderTransform!=null){
         if(next!="消失")return;
         this.elderTransform.active=false;
         var child:MovieClip=this.elderTransform.child;
         if(child.elderSpawnIdentity===this.elderTransform.spawnIdentity)child._visible=true;
     }
+    if(this.elderInPhaseTransition && !this.__elderAllowPhaseStateChange && this.hp>0 && next!="消失")return;
     if(this.hp<=0 && next!="消失"){
         this.elderReportCombat();
         if(this.elderForm=="human" && this.老头变身===true){this.elderStartTransform();return;}
@@ -210,19 +250,50 @@ elderReportCombat=function():Void {
     this.elderCancelAttack();this.状态=next;this.gotoAndStop(next);
 };
 elderBeginAttack=function(body:MovieClip,action:String):Void {
+    if(this.elderInPhaseTransition && this.elderActivePhaseAction!=""){
+        action=this.elderActivePhaseAction;
+        this.elderPendingPhaseAction="";
+        if(this.elderAttackOwner!=null && this.elderAttackOwner.active
+            && this.elderAttackOwner.action==action && this.man===body){
+            return;
+        }
+    }
     this.elderCancelAttack();
     var spec:Object=this.elderActions[action];
     if(!(this.hp>0) || spec==undefined || this.状态!=spec.state){body.stop();return;}
     var token:Object={};body.elderToken=token;
+    var isPhaseMove:Boolean=spec.isPhaseMove===true;
+    var prevRigid:Boolean=isPhaseMove?(this.elderPhasePrevRigid===true):(this.刚体===true);
+    var prevImmune:Boolean=isPhaseMove?(this.elderPhasePrevImmune===true):(this.免疫击退===true);
+    var prevLockDir:Boolean=isPhaseMove?(this.elderPhasePrevLockDir===true):(this.锁定方向===true);
     this.elderAttackOwner={token:token,active:true,state:spec.state,action:action,lastHitFrame:0,
-        spec:spec,target:this.攻击目标,previousRigid:this.刚体===true,ownsRigid:true,
-        previousImmune:this.免疫击退===true,ownsImmune:action=="beam" || action=="heavyBeam" || action=="retreat_burst"};
+        spec:spec,target:this.攻击目标,previousRigid:prevRigid,ownsRigid:true,
+        previousImmune:prevImmune,ownsImmune:isPhaseMove || action=="beam" || action=="heavyBeam" || action=="retreat_burst",
+        previousLockDir:prevLockDir,ownsLockDir:isPhaseMove};
     if(this.elderAttackOwner.ownsRigid)this.刚体=true;
     if(this.elderAttackOwner.ownsImmune)this.免疫击退=true;
+    if(this.elderAttackOwner.ownsLockDir)this.锁定方向=true;
     var target:MovieClip=_root.gameworld[this.攻击目标];
     if(target.hp>0){
         if(target.__elderActionIdentity==undefined)target.__elderActionIdentity={};
         this.elderAttackOwner.targetIdentity=target.__elderActionIdentity;
+    }
+    if(isPhaseMove && target!=null && target.hp>0 && !isNaN(target._x)){
+        this.elderSetFacing(target._x<this._x?"左":"右");
+    }
+    if(action=="phase_antiair"){
+        this.elderAttackOwner.shellsFired=0;
+        this.elderAttackOwner.barrageTick=0;
+        this.elderAttackOwner.barrageFinished=false;
+    }else if(action=="phase_sweepBeam"){
+        this.elderAttackOwner.sweepAngle=0;
+        this.elderAttackOwner.sweepInitialized=false;
+        if(body.elderHeavyBeamRay!=null)body.elderHeavyBeamRay._rotation=0;
+    }else if(action=="phase_pummel"){
+        this.elderAttackOwner.pummelLoop=0;
+    }else if(action=="phase_quake"){
+        this.elderAttackOwner.quakeHold=0;
+        this.elderAttackOwner.quakeWarningSpawned=false;
     }
     if(action=="heavyBeam" && !this.elderHasHeavyPermission(target,spec.hits[spec.hits.length-1]+1)){this.elderCancelAttack();this.动画完毕();return;}
     if(action=="burst" || action=="retreat_burst"){
@@ -338,7 +409,8 @@ elderFireSlamAntiair=function(body:MovieClip):Void {
         }
     };
     this.elderCombatStats.slamAntiairContacts++;
-    var bullet:Object={声音:"",霰弹值:1,子弹散射度:0,发射效果:"",
+    this.elderPlaySfx("G1炮开火.wav");
+    var bullet:Object={声音:"G1炮开火.wav",霰弹值:1,子弹散射度:0,发射效果:"",
         子弹种类:"近战子弹",子弹威力:this.空手攻击力*this.elderTuning.slamAntiairPower,子弹速度:0,
         Z轴攻击范围:36,击中地图效果:"",发射者:this._name,
         shootX:shootX,shootY:shootY,shootZ:this.Z轴坐标,
@@ -348,7 +420,7 @@ elderFireSlamAntiair=function(body:MovieClip):Void {
         cf6ElderSlamAntiair:true};
     _root.子弹区域shoot传递(bullet);
 };
-elderSpawnFallingShell=function(shellIndex:Number):Void {
+elderSpawnFallingShell=function(shellIndex:Number,customX:Number,customZ:Number,customPower:Number,customDelay:Number,isPhaseBarrage:Boolean):Void {
     var world:MovieClip=_root.gameworld;
     if(world==null)return;
     var dir:Number=this.方向=="左"?-1:1;
@@ -356,25 +428,34 @@ elderSpawnFallingShell=function(shellIndex:Number):Void {
     var hasTarget:Boolean=target!=null && target.hp>0 && target!==this && target.area!=null && !isNaN(target._x);
     var baseX:Number=hasTarget?target._x:(this._x+dir*260);
     var baseZ:Number=(hasTarget && !isNaN(target.Z轴坐标))?target.Z轴坐标:this.Z轴坐标;
-    var strikeX:Number=baseX+(shellIndex>0?dir*65:0);
-    var strikeZ:Number=baseZ;
+    var strikeX:Number=(customX!=undefined && !isNaN(customX))?customX:(baseX+(shellIndex>0?dir*65:0));
+    var strikeZ:Number=(customZ!=undefined && !isNaN(customZ))?customZ:baseZ;
     var depth:Number=world.getNextHighestDepth();
-    var clip:MovieClip=world.createEmptyMovieClip("cf6ElderShell"+depth+"_"+this.elderClock,depth);
+    var clip:MovieClip=world.createEmptyMovieClip("cf6ElderShell"+depth+"_"+this.elderClock+"_"+shellIndex,depth);
     clip._x=strikeX;clip._y=strikeZ;
     var area:MovieClip=clip.createEmptyMovieClip("area",1);
     area.beginFill(0,0);area.moveTo(-95,-115);area.lineTo(95,-115);area.lineTo(95,10);area.lineTo(-95,10);area.lineTo(-95,-115);area.endFill();
     area._visible=false;
-    var fxDepth:Number=1000+((this.elderClock*2+(shellIndex>0?1:0))&511);
+    var fxDepth:Number=1000+((this.elderClock*4+(shellIndex&15))&511);
+    var sIdx:Number=(shellIndex!=undefined && !isNaN(shellIndex))?shellIndex:0;
+    var zFrame:Number=1+((sIdx%12+12)%12);
     var fx:MovieClip=this.cf6BombTemplate!=null?this.cf6BombTemplate.duplicateMovieClip("cf6ElderShellFx_"+fxDepth,fxDepth):null;
-    if(fx!=null){fx._visible=true;fx.gotoAndStop(1);}
+    if(fx!=null){
+        fx._visible=true;fx.gotoAndStop(2);
+        if(fx.zodiacSign!=null)fx.zodiacSign.gotoAndStop(zFrame);
+    }
     clip.fx=fx;
+    clip.shellIndex=sIdx;
+    clip.zodiacFrame=zFrame;
     clip.age=0;
-    clip.delayFrames=this.elderTuning.slamShellDelay+(shellIndex>0?6:0);
+    clip.delayFrames=(customDelay!=undefined && !isNaN(customDelay))?customDelay:(this.elderTuning.slamShellDelay+(shellIndex>0?6:0));
     clip.shooterName=this._name;
     clip.shooterIdentity=this.elderIdentity;
-    clip.bulletPower=this.空手攻击力*this.elderTuning.slamShellPower;
+    var powerScale:Number=(customPower!=undefined && !isNaN(customPower))?customPower:this.elderTuning.slamShellPower;
+    clip.bulletPower=this.空手攻击力*powerScale;
     clip.strikeX=strikeX;
     clip.strikeZ=strikeZ;
+    clip.isPhaseBarrage=isPhaseBarrage===true;
     clip.onUnload=function():Void {
         if(this.fx!=null){this.fx.removeMovieClip();this.fx=null;}
     };
@@ -397,16 +478,26 @@ elderSpawnFallingShell=function(shellIndex:Number):Void {
             }
         }
         if(this.age<d){
+            if(this.age==d-12 && shooterValid && shooter.hp>0)shooter.elderPlaySfx("榴弹下落.wav");
             if(this.fx!=null){
                 if(this.age<d-12)this.fx.gotoAndStop(2+((this.age-1)%12));
                 else this.fx.gotoAndStop(14+(this.age-(d-12)));
+                if(this.fx.zodiacSign!=null)this.fx.zodiacSign.gotoAndStop(this.zodiacFrame);
             }
         }else if(this.age==d){
-            if(this.fx!=null)this.fx.gotoAndStop(26);
+            var shellZodiacFrame:Number=0;
+            if(this.fx!=null){
+                this.fx.gotoAndStop(26);
+                if(this.fx.zodiacSign!=null){
+                    this.fx.zodiacSign.gotoAndStop(this.zodiacFrame);
+                    shellZodiacFrame=this.fx.zodiacSign._currentframe;
+                }
+            }
             if(shooterValid && shooter.hp>0){
                 shooter.elderCombatStats.slamShellContacts++;
+                shooter.elderPlaySfx("G1炮命中.wav");
                 _root.效果("火花",this.strikeX,this.strikeZ,135);
-                var bullet:Object={声音:"",霰弹值:1,子弹散射度:0,发射效果:"",
+                var bullet:Object={声音:"G1炮命中.wav",霰弹值:1,子弹散射度:0,发射效果:"",
                     子弹种类:"近战子弹",子弹威力:this.bulletPower,子弹速度:0,
                     Z轴攻击范围:45,击中地图效果:"",发射者:this.shooterName,
                     shootX:this.strikeX,shootY:this.strikeZ,shootZ:this.strikeZ,
@@ -415,7 +506,9 @@ elderSpawnFallingShell=function(shellIndex:Number):Void {
                     伤害类型:"魔法",魔法伤害属性:"波",
                     elderShooterIdentity:this.shooterIdentity,
                     hitBehavior:{type:"cf6ElderBeam",peak:0.25,durationFrames:180},
-                    cf6FallingShell:true};
+                    cf6ShellZodiacFrame:shellZodiacFrame,
+                    cf6FallingShell:true,
+                    cf6PhaseBarrageShell:this.isPhaseBarrage};
                 bullet.击中时触发函数=function():Void {
                     if(this.elderShellRewardSpent===true)return;
                     this.elderShellRewardSpent=true;
@@ -435,6 +528,549 @@ elderSpawnFallingShell=function(shellIndex:Number):Void {
         }
     };
 };
+elderSpawnPhaseBarrageShell=function(shellIndex:Number):Void {
+    var world:MovieClip=_root.gameworld;
+    if(world==null)return;
+    var dir:Number=this.方向=="左"?-1:1;
+    var target:MovieClip=world[this.攻击目标];
+    var hasTarget:Boolean=target!=null && target.hp>0 && target!==this && !isNaN(target._x);
+    var baseX:Number=hasTarget?target._x:(this._x+dir*260);
+    var baseZ:Number=(hasTarget && !isNaN(target.Z轴坐标))?target.Z轴坐标:this.Z轴坐标;
+    var strikeX:Number=baseX;
+    var strikeZ:Number=baseZ;
+    if(shellIndex>0){
+        var jitterX:Number=Math.round((Math.random()-0.5)*50);
+        var jitterZ:Number=Math.round((Math.random()-0.5)*32);
+        if((shellIndex&1)==0){
+            var ring:Number=Math.floor(shellIndex/2);
+            var side:Number=(ring&1)==0?dir:-dir;
+            strikeX=baseX+side*(45+(ring%3)*40)+jitterX;
+            strikeZ=baseZ+((ring%3)-1)*22+jitterZ;
+        }else{
+            var fan:Number=((shellIndex%3)-1)*140+dir*((shellIndex&2)?70:-50);
+            strikeX=baseX+fan+jitterX;
+            strikeZ=baseZ+(((shellIndex+1)%3)-1)*28+jitterZ;
+        }
+    }
+    if(!isNaN(_root.Xmin) && !isNaN(_root.Xmax))strikeX=Math.max(_root.Xmin+60,Math.min(_root.Xmax-60,strikeX));
+    if(!isNaN(_root.Ymin) && !isNaN(_root.Ymax))strikeZ=Math.max(_root.Ymin+20,Math.min(_root.Ymax-20,strikeZ));
+    this.elderCombatStats.phase_antiairShells++;
+    this.elderSpawnFallingShell(shellIndex,strikeX,strikeZ,this.elderTuning.phaseAntiairShellPower,this.elderTuning.phaseAntiairShellDelay,true);
+};
+elderUpdateSweepBeam=function(body:MovieClip):Void {
+    var owner:Object=this.elderAttackOwner;
+    if(owner==null || owner.action!="phase_sweepBeam")return;
+    var frame:Number=body._currentframe;
+    var target:MovieClip=_root.gameworld[owner.target];
+    var hasTarget:Boolean=target!=null && target.hp>0 && target._parent===this._parent && !isNaN(target._x);
+    if(frame<=33 && hasTarget && !owner.sweepInitialized){
+        this.elderSetFacing(target._x<this._x?"左":"右");
+    }
+    if(frame<34 || owner.sweepFinished){
+        owner.sweepAngle=0;
+        if(body.elderHeavyBeamRay!=null){
+            body.elderHeavyBeamRay._xscale=100;
+            body.elderHeavyBeamRay._yscale=100;
+            body.elderHeavyBeamRay._rotation=0;
+        }
+        return;
+    }
+    if(!owner.sweepInitialized){
+        owner.sweepInitialized=true;
+        if(hasTarget)this.elderSetFacing(target._x<this._x?"左":"右");
+        owner.sweepInitDir=this.方向=="左"?-1:1;
+        owner.sweepWorldAngle=35;
+        owner.sweepTotalRotation=0;
+        owner.sweepDirChanges=0;
+        this.elderPlaySfx("黑红激光.wav");
+        this.elderPlaySfx("Itinerantlaser.wav");
+    }else{
+        var step:Number=this.elderTuning.phaseSweepAngularSpeed;
+        owner.sweepWorldAngle-=step;
+        owner.sweepTotalRotation+=step;
+    }
+    var rad:Number=owner.sweepWorldAngle*Math.PI/180;
+    var wx:Number=owner.sweepInitDir*Math.cos(rad);
+    var wy:Number=Math.sin(rad);
+    var newDir:String=wx<0?"左":"右";
+    if(newDir!=this.方向){
+        this.elderSetFacing(newDir);
+        owner.sweepDirChanges=(owner.sweepDirChanges|0)+1;
+        this.elderPlaySfx("机械关节转动.wav");
+        _root.效果("铁枪能量弹火花",this._x,this._y-65,100);
+    }
+    if((owner.sweepTick&1)==0){
+        var curDir:Number=this.方向=="左"?-1:1;
+        var scorchDist:Number=130+Math.abs(wx)*420;
+        _root.效果("铁枪能量弹火花",this._x+curDir*scorchDist,this.Z轴坐标+wy*85,100);
+    }
+    this.elderCombatStats.phase_sweepBeamRot=owner.sweepTotalRotation;
+    this.elderCombatStats.phase_sweepBeamTurns=owner.sweepDirChanges;
+    owner.sweepAngle=Math.atan2(wy,Math.abs(wx))*180/Math.PI;
+    if(body.elderHeavyBeamRay!=null){
+        body.elderHeavyBeamRay._xscale=100;
+        body.elderHeavyBeamRay._yscale=100;
+        body.elderHeavyBeamRay._rotation=owner.sweepAngle;
+    }
+};
+elderFireSweepBeamPulse=function(body:MovieClip,frame:Number):Void {
+    var owner:Object=this.elderAttackOwner,world:MovieClip=_root.gameworld;
+    if(owner==null || world==null)return;
+    var pulseKey:Number=owner.sweepTick!=undefined?owner.sweepTick:frame;
+    if(owner.lastSweepPulseKey!=undefined && owner.lastSweepPulseKey>=pulseKey)return;
+    owner.lastSweepPulseKey=pulseKey;
+    owner.lastHitFrame=frame;
+    this.elderHitCount++;
+    this.elderCombatStats.phase_sweepBeamContacts++;
+    var rayClip:MovieClip=body.elderHeavyBeamRay;
+    var muzzle:Object={x:-7.24234,y:0};
+    var tip:Object={x:773.58766,y:0};
+    var topPt:Object={x:383.17266,y:-48};
+    var botPt:Object={x:383.17266,y:48};
+    if(rayClip!=null){
+        rayClip.localToGlobal(muzzle);world.globalToLocal(muzzle);
+        rayClip.localToGlobal(tip);world.globalToLocal(tip);
+        rayClip.localToGlobal(topPt);world.globalToLocal(topPt);
+        rayClip.localToGlobal(botPt);world.globalToLocal(botPt);
+    }else{
+        var angle:Number=Number(owner.sweepAngle);
+        if(isNaN(angle))angle=0;
+        var rad:Number=angle*Math.PI/180;
+        var cosA:Number=Math.cos(rad),sinA:Number=Math.sin(rad);
+        muzzle={x:110.3+(-7.24234)*cosA,y:-32.8+(-7.24234)*sinA};
+        tip={x:110.3+773.58766*cosA,y:-32.8+773.58766*sinA};
+        topPt={x:110.3+383.17266*cosA-(-48)*sinA,y:-32.8+383.17266*sinA+(-48)*cosA};
+        botPt={x:110.3+383.17266*cosA-48*sinA,y:-32.8+383.17266*sinA+48*cosA};
+        body.localToGlobal(muzzle);world.globalToLocal(muzzle);
+        body.localToGlobal(tip);world.globalToLocal(tip);
+        body.localToGlobal(topPt);world.globalToLocal(topPt);
+        body.localToGlobal(botPt);world.globalToLocal(botPt);
+    }
+    var dx:Number=tip.x-muzzle.x,dy:Number=tip.y-muzzle.y;
+    var beamLen:Number=Math.sqrt(dx*dx+dy*dy);
+    if(!(beamLen>1))beamLen=780.83;
+    var tx:Number=botPt.x-topPt.x,ty:Number=botPt.y-topPt.y;
+    var beamThick:Number=Math.sqrt(tx*tx+ty*ty);
+    if(!(beamThick>1))beamThick=96;
+    var cx:Number=(muzzle.x+tip.x)*0.5,cy:Number=(muzzle.y+tip.y)*0.5;
+    var worldRot:Number=Math.atan2(dy,dx)*180/Math.PI;
+    var halfLen:Number=beamLen*0.5,halfThick:Number=beamThick*0.5;
+    var target:MovieClip=world[owner.target];
+    var hasTarget:Boolean=target!=null && target.hp>0 && target._parent===this._parent && !isNaN(target._x);
+    var beamZ:Number=(hasTarget && !isNaN(target.Z轴坐标) && Math.abs(target.Z轴坐标-this.Z轴坐标)<=220)?target.Z轴坐标:this.Z轴坐标;
+    var depth:Number=world.getNextHighestDepth();
+    var clip:MovieClip=world.createEmptyMovieClip("cf6ElderSweepBeam"+depth+"_"+this.elderClock,depth);
+    clip._x=cx;
+    clip._y=cy;
+    clip._rotation=worldRot;
+    var area:MovieClip=clip.createEmptyMovieClip("area",1);
+    area.beginFill(0,0);area.moveTo(-halfLen,-halfThick);area.lineTo(halfLen,-halfThick);area.lineTo(halfLen,halfThick);area.lineTo(-halfLen,halfThick);area.lineTo(-halfLen,-halfThick);area.endFill();
+    area._visible=false;
+    clip.age=0;
+    clip.onEnterFrame=function():Void {
+        if(_root.暂停)return;
+        this.age++;
+        if(this.age>=2)this.removeMovieClip();
+    };
+    var pulseIdx:Number=this.elderCombatStats.phase_sweepBeamContacts-1;
+    if((pulseIdx%3)==0)this.elderPlaySfx("CF6_0992.mp3");
+    var power:Number=1.2+Math.min(6,pulseIdx)*0.1;
+    var bullet:Object={声音:"CF6_0992.mp3",霰弹值:1,子弹散射度:0,发射效果:"",
+        子弹种类:"近战子弹",子弹威力:this.空手攻击力*power,子弹速度:0,
+        Z轴攻击范围:220,击中地图效果:"",发射者:this._name,
+        shootX:muzzle.x,shootY:muzzle.y,shootZ:beamZ,_rotation:worldRot,
+        击倒率:10,击中后子弹的效果:"空手攻击火花",
+        水平击退速度:4,垂直击退速度:0,区域定位area:area,
+        伤害类型:"魔法",魔法伤害属性:"波",
+        elderShooterIdentity:this.elderIdentity,
+        elderBeamAction:"phase_sweepBeam",
+        elderBeamPower:power,
+        cf6SweepRay:{ox:muzzle.x,oy:muzzle.y,ex:tip.x,ey:tip.y,cx:cx,cy:cy,len:beamLen,thick:beamThick,rot:worldRot},
+        cf6ElderSweepBeam:true};
+    bullet.击中时触发函数=function():Void {
+        if(this.elderBeamContactRecorded===true)return;
+        this.elderBeamContactRecorded=true;
+        var shooter:MovieClip=_root.gameworld[this.发射者];
+        if(!(shooter.hp>0) || shooter.elderIdentity!==this.elderShooterIdentity)return;
+        shooter.elderCombatStats.phase_sweepBeamHits++;
+        shooter.elderCombatStats.phase_sweepBeamHitPower+=this.elderBeamPower;
+    };
+    var mc:Object=_root.子弹区域shoot传递(bullet);
+    if(mc!=null){
+        mc._rotation=worldRot;
+        mc.flags=(mc.flags|0)|2;
+        var polyClass:Function=_global.org!=null && _global.org.flashNight!=null && _global.org.flashNight.arki!=null && _global.org.flashNight.arki.bullet!=null && _global.org.flashNight.arki.bullet.BulletComponent!=null && _global.org.flashNight.arki.bullet.BulletComponent.Collider!=null?_global.org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider:null;
+        if(typeof polyClass=="function"){
+            var poly:Object=new polyClass();
+            poly._currentFrame=-1;
+            poly.updateFromBullet(mc,area);
+            poly._currentFrame=-1;
+            poly.checkCollision=function(other:Object,zOff:Number):Object {
+                var res:Object=polyClass.prototype.checkCollision.call(this,other,zOff);
+                if(res!=null && res.isColliding)res.overlapRatio=1;
+                return res;
+            };
+            poly.getFactory=function():Object {
+                return {releaseCollider:function():Void {}};
+            };
+            mc.polygonCollider=poly;
+        }
+    }
+};
+elderClearZodiacAstrolabe=function():Void {
+    if(this.elderZodiacAstrolabe!=null){
+        if(this.elderZodiacAstrolabe.zodiacFx!=null){
+            this.elderZodiacAstrolabe.zodiacFx.removeMovieClip();
+            this.elderZodiacAstrolabe.zodiacFx=null;
+        }
+        this.elderZodiacAstrolabe.removeMovieClip();
+        this.elderZodiacAstrolabe=null;
+    }
+    if(this.cf6ElderZodiacFx!=null){
+        this.cf6ElderZodiacFx.removeMovieClip();
+        this.cf6ElderZodiacFx=null;
+    }
+};
+elderUpdateZodiacAstrolabe=function():MovieClip {
+    var world:MovieClip=_root.gameworld;
+    if(world==null)return null;
+    var astro:MovieClip=this.elderZodiacAstrolabe;
+    if(astro==null || astro._parent!==world){
+        var depth:Number=world.getNextHighestDepth();
+        astro=world.createEmptyMovieClip("cf6ElderZodiacAstrolabe_"+depth+"_"+this.elderClock,depth);
+        var wheel:MovieClip=astro.createEmptyMovieClip("outerWheel",1);
+        var rOut:Number=148,rIn:Number=112;
+        wheel.lineStyle(2.5,0xFFCC44,85);
+        wheel.moveTo(rOut,0);
+        for(var s:Number=1;s<=36;s++){
+            var a1:Number=s*10*Math.PI/180;
+            wheel.lineTo(Math.cos(a1)*rOut,Math.sin(a1)*rOut);
+        }
+        wheel.lineStyle(1.8,0x00EEFF,75);
+        wheel.moveTo(rIn,0);
+        for(s=1;s<=36;s++){
+            var a2:Number=s*10*Math.PI/180;
+            wheel.lineTo(Math.cos(a2)*rIn,Math.sin(a2)*rIn);
+        }
+        for(var h:Number=0;h<12;h++){
+            var hr:Number=h*30*Math.PI/180;
+            wheel.lineStyle(1.5,0xFFEE88,70);
+            wheel.moveTo(Math.cos(hr)*rIn,Math.sin(hr)*rIn);
+            wheel.lineTo(Math.cos(hr)*rOut,Math.sin(hr)*rOut);
+            var hrNext:Number=((h+5)%12)*30*Math.PI/180;
+            wheel.lineStyle(1.0,0x66CCFF,45);
+            wheel.moveTo(Math.cos(hr)*rIn,Math.sin(hr)*rIn);
+            wheel.lineTo(Math.cos(hrNext)*rIn,Math.sin(hrNext)*rIn);
+        }
+        var hex:MovieClip=astro.createEmptyMovieClip("innerHex",2);
+        var colors:Array=[0xFF6622,0xFF2255,0x00EEFF,0xFFCC33];
+        for(var t:Number=0;t<4;t++){
+            hex.lineStyle(2.2,colors[t],80);
+            for(var v:Number=0;v<=3;v++){
+                var vr:Number=(t*30+v*120)*Math.PI/180;
+                var vx:Number=Math.cos(vr)*rIn,vy:Number=Math.sin(vr)*rIn;
+                if(v==0)hex.moveTo(vx,vy);else hex.lineTo(vx,vy);
+            }
+        }
+        var beacons:MovieClip=astro.createEmptyMovieClip("beacons",3);
+        for(h=0;h<12;h++){
+            var br:Number=h*30*Math.PI/180;
+            var node:MovieClip=beacons.createEmptyMovieClip("node"+h,h+1);
+            node._x=Math.cos(br)*130;
+            node._y=Math.sin(br)*92;
+            var c:Number=colors[h%4];
+            node.lineStyle(1.8,0xFFFFFF,95);
+            node.beginFill(c,85);
+            node.moveTo(0,-11);node.lineTo(8,0);node.lineTo(0,11);node.lineTo(-8,0);node.lineTo(0,-11);
+            node.endFill();
+            node._alpha=75;
+        }
+        var zFx:MovieClip=this.cf6ZodiacTemplate!=null?this.cf6ZodiacTemplate.duplicateMovieClip("cf6ElderZodiacFx",1590):null;
+        if(zFx!=null){
+            zFx._visible=true;zFx._x=0;zFx._y=-68;
+            zFx._xscale=(this._xscale<0)?-100:100;zFx._yscale=100;
+            zFx.gotoAndStop(2);
+            for(var zh:Number=0;zh<12;zh++){
+                if(zFx["sign"+zh]!=null){
+                    zFx["sign"+zh].gotoAndStop(1+zh);
+                    zFx["sign"+zh]._xscale=zFx["sign"+zh]._yscale=38;
+                    zFx["sign"+zh]._alpha=80;
+                }
+            }
+            if(zFx.activeSign!=null){zFx.activeSign.gotoAndStop(1);zFx.activeSign._xscale=zFx.activeSign._yscale=85;zFx.activeSign._alpha=92;}
+            if(zFx.bannerSign!=null){zFx.bannerSign.gotoAndStop(1);zFx.bannerSign._xscale=zFx.bannerSign._yscale=65;zFx.bannerSign._alpha=96;}
+        }
+        astro.zodiacFx=zFx;
+        astro.shooterName=this._name;
+        astro.shooterIdentity=this.elderIdentity;
+        astro.onUnload=function():Void {
+            if(this.zodiacFx!=null){
+                this.zodiacFx.removeMovieClip();
+                this.zodiacFx=null;
+            }
+        };
+        astro.onEnterFrame=function():Void {
+            if(_root.暂停)return;
+            var shooter:MovieClip=_root.gameworld[this.shooterName];
+            if(shooter==null || shooter._parent!==_root.gameworld || shooter.elderIdentity!==this.shooterIdentity || !(shooter.hp>0) || shooter.elderAttackOwner==null || shooter.elderAttackOwner.action!="phase_pummel"){
+                if(this.zodiacFx!=null){
+                    this.zodiacFx.removeMovieClip();
+                    this.zodiacFx=null;
+                }
+                this.removeMovieClip();
+                return;
+            }
+            this._x=shooter._x;
+            this._y=shooter._y-68;
+            this.outerWheel._rotation+=1.8;
+            this.innerHex._rotation-=2.6;
+            for(var bi:Number=0;bi<12;bi++){
+                var bn:MovieClip=this.beacons["node"+bi];
+                if(bn!=null && bn._xscale>100){
+                    bn._xscale=bn._yscale=Math.max(100,bn._xscale-18);
+                    bn._alpha=Math.max(70,bn._alpha-4);
+                }
+            }
+            if(this.zodiacFx!=null){
+                this.zodiacFx._xscale=(shooter._xscale<0)?-100:100;
+                if(this.zodiacFx.wheelArt!=null)this.zodiacFx.wheelArt._rotation+=1.5;
+                if(this.zodiacFx.activeSign!=null && this.zodiacFx.activeSign._xscale>85){
+                    this.zodiacFx.activeSign._xscale=this.zodiacFx.activeSign._yscale=Math.max(85,this.zodiacFx.activeSign._xscale-6);
+                }
+                if(this.zodiacFx.bannerSign!=null && this.zodiacFx.bannerSign._xscale>65){
+                    this.zodiacFx.bannerSign._xscale=this.zodiacFx.bannerSign._yscale=Math.max(65,this.zodiacFx.bannerSign._xscale-5);
+                }
+                for(var zi:Number=0;zi<12;zi++){
+                    var zs:MovieClip=this.zodiacFx["sign"+zi];
+                    if(zs!=null && zs._xscale>38){
+                        zs._xscale=zs._yscale=Math.max(38,zs._xscale-6);
+                        zs._alpha=Math.max(80,zs._alpha-3);
+                    }
+                }
+            }
+        };
+        this.elderZodiacAstrolabe=astro;
+        this.elderPlaySfx("星座轮盘转动.wav");
+    }
+    astro._x=this._x;
+    astro._y=this._y-68;
+    return astro;
+};
+elderEmitPummelCluster=function(shootX:Number,shootY:Number,bulletType:String,muzzleFx:String,pellets:Number,spread:Number,speed:Number,angleOffset:Number,spiralR0:Number,spiralRmin:Number,spiralTurns:Number,delay:Number,span:Number,residualAngle:Number,trailGain:Number,pattern:Number,salvoIndex:Number,zodiacHouse:Number):Void {
+    this.elderCombatStats.phase_pummelMissiles++;
+    var pummelSfx:String=salvoIndex==1?"Itinerantmissile.wav":"铁血飞弹.mp3";
+    this.elderPlaySfx(pummelSfx);
+    var bullet:Object={声音:pummelSfx,霰弹值:pellets,子弹散射度:spread,
+        发射效果:muzzleFx,子弹种类:bulletType,
+        子弹威力:this.空手攻击力*this.elderTuning.phasePummelMissilePower,
+        子弹速度:speed,Z轴攻击范围:220,击中地图效果:"火花",
+        发射者:this._name,shootX:shootX,shootY:shootY,shootZ:shootY+68,
+        转换中间y:shootY,角度偏移:angleOffset,
+        击倒率:25,击中后子弹的效果:"铁枪能量弹火花",
+        水平击退速度:4,垂直击退速度:0,
+        伤害类型:"物理",
+        螺旋初半径:spiralR0,螺旋残留半径:spiralRmin,螺旋圈数:spiralTurns,
+        螺旋近景增粗:0.6,螺旋背面暗化:0.15,
+        聚拢延迟:delay,聚拢时长:span,收束残留角:residualAngle,拖尾扩散增益:trailGain,
+        cf6PummelPattern:pattern,cf6PummelSalvoIndex:salvoIndex,cf6ZodiacHouse:zodiacHouse,
+        cf6ActiveZodiacFrame:this.elderLastActiveZodiacFrame,
+        cf6ElderPummelMissile:true};
+    var mc:MovieClip=_root.子弹区域shoot传递(bullet);
+    if(mc!=null){
+        if(!isNaN(speed) && speed>0){
+            mc.xmov=(mc.xmov<0)?-speed:speed;
+        }
+        var cgMgr:Object=_global.org!=null && _global.org.flashNight!=null && _global.org.flashNight.arki!=null && _global.org.flashNight.arki.bullet!=null && _global.org.flashNight.arki.bullet.BulletComponent!=null && _global.org.flashNight.arki.bullet.BulletComponent.Chain!=null?_global.org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager:null;
+        if(cgMgr!=null && typeof cgMgr.findGroupByBullet=="function"){
+            var cg:Object=cgMgr.findGroupByBullet(mc);
+            if(cg!=null)cg.余弦值=0;
+        }
+        mc.cf6PummelAge=0;
+        var origUpdateMovement:Function=mc.updateMovement;
+        if(typeof origUpdateMovement=="function"){
+            mc.updateMovement=function(b:MovieClip):Void {
+                var target:MovieClip=b!=null?b:this;
+                target.cf6PummelAge=(target.cf6PummelAge|0)+1;
+                if(target.cf6PummelAge<=20){
+                    var px:Number=target._x,py:Number=target._y;
+                    origUpdateMovement.call(target,target);
+                    var vx:Number=target._x-px,vy:Number=target._y-py;
+                    if((vx*vx+vy*vy)>0.01){
+                        target.cf6LockVX=vx;
+                        target.cf6LockVY=vy;
+                    }
+                }else{
+                    var lvx:Number=Number(target.cf6LockVX),lvy:Number=Number(target.cf6LockVY);
+                    if(isNaN(lvx) || isNaN(lvy)){
+                        var rad:Number=(Number(target._rotation)||0)*Math.PI/180;
+                        var spd:Number=Number(target.子弹速度)||14;
+                        lvx=Math.cos(rad)*spd;
+                        lvy=Math.sin(rad)*spd;
+                        target.cf6LockVX=lvx;
+                        target.cf6LockVY=lvy;
+                    }
+                    target._x+=lvx;
+                    target._y+=lvy;
+                    if(!isNaN(target.flightZOffset))target.Z轴坐标=target._y+target.flightZOffset;
+                }
+            };
+        }
+        var origPreCheck:Function=mc.onEnterFrame;
+        if(typeof origPreCheck=="function"){
+            mc.onEnterFrame=function():Boolean {
+                var r:Boolean=origPreCheck.call(this);
+                this.stateFlags&=~32;
+                return r;
+            };
+        }
+        mc.shouldDestroy=function(target:MovieClip):Boolean {
+            if(target.cf6PummelAge>=42)return true;
+            var dx:Number=target.shootX-target._x;
+            var dy:Number=target.shootY-target._y;
+            return (dx>720 || dx<-720 || dy>520 || dy<-520);
+        };
+    }
+};
+elderEmitZodiacHouse=function(houseIdx:Number,pellets:Number,pattern:Number,salvoIndex:Number):Void {
+    var h:Number=((houseIdx%12)+12)%12;
+    var astro:MovieClip=this.elderUpdateZodiacAstrolabe();
+    var activeSignFrame:Number=0;
+    if(astro!=null){
+        if(astro.beacons!=null && astro.beacons["node"+h]!=null){
+            var bn:MovieClip=astro.beacons["node"+h];
+            bn._xscale=bn._yscale=220;
+            bn._alpha=100;
+        }
+        if(astro.zodiacFx!=null){
+            var zFx:MovieClip=astro.zodiacFx;
+            if(zFx.activeSign!=null){
+                zFx.activeSign.gotoAndStop(1+h);
+                zFx.activeSign._xscale=zFx.activeSign._yscale=115;
+                zFx.activeSign._alpha=100;
+                activeSignFrame=zFx.activeSign._currentframe;
+            }
+            if(zFx.bannerSign!=null){
+                zFx.bannerSign.gotoAndStop(1+h);
+                zFx.bannerSign._xscale=zFx.bannerSign._yscale=90;
+                zFx.bannerSign._alpha=100;
+            }
+            if(zFx["sign"+h]!=null){
+                zFx["sign"+h].gotoAndStop(1+h);
+                zFx["sign"+h]._xscale=zFx["sign"+h]._yscale=68;
+                zFx["sign"+h]._alpha=100;
+            }
+        }
+    }
+    this.elderLastActiveZodiacFrame=activeSignFrame;
+    var worldDeg:Number=h*30;
+    var rad:Number=worldDeg*Math.PI/180;
+    var shootX:Number=this._x+Math.cos(rad)*130;
+    var shootY:Number=(this._y-68)+Math.sin(rad)*92;
+    var angleOffset:Number=this.方向=="左"?(180-worldDeg):worldDeg;
+    var elem:Number=h%4;
+    _root.效果("铁枪能量弹火花",shootX,shootY,100);
+    if(elem==0){
+        this.elderEmitPummelCluster(shootX,shootY,"横向拖尾追踪联弹-铁枪能量子弹","发射器枪火",pellets,16,12,angleOffset,26,6,2.8,4,22,3.0,1.0,pattern,salvoIndex,h);
+    }else if(elem==1){
+        this.elderEmitPummelCluster(shootX,shootY,"横向拖尾追踪联弹-红色针弹","反器材枪火",pellets,12,22,angleOffset,18,4,3.2,2,16,2.0,0.9,pattern,salvoIndex,h);
+    }else if(elem==2){
+        this.elderEmitPummelCluster(shootX,shootY,"横向拖尾追踪联弹-无壳穿刺子弹","发射器枪火",pellets,15,14,angleOffset,24,6,2.6,5,20,3.5,1.0,pattern,salvoIndex,h);
+    }else{
+        this.elderEmitPummelCluster(shootX,shootY,"横向拖尾追踪联弹-加强普通子弹","发射器枪火",pellets,14,17,angleOffset,20,5,2.4,3,18,4.0,0.95,pattern,salvoIndex,h);
+    }
+};
+elderFirePummelMissile=function(body:MovieClip):Void {
+    var world:MovieClip=_root.gameworld;
+    if(world==null)return;
+    var dir:Number=this.方向=="左"?-1:1;
+    var pose:Object=this.elderSlamMuzzlePose(body);
+    var shootX:Number,shootY:Number;
+    if(pose!=null && pose.dx*dir>0.2){
+        shootX=pose.x;shootY=pose.y;
+    }else if(body.攻击点!=null){
+        var pt:Object={x:body.攻击点._x,y:body.攻击点._y};
+        body.localToGlobal(pt);world.globalToLocal(pt);
+        shootX=pt.x;shootY=pt.y;
+    }else{
+        shootX=this._x+dir*145;shootY=this._y-75;
+    }
+    _root.效果("发射器枪火",shootX,shootY,this._xscale);
+    var owner:Object=this.elderAttackOwner;
+    var punchIndex:Number=(owner!=null && owner.pummelPunchIndex!=undefined)?owner.pummelPunchIndex:0;
+    if(owner!=null)owner.pummelPunchIndex=punchIndex+1;
+    var pattern:Number=punchIndex%8;
+    var loopIdx:Number=(owner!=null && owner.pummelLoop!=undefined)?owner.pummelLoop:Math.floor(punchIndex/2);
+    var isSecondPunch:Boolean=(punchIndex&1)!=0;
+    var hMain:Number=((loopIdx*3+(isSecondPunch?2:0))%12+12)%12;
+    var hSub:Number=((hMain+(isSecondPunch?7:5))%12+12)%12;
+    var pellets:Number=this.elderTuning.phasePummelPellets;
+    this.elderEmitZodiacHouse(hSub,pellets,pattern,0);
+    this.elderEmitZodiacHouse(hMain,pellets,pattern,1);
+};
+elderSpawnPhaseQuakeFx=function(warnTicks:Number):Void {
+    var world:MovieClip=_root.gameworld;
+    if(world==null)return;
+    var depth:Number=world.getNextHighestDepth();
+    var clip:MovieClip=world.createEmptyMovieClip("cf6ElderQuakeWarn"+depth+"_"+this.elderClock,depth);
+    clip._x=this._x;clip._y=this.Z轴坐标;
+    var fxDepth:Number=1550+(this.elderClock&63);
+    var fx:MovieClip=this.cf6BombTemplate!=null?this.cf6BombTemplate.duplicateMovieClip("cf6ElderQuakeFx_"+fxDepth,fxDepth):null;
+    if(fx!=null){
+        fx._visible=true;fx._x=0;fx._y=0;fx._xscale=260;fx._yscale=140;fx.gotoAndStop(2);
+    }
+    clip.fx=fx;clip.age=0;clip.warnTicks=warnTicks>0?warnTicks:24;
+    clip.shooterName=this._name;clip.shooterIdentity=this.elderIdentity;
+    clip.onUnload=function():Void {
+        if(this.fx!=null){this.fx.removeMovieClip();this.fx=null;}
+    };
+    clip.onEnterFrame=function():Void {
+        if(_root.暂停)return;
+        this.age++;
+        var shooter:MovieClip=_root.gameworld[this.shooterName];
+        var valid:Boolean=shooter!=null && shooter._parent===_root.gameworld && shooter.elderIdentity===this.shooterIdentity && shooter.hp>0;
+        if(!valid || this.age>this.warnTicks+10){
+            if(this.fx!=null){this.fx.removeMovieClip();this.fx=null;}
+            this.removeMovieClip();return;
+        }
+        if(this.fx!=null){
+            if(this.age<this.warnTicks)this.fx.gotoAndStop(2+((this.age-1)%12));
+            else this.fx.gotoAndStop(Math.min(35,26+(this.age-this.warnTicks)));
+        }
+    };
+};
+elderFirePhaseQuake=function(body:MovieClip):Void {
+    var world:MovieClip=_root.gameworld;
+    if(world==null)return;
+    var strikeX:Number=this._x,strikeZ:Number=this.Z轴坐标;
+    var depth:Number=world.getNextHighestDepth();
+    var clip:MovieClip=world.createEmptyMovieClip("cf6ElderQuake"+depth+"_"+this.elderClock,depth);
+    clip._x=strikeX;clip._y=strikeZ;
+    var area:MovieClip=clip.createEmptyMovieClip("area",1);
+    // 地面震地波判定高度 [-24, +20]：Z轴补偿后全图地面目标必命中，喷气背包升空 (>=36px) 可稳定躲避。
+    area.beginFill(0,0);area.moveTo(-1800,-24);area.lineTo(1800,-24);area.lineTo(1800,20);area.lineTo(-1800,20);area.lineTo(-1800,-24);area.endFill();
+    area._visible=false;
+    clip.age=0;
+    clip.onEnterFrame=function():Void {
+        if(_root.暂停)return;
+        this.age++;
+        if(this.age>=3)this.removeMovieClip();
+    };
+    for(var wave:Number=-3;wave<=3;wave++){
+        _root.效果("火花",strikeX+wave*180,strikeZ,160);
+        _root.效果("小烟雾",strikeX+wave*180,strikeZ,160);
+    }
+    this.elderPlaySfx("全力砸地.wav");
+    this.elderPlaySfx("地震1.wav");
+    var bullet:Object={声音:"地震1.wav",霰弹值:1,子弹散射度:0,发射效果:"",
+        子弹种类:"近战子弹",子弹威力:this.空手攻击力*this.elderTuning.phaseQuakePower,子弹速度:0,
+        Z轴攻击范围:600,击中地图效果:"火花",发射者:this._name,
+        shootX:strikeX,shootY:strikeZ,shootZ:strikeZ,
+        击倒率:0,击中后子弹的效果:"空手攻击火花",
+        水平击退速度:18,垂直击退速度:-9,区域定位area:area,
+        伤害类型:"物理",
+        cf6ElderPhaseQuake:true};
+    _root.子弹区域shoot传递(bullet);
+};
 elderCanAct=function(body:MovieClip):Boolean {
     var owner:Object=this.elderAttackOwner;
     return !_root.暂停 && this.hp>0 && !this.硬直中 && owner!=null && owner.active
@@ -446,9 +1082,22 @@ elderContactDue=function(frame:Number):Boolean {
     return false;
 };
 elderStrike=function(body:MovieClip,point:MovieClip):Void {
-    if(!this.elderCanAct(body) || point._parent!==body || point.elderToken!==body.elderToken
-        || point.elderHitFrame!=body._currentframe || !this.elderContactDue(body._currentframe))return;
+    if(!this.elderCanAct(body))return;
     var owner:Object=this.elderAttackOwner,action:String=owner.action;
+    if(action=="phase_sweepBeam"){
+        return;
+    }
+    if(action=="phase_quake"){
+        if(this.elderContactDue(body._currentframe) && owner.lastHitFrame<body._currentframe){
+            owner.lastHitFrame=body._currentframe;
+            this.elderHitCount++;
+            this.elderCombatStats.phase_quakeContacts++;
+            this.elderFirePhaseQuake(body);
+        }
+        return;
+    }
+    if(point._parent!==body || point.elderToken!==body.elderToken
+        || point.elderHitFrame!=body._currentframe || !this.elderContactDue(body._currentframe))return;
     var isBurst:Boolean=(action=="burst" || action=="retreat_burst");
     if(action=="heavyBeam" && !this.elderHeavyTargetValid(owner))return;
     if(owner.lastHitFrame>=body._currentframe || (!isBurst && point.area==null))return;
@@ -526,6 +1175,9 @@ elderStrike=function(body:MovieClip,point:MovieClip):Void {
     var ruleAShielded:Boolean=this.elderForm=="robot" && action=="slam" && !owner.slamAntiairChecked && this.elderHasActiveShield();
     if(action=="slam")owner.slamAntiairChecked=true;
     var emitted:MovieClip=_root.子弹区域shoot传递(bullet);
+    if(action=="phase_pummel"){
+        this.elderFirePummelMissile(body);
+    }
     if(ruleAShielded){
         this.elderFireSlamAntiair(body);
         this.elderSpawnFallingShell(0);
@@ -656,6 +1308,20 @@ elderComboReady=function(target:MovieClip,dx:Number,dz:Number,height:Number):Boo
 
 elderFinishAttack=function(body:MovieClip):Void {
     if(!this.elderCanAct(body))return;
+    var owner:Object=this.elderAttackOwner;
+    if(owner!=null && owner.action=="phase_pummel" && owner.pummelLoop+1<this.elderTuning.phasePummelLoops){
+        owner.pummelLoop++;
+        owner.lastHitFrame=0;
+        owner.lastClockPulseFrame=0;
+        this.elderPlaySfx("星座轮盘转动.wav");
+        var pummelTarget:MovieClip=_root.gameworld[owner.target];
+        if(pummelTarget!=null && pummelTarget.hp>0 && !isNaN(pummelTarget._x))
+            this.elderSetFacing(pummelTarget._x<this._x?"左":"右");
+        body.gotoAndStop(2);
+        return;
+    }
+    var isPhase:Boolean=owner!=null && owner.spec.isPhaseMove===true;
+    if(isPhase || this.elderInPhaseTransition)this.elderFinishPhaseTransition();
     this.elderCancelAttack();this.elderReadyAt=this.elderClock+this.elderTuning.recoveryFrames;
     this.动画完毕();
 };
@@ -664,6 +1330,42 @@ elderDeathFx=function(bit:Number):Void {
     this.elderFxMask|=bit;
     _root.效果("火花",this._x,this._y-80,this._xscale*1.4);
     _root.效果("小烟雾",this._x,this._y-80,this._xscale*1.4);
+};
+elderUpdateNuclearDeath=function(body:MovieClip):Void {
+    if(_root.暂停 || body!==this.man || this._parent!==_root.gameworld || this.cf6RobotDeathSpent!==true || this.elderNukeSpent===true || isNaN(this.hp) || this.hp>0)return;
+    if(body._currentframe<32)return;
+    this.elderNukeSpent=true;
+    var point:MovieClip=body.cf6DeathPoint!=null?body.cf6DeathPoint:this;
+    var nuke:Object=typeof _root.子弹属性初始化=="function"?_root.子弹属性初始化(point,"核弹爆炸",this):{};
+    if(nuke==null)nuke={};
+    var px:Number=this._x;
+    var pz:Number=!isNaN(this.Z轴坐标)?this.Z轴坐标:this._y;
+    if(body.cf6DeathPoint!=null && _root.gameworld!=null){
+        var pt:Object={x:body.cf6DeathPoint._x,y:body.cf6DeathPoint._y};
+        body.localToGlobal(pt);_root.gameworld.globalToLocal(pt);
+        if(!isNaN(pt.x))px=pt.x;
+    }
+    this.elderPlaySfx("爆破 拆除 大型 深埋 炸药 强力冲击波 09.mp3");
+    nuke.声音="爆破 拆除 大型 深埋 炸药 强力冲击波 09.mp3";
+    nuke.霰弹值=1;
+    nuke.子弹散射度=0;
+    nuke.发射效果="";
+    nuke.子弹种类="核弹爆炸";
+    nuke.子弹威力=this.空手攻击力*10;
+    nuke.子弹速度=0;
+    nuke.Z轴攻击范围=300;
+    nuke.击中地图效果="";
+    nuke.发射者=this._name;
+    nuke.shootX=px;
+    nuke.shootY=pz;
+    nuke.shootZ=pz;
+    nuke.击倒率=0.001;
+    nuke.子弹敌我属性=false;
+    nuke.友军伤害=true;
+    nuke.伤害类型="物理";
+    nuke.命中率=1000;
+    nuke.cf6ElderNuclearDeath=true;
+    _root.子弹区域shoot传递(nuke);
 };
 // 蓄能前段可缓慢对齐同一目标；普通束提前六帧、重束提前二十四帧锁定，并保持至持续射击结束。
 elderTrackBeam=function(body:MovieClip):Void {
@@ -685,9 +1387,16 @@ elderBodyTick=function(body:MovieClip):Void {
     if(body.elderMode=="phase"){this.elderTransformTick(body);return;}
     if(body.elderMode=="death"){
         if(this.elderForm=="robot" && !this.cf6RobotDeathTick(body))return;
+        if(this.elderForm=="robot")this.elderUpdateNuclearDeath(body);
         if(body._currentframe<body._totalframes)body.nextFrame();
         else if(this.elderForm=="robot")this.cf6FinishCorpse(body);
         return;
+    }
+    if(this.elderInPhaseTransition){
+        this.elderClearImpactControl();
+        if(this.elderActivePhaseAction!="" && (this.elderAttackOwner==null || !this.elderAttackOwner.active)){
+            this.elderBeginAttack(body,this.elderActivePhaseAction);
+        }
     }
     if(!(this.hp>0) || this.硬直中)return;
     if(body.elderMode=="attack"){
@@ -697,11 +1406,68 @@ elderBodyTick=function(body:MovieClip):Void {
             this.elderCancelAttack();this.动画完毕();return;
         }
         this.elderTrackBeam(body);
-        if(owner.ownsRigid && owner.action!="beam" && owner.action!="heavyBeam" && frame>owner.spec.hits[owner.spec.hits.length-1]){
+        if(owner.ownsRigid && !owner.spec.isPhaseMove && owner.action!="beam" && owner.action!="heavyBeam" && frame>owner.spec.hits[owner.spec.hits.length-1]){
             this.刚体=owner.previousRigid;owner.ownsRigid=false;
         }
-        if(owner.ownsImmune && frame>owner.spec.hits[owner.spec.hits.length-1]){
+        if(owner.ownsImmune && !owner.spec.isPhaseMove && frame>owner.spec.hits[owner.spec.hits.length-1]){
             this.免疫击退=owner.previousImmune;owner.ownsImmune=false;
+        }
+        if(owner.action=="phase_antiair"){
+            if(!owner.barrageFinished && (frame>=this.elderTuning.slamAntiairFrame || owner.barrageTick>0)){
+                var interval:Number=this.elderTuning.phaseAntiairInterval;
+                var totalShells:Number=this.elderTuning.phaseAntiairShellCount;
+                if((owner.barrageTick%interval)==0 && owner.shellsFired<totalShells){
+                    var aaTarget:MovieClip=_root.gameworld[owner.target];
+                    if(aaTarget!=null && aaTarget.hp>0 && !isNaN(aaTarget._x))
+                        this.elderSetFacing(aaTarget._x<this._x?"左":"右");
+                    this.elderFireSlamAntiair(body);
+                    this.elderSpawnPhaseBarrageShell(owner.shellsFired);
+                    owner.shellsFired++;
+                }
+                owner.barrageTick++;
+                if(owner.shellsFired>=totalShells){
+                    owner.barrageFinished=true;
+                    body.gotoAndStop(21);
+                    return;
+                }
+                body.gotoAndStop((owner.barrageTick&1)==0?20:19);
+                return;
+            }
+            if(frame>=71){this.elderFinishAttack(body);return;}
+        }
+        if(owner.action=="phase_sweepBeam"){
+            if(frame>=35 && !owner.sweepFinished){
+                if(owner.sweepTick==undefined)owner.sweepTick=0;
+                body.gotoAndStop(35+(owner.sweepTick%35));
+                this.elderUpdateSweepBeam(body);
+                var pulseInterval:Number=this.elderTuning.phaseSweepPulseInterval;
+                if((owner.sweepTick%pulseInterval)==0){
+                    this.elderFireSweepBeamPulse(body,body._currentframe);
+                }
+                owner.sweepTick++;
+                if(owner.sweepTick>=this.elderTuning.phaseSweepDuration){
+                    owner.sweepFinished=true;
+                    if(body.elderHeavyBeamRay!=null)body.elderHeavyBeamRay._rotation=0;
+                    body.gotoAndStop(71);
+                }
+                return;
+            }
+            this.elderUpdateSweepBeam(body);
+            if(frame>=106){this.elderFinishAttack(body);return;}
+        }
+        if(owner.action=="phase_quake"){
+            if(frame==22 && owner.quakeHold<this.elderTuning.phaseQuakeChargeHold){
+                if(!owner.quakeWarningSpawned){
+                    owner.quakeWarningSpawned=true;
+                    this.elderPlaySfx("Itinerant蓄力.wav");
+                    this.elderPlaySfx("霸体觉醒蓄力.wav");
+                    this.elderSpawnPhaseQuakeFx(this.elderTuning.phaseQuakeChargeHold+15);
+                }
+                if((owner.quakeHold&3)==0)_root.效果("火花",this._x,this._y-120,120);
+                owner.quakeHold++;
+                return;
+            }
+            if(frame>=71){this.elderFinishAttack(body);return;}
         }
         if(owner.action=="slam" && !owner.slamAntiairChecked && frame==this.elderTuning.slamAntiairFrame){
             owner.slamAntiairChecked=true;
@@ -714,6 +1480,32 @@ elderBodyTick=function(body:MovieClip):Void {
         if(this.elderContactDue(frame) && owner.lastHitFrame<frame){
             this.elderStrike(body,body.攻击点);
             if(owner.lastHitFrame<frame)return;
+        }
+        if(owner.action=="phase_pummel"){
+            this.elderUpdateZodiacAstrolabe();
+            if(frame==18 && owner.lastClockPulseFrame!=frame){
+                owner.lastClockPulseFrame=frame;
+                this.elderPlaySfx("星座轮盘转动.wav");
+                var loopStep:Number=owner.pummelLoop!=undefined?owner.pummelLoop:0;
+                var hMid:Number=((loopStep*3+1)%12+12)%12;
+                var patMid:Number=(loopStep*2+1)%8;
+                this.elderEmitZodiacHouse(hMid,this.elderTuning.phasePummelPellets,patMid,0);
+            }
+            if(frame>=40){
+                if(owner.pummelLoop+1<this.elderTuning.phasePummelLoops){
+                    owner.pummelLoop++;
+                    owner.lastHitFrame=0;
+                    owner.lastClockPulseFrame=0;
+                    this.elderPlaySfx("星座轮盘转动.wav");
+                    var pummelTarget:MovieClip=_root.gameworld[owner.target];
+                    if(pummelTarget!=null && pummelTarget.hp>0 && !isNaN(pummelTarget._x))
+                        this.elderSetFacing(pummelTarget._x<this._x?"左":"右");
+                    body.gotoAndStop(2);
+                    return;
+                }
+                this.elderFinishAttack(body);
+                return;
+            }
         }
         if(owner.action=="burst" && frame>=53){this.elderFinishAttack(body);return;}
         if(owner.action=="slam" && frame>=71){this.elderFinishAttack(body);return;}
@@ -796,6 +1588,13 @@ elderTick=function():Void {
         return;
     }
     if(this.elderForm=="robot")this.elderUpdateReactiveShield();
+    if(this.elderInPhaseTransition){
+        this.elderClearImpactControl();
+        if(this.elderActivePhaseAction!="" && this.man!=null && (this.elderAttackOwner==null || !this.elderAttackOwner.active)){
+            this.elderBeginAttack(this.man,this.elderActivePhaseAction);
+        }
+        return;
+    }
     var owner:Object=this.elderAttackOwner;
     if(owner!=null){
         if(this.状态!=owner.state || this.man.elderToken!==owner.token)this.elderCancelAttack();
@@ -845,7 +1644,7 @@ elderUpdateMovement=function():Void {
 行走=function():Void {
     if(_root.暂停)return;
     if(_root.控制目标==this._name && _root.控制目标全自动==false){_root.敌人函数.行走.call(this);return;}
-    if(!(this.hp>0) || this.浮空 || this.倒地 || this.硬直中 || this.elderAttackOwner!=null){this.elderClearMovement();return;}
+    if(!(this.hp>0) || this.浮空 || this.倒地 || this.硬直中 || this.elderAttackOwner!=null || this.elderInPhaseTransition){this.elderClearMovement();return;}
     if(this.状态!="空手站立" && this.状态!="空手行走" && this.状态!="空手跑")return;
     this.elderUpdateMovement();
     var target:MovieClip=_root.gameworld[this.攻击目标];
@@ -862,3 +1661,151 @@ elderUpdateMovement=function():Void {
     }
     this.状态改变(movingX || movingZ?(running?"空手跑":"空手行走"):"空手站立");
 };
+elderSetFacing=function(dir:String):Void {
+    if(dir!="左" && dir!="右")return;
+    var prevLock:Boolean=this.锁定方向===true;
+    this.锁定方向=false;
+    this.__elderAllowPhaseDirChange=true;
+    if(typeof this.__elderOrigChangeDir=="function")this.__elderOrigChangeDir(dir);
+    else this.方向改变(dir);
+    this.方向=dir;
+    if(!isNaN(this.缩放比例) && this.缩放比例>0){
+        this._xscale=dir=="左"?-this.缩放比例:this.缩放比例;
+    }
+    this.__elderAllowPhaseDirChange=false;
+    this.锁定方向=prevLock;
+};
+elderClearImpactControl=function():Void {
+    this.硬直中=false;this.浮空=false;this.倒地=false;this.水平速度=0;this.垂直速度=0;this.speed=0;
+    delete this.onEnterFrame;
+    this.刚体=true;this.免疫击退=true;this.锁定方向=true;
+    if(!isNaN(this.Z轴坐标))this._y=this.Z轴坐标;
+    var wheelClass:Object=_global.org!=null && _global.org.flashNight!=null && _global.org.flashNight.neur!=null && _global.org.flashNight.neur.ScheduleTimer!=null
+        ?_global.org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel:null;
+    if(wheelClass!=null && typeof wheelClass.I=="function"){
+        var wheel:Object=wheelClass.I();
+        if(wheel!=null && typeof wheel.removeTask=="function"){
+            if(this.flyID!=null){wheel.removeTask(this.flyID);this.flyID=null;}
+            if(this.stiffID!=null){wheel.removeTask(this.stiffID);this.stiffID=null;}
+            if(this.knockStiffID!=null){wheel.removeTask(this.knockStiffID);this.knockStiffID=null;}
+        }
+    }
+    delete this.被击硬直函数;
+};
+elderClearPhaseShield=function():Void {
+    if(this.elderPhaseShield>=0){
+        _root.护盾函数.移除护盾(this,this.elderPhaseShield);
+        this.elderPhaseShield=-1;
+        this.elderCombatStats.phaseShieldRemoved++;
+    }
+};
+elderGrantPhaseShield=function():Void {
+    this.elderClearPhaseShield();
+    var cap:Number=Number(this.hp满血值);
+    if(!(cap>0) || isNaN(cap))return;
+    var str:Number=Math.max(999999,cap*10);
+    this.elderPhaseShield=_root.护盾函数.添加临时护盾(this,cap,str,-1,"机械转阶段护盾",null);
+    if(this.elderPhaseShield>=0)this.elderCombatStats.phaseShieldGrants++;
+};
+elderTriggerPhaseTransition=function(moveName:String):Void {
+    var spec:Object=this.elderActions[moveName];
+    if(spec==undefined)return;
+    this.elderCancelAttack();
+    if(!this.elderInPhaseTransition){
+        this.elderPhasePrevRigid=(this.刚体===true);
+        this.elderPhasePrevImmune=(this.免疫击退===true);
+        this.elderPhasePrevLockDir=(this.锁定方向===true);
+    }
+    this.elderInPhaseTransition=true;
+    this.elderActivePhaseAction=moveName;
+    this.elderPendingPhaseAction=moveName;
+    this.elderCombatStats.phaseTransitions++;
+    this.elderClearMovement();
+    this.elderClearImpactControl();
+    this.elderGrantPhaseShield();
+    this.elderPlaySfx("Itinerantsheild.wav");
+    this.elderPlaySfx("霸体觉醒.wav");
+    if(this.状态!=spec.state){
+        this.__elderAllowPhaseStateChange=true;
+        this.状态改变(spec.state);
+        this.__elderAllowPhaseStateChange=false;
+    }else if(this.man!=null){
+        this.man.gotoAndStop(1);
+    }
+    if(this.man!=null && (this.elderAttackOwner==null || !this.elderAttackOwner.active || this.elderAttackOwner.action!=moveName)){
+        this.elderBeginAttack(this.man,moveName);
+    }
+};
+elderFinishPhaseTransition=function():Void {
+    if(!this.elderInPhaseTransition && this.elderPhaseShield<0 && this.elderActivePhaseAction=="")return;
+    var wasInPhase:Boolean=this.elderInPhaseTransition===true;
+    this.elderInPhaseTransition=false;
+    this.elderActivePhaseAction="";
+    this.elderPendingPhaseAction="";
+    this.elderClearPhaseShield();
+    this.elderClearZodiacAstrolabe();
+    if(this.man!=null && this.man.elderHeavyBeamRay!=null)this.man.elderHeavyBeamRay._rotation=0;
+    this.刚体=(this.elderPhasePrevRigid===true);
+    this.免疫击退=(this.elderPhasePrevImmune===true);
+    this.锁定方向=(this.elderPhasePrevLockDir===true);
+    if(wasInPhase && !this.elderRetired && this.状态!="消失" && this.hp>0 && this.elderPhase<=this.elderPhaseThresholds.length){
+        this.elderPhase++;
+        if(this.elderPhase<=this.elderPhaseThresholds.length){
+            this.elderPhaseFloorHp=Math.max(1,Math.ceil(Number(this.hp满血值)*this.elderPhaseThresholds[this.elderPhase-1]));
+        }else{
+            this.elderPhaseFloorHp=0;
+        }
+    }
+};
+elderGetHp=function():Number {
+    return this.__elderRawHp;
+};
+elderSetHp=function(val:Number):Void {
+    var num:Number=Number(val);
+    if(isNaN(num)){this.__elderRawHp=val;return;}
+    if(this.elderForm=="robot" && this.老头五阶段===true && !this.__elderBypassPhaseLock && !this.elderRetired && this.状态!="消失" && this.elderPhaseFloorHp>0){
+        if(num<=this.elderPhaseFloorHp && this.__elderRawHp>=this.elderPhaseFloorHp){
+            this.__elderRawHp=this.elderPhaseFloorHp;
+            if(!this.elderInPhaseTransition){
+                var moveIndex:Number=this.elderPhase-1;
+                var moveName:String=this.elderPhaseMoves[moveIndex];
+                if(moveName!=undefined)this.elderTriggerPhaseTransition(moveName);
+            }
+            return;
+        }
+    }
+    this.__elderRawHp=num;
+};
+elderInitPhaseLock=function():Void {
+    if(this.elderForm!="robot" || this.老头五阶段!==true)return;
+    var maxHp:Number=Number(this.hp满血值),curHp:Number=Number(this.hp);
+    if(!(maxHp>0) || isNaN(maxHp) || !(curHp>0) || isNaN(curHp))return;
+    this.__elderRawHp=curHp;
+    this.elderPhase=1;
+    this.elderPhaseFloorHp=0;
+    for(var i:Number=0;i<this.elderPhaseThresholds.length;i++){
+        var floorHp:Number=Math.max(1,Math.ceil(maxHp*this.elderPhaseThresholds[i]));
+        if(curHp>floorHp){
+            this.elderPhase=i+1;
+            this.elderPhaseFloorHp=floorHp;
+            break;
+        }
+        this.elderPhase=i+2;
+    }
+    if(this.__elderOrigChangeDir==undefined && typeof this.方向改变=="function"){
+        this.__elderOrigChangeDir=this.方向改变;
+        this.方向改变=function(dir:String):Void {
+            if(this.elderInPhaseTransition && !this.__elderAllowPhaseDirChange)return;
+            this.__elderOrigChangeDir(dir);
+        };
+    }
+    if(this.__elderOrigStiff==undefined && typeof this.移动钝感硬直=="function"){
+        this.__elderOrigStiff=this.移动钝感硬直;
+        this.移动钝感硬直=function(t:Number):Void {
+            if(this.elderInPhaseTransition){this.硬直中=false;return;}
+            this.__elderOrigStiff(t);
+        };
+    }
+    this.addProperty("hp",this.elderGetHp,this.elderSetHp);
+};
+if(this.elderForm=="robot" && this.老头五阶段===true)this.elderInitPhaseLock();

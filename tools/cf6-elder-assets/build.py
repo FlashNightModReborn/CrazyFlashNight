@@ -5,6 +5,7 @@ import copy
 import hashlib
 import importlib.util
 import json
+import math
 import sys
 from lxml import etree as E
 
@@ -61,6 +62,22 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 R8_BAKED = HERE / 'r8-baked'
+WUREN_ZODIAC_ICONS = ROOT / 'flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/12.星座轮盘/图标/十二星座图标.xml'
+WUREN_ZODIAC_WHEEL = ROOT / 'flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/12.星座轮盘/星盘/火象星盘.xml'
+ZODIAC_SLICES = [
+    (23, 36, 184.2, 22.9),   # 0: 白羊座 Aries
+    (36, 51, 261.4, 40.0),   # 1: 金牛座 Taurus
+    (51, 63, 318.7, 98.2),   # 2: 双子座 Gemini
+    (63, 86, 332.3, 174.3),  # 3: 巨蟹座 Cancer
+    (86, 107, 313.7, 249.4), # 4: 狮子座 Leo
+    (107, 110, 259.2, 302.5),# 5: 处女座 Virgo
+    (154, 157, 183.1, 325.2),# 6: 天秤座 Libra
+    (110, 136, 110.0, 306.9),# 7: 天蝎座 Scorpio
+    (136, 140, 55.2, 250.7), # 8: 射手座 Sagittarius
+    (140, 154, 33.6, 172.1), # 9: 摩羯座 Capricorn
+    (0, 11, 49.5, 93.2),     # 10: 水瓶座 Aquarius
+    (11, 23, 106.4, 42.5),   # 11: 双鱼座 Pisces
+]
 
 def verify_inputs():
     for archive in ARCHIVES.values():
@@ -82,6 +99,7 @@ def build_inputs():
     paths += [native.THINGS1/(old+'.xml') for old in sorted(H)]
     paths += death.input_paths()
     paths += sorted(R8_BAKED.glob('*.xml'))
+    paths += [WUREN_ZODIAC_ICONS, WUREN_ZODIAC_WHEEL]
     return [{'path':p.relative_to(ROOT).as_posix(),'sha256':sha(p)} for p in paths]
 
 def depth_layers(timeline, parts):
@@ -132,8 +150,8 @@ def make_r8_body(name, form, act_id, count, events=None, hits=None, top_layers=N
 # x=154; y=4 is the center of that plane in the immutable R7 native part.
 SLAM_MUZZLE_LOCAL = (154.0, 4.0)
 
-def slam_muzzle_layer(count, driver):
-    source = E.parse(str(R8_BAKED/'act__robot__1007.xml'), PARSER)
+def slam_muzzle_layer(count, driver, act_id='1007'):
+    source = E.parse(str(R8_BAKED/f'act__robot__{act_id}.xml'), PARSER)
     poses = {}
     for frame in source.findall('.//x:DOMFrame', NS):
         start, duration = int(frame.get('index', '0')), int(frame.get('duration', '1'))
@@ -204,6 +222,66 @@ onEnterFrame=updateElderShadow;updateElderShadow();stop();''',elements=[native.i
     wuren_quake=PREFIX+'特效/雾人/强震地'
     wuren_blue_cannon=PREFIX+'特效/雾人/蓝色炮击'
     wuren_blue_burst=PREFIX+'特效/雾人/蓝芒强击'
+    zodiac_sign_name=PREFIX+'特效/雾人/十二星座单图标'
+    zodiac_wheel_base_name=PREFIX+'特效/雾人/星盘底图'
+    zodiac_wheel_mc_name=PREFIX+'特效/雾人/星盘转轮'
+    zodiac_template_name=PREFIX+'特效/黄道星盘模板'
+    zodiac_src_root=E.parse(str(WUREN_ZODIAC_ICONS),PARSER).getroot()
+    zodiac_raw_shapes=zodiac_src_root.findall('.//x:DOMShape',NS)
+    def shift_shapes(shapes,tx_val,ty_val):
+        out=[]
+        for sh in shapes:
+            c=copy.deepcopy(sh)
+            mel=c.find('x:matrix/x:Matrix',NS)
+            if mel is None:
+                mel=E.SubElement(E.SubElement(c,N+'matrix'),N+'Matrix')
+            orig_tx=float(mel.get('tx','0'))
+            orig_ty=float(mel.get('ty','0'))
+            mel.set('tx',native.num(orig_tx+tx_val))
+            mel.set('ty',native.num(orig_ty+ty_val))
+            out.append(c)
+        return out
+    zodiac_sign_frames={}
+    for h_idx,(s_i,e_i,cx,cy) in enumerate(ZODIAC_SLICES):
+        zodiac_sign_frames[h_idx]={'elements':shift_shapes(zodiac_raw_shapes[s_i:e_i],-cx,-cy)}
+    result[zodiac_sign_name]=native.symbol(zodiac_sign_name,[
+        native.make_sparse_layer('控制',12,{0:{'script':'stop();'}}),
+        native.make_sparse_layer('星座图标',12,zodiac_sign_frames),
+    ],symbol_type='movie clip')
+    wheel_src_root=E.parse(str(WUREN_ZODIAC_WHEEL),PARSER).getroot()
+    wheel_shapes=[copy.deepcopy(sh) for sh in wheel_src_root.findall('.//x:DOMShape',NS)]
+    result[zodiac_wheel_base_name]=native.symbol(zodiac_wheel_base_name,[
+        native.layer('星盘底',[native.frame(0,1,wheel_shapes)]),
+    ],symbol_type='graphic')
+    def tinted_inst(lib_name,matrix,symbol_type='movie clip',name=None,rgba_mult=(1,1,1,1),rgba_off=(0,0,0,0)):
+        inst=native.instance(lib_name,matrix=matrix,symbol_type=symbol_type,name=name)
+        color=E.SubElement(E.SubElement(inst,N+'color'),N+'Color')
+        for idx,ch in enumerate(('red','green','blue','alpha')):
+            color.set(ch+'Multiplier',native.num(rgba_mult[idx]))
+            color.set(ch+'Offset',native.num(rgba_off[idx]))
+        return inst
+    result[zodiac_wheel_mc_name]=native.symbol(zodiac_wheel_mc_name,[
+        native.layer('星盘与星座环',[native.frame(0,1,[
+            tinted_inst(zodiac_wheel_base_name,(0.85,0,0,0.85,0,0),symbol_type='graphic',rgba_mult=(1,0.82,0.32,0.78)),
+        ])]),
+    ],symbol_type='movie clip')
+    elem_tints=[(1.0,0.52,0.22,0.88),(1.0,0.28,0.55,0.88),(0.25,0.95,1.0,0.88),(1.0,0.86,0.32,0.88)]
+    zodiac_house_badges=[
+        tinted_inst(zodiac_sign_name,(0.38,0,0,0.38,round(math.cos(h*math.pi/6)*130,2),round(math.sin(h*math.pi/6)*92,2)),
+            symbol_type='movie clip',name=f'sign{h}',rgba_mult=elem_tints[h%4])
+        for h in range(12)
+    ]
+    result[zodiac_template_name]=native.symbol(zodiac_template_name,[
+        native.make_sparse_layer('控制',2,{0:{'script':'stop();'}}),
+        native.make_sparse_layer('当前发射星座主显',2,{1:{'elements':[
+            tinted_inst(zodiac_sign_name,(0.85,0,0,0.85,0,0),symbol_type='movie clip',name='activeSign',rgba_mult=(1,0.92,0.45,0.95),rgba_off=(30,20,0,0)),
+            tinted_inst(zodiac_sign_name,(0.65,0,0,0.65,0,-138),symbol_type='movie clip',name='bannerSign',rgba_mult=(0.55,1.0,1.0,0.98),rgba_off=(40,40,40,0)),
+        ]}}),
+        native.make_sparse_layer('十二宫星座徽章',2,{1:{'elements':zodiac_house_badges}}),
+        native.make_sparse_layer('星盘外环',2,{1:{'elements':[
+            native.instance(zodiac_wheel_mc_name,matrix=(1.0,0,0,0.72,0,0),symbol_type='movie clip',name='wheelArt'),
+        ]}}),
+    ],symbol_type='movie clip')
     antiair_fx_name=PREFIX+'特效/蓄力对空光束'
     aa_frames={}
     for f in range(14):
@@ -249,10 +327,14 @@ onEnterFrame=updateElderShadow;updateElderShadow();stop();''',elements=[native.i
             g_inst(wuren_quake,matrix=(q_scale,0,0,q_scale,-12,-14),first_frame=min(14,e),alpha_mult=alpha),
             g_inst(wuren_blue_burst,matrix=(b_scale,0,0,b_scale,0,-10),first_frame=min(23,e*2),alpha_mult=alpha),
         ]}
+    zodiac_target_frames={1:{'duration':28,'elements':[
+        tinted_inst(zodiac_sign_name,(0.75,0,0,0.35,-6.7,-0.9),symbol_type='movie clip',name='zodiacSign',rgba_mult=(0.45,1.0,1.0,0.92),rgba_off=(40,60,80,0)),
+    ]}}
     result[bomb_fx_name]=native.symbol(bomb_fx_name,[
         native.make_sparse_layer('控制',35,{0:{'script':'stop();'}}),
         native.make_sparse_layer('地面爆破冲击',35,blast_frames),
         native.make_sparse_layer('天降光束弹',35,shell_frames),
+        native.make_sparse_layer('星座靶标图标',35,zodiac_target_frames),
         native.make_sparse_layer('地面预警靶标',35,lock_frames),
     ],symbol_type='movie clip')
     roots={}
@@ -339,12 +421,29 @@ onEnterFrame=updateElderShadow;updateElderShadow();stop();''',elements=[native.i
                 events={0:{'script':'elderMode="attack";_parent.elderBeginAttack(this,"'+action+'");stop();'},
                     len(frames)-1:{'script':'_parent.elderFinishAttack(this);stop();'}}
                 result[names[a['id']]]=make_body(names[a['id']],frames,parts,events,hits)
+                heavy_beam_ray_name=PREFIX+'特效/重束光柱容器'
+                ray_inst=native.instance(parts[993],matrix=(BEAM_CONTACT_WIDTH/BEAM_ORIGINAL_WIDTH,0,0,a['beamThickness'],493.47266-110.3,0))
+                ray_color=E.SubElement(E.SubElement(ray_inst,N+'color'),N+'Color')
+                for channel,mult_val,off_val in (('red','0','255'),('green','0','0'),('blue','0','0'),('alpha','1','0')):
+                    ray_color.set(channel+'Multiplier',mult_val)
+                    ray_color.set(channel+'Offset',off_val)
+                result[heavy_beam_ray_name]=native.symbol(heavy_beam_ray_name,[
+                    native.layer('重束光柱',[native.frame(0,1,[ray_inst])])
+                ],symbol_type='movie clip')
                 charge={}
                 for f in range(a['hits'][0]-1):
                     scale=0.25+1.6*f/(a['hits'][0]-2)
                     charge[f]={'elements':[native.instance(parts[903],matrix=(scale,0,0,scale,110.3,-31.25),
                         alpha_mult=0.3+0.6*f/(a['hits'][0]-2))]}
                 layers_el=result[names[a['id']]].find('x:timeline/x:DOMTimeline/x:layers',NS)
+                for lyr in layers_el.findall('x:DOMLayer',NS):
+                    if lyr.get('name')=='原始深度_19':
+                        for df in lyr.findall('x:frames/x:DOMFrame',NS):
+                            if df.get('index')=='34':
+                                els_node=df.find('x:elements',NS)
+                                els_node.clear()
+                                els_node.append(native.instance(heavy_beam_ray_name,matrix=(1,0,0,1,110.3,-32.8),
+                                    symbol_type='movie clip',name='elderHeavyBeamRay'))
                 fx_root=E.parse(str(R8_BAKED/'act__robot__19940_fx.xml'),PARSER).getroot()
                 for fx_layer in reversed(fx_root.findall('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer',NS)):
                     layers_el.insert(3,copy.deepcopy(fx_layer))
@@ -354,7 +453,7 @@ onEnterFrame=updateElderShadow;updateElderShadow();stop();''',elements=[native.i
                 events={0:{'script':'elderMode="attack";_parent.elderBeginAttack(this,"'+action+'");stop();'},
                     dur-1:{'script':'_parent.elderFinishAttack(this);stop();'}}
                 result[names[a['id']]]=make_r8_body(names[a['id']],form,str(a['id']),dur,events,hits,
-                    top_layers=[slam_muzzle_layer(dur, driver)] if form=='robot' and action=='slam' else None)
+                    top_layers=[slam_muzzle_layer(dur, driver, str(a['id']))] if form=='robot' and action in ('slam','kicks') else None)
         first_hit,second_hit=spec['hitDurations']
         hit_events={0:{'name':'a0','label_type':'name','script':'elderMode="hit";stop();'},
             first_hit:{'name':'a1','label_type':'name','script':'elderMode="hit";stop();'},
@@ -440,7 +539,7 @@ elderForm="'''+form+'";\n'
         result[name]=native.symbol(name,[
             native.make_sparse_layer('状态标签',156,labels),
             native.make_sparse_layer('初始化与消失',156,{0:{'script':init},1:{'script':'this.swapDepths(this._y);'},
-                151:{'script':'hp=0;elderCancelAttack();'}}),
+                151:{'script':'this.elderRetired=true;this.__elderBypassPhaseLock=true;this.elderPhaseFloorHp=0;hp=0;elderCancelAttack();'}}),
             native.make_sparse_layer('私有行为',156,{0:{'duration':121,'elements':[native.instance(driver,symbol_type='movie clip',
                 name='elderDriver',script='onClipEvent(enterFrame){_parent.elderTick();}onClipEvent(unload){if(typeof _parent.elderReportCombat=="function")_parent.elderReportCombat();}') ]}}),
             native.make_sparse_layer('文字信息',156,{0:{'duration':151,'elements':[native.instance(H['Symbol 32'],
@@ -452,7 +551,8 @@ elderForm="'''+form+'";\n'
                 script='onClipEvent(enterFrame){if(!_root.暂停)_parent.行走();}')]}}),
             *([native.make_sparse_layer('轰炸特效模板',156,{0:{'duration':121,'elements':[
                 native.instance(antiair_fx_name,matrix=(1,0,0,1,0,0),symbol_type='movie clip',name='cf6AntiairTemplate'),
-                native.instance(bomb_fx_name,matrix=(1,0,0,1,0,0),symbol_type='movie clip',name='cf6BombTemplate')]}})] if form=='robot' else []),
+                native.instance(bomb_fx_name,matrix=(1,0,0,1,0,0),symbol_type='movie clip',name='cf6BombTemplate'),
+                native.instance(zodiac_template_name,matrix=(1,0,0,1,0,0),symbol_type='movie clip',name='cf6ZodiacTemplate')]}})] if form=='robot' else []),
             native.make_sparse_layer('动作',156,bodies)
         ],symbol_type='movie clip',linkage=LINKS[form],export_first_frame=True)
     entry=PREFIX+'两形态共享入口'

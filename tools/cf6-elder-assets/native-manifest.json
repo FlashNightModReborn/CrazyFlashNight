@@ -6,15 +6,15 @@
     "robot": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7",
     "phase": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2"
   },
-  "nativeSymbolCount": 187,
+  "nativeSymbolCount": 192,
   "buildInputs": [
     {
       "path": "tools/cf6-elder-assets/build.py",
-      "sha256": "bd0684faaf4087016da552c1629dd363bbfd11ea40d342a57905ecf7b0e74313"
+      "sha256": "e552a90255942cce3dc04ab0f5710d7f4d3cc47a210db1ce26bcb0c67a8d5a78"
     },
     {
       "path": "tools/cf6-elder-assets/ElderAI.as",
-      "sha256": "582eba7bc97513fbe8513e5fc6ec2a99e04c4a29e683f110a985900bc62a1734"
+      "sha256": "df4d0084ef3b864fe52fec4d88ae2a8f49eb9a24d42b8e09d897c05c99afc673"
     },
     {
       "path": "tools/cf6-elder-assets/ElderTransform.as",
@@ -547,6 +547,14 @@
     {
       "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__靶标_元件 9.xml",
       "sha256": "0f2aa318c5adaeb83cc0a32162652b2b1011c6c9a184de01c8b3bdd5fff04aec"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/12.星座轮盘/图标/十二星座图标.xml",
+      "sha256": "a6efe1a1cb972f5e1ba11f9507e0ee566f8829359003a0f9305f5b93a074576d"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/12.星座轮盘/星盘/火象星盘.xml",
+      "sha256": "0df7094f7a5fdb8c12276c0c585901ae57d2c73f5a42bc128f756fdc59430a5a"
     }
   ],
   "parts": [
@@ -1383,8 +1391,8 @@
     },
     {
       "path": "LIBRARY/Codex/老头/robot/动作/19940.xml",
-      "sha256": "fc7621b6d5a834375e76a5216e1790c30c6c9eabfdcad286a99e0ed12395b36a",
-      "bytes": 229300
+      "sha256": "684c38cb349e312f8e892c74b9df3abc9a5b3c778ca1e1d17d4a7249ddca06d8",
+      "bytes": 229056
     },
     {
       "path": "LIBRARY/Codex/老头/robot/动作/990.xml",
@@ -1403,8 +1411,8 @@
     },
     {
       "path": "LIBRARY/Codex/老头/robot/动作/997.xml",
-      "sha256": "294c5c5cd845e74b805c2912be8e01ac2bf4711803e989dc66136f523ec97b4d",
-      "bytes": 343178
+      "sha256": "7df2f0ef5d19b413a9dc78d96d778efe3628f7789e81893af1bf5f144b429319",
+      "bytes": 364995
     },
     {
       "path": "LIBRARY/Codex/老头/robot/尸体碎片.xml",
@@ -1738,13 +1746,13 @@
     },
     {
       "path": "LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
-      "sha256": "24096da5b20c01f23e3e3a271db25552d8dc0059f577a903c54a13b72b72b606",
-      "bytes": 80571
+      "sha256": "f0f22911235289980a4461861988c3d22574f1522165be5c228db545c037b111",
+      "bytes": 129247
     },
     {
       "path": "LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
-      "sha256": "3f932380974a20022c992288c48953d8e9ab5290236d504e34c8cdbf54c80c51",
-      "bytes": 78567
+      "sha256": "bb9c2072ca50c1c07fefe206cfbe469331c20e890547b73e48b8fea75506eb17",
+      "bytes": 127593
     },
     {
       "path": "LIBRARY/Codex/老头/机械爆裂/5武器特效和子弹_爆炸狙击子弹_小火焰爆炸素材.xml",
@@ -1763,8 +1771,8 @@
     },
     {
       "path": "LIBRARY/Codex/老头/特效/坠落轰炸弹.xml",
-      "sha256": "782852469eca5fe85dac482df243f0a6e746b7acb2e5874a936d26db679e5edf",
-      "bytes": 40389
+      "sha256": "3474db8a5e7374eca6e723e96ebbd7e05fd08934a1b0040d3298ed6105086f2a",
+      "bytes": 41476
     },
     {
       "path": "LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 473.xml",
@@ -1897,9 +1905,19 @@
       "bytes": 22059
     },
     {
+      "path": "LIBRARY/Codex/老头/特效/重束光柱容器.xml",
+      "sha256": "a1f7611b9268d463c635eea40b97c54094f7f5c4125db37dec68ca4dbdc28a4f",
+      "bytes": 1200
+    },
+    {
       "path": "LIBRARY/Codex/老头/特效/重束炮口光.xml",
       "sha256": "853da0abe048741b9bc43a8fa3e883a82a7f4d37dcb3c0e75ae28cc04f9b7cdf",
       "bytes": 3455
+    },
+    {
+      "path": "LIBRARY/Codex/老头/特效/雾人/十二星座单图标.xml",
+      "sha256": "9f76dda5cabfa12ebf6e5c8bf288de6f9286b8631b34685fe88dbf97a241c3ca",
+      "bytes": 290793
     },
     {
       "path": "LIBRARY/Codex/老头/特效/雾人/巨型穿刺能量子弹.xml",
@@ -2005,6 +2023,16 @@
       "path": "LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5114.xml",
       "sha256": "5f0a8c0d52a18ca7e875e6d41d22c2c5613693e5bdca5b17a8cb8d8c869df73e",
       "bytes": 6192
+    },
+    {
+      "path": "LIBRARY/Codex/老头/特效/雾人/星盘底图.xml",
+      "sha256": "dd3450400ae6f0fa3b9ed7eef609d105afbde68ed04dc361b8b3b998adec991b",
+      "bytes": 600367
+    },
+    {
+      "path": "LIBRARY/Codex/老头/特效/雾人/星盘转轮.xml",
+      "sha256": "57eb22101dbb9c0e9883ac1820351afad91d256c1b4dc0d06ed93a9d7ee34bd4",
+      "bytes": 1202
     },
     {
       "path": "LIBRARY/Codex/老头/特效/雾人/目标.xml",
@@ -2182,6 +2210,11 @@
       "bytes": 4042
     },
     {
+      "path": "LIBRARY/Codex/老头/特效/黄道星盘模板.xml",
+      "sha256": "e157bff8ed272e6aaa8c55e1554c7e84951ea56368dd5052716a123c63f7def7",
+      "bytes": 10705
+    },
+    {
       "path": "LIBRARY/Codex/老头/行为驱动.xml",
       "sha256": "5ccb2ce72b167a7862640d180d1b651ba02462eed9c483d818e2c34e46c0a962",
       "bytes": 657
@@ -2195,8 +2228,8 @@
   "projectFiles": [
     {
       "path": "DOMDocument.xml",
-      "sha256": "33a49a66c5218a47b3084c36ee7f94741daae60b35ce64c4f7af3db8dbb0cbbe",
-      "bytes": 24400
+      "sha256": "5958ea11f3208d339998c7ce68d7643cbdfca06a599298e071efc5163c10f86f",
+      "bytes": 24982
     },
     {
       "path": "Codex老头素材.xfl",

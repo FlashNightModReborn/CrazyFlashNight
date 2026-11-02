@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/老头/特效/重束光柱容器" itemID="6af00000-cb24c4a3">
+  <timeline>
+    <DOMTimeline name="重束光柱容器">
+      <layers>
+        <DOMLayer name="重束光柱" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/原始特效/993" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.693591" d="3" tx="383.17266"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" redOffset="255" greenMultiplier="0" greenOffset="0" blueMultiplier="0" blueOffset="0" alphaMultiplier="1" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

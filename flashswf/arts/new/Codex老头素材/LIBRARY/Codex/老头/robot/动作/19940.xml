@@ -4215,16 +4215,13 @@
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728" duration="38">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/老头/原始特效/993" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/重束光柱容器" name="elderHeavyBeamRay">
                   <matrix>
-                    <Matrix a="1.693591" d="3" tx="493.47266" ty="-32.8"/>
+                    <Matrix tx="110.3" ty="-32.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <color>
-                    <Color redMultiplier="0" redOffset="255" greenMultiplier="0" greenOffset="0" blueMultiplier="0" blueOffset="0" alphaMultiplier="1" alphaOffset="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

@@ -326,6 +326,53 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderCombatEffectsTest {
         reactiveShieldTests(actor);
         trace("Cf6ElderCombatEffectsTest: "+passed+" passed, "+failed+" failed");return failed==0;
     }
+    public static function verifyPhaseQuake(quakeBullet:Object,actor:MovieClip):Void {
+        if(DamageManagerFactory.Basic==null)DamageManagerFactory.init();PinkNoiseEngine.getInstance();
+        check(quakeBullet!=null,"phase quake bullet captured for settlement verification");
+        if(quakeBullet==null)return;
+        var world:MovieClip=actor._parent;
+        var qData:Object={};for(var k:String in quakeBullet)qData[k]=quakeBullet[k];
+        qData.固伤=0;qData.flags=256;qData.hitCount=0;qData.damageManager=DamageManagerFactory.resolveForBullet(qData);
+        var impact:MovieClip=world.createEmptyMovieClip("phaseQuakeImpact",world.getNextHighestDepth());
+        for(k in qData)impact[k]=qData[k];impact.破坏力=qData.子弹威力;
+
+        var grounded:MovieClip=_root.cf6MakePlayerTarget(world,"quakeGroundedTarget",175);
+        grounded._x=actor._x+900;grounded.Z轴坐标=actor.Z轴坐标+180;grounded._y=grounded.Z轴坐标;
+        grounded.刚体=false;grounded.浮空=grounded.倒地=grounded.硬直中=false;
+        grounded.韧性系数=40;grounded.remainingImpactForce=0;grounded.状态="空手站立";
+        grounded.状态改变=function(st:String):Void {this.状态=st;};
+        grounded.被击移动=function():Void {};
+        var groundedBefore:Number=grounded.hp;
+        var gRes:Object=settle(qData,actor,grounded,false);
+        ImpactStateHandler.handleImpactState(grounded,impact,DamageResult(gRes),"右",false);
+        check(grounded.hp<groundedBefore && grounded.状态=="击倒","phase quake hits far cross-lane grounded target and guarantees knockdown");
+
+        var rigidTarget:MovieClip=_root.cf6MakePlayerTarget(world,"quakeRigidTarget",175);
+        rigidTarget._x=actor._x-850;rigidTarget.Z轴坐标=actor.Z轴坐标-160;rigidTarget._y=rigidTarget.Z轴坐标;
+        rigidTarget.刚体=true;rigidTarget.浮空=rigidTarget.倒地=rigidTarget.硬直中=false;
+        rigidTarget.韧性系数=40;rigidTarget.remainingImpactForce=0;rigidTarget.状态="空手站立";
+        rigidTarget.状态改变=function(st:String):Void {this.状态=st;};
+        rigidTarget.被击移动=function():Void {};
+        var rigidBefore:Number=rigidTarget.hp;
+        qData.hitCount=0;
+        var rRes:Object=settle(qData,actor,rigidTarget,false);
+        ImpactStateHandler.handleImpactState(rigidTarget,impact,DamageResult(rRes),"左",false);
+        check(rigidTarget.hp<rigidBefore && rigidTarget.状态=="空手站立" && !rigidTarget.浮空 && !rigidTarget.倒地,
+            "rigid unit tanks high-damage phase quake without knockdown");
+
+        var jetpackTarget:MovieClip=_root.cf6MakePlayerTarget(world,"quakeJetpackTarget",175);
+        jetpackTarget._x=actor._x+300;jetpackTarget.Z轴坐标=actor.Z轴坐标+120;
+        jetpackTarget._y=jetpackTarget.Z轴坐标-60;
+        var jBounds:Object=jetpackTarget.area.getBounds(world);
+        var zOffset:Number=quakeBullet.shootZ-jetpackTarget.Z轴坐标;
+        var jBottomCompensated:Number=jBounds.yMax+zOffset;
+        check(jBottomCompensated<quakeBullet.shootZ-24,"jetpack altitude (>=36px) lifts Z-compensated hurtbox above ground shockwave");
+
+        impact.removeMovieClip();
+        grounded.removeMovieClip();
+        rigidTarget.removeMovieClip();
+        jetpackTarget.removeMovieClip();
+    }
     private static function reactiveShieldTests(actor:MovieClip):Void {
         var decayApi:Boolean=typeof _root.护盾函数.添加衰减护盾=="function";
         check(decayApi,"exact production decay adapter is available");if(!decayApi)return;

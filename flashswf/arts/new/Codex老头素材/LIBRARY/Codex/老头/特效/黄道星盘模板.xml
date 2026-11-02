@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/老头/特效/黄道星盘模板" itemID="6af00000-41fc8a50">
+  <timeline>
+    <DOMTimeline name="黄道星盘模板">
+      <layers>
+        <DOMLayer name="控制" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="当前发射星座主显" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="activeSign">
+                  <matrix>
+                    <Matrix a="0.85" d="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="30" greenMultiplier="0.92" greenOffset="20" blueMultiplier="0.45" blueOffset="0" alphaMultiplier="0.95" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="bannerSign">
+                  <matrix>
+                    <Matrix a="0.65" d="0.65" ty="-138"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.55" redOffset="40" greenMultiplier="1" greenOffset="40" blueMultiplier="1" blueOffset="40" alphaMultiplier="0.98" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="十二宫星座徽章" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign0">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" tx="130"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="0.52" greenOffset="0" blueMultiplier="0.22" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign1">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" tx="112.58" ty="46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="0.28" greenOffset="0" blueMultiplier="0.55" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign2">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" tx="65" ty="79.67"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.25" redOffset="0" greenMultiplier="0.95" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign3">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" ty="92"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="0.86" greenOffset="0" blueMultiplier="0.32" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign4">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" tx="-65" ty="79.67"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="0.52" greenOffset="0" blueMultiplier="0.22" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign5">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" tx="-112.58" ty="46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="0.28" greenOffset="0" blueMultiplier="0.55" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign6">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" tx="-130"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.25" redOffset="0" greenMultiplier="0.95" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign7">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" tx="-112.58" ty="-46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="0.86" greenOffset="0" blueMultiplier="0.32" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign8">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" tx="-65" ty="-79.67"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="0.52" greenOffset="0" blueMultiplier="0.22" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign9">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" ty="-92"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="0.28" greenOffset="0" blueMultiplier="0.55" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign10">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" tx="65" ty="-79.67"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.25" redOffset="0" greenMultiplier="0.95" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/十二星座单图标" name="sign11">
+                  <matrix>
+                    <Matrix a="0.38" d="0.38" tx="112.58" ty="-46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="0.86" greenOffset="0" blueMultiplier="0.32" blueOffset="0" alphaMultiplier="0.88" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="星盘外环" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/星盘转轮" name="wheelArt">
+                  <matrix>
+                    <Matrix d="0.72"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -14,17 +14,18 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
     private static var library:MovieClip,driver:MovieClip,loader:MovieClipLoader,listener:Object;
     private static var passed:Number,failed:Number,ticks:Number,fxCount:Number,muzzleChecks:Number;
     private static var ready:Boolean,finished:Boolean;
-    private static var cases:Array,r8Cases:Array,probes:Array,phases:Array;
+    private static var cases:Array,r8Cases:Array,fivePhaseCases:Array,fivePhaseSeq:MovieClip,retireIdle:MovieClip,retireMidPhase:MovieClip,probes:Array,phases:Array;
     private static var links:Array=["敌人-CF6老头人形","敌人-CF6老头机器人"];
     private static function check(ok:Boolean,label:String):Void {
         if(ok)passed++;else{failed++;trace("[TEST_FAIL] Cf6ElderAssetTest: "+label);}
     }
     private static function record():Object {
         return {shots:0,heavyShots:0,frames:[],moves:0,done:0,kills:0,deathChecks:0,removed:false,
-            physics:0,powerOk:true,areaOk:true,contractOk:true,frontOk:true,slamAntiairOk:true,fallingShellOk:true};
+            physics:0,powerOk:true,areaOk:true,contractOk:true,frontOk:true,slamAntiairOk:true,fallingShellOk:true,
+            sfxTotal:0,sfxCounts:{}};
     }
     public static function runAllTests():Void {
-        passed=failed=ticks=fxCount=muzzleChecks=0;ready=finished=false;cases=[];r8Cases=[];probes=[];phases=[];
+        passed=failed=ticks=fxCount=muzzleChecks=0;ready=finished=false;cases=[];r8Cases=[];fivePhaseCases=[];fivePhaseSeq=null;probes=[];phases=[];
         Cf6ElderCombatEffectsTest.reset();
         Cf6RobotCombatTest.reset("elder");
         library=_root.createEmptyMovieClip("__elderLibrary",_root.getNextHighestDepth());
@@ -46,7 +47,14 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
 
         };
         _root.控制目标="__none";_root.控制目标全自动=false;_root.是否阴影=true;
-        _root.播放音效=function():Void {};_root.发布消息=function():Void {};
+        _root.播放音效=function(soundId:String,source:String):Void {
+            if(source!=undefined && library!=null && library[source]!=null && library[source].fixtureRecord!=null){
+                var srec:Object=library[source].fixtureRecord;
+                srec.sfxTotal=(srec.sfxTotal|0)+1;
+                if(srec.sfxCounts==null)srec.sfxCounts={};
+                srec.sfxCounts[soundId]=(srec.sfxCounts[soundId]|0)+1;
+            }
+        };_root.发布消息=function():Void {};
         _root.效果=function(name:String):Void {Cf6ElderAssetTest.fxCount++;};
         _root.初始化思考标签=function(mc:MovieClip):Void {mc._name="思考标签";mc.stop();mc._visible=false;};
         nativeKnockback=_root.敌人函数.被击移动;
@@ -56,7 +64,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
                 u.fixtureRecord.kills++;u.状态改变("血腥死");u._killed=true;DeathEventComponent.onDeath(u);
             }};
         _root.子弹属性初始化=function(point:MovieClip,kind:String,u:MovieClip):Object {return {子弹种类:kind,霰弹值:1,发射者:u._name};};
-        _root.子弹区域shoot传递=function(data:Object):Void {Cf6ElderAssetTest.capture(data);};
+        _root.子弹区域shoot传递=function(data:Object):Object {return Cf6ElderAssetTest.capture(data);};
         _root.初始化敌人模板=function():Void {
             this.hp=this.hp满血值=1000;this.空手攻击力=100;this.等级=40;
             this.状态="空手站立";this.攻击模式="空手";this.方向="右";this.攻击目标="无";
@@ -70,7 +78,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
                 this.Z轴坐标+=dir=="下"?speed:dir=="上"?-speed:0;
                 this._y=this.Z轴坐标;if(this.fixtureRecord!=null)this.fixtureRecord.moves++;
             };
-            this.方向改变=function(dir:String):Void {this.方向=dir;this._xscale=dir=="左"?-100:100;};
+            this.方向改变=function(dir:String):Void {if(this.锁定方向)return;this.方向=dir;this._xscale=dir=="左"?-100:100;};
             this.动画完毕=function():Void {
                 this.__doneCount=(this.__doneCount|0)+1;this.__lastRecoveryFrame=this.man._currentframe;
                 if(this.fixtureRecord!=null){this.fixtureRecord.done++;this.fixtureRecord.lastRecoveryFrame=this.man._currentframe;}
@@ -105,25 +113,25 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
                          ["beam","kicks","slam","hit0","hit1","death","interrupt","dead","heavyBeam","unmarkedHeavy","expiredHeavy","reusedHeavy","midExpiredHeavy","slamHeavy"]];
         for(var form:Number=0;form<2;form++)for(var side:Number=0;side<2;side++)for(var m:Number=0;m<moves[form].length;m++){
             var rec:Object=record();
-            var u:MovieClip=library.attachMovie(links[form],"elderCase"+cases.length,library.getNextHighestDepth(),{fixtureRecord:rec,老头变身:false});
+            var u:MovieClip=library.attachMovie(links[form],"elderCase"+cases.length,library.getNextHighestDepth(),{fixtureRecord:rec,老头变身:false,老头五阶段:false});
             check(u!=null,"attach "+form+" "+moves[form][m]+" "+side);
             cases.push({actor:u,form:form,side:side,move:moves[form][m],record:rec});
         }
         for(var r8Side:Number=0;r8Side<2;r8Side++){
             var r8Rec:Object=record();
-            var r8u:MovieClip=library.attachMovie(links[0],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{fixtureRecord:r8Rec,老头变身:false});
+            var r8u:MovieClip=library.attachMovie(links[0],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{fixtureRecord:r8Rec,老头变身:false,老头五阶段:false});
             check(r8u!=null,"attach r8 retreat_burst "+r8Side);
             r8Cases.push({actor:r8u,form:0,side:r8Side,move:"retreat_burst",record:r8Rec});
-            var noFixRetreat:MovieClip=library.attachMovie(links[0],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{老头变身:false});
+            var noFixRetreat:MovieClip=library.attachMovie(links[0],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{老头变身:false,老头五阶段:false});
             check(noFixRetreat!=null && noFixRetreat.fixtureRecord===undefined,"attach r8 retreat_burst_no_fixture "+r8Side);
             r8Cases.push({actor:noFixRetreat,form:0,side:r8Side,move:"retreat_burst_no_fixture",record:null});
-            var noFixSlam:MovieClip=library.attachMovie(links[1],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{老头变身:false});
+            var noFixSlam:MovieClip=library.attachMovie(links[1],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{老头变身:false,老头五阶段:false});
             check(noFixSlam!=null && noFixSlam.fixtureRecord===undefined,"attach r8 slam_no_fixture "+r8Side);
             r8Cases.push({actor:noFixSlam,form:1,side:r8Side,move:"slam_no_fixture",record:null});
             var r8SlamMoves:Array=["slam_ruleA_shielded","slam_ruleA_broken","slam_ruleA_scaled","slam_ruleA_rotated","slam_ruleA_interrupt"];
             for(var sm:Number=0;sm<r8SlamMoves.length;sm++){
                 var slamRec:Object=record();
-                var slamUnit:MovieClip=library.attachMovie(links[1],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{fixtureRecord:slamRec,老头变身:false});
+                var slamUnit:MovieClip=library.attachMovie(links[1],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{fixtureRecord:slamRec,老头变身:false,老头五阶段:false});
                 slamUnit.shield=AdaptiveShield.createDormant("r8-"+r8SlamMoves[sm]+"-"+r8Side);
                 slamUnit.shield.setOwner(slamUnit);
                 check(slamUnit!=null,"attach r8 "+r8SlamMoves[sm]+" "+r8Side);
@@ -131,6 +139,27 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
                 r8Cases.push({actor:slamUnit,form:1,side:r8Side,move:sm>1?"slam_ruleA_shielded":r8SlamMoves[sm],record:slamRec});
             }
         }
+        for(var fpIndex:Number=0;fpIndex<4;fpIndex++){
+            var fpRec:Object=record();
+            fpRec.pummelMissiles=0;fpRec.sweepPulses=0;fpRec.quakeShots=0;fpRec.maxSweepAngle=0;
+            var startHp:Number=[1000,790,590,390][fpIndex];
+            var fpu:MovieClip=library.attachMovie(links[1],"elderFivePhaseCase"+fpIndex,library.getNextHighestDepth(),{fixtureRecord:fpRec,老头变身:false});
+            fpu.shield=AdaptiveShield.createDormant("fp-shield-"+fpIndex);
+            fpu.shield.setOwner(fpu);
+            check(fpu!=null,"attach five-phase case "+fpIndex);
+            var fpTarget:MovieClip=_root.cf6MakePlayerTarget(library,"fpTarget"+fpIndex,175);
+            fivePhaseCases.push({actor:fpu,target:fpTarget,record:fpRec,phaseIndex:fpIndex,startHp:startHp,
+                expectedPhase:fpIndex+1,expectedFloor:[800,600,400,200][fpIndex],
+                expectedMove:["phase_antiair","phase_sweepBeam","phase_pummel","phase_quake"][fpIndex]});
+        }
+        var seqRec:Object=record();
+        fivePhaseSeq=library.attachMovie(links[1],"elderFivePhaseSeq",library.getNextHighestDepth(),{fixtureRecord:seqRec});
+        fivePhaseSeq.shield=AdaptiveShield.createDormant("fp-seq-shield");
+        fivePhaseSeq.shield.setOwner(fivePhaseSeq);
+        retireIdle=library.attachMovie(links[1],"elderRetireIdle",library.getNextHighestDepth(),{fixtureRecord:record(),老头变身:false});
+        retireIdle.shield=AdaptiveShield.createDormant("retire-idle-shield");retireIdle.shield.setOwner(retireIdle);
+        retireMidPhase=library.attachMovie(links[1],"elderRetireMidPhase",library.getNextHighestDepth(),{fixtureRecord:record(),老头变身:false});
+        retireMidPhase.shield=AdaptiveShield.createDormant("retire-mid-shield");retireMidPhase.shield.setOwner(retireMidPhase);
         createPhases();ready=true;ticks=0;
     }
     private static function createPhases():Void {
@@ -220,11 +249,22 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
         }
         trace("[ELDER_MUZZLE_IMAGE_END]");bitmap.dispose();
     }
-    private static function capture(data:Object):Void {
-        var u:MovieClip=library[data.发射者],rec:Object=u.fixtureRecord;if(rec==undefined)return;
+    private static function capture(data:Object):Object {
+        var u:MovieClip=library[data.发射者],rec:Object=u.fixtureRecord;if(rec==undefined)return null;
         if(data.cf6DeathBurst===true){
             rec.deathBursts=(rec.deathBursts|0)+1;check(rec.deathBursts==1,"one death burst "+u._name);
-            if(rec.deathBursts==1)Cf6RobotCombatTest.captureDeath(data,u);return;
+            if(rec.deathBursts==1)Cf6RobotCombatTest.captureDeath(data,u);return null;
+        }
+        if(data.cf6ElderNuclearDeath===true){
+            rec.nuclearWaves=(rec.nuclearWaves|0)+1;
+            rec.nuclearDeathOk=(rec.nuclearDeathOk!==false)
+                && data.子弹种类=="核弹爆炸" && data.子弹速度==0
+                && data.声音=="爆破 拆除 大型 深埋 炸药 强力冲击波 09.mp3"
+                && data.伤害类型=="物理" && data.Z轴攻击范围==300
+                && data.友军伤害===true && data.子弹敌我属性===false
+                && Math.abs(data.子弹威力-1000)<0.001
+                && Math.abs(data.shootZ-u.Z轴坐标)<0.1;
+            return null;
         }
         if(data.cf6ElderSlamAntiair===true){
             muzzleChecks++;
@@ -251,25 +291,125 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
                 +" source="+u._url+" x="+data.shootX+" y="+data.shootY+" cosine="+cosine);
             if(rec.muzzleVariant=="slam_ruleA_interrupt")rec.muzzleInterruptRequested=true;
             rec.slamAntiairOk=rec.slamAntiairOk && data.区域定位area!=null
+                && data.声音=="G1炮开火.wav"
                 && data.子弹种类=="近战子弹" && data.子弹速度==0
                 && data.伤害类型=="魔法" && data.魔法伤害属性=="波"
                 && Math.abs(data.子弹威力-300)<0.001 && data.垂直击退速度==-6
                 && Math.abs(aaBounds.xMax-aaBounds.xMin-220)<0.3
                 && Math.abs(aaBounds.yMax-aaBounds.yMin-165)<0.3;
-            return;
+            return null;
         }
         if(data.cf6FallingShell===true){
             rec.fallingShells=(rec.fallingShells|0)+1;
             var shellBounds:Object=data.区域定位area.getBounds(library);
+            var expectedShellPower:Number=data.cf6PhaseBarrageShell===true?220:400;
+            var zShellFrame:Number=Number(data.cf6ShellZodiacFrame);
+            if(data.cf6PhaseBarrageShell===true && zShellFrame>=1 && zShellFrame<=12){
+                rec.shellZodiacMask=(rec.shellZodiacMask|0)|(1<<(zShellFrame-1));
+            }
             rec.fallingShellOk=rec.fallingShellOk && data.区域定位area!=null
+                && data.声音=="G1炮命中.wav"
+                && zShellFrame>=1 && zShellFrame<=12
                 && data.子弹种类=="近战子弹" && data.子弹速度==0
                 && data.伤害类型=="魔法" && data.魔法伤害属性=="波"
-                && Math.abs(data.子弹威力-400)<0.001 && data.Z轴攻击范围==45
+                && Math.abs(data.子弹威力-expectedShellPower)<0.001 && data.Z轴攻击范围==45
                 && data.hitBehavior.type=="cf6ElderBeam"
                 && Math.abs(shellBounds.xMax-shellBounds.xMin-190)<0.3
                 && Math.abs(shellBounds.yMax-shellBounds.yMin-125)<0.3
                 && (data.shootX-u._x)*(u.方向=="右"?1:-1)>0;
-            return;
+            return null;
+        }
+        if(data.cf6ElderSweepBeam===true){
+            rec.sweepPulses=(rec.sweepPulses|0)+1;
+            var sweepAng:Number=Math.abs(Number(data.cf6SweepAngle!=undefined?data.cf6SweepAngle:data.cf6SweepRay.rot));
+            if(sweepAng>rec.maxSweepAngle)rec.maxSweepAngle=sweepAng;
+            var sweepLocal:Object=data.区域定位area.getBounds(data.区域定位area._parent);
+            var sweepBounds:Object=data.区域定位area.getBounds(library);
+            var rayClip:MovieClip=u.man.elderHeavyBeamRay;
+            var rayMuzzle:Object={x:-7.24234,y:0};
+            var rayTip:Object={x:773.58766,y:0};
+            var c0:Object={x:-7.24234,y:-48},c1:Object={x:773.58766,y:-48},c2:Object={x:773.58766,y:48},c3:Object={x:-7.24234,y:48};
+            if(rayClip!=null){
+                rayClip.localToGlobal(rayMuzzle);library.globalToLocal(rayMuzzle);
+                rayClip.localToGlobal(rayTip);library.globalToLocal(rayTip);
+                rayClip.localToGlobal(c0);library.globalToLocal(c0);
+                rayClip.localToGlobal(c1);library.globalToLocal(c1);
+                rayClip.localToGlobal(c2);library.globalToLocal(c2);
+                rayClip.localToGlobal(c3);library.globalToLocal(c3);
+            }
+            var rayObbXMin:Number=Math.min(Math.min(c0.x,c1.x),Math.min(c2.x,c3.x));
+            var rayObbXMax:Number=Math.max(Math.max(c0.x,c1.x),Math.max(c2.x,c3.x));
+            var rayObbYMin:Number=Math.min(Math.min(c0.y,c1.y),Math.min(c2.y,c3.y));
+            var rayObbYMax:Number=Math.max(Math.max(c0.y,c1.y),Math.max(c2.y,c3.y));
+            var pulseAreaOk:Boolean=data.子弹种类=="近战子弹" && data.伤害类型=="魔法" && data.魔法伤害属性=="波"
+                && data.声音=="CF6_0992.mp3"
+                && Math.abs(sweepLocal.xMax-sweepLocal.xMin-780.83)<2
+                && Math.abs(sweepLocal.yMax-sweepLocal.yMin-96)<1.5
+                && Math.abs(sweepBounds.xMin-rayObbXMin)<2
+                && Math.abs(sweepBounds.xMax-rayObbXMax)<2
+                && Math.abs(sweepBounds.yMin-rayObbYMin)<2
+                && Math.abs(sweepBounds.yMax-rayObbYMax)<2
+                && Math.abs(data.shootX-rayMuzzle.x)<0.5
+                && Math.abs(data.shootY-rayMuzzle.y)<0.5
+                && Math.abs(data.cf6SweepRay.ex-rayTip.x)<0.5
+                && Math.abs(data.cf6SweepRay.ey-rayTip.y)<0.5;
+            if(!pulseAreaOk && rec.sweepFailDiag==undefined){
+                rec.sweepFailDiag="p="+rec.sweepPulses+" lw="+(sweepLocal.xMax-sweepLocal.xMin)+" lh="+(sweepLocal.yMax-sweepLocal.yMin)
+                    +" dxMin="+(sweepBounds.xMin-rayObbXMin)+" dxMax="+(sweepBounds.xMax-rayObbXMax)
+                    +" dyMin="+(sweepBounds.yMin-rayObbYMin)+" dyMax="+(sweepBounds.yMax-rayObbYMax)
+                    +" sx="+(data.shootX-rayMuzzle.x)+" sy="+(data.shootY-rayMuzzle.y)
+                    +" ex="+(data.cf6SweepRay.ex-rayTip.x)+" ey="+(data.cf6SweepRay.ey-rayTip.y);
+            }
+            rec.areaOk=rec.areaOk && pulseAreaOk;
+            var sweepMc:Object={_x:data.shootX,_y:data.shootY,_rotation:0,flags:11,子弹区域area:data.区域定位area};
+            if(data.cf6SweepRay!=null && Math.abs(data.cf6SweepRay.ey-data.cf6SweepRay.oy)>320 && Math.abs(data.cf6SweepRay.ex-data.cf6SweepRay.ox)>320){
+                rec.steepSweepBullet=sweepMc;
+                rec.steepSweepRay=data.cf6SweepRay;
+            }
+            return sweepMc;
+        }
+        if(data.cf6ElderPummelMissile===true){
+            rec.pummelMissiles=(rec.pummelMissiles|0)+1;
+            rec.pummelPellets=(rec.pummelPellets|0)+Number(data.霰弹值);
+            var pat:Number=Number(data.cf6PummelPattern);
+            var house:Number=Number(data.cf6ZodiacHouse);
+            rec.pummelMask=(rec.pummelMask|0)|(1<<pat);
+            rec.zodiacHouseMask=(rec.zodiacHouseMask|0)|(1<<house);
+            var elem:Number=house%4;
+            var patOk:Boolean=false;
+            if(elem===0){
+                patOk=data.子弹种类=="横向拖尾追踪联弹-铁枪能量子弹" && data.子弹速度==12 && data.螺旋初半径==26;
+            }else if(elem===1){
+                patOk=data.子弹种类=="横向拖尾追踪联弹-红色针弹" && data.子弹速度==22 && data.螺旋初半径==18;
+            }else if(elem===2){
+                patOk=data.子弹种类=="横向拖尾追踪联弹-无壳穿刺子弹" && data.子弹速度==14 && data.螺旋初半径==24;
+            }else if(elem===3){
+                patOk=data.子弹种类=="横向拖尾追踪联弹-加强普通子弹" && data.子弹速度==17 && data.螺旋初半径==20;
+            }
+            var zSafe:Boolean=Math.abs(data.shootZ-(data.shootY+68))<0.1 && data.Z轴攻击范围==220;
+            var activeSignOk:Boolean=Number(data.cf6ActiveZodiacFrame)==(1+house);
+            var expectedPummelSfx:String=data.cf6PummelSalvoIndex==1?"Itinerantmissile.wav":"铁血飞弹.mp3";
+            if(activeSignOk)rec.activeZodiacSignMask=(rec.activeZodiacSignMask|0)|(1<<house);
+            rec.contractOk=rec.contractOk && patOk && zSafe && activeSignOk && data.声音==expectedPummelSfx && Math.abs(data.子弹威力-45)<0.001;
+            var pummelMc:Object={_x:data.shootX,_y:data.shootY,_rotation:data.角度偏移,子弹速度:data.子弹速度,
+                shootX:data.shootX,shootY:data.shootY,Z轴坐标:data.shootZ,flightZOffset:68,
+                xmov:data.子弹速度,ymov:0,stateFlags:32,origMoves:0,
+                updateMovement:function(b:Object):Void {this.origMoves++;b._x+=5;b._y-=3;},
+                onEnterFrame:function():Boolean {this.stateFlags|=32;return true;}};
+            rec.lastPummelMc=pummelMc;
+            return pummelMc;
+        }
+        if(data.cf6ElderPhaseQuake===true){
+            rec.quakeShots=(rec.quakeShots|0)+1;
+            var quakeBounds:Object=data.区域定位area.getBounds(library);
+            rec.quakeBullet=data;
+            rec.quakeBounds=quakeBounds;
+            rec.areaOk=rec.areaOk && data.子弹种类=="近战子弹" && data.伤害类型=="物理"
+                && data.声音=="地震1.wav"
+                && Math.abs(data.子弹威力-2400)<0.001 && data.Z轴攻击范围==600 && data.击倒率==0
+                && Math.abs(quakeBounds.xMax-quakeBounds.xMin-3600)<1
+                && Math.abs(quakeBounds.yMax-quakeBounds.yMin-44)<1;
+            return null;
         }
         var action:String=u.elderAttackOwner.action,frame:Number=u.man._currentframe;
         rec.shots++;rec.frames.push(frame);if(action=="heavyBeam")rec.heavyShots++;
@@ -314,6 +454,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
         }
         var before:Number=rec.shots;u.elderStrike(u.man,u.man.攻击点);
         check(rec.shots==before,"duplicate contact callback rejected "+action+" "+frame);
+        return null;
     }
 
 
@@ -462,6 +603,42 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
                 r8u.状态改变("重击");
             }
         }
+        if(ticks==3)for(var fpi:Number=0;fpi<fivePhaseCases.length;fpi++){
+            var fpc:Object=fivePhaseCases[fpi],fpu:MovieClip=fpc.actor;
+            check(fpu.老头五阶段===true,"robot defaults to five-phase mode "+fpi);
+            if(fpi>0){
+                fpu.__elderBypassPhaseLock=true;
+                fpu.hp=fpc.startHp;
+                fpu.__elderBypassPhaseLock=false;
+                fpu.elderInitPhaseLock();
+            }
+            fpc.target._x=fpu._x+280;
+            fpc.target.Z轴坐标=fpu.Z轴坐标;
+            fpc.target._y=fpi==1?(fpu.Z轴坐标-95):fpu.Z轴坐标;
+            fpu.攻击目标=fpc.target._name;
+            check(fpu.elderPhase==fpc.expectedPhase && fpu.elderPhaseFloorHp==fpc.expectedFloor,
+                "initial phase lock floor "+fpi+" phase="+fpu.elderPhase+" floor="+fpu.elderPhaseFloorHp);
+            fpu.hp=-99999;
+            check(fpu.hp==fpc.expectedFloor,"one-shot overkill clamped to phase floor "+fpi+" hp="+fpu.hp);
+            check(fpu.elderInPhaseTransition===true && fpu.elderActivePhaseAction==fpc.expectedMove,
+                "phase transition immediately starts "+fpc.expectedMove);
+            var fpShield:Object=fpu.shield.getShieldById(fpu.elderPhaseShield);
+            check(fpu.elderPhaseShield>=0 && fpShield!=null && fpShield.getCapacity()==fpu.hp满血值 && fpShield.getStrength()>=999999,
+                "phase transition grants full-HP ultra-high-strength shield "+fpc.expectedMove);
+            check(fpu.刚体===true && fpu.免疫击退===true && fpu.锁定方向===true,
+                "phase transition locks rigidity, knockback immunity and direction "+fpc.expectedMove);
+            var lockedState:String=fpu.状态;
+            fpu.状态改变("被击");fpu.方向改变("左");fpu.移动钝感硬直(30);fpu.hp=0;
+            check(fpu.状态==lockedState && fpu.方向=="右" && !fpu.硬直中 && fpu.hp==fpc.expectedFloor,
+                "active phase transition resists state/dir/stiff/hp interrupts "+fpc.expectedMove);
+        }
+        for(fpi=0;fpi<fivePhaseCases.length;fpi++){
+            fpc=fivePhaseCases[fpi];fpu=fpc.actor;
+            if(fpc.phaseIndex==1 && fpu.man!=null && fpu.man.elderHeavyBeamRay!=null){
+                var rot:Number=Math.abs(fpu.man.elderHeavyBeamRay._rotation);
+                if(rot>fpc.record.maxSweepAngle)fpc.record.maxSweepAngle=rot;
+            }
+        }
         if(ticks==4)for(r8i=0;r8i<r8Cases.length;r8i++){
             r8c=r8Cases[r8i];r8u=r8c.actor;
             if(r8c.move=="slam_ruleA_shielded" || r8c.move=="slam_ruleA_broken"){
@@ -603,7 +780,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
                 if(c.move=="hit1")check(rec.lastRecoveryFrame==25,"second authored hit branch ends at frame 25 "+i);
                 if(c.move=="fall")check(rec.physics==1,"human landing delegates once "+i);
                 if(c.move=="knockdown")check(rec.physics==2 && !c.actor.倒地,"airborne then grounded recovery both delegate "+i);
-                if(dead){if(c.form==1)check(rec.stamps==1 && rec.stampLayer==2 && rec.stampSettled===true && rec.allDebrisGrounded===true && rec.debrisCount==15,"settled robot corpse stamped once "+i);check(rec.kills==1,"standard kill once "+i);check(rec.removed && rec.deathChecks==1 && (c.form==0?rec.deathOptions.noCorpse===true:rec.deathOptions.noCorpse!==true),"death retirement once "+i);}
+                if(dead){if(c.form==1){check(rec.stamps==1 && rec.stampLayer==2 && rec.stampSettled===true && rec.allDebrisGrounded===true && rec.debrisCount==15,"settled robot corpse stamped once "+i);check(rec.nuclearWaves==1 && rec.nuclearDeathOk===true && rec.sfxCounts["爆破 拆除 大型 深埋 炸药 强力冲击波 09.mp3"]==1,"robot death emits 战术核弹手雷-style 核弹爆炸 bullet and shockwave SFX "+i);}check(rec.kills==1,"standard kill once "+i);check(rec.removed && rec.deathChecks==1 && (c.form==0?rec.deathOptions.noCorpse===true:rec.deathOptions.noCorpse!==true),"death retirement once "+i);}
                 else check(c.actor.状态=="空手站立" && rec.done>=1,"action recovery "+i);
             }
             for(var r8k:Number=0;r8k<r8Cases.length;r8k++){
@@ -637,6 +814,123 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
             r8Cases[0].actor.状态改变("空手跑");
             check(r8Cases[0].actor.man._totalframes==24,"human run state mounts dedicated 24f R8 run clip");
             r8Cases[0].actor.状态改变("空手站立");
+            for(var fpk:Number=0;fpk<fivePhaseCases.length;fpk++){
+                var fpCase:Object=fivePhaseCases[fpk],fpActor:MovieClip=fpCase.actor,fpRec:Object=fpCase.record;
+                check(!fpActor.elderInPhaseTransition && fpActor.elderPhase==fpCase.expectedPhase+1,
+                    "phase transition completes and advances phase "+fpCase.expectedMove+" phase="+fpActor.elderPhase);
+                check(fpActor.elderPhaseShield==-1 && fpActor.shield.getCapacity()==0
+                    && fpActor.elderCombatStats.phaseShieldGrants==1 && fpActor.elderCombatStats.phaseShieldRemoved==1,
+                    "full-HP phase shield removed immediately when performance ends "+fpCase.expectedMove);
+                check(fpActor.状态=="空手站立" && !fpActor.刚体 && !fpActor.免疫击退 && !fpActor.锁定方向,
+                    "phase transition restores neutral combat flags "+fpCase.expectedMove);
+                check(fpRec.sfxCounts["Itinerantsheild.wav"]==1 && fpRec.sfxCounts["霸体觉醒.wav"]==1 && fpActor.elderCombatStats.sfxPlayed==fpRec.sfxTotal,
+                    "phase transition plays shield activation and awakening SFX "+fpCase.expectedMove);
+                if(fpk==0){
+                    check(fpActor.elderCombatStats.phase_antiairStarts==1 && fpActor.elderCombatStats.phase_antiairShells==12
+                        && fpRec.slamAntiairs==12 && fpRec.fallingShells==12 && fpRec.shellZodiacMask==4095 && fpRec.fallingShellOk
+                        && fpRec.sfxCounts["G1炮开火.wav"]==12 && fpRec.sfxCounts["榴弹下落.wav"]==12 && fpRec.sfxCounts["G1炮命中.wav"]==12,
+                        "phase 1->2 antiair fires 12 skyward blasts and 12 falling shells with all 12 Zodiac ground markers and full cannon/whistle/explosion SFX");
+                }else if(fpk==1){
+                    check(fpActor.elderCombatStats.phase_sweepBeamStarts==1 && fpActor.elderCombatStats.phase_sweepBeamContacts==34
+                        && fpRec.sweepPulses==34 && fpActor.elderCombatStats.phase_sweepBeamRot>540
+                        && fpActor.elderCombatStats.phase_sweepBeamTurns>=3 && fpRec.maxSweepAngle>60 && fpRec.areaOk
+                        && fpRec.sfxCounts["黑红激光.wav"]==1 && fpRec.sfxCounts["Itinerantlaser.wav"]==1
+                        && fpRec.sfxCounts["机械关节转动.wav"]==fpActor.elderCombatStats.phase_sweepBeamTurns
+                        && fpRec.sfxCounts["CF6_0992.mp3"]==12,
+                        "phase 2->3 sweepBeam rotates 540+ deg at 1/3 slower speed across 3+ left/right turns and emits 34 pulses + laser/pivot/sustain SFX rot="+fpActor.elderCombatStats.phase_sweepBeamRot+" turns="+fpActor.elderCombatStats.phase_sweepBeamTurns+" maxAng="+fpRec.maxSweepAngle+" diag="+fpRec.sweepFailDiag);
+                    var steepMc:Object=fpRec.steepSweepBullet,steepRay:Object=fpRec.steepSweepRay;
+                    check(steepMc!=null && steepMc.polygonCollider!=null && (steepMc.flags&2)!=0,"angled sweepBeam attaches narrow-phase polygon collider");
+                    if(steepMc!=null && steepMc.polygonCollider!=null && steepRay!=null){
+                        var onRayBox:Object={getAABB:function(zOff:Number):Object {
+                            return {left:steepRay.cx-18,right:steepRay.cx+18,top:steepRay.cy-30,bottom:steepRay.cy+30};
+                        }};
+                        var offRayGroundBox:Object={getAABB:function(zOff:Number):Object {
+                            return {left:steepRay.cx-18,right:steepRay.cx+18,top:steepRay.oy-20,bottom:steepRay.oy+20};
+                        }};
+                        var onHit:Object=steepMc.polygonCollider.checkCollision(onRayBox,0);
+                        var offHit:Object=steepMc.polygonCollider.checkCollision(offRayGroundBox,0);
+                        check(onHit!=null && onHit.isColliding===true && onHit.overlapRatio==1,"angled sweepBeam OBB hits target on the tilted beam ray with full ratio=1");
+                        check(offHit==null || offHit.isColliding===false,"angled sweepBeam OBB misses target inside world AABB but off the tilted beam ray");
+                    }
+                }else if(fpk==2){
+                    check(fpActor.elderCombatStats.phase_pummelStarts==1 && fpActor.elderCombatStats.phase_pummelContacts==8
+                        && fpActor.elderCombatStats.phase_pummelMissiles==20 && fpRec.shots==8 && fpRec.pummelMissiles==20
+                        && fpRec.pummelPellets==40 && fpRec.pummelMask==255 && fpRec.zodiacHouseMask==4095
+                        && fpRec.activeZodiacSignMask==4095 && fpActor.elderZodiacAstrolabe==null && fpActor.cf6ElderZodiacFx==null
+                        && fpRec.sfxCounts["星座轮盘转动.wav"]==8 && fpRec.sfxCounts["铁血飞弹.mp3"]==12 && fpRec.sfxCounts["Itinerantmissile.wav"]==8
+                        && fpRec.moves==0 && fpRec.contractOk,
+                        "phase 3->4 pummel performs 8 Zodiac punches + 4 astrolabe clock steps across all 12 houses with active Zodiac sign display and astrolabe/salvo SFX (20 clusters, 40 missiles)");
+                    var pmc:Object=fpRec.lastPummelMc;
+                    check(pmc!=null && typeof pmc.updateMovement=="function" && typeof pmc.shouldDestroy=="function","pummel missile installs post-spawn lifecycle hooks");
+                    if(pmc!=null){
+                        for(var pf:Number=1;pf<=20;pf++){
+                            pmc.updateMovement(pmc);
+                            pmc.onEnterFrame();
+                        }
+                        var x20:Number=pmc._x,y20:Number=pmc._y;
+                        check(pmc.origMoves==20 && pmc.cf6LockVX==5 && pmc.cf6LockVY==-3 && (pmc.stateFlags&32)==0 && !pmc.shouldDestroy(pmc),
+                            "pummel missile guides for 20 frames, locks velocity and clears map-hit flag");
+                        for(pf=21;pf<=41;pf++){
+                            pmc.updateMovement(pmc);
+                        }
+                        check(pmc.origMoves==20 && pmc._x==x20+21*5 && pmc._y==y20-21*3 && !pmc.shouldDestroy(pmc),
+                            "pummel missile flies straight at locked velocity after frame 20 without further guidance");
+                        pmc.updateMovement(pmc);
+                        check(pmc.cf6PummelAge==42 && pmc.shouldDestroy(pmc)===true,"pummel missile self-destructs at frame 42");
+                    }
+                }else if(fpk==3){
+                    check(fpActor.elderCombatStats.phase_quakeStarts==1 && fpActor.elderCombatStats.phase_quakeContacts==1
+                        && fpRec.quakeShots==1 && fpRec.areaOk && fpActor.elderPhaseFloorHp==0
+                        && fpRec.sfxCounts["Itinerant蓄力.wav"]==1 && fpRec.sfxCounts["霸体觉醒蓄力.wav"]==1
+                        && fpRec.sfxCounts["全力砸地.wav"]==1 && fpRec.sfxCounts["地震1.wav"]==1,
+                        "phase 4->5 quake charges and emits map-wide shockwave + charge/slam/quake SFX and unlocks final phase");
+                    Cf6ElderCombatEffectsTest.verifyPhaseQuake(fpRec.quakeBullet,fpActor);
+                }
+            }
+            var expectedFloors:Array=[800,600,400,200];
+            for(var seqStep:Number=0;seqStep<4;seqStep++){
+                if(seqStep==0){
+                    fivePhaseSeq.被击移动=nativeKnockback;
+                    fivePhaseSeq.被击移动("左",24,0.5);
+                    check(fivePhaseSeq.speed==24 && typeof fivePhaseSeq.onEnterFrame=="function","active knockback sliding armed before phase lock");
+                }
+                if(seqStep==1){
+                    fivePhaseSeq.刚体=true;fivePhaseSeq.免疫击退=true;fivePhaseSeq.锁定方向=true;
+                    fivePhaseSeq.elderBeginAttack(fivePhaseSeq.man,"beam");
+                }
+                var preSlideX:Number=fivePhaseSeq._x;
+                fivePhaseSeq.hp=-50000;
+                if(seqStep==0){
+                    if(typeof fivePhaseSeq.onEnterFrame=="function")fivePhaseSeq.onEnterFrame();
+                    check(fivePhaseSeq.speed==0 && fivePhaseSeq.onEnterFrame==undefined && fivePhaseSeq._x==preSlideX,
+                        "phase transition halts active knockback sliding with zero drift");
+                }
+                check(fivePhaseSeq.hp==expectedFloors[seqStep] && fivePhaseSeq.elderPhase==seqStep+1 && fivePhaseSeq.elderInPhaseTransition===true
+                    && fivePhaseSeq.elderPhaseShield>=0,
+                    "sequential five-phase lock step "+(seqStep+1)+" hp="+fivePhaseSeq.hp);
+                if(fivePhaseSeq.elderAttackOwner!=null)fivePhaseSeq.elderAttackOwner.pummelLoop=99;
+                fivePhaseSeq.elderFinishAttack(fivePhaseSeq.man);
+                check(!fivePhaseSeq.elderInPhaseTransition && fivePhaseSeq.elderPhase==seqStep+2 && fivePhaseSeq.elderPhaseShield==-1,
+                    "sequential five-phase finish step "+(seqStep+1)+" nextPhase="+fivePhaseSeq.elderPhase);
+                if(seqStep==1){
+                    check(fivePhaseSeq.刚体===true && fivePhaseSeq.免疫击退===true && fivePhaseSeq.锁定方向===true,
+                        "phase transition restores pre-existing baseline rigid/immune/lockDir flags");
+                    fivePhaseSeq.刚体=false;fivePhaseSeq.免疫击退=false;fivePhaseSeq.锁定方向=false;
+                }
+            }
+            fivePhaseSeq.hp=0;
+            check(fivePhaseSeq.hp==0 && fivePhaseSeq.elderPhase==5,"phase 5 allows lethal damage to reach 0 HP");
+            retireIdle.状态改变("消失");
+            check(retireIdle.状态=="消失" && retireIdle.hp==0 && !retireIdle.elderInPhaseTransition
+                && retireIdle.elderPhase==1 && retireIdle.elderPhaseShield==-1 && retireIdle.elderCombatStats.phaseTransitions==0,
+                "retiring living robot via 消失 zeroes HP without triggering phase lock");
+            retireMidPhase.hp=700;
+            check(retireMidPhase.elderInPhaseTransition===true && retireMidPhase.elderPhase==1,"mid-phase robot enters phase 1 transition");
+            retireMidPhase.状态改变("消失");
+            check(retireMidPhase.状态=="消失" && retireMidPhase.hp==0 && !retireMidPhase.elderInPhaseTransition
+                && retireMidPhase.elderPhase==1 && retireMidPhase.elderPhaseShield==-1,
+                "retiring mid-phase robot via 消失 cleans up phase transition without advancing phase or re-locking HP");
+            retireIdle.removeMovieClip();retireMidPhase.removeMovieClip();
             check(Cf6ElderCombatEffectsTest.runAllTests(nativeKnockback),"actual robot combat effect suite");
             finish();
         }
