@@ -466,6 +466,84 @@ void StampNativeFrameTag(std::vector<uint8_t>& bgra,int width,int height,const D
         runGpuTagAndBullet(1023,599,1,1,1024,600, 99,777777, 99,777777, -1,-1, valid,decEpoch,decFrame,drawn);
         Check(valid==1 && decEpoch==99 && decFrame==777777 && drawn,
             "D05 clipped client (1023x599 from 1024x600 at offset 1,1) preserves stage alignment and decodes tag on GPU");
+
+        // F5: Vertex-stage ResolvePointCamera exact match, same-epoch nearest fallback, epoch mismatch, and invalid tag fallback
+        com_ptr<ID3D11PixelShader> worldPs;
+        check_hresult(dev->CreatePixelShader(CompositorShaders::PS.data,CompositorShaders::PS.size,nullptr,worldPs.put()));
+        D3D11_TEXTURE2D_DESC sfDesc{};
+        sfDesc.Width=2;sfDesc.Height=1;sfDesc.MipLevels=1;sfDesc.ArraySize=1;sfDesc.SampleDesc.Count=1;
+        sfDesc.Format=DXGI_FORMAT_R32G32B32A32_FLOAT;sfDesc.Usage=D3D11_USAGE_DEFAULT;sfDesc.BindFlags=D3D11_BIND_SHADER_RESOURCE;
+        const float sfPixels[8]{4.f,0.f,0.f,4.f, 0.f,0.f,4.f,4.f}; // left=RED, right=BLUE
+        D3D11_SUBRESOURCE_DATA sfInit{sfPixels,32,0};
+        com_ptr<ID3D11Texture2D> sfTex;
+        com_ptr<ID3D11ShaderResourceView> sfSrv;
+        check_hresult(dev->CreateTexture2D(&sfDesc,&sfInit,sfTex.put()));
+        check_hresult(dev->CreateShaderResourceView(sfTex.get(),nullptr,sfSrv.put()));
+        const FrameCameraHistoryEntry camEntries[2]{
+            {7,500,7,500, 256.f,0.f,1.f},  // maps stage center x=512 -> world.x=256 (RED)
+            {7,510,7,510, -256.f,0.f,1.f}  // maps stage center x=512 -> world.x=768 (BLUE)
+        };
+        syncParams.SetCameraHistory(camEntries,2);
+        auto runWorldSceneCam=[&](bool stampTag,int tagEpoch,int tagFrame,uint8_t& outR,uint8_t& outB) {
+            D3D11_VIEWPORT srcStage=FrameSyncParameters::ResolveSourceStageViewport(1024,576,0,0,1024,576);
+            std::vector<uint8_t> srcBgra(1024*576*4,180);
+            if(stampTag)StampNativeFrameTag(srcBgra,1024,576,srcStage,tagEpoch,tagFrame);
+            D3D11_TEXTURE2D_DESC sd{};
+            sd.Width=1024;sd.Height=576;sd.MipLevels=1;sd.ArraySize=1;sd.SampleDesc.Count=1;
+            sd.Format=DXGI_FORMAT_B8G8R8A8_UNORM;sd.Usage=D3D11_USAGE_DEFAULT;sd.BindFlags=D3D11_BIND_SHADER_RESOURCE;
+            D3D11_SUBRESOURCE_DATA sdInit{srcBgra.data(),1024*4,0};
+            com_ptr<ID3D11Texture2D> srcTex;com_ptr<ID3D11ShaderResourceView> srcSrv;
+            check_hresult(dev->CreateTexture2D(&sd,&sdInit,srcTex.put()));
+            check_hresult(dev->CreateShaderResourceView(srcTex.get(),nullptr,srcSrv.put()));
+            D3D11_VIEWPORT vp64{0,0,64,64,0,1};
+            const int id[4]{7,510,7,510};
+            syncParams.UpdateParams(ctx,id,1024,576,vp64,true,true,0,0,1024,576);
+            const float darkGrade[16]{.05f,0,0,0, 0,.05f,0,0, 0,0,.05f,0, 0,0,0,1.f};
+            const float sampConsts[8]{1.f/1024.f,1.f/576.f,0.f,0.f, 1.f/64.f,1.f/64.f,0.f,0.f};
+            const float atmZero[16]{};
+            // Fallback pointCamera.x = -256 (BLUE) when history is not matched
+            const float ptConsts[16]{0.f,0.f,64.f,64.f, -256.f,0.f,1.f,0.f, 1.f,0.8f,0.f,0.f, 1.f,1.f,1.f,0.f};
+            const float scConsts[8]{0.f,0.f,1.f/1024.f,1.f/576.f, 1.f,0.f,0.f,0.f};
+            auto gBuf=Buffer(dev,darkGrade,64),smpBuf=Buffer(dev,sampConsts,32),aBuf=Buffer(dev,atmZero,64);
+            auto pBuf=Buffer(dev,ptConsts,64),scBuf=Buffer(dev,scConsts,32);
+            D3D11_TEXTURE2D_DESC od{};
+            od.Width=64;od.Height=64;od.MipLevels=1;od.ArraySize=1;od.SampleDesc.Count=1;
+            od.Format=DXGI_FORMAT_B8G8R8A8_UNORM;od.Usage=D3D11_USAGE_DEFAULT;od.BindFlags=D3D11_BIND_RENDER_TARGET;
+            com_ptr<ID3D11Texture2D> oTex;com_ptr<ID3D11RenderTargetView> oRtv;
+            check_hresult(dev->CreateTexture2D(&od,nullptr,oTex.put()));
+            check_hresult(dev->CreateRenderTargetView(oTex.get(),nullptr,oRtv.put()));
+            ctx->RSSetViewports(1,&vp64);
+            auto* ortv=oRtv.get();ctx->OMSetRenderTargets(1,&ortv,nullptr);
+            auto* gp=gBuf.get();auto* sp=smpBuf.get();auto* ap=aBuf.get();auto* pp=pBuf.get();auto* scp=scBuf.get();
+            ctx->PSSetConstantBuffers(0,1,&gp);ctx->PSSetConstantBuffers(1,1,&sp);
+            ctx->PSSetConstantBuffers(2,1,&ap);ctx->PSSetConstantBuffers(3,1,&ap);
+            ctx->VSSetConstantBuffers(4,1,&pp);ctx->PSSetConstantBuffers(4,1,&pp);
+            ctx->VSSetConstantBuffers(6,1,&scp);ctx->PSSetConstantBuffers(6,1,&scp);
+            auto* ssrv=srcSrv.get();auto* sfsrv=sfSrv.get();auto* smp=h.sampler.get();
+            ctx->PSSetShaderResources(0,1,&ssrv);ctx->PSSetSamplers(0,1,&smp);
+            ctx->PSSetShaderResources(6,1,&sfsrv);ctx->PSSetSamplers(3,1,&smp);
+            ctx->VSSetShaderResources(9,1,&ssrv);ctx->PSSetShaderResources(9,1,&ssrv);
+            ctx->VSSetShader(vs.get(),nullptr,0);ctx->PSSetShader(worldPs.get(),nullptr,0);
+            ctx->Draw(3,0);
+            ID3D11ShaderResourceView* nullSrv=nullptr;
+            ctx->PSSetShaderResources(0,1,&nullSrv);ctx->PSSetShaderResources(6,1,&nullSrv);
+            ctx->VSSetShaderResources(9,1,&nullSrv);ctx->PSSetShaderResources(9,1,&nullSrv);
+            ctx->OMSetRenderTargets(0,nullptr,nullptr);
+            auto px=Read(dev,ctx,oTex.get());
+            size_t center=((32*64)+32)*4;
+            outB=px[center];outR=px[center+2];
+        };
+        uint8_t rPx=0,bPx=0;
+        runWorldSceneCam(true,7,500,rPx,bPx);
+        Check(rPx>bPx+60,"F5 exact (epoch=7, frame=500) camera history match selects historical RED camera in VS");
+        runWorldSceneCam(true,7,502,rPx,bPx);
+        Check(rPx>bPx+60,"F5 same-epoch nearest frame (502 -> 500 vs 510) selects nearest historical RED camera");
+        runWorldSceneCam(true,7,508,rPx,bPx);
+        Check(bPx>rPx+60,"F5 same-epoch nearest frame (508 -> 510 vs 500) selects nearest historical BLUE camera");
+        runWorldSceneCam(true,8,500,rPx,bPx);
+        Check(bPx>rPx+60,"F5 mismatched epoch (epoch=8 vs 7) falls back cleanly to pointCamera");
+        runWorldSceneCam(false,7,500,rPx,bPx);
+        Check(bPx>rPx+60,"F5 invalid/missing frame tag falls back cleanly to pointCamera");
     }
 }
 void TextureTests() {

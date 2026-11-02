@@ -9,6 +9,7 @@ class org.flashNight.arki.render.SceneLightBridgeTest {
     public static function runAllTests():Void {
         passed = 0; failed = 0;
         var oldWorld:MovieClip = _root.gameworld;
+        var oldInfraSys:Object = _root.基建系统;
         var testWorld:MovieClip = _root.createEmptyMovieClip("__sceneLightSuiteWorld",_root.getNextHighestDepth());
         _root.gameworld = testWorld;
         SceneLightBridge.resetScene();
@@ -74,10 +75,55 @@ class org.flashNight.arki.render.SceneLightBridgeTest {
         second._y = 80; wire = SceneLightBridge.flush();
         check(Number(wire.split(";")[2].split(",")[2]) == 80,"second attachment invalidates its own row");
         check(frozen[2] == 60,"cached encoding does not mutate an earlier full pose");
+        var baseRig:MovieClip = testWorld.createEmptyMovieClip("基地灯光",3);
+        var glowLayer:MovieClip = baseRig.createEmptyMovieClip("发光层",1);
+        var beaconLayer:MovieClip = baseRig.createEmptyMovieClip("信标层",2);
+        SceneLightBridge.configure([{Key:"gate-door-sconce-l",X:135,Y:275},{Key:"roof-antenna-beacon",X:1445,Y:68}],null,"base-ambient");
+        SceneLightBridge.syncAmbientLight(7,testWorld);
+        snap = SceneLightBridge.snapshot();
+        check(snap.poses[0][6] == 0 && Math.abs(snap.poses[1][6]-0.35) < 0.02 && glowLayer._visible == false && Math.abs(beaconLayer._alpha-45) < 1,"daytime turns off base illumination and dims beacon");
+        SceneLightBridge.sent(); SceneLightBridge.flush();
+        SceneLightBridge.syncAmbientLight(4,testWorld);
+        wire = SceneLightBridge.flush();
+        check(Math.abs(Number(wire.split(";")[1].split(",")[6])-0.55) < 0.02 && wire.split(";")[2].split(",")[6] == "1" && glowLayer._visible == true && Math.abs(glowLayer._alpha-55) < 1 && Math.abs(beaconLayer._alpha-100) < 1,"dusk warms up base lights to half power");
+        SceneLightBridge.syncAmbientLight(1,testWorld);
+        wire = SceneLightBridge.flush();
+        check(wire.split(";")[1].split(",")[6] == "1" && glowLayer._visible == true && Math.abs(glowLayer._alpha-100) < 1,"night restores full base lighting power");
+        baseRig.removeMovieClip();
+        delete testWorld.基地灯光;
+        var deadbody:MovieClip = testWorld.createEmptyMovieClip("deadbody",4);
+        _global.ASSetPropFlags(testWorld,["deadbody"],1,false);
+        var mockDict:Object = {};
+        mockDict["基地供电与照明"] = {};
+        _root.基建系统 = {dict:mockDict, infrastructure:{}};
+        SceneLightBridge.configure([
+            {Key:"gate-door-sconce-l",X:155,Y:380},
+            {Key:"garage-workbay-se-lamp",X:1135,Y:585},
+            {Key:"garage-truss-flood-w",X:330,Y:145},
+            {Key:"roof-helipad-flood-l",X:165,Y:235},
+            {Key:"garage-bpk-underglow",X:615,Y:365}
+        ],null,"base-infra-tiers");
+        SceneLightBridge.syncAmbientLight(1,testWorld);
+        snap = SceneLightBridge.snapshot();
+        check(_root.基建系统.infrastructure["基地供电与照明"] === 0 && snap.poses[0][6] == 0.84375 && snap.poses[1][6] == 0.84375 && snap.poses[2][6] == 0 && snap.poses[3][6] == 0 && snap.poses[4][6] == 0,"Lv.0 auto-unlocks with full walkable emergency and stall lamps active while higher-tier floods remain locked");
+        check(testWorld.基地灯光 == undefined && deadbody.__baseLightRig == undefined && Math.abs(SceneLightBridge.effectiveAmbientLight(1)-1.0) < 0.01 && SceneLightBridge.baseCharacterInfoMinOpacity() == 100,"Lv.0 creates no procedural vector stickers and preserves deep night ambient with 100% readable nameplates");
+        _root.基建系统.infrastructure["基地供电与照明"] = 1;
+        SceneLightBridge.syncAmbientLight(1,testWorld);
+        snap = SceneLightBridge.snapshot();
+        check(snap.poses[0][6] == 0.90625 && snap.poses[1][6] == 0.90625 && snap.poses[2][6] == 0.875 && snap.poses[3][6] == 0 && snap.poses[4][6] == 0 && Math.abs(SceneLightBridge.effectiveAmbientLight(1)-1.15) < 0.01 && SceneLightBridge.baseCharacterInfoMinOpacity() == 100,"Lv.1 unlocks industrial wall-wash and truss workbay floods while keeping watchtower searchlights locked");
+        _root.基建系统.infrastructure["基地供电与照明"] = 2;
+        SceneLightBridge.syncAmbientLight(1,testWorld);
+        snap = SceneLightBridge.snapshot();
+        check(snap.poses[0][6] == 0.953125 && snap.poses[1][6] == 0.953125 && snap.poses[2][6] == 0.953125 && snap.poses[3][6] == 0.90625 && snap.poses[4][6] == 0 && Math.abs(SceneLightBridge.effectiveAmbientLight(1)-1.3) < 0.01 && SceneLightBridge.baseCharacterInfoMinOpacity() == 100,"Lv.2 unlocks watchtower diagonal searchlights and central high-bay floods");
+        _root.基建系统.infrastructure["基地供电与照明"] = 3;
+        SceneLightBridge.syncAmbientLight(1,testWorld);
+        snap = SceneLightBridge.snapshot();
+        check(snap.poses[0][6] == 1 && snap.poses[1][6] == 1 && snap.poses[2][6] == 1 && snap.poses[3][6] == 1 && snap.poses[4][6] == 1 && Math.abs(SceneLightBridge.effectiveAmbientLight(1)-1.45) < 0.01 && SceneLightBridge.baseCharacterInfoMinOpacity() == 100,"Lv.3 unlocks BPK cyan underglow and perimeter accents at full optical power");
         caps["native"] = false; caps.sceneLightsVersion = 0;
         SceneLightBridge.configureCaps(caps);
         check(SceneLightBridge.flush() == null && SceneLightBridge.snapshot() == null,"capability revocation");
         SceneLightBridge.resetScene();
+        _root.基建系统 = oldInfraSys;
         _root.gameworld = oldWorld; testWorld.removeMovieClip();
         trace("SceneLightBridgeTest Tests Passed: " + passed);
         trace("SceneLightBridgeTest Tests Failed: " + failed);

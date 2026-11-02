@@ -1,15 +1,47 @@
 #pragma once
 
-// Identity gates only projectiles. Source metadata is removed while sampling
-// the world, before any native effects or HUD; no final-screen rewrite exists.
+// Identity gates projectiles and aligns world-space point/scene lighting with
+// the captured source frame. Source metadata is removed while sampling the
+// world, before any native effects or HUD; no final-screen rewrite exists.
+struct FrameCameraHistoryEntry {
+    int ordinaryEpoch=-1,ordinaryFrame=-1,chainEpoch=-1,chainFrame=-1;
+    float cameraX=0.f,cameraY=0.f,cameraScale=1.f;
+};
+
 class FrameSyncParameters {
     winrt::com_ptr<ID3D11Buffer> params_;
+    float cameraHistory_[64]{};
 public:
+    FrameSyncParameters() {
+        SetCameraHistory(nullptr,0);
+    }
     void Prepare(ID3D11Device* device) {
         if(params_)return;
-        D3D11_BUFFER_DESC desc{};desc.ByteWidth=48;desc.BindFlags=D3D11_BIND_CONSTANT_BUFFER;
+        D3D11_BUFFER_DESC desc{};desc.ByteWidth=304;desc.BindFlags=D3D11_BIND_CONSTANT_BUFFER;
         desc.Usage=D3D11_USAGE_DEFAULT;
         winrt::check_hresult(device->CreateBuffer(&desc,nullptr,params_.put()));
+    }
+    void SetCameraHistory(const FrameCameraHistoryEntry* entries,size_t count) {
+        for(size_t i=0;i<8;++i) {
+            if(entries && i<count) {
+                const auto& e=entries[i];
+                const bool coherent=e.ordinaryEpoch>=0 && e.ordinaryFrame>=0
+                    && (e.chainEpoch<0 || e.chainFrame==e.ordinaryFrame);
+                cameraHistory_[i*4+0]=coherent?static_cast<float>(static_cast<uint32_t>(e.ordinaryEpoch)&0xFFFFu):-1.f;
+                cameraHistory_[i*4+1]=coherent?static_cast<float>(static_cast<uint32_t>(e.ordinaryFrame)&0xFFFFFFu):-1.f;
+                cameraHistory_[i*4+2]=coherent?1.f:-1.f;
+                cameraHistory_[i*4+3]=0.f;
+                cameraHistory_[32+i*4+0]=e.cameraX;
+                cameraHistory_[32+i*4+1]=e.cameraY;
+                cameraHistory_[32+i*4+2]=e.cameraScale;
+                cameraHistory_[32+i*4+3]=0.f;
+            } else {
+                cameraHistory_[i*4+0]=-1.f;cameraHistory_[i*4+1]=-1.f;
+                cameraHistory_[i*4+2]=-1.f;cameraHistory_[i*4+3]=0.f;
+                cameraHistory_[32+i*4+0]=0.f;cameraHistory_[32+i*4+1]=0.f;
+                cameraHistory_[32+i*4+2]=1.f;cameraHistory_[32+i*4+3]=0.f;
+            }
+        }
     }
     static D3D11_VIEWPORT ResolveSourceStageViewport(int sourceWidth,int sourceHeight,
             int clientOffsetX=0,int clientOffsetY=0,int fullClientWidth=0,int fullClientHeight=0) {
@@ -39,13 +71,14 @@ public:
         // Test exact CPU equality first: different full frames with equal low
         // bits must not become an apparently coherent ordinary/chain snapshot.
         const float chainFrame=identity[2]>=0 && identity[3]==identity[1] ? frame : -1.f;
-        float values[12]{
+        float values[76]{
             epoch,frame,chainEpoch,chainFrame,
             static_cast<float>(sourceWidth),static_cast<float>(sourceHeight),sourceStage.Width,sourceStage.Height,
             sourceStage.TopLeftX,sourceStage.TopLeftY,enabled?1.f:0.f,hideSourceTag?1.f:0.f};
+        std::memcpy(values+12,cameraHistory_,sizeof(cameraHistory_));
         context->UpdateSubresource(params_.get(),0,nullptr,values,0,0);
         auto buffer=params_.get();
-        // b7 belongs to night vision. b8 is shared by source sampling and bullets.
+        // b7 belongs to night vision. b8 is shared by source sampling, lighting and bullets.
         context->VSSetConstantBuffers(8,1,&buffer);context->PSSetConstantBuffers(8,1,&buffer);
     }
 };

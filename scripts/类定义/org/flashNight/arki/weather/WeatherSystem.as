@@ -313,7 +313,8 @@ class org.flashNight.arki.weather.WeatherSystem {
             bus.publish("夜视仪启动", lightLevel);
         }
 
-        // 经济倍率逻辑
+        // 经济倍率逻辑（先同步基地场景灯，再刷新人物信息透明度）
+        org.flashNight.arki.render.SceneLightBridge.syncAmbientLight(lightLevel, _root.gameworld);
         if (lightLevel <= this.timeMultiplierStartLevel && nvVisual == null) {
             bus.publish("WeatherTimeRateUpdated", lightLevel);
         } else {
@@ -331,6 +332,7 @@ class org.flashNight.arki.weather.WeatherSystem {
         }
 
         // 应用光照渲染
+        this.defensiveRefreshUnits();
         WorldLightingBridge.setMode(vc);
         WorldLightingBridge.publish(this, true);
 
@@ -354,6 +356,12 @@ class org.flashNight.arki.weather.WeatherSystem {
         if (envInfo.最小光照 != undefined) this.minLight = envInfo.最小光照;
         if (!org.flashNight.arki.render.SceneLightBridge.isConfigured())
             org.flashNight.arki.render.SceneLightBridge.configure(envInfo.场景灯, null, "environment");
+        var cfgLightLevel:Number = this.getCurrentLightLevel();
+        org.flashNight.arki.render.SceneLightBridge.syncAmbientLight(cfgLightLevel, _root.gameworld);
+        if (cfgLightLevel <= this.timeMultiplierStartLevel) {
+            this.characterInfoOpacity = Math.max(this.characterInfoOpacity, org.flashNight.arki.render.SceneLightBridge.baseCharacterInfoMinOpacity());
+            this.defensiveRefreshUnits();
+        }
 
         // ---- 天空盒渲染器：室内/禁用天空判定 ----
         var skyDisabled:Boolean = (this.spaceCondition == "室内") || (envInfo.禁用天空 == true);
@@ -500,7 +508,11 @@ class org.flashNight.arki.weather.WeatherSystem {
             1,
             this.expTimeMaxMultiplier
         );
-        this.characterInfoOpacity = Interpolatior.linear(lightLevel, 0, this.timeMultiplierStartLevel, 0, 100);
+        var rawOpacity:Number = Interpolatior.linear(lightLevel, 0, this.timeMultiplierStartLevel, 0, 100);
+        this.characterInfoOpacity = Math.max(
+            rawOpacity,
+            org.flashNight.arki.render.SceneLightBridge.baseCharacterInfoMinOpacity()
+        );
     }
 
     /**
@@ -510,6 +522,12 @@ class org.flashNight.arki.weather.WeatherSystem {
     public function _onVisualFrame():Void { WorldLightingBridge.publish(this, false); }
 
     public function _onSceneReady():Void {
+        var cfgLightLevel:Number = this.getCurrentLightLevel();
+        org.flashNight.arki.render.SceneLightBridge.syncAmbientLight(cfgLightLevel, _root.gameworld);
+        if (cfgLightLevel <= this.timeMultiplierStartLevel) {
+            this.characterInfoOpacity = Math.max(this.characterInfoOpacity, org.flashNight.arki.render.SceneLightBridge.baseCharacterInfoMinOpacity());
+            this.defensiveRefreshUnits();
+        }
         WorldLightingBridge.sceneReady();
         WorldLightingBridge.publish(this, true);
     }

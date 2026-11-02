@@ -21,6 +21,7 @@ class org.flashNight.arki.render.SceneLightBridge {
     private static var capsKeys:String = "n/a";
     private static var failureReason:String = "";
     private static var catalogDigest:String = "";
+    private static var lastBaseLightingTier:Number = -1;
     public static function installedCatalogDigest():String { return enabled ? catalogDigest : ""; }
 
     public static function configureCaps(caps:Object):Void {
@@ -42,7 +43,7 @@ class org.flashNight.arki.render.SceneLightBridge {
     public static function resetScene():Void {
         world = null; identity = null; sources = {}; entries = []; definitions = [];
         configured = false; dirty = true; revision++; sequence = 0; sceneKey = ""; valid = true;
-        failureReason = "";
+        failureReason = ""; lastBaseLightingTier = -1;
         sources.__proto__ = null;
     }
     private static function ensureWorld():Boolean {
@@ -265,6 +266,120 @@ class org.flashNight.arki.render.SceneLightBridge {
             entries[i].manual = active ? 1 : 0; entries[i].stateDirty = true; return true;
         }
         return false;
+    }
+    public static function setWeight(key:String, weight:Number):Boolean {
+        if (isNaN(weight) || !isFinite(weight)) return false;
+        var clamped:Number = Math.max(0, Math.min(1, Math.round(weight * 64) / 64));
+        for (var i:Number = 0; i < entries.length; i++) if (entries[i].raw.Key == key) {
+            if (entries[i].manual !== clamped) {
+                entries[i].manual = clamped;
+                entries[i].stateDirty = true;
+            }
+            return true;
+        }
+        return false;
+    }
+    public static function resolveBaseLightingTier(autoUnlock:Boolean):Number {
+        var sys:Object = _root.基建系统;
+        if (sys != undefined && sys.infrastructure != undefined) {
+            if (autoUnlock === true && _root.当前为战斗地图 !== true
+                    && sys.dict != undefined && sys.dict["基地供电与照明"] != null
+                    && sys.infrastructure["基地供电与照明"] == null) {
+                sys.infrastructure["基地供电与照明"] = 0;
+                if (typeof _root.发布消息 == "function") {
+                    _root.发布消息("发现新的基建项目：基地供电与照明");
+                }
+            }
+            var rawLv:Number = Number(sys.infrastructure["基地供电与照明"]);
+            if (!isNaN(rawLv) && isFinite(rawLv)) {
+                return Math.max(0, Math.min(3, Math.floor(rawLv)));
+            }
+            if (sys.dict != undefined) return 0;
+        }
+        return 3;
+    }
+    public static function hasActiveBaseLighting():Boolean {
+        for (var i:Number = 0; i < entries.length; i++) {
+            var checkKey:String = String(entries[i].raw.Key);
+            if (checkKey.indexOf("gate-") === 0 || checkKey.indexOf("garage-") === 0 || checkKey.indexOf("roof-") === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public static function baseLightTierFactor(key:String, infraTier:Number):Number {
+        var tier:Number = (isNaN(infraTier) || !isFinite(infraTier)) ? 3 : Math.max(0, Math.min(3, Math.floor(infraTier)));
+        if (key === "gate-emblem-accent" || key === "gate-perimeter-guide-e"
+                || key === "garage-bpk-underglow" || key === "garage-showroom-accent-se"
+                || key === "roof-helipad-approach-c" || key === "roof-perimeter-accent-e") {
+            return tier < 3 ? 0 : 1;
+        }
+        if (key === "gate-cam-searchlight" || key === "gate-watchtower-east-beam"
+                || key === "garage-truss-flood-c"
+                || key === "roof-helipad-flood-l" || key === "roof-helipad-flood-r") {
+            return tier < 2 ? 0 : (tier == 2 ? 0.90625 : 1);
+        }
+        if (key === "gate-bunker-wall-wash"
+                || key === "garage-truss-flood-w" || key === "garage-truss-flood-e"
+                || key === "roof-bounty-wall-wash") {
+            return tier < 1 ? 0 : (tier == 1 ? 0.875 : (tier == 2 ? 0.953125 : 1));
+        }
+        return tier <= 0 ? 0.84375 : (tier == 1 ? 0.90625 : (tier == 2 ? 0.953125 : 1));
+    }
+    public static function effectiveAmbientLight(rawLight:Number):Number {
+        if (isNaN(rawLight) || !isFinite(rawLight) || rawLight >= 7 || !hasActiveBaseLighting()) {
+            return rawLight;
+        }
+        var infraTier:Number = resolveBaseLightingTier(false);
+        var floor:Number = infraTier <= 0 ? 1.00 : (infraTier == 1 ? 1.15 : (infraTier == 2 ? 1.30 : 1.45));
+        var t:Number = Math.max(0, Math.min(1, (rawLight - 1.0) / 6.0));
+        var lifted:Number = floor + t * (7.0 - floor);
+        return Math.max(rawLight, Math.round(lifted * 100) / 100);
+    }
+    public static function baseCharacterInfoMinOpacity():Number {
+        if (!hasActiveBaseLighting()) return 0;
+        return 100;
+    }
+    public static function syncAmbientLight(lightLevel:Number, gw:MovieClip):Void {
+        var level:Number = (isNaN(lightLevel) || !isFinite(lightLevel)) ? 7 : lightLevel;
+        var tierWeight:Number = level > 5.5 ? 0 : (level > 3.0 ? 0.55 : 1);
+        var beaconWeight:Number = level > 5.5 ? 0.35 : 1;
+        var hasBaseLight:Boolean = hasActiveBaseLighting();
+        var infraTier:Number = resolveBaseLightingTier(hasBaseLight);
+        if (hasBaseLight && lastBaseLightingTier !== infraTier) {
+            lastBaseLightingTier = infraTier;
+            org.flashNight.arki.weather.WorldLightingBridge.snapNext();
+        }
+        for (var j:Number = 0; j < entries.length; j++) {
+            var key:String = String(entries[j].raw.Key);
+            if (key.indexOf("gate-") === 0 || key.indexOf("garage-") === 0 || key.indexOf("roof-") === 0) {
+                var isBeacon:Boolean = (key === "roof-antenna-beacon" || key === "gate-outpost-beacon");
+                var ambientFactor:Number = isBeacon ? beaconWeight : tierWeight;
+                var tierFactor:Number = baseLightTierFactor(key, infraTier);
+                var targetWeight:Number = ambientFactor * tierFactor;
+                var clamped:Number = Math.max(0, Math.min(1, Math.round(targetWeight * 64) / 64));
+                if (entries[j].manual !== clamped) {
+                    entries[j].manual = clamped;
+                    entries[j].stateDirty = true;
+                }
+            }
+        }
+        var targetWorld:MovieClip = gw != null ? gw : _root.gameworld;
+        if (targetWorld != null && targetWorld.基地灯光 != undefined) {
+            var rig:MovieClip = targetWorld.基地灯光;
+            if (rig.灯具层 != undefined) {
+                rig.灯具层._visible = true;
+                rig.灯具层._alpha = 88;
+            }
+            if (rig.发光层 != undefined) {
+                rig.发光层._visible = tierWeight > 0;
+                rig.发光层._alpha = Math.round(tierWeight * 100);
+            }
+            if (rig.信标层 != undefined) {
+                rig.信标层._visible = true;
+                rig.信标层._alpha = level > 5.5 ? 45 : 100;
+            }
+        }
     }
     private static function fail(reason:String):Void {
         valid = false; failureReason = reason;

@@ -10,8 +10,26 @@ PRESETS=json.loads((V.ROOT/'data/environment/scene_lights.v1.json').read_text(en
 
 class SceneLightValidationTests(unittest.TestCase):
     def test_live_candidate_references(self):
-        rows=V.validate_tree();self.assertEqual(len(rows),7)
+        rows=V.validate_tree();self.assertEqual(len(rows),14)
         self.assertIn(9,[r['lights'] for r in rows])
+    def test_shared_base_stage_lights_stay_in_sync(self):
+        scene_root=V.ET.parse(V.ROOT/'data/environment/scene_environment.xml').getroot()
+        stage_root=V.ET.parse(V.ROOT/'data/environment/stage_environment.xml').getroot()
+        siege_root=V.ET.parse(V.ROOT/'data/stages/基地房顶/基地.xml').getroot()
+        scene_defs={env.findtext('BackgroundURL'):V.definitions(env,PRESETS) for env in scene_root.findall('Environment')}
+        stage_defs={env.findtext('BackgroundURL'):V.definitions(env,PRESETS) for env in stage_root.findall('Environment')}
+        siege_defs={}
+        for sub in siege_root.findall('SubStage'):
+            override=sub.find('BasicInformation/Environment')
+            if override is not None and override.findtext('BackgroundURL'):
+                siege_defs[override.findtext('BackgroundURL')]=V.definitions(override,PRESETS)
+        self.assertEqual(len(scene_defs['基地门口']),10)
+        self.assertEqual(len(scene_defs['基地车库']),12)
+        self.assertEqual(len(scene_defs['基地房顶']),12)
+        self.assertEqual(scene_defs['基地门口'],stage_defs['gk20_1_BG.swf'])
+        self.assertEqual(scene_defs['基地门口'],siege_defs['gk20_1_BG_围攻.swf'])
+        self.assertEqual(scene_defs['基地房顶'],stage_defs['gk20_5_BG.swf'])
+        self.assertEqual(scene_defs['基地房顶'],siege_defs['gk20_5_BG_围攻.swf'])
     def test_zero_energy_and_explicit_false_are_preserved(self):
         value=V.validate_record({'Key':'zero','Energy':0,'Enabled':False,'FollowScale':False},PRESETS)
         self.assertEqual(value['Energy'],0);self.assertFalse(value['Enabled'])

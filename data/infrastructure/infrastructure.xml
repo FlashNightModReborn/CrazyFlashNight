@@ -398,4 +398,88 @@
             <Description>以统合标准制成的化学仪器，常用于科学研究或工业生产。因其功能强大而被广泛适用于统合研究设施与巨型企业的实验中（无论是否合法）。</Description>
         </Level>
     </Infrastructure>
+    <Infrastructure>
+        <Name>基地供电与照明</Name>
+        <Level id="0">
+            <Description>A兵团大本营由旧监狱改造而成。当前仅由大门、车库各商铺摊位、屋顶梯口及通缉栏的基础暖色应急灯维持全动线照明。重整配电回路后，可逐步加装防爆墙面洗光灯、四周监狱哨塔的高空交叉探照灯与BPK高定展厅光学阵列。</Description>
+            <Price>8000</Price>
+            <Material>
+                <Name>不锈钢材</Name>
+                <Value>4</Value>
+            </Material>
+            <Material>
+                <Name>可充锂电池</Name>
+                <Value>2</Value>
+            </Material>
+            <Material>
+                <Name>玻璃</Name>
+                <Value>4</Value>
+            </Material>
+            <Material>
+                <Name>螺丝套件</Name>
+                <Value>6</Value>
+            </Material>
+        </Level>
+        <Level id="1">
+            <Description>【工业防爆配电与工位洗光】已完成基地主供电回路扩容，新增正门掩体洗墙灯、车库东西两侧钢架工位投光灯与屋顶通缉栏洗墙灯，商铺与任务区的立体照度大幅提升。
+下一阶段可启用四周监狱哨塔的高空交叉探照灯与车库中央高顶投光阵列。</Description>
+            <Price>25000</Price>
+            <Material>
+                <Name>高强度合金</Name>
+                <Value>4</Value>
+            </Material>
+            <Material>
+                <Name>强化金属管</Name>
+                <Value>6</Value>
+            </Material>
+            <Material>
+                <Name>透镜</Name>
+                <Value>4</Value>
+            </Material>
+            <Material>
+                <Name>可充锂电池</Name>
+                <Value>4</Value>
+            </Material>
+            <Material>
+                <Name>传感器</Name>
+                <Value>2</Value>
+            </Material>
+            <Skill>
+                <Name>逆向</Name>
+                <Level>1</Level>
+            </Skill>
+        </Level>
+        <Level id="2">
+            <Description>【监狱哨塔交叉探照与高顶主照明】基地四周哨塔与摄像头高架的冷白探照光束斜向贯穿院落与停机坪，车库中央高顶展位主投光灯同步点亮，在深邃夜色中拉出极具纵深感的立体光束层次。
+下一阶段可引入BPK定制展厅级冷青底盘灯、停机坪助航导引灯与周界精修照明。</Description>
+            <Price>60000</Price>
+            <Material>
+                <Name>高强度合金</Name>
+                <Value>8</Value>
+            </Material>
+            <Material>
+                <Name>透镜</Name>
+                <Value>6</Value>
+            </Material>
+            <Material>
+                <Name>电脑芯片</Name>
+                <Value>2</Value>
+            </Material>
+            <Material>
+                <Name>小型液晶屏</Name>
+                <Value>2</Value>
+            </Material>
+            <Material>
+                <Name>上色涂料</Name>
+                <Value>4</Value>
+            </Material>
+            <Skill>
+                <Name>逆向</Name>
+                <Level>2</Level>
+            </Skill>
+        </Level>
+        <Level id="3">
+            <Description>【BPK高定展厅光学工程与周界精修】全基地照明已达最高规格：除哨塔冷白交叉探照光柱与全动线暖金壁灯外，额外点亮车库BPK改装车冷青底盘灯、屋顶H停机坪助航导引灯与大门CRAZY FLASHER徽章洗光灯，在浓郁夜色下呈现极具层次感的基地夜景。</Description>
+        </Level>
+    </Infrastructure>
 </root>

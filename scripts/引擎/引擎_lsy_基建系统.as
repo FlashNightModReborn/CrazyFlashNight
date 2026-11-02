@@ -253,6 +253,9 @@ _root.gameCommands["tabletInfraUpgrade"] = function(params:Object):Void{
 		throw assetError;
 	}
 	_root.发布消息(name + " 升级至 " + infraMap[name] + " 级");
+	if(_root.天气系统 != undefined && typeof _root.天气系统.requestRefresh == "function"){
+		_root.天气系统.requestRefresh();
+	}
 	_root.平板回执(params, {task:"tablet_response", success:true, name:name, level:infraMap[name],
 		infrastructure:_root.平板基建等级快照(),
 		assets:_root.平板基建资产快照()});

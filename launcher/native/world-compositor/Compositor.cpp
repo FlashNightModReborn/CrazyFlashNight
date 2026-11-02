@@ -1347,6 +1347,7 @@ private:
             std::shared_ptr<std::vector<uint8_t>> atlasPixels;int atlasW=0,atlasH=0;
             std::shared_ptr<std::vector<uint8_t>> bulletPixels;int bulletW=0,bulletH=0;uint64_t bulletAtlasVersion=0;
             uint64_t lightCaptureGeneration=0;
+            bool bulletHistoryChanged=false;
             { std::lock_guard guard(mutex_);
                 lightCaptureGeneration=geometry_.captureGeneration;
                 // Keep the weather state/style and their version together. This
@@ -1367,7 +1368,7 @@ private:
                         bulletSyncStats_.coalescedVersions+=bulletFrame->version-appliedBulletSnapshot-1;
                         appliedBulletSnapshot=bulletFrame->version;
                     }
-                    bulletHistory=bulletHistory_;appliedBullet=bulletVersion_; }
+                    bulletHistory=bulletHistory_;appliedBullet=bulletVersion_;bulletHistoryChanged=true; }
                 if(fxVersion_!=appliedFx) {
                     if(fxFrame.count!=fxFrame_.count || (fxFrame_.count>0
                         && std::memcmp(fxFrame.params,fxFrame_.params,static_cast<size_t>(fxFrame_.count)*64)!=0))
@@ -1433,6 +1434,14 @@ private:
             int syncIdentity[4]{bulletFrame->ordinaryEpoch,bulletFrame->ordinaryFrame,bulletFrame->chainEpoch,bulletFrame->chainFrame};
             bool syncActive=!proof && bulletFrame->ordinaryEpoch>=0 && bulletFrame->ordinaryFrame>=0
                 && bulletFrame->chainEpoch>=0 && bulletFrame->chainFrame>=0;
+            std::array<FrameCameraHistoryEntry,BulletHistoryCap> camHistory{};
+            size_t camHistoryCount=0;
+            for(auto it=bulletHistory.rbegin();it!=bulletHistory.rend() && camHistoryCount<BulletHistoryCap;++it) {
+                const auto& s=*it;
+                camHistory[camHistoryCount++]={s->ordinaryEpoch,s->ordinaryFrame,s->chainEpoch,s->chainFrame,
+                    s->cameraX,s->cameraY,s->cameraScale};
+            }
+            frameSync.SetCameraHistory(camHistory.data(),camHistoryCount);
             frameSync.UpdateParams(context.get(),syncIdentity,textureW,textureH,contentViewport,syncActive,!proof,
                 clientOffX,clientOffY,fullClientW,fullClientH);
             // Diagnostic work is explicitly requested by a reader, rate limited,
@@ -1478,10 +1487,13 @@ private:
                 lightsOn || sceneOn?1.f:0.f,std::max(fxFrame.maximumLightResponse,sceneOn?sceneGpu.response:0.f),lightsOn?1.f:0.f,0,palette[0],palette[1],palette[2],0};
             context->UpdateSubresource(lightParams.get(),0,nullptr,lp,0,0);
             auto lightBuffer=lightParams.get();context->VSSetConstantBuffers(4,1,&lightBuffer);context->PSSetConstantBuffers(4,1,&lightBuffer);
+            ID3D11ShaderResourceView* syncPointSource=srv.get();
+            context->VSSetShaderResources(9,1,&syncPointSource);context->PSSetShaderResources(9,1,&syncPointSource);
             ID3D11ShaderResourceView* noLight=nullptr;context->PSSetShaderResources(3,1,&noLight);
             context->RSSetState(raster.get());
             context->IASetInputLayout(nullptr); context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-            bool rebuildLight=lightsOn && (!lightCacheValid || cachedLightCount!=fxFrame.lightCount
+            bool rebuildLight=lightsOn && (!lightCacheValid || (syncActive && (fresh || bulletHistoryChanged))
+                || cachedLightCount!=fxFrame.lightCount
                 || cachedLightGeneration!=lightCaptureGeneration
                 || std::memcmp(cachedLightParams,lp,sizeof(lp))!=0
                 || std::memcmp(cachedLights,fxFrame.lights,static_cast<size_t>(fxFrame.lightCount)*64)!=0);
@@ -1703,6 +1715,7 @@ private:
             }
             drawFx(fxFrame.casings,fxFrame.count-fxFrame.casings);
             ID3D11ShaderResourceView* emptyFx=nullptr;context->PSSetShaderResources(2,1,&emptyFx);
+            context->VSSetShaderResources(9,1,&emptyFx);context->PSSetShaderResources(9,1,&emptyFx);
             appliedWeather = weatherVersion;
             appliedAtmosphere = atmosphereVersion;
             if(nightOn) {

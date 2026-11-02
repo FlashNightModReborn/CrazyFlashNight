@@ -66,8 +66,10 @@ class org.flashNight.arki.weather.WorldLightingBridge {
         var server:Object = _root.server;
         if (!server.isSocketConnected || typeof server.sendTaskToNode != "function") return;
         var frame:Number = _root.帧计时器.当前帧数;
-        var light:Number = visualLight(ws,frame);
-        if (isNaN(light) || !isFinite(light)) return;
+        var rawLight:Number = visualLight(ws,frame);
+        if (isNaN(rawLight) || !isFinite(rawLight)) return;
+        org.flashNight.arki.render.SceneLightBridge.syncAmbientLight(rawLight, _root.gameworld);
+        var light:Number = _mode === "光照" ? org.flashNight.arki.render.SceneLightBridge.effectiveAmbientLight(rawLight) : rawLight;
         var values:Array = parameters(_root.色彩引擎.光照等级映射表[_mode],light);
         if (values == null) return;
         neutralize(_root.gameworld);

@@ -56,6 +56,7 @@ constexpr char PointLightShared[] = R"hlsl(
 Texture2D pointField : register(t3);
 SamplerState pointSamplerLinear : register(s3);
 Texture2D scenePointField : register(t6);
+Texture2D pointSyncSource : register(t9);
 cbuffer SceneLightParams : register(b6) {
     float4 sceneRegion; // min world XY, inverse world extent XY
     float4 sceneControl; // enabled, baking, world texel XY
@@ -63,31 +64,10 @@ cbuffer SceneLightParams : register(b6) {
 cbuffer PointLightParams : register(b4) {
     float4 pointView; float4 pointCamera; float4 pointControl; float4 pointPalette;
 };
-cbuffer FrameSync : register(b8) { float4 bIdentity; float4 bFrameSize; float4 bView; };
-float2 pointUv(float2 pixel) { return (pixel-pointView.xy)/pointView.zw; }
-float3 pointLit(float3 graded,float3 raw,float2 uv) {
-    float3 result=graded;
-    if(any(uv<0.0) || any(uv>1.0))return result;
-    [branch] if(pointControl.x>=0.5) {
-        float4 field=float4(0,0,0,0);
-        if(pointControl.z>=0.5) field=pointField.SampleLevel(pointSamplerLinear,uv,0);
-        if(sceneControl.x>=0.5) {
-            float2 world=(uv*float2(1024.0,576.0)-pointCamera.xy)/pointCamera.z;
-            float2 sceneUv=(world-sceneRegion.xy)*sceneRegion.zw;
-            if(all(sceneUv>=0.0) && all(sceneUv<=1.0)) field+=scenePointField.SampleLevel(pointSamplerLinear,sceneUv,0);
-        }
-        float weight=max(field.a,0.0);
-        [branch] if(weight>0.0001) {
-            float response=pointControl.y*(1.0-exp(-weight));
-            float3 tint=field.rgb/weight;
-            // A short shot supplies direct light independently of dark ambient grading.
-            // Exposure lifts texture detail with a soft highlight shoulder; black remains black.
-            float3 local=(1.0-exp(-raw*1.8*(0.3+0.7*saturate(tint))))*pointPalette.rgb;
-            result=lerp(graded,max(graded,local),response);
-        }
-    }
-    return result;
-}
+cbuffer FrameSync : register(b8) {
+    float4 bIdentity; float4 bFrameSize; float4 bView;
+    float4 bCamIdentity[8]; float4 bCamTransform[8];
+};
 struct FrameTag {
     uint epoch;
     uint frame;
@@ -122,6 +102,60 @@ bool FrameTagMatches(Texture2D source,float2 size,float4 identity) {
     FrameTag tag=ReadFrameTag(source,size);
     return tag.valid && tag.epoch==((uint)identity.x&0xFFFFu) && tag.frame==((uint)identity.y&0xFFFFFFu)
         && (identity.z<0 || identity.w==identity.y);
+}
+float3 ResolvePointCamera() {
+    float3 cam=pointCamera.xyz;
+    [branch] if(bView.z>=0.5 && bFrameSize.x>0.0 && bFrameSize.y>0.0) {
+        FrameTag tag=ReadFrameTag(pointSyncSource,bFrameSize.xy);
+        [branch] if(tag.valid) {
+            bool matched=false;
+            uint bestDiff=0xFFFFFFFFu;
+            [unroll] for(int i=0;i<8;++i) {
+                if(bCamIdentity[i].z>=0.5 && tag.epoch==(uint)bCamIdentity[i].x) {
+                    uint candFrame=(uint)bCamIdentity[i].y;
+                    uint rawDiff=(tag.frame-candFrame)&0xFFFFFFu;
+                    uint diff=min(rawDiff,0x1000000u-rawDiff);
+                    if(diff==0u && !matched) {
+                        cam=bCamTransform[i].xyz;
+                        matched=true;
+                        bestDiff=0u;
+                    } else if(!matched && diff<bestDiff) {
+                        cam=bCamTransform[i].xyz;
+                        bestDiff=diff;
+                    }
+                }
+            }
+        }
+    }
+    return cam;
+}
+float2 pointUv(float2 pixel) { return (pixel-pointView.xy)/pointView.zw; }
+float3 pointLitWithCamera(float3 graded,float3 raw,float2 uv,float3 cam) {
+    float3 result=graded;
+    if(any(uv<0.0) || any(uv>1.0))return result;
+    [branch] if(pointControl.x>=0.5) {
+        float4 field=float4(0,0,0,0);
+        if(pointControl.z>=0.5) field=pointField.SampleLevel(pointSamplerLinear,uv,0);
+        if(sceneControl.x>=0.5) {
+            float2 world=(uv*float2(1024.0,576.0)-cam.xy)/max(cam.z,0.0001);
+            float2 sceneUv=(world-sceneRegion.xy)*sceneRegion.zw;
+            if(all(sceneUv>=0.0) && all(sceneUv<=1.0)) field+=scenePointField.SampleLevel(pointSamplerLinear,sceneUv,0);
+        }
+        float weight=max(field.a,0.0);
+        [branch] if(weight>0.0001) {
+            float response=pointControl.y*(1.0-exp(-weight));
+            float3 tint=field.rgb/weight;
+            // A short shot supplies direct light independently of dark ambient grading.
+            // Exposure lifts texture detail with a soft highlight shoulder; black remains black.
+            float3 local=(1.0-exp(-raw*1.8*(0.3+0.7*saturate(tint))))*pointPalette.rgb;
+            result=lerp(graded,max(graded,local),response);
+        }
+    }
+    return result;
+}
+float3 pointLit(float3 graded,float3 raw,float2 uv) {
+    float3 cam=(pointControl.x>=0.5 && sceneControl.x>=0.5)?ResolvePointCamera():pointCamera.xyz;
+    return pointLitWithCamera(graded,raw,uv,cam);
 }
 float2 CleanFrameTagUv(Texture2D source,float2 uv,float2 size) {
     float2 result=uv;
@@ -161,6 +195,7 @@ LVertex LVS(uint id:SV_VertexID) {
         (corner==2u || corner==4u || corner==5u)?1.0:0.0);
     float4 a=pointItems[item*4u],b=pointItems[item*4u+1u],c=pointItems[item*4u+2u],e=pointItems[item*4u+3u];
     LVertex v;v.color=float4(b.rgb,a.w);v.shape=float4(b.w,a.z,c.z,0);v.nearFill=float4(0,0,0,0);
+    float3 cam=sceneControl.y>=0.5?pointCamera.xyz:ResolvePointCamera();
     float2 world;
     if(b.w<0.5) {
         v.local=q*2.0-1.0;
@@ -173,7 +208,7 @@ LVertex LVS(uint id:SV_VertexID) {
         float2 d=c.xy,n=float2(-c.y,c.x);
         // Expand the raster quad by half a light-field texel; otherwise a thin
         // rotated beam can miss all samples even with a smooth pixel falloff.
-        float margin=sceneControl.y>=0.5?0.5*max(sceneControl.z,sceneControl.w):2.0/max(pointCamera.z,0.0001);
+        float margin=sceneControl.y>=0.5?0.5*max(sceneControl.z,sceneControl.w):2.0/max(cam.z,0.0001);
         float lo=0.0,hi=a.z,latHalf=c.z+margin;
         // A kind-1 near circle shares this one quad and budget: project its
         // center into the light basis and union the along/lateral ranges.
@@ -191,7 +226,7 @@ LVertex LVS(uint id:SV_VertexID) {
         v.local=float2(along,latHalf*s);
         world=a.xy+d*along+n*(latHalf*s);
     }
-    float2 stage=(pointCamera.xy+world*pointCamera.z)/float2(1024.0,576.0);
+    float2 stage=(cam.xy+world*cam.z)/float2(1024.0,576.0);
     if(sceneControl.y>=0.5)stage=(world-sceneRegion.xy)*sceneRegion.zw;
     v.pos=float4(stage.x*2.0-1.0,1.0-stage.y*2.0,0.5,1.0);
     return v;
@@ -263,7 +298,7 @@ cbuffer Atmosphere : register(b2) { float4 aA; float4 aB; float4 aC; float4 aD; 
 // Authored look: primary+base, secondary+edge, motion/rate/frequency,
 // focus/falloff/mix. Names select a fixed shader family, never injected code.
 cbuffer AtmosphereStyle : register(b3) { float4 lA; float4 lB; float4 lC; float4 lD; };
-struct Vertex { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
+struct Vertex { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; nointerpolation float3 cam : TEXCOORD1; };
 // Float32, green-weight, five-tap sharpening-only CAS, adapted from AMD's
 // ffx_cas.h at 9fabcc9a2c45f958aff55ddfda337e74ef894b7f (MIT).
 // Bilinear samples; adaptive L CAS can use a source-pixel neighborhood.
@@ -290,6 +325,7 @@ Vertex VS(uint id : SV_VertexID) {
     Vertex v;
     v.uv = float2((id << 1) & 2, id & 2);
     v.pos = float4(v.uv * float2(2, -2) + float2(-1, 1), 0, 1);
+    v.cam = (pointControl.x >= 0.5 && sceneControl.x >= 0.5) ? ResolvePointCamera() : pointCamera.xyz;
     return v;
 }
 float4 PS(Vertex v) : SV_TARGET {
@@ -317,7 +353,7 @@ float4 PS(Vertex v) : SV_TARGET {
     }
     int look = (int)(aB.x + 0.5);
     float2 uv = pointUv(v.pos.xy);
-    if (look == 0 || any(uv<0.0) || any(uv>1.0)) return float4(pointLit(scene,c.rgb,uv), 1);
+    if (look == 0 || any(uv<0.0) || any(uv>1.0)) return float4(pointLitWithCamera(scene,c.rgb,uv,v.cam), 1);
     float2 world = (uv * float2(1024.0,576.0) - aD.xy) / max(aC.w,0.01);
     float edge = smoothstep(0.28,0.95,length((uv-0.5)*float2(1.65,1.0)));
     float t = aB.y;
@@ -373,7 +409,7 @@ float4 PS(Vertex v) : SV_TARGET {
         float authored=aB.w>0.5 ? lerp(aC.y,aC.z,0.5+0.5*sin(t*aC.x)) : amount;
         amount=min(0.5,authored*(aB.z>0.5 ? radial : 1.0));
     }
-    return float4(pointLit(saturate(lerp(scene,tint,saturate(amount))),c.rgb,uv),1);
+    return float4(pointLitWithCamera(saturate(lerp(scene,tint,saturate(amount))),c.rgb,uv,v.cam),1);
 }
 )hlsl";
 
@@ -397,7 +433,7 @@ SamplerState lutSampler : register(s1);
 cbuffer Grade : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
 cbuffer FxParams : register(b1) { float4 fCamera; float4 fRange; };
 cbuffer FxItems : register(b2) { float4 fI[2048]; };
-struct FVertex { float4 pos:SV_POSITION; float2 uv:TEXCOORD0; nointerpolation float3 look:TEXCOORD1; };
+struct FVertex { float4 pos:SV_POSITION; float2 uv:TEXCOORD0; nointerpolation float3 look:TEXCOORD1; nointerpolation float3 cam:TEXCOORD2; };
 FVertex FVS(uint id:SV_VertexID) {
     uint item=id/6u+(uint)fRange.x, corner=id%6u;
     float4 a=fI[item*4u], b=fI[item*4u+1u], c=fI[item*4u+2u], d=fI[item*4u+3u];
@@ -408,7 +444,8 @@ FVertex FVS(uint id:SV_VertexID) {
     float2 world=a.xy+float2(local.x*cs-local.y*sn,local.x*sn+local.y*cs);
     float2 stage=(fCamera.xy+world*fCamera.z)/float2(1024.0,576.0);
     FVertex v;v.pos=float4(stage.x*2.0-1.0,1.0-stage.y*2.0,0.5,1.0);
-    v.uv=lerp(d.xy,d.zw,q);v.look=float3(a.w,b.z,b.w);return v;
+    v.uv=lerp(d.xy,d.zw,q);v.look=float3(a.w,b.z,b.w);
+    v.cam=(pointControl.x>=0.5 && sceneControl.x>=0.5 && b.w>0.5)?ResolvePointCamera():pointCamera.xyz;return v;
 }
 float4 FPS(FVertex v):SV_TARGET {
     float4 tex=fxAtlas.Sample(fxSampler,v.uv);
@@ -421,7 +458,7 @@ float4 FPS(FVertex v):SV_TARGET {
             float4 c=float4(color,1.0);
             color=pow(saturate(float3(dot(c,rowR),dot(c,rowG),dot(c,rowB))+offset.rgb),1.0/max(offset.w,1.0e-3));
         }
-        color=pointLit(color,raw,pointUv(v.pos.xy));
+        color=pointLitWithCamera(color,raw,pointUv(v.pos.xy),v.cam);
     }
     float alpha=tex.a*v.look.x;return float4(color*alpha,alpha);
 }
@@ -443,6 +480,7 @@ struct WVertex {
     float2 uv : TEXCOORD0;
     float4 color : TEXCOORD1;
     nointerpolation float shape : TEXCOORD2;
+    nointerpolation float3 cam : TEXCOORD3;
 };
 float whash(uint x) {
     x = x * 1664525u + 1013904223u; x ^= x >> 16;
@@ -574,6 +612,7 @@ WVertex WVS(uint id : SV_VertexID) {
     o.uv = corner;
     o.color = float4(color, alpha);
     o.shape = shape;
+    o.cam = (pointControl.x >= 0.5 && sceneControl.x >= 0.5) ? ResolvePointCamera() : pointCamera.xyz;
     if (alpha <= 0.002) { o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o; }
     float2 posPx;
     if (shape > 0.5 && shape < 1.5) {
@@ -622,7 +661,7 @@ float4 WPS(WVertex v) : SV_TARGET {
             weatherColor = lerp(weatherColor,sB.rgb,0.55 + 0.25 * core);
         }
         float3 lookup = weatherColor * (31.0/32.0) + (0.5/32.0);
-        return float4(pointLit(lutTexture.Sample(lutSampler, lookup).rgb,weatherColor,pointUv(v.pos.xy)), a);
+        return float4(pointLitWithCamera(lutTexture.Sample(lutSampler, lookup).rgb,weatherColor,pointUv(v.pos.xy),v.cam), a);
     }
     float4 c = float4(weatherColor, 1.0);
     float3 graded = saturate(float3(dot(c, rowR), dot(c, rowG), dot(c, rowB)) + offset.rgb);
@@ -630,7 +669,7 @@ float4 WPS(WVertex v) : SV_TARGET {
         float core = 1.0 - smoothstep(0.0,0.25,abs(d.x));
         graded = lerp(graded,sB.rgb,0.55 + 0.25 * core);
     }
-    return float4(pointLit(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)),weatherColor,pointUv(v.pos.xy)), a);
+    return float4(pointLitWithCamera(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)),weatherColor,pointUv(v.pos.xy),v.cam), a);
 }
 )hlsl";
 
