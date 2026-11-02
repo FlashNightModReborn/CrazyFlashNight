@@ -529,7 +529,7 @@
         if (!selectedItem) { if (produce) produce.disabled = true; return; }
         var query = byId('item-query');
         if (query) query.value = selectedItem.name;
-        var iconUrl = window.Icons ? (Icons.resolveStatic(selectedItem.icon) || Icons.resolve(selectedItem.icon)) : null;
+        var iconUrl = (window.Icons && Icons.resolveStatic) ? Icons.resolveStatic(selectedItem.icon) : null;
         if (iconUrl && slots[0]) {
             var icon = document.createElement('img'); icon.alt = ''; icon.src = iconUrl; slots[0].appendChild(icon);
         }

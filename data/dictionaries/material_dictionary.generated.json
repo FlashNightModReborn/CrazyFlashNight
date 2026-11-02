@@ -43,7 +43,7 @@
   "infrastructure": {
     "consumerEvidencePath": "flashswf/UI/平板电脑界面/LIBRARY/基建内容整体.xml",
     "materialCount": 21,
-    "materialOccurrenceCount": 67,
+    "materialOccurrenceCount": 81,
     "path": "data/infrastructure/infrastructure.xml"
   },
   "inputs": [
@@ -113,11 +113,11 @@
     },
     {
       "path": "data/items/防具_0-19级.xml",
-      "sha256": "E181F1A94BF44B7F55F012FC2EF2679389701D48C608735CB6660DD0F9DFEBC7"
+      "sha256": "089B1C580B0BC753F83B51B62241D4E89800ADFD8D12195C31C7673C159AE4FB"
     },
     {
       "path": "data/items/防具_20-39级.xml",
-      "sha256": "BFE9DF016D3039CCBAB6D87423212A86EC5A4B949DB1DA476A2B0BCC178FF903"
+      "sha256": "B9886C33CF113BF81DE1D89A6F85D79ACC9F83A2B9434A344B5CEA7B8768172B"
     },
     {
       "path": "data/items/防具_40+级.xml",
@@ -329,7 +329,7 @@
     },
     {
       "path": "data/items/equipment_mods/中等材料_枪械专用.xml",
-      "sha256": "47ED98963A6F0BC59EC449B4ECF65A5234194DDD880E56161063C5B9BF2CF4B7"
+      "sha256": "779214D9EE420D8F255A42606F3E2A662E14C42497F931458298D8FFE00965AD"
     },
     {
       "path": "data/items/equipment_mods/中等材料_刀专用.xml",
@@ -397,7 +397,7 @@
     },
     {
       "path": "data/infrastructure/infrastructure.xml",
-      "sha256": "DD85F4121EE18C3A13E4499830BE64CE6CAA849ED8B46B9E207A6F5309A069E0"
+      "sha256": "913B29EAA523E80D6E002340D0C6CEF5BDDB36C6AB4EEB28F4A283D86A9777ED"
     },
     {
       "path": "flashswf/UI/平板电脑界面/LIBRARY/基建内容整体.xml",
@@ -414,5 +414,5 @@
     "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
   },
   "schema": "cf7.material-dictionary-generated.v2",
-  "sourceDigest": "3008B542417DA2B80DE954C6A3375A49E2A2ACD8CF46FBD9EA7FFD8D7D0A42F8"
+  "sourceDigest": "45DAC1EF2B318BBD2ECFE1CA955602660EC61A1DA4663F96348958F3B2476195"
 }
