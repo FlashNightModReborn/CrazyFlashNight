@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/3武器特效和子弹/刀光素材/元件 1" itemID="69d60837-00000341" symbolType="graphic" lastModified="1775635529">
+  <timeline>
+    <DOMTimeline name="元件 1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.21246337890625" d="0.21246337890625" tx="229.5" ty="154.45"/>
+                        </matrix>
+                        <GradientEntry color="#2A2929" alpha="0" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.6" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!2396 3790[1518 901 5744 53!5744 53[1479 -390 0 2877!0 2877[485 4577 2396 3790"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

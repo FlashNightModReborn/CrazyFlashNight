@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/蓝旋反坦克炮文件/蓝旋反坦克炮动画" itemID="69e3482f-0000016a" symbolType="graphic" lastModified="1776503542">
+  <timeline>
+    <DOMTimeline name="蓝旋反坦克炮动画">
+      <layers>
+        <DOMLayer name="蓝光特效" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/蓝旋反坦克炮文件/蓝光特效" symbolType="graphic" centerPoint3DX="24.7" centerPoint3DY="5.7" loop="loop">
+                  <matrix>
+                    <Matrix a="1.26266479492188" d="0.989990234375" tx="-53.8" ty="-21.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90.95" y="29.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/蓝旋反坦克炮文件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="8.45" ty="1.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.95" y="5.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

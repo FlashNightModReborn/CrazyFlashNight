@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/g1炮弹素材/g1炮弹动画" itemID="69ddbbc9-0000018e" symbolType="graphic" lastModified="1776139209" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="g1炮弹动画" currentFrame="8">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/g1炮弹素材/元件 2" selected="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="24.5" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/g1炮弹素材/元件 2" symbolType="graphic" centerPoint3DX="24.5" centerPoint3DY="24.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9984130859375" b="0.0560302734375" c="-0.0560302734375" d="-0.9984130859375" tx="50.35" ty="48.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.5" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

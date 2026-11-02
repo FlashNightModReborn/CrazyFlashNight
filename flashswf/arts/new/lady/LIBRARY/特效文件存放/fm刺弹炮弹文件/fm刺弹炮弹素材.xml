@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/fm刺弹炮弹文件/fm刺弹炮弹素材" itemID="69e33804-00000192" symbolType="graphic" lastModified="1776498692">
+  <timeline>
+    <DOMTimeline name="fm刺弹炮弹素材">
+      <layers>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fm刺弹炮弹文件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix d="1.06488037109375" tx="10.25" ty="1.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.75" y="0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fm刺弹炮弹文件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="4.7" ty="1.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.5" y="7.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fm刺弹炮弹文件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.75" ty="12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.8" y="2.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fm刺弹炮弹文件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.25" ty="2.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.7" y="2.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fm刺弹炮弹文件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.7" ty="7.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.8" y="2.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fm刺弹炮弹文件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.9" ty="-1.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.8" y="2.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

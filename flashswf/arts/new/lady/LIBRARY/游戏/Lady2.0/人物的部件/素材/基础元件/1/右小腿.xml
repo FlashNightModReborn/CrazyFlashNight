@@ -1,0 +1,267 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/素材/基础元件/1/右小腿" itemID="696b0563-000004b0" lastModified="1768900548" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="右小腿">
+      <layers>
+        <DOMLayer name="MagnetTargets" color="#FF0000" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" layerType="guide">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Magnet Target" selected="true" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-22.05" ty="139.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="MT" v='{"id":"2026_0_20_17_14_57_216","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CenterMarker" color="#0000FF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Center Marker" locked="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="项圈" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="293.55" ty="-10.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-337.2" y="145"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.04962158203125" b="0.0001068115234375" c="0.000823974609375" d="0.0225982666015625" tx="-307.35" ty="142.75"/>
+                        </matrix>
+                        <GradientEntry color="#292929" ratio="0.00784313725490196"/>
+                        <GradientEntry ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.7">
+                        <fill>
+                          <SolidColor alpha="0.498039215686275"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-5871 2886[-6401 2924 -6600 2929!-6600 2929|-6796 2918!-6796 2918|-6810 2906!-6810 2906|-6841 2808!-6841 2808[-6479 2807 -6411 2807!-6411 2807[-6344 2807 -5862 2761!-5862 2761|-5843 2764!-5843 2764[-5838 2769 -5838 2785!-5838 2785[-5838
+ 2790 -5849 2825!-5849 2825[-5861 2865 -5871 2886"/>
+                    <Edge cubics="!-6810 2906(;-6810,2906 -6841,2808 -6841,2808q-6810 2906 -6841 2808);"/>
+                    <Edge cubics="!-6796 2918(;-6796,2918 -6810,2906 -6810,2906q-6796 2918 -6810 2906);"/>
+                    <Edge cubics="!-5862 2761(;-5843,2764 -5838,2758 -5838,2785q-5862 2761Q-5843 2764q-5843 2764Q-5838 2769q-5838 2785);"/>
+                    <Edge cubics="!-5838 2785(;-5838,2789 -5856,2853 -5871,2886q-5838 2785Q-5838 2790q-5849 2825Q-5861 2865q-5871 2886);"/>
+                    <Edge cubics="!-6411 2807(;-6366,2807 -6183,2792 -5862,2761q-6411 2807Q-6344 2807q-5862 2761);"/>
+                    <Edge cubics="!-6600 2929(;-6600,2929 -6796,2918 -6796,2918q-6600 2929 -6796 2918);"/>
+                    <Edge cubics="!-5871 2886(;-6224,2911 -6467,2926 -6600,2929q-5871 2886Q-6401 2924q-6600 2929);"/>
+                    <Edge cubics="!-6841 2808(;-6600,2807 -6456,2807 -6411,2807q-6841 2808Q-6479 2807q-6411 2807);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/元件 7" symbolType="graphic" centerPoint3DX="-39.6" centerPoint3DY="132.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.45782470703125" b="0.0337677001953125" c="-0.0731201171875" d="0.450790405273438" tx="-42.75" ty="129.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.65" y="8.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="鞋子上" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1C1C1C"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!31 2506[25 2533 19 2560!19 2560[7 2620 -6 2679!-6 2679[-14 2714 -23 2749!-23 2749[-35 2777 -48 2804!-48 2804[-108 2933 -235 2984!-235 2984[-364 3032 -502 3015!-502 3015[-570 3008 -682 2973!-682 2973[-776 2943 -840 2866!-840 2866[-837.5
+ 2868.5 -834.5 2871.5!-834.5 2871.5[#FFFCB6.D3 #B30.83 -846 2859!-846 2859[-862 2840 -863 2835!-863 2835[-865 2833 -866 2831!-866 2831[-865 2832 -864 2833!-864 2833[-876 2781 -920 2656!-920 2656[-923 2646 -926 2638"/>
+                    <Edge strokeStyle="1" edges="
+!-926 2638[-939 2611 -945 2592"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-945 2592|-1023 2360!-1023 2360[-934 2333 -844 2330!-844 2330[-829 2330 -814 2331!-814 2331[-788 2330 -762 2329"/>
+                    <Edge fillStyle1="1" edges="
+!-762 2329|-761 2331"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-761 2331|20 2307"/>
+                    <Edge fillStyle1="1" edges="
+!20 2307|20 2314"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!20 2314|45 2312!45 2312[52 2330 55 2348!55 2348[59 2380 51 2415!51 2415[40 2461 31 2506"/>
+                    <Edge fillStyle1="1" edges="
+!-926 2638[-958 2549 -945 2592"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="高光" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.027008056640625" b="0.0041046142578125" c="-0.0280609130859375" d="0.18243408203125" tx="-7.85" ty="59.5"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.219607843137255" ratio="0"/>
+                        <GradientEntry color="#2E2E2E" alpha="0.0588235294117647" ratio="0.294117647058824"/>
+                        <GradientEntry color="#272526" alpha="0" ratio="0.670588235294118"/>
+                        <GradientEntry color="#171617" alpha="0" ratio="0.92156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!539 -32[-50 -520 -328 -273!-328 -273[-607 -27 -583 36!-583 36|-595 65!-595 65[-599 214 -626 324!-626 324[-650 418 -692 483!-692 483[-749 571 -810 658!-810 658[-977 896 -1046 1180!-1046 1180[-1057 1226 -1061 1273!-1061 1273[-1083 1537
+ -1049 1798!-1049 1798[-1017 2042 -951 2278!-951 2278[-940 2318 -928 2358!-928 2358[-917 2397 -904 2437!-904 2437[-873 2528 -809 2577!-809 2577[-706 2655 -517 2619!-517 2619[-309 2641 -194 2568!-194 2568[-104 2510 -71 2394!-71 2394[-71
+ 2391 -70 2388!-70 2388|131 1689!131 1689|132 1672!132 1672[272 1236 300 835!300 835|315 836!315 836[320 619 408 427!408 427|405 419!405 419[465 312 499 209!499 209[536 92 538 -21!538 -21|539 -32"/>
+                    <Edge cubics="!-692 483(;-730,542 -769,600 -810,658q-692 483Q-749 571q-810 658);"/>
+                    <Edge cubics="!-1046 1180(;-1053,1211 -1058,1242 -1061,1273q-1046 1180Q-1057 1226q-1061 1273);"/>
+                    <Edge cubics="!-810 658(;-921,817 -1000,991 -1046,1180q-810 658Q-977 896q-1046 1180);"/>
+                    <Edge cubics="!-1049 1798(;-1028,1962 -994,2123 -951,2278q-1049 1798Q-1017 2042q-951 2278);"/>
+                    <Edge cubics="!-951 2278(;-943,2306 -936,2332 -928,2358q-951 2278 -928 2358);"/>
+                    <Edge cubics="!-1061 1273(;-1076,1449 -1072,1624 -1049,1798q-1061 1273Q-1083 1537q-1049 1798);"/>
+                    <Edge cubics="!-928 2358(;-921,2384 -913,2410 -904,2437q-928 2358Q-917 2397q-904 2437);"/>
+                    <Edge cubics="!-904 2437(;-883,2499 -850,2547 -809,2577q-904 2437Q-873 2528q-809 2577);"/>
+                    <Edge cubics="!-809 2577(;-737,2630 -641,2643 -517,2619q-809 2577Q-706 2655q-517 2619);"/>
+                    <Edge cubics="!-71 2394(;-71,2392 -71,2390 -70,2388q-71 2394Q-71 2391q-70 2388);"/>
+                    <Edge cubics="!-517 2619(;-378,2634 -270,2617 -194,2568q-517 2619Q-309 2641q-194 2568);"/>
+                    <Edge cubics="!-194 2568(;-134,2529 -93,2471 -71,2394q-194 2568Q-104 2510q-71 2394);"/>
+                    <Edge cubics="!-70 2388(;-70,2388 131,1689 131,1689q-70 2388 131 1689);"/>
+                    <Edge cubics="!132 1672(;225,1381 281,1102 300,835q132 1672Q272 1236q300 835);"/>
+                    <Edge cubics="!405 419(;445,348 476,278 499,209q405 419Q465 312q499 209);"/>
+                    <Edge cubics="!499 209(;523,131 536,54 538,-21q499 209Q536 92q538 -21);"/>
+                    <Edge cubics="!-595 65(;-598,164 -609,250 -626,324q-595 65Q-599 214q-626 324);"/>
+                    <Edge cubics="!-626 324(;-642,386 -664,439 -692,483q-626 324Q-650 418q-692 483);"/>
+                    <Edge cubics="!408 427(;408,427 405,419 405,419q408 427 405 419);"/>
+                    <Edge cubics="!538 -21(;538,-21 539,-32 539,-32q538 -21 539 -32);"/>
+                    <Edge cubics="!132 1672(;132,1672 131,1689 131,1689q132 1672 131 1689);"/>
+                    <Edge cubics="!300 835(;300,835 315,836 315,836q300 835 315 836);"/>
+                    <Edge cubics="!315 836(;318,691 349,555 408,427q315 836Q320 619q408 427);"/>
+                    <Edge cubics="!-583 36(;-583,36 -595,65 -595,65q-583 36 -595 65);"/>
+                    <Edge cubics="!-328 -273(;-514,-109 -599,-6 -583,36q-328 -273Q-607 -27q-583 36);"/>
+                    <Edge cubics="!539 -32(;146,-357 -143,-438 -328,-273q539 -32Q-50 -520q-328 -273);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="丝袜" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.036468505859375" b="0.0084228515625" c="-0.0206451416015625" d="0.0893096923828125" tx="-9.55" ty="60.55"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#483D3B" ratio="0"/>
+                        <GradientEntry color="#392D2F" ratio="0.294117647058824"/>
+                        <GradientEntry color="#272526" ratio="0.670588235294118"/>
+                        <GradientEntry color="#171617" ratio="0.92156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!419 402[493 270 521 108!521 108[527 71 525 39!525 39[523 6 512 -23!512 -23[500 -53 442 -139!442 -139[383 -226 231 -303!231 -303[10 -417 -268 -204!-268 -204[-441 -71 -439 -71!-439 -71[-514 -22 -544 -3!-544 -3|-551 111"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!-551 111[-603 344 -692 483!-692 483[-749 571 -810 658!-810 658[-977 896 -1046 1180!-1046 1180[-1057 1226 -1061 1273!-1061 1273[-1083 1537 -1049 1798!-1049 1798[-1017 2042 -951 2278!-951 2278[-940 2318 -928 2358!-928 2358[-917 2397 -904
+ 2437!-904 2437[-873 2528 -809 2577!-809 2577[-706 2655 -517 2619!-517 2619[-309 2641 -194 2568!-194 2568[-104 2510 -71 2394!-71 2394[-71 2391 -70 2388!-70 2388|131 1689"/>
+                    <Edge fillStyle0="1" edges="
+!131 1689|130 1691"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!130 1691[272 1236 312 870!312 870|315 836!315 836[323 650 389 476!389 476[398 451 408 427!408 427|419 402"/>
+                    <Edge cubics="!-692 483(;-730,542 -769,600 -810,658q-692 483Q-749 571q-810 658);"/>
+                    <Edge cubics="!-1046 1180(;-1053,1211 -1058,1242 -1061,1273q-1046 1180Q-1057 1226q-1061 1273);"/>
+                    <Edge cubics="!-810 658(;-921,817 -1000,991 -1046,1180q-810 658Q-977 896q-1046 1180);"/>
+                    <Edge cubics="!-1049 1798(;-1028,1962 -994,2123 -951,2278q-1049 1798Q-1017 2042q-951 2278);"/>
+                    <Edge cubics="!-951 2278(;-943,2306 -936,2332 -928,2358q-951 2278 -928 2358);"/>
+                    <Edge cubics="!-1061 1273(;-1076,1449 -1072,1624 -1049,1798q-1061 1273Q-1083 1537q-1049 1798);"/>
+                    <Edge cubics="!-928 2358(;-921,2384 -913,2410 -904,2437q-928 2358Q-917 2397q-904 2437);"/>
+                    <Edge cubics="!-904 2437(;-883,2499 -850,2547 -809,2577q-904 2437Q-873 2528q-809 2577);"/>
+                    <Edge cubics="!-809 2577(;-737,2630 -641,2643 -517,2619q-809 2577Q-706 2655q-517 2619);"/>
+                    <Edge cubics="!-71 2394(;-71,2392 -71,2390 -70,2388q-71 2394Q-71 2391q-70 2388);"/>
+                    <Edge cubics="!-517 2619(;-378,2634 -270,2617 -194,2568q-517 2619Q-309 2641q-194 2568);"/>
+                    <Edge cubics="!-194 2568(;-134,2529 -93,2471 -71,2394q-194 2568Q-104 2510q-71 2394);"/>
+                    <Edge cubics="!-70 2388(;-70,2388 131,1689 131,1689q-70 2388 131 1689);"/>
+                    <Edge cubics="!389 476(;395,459 401,443 408,427q389 476Q398 451q408 427);"/>
+                    <Edge cubics="!315 836(;320,712 345,592 389,476q315 836Q323 650q389 476);"/>
+                    <Edge cubics="!408 427(;408,427 419,402 419,402q408 427 419 402);"/>
+                    <Edge cubics="!419 402(;469,313 502,216 521,108q419 402Q493 270q521 108);"/>
+                    <Edge cubics="!130 1691(;130,1691 131,1689 131,1689q130 1691 131 1689);"/>
+                    <Edge cubics="!312 870(;312,870 315,836 315,836q312 870 315 836);"/>
+                    <Edge cubics="!130 1691(;225,1388 285,1114 312,870q130 1691Q272 1236q312 870);"/>
+                    <Edge cubics="!-551 111(;-586,266 -633,390 -692,483q-551 111Q-603 344q-692 483);"/>
+                    <Edge cubics="!-439 -71(;-440,-71 -383,-115 -268,-204q-439 -71Q-441 -71q-268 -204);"/>
+                    <Edge cubics="!-268 -204(;-83,-346 84,-379 231,-303q-268 -204Q10 -417q231 -303);"/>
+                    <Edge cubics="!-544 -3(;-544,-3 -551,111 -551,111q-544 -3 -551 111);"/>
+                    <Edge cubics="!-544 -3(;-524,-16 -489,-38 -439,-71q-544 -3Q-514 -22q-439 -71);"/>
+                    <Edge cubics="!521 108(;525,83 526,60 525,39q521 108Q527 71q525 39);"/>
+                    <Edge cubics="!525 39(;524,17 519,-4 512,-23q525 39Q523 6q512 -23);"/>
+                    <Edge cubics="!512 -23(;504,-43 481,-82 442,-139q512 -23Q500 -53q442 -139);"/>
+                    <Edge cubics="!442 -139(;403,-197 332,-252 231,-303q442 -139Q383 -226q231 -303);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

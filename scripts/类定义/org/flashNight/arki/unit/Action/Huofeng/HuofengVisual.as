@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.unit.Action.Huofeng.*;
 import org.flashNight.arki.component.Effect.EffectSystem;
+import org.flashNight.arki.render.EquipmentLightBridge;
 import flash.geom.Matrix;
 
 /** Equipment-owned presentation; Boss flame copies contain no combat scripts. */
@@ -126,6 +127,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengVisual {
         clip.__hfRotation=rotation*clip.__hfFacing;
         clip._alpha=tier==2?100:85;
         clip.gotoAndStop(1);clip._visible=true;
+        EquipmentLightBridge.emitPulseAt(ring?"火凤套装_原版回旋":"火凤套装_原版火攻",fxPoint.x,fxPoint.y,unit,0,tier==2?(ring?1.65:1.4):(ring?1.4:1.2),0);
     }
     private function updateFlames(action:Object,tier:Number):Void {
         // Retire attack bursts immediately on a weapon-mode switch. The
@@ -195,6 +197,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengVisual {
         ember._alpha=tier==2?60:35;
         ember._xscale=ember._yscale=tier==2?100:80;
         ember.gotoAndStop(age%24+1);ember._visible=true;
+        EquipmentLightBridge.emitPulseAt("__huofeng_ember",unit._x,unit._y,unit,tier==2?140:115,tier==2?0.9:0.65,4);
         updateFlames(action,tier);
     }
     public function heal(tier:Number):Void {

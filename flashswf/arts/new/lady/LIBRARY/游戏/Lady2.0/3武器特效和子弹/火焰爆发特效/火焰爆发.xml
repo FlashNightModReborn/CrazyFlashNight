@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/3武器特效和子弹/火焰爆发特效/火焰爆发" itemID="6971c15c-000008f1" lastModified="1775871345" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="火焰爆发">
+      <layers>
+        <DOMLayer name="火焰素材" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/火焰爆发特效/火焰爆发素材" selected="true" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="0.529998779296875" d="0.529998779296875" tx="-114.25" ty="-164.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="509.9" y="287"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

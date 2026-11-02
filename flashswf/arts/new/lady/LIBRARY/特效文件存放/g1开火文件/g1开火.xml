@@ -1,0 +1,41 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/g1开火文件/g1开火" itemID="69e59082-000002d0" linkageExportForAS="true" linkageIdentifier="g1开火" lastModified="1776867477" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="g1开火">
+      <layers>
+        <DOMLayer name="Script Layer" color="#A4F411" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 9" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/g1开火文件/g1开火动画" selected="true" symbolType="graphic" centerPoint3DX="1.2" centerPoint3DY="-4.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="-30.45" ty="-35.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.7" y="45.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

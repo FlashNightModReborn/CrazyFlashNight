@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/武器素材/对讲机素材/上1" itemID="69ccf386-00000170" symbolType="graphic" lastModified="1775122257">
+  <timeline>
+    <DOMTimeline name="上1">
+      <layers>
+        <DOMLayer name="上" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="25" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/武器素材/对讲机素材/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.010986328125" b="-0.0329742431640625" c="0.029510498046875" d="0.0098114013671875" tx="-3.65" ty="16"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="246.25" y="430.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/武器素材/对讲机素材/元件 2" selected="true" symbolType="graphic" centerPoint3DX="10.45" centerPoint3DY="12" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.025970458984375" b="0.0230560302734375" c="-0.0206451416015625" d="-0.0232086181640625" tx="27" ty="16.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="245.7" y="427.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/fm刺弹炮弹文件/元件 3" itemID="69dc7a6f-000001a7" symbolType="graphic" lastModified="1776056943">
+  <timeline>
+    <DOMTimeline name="元件 3">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fm刺弹炮弹文件/小" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.70697021484375" d="0.457366943359375" tx="2.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.7" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fm刺弹炮弹文件/小壳" selected="true" symbolType="graphic" centerPoint3DX="3.45" centerPoint3DY="3.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.15997314453125" d="0.15997314453125" tx="2" ty="1.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.05" y="8.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

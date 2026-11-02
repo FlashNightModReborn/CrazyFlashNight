@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/素材/胸口血" itemID="69720a79-0000027e" symbolType="graphic" lastModified="1770012392">
+  <timeline>
+    <DOMTimeline name="胸口血">
+      <layers>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/血迹/sprite/Symbol 749" centerPoint3DX="334.05" centerPoint3DY="349.75">
+                  <matrix>
+                    <Matrix a="0.529525756835938" b="-0.83935546875" c="0.83935546875" d="0.529525756835938" tx="311.25" ty="324.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

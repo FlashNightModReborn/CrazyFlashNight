@@ -25,7 +25,7 @@ internal static partial class Program
         File.WriteAllText(Path.Combine(output,"extended-fx-identity.json"),JsonSerializer.Serialize(identity,new JsonSerializerOptions{WriteIndented=true}));
         Require(sourceFiles.All(s=>string.Equals(s.declaredSha256,s.actualSha256,StringComparison.OrdinalIgnoreCase)),"Stale effect source closure");
         var catalog=CombatFxCatalog.Load(root);
-        string[] expected={"冰汽","烈焰火花","能量火花","空手攻击火花","铁枪能量弹枪火","飙血","子弹碎片-飞血"};
+        string[] expected={"冰汽","烈焰火花","能量火花","空手攻击火花","铁枪能量弹枪火","飙血","子弹碎片-飞血","刺弹炮枪火","g1开火","能量枪火","加农炮枪火","大喷气","高爆枪火"};
         var styles=expected.Select(name=>catalog.Styles.Single(s=>s.Linkage==name)).ToArray();
         using var session=new NativeCompositorSession(module,source,(uint)Environment.ProcessId,target);
         session.Mode(0);await WaitFor(()=>session.Read().Presented>0,session,"extended source capture");
@@ -75,7 +75,7 @@ internal static partial class Program
         File.WriteAllText(Path.Combine(output,"index.html"),"<!doctype html><meta charset=\"utf-8\"><title>Extended FX fixture</title>"+
             "<style>body{margin:24px;background:#12161c;color:#eee;font:16px system-ui}figure{margin:16px 0;border:1px solid #38434c}figcaption{padding:10px}img{display:block;width:100%;max-width:1024px}</style>"+
             "<h1>新增特效 · 原生图集夹具</h1><p>每图依次为首帧、中帧、末帧。只验证受控渲染，不代表实战、游戏FPS或人类验收。</p>"+cards);
-        Console.WriteLine("PASS: seven extended styles, all variant first/mid/last frames, 448+64 capacity, blood lifecycle and cleanup; renderer fixture only.");
+        Console.WriteLine("PASS: thirteen extended styles, all variant first/mid/last frames, 448+64 capacity, blood lifecycle and cleanup; renderer fixture only.");
     }
 
     private static bool ExtendedFrameVisible(CombatFxCatalog catalog,CombatFxImage frame)

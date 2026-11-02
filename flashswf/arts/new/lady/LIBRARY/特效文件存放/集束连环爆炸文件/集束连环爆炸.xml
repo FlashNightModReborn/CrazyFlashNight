@@ -1,0 +1,179 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/集束连环爆炸文件/集束连环爆炸" itemID="69e43d10-00000260" linkageExportForAS="true" linkageIdentifier="集束连环爆炸" lastModified="1781154248" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="集束连环爆炸">
+      <layers>
+        <DOMLayer name="Script Layer" color="#83CD50" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;
+_root.gameworld._y += 5;
+var 获取发射对象 = _root.gameworld[this.发射者名];
+if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
+{
+   this.子弹威力 *= 1 + 获取发射对象.被动技能.轰炸专家.等级 * 0.03;
+}
+
+this.伤害类型 = "魔法";
+this.魔法伤害属性 = "热";
+
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.gameworld._y -= 5;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//_root.gameworld._y += 3;
+if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
+{
+   this.伤害类型 = "魔法";
+   this.魔法伤害属性 = "冲";
+   this.子弹威力 *= 0.8 + 获取发射对象.被动技能.轰炸专家.等级 * 0.05;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//_root.gameworld._y -= 3;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#31E18C" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/集束连环爆炸文件/无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-45" centerPoint3DY="-33">
+                  <matrix>
+                    <Matrix a="13.7841186523438" d="9.42356872558594" tx="-186.95" ty="-105.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.75" y="11.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/集束连环爆炸文件/无AS链接/Symbol 13" name="area" centerPoint3DX="-200.6" centerPoint3DY="-164.55">
+                  <matrix>
+                    <Matrix a="16.0785522460938" d="10.8401031494141" tx="-213.5" ty="-177.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/集束连环爆炸文件/无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-224.7" centerPoint3DY="-177.5">
+                  <matrix>
+                    <Matrix a="17.3983306884766" d="12.1999664306641" tx="-238.65" ty="-192.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.45" y="14"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/集束连环爆炸文件/无AS链接/Symbol 13" name="area" centerPoint3DX="-234.65" centerPoint3DY="-160.95">
+                  <matrix>
+                    <Matrix a="17.4884490966797" d="11.3007965087891" tx="-248.65" ty="-182.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.35" y="11.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/集束连环爆炸文件/无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-238.55" centerPoint3DY="-157.2">
+                  <matrix>
+                    <Matrix a="16.29833984375" d="11.1693267822266" tx="-251.55" ty="-170.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/集束连环爆炸文件/集束连环爆炸动画" symbolType="graphic" centerPoint3DX="-46.7" centerPoint3DY="-35.95" loop="play once">
+                  <matrix>
+                    <Matrix a="0.699996948242188" d="0.699996948242188" tx="-394.6" ty="-318.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="550.55" y="525.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/集束连环爆炸文件/集束连环爆炸动画" symbolType="graphic" firstFrame="8" centerPoint3DX="-43.15" centerPoint3DY="-39.6" loop="play once">
+                  <matrix>
+                    <Matrix a="0.699996948242188" d="0.699996948242188" tx="-391.05" ty="-322.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="536.45" y="704.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

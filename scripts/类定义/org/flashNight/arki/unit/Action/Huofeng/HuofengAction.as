@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.Action.Huofeng.*;
 import org.flashNight.arki.unit.UnitComponent.Routing.*;
 import org.flashNight.arki.spatial.move.Mover;
+import org.flashNight.arki.render.EquipmentLightBridge;
 
 /** 动作时间由未暂停帧推进；独立令牌隔离同名 man 重建和旧碰撞队列。 */
 class org.flashNight.arki.unit.Action.Huofeng.HuofengAction {
@@ -271,6 +272,45 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengAction {
         var f:Number=action.frame;
         unit.man.gotoAndStop(f);
         if (HuofengRules.pulseIndex(HuofengRules.NIRVANA_PULSES[action.tier],f)>=0) HuofengCombat.blast(unit,action);
+        var px:Number=unit._x;
+        var py:Number=unit._y-45;
+        var torso:MovieClip=unit.man.hfTorso;
+        if (torso._parent && _root.gameworld._parent) {
+            var pt:Object={x:0,y:0};
+            torso.localToGlobal(pt);
+            _root.gameworld.globalToLocal(pt);
+            if (isFinite(pt.x+pt.y)) {px=pt.x;py=pt.y;}
+        }
+        var rad:Number;
+        var nrg:Number;
+        if (action.tier==1) {
+            if (f<=34) {
+                rad=125+125*(f/34);
+                nrg=0.75+0.95*(f/34);
+            } else if (f<=54) {
+                rad=275;nrg=1.88;
+            } else {
+                var fade1:Number=1-(f-54)/39;
+                rad=160+115*fade1;
+                nrg=0.55+1.33*fade1;
+            }
+        } else {
+            if (f<=16) {
+                rad=145+95*(f/16);
+                nrg=0.95+0.75*(f/16);
+            } else if (f<78) {
+                rad=250;nrg=1.78;
+            } else if (f<=96) {
+                py=unit._y-50;
+                rad=305;nrg=1.96;
+            } else {
+                py=unit._y-45;
+                var fade2:Number=1-(f-96)/18;
+                rad=180+125*fade2;
+                nrg=0.65+1.31*fade2;
+            }
+        }
+        EquipmentLightBridge.emitPulseAt("__huofeng_nirvana",px,py,unit,rad,nrg,4);
         if (f>=HuofengRules.NIRVANA_FRAMES[action.tier]) cancel(runtime,action,true);
     }
 }

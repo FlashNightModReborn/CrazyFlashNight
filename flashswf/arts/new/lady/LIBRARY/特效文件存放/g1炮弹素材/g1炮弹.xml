@@ -1,0 +1,153 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/g1炮弹素材/g1炮弹" itemID="69e58a9e-00000511" linkageExportForAS="true" linkageIdentifier="g1炮弹" lastModified="1781023235">
+  <timeline>
+    <DOMTimeline name="g1炮弹" currentFrame="2">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#B00DF6" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#95C8F0" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[声音 = "";
+霰弹值 = 1;
+子弹散射度 = 0;
+发射效果 = "";
+子弹种类 = "g1炮弹击中";
+if(!子弹威力)
+{
+   子弹威力 = 300;
+}
+else
+{
+   子弹威力 *= 0.7;
+}
+子弹速度 = 0;
+击中地图效果 = "";
+击退初速度 = 5
+Z轴攻击范围 = 80;
+ 击倒率 = 1;
+ 击中后子弹的效果 = "";
+ shootX = this._x;
+ shootY = this._y;
+
+ var 子弹属性 = _root.子弹属性初始化(this,子弹种类,发射者名);
+ 子弹属性.声音 = 声音;
+ 子弹属性.霰弹值 = 霰弹值;
+ 子弹属性.子弹散射度 = 子弹散射度;
+ 子弹属性.发射效果 = 发射效果;
+ 子弹属性.子弹种类 = 子弹种类;
+ 子弹属性.子弹威力 = 子弹威力;
+ 子弹属性.子弹速度 = 子弹速度;
+ 子弹属性.Z轴攻击范围 = Z轴攻击范围;
+ 子弹属性.击中地图效果 = 击中地图效果;
+ 子弹属性.击倒率 = 击倒率;
+ 子弹属性.击中后子弹的效果 = 击中后子弹的效果;
+ 子弹属性.shootX = shootX;
+ 子弹属性.shootY = shootY;
+ 子弹属性.shootZ = Z轴坐标;
+ 子弹属性.发射者 = 发射者名;
+
+ // 锁定发射瞬间的属性，避免切换武器/模组后爆炸继承到当前主角属性
+ 子弹属性.伤害类型 = (this.伤害类型 != undefined) ? this.伤害类型 : "物理";
+ 子弹属性.魔法伤害属性 = this.魔法伤害属性;
+ 子弹属性.毒 = this.毒;
+ 子弹属性.nanoToxic = this.nanoToxic;
+ 子弹属性.nanoToxicDecay = this.nanoToxicDecay;
+ 子弹属性.吸血 = this.吸血;
+ 子弹属性.击溃 = this.击溃;
+ 子弹属性.斩杀 = this.斩杀;
+ 子弹属性.暴击 = this.暴击;
+ 子弹属性.命中率 = this.命中率;
+ 子弹属性.固伤 = this.固伤;
+ 子弹属性.百分比伤害 = this.百分比伤害;
+ 子弹属性.血量上限击溃 = this.血量上限击溃;
+ 子弹属性.防御粉碎 = this.防御粉碎;
+ 子弹属性.lockShooterAttributes = true;
+
+ _root.子弹区域shoot传递(子弹属性);
+ stop();
+ this.removeMovieClip();
+ ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#0FBACF" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/g1炮弹素材/素材/Symbol 25" name="area">
+                  <matrix>
+                    <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   垂直速度 = -5;
+   起始Y = _parent.Z轴坐标;
+   this.onEnterFrame = function()
+   {
+      _parent._y += 垂直速度;
+      垂直速度 += _root.重力加速度;
+      if(_parent._y >= 起始Y)
+      {
+         _parent._y = 起始Y;
+         delete this.onEnterFrame;
+         _parent.gotoAndPlay("消失");
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 7" color="#4F80FF" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/g1炮弹素材/g1炮弹动画" centerPoint3DX="-0.3" centerPoint3DY="0.2">
+                  <matrix>
+                    <Matrix a="0.849990844726563" d="0.849990844726563" tx="-21.1" ty="-21.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.6" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

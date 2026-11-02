@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/素材/右臂上" itemID="696b050a-000004ab" symbolType="graphic" lastModified="1768900587">
+  <timeline>
+    <DOMTimeline name="右臂上">
+      <layers>
+        <DOMLayer name="MagnetTargets" color="#FF0000" outline="true" useOutlineView="true" autoNamed="false" layerType="guide">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Magnet Target" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-9.3" ty="29.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="MT" v='{"id":"2026_0_20_17_16_27_388","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CenterMarker" color="#0000FF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Center Marker" locked="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.210052490234375" b="-0.002471923828125" c="0.0025634765625" d="0.21026611328125" tx="-18.55" ty="-4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="81.85" y="24.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-13.5" ty="5.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.5" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -325,6 +325,25 @@ class org.flashNight.arki.render.EquipmentEmissiveTest {
             var lateHero:MovieClip=actor(world,"capacityHero"),lateRef:Object=refFor(lateHero,"上装装备");body(lateRef);
             check(EquipmentLightBridge.getStats().registered==256 && hasId(rows(),lateRef.equipmentLight.lightGroup.id),
                 "a late player is protected even when the raw contributor registry is full");
+            clearActors(world);EquipmentLightBridge.resetScene();
+            var fb:MovieClip = world.createEmptyMovieClip("fbTest", world.getNextHighestDepth());
+            fb._x = 220; fb._y = 180;
+            EquipmentLightBridge.registerBullet(fb, {baseAsset:"火球", 子弹种类:"火球"}, lateHero);
+            var fbRows:Array = rows();
+            check(fbRows.length == 1 && Number(fbRows[0][2]) == 0 && Number(fbRows[0][7]) == 175,
+                "luminous projectile emits a radial world light while alive");
+            fb.removeMovieClip();
+            EquipmentLightBridge.registerBullet({aabbCollider:{left:200, right:320, top:140, bottom:220}},
+                {baseAsset:"近战子弹", 子弹种类:"近战子弹", 声音:"火流.wav", 魔法伤害属性:"热", shootX:260, shootY:180}, lateHero);
+            var pulseRows:Array = rows();
+            _root.帧计时器.当前帧数 += 7;
+            check(pulseRows.length == 1 && Number(pulseRows[0][3]) == 260 && rows().length == 0,
+                "removed projectile detaches immediately and thermal melee pulse expires cleanly");
+            EquipmentLightBridge.emitPulseAt("__phoenix_revive", 240, 200, lateHero, 245, 1.75, 4);
+            EquipmentLightBridge.emitPulseAt("__phoenix_revive", 240, 120, lateHero, 305, 1.95, 4);
+            var phRows:Array = rows();
+            check(phRows.length == 1 && Number(phRows[0][4]) == 75 && Number(phRows[0][7]) == 305,
+                "Phoenix and Huofeng continuous revival pulses coalesce per actor and track altitude/radius");
             EquipmentLightBridge.disconnect(); check(rows().length == 0,"disconnect clears every persistent source");
         } catch (error) { check(false,"exception " + error); }
         world.removeMovieClip(); _root.gameworld = oldWorld; _root.帧计时器 = oldClock; _root.暂停 = oldPause; _root.控制目标 = oldHero;

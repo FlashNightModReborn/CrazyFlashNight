@@ -1,0 +1,59 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/支援飞弹爆炸素材/爆炸素材" itemID="6a72fb7d-000003f8" symbolType="graphic" lastModified="1785920381" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="爆炸素材" currentFrame="3">
+      <layers>
+        <DOMLayer name="小爆炸3素材" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/支援飞弹爆炸素材/小爆炸3/小爆炸3素材" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix tx="65.35" ty="73.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120.5" y="105.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/支援飞弹爆炸素材/小爆炸2/小爆炸2素材" symbolType="graphic" firstFrame="1" centerPoint3DX="186.8" centerPoint3DY="228.65" loop="play once">
+                  <matrix>
+                    <Matrix a="0.405502319335938" d="0.3499755859375" tx="141.1" ty="180.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="101.1" y="222.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/支援飞弹爆炸素材/小爆炸1/小爆炸1素材" symbolType="graphic" centerPoint3DX="195.2" centerPoint3DY="160.25" loop="play once">
+                  <matrix>
+                    <Matrix a="0.6585693359375" d="-0.65997314453125" tx="101.25" ty="247.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -40,14 +40,14 @@ namespace CF7Launcher.Tests.Guardian
         [Fact]
         public void CatalogAppendsTheSevenReviewedStylesAndBindsEachSourceLibrary()
         {
-            string[] names = { "冰汽", "烈焰火花", "能量火花", "空手攻击火花", "铁枪能量弹枪火", "飙血", "子弹碎片-飞血" };
-            string[] keys = { "mist", "mist", "mist", "stock", "fs", "stock", "stock" };
-            Assert.Equal(42, Catalog.Styles.Length);
+            string[] names = { "冰汽", "烈焰火花", "能量火花", "空手攻击火花", "铁枪能量弹枪火", "飙血", "子弹碎片-飞血", "刺弹炮枪火", "g1开火", "能量枪火", "加农炮枪火", "大喷气", "高爆枪火" };
+            string[] keys = { "mist", "mist", "mist", "stock", "fs", "stock", "stock", "lady", "lady", "lady", "lady", "lady", "mist" };
+            Assert.Equal(48, Catalog.Styles.Length);
             Assert.Equal(names, Catalog.Styles.Skip(35).Select(style => style.Linkage).ToArray());
             using var document = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ProjectRoot(), CombatFxCatalog.RelativePath)));
             JsonElement data = document.RootElement;
             var libraries = data.GetProperty("sourceLibraries").EnumerateArray().ToArray();
-            Assert.Equal(new[] { "fs", "mist", "stock" }, libraries.Select(library => library.GetProperty("key").GetString()).OrderBy(key => key).ToArray());
+            Assert.Equal(new[] { "fs", "lady", "mist", "stock" }, libraries.Select(library => library.GetProperty("key").GetString()).OrderBy(key => key).ToArray());
             string[] sources = data.GetProperty("sources").EnumerateArray().Select(source => source.GetProperty("path").GetString()).ToArray();
             foreach (JsonElement library in libraries) Assert.Contains(library.GetProperty("swf").GetString(), sources);
             for (int offset = 0; offset < names.Length; offset++)
@@ -72,6 +72,12 @@ namespace CF7Launcher.Tests.Guardian
             var muzzle = Catalog.Styles[Style("铁枪能量弹枪火")];
             Assert.True(muzzle.IsMuzzle); Assert.NotNull(muzzle.Light);
             Assert.Equal(new[] { 5, 3, 4 }, muzzle.Variants.Select(variant => variant.Length).ToArray());
+            foreach (var (name, length) in new[] { ("刺弹炮枪火", 8), ("g1开火", 6), ("能量枪火", 4), ("加农炮枪火", 7), ("大喷气", 7), ("高爆枪火", 11) })
+            {
+                var ladyMuzzle = Catalog.Styles[Style(name)];
+                Assert.True(ladyMuzzle.IsMuzzle); Assert.NotNull(ladyMuzzle.Light);
+                Assert.Equal(length, Assert.Single(ladyMuzzle.Variants).Length);
+            }
             var impact = Catalog.Styles[Style("飙血")];
             Assert.True(impact.IsImpact); Assert.True(impact.WorldLit);
             Assert.Equal(129, impact.Frames.Length);

@@ -1,0 +1,170 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/fsc7炮弹文件/fsc7炮弹" itemID="69e43a2e-00000046" linkageExportForAS="true" linkageIdentifier="fsc7炮弹" lastModified="1777091512">
+  <timeline>
+    <DOMTimeline name="fsc7炮弹" currentFrame="4">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#EEDFAD" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#7F42FB" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[声音 = "";
+霰弹值 = 1;
+子弹散射度 = 8;
+发射效果 = "";
+子弹种类 = "集束连环爆炸";
+if(!子弹威力)
+{
+   子弹威力 = 1000;
+}
+else
+{
+   子弹威力 *= 1.5;
+}
+
+子弹速度 = 0;
+击中地图效果 = "";
+Z轴攻击范围 = 150;
+击倒率 = 1;
+ 击中后子弹的效果 = "";
+ 击退初速度 = 20;
+ shootX = this._x;
+ shootY = this._y;
+
+ var 子弹属性 = _root.子弹属性初始化(this,子弹种类,发射者名);
+ 子弹属性.声音 = 声音;
+ 子弹属性.霰弹值 = 霰弹值;
+ 子弹属性.子弹散射度 = 子弹散射度;
+ 子弹属性.发射效果 = 发射效果;
+ 子弹属性.子弹种类 = 子弹种类;
+ 子弹属性.子弹威力 = 子弹威力;
+ 子弹属性.子弹速度 = 子弹速度;
+ 子弹属性.Z轴攻击范围 = Z轴攻击范围;
+ 子弹属性.击中地图效果 = 击中地图效果;
+ 子弹属性.击倒率 = 击倒率;
+ 子弹属性.击中后子弹的效果 = 击中后子弹的效果;
+ 子弹属性.水平击退速度 = 击退初速度;
+ 子弹属性.shootX = shootX;
+ 子弹属性.shootY = shootY;
+ 子弹属性.shootZ = Z轴坐标;
+ 子弹属性.发射者 = 发射者名;
+
+ // 锁定发射瞬间的属性，避免切换武器/模组后爆炸继承到当前主角属性
+ 子弹属性.伤害类型 = (this.伤害类型 != undefined) ? this.伤害类型 : "物理";
+ 子弹属性.魔法伤害属性 = this.魔法伤害属性;
+ 子弹属性.毒 = this.毒;
+ 子弹属性.nanoToxic = this.nanoToxic;
+ 子弹属性.nanoToxicDecay = this.nanoToxicDecay;
+ 子弹属性.吸血 = this.吸血;
+ 子弹属性.击溃 = this.击溃;
+ 子弹属性.斩杀 = this.斩杀;
+ 子弹属性.暴击 = this.暴击;
+ 子弹属性.命中率 = this.命中率;
+ 子弹属性.固伤 = this.固伤;
+ 子弹属性.百分比伤害 = this.百分比伤害;
+ 子弹属性.血量上限击溃 = this.血量上限击溃;
+ 子弹属性.防御粉碎 = this.防御粉碎;
+ 子弹属性.lockShooterAttributes = true;
+
+ _root.子弹区域shoot传递(子弹属性);
+ stop();
+ this.removeMovieClip();
+ ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#1CAFD9" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fsc7炮弹文件/无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area">
+                  <matrix>
+                    <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   横向加速度 = 1;
+   横向速度 = 0;
+   this.onEnterFrame = function()
+   {
+      if(90 > _parent._rotation and _parent._rotation > -90)
+      {
+         横向速度 += 横向加速度;
+         _parent._x += 横向速度;
+      }
+      else if(360 > _parent._rotation and _parent._rotation > 270)
+      {
+         横向速度 += 横向加速度;
+         _parent._x += 横向速度;
+      }
+      else if(270 > _parent._rotation and _parent._rotation > 90)
+      {
+         横向速度 += 横向加速度;
+         _parent._x -= 横向速度;
+      }
+      else if(-90 > _parent._rotation and _parent._rotation > -270)
+      {
+         横向速度 += 横向加速度;
+         _parent._x -= 横向速度;
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fsc7炮弹文件/fsc7炮弹素材" centerPoint3DX="-6.15" centerPoint3DY="0.9">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="-24.15" ty="-3.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60" y="10"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurY="13" color="#0066FF" quality="3" strength="0.69"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

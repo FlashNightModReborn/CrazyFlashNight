@@ -1,0 +1,245 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/素材/人物身躯单独" itemID="69cb2543-0000022d" symbolType="graphic" lastModified="1774921042" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="人物身躯单独">
+      <layers>
+        <DOMLayer name="MagnetTargets" color="#FF0000" outline="true" useOutlineView="true" autoNamed="false" layerType="guide">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Magnet Target" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="4.05" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="MT" v='{"id":"2026_0_20_17_14_7_10","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Magnet Target" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-18.55" ty="-41.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="MT" v='{"id":"2026_0_20_17_16_25_963","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Magnet Target" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="9.35" ty="-40.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="MT" v='{"id":"2026_0_20_17_17_3_6","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Magnet Target" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-3.25" ty="-54.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="MT" v='{"id":"2026_0_20_17_20_36_150","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <transformationPoint>
+                    <Point x="2.05" y="-45.75"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape>
+                      <transformationPoint>
+                        <Point x="2.05" y="-45.75"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#906753"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#E9B398"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.2">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!-130 -1075[-129 -1100 -126 -1133!-126 -1133[-93 -1147 -58 -1140!-58 -1140[-11 -1133 41 -1094!41 -1094[40 -1064 40 -1022!40 -1022[40 -1007 40 -978"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!40 -978[40 -968 40 -951!40 -951[41 -931 41 -918"/>
+                        <Edge fillStyle1="2" edges="!41 -918[41 -910 41 -905!41 -905[42 -894 44 -877!44 -877[44 -875 45 -873!45 -873[46 -867 50 -863!50 -863[57 -851 70 -841!70 -841[80 -835 98 -828!98 -828[123 -819 158 -811!158 -811|157 -810!157 -810|157 -807!157 -807[157 -806 156 -806
+!156 -806|156 -775!156 -775|157 -774!157 -774|157 -771!157 -771|158 -770!158 -770|158 -768!158 -768[158 -767 159 -767!159 -767|159 -765!159 -765[-45 -654 -200 -819!-200 -819|-180 -832!-180 -832[-174 -836 -169 -844!-169 -844[-164 -851
+ -161 -862!-161 -862[-159 -871 -156 -880!-156 -880[-155.75 #FFFC8E.81 -155 -883!-155 -883[-153 -900 -151 -916"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="
+!-151 -916[-149 -936 -146 -954!-146 -954[-144 -973 -141 -994!-141 -994[-137 -1027 -130 -1075"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!-130 -1075[-57 -1000 40 -978"/>
+                        <Edge cubics="!98 -828(;78,-836 60,-845 50,-863q98 -828Q80 -835q70 -841Q57 -851q50 -863);"/>
+                        <Edge cubics="!-169 -844(;-172,-838 -176,-835 -180,-832q-169 -844Q-174 -836q-180 -832);"/>
+                        <Edge cubics="!-161 -862(;-163,-855 -166,-848 -169,-844q-161 -862Q-164 -851q-169 -844);"/>
+                        <Edge cubics="!-200 -819(;-200,-819 -180,-832 -180,-832q-200 -819 -180 -832);"/>
+                        <Edge cubics="!-58 -1140(;-80,-1144 -103,-1142 -126,-1133q-58 -1140Q-93 -1147q-126 -1133);"/>
+                        <Edge cubics="!41 -1094(;11,-1117 -22,-1135 -58,-1140q41 -1094Q-11 -1133q-58 -1140);"/>
+                        <Edge cubics="!44 -877(;44,-876 44,-874 45,-873q44 -877Q44 -875q45 -873);"/>
+                        <Edge cubics="!45 -873(;46,-869 47,-866 50,-863q45 -873Q46 -867q50 -863);"/>
+                        <Edge cubics="!41 -905(;42,-898 43,-888 44,-877q41 -905Q42 -894q44 -877);"/>
+                        <Edge cubics="!-156 -880(;-156,-880 -156,-879 -156,-879q-156 -880 -156 -879);"/>
+                        <Edge cubics="!-156 -879(;-156,-880 -156,-882 -155,-883q-156 -879Q-156 -881q-155 -883);"/>
+                        <Edge cubics="!-161 -862(;-160,-868 -158,-874 -156,-880q-161 -862Q-159 -871q-156 -880);"/>
+                        <Edge cubics="!41 -1094(;40,-1074 40,-1050 40,-1022q41 -1094Q40 -1064q40 -1022);"/>
+                        <Edge cubics="!159 -765(;23,-691 -97,-709 -200,-819q159 -765Q-45 -654q-200 -819);"/>
+                        <Edge cubics="!156 -806(;157,-806 157,-806 157,-807q156 -806Q157 -806q157 -807);"/>
+                        <Edge cubics="!157 -807(;157,-807 157,-810 157,-810q157 -807 157 -810);"/>
+                        <Edge cubics="!157 -810(;157,-810 158,-811 158,-811q157 -810 158 -811);"/>
+                        <Edge cubics="!159 -765(;159,-765 159,-767 159,-767q159 -765 159 -767);"/>
+                        <Edge cubics="!159 -767(;158,-767 158,-767 158,-768q159 -767Q158 -767q158 -768);"/>
+                        <Edge cubics="!157 -771(;157,-771 157,-774 157,-774q157 -771 157 -774);"/>
+                        <Edge cubics="!158 -770(;158,-770 157,-771 157,-771q158 -770 157 -771);"/>
+                        <Edge cubics="!158 -768(;158,-768 158,-770 158,-770q158 -768 158 -770);"/>
+                        <Edge cubics="!157 -774(;157,-774 156,-775 156,-775q157 -774 156 -775);"/>
+                        <Edge cubics="!156 -775(;156,-775 156,-806 156,-806q156 -775 156 -806);"/>
+                        <Edge cubics="!98 -828(;115,-822 135,-816 158,-811q98 -828Q123 -819q158 -811);"/>
+                        <Edge cubics="!40 -951(;41,-938 41,-927 41,-918q40 -951Q41 -931q41 -918);"/>
+                        <Edge cubics="!40 -978(;40,-971 40,-962 40,-951q40 -978Q40 -968q40 -951);"/>
+                        <Edge cubics="!41 -918(;41,-913 41,-908 41,-905q41 -918Q41 -910q41 -905);"/>
+                        <Edge cubics="!40 -1022(;40,-1012 40,-997 40,-978q40 -1022Q40 -1007q40 -978);"/>
+                        <Edge cubics="!-130 -1075(;-129,-1092 -128,-1111 -126,-1133q-130 -1075Q-129 -1100q-126 -1133);"/>
+                        <Edge cubics="!-141 -994(;-138,-1016 -135,-1043 -130,-1075q-141 -994Q-137 -1027q-130 -1075);"/>
+                        <Edge cubics="!-151 -916(;-150,-929 -148,-942 -146,-954q-151 -916Q-149 -936q-146 -954);"/>
+                        <Edge cubics="!-146 -954(;-145,-967 -143,-980 -141,-994q-146 -954Q-144 -973q-141 -994);"/>
+                        <Edge cubics="!-155 -883(;-154,-894 -152,-905 -151,-916q-155 -883Q-153 -900q-151 -916);"/>
+                        <Edge cubics="!-130 -1075(;-81,-1025 -25,-993 40,-978q-130 -1075Q-57 -1000q40 -978);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/元件 10" symbolType="graphic" centerPoint3DX="-0.65" centerPoint3DY="-23.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.907958984375" b="-0.0153350830078125" c="0.0152740478515625" d="0.908065795898438" tx="-19.35" ty="-52.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23" y="56.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.9986572265625" b="0.0514984130859375" c="-0.0514984130859375" d="0.9986572265625" tx="-23.5" ty="-59.1"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#181627"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!679 152[629 138 555 115!555 115[495 100 470 93!470 93[444 123 435 147!435 147[432 156 432 157!432 157[427 161 431 166!431 166[430 170 423 176!423 176|423 177!423 177|426 177!426 177[424 #B1.0C 424 179!424 179[413 184 413 198!413 198
+[413 202 415 208!415 208[418 229 484 249!484 249[506 255 533 270!533 270|534 265!534 265|536 266!536 266[563 280 580 299!580 299[580 275 594 256!594 256|582 255!582 255[585 247 591 240!591 240[594 237 596 236!596 236[610 215 630 193!630
+ 193|627 193!627 193[627 191 630 190!630 190[647 170 679 152"/>
+                    <Edge cubics="!630 190(;641,177 658,164 679,152q630 190Q647 170q679 152);"/>
+                    <Edge cubics="!627 193(;627,192 628,191 630,190q627 193Q627 191q630 190);"/>
+                    <Edge cubics="!630 193(;630,193 627,193 627,193q630 193 627 193);"/>
+                    <Edge cubics="!426 177(;425,177 424,178 424,179q426 177Q424 177q424 179);"/>
+                    <Edge cubics="!423 177(;423,177 426,177 426,177q423 177 426 177);"/>
+                    <Edge cubics="!432 157(;429,160 428,163 431,166q432 157Q427 161q431 166);"/>
+                    <Edge cubics="!431 166(;430,169 428,172 423,176q431 166Q430 170q423 176);"/>
+                    <Edge cubics="!423 176(;423,176 423,177 423,177q423 176 423 177);"/>
+                    <Edge cubics="!413 198(;413,201 414,204 415,208q413 198Q413 202q415 208);"/>
+                    <Edge cubics="!424 179(;417,182 413,189 413,198q424 179Q413 184q413 198);"/>
+                    <Edge cubics="!435 147(;433,153 432,156 432,157q435 147Q432 156q432 157);"/>
+                    <Edge cubics="!591 240(;593,238 595,237 596,236q591 240Q594 237q596 236);"/>
+                    <Edge cubics="!555 115(;515,105 487,98 470,93q555 115Q495 100q470 93);"/>
+                    <Edge cubics="!470 93(;453,113 441,131 435,147q470 93Q444 123q435 147);"/>
+                    <Edge cubics="!533 270(;533,270 534,265 534,265q533 270 534 265);"/>
+                    <Edge cubics="!484 249(;499,253 515,260 533,270q484 249Q506 255q533 270);"/>
+                    <Edge cubics="!594 256(;594,256 582,255 582,255q594 256 582 255);"/>
+                    <Edge cubics="!580 299(;580,283 585,269 594,256q580 299Q580 275q594 256);"/>
+                    <Edge cubics="!534 265(;534,265 536,266 536,266q534 265 536 266);"/>
+                    <Edge cubics="!536 266(;554,275 569,286 580,299q536 266Q563 280q580 299);"/>
+                    <Edge cubics="!415 208(;417,222 440,236 484,249q415 208Q418 229q484 249);"/>
+                    <Edge cubics="!679 152(;646,143 604,130 555,115q679 152Q629 138q555 115);"/>
+                    <Edge cubics="!582 255(;584,250 587,245 591,240q582 255Q585 247q591 240);"/>
+                    <Edge cubics="!596 236(;605,222 617,208 630,193q596 236Q610 215q630 193);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="-24.05" ty="-57.55"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#181627"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!431 197[#1AA.53 174 424.5 162!424.5 162[#1A4.A7 140 432 139!432 139|453.5 80!453.5 80[#14B.3 80 272.5 88!272.5 88[#D5.AA 96 198.5 113!198.5 113[#B8.27 127 185 155!185 155[#B8.0C 158 185 162!185 162[#B8.F4 172 192.5 191!192.5 191[#C8.13
+ 210 201 220!201 220[202 256 297 253!297 253[#157.86 252 391 244!391 244[#187.E8 255 417.5 254!417.5 254[#1C7.8B 251 467 254!467 254[#1C8.A6 232 442.5 213!442.5 213[#1AF.0D 198 431 197"/>
+                    <Edge cubics="!431 197(;428,182 426,170 425,162q431 197Q426 174q425 162);"/>
+                    <Edge cubics="!425 162(;422,147 425,140 432,139q425 162Q421 140q432 139);"/>
+                    <Edge cubics="!443 213(;435,203 431,198 431,197q443 213Q431 198q431 197);"/>
+                    <Edge cubics="!432 139(;432,139 454,80 454,80q432 139 454 80);"/>
+                    <Edge cubics="!418 254(;443,252 460,252 467,254q418 254Q456 251q467 254);"/>
+                    <Edge cubics="!467 254(;460,239 452,226 443,213q467 254Q457 232q443 213);"/>
+                    <Edge cubics="!185 162(;185,169 188,178 193,191q185 162Q185 172q193 191);"/>
+                    <Edge cubics="!193 191(;198,204 200,213 201,220q193 191Q200 210q201 220);"/>
+                    <Edge cubics="!297 253(;328,252 360,249 391,244q297 253Q344 252q391 244);"/>
+                    <Edge cubics="!273 88(;234,93 209,102 199,113q273 88Q214 96q199 113);"/>
+                    <Edge cubics="!185 155(;184,157 184,159 185,162q185 155Q184 158q185 162);"/>
+                    <Edge cubics="!199 113(;189,122 184,136 185,155q199 113Q184 127q185 155);"/>
+                    <Edge cubics="!201 220(;202,244 234,255 297,253q201 220Q202 256q297 253);"/>
+                    <Edge cubics="!454 80(;372,80 312,83 273,88q454 80Q331 80q273 88);"/>
+                    <Edge cubics="!391 244(;392,251 401,255 418,254q391 244Q392 255q418 254);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/榴弹" symbolType="graphic" centerPoint3DX="-24.85" centerPoint3DY="-35.75" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.0075836181640625" b="-0.419891357421875" c="-0.419891357421875" d="-0.0075836181640625" tx="-11.95" ty="27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="148.85" y="33.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

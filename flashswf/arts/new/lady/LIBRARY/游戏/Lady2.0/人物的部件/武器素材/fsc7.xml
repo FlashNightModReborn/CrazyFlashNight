@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/武器素材/fsc7" itemID="698308b3-0000017a" symbolType="graphic" lastModified="1775791916" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="fsc7">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/武器素材/fsc7素材/fsc7炮弹" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="395.85" ty="24.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="94.3" y="20.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/武器素材/fsc7素材/fsc7本体" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="261.4" y="68.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

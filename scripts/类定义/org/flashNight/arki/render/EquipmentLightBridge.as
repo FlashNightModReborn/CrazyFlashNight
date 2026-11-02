@@ -21,6 +21,9 @@ class org.flashNight.arki.render.EquipmentLightBridge {
     private static var profile:Object = null;
     // Ordinary muzzle preset (local_lights.v1.json / 枪火), not a new lamp.
     private static var radialPeak:Number = 1.5;
+    private static var projectiles:Array = [];
+    private static var bulletProfiles:Object = null;
+    private static var bulletPoint:Object = {x:0, y:0};
 
     // Focused TestLoader instrumentation only; normal snapshots read a null gate.
     public static function profilePayloadForTests(enabled:Boolean):Object {
@@ -39,7 +42,7 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         // invalidates them normally. Only the native projections are reset.
         var retained:Array = entries; entries = [];
         candidates.length = 0; actors.length = 0;
-        selected.length = 0; previous.length = 0; scene++;
+        selected.length = 0; previous.length = 0; projectiles.length = 0; scene++;
         var now:Number = Number(_root.帧计时器.当前帧数);
         budgetTick = isFinite(now) ? now : 0;
         sourceCount = mergedCount = droppedCount = 0;
@@ -471,7 +474,8 @@ class org.flashNight.arki.render.EquipmentLightBridge {
     }
     private static function rank(entry:Object):Void {
         entry.selected = !!entry.selected;
-        entry.tier = (entry.actor._name === _root.控制目标 ? 3 : 0) + (entry.kind == 0 ? 0 : 1);
+        entry.tier = entry.tierOverride != undefined ? entry.tierOverride
+            : ((entry.actor._name === _root.控制目标 ? 3 : 0) + (entry.kind == 0 ? 0 : 1));
         var view:Object = viewport;
         var scale:Number = view.scale;
         var dx:Number = view.x + entry.x * scale - view.width * 0.5;
@@ -568,6 +572,10 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         sourceCount = count;
         if (timing) { nextStamp = getTimer(); timing.collection += nextStamp-stamp; stamp = nextStamp; }
         for (i = 0; i < contexts.length; i++) finish(contexts[i]);
+        if (radial && projectiles.length > 0) {
+            count += collectBullets(frameTick, paused);
+            sourceCount = count;
+        }
         if (timing) { nextStamp = getTimer(); timing.aggregation += nextStamp-stamp; stamp = nextStamp; }
         checking = false;
         mergedCount = count - pending.length;
@@ -614,6 +622,316 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         if (timing) { timing.serialization += getTimer()-stamp; timing.calls++; }
         return result;
     }
+    private static function initBulletProfiles():Object {
+        var m:Object = {};
+        var raw:String =
+            "爆炸,260,1.75,16753226,0,-45,17,1;火球爆炸,250,1.7,16747576,0,-40,17,1;等离子爆炸,260,1.8,7399679,0,-45,17,1;" +
+            "集束连环爆炸,270,1.8,16752712,0,-45,18,1;联弹爆炸,230,1.55,16753226,0,-35,17,1;定向爆破,250,1.7,16752196,0,-40,17,1;" +
+            "铁血弹爆炸,220,1.5,16746550,0,-30,15,1;空中爆炸1,230,1.55,16753226,0,-20,15,1;火焰爆发,240,1.65,16747574,150,0,17,1;" +
+            "小火焰爆发,195,1.4,16747574,115,0,17,1;冰流爆发,230,1.5,7396607,145,0,17,1;" +
+            "加强电球,145,1.15,7919871,0,0,53,0,7,245,1.65,-35;量子爆弹,130,0.95,9234687,0,-60,52,0,33,305,1.85,-120;" +
+            "火球,175,1.35,16747059,0,0,42,0;火焰,155,1.15,16745518,25,0,34,0;普通火箭弹,155,1.2,16753740,-20,0,38,0;" +
+            "高爆火箭弹,165,1.25,16750656,-20,0,38,0;激光火箭弹,165,1.3,16742984,-15,0,35,0;榴弹,135,1,16754772,-10,0,34,0;" +
+            "高爆榴弹,145,1.1,16751684,-10,0,34,0;穿甲榴弹,145,1.1,16756824,-10,0,34,0;集束榴弹,145,1.1,16753740,0,0,34,0;" +
+            "战术集束榴弹,150,1.15,16753740,0,0,34,0;高爆子弹,135,1.05,16756824,0,0,25,0;天基炮弹,175,1.35,16758880,0,0,40,0;" +
+            "战斧导弹,165,1.25,16753740,-20,0,45,0;追踪导弹,150,1.15,16753740,-15,0,45,0;长钉导弹,150,1.15,16753740,-15,0,45,0;" +
+            "红外制导导弹,150,1.15,16753740,-15,0,45,0;微型导弹,135,1,16753740,-10,0,40,0;连环导弹,145,1.1,16753740,-15,0,40,0;" +
+            "外星导弹,155,1.2,6875391,-15,0,45,0;蓝旋反坦克炮弹,175,1.35,6086911,0,0,40,0;能量弹,170,1.35,7006463,0,0,40,0;" +
+            "能量球,165,1.3,7006463,0,0,40,0;电球,145,1.15,7919871,0,0,35,0;等离子榴弹,155,1.25,6875391,0,0,34,0;" +
+            "等离子导弹,160,1.25,6875391,-15,0,45,0;压缩能量榴弹,155,1.25,7923967,0,0,34,0;重型电浆弹,175,1.4,6876927,0,0,40,0;" +
+            "战术电浆团,165,1.3,6876927,0,0,40,0;外星文明的馈赠,185,1.45,7401727,0,0,40,0;电磁弹,150,1.2,7395583,0,0,30,0;" +
+            "脉冲弹,150,1.2,7397631,0,0,30,0;蓝紫穿刺子弹,155,1.2,10385663,0,0,30,0;紫光球,150,1.15,12871935,0,0,35,0;" +
+            "铁枪磁暴弹,175,1.35,7136511,0,0,35,0;铁枪能量弹,150,1.15,7136511,0,0,30,0;高斯穿刺弹,145,1.1,8447231,0,0,25,0;" +
+            "重型高斯弹,160,1.25,8447231,0,0,25,0;极寒弹,140,1.05,7922943,0,0,25,0;急冻弹,140,1.05,7922943,0,0,25,0;" +
+            "寒冰冲击波,190,1.35,7922943,40,0,20,0;烈焰弹,140,1.05,16749112,0,0,25,0;日珥弹,155,1.2,16753720,0,0,25,0;" +
+            "黄金子弹,135,1,16765524,0,0,25,0;次元弹,155,1.2,12087551,0,0,30,0;破魔弹,145,1.1,13662463,0,0,25,0;" +
+            "生体护盾破坏弹,145,1.1,6881180,0,0,25,0;腐蚀弹,140,1.05,7929696,0,0,25,0;剧毒弹,140,1.05,7929696,0,0,25,0;" +
+            "异形酸液,145,1.1,8716114,0,0,30,0;火凤火攻,190,1.45,16743982,0,-25,10,1;火凤回旋,235,1.65,16747574,0,-45,20,1;" +
+            "中火燃,195,1.45,16745520,0,-35,15,1;熔炎裂渊,245,1.7,16743982,0,-45,24,1;金炎裂渊,250,1.75,16758852,0,-45,24,1;" +
+            "浴火重生,280,1.85,16749624,0,-65,30,1;浴火重生-火凤,280,1.85,16749624,0,-65,30,1;凤凰浴火重生,300,1.95,16750652,0,-75,30,1;" +
+            "凤凰浴火重生小型,240,1.65,16749624,0,-50,25,1;火凤套装_回血提示,180,1.3,16753216,0,-40,16,1;" +
+            "火凤套装_热附击,165,1.3,16746548,0,-25,10,1;火凤套装_完整热附击,195,1.5,16750140,0,-30,12,1;" +
+            "火凤套装_原版火攻,180,1.35,16745010,0,-15,8,1;火凤套装_原版回旋,230,1.6,16749624,0,-35,19,1;" +
+            "__phoenix_revive,260,1.8,16748086,0,-45,4,1;__phoenix_ember,135,0.85,16742952,0,-35,4,0;" +
+            "__huofeng_nirvana,270,1.85,16749624,0,0,4,1;__huofeng_ember,130,0.8,16744492,0,-35,4,0;" +
+            "__pulse_heat,215,1.5,16747574,0,0,6,1;__pulse_cold,200,1.35,7396607,0,0,6,1";
+        var rows:Array = raw.split(";");
+        for (var i:Number = 0; i < rows.length; i++) {
+            var p:Array = rows[i].split(",");
+            var col:Number = Number(p[3]);
+            m[p[0]] = {
+                radius:Number(p[1]), energy:Number(p[2]),
+                r:0.2 + (((col >> 16) & 255) / 255) * 0.8,
+                g:0.2 + (((col >> 8) & 255) / 255) * 0.8,
+                b:0.2 + ((col & 255) / 255) * 0.8,
+                forwardOffset:Number(p[4]), offsetY:Number(p[5]),
+                totalFrames:Number(p[6]), isExplosion:p[7] == "1",
+                stageFrame:p.length > 8 ? Number(p[8]) : 0,
+                stageRadius:p.length > 8 ? Number(p[9]) : 0,
+                stageEnergy:p.length > 8 ? Number(p[10]) : 0,
+                stageOffsetY:p.length > 8 ? Number(p[11]) : 0
+            };
+        }
+        bulletProfiles = m;
+        return m;
+    }
+
+    public static function emitPulseAt(asset:String, px:Number, py:Number, shooter:MovieClip,
+        radiusOverride:Number, energyOverride:Number, durationOverride:Number):Void {
+        if (!radialEnabled || !asset || nextId > 999999990) return;
+        var map:Object = bulletProfiles || initBulletProfiles();
+        var spec:Object = map[asset];
+        if (!spec) return;
+        var targetX:Number = Number(px) + spec.forwardOffset;
+        var targetY:Number = Number(py) + spec.offsetY;
+        if (!isFinite(targetX + targetY) || Math.abs(targetX) > 1000000 || Math.abs(targetY) > 1000000) return;
+        var effRadius:Number = radiusOverride > 0 ? Math.min(320, Math.max(30, radiusOverride)) : spec.radius;
+        var effEnergy:Number = energyOverride > 0 ? Math.min(2, Math.max(0.05, energyOverride)) : spec.energy;
+        var effDuration:Number = durationOverride > 0 ? durationOverride : spec.totalFrames;
+        var now:Number = Number(_root.帧计时器.当前帧数);
+        if (!isFinite(now)) now = budgetTick;
+        var isActorContinuous:Boolean = shooter != null && (durationOverride > 0 || radiusOverride > 0);
+        for (var i:Number = projectiles.length - 1; i > -1; i--) {
+            var existing:Object = projectiles[i];
+            if (existing.isPulse && existing.asset === asset && existing.scene === scene) {
+                var dx:Number = existing.x - targetX, dy:Number = existing.y - targetY;
+                if ((isActorContinuous && existing.actor === shooter) || dx * dx + dy * dy < 3600) {
+                    existing.x = targetX;
+                    existing.y = targetY;
+                    existing.baseRadius = effRadius;
+                    existing.baseEnergy = effEnergy;
+                    existing.pulseDuration = effDuration;
+                    existing.birthTick = now;
+                    existing.expireTick = now + effDuration;
+                    return;
+                }
+            }
+        }
+        addProjectileEntry(null, asset, spec, shooter, true, targetX, targetY);
+        var added:Object = projectiles[projectiles.length - 1];
+        if (added && added.asset === asset) {
+            added.baseRadius = effRadius;
+            added.baseEnergy = effEnergy;
+            added.pulseDuration = effDuration;
+            added.expireTick = now + effDuration;
+        }
+    }
+
+    public static function registerBullet(bullet:Object, obj:Object, shooter:MovieClip):Void {
+        if (!radialEnabled || !bullet || !obj || nextId > 999999990) return;
+        var map:Object = bulletProfiles || initBulletProfiles();
+        var asset:String = obj.baseAsset ? String(obj.baseAsset) : String(obj.子弹种类);
+        if (bullet._parent != undefined) {
+            var spec:Object = map[asset];
+            if (!spec) return;
+            addProjectileEntry(MovieClip(bullet), asset, spec, shooter, false, 0, 0);
+            return;
+        }
+        var sound:String = obj.声音;
+        var magic:String = obj.魔法伤害属性;
+        if (sound == "火流.wav" || sound == "冰流.wav"
+            || (asset == "近战子弹" && (magic == "热" || magic == "冷"))) {
+            var pulseKey:String = (sound == "冰流.wav" || magic == "冷") ? "__pulse_cold" : "__pulse_heat";
+            var pulseSpec:Object = map[pulseKey];
+            var col:Object = bullet.aabbCollider;
+            var px:Number = Number(obj.shootX);
+            var py:Number = Number(obj.shootY);
+            if (col && isFinite(col.left + col.right + col.top + col.bottom)) {
+                px = (col.left + col.right) * 0.5;
+                py = (col.top + col.bottom) * 0.5;
+            }
+            if (!isFinite(px + py) || Math.abs(px) > 1000000 || Math.abs(py) > 1000000) return;
+            var now:Number = Number(_root.帧计时器.当前帧数);
+            if (!isFinite(now)) now = budgetTick;
+            for (var i:Number = projectiles.length - 1; i > -1; i--) {
+                var existing:Object = projectiles[i];
+                if (existing.isPulse && existing.asset === pulseKey && existing.scene === scene) {
+                    var dx:Number = existing.x - px, dy:Number = existing.y - py;
+                    if (dx * dx + dy * dy < 8100) {
+                        existing.x = px; existing.y = py;
+                        existing.birthTick = now;
+                        existing.expireTick = now + pulseSpec.totalFrames;
+                        return;
+                    }
+                }
+            }
+            addProjectileEntry(null, pulseKey, pulseSpec, shooter, true, px, py);
+        }
+    }
+
+    public static function registerEffect(mc:MovieClip, effectType:String):Void {
+        if (!radialEnabled || !mc || !mc._parent || !effectType || nextId > 999999990) return;
+        var map:Object = bulletProfiles || initBulletProfiles();
+        var spec:Object = map[effectType];
+        if (!spec) return;
+        var now:Number = Number(_root.帧计时器.当前帧数);
+        if (!isFinite(now)) now = budgetTick;
+        for (var i:Number = projectiles.length - 1; i > -1; i--) {
+            var existing:Object = projectiles[i];
+            if (existing.mc === mc) {
+                existing.asset = effectType;
+                existing.spec = spec;
+                existing.scene = scene;
+                existing.birthTick = now;
+                existing.expireTick = now + spec.totalFrames + 4;
+                return;
+            }
+        }
+        addProjectileEntry(mc, effectType, spec, null, false, 0, 0);
+    }
+
+    private static function addProjectileEntry(mc:MovieClip, asset:String, spec:Object, shooter:MovieClip,
+        isPulse:Boolean, px:Number, py:Number):Void {
+        var now:Number = Number(_root.帧计时器.当前帧数);
+        if (!isFinite(now)) now = budgetTick;
+        for (var i:Number = projectiles.length - 1; i > -1; i--) {
+            var old:Object = projectiles[i];
+            if (old.scene !== scene || now > old.expireTick || (!old.isPulse && (!old.mc._parent || !old.mc._visible))) {
+                projectiles.splice(i, 1);
+            }
+        }
+        if (projectiles.length >= 48) {
+            var evict:Number = 0;
+            for (i = 0; i < projectiles.length; i++) {
+                if (!projectiles[i].spec.isExplosion) { evict = i; break; }
+            }
+            projectiles.splice(evict, 1);
+        }
+        var maxTicks:Number = isPulse ? spec.totalFrames : (spec.isExplosion ? spec.totalFrames + 4 : 180);
+        var isHero:Boolean = shooter != null && shooter._name === _root.控制目标;
+        var tierVal:Number = isHero ? 3 : (spec.isExplosion ? 2 : 1);
+        projectiles.push({
+            id: ++nextId,
+            kind: 0,
+            mc: mc,
+            asset: asset,
+            spec: spec,
+            actor: shooter,
+            tierOverride: tierVal,
+            isBullet: true,
+            isPulse: isPulse,
+            x: px,
+            y: py,
+            baseRadius: spec.radius,
+            baseEnergy: spec.energy,
+            pulseDuration: maxTicks,
+            length: spec.radius,
+            width: 0,
+            dx: 0,
+            dy: 0,
+            energy: spec.energy,
+            strength: 1,
+            r: spec.r,
+            g: spec.g,
+            b: spec.b,
+            nearRadius: 0,
+            nearEnergy: 0,
+            scene: scene,
+            birthTick: now,
+            expireTick: now + maxTicks,
+            selected: false,
+            holdUntil: 0
+        });
+    }
+
+    private static function collectBullets(now:Number, paused:Boolean):Number {
+        var world:MovieClip = _root.gameworld;
+        if (!world._parent) return 0;
+        var bulletLayer:MovieClip = world.子弹区域;
+        var effectLayer:MovieClip = world.效果;
+        var pending:Array = candidates;
+        var basePendingCount:Number = pending.length;
+        var activeBulletSources:Number = 0;
+        for (var i:Number = 0; i < projectiles.length; i++) {
+            var item:Object = projectiles[i];
+            var spec:Object = item.spec;
+            if (item.scene !== scene || (!paused && now > item.expireTick)) {
+                projectiles.splice(i, 1); i--; continue;
+            }
+            if (item.isPulse) {
+                var pDur:Number = item.pulseDuration > 0 ? item.pulseDuration : spec.totalFrames;
+                var age:Number = now - item.birthTick;
+                if (age < 0) age = 0;
+                if (!paused && age >= pDur) {
+                    projectiles.splice(i, 1); i--; continue;
+                }
+                var pulseFade:Number = 1 - age / (pDur + 1);
+                item.length = item.baseRadius > 0 ? item.baseRadius : spec.radius;
+                item.energy = (item.baseEnergy > 0 ? item.baseEnergy : spec.energy) * pulseFade;
+            } else {
+                var mc:MovieClip = item.mc;
+                if (!mc._parent || !mc._visible) {
+                    projectiles.splice(i, 1); i--; continue;
+                }
+                var cf:Number = mc._currentframe;
+                if (spec.isExplosion && cf > spec.totalFrames) {
+                    projectiles.splice(i, 1); i--; continue;
+                }
+                var bx:Number, by:Number;
+                var parentClip:MovieClip = mc._parent;
+                if (parentClip === world || parentClip === bulletLayer || parentClip === effectLayer) {
+                    bx = mc._x; by = mc._y;
+                } else {
+                    var pt:Object = bulletPoint;
+                    pt.x = 0; pt.y = 0;
+                    mc.localToGlobal(pt); world.globalToLocal(pt);
+                    bx = pt.x; by = pt.y;
+                }
+                var sx:Number = mc._xscale;
+                var absScaleX:Number = isFinite(sx) ? Math.abs(sx) * 0.01 : 1;
+                if (absScaleX < 0.5) absScaleX = 0.5;
+                else if (absScaleX > 1.5) absScaleX = 1.5;
+                var inStage2:Boolean = spec.stageFrame > 0 && cf >= spec.stageFrame;
+                if (!inStage2 && spec.forwardOffset != 0) {
+                    var rot:Number = isFinite(mc._rotation) ? mc._rotation * (Math.PI / 180) : 0;
+                    var dir:Number = sx < 0 ? -1 : 1;
+                    var fDist:Number = spec.forwardOffset * absScaleX;
+                    bx += Math.cos(rot) * fDist * dir;
+                    by += Math.sin(rot) * fDist * dir;
+                }
+                if (inStage2) {
+                    by += spec.stageOffsetY;
+                    var stageProg:Number = (cf - spec.stageFrame) / Math.max(1, spec.totalFrames - spec.stageFrame);
+                    var stageFade:Number = stageProg < 0.3 ? 1 : Math.max(0.2, 1 - (stageProg - 0.3) / 0.7 * 0.8);
+                    item.length = Math.min(320, Math.max(40, spec.stageRadius));
+                    item.energy = Math.min(2, spec.stageEnergy * stageFade);
+                    if (item.tierOverride < 2) item.tierOverride = 2;
+                } else if (spec.isExplosion) {
+                    by += spec.offsetY;
+                    var expProg:Number = (cf - 1) / Math.max(1, spec.totalFrames);
+                    var expFade:Number = expProg < 0.35 ? 1 : Math.max(0.2, 1 - (expProg - 0.35) / 0.65 * 0.8);
+                    item.length = Math.min(320, Math.max(40, spec.radius * Math.min(1.3, absScaleX)));
+                    item.energy = Math.min(2, spec.energy * expFade);
+                } else {
+                    by += spec.offsetY;
+                    item.length = Math.min(320, Math.max(30, spec.radius * Math.min(1.25, absScaleX)));
+                    item.energy = spec.energy;
+                }
+                if (!isFinite(bx + by + item.length + item.energy) || Math.abs(bx) > 1000000 || Math.abs(by) > 1000000 || !(item.energy > 0.01)) {
+                    continue;
+                }
+                item.x = bx; item.y = by;
+            }
+            if (!onScreen(item)) continue;
+            activeBulletSources++;
+            var merged:Boolean = false;
+            for (var j:Number = basePendingCount; j < pending.length; j++) {
+                var peer:Object = pending[j];
+                if (peer.asset === item.asset) {
+                    var pdx:Number = peer.x - item.x, pdy:Number = peer.y - item.y;
+                    if (pdx * pdx + pdy * pdy < 5625) {
+                        peer.energy = Math.min(2, peer.energy + item.energy * 0.22);
+                        peer.length = Math.min(320, Math.max(peer.length, item.length * 1.08));
+                        merged = true;
+                        break;
+                    }
+                }
+            }
+            if (!merged) pending[pending.length] = item;
+        }
+        return activeBulletSources;
+    }
+
     public static function getStats():Object {
         return {enabled:nativeEnabled,radialEnabled:radialEnabled,registered:entries.length,scene:scene,
             activeSources:sourceCount,coalescedOrCulled:mergedCount,candidates:candidates.length,admitted:selected.length,dropped:droppedCount};

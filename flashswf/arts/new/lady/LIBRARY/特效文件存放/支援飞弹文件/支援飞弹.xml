@@ -1,0 +1,158 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/支援飞弹文件/支援飞弹" itemID="6a71bce3-00000120" linkageExportForAS="true" linkageIdentifier="支援飞弹" lastModified="1785920926" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="支援飞弹" currentFrame="25">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#F9F958">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#91B5D7" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[声音 = "";
+霰弹值 = 1;
+子弹散射度 = 0;
+发射效果 = "";
+子弹种类 = "支援飞弹爆炸";
+if(子弹威力 == undefined)
+{
+   子弹威力 = 8000;
+}
+子弹速度 = 10;
+击中地图效果 = "";
+Z轴攻击范围 = 120;
+击倒率 = 0;
+击中后子弹的效果 = "";
+if(子弹敌我属性值 == undefined)
+{
+   子弹敌我属性值 = true;
+}
+shootX = this._x;
+Z轴坐标 = shootY = this._y;
+if(发射者名 == undefined)
+{
+   发射者名 = _root.控制目标;
+}
+子弹属性 = _root.子弹属性初始化(this,"支援飞弹爆炸",发射者名);
+子弹属性.声音 = "";
+子弹属性.霰弹值 = 1;
+子弹属性.子弹散射度 = 0;
+子弹属性.子弹种类 = "支援飞弹爆炸";
+子弹属性.子弹威力 = 子弹威力;
+子弹属性.子弹速度 = 0;
+子弹属性.击中地图效果 = "";
+子弹属性.Z轴攻击范围 = 120;
+子弹属性.击倒率 = 0;
+子弹属性.击中后子弹的效果 = "";
+子弹属性.子弹敌我属性 = 子弹敌我属性值;
+子弹属性.伤害类型 = "物理";
+子弹属性.shootX = this._x;
+子弹属性.shootY = this._y;
+子弹属性.shootZ = this._y;
+子弹属性.发射者 = 发射者名;
+_root.子弹区域shoot传递(子弹属性);
+stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="24" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="40">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/支援飞弹文件/空袭小飞弹" symbolType="graphic" centerPoint3DX="-813.6" centerPoint3DY="-903.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.880172729492188" b="0.838882446289063" c="-0.838882446289063" d="0.880172729492188" tx="-828.75" ty="-922.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/支援飞弹文件/空袭小飞弹" symbolType="graphic" centerPoint3DX="-21.4" centerPoint3DY="-27" loop="loop">
+                  <matrix>
+                    <Matrix a="0.880172729492188" b="0.838882446289063" c="-0.838882446289063" d="0.880172729492188" tx="-36.35" ty="-46.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/支援飞弹文件/瞄准" centerPoint3DX="-270.2" centerPoint3DY="1.15">
+                  <matrix>
+                    <Matrix tx="-379" ty="-41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="108.8" y="42.7"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.26953125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/支援飞弹文件/瞄准" selected="true" centerPoint3DX="0.45" centerPoint3DY="1.15">
+                  <matrix>
+                    <Matrix tx="-108.35" ty="-41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="108.8" y="42.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/支援飞弹文件/瞄准" centerPoint3DX="0.45" centerPoint3DY="1.15">
+                  <matrix>
+                    <Matrix tx="-108.35" ty="-41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="108.8" y="42.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

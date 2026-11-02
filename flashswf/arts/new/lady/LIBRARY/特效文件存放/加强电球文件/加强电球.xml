@@ -1,0 +1,310 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/加强电球文件/加强电球" itemID="69e893a8-000006e7" linkageExportForAS="true" linkageIdentifier="加强电球" lastModified="1776867306" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="加强电球" currentFrame="1">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#8ADE35" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="6" name="未爆炸" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="47" name="爆炸" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="53" name="消失?" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#C16F56" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (!this.击中时触发函数)
+{
+	this.击中时触发函数 = function()
+	{
+		if (!this.已爆炸)
+		{
+			this.已爆炸 = true;
+			this.伤害类型 = "魔法";
+			this.xmov = 0;
+			this.ymov = 0;
+			gotoAndPlay("爆炸");
+		}else{
+			this.击中时触发函数 = false;
+		}
+	};
+}
+this.已爆炸 = false;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.魔法伤害属性 = "电";]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.魔法伤害属性 = undefined;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.魔法伤害属性 = "电";]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.魔法伤害属性 = undefined;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.魔法伤害属性 = "电";]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.魔法伤害属性 = undefined;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="53" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.击中地图 = true;
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#A0E27F" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="框" color="#CC3300" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/特效素材/Symbol 13" name="area" centerPoint3DX="-93.95" centerPoint3DY="-78.35">
+                  <matrix>
+                    <Matrix a="1.57254028320313" d="1.48001098632813" tx="-17.9" ty="-19.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.15" y="11.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/特效素材/Symbol 13" name="area" centerPoint3DX="-59" centerPoint3DY="-64.9">
+                  <matrix>
+                    <Matrix a="5.96221923828125" d="5.61137390136719" tx="-71.5" ty="-77.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/特效素材/Symbol 13" name="area" centerPoint3DX="-56" centerPoint3DY="-58.4">
+                  <matrix>
+                    <Matrix a="5.96221923828125" d="5.61137390136719" tx="-68.5" ty="-70.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/特效素材/Symbol 13" name="area" centerPoint3DX="-58" centerPoint3DY="-59.9">
+                  <matrix>
+                    <Matrix a="5.96221923828125" d="5.61137390136719" tx="-70.5" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/特效素材/Symbol 13" name="area" centerPoint3DX="-72.1" centerPoint3DY="-71">
+                  <matrix>
+                    <Matrix a="7.09770202636719" d="6.68022155761719" tx="-87" ty="-85.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/特效素材/Symbol 13" name="area" centerPoint3DX="-57.5" centerPoint3DY="-61.4">
+                  <matrix>
+                    <Matrix a="5.96221923828125" d="5.61137390136719" tx="-70" ty="-73.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/特效素材/Symbol 13" name="area" centerPoint3DX="-69.8" centerPoint3DY="-69.65">
+                  <matrix>
+                    <Matrix a="7.02336120605469" d="6.60990905761719" tx="-84.5" ty="-84.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/特效素材/Symbol 13" name="area" centerPoint3DX="-68.4" centerPoint3DY="-76.8">
+                  <matrix>
+                    <Matrix a="7.20394897460938" d="6.77995300292969" tx="-83.5" ty="-91.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/特效素材/Symbol 13" name="area" centerPoint3DX="-59.5" centerPoint3DY="-62.9">
+                  <matrix>
+                    <Matrix a="5.96221923828125" d="5.61137390136719" tx="-72" ty="-75.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/特效素材/Symbol 13" name="area" centerPoint3DX="-55.5" centerPoint3DY="-61.4">
+                  <matrix>
+                    <Matrix a="5.96221923828125" d="5.61137390136719" tx="-68" ty="-73.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="新动画" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/加强电球运动动画" centerPoint3DX="-7.85" centerPoint3DY="-0.9">
+                  <matrix>
+                    <Matrix a="1.63999938964844" d="1.63999938964844" tx="-93.3" ty="-77.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.25" y="46.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="51" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加强电球文件/加强电球爆炸动画" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="1.20999145507813" d="1.20999145507813" tx="-275.5" ty="-4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="228" y="3.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#F442C8" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="42" keyMode="9728" soundName="特效文件存放/加强电球文件/音效/sound4764.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

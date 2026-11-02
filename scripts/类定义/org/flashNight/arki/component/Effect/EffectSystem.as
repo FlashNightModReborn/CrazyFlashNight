@@ -125,6 +125,7 @@ class org.flashNight.arki.component.Effect.EffectSystem
                 effect._y = y;
                 effect._xscale = scaleX;
                 currentEffectCount++;
+                org.flashNight.arki.render.EquipmentLightBridge.registerEffect(effect, effectType);
             }
 
             return effect;

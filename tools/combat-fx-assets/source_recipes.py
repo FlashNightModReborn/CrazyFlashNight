@@ -15,10 +15,12 @@ SOURCE_LIBRARIES = (
      'libraryRoot': 'flashswf/arts/new/雾人整合特效/LIBRARY'},
     {'key': 'fs', 'swf': 'flashswf/arts/new/fs配置素材.swf',
      'libraryRoot': 'flashswf/arts/new/fs配置素材/LIBRARY'},
+    {'key': 'lady', 'swf': 'flashswf/arts/new/lady.swf',
+     'libraryRoot': 'flashswf/arts/new/lady/LIBRARY'},
 )
 LEGACY_MUZZLES = ('冲锋枪枪火', '反器材枪火', '发射器枪火', '巴雷特枪火', '战斗步枪枪火',
                   '枪火', '突击步枪枪火', '紧凑手枪枪火', '霰弹枪枪火', '马格南手枪枪火')
-MUZZLES = LEGACY_MUZZLES + ('铁枪能量弹枪火',)
+MUZZLES = LEGACY_MUZZLES + ('铁枪能量弹枪火', '刺弹炮枪火', 'g1开火', '能量枪火', '加农炮枪火', '大喷气', '高爆枪火')
 IMPACTS = ('火花', '击中金属', '无声火花', '拼刀火花', '战术巴雷特击中特效', '铁枪能量弹火花', '屎花')
 EXTRA_STYLES = (
     ('mist', '1.特效文件夹/14.远程子弹/冰汽/冰汽', 'impact', 'sequence'),
@@ -28,6 +30,12 @@ EXTRA_STYLES = (
     ('fs', '长枪/铁枪/铁枪能量弹枪火', 'muzzle', 'sequence'),
     ('stock', '特效-血液组/飙血', 'impact', 'blood-impact'),
     ('stock', '特效-血液组/子弹碎片-飞血', 'blood', 'blood-static'),
+    ('lady', '特效文件存放/刺弹炮枪火文件/刺弹炮枪火', 'muzzle', 'sequence'),
+    ('lady', '特效文件存放/g1开火文件/g1开火', 'muzzle', 'sequence'),
+    ('lady', '特效文件存放/能量枪火文件/能量枪火', 'muzzle', 'sequence'),
+    ('lady', '特效文件存放/加农炮枪火文件/加农炮枪火', 'muzzle', 'sequence'),
+    ('lady', '特效文件存放/大喷气文件/大喷气', 'muzzle', 'sequence'),
+    ('mist', '1.特效文件夹/10.力大砖飞/高爆枪火/高爆枪火', 'muzzle', 'sequence'),
 )
 REMOVALS = {'this.removeMovieClip();', 'stop();this.removeMovieClip();', 'this.removeMovieClip();stop();'}
 METADATA_KEYS = ('sourceKey', 'sourceSymbol', 'adapter', 'variantSounds', 'soundAtBirth', 'nestedTransform',
@@ -214,7 +222,7 @@ def recipe():
                 'sourceKey': key, 'sourceSymbol': symbol, 'adapter': adapter, 'variantSounds': sounds,
                 'soundAtBirth': bool(sounds),
                 'renderLinkage': name, 'renderChild': '', 'renderMode': 'legacy'}
-        if name == '冰汽': plan['renderMode'] = 'padded'
+        if name in ('冰汽', '刺弹炮枪火', '大喷气'): plan['renderMode'] = 'padded'
         plan.update(extra); plans.append(plan)
     for path in files - approved_scripts:
         if any(True for _ in ET.parse(path).getroot().iter(NS + 'script')):

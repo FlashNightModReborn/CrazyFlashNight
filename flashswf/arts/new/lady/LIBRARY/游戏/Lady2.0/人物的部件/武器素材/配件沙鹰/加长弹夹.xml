@@ -1,0 +1,83 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/武器素材/配件沙鹰/加长弹夹" itemID="68f6e54a-000001e5" symbolType="graphic" lastModified="1770722897">
+  <timeline>
+    <DOMTimeline name="加长弹夹">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" d="0"/>
+                            </matrix>
+                            <GradientEntry color="#969696" ratio="0.00784313725490196"/>
+                            <GradientEntry color="#373737" ratio="0.254901960784314"/>
+                            <GradientEntry color="#333333" ratio="0.411764705882353"/>
+                            <GradientEntry ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#212322"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#0F1110"/>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.061370849609375" d="0.004669189453125" tx="50.25" ty="243.65"/>
+                            </matrix>
+                            <GradientEntry color="#575D62" ratio="0"/>
+                            <GradientEntry color="#4B4B48" ratio="0.141176470588235"/>
+                            <GradientEntry color="#878787" ratio="0.47843137254902"/>
+                            <GradientEntry color="#4F4F4B" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="5">
+                          <SolidColor color="#2B3235"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal">
+                            <fill>
+                              <SolidColor color="#1C1C1C"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="!2556 137|2516 83!2516 83|2262 120"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!2262 120|2240 189!2240 189|2478 149!2478 149[2517 130 2556 137"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!1756 4804|2795 498!2795 498[2835 350 2784 302!2784 302|2593 149!2593 149|2556 137"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!2110 143|2262 120"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!1224 222|1263 67!1263 67|2052 0!2052 0|2110 143"/>
+                        <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!1876 143|1947 222"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!1947 222[1975 162 2007 157!2007 157|2110 143"/>
+                        <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!1928 134[1996 83 1960 62!1960 62|1724 79!1724 79|1699 174!1699 174|1876 143!1876 143|1928 134"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1947 222|1927 275!1927 275|1752 946!1752 946[1706 1024 1619 1004!1619 1004[1501 957 1532 836!1532 836|1699 174!1699 174|1224 222"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!1224 222|98 4797"/>
+                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!98 4797[100 4832 149 4852!149 4852|1277 4852"/>
+                        <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="!1277 4852|1333 4842"/>
+                        <Edge fillStyle0="1" fillStyle1="5" edges="!1333 4842|1334 4852"/>
+                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!1334 4852[1693 4853 1756 4804"/>
+                        <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!1784 611[1811 641 1809 683!1809 683[1806 725 1776 754!1776 754[1745 784 1704 784!1704 784[1662 784 1636 754!1636 754[1608 725 1611 683!1611 683[1613 641 1644 611!1644 611[1674 582 1716 582!1716 582[1757 582 1784 611"/>
+                        <Edge fillStyle1="4" strokeStyle="1" edges="!1756 4804|1929 4859!1929 4859[2118 4936 1870 4950!1870 4950|0 4950!0 4950|52 4797!52 4797|98 4797"/>
+                        <Edge fillStyle0="5" fillStyle1="4" strokeStyle="1" edges="!1277 4852|1334 4852"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

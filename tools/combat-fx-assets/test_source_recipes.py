@@ -21,20 +21,25 @@ class SourceRecipeTests(unittest.TestCase):
         cls.by_name = {p['linkage']: p for p in cls.plans}
 
     def test_new_styles_append_to_the_original_35_and_bind_their_sources(self):
-        self.assertEqual(42, len(self.plans))
-        expected = ['冰汽', '烈焰火花', '能量火花', '空手攻击火花', '铁枪能量弹枪火', '飙血', '子弹碎片-飞血']
+        self.assertEqual(48, len(self.plans))
+        expected = ['冰汽', '烈焰火花', '能量火花', '空手攻击火花', '铁枪能量弹枪火', '飙血', '子弹碎片-飞血',
+                    '刺弹炮枪火', 'g1开火', '能量枪火', '加农炮枪火', '大喷气', '高爆枪火']
         self.assertEqual(expected, [p['linkage'] for p in self.plans[35:]])
-        self.assertEqual(list(range(42)), [p['index'] for p in self.plans])
+        self.assertEqual(list(range(48)), [p['index'] for p in self.plans])
         libraries = {s['key']: s for s in recipes.SOURCE_LIBRARIES}
-        self.assertEqual({'stock', 'mist', 'fs'}, set(libraries))
+        self.assertEqual({'stock', 'mist', 'fs', 'lady'}, set(libraries))
         for plan in self.plans:
             self.assertIn((recipes.ROOT / libraries[plan['sourceKey']]['libraryRoot'] /
                            (plan['sourceSymbol'] + '.xml')).resolve(), self.sources)
 
     def test_removal_frames_are_not_extra_visible_ticks(self):
-        for name, length in [('冰汽', 7), ('烈焰火花', 9), ('能量火花', 9), ('空手攻击火花', 3)]:
+        for name, length in [('冰汽', 7), ('烈焰火花', 9), ('能量火花', 9), ('空手攻击火花', 3),
+                             ('刺弹炮枪火', 8), ('g1开火', 6), ('能量枪火', 4), ('加农炮枪火', 7),
+                             ('大喷气', 7), ('高爆枪火', 11)]:
             self.assertEqual([list(range(length))], self.by_name[name]['variants'])
         self.assertEqual([5, 3, 4], [len(v) for v in self.by_name['铁枪能量弹枪火']['variants']])
+        self.assertEqual('padded', self.by_name['刺弹炮枪火']['renderMode'])
+        self.assertEqual('padded', self.by_name['大喷气']['renderMode'])
 
     def test_bullet_consumer_can_load_the_helper_without_adding_its_directory(self):
         result = subprocess.run([sys.executable, '-B', '-X', 'utf8', '-c',

@@ -50,12 +50,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
             var libraries=new Dictionary<string,(string Swf,string Library)>(StringComparer.Ordinal) {
                 ["stock"]=(BulletVisualCatalog.SourceSwf,"flashswf/arts/原版素材库-子弹/LIBRARY"),
                 ["mist"]=("flashswf/arts/new/雾人整合特效.swf","flashswf/arts/new/雾人整合特效/LIBRARY"),
-                ["fs"]=("flashswf/arts/new/fs配置素材.swf","flashswf/arts/new/fs配置素材/LIBRARY") };
+                ["fs"]=("flashswf/arts/new/fs配置素材.swf","flashswf/arts/new/fs配置素材/LIBRARY"),
+                ["lady"]=("flashswf/arts/new/lady.swf","flashswf/arts/new/lady/LIBRARY") };
             var declared=new HashSet<string>(StringComparer.Ordinal) {"stock"};
             if(data.TryGetProperty("sourceLibraries",out JsonElement libraryList))
             {
                 declared.Clear();
-                if(libraryList.GetArrayLength()<1 || libraryList.GetArrayLength()>3)throw new InvalidDataException("Invalid source libraries");
+                if(libraryList.GetArrayLength()<1 || libraryList.GetArrayLength()>4)throw new InvalidDataException("Invalid source libraries");
                 foreach(JsonElement entry in libraryList.EnumerateArray())
                 {
                     string key=entry.GetProperty("key").GetString();

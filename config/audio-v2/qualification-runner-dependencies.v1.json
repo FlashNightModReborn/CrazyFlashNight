@@ -1,5 +1,5 @@
 {
-  "closureSha256": "643F1A88DC7672121905F723FDA0EB562F81989D7619221FE26CF6008591CDAF",
+  "closureSha256": "3B84FA8E9C1E38ACAF706EF51ADAD08D602C8811A01BD1A6AEBE21C51594A135",
   "dependencies": [
     {
       "blobOid": "ee3989127bbc7cf3b3fe811a8dc1228dfd230714",
@@ -98,10 +98,10 @@
       "sha256": "73772046967A95FAAC9251E8BA326548E38A9E05C7A8546452AFE0DF5E560EAA"
     },
     {
-      "blobOid": "1decf89a25fd1679f43e75150b9d69f441beb778",
-      "bytes": 15199,
+      "blobOid": "dc3834e82f21a3707eb77bd9e73747d712005794",
+      "bytes": 15291,
       "path": "launcher/perf/combat-fx/ExtendedFxGallery.cs",
-      "sha256": "FD4A9F52B38AA0BC6D0CDC431A56516A24077530BB70F27DE7502461CD4DAC6D"
+      "sha256": "34B5C80A3B4CA59036816DCD96B53281CF808408B9C7324CF4B927ABD1929C3A"
     },
     {
       "blobOid": "5e994eed08df75aeeedae45275914cfb33e205d8",
@@ -170,10 +170,16 @@
       "sha256": "293A257608CCCAFE824A75D150A7E7A22AEF26D054EC919F326E8C2018382466"
     },
     {
-      "blobOid": "1d56a6a6b01ea33b68ef2eeba3796053836220a4",
-      "bytes": 67218,
+      "blobOid": "0d721f3136087531f7390e00e4e665a9c7d8b3b2",
+      "bytes": 29050,
+      "path": "launcher/perf/flash-compositor/ContentViewportRegression.cs",
+      "sha256": "0B05D4EECB5C11F0F1F54B94C383C337436B913520FB582BA36BFDBEA04CFDDE"
+    },
+    {
+      "blobOid": "440a4e7d88029cafb6bfe59f772d3a75bc88e8df",
+      "bytes": 67354,
       "path": "launcher/perf/flash-compositor/Program.cs",
-      "sha256": "57BD6C71C87ED7A6CDB591EE8FF050E25F7ED076358F808FF899A2B0F31C32EF"
+      "sha256": "FE65AD5901353032F06F4EC54CD319443CB2EE627A726538FDF861DCE1D41D10"
     },
     {
       "blobOid": "60d3c229cd95795b0e9708c91d5b3deb8af41429",
@@ -980,10 +986,10 @@
       "sha256": "B8DC80D45B7F8CFA663A01E1E25AC0EDCAD9BCEEB223DDA1261E2D1DC3AC1591"
     },
     {
-      "blobOid": "c7e81d29d749a4a4e1aff29413795c8c8b89f0f7",
-      "bytes": 50836,
+      "blobOid": "d43183fa49175b23e94a81b00b85171b4b3eeb34",
+      "bytes": 51579,
       "path": "launcher/src/Bus/TaskRegistry.cs",
-      "sha256": "650CE9DA58B329CD4C7C0A191DCD89DF916F19A0B776465450921971A2FB52B0"
+      "sha256": "DB3979A808264DCBEF8EA587929E8088602FC27605EFE7E3D855EDDD1E9E557B"
     },
     {
       "blobOid": "ffab60c7b2b3f2cef2cb314f0012672fde4b8df1",
@@ -1052,10 +1058,10 @@
       "sha256": "CA6A91FD6DF68B2DD3F6B1F3D0E9D8F27A5105FDCA1A8E2AF54E48119F7B5F39"
     },
     {
-      "blobOid": "65843562e8a239179c6c2630465733d4854c973d",
-      "bytes": 11562,
+      "blobOid": "5fa465fd3594a4a731f71b5f3aa45353e9218df7",
+      "bytes": 11972,
       "path": "launcher/src/Config/UserPrefs.cs",
-      "sha256": "53536F3EAEC457F15E2E82220F4A121F236D57B205C2EF0BF5677A4615BD0A58"
+      "sha256": "582ED864A218D420EF03E4D5ACACD4E6F68DD275EB84E86FEAC0C9D56D64D1A8"
     },
     {
       "blobOid": "30850811db4b13b1cf1aaa1a5694a233d67d429a",
@@ -1196,10 +1202,10 @@
       "sha256": "C4E09FE48D3FE770E7068F4528406E2112CCA505BF756BA2EDE81DFF177D96D8"
     },
     {
-      "blobOid": "2f1db5422b7b4e3aceab3ba937cbf7b95e1697e3",
-      "bytes": 12249,
+      "blobOid": "aad936ce335a5a4ea1182cd71ed6cb7385eba4bf",
+      "bytes": 13521,
       "path": "launcher/src/Data/MapTaskCatalog.cs",
-      "sha256": "5AEBE02D6ADE43C089A065B956B5913223B48B26FB69E813D940FA35EFF3009B"
+      "sha256": "7AEE4BB0A3C40F9ED390734398990D315286810409C31828AA16178D37A27F40"
     },
     {
       "blobOid": "e620073ec46b8a60c9201a6666e586b196797484",
@@ -1298,10 +1304,10 @@
       "sha256": "870DE80BE4303F2F293E98583C6B10896E98444C993EF8A2E0AB8037FB30E367"
     },
     {
-      "blobOid": "eeb92ff49aa3d0869911b32139cef91f2d8d683e",
-      "bytes": 15818,
+      "blobOid": "e2e7a418267582e68d487733dba4e454751dd864",
+      "bytes": 16102,
       "path": "launcher/src/Diagnostic/StartupFailureReporter.cs",
-      "sha256": "9426E6D8C16F4390B21B5FDA276B5EF408665A4A65FEF69EE5DC16279CA3309B"
+      "sha256": "4B1076A20082DC393326247479494C2B97D88187075EBD2D50CD1F750D72B59A"
     },
     {
       "blobOid": "6505cf680d0748dd51bc1348c07a8bafd4ce93f1",
@@ -1346,10 +1352,10 @@
       "sha256": "81032B320A8D38E072E54685FAF6A24E101B077C7C2DC4380EC552FAAB4FD154"
     },
     {
-      "blobOid": "b1ef83eaa2a20ec4cf3e2623ab54f5d3eb3fd5ae",
-      "bytes": 54284,
+      "blobOid": "53c4705989381930b60a04c29e817a90407ed1c1",
+      "bytes": 54386,
       "path": "launcher/src/Guardian/AuthorityLogFormatter.cs",
-      "sha256": "D28D342BB2D4A02171E886AA26BDBEF44EA247018D74DDC25FF28B4794457640"
+      "sha256": "994F08FEC9695A01815405EF433BD1F7BF9AB96166F6EEF8A9873C4F2C1CB3F6"
     },
     {
       "blobOid": "b8879ae817e395ecdf87dc03ba8d4982e04a44c7",
@@ -1382,16 +1388,16 @@
       "sha256": "6F6DE9BE1373AC627C537CD4B5FDE459AE13E3F3D7A012AEE132696089CF219D"
     },
     {
-      "blobOid": "ada22f2da7a4ed74b3041a064727689d73c94d55",
-      "bytes": 43149,
+      "blobOid": "f357c5c6af16c81e809db417bf40fd8b1d0e90fd",
+      "bytes": 44541,
       "path": "launcher/src/Guardian/CharacterBuildTask.DetachRecovery.cs",
-      "sha256": "C329B0B04B7AA923396E8D078EDFA9DA1F0E66B06B8E742B9650D09B7FC20DE2"
+      "sha256": "F47B61E5A5D43E2E169870A8F65B80F506791C1792F4F6BEA00FBCA90C982FC2"
     },
     {
-      "blobOid": "6bcd442a5c76de55927cff777f32d435a77bd20a",
-      "bytes": 132183,
+      "blobOid": "dca6ff1973972442139fc6bfb11fcab78de1bc7b",
+      "bytes": 135334,
       "path": "launcher/src/Guardian/CharacterBuildTask.cs",
-      "sha256": "2EEC5B1000E165DCF8735BA901355BA9B730FA45FBAFA70056322504E95AF433"
+      "sha256": "EC03D2EC236326332F559B148C3E071C69DAC11023EFF2832FAADB2324088FF9"
     },
     {
       "blobOid": "b9a02a440a31b83b5ad7665f6cf3f9860d27ffc2",
@@ -1406,10 +1412,10 @@
       "sha256": "DD990D9B7EA388094858EE1D80F93822D720577CB40C4C912B79DC6BE8B16EA5"
     },
     {
-      "blobOid": "64f7a317cc3dbbb8344cf85be6a5fa33a3c0d6aa",
-      "bytes": 40370,
+      "blobOid": "f416deabdd838863512cba02af44444f738f30ff",
+      "bytes": 43149,
       "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
-      "sha256": "900456D8B76B7B75B4DD4B7B2CC07064B4BD8E8D68A4D204D2387E6B99D69EA7"
+      "sha256": "504333414A1A9E67BFFA8C5A18ABF91E30228999128F48BF78EFBF2996CC17A9"
     },
     {
       "blobOid": "c0db01a394470a74c1f33cc81f2f527f851e8c40",
@@ -1496,10 +1502,10 @@
       "sha256": "E8A5F4B12527026BC448C2EB04F326A0CC5A7497B4C7747F72EB581F76DBE93F"
     },
     {
-      "blobOid": "ae57428ac1dca50d9a9d7e926efbd0b7bf95744c",
-      "bytes": 177078,
+      "blobOid": "4fdf894ea47d2bb0f2f9f420efde964d5d53f9b7",
+      "bytes": 178712,
       "path": "launcher/src/Guardian/GameLaunchFlow.cs",
-      "sha256": "99D18E30037E996749A7EBF656A9407CCA65EEBBB8B6E89B51CF4CF9B2093A6D"
+      "sha256": "5B1DC801824A8709CBF8673DD0E06AF5100D200409519B43971D7E70CF3FB298"
     },
     {
       "blobOid": "622b4e85992b19550fc79feb2a3e4b18896b3abc",
@@ -1508,10 +1514,10 @@
       "sha256": "6E50EBC672B1570F9D6BAEAFC7E5F245C3C5A60F24FEB55E915046D53AAB2419"
     },
     {
-      "blobOid": "8311fb21782841988accee76f20152bcdf657ea7",
-      "bytes": 79300,
+      "blobOid": "a93f84fe982b28baf453d77757c9c03c1d7a3e7c",
+      "bytes": 80292,
       "path": "launcher/src/Guardian/GuardianForm.cs",
-      "sha256": "338AC05B3396CE548D100C3620381D9FED5E317F38102AC88EB6D71FD9185DAF"
+      "sha256": "23C840C710D14991CDE9115C99555C345858A330F1DFA844379DC87A40430C81"
     },
     {
       "blobOid": "983383105d407bb4f9f8886b582609dac71dde75",
@@ -1682,16 +1688,22 @@
       "sha256": "6F0F1AB1028785CA13E65CB253EF3559AF3EF1CE156D393E06AE96A60786AB37"
     },
     {
-      "blobOid": "8c9571ea6987ad270fdd2f24b418e93594f3d592",
-      "bytes": 62886,
+      "blobOid": "00e2a06055984de40cec594048be4779a249d0d6",
+      "bytes": 66413,
       "path": "launcher/src/Guardian/Hud/Dialogue/DialogueInterjectInput.cs",
-      "sha256": "A9A44BA6E81BCC6EE1F84512D973EE1D3372CDAFEA84A0A2858FE388538C70F6"
+      "sha256": "D0BE0415FFFA3EA0AD32B7A113DA27215BDAD45B8A586AD421540D70955B5978"
     },
     {
-      "blobOid": "a91c255db6fb0093c0f151e6f13610b009fffb93",
-      "bytes": 8716,
+      "blobOid": "6a87bf1eb46e469f47e56e75bf9c243749692d5f",
+      "bytes": 9218,
       "path": "launcher/src/Guardian/Hud/Dialogue/DialogueInterjectInputBinder.cs",
-      "sha256": "48A62A3BDB0D4382B4ABDC0E7F8E43D542EB82FF58DD8CD9A470FA760D3D9DC0"
+      "sha256": "7C831989D7F559760E9183216506EBB1AEA78B39E3C61CAA161065AF19D3E43E"
+    },
+    {
+      "blobOid": "62884c062566030af8c1ec5082e0b3cbf2bcc770",
+      "bytes": 2101,
+      "path": "launcher/src/Guardian/Hud/Dialogue/DialogueInterjectItemClaimView.cs",
+      "sha256": "B9AAB67CA05257FC143F9AC7FF3F4BC39A1B3D79BBB4D219FE07DB9C635865E6"
     },
     {
       "blobOid": "100f6b1b511582b37e5b1a23a5bb935c8a20ef3a",
@@ -1790,10 +1802,10 @@
       "sha256": "F62AAED50FC900249B0BA2AD29F8D8DC681BC480A4C89F48BF9F8D126283EF07"
     },
     {
-      "blobOid": "b22d7a52bc69ee824b2082676130bff3b2bb9644",
-      "bytes": 37225,
+      "blobOid": "3cf1641e9d7c4b17dc655ea2c238996a51105b53",
+      "bytes": 41917,
       "path": "launcher/src/Guardian/Hud/Loot/LootIconCatalog.cs",
-      "sha256": "8572009A3CDAB3CFC3AF967585F6903DF8F30E2844E33742AE178B83E35FD5A3"
+      "sha256": "B7DF10BB84665207CA448DEB40672CA245AF39549D8E5A8CA5554B213360D0E4"
     },
     {
       "blobOid": "da27c6853b4868f61e7fbb077a596b30462ebd45",
@@ -1970,22 +1982,40 @@
       "sha256": "CF9D30A0436DBAF72A16426E64EDB47C8892990D7BADDF36361228A7E4AD4201"
     },
     {
-      "blobOid": "efe65b7371d2be2f2396e9af81db38cd7806934c",
-      "bytes": 9538,
+      "blobOid": "32bc3cf76097297de319d4b97cbd920d8e2450e4",
+      "bytes": 5594,
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudBuffCard.cs",
+      "sha256": "D4E399EBDB95C726C2BAB24CCD0736B00D0D9F3AFB91D3548C2CC2CE5A23555C"
+    },
+    {
+      "blobOid": "9442b66af27c6c2cb0de9d88bc678c973ea73cb2",
+      "bytes": 2040,
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudBuffLayout.cs",
+      "sha256": "B4ABBABD165C76B4D4EC0A3AC590349C64482E820E94150B62781948C1476AB6"
+    },
+    {
+      "blobOid": "07a2e6fd50137b5e612c6ab4569ef19f82f803a3",
+      "bytes": 9657,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudController.cs",
-      "sha256": "0113A83F6FA792537DD78115A9171985E7F59DDC9DF48784D59F5676E482ACD7"
+      "sha256": "714864A301F501ECDF5C800CCC527AF06E3EFFF96333C015C2DF1F917BED45D3"
     },
     {
-      "blobOid": "1907a97e00ce7f003c7b6ea6f8f7d16b4d26f048",
-      "bytes": 1085,
+      "blobOid": "f66cf72306b9d46f3bb4095de4b4523eab777b30",
+      "bytes": 1083,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudCooldownText.cs",
-      "sha256": "EADE4D66E698D1B9AE37CDD27EE3A21C8C55E9404BD2F61501876070FB4FFFD1"
+      "sha256": "1BA5885E90CD150BA5BCA8C99B8DF7E74ADD9BE8069A4FC23C938A75B59F04C0"
     },
     {
-      "blobOid": "5cea157c44bf4f9b2e826e0e56e97c8069ca5989",
+      "blobOid": "d847e7802bd3baa899e19fca445a1edd3a5361ae",
       "bytes": 14458,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudEquipmentOutline.cs",
-      "sha256": "C7CFBD2C3E4E8E6A7224C1D746A54AA125DAEF2B69C64458DA7AC9622AB63197"
+      "sha256": "CD69D60DB8247BFEDB3329F33260811510B1F2A399B8055C956CB6C715A21289"
+    },
+    {
+      "blobOid": "f5c59b610f24a6b3aa259d780ff8b7901671270f",
+      "bytes": 41639,
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudFocusTargetWidget.cs",
+      "sha256": "A7F673C5F0C242F645CD573C753C801A968B1D59C180CDD2A5E5748F41314A20"
     },
     {
       "blobOid": "68ff0a92caa0e33a2c657406f9c98c9530001999",
@@ -2000,10 +2030,10 @@
       "sha256": "883DD79661EACB2BD1289209952B9124196505F6DBAC839F7080FB01DE435ACF"
     },
     {
-      "blobOid": "1dce64b4cab417cc131bd61bbfa11d25b5d7bc91",
-      "bytes": 7795,
+      "blobOid": "4bbca63f47d9c384f8068db6f7e119d08f83a571",
+      "bytes": 8125,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudNumberFormat.cs",
-      "sha256": "6C64CE2133B497DD6CB2021346CE0DC7ECBD4F9BAE4C3A989FE804A9C540E73C"
+      "sha256": "DD40CD252449808FCB046E2C62D8C2DF6FEC375900F378A3D7FA35652452B0A9"
     },
     {
       "blobOid": "a5ddfe205c60ed2ef60d149eab741c2696633a96",
@@ -2030,40 +2060,40 @@
       "sha256": "034CEFA18EE9417B72101E5BD75998B9F3901FC5D1ACD8D60D3E77F15F3D618E"
     },
     {
-      "blobOid": "f02b8f986dd8c6757348e34f7084f62a6c8dfcbc",
-      "bytes": 7915,
+      "blobOid": "337cbd3ec0d5355b7d12e4dad52f6ae4b6eb7769",
+      "bytes": 7279,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudResourceHints.cs",
-      "sha256": "B05395B7136FD4AF8CB5907E454BBF63320F18AC14DA704917D2F6D2D04442BD"
+      "sha256": "62597D3AC1DE3733D909970D7FCF19B533F8A482640EA8043DF7287AA6C8588C"
     },
     {
-      "blobOid": "33a19070ff8cb5a9ecec304b112ba84ccbecf900",
-      "bytes": 7617,
+      "blobOid": "f90ee1570bf5435e7ff181dfb7ed3737c3aad5cc",
+      "bytes": 7825,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudResourceLayout.cs",
-      "sha256": "459D78C29FC136634C61FA3AAB1A45E4AC2ACCCEE580F24AF113F23DDB59763F"
+      "sha256": "DB0C2332EA312CF1EED801765ADB7A3C6FC31EC79BDC0431B5B1D7E577DD6F8A"
     },
     {
-      "blobOid": "80f4fc65fcd87a5d1539ab6005248b71613354ce",
-      "bytes": 21010,
+      "blobOid": "32eb0f3d510a057357c3aeec9b4a4ba20c615813",
+      "bytes": 17107,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudResourceMotion.cs",
-      "sha256": "365544961003B4653C011327999D441EBB07B08D0179FFEC08E0E72F16ACDD56"
+      "sha256": "5317FF9EC0ED844CAE0AB07EFD5AF2DB630885AF21E7BEB601E78DEAE139E284"
     },
     {
-      "blobOid": "9747e69aa9b0e29fa8c7766c621dcba2c9eb53e8",
-      "bytes": 6921,
+      "blobOid": "9cca939ab67033cfccebcbc71212bbeb0f8c6984",
+      "bytes": 7537,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudResourceOverlay.cs",
-      "sha256": "65DD216F81897DC593EAB24199795C518E2121DF9960B7512B9CAACF4D162202"
+      "sha256": "277D3B8811ACA0A4646C57137AE6CAF97A3A5483E27E1038D8579610679AFDCE"
     },
     {
-      "blobOid": "8dfc228d086e19211eacaa48bd0fbc0134bbbe5a",
-      "bytes": 9275,
+      "blobOid": "f8aa9e120f4db2e6b00fe118c3e2def5f7247750",
+      "bytes": 14284,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudResourceTooltip.cs",
-      "sha256": "98DF30E9518AF992AA3E39A979CE9D88F6F2ADCB3C54FFF4BB8ED031FAEE92E9"
+      "sha256": "E8873F81989EFF1EAF166495517BA853395488C292303C42A13C817EF1AA18D4"
     },
     {
-      "blobOid": "b2d6229355631d18bc03a7206a9d58a6062291a5",
-      "bytes": 10457,
+      "blobOid": "27e319de2d8ec5c120e3b65322fb8edecd2f30ce",
+      "bytes": 11527,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudRuntime.cs",
-      "sha256": "8F4D628589E482F48F73C6EF0191A4685CC6AC18CB2FC6B0899D86A290B7835D"
+      "sha256": "BB96AAA094D6B6D9C0B3482B5E19C73E94A8640930201D63756E7EBF41272D04"
     },
     {
       "blobOid": "828211cf5ed5ba5b8cc2ffebd5a29ef4805dc429",
@@ -2072,22 +2102,22 @@
       "sha256": "C53974C23DF9A353579C55204A0F3DA9DFF86D8EDE4A71CD64DCE92BAB36685A"
     },
     {
-      "blobOid": "443e2e519466550edc5a1ab26c7a693a938c0627",
-      "bytes": 21907,
+      "blobOid": "bf369e04e954e21cb1c9f0baed4941132afb5810",
+      "bytes": 28255,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudState.cs",
-      "sha256": "FC74F09EA0B36405D18BC7D7B8EE9318961ED211DECAC174F3A5EA54D6E44EB2"
+      "sha256": "D0EA3587796577FC1B174FD2C8D56AB75056AAEF3AEA8DDAD4DD474A50B40170"
     },
     {
-      "blobOid": "74d4b43ab4becab3ce2a9209ca4841096c1051a2",
-      "bytes": 2243,
+      "blobOid": "8b50bb1c096b7fc3d4e51847c69bca27424ffe2e",
+      "bytes": 3196,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudTextCache.cs",
-      "sha256": "6C64542F9837D97C72B99DF5378C2B9F4260AD234A9ABD3EAFBDBC2700DC351B"
+      "sha256": "ECE31E1C2697B9BC685F02F64AEB0189677E107C0BA6E3B7CB803EB0B94E6242"
     },
     {
-      "blobOid": "4f402a0ae9426f6fa88c804b28d46734f98a6ae8",
-      "bytes": 55648,
+      "blobOid": "542059b76e9dc6a4bf56a0fbaf573c12ffbe464e",
+      "bytes": 64685,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudWidgets.cs",
-      "sha256": "ECC53C8B46CCC274304ABEB1001E9386832019A9CE89412697FB573164F52A39"
+      "sha256": "3CACFE45E28EE1ADE277465BD0D5E5266C58ED8DB456AD16C2BFD0E473653EAE"
     },
     {
       "blobOid": "27b7311f30a27c363a74501807c26e6d363207ba",
@@ -2096,10 +2126,10 @@
       "sha256": "3C08F8C036D4C67D60353EBFF6956F187442AAF477DC915A5B6AB98013BB7BCD"
     },
     {
-      "blobOid": "a3513cca0340b8bfe648a858fde1db219b96f65f",
-      "bytes": 63699,
+      "blobOid": "fbee2ae3265fe2b41a7fc6726c23ce7cac3ea158",
+      "bytes": 63974,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoFrameCompositor.cs",
-      "sha256": "4A7481BE0F5067DCC2968A3B7B025D576F5E8DC25E80036271CB3F17983AAEFF"
+      "sha256": "5E09F57066C9A5CA7922566F2D3EECAAF34D09AC81826DC82DB256F8055CCF1D"
     },
     {
       "blobOid": "efa91c51354bb43bd5507a3da2b542aeac05bf30",
@@ -2162,10 +2192,10 @@
       "sha256": "F9FC9718DA8BB03396D16B4230C35C866F4F6B19FBC32652BC80C826FFDE6050"
     },
     {
-      "blobOid": "09140908e8076d530a1e0ed7602774e5495c032b",
-      "bytes": 5137,
+      "blobOid": "38df8f5468ce773b8bc17e57258994da662b4bd9",
+      "bytes": 5310,
       "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoWidget.cs",
-      "sha256": "90A29D8E7255F8A75A613182B3F044665A83F23C705B6969F36D85A37E0323BD"
+      "sha256": "321AE6E89FB4669A4F654E26247D4E5FD05F85EFE92503DAFFFC0635E8D00611"
     },
     {
       "blobOid": "a2fda312ed27a76c62f0a07122bd94ec48c2c7a4",
@@ -2216,22 +2246,22 @@
       "sha256": "5590A265820A79A97390779F3E0E8CBFEFF07701B15788F803D235D496AE118B"
     },
     {
-      "blobOid": "a9c1e2348fe6b91460174e8aea9d4d3e5f635b96",
-      "bytes": 41595,
+      "blobOid": "f4956a93f9612f6b3a3ef275f947c7ae813cfd16",
+      "bytes": 50010,
       "path": "launcher/src/Guardian/Hud/Tooltip/NativeTooltipDocument.cs",
-      "sha256": "A91ECAE0851DF0ED44311475E4D616BFBB10DCFA207AD4243AF3AA0AC4D7C740"
+      "sha256": "CD927F83854766FBE3F6815CC5F526BF511F4C83BD6CD570DD1868A55805DA9C"
     },
     {
-      "blobOid": "128b97a6036723f24669d43f32cd9cfdb1e85722",
-      "bytes": 77091,
+      "blobOid": "241fe90abd0beb4ec572765a291acf463c8170ad",
+      "bytes": 112844,
       "path": "launcher/src/Guardian/Hud/Tooltip/NativeTooltipLayout.cs",
-      "sha256": "92C2992E001401CD78B6EBA56E7F342B16B00409E4C4FBB29D1C682050A2D293"
+      "sha256": "26C5AABC0BD3C5C61E7D1221AF86417EFFC40D8962BCAB376812A7866B6778AC"
     },
     {
-      "blobOid": "0d05aeaf976ad3ed86d669be80af99eac6e0c051",
-      "bytes": 63696,
+      "blobOid": "1906d91bb64e8702fc6ce928510bb311c1ab8ff4",
+      "bytes": 88969,
       "path": "launcher/src/Guardian/Hud/Tooltip/NativeTooltipWidget.cs",
-      "sha256": "BC19CD35EDFB7EC0F4936708FA8B96400B3EA10655039C3494F0F3A7A5CC6096"
+      "sha256": "FA8478FC971C07D18D18E3C86CCE57EBCB200F71D117B5F817E714393104CE58"
     },
     {
       "blobOid": "cab0b1deb008688b28777e565a1125fcbc79ed92",
@@ -2324,10 +2354,10 @@
       "sha256": "EE98C11A9E45937634EC07D321FB2E3259055787B9980AB0500F80FAE0E200EA"
     },
     {
-      "blobOid": "be2a31ea56766f04ccc19cbc867887c6ea431c87",
-      "bytes": 319299,
+      "blobOid": "551a8efd627c852686e462af6ea70fea90d51871",
+      "bytes": 320860,
       "path": "launcher/src/Guardian/LauncherCommandRouter.cs",
-      "sha256": "82DAF4DCEB4BD0D670C2A11D7F0D6DD483467B3E54F28DE5095B78FCACAE959E"
+      "sha256": "FCE0025BBABACAD6F90046FBD702DF8F96AD1EC8C89C6D48845C92E054A4C6BA"
     },
     {
       "blobOid": "9df906cbcb9f68a9e4085dd2f18fd315f1469b88",
@@ -2346,6 +2376,12 @@
       "bytes": 82321,
       "path": "launcher/src/Guardian/MaterialShopNavigationCoordinator.cs",
       "sha256": "493EB55FA6EB6C9E908078F8F23FDB96CEAB8A0A2C3A2BB70DBA3105FBE24A3C"
+    },
+    {
+      "blobOid": "4297a3633a2a6f69fc27b770e86dd67e28826d19",
+      "bytes": 9142,
+      "path": "launcher/src/Guardian/ModifierOverlay.cs",
+      "sha256": "633B10F7EE5FA29AEF7629C144E0A3A311FD6DE74E0C806A3096B415B9CCDBB3"
     },
     {
       "blobOid": "ae0afa4dbcd1b364a46b07b48c7a8bba096cf6d1",
@@ -2388,6 +2424,12 @@
       "bytes": 6701,
       "path": "launcher/src/Guardian/OverlayCoordinateContext.cs",
       "sha256": "539CB391361CC6928ACD0827543FAED515B134C530F443E1C96A85BACA9E74B8"
+    },
+    {
+      "blobOid": "0fa4db013a8a1a93a0bc68910d45128980c47ad8",
+      "bytes": 5308,
+      "path": "launcher/src/Guardian/OwnedChildProcessJob.cs",
+      "sha256": "FA340E43E50729CE4E0AC0D504D83D95B58477C6A05EE046D9A80008A86D7E44"
     },
     {
       "blobOid": "fa61a1404bb51d30c996c33bfae138d16fc16bb3",
@@ -2486,10 +2528,10 @@
       "sha256": "6E69CF080683E4ED302079BF74516957E14FD178EEEA3A5512EB09D6CA7B5EEE"
     },
     {
-      "blobOid": "c18bc8c7b8f16cfcf3347976228c740861ecccbd",
-      "bytes": 6594,
+      "blobOid": "e729df2ccbd806d1bbc89c743d87aa8f8dbdc85b",
+      "bytes": 6607,
       "path": "launcher/src/Guardian/ProcessManager.cs",
-      "sha256": "46FF5D7B506E5C18F99AB06389488476367C04186CFEA59637237AE578C8B180"
+      "sha256": "98A78B89027A27C27A78BE50331C65660780FC81CB0D1A7DB2117F2AE5E73DE9"
     },
     {
       "blobOid": "f99cfd91894533457ff6ae951d7ea4d1b8a49ed4",
@@ -2582,10 +2624,10 @@
       "sha256": "0F9C738F13609C79EA2ECE90085EBD2676EC3EC7F976F7E050A42B0D93E8FDB8"
     },
     {
-      "blobOid": "00f622795d7ee955af1d26754fc54c8593edf88e",
-      "bytes": 470019,
+      "blobOid": "8490b4921462340d68a57612fcf43ae395bb152d",
+      "bytes": 470763,
       "path": "launcher/src/Guardian/WebOverlayForm.cs",
-      "sha256": "E30DD890353108090E8CACBD1B72315AEF49F9DB6BFA70D78A3279FE5BC546B1"
+      "sha256": "C9D63DF2A38DDCB97DD30B2555EFD630AA249579F7C5AEB99D06D59BF46CA0EB"
     },
     {
       "blobOid": "b4ec0919bfd939c74779b5bd96bed7c08a03788f",
@@ -2630,10 +2672,10 @@
       "sha256": "A2170BCA722F23365BCADF1AA9D4529C0F09479BB27F6E18312B9A5F974CB1A0"
     },
     {
-      "blobOid": "7df9490fcf6271ab7a23c49a591000420853f6ed",
-      "bytes": 15324,
+      "blobOid": "73fa2b3bd3077ff9d5fe421915f0eb2eac07c0d9",
+      "bytes": 15721,
       "path": "launcher/src/Guardian/WorldCompositor/BulletVisualFrame.cs",
-      "sha256": "513E2C6821BB481E6145403483063FB46AC4D4C28C5CA7100B3551A71BC40BFA"
+      "sha256": "9B5931B80C40F21FDAA331CF2D133AC6C74BDE5FA2456EEFBE62FC4F67192573"
     },
     {
       "blobOid": "8273cf9413c9961425073988fc601c67284e13ab",
@@ -2642,10 +2684,10 @@
       "sha256": "EFFF2EDF4105E52ED0CAB9A91EDBF46AA1440CA0D7F96DA9868187AD67D4F407"
     },
     {
-      "blobOid": "cf7952f1cf4178da036ac241b6864fd5826d5558",
-      "bytes": 8819,
+      "blobOid": "65bc488517903f8d1384c0ab1d2387bbc0d2b2d4",
+      "bytes": 8884,
       "path": "launcher/src/Guardian/WorldCompositor/ChainVisualEngine.cs",
-      "sha256": "EC61D3FD36F08A7590850A7854D2409EE5132644DC066BEAC6E33EB3FA32BB81"
+      "sha256": "A7F62CD3E9DC7580FF7C4719EE043934E4D1FD204D89B7EB9E2A88161E08695D"
     },
     {
       "blobOid": "04b240a1dbab4527b54a8794348ab8a3628c8509",
@@ -2654,10 +2696,10 @@
       "sha256": "0FBDAE5F6334452436F84289907CB5AE76A48A88D934AE5F62C3B4E444077C84"
     },
     {
-      "blobOid": "c541ce5569d7dc93de5ff4baa98b2f61f022338b",
-      "bytes": 20098,
+      "blobOid": "601bf90ad2bc4179ec64f9973c39beab8ecd4350",
+      "bytes": 20188,
       "path": "launcher/src/Guardian/WorldCompositor/CombatFxCatalog.cs",
-      "sha256": "04130DAC6226368672186A425682ABACCCFAEEE3DBFBF4480FA30C020607DC7D"
+      "sha256": "47FBE9F76F9B431495CA4F522382B2608FFBE5B8D88A57035E4080619D582043"
     },
     {
       "blobOid": "b6214f6c445e78a4d35444a17b4779c114f565d2",
@@ -2678,10 +2720,10 @@
       "sha256": "8EF9D58640837F86F09B5E47BA33D420DEBD55755BD374BFFA0AB28304D7ECF5"
     },
     {
-      "blobOid": "4efb9b75cef507a4cdfbb4e4d9ca8281598a7459",
-      "bytes": 33189,
+      "blobOid": "f16e2535f94bc44d820943a4ae5ed70db6620400",
+      "bytes": 38380,
       "path": "launcher/src/Guardian/WorldCompositor/NativeCompositorSession.cs",
-      "sha256": "4F62FE4D51BFCAC1EE9F56204C51D33996D40A89A72747BD524A4BA8178CEC2D"
+      "sha256": "0E1E9D7651B52F9181590A19C701E6EC9C8023F39E7EBF868B3DF4F0F2EA0822"
     },
     {
       "blobOid": "0de45371ac4c8795e9f1aa50c47930e57622ef86",
@@ -2786,10 +2828,10 @@
       "sha256": "F89985257DC22B5A1610CFA8A71E4954309E3186B3884F73408290B081A173BB"
     },
     {
-      "blobOid": "c4128972daab25d5769e8680d2fe8ae4461acb20",
-      "bytes": 78364,
+      "blobOid": "b9ee60c3923da68b39f0c94308e8839266a839c5",
+      "bytes": 88734,
       "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
-      "sha256": "7F6462E256AF73888448A4E8E6E821DCC112747FE9E23225F9957F02475B931B"
+      "sha256": "F6029FFDBA83D970D663D1ED1CC67A12F3446017EEC2D253E6F1316B4164276D"
     },
     {
       "blobOid": "6f96a5d7fa7059a760767f4f53e5f9073555c306",
@@ -2852,10 +2894,10 @@
       "sha256": "23E4618E759121E726A58B13D72A8F410BC8466A3579BE6D38915CE858059FAE"
     },
     {
-      "blobOid": "0afad7ed7cf2cb86978d75c1bfac8052149300b9",
-      "bytes": 4614,
+      "blobOid": "b91d5a6f4010608b55929af276fb6a0c2425019e",
+      "bytes": 7859,
       "path": "launcher/src/Guardian/WorldCompositor/WorldPointerMapper.cs",
-      "sha256": "B77FBCF2FF929201A9B5A7F2ADE3E7E2A983156B1E5856865CE85073CBC0B6C0"
+      "sha256": "70BCDBA83F98ABD6D0E67BF7D398C77D52C88F4F932A61D96AAEFF940C18C5D9"
     },
     {
       "blobOid": "c644a07ad26b5b7074dc0edd0113d27c9061c511",
@@ -2876,10 +2918,10 @@
       "sha256": "64F569C0FAE952C5341721F0B76C6FD0F4AB3D367802D6CE350048EB774A7197"
     },
     {
-      "blobOid": "b5f895ff6a7fc820814b4f297f64c51c605b0ad2",
-      "bytes": 219152,
+      "blobOid": "cae8229e0cd784d70e02b80755d33324cb4cec0f",
+      "bytes": 222434,
       "path": "launcher/src/Program.cs",
-      "sha256": "E8B8BDDEE2101F49E86458A46C09300B5C858CBC7B4DE7F94AFEBBB609650A2C"
+      "sha256": "A94393574CA8BE97179816CFB3872FE608119D763B6CC6DE625AB653E500C65E"
     },
     {
       "blobOid": "4413e3fc461b53bc23f5ee03697cb5787a5068c4",
@@ -2888,16 +2930,16 @@
       "sha256": "1174C52851CC13A4B985C93CD59EA458F0FC21CDB0C44319ACD81F32C0A943EA"
     },
     {
-      "blobOid": "bfbcccff163a06688ad9cfb5f5c0959a20ab3360",
-      "bytes": 21312,
+      "blobOid": "08e157031561903f07ecb6bb93093042c2911bf3",
+      "bytes": 23269,
       "path": "launcher/src/RagTerminal/DialogueInterjectClient.cs",
-      "sha256": "44A82254695E7E520E29311E33AB40A77EFA45C187D23AFBE29ACEF7B33F8BF0"
+      "sha256": "1919561DAF776E750435B798F969904DB543D99E5C7EEE31C8BFE91E95966C55"
     },
     {
-      "blobOid": "680b91b0c9d18260916e6c7b82692bcd01c01412",
-      "bytes": 30271,
+      "blobOid": "0b11638f7aee063ca8f7e11d19d3abe8c2e2a48c",
+      "bytes": 32523,
       "path": "launcher/src/RagTerminal/RagTerminalService.cs",
-      "sha256": "0DD05DB21D25E6BDFAFC62221E4B494B40530963EE2C559BA95C4AE8D5904592"
+      "sha256": "C073E5DAEEB759559EF6D4D68491C4E602633A3E94DEF0C6293E734D5236228F"
     },
     {
       "blobOid": "ec6d4a929ae7438e5326b76cb488e965a7f16ce0",
@@ -3140,10 +3182,10 @@
       "sha256": "20CD6A33B5BBF29C3AE5F2527D8D925C9EB96427712B04B35F95AA77AFD275C1"
     },
     {
-      "blobOid": "1b178e3a2c52b5f6c0412050fa63d303f0cad671",
-      "bytes": 30142,
+      "blobOid": "3f2a30177219b705129eddfb70c72991afc25efb",
+      "bytes": 31697,
       "path": "launcher/src/Tasks/BookshelfTask.cs",
-      "sha256": "EC555C73522E7269B5DD4D6E6C69B84383C2B3EE7B293D75349804D903AAE11A"
+      "sha256": "DB92F7DD00D37508AF2ACFD728CA51B09EEA1F0B5062CF187FE02A246CBCB07A"
     },
     {
       "blobOid": "a36d8dc76f2de3730ef8018afdbb1d2183f45bd3",
@@ -3194,10 +3236,10 @@
       "sha256": "C21A65D5557C4BF56D92C703614C31FFF0468EDC97D590B784B5D443B937AC26"
     },
     {
-      "blobOid": "85573520764657ca067e16b0f8948a3ad7e61960",
-      "bytes": 9498,
+      "blobOid": "598bb1773e32a2a5356b10de3cdc022d9f2ec0dd",
+      "bytes": 9523,
       "path": "launcher/src/Tasks/FrameTask.Projectiles.cs",
-      "sha256": "5B2F7C3B43F3C087AAF430D65233B425C0006060899321E4CC1CDAABF40997B2"
+      "sha256": "26D9C2BA2EB0248B194C20921500EB02A4EE20EA7C603634DEA194EA0D23F16D"
     },
     {
       "blobOid": "64104b5884d256d7ff8d6c57016c24c22bc9e553",
@@ -3218,16 +3260,16 @@
       "sha256": "A5A4EFC6643B490176682EDF71BB8402ADD34F91EEF519A31DA7DCEE5901AA89"
     },
     {
-      "blobOid": "514c00a380b7a04cbf48263263abd761a49fa9f0",
-      "bytes": 8041,
+      "blobOid": "4d91d274d140fb2c07874c92509d23851ae5d713",
+      "bytes": 9469,
       "path": "launcher/src/Tasks/GymPreviewOpenData.cs",
-      "sha256": "C6D7E5BCD62A304C6488008E4D8BB158DFEE5F1E194AF926657DD8CEF69D77F6"
+      "sha256": "B75DFBFA026AE7AEF47CDDA1D12D65629893576FA3710B6B33C86200768F3991"
     },
     {
-      "blobOid": "ace084d48f0042a9d197b117fc238f99ed7286da",
-      "bytes": 35008,
+      "blobOid": "12a3db63fa197da1b1e932b898d509928ee4dc19",
+      "bytes": 38504,
       "path": "launcher/src/Tasks/GymTrainingTask.cs",
-      "sha256": "B5B83DC1E05C7B2506D82EA9AA060B7E561171445BD8174C907F4ED0D72E30B4"
+      "sha256": "F6F08546053DC9A9B8A097FD1B57D01212BE58C0884B00F1E25FA8EE1E05DFE0"
     },
     {
       "blobOid": "08c5b268ca13c224de32a3aaf3c4cdcd7b3a5192",
@@ -3242,10 +3284,10 @@
       "sha256": "48F40B02E48CA144E3F5EC22B69D5F3C1FDFE4453C4C6315125809D6B9D3D4F6"
     },
     {
-      "blobOid": "ad03e51f6dab9c30eb83adccaa30b8a88748a779",
-      "bytes": 104215,
+      "blobOid": "f3896dedf9951329f7659b36a2ff499f96dcf8a8",
+      "bytes": 104454,
       "path": "launcher/src/Tasks/InventoryTask.cs",
-      "sha256": "610EA3E49596DB59F43D17C115A867BC03E71A3C99B88E35B69B871663A22356"
+      "sha256": "82EE22B18E25870D5BA5B92E47F54830007CCB3213D13944484E6CD0A0993258"
     },
     {
       "blobOid": "4e41676c056e8bf1e2fcf5875eb156d45e3f5ac9",
@@ -3254,10 +3296,10 @@
       "sha256": "5707C9BC5C82E3EB0D49471B990CFB539A7A8FFFA5B11AE818AA01AEE5922BA5"
     },
     {
-      "blobOid": "6ed8abc10a062210059f33c804b426eb1da6bc60",
-      "bytes": 24713,
+      "blobOid": "a2d8198d47a98315b1f7dc56df6b16f8466180cb",
+      "bytes": 24767,
       "path": "launcher/src/Tasks/ItemUseTask.RewardStash.cs",
-      "sha256": "B2093A93A17DB53BDA56AE8DCDB1051FFA655333D33CA0A7CF409BE30939DF19"
+      "sha256": "7848091B9F0415B9B1C306A6323CECB2DB20991401A82207B81E4F9ED4DCFD81"
     },
     {
       "blobOid": "43d9320992b7a915fe17257740bd1b7518c74014",
@@ -3266,10 +3308,10 @@
       "sha256": "A819C22BCEEFC234A4BDA0EBB8F4B072F0B177E63E86807FF6D1D1ADC01EA3DB"
     },
     {
-      "blobOid": "6db60eff6bfead75b5d7098b997b2c1d0de019ad",
-      "bytes": 22478,
+      "blobOid": "8816c2676c6da4d61493300c0e3c8697f2879853",
+      "bytes": 22514,
       "path": "launcher/src/Tasks/LootFeedTask.cs",
-      "sha256": "D79E153973080759DD4DBAE7361BA62D146448B7EA2FAD5C970BF72F0F786393"
+      "sha256": "2016C5945623EA4027A4DD6BB0BA531FEB962FB8AC6A4112BDEE85A9C652EB14"
     },
     {
       "blobOid": "6352b6fc83b11cdd2a99408349ad81830506f728",
@@ -3320,10 +3362,16 @@
       "sha256": "4EFA451D6BCAB25D9F5CC9FAB4929A9CB79E8C8AF1A068032408ED844D3DAD03"
     },
     {
-      "blobOid": "f8ba015d0cf9a2884f9ba9ba0924529b307b41a3",
-      "bytes": 7006,
+      "blobOid": "687dc696f695178e33795575387eccca947256db",
+      "bytes": 7953,
       "path": "launcher/src/Tasks/MeridiansTask.cs",
-      "sha256": "F9C35962D1A96FF24A0B2FCCD1CC0EABE0A69650283239DB4F98CC4E25B49CFD"
+      "sha256": "007958F692489E36D59119F7FDDD2C09BEB26A21F71B954A7253411A26DEC53C"
+    },
+    {
+      "blobOid": "6ea2ae5497b077918d7f391aeb7e78d0920c862b",
+      "bytes": 25293,
+      "path": "launcher/src/Tasks/ModifierTask.cs",
+      "sha256": "EA15E64BC1D752BE40365BD3C8CA995C22EFFAC0EBE45B861192B47FD56FA774"
     },
     {
       "blobOid": "9119a6d081ea41dd7f8c5e3f681316f750c83d49",
@@ -3332,10 +3380,10 @@
       "sha256": "94002746BA4A12A46DF1D3827A15917EB61671B4C3B35C6F087071458133E64A"
     },
     {
-      "blobOid": "e6c0c47a01364e4616ea1494a4b2b487b57505e0",
-      "bytes": 97659,
+      "blobOid": "2b21cdf8569671a9715116ac96686d981a7fd3b6",
+      "bytes": 151768,
       "path": "launcher/src/Tasks/NativeDialogueInterjectController.cs",
-      "sha256": "8D488104FF52D00EC3A1A56EE49EAB4E82BC916D9AEF539AB77C8B555B90750A"
+      "sha256": "7CDAD4FCB6928B1AE2228ED06F8703CAF2D53FAFD70FED95BFB429FF8BE85E74"
     },
     {
       "blobOid": "01a676126a3f9117f13ea5b84f494ddc743e1eee",
@@ -3354,6 +3402,12 @@
       "bytes": 25701,
       "path": "launcher/src/Tasks/NativeInteractionTask.cs",
       "sha256": "992654BAF2A9C842C1EECF7A37F045F9FD7B9B5149CB72C6798A12FBEC0D558A"
+    },
+    {
+      "blobOid": "14f6ce75080fb1f1bb157f701965d248a49dc544",
+      "bytes": 6226,
+      "path": "launcher/src/Tasks/NpcItemExchangeTask.cs",
+      "sha256": "DAE544728EF29951D950DBF78572FE6BE9D48543DC7272FEA0DB770DEE93FC44"
     },
     {
       "blobOid": "615a6814caad96210677b9e77f64491ff703aa5d",
@@ -3416,10 +3470,10 @@
       "sha256": "F2AE683BE6D459E582B7E0D6120E7482D799F84C1FA90FB6F9ADAC382FA2EC24"
     },
     {
-      "blobOid": "af71767c513ac0eb0215149d7a06081472169b45",
-      "bytes": 51561,
+      "blobOid": "432f337589ef5aacee36f8f81a9d4a10caa1e94d",
+      "bytes": 52184,
       "path": "launcher/src/Tasks/SettingsTask.cs",
-      "sha256": "8E6F165749852D63DB4318C81130D4048D5C58BF7CBC9E6728F8F6B86C32C9E0"
+      "sha256": "E0FD9F0D8FF27080065063FBD1A2C947420BF7D5ECAB6C6F862E754BB788BC63"
     },
     {
       "blobOid": "10e5647a87d86d606e8086541a10cafdd1aff7cf",
@@ -3434,10 +3488,10 @@
       "sha256": "AF168CF6E7C8D2F85B18E2AC5B503F5F6126456D5DF15D8C5C0977B8CE34C4FA"
     },
     {
-      "blobOid": "956d3c2caee84b99a3b5e602545f84d03a33487e",
-      "bytes": 91403,
+      "blobOid": "68a1354858d265e455270357867276aa6dcda0eb",
+      "bytes": 94970,
       "path": "launcher/src/Tasks/SkillTask.cs",
-      "sha256": "4FA62BCE9ABA8B73B9C1999E65ECDED5847AF008FBA893CF28BA4430F9930872"
+      "sha256": "57AC5DBED4A99B89538D72606B3B0D69C7B603BAFA765CA82D892F96763EF2AE"
     },
     {
       "blobOid": "187daf9c78a6d7b59c32ac9eda5b1d1323262b80",
@@ -3488,10 +3542,10 @@
       "sha256": "6E3AFCBB1BD6A93D8FF266C65C3B781E79249E7BA32BE6CF16C417010044EF40"
     },
     {
-      "blobOid": "3020129ce37c918e4d7dbbafd1457710ac46bfeb",
-      "bytes": 19249,
+      "blobOid": "37b18e23f325a2d1097b4d22217947f86ce772f6",
+      "bytes": 27286,
       "path": "launcher/src/Tasks/TooltipDocumentSanitizer.cs",
-      "sha256": "A7B885B9F0A274DF79CE465D71774CFBBDB4B289082DD51911DCA2744F1F4CCD"
+      "sha256": "60C7922650A79B6901C752B9DB2DBD0D1135499E61A574F66D9C5B9B3299563A"
     },
     {
       "blobOid": "63cc0fe5184f67a92a7c93ef8eeceb0bb641719e",
@@ -4166,10 +4220,10 @@
       "sha256": "9907DC77E8193CE023085000543E3654C2425B30DE2535F2F8266A448E20802F"
     },
     {
-      "blobOid": "63c93434bfe3a019354d168fa7a7b8df20319656",
-      "bytes": 20615,
+      "blobOid": "aff4774b32a01ca723d56e04917d122b0669d695",
+      "bytes": 21501,
       "path": "launcher/tests/Bus/XmlSocketProjectileReadLoopTests.cs",
-      "sha256": "3F28E7F1F34153D3CD5212B76DE7996E4ADAB16243E98C7CEF7D935BE139448E"
+      "sha256": "2F65CBE91C087EE3D2353FE6E2EF4F9D450690A916C440E9D89BB0FE69E208D6"
     },
     {
       "blobOid": "59dce3129eac92255f331561e4967ed651831240",
@@ -4388,10 +4442,10 @@
       "sha256": "F5099E032690A46FB4D29D59C53180E5115C735C6069CC2D4C1B044F59BDCD52"
     },
     {
-      "blobOid": "6f29c4120c68e942f079bfafae84c6cd4c819133",
-      "bytes": 10281,
+      "blobOid": "7b82c8db73d7a27e389d10cdb85bcceb999444ab",
+      "bytes": 10374,
       "path": "launcher/tests/Guardian/AuthorityLogFormatterDispatchReceiptTests.cs",
-      "sha256": "9BB4904AC561D82911C9F8FAA87E1F2B3714E08BC97D9118C1148D7B31DA0A7E"
+      "sha256": "C72E2EA1C8261DB9F344458AF370B092BD11A7AAB37A9DEDD396B925EAD8F9C1"
     },
     {
       "blobOid": "ea186cd2d0c08fd6d76b6c05e4fe5e9cd607078c",
@@ -4448,28 +4502,28 @@
       "sha256": "8028FD71D7DAB7A329F7E92DC9D670AA5D66A55E10B903C961505A22A2CC5B53"
     },
     {
-      "blobOid": "7e58a61d197ae0fb793399f17b34a249378947b9",
-      "bytes": 2746,
+      "blobOid": "9c59eb6954f3c7d275626fd85e470d5459ed1225",
+      "bytes": 3334,
       "path": "launcher/tests/Guardian/BulletVisualWireQ1Tests.cs",
-      "sha256": "4F70F8CFF2FCA2969952B8DD10CD1E83AAD44BBD409E46420CC437E1EDDD258A"
+      "sha256": "D7088EF0ECE15421C7782AF0C65F610757C03A2ECFC683E6FD30BB161E288B78"
     },
     {
-      "blobOid": "84c1ec65ff2019888eff9978fe290baabdfa5560",
-      "bytes": 9399,
+      "blobOid": "3f66611b4e3314221e625c0aa86e815fe81199ca",
+      "bytes": 10068,
       "path": "launcher/tests/Guardian/ChainVisualEngineTests.cs",
-      "sha256": "4E39E647BA58602C5BE322C5F5021F5CB1E330D8F757CD6EAFF0AAE99E40CC90"
+      "sha256": "933C8E10F3E07B2DF11139AC231667C1C1A9214758F380367CAE1F6572CA1D06"
     },
     {
-      "blobOid": "5e7be6e01bc0842762eb5ab6e93d0214aae89d18",
-      "bytes": 250318,
+      "blobOid": "c28ecc86deeff38bd4d89dfc9140d46da3a871a5",
+      "bytes": 258614,
       "path": "launcher/tests/Guardian/CharacterBuildTaskTests.cs",
-      "sha256": "9CE4DFC05F6DA12244E5FABE9F1C33E9B7B9D1A7FA496DD5CA2787E3CC7A026F"
+      "sha256": "6BDD52A5F301F33620CA37FB541CF327332A5089FA4A4600C241B01DC95DA97E"
     },
     {
-      "blobOid": "6bea8159d0af32c674c7d09cd9bada9a16593eab",
-      "bytes": 24016,
+      "blobOid": "4ba99ced3a936c8cdcdd0a663b5acd645a27ce5f",
+      "bytes": 24601,
       "path": "launcher/tests/Guardian/CombatFxExtendedTests.cs",
-      "sha256": "02E5F10DEAAB4A3922A5D35011297ED1F52E874AC16BDF5EF9661364ACD86075"
+      "sha256": "41C6B95B04A7FD30EC27FBEFB9BFA5C3D0053B0C607211EA3D6CA0346CEFD9C6"
     },
     {
       "blobOid": "63a6ee7621e74b9025b172bde0102549e71baeb1",
@@ -4490,10 +4544,10 @@
       "sha256": "D4304EA845A14A014DDB89D982EC2A4E60295A70A9D243900735B83439C1D4B7"
     },
     {
-      "blobOid": "0bc963f239076003619a66b7d6659d4fa62b6bac",
-      "bytes": 9990,
+      "blobOid": "702e218ed794a47fd2efcd900be4d55a7b1c96fd",
+      "bytes": 11430,
       "path": "launcher/tests/Guardian/CompositionRecheckTests.cs",
-      "sha256": "E8E15D383525A1154DBC703A476C5CAC08AC9D9F1BCA3E96A23102816A99E785"
+      "sha256": "659D89043E2CBE11F503A5D1004E776A678A340017825A6F29B6586544A57B29"
     },
     {
       "blobOid": "1099dea097c1b2d5ef4d36907f211956f09c8a89",
@@ -4574,10 +4628,10 @@
       "sha256": "35D319AD79A70A0AADC261D7D8E10A8F4C559EA93FCAECDC9D397722CC6DD6B1"
     },
     {
-      "blobOid": "b516a4bbd439e7efc5c6341ec7ef5284344cca69",
-      "bytes": 16301,
+      "blobOid": "b874d58f532e092f31c4029cbc961a4392f5ff62",
+      "bytes": 19785,
       "path": "launcher/tests/Guardian/DialogueInterjectInputTests.cs",
-      "sha256": "233F5D0CC8D43465454ECDFC65589B71B80C67F67AD211140CA2C736C127251C"
+      "sha256": "FF26859904DD01C51692B87EB7A87D453EA837E5A59550ED0D4686CC2C1EBEF4"
     },
     {
       "blobOid": "6cae4472fc930a9698e2969ec20e5887cebd8b82",
@@ -4682,10 +4736,10 @@
       "sha256": "B9F9A51E11209A93377A415F5A3C1B8BBDFE41B3824292887E6F6B88B18735D3"
     },
     {
-      "blobOid": "2d4f489b08ab7f0f1015cd3a7f3641cf33e1a50a",
-      "bytes": 70114,
+      "blobOid": "e7a198225cb1b982557e1ee57103379b39f334a6",
+      "bytes": 72900,
       "path": "launcher/tests/Guardian/GameLaunchFlowCharacterCreateTests.cs",
-      "sha256": "FC7B2DA86AC40D37FA35D0078ED5444EE88134DC58886C58FEF104045D034818"
+      "sha256": "1D7CD27A668AA68EDAE9BE861F1A14E5A1C443B1659F097821DF257C5198FEF4"
     },
     {
       "blobOid": "54e540c628c4f0e7a3c845f3cdcf81da75cdf905",
@@ -4772,16 +4826,16 @@
       "sha256": "68B6077C01A59A2C518B89F3AD6E425FB4E33699A85A1E24448BF434F2044C48"
     },
     {
-      "blobOid": "ece2060e7f36ed58c041a77a572fe6b82baf4127",
-      "bytes": 6468,
+      "blobOid": "492d96fc550092b2293095c1adba64769f867548",
+      "bytes": 9108,
       "path": "launcher/tests/Guardian/Hud/Loot/LootIconCatalogPortraitTests.cs",
-      "sha256": "EA5FD136729D5E42386D0DCE5D55C01F0BE64BD4B3A7035A41CC4E4DC69286D6"
+      "sha256": "5BE2924355A58DEF9BF4DBBC69126528E322D276267510C2A7CC1C18F2E12013"
     },
     {
-      "blobOid": "d3aebd4a5a55fd08b76525e92bee3404e8311372",
-      "bytes": 9146,
+      "blobOid": "e7c14fb03b8812a31d9c1f587628903ce4766af0",
+      "bytes": 12496,
       "path": "launcher/tests/Guardian/Hud/Loot/LootIconCatalogWebpTests.cs",
-      "sha256": "643EB66A56ADB1C460F882D9036430C0992952ECE7CDE0ED67E9B87DD38FF65D"
+      "sha256": "7F78AC1EE1061D2A61C3A6097B80334BADEC368202F2FD1C6CC0C8E46D53EFAA"
     },
     {
       "blobOid": "ccf72e66fddfa5cb067c85ca5928a5382afde779",
@@ -4790,10 +4844,22 @@
       "sha256": "C28F488A77C94225F5CFEFDB9EB07A21554191AE7BFD24F3E519FFE25CAF6A95"
     },
     {
+      "blobOid": "7f987626a77c315859c698426d6e7c3a07ca4604",
+      "bytes": 23480,
+      "path": "launcher/tests/Guardian/Hud/PlayerInfo/FocusTargetHudTests.cs",
+      "sha256": "EAACB1000D7789F52DA79858BED47859B908C7B26C34A44A5F8B27AD7D299607"
+    },
+    {
       "blobOid": "c6e71350cb97f63ba4e8f01bd1dd47e2205bfc3a",
       "bytes": 16690,
       "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudAmmoTests.cs",
       "sha256": "A7469FC334F8B9E92E3C0AA4F68304FFFECB49B72CD33D1DA83782CAB64372D8"
+    },
+    {
+      "blobOid": "299f60b9d8822504d332e243b83171aa3221e9a6",
+      "bytes": 7944,
+      "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudBuffLayoutTests.cs",
+      "sha256": "519893AE96F352FE98CB53DAFF9DC1C28AEC3F6D20F78B9FA96428D7B77ACD7E"
     },
     {
       "blobOid": "97e8e72dc42325e2c7fb36cfc3f74934ba0ae5bc",
@@ -4802,10 +4868,10 @@
       "sha256": "B081247DDC9F29A311BC0D9033318E910DA2021F334C28B3A6FD2D5724FFAB41"
     },
     {
-      "blobOid": "fffb5a175e8e488731affffda0b9594aee129806",
-      "bytes": 13455,
+      "blobOid": "1dfa3cab9b125c485f1a5a17981e54ecd34137fd",
+      "bytes": 13502,
       "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudPresentationTests.cs",
-      "sha256": "D6DF52970C3175C026105FDFF08E367B5001AC6D4E15F9C7D077655ACDAA5BEC"
+      "sha256": "4EA0CD607AC4597774864282DA216B44B6F174F3812300F8A290B983A50F6FC7"
     },
     {
       "blobOid": "f911d441b74a6bf01d1b325c11b2bc2ddea4535c",
@@ -4820,10 +4886,10 @@
       "sha256": "9F4DC56C9644C3209421D9CF941E045DF2017D3D7B1D455A57E0B861A47A2505"
     },
     {
-      "blobOid": "b1f35bea1393f019fa6cc19a726fa5989a31a812",
-      "bytes": 13876,
+      "blobOid": "6e9a12d89ab2262c56504950c5a509b90cfb23f8",
+      "bytes": 14326,
       "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudResourceMotionTests.cs",
-      "sha256": "10B16A1E0E97EABC4B18A91F074FE7737146F4DD4313406B53670BF5ECB04085"
+      "sha256": "68E98EA0A009A8A2C248094FC075CE04D22315C488E556E745A198D9551F437E"
     },
     {
       "blobOid": "41ce6d429563e0c03377c4b04545646d1e5d4e23",
@@ -4832,10 +4898,10 @@
       "sha256": "C8BFAC52EDD7962F3CF0CA80946FC2A63BFCFDB2DAFA698BBA946051007ED192"
     },
     {
-      "blobOid": "6b82d15bf39ae6fb39408b686359d24d7808d126",
-      "bytes": 5493,
+      "blobOid": "ae5efb1bc1c7f6307e547f1eddedca356df8af5a",
+      "bytes": 11413,
       "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudSharedInputTests.cs",
-      "sha256": "A8EB021CB5DCA0EC389D7A3FC11200257E44B12AA7DAF067FB05020AD559BDAF"
+      "sha256": "06AECE15DC819BD8E22235A6E0FA04D542B493D38FD70D29930EEB1F95E9B722"
     },
     {
       "blobOid": "80f0563a6fed114afadc9177ca3bacad3413f41e",
@@ -4844,22 +4910,28 @@
       "sha256": "485811EA38477D6EFD0254F306E622CEBAE7516F138EFCC1255D0B39743717F8"
     },
     {
-      "blobOid": "a527cd2add3b9e5b697700bae9ca79462c03478d",
-      "bytes": 5760,
+      "blobOid": "26f73467a217730013e06ee894dd8f979a387293",
+      "bytes": 5754,
       "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudSlotFeedbackTests.cs",
-      "sha256": "7F0F46E3D5124C382377042D2B425FF623B4115E525B5479A29E996627D3DAFE"
+      "sha256": "BC9D9B6AF7EA603268537E8D37460ADCF411EA71D99A784626F781E1E34E1D76"
     },
     {
-      "blobOid": "9b30036a15a612eebca323e5813d27a39fb173fb",
-      "bytes": 16255,
+      "blobOid": "e0cdcd6bc23260e80d905f5d693d7d803b086e6f",
+      "bytes": 21737,
       "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudStateTests.cs",
-      "sha256": "74D94B0D5808CD06A8E57815DBAA3548DB3C9BB27C26790ECB896E92E493884B"
+      "sha256": "13E4C7479F49B9869333970A3A62BA39FFD31B84A624E5D37EB9B8347AB293D3"
     },
     {
-      "blobOid": "7888ba3e6be1467b47c6611f25a592be35a888ba",
-      "bytes": 67876,
+      "blobOid": "d7f9fd1e362b2fff36340c6833e459ce813b82fe",
+      "bytes": 15066,
+      "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudUsabilityTests.cs",
+      "sha256": "2221A77963DD5AD0E791E237442368CCECF02D9951B5DDFD06DC8FCCC111BA31"
+    },
+    {
+      "blobOid": "159a10669c58f1199cce0f5e4f39b676e5460489",
+      "bytes": 73310,
       "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudVisualTests.cs",
-      "sha256": "A8F3E97E2D8C11CD78B760B5B8442EECADEE3EF0A6A953B5004B693599B7D521"
+      "sha256": "435A23FAAA60708B1C8486A3557B6D8CC8FC9A2E64006CB43E91449F5B67E036"
     },
     {
       "blobOid": "e86d1eeb65f35bfc678b93679181cc990427b58c",
@@ -5012,10 +5084,10 @@
       "sha256": "F244147600D728DA637D30D8A3A86AE1E4DEF7D60F754ACFE5D2FF99489A66A3"
     },
     {
-      "blobOid": "9f9c9f3a74d95e717186e78af52e2e5a98fb66c5",
-      "bytes": 372149,
+      "blobOid": "9f5e28d3572df11c963b735357a7ef4785d8080e",
+      "bytes": 373878,
       "path": "launcher/tests/Guardian/LauncherCommandRouterTests.cs",
-      "sha256": "D94E5D7E52D60946F9C943908B470C2B0B05E93D48F1692C8E8832E13A8DCCF1"
+      "sha256": "CA65EF87E83751C0D909D73B5E05433707CDCB0253FE7EE991D84B5C6CBF3DFB"
     },
     {
       "blobOid": "16391e1d4c0a1e43f4017b55c97a68cf80911fa8",
@@ -5070,6 +5142,12 @@
       "bytes": 51704,
       "path": "launcher/tests/Guardian/MaterialShopNavigationCoordinatorTests.cs",
       "sha256": "C9AA248D0E47A9835A18D5F7F0D9695DAD98BE52486BEAA808A8E0E310D93FD8"
+    },
+    {
+      "blobOid": "a5bdfd3cea57aedd364fc97f2e6b4fde867d4318",
+      "bytes": 829,
+      "path": "launcher/tests/Guardian/ModifierSurfaceTests.cs",
+      "sha256": "B12A1DC66B1238B74C89DFBD3D36FE9675709D7BBEFC11135B0215FAD96A2E52"
     },
     {
       "blobOid": "7a72fc02ecd665ed32dc5ea1304394f727d6da17",
@@ -5228,6 +5306,12 @@
       "sha256": "9FE00BFBAAE27775F1885C012734667BFE9EF20D198BFF72ED5FE608595F2382"
     },
     {
+      "blobOid": "d5b7e9e03b50b6e02ce981298e2c77ea6a0a8f34",
+      "bytes": 2514,
+      "path": "launcher/tests/Guardian/OwnedChildProcessJobTests.cs",
+      "sha256": "22E21E330E3AFA74EFF62E3F921F1CA0FF2AA41615502DE59913579CF444ECE8"
+    },
+    {
       "blobOid": "1ca028fa1dad2415dbfdf8622f02d8e74a61ea17",
       "bytes": 6863,
       "path": "launcher/tests/Guardian/PanelCloseTransactionTests.cs",
@@ -5378,6 +5462,12 @@
       "sha256": "3657267D75FD8416CEBAB4C73D547F1D1F818E5B7A1EA4F60F2E16EC0345D1B6"
     },
     {
+      "blobOid": "0ee284fe28af368e6c657684f35b8a476bdb9c5b",
+      "bytes": 3527,
+      "path": "launcher/tests/Guardian/RightContextWidget.SceneRevive.Tests.cs",
+      "sha256": "AE1D796B83365FA3BFF9798938F4A88B973A3144F41EF99B7DD0DF6B534E86B4"
+    },
+    {
       "blobOid": "ffe7b4f8b0b173af16ca399f903629b15e71cfce",
       "bytes": 15462,
       "path": "launcher/tests/Guardian/RightContextWidgetDeliveryTests.cs",
@@ -5486,16 +5576,16 @@
       "sha256": "C00C66AC015C5C3B7E93327357BA8EAB588B4311EF68D6C321980BBD8153E258"
     },
     {
-      "blobOid": "cdbfef358e39aab9ee716ed64814f8d37fda3571",
-      "bytes": 7164,
+      "blobOid": "8851703294c1f13c14461f86371f06ee6f9e0e82",
+      "bytes": 7326,
       "path": "launcher/tests/Guardian/Tooltip/NativeTooltipPointerFeedbackTests.cs",
-      "sha256": "09462B15C8EEF098639C5995CA69EB391801B8AC3F66E84D8988DDE8DC02DF56"
+      "sha256": "3FD47FF27D0A6887860FB8BB75D277237EFFFE29D13A36351A013CCA78E79413"
     },
     {
-      "blobOid": "caf8465904fb698adeca271f1acd5416601e53e1",
-      "bytes": 59217,
+      "blobOid": "f62aa5f339529866bac174a451e470b3cf0436d9",
+      "bytes": 111002,
       "path": "launcher/tests/Guardian/Tooltip/NativeTooltipTests.cs",
-      "sha256": "333C788904A02198A8985E3B7A38CD500DB1E2795028C6E89A9167D0CADEEC45"
+      "sha256": "1D13785E1F7E06D7A34D53E28F4671B28C2120778A2CAC30834A0A3B9604BBC5"
     },
     {
       "blobOid": "bb775fcf5436271cab05ddb3fa17ecf2af4fe718",
@@ -5570,10 +5660,16 @@
       "sha256": "BF4F150054D3584C58C29B467132A7815F17ADFBE7BEAE651F6C1F5D90AB8301"
     },
     {
-      "blobOid": "8dee73ac4c08d2de3f449da1c4012cf4a3bfd010",
-      "bytes": 28689,
+      "blobOid": "81ab76a8ec3e1cbb7eb79f1d74828034b4fba5e3",
+      "bytes": 39485,
+      "path": "launcher/tests/Guardian/WorldBulletPresentationGpuTests.cs",
+      "sha256": "9C5F1641C0C5E188BAE9FD457E9CA533E4EA2C211CE7D1E47085D10B0438C2D6"
+    },
+    {
+      "blobOid": "2cbeb76732433ba8efe583dd451d1d1ab434c52d",
+      "bytes": 50134,
       "path": "launcher/tests/Guardian/WorldCompositorTests.cs",
-      "sha256": "4A178AFF4318A54D4D13D162063B6CE9145306083438F70615F0BA17BE5039A9"
+      "sha256": "D5FE36949C8B6DA64C2430AB5D195052C421C12C045B4EC78DC1B4B59ED4A19F"
     },
     {
       "blobOid": "91cdbcd53f66df1d1aca45693d3117d3ed2e3dfc",
@@ -5654,10 +5750,10 @@
       "sha256": "C56729C15B81C0467E1264718FC88D48F235B903639E1D7D51805CBB1CABDA94"
     },
     {
-      "blobOid": "37c6c575682254204de18aaa2d8c7e1c079a8707",
-      "bytes": 18923,
+      "blobOid": "d7121f75509ee20090ba83b946aba5190073f21e",
+      "bytes": 21152,
       "path": "launcher/tests/RagTerminal/DialogueInterjectSseTests.cs",
-      "sha256": "656195A036EC41A90D916E583CFC6598403988CD7983D32B3D18806A3C9B17D6"
+      "sha256": "D63CF1F6884F7A589F4D4F265F0CE52C0069D9E0DE290857638FE923C25F1907"
     },
     {
       "blobOid": "00b3e283465b83722fd13282d5e308c0344c8d00",
@@ -5852,10 +5948,10 @@
       "sha256": "50A5653012D8A36F842FBE119626B56B512C321D17E858420789396969C5AB6A"
     },
     {
-      "blobOid": "2fe1a8985025b7cd5caf990af2bf7b566d332eb3",
-      "bytes": 29264,
+      "blobOid": "a00c0866b94363aa18210d65bb88c59dda88f639",
+      "bytes": 31298,
       "path": "launcher/tests/Tasks/BookshelfTaskTests.cs",
-      "sha256": "C5874BF1C6E518A4D959104B42DB931B5C3FDAD0950554FEF5AEF8029E886F47"
+      "sha256": "28BEF6617BBFD3891C6C6E70B78F6DB2BE017A44E77F9ED2BAF7A92877A2AE12"
     },
     {
       "blobOid": "7d704a084d3c6fc63554219b77b83d3d27272f28",
@@ -5912,10 +6008,10 @@
       "sha256": "2C37376D0B3888C52BEA72BB0F47BC43B956A173CA0CF727E8032BB4F094EA2D"
     },
     {
-      "blobOid": "e3f6ab167ee79bc058634e7db46a62acf1cd715c",
-      "bytes": 15625,
+      "blobOid": "11465b63db7a44f49e5f67dcb0bf58f8aeeecf7f",
+      "bytes": 16540,
       "path": "launcher/tests/Tasks/FrameTaskProjectileTests.cs",
-      "sha256": "D169948ABA0B6D5E594C790323EDCE78E18FE939389DEABBAD05EE5BC2447339"
+      "sha256": "EFF8204572B78551E2F7423E20A171E779F6AEF33A67199674B2D540C2A7126E"
     },
     {
       "blobOid": "dcd87306e8f08e38727128b7707f3306f9c4bffb",
@@ -5924,16 +6020,16 @@
       "sha256": "C0BF1EA8F6B8A3831AC0D18E36B89E4DBAFE33A80252011132952CD5B01F0E32"
     },
     {
-      "blobOid": "d5a13f08c57e4e424f82d41c23831f627b1f9eee",
-      "bytes": 4890,
+      "blobOid": "e47a21d4d15336c1b92020cebfe3a7d6716f23bd",
+      "bytes": 9207,
       "path": "launcher/tests/Tasks/GymPreviewOpenDataTests.cs",
-      "sha256": "6C5F55599EE4FDEF5AFF30D10001A1E73867636102013D374C303574CFF48A85"
+      "sha256": "45216D6110D7578E1888229E54FFE4ECF77BBED4C7B0C6B5BED5551F0B9A7C70"
     },
     {
-      "blobOid": "4626dd390633bda33248c10324455a7a9e62978c",
-      "bytes": 18160,
+      "blobOid": "057c8c4f076a7d1405409501763e20978edbe731",
+      "bytes": 21221,
       "path": "launcher/tests/Tasks/GymTrainingTaskTests.cs",
-      "sha256": "1CC1ADB910FD9A191C8D9F60B0B76A6199200B5F127D9404072D33D64DC78848"
+      "sha256": "400A01B84FDCA11239F242E8A6607E9086A39EFF24E3CD769C639069A43AB27F"
     },
     {
       "blobOid": "d454ec60ab485cd77c49986d4502c968562dac20",
@@ -5948,22 +6044,22 @@
       "sha256": "013E5C88CEB6253CE180924789D3B35C9A6A336ADA40DF8D5528868CD6CB0859"
     },
     {
-      "blobOid": "f7ae909a06cd4ae0304ec320abb56b9c5286071f",
-      "bytes": 117719,
+      "blobOid": "97af0d0b55d3a1babf2371d3c3018f3561bfd5e0",
+      "bytes": 119972,
       "path": "launcher/tests/Tasks/InventoryTaskTests.cs",
-      "sha256": "61480385643EF3DD55649C56167085B06DCA2248142F0CD825F299AD2D8B4405"
+      "sha256": "A2A40E7EB95CE959F685A4C3DD693154E1F34B8C475D9FB6D2A8031FBCE637A4"
     },
     {
-      "blobOid": "a6478e7af0f3a83a945dc931a0217a6534a73050",
-      "bytes": 42008,
+      "blobOid": "1f74a1e92f0961f1799b45c653f6c903ed368f1c",
+      "bytes": 42827,
       "path": "launcher/tests/Tasks/ItemUseTaskTests.cs",
-      "sha256": "E4DAE72B2C9317B7427524F42258BCAD06C7BCD20A0810684549306E9CFCA213"
+      "sha256": "C500E68C7A4EA077E878076792F7A8EAF96D2EB6B4563BD3A243D3D53E04F4E2"
     },
     {
-      "blobOid": "d82a8450025d714a05944f82491be78140fac32a",
-      "bytes": 35063,
+      "blobOid": "c97fa9cf52f52fbc85122e979b9782be71e6bd0f",
+      "bytes": 35129,
       "path": "launcher/tests/Tasks/LootFeedTaskTests.cs",
-      "sha256": "D1224996257915B903F26CC35FDB191BE3BCC64879364C41EE7A1D549B7FA804"
+      "sha256": "7F3F6A6C035974E6EABC75B89259E985E814B4EA7B90D52CA17F4D373267A8BC"
     },
     {
       "blobOid": "66ff06a7b7bfad90895cef81f28b06b1c7facdbe",
@@ -6002,6 +6098,12 @@
       "sha256": "75B83C98478173A683221619737702501AA90B12B6B98933720011783E9174C3"
     },
     {
+      "blobOid": "c2fe0c2c8ceff405382316e005173106cb94856c",
+      "bytes": 5262,
+      "path": "launcher/tests/Tasks/MapTaskCatalogOptionalSourceTests.cs",
+      "sha256": "146C314219F4CA96084E5EAFAA58AD904FC0704ED4BDD02F7ABBB5C042C158AD"
+    },
+    {
       "blobOid": "6579401bac60be88508237724f0632c7d482c0e5",
       "bytes": 6280,
       "path": "launcher/tests/Tasks/MapTaskResponseTests.cs",
@@ -6026,16 +6128,28 @@
       "sha256": "F0F932A55E2B28CB7EBE9EB41C9242E833A40A63CA19241D75CA86C68C4D3B95"
     },
     {
+      "blobOid": "091b7c5a994250145a33ef0e158062733efcb590",
+      "bytes": 2339,
+      "path": "launcher/tests/Tasks/MeridiansProjectionTests.cs",
+      "sha256": "7BB6843CF526EB4C477C09E97DD55C897EACE0374DA6BAC11417C1C603F346A8"
+    },
+    {
+      "blobOid": "280fe9289fc9d8ff1dd2fcbb05dd65ac638afbbe",
+      "bytes": 14470,
+      "path": "launcher/tests/Tasks/ModifierTaskTests.cs",
+      "sha256": "E27189E3D445CB9E06F74EACDDEDC0D7D880DAD6DA1D2875EF735799F4309654"
+    },
+    {
       "blobOid": "692dd79197148000f77596cf57f88a54c6e9ec83",
       "bytes": 23567,
       "path": "launcher/tests/Tasks/NativeDialogueBookSessionTests.cs",
       "sha256": "544803557A789B6196B1CC269806F05D9D9D3C61E5CB13ECAB3EC70E7A2B85ED"
     },
     {
-      "blobOid": "eb94d24bceea888f2cf91d666fb058e8368a13e0",
-      "bytes": 95320,
+      "blobOid": "15e1fd2244a6b653d26a90f8fca36eb8dfcd781c",
+      "bytes": 146965,
       "path": "launcher/tests/Tasks/NativeDialogueInterjectControllerTests.cs",
-      "sha256": "F9E50F827E8C3ED7843E6162E27B10FC82352EC45867B5BC8768F79A178A0E96"
+      "sha256": "46990E15C0039F49A78DB2DECE7AB9CF6287C4D4DBF4A07F6995467C2969F9D0"
     },
     {
       "blobOid": "a663c1100e86a86c20672d010be697791e306f22",
@@ -6068,10 +6182,16 @@
       "sha256": "D9A31B8577B1A15B6E8ACDF870154C714CE7C0579C2C371B9910418DC9FD1E1F"
     },
     {
-      "blobOid": "d20e65607910b1672fc15be18dfa8cc558944601",
-      "bytes": 9005,
+      "blobOid": "e78c554396983a5b3900da06650813857b371448",
+      "bytes": 6062,
+      "path": "launcher/tests/Tasks/NpcItemExchangeTaskTests.cs",
+      "sha256": "6B2E662D7454C8A6EB9DE1E1C209137500277AA80952744ED7AC32F1EB54343F"
+    },
+    {
+      "blobOid": "980cc151b68efc11a70a14f30ab8013fb9e09443",
+      "bytes": 9560,
       "path": "launcher/tests/Tasks/NpcShopAccessPolicyTests.cs",
-      "sha256": "10450D40B03838DE05D7D749A7EF017AA66E8AB27670E2C5DE3BECA95FCAC603"
+      "sha256": "69416931CB10A42146BC4519F11B970ED8C3842F170233DF94AFC1F242EFE1A8"
     },
     {
       "blobOid": "edf0267c87e2feb5a4fdcf5b7b8d822bffb4453d",
@@ -6164,10 +6284,10 @@
       "sha256": "39039451A11D3C24B09807B077DCDADB3B218AD4237C71662DDBE1DBCC8C1772"
     },
     {
-      "blobOid": "42cdc26045408e0c5e1db3e973e9969f1f3c25c3",
-      "bytes": 73103,
+      "blobOid": "bf775b088284f3105738b94c0b5fb2247d70fc3c",
+      "bytes": 77669,
       "path": "launcher/tests/Tasks/SkillTaskTests.cs",
-      "sha256": "3F8CB6C12851517256C8FA52EC14AB35B86B08BE1541CA1FBCA3C4DF445F5817"
+      "sha256": "60585B06602326ED7C4B43AB73DBBA0B0E4D688A4ED3139E8A8DE5D0D15D91BC"
     },
     {
       "blobOid": "d90dc345e125c05d4cd4f546c5fa7a70b7c9719a",
@@ -6212,10 +6332,10 @@
       "sha256": "3B289A75C997E9291E618126974013581C7A3BEE239B5D2D208B5BE9C8E784BE"
     },
     {
-      "blobOid": "146641ac3ad9fca1a7b1a229984a29cbe2facdaa",
-      "bytes": 24421,
+      "blobOid": "01e07a860437cf8dcafa9a02d137ee7798412bbb",
+      "bytes": 40137,
       "path": "launcher/tests/Tasks/TooltipDocumentSanitizerTests.cs",
-      "sha256": "4275E260611A68D3BE12CABD546BF0A8623437C9421E3322E842F7A15B979A5E"
+      "sha256": "A8573E86FB4FEAD0EA62E3FDC71B8D5971112399F350ED465FD68FE47CE85B2A"
     },
     {
       "blobOid": "fc7e77db897e26174cdce3c2ca17f44d2178f383",
@@ -6248,10 +6368,10 @@
       "sha256": "FF587AF04B793433FE6FE8E113152D0B5E9695C76EB559AC91E6F972180D550B"
     },
     {
-      "blobOid": "86579d91d0c9a5196daf240ad6c65ba59c28497e",
-      "bytes": 6327470,
+      "blobOid": "bd6cc4275112fe845b5d88f5c49fe4f7edc6b238",
+      "bytes": 6978276,
       "path": "scripts/asLoader.swf",
-      "sha256": "1CC3FBA3D00EBBC1CF3191BA773925273A4BCC1C4E853C65B690075AD99A7112"
+      "sha256": "FDA11263B604B15E36F7E907A9781441D5B917701E07F24D5703390D14279A4B"
     },
     {
       "blobOid": "6835da9ea666624a67094fca95a4822f39d5965d",
@@ -6284,10 +6404,10 @@
       "sha256": "4A5EDA8B01F596243A75BCA5242FCFD60ACBFC736768A714C50021578BDB974E"
     },
     {
-      "blobOid": "3c0a7765d3788e55755048309c57b7c69a1c5fa5",
-      "bytes": 33546,
+      "blobOid": "e035ca2db4cf3404046be94dd6d66b6b404dee39",
+      "bytes": 43301,
       "path": "scripts/类定义/org/flashNight/arki/audio/SoundEffectManager.as",
-      "sha256": "E37DB8FB63549F3F1C3FB6AEEB684E700C7FCBD4DA882D468D6ED03D729D68D2"
+      "sha256": "129C81B4D01CE01AE8586B3D094D9B7827A67EAF110F545A36E06B488C7659FF"
     },
     {
       "blobOid": "d3c7b72f3ccb13a6662c238b6c99594486fe03f5",
@@ -6296,10 +6416,10 @@
       "sha256": "FB9DD935D88D1927704E5F7D6EAA82461B277DFE2EBCF76DA22F263CB3544DCC"
     },
     {
-      "blobOid": "b45c2a5e8f4532cc29291c8ef2ffcb48e28cd7cb",
-      "bytes": 47649,
+      "blobOid": "dd5227567a8cb6d9ba41bbd8056839ba3ae3c920",
+      "bytes": 48157,
       "path": "scripts/类定义/org/flashNight/neur/Server/ServerManager.as",
-      "sha256": "1A6C508AF7A1B1E296F7FA455BFF150779C8420EA5B744BE87D498FD59901E6A"
+      "sha256": "C58BB484DEBA028AC303DE981F3047FD7F6DA0CBD4B0E9B117FAE5211CD0C343"
     },
     {
       "blobOid": "f83d4838efebccdf814dd4b90e171eed30d0ab9d",

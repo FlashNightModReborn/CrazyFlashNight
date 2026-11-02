@@ -308,6 +308,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             bulletInstance._workerVisualSeed = org.flashNight.arki.render.VisualRandom.eventSeed(4);
         // 首批子弹原生表现影子采样；能力未协商时该调用直接返回。
         org.flashNight.arki.render.BulletVisualProbe.registerNormal(bulletInstance);
+        org.flashNight.arki.render.EquipmentLightBridge.registerBullet(bulletInstance, Obj, shooter);
 
         // === 向后兼容：安装 stateFlags 布尔属性访问器 ===
         // 必须在 bulletInstance 创建后安装，因为 Obj 的 addProperty 不会被浅拷贝

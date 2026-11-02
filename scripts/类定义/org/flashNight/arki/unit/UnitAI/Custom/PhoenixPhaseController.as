@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
+import org.flashNight.arki.render.EquipmentLightBridge;
 
 /** Unit-local phase ownership. Existing AI, attacks and final death stay shared. */
 class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
@@ -152,6 +153,42 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
         } else {
             flame._alpha=0;flame.stop();
         }
+        var u:MovieClip=c.unit;
+        var f:Number=c.frame;
+        var rad:Number;
+        var nrg:Number;
+        var ly:Number=u._y;
+        if(c.phase==0) {
+            if(f<35) {
+                rad=120+135*(f/34);
+                nrg=0.75+0.95*(f/34);
+            } else if(f<=52) {
+                rad=275;nrg=1.9;
+            } else {
+                var fade0:Number=1-(f-52)/29;
+                rad=160+115*fade0;
+                nrg=0.55+1.35*fade0;
+            }
+        } else {
+            var yScale:Number=isFinite(u._yscale)?Math.abs(u._yscale)*0.01:1;
+            ly+=c.visual._y*yScale;
+            if(f<=94) {
+                var chargeProg:Number=(f-81)/13;
+                rad=140+95*chargeProg;
+                nrg=0.9+0.7*chargeProg;
+            } else if(f<159) {
+                rad=245;nrg=1.75;
+            } else if(f<=172) {
+                rad=305;nrg=1.95;
+            } else {
+                var fade1:Number=1-(f-172)/11;
+                rad=180+125*fade1;
+                nrg=0.65+1.3*fade1;
+            }
+        }
+        if(u) {
+            EquipmentLightBridge.emitPulseAt("__phoenix_revive",u._x,ly,u,rad,nrg,4);
+        }
     }
 
     private static function visualHeight(c:Object):Number {
@@ -238,6 +275,8 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
                 if(_root.暂停) {this.stop();return;}
                 if(this._currentframe>=this._totalframes-1)this.gotoAndPlay(1);
                 else this.play();
+                var host:MovieClip=this._parent;
+                if(host.hp>0)EquipmentLightBridge.emitPulseAt("__phoenix_ember",host._x,host._y,host,135,0.85,4);
             };
             _root.发布消息("涅槃重生……");
         }

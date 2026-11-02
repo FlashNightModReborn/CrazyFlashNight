@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/素材/榴弹" itemID="696e1c87-0000022f" symbolType="graphic" lastModified="1768900548">
+  <timeline>
+    <DOMTimeline name="榴弹">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/重复的素材/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.74066162109375" b="0.002288818359375" c="-0.002685546875" d="0.8516845703125" tx="4.95" ty="-0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="199.1" y="38.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/重复的素材/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="3.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="57.8" y="31.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/重复的素材/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="0.0035552978515625" c="-0.0035552978515625" d="0.999984741210938" tx="62.6" ty="23.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.5" y="20.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/重复的素材/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="180.45" ty="1.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.9" y="25.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

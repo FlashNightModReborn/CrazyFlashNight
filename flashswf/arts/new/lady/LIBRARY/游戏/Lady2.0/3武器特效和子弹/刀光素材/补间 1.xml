@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/3武器特效和子弹/刀光素材/补间 1" itemID="697c22b2-000007d6" symbolType="graphic" lastModified="1769743026">
+  <timeline>
+    <DOMTimeline name="补间 1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="15.35" ty="225.35"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.295654296875" b="0.15032958984375" c="-0.1929931640625" d="0.279953002929688" tx="-26" ty="-265.8"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.635294117647059"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.776470588235294"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3711 -4295S2[3385 -2739 2024 -1675!2024 -1675[1151 -992 171 -759!171 -759[-466 -608 -1141 -647!-1141 -647[-2933 -752 -3848 -2110!-3848 -2110[-4376 -2891 -4409 -3798!-4409 -3798[-4432 -4448 -4200 -5150!-4200 -5150[-3667 -6761 -2114 -7688
+!-2114 -7688[-1208 -8230 -271 -8345!-271 -8345[308 -8415 907 -8324!907 -8324[2407 -8095 3213 -6945!3213 -6945[3678 -6275 3773 -5505!3773 -5505[3842 -4933 3711 -4295"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

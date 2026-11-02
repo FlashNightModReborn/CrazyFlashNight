@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/素材/基础元件/沙鹰" itemID="696e1c81-0000022e" lastModified="1768900548" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="沙鹰">
+      <layers>
+        <DOMLayer name="CenterMarker" color="#0000FF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Center Marker" locked="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="蝎子" color="#0000FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-2.9" ty="-5.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.5" y="6.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/沙鹰" symbolType="graphic" centerPoint3DX="30.1" centerPoint3DY="5.45" loop="loop">
+                  <matrix>
+                    <Matrix a="0.307907104492188" d="0.307907104492188" tx="-11.05" ty="-18.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="133.5" y="76.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

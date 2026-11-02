@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/3武器特效和子弹/fm92特效爆炸文件/落地的爆炸" itemID="6984a83c-00000177" lastModified="1770346051">
+  <timeline>
+    <DOMTimeline name="落地的爆炸" currentFrame="7">
+      <layers>
+        <DOMLayer name="Layer_3" color="#49F6E9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/fm92特效爆炸文件/Symbol 366" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="0.299911499023438" b="-0.0741119384765625" c="0.114532470703125" d="0.525115966796875" tx="37.65" ty="9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

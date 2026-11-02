@@ -1,0 +1,488 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/0非战斗动画/击飞" itemID="6970c067-00000288" symbolType="graphic" lastModified="1775834264" lastUniqueIdentifier="19">
+  <timeline>
+    <DOMTimeline name="击飞" currentFrame="118" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-79&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#2E97BC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="9" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="7" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="7" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="7" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="6" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="108" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#14EEAE" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _parent.击倒呐喊();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右手部分" color="#FF4FFF" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="右臂下" color="#FF4FFF" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/右臂下" symbolType="graphic" centerPoint3DX="-124.3" centerPoint3DY="-291.3" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.16571044921875" b="-0.3856201171875" c="0.385543823242188" d="0.166183471679688" tx="-70.35" ty="-324.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":9,"parent":8,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_16_27_388"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右手" color="#669900" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/右手" symbolType="graphic" centerPoint3DX="-87.25" centerPoint3DY="-262.75" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.344207763671875" b="-0.04608154296875" c="0.0463714599609375" d="0.346298217773438" tx="-2.6" ty="-319.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":10,"parent":9,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_16_29_102"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右臂上" color="#00FFFF" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/右臂上" symbolType="graphic" centerPoint3DX="-137.3" centerPoint3DY="-339.65" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.7965087890625" b="-1.83433532714844" c="1.83433532714844" d="0.7965087890625" tx="-116.95" ty="-365.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":8,"parent":"R1768929247311","rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_16_25_963"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="沙鹰右" color="#FF4F4F" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/沙鹰" symbolType="graphic" centerPoint3DX="-108.55" centerPoint3DY="-256" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.18878173828125" b="1.35205078125" c="-1.35748291015625" d="0.1954345703125" tx="-106.6" ty="-297.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":15,"parent":1,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_23_52_497"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体躯干" color="#009999" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="头部" color="#FF800A" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/头部" symbolType="graphic" centerPoint3DX="-90.3" centerPoint3DY="-420.05" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.93669128417969" b="-0.498825073242188" c="0.498825073242188" d="1.93669128417969" tx="-94.05" ty="-399.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":14,"parent":"R1768929247311","rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_20_36_150"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="腰带" color="#FF0000" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/腰带" symbolType="graphic" centerPoint3DX="-61.5" centerPoint3DY="-296.75" loop="single frame">
+                  <matrix>
+                    <Matrix a="2.01377868652344" b="-0.545379638671875" c="0.569869995117188" d="2.10417175292969" tx="-49" ty="-298.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":17,"parent":1,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_24_24_233"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="人物腰部" color="#FF800A" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/人物腰部" symbolType="graphic" centerPoint3DX="-55.85" centerPoint3DY="-285.65" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.9388427734375" b="-0.49078369140625" c="0.49078369140625" d="1.9388427734375" tx="-52.15" ty="-294.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":1,"parent":"R1768929247311","rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_14_7_10"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="人物身躯" color="#009999" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/人物身躯" symbolType="graphic" centerPoint3DX="-75.6" centerPoint3DY="-344.5" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.9376220703125" b="-0.495361328125" c="0.495361328125" d="1.9376220703125" tx="-60.55" ty="-294.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"R1768929247311","parent":"","rig":"R1768929247311","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右腿" color="#FF0000" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="右小腿" color="#009999" parentLayerIndex="12" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/1/右小腿" symbolType="graphic" centerPoint3DX="100.55" centerPoint3DY="-120.4" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.49969482421875" b="-0.0458984375" c="0.0572662353515625" d="0.767120361328125" tx="-32.5" ty="-176.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":6,"parent":5,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_14_55_436"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右大腿" color="#9933CC" parentLayerIndex="12" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/右大腿" symbolType="graphic" centerPoint3DX="-68.5" centerPoint3DY="-222.35" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.74591064453125" b="-1.16630554199219" c="1.16647338867188" d="1.74595642089844" tx="-81.6" ty="-268.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":5,"parent":1,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_14_53_747"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右边鞋子" color="#FF0000" parentLayerIndex="12" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/右边鞋子" symbolType="graphic" centerPoint3DX="-52.35" centerPoint3DY="-38.7" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.3922119140625" b="0.078277587890625" c="0.084503173828125" d="0.413818359375" tx="-35.55" ty="-68.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":7,"parent":6,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_14_57_216"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左腿" color="#669900" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="左小腿" color="#FF4FFF" parentLayerIndex="16" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/1/左小腿" symbolType="graphic" centerPoint3DX="166.65" centerPoint3DY="-182.25" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.464401245117188" b="-0.19097900390625" c="0.281402587890625" d="0.71673583984375" tx="14.85" ty="-194.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":3,"parent":2,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_14_37_200"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左大腿" color="#FF0000" parentLayerIndex="16" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/左大腿" symbolType="graphic" centerPoint3DX="-28.3" centerPoint3DY="-243.7" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.82940673828125" b="-1.0306396484375" c="1.03056335449219" d="1.82963562011719" tx="-40.5" ty="-280.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":2,"parent":1,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_14_34_438"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="沙鹰左手" color="#9933CC" parentLayerIndex="16" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/沙鹰" symbolType="graphic" centerPoint3DX="-29.65" centerPoint3DY="-277.8" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.63946533203125" b="1.20611572265625" c="-1.20895385742188" d="0.6475830078125" tx="-42.2" ty="-317.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":16,"parent":1,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_23_54_20"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左鞋子" color="#FF800A" parentLayerIndex="16" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/左鞋子" symbolType="graphic" centerPoint3DX="32.25" centerPoint3DY="-66.35" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.3865966796875" b="0.10247802734375" c="0.108627319335938" d="0.408248901367188" tx="42.95" ty="-94.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":4,"parent":3,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_14_38_945"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左手部分" color="#FF4F4F" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="左臂下" color="#FF4F4F" parentLayerIndex="21" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/左臂下" symbolType="graphic" centerPoint3DX="-6.8" centerPoint3DY="-301.25" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.534637451171875" b="-1.92718505859375" c="1.92718505859375" d="0.534637451171875" tx="-5.5" ty="-349.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":12,"parent":11,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_17_24_190"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左臂上" color="#00FFFF" parentLayerIndex="21" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/左臂上" symbolType="graphic" centerPoint3DX="-38.9" centerPoint3DY="-348.6" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.310043334960938" b="0.28387451171875" c="0.28436279296875" d="0.30975341796875" tx="-62.65" ty="-378.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":11,"parent":"R1768929247311","rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_17_3_6"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左手" color="#9933CC" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/左手" symbolType="graphic" centerPoint3DX="17.7" centerPoint3DY="-266.75" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.355880737304688" b="-0.10687255859375" c="0.10888671875" d="0.3624267578125" tx="60.85" ty="-357.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":13,"parent":12,"rig":"R1768929247311","version":6,"snapTo":"2026_0_20_17_17_26_8"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

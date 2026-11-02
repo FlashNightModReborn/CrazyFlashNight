@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/加农炮球文件/加农炮球旋转" itemID="69e1fe85-000001b9" symbolType="graphic" lastModified="1776438728">
+  <timeline>
+    <DOMTimeline name="加农炮球旋转" currentFrame="13">
+      <layers>
+        <DOMLayer name="加农炮球" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加农炮球文件/加农炮球" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="12.7" ty="25.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51.5" y="38.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加农炮球文件/加农炮球" symbolType="graphic" firstFrame="3" centerPoint3DX="64.2" centerPoint3DY="63.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.999984741210938" b="0.005523681640625" c="-0.005523681640625" d="-0.999984741210938" tx="115.9" ty="102.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51.5" y="38.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加农炮球文件/加农炮球" symbolType="graphic" firstFrame="3" centerPoint3DX="64.25" centerPoint3DY="63.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.998779296875" b="-0.0489959716796875" c="0.0489959716796875" d="0.998779296875" tx="10.95" ty="27.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51.45" y="38.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

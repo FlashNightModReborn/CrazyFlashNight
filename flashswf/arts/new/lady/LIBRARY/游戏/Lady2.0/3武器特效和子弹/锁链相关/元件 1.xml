@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/3武器特效和子弹/锁链相关/元件 1" itemID="69d711f8-00000527" lastModified="1775729803">
+  <timeline>
+    <DOMTimeline name="元件 1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.3114013671875" d="0.3114013671875" tx="252.15" ty="183.1"/>
+                        </matrix>
+                        <GradientEntry alpha="0.4" ratio="0.411764705882353"/>
+                        <GradientEntry alpha="0.756862745098039" ratio="0.615686274509804"/>
+                        <GradientEntry color="#8F8F8F" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!10085 3816[10066 5333 8576 6357!8576 6357[7085 7384 4996 7319!4996 7319[2907 7254 1445 6138!1445 6138[-19 5021 0 3506!0 3506[20 1990 1511 966!1511 966[3001 -61 5090 4!5090 4[7179 69 8643 1185!8643 1185[10105 2301 10085 3816"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

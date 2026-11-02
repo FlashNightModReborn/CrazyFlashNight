@@ -1,0 +1,126 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/量子爆弹爆炸文件/量子爆弹爆炸动画" itemID="69e5e677-000004b6" symbolType="graphic" lastModified="1780405023">
+  <timeline>
+    <DOMTimeline name="量子爆弹爆炸动画" currentFrame="20">
+      <layers>
+        <DOMLayer name="图层_5" color="#009999">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/爆炸1素材/爆炸1" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix tx="1" ty="96.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="247.45" y="189.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/爆炸2素材/爆炸2" symbolType="graphic" centerPoint3DX="224.15" centerPoint3DY="155.5" loop="play once">
+                  <matrix>
+                    <Matrix a="1.25997924804688" d="1.25997924804688" tx="54.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="145.35" y="225.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/Symbol 371" blendMode="add" centerPoint3DX="542.85" centerPoint3DY="324.85">
+                  <matrix>
+                    <Matrix a="0.447479248046875" d="0.388534545898438" tx="239.7" ty="281.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                    <GlowFilter blurX="28" blurY="28" strength="1.2"/>
+                    <AdjustColorFilter brightness="38" contrast="17" saturation="16" hue="180"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/Symbol 371" blendMode="add" centerPoint3DX="542.85" centerPoint3DY="324.85">
+                  <matrix>
+                    <Matrix a="0.447479248046875" d="0.388534545898438" tx="239.7" ty="281.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                    <GlowFilter blurX="28" blurY="28" strength="1.2"/>
+                    <AdjustColorFilter brightness="38" contrast="17" saturation="16" hue="180"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.7890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/Symbol 371" blendMode="add" centerPoint3DX="542.85" centerPoint3DY="324.85">
+                  <matrix>
+                    <Matrix a="0.447479248046875" d="0.388534545898438" tx="239.7" ty="281.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                    <GlowFilter blurX="28" blurY="28" strength="1.2"/>
+                    <AdjustColorFilter brightness="38" contrast="17" saturation="16" hue="180"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.359375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/Symbol 371" blendMode="add" centerPoint3DX="542.85" centerPoint3DY="324.85">
+                  <matrix>
+                    <Matrix a="0.447479248046875" d="0.388534545898438" tx="239.7" ty="281.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                    <GlowFilter blurX="28" blurY="28" strength="1.2"/>
+                    <AdjustColorFilter brightness="38" contrast="17" saturation="16" hue="180"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.1484375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,252 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/量子爆弹文件/量子爆弹" itemID="69e5e5a7-00000426" linkageExportForAS="true" linkageIdentifier="量子爆弹" lastModified="1785851766" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="量子爆弹">
+      <layers>
+        <DOMLayer name="Script Layer" color="#91B5D7" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;
+_root.gameworld._y += 5;
+var 获取发射对象 = _root.gameworld[this.发射者名];
+if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
+{
+   this.子弹威力 *= 1 + 获取发射对象.被动技能.轰炸专家.等级 * 0.03;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.gameworld._y -= 5;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.gameworld._y -= 15;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//_root.gameworld._y += 3;
+if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
+{
+   this.伤害类型 = "魔法";
+   this.魔法伤害属性 = "冲";
+   this.子弹威力 *= 0.8 + 获取发射对象.被动技能.轰炸专家.等级 * 0.05;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.gameworld._y -= 20;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//_root.gameworld._y -= 3;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效(["导弹飞行1.wav", "导弹飞行2.wav", "导弹飞行.wav"][random(3)]);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="21" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("量子爆弹.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#31E18C" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/无AS链接/Symbol 13" name="area" centerPoint3DX="-161.15" centerPoint3DY="-68">
+                  <matrix>
+                    <Matrix a="5.45463562011719" d="4.64646911621094" tx="-71.85" ty="-87"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.2" y="23.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-168.15" centerPoint3DY="-61">
+                  <matrix>
+                    <Matrix a="18.0725708007813" d="11.9742126464844" tx="-232.8" ty="-249.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.2" y="23.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/无AS链接/Symbol 13" name="area" centerPoint3DX="-168.15" centerPoint3DY="-72">
+                  <matrix>
+                    <Matrix a="13.7341003417969" d="8.728515625" tx="-179.75" ty="-185.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.2" y="23.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/无AS链接/Symbol 13" name="area" centerPoint3DX="-160.35" centerPoint3DY="-93">
+                  <matrix>
+                    <Matrix a="13.7099609375" d="13.8797607421875" tx="-200.65" ty="-325.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.2" y="23.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-196.4" centerPoint3DY="-310.35">
+                  <matrix>
+                    <Matrix a="15.3722839355469" d="14.0142517089844" tx="-208.9" ty="-338"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="23.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="量子" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹文件/量子爆弹动画" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-686.6" ty="-479.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="295.8" y="262.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹文件/量子爆弹动画" symbolType="graphic" firstFrame="6" loop="play once">
+                  <matrix>
+                    <Matrix tx="-496.95" ty="-479.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="295.8" y="262.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹文件/量子爆弹动画" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix tx="-496.95" ty="-479.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="295.8" y="262.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹文件/量子爆弹动画" symbolType="graphic" firstFrame="10" loop="play once">
+                  <matrix>
+                    <Matrix tx="-496.95" ty="-479.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="295.8" y="262.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/量子爆弹爆炸文件/量子爆弹爆炸动画" symbolType="graphic" centerPoint3DX="5.35" centerPoint3DY="-137" loop="play once">
+                  <matrix>
+                    <Matrix a="1.3499755859375" d="1.3499755859375" tx="-329.4" ty="-383.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="236.5" y="294.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,272 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链选择测试" itemID="69d60ce9-0000037b" symbolType="graphic" lastModified="1775635708" lastUniqueIdentifier="31">
+  <timeline>
+    <DOMTimeline name="锁链选择测试" currentFrame="11">
+      <layers>
+        <DOMLayer name="MergedLayer_1" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/三飞镖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.85064697265625" b="0.52569580078125" c="-1.49462890625" d="0.2518310546875" tx="-819.7" ty="-1051.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="168.05" y="199.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/三飞镖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.85064697265625" b="0.52569580078125" c="-1.49462890625" d="0.2518310546875" tx="2738.4" ty="-1212.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="168.05" y="199.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="飞镖" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链飞镖" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.91180419921875" b="0.41058349609375" c="-1.84281921386719" d="0.266891479492188" tx="-1076.2" ty="-513.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="198.2" y="70.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链飞镖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.91180419921875" b="0.41058349609375" c="-1.84281921386719" d="0.266891479492188" tx="2495.95" ty="-559.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="198.2" y="70.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="锁链刃" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="3AB47F01-6443-0A40-B534-F8FD520672CA" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0130462646484375" b="-0.211288452148438" c="0.211288452148438" d="-0.0130462646484375" tx="631.45" ty="3.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.4" y="12.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="44CCCA2D-B2C9-C64D-BF74-F6FBADD689FB" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0298004150390625" b="-0.2093505859375" c="0.2093505859375" d="0.0298004150390625" tx="604.6" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.75" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="45007FDB-1DB0-0E47-A14B-29553C5F2DA0" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0032501220703125" b="-0.2115478515625" c="0.2115478515625" d="0.0032501220703125" tx="580" ty="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="17.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="8F329036-A9C9-F24F-A4EC-4C6882D9452C" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0017852783203125" b="-0.21173095703125" c="0.21173095703125" d="0.0017852783203125" tx="554.65" ty="1.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.85" y="15.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="966E1EAB-EDBC-3340-A51C-4FF2CDECB0B0" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0079498291015625" b="-0.211898803710938" c="0.211898803710938" d="0.0079498291015625" tx="529.05" ty="1.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.2" y="15.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="2C1D9601-187B-D54A-9C5E-15033A0EA225" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.015533447265625" b="-0.211456298828125" c="0.211456298828125" d="0.015533447265625" tx="503.65" ty="-0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.3" y="20.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="AE502FB8-D560-2640-B83E-68063C58A562" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.01922607421875" b="-0.210861206054688" c="0.210861206054688" d="0.01922607421875" tx="479.5" ty="-1.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2" y="24.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="34217F74-5758-A449-94C2-93285C4A2F45" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0265655517578125" b="-0.21002197265625" c="0.21002197265625" d="0.0265655517578125" tx="454.7" ty="-3.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.9" y="20.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="D4DE14CC-B3C8-F843-9273-90C55D5582CE" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0101776123046875" b="-0.21160888671875" c="0.21160888671875" d="-0.0101776123046875" tx="431.75" ty="-1.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.85" y="21.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="54BBCB5F-2F8D-564F-B07B-3B227263AB3D" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.020904541015625" b="-0.21063232421875" c="0.21063232421875" d="-0.020904541015625" tx="408.15" ty="1.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.9" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="FE5D7536-2010-F04E-BE07-241B278C3784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.00726318359375" b="-0.211349487304688" c="0.211349487304688" d="-0.00726318359375" tx="381.65" ty="3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.8" y="13.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="8263EEA6-1FE0-1F45-B267-760FF44D30A4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.009552001953125" b="-0.211349487304688" c="0.211349487304688" d="-0.009552001953125" tx="357.25" ty="5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.15" y="12.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="231A4F0A-A912-2942-A482-A8802FC2DDFB" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0004119873046875" b="-0.21173095703125" c="0.21173095703125" d="-0.0004119873046875" tx="331.85" ty="6.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="24.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="3C57F614-E2B7-9248-8600-63313778CC9F" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0032806396484375" b="-0.212020874023438" c="0.212020874023438" d="-0.0032806396484375" tx="306.35" ty="7.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.7" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="0569F7F3-B374-6947-A623-3660E9311B4B" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0104827880859375" b="-0.211761474609375" c="0.211761474609375" d="-0.0104827880859375" tx="280.95" ty="8.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.85" y="20.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="298925BA-85A3-2044-BB71-5EF992A20F9D" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.022369384765625" b="-0.21051025390625" c="0.21051025390625" d="0.022369384765625" tx="256.55" ty="6.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="15.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="8F56A35F-9159-6541-BDBC-FDAD39DEB8AC" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.020751953125" b="-0.210678100585938" c="0.210678100585938" d="0.020751953125" tx="231.75" ty="5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.95" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="16FAFB2B-E6DF-844E-933B-751408A5285A" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0205535888671875" b="-0.210861206054688" c="0.210861206054688" d="-0.0205535888671875" tx="208.75" ty="8.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.95" y="10.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="0A1FF005-2285-8846-AF18-C17592B1D6F0" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0244140625" b="-0.21002197265625" c="0.21002197265625" d="0.0244140625" tx="182.85" ty="6.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="17.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="B369FE9A-840A-BB46-AD5E-2863092B7D29" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.01025390625" b="-0.211288452148438" c="0.211288452148438" d="0.01025390625" tx="158.3" ty="7.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.1" y="15.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="3C902A46-9C83-2045-AB7C-0C0ABB8DB1CB" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.018646240234375" b="-0.210922241210938" c="0.210922241210938" d="-0.018646240234375" tx="132.75" ty="10.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.25" y="12.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="69CECF6C-C814-614B-98D2-CB13F26A4427" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.002685546875" b="-0.212005615234375" c="0.212005615234375" d="0.002685546875" tx="107.1" ty="11"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.7" y="23.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="55353DDA-7441-004F-97A6-6774012C69D5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.009857177734375" b="-0.211776733398438" c="0.211776733398438" d="0.009857177734375" tx="81.7" ty="9.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.9" y="17.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="5483BDAE-2416-B44C-9053-BBA3DC3D6264" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0023956298828125" b="-0.211700439453125" c="0.211700439453125" d="0.0023956298828125" tx="57.45" ty="10.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="16.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/3武器特效和子弹/锁链相关/锁链" referenceID="F288945F-7D24-C24D-9967-65F53EA2F88C" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.01898193359375" b="-0.210845947265625" c="0.210845947265625" d="0.01898193359375" tx="32.7" ty="9.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.45" y="17.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

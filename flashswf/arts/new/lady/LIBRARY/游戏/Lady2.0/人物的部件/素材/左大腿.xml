@@ -1,0 +1,170 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/素材/左大腿" itemID="696b0524-000004ae" symbolType="graphic" lastModified="1768900549">
+  <timeline>
+    <DOMTimeline name="左大腿">
+      <layers>
+        <DOMLayer name="MagnetTargets" color="#FF0000" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" layerType="guide">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Magnet Target" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="2.85" ty="48.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="MT" v='{"id":"2026_0_20_17_14_37_200","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CenterMarker" color="#0000FF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/EDAPT objects/Center Marker" locked="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="裤子" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9993896484375" b="0.03448486328125" c="-0.03448486328125" d="0.9993896484375" tx="-12.2" ty="-16.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.45" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="-13.05" ty="-15.7"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!19 484[185 543 368 510!368 510[451 495 533 461"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="高光" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.005889892578125" b="-0.00030517578125" c="0.0101470947265625" d="0.167449951171875" tx="2.45" ty="1.95"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.219607843137255" ratio="0"/>
+                        <GradientEntry color="#2E2E2E" alpha="0.0588235294117647" ratio="0.294117647058824"/>
+                        <GradientEntry color="#272526" alpha="0" ratio="0.670588235294118"/>
+                        <GradientEntry color="#171617" alpha="0" ratio="0.92156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!-219 89[-235 266 -72 983!-72 983[53 1156 189 939!189 939[279 504 221 92"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!221 92[-4 -111 -219 89"/>
+                    <Edge cubics="!189 939(;249,649 259,367 221,92q189 939Q279 504q221 92);"/>
+                    <Edge cubics="!-219 89(;-230,208 -181,505 -72,983q-219 89Q-235 266q-72 983);"/>
+                    <Edge cubics="!-72 983(;13,1098 98,1083 189,939q-72 983Q53 1156q189 939);"/>
+                    <Edge cubics="!-219 89(;-76,-43 71,-44 221,92q-219 89Q-4 -111q221 92);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="丝袜" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.010498046875" b="-0.0008544921875" c="0.00274658203125" d="0.03289794921875" tx="2.5" ty="17.9"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#483D3B" ratio="0"/>
+                        <GradientEntry color="#392D2F" ratio="0.294117647058824"/>
+                        <GradientEntry color="#272526" ratio="0.670588235294118"/>
+                        <GradientEntry color="#171617" ratio="0.92156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.2">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.3">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!189 939[279 504 221 92"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!221 92[-4 -111 -219 89"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!-219 89[-235 266 -72 983"/>
+                    <Edge fillStyle0="1" edges="!-72 983[174 1116 189 939"/>
+                    <Edge cubics="!189 939(;249,649 259,367 221,92q189 939Q279 504q221 92);"/>
+                    <Edge cubics="!-219 89(;-230,208 -181,505 -72,983q-219 89Q-235 266q-72 983);"/>
+                    <Edge cubics="!-219 89(;-76,-43 71,-44 221,92q-219 89Q-4 -111q221 92);"/>
+                    <Edge cubics="!-72 983(;92,1072 179,1057 189,939q-72 983Q174 1116q189 939);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/人物的部件/素材/基础元件/头" itemID="65ef4654-00001554" lastModified="1772084764" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="头">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/头1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.241943359375" b="-0.037933349609375" c="-0.0364837646484375" d="0.23199462890625" tx="65.75" ty="3.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="115.85" y="136.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/人物的部件/素材/基础元件/眼镜" centerPoint3DX="33.2" centerPoint3DY="27.7">
+                  <matrix>
+                    <Matrix a="0.45855712890625" b="0.11578369140625" c="-0.10931396484375" d="0.4326171875" tx="20.05" ty="19.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32" y="9.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

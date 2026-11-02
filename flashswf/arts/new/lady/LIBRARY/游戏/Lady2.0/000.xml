@@ -1,0 +1,487 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/000" itemID="69da180b-00000373" lastModified="1775900696" lastUniqueIdentifier="44">
+  <timeline>
+    <DOMTimeline name="000">
+      <layers>
+        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/0非战斗动画/待机动画" selected="true" centerPoint3DX="1.85" centerPoint3DY="-68.05">
+                  <matrix>
+                    <Matrix a="0.329986572265625" d="0.329986572265625" tx="2.95" ty="9.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.15" y="-236.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/0非战斗动画/走路" centerPoint3DX="3.55" centerPoint3DY="-68.05">
+                  <matrix>
+                    <Matrix a="0.329986572265625" d="0.329986572265625" tx="5.55" ty="9.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-239.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/0非战斗动画/奔跑" centerPoint3DX="10.45" centerPoint3DY="-67.4">
+                  <matrix>
+                    <Matrix a="0.329986572265625" d="0.329986572265625" tx="3.3" ty="9.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-13.95" y="-242.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/总技能" centerPoint3DX="1.85" centerPoint3DY="-68.05">
+                  <matrix>
+                    <Matrix a="0.329986572265625" d="0.329986572265625" tx="2.9" ty="9.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.2" y="-235.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.刚体 = true;
+	_parent.免疫击退 = true;
+	_parent.锁定方向 = true;
+}
+onClipEvent (unload) {
+	_parent.刚体 = false;
+	_parent.免疫击退 = false;
+	_parent.锁定方向 = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/4逐帧/近战动画逐帧" centerPoint3DX="-21" centerPoint3DY="-72.55">
+                  <matrix>
+                    <Matrix a="0.329986572265625" d="0.329986572265625" tx="2.7" ty="9.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="263.05" y="-253.35"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.刚体 = true;
+	_parent.免疫击退 = true;
+	_parent.锁定方向 = true;
+}
+onClipEvent (unload) {
+	_parent.刚体 = false;
+	_parent.免疫击退 = false;
+	_parent.锁定方向 = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/0非战斗动画/待机动画" centerPoint3DX="1.85" centerPoint3DY="-68.05">
+                  <matrix>
+                    <Matrix a="0.329986572265625" d="0.329986572265625" tx="2.95" ty="9.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.15" y="-236.7"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+   躲闪 = true;
+}
+onClipEvent(unload){
+   躲闪 = false;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/0非战斗动画/收到打击" centerPoint3DX="-1.45" centerPoint3DY="-69.9">
+                  <matrix>
+                    <Matrix a="0.329986572265625" d="0.329986572265625" tx="9.85" ty="12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-34.55" y="-248.65"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(2));
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/0非战斗动画/击飞" centerPoint3DX="-11.35" centerPoint3DY="-66.75">
+                  <matrix>
+                    <Matrix a="0.329986572265625" d="0.329986572265625" tx="3.7" ty="15.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-45.6" y="-249.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/4逐帧/倒地起身反击0" centerPoint3DX="-11.35" centerPoint3DY="-68.9">
+                  <matrix>
+                    <Matrix a="0.329986572265625" d="0.329986572265625" tx="3.7" ty="13.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-143.5" y="-235.9"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}
+onClipEvent (load) {
+	_parent.刚体 = true;
+	_parent.免疫击退 = true;
+	_parent.锁定方向 = true;
+}
+onClipEvent (unload) {
+	_parent.刚体 = false;
+	_parent.免疫击退 = false;
+	_parent.锁定方向 = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/0非战斗动画/死亡" centerPoint3DX="13.5" centerPoint3DY="-66.05">
+                  <matrix>
+                    <Matrix a="0.329986572265625" d="0.329986572265625" tx="6.6" ty="10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-73.5" y="-192.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(1));
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/底部影子" centerPoint3DX="84.4" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix a="0.348358154296875" d="0.130126953125" tx="-2.25" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/底部影子" centerPoint3DX="84.4" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix a="0.348358154296875" d="0.130126953125" tx="-2.25" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/底部影子" centerPoint3DX="84.4" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix a="0.348358154296875" d="0.130126953125" tx="-2.25" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/底部影子" centerPoint3DX="84.4" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix a="0.348358154296875" d="0.130126953125" tx="-2.25" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/底部影子" centerPoint3DX="84.4" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix a="0.348358154296875" d="0.130126953125" tx="-2.25" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/底部影子" centerPoint3DX="84.4" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix a="0.348358154296875" d="0.130126953125" tx="-2.25" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/底部影子" centerPoint3DX="84.4" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix a="0.348358154296875" d="0.130126953125" tx="-2.25" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/底部影子" centerPoint3DX="84.4" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix a="0.348358154296875" d="0.130126953125" tx="-2.25" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="游戏/Lady2.0/底部影子" centerPoint3DX="84.4" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix a="0.348358154296875" d="0.130126953125" tx="-2.25" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

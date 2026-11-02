@@ -1,0 +1,146 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/高压爆炸文件/高压爆炸" itemID="69e33ad3-00000272" linkageExportForAS="true" linkageIdentifier="高压爆炸" lastModified="1781023243">
+  <timeline>
+    <DOMTimeline name="高压爆炸" currentFrame="2">
+      <layers>
+        <DOMLayer name="Script Layer" color="#83CD50" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;
+_root.gameworld._y += 5;
+var 获取发射对象 = _root.gameworld[this.发射者名];
+if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
+{
+   this.子弹威力 *= 1 + 获取发射对象.被动技能.轰炸专家.等级 * 0.03;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.gameworld._y -= 5;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//_root.gameworld._y += 3;
+if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
+{
+   this.伤害类型 = "魔法";
+   this.魔法伤害属性 = "冲";
+   this.子弹威力 *= 0.8 + 获取发射对象.被动技能.轰炸专家.等级 * 0.05;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//_root.gameworld._y -= 3;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#4FFFFF" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("高压爆炸.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#31E18C" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/高压爆炸文件/无AS链接/Symbol 13" name="area" centerPoint3DX="-49.9" centerPoint3DY="-64.4">
+                  <matrix>
+                    <Matrix a="7.7421875" d="5.63005065917969" tx="-107.05" ty="-86.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="24.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/高压爆炸文件/无AS链接/Symbol 13" name="area" centerPoint3DX="-84.25" centerPoint3DY="-144.8">
+                  <matrix>
+                    <Matrix a="12.3095092773438" d="8.99412536621094" tx="-174.55" ty="-173.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.4" y="24.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/高压爆炸文件/无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-176.1" centerPoint3DY="-356.65">
+                  <matrix>
+                    <Matrix a="15.4659576416016" d="10.3601531982422" tx="-189.35" ty="-224.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.55" y="23.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="高压爆炸动画" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/高压爆炸文件/高压爆炸动画" symbolType="graphic" centerPoint3DX="12.85" centerPoint3DY="-84.3" loop="play once">
+                  <matrix>
+                    <Matrix a="1.02371215820313" d="1.04998779296875" tx="-5.4" ty="29.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.15" y="9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

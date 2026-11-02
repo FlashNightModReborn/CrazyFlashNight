@@ -291,6 +291,7 @@ _root.联弹系统.爆炸联弹消失 = function(clip:MovieClip):Void {
                 爆炸._y = point.y;
                 // 纳入深度管理器，正确参与 Y 排序
                 DepthManager.instance.updateDepth(爆炸, point.y);
+                org.flashNight.arki.render.EquipmentLightBridge.registerEffect(爆炸, "联弹爆炸");
             }
             ChainUnitManager.removeGroup(group);
         }

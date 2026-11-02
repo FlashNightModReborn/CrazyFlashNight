@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/fm直射刺弹素材/fm直射刺弹素材0/元件4 " itemID="6a71b986-000000a4" symbolType="graphic" lastModified="1785837958">
+  <timeline>
+    <DOMTimeline name="元件4 ">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fm直射刺弹素材/fm直射刺弹素材0/小" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.70697021484375" d="0.457366943359375" tx="2.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.7" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效文件存放/fm直射刺弹素材/fm直射刺弹素材0/小壳" symbolType="graphic" centerPoint3DX="3.45" centerPoint3DY="3.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.15997314453125" d="0.15997314453125" tx="2" ty="1.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.05" y="8.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

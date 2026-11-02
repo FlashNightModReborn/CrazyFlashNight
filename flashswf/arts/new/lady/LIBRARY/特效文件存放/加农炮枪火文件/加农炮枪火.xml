@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效文件存放/加农炮枪火文件/加农炮枪火" itemID="69e4aeea-000002e0" linkageExportForAS="true" linkageIdentifier="加农炮枪火" lastModified="1776594712" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="加农炮枪火" currentFrame="8">
+      <layers>
+        <DOMLayer name="Script Layer" color="#A4F411">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 6" color="#808080" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效文件存放/加农炮枪火文件/加农炮枪火动画" symbolType="graphic" centerPoint3DX="48.5" centerPoint3DY="-4.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.899993896484375" d="0.899993896484375" tx="-20.05" ty="-82.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.15" y="86"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

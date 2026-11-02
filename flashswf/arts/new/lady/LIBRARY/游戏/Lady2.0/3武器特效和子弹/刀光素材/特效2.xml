@@ -1,0 +1,41 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/3武器特效和子弹/刀光素材/特效2" itemID="69a3a988-00000493" lastModified="1772335658">
+  <timeline>
+    <DOMTimeline name="特效2">
+      <layers>
+        <DOMLayer name="Layer_1" color="#E77261" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.145858764648438" b="0.0310516357421875" c="0.0025634765625" d="-0.0459136962890625" tx="-61.3" ty="-49.15"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.988235294117647"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-405 -980[679 -857 1782 -99!1782 -99[#688.1 #95.E8 1595.5 313.5!1595.5 313.5[#5EE.F #1DD.18 1280 640!1280 640[-406 -672 -1699 -460!-1699 -460[-2938 -259 -3538 287!-3538 287[-2520 -919 -988 -999!-988 -999[-895 -1005 -798 -1004!-798 -1004
+[-605 -1004 -405 -980"/>
+                    <Edge cubics="!-988 -999(;-926,-1003 -863,-1005 -798,-1004q-988 -999Q-895 -1005q-798 -1004);"/>
+                    <Edge cubics="!-798 -1004(;-669,-1004 -538,-996 -405,-980q-798 -1004Q-605 -1004q-405 -980);"/>
+                    <Edge cubics="!-405 -980(;318,-898 1047,-604 1782,-99q-405 -980Q679 -857q1782 -99);"/>
+                    <Edge cubics="!-3538 287(;-2859,-517 -2009,-946 -988,-999q-3538 287Q-2520 -919q-988 -999);"/>
+                    <Edge cubics="!-1699 -460(;-2525,-326 -3138,-77 -3538,287q-1699 -460Q-2938 -259q-3538 287);"/>
+                    <Edge cubics="!1596 314(;1545,423 1439,531 1280,640q1596 314Q1519 477q1280 640);"/>
+                    <Edge cubics="!1782 -99(;1709,67 1647,205 1596,314q1782 -99Q1672 150q1596 314);"/>
+                    <Edge cubics="!1280 640(;156,-235 -837,-601 -1699,-460q1280 640Q-406 -672q-1699 -460);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
