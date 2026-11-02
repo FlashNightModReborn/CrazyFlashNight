@@ -340,7 +340,7 @@
             card.setAttribute('aria-label', item.displayName);
             card.setAttribute('data-name', item.name);
             if (selectedItem && selectedItem.name === item.name) card.classList.add('selected');
-            var url = window.Icons ? (Icons.resolveStatic(item.icon) || Icons.resolve(item.icon)) : null;
+            var url = (window.Icons && Icons.resolveStatic) ? Icons.resolveStatic(item.icon) : null;
             if (url) {
                 var image = document.createElement('img');
                 image.alt = ''; image.src = url;

@@ -146,16 +146,9 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         this._rewardAuthority = null;
         this._itemUseHolds = 0;
         this._itemUseReadyWaiters = [];
-        this._tuningTransport = {
-            send:options.send,
-            timeoutMs:options.timeoutMs,
-            sessionNonce:options.sessionNonce
-        };
+        this._tuningTransport = {send:options.send, timeoutMs:options.timeoutMs, sessionNonce:options.sessionNonce};
         if (global.Icons && typeof global.Icons.load === 'function') {
-            global.Icons.load(function() {
-                if (!self._view || !self._snapshotPayload) return;
-                self._view.setSnapshot(Projection.viewSnapshot(self._snapshotPayload));
-            });
+            global.Icons.load(function() { if (self._view && self._snapshotPayload) self._view.setSnapshot(Projection.viewSnapshot(self._snapshotPayload)); });
         }
     }
 
