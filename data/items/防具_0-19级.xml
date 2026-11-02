@@ -8457,6 +8457,46 @@
     </balance>
   </item>
   <item>
+    <name>jk套装裙子</name>
+    <displayname>jk套装裙子</displayname>
+    <icon>jk套装裙子</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <price>145600</price>
+    <description>校园里常见的裙子。</description>
+    <data>
+      <level>35</level>
+      <weight>1</weight>
+      <dressup>变装-jk套装</dressup>
+      <hp>100</hp>
+      <mp>100</mp>
+      <damage>60</damage>
+      <defence>255</defence>
+    </data>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <balanceMode>exception</balanceMode>
+      <exceptionCode>legacy-off-formula</exceptionCode>
+      <currentScore>890</currentScore>
+      <balanceScore>710</balanceScore>
+      <weightedScore>710</weightedScore>
+      <recommendedGoldPrice>91000</recommendedGoldPrice>
+      <recommendedKPointPrice>3150</recommendedKPointPrice>
+      <marketPrice>145600</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:a986e71a</inputDigest>
+      <sourceDigest>sha256:7c7c4e4106a6d41159315377cab7530b307beaf6bbb11c0d16dc21cf5fbc2a3c</sourceDigest>
+      <auditRef>armor:武装jk套装裙子</auditRef>
+    </balance>
+  </item>
+  <item>
     <name>黑铁死士鞋</name>
     <displayname>黑铁死士鞋</displayname>
     <icon>黑铁死士鞋</icon>
