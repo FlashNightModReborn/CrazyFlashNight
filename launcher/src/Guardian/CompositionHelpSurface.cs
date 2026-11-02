@@ -34,6 +34,7 @@ namespace CF7Launcher.Guardian
         internal bool DelegateCloseToAuthority;
         internal bool AcceptsPanelRequests;
         internal bool AllowNativeDrag;
+        internal bool TransparentSurface;
 
         internal static readonly CompositionPanelProfile Help = new CompositionPanelProfile
         {
@@ -62,14 +63,15 @@ namespace CF7Launcher.Guardian
         {
             PanelName = "modifier",
             HostName = "cf7-modifier.local",
-            PageUrl = "https://cf7-modifier.local/composition-modifier.html",
+            PageUrl = "https://cf7-modifier.local/composition-modifier.html?v=20261102b",
             ReadyMessageType = "composition_modifier_ready",
             WindowTitle = "CF7 Modifier",
             LogTag = "[ModifierSurface]",
             AcceptsPanelResponses = true,
             DelegateCloseToAuthority = true,
             AcceptsPanelRequests = true,
-            AllowNativeDrag = true
+            AllowNativeDrag = true,
+            TransparentSurface = true
         };
     }
 
@@ -93,6 +95,7 @@ namespace CF7Launcher.Guardian
         private readonly string _webRoot;
         private readonly string _profileRoot;
         private readonly bool _transition;
+        private bool AlphaSurface => _transition || (_profile != null && _profile.TransparentSurface);
         private readonly SceneTransitionBackingForm? _transitionBacking;
         private readonly SceneTransitionPresentationPolicy _presentationPolicy = SceneTransitionPresentationPolicy.Interactive;
         private bool _backgroundTransition;
@@ -152,13 +155,13 @@ namespace CF7Launcher.Guardian
             get {
                 var value = base.CreateParams;
                 // DirectComposition supplies the complete alpha surface, including fade edges.
-                if (_transition) value.ExStyle |= 0x00200000 | 0x80; // NOREDIRECTIONBITMAP | TOOLWINDOW
+                if (AlphaSurface) value.ExStyle |= 0x00200000 | 0x80; // NOREDIRECTIONBITMAP | TOOLWINDOW
                 if (_presentationPolicy.NonActivating) value.ExStyle |= 0x08000000; // NOACTIVATE
                 return value;
             }
         }
         protected override void OnPaintBackground(PaintEventArgs e) {
-            if (!_transition) base.OnPaintBackground(e);
+            if (!AlphaSurface) base.OnPaintBackground(e);
         }
 
         internal bool Ready { get { return _ready && !_disposed; } }
@@ -665,10 +668,11 @@ namespace CF7Launcher.Guardian
                 long packed = m.LParam.ToInt64();
                 int x = (short)(packed & 0xFFFF);
                 int y = (short)((packed >> 16) & 0xFFFF);
-                // 原修改器只在左上拖拽条上抓取；页签与关闭按钮保持可点击。
-                int dragH = (int)(ClientSize.Height * (30.0 / 400.0));
-                int dragW = (int)(ClientSize.Width * (80.0 / 550.0));
-                if (x >= 0 && x < dragW && y >= 0 && y < dragH)
+                // 原修改器在顶部标题栏抓取；左侧页签与右上关闭按钮保持可点击。
+                int dragH = (int)(ClientSize.Height * (40.0 / 400.0));
+                int dragLeft = (int)(ClientSize.Width * (169.0 / 843.0));
+                int dragRight = (int)(ClientSize.Width * (610.0 / 843.0));
+                if (x >= dragLeft && x < dragRight && y >= 0 && y < dragH)
                 {
                     ReleaseCapture();
                     SendMessage(Handle, 0x00A1, new IntPtr(2), IntPtr.Zero); // WM_NCLBUTTONDOWN / HTCAPTION

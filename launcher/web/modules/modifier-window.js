@@ -8,9 +8,18 @@
     var selectedItem = null, selectedUnit = null;
     var itemQuery = '', itemPage = 1, itemTotal = 0, itemPageSize = 64, itemLoading = false;
     var unitQuery = '', unitPage = 1, unitTotal = 0, unitPageSize = 8, unitLoading = false;
-    var closeAfterWrite = false, opSequence = 0, armTimer = 0, readySent = false;
+    var closeAfterWrite = false, opSequence = 0, armTimer = 0, readySent = false, tabAudio = null, itemTip = null, unitFrames = {};
+    var unitFrameCache = {}, unitFrameLoading = {}, tooltipCache = {}, tooltipLoading = {}, lastTipEvent = null, lastTipName = '';
 
     function byId(id) { return root ? root.querySelector('#mw-' + id) : null; }
+    function playTabSound() {
+        try {
+            if (!tabAudio) { tabAudio = new Audio('assets/modifier/tab-click.wav?v=20261102b'); tabAudio.preload = 'auto'; tabAudio.volume = 0.9; }
+            tabAudio.currentTime = 0;
+            var played = tabAudio.play();
+            if (played && played.catch) played.catch(function() {});
+        } catch (error) { }
+    }
     function text(id, value) { var node = byId(id); if (node) node.textContent = value; }
     function setStatus(value, tone) {
         var node = byId('message');
@@ -18,61 +27,75 @@
     }
 
     function skeleton() {
-        return '<section class="mw-window" role="dialog" aria-label="修改器">'
-            + '<header class="mw-titlebar">'
-            + '<span class="mw-grip" aria-hidden="true"></span><span class="mw-title">修改器</span>'
+        return '<section class="mw-window" data-tab="economy" role="dialog" aria-label="修改器">'
             + '<nav class="mw-tabs" role="tablist" aria-label="修改器页面">'
-            + '<button type="button" class="mw-tab" role="tab" data-tab="economy" aria-selected="true">经济</button>'
-            + '<button type="button" class="mw-tab" role="tab" data-tab="items" aria-selected="false">物品</button>'
-            + '<button type="button" class="mw-tab" role="tab" data-tab="level" aria-selected="false">关卡</button>'
-            + '<button type="button" class="mw-tab" role="tab" data-tab="units" aria-selected="false">阵营</button>'
+            + '<button type="button" class="mw-tab" role="tab" data-tab="economy" aria-selected="true"><span class="mw-sr">经济</span></button>'
+            + '<button type="button" class="mw-tab" role="tab" data-tab="items" aria-selected="false"><span class="mw-sr">物品</span></button>'
+            + '<button type="button" class="mw-tab" role="tab" data-tab="level" aria-selected="false"><span class="mw-sr">关卡</span></button>'
+            + '<button type="button" class="mw-tab" role="tab" data-tab="units" aria-selected="false"><span class="mw-sr">兵种</span></button>'
             + '</nav>'
-            + '<button type="button" class="mw-close" id="mw-close" aria-label="关闭修改器">×</button>'
-            + '</header>'
-            + '<main class="mw-body">'
+            + '<button type="button" class="mw-close" id="mw-close" aria-label="关闭修改器"></button>'
             + '<section class="mw-view" data-view="economy" role="tabpanel">'
-            + '<div class="mw-economy">'
-            + '<div class="mw-row"><span class="mw-label">金币</span><strong id="mw-money">—</strong>'
-            + '<button type="button" class="mw-button" data-write data-economy="grantMoney">+100000</button></div>'
-            + '<div class="mw-row"><span class="mw-label">虚拟币</span><strong id="mw-kcoin">—</strong>'
-            + '<button type="button" class="mw-button" data-write data-economy="grantKCoin">+100000</button></div>'
-            + '<p class="mw-hint">写操作沿用 AS2 现有 dirty/保存语义。</p>'
-            + '<button type="button" class="mw-button danger" data-write data-level-action="test_space">前往测试空间</button>'
-            + '</div></section>'
+            + '<button type="button" class="mw-hit mw-eco-money" data-write data-economy="grantMoney" aria-label="+10万金币"></button>'
+            + '<button type="button" class="mw-hit mw-eco-kcoin" data-write data-economy="grantKCoin" aria-label="+10万K点"></button>'
+            + '<button type="button" class="mw-hit mw-eco-map" data-write data-level-action="test_space" aria-label="测试用地图"></button>'
+            + '<span class="mw-aux" aria-hidden="true"><span id="mw-money"></span><span id="mw-kcoin"></span></span>'
+            + '</section>'
             + '<section class="mw-view" data-view="items" role="tabpanel" hidden>'
-            + '<div class="mw-toolbar"><input id="mw-item-query" type="search" maxlength="64" autocomplete="off" placeholder="id / 名称 / 类型 / 用途">'
-            + '<button type="button" class="mw-button" id="mw-item-search">搜索</button>'
-            + '<button type="button" class="mw-button quiet" id="mw-item-clear">清空</button>'
-            + '<span class="mw-page-state" id="mw-item-page-state">—</span></div>'
-            + '<div class="mw-split"><div class="mw-grid-wrap"><div class="mw-item-grid" id="mw-item-grid"></div>'
-            + '<div class="mw-page-row"><button type="button" class="mw-button" id="mw-item-prev">上一页</button>'
-            + '<button type="button" class="mw-button" id="mw-item-next">下一页</button></div></div>'
-            + '<aside class="mw-detail" id="mw-item-detail"><p class="mw-empty">选择物品</p></aside></div></section>'
+            + '<button type="button" class="mw-hit mw-item-first" id="mw-item-first" aria-label="第一页"></button>'
+            + '<button type="button" class="mw-hit mw-item-prev" id="mw-item-prev" aria-label="上一页"></button>'
+            + '<button type="button" class="mw-hit mw-item-next" id="mw-item-next" aria-label="下一页"></button>'
+            + '<button type="button" class="mw-hit mw-item-last" id="mw-item-last" aria-label="最后一页"></button>'
+            + '<div class="mw-item-grid" id="mw-item-grid"></div>'
+            + '<div class="mw-item-tip" id="mw-item-tip" hidden></div>'
+            + '<input class="mw-input mw-item-query" id="mw-item-query" type="search" maxlength="64" autocomplete="off">'
+            + '<input class="mw-input mw-item-quantity" id="mw-item-quantity" type="number" min="1" max="999999999" step="1" value="1">'
+            + '<button type="button" class="mw-hit mw-item-minus" id="mw-item-minus" aria-label="减少数量"></button>'
+            + '<button type="button" class="mw-hit mw-item-plus" id="mw-item-plus" aria-label="增加数量"></button>'
+            + '<button type="button" class="mw-hit mw-item-produce" id="mw-item-produce" data-write data-requires="item" aria-label="生产"></button>'
+            + '<button type="button" class="mw-hit mw-item-search" id="mw-item-search" aria-label="搜索"></button>'
+            + '<span class="mw-page-state mw-item-page-state" id="mw-item-page-state"></span>'
+            + '</section>'
             + '<section class="mw-view" data-view="level" role="tabpanel" hidden>'
-            + '<div class="mw-level"><div class="mw-button-grid">'
-            + '<button type="button" class="mw-button" data-write data-level-action="unlock_stages">解锁关卡</button>'
-            + '<button type="button" class="mw-button" data-write data-level-action="kill_all">敌人全死</button>'
-            + '<button type="button" class="mw-button" data-write data-level-action="finish_wave">完成当前波次</button>'
-            + '<button type="button" class="mw-button" data-write data-level-action="finish_map">完成当前地图</button>'
-            + '<button type="button" class="mw-button danger" data-write data-level-action="finish_stage">结算关卡</button>'
-            + '<button type="button" class="mw-button danger" data-write data-level-action="test_space">测试空间</button>'
-            + '</div><div class="mw-task"><label for="mw-task-id">主线任务</label>'
-            + '<input id="mw-task-id" type="number" min="1" max="999" step="1" value="1">'
-            + '<button type="button" class="mw-button primary" data-write id="mw-grant-task">获得任务</button></div></div></section>'
+            + '<button type="button" class="mw-hit mw-lv-kill" data-write data-level-action="kill_all" aria-label="敌人全死"></button>'
+            + '<button type="button" class="mw-hit mw-lv-wave" data-write data-level-action="finish_wave" aria-label="直接跳波"></button>'
+            + '<button type="button" class="mw-hit mw-lv-map" data-write data-level-action="finish_map" aria-label="直接过图"></button>'
+            + '<button type="button" class="mw-hit mw-lv-stage" data-write data-level-action="finish_stage" aria-label="直接过关"></button>'
+            + '<input class="mw-input mw-task-input" id="mw-task-id" type="number" min="1" max="999" step="1" value="1">'
+            + '<button type="button" class="mw-hit mw-lv-task" data-write id="mw-grant-task" aria-label="获得对应ID任务"></button>'
+            + '<button type="button" class="mw-hit mw-lv-unlock" data-write data-level-action="unlock_stages" aria-label="解锁关卡"></button>'
+            + '</section>'
             + '<section class="mw-view" data-view="units" role="tabpanel" hidden>'
-            + '<div class="mw-toolbar"><input id="mw-unit-query" type="search" maxlength="64" autocomplete="off" placeholder="id / 单位名 / 兵种名 / key">'
-            + '<button type="button" class="mw-button" id="mw-unit-search">搜索</button>'
-            + '<button type="button" class="mw-button quiet" id="mw-unit-clear">清空</button>'
-            + '<span class="mw-page-state" id="mw-unit-page-state">—</span></div>'
-            + '<div class="mw-split"><div class="mw-grid-wrap"><div class="mw-unit-grid" id="mw-unit-grid"></div>'
-            + '<div class="mw-page-row"><button type="button" class="mw-button" id="mw-unit-prev">上一页</button>'
-            + '<button type="button" class="mw-button" id="mw-unit-next">下一页</button></div></div>'
-            + '<aside class="mw-detail" id="mw-unit-detail"><p class="mw-empty">选择兵种</p></aside></div></section>'
-            + '</main>'
-            + '<footer class="mw-footer"><p id="mw-message" role="status" aria-live="polite"></p>'
-            + '<div class="mw-reconcile" id="mw-reconcile" hidden><span>结果未确认</span>'
-            + '<button type="button" class="mw-button" id="mw-reconcile-query">核对</button></div></footer>'
+            + '<input id="mw-unit-query" type="hidden" value="">'
+            + '<button type="button" class="mw-hit mw-unit-first" id="mw-unit-first" aria-label="第一页"></button>'
+            + '<button type="button" class="mw-hit mw-unit-prev" id="mw-unit-prev" aria-label="上一页"></button>'
+            + '<button type="button" class="mw-hit mw-unit-next" id="mw-unit-next" aria-label="下一页"></button>'
+            + '<button type="button" class="mw-hit mw-unit-last" id="mw-unit-last" aria-label="最后一页"></button>'
+            + '<div class="mw-unit-grid" id="mw-unit-grid"></div>'
+            + '<span class="mw-page-state mw-unit-page-state" id="mw-unit-page-state"></span>'
+            + '<div class="mw-unit-frame" aria-hidden="true"></div>'
+            + '<div class="mw-unit-preview" id="mw-unit-preview"></div>'
+            + '<input class="mw-input mw-unit-level" id="mw-unit-level" type="number" min="1" max="9999" step="1" value="1">'
+            + '<input class="mw-input mw-unit-count" id="mw-unit-count" type="number" min="1" max="100" step="1" value="1">'
+            + '<button type="button" class="mw-hit mw-unit-level-minus" id="mw-unit-level-minus" aria-label="降低等级"></button>'
+            + '<button type="button" class="mw-hit mw-unit-level-plus" id="mw-unit-level-plus" aria-label="提高等级"></button>'
+            + '<button type="button" class="mw-hit mw-unit-count-minus" id="mw-unit-count-minus" aria-label="减少数量"></button>'
+            + '<button type="button" class="mw-hit mw-unit-count-plus" id="mw-unit-count-plus" aria-label="增加数量"></button>'
+            + '<input class="mw-unit-hostile" id="mw-unit-hostile" type="checkbox">'
+            + '<button type="button" class="mw-hit mw-unit-spawn" id="mw-unit-spawn" data-write data-requires="unit" aria-label="加载兵种"></button>'
+            + '<button type="button" class="mw-hit mw-unit-merc" id="mw-unit-merc" data-write data-requires="unit" aria-label="添加佣兵"></button>'
+            + '</section>'
+            + '<footer class="mw-status"><p id="mw-message" role="status" aria-live="polite"></p>'
+            + '<div class="mw-reconcile" id="mw-reconcile" hidden><button type="button" class="mw-reconcile-query" id="mw-reconcile-query">核对</button></div></footer>'
             + '</section>';
+    }
+
+    function loadUnitFrames() {
+        if (typeof fetch !== 'function') return;
+        fetch('assets/modifier/units/manifest.json?v=20261102b', {cache:'no-cache'})
+            .then(function(response) { return response.ok ? response.json() : null; })
+            .then(function(data) { if (data && data.units) unitFrames = data.units; })
+            .catch(function() {});
     }
 
     function init() {
@@ -80,8 +103,10 @@
         if (!shell) return;
         shell.innerHTML = skeleton();
         root = shell;
-        scale = window.PanelScale.attach(shell, 550, 400);
+        itemTip = byId('item-tip');
+        scale = window.PanelScale.attach(shell, 843, 400);
         bind();
+        loadUnitFrames();
         if (window.Icons) Icons.load(function() { if (itemTotal) loadItems(); });
         shell.style.display = 'none';
         Bridge.on('panel_cmd', onPanelCommand);
@@ -136,7 +161,7 @@
     function bind() {
         byId('close').onclick = requestClose;
         root.querySelectorAll('.mw-tab').forEach(function(tab) {
-            tab.addEventListener('click', function() { showTab(tab.getAttribute('data-tab')); });
+            tab.addEventListener('click', function() { if (tab.getAttribute('data-tab') !== activeTab) playTabSound(); showTab(tab.getAttribute('data-tab')); });
         });
         root.querySelectorAll('[data-economy]').forEach(function(button) {
             button.addEventListener('click', function() { writeRequest(button.getAttribute('data-economy'), {}); });
@@ -156,24 +181,72 @@
             writeRequest('grantTask', {taskId:value});
         };
         byId('item-search').onclick = searchItems;
-        byId('item-clear').onclick = function() { byId('item-query').value = ''; searchItems(); };
         byId('item-query').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') { event.preventDefault(); searchItems(); }
         });
+        byId('item-first').onclick = function() { if (itemPage !== 1) { itemPage = 1; loadItems(); } };
         byId('item-prev').onclick = function() { if (itemPage > 1) { itemPage--; loadItems(); } };
         byId('item-next').onclick = function() { if (itemPage * itemPageSize < itemTotal) { itemPage++; loadItems(); } };
-        byId('unit-search').onclick = searchUnits;
-        byId('unit-clear').onclick = function() { byId('unit-query').value = ''; searchUnits(); };
-        byId('unit-query').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') { event.preventDefault(); searchUnits(); }
-        });
+        byId('item-last').onclick = function() {
+            var last = itemTotal > 0 ? Math.ceil(itemTotal / Math.max(1, itemPageSize)) : 1;
+            if (itemPage !== last) { itemPage = last; loadItems(); }
+        };
+        byId('item-minus').onclick = function() {
+            var input = byId('item-quantity');
+            input.value = String(Math.max(1, Number(input.value || 1) - 1));
+        };
+        byId('item-plus').onclick = function() {
+            var input = byId('item-quantity');
+            input.value = String(Math.min(999999999, Number(input.value || 1) + 1));
+        };
+        byId('item-produce').onclick = function() {
+            if (!selectedItem) { setStatus('请先选择物品。', 'warn'); return; }
+            var count = Number(byId('item-quantity').value);
+            if (!Runtime.int(count, 1, 999999999)) { setStatus('数量需为 1–999999999。', 'error'); return; }
+            writeRequest('spawnItem', {itemName:selectedItem.name, quantity:count});
+        };
+        byId('unit-first').onclick = function() { if (unitPage !== 1) { unitPage = 1; loadUnits(); } };
         byId('unit-prev').onclick = function() { if (unitPage > 1) { unitPage--; loadUnits(); } };
         byId('unit-next').onclick = function() { if (unitPage * unitPageSize < unitTotal) { unitPage++; loadUnits(); } };
+        byId('unit-last').onclick = function() {
+            var last = unitTotal > 0 ? Math.ceil(unitTotal / Math.max(1, unitPageSize)) : 1;
+            if (unitPage !== last) { unitPage = last; loadUnits(); }
+        };
+        byId('unit-level-minus').onclick = function() {
+            var input = byId('unit-level');
+            input.value = String(Math.max(1, Number(input.value || 1) - 1));
+        };
+        byId('unit-level-plus').onclick = function() {
+            var input = byId('unit-level');
+            input.value = String(Math.min(9999, Number(input.value || 1) + 1));
+        };
+        byId('unit-count-minus').onclick = function() {
+            var input = byId('unit-count');
+            input.value = String(Math.max(1, Number(input.value || 1) - 1));
+        };
+        byId('unit-count-plus').onclick = function() {
+            var input = byId('unit-count');
+            input.value = String(Math.min(100, Number(input.value || 1) + 1));
+        };
+        byId('unit-spawn').onclick = function() {
+            if (!selectedUnit) { setStatus('请先选择兵种。', 'warn'); return; }
+            var lv = Number(byId('unit-level').value), count = Number(byId('unit-count').value);
+            if (!Runtime.int(lv, 1, 9999) || !Runtime.int(count, 1, 100)) { setStatus('等级 1–9999，数量 1–100。', 'error'); return; }
+            writeRequest('spawnUnit', {unitId:selectedUnit.id, count:count, level:lv, hostile:byId('unit-hostile').checked});
+        };
+        byId('unit-merc').onclick = function() {
+            if (!selectedUnit) { setStatus('请先选择兵种。', 'warn'); return; }
+            var lv = Number(byId('unit-level').value);
+            if (!Runtime.int(lv, 1, 9999)) { setStatus('等级 1–9999。', 'error'); return; }
+            writeRequest('spawnMerc', {unitId:selectedUnit.id, level:lv, hostile:byId('unit-hostile').checked});
+        };
         byId('reconcile-query').onclick = queryUnresolved;
     }
 
     function showTab(tab, load) {
         activeTab = tab;
+        var win = root.querySelector('.mw-window');
+        if (win) win.setAttribute('data-tab', tab);
         root.querySelectorAll('.mw-tab').forEach(function(button) {
             button.setAttribute('aria-selected', String(button.getAttribute('data-tab') === tab));
         });
@@ -202,7 +275,8 @@
             if (result.requiresReconcile && result.recoveryToken) setUnresolved(result.recoveryToken, result.recoveryOperationId);
             else clearUnresolved();
             updateSnapshot();
-            if (!initial) setStatus('状态已刷新。', 'ok');
+            if (initial) setStatus('', 'neutral');
+            else setStatus('状态已刷新。', 'ok');
         });
     }
 
@@ -213,7 +287,9 @@
         text('kcoin', state.kcoin.toLocaleString('zh-CN'));
         var canWrite = !state.challengeMode && state.saveAvailable;
         root.querySelectorAll('[data-write]').forEach(function(button) {
-            button.disabled = !canWrite || !!unresolved || writeBusy;
+            var requires = button.getAttribute('data-requires');
+            var missing = (requires === 'item' && !selectedItem) || (requires === 'unit' && !selectedUnit);
+            button.disabled = !canWrite || missing || !!unresolved || writeBusy;
         });
         if (state.challengeMode) setStatus('挑战模式中写操作不可用。', 'error');
         else if (!state.saveAvailable) setStatus('存档系统尚未就绪。', 'error');
@@ -349,47 +425,120 @@
             } else {
                 card.classList.add('no-icon');
             }
+            var count = document.createElement('span');
+            count.className = 'mw-item-count';
+            count.textContent = '1';
+            card.appendChild(count);
             card.onclick = function() { selectedItem = item; renderItems(items); renderItemDetail(); };
+            card.addEventListener('mouseenter', function(event) { showItemTip(item, card, event); });
+            card.addEventListener('mouseleave', hideItemTip);
             grid.appendChild(card);
         });
+    }
+
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function showRichItemTip(item, data, event) {
+        if (!window.PanelTooltip) return false;
+        var html = PanelTooltip.buildItemRichHtml({
+            iconHtml: PanelTooltip.dynamicIconHtml(item.icon),
+            introHTML: data.introHTML || '',
+            descHTML: data.descHTML || '',
+            document: data.document || null,
+            rootClass: 'inventory-owned-tt-context',
+            layoutType: PanelTooltip.inferLayoutType(item.type || item.use || '物品')
+        });
+        PanelTooltip.showAtMouse(html, event, 'modifier', {profile:'simple-tooltip', placement:'right'});
+        return true;
+    }
+
+    function requestItemTooltip(item) {
+        if (!mux || tooltipLoading[item.name]) return;
+        tooltipLoading[item.name] = true;
+        request('itemTooltip', {v:1, token:token, itemName:item.name}, function(result) {
+            tooltipLoading[item.name] = false;
+            var data = Runtime.normalizeItemTooltip(result, token);
+            if (!data) return;
+            tooltipCache[item.name] = data;
+            if (lastTipName === item.name && lastTipEvent && window.PanelTooltip)
+                showRichItemTip(item, data, lastTipEvent);
+        });
+    }
+
+    function showItemTip(item, card, event) {
+        lastTipName = item.name;
+        lastTipEvent = event ? {clientX:event.clientX, clientY:event.clientY} : null;
+        if (window.PanelTooltip && document.getElementById('panel-tooltip')) {
+            if (tooltipCache[item.name]) {
+                showRichItemTip(item, tooltipCache[item.name], event);
+            } else {
+                var iconHtml = PanelTooltip.dynamicIconHtml(item.icon);
+                var name = escapeHtml(item.displayName || item.name);
+                var meta = escapeHtml('#' + item.id + ' · ' + (item.type || '—') + ' · ' + (item.use || '—'));
+                var html = PanelTooltip.buildItemRichHtml({
+                    iconHtml: iconHtml,
+                    introWebHTML: '<b>' + name + '</b>',
+                    descHTML: '<span>' + meta + '</span>',
+                    splitMode: 'merge'
+                });
+                PanelTooltip.showAtMouse(html, event, 'modifier', {profile:'simple-tooltip', placement:'right'});
+                requestItemTooltip(item);
+            }
+            return;
+        }
+        if (!itemTip) return;
+        itemTip.textContent = '';
+        var title = document.createElement('strong');
+        title.textContent = item.displayName || item.name;
+        var metaNode = document.createElement('span');
+        metaNode.textContent = '#' + item.id + ' · ' + (item.type || '—') + ' · ' + (item.use || '—');
+        itemTip.appendChild(title); itemTip.appendChild(metaNode);
+        var grid = byId('item-grid');
+        var left = (grid ? grid.offsetLeft : 0) + card.offsetLeft + 28;
+        var top = (grid ? grid.offsetTop : 0) + card.offsetTop + 2;
+        if (left > 660) left = Math.max(4, left - 180);
+        itemTip.style.left = left + 'px';
+        itemTip.style.top = top + 'px';
+        itemTip.hidden = false;
+    }
+
+    function hideItemTip() {
+        if (window.PanelTooltip) PanelTooltip.hide('modifier');
+        if (itemTip) itemTip.hidden = true;
     }
 
     function renderItemPageState() {
         var pages = itemTotal > 0 ? Math.ceil(itemTotal / Math.max(1, itemPageSize)) : 0;
         text('item-page-state', itemTotal + ' · ' + (pages ? itemPage + '/' + pages : '0/0'));
         var prev = byId('item-prev'), next = byId('item-next');
+        var first = byId('item-first'), last = byId('item-last');
         if (prev) prev.disabled = itemPage <= 1;
+        if (first) first.disabled = itemPage <= 1;
         if (next) next.disabled = itemPage * itemPageSize >= itemTotal;
+        if (last) last.disabled = itemPage * itemPageSize >= itemTotal;
     }
 
     function renderItemDetail() {
-        var detail = byId('item-detail');
-        if (!detail) return;
-        if (!selectedItem) { detail.innerHTML = '<p class="mw-empty">选择物品</p>'; return; }
-        detail.innerHTML = '';
-        var title = document.createElement('h2'); title.textContent = selectedItem.displayName;
-        var meta = document.createElement('p'); meta.className = 'mw-meta';
-        meta.textContent = '#' + selectedItem.id + ' · ' + (selectedItem.type || '—') + ' · ' + (selectedItem.use || '—');
-        var row = document.createElement('div'); row.className = 'mw-inline';
-        var quantity = document.createElement('input');
-        quantity.id = 'mw-item-quantity'; quantity.type = 'number'; quantity.min = '1';
-        quantity.max = '999999999'; quantity.step = '1'; quantity.value = '1';
-        var minus = document.createElement('button'); minus.type = 'button'; minus.className = 'mw-button quiet'; minus.textContent = '−';
-        var plus = document.createElement('button'); plus.type = 'button'; plus.className = 'mw-button quiet'; plus.textContent = '+';
-        minus.onclick = function() { quantity.value = String(Math.max(1, Number(quantity.value || 1) - 1)); };
-        plus.onclick = function() { quantity.value = String(Math.min(999999999, Number(quantity.value || 1) + 1)); };
-        var produce = document.createElement('button'); produce.type = 'button'; produce.className = 'mw-button primary';
-        produce.setAttribute('data-write', ''); produce.textContent = '生产';
-        produce.disabled = !!unresolved || writeBusy || !snapshot || !snapshot.state.saveAvailable || snapshot.state.challengeMode;
-        produce.onclick = function() {
-            var count = Number(quantity.value);
-            if (!Runtime.int(count, 1, 999999999)) { setStatus('数量需为 1–999999999。', 'error'); return; }
-            writeRequest('spawnItem', {itemName:selectedItem.name, quantity:count});
-        };
-        row.appendChild(minus); row.appendChild(quantity); row.appendChild(plus); row.appendChild(produce);
-        var note = document.createElement('p'); note.className = 'mw-note';
-        note.textContent = '在角色位置生成可拾取物；关闭后拾取。';
-        detail.appendChild(title); detail.appendChild(meta); detail.appendChild(row); detail.appendChild(note);
+        var slots = [byId('item-slot-0'), byId('item-slot-1')];
+        slots.forEach(function(slot) { if (slot) slot.textContent = ''; });
+        var produce = byId('item-produce');
+        if (!selectedItem) { if (produce) produce.disabled = true; return; }
+        var query = byId('item-query');
+        if (query) query.value = selectedItem.name;
+        var iconUrl = window.Icons ? (Icons.resolveStatic(selectedItem.icon) || Icons.resolve(selectedItem.icon)) : null;
+        if (iconUrl && slots[0]) {
+            var icon = document.createElement('img'); icon.alt = ''; icon.src = iconUrl; slots[0].appendChild(icon);
+        }
+        var quantity = byId('item-quantity');
+        if (quantity && !quantity.value) quantity.value = '1';
+        if (produce) {
+            produce.disabled = !!unresolved || writeBusy || !snapshot
+                || !snapshot.state.saveAvailable || snapshot.state.challengeMode;
+        }
     }
 
     function loadUnits() {
@@ -438,44 +587,80 @@
         var pages = unitTotal > 0 ? Math.ceil(unitTotal / Math.max(1, unitPageSize)) : 0;
         text('unit-page-state', unitTotal + ' · ' + (pages ? unitPage + '/' + pages : '0/0'));
         var prev = byId('unit-prev'), next = byId('unit-next');
+        var first = byId('unit-first'), last = byId('unit-last');
         if (prev) prev.disabled = unitPage <= 1;
+        if (first) first.disabled = unitPage <= 1;
         if (next) next.disabled = unitPage * unitPageSize >= unitTotal;
+        if (last) last.disabled = unitPage * unitPageSize >= unitTotal;
     }
 
+    function applyUnitFrame(dataUrl) {
+        var preview = byId('unit-preview');
+        if (!preview) return;
+        preview.textContent = '';
+        var img = document.createElement('img');
+        img.alt = '';
+        img.src = dataUrl;
+        preview.appendChild(img);
+    }
+
+    function loadUnitFrame(spriteName) {
+        if (!mux || !spriteName) return;
+        if (unitFrameCache[spriteName]) { applyUnitFrame(unitFrameCache[spriteName]); return; }
+        if (unitFrameLoading[spriteName]) return;
+        unitFrameLoading[spriteName] = true;
+        request('unitFrame', {v:1, token:token, spriteName:spriteName}, function(result) {
+            unitFrameLoading[spriteName] = false;
+            var frame = Runtime.normalizeUnitFrame(result, token);
+            if (!frame) return;
+            try {
+                var raw = atob(frame.pixels);
+                var bytes = new Uint8ClampedArray(raw.length);
+                for (var i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+                var canvas = document.createElement('canvas');
+                canvas.width = frame.width; canvas.height = frame.height;
+                var context = canvas.getContext('2d');
+                var image = context.createImageData(frame.width, frame.height);
+                image.data.set(bytes);
+                context.putImageData(image, 0, 0);
+                var dataUrl = canvas.toDataURL('image/png');
+                unitFrameCache[spriteName] = dataUrl;
+                if (selectedUnit && selectedUnit.spriteName === spriteName) applyUnitFrame(dataUrl);
+            } catch (error) { }
+        });
+    }
     function renderUnitDetail() {
-        var detail = byId('unit-detail');
-        if (!detail) return;
-        if (!selectedUnit) { detail.innerHTML = '<p class="mw-empty">选择兵种</p>'; return; }
-        detail.innerHTML = '';
-        var title = document.createElement('h2'); title.textContent = selectedUnit.name || selectedUnit.spriteName;
-        var meta = document.createElement('p'); meta.className = 'mw-meta';
-        meta.textContent = '#' + selectedUnit.id + ' · ' + selectedUnit.spriteName;
-        var hostile = {value:selectedUnit.hostile};
-        var hostileButton = document.createElement('button'); hostileButton.type = 'button'; hostileButton.className = 'mw-button';
-        function paint() { hostileButton.textContent = hostile.value ? '敌我：敌人' : '敌我：友军'; hostileButton.classList.toggle('danger', hostile.value); }
-        paint(); hostileButton.onclick = function() { hostile.value = !hostile.value; paint(); };
-        var level = document.createElement('input'); level.id = 'mw-unit-level'; level.type = 'number'; level.min = '1'; level.max = '9999'; level.step = '1';
-        level.value = String(Math.max(1, selectedUnit.level || 1));
-        var count = document.createElement('input'); count.id = 'mw-unit-count'; count.type = 'number'; count.min = '1'; count.max = '100'; count.step = '1'; count.value = '1';
-        var levelRow = document.createElement('label'); levelRow.className = 'mw-field'; levelRow.textContent = '等级'; levelRow.appendChild(level);
-        var countRow = document.createElement('label'); countRow.className = 'mw-field'; countRow.textContent = '数量'; countRow.appendChild(count);
-        var spawn = document.createElement('button'); spawn.type = 'button'; spawn.className = 'mw-button primary'; spawn.setAttribute('data-write', ''); spawn.textContent = '生成单位';
-        spawn.disabled = !!unresolved || writeBusy || !snapshot || !snapshot.state.saveAvailable || snapshot.state.challengeMode;
-        spawn.onclick = function() {
-            var lv = Number(level.value), n = Number(count.value);
-            if (!Runtime.int(lv, 1, 9999) || !Runtime.int(n, 1, 100)) { setStatus('等级 1–9999，数量 1–100。', 'error'); return; }
-            writeRequest('spawnUnit', {unitId:selectedUnit.id, count:n, level:lv, hostile:hostile.value});
-        };
-        var merc = document.createElement('button'); merc.type = 'button'; merc.className = 'mw-button'; merc.setAttribute('data-write', ''); merc.textContent = '生成佣兵';
-        merc.disabled = spawn.disabled;
-        merc.onclick = function() {
-            var lv = Number(level.value);
-            if (!Runtime.int(lv, 1, 9999)) { setStatus('等级 1–9999。', 'error'); return; }
-            writeRequest('spawnMerc', {unitId:selectedUnit.id, level:lv, hostile:hostile.value});
-        };
-        var note = document.createElement('p'); note.className = 'mw-note'; note.textContent = '数量只作用于生成单位；佣兵会写入雇佣池。';
-        detail.appendChild(title); detail.appendChild(meta); detail.appendChild(hostileButton);
-        detail.appendChild(levelRow); detail.appendChild(countRow); detail.appendChild(spawn); detail.appendChild(merc); detail.appendChild(note);
+        var spawn = byId('unit-spawn');
+        var merc = byId('unit-merc');
+        if (!selectedUnit) {
+            if (spawn) spawn.disabled = true;
+            if (merc) merc.disabled = true;
+            return;
+        }
+        var level = byId('unit-level');
+        var count = byId('unit-count');
+        var hostile = byId('unit-hostile');
+        if (level) level.value = String(Math.max(1, selectedUnit.level || 1));
+        if (count) count.value = '1';
+        if (hostile) hostile.checked = !!selectedUnit.hostile;
+        var preview = byId('unit-preview');
+        if (preview) {
+            if (unitFrameCache[selectedUnit.spriteName]) {
+                applyUnitFrame(unitFrameCache[selectedUnit.spriteName]);
+            } else {
+                preview.textContent = '';
+                var img = document.createElement('img'); img.alt = '' ;
+                preview.appendChild(img);
+                var frame = unitFrames[selectedUnit.spriteName];
+                if (frame) img.src = 'assets/modifier/units/' + frame;
+                else if (window.EnemyPortraits) EnemyPortraits.mount(preview, img, {identifier:selectedUnit.spriteName, portraitRef:selectedUnit.spriteName, consumer:'modifier'});
+                loadUnitFrame(selectedUnit.spriteName);
+            }
+        }
+        var disabled = !!unresolved || writeBusy || !snapshot
+            || !snapshot.state.saveAvailable || snapshot.state.challengeMode;
+        if (spawn) spawn.disabled = disabled;
+        if (merc) merc.disabled = disabled;
     }
 
     function request(cmd, payload, callback) {

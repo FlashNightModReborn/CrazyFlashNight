@@ -431,7 +431,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `team` | 工作台 | `modules/team/team-panel.js` |
 | `tasks` | 业务 Panel | `modules/tasks/task-panel.js` |
 <!-- launcher-panel-registry:end -->
-- `modifier` 不注册为普通 Panel：由 `ModifierOverlay` 使用 550×400 独立 composition 浮窗承载，不申请面板暂停、不进入全屏 backdrop；入口与四页协议见[修改器 Web 迁移](../docs/修改器-Web迁移-施工与验证-2026-11-01.md)。
+- `modifier` 不注册为普通 Panel：由 `ModifierOverlay` 使用 1016×484 独立 composition 浮窗（843×400 逻辑设计）承载，不申请面板暂停、不进入全屏 backdrop；入口与四页协议见[修改器 Web 迁移](../docs/修改器-Web迁移-施工与验证-2026-11-01.md)。
 - 所有 Panel：Host 拥有 open/admission、实例和跨 Panel 导航；Web 只消费授权 initData/snapshot。素材工作台从 **其他 → 工具** 打开，当前实例调用固定 Python 内核，候选图片映射 `asset-workbench.local`；旧 `icon_bake` 和三项旧烘焙菜单已退役。
 - NPC 店级资格由 `NpcShopAccessPolicy` 读取 [remote-access.json](../data/shops/remote-access.json)，复用地图地点/驻点规则并随现役事实桥返回；AS2 在来源导航和交易执行前复证当前角色上下文。书中与真实现场 NPC 的资格仍归 AS2，见 [店级资格](../agentsDoc/as2-web-panel-migration.md#npc-商店的店级资格issue-152)。
 - NPC 商店价格 wire 使用整数 `buyRatePermille` 与 safe-integer 金额；AS2/Host 按 `floor((basePrice × quantity) × rate / 1000)` 的同一顺序复验，Web 不重算价格。旧浮点 `buyMultiplier` 不兼容，Host、asLoader、Web 与 harness 必须进入同一 immutable candidate 原子交付；完整字段与 blocked-preview 边界见 [AS2 UI → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md)。

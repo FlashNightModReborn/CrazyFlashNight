@@ -549,7 +549,7 @@ NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影
 <a id="u13-garage-purchase"></a>
 ### U11 修改工具四页 Web 化（2026-11-01 源码施工）
 
-U11 从“是否迁移待选择”进入源码施工：NativeHud `SETTINGS` 改为 AS2 `openModifier`，由 AS2 生成会话 token 并发 `panel_request panel="modifier" source="nativehud_modifier"`。Host `OpenModifierPanel` 只接受该 exact source 与只含 `token` 的 initData，再由 `ModifierOverlay` 在 550×400 独立 composition 浮窗中承载：不注册普通 Panel、不申请面板暂停，保留旧修改器的浮动尺寸、四页布局与左上拖拽条。Web 只能消费授权目录和发白名单命令，AS2 保留全部写权威与 dirty 语义。旧 Flash `修改工具界面` 继续保留，不删除 placement、不宣称已退役。
+U11 从“是否迁移待选择”进入源码施工：NativeHud `SETTINGS` 改为 AS2 `openModifier`，由 AS2 生成会话 token 并发 `panel_request panel="modifier" source="nativehud_modifier"`。Host `OpenModifierPanel` 只接受该 exact source 与只含 `token` 的 initData，再由 `ModifierOverlay` 在 1016×484 独立 composition 浮窗（843×400 逻辑设计）中承载：不注册普通 Panel、不申请面板暂停，保留旧修改器的浮动尺寸、四页布局与顶部标题栏拖拽。Web 只能消费授权目录和发白名单命令，AS2 保留全部写权威与 dirty 语义。旧 Flash `修改工具界面` 继续保留，不删除 placement、不宣称已退役。
 
 | Web cmd | C# action | AS2 handler | AS2 response task | 写状态 |
 |---|---|---|---|---|

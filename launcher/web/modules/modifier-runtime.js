@@ -11,7 +11,7 @@
     var OPERATION = /^mod\.[A-Za-z0-9._~-]{1,80}$/;
     var LEVEL_ACTIONS = ['unlock_stages', 'kill_all', 'finish_wave', 'finish_map', 'finish_stage', 'test_space'];
     var WRITE_COMMANDS = ['grantMoney', 'grantKCoin', 'spawnItem', 'levelAction', 'grantTask', 'spawnUnit', 'spawnMerc'];
-    var READ_COMMANDS = ['snapshot', 'items', 'units', 'query'];
+    var READ_COMMANDS = ['snapshot', 'items', 'units', 'query', 'itemTooltip', 'unitFrame'];
 
     function int(value, min, max) {
         return typeof value === 'number' && Number.isSafeInteger(value) && value >= min && value <= max;
@@ -88,7 +88,26 @@
         return {v:1, operation:'units', token:token, success:true, revision:value.revision,
             query:value.query, page:value.page, pageSize:value.pageSize, total:value.total, units:units};
     }
-    function normalizeWrite(value, cmd, token, operationId) {
+    function normalizeItemTooltip(value, token) {
+        if (!value || value.v !== 1 || value.operation !== 'itemTooltip' || value.token !== token
+            || value.success !== true || !int(value.revision, 0, 9007199254740991)
+            || !text(value.itemName, 1, 128) || !text(value.displayname, 0, 256)
+            || typeof value.introHTML !== 'string' || typeof value.descHTML !== 'string') return null;
+        return {v:1, operation:'itemTooltip', token:token, success:true, revision:value.revision,
+            itemName:value.itemName, displayname:value.displayname,
+            introHTML:value.introHTML, descHTML:value.descHTML,
+            document:value.document === undefined ? null : value.document};
+    }
+    function normalizeUnitFrame(value, token) {
+        if (!value || value.v !== 1 || value.operation !== 'unitFrame' || value.token !== token
+            || value.success !== true || !int(value.revision, 0, 9007199254740991)
+            || !text(value.spriteName, 1, 256) || !int(value.width, 1, 512)
+            || !int(value.height, 1, 512) || typeof value.pixels !== 'string'
+            || value.pixels.length < 8 || value.pixels.length % 4 !== 0) return null;
+        if (!/^[A-Za-z0-9+/]+=*$/.test(value.pixels)) return null;
+        return {v:1, operation:'unitFrame', token:token, success:true, revision:value.revision,
+            spriteName:value.spriteName, width:value.width, height:value.height, pixels:value.pixels};
+    }    function normalizeWrite(value, cmd, token, operationId) {
         if (!value || value.v !== 1 || value.operation !== cmd || value.token !== token
             || typeof value.success !== 'boolean' || !int(value.revision, 0, 9007199254740991)) return null;
         if (WRITE_COMMANDS.indexOf(cmd) >= 0 && value.operationId !== operationId) return null;
@@ -176,7 +195,8 @@
         int:int, text:text, exact:exact,
         normalizeItem:normalizeItem, normalizeUnit:normalizeUnit,
         normalizeSnapshot:normalizeSnapshot, normalizeItems:normalizeItems,
-        normalizeUnits:normalizeUnits, normalizeWrite:normalizeWrite,
+        normalizeUnits:normalizeUnits, normalizeItemTooltip:normalizeItemTooltip,
+        normalizeUnitFrame:normalizeUnitFrame, normalizeWrite:normalizeWrite,
         isLevelAction:isLevelAction, RequestMux:RequestMux
     };
 });

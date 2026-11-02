@@ -190,6 +190,8 @@ namespace CF7Launcher.Tasks
                 case "items": action = "modifierItems"; return true;
                 case "units": action = "modifierUnits"; return true;
                 case "query": action = "modifierQuery"; return true;
+                case "itemTooltip": action = "modifierItemTooltip"; return true;
+                case "unitFrame": action = "modifierUnitFrame"; return true;
                 case "grantMoney": action = "modifierGrantMoney"; isWrite = true; return true;
                 case "grantKCoin": action = "modifierGrantKCoin"; isWrite = true; return true;
                 case "spawnItem": action = "modifierSpawnItem"; isWrite = true; return true;
@@ -212,6 +214,8 @@ namespace CF7Launcher.Tasks
                 case "items":
                 case "units": keys = new[] { "v", "token", "query", "page" }; break;
                 case "query": keys = new[] { "v", "token", "operationId" }; break;
+                case "itemTooltip": keys = new[] { "v", "token", "itemName" }; break;
+                case "unitFrame": keys = new[] { "v", "token", "spriteName" }; break;
                 case "grantMoney":
                 case "grantKCoin": keys = new[] { "v", "token", "operationId", "expectedRevision" }; break;
                 case "spawnItem": keys = new[] { "v", "token", "operationId", "expectedRevision", "itemName", "quantity" }; break;
@@ -231,6 +235,16 @@ namespace CF7Launcher.Tasks
             if (cmd == "query")
             {
                 if (!SafeOperation.IsMatch(Text(payload["operationId"]) ?? "")) return false;
+            }
+            if (cmd == "itemTooltip")
+            {
+                string itemName = Text(payload["itemName"]);
+                if (itemName == null || itemName.Length < 1 || itemName.Length > 128) return false;
+            }
+            if (cmd == "unitFrame")
+            {
+                string spriteName = Text(payload["spriteName"]);
+                if (spriteName == null || spriteName.Length < 1 || spriteName.Length > 256) return false;
             }
             if (WriteCommands.Contains(cmd))
             {

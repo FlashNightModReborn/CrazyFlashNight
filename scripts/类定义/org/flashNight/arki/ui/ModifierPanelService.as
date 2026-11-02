@@ -38,6 +38,12 @@ class org.flashNight.arki.ui.ModifierPanelService {
         _root.gameCommands["modifierQuery"] = function(params):Void {
             org.flashNight.arki.ui.ModifierPanelService.handle("query", params);
         };
+        _root.gameCommands["modifierItemTooltip"] = function(params):Void {
+            org.flashNight.arki.ui.ModifierPanelService.handle("itemTooltip", params);
+        };
+        _root.gameCommands["modifierUnitFrame"] = function(params):Void {
+            org.flashNight.arki.ui.ModifierPanelService.handle("unitFrame", params);
+        };
         _root.gameCommands["modifierGrantMoney"] = function(params):Void {
             org.flashNight.arki.ui.ModifierPanelService.handle("grantMoney", params);
         };
@@ -123,6 +129,8 @@ class org.flashNight.arki.ui.ModifierPanelService {
         if (command == "items") return readItems(params);
         if (command == "units") return readUnits(params);
         if (command == "query") return readQuery(params);
+        if (command == "itemTooltip") return readItemTooltip(params);
+        if (command == "unitFrame") return readUnitFrame(params);
         if (command == "grantMoney" || command == "grantKCoin" || command == "spawnItem"
                 || command == "levelAction" || command == "grantTask"
                 || command == "spawnUnit" || command == "spawnMerc") {
@@ -275,6 +283,43 @@ class org.flashNight.arki.ui.ModifierPanelService {
         return result;
     }
 
+    private static function readItemTooltip(params:Object):Object {
+        if (params == undefined || params.v !== 1) return fail("itemTooltip", tokenOf(params), "unsupported_version");
+        if (!hasOnly(params, ["v", "token", "itemName", "task", "action", "callId"])) return fail("itemTooltip", tokenOf(params), "invalid_payload");
+        var token:String = tokenOf(params);
+        var itemName:String = typeof params.itemName == "string" ? trimText(params.itemName) : "";
+        if (!validToken(token) || itemName == "" || itemName.length > 128) return fail("itemTooltip", token, "invalid_payload");
+        var session:Object = _sessions[token];
+        if (session == undefined) return fail("itemTooltip", token, "stale_token");
+        if (session.phase == "closed") return fail("itemTooltip", token, "stale_token");
+        if (session.phase == "expired") return fail("itemTooltip", token, "context_changed");
+        if (typeof _root.Web物品注释HTML != "function") return fail("itemTooltip", token, "tooltip_unavailable");
+        var tooltip:Object = _root.Web物品注释HTML(itemName);
+        if (tooltip == null) return fail("itemTooltip", token, "item_not_found");
+        return {v:1, operation:"itemTooltip", token:token, success:true,
+            revision:Number(session.revision), itemName:itemName,
+            displayname:String(tooltip.displayname || itemName),
+            introHTML:String(tooltip.introHTML || ""),
+            descHTML:String(tooltip.descHTML || ""),
+            document:tooltip.document == undefined ? null : tooltip.document};
+    }
+
+    private static function readUnitFrame(params:Object):Object {
+        if (params == undefined || params.v !== 1) return fail("unitFrame", tokenOf(params), "unsupported_version");
+        if (!hasOnly(params, ["v", "token", "spriteName", "task", "action", "callId"])) return fail("unitFrame", tokenOf(params), "invalid_payload");
+        var token:String = tokenOf(params);
+        var spriteName:String = typeof params.spriteName == "string" ? trimText(params.spriteName) : "";
+        if (!validToken(token) || spriteName == "" || spriteName.length > 256) return fail("unitFrame", token, "invalid_payload");
+        var session:Object = _sessions[token];
+        if (session == undefined) return fail("unitFrame", token, "stale_token");
+        if (session.phase == "closed") return fail("unitFrame", token, "stale_token");
+        if (session.phase == "expired") return fail("unitFrame", token, "context_changed");
+        var frame:Object = org.flashNight.arki.ui.ModifierUnitFrameService.capture(spriteName);
+        if (frame == null) return fail("unitFrame", token, "unit_frame_failed");
+        return {v:1, operation:"unitFrame", token:token, success:true,
+            revision:Number(session.revision), spriteName:spriteName,
+            width:Number(frame.width), height:Number(frame.height), pixels:String(frame.pixels)};
+    }
     private static function write(command:String, params:Object):Object {
         var token:String = tokenOf(params);
         var operationId:String = params != undefined && typeof params.operationId == "string" ? String(params.operationId) : "";
