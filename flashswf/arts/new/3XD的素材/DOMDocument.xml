@@ -200,7 +200,7 @@
           <DOMFolderItem name="3冷兵器/一部分武器1/热能武士刀/武士刀组成" itemID="6976d0fd-0000168f"/>
           <DOMFolderItem name="3冷兵器/一部分武器1/永恒之刃" itemID="6976d0fd-00001690"/>
           <DOMFolderItem name="3冷兵器/一部分武器1/永恒之刃/永恒之刃的素材" itemID="6976d0fd-00001691"/>
-          <DOMFolderItem name="4人物服饰外观" itemID="6976d73b-00001ff1" isExpanded="true"/>
+          <DOMFolderItem name="4人物服饰外观" itemID="6976d73b-00001ff1"/>
           <DOMFolderItem name="4人物服饰外观/普通jk校服" itemID="6976d44c-00001841" isExpanded="true"/>
           <DOMFolderItem name="4人物服饰外观/普通jk校服/刀狙少女" itemID="663e1bab-000006ad"/>
           <DOMFolderItem name="4人物服饰外观/普通jk校服/刀狙少女/基础元件" itemID="66153686-00000444"/>
@@ -292,15 +292,15 @@
           <DOMFolderItem name="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意" itemID="65f51de1-00000201"/>
           <DOMFolderItem name="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意/战术JK套装" itemID="65f51de1-00000202"/>
           <DOMFolderItem name="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意/战术JK套装/联合计划服装" itemID="65f51de1-00000203"/>
-          <DOMFolderItem name="5武器特效和子弹" itemID="6976d73f-00001ff2"/>
-          <DOMFolderItem name="5武器特效和子弹/爆炸狙击子弹" itemID="6973101c-0000005e"/>
+          <DOMFolderItem name="5武器特效和子弹" itemID="6976d73f-00001ff2" isExpanded="true"/>
+          <DOMFolderItem name="5武器特效和子弹/爆炸狙击子弹" itemID="6973101c-0000005e" isExpanded="true"/>
           <DOMFolderItem name="5武器特效和子弹/爆炸狙击子弹/3.音效相关" itemID="69733068-00000e78"/>
           <DOMFolderItem name="5武器特效和子弹/爆炸狙击子弹/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="5武器特效和子弹/冰流爆发特效" itemID="69721fdf-000001df"/>
           <DOMFolderItem name="5武器特效和子弹/冰流爆发特效/图片" itemID="697221f2-0000044f" isExpanded="true"/>
-          <DOMFolderItem name="5武器特效和子弹/高爆子弹" itemID="662f2ed4-000021fb"/>
+          <DOMFolderItem name="5武器特效和子弹/高爆子弹" itemID="662f2ed4-000021fb" isExpanded="true"/>
           <DOMFolderItem name="5武器特效和子弹/高爆子弹/爆炸" itemID="662f2edd-000021fd"/>
-          <DOMFolderItem name="5武器特效和子弹/火焰爆发特效" itemID="6971c2b6-00000955" isExpanded="true"/>
+          <DOMFolderItem name="5武器特效和子弹/火焰爆发特效" itemID="6971c2b6-00000955"/>
           <DOMFolderItem name="5武器特效和子弹/火焰爆发特效/图片" itemID="6971c4f8-0000008b"/>
           <DOMFolderItem name="6消耗品" itemID="6976d741-00001ff3"/>
           <DOMFolderItem name="6消耗品/罐头" itemID="66a92619-0000001f" isExpanded="true"/>
@@ -1287,8 +1287,8 @@
           <Include href="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意/战术JK套装/联合计划服装/nexus head set.xml" itemIcon="1" loadImmediate="false" itemID="65f51de1-00000208" lastModified="1486126289"/>
           <Include href="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意/战术JK套装/元件 2.xml" loadImmediate="false" itemID="65f51de1-00000209" lastModified="1710436588"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/Symbol 256.xml" loadImmediate="false" itemID="69733094-00000ea2" lastModified="1714367440"/>
-          <Include href="5武器特效和子弹/爆炸狙击子弹/Symbol 585.xml" itemID="69733094-00000e9e" lastModified="1769168896"/>
-          <Include href="5武器特效和子弹/爆炸狙击子弹/爆炸狙击子弹基底.xml" itemID="69730e65-00000142" lastModified="1769156475"/>
+          <Include href="5武器特效和子弹/爆炸狙击子弹/Symbol 585.xml" itemID="69733094-00000e9e" lastModified="1793672096"/>
+          <Include href="5武器特效和子弹/爆炸狙击子弹/爆炸狙击子弹基底.xml" itemID="69730e65-00000142" lastModified="1793672101"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="69733094-00000ea6" lastModified="1720533000"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 13.xml" loadImmediate="false" itemID="69733094-00000ea5" lastModified="1720533000"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 404.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006b1" lastModified="1720533000"/>
@@ -1304,17 +1304,17 @@
           <Include href="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 425.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006bb" lastModified="1720533000"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 427.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006bc" lastModified="1720533000"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 429.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006bd" lastModified="1720533000"/>
-          <Include href="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml" itemID="69732f4b-00000781" lastModified="1769157201"/>
+          <Include href="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml" itemID="69732f4b-00000781" lastModified="1793670905"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml" itemIcon="1" loadImmediate="false" itemID="69732d7a-00000747" lastModified="1769156228"/>
           <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发.xml" itemID="69721fc4-000001dc" lastModified="1777869733"/>
           <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721fc1-000001db" lastModified="1769086913"/>
           <Include href="5武器特效和子弹/冰流爆发特效/寒冰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721f34-000001c9" lastModified="1769086959"/>
           <Include href="5武器特效和子弹/冰流爆发特效/图片/area40X40.xml" loadImmediate="false" itemID="697221f2-0000045b" lastModified="1762772154"/>
           <Include href="5武器特效和子弹/高爆子弹/Symbol 256.xml" loadImmediate="false" itemID="662f2bea-0000155b" lastModified="1714367440"/>
-          <Include href="5武器特效和子弹/高爆子弹/Symbol 585.xml" itemID="662f2a77-00000010" lastModified="1769155435"/>
+          <Include href="5武器特效和子弹/高爆子弹/Symbol 585.xml" itemID="662f2a77-00000010" lastModified="1793672087"/>
           <Include href="5武器特效和子弹/高爆子弹/Symbol 3831.xml" loadImmediate="false" itemID="662f2bea-0000155c" lastModified="1714394624"/>
           <Include href="5武器特效和子弹/高爆子弹/Symbol 3832.xml" loadImmediate="false" itemID="662f2bea-0000155d" lastModified="1714398904"/>
-          <Include href="5武器特效和子弹/高爆子弹/Symbol 5851.xml" itemID="662fa8e1-00000caa" lastModified="1714922377"/>
+          <Include href="5武器特效和子弹/高爆子弹/Symbol 5851.xml" itemID="662fa8e1-00000caa" lastModified="1793670858"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1195.xml" loadImmediate="false" itemID="662f2a77-0000000e" lastModified="1714368253"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1197.xml" itemIcon="1" loadImmediate="false" itemID="662f2a77-0000000f" lastModified="1714367025"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1231.xml" loadImmediate="false" itemID="662f2a77-00000011" lastModified="1714395009"/>
@@ -1376,6 +1376,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2084255" publishTime="1793671674"/>
+          <PublishItem publishSize="2094869" publishTime="1793670744"/>
+          <PublishItem publishSize="2094869" publishTime="1793670307"/>
+          <PublishItem publishSize="2094869" publishTime="1793670259"/>
           <PublishItem publishSize="2094987" publishTime="1793632912"/>
           <PublishItem publishSize="2092933" publishTime="1793328901"/>
           <PublishItem publishSize="2092933" publishTime="1793328890"/>
@@ -1392,9 +1396,5 @@
           <PublishItem publishSize="1959182" publishTime="1791518517"/>
           <PublishItem publishSize="1912488" publishTime="1788581712"/>
           <PublishItem publishSize="1912488" publishTime="1788580130"/>
-          <PublishItem publishSize="1888977" publishTime="1777874534"/>
-          <PublishItem publishSize="1893173" publishTime="1777869829"/>
-          <PublishItem publishSize="1893168" publishTime="1777869759"/>
-          <PublishItem publishSize="1893186" publishTime="1777869358"/>
      </publishHistory>
 </DOMDocument>

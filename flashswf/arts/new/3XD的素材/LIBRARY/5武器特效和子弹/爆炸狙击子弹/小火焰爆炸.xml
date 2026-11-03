@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸" itemID="69732f4b-00000781" linkageExportForAS="true" linkageIdentifier="小火焰爆炸" lastModified="1769157201">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸" itemID="69732f4b-00000781" linkageExportForAS="true" linkageIdentifier="小火焰爆炸" lastModified="1793670905">
   <timeline>
-    <DOMTimeline name="小火焰爆炸" currentFrame="5">
+    <DOMTimeline name="小火焰爆炸">
       <layers>
-        <DOMLayer name="Script Layer" color="#83CD50">
+        <DOMLayer name="Script Layer" color="#83CD50" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -56,14 +56,14 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#31E18C" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 2" color="#31E18C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-46.7" centerPoint3DY="-58.55">
+                <DOMSymbolInstance libraryItemName="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 13" name="area" centerPoint3DX="-46.7" centerPoint3DY="-58.55">
                   <matrix>
                     <Matrix a="4.23997497558594" d="4.23983764648438" tx="-58.85" ty="-70.7"/>
                   </matrix>

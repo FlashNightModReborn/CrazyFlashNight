@@ -17,23 +17,25 @@
                   </fills>
                   <edges>
                     <Edge fillStyle1="2" edges="!401 27[#197.16 #1D.4A 413 32!413 32|419 38!419 38[#1AC.03 #77.14 412 193!412 193[#197.E #D7.18 390 220!390 220[#162.BF #E5.A1 325.5 224"/>
-                    <Edge fillStyle1="1" edges="!325.5 224[#13F.B6 #DE.CF 314 221!314 221|292 193!292 193|273 193"/>
-                    <Edge fillStyle1="2" edges="!273 193|258 193!258 193|223 218!223 218[#DA.5D #DC.12 213.5 222"/>
-                    <Edge fillStyle1="1" edges="!213.5 222[#AE.BD #ED.EF 133.5 243"/>
-                    <Edge fillStyle1="2" edges="!133.5 243[#6B.26 #F6.2B 80 245!80 245[#47.44 #F4.AD 63.5 243"/>
-                    <Edge fillStyle1="1" edges="!63.5 243[#2E.6C #EE.DC 33 228!33 228[#20.5E #E3.1C 31.5 226"/>
-                    <Edge fillStyle1="2" edges="!31.5 226[#16.18 #D4.5F 15.5 198"/>
-                    <Edge fillStyle1="1" edges="!15.5 198[#FFFFFD.6D #9F.DC 0 118!0 118[#6.D6 #3E.25 48 33!48 33[#41.4F #1A.88 83 21.5"/>
-                    <Edge fillStyle1="2" edges="!83 21.5[#61.F4 #11.0D 113 13.5"/>
-                    <Edge fillStyle1="1" edges="!113 13.5[#85.6A #8.C1 154.5 5.5"/>
-                    <Edge fillStyle1="2" edges="!154.5 5.5[#BD.D9 #0.49 226.5 -0.5"/>
-                    <Edge fillStyle1="1" edges="!226.5 -0.5[#F0.AE -0.4765625 255 0!255 0[#114.B3 #FFFFFE.D9 298.5 0.5"/>
-                    <Edge fillStyle1="2" edges="!298.5 0.5[#141.3F #2.96 344 8"/>
-                    <Edge fillStyle1="1" edges="!344 8[#174.93 #E.C9 401 27"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!401 27|325.5 224!298.5 0.5|213.5 222"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!325.5 224|401 27"/>
+                    <Edge fillStyle0="1" edges="!401 27[#174.93 #E.C9 344 8"/>
+                    <Edge fillStyle0="2" edges="!344 8[#141.3F #2.96 298.5 0.5"/>
+                    <Edge fillStyle0="1" edges="!298.5 0.5[#114.B3 #FFFFFE.D9 255 0!255 0[#F0.AE -0.4765625 226.5 -0.5"/>
+                    <Edge fillStyle0="2" edges="!226.5 -0.5[#BD.D9 #0.49 154.5 5.5"/>
+                    <Edge fillStyle0="1" edges="!154.5 5.5[#85.6A #8.C1 113 13.5"/>
+                    <Edge fillStyle0="2" edges="!113 13.5[#61.F4 #11.0D 83 21.5"/>
+                    <Edge fillStyle0="1" edges="!83 21.5[#41.4F #1A.88 48 33!48 33[#6.D6 #3E.25 0 118!0 118[#FFFFFD.6D #9F.DC 15.5 198"/>
+                    <Edge fillStyle0="2" edges="!15.5 198[#16.18 #D4.5F 31.5 226"/>
+                    <Edge fillStyle0="1" edges="!31.5 226[#20.5E #E3.1C 33 228!33 228[#2E.6C #EE.DC 63.5 243"/>
+                    <Edge fillStyle0="2" edges="!63.5 243[#47.44 #F4.AD 80 245!80 245[#6B.26 #F6.2B 133.5 243"/>
+                    <Edge fillStyle0="1" edges="!133.5 243[#AE.BD #ED.EF 213.5 222"/>
+                    <Edge fillStyle0="2" edges="!213.5 222[#DA.5D #DC.12 223 218!223 218|258 193!258 193|273 193"/>
+                    <Edge fillStyle0="1" edges="!273 193|292 193!292 193|314 221!314 221[#13F.B6 #DE.CF 325.5 224"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="!344 8|273 193"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!154.5 5.5|63.5 243!83 21.5|15.5 198"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!113 13.5|31.5 226!226.5 -0.5|133.5 243"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!298.5 0.5|213.5 222"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!113 13.5|31.5 226"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!83 21.5|15.5 198!154.5 5.5|63.5 243"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!226.5 -0.5|133.5 243"/>
                     <Edge cubics="!258 193(;258,193 223,218 223,218q258 193 223 218);"/>
                     <Edge cubics="!419 38(;425,92 423,144 412,193q419 38Q428 119q412 193);"/>
                     <Edge cubics="!413 32(;413,32 419,38 419,38q413 32 419 38);"/>
