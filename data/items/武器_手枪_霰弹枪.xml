@@ -766,7 +766,7 @@
         <profiles>
           <data>
             <dualWield>2</dualWield>
-            <pierce>1</pierce>
+            <pierce>1.5</pierce>
             <damageType>1</damageType>
             <shotgun>5</shotgun>
             <magPrice>1000</magPrice>
@@ -775,7 +775,7 @@
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:e20f243e</inputDigest>
+            <inputDigest>fnv1a32:6fe92f4b</inputDigest>
             <auditRef>weapon:Origin12战术版:data</auditRef>
           </data>
         </profiles>
@@ -842,7 +842,7 @@
         <profiles>
           <data>
             <dualWield>2</dualWield>
-            <pierce>1</pierce>
+            <pierce>1.5</pierce>
             <damageType>1</damageType>
             <shotgun>5</shotgun>
             <magPrice>1000</magPrice>
@@ -851,7 +851,7 @@
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:77a695b5</inputDigest>
+            <inputDigest>fnv1a32:b2c57cf4</inputDigest>
             <auditRef>weapon:Vepr12紧凑改装型:data</auditRef>
           </data>
         </profiles>
@@ -943,7 +943,6 @@
         <interval>150</interval>
         <velocity>50</velocity>
         <bullet>高爆子弹</bullet>
-        <bulletrename>常规穿甲弹</bulletrename>
         <sound>origin12.wav</sound>
         <muzzle>霰弹枪枪火</muzzle>
         <bullethit>火花</bullethit>
@@ -962,14 +961,14 @@
             <dualWield>2</dualWield>
             <pierce>1</pierce>
             <damageType>1</damageType>
-            <shotgun>5</shotgun>
-            <magPrice>1000</magPrice>
+            <shotgun>1</shotgun>
+            <magPrice>2000</magPrice>
             <weightLayers>0</weightLayers>
             <category>1</category>
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:d058938b</inputDigest>
+            <inputDigest>fnv1a32:ce0d7f04</inputDigest>
             <auditRef>weapon:KHAOS 12战术版:data</auditRef>
           </data>
         </profiles>

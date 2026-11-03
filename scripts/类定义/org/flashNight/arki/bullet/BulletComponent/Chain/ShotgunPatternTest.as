@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Chain.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.render.ChainVisualBridge;
 import org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
@@ -126,6 +127,22 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         actor.是否为敌人=false; actor.长枪数据.weapontype="步枪";
         props = ShootInitCore.generateBulletProps(actor,"长枪",wd,{});
         check(props.霰弹分配模式 == 0, "other weapon families never opt in");
+        actor.长枪数据.weapontype="霰弹枪";
+        wd.split=5; wd.diffusion=10; wd.bullet="横向联弹-加强普通子弹";
+        props = ShootInitCore.generateBulletProps(actor,"长枪",wd,{});
+        check(BulletTypesetter.setTypeFlags(props) == 66, "normal shotgun bullet resolves to FLAG_CHAIN|FLAG_NORMAL");
+        g = makeGroup(props.霰弹值, props.霰弹分配模式, false, props.flags);
+        check(g.shotgun != null, "normal shotgun bullet opts into ShotgunPattern");
+        ChainUnitManager.removeGroup(g);
+        wd.bullet="横向联弹-次级穿刺子弹";
+        props = ShootInitCore.generateBulletProps(actor,"长枪",wd,{});
+        check(BulletTypesetter.setTypeFlags(props) == 6, "secondary-pierce tactical shotgun bullet resolves to FLAG_CHAIN|FLAG_PIERCE");
+        g = makeGroup(props.霰弹值, props.霰弹分配模式, false, props.flags);
+        check(g.shotgun == null, "secondary-pierce tactical shotgun or pierce-modded shotgun is excluded from ShotgunPattern");
+        ChainUnitManager.removeGroup(g);
+        wd.split=1; wd.bullet="高爆子弹";
+        props = ShootInitCore.generateBulletProps(actor,"手枪",wd,{});
+        check(BulletTypesetter.setTypeFlags(props) == 0, "high-explosive shotgun bullet resolves to non-chain non-pierce");
     }
     private static function counters():Void { dice=0; damages=0; shields=0; hooks=0; events=0; displays=0; }
     private static function makeTarget():Object {

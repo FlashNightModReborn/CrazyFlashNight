@@ -11785,7 +11785,7 @@
       <itemName>Origin12战术版</itemName>
       <profileKey>data</profileKey>
       <dualWield>2</dualWield>
-      <pierce>1</pierce>
+      <pierce>1.5</pierce>
       <damageType>1</damageType>
       <shotgun>5</shotgun>
       <magPrice>1000</magPrice>
@@ -11794,7 +11794,7 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:e20f243e</inputDigest>
+      <inputDigest>fnv1a32:6fe92f4b</inputDigest>
       <sourceDigest>sha256:ea8dc9d4ca408f6c6ab56024840d0c62a23ec68e8c84067da68ca3291af4a1e8</sourceDigest>
       <budgetBreakdown>
         <entry>
@@ -11811,9 +11811,9 @@
           <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Origin12战术版/use=手枪</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-PIERCE-001</id>
+          <id>WBR-PIERCE-002</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=横向联弹-加强普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=横向联弹-次级穿刺子弹/pierceLimit=2</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -11846,14 +11846,14 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；次级穿刺联弹（pierce=1.5）；无获取渠道；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:Vepr12紧凑改装型:data</auditRef>
       <itemName>Vepr12紧凑改装型</itemName>
       <profileKey>data</profileKey>
       <dualWield>2</dualWield>
-      <pierce>1</pierce>
+      <pierce>1.5</pierce>
       <damageType>1</damageType>
       <shotgun>5</shotgun>
       <magPrice>1000</magPrice>
@@ -11862,7 +11862,7 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:77a695b5</inputDigest>
+      <inputDigest>fnv1a32:b2c57cf4</inputDigest>
       <sourceDigest>sha256:bc9503c0d9bd0a25a7308511c0764eb6689e40dfba598b363c26b7a189e281bc</sourceDigest>
       <budgetBreakdown>
         <entry>
@@ -11879,9 +11879,9 @@
           <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/use=手枪</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-PIERCE-001</id>
+          <id>WBR-PIERCE-002</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: 穿刺系数待人工复核</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=横向联弹-次级穿刺子弹/pierceLimit=2</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -11914,7 +11914,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记；次级穿刺联弹（pierce=1.5）；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:KHAOS 12战术版:data</auditRef>
@@ -11923,15 +11923,15 @@
       <dualWield>2</dualWield>
       <pierce>1</pierce>
       <damageType>1</damageType>
-      <shotgun>5</shotgun>
-      <magPrice>1000</magPrice>
+      <shotgun>1</shotgun>
+      <magPrice>2000</magPrice>
       <weightLayers>0</weightLayers>
       <category>1</category>
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:d058938b</inputDigest>
-      <sourceDigest>sha256:3419e1270d0f86a3a3900508fb0c7a906f49356c3dc37752c4865acf0a97c8cb</sourceDigest>
+      <inputDigest>fnv1a32:ce0d7f04</inputDigest>
+      <sourceDigest>sha256:646a29ac48351bd95013eb5f7ea3786d31469a2cb30e74e9c95d3d8f2186bee8</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -11949,7 +11949,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: 穿刺系数待人工复核</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=高爆子弹；默认非穿刺=1待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -11957,14 +11957,14 @@
           <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版/data;伤害类型待人工复核</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-SHOT-002</id>
+          <id>WBR-SHOT-001</id>
           <target>input.shotgun</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版/data/split;霰弹值待人工复核</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版/data/split=1</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AMMO-001</id>
           <target>input.magPrice</target>
-          <evidenceRef>data/items/消耗品_弹夹.xml#item=00号鹿弹/price=1000</evidenceRef>
+          <evidenceRef>data/items/消耗品_弹夹.xml#item=内爆弹/price=2000</evidenceRef>
         </ref>
         <ref>
           <id>WBR-WL-001</id>
@@ -11982,7 +11982,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记；使用高爆子弹/内爆弹（split=1, magPrice=2000）；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:TYPE79:data</auditRef>
@@ -26069,7 +26069,7 @@
       <itemName>AA12战术版</itemName>
       <profileKey>data</profileKey>
       <dualWield>1</dualWield>
-      <pierce>1</pierce>
+      <pierce>1.5</pierce>
       <damageType>1</damageType>
       <shotgun>5</shotgun>
       <magPrice>1000</magPrice>
@@ -26078,14 +26078,14 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:1611633a</inputDigest>
+      <inputDigest>fnv1a32:e3216e97</inputDigest>
       <sourceDigest>sha256:92815747c3b11307c7f780e4c7ee3b590adf40f54efccf4e2df849d6f087b756</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
           <delta>0</delta>
           <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>UNRESOLVED: 仅见于挑战关卡 CF6 Sting/钛合金61 局内拾取（cf6-sting.runtime.json#A03），非主线持久获取路径待人工确认</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -26095,9 +26095,9 @@
           <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=AA12战术版/use=长枪</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-PIERCE-001</id>
+          <id>WBR-PIERCE-002</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=横向联弹-加强普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=横向联弹-次级穿刺子弹/pierceLimit=2</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -26117,7 +26117,7 @@
         <ref>
           <id>WBR-WL-001</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>UNRESOLVED: 仅见于挑战关卡 CF6 Sting/钛合金61 局内拾取（cf6-sting.runtime.json#A03），非主线持久获取路径待人工确认</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -26130,14 +26130,14 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；次级穿刺联弹（pierce=1.5）；仅在CF6肉鸽关卡内作为拾取武器；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:Vepr12战术版:data</auditRef>
       <itemName>Vepr12战术版</itemName>
       <profileKey>data</profileKey>
       <dualWield>1</dualWield>
-      <pierce>1</pierce>
+      <pierce>1.5</pierce>
       <damageType>1</damageType>
       <shotgun>5</shotgun>
       <magPrice>1000</magPrice>
@@ -26146,7 +26146,7 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:0085ea1e</inputDigest>
+      <inputDigest>fnv1a32:71f1ca2b</inputDigest>
       <sourceDigest>sha256:9e55bc3950e26d964bc69d3581b9221a143efb5a13567c0b018d81f43dc9c2c7</sourceDigest>
       <budgetBreakdown>
         <entry>
@@ -26163,9 +26163,9 @@
           <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版/use=长枪</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-PIERCE-001</id>
+          <id>WBR-PIERCE-002</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: 穿刺系数待人工复核</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=横向联弹-次级穿刺子弹/pierceLimit=2</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -26198,7 +26198,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记；次级穿刺联弹（pierce=1.5）；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:AA12丧尸:data</auditRef>
@@ -26221,7 +26221,7 @@
           <code>acquisition.unverified</code>
           <delta>0</delta>
           <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>UNRESOLVED: 仅见于挑战关卡 CF6 Sting/钛合金61 局内精英奖励（cf6-sting.runtime.json#A13_E2），非主线持久获取路径待人工确认</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -26233,7 +26233,7 @@
         <ref>
           <id>WBR-PIERCE-002</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=横向联弹-次级穿刺子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=横向联弹-次级穿刺子弹/pierceLimit=2</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -26253,7 +26253,7 @@
         <ref>
           <id>WBR-WL-001</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>UNRESOLVED: 仅见于挑战关卡 CF6 Sting/钛合金61 局内精英奖励（cf6-sting.runtime.json#A13_E2），非主线持久获取路径待人工确认</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -26266,7 +26266,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；次级穿刺联弹（pierce=1.5）；仅在CF6肉鸽关卡内作为精英奖励/武器箱投放；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:众神之力:data</auditRef>

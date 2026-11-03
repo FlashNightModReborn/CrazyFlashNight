@@ -47,8 +47,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
             ["黄金QBZ的Andy版",10,11,39],
             ["SHRAPNEL",10,11,39],
             ["AA12",5,10,40],
-            ["AA12战术版",5,10,40],
             ["杠杆式霰弹枪",7,10,15],
+            ["Vepr12",5,10,40],
             ["超级矮子",8,30,30],
             ["HDBHshotgun",15,12,20],
             ["双管猎枪",9,11,20],
@@ -57,7 +57,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
             ["无枪托ZUX197",3,10,50],
             ["SPAS12-B2",20,14,35],
             ["Origin12",5,10,40],
-            ["Origin12战术版",5,10,40]
+            ["KHAOS 12",5,10,40]
         ];
     }
     private static function randomOffset(span:Number):Number {
