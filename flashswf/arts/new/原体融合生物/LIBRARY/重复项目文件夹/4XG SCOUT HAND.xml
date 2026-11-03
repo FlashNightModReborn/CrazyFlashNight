@@ -63,7 +63,7 @@
                             <FillStyle index="4">
                               <LinearGradient>
                                 <matrix>
-                                  <Matrix a="0.001861572265625" d="0.002777099609375" tx="9.15" ty="11.9"/>
+                                  <Matrix a="0.001922607421875" d="0.0030517578125" tx="6.75" ty="11.85"/>
                                 </matrix>
                                 <GradientEntry color="#232323" ratio="0"/>
                                 <GradientEntry color="#151515" ratio="0.101960784313725"/>
@@ -79,7 +79,7 @@
                             <FillStyle index="5">
                               <LinearGradient>
                                 <matrix>
-                                  <Matrix a="0.001922607421875" d="0.0030517578125" tx="6.75" ty="11.85"/>
+                                  <Matrix a="0.001861572265625" d="0.002777099609375" tx="9.15" ty="11.9"/>
                                 </matrix>
                                 <GradientEntry color="#232323" ratio="0"/>
                                 <GradientEntry color="#151515" ratio="0.101960784313725"/>
@@ -104,17 +104,17 @@
                           </strokes>
                           <edges>
                             <Edge fillStyle1="2" strokeStyle="1" edges="!133 189[132 182 133 175!133 175[137 153 164 134!164 134[134 110 181 95!181 95[213 89 235 103!235 103[249 114 257 136!257 136[257 145 252 151!252 151[240 180 203 176!203 176[186 183 170 195"/>
-                            <Edge fillStyle1="4" strokeStyle="1" edges="!170 195[191 188 204 203"/>
+                            <Edge fillStyle1="5" strokeStyle="1" edges="!170 195[191 188 204 203"/>
                             <Edge fillStyle1="1" strokeStyle="1" edges="!204 203[203 201 204 200!204 200[205 174 231 182!231 182[243 185 257 201!257 201|270 261!270 261[266 310 228 290!228 290[218 277 214 260"/>
-                            <Edge fillStyle1="4" strokeStyle="1" edges="!214 260[215 268 209 276!209 276[193 295 167 269"/>
-                            <Edge fillStyle1="5" strokeStyle="1" edges="!167 269[165 273 164 277!164 277[139 295 116 279!116 279|114 269"/>
+                            <Edge fillStyle1="5" strokeStyle="1" edges="!214 260[215 268 209 276!209 276[193 295 167 269"/>
+                            <Edge fillStyle1="4" strokeStyle="1" edges="!167 269[165 273 164 277!164 277[139 295 116 279!116 279|114 269"/>
                             <Edge fillStyle1="3" strokeStyle="1" edges="!114 269[85 282 66 257!66 257[62 263 61 244!61 244|62 194!62 194[73 170 102 195!102 195|105 210"/>
-                            <Edge fillStyle1="5" strokeStyle="1" edges="!105 210[110 179 133 189"/>
-                            <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!157 203[164 199 170 195"/>
-                            <Edge fillStyle0="2" fillStyle1="5" strokeStyle="1" edges="!133 189[137 200 149 208!149 208[152 206 157 203"/>
-                            <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!204 203[203 231 213 261!213 261|214 260"/>
-                            <Edge fillStyle0="5" fillStyle1="4" strokeStyle="1" edges="!167 269[146 241 157 203"/>
-                            <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!114 269[102 245 105 210"/>
+                            <Edge fillStyle1="4" strokeStyle="1" edges="!105 210[110 179 133 189"/>
+                            <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!133 189[137 200 149 208!149 208[152 206 157 203"/>
+                            <Edge fillStyle0="2" fillStyle1="5" strokeStyle="1" edges="!157 203[164 199 170 195"/>
+                            <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="!204 203[203 231 213 261!213 261|214 260"/>
+                            <Edge fillStyle0="4" fillStyle1="5" strokeStyle="1" edges="!167 269[146 241 157 203"/>
+                            <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!114 269[102 245 105 210"/>
                           </edges>
                         </DOMShape>
                       </members>

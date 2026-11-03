@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破片枪弹" itemID="68ef571e-00000d32" linkageExportForAS="true" linkageIdentifier="破片枪弹" lastModified="1770322934" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破片枪弹" itemID="68ef571e-00000d32" linkageExportForAS="true" linkageIdentifier="破片枪弹" lastModified="1793746786" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="破片枪弹" currentFrame="2">
       <layers>
@@ -42,9 +42,9 @@ else
 子弹速度 = 10;
 击中地图效果 = "";
 Z轴攻击范围 = 100;
-击倒率 = 1;
+击倒率 = 10;
 击中后子弹的效果 = "";
-击退初速度 = 5;
+击退初速度 = 10;
 子弹敌我属性 = 子弹敌我属性值;
 shootX = this._x;
 shootY = this._y;
@@ -58,7 +58,7 @@ _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种�
 霰弹值 = 8;
 子弹散射度 = 360;
 发射效果 = "";
-子弹种类 = "普通子弹";
+子弹种类 = "次级穿刺子弹";
 
 if(!子弹威力)
 {
