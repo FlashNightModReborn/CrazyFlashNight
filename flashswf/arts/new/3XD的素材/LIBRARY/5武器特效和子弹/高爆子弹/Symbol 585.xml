@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/高爆子弹/Symbol 585" itemID="662f2a77-00000010" linkageExportForAS="true" linkageIdentifier="高爆子弹" lastModified="1793672087" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/高爆子弹/Symbol 585" itemID="662f2a77-00000010" linkageExportForAS="true" linkageIdentifier="高爆子弹" lastModified="1793675276" lastUniqueIdentifier="32">
   <timeline>
-    <DOMTimeline name="Symbol 585" currentFrame="16">
+    <DOMTimeline name="Symbol 585" currentFrame="15">
       <layers>
         <DOMLayer name="Labels Layer" color="#8ADE35">
           <frames>
@@ -80,7 +80,7 @@ this.removeMovieClip();
 _root.播放音效("高爆弹爆炸.wav");
 this.伤害类型 = "魔法";
 this.魔法伤害属性 = "热";
-this.水平击退速度 = 10;
+this.水平击退速度 = 17;
 this.垂直击退速度 = 3;
 ]]></script>
               </Actionscript>
