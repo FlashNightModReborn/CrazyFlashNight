@@ -8422,15 +8422,56 @@
     <icon>JK校服</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <price>25200</price>
+    <setId>armed_jk</setId>
+    <price>39000</price>
     <description>这件平凡的校服上寄托着人们对大灾难前的美好回忆</description>
     <data>
-      <level>12</level>
+      <level>15</level>
       <weight>1</weight>
       <dressup>变装-JK校服</dressup>
-      <hp>50</hp>
-      <mp>50</mp>
-      <damage>15</damage>
+      <hp>60</hp>
+      <mp>30</mp>
+      <damage>10</damage>
+      <defence>95</defence>
+    </data>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <balanceMode>formula</balanceMode>
+      <currentScore>310</currentScore>
+      <balanceScore>310</balanceScore>
+      <weightedScore>310</weightedScore>
+      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <recommendedKPointPrice>1350</recommendedKPointPrice>
+      <marketPrice>39000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:edbe7484</inputDigest>
+      <sourceDigest>sha256:3960592f511c8566cd44d440d69683517e2b59b411ea9d047795767ffde8d72a</sourceDigest>
+      <auditRef>armor:JK校服</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>jk套装裙子</name>
+    <displayname>jk套装裙子</displayname>
+    <icon>jk套装裙子</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <setId>armed_jk</setId>
+    <price>39000</price>
+    <description>校园里常见的裙子。</description>
+    <data>
+      <level>15</level>
+      <weight>1</weight>
+      <dressup>变装-jk套装</dressup>
+      <hp>45</hp>
+      <mp>75</mp>
+      <damage>10</damage>
       <defence>80</defence>
     </data>
     <balance>
@@ -8442,36 +8483,36 @@
       <priceLayers>0</priceLayers>
       <category>1</category>
       <damageTypeFactor>1</damageTypeFactor>
-      <balanceMode>exception</balanceMode>
-      <exceptionCode>legacy-off-formula</exceptionCode>
-      <currentScore>305</currentScore>
-      <balanceScore>250</balanceScore>
-      <weightedScore>250</weightedScore>
-      <recommendedGoldPrice>31200</recommendedGoldPrice>
-      <recommendedKPointPrice>1080</recommendedKPointPrice>
-      <marketPrice>25200</marketPrice>
-      <status>unresolved</status>
-      <inputDigest>fnv1a32:ff82e099</inputDigest>
-      <sourceDigest>sha256:82f5194f5a016da24560721805665d72ac2ecfa2326e50f857846168cf5eee35</sourceDigest>
-      <auditRef>armor:JK校服</auditRef>
+      <balanceMode>formula</balanceMode>
+      <currentScore>310</currentScore>
+      <balanceScore>310</balanceScore>
+      <weightedScore>310</weightedScore>
+      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <recommendedKPointPrice>1350</recommendedKPointPrice>
+      <marketPrice>39000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:4f18b0eb</inputDigest>
+      <sourceDigest>sha256:9af3eccc5942908617958ec1514e66e0201576982b8927ee02087102f363d14f</sourceDigest>
+      <auditRef>armor:jk套装裙子</auditRef>
     </balance>
   </item>
   <item>
-    <name>jk套装裙子</name>
-    <displayname>jk套装裙子</displayname>
-    <icon>jk套装裙子</icon>
+    <name>jk套装鞋子</name>
+    <displayname>jk套装鞋子</displayname>
+    <icon>jk套装鞋子</icon>
     <type>防具</type>
-    <use>下装装备</use>
-    <price>145600</price>
-    <description>校园里常见的裙子。</description>
+    <use>脚部装备</use>
+    <setId>armed_jk</setId>
+    <price>39000</price>
+    <description>一双平平无奇的学生鞋。</description>
     <data>
-      <level>35</level>
-      <weight>1</weight>
-      <dressup>变装-jk套装</dressup>
-      <hp>100</hp>
-      <mp>100</mp>
-      <damage>60</damage>
-      <defence>255</defence>
+      <level>15</level>
+      <weight>0.8</weight>
+      <dressup>男变装-jk套装鞋子</dressup>
+      <hp>40</hp>
+      <mp>40</mp>
+      <damage>26</damage>
+      <defence>75</defence>
     </data>
     <balance>
       <formulaFamily>armor</formulaFamily>
@@ -8482,18 +8523,17 @@
       <priceLayers>0</priceLayers>
       <category>1</category>
       <damageTypeFactor>1</damageTypeFactor>
-      <balanceMode>exception</balanceMode>
-      <exceptionCode>legacy-off-formula</exceptionCode>
-      <currentScore>890</currentScore>
-      <balanceScore>710</balanceScore>
-      <weightedScore>710</weightedScore>
-      <recommendedGoldPrice>91000</recommendedGoldPrice>
-      <recommendedKPointPrice>3150</recommendedKPointPrice>
-      <marketPrice>145600</marketPrice>
-      <status>unresolved</status>
-      <inputDigest>fnv1a32:a986e71a</inputDigest>
-      <sourceDigest>sha256:7c7c4e4106a6d41159315377cab7530b307beaf6bbb11c0d16dc21cf5fbc2a3c</sourceDigest>
-      <auditRef>armor:武装jk套装裙子</auditRef>
+      <balanceMode>formula</balanceMode>
+      <currentScore>308</currentScore>
+      <balanceScore>308</balanceScore>
+      <weightedScore>308</weightedScore>
+      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <recommendedKPointPrice>1350</recommendedKPointPrice>
+      <marketPrice>39000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:29018456</inputDigest>
+      <sourceDigest>sha256:d03221ab524519eb7d2eba8dc2d5f0f0864cdfb3fcc778d4a7bd34140e4b6177</sourceDigest>
+      <auditRef>armor:jk套装鞋子</auditRef>
     </balance>
   </item>
   <item>

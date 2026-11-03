@@ -267,7 +267,21 @@
     <record itemName="弗莱迪手套" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="黑铁死士手套" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="黑铁死士围巾" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
-    <record itemName="JK校服" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
+    <record itemName="JK校服" sourceFile="data/items/防具_0-19级.xml" weightLayers="0" priceLayers="0" category="1" damageTypeFactor="1" adoptedGoldPrice="39000" expectedKPointPrice="1350" kpointEvidenceRef="data/kshop/末日COS☆PLAY.json" status="confirmed" note="15级轻装上衣；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分310，残差0.00%">
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="0" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/末日COS☆PLAY.json" />
+      </budgetBreakdown>
+    </record>
+    <record itemName="jk套装裙子" sourceFile="data/items/防具_0-19级.xml" weightLayers="0" priceLayers="0" category="1" damageTypeFactor="1" adoptedGoldPrice="39000" expectedKPointPrice="1350" kpointEvidenceRef="data/kshop/末日COS☆PLAY.json" status="confirmed" note="15级轻装下装；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分310，残差0.00%">
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="0" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/末日COS☆PLAY.json" />
+      </budgetBreakdown>
+    </record>
+    <record itemName="jk套装鞋子" sourceFile="data/items/防具_0-19级.xml" weightLayers="0" priceLayers="0" category="1" damageTypeFactor="1" adoptedGoldPrice="39000" expectedKPointPrice="1350" kpointEvidenceRef="data/kshop/末日COS☆PLAY.json" status="confirmed" note="15级轻装脚部；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分308，残差-0.65%">
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="0" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/末日COS☆PLAY.json" />
+      </budgetBreakdown>
+    </record>
     <record itemName="黑铁死士鞋" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="黑铁死士制式裤" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="黑铁死士绑带" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
@@ -504,9 +518,16 @@
     <record itemName="诺亚镇暴服脚" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="诺亚镇暴服下装" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="诺亚镇暴服上装" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
-    <record itemName="武装jk套装鞋子" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
-    <record itemName="武装jk套装裙子" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
-    <record itemName="武装jk套装校服" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
+    <record itemName="武装jk套装裙子" sourceFile="data/items/防具_20-39级.xml" weightLayers="0" priceLayers="0" category="1" damageTypeFactor="1" adoptedGoldPrice="67600" expectedKPointPrice="2340" kpointEvidenceRef="data/kshop/末日COS☆PLAY.json" status="confirmed" note="26级轻装下装；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分529，残差-0.19%">
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="0" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/末日COS☆PLAY.json" />
+      </budgetBreakdown>
+    </record>
+    <record itemName="武装jk套装校服" sourceFile="data/items/防具_20-39级.xml" weightLayers="0" priceLayers="0" category="1" damageTypeFactor="1" adoptedGoldPrice="67600" expectedKPointPrice="2340" kpointEvidenceRef="data/kshop/末日COS☆PLAY.json" status="confirmed" note="26级轻装上装；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分530，残差0.00%">
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="0" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/末日COS☆PLAY.json" />
+      </budgetBreakdown>
+    </record>
     <record itemName="A级防化服鞋" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="A级防化服手套" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="A级防化服下装" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />

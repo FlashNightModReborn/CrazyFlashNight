@@ -11656,16 +11656,16 @@
       <weightLayers>0</weightLayers>
       <category>1</category>
       <formula>1</formula>
-      <status>unresolved</status>
-      <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:ced8885b</inputDigest>
-      <sourceDigest>sha256:1f1f5216c00906f3fcd6f42769ff3bd0a6c6d36045371c5cdd4872e7cae7f5f5</sourceDigest>
+      <status>confirmed</status>
+      <displayEligible>true</displayEligible>
+      <inputDigest>fnv1a32:1dd2da2d</inputDigest>
+      <sourceDigest>sha256:55c8bf7b90a2ddef7d6baa128e2cf2153dafc54fa3d92483df73511e62e2ce3c</sourceDigest>
       <budgetBreakdown>
         <entry>
-          <code>acquisition.unverified</code>
+          <code>acquisition.gold-standard</code>
           <delta>0</delta>
           <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.16</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -11677,17 +11677,17 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=横向联弹-加强普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Origin12/data/bullet=横向联弹-加强普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=Origin12/data;无 damagetype/magictype，默认物理=1</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Origin12/data;无 damagetype/magictype，默认物理=1</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-SHOT-002</id>
+          <id>WBR-SHOT-001</id>
           <target>input.shotgun</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=Origin12/data/split=5；横向/纵向/连发语义未裁定，按 split 直录待复核</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Origin12/data/split=5</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AMMO-001</id>
@@ -11695,9 +11695,9 @@
           <evidenceRef>data/items/消耗品_弹夹.xml#item=00号鹿弹/price=1000</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-WL-001</id>
+          <id>WBR-WL-003</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.16</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -11710,7 +11710,75 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>26级副武器全自动连喷；加入PIG商店确定性金币购买（WL=0）；实测DPS残差0.00%符合WBR-DPS-002</note>
+    </record>
+    <record>
+      <auditRef>weapon:KHAOS 12:data</auditRef>
+      <itemName>KHAOS 12</itemName>
+      <profileKey>data</profileKey>
+      <dualWield>2</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>5</shotgun>
+      <magPrice>1000</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <status>confirmed</status>
+      <displayEligible>true</displayEligible>
+      <inputDigest>fnv1a32:59e89734</inputDigest>
+      <sourceDigest>sha256:30cb49bf680d26f2f71090674da4da12a1db5a8fb292796ef39f5e77133f86d4</sourceDigest>
+      <budgetBreakdown>
+        <entry>
+          <code>acquisition.gold-standard</code>
+          <delta>0</delta>
+          <ruleRef>WBR-WL-003</ruleRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.14</evidenceRef>
+        </entry>
+      </budgetBreakdown>
+      <ruleRefs>
+        <ref>
+          <id>WBR-DUAL-001</id>
+          <target>input.dualWield</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12/use=手枪</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PIERCE-001</id>
+          <target>input.pierce</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12/data/bullet=横向联弹-加强普通子弹</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DMG-001</id>
+          <target>input.damageType</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12/data;无 damagetype/magictype，默认物理=1</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-SHOT-001</id>
+          <target>input.shotgun</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12/data/split=5</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AMMO-001</id>
+          <target>input.magPrice</target>
+          <evidenceRef>data/items/消耗品_弹夹.xml#item=00号鹿弹/price=1000</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-003</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.14</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-CAT-001</id>
+          <target>input.category</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12;no-special-category-evidence</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AUTH-001</id>
+          <target>input.formula</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
+        </ref>
+      </ruleRefs>
+      <note>17级副武器半自动霰弹枪；加入PIG商店确定性金币购买（WL=0）；实测DPS残差+0.04%符合WBR-DPS-002</note>
     </record>
     <record>
       <auditRef>weapon:Origin12战术版:data</auditRef>
@@ -11726,8 +11794,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:d6590d3e</inputDigest>
-      <sourceDigest>sha256:064c290b8f8be0da8281c78058d15967e695f565ea5c8bb047937519ad61c271</sourceDigest>
+      <inputDigest>fnv1a32:e20f243e</inputDigest>
+      <sourceDigest>sha256:ea8dc9d4ca408f6c6ab56024840d0c62a23ec68e8c84067da68ca3291af4a1e8</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -11779,6 +11847,142 @@
         </ref>
       </ruleRefs>
       <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+    </record>
+    <record>
+      <auditRef>weapon:Vepr12紧凑改装型:data</auditRef>
+      <itemName>Vepr12紧凑改装型</itemName>
+      <profileKey>data</profileKey>
+      <dualWield>2</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>5</shotgun>
+      <magPrice>1000</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <status>unresolved</status>
+      <displayEligible>false</displayEligible>
+      <inputDigest>fnv1a32:77a695b5</inputDigest>
+      <sourceDigest>sha256:bc9503c0d9bd0a25a7308511c0764eb6689e40dfba598b363c26b7a189e281bc</sourceDigest>
+      <budgetBreakdown>
+        <entry>
+          <code>acquisition.unverified</code>
+          <delta>0</delta>
+          <ruleRef>WBR-WL-003</ruleRef>
+          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+        </entry>
+      </budgetBreakdown>
+      <ruleRefs>
+        <ref>
+          <id>WBR-DUAL-001</id>
+          <target>input.dualWield</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/use=手枪</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PIERCE-001</id>
+          <target>input.pierce</target>
+          <evidenceRef>UNRESOLVED: 穿刺系数待人工复核</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DMG-001</id>
+          <target>input.damageType</target>
+          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/data;伤害类型待人工复核</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-SHOT-002</id>
+          <target>input.shotgun</target>
+          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/data/split;霰弹值待人工复核</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AMMO-001</id>
+          <target>input.magPrice</target>
+          <evidenceRef>data/items/消耗品_弹夹.xml#item=00号鹿弹/price=1000</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-001</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-CAT-001</id>
+          <target>input.category</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型;no-special-category-evidence</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AUTH-001</id>
+          <target>input.formula</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
+        </ref>
+      </ruleRefs>
+      <note>机械派生登记；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
+    </record>
+    <record>
+      <auditRef>weapon:KHAOS 12战术版:data</auditRef>
+      <itemName>KHAOS 12战术版</itemName>
+      <profileKey>data</profileKey>
+      <dualWield>2</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>5</shotgun>
+      <magPrice>1000</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <status>unresolved</status>
+      <displayEligible>false</displayEligible>
+      <inputDigest>fnv1a32:d058938b</inputDigest>
+      <sourceDigest>sha256:3419e1270d0f86a3a3900508fb0c7a906f49356c3dc37752c4865acf0a97c8cb</sourceDigest>
+      <budgetBreakdown>
+        <entry>
+          <code>acquisition.unverified</code>
+          <delta>0</delta>
+          <ruleRef>WBR-WL-003</ruleRef>
+          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+        </entry>
+      </budgetBreakdown>
+      <ruleRefs>
+        <ref>
+          <id>WBR-DUAL-001</id>
+          <target>input.dualWield</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版/use=手枪</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PIERCE-001</id>
+          <target>input.pierce</target>
+          <evidenceRef>UNRESOLVED: 穿刺系数待人工复核</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DMG-001</id>
+          <target>input.damageType</target>
+          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版/data;伤害类型待人工复核</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-SHOT-002</id>
+          <target>input.shotgun</target>
+          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版/data/split;霰弹值待人工复核</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AMMO-001</id>
+          <target>input.magPrice</target>
+          <evidenceRef>data/items/消耗品_弹夹.xml#item=00号鹿弹/price=1000</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-001</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-CAT-001</id>
+          <target>input.category</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版;no-special-category-evidence</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AUTH-001</id>
+          <target>input.formula</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
+        </ref>
+      </ruleRefs>
+      <note>机械派生登记；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:TYPE79:data</auditRef>
@@ -22865,7 +23069,7 @@
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
       <inputDigest>fnv1a32:ce76b3da</inputDigest>
-      <sourceDigest>sha256:4cfd433bbb161559fcd2cdfb80603b8e57ccfd94aebd022c93b200c699e68c51</sourceDigest>
+      <sourceDigest>sha256:227b58f1ed99775b2c3a4be872f92336c1b54447bfa2d80a425eadad3804a461</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -25736,16 +25940,16 @@
       <weightLayers>0</weightLayers>
       <category>1</category>
       <formula>1</formula>
-      <status>unresolved</status>
-      <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:b1302340</inputDigest>
-      <sourceDigest>sha256:9e7ab5665118355b9b022a4b7feefa328623101d1a175e88f283b10bb590a9b9</sourceDigest>
+      <status>confirmed</status>
+      <displayEligible>true</displayEligible>
+      <inputDigest>fnv1a32:6ca93250</inputDigest>
+      <sourceDigest>sha256:9c1614edbd60fefc167594ef19ebed57b2efe9d9fae6c7d3af81930e9f687cb6</sourceDigest>
       <budgetBreakdown>
         <entry>
-          <code>acquisition.unverified</code>
+          <code>acquisition.gold-standard</code>
           <delta>0</delta>
           <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.17</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -25757,17 +25961,17 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=横向联弹-加强普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=AA12/data/bullet=横向联弹-加强普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_霰弹枪.xml#item=AA12/data;无 damagetype/magictype，默认物理=1</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=AA12/data;无 damagetype/magictype，默认物理=1</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-SHOT-002</id>
+          <id>WBR-SHOT-001</id>
           <target>input.shotgun</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_霰弹枪.xml#item=AA12/data/split=5；横向/纵向/连发语义未裁定，按 split 直录待复核</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=AA12/data/split=5</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AMMO-001</id>
@@ -25775,9 +25979,9 @@
           <evidenceRef>data/items/消耗品_弹夹.xml#item=00号鹿弹/price=1000</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-WL-001</id>
+          <id>WBR-WL-003</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.17</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -25790,7 +25994,75 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>28级主武器全自动连喷；加入PIG商店确定性金币购买（WL=0）；子弹命名与显示名修复一致；实测DPS残差+0.18%符合WBR-DPS-002</note>
+    </record>
+    <record>
+      <auditRef>weapon:Vepr12:data</auditRef>
+      <itemName>Vepr12</itemName>
+      <profileKey>data</profileKey>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>5</shotgun>
+      <magPrice>1000</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <status>confirmed</status>
+      <displayEligible>true</displayEligible>
+      <inputDigest>fnv1a32:69f9eec3</inputDigest>
+      <sourceDigest>sha256:2866b2178bd5aa6e444463b05f0029d2291136559b9c5c5e9afa7604e828c2b1</sourceDigest>
+      <budgetBreakdown>
+        <entry>
+          <code>acquisition.gold-standard</code>
+          <delta>0</delta>
+          <ruleRef>WBR-WL-003</ruleRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.15</evidenceRef>
+        </entry>
+      </budgetBreakdown>
+      <ruleRefs>
+        <ref>
+          <id>WBR-DUAL-001</id>
+          <target>input.dualWield</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12/use=长枪</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PIERCE-001</id>
+          <target>input.pierce</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12/data/bullet=横向联弹-加强普通子弹</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DMG-001</id>
+          <target>input.damageType</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12/data;无 damagetype/magictype，默认物理=1</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-SHOT-001</id>
+          <target>input.shotgun</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12/data/split=5</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AMMO-001</id>
+          <target>input.magPrice</target>
+          <evidenceRef>data/items/消耗品_弹夹.xml#item=00号鹿弹/price=1000</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-003</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.15</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-CAT-001</id>
+          <target>input.category</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12;no-special-category-evidence</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AUTH-001</id>
+          <target>input.formula</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
+        </ref>
+      </ruleRefs>
+      <note>23级主武器全自动连喷；加入PIG商店确定性金币购买（WL=0）；实测DPS残差+0.07%符合WBR-DPS-002</note>
     </record>
     <record>
       <auditRef>weapon:AA12战术版:data</auditRef>
@@ -25806,8 +26078,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:fd2ceb62</inputDigest>
-      <sourceDigest>sha256:5dd1cdb6188d4e62bb2bd6bf1621f9d6d1355ecbfb956e08a6f60a6736addb6e</sourceDigest>
+      <inputDigest>fnv1a32:1611633a</inputDigest>
+      <sourceDigest>sha256:92815747c3b11307c7f780e4c7ee3b590adf40f54efccf4e2df849d6f087b756</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -25859,6 +26131,74 @@
         </ref>
       </ruleRefs>
       <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+    </record>
+    <record>
+      <auditRef>weapon:Vepr12战术版:data</auditRef>
+      <itemName>Vepr12战术版</itemName>
+      <profileKey>data</profileKey>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>5</shotgun>
+      <magPrice>1000</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <status>unresolved</status>
+      <displayEligible>false</displayEligible>
+      <inputDigest>fnv1a32:0085ea1e</inputDigest>
+      <sourceDigest>sha256:9e55bc3950e26d964bc69d3581b9221a143efb5a13567c0b018d81f43dc9c2c7</sourceDigest>
+      <budgetBreakdown>
+        <entry>
+          <code>acquisition.unverified</code>
+          <delta>0</delta>
+          <ruleRef>WBR-WL-003</ruleRef>
+          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+        </entry>
+      </budgetBreakdown>
+      <ruleRefs>
+        <ref>
+          <id>WBR-DUAL-001</id>
+          <target>input.dualWield</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版/use=长枪</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PIERCE-001</id>
+          <target>input.pierce</target>
+          <evidenceRef>UNRESOLVED: 穿刺系数待人工复核</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DMG-001</id>
+          <target>input.damageType</target>
+          <evidenceRef>UNRESOLVED: data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版/data;伤害类型待人工复核</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-SHOT-002</id>
+          <target>input.shotgun</target>
+          <evidenceRef>UNRESOLVED: data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版/data/split;霰弹值待人工复核</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AMMO-001</id>
+          <target>input.magPrice</target>
+          <evidenceRef>data/items/消耗品_弹夹.xml#item=00号鹿弹/price=1000</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-001</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-CAT-001</id>
+          <target>input.category</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版;no-special-category-evidence</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AUTH-001</id>
+          <target>input.formula</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
+        </ref>
+      </ruleRefs>
+      <note>机械派生登记；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:AA12丧尸:data</auditRef>

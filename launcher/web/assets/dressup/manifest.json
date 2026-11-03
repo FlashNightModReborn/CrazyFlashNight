@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-10-23T23:54:18+0800",
+  "generatedAt": "2026-11-03T18:08:44+0800",
   "genders": [
     "男",
     "女"
@@ -6396,6 +6396,40 @@
       },
       "sourceFile": "武器_手枪_霰弹枪.xml"
     },
+    "KHAOS 12": {
+      "use": "手枪",
+      "icon": "KHAOS 12",
+      "dressup": "枪-手枪-KHAOS 12",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手枪_装扮": "枪-手枪-KHAOS 12",
+          "手枪2_装扮": "枪-手枪-KHAOS 12"
+        },
+        "女": {
+          "手枪_装扮": "枪-手枪-KHAOS 12",
+          "手枪2_装扮": "枪-手枪-KHAOS 12"
+        }
+      },
+      "sourceFile": "武器_手枪_霰弹枪.xml"
+    },
+    "KHAOS 12战术版": {
+      "use": "手枪",
+      "icon": "KHAOS 12战术版",
+      "dressup": "枪-手枪-KHAOS 12战术版",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手枪_装扮": "枪-手枪-KHAOS 12战术版",
+          "手枪2_装扮": "枪-手枪-KHAOS 12战术版"
+        },
+        "女": {
+          "手枪_装扮": "枪-手枪-KHAOS 12战术版",
+          "手枪2_装扮": "枪-手枪-KHAOS 12战术版"
+        }
+      },
+      "sourceFile": "武器_手枪_霰弹枪.xml"
+    },
     "TYPE79": {
       "use": "长枪",
       "icon": "TYPE79",
@@ -9809,6 +9843,62 @@
       },
       "sourceFile": "武器_长枪_霰弹枪.xml"
     },
+    "61计划普通星座箱": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_CF6六一配给.xml"
+    },
+    "61计划星座机缘箱": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_CF6六一配给.xml"
+    },
+    "61计划战场急救包": {
+      "use": "战场补给",
+      "icon": "加强抗生素药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_CF6六一配给.xml"
+    },
+    "61计划战场弹药包": {
+      "use": "战场补给",
+      "icon": "榴弹弹药",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_CF6六一配给.xml"
+    },
+    "61计划战场火力包": {
+      "use": "战场补给",
+      "icon": "肾上腺素",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_CF6六一配给.xml"
+    },
+    "61计划战场机动包": {
+      "use": "战场补给",
+      "icon": "狴犴·零型",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_CF6六一配给.xml"
+    },
+    "61计划战场防护包": {
+      "use": "战场补给",
+      "icon": "全属性抗性药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_CF6六一配给.xml"
+    },
     "书中冲锋配给包": {
       "use": "礼包",
       "icon": "材料盒子",
@@ -10747,6 +10837,94 @@
       "sourceFile": "消耗品_自选配给.xml"
     },
     "书中CF6毒刺自选配给包·五": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划初始主枪自选箱": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划中级插件自选箱": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划高级插件自选箱": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划改装主枪箱1": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划改装主枪箱2": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划改装主枪箱4": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划改装主枪箱5": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划改装主枪箱6": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划改装主枪箱7": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划改装主枪箱8": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "61计划改装主枪箱9": {
       "use": "礼包",
       "icon": "材料盒子",
       "dressup": "",
@@ -15107,6 +15285,42 @@
       },
       "sourceFile": "防具_0-19级.xml"
     },
+    "jk套装裙子": {
+      "use": "下装装备",
+      "icon": "jk套装裙子",
+      "dressup": "变装-jk套装",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "屁股": "男变装-jk套装屁股",
+          "左大腿": "男变装-jk套装左大腿",
+          "右大腿": "男变装-jk套装右大腿",
+          "小腿": "男变装-jk套装小腿"
+        },
+        "女": {
+          "屁股": "女变装-jk套装屁股",
+          "左大腿": "女变装-jk套装左大腿",
+          "右大腿": "女变装-jk套装右大腿",
+          "小腿": "女变装-jk套装小腿"
+        }
+      },
+      "sourceFile": "防具_0-19级.xml"
+    },
+    "jk套装鞋子": {
+      "use": "脚部装备",
+      "icon": "jk套装鞋子",
+      "dressup": "男变装-jk套装鞋子",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "脚": "男变装-jk套装鞋子"
+        },
+        "女": {
+          "脚": "男变装-jk套装鞋子"
+        }
+      },
+      "sourceFile": "防具_0-19级.xml"
+    },
     "黑铁死士鞋": {
       "use": "脚部装备",
       "icon": "黑铁死士鞋",
@@ -19306,21 +19520,6 @@
       },
       "sourceFile": "防具_20-39级.xml"
     },
-    "武装jk套装鞋子": {
-      "use": "脚部装备",
-      "icon": "武装jk套装鞋子",
-      "dressup": "男变装-武装jk套装鞋子",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "脚": "男变装-武装jk套装鞋子"
-        },
-        "女": {
-          "脚": "男变装-武装jk套装鞋子"
-        }
-      },
-      "sourceFile": "防具_20-39级.xml"
-    },
     "武装jk套装裙子": {
       "use": "下装装备",
       "icon": "武装jk套装裙子",
@@ -19749,6 +19948,188 @@
         },
         "女": {
           "脚": "男变装-3XF特勤脚"
+        }
+      },
+      "sourceFile": "防具_20-39级.xml"
+    },
+    "火凤头部装备": {
+      "use": "头部装备",
+      "icon": "火凤头部装备",
+      "dressup": "HF8/Hair/Front",
+      "helmet": true,
+      "fieldsByGender": {
+        "男": {
+          "面具": "HF8/Hair/Front"
+        },
+        "女": {
+          "面具": "HF8/Hair/Front"
+        }
+      },
+      "sourceFile": "防具_20-39级.xml",
+      "rearAttachments": [
+        {
+          "skinKey": "HF8/Hair/BackTail",
+          "anchorField": "面具",
+          "requiredKeys": {
+            "面具": "HF8/Hair/Front"
+          },
+          "matrix": {
+            "a": -0.9534276440432712,
+            "b": -0.10938534476823622,
+            "c": -0.10938534476823622,
+            "d": 0.9534276440432712,
+            "tx": -28.983013648081673,
+            "ty": 73.15799612988988
+          }
+        },
+        {
+          "skinKey": "HF8/Hair/BackUpper",
+          "anchorField": "面具",
+          "requiredKeys": {
+            "面具": "HF8/Hair/Front"
+          },
+          "matrix": {
+            "a": -0.9534276440432712,
+            "b": -0.10938534476823622,
+            "c": -0.10938534476823622,
+            "d": 0.9534276440432712,
+            "tx": -28.983013648081673,
+            "ty": 73.15799612988988
+          }
+        }
+      ],
+      "auxiliarySkinKeys": [
+        "HF8/Hair/BackTail",
+        "HF8/Hair/BackUpper"
+      ]
+    },
+    "火凤胸甲": {
+      "use": "上装装备",
+      "icon": "火凤胸甲",
+      "dressup": "变装-火凤上装",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "身体": "男变装-火凤上装身体",
+          "上臂": "男变装-火凤上装上臂",
+          "左下臂": "男变装-火凤上装左下臂",
+          "右下臂": "男变装-火凤上装右下臂"
+        },
+        "女": {
+          "身体": "女变装-火凤上装身体",
+          "上臂": "女变装-火凤上装上臂",
+          "左下臂": "女变装-火凤上装左下臂",
+          "右下臂": "女变装-火凤上装右下臂"
+        }
+      },
+      "sourceFile": "防具_20-39级.xml"
+    },
+    "火凤下装": {
+      "use": "下装装备",
+      "icon": "火凤下装",
+      "dressup": "变装-火凤下装",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "屁股": "男变装-火凤下装屁股",
+          "左大腿": "男变装-火凤下装左大腿",
+          "右大腿": "男变装-火凤下装右大腿",
+          "小腿": "男变装-火凤下装小腿"
+        },
+        "女": {
+          "屁股": "女变装-火凤下装屁股",
+          "左大腿": "女变装-火凤下装左大腿",
+          "右大腿": "女变装-火凤下装右大腿",
+          "小腿": "女变装-火凤下装小腿"
+        }
+      },
+      "sourceFile": "防具_20-39级.xml",
+      "rearAttachments": [
+        {
+          "skinKey": "火凤套装_后披摆",
+          "anchorField": "屁股",
+          "requiredKeys": {
+            "面具": "HF8/Hair/Front",
+            "身体": "男变装-火凤上装身体",
+            "上臂": "男变装-火凤上装上臂",
+            "左下臂": "男变装-火凤上装左下臂",
+            "右下臂": "男变装-火凤上装右下臂",
+            "屁股": "男变装-火凤下装屁股",
+            "左大腿": "男变装-火凤下装左大腿",
+            "右大腿": "男变装-火凤下装右大腿",
+            "小腿": "男变装-火凤下装小腿",
+            "左手": "男变装-火凤手甲左手",
+            "右手": "男变装-火凤手甲右手",
+            "脚": "男变装-火凤战靴"
+          },
+          "matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 0,
+            "d": 1,
+            "tx": 0,
+            "ty": 0
+          }
+        },
+        {
+          "skinKey": "火凤套装_后披摆",
+          "anchorField": "屁股",
+          "requiredKeys": {
+            "面具": "HF8/Hair/Front",
+            "身体": "女变装-火凤上装身体",
+            "上臂": "女变装-火凤上装上臂",
+            "左下臂": "女变装-火凤上装左下臂",
+            "右下臂": "女变装-火凤上装右下臂",
+            "屁股": "女变装-火凤下装屁股",
+            "左大腿": "女变装-火凤下装左大腿",
+            "右大腿": "女变装-火凤下装右大腿",
+            "小腿": "女变装-火凤下装小腿",
+            "左手": "男变装-火凤手甲左手",
+            "右手": "男变装-火凤手甲右手",
+            "脚": "男变装-火凤战靴"
+          },
+          "matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 0,
+            "d": 1,
+            "tx": 0,
+            "ty": 0
+          }
+        }
+      ],
+      "auxiliarySkinKeys": [
+        "火凤套装_后披摆"
+      ]
+    },
+    "火凤手甲": {
+      "use": "手部装备",
+      "icon": "火凤手甲",
+      "dressup": "男变装-火凤手甲",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "左手": "男变装-火凤手甲左手",
+          "右手": "男变装-火凤手甲右手"
+        },
+        "女": {
+          "左手": "男变装-火凤手甲左手",
+          "右手": "男变装-火凤手甲右手"
+        }
+      },
+      "sourceFile": "防具_20-39级.xml"
+    },
+    "火凤战靴": {
+      "use": "脚部装备",
+      "icon": "火凤战靴",
+      "dressup": "男变装-火凤战靴",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "脚": "男变装-火凤战靴"
+        },
+        "女": {
+          "脚": "男变装-火凤战靴"
         }
       },
       "sourceFile": "防具_20-39级.xml"
@@ -21744,6 +22125,95 @@
       },
       "sourceFile": "防具_40+级.xml"
     },
+    "统合61式头部装甲": {
+      "use": "头部装备",
+      "icon": "Codex-统合61式头部装甲",
+      "dressup": "男变装-Codex-统合61式头部装甲",
+      "helmet": true,
+      "fieldsByGender": {
+        "男": {
+          "面具": "男变装-Codex-统合61式头部装甲"
+        },
+        "女": {
+          "面具": "男变装-Codex-统合61式头部装甲"
+        }
+      },
+      "sourceFile": "防具_40+级.xml"
+    },
+    "统合61式胸甲": {
+      "use": "上装装备",
+      "icon": "Codex-统合61式胸甲",
+      "dressup": "变装-Codex-统合61式胸甲",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "身体": "男变装-Codex-统合61式胸甲身体",
+          "上臂": "男变装-Codex-统合61式胸甲上臂",
+          "左下臂": "男变装-Codex-统合61式胸甲左下臂",
+          "右下臂": "男变装-Codex-统合61式胸甲右下臂"
+        },
+        "女": {
+          "身体": "女变装-Codex-统合61式胸甲身体",
+          "上臂": "女变装-Codex-统合61式胸甲上臂",
+          "左下臂": "女变装-Codex-统合61式胸甲左下臂",
+          "右下臂": "女变装-Codex-统合61式胸甲右下臂"
+        }
+      },
+      "sourceFile": "防具_40+级.xml"
+    },
+    "统合61式腿甲": {
+      "use": "下装装备",
+      "icon": "Codex-统合61式腿甲",
+      "dressup": "变装-Codex-统合61式腿甲",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "屁股": "男变装-Codex-统合61式腿甲屁股",
+          "左大腿": "男变装-Codex-统合61式腿甲左大腿",
+          "右大腿": "男变装-Codex-统合61式腿甲右大腿",
+          "小腿": "男变装-Codex-统合61式腿甲小腿"
+        },
+        "女": {
+          "屁股": "女变装-Codex-统合61式腿甲屁股",
+          "左大腿": "女变装-Codex-统合61式腿甲左大腿",
+          "右大腿": "女变装-Codex-统合61式腿甲右大腿",
+          "小腿": "女变装-Codex-统合61式腿甲小腿"
+        }
+      },
+      "sourceFile": "防具_40+级.xml"
+    },
+    "统合61式装甲鞋": {
+      "use": "脚部装备",
+      "icon": "Codex-统合61式装甲鞋",
+      "dressup": "男变装-Codex-统合61式装甲鞋",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "脚": "男变装-Codex-统合61式装甲鞋"
+        },
+        "女": {
+          "脚": "男变装-Codex-统合61式装甲鞋"
+        }
+      },
+      "sourceFile": "防具_40+级.xml"
+    },
+    "统合61式手甲": {
+      "use": "手部装备",
+      "icon": "Codex-统合61式手甲",
+      "dressup": "男变装-Codex-统合61式手甲",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "左手": "男变装-Codex-统合61式手甲左手",
+          "右手": "男变装-Codex-统合61式手甲右手"
+        },
+        "女": {
+          "左手": "男变装-Codex-统合61式手甲左手",
+          "右手": "男变装-Codex-统合61式手甲右手"
+        }
+      },
+      "sourceFile": "防具_40+级.xml"
+    },
     "战斗专家军牌": {
       "use": "颈部装备",
       "icon": "战斗专家军牌",
@@ -22597,314 +23067,132 @@
       "sourceFile": "data/units/units.json#235",
       "virtual": true,
       "sourceUnitId": 235
-    },
-    "统合61式头部装甲": {
-      "use": "头部装备",
-      "icon": "Codex-统合61式头部装甲",
-      "dressup": "男变装-Codex-统合61式头部装甲",
-      "helmet": true,
-      "fieldsByGender": {
-        "男": {
-          "面具": "男变装-Codex-统合61式头部装甲"
-        },
-        "女": {
-          "面具": "男变装-Codex-统合61式头部装甲"
-        }
-      },
-      "sourceFile": "防具_40+级.xml"
-    },
-    "统合61式腿甲": {
-      "use": "下装装备",
-      "icon": "Codex-统合61式腿甲",
-      "dressup": "变装-Codex-统合61式腿甲",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "屁股": "男变装-Codex-统合61式腿甲屁股",
-          "左大腿": "男变装-Codex-统合61式腿甲左大腿",
-          "右大腿": "男变装-Codex-统合61式腿甲右大腿",
-          "小腿": "男变装-Codex-统合61式腿甲小腿"
-        },
-        "女": {
-          "屁股": "女变装-Codex-统合61式腿甲屁股",
-          "左大腿": "女变装-Codex-统合61式腿甲左大腿",
-          "右大腿": "女变装-Codex-统合61式腿甲右大腿",
-          "小腿": "女变装-Codex-统合61式腿甲小腿"
-        }
-      },
-      "sourceFile": "防具_40+级.xml"
-    },
-    "统合61式手甲": {
-      "use": "手部装备",
-      "icon": "Codex-统合61式手甲",
-      "dressup": "男变装-Codex-统合61式手甲",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "左手": "男变装-Codex-统合61式手甲左手",
-          "右手": "男变装-Codex-统合61式手甲右手"
-        },
-        "女": {
-          "左手": "男变装-Codex-统合61式手甲左手",
-          "右手": "男变装-Codex-统合61式手甲右手"
-        }
-      },
-      "sourceFile": "防具_40+级.xml"
-    },
-    "统合61式装甲鞋": {
-      "use": "脚部装备",
-      "icon": "Codex-统合61式装甲鞋",
-      "dressup": "男变装-Codex-统合61式装甲鞋",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "脚": "男变装-Codex-统合61式装甲鞋"
-        },
-        "女": {
-          "脚": "男变装-Codex-统合61式装甲鞋"
-        }
-      },
-      "sourceFile": "防具_40+级.xml"
-    },
-    "统合61式胸甲": {
-      "use": "上装装备",
-      "icon": "Codex-统合61式胸甲",
-      "dressup": "变装-Codex-统合61式胸甲",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "身体": "男变装-Codex-统合61式胸甲身体",
-          "上臂": "男变装-Codex-统合61式胸甲上臂",
-          "左下臂": "男变装-Codex-统合61式胸甲左下臂",
-          "右下臂": "男变装-Codex-统合61式胸甲右下臂"
-        },
-        "女": {
-          "身体": "女变装-Codex-统合61式胸甲身体",
-          "上臂": "女变装-Codex-统合61式胸甲上臂",
-          "左下臂": "女变装-Codex-统合61式胸甲左下臂",
-          "右下臂": "女变装-Codex-统合61式胸甲右下臂"
-        }
-      },
-      "sourceFile": "防具_40+级.xml"
-    },
-    "火凤头部装备": {
-      "use": "头部装备",
-      "icon": "火凤头部装备",
-      "dressup": "HF8/Hair/Front",
-      "helmet": true,
-      "fieldsByGender": {
-        "男": {
-          "面具": "HF8/Hair/Front"
-        },
-        "女": {
-          "面具": "HF8/Hair/Front"
-        }
-      },
-      "sourceFile": "防具_20-39级.xml",
-      "rearAttachments": [
-        {
-          "skinKey": "HF8/Hair/BackTail",
-          "anchorField": "面具",
-          "requiredKeys": {
-            "面具": "HF8/Hair/Front"
-          },
-          "matrix": {
-            "a": -0.9534276440432712,
-            "b": -0.10938534476823622,
-            "c": -0.10938534476823622,
-            "d": 0.9534276440432712,
-            "tx": -28.983013648081673,
-            "ty": 73.15799612988988
-          }
-        },
-        {
-          "skinKey": "HF8/Hair/BackUpper",
-          "anchorField": "面具",
-          "requiredKeys": {
-            "面具": "HF8/Hair/Front"
-          },
-          "matrix": {
-            "a": -0.9534276440432712,
-            "b": -0.10938534476823622,
-            "c": -0.10938534476823622,
-            "d": 0.9534276440432712,
-            "tx": -28.983013648081673,
-            "ty": 73.15799612988988
-          }
-        }
-      ],
-      "auxiliarySkinKeys": [
-        "HF8/Hair/BackTail",
-        "HF8/Hair/BackUpper"
-      ]
-    },
-    "火凤胸甲": {
-      "use": "上装装备",
-      "icon": "火凤胸甲",
-      "dressup": "变装-火凤上装",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "身体": "男变装-火凤上装身体",
-          "上臂": "男变装-火凤上装上臂",
-          "左下臂": "男变装-火凤上装左下臂",
-          "右下臂": "男变装-火凤上装右下臂"
-        },
-        "女": {
-          "身体": "女变装-火凤上装身体",
-          "上臂": "女变装-火凤上装上臂",
-          "左下臂": "女变装-火凤上装左下臂",
-          "右下臂": "女变装-火凤上装右下臂"
-        }
-      },
-      "sourceFile": "防具_20-39级.xml"
-    },
-    "火凤下装": {
-      "use": "下装装备",
-      "icon": "火凤下装",
-      "dressup": "变装-火凤下装",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "屁股": "男变装-火凤下装屁股",
-          "左大腿": "男变装-火凤下装左大腿",
-          "右大腿": "男变装-火凤下装右大腿",
-          "小腿": "男变装-火凤下装小腿"
-        },
-        "女": {
-          "屁股": "女变装-火凤下装屁股",
-          "左大腿": "女变装-火凤下装左大腿",
-          "右大腿": "女变装-火凤下装右大腿",
-          "小腿": "女变装-火凤下装小腿"
-        }
-      },
-      "sourceFile": "防具_20-39级.xml",
-      "rearAttachments": [
-        {
-          "skinKey": "火凤套装_后披摆",
-          "anchorField": "屁股",
-          "requiredKeys": {
-            "面具": "HF8/Hair/Front",
-            "身体": "男变装-火凤上装身体",
-            "上臂": "男变装-火凤上装上臂",
-            "左下臂": "男变装-火凤上装左下臂",
-            "右下臂": "男变装-火凤上装右下臂",
-            "屁股": "男变装-火凤下装屁股",
-            "左大腿": "男变装-火凤下装左大腿",
-            "右大腿": "男变装-火凤下装右大腿",
-            "小腿": "男变装-火凤下装小腿",
-            "左手": "男变装-火凤手甲左手",
-            "右手": "男变装-火凤手甲右手",
-            "脚": "男变装-火凤战靴"
-          },
-          "matrix": {
-            "a": 1,
-            "b": 0,
-            "c": 0,
-            "d": 1,
-            "tx": 0,
-            "ty": 0
-          }
-        },
-        {
-          "skinKey": "火凤套装_后披摆",
-          "anchorField": "屁股",
-          "requiredKeys": {
-            "面具": "HF8/Hair/Front",
-            "身体": "女变装-火凤上装身体",
-            "上臂": "女变装-火凤上装上臂",
-            "左下臂": "女变装-火凤上装左下臂",
-            "右下臂": "女变装-火凤上装右下臂",
-            "屁股": "女变装-火凤下装屁股",
-            "左大腿": "女变装-火凤下装左大腿",
-            "右大腿": "女变装-火凤下装右大腿",
-            "小腿": "女变装-火凤下装小腿",
-            "左手": "男变装-火凤手甲左手",
-            "右手": "男变装-火凤手甲右手",
-            "脚": "男变装-火凤战靴"
-          },
-          "matrix": {
-            "a": 1,
-            "b": 0,
-            "c": 0,
-            "d": 1,
-            "tx": 0,
-            "ty": 0
-          }
-        }
-      ],
-      "auxiliarySkinKeys": [
-        "火凤套装_后披摆"
-      ]
-    },
-    "火凤手甲": {
-      "use": "手部装备",
-      "icon": "火凤手甲",
-      "dressup": "男变装-火凤手甲",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "左手": "男变装-火凤手甲左手",
-          "右手": "男变装-火凤手甲右手"
-        },
-        "女": {
-          "左手": "男变装-火凤手甲左手",
-          "右手": "男变装-火凤手甲右手"
-        }
-      },
-      "sourceFile": "防具_20-39级.xml"
-    },
-    "火凤战靴": {
-      "use": "脚部装备",
-      "icon": "火凤战靴",
-      "dressup": "男变装-火凤战靴",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "脚": "男变装-火凤战靴"
-        },
-        "女": {
-          "脚": "男变装-火凤战靴"
-        }
-      },
-      "sourceFile": "防具_20-39级.xml"
-    },
-    "KHAOS 12": {
-      "use": "手枪",
-      "icon": "KHAOS 12",
-      "dressup": "枪-手枪-KHAOS 12",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手枪_装扮": "枪-手枪-KHAOS 12",
-          "手枪2_装扮": "枪-手枪-KHAOS 12"
-        },
-        "女": {
-          "手枪_装扮": "枪-手枪-KHAOS 12",
-          "手枪2_装扮": "枪-手枪-KHAOS 12"
-        }
-      },
-      "sourceFile": "武器_手枪_霰弹枪.xml"
-    },
-    "KHAOS 12战术版": {
-      "use": "手枪",
-      "icon": "KHAOS 12战术版",
-      "dressup": "枪-手枪-KHAOS 12战术版",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手枪_装扮": "枪-手枪-KHAOS 12战术版",
-          "手枪2_装扮": "枪-手枪-KHAOS 12战术版"
-        },
-        "女": {
-          "手枪_装扮": "枪-手枪-KHAOS 12战术版",
-          "手枪2_装扮": "枪-手枪-KHAOS 12战术版"
-        }
-      },
-      "sourceFile": "武器_手枪_霰弹枪.xml"
     }
   },
   "skinKeys": {
+    "HF8/Hair/BackTail": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/R9长发/BackTail",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "rear-attachment"
+      ],
+      "items": [
+        "火凤头部装备"
+      ],
+      "sourceFiles": [
+        "scripts/类定义/org/flashNight/arki/unit/Action/Huofeng/HuofengHairProfile.as"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/9c264a6c_1.png",
+        "width": 304,
+        "height": 240,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/9c264a6c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 304,
+          "height": 240,
+          "originX": 152.1,
+          "originY": 22.0
+        }
+      ]
+    },
+    "HF8/Hair/BackUpper": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/R9长发/BackUpper",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "rear-attachment"
+      ],
+      "items": [
+        "火凤头部装备"
+      ],
+      "sourceFiles": [
+        "scripts/类定义/org/flashNight/arki/unit/Action/Huofeng/HuofengHairProfile.as"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/3f61ce58_1.png",
+        "width": 304,
+        "height": 239,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/3f61ce58_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 304,
+          "height": 239,
+          "originX": 152.1,
+          "originY": 217.9
+        }
+      ]
+    },
+    "HF8/Hair/Front": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/R9长发/Front",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "头部装备"
+      ],
+      "items": [
+        "火凤头部装备"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c4b640b0_1.png",
+        "width": 197,
+        "height": 166,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ]
+      },
+      "frames": [
+        {
+          "uri": "skins/c4b640b0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 197,
+          "height": 166,
+          "originX": 93.7,
+          "originY": 105.2
+        }
+      ]
+    },
     "刀-3XF电棍": {
       "covered": true,
       "asset": {
@@ -46046,6 +46334,362 @@
         "防具_0-19级.xml"
       ]
     },
+    "女变装-Codex-统合61式胸甲上臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/女变装-Codex-统合61式胸甲上臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "统合61式胸甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0a245066_1.png",
+        "width": 190,
+        "height": 269,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/0a245066_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 190,
+          "height": 269,
+          "originX": 129.6,
+          "originY": 145.2
+        }
+      ]
+    },
+    "女变装-Codex-统合61式胸甲右下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/女变装-Codex-统合61式胸甲右下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "统合61式胸甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/6915b497_1.png",
+        "width": 107,
+        "height": 265,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/6915b497_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 107,
+          "height": 265,
+          "originX": 70.5,
+          "originY": 147.2
+        }
+      ]
+    },
+    "女变装-Codex-统合61式胸甲左下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/女变装-Codex-统合61式胸甲左下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "统合61式胸甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0adb4f36_1.png",
+        "width": 95,
+        "height": 236,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/0adb4f36_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 95,
+          "height": 236,
+          "originX": 52.8,
+          "originY": 121.8
+        }
+      ]
+    },
+    "女变装-Codex-统合61式胸甲身体": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/女变装-Codex-统合61式胸甲身体",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "统合61式胸甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/59ab0cc9_1.png",
+        "width": 347,
+        "height": 496,
+        "playback": "static-first-frame",
+        "sourceFrameCount": 3,
+        "timelineScriptFrames": [
+          1,
+          2,
+          3
+        ],
+        "hasFrame1Stop": true,
+        "staticReason": "frame1_scripted_stop",
+        "collapsedFrameCount": 2
+      },
+      "frames": [
+        {
+          "uri": "skins/59ab0cc9_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 347,
+          "height": 496,
+          "originX": 172.9,
+          "originY": 258.0
+        }
+      ]
+    },
+    "女变装-Codex-统合61式腿甲右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/女变装-Codex-统合61式腿甲右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "统合61式腿甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/02526e4a_1.png",
+        "width": 197,
+        "height": 334,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/02526e4a_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 197,
+          "height": 334,
+          "originX": 92.8,
+          "originY": 186.8
+        }
+      ]
+    },
+    "女变装-Codex-统合61式腿甲小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/女变装-Codex-统合61式腿甲小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "统合61式腿甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/a6e1c799_1.png",
+        "width": 128,
+        "height": 327,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/a6e1c799_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 128,
+          "height": 327,
+          "originX": 67.0,
+          "originY": 146.9
+        }
+      ]
+    },
+    "女变装-Codex-统合61式腿甲屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/女变装-Codex-统合61式腿甲屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "统合61式腿甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/ce1032be_1.png",
+        "width": 341,
+        "height": 199,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/ce1032be_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 341,
+          "height": 199,
+          "originX": 169.0,
+          "originY": 103.5
+        }
+      ]
+    },
+    "女变装-Codex-统合61式腿甲左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/女变装-Codex-统合61式腿甲左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "统合61式腿甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/619c95eb_1.png",
+        "width": 225,
+        "height": 351,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/619c95eb_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 225,
+          "height": 351,
+          "originX": 58.4,
+          "originY": 190.8
+        }
+      ]
+    },
     "女变装-Codex-重装特勤上臂": {
       "covered": true,
       "asset": {
@@ -50055,6 +50699,166 @@
           "height": 371,
           "originX": 55.5,
           "originY": 213
+        }
+      ]
+    },
+    "女变装-jk套装右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/裙子/女变装-jk套装右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d0c8810c_1.png",
+        "width": 187,
+        "height": 388,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d0c8810c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 187,
+          "height": 388,
+          "originX": 105.3,
+          "originY": 219.3
+        }
+      ]
+    },
+    "女变装-jk套装小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/裙子/女变装-jk套装小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/79eac3ae_1.png",
+        "width": 100,
+        "height": 303,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/79eac3ae_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 100,
+          "height": 303,
+          "originX": 55.6,
+          "originY": 145.3
+        }
+      ]
+    },
+    "女变装-jk套装屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/裙子/女变装-jk套装屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/111b3689_1.png",
+        "width": 293,
+        "height": 201,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/111b3689_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 293,
+          "height": 201,
+          "originX": 160.7,
+          "originY": 99.7
+        }
+      ]
+    },
+    "女变装-jk套装左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/裙子/女变装-jk套装左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b3067aad_1.png",
+        "width": 158,
+        "height": 314,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/b3067aad_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 158,
+          "height": 314,
+          "originX": 90.3,
+          "originY": 154.9
         }
       ]
     },
@@ -63438,6 +64242,326 @@
           "height": 485,
           "originX": 110.4,
           "originY": 246
+        }
+      ]
+    },
+    "女变装-火凤上装上臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/女变装-火凤上装上臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "火凤胸甲"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/9864cbeb_1.png",
+        "width": 115,
+        "height": 267,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/9864cbeb_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 115,
+          "height": 267,
+          "originX": 56.3,
+          "originY": 142.1
+        }
+      ]
+    },
+    "女变装-火凤上装右下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/女变装-火凤上装右下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "火凤胸甲"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/64912e97_1.png",
+        "width": 322,
+        "height": 326,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/64912e97_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 322,
+          "height": 326,
+          "originX": 191.0,
+          "originY": 144.0
+        }
+      ]
+    },
+    "女变装-火凤上装左下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/女变装-火凤上装左下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "火凤胸甲"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/075fd536_1.png",
+        "width": 103,
+        "height": 177,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/075fd536_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 103,
+          "height": 177,
+          "originX": 53.7,
+          "originY": 88.5
+        }
+      ]
+    },
+    "女变装-火凤上装身体": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/女变装-火凤上装身体",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "火凤胸甲"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/cbeb9744_1.png",
+        "width": 282,
+        "height": 489,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/cbeb9744_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 282,
+          "height": 489,
+          "originX": 118.0,
+          "originY": 251.7
+        }
+      ]
+    },
+    "女变装-火凤下装右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/女变装-火凤下装右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "火凤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/57f16021_1.png",
+        "width": 124,
+        "height": 311,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/57f16021_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 124,
+          "height": 311,
+          "originX": 62.0,
+          "originY": 156.3
+        }
+      ]
+    },
+    "女变装-火凤下装小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/女变装-火凤下装小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "火凤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d10ae610_1.png",
+        "width": 115,
+        "height": 301,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d10ae610_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 115,
+          "height": 301,
+          "originX": 57.8,
+          "originY": 162.9
+        }
+      ]
+    },
+    "女变装-火凤下装屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/女变装-火凤下装屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "火凤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b9fb1337_1.png",
+        "width": 226,
+        "height": 173,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/b9fb1337_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 226,
+          "height": 173,
+          "originX": 119.7,
+          "originY": 86.9
+        }
+      ]
+    },
+    "女变装-火凤下装左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/女变装-火凤下装左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "火凤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/343f9b80_1.png",
+        "width": 117,
+        "height": 312,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/343f9b80_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 117,
+          "height": 312,
+          "originX": 56.8,
+          "originY": 154.8
         }
       ]
     },
@@ -82124,6 +83248,86 @@
         }
       ]
     },
+    "枪-手枪-KHAOS 12": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "2副武器/khaos12g文件/武器版本/枪-手枪-KHAOS 12",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "KHAOS 12"
+      ],
+      "sourceFiles": [
+        "武器_手枪_霰弹枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c0d91c0f_1.png",
+        "width": 557,
+        "height": 213,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/c0d91c0f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 557,
+          "height": 213,
+          "originX": 42.4,
+          "originY": 97.7
+        }
+      ]
+    },
+    "枪-手枪-KHAOS 12战术版": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "2副武器/khaos12g文件/武器版本/枪-手枪-KHAOS 12战术版",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "KHAOS 12战术版"
+      ],
+      "sourceFiles": [
+        "武器_手枪_霰弹枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/4cae2c84_1.png",
+        "width": 1435,
+        "height": 217,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/4cae2c84_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1435,
+          "height": 217,
+          "originX": 42.4,
+          "originY": 103.5
+        }
+      ]
+    },
     "枪-手枪-KRISS": {
       "covered": true,
       "asset": {
@@ -96642,6 +97846,46 @@
         }
       ]
     },
+    "火凤套装_后披摆": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/后披摆",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "rear-attachment"
+      ],
+      "items": [
+        "火凤下装"
+      ],
+      "sourceFiles": [
+        "scripts/类定义/org/flashNight/arki/unit/Action/Huofeng/HuofengHairProfile.as"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/711fb3b8_1.png",
+        "width": 619,
+        "height": 636,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/711fb3b8_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 619,
+          "height": 636,
+          "originX": 518.6,
+          "originY": 62.6
+        }
+      ]
+    },
     "男变装-3XF士兵上臂": {
       "covered": true,
       "asset": {
@@ -102242,6 +103486,538 @@
         }
       ]
     },
+    "男变装-Codex-统合61式头部装甲": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式头部装甲",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "头部装备"
+      ],
+      "items": [
+        "统合61式头部装甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/5396e436_1.png",
+        "width": 200,
+        "height": 194,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/5396e436_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 200,
+          "height": 194,
+          "originX": 107.8,
+          "originY": 101.3
+        }
+      ]
+    },
+    "男变装-Codex-统合61式手甲右手": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式手甲右手",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手部装备"
+      ],
+      "items": [
+        "统合61式手甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/41aef506_1.png",
+        "width": 333,
+        "height": 189,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/41aef506_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 333,
+          "height": 189,
+          "originX": 270.7,
+          "originY": 130.6
+        }
+      ]
+    },
+    "男变装-Codex-统合61式手甲左手": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式手甲左手",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手部装备"
+      ],
+      "items": [
+        "统合61式手甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b738a1ec_1.png",
+        "width": 125,
+        "height": 107,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/b738a1ec_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 125,
+          "height": 107,
+          "originX": 59.7,
+          "originY": 48.6
+        }
+      ]
+    },
+    "男变装-Codex-统合61式胸甲上臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式胸甲上臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "统合61式胸甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/714bff9f_1.png",
+        "width": 189,
+        "height": 272,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/714bff9f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 189,
+          "height": 272,
+          "originX": 101.9,
+          "originY": 177.1
+        }
+      ]
+    },
+    "男变装-Codex-统合61式胸甲右下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式胸甲右下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "统合61式胸甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/2792205c_1.png",
+        "width": 107,
+        "height": 265,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/2792205c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 107,
+          "height": 265,
+          "originX": 70.7,
+          "originY": 143.8
+        }
+      ]
+    },
+    "男变装-Codex-统合61式胸甲左下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式胸甲左下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "统合61式胸甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/445cdbfd_1.png",
+        "width": 95,
+        "height": 236,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/445cdbfd_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 95,
+          "height": 236,
+          "originX": 48.7,
+          "originY": 121.8
+        }
+      ]
+    },
+    "男变装-Codex-统合61式胸甲身体": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式胸甲身体",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "统合61式胸甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/22c4a330_1.png",
+        "width": 354,
+        "height": 453,
+        "playback": "static-first-frame",
+        "sourceFrameCount": 3,
+        "timelineScriptFrames": [
+          1,
+          2,
+          3
+        ],
+        "hasFrame1Stop": true,
+        "staticReason": "frame1_scripted_stop",
+        "collapsedFrameCount": 2
+      },
+      "frames": [
+        {
+          "uri": "skins/22c4a330_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 354,
+          "height": 453,
+          "originX": 193.2,
+          "originY": 260.1
+        }
+      ]
+    },
+    "男变装-Codex-统合61式腿甲右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式腿甲右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "统合61式腿甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/4cd5fa81_1.png",
+        "width": 197,
+        "height": 334,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/4cd5fa81_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 197,
+          "height": 334,
+          "originX": 102.8,
+          "originY": 186.8
+        }
+      ]
+    },
+    "男变装-Codex-统合61式腿甲小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式腿甲小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "统合61式腿甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/dd8e6860_1.png",
+        "width": 128,
+        "height": 300,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/dd8e6860_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 128,
+          "height": 300,
+          "originX": 63.0,
+          "originY": 149.5
+        }
+      ]
+    },
+    "男变装-Codex-统合61式腿甲屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式腿甲屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "统合61式腿甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b57f9d47_1.png",
+        "width": 341,
+        "height": 203,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/b57f9d47_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 341,
+          "height": 203,
+          "originX": 190.6,
+          "originY": 126.8
+        }
+      ]
+    },
+    "男变装-Codex-统合61式腿甲左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式腿甲左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "统合61式腿甲"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/2f1b0120_1.png",
+        "width": 225,
+        "height": 351,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/2f1b0120_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 225,
+          "height": 351,
+          "originX": 62.4,
+          "originY": 194.8
+        }
+      ]
+    },
+    "男变装-Codex-统合61式装甲鞋": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/统合61式/男变装-Codex-统合61式装甲鞋",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "脚部装备"
+      ],
+      "items": [
+        "统合61式装甲鞋"
+      ],
+      "sourceFiles": [
+        "防具_40+级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/91145a71_1.png",
+        "width": 177,
+        "height": 129,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/91145a71_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 177,
+          "height": 129,
+          "originX": 96.8,
+          "originY": 50.8
+        }
+      ]
+    },
     "男变装-Codex-重装特勤上臂": {
       "covered": true,
       "asset": {
@@ -106506,6 +108282,98 @@
       ],
       "sourceFiles": [
         "防具_20-39级.xml"
+      ]
+    },
+    "男变装-jk套装右大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装小腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装屁股": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装左大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装鞋子": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/武装jk套装/男变装-武装jk套装鞋子",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "脚部装备"
+      ],
+      "items": [
+        "jk套装鞋子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/1c913a48_1.png",
+        "width": 148,
+        "height": 132,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/1c913a48_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 148,
+          "height": 132,
+          "originX": 71.7,
+          "originY": 44.6
+        }
       ]
     },
     "男变装-keyboard手套右手": {
@@ -115711,6 +117579,14 @@
           {
             "swf": "flashswf/backgrounds/gk22_3_BG.swf",
             "symbolName": ""
+          },
+          {
+            "swf": "flashswf/levels/地图-研究所接待处.swf",
+            "symbolName": "sprite/男变装-基本脸型"
+          },
+          {
+            "swf": "flashswf/levels/地图-研究所通路.swf",
+            "symbolName": "sprite/男变装-基本脸型"
           },
           {
             "swf": "flashswf/levels/地图-第一防线防区.swf",
@@ -126412,46 +128288,6 @@
         "防具_20-39级.xml"
       ]
     },
-    "男变装-武装jk套装鞋子": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/3XD的素材.swf",
-        "symbolName": "4人物服饰外观/武装jk套装/男变装-武装jk套装鞋子",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "脚部装备"
-      ],
-      "items": [
-        "武装jk套装鞋子"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24,
-        "frameCount": 1,
-        "uri": "skins/24c95120_1.png",
-        "width": 148,
-        "height": 132,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/24c95120_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 148,
-          "height": 132,
-          "originX": 71.7,
-          "originY": 44.6
-        }
-      ]
-    },
     "男变装-毒液蜘蛛侠头套": {
       "covered": true,
       "asset": {
@@ -127649,6 +129485,446 @@
           "height": 152,
           "originX": 77.5,
           "originY": 69.8
+        }
+      ]
+    },
+    "男变装-火凤上装上臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤上装上臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "火凤胸甲"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/3d8a41b1_1.png",
+        "width": 115,
+        "height": 267,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/3d8a41b1_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 115,
+          "height": 267,
+          "originX": 56.3,
+          "originY": 142.1
+        }
+      ]
+    },
+    "男变装-火凤上装右下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤上装右下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "火凤胸甲"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/83643aea_1.png",
+        "width": 322,
+        "height": 326,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/83643aea_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 322,
+          "height": 326,
+          "originX": 191.0,
+          "originY": 144.0
+        }
+      ]
+    },
+    "男变装-火凤上装左下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤上装左下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "火凤胸甲"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/e0aac14b_1.png",
+        "width": 103,
+        "height": 177,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/e0aac14b_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 103,
+          "height": 177,
+          "originX": 53.7,
+          "originY": 88.5
+        }
+      ]
+    },
+    "男变装-火凤上装身体": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤上装身体",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "火凤胸甲"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/6e051d1e_1.png",
+        "width": 282,
+        "height": 489,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/6e051d1e_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 282,
+          "height": 489,
+          "originX": 118.0,
+          "originY": 251.7
+        }
+      ]
+    },
+    "男变装-火凤下装右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤下装右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "火凤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b004745c_1.png",
+        "width": 124,
+        "height": 311,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/b004745c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 124,
+          "height": 311,
+          "originX": 62.0,
+          "originY": 156.3
+        }
+      ]
+    },
+    "男变装-火凤下装小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤下装小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "火凤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/74e46c4a_1.png",
+        "width": 115,
+        "height": 301,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/74e46c4a_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 115,
+          "height": 301,
+          "originX": 57.8,
+          "originY": 162.9
+        }
+      ]
+    },
+    "男变装-火凤下装屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤下装屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "火凤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/1c15996d_1.png",
+        "width": 226,
+        "height": 173,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/1c15996d_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 226,
+          "height": 173,
+          "originX": 119.7,
+          "originY": 86.9
+        }
+      ]
+    },
+    "男变装-火凤下装左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤下装左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "火凤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d3ca8ffd_1.png",
+        "width": 117,
+        "height": 312,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d3ca8ffd_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 117,
+          "height": 312,
+          "originX": 56.8,
+          "originY": 154.8
+        }
+      ]
+    },
+    "男变装-火凤战靴": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤战靴",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "脚部装备"
+      ],
+      "items": [
+        "火凤战靴"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/e3ff6430_1.png",
+        "width": 146,
+        "height": 139,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/e3ff6430_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 146,
+          "height": 139,
+          "originX": 73.4,
+          "originY": 71.2
+        }
+      ]
+    },
+    "男变装-火凤手甲右手": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤手甲右手",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手部装备"
+      ],
+      "items": [
+        "火凤手甲"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/525d969d_1.png",
+        "width": 321,
+        "height": 246,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/525d969d_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 321,
+          "height": 246,
+          "originX": 231.5,
+          "originY": 153.6
+        }
+      ]
+    },
+    "男变装-火凤手甲左手": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/火凤套装/装扮/男变装-火凤手甲左手",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手部装备"
+      ],
+      "items": [
+        "火凤手甲"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/a4cbc277_1.png",
+        "width": 115,
+        "height": 102,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/a4cbc277_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 115,
+          "height": 102,
+          "originX": 64.7,
+          "originY": 51.1
         }
       ]
     },
@@ -153181,1897 +155457,6 @@
           "height": 156,
           "originX": 50.4,
           "originY": 67.2
-        }
-      ]
-    },
-    "男变装-Codex-统合61式头部装甲": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式头部装甲",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "头部装备"
-      ],
-      "items": [
-        "统合61式头部装甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/5396e436_1.png",
-        "width": 200,
-        "height": 194,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/5396e436_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 200,
-          "height": 194,
-          "originX": 107.8,
-          "originY": 101.3
-        }
-      ]
-    },
-    "女变装-Codex-统合61式腿甲右大腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/女变装-Codex-统合61式腿甲右大腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "统合61式腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/02526e4a_1.png",
-        "width": 197,
-        "height": 334,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/02526e4a_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 197,
-          "height": 334,
-          "originX": 92.8,
-          "originY": 186.8
-        }
-      ]
-    },
-    "女变装-Codex-统合61式腿甲小腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/女变装-Codex-统合61式腿甲小腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "统合61式腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/a6e1c799_1.png",
-        "width": 128,
-        "height": 327,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/a6e1c799_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 128,
-          "height": 327,
-          "originX": 67.0,
-          "originY": 146.9
-        }
-      ]
-    },
-    "女变装-Codex-统合61式腿甲屁股": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/女变装-Codex-统合61式腿甲屁股",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "统合61式腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/ce1032be_1.png",
-        "width": 341,
-        "height": 199,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/ce1032be_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 341,
-          "height": 199,
-          "originX": 169.0,
-          "originY": 103.5
-        }
-      ]
-    },
-    "女变装-Codex-统合61式腿甲左大腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/女变装-Codex-统合61式腿甲左大腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "统合61式腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/619c95eb_1.png",
-        "width": 225,
-        "height": 351,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/619c95eb_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 225,
-          "height": 351,
-          "originX": 58.4,
-          "originY": 190.8
-        }
-      ]
-    },
-    "男变装-Codex-统合61式腿甲右大腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式腿甲右大腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "统合61式腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/4cd5fa81_1.png",
-        "width": 197,
-        "height": 334,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/4cd5fa81_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 197,
-          "height": 334,
-          "originX": 102.8,
-          "originY": 186.8
-        }
-      ]
-    },
-    "男变装-Codex-统合61式腿甲小腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式腿甲小腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "统合61式腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/dd8e6860_1.png",
-        "width": 128,
-        "height": 300,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/dd8e6860_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 128,
-          "height": 300,
-          "originX": 63.0,
-          "originY": 149.5
-        }
-      ]
-    },
-    "男变装-Codex-统合61式腿甲屁股": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式腿甲屁股",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "统合61式腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/b57f9d47_1.png",
-        "width": 341,
-        "height": 203,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/b57f9d47_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 341,
-          "height": 203,
-          "originX": 190.6,
-          "originY": 126.8
-        }
-      ]
-    },
-    "男变装-Codex-统合61式腿甲左大腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式腿甲左大腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "统合61式腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/2f1b0120_1.png",
-        "width": 225,
-        "height": 351,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/2f1b0120_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 225,
-          "height": 351,
-          "originX": 62.4,
-          "originY": 194.8
-        }
-      ]
-    },
-    "男变装-Codex-统合61式手甲右手": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式手甲右手",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "手部装备"
-      ],
-      "items": [
-        "统合61式手甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/41aef506_1.png",
-        "width": 333,
-        "height": 189,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/41aef506_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 333,
-          "height": 189,
-          "originX": 270.7,
-          "originY": 130.6
-        }
-      ]
-    },
-    "男变装-Codex-统合61式手甲左手": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式手甲左手",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "手部装备"
-      ],
-      "items": [
-        "统合61式手甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/b738a1ec_1.png",
-        "width": 125,
-        "height": 107,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/b738a1ec_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 125,
-          "height": 107,
-          "originX": 59.7,
-          "originY": 48.6
-        }
-      ]
-    },
-    "男变装-Codex-统合61式装甲鞋": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式装甲鞋",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "脚部装备"
-      ],
-      "items": [
-        "统合61式装甲鞋"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/91145a71_1.png",
-        "width": 177,
-        "height": 129,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/91145a71_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 177,
-          "height": 129,
-          "originX": 96.8,
-          "originY": 50.8
-        }
-      ]
-    },
-    "女变装-Codex-统合61式胸甲上臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/女变装-Codex-统合61式胸甲上臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "统合61式胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/0a245066_1.png",
-        "width": 190,
-        "height": 269,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/0a245066_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 190,
-          "height": 269,
-          "originX": 129.6,
-          "originY": 145.2
-        }
-      ]
-    },
-    "女变装-Codex-统合61式胸甲右下臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/女变装-Codex-统合61式胸甲右下臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "统合61式胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/6915b497_1.png",
-        "width": 107,
-        "height": 265,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/6915b497_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 107,
-          "height": 265,
-          "originX": 70.5,
-          "originY": 147.2
-        }
-      ]
-    },
-    "女变装-Codex-统合61式胸甲左下臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/女变装-Codex-统合61式胸甲左下臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "统合61式胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/0adb4f36_1.png",
-        "width": 95,
-        "height": 236,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/0adb4f36_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 95,
-          "height": 236,
-          "originX": 52.8,
-          "originY": 121.8
-        }
-      ]
-    },
-    "女变装-Codex-统合61式胸甲身体": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/女变装-Codex-统合61式胸甲身体",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "统合61式胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/59ab0cc9_1.png",
-        "width": 347,
-        "height": 496,
-        "playback": "static-first-frame",
-        "sourceFrameCount": 3,
-        "timelineScriptFrames": [
-          1,
-          2,
-          3
-        ],
-        "hasFrame1Stop": true,
-        "staticReason": "frame1_scripted_stop",
-        "collapsedFrameCount": 2
-      },
-      "frames": [
-        {
-          "uri": "skins/59ab0cc9_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 347,
-          "height": 496,
-          "originX": 172.9,
-          "originY": 258.0
-        }
-      ]
-    },
-    "男变装-Codex-统合61式胸甲上臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式胸甲上臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "统合61式胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/714bff9f_1.png",
-        "width": 189,
-        "height": 272,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/714bff9f_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 189,
-          "height": 272,
-          "originX": 101.9,
-          "originY": 177.1
-        }
-      ]
-    },
-    "男变装-Codex-统合61式胸甲右下臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式胸甲右下臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "统合61式胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/2792205c_1.png",
-        "width": 107,
-        "height": 265,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/2792205c_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 107,
-          "height": 265,
-          "originX": 70.7,
-          "originY": 143.8
-        }
-      ]
-    },
-    "男变装-Codex-统合61式胸甲左下臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式胸甲左下臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "统合61式胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/445cdbfd_1.png",
-        "width": 95,
-        "height": 236,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/445cdbfd_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 95,
-          "height": 236,
-          "originX": 48.7,
-          "originY": 121.8
-        }
-      ]
-    },
-    "男变装-Codex-统合61式胸甲身体": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/统合61式/男变装-Codex-统合61式胸甲身体",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "统合61式胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/22c4a330_1.png",
-        "width": 354,
-        "height": 453,
-        "playback": "static-first-frame",
-        "sourceFrameCount": 3,
-        "timelineScriptFrames": [
-          1,
-          2,
-          3
-        ],
-        "hasFrame1Stop": true,
-        "staticReason": "frame1_scripted_stop",
-        "collapsedFrameCount": 2
-      },
-      "frames": [
-        {
-          "uri": "skins/22c4a330_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 354,
-          "height": 453,
-          "originX": 193.2,
-          "originY": 260.1
-        }
-      ]
-    },
-    "HF8/Hair/BackTail": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/R9长发/BackTail",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "rear-attachment"
-      ],
-      "items": [
-        "火凤头部装备"
-      ],
-      "sourceFiles": [
-        "scripts/类定义/org/flashNight/arki/unit/Action/Huofeng/HuofengHairProfile.as"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/9c264a6c_1.png",
-        "width": 304,
-        "height": 240,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/9c264a6c_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 304,
-          "height": 240,
-          "originX": 152.1,
-          "originY": 22.0
-        }
-      ]
-    },
-    "HF8/Hair/BackUpper": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/R9长发/BackUpper",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "rear-attachment"
-      ],
-      "items": [
-        "火凤头部装备"
-      ],
-      "sourceFiles": [
-        "scripts/类定义/org/flashNight/arki/unit/Action/Huofeng/HuofengHairProfile.as"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/3f61ce58_1.png",
-        "width": 304,
-        "height": 239,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/3f61ce58_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 304,
-          "height": 239,
-          "originX": 152.1,
-          "originY": 217.9
-        }
-      ]
-    },
-    "HF8/Hair/Front": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/R9长发/Front",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "头部装备"
-      ],
-      "items": [
-        "火凤头部装备"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/c4b640b0_1.png",
-        "width": 197,
-        "height": 166,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ]
-      },
-      "frames": [
-        {
-          "uri": "skins/c4b640b0_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 197,
-          "height": 166,
-          "originX": 93.7,
-          "originY": 105.2
-        }
-      ]
-    },
-    "女变装-火凤上装上臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/女变装-火凤上装上臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "火凤胸甲"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/9864cbeb_1.png",
-        "width": 115,
-        "height": 267,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/9864cbeb_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 115,
-          "height": 267,
-          "originX": 56.3,
-          "originY": 142.1
-        }
-      ]
-    },
-    "女变装-火凤上装右下臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/女变装-火凤上装右下臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "火凤胸甲"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/64912e97_1.png",
-        "width": 322,
-        "height": 326,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/64912e97_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 322,
-          "height": 326,
-          "originX": 191.0,
-          "originY": 144.0
-        }
-      ]
-    },
-    "女变装-火凤上装左下臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/女变装-火凤上装左下臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "火凤胸甲"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/075fd536_1.png",
-        "width": 103,
-        "height": 177,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/075fd536_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 103,
-          "height": 177,
-          "originX": 53.7,
-          "originY": 88.5
-        }
-      ]
-    },
-    "女变装-火凤上装身体": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/女变装-火凤上装身体",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "火凤胸甲"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/cbeb9744_1.png",
-        "width": 282,
-        "height": 489,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/cbeb9744_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 282,
-          "height": 489,
-          "originX": 118.0,
-          "originY": 251.7
-        }
-      ]
-    },
-    "男变装-火凤上装上臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤上装上臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "火凤胸甲"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/3d8a41b1_1.png",
-        "width": 115,
-        "height": 267,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/3d8a41b1_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 115,
-          "height": 267,
-          "originX": 56.3,
-          "originY": 142.1
-        }
-      ]
-    },
-    "男变装-火凤上装右下臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤上装右下臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "火凤胸甲"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/83643aea_1.png",
-        "width": 322,
-        "height": 326,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/83643aea_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 322,
-          "height": 326,
-          "originX": 191.0,
-          "originY": 144.0
-        }
-      ]
-    },
-    "男变装-火凤上装左下臂": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤上装左下臂",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "火凤胸甲"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/e0aac14b_1.png",
-        "width": 103,
-        "height": 177,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/e0aac14b_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 103,
-          "height": 177,
-          "originX": 53.7,
-          "originY": 88.5
-        }
-      ]
-    },
-    "男变装-火凤上装身体": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤上装身体",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "火凤胸甲"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/6e051d1e_1.png",
-        "width": 282,
-        "height": 489,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/6e051d1e_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 282,
-          "height": 489,
-          "originX": 118.0,
-          "originY": 251.7
-        }
-      ]
-    },
-    "女变装-火凤下装右大腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/女变装-火凤下装右大腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "火凤下装"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/57f16021_1.png",
-        "width": 124,
-        "height": 311,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/57f16021_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 124,
-          "height": 311,
-          "originX": 62.0,
-          "originY": 156.3
-        }
-      ]
-    },
-    "女变装-火凤下装小腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/女变装-火凤下装小腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "火凤下装"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/d10ae610_1.png",
-        "width": 115,
-        "height": 301,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/d10ae610_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 115,
-          "height": 301,
-          "originX": 57.8,
-          "originY": 162.9
-        }
-      ]
-    },
-    "女变装-火凤下装屁股": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/女变装-火凤下装屁股",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "火凤下装"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/b9fb1337_1.png",
-        "width": 226,
-        "height": 173,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/b9fb1337_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 226,
-          "height": 173,
-          "originX": 119.7,
-          "originY": 86.9
-        }
-      ]
-    },
-    "女变装-火凤下装左大腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/女变装-火凤下装左大腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "火凤下装"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/343f9b80_1.png",
-        "width": 117,
-        "height": 312,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/343f9b80_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 117,
-          "height": 312,
-          "originX": 56.8,
-          "originY": 154.8
-        }
-      ]
-    },
-    "火凤套装_后披摆": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/后披摆",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "rear-attachment"
-      ],
-      "items": [
-        "火凤下装"
-      ],
-      "sourceFiles": [
-        "scripts/类定义/org/flashNight/arki/unit/Action/Huofeng/HuofengHairProfile.as"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/711fb3b8_1.png",
-        "width": 619,
-        "height": 636,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/711fb3b8_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 619,
-          "height": 636,
-          "originX": 518.6,
-          "originY": 62.6
-        }
-      ]
-    },
-    "男变装-火凤下装右大腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤下装右大腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "火凤下装"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/b004745c_1.png",
-        "width": 124,
-        "height": 311,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/b004745c_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 124,
-          "height": 311,
-          "originX": 62.0,
-          "originY": 156.3
-        }
-      ]
-    },
-    "男变装-火凤下装小腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤下装小腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "火凤下装"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/74e46c4a_1.png",
-        "width": 115,
-        "height": 301,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/74e46c4a_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 115,
-          "height": 301,
-          "originX": 57.8,
-          "originY": 162.9
-        }
-      ]
-    },
-    "男变装-火凤下装屁股": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤下装屁股",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "火凤下装"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/1c15996d_1.png",
-        "width": 226,
-        "height": 173,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/1c15996d_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 226,
-          "height": 173,
-          "originX": 119.7,
-          "originY": 86.9
-        }
-      ]
-    },
-    "男变装-火凤下装左大腿": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤下装左大腿",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "火凤下装"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/d3ca8ffd_1.png",
-        "width": 117,
-        "height": 312,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/d3ca8ffd_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 117,
-          "height": 312,
-          "originX": 56.8,
-          "originY": 154.8
-        }
-      ]
-    },
-    "男变装-火凤手甲右手": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤手甲右手",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "手部装备"
-      ],
-      "items": [
-        "火凤手甲"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/525d969d_1.png",
-        "width": 321,
-        "height": 246,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/525d969d_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 321,
-          "height": 246,
-          "originX": 231.5,
-          "originY": 153.6
-        }
-      ]
-    },
-    "男变装-火凤手甲左手": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤手甲左手",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "手部装备"
-      ],
-      "items": [
-        "火凤手甲"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/a4cbc277_1.png",
-        "width": 115,
-        "height": 102,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/a4cbc277_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 115,
-          "height": 102,
-          "originX": 64.7,
-          "originY": 51.1
-        }
-      ]
-    },
-    "男变装-火凤战靴": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/火凤套装/装扮/男变装-火凤战靴",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "脚部装备"
-      ],
-      "items": [
-        "火凤战靴"
-      ],
-      "sourceFiles": [
-        "防具_20-39级.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/e3ff6430_1.png",
-        "width": 146,
-        "height": 139,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/e3ff6430_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 146,
-          "height": 139,
-          "originX": 73.4,
-          "originY": 71.2
-        }
-      ]
-    },
-    "枪-手枪-KHAOS 12": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/3XD的素材.swf",
-        "symbolName": "2副武器/khaos12g文件/武器版本/枪-手枪-KHAOS 12",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "手枪"
-      ],
-      "items": [
-        "KHAOS 12"
-      ],
-      "sourceFiles": [
-        "武器_手枪_霰弹枪.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/c0d91c0f_1.png",
-        "width": 557,
-        "height": 213,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/c0d91c0f_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 557,
-          "height": 213,
-          "originX": 42.4,
-          "originY": 97.7
-        }
-      ]
-    },
-    "枪-手枪-KHAOS 12战术版": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/3XD的素材.swf",
-        "symbolName": "2副武器/khaos12g文件/武器版本/枪-手枪-KHAOS 12战术版",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "手枪"
-      ],
-      "items": [
-        "KHAOS 12战术版"
-      ],
-      "sourceFiles": [
-        "武器_手枪_霰弹枪.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/4cae2c84_1.png",
-        "width": 1435,
-        "height": 217,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/4cae2c84_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 1435,
-          "height": 217,
-          "originX": 42.4,
-          "originY": 103.5
         }
       ]
     }

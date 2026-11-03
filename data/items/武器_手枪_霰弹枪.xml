@@ -685,7 +685,7 @@
       <icon>Origin12</icon>
       <type>武器</type>
       <use>手枪</use>
-      <price>497000</price>
+      <price>50700</price>
       <description>Origin-12以极快的射速和近距离压制力著称。凭借弹匣供弹带来的流畅续火能力，在室内或狭窄地形中能迅速倾泻火力，对近距离目标造成爆发性伤害。</description>
       <data>
         <level>26</level>
@@ -704,7 +704,7 @@
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>300</power>
+        <power>330</power>
         <impact>12</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
@@ -722,9 +722,9 @@
             <weightLayers>0</weightLayers>
             <category>1</category>
             <formula>1</formula>
-            <status>unresolved</status>
-            <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:ced8885b</inputDigest>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:1dd2da2d</inputDigest>
             <auditRef>weapon:Origin12:data</auditRef>
           </data>
         </profiles>
@@ -775,7 +775,7 @@
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:d6590d3e</inputDigest>
+            <inputDigest>fnv1a32:e20f243e</inputDigest>
             <auditRef>weapon:Origin12战术版:data</auditRef>
           </data>
         </profiles>
@@ -851,11 +851,11 @@
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:ced8885b</inputDigest>
-            <auditRef>weapon:Origin12:data</auditRef>
+            <inputDigest>fnv1a32:77a695b5</inputDigest>
+            <auditRef>weapon:Vepr12紧凑改装型:data</auditRef>
           </data>
         </profiles>
-        </balance>
+      </balance>
      <lifecycle>
       <attr_equipmentLight>
         <skillInteraction>independent</skillInteraction>
@@ -878,7 +878,7 @@
       <icon>KHAOS 12</icon>
       <type>武器</type>
       <use>手枪</use>
-      <price>497000</price>
+      <price>33150</price>
       <description>这把武器是对AK平台的霰弹枪化改造：在末日前它本质是绕开对短管霰弹枪的管制门槛改造的12号半自动枪械，而非为了追求短管霰弹枪的战术性能或人机工效而自然演化出的设计。但在末日社会里，可拆卸弹匣让它换弹远快于传统管式霰弹枪，在清理室内、车厢或狭窄废墟时极为灵活，且能直接塞入10发的弹匣甚至弹鼓，配合AK结构的耐脏可靠性，特别受那些需要在一瞬间泼洒火力压制尸群或敌人的老手偏爱。</description>
       <data>
         <level>17</level>
@@ -888,7 +888,8 @@
       <overload><chamber>1</chamber><ghost>0</ghost></overload>
         <split>5</split>
         <diffusion>10</diffusion>
-        <interval>150</interval>
+        <interval>220</interval>
+        <singleshoot>true</singleshoot>
         <velocity>40</velocity>
         <bullet>横向联弹-加强普通子弹</bullet>
         <bulletrename>加强普通子弹</bulletrename>
@@ -897,7 +898,7 @@
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>350</power>
+        <power>265</power>
         <impact>12</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
@@ -915,10 +916,10 @@
             <weightLayers>0</weightLayers>
             <category>1</category>
             <formula>1</formula>
-            <status>unresolved</status>
-            <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:ced8885b</inputDigest>
-            <auditRef>weapon:Origin12:data</auditRef>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:59e89734</inputDigest>
+            <auditRef>weapon:KHAOS 12:data</auditRef>
           </data>
         </profiles>
       </balance>
@@ -968,8 +969,8 @@
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:ced8885b</inputDigest>
-            <auditRef>weapon:Origin12:data</auditRef>
+            <inputDigest>fnv1a32:d058938b</inputDigest>
+            <auditRef>weapon:KHAOS 12战术版:data</auditRef>
           </data>
         </profiles>
       </balance>
