@@ -692,6 +692,8 @@ Reward 未知写查询、O1 观测与存档闭包合同见 [持久写与恢复](
 
 **枪械激光**：另跑 `scripts/run-weapon-laser-tests.ps1`（机器钉死 WeaponLaserSightTest 97/97；文本「三槽位 89 项」为历史），见 [激光记录](../docs/P90印花集与钛合金61式共用激光装配-2026-09-07.md)。
 
+**手枪弹武器水平击退与实战碰撞**：改 `ShootInitCore.calculateWeaponKnockback`、`ShootInitCore.generateBulletProps` 或手枪弹武器 `<knockback>` 分档规则时，另跑 `powershell -ExecutionPolicy Bypass -File scripts/run-handgun-knockback-combat-tests.ps1 -TimeoutSeconds 240`（机器钉死 `HandgunKnockbackCombatTest` **6841 passed, 0 failed; 241 combat cases**），覆盖枪种默认分档（手枪槽手枪弹系 `14`、长枪冲锋枪 `12`、手枪槽霰弹/步枪等排除项与其余长枪 `10`）、显式 `<knockback>` 覆盖、单发衰减曲线、1v1 高韧/刚体推拒、1v3 共线挤压多判、穿刺顺风车多段及版边/换弹/跨 Z 走廊边界；调参边界见 [冲锋枪错位竞争与双枪插件设计备忘 §17](../docs/冲锋枪错位竞争与双枪插件-设计备忘-2026-07-13.md#17-手枪弹武器水平击退速度分档与对群挤压穿刺边界issue-195)。
+
 **装备照明与功能插件**：从仓库根运行 `scripts/run-equipment-light-tests.ps1`、`scripts/run-equipment-lifecycle-policy-tests.ps1`、`scripts/run-equipment-light-asset-tests.ps1`（机器计数由各 runner 钉死）。分别覆盖真实 MovieClip 锚点/所有权、战技锁与进阶/插件合成、实际 XML/SWF 经生产 loader 的安装/显隐/卸载。条件防御另跑 `scripts/run-equipment-light-defense-tests.ps1`，验证真实 BuffManager 的 20/25、双持取高、基值恢复、其他 Buff 共存和同路径重建隔离；触及共享 FX 再跑 `scripts/run-combat-fx-tests.ps1`。数据门为 `python -X utf8 tools/lifecycle-skill-metadata/validate.py` 及同目录 unittest。Host 走 canonical 全量 runner，定向光 renderer 走 [Combat FX GPU 夹具](../launcher/perf/combat-fx/README.md)，并绑定实际测试 DLL。Flash/GPU 夹具不代签游戏内贴合、观感和弱机性能；配置合同见[装备生命周期](../scripts/逻辑/装备函数/README.md#skill-interaction)。
 
 防具/兵器径向源、角色归并和优先预算另跑 `scripts/run-equipment-emissive-tests.ps1`；涉及物品接线、状态发布与素材时跑 `scripts/run-equipment-emissive-asset-tests.ps1`。前者包含多件归一、异色、心跳/静态生命周期、暂停重连、真实 MovieClip 身份重建及饱和准入；后者从真实 XML 经生产装载器调用原初始化函数并加载已发布素材，身体贡献不得建立逐件逐帧任务。配置门为 `python -X utf8 tools/equipment-emissive/validate.py` 和同目录 unittest。payload CPU 夹具只证明该函数在指定来源/角色数量下的开销，不代签完整战斗帧耗。

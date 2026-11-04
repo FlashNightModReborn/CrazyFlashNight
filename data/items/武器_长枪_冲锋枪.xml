@@ -1,6 +1,7 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
-物品ID已自动生成，无需手动维护-->
+物品ID已自动生成，无需手动维护
+长枪槽冲锋枪默认水平击退速度为 12（由 ShootInitCore.calculateWeaponKnockback 提供）；单枪特例可在 <data> 内声明 <knockback>数值</knockback> 覆盖（详见 agentsDoc/data-schemas.md）-->
 <root>
   <item weapontype="冲锋枪">
     <name>TYPE79</name>

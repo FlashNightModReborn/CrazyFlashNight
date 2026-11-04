@@ -1,0 +1,9 @@
+﻿#include "test-runners/cf6-playtest/PlaytestFixture.as"
+import org.flashNight.gesh.depth.*;
+import org.flashNight.neur.ScheduleTimer.*;
+import org.flashNight.arki.unit.Action.Shoot.*;
+_root.handgunKnockbackCombatComplete = function():Void {
+    trace("FocusedTestRunId handgun-knockback-combat Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId handgun-knockback-combat Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest.runAllTests();

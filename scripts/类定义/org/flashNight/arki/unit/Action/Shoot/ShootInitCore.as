@@ -566,6 +566,42 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     }
 
     /**
+     * 计算武器的最终水平击退速度
+     * 优先采用武器数据或调用方显式配置的 knockback（>= 0）；
+     * 未显式配置时按方案 A1 分档：
+     * - 手枪槽（"手枪"、"手枪2"）中的手枪/大威力手枪/冲锋枪/压制冲锋枪/特殊手枪：默认 14
+     *   （借用手枪槽的霰弹枪、突击步枪、发射器、压制机枪、反器材武器保持默认 10）
+     * - 长枪槽（"长枪"）中的冲锋枪/压制冲锋枪：默认 12
+     * - 其余武器类型：默认 10
+     *
+     * @param parentRef     父级引用（单位对象）
+     * @param weaponType    武器类型（"长枪"、"手枪"、"手枪2"）
+     * @param baseKnockback 显式配置的水平击退速度（weaponData.knockback）
+     * @param weaponTypeTag 武器类型标签（来自XML的weapontype属性，如"手枪"、"冲锋枪"等）
+     * @return 返回计算后的水平击退速度
+     */
+    public static function calculateWeaponKnockback(parentRef:Object, weaponType:String, baseKnockback:Number, weaponTypeTag:String):Number {
+        var explicitKb:Number = Number(baseKnockback);
+        if (explicitKb >= 0 && isFinite(explicitKb)) {
+            return explicitKb;
+        }
+        if (weaponType == "手枪" || weaponType == "手枪2") {
+            if (weaponTypeTag == "霰弹枪"
+                || weaponTypeTag == "突击步枪"
+                || weaponTypeTag == "发射器"
+                || weaponTypeTag == "压制机枪"
+                || weaponTypeTag == "反器材武器") {
+                return 10;
+            }
+            return 14;
+        }
+        if (weaponType == "长枪" && (weaponTypeTag == "冲锋枪" || weaponTypeTag == "压制冲锋枪")) {
+            return 12;
+        }
+        return 10;
+    }
+
+    /**
      * 生成子弹属性对象
      * 根据武器类型、数据和额外参数生成完整的子弹属性配置
      *
@@ -594,6 +630,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             子弹威力Base:   weaponData.power,
             Z轴攻击范围:    weaponData.bulletsize,
             击倒率:        weaponData.impact,
+            水平击退速度:   weaponData.knockback,
             击中后子弹效果: weaponData.targethit
         };
 
@@ -638,16 +675,24 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         var bulletIsRay:Boolean = BulletTypeUtil.isRay(wd.子弹种类);
         bulletProps.子弹威力 = calculateWeaponPower(parentRef, weaponType, basePower, bulletIsRay);
 
-        // 获取武器类型标签（weapontype），用于判断是否为霰弹枪等特殊武器类型
-        // weapontype 存储在武器数据对象中（如 长枪数据.weapontype），而非武器属性中
+        // 获取武器类型标签（weapontype），用于判断是否为霰弹枪、冲锋枪等特殊武器类型
+        // weapontype 存储在武器数据对象中（如 长枪数据.weapontype），缺省回退 weaponData.weapontype
         var weaponDataKey:String = weaponType + "数据";
-        var weaponTypeTag:String = parentRef[weaponDataKey] ? parentRef[weaponDataKey].weapontype : null;
+        var weaponTypeTag:String = (parentRef[weaponDataKey] && parentRef[weaponDataKey].weapontype != undefined)
+            ? parentRef[weaponDataKey].weapontype
+            : (weaponData ? weaponData.weapontype : null);
 
         // 仅非敌方霰弹枪登记组级分配；最终弹种仍由横向组装排除穿刺/透明弹。
         bulletProps.霰弹分配模式 = (!isEnemy && weaponTypeTag == "霰弹枪") ? 1 : 0;
 
         // 计算击倒率（使用统一的武器冲击力计算函数）
         bulletProps.击倒率 = calculateWeaponImpact(parentRef, weaponType, wd.击倒率, weaponTypeTag);
+
+        // 计算水平击退速度（优先使用武器显式 knockback，缺省按手枪 14 / 长枪冲锋枪 12 / 其余 10 分档）
+        var baseKnockback:Number = (extraParams && extraParams.水平击退速度 !== undefined)
+            ? Number(extraParams.水平击退速度)
+            : ((extraParams && extraParams.knockback !== undefined) ? Number(extraParams.knockback) : Number(wd.水平击退速度));
+        bulletProps.水平击退速度 = calculateWeaponKnockback(parentRef, weaponType, baseKnockback, weaponTypeTag);
 
         // 子弹固化实际发射武器的命中率，避免双枪两手都回退到单位最后一次写入的
         // generic 命中率。基础加成来自非武器装备，手枪/手枪2加成分别独立投影。

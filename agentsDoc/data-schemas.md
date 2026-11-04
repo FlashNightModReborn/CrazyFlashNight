@@ -422,6 +422,20 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 灰蛊裂隙弹使用 18 格、6/12/18 三个节点、每格 1% 全队易伤；冲锋枪/大威力手枪/普通手枪每次有效命中分别增加 1/2/3 格，真实破韧追加一次本 profile 等价命中。基础档仅由冲锋枪完整使用，参数为 `decayDelay=90/decayInterval=10/crumblePerMilestone=1/executeAtMax=8`；大威力手枪分支显式锁定为 `90/10/0.1/5`，防止继承冲锋枪的自建自吃补偿；普通手枪是 `150/15/0.3/8`。节点分别在衰减到 0/6/12 格时重新武装。`ToughnessBroken` 只表示非刚体真实破韧；刚体越阈仅清槽、不发布。层数变化发布 `GrayGooStacksChanged(target, stacks, maxStacks, profileId)`，并同步写入 `target.grayGooStackCount/grayGooMaxStacks`。`useSwitch.merge.hitBehavior` 是深度 merge；追猎射击的六个发射点也必须从两把手枪属性透传该对象。
 
+### 枪械水平击退速度 `<knockback>` 与枪种默认分档
+
+武器 `<data>`（或形态层 `<data_*>`）可显式声明非负数字 `<knockback>`，用于控制发射子弹的 `水平击退速度`（即 `ImpactStateHandler` 在目标受击进入 `被击` 滑行态或倒地追击时传给 `_root.敌人函数.被击移动` 的水平初速度 `kb`）。它与控制韧性槽削减效率的 `<impact>`（击倒率，数值越小越容易破韧）完全正交。
+
+`ShootInitCore.generateBulletProps` 通过 `ShootInitCore.calculateWeaponKnockback(weaponData, weaponType, extraParams)` 解析每发子弹的 `水平击退速度`，优先级如下：
+
+- **显式覆盖优先**：若调用方 `extraParams.水平击退速度 >= 0`、`extraParams.knockback >= 0` 或武器 `weaponData.knockback >= 0`，直接使用该显式值（仅改 XML `<knockback>` 重启即生效，无需重编 SWF）。
+- **枪种默认分档（未声明 `<knockback>` 时）**：
+  - **手枪槽手枪弹系（默认 `14`）**：`use`（运行时 `weaponType`）为 `手枪` 或 `手枪2`，且武器子类 `weapontype` 为 `手枪`、`大威力手枪`、`冲锋枪`、`压制冲锋枪`、`特殊` 或未声明子类时，默认 `水平击退速度 = 14`。借用手枪槽的 `霰弹枪`、`突击步枪`、`发射器`、`压制机枪`、`反器材武器` 排除在外，保持默认 `10`。
+  - **长枪槽冲锋枪系（默认 `12`）**：`use` 为 `长枪` 且 `weapontype` 为 `冲锋枪` 或 `压制冲锋枪` 时，默认 `水平击退速度 = 12`。
+  - **其余长枪与非手枪弹系（默认 `10`）**：保持默认 `水平击退速度 = 10`。
+
+该分档只作用于枪械射击属性生成层，近战刀剑（`BladeShootCore`）、切手技（`SwitchStrikeCore`）、手雷与技能子弹不经此函数，也不修改 `ImpactStateHandler` 或 `被击移动` 公共基建。对群共线挤压多判、穿刺顺风车多段与调参红线见 [冲锋枪错位竞争与双枪插件设计备忘](../docs/冲锋枪错位竞争与双枪插件-设计备忘-2026-07-13.md#17-手枪弹武器水平击退速度分档与对群挤压穿刺边界issue-195)；行为回归套件为 `powershell -ExecutionPolicy Bypass -File scripts/run-handgun-knockback-combat-tests.ps1`。
+
 ### 装备插件格展示词典
 
 装备根层可用 `<allowedModTags>` 声明允许的插件挂点类别（逗号分隔）。缺省沿原规则；显式空值、畸形值、未列出的类别和无 `tag` 插件均拒绝，`blockedTags` 仍可进一步拒绝。目录筛选与安装提交共同使用 `TagManager` 的这条规则，不靠展示文案或列举当前黑名单推断“封闭改装”。`inherentTags` 只提供结构前置，不授予额外安装权限。
