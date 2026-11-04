@@ -1,0 +1,90 @@
+{
+  "validatorSha256": "7e00a80a7b963e4534cd24ddb13fc4ebb608120652a9149daa8e7797d1f3736c",
+  "passed": 10,
+  "failed": 0,
+  "results": [
+    {
+      "name": "known_levels",
+      "passed": true,
+      "expectedErrors": 1,
+      "issues": [
+        {
+          "line": 1,
+          "severity": "error",
+          "message": "unsupported literal compile target alias: levels [.workbuddy/memory/MEMORY.md:1]"
+        }
+      ]
+    },
+    {
+      "name": "blockquote_history",
+      "passed": true,
+      "expectedErrors": 0,
+      "issues": []
+    },
+    {
+      "name": "other_inline_span",
+      "passed": true,
+      "expectedErrors": 0,
+      "issues": []
+    },
+    {
+      "name": "compiler_prose_mention",
+      "passed": true,
+      "expectedErrors": 0,
+      "issues": []
+    },
+    {
+      "name": "shell_trailing_comment",
+      "passed": true,
+      "expectedErrors": 0,
+      "issues": []
+    },
+    {
+      "name": "shell_comment_only",
+      "passed": true,
+      "expectedErrors": 0,
+      "issues": []
+    },
+    {
+      "name": "html_comment",
+      "passed": true,
+      "expectedErrors": 0,
+      "issues": []
+    },
+    {
+      "name": "unrelated_target_table",
+      "passed": true,
+      "expectedErrors": 0,
+      "issues": []
+    },
+    {
+      "name": "original_table",
+      "passed": true,
+      "expectedErrors": 1,
+      "issues": [
+        {
+          "line": 2,
+          "severity": "warn",
+          "message": "compile target value is outside the literal alias check (path, placeholder or expression) [.workbuddy/memory/MEMORY.md:2]"
+        },
+        {
+          "line": 7,
+          "severity": "error",
+          "message": "unsupported literal compile target alias: levels [.workbuddy/memory/MEMORY.md:7]"
+        }
+      ]
+    },
+    {
+      "name": "unknown_resolver_shape",
+      "passed": true,
+      "aliases": null,
+      "issues": [
+        {
+          "line": 1,
+          "severity": "warn",
+          "message": "cannot verify literal compile targets: resolver shape changed; use the canonical compile doc [.workbuddy/memory/MEMORY.md:1]"
+        }
+      ]
+    }
+  ]
+}

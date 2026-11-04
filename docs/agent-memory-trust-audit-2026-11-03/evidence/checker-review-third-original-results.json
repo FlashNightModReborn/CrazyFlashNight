@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "validatorSha256": "7e00a80a7b963e4534cd24ddb13fc4ebb608120652a9149daa8e7797d1f3736c",
+  "sourceSnapshot": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2:.workbuddy/memory/MEMORY.md",
+  "sourceContentSha256": "da19cf15fc3b14a029206d4007b9194056bba6ca455823d636b8c50886b87fe7",
+  "errors": [
+    {
+      "line": 21,
+      "severity": "error",
+      "message": "unsupported literal compile target alias: levels [.workbuddy/memory/MEMORY.md:21]"
+    }
+  ],
+  "warnings": [
+    {
+      "line": 14,
+      "severity": "warn",
+      "message": "compile target value is outside the literal alias check (path, placeholder or expression) [.workbuddy/memory/MEMORY.md:14]"
+    }
+  ]
+}

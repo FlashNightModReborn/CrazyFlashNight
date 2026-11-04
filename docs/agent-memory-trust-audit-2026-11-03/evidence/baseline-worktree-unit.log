@@ -1,0 +1,27 @@
+ok - exports are functions and require does not run the CLI
+ok - valid inline link + valid fragment pass; invalid fragment fails
+ok - same-file anchors are validated
+ok - Chinese heading slug and GitHub-style punctuation stripping
+ok - duplicate headings get -1/-2 suffix anchors
+ok - percent-encoded fragment is URL-decoded before matching
+ok - reference-style links and definitions are resolved and checked
+ok - links and headings inside code fences are ignored
+ok - inline code spans are not treated as links
+ok - relative links escaping the repo root are rejected; in-root .. is allowed
+ok - external schemes, mailto and bare autolinks are skipped
+ok - query strings are stripped before existence check
+ok - readability: long line and long paragraph reported; boundaries pass
+ok - byte budget boundary: exact budget passes, one byte over fails
+ok - lineCountOf matches legacy line-count semantics
+ok - background cross-links do not count as must-read edges; strong directives do
+ok - findMustReadCycles: acyclic graph passes, must-read cycle is detected
+ok - must-read edges from entry texts form a cycle only via strong directives
+ok - diffExactSet reports missing and unexpected entries
+ok - legacy machine gates still present in validator source
+ok - F1 parseGitDiffAddedLines maps new-side line numbers
+ok - F1 linkIssueSeverity: block list / new line / unchanged line / untracked / degraded
+ok - F1 real git pipeline in a temp repo (skipped when git unavailable)
+ok - F2 mixed strong/weak line: acceptance counterexample now detects the cycle
+ok - F2 clause order independence and tone inheritance
+ok - F3 line budget is notice-level while byte budget stays hard
+[test-doc-governance] ok: 26 passed

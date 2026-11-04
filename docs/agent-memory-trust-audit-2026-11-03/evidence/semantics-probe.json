@@ -1,0 +1,45 @@
+{
+  "baseline": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+  "kind": "deterministic static parsing and independent mathematical check; no AVM1 execution",
+  "skill_count": 85,
+  "skill_id_min": 0,
+  "skill_id_max": 84,
+  "nonempty_skills": 85,
+  "skill_types": [
+    "内功",
+    "内功-内力",
+    "剑术-锋利度",
+    "剑术-锋利度&内力",
+    "投技",
+    "枪术",
+    "枪术-子弹威力",
+    "枪术-轰炸",
+    "武术",
+    "武术&剑术-内力&锋利度",
+    "武术-内力",
+    "武术-空手",
+    "武术-空手&内力",
+    "神功",
+    "神功-内力",
+    "科技",
+    "被动",
+    "被动&主动",
+    "超能力",
+    "龙吼-内力"
+  ],
+  "multi_object_xfl_sample": {
+    "path": "flashswf/arts/new/公共素材位0/LIBRARY/假小子机枪手/头.xml",
+    "frame_count": 1,
+    "max_DOMShapes_in_one_frame": 1,
+    "descendant_DOMShapes_in_one_frame": 31,
+    "top_level_element_count": 24,
+    "finding": "1 direct DOMShape plus 23 DOMGroups; 31 descendant DOMShapes. Contradicts universal one-object-per-frame, not evidence of arbitrary overlap order."
+  },
+  "cubic_to_quadratic_identity": {
+    "samples": 404,
+    "max_absolute_residual": 8.881784197001252e-15,
+    "analytic_constant": 0.04811252243246881,
+    "precision_note": "0.03px bound is before coordinate quantization"
+  },
+  "archived_assets_are_not_executed": true
+}

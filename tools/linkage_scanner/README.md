@@ -25,6 +25,8 @@ python tools/linkage_scanner/scan_linkage.py
 | `--include-all` | 包含默认排除的归档目录（`unused/`、`renew/`） |
 | `--xml-only` | 只生成 XML，不打印控制台报告 |
 
+**操作边界**：当前脚本直接检查 `sys.argv` 中的两个开关，不提供 `--help`/dry-run；未知参数不会阻止 `main()` 扫描及重写 `data/items/asset_source_map.xml`。只查用法请读本文和源码，不把 `--help` 当只读探测。运行前确认该映射写入属于任务范围。
+
 默认排除的目录（非生产源）：`unused/`（废弃归档）、`renew/`（翻新对照）。
 
 ## 输出产物

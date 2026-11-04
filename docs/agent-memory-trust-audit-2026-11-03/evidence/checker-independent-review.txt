@@ -1,0 +1,159 @@
+# 候选文档治理检查器独立审阅
+
+## 第一轮结论
+
+**暂不通过：已知 `levels` 错误确实可拦，但新增Target硬门存在可复现的误报，不能用37项既有正负例通过代替它们的修复。**
+
+受审文件 SHA-256：
+
+- `tools/validate-doc-governance.js`：`94c60ec08852ae8e210faf5a479d1d086068f7f1f0b64598501f0de900be6ddc`
+- `tools/test-doc-governance.js`：`2d36f1ed6cfc05329c3ca2277df0befb5d8875aeb53d7222cf376f92fa58c924`
+
+本次只读diff、执行导出纯函数探针和 `node tools/test-doc-governance.js`；没有编辑候选文件，没有运行Flash。
+
+## 已确认通过的部分
+
+- 对基线 MEMORY 原文运行新检查，**只报原第21行的 `levels` 一项**，说明已知实际回流样本能够命中。
+- 当前真实resolver得到七个实际别名，无另建静态别名清单。
+- `.workbuddy/memory/MEMORY.md` 以显式allowlist加入扫描/链接闭包；未取消 `.workbuddy` 全目录排除。
+- topics、日期日记、其他MEMORY目录不进入新硬门；明确blockquote历史命令不报Target错误。
+- 现有37项测试均通过；链接和新未跟踪活跃入口的真实Git枚举已覆盖。
+
+## 必修问题
+
+### P2-1：跨越Markdown inline代码边界，把别的工具参数当编译Target
+
+位置：`collectLiteralCompileTargets`，受审版本第578–602行，特别是第596行只用 `;|&` 分割参数。
+
+输入：
+
+```text
+`scripts/compile_test.ps1 -Target publish` 与 `build.ps1 -Target custom`
+```
+
+实际：报 `unsupported literal compile target alias: custom`。
+
+预期：编译命令只有publish；build.ps1的custom不属于本规则。另一个等价反例是只在散文中提到 `compile_test.ps1`，随后同一行描述build.ps1的参数。
+
+**建议**：以独立Markdown code span/已明确的shell语句为最小证明范围；不要从某个文件名一路扫描到整行末尾。无法明确划界的散文/多命令表达式可降为警告或不作alias判断，避免造完整shell解释器。
+
+### P2-2：shell注释中的历史错误被当现役命令
+
+受审版本第584–602行未剥离注释。
+
+输入：
+
+```powershell
+scripts/compile_test.ps1 -Target publish # old -Target levels is invalid
+```
+
+实际：报levels错误。HTML注释中的同样命令也被硬拦。
+
+**建议**：对已识别shell代码按引用状态过滤注释；或者把规则进一步收窄到一条可证明的Target参数，复杂内容只警告。新增“正确命令+错误示例注释”误报负例，不应要求用户删掉诊断解释才过门。
+
+### P2-3：Target表格的编译归属延伸过远
+
+受审版本第557、577–581、606–611行。`compileSection`一旦置true，仅遇标题才复位。
+
+输入：
+
+```text
+## Tools
+`compile_test.ps1 -Target publish`
+
+`build.ps1` 的参数：
+| Parameter | Target |
+| --- | --- |
+| build target | custom |
+```
+
+实际：第7行custom被硬拦。
+
+**建议**：只关联紧邻、明确属于编译命令的表格；出现其他工具上下文后解除关联。至少新增该反例；不需要维护全仓所有工具名称清单。
+
+### P2-4：resolver结构变化时会漏掉合法裸case并继续声称别名不存在
+
+受审版本第537–546行只统计带引号case。向真实switch中插入PowerShell合法的：
+
+```powershell
+levels { $targetPath = 'levels.xfl' }
+```
+
+实际：`parseCompileTargetAliases`仍返回原七个别名而非null，随后合法levels被判unsupported。
+
+这违背注释宣称的“不支持的PowerShell结构返回null，不猜测语义”。
+
+**建议**：有限解析无法证明已读完所有分支时返回不可核对，不输出完备别名断言。无需支持所有PowerShell语法，关键是检测unknown并停止下结论。
+
+### P2-5：无法核对的结构变化目前也是硬错误
+
+受审版本第621与1332行：resolver parse失败返回 `cannot verify`，driver仍一律 `errors.push`。
+
+**建议**：这种情形不能证明文档断言错误，应明确severity=warn；确定的unsupported alias才error。测试须验证CLI/汇总层的severity，不只检查message出现。
+
+## 维护成本与边界
+
+新增代码约100行、11条测试，规模仍可接受，但它已承担部分Markdown、shell和PowerShell源码词法解析。修复应优先**收窄可证明范围并对unknown警告**，不要为覆盖全部语法继续造解析器。主动使用 `-Tar`、变量、未加围栏续行等绕开规则属于已声明未覆盖范围，不应宣称该检查器能证明所有命令正确。
+
+原有 `gitHasCommit` 缺陷不属于这次候选改动，本轮没有要求顺带修改。
+
+## MEMORY编译段覆盖复核
+
+36条记录覆盖全部16个含事实/操作断言的原始行；其他行是标题、空行或表头。这里是逐行覆盖与断言拆解，不表示每个语法短语都单列了一条。
+
+| 原始行 | 台账ID |
+|---|---|
+| 13 | COMP-001 |
+| 14 | COMP-002～004 |
+| 18 | COMP-005 |
+| 19 | COMP-006 |
+| 20 | COMP-007～008 |
+| 21 | COMP-009 |
+| 22 | COMP-010 |
+| 24 | COMP-011～013 |
+| 25 | COMP-014～015 |
+| 26 | COMP-016～017 |
+| 27 | COMP-018～021 |
+| 28 | COMP-022 |
+| 29 | COMP-023～024 |
+| 30 | COMP-025～032 |
+| 31 | COMP-033～034 |
+| 32 | COMP-035～036 |
+
+---
+
+## 第二轮复核：真实原文回放发现回归，仍暂不通过
+
+受审 validator SHA-256：`d15796311a3994df60ef33cb5e8c635e14b8f47fb28ed91e8b09100aac0074cf`。
+
+独立复跑原有误报反例10/10与候选41/41均通过，但用真实原MEMORY全文回放时，结果为 **errors=[]，warnings=4**，**原第21行levels不再硬拦**。
+
+原因：原第14行编译命令后还有“Git Bash用 `.sh`”这一inline片段。新工具上下文识别把孤立文件后缀`.sh`误当另一工具，因此表格上下文变为ambiguous。合成fixture省略了这段旁注，未覆盖真实回流样本。
+
+建议仅收窄工具文件识别，要求真实非空basename；保留真实原文对应上下文的回归测试。该问题已通知实施代理修复。首轮5项误报已经解决，但本轮不能在已知真实错误漏拦时交付“通过”结论。
+
+第二轮探针结果仍保存在 `checker-review-final-results.json` 和 `checker-review-final-tests.txt`，它们只证明这组10反例与41fixture，不证明真实原MEMORY门禁通过。后续复核会另留结果文件。
+
+---
+
+## 第三轮最终 disposition：通过
+
+**已知实际错误拦截、首轮误报防护和源结构未知降级三类目标均通过；本专项候选可交付审阅。** 后续不继续扩大可选语法测试。
+
+最终受审文件SHA-256：
+
+- `tools/validate-doc-governance.js`：`7e00a80a7b963e4534cd24ddb13fc4ebb608120652a9149daa8e7797d1f3736c`
+- `tools/test-doc-governance.js`：`9de50cc9b974daacde32b107724bc42f57fd835f0509555cfb208d7dd97d2508`
+
+独立复核结果（由审阅代理实际执行）：
+
+1. **完整真实原文回放通过**：直接用 `git show cfb1952e88553d8e5138d7c3e9b883a9beb035d2:.workbuddy/memory/MEMORY.md` 取原文，精确得到第21行 `levels` 的1个error；第14行占位符是1个warn。原文字节内容SHA-256为 `da19cf15fc3b14a029206d4007b9194056bba6ca455823d636b8c50886b87fe7`。结果：`checker-review-third-original-results.json`。
+2. **独立10组探针10/10**：同行不同工具、散文提名、shell注释、HTML注释、历史blockquote、其他工具表、原始错误表以及裸resolver case。结果：`checker-review-third-probe-results.json`。
+3. **现有及新增fixture42/42**：基线26项加候选16项。输出：`checker-review-third-tests.txt`。
+4. 主循环按`severity`分流warn/error，已再次核对；未将unknown悄悄提升为硬失败。
+
+第二轮新问题通过“工具token必须有非空basename”修复，孤立`.sh`只是扩展名提示，不再切走编译表归属；新增回归保留了真实原文中完整的旁注结构。词法遇复杂控制表达式/特殊调用选项/变量或路径Target/未知resolver结构时只警告，不冒充完整解释器；参数缩写亦明确提示范围不足。
+
+最终候选增加检查器209行、替换10行；测试增加208行。新增成本仍集中于单一现役检查器和纯fixture，没有知识数据库或平行规则平台。该范围足以防本次已发现的确定错误，不能宣称所有历史语义、所有shell表达式或平台加载行为都经过机器验证。
+
+本报告保留两轮拒收与修复记录。最终通过仅指本次有限治理候选；未执行Flash/运行时发布/真实游戏验收，也未顺带修复原有`gitHasCommit`缺陷。

@@ -8,6 +8,9 @@ var ROOT = path.resolve(__dirname, "..");
 var errors = [];
 var warnings = [];
 
+// 显式共享入口，不推断工具是否自动加载；其余平台历史/私有资料仍不进入硬门。
+var ACTIVE_MEMORY_ENTRIES = [".workbuddy/memory/MEMORY.md"];
+
 function abs(rel) {
     return path.join(ROOT, rel);
 }
@@ -521,6 +524,183 @@ function lineBudgetNotice(lineCount, budget) {
         "；行数只作提示，新增锚点/章节不受行数门逼迫；超限应删重复/缩小范围而非压行";
 }
 
+// 窄语法识别：整个 resolver 分支区必须由锚定字面枚举和简单块组成。
+// 任一裸 case、复杂模式/嵌套块或新结构都返回 null，不把部分解析当完整别名表。
+function parseCompileTargetAliases(scriptText) {
+    var switches = scriptText.match(/^[ \t]*switch\s+-Regex\s*\(\s*\$Target\.ToLower\(\)\s*\)\s*\{/gmi);
+    if (!switches || switches.length !== 1) return null;
+    var start = scriptText.indexOf(switches[0]) + switches[0].length;
+    var tail = scriptText.slice(start);
+    var end = /^[ \t]*default\s*\{/mi.exec(tail);
+    if (!end) return null;
+    var aliases = [];
+    var remainder = tail.slice(0, end.index).replace(
+        /^[ \t]*'\^\(([A-Za-z0-9_|-]+)\)\$'[ \t]*\{[^{}]*\}[ \t]*(?:#[^\r\n]*)?$/gm,
+        function (whole, names) { aliases = aliases.concat(names.toLowerCase().split("|")); return ""; });
+    remainder = remainder.replace(/^[ \t]*#[^\r\n]*$/gm, "").trim();
+    return aliases.length && !remainder ? uniqueSorted(aliases) : null;
+}
+
+// 只做简单命令的词法边界：识别引号、空白和 # 注释，不执行或解释 PowerShell。
+// 控制运算符、未完成引号、非续行反引号等复杂输入返回 null，调用方只发 warn。
+function simpleCommandTokens(command) {
+    var tokens = [];
+    var i = 0;
+    while (i < command.length) {
+        while (/\s/.test(command.charAt(i)) && i < command.length) i++;
+        if (i >= command.length || command.charAt(i) === "#") break;
+        var start = i;
+        var quote = "";
+        while (i < command.length) {
+            var c = command.charAt(i);
+            if (c === "`") return null;
+            if (!quote && /[;|&{}()]/.test(c)) return null;
+            if (!quote && /\s/.test(c)) break;
+            if (c === "'" || c === '"') {
+                if (!quote) quote = c;
+                else if (quote === c) quote = "";
+            }
+            i++;
+        }
+        if (quote) return null;
+        tokens.push({ raw: command.slice(start, i), start: start });
+        if (command.charAt(i) === "#") break;
+    }
+    return tokens;
+}
+
+// 只证明独立 inline code / fenced 命令或完整独立命令行中的字面别名。
+// Target 表只继承紧邻的明确工具上下文；历史 blockquote 和 HTML 注释不参与。
+// notices 收集范围不明之处；不能安全判定的内容不产生硬错误。
+function collectLiteralCompileTargets(text, notices) {
+    notices = notices || [];
+    var refs = [];
+    var seen = {};
+    var cleanText = text.replace(/<!--[\s\S]*?(?:-->|$)/g, function (m) { return m.replace(/[^\r\n]/g, " "); });
+    var lines = cleanText.split(/\r?\n/);
+    var targetColumn = -1;
+    var tableTool = "";
+    var fenceChar = "";
+    function notice(line, reason) { notices.push({ line: line, severity: "warn", message: reason }); }
+    function scalar(value) {
+        var quoted = /^(['"])([^'"]*)\1$/.exec(value);
+        if (quoted) value = quoted[2];
+        return /^[A-Za-z][A-Za-z0-9_-]*$/.test(value) ? value : null;
+    }
+    function add(value, line) {
+        var key = line + ":" + value.toLowerCase();
+        if (!seen[key]) { seen[key] = true; refs.push({ target: value, line: line }); }
+    }
+    function inspect(command, lineNo) {
+        if (!/\bcompile_test\.(?:ps1|sh)\b/i.test(command)) return;
+        var tokens = simpleCommandTokens(command);
+        if (!tokens) { notice(lineNo, "compile target check skipped: complex command syntax"); return; }
+        if (!tokens.length) return; // comment-only shell line
+        var invocation = -1;
+        for (var t = 0; t < tokens.length; t++) {
+            if (/^(?:\.?[\\/])?(?:scripts[\\/])?compile_test\.(?:ps1|sh)$/i.test(tokens[t].raw)) invocation = t;
+        }
+        // 只接受脚本直接调用，以及 powershell/pwsh 的普通 -File 形式。
+        if (invocation === -1 || (invocation > 0 &&
+            !/^(?:powershell|pwsh)(?:\.exe)?$/i.test(tokens[0].raw))) {
+            notice(lineNo, "compile target check skipped: invocation is not an isolated simple command"); return;
+        }
+        if (invocation > 0) {
+            var prefix = tokens.slice(1, invocation).map(function (token) { return token.raw; }).join(" ");
+            if (!/^(?:(?:-NoProfile|-NonInteractive|-ExecutionPolicy Bypass) )*-File$/i.test(prefix)) {
+                notice(lineNo, "compile target check skipped: unsupported shell invocation options"); return;
+            }
+        }
+        for (var j = invocation + 1; j < tokens.length; j++) {
+            var arg = /^-Target(?::(.*))?$/i.exec(tokens[j].raw);
+            if (!arg && /^-Ta(?:r(?:g(?:e)?)?)?(?::.*)?$/i.test(tokens[j].raw)) {
+                notice(lineNo, "abbreviated -Target parameter is outside the literal alias check");
+            }
+            if (!arg) continue;
+            var value = arg[1] !== undefined ? arg[1] : (tokens[j + 1] && tokens[j + 1].raw);
+            var directiveLine = lineNo + command.slice(0, tokens[j].start).split("\n").length - 1;
+            var literal = value && scalar(value);
+            if (literal) add(literal, directiveLine);
+            else notice(directiveLine, "compile target value is outside the literal alias check (path, placeholder or expression)");
+        }
+    }
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        if (/^\s*>/.test(line)) { targetColumn = -1; tableTool = ""; continue; }
+        var fence = /^[ ]{0,3}(```+|~~~+)/.exec(line);
+        if (fence) {
+            if (!fenceChar) fenceChar = fence[1].charAt(0);
+            else if (fenceChar === fence[1].charAt(0)) fenceChar = "";
+            targetColumn = -1;
+            continue;
+        }
+        if (!fenceChar && /^\s*#{1,6}\s/.test(line)) { tableTool = ""; targetColumn = -1; }
+        if (!fenceChar && /^\s*\|/.test(line)) {
+            var cells = line.trim().split("|").slice(1, -1).map(function (cell) { return cell.trim(); });
+            var header = -1;
+            for (var c = 0; c < cells.length; c++) if (/^`?-?Target`?$/i.test(cells[c])) header = c;
+            if (header !== -1) { targetColumn = header; continue; }
+            if (targetColumn !== -1 && cells[targetColumn]) {
+                var cell = cells[targetColumn].replace(/^`|`$/g, "");
+                var literal = scalar(cell);
+                if (literal && tableTool === "compile") add(literal, i + 1);
+                else if (literal && tableTool === "ambiguous") notice(i + 1, "Target table has ambiguous tool context; alias check skipped");
+            }
+            continue;
+        }
+        targetColumn = -1;
+        var snippets = [];
+        if (fenceChar) {
+            var command = line;
+            var extension = /\bcompile_test\.(ps1|sh)\b/i.exec(line);
+            var continuation = extension && extension[1].toLowerCase() === "sh" ? /\\\s*$/ : /`\s*$/;
+            var next = i;
+            while (extension && continuation.test(lines[next]) && next + 1 < lines.length &&
+                !/^\s*(?:>|```|~~~)/.test(lines[next + 1])) {
+                command = command.replace(continuation, "") + "\n" + lines[++next];
+            }
+            snippets.push(command);
+            inspect(command, i + 1);
+            i = next;
+        } else {
+            var spanRe = /`([^`]+)`/g;
+            var span;
+            while ((span = spanRe.exec(line)) !== null) { snippets.push(span[1]); inspect(span[1], i + 1); }
+            if (!snippets.length && /\bcompile_test\.(?:ps1|sh)\b/i.test(line)) { snippets.push(line); inspect(line.trim(), i + 1); }
+        }
+        var tools = [];
+        snippets.forEach(function (snippet) {
+            var tokenList = simpleCommandTokens(snippet);
+            if (!tokenList) { tools.push("ambiguous"); return; }
+            tokenList.forEach(function (token) {
+                if (/(?:^|[\\/])[^\\/\s.][^\\/\s]*\.(?:ps1|sh)$/i.test(token.raw)) tools.push(/(?:^|[\\/])compile_test\.(?:ps1|sh)$/i.test(token.raw) ? "compile" : "other");
+            });
+        });
+        tools = uniqueSorted(tools);
+        if (tools.length) tableTool = tools.length === 1 ? tools[0] : "ambiguous";
+        else if (line.trim() && tableTool === "compile") tableTool = "ambiguous";
+    }
+    return refs;
+}
+
+function checkActiveMemoryTargets(rel, text, scriptText) {
+    if (ACTIVE_MEMORY_ENTRIES.indexOf(rel) === -1) return [];
+    var issues = [];
+    var refs = collectLiteralCompileTargets(text, issues);
+    var aliases = refs.length ? parseCompileTargetAliases(scriptText) : null;
+    if (refs.length && !aliases) {
+        issues.push({ line: refs[0].line, severity: "warn", message: "cannot verify literal compile targets: resolver shape changed; use the canonical compile doc" });
+    } else {
+        for (var i = 0; i < refs.length; i++) {
+            if (aliases.indexOf(refs[i].target.toLowerCase()) !== -1) continue;
+            issues.push({ line: refs[i].line, severity: "error", message: "unsupported literal compile target alias: " + refs[i].target });
+        }
+    }
+    return issues.map(function (issue) {
+        return { line: issue.line, severity: issue.severity, message: issue.message + " [" + rel + ":" + issue.line + "]" };
+    });
+}
+
 var REQUIRED_FILES = [
     "AGENTS.md",
     "CLAUDE.md",
@@ -543,7 +723,7 @@ var REQUIRED_FILES = [
     "scripts/FlashCS6自动化编译.md",
     "tools/validate-doc-governance.js",
     "tools/test-doc-governance.js"
-];
+].concat(ACTIVE_MEMORY_ENTRIES);
 
 var AGENTS_REFERENCES = [
     "agentsDoc/as2-anti-hallucination.md",
@@ -586,6 +766,9 @@ var LINK_BLOCK_FILES = {
     "docs/runtime-build-reproducibility.md": true,
     "docs/AS2-UI迁移剩余清单与难度评估-2026-09-12.md": true
 };
+for (var activeMemoryIndex = 0; activeMemoryIndex < ACTIVE_MEMORY_ENTRIES.length; activeMemoryIndex++) {
+    LINK_BLOCK_FILES[ACTIVE_MEMORY_ENTRIES[activeMemoryIndex]] = true;
+}
 
 // 这两个文件的目标存在性检查仍由 validateLocalMarkdownLinks 以 error 承担；
 // 全仓扫描对它们只补 fragment/越界校验，避免同一行同一目标重复报错。
@@ -594,24 +777,28 @@ var LEGACY_LINK_GATE_FILES = {
     "docs/launcher-save-editor-audio-migration-incident-2026-04-28.md": true
 };
 
-// 必读环检测的边来源：只从四个入口文件提取强指令（先读/必读）边；条件/背景互链不构成 DAG 节点义务。
-var MUST_READ_ENTRIES = ["AGENTS.md", "CLAUDE.md", "README.md", "agentsDoc/testing-guide.md"];
+// 必读环检测：四个仓库入口加显式活跃记忆；条件/背景互链不构成 DAG 节点义务。
+var MUST_READ_ENTRIES = ["AGENTS.md", "CLAUDE.md", "README.md", "agentsDoc/testing-guide.md"].concat(ACTIVE_MEMORY_ENTRIES);
 
-function listRepoMarkdownFiles() {
+function listRepoMarkdownFiles(root) {
+    root = root || ROOT;
     var SKIP_DIRS = { ".git": true, "node_modules": true, "tmp": true, ".workbuddy": true, ".workbuddy-ai": true };
     var out = [];
     function walk(relDir) {
-        var names = fs.readdirSync(relDir ? abs(relDir) : ROOT);
+        var names = fs.readdirSync(path.join(root, relDir));
         for (var i = 0; i < names.length; i++) {
             var name = names[i];
             if (SKIP_DIRS[name]) continue;
             var rel = relDir ? relDir + "/" + name : name;
-            if (fs.statSync(abs(rel)).isDirectory()) walk(rel);
+            if (fs.statSync(path.join(root, rel)).isDirectory()) walk(rel);
             else if (/\.md$/i.test(name)) out.push(rel);
         }
     }
     walk("");
-    return out.sort();
+    for (var a = 0; a < ACTIVE_MEMORY_ENTRIES.length; a++) {
+        if (fs.existsSync(path.join(root, ACTIVE_MEMORY_ENTRIES[a]))) out.push(ACTIVE_MEMORY_ENTRIES[a]);
+    }
+    return uniqueSorted(out);
 }
 
 // 文件内容与锚点索引按绝对路径缓存：链接扫描近似 O(总受检字节 + 边数)。
@@ -661,7 +848,7 @@ function collectChangedMarkdownLines(root) {
     var otherLines = others.split(/\r?\n/);
     for (var i = 0; i < otherLines.length; i++) {
         var rel = otherLines[i];
-        if (!/\.md$/i.test(rel) || skipRe.test(rel)) continue;
+        if (!/\.md$/i.test(rel) || (skipRe.test(rel) && ACTIVE_MEMORY_ENTRIES.indexOf(rel) === -1)) continue;
         untracked[rel] = true;
     }
     return { changed: parseGitDiffAddedLines(diff), untracked: untracked };
@@ -1198,7 +1385,7 @@ if (equipCov.status !== 0) {
 }
 
 // ---- Repo-wide local markdown link & fragment audit ----
-// 扫描全仓 .md（排除 .git/node_modules/tmp/.workbuddy/.workbuddy-ai）。
+// 扫描全仓 .md（排除 .git/node_modules/tmp/.workbuddy/.workbuddy-ai，再显式加入活跃记忆入口）。
 // 分级（F1）：LINK_BLOCK_FILES 治理闭包内一律 error；名单外落在 git 新增/改动行（或未跟踪文件）→ error；
 // 未改动行的旧缺陷逐条 warn，不静默豁免。与 validateLocalMarkdownLinks 共存：
 // LEGACY_LINK_GATE_FILES 的存在性错误仍由旧门承担，此处不重复报。
@@ -1214,6 +1401,12 @@ for (var md = 0; md < repoMdFiles.length; md++) {
     var mdRel = repoMdFiles[md];
     var mdText = readCachedAbs(abs(mdRel));
     if (mdText === null) continue;
+    if (ACTIVE_MEMORY_ENTRIES.indexOf(mdRel) !== -1) {
+        var targetIssues = checkActiveMemoryTargets(mdRel, mdText, read("scripts/compile_test.ps1"));
+        for (var ti = 0; ti < targetIssues.length; ti++) {
+            (targetIssues[ti].severity === "warn" ? warnings : errors).push(targetIssues[ti].message);
+        }
+    }
     var linkIssues = checkMarkdownLinks(ROOT, abs(mdRel), mdRel, mdText, liveMarkdownIo);
     for (var li = 0; li < linkIssues.length; li++) {
         var linkIssue = linkIssues[li];
@@ -1255,7 +1448,7 @@ if (linkDebt.length > 200) {
 }
 
 // ---- Must-read cycle detection (entry docs only) ----
-// 只从四个入口文件提取「先读/必读」强指令边；详见/参考类背景互链不计入，不把所有链接当 DAG。
+// 只从仓库入口和显式活跃记忆提取「先读/必读」强指令边；详见/参考类背景互链不计入。
 
 var mustReadEdges = [];
 for (var mr = 0; mr < MUST_READ_ENTRIES.length; mr++) {
@@ -1299,6 +1492,12 @@ if (require.main === module) {
 
 // 纯文本检查函数导出，供 tools/test-doc-governance.js 的 fixture 复用；require 本文件不触发巡检。
 module.exports = {
+    ACTIVE_MEMORY_ENTRIES: ACTIVE_MEMORY_ENTRIES,
+    LINK_BLOCK_FILES: LINK_BLOCK_FILES,
+    listRepoMarkdownFiles: listRepoMarkdownFiles,
+    parseCompileTargetAliases: parseCompileTargetAliases,
+    collectLiteralCompileTargets: collectLiteralCompileTargets,
+    checkActiveMemoryTargets: checkActiveMemoryTargets,
     blankInlineCode: blankInlineCode,
     eachNonFenceLine: eachNonFenceLine,
     extractMarkdownLinks: extractMarkdownLinks,

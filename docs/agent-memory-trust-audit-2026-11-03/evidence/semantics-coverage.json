@@ -1,0 +1,171 @@
+{
+  "baseline": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+  "scope": "MEMORY sections XFL/depth, game values, input events; six topics; one archived handoff; three reference Python scripts",
+  "sampling_rule": "Read all 6 topic Markdown and 89-line handoff. Risk-selected assertions verified; not an exhaustive census of every sentence. Python scripts checked statically, not executed. No Flash/CS6/AVM1 execution.",
+  "files": [
+    {
+      "source_file": ".workbuddy/memory/topics/xfl-参考脚本/gen_football_xfl.py",
+      "lines": 516,
+      "bytes": 20575,
+      "reading": "static targeted slices: imports/config, parsers, write sites, entrypoints",
+      "claim_records": 1,
+      "claim_ids": [
+        "SEM-095"
+      ]
+    },
+    {
+      "source_file": ".workbuddy/memory/topics/xfl-参考脚本/render_preview.py",
+      "lines": 43,
+      "bytes": 1319,
+      "reading": "static targeted slices: imports/config, parsers, write sites, entrypoints",
+      "claim_records": 1,
+      "claim_ids": [
+        "SEM-098"
+      ]
+    },
+    {
+      "source_file": ".workbuddy/memory/topics/xfl-参考脚本/verify_xfl.py",
+      "lines": 140,
+      "bytes": 4745,
+      "reading": "static targeted slices: imports/config, parsers, write sites, entrypoints",
+      "claim_records": 0,
+      "claim_ids": []
+    },
+    {
+      "source_file": ".workbuddy/memory/topics/xfl-参考脚本/足球手雷-接入说明（历史）.md",
+      "lines": 89,
+      "bytes": 5026,
+      "reading": "all lines",
+      "claim_records": 2,
+      "claim_ids": [
+        "SEM-093",
+        "SEM-094"
+      ]
+    },
+    {
+      "source_file": ".workbuddy/memory/topics/封印领域-天启大封印.md",
+      "lines": 23,
+      "bytes": 2932,
+      "reading": "all lines",
+      "claim_records": 12,
+      "claim_ids": [
+        "SEM-026",
+        "SEM-027",
+        "SEM-028",
+        "SEM-029",
+        "SEM-030",
+        "SEM-031",
+        "SEM-032",
+        "SEM-033",
+        "SEM-034",
+        "SEM-035",
+        "SEM-036",
+        "SEM-037"
+      ]
+    },
+    {
+      "source_file": ".workbuddy/memory/topics/战技与装备插件.md",
+      "lines": 34,
+      "bytes": 4798,
+      "reading": "all lines",
+      "claim_records": 11,
+      "claim_ids": [
+        "SEM-049",
+        "SEM-050",
+        "SEM-051",
+        "SEM-052",
+        "SEM-053",
+        "SEM-054",
+        "SEM-055",
+        "SEM-056",
+        "SEM-057",
+        "SEM-058",
+        "SEM-059"
+      ]
+    },
+    {
+      "source_file": ".workbuddy/memory/topics/手写XFL-格式与踩坑.md",
+      "lines": 328,
+      "bytes": 24044,
+      "reading": "all lines",
+      "claim_records": 14,
+      "claim_ids": [
+        "SEM-081",
+        "SEM-082",
+        "SEM-083",
+        "SEM-084",
+        "SEM-085",
+        "SEM-086",
+        "SEM-087",
+        "SEM-088",
+        "SEM-089",
+        "SEM-090",
+        "SEM-091",
+        "SEM-092",
+        "SEM-096",
+        "SEM-097"
+      ]
+    },
+    {
+      "source_file": ".workbuddy/memory/topics/技能注册清单.md",
+      "lines": 82,
+      "bytes": 6525,
+      "reading": "all lines",
+      "claim_records": 11,
+      "claim_ids": [
+        "SEM-038",
+        "SEM-039",
+        "SEM-040",
+        "SEM-041",
+        "SEM-042",
+        "SEM-043",
+        "SEM-044",
+        "SEM-045",
+        "SEM-046",
+        "SEM-047",
+        "SEM-048"
+      ]
+    },
+    {
+      "source_file": ".workbuddy/memory/topics/物品数据与素材映射.md",
+      "lines": 70,
+      "bytes": 6965,
+      "reading": "all lines",
+      "claim_records": 9,
+      "claim_ids": [
+        "SEM-060",
+        "SEM-061",
+        "SEM-062",
+        "SEM-063",
+        "SEM-064",
+        "SEM-065",
+        "SEM-066",
+        "SEM-067",
+        "SEM-068"
+      ]
+    },
+    {
+      "source_file": ".workbuddy/memory/topics/素材与图标管线.md",
+      "lines": 53,
+      "bytes": 12065,
+      "reading": "all lines",
+      "claim_records": 12,
+      "claim_ids": [
+        "SEM-069",
+        "SEM-070",
+        "SEM-071",
+        "SEM-072",
+        "SEM-073",
+        "SEM-074",
+        "SEM-075",
+        "SEM-076",
+        "SEM-077",
+        "SEM-078",
+        "SEM-079",
+        "SEM-080"
+      ]
+    }
+  ],
+  "ledger_records": 98,
+  "unreviewed": "Individual art-tuning numeric preferences, every historical SVG/PNG measurement, full SWF binary identity and all legacy XFL assets were not revalidated. No claim of runtime reproduction."
+}

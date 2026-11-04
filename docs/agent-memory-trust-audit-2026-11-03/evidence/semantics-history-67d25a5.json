@@ -1,0 +1,33 @@
+{
+  "sha": "67d25a5ad0fd3620722043837ece16e1aceec2fe",
+  "parent": [
+    "b6161c17032d63a4073b60b9a3dc21c257a2b5e2"
+  ],
+  "message": "✨ feat: 调整天启大封印特效",
+  "files": [
+    {
+      "sha": "cd83db9bee9b4724a42fc7299f9c8019e7888557",
+      "filename": "scripts/类定义/org/flashNight/arki/skill/SealDomain.as",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/67d25a5ad0fd3620722043837ece16e1aceec2fe/scripts%2F%E7%B1%BB%E5%AE%9A%E4%B9%89%2Forg%2FflashNight%2Farki%2Fskill%2FSealDomain.as",
+      "raw_url": "https://github.com/FlashNightModReborn/CrazyFlashNight/raw/67d25a5ad0fd3620722043837ece16e1aceec2fe/scripts%2F%E7%B1%BB%E5%AE%9A%E4%B9%89%2Forg%2FflashNight%2Farki%2Fskill%2FSealDomain.as",
+      "contents_url": "https://api.github.com/repos/FlashNightModReborn/CrazyFlashNight/contents/scripts%2F%E7%B1%BB%E5%AE%9A%E4%B9%89%2Forg%2FflashNight%2Farki%2Fskill%2FSealDomain.as?ref=67d25a5ad0fd3620722043837ece16e1aceec2fe",
+      "patch": "@@ -62,7 +62,7 @@ class org.flashNight.arki.skill.SealDomain {\n      * ⚠ 必须与 `_root.主动战技函数.长枪.天启大封印.法阵Y偏移` 保持一致 ——\n      *   那边管「元件摆在哪」，这边管「判定圆心在哪」。两边对不上，判定整体偏移。\n      */\n-    public static var 宿主Y偏移:Number = 80;\n+    public static var 宿主Y偏移:Number = 120;\n \n     /** X 轴判定半径（像素）：圆心左右各 300。 */\n     public static var 范围半径X:Number = 300;\n@@ -77,7 +77,7 @@ class org.flashNight.arki.skill.SealDomain {\n      * ⚠ 改这个值只影响纵深，不影响左右；法阵素材的高度若与判定不一致，\n      *   需要在元件里调图形，不要反过来把判定改成不对称。\n      */\n-    public static var 范围半径Z:Number = 80;\n+    public static var 范围半径Z:Number = 120;\n \n     /**\n      * 每隔多少帧补收一次新走进范围的敌人（1 = 每帧，越大越省）。"
+    },
+    {
+      "sha": "01b4a74ead9e9e5d6f38e80314cbb16979c94f69",
+      "filename": "scripts/逻辑/单位函数/单位函数_雾人_aka_fs_主动战技.as",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/67d25a5ad0fd3620722043837ece16e1aceec2fe/scripts%2F%E9%80%BB%E8%BE%91%2F%E5%8D%95%E4%BD%8D%E5%87%BD%E6%95%B0%2F%E5%8D%95%E4%BD%8D%E5%87%BD%E6%95%B0_%E9%9B%BE%E4%BA%BA_aka_fs_%E4%B8%BB%E5%8A%A8%E6%88%98%E6%8A%80.as",
+      "raw_url": "https://github.com/FlashNightModReborn/CrazyFlashNight/raw/67d25a5ad0fd3620722043837ece16e1aceec2fe/scripts%2F%E9%80%BB%E8%BE%91%2F%E5%8D%95%E4%BD%8D%E5%87%BD%E6%95%B0%2F%E5%8D%95%E4%BD%8D%E5%87%BD%E6%95%B0_%E9%9B%BE%E4%BA%BA_aka_fs_%E4%B8%BB%E5%8A%A8%E6%88%98%E6%8A%80.as",
+      "contents_url": "https://api.github.com/repos/FlashNightModReborn/CrazyFlashNight/contents/scripts%2F%E9%80%BB%E8%BE%91%2F%E5%8D%95%E4%BD%8D%E5%87%BD%E6%95%B0%2F%E5%8D%95%E4%BD%8D%E5%87%BD%E6%95%B0_%E9%9B%BE%E4%BA%BA_aka_fs_%E4%B8%BB%E5%8A%A8%E6%88%98%E6%8A%80.as?ref=67d25a5ad0fd3620722043837ece16e1aceec2fe",
+      "patch": "@@ -1793,7 +1793,7 @@ _root.主动战技函数.长枪.天启大封印.法阵兜底距离 = 390;\n  *   ② 本常量；\n  *   ③ `SealDomain.宿主Y偏移`（它按 `宿主._y - 宿主Y偏移` 反推判定圆心）。\n  */\n-_root.主动战技函数.长枪.天启大封印.法阵Y偏移 = 80;\n+_root.主动战技函数.长枪.天启大封印.法阵Y偏移 = 120;\n \n /** 索敌起始距离 = 索敌距离 × 该倍率 */\n _root.主动战技函数.长枪.天启大封印.索敌距离倍率 = 1;"
+    }
+  ]
+}

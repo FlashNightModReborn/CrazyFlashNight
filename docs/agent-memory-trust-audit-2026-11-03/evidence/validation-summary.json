@@ -1,0 +1,85 @@
+{
+  "status": "passed",
+  "baseline_commit": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+  "recorded_at_utc": "2026-11-03T11:51:34.269442+00:00",
+  "checks": {
+    "baseline_validator": {
+      "command": "node tools/validate-doc-governance.js",
+      "exit_code": 0,
+      "log_file": "baseline-validator-final.log",
+      "sha256": "7b3d7931dc0dd4669f2d2e5da01af16c805c21ab3952226a4bdf72472bef3161",
+      "errors": 0,
+      "warning_lines": 12
+    },
+    "baseline_unit_tests": {
+      "command": "node tools/test-doc-governance.js",
+      "exit_code": 0,
+      "log_file": "baseline-worktree-unit.log",
+      "sha256": "dbb7e6d3a7da2cf696bf055fb4a7460aa27392e77169c07c8f81c63070b73e5a",
+      "tests_passed": 26
+    },
+    "candidate_validator": {
+      "command": "node tools/validate-doc-governance.js",
+      "exit_code": 0,
+      "log_file": "final-document-validator.log",
+      "sha256": "7a7512cea20e5ce0c6ba49bbac3407a47067096330a0333c7518823794bad23c",
+      "errors": 0,
+      "warning_lines": 13,
+      "phase": "Final report, ledger and candidate documentation included; unit-tested tool files unchanged."
+    },
+    "candidate_unit_tests": {
+      "command": "node tools/test-doc-governance.js",
+      "exit_code": 0,
+      "log_file": "final-candidate-unit-tests.log",
+      "sha256": "3af51ffc1e93d49305c6bdcd4dbfbf634e9dc4fdfcc5c392bc56742a10f33ba0",
+      "tests_passed": 42
+    }
+  },
+  "independent_counterexamples": {
+    "passed": 10,
+    "failed": 0,
+    "evidence": "checker-review-third-probe-results.json"
+  },
+  "original_memory_full_replay": {
+    "error_line": 21,
+    "error_target": "levels",
+    "warnings": [
+      {
+        "line": 14,
+        "reason": "placeholder outside literal alias scope"
+      }
+    ],
+    "evidence": "checker-review-third-original-results.json"
+  },
+  "reviewed_tool_sha256": {
+    "validate-doc-governance.js": "7e00a80a7b963e4534cd24ddb13fc4ebb608120652a9149daa8e7797d1f3736c",
+    "test-doc-governance.js": "9de50cc9b974daacde32b107724bc42f57fd835f0509555cfb208d7dd97d2508"
+  },
+  "warning_delta": {
+    "added": [
+      "[doc-governance] warn: line budget notice: 159 lines, budget 150；行数只作提示，新增锚点/章节不受行数门逼迫；超限应删重复/缩小范围而非压行 [agentsDoc/documentation-governance.md]"
+    ],
+    "removed": [],
+    "interpretation": "One advisory line-budget warning only; no hard gate weakened. Existing historical link-debt warnings include sparse-unmaterialized targets and are not repository defect totals."
+  },
+  "preservation_evidence": "preservation-check.json",
+  "ledger_integrity": "ledger-integrity.json",
+  "standalone_static_probes": {
+    "avatar_handlers": "3/3; control-flow only, not visual rendering",
+    "curve_identity": "404 samples; residual 8.881784197001252e-15; no AVM1 execution"
+  },
+  "git_diff_check": {
+    "exit_code": 0,
+    "command": "git diff --check"
+  },
+  "patch_apply_check": "Final forward-apply receipt and patch SHA-256 are in the delivery package, outside the patch to avoid a self-referential digest.",
+  "not_run": [
+    "Flash CS6 compilation",
+    "game E2E",
+    "Windows GUI/runtime promotion",
+    "archived reference Python scripts",
+    "cross-model controlled A/B"
+  ],
+  "baseline_materialization_note": "Earlier 49 errors were caused by missing sparse objects/short SHAs. After materializing the hard-gate inputs the unchanged baseline passed. The supplied baseline-validator-final.log is the accepted baseline.",
+  "task_specification_copy": "Task text retained with LF line endings; line numbers unchanged."
+}

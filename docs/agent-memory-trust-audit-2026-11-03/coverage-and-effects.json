@@ -1,0 +1,135 @@
+{
+  "baseline_commit": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+  "ledger_records": 209,
+  "memory_statement_records": 193,
+  "other_investigation_records": 16,
+  "record_scopes": {
+    "active_memory": 103,
+    "historical_log": 17,
+    "supporting_evidence_or_governance": 16,
+    "memory_topic": 69,
+    "historical_handoff": 2,
+    "reference_script": 2
+  },
+  "status_counts_all": {
+    "VALID": 102,
+    "DUPLICATE": 34,
+    "FALSE": 20,
+    "CONFLICT": 25,
+    "UNSAFE_DIRECTIVE": 9,
+    "UNVERIFIED": 41,
+    "HISTORICAL": 50,
+    "LOCAL_ONLY": 29,
+    "STALE": 13
+  },
+  "status_counts_memory_statements_only": {
+    "VALID": 94,
+    "DUPLICATE": 34,
+    "FALSE": 17,
+    "CONFLICT": 23,
+    "UNSAFE_DIRECTIVE": 9,
+    "UNVERIFIED": 37,
+    "HISTORICAL": 45,
+    "LOCAL_ONLY": 29,
+    "STALE": 12
+  },
+  "status_counts_active_memory": {
+    "VALID": 57,
+    "DUPLICATE": 29,
+    "FALSE": 7,
+    "CONFLICT": 14,
+    "UNSAFE_DIRECTIVE": 6,
+    "UNVERIFIED": 20,
+    "HISTORICAL": 14,
+    "LOCAL_ONLY": 16,
+    "STALE": 4
+  },
+  "risk_counts_all": {
+    "P2": 134,
+    "P3": 6,
+    "P1": 66,
+    "P0": 3
+  },
+  "scope_note": "风险导向抽样；状态允许重叠。这些数量不是全库错误率、独立事故数或模型幻觉率。",
+  "asset_totals": {
+    "all_files": 22,
+    "markdown_files": 19,
+    "markdown_bytes": 399577,
+    "markdown_lines": 4145,
+    "historical_logs": 11,
+    "historical_log_lines": 3359,
+    "python_files": 3,
+    "python_lines": 699
+  },
+  "reading_and_sampling": {
+    "active_memory": "107/107行全文阅读。抽取103条原文断言；另2条目录/加载调查已从active计数移出。编译16个含断言行全覆盖36条。未把每个复合历史实验拆成全部微观事实。",
+    "six_topics": "6/6文件、590/590行全文阅读；风险导向抽取69条，未建立所有句子断言总数。",
+    "dated_logs": "11/11文件纳入编译风险检索/上下文阅读，共3359行；258关键词命中行不是断言总数；13条编译+4条权限/头像/Git历史=17条定向抽样。非随机样本，不报告伪精确句级覆盖率。",
+    "historical_handoff": "89/89行全文阅读，2条台账。",
+    "python_references": "3/3文件699行的配置、解析器、入口与写入点定向静态审查，2条文件来源台账；未执行脚本，未逐分支测试。",
+    "memory_history": "22条路径历史提交元数据、18个MEMORY内容快照；首个levels失真提交同时复核当时编译resolver。",
+    "not_semantically_audited": "日记全部业务叙述、每项美术参数与历史性能数值、所有XFL/SWF资产、私有平台会话与实际prompt未做逐句或运行审计。"
+  },
+  "effects": {
+    "active_false_claim_ids_removed": [
+      "COMP-009",
+      "ROOT-014",
+      "ROOT-016",
+      "ROOT-020",
+      "ROOT-022",
+      "ROOT-033",
+      "ROOT-039"
+    ],
+    "active_unsafe_claim_ids_removed": [
+      "COMP-024",
+      "COMP-029",
+      "ROOT-034",
+      "ROOT-036",
+      "ROOT-038",
+      "ROOT-042"
+    ],
+    "active_duplicate_claim_ids_routed": [
+      "COMP-001",
+      "COMP-002",
+      "COMP-003",
+      "COMP-004",
+      "COMP-005",
+      "COMP-006",
+      "COMP-007",
+      "COMP-008",
+      "COMP-010",
+      "COMP-011",
+      "COMP-012",
+      "COMP-013",
+      "COMP-014",
+      "COMP-016",
+      "COMP-017",
+      "COMP-018",
+      "COMP-019",
+      "COMP-021",
+      "COMP-022",
+      "COMP-023",
+      "COMP-034",
+      "COMP-036",
+      "SEM-001",
+      "SEM-004",
+      "ROOT-001",
+      "ROOT-008",
+      "ROOT-013",
+      "ROOT-030",
+      "ROOT-040"
+    ],
+    "machine_environment_records": [
+      "ROOT-009",
+      "ROOT-011",
+      "ROOT-012",
+      "ROOT-024",
+      "ROOT-025"
+    ],
+    "machine_environment_generalized_to_universal_prerequisite": [
+      "ROOT-011",
+      "ROOT-024"
+    ],
+    "note": "before/after只跟踪已审计同一组断言；历史原文仍可检索。未测实际token账单或跨模型行为改善。"
+  }
+}

@@ -1,7 +1,7 @@
 # Agent 协作与 harness 实践
 
 **文档角色**：Agent 协作 / 任务粒度 / 无人值守执行 canonical doc。
-**最后核对代码基线**：commit `539fa306181da40d092c03508afdbddef18eff8d`（2026-08-15）。
+**最后核对代码基线**：commit `cfb1952e88553d8e5138d7c3e9b883a9beb035d2`（2026-11-03；本轮仅核对 Flash smoke 证据路由）。
 
 只写项目特定约束。协作目标不是制造更多可见步骤，而是在 [human-care.md](human-care.md) 的边界内，把真实产品结果更快、可恢复地交付。
 
@@ -67,7 +67,7 @@
 
 - UI / overlay / minigame 行为变更优先补现有 `dev/harness.html`、`qa-suite.js` 或静态校验；不要只留“人工点一下”。
 - Node QA 负责确定性状态流，browser harness 负责协议 / DOM / 交互，静态校验负责结构与旧入口回流。
-- `scripts/compile_test.ps1` 退出 0 不等于 Flash 编译成功；必须核本次 `flashlog.txt`、`compiler_errors.txt`，`publish_done.marker` 只代表 JSFL 触发结束。详见 [testing-guide.md §2](testing-guide.md)。
+- `scripts/compile_test.ps1` 退出 0 或 terminal marker 不单独证明成功；按目标核验本轮证据，测试行为与 publish-only 的判据统一见 [AS2 验证](testing-guide.md#as2)。
 
 ## 8. 项目特定反模式
 

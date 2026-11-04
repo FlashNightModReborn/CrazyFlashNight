@@ -1,0 +1,24 @@
+{
+  "commit": "f495419e3b77f042f20bd287ed1f9d83e8b0fe16",
+  "onerror": [
+    {
+      "line": 1067,
+      "text": "                '<div class=\"task-icon-avatar\"><img src=\"' + avatarUrl(task.npcName) + '\" onerror=\"this.onerror=function(){this.onerror=null;this.style.visibility=\\'hidden\\'};this.src=\\'' + defaultAvatarUrl() + '\\';\" alt=\"\"></div>' +"
+    },
+    {
+      "line": 1180,
+      "text": "            html += '<div class=\"task-npc-avatar\"><img src=\"' + avatarUrl(task.npcName) + '\" onerror=\"this.onerror=function(){this.onerror=null;this.style.visibility=\\'hidden\\'};this.src=\\'' + defaultAvatarUrl() + '\\';\" alt=\"\"></div>';"
+    },
+    {
+      "line": 1450,
+      "text": "                '<div class=\"task-npc-avatar\"><img src=\"' + avatarUrl(t.npcName) + '\" onerror=\"this.onerror=function(){this.onerror=null;this.style.visibility=\\'hidden\\'};this.src=\\'' + defaultAvatarUrl() + '\\';\" alt=\"\"></div></div>';"
+    }
+  ],
+  "manifest": {
+    "content": "    names = [entry['name'] for entry in spec['entries']]\n    assert len(names) == len({name.casefold() for name in names})\n    assert all(name and not any(c in name for c in '/\\\\:*?\"<>|') and name not in ('.', '..') for name in names)\n    output_dir = args.output_dir.resolve()\n    previous = output_dir / 'generated-manifest.json'\n    owned = set()\n    if previous.exists():\n        owned = {e['name'] for e in json.loads(previous.read_text(encoding='utf-8'))['entries']}\n    prepared = []\n    for entry in spec['entries']:\n        data = render(entry, spec['size'])\n        with Image.open(io.BytesIO(data)) as image:\n            assert image.size == (400, 400) and image.convert('RGBA').getbbox() is not None\n        assert len(data) <= 512 * 1024\n        path = output_dir / (entry['name'] + '.png')\n        if not args.check and path.exists() and entry['name'] not in owned:\n            raise ValueError('拒绝覆盖未归本生成器维护的头像: ' + str(path))\n        prepared.append((path, data, {'name': entry['name'], 'uri': path.name,\n                                     'sha256': digest(data), 'bytes': len(data),\n                                     'mode': entry['mode'], 'sources': entry['sources'], 'note': entry['note']}))\n    total = sum(len(data) for _, data, _ in prepared)\n    assert total <= 8 * 1024 * 1024\n    manifest = {'schema': 'cf7-generated-npc-profiles-v1', 'size': 400, 'pillow': PILLOW_VERSION,\n                'generatorSha256': digest(Path(__file__).read_bytes()),\n                'recipeSha256': digest(SPEC.read_bytes()), 'totalBytes': total,\n                'entries': [entry for _, _, entry in prepared]}\n    manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + '\\n').encode('utf-8')\n    if args.check:\n        for path, data, _ in prepared:\n            if not path.exists() or path.read_bytes() != data:\n                raise ValueError('头像缺失或与配方不符: ' + str(path))",
+    "encoding": "utf-8",
+    "sha": "cb427a5c83cddee44fd670a6258cc80f9eab776c",
+    "display_url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/f495419e3b77f042f20bd287ed1f9d83e8b0fe16/tools/bake-npc-profiles.py",
+    "display_title": "bake-npc-profiles.py"
+  }
+}

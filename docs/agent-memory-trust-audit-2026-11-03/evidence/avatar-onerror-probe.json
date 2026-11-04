@@ -1,0 +1,52 @@
+{
+  "head": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+  "method": "evaluate three actual serialized event-handler expressions in isolation; no browser or rendering claim",
+  "passed": 3,
+  "results": [
+    {
+      "source_file": "launcher/web/modules/tasks/task-panel.js",
+      "source_line": 1069,
+      "handler": "this.onerror=function(){this.onerror=null;this.style.visibility='hidden'};this.src='fallback.png';",
+      "firstFailure": {
+        "visibility": "visible",
+        "src": "fallback.png",
+        "hasSecondHandler": true
+      },
+      "secondFailure": {
+        "visibility": "hidden",
+        "src": "fallback.png",
+        "onerror": null
+      }
+    },
+    {
+      "source_file": "launcher/web/modules/tasks/task-panel.js",
+      "source_line": 1182,
+      "handler": "this.onerror=function(){this.onerror=null;this.style.visibility='hidden'};this.src='fallback.png';",
+      "firstFailure": {
+        "visibility": "visible",
+        "src": "fallback.png",
+        "hasSecondHandler": true
+      },
+      "secondFailure": {
+        "visibility": "hidden",
+        "src": "fallback.png",
+        "onerror": null
+      }
+    },
+    {
+      "source_file": "launcher/web/modules/tasks/task-panel.js",
+      "source_line": 1452,
+      "handler": "this.onerror=function(){this.onerror=null;this.style.visibility='hidden'};this.src='fallback.png';",
+      "firstFailure": {
+        "visibility": "visible",
+        "src": "fallback.png",
+        "hasSecondHandler": true
+      },
+      "secondFailure": {
+        "visibility": "hidden",
+        "src": "fallback.png",
+        "onerror": null
+      }
+    }
+  ]
+}

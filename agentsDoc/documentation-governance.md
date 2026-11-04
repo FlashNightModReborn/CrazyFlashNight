@@ -1,7 +1,7 @@
 # 文档治理规则
 
 **文档角色**：文档治理 canonical doc。  
-**最后核对代码基线**：commit `c1e51dd1e8dba6bf72452cfef3af8b6f09b36acf`（2026-09-12；本轮核对长期 UI 迁移计划的归属与维护规则）。
+**最后核对代码基线**：commit `cfb1952e88553d8e5138d7c3e9b883a9beb035d2`（2026-11-03；本轮核对受限记忆入口与巡检范围）。
 
 ## 1. 文档分层
 
@@ -12,6 +12,7 @@
 | 主题深文档 | `agentsDoc/*` | 架构、规范、治理等 canonical doc；验证类按 matrix/details 分工：`testing-guide.md` 是验证选择矩阵，`testing-details.md` 是按需验证正文（规范层） |
 | 子系统 source of truth | `launcher/README.md` 等 | 稳定架构、入口、职责地图、机器注册表与专题文档索引 |
 | 评估 / 路线图 / ADR | `docs/*` | 技术栈评估、审计、决策沉淀 |
+| 受限 Agent 记忆 | `.workbuddy/memory/MEMORY.md` | 当前导航与有来源的术语提示；其余日期日志、topics 为历史参考 |
 
 ## 2. 角色边界
 
@@ -25,6 +26,16 @@
 - 事故时间线与量化反例放入 `docs/*` 独立复盘，不把案例堆回高频 canonical doc
 - 新增流程必须说明它消除的决策不确定性、为何不能自动化，以及相对人工打断和关键路径的净收益；不能证明就不新增
 - 流程时长、revision 数和 token 代理指标只用于触发删减，不得成为需要人类确认的合规对象
+
+<a id="agent-memory"></a>
+### 受限记忆与历史证据
+
+`.workbuddy/memory/MEMORY.md` 只维护权威链接和必要的术语提示，不另存编译协议、机器绝对路径、动态参数或全局授权。
+Git 跟踪与工具私有目录的区别以实际索引为准；`.gitignore` 不会取消已有跟踪。平台是否注入某文件须有加载证据，不能从文件名推定。
+日期日志、topics、参考脚本只提供调查线索；历史“用户要求”“实测通过”不产生当前权限或新基线的运行证明。
+唯一知识先核源码、适用范围与证据，再按[归属表](self-optimization.md#3-归档目标)进入现有 canonical；已覆盖的内容只保留链接。
+活跃入口的标准 Markdown 链接、锚点、明确编译命令与别名表由现有巡检器核对；无法确定的语法仅警告，历史错误命令用引用块标明。
+其余 `.workbuddy` 历史与脚本继续排除，不把旧日志变成无关业务的硬门。授权、恢复前提和自然语言真伪由审阅裁决，不用正则代签。
 
 ## 3. 高变动文档基线规则
 
@@ -135,10 +146,10 @@ node tools/test-doc-governance.js   # 巡检器纯文本 fixture 单测；改巡
 - `AGENTS.md` 的关键链接存在
 - 已知回流模式没有重新进入高频入口文档
 - 关键文档包含基线标记或维护约束
-- 高变动文档的基线 commit 真实存在于 `git log` 中
+- 高变动文档的基线标记可由 Git 解析；当前 `rev-parse --verify` 不证明任意完整 SHA 的对象存在或祖先可达性，需精确身份时另核对象/历史
 - 入口文档体量符合本文 §7 标记块：字节预算与单行/段落可读性为硬门，其余文档行数预算为提示级 warn
 - 治理范围内本地 Markdown 链接与 fragment 锚点可解析：含同文件锚点、中文标题 slug、重复标题 `-1`/`-2` 后缀、显式 `<a id>`、引用式链接与 URL 解码；代码围栏内假链接豁免，相对路径不得逃出仓库根；治理闭包名单内文件一律阻断，名单外的新增/改动行（git diff 识别，未跟踪文件全部行算新增）同样阻断，未改动行的既有债务逐条 warn（不静默豁免）
-- 四个入口文件（`AGENTS.md`、`CLAUDE.md`、`README.md`、`agentsDoc/testing-guide.md`）的必读边（先读/必读类强指令子句，同行弱词子句不吞）无循环；详见/参考类背景互链不计入
+- 四个仓库入口（`AGENTS.md`、`CLAUDE.md`、`README.md`、`agentsDoc/testing-guide.md`）及显式活跃记忆入口的必读边（先读/必读类强指令子句，同行弱词子句不吞）无循环；详见/参考类背景互链不计入
 - Launcher 分节基线齐全，本地 Markdown 链接与源码职责路径可解析
 - runtime consensus 与 manifest 身份一致，README 不复制可变发布收据和产物数字
 - Launcher 配置、用户偏好、CLI、Bootstrap cmd、测试分区、Panel id/最终模块与代码 exact-set 一致

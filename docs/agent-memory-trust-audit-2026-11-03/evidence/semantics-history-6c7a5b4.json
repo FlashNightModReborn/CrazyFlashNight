@@ -1,0 +1,21 @@
+{
+  "sha": "6c7a5b4f6866ea76ef1c720c95f768bc0c88fdef",
+  "parent": [
+    "0e6b7f980a59d9c33eeef9332ac7a4d670d9a136"
+  ],
+  "message": "✨ feat: 调整下手套对应的倍率",
+  "files": [
+    {
+      "sha": "3405020a308435fbcc9724cc1fb7109435455623",
+      "filename": "scripts/类定义/org/flashNight/arki/skill/SealDomain.as",
+      "status": "modified",
+      "additions": 51,
+      "deletions": 1,
+      "changes": 52,
+      "blob_url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/6c7a5b4f6866ea76ef1c720c95f768bc0c88fdef/scripts%2F%E7%B1%BB%E5%AE%9A%E4%B9%89%2Forg%2FflashNight%2Farki%2Fskill%2FSealDomain.as",
+      "raw_url": "https://github.com/FlashNightModReborn/CrazyFlashNight/raw/6c7a5b4f6866ea76ef1c720c95f768bc0c88fdef/scripts%2F%E7%B1%BB%E5%AE%9A%E4%B9%89%2Forg%2FflashNight%2Farki%2Fskill%2FSealDomain.as",
+      "contents_url": "https://api.github.com/repos/FlashNightModReborn/CrazyFlashNight/contents/scripts%2F%E7%B1%BB%E5%AE%9A%E4%B9%89%2Forg%2FflashNight%2Farki%2Fskill%2FSealDomain.as?ref=6c7a5b4f6866ea76ef1c720c95f768bc0c88fdef",
+      "patch": "@@ -185,6 +185,50 @@ class org.flashNight.arki.skill.SealDomain {\n             + 攻 * SealDomain.攻击系数;\n     }\n \n+    // ════════════════════════════════════════════════════════════════════\n+    // 施术者侧的强度倍率\n+    // ════════════════════════════════════════════════════════════════════\n+\n+    /**\n+     * 「三蝶手稿」插件带来的封印强度倍率。\n+     *\n+     * 判定口径：**手部战技名 == 天启大封印** ⟺ 手套上装了三蝶手稿。\n+     * （三蝶手稿的 `<use>` 是 `刀,手部装备,长枪`，装到手套上时\n+     *  `EquipmentCalculator.calculateInPlace` 会把 `modifiers.skill` 覆盖进\n+     *  `itemData.skill`，`DressupInitializer.loadWeaponSkill` 再拿\n+     *  `target[\"手部装备数据\"].skill` 去 `装载主动战技(…, \"空手\")`。）\n+     *\n+     * 这样判还顺带解决歧义：手稿装在刀 / 长枪上、手套另配时，手部战技不是\n+     * 天启大封印 → 不加成，符合\"只有戴着手稿的那只手套才强化封印\"的直觉。\n+     *\n+     *   手部装备 = 真猫妖手套 → 5.0\n+     *   手部装备 = 猫妖手套   → 2.0\n+     *   其余 / 取不到     → 1.0\n+     *\n+     * ⚠ 倍率挂在 状态 上（落成时快照一次），**不要**去改静态的 每秒强度 ——\n+     *   那是全局量，动了会让所有封印一起变。\n+     */\n+    private static function 取强度倍率(施术者:MovieClip):Number {\n+        if (施术者 == undefined) {\n+            return 1;\n+        }\n+        var 手部数据:Object = 施术者[\"手部装备数据\"];\n+        if (手部数据 == undefined || 手部数据 == null || 手部数据.skill == undefined) {\n+            return 1;\n+        }\n+        if (String(手部数据.skill.skillname) != \"天启大封印\") {\n+            return 1;\n+        }\n+        var 装备名:String = String(手部数据.name == undefined ? \"\" : 手部数据.name);\n+        if (装备名 == \"真猫妖手套\") {\n+            return 5;\n+        }\n+        if (装备名 == \"猫妖手套\") {\n+            return 2;\n+        }\n+        return 1;\n+    }\n+\n     // ════════════════════════════════════════════════════════════════════\n     // 对外入口\n     // ════════════════════════════════════════════════════════════════════\n@@ -212,13 +256,18 @@ class org.flashNight.arki.skill.SealDomain {\n             已存续帧: 0,\n             记录表: [],\n             任务ID: null,\n+            强度倍率: 1,\n             已结束: false\n         };\n \n         if (状态.施术者 == undefined) {\n             状态.施术者 = _root.gameworld[_root.控制目标];\n         }\n \n+        // 落成时快照一次强度倍率（三蝶手稿 + 猫妖手套，见 取强度倍率）：\n+        // 挂在本状态上而不是改全局 每秒强度，多个封印可各算各的。\n+        状态.强度倍率 = SealDomain.取强度倍率(状态.施术者);\n+\n         // 宿主被卸载（换场景 / 元件移除）时必须还原现场，否则敌人会被永久冻结。\n         // ⚠ 优先走 EventCoordinator 的卸载链：宿主一旦被 addUnloadCallback /\n         //    addLifecycleTask 碰过，它的 onUnload 会被 EventCoordinator 换成 proxy\n@@ -432,7 +481,8 @@ class org.flashNight.arki.skill.SealDomain {\n             // ⚠ 强度按「单位各自被封印那一刻」起算，而不是全领域统一从技能开始累计。\n             //    所以累加与判定都必须落在 记录 上：晚进来的敌人只能从它的 0 开始攒。\n             记录.已存续帧++;\n-            记录.强度 += SealDomain.每秒强度 / 率;\n+            // 强度倍率在 封() 里快照过（三蝶手稿 + 猫妖手套）；取不到时按 1 处理。\n+            记录.强度 += SealDomain.每秒强度 * 取数(状态.强度倍率, 1) / 率;\n             // 并集二选一：带 立即放逐标签 的（补收发生在本循环之前，所以当帧就到这）\n             // 与强度达标的一律放逐；没标签且没达标的继续攒。\n             if (记录.立即放逐 || 记录.强度 >= 记录.额度) {"
+    }
+  ]
+}

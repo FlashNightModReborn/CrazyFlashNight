@@ -1,0 +1,43 @@
+ok - exports are functions and require does not run the CLI
+ok - valid inline link + valid fragment pass; invalid fragment fails
+ok - same-file anchors are validated
+ok - Chinese heading slug and GitHub-style punctuation stripping
+ok - duplicate headings get -1/-2 suffix anchors
+ok - percent-encoded fragment is URL-decoded before matching
+ok - reference-style links and definitions are resolved and checked
+ok - links and headings inside code fences are ignored
+ok - inline code spans are not treated as links
+ok - relative links escaping the repo root are rejected; in-root .. is allowed
+ok - external schemes, mailto and bare autolinks are skipped
+ok - query strings are stripped before existence check
+ok - readability: long line and long paragraph reported; boundaries pass
+ok - byte budget boundary: exact budget passes, one byte over fails
+ok - lineCountOf matches legacy line-count semantics
+ok - background cross-links do not count as must-read edges; strong directives do
+ok - findMustReadCycles: acyclic graph passes, must-read cycle is detected
+ok - must-read edges from entry texts form a cycle only via strong directives
+ok - diffExactSet reports missing and unexpected entries
+ok - legacy machine gates still present in validator source
+ok - F1 parseGitDiffAddedLines maps new-side line numbers
+ok - F1 linkIssueSeverity: block list / new line / unchanged line / untracked / degraded
+ok - F1 real git pipeline in a temp repo (skipped when git unavailable)
+ok - F2 mixed strong/weak line: acceptance counterexample now detects the cycle
+ok - F2 clause order independence and tone inheritance
+ok - F3 line budget is notice-level while byte budget stays hard
+ok - M1 only the explicit active memory is scanned; historical and private trees stay excluded
+ok - M1 active memory links and fragments are hard errors even on unchanged lines
+ok - M1 untracked active entry is included by real git enumeration; its sibling history is not
+ok - M2 reads aliases from the resolver and follows a newly added source alias
+ok - M2 accepts current aliases, case-insensitive quoted values and colon syntax
+ok - M2 rejects known obsolete levels in the original Target table shape
+ok - M2 fenced current commands and multiline commands are checked
+ok - M2 quoted historical mistakes, sibling topics and unrelated Target parameters are allowed
+ok - M2 explicit XFL paths, variables, placeholders and parameter abbreviations are outside alias proof
+ok - M2 CRLF and a continued parameter value retain the exact directive line
+ok - M2 resolver shape changes are reported as unverifiable, never as invented alias facts
+ok - M3 independent inline commands and prose mentions never share their arguments
+ok - M3 shell and HTML comments are not current target declarations
+ok - M3 Target tables follow the nearest explicit tool; ambiguous context only warns
+ok - M3 complex shell expressions and invocation options are review warnings
+ok - M3 the real MEMORY compile preamble keeps a suffix mention from stealing its table context
+[test-doc-governance] ok: 42 passed

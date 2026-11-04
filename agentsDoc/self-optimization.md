@@ -1,7 +1,7 @@
 # 自优化工作流
 
 **文档角色**：会话归档 / 自优化 canonical doc。  
-**最后核对代码基线**：commit `04718fa57afb64836e95893f0c4ff821d25ca043`（2026-08-16）。
+**最后核对代码基线**：commit `cfb1952e88553d8e5138d7c3e9b883a9beb035d2`（2026-11-03；仅核对知识归属与平台记忆边界）。
 
 ## 1. 授权前提与评估时机
 
@@ -85,6 +85,8 @@ node tools/validate-doc-governance.js
 - 已在 canonical doc 中稳定记录的规则
 - 会话临时状态
 
+受 Git 跟踪的 `.workbuddy/memory/MEMORY.md` 不属于私有轨道：仅保留受限导航；日期日志与 topics 按[记忆治理](documentation-governance.md#agent-memory)作为历史证据。
+
 ### 轨道 B：平台私有记忆
 
 - Claude Code：`~/.claude/projects/[项目]/memory/MEMORY.md`
@@ -98,7 +100,7 @@ node tools/validate-doc-governance.js
 ## 6. 维护准则
 
 - **渐进式**：每次会话填充一点，不追求一次完善
-- **准确性优先**：只记录已验证信息
+- **准确性优先**：共享规则只记录已核实信息及适用范围；未复核的独有实验保留来源、输入身份和不确定性，作为历史线索，不晋升规范
 - **去重**：添加前检查是否已有相同内容
 - **角色一致**：入口文档不堆深度实现，深文档不反过来充当路由页
 - **权限不扩张**：归档、commit、push 与写平台记忆只能来自原任务范围或用户明确授权；human-care 不产生写权限

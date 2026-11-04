@@ -429,6 +429,214 @@ test("F3 line budget is notice-level while byte budget stays hard", function () 
     assert.strictEqual(v.exceedsByteBudget(20481, 20480), true);
 });
 
+// ---- M1：显式活跃记忆范围；历史/topic 不进入新增硬门 ----
+
+test("M1 only the explicit active memory is scanned; historical and private trees stay excluded", function () {
+    var repo = makeFixtureRepo({
+        "AGENTS.md": "# Router\n",
+        ".workbuddy/memory/MEMORY.md": "[rules](../../AGENTS.md)\n",
+        ".workbuddy/memory/2026-10-27.md": "[old](gone.md)\n",
+        ".workbuddy/memory/topics/history.md": "[old](gone.md)\n",
+        ".workbuddy/other/MEMORY.md": "[old](gone.md)\n",
+        ".workbuddy-ai/session.md": "[old](gone.md)\n",
+        "docs/history.md": "# Existing public history\n"
+    });
+    try {
+        assert.deepStrictEqual(v.listRepoMarkdownFiles(repo.root), [
+            ".workbuddy/memory/MEMORY.md", "AGENTS.md", "docs/history.md"
+        ]);
+    } finally { repo.cleanup(); }
+});
+
+test("M1 active memory links and fragments are hard errors even on unchanged lines", function () {
+    var rel = ".workbuddy/memory/MEMORY.md";
+    var repo = makeFixtureRepo({
+        ".workbuddy/memory/MEMORY.md": "[good](../../AGENTS.md#rules)\n[bad](../../AGENTS.md#gone)\n[missing](gone.md)\n",
+        "AGENTS.md": "# Rules\n"
+    });
+    try {
+        var issues = repo.check(rel);
+        assert.strictEqual(issues.length, 2);
+        issues.forEach(function (issue) {
+            assert.strictEqual(v.linkIssueSeverity(rel, issue.line, v.LINK_BLOCK_FILES, {}, {}), "error");
+        });
+        assert.strictEqual(v.LINK_BLOCK_FILES[".workbuddy/memory/topics/history.md"], undefined);
+    } finally { repo.cleanup(); }
+});
+
+test("M1 untracked active entry is included by real git enumeration; its sibling history is not", function () {
+    var root = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-active-memory-git-"));
+    function git(args) { return cp.spawnSync("git", args, { cwd: root, stdio: ["ignore", "pipe", "ignore"] }); }
+    try {
+        if (git(["--version"]).status !== 0) { console.log("  (skipped: git unavailable)"); return; }
+        assert.strictEqual(git(["init", "--quiet"]).status, 0);
+        fs.writeFileSync(path.join(root, "AGENTS.md"), "# Router\n");
+        assert.strictEqual(git(["add", "AGENTS.md"]).status, 0);
+        assert.strictEqual(git(["-c", "user.email=fixture@example.invalid", "-c", "user.name=fixture",
+            "commit", "--quiet", "-m", "init"]).status, 0);
+        fs.mkdirSync(path.join(root, ".workbuddy/memory"), { recursive: true });
+        fs.writeFileSync(path.join(root, ".workbuddy/memory/MEMORY.md"), "# Router\n");
+        fs.writeFileSync(path.join(root, ".workbuddy/memory/2026-10-27.md"), "# History\n");
+        var info = v.collectChangedMarkdownLines(root);
+        assert.strictEqual(info.untracked[".workbuddy/memory/MEMORY.md"], true);
+        assert.strictEqual(info.untracked[".workbuddy/memory/2026-10-27.md"], undefined);
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+// ---- M2：target 来自现役 resolver；只核对可证明的字面别名 ----
+
+var compileResolverFixture = [
+    "switch -Regex ($Target.ToLower()) {",
+    "    '^(test|testloader)$' { $targetPath = 'test.xfl' }",
+    "    '^(publish|asloader)$' { $targetPath = 'asLoader.xfl' }",
+    "    '^(main|mainfile|empire)$' { $targetPath = 'main.xfl' }",
+    "    default { $targetPath = $Target }",
+    "}"
+].join("\n");
+var activeMemoryRel = ".workbuddy/memory/MEMORY.md";
+
+test("M2 reads aliases from the resolver and follows a newly added source alias", function () {
+    assert.deepStrictEqual(v.parseCompileTargetAliases(compileResolverFixture),
+        ["asloader", "empire", "main", "mainfile", "publish", "test", "testloader"]);
+    var changed = compileResolverFixture.replace("test|testloader", "test|testloader|focused");
+    assert.deepStrictEqual(v.checkActiveMemoryTargets(activeMemoryRel,
+        "`scripts/compile_test.ps1 -Target focused`", changed), []);
+});
+
+test("M2 accepts current aliases, case-insensitive quoted values and colon syntax", function () {
+    var text = "`scripts/compile_test.ps1 -Target PUBLISH`\n" +
+        "`scripts/compile_test.ps1 -target:'TestLoader'`\n" +
+        '`scripts/compile_test.ps1 -Target "empire"`\n';
+    assert.strictEqual(v.collectLiteralCompileTargets(text).length, 3);
+    assert.deepStrictEqual(v.checkActiveMemoryTargets(activeMemoryRel, text, compileResolverFixture), []);
+});
+
+test("M2 rejects known obsolete levels in the original Target table shape", function () {
+    var text = "## Compile\n`powershell -File scripts/compile_test.ps1 -Target <target>`\n\n" +
+        "| Changes | Target |\n| --- | --- |\n| scripts | `publish` |\n| UI | `levels` |\n";
+    var issues = v.checkActiveMemoryTargets(activeMemoryRel, text, compileResolverFixture)
+        .filter(function (issue) { return issue.severity === "error"; });
+    assert.strictEqual(issues.length, 1);
+    assert.strictEqual(issues[0].line, 7);
+    assert.ok(/unsupported literal compile target alias: levels/.test(issues[0].message));
+});
+
+test("M2 fenced current commands and multiline commands are checked", function () {
+    var text = '```powershell\nscripts/compile_test.ps1 -Target levels\n```\n\n' +
+        '```powershell\nscripts/compile_test.ps1 `\n  -Target obsolete\n```\n';
+    var issues = v.checkActiveMemoryTargets(activeMemoryRel, text, compileResolverFixture);
+    assert.deepStrictEqual(issues.map(function (i) { return i.line; }), [2, 7]);
+});
+
+test("M2 quoted historical mistakes, sibling topics and unrelated Target parameters are allowed", function () {
+    var history = '> Historical command, not a current instruction:\n> `scripts/compile_test.ps1 -Target levels`\n';
+    assert.deepStrictEqual(v.checkActiveMemoryTargets(activeMemoryRel, history, compileResolverFixture), []);
+    assert.deepStrictEqual(v.checkActiveMemoryTargets(".workbuddy/memory/topics/old.md",
+        "scripts/compile_test.ps1 -Target levels", compileResolverFixture), []);
+    var other = "build.ps1 -Target custom\n| Change | Target |\n| --- | --- |\n| another tool | custom |\n";
+    assert.deepStrictEqual(v.checkActiveMemoryTargets(activeMemoryRel, other, compileResolverFixture), []);
+    var mixed = "```powershell\nscripts/compile_test.ps1 -Target publish\nbuild.ps1 -Target custom\n```\n";
+    assert.deepStrictEqual(v.checkActiveMemoryTargets(activeMemoryRel, mixed, compileResolverFixture), []);
+    var sameLine = "build.ps1 -Target before; scripts/compile_test.ps1 -Target publish; build.ps1 -Target after";
+    var uncertain = v.checkActiveMemoryTargets(activeMemoryRel, sameLine, compileResolverFixture);
+    assert.ok(uncertain.length > 0);
+    assert.ok(uncertain.every(function (issue) { return issue.severity === "warn"; }));
+});
+
+test("M2 explicit XFL paths, variables, placeholders and parameter abbreviations are outside alias proof", function () {
+    var text = 'scripts/compile_test.ps1 -Target "flashswf/arts/a/a.xfl"\n' +
+        'scripts/compile_test.ps1 -Target "C:\\work\\a.fla"\n' +
+        'scripts/compile_test.ps1 -Target $chosen\n' +
+        'scripts/compile_test.ps1 -Target <target>\n' +
+        'scripts/compile_test.ps1 -Tar levels\n';
+    assert.deepStrictEqual(v.collectLiteralCompileTargets(text), []);
+    var notices = v.checkActiveMemoryTargets(activeMemoryRel, text, compileResolverFixture);
+    assert.strictEqual(notices.length, 5);
+    assert.ok(notices.every(function (issue) { return issue.severity === "warn"; }));
+});
+
+test("M2 CRLF and a continued parameter value retain the exact directive line", function () {
+    var text = "```powershell\r\nscripts/compile_test.ps1 `\r\n  -Target `\r\n  levels\r\n```\r\n";
+    var issues = v.checkActiveMemoryTargets(activeMemoryRel, text, compileResolverFixture);
+    assert.strictEqual(issues.length, 1);
+    assert.strictEqual(issues[0].line, 3);
+    var unindented = text.replace("  -Target", "-Target");
+    assert.strictEqual(v.checkActiveMemoryTargets(activeMemoryRel, unindented, compileResolverFixture)[0].line, 3);
+});
+
+test("M2 resolver shape changes are reported as unverifiable, never as invented alias facts", function () {
+    var changed = compileResolverFixture.replace("'^(test|testloader)$'", "'test.*'");
+    assert.strictEqual(v.parseCompileTargetAliases(changed), null);
+    var issues = v.checkActiveMemoryTargets(activeMemoryRel,
+        "scripts/compile_test.ps1 -Target test", changed);
+    assert.strictEqual(issues.length, 1);
+    assert.ok(/cannot verify/.test(issues[0].message));
+    assert.strictEqual(issues[0].severity, "warn");
+    assert.deepStrictEqual(v.checkActiveMemoryTargets(activeMemoryRel, "[compile](../../compile.md)", changed), []);
+    var bareCase = compileResolverFixture.replace("    default", "    levels { $targetPath = 'levels.xfl' }\n    default");
+    assert.strictEqual(v.parseCompileTargetAliases(bareCase), null);
+    var bareIssues = v.checkActiveMemoryTargets(activeMemoryRel, "scripts/compile_test.ps1 -Target levels", bareCase);
+    assert.ok(bareIssues.length > 0);
+    assert.ok(bareIssues.every(function (issue) { return issue.severity === "warn"; }));
+});
+
+// 独立审阅发现的误报回归：语法不明只能 warn，不能扩大为语义硬门。
+test("M3 independent inline commands and prose mentions never share their arguments", function () {
+    var text = '`scripts/compile_test.ps1 -Target publish` 与 `build.ps1 -Target custom`\n' +
+        '`scripts/compile_test.ps1` 是编译器。另一个工具用 `build.ps1 -Target custom`。\n';
+    assert.deepStrictEqual(v.checkActiveMemoryTargets(activeMemoryRel, text, compileResolverFixture), []);
+});
+
+test("M3 shell and HTML comments are not current target declarations", function () {
+    var text = '```powershell\nscripts/compile_test.ps1 -Target publish # old -Target levels is invalid\n' +
+        '# scripts/compile_test.ps1 -Target levels\n' +
+        'scripts/compile_test.ps1 -Target publish -VerifySwf "path -Target levels"\n```\n' +
+        '<!-- scripts/compile_test.ps1 -Target levels -->\n' +
+        '<!--\nscripts/compile_test.ps1 -Target levels\n-->\n';
+    assert.deepStrictEqual(v.checkActiveMemoryTargets(activeMemoryRel, text, compileResolverFixture), []);
+    var tokenHash = v.checkActiveMemoryTargets(activeMemoryRel,
+        '`scripts/compile_test.ps1 -Target levels#part`', compileResolverFixture);
+    assert.ok(tokenHash.length > 0);
+    assert.ok(tokenHash.every(function (issue) { return issue.severity === "warn"; }));
+});
+
+test("M3 Target tables follow the nearest explicit tool; ambiguous context only warns", function () {
+    var before = '## Tools\n`compile_test.ps1 -Target publish`\n\n';
+    var table = '| Parameter | Target |\n| --- | --- |\n| build target | custom |\n';
+    assert.deepStrictEqual(v.checkActiveMemoryTargets(activeMemoryRel,
+        before + '`build.ps1` 的参数：\n' + table, compileResolverFixture), []);
+    var issues = v.checkActiveMemoryTargets(activeMemoryRel,
+        before + '接下来是另一种工具的参数。\n' + table, compileResolverFixture);
+    assert.ok(issues.length > 0);
+    assert.ok(issues.every(function (issue) { return issue.severity === "warn"; }));
+});
+
+test("M3 complex shell expressions and invocation options are review warnings", function () {
+    var inputs = [
+        '`scripts/compile_test.ps1 -Target publish; build.ps1 -Target custom`',
+        '`powershell -Command scripts/compile_test.ps1 -Target levels`',
+        '`scripts/compile_test.ps1 -Target $selected`'
+    ];
+    inputs.forEach(function (text) {
+        var issues = v.checkActiveMemoryTargets(activeMemoryRel, text, compileResolverFixture);
+        assert.ok(issues.length > 0, text);
+        assert.ok(issues.every(function (issue) { return issue.severity === "warn"; }), text);
+    });
+});
+
+test("M3 the real MEMORY compile preamble keeps a suffix mention from stealing its table context", function () {
+    // 固定基线 MEMORY 原文摘录：独立的 `.sh` 是扩展名提示，不是第二个脚本。
+    var text = '## 编译（Flash CS6 自动化）\n\n' +
+        '计划任务拉起 `Flash.exe` 跑 JSFL（`publish()`/`testMovie()`）；CS6 仍在链路上。唯一入口：\n' +
+        '`powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target <目标> -TimeoutSeconds 180`（Git Bash 用 `.sh`），别单独跑 `compile_action.jsfl`。\n\n' +
+        '| 改动位置 | Target |\n| --- | --- |\n| `scripts/类定义/` | `publish` |\n| `flashswf/UI levels` | `levels` |\n';
+    var errors = v.checkActiveMemoryTargets(activeMemoryRel, text, compileResolverFixture)
+        .filter(function (issue) { return issue.severity === "error"; });
+    assert.strictEqual(errors.length, 1);
+    assert.strictEqual(errors[0].line, 9);
+    assert.ok(/levels/.test(errors[0].message));
+});
+
 if (failed) {
     console.error("[test-doc-governance] failed: " + failed + " failed, " + passed + " passed");
     process.exit(1);
