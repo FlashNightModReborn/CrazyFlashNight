@@ -92,6 +92,8 @@ tools/stage-fixed-webview-runtime.ps1 text eol=lf
 # Generated artifacts — canonical LF.
 # 注：launcher/web/modules/stage-select-data.js 曾是生成物，.fla 退役后已是手写权威 SOT，
 # 不得再标 linguist-generated（否则手改在 PR 中被默认折叠、逃过 review）。
+launcher/web/generated/guidance-catalog.js text eol=lf
+launcher/web/generated/tutorial-journeys.js text eol=lf
 scripts/asLoaderManifest/_collapsed_frame.as text eol=lf
 launcher/scripts/dist/hit-number-bundle.js text eol=lf
 launcher/web/modules/arena-custom-presets.js text eol=lf
