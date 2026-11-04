@@ -1,0 +1,109 @@
+{
+  "schema": "cf7-publisher-onboarding-runtime-release-evidence.v1",
+  "evidenceRole": "Historical release receipt; current deployment truth remains the runtime manifest and signed consensus.",
+  "date": "2026-11-04",
+  "publisher": {
+    "login": "towerofsorcerer",
+    "databaseId": 328609522
+  },
+  "source": {
+    "implementationCommit": "cfc2325561541d031b73738f472a69845455c49b",
+    "sourceCommit": "ddd3ecccfca78fd9fdcaa714968c32639fba338d",
+    "releaseTreeOid": "f0de6241fa0a5b6766d8c127b724e81a8aae006d",
+    "sourceTag": "runtime-build-v2/20261104-publisher-onboarding-v1",
+    "tagObject": "6af5d63c3e98974e1008900f5bf897b1afb2024c",
+    "deploymentCommit": "64a0bef9cb852480d169eecc9b55c7113902ec8b"
+  },
+  "requestId": "DF713EAA19C6755BB08E7A8E0922F25242C0F3C6EF09ECD26591D295416851D9",
+  "identity": {
+    "artifactSourceHash": "432E0B2F04D61FAD147EBA8A28C37A6D51A83EBFE0BE66F0ECA2DCDD545522DC",
+    "producerRecipeHash": "8283AA52DFD51F747BDE1F2C6A6468B3C310F1BDF3E45BF8417E19C12E6E44C4",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "78F98A51BB28E4C50B53E77ED33A5D20774EB833931A7F630EDB10E78338C381",
+    "buildIdentityHash": "B76A37F8856EE7C90CBB94A2E6F53EEADAFDD6E1FD708AACD8457A984A42502C",
+    "payloadClosureHash": "33D636951CD9AEAA6C6ED1FD50B2214BBF5126D885D78BD6C72372A9EC8E6452",
+    "manifestSha256": "8B53C0068611EB752D347909581870989EEC870D52C0918E42BDDAD0253D535E",
+    "consensusSha256": "1A7728F53B8A5804DC9E2085BF80B6B67D5F9680E8C26EA69D3BE5EC901CB086",
+    "runtimePayloadChanged": false,
+    "payloadFiles": 43
+  },
+  "producers": [
+    {
+      "kind": "local-x509",
+      "builderIdentityHash": "EF5E8EEF42090F5267CD4069DDD5CF71EC968CC5A30EEA9152EACDC386C6495E",
+      "certificateThumbprint": "FB12661270A5D62424E64087D164FE401D1EA3D8",
+      "faultDomain": "physical-host-d"
+    },
+    {
+      "kind": "github-oidc",
+      "builderIdentityHash": "117C9D40B6C1A90086AA17B2289BCDD7D0BF0A2F3D0305739CC225BE96E9C11F",
+      "faultDomain": "github-hosted-windows"
+    }
+  ],
+  "cloudBuild": {
+    "runId": 41867291007,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/41867291007",
+    "conclusion": "success",
+    "proofMode": "attestation-only; replayed against the actual local CAS candidate during promotion"
+  },
+  "policy": {
+    "passed": true,
+    "checksPassed": 47,
+    "checksTotal": 47,
+    "receiptSha256": "D53EAF3B0741A94BA3C6D14B9A31F6752621F589F29DD3F930ED00E08DEA3694"
+  },
+  "promotion": {
+    "status": "promoted",
+    "promotedAtUtc": "2026-11-04T16:53:03.5766013Z",
+    "signers": 2,
+    "faultDomains": 2,
+    "fullInstallVerificationPassed": true,
+    "previousBundlePreservedOutsideWorktree": true
+  },
+  "deploymentAudit": {
+    "runId": 41872223121,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/41872223121",
+    "conclusion": "success",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "signers": 2,
+    "faultDomains": 2
+  },
+  "sourceAudit": {
+    "runId": 41867109806,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/41867109806",
+    "conclusion": "success",
+    "state": "source-ahead",
+    "deploymentChanged": false
+  },
+  "onboarding": {
+    "teamPackage": "towerofsorcerer-发布者接入准备包-v2.zip",
+    "packageBaseCommit": "a71b44aa237959512490e2bf06edcc6f3711ea00",
+    "identityAndRulesetTargetMatched": true,
+    "adoptedRegressionCoverage": true,
+    "builderId": "builder-local-d",
+    "faultDomain": "physical-host-d",
+    "privateKeyExported": false
+  },
+  "retainedFailure": {
+    "stage": "initial local candidate",
+    "observedPayloadClosureHash": "641491321B3FF96E741E86DBEA19B13362472FB8A5992E66BEA620969EAC973F",
+    "cause": "The local CARGO_HOME is part of the remapped Rust source path; D:\\CF7\\cargo produced a different sol_parser.dll path identity than the GitHub runner's default user cargo home.",
+    "resolution": "Re-ran the same immutable request in a fresh queue with CARGO_HOME unset so the local build used the default user cargo home; the rebuilt payload closure matched the cloud proof at 33D636951CD9AEAA6C6ED1FD50B2214BBF5126D885D78BD6C72372A9EC8E6452.",
+    "promoted": false
+  },
+  "validation": {
+    "testMainBranchAdmission": "passed=15 failed=0",
+    "testRuntimeGithubAttestation": "assertions=129",
+    "testRuntimeReleaseState": "passed=55 failed=0",
+    "testRuntimeBuildV2": "checks=296",
+    "testInvokeRuntimeGithubBuild": "passed=24 failed=0",
+    "docGovernance": "ok with existing non-blocking warnings",
+    "fullInstallVerifyOnly": "exit 0",
+    "standardEntryGameplay": "not_run; this receipt does not claim standard_entry_verified or gameplay E2E"
+  },
+  "scope": {
+    "csharpNativeModifierIncluded": false,
+    "distributionBoundary": "Runtime release for the current source; no new stable package, GitHub Release, save migration, or gameplay acceptance."
+  }
+}

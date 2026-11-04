@@ -337,6 +337,10 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 
 **阅读口径**：以下各节是按对象 / 日期 / 范围留存的历史证据快照，记录各列车当时的身份、证明与验收边界。节标题与正文中的「当前正式发布」「上一正式发布」「顶部当前段」等字样均为该次发布当时的相对称呼，不代表当前部署状态；查询当前部署身份与状态一律以上文「当前机器真值读取说明」列出的机器真源为准。本节内容由原文件前部整体迁移至此，历史记录未删改。
 
+## 2026-11-04 发布者接入验收列车
+
+`towerofsorcerer` 接入后的首趟完整列车以 `ddd3ecccfca78fd9fdcaa714968c32639fba338d`、不可变 tag `runtime-build-v2/20261104-publisher-onboarding-v1` 和 request `DF713EAA19C6755BB08E7A8E0922F25242C0F3C6EF09ECD26591D295416851D9` 冻结。本机不可导出 X509 `builder-local-d / physical-host-d`（keyId `EF5E8EEF42090F5267CD4069DDD5CF71EC968CC5A30EEA9152EACDC386C6495E`）与 [GitHub OIDC/Sigstore run 41867291007](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/41867291007) 对 build identity `B76A37F8856EE7C90CBB94A2E6F53EEADAFDD6E1FD708AACD8457A984A42502C`、43 文件 payload closure `33D636951CD9AEAA6C6ED1FD50B2214BBF5126D885D78BD6C72372A9EC8E6452` 达成双 signer / 双 faultDomain 共识，production policy 47/47。唯一 promotion writer 于 `2026-11-04T16:53:03.5766013Z` 完成原子提升，部署提交 `64a0bef9cb852480d169eecc9b55c7113902ec8b` 的 [deployment Audit 41872223121](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/41872223121) 报告 `state=promoted`、`deploymentChanged=true`，full-install `--verify-only` 通过。首轮本地构建曾因 `CARGO_HOME` 进入 Rust remap 路径而产生不同 `sol_parser.dll`，该候选未提升；最终以默认用户 cargo home 重跑并取得与云端相同闭包。本列车只覆盖发布者接入和现有源码，不包含尚未实现的 C# 原生修改器，也未在正式入口重跑游戏旅程，因此不称 `standard_entry_verified`。完整身份与验证边界见 [发布回执](evidence/publisher-onboarding-runtime-release-2026-11-04.json)。
+
 ## 2026-10-30 至 31 黑边子弹与原生内容视口止血
 
 最终冻结源 `e6a367d08d`、受控标签 `runtime-build-v2/20261031-content-viewport-hotfix-v4`、部署 `e00da093d8` 合并上游注释与商店更新，完成双生产者/双故障域同闭包共识与生产政策 47/47。Host 最终单轮 8,116 通过、31 条件跳过、零失败；74 项视口、缩放、切换、天气灯光和诊断回归所测原生 DLL 与最终包逐字节相同。熄屏时序资格未取得，旧包同环境对照同样未通过，保留亮屏与实际游戏复验边界。v2 本地推广后的整合过程、v3 政策失败及 v4 精确身份见[发布记录](reports/黑边子弹与原生视口-正式发布-2026-10-30.md)，不新增稳定整包。
