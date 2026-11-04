@@ -142,6 +142,7 @@ switch -Regex ($endpoint) {
             [ordered]@{ id=[long]$_.databaseId; login=[string]$_.login; permissions=[ordered]@{ push=$true } }
         })
         if ($mode -eq 'creator-missing') { $collaborators = @($collaborators | Where-Object id -ne 91271520) }
+        if ($mode -eq 'creator-missing-new') { $collaborators = @($collaborators | Where-Object id -ne 328609522) }
         $collaborators += [ordered]@{
             id=777777777
             login='UnlistedArtist'
@@ -276,8 +277,8 @@ try {
         Assert-Test ($result.Output -match 'not sourced by the configured repository') $result.Output
     }
 
-    Run-Test 'Runtime tag creators remain the exact two immutable identities' {
-        foreach ($mode in @('creator-missing','tag-creator-extra')) {
+    Run-Test 'Runtime tag creators remain the exact three immutable identities' {
+        foreach ($mode in @('creator-missing','creator-missing-new','tag-creator-extra')) {
             $result = Invoke-TestAudit -ExpectedState Active -MockMode $mode
             Assert-Test ($result.ExitCode -ne 0) "$mode passed"
             Assert-Test ($result.Output -match 'source-tag creator|source-tag creation') "$mode`: $($result.Output)"

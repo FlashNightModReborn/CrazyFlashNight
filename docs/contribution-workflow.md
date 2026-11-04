@@ -6,7 +6,7 @@
 
 仓库继续保留 AS2、XML、XFL、Web 与 Launcher 的同提交原子性，不拆软件仓库和资产仓库。GitHub Free 公开仓库采用“全员直推 + 事后审计 + 正式发布双生产者共识”：
 
-- 所有已有 write 权限的协作者，包括 `Crazyfs`、`Flash-Night`，都继续使用现有客户端 `Pull → Commit → Push main`；服务端不要求 PR、CODEOWNER 或另一人在线。
+- 所有已有 write 权限的协作者，包括 `Crazyfs`、`Flash-Night`、`towerofsorcerer`，都继续使用现有客户端 `Pull → Commit → Push main`；服务端不要求 PR、CODEOWNER 或另一人在线。
 - 普通文档、美术、策划、AS2、Web 与数据提交不触发 runtime integrity workflow，各自继续遵守原有专项验证。
 - C# / Rust / C / C++、项目/锁文件与其他 native 源码直推属于正常开发态。push 后审计可以成功报告 `source-ahead`，表示源码领先于当前已部署 runtime；它不是发布失败，也不要求每次提交立即重建二进制。
 - 根 EXE、`runtime/**`、manifest、signed consensus 等部署字节若发生变化，却没有完整 v2 promotion 证据，push 后 workflow 必须失败报警。报警是事后信号，不能撤销已经进入 `main` 的提交。
@@ -77,7 +77,7 @@ push 后状态分三类理解：
 
 两张票必须拥有不同 signer identity 和真实不同 `faultDomain`，且 build identity / payload closure 全等。GitHub Hosted 是自动第二生产者，不是第二名 human reviewer；它证明构建来源与字节共识，不判断源码业务意图。只要发布者拥有已登记本地证书、source-tag 创建权和 cloud dispatch 权，就不需要等待另一账号批准。
 
-cloud workflow 只接受 `Crazyfs`（GitHub actor ID `91271520`）或 `Flash-Night`（`138298913`）发起的 `workflow_dispatch`，并只接受 `run_attempt == 1`；失败后应重新 dispatch，不使用 Actions 的 rerun 按钮。该授权用于限制发布能力与 hosted runner 消耗，不影响任何协作者直推源码。
+cloud workflow 只接受 `Crazyfs`（GitHub actor ID `91271520`）、`Flash-Night`（`138298913`）或 `towerofsorcerer`（`328609522`）发起的 `workflow_dispatch`，并只接受 `run_attempt == 1`；失败后应重新 dispatch，不使用 Actions 的 rerun 按钮。该授权用于限制发布能力与 hosted runner 消耗，不影响任何协作者直推源码。
 
 cloud artifact 保留期是有意缩短的临时传递窗口：
 
@@ -94,7 +94,7 @@ cloud artifact 保留期是有意缩短的临时传递窗口：
 | Ruleset | bypass | 规则 |
 |---------|--------|------|
 | `main-global-ref-integrity-v1` | 无 | 禁止删除 `main`；禁止 non-fast-forward / force-push，正常 fast-forward 直推不受阻 |
-| `runtime-source-tag-creation-v1` | 仅获授权发布账号，`User + always` | 只有 `Crazyfs`、`Flash-Night` 可创建 `refs/tags/runtime-build-v2/*` |
+| `runtime-source-tag-creation-v1` | 仅获授权发布账号，`User + always` | 只有 `Crazyfs`、`Flash-Night`、`towerofsorcerer` 可创建 `refs/tags/runtime-build-v2/*` |
 | `runtime-source-tag-immutability-v1` | 无 | 已创建的 runtime source tag 禁止任何 update 与 deletion |
 
 tag creation 与 immutability 必须分开：创建新 tag 的 bypass 不能同时获得移动或删除旧 tag 的能力。`.github/CODEOWNERS` 可以保留为审阅提示，但没有服务端 required-review 效力，不构成准入或发布证明。

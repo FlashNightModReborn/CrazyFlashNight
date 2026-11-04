@@ -1360,7 +1360,9 @@ try {
             $workflow -match '(?m)^\s{2}cancel-in-progress:\s*false\s*$') 'each native head needs an uncancelled audit identity'
         Assert-Test ($workflow -match [regex]::Escape("@('-BaseRevision', `$baseRevision)")) 'workflow must preserve the event base for strict state semantics'
         Assert-Test ($workflow -match "'-Mode', 'Audit'") 'workflow must pass Audit mode literally'
-        Assert-Test ($workflow -match "github\.actor_id == '91271520'" -and $workflow -match "github\.actor_id == '138298913'") `
+        Assert-Test ($workflow -match "github\.actor_id == '91271520'" -and
+            $workflow -match "github\.actor_id == '138298913'" -and
+            $workflow -match "github\.actor_id == '328609522'") `
             'manual audit allocation must use the immutable native maintainer IDs'
         $auditJob = [regex]::Match($workflow, '(?ms)^  audit-native-runtime:\s.*$').Value
         Assert-Test ($auditJob.Contains('github.run_attempt == 1') -and

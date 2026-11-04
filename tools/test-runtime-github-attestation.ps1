@@ -280,7 +280,8 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
         Assert-Cf7Test ($jobContract.Contains("github.event_name == 'workflow_dispatch'") -and
             $jobContract.Contains('github.run_attempt == 1') -and
             $jobContract.Contains("github.actor_id == '91271520'") -and
-            $jobContract.Contains("github.actor_id == '138298913'")) `
+            $jobContract.Contains("github.actor_id == '138298913'") -and
+            $jobContract.Contains("github.actor_id == '328609522'")) `
             'each cloud job must reject non-dispatch, rerun, and non-maintainer identities before allocation'
         Assert-Cf7Test ($jobContract.IndexOf('if: >-', [StringComparison]::Ordinal) -lt
             $jobContract.IndexOf('runs-on: windows-2022', [StringComparison]::Ordinal)) `
