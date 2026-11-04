@@ -87,6 +87,17 @@ cloud artifact 保留期是有意缩短的临时传递窗口：
 
 超过 7 天仍未 promotion 时重新 dispatch；不要把 Actions artifact 当永久发布档案。promotion 后的 tracked manifest/consensus 与其内嵌证明才是仓库长期审计记录。
 
+<a id="publisher-enrollment"></a>
+## 新发布者与新发布机接入
+
+发布账号与本地签名机器分别登记：账号具有仓库 write/admin 权限，不代表已获 source-tag 创建权或 cloud dispatch 授权；新增本地公钥也不授予 GitHub 权限。现役账号身份以 `config/build/main-branch-admission.v2.json` 的 login + immutable database ID 为准，机器身份以 `config/build/runtime-builders.v2.json` 为准。
+
+维护者授权新增账号时，同批更新 admission config、`audit-main-branch-admission.ps1` 的精确身份合同、cloud workflow 的 build/attest 条件、integrity workflow 的 audit/generated-path 条件及对应回归。远端只在 `runtime-source-tag-creation-v1` 添加该用户的 `User + always` 创建例外；main 完整性与 tag 不可变规则继续无 bypass。`.github/CODEOWNERS` 只是审阅提示，不是接入授权入口。
+
+新发布机按[本地 enrollment](runtime-build-reproducibility.md#builder-enrollment)生成不可导出密钥，回传公钥登记 JSON、其 SHA-256 和真实宿主/故障域说明；不要传私钥、PFX 或登录 token。维护者核对材料后合入公钥 registry，使用新机器的实际本地签名证明确认私钥可用。工具链按仓库 lock 和现有环境校验工具核对，不因是新机器而降低锁定要求。
+
+首次列车使用该开发者自己的真实开发内容：先合入全部接入改动及登记材料，完成受影响功能验证、release prepare 与配置检查，再从最终干净 source commit 冻结新 tag/request。工作流和公钥 registry 必须已经包含在这个 source tree 中；不能用旧 tag 加载 main 上的新授权。远端 Active audit、本地与 GitHub 独立生产、production receipt、strict consensus、promotion、部署提交后的 Audit 依次留证；业务标准入口验收仍按实际完成情况表述。
+
 ## GitHub 远端只保留三条零 Actions ruleset
 
 `config/build/main-branch-admission.v2.json` 是全员直推、advisory CODEOWNERS、source-tag 创建者和以下三条规则的版本化 source of truth。远端不设置身份 gate、Require PR、CODEOWNER review 或 required Actions check，只保留三条不依赖 Actions 结果的引用完整性规则：

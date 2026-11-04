@@ -1548,7 +1548,7 @@ v2 将 artifact source、producer recipe、toolchain lock、policy 分为四个�
 
 **主线准入与发布授权门**：文档治理巡检跑 `node tools/validate-doc-governance.js`；另按改动跑 `tools/test-submit-contribution.ps1`（仅可选 PR 辅助回归）、`tools/test-main-branch-admission.ps1`、`tools/audit-main-branch-admission.ps1 -ExpectedState ConfigOnly|Prepared|Layered|Active`、`tools/test-invoke-runtime-github-build.ps1`。
 现役准入事实（以 [contribution-workflow.md](../docs/contribution-workflow.md) 为准）：所有 write collaborator（含 `Crazyfs` / `Flash-Night` / `towerofsorcerer`）可 fast-forward 直推且不需要 PR/check/CODEOWNER；远端仅有 `main-global-ref-integrity-v1`、`runtime-source-tag-creation-v1`、`runtime-source-tag-immutability-v1` 三条零 Actions ruleset。
-迁移按 3 disabled + minimal classic → 3 active + minimal classic → 3 active 且 classic removed 逐态 fail-closed；native audit 全事件只接受首次 run，获授权手工 dispatch 必须强制 release-readiness 全链；cloud 只接受两个固定 actor ID 的首次 `workflow_dispatch`，负例覆盖其他 actor、repository_dispatch 与 rerun，artifact 覆盖 unsigned=1 天、diagnostics/signed=7 天。
+迁移按 3 disabled + minimal classic → 3 active + minimal classic → 3 active 且 classic removed 逐态 fail-closed；native audit 全事件只接受首次 run，获授权手工 dispatch 必须强制 release-readiness 全链；cloud 只接受三个固定 actor ID 的首次 `workflow_dispatch`，负例覆盖其他 actor、repository_dispatch 与 rerun，artifact 覆盖 unsigned=1 天、diagnostics/signed=7 天。发布者扩容另核对[账号与机器分别登记](../docs/contribution-workflow.md#publisher-enrollment)，以及远端漏登新账号、同名错误 ID 和额外创建者的拒绝回归。
 
 **部署后表述**：standard-entry 只覆盖实际验证的功能/环境；记清尚未重跑的业务与感官验收。部署后只执行根 bootstrap `--verify-only` 与 post-promotion Audit 时，不得声称业务 `standard_entry_verified`。历史发布身份与收据不进本页，见 `docs/testing-guide-history-2026-09-17.md`。
 

@@ -90,6 +90,9 @@ function New-TagCreationRuleset {
     [object[]]$bypass = @($config.runtimeTagCreators | ForEach-Object {
         [ordered]@{ actor_id=[long]$_.databaseId; actor_type='User'; bypass_mode='always' }
     })
+    if ($mode -eq 'tower-tag-creator-missing') {
+        $bypass = @($bypass | Where-Object { $_.actor_id -ne 328609522 })
+    }
     if ($mode -eq 'tag-creator-extra') {
         $bypass += [ordered]@{ actor_id=999999999; actor_type='User'; bypass_mode='always' }
     }
@@ -142,7 +145,7 @@ switch -Regex ($endpoint) {
             [ordered]@{ id=[long]$_.databaseId; login=[string]$_.login; permissions=[ordered]@{ push=$true } }
         })
         if ($mode -eq 'creator-missing') { $collaborators = @($collaborators | Where-Object id -ne 91271520) }
-        if ($mode -eq 'creator-missing-new') { $collaborators = @($collaborators | Where-Object id -ne 328609522) }
+        if ($mode -eq 'tower-creator-missing') { $collaborators = @($collaborators | Where-Object id -ne 328609522) }
         $collaborators += [ordered]@{
             id=777777777
             login='UnlistedArtist'
@@ -250,6 +253,49 @@ try {
         $result = Invoke-TestAudit -ExpectedState ConfigOnly
         Assert-Test ($result.ExitCode -eq 0) $result.Output
         Assert-Test ($null -ne $result.Result -and $result.Result.passed -eq $true -and $result.Result.mainDirectPush -eq $true) $result.Output
+        Assert-Test (@($result.Result.runtimeTagCreators).Count -eq 3 -and
+            @($result.Result.runtimeTagCreators) -contains 'towerofsorcerer') 'new publisher was not admitted'
+    }
+
+    Run-Test 'Publisher identity rejects a matching login with a wrong immutable ID or an extra creator' {
+        $invalidRoot = Join-Path $testRoot 'invalid-config'
+        [void](New-Item -ItemType Directory -Path (Join-Path $invalidRoot 'config\build'),(Join-Path $invalidRoot '.github') -Force)
+        Copy-Item -LiteralPath $cloudBuilderConfigPath -Destination (Join-Path $invalidRoot 'config\build\runtime-github-builder.v2.json')
+        Copy-Item -LiteralPath (Join-Path $repoRoot '.github\CODEOWNERS') -Destination (Join-Path $invalidRoot '.github\CODEOWNERS')
+        foreach ($mutation in @('wrong-id','extra-creator')) {
+            $invalidConfig = Get-Content -LiteralPath $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($mutation -eq 'wrong-id') {
+                ($invalidConfig.runtimeTagCreators | Where-Object login -eq 'towerofsorcerer').databaseId = 999999999
+            } else {
+                $invalidConfig.runtimeTagCreators += [pscustomobject]@{ databaseId=999999999; login='OtherPublisher' }
+            }
+            [IO.File]::WriteAllText((Join-Path $invalidRoot 'config\build\main-branch-admission.v2.json'),
+                ($invalidConfig | ConvertTo-Json -Depth 20), $utf8)
+            $output = @(& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $auditScript `
+                -ProjectRoot $invalidRoot -ExpectedState ConfigOnly -Json 2>&1 | ForEach-Object { [string]$_ })
+            Assert-Test ($LASTEXITCODE -ne 0) "$mutation config passed"
+            Assert-Test (($output -join "`n") -match 'Runtime source-tag creators') ($output -join "`n")
+        }
+    }
+
+    Run-Test 'Every release workflow job pins exactly the three publisher IDs before runner allocation' {
+        $actorClause = "github.actor_id == '91271520' || github.actor_id == '138298913' || github.actor_id == '328609522'"
+        $contracts = @(
+            @{ Path='.github\workflows\runtime-cloud-builder.yml'; Job='build'; Guard="github.event_name == 'workflow_dispatch' && github.run_attempt == 1 && ($actorClause)" },
+            @{ Path='.github\workflows\runtime-cloud-builder.yml'; Job='attest'; Guard="needs.build.result == 'success' && github.event_name == 'workflow_dispatch' && github.run_attempt == 1 && ($actorClause)" },
+            @{ Path='.github\workflows\runtime-bundle-integrity.yml'; Job='audit-native-runtime'; Guard="github.run_attempt == 1 && (github.event_name != 'workflow_dispatch' || $actorClause)" },
+            @{ Path='.github\workflows\runtime-bundle-integrity.yml'; Job='generated-path-regressions'; Guard="github.run_attempt == 1 && (github.event_name != 'workflow_dispatch' || $actorClause)" }
+        )
+        foreach ($contract in $contracts) {
+            $workflow = [IO.File]::ReadAllText((Join-Path $repoRoot $contract.Path), [Text.Encoding]::UTF8)
+            $job = [regex]::Match($workflow, ('(?ms)^  ' + [regex]::Escape($contract.Job) + ':\s*\r?\n.*?(?=^  [a-z][a-z0-9-]*:|\z)')).Value
+            $condition = [regex]::Match($job, '(?m)^    if: >-\r?\n(?<guard>(?:^      [^\r\n]*\r?\n)+)')
+            Assert-Test $condition.Success "missing job-level condition: $($contract.Job)"
+            $normalized = [regex]::Replace($condition.Groups['guard'].Value.Trim(), '\s+', ' ')
+            Assert-Test ($normalized -ceq $contract.Guard) "publisher, event, attempt or success gate drifted: $($contract.Job): $normalized"
+            Assert-Test ($job.IndexOf('if: >-', [StringComparison]::Ordinal) -lt
+                $job.IndexOf('runs-on:', [StringComparison]::Ordinal)) "late authorization: $($contract.Job)"
+        }
     }
 
     foreach ($state in @('Prepared','Layered','Active')) {
@@ -278,7 +324,7 @@ try {
     }
 
     Run-Test 'Runtime tag creators remain the exact three immutable identities' {
-        foreach ($mode in @('creator-missing','creator-missing-new','tag-creator-extra')) {
+        foreach ($mode in @('creator-missing','tower-creator-missing','tower-tag-creator-missing','tag-creator-extra')) {
             $result = Invoke-TestAudit -ExpectedState Active -MockMode $mode
             Assert-Test ($result.ExitCode -ne 0) "$mode passed"
             Assert-Test ($result.Output -match 'source-tag creator|source-tag creation') "$mode`: $($result.Output)"

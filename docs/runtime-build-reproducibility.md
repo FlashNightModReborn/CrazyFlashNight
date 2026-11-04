@@ -98,6 +98,7 @@ Core 的 Windows 启动清单 `launcher/app.manifest` 会逐字节嵌入 DLL 与
 - promotion preflight 的隐私回归对本地路径做全文排除，对 Windows 用户名和机器名按完整 JSON 字符串值排除；不能用两字符用户名之类的短标识做任意子串匹配，否则会把无关字段误报为机器身份泄漏。
 - candidate 默认位于 `tmp/runtime-candidates/v2/c-<identity-prefix>-<builder-hash>-<run-token>/`，完整 build identity / builder label 只存 metadata 与证明，避免目录名把 legacy `MAX_PATH` 撑爆；producer 在编译前后都做 259 字符预算门，已存在目录不覆盖。native / Cargo / MSBuild / `TMP` / `TEMP` 的 job 工作根默认位于环境门规范化后的 machine-local `[IO.Path]::GetTempPath()/cf7-runtime-build-work/job-<token>/`，避免仓库位于 `Program Files (x86)` 等含括号路径时把 CMD 元字符传给 VsDevCmd；`CF7_RUNTIME_WORK_ROOT` 只能覆盖为短的本机绝对目录，卷根、UNC/映射网络盘、reparse point、仓库内/祖先、CMD 元字符或 projected MAX_PATH 超限均 fail-closed。队列 worker 从 request Git bundle 创建隔离 clone；输出按 job 分离，不再共享 `launcher/bin/Release`、Cargo target、MSBuild obj/bin 或临时目录。
 
+<a id="builder-enrollment"></a>
 ### 本地 builder enrollment 与证明
 
 每台本地发布机一次性执行：
@@ -109,6 +110,8 @@ $entry = .\tools\register-runtime-builder.ps1 `
 ```
 
 脚本在 `Cert:\CurrentUser\My` 创建 3072-bit、不可导出的 RSA 私钥，只把 public certificate/`keyId`/epoch/faultDomain 写到 `tmp/runtime-builder-enrollment/`，**不会自动改 registry**。维护者核对机器与故障域后，才把 entry 合入 `config/build/runtime-builders.v2.json`。私钥不得导出或跨机复制；轮换/撤销通过新 epoch/key 或 `enabled=false` 完成。两台 VM 若共享同一宿主、磁盘或管理员边界，不得宣称两个 faultDomain。
+
+账号授权与公钥登记的配套更新、远端 source-tag 创建权限和首次真实内容列车顺序见[新发布者与新发布机接入](contribution-workflow.md#publisher-enrollment)。新的 builder entry 必须来自实际发布机；不要为了让配置先通过而登记占位证书或在另一台机器代建私钥。
 
 tracked registry 继续保留 `builder-local-a` / `physical-host-a` 与 `builder-local-b` / `physical-host-b` 两张历史公钥；既有 consensus 曾实际采用 `builder-local-a` 的 keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3` / `physical-host-a` 和 GitHub Actions run `30364763726` 的 OIDC builder identity `1BDD1B0F419E0CA384E59986DBC1C9C9195A01CFEAF0838E116A8AD13B9BCEC3` / `github-hosted-windows`。任一单独本地票都仍不构成 quorum，也不授权单机 promotion。
 
