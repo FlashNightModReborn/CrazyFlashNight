@@ -7974,8 +7974,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:f784088b</inputDigest>
-      <sourceDigest>sha256:aafd282207a25ce359ab6836caa2fcea5c5aa6353e5554b4c9541686e60ab43a</sourceDigest>
+      <inputDigest>fnv1a32:191ea8e1</inputDigest>
+      <sourceDigest>sha256:9325256fe26c67d64d074e9b9a2d178d1cbcd3a0607574ce227718d14c8b34e6</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -7993,7 +7993,7 @@
         <ref>
           <id>WBR-PIERCE-003</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=穿刺子弹；普通穿刺按名推断 2待复核</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/武器_手枪_大威力手枪.xml#item=Podbyrin/data/bullet=破片枪弹；现役弹种已恢复，旧pierce=2待机制复核，本轮只同步记录</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -8026,7 +8026,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>现役弹种已由fe23062b37恢复为破片枪弹，本轮按当前XML重新生成输入与来源摘要；穿刺等系数和获取路径仍待复核，不改战斗面板或提升审计状态</note>
     </record>
     <record>
       <auditRef>weapon:Glock40:data</auditRef>
@@ -11789,19 +11789,26 @@
       <damageType>1</damageType>
       <shotgun>5</shotgun>
       <magPrice>1000</magPrice>
-      <weightLayers>0</weightLayers>
+      <weightLayers>2</weightLayers>
       <category>1</category>
       <formula>1</formula>
+      <priceLayers>1</priceLayers>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:6fe92f4b</inputDigest>
-      <sourceDigest>sha256:ea8dc9d4ca408f6c6ab56024840d0c62a23ec68e8c84067da68ca3291af4a1e8</sourceDigest>
+      <inputDigest>fnv1a32:88cef619</inputDigest>
+      <sourceDigest>sha256:bc7661fde83a93500abf05bfe7bc38a43d3dad938328c93344acd882d24bae5f</sourceDigest>
       <budgetBreakdown>
         <entry>
-          <code>acquisition.unverified</code>
-          <delta>0</delta>
-          <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <code>acquisition.high-price</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-001</ruleRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.22</evidenceRef>
+        </entry>
+        <entry>
+          <code>mechanic.tactical-mod-lock</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-010</ruleRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Origin12战术版</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -11818,12 +11825,12 @@
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=Origin12战术版/data;无 damagetype/magictype，默认物理=1</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Origin12战术版/data;默认物理，无元素覆盖</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-002</id>
           <target>input.shotgun</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=Origin12战术版/data/split=5；横向/纵向/连发语义未裁定，按 split 直录待复核</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Origin12战术版/data/split=5;横向次级穿刺联弹；保持既有模式</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AMMO-001</id>
@@ -11833,7 +11840,7 @@
         <ref>
           <id>WBR-WL-001</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.22;高价1层+战术补偿1层</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -11845,8 +11852,43 @@
           <target>input.formula</target>
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
+        <ref>
+          <id>WBR-WL-010</id>
+          <target>budget.mechanic.tactical-mod-lock</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Origin12战术版</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-MAP-002</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PL-001</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.22</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PL-003</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-001</id>
+          <target>pricing.goldPrice</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Origin12战术版/price</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-002</id>
+          <target>pricing.priceRatio</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Origin12战术版/price</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-003</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；次级穿刺联弹（pierce=1.5）；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>维护者已确认保留五联弹及当前候选参数，待实战体验；主线金币高价和CF6局内拾取分域，其他来源仍须复核，暂不开放绿色摘要</note>
     </record>
     <record>
       <auditRef>weapon:Vepr12紧凑改装型:data</auditRef>
@@ -11857,19 +11899,32 @@
       <damageType>1</damageType>
       <shotgun>5</shotgun>
       <magPrice>1000</magPrice>
-      <weightLayers>0</weightLayers>
+      <weightLayers>1</weightLayers>
       <category>1</category>
       <formula>1</formula>
+      <priceLayers>1</priceLayers>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:b2c57cf4</inputDigest>
-      <sourceDigest>sha256:bc9503c0d9bd0a25a7308511c0764eb6689e40dfba598b363c26b7a189e281bc</sourceDigest>
+      <inputDigest>fnv1a32:b5bf67bf</inputDigest>
+      <sourceDigest>sha256:9dce7add3a30f8ada8385d3b1609230a8f24ca61c2ff8ec9a71e9abfe2551890</sourceDigest>
       <budgetBreakdown>
         <entry>
-          <code>acquisition.unverified</code>
-          <delta>0</delta>
-          <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <code>acquisition.high-price</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-001</ruleRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.18</evidenceRef>
+        </entry>
+        <entry>
+          <code>mechanic.tactical-mod-lock</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-010</ruleRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型</evidenceRef>
+        </entry>
+        <entry>
+          <code>mechanic.early-unlock</code>
+          <delta>-1</delta>
+          <ruleRef>WBR-WL-008</ruleRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/data/level=27;穿刺霰弹解锁30/35级</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -11886,12 +11941,12 @@
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/data;伤害类型待人工复核</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/data;默认物理，无元素覆盖</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-002</id>
           <target>input.shotgun</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/data/split;霰弹值待人工复核</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/data/split=5;横向次级穿刺联弹；保持既有模式</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AMMO-001</id>
@@ -11901,7 +11956,7 @@
         <ref>
           <id>WBR-WL-001</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.18;高价1层+战术补偿1层-超前1层</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -11913,8 +11968,48 @@
           <target>input.formula</target>
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
+        <ref>
+          <id>WBR-WL-010</id>
+          <target>budget.mechanic.tactical-mod-lock</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-MAP-002</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PL-001</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.18</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PL-003</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-001</id>
+          <target>pricing.goldPrice</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/price</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-002</id>
+          <target>pricing.priceRatio</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/price</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-003</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-008</id>
+          <target>budget.mechanic.early-unlock</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=Vepr12紧凑改装型/data/level=27</evidenceRef>
+        </ref>
       </ruleRefs>
-      <note>机械派生登记；次级穿刺联弹（pierce=1.5）；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>维护者已确认保留五联弹及当前候选参数，待实战体验；主线金币高价和CF6局内拾取分域，其他来源仍须复核，暂不开放绿色摘要</note>
     </record>
     <record>
       <auditRef>weapon:KHAOS 12战术版:data</auditRef>
@@ -11922,22 +12017,29 @@
       <profileKey>data</profileKey>
       <dualWield>2</dualWield>
       <pierce>1</pierce>
-      <damageType>1</damageType>
-      <shotgun>1</shotgun>
+      <damageType>2</damageType>
+      <shotgun>2</shotgun>
       <magPrice>2000</magPrice>
-      <weightLayers>0</weightLayers>
+      <weightLayers>2</weightLayers>
       <category>1</category>
       <formula>1</formula>
+      <priceLayers>1</priceLayers>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:ce0d7f04</inputDigest>
-      <sourceDigest>sha256:646a29ac48351bd95013eb5f7ea3786d31469a2cb30e74e9c95d3d8f2186bee8</sourceDigest>
+      <inputDigest>fnv1a32:d37a602e</inputDigest>
+      <sourceDigest>sha256:ec7b7becbdb6c348370dd6e43fb1ac4bf999939161ecf8c53f4456750e1fbe37</sourceDigest>
       <budgetBreakdown>
         <entry>
-          <code>acquisition.unverified</code>
-          <delta>0</delta>
-          <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <code>acquisition.high-price</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-001</ruleRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.19</evidenceRef>
+        </entry>
+        <entry>
+          <code>mechanic.tactical-mod-lock</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-010</ruleRef>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -11949,17 +12051,17 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=高爆子弹；默认非穿刺=1待复核</evidenceRef>
+          <evidenceRef>scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Lifecycle/HighExplosiveAssetTest.as#typeFlags=0;高爆子弹无穿刺标志，pierce=1</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-DMG-001</id>
+          <id>WBR-DMG-002</id>
           <target>input.damageType</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版/data;伤害类型待人工复核</evidenceRef>
+          <evidenceRef>flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/高爆子弹/Symbol 585.xml#命中前伤害参数函数;首段魔法及后段热伤害；scripts/run-high-explosive-asset-tests.ps1</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-SHOT-001</id>
+          <id>WBR-SHOT-002</id>
           <target>input.shotgun</target>
-          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版/data/split=1</evidenceRef>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#khaos-single-target;维护者裁定本轮不计跨单位AOE，按每发两次同目标结算机会录入2</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AMMO-001</id>
@@ -11969,7 +12071,7 @@
         <ref>
           <id>WBR-WL-001</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.19;高价1层+战术补偿1层</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -11981,8 +12083,43 @@
           <target>input.formula</target>
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
+        <ref>
+          <id>WBR-WL-010</id>
+          <target>budget.mechanic.tactical-mod-lock</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-MAP-002</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PL-001</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.19</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PL-003</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-001</id>
+          <target>pricing.goldPrice</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版/price</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-002</id>
+          <target>pricing.priceRatio</target>
+          <evidenceRef>data/items/武器_手枪_霰弹枪.xml#item=KHAOS 12战术版/price</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-003</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
       </ruleRefs>
-      <note>机械派生登记；使用高爆子弹/内爆弹（split=1, magPrice=2000）；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>维护者裁定本轮不计跨单位AOE，按每发两次同目标结算机会取shotgun=2、魔法系数2；参数397威力/200ms/25发已按formula=1复算；实际完整配装、受击移动及获取路径尚未提升为完全核实</note>
     </record>
     <record>
       <auditRef>weapon:TYPE79:data</auditRef>
@@ -26073,19 +26210,26 @@
       <damageType>1</damageType>
       <shotgun>5</shotgun>
       <magPrice>1000</magPrice>
-      <weightLayers>0</weightLayers>
+      <weightLayers>2</weightLayers>
       <category>1</category>
       <formula>1</formula>
+      <priceLayers>1</priceLayers>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:e3216e97</inputDigest>
-      <sourceDigest>sha256:92815747c3b11307c7f780e4c7ee3b590adf40f54efccf4e2df849d6f087b756</sourceDigest>
+      <inputDigest>fnv1a32:650a0628</inputDigest>
+      <sourceDigest>sha256:8443ecf887008762f9942926248aad95588985e0796ac30ddb4da6edae4debae</sourceDigest>
       <budgetBreakdown>
         <entry>
-          <code>acquisition.unverified</code>
-          <delta>0</delta>
-          <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>UNRESOLVED: 仅见于挑战关卡 CF6 Sting/钛合金61 局内拾取（cf6-sting.runtime.json#A03），非主线持久获取路径待人工确认</evidenceRef>
+          <code>acquisition.high-price</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-001</ruleRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.20</evidenceRef>
+        </entry>
+        <entry>
+          <code>mechanic.tactical-mod-lock</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-010</ruleRef>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=AA12战术版</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -26102,12 +26246,12 @@
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_霰弹枪.xml#item=AA12战术版/data;无 damagetype/magictype，默认物理=1</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=AA12战术版/data;默认物理，无元素覆盖</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-002</id>
           <target>input.shotgun</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_霰弹枪.xml#item=AA12战术版/data/split=5；横向/纵向/连发语义未裁定，按 split 直录待复核</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=AA12战术版/data/split=5;横向次级穿刺联弹；保持既有模式</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AMMO-001</id>
@@ -26117,7 +26261,7 @@
         <ref>
           <id>WBR-WL-001</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: 仅见于挑战关卡 CF6 Sting/钛合金61 局内拾取（cf6-sting.runtime.json#A03），非主线持久获取路径待人工确认</evidenceRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.20;高价1层+战术补偿1层</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -26129,8 +26273,43 @@
           <target>input.formula</target>
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
+        <ref>
+          <id>WBR-WL-010</id>
+          <target>budget.mechanic.tactical-mod-lock</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=AA12战术版</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-MAP-002</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PL-001</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.20</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PL-003</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-001</id>
+          <target>pricing.goldPrice</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=AA12战术版/price</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-002</id>
+          <target>pricing.priceRatio</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=AA12战术版/price</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-003</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；次级穿刺联弹（pierce=1.5）；仅在CF6肉鸽关卡内作为拾取武器；全部输入待人工复核后方可 confirmed</note>
+      <note>维护者已确认保留五联弹及当前候选参数，待实战体验；主线金币高价和CF6局内拾取分域，其他来源仍须复核，暂不开放绿色摘要</note>
     </record>
     <record>
       <auditRef>weapon:Vepr12战术版:data</auditRef>
@@ -26141,19 +26320,26 @@
       <damageType>1</damageType>
       <shotgun>5</shotgun>
       <magPrice>1000</magPrice>
-      <weightLayers>0</weightLayers>
+      <weightLayers>2</weightLayers>
       <category>1</category>
       <formula>1</formula>
+      <priceLayers>1</priceLayers>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:71f1ca2b</inputDigest>
-      <sourceDigest>sha256:9e55bc3950e26d964bc69d3581b9221a143efb5a13567c0b018d81f43dc9c2c7</sourceDigest>
+      <inputDigest>fnv1a32:339c0a33</inputDigest>
+      <sourceDigest>sha256:8a495bbfa5b864eec99bce47ca54002a094b712b67cd01c64315c185798cd7a0</sourceDigest>
       <budgetBreakdown>
         <entry>
-          <code>acquisition.unverified</code>
-          <delta>0</delta>
-          <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <code>acquisition.high-price</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-001</ruleRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.21</evidenceRef>
+        </entry>
+        <entry>
+          <code>mechanic.tactical-mod-lock</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-010</ruleRef>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -26170,12 +26356,12 @@
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版/data;伤害类型待人工复核</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版/data;默认物理，无元素覆盖</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-002</id>
           <target>input.shotgun</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版/data/split;霰弹值待人工复核</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版/data/split=5;横向次级穿刺联弹；保持既有模式</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AMMO-001</id>
@@ -26185,7 +26371,7 @@
         <ref>
           <id>WBR-WL-001</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: 现役商店/K点/合成索引均未命中；获取路径待人工确认</evidenceRef>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.21;高价1层+战术补偿1层</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -26197,8 +26383,43 @@
           <target>input.formula</target>
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
+        <ref>
+          <id>WBR-WL-010</id>
+          <target>budget.mechanic.tactical-mod-lock</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-MAP-002</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PL-001</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>data/shops/npcs/Pig.json#catalog.21</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PL-003</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-001</id>
+          <target>pricing.goldPrice</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版/price</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-002</id>
+          <target>pricing.priceRatio</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=Vepr12战术版/price</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PRICE-003</id>
+          <target>pricing.priceLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/docs/weapon-balance-rulebook.md#tactical-mod-lock</evidenceRef>
+        </ref>
       </ruleRefs>
-      <note>机械派生登记；次级穿刺联弹（pierce=1.5）；战术改装衍生型尚无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>维护者已确认保留五联弹及当前候选参数，待实战体验；主线金币高价和CF6局内拾取分域，其他来源仍须复核，暂不开放绿色摘要</note>
     </record>
     <record>
       <auditRef>weapon:AA12丧尸:data</auditRef>

@@ -1,0 +1,5 @@
+﻿_root.highExplosiveAssetComplete = function():Void {
+    trace("FocusedTestRunId high-explosive Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId high-explosive Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.bullet.BulletComponent.Lifecycle.HighExplosiveAssetTest.runAllTests();

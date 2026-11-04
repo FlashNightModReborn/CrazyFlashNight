@@ -138,6 +138,7 @@
 - 台账与 runtime 的 8 输入、状态、显示门和 input digest 必须完全相同。
 - `budgetBreakdown.entry.delta` 之和严格等于 `weightLayers`；零层也要有可复核的零贡献依据。
 - 超前机制可使用 `mechanic.early-unlock`，只接受 `delta=-1` 且引用 `WBR-WL-008`；解锁门槛和低等级折减仍须逐项证据，不能因枚举通过就自动判绿。
+- 封闭改装战术补偿使用 `mechanic.tactical-mod-lock`，只接受 `delta=+1` 且引用 `WBR-WL-010`；证据门逐件读取实际 XML 的允许标签、电力/NOAH 基座、普通挂点封闭和有效单槽配置。该层不进入价格层，也不证明主动发电效果。
 - `confirmed` 必须让八个 `input.*` target 都有合法条款和真实证据；获取证据还要通过现役商店/合成等专项索引。
 - `unresolved/invalid` 必须 `displayEligible=false` 并提供非空 `note`；`confirmed` 的普通说明由结构化记录生成，`note` 可省。
 - v1 不再存在 `rationale` 字段。DPS、残差、条款列表、SHA 和路径均可机械生成，不在每个 item 中复述。

@@ -65,6 +65,66 @@ function createRecord(
 }
 
 describe("weapon balance project evidence", () => {
+  function tacticalFixture(root: string, overrides: Record<string, string> = {}) {
+    const fields = {
+      name: "测试战术枪", type: "武器", use: "手枪",
+      allowedModTags: "等级校正", inherentTags: "电力,NOAH",
+      blockedTags: "导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管",
+      data: "<modslot>1</modslot>", ...overrides
+    };
+    const relative = "data/items/武器_test.xml";
+    const target = path.join(root, relative);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, `<root><item>${Object.entries(fields).map(([key, value]) =>
+      `<${key}>${value}</${key}>`).join("")}</item></root>`, "utf8");
+    const record = createRecord("acquisition.gold-standard", relative);
+    record.itemName = "测试战术枪";
+    record.weightLayers = 1;
+    record.budgetBreakdown = [{code:"mechanic.tactical-mod-lock", delta:1,
+      ruleRef:"WBR-WL-010", evidenceRef:relative}];
+    record.ruleRefs = [{id:"WBR-WL-010",target:"input.weightLayers",evidenceRef:relative}];
+    return record;
+  }
+
+  it("confirms tactical compensation from the actual closed mod policy without a price layer", () => {
+    withFixtureRepository(root => {
+      const record = tacticalFixture(root);
+      expect(validateWeaponBalanceEvidence(record.itemName, record, buildWeaponAcquisitionIndex(root)))
+        .toEqual({valid:true, displayEligible:true, issues:[]});
+      expect(record.priceLayers).toBeUndefined();
+    });
+  });
+
+  it.each([
+    {allowedModTags:"等级校正,弹匣"},
+    {allowedModTags:""},
+    {inherentTags:"NOAH"},
+    {inherentTags:"电力"},
+    {data:"<modslot>2</modslot>"},
+    {data:"<modslot>0</modslot>"},
+    {blockedTags:"枪口,弹匣"},
+    {blockedTags:"导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管,等级校正"}
+  ])("rejects tactical compensation after mod-policy drift: %j", overrides => {
+    withFixtureRepository(root => {
+      const record = tacticalFixture(root, overrides);
+      const result = validateWeaponBalanceEvidence(record.itemName, record, buildWeaponAcquisitionIndex(root));
+      expect(result.displayEligible).toBe(false);
+      expect(result.issues.map(issue => issue.code)).toContain("tactical_mod_lock_policy_mismatch");
+    });
+  });
+
+  it("checks the exact tactical weapon and the effective variant slot", () => {
+    withFixtureRepository(root => {
+      const record = tacticalFixture(root, {data_2:"<modslot>2</modslot>"});
+      record.profileKey = "data_2";
+      expect(validateWeaponBalanceEvidence(record.itemName, record, buildWeaponAcquisitionIndex(root))
+        .issues.map(issue => issue.code)).toContain("tactical_mod_lock_policy_mismatch");
+      record.itemName = "另一个战术枪";
+      expect(validateWeaponBalanceEvidence(record.itemName, record, buildWeaponAcquisitionIndex(root))
+        .issues.map(issue => issue.code)).toContain("tactical_mod_lock_item_mismatch");
+    });
+  });
+
   function highPriceFixture(root: string) {
     writeJson(root, "data/shops/npcs/Pig.json", { catalog: { "53": "QJZ171" } });
     const record = createRecord("acquisition.high-price", "data/shops/npcs/Pig.json#catalog.53");

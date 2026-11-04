@@ -456,8 +456,7 @@
       <type>武器</type>
       <use>手枪</use>
       <price>250000</price>
-      <description>单手持霰弹枪，将霰弹进行到底。
-内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
+      <description>单手持霰弹枪，将霰弹进行到底。</description>
       <inherentTags>电力,NOAH</inherentTags>
       <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
       <data>
@@ -735,18 +734,22 @@
       <displayname>Origin12战术版</displayname>
       <icon>Origin12战术版</icon>
       <type>武器</type>
+      <allowedModTags>等级校正</allowedModTags>
       <use>手枪</use>
-      <price>497000</price>
+      <price>187200</price>
       <description>Origin-12以极快的射速和近距离压制力著称。凭借弹匣供弹带来的流畅续火能力，在室内或狭窄地形中能迅速倾泻火力，对近距离目标造成爆发性伤害。</description>
+      <inherentTags>电力,NOAH</inherentTags>
+      <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
       <data>
         <level>45</level>
+        <modslot>1</modslot>
         <weight>5</weight>
         <dressup>枪-手枪-Origin12战术版</dressup>
-        <capacity>30</capacity>
+        <capacity>20</capacity>
       <overload><chamber>1</chamber><ghost>0</ghost></overload>
         <split>5</split>
         <diffusion>10</diffusion>
-        <interval>150</interval>
+        <interval>200</interval>
         <velocity>40</velocity>
         <bullet>横向联弹-次级穿刺子弹</bullet>
         <bulletrename>常规穿甲弹</bulletrename>
@@ -755,7 +758,7 @@
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>440</power>
+        <power>79</power>
         <impact>12</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
@@ -770,27 +773,17 @@
             <damageType>1</damageType>
             <shotgun>5</shotgun>
             <magPrice>1000</magPrice>
-            <weightLayers>0</weightLayers>
+            <weightLayers>2</weightLayers>
             <category>1</category>
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:6fe92f4b</inputDigest>
+            <inputDigest>fnv1a32:88cef619</inputDigest>
             <auditRef>weapon:Origin12战术版:data</auditRef>
           </data>
         </profiles>
       </balance>
       <lifecycle>
-        <attr_0>
-          <skillInteraction>independent</skillInteraction>
-          <init>
-            <initRoutines>P90初始化</initRoutines>
-            <initParam><extraMpPerShot>3</extraMpPerShot></initParam>
-          </init>
-          <cycle>
-            <cycleRoutines>P90周期</cycleRoutines>
-          </cycle>
-        </attr_0>
         <attr_1>
           <skillInteraction>independent</skillInteraction>
           <init>
@@ -811,11 +804,15 @@
       <displayname>Vepr12紧凑改装型</displayname>
       <icon>Vepr12紧凑改装型</icon>
       <type>武器</type>
+      <allowedModTags>等级校正</allowedModTags>
       <use>手枪</use>
-      <price>497000</price>
+      <price>112320</price>
       <description>Vepr-12 是基于 AK 平台衍生的半自动战斗霰弹枪，以RPK轻机枪的加强型机匣为基础打造，发射 12 号霰弹。采用直插式弹匣井（类似 AR 风格）而非 AK 的摆动式换弹，并标配空仓挂机功能，人机工效更优。</description>
+      <inherentTags>电力,NOAH</inherentTags>
+      <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
       <data>
         <level>27</level>
+        <modslot>1</modslot>
         <weight>5</weight>
         <dressup>枪-手枪-Vepr12紧凑改装型</dressup>
         <capacity>12</capacity>
@@ -831,7 +828,7 @@
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>330</power>
+        <power>90</power>
         <impact>12</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
@@ -846,12 +843,12 @@
             <damageType>1</damageType>
             <shotgun>5</shotgun>
             <magPrice>1000</magPrice>
-            <weightLayers>0</weightLayers>
+            <weightLayers>1</weightLayers>
             <category>1</category>
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:b2c57cf4</inputDigest>
+            <inputDigest>fnv1a32:b5bf67bf</inputDigest>
             <auditRef>weapon:Vepr12紧凑改装型:data</auditRef>
           </data>
         </profiles>
@@ -929,18 +926,22 @@
       <displayname>KHAOS 12战术版</displayname>
       <icon>KHAOS 12战术版</icon>
       <type>武器</type>
+      <allowedModTags>等级校正</allowedModTags>
       <use>手枪</use>
-      <price>497000</price>
+      <price>219648</price>
       <description>这把武器是对AK平台的霰弹枪化改造：在末日前它本质是绕开对短管霰弹枪的管制门槛改造的12号半自动枪械，而非为了追求短管霰弹枪的战术性能或人机工效而自然演化出的设计。但在末日社会里，可拆卸弹匣让它换弹远快于传统管式霰弹枪，在清理室内、车厢或狭窄废墟时极为灵活，且能直接塞入10发的弹匣甚至弹鼓，配合AK结构的耐脏可靠性，特别受那些需要在一瞬间泼洒火力压制尸群或敌人的老手偏爱。</description>
+      <inherentTags>电力,NOAH</inherentTags>
+      <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
       <data>
         <level>33</level>
+        <modslot>1</modslot>
         <weight>5</weight>
         <dressup>枪-手枪-KHAOS 12战术版</dressup>
         <capacity>25</capacity>
       <overload><chamber>1</chamber><ghost>0</ghost></overload>
         <split>1</split>
         <diffusion>10</diffusion>
-        <interval>150</interval>
+        <interval>200</interval>
         <velocity>50</velocity>
         <bullet>高爆子弹</bullet>
         <sound>origin12.wav</sound>
@@ -948,7 +949,7 @@
         <bullethit>火花</bullethit>
         <clipname>内爆弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>340</power>
+        <power>397</power>
         <impact>12</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
@@ -960,15 +961,15 @@
           <data>
             <dualWield>2</dualWield>
             <pierce>1</pierce>
-            <damageType>1</damageType>
-            <shotgun>1</shotgun>
+            <damageType>2</damageType>
+            <shotgun>2</shotgun>
             <magPrice>2000</magPrice>
-            <weightLayers>0</weightLayers>
+            <weightLayers>2</weightLayers>
             <category>1</category>
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:ce0d7f04</inputDigest>
+            <inputDigest>fnv1a32:d37a602e</inputDigest>
             <auditRef>weapon:KHAOS 12战术版:data</auditRef>
           </data>
         </profiles>

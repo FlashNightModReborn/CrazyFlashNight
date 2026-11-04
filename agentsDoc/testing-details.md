@@ -55,6 +55,7 @@
 
 视改动追加：
 
+- 高爆弹帧脚本、独立前段或爆炸估值变化时，运行 `powershell -File scripts/run-high-explosive-asset-tests.ps1 -TimeoutSeconds 900`。该入口测现役资源与生产发射/碰撞/伤害链的近中远、队形密度、地图、MISS/无敌与抗性边界；使用静止矩形目标和固定躲闪结果，不代签 AI、受击移动、物理输入或完整战斗平衡。必需断言与场景数由 runner 钉住，不因编译等待较长而放宽。
 - 改 AS2 选择/摘要/缓存时用 `scripts/compile_test.ps1 -Target test` 取得 `InventoryPanelServiceTest`、`NpcShopPanelServiceTest`、`KShopCheckoutServiceTest` 的 fresh trace（各 suite 计数机器钉死值见 [Flash 编译核心](#flash-core) 与对应 runner 脚本），再用 `-Target publish -VerifySwf scripts/asLoader.swf` 刷新注入层。
 - 改玩家显示时追加 `node tools/test-workbench-primitives.js`、`node tools/test-kshop-presenters.js`、KShop/NPC harness 与物品格视觉矩阵（文本现役 20 项，待核：阈值来源为历史文本，未找到当前机器真源）。
 

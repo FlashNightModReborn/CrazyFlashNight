@@ -22,7 +22,7 @@ const RULE_NUMBERS_BY_DOMAIN = {
   PRICE: [1, 2, 3, 4],
   SHOT: [1, 2, 3],
   TRIAGE: [1, 2, 3],
-  WL: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  WL: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 } as const;
 
 const TARGET_POLICY_BY_DOMAIN: Record<

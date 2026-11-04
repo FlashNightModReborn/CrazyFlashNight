@@ -7,11 +7,12 @@ import {
 } from "../../src/index.js";
 
 describe("weapon balance rule catalog", () => {
-  it("contains the 57 stable WBR ids from the current rulebook", () => {
-    expect(WEAPON_BALANCE_RULE_CATALOG).toHaveLength(57);
-    expect(WEAPON_BALANCE_RULE_IDS.size).toBe(57);
+  it("contains the 58 stable WBR ids from the current rulebook", () => {
+    expect(WEAPON_BALANCE_RULE_CATALOG).toHaveLength(58);
+    expect(WEAPON_BALANCE_RULE_IDS.size).toBe(58);
     expect(WEAPON_BALANCE_RULE_IDS).toContain("WBR-AUTH-001");
     expect(WEAPON_BALANCE_RULE_IDS).toContain("WBR-WL-009");
+    expect(WEAPON_BALANCE_RULE_IDS).toContain("WBR-WL-010");
     expect(WEAPON_BALANCE_RULE_IDS).toContain("WBR-PRICE-004");
   });
 

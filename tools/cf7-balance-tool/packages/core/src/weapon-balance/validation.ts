@@ -502,6 +502,9 @@ function validateBudget(
     if (entry.code === "mechanic.early-unlock" && (entry.delta !== -1 || entry.ruleRef !== "WBR-WL-008")) {
       addError(issues, "early_unlock_budget_invalid", path, "超前武器必须按 WBR-WL-008 支付一层（delta=-1）");
     }
+    if (entry.code === "mechanic.tactical-mod-lock" && (entry.delta !== 1 || entry.ruleRef !== "WBR-WL-010")) {
+      addError(issues, "tactical_mod_lock_budget_invalid", path, "战术版封闭改装补偿只允许 WBR-WL-010 的一层（delta=1）");
+    }
     if (!isWeaponBalanceRuleId(entry.ruleRef)) {
       addError(issues, "rule_id_unknown", `${path}.ruleRef`, `unknown rule id ${entry.ruleRef || "<empty>"}`);
     } else if (!isWeaponBalanceRuleTargetAllowed(entry.ruleRef, `budget.${entry.code}`)) {

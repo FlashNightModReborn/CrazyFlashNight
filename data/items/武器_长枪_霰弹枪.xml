@@ -658,8 +658,7 @@
     <use>长枪</use>
     <price>100000</price>
     <description>M1014战术版，由M1014霰弹枪加装多种泽宁特战术套件改造而成。
-    瞄准镜和侧导轨，手电筒与垂直握把等组件使得质量更为沉重，而这份代价的背后则是性能上的天壤之别。
-内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
+    瞄准镜和侧导轨，手电筒与垂直握把等组件使得质量更为沉重，而这份代价的背后则是性能上的天壤之别。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
@@ -857,8 +856,7 @@
     <price>100000</price>
     <description>弗兰基SPAS-12战斗霰弹枪，由ITA国枪械制造商路易吉· 弗兰基在1979年所生产，发射12铅径散弹。
     1990年，弗兰基将该枪更名为「运动用途自动型散弹枪」，令缩短弹仓固定枪托的版本直到1994年前可在A国民间市场继续销售。
-    直到A联邦突击武器禁制法案生效后，SPAS-12被A联邦政府从其外观和设计目认定其缺乏「运动用途」，故最终被禁止进口到A国。
-内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
+    直到A联邦突击武器禁制法案生效后，SPAS-12被A联邦政府从其外观和设计目认定其缺乏「运动用途」，故最终被禁止进口到A国。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
@@ -1537,18 +1535,22 @@
     <displayname>AA12战术版</displayname>
     <icon>AA12战术版</icon>
     <type>武器</type>
+    <allowedModTags>等级校正</allowedModTags>
     <use>长枪</use>
-    <price>457600</price>
+    <price>218400</price>
     <description>全自动霰弹枪。</description>
+    <inherentTags>电力,NOAH</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
       <level>35</level>
+      <modslot>1</modslot>
       <weight>4</weight>
       <dressup>枪-长枪-AA12战术版</dressup>
       <capacity>20</capacity>
       <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>5</split>
       <diffusion>10</diffusion>
-      <interval>150</interval>
+      <interval>200</interval>
       <velocity>40</velocity>
       <bullet>横向联弹-次级穿刺子弹</bullet>
       <bulletrename>常规穿甲弹</bulletrename>
@@ -1557,7 +1559,7 @@
       <bullethit>火花</bullethit>
       <clipname>00号鹿弹</clipname>
       <bulletsize>25</bulletsize>
-      <power>360</power>
+      <power>94</power>
       <impact>12</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
@@ -1572,12 +1574,12 @@
           <damageType>1</damageType>
           <shotgun>5</shotgun>
           <magPrice>1000</magPrice>
-          <weightLayers>0</weightLayers>
+          <weightLayers>2</weightLayers>
           <category>1</category>
           <formula>1</formula>
           <status>unresolved</status>
           <displayEligible>false</displayEligible>
-          <inputDigest>fnv1a32:e3216e97</inputDigest>
+          <inputDigest>fnv1a32:650a0628</inputDigest>
           <auditRef>weapon:AA12战术版:data</auditRef>
         </data>
       </profiles>
@@ -1939,18 +1941,22 @@
     <displayname>Vepr12战术版</displayname>
     <icon>Vepr12战术版</icon>
     <type>武器</type>
+    <allowedModTags>等级校正</allowedModTags>
     <use>长枪</use>
-    <price>457600</price>
+    <price>280800</price>
     <description>Vepr-12 是基于 AK 平台衍生的半自动战斗霰弹枪，以RPK轻机枪的加强型机匣为基础打造，发射 12 号霰弹。采用直插式弹匣井（类似 AR 风格）而非 AK 的摆动式换弹，并标配空仓挂机功能，人机工效更优。</description>
+    <inherentTags>电力,NOAH</inherentTags>
+    <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
       <level>45</level>
+      <modslot>1</modslot>
       <weight>4</weight>
       <dressup>枪-长枪-Vepr12战术版</dressup>
       <capacity>25</capacity>
       <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>5</split>
       <diffusion>10</diffusion>
-      <interval>150</interval>
+      <interval>240</interval>
       <velocity>40</velocity>
       <bullet>横向联弹-次级穿刺子弹</bullet>
       <bulletrename>常规穿甲弹</bulletrename>
@@ -1959,7 +1965,7 @@
       <bullethit>火花</bullethit>
       <clipname>00号鹿弹</clipname>
       <bulletsize>25</bulletsize>
-      <power>370</power>
+      <power>149</power>
       <impact>12</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
@@ -1974,12 +1980,12 @@
           <damageType>1</damageType>
           <shotgun>5</shotgun>
           <magPrice>1000</magPrice>
-          <weightLayers>0</weightLayers>
+          <weightLayers>2</weightLayers>
           <category>1</category>
           <formula>1</formula>
           <status>unresolved</status>
           <displayEligible>false</displayEligible>
-          <inputDigest>fnv1a32:71f1ca2b</inputDigest>
+          <inputDigest>fnv1a32:339c0a33</inputDigest>
           <auditRef>weapon:Vepr12战术版:data</auditRef>
         </data>
       </profiles>

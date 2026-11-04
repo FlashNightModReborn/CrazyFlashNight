@@ -189,6 +189,10 @@ export function validateWeaponBalanceEvidence(
       validateHighPriceEvidence(itemName, record, index, priceContext,
         entry.delta, evidencePath, issuePath, issues);
     }
+    if (entry.code === "mechanic.tactical-mod-lock") {
+      validateTacticalModLockEvidence(itemName, record, index.repositoryRoot,
+        evidencePath, issuePath, issues);
+    }
   });
 
   const valid = !issues.some((issue) => issue.severity === "error");
@@ -197,6 +201,57 @@ export function validateWeaponBalanceEvidence(
     displayEligible: valid && record.displayEligible,
     issues
   };
+}
+
+/** 战术补偿必须由当前物品的实际改装政策证明，名称和文案不作证据。 */
+function validateTacticalModLockEvidence(
+  itemName: string,
+  record: WeaponBalanceAuditRecord,
+  repositoryRoot: string,
+  evidencePath: string | undefined,
+  issuePath: string,
+  issues: WeaponBalanceEvidenceIssue[]
+): void {
+  if (!evidencePath) return;
+  const items: Record<string, unknown>[] = [];
+  const collect = (value: unknown): void => {
+    if (Array.isArray(value)) { value.forEach(collect); return; }
+    if (!isObject(value)) return;
+    if (value.name === itemName && value.type === "武器") items.push(value);
+    Object.values(value).forEach(collect);
+  };
+  try {
+    const source = fs.readFileSync(path.join(repositoryRoot, evidencePath), "utf8");
+    collect(new XMLParser({ ignoreAttributes: false, trimValues: true }).parse(source));
+  } catch {
+    addError(issues, "tactical_mod_lock_evidence_invalid", issuePath,
+      "tactical mod-lock evidence must be a readable current item XML");
+    return;
+  }
+  const item = items.length === 1 ? items[0] : undefined;
+  if (!item || !isObject(item.data)) {
+    addError(issues, "tactical_mod_lock_item_mismatch", issuePath,
+      `evidence must contain exactly one weapon definition named ${itemName}`);
+    return;
+  }
+  const variant = record.profileKey === "data" ? {} : item[record.profileKey];
+  const tags = (value: unknown): string[] => typeof value === "string"
+    ? value.split(",").map(tag => tag.trim()).filter(Boolean) : [];
+  const allowed = tags(item.allowedModTags);
+  const inherent = tags(item.inherentTags);
+  const blocked = tags(item.blockedTags);
+  const requiredBlocked = ["导轨基座", "枪口", "弹匣", "下导轨", "瞄具", "枪机",
+    "外部紧固", "表面涂层", "弹药", "机匣内构", "核心模块", "枪管"];
+  const modslot = isObject(variant) ? (variant.modslot ?? item.data.modslot) : undefined;
+  if (!["长枪", "手枪", "手枪2"].includes(String(item.use)) ||
+      allowed.length !== 1 || allowed[0] !== "等级校正" ||
+      !["电力", "NOAH"].every(tag => inherent.includes(tag)) ||
+      !requiredBlocked.every(tag => blocked.includes(tag)) ||
+      blocked.includes("等级校正") ||
+      !(typeof modslot === "number" || typeof modslot === "string") || Number(modslot) !== 1) {
+    addError(issues, "tactical_mod_lock_policy_mismatch", issuePath,
+      "tactical +1 requires one level-correction slot, 电力/NOAH bases and the closed ordinary-mod policy");
+  }
 }
 
 /** 只支持已独立裁定的购买限定金币 +1；不推断其他物品的价格层。 */

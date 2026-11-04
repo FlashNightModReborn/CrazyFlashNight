@@ -112,6 +112,19 @@ function validateFixture(fixture = createFixture()) {
 }
 
 describe("validateWeaponBalanceRecord strict v1", () => {
+  it("limits tactical mod-lock compensation to one layer under its own rule", () => {
+    const fixture = createFixture("unresolved");
+    fixture.audit.budgetBreakdown = [
+      {code:"mechanic.tactical-mod-lock",delta:1,ruleRef:"WBR-WL-010"},
+      {code:"mechanic.early-unlock",delta:-1,ruleRef:"WBR-WL-008"}
+    ];
+    expect(validateFixture(fixture).valid).toBe(true);
+    fixture.audit.budgetBreakdown[0]!.delta = 2;
+    expect(validateFixture(fixture).issues.some(i => i.code === "tactical_mod_lock_budget_invalid")).toBe(true);
+    fixture.audit.budgetBreakdown[0]!.delta = 1;
+    fixture.audit.budgetBreakdown[0]!.ruleRef = "WBR-WL-001";
+    expect(validateFixture(fixture).issues.some(i => i.code === "tactical_mod_lock_budget_invalid")).toBe(true);
+  });
   it("records an early-unlock cost as exactly minus one layer", () => {
     const fixture = createFixture("unresolved");
     fixture.audit.budgetBreakdown = [
