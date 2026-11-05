@@ -12,7 +12,18 @@
             </DOMFrame>
             <DOMFrame index="8" duration="46" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.基因虫生成僵尸();]]></script>
+                <script><![CDATA[if(_parent.基因虫生成僵尸() === false){
+    stop();
+    this.noahWait = 0;
+    this.noahWorldToken = _root.gameworld.__stageReturnWorldIdentity;
+    this.onEnterFrame = function(){
+        if(this.noahWorldToken !== _root.gameworld.__stageReturnWorldIdentity){delete this.onEnterFrame;return;}
+        if(_root.暂停 || _root.场景转换中)return;
+        if(++this.noahWait < 10)return;
+        this.noahWait = 0;
+        if(_parent.基因虫生成僵尸() !== false){delete this.onEnterFrame;play();}
+    };
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

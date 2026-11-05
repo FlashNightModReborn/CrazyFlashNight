@@ -407,6 +407,8 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 	}else{
 		initObject.兵种 = id;
 	}
+    var nest:Object=_root.gameworld.__noahMotherEncounter;
+    if(nest!=null && !nest.acceptSpawn(id,initObject))return null;
     org.flashNight.arki.scene.PlayerSceneLifecycle.prepareSpawn(id,name,initObject);
 	// Only a newly born, currently controlled historical-CF6 hero gets mask history.
 	// Existing actors and other routes are never retroactively declared mask-free.
@@ -421,7 +423,9 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 		org.flashNight.arki.scene.Cf6ActorMaskState.bind(maskActor, maskInit);
 		return maskActor;
 	}
-	return _root.gameworld.attachMovie(id, name, depth, initObject);
+	var born:MovieClip=_root.gameworld.attachMovie(id, name, depth, initObject);
+    if(nest!=null && born!=undefined)nest.registered(born,initObject);
+    return born;
 }
 
 

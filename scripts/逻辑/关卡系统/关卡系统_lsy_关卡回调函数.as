@@ -1,6 +1,9 @@
 ﻿// import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.关卡回调函数 = new Object();
+_root.关卡回调函数.尸母巢穴末图 = function():Void {
+    org.flashNight.arki.scene.NoahMotherEncounter.start();
+};
 
 _root.关卡回调函数.AVP_重设光照 = function(最大光照, 最小光照){
 	if(_root.难度等级 >= 2){

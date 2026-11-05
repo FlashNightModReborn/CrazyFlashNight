@@ -1,0 +1,21 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Noah_chainPivot1">
+  <timeline>
+    <DOMTimeline name="Noah_chainPivot1">
+      <layers>
+        <DOMLayer name="链条本体" color="#7FAA22">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Noah_chainUpperPiece">
+                  <matrix>
+                    <Matrix a="1" d="1"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

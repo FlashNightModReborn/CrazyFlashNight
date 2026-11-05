@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="巨型尸母 上颚">
+  <timeline>
+    <DOMTimeline name="巨型尸母 上颚">
+      <layers>
+        <DOMLayer name="战损状态" color="#AA6666">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 上颚_战损0" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 上颚_战损1" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 上颚_战损2" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

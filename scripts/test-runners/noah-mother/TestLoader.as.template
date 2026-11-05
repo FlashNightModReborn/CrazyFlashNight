@@ -1,0 +1,5 @@
+﻿import org.flashNight.arki.scene.*;
+trace("FocusedTestRunId noah-mother Start: __FOCUSED_RUN_ID__");
+_root.__noahMotherFocusedRunId="__FOCUSED_RUN_ID__";
+_root.__noahCapture=false;
+org.flashNight.arki.scene.NoahMotherEncounterTest.runAllTests();

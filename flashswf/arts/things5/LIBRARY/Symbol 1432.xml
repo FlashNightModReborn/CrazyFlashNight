@@ -90,7 +90,7 @@ if(_parent.hp < 0)
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_parent._parent.基因虫数量 > 0 && random(6 - _parent._parent.基因虫数量) == 0)
+	if (_parent._parent.基因虫数量 > 0 && (_root.gameworld.__noahMotherEncounter == undefined || _root.gameworld.__noahMotherEncounter.canProduce(1,false)) && random(6 - _parent._parent.基因虫数量) == 0)
 	{
 		_parent._parent.基因虫数量--;
 		var myPoint = {x:this._x, y:this._y};

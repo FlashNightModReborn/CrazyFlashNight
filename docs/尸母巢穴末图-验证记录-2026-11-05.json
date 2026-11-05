@@ -1,0 +1,258 @@
+{
+  "schema": "noah-mother-integration-record.v1",
+  "date": "2026-11-05",
+  "originalBase": "d0f088b6e65da28aff7442be855c5505feed6f20",
+  "integratedUpstream": "57630f2e3a14a3e404f6626b94b670b7e767bacb",
+  "scope": "尸母巢穴末图生产衰竭战、持续液体、受损演出与动作配声",
+  "producer": {
+    "main": "scripts/compile_test.ps1 -Target publish -VerifySwf scripts/asLoader.swf -QuitFlashAfterPublish",
+    "assetSource": "flashswf/movies/尸母巢穴巨型尸母/尸母巢穴巨型尸母.xfl",
+    "nativeEditor": "Adobe Flash Professional CS6",
+    "compilerErrors": 0,
+    "compilerWarnings": 0
+  },
+  "products": {
+    "scripts/asLoader.swf": {
+      "bytes": 7010318,
+      "sha256": "542c0f7834df82367610193724069f6619ee6d1b3a859d1c4ae88b8f72b3ced8",
+      "upstreamBytes": 6989600,
+      "deltaBytes": 20718
+    },
+    "flashswf/movies/尸母巢穴巨型尸母.swf": {
+      "bytes": 117961,
+      "sha256": "742934bafe4f288c8213a9cb9a9c96ff25c1588061300458c8746797da71cf4c",
+      "upstreamBytes": 85599,
+      "deltaBytes": 32362
+    },
+    "flashswf/arts/things5.swf": {
+      "bytes": 3188843,
+      "sha256": "d03dc42dcb86bbc16c010f6cc51bee17879fff6206f729e5b338a5807d9be1f0",
+      "upstreamBytes": 3188556,
+      "deltaBytes": 287
+    }
+  },
+  "sourceHashesLFNormalized": {
+    "agentsDoc/game-design.md": "320e76724f65d833c1072f78a52a85ca04be9a3aac8838f9794ec15e33d2432d",
+    "data/enemy_properties/原版敌人 2013-2016.xml": "8d978cf942f8c2968ab1d5e755c84108d29fd292497ddb15fef8c834bb93c937",
+    "data/stages/诺亚前线基地深处/尸母巢穴.xml": "2f0f77c094ebdbde108046bee2eb96a8bcd4466e6a40086c76aba92ed58174b5",
+    "docs/尸母巢穴末图-MVP实现与验证.md": "04ea5889a9fc22303dafa5c1f815f66bde77f64095e38e071a61b0701d45986c",
+    "flashswf/arts/things5/LIBRARY/Symbol 1402.xml": "1be53567efd491e1dda7c292b3f31547b738da88e6b175cc6be064b33d8d6a85",
+    "flashswf/arts/things5/LIBRARY/Symbol 1432.xml": "216e7bab1b7051d443944900387faf865a4315009208df63deac46deef534e91",
+    "flashswf/arts/things5/LIBRARY/Symbol 1672.xml": "f247fa12e58e56d6a7cccb22c3a17b4c83c078c8463006028997fa1feeb61f47",
+    "flashswf/movies/尸母巢穴巨型尸母/DOMDocument.xml": "7acdc58de798ec23122c7480099a875a0fc6600895a917775454b5cc84e7025d",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_101.xml": "913a0417ba9099b951c83a1b61c1404da5ca330cbcdd73414b012f4ddfb5f3f9",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_102.xml": "08051f2b6158a2a470b4f14e65bcb032747464fcf30774c9d4d0996ff32f7540",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_105.xml": "4f4760cf1902f015503260e64274953f995c4fb3c85cb46b8e52f6539534694d",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_106.xml": "c33b31f085ceabe7e8f1d491351c6c40ccf57a6b8fd0a869d0d53b7d794803f7",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_108.xml": "8948a2c438b2f7eab87066095906d46603a5767ddbb41cbc5ea84ae24e7f9359",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_54.xml": "70271a68832eca5c5ffc84f62a7d63a1fc0f17857af5b89d90bd5ee64d43c985",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_55.xml": "dc1f829f13aa3225d47a20227c3e672f1469748f6a8d5b27e46932836ec62b4d",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_56.xml": "c8f0068efc96712fd1d296926a75096da179ca0a9c55bce4205ef63d56f0e3ab",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_57.xml": "166edb73fd2587f38fbe228c2494ed4311a43ed566d53477322329525f735a9d",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_62.xml": "7decff5d093ad3c55fc768352c6c4462535261132085d1a2e7b48458b8d88363",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_63.xml": "03b3953865dae102f95cccfa71fb15f68c3dd3343e1488706efb7e613e01862b",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_68.xml": "0009ef0ff0ee2a0733be06f7f8f745c29ab794cf220f68084508828271921361",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_69.xml": "5cea6a52b858afb126dcd0698c6ebe41cfbe5735e7acc3e3bddf877c169488f2",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_73.xml": "39e22bd38b7beffb35cb3d0ca41f86c838e931894adefb77166aa31990eb5ae2",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_74.xml": "f40ed9d132bbaa33973ae8867f1ddd015d11851303e2a078ff06cdfd5cfa388d",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_79.xml": "df706a2960471c93ff21ac463ad41ce2dca9bf06b4b517cbb65b2d51fb780fab",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_84.xml": "1c56248c959ea194d46881498a2e4985651631c10cca797dc3daecaa64104940",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_88.xml": "9ca6cff9dfe768266be17d33c74ddc28982df84e547e0c73aa49fa3b03f7f203",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_89.xml": "b6316f05b201a562120e4d9295466867f8be402980297529df1e7bef47c5e79a",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_92.xml": "9fa503f656317b32c4264685fd5e8bd60074fbe793e608e1d987f0b6c3d662a8",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_93.xml": "0fb7feb714330a9736c8dfa256713a502503929f064465df1446b9133448c67d",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_97.xml": "e987323577efa186f533281f0085481d82e73d6186bff73975b1a1046bae1b38",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/NoahSpill_Symbol_99.xml": "481e14b207222d5e8aaa2387f9141965a5ecea90da36500c192c5aef1cec8133",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_acidDrop.xml": "fbbee4c11242219e78712323a7894d9b306740931a9875a4142b546f85fef054",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_acidFlame.xml": "9119d799d4d564232a824253ced25e5276e2458526471d0d6d78aadd0bd4d688",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_acidRupture.xml": "6b1274e328898bc1c0e90435ba2218479918c62792661de8c14c4145308cabc1",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_acidSplash.xml": "781f90f7b09e89afeb881c77038392940af9de9ddbe2c50fffb2e74e2cb683ea",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainBottom.xml": "43d35f12aaee93d26429d5385f0188f765bbdee03bbce0c5860fef7f81fcb044",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainLowerPiece.xml": "f21d3cd4ab41b83dcdd39648f3f7ac18b9c70acf106f19b9264d8b8866b2d758",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot0.xml": "b9e2aaecd08eba9ead5e9ee82734833f9df93e6c9b92db92a26a82ee9db77b51",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot1.xml": "90cea9af0b7a1453db0c5de40ca4e688da2b6cfde22c2d4484c2abff4c6c3fe8",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot10.xml": "7c61ccec6d6a17b981f633a4a0ce6af3f0a08a104e86b58683853729dea9a46d",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot11.xml": "fc4c69b646c28548b14bb086fa32367365c1512ad4f6e59d16e5c446bb252ba5",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot12.xml": "6f8fab88e3c4d3b7bfb2e7b294d14cf006c8c1f729af32360c67cc5dd455f624",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot13.xml": "ab666118ff61bc41c3b4c3620db1fb59a41dce284defa5f53d6fda9b0fb4fe52",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot14.xml": "60cee3fdcd31b7a8cebc2c32bb0752579ed362037eb57d56f2be55676bfada24",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot2.xml": "242f33317cec1e9e75976220756193ea6cf470bf073d1a93f4efbaca9405c628",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot3.xml": "e624c7ee60e2429f4ff6795ce80b2eaac3088d8c6f93edf38ffec7b9ebaaf7cd",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot4.xml": "33ea86448234dc66bc0ce320dc0dc28aeced00e49a8cedd1f2555f0822945884",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot5.xml": "c3e769d6fbc0bbf662a1237613d291d0f423c8540ef3f502200c1b123b0ea174",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot6.xml": "634fe106ca3f13dd6e1f2b5be329db0421ab0d35a93205b03ecef25d20936d53",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot7.xml": "312ab73394320d513195d9e50901ca2a68199cdaa6bf84c9cf3599f6d25d0047",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot8.xml": "71a3c403e753b765bb7ae5d3f975bc91de85b2cbc4ae44ab1f86d8f8ddddd046",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainPivot9.xml": "162d3ea698733ecc3e02e303f91fce96b60a79704130934072243921eedba836",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainTop.xml": "8fde32a8abfa912ee736be9749be1427020d5d4ad8b77bb09834183db449a87c",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_chainUpperPiece.xml": "3b8256eb3b1c7767a84824e5ea39e66c587b0e7ae04c522c227baf48243528b6",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_deathBody.xml": "ed160c8b0aeffa47ae962cb7a0ddbc499e31de50389684c6c305db6f18ba01f0",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_serumDrop.xml": "be5c9d61b109f457af0bd2c3f966f53500578fdb24734fae8b98710d069f2e6a",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_serumFlame.xml": "903124587bedfa6997bacd678f53e6b02d83c7d821438888c628fed804e7453e",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Noah_serumSplash.xml": "eae3f481c60efad18efa13c558fcdb3b375ae3b7cf001946d7097c816a2d3aca",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Symbol 10.xml": "0dfc8380be538aaac777c9d3b41d76c92fc9a86b576e5fe2fdb32c034d76d319",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Symbol 15.xml": "e9fccb1ca982ae58a5331c65ca98f9fbc34e9af6ee72e8062d83900c3d6cae93",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Symbol 16.xml": "2bd96e91659b38140221bcc8b544536e5532c5210f4768efbb06dbe8000f0ca9",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/Symbol 6.xml": "2f431f44b4c10cb76c2eb1f5389ec293916956a4c749beb2e60154ff9ae435e3",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 上颚.xml": "5a411d8faae50a7dfec12173b31a7697e4118f7bf95bf20cc32c7bbcd3902af3",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 上颚_战损0.xml": "8c3b9431f96d10545dd7f8b9adc5118011b77d1ee7f43549f50978040a5184af",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 上颚_战损1.xml": "a6613842910dd69668ddac9a66186802788db94e9f8b5acf20dafc7b20c0faed",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 上颚_战损2.xml": "69d8b3544d1f23a1391e00581d947fbdc2d03f94f8b9ecbea0066dca4d03d736",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 下颚.xml": "d929db207f8cacded0c69b625a3b594ded2789a47f00f6613eb8889c6276a61a",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 下颚_战损0.xml": "ac9d2273d245190cc83ea9ed0b7ca2d2ea42a468b55fcfa370d54373d68579f0",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 下颚_战损1.xml": "a81c2cd96735ed094bb7b5768a7f02036c108fc23a679e3e178dce96e3f0780e",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 下颚_战损2.xml": "274027199d930a37654e9fdfd11bbddf4c34913fd764bfe84f4c9c3acf929bb8",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 身体.xml": "6568345ce24c7d517e4754bdc6d6fb75d56063dd7d22cdf4c9adfbd204f1beb4",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 身体_战损0.xml": "2ccda070f418728ff85cdafb56c900a5ea8a53a7077230e2dcc9cb63a48ed64d",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 身体_战损1.xml": "097aa1f38b76a4715b3f6a8aff11ed4e5259ab26451ffe77ea58802418960db0",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母 身体_战损2.xml": "2e72479570b089706967397d52be37b2ebf5ea34310535e35652d0594dadc415",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母上颚张开.xml": "4b39be3c370d0e6654a0d5d61e245b548e8ab81756e3e36683596b24dd116a54",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母上颚张开_战损0.xml": "4bf4a05cff948cc1dc11d9fc0fea07f6acb1606e8b3d5bd7a20562aecc552e34",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母上颚张开_战损1.xml": "cb14d86c2fe05aabb4d932d7a4860ec574e2ad973f6e514f1cd1f79110492d57",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母上颚张开_战损2.xml": "218f618862dddc48ae0703889c41513b5fc1e815fb5578d589f6fbcdc7935cf0",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母动画 喷吐.xml": "3f4af1f3570d7a5aec4afc9e65fd0c35ea73ed3ba9b52b9ba04e293a86559fea",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母动画 死亡.xml": "a1167396820becedb0eb67765f14707478cdf007bbef1949f9f13c3a8966d08f",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母动画 登场.xml": "7361bb98c0d1b42c89d794898479f6bd71e48acc02d0e6cb04af7916375073cc",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/巨型尸母动画 空闲.xml": "1289e1d15bf88a1a9cab7579a11912fcd8029e712b3277bcd612f90ac33896c7",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/锁链 长.xml": "025b67f43c5f56f3a72d0bd3d54903c8e4daf1ecb681aadb1bf3e70bbeccbc6a",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/锁链.xml": "ed9edfb23acbba9ad8e89a095cf7ffcdbe71d04641e5af51aeb3b856fd314662",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/锁链组合1-1.xml": "f9b4666ce9719e3360a4a515813744a49e495b60eadfccae2b1dc7bd86988796",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/锁链组合1-2.xml": "54db019615a5fbfbb047f5f4d3e24a251f930689451bd37574d428c55b0614c2",
+    "flashswf/movies/尸母巢穴巨型尸母/LIBRARY/锁链组合1.xml": "3ac8bebcac5bf9b86c4c2615587e6c87a8b219f668b89c8605d89aed20eae869",
+    "flashswf/movies/尸母巢穴巨型尸母/META-INF/metadata.xml": "20fd60f76e550b4e856e7b07b55a92d89c7d21b0d91fe1e47e21cdfeeb6dd56b",
+    "flashswf/movies/尸母巢穴巨型尸母/MobileSettings.xml": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "flashswf/movies/尸母巢穴巨型尸母/PublishSettings.xml": "efc9802c056975e91030131f1bfff8daa218a03c54f47c842169f7516d0046dd",
+    "flashswf/movies/尸母巢穴巨型尸母/bin/SymDepend.cache": "4893e9b0277a3537b364ba6ff2ea4339f1342cf574ed793f7c5b6f54f66bb174",
+    "flashswf/movies/尸母巢穴巨型尸母/mimetype": "4a52f63e1b07c2c8506273713a0412c0e8a8cbba1206ae04762c48972dd73422",
+    "flashswf/movies/尸母巢穴巨型尸母/尸母巢穴巨型尸母.xfl": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+    "scripts/run-noah-mother-art-tests.ps1": "8764f9873db2fc9df4a6d0aa27e6c241b81d2893347604a598b0c590a8df8af0",
+    "scripts/run-noah-mother-production-tests.ps1": "5cc9989805f9f1764a7657a318f38ae600f50255aa8e8c9e96cd28f958cbffc1",
+    "scripts/run-noah-mother-tests.ps1": "19c972c6cf00f5ba772a96b9d080bb7aa6dc6508e9d429e8e754f3089d4d3134",
+    "scripts/test-runners/noah-mother-art/TestLoader.as.template": "f86ef3a7a440ce94a8055d1c8e2b9bf8fd935a335f366dc87d9c0fc006a6b57a",
+    "scripts/test-runners/noah-mother-art/TestLoader.legacy-mask.as.template": "8f1bad8449c2e182f1e5516f10fc30ed6997e4722dd566468fe7ece8e1d38c3d",
+    "scripts/test-runners/noah-mother-production/TestLoader.as.template": "1bfef25b53f5384d3e50e3f630ec183c4780c1b5668550de5333ecb9b645a32c",
+    "scripts/test-runners/noah-mother/TestLoader.as.template": "17505a8e32cd24120793fe44c7daf29fe01a036e3ff50e021574b5428827fcc1",
+    "scripts/类定义/org/flashNight/arki/scene/NoahMotherArtTest.as": "86251d91298b54ef51c77fe5ffa934e1ef565ea4e72636fb0e513e13863eb22e",
+    "scripts/类定义/org/flashNight/arki/scene/NoahMotherEncounter.as": "14ee81ee29f3d515f9f8118c13ca1a7b2fc87832f9e839fd9ff8bd8220802ab8",
+    "scripts/类定义/org/flashNight/arki/scene/NoahMotherEncounterTest.as": "3cfc38f7f9512c53105b089464c80261e074c244cad29a5348ace7b4a1379232",
+    "scripts/类定义/org/flashNight/arki/scene/NoahMotherProductionTest.as": "9563bc57d897cd02f59945121369c7058b29712aa19f1930bc17e5efaede0aee",
+    "scripts/类定义/org/flashNight/arki/scene/WaveSpawner.as": "2e94a9a1f937fcbde732a49729e8e3531fc20cfa925a505328e2e79647dee1a5",
+    "scripts/逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as": "0768f7a9a9de0c3a37ae6588744eab309f9e555c10694cf817a4545051f76979",
+    "scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as": "75d87c1a4bd923830a4431afd80a4bffd73679cab41e09b5ad7ee8d5b46c665e",
+    "scripts/逻辑/单位函数/单位函数_lsy_敌人特殊函数.as": "6b729b1e8381dec764455a900320cb90120b079205671d8aaf188bcb272dc63c"
+  },
+  "sourceIntegrity": {
+    "xflIncludes": 79,
+    "symbolReferencesResolved": true,
+    "changedDataXMLParsed": true
+  },
+  "tests": {
+    "controller": {
+      "command": "scripts/run-noah-mother-tests.ps1 -TimeoutSeconds 3600",
+      "assertions": 115,
+      "failed": 0,
+      "runId": "f43c213856854b8a80942f2ecf075c06",
+      "traceSha256LFNormalized": "7d5d1c389eccaff4c398735e30440718cb3595de8c9cc27321eb42b483863eac"
+    },
+    "retainedArt": {
+      "assertions": 31,
+      "runId": "5178284055414ce09328cebb4ab01d60",
+      "rerunAfterMerge": false,
+      "assetUnchanged": true
+    },
+    "retainedProduction": {
+      "assertions": 7,
+      "runId": "8631823170884f829c5fd43fef479cb5",
+      "rerunAfterMerge": false,
+      "assetUnchanged": true
+    }
+  },
+  "mergedBinaryMarkers": [
+    "poseSounds",
+    "soundPhase",
+    "calculateWeaponKnockback",
+    "all 10 selected sound IDs"
+  ],
+  "unchangedReusedAudio": [
+    {
+      "id": "金属刮擦.wav",
+      "path": "sounds/export/特效/金属刮擦.wav",
+      "sha256": "ba4dfb45e40195ed282cd0e847f80abb8e6b32926073419309e38d6852fc1983",
+      "provenance": "config/audio-v2/shipped-audio-assets.v1.json",
+      "inGlobalInventory": true
+    },
+    {
+      "id": "克隆怪嘶吼3.wav",
+      "path": "sounds/export/人物/克隆怪嘶吼3.wav",
+      "sha256": "25d41375e3c239d2dca73ace84aed59befdd0b9b5baf7e702a4e7a9c68e8f5be",
+      "provenance": "config/audio-v2/shipped-audio-assets.v1.json",
+      "inGlobalInventory": true
+    },
+    {
+      "id": "blood6.wav",
+      "path": "sounds/export/特效/blood6.wav",
+      "sha256": "c1f21c82fb2a2e483d0daf2edc0c716d9d8c86847bc6692001e1d83e8d16ea6f",
+      "provenance": "config/audio-v2/shipped-audio-assets.v1.json",
+      "inGlobalInventory": true
+    },
+    {
+      "id": "blood7.wav",
+      "path": "sounds/export/特效/blood7.wav",
+      "sha256": "5bc0737ebfab3fa4978f09c07ebeff2e888f5a16a6d8d889c496aa21a9f1ec96",
+      "provenance": "config/audio-v2/shipped-audio-assets.v1.json",
+      "inGlobalInventory": true
+    },
+    {
+      "id": "m1014毒液.wav",
+      "path": "sounds/export/特效/m1014毒液.wav",
+      "sha256": "5ba40168a7951db7b09b276f629c6ba31d4f385ea6e7fdf22b79a80e4dc9eeb2",
+      "provenance": "config/audio-v2/shipped-audio-assets.v1.json",
+      "inGlobalInventory": true
+    },
+    {
+      "id": "blood5.wav",
+      "path": "sounds/export/特效/blood5.wav",
+      "sha256": "2e47f0baf2f1021de3ebca3086c0d0f2e8e007d0c53066a3cbeec6a3f7ad7b21",
+      "provenance": "config/audio-v2/shipped-audio-assets.v1.json",
+      "inGlobalInventory": true
+    },
+    {
+      "id": "soundheadexplode.wav",
+      "path": "sounds/export/人物/soundheadexplode.wav",
+      "sha256": "3d851fadb61ce34a20431cb00c2d444389dbe24634e697a4619eee0d1b69fdc5",
+      "provenance": "tools/cf6-audio/legacy-assets.json",
+      "inGlobalInventory": false
+    },
+    {
+      "id": "克隆怪嘶吼2.wav",
+      "path": "sounds/export/人物/克隆怪嘶吼2.wav",
+      "sha256": "b5060db0eeeecaf3afaf6f3fde6a90712c179f4757f89964a66521e0a24f2da9",
+      "provenance": "config/audio-v2/shipped-audio-assets.v1.json",
+      "inGlobalInventory": true
+    },
+    {
+      "id": "火凤_链条.wav",
+      "path": "sounds/export/特效/火凤_链条.wav",
+      "sha256": "52e576c4cc987d97115d9fcf6d9412af2ca0559abd23b8c70973573764e4f57e",
+      "provenance": "tools/huofeng-set-assets/audio-map.json",
+      "inGlobalInventory": false
+    },
+    {
+      "id": "地震3.wav",
+      "path": "sounds/export/特效/地震3.wav",
+      "sha256": "04cd0ad0ac20896d75420b8c957016d7b4067b86aa544d7ceb54bab05a1416b1",
+      "provenance": "config/audio-v2/shipped-audio-assets.v1.json",
+      "inGlobalInventory": true
+    }
+  ],
+  "localDevelopmentRuntime": {
+    "selectionState": "ready",
+    "buildIdentity": "B76A37F8856EE7C90CBB94A2E6F53EEADAFDD6E1FD708AACD8457A984A42502C",
+    "payloadClosure": "33D636951CD9AEAA6C6ED1FD50B2214BBF5126D885D78BD6C72372A9EC8E6452"
+  },
+  "limitations": [
+    "未执行合并后完整关卡通关或密集战斗性能验收",
+    "未代签实际扬声器输出或枪声与背景音乐混音听感",
+    "未改真实存档，未启动新的正式运行库推广"
+  ]
+}

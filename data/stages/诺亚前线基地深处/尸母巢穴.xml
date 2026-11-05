@@ -439,6 +439,7 @@
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
+                    <MapNoCount>true</MapNoCount>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -447,6 +448,9 @@
                         <Quantity>12</Quantity>
                         <Level>41</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <noahPrimary>true</noahPrimary>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>诺亚.基因虫</Type>
@@ -458,5 +462,23 @@
                 </EnemyGroup>
             </SubWave>
         </Wave>
+        <Event>
+            <EventName>Start</EventName>
+            <Callback>
+                <Name>尸母巢穴末图</Name>
+            </Callback>
+            <Dialogue id="0">
+                <Name>Blue（无线电）</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue（无线电）</Char>
+                <Text>情报里提到过这个母体：它是诺亚在这一带的重要兵源。高频生产已经让它濒临衰竭，吊着它的装置也救不了多久。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>Blue（无线电）</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue（无线电）</Char>
+                <Text>优先消灭周围的尸母，逼它不断补充护卫。它再这样生产下去，剩下的生命力很快就会耗尽。</Text>
+            </Dialogue>
+        </Event>
     </SubStage>
 </GameStage>

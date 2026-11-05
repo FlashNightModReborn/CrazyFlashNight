@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="巨型尸母动画 死亡">
+  <timeline>
+    <DOMTimeline name="巨型尸母动画 死亡">
+      <layers>
+        <DOMLayer name="时钟控制" color="#7FAA22">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="井口遮挡" color="#7FAA22" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#000000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-20000 -20000|20000 -20000|20000 1620|-20000 1620|-20000 -20000"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="耗竭母体" color="#7FAA22" parentLayerIndex="1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Noah_deathBody" name="noahBody">
+                  <matrix>
+                    <Matrix tx="0" ty="0"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="断索上段" color="#7FAA22" parentLayerIndex="1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Noah_chainTop" name="noahChainHead">
+                  <matrix>
+                    <Matrix tx="0" ty="0"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

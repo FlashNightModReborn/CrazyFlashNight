@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Noah_deathBody">
+  <timeline>
+    <DOMTimeline name="Noah_deathBody">
+      <layers>
+        <DOMLayer name="巨型尸母 上颚" color="#7FAA22">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="巨型尸母 上颚" name="noahHead">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-9.35" ty="-67.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14.65" y="-26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="巨型尸母 下颚" color="#7FAA22">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="巨型尸母 下颚" name="noahJaw">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-111.95" ty="-88"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="216.5" y="175.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="巨型尸母 身体" color="#7FAA22">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="巨型尸母 身体" name="noahSkin">
+                  <matrix>
+                    <Matrix a="0.446182250976563" d="0.446182250976563" tx="-239.35" ty="-195.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="506.2" y="305.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="随体断索" color="#7FAA22">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Noah_chainBottom" name="noahChainTail">
+                  <matrix>
+                    <Matrix tx="0" ty="0"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="时钟控制" color="#7FAA22">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -342,7 +342,9 @@ class org.flashNight.arki.scene.WaveSpawner {
             instanceName = attribute.名字 + "_" + waveIndex + "_" + index + "_" + quantity;
         }
 
-        spawnEnemy(id, instanceName, enemyPara, spawnIndex, 兵种信息.x, 兵种信息.y);
+        var born:MovieClip=spawnEnemy(id, instanceName, enemyPara, spawnIndex, 兵种信息.x, 兵种信息.y);
+        // 本图数量闸拒绝的刷新不扣额度、不推进尸母衰竭，也不虚增出生点人数。
+        if(gameworld.__noahMotherEncounter!=null && born==undefined)return false;
 
         if (enemyPara.是否为敌人 === true){
             spawnPiontInstance.僵尸型敌人场上实际人数++;
@@ -352,7 +354,7 @@ class org.flashNight.arki.scene.WaveSpawner {
         return true;
     }
 
-    public function spawnEnemy(id:String, instanceName:String, initObject, spawnIndex, x:Number, y:Number):Void{
+    public function spawnEnemy(id:String, instanceName:String, initObject, spawnIndex, x:Number, y:Number):MovieClip{
         // 优先使用兵种自带的坐标
         var spawnPiontInstance = spawnIndex > -1 ? spawnPoints[spawnIndex] : gameworld.地图;
         if (spawnIndex > -1){
@@ -414,7 +416,7 @@ class org.flashNight.arki.scene.WaveSpawner {
         initObject._x = x;
         initObject._y = y;
 
-        _root.加载游戏世界人物(id, instanceName, gameworld.getNextHighestDepth(), initObject);
+        return _root.加载游戏世界人物(id, instanceName, gameworld.getNextHighestDepth(), initObject);
     }
 
 
@@ -427,6 +429,7 @@ class org.flashNight.arki.scene.WaveSpawner {
                 count += spawnPoints[i].僵尸型敌人总个数;
             }
         }
+        if(gameworld.__noahMotherEncounter!=null)count+=gameworld.__noahMotherEncounter.requiredCount();
         return count;
     }
 

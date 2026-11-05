@@ -1,0 +1,59 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Noah_acidFlame" linkageExportForAS="true" linkageIdentifier="Noah_acidFlame">
+  <timeline>
+    <DOMTimeline name="Noah_acidFlame">
+      <layers>
+        <DOMLayer name="原生矢量" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#34440D"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-600 0|-180 160[200 300 600 -80[1100 -520 780 -1180[860 -900 500 -780[920 -1060 620 -1940[480 -1820 360 -1540[560 -2060 0 -2500[80 -1880 -140 -1440[-220 -1220 -440 -1700[-700 -900 -480 -1100[-1020 -440 -600 0" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#7EAA22"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-440 0|240 100[820 -120 580 -680[660 -420 440 -420[760 -700 580 -1380[500 -1000 160 -880[380 -1420 140 -1920[40 -1020 -240 -740[-420 -660 -340 -1000[-720 -400 -440 0" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#D0FF62"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-260 0|-40 140[460 160 500 -240[380 -240 240 -80[500 -400 220 -980[200 -500 0 -380[-160 -340 -100 -720[-460 -340 -260 0" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#EFFFC5"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-60 20|120 80[280 -40 140 -180[20 -240 40 -440[-200 -160 -60 20" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

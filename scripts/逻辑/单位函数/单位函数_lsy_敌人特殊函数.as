@@ -28,6 +28,12 @@ _root.敌人函数.基因虫生成僵尸 = function(){
 	for(var i=0; i<兵种库.length; i++){
 		if(兵种库[i].权重 == 目标权重) 目标权重兵种库.push(兵种库[i]);
 	}
+	var nest:Object=_root.gameworld.__noahMotherEncounter;
+    if(nest!=null){
+        if(this.__noahTransformPlan==undefined)this.__noahTransformPlan={pool:目标权重兵种库,count:生成数量,weight:目标权重};
+        目标权重兵种库=this.__noahTransformPlan.pool;生成数量=this.__noahTransformPlan.count;目标权重=this.__noahTransformPlan.weight;
+        if(!nest.canProduce(生成数量,目标权重==6))return false;
+    }
 	var offset = 生成数量 * 8;
 	var 名字 = "基因变身怪";
 	var 是否为敌人 = this.是否为敌人;
@@ -38,6 +44,8 @@ _root.敌人函数.基因虫生成僵尸 = function(){
 		var 僵尸型敌人newname = this._name + 目标兵种.兵种 + i;
 		_root.加载游戏世界人物(目标兵种.兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX, _y:shootY, 等级:等级, 名字:名字, 是否为敌人:是否为敌人, 身高:目标兵种.身高, 长枪:"", 手枪:"", 手枪2:"", 刀:"", 手雷:""});
 	}
+    if(nest!=null)this.__noahTransformed=true;
+    return true;
 };
 
 // ==================== 诺艾尔特殊函数 ====================

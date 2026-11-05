@@ -1,0 +1,90 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Noah_serumSplash" linkageExportForAS="true" linkageIdentifier="Noah_serumSplash">
+  <timeline>
+    <DOMTimeline name="Noah_serumSplash">
+      <layers>
+        <DOMLayer name="原生矢量" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#164754"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="2" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#17252B"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-3060 20|-2780 280|-1820 300|-2060 560|-1200 440|-560 680|160 560|960 720|1620 400|2600 500|2380 240|3080 20|2320 -160|2640 -500|1760 -360|1660 -840|1300 -540|320 -580|-60 -1040|-400 -600|-1160 -420|-1640 -800|-1700 -320|-2840 -520|-2280 -160|-3060 20" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#299BAE"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-2700 20|-1580 200|-1720 400|-1140 280|-500 500|120 400|840 500|1420 260|2160 320|2060 100|2700 20[2240 -200 1520 -180|1660 -580|1120 -320|340 -380|60 -740|-260 -420|-900 -220|-1280 -520|-1500 -160[-2080 -140 -2700 20" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#69E9ED"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-2180 20[-1480 -60 -840 100[-120 360 460 100[880 -120 1500 -80[820 -340 300 -160[-240 100 -740 -100[-1240 -320 -2180 20" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#DDFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-800 -280[-802 -322 -853 -351[-904 -379 -980 -380[-1056 -379 -1107 -351[-1158 -322 -1160 -280[-1158 -238 -1107 -209[-1056 -181 -980 -180[-904 -181 -853 -209[-802 -238 -800 -280" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#69E9ED"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!1120 240[1118 206 1073 183[1028 161 960 160[892 161 847 183[802 206 800 240[802 274 847 297[892 319 960 320[1028 319 1073 297[1118 274 1120 240" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#69E9ED"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-2260 -500[-2160 -740 -2380 -860[-2540 -700 -2260 -500" fillStyle0="1"/>
+                    <Edge edges="!1920 -620[2160 -760 2020 -920[1860 -940 1920 -620" fillStyle0="1"/>
+                    <Edge edges="!-140 -960[80 -1160 -100 -1320[-300 -1280 -140 -960" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+              <Actionscript>
+                <script>stop();</script>
+              </Actionscript>
+            </DOMFrame>
+          <DOMFrame index="1" keyMode="9728"><elements><DOMShape isFloating="true"><fills><FillStyle index="1"><SolidColor color="#164754"/></FillStyle></fills><strokes><StrokeStyle index="1"><SolidStroke weight="2" scaleMode="normal" caps="none" joints="miter"><fill><SolidColor color="#69E9ED"/></fill></SolidStroke></StrokeStyle></strokes><edges><Edge edges="!3100 0[3096 -300 2856 -561[2617 -821 2192 -1018[1767 -1216 1207 -1327[646 -1438 0 -1440[-646 -1438 -1207 -1327[-1767 -1216 -2192 -1018[-2617 -821 -2856 -561[-3096 -300 -3100 0[-3096 300 -2856 561[-2617 821 -2192 1018[-1767 1216 -1207 1327[-646 1438 0 1440[646 1438 1207 1327[1767 1216 2192 1018[2617 821 2856 561[3096 300 3100 0" fillStyle0="1" strokeStyle="1"/></edges></DOMShape><DOMShape isFloating="true"><fills><FillStyle index="1"><SolidColor color="#299BAE"/></FillStyle></fills><edges><Edge edges="!2920 0[2916 -271 2691 -506[2465 -741 2065 -919[1665 -1097 1137 -1198[609 -1298 0 -1300[-609 -1298 -1137 -1198[-1665 -1097 -2065 -919[-2465 -741 -2691 -506[-2916 -271 -2920 0[-2916 271 -2691 506[-2465 741 -2065 919[-1665 1097 -1137 1198[-609 1298 0 1300[609 1298 1137 1198[1665 1097 2065 919[2465 741 2691 506[2916 271 2920 0" fillStyle0="1"/></edges></DOMShape><DOMShape isFloating="true"><fills><FillStyle index="1"><SolidColor color="#164754"/></FillStyle></fills><edges><Edge edges="!2340 -60[2337 -260 2142 -434[1947 -607 1602 -739[1257 -870 801 -945[345 -1019 -180 -1020[-705 -1019 -1161 -945[-1617 -870 -1962 -739[-2307 -607 -2502 -434[-2697 -260 -2700 -60[-2697 140 -2502 314[-2307 487 -1962 619[-1617 750 -1161 825[-705 899 -180 900[345 899 801 825[1257 750 1602 619[1947 487 2142 314[2337 140 2340 -60" fillStyle0="1"/></edges></DOMShape><DOMShape isFloating="true"><strokes><StrokeStyle index="1"><SolidStroke weight="4" scaleMode="normal" caps="none" joints="miter"><fill><SolidColor color="#69E9ED"/></fill></SolidStroke></StrokeStyle></strokes><edges><Edge edges="!-2500 -340[-1500 -1080 -340 -620[900 -200 2220 -540" strokeStyle="1"/><Edge edges="!-2140 620[-820 1240 460 680[1420 280 2540 480" strokeStyle="1"/></edges></DOMShape><DOMShape isFloating="true"><fills><FillStyle index="1"><SolidColor color="#69E9ED"/></FillStyle></fills><edges><Edge edges="!-960 -560[-963 -602 -1030 -631[-1098 -659 -1200 -660[-1302 -659 -1370 -631[-1437 -602 -1440 -560[-1437 -518 -1370 -489[-1302 -461 -1200 -460[-1098 -461 -1030 -489[-963 -518 -960 -560" fillStyle0="1"/></edges></DOMShape><DOMShape isFloating="true"><fills><FillStyle index="1"><SolidColor color="#69E9ED"/></FillStyle></fills><edges><Edge edges="!1320 620[1318 586 1267 563[1216 541 1140 540[1064 541 1013 563[962 586 960 620[962 654 1013 677[1064 699 1140 700[1216 699 1267 677[1318 654 1320 620" fillStyle0="1"/></edges></DOMShape></elements><Actionscript><script><![CDATA[stop();]]></script></Actionscript></DOMFrame></frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

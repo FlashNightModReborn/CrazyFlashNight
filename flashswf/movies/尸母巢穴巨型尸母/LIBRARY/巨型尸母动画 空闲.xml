@@ -1,0 +1,245 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="巨型尸母动画 空闲" itemID="679bbb15-00000453" lastModified="1738259511">
+  <timeline>
+    <DOMTimeline name="巨型尸母动画 空闲">
+      <layers>
+        <DOMLayer name="关卡时钟控制" color="#CC6666"><frames><DOMFrame index="0" keyMode="9728"><Actionscript><script><![CDATA[stop();]]></script></Actionscript><elements/></DOMFrame></frames></DOMLayer><DOMLayer name="as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="79" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <Actionscript>
+                <script>stop();</script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="巨型尸母 上颚" color="#4FFF4F" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333"/>
+                  <Point x="0.666666666666667" y="0.333333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 上颚" name="noahHead">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-9.35" ty="-67.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14.65" y="-26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="20" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666667"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 上颚" name="noahHead">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-9.35" ty="-65.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14.65" y="-26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="20" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333"/>
+                  <Point x="0.666666666666667" y="0.333333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 上颚" name="noahHead">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-9.35" ty="-63.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14.65" y="-26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="20" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666667"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 上颚" name="noahHead">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-9.35" ty="-65.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14.65" y="-26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 上颚" name="noahHead">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-9.35" ty="-67.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14.65" y="-26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="巨型尸母 下颚" color="#FF800A" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333"/>
+                  <Point x="0.666666666666667" y="0.333333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 下颚" name="noahJaw">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-111.95" ty="-88"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="216.5" y="175.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="20" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666667"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 下颚" name="noahJaw">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-111.95" ty="-83"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="216.5" y="175.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="20" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333"/>
+                  <Point x="0.666666666666667" y="0.333333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 下颚" name="noahJaw">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.47137451171875" tx="-111.95" ty="-86.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="216.5" y="175.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="20" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666667"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 下颚" name="noahJaw">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-111.95" ty="-83"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="216.5" y="175.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 下颚" name="noahJaw">
+                  <matrix>
+                    <Matrix a="0.434173583984375" d="0.434173583984375" tx="-111.95" ty="-88"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="216.5" y="175.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="巨型尸母 身体" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母 身体" name="noahSkin">
+                  <matrix>
+                    <Matrix a="0.446182250976563" d="0.446182250976563" tx="-239.35" ty="-195.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="506.2" y="305.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="锁链" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="锁链组合1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-382.2" ty="-338.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="367.7" y="93.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

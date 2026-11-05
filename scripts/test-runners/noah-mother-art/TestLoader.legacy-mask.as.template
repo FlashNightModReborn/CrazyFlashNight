@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId noah-mother-art Start: __FOCUSED_RUN_ID__");
+_root.__noahArtRunId="__FOCUSED_RUN_ID__";
+_root.__noahVerifyLegacyMask=true;
+org.flashNight.arki.scene.NoahMotherArtTest.runAllTests();
