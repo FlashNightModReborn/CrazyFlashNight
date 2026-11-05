@@ -42,7 +42,8 @@ public sealed class PlayerHudBuffLayoutTests
             Assert.True(bounds.Contains(PlayerHudBuffWidget.SlotRect(i)));
         var targets = PlayerHudFocusTargetWidget.BoundsForBuffCount(count, 4);
         Assert.True(targets.Top >= bounds.Bottom + 4);
-        Assert.True(targets.Bottom < 460); // Preserve room above the bottom player HUD, including at the 256-row wire limit.
+        // TL 状态列静态预算：即使 256 行线上限 + 4 条目标，也不进入 BL 事件卡保留区（ADR D5）。
+        Assert.True(targets.Bottom <= HudZoneLayout.TopLeftMaxBottom);
         if (count > PlayerHudBuffLayout.PageSize)
         {
             Assert.True(bounds.Contains(PlayerHudBuffLayout.PreviousPageRect(count)));
@@ -103,9 +104,9 @@ public sealed class PlayerHudBuffLayoutTests
         Click(next);
         Assert.Equal(1, widget.CurrentPage);
         Assert.NotEqual(initialNext, widget.CapturePointerTarget(next));
-        Assert.Equal("buff080", Assert.IsType<PlayerHudTarget>(widget.CapturePointerTarget(At(PlayerHudBuffWidget.SlotRect(0)))).Key);
-        Click(next); Click(next);
-        Assert.Equal(3, widget.CurrentPage);
+        Assert.Equal("buff040", Assert.IsType<PlayerHudTarget>(widget.CapturePointerTarget(At(PlayerHudBuffWidget.SlotRect(0)))).Key);
+        Click(next); Click(next); Click(next); Click(next); Click(next);
+        Assert.Equal(6, widget.CurrentPage);
         Assert.Equal("buff255", Assert.IsType<PlayerHudTarget>(widget.CapturePointerTarget(At(PlayerHudBuffWidget.SlotRect(15)))).Key);
         Assert.False(widget.TryHitTest(At(PlayerHudBuffWidget.SlotRect(16))));
         Edge(next, MouseEventKind.Down);

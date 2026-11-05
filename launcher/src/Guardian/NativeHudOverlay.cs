@@ -183,6 +183,7 @@ namespace CF7Launcher.Guardian
             if (FocusTrace.Enabled) FocusTrace.Record("hud.suspend");
             _suspendedForPanel = true;
             _suspendedAtMs = Environment.TickCount;
+            _notchWidget?.BeginPanelSuspend();
             NotifyResumableState();
             if (_animTick != null) _animTick.Stop();
             _lastTickMs = 0;

@@ -1003,43 +1003,21 @@ internal sealed class PlayerHudBuffWidget : PlayerHudWidgetBase, INativeHudPoint
         {
             var b=Snapshot.BuffCards[index];
             var r=SlotRect(index-first);
-            using var bg=new LinearGradientBrush(r,Color.FromArgb(247,38,40,40),Color.FromArgb(247,17,19,19),LinearGradientMode.Vertical);
-            g.FillRectangle(bg,r);
-            var color=b.Polarity switch { "benefit"=>Color.FromArgb(139,169,151),"harm"=>Color.FromArgb(213,139,112),_=>Color.FromArgb(161,168,168) };
-            var edgeColor=_hoverId==b.Id?Color.FromArgb(228,230,226):b.Activation?.Active==true?Color.FromArgb(176,197,184):Color.FromArgb(103,110,110);
-            using var edge=new Pen(edgeColor,0.6f);
-            g.DrawRectangle(edge,r.X,r.Y,r.Width,r.Height);
-            using var bevel=new Pen(Color.FromArgb(36,39,39),0.7f);
-            g.DrawLine(bevel,r.Left+1,r.Bottom-1,r.Right-1,r.Bottom-1);
-            using var ink=new SolidBrush(Color.FromArgb(218,222,218));
-            using var format=new StringFormat(StringFormat.GenericTypographic){Alignment=StringAlignment.Center,FormatFlags=StringFormatFlags.NoWrap,Trimming=StringTrimming.EllipsisCharacter};
-            var label=b.Name.Length>0?b.Name:"状态";
-            // Initial glyphs identify the effect without inventing a missing asset icon.
-            var elements=new System.Globalization.StringInfo(label);
-            if(elements.LengthInTextElements>2)label=elements.SubstringByTextElements(0,2);
-            g.DrawString(label,_label,ink,new RectangleF(r.X+1,r.Y+(b.DisplayTimed||b.Stacks>1?2:7),24,13),format);
-            var caption=b.Stacks>1?"×"+b.Stacks:b.DisplayTimed?Math.Ceiling(b.DisplayRemaining*PlayerHudCooldownText.StepMilliseconds/1000).ToString("0",CultureInfo.InvariantCulture)+"s":"";
-            if(caption.Length>0)g.DrawString(caption,_small,ink,new RectangleF(r.X+1,r.Y+13,24,9),format);
-            if(b.DisplayTimed)
-            {
-                var fraction=b.DisplayTotal>0?Math.Clamp(b.DisplayRemaining/b.DisplayTotal,0,1):0;
-                using var progress=new SolidBrush(b.DisplayRemaining<=90?Color.FromArgb(225,177,91):color);
-                g.FillRectangle(progress,r.X+2,r.Bottom-3,(float)(22*fraction),2);
-            }
-            else
-            {
-                using var accent=new SolidBrush(color);
-                g.FillRectangle(accent,r.X+8,r.Bottom-2.5f,10,0.8f);
-            }
+            PaintBuffSlot(g, b, r, _hoverId==b.Id);
         }
         if (PlayerHudBuffLayout.PageCount(SlotCount) > 1)
         {
             var previous = PlayerHudBuffLayout.PreviousPageRect(SlotCount);
             var next = PlayerHudBuffLayout.NextPageRect(SlotCount);
-            using var edge = new Pen(Color.FromArgb(103, 110, 110), .6f);
+            using var edge = new Pen(NativeHudTheme.AnchorRimMuted, .6f);
             using var ink = new SolidBrush(Color.FromArgb(218, 222, 218));
             using var muted = new SolidBrush(Color.FromArgb(103, 110, 110));
             using var format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+            using (var pagerBg = new SolidBrush(Color.FromArgb(220, 10, 11, 12)))
+            {
+                g.FillRectangle(pagerBg, previous);
+                g.FillRectangle(pagerBg, next);
+            }
             g.DrawRectangle(edge, previous.X, previous.Y, previous.Width, previous.Height);
             g.DrawRectangle(edge, next.X, next.Y, next.Width, next.Height);
             g.DrawString("<", _label, _page > 0 ? ink : muted, previous, format);
@@ -1048,6 +1026,95 @@ internal sealed class PlayerHudBuffWidget : PlayerHudWidgetBase, INativeHudPoint
                 RectangleF.FromLTRB(previous.Right, previous.Top, next.Left, previous.Bottom), format);
         }
     }
+    /// <summary>
+    /// Buff 基础框（ADR D7，不含图标美术）：技能槽式四角角标框；计时与技能冷却同语言
+    /// （自上而下的已过时长遮罩 + 琥珀分界线），右下剩余秒数，左上层数，底部 2px 极性轨，
+    /// 临近结束左上/右下框角红灯，组卡激活青色内框。图标位暂用名称首字占位。
+    /// </summary>
+    internal const double BuffExpiringFrames = 90;
+    internal static readonly Color BuffBenefitRail = NativeHudTheme.AnchorCyan;
+    internal static readonly Color BuffHarmRail = NativeHudTheme.AnchorCoral;
+    internal static readonly Color BuffNeutralRail = Color.FromArgb(255, 150, 154, 152);
+
+    private void PaintBuffSlot(Graphics g, PlayerHudBuffCard b, RectangleF r, bool hover)
+    {
+        var oldSmooth = g.SmoothingMode;
+        try
+        {
+            g.SmoothingMode = SmoothingMode.None;
+            using (var bg = new LinearGradientBrush(r, Color.FromArgb(244, 22, 24, 25), Color.FromArgb(248, 5, 6, 6), LinearGradientMode.Vertical))
+                g.FillRectangle(bg, r);
+            using (var outline = new Pen(Color.FromArgb(hover ? 150 : 72, 214, 217, 215), 0.6f))
+                g.DrawRectangle(outline, r.X, r.Y, r.Width, r.Height);
+
+            var label = b.Name.Length > 0 ? b.Name : "状态";
+            // Initial glyphs identify the effect without inventing a missing asset icon.
+            var elements = new System.Globalization.StringInfo(label);
+            if (elements.LengthInTextElements > 2) label = elements.SubstringByTextElements(0, 2);
+            using (var glyph = new SolidBrush(Color.FromArgb(hover ? 236 : 196, 214, 217, 215)))
+            using (var format = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap, Trimming = StringTrimming.EllipsisCharacter })
+                g.DrawString(label, _label, glyph, new RectangleF(r.X + 1, r.Y + 1, r.Width - 2, r.Height - 5), format);
+
+            var inner = RectangleF.FromLTRB(r.Left + 1.2f, r.Top + 1.2f, r.Right - 1.2f, r.Bottom - 3.5f);
+            bool expiring = false;
+            if (b.DisplayTimed)
+            {
+                var fraction = b.DisplayTotal > 0 ? Math.Clamp(b.DisplayRemaining / b.DisplayTotal, 0, 1) : 0;
+                float elapsedH = (float)(inner.Height * (1 - fraction));
+                if (elapsedH > 0.4f)
+                {
+                    using (var cover = new SolidBrush(Color.FromArgb(158, 0, 0, 0)))
+                        g.FillRectangle(cover, inner.X, inner.Y, inner.Width, elapsedH);
+                    using (var horizon = new Pen(NativeHudTheme.AnchorAmber, 0.8f))
+                        g.DrawLine(horizon, inner.Left, inner.Y + elapsedH, inner.Right, inner.Y + elapsedH);
+                }
+                expiring = b.DisplayRemaining <= BuffExpiringFrames;
+                var seconds = Math.Ceiling(b.DisplayRemaining * PlayerHudCooldownText.StepMilliseconds / 1000).ToString("0", CultureInfo.InvariantCulture);
+                var size = g.MeasureString(seconds, _small, PointF.Empty, StringFormat.GenericTypographic);
+                var secRect = new RectangleF(r.Right - size.Width - 2.4f, r.Bottom - size.Height - 3.4f, size.Width + 1.2f, size.Height);
+                using (var back = new SolidBrush(Color.FromArgb(196, 0, 0, 0)))
+                    g.FillRectangle(back, secRect);
+                using (var ink = new SolidBrush(expiring ? NativeHudTheme.AnchorAmber : Color.FromArgb(240, 244, 248, 244)))
+                    g.DrawString(seconds, _small, ink, secRect.X + 0.6f, secRect.Y, StringFormat.GenericTypographic);
+            }
+            if (b.Stacks > 1)
+            {
+                using (var back = new SolidBrush(Color.FromArgb(180, 0, 0, 0)))
+                using (var ink = new SolidBrush(Color.FromArgb(244, 248, 248, 244)))
+                {
+                    var stacks = b.Stacks.ToString(CultureInfo.InvariantCulture);
+                    var size = g.MeasureString(stacks, _small, PointF.Empty, StringFormat.GenericTypographic);
+                    g.FillRectangle(back, r.X + 1.2f, r.Y + 1.2f, size.Width + 1.4f, size.Height);
+                    g.DrawString(stacks, _small, ink, r.X + 1.8f, r.Y + 1.2f, StringFormat.GenericTypographic);
+                }
+            }
+
+            var bracket = hover ? Color.FromArgb(250, 246, 246, 242) : NativeHudTheme.AnchorRim;
+            if (b.Activation?.Active == true)
+            {
+                using (var groupPen = new Pen(NativeHudTheme.AnchorCyan, 0.8f))
+                    g.DrawRectangle(groupPen, r.X + 1, r.Y + 1, r.Width - 2, r.Height - 2);
+                bracket = NativeHudTheme.AnchorCyan;
+            }
+            NativeHudTheme.DrawSlotBrackets(g, r, bracket, 5f, 1.1f);
+
+            var rail = b.Polarity switch { "benefit" => BuffBenefitRail, "harm" => BuffHarmRail, _ => BuffNeutralRail };
+            using (var railBrush = new SolidBrush(rail))
+                g.FillRectangle(railBrush, r.X + 3, r.Bottom - 2.6f, r.Width - 6, 1.8f);
+
+            if (expiring)
+            {
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                using (var lamp = new SolidBrush(NativeHudTheme.AnchorCoral))
+                {
+                    g.FillEllipse(lamp, r.X + 0.6f, r.Y + 0.6f, 2.8f, 2.8f);
+                    g.FillEllipse(lamp, r.Right - 3.4f, r.Bottom - 3.4f, 2.8f, 2.8f);
+                }
+            }
+        }
+        finally { g.SmoothingMode = oldSmooth; }
+    }
+
     private PlayerHudTarget? Hit(Point screen)
     {
         if(!Visible || !Controller.CanInteract || Snapshot is not {} s || Scale<=0)return null;

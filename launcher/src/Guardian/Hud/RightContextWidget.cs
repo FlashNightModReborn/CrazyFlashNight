@@ -615,8 +615,12 @@ namespace CF7Launcher.Guardian.Hud
         {
             if (r.Width <= 0 || r.Height <= 0) return;
             string[] labels = _paused ? TOOL_LABELS_PAUSED : TOOL_LABELS_DEFAULT;
-            // Flash 白框：每个入口保持独立分舱，hover/pressed/暂停/危险态共用主题语义。
+            // v2 锚点（ADR D3）：整行一块右上切角金属板，入口以 12.5° 斜切分隔，
+            // 导航组与系统组之间加粗分隔；hover/pressed/暂停/危险态只作用于入口内衬，不改外框。
+            NativeHudTheme.DrawPlate(g, r, scale, NativeHudTheme.PanelFillDense, NativeHudTheme.AnchorRim,
+                NativeHudTheme.PlateCorners.TopRight, NativeHudTheme.NotchChamferBase);
             StringFormat fmt = FMT_CENTER;
+            int sepInset = WidgetScaler.Px(7, scale);
             for (int i = 0; i < TOOL_KEYS.Length; i++)
             {
                 Rectangle btn = RightHudLayout.ActionButtonRectFromTools(r, scale, i);
@@ -626,9 +630,42 @@ namespace CF7Launcher.Guardian.Hud
                 bool paused = _paused && i == IDX_PAUSE;
                 bool danger = i == TOOL_KEYS.Length - 1;
                 Brush fgBrush = paused ? BR_TOOLS_FG_PAUSED : (hover ? BR_TOOLS_FG_HOVER : (Brush)BR_TOOLS_FG);
-                NativeHudTheme.DrawButton(g, btn, scale, hover, pressed, paused, danger);
+                PaintToolCell(g, btn, scale, hover, pressed, paused, danger);
+                if (i > 0)
+                {
+                    bool groupBreak = i == RightHudLayout.PrimaryActionButtonCount;
+                    NativeHudTheme.DrawSlantLine(g, btn.X, r.Y + sepInset, r.Bottom - sepInset,
+                        groupBreak ? NativeHudTheme.AnchorRim : NativeHudTheme.Separator,
+                        groupBreak ? Math.Max(2, NativeHudTheme.StrokePx(scale) + 1) : NativeHudTheme.StrokePx(scale));
+                }
                 if (i == IDX_SAFEEXIT) SaveFeedbackState.PaintAccent(g, btn, scale, _saveFeedback.Visual);
                 g.DrawString(labels[i], font, fgBrush, btn, fmt);
+            }
+        }
+
+        /// <summary>动作行入口内衬：只在 hover/pressed/激活时出现，四角角标 + 激活青色短轨。</summary>
+        private static void PaintToolCell(Graphics g, Rectangle btn, float scale,
+            bool hover, bool pressed, bool active, bool danger)
+        {
+            if (!(hover || pressed || active)) return;
+            int inset = WidgetScaler.Px(3, scale);
+            Rectangle cell = Rectangle.Inflate(btn, -inset, -inset);
+            if (cell.Width <= 2 || cell.Height <= 2) return;
+            Color fill = pressed ? NativeHudTheme.ButtonPressed
+                : (hover ? NativeHudTheme.ButtonHover : NativeHudTheme.ButtonActive);
+            if (danger && (hover || pressed)) fill = Color.FromArgb(238, 92, 22, 26);
+            using (SolidBrush b = new SolidBrush(fill))
+                g.FillRectangle(b, cell);
+            if (hover || pressed)
+                NativeHudTheme.DrawSlotBrackets(g, RectangleF.FromLTRB(cell.Left, cell.Top, cell.Right - 1, cell.Bottom - 1),
+                    danger ? NativeHudTheme.WithAlpha(NativeHudTheme.Danger, 220) : NativeHudTheme.FrameStrong,
+                    WidgetScaler.Px(5, scale));
+            if (active)
+            {
+                int arm = Math.Min(WidgetScaler.Px(16, scale), Math.Max(2, cell.Width - 4));
+                int barH = Math.Max(2, WidgetScaler.Px(2, scale));
+                using (SolidBrush bar = new SolidBrush(NativeHudTheme.AnchorCyan))
+                    g.FillRectangle(bar, cell.X + (cell.Width - arm) / 2, cell.Bottom - barH, arm, barH);
             }
         }
 
@@ -770,10 +807,19 @@ namespace CF7Launcher.Guardian.Hud
             using (SolidBrush iconBrush = new SolidBrush(iconColor))
             using (SolidBrush textBrush = new SolidBrush(textColor))
             {
-                NativeHudTheme.DrawSeparator(g, iconRect.Right, r.Y + WidgetScaler.Px(4, scale),
-                    r.Bottom - WidgetScaler.Px(4, scale), scale);
-                g.DrawString(noticeIcon, font, iconBrush, iconRect, center);
+                // v2：图标置于语义色斜切标签内（SP. 铭牌语言），取代竖分隔线。
+                int tagH = Math.Min(r.Height - WidgetScaler.Px(6, scale), WidgetScaler.Px(16, scale));
+                RectangleF tagRect = new RectangleF(iconRect.X + WidgetScaler.Px(6, scale),
+                    r.Y + (r.Height - tagH) / 2f, Math.Max(4, iconW - WidgetScaler.Px(9, scale)), tagH);
+                RectangleF tagContent = NativeHudTheme.DrawSlantTag(g, tagRect,
+                    NativeHudTheme.WithAlpha(iconColor, 236), Color.FromArgb(220, 0, 0, 0));
+                using (SolidBrush tagInk = new SolidBrush(Color.FromArgb(255, 10, 11, 12)))
+                    g.DrawString(noticeIcon, font, tagInk, tagContent, center);
                 g.DrawString(noticeText, font, textBrush, textRect, textFmt);
+                if (!showArrow && r.Width > WidgetScaler.Px(140, scale))
+                    NativeHudTheme.DrawHatch(g, new RectangleF(r.Right - WidgetScaler.Px(36, scale),
+                        r.Y + r.Height / 2f - WidgetScaler.Px(2, scale), WidgetScaler.Px(26, scale), WidgetScaler.Px(4, scale)),
+                        NativeHudTheme.WithAlpha(NativeHudTheme.AnchorRim, 90), scale);
                 if (showArrow)
                 {
                     Rectangle arrowRect = new Rectangle(r.Right - arrowW, r.Y, arrowW, r.Height);

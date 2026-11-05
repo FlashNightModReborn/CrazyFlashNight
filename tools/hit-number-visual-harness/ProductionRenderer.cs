@@ -193,20 +193,23 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                     ScenarioCatalog.BuildCausalAttributionVideoStream(durationSeconds + 0.5),
                     durationSeconds,
                     framesPerSecond),
-                RenderHealingVideo()
+                RenderHealingVideo(HitNumberDisplayMode.Balanced, "V03"),
+                RenderHealingVideo(HitNumberDisplayMode.Detail, "V04"),
+                RenderHealingVideo(HitNumberDisplayMode.Classic, "V05"),
+                RenderHealingVideo(HitNumberDisplayMode.Total, "V06")
             };
         }
 
         // 使用持续的生产Runtime，而非每张图重新造一个150ms窗口。
-        private VideoRenderResult RenderHealingVideo()
+        private VideoRenderResult RenderHealingVideo(HitNumberDisplayMode mode, string id)
         {
             const int fps = 30, count = 162;
-            const string stem = "healing-continuity-production";
+            string stem = "healing-" + mode.ToString().ToLowerInvariant() + "-production";
             string folder = Path.Combine(_outputRoot, ".frames-" + stem);
             Directory.CreateDirectory(folder);
             double now = 0;
             var runtime = new HitNumberRuntime(() => now);
-            runtime.Configure(new HitNumberRuntimeOptions(HitNumberDisplayMode.Balanced, 24));
+            runtime.Configure(new HitNumberRuntimeOptions(mode, 24));
             var storyboard = new List<string>();
             var metrics = new List<object>();
             for (int frameIndex = 0; frameIndex < count; frameIndex++)
@@ -242,19 +245,19 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 HitNumberLayoutFrame frame = runtime.ProcessFrame("0|0|1", payload.ToString())?.Frame
                     ?? new HitNumberLayoutFrame();
                 string file = Path.Combine(folder, "frame-" + frameIndex.ToString("0000", CultureInfo.InvariantCulture) + ".png");
-                RenderVideoFrame(actors, now, file, "整数治疗 · 连续窗口不重启动画 · 同屏伤害对照", frame);
+                RenderVideoFrame(actors, now, file, mode + " · 持续治疗窗口 · 移动与同屏伤害对照", frame);
                 if (frameIndex == 8 || frameIndex == 18 || frameIndex == 60 || frameIndex == 138) storyboard.Add(file);
                 metrics.Add(new { time = now, heals = frame.Items.Where(item => item.Kind == CombatNumberKind.HealHp)
                     .Select(item => new { item.SourceTargetId, item.Value, item.StageX, item.StageY, item.CombinedScale, item.Alpha }).ToArray() });
             }
-            string storyboardName = "V03-" + stem + "-storyboard.png";
+            string storyboardName = id + "-" + stem + "-storyboard.png";
             RenderVideoStoryboard(storyboard, Path.Combine(_outputRoot, storyboardName));
-            File.WriteAllText(Path.Combine(_outputRoot, "healing-motion-samples.json"),
+            File.WriteAllText(Path.Combine(_outputRoot, "healing-" + mode.ToString().ToLowerInvariant() + "-motion-samples.json"),
                 System.Text.Json.JsonSerializer.Serialize(metrics), new System.Text.UTF8Encoding(false));
-            string videoName = "V03-" + stem + (_gif ? ".gif" : ".mp4");
+            string videoName = id + "-" + stem + (_gif ? ".gif" : ".mp4");
             bool encoded = TryEncodeVideo(folder, Path.Combine(_outputRoot, videoName), fps, out string error);
             // 无encoder时保留精确PNG帧，可无损读入GIF封装；不伪称MP4成功。
-            return new VideoRenderResult { Id = "V03", Title = "治疗连续动效与整数显示",
+            return new VideoRenderResult { Id = id, Title = mode + " · 治疗统一布局与整数显示",
                 RelativeVideoPath = videoName, RelativeStoryboardPath = storyboardName,
                 Frames = count, FramesPerSecond = fps, Encoded = encoded, Error = error };
         }
@@ -507,10 +510,12 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 double now = 0;
                 var runtime = new HitNumberRuntime(() => now);
                 runtime.Configure(new HitNumberRuntimeOptions(spec.Mode, spec.WorldRowLimit));
-                var payload = new System.Text.StringBuilder(scenario.HealPayload);
+                var payload = new System.Text.StringBuilder();
                 if (!scenario.HealOnly)
                     foreach (HitNumberSegment segment in scenario.Segments)
-                        payload.Append(';').Append(segment.Damage).Append('|')
+                    {
+                        if (payload.Length > 0) payload.Append(';');
+                        payload.Append(segment.Damage).Append('|')
                             .Append(segment.TargetX.ToString(CultureInfo.InvariantCulture)).Append('|')
                             .Append(segment.TargetY.ToString(CultureInfo.InvariantCulture)).Append('|')
                             .Append(segment.Packed).Append('|').Append(segment.EffectText).Append('|')
@@ -518,7 +523,11 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                             .Append('|').Append(segment.ShieldAbsorb.ToString(CultureInfo.InvariantCulture)).Append('|')
                             .Append(segment.TargetId).Append('|').Append(segment.BurstId).Append('|')
                             .Append(segment.ExpectedBurstHitCount);
-                runtime.ProcessFrame("0|0|1", payload.ToString());
+                    }
+                runtime.ProcessFrame("0|0|1", scenario.HealPayload);
+                // 对照图把伤害到达与治疗窗口发布对齐，避免把治疗入场峰值与旧伤害静止态比较。
+                now = HealNumberAccumulator.WindowSeconds;
+                runtime.ProcessFrame("", payload.ToString());
                 now = HealNumberAccumulator.WindowSeconds + 0.02;
                 frame = runtime.ProcessFrame("", "").Frame;
             }

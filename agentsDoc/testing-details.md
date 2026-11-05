@@ -981,6 +981,8 @@ NativeHud down 绑定 exact action/revision，suspend/hide/capture loss/外放�
 
 ### 打击数字（C# 原生化）跨栈门
 
+治疗统一表现追加 `CombatNumberUnifiedLayoutTests` / `HealNumberRuntimeTests`：四模式共用策略与 24/0 世界预算、独立治疗累计、150ms 窗口粒度、小数结转、实例/epoch 隔离、最新语义行优先及实际像素无跨通道遮挡；视觉 harness 的 P27–P34 和 V03–V06 覆盖治疗/混流与持续移动。额外检查 1200 次治疗/秒和伤害混流的分配、共享行峰值与资源稳定。
+
 AS2 只发送逐段结算事实，C# `HitNumberRuntime` / `HitNumberOverlay` 是唯一 reducer、布局与绘制路径；V8/Flash renderer、旧 `_root.是否打击数字特效` 与 `_root.同屏打击数字特效上限` 不得恢复为 fallback。
 改解析、聚合、颜色、布局、overlay、Host 偏好或设置 Web 时，至少运行 Hit Number focused（文本门槛 97/97，待核：阈值来源为历史文本，未找到当前机器真源）、Settings Host/Web（20/20、18/18，待核）、Launcher 全量与视觉 harness [`tools/hit-number-visual-harness/run.ps1`](../tools/hit-number-visual-harness/README.md)；
 追加 `scripts/run-hit-number-tests.ps1`（机器钉死 9/9）、`scripts/run-settings-tests.ps1`（机器钉死 47/47）、asLoader publish 和真实 candidate。五状态固定为 `off / balanced / total / classic / detail`，有限上限按 Burst 原子裁剪，`0` 才显式无限，屏外余量剔除始终保留；精确历史独立进入 32,768 段环形账本，只在暂停态 Web 设置按需分页。
@@ -1453,10 +1455,10 @@ focused 必须覆盖同 epoch 重复 acquire 不重播、foreign source 不抢�
 [RightContextWidget](../launcher/src/Guardian/Hud/RightContextWidget.cs)、[RightHudLayout](../launcher/src/Guardian/Hud/RightHudLayout.cs)、[MapDisplayState](../launcher/src/Guardian/Hud/MapDisplayState.cs)、[SafeExitPanelWidget](../launcher/src/Guardian/Hud/SafeExitPanelWidget.cs)、
 [LootFeedWidget](../launcher/src/Guardian/Hud/Loot/LootFeedWidget.cs) / [LootFeedModel](../launcher/src/Guardian/Hud/Loot/LootFeedModel.cs) / [SingleFlightBatchQueue](../launcher/src/Guardian/Hud/Loot/SingleFlightBatchQueue.cs) / [LootIconCatalog](../launcher/src/Guardian/Hud/Loot/LootIconCatalog.cs) /
 [DollPortraitBakeService](../launcher/src/Guardian/Hud/Loot/DollPortraitBakeService.cs)、
-[LootFeedTask](../launcher/src/Tasks/LootFeedTask.cs) / [DollBakeTask](../launcher/src/Tasks/DollBakeTask.cs)、[NativeHudOverlay](../launcher/src/Guardian/NativeHudOverlay.cs) 或 `Program.cs` 注册顺序时，必跑 `launcher/build.ps1` + `launcher/tests/run_tests.ps1`。
+[LootFeedTask](../launcher/src/Tasks/LootFeedTask.cs) / [DollBakeTask](../launcher/src/Tasks/DollBakeTask.cs)、[HudZoneLayout](../launcher/src/Guardian/Hud/HudZoneLayout.cs) / [ToastWidget](../launcher/src/Guardian/Hud/ToastWidget.cs) / [ComboWidget](../launcher/src/Guardian/Hud/ComboWidget.cs)、[NativeHudOverlay](../launcher/src/Guardian/NativeHudOverlay.cs) 或 `Program.cs` 注册顺序时，必跑 `launcher/build.ps1` + `launcher/tests/run_tests.ps1`；分区与 v2 原语另有 `HudZoneLayoutTests` / `HudAnchorCompositeTests`（设 `CF7_HUD_ANCHOR_REVIEW_DIR` 输出复核 PNG）。
 
 缓存/烘焙定向门必须覆盖最小预算下图标 A→B→A 淘汰重载、动画整组预算、exact requestId 的 missing/foreign/duplicate/late 拒绝、匹配失败只释放本请求、PNG 完整解码与 exact 256×256，以及宿主 `devicePixelRatio=1.5` 时快照仍显式 `pixelRatio:1` / 256×256 / `animate:false`；单纯 PNG magic、key-only 清理或 mock 成功不得计通过。人工覆盖 1024×576 / 1600×900 / 1920×1080 / 4:3 letterbox：刘海与右侧动作行共享 32px 顶行；
-刘海外框比右栏槽位再低一级；常驻面板采用黑底、1 device-pixel 直角发丝框、与外框分离的内侧明暗压边和技能槽式角标，hover/pressed 不得把整圈外框加粗/提纯白，常见 1.0～1.875 倍 viewport scale 不得膨胀为 2px 粗框，100/125/150/175% 下线宽、角标与文字基线清晰，不回退为圆角/切角外壳或大圆角半透明卡片；已安装 FontPack 时刘海中文/右侧入口/SafeExit/Toast/地图标签命中思源宋体，缺失时仍可用回退字体，FPS/数字/系统图标/Combo 字体不变；刘海折叠展开端点、透明 CompositeBounds 点击透传。
+视觉语言以 [上层 HUD 风格锚定 ADR](../docs/上层HUD风格锚定与分区仲裁-ADR-2026-11-05.md) 为准：右侧动作行为整行右上切角金属板、12.5° 斜切分隔，刘海为下沿双切角板，状态槽图标在语义色斜切标签内，Buff 为技能槽四角角标框；结构线在常见 1.0～1.875 倍 viewport scale 不得膨胀为 2px 粗框，hover/pressed 只作用于入口内衬，100/125/150/175% 下线宽、切角、角标与文字基线清晰；分区上 Combo 必须在刘海信息行之下、宽度不越过刘海安全宽度，fallback 消息只在左下事件卡上方且不覆盖 Buff/聚焦目标；NPC 菜单保留 07-10 白框（`DrawLegacy*`）。刘海中文/右侧入口/SafeExit/消息行/地图标签命中现役 UI 字体角色，缺失时仍可用回退字体，FPS/数字/系统图标/Combo 字体不变；刘海折叠展开端点、透明 CompositeBounds 点击透传。
 `PreparationNavigationV1` 默认 `true` 时必须完整显示「游戏 / 整备 / 辅助 / 系统」四行：游戏仅战队/平板/商城，整备固定装备/战备箱/装备调制/技能/材料/情报六项且与 Character Build 菜单同源；显式 `false` 或非法配置必须成套恢复旧「游戏 / 辅助 / 系统」三行、七项游戏行、Build header 与 `skills` focus。该 off fixture 只验证旧导航 presentation，任何生产入口仍须 Web-only fail-closed，不得恢复退役 AS2 全屏 UI。
 材料入口不能叠在活动 Web panel 上，辅助行含点歌机/地图开关/修改器/帮助；
 「系统 → 其他」的「控制/测试/工具」分类切换与随刘海收起、刘海内容硬裁切且与右栏至少留 12px、FPS 前景+BGM 低透明度包络、右侧 `252px = 3×50px 双字入口 + 3×34px 图标入口`、任务/SafeExit 单一状态槽优先级、SafeExit Saving/Done/Failed、Failed 取消/重试、Done one-shot 确认、raw/replay 拒绝、Done 5 秒无操作自动收起且悬停确认按钮暂停、地图无通知时不显示冗余 header、卡片只做 `compact ↔ expanded`、刘海只做显示/关闭、完整 Web 地图一击直达与中文 toast、combo/toast、

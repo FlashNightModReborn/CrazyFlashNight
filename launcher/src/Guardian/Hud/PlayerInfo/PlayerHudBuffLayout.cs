@@ -12,7 +12,9 @@ internal static class PlayerHudBuffLayout
     internal const float SlotTop = 3;
     internal const float SlotSize = 26;
     internal const float SlotPitch = 28;
-    internal const int MaxVisibleRows = 8;
+    // TL 状态列静态预算（ADR D5）：4 行 + 翻页条 + 4 条聚焦目标的最坏底边不得越过
+    // BL 事件卡保留区（HudZoneLayout.TopLeftMaxBottom）；超过 40 项时本地翻页。
+    internal const int MaxVisibleRows = 4;
     internal const float PagerHeight = 20;
     internal const float SafeRight = (1024 - RightHudLayout.PreferredNotchMaxWidthBase) / 2f
         - RightHudLayout.NotchRightGapBase;

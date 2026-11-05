@@ -39,7 +39,7 @@ namespace CF7Launcher.Guardian.Hud
         private const int BAR_PADDING_X_BASE = 8;
         private const int HIT_PADDING_X_BASE = 16;
         private const int MIN_BAR_W_BASE = 160;
-        private const int MAX_BAR_W_BASE = 480;
+        private const int MAX_BAR_W_BASE = (int)HudZoneLayout.ComboMaxWidth; // TC 分区：不超过刘海安全宽度（ADR D5）
         // Web CSS 的 input 态在 150% DPI 下视觉偏松；native 预览态使用更紧凑的 spacing，
         // 保持 typed/remain/name 语义不变，但让候选条更像一个整体。
         private const float FLEX_GAP_BASE = 1f;
@@ -78,7 +78,7 @@ namespace CF7Launcher.Guardian.Hud
         private static readonly Color COLOR_HIT_SYNC = Color.FromArgb(102, 204, 255);
         private static readonly Color COLOR_BG_INPUT = NativeHudTheme.PanelFill;
         private static readonly Color COLOR_BG_HIT   = NativeHudTheme.PanelFillDense;
-        private static readonly Color COLOR_BORDER_INPUT = NativeHudTheme.FrameNormal;
+        private static readonly Color COLOR_BORDER_INPUT = NativeHudTheme.AnchorRimMuted;
         private static readonly Color COLOR_BORDER_HIT_DFA = Color.FromArgb(140, 255, 215, 0);
         private static readonly Color COLOR_BORDER_HIT_SYNC = Color.FromArgb(140, 102, 204, 255);
 
@@ -139,6 +139,7 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         private readonly Control _anchor;
+        private readonly EventHandler _zoneChanged;
         private readonly FlashCoordinateMapper _mapper;
 
         private volatile bool _gameReady = true; // combo 流通常意味着 game ready；缺 s 键时默认放行
@@ -254,6 +255,7 @@ namespace CF7Launcher.Guardian.Hud
         /// </summary>
         public void Dispose()
         {
+            HudZoneLayout.Changed -= _zoneChanged;
             DisposeScaledFonts();
         }
 
@@ -309,6 +311,8 @@ namespace CF7Launcher.Guardian.Hud
             _anchor = anchor;
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
             _anchor.Resize += delegate { FireBounds(); };
+            _zoneChanged = delegate { if (Visible) FireBounds(); };
+            HudZoneLayout.Changed += _zoneChanged;
         }
 
         private float Scale { get { return WidgetScaler.GetScale(_mapper); } }
@@ -343,8 +347,8 @@ namespace CF7Launcher.Guardian.Hud
                     int hScaled = SlotH;
                     int x = origin.X + (int)vpX + Math.Max(0, ((int)vpW - wScaled) / 2);
                     int y = origin.Y + (int)vpY
-                          + WidgetScaler.Px(NOTCH_PILL_H_BASE, Scale)
-                          + WidgetScaler.Px(COMBO_STATUS_PAD_TOP_BASE, Scale);
+                          // TC 分区：紧随刘海最大稳定占位，动画期间也不进入信息行或展开菜单。
+                          + (int)Math.Ceiling(HudZoneLayout.CurrentComboTop() * Scale);
                     return new Rectangle(x, y, wScaled, hScaled);
                 }
                 catch { return Rectangle.Empty; }
@@ -746,18 +750,9 @@ namespace CF7Launcher.Guardian.Hud
 
         private static void DrawFlashFrameBar(Graphics g, Rectangle r, float scale, Color bg, Color border, float alpha)
         {
-            int stroke = NativeHudTheme.StrokePx(scale);
-            int inset = Math.Max(0, stroke / 2);
-            Rectangle rr = new Rectangle(r.X + inset, r.Y + inset,
-                Math.Max(1, r.Width - stroke), Math.Max(1, r.Height - stroke));
-            using (GraphicsPath path = NativeHudTheme.CreateCutCornerPath(rr,
-                NativeHudTheme.CornerCutPx(scale)))
-            using (SolidBrush bgBrush = new SolidBrush(WithAlpha(bg, alpha)))
-            using (Pen borderPen = new Pen(WithAlpha(border, alpha), stroke))
-            {
-                g.FillPath(bgBrush, path);
-                g.DrawPath(borderPen, path);
-            }
+            // v2：锚点切角金属板（ADR D3），语义色仍由 border 承担。
+            NativeHudTheme.DrawPlate(g, r, scale, bg, border,
+                NativeHudTheme.PlateCorners.TopRight, NativeHudTheme.PlateChamferBase, alpha);
         }
 
         private static void FillRoundedRect(Graphics g, RectangleF r, float radius, Brush brush)

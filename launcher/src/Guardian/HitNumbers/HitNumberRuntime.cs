@@ -195,41 +195,12 @@ namespace CF7Launcher.Guardian.HitNumbers
         {
             PruneExpired(now);
             _heals.Advance(now);
-            if (_options.Mode == HitNumberDisplayMode.Total)
-            {
-                HitNumberLayoutFrame totalFrame = HitNumberLayoutEngine.BuildTotalFrame(
-                    _totals.Snapshot(now),
-                    now,
-                    _camera,
-                    _options.WorldRowLimit);
-                _heals.AppendFrame(totalFrame, _camera, now, _options.WorldRowLimit);
-                if (totalFrame.WorldRows.Count == 0 && totalFrame.Items.Count == 0)
-                    return TakeDismissSnapshotIfNeeded();
-                _hasPublishedVisuals = true;
-                return new HitNumberRuntimeSnapshot(_generation, _options.Mode, totalFrame);
-            }
-
-            if (_head == _segments.Count && !_heals.HasState) return TakeDismissSnapshotIfNeeded();
-
-            HitNumberLayoutCandidate candidate =
-                _options.Mode == HitNumberDisplayMode.Detail
-                    ? HitNumberLayoutCandidate.FixedBurstStack
-                    : _options.Mode == HitNumberDisplayMode.Classic
-                        ? HitNumberLayoutCandidate.ClassicScatter
-                        : HitNumberLayoutCandidate.BalancedSummary;
-            double lifetime = _options.Mode == HitNumberDisplayMode.Classic
-                ? HitNumberLayoutEngine.ClassicLifetimeSeconds
-                : HitNumberLayoutEngine.DefaultLifetimeSeconds;
-            HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildFrame(
-                _segments,
-                _head,
-                now,
-                candidate,
-                _camera,
-                _options.WorldRowLimit,
-                lifetime,
-                false);
-            _heals.AppendFrame(frame, _camera, now, _options.WorldRowLimit);
+            var totals = _options.Mode == HitNumberDisplayMode.Total ? _totals.Snapshot(now) : null;
+            var healing = _heals.Snapshot(now, _options.Mode == HitNumberDisplayMode.Detail || _options.Mode == HitNumberDisplayMode.Classic);
+            if (_head == _segments.Count && !_heals.HasState && (totals == null || totals.Count == 0))
+                return TakeDismissSnapshotIfNeeded();
+            HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildCombatFrame(
+                _segments, _head, totals, healing, _options.Mode, _camera, now, _options.WorldRowLimit);
             bool hasVisuals = frame.WorldRows.Count > 0 || frame.Items.Count > 0;
             if (!hasVisuals) return TakeDismissSnapshotIfNeeded();
             _hasPublishedVisuals = true;

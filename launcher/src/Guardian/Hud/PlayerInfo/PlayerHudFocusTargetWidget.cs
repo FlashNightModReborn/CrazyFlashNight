@@ -259,9 +259,18 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         }
 
         var layout = LogicalBounds;
+        // TL 状态列实际底边上报分区仲裁，BL fallback 消息据此让位（ADR D5）。
+        HudZoneLayout.ReportTopLeftBottom(TopLeftBottomFor(s?.BuffCards.Length ?? 0, targets.Length, Suppressed || s == null));
         if (targets.SequenceEqual(_lastTargets) && layout == _lastLayout && Suppressed == _lastSuppressed) return;
         _lastTargets = targets; _lastLayout = layout; _lastSuppressed = Suppressed;
         base.OnStateChanged();
+    }
+
+    internal static float TopLeftBottomFor(int buffCount, int targetCount, bool hidden)
+    {
+        if (hidden) return 0f;
+        if (targetCount > 0) return BoundsForBuffCount(buffCount, targetCount).Bottom;
+        return buffCount > 0 ? PlayerHudBuffLayout.ContentHeight(buffCount) : 0f;
     }
 
     public override void Tick(int deltaMs)
@@ -428,11 +437,12 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         }
         else
         {
+            // ADR D2 token：交战行银色描边、保护行锚点青，Boss 保留暖金属边区分首领。
             edgeColor = isBoss
                 ? Color.FromArgb(210, 186, 104, 88)
                 : isCombat
-                    ? Color.FromArgb(165, 108, 112, 114)
-                    : Color.FromArgb(185, 64, 168, 184);
+                    ? NativeHudTheme.AnchorRimMuted
+                    : NativeHudTheme.WithAlpha(NativeHudTheme.AnchorCyan, 185);
         }
 
         using (var edge = new Pen(edgeColor, isBoss ? 0.95f : 0.8f))

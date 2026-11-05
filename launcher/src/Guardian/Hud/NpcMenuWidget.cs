@@ -261,7 +261,7 @@ namespace CF7Launcher.Guardian.Hud
                 g.TextRenderingHint = TextRenderingHint.AntiAlias;
                 try
                 {
-                    NativeHudTheme.DrawPanel(g,
+                    NativeHudTheme.DrawLegacyPanel(g,
                         new Rectangle(localX, localY, r.Width, r.Height),
                         scale, NativeHudTheme.PanelFillDense, Color.Empty, true);
 
@@ -282,7 +282,7 @@ namespace CF7Launcher.Guardian.Hud
                             rowsTop + i * rowH, r.Width - pad * 2, rowH);
                         bool enabled = entry.Enabled;
                         bool rowHover = enabled && i == hover;
-                        NativeHudTheme.DrawButton(g, rowRect, scale,
+                        NativeHudTheme.DrawLegacyButton(g, rowRect, scale,
                             rowHover, false, false, false);
                         Color textColor = !enabled
                             ? NativeHudTheme.TextDisabled

@@ -107,8 +107,9 @@ bootstrap preflight
 - AS2 所有权变化由 `PlayerAssetTransaction` 在领域最外层提交后生成 detached receipt，再经 XMLSocket fire-and-forget `loot` v1 发送 `{v,direction,kind,itemKey,name,count,source,operationId,icon?,tier?,mergeScope?,reason?}`。完全缺 `v` 的旧格式只为现役 kill/gain 兼容；v1 错型、缺必填、未知 source 或非 safe 正整数均 fail-closed。
 - `LootFeedTask` 只把已提交事实投影到 NativeHud `LootFeedWidget`；资产写入/回滚仍由 AS2 领域权威负责，消费者失败不能反向破坏资产。地图 `loot_response` 是另一业务域，常驻 feed 无 Web fallback。范围、source 表、所有权排除项与存档终点见[玩家物资事务与双向播报 ADR](../docs/玩家物资事务与双向播报-ADR-2026-08-22.md)。
 - `LootFeedModel` 统一五槽池与可恢复队列；视觉键为 `direction/kind/itemKey/tier/派生调度策略/eliteLevel`，且展示名/图标须一致。`operationId/reason/mergeScope/raw source` 只留在 Host 幂等与审计层；跨 raw source 仅在策略完全相同且都非 `unknown` 时合并。`reload` 为 immediate exact-aggregate；Host 按 operation/effect 去重并拒绝冲突重放。
-- 绘制采用 5 个 26px 直角卡、20px 图标与 12px 名称，宽度在 96–220px 内按 8px 微量化。gain 沿用 `×N` 且一件省略数量；资产 loss 使用珊瑚红 `−N`，一件也明确显示 `−1`。击杀带「击杀」标签，精英使用琥珀分段轨，Boss 使用金色双轨；我方倒地带青色「我方」标签、加深蓝底与青色轮廓、头像上的琥珀警告三角及独立「倒地」状态列，状态不画成资产 `−1`。标签与状态固定留位，长姓名省略。任务、开箱与普通物资不借用 Boss 视觉。
+- 绘制采用 5 个 26px 锚点切角金属卡、20px 图标与 12px 名称，宽度在 96–220px 内按 8px 微量化。gain 沿用 `×N` 且一件省略数量；资产 loss 使用珊瑚红 `−N`，一件也明确显示 `−1`。击杀带「击杀」标签，精英使用琥珀分段轨，Boss 使用金色双轨；我方倒地带青色「我方」标签、加深蓝底与青色轮廓、头像上的琥珀警告三角及独立「倒地」状态列，状态不画成资产 `−1`。标签与状态固定留位，长姓名省略。任务、开箱与普通物资不借用 Boss 视觉。
   入场只做 4px/180ms SmoothStep 垂直归位；计数按 125ms 提交，用 180ms/1–2px SmoothStep 交叉淡化并仅在数字区增加有界色洗/底沿，击杀按本批增量增强但不缩放整卡、不发粒子；退场 280ms，动画图标最多运行 450ms 后冻结。静态持有不申请重绘，视觉签名 32ms 采样且仍受 NativeHud 33ms 合成硬上限约束；socket burst 维持单 UI drain / 单批决策，bounds 只随卡片/等待行或方向感知的计数位数桶变化（gain `1→2`、loss `9→10` 才跨桶）。
+- 卡片顶边上报 `HudZoneLayout`，其上方为 fallback 消息行（原左上 toast）；视觉与分区见 [上层 HUD 风格锚定 ADR](../docs/上层HUD风格锚定与分区仲裁-ADR-2026-11-05.md)。
 - `LootIconCatalog` 从 `launcher/web/icons/manifest.json`、敌人头像 manifest 与 `launcher/data/doll-portraits` 解析图标。64px `Bitmap` 只由有界 LRU 持有，图标帧集不得跨 LRU 淘汰保存位图引用；动画整组超过预算时降级静态首帧。
 - 主角/佣兵击杀缺少预烘焙头像时，Host 发 WebView2 message `{type:"dollBake",key,requestId,tuple}`。Web 只负责渲染，并经 allowlisted task `doll_bake_result` 回传 `{key,requestId,pngBase64|error}`；`requestId` 必须与当前 key 的唯一在飞项 exact 匹配。缺失、foreign、duplicate、timeout 后迟到或无在飞项的回包一律拒绝，且不得清除更新请求。
 - `DollBakeTask` 只接受可完整解码的 exact 256×256 PNG。Web 离屏渲染显式固定 `pixelRatio:1` 并关闭一次性快照的动画循环，使传输尺寸不受宿主 125%、150%、175% DPI 放大。校验通过后才原子写入 `launcher/data/doll-portraits/<hex>.png`；拒绝尺寸/内容时记录 key、requestId 与原因。
@@ -321,7 +322,8 @@ Help composition 端点仅新增 `tutorial_preference:disable_auto_open` / `tuto
 <a id="打击伤害数字生产路径"></a> **打击伤害数字生产路径**：AS2 仍负责伤害结算，`HitNumberBatchProcessor` 仅发送结算后的逐段事实；C# `HitNumberRuntime` 是唯一表现状态机，负责短寿命状态、模式投影和世界行裁剪，`HitNumberOverlay` 消费 latest-wins frame 并以紧边界持久 DIB 绘制。V8 只保留 `GameInput`，Flash renderer 不再作为 fallback。
 机器全局偏好提供 `off/balanced/total/classic/detail` 五状态。默认 `balanced` 只保留同目标最近三次 Burst，并把总伤的“最新段来源色闪现→该次攻击贡献主体色”、属性来源色、固定效果色、emoji、贡献强度及吸血/护盾精确值投影到攻击摘要；`classic` 复刻旧 Flash 散射/14 帧动效，`detail` 按 Burst 原子展示逐段并按实际数字/属性标签边界扩格、缩列。四模式共用同一 11 色语义表，逐段项永远使用自身来源色；属性贡献可见度与模式标签密度为正交尺度，因此平衡/逐发可保持紧凑而不伪造低贡献。
 `total` 保留旧总伤表达：当前段颜色闪现后回落到贡献主体色，状态按伤害贡献衰减，吸血/护盾保留精确累计值，总伤与 hit 渐进追赶；伤害类型与粉碎使用独立文字槽，非 MISS 零伤保持来源色，MISS 不累计，淡出续击恢复同一条目，最新目标最后绘制，冲击脉冲受平衡字号上限约束。balanced/detail 同样把最新受击目标最后绘制。
-非零 `hitNumberWorldRowLimit` 是全局攻击行上限，有限 `detail` 另对每目标只保留最新六行；`0` 明确解除两层产品上限并保持真正无限制。四种显示模式仍保留屏外剔除和自然寿命，有限上限不拆攻击，切换立即建立新 generation 并重排。
+治疗由独立的 150ms 数值窗口输出 `CombatNumberVisualEvent`，与伤害共用四模式布局和动画；balanced 连续更新当前值，total 独立累计本周期恢复量，detail/classic 按已聚合窗口展示。只保留治疗语义的绿色、正号与独立生命周期，不进入伤害账本、hit 或总伤 reducer；见[统一表现 ADR](../docs/战斗数字统一表现管线-ADR-2026-11-05.md)。
+非零 `hitNumberWorldRowLimit` 是伤害与治疗共同占用的全局战斗数字行上限，有限 `detail` 另对每目标只保留最新六行；`0` 明确解除两层产品上限并保持真正无限制。四种显示模式仍保留屏外剔除和自然寿命，有限上限不拆攻击，切换立即建立新 generation 并重排。
 精确对账不占战斗键：暂停态设置通过 Host-local `hit_number_ledger` 分页读取固定 32,768 段环形账本，按目标/Burst 保留逐段事实并显式报告溢出；`off` 后停止接收新段，既有记录保留至 reset 或覆盖。验证入口见[专项视觉/性能 harness](../tools/hit-number-visual-harness/README.md)和[测试矩阵](../agentsDoc/testing-guide.md)；合成门不代签真实战斗的目标归属、打击感或高 hit 人类验收。
 
 ## 命令行参数

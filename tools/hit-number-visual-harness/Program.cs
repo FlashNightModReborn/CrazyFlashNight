@@ -57,6 +57,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                         healingPerformance.UserObjectsBefore, healingPerformance.UserObjectsAfter,
                         healingPerformance.ProcessHandlesBefore, healingPerformance.ProcessHandlesAfter,
                         healingPerformance.MaximumActiveSegments, healingPerformance.MaximumBackingSegments,
+                        healingPerformance.MaximumWorldRows,
                         healingPerformance.LedgerRetainedSegments, healingPerformance.LedgerDroppedSegments,
                         healingPerformance.HistoryBounded, healingPerformance.LedgerBounded, healingPerformance.GuiResourcesStable,
                         healingEventsPerFrame = 20, damageSegmentsPerFrame = 20, measuredFrames = 600, simulatedFps = 60
