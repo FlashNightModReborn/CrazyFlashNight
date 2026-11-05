@@ -1183,12 +1183,12 @@ worldview_block
 4. 物品往来账本（daily/task）
 5. 本组赠送明细 → 最近往来 → 待处理索取（仅 daily，有值才给）
 6. 检索到的设定资料
-7. 本组已播历史 render_played
+7. 本组已播历史对话 render_played（含玩家本轮插话）
 8. 原剩余台词 render_remaining（日常无编号参考；任务带原编号）
 9. 参考续写 render_reference（上一轮未播，仍只作参考）
 10. 任务上下文 render_task_summary（仅 task：已完成摘要 → 将完成摘要）
 11. 待确认草案（仅 daily，仍明确“已拟定、尚未发布”）
-12. 玩家刚刚说的话
+12. 玩家刚刚说的话（即已播对话的最后一句，通常需要你回应）
 ```
 
 顺序变化只是把同源任务材料放到长期记忆之前，其余块沿现有顺序。插话仍不自动拼 session 聊天历史；`npc_history`/`player_history` 是有必要时的显式补充查询，不把整库塞进现场取代 `played`/`remaining` 权威。
