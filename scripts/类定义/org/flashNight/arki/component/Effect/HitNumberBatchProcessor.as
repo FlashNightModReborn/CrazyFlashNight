@@ -43,7 +43,7 @@
  *   bit  9        (1 bit):  isMISS（闪避状态）
  *   bits 10-17    (8 bits): damageSize（字体大小，0-255）
  *   bits 18-21    (4 bits): colorId（颜色 ID，索引 COLOR_TABLE，0-10）
- *   bits 22-30    (9 bits): [空闲，可用于未来扩展，如 force 标志]
+ *   bit 22: HealHp（仅空 Burst 且严格治疗 schema）；Damage 的 bits22-31 恒为0
  *
  * @version 2.0 - 移除遗留 enqueue/force/负索引机制
  * @author FlashNight
@@ -98,6 +98,14 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     /** Host 权威的源头开关。默认关闭，只有当前连接收到 H1 后才开始产出。 */
     private static var _hostEnabled:Boolean = false;
 
+    // 治疗独立 SoA，复用同一 hn 传输；Hh0 清理不扫描伤害队列。
+    private static var _healHostEnabled:Boolean = false;
+    private static var _healValues:Array = [];
+    private static var _healXs:Array = [];
+    private static var _healYs:Array = [];
+    private static var _healIds:Array = [];
+    private static var _healLength:Number = 0;
+
     /** 场景内单调 Burst 序列；Number 精确整数范围足够覆盖单场景生命周期。 */
     private static var _nextBurstSequence:Number = 1;
 
@@ -143,8 +151,46 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     /** Host→Flash H0/H1 快车道入口；关闭时 flush 在任何协议字符串工作前丢弃。 */
     public static function setHostEnabled(enabled:Boolean):Void {
         _hostEnabled = enabled;
-        if (!enabled) __resetQueue();
+        if (!enabled) { __resetQueue(); resetHeals(); }
     }
+
+    public static function setHealHostEnabled(enabled:Boolean):Void {
+        _healHostEnabled = enabled;
+        if (!enabled) resetHeals();
+    }
+
+    /** 写后提交量才允许进入。显示关闭不取坐标、不创建身份或事件对象。 */
+    public static function enqueueHeal(target:Object, amount:Number):Void {
+        if (!_hostEnabled || !_healHostEnabled || !(amount > 0) || !isFinite(amount)) return;
+        var x:Number = target._x;
+        var y:Number = target._y;
+        if (typeof x != "number" || typeof y != "number" || !isFinite(x) || !isFinite(y)) return;
+        var idx:Number = _healLength++;
+        _healValues[idx] = amount;
+        _healXs[idx] = x;
+        _healYs[idx] = y;
+        _healIds[idx] = org.flashNight.arki.unit.UnitBattleRecord.healDisplayId(target);
+    }
+
+    /** 仅特殊复活/阶段切换调用，保留同帧其他单位与伤害记录。 */
+    public static function retireHealTarget(identity:String):Void {
+        var dest:Number = 0;
+        for (var i:Number = 0; i < _healLength; i++) {
+            if (_healIds[i] == identity) continue;
+            _healValues[dest] = _healValues[i]; _healXs[dest] = _healXs[i];
+            _healYs[dest] = _healYs[i]; _healIds[dest] = _healIds[i]; dest++;
+        }
+        _healLength = dest;
+        _healValues.length = dest; _healXs.length = dest;
+        _healYs.length = dest; _healIds.length = dest;
+    }
+
+    private static function resetHeals():Void {
+        _healValues.length = 0; _healXs.length = 0;
+        _healYs.length = 0; _healIds.length = 0; _healLength = 0;
+    }
+
+    public static function getHealQueueLength():Number { return _healLength; }
 
     /** DamageResult.triggerDisplay 的最前置热路短路。 */
     public static function isHostEnabled():Boolean {
@@ -200,15 +246,16 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
      */
     public static function flush():Void {
         var n:Number = _length;
-        if (n == 0) return;
+        var hn:Number = _healLength;
+        if (n == 0 && hn == 0) return;
 
         var r:Object = _root;
         if (!_hostEnabled || !r.server.isSocketConnected) {
-            __resetQueue();
+            __resetQueue(); resetHeals();
             return;
         }
         if (!r.gameworld) {
-            __resetQueue();
+            __resetQueue(); resetHeals();
             return;
         }
 
@@ -217,7 +264,7 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         var y:Number;
         var entry:String;
         var buf:String = "";
-        do {
+        while (i < n) {
             x = _xs[i];
             y = _ys[i];
             entry = _values[i] + "|" + x + "|" + y + "|" + _packed[i] + "|";
@@ -227,7 +274,17 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
             entry += _unitIds[i] + "|" + _burstIds[i] + "|" + _expectedHitCounts[i];
             if (i === 0) buf = entry;
             else buf += ";" + entry;
-        } while (++i < n);
+            ++i;
+        }
+        i = 0;
+        while (i < hn && _healHostEnabled) {
+            // 11字段：空效果槽、零吸血/护盾、空Burst、计数1。
+            entry = _healValues[i] + "|" + _healXs[i] + "|" + _healYs[i]
+                + "|4194304|||0|0|" + _healIds[i] + "||1";
+            if (length(buf) == 0) buf = entry;
+            else buf += ";" + entry;
+            ++i;
+        }
 
         FrameBroadcaster.setHnPayload(buf);
         if (debugMode) {
@@ -235,7 +292,7 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
                 "[HitNumberBatch] C# queued:" + n
             );
         }
-        __resetQueue();
+        __resetQueue(); resetHeals();
     }
 
     /**
@@ -261,6 +318,7 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
      */
     public static function clear():Void {
         __resetQueue();
+        resetHeals();
         _nextBurstSequence = 1;
     }
 

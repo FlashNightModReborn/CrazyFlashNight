@@ -20,15 +20,7 @@
       if(random(50) == 0)
       {
          hp增加值 = 60;
-         if(hp增加值 + _parent._parent._parent._parent._parent.hp <= _parent._parent._parent._parent._parent.hp满血值)
-         {
-            _parent._parent._parent._parent._parent.hp += hp增加值;
-         }
-         else
-         {
-            _parent._parent._parent._parent._parent.hp = _parent._parent._parent._parent._parent.hp满血值;
-         }
-         _root.主角hp显示界面.刷新显示();
+         _root.加血动作.单位HP_capped(_parent._parent._parent._parent._parent, hp增加值);
          _root.效果("药剂动画",_parent._parent._parent._parent._parent._x,_parent._parent._parent._parent._parent._y,100);
       }
    }

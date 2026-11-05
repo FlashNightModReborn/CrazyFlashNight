@@ -505,7 +505,8 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
         // 预打包标量快照
         var efFlags:Number = this._efFlags;
-        var packed:Number = efFlags | (((this.dodgeStatus == "MISS") ? 1 : 0) << 9) | ((this.damageSize | 0) << 10) | (this._dmgColorId << 18);
+        // 每个字段只占自己的位域；字号不得污染颜色或 HealHp 类型位。
+        var packed:Number = (efFlags & 511) | (((this.dodgeStatus == "MISS") ? 1 : 0) << 9) | ((this.damageSize & 255) << 10) | ((this._dmgColorId & 15) << 18);
 
         // 预取效果槽值（仅对应 flags 位为 1 时有意义）
         var efText:String = ((efFlags & 8) != 0 || (efFlags & 16) != 0) ? this._efText : null;

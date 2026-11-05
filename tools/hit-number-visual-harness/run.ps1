@@ -1,6 +1,7 @@
 param(
     [string]$OutputRoot,
-    [switch]$NoVideo
+    [switch]$NoVideo,
+    [switch]$Gif
 )
 
 $ErrorActionPreference = 'Stop'
@@ -16,6 +17,7 @@ if (-not [string]::IsNullOrWhiteSpace($OutputRoot)) {
     $appArgs += @('--output', [IO.Path]::GetFullPath($OutputRoot))
 }
 if ($NoVideo) { $appArgs += '--no-video' }
+if ($Gif) { $appArgs += '--gif' }
 
 Push-Location -LiteralPath $projectRoot
 try {

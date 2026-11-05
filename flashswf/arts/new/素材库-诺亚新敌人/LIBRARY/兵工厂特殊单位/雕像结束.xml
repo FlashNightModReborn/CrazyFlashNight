@@ -37,6 +37,7 @@ _parent.复活计时();]]></script>
             <DOMFrame index="58" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.hp = _parent.hp满血值;
+_root.加血动作.失效治疗显示(_parent);
 ]]></script>
               </Actionscript>
               <elements/>

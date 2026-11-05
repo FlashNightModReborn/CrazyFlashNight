@@ -79,6 +79,10 @@ namespace CF7Launcher.Guardian.HitNumbers
         private readonly List<HitNumberSegment> _segments = new List<HitNumberSegment>(256);
         private readonly HitNumberLedgerStore _ledger = new HitNumberLedgerStore();
         private readonly HitNumberTotalAccumulator _totals = new HitNumberTotalAccumulator();
+        private readonly HealNumberAccumulator _heals = new HealNumberAccumulator();
+        private readonly List<HealNumberEvent> _newHeals = new List<HealNumberEvent>();
+        internal int PendingHealCountForTests => _heals.PendingCount;
+        internal int VisibleHealCountForTests => _heals.VisibleCount;
         private HitNumberRuntimeOptions _options = new HitNumberRuntimeOptions(
             HitNumberDisplayMode.Balanced,
             24);
@@ -117,6 +121,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             if (!options.SourceEnabled)
             {
                 ClearEvents();
+                _heals.Clear(); _newHeals.Clear();
                 _totals.Clear();
                 _hasPublishedVisuals = false;
                 return new HitNumberRuntimeSnapshot(
@@ -148,7 +153,9 @@ namespace CF7Launcher.Guardian.HitNumbers
                     hitPayload,
                     now,
                     _segments,
-                    ref _nextSequence);
+                    ref _nextSequence, _newHeals);
+                for (int i = 0; i < _newHeals.Count; i++) _heals.Add(_newHeals[i], now);
+                _newHeals.Clear();
                 if (accepted > 0)
                 {
                     _ledger.AddRange(_segments, firstNewSegment, accepted);
@@ -163,6 +170,7 @@ namespace CF7Launcher.Guardian.HitNumbers
         internal HitNumberRuntimeSnapshot Reset()
         {
             ClearEvents();
+            _heals.Clear(); _newHeals.Clear();
             _totals.Clear();
             _ledger.Reset();
             _generation++;
@@ -174,9 +182,19 @@ namespace CF7Launcher.Guardian.HitNumbers
                 true);
         }
 
+        internal HitNumberRuntimeSnapshot ResetHealing()
+        {
+            _heals.Clear(); _newHeals.Clear();
+            _generation++;
+            _hasPublishedVisuals = false;
+            // 连接切换只失效治疗显示，不重写已有伤害账本/总计/序号。
+            return new HitNumberRuntimeSnapshot(_generation, _options.Mode, null, true);
+        }
+
         private HitNumberRuntimeSnapshot BuildSnapshot(double now)
         {
             PruneExpired(now);
+            _heals.Advance(now);
             if (_options.Mode == HitNumberDisplayMode.Total)
             {
                 HitNumberLayoutFrame totalFrame = HitNumberLayoutEngine.BuildTotalFrame(
@@ -184,13 +202,14 @@ namespace CF7Launcher.Guardian.HitNumbers
                     now,
                     _camera,
                     _options.WorldRowLimit);
-                if (totalFrame.WorldRows.Count == 0)
+                _heals.AppendFrame(totalFrame, _camera, now, _options.WorldRowLimit);
+                if (totalFrame.WorldRows.Count == 0 && totalFrame.Items.Count == 0)
                     return TakeDismissSnapshotIfNeeded();
                 _hasPublishedVisuals = true;
                 return new HitNumberRuntimeSnapshot(_generation, _options.Mode, totalFrame);
             }
 
-            if (_head == _segments.Count) return TakeDismissSnapshotIfNeeded();
+            if (_head == _segments.Count && !_heals.HasState) return TakeDismissSnapshotIfNeeded();
 
             HitNumberLayoutCandidate candidate =
                 _options.Mode == HitNumberDisplayMode.Detail
@@ -210,7 +229,8 @@ namespace CF7Launcher.Guardian.HitNumbers
                 _options.WorldRowLimit,
                 lifetime,
                 false);
-            bool hasVisuals = frame.WorldRows.Count > 0;
+            _heals.AppendFrame(frame, _camera, now, _options.WorldRowLimit);
+            bool hasVisuals = frame.WorldRows.Count > 0 || frame.Items.Count > 0;
             if (!hasVisuals) return TakeDismissSnapshotIfNeeded();
             _hasPublishedVisuals = true;
             return new HitNumberRuntimeSnapshot(_generation, _options.Mode, frame);
@@ -273,7 +293,8 @@ namespace CF7Launcher.Guardian.HitNumbers
             string payload,
             double arrivalSeconds,
             List<HitNumberSegment> destination,
-            ref int nextSequence)
+            ref int nextSequence,
+            List<HealNumberEvent> heals = null)
         {
             if (destination == null) throw new ArgumentNullException(nameof(destination));
             if (string.IsNullOrEmpty(payload)) return 0;
@@ -286,12 +307,17 @@ namespace CF7Launcher.Guardian.HitNumbers
             {
                 if (i != source.Length && source[i] != ';') continue;
                 ReadOnlySpan<char> entry = source.Slice(entryStart, i - entryStart);
-                if (TryParseEntry(entry, arrivalSeconds, nextSequence, out HitNumberSegment segment))
+                if (TryParseEntry(entry, arrivalSeconds, nextSequence, heals != null,
+                    out HitNumberSegment segment, out HealNumberEvent heal))
                 {
-                    destination.Add(segment);
-                    accepted++;
-                    if (nextSequence == int.MaxValue) nextSequence = int.MinValue;
-                    else nextSequence++;
+                    if (segment == null) heals.Add(heal);
+                    else
+                    {
+                        destination.Add(segment);
+                        accepted++;
+                        if (nextSequence == int.MaxValue) nextSequence = int.MinValue;
+                        else nextSequence++;
+                    }
                 }
                 else if (!entry.IsEmpty)
                 {
@@ -325,9 +351,12 @@ namespace CF7Launcher.Guardian.HitNumbers
             ReadOnlySpan<char> entry,
             double arrivalSeconds,
             int sequence,
-            out HitNumberSegment segment)
+            bool allowHeals,
+            out HitNumberSegment segment,
+            out HealNumberEvent heal)
         {
             segment = null;
+            heal = default;
             Span<int> bounds = stackalloc int[FieldCount * 2];
             if (SplitFields(entry, '|', bounds) != FieldCount ||
                 !TryFiniteDouble(Field(entry, bounds, 0), out double damageValue) ||
@@ -344,6 +373,21 @@ namespace CF7Launcher.Guardian.HitNumbers
                 expectedHitCount <= 0)
             {
                 return false;
+            }
+
+            // 旧生产端字号可能溢出到bit22：非空Burst始终走Damage。
+            // 空Burst只接纳唯一HealHp schema；不能先截断packed再判断类型。
+            if (Field(entry, bounds, 9).IsEmpty)
+            {
+                ReadOnlySpan<char> target = Field(entry, bounds, 8);
+                if (!allowHeals || packedValue != 4194304 || !(damageValue > 0) ||
+                    expectedHitCount != 1 || lifeSteal != 0 || shieldAbsorb != 0 ||
+                    !Field(entry, bounds, 4).IsEmpty || !Field(entry, bounds, 5).IsEmpty ||
+                    target.IsEmpty || target.Length > 192) return false;
+                for (int i = 0; i < target.Length; i++)
+                    if (target[i] < 32 || target[i] > 126) return false;
+                heal = new HealNumberEvent(Canonical(target), damageValue, worldX, worldY);
+                return true;
             }
 
             // expectedHitCount 只用于 Burst 行的预留几何，不是事件接纳上限。
@@ -383,9 +427,7 @@ namespace CF7Launcher.Guardian.HitNumbers
 
         private static int SaturatingInt(double value)
         {
-            if (value >= int.MaxValue) return int.MaxValue;
-            if (value <= int.MinValue) return int.MinValue;
-            return (int)value;
+            return CombatNumberValue.ClampToInteger(value);
         }
 
         private static int SplitFields(ReadOnlySpan<char> source, char separator, Span<int> bounds)

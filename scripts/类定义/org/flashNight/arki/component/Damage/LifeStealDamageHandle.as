@@ -90,7 +90,7 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
         if (lifeStealAmount <= 0) return;
 
         // 委托 HealApplier 执行衰减曲线；曲线参数、存活检查、取整事实封顶在内部完成
-        var healAmount:Number = HealApplier.applyHpOverflow(shooter, lifeStealAmount, shooter.hp满血值);
+        var healAmount:Number = HealApplier.applyHpOverflow(shooter, lifeStealAmount, shooter.hp满血值, true);
         if (healAmount <= 0) return;
 
         // 每弹显示量：联弹/霰弹下 healAmount < actualScatterUsed 会被取整成 0，

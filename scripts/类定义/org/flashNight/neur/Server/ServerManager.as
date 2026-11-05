@@ -593,6 +593,8 @@ class org.flashNight.neur.Server.ServerManager {
                 org.flashNight.arki.component.Effect.HitNumberBatchProcessor.setHostEnabled(
                     data == "H1"
                 );
+            } else if (data == "Hh0" || data == "Hh1") {
+                org.flashNight.arki.component.Effect.HitNumberBatchProcessor.setHealHostEnabled(data == "Hh1");
             }
             return;
         }
@@ -854,6 +856,7 @@ class org.flashNight.neur.Server.ServerManager {
         trace("XMLSocket connection closed");
         isSocketConnected = false;
         org.flashNight.arki.component.Effect.HitNumberBatchProcessor.setHostEnabled(false);
+        org.flashNight.arki.component.Effect.HitNumberBatchProcessor.setHealHostEnabled(false);
         org.flashNight.arki.render.WeatherParticleRenderer.setNativeEnabled(false);
         org.flashNight.arki.render.VisualWireService.retire();
         org.flashNight.arki.render.WorkerProjectionPolicy.retired();

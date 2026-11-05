@@ -17,7 +17,7 @@ class org.flashNight.arki.unit.UnitBattleRecord {
         }
     }
 
-    private static function stateFor(target:MovieClip):Object {
+    private static function stateFor(target:Object):Object {
         var state:Object = target.__battleRecord;
         if (state == undefined) {
             _sequence++;
@@ -26,6 +26,23 @@ class org.flashNight.arki.unit.UnitBattleRecord {
             target.__battleRecord = state;
         }
         return state;
+    }
+
+    /** 只取缓存身份，不组装战报/装备快照；可用于每帧治疗事件。 */
+    public static function healDisplayId(target:Object):String {
+        var state:Object = stateFor(target);
+        if (state.healEpoch == undefined) state.healEpoch = 0;
+        if (state.healId == undefined) state.healId = state.unitId + ".heal." + state.healEpoch;
+        return state.healId;
+    }
+
+    /** 纯显示代际；特殊重生不借此改变战报、down 或真实资源。 */
+    public static function invalidateHealDisplay(target:Object):Void {
+        var oldId:String = healDisplayId(target);
+        var state:Object = target.__battleRecord;
+        state.healEpoch++;
+        delete state.healId;
+        org.flashNight.arki.component.Effect.HitNumberBatchProcessor.retireHealTarget(oldId);
     }
 
     private static function text(value, maximum:Number):String {
@@ -124,6 +141,7 @@ class org.flashNight.arki.unit.UnitBattleRecord {
         state.killReported = false;
         state.snapshot = null;
         state.life++;
+        invalidateHealDisplay(target);
         // 装备直接恢复主角 HP 时也要同步原生关卡结果卡的 life 轴。
         if (target._name === _root.控制目标) StageRunSession.onHeroRespawn(target);
     }

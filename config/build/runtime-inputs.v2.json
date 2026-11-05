@@ -216,6 +216,9 @@
         ".github/workflows/runtime-bundle-integrity.yml",
         ".github/workflows/runtime-cloud-builder.yml",
         ".github/workflows/as2-artifact-ownership.yml",
+        ".github/workflows/healing-contract.yml",
+        "tools/heal-numbers/verify_assets.py",
+        "tools/heal-numbers/asset-contract.json",
         "tools/audit-as2-class-embedding.js",
         "tools/swf-metadata.js",
         "tools/test-swf-metadata.js",
@@ -658,6 +661,15 @@
           "excludePrefixes": [
             "tools/player-info-hud/renderer-qualification/bin/",
             "tools/player-info-hud/renderer-qualification/obj/"
+          ]
+        },
+        {
+          "path": "tools/hit-number-visual-harness",
+          "includeExtensions": [".cs", ".csproj", ".ps1", ".py"],
+          "excludePaths": [],
+          "excludePrefixes": [
+            "tools/hit-number-visual-harness/bin/",
+            "tools/hit-number-visual-harness/obj/"
           ]
         },
         {

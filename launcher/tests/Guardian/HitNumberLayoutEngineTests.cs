@@ -354,7 +354,7 @@ namespace CF7Launcher.Tests.Guardian
                 HitNumberLayoutCandidate.BalancedSummary);
             HitNumberPaintItem summary = Assert.Single(frame.Items);
 
-            Assert.Equal(int.MaxValue, summary.Damage);
+            Assert.Equal(int.MaxValue, summary.Value);
             Assert.Equal((long)int.MaxValue * 2L, frame.WorldRows[0].TotalDamage);
         }
 
@@ -369,7 +369,7 @@ namespace CF7Launcher.Tests.Guardian
             {
                 StageX = 512,
                 StageY = 288,
-                Damage = 12345,
+                Value = 12345,
                 Packed = HitNumberPacking.Create(8, false, 32, 2),
                 EffectText = "雷"
             };
@@ -958,8 +958,8 @@ namespace CF7Launcher.Tests.Guardian
                 reference.WorldRows.Select(row => row.BurstId),
                 fast.WorldRows.Select(row => row.BurstId));
             Assert.Equal(
-                reference.Items.Select(item => item.Damage),
-                fast.Items.Select(item => item.Damage));
+                reference.Items.Select(item => item.Value),
+                fast.Items.Select(item => item.Value));
         }
 
         [Fact]

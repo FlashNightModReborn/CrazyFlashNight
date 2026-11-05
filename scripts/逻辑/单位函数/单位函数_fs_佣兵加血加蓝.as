@@ -146,8 +146,19 @@ _root.加血动作.键盘集体加血 = function(加血距离X:Number, 加血距
  * @param 量    请求恢复量
  * @return 实际恢复量；0 表示无效/已满
  */
-_root.加血动作.单位HP_capped = function(单位, 量:Number):Number {
-	return HealApplier.applyHpCapped(单位, 量, 单位.hp满血值);
+_root.加血动作.单位HP_capped = function(单位, 量:Number, 封顶:Number):Number {
+    if (封顶 == undefined) 封顶 = 单位.hp满血值;
+    return HealApplier.applyHpCapped(单位, 量, 封顶);
+};
+
+// 拼命之王保持原攻击动作的无固定上限回血，仍经过有限数值/存活/提交量合同。
+_root.加血动作.拼命之王回血 = function(单位):Number {
+    var 量:Number = 单位.hp满血值 * 0.01;
+    return HealApplier.applyHpCapped(单位, 量, 单位.hp + 量);
+};
+
+_root.加血动作.失效治疗显示 = function(单位):Void {
+    org.flashNight.arki.unit.UnitBattleRecord.invalidateHealDisplay(单位);
 };
 
 /**

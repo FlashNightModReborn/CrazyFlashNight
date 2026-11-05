@@ -1,0 +1,26 @@
+name: Healing source contract
+on:
+  pull_request:
+    paths: ['scripts/**/*.as', 'flashswf/**/*.xml', 'flashswf/**/*.fla', 'tools/heal-numbers/**', '.github/workflows/healing-contract.yml']
+  push:
+    branches: [main]
+    paths: ['scripts/**/*.as', 'flashswf/**/*.xml', 'flashswf/**/*.fla', 'tools/heal-numbers/**', '.github/workflows/healing-contract.yml']
+permissions:
+  contents: read
+jobs:
+  healing-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Check healing sources and added direct writes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -n "$BASE_SHA" ] && [ "$BASE_SHA" != 0000000000000000000000000000000000000000 ]; then
+            git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null || git fetch --no-tags --depth=1 origin "$BASE_SHA"
+            python3 tools/heal-numbers/verify_assets.py --base "$BASE_SHA"
+          else
+            python3 tools/heal-numbers/verify_assets.py
+          fi

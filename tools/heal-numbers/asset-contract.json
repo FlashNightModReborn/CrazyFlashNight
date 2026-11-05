@@ -1,0 +1,240 @@
+{
+  "schema": "healing-asset-contract-v1",
+  "branches": 37,
+  "sources": [
+    {
+      "source": "flashswf/arts/new/拼命之王.fla",
+      "swf": "flashswf/arts/new/拼命之王.swf",
+      "members": [
+        {
+          "path": "LIBRARY/4.拼命之王/动画合集/攻击动作.xml",
+          "calls": 1,
+          "bridge": "拼命之王回血"
+        }
+      ]
+    },
+    {
+      "source": "flashswf/arts/new/素材库-牛仔支线.fla",
+      "swf": "flashswf/arts/new/素材库-牛仔支线.swf",
+      "members": [
+        {
+          "path": "LIBRARY/虚拟向导/动作/近战.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        }
+      ]
+    },
+    {
+      "source": "flashswf/arts/new/蓝环章鱼烧.fla",
+      "swf": "flashswf/arts/new/蓝环章鱼烧.swf",
+      "members": [
+        {
+          "path": "LIBRARY/B.各种单位的动画/圣诞白忍/圣诞白忍-空手攻击（爆气）.xml",
+          "calls": 3,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/B.各种单位的动画/圣诞白忍/圣诞白忍-近战攻击.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        }
+      ]
+    },
+    {
+      "source": "flashswf/arts/new/魔神菲尼克斯.fla",
+      "swf": "flashswf/arts/new/魔神菲尼克斯.swf",
+      "members": [
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属刀兵.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属刺客.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属大刀兵.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属大火精灵.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属武士.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属火炮兵.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属火狗.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属火精灵.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属狗.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属狙击兵.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属盾兵.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属虫.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属赤焰.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属远程刀兵.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属连射兵.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属金甲.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属铁甲.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属飞行.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属飞行小型.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/小兵/敌人-凤凰眷属黑金.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/菲尼克斯/敌人-魔神菲尼克斯.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        }
+      ]
+    },
+    {
+      "source": "flashswf/arts/things6.fla",
+      "swf": "flashswf/arts/things6.swf",
+      "members": [
+        {
+          "path": "LIBRARY/Symbol 253.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        }
+      ]
+    },
+    {
+      "source": "flashswf/arts/things7.fla",
+      "swf": "flashswf/arts/things7.swf",
+      "members": [
+        {
+          "path": "LIBRARY/Symbol 1180.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "LIBRARY/Symbol 1285.xml",
+          "calls": 4,
+          "bridge": "单位HP_capped"
+        }
+      ]
+    },
+    {
+      "source": "flashswf/arts/things0/things0.xfl",
+      "swf": "flashswf/arts/things0.swf",
+      "members": [
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-扭转乾坤.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        }
+      ]
+    },
+    {
+      "source": "flashswf/arts/new/体育老师/体育老师.xfl",
+      "swf": "flashswf/arts/new/体育老师.swf",
+      "members": [
+        {
+          "path": "flashswf/arts/new/体育老师/LIBRARY/容器/技能容器/技能容器-扭转乾坤.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        }
+      ]
+    },
+    {
+      "source": "flashswf/arts/new/公共素材位0/公共素材位0.xfl",
+      "swf": "flashswf/arts/new/公共素材位0.swf",
+      "members": [
+        {
+          "path": "flashswf/arts/new/公共素材位0/LIBRARY/诺亚/枪-长枪-诺亚方舟护士狙击步枪.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        },
+        {
+          "path": "flashswf/arts/new/公共素材位0/LIBRARY/女仆白/Symbol 253.xml",
+          "calls": 1,
+          "bridge": "单位HP_capped"
+        }
+      ]
+    },
+    {
+      "source": "flashswf/arts/new/素材库-诺亚新敌人/素材库-诺亚新敌人.xfl",
+      "swf": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "members": []
+    }
+  ],
+  "displayResets": [
+    {
+      "source": "flashswf/arts/new/素材库-牛仔支线.fla",
+      "member": "LIBRARY/虚拟向导/动作/击倒.xml",
+      "calls": 1
+    },
+    {
+      "source": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/特殊敌人-地球衍生物.xml",
+      "calls": 2
+    },
+    {
+      "source": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/兵工厂特殊单位/雕像结束.xml",
+      "calls": 1
+    }
+  ]
+}

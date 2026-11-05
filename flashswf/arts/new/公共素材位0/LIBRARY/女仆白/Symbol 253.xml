@@ -54,11 +54,7 @@
 			{
 				if (目标对象.hp > 0 and 目标对象.hp < Math.ceil(目标对象.hp满血值 * _parent.溢出比例))
 				{
-					目标对象.hp += _parent.空手攻击力 * 2.5 + _parent.等级 * 15;
-					if (目标对象.hp > 目标对象.hp满血值 * _parent.溢出比例)
-					{
-						目标对象.hp = Math.ceil(目标对象.hp满血值 * _parent.溢出比例);
-					}
+					_root.加血动作.单位HP_capped(目标对象, _parent.空手攻击力 * 2.5 + _parent.等级 * 15, Math.ceil(目标对象.hp满血值 * _parent.溢出比例));
 					if (_parent.宠物属性.净化治疗)
 					{/*
 						if (!目标对象.麻痹值 || 目标对象.麻痹值 > -10 * _parent.等级)

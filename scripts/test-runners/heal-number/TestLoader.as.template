@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId heal-number Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Regeneration.HealApplierTest.runAllTests();
+org.flashNight.arki.unit.Action.Regeneration.HealNumberContractTest.runAllTests();
+trace("FocusedTestRunId heal-number Complete: __FOCUSED_RUN_ID__");

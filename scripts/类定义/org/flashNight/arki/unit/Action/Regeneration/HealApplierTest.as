@@ -50,6 +50,8 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplierTest {
         }
     }
 
+    public static function runAllTests():Void { runTests(); }
+
     public static function runTests():Void {
         trace("===== HealApplier 测试套件 =====");
         _total = 0; _pass = 0; _fail = 0;

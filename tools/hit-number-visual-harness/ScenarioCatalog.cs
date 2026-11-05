@@ -10,6 +10,8 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
         internal string Title = string.Empty;
         internal string Intent = string.Empty;
         internal double SnapshotSeconds = 2.0;
+        internal string HealPayload;
+        internal bool HealOnly;
         internal List<HitNumberSegment> Segments { get; } = new List<HitNumberSegment>();
     }
 
@@ -208,6 +210,16 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 "canonical-semantic",
                 1);
             scenarios.Add(s21);
+
+            var healOnly = New("S22", "治疗独立显示", "整数钳制、满额与多目标绿字，共用生产解析/聚合/绘制。");
+            healOnly.Segments.AddRange(s08.Segments);
+            healOnly.HealOnly = true;
+            healOnly.HealPayload = "353.056|270|330|4194304|||0|0|h1||1;353.056|510|330|4194304|||0|0|h2||1;2836.528|750|330|4194304|||0|0|h3||1";
+            scenarios.Add(healOnly);
+            var mixed = New("S23", "伤害治疗混流", "同目标治疗与受击同时存在，伤害分组/序号保持隔离。");
+            mixed.Segments.AddRange(s15.Segments);
+            mixed.HealPayload = "353.056|438|390|4194304|||0|0|h4||1;2836.528|586|378|4194304|||0|0|h5||1";
+            scenarios.Add(mixed);
 
             return scenarios;
         }

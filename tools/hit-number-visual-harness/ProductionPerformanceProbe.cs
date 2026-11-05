@@ -17,6 +17,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
         internal int MeasuredFrames;
         internal int LedgerFillFrames;
         internal int HitsPerFrame;
+        internal int HealingEventsPerFrame;
         internal int SimulatedHits;
         internal int MaximumActiveSegments;
         internal int MaximumBackingSegments;
@@ -57,7 +58,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
         private const int HitsPerFrame = 20;
         private const int FramesPerSecond = 60;
 
-        internal static ProductionPerformanceProbeResult Run()
+        internal static ProductionPerformanceProbeResult Run(bool includeHeals = false)
         {
             double now = 0.0;
             var runtime = new HitNumberRuntime(() => now);
@@ -71,7 +72,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             for (int frame = 0; frame < WarmupFrames; frame++)
             {
                 DrawFrame(runtime, painter, scenePainter, graphics, viewport,
-                    BuildPayload(frame), ref now, out _, out _);
+                    BuildPayload(frame, includeHeals), ref now, out _, out _);
             }
 
             GC.Collect();
@@ -89,7 +90,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             for (int frame = 0; frame < MeasuredFrames; frame++)
             {
                 DrawFrame(runtime, painter, scenePainter, graphics, viewport,
-                    BuildPayload(WarmupFrames + frame), ref now,
+                    BuildPayload(WarmupFrames + frame, includeHeals), ref now,
                     out long frameReducerLayoutTicks, out long framePainterTicks);
                 reducerLayoutTicks += frameReducerLayoutTicks;
                 painterTicks += framePainterTicks;
@@ -107,7 +108,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             int nextFrame = WarmupFrames + MeasuredFrames;
             for (int frame = 0; frame < LedgerFillFrames; frame++)
             {
-                runtime.ProcessFrame("0|0|1", BuildPayload(nextFrame + frame));
+                runtime.ProcessFrame("0|0|1", BuildPayload(nextFrame + frame, includeHeals));
                 maximumActive = Math.Max(maximumActive, runtime.StoredSegmentCountForTests);
                 maximumBacking = Math.Max(maximumBacking, runtime.BackingSegmentCountForTests);
                 now += 1.0 / FramesPerSecond;
@@ -132,6 +133,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 MeasuredFrames = MeasuredFrames,
                 LedgerFillFrames = LedgerFillFrames,
                 HitsPerFrame = HitsPerFrame,
+                HealingEventsPerFrame = includeHeals ? 20 : 0,
                 SimulatedHits = (WarmupFrames + MeasuredFrames + LedgerFillFrames) * HitsPerFrame,
                 MaximumActiveSegments = maximumActive,
                 MaximumBackingSegments = maximumBacking,
@@ -193,7 +195,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             now += 1.0 / FramesPerSecond;
         }
 
-        private static string BuildPayload(int frame)
+        private static string BuildPayload(int frame, bool includeHeals)
         {
             var payload = new StringBuilder(HitsPerFrame * 72);
             for (int hit = 0; hit < HitsPerFrame; hit++)
@@ -210,6 +212,10 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                     .Append(sequence.ToString(CultureInfo.InvariantCulture))
                     .Append("|1");
             }
+            if (includeHeals)
+                for (int i = 0; i < 20; i++)
+                    payload.Append(";0.4|").Append(120 + i * 40)
+                        .Append("|390|4194304|||0|0|heal-").Append(i).Append("||1");
             return payload.ToString();
         }
 

@@ -35,7 +35,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 var videos = new List<VideoRenderResult>();
                 ProductionPerformanceProbeResult performance;
 
-                using (var renderer = new ProductionRenderer(outputRoot))
+                using (var renderer = new ProductionRenderer(outputRoot, projectRoot, options.Gif))
                 {
                     Console.WriteLine("[hit-number-visual] render production acceptance set");
                     captures = renderer.RenderAcceptanceSet(scenarios);
@@ -48,6 +48,23 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 }
                 Console.WriteLine("[hit-number-visual] run sustained production performance probe");
                 performance = ProductionPerformanceProbe.Run();
+                var healingPerformance = ProductionPerformanceProbe.Run(true);
+                File.WriteAllText(Path.Combine(outputRoot, "healing-performance.json"),
+                    JsonSerializer.Serialize(new {
+                        healingPerformance.AverageMillisecondsPerFrame, healingPerformance.ReducerLayoutMillisecondsPerFrame,
+                        healingPerformance.PainterMillisecondsPerFrame, healingPerformance.ManagedAllocatedBytesPerFrame,
+                        healingPerformance.Gen0Collections, healingPerformance.GdiObjectsBefore, healingPerformance.GdiObjectsAfter,
+                        healingPerformance.UserObjectsBefore, healingPerformance.UserObjectsAfter,
+                        healingPerformance.ProcessHandlesBefore, healingPerformance.ProcessHandlesAfter,
+                        healingPerformance.MaximumActiveSegments, healingPerformance.MaximumBackingSegments,
+                        healingPerformance.LedgerRetainedSegments, healingPerformance.LedgerDroppedSegments,
+                        healingPerformance.HistoryBounded, healingPerformance.LedgerBounded, healingPerformance.GuiResourcesStable,
+                        healingEventsPerFrame = 20, damageSegmentsPerFrame = 20, measuredFrames = 600, simulatedFps = 60
+                    }, new JsonSerializerOptions { WriteIndented = true }),
+                    new UTF8Encoding(false));
+                Console.WriteLine("[heal-number] mixed avgMs=" + healingPerformance.AverageMillisecondsPerFrame.ToString("0.000") +
+                    " reducer=" + healingPerformance.ReducerLayoutMillisecondsPerFrame.ToString("0.000") +
+                    " painter=" + healingPerformance.PainterMillisecondsPerFrame.ToString("0.000"));
 
                 object manifest = BuildManifest(
                     projectRoot,
@@ -95,7 +112,8 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 return videosPassed &&
                     performance.HistoryBounded &&
                     performance.LedgerBounded &&
-                    performance.GuiResourcesStable
+                    performance.GuiResourcesStable && healingPerformance.HistoryBounded &&
+                    healingPerformance.LedgerBounded && healingPerformance.GuiResourcesStable
                     ? 0
                     : 2;
             }
@@ -274,6 +292,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             internal string ProjectRoot;
             internal string OutputRoot;
             internal bool NoVideo;
+            internal bool Gif;
 
             internal static Options Parse(string[] args)
             {
@@ -287,6 +306,9 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                             break;
                         case "--output":
                             options.OutputRoot = RequireValue(args, ref i, "--output");
+                            break;
+                        case "--gif":
+                            options.Gif = true;
                             break;
                         case "--no-video":
                             options.NoVideo = true;

@@ -20,12 +20,13 @@ namespace CF7Launcher.Guardian.HitNumbers
     /// </summary>
     internal sealed class HitNumberPaintItem
     {
+        internal CombatNumberKind Kind;
         internal float StageX;
         internal float StageY;
         internal float CombinedScale = 1f;
         internal float Alpha = 1f;
         internal float CombinedBlur = 3f;
-        internal int Damage;
+        internal int Value;
         internal int Packed;
         internal string EffectText = string.Empty;
         internal string EffectEmoji = string.Empty;
@@ -160,7 +161,8 @@ namespace CF7Launcher.Guardian.HitNumbers
             _segments.Clear();
             _runs.Clear();
 
-            string mainText = isMiss ? "MISS" : item.Damage.ToString(CultureInfo.InvariantCulture);
+            string mainText = isMiss ? "MISS" : CombatNumberValue.Format(
+                item.Value, item.Kind == CombatNumberKind.HealHp);
             float mainPt = Clamp(fontSize * item.CombinedScale * pixPerFlash, 6f, 72f);
             _segments.Add(new TextSegment(mainText, mainColor, mainPt, false));
 
@@ -191,7 +193,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             {
                 float pt = Clamp(15f * item.CombinedScale * pixPerFlash * VisualFlagScale(item, 5), 4f, 30f);
                 _segments.Add(new TextSegment(
-                    " 汲:" + ((int)item.LifeSteal).ToString(CultureInfo.InvariantCulture),
+                    " 汲:" + CombatNumberValue.Format(CombatNumberValue.ClampToInteger(item.LifeSteal)),
                     Color.FromArgb(0xBB, 0x00, 0xAA), pt, true));
             }
             if ((flags & 1) != 0 && VisualFlagScale(item, 0) > 0f)
@@ -211,7 +213,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             {
                 float pt = Clamp(18f * item.CombinedScale * pixPerFlash * VisualFlagScale(item, 8), 4f, 36f);
                 _segments.Add(new TextSegment(
-                    " 🛡" + ((int)item.ShieldAbsorb).ToString(CultureInfo.InvariantCulture),
+                    " 🛡" + CombatNumberValue.Format(CombatNumberValue.ClampToInteger(item.ShieldAbsorb)),
                     Color.FromArgb(0x00, 0xCE, 0xD1), pt, true));
             }
 

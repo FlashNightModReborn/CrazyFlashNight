@@ -31,6 +31,8 @@ namespace CF7Launcher.Tasks
         private readonly FpsRingBuffer _fpsBuffer;
         private PerfDecisionEngine _decisionEngine; // 可空，Phase 1 之前为 null
         private CF7Launcher.Bus.XmlSocketServer _socket; // 用于 K 前缀推送
+        private Action<int> _hitNumberReady, _hitNumberDisconnected;
+        private int _hitNumberConnectionGeneration;
         private Action<string> _uiDataHandler; // combo hints → WebView2
         internal Action<float,float,float> WeatherCameraObserved;
         internal Action<BulletVisualFrame,float,float,float> BulletVisualObserved;
@@ -58,9 +60,43 @@ namespace CF7Launcher.Tasks
         public void SetSocket(CF7Launcher.Bus.XmlSocketServer socket)
         {
             if (ReferenceEquals(_socket, socket)) return;
-            if (_socket != null) _socket.OnClientReady -= PublishHitNumberSourceState;
+            if (_socket != null)
+            {
+                _socket.OnClientReadyForGeneration -= _hitNumberReady;
+                _socket.OnClientDisconnectedForGeneration -= _hitNumberDisconnected;
+            }
             _socket = socket;
-            if (_socket != null) _socket.OnClientReady += PublishHitNumberSourceState;
+            _hitNumberConnectionGeneration = 0;
+            if (_socket != null)
+            {
+                var owner = socket;
+                _hitNumberReady = generation =>
+                {
+                    if (_stopped || !ReferenceEquals(_socket, owner)) return;
+                    HitNumberRuntimeSnapshot reset;
+                    lock (_hitNumberLock)
+                    {
+                        if (generation <= _hitNumberConnectionGeneration) return;
+                        _hitNumberConnectionGeneration = generation;
+                        reset = _hitNumberRuntime.ResetHealing();
+                    }
+                    _overlay?.UpdateFrame(reset);
+                    PublishHitNumberSourceState();
+                };
+                _hitNumberDisconnected = generation =>
+                {
+                    if (_stopped || !ReferenceEquals(_socket, owner)) return;
+                    HitNumberRuntimeSnapshot reset;
+                    lock (_hitNumberLock)
+                    {
+                        if (generation != _hitNumberConnectionGeneration) return;
+                        reset = _hitNumberRuntime.ResetHealing();
+                    }
+                    _overlay?.UpdateFrame(reset);
+                };
+                _socket.OnClientReadyForGeneration += _hitNumberReady;
+                _socket.OnClientDisconnectedForGeneration += _hitNumberDisconnected;
+            }
         }
 
         public void SetUiDataHandler(Action<string> handler)
@@ -83,7 +119,11 @@ namespace CF7Launcher.Tasks
             _bulletVisualShadow?.Reset();
             ResetProjectileVisuals();
             lock(_combatFxLock) { _combatFxEngine?.Reset();CombatFxCleared?.Invoke(); }
-            if (_socket != null) _socket.OnClientReady -= PublishHitNumberSourceState;
+            if (_socket != null)
+            {
+                _socket.OnClientReadyForGeneration -= _hitNumberReady;
+                _socket.OnClientDisconnectedForGeneration -= _hitNumberDisconnected;
+            }
             _socket = null;
         }
 
@@ -157,6 +197,8 @@ namespace CF7Launcher.Tasks
             bool enabled;
             lock (_hitNumberLock) enabled = _hitNumberRuntime.Options.SourceEnabled;
             _socket.PushToClient(enabled ? "H1" : "H0");
+            // 独立能力门：旧Flash忽略Hh，新Flash接旧Host默认不发送治疗。
+            _socket.PushToClient(enabled ? "Hh1" : "Hh0");
         }
 
         /// <summary>

@@ -73,10 +73,7 @@ _root.技能函数.扭转乾坤护盾释放(_parent,_parent.技能等级);
             <DOMFrame index="23" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
-if (_parent.hp + 20 < _parent.hp满血值 * 1.5)
-{
-	_parent.hp += 20;
-}
+_root.加血动作.单位HP_capped(_parent, 20, _parent.hp满血值 * 1.5);
 if (_parent.mp + 30 + Math.ceil(_parent.mp满血值 * 0.01) < _parent.mp满血值)
 {
 	_parent.mp += 30 + Math.ceil(_parent.mp满血值 * 0.01);

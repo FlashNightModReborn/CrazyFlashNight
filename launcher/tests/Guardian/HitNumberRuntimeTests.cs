@@ -530,7 +530,7 @@ namespace CF7Launcher.Tests.Guardian
                 StageY = 300,
                 CombinedScale = 1.52f,
                 CombinedBlur = 4f,
-                Damage = 33731639,
+                Value = 33731639,
                 Packed = HitNumberPacking.Create(1 | 2 | 4 | 8 | 16 | 32 | 256,
                     false, 32, 2),
                 EffectText = "粉碎附加",

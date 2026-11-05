@@ -50,6 +50,8 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
     internal sealed class ProductionRenderer : IDisposable
     {
         private readonly string _outputRoot;
+        private readonly string _projectRoot;
+        private readonly bool _gif;
         private readonly HitNumberPainter _painter = new HitNumberPainter();
         private readonly HitNumberScenePainter _scenePainter = new HitNumberScenePainter();
         private readonly Font _labelFont = NativeHudFonts.CreateUiFont(
@@ -63,9 +65,11 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
         };
         private bool _disposed;
 
-        internal ProductionRenderer(string outputRoot)
+        internal ProductionRenderer(string outputRoot, string projectRoot = null, bool gif = false)
         {
             _outputRoot = outputRoot ?? throw new ArgumentNullException(nameof(outputRoot));
+            _projectRoot = projectRoot ?? Directory.GetCurrentDirectory();
+            _gif = gif;
         }
 
         internal List<ProductionRenderResult> RenderAcceptanceSet(
@@ -99,7 +103,15 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 new Spec("P23", "S21", "平衡默认 · 同源语义全集", HitNumberDisplayMode.Balanced, 24, 1600, 900),
                 new Spec("P24", "S21", "逐发矩阵 · 同源语义全集", HitNumberDisplayMode.Detail, 24, 1600, 900),
                 new Spec("P25", "S21", "经典 Flash · 同源语义全集", HitNumberDisplayMode.Classic, 0, 1600, 900),
-                new Spec("P26", "S21", "总伤兼容 · 同源语义全集", HitNumberDisplayMode.Total, 24, 1600, 900)
+                new Spec("P26", "S21", "总伤兼容 · 同源语义全集", HitNumberDisplayMode.Total, 24, 1600, 900),
+                new Spec("P27", "S22", "平衡 · 纯治疗", HitNumberDisplayMode.Balanced, 24, 1600, 900),
+                new Spec("P28", "S22", "逐发 · 纯治疗", HitNumberDisplayMode.Detail, 24, 1600, 900),
+                new Spec("P29", "S22", "经典 · 纯治疗", HitNumberDisplayMode.Classic, 0, 1600, 900),
+                new Spec("P30", "S22", "总计 · 纯治疗", HitNumberDisplayMode.Total, 24, 1600, 900),
+                new Spec("P31", "S23", "平衡 · 治疗与伤害", HitNumberDisplayMode.Balanced, 24, 1600, 900),
+                new Spec("P32", "S23", "逐发 · 治疗与伤害", HitNumberDisplayMode.Detail, 24, 1600, 900),
+                new Spec("P33", "S23", "经典 · 治疗与伤害", HitNumberDisplayMode.Classic, 0, 1600, 900),
+                new Spec("P34", "S23", "总计 · 治疗与伤害", HitNumberDisplayMode.Total, 24, 1600, 900)
             };
 
             var results = new List<ProductionRenderResult>(specs.Length);
@@ -180,8 +192,71 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                     "causal-attribution-production",
                     ScenarioCatalog.BuildCausalAttributionVideoStream(durationSeconds + 0.5),
                     durationSeconds,
-                    framesPerSecond)
+                    framesPerSecond),
+                RenderHealingVideo()
             };
+        }
+
+        // 使用持续的生产Runtime，而非每张图重新造一个150ms窗口。
+        private VideoRenderResult RenderHealingVideo()
+        {
+            const int fps = 30, count = 162;
+            const string stem = "healing-continuity-production";
+            string folder = Path.Combine(_outputRoot, ".frames-" + stem);
+            Directory.CreateDirectory(folder);
+            double now = 0;
+            var runtime = new HitNumberRuntime(() => now);
+            runtime.Configure(new HitNumberRuntimeOptions(HitNumberDisplayMode.Balanced, 24));
+            var storyboard = new List<string>();
+            var metrics = new List<object>();
+            for (int frameIndex = 0; frameIndex < count; frameIndex++)
+            {
+                now = frameIndex / (double)fps;
+                var actors = new List<HitNumberSegment>();
+                var payload = new System.Text.StringBuilder();
+                for (int target = 0; target < 3; target++)
+                {
+                    float x = (float)(410 + target * 100 + Math.Sin(now * 1.6 + target) * 12);
+                    float y = 390 + target % 2 * 35;
+                    actors.Add(new HitNumberSegment { TargetId = "actor-" + target,
+                        TargetX = x, TargetY = y, ArrivalSeconds = now });
+                    // 30Hz治疗，150ms聚合后约为用户现场的353.056和2836.528。
+                    if (frameIndex >= 3 && frameIndex < 108)
+                    {
+                        if (payload.Length > 0) payload.Append(';');
+                        payload.Append(target == 2 ? "567.3056|" : "70.6112|")
+                            .Append(x.ToString(CultureInfo.InvariantCulture)).Append('|')
+                            .Append(y.ToString(CultureInfo.InvariantCulture))
+                            .Append("|4194304|||0|0|heal-").Append(target).Append("||1");
+                    }
+                    if (frameIndex < 108 && frameIndex % 9 == target * 3)
+                    {
+                        if (payload.Length > 0) payload.Append(';');
+                        payload.Append(120 + target * 80).Append('|')
+                            .Append(x.ToString(CultureInfo.InvariantCulture)).Append('|')
+                            .Append(y.ToString(CultureInfo.InvariantCulture))
+                            .Append("|28672|||0|0|actor-").Append(target).Append("|motion-")
+                            .Append(frameIndex).Append("|1");
+                    }
+                }
+                HitNumberLayoutFrame frame = runtime.ProcessFrame("0|0|1", payload.ToString())?.Frame
+                    ?? new HitNumberLayoutFrame();
+                string file = Path.Combine(folder, "frame-" + frameIndex.ToString("0000", CultureInfo.InvariantCulture) + ".png");
+                RenderVideoFrame(actors, now, file, "整数治疗 · 连续窗口不重启动画 · 同屏伤害对照", frame);
+                if (frameIndex == 8 || frameIndex == 18 || frameIndex == 60 || frameIndex == 138) storyboard.Add(file);
+                metrics.Add(new { time = now, heals = frame.Items.Where(item => item.Kind == CombatNumberKind.HealHp)
+                    .Select(item => new { item.SourceTargetId, item.Value, item.StageX, item.StageY, item.CombinedScale, item.Alpha }).ToArray() });
+            }
+            string storyboardName = "V03-" + stem + "-storyboard.png";
+            RenderVideoStoryboard(storyboard, Path.Combine(_outputRoot, storyboardName));
+            File.WriteAllText(Path.Combine(_outputRoot, "healing-motion-samples.json"),
+                System.Text.Json.JsonSerializer.Serialize(metrics), new System.Text.UTF8Encoding(false));
+            string videoName = "V03-" + stem + (_gif ? ".gif" : ".mp4");
+            bool encoded = TryEncodeVideo(folder, Path.Combine(_outputRoot, videoName), fps, out string error);
+            // 无encoder时保留精确PNG帧，可无损读入GIF封装；不伪称MP4成功。
+            return new VideoRenderResult { Id = "V03", Title = "治疗连续动效与整数显示",
+                RelativeVideoPath = videoName, RelativeStoryboardPath = storyboardName,
+                Frames = count, FramesPerSecond = fps, Encoded = encoded, Error = error };
         }
 
         private VideoRenderResult RenderVideo(
@@ -220,7 +295,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
 
             string storyboardName = id + "-" + fileStem + "-storyboard.png";
             RenderVideoStoryboard(storyboardFrames, Path.Combine(_outputRoot, storyboardName));
-            string videoName = id + "-" + fileStem + ".mp4";
+            string videoName = id + "-" + fileStem + (_gif ? ".gif" : ".mp4");
             string videoPath = Path.Combine(_outputRoot, videoName);
             var result = new VideoRenderResult
             {
@@ -245,12 +320,13 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             IReadOnlyList<HitNumberSegment> segments,
             double nowSeconds,
             string output,
-            string title)
+            string title,
+            HitNumberLayoutFrame preparedFrame = null)
         {
             const int width = 1600;
             const int height = 900;
             var viewport = new RectangleF(0, 0, width, height);
-            HitNumberLayoutFrame worldFrame = HitNumberLayoutEngine.BuildFrame(
+            HitNumberLayoutFrame worldFrame = preparedFrame ?? HitNumberLayoutEngine.BuildFrame(
                 segments,
                 0,
                 nowSeconds,
@@ -330,13 +406,31 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             }
         }
 
-        private static bool TryEncodeVideo(
+        private bool TryEncodeVideo(
             string frameRoot,
             string output,
             int framesPerSecond,
             out string error)
         {
             error = string.Empty;
+            if (_gif)
+            {
+                try
+                {
+                    var python = new ProcessStartInfo { FileName = "python", UseShellExecute = false,
+                        RedirectStandardError = true, RedirectStandardOutput = true, CreateNoWindow = true };
+                    python.ArgumentList.Add(Path.Combine(_projectRoot, "tools", "hit-number-visual-harness", "encode-gif.py"));
+                    python.ArgumentList.Add(frameRoot); python.ArgumentList.Add(output);
+                    python.ArgumentList.Add(framesPerSecond.ToString(CultureInfo.InvariantCulture));
+                    using Process process = Process.Start(python);
+                    var errors = process.StandardError.ReadToEndAsync();
+                    var stdout = process.StandardOutput.ReadToEndAsync();
+                    if (!process.WaitForExit(120000)) { process.Kill(true); error = "GIF encoder timed out"; return false; }
+                    error = errors.GetAwaiter().GetResult(); stdout.GetAwaiter().GetResult();
+                    return process.ExitCode == 0 && File.Exists(output) && new FileInfo(output).Length > 0;
+                }
+                catch (Exception ex) { error = ex.Message; return false; }
+            }
             try
             {
                 var info = new ProcessStartInfo
@@ -408,6 +502,26 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 spec.Mode,
                 spec.WorldRowLimit,
                 true);
+            if (scenario.HealPayload != null)
+            {
+                double now = 0;
+                var runtime = new HitNumberRuntime(() => now);
+                runtime.Configure(new HitNumberRuntimeOptions(spec.Mode, spec.WorldRowLimit));
+                var payload = new System.Text.StringBuilder(scenario.HealPayload);
+                if (!scenario.HealOnly)
+                    foreach (HitNumberSegment segment in scenario.Segments)
+                        payload.Append(';').Append(segment.Damage).Append('|')
+                            .Append(segment.TargetX.ToString(CultureInfo.InvariantCulture)).Append('|')
+                            .Append(segment.TargetY.ToString(CultureInfo.InvariantCulture)).Append('|')
+                            .Append(segment.Packed).Append('|').Append(segment.EffectText).Append('|')
+                            .Append(segment.EffectEmoji).Append('|').Append(segment.LifeSteal.ToString(CultureInfo.InvariantCulture))
+                            .Append('|').Append(segment.ShieldAbsorb.ToString(CultureInfo.InvariantCulture)).Append('|')
+                            .Append(segment.TargetId).Append('|').Append(segment.BurstId).Append('|')
+                            .Append(segment.ExpectedBurstHitCount);
+                runtime.ProcessFrame("0|0|1", payload.ToString());
+                now = HealNumberAccumulator.WindowSeconds + 0.02;
+                frame = runtime.ProcessFrame("", "").Frame;
+            }
             string filename = spec.Id + "-production-" + spec.ScenarioId + "-" +
                 spec.Width.ToString(CultureInfo.InvariantCulture) + "x" +
                 spec.Height.ToString(CultureInfo.InvariantCulture) + ".png";

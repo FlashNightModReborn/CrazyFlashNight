@@ -1,7 +1,7 @@
 ﻿/**
  * HealApplier - 治疗封顶统一入口
  *
- * 项目内所有"会增加 target.hp / target.mp"的路径在此聚合，统一封顶逻辑。
+ * 普通治疗在此聚合；初始化、资源重置和属性结算保持独立语义。
  * API 按属性 + 行为特化，避免 target[prop] 的 dynamic name 开销（吸血是热路径）。
  *
  *   applyHpCapped     —— HP 硬封顶到 capValue（药剂炼金加成 / Regen tick / 范围治疗 / 装备形态切换）
@@ -14,7 +14,7 @@
  *   - TickComponent（仅周期框架，回调应调用本类）
  *
  * 调用方约定：
- *   - 返回真实回复量；主角 HP 成功变化后由本类请求主 HUD 合并刷新，浮字 / 音效仍由调用方决定
+ *   - 返回真实回复量；主角 HP 成功变化后由本类请求主 HUD 合并刷新，HP 治疗数字由本类提交；音效/技能特效仍由调用方决定
  *   - target 死亡（hp <= 0）一律返回 0，不修改任何属性（MP 路径同样以 hp 判存活）
  *   - amount <= 0 或 NaN 一律返回 0
  *
@@ -24,6 +24,7 @@
  * @see RegenerationCore       (applyHpCapped + applyMpCapped 通用回血)
  */
 import org.flashNight.arki.unit.Action.Regeneration.ResourceNumber;
+import org.flashNight.arki.component.Effect.HitNumberBatchProcessor;
 class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
 
     // ========== 溢出治疗曲线参数（项目级单一来源） ==========
@@ -141,9 +142,10 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
      * @param target   目标对象（需有 hp 字段）
      * @param amount   请求恢复量
      * @param capValue 实际封顶值
-     * @return 实际恢复量；0 表示无效（死亡 / 已达封顶 / 请求<=0）
+     * @param silentNumber 可省略；true 保留吸血原表现，不生成第二份治疗字
+     * @return 写后实际正增量；0 表示无效、拒写或已达封顶
      */
-    public static function applyHpCapped(target:Object, amount:Number, capValue:Number):Number {
+    public static function applyHpCapped(target:Object, amount:Number, capValue:Number, silentNumber:Boolean):Number {
         if (!target) return 0;
         if(!ResourceNumber.finite(target.hp)
                 || !ResourceNumber.finite(amount) || !ResourceNumber.finite(capValue)) {
@@ -163,7 +165,12 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
         if (actual <= 0) return 0;
 
         target.hp = newValue;
+        // 阶段保护 setter 可以拒写；返回量、扣费与显示共用已提交事实。
+        var committed:Number = target.hp;
+        if (!ResourceNumber.finite(committed) || !(committed > current)) return 0;
+        actual = committed - current;
         requestHeroHpDisplayRefresh(target);
+        if (!silentNumber) HitNumberBatchProcessor.enqueueHeal(target, actual);
         return actual;
     }
 
@@ -181,7 +188,7 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
      * @param baseMax 曲线基准（通常 = target.hp满血值；不含炼金加成）
      * @return 实际恢复量（已取整）；0 表示衰减后 < 1 点 或 已死亡 或 amount<=0
      */
-    public static function applyHpOverflow(target:Object, amount:Number, baseMax:Number):Number {
+    public static function applyHpOverflow(target:Object, amount:Number, baseMax:Number, silentNumber:Boolean):Number {
         if (!target) return 0;
         if(!ResourceNumber.finite(target.hp)
                 || !ResourceNumber.finite(amount) || !ResourceNumber.finite(baseMax) || !ResourceNumber.positive(OVERFLOW_CAP_RATIO) || !ResourceNumber.positive(OVERFLOW_INITIAL_EFFICIENCY)) {
@@ -193,7 +200,7 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
         if (!(baseMax > 0)) return 0;
 
         // 仅火凤的有效涅槃契约取消过量 HP；普通吸血与炼金规则保持原有曲线。
-        if (target.__huofengHpContract != undefined) return applyHpCapped(target,amount,Number(target.hp满血值));
+        if (target.__huofengHpContract != undefined) return applyHpCapped(target,amount,Number(target.hp满血值),silentNumber);
         var M:Number = baseMax;
         var C:Number = M * OVERFLOW_CAP_RATIO;
         if(!ResourceNumber.positive(C)) {ResourceNumber.reject(target,"hp_cap_product_invalid");return 0;}
@@ -216,7 +223,11 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
 
         if(!ResourceNumber.positive(current+healed)) {ResourceNumber.reject(target,"hp_heal_result_invalid");return 0;}
         target.hp = current + healed;
+        var committed:Number = target.hp;
+        if (!ResourceNumber.finite(committed) || !(committed > current)) return 0;
+        healed = committed - current;
         requestHeroHpDisplayRefresh(target);
+        if (!silentNumber) HitNumberBatchProcessor.enqueueHeal(target, healed);
         return healed;
     }
 

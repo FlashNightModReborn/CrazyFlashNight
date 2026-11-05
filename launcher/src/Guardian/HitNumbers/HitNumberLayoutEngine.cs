@@ -643,7 +643,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 CombinedScale = BurstImpactScale(burst),
                 Alpha = BurstAlpha(burst),
                 CombinedBlur = 2.8f,
-                Damage = displayedTotal,
+                Value = displayedTotal,
                 Packed = packed,
                 EffectText = includeAttributes ? projection.EffectText : string.Empty,
                 CrushText = includeAttributes ? projection.CrushText : string.Empty,
@@ -679,7 +679,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 CombinedScale = ImpactScale(active.AgeSeconds),
                 Alpha = alpha,
                 CombinedBlur = 2.0f,
-                Damage = segment.Damage,
+                Value = segment.Damage,
                 Packed = HitNumberPacking.WithFontSize(segment.Packed, fontSize),
                 EffectText = segment.EffectText,
                 EffectEmoji = segment.EffectEmoji,
@@ -721,7 +721,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 CombinedScale = ClassicScale[frame] * camera.Scale,
                 Alpha = 1f,
                 CombinedBlur = ClassicBlur[frame] * camera.Scale,
-                Damage = segment.Damage,
+                Value = segment.Damage,
                 Packed = HitNumberPacking.WithFontSize(segment.Packed, BalancedFontSize),
                 EffectText = segment.EffectText,
                 EffectEmoji = segment.EffectEmoji,
@@ -843,7 +843,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                     CombinedScale = TotalImpactScale(age, entry.HitCount),
                     Alpha = alpha,
                     CombinedBlur = age < 0.10f ? 3.8f : 2.8f,
-                    Damage = ClampLongToInt(entry.DisplayDamage),
+                    Value = ClampLongToInt(entry.DisplayDamage),
                     Packed = packed,
                     EffectText = entry.EffectText,
                     CrushText = entry.CrushText,
@@ -1275,7 +1275,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             return ImpactLift(newestAge);
         }
 
-        private static float ImpactScale(double ageSeconds)
+        internal static float ImpactScale(double ageSeconds)
         {
             float age = (float)Math.Max(0.0, ageSeconds);
             if (age < 0.055f) return Lerp(1.46f, 1.08f, age / 0.055f);
@@ -1284,7 +1284,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             return 1f;
         }
 
-        private static float ImpactLift(double ageSeconds)
+        internal static float ImpactLift(double ageSeconds)
         {
             float age = (float)Math.Max(0.0, ageSeconds);
             if (age < 0.08f) return Lerp(6f, -8f, age / 0.08f);
@@ -1369,7 +1369,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 item.StageY,
                 item.CombinedScale,
                 item.CombinedBlur,
-                item.Damage,
+                item.Value,
                 item.Packed,
                 item.EffectText,
                 item.EffectEmoji,
@@ -1379,7 +1379,8 @@ namespace CF7Launcher.Guardian.HitNumbers
                 item.ShieldAbsorb,
                 item.HitCount,
                 item.FlagScales,
-                item.SemanticDensityScale);
+                item.SemanticDensityScale,
+                item.Kind == CombatNumberKind.HealHp);
         }
 
         private static RectangleF EstimateDetailBounds(
@@ -1421,7 +1422,8 @@ namespace CF7Launcher.Guardian.HitNumbers
             float shieldAbsorb,
             int hitCount,
             string flagScales,
-            float semanticDensityScale)
+            float semanticDensityScale,
+            bool positiveSign = false)
         {
             int size = HitNumberPacking.FontSize(packed);
             // Painter 使用 point 字体；在常见 96-120 DPI 下，字形像素高于同值的
@@ -1431,7 +1433,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             float mainEm = visualSize * 1.60f;
             int mainGlyphCount = HitNumberPacking.IsMiss(packed)
                 ? 4
-                : SignedDigitCount(damage);
+                : SignedDigitCount(damage) + (positiveSign ? 1 : 0);
             float width = EstimateRunWidth(mainGlyphCount, mainEm, 0.82f) + 8f;
             float maximumEm = mainEm;
             int flags = HitNumberPacking.Flags(packed);
@@ -1456,7 +1458,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                     labelVisualSize, EstimateFlagScale(flagScales, 1) * densityScale);
             if ((flags & 32) != 0 && lifeSteal > 0)
                 AddEstimatedLabel(ref width, ref maximumEm,
-                    3 + SignedDigitCount((int)lifeSteal),
+                    3 + SignedDigitCount(CombatNumberValue.ClampToInteger(lifeSteal)),
                     Math.Max(4f, Math.Min(30f, 15f * combinedScale)),
                     EstimateFlagScale(flagScales, 5) * densityScale);
             if ((flags & 1) != 0)
@@ -1467,7 +1469,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                     labelVisualSize, EstimateFlagScale(flagScales, 2) * densityScale);
             if ((flags & 256) != 0 && shieldAbsorb > 0)
                 AddEstimatedLabel(ref width, ref maximumEm,
-                    3 + SignedDigitCount((int)shieldAbsorb),
+                    3 + SignedDigitCount(CombatNumberValue.ClampToInteger(shieldAbsorb)),
                     Math.Max(4f, Math.Min(36f, 18f * combinedScale)),
                     EstimateFlagScale(flagScales, 8) * densityScale);
             if (hitCount > 1)
@@ -1628,9 +1630,7 @@ namespace CF7Launcher.Guardian.HitNumbers
 
         private static int ClampLongToInt(long value)
         {
-            return value > int.MaxValue
-                ? int.MaxValue
-                : value < int.MinValue ? int.MinValue : (int)value;
+            return CombatNumberValue.ClampToInteger(value);
         }
 
         private static float Clamp(float value, float minimum, float maximum)

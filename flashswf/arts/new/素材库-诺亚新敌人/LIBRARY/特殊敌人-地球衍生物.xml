@@ -60,6 +60,7 @@ function 激活() {
     正在死亡 = false;
     躲闪率 = 0;                 // 可被攻击
     hp = hp满血值;
+    _root.加血动作.失效治疗显示(this);
     this._visible = true;
     gotoAndStop("正常");
     _root.帧计时器.移除任务(this, "复活计时");
@@ -107,6 +108,7 @@ function 复活计时() {
         if (自机.已激活 && 自机.正在死亡) {
             // 复活
             自机.hp = 自机.hp满血值;
+            _root.加血动作.失效治疗显示(自机);
             自机.gotoAndStop("正常");
             自机.正在死亡 = false;
             死亡次数++;

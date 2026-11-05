@@ -256,15 +256,6 @@
           "weight": 103
         },
         {
-          "type": "兵种75",
-          "name": "尸母",
-          "spritename": "敌人-普通尸母",
-          "isHostile": true,
-          "minLevel": 41,
-          "maxLevel": 60,
-          "weight": 100
-        },
-        {
           "type": "兵种39",
           "name": "狂躁僵尸",
           "spritename": "敌人-士兵奔跑僵尸1",
@@ -281,6 +272,15 @@
           "minLevel": 15,
           "maxLevel": 50,
           "weight": 89
+        },
+        {
+          "type": "兵种75",
+          "name": "尸母",
+          "spritename": "敌人-普通尸母",
+          "isHostile": true,
+          "minLevel": 41,
+          "maxLevel": 60,
+          "weight": 88
         },
         {
           "type": "兵种107",
@@ -617,6 +617,18 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 12
+        },
+        {
+          "type": "兵种75",
+          "name": "尸母",
+          "spritename": "敌人-普通尸母",
+          "isHostile": true,
+          "minLevel": 41,
+          "maxLevel": 41,
+          "weight": 12,
+          "Parameters": {
+            "noahPrimary": true
+          }
         },
         {
           "type": "兵种70",
@@ -2184,7 +2196,7 @@
           }
         }
       ],
-      "unitCount": 184
+      "unitCount": 185
     },
     "天网": {
       "teamCount": 234,
@@ -93679,7 +93691,10 @@
           "count": 12,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "noahPrimary": true
+          }
         },
         {
           "type": "兵种77",
