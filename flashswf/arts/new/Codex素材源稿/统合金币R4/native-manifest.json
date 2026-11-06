@@ -1,0 +1,993 @@
+{
+  "schema": "tonghe-gold-native/v1",
+  "revision": "side-reeds-restored-v2",
+  "fps": 30,
+  "frames": 32,
+  "native_scale": 8,
+  "wrapper_scale": 0.125,
+  "canvas": [
+    28,
+    28
+  ],
+  "pivot": [
+    14,
+    14
+  ],
+  "native_origin": [
+    0,
+    0
+  ],
+  "linkage": "图标-金钱",
+  "native_mask": true,
+  "bitmaps": false,
+  "inputs": [
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/model.json",
+      "sha256": "796f668fb03dae9cfe45b97f274d4b77ed93cddbfef55b0581bca7f4547fc560"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/style.json",
+      "sha256": "fe8c50954fc945a5b99d98a09f66d91f9b01a4eb12701868fd37a1d2e799ba99"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/original_node.svg",
+      "sha256": "ce699e73fbfbbf6f51f52fb1456d9e93a1d957feb3a30f52b00a9cf483263374"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/R3_B_original_unchanged.blend",
+      "sha256": "814689584f6a7d96b8e0decdd9b349a8a7674c9cbdbb1362b02c0ac1a2ff82ce"
+    },
+    {
+      "path": "tools/tonghe-gold-assets/build.py",
+      "sha256": "95664067e4513f4347272b5328893bf42ed7af2cc59656370c2dd5d567263449"
+    },
+    {
+      "path": "tools/tonghe-gold-assets/coin_svg.py",
+      "sha256": "8f74271a7a71bda43c9593d8ec1016af0e02d94ca3a5ad4ba4da99939cb44c18"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
+    }
+  ],
+  "publication_inputs": [
+    {
+      "path": "tools/tonghe-gold-assets/publish.py",
+      "sha256": "a83e26f2fefd2aa5533b5955ede9e9a4a09a6589b656c371733d9bf2bc8cb9c3"
+    },
+    {
+      "path": "tools/tonghe-gold-assets/repair_font_metrics.py",
+      "sha256": "cc92e2093c38a15f6eb59e4360c3bc563ebff04fed0f9c7fb4b1c48137d99f00"
+    },
+    {
+      "path": "tools/tonghe-gold-assets/verify_swf.py",
+      "sha256": "d47b036eea577b35a7b875a1f6af3813837722d977a537fccf6d666a5025bfc1"
+    },
+    {
+      "path": "tools/tonghe-gold-assets/compile-fonts/1154_STLiti.ttf",
+      "sha256": "bf949eb92c6bbf629c2ae0043cacc383e07bdc53c3c67214cabe4f2367b60b02"
+    },
+    {
+      "path": "tools/tonghe-gold-assets/compile-fonts/126_STFangsong.ttf",
+      "sha256": "f681d26531b6fba0c9296a9bd75a552fa38b8c1bd3f6c55a7a82a416335d12db"
+    },
+    {
+      "path": "tools/tonghe-gold-assets/compile-fonts/29_STXingkai.ttf",
+      "sha256": "46861b0a5786a574b9db9ece275cdb1cb5d4aa7e5d0826d1fa0b725c66072a64"
+    },
+    {
+      "path": "tools/tonghe-gold-assets/compile-fonts/manifest.json",
+      "sha256": "28cfa5779493a5561c670eee60db125eb69b73d87ab8e77b96c57113be57db95"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_00.svg",
+      "bytes": 38838,
+      "sha256": "71e2cb525c9a11ffd5a64e72338f433b0f74607e8259dadc29c3c825eff0a5f8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_01.svg",
+      "bytes": 58374,
+      "sha256": "7676698016725f77a19e63b9706d355ac8c5991b84962eef54413e756dff4751"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_02.svg",
+      "bytes": 57360,
+      "sha256": "0a63fce49640ff35fa81a4508c593cceb514828086211117c2932a215380d70a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_03.svg",
+      "bytes": 57188,
+      "sha256": "b5283f29953f810133af10f113b27a30f977cc8f2b8f4f3a82b06bf62703f632"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_04.svg",
+      "bytes": 55638,
+      "sha256": "4f53f3529083948ceeaa50e36f6ab0d8092c56aa66ec96340425b483fcf7b190"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_05.svg",
+      "bytes": 53045,
+      "sha256": "dc2281d1737b10be699ecc768f5d494b89ba8578d5db91fc81f1293f571ca1e9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_06.svg",
+      "bytes": 51062,
+      "sha256": "ac8a70650627f6fcd6f69e6b623685361567e8d7233ef53a9590cc9b03d2e420"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_07.svg",
+      "bytes": 46226,
+      "sha256": "61a5e320ceb5724c8d13183ac0730f05b3fe6e014bce57cc1d5160b7d9f5bb76"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_08.svg",
+      "bytes": 21131,
+      "sha256": "f4361752096c43ba8a5d047adec6e00df524b95ed1d49e934b8f11c14d00ad7b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_09.svg",
+      "bytes": 46162,
+      "sha256": "2d0552f49a24a08d9884862b67484fc9b617d0b46e09c3fa7e89c8de6a85f342"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_10.svg",
+      "bytes": 51475,
+      "sha256": "bdd3cef2d78b1257bbe22df70785d5a64563ddb1290ce9974699e84b2a1224f4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_11.svg",
+      "bytes": 53901,
+      "sha256": "9410184bbe3833a6b97c67a252a613d692470fb9423576d0a0a40c0fa9d58f3e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_12.svg",
+      "bytes": 56589,
+      "sha256": "fd9a7875a48e6d4b99cac95a24126515791542712f3f1b9eeb2fa2dd44604e4a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_13.svg",
+      "bytes": 58333,
+      "sha256": "dc3cbc8820dae8354a7dc3b9cae3865b3ce3798182bf11a4b57ac89247110ff2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_14.svg",
+      "bytes": 58484,
+      "sha256": "bbca83d9f9ff7255e2cbba09e218e939377880fa2857a8fe6d84fae011b6f035"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_15.svg",
+      "bytes": 59424,
+      "sha256": "4a2afef0a12549d763989f3481e50a0c6a183830eafc7b6f8ad078c2353e422a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_16.svg",
+      "bytes": 38830,
+      "sha256": "91480b89dc701e680220eb7f6429e7b388af93933a9845c5957260c0f5519b3a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_17.svg",
+      "bytes": 58346,
+      "sha256": "9d79d3c0413f30ae4f8ee373448d9450cd7d5b06798a0a5ee879fd1077863685"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_18.svg",
+      "bytes": 57304,
+      "sha256": "94f543b22cfdceb409ef46298b1d8188f4b9ef74906cb16a27b15cfd31d02a80"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_19.svg",
+      "bytes": 57128,
+      "sha256": "86476541f58a51b313c0ce7ca7b2c48703935aaa78cb505814ab5855e9d93dd7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_20.svg",
+      "bytes": 55591,
+      "sha256": "97deba1ce26d2abc8769d45f216a76f5c9a226c549949d4d733ad87b04310013"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_21.svg",
+      "bytes": 52940,
+      "sha256": "6a83f2c03683b5545f24ad310983837977f0e0e975f52aa6382b7ac0f66a5ef2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_22.svg",
+      "bytes": 50872,
+      "sha256": "34291559e282cbb322d7a966935f425241bc1d26a4bfd3dcd0de69683cca78d4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_23.svg",
+      "bytes": 46202,
+      "sha256": "102910c2fee207d6a87f2995142728497d4683c708f5aa6f49dcb7220d80e7ae"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_24.svg",
+      "bytes": 21290,
+      "sha256": "0820f7d1d2824e922b0e57bda61a2b08ea7bf94a4faf870acb1cc36f51170b54"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_25.svg",
+      "bytes": 46264,
+      "sha256": "36a21aa10fb1b62a9b37172836ff47ed3a7dcb576ae638e0329b3ef4edf95248"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_26.svg",
+      "bytes": 51279,
+      "sha256": "a0e4408a66c306664658b1b726b5824f2d376ceb4d94cd00862e00e34f6a790e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_27.svg",
+      "bytes": 53834,
+      "sha256": "58f6fb0ab1cc0c917b56e22667a0f98af8be9aa86b0acb7651a0575485e916a5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_28.svg",
+      "bytes": 56597,
+      "sha256": "7026ce95c8adbd354cd704f6aa42ca39677996c087a5af5fc74c9cf31c51f262"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_29.svg",
+      "bytes": 58309,
+      "sha256": "1e25b3e2b19cbd84ea3be30812e03dda8b5a9e90d50af6d2152316cfb308ef25"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_30.svg",
+      "bytes": 58481,
+      "sha256": "7950967c3844b880ad96a78b48d0159b315b5336c1237eda8d6fe659cb83ea60"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/统合金币R4/svg/frame_31.svg",
+      "bytes": 59443,
+      "sha256": "18e19dc8bb8a6759fc4156183e20b8157ffeea8ac31ff4042a004b432b9f475b"
+    },
+    {
+      "path": "flashswf/arts/素材库-物品技能图标/LIBRARY/消耗道具相关/Symbol 4297.xml",
+      "bytes": 2058963,
+      "sha256": "642d45195e8a9f9caece9f677847e1229e37fb60ad25a304d211a67693048ab3"
+    },
+    {
+      "path": "flashswf/arts/素材库-物品技能图标/LIBRARY/消耗道具相关/图标-金钱.xml",
+      "bytes": 1011,
+      "sha256": "b8403fa2f17d0a1a57d469cae7f83b676625d9fa78fa09a8546430fad9fc6d79"
+    }
+  ],
+  "frame_audit": [
+    {
+      "angle_degrees": 0.0,
+      "body_patches": 7,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 0,
+      "body_boundary_vertices": 322,
+      "svg_bytes": 38838,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        1.615003,
+        1.615019,
+        26.384997,
+        26.385013
+      ],
+      "native_shapes": 12,
+      "native_segments": 2275,
+      "svg_sha256": "71e2cb525c9a11ffd5a64e72338f433b0f74607e8259dadc29c3c825eff0a5f8"
+    },
+    {
+      "angle_degrees": 11.25,
+      "body_patches": 9,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 279,
+      "body_boundary_vertices": 322,
+      "svg_bytes": 58374,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        1.559168,
+        1.615019,
+        26.440832,
+        26.385013
+      ],
+      "native_shapes": 22,
+      "native_segments": 3499,
+      "svg_sha256": "7676698016725f77a19e63b9706d355ac8c5991b84962eef54413e756dff4751"
+    },
+    {
+      "angle_degrees": 22.5,
+      "body_patches": 9,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 278,
+      "body_boundary_vertices": 322,
+      "svg_bytes": 57360,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        1.981427,
+        1.615019,
+        26.018573,
+        26.385013
+      ],
+      "native_shapes": 22,
+      "native_segments": 3420,
+      "svg_sha256": "0a63fce49640ff35fa81a4508c593cceb514828086211117c2932a215380d70a"
+    },
+    {
+      "angle_degrees": 33.75,
+      "body_patches": 10,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 273,
+      "body_boundary_vertices": 326,
+      "svg_bytes": 57188,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        2.810041,
+        1.615019,
+        25.189959,
+        26.385013
+      ],
+      "native_shapes": 23,
+      "native_segments": 3393,
+      "svg_sha256": "b5283f29953f810133af10f113b27a30f977cc8f2b8f4f3a82b06bf62703f632"
+    },
+    {
+      "angle_degrees": 45.0,
+      "body_patches": 11,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 275,
+      "body_boundary_vertices": 326,
+      "svg_bytes": 55638,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        4.019935,
+        1.615019,
+        23.980065,
+        26.385013
+      ],
+      "native_shapes": 24,
+      "native_segments": 3249,
+      "svg_sha256": "4f53f3529083948ceeaa50e36f6ab0d8092c56aa66ec96340425b483fcf7b190"
+    },
+    {
+      "angle_degrees": 56.25,
+      "body_patches": 12,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 277,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 53045,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        5.575536,
+        1.615019,
+        22.424464,
+        26.385013
+      ],
+      "native_shapes": 25,
+      "native_segments": 3036,
+      "svg_sha256": "dc2281d1737b10be699ecc768f5d494b89ba8578d5db91fc81f1293f571ca1e9"
+    },
+    {
+      "angle_degrees": 67.5,
+      "body_patches": 13,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 273,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 51062,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        7.370812,
+        1.615019,
+        20.629188,
+        26.385013
+      ],
+      "native_shapes": 26,
+      "native_segments": 2834,
+      "svg_sha256": "ac8a70650627f6fcd6f69e6b623685361567e8d7233ef53a9590cc9b03d2e420"
+    },
+    {
+      "angle_degrees": 78.75,
+      "body_patches": 13,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 275,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 46226,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        9.420844,
+        1.615019,
+        18.579156,
+        26.385013
+      ],
+      "native_shapes": 26,
+      "native_segments": 2483,
+      "svg_sha256": "61a5e320ceb5724c8d13183ac0730f05b3fe6e014bce57cc1d5160b7d9f5bb76"
+    },
+    {
+      "angle_degrees": 90.0,
+      "body_patches": 11,
+      "original_mark_paths": 0,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 275,
+      "body_boundary_vertices": 16,
+      "svg_bytes": 21131,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        11.64685,
+        1.615019,
+        16.35315,
+        26.385013
+      ],
+      "native_shapes": 22,
+      "native_segments": 1002,
+      "svg_sha256": "f4361752096c43ba8a5d047adec6e00df524b95ed1d49e934b8f11c14d00ad7b"
+    },
+    {
+      "angle_degrees": 101.25,
+      "body_patches": 13,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 275,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 46162,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        9.420844,
+        1.615019,
+        18.579156,
+        26.385013
+      ],
+      "native_shapes": 26,
+      "native_segments": 2481,
+      "svg_sha256": "2d0552f49a24a08d9884862b67484fc9b617d0b46e09c3fa7e89c8de6a85f342"
+    },
+    {
+      "angle_degrees": 112.5,
+      "body_patches": 13,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 273,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 51475,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        7.370812,
+        1.615019,
+        20.629188,
+        26.385013
+      ],
+      "native_shapes": 26,
+      "native_segments": 2836,
+      "svg_sha256": "bdd3cef2d78b1257bbe22df70785d5a64563ddb1290ce9974699e84b2a1224f4"
+    },
+    {
+      "angle_degrees": 123.75,
+      "body_patches": 12,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 277,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 53901,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        5.575536,
+        1.615019,
+        22.424464,
+        26.385013
+      ],
+      "native_shapes": 25,
+      "native_segments": 3036,
+      "svg_sha256": "9410184bbe3833a6b97c67a252a613d692470fb9423576d0a0a40c0fa9d58f3e"
+    },
+    {
+      "angle_degrees": 135.0,
+      "body_patches": 11,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 275,
+      "body_boundary_vertices": 326,
+      "svg_bytes": 56589,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        4.019935,
+        1.615019,
+        23.980065,
+        26.385013
+      ],
+      "native_shapes": 24,
+      "native_segments": 3249,
+      "svg_sha256": "fd9a7875a48e6d4b99cac95a24126515791542712f3f1b9eeb2fa2dd44604e4a"
+    },
+    {
+      "angle_degrees": 146.25,
+      "body_patches": 10,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 273,
+      "body_boundary_vertices": 326,
+      "svg_bytes": 58333,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        2.810041,
+        1.615019,
+        25.189959,
+        26.385013
+      ],
+      "native_shapes": 23,
+      "native_segments": 3393,
+      "svg_sha256": "dc3cbc8820dae8354a7dc3b9cae3865b3ce3798182bf11a4b57ac89247110ff2"
+    },
+    {
+      "angle_degrees": 157.5,
+      "body_patches": 9,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 278,
+      "body_boundary_vertices": 322,
+      "svg_bytes": 58484,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        1.981427,
+        1.615019,
+        26.018573,
+        26.385013
+      ],
+      "native_shapes": 22,
+      "native_segments": 3420,
+      "svg_sha256": "bbca83d9f9ff7255e2cbba09e218e939377880fa2857a8fe6d84fae011b6f035"
+    },
+    {
+      "angle_degrees": 168.75,
+      "body_patches": 9,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 279,
+      "body_boundary_vertices": 322,
+      "svg_bytes": 59424,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        1.559168,
+        1.615019,
+        26.440832,
+        26.385013
+      ],
+      "native_shapes": 22,
+      "native_segments": 3499,
+      "svg_sha256": "4a2afef0a12549d763989f3481e50a0c6a183830eafc7b6f8ad078c2353e422a"
+    },
+    {
+      "angle_degrees": 180.0,
+      "body_patches": 7,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 0,
+      "body_boundary_vertices": 320,
+      "svg_bytes": 38830,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        1.615003,
+        1.615019,
+        26.384997,
+        26.385013
+      ],
+      "native_shapes": 12,
+      "native_segments": 2273,
+      "svg_sha256": "91480b89dc701e680220eb7f6429e7b388af93933a9845c5957260c0f5519b3a"
+    },
+    {
+      "angle_degrees": 191.25,
+      "body_patches": 9,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 279,
+      "body_boundary_vertices": 322,
+      "svg_bytes": 58346,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        1.559168,
+        1.615019,
+        26.440832,
+        26.385013
+      ],
+      "native_shapes": 22,
+      "native_segments": 3498,
+      "svg_sha256": "9d79d3c0413f30ae4f8ee373448d9450cd7d5b06798a0a5ee879fd1077863685"
+    },
+    {
+      "angle_degrees": 202.5,
+      "body_patches": 9,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 278,
+      "body_boundary_vertices": 322,
+      "svg_bytes": 57304,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        1.981427,
+        1.615019,
+        26.018573,
+        26.385013
+      ],
+      "native_shapes": 22,
+      "native_segments": 3418,
+      "svg_sha256": "94f543b22cfdceb409ef46298b1d8188f4b9ef74906cb16a27b15cfd31d02a80"
+    },
+    {
+      "angle_degrees": 213.75,
+      "body_patches": 10,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 273,
+      "body_boundary_vertices": 326,
+      "svg_bytes": 57128,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        2.810041,
+        1.615019,
+        25.189959,
+        26.385013
+      ],
+      "native_shapes": 23,
+      "native_segments": 3391,
+      "svg_sha256": "86476541f58a51b313c0ce7ca7b2c48703935aaa78cb505814ab5855e9d93dd7"
+    },
+    {
+      "angle_degrees": 225.0,
+      "body_patches": 11,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 275,
+      "body_boundary_vertices": 326,
+      "svg_bytes": 55591,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        4.019935,
+        1.615019,
+        23.980065,
+        26.385013
+      ],
+      "native_shapes": 24,
+      "native_segments": 3247,
+      "svg_sha256": "97deba1ce26d2abc8769d45f216a76f5c9a226c549949d4d733ad87b04310013"
+    },
+    {
+      "angle_degrees": 236.25,
+      "body_patches": 12,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 277,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 52940,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        5.575536,
+        1.615019,
+        22.424464,
+        26.385013
+      ],
+      "native_shapes": 25,
+      "native_segments": 3031,
+      "svg_sha256": "6a83f2c03683b5545f24ad310983837977f0e0e975f52aa6382b7ac0f66a5ef2"
+    },
+    {
+      "angle_degrees": 247.5,
+      "body_patches": 13,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 273,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 50872,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        7.370812,
+        1.615019,
+        20.629188,
+        26.385013
+      ],
+      "native_shapes": 26,
+      "native_segments": 2823,
+      "svg_sha256": "34291559e282cbb322d7a966935f425241bc1d26a4bfd3dcd0de69683cca78d4"
+    },
+    {
+      "angle_degrees": 258.75,
+      "body_patches": 13,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 275,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 46202,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        9.420844,
+        1.615019,
+        18.579156,
+        26.385013
+      ],
+      "native_shapes": 26,
+      "native_segments": 2482,
+      "svg_sha256": "102910c2fee207d6a87f2995142728497d4683c708f5aa6f49dcb7220d80e7ae"
+    },
+    {
+      "angle_degrees": 270.0,
+      "body_patches": 11,
+      "original_mark_paths": 0,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 275,
+      "body_boundary_vertices": 16,
+      "svg_bytes": 21290,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        11.64685,
+        1.615019,
+        16.35315,
+        26.385013
+      ],
+      "native_shapes": 22,
+      "native_segments": 1014,
+      "svg_sha256": "0820f7d1d2824e922b0e57bda61a2b08ea7bf94a4faf870acb1cc36f51170b54"
+    },
+    {
+      "angle_degrees": 281.25,
+      "body_patches": 13,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 275,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 46264,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        9.420844,
+        1.615019,
+        18.579156,
+        26.385013
+      ],
+      "native_shapes": 26,
+      "native_segments": 2484,
+      "svg_sha256": "36a21aa10fb1b62a9b37172836ff47ed3a7dcb576ae638e0329b3ef4edf95248"
+    },
+    {
+      "angle_degrees": 292.5,
+      "body_patches": 13,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 273,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 51279,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        7.370812,
+        1.615019,
+        20.629188,
+        26.385013
+      ],
+      "native_shapes": 26,
+      "native_segments": 2821,
+      "svg_sha256": "a0e4408a66c306664658b1b726b5824f2d376ceb4d94cd00862e00e34f6a790e"
+    },
+    {
+      "angle_degrees": 303.75,
+      "body_patches": 12,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 277,
+      "body_boundary_vertices": 330,
+      "svg_bytes": 53834,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        5.575536,
+        1.615019,
+        22.424464,
+        26.385013
+      ],
+      "native_shapes": 25,
+      "native_segments": 3031,
+      "svg_sha256": "58f6fb0ab1cc0c917b56e22667a0f98af8be9aa86b0acb7651a0575485e916a5"
+    },
+    {
+      "angle_degrees": 315.0,
+      "body_patches": 11,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 275,
+      "body_boundary_vertices": 326,
+      "svg_bytes": 56597,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        4.019935,
+        1.615019,
+        23.980065,
+        26.385013
+      ],
+      "native_shapes": 24,
+      "native_segments": 3247,
+      "svg_sha256": "7026ce95c8adbd354cd704f6aa42ca39677996c087a5af5fc74c9cf31c51f262"
+    },
+    {
+      "angle_degrees": 326.25,
+      "body_patches": 10,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 273,
+      "body_boundary_vertices": 326,
+      "svg_bytes": 58309,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        2.810041,
+        1.615019,
+        25.189959,
+        26.385013
+      ],
+      "native_shapes": 23,
+      "native_segments": 3391,
+      "svg_sha256": "1e25b3e2b19cbd84ea3be30812e03dda8b5a9e90d50af6d2152316cfb308ef25"
+    },
+    {
+      "angle_degrees": 337.5,
+      "body_patches": 9,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 278,
+      "body_boundary_vertices": 322,
+      "svg_bytes": 58481,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        1.981427,
+        1.615019,
+        26.018573,
+        26.385013
+      ],
+      "native_shapes": 22,
+      "native_segments": 3418,
+      "svg_sha256": "7950967c3844b880ad96a78b48d0159b315b5336c1237eda8d6fe659cb83ea60"
+    },
+    {
+      "angle_degrees": 348.75,
+      "body_patches": 9,
+      "original_mark_paths": 2,
+      "shared_across_display_sizes": true,
+      "side_reed_count": 64,
+      "textured_visible_side_facets": 279,
+      "body_boundary_vertices": 322,
+      "svg_bytes": 59443,
+      "canvas": [
+        28,
+        28
+      ],
+      "projected_bbox": [
+        1.559168,
+        1.615019,
+        26.440832,
+        26.385013
+      ],
+      "native_shapes": 22,
+      "native_segments": 3498,
+      "svg_sha256": "18e19dc8bb8a6759fc4156183e20b8157ffeea8ac31ff4042a004b432b9f475b"
+    }
+  ]
+}

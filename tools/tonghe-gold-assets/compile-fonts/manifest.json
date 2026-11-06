@@ -1,0 +1,231 @@
+{
+  "schema": "original-swf-font-subsets/v1",
+  "source_swf": "flashswf/arts/素材库-物品技能图标.swf",
+  "source_git_revision": "472e7d01d476f6eac9733a42db33d34f610a058c",
+  "source_swf_sha256": "087b30385d724d8c27e96b5b0ffbcc43be837335531feeb44f073a8bb536cbc6",
+  "exporter": "tools/ffdec/ffdec.jar 21.1.1 font:ttf",
+  "scope": "Existing static food-label glyphs only; temporary build-session load",
+  "fonts": [
+    {
+      "file": "1154_STLiti.ttf",
+      "sha256": "bf949eb92c6bbf629c2ae0043cacc383e07bdc53c3c67214cabe4f2367b60b02",
+      "bytes": 9760
+    },
+    {
+      "file": "126_STFangsong.ttf",
+      "sha256": "f681d26531b6fba0c9296a9bd75a552fa38b8c1bd3f6c55a7a82a416335d12db",
+      "bytes": 2368
+    },
+    {
+      "file": "29_STXingkai.ttf",
+      "sha256": "46861b0a5786a574b9db9ece275cdb1cb5d4aa7e5d0826d1fa0b725c66072a64",
+      "bytes": 13244
+    }
+  ],
+  "metrics_recovery": {
+    "basis": "Original DefineText2 glyph advance / text height equals one em for every used Han glyph",
+    "fontTools_version": "4.68.0",
+    "records": [
+      {
+        "id": 30,
+        "font": "STXingkai",
+        "height": 300,
+        "text": "柱侯酱",
+        "advances": [
+          [
+            "柱",
+            300,
+            1024.0
+          ],
+          [
+            "侯",
+            300,
+            1024.0
+          ],
+          [
+            "酱",
+            300,
+            1024.0
+          ]
+        ],
+        "bounds": [
+          42,
+          1183,
+          -42,
+          299
+        ]
+      },
+      {
+        "id": 92,
+        "font": "STXingkai",
+        "height": 300,
+        "text": "生粉",
+        "advances": [
+          [
+            "生",
+            300,
+            1024.0
+          ],
+          [
+            "粉",
+            300,
+            1024.0
+          ]
+        ],
+        "bounds": [
+          79,
+          883,
+          -29,
+          287
+        ]
+      },
+      {
+        "id": 99,
+        "font": "STXingkai",
+        "height": 300,
+        "text": "沙茶酱",
+        "advances": [
+          [
+            "沙",
+            300,
+            1024.0
+          ],
+          [
+            "茶",
+            300,
+            1024.0
+          ],
+          [
+            "酱",
+            300,
+            1024.0
+          ]
+        ],
+        "bounds": [
+          48,
+          1183,
+          -42,
+          303
+        ]
+      },
+      {
+        "id": 127,
+        "font": "STFangsong",
+        "height": 240,
+        "text": "米",
+        "advances": [
+          [
+            "米",
+            240,
+            1024.0
+          ]
+        ],
+        "bounds": [
+          18,
+          451,
+          2,
+          266
+        ]
+      },
+      {
+        "id": 177,
+        "font": "STXingkai",
+        "height": 300,
+        "text": "海鲜酱",
+        "advances": [
+          [
+            "海",
+            300,
+            1024.0
+          ],
+          [
+            "鲜",
+            300,
+            1024.0
+          ],
+          [
+            "酱",
+            300,
+            1024.0
+          ]
+        ],
+        "bounds": [
+          53,
+          1183,
+          -42,
+          306
+        ]
+      },
+      {
+        "id": 1155,
+        "font": "STLiti",
+        "height": 240,
+        "text": "统合",
+        "advances": [
+          [
+            "统",
+            240,
+            1024.0
+          ],
+          [
+            "合",
+            240,
+            1024.0
+          ]
+        ],
+        "bounds": [
+          12,
+          709,
+          -19,
+          216
+        ]
+      },
+      {
+        "id": 1156,
+        "font": "STLiti",
+        "height": 240,
+        "text": "鲜菠萝",
+        "advances": [
+          [
+            "鲜",
+            240,
+            1024.0
+          ],
+          [
+            "菠",
+            240,
+            1024.0
+          ],
+          [
+            "萝",
+            240,
+            1024.0
+          ]
+        ],
+        "bounds": [
+          16,
+          949,
+          -21,
+          216
+        ]
+      }
+    ],
+    "baseline_recovery": {
+      "STXingkai": {
+        "source_y_offset": 220,
+        "source_text_height": 300,
+        "ascent_units": 751
+      },
+      "STFangsong": {
+        "source_y_offset": 200,
+        "source_text_height": 240,
+        "ascent_units": 853
+      },
+      "STLiti": {
+        "source_y_offset": 180,
+        "source_text_height": 240,
+        "ascent_units": 768
+      }
+    }
+  }
+}

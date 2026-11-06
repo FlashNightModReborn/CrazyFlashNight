@@ -1728,6 +1728,32 @@ def normalize_icon(
         return normalize_icon_image(raw.convert("RGBA"), profile_size, canvas_size, preserve_canvas)
 
 
+def normalize_shared_animation_canvas(
+    canvases: list[Image.Image],
+    reference_frame: Image.Image,
+    profile_size: tuple[int, int] | None,
+    canvas_size: int,
+) -> list[Image.Image]:
+    """Use one crop/scale for the complete cycle; never crop each pose alone.
+
+    Include all poses in the bounds so a moving child cannot be clipped. The
+    actual parent reference supplies frame one, but uses the same view as every
+    child frame. A separate static cover can retain the legacy f1 crop.
+    """
+    if not canvases:
+        return []
+    frames = [reference_frame.convert("RGBA")] + [im.convert("RGBA") for im in canvases[1:]]
+    boxes = [box for im in frames if (box := alpha_bbox(im)) is not None]
+    if not boxes:
+        return [Image.new("RGBA", (canvas_size, canvas_size)) for _ in frames]
+    box = (min(b[0] for b in boxes), min(b[1] for b in boxes),
+           max(b[2] for b in boxes), max(b[3] for b in boxes))
+    width, height = box[2] - box[0], box[3] - box[1]
+    basis = (max(width, profile_size[0] if profile_size else 0),
+             max(height, profile_size[1] if profile_size else 0))
+    return [normalize_icon_image(im.crop(box), basis, canvas_size, preserve_canvas=True) for im in frames]
+
+
 def paste_clipped(canvas: Image.Image, image: Image.Image, left: int, top: int) -> None:
     src_left = max(0, -left)
     src_top = max(0, -top)
@@ -1858,13 +1884,12 @@ def apply_icon_filters(image: Image.Image, filters: list[dict[str, Any]] | None)
     return out
 
 
-def nested_layer_frame_icon(
+def nested_layer_frame_canvas(
     source_png: Path,
     parent_profile_size: tuple[int, int],
     matrix: Matrix,
     filters: list[dict[str, Any]] | None = None,
     offset: tuple[int, int] = (0, 0),
-    canvas_size: int | None = None,
 ) -> Image.Image:
     with Image.open(source_png) as raw:
         layer = apply_icon_filters(raw.convert("RGBA"), filters)
@@ -1876,6 +1901,18 @@ def nested_layer_frame_icon(
     # FFDec exports sprite PNGs cropped to transformed bounds; for an empty stripped base,
     # the child layer's transformed bbox defines the parent sprite bbox, so its local origin is (0, 0).
     paste_clipped(parent_canvas, layer, int(offset[0]), int(offset[1]))
+    return parent_canvas
+
+
+def nested_layer_frame_icon(
+    source_png: Path,
+    parent_profile_size: tuple[int, int],
+    matrix: Matrix,
+    filters: list[dict[str, Any]] | None = None,
+    offset: tuple[int, int] = (0, 0),
+    canvas_size: int | None = None,
+) -> Image.Image:
+    parent_canvas = nested_layer_frame_canvas(source_png, parent_profile_size, matrix, filters, offset)
     # canvas_size=None keeps the static 256 output (diff-gate path); animated frame composition
     # passes ANIMATED_ICON_SIZE for the smaller, byte-budget-friendly animated stream.
     return normalize_icon_image(
@@ -2156,6 +2193,7 @@ def assemble_animated_webp_entry(
     dry_run: bool,
     report: dict[str, Any],
     extra: dict[str, Any] | None = None,
+    static_first_override: Image.Image | None = None,
 ) -> dict[str, Any] | None:
     # Assemble the unique full-canvas frames into ONE animated WebP. This replaces the
     # png-sequence for the full-canvas animated case so a 120-frame animation compresses to
@@ -2213,7 +2251,8 @@ def assemble_animated_webp_entry(
                 duration=unique_durations,
                 loop=0,
             )
-        save_static_icon(unique_images[0], output_dir / static_first_filename)
+        save_static_icon(static_first_override if static_first_override is not None else unique_images[0],
+                         output_dir / static_first_filename)
 
     sheet_path = write_animated_contact_sheet(project_root, icon_name, unique_images, report, dry_run)
 
@@ -2232,6 +2271,20 @@ def assemble_animated_webp_entry(
     if sheet_path is not None:
         entry["_contactSheet"] = sheet_path
     return entry
+
+
+def merge_webp_animation_entry(entry: dict[str, Any], fresh: dict[str, Any]) -> None:
+    """Replace sequence-owned metadata after a successful native WebP export.
+
+    In particular, a nested-animation rebake must not leave an old semantic f2
+    or PNG timeline pointing at the previous artwork. Fresh f2 data, when
+    explicitly produced, is applied again below; unrelated metadata is retained.
+    """
+    if fresh.get("format") != "webp-animated":
+        raise ValueError("Expected a freshly exported animated WebP entry")
+    for stale_key in ("f2", "frames", "timelineFrames", "nestedAnimation"):
+        entry.pop(stale_key, None)
+    entry.update(fresh)
 
 
 def load_manifest(path: Path) -> OrderedDict[str, dict[str, Any]]:
@@ -3104,16 +3157,12 @@ def export_nested_icon_canvas_entry(
             if f1_profile_size is not None
             else normalize_icon(parent_frame, parent_profile_size, ANIMATED_ICON_SIZE)
         )
-        normalized_frames: list[Image.Image] = []
-        for index, source_frame in enumerate(child_frames, start=1):
-            if index == 1:
-                normalized_frames.append(f1_animated)
-            else:
-                normalized_frames.append(
-                    nested_layer_frame_icon(
-                        source_frame, parent_profile_size, matrix, filters, canvas_size=ANIMATED_ICON_SIZE
-                    )
-                )
+        raw_canvases = [nested_layer_frame_canvas(frame, parent_profile_size, matrix, filters)
+                        for frame in child_frames]
+        with Image.open(parent_frame) as raw_parent:
+            normalized_frames = normalize_shared_animation_canvas(
+                raw_canvases, raw_parent.convert("RGBA"), f1_profile_size, ANIMATED_ICON_SIZE
+            )
         webp_entry = assemble_animated_webp_entry(
             project_root=project_root,
             output_dir=output_dir,
@@ -3126,6 +3175,7 @@ def export_nested_icon_canvas_entry(
             dry_run=dry_run,
             report=report,
             extra={"nestedAnimation": nested_meta},
+            static_first_override=f1_animated,
         )
         if webp_entry is None:
             return None, {"reason": "no_frame_entries_written", "characterId": child_id}
@@ -4143,15 +4193,7 @@ def main() -> int:
                     report=report,
                 )
                 if webp_entry is not None:
-                    # Drop any stale png-sequence keys carried over from a prior bake.
-                    for stale_key in (
-                        "f2",
-                        "frames",
-                        "timelineFrames",
-                        "nestedAnimation",
-                    ):
-                        entry.pop(stale_key, None)
-                    entry.update(webp_entry)
+                    merge_webp_animation_entry(entry, webp_entry)
                     report["counts"]["animated_manifest_entries"] += 1
                     report["counts"]["animated_webp_entries"] += 1
                     report["counts"]["animated_unique_frame_images"] += int(
@@ -4218,7 +4260,10 @@ def main() -> int:
                     },
                 )
             elif nested_canvas_entry is not None:
-                entry.update(nested_canvas_entry)
+                if nested_canvas_entry.get("format") == "webp-animated":
+                    merge_webp_animation_entry(entry, nested_canvas_entry)
+                else:
+                    entry.update(nested_canvas_entry)
                 report["counts"]["nested_icon_canvas_manifest_entries"] += 1
                 report["counts"]["nested_icon_canvas_frame_entries"] += len(nested_canvas_entry.get("frames") or [])
                 report["counts"]["nested_icon_canvas_timeline_entries"] += len(

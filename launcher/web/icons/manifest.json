@@ -1,214 +1,26 @@
 {
   "金钱": {
-    "f1": "df918107_layer1115_1.png",
-    "frames": [
-      {
-        "frame": 1,
-        "sourceFrame": 1,
-        "uri": "df918107_layer1115_1.png"
-      },
-      {
-        "frame": 2,
-        "sourceFrame": 2,
-        "uri": "df918107_layer1115_2.png"
-      },
-      {
-        "frame": 3,
-        "sourceFrame": 3,
-        "uri": "df918107_layer1115_2.png",
-        "duplicateOfFrame": 2
-      },
-      {
-        "frame": 4,
-        "sourceFrame": 4,
-        "uri": "df918107_layer1115_2.png",
-        "duplicateOfFrame": 2
-      },
-      {
-        "frame": 5,
-        "sourceFrame": 5,
-        "uri": "df918107_layer1115_5.png"
-      },
-      {
-        "frame": 6,
-        "sourceFrame": 6,
-        "uri": "df918107_layer1115_5.png",
-        "duplicateOfFrame": 5
-      },
-      {
-        "frame": 7,
-        "sourceFrame": 7,
-        "uri": "df918107_layer1115_5.png",
-        "duplicateOfFrame": 5
-      },
-      {
-        "frame": 8,
-        "sourceFrame": 8,
-        "uri": "df918107_layer1115_5.png",
-        "duplicateOfFrame": 5
-      },
-      {
-        "frame": 9,
-        "sourceFrame": 9,
-        "uri": "df918107_layer1115_9.png"
-      },
-      {
-        "frame": 10,
-        "sourceFrame": 10,
-        "uri": "df918107_layer1115_9.png",
-        "duplicateOfFrame": 9
-      },
-      {
-        "frame": 11,
-        "sourceFrame": 11,
-        "uri": "df918107_layer1115_9.png",
-        "duplicateOfFrame": 9
-      },
-      {
-        "frame": 12,
-        "sourceFrame": 12,
-        "uri": "df918107_layer1115_9.png",
-        "duplicateOfFrame": 9
-      },
-      {
-        "frame": 13,
-        "sourceFrame": 13,
-        "uri": "df918107_layer1115_13.png"
-      },
-      {
-        "frame": 14,
-        "sourceFrame": 14,
-        "uri": "df918107_layer1115_13.png",
-        "duplicateOfFrame": 13
-      },
-      {
-        "frame": 15,
-        "sourceFrame": 15,
-        "uri": "df918107_layer1115_13.png",
-        "duplicateOfFrame": 13
-      },
-      {
-        "frame": 16,
-        "sourceFrame": 16,
-        "uri": "df918107_layer1115_13.png",
-        "duplicateOfFrame": 13
-      },
-      {
-        "frame": 17,
-        "sourceFrame": 17,
-        "uri": "df918107_layer1115_2.png",
-        "duplicateOfFrame": 2
-      },
-      {
-        "frame": 18,
-        "sourceFrame": 18,
-        "uri": "df918107_layer1115_2.png",
-        "duplicateOfFrame": 2
-      },
-      {
-        "frame": 19,
-        "sourceFrame": 19,
-        "uri": "df918107_layer1115_2.png",
-        "duplicateOfFrame": 2
-      },
-      {
-        "frame": 20,
-        "sourceFrame": 20,
-        "uri": "df918107_layer1115_2.png",
-        "duplicateOfFrame": 2
-      },
-      {
-        "frame": 21,
-        "sourceFrame": 21,
-        "uri": "df918107_layer1115_5.png",
-        "duplicateOfFrame": 5
-      },
-      {
-        "frame": 22,
-        "sourceFrame": 22,
-        "uri": "df918107_layer1115_5.png",
-        "duplicateOfFrame": 5
-      },
-      {
-        "frame": 23,
-        "sourceFrame": 23,
-        "uri": "df918107_layer1115_5.png",
-        "duplicateOfFrame": 5
-      },
-      {
-        "frame": 24,
-        "sourceFrame": 24,
-        "uri": "df918107_layer1115_5.png",
-        "duplicateOfFrame": 5
-      },
-      {
-        "frame": 25,
-        "sourceFrame": 25,
-        "uri": "df918107_layer1115_9.png",
-        "duplicateOfFrame": 9
-      },
-      {
-        "frame": 26,
-        "sourceFrame": 26,
-        "uri": "df918107_layer1115_9.png",
-        "duplicateOfFrame": 9
-      },
-      {
-        "frame": 27,
-        "sourceFrame": 27,
-        "uri": "df918107_layer1115_9.png",
-        "duplicateOfFrame": 9
-      },
-      {
-        "frame": 28,
-        "sourceFrame": 28,
-        "uri": "df918107_layer1115_9.png",
-        "duplicateOfFrame": 9
-      },
-      {
-        "frame": 29,
-        "sourceFrame": 29,
-        "uri": "df918107_layer1115_13.png",
-        "duplicateOfFrame": 13
-      },
-      {
-        "frame": 30,
-        "sourceFrame": 30,
-        "uri": "df918107_layer1115_13.png",
-        "duplicateOfFrame": 13
-      },
-      {
-        "frame": 31,
-        "sourceFrame": 31,
-        "uri": "df918107_layer1115_13.png",
-        "duplicateOfFrame": 13
-      },
-      {
-        "frame": 32,
-        "sourceFrame": 32,
-        "uri": "df918107_layer1115_13.png",
-        "duplicateOfFrame": 13
-      }
-    ],
+    "f1": "df918107_1.webp",
     "playback": "nested-animation",
     "animated": true,
-    "fps": 24,
-    "format": "png-sequence",
+    "fps": 30.0,
+    "format": "webp-animated",
     "frameCount": 32,
-    "uniqueFrameImages": 5,
+    "uniqueFrameImages": 32,
+    "uri": "df918107.webp",
     "nestedAnimation": {
       "strategy": "single-child-icon-canvas",
       "base": "empty-stripped-parent",
-      "characterId": 1115,
-      "sourceParentId": 1116,
+      "characterId": 1311,
+      "sourceParentId": 1312,
       "sourceFrameCount": 32,
       "matrix": {
-        "a": 0.479996,
-        "b": 0,
-        "c": 0,
-        "d": 0.479996,
-        "tx": -1.8,
-        "ty": -0.1
+        "a": 0.125,
+        "b": 0.0,
+        "c": 0.0,
+        "d": 0.125,
+        "tx": 0.0,
+        "ty": 0.0
       },
       "filters": [],
       "offset": {
@@ -216,94 +28,18 @@
         "y": 0
       },
       "path": [
-        1116,
-        1115
+        1312,
+        1311
       ],
       "frame1Diff": {
         "exact": false,
         "micro": true,
-        "changedPixels": 10965,
-        "changedAlphaPixels": 3026,
+        "changedPixels": 6169,
+        "changedAlphaPixels": 1703,
         "maxChannelDelta": 255,
-        "totalChannelDelta": 317243
+        "totalChannelDelta": 223940
       }
-    },
-    "f2": "df918107_layer1115_2.png",
-    "timelineFrames": [
-      {
-        "frame": 1,
-        "sourceFrame": 1,
-        "uri": "df918107_layer1115_1.png"
-      },
-      {
-        "frame": 2,
-        "sourceFrame": 2,
-        "uri": "df918107_layer1115_2.png",
-        "durationFrames": 3,
-        "frameEnd": 4,
-        "sourceFrameEnd": 4
-      },
-      {
-        "frame": 5,
-        "sourceFrame": 5,
-        "uri": "df918107_layer1115_5.png",
-        "durationFrames": 4,
-        "frameEnd": 8,
-        "sourceFrameEnd": 8
-      },
-      {
-        "frame": 9,
-        "sourceFrame": 9,
-        "uri": "df918107_layer1115_9.png",
-        "durationFrames": 4,
-        "frameEnd": 12,
-        "sourceFrameEnd": 12
-      },
-      {
-        "frame": 13,
-        "sourceFrame": 13,
-        "uri": "df918107_layer1115_13.png",
-        "durationFrames": 4,
-        "frameEnd": 16,
-        "sourceFrameEnd": 16
-      },
-      {
-        "frame": 17,
-        "sourceFrame": 17,
-        "uri": "df918107_layer1115_2.png",
-        "duplicateOfFrame": 2,
-        "durationFrames": 4,
-        "frameEnd": 20,
-        "sourceFrameEnd": 20
-      },
-      {
-        "frame": 21,
-        "sourceFrame": 21,
-        "uri": "df918107_layer1115_5.png",
-        "duplicateOfFrame": 5,
-        "durationFrames": 4,
-        "frameEnd": 24,
-        "sourceFrameEnd": 24
-      },
-      {
-        "frame": 25,
-        "sourceFrame": 25,
-        "uri": "df918107_layer1115_9.png",
-        "duplicateOfFrame": 9,
-        "durationFrames": 4,
-        "frameEnd": 28,
-        "sourceFrameEnd": 28
-      },
-      {
-        "frame": 29,
-        "sourceFrame": 29,
-        "uri": "df918107_layer1115_13.png",
-        "duplicateOfFrame": 13,
-        "durationFrames": 4,
-        "frameEnd": 32,
-        "sourceFrameEnd": 32
-      }
-    ]
+    }
   },
   "经验值": {
     "f1": "b7b2193f_1.webp"
