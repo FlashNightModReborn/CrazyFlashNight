@@ -1,0 +1,174 @@
+{
+  "schema": "cf6-body-source-refresh.v1",
+  "previousPolicySha256": "f90dd65d75cf627b7aa41d882b51b1a3b39aacf771d56e3d3721b6e2dd275cb8",
+  "currentPolicySha256": "78b5c28601067fc9d398007ab9d05fe0301cb07b85edf8dba03c5cf3684439d8",
+  "numericalPolicyUnchanged": true,
+  "historicalCalibrationPreserved": true,
+  "method": "Keep each declared unit root and standing symbol; recursively bind current DOMSymbolInstance dependencies, preserving explicit excludedSymbols.",
+  "changes": [
+    {
+      "unitId": 461,
+      "linkage": "敌人-CF6普通男僵尸",
+      "previousCount": 26,
+      "currentCount": 26,
+      "changedOrAdded": {},
+      "removedUnreferenced": {}
+    },
+    {
+      "unitId": 462,
+      "linkage": "敌人-CF6女僵尸",
+      "previousCount": 32,
+      "currentCount": 32,
+      "changedOrAdded": {},
+      "removedUnreferenced": {}
+    },
+    {
+      "unitId": 464,
+      "linkage": "敌人-CF6Wings",
+      "previousCount": 35,
+      "currentCount": 35,
+      "changedOrAdded": {},
+      "removedUnreferenced": {}
+    },
+    {
+      "unitId": 466,
+      "linkage": "敌人-CF6特种兵",
+      "previousCount": 50,
+      "currentCount": 50,
+      "changedOrAdded": {
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6特种兵.xml": {
+          "before": "6efa31c6864244792710de525203958fc3a13759989cb1ae42930191aa38dac5",
+          "after": "ba37ff64d6592f156f5d97f77d1923b23f35a5fc4ecc077e66bfe8b72cedf83f"
+        }
+      },
+      "removedUnreferenced": {}
+    },
+    {
+      "unitId": 467,
+      "linkage": "敌人-CF6持盾特种兵",
+      "previousCount": 53,
+      "currentCount": 53,
+      "changedOrAdded": {
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6持盾特种兵.xml": {
+          "before": "74671729b285a786bd919e74d6fe1ad1d3b558c5cd6745f4d36e98ba1f574a94",
+          "after": "66208e6b204541c81dafef730e5954232b617c39f68d0f610b4b46de42697cf8"
+        }
+      },
+      "removedUnreferenced": {}
+    },
+    {
+      "unitId": 468,
+      "linkage": "敌人-CF6光头保安",
+      "previousCount": 40,
+      "currentCount": 40,
+      "changedOrAdded": {
+        "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/敌人-CF6光头保安.xml": {
+          "before": "f60741d755e8104c70ee41e6c198b4e41fcf83d8cd33a44c45576a6d29fac04e",
+          "after": "32797fdce4cd5fc6a5700a027c3866211db67c4ba9bcf0f7d7c355ffce9d4938"
+        }
+      },
+      "removedUnreferenced": {}
+    },
+    {
+      "unitId": 469,
+      "linkage": "敌人-CF6变身光头保安",
+      "previousCount": 40,
+      "currentCount": 40,
+      "changedOrAdded": {
+        "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/敌人-CF6变身光头保安.xml": {
+          "before": "a8373d994a4398384375a1a6e70c04e1b82f90c40f436f1fe65c18804f8e7174",
+          "after": "941037475b402152218e482240760be95d6219a108b460dae97bfd58b2365779"
+        }
+      },
+      "removedUnreferenced": {}
+    }
+  ],
+  "nativeVerification": {
+    "runId": "4631709857ae45d9a671cd70bc6e8dd5",
+    "passed": 21,
+    "failed": 0,
+    "measured": 7,
+    "swfSha256": "73a355a56b492e445cb94b35f0d79fa3a4dbc8da178f4b3eef6f892045b31b6e",
+    "measurementContract": {
+      "schema": "cf6-body-alpha-probe.v1",
+      "supersample": 4,
+      "alphaMinimum": 128,
+      "as2ApiReferences": [
+        "https://open-flash.github.io/mirrors/as2-language-reference/flash/display/BitmapData.html",
+        "https://open-flash.github.io/mirrors/as2-language-reference/flash/geom/Rectangle.html",
+        "https://open-flash.github.io/mirrors/as2-language-reference/flash/geom/Matrix.html"
+      ],
+      "heightToleranceLogicalPixels": 1,
+      "scaleTolerancePercentagePoints": 0.02,
+      "policySha256": "f90dd65d75cf627b7aa41d882b51b1a3b39aacf771d56e3d3721b6e2dd275cb8",
+      "rows": [
+        {
+          "linkage": "敌人-CF6普通男僵尸",
+          "label": "空手站立",
+          "heightCm": 175,
+          "name": "制服感染者",
+          "expectedPixels": 145.192765
+        },
+        {
+          "linkage": "敌人-CF6女僵尸",
+          "label": "空手站立",
+          "heightCm": 175,
+          "name": "游荡感染者",
+          "expectedPixels": 145.192765
+        },
+        {
+          "linkage": "敌人-CF6Wings",
+          "label": "空手站立",
+          "heightCm": 190,
+          "name": "「翼」型克隆特工",
+          "expectedPixels": 157.63785914285717
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "label": "长枪站立",
+          "heightCm": 175,
+          "name": "突击步兵",
+          "expectedPixels": 145.192765
+        },
+        {
+          "linkage": "敌人-CF6持盾特种兵",
+          "label": "持盾站立",
+          "heightCm": 175,
+          "name": "重盾突击兵",
+          "expectedPixels": 145.192765
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "label": "空手站立",
+          "heightCm": 175,
+          "name": "安保干员",
+          "expectedPixels": 145.192765
+        },
+        {
+          "linkage": "敌人-CF6变身光头保安",
+          "label": "空手站立",
+          "heightCm": 175,
+          "name": "安保干员",
+          "expectedPixels": 145.192765
+        }
+      ],
+      "basis": "Frozen policy body targets; 4x alpha threshold raster bounds, two boundary quantization plus AA/matrix budget. No tolerance adjustment based on test output."
+    },
+    "observations": [
+      "Cf6BodyScaleLiveProbe 敌人-CF6普通男僵尸 opaqueBodyHeight=144.5 expected=145.192765 delta=-0.692765000000009 footY=6 scale=115.445411537411 expectedScale=115.445411537411 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6女僵尸 opaqueBodyHeight=145.25 expected=145.192765 delta=0.0572349999999915 footY=3.5 scale=117.524423309535 expectedScale=117.524423309535 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6Wings opaqueBodyHeight=157.5 expected=157.637859142857 delta=-0.137859142857167 footY=6 scale=120.91236618872 expectedScale=120.91236618872 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6特种兵 opaqueBodyHeight=145.25 expected=145.192765 delta=0.0572349999999915 footY=-0.75 scale=110.150732623056 expectedScale=110.150732623056 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6持盾特种兵 opaqueBodyHeight=145.25 expected=145.192765 delta=0.0572349999999915 footY=-0.75 scale=110.150732623056 expectedScale=110.150732623056 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6光头保安 opaqueBodyHeight=144.5 expected=145.192765 delta=-0.692765000000009 footY=0 scale=113.41162499017 expectedScale=113.41162499017 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6变身光头保安 opaqueBodyHeight=144.5 expected=145.192765 delta=-0.692765000000009 footY=0 scale=113.41162499017 expectedScale=113.41162499017 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true"
+    ],
+    "rslIdentities": {
+      "flashswf/arts/new/Antigravity专用素材.swf": "8166bc4a17e541876bd76092bcd4a5fd4e603a8bca8a8376589540861bcb98da",
+      "flashswf/arts/new/CodexWings素材.swf": "d53367b97281c0028fe568015b7fab40094699e0eaa6625fcb0cc961945a1164",
+      "flashswf/arts/new/Codex特种兵素材.swf": "611924e11cc57bc043e064b254a2a53ad43cad90431d0bba15185ab417158c56",
+      "flashswf/arts/new/Codex光头保安素材.swf": "db14bbf02ad25a583e11ec04c7fc3c3030acbf411d534c6e3eafcc2f49e2c9eb"
+    }
+  },
+  "scope": "Source provenance refresh only, not geometry, gameplay balance or human acceptance."
+}

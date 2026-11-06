@@ -44,9 +44,17 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
     ref.currentFrame = ref.isRocketMode ? ref.ROCKET_START : ref.RIFLE_START;
     ref.weaponValue  = wv;
     wv.isRocketMode  = ref.isRocketMode;
+    ref.cf6FixedNpc=typeof target.cf6UnitIdentity=="string" && typeof target.cf6G1111FixedMode=="boolean";
+    if(ref.cf6FixedNpc){
+        ref.isRocketMode=target.cf6G1111FixedMode;wv.isRocketMode=ref.isRocketMode;
+        ref.currentFrame=ref.isRocketMode?ref.ROCKET_START:ref.RIFLE_START;
+        ref.cf6Weapon=target[ref.装备类型];ref.cf6Version=target.version;
+        target.__cf6G1111=ref;target.铁枪之锋许可=false;
+    }
 
     /* ---------- 5. 射击事件监听 ---------- */
     target.dispatcher.subscribe("长枪射击", function () {
+        if(ref.cf6FixedNpc)return;
         if(target.攻击模式 !== "长枪") return;
         var prop:Object = target.man.子弹属性;
 
@@ -148,6 +156,7 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
 
     target.dispatcher.subscribe
     ("processShot", function (owner:MovieClip, weaponType:String) {
+        if(ref.cf6FixedNpc)return;
         if(!EquipmentFireIntent.isMainLongGunProcessShot(target, weaponType)) return;
         var prop:Object = target.man.子弹属性;
         if(prop.子弹种类 != "铁枪磁轨弹") return;
@@ -178,11 +187,13 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
 
     target.dispatcher.subscribe
     ("updateBullet", function (owner:MovieClip, shootStateName:String, magazineRemaining:Number, playerBulletField:String, weaponType:String) {
+        if(ref.cf6FixedNpc)return;
         if(!EquipmentFireIntent.isMainLongGunUpdateBullet(target, playerBulletField, weaponType)) return;
         ref.fireRequest = true;
     });
 
     PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref, _root.装备生命周期函数.G1111视觉更新);
+    if(ref.cf6FixedNpc)_root.装备生命周期函数.G1111视觉更新(ref);
 };
 
 /*--------------------------------------------------------
@@ -194,6 +205,8 @@ _root.装备生命周期函数.G1111周期 = function (ref)
 
     var 自机  = ref.自机;
     var 长枪  = 自机.长枪_引用;
+    if(ref.cf6FixedNpc && (自机.__cf6G1111!==ref || ref.cf6Version!==自机.version
+        || ref.cf6Weapon!==自机.长枪 || ref.weaponValue!==自机.长枪.value))return;
 
     /* ===== 0. 武器激活检测 ===== */
     var prevActive = ref.isWeaponActive;
@@ -213,7 +226,7 @@ _root.装备生命周期函数.G1111周期 = function (ref)
     ref.fireRequest = false;
 
     /* ===== 2. 变形键触发（edge） ===== */
-    if (!ref.isTransforming) {
+    if (!ref.cf6FixedNpc && !ref.isTransforming) {
         if (KeyEdgeTrigger.onRise(ref, 自机, _root.武器变形键, "wasTransformKeyDown")) {
             ref.isTransforming   = true;
             ref.transformToRock  = !ref.isRocketMode;          // 目标形态
@@ -295,7 +308,7 @@ _root.装备生命周期函数.G1111周期 = function (ref)
     /* ===== 6. 激光模组自动锁定 ===== */
     if (ref.isWeaponActive) {
         var laser = 长枪.激光模组;
-        if (laser != undefined) {
+        if (laser != undefined && !ref.cf6FixedNpc) {
             var RAD_TO_DEG = 180 / Math.PI;
             var targetRotation = 0; // 默认归位到0度
             
@@ -373,6 +386,8 @@ _root.装备生命周期函数.G1111周期 = function (ref)
 };
 
 _root.装备生命周期函数.G1111视觉更新 = function (ref:Object) {
+    if(ref.cf6FixedNpc && (ref.自机.__cf6G1111!==ref || ref.cf6Version!==ref.自机.version
+        || ref.cf6Weapon!==ref.自机.长枪 || ref.weaponValue!==ref.自机.长枪.value))return;
     var 长枪:MovieClip = ref.自机.长枪_引用;
     if (!长枪) return;
 
@@ -380,6 +395,7 @@ _root.装备生命周期函数.G1111视觉更新 = function (ref:Object) {
 
     // 激光模组角度同步
     var laser:MovieClip = 长枪.激光模组;
+    if(ref.cf6FixedNpc && laser!=undefined)laser._visible=false;
     if (laser != undefined && !isNaN(ref.laserRotation)) {
         laser._rotation = ref.laserRotation;
     }

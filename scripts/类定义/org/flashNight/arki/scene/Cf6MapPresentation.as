@@ -68,7 +68,19 @@ class org.flashNight.arki.scene.Cf6MapPresentation {
                 || typeof index != "number" || (index-index) != 0 || index < 0 || Math.floor(index) != index
                 || _root.当前关卡名 !== "书中历险-毒刺行动" || run.slot !== String(_root.savePath)
                 || !BookRunRules.sameCf6Run(run, run)) return null;
-        var map:Object = BookDefinition.get("cf6-sting").maps[index];
+        // Debug starts slice the stage list, so its index is not the authored map index.
+        // Resolve the exact map identity captured by StageInfo; never infer it from the URL.
+        var maps:Array = BookDefinition.get("cf6-sting").maps;
+        if (!(maps instanceof Array) || !(index < maps.length)
+                || typeof manager.currentBookMapId != "function") return null;
+        var mapId:String = manager.currentBookMapId();
+        var map:Object = null;
+        for (var i:Number = 0; i < maps.length; i++) {
+            if (maps[i].id === mapId) {
+                if (map != null) return null;
+                map = maps[i];
+            }
+        }
         var value:Object = map.presentation;
         if (!valid(value) || !Cf6MapMechanism.knownMap(map.id)
                 || map.background !== (map.id === "TUTORIAL" ? "cf6/CF6_Tutorial_BG.swf" : "cf6/CF6_"+map.id+"_BG.swf")

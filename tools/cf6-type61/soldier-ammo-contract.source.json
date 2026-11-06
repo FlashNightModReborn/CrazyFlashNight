@@ -1,0 +1,994 @@
+{
+  "schema": "cf6-ammo-access-contract.v2",
+  "baselineSha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+  "status": "PROPOSED; source-derived reload quote, no FP20/persistence execution",
+  "reviewedRosterSha256": "3955072aa2a9c3422a1b0ec0c8dd51b3ef98b10a87fe17a922ee085ea510b032",
+  "decision": "same-packet ammo companion; no dependency on legacy E1–E5 gifts or unproven shop coverage",
+  "policy": {
+    "trigger": "only a decided successful longgun or sidearm_pair loot packet",
+    "quantityMeaning": "integer inventory units passed to ItemUtil.singleSubmit, not projectile count or a universal magazine conversion",
+    "referenceLoad": "one full ordinary paid reload per delivered gun, quoted from its actual resolved weapon+mods; empty ordinary magazine and zero pre-paid reserve in an isolated quote view; no gunslinger discount, ghost/reward/extra chamber allowance",
+    "preserveSnapshot": [
+      "shot",
+      "reloadCount",
+      "subweaponShot",
+      "subweaponReloadCount",
+      "ammoState",
+      "mods",
+      "tier",
+      "level",
+      "isRocketMode (G1111 Boolean, including false)"
+    ],
+    "normalCostFormula": "max(0, ceil((requestedNormalRounds - paidReserve) / ordinaryCapacity)); reference quote uses requestedNormalRounds=ordinaryCapacity and paidReserve=0",
+    "liveReloadSemantics": "box magazine fill requests ordinaryCapacity; tube requests missing ordinary rounds and consumes persisted reserve before opening more inventory packs; reference quote does not mutate actual saved state",
+    "subweaponCost": "onLoadGroup -> actual clipCostPerLoad, regardless of sub capacity; onFire -> a separately audited finite group cost fireCost*groupCapacity; unknown consume modes reject the quote",
+    "deliveredSlots": "longgun packet: only its primary slot and its installed/inherent subweapon; pair packet: each of its two actual pistol slots, no enemy primary or primary subweapon",
+    "aggregation": "sum required quantities by exact inventory ammo name across selected delivered slots; do not deduplicate by taking max or by name presence",
+    "materialPacket": "consumables=[]; no ammo for none/miss/quota_exhausted either",
+    "freeze": "freeze ammo quote and contributions in same DECIDED_HIT record as weapon snapshots; no re-quote, second roll, or ammo-only retry after save/load",
+    "admission": "one RewardStashService transaction over packet.items.concat(packet.consumables), preferInventory=false; same owner/source/operation",
+    "quotaAccounting": "items remain at most two weapon instances; consumables are same packet numeric-value items, never a third gun, extra reward package, or mod-material reward; total supply is sum of quotes for at most six successful packages",
+    "economicFreeze": "access structure approved as design; no final expected amount, probability, currency valuation or fixed chapter ammo yield is asserted"
+  },
+  "coverage": {
+    "weaponNames": 42,
+    "ammoNames": 13,
+    "allAmmoNamesExist": true,
+    "shopsCoverageProved": false,
+    "shopCoverageNeeded": false,
+    "reason": "Ammo accompanies only the already-decided successful probabilistic weapon packet, under the preserved Round1 contract."
+  },
+  "inventoryAmmoCatalog": [
+    {
+      "name": "00号鹿弹",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 117,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L117"
+      }
+    },
+    {
+      "name": "12号霰弹弹药",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 27,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L27"
+      }
+    },
+    {
+      "name": "冲锋枪通用弹药",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 36,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L36"
+      }
+    },
+    {
+      "name": "手枪通用弹药",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 18,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L18"
+      }
+    },
+    {
+      "name": "机枪贫铀穿甲弹",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 162,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L162"
+      }
+    },
+    {
+      "name": "机枪通用弹药",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 90,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L90"
+      }
+    },
+    {
+      "name": "榴弹弹药",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 144,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L144"
+      }
+    },
+    {
+      "name": "火焰喷射器燃料罐",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 126,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L126"
+      }
+    },
+    {
+      "name": "火箭弹弹药",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 153,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L153"
+      }
+    },
+    {
+      "name": "狙击步枪通用弹药",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 99,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L99"
+      }
+    },
+    {
+      "name": "突击步枪通用弹药",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 45,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L45"
+      }
+    },
+    {
+      "name": "能量电池",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 171,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L171"
+      }
+    },
+    {
+      "name": "马格南手枪弹药",
+      "exists": true,
+      "evidence": {
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "path": "data/items/消耗品_弹夹.xml",
+        "line": 54,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/消耗品_弹夹.xml#L54"
+      }
+    }
+  ],
+  "ordinaryWeaponReferenceQuotes": [
+    {
+      "name": "AK47",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 30,
+      "reloadType": "default-magazine",
+      "ammoName": "突击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_突击步枪.xml",
+        "line": 57,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_突击步枪.xml#L57"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "AK74",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 50,
+      "reloadType": "default-magazine",
+      "ammoName": "突击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_突击步枪.xml",
+        "line": 848,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_突击步枪.xml#L848"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "AKS74U",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 60,
+      "reloadType": "default-magazine",
+      "ammoName": "突击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_突击步枪.xml",
+        "line": 745,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_突击步枪.xml#L745"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "Desert Eagle",
+      "slot": "手枪",
+      "baseCapacityForAuditOnly": 8,
+      "reloadType": "default-magazine",
+      "ammoName": "马格南手枪弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_手枪_大威力手枪.xml",
+        "line": 274,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_手枪_大威力手枪.xml#L274"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "FSC7",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 1,
+      "reloadType": "default-magazine",
+      "ammoName": "火箭弹弹药",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_发射器.xml",
+        "line": 968,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_发射器.xml#L968"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    },
+    {
+      "name": "G1111",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 15,
+      "reloadType": "default-magazine",
+      "ammoName": "能量电池",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_战斗步枪.xml",
+        "line": 1021,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_战斗步枪.xml#L1021"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    },
+    {
+      "name": "G36",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 30,
+      "reloadType": "default-magazine",
+      "ammoName": "突击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_突击步枪.xml",
+        "line": 320,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_突击步枪.xml#L320"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "G3SG1",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 20,
+      "reloadType": "default-magazine",
+      "ammoName": "狙击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_战斗步枪.xml",
+        "line": 228,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_战斗步枪.xml#L228"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "Glock 18",
+      "slot": "手枪",
+      "baseCapacityForAuditOnly": 33,
+      "reloadType": "default-magazine",
+      "ammoName": "手枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_手枪_冲锋枪.xml",
+        "line": 57,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_手枪_冲锋枪.xml#L57"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "HK33A2",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 35,
+      "reloadType": "default-magazine",
+      "ammoName": "突击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_突击步枪.xml",
+        "line": 1409,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_突击步枪.xml#L1409"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "HK33KA3",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 35,
+      "reloadType": "default-magazine",
+      "ammoName": "突击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_突击步枪.xml",
+        "line": 1043,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_突击步枪.xml#L1043"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "HKSL8",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 10,
+      "reloadType": "default-magazine",
+      "ammoName": "突击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_战斗步枪.xml",
+        "line": 6,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_战斗步枪.xml#L6"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "HKUSP9",
+      "slot": "手枪",
+      "baseCapacityForAuditOnly": 15,
+      "reloadType": "default-magazine",
+      "ammoName": "手枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_手枪_手枪.xml",
+        "line": 575,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_手枪_手枪.xml#L575"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "M134",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 60,
+      "reloadType": "default-magazine",
+      "ammoName": "机枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_压制机枪.xml",
+        "line": 268,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_压制机枪.xml#L268"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "M16A1",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 20,
+      "reloadType": "default-magazine",
+      "ammoName": "突击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_突击步枪.xml",
+        "line": 162,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_突击步枪.xml#L162"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "M1911",
+      "slot": "手枪",
+      "baseCapacityForAuditOnly": 8,
+      "reloadType": "default-magazine",
+      "ammoName": "手枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_手枪_手枪.xml",
+        "line": 421,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_手枪_手枪.xml#L421"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "M249",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 200,
+      "reloadType": "default-magazine",
+      "ammoName": "机枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_机枪.xml",
+        "line": 56,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_机枪.xml#L56"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "M24SWS",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 5,
+      "reloadType": "tube",
+      "ammoName": "狙击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_狙击步枪.xml",
+        "line": 265,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_狙击步枪.xml#L265"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "M4A1",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 50,
+      "reloadType": "default-magazine",
+      "ammoName": "突击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_突击步枪.xml",
+        "line": 213,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_突击步枪.xml#L213"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "M93R",
+      "slot": "手枪",
+      "baseCapacityForAuditOnly": 7,
+      "reloadType": "default-magazine",
+      "ammoName": "手枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_手枪_冲锋枪.xml",
+        "line": 1067,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_手枪_冲锋枪.xml#L1067"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "MAC10",
+      "slot": "手枪",
+      "baseCapacityForAuditOnly": 32,
+      "reloadType": "default-magazine",
+      "ammoName": "冲锋枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_手枪_冲锋枪.xml",
+        "line": 162,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_手枪_冲锋枪.xml#L162"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "MG42",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 85,
+      "reloadType": "default-magazine",
+      "ammoName": "机枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_压制机枪.xml",
+        "line": 135,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_压制机枪.xml#L135"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "MG42战术版",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 250,
+      "reloadType": "default-magazine",
+      "ammoName": "机枪贫铀穿甲弹",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_压制机枪.xml",
+        "line": 424,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_压制机枪.xml#L424"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    },
+    {
+      "name": "MP7",
+      "slot": "手枪",
+      "baseCapacityForAuditOnly": 50,
+      "reloadType": "default-magazine",
+      "ammoName": "冲锋枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_手枪_冲锋枪.xml",
+        "line": 413,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_手枪_冲锋枪.xml#L413"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "P90",
+      "slot": "手枪",
+      "baseCapacityForAuditOnly": 50,
+      "reloadType": "default-magazine",
+      "ammoName": "冲锋枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_手枪_冲锋枪.xml",
+        "line": 518,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_手枪_冲锋枪.xml#L518"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "PKM机枪",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 100,
+      "reloadType": "default-magazine",
+      "ammoName": "机枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_机枪.xml",
+        "line": 229,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_机枪.xml#L229"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "SPAS12",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 10,
+      "reloadType": "tube",
+      "ammoName": "00号鹿弹",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_霰弹枪.xml",
+        "line": 910,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_霰弹枪.xml#L910"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "SVD",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 15,
+      "reloadType": "default-magazine",
+      "ammoName": "狙击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_战斗步枪.xml",
+        "line": 758,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_战斗步枪.xml#L758"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "UZI",
+      "slot": "手枪",
+      "baseCapacityForAuditOnly": 33,
+      "reloadType": "default-magazine",
+      "ammoName": "冲锋枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_手枪_冲锋枪.xml",
+        "line": 213,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_手枪_冲锋枪.xml#L213"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "WA2000",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 7,
+      "reloadType": "default-magazine",
+      "ammoName": "狙击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_狙击步枪.xml",
+        "line": 591,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_狙击步枪.xml#L591"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "XM1014",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 8,
+      "reloadType": "tube",
+      "ammoName": "12号霰弹弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_霰弹枪.xml",
+        "line": 327,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_霰弹枪.xml#L327"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "巴雷特",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 8,
+      "reloadType": "default-magazine",
+      "ammoName": "狙击步枪通用弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_反器材武器.xml",
+        "line": 147,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_反器材武器.xml#L147"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "战术巴雷特",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 8,
+      "reloadType": "default-magazine",
+      "ammoName": "狙击步枪通用弹药",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_反器材武器.xml",
+        "line": 484,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_反器材武器.xml#L484"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    },
+    {
+      "name": "战术版喷火器",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 100,
+      "reloadType": "default-magazine",
+      "ammoName": "火焰喷射器燃料罐",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_特殊.xml",
+        "line": 901,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_特殊.xml#L901"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    },
+    {
+      "name": "紫色幻想",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 60,
+      "reloadType": "default-magazine",
+      "ammoName": "能量电池",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_特殊.xml",
+        "line": 799,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_特殊.xml#L799"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    },
+    {
+      "name": "能量狙击枪",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 6,
+      "reloadType": "default-magazine",
+      "ammoName": "能量电池",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_狙击步枪.xml",
+        "line": 753,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_狙击步枪.xml#L753"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    },
+    {
+      "name": "诛神枪",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 50,
+      "reloadType": "default-magazine",
+      "ammoName": "能量电池",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_特殊.xml",
+        "line": 747,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_特殊.xml#L747"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    },
+    {
+      "name": "轻量化量子能量枪",
+      "slot": "手枪",
+      "baseCapacityForAuditOnly": 60,
+      "reloadType": "default-magazine",
+      "ammoName": "能量电池",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_手枪_冲锋枪.xml",
+        "line": 2022,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_手枪_冲锋枪.xml#L2022"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    },
+    {
+      "name": "量子能量枪",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 90,
+      "reloadType": "default-magazine",
+      "ammoName": "能量电池",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_突击步枪.xml",
+        "line": 3226,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_突击步枪.xml#L3226"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    },
+    {
+      "name": "雷明登870",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 8,
+      "reloadType": "tube",
+      "ammoName": "12号霰弹弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_霰弹枪.xml",
+        "line": 113,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_霰弹枪.xml#L113"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "雷明登870警用型",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 5,
+      "reloadType": "tube",
+      "ammoName": "12号霰弹弹药",
+      "quote": "ceil(C / C), C=effective ordinary capacity > 0; reference one full normal load with paidReserve=0; no bonus/ghost/chamber refill allowance",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_霰弹枪.xml",
+        "line": 273,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/武器_长枪_霰弹枪.xml#L273"
+      },
+      "notGeneralUnitConversion": true
+    },
+    {
+      "name": "高斯枪",
+      "slot": "长枪",
+      "baseCapacityForAuditOnly": 5,
+      "reloadType": "default-magazine",
+      "ammoName": "能量电池",
+      "quote": "ceil(C / C)=1 inventory unit for one ordinary full reload; C=effective positive ordinary capacity, paidReserve=0 in isolated quote; never mutate live shot/ammoState",
+      "derivedCurrentInventoryUnits": 1,
+      "source": {
+        "path": "data/items/武器_长枪_反器材武器.xml",
+        "line": 566,
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_反器材武器.xml#L566"
+      },
+      "notGeneralUnitConversion": true,
+      "runtimeReloadQuoteRequired": true
+    }
+  ],
+  "subweaponReferenceQuotes": [
+    {
+      "name": "M203榴弹发射器",
+      "capacity": 1,
+      "consumeMode": "onLoadGroup",
+      "consumeTiming": "onReloadCommit",
+      "reserveName": "榴弹弹药",
+      "quoteField": "clipCostPerLoad",
+      "derivedCurrentInventoryUnits": 1,
+      "evidence": {
+        "sha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+        "path": "data/items/equipment_mods/中等材料_下挂武器.xml",
+        "lines": "59-82",
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/equipment_mods/中等材料_下挂武器.xml#L59"
+      }
+    },
+    {
+      "name": "下挂霰弹枪",
+      "capacity": 3,
+      "consumeMode": "onLoadGroup",
+      "consumeTiming": "onReloadCommit",
+      "reserveName": "12号霰弹弹药",
+      "quoteField": "clipCostPerLoad",
+      "derivedCurrentInventoryUnits": 1,
+      "evidence": {
+        "sha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+        "path": "data/items/equipment_mods/低级材料_下挂武器.xml",
+        "lines": "19-43",
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/items/equipment_mods/低级材料_下挂武器.xml#L19"
+      }
+    }
+  ],
+  "examples": [
+    {
+      "kind": "longgun",
+      "weapon": "AK47 + M203榴弹发射器",
+      "consumables": [
+        {
+          "name": "突击步枪通用弹药",
+          "value": 1
+        },
+        {
+          "name": "榴弹弹药",
+          "value": 1
+        }
+      ],
+      "weaponInstanceCount": 1,
+      "basis": "current source-derived reference costs, not a universal ammo conversion"
+    },
+    {
+      "kind": "sidearm_pair",
+      "weapons": [
+        "Glock18",
+        "Glock18"
+      ],
+      "consumables": [
+        {
+          "name": "手枪通用弹药",
+          "value": 2
+        }
+      ],
+      "weaponInstanceCount": 2,
+      "basis": "each delivered hand quotes separately, then exact-name sum"
+    },
+    {
+      "kind": "mod_material",
+      "consumables": [],
+      "weaponInstanceCount": 0
+    },
+    {
+      "kind": "longgun",
+      "weapon": "G1111 actual own mode snapshot",
+      "consumables": [
+        {
+          "name": "能量电池",
+          "value": 1
+        }
+      ],
+      "weaponInstanceCount": 1,
+      "probability": "not guaranteed",
+      "mode": "false/true preserved from the actual instance"
+    },
+    {
+      "kind": "sidearm_pair",
+      "weapons": [
+        "轻量化量子能量枪",
+        "轻量化量子能量枪"
+      ],
+      "consumables": [
+        {
+          "name": "能量电池",
+          "value": 2
+        }
+      ],
+      "weaponInstanceCount": 2,
+      "basis": "sum two independent full reload inventory quotes; never deduplicate to1"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "sha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/WeaponAmmoRuntime.as",
+      "lines": "192-244",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/scripts/类定义/org/flashNight/arki/unit/Action/Shoot/WeaponAmmoRuntime.as#L192"
+    },
+    {
+      "sha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ReloadManager.as",
+      "lines": "281-313",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ReloadManager.as#L281"
+    },
+    {
+      "sha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ReloadManager.as",
+      "lines": "583-615",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ReloadManager.as#L583"
+    },
+    {
+      "sha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/LongGunSubWeaponCore.as",
+      "lines": "652-684",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/scripts/类定义/org/flashNight/arki/unit/Action/Shoot/LongGunSubWeaponCore.as#L652"
+    },
+    {
+      "sha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/LongGunSubWeaponCore.as",
+      "lines": "712-804",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/scripts/类定义/org/flashNight/arki/unit/Action/Shoot/LongGunSubWeaponCore.as#L712"
+    },
+    {
+      "sha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+      "path": "scripts/类定义/org/flashNight/arki/item/RewardStashStore.as",
+      "lines": "92-152",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/scripts/类定义/org/flashNight/arki/item/RewardStashStore.as#L92"
+    }
+  ],
+  "requiredImplementationTests": [
+    "zero player ammo: main magazine can pay normal reload",
+    "tube partial reload interrupted: reserve persists and quote never refills saved shot",
+    "two same-name pistols: inventory charge per hand and companion summed",
+    "primary + M203 or shotgun sub: both inventory names available, no NPC free reload on player",
+    "transaction failure after equipment before ammo: zero visible partial delivery",
+    "saved retry: no companion duplicated or re-quoted",
+    "material/NO_LOOT has no companion",
+    "unknown cost mode or missing ammo type fails closed"
+  ],
+  "headSha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+  "reviewedRosterCanonicalSha256": "0f47b8d112fbae4e7618d8f8e0befbe994c3642bf1f99f1caade6844176279a2",
+  "baselineContractPreserved": true,
+  "round2Change": "Only new actual weapon/ammo identities and G1111 Boolean mode preservation. No shop additions, drop probability, cap, guaranteed reward or live ammo reset changes.",
+  "g1111StateBoundary": {
+    "weaponName": "G1111",
+    "authority": "actual BaseItem.toObject before equipment teardown",
+    "modeType": "Boolean required; false must remain false",
+    "copyBoundary": "clone snapshot independently again before createFromObject",
+    "excludeFromPersistence": [
+      "cf6G1111FixedMode",
+      "cf6G1111Action",
+      "__g1111Owner",
+      "__cf6DangerAction",
+      "autoTarget",
+      "MovieClip references"
+    ],
+    "preserve": [
+      "name",
+      "value.level",
+      "value.tier",
+      "value.mods",
+      "value.shot",
+      "value.ammoState",
+      "value.reloadCount",
+      "value.isRocketMode"
+    ],
+    "ammoName": "能量电池",
+    "ammoRule": "same packet independent consumables from real reloadCost quote, never reset shot or count companion as third gun",
+    "probability": "unchanged protocol; no guaranteed G1111; no reroll on save/load or cap exhaustion",
+    "chapterCaps": "retain proposed <=6 packages, <=2 pairs, <=8 weapon instances, <=2 material packages; not a frozen drop yield"
+  }
+}

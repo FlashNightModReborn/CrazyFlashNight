@@ -4,11 +4,11 @@ function canonicalDocumentURI(value) {
   try { return encodeURI(decodeURI(value)); } catch (uriError) { return value; }
 }
 // Convert only our known absolute paths, never arbitrary open documents.
-var target = FLfile.platformPathToURI("C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\flashswf\\backgrounds\\cf6\\preparation\\CF6_TransportTextureSeed\\CF6_TransportTextureSeed.xfl");
-var receipt = FLfile.platformPathToURI("C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-map-runtime\\native-import\\CF6_TransportTextureSeed-" + String(new Date().getTime()) + ".txt");
+var target = FLfile.platformPathToURI("C:\\Users\\fs\\.codex\\worktrees\\cf6-soldier-integration\\CrazyFlashNight\\flashswf\\backgrounds\\cf6\\preparation\\CF6_TransportTextureSeed\\CF6_TransportTextureSeed.xfl");
+var receipt = FLfile.platformPathToURI("C:\\Users\\fs\\.codex\\worktrees\\cf6-soldier-integration\\CrazyFlashNight\\tmp\\cf6-map-runtime\\native-import\\CF6_TransportTextureSeed-" + String(new Date().getTime()) + ".txt");
 if (!FLfile.write(receipt, "CF6_NATIVE_IMPORT_STARTED\n" + target + "\n"))
   throw new Error("Cannot write native import receipt before creating document");
-var assets = [{"path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-scene-completion\\transport-art\\textures\\intrinsic-bd390a38e397a6693d65a032.png", "id": "texture-0", "x": 0, "y": 0, "width": 1113, "height": 708}];
+var assets = [{"path": "C:\\Users\\fs\\.codex\\worktrees\\cf6-soldier-integration\\CrazyFlashNight\\tools\\cf6-scene-completion\\transport-art\\textures\\intrinsic-bd390a38e397a6693d65a032.png", "id": "texture-0", "x": 0, "y": 0, "width": 1113, "height": 708}];
 var doc = null;
 try {
 if (FLfile.exists(target)) throw new Error("Refusing to overwrite existing XFL: " + target);

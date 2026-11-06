@@ -38,6 +38,7 @@ $focusedRun = @{
         'org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest'
         'org.flashNight.arki.key.KeyManagerTest'
     )
+    AdditionalAsRelativePaths = @('scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ShootCore.as','scripts/类定义/org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as')
     ExpectedTracePatterns = @(
         '(?m)^--- LongGunSubWeaponCoreTest: 511/511 passed, 0 failed ---\r?$'
         '(?m)^--- PistolRecoilCoreTest: (?<pistol>[1-9][0-9]*)/\k<pistol> passed, 0 failed ---\r?$'

@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId cf6-fixed-roster Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.WaveSpawnWheelTest.runAllTests();
+org.flashNight.arki.scene.Cf6SoldierRosterTest.runAllTests();
+trace("FocusedTestRunId cf6-fixed-roster Complete: __FOCUSED_RUN_ID__");

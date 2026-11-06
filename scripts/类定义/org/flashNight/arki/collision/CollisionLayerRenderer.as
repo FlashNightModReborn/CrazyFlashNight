@@ -198,7 +198,10 @@ class org.flashNight.arki.collision.CollisionLayerRenderer {
     /**
      * 标记碰撞层为脏并发布事件
      */
+    public static var revision:Number = 0;
+
     public static function markDirty():Void {
+        revision++;
         _dirty = true;
         EventBus.getInstance().publish(EVENT_COLLISION_CHANGED);
     }

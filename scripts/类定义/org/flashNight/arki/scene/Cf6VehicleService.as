@@ -197,18 +197,16 @@ class org.flashNight.arki.scene.Cf6VehicleService {
         if(s.status=="dead") return s.status;
         s.resumeStatus=s.status;s.deadCarFrame=s.player._currentframe;
         if(!s.heroDeathSound) {Cf6VehicleCombat.playCue(s,"vehicleDeath",true);s.heroDeathSound=true;}
-        s.deadHold=Cf6VehicleActorAdapter.park(s.actorAdapter);
-        if(s.deadHold==null) {s.reason="dead-presentation-owner-changed";dispose(s);return "cancelled";}
+        if(!Cf6VehicleActorAdapter.park(s.actorAdapter)) {s.reason="dead-presentation-owner-changed";dispose(s);return "cancelled";}
         releaseLoading(s);FocusTargetHudService.clear(s.hudLease);s.hudLease=null;
         s.status="dead";Cf6VehicleTimeline.pose(s.player,16);
         return s.status;
     }
     private static function resumeDead(s:Object):String {
-        if(!Cf6VehicleActorAdapter.parked(s.deadHold)) {s.reason="dead-actor-owner-changed";dispose(s);return "cancelled";}
-        if(!(s.deadHold.hero.hp>0)) {s.deadHold.hero._visible=false;return "dead";}
-        var adapter:Object=Cf6VehicleActorAdapter.resume(s.deadHold);
-        if(adapter==null) {s.reason="revived-actor-owner-rejected";dispose(s);return "cancelled";}
-        s.actorAdapter=adapter;s.deadHold=null;s.status=s.resumeStatus;s.heroDeathSound=false;
+        if(!Cf6VehicleActorAdapter.parked(s.actorAdapter)) {s.reason="dead-actor-owner-changed";dispose(s);return "cancelled";}
+        if(!(s.actorAdapter.hero.hp>0) || org.flashNight.arki.scene.StageRunSession.getRunAuthority().life!=="alive") {s.actorAdapter.hero._visible=false;return "dead";}
+        if(!Cf6VehicleActorAdapter.resume(s.actorAdapter)) {s.reason="revived-actor-owner-rejected";dispose(s);return "cancelled";}
+        s.status=s.resumeStatus;s.heroDeathSound=false;
         Cf6VehicleTimeline.pose(s.player,s.deadCarFrame);syncPlayer(s);
         if(s.status=="loading")s.loadingLease=PauseManager.lease(true,"cf6_vehicle_loading");
         if(Cf6VehicleCombat.owned(s,s.boss)) {
@@ -284,7 +282,6 @@ class org.flashNight.arki.scene.Cf6VehicleService {
             clips[i].removeMovieClip();
         }
         Cf6VehicleActorAdapter.release(s.actorAdapter);
-        Cf6VehicleActorAdapter.releaseParked(s.deadHold);
         if(s.world.__cf6VehicleSession===s) delete s.world.__cf6VehicleSession;
         s.closed=true;s.status="cancelled";
     }

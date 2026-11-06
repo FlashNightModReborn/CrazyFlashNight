@@ -1,5 +1,4 @@
 ﻿import org.flashNight.arki.item.itemCollection.ICollection;
-import org.flashNight.arki.item.BaseItem;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
 import org.flashNight.gesh.object.ObjectUtil;
 
@@ -42,17 +41,18 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     public function toObject():Object{
         var obj = {};
         for(var key in items){
-            var item:BaseItem = items[key];
+            var item:Object = items[key];
             obj[key] = item.toObject();
         }
         return obj;
     }
 
-    // 设置物品集合数据
+    // 设置物品集合数据。工厂只在运行期查找，避免基础容器经 BaseItem → 装备服务
+    // 回连其派生容器，导致 CS6 先注册子类、后注册父类而永久丢失继承方法。
     public function setItems(_items:Object):Void{
         var newItems = {};
         for(var key in _items){
-            newItems[key] = BaseItem.createFromObject(_items[key]);
+            newItems[key] = _global.org.flashNight.arki.item.BaseItem.createFromObject(_items[key]);
         }
         this.items = newItems;
     }

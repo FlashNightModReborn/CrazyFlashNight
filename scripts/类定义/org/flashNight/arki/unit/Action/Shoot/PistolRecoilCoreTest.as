@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.unit.Action.Shoot.ShootCore;
+﻿import org.flashNight.arki.unit.Action.Shoot.WeaponFireCore;
+import org.flashNight.arki.unit.Action.Shoot.ShootCore;
 import org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
@@ -21,6 +22,7 @@ class org.flashNight.arki.unit.Action.Shoot.PistolRecoilCoreTest {
         testAutomaticInterval();
         testCleanupAndLateCallback();
         testUnloadSamePath();
+        testPresentationOwnership();
         EnhancedCooldownWheel.I().reset();
         _root.gameworld = oldWorld;
         _root.控制目标 = oldControl;
@@ -83,6 +85,34 @@ class org.flashNight.arki.unit.Action.Shoot.PistolRecoilCoreTest {
             off ? "_semiReleased_keepshooting2" : "_semiReleased_keepshooting");
     }
 
+    private static function testPresentationOwnership():Void {
+        var markers:Array=["__cf6VehicleOwner","__cf6TraversalOwner","__cf6ElevatorPoseOwner"];
+        for(var index:Number=0;index<markers.length;index++) {
+            for(var variant:Number=0;variant<2;variant++) {
+                var unit:MovieClip=fixture(variant==1,variant==1,100);
+                unit.动作A=true;unit.man.主手开始射击();ticks(4);
+                var fired:Number=unit.mainFired;
+                check(fired>0,"positive ordinary fire before presentation "+markers[index]+"/"+variant);
+                unit[markers[index]]={};
+                unit.man.主手开始射击();ticks(9);
+                check(unit.mainFired==fired && unit.动作A===true && unit.主手射击中===false
+                    && unit.keepshooting==undefined,"held fire cancels its existing lane while ownership persists "+markers[index]+"/"+variant);
+                ShootCore.continuousShootAs(unit,{params:ShootCore.primaryParams,man:unit.man},100);
+                ticks(3);
+                check(unit.mainFired==fired,"late contextual callback cannot bypass persistent presentation owner "+markers[index]+"/"+variant);
+                delete unit[markers[index]];unit.动作A=false;ticks(2);
+                unit.动作A=true;unit.man.主手开始射击();ticks(4);
+                check(unit.mainFired>fired,"ordinary fire resumes after presentation release "+markers[index]+"/"+variant);
+                dispose(unit);
+            }
+            unit=fixture(false,false,100);unit[markers[index]]={};unit.__pendingFireInterval=80;
+            var properties:Object={};var spent:Number=unit.手枪.value.shot;
+            check(!WeaponFireCore.executeShot(unit,"手枪",null,properties) && unit.手枪.value.shot==spent
+                && unit.__pendingFireInterval==0 && properties.武器扩散倍率==undefined,
+                "last fire boundary denies before magazine/template mutation "+markers[index]);
+            dispose(unit);
+        }
+    }
     private static function testInterleaved(reverse:Boolean):Void {
         var unit:MovieClip = fixture(true, true, 200);
         unit[reverse ? "动作A" : "动作B"] = true;

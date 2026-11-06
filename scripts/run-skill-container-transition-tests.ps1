@@ -43,6 +43,6 @@ $hostSettings=[IO.File]::ReadAllText((Join-Path $hostSource 'PublishSettings.xml
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/unit/UnitComponent/Routing/SkillContainerTransitionTest.as') `
     -SuiteFqns @('org.flashNight.arki.unit.UnitComponent.Routing.SkillContainerTransitionTest') `
     -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/unit/UnitComponent/Routing/StateTransition.as','scripts/类定义/org/flashNight/arki/unit/UnitComponent/Routing/StateTransitionTest.as','scripts/逻辑/单位函数/单位函数_lsy_主角技能.as','scripts/引擎/引擎_fs_技能路由.as','scripts/引擎/引擎_fs_战技路由.as','scripts/类定义/org/flashNight/arki/unit/UnitComponent/Routing/RoutingLifecycle.as','scripts/类定义/org/flashNight/arki/unit/Action/Melee/BladeShootCore.as','scripts/类定义/org/flashNight/arki/unit/Action/Skill/IchimonjiMovement.as','scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as') `
-    -ExpectedTracePatterns @('(?m)^SkillContainerTransitionTest Tests Passed: 46\r?$','(?m)^SkillContainerTransitionTest Tests Failed: 0\r?$') `
+    -ExpectedTracePatterns @('(?m)^SkillContainerTransitionTest Tests Passed: 64\r?$','(?m)^SkillContainerTransitionTest Tests Failed: 0\r?$') `
     -SuccessSummary 'Actual things0 skill timelines, production routing and attribute functions; disposable unit fixture, no full-game hit acceptance' `
     -AsyncBehaviorTimeoutSeconds 180 -TimeoutSeconds $TimeoutSeconds

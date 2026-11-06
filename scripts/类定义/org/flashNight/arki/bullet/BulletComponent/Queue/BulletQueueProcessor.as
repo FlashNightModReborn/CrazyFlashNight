@@ -363,7 +363,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * - 使用位运算检测友军伤害标志，避免布尔属性查找开销
      * - 阵营查询结果存入局部变量queueKey后立即使用
      */
-    public static function add(bullet:Object):Void {
+    public static function add(bullet:Object):BulletQueue {
         // === 宏展开：实例状态标志位 ===
         #include "../macros/STATE_FRIENDLY_FIRE.as"
 
@@ -376,7 +376,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             FactionManager.getFactionFromUnit(_root.gameworld[bullet.发射者名]);
 
         // 将子弹添加到对应队列
-        activeQueues[queueKey].add(bullet);
+        return activeQueues[queueKey].add(bullet);
     }
 
     // ========================================================================
@@ -413,8 +413,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             areaAABB.updateFromTransparentBullet(bullet);
         }
 
-        // 透明子弹总是进入碰撞检测执行段
-        BulletQueueProcessor.add(bullet);
+        // 透明子弹只入队一次。为需要追踪的碰撞记录保留本次实际入队或拒收结果。
+        var queue:BulletQueue=BulletQueueProcessor.add(bullet);
+        if(bullet.cf6DamageGroup!=null)
+            bullet.__cf6OneFrameDrain=queue!=null?queue.nextDrain():{drained:true};
     }
 
     /**

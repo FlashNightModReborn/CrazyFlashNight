@@ -310,7 +310,7 @@ class org.flashNight.arki.scene.WaveSpawner {
     }
 
 
-    public function spawn(attribute:Object, index:Number, waveIndex:Number, quantity:Number):Boolean{
+    public function spawn(attribute:Object, index:Number, waveIndex:Number, quantity:Number, spawnOrdinal:Number):Boolean{
         var 兵种信息 = waveInfo[waveIndex][index];
         var spawnIndex = 兵种信息.SpawnIndex;
         var spawnPiontInstance = spawnIndex > -1 ? spawnPoints[spawnIndex] : gameworld.地图;
@@ -342,7 +342,13 @@ class org.flashNight.arki.scene.WaveSpawner {
             instanceName = attribute.名字 + "_" + waveIndex + "_" + index + "_" + quantity;
         }
 
-        var born:MovieClip=spawnEnemy(id, instanceName, enemyPara, spawnIndex, 兵种信息.x, 兵种信息.y);
+        var fixedPosition:Object;
+        if(兵种信息.Parameters.cf6FixedSlots!==undefined)
+            fixedPosition=org.flashNight.arki.scene.Cf6SoldierRoster.prepare(兵种信息,spawnOrdinal,enemyPara);
+        // The authored wave/entry provenance is captured before the actor is attached.
+        enemyPara.cf6SpawnWave=waveIndex+1;enemyPara.cf6SpawnEntry=index-1;enemyPara.cf6SpawnOrdinal=spawnOrdinal;
+        var born:MovieClip=spawnEnemy(id, instanceName, enemyPara, spawnIndex,
+            fixedPosition==null?兵种信息.x:fixedPosition.x,fixedPosition==null?兵种信息.y:fixedPosition.y);
         // 本图数量闸拒绝的刷新不扣额度、不推进尸母衰竭，也不虚增出生点人数。
         if(gameworld.__noahMotherEncounter!=null && born==undefined)return false;
 

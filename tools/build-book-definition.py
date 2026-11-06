@@ -7,6 +7,7 @@ import math
 import re
 from pathlib import Path
 import shutil
+import sys
 import xml.etree.ElementTree as ET
 from choice_reward_catalog import resolve_book_choices, validate_loadout, loadout_entries
 from unit_registry import UnitRegistry, normalize_book_units
@@ -143,6 +144,12 @@ def validate_cf6(data, items, skills, units, require_backgrounds=True):
     validate_cf6_interactive_props(data)
     from cf6_economy import validate_economy
     validate_economy(data, items)
+    if type61:
+        sys.path.insert(0, str(ROOT/'tools/cf6-type61'))
+        from fixed_roster import validate_materialized
+        validate_materialized(data)
+    elif data.get('type61', {}).get('soldiers') is not None:
+        raise ValueError('Fixed158 is restricted to the Type61 route')
 
 
 def validate_cf6_vehicle(stage):
@@ -449,7 +456,8 @@ def validate_cf6_boss(stage, units, items, successor=False):
 
 def generated_cf6(data):
     name = 'cf6-type61' if data['routeId'] == 'type61' else 'cf6-sting'
-    return {ROOT/('data/stages/books/'+name+'.runtime.json'): (json.dumps(data,ensure_ascii=False,indent=2)+'\n').encode('utf-8')}
+    options={'separators':(',',':')} if data.get('type61',{}).get('soldiers') else {'indent':2}
+    return {ROOT/('data/stages/books/'+name+'.runtime.json'): (json.dumps(data,ensure_ascii=False,**options)+'\n').encode('utf-8')}
 
 
 def load_mods():

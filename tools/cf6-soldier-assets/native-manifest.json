@@ -2,7 +2,7 @@
   "schema": "cf6-soldier.native-import.v1",
   "owner": "flashswf/arts/new/Codex特种兵素材",
   "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6特种兵-R3",
-  "nativeSymbolCount": 542,
+  "nativeSymbolCount": 546,
   "shieldInput": "flashswf/arts/new/Codex素材源稿/CF6特种兵-持盾-R4",
   "shieldRoot": 580,
   "phaseLinkages": {
@@ -19,7 +19,7 @@
   "buildInputs": [
     {
       "path": "tools/cf6-soldier-assets/build.py",
-      "sha256": "e0b8dda16f41a38777ad0a79ded4db21a8bd214b82c06c308d9b21f9d4c1946c"
+      "sha256": "4b4d182547111b34fe8fcdab760c1df49e5cbcfb911537a4f99cd2eb43893505"
     },
     {
       "path": "tools/cf6-soldier-assets/vector.py",
@@ -31,7 +31,11 @@
     },
     {
       "path": "tools/cf6-soldier-assets/SoldierAI.as",
-      "sha256": "60197196d2446a54fd9b6408f5f00de06a35e034d7fcde8160b626795d594dea"
+      "sha256": "d01476afedeedcaf97c7f23aacb14db441aa60d2a272070de866b06e4d3ca4d7"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierDefense.as",
+      "sha256": "89b00ae1c127fa4794b9b109adf2e2159d304d606f0fcb2cd45014669da8cfb4"
     },
     {
       "path": "tools/cf6-wings-assets/vector.py",
@@ -125,7 +129,7 @@
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人特殊函数.as",
       "lineEndingNormalization": "lf",
-      "sha256": "151a84fd63229971abcf0b62cff1f824b38a43a176915ce8e571f0170b046628"
+      "sha256": "6b729b1e8381dec764455a900320cb90120b079205671d8aaf188bcb272dc63c"
     },
     {
       "path": "scripts/逻辑/单位函数/单位函数_fs_装备引用配置.as",
@@ -135,7 +139,7 @@
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
       "lineEndingNormalization": "lf",
-      "sha256": "5b0f55f6904cad0332a5375b42e3fa8928f762e1a0d32cde55f48f965fa4f621"
+      "sha256": "70d473ffc31d8ab1e7e6482d74f5bf3e0bb7c6d1c3bd125a702c0b2cb741564e"
     },
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
@@ -152,7 +156,7 @@
     },
     {
       "path": "tools/cf6-soldier-assets/EliteAI.as",
-      "sha256": "ca2486d871bd5720557112ecb80005b148c72fa54dbdfb3a106e89a9658a9cec"
+      "sha256": "adea20fa4fddde445f574be662946bd8cacb44981807c1ed8d021c07c0334930"
     },
     {
       "path": "tools/cf6-soldier-assets/elite_anatomy.py",
@@ -176,7 +180,7 @@
     },
     {
       "path": "data/items/武器_手枪_大威力手枪.xml",
-      "sha256": "9fc68c4193af3809819e4a6ede3e357e9d1785a825218d3ab5ec3c9a3f277510"
+      "sha256": "6dc3c7937fdad429885aae92493263bb28d060771172cce5c7380b8f1f9bde26"
     },
     {
       "path": "flashswf/arts/new/偷吃屑鱼坟头贡品/LIBRARY/枪-手枪-FR506.xml",
@@ -184,11 +188,11 @@
     },
     {
       "path": "tools/cf6-soldier-assets/art_revision.py",
-      "sha256": "ba6d0e54babb6f9a9ad3d36728cd33aacbc45d44089d6c2d84deac42f6569941"
+      "sha256": "d1d6db1f7a0cb1da417b8659bf541511b9c807efe5f5a3d235084eda3a3c8107"
     },
     {
       "path": "tools/cf6-soldier-assets/SoldierRoles.as",
-      "sha256": "60769cff7ab11d499fa1b5cddb69040afc08368a4178082bd105a47f94d06ff9"
+      "sha256": "423a26f33327b85785679c18e12f84704689662f6016e7c6a58fb02f1e9ebafb"
     },
     {
       "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/倒地恢复.xml",
@@ -268,11 +272,11 @@
     },
     {
       "path": "tools/cf6-soldier-assets/tactics.py",
-      "sha256": "1ebb8cbc71591a8cff7cd71a285dd6ae25746473c6d5de1114ab603f443759f2"
+      "sha256": "dfd93441d7f0221f7a93e603052e00026dfabc7aaad4799f9047e375e9dd2b45"
     },
     {
       "path": "tools/cf6-soldier-assets/TacticalAI.as",
-      "sha256": "f5944ea080d42c0c207da7f0d13b4624d7e9eab9cef05cc241135ed71b39d6f4"
+      "sha256": "3f5761be1cbc02c2caf34f75d620bedce36e75f4452d05904303464ec23c5c94"
     },
     {
       "path": "tools/cf6-soldier-assets/SoldierSubweapon.as",
@@ -281,6 +285,26 @@
     {
       "path": "tools/cf6-soldier-assets/tactical-profiles.json",
       "sha256": "5417d99891aabfdc86842a5d3718be32cc350ca2da681e988b6dabc352d1769a"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/FixedActionRules.as",
+      "sha256": "106993cdcbc431cefda7fe7e28462181535147d19be8fe9e4aca43eec7e81358"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/FixedActionTriggers.as",
+      "sha256": "fcdc959cd062d98ace2cf593199516ce1a9cdc71745f01d506afd1624d06e3c1"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/FixedActionAdapter.as",
+      "sha256": "5058809249075a00e4f0f6d472a5da0bffc51b8d50c6dc8d87135db93686cc71"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/FixedNavigation.as",
+      "sha256": "b8f70007be1b266a9a5c364eda7aa513209a07f8410f48379e028c30d2c47d03"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/FixedActionWeapons.as",
+      "sha256": "a8f41b34f0dfff608080184a02a91109c07a16cefd22a29fe72a5dc89bfc8fc0"
     },
     {
       "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/archive-origin.json",
@@ -801,7 +825,7 @@
     {
       "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ShootCore.as",
       "lineEndingNormalization": "lf",
-      "sha256": "e340a82b58e87de169c5091586dfe8dfb507204da0054fc1f8a5d1e1018b2798"
+      "sha256": "109469ae1d60c2f2912aa2009fb31c5b2af8d79031bee9289d7360edb7bc4ddb"
     },
     {
       "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/FireEventComponent.as",
@@ -2908,8 +2932,8 @@
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_持盾点射与装填.xml",
-      "sha256": "2ee40c6664248869911a8ddd15ad8d361b7c22be4862807327b473c6428bb188",
-      "bytes": 77691
+      "sha256": "9d5f45afa905df63cf981a79da3440539f2f8a9e0f499b5bf414477031461bdd",
+      "bytes": 75501
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_持盾站立.xml",
@@ -2923,8 +2947,8 @@
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_持盾被击.xml",
-      "sha256": "85146bcc1be16d7299b8d3026db12259e07e34c1e6ff0c2842b5b2418a128788",
-      "bytes": 525207
+      "sha256": "4d16c490fb309c32720259799cb2941451428152b5628c1896666cc41853f2da",
+      "bytes": 526687
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_死亡.xml",
@@ -2945,6 +2969,11 @@
       "path": "LIBRARY/Codex/教官/动作/教官_破盾碎片.xml",
       "sha256": "513b1bd970ac5e5c37607694dc2348244ae2560a8446bc2b1f0a58b8b851e51b",
       "bytes": 1300
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_移动射击步态.xml",
+      "sha256": "74e1ff006ac6647e352d3fb0316ee0c2602604c105bc216aa9f365f814b1caa8",
+      "bytes": 48073
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_站立.xml",
@@ -2973,18 +3002,18 @@
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_长枪点射与装填.xml",
-      "sha256": "a664afc241e83932830fe496da2394977144c9dba5a74f2cc03830c7dee28d6c",
-      "bytes": 77043
+      "sha256": "6de1ae54d7ceb3e3c7f614bbf6698dac5623281c069a6f37d6c6169c0419e804",
+      "bytes": 74853
     },
     {
       "path": "LIBRARY/Codex/教官/敌人-CF6持盾特种教官.xml",
-      "sha256": "59b50a8a51672c41df70a9c189da2828b816291e86108ef2be16967e33004017",
-      "bytes": 127407
+      "sha256": "51fb6b5451e1d4c502c8c70067131e1ce6edae944cca0d2467c20a38b5d10310",
+      "bytes": 194087
     },
     {
       "path": "LIBRARY/Codex/教官/敌人-CF6特种教官.xml",
-      "sha256": "a036fc28f87df78b924262ded586196ddf843612fa17c214221d3c90d3690a58",
-      "bytes": 127389
+      "sha256": "6dc0c9b517882833aa3ace14b5a97988c9b3e3558b140acd06c6ae5b9f5cd625",
+      "bytes": 194069
     },
     {
       "path": "LIBRARY/Codex/教官/教官_行为驱动.xml",
@@ -3008,8 +3037,13 @@
     },
     {
       "path": "LIBRARY/Codex/教官/精英/动作/教官_CF6战术长枪.xml",
-      "sha256": "6d8bc3a30af0cc952ca76e2079f3ebede594dd2636519edec5279fdf36370b4f",
-      "bytes": 1780164
+      "sha256": "f0efa6f72d731fa18a397a6c96388ea659c540ba11d4355a161b835f10036d7d",
+      "bytes": 1785627
+    },
+    {
+      "path": "LIBRARY/Codex/教官/精英/动作/教官_双枪移动射击步态.xml",
+      "sha256": "bdc54f835c8afc8de4bbe51ee34fd1ba5e4651ed5df44e6a0e1780b2d54718db",
+      "bytes": 49917
     },
     {
       "path": "LIBRARY/Codex/教官/精英/武器/教官_可配置主手枪.xml",
@@ -4183,8 +4217,8 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾点射与装填.xml",
-      "sha256": "64657c4a44fc89bb05cd1f9f8e3b97784c2241e0090ded74e900b40c4ed5a446",
-      "bytes": 77172
+      "sha256": "d6a1fb666d652dcc5c7eea63b36ffe80be434de702daa5921bce42fa8822b333",
+      "bytes": 74994
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾站立.xml",
@@ -4198,8 +4232,8 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾被击.xml",
-      "sha256": "35bab16997c0ed2be9e909387828e84388838d15b76913b1cf60a9280dbe55ff",
-      "bytes": 521668
+      "sha256": "a9590349847dfe0c97c2bdf044ee3b32a15d8ae16c5ae3bfd6a6e733c4445f23",
+      "bytes": 523148
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/死亡.xml",
@@ -4220,6 +4254,11 @@
       "path": "LIBRARY/Codex/特种兵/动作/破盾碎片.xml",
       "sha256": "7a3f6be035d35f479c3b2c29574c7434fa30cc312dd0bda58d5166cde25e6527",
       "bytes": 1285
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/移动射击步态.xml",
+      "sha256": "f083e903bf8f7f8d6f454fa2dbc19a5f47bbc8b82ca5aacb165abe03e595373b",
+      "bytes": 47734
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/站立.xml",
@@ -4248,28 +4287,28 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/长枪点射与装填.xml",
-      "sha256": "397ff27695d36c26bdbe412d015578dddcae2d541a4879d06a6de205989baf38",
-      "bytes": 76528
+      "sha256": "582336e3533412eb63d9258bd277fc743043d07be8956601e8e2281bec32ab04",
+      "bytes": 74350
     },
     {
       "path": "LIBRARY/Codex/特种兵/敌人-CF6持盾特种兵.xml",
-      "sha256": "75f087f95777b62ee298bc896a5948ca0a5d2d772131c77b9042c7626f0e8be2",
-      "bytes": 90736
+      "sha256": "d096f3f78bc0d045b068a094d2381cdc4b25e82244be451a410216be11efefd3",
+      "bytes": 156692
     },
     {
       "path": "LIBRARY/Codex/特种兵/敌人-CF6持盾特种精英.xml",
-      "sha256": "56a105ecf15883a40f1db27b1ccfc99a78bb1c3383c27be3721479c10817e3fe",
-      "bytes": 125952
+      "sha256": "6a6f2f9b878c61bf5fc209123c9ecb2fe65556bd6f0fbe63308b683acbf648f8",
+      "bytes": 193956
     },
     {
       "path": "LIBRARY/Codex/特种兵/敌人-CF6特种兵.xml",
-      "sha256": "42a2e0ebc5cb8b67850772c7fd6b65849d1b39aad3bb78f4aa0ab0260cdcece6",
-      "bytes": 90718
+      "sha256": "06dd804bc2d93a16ac1a7b80e941800abfb157ede49555b0123a3a7df21e7e4e",
+      "bytes": 156674
     },
     {
       "path": "LIBRARY/Codex/特种兵/敌人-CF6特种精英.xml",
-      "sha256": "d2b710b13931eaafb0ad58339ae0a0d17b03fb719d41e83477fe6de2e5e703ac",
-      "bytes": 125934
+      "sha256": "28fdfd72ebba8288152fcd376e3cc23df1cc88525afba90319636bde2a24d484",
+      "bytes": 193938
     },
     {
       "path": "LIBRARY/Codex/特种兵/武器/可配置投掷物.xml",
@@ -4378,8 +4417,13 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/精英/动作/CF6战术长枪.xml",
-      "sha256": "5e8f9c0e8ee8cf2580deeb51f8b4508377ba4f5609006a050ec91c90a7cdce4b",
-      "bytes": 1768105
+      "sha256": "82fa7641ad0b0da511dabce8bceb4daabf67537ca9a5d2e4acb4624f6a94a620",
+      "bytes": 1773580
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/精英/动作/双枪移动射击步态.xml",
+      "sha256": "d6564eb4035c673086f0b8c2fcddcc1f673d7f9b21a214411398e43476255c06",
+      "bytes": 49570
     },
     {
       "path": "LIBRARY/Codex/特种兵/精英/武器/可配置主手枪.xml",
@@ -4415,8 +4459,8 @@
   "projectFiles": [
     {
       "path": "DOMDocument.xml",
-      "sha256": "852e06beadb4245a379666c0188e8fffd606115aeb9621358e8f22c08d64fac3",
-      "bytes": 64521
+      "sha256": "9aa25acadf7cae0feb2f69c715dbb6fda6682d78673cb8f9f744a032e5ed0014",
+      "bytes": 65023
     },
     {
       "path": "Codex特种兵素材.xfl",

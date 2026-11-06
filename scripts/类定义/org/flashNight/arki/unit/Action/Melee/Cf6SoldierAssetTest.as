@@ -39,6 +39,9 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
     private static var reviewQueue:Array,reviewUnits:Array,reviewIndex:Number,reviewStage:Number,reviewDone:Boolean;
     private static var fullChainUnits:Array,tacticalPanelLogs:Array;
     private static var link:String="敌人-CF6特种兵";
+    private static var preparedWorldHandler:Function;
+    public static function prepareWorld(handler:Function):Void {preparedWorldHandler=handler;runAllTests();}
+    public static function preparationFailures():Number {return failed;}
 
     private static function check(ok:Boolean,label:String):Void {
         if(ok) passed++;else {failed++;trace("[TEST_FAIL] Cf6SoldierAssetTest: "+label);}
@@ -77,7 +80,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         _root.add2map=function():Void {};_root.add2map2=function():Void {};
         _root.fixtureCrit=false;_root.重力加速度=1;
         _root.成功率=function(chance:Number):Boolean {_root.fixtureChance=chance;return _root.fixtureCrit;};
-        _root.敌人函数={配置音效:function():Void {},
+        _root.敌人函数={换相位移未结束:org.flashNight.arki.spatial.move.Mover.pendingPhaseMotion,配置音效:function():Void {},
             标准击杀:KillEventComponent.onKill,
             行走:_root.士兵测试标准行走,
             魔法伤害种类:["基础","电","热","冷","波","蚀","毒","冲","人类"],
@@ -168,6 +171,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         _root.getItemData=function(name:String):Object {return ItemUtil.itemDataDict[name];};
         _root.子弹区域shoot传递=function(data:Object):MovieClip {Cf6SoldierAssetTest.capture(data);return _root.gameworld;};
         _root.初始化敌人模板=function():Void {
+            var fixedLevel:Number=this.等级,fixedX:Number=this._x,fixedZ:Number=this._y;
             // Legacy cases isolate primary fire; completion cases exercise default-on subweapons.
             if(this.fixtureCompletion!==true)this.特种兵副武器=false;
             // Freeze the historical emission fixtures; R9 scenarios use live defaults.
@@ -178,6 +182,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             this.hp=this.hp满血值=1000;this.mp=0;this.空手攻击力=100;this.等级=30;
             this.状态="长枪站立";this.攻击模式="长枪";this.方向="右";this.攻击目标="无";
             this.Z轴坐标=this._y=200;this._x=200;this.myxscale=100;this.是否为敌人=true;
+            if(this.fixtureFixed===true){this.等级=fixedLevel;this._x=fixedX;this._y=this.Z轴坐标=fixedZ;}
             this.倒地=this.浮空=this.硬直中=this.刚体=this.免疫击退=false;
             this.unitAI={data:{xrange:100,zrange:10,xdistance:50}};
             this.swapDepths=function():Void {};
@@ -190,7 +195,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             };
             this.方向改变=function(dir:String):Void {this.方向=dir;this._xscale=dir=="左"?-100:100;};
             this.动画完毕=function():Void {
-                this.fixtureRecord.done++;this.倒地=false;this.攻击目标="无";
+                this.fixtureRecord.done++;this.倒地=false;if(this.fixtureFixed!==true)this.攻击目标="无";
                 this.状态改变(this.hp>0?"长枪站立":"血腥死");
             };
             this.击飞浮空=function():Void {this.fixtureRecord.physics++;this.浮空=true;};
@@ -242,6 +247,11 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 this.基础躲闪率=this.躲闪率;
                 this.unitAI.destroy=function():Void {};
                 this.aabbCollider={updateFromUnitArea:function():Void {},getFactory:function():Object {return {releaseCollider:function():Void {}};}};
+                if(this.fixtureFixed===true){
+                    // The full initializer must create its real lifecycle-owned
+                    // dispatcher, not reuse the earlier plain fixture dispatcher.
+                    this.dispatcher.destroy();delete this.dispatcher;
+                }
                 org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer.initializeUnit(this);
                 this.stop();
                 return;
@@ -325,6 +335,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
     }
     private static function loaded(mc:MovieClip):Void {
         mc.stop();
+        if(preparedWorldHandler!=null){
+            var handler:Function=preparedWorldHandler;preparedWorldHandler=null;
+            driver.removeMovieClip();library._visible=true;handler(library);return;
+        }
         var fr506Probe:MovieClip=library.attachMovie("枪-手枪-FR506","fr506LinkProbe",library.getNextHighestDepth());
         check(fr506Probe!=null && fr506Probe.枪口位置!=null,"FR506 shared RSL scope and live muzzle");
         fr506Probe.removeMovieClip();
@@ -909,19 +923,20 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         var noise:Object=PinkNoiseEngine.getInstance(),oldNoise:Function=noise.randomFluctuation;
         noise.randomFluctuation=function(percent:Number):Number {return 1;};
         DamageManagerFactory.init();u.shield=new BaseShield(0,0,0,0);u.防御力=1;
-        var bullet:Object={子弹威力:100,固伤:0,百分比伤害:0,霰弹值:1,伤害类型:"真伤",flags:0};
+        var bullet:Object={子弹威力:20,固伤:0,百分比伤害:0,霰弹值:1,伤害类型:"真伤",flags:0};
         bullet.damageManager=DamageManagerFactory.resolveForBullet(bullet);
         var before:Number=u.hp;DamageCalculator.calculateDamage(bullet,{伤害加成:0},u,1,"");
-        trace("[SOLDIER_SHIELD_BUFF] multiplier="+u.damageTakenMultiplier+" input=100 hpLoss="+(before-u.hp));
-        check(Math.abs(before-u.hp-100*expected)<0.001,"real DamageCalculator applies shield multiplier to committed HP loss");
-        check(u.状态=="长枪站立" && Math.abs(u.soldierShieldGuardDamage-100*expected)<0.001,"light shield hit below 10 percent accumulates without crouch guard");
-        u.状态="近战";u.hp-=120;
-        check(u.状态=="近战","super-armor shield skill is not interrupted by 10 percent HP loss");
-        u.状态="长枪站立";u.hp-=80;
+        trace("[SOLDIER_SHIELD_BUFF] multiplier="+u.damageTakenMultiplier+" input=20 hpLoss="+(before-u.hp));
+        check(Math.abs(before-u.hp-20*expected)<0.001,"real DamageCalculator applies shield multiplier to committed HP loss");
+        check(u.状态=="长枪站立" && Math.abs(u.soldierShieldGuardDamage-20*expected)<0.001,"small shield hit records pressure without immediate pose transition");
+        var priorGuardAt:Number=u.soldierNextShieldGuardAt;
+        u.状态="近战";u.hp-=u.hp满血值*0.4;
+        check(u.状态=="近战" && u.soldierShieldGuardPending,"committed shield skill records forty percent HP pressure without interruption");
+        u.状态="长枪站立";u.soldierTryShieldGuard();
         check(u.状态=="被击" && u.soldierShieldGuardDamage==0 && u.soldierPhase==1 && u.刚体
             && Math.abs(u.damageTakenMultiplier-expected)<0.0001,
-            "10 percent shield HP loss in stand/move/ordinary shoot enters crouch guard while keeping frontal reduction and rigid armor");
-        u.hp=before;u.状态改变("长枪站立");noise.randomFluctuation=oldNoise;
+            "queued defense starts at the first safe node without requiring another damaging hit");
+        u.hp=before;u.状态改变("长枪站立");u.soldierNextShieldGuardAt=priorGuardAt;noise.randomFluctuation=oldNoise;
     }
     private static function tick():Void {
         if(finished)return;ticks++;_root.帧计时器.当前帧数=ticks;
@@ -1869,6 +1884,23 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 }
             }
             if(ticks==185 && c.move=="hit")u.man.gotoAndPlay(c.side==0?"a0":"a1");
+            if(ticks>185 && ticks<265 && c.move=="hit" && u.状态=="被击"){
+                var guardPoseFrame:Number=u.man._currentframe-(c.side==0?0:62);
+                if(!c.guardHoldSeen && guardPoseFrame>13 && guardPoseFrame<50){
+                    c.guardHoldSeen=true;
+                    check(u.soldierShieldGuardBuffActive && Math.abs(u.damageTakenMultiplier-
+                        (1-Math.max(u.soldierShieldReduction,85)/100))<0.0001,
+                        "real shield hold pose activates additional standard reduction "+i);
+                }
+                if(!c.guardReleaseSeen && guardPoseFrame>51){
+                    c.guardReleaseSeen=true;
+                    check(!u.soldierShieldGuardBuffActive && Math.abs(u.damageTakenMultiplier-
+                        (1-u.soldierShieldReduction/100))<0.0001,
+                        "real shield return pose removes only its temporary reduction "+i);
+                }
+            }
+            if(ticks==265 && c.move=="hit")check(c.guardHoldSeen && c.guardReleaseSeen,
+                "both shield pose windows were exercised by the native timeline "+i);
             if(ticks==225 && c.move=="hit"){
                 check(u.状态=="被击" && c.record.done==0 && u.man._currentframe>(c.side==0?30:92),
                     "shield guard hit plays full 62-frame crouch-guard without early truncation under active target "+i);

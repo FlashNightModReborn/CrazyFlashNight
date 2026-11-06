@@ -6,6 +6,8 @@
 **上游设计**：[asLoader重构-架构设计-2026-06-15.md](asLoader重构-架构设计-2026-06-15.md)。
 **状态**：契约与单帧实现均已落地；当前 29 个 live source 由唯一 `BOOT_SOURCES` 生成 6 个纯装配 stage，S0/S5/S9 业务归 `BootSequencer`。happy-path 真机 boot、S2→S10 全 10 事件 trace 等价门与 L1 `BootSequencerTest 58/58` / `BootstrapHandshakeTest 12/12` 是已有历史证据；当前源码树的 tracked L1 契约已更新为 `91/91 + 12/12`，须以 §5.3 新入口取得 fresh trace 后才能声称当前行为闭环。七边界只保留真 socket 10s 超时为低价值人工观察项（见 §5.3）。
 
+> **2026-11-05候选装配更新**：`BOOT_SOURCES`仍唯一决定55个定义和6个装配stage；生成器将完整定义分为有界的`_definition_frameNN.as`并维护asLoader符号中的include序列。前置帧只装载定义，末帧停止后唯一调用`BootSequencer.run`。`_collapsed_frame.as`保留为可重建母版。旧文中“单帧”与“唯一生成物”描述对应历史实现；当前改动入口、分组预算及验证边界以[启动导览](asLoader-README.md)为准。S0–S10业务、握手、等待门与handoff合同保持原归属。
+
 > **2026-07-25 现行装配入口**：只编辑 `scripts/asLoaderManifest/` 中表列 live source、`BootSequencer.as` 与 `tools/assemble-collapsed-frame.js`；运行生成器后以 `_collapsed_frame.as` 为唯一生成物。旧 `frame0/1/4/5/6/7/26/75/91.as` 与 pre-collapse backup 已删除，历史只查 Git。生成器以 canonical LF、剥 BOM并计根源体的方式报告源闭包；`70,000 B` 只是调查提示线，不是 hard gate 或 no-growth ratchet。当前提示项为 `f3=149298`、`f36_2=121117`、`f37_7=76380`，仍须与 fresh SWF `codeSize` 和行为证据合用。
 
 > ## ⚠ 2026-06-16 重大修正 + 进展（读 Runbook 前必看）

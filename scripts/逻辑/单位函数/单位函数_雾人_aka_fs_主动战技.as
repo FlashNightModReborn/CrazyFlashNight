@@ -343,6 +343,7 @@ _root.主动战技函数.长枪.铁枪之锋 = {初始化: function(自机) {
 },
 
         释放许可判定: function(自机) {
+            if(typeof 自机.cf6UnitIdentity=="string" && typeof 自机.cf6G1111FixedMode=="boolean")return false;
             if (自机.倒地)
                 return false;
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
@@ -352,6 +353,7 @@ _root.主动战技函数.长枪.铁枪之锋 = {初始化: function(自机) {
         },
 
         释放: function(自机) {
+            if(typeof 自机.cf6UnitIdentity=="string" && typeof 自机.cf6G1111FixedMode=="boolean")return;
             // 1. 清理所有射击相关的状态和任务
             自机.强制奔跑 = false;
             自机.射击最大后摇中 = false;

@@ -160,6 +160,7 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
         // 创建一个包装对象，包含原始参数和用于重新调度的延迟信息
         var wrapper:Object = {
             quantity:quantity,
+            spawnOrdinal:0,
             attribute: attribute,
             index: index,
             waveIndex: waveIndex
@@ -229,7 +230,9 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
                 wrapper = currentSlotTasks[i];
                 
                 // 执行 spawn 函数，若成功则减少计数
-                if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity)) wrapper.quantity--;
+                if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity, wrapper.spawnOrdinal)) {
+                    wrapper.quantity--;wrapper.spawnOrdinal++;
+                }
                 // 若计数未归零则重新调度任务（实现循环任务）
                 if(wrapper.quantity > 0) this._addToSlot(wrapper);
             }
@@ -246,7 +249,9 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
         var wrapper:Object = this.minHeap[len - 1];
         for(var i:Number = 0; i < this.minHeapSpeed; i++){
             // 并发上限等暂拒不消耗待生成数量；保留任务，下帧继续受五次预算约束重试。
-            if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity)) wrapper.quantity--;
+            if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity, wrapper.spawnOrdinal)) {
+                wrapper.quantity--;wrapper.spawnOrdinal++;
+            }
             if(wrapper.quantity <= 0) {
                 len--;
                 if(len <= 0){
@@ -268,7 +273,9 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
             var wrapper:Object = longDelaySlot[i];
             wrapper.delayCount--;
             if(wrapper.delayCount <= 0){
-                if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity)) wrapper.quantity--;
+                if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity, wrapper.spawnOrdinal)) {
+                    wrapper.quantity--;wrapper.spawnOrdinal++;
+                }
                 if(wrapper.quantity > 0){
                     if(wrapper.interval >= this.wheelSize){
                         wrapper.delayCount = (wrapper.interval / 10) | 0;

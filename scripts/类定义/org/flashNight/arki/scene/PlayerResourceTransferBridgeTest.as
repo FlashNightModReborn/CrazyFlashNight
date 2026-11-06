@@ -25,7 +25,7 @@ class org.flashNight.arki.scene.PlayerResourceTransferBridgeTest {
     private static function makeWorld(stage:Number):Object {
         if(world!=undefined) world.removeMovieClip();
         world=_root.createEmptyMovieClip("__resourceBridgeWorld",_root.getNextHighestDepth());_root.gameworld=world;
-        var manager:Object={gameworld:world,currentStage:stage,isActive:true,onPlayerReady:function(gate:Object):Void {starts++;}};
+        var manager:Object={gameworld:world,currentStage:stage,isActive:true,onPlayerReady:function(gate:Object):Void {if(gate.started===true)return;gate.started=true;gate.wavesStarted=true;starts++;}};
         return PlayerSceneLifecycle.beginStage(world,stage,manager);
     }
     private static function hitClip(parent:MovieClip,name:String):MovieClip {
@@ -114,6 +114,62 @@ class org.flashNight.arki.scene.PlayerResourceTransferBridgeTest {
         check(events===eventsBefore,"partially_published_scene_is_not_replayed");
         api.dispatchFailure(gate,_root.__playerSceneFailure);
         check(failureHandoffs===2,"listener_failure_reaches_owner");
+    }
+    private static var readyMode:String,readyScope:Object,readyStarts:Number;
+    private static function interruptReadyScene(world:Object):Void {
+        var hero:Object=world[_root.控制目标];
+        if(readyMode=="refresh") readyScope=initialize(hero,true);
+        if(readyMode=="scene-death") {hero.hp=0;StageRunSession.onHeroDeath();}
+    }
+    private static function interruptReadyStart():Void {
+        readyStarts++;
+        if(readyMode=="start-death") {
+            _root.gameworld[_root.控制目标].hp=0;StageRunSession.onHeroDeath();
+        }
+    }
+    /** Actual coordinator, life authority and StageManager methods across synchronous event interruptions. */
+    private static function testReadyResume():Void {
+        var runApi:Object=StageRunSession,stageApi:Object=org.flashNight.arki.scene.StageManager;
+        var cache:Object=org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+        var savedRun:Object=runApi._run,savedReturn=runApi._returnRequested;
+        var savedFind:Function=cache.findHero;
+        runApi._run=run;runApi._returnRequested=false;
+        cache.findHero=function():MovieClip {return _root.gameworld[_root.控制目标];};
+        try {
+            var modes:Array=["refresh","scene-death","start-death"];
+            for(var index:Number=0;index<modes.length;index++) {
+                readyMode=modes[index];readyStarts=0;readyScope=null;run.life="alive";
+                var gate:Object=makeWorld(6+index),manager:Object=gate.manager;
+                world.dispatcher=new org.flashNight.neur.Event.EventDispatcher();
+                manager.currentStageInfo={waveInfo:[]};manager.spawner={calls:0,init:function(info:Object):Void {this.calls++;}};
+                manager.onPlayerReady=stageApi.prototype.onPlayerReady;
+                var hero:MovieClip=makeActor();initialize(hero,false);
+                var spawn:Object=hero.__playerSceneSpawn,beforeEvents:Number=events;
+                EventBus.getInstance().subscribe("SceneReady",interruptReadyScene,null);
+                world.dispatcher.subscribe("Start",interruptReadyStart,null);
+                PlayerSceneLifecycle.finishStageSetup(gate);
+                EventBus.getInstance().unsubscribe("SceneReady",interruptReadyScene,null);
+                check(gate.published===true && gate.failed!==true && manager.spawner.calls===0,
+                    "ready_interruption_preserves_unfinished_start_"+readyMode);
+                if(readyMode=="refresh") {
+                    var result:Object=PlayerStatRefreshCoordinator.endOuterInitialization(readyScope);
+                    check((result.status=="applied" || result.status=="unchanged") && readyScope.plan.complete===true
+                        && hero.__playerStatFullReady===hero.__playerStatBody,"actual_current_body_refresh_completes_pending_start");
+                } else {
+                    hero.hp=hero.hp满血值;hero.mp=hero.mp满血值;StageRunSession.onHeroRespawn(hero);
+                }
+                check(world.__playerSceneGate===gate && hero.__playerSceneSpawn===spawn && PlayerSceneLifecycle.isReady(gate),
+                    "interrupted_ready_resumes_same_scene_and_actor_"+readyMode);
+                check(events===beforeEvents+1 && readyStarts===1 && manager.spawner.calls===1 && gate.wavesStarted===true,
+                    "interrupted_ready_delivers_scene_start_and_waves_once_"+readyMode);
+                PlayerSceneLifecycle.actorReady(hero);PlayerSceneLifecycle.finishStageSetup(gate);StageRunSession.onHeroRespawn(hero);
+                check(events===beforeEvents+1 && readyStarts===1 && manager.spawner.calls===1,
+                    "late_ready_callbacks_cannot_replay_start_or_waves_"+readyMode);
+            }
+        } finally {
+            EventBus.getInstance().unsubscribe("SceneReady",interruptReadyScene,null);
+            runApi._run=savedRun;runApi._returnRequested=savedReturn;cache.findHero=savedFind;
+        }
     }
     public static function runAllTests():Void {
         passed=failed=events=starts=0;var saved:Object={};var i:Number;
@@ -259,29 +315,33 @@ class org.flashNight.arki.scene.PlayerResourceTransferBridgeTest {
                     _root.淡出动画={跳转帧:"wuxianguotu_1",_currentframe:5};
                     PlayerSceneLifecycle.recordAdmittedDoor("wuxianguotu_1");
                     var deathTicket:Object=SceneTransitionGuard.captureCleanup();
-                    actor.hp=0;StageRunSession.onHeroDeath();
+                    actor.hp=0;PlayerSceneLifecycle.actorReady(actor);
+                    check(beforeDeath.failed!==true,"later_zero_hp_ready_notification_is_not_spawn_failure_"+revivalIndex);
+                    StageRunSession.onHeroDeath();
                     check(run.life=="dead" && !PlayerSceneLifecycle.isCurrent(beforeDeath),"death_revokes_prior_gate_"+revivalIndex);
                     actor.hp=2918;actor.hp满血值=2918;actor.mp=3321;actor.mp满血值=3321;
                     if(revivalIndex==0) {
-                        check(!PlayerSceneLifecycle.onHeroRespawn(actor),"unconfirmed_life_cannot_resume_resources");
+                        check(!PlayerSceneLifecycle.isReady(beforeDeath),"unconfirmed_life_cannot_resume_resources");
                         run.life="alive";actor.mp=Number.NaN;
-                        check(!PlayerSceneLifecycle.onHeroRespawn(actor),"invalid_revived_resources_rejected");
+                        check(!PlayerSceneLifecycle.isReady(beforeDeath),"invalid_revived_resources_rejected");
                         actor.mp=3321;var originalBody:Object=actor.__playerStatBody;actor.__playerStatBody={};
-                        check(!PlayerSceneLifecycle.onHeroRespawn(actor),"revival_rejects_replaced_body");
-                        actor.__playerStatBody=originalBody;var originalWorldIdentity:Object=world.__stageReturnWorldIdentity;world.__stageReturnWorldIdentity={};
-                        check(!PlayerSceneLifecycle.onHeroRespawn(actor),"revival_rejects_replaced_world");
+                        check(!PlayerSceneLifecycle.isReady(beforeDeath),"incomplete_current_body_waits_without_replacing_hero");
+                        actor.__playerStatFullReady=actor.__playerStatBody;
+                        check(PlayerSceneLifecycle.isReady(beforeDeath) && world.__playerSceneGate===beforeDeath,"ready_current_body_needs_no_predeath_snapshot");
+                        var originalWorldIdentity:Object=world.__stageReturnWorldIdentity;world.__stageReturnWorldIdentity={};
+                        check(!PlayerSceneLifecycle.isReady(beforeDeath),"revival_rejects_replaced_world");
                         world.__stageReturnWorldIdentity=originalWorldIdentity;
-                        check(!PlayerSceneLifecycle.onHeroRespawn(merc),"companion_cannot_resume_hero_resources");
-                        run.life="dead";
-                        // 模拟一次未成功的复活请求；保留同一次死亡 owner，不能恢复旧 generation。
+                        run.life="dead";StageRunSession.onHeroRespawn(merc);
+                        check(run.life=="dead","companion_cannot_resume_hero_resources");
+                        // 退款/扣币失败可再次退休请求，现役人物与场景门仍保持同一实例。
                         PlayerSceneLifecycle.retire("hero_dead");
                     }
                     StageRunSession.onHeroRespawn(actor);
                     check(run.life=="alive","real_respawn_authority_restores_life_"+revivalIndex);
                     var renewed:Object=world.__playerSceneGate;
-                    check(renewed!==beforeDeath && PlayerSceneLifecycle.isReady(renewed),"revival_renews_ready_gate_"+revivalIndex);
-                    check(actor.__playerSceneSpawn!==beforeSpawn && actor.__playerSceneActorIdentity!==beforeSpawn.identity,"revival_renews_actor_identity_"+revivalIndex);
-                    check(!PlayerSceneLifecycle.isCurrent(beforeDeath),"old_ready_gate_stays_retired_"+revivalIndex);
+                    check(renewed===beforeDeath && PlayerSceneLifecycle.isReady(renewed),"revival_preserves_ready_gate_"+revivalIndex);
+                    check(actor.__playerSceneSpawn===beforeSpawn && actor.__playerSceneActorIdentity===beforeSpawn.identity,"revival_preserves_actor_identity_"+revivalIndex);
+                    check(beforeDeath.published===true && beforeDeath.setup===true,"revival_keeps_published_scene_barrier_"+revivalIndex);
                     check(events===2 && starts===2 && actor.hp===2918 && actor.mp===3321,"revival_does_not_replay_scene_or_resources_"+revivalIndex);
                     check(PlayerSceneLifecycle.captureCleanup(deathTicket,world,1)===false,"predeath_cleanup_intent_stays_invalid_"+revivalIndex);
                     StageRunSession.onHeroRespawn(actor);
@@ -330,7 +390,7 @@ class org.flashNight.arki.scene.PlayerResourceTransferBridgeTest {
             // 换档会真实重置 production context；反例必须在成功链完成后独立收口。
             PlayerSceneLifecycle.retire("hero_dead");
             _root.savePath="foreign-slot";
-            check(!PlayerSceneLifecycle.onHeroRespawn(actor),"revival_rejects_slot_change");
+            check(!PlayerSceneLifecycle.isReady(second),"revival_rejects_slot_change");
             PlayerSceneLifecycle.retire("return_started");
             check(!PlayerSceneLifecycle.isCurrent(second),"return_revokes_ready_generation");
             // 存档 context 改变后，旧 ready/cleanup 回调不能放行或写入另一角色。
@@ -346,8 +406,15 @@ class org.flashNight.arki.scene.PlayerResourceTransferBridgeTest {
             check(events===5 && starts===4,"base_entry_publishes_scene_without_stage_start");
             check(sceneApi.transfer==null && actor.__playerSceneSpawn.handle==null,"base_entry_has_no_transfer_payload");
             check(PlayerSceneLifecycle.isReady(world.__playerSceneGate),"base_entry_uses_scene_lifecycle_ready");
+            var baseGate:Object=world.__playerSceneGate,baseSpawn:Object=actor.__playerSceneSpawn;
+            actor.hp=0;PlayerSceneLifecycle.actorReady(actor);PlayerSceneLifecycle.retire("hero_dead");
+            check(!PlayerSceneLifecycle.isReady(baseGate) && baseGate.failed!==true,"base_dead_actor_is_not_ready");
+            actor.hp=actor.hp满血值;actor.mp=actor.mp满血值;
+            check(world.__playerSceneGate===baseGate && actor.__playerSceneSpawn===baseSpawn
+                && PlayerSceneLifecycle.isReady(baseGate) && events===5,"base_revive_preserves_scene_without_republication");
             _root.当前为战斗地图=true;
             testFailureHandoff();
+            testReadyResume();
         } catch(error) {check(false,"exception "+error);}
         finally {
             EventBus.getInstance().unsubscribe("SceneReady",onScene,null);

@@ -552,10 +552,13 @@ class org.flashNight.arki.scene.StageManager {
     /** 只接受本次世界/关卡的完成闩锁；事件重入后再次检查身份。 */
     public function onPlayerReady(gate:Object):Void {
         var bridge:Object=org.flashNight.arki.scene.PlayerSceneLifecycle;
-        if(gate.manager!==this || !bridge.isReady(gate) || gate.published!==true || gate.started===true) return;
-        gate.started=true;
-        gameworld.dispatcher.publish("Start");
+        if(gate.manager!==this || !bridge.isReady(gate) || gate.published!==true || gate.wavesStarted===true) return;
+        if(gate.started!==true) {
+            gate.started=true;
+            gameworld.dispatcher.publish("Start");
+        }
         if(!bridge.isReady(gate)) return;
+        gate.wavesStarted=true;
         if(currentStageInfo.waveInfo!=null) spawner.init(currentStageInfo);
     }
 

@@ -29,6 +29,8 @@ Gym 在准备入口及创建候选之前登记专用的只读消费门，协调�
 
 11 槽的未受修改数据由实际装载时冻结。引用及 level/tier/mods 等语义改变会使来源过期。普通投影不调用 getData、不从 live final 反推 base。DressupInitializer.buildPersistentSnapshot 在隔离对象上算完并校验必要数值，再由 applyPersistentSnapshot 通过现有 BuffManager base API 提交。旧 Buff 保留自身倍率、加算、定时记录；套装静态贡献按已提交记录重放，不重复安装 lifecycle。
 
+人形敌人的明确模板抗性由 `敌人属性表[兵种].魔法抗性` 提供，隔离快照保留兵种输入，再与装备贡献合并。不能以“非生物”作为保留精英、首领、装甲等分类的唯一条件，也不能把人形当前含装备/Buff 的 live 抗性表缓存为基础。没有明确兵种模板的玩家继续按当前等级重建抗性。既有非生物初始化中的遭遇覆盖保持原快照入口；普通刷新不重复累积装备抗性。
+
 合法装备负加成不是无效输入。`punch` 的正负值均参与空手攻击力；佣兵 AI 的非负抑制权重仅累计正加成的平方根，不能对负加成开平方并把生成的 NaN 传播成整个人物初始化失败。非有限输入仍在提交 live 前拒绝，回归需覆盖负值、零值、混合正负与重复刷新。
 
 `佣兵技能概率抑制基数` 是 AI 辅助输出，不属于玩家必需属性、Buff 基底或属性后验。它仍随成功投影更新，不能因移出校验而保留上一次装备的值。旧帧 AI 通过 `LegacyUnarmedSkillChance` 消费：合法权重保持原概率公式，无效权重只拒绝本次可选技能抽取并沿原分支执行普通攻击。手动操控及已由 unitAI 接管的路径保留原入口判断。装备 `punch`、HP/MP 与其他必需输入的非法值仍由原数值边界拒绝；不补满资源，不放宽身份，不用辅助字段失败解除保存等待。
@@ -52,6 +54,8 @@ context/body 是不可复用的普通 Object；world 复用 StageReturnFlow.worl
 首次完整初始化和首次进场通知分别完成：若尾部 `initial_ready` 因合批或领域权威返回 pending，原 owner 后续 flush 达到 applied/unchanged 时补发一次出生就绪通知，不重放属性初始化或资源恢复。通知在 flush 的重入保护释放后执行；同一身体后续读取不重复发布。投影失败的 stage/reason 首次出现或改变时写入现有服务器日志，避免只留下 Host 的进场超时。
 
 首次初始化明确失败时，通过窄失败 hook 通知场景 owner；同步 scene scope 的返回值同样必须消费。场景 owner 延后至下一帧接管失败，属性协调器不负责跳帧、重读档或发放资源。旧 scope 的失败不得撤销新身体。后续换装/成长仍按原 owner 的 checkpoint 恢复；出生失败不会靠发布部分成功的 SceneReady/Start 来解锁。
+
+同一场景的死亡与复活保留已经初始化的主角、spawn 身份和就绪 gate；死亡仅退休未完成的跨图资源事务与旧请求 generation。life authority 确认存活、当前属性身体完成且当前资源有效后，原 gate 自动可用；不与死亡前的 body 或回调快照比较，不重建假出生。SceneReady、Start 和波次初始化各自在调用前占用一次交付资格；回调中的死亡或完整属性重建只暂停后续步骤，由真实复活或属性就绪通知续接，不重放已发出的事件。实际换世界、换档、退场和初始化失败仍使旧 gate 失效。
 
 合法 EQUIPMENT 的领域 owner 先冻结原装备 proof 并预分配一次性 ticket 的目标 body。Static 开始时激活一次，最终必须恰为该目标及原 context/world/actor/proof。完整重建已覆盖的 STATS/SKILLS 合批吸收。任意另一个 body 仍失败；不能为了装备通过而放宽原 manager/dispatcher 替换后置条件。
 

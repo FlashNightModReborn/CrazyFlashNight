@@ -494,6 +494,7 @@ _root.主角函数.初始化可用技能 = function() {
 };
 
 _root.主角函数.行走_玩家 = function() {
+    if(this.__cf6TraversalOwner!==undefined || this.__cf6ElevatorPoseOwner!==undefined || this.__cf6VehicleOwner!==undefined) return;
     // 提取频繁访问的属性到局部变量
     var self = this;
     var isFlying = self.飞行浮空;
@@ -606,6 +607,7 @@ _root.主角函数.行走_玩家 = function() {
 };
 
 _root.主角函数.行走 = function() {
+    if(this.__cf6TraversalOwner!==undefined || this.__cf6ElevatorPoseOwner!==undefined || this.__cf6VehicleOwner!==undefined) return;
     // 提取频繁访问的属性到局部变量
     var self = this;
     var rightMove = self.右行;
@@ -1280,6 +1282,7 @@ _root.主角函数.根据模式重新读取武器加成 = function(模式) {
 }
 
 _root.主角函数.按键控制攻击模式 = function() {
+    if(this.__cf6TraversalOwner!==undefined || this.__cf6ElevatorPoseOwner!==undefined || this.__cf6VehicleOwner!==undefined) return;
     if (_root.当前玩家总数 == 1) {
         if (Key.isDown(_root.键1)) {
             攻击模式切换("空手");
@@ -1655,6 +1658,7 @@ _root.主角函数.getPastSmallStates = function(numStates) {
     return smallState[smallState.length - 1 - numStates];
 };
 _root.主角函数.按键检测 = function(按键, ai使用率) {
+    if(this.__cf6TraversalOwner!==undefined || this.__cf6ElevatorPoseOwner!==undefined || this.__cf6VehicleOwner!==undefined) return false;
     if (_root.控制目标 === this._name) {
         return Key.isDown(按键);
     } else {

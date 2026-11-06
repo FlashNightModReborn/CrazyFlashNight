@@ -87,6 +87,8 @@ _root.子弹区域shoot传递 = function(Obj){
 
     var gameWorld:MovieClip = _root.gameworld;
     var shooter:MovieClip = gameWorld[Obj.发射者];
+    if(shooter.__cf6ExternalRecord != null)
+        org.flashNight.arki.scene.Cf6SoldierSignals.decorate(shooter,Obj);
 
     // 计算射击角度
     var shootingAngle:Number = ShootingAngleCalculator.calculate(Obj, shooter);
@@ -182,6 +184,8 @@ _root.子弹属性初始化 = function(子弹元件:MovieClip,子弹种类:Strin
 		水平击退反向:false,
 		角度偏移:0
 	}
+	if(子弹元件.__cf6DamageMember != null)
+		org.flashNight.arki.scene.Cf6DamageGroups.inherit(子弹元件,子弹属性);
 	return 子弹属性;
 }
 

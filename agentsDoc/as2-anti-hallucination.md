@@ -96,7 +96,7 @@
 - **禁止**：在帧脚本中创建需要持久存在的闭包（`addProperty` / `setTimeout` / `EventBus` 回调）并捕获局部变量
 - **正确做法**：将需要持久闭包的逻辑放在 class 方法中（class 方法的 activation object 独立于 MovieClip 生命周期），帧脚本只做同步初始化调用
 - 示例：`ws.setupLegacyBridge()` 在 class 方法内用 `var self = this` 创建 `addProperty` 闭包，而非在帧脚本中用局部变量 `ws` 创建
-- **2026-06 塌缩后**：asLoader 已从 82 帧塌成**单帧**（架构导览见 [docs/asLoader-README.md](../docs/asLoader-README.md)）。单帧仍在 handoff 后被移除，故上述陷阱不变；`BootSequencer`（class + 挂 `_root` 的 `onEnterFrame` tick clip）即「持久闭包 / 异步逻辑住 class」的范本——握手 / loader 队列 / await 全在类里，单帧只做同步 `#include` 调用。
+- **2026-06 塌缩后**：asLoader 已从 82 帧塌成**单帧**（架构导览见 [docs/asLoader-README.md](../docs/asLoader-README.md)）。2026-11-05候选的定义装载已由生成器分帧，业务仍由同一状态机执行；asLoader仍在handoff后被移除，故上述陷阱不变；`BootSequencer`（class + 挂 `_root` 的 `onEnterFrame` tick clip）即「持久闭包 / 异步逻辑住 class」的范本——握手 / loader 队列 / await 全在类里，单帧只做同步 `#include` 调用。
 
 ### AVM1 静默失败陷阱（塌缩暴露：编译 0 错但运行时坏）
 - **异步局部变量捕获仍须看实际产物**：2026-09-07 的 `MapPanelService` 中，外层局部 `callId` 被 CS6 编为 `StoreRegister 1`，内层回调却以 `GetVariable("callId")` 读取；结果 wire 静默省略编号，Host 已收到数据仍等到超时。该写法改为独立回调工厂的形参后，发布字节码将参数分配到 activation scope（register 0）；fresh CS6 测试从 5 项回包断言失败转为 26/26。不要据此笼统认定所有局部闭包都坏，或只凭“放在 class 中”认定捕获必定有效；跨回调请求身份须以延迟／乱序 wire 回读验证。入口见 `scripts/run-map-domain-tests.ps1` 与[地图工作台说明](../tools/map-workbench/README.md)。

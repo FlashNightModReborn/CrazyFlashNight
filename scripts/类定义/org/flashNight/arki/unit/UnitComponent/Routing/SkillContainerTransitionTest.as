@@ -2,6 +2,7 @@
 /** 真实things0时间轴与生产路由；单位状态夹具不代表完整游戏命中链。 */
 class org.flashNight.arki.unit.UnitComponent.Routing.SkillContainerTransitionTest {
     private static var world:MovieClip,unit:MovieClip,driver:MovieClip;
+    private static var signalRoom:Object;
     private static var rows:Array,current:Object,index:Number,age:Number,phase:String,passed:Number,failed:Number;
     private static function check(ok:Boolean,label:String):Void {if(ok) passed++;else {failed++;trace("[FAIL] SkillContainerTransition: "+label);}}
     public static function noop():Void {}
@@ -50,6 +51,9 @@ class org.flashNight.arki.unit.UnitComponent.Routing.SkillContainerTransitionTes
         var depthApi:Object=org.flashNight.gesh.depth.DepthManager;depthApi.instance={updateDepth:noop};
         org.flashNight.arki.spatial.move.Mover.init();
         world=_root.createEmptyMovieClip("__skillTransitionWorld",_root.getNextHighestDepth());_root.gameworld=world;
+        signalRoom={world:world,owner:org.flashNight.arki.scene.StageReturnFlow.worldIdentity(world),
+            key:"native-player-commit",mapId:"A19",sequence:0,clock:0,external:{},player:{}};
+        org.flashNight.arki.scene.Cf6SoldierSignals.bindRoom(signalRoom);
         _root.collisionLayer=world.createEmptyMovieClip("collision",1);
         unit=world.createEmptyMovieClip("probeHero",2);
         driver=_root.createEmptyMovieClip("__skillTransitionDriver",_root.getNextHighestDepth());
@@ -59,7 +63,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.SkillContainerTransitionTes
         trace("SkillContainerTransition Root: "+_root._target+" unit="+unit._target);
     }
     private static function initUnit():Void {
-        unit.hp=1000;unit.hp满血=1000;unit.等级=40;unit.技能等级=10;unit.内力=100;unit.空手攻击力=100;unit.mp攻击加成=0;
+        unit.version=index+1;unit.hp=1000;unit.hp满血=1000;unit.等级=40;unit.技能等级=10;unit.内力=100;unit.空手攻击力=100;unit.mp攻击加成=0;
         unit.兵种="主角-男";unit.攻击模式="兵器";unit.状态="兵器站立";unit.__stateGotoLabel="兵器站立";
         unit._x=400;unit._y=unit.Z轴坐标=400;unit.方向="右";unit.身高=175;unit.myxscale=100;unit.浮空=false;unit.飞行浮空=false;unit.temp_y=0;
         unit.左行=unit.右行=unit.上行=unit.下行=false;unit.刀="probe-blade";unit.刀属性={power:100,skillmultipliers:{瞬步斩:3,凶斩:3}};
@@ -78,9 +82,12 @@ class org.flashNight.arki.unit.UnitComponent.Routing.SkillContainerTransitionTes
         unit.dispatcher={publish:noop};
     }
     private static function cast(name:String,war:Boolean):Void {
+        var previousSequence:Number=signalRoom.player.sequence|0;
         unit.技能等级=10;
         if(war) _root.战技路由.战技标签跳转_旧(unit,name);
         else _root.技能路由.技能标签跳转_旧(unit,name);
+        check(signalRoom.player.sequence>previousSequence && signalRoom.player.version===unit.version,
+            "real accepted attack or dash creates one fresh player commitment "+name);
         check(unit.man!=undefined,"native attach "+name+" case="+current.name);trace("SkillContainerTransition Attach: case="+current.name+" frames="+unit.man._totalframes+" frame="+unit.man._currentframe+" target="+unit.man._target);
         if(current.kind=="attributes" && !war) {
             var blade:MovieClip=unit.man.createEmptyMovieClip("__attributeProbeBlade",unit.man.getNextHighestDepth());
@@ -89,7 +96,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.SkillContainerTransitionTes
         }
     }
     public static function tick():Void {
-        _root.帧计时器.当前帧数++;
+        _root.帧计时器.当前帧数++;signalRoom.clock++;
         if(phase=="done") return;
         if(phase=="next") {
             if(unit.man!=undefined) unit.man.removeMovieClip();

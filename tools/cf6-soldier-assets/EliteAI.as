@@ -87,7 +87,9 @@ soldierTick=function():Void {
         }
     }
     if((owner.elite || owner.charge) && this.硬直中 && !this.倒地 && !this.浮空 && this.soldierCanAct(this.man)){
-        this.soldierClock++;this.soldierDriveShooting(this.man);return;
+        this.soldierClock++;
+        if(this.soldierTryShieldGuard())return;
+        this.soldierDriveShooting(this.man);return;
     }
     this.eliteOriginalTick();
     // A movement-only wall escape may leave light hitstop, just like the

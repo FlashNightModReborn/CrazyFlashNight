@@ -27,6 +27,10 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.SearchForTargetCa
      */
     public static function create(config:Object):Function {
         return function():Boolean {
+            if(this.targetObject.cf6FixedFlight===true){
+                if(!org.flashNight.arki.scene.Cf6DamageGroups.enforceTarget(this.targetObject))return false;
+                this.target=this.targetObject.cf6BoundTarget;this.hasTarget=true;return true;
+            }
             var gw:MovieClip = _root.gameworld;
             var currentShooter:MovieClip = gw[this.shooter];
 

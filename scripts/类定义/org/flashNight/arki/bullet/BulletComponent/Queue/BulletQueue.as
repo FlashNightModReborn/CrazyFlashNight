@@ -14,6 +14,14 @@ import org.flashNight.arki.component.Collider.*;
 class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     
     private var bullets:Array;
+    private var pendingDrain:Object;
+
+    /** A single-frame object cannot collide again after its owning queue is
+     * cleared. Sorting may swap buffers, so the sort version is not a receipt. */
+    public function nextDrain():Object {
+        if(pendingDrain==null)pendingDrain={drained:false};
+        return pendingDrain;
+    }
     
     // 排序阈值常量
     private static var INSERTION_SORT_THRESHOLD:Number = 16;
@@ -69,10 +77,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
      * 执行严格的合法性检查，确保只有有效子弹进入队列
      * @param bullet 待添加的子弹对象
      */
-    public function add(bullet:Object):Void {
+    public function add(bullet:Object):BulletQueue {
         if (!bullet) {
             // _root.服务器.发布服务器消息("BulletQueue.add: null bullet");
-            return;
+            return null;
         }
         var box:AABBCollider = bullet.aabbCollider; // 如果碰撞箱不存在，后续数值校验依旧可以防护住
         var left:Number  = box.left;
@@ -82,13 +90,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         if (((left - left) + (right - right)) != 0) {
             // trace("skip add: invalid aabb (" + left + ", " + right + ")");  // 新增: 检查是否跳过
             // _root.服务器.发布服务器消息("BulletQueue.add: bullet with invalid aabbCollider: " + "(" + left + "," + right + ") " + bullet._name);
-            return;
+            return null;
         }
 
         // 比 push 更快的追加方式
         // _root.服务器.发布服务器消息("BulletQueue.add: enqueue bullet " + bullet._name + " with aabb (" + left + ", " + right + ")");
         var arr:Array = this.bullets;
         arr[arr.length] = bullet;
+        return this;
     }
     
     /**
@@ -342,6 +351,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
      * 清空队列（原地清空，保持引用有效）
      */
     public function clear():Void {
+        if(pendingDrain!=null){pendingDrain.drained=true;pendingDrain=null;}
         // 清空所有双缓冲区
         this._arrA.length = 0;
         this._arrB.length = 0;

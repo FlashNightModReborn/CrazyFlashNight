@@ -1,4 +1,5 @@
 ﻿_root.主角函数.持枪行走状态机 = function(){
+	if(_parent.__cf6TraversalOwner!==undefined || _parent.__cf6ElevatorPoseOwner!==undefined || _parent.__cf6VehicleOwner!==undefined) return;
 	//按攻击键后若需要转换状态则停止行走判定2帧
 	// _root.发布消息("持枪行走状态机", _parent.行走冷却帧)
 	if(_parent.行走冷却帧 > 0){
@@ -133,6 +134,7 @@
 }
 
 _root.主角函数.双枪行走状态机 = function(){
+	if(_parent.__cf6TraversalOwner!==undefined || _parent.__cf6ElevatorPoseOwner!==undefined || _parent.__cf6VehicleOwner!==undefined) return;
 	//按攻击键后若需要转换状态则停止行走判定2帧
 	// _root.发布消息("双枪行走状态机", _parent.行走冷却帧)
 	if(_parent.行走冷却帧 > 0){
@@ -165,6 +167,7 @@ _root.主角函数.双枪行走状态机 = function(){
 }
 
 _root.主角函数.拳刀行走状态机 = function(){
+	if(_parent.__cf6TraversalOwner!==undefined || _parent.__cf6ElevatorPoseOwner!==undefined || _parent.__cf6VehicleOwner!==undefined) return;
 	_parent.行走();
 	/*
 	_root.服务器.发布服务器消息("拳刀行走状态机 " + "行走冷却帧:" + 行走冷却帧 + 
@@ -208,6 +211,7 @@ _root.主角函数.拳刀行走状态机 = function(){
 }
 
 _root.主角函数.手雷行走状态机 = function(){
+	if(_parent.__cf6TraversalOwner!==undefined || _parent.__cf6ElevatorPoseOwner!==undefined || _parent.__cf6VehicleOwner!==undefined) return;
 	// _root.发布消息("手雷行走状态机", 行走冷却帧)
 	_parent.行走();
     if (_parent.操控编号 != -1 && !_root.控制目标全自动 && !_root.全鼠标控制){

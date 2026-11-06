@@ -1,0 +1,643 @@
+{
+  "schema": "cf6-v2-g1111-pair-state-contract.v1",
+  "pairId": "A19-W1-judgment-rifle-pope-rocket",
+  "headSha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+  "baselineSha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+  "baselineRosterSha256": "3955072aa2a9c3422a1b0ec0c8dd51b3ef98b10a87fe17a922ee085ea510b032",
+  "status": "SELECTED_DESIGN_NOT_IMPLEMENTED; timings subject to integration with D5 weapon lifecycle findings",
+  "scope": "A19 wave 1; two existing instructors, two independently owned instances of the same G1111 item identity",
+  "members": [
+    {
+      "unitIdentity": "CF6-M-XX",
+      "tarotCard": "XX·审判",
+      "sourceSeat": "A19.W01.E00.I01",
+      "mapId": "A19",
+      "role": "precision",
+      "startingPhase": 1,
+      "startingOrientation": "正位",
+      "spawn": {
+        "phase": "wave",
+        "wave": 1,
+        "group": null,
+        "sourceEnemy": 0,
+        "sourceInstance": 1,
+        "spawnIndex": 2,
+        "x": 929.4507,
+        "y": 293.888,
+        "fixedOffset": [
+          0,
+          0
+        ],
+        "randomBiasEnabled": false,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "keepSourceGroupScheduler": true,
+        "triggerEvent": null,
+        "coordinateEvidence": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L16154",
+        "positionValidation": "authored marker or inside its existing jitter envelope; collision/first-frame visibility requires actual FP20 test"
+      },
+      "relocation": null,
+      "level": 60,
+      "difficultyScale": 1,
+      "originalPrimary": {
+        "name": "巴雷特",
+        "enhancement": 13,
+        "tier": null,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "巴雷特#13##透镜",
+        "baseEquipLevel": 40,
+        "modSlots": 1,
+        "ammo": "狙击步枪通用弹药",
+        "sourcePath": "data/items/武器_长枪_反器材武器.xml",
+        "sourceLine": 147
+      },
+      "proposedItemName": "G1111",
+      "requiredResolvedInstanceValue": {
+        "isRocketMode": false
+      },
+      "sourceEvidence": {
+        "path": "data/stages/books/cf6-type61.json",
+        "startLine": 16154,
+        "endLine": 16154,
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16154"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-V",
+      "tarotCard": "V·教皇",
+      "sourceSeat": "A19.W01.E01.I01",
+      "mapId": "A19",
+      "role": "suppress",
+      "startingPhase": 1,
+      "startingOrientation": "正位",
+      "spawn": {
+        "phase": "wave",
+        "wave": 1,
+        "group": null,
+        "sourceEnemy": 1,
+        "sourceInstance": 1,
+        "spawnIndex": 3,
+        "x": 2212.6933,
+        "y": 410.624,
+        "fixedOffset": [
+          0,
+          0
+        ],
+        "randomBiasEnabled": false,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "keepSourceGroupScheduler": true,
+        "triggerEvent": null,
+        "coordinateEvidence": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L16185",
+        "positionValidation": "authored marker or inside its existing jitter envelope; collision/first-frame visibility requires actual FP20 test"
+      },
+      "relocation": null,
+      "level": 60,
+      "difficultyScale": 1,
+      "originalPrimary": {
+        "name": "PKM机枪",
+        "enhancement": 13,
+        "tier": null,
+        "mods": [
+          "水冷机构",
+          "强化金属管"
+        ],
+        "serialized": "PKM机枪#13##水冷机构,强化金属管",
+        "baseEquipLevel": 21,
+        "modSlots": 2,
+        "ammo": "机枪通用弹药",
+        "sourcePath": "data/items/武器_长枪_机枪.xml",
+        "sourceLine": 229
+      },
+      "proposedItemName": "G1111",
+      "requiredResolvedInstanceValue": {
+        "isRocketMode": true
+      },
+      "sourceEvidence": {
+        "path": "data/stages/books/cf6-type61.json",
+        "startLine": 16185,
+        "endLine": 16185,
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16185"
+      }
+    }
+  ],
+  "immutable": {
+    "sourceSeatsAndUnitIdentities": true,
+    "mapAndWave": true,
+    "startingPhaseAndOrientation": true,
+    "spawnCoordinatesAndScheduler": true,
+    "threeExistingPhaseMigrations": true,
+    "levelsAndDifficultyScales": true,
+    "primaryEnhancement": 13,
+    "sidearmsAndTheirModsAmmoBudgets": true,
+    "noAdditionalPersonOrWeaponIdentity": true
+  },
+  "equipmentMode": {
+    "requiredResolvedValues": {
+      "CF6-M-XX": {
+        "isRocketMode": false
+      },
+      "CF6-M-V": {
+        "isRocketMode": true
+      }
+    },
+    "wireFormatStatus": "contract values only; the required birth/equipment/lifecycle adapter is specified by D5, not an assertion that current Parameters can carry them",
+    "instanceOwnership": "separate deep-owned value objects keyed by unitIdentity + actorVersion + equipmentSlot; write before G1111 init and preserve on same-instance refresh",
+    "itemNameForBoth": "G1111",
+    "createNewItemIdentity": false,
+    "NPCTransformationInputAllowed": false,
+    "chargedG1111AttackAllowed": false,
+    "reasonForChargeGate": "Default rocket has6 linked units. Charged rocket base16 is multiplied by(1+enhancement*0.1) and ceiled; at enhancement13 it is37, beyond the14 final damage-unit action ceiling.",
+    "chargedRocketBaseUnits": 16,
+    "chargedRocketUnitsAtEnhancement13": 37,
+    "primaryModsProposal": [],
+    "primaryModsReason": "do not transfer PKM cooling or old Barrett lens blindly; no pellet-amplifying/skill-enabling modifier is admitted by the pair contract",
+    "skillAndPlayerInputIsolation": "NPC cannot consume player transform/charge controls; player weapon behavior must remain independently controlled",
+    "dropSnapshot": "if eligible probabilistic loot is awarded, preserve the actual held G1111 instance value; holding a top weapon does not guarantee a drop",
+    "evidence": [
+      {
+        "path": "data/items/武器_长枪_战斗步枪.xml",
+        "startLine": 1020,
+        "endLine": 1055,
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_战斗步枪.xml#L1020-L1055"
+      },
+      {
+        "path": "data/items/武器_长枪_战斗步枪.xml",
+        "startLine": 1082,
+        "endLine": 1107,
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_战斗步枪.xml#L1082-L1107"
+      }
+    ]
+  },
+  "assembly": {
+    "owner": "CF6-M-V",
+    "referencePartner": "CF6-M-XX",
+    "trigger": {
+      "all": [
+        "both identities resolved to live matching actor versions in this A19 world",
+        "both starting combat phases remain 1",
+        "assembly not yet attempted for this pair generation",
+        "owner has no active gun action"
+      ]
+    },
+    "action": "Move toward the verified partner using the existing collision-resolved movement path; all firing modes disabled while assembling. Do not teleport or invent a map cover point.",
+    "anchor": {
+      "kind": "live_roster_partner",
+      "unitIdentity": "CF6-M-XX",
+      "birthEvidence": {
+        "path": "data/stages/books/cf6-type61.json",
+        "startLine": 16154,
+        "endLine": 16183,
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16154-L16183"
+      }
+    },
+    "maximumCumulativeAbsXTravelPx": 480,
+    "maximumCumulativeAbsZTravelPx": 120,
+    "walkTimeoutActiveFrames": 150,
+    "blockedNoProgressActiveFrames": 15,
+    "maxAttemptsPerPairGeneration": 1,
+    "pauseDoesNotAdvanceTimeout": true,
+    "preferredGeometry": {
+      "partnerDeltaXMax": 820,
+      "partnerDeltaZMax": 16,
+      "nominalMinimumXMoveFromSource": 463.2426,
+      "nominalMinimumZMoveFromSource": 100.736,
+      "maximumTravelCaseXSeparation": 803.2426,
+      "maximumTravelCaseHorizontalFireOverlap": 336.7574,
+      "mainStageWidth": 1024,
+      "mainStageHeight": 576,
+      "baseScaleScenario": 1,
+      "safeHorizontalInsetScreenPx": 64,
+      "base1xSafeWidthIgnoringActualBoundingBoxes": 896,
+      "mathematicalFeasibilityOnly": true,
+      "walkabilityNotEstablished": true
+    },
+    "success": "Actual positions yield the existing range/lane intersection and collision/line eligibility, and both shooter/telegraph bounds fit the actual viewport under currentScale and current camera pose. Position arithmetic alone does not grant fire.",
+    "viewportPolicy": {
+      "horizontalInsetScreenPx": 64,
+      "worldViewportWidthFormula": "actual Stage.width / currentScale",
+      "worldSafeWidthBeforeBoundsFormula": "(actual Stage.width -128) / currentScale",
+      "mustCheck": [
+        "current camera pose and currentScale",
+        "actual rendered actor bounding boxes",
+        "complete visible telegraph bounds",
+        "usable vertical viewport including HUD exclusion"
+      ],
+      "cameraMutationAllowed": false,
+      "largerZoomOrBlockedPath": "fallback; never zoom out, pull camera, teleport or expand weapon range to force the pair"
+    },
+    "exit": {
+      "goalReached": "stop all movement and test pairEligibility on actual current geometry",
+      "timeoutBlockedOrBudgetExhausted": "stop at last valid actual position; latch independent_low_frequency fallback, without repeated assembly attempts",
+      "phaseDeathOrWorldChange": "cancel pending movement and unissued attacks; invalidate this pair generation"
+    },
+    "counterplay": "The assembling Pope does not fire; player movement or a stagger can deny a clean paired firing position.",
+    "remainingGate": "FP20 must verify the real path, visibility, readable target lane and collision behavior from the unchanged source spawns."
+  },
+  "pairEligibility": {
+    "all": [
+      "same live A19 world and wave context",
+      "valid immutable identities and matching bound actor versions",
+      "both combat phases are 1",
+      "both rendered shooter and telegraph bounding boxes fit the actual viewport safe inset using currentScale and current camera pose",
+      "actual player target lies in both existing attack predicates after facing/range/lane/collision checks",
+      "no unresolved earlier dangerous projectile group",
+      "no observed Wings/elite dangerous action owns or conflicts with the map permit"
+    ],
+    "rangesAreNotExpanded": {
+      "judgmentMaxDx": 680,
+      "popeMaxDx": 460,
+      "judgmentLaneTolerance": 20,
+      "popeLaneTolerance": 24
+    },
+    "geometryEvidence": {
+      "judgment": {
+        "path": "data/stages/books/cf6-type61.json",
+        "startLine": 16863,
+        "endLine": 16867,
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16863-L16867"
+      },
+      "pope": {
+        "path": "data/stages/books/cf6-type61.json",
+        "startLine": 16868,
+        "endLine": 16874,
+        "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+        "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16868-L16874"
+      }
+    },
+    "noIntersectionBehavior": "independent_low_frequency; neither invisible firing nor expanding range is a fallback",
+    "revalidateViewportDuringWarning": true,
+    "cameraMutationAllowed": false
+  },
+  "dangerPermit": {
+    "scope": "entire map, including both G1111 modes, other roster high-risk actions and observed Wings high-risk windows",
+    "maximumConcurrentOwners": 1,
+    "acquireBefore": "visible warning begins",
+    "firstEligibleOwner": "CF6-M-XX",
+    "handoffOrder": [
+      "CF6-M-XX",
+      "CF6-M-V"
+    ],
+    "minimumQuietTransferActiveFrames": 12,
+    "maxQueuedRequestPerActor": 1,
+    "pendingRequestTimeoutActiveFrames": 180,
+    "pendingRequestTimeoutBehavior": "discard only that ungranted request; never release another action's active lease",
+    "leaseIdentity": [
+      "worldIdentity",
+      "unitIdentity",
+      "actorVersion",
+      "cycleId",
+      "shotOrdinal",
+      "damageGroupId"
+    ],
+    "holdUntil": "every registered damage-producing carrier/linked group and any descendant has actually terminated; cancellation of an unissued action is distinct from cleanup of an emitted group",
+    "recoveryIsNotProjectileLifetime": true,
+    "deathOrPhaseChangeAfterEmission": "stop new emissions, retain the orphaned group's map lease until actual termination or verified world cleanup",
+    "neverReleaseBy": [
+      "rifleRestFrames",
+      "75-frame actor recovery",
+      "wall-clock timeout",
+      "target death alone",
+      "shooter deletion alone",
+      "predicted 150-tick carrier lifetime alone"
+    ],
+    "missingOrUnknownObservation": "fail closed for a new high-risk action; report missing lifecycle adapter rather than infer that the old group is gone",
+    "starvationHandling": "coalesce pending triggers, prioritize explicit handoff only among currently eligible actors, and discard missed opportunities instead of firing catch-up bursts"
+  },
+  "actors": [
+    {
+      "unitIdentity": "CF6-M-XX",
+      "majorTactic": "judgment_line",
+      "role": "precision",
+      "trigger": {
+        "all": [
+          "pairEligibility or valid independent fallback",
+          "own recovery complete",
+          "target visible and in existing lane/range",
+          "target not within 180 px",
+          "danger permit granted",
+          "fixed isRocketMode false read back from own instance"
+        ]
+      },
+      "action": [
+        {
+          "state": "rifle_warning",
+          "activeFrames": 45,
+          "lockedFinalFrames": 15,
+          "operation": "Expose one clear line. The final 15 frames do not silently follow a new target/line; this needs the new AI/aim callback gate."
+        },
+        {
+          "state": "rifle_fire",
+          "primaryEvents": 1,
+          "expectedFinalDamageUnits": 1,
+          "operation": "One ordinary G1111 rifle event. Do not charge, transform, or add a sidearm/subweapon event to the same action."
+        },
+        {
+          "state": "rifle_recover",
+          "minimumActiveFrames": 75,
+          "operation": "Own recovery and actual shot/group termination are separately observed before handing off."
+        }
+      ],
+      "exit": {
+        "normal": "offer next turn to Pope only after own recovery state starts and previous hazard has truly cleared",
+        "cancel": "discard remaining unissued event, enter full recovery, retain any emitted hazard lease",
+        "nearInterrupt": "entering 180 px before emission cancels the shot; no instant reverse-line rifle fire"
+      },
+      "counterplay": [
+        "move out of the locked line during the final 15 frames",
+        "interrupt the 45-frame warning or enter the 180 px cancellation range",
+        "use the observed recovery interval"
+      ],
+      "budgets": {
+        "primaryTriggerLimit": 1,
+        "primarySplit": 1,
+        "primaryProjectilesPerAction": 1,
+        "sidearmSynchronizedTriggerLimit": 1,
+        "sidearmProjectilesPerAction": 2,
+        "subweaponProjectilesPerAction": 0,
+        "longgunWithSubProjectilesPerAction": 1,
+        "longgunAndSubweaponMayShareAction": false,
+        "longgunGroupAndDualActionMutuallyExclusive": true,
+        "activeFrameRate": 30,
+        "notPerformanceMeasurement": true,
+        "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+        "maxPlannedActionProjectiles": 2,
+        "scriptedCycleProjectiles": 2,
+        "cycleNote": "One granted action; future actions require rest and renewed permission.",
+        "sidearmTriggerSemantics": "Per-real-hand ceiling; synchronized means one planned pair opportunity, not forced same-frame fire or bypass of each weapon cadence."
+      },
+      "claimBoundary": "precision role and locked warning are proposed AI behavior; the current ordinary rail projectile is not proven to be strict one-hit-per-target piercing"
+    },
+    {
+      "unitIdentity": "CF6-M-V",
+      "majorTactic": "disciplined_screen",
+      "role": "suppress",
+      "partner": {
+        "unitIdentity": "CF6-M-XX",
+        "sourceSeat": "A19.W01.E00.I01",
+        "versionedBindingRequired": true
+      },
+      "trigger": {
+        "all": [
+          "pairEligibility or valid independent fallback",
+          "Judgment is in recovery when pair-bound",
+          "own recovery complete",
+          "220 <= target dx <= 460 and existing lane predicate valid",
+          "danger permit granted after prior group clears",
+          "fixed isRocketMode true read back from own instance"
+        ]
+      },
+      "action": [
+        {
+          "state": "rocket_warning",
+          "activeFrames": 36,
+          "operation": "New explicit visible AI warning. Show the intended tracked target; no claim that default rocket prelaunch already provides this warning."
+        },
+        {
+          "state": "rocket_fire",
+          "primaryEvents": 1,
+          "carrierCount": 1,
+          "linkedDamageUnits": 6,
+          "operation": "One uncharged carrier with six linked visual/collision units following a shared homing path. Not six independently homing missiles; no G1111 secondary explosion is claimed."
+        },
+        {
+          "state": "rocket_recover",
+          "minimumActiveFrames": 75,
+          "operation": "No further primary/sidearm/subweapon action in this cycle. The carrier/group lease can outlive these 75 frames."
+        }
+      ],
+      "exit": {
+        "normal": "complete recovery and wait for carrier/group termination before offering a new danger turn",
+        "warningInvalidated": "cancel before emission on lost target/visibility/lane, distance below 220, or partner phase/death; do not transfer the pending shot to a new target",
+        "phaseOrDeathAfterFire": "invalidate actor action but retain group ownership until cleanup"
+      },
+      "counterplay": [
+        "interrupt during the explicit 36-frame warning",
+        "enter 220 px before emission to cancel the heavy launch",
+        "after launch, use the visible shared trajectory and the no-follow-up recovery window; no unverified wall-blocking claim"
+      ],
+      "budgets": {
+        "primaryTriggerLimit": 1,
+        "primarySplit": 6,
+        "primaryProjectilesPerAction": 6,
+        "sidearmSynchronizedTriggerLimit": 3,
+        "sidearmProjectilesPerAction": 6,
+        "subweaponProjectilesPerAction": 0,
+        "longgunWithSubProjectilesPerAction": 6,
+        "longgunAndSubweaponMayShareAction": false,
+        "longgunGroupAndDualActionMutuallyExclusive": true,
+        "activeFrameRate": 30,
+        "notPerformanceMeasurement": true,
+        "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+        "maxPlannedActionProjectiles": 6,
+        "scriptedCycleProjectiles": 6,
+        "cycleNote": "One granted action; future actions require rest and renewed permission.",
+        "sidearmTriggerSemantics": "Per-real-hand ceiling; synchronized means one planned pair opportunity, not forced same-frame fire or bypass of each weapon cadence."
+      },
+      "targetPolicy": {
+        "newAdapterRequired": true,
+        "preFire": "bind intended target identity/version and revalidate at emission",
+        "afterEmission": "do not silently reacquire a different target when the bound target dies; terminate through verified projectile cleanup or use an explicitly reviewed target-loss policy",
+        "currentSourceDifference": "current tracking callback returns to search on target death; G1111 laserAutoTarget does not by itself constrain the flight target"
+      }
+    }
+  ],
+  "fallback": {
+    "mode": "independent_low_frequency",
+    "triggerReasons": [
+      "assembly timeout/blocked/budget exhausted",
+      "no shared visible range/lane intersection",
+      "partner unavailable or dead",
+      "pair phases no longer match"
+    ],
+    "rifleMinimumRecoveryFrames": 90,
+    "rocketMinimumRecoveryFrames": 120,
+    "rifleWarningFrames": 45,
+    "rifleLockedFinalFrames": 15,
+    "rocketWarningFrames": 36,
+    "sameMapDangerPermitStillRequired": true,
+    "sameOneEventModeBudgets": true,
+    "onlyIndividuallyVisibleEligibleActorCanFire": true,
+    "noRangeOrDamageCompensation": true,
+    "noPartnerReplacementByAnotherActor": true,
+    "phaseTwo": "preserve the approved native phase/sidearm behavior and its per-real-hand ceilings; never force a primary-only demonstration by reverting the initial/actual phase",
+    "afterPhaseTransition": "the actor's G1111 instance mode remains unchanged; the two-actor special cycle is canceled and is not rebound by display name or recycled actor reference"
+  },
+  "cancelEvents": [
+    "world identity changes",
+    "actor version changes or actor retires",
+    "either bound participant dies",
+    "either participant changes combat phase",
+    "target becomes invalid",
+    "actual visibility/line eligibility fails before firing"
+  ],
+  "budgetInvariants": {
+    "mapDangerPermitCap": 1,
+    "finalDamageUnitsPerGrantedActionCap": 14,
+    "riflePrimary": 1,
+    "rocketPrimary": 6,
+    "rocketChargedBase16Enhanced37Rejected": true,
+    "primaryAndDualSidearmActionsMutuallyExclusive": true,
+    "noSubweaponOrThrownBurstAdded": true,
+    "currentSidearmCeilings": {
+      "CF6-M-XX": 2,
+      "CF6-M-V": 6
+    },
+    "oldMaximumActionCeilings": {
+      "CF6-M-XX": 2,
+      "CF6-M-V": 8
+    },
+    "proposedMaximumActionCeilings": {
+      "CF6-M-XX": 2,
+      "CF6-M-V": 6
+    },
+    "damageUnitMeaning": "count linked collision/damage units, not just one carrier object; exclude non-damaging display-only effects",
+    "global14AndActionsOutsideThisPairUnchangedByThisContract": true,
+    "otherExplicitlyAuthorizedV2Deltas": "ten other selected rows may receive their own reviewed changes; this pair contract does not define those changes",
+    "counterResetPolicy": "neither phase change, mode refresh, movement, partner loss, reload nor a new owner reference can reset an unfinished action's consumed-event ledger"
+  },
+  "requiredImplementation": [
+    "deep per-instance G1111 mode initialization and readback",
+    "NPC/player transform and charge isolation",
+    "G1111 bullet/target callback gates with no silent aim or target reassignment",
+    "map-wide hazard lease registered to actual damage group lifetime",
+    "explicit visible 45/15 rifle and 36-frame rocket telegraphs",
+    "one-event all-action-path budget gate",
+    "versioned partner observer and one-shot bounded assembly controller",
+    "unknown tactic/mode schema fail-closed validation"
+  ],
+  "acceptance": [
+    "All 158 identities, source seats, twelve map totals, initial phases, fixed births and the three prior migrations compare equal to the frozen roster.",
+    "Read back false and true on two separate G1111 value objects; changing one cannot mutate the other or the player instance.",
+    "Show150-frame walk timeout,15-frame blocked timeout, cumulativeX<=480/Z<=120, no teleport, and no-intersection/no-shared-viewport fallback from actual source spawns.",
+    "Pair actions require both actual rendered/telegraph bounds in the currentScale viewport with64-screen-pixel horizontal safe insets and targetable overlap. The rejected240px assembly leaves1043.2426px separation, wider than the1024px Stage at1x.480px only establishes necessary geometry, not a validated path or higher-zoom visibility.",
+    "Trace one rifle event and one rocket carrier/six linked units; reject charged base16/enhancement13=>37, any extra primary event, and a sidearm/subweapon add-on under the same action.",
+    "Keep the map lease after 75 actor recovery frames if the carrier is still alive; release only on actual registered group cleanup, including death/phase cancellation cases.",
+    "Target death never silently moves the existing rocket group to another target; observe the reviewed target-loss adapter.",
+    "Verify 45/15 rifle warning, explicit 36-frame rocket warning, at least 12 quiet transfer frames, all chosen recovery minima, and interruption before fire.",
+    "Neither assembly/partner failure nor quick death creates a replacement person, duplicate drop ticket, cooldown refill or missing-person compensation."
+  ],
+  "sourceEvidence": [
+    {
+      "path": "data/stages/books/cf6-type61.json",
+      "startLine": 16154,
+      "endLine": 16259,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16154-L16259"
+    },
+    {
+      "path": "data/stages/books/cf6-type61.json",
+      "startLine": 16863,
+      "endLine": 16874,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16863-L16874"
+    },
+    {
+      "path": "data/items/武器_长枪_战斗步枪.xml",
+      "startLine": 1082,
+      "endLine": 1107,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/武器_长枪_战斗步枪.xml#L1082-L1107"
+    },
+    {
+      "path": "data/items/bullets_cases.xml",
+      "startLine": 217,
+      "endLine": 227,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/bullets_cases.xml#L217-L227"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/MissileMovement.as",
+      "startLine": 151,
+      "endLine": 164,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/MissileMovement.as#L151-L164"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/Util/SearchForTargetCallbacks.as",
+      "startLine": 31,
+      "endLine": 60,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/Util/SearchForTargetCallbacks.as#L31-L60"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/Util/TrackTargetCallbacks.as",
+      "startLine": 33,
+      "endLine": 45,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/Util/TrackTargetCallbacks.as#L33-L45"
+    },
+    {
+      "path": "scripts/逻辑/战斗系统/战斗系统_fs_联弹管理.as",
+      "startLine": 613,
+      "endLine": 672,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/scripts/逻辑/战斗系统/战斗系统_fs_联弹管理.as#L613-L672"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/横向拖尾追踪联弹.xml",
+      "startLine": 27,
+      "endLine": 46,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/flashswf/arts/原版素材库-子弹/LIBRARY/联弹/横向拖尾追踪联弹.xml#L27-L46"
+    },
+    {
+      "path": "scripts/逻辑/装备函数/G1111.as",
+      "startLine": 63,
+      "endLine": 69,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/scripts/逻辑/装备函数/G1111.as#L63-L69"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_雾人_aka_fs_主动战技.as",
+      "startLine": 339,
+      "endLine": 342,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/scripts/逻辑/单位函数/单位函数_雾人_aka_fs_主动战技.as#L339-L342"
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml",
+      "startLine": 1,
+      "endLine": 1,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml#L1"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/camera/HorizontalScroller.as",
+      "startLine": 132,
+      "endLine": 138,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/scripts/类定义/org/flashNight/arki/camera/HorizontalScroller.as#L132-L138"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/camera/HorizontalScroller.as",
+      "startLine": 314,
+      "endLine": 350,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/scripts/类定义/org/flashNight/arki/camera/HorizontalScroller.as#L314-L350"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/camera/ZoomController.as",
+      "startLine": 63,
+      "endLine": 72,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/scripts/类定义/org/flashNight/arki/camera/ZoomController.as#L63-L72"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/camera/ZoomController.as",
+      "startLine": 543,
+      "endLine": 554,
+      "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/scripts/类定义/org/flashNight/arki/camera/ZoomController.as#L543-L554"
+    }
+  ],
+  "evidenceLevel": "source inspection + prior approved design + explicit new proposal; no Flash/FP20 execution or projectile-performance claim"
+}

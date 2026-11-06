@@ -14,6 +14,8 @@ wingsTuning = {shootRange:480, slashRange:115, comboRange:135, flipRange:230,
     reactionFrames:6, recoveryFrames:2, flipCooldown:75, comboCooldown:55};
 
 wingsCancelAttack = function():Void {
+    if(this.wingsAttackOwner!=null)
+        _global.org.flashNight.arki.scene.Cf6SoldierSignals.externalEnd(this,"wings",this.wingsAttackOwner,false);
     if (this.wingsAttackOwner != null) this.wingsAttackOwner.active = false;
     this.wingsAttackOwner = null;
 };
@@ -21,11 +23,16 @@ wingsCancelAttack = function():Void {
 wingsBeginAttack = function(body:MovieClip, action:String):Void {
     this.wingsCancelAttack();
     if (!(this.hp > 0)) { body.stop(); return; }
+    if((action=="flip" || action=="combo")
+        && _global.org.flashNight.arki.scene.Cf6SoldierActions.externalMayStart(this)===false){
+        body.stop();this.wingsReadyAt=this.wingsClock+12;this.动画完毕();return;
+    }
     var token:Object = {};
     body.wingsToken = token;
     this.wingsAttackOwner = {token:token, action:action, active:true,
         state:action == "combo" ? "空手攻击" : "近战"};
     this.wingsAttackCount++;
+    _global.org.flashNight.arki.scene.Cf6SoldierSignals.externalStart(this,"wings",this.wingsAttackOwner,action=="flip" || action=="combo");
     if (action == "flip") this.wingsNextFlip = this.wingsClock + this.wingsTuning.flipCooldown;
     if (action == "combo") this.wingsNextCombo = this.wingsClock + this.wingsTuning.comboCooldown;
 };
@@ -39,6 +46,7 @@ wingsCanAct = function(body:MovieClip):Boolean {
 wingsFinishAttack = function(body:MovieClip):Void {
     var owner:Object = this.wingsAttackOwner;
     if (owner == null || body.wingsToken !== owner.token) return;
+    _global.org.flashNight.arki.scene.Cf6SoldierSignals.externalEnd(this,"wings",owner,this.wingsCanAct(body));
     this.wingsCancelAttack();
     this.wingsReadyAt = this.wingsClock + this.wingsTuning.recoveryFrames;
     this.动画完毕();
@@ -130,6 +138,7 @@ wingsMove = function(body:MovieClip, amount:Number, trackZ:Number):Void {
 
 wingsFinishFlip = function(body:MovieClip):Void {
     if (!this.wingsCanAct(body)) return;
+    _global.org.flashNight.arki.scene.Cf6SoldierSignals.externalEnd(this,"wings",this.wingsAttackOwner,true);
     var target:MovieClip = _root.gameworld[this.攻击目标];
     var dx:Number = Math.abs(target._x - this._x);
     var dz:Number = Math.abs(target.Z轴坐标 - this.Z轴坐标);

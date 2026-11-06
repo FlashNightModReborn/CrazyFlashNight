@@ -9,7 +9,7 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
 
     public static function runAllTests():Void {
         _passed = _failed = 0;
-        var keys:Array = ["控制目标","全局健身HP加成","全局健身MP加成","全局健身空攻加成","全局健身防御加成","全局健身内力加成","经脉HP加成","经脉MP加成","经脉防御加成","经脉内力加成","敌人函数"];
+        var keys:Array = ["控制目标","全局健身HP加成","全局健身MP加成","全局健身空攻加成","全局健身防御加成","全局健身内力加成","经脉HP加成","经脉MP加成","经脉防御加成","经脉内力加成","敌人函数","敌人属性表"];
         var before:Object = {};
         for (var i:Number = 0; i < keys.length; i++) before[keys[i]] = _root[keys[i]];
         trace("PlayerStatProjectionTest Evidence: fixed-production-methods");
@@ -27,6 +27,7 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
             testRuntimeSources();
             testWeaponModes();
             testDressupEnemyHitAndDodgeGuard();
+            testHumanEnemyTemplateResistance();
         } catch (error) {
             check(false,"suite exception: " + error);
         } finally {
@@ -367,6 +368,43 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
                 check(output.power==data.dominator.data.power*coefficients[i]+5+15*extra[i],"real dominator "+modes[i]+" pure numeric source");
             }
         } finally {items.itemDataDict=oldData;items.equipmentDict=oldEquipment;_root.全局健身HP加成=0;}
+    }
+
+    private static function testHumanEnemyTemplateResistance():Void {
+        var before:Object=_root.敌人属性表;
+        var api:Object=org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+        var damage:Object=org.flashNight.arki.component.Damage.UniversalDamageHandle.instance;
+        var links:Array=["敌人-CF6特种兵","敌人-CF6持盾特种兵","敌人-CF6特种精英","敌人-CF6持盾特种精英","敌人-CF6特种教官","敌人-CF6持盾特种教官"];
+        _root.敌人属性表={};
+        try {
+            for(var i:Number=0;i<links.length;i++) {
+                var boss:Boolean=i>=4;
+                var declared:Object={人类:20,装甲:15};declared[boss?"首领":"精英"]=boss?20:15;
+                _root.敌人属性表[links[i]]={魔法抗性:declared};
+                var t:Object=persistentFixture();t.兵种=links[i];t.是否为敌人=true;
+                t.魔法抗性={精英:99,首领:99,热:999,人类:99};
+                t.__persistentEquipmentInputV1.slots.头部装备.data.magicdefence={热:7};
+                var hp:Number=t.hp,mp:Number=t.mp;
+                for(var repeat:Number=0;repeat<10;repeat++)api.applyPersistentSnapshot(t,api.buildPersistentSnapshot(t));
+                check(t.魔法抗性[boss?"首领":"精英"]==(boss?20:15),"human enemy keeps declared classification through equipment refresh "+links[i]);
+                check(t.魔法抗性[boss?"精英":"首领"]==undefined,"live classification contamination is not a template "+links[i]);
+                check(t.魔法抗性.热==19 && declared.热==undefined,"gear resistance applies once without rewriting XML "+links[i]);
+                check(t.hp==hp && t.mp==mp,"classification repair does not heal or restore MP "+links[i]);
+                var result= new org.flashNight.arki.component.Damage.DamageResult();
+                damage.handleBulletDamage({伤害类型:"破击",魔法伤害属性:"精英",破坏力:100,是否为敌人:false},{},t,null,result);
+                var physical:Number=100*300/(t.防御力+300);
+                check(Math.abs(t.损伤值-physical-(boss?0:42.5))<0.00001,"real BlackClaw damage branch distinguishes elite from boss "+links[i]);
+            }
+            var hero:Object=persistentFixture();hero.兵种="主角-男";hero.魔法抗性={精英:99,首领:99,热:999};
+            api.applyPersistentSnapshot(hero,api.buildPersistentSnapshot(hero));hero.等级=30;
+            api.applyPersistentSnapshot(hero,api.buildPersistentSnapshot(hero));
+            check(hero.魔法抗性.热==13 && hero.魔法抗性.人类==30,"player level-derived resistance remains fresh");
+            check(hero.魔法抗性.精英==undefined && hero.魔法抗性.首领==undefined,"untyped player live values cannot become enemy classification");
+            _root.敌人属性表.zero={魔法抗性:{精英:0}};
+            var zero:Object=persistentFixture();zero.兵种="zero";
+            api.applyPersistentSnapshot(zero,api.buildPersistentSnapshot(zero));
+            check(zero.魔法抗性.精英===0,"declared zero remains a valid classification resistance");
+        } finally {_root.敌人属性表=before;}
     }
 
     private static function testResources():Void {

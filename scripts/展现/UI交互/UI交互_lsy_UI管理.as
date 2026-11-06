@@ -161,6 +161,7 @@ _root.gameCommands["openTabletWeb"] = function():Void {
 };
 
 _root.gameCommands["safeExit"] = function() {
+    if(org.flashNight.arki.scene.Cf6SoldierLoot.deferSafeExit())return;
     // 安全退出界面已迁移到 Launcher Web 侧
     // 只触发存盘，sv:1/sv:2/sv:3 分别通知存盘中/成功/失败
     _root.仓库标志 = 0;

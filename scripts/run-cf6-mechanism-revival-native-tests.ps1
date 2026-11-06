@@ -49,7 +49,7 @@ if($PrepareOnly) {return}
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6MechanismRevivalTest.as') `
     -SuiteFqns @('org.flashNight.arki.scene.Cf6MechanismRevivalTest') `
     -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6MapMechanism.as','scripts/类定义/org/flashNight/arki/scene/Cf6TraversalService.as','scripts/类定义/org/flashNight/arki/scene/StageRunSession.as','scripts/类定义/org/flashNight/arki/scene/BookRunService.as') `
-    -ExpectedTracePatterns @('(?m)^Cf6MechanismRevivalTest Tests Passed: 92\r?$','(?m)^Cf6MechanismRevivalTest Tests Failed: 0\r?$') `
-    -SuccessSummary '92 native assertions: same-world revival, actual elevators, frozen traversal and fresh depth ownership; memory run, no coins or saves' `
+    -ExpectedTracePatterns @('(?m)^Cf6MechanismRevivalTest Tests Passed: 112\r?$','(?m)^Cf6MechanismRevivalTest Tests Failed: 0\r?$') `
+    -SuccessSummary '98 native assertions: same-world revival, actual elevators, frozen traversal and fresh depth ownership; memory run, no coins or saves' `
     -AsyncBehaviorTimeoutSeconds 120 -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile
 exit $LASTEXITCODE

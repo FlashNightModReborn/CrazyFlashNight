@@ -1,4 +1,4 @@
-﻿// asLoader 单帧 boot 帧 CDATA（由 tools/assemble-collapsed-frame.js 生成；asLoader.xml 单关键帧 #include 之，勿手改本文件——改组装器重生成）。
+﻿// asLoader boot 定义母版（由 tools/assemble-collapsed-frame.js 生成；XFL 消费同源分段，勿手改本文件——改组装器重生成）。
 // ▶ 架构导览 + 反直觉点 + 待测项：docs/asLoader-README.md（接手测试先读此文件）。
 // 联合头 82 包 + 具体类 9 | live sources 29 | generated stages 6 | BootSequencer.run
 // S0/S5/S9 业务、异步/控制行为与 f48 进度文案由 BootSequencer.as 编排。

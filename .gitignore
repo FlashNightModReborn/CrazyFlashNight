@@ -308,3 +308,10 @@ tools/input-hook-diagnostic/obj/
 
 # Rebuilt native reload fixture; source is scripts/ShootReloadNativeHost.
 /scripts/tmp-shoot-reload-native-host/
+
+# CF6 owned test-host compiler outputs (source projects remain tracked).
+/Cf6SoldierLootColdProbe.swf
+/scripts/Cf6FixedChapterHost.swf
+/scripts/Cf6FixedProjectileHost.swf
+/scripts/Cf6FixedSoldierNativeHost.swf
+/scripts/Cf6TraversalNativeHost.swf

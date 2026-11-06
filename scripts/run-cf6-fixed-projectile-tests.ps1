@@ -1,0 +1,34 @@
+﻿[CmdletBinding()]
+param([ValidateRange(1,3600)][int]$TimeoutSeconds=900,[ValidateRange(1,3600)][int]$AsyncBehaviorTimeoutSeconds=900,[switch]$SkipCompile,[switch]$LifetimeOnly)
+$ErrorActionPreference='Stop'
+& python -X utf8 -B (Join-Path $PSScriptRoot '../tools/cf6-type61/build-fixed-actions-fixture.py') --check
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& python -X utf8 -B (Join-Path $PSScriptRoot '../tools/cf6-type61/build-fixed-roster-fixture.py') --check
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& python -X utf8 -B (Join-Path $PSScriptRoot '../tools/cf6-soldier-assets/build-fixed-test-consumer.py') --projectiles
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+$template='scripts/test-runners/cf6-fixed-projectiles/TestLoader.as.template'
+$birthPattern='[1-9]\d*';$materializations=158;$cases=35
+if ($LifetimeOnly) {
+    $root=Split-Path -Parent $PSScriptRoot
+    $source=Join-Path $root $template
+    $template='tmp/cf6-fixed-projectiles-lifetime/TestLoader.as.template'
+    $target=Join-Path $root $template
+    [void](New-Item -ItemType Directory -Path (Split-Path -Parent $target) -Force)
+    Copy-Item -LiteralPath $source -Destination $target -Force
+    $body='_root.cf6ProjectileLifetimeOnly=true;' + "`n" + [IO.File]::ReadAllText($source,[Text.Encoding]::UTF8)
+    [IO.File]::WriteAllText($target,$body,[Text.UTF8Encoding]::new($true))
+    $birthPattern='\d+';$materializations=0;$cases=2
+}
+& (Join-Path $PSScriptRoot 'test-runners/run-focused-testloader.ps1') `
+    -DomainId 'cf6-fixed-projectiles' `
+    -CompileTargetRelativePath 'scripts/Cf6FixedProjectileHost/Cf6FixedProjectileHost.xfl' `
+    -CompileSwfRelativePath 'scripts/Cf6FixedProjectileHost.swf' `
+    -TemplateRelativePath $template `
+    -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6FixedSoldierNativeTest.as','scripts/类定义/org/flashNight/arki/scene/Cf6FixedActionsTest.as') `
+    -SuiteFqns @('org.flashNight.arki.scene.Cf6FixedSoldierNativeTest','org.flashNight.arki.scene.Cf6FixedActionsTest') `
+    -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6FixedActionsFixture.as','scripts/类定义/org/flashNight/arki/scene/Cf6FixedRosterFixture.as','scripts/类定义/org/flashNight/arki/scene/Cf6FixedProjectileHarness.as') `
+    -ExpectedTracePatterns @(("(?m)^Cf6FixedProjectileHarness: [1-9]\d* actual births, $birthPattern collision settlements, 0 failed\r?$"),'(?m)^Cf6FixedActionsTest: \d+ passed, 0 failed; 22 same-source cycles and native ownership\r?$',("(?m)^Cf6FixedSoldierNativeTest: \d+ passed, 0 failed; $materializations fixed materializations, $cases native action cases\r?$")) `
+    -SuccessSummary 'Fixed158 real actor, factory, collision and projectile retirement; controlled damage magnitude and target observations' `
+    -TimeoutSeconds $TimeoutSeconds -AsyncBehaviorTimeoutSeconds $AsyncBehaviorTimeoutSeconds -SkipCompile:$SkipCompile
+exit $LASTEXITCODE

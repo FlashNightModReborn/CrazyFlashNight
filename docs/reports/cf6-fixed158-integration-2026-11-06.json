@@ -1,0 +1,54 @@
+{
+  "schema": "cf6-fixed158-integration-evidence.v1",
+  "status": "compiled_and_isolated_candidate_executed",
+  "sourceBaseline": "7b7785b438ecfa57030f73ac2216aa5d1207ab68",
+  "loaderSha256": "9a5b52f56946a547308a71429f6cffef080232a4085bf7070bfdb1be389c0da8",
+  "soldierSha256": "a121ee69e43d5b829a6d383495e25fc9c8af147c80f04de0c5b735a5759ba9b8",
+  "implementation": [
+    "fixed158 weapon, action, permit and durable loot integration",
+    "persistent hero traversal and death revival without old callback restoration",
+    "car held fire ownership",
+    "human NPC declared resistance projection",
+    "running body display without AI facing changes",
+    "fixed straight projectile heading"
+  ],
+  "ordinaryEliteResistance": 15,
+  "ordinaryTenacity": 5,
+  "eliteTenacity": 50,
+  "instructorBossResistance": 20,
+  "instructorEliteClassification": false,
+  "nativeRegression": {
+    "nativeResourceAssertions": 1421,
+    "nativeProjectionAssertions": 119,
+    "nativeActorAssertions": 3169,
+    "fixedMaterializations": 158,
+    "nativeActionCases": 35,
+    "actualProjectileBirths": 131,
+    "actualCollisionSettlements": 195,
+    "bodyHeightAssertions": 21,
+    "measuredLinkages": 7,
+    "compilerErrors": 0,
+    "compilerWarnings": 0
+  },
+  "candidateJourney": {
+    "runId": "20261106T065415152Z-cf6",
+    "reportSha256": "e6ea1b893f176152fbaf1b44c7592105d2a9ea7b254a2a2fd876ef68621a9311",
+    "map": "A10",
+    "actualEliteClassificationsObserved": 4,
+    "naturalDeath": true,
+    "medicalReturn": true,
+    "newProcessReadback": true,
+    "originAssetsUnchanged": true,
+    "assistance": "existing debug map entry and session-only god mode, then disabled before natural death; no fabricated result"
+  },
+  "evidenceBoundary": {
+    "formalRuntimePromoted": false,
+    "fullChapterHumanAcceptanceForNewFeedbackBuild": false,
+    "previousElevatorReviveA11JourneyLoaderSha256": "913d0cc24ade62df87a83ed7349e30567b17e2f1c4df4c7020b5f048f94412d7"
+  },
+  "preservation": {
+    "originalPlayableSavedFilesUnchangedAtDelivery": 11,
+    "originalPlayableFlashObjectsUnchangedAtDelivery": 8
+  },
+  "scope": "Existing production RSL and behavior source plus governed fixture sources; generated test SWFs and scratch probes excluded."
+}

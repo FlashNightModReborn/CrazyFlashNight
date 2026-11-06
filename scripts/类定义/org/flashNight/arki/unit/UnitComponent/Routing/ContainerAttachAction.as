@@ -62,6 +62,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerAttachAction {
 
         if (man != undefined) {
             result.status = STATUS_OK;
+            org.flashNight.arki.scene.Cf6SoldierSignals.playerContainer(unit,kind,actionName,man);
             return result;
         }
 

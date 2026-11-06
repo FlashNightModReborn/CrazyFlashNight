@@ -203,7 +203,7 @@
       "physicalId": "A1",
       "layer": "scripts",
       "sourcePath": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
-      "line": 163,
+      "line": 170,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "_root.存档系统.flushBeforeTransition(\"safe_exit\")",
@@ -1195,7 +1195,7 @@
       "physicalId": "U6.1",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/BookRunService.as",
-      "line": 229,
+      "line": 233,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
@@ -1336,7 +1336,7 @@
     },
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/BookRunService.as",
-      "line": 319,
+      "line": 324,
       "api": "_root.存档系统.markDirty()",
       "liveState": "live",
       "notes": "书中终局数据等待正规返回与书架换槽的严格全量保存；不另占奖励候选。"

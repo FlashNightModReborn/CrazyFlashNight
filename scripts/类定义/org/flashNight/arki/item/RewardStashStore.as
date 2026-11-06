@@ -18,13 +18,13 @@ class org.flashNight.arki.item.RewardStashStore {
     public static function candidate(raw:Object):Object {
         var copy:Object = {};
         for(var key:String in raw) {
-            if (key == "entries") copy.entries = raw.entries instanceof Array ? raw.entries.slice() : PersistedSnapshot.clone(raw.entries);
+            if (key == "entries") copy.entries = raw.entries instanceof Array ? raw.entries.slice() : PersistedSnapshot.cloneData(raw.entries);
             else copy[key] = PersistedSnapshot.clone(raw[key]);
         }
         // A known AMF shape repair also replaces its row, preserving the committed before-image.
         if(copy.entries instanceof Array) for(var i:Number=0;i<copy.entries.length;i++) {
             var row:Object=copy.entries[i];
-            if(row != null && emptyObject(row.item.value.mods)) copy.entries[i]=PersistedSnapshot.clone(row);
+            if(row != null && emptyObject(row.item.value.mods)) copy.entries[i]=PersistedSnapshot.cloneData(row);
         }
         return copy;
     }
@@ -48,7 +48,7 @@ class org.flashNight.arki.item.RewardStashStore {
             var checkedItem:Object = row == null ? null : row.item;
             if (row != null && row.item != null && typeof row.item.value == "object"
                     && emptyObject(row.item.value.mods)) {
-                checkedItem = PersistedSnapshot.clone(row.item); checkedItem.value.mods = [];
+                checkedItem = PersistedSnapshot.cloneData(row.item); checkedItem.value.mods = [];
                 repairs.push({owner:row.item.value,key:"mods",value:[]}); changed = true;
             }
             if (row == null || typeof row.entryId != "string" || row.entryId.length == 0
@@ -133,11 +133,11 @@ class org.flashNight.arki.item.RewardStashStore {
         if (items.length > MAX_INTEGER - Number(store.sequence)) return false;
         for (var rk:String in indexes) if (items.length > MAX_INTEGER - store.entries[Number(indexes[rk])].revision) return false;
         for (var k:Number = 0; k < items.length; k++) {
-            var next:Object = PersistedSnapshot.clone(items[k]);
+            var next:Object = PersistedSnapshot.cloneData(items[k]);
             var key:String = "$" + next.name;
             var index = typeof next.value == "number" ? indexes[key] : undefined;
             if (index !== undefined) {
-                var target:Object = PersistedSnapshot.clone(store.entries[Number(index)]);
+                var target:Object = PersistedSnapshot.cloneData(store.entries[Number(index)]);
                 store.entries[Number(index)] = target;
                 target.item.value += next.value;
                 target.item.lastUpdate = Math.max(target.item.lastUpdate, next.lastUpdate);
@@ -166,7 +166,7 @@ class org.flashNight.arki.item.RewardStashStore {
         if (row == null || !whole(count) || count < 1 || count > quantity(row.item)) return false;
         if (typeof row.item.value == "number" && count < row.item.value) {
             if (row.revision >= MAX_INTEGER) return false;
-            var updated:Object = PersistedSnapshot.clone(row);
+            var updated:Object = PersistedSnapshot.cloneData(row);
             updated.item.value -= count;
             updated.revision++;
             for(var position:Number=0;position<store.entries.length;position++)

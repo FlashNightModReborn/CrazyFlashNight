@@ -1,0 +1,3894 @@
+{
+  "schema": "cf6-soldier-action-contracts.source.v1",
+  "baselineSha": "64b22a0449efa5689c0b946ee3c348774737ad65",
+  "inputD3Sha256": "46a3685a829488d5e075da65851a4da33bbfa914e0bb6f1823a6be165dac0d49",
+  "scope": "22 proposed implementation contracts; preserve all chosen equipment, identities, roles, spawn seats and difficulty scales",
+  "contractLanguage": "declarative trigger/state predicates, not code to eval; all new observations are requirements, not claims about current APIs",
+  "unknownMajorTacticPolicy": {
+    "generator": "reject unknown or missing tactic; fail build before runtime",
+    "runtime": "reject invalid roster/tactic capability before actor activation; emit diagnostic and abort test scenario, no silent generic-adaptive fallback",
+    "missingRequiredObservation": "fail capability validation; do not substitute HP ratio, display name, random timing or a generic fallback"
+  },
+  "sharedRules": {
+    "simulationFPS": 30,
+    "lifeScope": "worldIdentity + unitIdentity + actorVersion + cycleId; no title authority",
+    "visibility": "complete windup must be visible; shooter offscreen/target invalid/world changed cancels remaining event queue",
+    "interrupt": "control/death/retirement/shield phase change cancels unissued events; ammo and identity persist; no delayed refill or replay",
+    "counterScope": "one counter set per composite action, retained across weapon switches; central budget check before every real primary/secondary/subweapon event",
+    "attackInterlock": "no simultaneous primary+dual+subweapon; dangerous-action permit covers full composite sequence and releases on terminal paths",
+    "movement": "use existing collision-aware mover; distance limits are maxima, not teleport destinations; blocked movement ends or cancels the sequence",
+    "frameSafety": "never accelerate fire events to catch up after low FPS or late cue; discard events that miss their allowed window",
+    "dependencyBinding": "bind explicit roster identity or authored non-roster spawn ordinal with actor/world identity; never resolve by randomized display name",
+    "phaseAndLoot": "shield flip does not create another person; boss support retirement is not combat death; no tactic path issues loot directly",
+    "AVM1Cost": "precompile contract enums and scalar tables; per-actor compact counters; no eval strings, new per-frame arrays, per-shot JSON, or per-tick closure allocation"
+  },
+  "contracts": [
+    {
+      "unitIdentity": "CF6-M-VII",
+      "tarotMajor": "VII·战车",
+      "majorTactic": "shield_breach",
+      "sourceSeat": "A13.W01.E00.I01",
+      "mapId": "A13",
+      "role": "breach",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "phase==1",
+          "targetInFront",
+          "180<=dx<=240",
+          "targetInSameLane",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "shield_approach",
+          "operation": "现有盾冲/推进接近；枪械不在移动接触帧开火",
+          "travelCapPx": 120,
+          "collisionSolver": "existing",
+          "allFireModesDisabled": true,
+          "primaryEvents": 0
+        },
+        {
+          "state": "settle",
+          "operation": "盾冲终止后停步并亮出枪口预警",
+          "frames": 18,
+          "allGunsOff": true,
+          "requiresEvent": "verifiedChargeTerminalOrShieldContactRecovery"
+        },
+        {
+          "state": "primary",
+          "operation": "SPAS12仅1次真实射击事件",
+          "primaryEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少60帧恢复，不补榴弹、不立刻连双枪",
+          "frames": 60
+        }
+      ],
+      "exit": {
+        "normal": "recover结束后重新读距离；不连续自动重开盾冲",
+        "phase2": "破盾取消当前未发事件，转双枪短后撤；每轮不超过D3副手上限，不能再走盾冲触发链"
+      },
+      "counterplay": [
+        "在18帧停步预警内绕侧或打断",
+        "诱出单次霰弹后利用60帧恢复"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 1,
+          "primarySplit": 10,
+          "primaryProjectilesPerAction": 10,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 10,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 10,
+          "scriptedCycleProjectiles": 10,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 18,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 60,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {}
+      },
+      "anchor": {
+        "mode": "limited_advance",
+        "x": 477.8667,
+        "z": 477.8667,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L12647",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "movementBudget": {
+        "perCycleX": 120,
+        "pursuitFromSpawnMaxX": 240
+      },
+      "phaseMode": "positive_shield_then_reversed_dual",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity",
+        "chargeTerminalSequence",
+        "chargePrimaryGateClosed",
+        "settleStartedAfterTerminal"
+      ],
+      "whileTriggerFalse": {
+        "mode": "approach_for_close_primary",
+        "instruction": "只用现有碰撞移动尝试到240px内；未进入枪械距离不开霰弹，不能为触发盾冲无限追击。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      },
+      "requiredImplementation": [
+        "B2-shield-charge-contact-fire-separation",
+        "B2-weapon-action-event-budget",
+        "B2-telegraph-visibility"
+      ],
+      "shieldChargeFireInterlock": {
+        "existingPitfall": "现有chargeShots=1仍允许同一drive阶段完成盾冲接触并发出1次长枪事件；它只限制次数，不保证接触与枪火分段。",
+        "requiredBehavior": "新盾冲动作owner必须明确禁止primary/secondary/subweapon发射；只有真实charge-terminal或shield-contact-recovery事件已确认，才进入settle预警。不能只用age或chargeShots标量冒充此门。",
+        "settleFrames": 18,
+        "mustCancelOn": [
+          "盾冲未完成即受击/打断",
+          "phase切换",
+          "目标失效",
+          "世界身份变化"
+        ],
+        "primaryAfterSettleMaxEvents": 1,
+        "singleCyclePrimaryCounter": "跨盾冲与settle共用，盾冲段必须为0，终点最多1；不因切换owner重置为第二份配额。",
+        "acceptance": "逐帧记录盾冲接触、terminal、预警开始、枪口事件；接触/推进期间0枪口事件，settle至少18帧后才允许唯一霰弹事件。"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XII",
+      "tarotMajor": "XII·倒吊人",
+      "majorTactic": "reverse_rear_guard",
+      "sourceSeat": "A14.W01.E00.I01",
+      "mapId": "A14",
+      "role": "precision",
+      "startingPhase": 2,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "phase==2",
+          "targetVisible",
+          "targetWithin580",
+          "recentDirectAttackObservedWithin30Frames",
+          "retreatAvailable",
+          "ready"
+        ]
+      },
+      "action": [
+        {
+          "state": "retreat",
+          "operation": "用现有撤步远离最近攻击方向，禁止主枪开火",
+          "maxDistancePx": 100,
+          "maxFrames": 18
+        },
+        {
+          "state": "aim",
+          "operation": "撤步结束定点锁线；提前近身则取消",
+          "frames": 24,
+          "lockLastFrames": 9
+        },
+        {
+          "state": "primary",
+          "operation": "G3SG1单发穿刺精确射击",
+          "primaryEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少60帧不再反击同一事件",
+          "frames": 60
+        }
+      ],
+      "exit": {
+        "normal": "消费本次recentDirectAttack事件序号，防止同一攻击重复触发",
+        "close": "玩家进入180px改防御/短枪撤离，取消本轮精确射击",
+        "blocked": "撤步受阻直接恢复；不原地补射"
+      },
+      "counterplay": [
+        "停火逼其放弃反击节奏",
+        "提前贴近取消长枪窗口",
+        "绕到撤步末端侧面攻击"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 1,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 1,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 1,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 24,
+        "defaultLockAimLastFrames": 9,
+        "minimumRecoveryFrames": 60,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {}
+      },
+      "anchor": {
+        "mode": "retreat_local",
+        "x": 102.4,
+        "z": 629.0773,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L13291",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "movementBudget": {
+        "perCycleX": 100,
+        "pursuitFromSpawnMaxX": 240
+      },
+      "requiredObservation": [
+        "selfRecentAttackOrDamageSequence"
+      ],
+      "phaseMode": "starts_reversed_no_new_identity",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity"
+      ],
+      "whileTriggerFalse": {
+        "mode": "defence_and_observation",
+        "instruction": "没有新攻击事件时可调整朝向/持位；允许已预算的近距短枪防御，但不无条件周期狙击冒充反击机制。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-IV",
+      "tarotMajor": "IV·皇帝",
+      "majorTactic": "fixed_bastion",
+      "sourceSeat": "A14.W04.E02.I01",
+      "mapId": "A14",
+      "role": "suppress",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "targetVisible",
+          "targetWithin500",
+          "targetInSameLane",
+          "atFixedAnchor",
+          "ready"
+        ]
+      },
+      "action": [
+        {
+          "state": "brace",
+          "operation": "在固定出生锚区停步预警",
+          "frames": 15
+        },
+        {
+          "state": "primary",
+          "operation": "M249最多8个主枪事件，固定同一射线；不追随玩家跨Z轴",
+          "primaryEvents": 8,
+          "maximumFrames": 48
+        },
+        {
+          "state": "recover",
+          "operation": "48帧停火；不因玩家走出射程而缩短",
+          "frames": 48
+        }
+      ],
+      "exit": {
+        "normal": "回到固定锚区等待下一轮",
+        "targetLeavesLane": "结束当前轮的剩余事件并恢复；不追人",
+        "phase2": "破盾只扩大可受击窗口；仍不转追击型教官"
+      },
+      "counterplay": [
+        "绕到另一Z带迫其停火",
+        "利用48帧恢复穿过火线",
+        "近身打断固定堡垒"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 8,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 8,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 8,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 8,
+          "scriptedCycleProjectiles": 8,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 15,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 48,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {}
+      },
+      "anchor": {
+        "mode": "fixed_spawn",
+        "x": 102.4,
+        "z": 629.0773,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L13561",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required",
+        "tolerancePx": {
+          "x": 24,
+          "z": 24
+        }
+      },
+      "phaseMode": "same_anchor_after_shield_break",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity"
+      ],
+      "whileTriggerFalse": {
+        "mode": "anchor_hold",
+        "instruction": "只在锚区内对齐；玩家在射程外时不追逐。这个可被隔离的弱点是固定堡垒的代价。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XV",
+      "tarotMajor": "XV·恶魔",
+      "majorTactic": "pursuit_leash",
+      "sourceSeat": "A15.W03.E02.I01",
+      "mapId": "A15",
+      "role": "mobile",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "targetVisible",
+          "180<dx<=460",
+          "targetMovingAway",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "pursue",
+          "operation": "沿已通过碰撞检测的方向追击；此特殊追击周期所有主枪事件为0，终点只使用双M93R一次同步事件。",
+          "maxDistancePx": 180,
+          "maxFrames": 30,
+          "primaryEventsMax": 0
+        },
+        {
+          "state": "brake",
+          "operation": "停止追击后显示双枪预警",
+          "frames": 18,
+          "allGunsOff": true
+        },
+        {
+          "state": "dual",
+          "operation": "双M93R仅一次同步扳机事件",
+          "synchronizedEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少48帧停止追击",
+          "frames": 48
+        }
+      ],
+      "exit": {
+        "normal": "恢复后才允许新追击",
+        "leash": "达到180px或30帧则强制刹停，目标跑远也不延长",
+        "crossed": "玩家越过自身侧面立即取消剩余双枪事件并恢复"
+      },
+      "counterplay": [
+        "反向穿过其侧面可让双枪轮落空",
+        "诱其追击耗完180px预算后输出"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 3,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 3,
+          "sidearmSynchronizedTriggerLimit": 1,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 3,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 12,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 42,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {},
+        "cyclePartition": {
+          "specialPursuitPrimaryEvents": 0,
+          "specialPursuitSynchronizedSidearmEvents": 1,
+          "specialPursuitNominalProjectiles": 6,
+          "ordinaryPrimaryOutsideSpecialCycleMaxEvents": 3,
+          "outsideCycleRequiresFullRest": true
+        }
+      },
+      "anchor": {
+        "mode": "bounded_pursuit",
+        "x": 102.4,
+        "z": 680.6187,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L14082",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "movementBudget": {
+        "perCycleX": 180,
+        "perCycleZ": 24
+      },
+      "phaseMode": "phase_independent_pursuit_no_reset_on_break",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity"
+      ],
+      "whileTriggerFalse": {
+        "mode": "bounded_primary_cycle",
+        "instruction": "目标不后撤时最多3次步枪点射、至少42帧恢复；目标后撤才进入特殊追击。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XVI",
+      "tarotMajor": "XVI·高塔",
+      "majorTactic": "segmented_lane",
+      "sourceSeat": "A17.W01.E04.I01",
+      "mapId": "A17",
+      "role": "suppress",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "contractRevision": 2,
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 3,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 3,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 3,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "source-backed creation/configuration ceilings and proposed event gates; no FP20 hit/FPS verification",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission.",
+          "sidearmTriggerSemantics": "Per-real-hand ceiling; synchronized means one planned pair opportunity, not forced same-frame fire or bypass of each weapon cadence.",
+          "primaryCreatedObjectsIncludingDescendants": 3,
+          "primaryFinalDamageUnitsPerAction": 3,
+          "countingNote": "Direct projectiles, descendants/linked damage units and repeated contacts/settlements are separate quantities; the 14-unit gate checks final units, not XML split alone."
+        },
+        "defaultWindupFrames": 15,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 54,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only real host-weapon loading/reload lifecycle; no phase, movement, tactic or partner refresh",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "All repeated segments share the same event ledger; discarded events never bank or replay.",
+        "leaseRelease": "registered damage body/group and every descendant actually terminated",
+        "overrides": {
+          "windupFrames": 15,
+          "lockAimLastFrames": 0,
+          "recoveryFrames": 54
+        }
+      },
+      "effectBudget": {
+        "primaryEvents": 3,
+        "directBodies": 3,
+        "createdObjectsIncludingDescendants": 3,
+        "finalDamageUnitsCeiling": 3,
+        "nativeCadenceMs": 60.0,
+        "minimumCadenceFramesAt30FPS": 2,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient"
+      },
+      "anchor": {
+        "mode": "two_real_lanes",
+        "x": 102.4,
+        "z": 452.2667,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L14806",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "requiredState": [
+        "worldIdentity",
+        "unitIdentity",
+        "actorVersion",
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "lastConsumedTriggerId",
+        "damageGroupIds"
+      ],
+      "requiredImplementation": [
+        "B2-weapon-action-event-budget",
+        "B2-telegraph-visibility",
+        "B2-high-risk-permit",
+        "B2-damage-group-retirement",
+        "B2-major-tactic-segmented_lane",
+        "B2-native-cadence-event-gate"
+      ],
+      "cancelRules": [
+        "world/actor version changes",
+        "phase changes before unissued events complete",
+        "target invalid/offscreen before emission",
+        "tactic interrupted"
+      ],
+      "cancellationDoesNotReleaseLiveEmittedDamageGroups": true,
+      "acceptanceTest": {
+        "scene": "original source identity, phase and fixed birth; authorized equipment increment only",
+        "mustObserve": [
+          "complete trigger/action/exit and real counterplay",
+          "no duplicate consumed event",
+          "native cooldown never reset to meet planned timing",
+          "actual damage-group cleanup before hazard lease release",
+          "phase-appropriate action only",
+          "no hidden fallback to old gun or absent auxiliary weapon"
+        ],
+        "geometry": "fixed source marker only; no invented obstacle or guaranteed free path; FP20 acceptance remains required"
+      },
+      "phaseEligibility": {
+        "startingPhaseMustRemain": 1,
+        "noPhaseRewriteForWeaponDemonstration": true,
+        "modeReadinessMustBeObservedBeforeShooting": true
+      },
+      "counterplay": [
+        "首段预警后横移；换线遇阻会取消第二段，趁54帧恢复突进。"
+      ],
+      "trigger": {
+        "all": [
+          "visible eligible target",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "first_warning",
+          "operation": "冻结当前真实Z线并预警",
+          "frames": 15
+        },
+        {
+          "state": "first_segment",
+          "operation": "战术机枪2次真实事件，每次1弹",
+          "primaryEvents": 2,
+          "minimumGapFrames": 2
+        },
+        {
+          "state": "lane_change",
+          "operation": "既有碰撞移动最多24px纵深，所有枪械关闭",
+          "maxDistanceZPx": 24,
+          "maxFrames": 18,
+          "allGunsOff": true
+        },
+        {
+          "state": "second_warning",
+          "operation": "到达真实新射线后重新预警",
+          "frames": 15
+        },
+        {
+          "state": "second_segment",
+          "operation": "同一周期剩余1次战术机枪事件",
+          "primaryEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "完整停火恢复",
+          "frames": 54
+        }
+      ],
+      "exit": {
+        "normal": "总3事件/3弹，不是每段3事件",
+        "blockedOrDeadline": "取消第二段，保留已消费计数并恢复"
+      },
+      "whileTriggerFalse": {
+        "mode": "bounded_lane_acquisition",
+        "instruction": "既有碰撞移动对齐；不能把未对齐变成扫全屏"
+      },
+      "phaseMode": "existing phase behavior retained; any allowed primary segment shares this ledger",
+      "movementBudget": {
+        "perCycleZ": 24
+      },
+      "nativeEffectBudget": {
+        "primaryEvents": 3,
+        "directBodies": 3,
+        "createdObjectsIncludingDescendants": 3,
+        "finalDamageUnitsCeiling": 3,
+        "nativeCadenceMs": 60.0,
+        "minimumCadenceFramesAt30FPS": 2,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XIII",
+      "tarotMajor": "XIII·死神",
+      "majorTactic": "advance_flush",
+      "sourceSeat": "A17.W03.E05.I01",
+      "mapId": "A17",
+      "role": "flush",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "targetVisible",
+          "220<=dx<=420",
+          "subweaponLoaded",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "primary_setup",
+          "operation": "最多3次M16A1事件后至少12帧停火，满足真实下挂调用窗口",
+          "primaryEvents": 3,
+          "minGapAfterLastPrimaryFrames": 12
+        },
+        {
+          "state": "grenade_warning",
+          "operation": "固定落点预警，不追随玩家移动",
+          "frames": 24
+        },
+        {
+          "state": "subweapon",
+          "operation": "M203仅1发，消费真实副仓",
+          "subweaponEvents": 1
+        },
+        {
+          "state": "blast_wait",
+          "operation": "等待该发榴弹的detonated或retired回执；回执不明不得提前前冲",
+          "timeoutFrames": 90
+        },
+        {
+          "state": "advance",
+          "operation": "爆炸已结束后才前进，压迫刚让出的站位；所有枪保持关闭",
+          "maxDistancePx": 120,
+          "maxFrames": 24
+        },
+        {
+          "state": "recover",
+          "operation": "至少66帧恢复",
+          "frames": 66
+        }
+      ],
+      "exit": {
+        "normal": "下挂空仓后仅普通主枪周期，直到真实主枪装填完成补副仓",
+        "lostBlastReceipt": "超时取消推进并恢复；不猜测爆炸已结束",
+        "blocked": "前进受阻停止并恢复，不改成瞬移/继续开枪"
+      },
+      "counterplay": [
+        "趁其等待榴弹结果时换边",
+        "打断爆炸后推进阶段",
+        "消耗唯一副仓弹后站位输出"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 3,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 3,
+          "sidearmSynchronizedTriggerLimit": 1,
+          "sidearmProjectilesPerAction": 2,
+          "subweaponProjectilesPerAction": 1,
+          "longgunWithSubProjectilesPerAction": 4,
+          "longgunAndSubweaponMayShareAction": true,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 4,
+          "scriptedCycleProjectiles": 4,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 24,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 66,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {}
+      },
+      "anchor": {
+        "mode": "post_blast_advance",
+        "x": 2542.9334,
+        "z": 452.2667,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L15038",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "movementBudget": {
+        "perCycleX": 120
+      },
+      "requiredObservation": [
+        "ownedSubweaponProjectileTerminal"
+      ],
+      "phaseMode": "same_single_grenade_person_across_break",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity",
+        "lastReloadCycleId",
+        "subweaponDeliveryId"
+      ],
+      "whileTriggerFalse": {
+        "mode": "bounded_primary_cycle_until_real_reload",
+        "instruction": "无副仓弹时最多3次步枪、至少66帧恢复，正常消耗主匣直至真实换弹；不故意清空主仓、不提前补副仓。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XVII",
+      "tarotMajor": "XVII·星星",
+      "majorTactic": "landing_watch",
+      "sourceSeat": "A18.W01.E02.I01",
+      "mapId": "A18",
+      "role": "precision",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "contractRevision": 2,
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 2,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 2,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 2,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "source-backed creation/configuration ceilings and proposed event gates; no FP20 hit/FPS verification",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission.",
+          "sidearmTriggerSemantics": "Per-real-hand ceiling; synchronized means one planned pair opportunity, not forced same-frame fire or bypass of each weapon cadence.",
+          "primaryCreatedObjectsIncludingDescendants": 2,
+          "primaryFinalDamageUnitsPerAction": 2,
+          "countingNote": "Direct projectiles, descendants/linked damage units and repeated contacts/settlements are separate quantities; the 14-unit gate checks final units, not XML split alone."
+        },
+        "defaultWindupFrames": 27,
+        "defaultLockAimLastFrames": 9,
+        "minimumRecoveryFrames": 75,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only real host-weapon loading/reload lifecycle; no phase, movement, tactic or partner refresh",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "All repeated segments share the same event ledger; discarded events never bank or replay.",
+        "leaseRelease": "registered damage body/group and every descendant actually terminated",
+        "overrides": {
+          "windupFrames": 27,
+          "lockAimLastFrames": 9,
+          "recoveryFrames": 75
+        }
+      },
+      "effectBudget": {
+        "primaryEvents": 2,
+        "directBodies": 2,
+        "createdObjectsIncludingDescendants": 2,
+        "finalDamageUnitsCeiling": 2,
+        "nativeCadenceMs": 1000.0,
+        "minimumCadenceFramesAt30FPS": 30,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient"
+      },
+      "anchor": {
+        "mode": "fixed_spawn_tether",
+        "x": 102.4,
+        "z": 556.2027,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L15585",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "requiredState": [
+        "worldIdentity",
+        "unitIdentity",
+        "actorVersion",
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "lastConsumedTriggerId",
+        "damageGroupIds"
+      ],
+      "requiredImplementation": [
+        "B2-weapon-action-event-budget",
+        "B2-telegraph-visibility",
+        "B2-high-risk-permit",
+        "B2-damage-group-retirement",
+        "B2-aim-telegraph",
+        "B2-major-tactic-landing_watch",
+        "B2-native-cadence-event-gate"
+      ],
+      "cancelRules": [
+        "world/actor version changes",
+        "phase changes before unissued events complete",
+        "target invalid/offscreen before emission",
+        "tactic interrupted"
+      ],
+      "cancellationDoesNotReleaseLiveEmittedDamageGroups": true,
+      "acceptanceTest": {
+        "scene": "original source identity, phase and fixed birth; authorized equipment increment only",
+        "mustObserve": [
+          "complete trigger/action/exit and real counterplay",
+          "no duplicate consumed event",
+          "native cooldown never reset to meet planned timing",
+          "actual damage-group cleanup before hazard lease release",
+          "phase-appropriate action only",
+          "no hidden fallback to old gun or absent auxiliary weapon"
+        ],
+        "geometry": "fixed source marker only; no invented obstacle or guaranteed free path; FP20 acceptance remains required"
+      },
+      "phaseEligibility": {
+        "startingPhaseMustRemain": 1,
+        "noPhaseRewriteForWeaponDemonstration": true,
+        "modeReadinessMustBeObservedBeforeShooting": true
+      },
+      "counterplay": [
+        "两次各自锁线分别侧移；击杀或打断搭档只会降低剩余连发资格。"
+      ],
+      "trigger": {
+        "all": [
+          "target visible within existing 680 range",
+          "fresh designated Wings landing/recovery event",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "first_warning",
+          "operation": "指定Wings高危动作结束后完整锁线预警",
+          "frames": 27,
+          "lockLastFrames": 9
+        },
+        {
+          "state": "first_shot",
+          "operation": "战术巴雷特第一次真实事件",
+          "primaryEvents": 1
+        },
+        {
+          "state": "second_warning",
+          "operation": "独立重新预警，不能沿第一发追线",
+          "frames": 27,
+          "lockLastFrames": 9
+        },
+        {
+          "state": "cadence_gate",
+          "operation": "第二发同时要求完整预警结束与真实1000ms武器冷却完成；不足则等候或取消，绝不重置冷却",
+          "allGunsOff": true,
+          "nativeMinimumCadenceFramesAt30FPS": 30
+        },
+        {
+          "state": "second_shot",
+          "operation": "战术巴雷特第二次真实事件",
+          "primaryEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "消费一次搭档事件并完整恢复",
+          "frames": 75
+        }
+      ],
+      "exit": {
+        "normal": "一次伙伴事件至多两次独立射击",
+        "partnerDead": "未发第二枪取消，改完整27/9预警低频单发，不补偿",
+        "partnerMissing": "禁止两连，不按显示名猜伙伴"
+      },
+      "whileTriggerFalse": {
+        "mode": "partner_watch_with_phase_valid_defence",
+        "instruction": "等待明确伙伴事件；无二连资格不强制换相或跳过预警"
+      },
+      "partner": [
+        {
+          "kind": "non_roster_actor",
+          "mapId": "A18",
+          "phase": "wave",
+          "wave": 1,
+          "enemy": 0,
+          "instance": 1,
+          "unitType": "cf6.Wings",
+          "binding": "authored spawn ordinal + actor.version + worldIdentity; never display name"
+        }
+      ],
+      "phaseMode": "partner event controls two-shot permission; starting positive phase unchanged",
+      "nativeEffectBudget": {
+        "primaryEvents": 2,
+        "directBodies": 2,
+        "createdObjectsIncludingDescendants": 2,
+        "finalDamageUnitsCeiling": 2,
+        "nativeCadenceMs": 1000.0,
+        "minimumCadenceFramesAt30FPS": 30,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XIX",
+      "tarotMajor": "XIX·太阳",
+      "majorTactic": "bright_burst",
+      "sourceSeat": "A18.W01.E03.I01",
+      "mapId": "A18",
+      "role": "suppress",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "targetVisible",
+          "targetWithin500",
+          "targetInSameLane",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "bright_warning",
+          "operation": "固定一条射线；射手完全可见",
+          "frames": 21
+        },
+        {
+          "state": "primary",
+          "operation": "M134最多2次事件=10名义弹丸，弹体仍由原射击核心发出",
+          "primaryEvents": 2,
+          "minimumGapFrames": 6
+        },
+        {
+          "state": "recover",
+          "operation": "至少66帧不开火、不追踪变线",
+          "frames": 66
+        }
+      ],
+      "exit": {
+        "normal": "结束固定10弹预算后完整停火",
+        "targetLeavesLane": "取消未发第二事件，不转向横扫",
+        "phaseChange": "取消动作但不补已经消耗事件"
+      },
+      "counterplay": [
+        "在21帧提示内离开同一Z带",
+        "利用66帧停止照射窗口近身"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 2,
+          "primarySplit": 5,
+          "primaryProjectilesPerAction": 10,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 10,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 10,
+          "scriptedCycleProjectiles": 10,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 15,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 66,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {}
+      },
+      "anchor": {
+        "mode": "single_locked_lane",
+        "x": 2628.2667,
+        "z": 556.2027,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L15605",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "phaseMode": "same_short_burst_after_break",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity"
+      ],
+      "whileTriggerFalse": {
+        "mode": "lane_acquire_then_hold",
+        "instruction": "不在同一真实Z带则低频移动对齐，保持移动不开该高危M134齐射；目标离屏不启动。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XVIII",
+      "tarotMajor": "XVIII·月亮",
+      "majorTactic": "relocate_then_flush",
+      "sourceSeat": "A18.W03.E05.I01",
+      "mapId": "A18",
+      "role": "flush",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "contractRevision": 2,
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 1,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 1,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 1,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "source-backed creation/configuration ceilings and proposed event gates; no FP20 hit/FPS verification",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission.",
+          "sidearmTriggerSemantics": "Per-real-hand ceiling; synchronized means one planned pair opportunity, not forced same-frame fire or bypass of each weapon cadence.",
+          "primaryCreatedObjectsIncludingDescendants": 2,
+          "primaryFinalDamageUnitsPerAction": 2,
+          "countingNote": "Direct projectiles, descendants/linked damage units and repeated contacts/settlements are separate quantities; the 14-unit gate checks final units, not XML split alone."
+        },
+        "defaultWindupFrames": 30,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 90,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only real host-weapon loading/reload lifecycle; no phase, movement, tactic or partner refresh",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "All repeated segments share the same event ledger; discarded events never bank or replay.",
+        "leaseRelease": "registered damage body/group and every descendant actually terminated",
+        "overrides": {
+          "windupFrames": 30,
+          "lockAimLastFrames": 0,
+          "recoveryFrames": 90
+        }
+      },
+      "effectBudget": {
+        "primaryEvents": 1,
+        "directBodies": 1,
+        "createdObjectsIncludingDescendants": 2,
+        "finalDamageUnitsCeiling": 2,
+        "nativeCadenceMs": 800.0,
+        "minimumCadenceFramesAt30FPS": 24,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient",
+        "childAreaKeyframes": 5,
+        "guaranteedHitsPerTarget": null,
+        "effectEvidence": {
+          "carrierSource": {
+            "path": "flashswf/arts/new/lady/LIBRARY/特效文件存放/fsc7炮弹文件/fsc7炮弹.xml",
+            "line": 1,
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/flashswf/arts/new/lady/LIBRARY/特效文件存放/fsc7炮弹文件/fsc7炮弹.xml#L1"
+          },
+          "childSource": {
+            "path": "flashswf/arts/new/lady/LIBRARY/特效文件存放/集束连环爆炸文件/集束连环爆炸.xml",
+            "line": 1,
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/flashswf/arts/new/lady/LIBRARY/特效文件存放/集束连环爆炸文件/集束连环爆炸.xml#L1"
+          },
+          "childAreaKeyframes": [
+            {
+              "frameIndexZeroBased": 6,
+              "duration": 1,
+              "layer": "Layer 2"
+            },
+            {
+              "frameIndexZeroBased": 8,
+              "duration": 1,
+              "layer": "Layer 2"
+            },
+            {
+              "frameIndexZeroBased": 10,
+              "duration": 1,
+              "layer": "Layer 2"
+            },
+            {
+              "frameIndexZeroBased": 11,
+              "duration": 1,
+              "layer": "Layer 2"
+            },
+            {
+              "frameIndexZeroBased": 12,
+              "duration": 1,
+              "layer": "Layer 2"
+            }
+          ],
+          "createdObjectsPerTriggerIncludingChild": 2,
+          "independentHomingSubmunitions": 0,
+          "actualHitsNotMeasured": true
+        },
+        "note": "One carrier creates one child explosion. Five child area keyframes are collision opportunities, not five guaranteed hits."
+      },
+      "anchor": {
+        "mode": "reload_reposition_tether",
+        "x": 2628.2667,
+        "z": 556.2027,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L15744",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "requiredState": [
+        "worldIdentity",
+        "unitIdentity",
+        "actorVersion",
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "lastConsumedTriggerId",
+        "damageGroupIds",
+        "lastConsumedPrimaryLoadId",
+        "initialLoadedTokenConsumed",
+        "visibleAgainSinceFrame"
+      ],
+      "requiredImplementation": [
+        "B2-weapon-action-event-budget",
+        "B2-telegraph-visibility",
+        "B2-high-risk-permit",
+        "B2-damage-group-retirement",
+        "B2-major-tactic-relocate_then_flush",
+        "B2-native-cadence-event-gate"
+      ],
+      "cancelRules": [
+        "world/actor version changes",
+        "phase changes before unissued events complete",
+        "target invalid/offscreen before emission",
+        "tactic interrupted"
+      ],
+      "cancellationDoesNotReleaseLiveEmittedDamageGroups": true,
+      "acceptanceTest": {
+        "scene": "original source identity, phase and fixed birth; authorized equipment increment only",
+        "mustObserve": [
+          "complete trigger/action/exit and real counterplay",
+          "no duplicate consumed event",
+          "native cooldown never reset to meet planned timing",
+          "actual damage-group cleanup before hazard lease release",
+          "phase-appropriate action only",
+          "no hidden fallback to old gun or absent auxiliary weapon"
+        ],
+        "geometry": "fixed source marker only; no invented obstacle or guaranteed free path; FP20 acceptance remains required"
+      },
+      "phaseEligibility": {
+        "startingPhaseMustRemain": 1,
+        "noPhaseRewriteForWeaponDemonstration": true,
+        "modeReadinessMustBeObservedBeforeShooting": true
+      },
+      "counterplay": [
+        "显形到发射的30帧内移位或打断；母弹消失后仍需避开其可见子爆炸尾部。"
+      ],
+      "trigger": {
+        "all": [
+          "target visible in existing 220..420 band",
+          "one unconsumed initial-load or actual-primary-reload token",
+          "primary magazine has a real round",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "load_origin",
+          "operation": "出生时真实已有装填只给一次初始资格；后续只接真实主仓装填回执",
+          "initialLoadedTokenLimit": 1
+        },
+        {
+          "state": "reload_relocate",
+          "operation": "仅对真实装填周期复用烟雾/碰撞位移，所有枪关闭；初始资格不伪造烟雾或装填",
+          "conditionalOn": "actualReloadToken",
+          "maxDistancePx": 120,
+          "allGunsOff": true
+        },
+        {
+          "state": "reveal",
+          "operation": "真实显形至少18活跃帧",
+          "frames": 18,
+          "allGunsOff": true
+        },
+        {
+          "state": "primary_warning",
+          "operation": "在真实显形位置给炮弹完整可见预警",
+          "frames": 30
+        },
+        {
+          "state": "single_launcher_event",
+          "operation": "FSC7一次主枪事件；母弹及一个子爆炸共用危险许可",
+          "primaryEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少90帧；许可继续等待真实子爆炸结束",
+          "frames": 90
+        }
+      ],
+      "exit": {
+        "normal": "消费唯一loadCycleId；主仓capacity1，下一发必须真实装填",
+        "reloadCancelled": "取消本轮，不伪造加载资格",
+        "initialRoundAbsent": "请求既有正常装填流程，未完成不开火",
+        "phaseChange": "取消未发事件，已发母/子伤害组仍持许可"
+      },
+      "whileTriggerFalse": {
+        "mode": "real_primary_load_wait",
+        "instruction": "无新装填令牌或主仓无弹时仅正常装填/阶段允许的防御；没有旧三发步枪兜底，也不自动补弹"
+      },
+      "phaseMode": "positive smoke/reload identity preserved; phase change never creates a loaded-round token",
+      "movementBudget": {
+        "perReloadCyclePx": 120
+      },
+      "reloadToken": {
+        "initialBirthTokenMax": 1,
+        "consumeOnAttemptStart": true,
+        "eachRealReloadCommitIdAtMostOnce": true,
+        "cancelDoesNotRefundToken": true
+      },
+      "nativeEffectBudget": {
+        "primaryEvents": 1,
+        "directBodies": 1,
+        "createdObjectsIncludingDescendants": 2,
+        "finalDamageUnitsCeiling": 2,
+        "nativeCadenceMs": 800.0,
+        "minimumCadenceFramesAt30FPS": 24,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient",
+        "childAreaKeyframes": 5,
+        "guaranteedHitsPerTarget": null,
+        "effectEvidence": {
+          "carrierSource": {
+            "path": "flashswf/arts/new/lady/LIBRARY/特效文件存放/fsc7炮弹文件/fsc7炮弹.xml",
+            "line": 1,
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/flashswf/arts/new/lady/LIBRARY/特效文件存放/fsc7炮弹文件/fsc7炮弹.xml#L1"
+          },
+          "childSource": {
+            "path": "flashswf/arts/new/lady/LIBRARY/特效文件存放/集束连环爆炸文件/集束连环爆炸.xml",
+            "line": 1,
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/flashswf/arts/new/lady/LIBRARY/特效文件存放/集束连环爆炸文件/集束连环爆炸.xml#L1"
+          },
+          "childAreaKeyframes": [
+            {
+              "frameIndexZeroBased": 6,
+              "duration": 1,
+              "layer": "Layer 2"
+            },
+            {
+              "frameIndexZeroBased": 8,
+              "duration": 1,
+              "layer": "Layer 2"
+            },
+            {
+              "frameIndexZeroBased": 10,
+              "duration": 1,
+              "layer": "Layer 2"
+            },
+            {
+              "frameIndexZeroBased": 11,
+              "duration": 1,
+              "layer": "Layer 2"
+            },
+            {
+              "frameIndexZeroBased": 12,
+              "duration": 1,
+              "layer": "Layer 2"
+            }
+          ],
+          "createdObjectsPerTriggerIncludingChild": 2,
+          "independentHomingSubmunitions": 0,
+          "actualHitsNotMeasured": true
+        },
+        "note": "One carrier creates one child explosion. Five child area keyframes are collision opportunities, not five guaranteed hits."
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-X",
+      "tarotMajor": "X·命运之轮",
+      "majorTactic": "range_rotation",
+      "sourceSeat": "A18.W03.E07.I01",
+      "mapId": "A18",
+      "role": "mobile",
+      "startingPhase": 2,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "targetVisible",
+          "targetWithin460",
+          "ready"
+        ]
+      },
+      "action": [
+        {
+          "state": "far_mode",
+          "operation": "dx>=360时完成最多3次长枪事件；进入另一模式前至少保持45帧",
+          "primaryEvents": 3,
+          "minimumModeHoldFrames": 45
+        },
+        {
+          "state": "approach_window",
+          "operation": "主枪停火，仅在安全移动允许时接近至240px；追不上则恢复",
+          "maxDistancePx": 120,
+          "maxFrames": 24
+        },
+        {
+          "state": "near_warning",
+          "operation": "dx<=240且持有危险许可才展示双枪切换",
+          "frames": 18
+        },
+        {
+          "state": "near_mode",
+          "operation": "本完整轮换周期双MP7只做1次同步事件；加前段3次主枪共5名义弹丸，不突破D3单周期上界。",
+          "synchronizedEvents": 1
+        },
+        {
+          "state": "separate",
+          "operation": "停火撤至360px或耗尽120px移动预算，之后至少48帧恢复",
+          "maxDistancePx": 120,
+          "recoveryFrames": 48
+        }
+      ],
+      "exit": {
+        "normal": "按far→approach→near→separate有序轮换，不能每帧根据距离重选",
+        "targetOutsideTransition": "所需距离未满足就终止当前周期，不原地刷切枪",
+        "blocked": "移动受阻直接恢复，不补射另一枪组"
+      },
+      "counterplay": [
+        "保持在240至360px滞回区可迫使轮换等待",
+        "在切换可见期打断",
+        "绕墙/障碍只能通过真实碰撞结果触发终止，不能预设地图有掩体"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 3,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 3,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 3,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 12,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 42,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {},
+        "cyclePartition": {
+          "primaryEvents": 3,
+          "synchronizedSidearmEvents": 1,
+          "nominalCycleProjectiles": 5,
+          "doesNotIncreaseD3Ceiling": true
+        }
+      },
+      "anchor": {
+        "mode": "range_hysteresis_cycle",
+        "x": 2628.2667,
+        "z": 556.2027,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L15778",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "movementBudget": {
+        "approachX": 120,
+        "retreatX": 120
+      },
+      "phaseMode": "starts_reversed_same_rotation_state",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity"
+      ],
+      "whileTriggerFalse": {
+        "mode": "far_mode_entry",
+        "instruction": "默认从far_mode开始，进入近距前不能每帧在枪组之间切换；未到必要距离时真实移动或终止周期。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-VIII",
+      "tarotMajor": "VIII·力量",
+      "majorTactic": "shield_counter",
+      "sourceSeat": "A18.W04.E05.I01",
+      "mapId": "A18",
+      "role": "counter",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "phase==1",
+          "verifiedShieldImpactOrBashRecoveryEventUnconsumed",
+          "180<=dx<=240",
+          "targetVisible",
+          "subweaponLoaded",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "shield_settle",
+          "operation": "盾击/抵挡动作完全结束，禁止接触帧同时喷霰弹",
+          "frames": 18,
+          "allGunsOff": true
+        },
+        {
+          "state": "subweapon",
+          "operation": "下挂霰弹仅1发=7名义弹丸",
+          "subweaponEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少48帧，消费盾事件",
+          "frames": 48
+        }
+      ],
+      "exit": {
+        "normal": "每个盾事件只反击一次",
+        "phase2": "破盾后转普通步枪/近距双枪防御，特殊盾反击停用，不凭空触发下挂",
+        "subweaponEmpty": "保留盾动作但不补射、不开免费副仓"
+      },
+      "counterplay": [
+        "不要连续撞正面盾；侧绕破盾即可永久关闭该特殊反击",
+        "在18帧间隔打断下挂"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 3,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 3,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 7,
+          "longgunWithSubProjectilesPerAction": 10,
+          "longgunAndSubweaponMayShareAction": true,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 10,
+          "scriptedCycleProjectiles": 10,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 18,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 48,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {}
+      },
+      "anchor": {
+        "mode": "shield_front",
+        "x": 2628.2667,
+        "z": 556.2027,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L15877",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "requiredObservation": [
+        "successfulShieldImpactOrBashRecovery"
+      ],
+      "phaseMode": "special_disabled_after_shield_break",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity"
+      ],
+      "whileTriggerFalse": {
+        "mode": "bounded_primary_or_shield_defence",
+        "instruction": "没有盾反事件时以最多3发步枪或既有盾/刀防御处理距离；不给通用距离条件直接调用特殊下挂。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XX",
+      "tarotMajor": "XX·审判",
+      "majorTactic": "judgment_line",
+      "sourceSeat": "A19.W01.E00.I01",
+      "mapId": "A19",
+      "role": "precision",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "contractRevision": 2,
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 1,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 1,
+          "sidearmSynchronizedTriggerLimit": 1,
+          "sidearmProjectilesPerAction": 2,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 1,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "source-backed creation/configuration ceilings and proposed event gates; no FP20 hit/FPS verification",
+          "maxPlannedActionProjectiles": 2,
+          "scriptedCycleProjectiles": 2,
+          "cycleNote": "One granted action; future actions require rest and renewed permission.",
+          "sidearmTriggerSemantics": "Per-real-hand ceiling; synchronized means one planned pair opportunity, not forced same-frame fire or bypass of each weapon cadence.",
+          "primaryCreatedObjectsIncludingDescendants": 1,
+          "primaryFinalDamageUnitsPerAction": 1,
+          "countingNote": "Direct projectiles, descendants/linked damage units and repeated contacts/settlements are separate quantities; the 14-unit gate checks final units, not XML split alone."
+        },
+        "defaultWindupFrames": 45,
+        "defaultLockAimLastFrames": 15,
+        "minimumRecoveryFrames": 75,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only real host-weapon loading/reload lifecycle; no phase, movement, tactic or partner refresh",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "All repeated segments share the same event ledger; discarded events never bank or replay.",
+        "leaseRelease": "registered damage body/group and every descendant actually terminated",
+        "overrides": {
+          "windupFrames": 45,
+          "lockAimLastFrames": 15,
+          "recoveryFrames": 75
+        }
+      },
+      "effectBudget": {
+        "primaryEvents": 1,
+        "directBodies": 1,
+        "createdObjectsIncludingDescendants": 1,
+        "finalDamageUnitsCeiling": 1,
+        "nativeCadenceMs": 1000.0,
+        "minimumCadenceFramesAt30FPS": 30,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient",
+        "linkedDamageUnits": 0,
+        "isRocketMode": false,
+        "chargedAttackAllowed": false,
+        "sharedHomingPath": false,
+        "independentHomingMissiles": 0,
+        "chargedRocketBaseUnits": 16,
+        "chargedRocketUnitsAtEnhancement13": 37,
+        "strictStablePiercingProven": false
+      },
+      "anchor": {
+        "mode": "fixed_long_warning_lane",
+        "x": 929.4507,
+        "z": 293.888,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L16154",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "requiredState": [
+        "worldIdentity",
+        "unitIdentity",
+        "actorVersion",
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "lastConsumedTriggerId",
+        "damageGroupIds"
+      ],
+      "requiredImplementation": [
+        "B2-weapon-action-event-budget",
+        "B2-telegraph-visibility",
+        "B2-high-risk-permit",
+        "B2-damage-group-retirement",
+        "B2-aim-telegraph",
+        "B2-major-tactic-judgment_line",
+        "B2-native-cadence-event-gate",
+        "B2-G1111-instance-mode-gate",
+        "B2-G1111-pair-observer",
+        "B2-G1111-target-identity-gate"
+      ],
+      "cancelRules": [
+        "world/actor version changes",
+        "phase changes before unissued events complete",
+        "target invalid/offscreen before emission",
+        "tactic interrupted"
+      ],
+      "cancellationDoesNotReleaseLiveEmittedDamageGroups": true,
+      "acceptanceTest": {
+        "scene": "original source identity, phase and fixed birth; authorized equipment increment only",
+        "mustObserve": [
+          "complete trigger/action/exit and real counterplay",
+          "no duplicate consumed event",
+          "native cooldown never reset to meet planned timing",
+          "actual damage-group cleanup before hazard lease release",
+          "phase-appropriate action only",
+          "no hidden fallback to old gun or absent auxiliary weapon"
+        ],
+        "geometry": "fixed source marker only; no invented obstacle or guaranteed free path; FP20 acceptance remains required"
+      },
+      "phaseEligibility": {
+        "startingPhaseMustRemain": 1,
+        "noPhaseRewriteForWeaponDemonstration": true,
+        "modeReadinessMustBeObservedBeforeShooting": true
+      },
+      "counterplay": [
+        "move out of the locked line during the final 15 frames",
+        "interrupt the 45-frame warning or enter the 180 px cancellation range",
+        "use the observed recovery interval"
+      ],
+      "trigger": {
+        "all": [
+          "pairEligibility or valid independent fallback",
+          "own recovery complete",
+          "target visible and in existing lane/range",
+          "target not within 180 px",
+          "danger permit granted",
+          "fixed isRocketMode false read back from own instance"
+        ]
+      },
+      "action": [
+        {
+          "state": "rifle_warning",
+          "activeFrames": 45,
+          "lockedFinalFrames": 15,
+          "operation": "Expose one clear line. The final 15 frames do not silently follow a new target/line; this needs the new AI/aim callback gate."
+        },
+        {
+          "state": "rifle_fire",
+          "primaryEvents": 1,
+          "expectedFinalDamageUnits": 1,
+          "operation": "One ordinary G1111 rifle event. Do not charge, transform, or add a sidearm/subweapon event to the same action."
+        },
+        {
+          "state": "rifle_recover",
+          "minimumActiveFrames": 75,
+          "operation": "Own recovery and actual shot/group termination are separately observed before handing off."
+        }
+      ],
+      "exit": {
+        "normal": "offer next turn to Pope only after own recovery state starts and previous hazard has truly cleared",
+        "cancel": "discard remaining unissued event, enter full recovery, retain any emitted hazard lease",
+        "nearInterrupt": "entering 180 px before emission cancels the shot; no instant reverse-line rifle fire"
+      },
+      "whileTriggerFalse": {
+        "mode": "explicit_pair_or_independent_fallback",
+        "instruction": "使用pair contract低频fallback；无有效射击模式或生命周期观测时新高危主枪关闭"
+      },
+      "phaseMode": "both initial positive states fixed; either phase transition cancels the pair generation, never restores shield",
+      "pairContractReference": "G1111_pair_contract.json",
+      "pairDangerPermit": {
+        "scope": "entire map, including both G1111 modes, other roster high-risk actions and observed Wings high-risk windows",
+        "maximumConcurrentOwners": 1,
+        "acquireBefore": "visible warning begins",
+        "firstEligibleOwner": "CF6-M-XX",
+        "handoffOrder": [
+          "CF6-M-XX",
+          "CF6-M-V"
+        ],
+        "minimumQuietTransferActiveFrames": 12,
+        "maxQueuedRequestPerActor": 1,
+        "pendingRequestTimeoutActiveFrames": 180,
+        "pendingRequestTimeoutBehavior": "discard only that ungranted request; never release another action's active lease",
+        "leaseIdentity": [
+          "worldIdentity",
+          "unitIdentity",
+          "actorVersion",
+          "cycleId",
+          "shotOrdinal",
+          "damageGroupId"
+        ],
+        "holdUntil": "every registered damage-producing carrier/linked group and any descendant has actually terminated; cancellation of an unissued action is distinct from cleanup of an emitted group",
+        "recoveryIsNotProjectileLifetime": true,
+        "deathOrPhaseChangeAfterEmission": "stop new emissions, retain the orphaned group's map lease until actual termination or verified world cleanup",
+        "neverReleaseBy": [
+          "rifleRestFrames",
+          "75-frame actor recovery",
+          "wall-clock timeout",
+          "target death alone",
+          "shooter deletion alone",
+          "predicted 150-tick carrier lifetime alone"
+        ],
+        "missingOrUnknownObservation": "fail closed for a new high-risk action; report missing lifecycle adapter rather than infer that the old group is gone",
+        "starvationHandling": "coalesce pending triggers, prioritize explicit handoff only among currently eligible actors, and discard missed opportunities instead of firing catch-up bursts"
+      },
+      "pairEligibility": {
+        "all": [
+          "same live A19 world and wave context",
+          "valid immutable identities and matching bound actor versions",
+          "both combat phases are 1",
+          "both rendered shooter and telegraph bounding boxes fit the actual viewport safe inset using currentScale and current camera pose",
+          "actual player target lies in both existing attack predicates after facing/range/lane/collision checks",
+          "no unresolved earlier dangerous projectile group",
+          "no observed Wings/elite dangerous action owns or conflicts with the map permit"
+        ],
+        "rangesAreNotExpanded": {
+          "judgmentMaxDx": 680,
+          "popeMaxDx": 460,
+          "judgmentLaneTolerance": 20,
+          "popeLaneTolerance": 24
+        },
+        "geometryEvidence": {
+          "judgment": {
+            "path": "data/stages/books/cf6-type61.json",
+            "startLine": 16863,
+            "endLine": 16867,
+            "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16863-L16867"
+          },
+          "pope": {
+            "path": "data/stages/books/cf6-type61.json",
+            "startLine": 16868,
+            "endLine": 16874,
+            "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16868-L16874"
+          }
+        },
+        "noIntersectionBehavior": "independent_low_frequency; neither invisible firing nor expanding range is a fallback",
+        "revalidateViewportDuringWarning": true,
+        "cameraMutationAllowed": false
+      },
+      "pairFallback": {
+        "mode": "independent_low_frequency",
+        "triggerReasons": [
+          "assembly timeout/blocked/budget exhausted",
+          "no shared visible range/lane intersection",
+          "partner unavailable or dead",
+          "pair phases no longer match"
+        ],
+        "rifleMinimumRecoveryFrames": 90,
+        "rocketMinimumRecoveryFrames": 120,
+        "rifleWarningFrames": 45,
+        "rifleLockedFinalFrames": 15,
+        "rocketWarningFrames": 36,
+        "sameMapDangerPermitStillRequired": true,
+        "sameOneEventModeBudgets": true,
+        "onlyIndividuallyVisibleEligibleActorCanFire": true,
+        "noRangeOrDamageCompensation": true,
+        "noPartnerReplacementByAnotherActor": true,
+        "phaseTwo": "preserve the approved native phase/sidearm behavior and its per-real-hand ceilings; never force a primary-only demonstration by reverting the initial/actual phase",
+        "afterPhaseTransition": "the actor's G1111 instance mode remains unchanged; the two-actor special cycle is canceled and is not rebound by display name or recycled actor reference"
+      },
+      "fixedInstanceValue": {
+        "isRocketMode": false
+      },
+      "nativeEffectBudget": {
+        "primaryEvents": 1,
+        "directBodies": 1,
+        "createdObjectsIncludingDescendants": 1,
+        "finalDamageUnitsCeiling": 1,
+        "nativeCadenceMs": 1000.0,
+        "minimumCadenceFramesAt30FPS": 30,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient",
+        "linkedDamageUnits": 0,
+        "isRocketMode": false,
+        "chargedAttackAllowed": false,
+        "sharedHomingPath": false,
+        "independentHomingMissiles": 0,
+        "chargedRocketBaseUnits": 16,
+        "chargedRocketUnitsAtEnhancement13": 37,
+        "strictStablePiercingProven": false
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-V",
+      "tarotMajor": "V·教皇",
+      "majorTactic": "disciplined_screen",
+      "sourceSeat": "A19.W01.E01.I01",
+      "mapId": "A19",
+      "role": "suppress",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "contractRevision": 2,
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 1,
+          "primarySplit": 6,
+          "primaryProjectilesPerAction": 6,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 6,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "source-backed creation/configuration ceilings and proposed event gates; no FP20 hit/FPS verification",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission.",
+          "sidearmTriggerSemantics": "Per-real-hand ceiling; synchronized means one planned pair opportunity, not forced same-frame fire or bypass of each weapon cadence.",
+          "primaryCreatedObjectsIncludingDescendants": 1,
+          "primaryFinalDamageUnitsPerAction": 6,
+          "countingNote": "Direct projectiles, descendants/linked damage units and repeated contacts/settlements are separate quantities; the 14-unit gate checks final units, not XML split alone."
+        },
+        "defaultWindupFrames": 36,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 75,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only real host-weapon loading/reload lifecycle; no phase, movement, tactic or partner refresh",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "All repeated segments share the same event ledger; discarded events never bank or replay.",
+        "leaseRelease": "registered damage body/group and every descendant actually terminated",
+        "overrides": {
+          "windupFrames": 36,
+          "lockAimLastFrames": 0,
+          "recoveryFrames": 75
+        }
+      },
+      "effectBudget": {
+        "primaryEvents": 1,
+        "directBodies": 1,
+        "createdObjectsIncludingDescendants": 1,
+        "finalDamageUnitsCeiling": 6,
+        "nativeCadenceMs": 1000.0,
+        "minimumCadenceFramesAt30FPS": 30,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient",
+        "linkedDamageUnits": 6,
+        "isRocketMode": true,
+        "chargedAttackAllowed": false,
+        "sharedHomingPath": true,
+        "independentHomingMissiles": 0,
+        "chargedRocketBaseUnits": 16,
+        "chargedRocketUnitsAtEnhancement13": 37,
+        "strictStablePiercingProven": false
+      },
+      "anchor": {
+        "mode": "fixed_spawn_tether",
+        "x": 2212.6933,
+        "z": 410.624,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L16185",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "requiredState": [
+        "worldIdentity",
+        "unitIdentity",
+        "actorVersion",
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "lastConsumedTriggerId",
+        "damageGroupIds"
+      ],
+      "requiredImplementation": [
+        "B2-weapon-action-event-budget",
+        "B2-telegraph-visibility",
+        "B2-high-risk-permit",
+        "B2-damage-group-retirement",
+        "B2-major-tactic-disciplined_screen",
+        "B2-native-cadence-event-gate",
+        "B2-G1111-instance-mode-gate",
+        "B2-G1111-pair-observer",
+        "B2-G1111-target-identity-gate"
+      ],
+      "cancelRules": [
+        "world/actor version changes",
+        "phase changes before unissued events complete",
+        "target invalid/offscreen before emission",
+        "tactic interrupted"
+      ],
+      "cancellationDoesNotReleaseLiveEmittedDamageGroups": true,
+      "acceptanceTest": {
+        "scene": "original source identity, phase and fixed birth; authorized equipment increment only",
+        "mustObserve": [
+          "complete trigger/action/exit and real counterplay",
+          "no duplicate consumed event",
+          "native cooldown never reset to meet planned timing",
+          "actual damage-group cleanup before hazard lease release",
+          "phase-appropriate action only",
+          "no hidden fallback to old gun or absent auxiliary weapon"
+        ],
+        "geometry": "fixed source marker only; no invented obstacle or guaranteed free path; FP20 acceptance remains required"
+      },
+      "phaseEligibility": {
+        "startingPhaseMustRemain": 1,
+        "noPhaseRewriteForWeaponDemonstration": true,
+        "modeReadinessMustBeObservedBeforeShooting": true
+      },
+      "counterplay": [
+        "interrupt during the explicit 36-frame warning",
+        "enter 220 px before emission to cancel the heavy launch",
+        "after launch, use the visible shared trajectory and the no-follow-up recovery window; no unverified wall-blocking claim"
+      ],
+      "trigger": {
+        "all": [
+          "pairEligibility or valid independent fallback",
+          "Judgment is in recovery when pair-bound",
+          "own recovery complete",
+          "220 <= target dx <= 460 and existing lane predicate valid",
+          "danger permit granted after prior group clears",
+          "fixed isRocketMode true read back from own instance"
+        ]
+      },
+      "action": [
+        {
+          "state": "rocket_warning",
+          "activeFrames": 36,
+          "operation": "New explicit visible AI warning. Show the intended tracked target; no claim that default rocket prelaunch already provides this warning."
+        },
+        {
+          "state": "rocket_fire",
+          "primaryEvents": 1,
+          "carrierCount": 1,
+          "linkedDamageUnits": 6,
+          "operation": "One uncharged carrier with six linked visual/collision units following a shared homing path. Not six independently homing missiles; no G1111 secondary explosion is claimed."
+        },
+        {
+          "state": "rocket_recover",
+          "minimumActiveFrames": 75,
+          "operation": "No further primary/sidearm/subweapon action in this cycle. The carrier/group lease can outlive these 75 frames."
+        }
+      ],
+      "exit": {
+        "normal": "complete recovery and wait for carrier/group termination before offering a new danger turn",
+        "warningInvalidated": "cancel before emission on lost target/visibility/lane, distance below 220, or partner phase/death; do not transfer the pending shot to a new target",
+        "phaseOrDeathAfterFire": "invalidate actor action but retain group ownership until cleanup"
+      },
+      "whileTriggerFalse": {
+        "mode": "explicit_pair_or_independent_fallback",
+        "instruction": "使用pair contract低频fallback；无有效射击模式或生命周期观测时新高危主枪关闭"
+      },
+      "phaseMode": "both initial positive states fixed; either phase transition cancels the pair generation, never restores shield",
+      "pairContractReference": "G1111_pair_contract.json",
+      "pairDangerPermit": {
+        "scope": "entire map, including both G1111 modes, other roster high-risk actions and observed Wings high-risk windows",
+        "maximumConcurrentOwners": 1,
+        "acquireBefore": "visible warning begins",
+        "firstEligibleOwner": "CF6-M-XX",
+        "handoffOrder": [
+          "CF6-M-XX",
+          "CF6-M-V"
+        ],
+        "minimumQuietTransferActiveFrames": 12,
+        "maxQueuedRequestPerActor": 1,
+        "pendingRequestTimeoutActiveFrames": 180,
+        "pendingRequestTimeoutBehavior": "discard only that ungranted request; never release another action's active lease",
+        "leaseIdentity": [
+          "worldIdentity",
+          "unitIdentity",
+          "actorVersion",
+          "cycleId",
+          "shotOrdinal",
+          "damageGroupId"
+        ],
+        "holdUntil": "every registered damage-producing carrier/linked group and any descendant has actually terminated; cancellation of an unissued action is distinct from cleanup of an emitted group",
+        "recoveryIsNotProjectileLifetime": true,
+        "deathOrPhaseChangeAfterEmission": "stop new emissions, retain the orphaned group's map lease until actual termination or verified world cleanup",
+        "neverReleaseBy": [
+          "rifleRestFrames",
+          "75-frame actor recovery",
+          "wall-clock timeout",
+          "target death alone",
+          "shooter deletion alone",
+          "predicted 150-tick carrier lifetime alone"
+        ],
+        "missingOrUnknownObservation": "fail closed for a new high-risk action; report missing lifecycle adapter rather than infer that the old group is gone",
+        "starvationHandling": "coalesce pending triggers, prioritize explicit handoff only among currently eligible actors, and discard missed opportunities instead of firing catch-up bursts"
+      },
+      "pairEligibility": {
+        "all": [
+          "same live A19 world and wave context",
+          "valid immutable identities and matching bound actor versions",
+          "both combat phases are 1",
+          "both rendered shooter and telegraph bounding boxes fit the actual viewport safe inset using currentScale and current camera pose",
+          "actual player target lies in both existing attack predicates after facing/range/lane/collision checks",
+          "no unresolved earlier dangerous projectile group",
+          "no observed Wings/elite dangerous action owns or conflicts with the map permit"
+        ],
+        "rangesAreNotExpanded": {
+          "judgmentMaxDx": 680,
+          "popeMaxDx": 460,
+          "judgmentLaneTolerance": 20,
+          "popeLaneTolerance": 24
+        },
+        "geometryEvidence": {
+          "judgment": {
+            "path": "data/stages/books/cf6-type61.json",
+            "startLine": 16863,
+            "endLine": 16867,
+            "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16863-L16867"
+          },
+          "pope": {
+            "path": "data/stages/books/cf6-type61.json",
+            "startLine": 16868,
+            "endLine": 16874,
+            "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16868-L16874"
+          }
+        },
+        "noIntersectionBehavior": "independent_low_frequency; neither invisible firing nor expanding range is a fallback",
+        "revalidateViewportDuringWarning": true,
+        "cameraMutationAllowed": false
+      },
+      "pairFallback": {
+        "mode": "independent_low_frequency",
+        "triggerReasons": [
+          "assembly timeout/blocked/budget exhausted",
+          "no shared visible range/lane intersection",
+          "partner unavailable or dead",
+          "pair phases no longer match"
+        ],
+        "rifleMinimumRecoveryFrames": 90,
+        "rocketMinimumRecoveryFrames": 120,
+        "rifleWarningFrames": 45,
+        "rifleLockedFinalFrames": 15,
+        "rocketWarningFrames": 36,
+        "sameMapDangerPermitStillRequired": true,
+        "sameOneEventModeBudgets": true,
+        "onlyIndividuallyVisibleEligibleActorCanFire": true,
+        "noRangeOrDamageCompensation": true,
+        "noPartnerReplacementByAnotherActor": true,
+        "phaseTwo": "preserve the approved native phase/sidearm behavior and its per-real-hand ceilings; never force a primary-only demonstration by reverting the initial/actual phase",
+        "afterPhaseTransition": "the actor's G1111 instance mode remains unchanged; the two-actor special cycle is canceled and is not rebound by display name or recycled actor reference"
+      },
+      "fixedInstanceValue": {
+        "isRocketMode": true
+      },
+      "partner": [
+        {
+          "kind": "roster_actor",
+          "unitIdentity": "CF6-M-XX",
+          "sourceSeat": "A19.W01.E00.I01"
+        }
+      ],
+      "assembly": {
+        "owner": "CF6-M-V",
+        "referencePartner": "CF6-M-XX",
+        "trigger": {
+          "all": [
+            "both identities resolved to live matching actor versions in this A19 world",
+            "both starting combat phases remain 1",
+            "assembly not yet attempted for this pair generation",
+            "owner has no active gun action"
+          ]
+        },
+        "action": "Move toward the verified partner using the existing collision-resolved movement path; all firing modes disabled while assembling. Do not teleport or invent a map cover point.",
+        "anchor": {
+          "kind": "live_roster_partner",
+          "unitIdentity": "CF6-M-XX",
+          "birthEvidence": {
+            "path": "data/stages/books/cf6-type61.json",
+            "startLine": 16154,
+            "endLine": 16183,
+            "sha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/stages/books/cf6-type61.json#L16154-L16183"
+          }
+        },
+        "maximumCumulativeAbsXTravelPx": 480,
+        "maximumCumulativeAbsZTravelPx": 120,
+        "walkTimeoutActiveFrames": 150,
+        "blockedNoProgressActiveFrames": 15,
+        "maxAttemptsPerPairGeneration": 1,
+        "pauseDoesNotAdvanceTimeout": true,
+        "preferredGeometry": {
+          "partnerDeltaXMax": 820,
+          "partnerDeltaZMax": 16,
+          "nominalMinimumXMoveFromSource": 463.2426,
+          "nominalMinimumZMoveFromSource": 100.736,
+          "maximumTravelCaseXSeparation": 803.2426,
+          "maximumTravelCaseHorizontalFireOverlap": 336.7574,
+          "mainStageWidth": 1024,
+          "mainStageHeight": 576,
+          "baseScaleScenario": 1,
+          "safeHorizontalInsetScreenPx": 64,
+          "base1xSafeWidthIgnoringActualBoundingBoxes": 896,
+          "mathematicalFeasibilityOnly": true,
+          "walkabilityNotEstablished": true
+        },
+        "success": "Actual positions yield the existing range/lane intersection and collision/line eligibility, and both shooter/telegraph bounds fit the actual viewport under currentScale and current camera pose. Position arithmetic alone does not grant fire.",
+        "viewportPolicy": {
+          "horizontalInsetScreenPx": 64,
+          "worldViewportWidthFormula": "actual Stage.width / currentScale",
+          "worldSafeWidthBeforeBoundsFormula": "(actual Stage.width -128) / currentScale",
+          "mustCheck": [
+            "current camera pose and currentScale",
+            "actual rendered actor bounding boxes",
+            "complete visible telegraph bounds",
+            "usable vertical viewport including HUD exclusion"
+          ],
+          "cameraMutationAllowed": false,
+          "largerZoomOrBlockedPath": "fallback; never zoom out, pull camera, teleport or expand weapon range to force the pair"
+        },
+        "exit": {
+          "goalReached": "stop all movement and test pairEligibility on actual current geometry",
+          "timeoutBlockedOrBudgetExhausted": "stop at last valid actual position; latch independent_low_frequency fallback, without repeated assembly attempts",
+          "phaseDeathOrWorldChange": "cancel pending movement and unissued attacks; invalidate this pair generation"
+        },
+        "counterplay": "The assembling Pope does not fire; player movement or a stagger can deny a clean paired firing position.",
+        "remainingGate": "FP20 must verify the real path, visibility, readable target lane and collision behavior from the unchanged source spawns."
+      },
+      "targetPolicy": {
+        "newAdapterRequired": true,
+        "preFire": "bind intended target identity/version and revalidate at emission",
+        "afterEmission": "do not silently reacquire a different target when the bound target dies; terminate through verified projectile cleanup or use an explicitly reviewed target-loss policy",
+        "currentSourceDifference": "current tracking callback returns to search on target death; G1111 laserAutoTarget does not by itself constrain the flight target"
+      },
+      "nativeEffectBudget": {
+        "primaryEvents": 1,
+        "directBodies": 1,
+        "createdObjectsIncludingDescendants": 1,
+        "finalDamageUnitsCeiling": 6,
+        "nativeCadenceMs": 1000.0,
+        "minimumCadenceFramesAt30FPS": 30,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient",
+        "linkedDamageUnits": 6,
+        "isRocketMode": true,
+        "chargedAttackAllowed": false,
+        "sharedHomingPath": true,
+        "independentHomingMissiles": 0,
+        "chargedRocketBaseUnits": 16,
+        "chargedRocketUnitsAtEnhancement13": 37,
+        "strictStablePiercingProven": false
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-0",
+      "tarotMajor": "0·愚者",
+      "majorTactic": "feint_retreat",
+      "sourceSeat": "A19.W01.E03.I01",
+      "mapId": "A19",
+      "role": "mobile",
+      "startingPhase": 2,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "phase==2",
+          "targetVisible",
+          "targetMovingTowardShooter",
+          "dx<=460",
+          "ready"
+        ]
+      },
+      "action": [
+        {
+          "state": "bait_retreat",
+          "operation": "短撤最多100px；不开主枪，用可读撤步诱追",
+          "maxDistancePx": 100,
+          "maxFrames": 18
+        },
+        {
+          "state": "ambush_warning",
+          "operation": "只有玩家继续接近到180–240px才预警；停追则等待/取消",
+          "frames": 18
+        },
+        {
+          "state": "subweapon",
+          "operation": "危险许可及真实副仓满足才射1发下挂霰弹",
+          "subweaponEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少60帧，不继续反复后撤风筝",
+          "frames": 60
+        }
+      ],
+      "exit": {
+        "normal": "单周期最多1发；3发副仓耗尽后直到真实主枪装填才恢复",
+        "targetStopsChasing": "取消埋伏并恢复，不主动追上去喷",
+        "blocked": "短撤被挡直接恢复，不原地瞬时下挂"
+      },
+      "counterplay": [
+        "看到撤步就停追使特殊攻击失效",
+        "诱出有限副仓后再推进"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 3,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 3,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 7,
+          "longgunWithSubProjectilesPerAction": 10,
+          "longgunAndSubweaponMayShareAction": true,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 10,
+          "scriptedCycleProjectiles": 10,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 12,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 42,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {}
+      },
+      "anchor": {
+        "mode": "feint_tether",
+        "x": 2212.6933,
+        "z": 410.624,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L16221",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "movementBudget": {
+        "perCycleX": 100,
+        "pursuitFromSpawnMaxX": 220
+      },
+      "phaseMode": "starts_reversed_ambush",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity"
+      ],
+      "whileTriggerFalse": {
+        "mode": "bounded_primary_cycle",
+        "instruction": "玩家不追击时最多3发AKS74U点射、至少42帧恢复；用真实消耗与装填维持副仓，不主动追上去触发埋伏。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XIV",
+      "tarotMajor": "XIV·节制",
+      "majorTactic": "alternating_fire",
+      "sourceSeat": "A19.W02.E01.I01",
+      "mapId": "A19",
+      "role": "flush",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "targetVisible",
+          "targetWithin460",
+          "ready"
+        ]
+      },
+      "action": [
+        {
+          "state": "rifle",
+          "operation": "M16A1最多3次真实主枪事件",
+          "primaryEvents": 3
+        },
+        {
+          "state": "gap",
+          "operation": "至少24帧主副枪均关闭",
+          "frames": 24
+        },
+        {
+          "state": "subweapon_optional",
+          "operation": "仅副仓有弹、220–420px且危险许可有效时，完整24帧预警后1发M203",
+          "warningFrames": 24,
+          "subweaponEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少66帧；有弹分支完成主→副，不允许副→副",
+          "frames": 66
+        }
+      ],
+      "exit": {
+        "normal": "记住lastFiredMode；副仓有弹时禁止连续两次副武器",
+        "drySubweapon": "空副仓时只准主枪周期，直到主枪真实装填结束；绝不为实现交替凭空补弹",
+        "missingPermit": "本轮不发榴弹并进入恢复，不缩短主枪冷却补偿"
+      },
+      "counterplay": [
+        "利用固定24帧间隔接近",
+        "消耗首枚榴弹后在真实换弹前打站桩输出"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 3,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 3,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 1,
+          "longgunWithSubProjectilesPerAction": 4,
+          "longgunAndSubweaponMayShareAction": true,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 24,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 66,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {}
+      },
+      "anchor": {
+        "mode": "stationary_alternation",
+        "x": 2212.6933,
+        "z": 410.624,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L16289",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "phaseMode": "keep_lastFiredMode_on_break",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity"
+      ],
+      "whileTriggerFalse": {
+        "mode": "rifle_phase",
+        "instruction": "总是从3发主枪开始；副仓空或缺许可时跳过副武器段并完整恢复。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XI",
+      "tarotMajor": "XI·正义",
+      "majorTactic": "punish_commit",
+      "sourceSeat": "A19.W02.E03.I01",
+      "mapId": "A19",
+      "role": "counter",
+      "startingPhase": 2,
+      "targetPhase": "wave",
+      "contractRevision": 2,
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 2,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 2,
+          "sidearmSynchronizedTriggerLimit": 1,
+          "sidearmProjectilesPerAction": 2,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 2,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "source-backed creation/configuration ceilings and proposed event gates; no FP20 hit/FPS verification",
+          "maxPlannedActionProjectiles": 2,
+          "scriptedCycleProjectiles": 2,
+          "cycleNote": "One granted action; future actions require rest and renewed permission.",
+          "sidearmTriggerSemantics": "Per-real-hand ceiling; synchronized means one planned pair opportunity, not forced same-frame fire or bypass of each weapon cadence.",
+          "primaryCreatedObjectsIncludingDescendants": 2,
+          "primaryFinalDamageUnitsPerAction": 2,
+          "countingNote": "Direct projectiles, descendants/linked damage units and repeated contacts/settlements are separate quantities; the 14-unit gate checks final units, not XML split alone."
+        },
+        "defaultWindupFrames": 18,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 75,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only real host-weapon loading/reload lifecycle; no phase, movement, tactic or partner refresh",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "All repeated segments share the same event ledger; discarded events never bank or replay.",
+        "leaseRelease": "registered damage body/group and every descendant actually terminated",
+        "overrides": {
+          "windupFrames": 18,
+          "lockAimLastFrames": 0,
+          "recoveryFrames": 75
+        }
+      },
+      "effectBudget": {
+        "primaryEvents": 2,
+        "directBodies": 2,
+        "createdObjectsIncludingDescendants": 2,
+        "finalDamageUnitsCeiling": 2,
+        "nativeCadenceMs": 300.0,
+        "minimumCadenceFramesAt30FPS": 9,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient"
+      },
+      "anchor": {
+        "mode": "commitment_guard",
+        "x": 2212.6933,
+        "z": 410.624,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L16325",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "requiredState": [
+        "worldIdentity",
+        "unitIdentity",
+        "actorVersion",
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "lastConsumedTriggerId",
+        "damageGroupIds",
+        "lastConsumedTargetActionId",
+        "primaryCounterModeReadyVersion"
+      ],
+      "requiredImplementation": [
+        "B2-weapon-action-event-budget",
+        "B2-telegraph-visibility",
+        "B2-high-risk-permit",
+        "B2-damage-group-retirement",
+        "B2-major-tactic-punish_commit",
+        "B2-native-cadence-event-gate",
+        "B2-primary-counter"
+      ],
+      "cancelRules": [
+        "world/actor version changes",
+        "phase changes before unissued events complete",
+        "target invalid/offscreen before emission",
+        "tactic interrupted"
+      ],
+      "cancellationDoesNotReleaseLiveEmittedDamageGroups": true,
+      "acceptanceTest": {
+        "scene": "original source identity, phase and fixed birth; authorized equipment increment only",
+        "mustObserve": [
+          "complete trigger/action/exit and real counterplay",
+          "no duplicate consumed event",
+          "native cooldown never reset to meet planned timing",
+          "actual damage-group cleanup before hazard lease release",
+          "phase-appropriate action only",
+          "no hidden fallback to old gun or absent auxiliary weapon"
+        ],
+        "geometry": "fixed source marker only; no invented obstacle or guaranteed free path; FP20 acceptance remains required"
+      },
+      "phaseEligibility": {
+        "startingPhaseMustRemain": 2,
+        "noPhaseRewriteForWeaponDemonstration": true,
+        "modeReadinessMustBeObservedBeforeShooting": true,
+        "requiredBeforePrimary": "B2-primary-counter",
+        "preservePhase": 2,
+        "actionMode": "observed longgun draw/settle without restoring shield or changing phase",
+        "preGatePolicy": "quantum counter disabled; existing phase-appropriate sidearm behavior only"
+      },
+      "counterplay": [
+        "诱出承诺反击后离开180–240px区，取消剩余发射；同一动作ID不会被重复消费。"
+      ],
+      "trigger": {
+        "all": [
+          "B2-primary-counter verified and active",
+          "actual combat phase remains 2",
+          "fresh observed target committed attack/dash ID",
+          "visible target in 180..240 band",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "primary_draw_gate",
+          "operation": "走真实可观察换枪/握持就绪；不得为用主枪恢复盾或改phase",
+          "allGunsOff": true,
+          "requires": "B2-primary-counter longgunModeReady receipt"
+        },
+        {
+          "state": "commit_warning",
+          "operation": "同一个玩家承诺动作只消费一次，完整预警后再确认目标仍在区内",
+          "frames": 18
+        },
+        {
+          "state": "quantum_counter_one",
+          "operation": "量子能量枪第一发",
+          "primaryEvents": 1
+        },
+        {
+          "state": "native_gap",
+          "operation": "尊重真实300ms冷却，退出区或目标失效则取消第二发",
+          "minimumFramesAt30FPS": 9,
+          "allGunsOff": true
+        },
+        {
+          "state": "quantum_counter_two",
+          "operation": "至多第二发，不添加别的枪组事件",
+          "primaryEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "75帧恢复，动作ID不回退",
+          "frames": 75
+        }
+      ],
+      "exit": {
+        "normal": "同一玩家动作至多一个二发反击周期",
+        "leftBand": "取消未发事件，不追线补枪",
+        "gateUnavailable": "量子反击关闭，保既有phase2可用副手行为",
+        "phaseChange": "保留消费过的targetActionId和已用枪次，取消未发事件"
+      },
+      "whileTriggerFalse": {
+        "mode": "phase_two_guard",
+        "instruction": "无真实玩家承诺或主枪模式门时只用现有逆位阶段允许的防御；禁止通用三发主枪循环绕过反击条件"
+      },
+      "phaseMode": "phase2 remains phase2; explicit mode draw does not synthesize shield or a new actor",
+      "nativeEffectBudget": {
+        "primaryEvents": 2,
+        "directBodies": 2,
+        "createdObjectsIncludingDescendants": 2,
+        "finalDamageUnitsCeiling": 2,
+        "nativeCadenceMs": 300.0,
+        "minimumCadenceFramesAt30FPS": 9,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-VI",
+      "tarotMajor": "VI·恋人",
+      "majorTactic": "paired_windows",
+      "sourceSeat": "A19.W03.E09.I01",
+      "mapId": "A19",
+      "role": "suppress",
+      "startingPhase": 2,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "targetVisible",
+          "targetWithin500",
+          "pairOwnerGrantedToSelf",
+          "ready"
+        ]
+      },
+      "action": [
+        {
+          "state": "pair_wait",
+          "operation": "与星币一共用一份交替令牌；同一时刻只允许一方高危动作"
+        },
+        {
+          "state": "primary",
+          "operation": "M249最多8次事件，不因搭档空枪而延长",
+          "primaryEvents": 8,
+          "maximumFrames": 48
+        },
+        {
+          "state": "handoff",
+          "operation": "结束后释放pair令牌给固定搭档，自己休止至少48帧",
+          "frames": 48
+        }
+      ],
+      "exit": {
+        "normal": "每次handoff都以worldIdentity/actor.version和pairEpoch验证",
+        "partnerDead": "丢弃搭档窗口，保留自己的原休止和主枪上限，绝不把2人火力合成1人",
+        "partnerPendingOrUnknown": "不得重复授予；等待至该状态明确，不按名字找替代"
+      },
+      "counterplay": [
+        "优先击杀一人会永久减少一半节奏段",
+        "在两人交接空隙穿过火线"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 8,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 8,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 8,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 8,
+          "scriptedCycleProjectiles": 8,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 15,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 48,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {}
+      },
+      "anchor": {
+        "mode": "pair_tether",
+        "x": 2212.6933,
+        "z": 410.624,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L16481",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "partner": [
+        {
+          "kind": "roster_actor",
+          "unitIdentity": "CF6-N-PE-01",
+          "sourceSeat": "A19.W03.E08.I01"
+        }
+      ],
+      "requiredObservation": [
+        "pairActionOwnership",
+        "partnerTerminalStatus"
+      ],
+      "phaseMode": "pairEpoch_not_reset_on_break",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity",
+        "boundPartnerIdentity",
+        "boundPartnerVersion",
+        "lastConsumedPartnerEventId"
+      ],
+      "whileTriggerFalse": {
+        "mode": "pair_turn_wait",
+        "instruction": "未获得本对交替令牌时停高危攻击；允许移动/受击/真实装填，不能另走通用adaptive补火。"
+      },
+      "pairProtocol": {
+        "initialOwnerIdentity": "CF6-N-PE-01",
+        "otherIdentity": "CF6-M-VI",
+        "handoffOnlyOn": "当前owner动作完成或取消的terminal事件；每pairEpoch仅交接一次",
+        "interruptedAction": "已消费事件保持；不得在同一轮重试",
+        "deadPartnerTurn": "保留至少48帧空段后才轮到存活者自己的正常周期",
+        "unknownOutcome": "持有原owner直到状态明确，禁止重复授予"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-I",
+      "tarotMajor": "I·魔术师",
+      "majorTactic": "weapon_handoff",
+      "sourceSeat": "A19.W05.E03.I01",
+      "mapId": "A19",
+      "role": "breach",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "trigger": {
+        "all": [
+          "targetVisible",
+          "dx<=240",
+          "targetInSameLane",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "shotgun_warning",
+          "operation": "近距霰弹完整预警",
+          "frames": 18
+        },
+        {
+          "state": "primary_pair",
+          "operation": "XM1014最多2次事件=14名义弹丸；原武器冷却仍有效",
+          "primaryEvents": 2
+        },
+        {
+          "state": "visible_handoff",
+          "operation": "停止主枪，展示换枪动作，至少18帧可被打断",
+          "frames": 18,
+          "allGunsOff": true
+        },
+        {
+          "state": "dual",
+          "operation": "仍在合法距离才执行双M93R一次同步事件=6名义弹丸",
+          "synchronizedEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少60帧",
+          "frames": 60
+        }
+      ],
+      "exit": {
+        "normal": "整个组合共2次主枪+1次双枪，不是每个子段刷新新预算",
+        "interrupted": "任一段受击/控制使剩余段取消，不补完尾段",
+        "outOfRange": "换枪结束目标已离开则取消双枪"
+      },
+      "counterplay": [
+        "诱出霰弹后拉远可让尾段失效",
+        "18帧可见换枪中攻击打断"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 2,
+          "primarySplit": 7,
+          "primaryProjectilesPerAction": 14,
+          "sidearmSynchronizedTriggerLimit": 1,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 14,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 14,
+          "scriptedCycleProjectiles": 20,
+          "cycleNote": "Two separately warned actions; primary shotgun and dual burst add over the complete scripted cycle."
+        },
+        "defaultWindupFrames": 18,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 60,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": false,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {},
+        "scriptedCycleUpperBoundProjectiles": 20,
+        "twoSeparatelyWarnedActions": true,
+        "renewPermitBeforeSecondAction": true,
+        "permitLostBeforeSecondAction": "discard dual tail; never fire without renewed permission"
+      },
+      "anchor": {
+        "mode": "close_handoff",
+        "x": 2212.6933,
+        "z": 410.624,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L16647",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "phaseMode": "one_cycle_across_modes_no_reset",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity"
+      ],
+      "whileTriggerFalse": {
+        "mode": "close_approach",
+        "instruction": "只用现有移动尝试接近到240px；尚未到距离不发霰弹，也不以免费双枪代替整段组合。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-III",
+      "tarotMajor": "III·女皇",
+      "majorTactic": "reserve_gate",
+      "sourceSeat": "A20.W01.E00.I01",
+      "mapId": "A20",
+      "role": "suppress",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "contractRevision": 2,
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 1,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 1,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 1,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "source-backed creation/configuration ceilings and proposed event gates; no FP20 hit/FPS verification",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission.",
+          "sidearmTriggerSemantics": "Per-real-hand ceiling; synchronized means one planned pair opportunity, not forced same-frame fire or bypass of each weapon cadence.",
+          "primaryCreatedObjectsIncludingDescendants": 1,
+          "primaryFinalDamageUnitsPerAction": 1,
+          "countingNote": "Direct projectiles, descendants/linked damage units and repeated contacts/settlements are separate quantities; the 14-unit gate checks final units, not XML split alone."
+        },
+        "defaultWindupFrames": 30,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 90,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only real host-weapon loading/reload lifecycle; no phase, movement, tactic or partner refresh",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "All repeated segments share the same event ledger; discarded events never bank or replay.",
+        "leaseRelease": "registered damage body/group and every descendant actually terminated",
+        "overrides": {
+          "windupFrames": 30,
+          "lockAimLastFrames": 0,
+          "recoveryFrames": 90
+        }
+      },
+      "effectBudget": {
+        "primaryEvents": 1,
+        "directBodies": 1,
+        "createdObjectsIncludingDescendants": 1,
+        "finalDamageUnitsCeiling": 1,
+        "nativeCadenceMs": 550.0,
+        "minimumCadenceFramesAt30FPS": 17,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient",
+        "flightAreaFramesZeroBased": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explosionAreaKeyframes": 9,
+        "guaranteedHitsPerTarget": null,
+        "chainLightning": false,
+        "damageTypeCaveat": "Unit pre-hit hook and map collision do not establish the same type projection; never promise that every tail frame is magical.",
+        "effectEvidence": {
+          "source": {
+            "path": "flashswf/arts/new/瓦巴杰克/LIBRARY/特效与子弹/新电球.xml",
+            "line": 1,
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/flashswf/arts/new/瓦巴杰克/LIBRARY/特效与子弹/新电球.xml#L1"
+          },
+          "areaKeyframes": [
+            {
+              "frameIndexZeroBased": 0,
+              "duration": 5,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 6,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 10,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 14,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 19,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 24,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 29,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 34,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 39,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 44,
+              "duration": 1,
+              "layer": "Layer 3"
+            }
+          ],
+          "explosionAreaKeyframeCount": 9,
+          "createdProjectileObjectsPerTrigger": 1,
+          "assertedChainLightning": false,
+          "actualHitsNotMeasured": true
+        }
+      },
+      "anchor": {
+        "mode": "fixed_spawn_reserve",
+        "x": 314.88,
+        "z": 303.104,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L17057",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required",
+        "tolerancePx": {
+          "x": 24,
+          "z": 24
+        }
+      },
+      "requiredState": [
+        "worldIdentity",
+        "unitIdentity",
+        "actorVersion",
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "lastConsumedTriggerId",
+        "damageGroupIds",
+        "lastConsumedVanguardEventId",
+        "lastObservationPermitFrame"
+      ],
+      "requiredImplementation": [
+        "B2-weapon-action-event-budget",
+        "B2-telegraph-visibility",
+        "B2-high-risk-permit",
+        "B2-damage-group-retirement",
+        "B2-major-tactic-reserve_gate",
+        "B2-native-cadence-event-gate"
+      ],
+      "cancelRules": [
+        "world/actor version changes",
+        "phase changes before unissued events complete",
+        "target invalid/offscreen before emission",
+        "tactic interrupted"
+      ],
+      "cancellationDoesNotReleaseLiveEmittedDamageGroups": true,
+      "acceptanceTest": {
+        "scene": "original source identity, phase and fixed birth; authorized equipment increment only",
+        "mustObserve": [
+          "complete trigger/action/exit and real counterplay",
+          "no duplicate consumed event",
+          "native cooldown never reset to meet planned timing",
+          "actual damage-group cleanup before hazard lease release",
+          "phase-appropriate action only",
+          "no hidden fallback to old gun or absent auxiliary weapon"
+        ],
+        "geometry": "fixed source marker only; no invented obstacle or guaranteed free path; FP20 acceptance remains required"
+      },
+      "phaseEligibility": {
+        "startingPhaseMustRemain": 1,
+        "noPhaseRewriteForWeaponDemonstration": true,
+        "modeReadinessMustBeObservedBeforeShooting": true
+      },
+      "counterplay": [
+        "30帧预警内离开落点；球进入时间线后绕开可见区域，等待实际消失。"
+      ],
+      "trigger": {
+        "all": [
+          "target visible within effective460 band",
+          "one fresh bound-vanguard retreat/reload/death event",
+          "at authored reserve anchor",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "reserve_watch",
+          "operation": "开局保留预备；只绑定星币五/六真实事件，同帧事件合并一轮",
+          "maxPendingEvents": 1
+        },
+        {
+          "state": "ball_warning",
+          "operation": "固定方向显示30帧可见预警",
+          "frames": 30
+        },
+        {
+          "state": "one_ball",
+          "operation": "诛神枪仅一次事件/一个电球本体；不追加连锁电弧",
+          "primaryEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少90帧；伤害区或尾部仍活跃时许可继续保持",
+          "frames": 90
+        }
+      ],
+      "exit": {
+        "normal": "每个伙伴事件仅消费一次，取消后不补发",
+        "allPartnersDead": "最后死亡事件最多一球，随后每240活跃帧才可产生一次观察性资格；仍全预警/一球/单许可",
+        "partnerUnknown": "保持预备，无猜测触发"
+      },
+      "whileTriggerFalse": {
+        "mode": "reserve_hold",
+        "instruction": "未收到有效前卫事件时不周期发电球；仅保阶段允许的近距防御"
+      },
+      "partner": [
+        {
+          "kind": "roster_actor",
+          "unitIdentity": "CF6-N-PE-05",
+          "sourceSeat": "A20.W01.E02.I01"
+        },
+        {
+          "kind": "roster_actor",
+          "unitIdentity": "CF6-N-PE-06",
+          "sourceSeat": "A20.W01.E03.I01"
+        }
+      ],
+      "phaseMode": "reserve event queue survives phase changes without duplicate trigger",
+      "maxPendingPartnerEvents": 1,
+      "damageClaimBoundary": "one body has flight and explosion collision windows; no guaranteed nine hits, chain lightning, universal magic tail, MP drain or automatic shield stripping",
+      "nativeEffectBudget": {
+        "primaryEvents": 1,
+        "directBodies": 1,
+        "createdObjectsIncludingDescendants": 1,
+        "finalDamageUnitsCeiling": 1,
+        "nativeCadenceMs": 550.0,
+        "minimumCadenceFramesAt30FPS": 17,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient",
+        "flightAreaFramesZeroBased": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explosionAreaKeyframes": 9,
+        "guaranteedHitsPerTarget": null,
+        "chainLightning": false,
+        "damageTypeCaveat": "Unit pre-hit hook and map collision do not establish the same type projection; never promise that every tail frame is magical.",
+        "effectEvidence": {
+          "source": {
+            "path": "flashswf/arts/new/瓦巴杰克/LIBRARY/特效与子弹/新电球.xml",
+            "line": 1,
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/flashswf/arts/new/瓦巴杰克/LIBRARY/特效与子弹/新电球.xml#L1"
+          },
+          "areaKeyframes": [
+            {
+              "frameIndexZeroBased": 0,
+              "duration": 5,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 6,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 10,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 14,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 19,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 24,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 29,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 34,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 39,
+              "duration": 1,
+              "layer": "Layer 3"
+            },
+            {
+              "frameIndexZeroBased": 44,
+              "duration": 1,
+              "layer": "Layer 3"
+            }
+          ],
+          "explosionAreaKeyframeCount": 9,
+          "createdProjectileObjectsPerTrigger": 1,
+          "assertedChainLightning": false,
+          "actualHitsNotMeasured": true
+        }
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-IX",
+      "tarotMajor": "IX·隐者",
+      "majorTactic": "robot_observer",
+      "sourceSeat": "A20.W01.E01.I01",
+      "mapId": "A20",
+      "role": "precision",
+      "startingPhase": 1,
+      "targetPhase": "nextPhase",
+      "trigger": {
+        "all": [
+          "bossRobotIdentityReady",
+          "bossJustFinishedCommittedHighRiskAction",
+          "bossActionEventUnconsumed",
+          "targetVisible",
+          "targetWithin680",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "boss_recovery_watch",
+          "operation": "仅观察实际机器人Boss恢复事件，HP阈值/时间猜测不等价"
+        },
+        {
+          "state": "aim",
+          "operation": "Boss恢复后开始27帧预警，末9帧锁线",
+          "frames": 27,
+          "lockLastFrames": 9
+        },
+        {
+          "state": "primary",
+          "operation": "M24SWS单发；Boss已重启高危动作则取消",
+          "primaryEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少75帧，消费bossActionId",
+          "frames": 75
+        }
+      ],
+      "exit": {
+        "normal": "一段Boss动作完成只准一次狙击；不排队攒下多次",
+        "bossDeadOrRetired": "清退，未发攻击取消，无正常击杀掉落",
+        "observationMissing": "停止本特殊攻击并标记验收失败；不得假定每隔若干秒是Boss恢复"
+      },
+      "counterplay": [
+        "先杀隐者扩大Boss后摇的安全输出窗口",
+        "在27帧预警内换线或打断",
+        "快杀Boss可以跳过该未到支援"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 1,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 1,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 1,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 27,
+        "defaultLockAimLastFrames": 9,
+        "minimumRecoveryFrames": 60,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {}
+      },
+      "anchor": {
+        "mode": "robot_support_spawn",
+        "x": 2135.04,
+        "z": 578.2187,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L17075",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "partner": [
+        {
+          "kind": "boss_actor",
+          "instanceName": "cf6Boss_A20__elderbot",
+          "binding": "Cf6BossEncounter accepted native successor mark + worldIdentity + version"
+        }
+      ],
+      "requiredObservation": [
+        "bossCommittedActionRecoverySequence"
+      ],
+      "phaseMode": "robot_only_person_not_world_revival",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity",
+        "boundPartnerIdentity",
+        "boundPartnerVersion",
+        "lastConsumedPartnerEventId"
+      ],
+      "whileTriggerFalse": {
+        "mode": "boss_recovery_watch",
+        "instruction": "Boss观察接口已验证但暂时无恢复事件时保持观察/近距防御；该等待不触发generic狙击。接口缺失则能力验证失败。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-II",
+      "tarotMajor": "II·女祭司",
+      "majorTactic": "threshold_flush",
+      "sourceSeat": "A20.W05.E07.I01",
+      "mapId": "A20",
+      "role": "flush",
+      "startingPhase": 1,
+      "targetPhase": "wave",
+      "contractRevision": 2,
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 2,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 2,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 0,
+          "longgunWithSubProjectilesPerAction": 2,
+          "longgunAndSubweaponMayShareAction": false,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "source-backed creation/configuration ceilings and proposed event gates; no FP20 hit/FPS verification",
+          "maxPlannedActionProjectiles": 6,
+          "scriptedCycleProjectiles": 6,
+          "cycleNote": "One granted action; future actions require rest and renewed permission.",
+          "sidearmTriggerSemantics": "Per-real-hand ceiling; synchronized means one planned pair opportunity, not forced same-frame fire or bypass of each weapon cadence.",
+          "primaryCreatedObjectsIncludingDescendants": 2,
+          "primaryFinalDamageUnitsPerAction": 2,
+          "countingNote": "Direct projectiles, descendants/linked damage units and repeated contacts/settlements are separate quantities; the 14-unit gate checks final units, not XML split alone."
+        },
+        "defaultWindupFrames": 24,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 66,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only real host-weapon loading/reload lifecycle; no phase, movement, tactic or partner refresh",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "All repeated segments share the same event ledger; discarded events never bank or replay.",
+        "leaseRelease": "registered damage body/group and every descendant actually terminated",
+        "overrides": {
+          "windupFrames": 24,
+          "lockAimLastFrames": 0,
+          "recoveryFrames": 66
+        }
+      },
+      "effectBudget": {
+        "primaryEvents": 2,
+        "directBodies": 2,
+        "createdObjectsIncludingDescendants": 2,
+        "finalDamageUnitsCeiling": 2,
+        "nativeCadenceMs": 220.0,
+        "minimumCadenceFramesAt30FPS": 7,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient",
+        "maxSimultaneousRays": 2,
+        "pulsesPerRay": 5,
+        "hitBudgetPerRay": 5,
+        "hitBudgetPerTargetPerRay": 2,
+        "maxSettlementsPerAction": 10,
+        "maxSettlementsPerTargetPerAction": 4,
+        "lifeFramesPerRay": 12,
+        "rayLengthNative": 620,
+        "aiTriggerRangeNotExpanded": true,
+        "effectEvidence": {
+          "source": {
+            "path": "data/items/bullets_cases.xml",
+            "line": 902,
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/bullets_cases.xml#L902"
+          },
+          "emissionsPerAction": 2,
+          "maxSettlementsPerEmission": 5,
+          "maxSettlementsPerTargetPerEmission": 2,
+          "maxSettlementsPerAction": 10,
+          "maxSimultaneousRays": 2,
+          "lifetimeFramesPerRay": 12
+        }
+      },
+      "anchor": {
+        "mode": "one_way_spawn_boundary",
+        "x": 2135.04,
+        "z": 578.2187,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L17606",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "requiredState": [
+        "worldIdentity",
+        "unitIdentity",
+        "actorVersion",
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "lastConsumedTriggerId",
+        "damageGroupIds",
+        "lastConsumedCrossingId",
+        "crossedBoundaryFlag",
+        "birthFacingSide"
+      ],
+      "requiredImplementation": [
+        "B2-weapon-action-event-budget",
+        "B2-telegraph-visibility",
+        "B2-high-risk-permit",
+        "B2-damage-group-retirement",
+        "B2-major-tactic-threshold_flush",
+        "B2-native-cadence-event-gate"
+      ],
+      "cancelRules": [
+        "world/actor version changes",
+        "phase changes before unissued events complete",
+        "target invalid/offscreen before emission",
+        "tactic interrupted"
+      ],
+      "cancellationDoesNotReleaseLiveEmittedDamageGroups": true,
+      "acceptanceTest": {
+        "scene": "original source identity, phase and fixed birth; authorized equipment increment only",
+        "mustObserve": [
+          "complete trigger/action/exit and real counterplay",
+          "no duplicate consumed event",
+          "native cooldown never reset to meet planned timing",
+          "actual damage-group cleanup before hazard lease release",
+          "phase-appropriate action only",
+          "no hidden fallback to old gun or absent auxiliary weapon"
+        ],
+        "geometry": "fixed source marker only; no invented obstacle or guaranteed free path; FP20 acceptance remains required"
+      },
+      "phaseEligibility": {
+        "startingPhaseMustRemain": 1,
+        "noPhaseRewriteForWeaponDemonstration": true,
+        "modeReadinessMustBeObservedBeforeShooting": true
+      },
+      "counterplay": [
+        "24帧预警时退出火线，或越过出生参考线取消尚未发射的一束；两束结束后有66帧恢复。"
+      ],
+      "trigger": {
+        "all": [
+          "target visible",
+          "fresh crossing from original facing side outside420 into220..420",
+          "not permanently crossed behind birth reference",
+          "real primary fuel available",
+          "ready",
+          "dangerPermit"
+        ]
+      },
+      "action": [
+        {
+          "state": "boundary_watch",
+          "operation": "冻结出生参考线和初始面对侧；只读取同侧进入的crossingId"
+        },
+        {
+          "state": "flame_warning",
+          "operation": "固定真实射线预警24帧；预警期间跨到背侧即取消",
+          "frames": 24
+        },
+        {
+          "state": "first_ray",
+          "operation": "战术版喷火器第一束；每束预算保持原生配置",
+          "primaryEvents": 1
+        },
+        {
+          "state": "native_gap",
+          "operation": "实际220ms冷却完成才可第二束，30FPS下至少7帧；跨线或退出条件时不补发",
+          "minimumFramesAt30FPS": 7,
+          "allGunsOff": true
+        },
+        {
+          "state": "second_ray",
+          "operation": "至多第二束；每束独立5总结算预算/每目标2次，不能叠第三束",
+          "primaryEvents": 1
+        },
+        {
+          "state": "recover",
+          "operation": "至少66帧，许可直到所有实际射线结束",
+          "frames": 66
+        }
+      ],
+      "exit": {
+        "normal": "同crossingId仅2次主枪事件；再次资格必须先退回同侧420px外并真实有燃料",
+        "passedShooter": "跨过固定出生参考线后本场永久停该特殊喷流，取消未发第二束；已有射线按原生生命周期结束",
+        "dryPrimary": "等待正常主仓装填，不伪造燃料或额外越线资格",
+        "phaseChange": "crossedBoundaryFlag和已消费crossingId保留"
+      },
+      "whileTriggerFalse": {
+        "mode": "one_way_guard",
+        "instruction": "未发生合格越线或已经越过背侧时，不走额外常态喷流循环；保留现有战斗阶段允许的近距防御和位移"
+      },
+      "phaseMode": "one-way boundary state survives phase change; no reverse instantaneous spray",
+      "damageClaimBoundary": "two rays are two emissions, not ten projectiles; at most ten configured settlements total and four per target, with collision eligibility still required",
+      "nativeEffectBudget": {
+        "primaryEvents": 2,
+        "directBodies": 2,
+        "createdObjectsIncludingDescendants": 2,
+        "finalDamageUnitsCeiling": 2,
+        "nativeCadenceMs": 220.0,
+        "minimumCadenceFramesAt30FPS": 7,
+        "allActionPathsShareSameLedger": true,
+        "actualDamageHitsNotMeasured": true,
+        "leaseRelease": "actual registered damage groups and descendants terminated; actor recovery alone is insufficient",
+        "maxSimultaneousRays": 2,
+        "pulsesPerRay": 5,
+        "hitBudgetPerRay": 5,
+        "hitBudgetPerTargetPerRay": 2,
+        "maxSettlementsPerAction": 10,
+        "maxSettlementsPerTargetPerAction": 4,
+        "lifeFramesPerRay": 12,
+        "rayLengthNative": 620,
+        "aiTriggerRangeNotExpanded": true,
+        "effectEvidence": {
+          "source": {
+            "path": "data/items/bullets_cases.xml",
+            "line": 902,
+            "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/cfb1952e88553d8e5138d7c3e9b883a9beb035d2/data/items/bullets_cases.xml#L902"
+          },
+          "emissionsPerAction": 2,
+          "maxSettlementsPerEmission": 5,
+          "maxSettlementsPerTargetPerEmission": 2,
+          "maxSettlementsPerAction": 10,
+          "maxSimultaneousRays": 2,
+          "lifetimeFramesPerRay": 12
+        }
+      }
+    },
+    {
+      "unitIdentity": "CF6-M-XXI",
+      "tarotMajor": "XXI·世界",
+      "majorTactic": "final_phase_guard",
+      "sourceSeat": "A20.BG00.E00.I01",
+      "mapId": "A20",
+      "role": "counter",
+      "startingPhase": 1,
+      "targetPhase": "boss",
+      "trigger": {
+        "all": [
+          "humanBossIdentityReady",
+          "targetVisible",
+          "targetThreatensBossGuardRadius",
+          "ready"
+        ]
+      },
+      "action": [
+        {
+          "state": "shield_guard",
+          "operation": "正位时守Boss侧的中距火线，主枪最多3次；不追出Boss220px护卫范围",
+          "primaryEventsMax": 3
+        },
+        {
+          "state": "close_warning",
+          "operation": "玩家进入180–240px且危险许可可用才预警1次下挂",
+          "frames": 18
+        },
+        {
+          "state": "subweapon_optional",
+          "operation": "真实副仓允许时仅1发下挂霰弹，不能与主枪并发",
+          "subweaponEvents": 1
+        },
+        {
+          "state": "reverse_retreat",
+          "operation": "破盾取消未发主枪/下挂，转有界双枪后撤，仍不越Boss220px护卫范围",
+          "synchronizedEventsMax": 3,
+          "maxRetreatPx": 100
+        },
+        {
+          "state": "recover",
+          "operation": "至少60帧再选新模式",
+          "frames": 60
+        }
+      ],
+      "exit": {
+        "normal": "每个动作只选当前阶段允许的枪组，阶段翻转不重置任何已消耗弹药/人物票据",
+        "humanBossDead": "按原人形phase清退；未死亡的清退不发缴获",
+        "robotReady": "本身份不得在机器人阶段重新绑定，机器人教官是隐者"
+      },
+      "counterplay": [
+        "主动绕到护卫半径外让其停止追击",
+        "破盾能永久关闭盾期护卫压制",
+        "快杀人形Boss可避开未完成支援"
+      ],
+      "budgets": {
+        "perAction": {
+          "primaryTriggerLimit": 3,
+          "primarySplit": 1,
+          "primaryProjectilesPerAction": 3,
+          "sidearmSynchronizedTriggerLimit": 3,
+          "sidearmProjectilesPerAction": 6,
+          "subweaponProjectilesPerAction": 7,
+          "longgunWithSubProjectilesPerAction": 10,
+          "longgunAndSubweaponMayShareAction": true,
+          "longgunGroupAndDualActionMutuallyExclusive": true,
+          "activeFrameRate": 30,
+          "notPerformanceMeasurement": true,
+          "verification": "design upper bounds; require all-action event gate; not current-AI observed counts",
+          "maxPlannedActionProjectiles": 10,
+          "scriptedCycleProjectiles": 10,
+          "cycleNote": "One granted action; future actions require rest and renewed permission."
+        },
+        "defaultWindupFrames": 18,
+        "defaultLockAimLastFrames": 0,
+        "minimumRecoveryFrames": 48,
+        "highRiskConcurrentPermitPerMap": 1,
+        "onePermitCoversWholeCompositeCycle": true,
+        "globalSafetyMayCancelRemainingEvents": true,
+        "ammoRefill": "only actual host-weapon reload lifecycle; shield break and tactic change never refill",
+        "modeSwitchDoesNotResetCounters": true,
+        "cycleBudgetRule": "sequence totals cannot exceed D3 primary/sidearm/subweapon ceilings; unused events are discarded, not banked",
+        "overrides": {},
+        "exclusivePhaseBranches": [
+          "phase1: primary<=3 plus subweapon<=1 event within primary+sub group limit",
+          "phase2: a fresh permitted dual action after prior action cancelled and recovery; never add dual to completed phase1 cycle"
+        ]
+      },
+      "anchor": {
+        "mode": "human_boss_tether",
+        "x": 314.88,
+        "z": 303.104,
+        "source": "D3.proposedSpawn fixed authored coordinate or inside original bias envelope",
+        "sourceUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/64b22a0449efa5689c0b946ee3c348774737ad65/data/stages/books/cf6-type61.json#L17687",
+        "geometryStatus": "source-only; no claim of cover, wall, walkability or collision clearance; FP20 validation required"
+      },
+      "partner": [
+        {
+          "kind": "boss_actor",
+          "instanceName": "cf6Boss_A20",
+          "binding": "Cf6BossEncounter bossMark + worldIdentity + actor.version"
+        }
+      ],
+      "movementBudget": {
+        "maxDistanceFromBossPx": 220,
+        "perRetreatX": 100
+      },
+      "requiredObservation": [
+        "bossGuardThreatDistance"
+      ],
+      "phaseMode": "positive_guard_reversed_retreat_human_only",
+      "requiredState": [
+        "cycleId",
+        "currentState",
+        "stateEnteredAtFrame",
+        "primaryEventsUsed",
+        "sidearmEventsUsedBySlot",
+        "subweaponEventsUsed",
+        "lastConsumedTriggerId",
+        "unitIdentity",
+        "actorVersion",
+        "worldIdentity",
+        "boundPartnerIdentity",
+        "boundPartnerVersion",
+        "lastConsumedPartnerEventId"
+      ],
+      "whileTriggerFalse": {
+        "mode": "guard_within_tether",
+        "instruction": "优先保护人形Boss220px范围，护卫目标不满足时不无限追出；可调整枪线或实际装填。"
+      },
+      "acceptanceTest": {
+        "scene": "单教官+必要的显式伙伴，保持D3配装/等级/阶段；用固定输入验证一次完整周期和一次打断",
+        "mustObserve": [
+          "触发前waitingPolicy明确生效且不会永久等待自己无法产生的事件",
+          "每个triggerId最多消费一次；未知结果不重放",
+          "各阶段事件总数不超D3预算；换枪/破盾不刷新计数",
+          "玩家反制至少一种在实机可执行",
+          "去掉名字后仍能由触发和动作节奏区分该教官"
+        ],
+        "geometry": "只确认已有固定出生点；移动实际路径、屏幕预警和碰撞安全需要FP20人工验收"
+      }
+    }
+  ],
+  "verification": {
+    "count": 22,
+    "uniqueTacticNames": 22,
+    "allRosterPartnersExist": true,
+    "roleEquipmentAndSpawnPreserved": true,
+    "requiresActualCombatAcceptance": true,
+    "notEvidenceOfRuntimeSupport": true,
+    "SPAS12SourceLineCorrected": 910,
+    "shieldChargeAndShotExplicitlySeparated": true,
+    "noD3EventBudgetRaised": true
+  },
+  "headSha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+  "inputRosterCanonicalSha256": "0f47b8d112fbae4e7618d8f8e0befbe994c3642bf1f99f1caade6844176279a2",
+  "review": {
+    "head": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+    "rosterCanonicalSha256": "0f47b8d112fbae4e7618d8f8e0befbe994c3642bf1f99f1caade6844176279a2",
+    "inputs": [
+      {
+        "path": "outputs/cf6-158-v2/D4_roster_158_v2.json",
+        "sha256": "1459f66feb07e852ae6fa56ab74cbe08808ee51a506a36d6aa6d5f9c18b65369"
+      },
+      {
+        "path": "outputs/cf6-158-v2/D4_major_tactic_contracts_v2.json",
+        "sha256": "92abf464bfc09ac0d7a76ee1953d41078ed9a23f9aae6930854c524db8f2bac4"
+      },
+      {
+        "path": "outputs/cf6-158-v2/D4_enemy_admission_manifest_v2.json",
+        "sha256": "71a9e78dcd7aa9b934b20b4105ff4283d6470ac4ff9ec921333baa7a4395e0d0"
+      },
+      {
+        "path": "outputs/cf6-158-v2/D2_xml_text_patchset.json",
+        "sha256": "b7fbfa515f6d687a40b64ce10adb76cef0feed713dd1806e2a33ad6b225c1e98"
+      },
+      {
+        "path": "audit_v2/seats/G1111_pair_contract.json",
+        "sha256": "28e7cbb2b32dc709ba8afc0f9ede21389db15f3a42a0b6b616f053bde0eab86b"
+      },
+      {
+        "path": "outputs/cf6-158-v2/D4_ammo_access_contract_v2.json",
+        "sha256": "39eaef57747c047e636ec2f6e1f577f39690c2b5422dfbe1e604b419a68c2e7b"
+      }
+    ]
+  }
+}

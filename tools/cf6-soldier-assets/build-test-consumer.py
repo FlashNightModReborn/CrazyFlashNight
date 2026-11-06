@@ -67,9 +67,9 @@ def canonical_fixture_facades():
         'import org.flashNight.arki.component.Buff.Component.*;\n_root.技能函数={};\n'+'\n'.join(scripts))
 
 
-def main():
+def main(manifest_name='test-host-manifest.json',width=550,height=400,extra_script='',anchor_linkages=()):
     generated = {}
-    doc = E.Element(N+'DOMDocument', nsmap={None:NS['x']}, width='550',height='400',
+    doc = E.Element(N+'DOMDocument', nsmap={None:NS['x']}, width=str(width),height=str(height),
         frameRate='30',xflVersion='2.2',creatorInfo='Adobe Flash Professional CS6',
         platform='Windows',versionInfo='Saved by Adobe Flash Windows 12.0 build 481',majorVersion='12',buildNumber='481')
     includes = E.SubElement(doc,N+'symbols')
@@ -83,17 +83,17 @@ def main():
         item.set('linkageExportInFirstFrame','true')
         generated['LIBRARY/'+name+'.xml'] = native.xml_bytes(item)
         E.SubElement(includes,N+'Include',href=name+'.xml',itemID=native.item_id(name),loadImmediate='false')
-        (anchors if index<3 or relative=='flashswf/arts/new/偷吃屑鱼坟头贡品.swf' or linkage=='原版素材库-子弹' else instances).append(native.instance(name,symbol_type='movie clip',name='source'+str(index),alpha_mult=0,
+        (anchors if index<3 or linkage in anchor_linkages or relative=='flashswf/arts/new/偷吃屑鱼坟头贡品.swf' or linkage=='原版素材库-子弹' else instances).append(native.instance(name,symbol_type='movie clip',name='source'+str(index),alpha_mult=0,
             matrix=(1,0,0,1,-5000,-5000)))
     timeline = E.SubElement(E.SubElement(doc,N+'timelines'),N+'DOMTimeline',name='场景 1')
     E.SubElement(timeline,N+'layers').append(native.layer('真实 RSL 消费者',[
-        native.frame(script='stop();\n'+canonical_fixture_facades()+'\n#include "../TestLoader.as"',elements=anchors),
+        native.frame(script='stop();\n'+canonical_fixture_facades()+'\n'+extra_script+'\n#include "../TestLoader.as"',elements=anchors),
         native.frame(1,elements=instances)]))
     generated['DOMDocument.xml'] = native.xml_bytes(doc)
     generated[NAME+'.xfl'] = b'PROXY-CS5\n'
     generated['MobileSettings.xml'] = b''
     generated['PublishSettings.xml'] = (ROOT/'scripts/FormerSheriffNativeHost/PublishSettings.xml').read_text(encoding='utf8').replace('FormerSheriffNativeHost',NAME).encode('utf8')
-    manifest_path = build.HERE/'test-host-manifest.json'
+    manifest_path = build.HERE/manifest_name
     if manifest_path.exists():
         previous = json.loads(manifest_path.read_text(encoding='utf8'))
         for row in previous['files']:

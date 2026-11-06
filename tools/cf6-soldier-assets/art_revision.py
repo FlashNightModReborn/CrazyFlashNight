@@ -74,7 +74,13 @@ def install(b, symbols, parts, old):
     # Both hit variants use the full 62-frame authored crouch-guard-and-return motion.
     cover=copy.deepcopy(poses['持盾被击'])
     body('持盾被击',cover+copy.deepcopy(cover),{0:{'name':'a0','label_type':'name'},
-        62:{'name':'a1','label_type':'name'},61:{'script':'_parent.动画完毕();'},123:{'script':'_parent.动画完毕();'}})
+        12:{'script':'_parent.soldierGuardPose(this,true);'},
+        50:{'script':'_parent.soldierGuardPose(this,false);'},
+        62:{'name':'a1','label_type':'name'},
+        74:{'script':'_parent.soldierGuardPose(this,true);'},
+        112:{'script':'_parent.soldierGuardPose(this,false);'},
+        61:{'script':'_parent.soldierEndShieldGuard();_parent.动画完毕();'},
+        123:{'script':'_parent.soldierEndShieldGuard();_parent.动画完毕();'}})
 
     # Preserve the previous shield stab as one branch; new art is a shield bash.
     stab=old['573'];bash=sample(poses['持盾匕首刺击'],34)

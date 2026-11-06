@@ -51,6 +51,25 @@ exports.runtime=function(source,report) {
     report('resource-ordinary',settle(900,1000,800),800);
     report('resource-existing-overflow',settle(1300,1000,800),1200);
     report('resource-half-write-recapture-is-unsafe',settle(900,800,800),900);
+    const handle=source.fn('scripts/类定义/org/flashNight/arki/component/Damage/UniversalDamageHandle.as',
+        'public function handleBulletDamage(',{_isMagicType:()=>false});
+    for(let i=0;i<6;i++) {
+        const enemy=fixture(source),e=enemy.target,boss=i>=4,key='cf6-template-'+i;
+        const declared={人类:20,装甲:15,[boss?'首领':'精英']:boss?20:15};
+        enemy.root.敌人属性表[key]={魔法抗性:declared};
+        e.兵种=key;e.是否为敌人=true;e.魔法抗性={精英:99,首领:99,热:999};
+        e.__persistentEquipmentInputV1.slots.头部装备.data.magicdefence={热:7};
+        for(let repeat=0;repeat<10;repeat++)project(enemy);
+        report('human-template-classification-'+i,[e.魔法抗性.精英,e.魔法抗性.首领,e.魔法抗性.热],
+            [boss?undefined:15,boss?20:undefined,19]);
+        handle({伤害类型:'破击',魔法伤害属性:'精英',破坏力:100,是否为敌人:false},{},e,null,{_efFlags:0});
+        const physical=100*300/(e.防御力+300);
+        report('blackclaw-real-damage-branch-'+i,Math.round((e.损伤值-physical)*1000),boss?0:42500);
+    }
+    const player=fixture(source);player.target.兵种='主角-男';player.target.魔法抗性={精英:99,首领:99,热:999};
+    project(player);player.target.等级=30;project(player);
+    report('player-resistance-remains-level-derived',[player.target.魔法抗性.热,player.target.魔法抗性.人类,
+        player.target.魔法抗性.精英,player.target.魔法抗性.首领],[13,30,undefined,undefined]);
 };
 exports.skill=function(source,report,fixtures) {
     const f=fixture(source),t=f.target;

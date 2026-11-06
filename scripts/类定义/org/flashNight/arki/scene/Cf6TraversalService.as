@@ -137,26 +137,8 @@ class org.flashNight.arki.scene.Cf6TraversalService {
             && t.acquired && t.actor.__cf6TraversalOwner===t.token
             && t.actor===t.room.world[t.actorName];
     }
-    private static function idle():Void {}
-    private static function deny():Boolean {return false;}
-    private static function ownControl(t:Object):Boolean {
-        var block:MovieClip=t.actor.控制块;
-        if(block==undefined || typeof block.onEnterFrame!="function") {restoreControl(t);return true;}
-        if(block.__cf6TraversalOwner===t.token) return block.onEnterFrame===idle;
-        if(block.__cf6TraversalOwner!=undefined) return false;
-        // A new pose legitimately creates a fresh control block. Never restore through its old alias.
-        restoreControl(t);
-        t.block=block;t.blockCallback=block.onEnterFrame;
-        block.__cf6TraversalOwner=t.token;block.onEnterFrame=idle;
-        return true;
-    }
-    private static function restoreControl(t:Object):Void {
-        if(t.block.__cf6TraversalOwner===t.token && t.token!=undefined) {
-            if(t.block.onEnterFrame===idle) t.block.onEnterFrame=t.blockCallback;
-            delete t.block.__cf6TraversalOwner;
-        }
-        t.block=undefined;
-    }
+
+    /** Gate the persistent actor through its current native input entries. */
     private static function acquire(t:Object,hero:MovieClip):Boolean {
         if(!current(t) || hero==undefined || !(hero.hp>0)
                 || hero!==t.room.world[_root.控制目标]
@@ -166,7 +148,6 @@ class org.flashNight.arki.scene.Cf6TraversalService {
         if(typeof pauseApi.isPausedExcept!="function") return false;
         t.actor=hero;t.actorName=hero._name;t.controlName=_root.控制目标;
         t.startX=hero._x;t.startZ=hero.Z轴坐标;
-        t.stateChange=hero.状态改变;t.directionChange=hero.方向改变;
         // beginRoom may precede SceneReady in an uncovered entry. Adopt the
         // later synchronous preparation only through the same frozen source identity.
         var p:Object=t.preparation;
@@ -181,13 +162,10 @@ class org.flashNight.arki.scene.Cf6TraversalService {
         }
         if(p!=null && (!preparationCurrent(p) || p.actor!==hero || hero._visible!==false
                 || hero.锁定方向!==true || org.flashNight.arki.scene.Cf6ActorMaskState.identity(hero)!==p.maskBirth)) return false;
-        t.token={};t.visible=p==null?hero._visible:p.visible;t.direction=p==null?hero.方向:p.direction;
+        t.token={sortY:t.spec.actorSortY};t.visible=p==null?hero._visible:p.visible;t.direction=p==null?hero.方向:p.direction;
         t.directionLock=p==null?hero.锁定方向:p.directionLock;
         t.maskBirth=org.flashNight.arki.scene.Cf6ActorMaskState.identity(hero);
         t.lastVisible=hero._visible;t.lastDirection=hero.方向;
-        // A revived actor starts a new presentation lease. Sample its current pose;
-        // the former lease's walking pose/depth owner cannot validate this new token.
-        t.lastAction=hero.状态;t.depthManager=undefined;t.lastDepth=undefined;
         hero.锁定方向=true;
         if(p!=null) {
             delete hero.__cf6ArrivalPreparationOwner;
@@ -195,14 +173,13 @@ class org.flashNight.arki.scene.Cf6TraversalService {
             p.closed=true;t.preparation=null;
         }
         t.acquired=true;hero.__cf6TraversalOwner=t.token;
-        // Native onClipEvent(load) may initialize a new control block on the next frame.
-        // These actor-local CAS slots cover that gap without replacing global input.
-        t.walk=hero.行走;t.switchMode=hero.按键控制攻击模式;t.keyCheck=hero.按键检测;
-        hero.行走=idle;hero.按键控制攻击模式=idle;hero.按键检测=deny;
+        // The persistent actor keeps its current callbacks. Native input
+        // entry points read this lease marker even after a pose/control refresh.
         t.lease=PauseManager.lease(true,"cf6_traversal");
         hero.左行=hero.右行=hero.上行=hero.下行=false;
         hero.动作A=hero.动作B=hero.动作C=false;
         hero.按住奔跑键=hero.强制奔跑=false;
+        if(t.spec.actorSortY!==undefined) hero.__cf6TraversalDepthOwner=t.token;
         return true;
     }
     public static function isPaused(t:Object):Boolean {
@@ -217,7 +194,10 @@ class org.flashNight.arki.scene.Cf6TraversalService {
         if(isPaused(t)) return t.rules.phase;
         var gate:Boolean=t.spec.mode=="arrive" || atGate(t.spec,hero);
         if(t.rules.phase=="waiting") {
-            if(t.spec.mode=="depart" && (!cleared || !gate)) return "waiting";
+            if(t.spec.mode=="depart" && (!cleared || !gate)) {t.waitFrames=0;return "waiting";}
+            // A live airborne actor still owns its flight/landing. This is a
+            // normal wait, not a failed presentation admission after 300 frames.
+            if(hero!=undefined && hero===t.room.world[_root.控制目标] && hero.hp>0 && (hero.浮空 || hero.飞行浮空)) {t.waitFrames=0;return "waiting";}
             if(!acquire(t,hero)) {
                 t.waitFrames=t.waitFrames==undefined ? 1 : t.waitFrames+1;
                 if(t.waitFrames>300) {cancel(t);return "cancelled";}
@@ -226,7 +206,14 @@ class org.flashNight.arki.scene.Cf6TraversalService {
         }
         var cue:String=Cf6TraversalRules.advance(t.rules,t.room.owner,false,cleared,gate);
         var row:Object=Cf6TraversalRules.sample(t.rules,t.room.owner);
-        if(row!=null && actorOwned(t) && !applySample(t,row)) {cancel(t);return "cancelled";}
+        if(row!=null && actorOwned(t) && !applySample(t,row)) {
+            t.presentationActorCurrent=actorOwned(t) && hero.hp>0;
+            if(t.spec.mode=="depart") restoreGate(t);
+            else if(t.presentationActorCurrent) {
+                hero._x=t.startX;hero._y=hero.Z轴坐标=t.startZ;
+            }
+            cancel(t);return "cancelled";
+        }
         if(cue=="release-actor") releaseActor(t,false);
         if(cue=="complete") {
             Cf6TraversalRules.takeCompletion(t.rules,t.room.owner);
@@ -239,28 +226,28 @@ class org.flashNight.arki.scene.Cf6TraversalService {
     private static function applySample(t:Object,row:Object):Boolean {
         var hero:MovieClip=t.actor;
         if(t.maskBirth!=null && org.flashNight.arki.scene.Cf6ActorMaskState.identity(hero)!==t.maskBirth) return false;
-        if(hero._visible!==t.lastVisible || hero.状态改变!==t.stateChange || hero.方向改变!==t.directionChange
-                || t.lastAction!==undefined && hero.状态!==t.lastAction
-                || t.block!==undefined && (t.block.__cf6TraversalOwner!==t.token || t.block.onEnterFrame!==idle)) return false;
-        if(hero.锁定方向!==true || hero.方向!==t.lastDirection) return false;
+        if(typeof hero.状态改变!="function" || typeof hero.方向改变!="function") return false;
+        if(hero._visible!==t.lastVisible) t.visible=hero._visible;
+        hero.锁定方向=true;
         var direction:String=t.spec.preserveActorPosition || t.rules.heading==null || t.directionLock===true ? t.direction : t.rules.heading;
         var action:String=hero.攻击模式+(row.action=="walk" ? "行走" : "站立");
-        if(hero.状态!==action) {restoreControl(t);hero.状态改变(action);}
-        t.lastAction=hero.状态;
+        if(hero.状态!==action) hero.状态改变(action);
         if(direction!=hero.方向) {
-            hero.锁定方向=false;t.directionChange.call(hero,direction);hero.锁定方向=true;
+            hero.锁定方向=false;hero.方向改变(direction);hero.锁定方向=true;
         }
         t.lastDirection=hero.方向;
-        if(!ownControl(t)) return false;
+        hero.左行=hero.右行=hero.上行=hero.下行=false;
+        hero.动作A=hero.动作B=hero.动作C=false;
+        hero.按住奔跑键=hero.强制奔跑=false;
         var footX:Number=t.spec.preserveActorPosition ? t.startX : row.x;
         var footZ:Number=t.spec.preserveActorPosition ? t.startZ : row.z;
         hero._x=footX;hero._y=hero.Z轴坐标=footZ;
         var sortY:Number=t.spec.actorSortY===undefined ? footZ : t.spec.actorSortY;
         if(t.spec.actorSortY!==undefined) {
             var dm:Object=DepthManager.instance;
-            if(dm==undefined || t.depthManager!==undefined && (dm!==t.depthManager || hero.__cf6TraversalDepthOwner!==t.token || hero.getDepth()!==t.lastDepth)) return false;
+            if(dm==undefined) return false;
             if(!dm.updateDepth(hero,sortY)) return false;
-            t.depthManager=dm;hero.__cf6TraversalDepthOwner=t.token;t.lastDepth=hero.getDepth();
+            hero.__cf6TraversalDepthOwner=t.token;
         } else hero.swapDepths(footZ);
         if(typeof hero.aabbCollider.updateFromUnitArea=="function") hero.aabbCollider.updateFromUnitArea(hero);
         // Held-gun man is the UPPER-body action timeline (fire/up/down/reload),
@@ -273,6 +260,7 @@ class org.flashNight.arki.scene.Cf6TraversalService {
             hero.man.__cf6TraversalAnimationOwner=t.token;
             hero.man.gotoAndStop("空闲");
         }
+        t.lastVisible=hero._visible;
         if(row.visible && t.visible && maskActive(t)) {
             if(!org.flashNight.arki.scene.Cf6PropDepthService.valid(t.maskTicket)) return false;
             t.maskTicket.holder.art.gotoAndStop(t.rules.frame);
@@ -318,34 +306,23 @@ class org.flashNight.arki.scene.Cf6TraversalService {
         if(t==null || !t.acquired) return;
         releaseMask(t);
         if(actorOwned(t)) {
-            var controlOwned:Boolean=t.block==undefined || t.block.__cf6TraversalOwner===t.token && t.block.onEnterFrame===idle;
-            restoreControl(t);
             var hero:MovieClip=t.actor;
             if(hero.__cf6TraversalDepthOwner===t.token) {
-                if(t.depthManager===DepthManager.instance && hero.getDepth()===t.lastDepth && finite(hero.Z轴坐标))
-                    t.depthManager.updateDepth(hero,hero.Z轴坐标);
                 delete hero.__cf6TraversalDepthOwner;
+                var dm:Object=DepthManager.instance;
+                if(dm!=undefined && finite(hero.Z轴坐标)) dm.updateDepth(hero,hero.Z轴坐标);
             }
-            if(hero.行走===idle) hero.行走=t.walk;
-            if(hero.按键控制攻击模式===idle) hero.按键控制攻击模式=t.switchMode;
-            if(hero.按键检测===deny) hero.按键检测=t.keyCheck;
             if(hero._visible===t.lastVisible && (t.maskBirth==null
                     || org.flashNight.arki.scene.Cf6ActorMaskState.identity(hero)===t.maskBirth)) hero._visible=t.visible;
             if(hero.锁定方向===true) {
                 hero.锁定方向=t.directionLock;
-                if(cancelled && hero.方向===t.lastDirection && hero.hp>0 && hero.方向改变===t.directionChange)
+                if(cancelled && hero.方向===t.lastDirection && hero.hp>0 && typeof hero.方向改变=="function")
                     hero.方向改变(t.direction);
             }
-            if(hero.man.__cf6TraversalAnimationOwner===t.token) {
-                delete hero.man.__cf6TraversalAnimationOwner;
-                // Do not play the whole upper-body timeline: idle is followed by fire/reload.
-                // Restored input and the standard pose state machine own subsequent actions.
-            }
-            if(!cancelled && controlOwned && hero.hp>0 && current(t)
-                    && hero.状态===t.lastAction && hero.状态改变===t.stateChange) hero.状态改变(hero.攻击模式+"站立");
+            if(hero.man.__cf6TraversalAnimationOwner===t.token) delete hero.man.__cf6TraversalAnimationOwner;
             delete hero.__cf6TraversalOwner;
+            if(!cancelled && hero.hp>0 && current(t) && typeof hero.状态改变=="function") hero.状态改变(hero.攻击模式+"站立");
         }
-        // Lease IDs are independent ordinary strings: always release only our responsibility.
         if(t.lease!=undefined) PauseManager.releaseLease(t.lease);
         t.lease=undefined;t.acquired=false;
     }

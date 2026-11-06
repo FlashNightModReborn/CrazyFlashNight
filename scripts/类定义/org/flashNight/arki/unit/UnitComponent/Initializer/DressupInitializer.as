@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.component.StatHandler.DodgeHandler;
 import org.flashNight.arki.unit.HeroUtil;
 import org.flashNight.arki.unit.UnitUtil;
@@ -199,7 +200,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     private static var persistentValueKeys:Array = ["伤害类型","魔法伤害属性","基础伤害类型","基础魔法伤害属性"];
     private static var persistentInputKeys:Array = ["_name","等级","hp基本满血值","mp基本满血值","基本空手攻击力",
         "空手攻击力_min","空手攻击力_max","基本防御力","体重","基础命中率","基础韧性系数","基础躲闪率",
-        "是否为敌人","_yscale","攻击模式","装备投影含模板魔法抗性"];
+        "是否为敌人","兵种","_yscale","攻击模式","装备投影含模板魔法抗性"];
     private static var weaponValueSuffixes:Array = ["伤害类型","魔法伤害属性","毒","吸血","击溃","命中加成","暴击","斩杀","消音","消音策略"];
     private static var projectionFaultForTests:Function;
     public static function _setProjectionFaultForTests(value:Function):Void { projectionFaultForTests=value; }
@@ -633,6 +634,18 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             装备 = BaseItem.createFromString(装备);
             if(装备.value.level == 1 && defaultLevel > 1) 装备.value.level = defaultLevel;
         }
+        if(equipKey=="长枪" && typeof target.cf6UnitIdentity=="string" && target.cf6G1111FixedMode!==undefined){
+            if(typeof target.cf6G1111FixedMode!="boolean" || 装备.name!="G1111")return null;
+            var held:Object=target.__cf6FixedLongItem;
+            if(held==null){
+                var source:Object=typeof 装备.toObject=="function"?装备.toObject():装备;
+                装备=BaseItem.createFromObject(ObjectUtil.clone(source));
+                if(装备==null || typeof 装备.value!="object")return null;
+                装备.value.isRocketMode=target.cf6G1111FixedMode;
+                target.__cf6FixedLongItem={item:装备,birth:target.cf6BirthIdentity,mode:target.cf6G1111FixedMode};
+            }else if(held.item!==装备 || held.birth!==target.cf6BirthIdentity || held.mode!==target.cf6G1111FixedMode
+                || 装备.value.isRocketMode!==held.mode)return null;
+        }
         return 装备;
     }
 
@@ -789,10 +802,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
      * 又不让装备 magicdefence 在重复换装时累计。
      */
     private static function resolveTemplateMagicResistance(target:Object):Object {
-        // 人形/玩家即使在首次刷新前已有一张 level-derived 抗性表，也不能把它误认成
-        // 模板权威并永久冻结；当前权威边界由敌人数据的明确“非生物”标签承担。
+        // 人形敌人的分类抗性同样来自兵种 XML。玩家已有的 level-derived 表仍不
+        // 是模板；只凭一张运行时抗性表，不能将其冻结为永久基础。
         var nonBiological:Object = target.label ? target.label.非生物 : undefined;
-        var hasAuthoritativeTemplate:Boolean = nonBiological === true || nonBiological === "true";
+        var nonBiologicalTemplate:Boolean = nonBiological === true || nonBiological === "true";
+        var declared:Object = _root.敌人属性表[target.兵种].魔法抗性;
+        var hasAuthoritativeTemplate:Boolean = nonBiologicalTemplate || declared != undefined;
         if (!hasAuthoritativeTemplate) {
             delete target.装备投影基础魔法抗性;
             target.装备投影含模板魔法抗性 = false;
@@ -803,7 +818,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         if (cached != undefined) return cached;
 
         cached = {};
-        var source:Object = target.魔法抗性;
+        // 既有非生物初始化允许遭遇参数覆盖；人形只读取明确的模板项，避免复制
+        // 装备、Buff 或等级补全后的 live 表。
+        var source:Object = nonBiologicalTemplate ? target.魔法抗性 : declared;
         var hasTemplateValue:Boolean = false;
         if (source) {
             for (var key:String in source) {
@@ -1339,6 +1356,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
         SetEffectController.prepare(target);
 
+        if(typeof target.装载生命周期函数!="function" && typeof target.cf6UnitIdentity=="string"
+            && typeof target.cf6G1111FixedMode=="boolean" && target.长枪.name=="G1111") {
+            _root.主角函数.装载生命周期函数.call(target,target.长枪数据.lifecycle,"长枪");
+            SetEffectController.finalize(target);
+            return;
+        }
         target.装载生命周期函数(target.头部装备数据.lifecycle, "头部装备");
         target.装载生命周期函数(target.上装装备数据.lifecycle, "上装装备");
         target.装载生命周期函数(target.下装装备数据.lifecycle, "下装装备");

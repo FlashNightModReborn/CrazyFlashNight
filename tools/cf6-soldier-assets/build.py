@@ -65,7 +65,7 @@ def sha(path):
 
 
 def build_inputs():
-    paths = [HERE/'build.py', HERE/'vector.py', HERE/'holster.py', HERE/'SoldierAI.as',
+    paths = [HERE/'build.py', HERE/'vector.py', HERE/'holster.py', HERE/'SoldierAI.as', HERE/'SoldierDefense.as',
         ROOT/'tools/cf6-wings-assets/vector.py', ROOT/'tools/cf6-manman-assets/build.py',
         ROOT/'tools/cf6-zombie-assets/build.py', ROOT/'tools/gamma-echo-assets/build.py',
         ROOT/'tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py',
@@ -281,7 +281,7 @@ onEnterFrame=updateSoldierShadow;updateSoldierShadow();stop();''')]))
 x轴攻击范围=0;y轴攻击范围=24;x轴保持距离=190;攻击欲望=3;命中率=20;
 if(!长枪){var pool:Array=_root.敌人函数.大学军校学员随机兵器表;长枪=pool[random(pool.length)];}
 根据模式重新读取武器加成=_root.主角函数.根据模式重新读取武器加成;
-'''+(HERE/'SoldierAI.as').read_text(encoding='utf-8-sig')+'\n'+(HERE/'SoldierRoles.as').read_text(encoding='utf-8-sig')+'''
+'''+(HERE/'SoldierAI.as').read_text(encoding='utf-8-sig')+'\n'+(HERE/'SoldierDefense.as').read_text(encoding='utf-8-sig')+'\n'+(HERE/'SoldierRoles.as').read_text(encoding='utf-8-sig')+'''
 _root.敌人函数.配置音效("人类",this);
 初始化敌人模板=_root.初始化敌人模板;初始化敌人模板();
 soldierInitializePhase();

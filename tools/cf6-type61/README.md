@@ -92,6 +92,34 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-cf6-type61-tests
 
 本轮编译、回归及剩余实机边界记入[当前修复回执](../../docs/reports/cf6-acquisition-repair-2026-10-28.json)。
 
+## 固定158配置与缴获候选
+
+2026-11-04候选将Pro v2的96名普通兵、40名精英、22名教官接入12张地图。`fixed-roster.source.json`保留审阅输入，`fixed_roster.py`编译每个出生席位的身份、等级、装备实例和动作配置；`soldier_programs.py`给出22种可执行战术。`build-route.py`在原章节基础上生成固定席位，`build-book-definition.py`同时核验原坐标、原生成节奏与逐席数据。运行侧通过`WaveSpawner`与`Cf6BossEncounter`消费席位，不由出生顺序随机挑选装备。
+
+明确迁移仅三席：A17的`CF6-C-PE-R-06`与`CF6-N-SW-01`移入首领增援，A20的`CF6-M-IX`移入机器人阶段增援，保持45帧间隔。其余原调度保留。装备强化、两把独立短枪、实际插件和G1111布尔模式在出生时恢复；教官称号显示固定身份。
+
+缴获替换固定158的旧E1–E5保证武器名额。`soldier-loot-policy.source.json`是待验收的概率设置：普通/精英/教官基础名义概率3%/6%/10%，沿用现役掉落PRD及逆向技能加成。每身份只裁决一次，从长枪、双短枪、插件材料或无掉落中选择一个结果；整章上限为6包、2对双枪、8件武器实例、2包材料。取消增援、破盾和退场不等同于二阶段战斗死亡。
+
+死亡时冻结实际`BaseItem`的完整`name/value`，保留已用弹数、插件及未知扩展；同包按真实普通付费装填成本发放每把武器与安装副武器的一次备用弹，两手同弹种相加。先持久保存裁决和配额，再经`RewardStashService`原子接纳；保存结果未知时查原操作，不重抽、不重复奖励、不提前报告安全退出成功。AMF空数组归一化仅接受已知空字段，不重写未来版本。旧局已冻结的历史奖励不追溯回收。
+
+六项武器说明只更新description节点，不增加商店、开局池或虚构物品。具体采用文本与原值校验见`apply-soldier-descriptions.py`及`soldier-description-application.json`。
+
+定向检查：
+
+```powershell
+python -X utf8 -B tools/cf6-type61/test-fixed-roster.py
+python -X utf8 -B tools/cf6-type61/test-route.py
+node tools/cf6-type61/test-soldier-program-contract.js
+node tools/cf6-type61/test-soldier-loot-rules.js
+node tools/cf6-type61/test-soldier-loot-service.js
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-cf6-soldier-loot-tests.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-cf6-fixed-chapter-tests.ps1
+```
+
+真正重启持久化验证用`prepare-loot-cold-host.py`生成独立测试宿主，依次运行`run-cf6-soldier-loot-cold-tests.ps1`和`run-loot-cold-read.ps1`。只接受本轮随机测试槽；12个独立播放器验证长枪/双枪/未掉落的裁决、接纳、领取、冷读回。若使用`-ProbeSwf`，必须与本轮编译SWF哈希相同。该工具需PowerShell7与本机运行库；不使用真实玩家存档。
+
+本批属于未提交、未推送、未部署候选。下文历史经济模型按旧有限武器名额计算，不能据其概率余款推断固定158缴获的收益或难度；新概率与真实战斗节奏等待合并验收。
+
 ## 教官递进与前置防具经济
 
 兵种替换由 `encounters.source.json` 绑定原地图、波次、条目、原兵种及原数量，生成器拒绝源场景漂移。坐标、事件钩子、载具与原有Boss机关保持原归属；新增特种兵不复制E1至E5有限掉落。普通兵和精英带“精英”抗性键，接受黑爪扩张弹的类别增伤；教官以阶段8、档次系数9正算面板，只有“首领”类别，不带“精英”。
@@ -109,7 +137,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-cf6-type61-tests
 | A18 / A19 / A20（含有限支援） | 0 / 0 / 0 | 5 / 7 / 6 | 5 / 7 / 4 |
 | **合计（整副塔罗编制 158 人）** | **96** | **40** | **22** |
 
-普通兵采用阵地策略及高爆手雷；精英采用机动策略、双Glock40或50级后的双Glock18战术版，并使用烟雾装填；教官兼有自适应策略、双枪和投掷物。E1由A09首发精英承载（称号「宝剑十·军械队长」），E2至E5由教官携带（对应大阿卡那战车、倒吊人、高塔、审判），实际长枪随本局有限掉落选项一起冻结。
+历史基线曾采用统一装备与E1–E5保证武器名额；固定158候选现按逐席配置装备、有限投掷物和烟雾，并使用上节概率缴获。人数与原有教官面板保留。
 
 钛合金61的物品需求为45级，本路线配方提前至A11。新增K前移到A08至A11；第一电梯A10清场即交付所需货币，进入A11后即可在当地商人完成升级；不用先清A11再回头，也不提前计入A12收入。固定资源硬检查如下，均含150,000补给预留、不计死亡收入和出售：
 

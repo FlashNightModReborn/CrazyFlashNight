@@ -30,6 +30,10 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
         return function():Void {
             // 目标失效时回退到搜索状态
             var targetObject:MovieClip = this.targetObject;
+            if(targetObject.cf6FixedFlight===true){
+                if(!org.flashNight.arki.scene.Cf6DamageGroups.enforceTarget(targetObject))return;
+                this.target=targetObject.cf6BoundTarget;this.hasTarget=true;
+            }
             if (!this.target || this.target.hp <= 0) {
                 this.changeState("SearchTarget");
                 this.target = null;

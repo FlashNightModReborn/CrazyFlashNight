@@ -281,6 +281,8 @@ elderRecordBeamShield=function():Void {
     this.elderBeamShieldSample=null;
 };
 elderCancelAttack=function():Void {
+    if(this.elderAttackOwner!=null)
+        _global.org.flashNight.arki.scene.Cf6SoldierSignals.externalEnd(this,this.elderForm,this.elderAttackOwner,false);
     this.elderRecordBeamShield();
     this.elderClearZodiacAstrolabe();
     if(this.man!=null && this.man.elderHeavyBeamRay!=null)this.man.elderHeavyBeamRay._rotation=0;
@@ -444,6 +446,8 @@ elderBeginAttack=function(body:MovieClip,action:String):Void {
     this.elderCombo=null;
     this.elderCombatStats[action+"Starts"]++;
     this.elderAttackCount++;this.elderClearMovement();
+    _global.org.flashNight.arki.scene.Cf6SoldierSignals.externalStart(this,this.elderForm,this.elderAttackOwner,
+        isPhaseMove || action=="beam" || action=="heavyBeam" || action=="slam");
     if(action=="slam"){
         if(this.elderForm=="robot"){
             var slamChargeCap:Number=Math.max(80,Math.floor(this.hp满血值*0.08));
@@ -1438,6 +1442,7 @@ elderFinishAttack=function(body:MovieClip):Void {
         return;
     }
     var isPhase:Boolean=owner!=null && owner.spec.isPhaseMove===true;
+    _global.org.flashNight.arki.scene.Cf6SoldierSignals.externalEnd(this,this.elderForm,owner,true);
     if(isPhase || this.elderInPhaseTransition)this.elderFinishPhaseTransition();
     this.elderCancelAttack();this.elderReadyAt=this.elderClock+this.elderTuning.recoveryFrames;
     this.动画完毕();

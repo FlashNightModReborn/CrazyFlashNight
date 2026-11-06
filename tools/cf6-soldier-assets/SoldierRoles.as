@@ -213,6 +213,9 @@ soldierUpdateMovement=function():Void {
     this.状态改变(moving?"长枪行走":"长枪站立");
 };
 soldierFinishBreak=function(body:MovieClip):Void {
+    // The shield and its successor share this root. Commit at its settled
+    // ground position, not while the lethal hit is still transporting it.
+    if(_root.敌人函数.换相位移未结束(this))return;
     if(!_root.暂停 && this.soldierPhase==0 && body===this.man
         && body.soldierPhaseToken===this.soldierPhaseToken && !this.soldierDebrisStamped){
         var debris:MovieClip=body.盾碎片;

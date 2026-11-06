@@ -1,0 +1,72 @@
+{
+  "schema": "cf6-fixed-description-application.v1",
+  "status": "candidate_for_acceptance",
+  "proposalSha256": "b7fbfa515f6d687a40b64ce10adb76cef0feed713dd1806e2a33ad6b225c1e98",
+  "items": [
+    {
+      "name": "诛神枪",
+      "sourcePath": "data/items/武器_长枪_特殊.xml",
+      "paths": [
+        "description"
+      ]
+    },
+    {
+      "name": "G1111",
+      "sourcePath": "data/items/武器_长枪_战斗步枪.xml",
+      "paths": [
+        "description",
+        "skill/description"
+      ]
+    },
+    {
+      "name": "FSC7",
+      "sourcePath": "data/items/武器_长枪_发射器.xml",
+      "paths": [
+        "description"
+      ]
+    },
+    {
+      "name": "RPG7V2",
+      "sourcePath": "data/items/武器_长枪_发射器.xml",
+      "paths": [
+        "description"
+      ]
+    },
+    {
+      "name": "ASH12.7",
+      "sourcePath": "data/items/武器_长枪_反器材武器.xml",
+      "paths": [
+        "description"
+      ]
+    },
+    {
+      "name": "M202火箭发射器",
+      "sourcePath": "data/items/武器_长枪_发射器.xml",
+      "paths": [
+        "description"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "data/items/武器_长枪_特殊.xml",
+      "sha256": "3082a4eb3684a2d12c86de0a715d5bb3f2c39ff0203a330c4f25ae7124684cc7",
+      "nonDescriptionSha256": "40142ed3767b1f5a3c0b651b88d2d74d2b234c50648fcb4c6e3258f606dcbc11"
+    },
+    {
+      "path": "data/items/武器_长枪_战斗步枪.xml",
+      "sha256": "36700eb380c446184ccae30422af7aa42587d7a6d58a8f9c20000ba94ab06b4d",
+      "nonDescriptionSha256": "f71b2121d4a9a456917caab7bf612288c63931cc7ced28e699961534571b3710"
+    },
+    {
+      "path": "data/items/武器_长枪_发射器.xml",
+      "sha256": "dac18547af8f451cae5a0377f40c4376790cf86578d4f2ee09531b91437b2d6b",
+      "nonDescriptionSha256": "ebefbf9a12d1919b7b520546b26acaa90401ba019628cfe1eb785c3368cf370c"
+    },
+    {
+      "path": "data/items/武器_长枪_反器材武器.xml",
+      "sha256": "b5240a9d57726ec1eec411c673b7f89bf6d8abfda9c07f775bd36cd65e73618e",
+      "nonDescriptionSha256": "454e6e76d3ddc2dc666a6ee877f1bfa12bb664a861842843e182f08741089252"
+    }
+  ]
+}

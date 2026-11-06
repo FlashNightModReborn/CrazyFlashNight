@@ -1,4 +1,4 @@
-﻿import org.flashNight.gesh.object.ObjectUtil;
+﻿import org.flashNight.gesh.object.PersistedSnapshot;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.EquipmentUtil;
 
@@ -125,7 +125,7 @@ class org.flashNight.arki.item.BaseItem{
     public function toObject():Object{
         return {
             name: this.name,
-            value: ObjectUtil.clone(this.value),
+            value: PersistedSnapshot.cloneData(this.value),
             lastUpdate: this.lastUpdate
         };
     }

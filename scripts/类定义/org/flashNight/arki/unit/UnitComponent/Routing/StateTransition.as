@@ -60,6 +60,8 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransition {
             self.gotoAndStop(plan.gotoLabel);
             self.读取当前飞行状态();
             RoutingIntent.executeStateTransitionJob(self);
+            if(self.状态===plan.newLogicalState)
+                org.flashNight.arki.scene.Cf6SoldierSignals.playerState(self,plan.newLogicalState);
         } else {
             RoutingIntent.clearStateTransitionJob(self);
         }

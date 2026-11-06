@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.scene.*;
 import org.flashNight.gesh.object.PersistedSnapshot;
 import flash.display.BitmapData;
+import org.flashNight.gesh.depth.DepthManager;
 
 /** Must run in real CS6/TestLoader. Pure steps are supplemented by same-path MovieClip replacement. */
 class org.flashNight.arki.scene.Cf6MapMechanismTest {
@@ -88,16 +89,16 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         };
         var walk:Function=hero.行走,key:Function=hero.按键检测;
         check(Cf6MapMechanism.holdElevatorActor(s,hero) && hero.状态=="空手站立","elevator pause selects genuine standing state");
-        var callback:Function=s.standingActor.callback;
+        var callback:Function=hero.控制块.onEnterFrame;
         check(Cf6MapMechanism.holdElevatorActor(s,hero) && hero.transitions==1,"held pose is not reentered every frame");
-        check(hero.控制块.onEnterFrame!==callback && hero.按键检测()===false,"held actor control is owned without stale walking input");
+        check(hero.控制块.onEnterFrame===callback && hero.行走===walk && hero.按键检测===key && hero.__cf6ElevatorPoseOwner!==undefined,"standing hold uses a marker and keeps native callbacks");
         Cf6MapMechanism.releaseElevatorActor(s);
         check(hero.行走===walk && hero.按键检测===key && hero.控制块.onEnterFrame===callback,"normal release restores exact input callbacks");
         check(hero.状态=="空手站立" && hero.__cf6ElevatorPoseOwner===undefined,"release does not restore stale walking pose");
         Cf6MapMechanism.holdElevatorActor(s,hero);
         var foreign:Function=function():Void {};hero.控制块.onEnterFrame=foreign;
-        check(!Cf6MapMechanism.holdElevatorActor(s,hero) && hero.控制块.onEnterFrame===foreign,"foreign control callback cancels hold without overwrite");
-        check(!Cf6MapMechanism.holdElevatorActor(s,hero),"abandoned ownership cannot reacquire within same hold");
+        check(Cf6MapMechanism.holdElevatorActor(s,hero) && hero.控制块.onEnterFrame===foreign,"normal control refresh keeps standing hold and refreshed callback");
+        check(Cf6MapMechanism.holdElevatorActor(s,hero),"same persistent actor remains held after callback refresh");
         Cf6MapMechanism.releaseElevatorActor(s);hero.状态="空手行走";
         Cf6MapMechanism.holdElevatorActor(s,hero);hero.hp=0;hero.状态="血腥死";Cf6MapMechanism.releaseElevatorActor(s);
         check(hero.状态=="血腥死","release cannot replace a real death pose");
@@ -234,7 +235,8 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
                 definition._type61={maps:[{id:ids[i],background:background,
                     presentation:{scale:2,backgroundX:0,backgroundY:0}}]};
                 var managerClass:Object=org.flashNight.arki.scene.StageManager;
-                managerClass.instance={currentStage:0,gameworld:w};
+                managerClass.instance={currentStage:0,gameworld:w,mapId:ids[i]};
+                managerClass.instance.currentBookMapId=function():String {return this.mapId;};
                 _root.__cf6TestBakeCalls=0;
                 _root.__cf6TestBakeWidth=_root.__cf6TestBakeHeight=0;
                 _root.贴背景图=bakeType61;
@@ -961,6 +963,102 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
             check(!Cf6MapPresentation.beginLoadingCover(w,replacement),"other books never acquire the CF6 visual curtain");
         } finally {Cf6MapPresentation.clearLoadingCover(w,StageReturnFlow.worldIdentity(w));w.removeMovieClip();_root.淡出动画=oldFade;}
     }
+    private static function testAirborneGateWait():Void {
+        var flags:Array=["浮空","飞行浮空","broken-control"];
+        for(var i:Number=0;i<flags.length;i++) {
+            var w:MovieClip=fixture("__cf6AirborneGateWorld"),identity:Object=StageReturnFlow.worldIdentity(w);
+            _root.控制目标="hero";w.hero._x=10;w.hero._y=w.hero.Z轴坐标=20;
+            w.hero.createEmptyMovieClip("man",1);w.hero.攻击模式="长枪";w.hero.方向="右";
+            w.hero.状态改变=function(value:String):Void {this.状态=value;};
+            w.hero.方向改变=function(value:String):Void {this.方向=value;};
+            var manager:Object={calls:0,currentStage:0};
+            var api:Object=org.flashNight.arki.scene.StageManager;api.instance=manager;
+            manager.clearStage=function():Void {
+                if(!org.flashNight.arki.scene.Cf6MapMechanism.interceptClear(this,_root.gameworld)) this.calls++;
+            };
+            var path:Object={mode:"depart",fps:30,durationFrames:2,gate:{x:10,z:20,radius:12},exit:{x:20,z:20},samples:[
+                {frame:1,x:10,z:20,visible:true,action:"stand"},{frame:2,x:20,z:20,visible:true,action:"stand"}]};
+            Cf6MapMechanism.beginRoom(w,identity,"A03",{kind:"door",layers:[],traversal:{depart:path}});
+            Cf6MapMechanism.tick();Cf6MapMechanism.interceptClear(manager,w);
+            var state:Object=w.__cf6Mechanism;
+            if(i==2) delete w.hero.状态改变;
+            else w.hero[flags[i]]=true;
+            for(var frame:Number=0;frame<361;frame++) Cf6MapMechanism.tick();
+            if(i==2) {
+                check(state.failed && state.departure.closed,"invalid control still reaches bounded admission failure");
+                check(!_root.暂停 && manager.calls==0,"invalid control never acquires pause or clears stage");
+            } else {
+                check(!state.failed && state.departure.rules.phase=="waiting","long airborne gate wait remains recoverable "+flags[i]);
+                check(!state.departure.acquired && !_root.暂停 && manager.calls==0,"airborne player retains control and flight clock "+flags[i]);
+                w.hero[flags[i]]=false;Cf6MapMechanism.tick();
+                check(state.departure.acquired && state.departure.rules.frame==1,"real landing can acquire the same waiting gate "+flags[i]);
+                Cf6MapMechanism.tick();Cf6MapMechanism.tick();
+                check(state.phase=="ready" && manager.calls==1 && !_root.暂停,"landed gate completes once and restores pause "+flags[i]);
+            }
+            Cf6MapMechanism.teardown();w.removeMovieClip();
+        }
+    }
+    private static function testPersistentActorRefresh():Void {
+        var savedDepth:DepthManager=DepthManager.instance;
+        var w:MovieClip=fixture("__cf6RefreshWorld"),identity:Object=StageReturnFlow.worldIdentity(w);
+        _root.控制目标="hero";var h:MovieClip=w.hero;h._x=10;h._y=h.Z轴坐标=20;
+        h.createEmptyMovieClip("man",1);h.攻击模式="长枪";h.方向="右";
+        h.状态改变=function(value:String):Void {this.状态=value;};h.方向改变=function(value:String):Void {this.方向=value;};
+        h.行走=function():Void {};h.按键检测=function():Boolean {return false;};
+        var walk:Function=h.行走,keys:Function=h.按键检测;
+        DepthManager.instance=new DepthManager(w,0,870655,8);DepthManager.instance.calibrate(0,100);DepthManager.instance.installHijack(h);
+        var manager:Object={calls:0,currentStage:0,isActive:true,gameworld:w};
+        var api:Object=org.flashNight.arki.scene.StageManager;api.instance=manager;
+        manager.clearStage=function():Void {if(!org.flashNight.arki.scene.Cf6MapMechanism.interceptClear(this,_root.gameworld))this.calls++;};
+        var path:Object={mode:"depart",fps:30,durationFrames:4,actorSortY:30,gate:{x:10,z:20,radius:12},exit:{x:20,z:20},samples:[
+            {frame:1,x:10,z:20,visible:true,action:"walk"},{frame:2,x:10,z:15,visible:true,action:"stand"},
+            {frame:3,x:10,z:15,visible:true,action:"stand"},{frame:4,x:20,z:10,visible:true,action:"stand"}]};
+        Cf6MapMechanism.beginRoom(w,identity,"A03",{kind:"door",layers:[],traversal:{depart:path}});
+        Cf6MapMechanism.tick();Cf6MapMechanism.interceptClear(manager,w);Cf6MapMechanism.tick();
+        var state:Object=w.__cf6Mechanism,t:Object=state.departure;
+        check(t.acquired && h.__cf6TraversalOwner===t.token,"persistent actor carries the active presentation marker");
+        check(h.行走===walk && h.按键检测===keys,"acquisition never replaces actor input callbacks");
+        var stateFn:Function=function(value:String):Void {this.状态=value;};
+        var directionFn:Function=function(value:String):Void {this.方向=value;};
+        var freshWalk:Function=function():Void {};h.状态改变=stateFn;h.方向改变=directionFn;h.行走=freshWalk;
+        var block:MovieClip=h.createEmptyMovieClip("控制块",2);var callback:Function=function():Void {};block.onEnterFrame=callback;
+        h.man.removeMovieClip();h.createEmptyMovieClip("man",1);Cf6MapMechanism.tick();
+        check(!state.failed && t.rules.frame==2,"same actor continues after pose/method/control-block refresh");
+        check(h.控制块.onEnterFrame===callback && h.状态改变===stateFn,"refresh callbacks remain native and current");
+        var sorted:Number=h.getDepth();h.swapDepths(h._y);
+        check(h.getDepth()==sorted,"native scalar foot sorting honors the current display plane");
+        DepthManager.instance.updateDepthBatch([h],[h.Z轴坐标],0,1);
+        check(h.getDepth()==sorted,"batched sorting honors that same display plane");
+        Cf6MapMechanism.tick();Cf6MapMechanism.tick();Cf6MapMechanism.tick();
+        check(!state.failed && manager.calls==1 && !t.acquired && !_root.暂停,"refreshed actor completes once and releases presentation");
+        check(h.状态改变===stateFn && h.方向改变===directionFn && h.行走===freshWalk && h.控制块.onEnterFrame===callback,"release keeps refreshed callbacks instead of restoring stale references");
+        Cf6MapMechanism.teardown();w.removeMovieClip();DepthManager.instance=savedDepth;
+    }
+    private static function testPresentationFallback():Void {
+        var savedDepth:DepthManager=DepthManager.instance;
+        var w:MovieClip=fixture("__cf6PresentationFallback"),identity:Object=StageReturnFlow.worldIdentity(w);
+        _root.控制目标="hero";var h:MovieClip=w.hero;h._x=10;h._y=h.Z轴坐标=20;
+        h.createEmptyMovieClip("man",1);h.攻击模式="长枪";h.方向="右";
+        h.状态改变=function(value:String):Void {this.状态=value;};h.方向改变=function(value:String):Void {this.方向=value;};
+        DepthManager.instance=new DepthManager(w,0,870655,8);DepthManager.instance.calibrate(0,100);
+        var manager:Object={calls:0,currentStage:0,isActive:true,gameworld:w};
+        var api:Object=org.flashNight.arki.scene.StageManager;api.instance=manager;
+        manager.clearStage=function():Void {
+            if(!org.flashNight.arki.scene.Cf6MapMechanism.interceptClear(this,_root.gameworld)) {this.calls++;this.isCleared=true;this.gameworld.允许通行=true;}
+        };
+        var path:Object={mode:"depart",fps:30,durationFrames:2,actorSortY:30,gate:{x:10,z:20,radius:12},exit:{x:10,z:20},samples:[
+            {frame:1,x:10,z:20,visible:true,action:"stand"},{frame:2,x:10,z:15,visible:true,action:"stand"}]};
+        Cf6MapMechanism.beginRoom(w,identity,"A03",{kind:"door",layers:[],traversal:{depart:path}});
+        Cf6MapMechanism.tick();Cf6MapMechanism.interceptClear(manager,w);Cf6MapMechanism.tick();
+        var state:Object=w.__cf6Mechanism;
+        check(state.departure.acquired && !state.failed,"fallback fixture starts a real current-actor presentation");
+        DepthManager.instance=undefined;Cf6MapMechanism.tick();
+        check(!state.failed && state.departure==null && state.phase=="ready","actor-only presentation failure yields to the normal gate");
+        check(manager.calls==1 && w.允许通行 && h._x==10 && h.Z轴坐标==20 && !_root.暂停,"fallback keeps authoritative clear, restores the gate and releases only its pause");
+        Cf6MapMechanism.tick();Cf6MapMechanism.tick();
+        check(manager.calls==1 && state.advanceIssued!==true,"fallback does not issue or retry automatic navigation");
+        Cf6MapMechanism.teardown();w.removeMovieClip();DepthManager.instance=savedDepth;
+    }
     public static function runAllTests():Void {
         passed=0;failed=0;finished=false;pixelProbe=null;
         var savedManagerClass:Object=org.flashNight.arki.scene.StageManager;
@@ -972,7 +1070,7 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         var oldFind:Function=targetClass.findHero;
         targetClass.findHero=function():MovieClip {return _root.gameworld.hero;};
         _root.暂停=false;_root.发布消息=function(message:String):Void {trace(message);};
-        try {testLoadingCover();testPhases();testElevatorPoseOwnership();testLifecycle();testLogicalRunIdentity();testElevatorBake();testType61StaticBackgrounds();testBakeReceipts();testDeferredBackground();testDoorSequences();testBackdropLoading();testBackdropFailuresAndIdentity();testBackdropTransfer();testEarlyEmptyWave();testTurretWiring();testTraversalWiring();testTraversalAssetClosure();testImmediateOwnershipAndArt();testEarlyBirthWindow();testLateSceneReadyArrival();testLoadedElevatorMask();}
+        try {testLoadingCover();testPhases();testElevatorPoseOwnership();testLifecycle();testLogicalRunIdentity();testElevatorBake();testType61StaticBackgrounds();testBakeReceipts();testDeferredBackground();testDoorSequences();testBackdropLoading();testBackdropFailuresAndIdentity();testBackdropTransfer();testEarlyEmptyWave();testTurretWiring();testTraversalWiring();testAirborneGateWait();testPersistentActorRefresh();testPresentationFallback();testTraversalAssetClosure();testImmediateOwnershipAndArt();testEarlyBirthWindow();testLateSceneReadyArrival();testLoadedElevatorMask();}
         catch(error) {check(false,"synchronous suite exception: "+error);}
         finally {
             Cf6MapMechanism.teardown();Cf6TutorialTurretService.teardown();targetClass.findHero=oldFind;savedManagerClass.instance=savedManager;

@@ -10,7 +10,8 @@ function fixture(source) {
     const weapons = {长枪:'长枪属性',手枪:'手枪属性',手枪2:'手枪2属性',刀:'刀属性',手雷:'手雷属性'};
     const root = {控制目标:'hero',全局健身HP加成:0,全局健身MP加成:0,全局健身空攻加成:0,
         全局健身防御加成:0,全局健身内力加成:0,经脉HP加成:0,经脉MP加成:0,经脉防御加成:0,经脉内力加成:0,
-        根据等级计算值:min => min,敌人函数:{魔法伤害种类:['基础','电','热','冷','波','蚀','毒','冲','人类']}};
+        // Explicit JS boundary port for AVM1's absent-table-entry property reads.
+        根据等级计算值:min => min,敌人属性表:new Proxy({}, {get:(table,key) => table[key] || {}}),敌人函数:{魔法伤害种类:['基础','电','热','冷','波','蚀','毒','冲','人类']}};
     const globals = {_root:root,equipmentKeys:keys,weaponKeys:weapons,
         weaponPrefixKeys:{长枪:'长枪',手枪:'手枪',手枪2:'手枪2',刀:'兵器',手部装备:'空手',手雷:'手雷'},
         removePropertyFunc:{},DodgeHandler:{HIT_RATE_LIMIT:0.01,applyDodgeBonus:(base,bonus) => base + bonus},

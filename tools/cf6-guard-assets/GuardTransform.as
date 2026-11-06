@@ -14,9 +14,9 @@ guardStartTransform=function():Void {
     this.guardCancelAttack();this.guardClearMovement();
     this.guardTransform={active:true,attempted:false,retired:false,waitFrames:0,
         world:this._parent,name:this._name+"__tyrant",level:this.等级,
-        side:this.是否为敌人,source:this.产生源,direction:this.方向,x:this._x,z:this.Z轴坐标};
-    this.浮空=this.倒地=false;this.水平速度=this.垂直速度=0;
-    this._y=this.Z轴坐标;this._rotation=0;
+        side:this.是否为敌人,source:this.产生源,direction:this.方向};
+    if(this.flyID==null){this.浮空=this.倒地=false;this._y=this.Z轴坐标;}
+    this._rotation=0;
     this.状态="变身";this.gotoAndStop("变身");
 };
 
@@ -39,7 +39,10 @@ guardSpawnTyrant=function(body:MovieClip):Void {
     if(_root.暂停 || phase==null || !phase.active || phase.attempted || this.man!==body
         || phase.body!==body || body._currentframe!=70)return;
     // 先占有本次尝试；返回缺失或初始化超时均不得自动重放。
+    if(_root.敌人函数.换相位移未结束(this))return;
     phase.attempted=true;
+    phase.x=this._x;phase.z=this.Z轴坐标;
+    if(!isFinite(phase.x) || !isFinite(phase.z)){this.guardTransformError("invalid-handoff-position");return;}
     if(phase.world!==_root.gameworld || phase.world[phase.name]!=undefined){
         this.guardTransformError("world-or-name-conflict");return;
     }
@@ -53,7 +56,10 @@ guardTransformTick=function(body:MovieClip):Void {
     var phase:Object=this.guardTransform;
     if(_root.暂停 || phase==null || !phase.active || phase.retired || phase.body!==body
         || this.man!==body || this.状态!="变身")return;
-    if(!phase.attempted){body.nextFrame();return;}
+    if(!phase.attempted){
+        if(body._currentframe==70)this.guardSpawnTyrant(body);else body.nextFrame();
+        return;
+    }
     var child:MovieClip=phase.child;
     if(phase.world!==_root.gameworld || child._parent!==phase.world || child._name!=phase.name
         || phase.world[phase.name]!==child){this.guardTransformError("spawn-identity-lost");return;}

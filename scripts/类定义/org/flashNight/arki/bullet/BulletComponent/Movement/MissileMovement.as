@@ -117,6 +117,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
      */
     public function updateMovement(target:MovieClip):Void 
     {
+        if(target.cf6FixedFlight===true && !org.flashNight.arki.scene.Cf6DamageGroups.enforceTarget(target))return;
         if ((target._x - target._x) != 0) {
             target._x = 0;
         }

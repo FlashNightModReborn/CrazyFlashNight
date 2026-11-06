@@ -191,6 +191,14 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             ? (Math.atan2(speedY, speedX) * (180 / Math.PI) + 360) % 360
             : scatteringAngle;
 
+        // CF6 固定射手的直射弹使用显式水平速度，随机散射角不参与这条运动。
+        // 外观沿实际飞行方向；保留上面的抽样、xmov/ymov 及运动组件选择。
+        // 射线、联弹和单位弹仍由各自的几何/运动合同决定朝向。
+        if (Obj.cf6DamageGroup != null && !isTransparent && !isChain && !isUnitBullet
+                && speedY === 0 && isFinite(speedX) && speedX != 0 && !zyRatio) {
+            Obj._rotation = speedX < 0 ? 180 : 0;
+        }
+
         // 创建子弹实例
         // 透明子弹（含射线）使用浅拷贝；FLAG_RAY 已在 BulletTypesetter 中蕴含 FLAG_TRANSPARENCY
         if (isTransparent) {
@@ -266,6 +274,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         else if (isTransparent) {
             // 透明子弹（含近战子弹/近战联弹）：单帧检测后立即销毁
             lifecycle = TransparentBulletLifecycle.BASIC;
+            bulletInstance.shouldDestroy = lifecycle.shouldDestroy;
         }
         else if (isChainObject) {
             // 对象化联弹：多帧存活的纯对象子弹，运动绑定与普通子弹一致，
@@ -302,6 +311,9 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
         // 绑定生命周期逻辑
         lifecycle.bindLifecycle(bulletInstance);
+        if (Obj.cf6DamageGroup != null)
+            org.flashNight.arki.scene.Cf6DamageGroups.born(bulletInstance, Obj,
+                lifecycle===TransparentBulletLifecycle.BASIC?bulletInstance.__cf6OneFrameDrain:null);
         // Reserve a visual event at the actual ray birth, before consumer/capacity decisions.
         // This isolated stream never replaces gameplay Math.random, scatter or damage RNG.
         if (isRay && org.flashNight.arki.render.WorkerProjectionPolicy.isCommitted())

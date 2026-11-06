@@ -183,7 +183,7 @@ class org.flashNight.arki.item.RewardStashService {
                 if (entry == null || !RewardStashStore.whole(Number(entry.remaining))) return {success:false, error:"malformed_legacy_rewards"};
                 if (Number(entry.remaining) == 0) continue;
                 // v1 装备 remaining 是强化度。完整 itemData 优先，不能按它生成多件。
-                var rawItem:Object = entry.itemData == null ? null : PersistedSnapshot.clone(entry.itemData);
+                var rawItem:Object = entry.itemData == null ? null : PersistedSnapshot.cloneData(entry.itemData);
                 if (rawItem != null && ItemUtil.isEquipment(String(rawItem.name))) {
                     if (RewardStashStore.emptyObject(rawItem.value.mods)) rawItem.value.mods = [];
                     if (!RewardStashStore.validItem(rawItem)) return {success:false, error:"malformed_legacy_equipment"};
@@ -275,7 +275,7 @@ class org.flashNight.arki.item.RewardStashService {
         if (_pending == null || !(items instanceof Array)) return false;
         var appendItems:Array = [];
         for (var i:Number = 0; i < items.length; i++) {
-            var item:Object = PersistedSnapshot.clone(items[i]);
+            var item:Object = PersistedSnapshot.cloneData(items[i]);
             if (!RewardStashStore.validItem(item) || !ItemUtil.isItem(String(item.name))
                     || ItemUtil.isEquipment(String(item.name)) != (typeof item.value == "object")) return false;
             if (ItemUtil.isInformation(String(item.name)) && acquired) {
@@ -313,7 +313,7 @@ class org.flashNight.arki.item.RewardStashService {
         var slot:String = null;
         for (var key:String in plan.背包) { slot = key; break; }
         if (slot == null) return null;
-        var value:BaseItem = BaseItem.createFromObject(PersistedSnapshot.clone(item));
+        var value:BaseItem = BaseItem.createFromObject(PersistedSnapshot.cloneData(item));
         var bag:Object = _root.物品栏.背包;
         if (value == null || !bag.add(Number(slot), value)
                 || bag.getItem(Number(slot)) !== value) throw new Error("stash_equipment_write_inexact");
@@ -367,7 +367,7 @@ class org.flashNight.arki.item.RewardStashService {
             return {destination:"背包", slot:Number(target.slot)};
         }
         var value:BaseItem = equipment
-            ? BaseItem.createFromObject(PersistedSnapshot.clone(item))
+            ? BaseItem.createFromObject(PersistedSnapshot.cloneData(item))
             : BaseItem.create(String(item.name), quantity, Number(item.lastUpdate));
         if (value == null) return {reason:"target_incompatible"};
         if (!bag.add(target.slot, value) || bag.getItem(target.slot) !== value) {
@@ -433,7 +433,7 @@ class org.flashNight.arki.item.RewardStashService {
             for (var j:Number = 0; j < params.entries.length; j++) {
                 var request:Object = params.entries[j];
                 var current:Object = RewardStashStore.find(peek(), String(request.entryId));
-                var item:Object = PersistedSnapshot.clone(current.item);
+                var item:Object = PersistedSnapshot.cloneData(current.item);
                 if (typeof item.value == "number") item.value = Number(request.quantity);
                 if (target != null) {
                     var placed:Object = placeAtBagTarget(item, Number(request.quantity), target);
@@ -485,7 +485,7 @@ class org.flashNight.arki.item.RewardStashService {
         if (store == null || store.v !== 2 || store.storeId !== params.storeId) return {success:false, error:"stale_stash"};
         var entry:Object = RewardStashStore.find(store, String(params.entryId));
         if (entry == null || entry.revision !== params.revision) return {success:false, error:"stale_entry"};
-        var item:BaseItem = BaseItem.createFromObject(PersistedSnapshot.clone(entry.item));
+        var item:BaseItem = BaseItem.createFromObject(PersistedSnapshot.cloneData(entry.item));
         var info:Object = InventoryPanelService.buildTooltipProjection(item);
         if (info == null || info.success !== true) return {success:false, error:"tooltip_failed"};
         delete info.success; delete info.v;
@@ -558,7 +558,7 @@ class org.flashNight.arki.item.RewardStashService {
 
     private static function projectPageEntry(entry:Object):Object {
         if (!RewardStashStore.validItem(entry.item)) return {error:"reward_stash_quarantined"};
-        var item:BaseItem = BaseItem.createFromObject(PersistedSnapshot.clone(entry.item));
+        var item:BaseItem = BaseItem.createFromObject(PersistedSnapshot.cloneData(entry.item));
         if (item == null) return {error:"unknown_stash_item"};
         return {row:{entryId:String(entry.entryId), revision:Number(entry.revision),
             quantity:RewardStashStore.quantity(entry.item),

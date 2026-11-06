@@ -32,8 +32,8 @@ class org.flashNight.arki.scene.BookRunService {
         EventBus.getInstance().subscribe("SceneReady", onSceneReady, null);
         EventBus.getInstance().subscribe("SceneTransitionReleased", onTransitionReleased, null);
         // 仅 AS2 开发控制台可调用；调试局明确禁止奖励回流。
-        _root.书中调试 = function(seed:Number, startMap:Number):Boolean {
-            return org.flashNight.arki.scene.BookRunService.configureDebug(seed, startMap);
+        _root.书中调试 = function(seed:Number, startMap:Number, bookId:String, routeId:String):Boolean {
+            return org.flashNight.arki.scene.BookRunService.configureDebug(seed, startMap, bookId, routeId);
         };
     }
     public static function playChapter(index:Number):Void {
@@ -151,10 +151,17 @@ class org.flashNight.arki.scene.BookRunService {
         }
         org.flashNight.arki.dialogue.NativeDialogueService.beginStage(rows, null);
     }
-    public static function configureDebug(seed:Number, startMap:Number):Boolean {
-        if (_root._saveExt.bookRun != null || isNaN(seed) || seed < 1 || seed >= 2147483647
-            || Math.floor(seed) != seed || isNaN(startMap) || startMap < 0 || startMap >= BookDefinition.get().maps.length || Math.floor(startMap) != startMap) return false;
-        _debug = {seed:seed, startMap:startMap}; return true;
+    public static function configureDebug(seed:Number, startMap:Number, bookId:String, routeId:String):Boolean {
+        if(_root._saveExt.bookRun!=null)return false;
+        var definition:Object;
+        if(bookId!==undefined || routeId!==undefined){
+            if(bookId!=="cf6-sting" || !BookDefinition.isCf6Route(routeId))return false;
+            definition=BookDefinition.get(bookId,routeId);
+            if(definition==null){BookDefinition.load(bookId,routeId);return false;}
+        }else definition=BookDefinition.get();
+        if (isNaN(seed) || seed < 1 || seed >= 2147483647
+            || Math.floor(seed) != seed || isNaN(startMap) || startMap < 0 || startMap >= definition.maps.length || Math.floor(startMap) != startMap) return false;
+        _debug = {seed:seed, startMap:startMap, bookId:bookId, routeId:routeId}; return true;
     }
     public static function queueStart():Void {
         var run:Object = _root._saveExt.bookRun;
@@ -186,7 +193,12 @@ class org.flashNight.arki.scene.BookRunService {
                 || (run.bookId === "cf6-sting" && !BookDefinition.isCf6Route(run.routeId))) return "";
         var startMap:Number = 0;
         var planSeed:Number = run.seed;
-        if (_debug != null) { planSeed = _debug.seed; run.planSeed = planSeed; startMap = _debug.startMap; run.debug = true; _debug = null; }
+        if (_debug != null) {
+            if(_debug.bookId===undefined || (_debug.bookId===run.bookId && _debug.routeId===run.routeId)){
+                planSeed=_debug.seed;run.planSeed=planSeed;startMap=_debug.startMap;run.debug=true;
+            }
+            _debug=null;
+        }
         // 原档的进入凭据中的 seed 保持不变；调试随机种子单独存放。
         var stages:Array = trial ? org.flashNight.arki.scene.LeeTrialDefinition.stages() : BookRunRules.stages(planSeed, startMap, run.bookId,run.routeId);
         if (stages.length == 0) return "";
@@ -311,7 +323,8 @@ class org.flashNight.arki.scene.BookRunService {
             _ending = null; return;
         }
         if (ending.slot !== String(_root.savePath)) { _ending = null; return; }
-        if (SaveManager.getInstance().hasRewardCommitPending()) {
+        if (SaveManager.getInstance().hasRewardCommitPending()
+            || !org.flashNight.arki.scene.Cf6SoldierLoot.prepareForTransition()) {
             _root.帧计时器.添加单次任务(persistOutcome, 1); return;
         }
         // 终局结果属于临时角色。复用正规返回基地及书架换槽的全量保存屏障，

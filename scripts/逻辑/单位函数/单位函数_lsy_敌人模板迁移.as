@@ -189,22 +189,11 @@ _root.敌人函数.移动 = function(移动方向, 速度) {
 
 
 _root.敌人函数.被击移动 = function(移动方向, 速度, 摩擦力) {
-    if (this.免疫击退)
-        return;
+    if (this.免疫击退) return;
     this.移动钝感硬直(_root.钝感硬直时间);
-    this.减速度 = 摩擦力;
-    this.speed = 速度;
-    this.onEnterFrame = function() {
-        if (!this.硬直中) {
-            this.speed -= this.减速度;
-            if (this.speed <= 0) {
-                delete this.onEnterFrame;
-                return;
-            }
-            this.移动(移动方向, this.speed);
-        }
-    };
+    org.flashNight.arki.spatial.move.Mover.beginEnemyHitMove(this,移动方向,速度,摩擦力);
 };
+_root.敌人函数.换相位移未结束 = org.flashNight.arki.spatial.move.Mover.pendingPhaseMotion;
 
 _root.敌人函数.强制移动 = _root.主角函数.强制移动;
 

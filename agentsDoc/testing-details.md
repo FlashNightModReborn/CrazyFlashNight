@@ -109,6 +109,8 @@
 历史路径 `flashswf/gk-1-s.swf` 是主时间轴通过 `XML.load()` 读取的 UTF-16LE 文本配置。类型识别仅对该精确路径开放，要求 BOM、完整字节对、既有字段闭集且各出现一次、分号结束，并拒绝控制字符、其他路径文本及伪装成该配置的 SWF；不把某次文件长度固定为永久类型标记。这个结构检查不验证字段值的业务有效性，也不得输出配置正文。
 `--policy core-ownership` 仅作两件核心文件诊断；`child-only` / `dual-build` 是历史兼容诊断，不可代替生产归属验收。解析器/缓存/归属负例为 `node tools/test-swf-metadata.js`。原有 AVM1 64KB 能力边界继续成立。
 
+**asLoader继承顺序门**：`node tools/check-as2-inheritance-order.js`读取实际根DoInitAction顺序并解析现役类的extends关系，拒绝父类晚于派生类。asLoader发布入口自动执行。2026-11-05完整加载器中，两个容器曾在父类之前注册，而小型TestLoader仍通过；类计数、Compiler 0/0和单函数尺寸均不能代替此检查。
+
 **对外表述边界**：可以说「已完成 Flash CS6 自动化 smoke 验证」/「已触发编译并拿到新鲜 trace」（TestLoader）/「asLoader 发布编译 0 错误、SWF 已重生成」（publish 模式）。缺少新鲜 trace、编译器错误面板或 IDE 复核时不得说「已编译通过」；但 asLoader publish 本就无 trace，以 `0 个错误` + SWF 刷新为准。若 AS2 逻辑改动选择 `main`，必须说明触及主 FLA / 资产 / linkage / 主时间轴，否则应使用 asLoader / TestLoader。
 
 <a id="flash-recovery"></a>

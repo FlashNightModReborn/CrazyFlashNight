@@ -13,7 +13,6 @@ class org.flashNight.arki.scene.PlayerSceneLifecycle {
     private static var installed:Boolean;
     private static var generation:Object={};
     private static var activeIntent:Object;
-    private static var revival:Object;
     private static var captureFailure:String;
     private static var captureDetail:String;
     public static function cleanupFailureReason():String {return captureFailure;}
@@ -42,52 +41,21 @@ class org.flashNight.arki.scene.PlayerSceneLifecycle {
         installed=true;
         PlayerStatRefreshCoordinator.setSpawnLifecycleHooks(checkSeed,finishResources,actorReady,retire,actorFailed);
     }
-    /** 死亡仅保留本世界已完成初始化的 owner；旧意图、快照和回调身份仍全部退休。 */
-    private static function rememberRevival():Object {
-        var world:Object=_root.gameworld;var gate:Object=world.__playerSceneGate;
-        if(isReady(gate) && gate.manager!=null && gate.setup===true && gate.published===true) {
-            var actor:Object=world[_root.控制目标];var spawn:Object=actor.__playerSceneSpawn;
-            return {gate:gate,spawn:spawn,actor:spawn.identity,body:actor.__playerStatBody,
-                context:gate.context,run:gate.run,world:gate.world,slot:gate.slot,name:spawn.name,
-                kind:spawn.kind,stage:gate.stage,manager:gate.manager,started:gate.started,
-                publishScene:gate.publishScene,arrivalToken:gate.arrivalToken};
-        }
-        // 扣币/respawn 失败仍处于同一次死亡，不能丢掉原 owner，也不能从旧剪辑重建 owner。
-        return revival!=null && revival.generation===generation ? revival : null;
-    }
+    /** Death retires transition transactions, while the initialized hero and scene gate persist. */
     public static function retire(reason:String):Void {
-        var owner:Object=reason=="hero_dead" ? rememberRevival() : null;
+        var gate:Object=_root.gameworld.__playerSceneGate;
+        var keep:Boolean=reason=="hero_dead" && gate.setup===true && gate.published===true
+            && gate.hero.resourcesReady===true && owns(_root.gameworld[_root.控制目标],gate.hero,true);
         generation={};activeIntent=null;
         if(transfer!=null) transfer.retire(reason);
         transfer=null;mercs=null;mercWorld=null;
-        revival=owner;if(owner!=null) owner.generation=generation;
+        if(keep) gate.generation=generation;
     }
-    /** 仅由 life authority 确认同一主角已复活后调用；不改 HP/MP、不重发场景启动。 */
-    public static function onHeroRespawn(target:MovieClip):Boolean {
-        var owner:Object=revival;var world:Object=_root.gameworld;
-        var run:Object=StageRunSession.getRunAuthority();
-        if(owner==null || owner.generation!==generation || run!==owner.run || !liveRun(run) || run.life!=="alive"
-                || _root.当前为战斗地图!==true || context()!==owner.context || String(_root.savePath)!==owner.slot
-                || String(_root.控制目标)!==owner.name || StageReturnFlow.worldIdentity(world)!==owner.world
-                || world.__playerSceneGate!==owner.gate || world[owner.name]!==target
-                || target.__playerSceneSpawn!==owner.spawn || target.__playerSceneActorIdentity!==owner.actor
-                || target.__playerStatBody!==owner.body || target.__playerStatProjectionBlocked===true
-                || (owner.kind=="player" && (target.__playerStatInitializing===true || target.__playerStatFullReady!==owner.body))) return false;
-        var manager:Object=owner.manager;
-        if(manager==null || manager.gameworld!==world || manager.currentStage!==owner.stage
-                || manager.isActive!==true || manager.isFinished===true || manager.isFailed===true
-                || kindOf(String(target.兵种),target)!==owner.kind
-                || !ResourceNumber.positive(target.hp) || !ResourceNumber.positive(target.hp满血值)
-                || !ResourceNumber.nonnegative(target.mp)
-                || !(ResourceNumber.positive(target.mp满血值) || (owner.kind=="lee" && target.mp满血值===0 && target.mp===0))) return false;
-        var gate:Object={generation:generation,world:owner.world,context:owner.context,run:run,stage:owner.stage,manager:manager,
-            setup:true,actorReady:true,published:true,started:owner.started,publishScene:owner.publishScene,
-            arrivalToken:owner.arrivalToken,slot:owner.slot};
-        var spawn:Object={identity:{},gate:gate,name:owner.name,kind:owner.kind,resourcesReady:true,
-            hero:true,handle:null,merc:null};
-        gate.hero=spawn;world.__playerSceneGate=gate;
-        target.__playerSceneSpawn=spawn;target.__playerSceneActorIdentity=spawn.identity;
-        revival=null;return isReady(gate);
+    /** Confirmed revival resumes only the unfinished ready handshake on the same gate. */
+    public static function onHeroRespawn(target:MovieClip):Void {
+        var spawn:Object=target.__playerSceneSpawn;
+        if(target!==_root.gameworld[_root.控制目标] || !owns(target,spawn) || !spawn.hero) return;
+        publishReady(spawn.gate);
     }
     private static function context():Object {return PlayerStatRefreshCoordinator.production().contextToken();}
     private static function kindOf(identifier:String,params:Object):String {
@@ -241,12 +209,12 @@ class org.flashNight.arki.scene.PlayerSceneLifecycle {
         }
     }
     /** 失败身份允许读取已失败 gate；同路径新世界、旧存档/关卡回调都不能接管。 */
-    private static function identityCurrent(gate:Object):Boolean {
+    private static function identityCurrent(gate:Object,includeDead:Boolean):Boolean {
         var world:Object=_root.gameworld;
         if(gate==null || gate.generation!==generation || world.__playerSceneGate!==gate
                 || gate.world!==StageReturnFlow.worldIdentity(world) || gate.context!==context()
                 || gate.slot!==String(_root.savePath)) return false;
-        return gate.manager==null || (gate.run===StageRunSession.getRunAuthority() && liveRun(gate.run)
+        return gate.manager==null || (gate.run===StageRunSession.getRunAuthority() && (includeDead ? gate.run.outcome=="active" : liveRun(gate.run))
             && gate.manager.isActive===true && gate.manager.isFinished!==true && gate.manager.isFailed!==true
             && gate.manager.currentStage===gate.stage && gate.manager.gameworld===world);
     }
@@ -283,14 +251,20 @@ class org.flashNight.arki.scene.PlayerSceneLifecycle {
     public static function isCurrent(gate:Object):Boolean {
         return gate.failed!==true && identityCurrent(gate);
     }
-    private static function owns(target:Object,spawn:Object):Boolean {
+    private static function owns(target:Object,spawn:Object,includeDead:Boolean):Boolean {
         return spawn!=null && target.__playerSceneSpawn===spawn && target.__playerSceneActorIdentity===spawn.identity
-            && isCurrent(spawn.gate) && _root.gameworld[spawn.name]===target
+            && spawn.gate.failed!==true && identityCurrent(spawn.gate,includeDead) && _root.gameworld[spawn.name]===target
             && (!spawn.hero || spawn.gate.hero===spawn);
     }
     public static function isReady(gate:Object):Boolean {
+        var actor:Object=_root.gameworld[_root.控制目标];
         return isCurrent(gate) && gate.actorReady===true && gate.hero.resourcesReady===true
-            && owns(_root.gameworld[_root.控制目标],gate.hero);
+            && owns(actor,gate.hero) && ResourceNumber.positive(actor.hp) && ResourceNumber.positive(actor.hp满血值)
+            && ResourceNumber.nonnegative(actor.mp)
+            && (ResourceNumber.positive(actor.mp满血值) || (gate.hero.kind=="lee" && actor.mp满血值===0 && actor.mp===0))
+            && actor.__playerStatProjectionBlocked!==true
+            && (gate.hero.kind!="player" || (actor.__playerStatBody!=null && actor.__playerStatInitializing!==true
+                && actor.__playerStatFullReady===actor.__playerStatBody));
     }
     public static function checkSeed(target:Object):Void {
         var spawn:Object=target.__playerSceneSpawn;if(spawn==undefined || spawn.resourcesReady===true) return;
@@ -328,7 +302,8 @@ class org.flashNight.arki.scene.PlayerSceneLifecycle {
     }
     public static function actorReady(target:Object):Void {
         var spawn:Object=target.__playerSceneSpawn;
-        if(!owns(target,spawn) || !spawn.hero || spawn.resourcesReady!==true || spawn.gate.actorReady===true) return;
+        if(!owns(target,spawn) || !spawn.hero || spawn.resourcesReady!==true) return;
+        if(spawn.gate.actorReady===true) {publishReady(spawn.gate);return;}
         // 尾部结算后允许合法付款/治疗；场景只要求当前角色资源有效，不锁定旧数值。
         if(!ResourceNumber.positive(target.hp) || !ResourceNumber.positive(target.hp满血值)
                 || !ResourceNumber.nonnegative(target.mp)
@@ -338,16 +313,19 @@ class org.flashNight.arki.scene.PlayerSceneLifecycle {
         spawn.gate.actorReady=true;publishReady(spawn.gate);
     }
     private static function publishReady(gate:Object):Void {
-        if(!isReady(gate) || !gate.setup || gate.published) return;
+        if(!isReady(gate) || !gate.setup) return;
         var world:MovieClip=_root.gameworld;var actor:MovieClip=world[_root.控制目标];
         if(!owns(actor,gate.hero) || gate.hero.resourcesReady!==true) return;
-        // published/started 必须在回调前占位；异常后不能重放已部分交付的事件。
-        gate.published=true;
+        // Each event is claimed before dispatch. A later ready/respawn may finish
+        // the handshake after death/refresh, without replaying SceneReady or Start.
         var recover:Function=org.flashNight.neur.Event.EventBus.getInstance().createDispatchRecoveryToken();
         try {
-            org.flashNight.arki.camera.HorizontalScroller.onPlayerBound(world,gate.world,actor);
-            if(!isReady(gate)) return;
-            if(gate.publishScene) org.flashNight.neur.Event.EventBus.instance.publish("SceneReady",world,gate.arrivalToken,gate.world);
+            if(gate.published!==true) {
+                gate.published=true;
+                org.flashNight.arki.camera.HorizontalScroller.onPlayerBound(world,gate.world,actor);
+                if(!isReady(gate)) return;
+                if(gate.publishScene) org.flashNight.neur.Event.EventBus.instance.publish("SceneReady",world,gate.arrivalToken,gate.world);
+            }
             if(isReady(gate) && gate.manager!=null) gate.manager.onPlayerReady(gate);
         } catch(error) {
             recover();

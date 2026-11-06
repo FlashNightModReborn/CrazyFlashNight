@@ -22,6 +22,8 @@ class org.flashNight.arki.scene.Cf6Type61Service {
     }
     public static function validDefinition(data:Object):Boolean {
         var c:Object=data.type61;
+        if(c.soldiers!=null && (!org.flashNight.arki.scene.Cf6SoldierActions.validDefinition(c.soldiers)
+            || !org.flashNight.arki.scene.Cf6SoldierLoot.validPolicy(c.soldiers.lootPolicy)))return false;
         if (c == null || !(c.checkpoints instanceof Array) || c.checkpoints.length != 19 || c.deliveryItems == null
                 || !(c.ammoCatalog instanceof Array) || c.ammoCatalog.length != 13
                 || !(c.fieldSupplies instanceof Array) || c.fieldSupplies.length != 59
@@ -269,6 +271,15 @@ class org.flashNight.arki.scene.Cf6Type61Service {
         _root.pickupItemManager.createCollectible(name,1,x,y,false,
             {一次性领取ID:"cf6.61."+run.seed+"."+run.startedAt+"."+key});
     }
+    /** Fixed actors may initialize before the chapter presentation finishes. */
+    public static function ensureFixedWorld(world:MovieClip):Boolean {
+        if(!isActive() || !BookRunService.isBookStageContext() || world!==_root.gameworld
+            || StageManager.instance==null)return false;
+        var config:Object=BookDefinition.get("cf6-sting","type61").type61.soldiers;
+        if(config==null || !org.flashNight.arki.scene.Cf6SoldierLoot.bind(config))return false;
+        return org.flashNight.arki.scene.Cf6SoldierActions.bindWorld(world,
+            StageReturnFlow.worldIdentity(world),config,StageManager.instance.currentBookMapId());
+    }
     public static function beginRoom(world:MovieClip, owner:Object, mapId:String):Void {
         if (!isActive() || !BookRunService.isBookStageContext() || world !== _root.gameworld
                 || owner == null || owner !== StageReturnFlow.worldIdentity(world)) return;
@@ -277,6 +288,9 @@ class org.flashNight.arki.scene.Cf6Type61Service {
         if (room != null && room.operationId != "" && RewardStashService.pendingOperationId() != "") return;
         release(room);
         org.flashNight.gesh.string.Cf6NameRandomizer.bindRoomCourtDetachment(world, mapId);
+        var soldiers:Object=BookDefinition.get("cf6-sting","type61").type61.soldiers;
+        if(soldiers!=null && (!org.flashNight.arki.scene.Cf6SoldierLoot.bind(soldiers)
+            || !org.flashNight.arki.scene.Cf6SoldierActions.bindWorld(world,owner,soldiers,mapId)))return;
         var run:Object=_root._saveExt.bookRun;
         room={world:world,owner:owner,mapId:mapId,manager:StageManager.instance,
             stage:StageManager.instance.currentStage,slot:String(_root.savePath),
@@ -303,8 +317,9 @@ class org.flashNight.arki.scene.Cf6Type61Service {
         var id:String=String(manager.currentBookMapId());
         var checkpoint:Object=checkpointFor(id);
         // Tutorial still waits for its initial delivery, but the terminal boss has no economic grant.
-        if (checkpoint == null && id != "TUTORIAL") return false;
-        if (RewardStashService.pendingOperationId() == "" && _root._saveExt.bookRun.type61Claims[id] === true) return false;
+        var lootReady:Boolean=org.flashNight.arki.scene.Cf6SoldierLoot.prepareForTransition();
+        if (checkpoint == null && id != "TUTORIAL" && lootReady) return false;
+        if (RewardStashService.pendingOperationId() == "" && _root._saveExt.bookRun.type61Claims[id] === true && lootReady) return false;
         world.允许通行=false;
         if (current(room)) {
             room.clearRequested=true;
@@ -336,6 +351,7 @@ class org.flashNight.arki.scene.Cf6Type61Service {
         var claims:Object=_root._saveExt.bookRun.type61Claims;
         if (claims.TUTORIAL !== true) {deliver(r,"TUTORIAL");return;}
         if (!r.clearRequested) return;
+        if (!org.flashNight.arki.scene.Cf6SoldierLoot.prepareForTransition()) return;
         if (claims[r.mapId] !== true && checkpointFor(r.mapId) != null) {deliver(r,r.mapId);return;}
         r.clearRequested=false;
         try {r.manager.clearStage();} finally {release(r);}

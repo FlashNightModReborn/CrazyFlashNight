@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId cf6-map-presentation Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.Cf6MapPresentationTest.runAllTests();
+_root.cf6MapMechanismTestsComplete=function():Void {trace("FocusedTestRunId cf6-map-presentation Complete: __FOCUSED_RUN_ID__");};
+org.flashNight.arki.scene.Cf6MapMechanismTest.runAllTests();

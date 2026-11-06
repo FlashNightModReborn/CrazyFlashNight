@@ -1,5 +1,5 @@
 // tools/assemble-collapsed-frame.js
-// 组装 asLoader 单帧塌缩后的帧 CDATA（评审产物 → scripts/asLoaderManifest/_collapsed_frame.as；**不触碰 asLoader.xml**）。
+// 组装 asLoader 定义母版及有界定义帧；同时维护唯一 boot 图层的 include 序列。
 // 来源：BOOT_SOURCES 内 13 个 staged 同步帧 + 16 个 loader-fire 帧（均强制 UTF-8 BOM）。
 // 产出结构：帧顶(_lockroot/stop/打印加载内容/onError) + 联合通配 import 头(收集去重) + staged fN 定义(去内联调用)
 //   + loader-fire fN 定义(import 提升) + 由表派生的纯装配 stage 函数 + BootSequencer.run(this)。
@@ -10,6 +10,8 @@ var REPO = path.resolve(__dirname, '..');
 var MAN = path.join(REPO, 'scripts', 'asLoaderManifest');
 var INCLUDE_BASE = path.join(REPO, 'scripts', 'asLoader');
 var OUT = path.join(MAN, '_collapsed_frame.as');
+var SYMBOL = path.join(INCLUDE_BASE, 'LIBRARY', 'asLoader.xml');
+var DefinitionFrames = require('./asloader-definition-frames');
 var BOM = Buffer.from([0xEF, 0xBB, 0xBF]);
 var CLI_ARGS = process.argv.slice(2);
 if (CLI_ARGS.some(function (arg) { return arg !== '--check'; })) {
@@ -376,7 +378,7 @@ var headerPackages = Object.keys(_pkgs).filter(function (p) { return !SPECIFIC_I
 var header = headerPackages.map(function (p) { return 'import ' + p + '.*;'; }).join('\n');
 
 var out = [
-  '// asLoader 单帧 boot 帧 CDATA（由 tools/assemble-collapsed-frame.js 生成；asLoader.xml 单关键帧 #include 之，勿手改本文件——改组装器重生成）。',
+  '// asLoader boot 定义母版（由 tools/assemble-collapsed-frame.js 生成；XFL 消费同源分段，勿手改本文件——改组装器重生成）。',
   '// ▶ 架构导览 + 反直觉点 + 待测项：docs/asLoader-README.md（接手测试先读此文件）。',
   '// 联合头 ' + headerPackages.length + ' 包 + 具体类 ' + SPECIFIC_IMPORTS.length +
     ' | live sources ' + BOOT_SOURCES.length + ' | generated stages ' + phaseOrder.length + ' | BootSequencer.run',
@@ -462,19 +464,43 @@ var runCalls = out.match(/BootSequencer\.run\(this\);/g) || [];
 if (runCalls.length !== 1 || out.replace(/\s+$/, '').slice(-24) !== 'BootSequencer.run(this);')
   throw new Error('BootSequencer.run(this) 必须是唯一且最后的启动动作');
 
-var outputBytes = Buffer.concat([BOM, Buffer.from(out, 'utf8')]);
+var definitionNames = sourceRecords.reduce(function (names, record) { return names.concat(record.names); }, []);
+var definitionFrames = DefinitionFrames.build(out, definitionNames, sourceClosureMeasurements,
+  fs.readFileSync(SYMBOL, 'utf8').replace(/\r\n/g, '\n'));
+var generatedOutputs = [{path: OUT, bytes: Buffer.concat([BOM, Buffer.from(out, 'utf8')])},
+  {path: SYMBOL, bytes: Buffer.from(definitionFrames.xml, 'utf8')}];
+definitionFrames.files.forEach(function (entry) {
+  generatedOutputs.push({path: path.join(MAN, entry.file), bytes: Buffer.concat([BOM, Buffer.from(entry.text, 'utf8')])});
+});
+var expectedFrameFiles = definitionFrames.files.map(function (entry) { return entry.file; });
+var staleFrameFiles = fs.readdirSync(MAN).filter(function (name) {
+  return /^_definition_frame\d+\.as$/.test(name) && expectedFrameFiles.indexOf(name) < 0;
+});
+staleFrameFiles.forEach(function (name) {
+  if (readBom(path.join(MAN, name)).indexOf(DefinitionFrames.OWNED_PREFIX + '\n') !== 0)
+    throw new Error('Refusing to replace an unowned definition frame: ' + name);
+});
 var relativeOut = path.relative(REPO, OUT).replace(/\\/g, '/');
 var stagedCount = sourceRecords.filter(function (record) { return record.source.shape === 'staged'; }).length;
 var loaderCount = sourceRecords.length - stagedCount;
 if (CHECK_ONLY) {
-  if (!fs.existsSync(OUT) || !fs.readFileSync(OUT).equals(outputBytes)) {
-    console.error('[CHECK FAIL] ' + relativeOut + ' 与 BOOT_SOURCES/生成规则不一致；请运行 node tools/assemble-collapsed-frame.js');
+  var mismatches = generatedOutputs.filter(function (entry) {
+    return !fs.existsSync(entry.path) || !fs.readFileSync(entry.path).equals(entry.bytes);
+  });
+  if (mismatches.length || staleFrameFiles.length) {
+    console.error('[CHECK FAIL] boot 母版/定义帧/符号引用与 BOOT_SOURCES 不一致；请运行 node tools/assemble-collapsed-frame.js');
     process.exit(1);
   }
-  console.log('[OK] ' + relativeOut + ' 可由唯一 BOOT_SOURCES 字节级重建');
+  console.log('[OK] boot 母版、' + definitionFrames.files.length + ' 个定义帧及符号引用可由唯一 BOOT_SOURCES 字节级重建');
 } else {
-  fs.writeFileSync(OUT, outputBytes);
-  console.log('[DONE] 写出 ' + relativeOut);
+  generatedOutputs.forEach(function (entry) {
+    if (!fs.existsSync(entry.path) || !fs.readFileSync(entry.path).equals(entry.bytes)) {
+      if (/\.as$/.test(entry.path) && !fs.existsSync(entry.path)) fs.copyFileSync(OUT, entry.path);
+      fs.writeFileSync(entry.path, entry.bytes);
+    }
+  });
+  staleFrameFiles.forEach(function (name) { fs.unlinkSync(path.join(MAN, name)); });
+  console.log('[DONE] 写出 boot 母版、' + definitionFrames.files.length + ' 个定义帧及符号引用');
 }
 console.log('  联合头 ' + headerPackages.length + ' 包 + 具体类 ' + SPECIFIC_IMPORTS.length +
   ' | live ' + sourceRecords.length + ' (staged ' + stagedCount + ' + loader-fire ' + loaderCount +

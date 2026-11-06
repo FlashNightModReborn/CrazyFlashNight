@@ -81,7 +81,7 @@ class org.flashNight.arki.scene.Cf6MechanismRevivalTest {
         if(t!=null)check(t.acquired===true,c.label+" actor lease acquired before interruption");
         else check(s.phase==(s.kind=="elevator"?"moving":"combat"),c.label+" normal combat phase reached");
         var beforeLease:Object=t.token;
-        if(c.sorted===true)check(t.depthManager===DepthManager.instance && h.__cf6TraversalDepthOwner===beforeLease && h.Z轴坐标==20,
+        if(c.sorted===true)check(DepthManager.instance.getDepth(h)===h.getDepth() && h.__cf6TraversalDepthOwner===beforeLease && h.Z轴坐标==20,
             c.label+" first lease uses real fixed-sort depth without replacing foot coordinates");
         var peer:String=PauseManager.lease(true,"revival-fixture-peer");
         if(c.replace===true) {
@@ -110,19 +110,34 @@ class org.flashNight.arki.scene.Cf6MechanismRevivalTest {
         if(c.sorted===true)check(h.__cf6TraversalDepthOwner==undefined,c.label+" death retires the former depth owner");
         check(h.状态=="血腥死",c.label+" cleanup preserves actual death pose");
         PauseManager.releaseLease(peer);
-        h.hp=100;h.mp=40;h._visible=true;h.状态="长枪站立";StageRunSession.onHeroRespawn(h);
+        var renewedWalk:Function=function():Void {};
+        h.行走=renewedWalk;h.控制块.removeMovieClip();h.createEmptyMovieClip("控制块",2);
+        var renewedControl:Function=function():Void {};h.控制块.onEnterFrame=renewedControl;
+        h.hp=100;h.mp=40;h._visible=true;h.状态="长枪站立";
+        Cf6MapMechanism.tick();
+        check(s.lifeSuspended===true && !s.failed && !t.acquired,c.label+" HP recovery waits for confirmed life authority");
+        StageRunSession.onHeroRespawn(h);
         check(f.life.life=="alive" && h===f.world.hero,c.label+" real life authority confirms same actor revival");
         // No beginRoom, SceneReady, spawn replay or persistence reset is allowed here.
         if(c.frozen===true || c.sorted===true) {
             Cf6MapMechanism.tick();
             if(c.frozen===true)check(t.acquired && t.rules.frame==1 && h._x==10 && h.Z轴坐标==20,
                 c.label+" revived actor follows frozen first sample after source mutation");
-            if(c.sorted===true)check(t.acquired && t.token!==beforeLease && t.depthManager===DepthManager.instance
+            if(c.sorted===true)check(t.acquired && t.token!==beforeLease && DepthManager.instance.getDepth(h)===h.getDepth()
                     && h.__cf6TraversalDepthOwner===t.token && t.rules.frame==1 && h.Z轴坐标==20,
                 c.label+" revived lease owns real depth with a fresh token");
             ticks(7);
         } else ticks(8);
         check(api.active===s && !s.failed,c.label+" same room remains serviceable after revival");
+        check(h.行走===renewedWalk && h.控制块.onEnterFrame===renewedControl
+            && h.__cf6MechanismDeathOwner===undefined,c.label+" revival keeps current callbacks without a separate death identity");
+        if(c.map=="A10" || c.map=="A13") {
+            h.飞行浮空=true;f.manager.clearStage();ticks(2);
+            check(s.phase=="stopping" && !PauseManager.isPaused(),c.label+" stopping lift leaves the landing clock running");
+            check(!s.failed && f.manager.calls==0,c.label+" airborne clear preserves waves and waits for landing");
+            h.飞行浮空=false;Cf6MapMechanism.tick();
+            check(PauseManager.isPaused(),c.label+" grounded lift reacquires its own standing pause");
+        }
         h._x=10;h._y=h.Z轴坐标=20;f.manager.clearStage();ticks(100);
         check(f.manager.calls==1 && f.manager.isCleared,c.label+" revived room clears exactly once");
         ticks(12);check(f.manager.calls==1,c.label+" late ticks cannot duplicate clear");

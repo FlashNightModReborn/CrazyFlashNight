@@ -189,6 +189,13 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime {
             + (allowGhost ? Math.max(0, ghostLimit(unit, slot) - state.ghost) : 0);
     }
 
+    /** Shared ordinary paid-reload quote. No weapon state or inventory mutation. */
+    public static function quoteInventoryPacks(rounds:Number,reserve:Number,capacity:Number):Number {
+        if(!isFinite(rounds) || !isFinite(reserve) || !isFinite(capacity)
+            || rounds<0 || reserve<0 || !(capacity>0))return NaN;
+        return Math.max(0,Math.ceil((rounds-reserve)/capacity));
+    }
+
     /** 一包只提供普通弹容份额，额外容量永不反哺每包预算；库存成功提交后才记余额。 */
     public static function spend(unit:Object, slot:String, rounds:Number, magazine:String, isHero:Boolean):Boolean {
         var state:Object = ensure(unit, slot);
@@ -196,7 +203,8 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime {
         if (!isHero) return true;
         if (magazine != String(unit[slot + "属性"].clipname)) return false;
         if (state.reserve > 0 && state.reserveName != magazine) return false;
-        var packs:Number = Math.max(0, Math.ceil((rounds - state.reserve) / state.capacity));
+        var packs:Number = quoteInventoryPacks(rounds,state.reserve,state.capacity);
+        if(!isFinite(packs))return false;
         if (packs > 0 && isHero && !ItemUtil.singleSubmit(magazine, packs,
                 {source:"reload", reason:"ammo_packet", mergeScope:"operation"})) return false;
         if (packs > 0) state.reserveName = magazine;

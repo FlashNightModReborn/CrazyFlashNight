@@ -19,9 +19,11 @@
 
 `Cf6VehicleService.begin(room,spec)` 返回会话或拒绝；`tick(session)` 返回 `loading / playing / dead / complete / failed / cancelled`；`dispose(session)` 只释放自己持有的对象和回调；`snapshot(session)` 只读。服务不调用切章、清场、奖励、存档或扣币 API。
 
-普通主角死亡是 `dead`，不是 StageManager 的终局失败。车辆、敌人、投射物、Boss HP、计数、预算和 RNG 暂停保存；释放加载暂停及人物输入回调，只保留独立死亡展示 token。现役复活恢复同一个 hero 后重新取得当时的新回调，恢复同一战斗会话和 Boss HUD。不同 hero、世界、出生 mask 或控制目标不得被接管。装载／协议故障才返回 `failed`。实际关卡失败／返回由既有 `StageRunSession` 决定。
+普通主角死亡是 `dead`，不是 StageManager 的终局失败。车辆、敌人、投射物、Boss HP、计数、预算和 RNG 暂停保存，释放自己的加载暂停与 HUD。主角和同一份车辆适配记录继续持有输入标记；原生输入入口读取标记，行走、按键及控制块回调始终由主角维护，刷新后直接沿用。实际 life authority 确认存活后，恢复同一会话和 Boss HUD；不创建另一套死亡人物身份，不保存或恢复旧回调。世界、出生 mask 或真实主控实例改变仍撤销本展示。装载／协议故障才返回 `failed`，实际关卡失败／返回仍由 `StageRunSession` 决定。
 
 ## 原作行为对照
+
+人物普通枪械的启动、排队连射与最终 `WeaponFireCore` 发射入口使用同一个接管标记。标记有效时取消本通道的连射任务，射速预算仍按原合同保留；最终入口在弹药和子弹提交之前拒绝。赛车固定火力走独立的车辆消费者。原生专项持续保持 J 的受控输入意图，跨过公路、Boss 入场和 Boss 战，检查赛车继续射击而人物枪械零发射、零弹药消耗；它不冒充物理长按键验收。`node tools/cf6-vehicle/test-hero-fire-isolation.js` 另从当前生产函数提取执行，覆盖普通人物对照及三种接管标记；Node 端的字典、事件、射击和任务移除均为显式内存端口。
 
 | 原作证据 | 当前消费者及边界 |
 |---|---|

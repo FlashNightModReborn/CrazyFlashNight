@@ -1,0 +1,107 @@
+{
+  "schema": "cf6.text-only-patchset.v1",
+  "headSha": "cfb1952e88553d8e5138d7c3e9b883a9beb035d2",
+  "itemCount": 6,
+  "onlyDescriptionElements": true,
+  "numbersOrNamesOrSkillsChanged": false,
+  "skillDescriptionChanged": true,
+  "productionModified": false,
+  "changes": [
+    {
+      "name": "诛神枪",
+      "sourcePath": "data/items/武器_长枪_特殊.xml",
+      "sourceLine": 753,
+      "updates": [
+        {
+          "xpath": "description",
+          "expectedText": "能够发射球状闪电的枪械，人类科技的尽头，世间暴力的极致。\n    这片被遗弃的末日废土之中，即便神明仍存于此处，也只会被这为弑神而准备的凶器所屠戮。",
+          "replacementText": "烬灭是在统合成立前的企业战争末期少量制造的重型放电武器，原本作为攻坚器材配发给承担高风险任务的专业人员。大型放电组件和专用校准工作使它始终未能成为普通部队的制式枪械。\n毒刺行动之前，C.T.从被截获的旧军械转运批次中取得少量成品与配套电池，将它们集中交给负责关键区域的人员保管。\n能够发射球状闪电的枪械，人类科技的尽头，世间暴力的极致。\n这片被遗弃的末日废土之中，即便神明仍存于此处，也只会被这为弑神而准备的凶器所屠戮。"
+        }
+      ],
+      "descriptionProposalCanonicalSha256": "e42e8c59636f0c6b4eec2f23c8b00d10108b8b4bb20687be5321a63ac5bd0105",
+      "requiresExplicitHistoryAdoption": true,
+      "status": "REVIEW_ONLY_NOT_APPLIED"
+    },
+    {
+      "name": "G1111",
+      "sourcePath": "data/items/武器_长枪_战斗步枪.xml",
+      "sourceLine": 1027,
+      "updates": [
+        {
+          "xpath": "description",
+          "expectedText": "占位用待平衡",
+          "replacementText": "统合成立前的企业战争末期，一家地面军工承包商试制的双形态远射平台。步枪形态承担低频高能射击，导弹形态用于投送追踪联弹；两种工作形态共用枪体与能量供应，成品按专装设备维护。\n复杂的活动结构、目标解算和供能系统限制了它的生产规模。毒刺行动之前，C.T.截获了一批尚未完成正式交付的试验器材，其中少数G1111成为关键区域守备的专用武器。\n它仍保留切换工作形态与执行“铁枪之锋”强化射击的能力。不同形态服务于同一时代的装甲目标和重型守备需求，使用者必须承担相应的能源、耗材与维护负担。"
+        },
+        {
+          "xpath": "skill/description",
+          "expectedText": "【铁枪之锋】",
+          "replacementText": "消耗1枚强化石执行一次强化射击。步枪形态对有效锁定目标追加真伤，并释放聚束射线；导弹形态发射强化追踪联弹。效果随武器强化度变化，强化射击结束后恢复普通射击。"
+        }
+      ],
+      "descriptionProposalCanonicalSha256": "b5e15664a1afc19bc260b6b9c7d61fdb9f911321ef9f5ad439e86aed5afcca2d",
+      "requiresExplicitHistoryAdoption": true,
+      "status": "REVIEW_ONLY_NOT_APPLIED"
+    },
+    {
+      "name": "FSC7",
+      "sourcePath": "data/items/武器_长枪_发射器.xml",
+      "sourceLine": 974,
+      "updates": [
+        {
+          "xpath": "description",
+          "expectedText": "发射极具冲击性的炮弹，内置子母弹的高爆弹体，命中目标后附着并扩散微型炸弹，触发连锁热爆破，大范围清场与单体爆发兼备。特点：先冲，后热",
+          "replacementText": "统合成立前的企业战争时期试制的单发重型爆破发射器，供攻坚分队突破固定防线与重型守备。毒刺行动之前，C.T.从控制的试验器材仓库中取得少量成品，将有限的炮弹留给负责封锁关键通道的人员。\n炮弹首先以强烈冲击命中，随后展开一片连续热爆破区域。冲击与后续爆破相继发生，既能压迫集中的敌人，也能对停留在爆破区内的目标持续造成威胁。\n特点：先冲，后热。"
+        }
+      ],
+      "descriptionProposalCanonicalSha256": "b57772f97ae952c637674528c7ae494bc7e90d7730463017235c6fb90a44570c",
+      "requiresExplicitHistoryAdoption": true,
+      "status": "REVIEW_ONLY_NOT_APPLIED"
+    },
+    {
+      "name": "RPG7V2",
+      "sourcePath": "data/items/武器_长枪_发射器.xml",
+      "sourceLine": 178,
+      "updates": [
+        {
+          "xpath": "description",
+          "expectedText": "经典RPG-7的深度改进型，化了发射筒结构以承受更强力的新型弹药。\n    作为全球流通量最大的反坦克武器家族成员，RPG-7V2见证了无数次不对称战争的胜利。\n    在末日废土中，它依然是游荡者们最信赖的重型火力——简单、可靠、致命。",
+          "replacementText": "经典RPG-7的深度改进型，在统合成立前的企业战争时期强化了发射筒结构，以承受更强力的新型弹药。它沿用成熟的肩射操作与补给体系，C.T.在毒刺行动之前通过流通军火渠道取得了少量成品。\n作为全球流通量最大的反坦克武器家族成员，RPG-7V2见证了无数次不对称战争的胜利。\n在末日废土中，它依然是游荡者们最信赖的重型火力——简单、可靠、致命。"
+        }
+      ],
+      "descriptionProposalCanonicalSha256": "9bccf7189fea7e0ef1cdf4156e6b51f243c2f1c686832af063db5ccb5aa5e47c",
+      "requiresExplicitHistoryAdoption": true,
+      "status": "REVIEW_ONLY_NOT_APPLIED"
+    },
+    {
+      "name": "ASH12.7",
+      "sourcePath": "data/items/武器_长枪_反器材武器.xml",
+      "sourceLine": 209,
+      "updates": [
+        {
+          "xpath": "description",
+          "expectedText": "ASH12.7大口径突击步枪，是一种在巷战使用的CQB武器。\n    ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效射程不需要太远，不也需要有过高的侵彻能力，同时又要有比较强的停止作用，总之就是要避免没有命中目标流弹飞得太远，或弹头穿透目标后还能飞出很远距离，而伤及无辜的旁观者。\n    因此ASh-12.7突击步枪是先设计了专用的大口径低速重弹头的近程大威力弹药，然后围绕这种弹药再去设计枪支的。\n    据代号为3102的工匠所说，这把枪在近距离表现不错，但若是距离过远，则与投石机并无差别，相当有R国特色的武器。",
+          "replacementText": "ASH12.7大口径突击步枪，是在统合成立前的企业战争时期面向近距安保与巷战需求制造的CQB武器。C.T.在毒刺行动之前通过军火中间商购得少量成品，用于守卫狭窄通道与重要设施。\nASh-12突击步枪围绕专用的大口径低速重弹头近程弹药设计，强调近距离的停止作用，并减少未命中或穿透目标后的远距离附带威胁。\n据代号为3102的工匠所说，这把枪在近距离表现不错，但若是距离过远，则与投石机并无差别，相当有R国特色的武器。"
+        }
+      ],
+      "descriptionProposalCanonicalSha256": "20abbe550e300c79bedf18286ca1756a4013f4b39221c9fd95277b85896ff734",
+      "requiresExplicitHistoryAdoption": true,
+      "status": "REVIEW_ONLY_NOT_APPLIED"
+    },
+    {
+      "name": "M202火箭发射器",
+      "sourcePath": "data/items/武器_长枪_发射器.xml",
+      "sourceLine": 244,
+      "updates": [
+        {
+          "xpath": "description",
+          "expectedText": "暂无",
+          "replacementText": "统合成立前的企业战争时期，以M202四管布局为基础制造的常规爆破改型。它装填普通高爆火箭弹，供小队对固定火力点和集中目标实施短促打击；这一配置与使用燃烧火箭的M202FLASH分别管理。\n毒刺行动之前，C.T.从截获的军械运输物资中取得了一批此型发射器。四管结构提供有限的连续射击机会，补充弹药与装填仍由使用者承担。"
+        }
+      ],
+      "descriptionProposalCanonicalSha256": "eb50bc79def3bdef8c116c6d80fa89f69566007c1e6ff88f612ced8aba5ec88a",
+      "requiresExplicitHistoryAdoption": true,
+      "status": "REVIEW_ONLY_NOT_APPLIED"
+    }
+  ],
+  "application": "审阅采用后按sourcePath/item[name]/xpath替换；先校验expectedText与源HEAD。C前身不在此patch。源文件BOM/行尾应由repo工具保持。"
+}

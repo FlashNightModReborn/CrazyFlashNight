@@ -208,10 +208,10 @@ class org.flashNight.arki.scene.Cf6Type61ServiceTest {
             var loader:Object=org.flashNight.gesh.xml.LoadXml.SkillDataLoader.getInstance();
             loader.applySkillData({Skill:inputs.skills});
             definition._type61=book;
-            check(book.economy.eliteWeapons[3].choices.length===1 && Cf6EconomyRules.valid(book),"K-only removal preserves one E4 gun quota with a valid canonical route");
-            var removedChoice:Object=book.economy.eliteWeapons[1].choices.pop();
-            check(!Cf6EconomyRules.valid(book),"other two-option elite quotas still require real alternatives");
-            book.economy.eliteWeapons[1].choices.push(removedChoice);
+            check(book.economy.eliteWeapons.length===0 && Cf6EconomyRules.valid(book),"fixed equipment retires legacy random elite quotas without changing player pools");
+            var soldierSchema:String=book.type61.soldiers.schema;book.type61.soldiers.schema="unknown";
+            check(!Cf6Type61Service.validDefinition(book),"unknown fixed soldier definition rejects actor preparation");
+            book.type61.soldiers.schema=soldierSchema;
             var beforeSp:Number=_root.技能点数,beforeMoney:Number=_root.金钱;
             var loadout:Object=api.prepareCf6Loadout("type61");
             check(loadout!=null && loadout.skills.length==80 && loadout.quickSkills.length==10,"actual preparation accepts source level35 actor and ten quick slots");

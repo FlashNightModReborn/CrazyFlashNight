@@ -154,6 +154,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         };
     }
 
+    /** Presentation ownership also gates queued fire callbacks after native input refresh. */
+    public static function isPresentationControlled(core:Object):Boolean {
+        return core.__cf6VehicleOwner!==undefined || core.__cf6TraversalOwner!==undefined
+            || core.__cf6ElevatorPoseOwner!==undefined;
+    }
     public static function isAnyShooting(core:Object):Boolean {
         if (!core) return false;
         return Boolean(
@@ -248,6 +253,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * @return Boolean       返回是否处于持续射击状态
      */
     public static function continuousShoot(core:Object, attackMode:String, shootSpeed:Number, params:Object, effectiveInterval:Number):Boolean {
+        if(ShootCore.isPresentationControlled(core)) {ShootCore.cleanupLane(core,params,true);return false;}
         // 缓存常用全局对象和属性引用
         var root:Object = _root;
         var man:Object  = core.man;
@@ -377,6 +383,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     }
 
     public static function continuousShootAs(core:Object, context:Object, effectiveInterval:Number):Boolean {
+        if(ShootCore.isPresentationControlled(core)) {ShootCore.cleanupLane(core,context.params,true);return false;}
         var root:Object = _root;
         var man:Object = (context.man != null) ? context.man : core.man;
         if (context.refreshManEachTick == true && context.__continuousShootStarted === true && core.man != null) {
@@ -518,6 +525,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         protagonist:Object,       // 原主角函数对象（原 this）
         params:Object             // 主副手参数（primaryParams/secondaryParams）
     ):Void {
+        if(ShootCore.isPresentationControlled(core)) {ShootCore.cleanupLane(core,params,true);return;}
         // 若正在该状态射击中或正在换弹，直接返回
         if (core[params.shootingStateName]) return;
         if (protagonist.换弹标签 && !ReloadManager.tryCancelForFire(protagonist, core, core.攻击模式)) return;
@@ -653,6 +661,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         params:Object,
         context:Object
     ):Boolean {
+        if(ShootCore.isPresentationControlled(core)) {ShootCore.cleanupLane(core,params,true);return false;}
         if (!context) {
             context = ShootCore.createDefaultShootContext(core, protagonist, params);
         }

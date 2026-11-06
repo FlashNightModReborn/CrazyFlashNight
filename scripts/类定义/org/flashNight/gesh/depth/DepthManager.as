@@ -137,6 +137,9 @@ class org.flashNight.gesh.depth.DepthManager {
      */
     public function updateDepth(mc:MovieClip, targetY:Number):Boolean {
         if (!mc || !_calibrated) return false;
+        var presentation:Object=mc.__cf6TraversalDepthOwner;
+        if(presentation!==undefined && mc.__cf6TraversalOwner===presentation && typeof presentation.sortY=="number")
+            targetY=presentation.sortY;
         if ((targetY - targetY) != 0) return false; // NaN guard (H07)
 
         // 热路径优先走 MC 自带槽位缓存，避免每帧 _name → _idxMap 查找。
@@ -219,6 +222,9 @@ class org.flashNight.gesh.depth.DepthManager {
             mc = mcs[i++];
             y = ys[yi++];
             if (!mc) continue;
+            var presentation:Object=mc.__cf6TraversalDepthOwner;
+            if(presentation!==undefined && mc.__cf6TraversalOwner===presentation && typeof presentation.sortY=="number")
+                y=presentation.sortY;
             if ((y - y) != 0) continue; // NaN guard
 
             idx = mc["__dmIdx"];

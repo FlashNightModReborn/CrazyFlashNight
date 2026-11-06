@@ -437,6 +437,28 @@ class org.flashNight.arki.spatial.move.Mover {
         return !_root.collisionLayer.hitTest(globalX, globalY, true);
     }
 
+    /** The existing enemy hit impulse owns one root callback. Replacing that
+     * callback retires the previous impulse for phase handoff purposes. */
+    public static function beginEnemyHitMove(unit:MovieClip,direction:String,speed:Number,friction:Number):Void {
+        unit.减速度=friction;
+        unit.speed=speed;
+        unit.onEnterFrame=function():Void {
+            if(this.硬直中 || _root.暂停)return;
+            this.speed-=this.减速度;
+            if(!(this.speed>0)){
+                delete this.__enemyHitMoveDriver;
+                delete this.onEnterFrame;
+                return;
+            }
+            this.移动(direction,this.speed);
+        };
+        unit.__enemyHitMoveDriver=unit.onEnterFrame;
+    }
+    public static function pendingPhaseMotion(unit:MovieClip):Boolean {
+        return unit.flyID!=null || (typeof unit.__enemyHitMoveDriver=="function"
+            && unit.onEnterFrame===unit.__enemyHitMoveDriver);
+    }
+
     /**
      * 方向可行走检测（轻量版）
      *

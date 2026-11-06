@@ -335,8 +335,9 @@ if (($strictCoreBody -notmatch
             'catch \(saveError\)[\s\S]*?pushUiState\("sv:3"\)[\s\S]*?throw saveError') -or
         ($debounceBody -notmatch
             'catch \(saveError\)[\s\S]*?pushUiState\("sv:3"\)[\s\S]*?throw saveError') -or
-        ($saveManagerSource -notmatch
-            'pushUiState\(ok \? "sv:2" : "sv:3"\)') -or
+        ([regex]::Matches($saveManagerSource,
+            'pushUiState\((?:ok|committed) \? \(org\.flashNight\.arki\.scene\.Cf6SoldierLoot\.blocksSaveSuccess\(\)\?"sv:1":"sv:2"\) : "sv:3"\)').Count -ne 2) -or
+        ($beforeTransitionBody -notmatch 'Cf6SoldierLoot\.prepareForTransition\(\)[\s\S]*?_strictFlushCore') -or
         ($flushNowBody -notmatch '_strictFlushCore\("legacyStrict"') -or
         ($flushNowBody -match 'flushDurableNow|flushBeforeTransition|_doSaveAll') -or
         ($durableNowBody -notmatch '_strictFlushCore\("durable"') -or

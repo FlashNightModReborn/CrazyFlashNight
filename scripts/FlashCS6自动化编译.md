@@ -175,6 +175,8 @@ compile_test.ps1 / compile_test.sh
 - 只看到 `publish_done.marker` 就说 `已编译通过`
 - 缺少该目标要求的新鲜证据组合还说 `编译成功`（例如 publish-only 缺本轮 Compiler Errors `0/0` 或目标 SWF 刷新；testMovie 缺其要求的 trace / Output 证据）
 
+asLoader发布还会核对实际类继承注册顺序（`tools/check-as2-inheritance-order.js`）：父类DoInitAction必须先于派生类。缺失或倒序不会因Compiler 0/0而放行；此门针对完整加载器的类初始化，不由较小TestLoader通过代替。
+
 ## 6. 当前边界
 
 - AS2 帧脚本中的类型错误、未声明变量不会稳定体现在编译期错误里

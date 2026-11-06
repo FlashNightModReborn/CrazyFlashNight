@@ -105,61 +105,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_17" color="#4FFF4F">
+        <DOMLayer name="移动射击步态" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="49">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                <DOMSymbolInstance libraryItemName="Codex/教官/动作/教官_移动射击步态" name="cf6Stride">
                   <matrix>
-                    <Matrix a="0.203552" b="0.106293" c="-0.106293" d="0.203552" tx="-26.2" ty="38.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="原始深度_16" color="#4FFF4F">
-          <frames>
-            <DOMFrame index="0" keyMode="9728" duration="49">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="0.225647" b="0.041855" c="-0.041855" d="0.225647" tx="-38.3" ty="60.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="原始深度_15" color="#4FFF4F">
-          <frames>
-            <DOMFrame index="0" keyMode="9728" duration="49">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="0.22789" b="0.030167" c="-0.030167" d="0.22789" tx="2.3" ty="30.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="原始深度_14" color="#4FFF4F">
-          <frames>
-            <DOMFrame index="0" keyMode="9728" duration="49">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-1.65" ty="59"/>
+                    <Matrix/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

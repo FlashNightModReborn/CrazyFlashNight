@@ -1,0 +1,1022 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/教官/动作/教官_移动射击步态" itemID="6af10000-2f1f32c6">
+  <timeline>
+    <DOMTimeline name="教官_移动射击步态">
+      <layers>
+        <DOMLayer name="CF7生命周期" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" duration="20">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_17" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.203552" b="0.106293" c="-0.106293" d="0.203552" tx="-26.2" ty="38.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.203537" b="0.106277" c="-0.106277" d="0.203537" tx="-21.85" ty="37.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.203537" b="0.106277" c="-0.106277" d="0.203537" tx="-17.5" ty="36.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.203552" b="0.106293" c="-0.106293" d="0.203552" tx="-13.2" ty="35.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.215424" b="0.078949" c="-0.078949" d="0.215424" tx="-11.1" ty="33.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.223663" b="0.050323" c="-0.050323" d="0.223663" tx="-9" ty="32.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.228119" b="0.020905" c="-0.020905" d="0.228119" tx="-6.95" ty="31.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.228928" b="0.006226" c="-0.006226" d="0.228928" tx="-7.15" ty="33.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.228821" b="-0.008438" c="0.008438" d="0.228821" tx="-7.4" ty="34.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.227768" b="-0.023102" c="0.023102" d="0.227768" tx="-7.6" ty="36.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22876" b="-0.007767" c="0.007767" d="0.22876" tx="-10.35" ty="37.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.228699" b="0.007599" c="-0.007599" d="0.228699" tx="-13.15" ty="37.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.227631" b="0.022934" c="-0.022934" d="0.227631" tx="-15.9" ty="37.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.225403" b="0.038834" c="-0.038834" d="0.225403" tx="-19.1" ty="39.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.222076" b="0.054535" c="-0.054535" d="0.222076" tx="-22.15" ty="40.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.217651" b="0.069977" c="-0.069977" d="0.217651" tx="-25.3" ty="41.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.217636" b="0.069962" c="-0.069962" d="0.217636" tx="-26.8" ty="41.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.217636" b="0.069962" c="-0.069962" d="0.217636" tx="-28.45" ty="41"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.217651" b="0.069977" c="-0.069977" d="0.217651" tx="-30" ty="40.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.213638" b="0.082321" c="-0.082321" d="0.213638" tx="-28.8" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_16" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.225647" b="0.041855" c="-0.041855" d="0.225647" tx="-38.3" ty="60.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.219727" b="0.065918" c="-0.065918" d="0.219727" tx="-33.65" ty="59.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.211273" b="0.089203" c="-0.089203" d="0.211273" tx="-29.05" ty="58.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200363" b="0.11145" c="-0.11145" d="0.200363" tx="-24.4" ty="58.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.219162" b="0.066879" c="-0.066879" d="0.219162" tx="-19.2" ty="57.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22821" b="0.019394" c="-0.019394" d="0.22821" tx="-14.1" ty="56.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.227097" b="-0.0289" c="0.0289" d="0.227097" tx="-9" ty="55.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.2267" b="-0.030457" c="0.030457" d="0.2267" tx="-7.4" ty="57.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.226334" b="-0.032013" c="0.032013" d="0.226334" tx="-5.8" ty="59.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.225952" b="-0.033585" c="0.033585" d="0.225952" tx="-4.3" ty="61.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.225952" b="-0.033585" c="0.033585" d="0.225952" tx="-9.3" ty="62.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.225952" b="-0.033585" c="0.033585" d="0.225952" tx="-14.3" ty="62.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.225952" b="-0.033585" c="0.033585" d="0.225952" tx="-19.35" ty="63.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.225952" b="-0.033585" c="0.033585" d="0.225952" tx="-24.1" ty="63.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.225952" b="-0.033585" c="0.033585" d="0.225952" tx="-28.75" ty="64.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.225952" b="-0.033585" c="0.033585" d="0.225952" tx="-33.45" ty="65.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.227585" b="-0.019012" c="0.019012" d="0.227585" tx="-35.15" ty="64.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.228271" b="-0.004379" c="0.004379" d="0.228271" tx="-36.95" ty="63.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.228058" b="0.010269" c="-0.010269" d="0.228058" tx="-38.7" ty="63.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.227722" b="0.020798" c="-0.020798" d="0.227722" tx="-38.6" ty="62.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_15" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22789" b="0.030167" c="-0.030167" d="0.22789" tx="2.3" ty="30.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22789" b="0.030167" c="-0.030167" d="0.22789" tx="2.3" ty="30.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.222229" b="0.058411" c="-0.058411" d="0.222229" tx="-0.1" ty="32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.213089" b="0.085739" c="-0.085739" d="0.213089" tx="-2.6" ty="33.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200623" b="0.111694" c="-0.111694" d="0.200623" tx="-4.9" ty="34.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200607" b="0.111679" c="-0.111679" d="0.200607" tx="-10.15" ty="35.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200607" b="0.111679" c="-0.111679" d="0.200607" tx="-15.4" ty="35.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200623" b="0.111694" c="-0.111694" d="0.200623" tx="-20.65" ty="36.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200607" b="0.111679" c="-0.111679" d="0.200607" tx="-22.6" ty="36.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200607" b="0.111679" c="-0.111679" d="0.200607" tx="-24.5" ty="35.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200623" b="0.111694" c="-0.111694" d="0.200623" tx="-26.45" ty="34.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200607" b="0.111679" c="-0.111679" d="0.200607" tx="-24.35" ty="35.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200607" b="0.111679" c="-0.111679" d="0.200607" tx="-22.25" ty="35.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200623" b="0.111694" c="-0.111694" d="0.200623" tx="-20.2" ty="35.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200607" b="0.111679" c="-0.111679" d="0.200607" tx="-16.2" ty="36"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200607" b="0.111679" c="-0.111679" d="0.200607" tx="-12.15" ty="35.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.200623" b="0.111694" c="-0.111694" d="0.200623" tx="-8.2" ty="35.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.209259" b="0.094269" c="-0.094269" d="0.209259" tx="-7.8" ty="35.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.216431" b="0.076218" c="-0.076218" d="0.216431" tx="-7.5" ty="35.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.222046" b="0.057617" c="-0.057617" d="0.222046" tx="-7.05" ty="35.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22435" b="0.048553" c="-0.048553" d="0.22435" tx="-3.95" ty="34"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_14" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-1.65" ty="59"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-1.65" ty="59"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-7.35" ty="58.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-13.05" ty="57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-18.8" ty="56.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-23.7" ty="56.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-28.6" ty="57.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-33.5" ty="57.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-35.25" ty="57.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-37.05" ty="56.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-38.8" ty="56.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-37.1" ty="56.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-35.25" ty="57.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22937" b="-0.013092" c="0.013092" d="0.22937" tx="-33.5" ty="57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.228516" b="0.022705" c="-0.022705" d="0.228516" tx="-29.45" ty="57.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.222107" b="0.057938" c="-0.057938" d="0.222107" tx="-25.35" ty="56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.210312" b="0.091751" c="-0.091751" d="0.210312" tx="-21.35" ty="56.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.210312" b="0.091751" c="-0.091751" d="0.210312" tx="-18.2" ty="56.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.210312" b="0.091751" c="-0.091751" d="0.210312" tx="-15.05" ty="57.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.210312" b="0.091751" c="-0.091751" d="0.210312" tx="-11.85" ty="58.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_496" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.222107" b="0.057953" c="-0.057953" d="0.222107" tx="-8.5" ty="58.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

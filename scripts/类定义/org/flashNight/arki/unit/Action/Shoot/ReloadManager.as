@@ -285,6 +285,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var isHero:Boolean = parent === TargetCacheManager.findHero();
         if (!isHero) {
             WeaponAmmoRuntime.supplyValue(value, false);
+            org.flashNight.arki.scene.Cf6SoldierSignals.reloadCommitted(parent,slot);
             return true;
         }
         var hadRecovery:Boolean = value.reloadCount != undefined;
@@ -1238,6 +1239,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         }
         bumpReloadGeneration(target);
         target.剩余弹匣数 = ReloadManager.magazineStock(parent, target.使用弹匣名称);
+        org.flashNight.arki.scene.Cf6SoldierSignals.reloadCommitted(parent,slot);
         target.主手剩余弹匣数 = ReloadManager.magazineStock(parent, target.主手使用弹匣名称);
         target.副手剩余弹匣数 = ReloadManager.magazineStock(parent, target.副手使用弹匣名称);
         updateAmmoDisplay(target, parent, _root);

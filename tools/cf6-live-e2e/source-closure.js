@@ -114,6 +114,8 @@ const FILES = [
     'scripts/类定义/org/flashNight/arki/audio/AudioBridge.as',
     'scripts/类定义/org/flashNight/arki/audio/SoundEffectManager.as',
     'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as',
+    'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueue.as',
+    'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Lifecycle/TransparentBulletLifecycle.as',
     'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Init/BulletInitializer.as',
     'scripts/类定义/org/flashNight/arki/bullet/Factory/BulletFactory.as',
     'scripts/类定义/org/flashNight/arki/component/StatHandler/DodgeHandler.as',
@@ -233,6 +235,56 @@ function listReferences(xml, tags) {
     return result;
 }
 const TYPE61_FILES=Object.freeze([
+    "scripts/类定义/org/flashNight/arki/spatial/move/Mover.as",
+    "scripts/类定义/org/flashNight/arki/collision/CollisionLayerRenderer.as",
+    "tools/cf6-guard-assets/GuardTransform.as",
+    "tools/assemble-collapsed-frame.js",
+    "tools/asloader-definition-frames.js",
+    "tools/check-as2-inheritance-order.js",
+    "scripts/compile_test.ps1",
+    "scripts/类定义/org/flashNight/arki/item/itemCollection/ItemCollection.as",
+    "scripts/asLoader/asLoader.xfl",
+    "scripts/asLoader/DOMDocument.xml",
+    "scripts/asLoader/PublishSettings.xml",
+    "scripts/asLoader/LIBRARY/asLoader.xml",
+    "scripts/asLoaderManifest/_collapsed_frame.as",
+    "tools/cf6-type61/fixed_roster.py",
+    "tools/cf6-type61/soldier_programs.py",
+    "tools/cf6-type61/fixed-roster.source.json",
+    "tools/cf6-type61/soldier-action-contracts.source.json",
+    "tools/cf6-type61/soldier-g1111-pair.source.json",
+    "tools/cf6-type61/soldier-ammo-contract.source.json",
+    "tools/cf6-type61/soldier-loot-policy.source.json",
+    "tools/cf6-type61/soldier-description-proposals.source.json",
+    "tools/cf6-type61/soldier-description-application.json",
+    "tools/cf6-type61/apply-soldier-descriptions.py",
+    "tools/cf6-type61/import-fixed-roster.py",
+    "tools/cf6-soldier-assets/build.py",
+    "tools/cf6-soldier-assets/SoldierDefense.as",
+    "tools/cf6-soldier-assets/SoldierAI.as",
+    "tools/cf6-soldier-assets/EliteAI.as",
+    "tools/cf6-soldier-assets/TacticalAI.as",
+    "tools/cf6-soldier-assets/FixedActionRules.as",
+    "tools/cf6-soldier-assets/FixedActionTriggers.as",
+    "tools/cf6-soldier-assets/FixedActionAdapter.as",
+    "tools/cf6-soldier-assets/FixedNavigation.as",
+    "scripts/类定义/org/flashNight/neur/Navigation/AStarGrid.as",
+    "tools/cf6-soldier-assets/FixedActionWeapons.as",
+    "tools/cf6-wings-assets/WingsAI.as",
+    "tools/cf6-elder-assets/ElderAI.as",
+    "scripts/逻辑/装备函数/G1111.as",
+    "scripts/逻辑/单位函数/单位函数_雾人_aka_fs_主动战技.as",
+    "scripts/类定义/org/flashNight/arki/item/BaseItem.as",
+    "scripts/类定义/org/flashNight/arki/item/RewardStashService.as",
+    "scripts/类定义/org/flashNight/arki/item/RewardStashStore.as",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/WeaponAmmoRuntime.as",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ReloadManager.as",
+    "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Routing/ContainerAttachAction.as",
+    "scripts/类定义/org/flashNight/arki/bullet/Factory/BulletFactory.as",
+    "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/MissileMovement.as",
+    "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/Util/SearchForTargetCallbacks.as",
+    "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/Util/TrackTargetCallbacks.as",
     "tools/cf6-type61/build-route.py",
     "tools/cf6-type61/route.source.json",
     "tools/cf6-type61/encounters.py",
@@ -355,8 +407,9 @@ function capture(root,routeId) {
         ref=relative(ref);inside(root,ref);
         const key=ref.toLowerCase();if(folded.has(key)&&folded.get(key)!==ref)throw Error('case-aliased closure resource: '+ref);
         folded.set(key,ref);pending.add(ref);
-        // Four full interactive timelines require a larger but finite whole-journey inventory.
-        if(pending.size>8192)throw Error('closure resource count exceeded');
+        // Type61 additionally binds three bounded native actor XFL inventories.
+        // Keep the historical-route limit unchanged.
+        if(pending.size>(route.id==='type61'?12288:8192))throw Error('closure resource count exceeded');
         if(owner)edges.push({owner,target:ref,kind});return ref;
     }
     function read(ref){
@@ -364,7 +417,8 @@ function capture(root,routeId) {
         // The one hash-named original 1805/frame2 ActionEnd export is also genuinely empty.
         // Keep exact bytes/hash; other required source and asset files stay nonempty.
         const allowEmpty=ref==='flashswf/backgrounds/cf6/CF6_A01_Turret/MobileSettings.xml'
-            ||ref==='tools/cf6-vehicle/source/actions/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.as.txt';
+            ||ref==='tools/cf6-vehicle/source/actions/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.as.txt'
+            ||route.id==='type61'&&/^flashswf\/arts\/new\/(?:Codex特种兵素材|CodexWings素材|Codex老头素材|Codex光头保安素材)\/MobileSettings\.xml$/.test(ref);
         const file=E.readExactRegularFile(inside(root,ref),{phase:'cf6_closure',maximumBytes:128*1024*1024,allowEmpty});
         const row={relativePath:ref,bytes:file.length,sha256:file.sha256};
         if(rows.has(ref)&&rows.get(ref).sha256!==row.sha256)throw Error('closure resource changed during discovery');
@@ -928,6 +982,47 @@ function capture(root,routeId) {
             }
         }
     }
+    function fixedActorSources(chapter){
+        if(route.id!=='type61'||chapter.type61?.soldiers==null)return;
+        for(const [tool,owner,schema] of [
+            ['cf6-soldier-assets','Codex特种兵素材','cf6-soldier.native-import.v1'],
+            ['cf6-wings-assets','CodexWings素材','cf6-wings.native-import.v1'],
+            ['cf6-elder-assets','Codex老头素材','cf6-elder.native-import.v1'],
+            ['cf6-guard-assets','Codex光头保安素材','cf6-guard.native-import.v1']]){
+            const ref='tools/'+tool+'/native-manifest.json',base='flashswf/arts/new/'+owner;
+            add(ref,route.chapterPath,'fixed_actor_manifest');const manifest=json(ref);
+            if(manifest.schema!==schema||manifest.owner!==base||!Array.isArray(manifest.buildInputs)
+                ||!manifest.buildInputs.length||manifest.buildInputs.length>256||!Array.isArray(manifest.outputs)
+                ||manifest.outputs.length!==manifest.nativeSymbolCount||!manifest.outputs.length||manifest.outputs.length>800
+                ||!Array.isArray(manifest.projectFiles)||manifest.projectFiles.length!==4)
+                throw Error('invalid fixed actor source manifest: '+ref);
+            const seen=new Set();
+            for(const entry of manifest.buildInputs){let name;
+                if(entry.lineEndingNormalization!==undefined){
+                    const sharedGuardInput=tool==='cf6-guard-assets' && (
+                        entry.path==='scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as'
+                        || entry.path==='scripts/逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as');
+                    if((tool!=='cf6-soldier-assets' && !sharedGuardInput)||entry.lineEndingNormalization!=='lf'
+                        ||!/^scripts\/.+\.as$/.test(entry.path)||!digest(entry.sha256)||entry.bytes!==undefined)
+                        throw Error('invalid fixed actor source normalization');
+                    name=relative(entry.path);add(name,ref,'fixed_actor_input');const raw=read(name),source=raw.toString('utf8');
+                    if(!Buffer.from(source,'utf8').equals(raw)||E.sha256Text(source.replace(/\r\n/g,'\n'))!==entry.sha256)
+                        throw Error('declared normalized actor digest mismatch: '+name);
+                    // Only the manifest comparison normalizes text. The journey
+                    // closure still binds exact on-disk bytes and detects edits.
+                }else name=bound(entry,'',ref,'fixed_actor_input');
+                if(seen.has(name))throw Error('duplicate fixed actor input');seen.add(name);}
+            for(const entry of [...manifest.outputs,...manifest.projectFiles]){
+                if(entry.path==='MobileSettings.xml'&&entry.bytes===0){
+                    const empty=base+'/MobileSettings.xml';add(empty,ref,'fixed_actor_native_sidecar');read(empty);
+                    if(entry.sha256!=='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+                        ||rows.get(empty).sha256!==entry.sha256||rows.get(empty).bytes!==0)
+                        throw Error('fixed actor mobile sidecar changed');
+                }else bound(entry,base+'/',ref,'fixed_actor_native_source');
+            }
+            add(base+'.swf',ref,'fixed_actor_published');
+        }
+    }
     function scaleSources(){
         const ref='tools/cf6-prop-layout/scale-policy.json',policy=json(ref);
         const types=['敌人-CF6普通男僵尸','敌人-CF6女僵尸','敌人-CF6Wings','敌人-CF6特种兵',
@@ -959,7 +1054,18 @@ function capture(root,routeId) {
     FILES.forEach(ref=>add(ref));
     for(const name of ['route-config.js','preflight.js','affiliated-slot.js','run-candidate.js','cdp-input-channel.js','passive-observer.js','source-closure.js','verified-return-observation.js'])
         add('tools/cf6-live-e2e/'+name);
-    if(route.id==='type61')TYPE61_FILES.forEach(ref=>add(ref));
+    if(route.id==='type61'){
+        TYPE61_FILES.forEach(ref=>add(ref));
+        const base='scripts/asLoaderManifest';
+        E.assertExactDirectory(inside(root,base),'cf6_boot_source');
+        const inputs=fs.readdirSync(inside(root,base),{withFileTypes:true}).filter(entry=>entry.name.endsWith('.as'));
+        if(!inputs.length||inputs.length>128)throw Error('invalid boot definition source count');
+        for(const entry of inputs){
+            if(!entry.isFile()||entry.isSymbolicLink()||! /^(?:frame\d+|_collapsed_frame|_definition_frame\d+)\.as$/.test(entry.name))
+                throw Error('unexpected boot definition source: '+entry.name);
+            add(base+'/'+entry.name,'scripts/asLoader/LIBRARY/asLoader.xml','boot_definition_source');
+        }
+    }
     const chapterPath=route.chapterPath;
     const chapter=JSON.parse(read(chapterPath).toString('utf8').replace(/^\uFEFF/,''));
     chapterResources(chapter,route.id).forEach(ref=>add(ref,chapterPath,'chapter_resource'));
@@ -967,7 +1073,7 @@ function capture(root,routeId) {
     scaleSources();portraitSources(chapter);
     const used=new Set(chapterResources(chapter,route.id));
     tutorialR7(used);
-    sceneConsumers();
+    sceneConsumers();fixedActorSources(chapter);
     sceneManifest('tools/cf6-scene-completion/traversal-art-manifest.json','cf6-traversal-native-source.v1',used,false);
     sceneManifest('tools/cf6-scene-completion/auxiliary-art-manifest.json','cf6-auxiliary-native-source.v1',used,true);
     sceneManifest('tools/cf6-scene-completion/interactive-art-manifest.json','cf6-interactive-native-source.v1',used,'interactive');

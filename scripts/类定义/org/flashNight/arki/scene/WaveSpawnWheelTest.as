@@ -11,13 +11,13 @@ class org.flashNight.arki.scene.WaveSpawnWheelTest {
     }
     private static function spawner(capacity:Number):Object {
         var result:Object = {capacity:capacity, live:0, attempts:0, created:0,
-            accepted:[], acceptedSteps:[], seen:[], slotStep:0, failAll:false};
-        result.spawn = function(attribute, index:Number, waveIndex:Number, quantity:Number):Boolean {
+            accepted:[], acceptedOrdinals:[], acceptedSteps:[], seen:[], slotStep:0, failAll:false};
+        result.spawn = function(attribute, index:Number, waveIndex:Number, quantity:Number, ordinal:Number):Boolean {
             this.attempts++;
-            this.seen.push({attribute:attribute, index:index, waveIndex:waveIndex, quantity:quantity});
+            this.seen.push({attribute:attribute, index:index, waveIndex:waveIndex, quantity:quantity, ordinal:ordinal});
             if (this.failAll || !(this.live < this.capacity)) return false;
             this.live++; this.created++;
-            this.accepted.push(quantity);this.acceptedSteps.push(this.slotStep);
+            this.accepted.push(quantity);this.acceptedOrdinals.push(ordinal);this.acceptedSteps.push(this.slotStep);
             return true;
         };
         return result;
@@ -60,6 +60,9 @@ class org.flashNight.arki.scene.WaveSpawnWheelTest {
             scheduler.minHeapTick();
             check(fake.created == 5 && fake.live == 2, "all five reserved enemies eventually spawn");
             check(fake.accepted.join(",") == "5,4,3,2,1", "successful remaining-count sequence has no gaps");
+            check(fake.acceptedOrdinals.join(",")=="0,1,2,3,4","fixed source ordinals advance only after admitted spawns");
+            check(fake.seen[2].ordinal==2 && fake.seen[4].ordinal==2 && fake.seen[9].ordinal==2,
+                "rejected retries keep the same fixed source instance ordinal");
             check(fake.attempts == 17, "completed task stops attempts immediately");
             scheduler.minHeapTick();
             check(fake.attempts == 17, "drained task cannot spawn twice");
@@ -91,6 +94,7 @@ class org.flashNight.arki.scene.WaveSpawnWheelTest {
             for(var si:Number=0;si<40;si++) {fake.slotStep=si;scheduler.slotTick();scheduler.minHeapTick();}
             check(fake.created==3,"400ms slot queue eventually delivers all original quantity");
             check(fake.accepted.join(",")=="3,2,1","slot requeue preserves every remaining-count transition");
+            check(fake.acceptedOrdinals.join(",")=="0,1,2","timed queue preserves independent source ordinals");
             check(fake.acceptedSteps.join(",")=="4,9,14","explicit interval retains existing wheel quantum: first400ms then500ms");
             check(fake.attempts==3,"completed slot queue never replays");
             var schedulerApi:Object=scheduler;var slots:Object=schedulerApi.slots;

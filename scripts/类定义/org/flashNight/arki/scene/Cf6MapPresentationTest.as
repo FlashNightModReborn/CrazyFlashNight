@@ -37,7 +37,8 @@ class org.flashNight.arki.scene.Cf6MapPresentationTest {
             _root.basicZoomScale=1;_root.cameraZoomToggle=false;
             world.场景背景url="flashswf/backgrounds/cf6/CF6_A01_BG.swf";
             var map:Object={id:"A01",background:"cf6/CF6_A01_BG.swf",presentation:{scale:2,backgroundX:12,backgroundY:18}};
-            definition._cf6={maps:[map]};stageApi.instance={currentStage:0,gameworld:world};
+            definition._cf6={maps:[map]};stageApi.instance={currentStage:0,gameworld:world,mapId:"A01"};
+            stageApi.instance.currentBookMapId=function():String {return this.mapId;};
             check(Cf6MapPresentation.applyBackground(world,owner,background),"exact live room accepts asset transform");
             check(background._x==12 && background._y==18,"absolute asset origin is applied");
             check(background._width==40 && background._height==20,"native MovieClip dimensions scale uniformly");
@@ -59,6 +60,32 @@ class org.flashNight.arki.scene.Cf6MapPresentationTest {
             check(!Cf6MapPresentation.matchesBake(world,owner,background,receipt),"old bake cannot claim a different asset origin");
             map.presentation.backgroundX=12;
             check(!Cf6MapPresentation.matchesBake(world,owner,background,{}),"legacy receipt without actual matrix is insufficient");
+            var tutorial:Object={id:"TUTORIAL",background:"cf6/CF6_Tutorial_BG.swf",
+                presentation:{scale:1,backgroundX:0,backgroundY:0}};
+            var direct:Object={id:"A06",background:"cf6/CF6_A06_BG.swf",
+                presentation:{scale:1.5,backgroundX:2,backgroundY:4}};
+            definition._cf6={maps:[tutorial,direct]};stageApi.instance.mapId="A06";
+            world.场景背景url="flashswf/backgrounds/cf6/CF6_A06_BG.swf";
+            check(Cf6MapPresentation.applyBackground(world,owner,background)
+                && background._x==2 && background._y==4 && background._width==30 && background._height==15,
+                "nonzero debug start selects authored A06 instead of tutorial at stage index zero");
+            pixels=new BitmapData(50,40,true,0);pixels.draw(background,background.transform.matrix);
+            check(pixels.getPixel(30,17)===0x44AA77 && (pixels.getPixel32(30,17)>>>24)===255
+                && pixels.getPixel32(32,19)==0,"debug-start native bitmap uses the selected map footprint");
+            pixels.dispose();
+            check(stageApi.instance.currentStage===0 && hero._x==80 && hero._y==70 && world._xscale==100,
+                "map identity resolution does not rewrite progression or actor coordinates");
+            stageApi.instance.mapId="TUTORIAL";
+            check(!Cf6MapPresentation.applyBackground(world,owner,background),
+                "loaded A06 resource cannot override an authoritative tutorial identity");
+            stageApi.instance.mapId="A99";
+            check(!Cf6MapPresentation.applyBackground(world,owner,background),"unknown authored map identity rejected");
+            stageApi.instance.mapId="A06";definition._cf6.maps.push(direct);
+            check(!Cf6MapPresentation.applyBackground(world,owner,background),"ambiguous authored map identity rejected");
+            definition._cf6={maps:[map]};stageApi.instance.mapId="A01";
+            world.场景背景url="flashswf/backgrounds/cf6/CF6_A01_BG.swf";
+            check(Cf6MapPresentation.applyBackground(world,owner,background) && background._width==40,
+                "ordinary progression keeps its original presentation after debug-start coverage");
             map.presentation.scale=Number.NaN;
             check(!Cf6MapPresentation.applyBackground(world,owner,background) && background._width==40,"invalid policy leaves current visual untouched");
             map.presentation.scale=2;world.场景背景url="flashswf/backgrounds/cf6/CF6_A02_BG.swf";

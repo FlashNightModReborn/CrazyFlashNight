@@ -8,6 +8,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6WingsAssetTest {
     private static var loader:MovieClipLoader, listener:Object;
     private static var passed:Number, failed:Number, ticks:Number;
     private static var ready:Boolean, finished:Boolean;
+    private static var signalRoom:Object;
     private static var cases:Array, probes:Array, images:Object, shadows:Array;
     private static var link:String = "敌人-CF6Wings";
 
@@ -91,6 +92,13 @@ class org.flashNight.arki.unit.Action.Melee.Cf6WingsAssetTest {
             var shadowActor:MovieClip=library.attachMovie(link,"wingsShadowProbe"+shadows.length,library.getNextHighestDepth(),{fixtureRecord:record()});
             shadows.push({actor:shadowActor,state:shadowStates[st],face:face});
         }
+        signalRoom={world:library,owner:org.flashNight.arki.scene.StageReturnFlow.worldIdentity(library),
+            key:"wings-native-signals",mapId:"A18",sequence:0,clock:0,external:{},player:{}};
+        org.flashNight.arki.scene.Cf6SoldierSignals.bindRoom(signalRoom);
+        var designated:MovieClip=cases[4].actor,interrupted:MovieClip=cases[15].actor;
+        designated.version=1001;designated.兵种=link;
+        designated.cf6SpawnWave=1;designated.cf6SpawnEntry=0;designated.cf6SpawnOrdinal=0;
+        interrupted.version=1002;interrupted.兵种=link;
         ready=true;ticks=0;
     }
     private static function target(name:String,dx:Number):MovieClip {
@@ -249,6 +257,9 @@ class org.flashNight.arki.unit.Action.Melee.Cf6WingsAssetTest {
     private static function tick():Void {
         if(finished)return;ticks++;
         if(!ready){if(ticks>300){check(false,"load timeout");finish();}return;}
+        signalRoom.clock=ticks;
+        if(ticks==4)check(signalRoom.designatedWings.busy===true && signalRoom.designatedWings.sequence===0,
+            "actual designated Wings flip starts a busy interval without an early recovery receipt");
         if(ticks==3) {
             for(var sp:Number=0;sp<shadows.length;sp++) {
                 var shadowCase:Object=shadows[sp];var su:MovieClip=shadowCase.actor;
@@ -330,6 +341,12 @@ class org.flashNight.arki.unit.Action.Melee.Cf6WingsAssetTest {
             if(death.actor.man._currentframe>=end-3 && death.actor.man._currentframe<=end)render(death.actor,"death-a"+branch+"-late");
         }
         if(ticks==145) {
+            var observed:Object=signalRoom.designatedWings;
+            check(observed.actor===cases[4].actor && observed.sequence>0 && !observed.busy && observed.frame>4,
+                "actual designated Wings landing publishes one version-bound recovery");
+            var canceled:Object=cases[15].actor.__cf6ExternalRecord;
+            check(canceled!=null && canceled.sequence===0 && !canceled.busy,
+                "interrupted native flip has no recovery receipt");
             var expected:Object={combo:[14,0],shoot:[0,4],slash:[3,0],flip:[6,5],flipSlash:[9,5],flipShoot:[6,9]};
             for(var j:Number=0;j<cases.length;j++) {
                 var item:Object=cases[j];var rec:Object=item.record;var attacks:Array=expected[item.move];

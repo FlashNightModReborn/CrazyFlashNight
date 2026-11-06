@@ -38,9 +38,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer 
                 && kind != "敌人-CF6特种教官" && kind != "敌人-CF6持盾特种教官") {
             return;
         }
-        var courtTitle:String = Cf6NameRandomizer.getCourtDetachmentTitle();
+        var fixedTitle:Boolean=typeof target.cf6UnitIdentity=="string" && typeof target.cf6DisplayTitle=="string" && target.cf6DisplayTitle!="";
+        if(fixedTitle)target.称号=target.cf6DisplayTitle;
+        var courtTitle:String = fixedTitle?target.cf6DisplayTitle:Cf6NameRandomizer.getCourtDetachmentTitle();
         target.驻防番号 = courtTitle;
-        if (_root != null && _root.gameworld != null) {
+        if (!fixedTitle && _root != null && _root.gameworld != null) {
             _root.gameworld.cf6CourtDetachment = courtTitle;
         }
         if (kind == "敌人-CF6特种兵" || kind == "敌人-CF6持盾特种兵") {

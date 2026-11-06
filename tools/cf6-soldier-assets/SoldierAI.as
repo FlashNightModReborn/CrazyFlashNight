@@ -95,7 +95,8 @@ soldierCanShieldGuard=function():Boolean {
     if(this.状态=="长枪站立" || this.状态=="长枪行走" || this.状态=="长枪跑"
         || this.状态=="拾取" || this.状态=="躲闪")return true;
     var owner:Object=this.soldierAttackOwner;
-    return this.状态=="长枪攻击" && (owner==null || (owner.action=="shoot" && !owner.charge && !owner.elite));
+    return this.状态=="长枪攻击" && (owner==null || (owner.action=="shoot" && !owner.charge
+        && (!owner.elite || owner.kind=="stand")));
 };
 
 // Cancel before the timeline unloads its old man; delayed shots cannot adopt a new pose.
@@ -105,13 +106,17 @@ soldierCanShieldGuard=function():Boolean {
         this.soldierSetHP(0);return;
     }
     if(this.状态==next)return;
-    if(next!="被击")this.soldierShieldGuardActive=false;
-    if(next=="被击" || this.soldierPhase!=1)this.soldierShieldGuardDamage=0;
+    if(next!="被击")this.soldierEndShieldGuard();
+    if(this.soldierPhase!=1)this.soldierClearShieldPressure();
     this.soldierCancelAttack();
     this.状态=next;
     var pose:String=this.soldierPhase==1?this.soldierShieldStates[next]:next;
-    if(next=="长枪攻击" && this.soldierIsInstructor===true && this.eliteNextAction=="line")
+    if(next=="长枪攻击" && typeof this.cf6UnitIdentity=="string" && this.cf6ExpectedPose=="dual")
+        pose="固定双枪攻击";
+    else if(next=="长枪攻击" && this.soldierIsInstructor===true && this.eliteNextAction=="line")
         pose=this.soldierPhase==1?"教官持盾阵地攻击":"教官阵地攻击";
+    else if(next=="长枪攻击" && this.soldierIsElite===true && typeof this.cf6UnitIdentity=="string" && this.eliteNextAction=="line")
+        pose=this.soldierPhase==1?"固定持盾阵地攻击":"固定阵地攻击";
     this.gotoAndStop(pose);
 };
 
@@ -120,7 +125,7 @@ soldierSetHP=function(value:Number):Void {
     if(this.soldierPhase==0)return;
     if(this.soldierPhase==1 && value<=0){
         this.soldierHP=1;this.soldierPhase=0;this.soldierPhasePending=true;
-        this.soldierShieldGuardDamage=0;this.soldierShieldGuardActive=false;
+        this.soldierClearShieldPressure();this.soldierEndShieldGuard();
         this.soldierPhaseChanges++;this.soldierCancelAttack();
         this.soldierClearMovement();this.soldierRemoveShieldBuff();
         return;
@@ -128,18 +133,8 @@ soldierSetHP=function(value:Number):Void {
     var previous:Number=this.soldierHP;
     this.soldierHP=value;
     if(this.soldierPhase==1){
-        if(value>=this.hp满血值){this.soldierShieldGuardDamage=0;this.soldierNextShieldGuardAt=0;}
-        else if(isFinite(previous) && value<previous && this.soldierCanShieldGuard()){
-            this.soldierShieldGuardDamage+=previous-value;
-            var threshold:Number=Math.max(1,this.hp满血值*this.soldierTuning.shieldGuardTriggerRatio);
-            if(this.soldierShieldGuardDamage>=threshold){
-                this.soldierShieldGuardDamage=0;
-                this.soldierNextShieldGuardAt=this.soldierClock+90;
-                this.soldierShieldGuardActive=true;
-                this.soldierNextShootAt=0;this.soldierReadyAt=0;
-                this.状态改变("被击");
-            }
-        }
+        if(value>=this.hp满血值)this.soldierClearShieldPressure();
+        else this.soldierRecordShieldPressure(previous,value);
     }
 };
 
@@ -147,6 +142,7 @@ soldierOnKill=function(target:MovieClip):Void {
     if(this.soldierPhase==1){this.soldierSetHP(0);return;}
     if(this.soldierPhase==0 || this._killed || this.hp>0)return;
     var airborne:Boolean=this.浮空===true && this.状态=="击倒";
+    if(typeof this.cf6FixedDeath=="function")this.cf6FixedDeath();
     _root.敌人函数.标准击杀(this);
     if(airborne){this.浮空=true;this.状态改变("击倒");}
 };
@@ -158,6 +154,7 @@ soldierInitializePhase=function():Void {
         requested=this.soldierDefaultPhase;
     }
     this.soldierPhase=this.soldierInitialPhase=requested;
+    this.soldierInitializeDefense();
     this.soldierNormalHitEffect=this.击中效果 || "飙血";
     this.击中效果=requested==1?"击中金属":this.soldierNormalHitEffect;
     this.soldierHP=Number(this.hp);
@@ -172,7 +169,10 @@ soldierInitializePhase=function():Void {
     this.soldierStandardDeathCheck=this.死亡检测;
     this.死亡检测=function(para:Object):Void {
         if(this.soldierPhase!=2 || this.soldierDeathSettled)return;
-        if(this.hp<=0)this.soldierDeathSettled=true;
+        if(this.hp<=0){
+            if(typeof this.cf6FixedDeath=="function")this.cf6FixedDeath();
+            this.soldierDeathSettled=true;
+        }
         this.soldierStandardDeathCheck.call(this,para);
     };
     this.dispatcher.subscribeSingle("kill",this.soldierOnKill,this);
@@ -344,6 +344,8 @@ soldierTick=function():Void {
         if(this.状态!="血腥死" && this.状态!="消失")this.状态改变("血腥死");
         return;
     }
+    this.soldierObserveShieldThreat();
+    if(this.soldierTryShieldGuard())return;
     var owner:Object=this.soldierAttackOwner;
     if(owner!=null && !this.soldierCanAct(this.man)){
         this.soldierCancelAttack();

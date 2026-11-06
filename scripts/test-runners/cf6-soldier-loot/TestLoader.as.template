@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId cf6-soldier-loot Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.Cf6SoldierLootTest.runAllTests();
+org.flashNight.arki.item.RewardStashServiceTest.runAllTests();
+trace("FocusedTestRunId cf6-soldier-loot Complete: __FOCUSED_RUN_ID__");

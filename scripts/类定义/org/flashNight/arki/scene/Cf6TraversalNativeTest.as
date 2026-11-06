@@ -14,16 +14,17 @@ class org.flashNight.arki.scene.Cf6TraversalNativeTest {
     private static var saved:Object,world:MovieClip,driver:MovieClip,hero:MovieClip;
     private static var clothes:Object,pants:Object,rifle:Object,pistol:Object,cases:Array,row:Object,t:Object,room:Object;
     private static var stage:String,index:Number,age:Number,pending:Number,passed:Number,failed:Number;
-    private static var sideEffects:Number,done:Boolean;
+    private static var sideEffects:Number,combatEffects:Number,done:Boolean;
     private static function check(ok:Boolean,label:String):Void {
         if(ok) passed++;else {failed++;trace("[FAIL] Cf6TraversalNative: "+label);}
     }
     private static function noop():Void {}
     private static function noKey():Boolean {return false;}
     public static function effect():Void {sideEffects++;}
+    public static function combatEffect():Void {sideEffects++;combatEffects++;}
     public static function bindUpper(u:MovieClip):Void {
-        u.换弹匣=effect;u.主手换弹匣=effect;u.副手换弹匣=effect;u.结束换弹=effect;
-        u.开始射击=effect;u.长枪射击=effect;u.手枪射击=effect;u.手枪2射击=effect;
+        u.换弹匣=combatEffect;u.主手换弹匣=combatEffect;u.副手换弹匣=combatEffect;u.结束换弹=combatEffect;
+        u.开始射击=combatEffect;u.长枪射击=combatEffect;u.手枪射击=combatEffect;u.手枪2射击=combatEffect;
     }
     public static function initActor(u:MovieClip):Void {
         u.stop();u.hp=u.hp满血值=100;u.身高=175;u.性别="男";u.兵种="主角-男";
@@ -32,7 +33,7 @@ class org.flashNight.arki.scene.Cf6TraversalNativeTest {
         u.动作A=u.动作B=u.动作C=false;u.行走=noop;u.行走冷却帧=0;u.按键控制攻击模式=noop;u.按键检测=noKey;
         u.状态改变=function(value:String):Void {StateTransition.apply(this,value);};
         u.方向改变=function(value:String):Void {if(this.锁定方向)return;this.方向=value;this._xscale=value=="左"?-100:100;};
-        u.读取当前飞行状态=noop;u.存储当前飞行状态=noop;
+        u.读取当前飞行状态=noop;u.存储当前飞行状态=noop;DepthManager.instance.installHijack(u);
         var top:Array=["身体","上臂","左下臂","右下臂"];
         for(var i:Number=0;i<top.length;i++) u[top[i]]="男"+clothes.data.dressup+top[i];
         var legs:Array=["屁股","左大腿","右大腿","左小腿","右小腿"];
@@ -66,6 +67,10 @@ class org.flashNight.arki.scene.Cf6TraversalNativeTest {
         _root.gameworld=world;DepthManager.instance=new DepthManager(world,0,870655,32);DepthManager.instance.calibrate(0,600);
         var manager:Object={currentStage:0,isFailed:false,isFinished:false,isActive:true,gameworld:world};var managerClass:Object=StageManager;managerClass.instance=manager;
         room={world:world,owner:world.__stageReturnWorldIdentity,stageManager:manager,stageIndex:0};world.__cf6Mechanism=room;
+        _root.主角函数.持枪行走状态机=saved.functions.持枪行走状态机;
+        _root.主角函数.双枪行走状态机=saved.functions.双枪行走状态机;
+        _root.主角函数.拳刀行走状态机=saved.functions.拳刀行走状态机;
+        _root.主角函数.手雷行走状态机=saved.functions.手雷行走状态机;
         cases=[];var modes:Array=["长枪","手枪","双枪"];
         for(var i:Number=0;i<modes.length;i++) {cases.push({mode:modes[i],duration:174,kind:"door",serviceMode:"depart"});cases.push({mode:modes[i],duration:30,kind:"elevator",serviceMode:"arrive"});}
         driver=_root.createEmptyMovieClip("__cf6TraversalNativeWatch",30061);
@@ -113,7 +118,7 @@ class org.flashNight.arki.scene.Cf6TraversalNativeTest {
             // Exact source A03 departure action spans: stand1-54, walk55-90,
             // stand91-136, walk137-174. Spatially bounded to this disposable world.
             var walk:Boolean=row.kind=="elevator" || f>=55 && f<=90 || f>=137;
-            samples.push({frame:f,x:(row.kind=="elevator"?150:250)+f/10,z:300,visible:true,action:walk?"walk":"stand"});
+            samples.push({frame:f,x:(row.kind=="elevator"?150:250)+f/10,z:row.kind=="door" && f>=55 ? 245 : 300,visible:true,action:walk?"walk":"stand"});
         }
         var spec:Object={mode:row.serviceMode,fps:30,durationFrames:row.duration,
             actorReleaseFrame:null,actorSortY:300,gate:{x:250,z:300,radius:42},exit:{x:270,z:300},samples:samples};
@@ -171,6 +176,11 @@ class org.flashNight.arki.scene.Cf6TraversalNativeTest {
         if(stage=="play") {
             // Observe the previous actual render turn BEFORE applying the next sample.
             if(t.rules.frame>0) observe();
+            if(row.kind=="door" && t.rules.frame==90) {
+                hero.状态改变=function(value:String):Void {StateTransition.apply(this,value);};
+                hero.方向改变=function(value:String):Void {if(this.锁定方向)return;this.方向=value;this._xscale=value=="左"?-100:100;};
+                hero.行走=function():Void {};row.walk=hero.行走;
+            }
             var cue:String=Cf6TraversalService.tick(t,hero,true);
             if(row.kind=="elevator" && t.rules.frame==1)
                 check(hero._visible && visiblePixels() && Math.abs(hero._x-t.rules.samples[0].x)<0.06,"first visible native frame is already at the authored arrival point "+index);
@@ -224,6 +234,32 @@ class org.flashNight.arki.scene.Cf6TraversalNativeTest {
                     && hero.__cf6ElevatorPoseOwner===undefined,"native elevator input CAS restored "+index);
                 hero.状态改变(row.mode+"行走");
                 check(hero.状态==row.mode+"行走","native disembark may walk after hold released "+index);
+                hero.man.gotoAndStop(row.mode=="双枪"?"主手换弹匣":"换弹匣");
+                row.vehicle=Cf6VehicleActorAdapter.acquire(world,world.__stageReturnWorldIdentity);
+                check(row.vehicle!=null && hero.行走===row.walk,"native car presentation keeps existing player callbacks "+index);
+                row.vehicleRect=[-1,-1,1,1];
+                row.vehicleWalls=[[-10000,-10000,10000,-10000],[-10000,10000,10000,10000],[-10000,-10000,-10000,10000],[10000,-10000,10000,10000]];
+                sideEffects=combatEffects=0;stage="vehicle-hold";age=0;
+            }
+        }
+        if(stage=="vehicle-hold") {
+            hero.动作A=hero.动作B=hero.动作C=true;
+            if(age==4) {
+                hero.行走=effect;row.walk=hero.行走;
+                hero.控制块.removeMovieClip();var refreshed:MovieClip=hero.createEmptyMovieClip("控制块",hero.getNextHighestDepth());
+                refreshed.machine=row.mode=="双枪"?_root.主角函数.双枪行走状态机:_root.主角函数.持枪行走状态机;
+                refreshed.onEnterFrame=function():Void {this.machine.call(this);};row.control=refreshed.onEnterFrame;
+            }
+            Cf6VehicleActorAdapter.move(row.vehicle,0,0,1,row.vehicleRect,row.vehicleWalls);
+            if(age==12) {
+                trace("NativeVehicleHold: case="+index+" current="+Cf6VehicleActorAdapter.current(row.vehicle)+" effects="+sideEffects+" combat="+combatEffects+" frame="+hero.man._currentframe+" hp="+hero.hp+" owner="+(hero.__cf6VehicleOwner===row.vehicle.token)+" mask="+(Cf6ActorMaskState.identity(hero)===row.vehicle.maskBirth)+" walk="+(hero.行走===row.walk)+" control="+(hero.控制块.onEnterFrame===row.control)+" state="+hero.状态);
+                check(Cf6VehicleActorAdapter.current(row.vehicle) && combatEffects==0 && hero.man._currentframe==2,
+                    "native refreshed player/control timelines cannot act through the vehicle marker "+index);
+                var currentWalk:Function=hero.行走,currentControl:Function=hero.控制块.onEnterFrame;
+                Cf6VehicleActorAdapter.release(row.vehicle);
+                trace("NativeVehicleRelease: case="+index+" walk="+(hero.行走===row.walk)+" control="+(hero.控制块.onEnterFrame===row.control)+" marker="+typeof hero.__cf6VehicleOwner);
+                check(hero.行走===currentWalk && hero.控制块.onEnterFrame===currentControl && hero.__cf6VehicleOwner===undefined,
+                    "native vehicle release keeps refreshed input and control callbacks "+index);
                 nextCase();
             }
         }

@@ -1,0 +1,298 @@
+{
+  "schema": "cf6-body-source-refresh.v1",
+  "previousPolicySha256": "66c5787baea7d9fc7dc6c844c2678199f0cdda18c6bb7ec4d55026277d6687e8",
+  "currentPolicySha256": "f90dd65d75cf627b7aa41d882b51b1a3b39aacf771d56e3d3721b6e2dd275cb8",
+  "numericalPolicyUnchanged": true,
+  "historicalCalibrationPreserved": true,
+  "method": "Keep each declared unit root and standing symbol; recursively bind current DOMSymbolInstance dependencies, preserving explicit excludedSymbols.",
+  "changes": [
+    {
+      "unitId": 461,
+      "linkage": "敌人-CF6普通男僵尸",
+      "previousCount": 26,
+      "currentCount": 26,
+      "changedOrAdded": {},
+      "removedUnreferenced": {}
+    },
+    {
+      "unitId": 462,
+      "linkage": "敌人-CF6女僵尸",
+      "previousCount": 32,
+      "currentCount": 32,
+      "changedOrAdded": {},
+      "removedUnreferenced": {}
+    },
+    {
+      "unitId": 464,
+      "linkage": "敌人-CF6Wings",
+      "previousCount": 35,
+      "currentCount": 35,
+      "changedOrAdded": {
+        "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/敌人-CF6Wings.xml": {
+          "before": "6136b25f0af3ad018e9ab14dfa785065732ba5e689b65edbc5c9d5deae0b164b",
+          "after": "5cf819067e9e846cc88d078506c006af4f0ed99b4ec88ebf548ca120a453df88"
+        }
+      },
+      "removedUnreferenced": {}
+    },
+    {
+      "unitId": 466,
+      "linkage": "敌人-CF6特种兵",
+      "previousCount": 41,
+      "currentCount": 50,
+      "changedOrAdded": {
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-空枪套前景-遮罩0.xml": {
+          "before": null,
+          "after": "d6e90dfddfeefd937ecd1f713af633ae897ce9bd0b9a7ace3b2764e29d1c0291"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-空枪套前景-遮罩1.xml": {
+          "before": null,
+          "after": "aba66816372a33ed29298c6ebaddcb1419f44924a5b09ebbde5579da7181906e"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-空枪套前景.xml": {
+          "before": null,
+          "after": "51a82435f8e085bf8eacf8a389955630279525b99f18ff0335c99f7e227bdab8"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部投掷物-遮罩0.xml": {
+          "before": null,
+          "after": "f51a4bfd70abea25d689b41e8262ed38711fa8bd218072820c343dc107f8a44f"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部投掷物-遮罩1.xml": {
+          "before": null,
+          "after": "f01bc834bb7eb5a64250cb37a3ff197b4cc0cc9230d88f52355bb9a1b8578704"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部投掷物.xml": {
+          "before": null,
+          "after": "59dd22588d954fc6387a525677777b052d827fa4932bb06fd5610b74e9da8252"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部衣料-遮罩0.xml": {
+          "before": null,
+          "after": "22cf31d75e8f3bf6c9a737d94a1f6decae784ebaa21a78322c2e0739c751035b"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部衣料-遮罩1.xml": {
+          "before": null,
+          "after": "a8daa7b9e026b0d1b221407453cb059046bf39e2279e99e5d7d0b8d2d3daf6f0"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部衣料.xml": {
+          "before": null,
+          "after": "fb64ec9ef95b10252add1b3b8e40e9e189e546fcbbdcd5b01823501e2e972060"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489.xml": {
+          "before": "71c7311c0f7905f17210083ac45522768e2132eee6bacf74236cc715e18fd03f",
+          "after": "5e00fa4fb2b95ff21ee5f468974118a32ab4cc66c239fff7ff39a612a4eacd31"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/站立.xml": {
+          "before": "669a2a4694c4d058f330d3ef822db54ee1cacc9c08576c2a9d7f651dbe22470c",
+          "after": "71cf69a10cd39c3d2a6413e52913702a0eaa95a08a2821a570203623991de0ef"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6特种兵.xml": {
+          "before": "41d9f56956c3fcf19a2c9a5c0d4c951dfb13fba1227977047804ce276a710480",
+          "after": "6efa31c6864244792710de525203958fc3a13759989cb1ae42930191aa38dac5"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/武器/长枪挂点.xml": {
+          "before": null,
+          "after": "67b0d0ed24e42ee6e1f25c8fbe4c64ffc4b64fb00021770a18cb5b0731df4437"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/装备/腿挂匕首.xml": {
+          "before": null,
+          "after": "fd2a13d834f27e820712369eb34979137391df0fa1e119625e7066ddeb85fc7d"
+        }
+      },
+      "removedUnreferenced": {
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-遮罩0.xml": "5354b603df078cd64ff562e9d6f1c5c1c105d8f710d889560d27995b59324414",
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-遮罩1.xml": "426cc859305037095a015716fb34fc1ae2300fdfd8782dc048b3a47711e3f0ee"
+      }
+    },
+    {
+      "unitId": 467,
+      "linkage": "敌人-CF6持盾特种兵",
+      "previousCount": 44,
+      "currentCount": 53,
+      "changedOrAdded": {
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-空枪套前景-遮罩0.xml": {
+          "before": null,
+          "after": "d6e90dfddfeefd937ecd1f713af633ae897ce9bd0b9a7ace3b2764e29d1c0291"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-空枪套前景-遮罩1.xml": {
+          "before": null,
+          "after": "aba66816372a33ed29298c6ebaddcb1419f44924a5b09ebbde5579da7181906e"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-空枪套前景.xml": {
+          "before": null,
+          "after": "51a82435f8e085bf8eacf8a389955630279525b99f18ff0335c99f7e227bdab8"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部投掷物-遮罩0.xml": {
+          "before": null,
+          "after": "f51a4bfd70abea25d689b41e8262ed38711fa8bd218072820c343dc107f8a44f"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部投掷物-遮罩1.xml": {
+          "before": null,
+          "after": "f01bc834bb7eb5a64250cb37a3ff197b4cc0cc9230d88f52355bb9a1b8578704"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部投掷物.xml": {
+          "before": null,
+          "after": "59dd22588d954fc6387a525677777b052d827fa4932bb06fd5610b74e9da8252"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部衣料-遮罩0.xml": {
+          "before": null,
+          "after": "22cf31d75e8f3bf6c9a737d94a1f6decae784ebaa21a78322c2e0739c751035b"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部衣料-遮罩1.xml": {
+          "before": null,
+          "after": "a8daa7b9e026b0d1b221407453cb059046bf39e2279e99e5d7d0b8d2d3daf6f0"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-腰部衣料.xml": {
+          "before": null,
+          "after": "fb64ec9ef95b10252add1b3b8e40e9e189e546fcbbdcd5b01823501e2e972060"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489.xml": {
+          "before": "71c7311c0f7905f17210083ac45522768e2132eee6bacf74236cc715e18fd03f",
+          "after": "5e00fa4fb2b95ff21ee5f468974118a32ab4cc66c239fff7ff39a612a4eacd31"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/持盾站立.xml": {
+          "before": "0da5f19a8991df4526525a04d5d97158b0280c29375cbfe5e080bc8c20cfe6e9",
+          "after": "40ccbe9a2b8f98ce1a383c48708dcce3b7053f6efcea9b7d7cd2bec8b4520863"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6持盾特种兵.xml": {
+          "before": "6071b673ad8bc73dff4c0955a570cfcef9efc2f843f37be04db4da71624ac81d",
+          "after": "74671729b285a786bd919e74d6fe1ad1d3b558c5cd6745f4d36e98ba1f574a94"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/武器/长枪挂点.xml": {
+          "before": null,
+          "after": "67b0d0ed24e42ee6e1f25c8fbe4c64ffc4b64fb00021770a18cb5b0731df4437"
+        },
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/装备/腿挂匕首.xml": {
+          "before": null,
+          "after": "fd2a13d834f27e820712369eb34979137391df0fa1e119625e7066ddeb85fc7d"
+        }
+      },
+      "removedUnreferenced": {
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-遮罩0.xml": "5354b603df078cd64ff562e9d6f1c5c1c105d8f710d889560d27995b59324414",
+        "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/分件/489-遮罩1.xml": "426cc859305037095a015716fb34fc1ae2300fdfd8782dc048b3a47711e3f0ee"
+      }
+    },
+    {
+      "unitId": 468,
+      "linkage": "敌人-CF6光头保安",
+      "previousCount": 40,
+      "currentCount": 40,
+      "changedOrAdded": {
+        "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/站立.xml": {
+          "before": "6f0308c156fd7b86e5b44007bfc4112feca507cbd38799c21a974b6f8bb12134",
+          "after": "cd1c6c40ea5633c5a8068d66d4d1a93a3f4c0370d6afc4ca4973e31963dc4407"
+        },
+        "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/敌人-CF6光头保安.xml": {
+          "before": "c00ef9508b7be28816a01449437aafae2138009fbda598dba37bc2fbc7ad24af",
+          "after": "f60741d755e8104c70ee41e6c198b4e41fcf83d8cd33a44c45576a6d29fac04e"
+        }
+      },
+      "removedUnreferenced": {}
+    },
+    {
+      "unitId": 469,
+      "linkage": "敌人-CF6变身光头保安",
+      "previousCount": 40,
+      "currentCount": 40,
+      "changedOrAdded": {
+        "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/站立.xml": {
+          "before": "6f0308c156fd7b86e5b44007bfc4112feca507cbd38799c21a974b6f8bb12134",
+          "after": "cd1c6c40ea5633c5a8068d66d4d1a93a3f4c0370d6afc4ca4973e31963dc4407"
+        },
+        "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/敌人-CF6变身光头保安.xml": {
+          "before": "bd32db76cc1499708b9d16776e28dd40a79777f0ff4703d5843e578f0e3dc2df",
+          "after": "a8373d994a4398384375a1a6e70c04e1b82f90c40f436f1fe65c18804f8e7174"
+        }
+      },
+      "removedUnreferenced": {}
+    }
+  ],
+  "nativeVerification": {
+    "runId": "d939c5452e644159b02b5743734bacec",
+    "passed": 21,
+    "failed": 0,
+    "measured": 7,
+    "swfSha256": "9224e5588c1951dbcffb4da5cf22a1bddff918673a1ca2ff1bf5a6912fdfd739",
+    "measurementContract": {
+      "schema": "cf6-body-alpha-probe.v1",
+      "supersample": 4,
+      "alphaMinimum": 128,
+      "as2ApiReferences": [
+        "https://open-flash.github.io/mirrors/as2-language-reference/flash/display/BitmapData.html",
+        "https://open-flash.github.io/mirrors/as2-language-reference/flash/geom/Rectangle.html",
+        "https://open-flash.github.io/mirrors/as2-language-reference/flash/geom/Matrix.html"
+      ],
+      "heightToleranceLogicalPixels": 1,
+      "scaleTolerancePercentagePoints": 0.02,
+      "policySha256": "66c5787baea7d9fc7dc6c844c2678199f0cdda18c6bb7ec4d55026277d6687e8",
+      "rows": [
+        {
+          "linkage": "敌人-CF6普通男僵尸",
+          "label": "空手站立",
+          "heightCm": 175,
+          "name": "制服感染者",
+          "expectedPixels": 145.192765
+        },
+        {
+          "linkage": "敌人-CF6女僵尸",
+          "label": "空手站立",
+          "heightCm": 175,
+          "name": "游荡感染者",
+          "expectedPixels": 145.192765
+        },
+        {
+          "linkage": "敌人-CF6Wings",
+          "label": "空手站立",
+          "heightCm": 190,
+          "name": "「翼」型克隆特工",
+          "expectedPixels": 157.63785914285717
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "label": "长枪站立",
+          "heightCm": 175,
+          "name": "突击步兵",
+          "expectedPixels": 145.192765
+        },
+        {
+          "linkage": "敌人-CF6持盾特种兵",
+          "label": "持盾站立",
+          "heightCm": 175,
+          "name": "重盾突击兵",
+          "expectedPixels": 145.192765
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "label": "空手站立",
+          "heightCm": 175,
+          "name": "安保干员",
+          "expectedPixels": 145.192765
+        },
+        {
+          "linkage": "敌人-CF6变身光头保安",
+          "label": "空手站立",
+          "heightCm": 175,
+          "name": "安保干员",
+          "expectedPixels": 145.192765
+        }
+      ],
+      "basis": "Frozen policy body targets; 4x alpha threshold raster bounds, two boundary quantization plus AA/matrix budget. No tolerance adjustment based on test output."
+    },
+    "measurements": [
+      "Cf6BodyScaleLiveProbe 敌人-CF6普通男僵尸 opaqueBodyHeight=144.5 expected=145.192765 delta=-0.692765000000009 footY=6 scale=115.445411537411 expectedScale=115.445411537411 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6女僵尸 opaqueBodyHeight=145.25 expected=145.192765 delta=0.0572349999999915 footY=3.5 scale=117.524423309535 expectedScale=117.524423309535 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6Wings opaqueBodyHeight=157.5 expected=157.637859142857 delta=-0.137859142857167 footY=6 scale=120.91236618872 expectedScale=120.91236618872 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6特种兵 opaqueBodyHeight=145.25 expected=145.192765 delta=0.0572349999999915 footY=-0.75 scale=110.150732623056 expectedScale=110.150732623056 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6持盾特种兵 opaqueBodyHeight=145.25 expected=145.192765 delta=0.0572349999999915 footY=-0.75 scale=110.150732623056 expectedScale=110.150732623056 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6光头保安 opaqueBodyHeight=144.5 expected=145.192765 delta=-0.692765000000009 footY=0 scale=113.41162499017 expectedScale=113.41162499017 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true",
+      "Cf6BodyScaleLiveProbe 敌人-CF6变身光头保安 opaqueBodyHeight=144.5 expected=145.192765 delta=-0.692765000000009 footY=0 scale=113.41162499017 expectedScale=113.41162499017 bodyFrame=1 alpha=128 res=4 unclipped=true ok=true"
+    ],
+    "rslIdentities": {
+      "flashswf/arts/new/Antigravity专用素材.swf": "8166bc4a17e541876bd76092bcd4a5fd4e603a8bca8a8376589540861bcb98da",
+      "flashswf/arts/new/CodexWings素材.swf": "d53367b97281c0028fe568015b7fab40094699e0eaa6625fcb0cc961945a1164",
+      "flashswf/arts/new/Codex特种兵素材.swf": "96c397e9cd842021b45dc9b00fd45d710d3eed2b5b8a47bb8d1a4d75b9846a1a",
+      "flashswf/arts/new/Codex光头保安素材.swf": "e785224e92166e67ef835b986d063b26ab66be8807db4395b4508fdb2849fafb"
+    },
+    "scope": "actual native alpha body bounds and direction ownership; fixed prior targets/tolerance; no resize"
+  },
+  "scope": "Source provenance refresh only, not geometry, gameplay balance or human acceptance."
+}

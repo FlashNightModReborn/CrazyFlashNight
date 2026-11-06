@@ -124,6 +124,7 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         }
         if (bossMark == null && health && finite(boss.hp满血值) && boss.hp满血值 > 0) {
             bossMark={}; boss.cf6BossIdentity=bossMark;forgetBossBirth();
+            org.flashNight.arki.scene.Cf6SoldierSignals.bindBoss(boss,"human");
             hudLease=org.flashNight.arki.hud.FocusTargetHudService.bind(
                 world,owner,boss,"cf6BossIdentity",bossMark,"boss","");
         }
@@ -151,7 +152,14 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
                 || !finite(boss.hp) || !finite(boss.hp满血值) || boss.hp满血值 <= 0) return;
         while (groupIndex < plan.groups.length && boss.hp / boss.hp满血值 <= plan.groups[groupIndex].hpRatio) {
             var entries:Array=plan.groups[groupIndex++].enemies;
-            for (var i:Number=0;i<entries.length;i++) for (var q:Number=0;q<entries[i].Quantity;q++) queue.push(entries[i]);
+            for (var i:Number=0;i<entries.length;i++) for (var q:Number=0;q<entries[i].Quantity;q++) {
+                if(entries[i].Parameters.cf6FixedSlots===undefined)queue.push(entries[i]);
+                else {
+                    var pending:Object={};
+                    for(var field:String in entries[i])pending[field]=entries[i][field];
+                    pending.cf6SpawnOrdinal=q;queue.push(pending);
+                }
+            }
         }
         if (waitFrames > 0) { waitFrames--; return; }
         var count:Number=0, ranged:Number=0;
@@ -167,6 +175,10 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         var source:Object=queue.splice(index,1)[0], enemy:Object={}, parameters:Object={};
         for (var key:String in source) enemy[key]=source[key];
         for (key in source.Parameters) parameters[key]=source.Parameters[key];
+        if(source.Parameters.cf6FixedSlots!==undefined){
+            var position:Object=org.flashNight.arki.scene.Cf6SoldierRoster.prepare(source,source.cf6SpawnOrdinal,parameters);
+            enemy.x=position.x;enemy.y=position.y;
+        }
         name=token+"_"+(nextName++);
         parameters.cf6BossOwnerToken=token; parameters.publishStageEvent=true; parameters.产生源="无";
         if(source.podId!=undefined) parameters.cf6PodId=source.podId;
@@ -242,6 +254,7 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         }
         // Native unit code alone creates and counts the successor; this controller binds it.
         plan=plan.nextPhase;bossMark={};child.cf6BossIdentity=bossMark;child.publishStageEvent=true;
+        org.flashNight.arki.scene.Cf6SoldierSignals.bindBoss(child,"robot");
         org.flashNight.arki.scene.Cf6Type61Service.queueField(world,6,"robot");
         hudLease=org.flashNight.arki.hud.FocusTargetHudService.bind(
             world,owner,child,"cf6BossIdentity",bossMark,"boss","");
@@ -308,6 +321,11 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
     }
     private function retire(unit:MovieClip, mark:Object):Void {
         if (unit == undefined || mark == null || unit.cf6SupportIdentity !== mark || unit.cf6BossOwnerToken !== token) return;
+        if(typeof unit.cf6UnitIdentity=="string"){
+            unit.cf6EncounterRetired=true;unit.cf6ActionRecord.retired=true;
+            org.flashNight.arki.scene.Cf6SoldierSignals.event(unit,"retire");
+            if(typeof unit.cf6FixedCancel=="function")unit.cf6FixedCancel("support_retired");
+        }
         unit.已加经验值=true; unit.掉落物=[]; unit.removeMovieClip();
     }
     private function retireRecord(record:Object):Void {

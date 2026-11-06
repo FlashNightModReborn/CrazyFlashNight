@@ -129,24 +129,82 @@ try{
     test('unchanged captures have deterministic digest',()=>assert(C.assertUnchanged(baseline,C.capture(root))));
     test('Type61 closure binds route source, shop policies and its own runtime',()=>{
         const prior=new Map(C.TYPE61_FILES.map(ref=>[ref,fs.existsSync(path.join(root,ref))?fs.readFileSync(path.join(root,ref)):null]));
+        const bootFrame='scripts/asLoaderManifest/_definition_frame00.as';
         try {
         C.TYPE61_FILES.forEach(ref=>write(ref,'fixture type61 source'));
+        write(bootFrame,'\uFEFF// bounded boot definition fixture\nstop();');
         const type61=JSON.parse(JSON.stringify(chapter));type61.routeId='type61';
         write('data/stages/books/cf6-type61.runtime.json',JSON.stringify(type61));
         const result=C.capture(root,'type61');C.verify(result);assert.equal(result.routeId,'type61');
         const names=new Set(result.files.map(row=>row.relativePath));
         for(const ref of C.TYPE61_FILES)assert(names.has(ref),ref);
-        for(const ref of ['tools/cf6-type61/encounters.source.json','tools/cf6-soldier-assets/instructor-tuning.json']) {
+        assert(names.has(bootFrame));
+        assert(result.dependencies.some(row=>row.target===bootFrame&&row.kind==='boot_definition_source'));
+        for(const ref of ['tools/cf6-type61/encounters.source.json','tools/cf6-soldier-assets/instructor-tuning.json',
+            'tools/cf6-type61/soldier-loot-policy.source.json','tools/cf6-type61/soldier_programs.py','tools/cf6-soldier-assets/FixedActionRules.as',bootFrame]) {
             const original=fs.readFileSync(path.join(root,ref));
             write(ref,Buffer.concat([original,Buffer.from('\nauthoring change')]));
             assert.throws(()=>C.assertUnchanged(result,C.capture(root,'type61')));
             write(ref,original);
         }
         assert.throws(()=>C.assertUnchanged(baseline,result));
+        type61.type61={soldiers:{schema:'fixture'}};write('data/stages/books/cf6-type61.runtime.json',JSON.stringify(type61));
+        for(const [tool,owner,schema,input] of [
+            ['cf6-soldier-assets','Codex特种兵素材','cf6-soldier.native-import.v1','SoldierDefense.as'],
+            ['cf6-wings-assets','CodexWings素材','cf6-wings.native-import.v1','WingsAI.as'],
+            ['cf6-elder-assets','Codex老头素材','cf6-elder.native-import.v1','ElderAI.as'],
+            ['cf6-guard-assets','Codex光头保安素材','cf6-guard.native-import.v1','GuardTransform.as']]){
+            const base='flashswf/arts/new/'+owner,output=base+'/LIBRARY/__fixed_fixture.xml';write(output,'<fixture/>');
+            const projectFiles=['DOMDocument.xml','PublishSettings.xml',owner+'.xfl','MobileSettings.xml'].map(name=>{
+                write(base+'/'+name,name==='MobileSettings.xml'?'':'fixture '+name);
+                const entry=declared(base+'/'+name);return {...entry,path:name};
+            });
+            const entry=declared(output);write(base+'.swf',swf());
+            put('tools/'+tool+'/native-manifest.json',{schema,owner:base,nativeSymbolCount:1,
+                buildInputs:[declared('tools/'+tool+'/'+input)],outputs:[{...entry,path:'LIBRARY/__fixed_fixture.xml'}],projectFiles});
+        }
+        const actors=C.capture(root,'type61');
+        assert(actors.dependencies.some(x=>x.kind==='fixed_actor_native_source'));
+        const mobile='flashswf/arts/new/Codex特种兵素材/MobileSettings.xml';
+        write(mobile,'drift');assert.throws(()=>C.capture(root,'type61'),/sidecar changed/);write(mobile,'');
+        const source='flashswf/arts/new/Codex特种兵素材/LIBRARY/__fixed_fixture.xml';
+        write(source,'tampered');assert.throws(()=>C.capture(root,'type61'),/digest mismatch/);write(source,'<fixture/>');
+        assert(C.assertUnchanged(actors,C.capture(root,'type61')));
+        const normalizedPath='scripts/逻辑/单位函数/单位函数_lsy_主角射击函数.as',normalizedFile=path.join(root,normalizedPath);
+        const normalizedBefore=fs.existsSync(normalizedFile)?fs.readFileSync(normalizedFile):null;
+        const soldierManifest='tools/cf6-soldier-assets/native-manifest.json',soldierBefore=parse(soldierManifest);
+        try {
+            write(normalizedPath,'\uFEFF// fixture\r\nstop();\r\n');
+            const normalizedManifest=JSON.parse(JSON.stringify(soldierBefore));
+            normalizedManifest.buildInputs.push({path:normalizedPath,lineEndingNormalization:'lf',sha256:hash('\uFEFF// fixture\nstop();\n')});
+            put(soldierManifest,normalizedManifest);
+            const normalized=C.capture(root,'type61');
+            assert.equal(normalized.files.find(r=>r.relativePath===normalizedPath).sha256,hash('\uFEFF// fixture\r\nstop();\r\n'));
+            write(normalizedPath,'\uFEFF// fixture\nstop();\n');
+            assert.throws(()=>C.assertUnchanged(normalized,C.capture(root,'type61')),/changed/);
+            write(normalizedPath,'\uFEFF// fixture\nplay();\n');assert.throws(()=>C.capture(root,'type61'),/normalized actor digest mismatch/);
+            normalizedManifest.buildInputs.at(-1).lineEndingNormalization='crlf';put(soldierManifest,normalizedManifest);
+            assert.throws(()=>C.capture(root,'type61'),/source normalization/);
+        } finally {if(normalizedBefore===null)fs.unlinkSync(normalizedFile);else write(normalizedPath,normalizedBefore);put(soldierManifest,soldierBefore);}
+        const guardRef='tools/cf6-guard-assets/native-manifest.json',guardOriginal=parse(guardRef);
+        try {
+            const guarded=JSON.parse(JSON.stringify(guardOriginal));
+            for(const file of ['scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as','scripts/逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as']){
+                const content=fs.readFileSync(path.join(root,file),'utf8');
+                guarded.buildInputs.push({path:file,lineEndingNormalization:'lf',sha256:hash(content.replace(/\r\n/g,'\n'))});
+            }
+            put(guardRef,guarded);
+            const bound=C.capture(root,'type61');
+            for(const input of guarded.buildInputs.slice(-2)){
+                assert.equal(bound.files.find(row=>row.relativePath===input.path).sha256,hash(fs.readFileSync(path.join(root,input.path))));
+            }
+            guarded.buildInputs.at(-1).path='scripts/unsupported-guard-test.as';put(guardRef,guarded);
+            assert.throws(()=>C.capture(root,'type61'),/source normalization/);
+        } finally {put(guardRef,guardOriginal);}
         type61.routeId='historical';write('data/stages/books/cf6-type61.runtime.json',JSON.stringify(type61));
         assert.throws(()=>C.capture(root,'type61'));
         type61.routeId='type61';write('data/stages/books/cf6-type61.runtime.json',JSON.stringify(type61));
-        } finally {for(const [ref,bytes] of prior){if(bytes===null)fs.unlinkSync(path.join(root,ref));else write(ref,bytes);}}
+        } finally {fs.unlinkSync(path.join(root,bootFrame));for(const [ref,bytes] of prior){if(bytes===null)fs.unlinkSync(path.join(root,ref));else write(ref,bytes);}}
         assert(C.assertUnchanged(baseline,C.capture(root)));
     });
     test('new consumers, turret assetUrl and actual XFL input tree are bound',()=>{

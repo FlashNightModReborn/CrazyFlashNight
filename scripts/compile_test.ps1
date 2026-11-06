@@ -658,6 +658,7 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         }
 
         $hasOwnershipFailure = $false
+        $hasInheritanceFailure = $false
         if (-not $isTestLoaderTarget -and $VerifySwfPath -and
             $VerifySwfPath.StartsWith($ProjectDir + [System.IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -and
             -not ($hasCompileError -or $hasTraceFailure -or $hasSwfStale)) {
@@ -667,10 +668,17 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
                 $ownershipRelative.StartsWith('flashswf/')) {
                 & node (Join-Path $ProjectDir 'tools/audit-as2-class-embedding.js') --swf $ownershipRelative
                 if ($LASTEXITCODE -ne 0) { $hasOwnershipFailure = $true }
+                if ($ownershipRelative -eq 'scripts/asLoader.swf' -and -not $hasOwnershipFailure) {
+                    & node (Join-Path $ProjectDir 'tools/check-as2-inheritance-order.js') --swf $VerifySwfPath
+                    if ($LASTEXITCODE -ne 0) {
+                        Write-Host '[ERROR] asLoader 运行类的父类注册顺序校验失败。'
+                        $hasInheritanceFailure = $true
+                    }
+                }
             }
         }
 
-        if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasFunctionSizeFailure -or $hasOwnershipFailure) {
+        if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasFunctionSizeFailure -or $hasOwnershipFailure -or $hasInheritanceFailure) {
             Remove-Item -Path $TargetCfg, $ModeCfg, $QuitCfg, $ReopenMarker -ErrorAction SilentlyContinue
             exit 1
         }

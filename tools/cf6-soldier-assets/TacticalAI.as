@@ -32,7 +32,10 @@ soldierConfigureTactics=function():Void {
     if(this.特种兵避弹==undefined)this.特种兵避弹=this.soldierIsElite===true;
     // Reuse the main runtime's scanner. Do not publish a second class singleton.
     this.soldierThreatApi=_global.org.flashNight.arki.bullet.BulletComponent.Queue.BulletThreatScanProcessor;
-    if(this.特种兵避弹===true && this._btEnabled!==true && typeof this.soldierThreatApi.register=="function"){
+    this.soldierInitializeDefense();
+    if((this.特种兵避弹===true || this.soldierShieldGuardProactive
+        && (this.soldierDefaultPhase==1 || this.特种兵初始阶段==1))
+        && this._btEnabled!==true && typeof this.soldierThreatApi.register=="function"){
         this.soldierThreatApi.register(this);this.soldierThreatOwned=true;
     }
 };
@@ -141,7 +144,8 @@ soldierTacticalMove=function(direction:String,speed:Number):Number {
 };
 soldierBeginSmokeReload=function(body:MovieClip):Void {
     var owner:Object=this.soldierAttackOwner,config:Object=this.soldierTacticalConfig;
-    if(owner==null || owner.smokePrepared || this.soldierPhase!=2)return;
+    var fixedLauncher:Boolean=owner.fixed && this.cf6Profile.program.trigger=="relocate_then_flush";
+    if(owner==null || owner.smokePrepared || this.soldierPhase!=2 && !fixedLauncher)return;
     owner.smokePrepared=true;owner.reloadMoveAge=0;owner.reloadMovedX=0;owner.reloadMovedZ=0;
     var target:MovieClip=_root.gameworld[this.攻击目标];
     owner.reloadMoveSign=target._x<this._x?1:-1;
@@ -231,6 +235,8 @@ soldierReleaseChargeObserver=function():Void {
     }
 };
 soldierReleaseTactics=function():Void {
+    if(typeof this.cf6FixedRelease=="function")this.cf6FixedRelease();
+    this.soldierEndShieldGuard();this.soldierClearShieldPressure();
     this.soldierReleaseChargeObserver();this.soldierPendingEvasion=null;
     if(this.soldierThreatOwned && typeof this.soldierThreatApi.unregister=="function"){
         this.soldierThreatApi.unregister(this);this.soldierThreatOwned=false;

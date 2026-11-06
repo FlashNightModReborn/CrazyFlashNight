@@ -1,0 +1,3 @@
+﻿_root.cf6LootColdRunId="__FOCUSED_RUN_ID__";
+trace("FocusedTestRunId cf6-soldier-loot-cold Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.Cf6SoldierLootColdProbeTest.runAllTests();

@@ -39,8 +39,8 @@
     },
     {
       "path": "data/crafting/武器合成.json",
-      "bytes": 16592,
-      "sha256": "fb09eab4dd0dd201fe1c961cade3f8f7967c0c9ba224a3feab30ae7cfc1a3962"
+      "bytes": 17368,
+      "sha256": "691c0e77c63d4e7ad89e375d1150c7f5c11e6486c5b9868b51c395e16dfad27d"
     },
     {
       "path": "data/crafting/烹饪.json",
@@ -78,6 +78,131 @@
       "sha256": "0f8b6000cef121cf4c8f2cf2278fc729057c250abdacec90f44da35b51ce9690"
     },
     {
+      "path": "data/items/equipment_mods/list.xml",
+      "bytes": 1297,
+      "sha256": "9cc0879a81e2a252a576d9d6191237c730dabac0fe2067e083b2713622c49dd5"
+    },
+    {
+      "path": "data/items/equipment_mods/ui_presentation.xml",
+      "bytes": 3967,
+      "sha256": "36a29b67eb2c72ca76c965ec21950c1d86cc8f41bc7ab4a5a7ac3891d31cea25"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_下挂武器.xml",
+      "bytes": 5288,
+      "sha256": "e8806dfbe5730f1a90277ef155511682b5f59cd97dffea8ebc5c6ff7e0aecc43"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_刀专用.xml",
+      "bytes": 5642,
+      "sha256": "fe70b799f36f1a750bbd60cba90f1d46ecb2c54ef12b46312f55689aa83651a0"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_拳专用.xml",
+      "bytes": 473,
+      "sha256": "4686dea4fccf9548d375cd60bb73cf2fea4b28059eea007b39e29c35b2391262"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_枪械专用.xml",
+      "bytes": 6111,
+      "sha256": "47ed98963a6f0bc59ec449b4ecf65a5234194ddd880e56161063c5b9bf2cf4b7"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_通用.xml",
+      "bytes": 3530,
+      "sha256": "d339c3a7c4c210c1c069f0149b5613f6b3b263b7e9b32537eb5141a803159282"
+    },
+    {
+      "path": "data/items/equipment_mods/中等材料_防具专用.xml",
+      "bytes": 5551,
+      "sha256": "5b694da5c4d83e9d038ebe8cffbd5e8d712323bcd933192ddd09b0f907c8d4a5"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_下挂武器.xml",
+      "bytes": 1954,
+      "sha256": "9a20f44bf46dd9eaf8991b42945b5958f311b65d7e6a2a7cf51d526b9d7e0890"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_刀专用.xml",
+      "bytes": 2085,
+      "sha256": "14f3d437da24c78c03f05892e12b06858a4304e7e4c26439f3ff51d00587dde6"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_拳专用.xml",
+      "bytes": 851,
+      "sha256": "9975fac87b1b72d14cead0c207e4650b8d201c90c3f5b15285eaca51c654b03b"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_枪械专用.xml",
+      "bytes": 1740,
+      "sha256": "b5cbe3dcb737d68b74b7c440eb27a17a1e14a0cdedf2bb1d25861d6fa88c01fd"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_通用.xml",
+      "bytes": 1342,
+      "sha256": "c1f0613c68eb96d40e15866b54a9e1ff541caacbee2f2e1717daa68e0bf16f56"
+    },
+    {
+      "path": "data/items/equipment_mods/低级材料_防具专用.xml",
+      "bytes": 1444,
+      "sha256": "89c7df98c831f4ba57f7097a831ed379418da7a98b7295da7da6b65fe581668b"
+    },
+    {
+      "path": "data/items/equipment_mods/特殊材料_下挂武器.xml",
+      "bytes": 1929,
+      "sha256": "d3b7a3989ecb51df9395ec1ca1e01741108a8e225f66c4f99fff1003a25181ff"
+    },
+    {
+      "path": "data/items/equipment_mods/特殊材料_刀专用.xml",
+      "bytes": 556,
+      "sha256": "78e4e49ebd9ee00a8e9a34617038857518d5a5c5c8e76e1057268d947124c5ad"
+    },
+    {
+      "path": "data/items/equipment_mods/特殊材料_通用.xml",
+      "bytes": 2679,
+      "sha256": "a1110923094234c1a61ee7ba1711982c22543925594e5761377df8153b819367"
+    },
+    {
+      "path": "data/items/equipment_mods/特殊材料_防具专用.xml",
+      "bytes": 3562,
+      "sha256": "6f1d4f4c9137d8b04315b7fda3bfd390b724e84cabf0b0f587d12cc015599d4e"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_下挂武器.xml",
+      "bytes": 7086,
+      "sha256": "d728d0eeaaac0214e2a355588f2938fccf5b7c1f366c55d89319f69fc624396b"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_刀专用.xml",
+      "bytes": 3710,
+      "sha256": "cd4665f51a18585ae015d190dc4922ddf8d82e2c463c307f74077a2c98c47e46"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_拳专用.xml",
+      "bytes": 792,
+      "sha256": "877167d4ecfdce53d618c4d1104d562ccc774ecdfc627e0a3b670f35255587f8"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_枪械专用.xml",
+      "bytes": 52675,
+      "sha256": "3b567e7ce4bb3b59ebdc15d5b0d64436f99b39307b07649d4076797fcafcd00f"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_通用.xml",
+      "bytes": 4963,
+      "sha256": "e5ab3cdedf576d6d1ca9bd69e1b4fd107a479dccdc33d423220da4fc5c95a1ed"
+    },
+    {
+      "path": "data/items/equipment_mods/高等材料_防具专用.xml",
+      "bytes": 1100,
+      "sha256": "0ef31bc8eeb62c03aef951e1b4207bbbdaed5ea2b942efc2332eee2dff1b04de"
+    },
+    {
+      "path": "data/items/收集品_情报.xml",
+      "bytes": 28112,
+      "sha256": "3c5d4cb260cc8a10fa66c8ab0ca5e8e48c1206adc921e5f0fc6ac42fafc63ef2"
+    },
+    {
       "path": "data/items/收集品_材料.xml",
       "bytes": 27654,
       "sha256": "c869f113c90719bb0e8fcd4cac223157bd4fd693af5c13517cbd09d1451df476"
@@ -88,9 +213,29 @@
       "sha256": "17c2a1b9f20ccfc52f9e0c381bbb7646f64d80803c99cd0e83e9d83fdd71b856"
     },
     {
+      "path": "data/items/武器_刀_刀剑.xml",
+      "bytes": 49547,
+      "sha256": "13cfe9b89ed46e267d15acc048738dc1ccbc2a97ae17fc4e4c475ab3636e9779"
+    },
+    {
+      "path": "data/items/武器_刀_双刀.xml",
+      "bytes": 18862,
+      "sha256": "6d45577ec9f43776a8a04b70e9a77761d9d9307bac3b39e42a5b4eb13a826f85"
+    },
+    {
+      "path": "data/items/武器_刀_棍棒.xml",
+      "bytes": 14043,
+      "sha256": "f6b8167729c85e143273d57848a65a8beb66bc7181fd997196966aaf7c648c56"
+    },
+    {
       "path": "data/items/武器_刀_狂野.xml",
       "bytes": 32803,
       "sha256": "e985751474193e2da9e0e52f0440775bdcf8af729f7eae6f3d746aaaed75d647"
+    },
+    {
+      "path": "data/items/武器_刀_疾影.xml",
+      "bytes": 18940,
+      "sha256": "3efa9437fdd6d827f33f002143d489916fc3f6f2cc84c65ae4eab42a7b5552d7"
     },
     {
       "path": "data/items/武器_刀_直剑.xml",
@@ -103,54 +248,144 @@
       "sha256": "d8b1e0d024c6b7429d5fe8c10ac6ba77b97f1813fb6a9ab1aacd323d63f302de"
     },
     {
+      "path": "data/items/武器_刀_短柄.xml",
+      "bytes": 14966,
+      "sha256": "2ad4be08e83f8941ce7c342c5251e7417cbe8a8b94c381b29486904ac702583b"
+    },
+    {
+      "path": "data/items/武器_刀_迅捷.xml",
+      "bytes": 11000,
+      "sha256": "8411b1b9d499837bf96935681693635590154ea825c32f77b71b5baa5b6cff0b"
+    },
+    {
+      "path": "data/items/武器_刀_重斩.xml",
+      "bytes": 58908,
+      "sha256": "412813a8361865e2839266ab89a2816664545c8e64a56c46250c32910379fd61"
+    },
+    {
+      "path": "data/items/武器_刀_镰刀.xml",
+      "bytes": 28328,
+      "sha256": "55e253bd29ea888db5bff9093ac150b361f40dc06b0f28ee03864b33025c1d6c"
+    },
+    {
+      "path": "data/items/武器_刀_长刀.xml",
+      "bytes": 34272,
+      "sha256": "a31d3d6bf8aa3bc90ff64a753b8945a0472bcfcd19f4f681710b27fb5a792c45"
+    },
+    {
+      "path": "data/items/武器_刀_长枪.xml",
+      "bytes": 26809,
+      "sha256": "9cc07d71224c80a11dedf336885c46661cc56c2951cb4b769df9e42f5c70b378"
+    },
+    {
+      "path": "data/items/武器_刀_长柄.xml",
+      "bytes": 24582,
+      "sha256": "63a4654f8f44f388579280ccc91758407c591bfee2594351f27e1d2b8931a312"
+    },
+    {
+      "path": "data/items/武器_刀_长棍.xml",
+      "bytes": 15345,
+      "sha256": "de3abbf8890962ad4a8c605885b4e3476c6c5daeb9a73a4c93c09cd671a9cd54"
+    },
+    {
+      "path": "data/items/武器_刀_默认.xml",
+      "bytes": 14543,
+      "sha256": "6a7827f9ab624151ff3f0603f57cd0dc1a3093a9906e5fb5f9e471bf28257cb6"
+    },
+    {
       "path": "data/items/武器_手枪_冲锋枪.xml",
-      "bytes": 83023,
-      "sha256": "fb15c6bf327525573200fa6d2f4c0b411d887397ab53294491b7f48ccc7bc19c"
+      "bytes": 82658,
+      "sha256": "1fcb29157022622da104dabce68a55ebbe39ea75f6a6084ad6127f5a5f29e6d1"
+    },
+    {
+      "path": "data/items/武器_手枪_压制冲锋枪.xml",
+      "bytes": 2187,
+      "sha256": "92c39928e4402e0ecdaadb1e6b60dca5060fe98c338d69a038905efdecd46711"
+    },
+    {
+      "path": "data/items/武器_手枪_压制机枪.xml",
+      "bytes": 4964,
+      "sha256": "b0a9b29ad9ff628eb992591eeb1d2451296b832e31d7ad30bdbcfb3e0f07ca0f"
+    },
+    {
+      "path": "data/items/武器_手枪_反器材武器.xml",
+      "bytes": 2287,
+      "sha256": "abda8608c4cce45e82119b7245c28a57bf048d03f5d09e781cfdc0c14f298c78"
     },
     {
       "path": "data/items/武器_手枪_发射器.xml",
-      "bytes": 8975,
-      "sha256": "e4cfe058c064447f9fb6803a29f84069720fbebbb8c33a39bbf073612724a347"
+      "bytes": 8878,
+      "sha256": "e1e78ec6a86698ea5539e45e4a7fb68d51d28450cfeab639756f6a152279a929"
     },
     {
       "path": "data/items/武器_手枪_大威力手枪.xml",
-      "bytes": 55119,
-      "sha256": "9fc68c4193af3809819e4a6ede3e357e9d1785a825218d3ab5ec3c9a3f277510"
+      "bytes": 55342,
+      "sha256": "6dc3c7937fdad429885aae92493263bb28d060771172cce5c7380b8f1f9bde26"
+    },
+    {
+      "path": "data/items/武器_手枪_手枪.xml",
+      "bytes": 46756,
+      "sha256": "91210f29303607639f00700e974e4152a85256e66f421fbf9eb8ac45ce8d2ed0"
+    },
+    {
+      "path": "data/items/武器_手枪_特殊.xml",
+      "bytes": 16177,
+      "sha256": "eeab6ee49f2182382565a3d89b280c87c0ae42d3f740c29df79ad0749f2158de"
+    },
+    {
+      "path": "data/items/武器_手枪_突击步枪.xml",
+      "bytes": 6395,
+      "sha256": "cdd4f1ff66e29e32187fe6299fa10f366a4b3255f5625f9f5f7775ce07b0c512"
     },
     {
       "path": "data/items/武器_手枪_霰弹枪.xml",
-      "bytes": 39290,
-      "sha256": "256fa454f3b30ba464a88107f091f411a392d1eb3a71d41c83a32c6fa308d657"
+      "bytes": 39685,
+      "sha256": "a935bf85bc2d63bcf517d596f8a67990fd514c5fb2e34b9591f3587c45ee1bc1"
+    },
+    {
+      "path": "data/items/武器_长枪_冲锋枪.xml",
+      "bytes": 31618,
+      "sha256": "33df9cef487dcdb65b2eac992a52009e1695d8bf74c5f013efb2c29ca5423e0f"
     },
     {
       "path": "data/items/武器_长枪_压制机枪.xml",
-      "bytes": 20460,
-      "sha256": "66e018b9fb1ec2c8c0721261969bd11f6f1a29772ee29959b7e7e18938481897"
+      "bytes": 20363,
+      "sha256": "4acd661d4d6a74d4d3a925add85d2ca51e987fa278550bbf60565b66a920f780"
+    },
+    {
+      "path": "data/items/武器_长枪_压制近战.xml",
+      "bytes": 2282,
+      "sha256": "619dbec449c9cf61edb6fbee6104ed45483c4d17d3ee71a32c7bc9cdce30e758"
     },
     {
       "path": "data/items/武器_长枪_反器材武器.xml",
-      "bytes": 24048,
-      "sha256": "fa126aea6522dc98c289837dcd10a3f5c7f6faa321aa7cea0017e6eb3d9e7e46"
+      "bytes": 23805,
+      "sha256": "b5240a9d57726ec1eec411c673b7f89bf6d8abfda9c07f775bd36cd65e73618e"
     },
     {
       "path": "data/items/武器_长枪_发射器.xml",
-      "bytes": 40211,
-      "sha256": "5a2f3d3ef6c41d31e358ca2f20acd839c2d827e0228f8b9fdd92c71e3aa632ed"
+      "bytes": 41004,
+      "sha256": "dac18547af8f451cae5a0377f40c4376790cf86578d4f2ee09531b91437b2d6b"
+    },
+    {
+      "path": "data/items/武器_长枪_弓弩.xml",
+      "bytes": 6962,
+      "sha256": "e95b89601ba0d635942de60a6a36fc1fa7ad0b044c9007d79b2dbd18cf83b719"
     },
     {
       "path": "data/items/武器_长枪_战斗步枪.xml",
-      "bytes": 42510,
-      "sha256": "f49a2b70027d233ae75c95913ad0331e78b1e29fc046bb44492f5c7f5fbb60a4"
+      "bytes": 43401,
+      "sha256": "36700eb380c446184ccae30422af7aa42587d7a6d58a8f9c20000ba94ab06b4d"
     },
     {
       "path": "data/items/武器_长枪_机枪.xml",
-      "bytes": 30837,
-      "sha256": "290c1c4fcfd186adcdc097f3628fa5a5e187dda71c640401e8c303866499c89b"
+      "bytes": 30740,
+      "sha256": "92eed73f56287e4517bea2afdc6edd8772bb398b71659de73a841d3559bfeaef"
     },
     {
       "path": "data/items/武器_长枪_特殊.xml",
-      "bytes": 35182,
-      "sha256": "bfb3c6075caf3956b71222e21da40be3228583a478fed1b358e77a5017889d61"
+      "bytes": 35489,
+      "sha256": "3082a4eb3684a2d12c86de0a715d5bb3f2c39ff0203a330c4f25ae7124684cc7"
     },
     {
       "path": "data/items/武器_长枪_狙击步枪.xml",
@@ -159,13 +394,23 @@
     },
     {
       "path": "data/items/武器_长枪_突击步枪.xml",
-      "bytes": 120375,
-      "sha256": "1f369fbbbf0ca227d478e6ba134e1f4e52803db2dfcd00e09aaff013a52323c4"
+      "bytes": 119793,
+      "sha256": "1a49d273a8e53e5e2125755dcbe1d7e18458c8815f97f061d8a08369b161a350"
+    },
+    {
+      "path": "data/items/武器_长枪_近战.xml",
+      "bytes": 33529,
+      "sha256": "8d3d8a556cb6838740462d9a56dd326adb8251b5dd0c4221aa16b11643482ff9"
     },
     {
       "path": "data/items/武器_长枪_霰弹枪.xml",
-      "bytes": 73477,
-      "sha256": "0bb7d5cf545af01d1fb8f5543b51be2fa341605631c64878af18df4ce29b71d3"
+      "bytes": 73837,
+      "sha256": "b4dc9f11ffcd1b815b7bda19d6c64cff9238b0d1daf323e1f427294fef6fa925"
+    },
+    {
+      "path": "data/items/消耗品_书中配给.xml",
+      "bytes": 17737,
+      "sha256": "ed7681414d0fc9fb71d5f63b7001da2339f4b26aa8588585b98f3641e6a88b4a"
     },
     {
       "path": "data/items/消耗品_弹夹.xml",
@@ -183,6 +428,21 @@
       "sha256": "192e8630d7673fc34f777bd9271828f08abf46cf539ca3715f176d83631f2e0f"
     },
     {
+      "path": "data/items/消耗品_材料_食材.xml",
+      "bytes": 12054,
+      "sha256": "fba0d92b29582f12e978ec3e83f0ce5821eea25fb7592ef964c124592573e80c"
+    },
+    {
+      "path": "data/items/消耗品_礼包.xml",
+      "bytes": 31170,
+      "sha256": "30dac5d88ddfb40f95cd8cd928b21adb7c042d3d04b15e94619937452d34eb07"
+    },
+    {
+      "path": "data/items/消耗品_自选配给.xml",
+      "bytes": 16686,
+      "sha256": "aa1bd185ef843ff15239a42f840bd1578aad8263463c9418e3ff733fb10d038d"
+    },
+    {
       "path": "data/items/消耗品_药剂.xml",
       "bytes": 40693,
       "sha256": "dda70d541217333a7d499de92d7db1676bc7301065fe1514858d89e286e32207"
@@ -193,19 +453,34 @@
       "sha256": "a9b4a15ca280075e91c95f49fd6ac8ea40a54234d5aa0b43bfe6bb4095feaf90"
     },
     {
+      "path": "data/items/消耗品_药剂_食品.xml",
+      "bytes": 52749,
+      "sha256": "431d31b569a911fd614ed7260e720bfd459fcdfe85f0811943654f857cb2db4f"
+    },
+    {
       "path": "data/items/消耗品_货币.xml",
       "bytes": 1006,
       "sha256": "6c42ef823ffc2db4f2279303c0daf753cf309a05697007bf4fac147ac16148c5"
     },
     {
+      "path": "data/items/消耗品_酒水.xml",
+      "bytes": 45065,
+      "sha256": "210b0326a8d84ab47c5cdab3949c47a22e192d19724f3a01e9c2109dcd589795"
+    },
+    {
       "path": "data/items/防具_0-19级.xml",
-      "bytes": 425620,
-      "sha256": "e181f1a94bf44b7f55f012fc2ef2679389701d48c608735cb6660dd0f9dfebc7"
+      "bytes": 428388,
+      "sha256": "9860a75ef10c1d0806aa548e34a3ef4dd5299d4f14edafa19d22048c5c46969e"
     },
     {
       "path": "data/items/防具_20-39级.xml",
-      "bytes": 373462,
-      "sha256": "bfe9df016d3039ccbab6d87423212a86ec5a4b949db1da476a2b0bcc178ff903"
+      "bytes": 371920,
+      "sha256": "cbd7bb4edce7f17332ec5ab30c0246afb8955a8b0f29d79fed3f0769c4f7b491"
+    },
+    {
+      "path": "data/items/防具_40+级.xml",
+      "bytes": 220674,
+      "sha256": "aa495f77a7e12e6d7fc6f94d30668b62ccf967db05155153835131ecdb642b6d"
     },
     {
       "path": "data/items/防具_颈部装备.xml",
@@ -249,8 +524,8 @@
     },
     {
       "path": "data/kshop/末日COS☆PLAY.json",
-      "bytes": 4520,
-      "sha256": "bbbd8819fde8b30f3bd3185df9799dffbe68aa5f2c27ca837e765cf415e2d63b"
+      "bytes": 5096,
+      "sha256": "83322857813aa3f58b847ad9910f04ab803371a25f6b754580818318120c33d5"
     },
     {
       "path": "data/kshop/武术联盟.json",
@@ -329,8 +604,8 @@
     },
     {
       "path": "data/shops/npcs/Pig.json",
-      "bytes": 1085,
-      "sha256": "1f6517271a06c6842535f38257b8565d104f3df66bcc5fe3a902ca6a57d65b97"
+      "bytes": 1320,
+      "sha256": "b92e84e52620ef2b927c5c9150e348af6a97227090129535f31b3ee5b0b71106"
     },
     {
       "path": "data/shops/npcs/Shop Girl.json",
@@ -528,9 +803,24 @@
       "sha256": "0dbfdc89643a59b0b660b7d603e7de5bb74c802d69c1655b8d807b64e96d4e53"
     },
     {
+      "path": "tools/cf6-type61/build-fixed-actions-fixture.py",
+      "bytes": 5263,
+      "sha256": "178ca52aad982bebe8a7d5eadb31987177951f9cfbd86cdfdc23ae51383b8a6a"
+    },
+    {
+      "path": "tools/cf6-type61/build-fixed-roster-fixture.py",
+      "bytes": 2664,
+      "sha256": "8134db4ae2b615559f63b36ef0744d1f065beae4d5abe9cc3dd405c41195f3ae"
+    },
+    {
       "path": "tools/cf6-type61/build-route.py",
-      "bytes": 32310,
-      "sha256": "b9d53ee4be28abf7e74ca5e3ac559b29f5a2953cf240fb39a4d11a33ba1ec7b6"
+      "bytes": 35155,
+      "sha256": "d417c4d5436b66e9dd8a6e9c45189aaa757f218ac76cc01514803f510bc32141"
+    },
+    {
+      "path": "tools/cf6-type61/build-soldier-loot-fixture.py",
+      "bytes": 1309,
+      "sha256": "d60e0a42065666ebafc60d8a913d17d65e00258dbff778fced54e373b3118bb7"
     },
     {
       "path": "tools/cf6-type61/encounters.py",
@@ -543,9 +833,49 @@
       "sha256": "e3e0730dc35abf1d44078242713716311d25054e04a1c37d047c612fb5d34869"
     },
     {
+      "path": "tools/cf6-type61/fixed-roster.source.json",
+      "bytes": 754965,
+      "sha256": "fb7aa61366cf60dadfc5e4b41a5d977dcd58133ae7cfebafd0c48b1ef8a19a4b"
+    },
+    {
+      "path": "tools/cf6-type61/fixed_roster.py",
+      "bytes": 23272,
+      "sha256": "838a1ea15041177e4ae59e65d0d9bea47978af8fb1e09b929567c4d118af93e4"
+    },
+    {
       "path": "tools/cf6-type61/route.source.json",
       "bytes": 23620,
       "sha256": "b0d200eaad731f53d4e829ab8e6b67732b3b3ba91d291706a26a2960335c16ae"
+    },
+    {
+      "path": "tools/cf6-type61/soldier-action-contracts.source.json",
+      "bytes": 166030,
+      "sha256": "cd669e81b658c40a993cd4a2b0771e6577639a0674261dcda3e6d3f310a0e6a2"
+    },
+    {
+      "path": "tools/cf6-type61/soldier-ammo-contract.source.json",
+      "bytes": 45141,
+      "sha256": "39eaef57747c047e636ec2f6e1f577f39690c2b5422dfbe1e604b419a68c2e7b"
+    },
+    {
+      "path": "tools/cf6-type61/soldier-description-proposals.source.json",
+      "bytes": 8429,
+      "sha256": "b7fbfa515f6d687a40b64ce10adb76cef0feed713dd1806e2a33ad6b225c1e98"
+    },
+    {
+      "path": "tools/cf6-type61/soldier-g1111-pair.source.json",
+      "bytes": 31346,
+      "sha256": "28e7cbb2b32dc709ba8afc0f9ede21389db15f3a42a0b6b616f053bde0eab86b"
+    },
+    {
+      "path": "tools/cf6-type61/soldier-loot-policy.source.json",
+      "bytes": 1295,
+      "sha256": "6987a3a56f312a993ee8fc1dbc19f58a433cdeb2fd230d9352a781968ac3266c"
+    },
+    {
+      "path": "tools/cf6-type61/soldier_programs.py",
+      "bytes": 12561,
+      "sha256": "96b7fc16e5784440c068f2a86dccbd43447aadae7a8637740081b411a000fad4"
     },
     {
       "path": "tools/cf6_acquisition.py",
@@ -611,13 +941,13 @@
     },
     {
       "path": "data/stages/books/cf6-type61.json",
-      "bytes": 605660,
-      "sha256": "5a823612e9f9a2d6da867798640db18dd49f6a6b5bbcc991c937957f7fdf16cd"
+      "bytes": 1182831,
+      "sha256": "66b472c3987f40cf93be42dbd64b59c836fd5c5b5be3a965e2c60082fca9d23b"
     },
     {
       "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as",
-      "bytes": 52421,
-      "sha256": "deac2343a40364487b86ed95aa7872e2e35373f4a34c15eda02c186fdfa9f60a"
+      "bytes": 186593,
+      "sha256": "880d82145181ce89e8677713250f0dcfdfd71284d830ea747ecb866e6df9ad20"
     },
     {
       "path": "tools/cf6-type61/acquisition.generated.json",
@@ -635,8 +965,8 @@
       "sha256": "a5564665a449b2b9de69126ed4d519d46959d3be26a7ab8fe7abd8ad499932fd"
     }
   ],
-  "generatedBytes": 716630,
-  "bytesIncludingRuntimeSidecar": 1317523,
+  "generatedBytes": 1427973,
+  "bytesIncludingRuntimeSidecar": 1992257,
   "maxGeneratedBytes": 2000000,
   "downstreamChecks": [
     "tools/build-choice-rewards.py --check",
@@ -644,7 +974,7 @@
   ],
   "runtimeSidecar": {
     "path": "data/stages/books/cf6-type61.runtime.json",
-    "bytes": 600893,
-    "sha256": "863258616c28cc5772e66ba347fd6ba3d1e7546fdff02a2bf5dbda1b136a8f2d"
+    "bytes": 564284,
+    "sha256": "0b4d5cf0d64d10d4de050233efd061b20da749b39f2c8d93ac54b525bb63a4ac"
   }
 }

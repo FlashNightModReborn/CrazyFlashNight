@@ -1,0 +1,15 @@
+﻿_root.主角函数=_root.主角函数 || {};
+#include "逻辑/单位函数/单位函数_lsy_主角行走状态机.as"
+trace("FocusedTestRunId cf6-transition-regression Start: __FOCUSED_RUN_ID__");
+_root.cf6MapMechanismTestsComplete=function():Void {
+org.flashNight.arki.scene.Cf6MechanismRevivalTest.runAllTests();
+};
+_root.cf6MechanismRevivalComplete=function():Void {
+org.flashNight.arki.scene.Cf6TraversalNativeTest.runAllTests();
+};
+_root.cf6TraversalNativeComplete=function():Void {trace("FocusedTestRunId cf6-transition-regression Complete: __FOCUSED_RUN_ID__");};
+org.flashNight.arki.scene.Cf6SceneCompletionTest.runAllTests();
+org.flashNight.arki.scene.Cf6DoorAdvanceTest.runAllTests();
+org.flashNight.arki.scene.Cf6VehicleMapIntegrationTest.runAllTests();
+org.flashNight.arki.scene.Cf6TraversalLifecycleTest.runAllTests();
+org.flashNight.arki.scene.Cf6MapMechanismTest.runAllTests();

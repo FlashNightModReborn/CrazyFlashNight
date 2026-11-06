@@ -6,6 +6,7 @@ import org.flashNight.gesh.depth.DepthManager;
 class org.flashNight.arki.scene.Cf6TraversalLifecycleTest {
     private static var passed:Number;
     private static var failed:Number;
+    private static var depthFixtureSerial:Number=0;
     private static function check(value:Boolean,label:String):Void {
         if(value) passed++;else {failed++;trace("[FAIL] Cf6TraversalLifecycle: "+label);}
     }
@@ -19,8 +20,9 @@ class org.flashNight.arki.scene.Cf6TraversalLifecycleTest {
             {frame:3,x:30,z:20,visible:false,action:"stand"},
             {frame:4,x:40,z:20,visible:false,action:"stand"}]};
     }
-    private static function fixture():Object {
-        var w:MovieClip=_root.createEmptyMovieClip("__cf6TraversalFixture",_root.getNextHighestDepth());
+    private static function fixture(uniqueWorld:Boolean):Object {
+        var name:String=uniqueWorld ? "__cf6DepthFixture"+(++depthFixtureSerial) : "__cf6TraversalFixture";
+        var w:MovieClip=_root.createEmptyMovieClip(name,_root.getNextHighestDepth());
         _root.gameworld=w;_root.控制目标="hero";
         w.__stageReturnWorldIdentity={};
         var h:MovieClip=w.createEmptyMovieClip("hero",10);
@@ -80,10 +82,10 @@ class org.flashNight.arki.scene.Cf6TraversalLifecycleTest {
         check(t.acquired && t.awaitingAdvance && f.hero._x==40 && _root.暂停,"terminal pose remains owned until standard authority decides");
         Cf6TraversalService.finishAdvance(t,"rejected",{status:"rejected",manualAllowed:true});
         check(f.hero._visible && f.hero._x==60 && f.hero.Z轴坐标==30,"visible standard exit handoff");
-        check(f.hero.控制块.onEnterFrame===noop && !_root.暂停,"callback and own pause restored");
+        check(f.hero.控制块.onEnterFrame===noop && !_root.暂停,"native callback retained and own pause released");
         check(f.hero.man.wholeTimelinePlayCalls==undefined && f.hero.man.__cf6TraversalAnimationOwner==undefined,
             "release removes own animation token without playing fire/reload timeline");
-        check(f.hero.行走===noop && f.hero.按键控制攻击模式===noop && f.hero.按键检测===other,"actor-local input gap slots restored by CAS");
+        check(f.hero.行走===noop && f.hero.按键控制攻击模式===noop && f.hero.按键检测===other,"persistent actor input callbacks are unchanged");
         check(Cf6TraversalService.tick(t,f.hero,true)=="complete" && !t.acquired,"completion does not reacquire");
         f.world.removeMovieClip();
         f=fixture();t=Cf6TraversalService.create(f.room,spec("arrive"));
@@ -112,7 +114,7 @@ class org.flashNight.arki.scene.Cf6TraversalLifecycleTest {
         Cf6TraversalService.tick(t,f.hero,true);
         check(t.acquired && f.hero.控制块.__cf6TraversalOwner==undefined,"uninitialized native control block is not overwritten");
         f.hero.控制块.onEnterFrame=noop;Cf6TraversalService.tick(t,f.hero,true);
-        check(t.acquired && f.hero.控制块.__cf6TraversalOwner===t.token,"late native load callback can be safely claimed");
+        check(t.acquired && f.hero.控制块.__cf6TraversalOwner==undefined && f.hero.控制块.onEnterFrame===noop,"late native control callback stays current without replacement");
         Cf6TraversalService.cancel(t);f.world.removeMovieClip();f=fixture();t=Cf6TraversalService.create(f.room,spec("depart"));
         Cf6TraversalService.tick(t,f.hero,true);f.hero.hp=0;
         check(Cf6TraversalService.tick(t,f.hero,true)=="cancelled" && !_root.暂停,"death cancels and returns own pause");
@@ -127,7 +129,7 @@ class org.flashNight.arki.scene.Cf6TraversalLifecycleTest {
         f.world.removeMovieClip();f=fixture();t=Cf6TraversalService.create(f.room,spec("depart"));
         Cf6TraversalService.tick(t,f.hero,true);f.room.stageManager.currentStage++;
         check(Cf6TraversalService.tick(t,f.hero,true)=="cancelled","stage replacement cancels");
-        check(f.hero.控制块.onEnterFrame===noop,"stage change restores only still-owned callback");
+        check(f.hero.控制块.onEnterFrame===noop,"stage change retains the current native callback");
         f.world.removeMovieClip();f=fixture();t=Cf6TraversalService.create(f.room,spec("depart"));
         Cf6TraversalService.tick(t,f.hero,true);f.world.removeMovieClip();
         var nw:MovieClip=_root.createEmptyMovieClip("__cf6TraversalFixture",_root.getNextHighestDepth());
@@ -139,28 +141,29 @@ class org.flashNight.arki.scene.Cf6TraversalLifecycleTest {
     }
     private static function testDepthOwnership():Void {
         var saved:DepthManager=DepthManager.instance;
-        var f:Object=fixture(),a:Object=spec("arrive");a.actorSortY=70;
+        var f:Object=fixture(true),a:Object=spec("arrive");a.actorSortY=70;
         var counter:Number=900000;f.world.getNextHighestDepth=function():Number {return counter++;};
         DepthManager.instance=new DepthManager(f.world,0,870655,8);DepthManager.instance.calibrate(0,100);
         var t:Object=Cf6TraversalService.create(f.room,a);
         Cf6TraversalService.tick(t,f.hero,false);
         var held:Number=f.hero.getDepth();
-        check(t.depthManager===DepthManager.instance && f.hero.__cf6TraversalDepthOwner===t.token,"fixed actor sort claims current manager and actor token");
+        check(t.acquired && t.token!=undefined && DepthManager.instance.size()==1 && DepthManager.instance.getDepth(f.hero)===f.hero.getDepth() && f.hero.__cf6TraversalDepthOwner===t.token,"fixed actor sort claims current manager and actor token");
         check(f.hero.Z轴坐标==20 && t.spec.actorSortY==70,"fixed sort leaves authored shoe coordinates intact");
         Cf6TraversalService.tick(t,f.hero,false);
         check(!t.acquired && f.hero.getDepth()<held && f.hero.__cf6TraversalDepthOwner==undefined,"release frame returns managed depth to true Z");
-        f.world.removeMovieClip();f=fixture();counter=900000;f.world.getNextHighestDepth=function():Number {return counter++;};
+        f.world.removeMovieClip();f=fixture(true);counter=900000;f.world.getNextHighestDepth=function():Number {return counter++;};
         DepthManager.instance=new DepthManager(f.world,0,870655,8);DepthManager.instance.calibrate(0,100);
         t=Cf6TraversalService.create(f.room,a);Cf6TraversalService.tick(t,f.hero,false);
         DepthManager.instance.updateDepth(f.hero,90);held=f.hero.getDepth();Cf6TraversalService.cancel(t);
-        check(f.hero.getDepth()==held,"foreign managed depth survives cancellation CAS");
-        f.world.removeMovieClip();f=fixture();counter=900000;f.world.getNextHighestDepth=function():Number {return counter++;};
+        trace("TraversalReleaseDepth: before="+held+" after="+f.hero.getDepth()+" z="+f.hero.Z轴坐标+" marker="+typeof f.hero.__cf6TraversalDepthOwner+" acquired="+t.acquired);
+        check(f.hero.getDepth()<held && f.hero.__cf6TraversalDepthOwner==undefined,"release resumes current foot sorting without a stale depth snapshot");
+        f.world.removeMovieClip();f=fixture(true);counter=900000;f.world.getNextHighestDepth=function():Number {return counter++;};
         DepthManager.instance=new DepthManager(f.world,0,870655,8);DepthManager.instance.calibrate(0,100);
         t=Cf6TraversalService.create(f.room,a);Cf6TraversalService.tick(t,f.hero,false);held=f.hero.getDepth();
         DepthManager.instance=undefined;Cf6TraversalService.cancel(t);
         check(f.hero.getDepth()==held,"manager replacement never restores through retired manager");
         f.world.removeMovieClip();DepthManager.instance=saved;
-        f=fixture();a=spec("depart");a.samples[0].action="stand";
+        f=fixture(true);a=spec("depart");a.samples[0].action="stand";
         f.hero.状态改变=function(value:String):Void {this.状态=value;this.控制块.removeMovieClip();this.createEmptyMovieClip("控制块",1);};
         t=Cf6TraversalService.create(f.room,a);Cf6TraversalService.tick(t,f.hero,true);
         f.hero.控制块.onEnterFrame=noop;Cf6TraversalService.tick(t,f.hero,true);

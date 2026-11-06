@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
+﻿import org.flashNight.arki.unit.Action.Shoot.ShootCore;
+import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
 // File: org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as
 import org.flashNight.arki.unit.*;
 import org.flashNight.sara.util.*;
@@ -63,6 +64,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
      * @return Boolean 射击是否成功执行（弹药不足时返回false）
      */
     public static function executeShot(owner, weaponType:String, muzzlePosition:MovieClip, bulletProps:Object, commitGuard:Function):Boolean {
+        if(ShootCore.isPresentationControlled(owner)) {owner.__pendingFireInterval=0;return false;}
         // 可复用模板不携带上一发倍率；暂停拒绝在弹药提交与密度记录之前。
         bulletProps.武器扩散倍率 = 1;
         if (_root.暂停) {
@@ -80,7 +82,12 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
             return false;
         }
 
+        var fixedActor:Boolean=typeof owner.cf6UnitIdentity=="string";
+        if (fixedActor && (typeof owner.cf6FixedArmShot!="function" || !owner.cf6FixedArmShot(weaponType,bulletProps))) {
+            owner.__pendingFireInterval=0;return false;
+        }
         if (commitGuard != null && !commitGuard(owner, weaponType, bulletProps)) {
+            if(fixedActor)owner.cf6PendingShot=null;
             owner.__pendingFireInterval = 0;
             return false;
         }
@@ -117,11 +124,13 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
                 ((rawSpread * bulletProps.武器扩散倍率 - moveSpread) * ghostSpread + moveSpread) / rawSpread);
         }
 
+        if(fixedActor && !owner.cf6FixedFinalizeShot(weaponType,bulletProps))return false;
         // 只冻结真实发射槽/枪口/物件的表现身份；不更改命中、弹药或随机数。
         RayVisualBridge.captureShot(owner, weaponType, muzzlePosition, bulletProps, firedWeapon);
 
         // 发射子弹
         _root.子弹区域shoot传递(bulletProps);
+        if(fixedActor)owner.cf6FixedShotDispatched(weaponType,bulletProps);
 
         return true;
     }

@@ -183,15 +183,25 @@ class Type61RouteTests(unittest.TestCase):
                     self.assertEqual(expected,enemy.get('Parameters',{}).get('cf6DifficultyScale',1),(stage['id'],enemy['Type']))
             for phase in (boss,boss.get('nextPhase',{})):
                 for group in phase.get('groups',[]):
-                    self.assertTrue(all(e['Parameters']['cf6DifficultyScale']==2.5 for e in group['enemies']))
+                    for enemy in group['enemies']:
+                        params=enemy['Parameters']
+                        # Three reviewed migrations preserve their source multiplier.
+                        slots=params.get('cf6FixedSlots',[])
+                        migrated={'CF6-C-PE-R-06','CF6-N-SW-01','CF6-M-IX'}
+                        expected=1 if slots and slots[0]['parameters']['cf6UnitIdentity'] in migrated else 2.5
+                        self.assertEqual(expected,params.get('cf6DifficultyScale',1))
         for node in ('A10','A13'):
             enemies=self.maps[node]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy']
             self.assertEqual(4 if node=='A10' else 1,sum(e['Quantity'] for e in enemies))
-        self.assertEqual('E2',self.maps['A13']['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]['Parameters']['cf6EliteQuota'])
+        params=self.maps['A13']['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]['Parameters']
+        self.assertNotIn('cf6EliteQuota',params)
+        self.assertEqual('CF6-M-VII',params['cf6FixedSlots'][0]['parameters']['cf6UnitIdentity'])
 
     def test_soldier_progression_and_loot_carriers(self):
         registry=builder.UnitRegistry.load(ROOT)
         counts={}
+        identities=set()
+        throwable_count=0
         for node,stage in self.maps.items():
             counter=collections.Counter()
             for enemy in builder.all_enemies(stage):
@@ -202,12 +212,20 @@ class Type61RouteTests(unittest.TestCase):
                 if node<'A09':self.assertEqual('ordinary',role)
                 if node<'A13':self.assertNotEqual('instructor',role)
                 if node>='A18':self.assertIn(role,('elite','instructor'))
-                if role in ('elite','instructor'):self.assertTrue(p.get('手枪') and p.get('手枪2'))
-                if role in ('ordinary','instructor'):self.assertTrue(p.get('特种兵投掷物') in self.items,(node,unit))
-                if p.get('cf6EliteQuota'):
-                    self.assertEqual(1,enemy['Quantity'])
-                    if p['cf6EliteQuota']!='E1':self.assertEqual('instructor',role)
-                    self.assertEqual(p['长枪'],p['掉落物'][0]['名字'])
+                self.assertNotIn('cf6EliteQuota',p)
+                self.assertEqual([],p['掉落物'])
+                self.assertIs(p['不掉装备'],True)
+                self.assertEqual(enemy['Quantity'],len(p['cf6FixedSlots']))
+                for ordinal,slot in enumerate(p['cf6FixedSlots']):
+                    self.assertEqual(ordinal,slot['ordinal'])
+                    fixed=slot['parameters']
+                    self.assertNotIn(fixed['cf6UnitIdentity'],identities)
+                    identities.add(fixed['cf6UnitIdentity'])
+                    if role in ('elite','instructor'):self.assertTrue(fixed.get('手枪') and fixed.get('手枪2'))
+                    if fixed['特种兵投掷物'] is not False:
+                        self.assertIn(fixed['特种兵投掷物'],self.items)
+                        throwable_count+=1
+                    self.assertEqual([],fixed['掉落物'])
             counts[node]=counter
         self.assertEqual({'ordinary':10},counts['A06'])
         self.assertEqual({'ordinary':15,'elite':1},counts['A09'])
@@ -216,6 +234,9 @@ class Type61RouteTests(unittest.TestCase):
         for node in ('A14','A15','A17'):self.assertEqual({'ordinary','elite','instructor'},set(counts[node]))
         totals=sum(counts.values(),collections.Counter())
         self.assertEqual({'ordinary':96,'elite':40,'instructor':22},dict(totals))
+        self.assertEqual(158,len(identities))
+        self.assertEqual(5,throwable_count)
+        self.assertEqual([],self.chapter['economy']['eliteWeapons'])
         bladebots=collections.Counter()
         primary_bladebots=collections.Counter()
         support_bladebots=collections.Counter()

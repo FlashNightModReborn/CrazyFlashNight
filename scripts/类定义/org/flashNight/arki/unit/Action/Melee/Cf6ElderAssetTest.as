@@ -11,6 +11,7 @@ import org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler;
 /** Published SWF behavior under isolated damage / template fixtures; no save access. */
 class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
     private static var nativeKnockback:Function;
+    private static var signalRoom:Object,signalOwner:Object,signalRobot:MovieClip;
     private static var library:MovieClip,driver:MovieClip,loader:MovieClipLoader,listener:Object;
     private static var passed:Number,failed:Number,ticks:Number,fxCount:Number,muzzleChecks:Number;
     private static var ready:Boolean,finished:Boolean;
@@ -160,7 +161,13 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
         retireIdle.shield=AdaptiveShield.createDormant("retire-idle-shield");retireIdle.shield.setOwner(retireIdle);
         retireMidPhase=library.attachMovie(links[1],"elderRetireMidPhase",library.getNextHighestDepth(),{fixtureRecord:record(),老头变身:false});
         retireMidPhase.shield=AdaptiveShield.createDormant("retire-mid-shield");retireMidPhase.shield.setOwner(retireMidPhase);
-        createPhases();ready=true;ticks=0;
+        createPhases();
+        signalRoom={world:library,owner:org.flashNight.arki.scene.StageReturnFlow.worldIdentity(library),
+            key:"elder-native-signals",mapId:"A20",sequence:0,clock:0,external:{},player:{}};
+        org.flashNight.arki.scene.Cf6SoldierSignals.bindRoom(signalRoom);
+        signalRobot=library.attachMovie(links[1],"cf6Boss_A20__elderbot",library.getNextHighestDepth(),
+            {fixtureRecord:record(),老头变身:false,_arenaCalibrationUnit:true,version:7001,cf6BossIdentity:{}});
+        ready=true;ticks=0;
     }
     private static function createPhases():Void {
         var modes:Array=["ready","ready","ready","ready","ready","ready","empty","timeout","foreign","collision","wrong-token","wrong-context","ready-dead"];
@@ -563,6 +570,26 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
         if(finished)return;ticks++;
         if(!ready){if(ticks>300){check(false,"load timeout");finish();}return;}
         phaseTick();
+        signalRoom.clock=ticks;
+        if(ticks==3)signalRobot.状态改变(signalRobot.elderActions.beam.state);
+        if(ticks==5){
+            check(signalRoom.external.robot.busy===true && signalRoom.external.robot.sequence===0,
+                "actual robot beam opens danger before any recovery");
+            signalOwner=signalRobot.elderAttackOwner;
+        }
+        if(ticks==7)signalRobot.状态改变("被击");
+        if(ticks==20){
+            check(signalRoom.external.robot.busy===false && signalRoom.external.robot.sequence===0,
+                "actual robot interruption cancels without a recovery receipt");
+            signalRobot.状态改变(signalRobot.elderActions.beam.state);
+        }
+        if(ticks==24){
+            org.flashNight.arki.scene.Cf6SoldierSignals.externalEnd(signalRobot,"robot",signalOwner,true);
+            check(signalRoom.external.robot.busy===true && signalRoom.external.robot.sequence===0,
+                "late old action completion cannot end the new native beam");
+        }
+        if(ticks==200)check(signalRoom.external.robot.sequence>0 && !signalRoom.external.robot.busy
+            && signalRoom.external.robot.frame>24,"actual robot terminal exposes a new version-bound recovery");
         if(ticks==3)for(var i:Number=0;i<cases.length;i++){
             var c:Object=cases[i],u:MovieClip=c.actor;u.方向改变(c.side==0?"右":"左");
             check(u.老头变身===false,"isolated combat cases disable phase "+i);

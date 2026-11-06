@@ -21,6 +21,7 @@ def smoke_sources():
 
 def input_paths():
     return [Path(__file__), HERE/'TacticalAI.as', HERE/'SoldierSubweapon.as', HERE/'tactical-profiles.json',
+            *[HERE/name for name in ('FixedActionRules.as','FixedActionTriggers.as','FixedActionAdapter.as','FixedNavigation.as','FixedActionWeapons.as')],
             *sorted(p for p in SOURCE.rglob('*') if p.is_file()), *smoke_sources()]
 
 
@@ -109,17 +110,76 @@ def replace_reload_art(b,symbols,parts):
         layers.append(layer)
 
 
+def install_firing_stride(b, symbols, parts):
+    """Keep the gun and torso on their firing timeline. Only the legs stride."""
+    poses = b.art_revision.load()
+    walk = poses['行走'][:-1]  # authoring stop key repeats the previous sample
+
+    def make_stride(name, ready):
+        def legs(pose):
+            return {k:copy.deepcopy(row) for k,row in pose.items() if row['id'] in (496,497)}
+        def hip(pose):
+            return next(row['matrix'][4:6] for row in pose.values() if row['id']==495)
+        idle = legs(ready)
+        assert len(idle)==4
+        target_x,target_y=hip(ready)
+        steps=[idle]
+        for pose in walk:
+            x,y=hip(pose)
+            step=legs(pose)
+            # Preserve the near/far leg order of the target pose.
+            walk_depths=sorted(step,key=int);target_depths=sorted(idle,key=int)
+            step={dest:step[src] for dest,src in zip(target_depths,walk_depths)}
+            for row in step.values():
+                matrix=list(row['matrix']);matrix[4]+=target_x-x;matrix[5]+=target_y-y;row['matrix']=matrix
+            steps.append(step)
+        symbols[name]=b.make_body(name,steps,parts,{0:{'script':'stop();'}})
+        return sorted((int(k) for k in idle),reverse=True)
+
+    def replace_feet(body, layer_prefix, depths, begin, end, total, stride):
+        layers=body.find('x:timeline/x:DOMTimeline/x:layers',NS)
+        leg_layers=[layers.find('x:DOMLayer[@name="'+layer_prefix+str(i)+'"]',NS) for i in depths]
+        assert all(layer is not None for layer in leg_layers)
+        index=list(layers).index(leg_layers[0])
+        for layer in leg_layers:
+            frames=layer.find('x:frames',NS)
+            preserved=[]
+            for frame in list(frames):
+                start=int(frame.get('index'));finish=start+int(frame.get('duration','1'))
+                for left,right in ((start,min(finish,begin)),(max(start,end),finish)):
+                    if right>left:
+                        segment=copy.deepcopy(frame);segment.set('index',str(left));segment.set('duration',str(right-left));preserved.append(segment)
+            if preserved:
+                preserved.append(b.native.frame(begin,end-begin))
+                frames[:]=sorted(preserved,key=lambda item:int(item.get('index')))
+            else:
+                layers.remove(layer)
+        layers.insert(index,b.native.make_sparse_layer('移动射击步态',total,{begin:{'duration':end-begin,'elements':[
+            b.native.instance(stride,symbol_type='movie clip',name='cf6Stride')]}}))
+
+    rifle=b.PREFIX+'动作/移动射击步态'
+    depths=make_stride(rifle,poses['长枪点射与装填'][0])
+    for name in ('长枪点射与装填','持盾点射与装填'):
+        replace_feet(symbols[b.PREFIX+'动作/'+name],'原始深度_',depths,0,49,49,rifle)
+    dual=b.elite.PREFIX+'动作/双枪移动射击步态'
+    depths=make_stride(dual,b.elite.retarget_frames()[20])
+    replace_feet(symbols[b.elite.PREFIX+'动作/CF6战术长枪'],'CF6分件_',depths,20,21,365,dual)
+
+
 def install(b,symbols,parts):
     data=load_profiles()
     source=('var cf6TacticalDefaults:Object='+elite.as2_literal(data['roles'])+';\n'
             +'var cf6TacticalLimits:Object='+elite.as2_literal(data['bounds'])+';\n'
             +(HERE/'TacticalAI.as').read_text(encoding='utf-8-sig')+'\n'
-            +(HERE/'SoldierSubweapon.as').read_text(encoding='utf-8-sig'))
+            +(HERE/'SoldierSubweapon.as').read_text(encoding='utf-8-sig')+'\n'
+            +'\n'.join((HERE/name).read_text(encoding='utf-8-sig') for name in
+                       ('FixedActionRules.as','FixedActionTriggers.as','FixedActionAdapter.as','FixedNavigation.as','FixedActionWeapons.as')))
     for link in (b.LINKAGE,b.SHIELD_LINKAGE,*elite.LINKAGES):
         root=symbols[b.PREFIX+link]
         script=root.find('.//x:DOMLayer[@name="初始化与消失"]//x:script',NS)
-        script.text=E.CDATA(script.text.replace('soldierInitializePhase();',source+'\nsoldierInstallTactics();soldierInitializePhase();',1))
+        script.text=E.CDATA(script.text.replace('soldierInitializePhase();',source+'\nsoldierInstallTactics();soldierInitializePhase();cf6FixedInstall();',1))
     replace_reload_art(b,symbols,parts)
+    install_firing_stride(b,symbols,parts)
     add_smoke(b,symbols)
     origin=json.loads((SOURCE/'archive-origin.json').read_text(encoding='utf-8'))
     for row in origin['members']:
@@ -184,5 +244,44 @@ def install(b,symbols,parts):
         projected=remap(symbols.pop(name),isolated)
         symbols[projected.get('name')]=projected
     for name in actor_names:symbols[name]=remap(symbols[name],isolated)
+    # Fixed elite long-gun mode reuses the ordinary authored standing bodies.
+    # The normal elite movement controller keeps its previous state selection.
+    original=symbols[b.PREFIX+b.LINKAGE]
+    original_layers={layer.get('name'):layer for layer in original.find('x:timeline/x:DOMTimeline/x:layers',NS)}
+    for link in elite.LINKAGES:
+        for layer in symbols[b.PREFIX+link].find('x:timeline/x:DOMTimeline/x:layers',NS):
+            lname=layer.get('name')
+            if lname not in ('状态标签','动作'):continue
+            frames=layer.find('x:frames',NS)
+            for index,source_index,label in ((211,41,'固定阵地攻击'),(212,180,'固定持盾阵地攻击')):
+                covering=next(f for f in frames if int(f.get('index'))<=index<int(f.get('index'))+int(f.get('duration','1')))
+                end=int(covering.get('index'))+int(covering.get('duration','1'))
+                if int(covering.get('index'))==index:frames.remove(covering)
+                else:covering.set('duration',str(index-int(covering.get('index'))))
+                if lname=='状态标签':frame=b.native.frame(index,name=label,label_type='name')
+                else:
+                    src=next(f for f in original_layers[lname].findall('x:frames/x:DOMFrame',NS)
+                             if int(f.get('index'))<=source_index<int(f.get('index'))+int(f.get('duration','1')))
+                    frame=copy.deepcopy(src);frame.set('index',str(index));frame.attrib.pop('name',None);frame.attrib.pop('labelType',None)
+                frame.set('duration',str(end-index));frames.append(frame)
+                frames[:]=sorted(frames,key=lambda f:int(f.get('index')))
+    # A fixed composite may draw its real pistols without changing combat phase.
+    # Reuse the existing dual body, including its original reload anchors.
+    for root_name in [b.PREFIX+link for link in elite.LINKAGES]+[PREFIX+link for link in LINKAGES]:
+        root=symbols[root_name]
+        for layer in root.find('x:timeline/x:DOMTimeline/x:layers',NS):
+            lname=layer.get('name')
+            if lname not in ('状态标签','动作'):continue
+            frames=layer.find('x:frames',NS);index=213
+            covering=next(f for f in frames if int(f.get('index'))<=index<int(f.get('index'))+int(f.get('duration','1')))
+            end=int(covering.get('index'))+int(covering.get('duration','1'))
+            if int(covering.get('index'))==index:frames.remove(covering)
+            else:covering.set('duration',str(index-int(covering.get('index'))))
+            if lname=='状态标签':frame=b.native.frame(index,name='固定双枪攻击',label_type='name')
+            else:
+                src=next(f for f in frames if int(f.get('index'))<=41<int(f.get('index'))+int(f.get('duration','1')))
+                frame=copy.deepcopy(src);frame.set('index',str(index));frame.attrib.pop('name',None);frame.attrib.pop('labelType',None)
+            frame.set('duration',str(end-index));frames.append(frame)
+            frames[:]=sorted(frames,key=lambda f:int(f.get('index')))
     return {'linkages':list(LINKAGES),'artSource':SOURCE.relative_to(ROOT).as_posix(),
             'strategy':'shared actions with instructor selection and bounded commitment'}

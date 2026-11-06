@@ -30,6 +30,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
         _root.效果=function(name:String):Void {Cf6GuardAssetTest.fxCount++;};
         _root.初始化思考标签=function(mc:MovieClip):Void {mc._name="思考标签";mc.stop();mc._visible=false;};
         _root.敌人函数={配置音效:function():Void {},行走:function():Void {this.fixtureManualWalk=true;}};
+        _root.敌人函数.换相位移未结束=org.flashNight.arki.spatial.move.Mover.pendingPhaseMotion;
         _root.子弹属性初始化=function(marker:MovieClip,kind:String,u:MovieClip):Object {
             return {子弹种类:kind,发射者:u._name,shootZ:u.Z轴坐标};
         };
@@ -198,6 +199,17 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
                 check(actor.状态=="变身" && actor.man._currentframe==before,"duplicate death and hit keep phase "+n);
             }
         }
+        // Simulate a late real horizontal impulse on both sides of the
+        // terminal art frame. The successor must wait, then use the live pose.
+        if(ticks==68){
+            for(var j:Number=2;j<=3;j++){
+                var moving:MovieClip=phases[j].actor;
+                moving.Z轴坐标=moving._y=216;
+                org.flashNight.arki.spatial.move.Mover.beginEnemyHitMove(moving,j==2?"右":"左",20,1);
+            }
+        }
+        if(ticks==78)check(phases[2].record.spawnCalls==0 && phases[3].record.spawnCalls==0,
+            "late hit movement outlives the transform art without an early successor");
         if(ticks==125)for(n=0;n<phases.length;n++) {
             var entry:Object=phases[n],rec:Object=entry.record,unit:MovieClip=entry.actor;
             check(rec.spawnCalls==(entry.mode=="collision"?0:1),"at most one spawn attempt "+n);
@@ -214,7 +226,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
                     && rec.child.displayName.indexOf("暴君克隆兽")>=0 && rec.child.displayName.indexOf("保安姓名继承")<0
                     && rec.child.displayName.indexOf("undefined")<0,"real name initializer uses successor identity "+n);
                 check(rec.kind=="敌人-完全体克隆兽" && rec.params.身高==230 && rec.params.产生源=="phaseSource"
-                    && rec.params._x==200 && rec.params._y==200,"canonical tyrant and spawn context "+n);
+                    && rec.params._x==(n==2?390:n==3?10:200) && rec.params._y==(n==2 || n==3?216:200),
+                    "canonical tyrant at settled predecessor position "+n);
             }else {
                 check(!rec.removed && rec.deathChecks==0,"failed handoff keeps source count "+n);
                 check(unit.guardTransform.error!=undefined && !unit.guardTransform.active,"failure becomes stable explicit state "+n);

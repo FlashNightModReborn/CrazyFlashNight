@@ -1091,7 +1091,7 @@ class org.flashNight.neur.Server.SaveManager {
         _rewardPhysicalStarted = false;
         _rewardPhysicalResult = undefined;
         try { org.flashNight.arki.pause.PauseManager.setRewardCommitPending(false); } catch (pauseNoticeError) {}
-        try { FrameBroadcaster.pushUiState(committed ? "sv:2" : "sv:3"); } catch (uiNoticeError) {}
+        try { FrameBroadcaster.pushUiState(committed ? (org.flashNight.arki.scene.Cf6SoldierLoot.blocksSaveSuccess()?"sv:1":"sv:2") : "sv:3"); } catch (uiNoticeError) {}
     }
 
     /** 奖励事务有界生产日志：单行分类字段、连续重复折叠、进程内封顶；不带存档内容。 */
@@ -1187,6 +1187,7 @@ class org.flashNight.neur.Server.SaveManager {
                 "[SaveManager.flushBeforeTransition] reason outside transition allowlist, fail-closed: " + reason);
             return false;
         }
+        if(!org.flashNight.arki.scene.Cf6SoldierLoot.prepareForTransition())return false;
         return _strictFlushCore("transition", reason);
     }
 
@@ -1410,7 +1411,7 @@ class org.flashNight.neur.Server.SaveManager {
         try {
             // sv:2 只代表 SharedObject.flush() 已确认成功；false / "pending"
             // 必须投影为失败态，安全退出面板据此禁止 EXIT_CONFIRM。
-            FrameBroadcaster.pushUiState(ok ? "sv:2" : "sv:3");
+            FrameBroadcaster.pushUiState(ok ? (org.flashNight.arki.scene.Cf6SoldierLoot.blocksSaveSuccess()?"sv:1":"sv:2") : "sv:3");
         } catch (uiStateError) {
             reportPostFlushFailure(sm, "ui_state", uiStateError, ok);
         }
@@ -2789,6 +2790,7 @@ class org.flashNight.neur.Server.SaveManager {
             return false;
         }
         if (rewardSchema.changed) _rewardInboxMigrationPending = true;
+        if (!org.flashNight.arki.scene.Cf6SoldierLootRules.normalizeSaveData(mydata)) return false;
         // AMF0 空数组→空对象修复（幂等纯内存修复；修复结果随 _saveExt 与
         // tasks/pets 应用层进入运行时，下次存盘自然持久化）。
         org.flashNight.arki.scene.StageRunSession.normalizeSaveData(mydata);

@@ -1,4 +1,6 @@
-﻿import org.flashNight.arki.scene.*;
+﻿import org.flashNight.arki.unit.Action.Shoot.ShootCore;
+import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
+import org.flashNight.arki.scene.*;
 import org.flashNight.arki.pause.PauseManager;
 import org.flashNight.arki.hud.FocusTargetHudService;
 import org.flashNight.arki.component.Damage.DamageManagerFactory;
@@ -19,6 +21,7 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
     private static var pauseLease:String,paused:Object,bossAt:Number,deathAt:Number,shotsBefore:Number;
     private static var hitEvents:Number,killEvents:Number,unknownCalls:Number,fixtureSerial:Number,done:Boolean;
     private static var audioCalls:Object,deathVariants:Object,deathChosen:Object,referenceAt:Number,startedAt:Number;
+    private static var ordinaryShots:Number,ordinaryEvents:Number;
     private static function check(ok:Boolean,label:String):Void {
         if(ok) passed++;else {failed++;trace("[FAIL] Cf6Vehicle: "+label);}
     }
@@ -71,6 +74,24 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
         room={world:world,owner:world.__stageReturnWorldIdentity,mapId:"A07",stageManager:manager};
         s=Cf6VehicleService.begin(room,Cf6VehicleTestData.spec());age=0;
     }
+    private static function prepareOrdinaryGunProbe():Void {
+        ordinaryShots=ordinaryEvents=0;hero.攻击模式="长枪";
+        hero.长枪={name:"isolated-ordinary-gun",value:{shot:0}};hero.长枪弹匣容量=100;
+        var man:MovieClip=hero.createEmptyMovieClip("ordinaryGunProbe",hero.getNextHighestDepth());hero.man=man;
+        man.射击许可标签=true;man.子弹属性={ammoCost:1};man.gotoAndPlay=function():Void {};
+        man.枪={枪:{装扮:{枪口位置:{}}}};
+        hero.长枪射击=function():Boolean {ordinaryShots++;this.长枪.value.shot++;return true;};
+        hero.dispatcher.subscribe("长枪射击",function():Void {ordinaryEvents++;},null);
+    }
+    /** Real queued ShootCore callback with a held action flag; car input remains held independently. */
+    private static function probeHeldOrdinaryFire(label:String):Void {
+        hero.动作A=true;hero.主手射击中=true;
+        hero.keepshooting=EnhancedCooldownWheel.I().addTask(ShootCore.continuousShoot,1,true,hero,"长枪",100,ShootCore.primaryParams,100);
+        for(var tick:Number=0;tick<3;tick++)EnhancedCooldownWheel.I().tick();
+        check(keys[74]===true && ordinaryShots==0 && ordinaryEvents==0 && hero.长枪.value.shot==0
+            && hero.keepshooting==undefined && hero.主手射击中===false,
+            "held J cannot dispatch the ordinary player weapon during "+label);
+    }
     private static function fixtureRaider():Void {
         var name:String="fixtureRaider"+(++fixtureSerial);
         var clip:MovieClip=world.attachMovie("CF6VehicleRaider",name,world.getNextHighestDepth());
@@ -100,7 +121,7 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             if(state=="failed") {abort("loading failed "+s.reason);return;}
             if(state!="playing")return;
             check(s.loadingLease===undefined,"loading lease released once assets are ready");
-            check(!hero._visible && hero.行走!==walk && hero.按键检测()===false,"real hero hidden with actor-local controls owned");
+            check(!hero._visible && hero.行走===walk && hero.按键检测===checkKey && hero.__cf6VehicleOwner!==undefined,"real hero hidden while retaining native callbacks");
             nativeArtChecks();keys[68]=true;phase=1;age=0;paused={x:hero._x,wheel:s.player.p1.p2._currentframe};return;
         }
         if(phase==1) {
@@ -165,7 +186,7 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             check(shieldClip.hp==-20 && !shieldRow.resolved && !shieldRow.closed && shieldClip._currentframe==50 && s.rules.roadKills==beforeShield,"source 629 keeps its pain branch below zero HP without a gun-death event");
             for(var i:Number=0;i<s.actors.length;i++)Cf6VehicleCombat.retire(s,s.actors[i]);s.actors=[];
             for(i=0;i<s.generators.length;i++)s.generators[i].remaining=0;
-            s.rules.roadKills=0;s.rules.roadEvents={};keys[74]=true;
+            s.rules.roadKills=0;s.rules.roadEvents={};keys[74]=true;prepareOrdinaryGunProbe();
             phase=3;age=0;return;
         }
         if(phase==3) {
@@ -187,10 +208,12 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             trace("VehicleDeathBranches: chosen="+deathChosen[1]+","+deathChosen[32]+","+deathChosen[78]
                 +" observed="+deathVariants.a0+","+deathVariants.a1+","+deathVariants.a2);
             check(deathVariants.a0 && deathVariants.a1 && deathVariants.a2,"actual nested raider death playback reaches all three source branches");
+            probeHeldOrdinaryFire("road-to-boss-intro");
             paused={keyCalls:keyCalls,shots:s.shots};_root.__vehicleIntroClock.gotoAndStop(1);_root.__vehicleIntroClock.play();referenceAt=-1;phase=4;age=0;return;
         }
         if(phase==4) {
             Cf6VehicleService.tick(s);
+            if(age==30)probeHeldOrdinaryFire("boss-intro");
             if(_root.__vehicleIntroClock._currentframe==59 && referenceAt<0)referenceAt=age;
             if(s.rules.phase!="boss")return;
             check(age==58,"source helper starts on frame one and reaches fifty-nine after fifty-eight advances");
@@ -202,6 +225,8 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
         }
         if(phase==5) {
             Cf6VehicleService.tick(s);
+            if(age==1)probeHeldOrdinaryFire("boss-combat");
+            if(age==18)check(keys[74]===true && s.shots>paused.shots && ordinaryShots==0,"unreleased J keeps car fire active while the ordinary gun stays silent");
             if(age==18)check(s.rules.bossFrame==19 && s.grenades.length==1,"first native boss throw is source frame nineteen, eighteen advances after birth");
             // The complete route remains deterministic after proving one real hit;
             // subsequent grenade attempts exercise the native invulnerability gate.
@@ -230,9 +255,9 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             check(s.rules.phase=="complete" && s.tailX<s.data.endpoint.x,"only actual moving tail endpoint completes");
             var x:Number=hero._x;keys[68]=true;var count:Number=keyCalls;
             check(Cf6VehicleService.tick(s)=="complete" && hero._x==x && keyCalls==count,"complete remains stable and input locked");
-            check(!hero._visible && hero.行走!==walk && s.player._parent===world,"complete preserves car until real teardown");
+            check(!hero._visible && hero.行走===walk && s.player._parent===world,"complete preserves car and native callbacks until real teardown");
             Cf6VehicleService.dispose(s);
-            check(hero._visible && hero.行走===walk && hero.按键控制攻击模式===mode && hero.按键检测===checkKey,"dispose restores exactly owned actor slots");
+            check(hero._visible && hero.行走===walk && hero.按键控制攻击模式===mode && hero.按键检测===checkKey,"dispose releases its presentation without replacing actor callbacks");
             check(world.__cf6VehicleSession===undefined,"teardown clears only exact room session");
             var high:Object=Cf6VehicleRules.create(Cf6VehicleTestData.spec().rules,{},1000000000,8,4);
             check(high!=null && high.health==1000000000,"valid current hero HP is not capped by coordinate validation");
@@ -254,6 +279,7 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             check(Cf6VehicleCombat.damageHero(s,g) && hero.hp==0 && killEvents==kills+1,"native damage settles lethal HP and publishes one kill");
             StageRunSession.onHeroDeath();var seedBefore:Number=s.rng;
             check(Cf6VehicleService.tick(s)=="dead" && room.stageManager.isFailed===false,"ordinary hero death suspends car encounter without StageFailed");
+            var deathAdapter:Object=s.actorAdapter,deathToken:Object=s.actorAdapter.token;
             var life:Object=StageRunSession.testOnlySnapshot();
             check(life.life=="dead" && life.outcome=="active","actual run life and outcome remain orthogonal during death");
             var deadFrame:Number=s.rules.bossFrame,deadAge:Number=s.age,deadProjectiles:Number=s.projectiles.length;
@@ -266,7 +292,7 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             RespawnEventComponent.onHeroRespawn(hero);
             check(hero.hp==hero.hp满血值 && !hero._killed && StageRunSession.testOnlySnapshot().life=="alive","actual RespawnEventComponent restores same actor and run life");
             check(Cf6VehicleService.tick(s)=="playing" && s.actorAdapter.hero===hero && !hero._visible,"same-world actual respawn reacquires car presentation without replacing hero");
-            check(s.actorAdapter.walk===revivedWalk && s.hudLease!=null && s.boss.hp==4200 && s.rules.bossFrame==deadFrame && s.rules.roadKills==30 && s.rng==seedBefore,"resume captures fresh callbacks and restores HUD with unchanged encounter identity");
+            check(s.actorAdapter===deathAdapter && s.actorAdapter.token===deathToken && hero.行走===revivedWalk && s.hudLease!=null && s.boss.hp==4200 && s.rules.bossFrame==deadFrame && s.rules.roadKills==30 && s.rng==seedBefore,"resume retains the same adapter and current callbacks with unchanged encounter identity");
             check(!Cf6VehicleCombat.damageHero(s,g) && hero.hp==hero.hp满血值,"revival does not clear already-attempted grenade identity");
             grenade.removeMovieClip();Cf6VehicleService.dispose(s);
             check(hero.行走===revivedWalk,"post-revival teardown restores the fresh native callback, not stale pre-death callback");
@@ -275,8 +301,16 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
         if(phase==9) {
             if(Cf6VehicleService.tick(s)!="playing")return;
             var foreign:Function=function():Void {};hero.行走=foreign;
-            check(Cf6VehicleService.tick(s)=="cancelled","foreign actor control ownership cancels this session");
-            check(hero.行走===foreign,"CAS release never overwrites foreign control function");
+            var freshMode:Function=function():Void {},freshKeys:Function=function():Boolean {return true;};
+            hero.按键控制攻击模式=freshMode;hero.按键检测=freshKeys;
+            hero.控制块.removeMovieClip();hero.createEmptyMovieClip("控制块",1);
+            var freshControl:Function=function():Void {};hero.控制块.onEnterFrame=freshControl;
+            check(Cf6VehicleService.tick(s)=="playing","same persistent actor continues after every callback and control-block refresh");
+            check(hero.行走===foreign && hero.按键控制攻击模式===freshMode && hero.按键检测===freshKeys
+                && hero.控制块.onEnterFrame===freshControl,"current native callbacks remain untouched during vehicle play");
+            Cf6VehicleService.dispose(s);
+            check(hero._visible && hero.__cf6VehicleOwner===undefined && hero.行走===foreign
+                && hero.控制块.onEnterFrame===freshControl,"vehicle teardown releases only its marker and visibility");
             var invalid:Object=Cf6VehicleTestData.spec();invalid.assetUrl="foreign.swf";
             check(Cf6VehicleService.begin(room,invalid)==null,"closed spec rejects foreign asset URL without side effects");
             check(Cf6VehicleService.begin({world:world,owner:room.owner,mapId:"A07",stageManager:{}},Cf6VehicleTestData.spec())==null && hero._visible,"foreign stage manager is rejected before acquiring actor or pause ownership");

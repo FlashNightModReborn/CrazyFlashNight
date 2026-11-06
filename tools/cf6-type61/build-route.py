@@ -15,6 +15,7 @@ OUTPUT = ROOT / 'data/stages/books/cf6-type61.json'
 sys.path.insert(0, str(ROOT / 'tools'))
 sys.path.insert(0, str(SOURCE.parent))
 import encounters
+import fixed_roster
 from choice_reward_catalog import item_catalog
 from cf6_acquisition import channels, route_plan, sources as acquisition_sources, registries as acquisition_registries
 from unit_registry import UnitRegistry, normalize_book_units
@@ -181,7 +182,7 @@ def validate_source(source,base,items):
         raise ValueError('Type61 blood sword chance changed')
 
 
-def build(source=None):
+def build(source=None, include_fixed=True):
     source = json.loads(SOURCE.read_text('utf8')) if source is None else copy.deepcopy(source)
     if source['schema'] != 'cf6-type61-source.v1':
         raise ValueError('unsupported Type61 authoring schema')
@@ -301,20 +302,41 @@ def build(source=None):
             if row['name']=='GM6_LYNX': config['recipeUnlocks'][row['recipeId']]='A11'
             if row['name']=='钛合金QJZ171': config['recipeUnlocks'][row['recipeId']]='A16'
     config['recipeUnlocks'].update(acquisition['recipes'])
+    if include_fixed:
+        chapter=fixed_roster.apply(chapter,fixed_roster.compile_slots(chapter))
+        config=chapter['type61']
+        config['soldiers']['lootPolicy']=json.loads(SOURCE.with_name('soldier-loot-policy.source.json').read_text('utf8'))
     outputs[OUTPUT]=encoded(chapter)
     outputs[SOURCE.with_name('acquisition.generated.json')]=encoded(acquisition)
     fixture='// Generated test-only Type61 configuration; production reads the route runtime JSON.\nclass org.flashNight.arki.scene.Cf6Type61Fixture {\n'
     def fixture_method(name,value,public=False):
         text=json.dumps(value,ensure_ascii=False,separators=(',',':'))
-        if len(text.encode('utf8'))>48000: raise ValueError('Type61 test fixture function needs splitting: '+name)
+        if len(text.encode('utf8'))>48000:
+            parts=[text[i:i+3000] for i in range(0,len(text),3000)]
+            helpers=''
+            for i,part in enumerate(parts):
+                method='    private static function '+name+'Text'+str(i)+'():String {return '+json.dumps(part,ensure_ascii=False)+';}\n'
+                if len(method.encode('utf8'))>48000:raise ValueError('Type61 native chunk exceeds function source limit')
+                helpers+=method
+            wrapper='    '+('public' if public else 'private')+' static function '+name+'():Object {\n        var text:String="";\n'
+            for i in range(len(parts)):wrapper+='        text+='+name+'Text'+str(i)+'();\n'
+            wrapper+='        var codec:LiteJSON=new LiteJSON();return codec.parse(text);\n    }\n'
+            if len(wrapper.encode('utf8'))>48000:raise ValueError('Type61 native assembly function exceeds source limit')
+            return helpers+wrapper
         result='    '+('public' if public else 'private')+' static function '+name+'():Object {\n        var text:String="";\n'
         for offset in range(0,len(text),1000): result+='        text+='+json.dumps(text[offset:offset+1000],ensure_ascii=False)+';\n'
         return result+'        var codec:LiteJSON=new LiteJSON();\n        return codec.parse(text);\n    }\n'
     def fixture_literal(name,value):
         text=re.sub(r'"([A-Za-z_\u4e00-\u9fa5][A-Za-z0-9_\u4e00-\u9fa5]*)"(?=\s*:)',r'\1',
                     json.dumps(value,ensure_ascii=False,separators=(',',':')))
+        if len(text.encode('utf8'))>24000:return fixture_method(name,value)
         return '    private static function '+name+'():Object {\n        return '+text+';\n    }\n'
-    fixture+=fixture_method('config',{k:v for k,v in config.items() if k!='acquisition'},True)
+    if include_fixed:
+        fixture+=fixture_method('configBase',{k:v for k,v in config.items() if k not in ('acquisition','soldiers')})
+        fixture+='    public static function config():Object {var c:Object=configBase();\n'
+        fixture+='        c.soldiers=org.flashNight.arki.scene.Cf6FixedActionsFixture.config();\n'
+        fixture+='        c.soldiers.lootPolicy=org.flashNight.arki.scene.Cf6SoldierLootFixture.policy();return c;}\n'
+    else:fixture+=fixture_method('config',{k:v for k,v in config.items() if k!='acquisition'},True)
     actor_names={e['name'] for e in source['actor']['equipment']}
     actor_items={name:dict(name=name,type=items[name].findtext('type'),use=items[name].findtext('use'),
                            data=dict(level=int(items[name].findtext('data/level')))) for name in sorted(actor_names)}
@@ -326,7 +348,7 @@ def build(source=None):
     fixture+=fixture_literal('metadata',{k:v for k,v in runtime_chapter.items() if k not in ('maps','type61')})
     def slim_params(p):
         if not p: return None
-        keep={k:p[k] for k in ('cf6EliteQuota','掉落物','老头变身','cf6Type61MidMod') if k in p}
+        keep={k:p[k] for k in ('cf6EliteQuota','掉落物','老头变身','cf6Type61MidMod','cf6FixedSlots','cf6RosterVersion') if k in p}
         return keep if keep else None
     def slim_wave_enemy(e):
         row={'Type':e['Type'],'Level':e['Level'],'Quantity':e['Quantity']}
@@ -378,6 +400,15 @@ def build(source=None):
     # This manifest binds generated content, not an SWF compilation or runtime promotion.
     inputs={SOURCE,Path(__file__),BASE,ROOT/'tools/choice_reward_catalog.py',ROOT/'data/skills/skills.xml',
             ROOT/'data/crafting/进阶防具.json',ROOT/'data/crafting/铁枪会.json'}
+    if include_fixed:
+        inputs.update({Path(fixed_roster.__file__),SOURCE.with_name('soldier_programs.py'),
+            SOURCE.with_name('fixed-roster.source.json'),SOURCE.with_name('soldier-loot-policy.source.json'),
+            SOURCE.with_name('soldier-action-contracts.source.json'),SOURCE.with_name('soldier-g1111-pair.source.json'),
+            SOURCE.with_name('soldier-ammo-contract.source.json'),SOURCE.with_name('soldier-description-proposals.source.json'),
+            SOURCE.with_name('build-fixed-actions-fixture.py'),SOURCE.with_name('build-fixed-roster-fixture.py'),SOURCE.with_name('build-soldier-loot-fixture.py')})
+        inputs.update(ROOT/'data/items'/entry.text for entry in ET.parse(ROOT/'data/items/list.xml').findall('items')
+            if (ROOT/'data/items'/entry.text).is_file() and ROOT/'data/items'/entry.text not in outputs)
+        inputs.update((ROOT/'data/items/equipment_mods').glob('*.xml'))
     inputs.update(acquisition_sources())
     inputs.update(acquisition_registries())
     inputs.add(ROOT/'tools/cf6_acquisition.py')
@@ -404,7 +435,8 @@ def build(source=None):
         return dict(path=path.relative_to(ROOT).as_posix(),bytes=len(content),sha256=hashlib.sha256(content).hexdigest())
     entries=[identity(p,b) for p,b in sorted(outputs.items())]
     total=sum(e['bytes'] for e in entries)
-    runtime_bytes=encoded(normalize_book_units(chapter,UnitRegistry.load(ROOT)))
+    normalized=normalize_book_units(chapter,UnitRegistry.load(ROOT))
+    runtime_bytes=(json.dumps(normalized,ensure_ascii=False,separators=(',',':'))+'\n').encode('utf8') if include_fixed else encoded(normalized)
     complete_size=total+len(runtime_bytes)
     if complete_size>2000000: raise ValueError('Type61 generated content exceeds its reviewed 2 MB limit')
     manifest=dict(schema='cf6-type61-content.v1',scope='Generated route content and test fixtures; no SWF compilation, execution or promotion claim.',
