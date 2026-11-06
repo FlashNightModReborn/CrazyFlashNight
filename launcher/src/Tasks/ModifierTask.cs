@@ -10,9 +10,9 @@ using Newtonsoft.Json.Linq;
 namespace CF7Launcher.Tasks
 {
     /// <summary>
-    /// 修改器 Web Panel 传输边界。AS2 保留四页写权威、目录投影、
+    /// 修改器面板传输边界。AS2 保留四页写权威、目录投影、
     /// dirty/保存语义和一次性操作收据；Host 只做 owner、白名单、
-    /// 未知写水位与响应重建。
+    /// 未知写水位与响应重建。C# 原生面与旧 Web 面共用同一请求合同。
     /// </summary>
     public sealed class ModifierTask : IDisposable
     {
@@ -25,6 +25,7 @@ namespace CF7Launcher.Tasks
         private static readonly Regex SafeToken = new Regex("^modifier\\.[A-Za-z0-9._~-]{1,80}$", RegexOptions.Compiled);
         private static readonly Regex SafeOperation = new Regex("^mod\\.[A-Za-z0-9._~-]{1,80}$", RegexOptions.Compiled);
         private static readonly Regex SafeId = new Regex("^[A-Za-z0-9._~-]{1,128}$", RegexOptions.Compiled);
+        private static readonly Regex Base64 = new Regex("^[A-Za-z0-9+/]+=*$", RegexOptions.Compiled);
         private static readonly HashSet<string> DefinitiveErrors = new HashSet<string>(StringComparer.Ordinal)
         {
             "unsupported_cmd", "unsupported_version", "invalid_payload", "stale_token", "stale_revision",
@@ -385,7 +386,31 @@ namespace CF7Launcher.Tasks
             if (entry.Cmd == "snapshot") return ValidSnapshot(value);
             if (entry.Cmd == "items") return ValidItems(value, entry);
             if (entry.Cmd == "units") return ValidUnits(value, entry);
+            if (entry.Cmd == "itemTooltip") return ValidItemTooltip(value);
+            if (entry.Cmd == "unitFrame") return ValidUnitFrame(value);
             return false;
+        }
+
+        private static bool ValidItemTooltip(JObject value)
+        {
+            if (!Integer(value["revision"], 0, 9007199254740991L)) return false;
+            string itemName = Text(value["itemName"]);
+            string displayname = Text(value["displayname"]);
+            if (itemName == null || itemName.Length < 1 || itemName.Length > 128) return false;
+            if (displayname == null || displayname.Length > 256) return false;
+            if (value["introHTML"]?.Type != JTokenType.String || value["descHTML"]?.Type != JTokenType.String) return false;
+            JToken document = value["document"];
+            return document == null || document.Type == JTokenType.Object || document.Type == JTokenType.Null;
+        }
+
+        private static bool ValidUnitFrame(JObject value)
+        {
+            if (!Integer(value["revision"], 0, 9007199254740991L)) return false;
+            string spriteName = Text(value["spriteName"]);
+            if (spriteName == null || spriteName.Length < 1 || spriteName.Length > 256) return false;
+            if (!Integer(value["width"], 1, 512) || !Integer(value["height"], 1, 512)) return false;
+            string pixels = Text(value["pixels"]);
+            return pixels != null && pixels.Length >= 8 && pixels.Length % 4 == 0 && Base64.IsMatch(pixels);
         }
 
         private static bool ValidSnapshot(JObject value)

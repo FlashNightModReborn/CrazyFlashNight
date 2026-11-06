@@ -1466,8 +1466,13 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
             foreach (NativeTooltipSection sec in subSecs)
             {
-                if (sec.Kind == "acquisition")
+                if (sec.Rows.Count > 0)
                     w = Math.Max(w, RequiredAcquisitionWidth(sec, pad, scale, measure));
+            }
+            if (hasDesc && w > plan.DescPanel.Width) plan.DescPanel.Width = w;
+
+            foreach (NativeTooltipSection sec in subSecs)
+            {
                 Plan.SubBox box = sec.IsAttachments
                     ? BuildAttachmentsBox(sec, x, y, w, pad, scale, measure, lh, maxH)
                     : BuildTextSubBox(sec, x, y, w, pad, scale, measure, lh, maxH);

@@ -19,6 +19,8 @@ namespace Launcher.Tests.Tasks
                 payload["page"] = 1;
             }
             if (cmd == "query") payload["operationId"] = operationId;
+            if (cmd == "itemTooltip") payload["itemName"] = "普通hp药剂";
+            if (cmd == "unitFrame") payload["spriteName"] = "敌人-金发女僵尸1";
             if (cmd == "grantMoney" || cmd == "grantKCoin" || cmd == "spawnItem" || cmd == "levelAction"
                 || cmd == "grantTask" || cmd == "spawnUnit" || cmd == "spawnMerc")
             {
@@ -51,6 +53,8 @@ namespace Launcher.Tests.Tasks
                 case "modifierSnapshot": return "snapshot";
                 case "modifierItems": return "items";
                 case "modifierUnits": return "units";
+                case "modifierItemTooltip": return "itemTooltip";
+                case "modifierUnitFrame": return "unitFrame";
                 case "modifierQuery": return "query";
                 case "modifierGrantMoney": return "grantMoney";
                 case "modifierGrantKCoin": return "grantKCoin";
@@ -109,6 +113,20 @@ namespace Launcher.Tests.Tasks
                     ["key"] = "僵尸.金发女", ["level"] = 2, ["hostile"] = true
                 });
             }
+            else if (cmd == "itemTooltip")
+            {
+                response["itemName"] = "普通hp药剂";
+                response["displayname"] = "普通HP药剂";
+                response["introHTML"] = "<b>普通HP药剂</b>";
+                response["descHTML"] = "<span>恢复生命</span>";
+            }
+            else if (cmd == "unitFrame")
+            {
+                response["spriteName"] = "敌人-金发女僵尸1";
+                response["width"] = 1;
+                response["height"] = 1;
+                response["pixels"] = "AAAAAA==";
+            }
             else
             {
                 response["operationId"] = request["operationId"];
@@ -123,6 +141,8 @@ namespace Launcher.Tests.Tasks
         [InlineData("snapshot", "modifierSnapshot")]
         [InlineData("items", "modifierItems")]
         [InlineData("units", "modifierUnits")]
+        [InlineData("itemTooltip", "modifierItemTooltip")]
+        [InlineData("unitFrame", "modifierUnitFrame")]
         [InlineData("query", "modifierQuery")]
         [InlineData("grantMoney", "modifierGrantMoney")]
         [InlineData("grantKCoin", "modifierGrantKCoin")]
@@ -174,6 +194,25 @@ namespace Launcher.Tests.Tasks
             if (defect == "levelAction") request["payload"]["levelAction"] = "rm_rf";
             task.HandleWebRequest("levelAction", request);
             Assert.Equal(0, sends);
+        }
+
+        [Fact]
+        public void UnitFrameAndItemTooltipResponsesAreRebuiltForThePanel()
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = new ModifierTask(() => true, value => { sent.Add(Read(value)); return true; });
+            task.SetPostToWeb(value => posted.Add(Read(value)));
+            task.HandleWebRequest("unitFrame", Request("unitFrame", "call.unit"));
+            task.HandleWebRequest("itemTooltip", Request("itemTooltip", "call.tooltip"));
+            task.HandleFlashResponse(Response(sent[0]), _ => { });
+            task.HandleFlashResponse(Response(sent[1]), _ => { });
+            Assert.Equal(2, posted.Count);
+            Assert.True(posted[0].Value<bool>("success"));
+            Assert.Equal("unitFrame", posted[0].Value<string>("cmd"));
+            Assert.Equal("AAAAAA==", posted[0].Value<string>("pixels"));
+            Assert.True(posted[1].Value<bool>("success"));
+            Assert.Equal("itemTooltip", posted[1].Value<string>("cmd"));
+            Assert.Equal("<b>普通HP药剂</b>", posted[1].Value<string>("introHTML"));
         }
 
         [Fact]

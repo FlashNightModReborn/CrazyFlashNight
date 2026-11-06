@@ -8,14 +8,14 @@ using Newtonsoft.Json.Linq;
 namespace CF7Launcher.Guardian
 {
     /// <summary>
-    /// 修改器的独立 1016×484 composition 浮窗。它不进入 PanelHost 的全屏面板、
+    /// 修改器的独立 1016×484 原生浮窗。它不进入 PanelHost 的全屏面板、
     /// 不申请面板暂停，也不复用 backup/input shield；AS2 会话和写权威仍归
     /// ModifierTask / ModifierPanelService。
     /// </summary>
     internal sealed class ModifierOverlay : IDisposable
     {
         private readonly Form _owner;
-        private readonly CompositionHelpSurface _surface;
+        private readonly ModifierNativeSurface _surface;
         private readonly ModifierTask _task;
         private readonly Action _sendClosed;
         private readonly object _gate = new object();
@@ -33,10 +33,8 @@ namespace CF7Launcher.Guardian
             _owner = owner ?? throw new ArgumentNullException(nameof(owner));
             _task = task ?? throw new ArgumentNullException(nameof(task));
             _sendClosed = sendClosed;
-            _surface = new CompositionHelpSurface(owner, webRoot, profileRoot,
-                CompositionPanelProfile.Modifier);
-            _surface.HostCloseRequested += OnHostCloseRequested;
-            _surface.InboundPanelMessage += OnPanelMessage;
+            _surface = new ModifierNativeSurface(owner, webRoot, profileRoot, task);
+            _surface.CloseRequested += OnNativeCloseRequested;
             _surface.Move += OnSurfaceMoved;
             _ownerLocation = _owner.Location;
             _owner.Move += OnOwnerMoved;
@@ -184,11 +182,9 @@ namespace CF7Launcher.Guardian
             try { _surface.Dispose(); } catch { }
         }
 
-        private void OnHostCloseRequested(HostCloseContext context)
+        private void OnNativeCloseRequested()
         {
             if (_disposed) return;
-            if (context == null || context.Endpoint == null
-                || !string.Equals(context.Endpoint.Instance, _instance, StringComparison.Ordinal)) return;
             CloseCore();
         }
 
@@ -211,15 +207,6 @@ namespace CF7Launcher.Guardian
             {
                 try { _owner.Activate(); } catch { }
             }
-        }
-
-        private void OnPanelMessage(JObject message)
-        {
-            if (_disposed || message == null) return;
-            string instance = message.Value<string>("panelInstanceId");
-            string cmd = message.Value<string>("cmd");
-            if (string.IsNullOrEmpty(instance) || instance != _instance || string.IsNullOrEmpty(cmd)) return;
-            _task.HandleWebRequest(cmd, message);
         }
 
         private void OnSurfaceMoved(object sender, EventArgs e)
