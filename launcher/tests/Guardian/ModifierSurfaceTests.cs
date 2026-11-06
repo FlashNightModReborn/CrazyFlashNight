@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -25,7 +26,12 @@ namespace Launcher.Tests.Guardian
         [Fact]
         public void PortraitManifestResolvesAcceptedUnitPortrait()
         {
-            string webRoot = Path.Combine(Directory.GetCurrentDirectory(), "launcher", "web");
+            DirectoryInfo repository = new DirectoryInfo(AppContext.BaseDirectory);
+            while (repository != null && !File.Exists(Path.Combine(
+                repository.FullName, "launcher", "CRAZYFLASHER7MercenaryEmpire.csproj")))
+                repository = repository.Parent;
+            Assert.NotNull(repository);
+            string webRoot = Path.Combine(repository.FullName, "launcher", "web");
             using var owner = new Form();
             using var task = new ModifierTask(() => true, _ => true);
             using var surface = new ModifierNativeSurface(owner, webRoot, "owned", task);

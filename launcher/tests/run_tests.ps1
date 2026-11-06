@@ -6,7 +6,7 @@
 # Phase 4 重写：从 nuget restore + msbuild + xunit.console.exe 路径切到
 # `dotnet test`（Microsoft.NET.Test.Sdk + xunit.runner.visualstudio）。
 
-param([switch]$NoBuild, [string]$ResultsDirectory)
+param([switch]$NoBuild, [string]$ResultsDirectory, [string]$Filter)
 $ErrorActionPreference = "Stop"
 
 $testsDir    = $PSScriptRoot
@@ -159,6 +159,7 @@ try {
     $additionalArguments=@()
     if($NoBuild){$additionalArguments+=@('--no-build','--no-restore')}
     if($ResultsDirectory){$additionalArguments+=@('--logger','trx;LogFileName=recheck.trx','--results-directory',$ResultsDirectory)}
+    if($Filter){$additionalArguments+=@('--filter',$Filter)}
     $testOutput = @(
         & $dotnet test $testsCsproj -c Release `
             --logger "console;verbosity=normal" @additionalArguments 2>&1

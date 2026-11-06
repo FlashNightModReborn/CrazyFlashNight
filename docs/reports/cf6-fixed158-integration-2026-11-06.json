@@ -50,5 +50,32 @@
     "originalPlayableSavedFilesUnchangedAtDelivery": 11,
     "originalPlayableFlashObjectsUnchangedAtDelivery": 8
   },
-  "scope": "Existing production RSL and behavior source plus governed fixture sources; generated test SWFs and scratch probes excluded."
+  "scope": "Existing production RSL and behavior source plus governed fixture sources; generated test SWFs and scratch probes excluded.",
+  "hostRegression": {
+    "regularPassed": 8135,
+    "regularSkipped": 31,
+    "regularFailed": 0,
+    "totalRegular": 8166,
+    "qualificationCasesExcluded": 123,
+    "qualificationClasses": [
+      "FocusTracePhysicalHistoryTests",
+      "WindowManagerFocusRestoreTests",
+      "SolIndependentWindowsTraceTests",
+      "CompositionRecheckTests",
+      "SettingsTaskTests"
+    ],
+    "qualificationReason": "Require separately acknowledged resource/input window; not claimed by general release.",
+    "upstreamPortraitTestPathFixed": true,
+    "portraitFocusedTestsPassed": 2,
+    "retainedInitialAttempt": {
+      "total": 8289,
+      "passed": 8134,
+      "failed": 124,
+      "skipped": 31,
+      "failureAttribution": {
+        "missingInputEvidenceWindow": 123,
+        "portraitTestCurrentDirectoryAssumption": 1
+      }
+    }
+  }
 }
