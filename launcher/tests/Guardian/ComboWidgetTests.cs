@@ -639,7 +639,8 @@ namespace CF7Launcher.Tests.Guardian
             string longSeq = new string('A', 120);
             w.OnLegacyUiData("combo", new[] { "", longSeq, "Move:" + longSeq + "B:1" });
 
-            Assert.Equal(480, w.PaintWidthBaseForTest());
+            // TC 分区：Combo 上限收敛到刘海安全宽度，避免侵入左上状态列与右侧动作行（ADR D5）。
+            Assert.Equal((int)HudZoneLayout.ComboMaxWidth, w.PaintWidthBaseForTest());
         }
     }
 }

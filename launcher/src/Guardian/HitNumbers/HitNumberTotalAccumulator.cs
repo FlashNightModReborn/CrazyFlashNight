@@ -133,6 +133,20 @@ namespace CF7Launcher.Guardian.HitNumbers
         }
 
         internal string TargetId { get; }
+        internal CombatNumberKind Kind { get; private set; }
+        internal float VisualAlpha { get; private set; } = 1f;
+
+        // 只作为布局器的候选适配器，不调用伤害 Add/AdvanceVisual，不加入 _byTarget。
+        internal static HitNumberTotalEntry ForHealing(CombatNumberVisualEvent value)
+        {
+            var result = new HitNumberTotalEntry(value.LifecycleKey, HitNumberLayoutEngine.CreateHealingSample(value));
+            result.Kind = CombatNumberKind.HealHp;
+            result.TotalDamage = result.DisplayDamage = value.TotalValue;
+            result.VisualAlpha = value.Alpha;
+            var color = HitNumberLayoutEngine.HealingColor;
+            result._displayR = color.R; result._displayG = color.G; result._displayB = color.B;
+            return result;
+        }
         internal float TargetX { get; private set; }
         internal float TargetY { get; private set; }
         internal long TotalDamage { get; private set; }

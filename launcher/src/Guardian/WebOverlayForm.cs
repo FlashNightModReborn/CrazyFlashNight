@@ -3132,9 +3132,9 @@ namespace CF7Launcher.Guardian
                 else if (type == "panel-toast")
                 {
                     // 面板 toast 桥接：web 面板模块 Toast.add 上送原始 Flash htmlText 子集，
-                    // 由 IToastSink → NativeHud ToastWidget 渲染；severity 音效已在 web 侧播放。
+                    // 由 AddPanelToast → 刘海临时行渲染（ADR D6，操作回执不再挤占 fallback 消息行）；severity 音效已在 web 侧播放。
                     string panelToastHtml = parsed != null ? parsed.Value<string>("html") : null;
-                    if (!string.IsNullOrEmpty(panelToastHtml)) AddMessage(panelToastHtml);
+                    if (!string.IsNullOrEmpty(panelToastHtml)) AddPanelToast(panelToastHtml);
                 }
                 else if (type == "ragchat-autostart")
                 {
@@ -4587,8 +4587,46 @@ namespace CF7Launcher.Guardian
                 this.BeginInvoke(new Action<string>(AddMessage), text);
                 return;
             }
-            // toast 渲染固定走 NativeHud ToastWidget（含 panel-toast 桥接回流）
+            // toast 渲染固定走 NativeHud ToastWidget（BL fallback 消息行；面板回执见 AddPanelToast）
             if (_toastFallback != null) _toastFallback.AddMessage(text);
+        }
+
+        /// <summary>
+        /// 面板 Toast.add 操作回执：转为刘海临时行（ADR D6）。同一类目 upsert，
+        /// 连续回执只替换同一行，不再在 fallback 消息行堆叠。刘海不可用时回退旧 toast。
+        /// </summary>
+        internal void AddPanelToast(string html)
+        {
+            if (string.IsNullOrEmpty(html)) return;
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(AddPanelToast), html);
+                return;
+            }
+            if (_notchFallback == null) { AddMessage(html); return; }
+            string plain;
+            Color accent;
+            DescribePanelToast(html, out plain, out accent);
+            if (string.IsNullOrEmpty(plain)) return;
+            _notchFallback.AddNotice(PanelToastNoticeCategory, plain, accent);
+        }
+
+        internal const string PanelToastNoticeCategory = NotchWidget.PanelToastNoticeCategory;
+
+        internal static void DescribePanelToast(string html, out string plain, out Color accent)
+        {
+            var segments = FlashHtmlParser.Parse(html, " ");
+            plain = (FlashHtmlParser.ToPlainText(segments) ?? "").Trim();
+            accent = Color.FromArgb(255, 244, 248, 248);
+            for (int i = 0; i < segments.Count; i++)
+            {
+                Color c = segments[i].Color;
+                if (!string.IsNullOrEmpty(segments[i].Text) && !(c.R == 255 && c.G == 255 && c.B == 255))
+                {
+                    accent = Color.FromArgb(255, c.R, c.G, c.B);
+                    break;
+                }
+            }
         }
 
         #endregion
@@ -4912,7 +4950,7 @@ namespace CF7Launcher.Guardian
         // are reachable here; it never enters the generic Web task router.
         internal void HandleTransitionSettlementMessage(JObject p) {
             if(_disposed || _panelHost?.UsesTransitionSettlement!=true) return;
-            if(p.Value<string>("type")=="panel-toast") { AddMessage(p.Value<string>("html"));return; }
+            if(p.Value<string>("type")=="panel-toast") { AddPanelToast(p.Value<string>("html"));return; }
             if(!CompositionHelpSurface.IsSettlementMessage(p,_panelHost.ActivePanelInstanceId)) return;
             if(p.Value<string>("type")=="task") _lootTask?.HandleWebRequest(p);
             else if(p.Value<string>("cmd")=="close" && p.Value<string>("domain")!="inventory") HandleLootVisualClose(p);
@@ -5327,7 +5365,7 @@ namespace CF7Launcher.Guardian
             if (parsed != null && parsed.Value<string>("type") == "panel-toast")
             {
                 string html = parsed.Value<string>("html");
-                if (!string.IsNullOrEmpty(html)) AddMessage(html);
+                if (!string.IsNullOrEmpty(html)) AddPanelToast(html);
                 return;
             }
             HandlePanelMessage(json);

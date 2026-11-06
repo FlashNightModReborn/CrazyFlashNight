@@ -423,15 +423,11 @@ namespace CF7Launcher.Guardian.Hud.Loot
             byte fullAlpha = ToAlpha(255f * alpha);
             bool isCasualty = card.Kind == "casualty";
 
-            // 直角低透明底 + 文本区局部加深。静态对比度由底色承担，不依赖脉冲。
-            using (SolidBrush baseBrush = new SolidBrush(isCasualty
-                ? Color.FromArgb(ToAlpha(174f * alpha), 5, 22, 31)
-                : Color.FromArgb(ToAlpha(108f * alpha), 8, 10, 14)))
-                g.FillRectangle(baseBrush, rect);
-            using (Pen hairline = new Pen(isCasualty
-                ? Color.FromArgb(ToAlpha(175f * alpha), accent.R, accent.G, accent.B)
-                : Color.FromArgb(ToAlpha(70f * alpha), 0xB8, 0xBE, 0xC8), 1f))
-                g.DrawRectangle(hairline, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
+            // 锚点切角金属卡（ADR D3）：静态对比度由板材承担，不依赖脉冲；文本区局部加深保留。
+            NativeHudTheme.DrawPlate(g, rect, scale,
+                isCasualty ? Color.FromArgb(214, 5, 22, 31) : Color.FromArgb(206, 24, 26, 29),
+                isCasualty ? Color.FromArgb(200, accent.R, accent.G, accent.B) : NativeHudTheme.AnchorRimMuted,
+                NativeHudTheme.PlateCorners.TopRight, NativeHudTheme.ButtonChamferBase + 2, alpha);
 
             int iconX = rect.X + railWidth + padX;
             int iconY = rect.Y + (rect.Height - iconSize) / 2;
@@ -498,17 +494,14 @@ namespace CF7Launcher.Guardian.Hud.Loot
             Color accent, float scale, float alpha)
         {
             int height = Px(16, scale);
-            Rectangle tag = new Rectangle(rect.X, rect.Y + (rect.Height - height) / 2,
+            RectangleF tag = new RectangleF(rect.X, rect.Y + (rect.Height - height) / 2f,
                 rect.Width, height);
-            using (SolidBrush backing = new SolidBrush(Color.FromArgb(
-                ToAlpha(46f * alpha), accent.R, accent.G, accent.B)))
-                g.FillRectangle(backing, tag);
-            using (Pen border = new Pen(Color.FromArgb(
-                ToAlpha(175f * alpha), accent.R, accent.G, accent.B), 1f))
-                g.DrawRectangle(border, tag.X, tag.Y, tag.Width - 1, tag.Height - 1);
+            // 锚点斜切标签（SP. 铭牌语言），语义色只承担描边与字色。
+            RectangleF content = NativeHudTheme.DrawSlantTag(g, tag,
+                Color.FromArgb(230, 5, 6, 6), Color.FromArgb(200, accent.R, accent.G, accent.B), alpha);
             using (SolidBrush text = new SolidBrush(Color.FromArgb(
                 ToAlpha(255f * alpha), accent.R, accent.G, accent.B)))
-                g.DrawString(label, _metaFont, text, tag, _centerFormat);
+                g.DrawString(label, _metaFont, text, content, _centerFormat);
         }
 
         private static void DrawDownWarning(Graphics g, Rectangle iconRect, float scale, float alpha)
@@ -891,6 +884,9 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
         private void PublishBoundsIfChanged()
         {
+            // BL 事件卡顶边上报给分区仲裁，fallback 消息据此让位（ADR D4/D5）。
+            HudZoneLayout.ReportEventCardsTop(HudZoneLayout.EventCardsTopFor(
+                Visible ? _model.ActiveCount : 0, _model.DisplayPendingCount > 0));
             Rectangle current = ScreenBounds;
             if (current == _lastPublishedBounds) return;
             _lastPublishedBounds = current;

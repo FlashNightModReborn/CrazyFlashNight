@@ -21,6 +21,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
         internal int SimulatedHits;
         internal int MaximumActiveSegments;
         internal int MaximumBackingSegments;
+        internal int MaximumWorldRows;
         internal double ElapsedMilliseconds;
         internal double AverageMillisecondsPerFrame;
         internal double ReducerLayoutMillisecondsPerFrame;
@@ -72,7 +73,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             for (int frame = 0; frame < WarmupFrames; frame++)
             {
                 DrawFrame(runtime, painter, scenePainter, graphics, viewport,
-                    BuildPayload(frame, includeHeals), ref now, out _, out _);
+                    BuildPayload(frame, includeHeals), ref now, out _, out _, out _);
             }
 
             GC.Collect();
@@ -83,6 +84,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             int gen0Before = GC.CollectionCount(0);
             int maximumActive = runtime.StoredSegmentCountForTests;
             int maximumBacking = runtime.BackingSegmentCountForTests;
+            int maximumWorldRows = 0;
             long reducerLayoutTicks = 0;
             long painterTicks = 0;
             var stopwatch = Stopwatch.StartNew();
@@ -91,11 +93,12 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             {
                 DrawFrame(runtime, painter, scenePainter, graphics, viewport,
                     BuildPayload(WarmupFrames + frame, includeHeals), ref now,
-                    out long frameReducerLayoutTicks, out long framePainterTicks);
+                    out long frameReducerLayoutTicks, out long framePainterTicks, out int frameWorldRows);
                 reducerLayoutTicks += frameReducerLayoutTicks;
                 painterTicks += framePainterTicks;
                 maximumActive = Math.Max(maximumActive, runtime.StoredSegmentCountForTests);
                 maximumBacking = Math.Max(maximumBacking, runtime.BackingSegmentCountForTests);
+                maximumWorldRows = Math.Max(maximumWorldRows, frameWorldRows);
             }
 
             stopwatch.Stop();
@@ -137,6 +140,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 SimulatedHits = (WarmupFrames + MeasuredFrames + LedgerFillFrames) * HitsPerFrame,
                 MaximumActiveSegments = maximumActive,
                 MaximumBackingSegments = maximumBacking,
+                MaximumWorldRows = maximumWorldRows,
                 ElapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds,
                 AverageMillisecondsPerFrame = stopwatch.Elapsed.TotalMilliseconds / MeasuredFrames,
                 ReducerLayoutMillisecondsPerFrame =
@@ -175,10 +179,14 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
             string payload,
             ref double now,
             out long reducerLayoutTicks,
-            out long painterTicks)
+            out long painterTicks,
+            out int worldRows)
         {
             long reducerStart = Stopwatch.GetTimestamp();
             HitNumberRuntimeSnapshot snapshot = runtime.ProcessFrame("0|0|1", payload);
+            worldRows = snapshot?.Frame?.WorldRows.Count ?? 0;
+            if (runtime.Options.WorldRowLimit > 0 && worldRows > runtime.Options.WorldRowLimit)
+                throw new InvalidOperationException("Damage and healing exceeded their shared world row limit.");
             reducerLayoutTicks = Stopwatch.GetTimestamp() - reducerStart;
             long painterStart = Stopwatch.GetTimestamp();
             graphics.Clear(Color.Transparent);

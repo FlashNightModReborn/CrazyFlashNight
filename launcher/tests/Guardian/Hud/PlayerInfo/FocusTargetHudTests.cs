@@ -109,9 +109,9 @@ public sealed class FocusTargetHudTests
     [InlineData(11, 68)]
     [InlineData(32, 132)]
     [InlineData(33, 132)]
-    [InlineData(80, 260)]
-    [InlineData(81, 280)]
-    [InlineData(256, 280)]
+    [InlineData(80, 152)]
+    [InlineData(81, 152)]
+    [InlineData(256, 152)]
     public void FollowsBuffRowsAndCompactsToTopWhenNoBuffsExist(int buffs, float top)
     {
         var bounds = PlayerHudFocusTargetWidget.BoundsForBuffCount(buffs);

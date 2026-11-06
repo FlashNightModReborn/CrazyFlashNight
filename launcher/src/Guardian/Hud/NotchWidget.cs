@@ -80,6 +80,8 @@ namespace CF7Launcher.Guardian.Hud
         private const int RowGap = 2;
         private const int MaxRows = 4;
         private const int TransientLifetimeMs = 4000;
+        internal const string PanelToastNoticeCategory = "panel_toast";
+        private bool _panelSuspended;
         private const int GameTransientLifetimeMs = 3000;
         private const int GameThrottleMs = 350;
         private const int MaxGameRows = 4;
@@ -495,8 +497,9 @@ namespace CF7Launcher.Guardian.Hud
                 // 最后一道绘制护栏：即使未来按钮测量回归，也不得越过 Notch 自身视觉矩形侵入右侧 HUD。
                 g.SetClip(new Rectangle(0, 0, w, h), CombineMode.Intersect);
 
-                NativeHudTheme.DrawPanel(g, new Rectangle(0, 0, w, pillH), scale,
-                    ResolvePillColor(), Color.Empty, false);
+                // v2 刘海板：下沿双切角 + 底部斜纹（ADR D3）；展开时斜纹让位工具栏。
+                NativeHudTheme.DrawNotchPlate(g, new Rectangle(0, 0, w, pillH), scale,
+                    ResolvePillColor(), toolbarH <= 2);
                 if (toolbarH > 2)
                 {
                     using (Pen separator = new Pen(NativeHudTheme.Separator, NativeHudTheme.StrokePx(scale)))
@@ -541,21 +544,20 @@ namespace CF7Launcher.Guardian.Hud
                         int textInnerW = w - textPadX - rowPadX;
                         if (textInnerW < Px(20, scale)) textInnerW = Px(20, scale);
                         float pulse = row.PulseMs > 0 ? (float)row.PulseMs / 350f : 0f;
+                        // v2 信息行：挂在刘海下方的切角金属条；淡入淡出整体乘 alpha，
+                        // 常驻行左侧语义轨，game 行受击脉冲只轻微提亮底色。
                         Color rowBg = row.IsGame
-                            ? Color.FromArgb((byte)(ra * (0.10f + 0.10f * pulse)), 255, 255, 255)
-                            : Color.FromArgb((byte)(ra * (row.Persistent ? 0.82f : 0.70f)), 20, 20, 22);
-
-                        NativeHudTheme.DrawPanel(g, new Rectangle(0, rowY, w, scaledRowH), scale,
-                            rowBg, row.Persistent ? row.AccentColor : Color.Empty, row.Persistent || row.IsGame);
+                            ? NativeHudTheme.Blend(Color.FromArgb(226, 16, 17, 19), Color.White, 0.10f * pulse, 226)
+                            : Color.FromArgb(row.Persistent ? 230 : 214, 16, 17, 19);
+                        float rowA = ra / 255f;
+                        Rectangle rowRect = new Rectangle(0, rowY, w, scaledRowH);
+                        NativeHudTheme.DrawPlate(g, rowRect, scale, rowBg,
+                            row.Persistent || row.IsGame ? NativeHudTheme.AnchorRimMuted : NativeHudTheme.AnchorRimFaint,
+                            NativeHudTheme.PlateCorners.TopRight, NativeHudTheme.ButtonChamferBase, rowA);
                         if (row.Persistent)
                         {
                             using (SolidBrush accent = new SolidBrush(Color.FromArgb(ra, row.AccentColor)))
-                                g.FillRectangle(accent, 0, rowY, Px(3, scale), scaledRowH);
-                        }
-                        if (row.IsGame)
-                        {
-                            using (Pen border = new Pen(Color.FromArgb((byte)(ra * 0.2f), 255, 215, 0)))
-                                g.DrawRectangle(border, 0, rowY, w - 1, scaledRowH - 1);
+                                g.FillRectangle(accent, Px(1, scale) + 1, rowY + Px(2, scale), Px(3, scale), Math.Max(1, scaledRowH - Px(4, scale)));
                         }
 
                         GraphicsState rowClip = g.Save();
@@ -783,7 +785,7 @@ namespace CF7Launcher.Guardian.Hud
         /// </summary>
         public void AgeTransientRowsForSuspend(int elapsedMs)
         {
-            if (elapsedMs <= 0) return;
+            _panelSuspended = false;
             // 挂起期间排队的 game 提示展示窗口已过：不补发
             _gameQueue.Clear();
             _gameThrottleRemainingMs = 0;
@@ -793,6 +795,17 @@ namespace CF7Launcher.Guardian.Hud
             {
                 NotchInfoRow row = _infoRows[i];
                 if (row.Persistent) continue;
+                // 操作回执在隐藏期间尚未展示，恢复后才开始它的四秒曝光窗口。
+                // 挂起前已有的瞬时行仍按原规则老化，避免旧提示复活。
+                if (row.PendingFirstPresentation)
+                {
+                    row.PendingFirstPresentation = false;
+                    row.AgeMs = 0;
+                    row.RemainingMs = TransientLifetimeMs;
+                    row.PrevText = null;
+                    continue;
+                }
+                if (elapsedMs <= 0) continue;
                 row.AgeMs += elapsedMs;
                 row.RemainingMs -= elapsedMs;
                 if (row.RemainingMs <= 0)
@@ -806,6 +819,8 @@ namespace CF7Launcher.Guardian.Hud
             FireAnimationStateChanged();
             FireRepaint();
         }
+
+        internal void BeginPanelSuspend() { _panelSuspended = true; }
 
         private void DrainGameQueue()
         {
@@ -858,7 +873,11 @@ namespace CF7Launcher.Guardian.Hud
                     }
                     _infoRows[i].Text = text;
                     _infoRows[i].AccentColor = color;
-                    if (!persistent) _infoRows[i].RemainingMs = lifetimeMs;
+                    if (!persistent)
+                    {
+                        _infoRows[i].RemainingMs = lifetimeMs;
+                        _infoRows[i].PendingFirstPresentation = _panelSuspended && category == PanelToastNoticeCategory;
+                    }
                     return;
                 }
             }
@@ -869,6 +888,7 @@ namespace CF7Launcher.Guardian.Hud
             row.Persistent = persistent;
             row.RemainingMs = persistent ? 0 : lifetimeMs;
             row.AgeMs = 0;
+            row.PendingFirstPresentation = _panelSuspended && category == PanelToastNoticeCategory;
             _infoRows.Add(row);
             SortRows();
             while (_infoRows.Count > MaxRows)
@@ -2229,8 +2249,21 @@ namespace CF7Launcher.Guardian.Hud
         private void FireBounds()
         {
             ClearPointerDown();
+            // 展开/收起期间一次性预留完整占位，Combo 不随每帧插值移动，也不进入菜单。
+            float vpX, vpY, vpW, vpH;
+            _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
+            float scale = GetScale(vpH);
+            GetSizeForProgress(_reserveExpandedCompositeBounds || _state != NotchState.Collapsed ? 1f : 0f,
+                out int reservedWidth, out int reservedHeight);
+            // 逐行取整后的真实高度才是权威，不能把 base 高度求和后再整体缩放。
+            HudZoneLayout.ReportNotchStableBottom(reservedHeight / scale);
             EventHandler h = BoundsOrVisibilityChanged;
             if (h != null) h(this, EventArgs.Empty);
+        }
+
+        internal static float StableBottomBase(int infoRowCount)
+        {
+            return CollapsedH + Math.Max(0, infoRowCount) * (RowGap + RowH);
         }
         private void FireRepaint()
         {
@@ -2324,6 +2357,7 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         internal bool HasCompositeReservationForTest { get { return _reserveExpandedCompositeBounds; } }
+        internal IReadOnlyList<NotchInfoRow> InfoRowsForTest => _infoRows;
         internal bool IsOtherMenuOpenForTest { get { return _otherMenuOpen; } }
         internal int OtherMenuGroupIndexForTest { get { return _otherMenuGroupIndex; } }
         internal int OtherMenuItemCountForTest { get { return CountVisibleButtons(GetActiveOtherButtons()); } }
@@ -2347,6 +2381,7 @@ namespace CF7Launcher.Guardian.Hud
         {
             _otherMenuOpen = true;
             _otherMenuGroupIndex = Math.Max(0, Math.Min(OtherButtonGroups.Length - 1, groupIndex));
+            FireBounds();
         }
         internal void ForceGameReadyForTest(bool ready)
         {
@@ -2388,6 +2423,7 @@ namespace CF7Launcher.Guardian.Hud
         public bool Persistent;    // true=持久，false=自动过期
         public int RemainingMs;    // 瞬态专用：剩余毫秒
         public int AgeMs;          // 已存活毫秒（用于淡入）
+        internal bool PendingFirstPresentation;
 
         // 平滑过渡：替换旧文字时交叉淡变
         public string PrevText;        // 被替换的旧文字（null=无过渡）

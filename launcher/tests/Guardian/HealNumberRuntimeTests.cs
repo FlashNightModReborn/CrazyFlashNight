@@ -10,6 +10,12 @@ namespace CF7Launcher.Tests.Guardian
 {
     public sealed class HealNumberRuntimeTests
     {
+        private static HitNumberLayoutFrame HealingFrame(HealNumberAccumulator accumulator, double now, int limit = 24,
+            HitNumberDisplayMode mode = HitNumberDisplayMode.Balanced) => HitNumberLayoutEngine.BuildCombatFrame(
+                Array.Empty<HitNumberSegment>(), 0, Array.Empty<HitNumberTotalEntry>(),
+                accumulator.Snapshot(now, mode == HitNumberDisplayMode.Detail || mode == HitNumberDisplayMode.Classic),
+                mode, HitNumberCamera.Identity, now, limit);
+
         private static string Heal(string amount, string id = "unit.1.heal.0") =>
             amount + "|512|360|4194304|||0|0|" + id + "||1";
         private static string Damage(string burst, int packed = 28672) =>
@@ -62,7 +68,7 @@ namespace CF7Launcher.Tests.Guardian
             now = 0.151; var snapshot = runtime.ProcessFrame("", "");
             var item = Assert.Single(snapshot.Frame.Items);
             Assert.Equal(CombatNumberKind.HealHp, item.Kind); Assert.Equal(1, item.Value);
-            Assert.Empty(snapshot.Frame.WorldRows);
+            Assert.Equal(CombatNumberKind.HealHp, Assert.Single(snapshot.Frame.WorldRows).Kind);
             Assert.Equal(0, runtime.LedgerSegmentCountForTests);
             Assert.Equal(0, runtime.TotalTargetCountForTests);
             Assert.False(HitNumberRenderPlanner.Plan(snapshot.Frame, 1024, 576).IsEmpty);
@@ -102,7 +108,7 @@ namespace CF7Launcher.Tests.Guardian
             double now = 0; var runtime = new HitNumberRuntime(() => now);
             runtime.ProcessFrame("0|0|1", Heal("2", "u.heal.0") + ";" + Heal("3", "u.heal.1"));
             now = 0.16;
-            Assert.Equal(new[] { 2, 3 }, runtime.ProcessFrame("", "").Frame.Items.Select(i => i.Value));
+            Assert.Equal(new[] { 2, 3 }, runtime.ProcessFrame("", "").Frame.Items.Select(i => i.Value).OrderBy(v => v));
             runtime.ProcessFrame("", Heal("10")); runtime.Reset(); now = 1;
             Assert.Null(runtime.ProcessFrame("", ""));
             runtime.ProcessFrame("", Heal("11"));
@@ -134,11 +140,11 @@ namespace CF7Launcher.Tests.Guardian
             var accumulator = new HealNumberAccumulator();
             for (int i = 0; i < 100; i++) accumulator.Add(new HealNumberEvent("u", 0.001, 512, 360), i * 0.001);
             accumulator.Advance(0.151);
-            var frame = new HitNumberLayoutFrame(); accumulator.AppendFrame(frame, HitNumberCamera.Identity, 0.151, 24);
+            var frame = new HitNumberLayoutFrame(); frame = HealingFrame(accumulator, 0.151, 24);
             Assert.Empty(frame.Items);
             accumulator.Add(new HealNumberEvent("u", 0.9, 512, 360), 0.2);
             accumulator.Advance(0.36);
-            frame = new HitNumberLayoutFrame(); accumulator.AppendFrame(frame, HitNumberCamera.Identity, 0.36, 24);
+            frame = new HitNumberLayoutFrame(); frame = HealingFrame(accumulator, 0.36, 24);
             Assert.Equal(1, Assert.Single(frame.Items).Value);
             for (int i = 0; i < 2000; i++) accumulator.Add(new HealNumberEvent("u" + i, 1, 512, 360), 1);
             Assert.InRange(accumulator.PendingCount, 0, HealNumberAccumulator.MaximumTargets);
@@ -169,7 +175,7 @@ namespace CF7Launcher.Tests.Guardian
                 accumulator.Add(new HealNumberEvent("u", 0.4, 512, 360), i * 0.2);
                 accumulator.Advance(i * 0.2 + 0.16);
                 var frame = new HitNumberLayoutFrame();
-                accumulator.AppendFrame(frame, HitNumberCamera.Identity, i * 0.2 + 0.16, 24);
+                frame = HealingFrame(accumulator, i * 0.2 + 0.16, 24);
                 if (i < 2) Assert.Empty(frame.Items);
                 else Assert.Equal(1, Assert.Single(frame.Items).Value);
             }
@@ -188,14 +194,15 @@ namespace CF7Launcher.Tests.Guardian
             // 第二个窗口尚未发布时，锚点就必须跟随新坐标。
             accumulator.Add(new HealNumberEvent("u", 10, 518, 360), 0.2);
             var moving = new HitNumberLayoutFrame();
-            accumulator.AppendFrame(moving, HitNumberCamera.Identity, 0.2, 24);
+            moving = HealingFrame(accumulator, 0.2, 24);
             Assert.Equal(518, Assert.Single(moving.Items).SourceTargetX);
             accumulator.Advance(0.36);
             var after = new HitNumberLayoutFrame();
-            accumulator.AppendFrame(after, HitNumberCamera.Identity, 0.36, 24);
+            after = HealingFrame(accumulator, 0.36, 24);
             var item = Assert.Single(after.Items);
             Assert.Equal(HitNumberLayoutEngine.ImpactScale(0.36 - 0.15), item.CombinedScale, 4);
-            Assert.Equal(360 + 8 + HitNumberLayoutEngine.ImpactLift(0.36 - 0.15), item.StageY, 4);
+            Assert.Equal(360, item.SourceTargetY);
+            Assert.True(item.StageY < item.SourceTargetY); // 与伤害共用策略锚点，不再固定脚边偏移。
             Assert.True(item.CombinedScale < 1.01); // 没有重放1.46倍的入场峰值。
         }
 
@@ -207,14 +214,14 @@ namespace CF7Launcher.Tests.Guardian
             accumulator.Advance(0.16);
             accumulator.Add(new HealNumberEvent("u", 10, 512, 360), 0.98);
             var before = new HitNumberLayoutFrame();
-            accumulator.AppendFrame(before, HitNumberCamera.Identity, 1.13, 24);
+            before = HealingFrame(accumulator, 1.13, 24);
             accumulator.Advance(1.13);
             var refreshed = new HitNumberLayoutFrame();
-            accumulator.AppendFrame(refreshed, HitNumberCamera.Identity, 1.13, 24);
+            refreshed = HealingFrame(accumulator, 1.13, 24);
             Assert.Equal(Assert.Single(before.Items).Alpha, Assert.Single(refreshed.Items).Alpha, 4);
             Assert.Equal(before.Items[0].StageY, refreshed.Items[0].StageY);
             var recovered = new HitNumberLayoutFrame();
-            accumulator.AppendFrame(recovered, HitNumberCamera.Identity, 1.22, 24);
+            recovered = HealingFrame(accumulator, 1.22, 24);
             Assert.Equal(1f, Assert.Single(recovered.Items).Alpha);
         }
 
@@ -228,7 +235,7 @@ namespace CF7Launcher.Tests.Guardian
             accumulator.Add(new HealNumberEvent("u", 10, 512, 360), 3);
             accumulator.Advance(3.16);
             var frame = new HitNumberLayoutFrame();
-            accumulator.AppendFrame(frame, HitNumberCamera.Identity, 3.16, 24);
+            frame = HealingFrame(accumulator, 3.16, 24);
             Assert.True(Assert.Single(frame.Items).CombinedScale > 1.3f);
         }
 
@@ -274,7 +281,7 @@ namespace CF7Launcher.Tests.Guardian
                 accumulator.Add(new HealNumberEvent("a-off-" + i, 1, 2000, 360), 0);
             accumulator.Advance(0.16);
             var frame = new HitNumberLayoutFrame();
-            accumulator.AppendFrame(frame, HitNumberCamera.Identity, 0.16, 1);
+            frame = HealingFrame(accumulator, 0.16, 1);
             var item = Assert.Single(frame.Items);
             Assert.Equal("z-visible", item.SourceTargetId);
             var bounds = HitNumberLayoutEngine.EstimateItemBounds(item);
@@ -290,7 +297,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             var accumulator = new HealNumberAccumulator();
             accumulator.Add(new HealNumberEvent("u", amount, 512, 360), 0); accumulator.Advance(0.16);
-            var frame = new HitNumberLayoutFrame(); accumulator.AppendFrame(frame, HitNumberCamera.Identity, 0.16, 24);
+            var frame = new HitNumberLayoutFrame(); frame = HealingFrame(accumulator, 0.16, 24);
             Assert.True(Assert.Single(frame.Items).Value > 0);
             var region = HitNumberRenderPlanner.Plan(frame, 1024, 576);
             using var bitmap = new Bitmap(region.PixelBounds.Width, region.PixelBounds.Height);

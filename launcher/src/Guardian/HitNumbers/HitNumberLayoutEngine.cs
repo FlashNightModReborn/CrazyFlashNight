@@ -37,6 +37,11 @@ namespace CF7Launcher.Guardian.HitNumbers
     /// </summary>
     internal sealed class HitNumberSegment
     {
+        // 仅布局适配器可生成 HealHp 样本；wire parser、Ledger/Total reducer 仍只接收 Damage。
+        internal CombatNumberKind Kind;
+        internal string PresentationTargetId;
+        internal double? VisualBornSeconds;
+        internal float VisualAlpha = 1f;
         internal int Sequence;
         internal string BurstId = string.Empty;
         internal string TargetId = string.Empty;
@@ -58,6 +63,7 @@ namespace CF7Launcher.Guardian.HitNumbers
     /// </summary>
     internal sealed class HitNumberBurstRow
     {
+        internal CombatNumberKind Kind;
         internal string TargetId = string.Empty;
         internal string BurstId = string.Empty;
         internal float TargetX;
@@ -136,7 +142,7 @@ namespace CF7Launcher.Guardian.HitNumbers
     /// 动态避碰。有限 detail 每目标只保留最新六行以维持可读性，显式无限制
     /// 仍完整投影；唯一输入剔除是目标位于舞台外加 100px margin。
     /// </summary>
-    internal static class HitNumberLayoutEngine
+    internal static partial class HitNumberLayoutEngine
     {
         internal const float StageWidth = 1024f;
         internal const float StageHeight = 576f;
@@ -298,7 +304,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 }
                 group.Add(new ActiveSegment(
                     segment,
-                    age,
+                    segment.VisualBornSeconds.HasValue ? Math.Max(0, nowSeconds - segment.VisualBornSeconds.Value) : age,
                     age / lifetimeSeconds,
                     stageX,
                     stageY));
@@ -535,7 +541,8 @@ namespace CF7Launcher.Guardian.HitNumbers
         {
             var row = new HitNumberBurstRow
             {
-                TargetId = burst.TargetId,
+                Kind = burst.Segments[0].Segment.Kind,
+                TargetId = burst.Segments[0].Segment.Kind == CombatNumberKind.Damage ? burst.TargetId : burst.Segments[0].Segment.TargetId,
                 BurstId = burst.Id,
                 TargetX = burst.TargetX,
                 TargetY = burst.TargetY,
@@ -545,8 +552,8 @@ namespace CF7Launcher.Guardian.HitNumbers
                     : growthDirection > 0 ? bounds.Left : bounds.Left + bounds.Width / 2f,
                 AttachmentY = bounds.Bottom,
                 GrowthDirection = growthDirection,
-                TotalDamage = burst.TotalDamage,
-                HitCount = burst.Segments.Count,
+                TotalDamage = burst.Segments[0].Segment.Kind == CombatNumberKind.Damage ? burst.TotalDamage : 0,
+                HitCount = burst.Segments[0].Segment.Kind == CombatNumberKind.Damage ? burst.Segments.Count : 0,
                 ExpectedHitCount = burst.ExpectedHitCount,
                 FirstSequence = burst.FirstSequence,
                 FirstArrivalSeconds = burst.FirstArrivalSeconds,
@@ -636,7 +643,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 includeAttributes && !allMiss ? projection.Flags : 0);
             if (allMiss) packed |= 1 << 9;
 
-            return new HitNumberPaintItem
+            return ApplySemantic(new HitNumberPaintItem
             {
                 StageX = x,
                 StageY = y + BurstImpactLift(burst),
@@ -663,7 +670,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 SourceTargetX = burst.TargetX,
                 SourceTargetY = burst.TargetY,
                 VisualRole = HitNumberVisualRole.Summary
-            };
+            }, representative.Segment);
         }
 
         private static HitNumberPaintItem ToDetailItem(ActiveSegment active, int fontSize)
@@ -672,7 +679,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             float alpha = active.Progress01 <= 0.78
                 ? 1f
                 : (float)Math.Max(0.16, (1.0 - active.Progress01) / 0.22);
-            return new HitNumberPaintItem
+            return ApplySemantic(new HitNumberPaintItem
             {
                 StageX = active.StageX,
                 StageY = active.StageY,
@@ -697,7 +704,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 SourceTargetX = active.StageX,
                 SourceTargetY = active.StageY,
                 VisualRole = HitNumberVisualRole.Detail
-            };
+            }, segment);
         }
 
         private static HitNumberPaintItem ToClassicItem(
@@ -714,7 +721,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             float offsetY = ClassicScale[frame] * ClassicTextCenterY
                 + ClassicTranslateY[frame];
             HitNumberSegment segment = active.Segment;
-            return new HitNumberPaintItem
+            return ApplySemantic(new HitNumberPaintItem
             {
                 StageX = active.StageX + (randomX + offsetX) * camera.Scale,
                 StageY = active.StageY + (randomY + offsetY) * camera.Scale,
@@ -737,7 +744,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 SourceTargetX = active.StageX,
                 SourceTargetY = active.StageY,
                 VisualRole = HitNumberVisualRole.Detail
-            };
+            }, segment, classic: true);
         }
 
         internal static HitNumberLayoutFrame BuildTotalFrame(
@@ -797,7 +804,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 HitNumberTotalEntry entry = visible[i];
                 PointF target = stagePositions[entry];
                 float age = (float)Math.Max(0.0, nowSeconds - entry.LastArrivalSeconds);
-                float alpha = age <= HitNumberTotalAccumulator.QuietSeconds
+                float alpha = entry.Kind == CombatNumberKind.HealHp ? entry.VisualAlpha : age <= HitNumberTotalAccumulator.QuietSeconds
                     ? 1f
                     : Clamp(
                         1f - (age - (float)HitNumberTotalAccumulator.QuietSeconds)
@@ -817,6 +824,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 string attributes = BuildTotalAttributeSummary(entry, 4);
                 var row = new HitNumberBurstRow
                 {
+                    Kind = entry.Kind,
                     TargetId = entry.TargetId,
                     BurstId = "#total",
                     TargetX = target.X,
@@ -825,7 +833,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                     AttachmentX = target.X,
                     AttachmentY = top + height,
                     GrowthDirection = 0,
-                    TotalDamage = entry.TotalDamage,
+                    TotalDamage = entry.Kind == CombatNumberKind.Damage ? entry.TotalDamage : 0,
                     HitCount = entry.HitCount,
                     ExpectedHitCount = entry.ExpectedHitCount,
                     FirstSequence = entry.FirstSequence,
@@ -838,6 +846,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 int packed = HitNumberPacking.WithFontSize(entry.Packed, BalancedFontSize);
                 frame.Items.Add(new HitNumberPaintItem
                 {
+                    Kind = entry.Kind,
                     StageX = left + width / 2f,
                     StageY = top + TotalImpactLift(age),
                     CombinedScale = TotalImpactScale(age, entry.HitCount),
@@ -858,7 +867,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                         entry.DisplayB),
                     EffectTextColorOverride = HitNumberPainter.ResolveColorId(
                         entry.EffectTextColorId),
-                    SourceSequence = entry.FirstSequence,
+                    SourceSequence = entry.Kind == CombatNumberKind.Damage ? entry.FirstSequence : -1,
                     SourceBurstId = "#total",
                     SourceTargetId = entry.TargetId,
                     SourceTargetX = target.X,
@@ -907,6 +916,9 @@ namespace CF7Launcher.Guardian.HitNumbers
         /// </summary>
         private static BurstVisualProjection BuildBurstVisualProjection(BurstSlice burst)
         {
+            // 严格 HealHp wire 没有伤害属性贡献。复用布局时不建立无意义的属性摘要。
+            if (burst.Segments[0].Segment.Kind == CombatNumberKind.HealHp)
+                return new BurstVisualProjection(0, HealingColor, HealingColor, "", "", "", 0, 0, "000000000", "");
             Span<long> flagDamageSums = stackalloc long[EffectFlagCount];
             Span<double> latestFlagAges = stackalloc double[EffectFlagCount];
             Span<int> latestFlagSequences = stackalloc int[EffectFlagCount];
@@ -1250,6 +1262,7 @@ namespace CF7Launcher.Guardian.HitNumbers
 
         private static float BurstAlpha(BurstSlice burst)
         {
+            if (burst.Segments[0].Segment.Kind == CombatNumberKind.HealHp) return burst.Segments[0].Segment.VisualAlpha;
             double newestProgress = 1.0;
             for (int i = 0; i < burst.Segments.Count; i++)
                 newestProgress = Math.Min(newestProgress, burst.Segments[i].Progress01);
@@ -1577,6 +1590,7 @@ namespace CF7Launcher.Guardian.HitNumbers
 
         private static string TargetKey(HitNumberSegment segment)
         {
+            if (!string.IsNullOrEmpty(segment.PresentationTargetId)) return segment.PresentationTargetId;
             return string.IsNullOrEmpty(segment.TargetId)
                 ? "@" + segment.TargetX.ToString("0.###", CultureInfo.InvariantCulture) +
                   ":" + segment.TargetY.ToString("0.###", CultureInfo.InvariantCulture)
@@ -1760,18 +1774,20 @@ namespace CF7Launcher.Guardian.HitNumbers
         {
             internal BurstIdentity(string targetId, HitNumberSegment segment)
             {
+                Kind = segment.Kind;
                 TargetId = targetId ?? string.Empty;
                 BurstId = segment.BurstId ?? string.Empty;
                 SyntheticSequence = BurstId.Length == 0 ? segment.Sequence : -1;
             }
 
             private string TargetId { get; }
+            private CombatNumberKind Kind { get; }
             private string BurstId { get; }
             private int SyntheticSequence { get; }
 
             public bool Equals(BurstIdentity other)
             {
-                return SyntheticSequence == other.SyntheticSequence &&
+                return Kind == other.Kind && SyntheticSequence == other.SyntheticSequence &&
                     string.Equals(TargetId, other.TargetId, StringComparison.Ordinal) &&
                     string.Equals(BurstId, other.BurstId, StringComparison.Ordinal);
             }
@@ -1787,7 +1803,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 {
                     int hash = StringComparer.Ordinal.GetHashCode(TargetId);
                     hash = hash * 397 ^ StringComparer.Ordinal.GetHashCode(BurstId);
-                    return hash * 397 ^ SyntheticSequence;
+                    return (hash * 397 ^ SyntheticSequence) * 397 ^ (int)Kind;
                 }
             }
         }
