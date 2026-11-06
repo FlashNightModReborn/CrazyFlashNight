@@ -59,20 +59,6 @@ namespace CF7Launcher.Guardian
             DelegateCloseToAuthority = true
         };
 
-        internal static readonly CompositionPanelProfile Modifier = new CompositionPanelProfile
-        {
-            PanelName = "modifier",
-            HostName = "cf7-modifier.local",
-            PageUrl = "https://cf7-modifier.local/composition-modifier.html?v=20261102b",
-            ReadyMessageType = "composition_modifier_ready",
-            WindowTitle = "CF7 Modifier",
-            LogTag = "[ModifierSurface]",
-            AcceptsPanelResponses = true,
-            DelegateCloseToAuthority = true,
-            AcceptsPanelRequests = true,
-            AllowNativeDrag = true,
-            TransparentSurface = true
-        };
     }
 
     internal sealed partial class CompositionHelpSurface : Form
