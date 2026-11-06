@@ -77,5 +77,18 @@
         "portraitTestCurrentDirectoryAssumption": 1
       }
     }
+  },
+  "preparation": {
+    "materialRuntimeDictionaryBytesUnchanged": true,
+    "materialInputProvenanceRefreshed": true,
+    "guidanceBrowserChecks": 47,
+    "retainedFirstProductionPolicy": {
+      "passed": 45,
+      "total": 47,
+      "failures": [
+        "missing task-local Playwright package",
+        "material sidecar bound to old weapon XML hashes"
+      ]
+    }
   }
 }
