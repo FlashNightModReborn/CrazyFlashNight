@@ -1,0 +1,40 @@
+{
+  "schema": "cf6-fixed158-runtime-release.v1",
+  "state": "promoted",
+  "sourceCommit": "9072271b3ef0dd7c17351bae6d923ee706fe2118",
+  "sourceTag": "runtime-build-v2/20261106-cf6-fixed158-v3",
+  "releaseTreeOid": "b40e9da5709305bf72f94985ea4f450a345b65b8",
+  "requestId": "282428840C6BD5FEF3646AD9D43E315D4C323F733B0CB6A37798E99E70F7A978",
+  "buildIdentityHash": "7FD0E38E00204B4B123343E792EF10B69634FBF8BCAF7121289A328030B04803",
+  "payloadClosureHash": "DBD6A300086A43B2D38CA22B70ECF2A20059EDD67920F3812692A976132B0B5E",
+  "manifestSha256": "3AFC7504239BC58399E89686278AC405B32CD81FF5B825761A0080C324E2C3A6",
+  "policyHash": "21EC6EC14E3542712545704753324990314A3E781B143CBD976C989E61AEC21A",
+  "policyReceiptSha256": "04E9F8276C29B6169B84EAB821D7B56DE28581FB1F24AAAA9EC81691F0541E8B",
+  "productionChecksPassed": 47,
+  "productionChecksTotal": 47,
+  "signers": 2,
+  "faultDomains": 2,
+  "localBuilder": "builder-local-c",
+  "localFaultDomain": "physical-host-c",
+  "githubRunId": 42208395245,
+  "githubRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/42208395245",
+  "promotedAtUtc": "2026-11-06T11:33:23.0210757Z",
+  "coreSha256": "B5ED69107760E0259EFDC1F1C0E2A2393C87CB94C9874CF39A2677CCCFB2B896",
+  "loaderSha256": "9a5b52f56946a547308a71429f6cffef080232a4085bf7070bfdb1be389c0da8",
+  "soldierSha256": "a121ee69e43d5b829a6d383495e25fc9c8af147c80f04de0c5b735a5759ba9b8",
+  "hostRegularRegression": {
+    "passed": 8135,
+    "skipped": 31,
+    "failed": 0,
+    "qualificationCasesNotAccepted": 123
+  },
+  "standardEntryBusinessJourneyExecuted": false,
+  "fullChapterHumanAcceptanceForNewFeedbackBuild": false,
+  "boundaries": "Native supply-chain promotion and full-install verification passed. Previous CF6 candidate journey and native AS2 assertions remain tied to their own binary identities.",
+  "retainedAttempts": [
+    "v1 request before host-test path repair",
+    "v2 request before material provenance refresh",
+    "full host run gated on unacknowledged resource window",
+    "owned local producer stopped at zero-byte dependency download; exact locked cache used on canonical retry"
+  ]
+}
