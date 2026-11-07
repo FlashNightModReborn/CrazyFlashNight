@@ -236,10 +236,12 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle
      * _killed=true 用作 BulletQueueProcessor 死亡判定的重复发布守卫
      */
     public static function onKill(target:MovieClip):Void {
-        target.gotoAndPlay("消失");
+        if (target._killed) return;
         target._killed = true;
         if (target.垂直速度 < 0) target.垂直速度 = 0;
         target.dispatcher.publish("death", target);
+        // 消失处理器可能同步移除弹体；死亡守卫和通知必须先于帧跳转。
+        target.gotoAndPlay("消失");
     }
 
     /**

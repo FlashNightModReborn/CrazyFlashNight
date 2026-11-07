@@ -311,6 +311,10 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
         // 绑定生命周期逻辑
         lifecycle.bindLifecycle(bulletInstance);
+        // 只接管有明确配置的普通/可拦截 MovieClip；透明弹、射线和联弹保留原合同。
+        if (Obj.timedDetonation != null && !isTransparent && !isChain && !isRay) {
+            TimedDetonation.bind(bulletInstance, Obj.timedDetonation, null);
+        }
         if (Obj.cf6DamageGroup != null)
             org.flashNight.arki.scene.Cf6DamageGroups.born(bulletInstance, Obj,
                 lifecycle===TransparentBulletLifecycle.BASIC?bulletInstance.__cf6OneFrameDrain:null);

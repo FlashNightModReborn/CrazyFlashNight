@@ -3670,7 +3670,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         // 优先级1：直接移除（强力消弹+穿透弹）
                         // _root.发布消息("rank 1: removeMovieClip");
                         bullet.removeMovieClip();
-                    } else if ((killFlags & MODE_VANISH) != 0 || hitMapFinal) {
+                    } else if ((killFlags & MODE_VANISH) != 0 || hitMapFinal
+                            || bullet.__timedDetonation.timeoutRequested) {
                         // 优先级2-3：播放消失动画（普通消弹或击中地图）
                         // _root.发布消息("rank 2/3: gotoAndPlay 消失");
                         bullet.gotoAndPlay("消失");
