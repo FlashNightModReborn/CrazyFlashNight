@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1773222931" lastUniqueIdentifier="242">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1794051927" lastUniqueIdentifier="243">
   <timeline>
-    <DOMTimeline name="选关界面 1024*576" currentFrame="31">
+    <DOMTimeline name="选关界面 1024*576">
       <layers>
         <DOMLayer name="Labels Layer" color="#5E5DCA">
           <frames>
@@ -1317,6 +1317,21 @@ onClipEvent(load){
                     <script><![CDATA[onClipEvent(load){
    this.配置关卡属性 = _root.配置关卡属性;
    this.配置关卡属性("地铁站隧道");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-地下研究所" centerPoint3DX="532.5" centerPoint3DY="175.7">
+                  <matrix>
+                    <Matrix tx="462" ty="142.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.5" y="33.3"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-地下研究所");
 }
 ]]></script>
                   </Actionscript>
@@ -4448,7 +4463,7 @@ on(rollOut){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!20480 -2111|20480 11442!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111"/>
+                    <Edge fillStyle1="1" edges="!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111!20480 -2111|20480 11442"/>
                   </edges>
                 </DOMShape>
               </elements>
