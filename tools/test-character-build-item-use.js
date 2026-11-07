@@ -884,12 +884,21 @@ check('inline result messages carry the granted content list', function() {
         '已领取「霸体入门」：霸体 · 2级。技能已直接授予，主动技能请在技能页装备。');
 });
 
-check('incompatible Type61 mod box reports preserved source without reloading or replaying', function() {
+check('definitively rejected Type61 mod box refreshes authority before another close', function() {
     const toasts = [];
+    let refreshes = 0, applied = 0, finishRefresh;
     const controller = {_ports:{toast:message=>toasts.push(message)},
-        _session:{refreshSnapshot:()=>{throw new Error('unexpected refresh');}}};
+        _candidateCache:{oldLease:true},
+        _view:{},
+        _applySnapshot:payload=>{assert.strictEqual(payload.revision,2);applied++;},
+        _session:{refreshSnapshot:callback=>{refreshes++;finishRefresh=callback;return 'read.snapshot';}}};
     ItemUseChannel.install(controller);
     controller._itemUseSettled({success:false,error:'no_eligible_choices'},false,{command:'stashOpen'});
+    assert.strictEqual(refreshes,1);
+    assert.strictEqual(controller._candidateCache,null);
+    assert.strictEqual(applied,0);
+    finishRefresh({payload:{revision:2}},true);
+    assert.strictEqual(applied,1);
     assert.strictEqual(toasts.length,1);
     assert(toasts[0].includes('箱子尚未消耗'));
 });

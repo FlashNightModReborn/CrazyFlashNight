@@ -27,6 +27,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationAssetT
     private static var world:MovieClip,stock:MovieClip,blasts:MovieClip,driver:MovieClip,shooter:MovieClip,target:MovieClip;
     private static var loader:MovieClipLoader,listener:Object,saved:Object,records:Array,spawned:Array,cache:Object;
     private static var coverageTargets:Array;
+    private static var configured:TimedDetonationProfile;
     private static var tag:String,live:Object,bornAt:Number,emittedAt:Number,observedFrames:Number,deathEvents:Number;
 
     private static function check(ok:Boolean,name:String):Void {
@@ -59,7 +60,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationAssetT
         StaticInitializer.factory=new AABBColliderFactory(32);
         MovementSystem.initialize();
         InfoLoader.getInstance().onLoad(function(data:Object):Void {
-            TimedDetonationAssetTest.xmlReady=data.attributeData["fm92刺弹炮弹"].timedDetonation.timeoutMs==1000;
+            TimedDetonationAssetTest.configured=data.attributeData["fm92刺弹炮弹"].timedDetonation;
+            TimedDetonationAssetTest.xmlReady=TimedDetonationAssetTest.configured!=null;
         });
         cache={data:[],leftValues:[],rightValues:[],rightMaxValues:[]};
         world=_root.createEmptyMovieClip("__timedLady",_root.getNextHighestDepth());world._visible=false;
@@ -79,6 +81,9 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationAssetT
         check(loader.loadClip("../flashswf/arts/new/PTXOA馆长_JohnWick系列.swf",blasts),"request actual ordinary-grenade explosion library");
     }
     private static function initializeWorld():Void {
+        // Unit grenades need the host shared RSL namespace, not the loaded lady-only namespace.
+        world.removeMovieClip();
+        world=_root.createEmptyMovieClip("__timedWorld",_root.getNextHighestDepth());
         _root.gameworld=world;world.子弹区域=stock;world.dispatcher=new EventDispatcher();
         world.地图={僵尸型敌人总个数:0,僵尸型敌人场上实际人数:0};
         DepthManager.instance=new DepthManager(world,0,870655,128);
@@ -136,17 +141,17 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationAssetT
         tag="timeout";var b:MovieClip=fire(-500);var state:Object=b.__timedDetonation;
         check(b._parent===world && b.unitBulletConfig.hitPoint==1,"real factory creates interceptable FM92 from XML");
         check(b.dispatcher!=null && b.__unitInitializedVersion!=null,"production StaticInitializer completed unit registration");
-        check(state.profile.timeoutMs==1000 && state.profile.scatter.type=="普通手雷","InfoLoader to factory config chain is active");
-        state.elapsedMs=999;state.lastMs=getTimer();
-        check(!b.shouldDestroy(b) && count("普通手雷")==0,"real projectile remains armed before deadline");
-        state.elapsedMs=1000;step(b);
+        check(state.profile===configured && state.profile.scatter!=null,"InfoLoader to factory config chain is active");
+        state.elapsedMs=configured.timeoutMs-1;state.lastMs=getTimer();
+        check(!b.shouldDestroy(b) && count(configured.scatter.type)==0,"real projectile remains armed before deadline");
+        state.elapsedMs=configured.timeoutMs;step(b);
         check(state.emitted && state.reason=="timeout","empty-target queue terminates timeout through disappearance");
-        check(count("高压爆炸")==1 && count("普通手雷")==4,"timeout creates one parent blast and exactly four real grenades");
-        trace("TimedDetonationNativeCase timeout explosions="+count("高压爆炸")+" children="+count("普通手雷"));
+        check(count("高压爆炸")==1 && count(configured.scatter.type)==4,"timeout creates one parent blast and exactly four real grenades");
+        trace("TimedDetonationNativeCase timeout explosions="+count("高压爆炸")+" children="+count(configured.scatter.type));
         var child:MovieClip=null;
-        for(var i:Number=0;i<records.length;i++)if(records[i].tag==tag && records[i].type=="普通手雷"){
+        for(var i:Number=0;i<records.length;i++)if(records[i].tag==tag && records[i].type==configured.scatter.type){
             child=records[i].clip;
-            check(child._parent===stock && child.area!=null && child.__timedDetonation!=null,"actual ordinary grenade attaches and receives controller "+i);
+            check(child._parent===world && child.unitBulletConfig!=null && child.area!=null && child.__timedDetonation!=null,"actual configured unit grenade attaches to world and receives controller "+i);
             check(child.毒==state.snapshot.毒 && child.nanoToxic==state.snapshot.nanoToxic && child.lockShooterAttributes,"child preserves locked toxin snapshot "+i);
         }
         var before:Number=child._y-child.Z轴坐标;
@@ -157,43 +162,43 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationAssetT
         var childState:Object=child.__timedDetonation;child.gotoAndPlay("消失");
         check(childState.emitted && count("火焰集束手雷爆炸")==1,"native gotoAndPlay override prevents legacy second grenade explosion");
         check(records[records.length-1].clip._parent===blasts,"ordinary grenade blast is a real published effect instance");
-        check(count("普通手雷")==4,"child explosion cannot recursively scatter");
+        check(count(configured.scatter.type)==4,"child explosion cannot recursively scatter");
         cleanup();
 
-        tag="contact-early";makeTarget();b=fire(-75);state=b.__timedDetonation;state.elapsedMs=500;step(b);
-        check(state.emitted && state.reason=="impact","enemy contact before 1s detonates immediately");
-        check(count("高压爆炸")==1 && count("普通手雷")==0,"early enemy contact emits no grenades");cleanup();
-        tag="contact";makeTarget();b=fire(-75);state=b.__timedDetonation;state.elapsedMs=1000;step(b);
+        tag="contact-early";makeTarget();b=fire(-75);state=b.__timedDetonation;state.elapsedMs=configured.timeoutMs/2;step(b);
+        check(state.emitted && state.reason=="impact","enemy contact before configured deadline detonates immediately");
+        check(count("高压爆炸")==1 && count(configured.scatter.type)==0,"early enemy contact emits no grenades");cleanup();
+        tag="contact";makeTarget();b=fire(-75);state=b.__timedDetonation;state.elapsedMs=configured.timeoutMs;step(b);
         check(state.emitted && state.reason=="impact","real enemy contact wins at timeout boundary");
         check(target.hp<target.hp满血值 && isFinite(target.hp),"production damage settlement ran for enemy contact");
-        check(count("高压爆炸")==1 && count("普通手雷")==0,"enemy contact never spawns grenades");
-        trace("TimedDetonationNativeCase contact explosions="+count("高压爆炸")+" children="+count("普通手雷"));cleanup();
+        check(count("高压爆炸")==1 && count(configured.scatter.type)==0,"enemy contact never spawns grenades");
+        trace("TimedDetonationNativeCase contact explosions="+count("高压爆炸")+" children="+count(configured.scatter.type));cleanup();
 
-        tag="map";b=fire(-500);state=b.__timedDetonation;state.elapsedMs=1000;mapHit=true;step(b);
-        check(state.emitted && state.reason=="impact" && count("普通手雷")==0,"map collision takes priority over timeout");
+        tag="map";b=fire(-500);state=b.__timedDetonation;state.elapsedMs=configured.timeoutMs;mapHit=true;step(b);
+        check(state.emitted && state.reason=="impact" && count(configured.scatter.type)==0,"map collision takes priority over timeout");
         check(count("高压爆炸")==1,"map collision creates exactly one blast");cleanup();
         tag="intercept";b=fire(-500);state=b.__timedDetonation;
-        state.elapsedMs=1000;
+        state.elapsedMs=configured.timeoutMs;
         check(b.shouldDestroy(b) && state.timeoutRequested,"interception fixture reaches a pending timeout");
         deathEvents=0;
         b.dispatcher.subscribe("death",function(unit:MovieClip):Void{
             if(unit._killed) TimedDetonationAssetTest.deathEvents++;
         },b);
         UnitBulletLifecycle.onHit(b,shooter,null);
-        check(state.emitted && state.reason=="impact" && count("高压爆炸")==1 && count("普通手雷")==0,"actual UnitBullet hit/kill path detonates once without scatter");cleanup();
+        check(state.emitted && state.reason=="impact" && count("高压爆炸")==1 && count(configured.scatter.type)==0,"actual UnitBullet hit/kill path detonates once without scatter");cleanup();
         check(deathEvents==1,"interception publishes death exactly once before synchronous detonation removal");
         tag="left";shooter.方向="左";b=fire(-500);state=b.__timedDetonation;
         check(b.xmov<0,"left-facing FM92 preserves original flight direction");
-        state.elapsedMs=1000;step(b);
-        check(state.emitted && count("高压爆炸")==1 && count("普通手雷")==4,"left-facing timeout has the same four downward grenades");
+        state.elapsedMs=configured.timeoutMs;step(b);
+        check(state.emitted && count("高压爆炸")==1 && count(configured.scatter.type)==4,"left-facing timeout has the same four downward grenades");
         cleanup();shooter.方向="右";
-        tag="long-flight";b=fire(-1200,60);state=b.__timedDetonation;b._x=1500;state.elapsedMs=500;
+        tag="long-flight";b=fire(-1200,60);state=b.__timedDetonation;b._x=1500;state.elapsedMs=configured.timeoutMs/2;
         check(!b.shouldDestroy(b),"armed timed projectile survives the legacy 900px range prune");
-        state.elapsedMs=1000;step(b);
-        check(state.emitted && state.reason=="timeout" && count("高压爆炸")==1 && count("普通手雷")==4,"distant high-speed projectile still expires into four grenades");
-        trace("TimedDetonationNativeCase long-flight explosions="+count("高压爆炸")+" children="+count("普通手雷"));cleanup();
+        state.elapsedMs=configured.timeoutMs;step(b);
+        check(state.emitted && state.reason=="timeout" && count("高压爆炸")==1 && count(configured.scatter.type)==4,"distant high-speed projectile still expires into four grenades");
+        trace("TimedDetonationNativeCase long-flight explosions="+count("高压爆炸")+" children="+count(configured.scatter.type));cleanup();
         tag="removed";b=fire(-500);state=b.__timedDetonation;b.removeMovieClip();
-        check(state.cancelled && count("高压爆炸")==0 && count("普通手雷")==0,"safeRemove cancels without firing");cleanup();
+        check(state.cancelled && count("高压爆炸")==0 && count(configured.scatter.type)==0,"safeRemove cancels without firing");cleanup();
         tag="unchanged";
         var plain:MovieClip=MovieClip(_root.子弹区域shoot传递({子弹种类:"普通手雷",发射者:shooter._name,shootX:0,shootY:-500,shootZ:0,
             子弹威力:100,子弹速度:0,子弹散射度:0,霰弹值:1,Z轴攻击范围:40,击倒率:0,角度偏移:0}));
@@ -276,9 +281,9 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationAssetT
         tag="coverage-scatter";
         var source:MovieClip=fire(-600);var state:Object=source.__timedDetonation;
         check(state.profile.scatter.landingSpread.radiusX==240 && state.profile.scatter.fallSpeed==20,"production XML enables spread footprint");
-        state.elapsedMs=1000;source.shouldDestroy(source);source.gotoAndPlay("消失");
+        state.elapsedMs=configured.timeoutMs;source.shouldDestroy(source);source.gotoAndPlay("消失");
         var children:Array=[];
-        for(var i:Number=0;i<records.length;i++)if(records[i].tag==tag && records[i].type=="普通手雷") {
+        for(var i:Number=0;i<records.length;i++)if(records[i].tag==tag && records[i].type==configured.scatter.type) {
             var child:MovieClip=records[i].clip;delete child.onEnterFrame;
             children.push({clip:child,state:child.__timedDetonation});
         }
@@ -288,7 +293,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationAssetT
         }
         var realChildren:Number=0;
         for(i=0;i<records.length;i++)if(records[i].tag==tag && records[i].type=="火焰集束手雷爆炸" && records[i].clip._parent===blasts)realChildren++;
-        check(children.length==4 && realChildren==4,"four ordinary grenades land into four actual explosion clips");
+        check(children.length==4 && realChildren==4,"four configured grenades land into four actual explosion clips");
         makeCoverageTargets();var scatter:Object=exerciseBlastFrames();var spreadHits:Array=coverageHits();
         var ratio:Number=scatter.width/direct.width;
         check(ratio>=1.5 && ratio<=2.1,"actual scatter explosion width is 1.5 to 2.1 times direct blast: "+ratio);
@@ -313,13 +318,13 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationAssetT
                 delete b.onEnterFrame;
                 // 时间轴静态子剪辑须先换到动态深度才能原生删除；下一帧才验证缺失。
                 b.area.swapDepths(9000);b.area.removeMovieClip();phase=3;
-            }else if(ticks>300){check(false,"asset/XML readiness watchdog");finish();}
+            }else if(ticks>300){check(false,"asset/XML readiness watchdog loaded="+loaded+" xmlReady="+xmlReady);finish();}
             return;
         }
         if(phase==3){
             check(live.clip.area==undefined,"native timeline area was genuinely removed");
-            live.state.elapsedMs=1000;live.callback.call(live.clip);
-            check(live.state.emitted && count("高压爆炸")==1 && count("普通手雷")==4,"area-free precheck has finite timeout exit");cleanup();
+            live.state.elapsedMs=configured.timeoutMs;live.callback.call(live.clip);
+            check(live.state.emitted && count("高压爆炸")==1 && count(configured.scatter.type)==4,"area-free precheck has finite timeout exit");cleanup();
             tag="live";bornAt=getTimer();emittedAt=-1;observedFrames=0;
             var automatic:MovieClip=fire(-1200);
             live={clip:automatic,name:automatic._name,state:automatic.__timedDetonation};phase=1;
@@ -330,13 +335,13 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationAssetT
             if(live.state.emitted && emittedAt<0){
                 emittedAt=getTimer();
                 var elapsed:Number=emittedAt-bornAt;
-                check(elapsed>=990 && elapsed<1400,"real wall-clock timeout is 1s plus at most sampled-frame delay: "+elapsed);
-                check(live.state.reason=="timeout" && count("高压爆炸")==1 && count("普通手雷")==4,"automatic native callbacks create exactly four children");
-                trace("TimedDetonationNativeCase live elapsedMs="+elapsed+" explosions="+count("高压爆炸")+" children="+count("普通手雷"));
+                check(elapsed>=configured.timeoutMs-10 && elapsed<configured.timeoutMs+400,"real wall-clock timeout follows configured milliseconds plus sampled-frame delay: "+elapsed);
+                check(live.state.reason=="timeout" && count("高压爆炸")==1 && count(configured.scatter.type)==4,"automatic native callbacks create exactly four children");
+                trace("TimedDetonationNativeCase live elapsedMs="+elapsed+" explosions="+count("高压爆炸")+" children="+count(configured.scatter.type));
             }
             if(emittedAt>0 && ++observedFrames==4){
                 check(world[live.name].__timedDetonation!==live.state,"original parent birth is absent after native unload boundary");
-                for(var i:Number=0;i<records.length;i++)if(records[i].tag==tag && records[i].type=="普通手雷"){
+                for(var i:Number=0;i<records.length;i++)if(records[i].tag==tag && records[i].type==configured.scatter.type){
                     var child:Object=records[i].clip;
                     check(child._parent!=null && child._y-child.Z轴坐标>records[i].props.shootY-records[i].props.shootZ,"native first frames move each grenade down "+i);
                     check(child.area.onEnterFrame==undefined,"late onClipEvent(load) cannot restore old gravity "+i);

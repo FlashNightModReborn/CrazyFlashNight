@@ -17,11 +17,11 @@ $focusedRun = @{
         'org.flashNight.arki.scene.SceneCollisionManagerTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^SceneCollisionManagerTest Tests Passed: 21\r?$'
+        '(?m)^SceneCollisionManagerTest Tests Passed: 27\r?$'
         '(?m)^SceneCollisionManagerTest Tests Failed: 0\r?$'
         '(?m)^SceneCollisionManagerTest Cases Passed: 4/4\r?$'
     )
-    SuccessSummary = '21/21 assertions, 4/4 cases'
+    SuccessSummary = '27/27 assertions, 4/4 cases'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

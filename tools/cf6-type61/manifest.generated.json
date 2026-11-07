@@ -803,6 +803,16 @@
       "sha256": "0dbfdc89643a59b0b660b7d603e7de5bb74c802d69c1655b8d807b64e96d4e53"
     },
     {
+      "path": "tools/cf6-type61/apply-firepower-adaptations.py",
+      "bytes": 5545,
+      "sha256": "36a47580da47a1fa6b4596789d864d10dabfd728fdd824ff58765c1d1eebfd19"
+    },
+    {
+      "path": "tools/cf6-type61/apply-loadout-plan.py",
+      "bytes": 3987,
+      "sha256": "59c56dfb6553b5395b2b5db00ac0c287a6f9f0a2c858f72b403e4ce04f426bc8"
+    },
+    {
       "path": "tools/cf6-type61/build-fixed-actions-fixture.py",
       "bytes": 5263,
       "sha256": "178ca52aad982bebe8a7d5eadb31987177951f9cfbd86cdfdc23ae51383b8a6a"
@@ -814,8 +824,8 @@
     },
     {
       "path": "tools/cf6-type61/build-route.py",
-      "bytes": 35231,
-      "sha256": "f9bf4f57c46a7fad41facc403304ee59c168a07cb98bdf38cd97167d9f3df6ec"
+      "bytes": 35952,
+      "sha256": "b5cf4be8b38364b1fd28ad1a7076d8abdfea0cfcbbcff805eb31140d4da844cb"
     },
     {
       "path": "tools/cf6-type61/build-soldier-loot-fixture.py",
@@ -833,14 +843,29 @@
       "sha256": "e3e0730dc35abf1d44078242713716311d25054e04a1c37d047c612fb5d34869"
     },
     {
+      "path": "tools/cf6-type61/firepower-local-adaptations.source.json",
+      "bytes": 5266,
+      "sha256": "508720a6643e6e57da865b60f5d54eb4ebdb80a8393c53c9b3bbcfbf790ddb18"
+    },
+    {
       "path": "tools/cf6-type61/fixed-roster.source.json",
-      "bytes": 754965,
-      "sha256": "fb7aa61366cf60dadfc5e4b41a5d977dcd58133ae7cfebafd0c48b1ef8a19a4b"
+      "bytes": 793430,
+      "sha256": "7a8a8db83fac1d69df1dc6b35f999e2f414cf2832ff1d7f10ff353184fa16fb4"
     },
     {
       "path": "tools/cf6-type61/fixed_roster.py",
-      "bytes": 23272,
-      "sha256": "838a1ea15041177e4ae59e65d0d9bea47978af8fb1e09b929567c4d118af93e4"
+      "bytes": 25217,
+      "sha256": "fed0c33f79ba2a86921a726fb0d77e2d6cb27b22b77d00076b061c6de3fcd426"
+    },
+    {
+      "path": "tools/cf6-type61/import-firepower-plan.py",
+      "bytes": 4717,
+      "sha256": "1b17e0b141eda882b97e4d13ee9bab112bed369b07960593f61ffd63bd5a291c"
+    },
+    {
+      "path": "tools/cf6-type61/loadout_rules.py",
+      "bytes": 6452,
+      "sha256": "5c76b6fd059543572f2780775fd3e8f6697404668a5fbedf69b3d7bbb6dedf26"
     },
     {
       "path": "tools/cf6-type61/route.source.json",
@@ -863,14 +888,24 @@
       "sha256": "b7fbfa515f6d687a40b64ce10adb76cef0feed713dd1806e2a33ad6b225c1e98"
     },
     {
+      "path": "tools/cf6-type61/soldier-firepower.source.json",
+      "bytes": 141189,
+      "sha256": "6328164efc6b874f2a38f1114ff850ca801ddc13f8574f6738bd902c46cc46e6"
+    },
+    {
       "path": "tools/cf6-type61/soldier-g1111-pair.source.json",
       "bytes": 31346,
       "sha256": "28e7cbb2b32dc709ba8afc0f9ede21389db15f3a42a0b6b616f053bde0eab86b"
     },
     {
+      "path": "tools/cf6-type61/soldier-loadout-plan.source.json",
+      "bytes": 104913,
+      "sha256": "38f7b5d22e30a9f24abe39aed26fa5857150c4f83296fb1d6eebf3e7abfd0129"
+    },
+    {
       "path": "tools/cf6-type61/soldier-loot-policy.source.json",
-      "bytes": 1295,
-      "sha256": "6987a3a56f312a993ee8fc1dbc19f58a433cdeb2fd230d9352a781968ac3266c"
+      "bytes": 1970,
+      "sha256": "4fe718212a536dc06592b4f9f873d500229132d0e0bc83c349af7b7caaaf14a6"
     },
     {
       "path": "tools/cf6-type61/soldier_programs.py",
@@ -941,13 +976,13 @@
     },
     {
       "path": "data/stages/books/cf6-type61.json",
-      "bytes": 1182831,
-      "sha256": "66b472c3987f40cf93be42dbd64b59c836fd5c5b5be3a965e2c60082fca9d23b"
+      "bytes": 590072,
+      "sha256": "c58f1985ecb2de0509ba4ddcabf274b917e34bfb97a708d27a5db7c892f6deaa"
     },
     {
       "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as",
-      "bytes": 186862,
-      "sha256": "137ab8a50b0f2f2ecb230dee96eccde6fd4866873a3a152701c8f2bfb3ee09bd"
+      "bytes": 206360,
+      "sha256": "cd0e193c7df4970a9e015cac4d5a54224596c9f709b3e5ebe271ce174cec2814"
     },
     {
       "path": "tools/cf6-type61/acquisition.generated.json",
@@ -965,8 +1000,8 @@
       "sha256": "a5564665a449b2b9de69126ed4d519d46959d3be26a7ab8fe7abd8ad499932fd"
     }
   ],
-  "generatedBytes": 1428242,
-  "bytesIncludingRuntimeSidecar": 1992526,
+  "generatedBytes": 854981,
+  "bytesIncludingRuntimeSidecar": 1440272,
   "maxGeneratedBytes": 2000000,
   "downstreamChecks": [
     "tools/build-choice-rewards.py --check",
@@ -974,7 +1009,7 @@
   ],
   "runtimeSidecar": {
     "path": "data/stages/books/cf6-type61.runtime.json",
-    "bytes": 564284,
-    "sha256": "0b4d5cf0d64d10d4de050233efd061b20da749b39f2c8d93ac54b525bb63a4ac"
+    "bytes": 585291,
+    "sha256": "76af032b44ce7d5d25079858bf718021615bda83ae296856980febdbd9e3dd96"
   }
 }

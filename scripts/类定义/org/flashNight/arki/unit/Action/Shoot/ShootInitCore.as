@@ -515,6 +515,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         }
 
         // 最终计算：basePower * (1 + 倍率之和) + 固定加成
+        if(typeof parentRef.cf6UnitIdentity=="string")
+            return org.flashNight.arki.scene.Cf6SoldierFirepower.calculate(parentRef,weaponType,basePower,totalMultiplier,flatBonus,isRay,isLongGun);
         return basePower * (1 + totalMultiplier) + flatBonus;
     }
 
@@ -752,6 +754,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         }
         //_root.服务器.发布服务器消息(weaponType + " 子弹数据: " + ObjectUtil.stringify(wd) + " 返回子弹数据: " + ObjectUtil.stringify(bulletProps));
 
+        if(typeof parentRef.cf6UnitIdentity=="string")
+            org.flashNight.arki.scene.Cf6SoldierFirepower.applyPoison(parentRef,weaponType,bulletProps);
         return bulletProps;
     }
 

@@ -94,6 +94,19 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
         }
         check(found && RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")==0,"weapon exists exactly once after claim");
     }
+    private static function absentMaterialCase():Void {
+        cleanState();var unit:MovieClip=actor("noMaterial");
+        unit.cf6LootMaterial=null;unit.长枪.value.mods=[];
+        unit.cf6FirepowerProfile={v:1,gunOnly:123,nano:4};
+        check(Cf6SoldierLoot.combatDeath(unit),"no-material death still captures native weapon");
+        drain();var p:Object=packet("noMaterial");
+        check(rolls==1 && p.state=="OWNED" && p.kind=="longgun","missing material removes only that category");
+        check(p.items[0].cf6FirepowerProfile==undefined && p.items[0].value.cf6FirepowerProfile==undefined
+            && p.items[0].value.mods.length==0,"actor firepower never enters saved weapon");
+        check(storage.data.test.ext.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"].kind=="longgun",
+            "actual save image retains the valid weapon-only category");
+        Cf6SoldierLoot.combatDeath(unit);drain();check(rolls==1,"no-material duplicate never rerolls");
+    }
     private static function failureCases():Void {
         cleanState();var unit:MovieClip=actor("known");Cf6SoldierLoot.combatDeath(unit);
         sm._configureSaveFlowForTest({beforeRewardExposure:function():Void {throw new Error("owned_pre_exposure_fault");}});
@@ -139,6 +152,38 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
         check(!sawSaveSuccess(),"deferred exit has no early sv2 before full admission");
         Cf6SoldierLoot.tick();Cf6SoldierLoot.tick();check(exitCalls==1 && sawSaveSuccess() && packet("exit").state=="OWNED","safe exit invoked once after atomic admission");
     }
+    private static function seedSevenMisses():Object {
+        var ledger:Object=Cf6SoldierLootRules.create(config.version,config.lootPolicy.version);
+        _root._saveExt.bookRun.cf6SoldierLoot=ledger;
+        for(var i:Number=0;i<7;i++){
+            var id:String="historical-miss-"+i;
+            var header:Object={sourceKey:"historical."+caseIndex+"."+id,unitIdentity:id,spawnIdentity:id,
+                rosterVersion:config.version,configurationFingerprint:config.version+"|old-policy"};
+            var roll:Object={recorded:true,gateEvaluated:true,hit:false,nominalPercent:3,luckBonus:0,
+                prdPoolKey:"cf6.fixed158.ordinary|缴获包",reason:"roll_miss"};
+            check(Cf6SoldierLootRules.reserve(ledger,Cf6SoldierLootRules.packet(header,{},"none",roll,[])),"historical durable miss fixture");
+        }
+        check(Cf6SoldierLootRules.validLedger(ledger) && Cf6SoldierLootRules.eligibleDeaths(ledger)==7,"seven valid evaluated deaths exist before guard");
+        return PersistedSnapshot.cloneData(ledger.records);
+    }
+    private static function firstWeaponCases():Void {
+        cleanState();gateHit=false;var previous:Object=seedSevenMisses();
+        var unit:MovieClip=actor("guard");check(Cf6SoldierLoot.combatDeath(unit),"capture eighth eligible death");drain();
+        var p:Object=packet("guard"),ledger:Object=_root._saveExt.bookRun.cf6SoldierLoot;
+        check(rolls==1 && p.kind=="longgun" && p.roll.reason=="first_weapon_guarantee"
+            && p.roll.naturalHit===false && p.roll.eligibleOrdinal==8,"native eighth-death guarantee with one real PRD gate");
+        check(ledger.packages==1 && ledger.weaponInstances==1 && ledger.pairs==0 && ledger.materials==0,"guard consumes original package and weapon quotas");
+        var unchanged:Boolean=true;
+        for(var key:String in previous)if(ledger.records[key].roll.reason!="roll_miss" || ledger.records[key].roll.nominalPercent!==3)unchanged=false;
+        check(unchanged,"seven original durable misses retain their original rate and result");
+        check(storage.data.test.ext.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"].roll.reason=="first_weapon_guarantee","guard evidence saved with owned packet");
+        cleanState();gateHit=false;seedSevenMisses();unit=actor("guardPending");Cf6SoldierLoot.combatDeath(unit);
+        sm._configureSaveFlowForTest({flushResult:"pending"});check(!Cf6SoldierLoot.prepareForTransition(),"unknown guard decision blocks transition");
+        var op:String=RewardStashService.pendingOperationId();Cf6SoldierLoot.prepareForTransition();
+        check(op!="" && RewardStashService.pendingOperationId()===op && rolls==1,"unknown guard queries the same frozen operation");
+        sm._configureSaveFlowForTest({flushResult:true});drain();
+        check(rolls==1 && packet("guardPending").state=="OWNED","pending guard resolves once without reroll");
+    }
     public static function runAllTests():Boolean {
         passed=failed=rolls=caseIndex=exitCalls=0;
         var keys:Array=["savePath","允许存档","角色名","等级","基础身价值","身价","存档系统","mydata","_saveExt","暂停","UpdateTaskProgress",
@@ -165,7 +210,7 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
             config=Cf6FixedActionsFixture.config();config.lootPolicy=Cf6SoldierLootFixture.policy();
             // No prior player run is bound in this isolated test process.
             loot.context=null;loot.queue=[];loot.captured={};loot.plan=null;loot.operation="";
-            exactCase();failureCases();edgeCases();
+            exactCase();failureCases();edgeCases();absentMaterialCase();firstWeaponCases();
             check(WeaponAmmoRuntime.quoteInventoryPacks(40,0,40)==1 && WeaponAmmoRuntime.quoteInventoryPacks(40,8,40)==1
                 && WeaponAmmoRuntime.quoteInventoryPacks(40,80,40)==0,"ordinary paid reload quote is shared with real spend");
         }catch(error){check(false,"unexpected exception: "+error);}

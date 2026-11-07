@@ -114,7 +114,7 @@ def main(manifest_name='test-host-manifest.json',width=550,height=400,extra_scri
                 if not obsolete.is_relative_to(OWNER.resolve()):
                     raise ValueError('Invalid obsolete fixture path')
                 backup = ROOT/'tmp/cf6-soldier-equipment-consumer/obsolete'/row['sha256']
-                backup.parent.mkdir(exist_ok=True)
+                backup.parent.mkdir(parents=True,exist_ok=True)
                 if not backup.exists():
                     backup.write_bytes(obsolete.read_bytes())
                 obsolete.unlink()

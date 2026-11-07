@@ -77,6 +77,34 @@
     <Include href="Import73.xml" itemID="6af00000-e3aa3643" loadImmediate="false"/>
     <Include href="Import74.xml" itemID="6af00000-3d2ce2f3" loadImmediate="false"/>
     <Include href="Import75.xml" itemID="6af00000-3ab8de6f" loadImmediate="false"/>
+    <Include href="Import76.xml" itemID="6af00000-f120a994" loadImmediate="false"/>
+    <Include href="Import77.xml" itemID="6af00000-f6bd1f1e" loadImmediate="false"/>
+    <Include href="Import78.xml" itemID="6af00000-8cfea40c" loadImmediate="false"/>
+    <Include href="Import79.xml" itemID="6af00000-1bffe0ef" loadImmediate="false"/>
+    <Include href="Import80.xml" itemID="6af00000-47633c5f" loadImmediate="false"/>
+    <Include href="Import81.xml" itemID="6af00000-eebb12bb" loadImmediate="false"/>
+    <Include href="Import82.xml" itemID="6af00000-7ed47d42" loadImmediate="false"/>
+    <Include href="Import83.xml" itemID="6af00000-d6f3c2bb" loadImmediate="false"/>
+    <Include href="Import84.xml" itemID="6af00000-fe007176" loadImmediate="false"/>
+    <Include href="Import85.xml" itemID="6af00000-6e140e72" loadImmediate="false"/>
+    <Include href="Import86.xml" itemID="6af00000-b4066dac" loadImmediate="false"/>
+    <Include href="Import87.xml" itemID="6af00000-0c98579d" loadImmediate="false"/>
+    <Include href="Import88.xml" itemID="6af00000-fd4d38a9" loadImmediate="false"/>
+    <Include href="Import89.xml" itemID="6af00000-958ae05e" loadImmediate="false"/>
+    <Include href="Import90.xml" itemID="6af00000-ad71ca70" loadImmediate="false"/>
+    <Include href="Import91.xml" itemID="6af00000-6d67bb4f" loadImmediate="false"/>
+    <Include href="Import92.xml" itemID="6af00000-ba30149a" loadImmediate="false"/>
+    <Include href="Import93.xml" itemID="6af00000-2a5f828d" loadImmediate="false"/>
+    <Include href="Import94.xml" itemID="6af00000-0427c3f4" loadImmediate="false"/>
+    <Include href="Import95.xml" itemID="6af00000-239a1887" loadImmediate="false"/>
+    <Include href="Import96.xml" itemID="6af00000-95434aef" loadImmediate="false"/>
+    <Include href="Import97.xml" itemID="6af00000-f0fc6330" loadImmediate="false"/>
+    <Include href="Import98.xml" itemID="6af00000-444a52d3" loadImmediate="false"/>
+    <Include href="Import99.xml" itemID="6af00000-274d0a93" loadImmediate="false"/>
+    <Include href="Import100.xml" itemID="6af00000-eec2fbc0" loadImmediate="false"/>
+    <Include href="Import101.xml" itemID="6af00000-f8d78414" loadImmediate="false"/>
+    <Include href="Import102.xml" itemID="6af00000-b1911a97" loadImmediate="false"/>
+    <Include href="Import103.xml" itemID="6af00000-18b85e3b" loadImmediate="false"/>
   </symbols>
   <timelines>
     <DOMTimeline name="场景 1">
@@ -293,11 +321,12 @@ _root.主角函数.获取装备主动战技种类 = function(装备类型, 装�
     #include "../逻辑/装备函数/G1111.as"
     #include "../逻辑/装备函数/M134.as"
     #include "../逻辑/装备函数/M249.as"
+    #include "../逻辑/装备函数/NEGEV.as"
     #include "../逻辑/装备函数/P90.as"
     #include "../逻辑/装备函数/RPG.as"
 };
 
-_root.cf6NativeRslAnchorCount=76;
+_root.cf6NativeRslAnchorCount=104;
 
 import flash.display.*;
 import flash.filters.*;
@@ -400,6 +429,8 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
     }else{
         initObject.兵种 = id;
     }
+    var nest:Object=_root.gameworld.__noahMotherEncounter;
+    if(nest!=null && !nest.acceptSpawn(id,initObject))return null;
     org.flashNight.arki.scene.PlayerSceneLifecycle.prepareSpawn(id,name,initObject);
     // Only a newly born, currently controlled historical-CF6 hero gets mask history.
     // Existing actors and other routes are never retroactively declared mask-free.
@@ -414,7 +445,9 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
         org.flashNight.arki.scene.Cf6ActorMaskState.bind(maskActor, maskInit);
         return maskActor;
     }
-    return _root.gameworld.attachMovie(id, name, depth, initObject);
+    var born:MovieClip=_root.gameworld.attachMovie(id, name, depth, initObject);
+    if(nest!=null && born!=undefined)nest.registered(born,initObject);
+    return born;
 }
 _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允许小数, 禁止超出最大等级, param) {
     if (禁止超出最大等级 === true && 目前等级 > _root.最大等级)
@@ -510,7 +543,7 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import33" name="source33">
+                <DOMSymbolInstance libraryItemName="Import63" name="source63">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -521,7 +554,7 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import68" name="source68">
+                <DOMSymbolInstance libraryItemName="Import92" name="source92">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -532,7 +565,7 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import69" name="source69">
+                <DOMSymbolInstance libraryItemName="Import93" name="source93">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -543,7 +576,7 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import70" name="source70">
+                <DOMSymbolInstance libraryItemName="Import94" name="source94">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -554,7 +587,7 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import71" name="source71">
+                <DOMSymbolInstance libraryItemName="Import95" name="source95">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -565,7 +598,7 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import72" name="source72">
+                <DOMSymbolInstance libraryItemName="Import96" name="source96">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -576,7 +609,7 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import73" name="source73">
+                <DOMSymbolInstance libraryItemName="Import97" name="source97">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -587,7 +620,7 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import74" name="source74">
+                <DOMSymbolInstance libraryItemName="Import98" name="source98">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -598,7 +631,51 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import75" name="source75">
+                <DOMSymbolInstance libraryItemName="Import99" name="source99">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import100" name="source100">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import101" name="source101">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import102" name="source102">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import103" name="source103">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -889,6 +966,17 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                   </color>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import32" name="source32">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import33" name="source33">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -1218,17 +1306,6 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import63" name="source63">
-                  <matrix>
-                    <Matrix tx="-5000" ty="-5000"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import64" name="source64">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
@@ -1263,6 +1340,270 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                   </color>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import67" name="source67">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import68" name="source68">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import69" name="source69">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import70" name="source70">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import71" name="source71">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import72" name="source72">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import73" name="source73">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import74" name="source74">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import75" name="source75">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import76" name="source76">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import77" name="source77">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import78" name="source78">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import79" name="source79">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import80" name="source80">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import81" name="source81">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import82" name="source82">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import83" name="source83">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import84" name="source84">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import85" name="source85">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import86" name="source86">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import87" name="source87">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import88" name="source88">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import89" name="source89">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import90" name="source90">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import91" name="source91">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>

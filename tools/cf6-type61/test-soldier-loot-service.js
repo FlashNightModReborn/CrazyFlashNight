@@ -132,3 +132,57 @@ test('save success remains blocked across the two durable stages and deferred ex
   assert.equal(f.api.blocksSaveSuccess(),true);decide(f);assert.equal(f.api.blocksSaveSuccess(),true);
   drain(f);assert.equal(f.api.blocksSaveSuccess(),false);
 });
+
+test('no installed material filters that category while preserving the single weapon gate and tier',()=>{
+  const f=fixture();f.c.actor.cf6LootMaterial=null;f.c.actor.长枪.value.tier='狱火';
+  f.c.actor.cf6FirepowerProfile={gunOnly:123,nano:4};death(f);drain(f);
+  assert.equal(f.c.rolls,1);assert.equal(f.c.admits,1);
+  const packet=f.c.saved.bookRun.cf6SoldierLoot.records['u.A'];
+  assert.equal(packet.kind,'longgun');assert.equal(packet.items[0].value.tier,'狱火');
+  assert.equal(packet.items[0].value.cf6FirepowerProfile,undefined);
+  assert.equal(packet.items[0].cf6FirepowerProfile,undefined);
+  death(f);drain(f);assert.equal(f.c.rolls,1);
+});
+
+test('an unknown nonempty material remains invalid instead of widening admission',()=>{
+  const f=fixture();f.c.actor.cf6LootMaterial='unknown';death(f);drain(f);
+  assert.equal(f.c.rolls,0);assert.equal(f.c.admits,0);
+});
+
+function missUntil(f,count) {
+  f.c.gateHit=false;
+  for(let i=0;i<count;i++) {
+    f.c.actor.cf6UnitIdentity='pity-'+i;f.c.actor.cf6ActionRecord.key='birth.pity-'+i;
+    death(f);drain(f);
+  }
+}
+test('eighth evaluated death freezes one guaranteed primary and leaves seven historical misses intact',()=>{
+  const f=fixture();missUntil(f,7);
+  const before=JSON.stringify(f.c.saved.bookRun.cf6SoldierLoot.records);
+  f.c.actor.cf6UnitIdentity='eighth';f.c.actor.cf6ActionRecord.key='birth.eighth';
+  death(f);drain(f);const ledger=f.c.saved.bookRun.cf6SoldierLoot;
+  assert.equal(f.c.rolls,8);assert.equal(f.c.choices,0);assert.equal(ledger.weaponInstances,1);assert.equal(ledger.packages,1);
+  const p=ledger.records['u.eighth'];assert.equal(p.kind,'longgun');assert.equal(p.roll.reason,'first_weapon_guarantee');
+  assert.equal(p.roll.naturalHit,false);assert.equal(p.roll.eligibleOrdinal,8);
+  const old={...ledger.records};delete old['u.eighth'];assert.equal(JSON.stringify(old),before);
+  death(f);drain(f);assert.equal(f.c.rolls,8);assert.equal(f.c.admits,1);
+});
+test('unknown guarantee decision queries the same frozen operation without advancing RNG or quota twice',()=>{
+  const f=fixture();missUntil(f,7);f.c.actor.cf6UnitIdentity='unknown-eighth';f.c.actor.cf6ActionRecord.key='birth.unknown-eighth';
+  death(f);f.c.outcome='unknown';decide(f);const op=status(f).operationId;
+  f.api.prepareForTransition();assert.equal(status(f).operationId,op);assert.equal(f.c.rolls,8);assert.equal(f.c.admits,0);
+  f.c.outcome='committed';drain(f);assert.equal(f.c.rolls,8);assert.equal(f.c.admits,1);assert.equal(f.c.saved.bookRun.cf6SoldierLoot.packages,1);
+});
+test('already received weapon suppresses first-weapon guarantee even after eight later misses',()=>{
+  const f=fixture();death(f);drain(f);missUntil(f,9);
+  assert.equal(f.c.rolls,10);assert.equal(f.c.saved.bookRun.cf6SoldierLoot.weaponInstances,1);
+  assert.equal(Object.values(f.c.saved.bookRun.cf6SoldierLoot.records).filter(p=>p.roll.reason==='first_weapon_guarantee').length,0);
+});
+test('legacy eight-miss ledger qualifies on the next new death without revising a durable identity',()=>{
+  const f=fixture();delete f.c.config.lootPolicy.firstWeaponGuarantee;missUntil(f,8);
+  f.c.config.lootPolicy.firstWeaponGuarantee=vm.runInContext('({afterEligibleDeaths:8})',f.c);
+  const old=JSON.stringify(f.c.saved.bookRun.cf6SoldierLoot.records);
+  f.c.actor.cf6UnitIdentity='legacy-next';f.c.actor.cf6ActionRecord.key='birth.legacy-next';death(f);drain(f);
+  const ledger=f.c.saved.bookRun.cf6SoldierLoot;assert.equal(ledger.records['u.legacy-next'].roll.eligibleOrdinal,9);
+  const previous={...ledger.records};delete previous['u.legacy-next'];assert.equal(JSON.stringify(previous),old);
+});

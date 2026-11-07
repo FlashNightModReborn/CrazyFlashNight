@@ -127,7 +127,7 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
     }
     private static function expectedWeapon(raw:Object):Object {
         if(typeof raw=="object")return raw;
-        var parts:Array=String(raw).split("#");return {name:parts[0],value:{level:Number(parts[1]),mods:parts[3]==""?[]:parts[3].split(",")}};
+        var parts:Array=String(raw).split("#");return {name:parts[0],value:{level:Number(parts[1]),tier:parts[2] || null,mods:parts[3]==""?[]:parts[3].split(",")}};
     }
     private static function validateActor(unit:MovieClip,row:Object):Void {
         check(unit!=null && unit.cf6FixedError==undefined && unit.cf6ActionState!=null,"native fixed adapter "+row.identity+" "+unit.cf6FixedError);
@@ -138,11 +138,21 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
             if(p[slot]==null)continue;
             var expected:Object=expectedWeapon(p[slot]),actual:Object=unit[slot];
             check(actual.name==expected.name && actual.value.level==expected.value.level,"resolved name/enhancement "+row.identity+" "+slot);
+            check((actual.value.tier || null)===(expected.value.tier || null),"resolved exact tier "+row.identity+" "+slot);
             check(actual.value.mods instanceof Array && actual.value.mods.join(",")==expected.value.mods.join(","),"exact mods "+row.identity+" "+slot);
             check(unit[slot+"属性"].capacity>0 && unit[slot+"属性"].interval>0,"finite weapon runtime "+row.identity+" "+slot);
+            var stage:Number=unit.cf6FirepowerProfile.s;
+            unit.cf6FirepowerProfile.s=0;
+            var before:Object=org.flashNight.arki.unit.Action.Shoot.ShootInitCore.generateBulletProps(unit,slot,unit[slot+"属性"],{});
+            unit.cf6FirepowerProfile.s=stage;
+            var after:Object=org.flashNight.arki.unit.Action.Shoot.ShootInitCore.generateBulletProps(unit,slot,unit[slot+"属性"],{});
+            check(isFinite(after.子弹威力) && after.子弹威力>=before.子弹威力,"actual firearm projection finite and non-reducing "+row.identity+" "+slot);
+            trace("[CF6_GUN_PROJECTION] "+row.identity+" slot="+slot+" gun="+actual.name+" tier="+(actual.value.tier || "data")
+                +" equipmentPower="+actual.getData().data.power+" actorGunpower="+unit.装备枪械威力加成
+                +" original="+before.子弹威力+" final="+after.子弹威力+" poison="+(after.毒 || 0));
         }
         var expectedLong:Object=expectedWeapon(p.长枪);
-        var skinKey:String=ItemUtil.itemDataDict[expectedLong.name].data.dressup;
+        var skinKey:String=unit.长枪.getData().data.dressup;
         var holder:MovieClip=unit.man.枪.枪,skin:MovieClip=unit.长枪_引用;
         check(skinKey!=null && unit.长枪_装扮===skinKey && skin!=null && skin===holder.装扮
             && skin.枪口位置._parent===skin,"exact equipped long-gun art and real muzzle "+row.identity+" "+expectedLong.name);
@@ -198,7 +208,7 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
         if(unit.cf6ActionState!=null && actualBit>0){
             var s:Object=unit.cf6ActionState;
             emissions.push({identity:unit.cf6UnitIdentity,frame:Cf6SoldierActions.now(),cycle:s.cycle,phase:unit.soldierPhase,
-                bit:actualBit,split:props.霰弹值,type:props.子弹种类,stage:s.index});
+                bit:actualBit,split:props.霰弹值,type:props.子弹种类,stage:s.index,power:props.子弹威力,poison:props.毒 || 0});
             check(props.cf6DamageGroup!=null,"actual core binds each committed emission");
             check(isFinite(props.shootX) && isFinite(props.shootY) && isFinite(props.shootZ),"actual native muzzle transform");
         }
@@ -267,6 +277,23 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
             for(var pick:Number=0;pick<scenarios.length;pick++)if(scenarios[pick].flightMode!=undefined)selected.push(scenarios[pick]);
             scenarios=selected;
         }
+        if(_root.cf6AdmissionAllForms===true){
+            var seen:Object={},admitted:Number=0;
+            // Prefer a main-gun representative, then a native phase-2 sidearm.
+            for(var pass:Number=0;pass<3;pass++)for(var person:Number=0;person<metadata.length;person++){
+                var meta:Object=metadata[person],params:Object=parameters[meta.identity];
+                for(var hand:Number=0;hand<3;hand++){
+                    if(pass==0 && hand!=0 || pass>0 && hand==0 || pass==1 && meta.phase!=2 || pass==2 && meta.phase!=1)continue;
+                    var raw=params[hand==0?"长枪":hand==1?"手枪":"手枪2"];
+                    if(raw==null)continue;
+                    var weapon:Object=expectedWeapon(raw),key:String=weapon.name+"|"+(weapon.value.tier || "data");
+                    if(seen[key])continue;seen[key]=true;
+                    scenarios.push({row:meta,label:"admission_"+admitted,admissionBit:hand==0?1:hand==1?2:4,admissionKey:key});admitted++;
+                }
+            }
+            check(admitted==Cf6SoldierFirepowerFixture.formCount(),"exact final selected-form admission coverage");
+            trace("[CF6_ADMISSION_BEGIN] forms="+admitted+"; original rules/poses, controlled variant request; genuine shield-break for phase-1 sidearms");
+        }
         cursor=0;phase=2;age=0;current=null;
     }
     private static function startScenario():Void {
@@ -293,6 +320,46 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
     }
     private static function scenarioInputs():Void {
         var label:String=currentScenario.label,target:MovieClip=world.fixedTarget;
+        if(currentScenario.admissionBit!=undefined){
+            if(!currentScenario.admissionStarted){
+                current.攻击目标="__admission_wait";
+                if(age==15 && currentScenario.admissionBit!=1 && current.soldierPhase==1)current.hp=0;
+                if(age>16 && current.soldierPhase>0 && current.hp>0 && !current.cf6ActionState.active
+                    && current.cf6ActionState.terminal===current.cf6LastTerminal){
+                    // Let the real phase-transition terminal be acknowledged first.
+                    // Dual's original retreat must fit inside its tactical range.
+                    if(currentScenario.admissionBit!=1 && !currentScenario.admissionPositioned){
+                        var tether:Number=current.cf6Profile.program.tether;
+                        if(tether<80){
+                            // The bastion's 80px dual retreat fits only when it
+                            // begins near the legal forward edge of its 48px tether.
+                            // Preserve the real movement stage and original bound.
+                            current._x=current.cf6ActionRecord.birthX+tether;
+                            check(current._x-current.cf6ActionRecord.birthX<=tether,"admission begins inside original tether");
+                            trace("[CF6_ADMISSION_TETHER] "+current.cf6UnitIdentity+" start="+current._x
+                                +" anchor="+current.cf6ActionRecord.birthX+" tether="+tether+" originalRetreat=80");
+                        }
+                        currentScenario.admissionPositioned=true;
+                    }
+                    target._x=current._x+(currentScenario.admissionBit==1?230:Math.min(160,current.cf6Profile.program.maxDistance-85));
+                    target.Z轴坐标=target._y=current.Z轴坐标;
+                    current.cf6ActionApi.observe(current.cf6ActionRecord,target,current.cf6Observation);
+                    if(current.cf6ActionApi.request(current.cf6ActionRecord)){
+                        current.攻击目标="fixedTarget";
+                        current.cf6ActionApi.observe(current.cf6ActionRecord,target,current.cf6Observation);
+                        current.cf6RuleStart(current.cf6ActionState,current.cf6Profile,current.cf6Observation,
+                            currentScenario.admissionBit==1?"pressure":"dual",current.cf6Command);
+                        currentScenario.admissionStarted=true;
+                    }
+                }
+            }else if(!currentScenario.admissionStopped){
+                for(var shot:Number=0;shot<emissions.length;shot++)if(emissions[shot].bit==currentScenario.admissionBit){
+                    current.cf6FixedCancel("admission_stop");current.攻击目标="__admission_done";
+                    currentScenario.admissionStopped=true;break;
+                }
+            }
+            return;
+        }
         if(age==15){
             if(label=="ordinary_line"){
                 current.状态改变("长枪攻击");current.状态改变("投掷手雷");
@@ -377,7 +444,7 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
         for(var i:Number=0;i<emissions.length;i++){
             var e:Object=emissions[i];if(e.cycle!=1 || e.identity!==current.cf6UnitIdentity)continue;
             if(e.bit==1)count[0]++;if(e.bit==2)count[1]++;if(e.bit==4)count[2]++;if(e.bit==8)count[3]++;
-            check(e.phase==currentScenario.row.phase,"no synthetic phase change "+currentScenario.label);
+            check(e.phase==(currentScenario.admissionBit!=undefined && currentScenario.admissionBit!=1?2:currentScenario.row.phase),"native firing phase "+currentScenario.label);
             if(currentScenario.label=="g1111_rifle_fallback")check(e.split==1 && e.type=="铁枪磁轨弹","fixed rifle one native payload");
             if(currentScenario.label=="g1111_rocket_fallback")check(e.split==6 && e.type=="横向拖尾追踪联弹-普通无壳子弹","fixed rocket six linked units in native payload");
         }
@@ -407,10 +474,16 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
                 "one same-side mobile gunner crosses under covering fire and both real weapons discharge");
             trace("[CF6_FLANK] routed="+currentScenario.routed+" left="+partner._x+" right="+current._x
                 +" player="+world.fixedTarget._x+" shots="+partner.soldierShotCount+"/"+current.soldierShotCount);
+        }else if(currentScenario.admissionBit!=undefined){
+            var bit:Number=currentScenario.admissionBit;
+            check(currentScenario.admissionStarted && currentScenario.admissionStopped && count[bit==1?0:bit==2?1:2]>0,
+                "real native discharge of selected exact form "+currentScenario.admissionKey);
+            trace("[CF6_ADMISSION_FORM] "+currentScenario.admissionKey+" identity="+current.cf6UnitIdentity+" bit="+bit
+                +" phaseChanges="+current.soldierPhaseChanges+" shots="+count.join("/"));
         }else{
         check(count[0]==currentScenario.primary && count[1]==currentScenario.dual && count[2]==currentScenario.dual
             && count[3]==currentScenario.sub,"native commit signature "+currentScenario.label+" = "+count.join("/"));
-        check(currentScenario.negative!=undefined?current.cf6ActionState.cancelReason=="target_or_permission":current.cf6ActionState.cancelReason=="complete","native terminal "+currentScenario.label+" reason="+current.cf6ActionState.cancelReason);
+        check(currentScenario.negative!=undefined?currentScenario.terminalReason=="target_or_permission":currentScenario.terminalReason=="complete","native terminal "+currentScenario.label+" reason="+currentScenario.terminalReason);
         }
         if(currentScenario.flightMode!=undefined){
             // The committed shot has already entered recovery. Target loss
@@ -449,7 +522,7 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
             if(task.unit._parent!==world || task.unit.version!==task.version){lifecycles.splice(l,1);continue;}
             task.fn.apply(null,task.args);
         }
-        if(ticks>14000){check(false,"bounded native suite timeout");finish();return;}
+        if(ticks>14000+(_root.cf6AdmissionAllForms===true?Cf6SoldierFirepowerFixture.formCount()*720:0)){check(false,"bounded native suite timeout");finish();return;}
         age++;
         if(phase==1){
             if(batch.length==0){
@@ -495,6 +568,17 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
                 +" valid="+current.cf6Observation.targetValid+" visible="+current.cf6Observation.visible
                 +" lane="+current.cf6Observation.sameLane+" distance="+current.cf6Observation.distance+" error="+current.cf6FixedError);
             var required:Number=currentScenario.repeats>0?currentScenario.repeats:1;
+            if(currentScenario.admissionBit==undefined && !currentScenario.movementCase
+                && current.cf6ActionState.terminal>=required && currentScenario.terminalReason==undefined){
+                currentScenario.terminalReason=current.cf6ActionState.cancelReason;
+                // Freeze the completed attempt while its already emitted objects retire.
+                // A subsequent cycle may not erase the terminal being asserted.
+                current.攻击目标="__completed_attempt";
+            }
+            if(currentScenario.admissionBit!=undefined){
+                if(currentScenario.admissionStopped && Cf6FixedProjectileHarness.terminal(current) || age>=700)finishScenario();
+                return;
+            }
             if(currentScenario.movementCase){
                 if(age>=200 && (_root.cf6RealProjectile!==true || Cf6FixedProjectileHarness.terminal(current)) || age>=400)finishScenario();
                 return;

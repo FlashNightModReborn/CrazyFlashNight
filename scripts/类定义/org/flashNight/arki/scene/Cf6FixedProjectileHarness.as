@@ -48,6 +48,9 @@ class org.flashNight.arki.scene.Cf6FixedProjectileHarness {
         var targets:Object=TargetCacheManager,damage:Object=DamageCalculator;
         saved={enemyCache:targets.acquireEnemyCache,damage:damage.calculateDamage,random:_root.随机偏移,
             search:_root.帧计时器.获取敌人缓存,eventBus:_root.帧计时器.eventBus};
+        saved.randomState=LinearCongruentialEngine.getInstance().captureState();
+        LinearCongruentialEngine.getInstance().restoreState(20261107);
+        trace("CF6_PROJECTILE_RANDOM seed=20261107; native LCG, original target geometry and hit assertions");
         targets.acquireEnemyCache=enemyCache;damage.calculateDamage=damageOnce;
         _root.随机偏移=function(span:Number):Number {return LinearCongruentialEngine.getInstance().randomOffset(span);};
         _root.帧计时器.获取敌人缓存=search;
@@ -119,6 +122,9 @@ class org.flashNight.arki.scene.Cf6FixedProjectileHarness {
         var actor:MovieClip=world[props.发射者],group:Object=props.cf6DamageGroup;
         check(group!=null,"every fixed root or descendant keeps its damage group");
         groupRow(group,props,actor);syncTarget();
+        if(String(props.子弹种类).indexOf("横向联弹-")==0)trace("CF6_SHOT_STATE identity="+actor.cf6UnitIdentity
+            +" seed="+LinearCongruentialEngine.getInstance().captureState()+" xyz="+props.shootX+","+props.shootY+","+props.shootZ
+            +" velocity="+props.子弹速度+" diffusion="+props.子弹散射度+" target="+world.fixedTarget._x+","+world.fixedTarget._y);
         var angle:Number=ShootingAngleCalculator.calculate(props,actor);
         BulletFactory.prepareBulletData(props,actor);
         var bullet:Object=BulletFactory.createBullet(props,actor,angle);
@@ -197,6 +203,7 @@ class org.flashNight.arki.scene.Cf6FixedProjectileHarness {
         var requiredHits:Boolean=label=="ordinary_line" || label=="primary_then_subweapon" || label=="real_launcher_load"
             || label=="g1111_rifle_fallback" || label=="g1111_rocket_fallback" || label=="bright_burst"
             || label=="reserve_gate" || label=="threshold_flush" || label=="finite_grenade";
+        if(label.indexOf("admission_")==0)requiredHits=true;
         if(requiredHits){
             var contacts:Number=0;
             for(i=0;i<groups.length;i++)if(groups[i].identity===actor.cf6UnitIdentity)contacts+=groups[i].group.fixtureHits|0;
@@ -217,7 +224,8 @@ class org.flashNight.arki.scene.Cf6FixedProjectileHarness {
             BulletQueueProcessor.reset();ChainUnitManager.resetAll();
             var target:Object=TargetCacheManager,damage:Object=DamageCalculator;
             target.acquireEnemyCache=saved.enemyCache;damage.calculateDamage=saved.damage;
-            _root.随机偏移=saved.random;_root.帧计时器.获取敌人缓存=saved.search;_root.帧计时器.eventBus=saved.eventBus;
+            _root.随机偏移=saved.random;
+            LinearCongruentialEngine.getInstance().restoreState(saved.randomState);_root.帧计时器.获取敌人缓存=saved.search;_root.帧计时器.eventBus=saved.eventBus;
             installed=false;
         }
     }

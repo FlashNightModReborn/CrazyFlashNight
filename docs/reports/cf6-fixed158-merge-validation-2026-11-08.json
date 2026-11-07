@@ -1,0 +1,169 @@
+{
+  "schema": "cf7-cf6-fixed158-merge-validation.v1",
+  "date": "2026-11-08",
+  "kind": "merged_source_validation",
+  "authorization": "可行，可以合并上游，提交部署推送了",
+  "candidateBase": "0b84e3204fb1d90184e8478c29498666d16d9678",
+  "upstream": "75e60b0c41319b81d24773f98b2645cc1516c9e7",
+  "sourceRef": "refs/tags/runtime-build-v2/20261108-cf6-fixed158-r4-v3",
+  "scope": [
+    "固定158席的独立枪械成长、合法扩槽与插件组合，保持身份、等级、出生和战术编制。",
+    "普通/精英/教官名义缴获包概率5%/8%/12%，首把保护及原子裁决、配额与恢复合同。",
+    "中级插件箱无可用选项时保留真实库存引用；面板按实际写入需求进入保存通道。",
+    "CF6-M-XIX与CF6-N-PE-07更换为M134暴力版；缴获提示精确接纳cf6_type61来源。",
+    "合并上游地图、漫画开场与弹丸生命周期；重新生成章节及发布逻辑加载文件。"
+  ],
+  "tests": {
+    "offline": {
+      "checks": 28,
+      "allPassed": true
+    },
+    "host": {
+      "total": 8331,
+      "passed": 8300,
+      "skipped": 31,
+      "failed": 0,
+      "singleMonolithicRun": true,
+      "trxSha256": "647e48b1a90497fae7848a8ce370cdefb3cb28180957181144b0fe20d1c98b77"
+    },
+    "as2": {
+      "compilerDiagnostics": "0 errors / 0 warnings; fresh behavior gates",
+      "choiceRewards": 110,
+      "type61": 114,
+      "stageIntroContractsPassed": true,
+      "timedDetonation": {
+        "logic": 98,
+        "targetFilter": 17,
+        "nativeAsset": 73,
+        "gatePassed": true,
+        "successfulRawTraceRetained": false
+      },
+      "firepower": 2783,
+      "actions": 1970,
+      "nativeFixedSoldiers": 5585,
+      "nativeActionCases": 101,
+      "actualProjectileBirths": 222,
+      "actualCollisionSettlements": 407,
+      "chapterAssertions": 1594,
+      "chapterActors": 158,
+      "chapterMaps": 12,
+      "sceneCollisionRemoval": 27,
+      "sceneCollisionRemovalEvidence": {
+        "passed": 27,
+        "cases": "4/4",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "successfulRawTraceRetained": true
+      }
+    },
+    "asLoader": {
+      "bytes": 7040959,
+      "sha256": "5425c9aaf4d15d0fb8f39742c3eb0ed108f303ad831d9dcbf3574e68dd335901",
+      "freshColdPublish": true,
+      "ownership": {
+        "errors": [],
+        "files": 793,
+        "parsed": 2,
+        "cacheHits": 791,
+        "loaderClasses": 808,
+        "closureChecked": true,
+        "policy": "production",
+        "milliseconds": 5214.1971
+      }
+    },
+    "releasePreflightRepairs": {
+      "itemUse": 31,
+      "session": 42,
+      "workbenchRatchet": 68,
+      "releaseTreeAuditErrors": 0,
+      "releaseTreeAuditWarnings": 0,
+      "itemUseChannelLines": 269,
+      "splitThresholdUnchanged": 280
+    }
+  },
+  "mergeValidationRepairs": [
+    {
+      "scope": "test_only",
+      "issue": "延时爆炸资源测试仍硬编码旧1秒与普通手雷，且独立加载lady后缺少单位榴弹的共享库场景。",
+      "resolution": "读取真实InfoLoader配置，使用受治理的共享RSL测试宿主和空场景，继续验证到时、碰撞优先、四枚子弹、覆盖及转场取消；未改游戏数值。",
+      "failedAttemptsRetained": 3
+    },
+    {
+      "scope": "test_only",
+      "issue": "章节断言把装备后HP与兵种基础HP比较，遗漏13名双持T181S的原有负生命属性。",
+      "resolution": "分别核验基础成长和真实BaseItem装备HP投影，保留T181S原有代价。",
+      "failedActors": 13
+    },
+    {
+      "scope": "tool_environment",
+      "issue": "连续多套真实Flash测试后，CS6内存不足，第一次publish留下无效SWF。",
+      "resolution": "SWF结构门拒绝产物，保留失败文件与诊断；正常退出所有本轮拥有的宿主后冷启动重新发布。"
+    },
+    {
+      "scope": "compiler_environment",
+      "issue": "The first cold collision-suite compilation exited without terminal evidence.",
+      "resolution": "Archived the exact marker and partial SWF, confirmed editor/tasks quiet and scratch restored, reviewed stable evidence, cleared only the exact-owned marker and retried through the canonical runner after editor stabilization. The failed attempt remains failed."
+    }
+  ],
+  "boundaries": {
+    "machinegunSustainedFireImplemented": false,
+    "wingsElementalSpecializationImplemented": false,
+    "groundWeaponPickupsImplemented": false,
+    "lootPresentation": "持久奖励暂存及缴获提示；没有新增地面装备或防具掉落。",
+    "allLevelGapCompensationProvenSufficient": false,
+    "mergedFullHumanChapterPlaythrough": false,
+    "historicalColdPersistence": "已验收R4的16进程冷读回留作历史证据，不冒称当前合并二进制的冷读结果。",
+    "formalDeploymentClaim": false,
+    "formalDeploymentAuthority": "部署事实与身份读取config/build/runtime-release-consensus.json及runtime/cf7-runtime-manifest.tsv。"
+  },
+  "upstreamDeltaAfterBehaviorTests": {
+    "paths": [
+      "data/environment/scene_environment.xml",
+      "flashswf/levels/地图-研究所接待处.fla",
+      "flashswf/levels/地图-研究所接待处.swf"
+    ],
+    "scope": "外交地图与环境数据；没有AS2或C#行为代码变更。",
+    "newMapHumanPlaythrough": false,
+    "additionalRuntimeChange": {
+      "commit": "74d7f896323a95a51a32836a19cbe18153c25614",
+      "scope": "SceneCollisionManager explicit MovieClip removal and root background helper; garage door/background assets.",
+      "runtimeNativeTests": {
+        "passed": 27,
+        "cases": "4/4",
+        "staticChecks": 35
+      },
+      "sourceFixtureFix": "Update the existing focused runner sentinel and wildcard import; add six actual hit-geometry removal checks.",
+      "actualNewGarageDoorPlaythrough": false
+    },
+    "additionalPaths": [
+      "data/stages/基地车库/据点M.xml",
+      "flashswf/backgrounds/据点M-控制室.fla",
+      "flashswf/backgrounds/据点M-控制室.swf",
+      "flashswf/movies/竖直闸门.fla",
+      "flashswf/movies/竖直闸门.swf",
+      "scripts/asLoader - 副本.swf",
+      "scripts/类定义/org/flashNight/arki/scene/SceneCollisionManager.as",
+      "scripts/逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as",
+      "sounds/export/特效/闸门开启.mp3"
+    ],
+    "additionalMusicResources": {
+      "commit": "75e60b0c41319b81d24773f98b2645cc1516c9e7",
+      "scope": "Two music-only commits and BGM list; no additional behavior-code change.",
+      "bgmXmlParsed": true,
+      "humanListeningAcceptance": false
+    }
+  },
+  "supersedesUnpromotedSourceRef": "refs/tags/runtime-build-v2/20261107-cf6-fixed158-r4-v1",
+  "releasePreflightRepairs": [
+    {
+      "scope": "existing_web_modules",
+      "issue": "Item-use integration exceeded its existing 280-line split threshold.",
+      "resolution": "Cooldown readiness counting and cooldown-only candidate blocking now belong to the existing cooldown module; transaction orchestration stays in the item-use channel. No new module or budget increase."
+    },
+    {
+      "scope": "receiver_input_normalization",
+      "issue": "The existing formal checkout retained CRLF in the medium gun-mod XML while the committed input and its LF attribute were canonical. XML text was identical; only raw source SHA and aggregate provenance differed.",
+      "resolution": "Preserve the original bytes, restore the receiver input to exact Git bytes and verify the existing material dictionary. No material, mod, dictionary entries or data hash changed; remove the redundant newly added LF rule."
+    }
+  ]
+}

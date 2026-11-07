@@ -121,7 +121,7 @@ bash scripts/compile_test.sh -TimeoutSeconds 120
 
 可能卡死的只读测试可显式加 `-OwnedReadOnlyHost`。前置是无既有 Flash；用既有 `FlashCS6Task` 创建新宿主，绑定 PID/创建时刻/任务 executable，并由新鲜 JSFL 回执证明文档仅为可丢弃的 TestLoader。文档 open/new/切换监视器发现其他或未保存文档即写 taint，拒绝自动结束宿主。该宿主运行期间不要用于其他编辑工作。正常/失败收尾均只停止这次任务拥有的宿主；必须确认实际进程消失、trigger 与 lifecycle 任务空闲、迟到产物稳定、原件恢复及 marker exact-match，才能清本轮闸。不会盲重放，也不结束原先用户编辑器。
 
-确需给独占测试腾出宿主时，`-QuitOwnedTestHost` 仅接受空编辑器或本轮可丢弃 TestLoader；其他文档一律拒绝。先保全 TestLoader 磁盘源及 scratch 原件。第一轮仅关闭目标，下一轮空编辑器才退出，另核实际进程退出；不能把退出请求回执当作退出。普通发布不带这些选项。
+确需给独占测试腾出宿主时，`-QuitOwnedTestHost` 仅接受空编辑器、可丢弃 TestLoader，以及 `compile_action.jsfl` 明列的五类CF6生成测试宿主；须属于本轮且已保全磁盘源及scratch原件。使用精确路径，不按前缀或通配放行其他、未保存或美术文档。inspect/output独占租约仍仅接受TestLoader。第一轮仅关闭目标，下一轮空编辑器才退出，另核实际进程退出；不能把退出请求回执当作退出。普通发布不带这些选项。
 
 协议回归：`node tools/test-flash-compile-jsfl.js`、`powershell -File tools/test-testplayer-control.ps1`、`powershell -File tools/test-focused-testloader-trace.ps1`。独占路径的真实新宿主/文档事件/进程退出仍由 focused 运行证明；只读例外不改变上文一般未知写与人工恢复合同。
 
@@ -236,6 +236,8 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
   修复后用 IDE 的"另存为 UTF-8 with BOM"重写一次，或用 `printf '\xef\xbb\xbf'` 前置后再编译
 
 ### 重启后仍停在导出 SWF，或完整类编译发生原生异常
+
+专项 `testMovie` 结束不等于测试播放器已退出。涉及 `SaveManager/ServerManager` 的夹具可能在断言终态后继续发现端口、连接正在试玩的 Host；这类夹具须与真实试玩隔离。已确认本轮终态并还原 scratch 后，先用 `compile_test.ps1 -StopTestPlayers` 取得两阶段回执；大包发布需要干净宿主时，再用 `-QuitOwnedTestHost` 核对只剩本轮 TestLoader/空编辑器并确认实际退出。新宿主应先取得一次无播放器的 JSFL 回执，再发布；进程存在本身不证明编辑器已就绪。共享宿主有其他或未保存文档时继续保持关闭闸，不能结束整个进程。
 
 先保留本轮输入、Output、Compiler、未完成SWF及未知marker，区分仍在消耗CPU的编译与长期无进展的导出。检查本机 `%LOCALAPPDATA%\Adobe\Flash CS6\<语言>\Configuration\Classes\aso` 是否存在与故障时间对应的0字节类缓存；重启不会重建这些磁盘缓存。空缓存是排查线索，不能仅凭它认定故障原因。
 

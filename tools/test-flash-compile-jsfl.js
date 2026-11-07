@@ -83,6 +83,8 @@ function runHarness(options = {}) {
     document.pathURI = `${projectURI}/scripts/TestLoader/TestLoader.xfl`;
   }
 
+  if (options.focusedDocument) { document.name = path.basename(options.focusedDocument); document.pathURI = `${projectURI}/scripts/${options.focusedDocument}`; }
+
   const foreignDocument = {
     name: "素材库-物品技能图标.xfl*",
     pathURI: `${projectURI}/flashswf/arts/素材库-物品技能图标.xfl`,
@@ -345,3 +347,18 @@ function testOwnedOutputClearPreservesEvidenceAndPlayer() {
 }
 testOwnedOutputClearPreservesEvidenceAndPlayer();
 console.log("[flash-compile-jsfl] ok 11/11");
+
+function testFocusedConsumerExitKeepsOtherOperationsNarrow() {
+  const nonce="a".repeat(32);
+  for(const focusedDocument of ["Cf6FirepowerProjectileHost/Cf6FirepowerProjectileHost.xfl","tmp-cf6-loot-cold-host/Cf6SoldierLootColdProbe.xfl"]){
+    const exited=runHarness({controlRequest:`quit_owned_test_host\n${nonce}`,focusedDocument});
+    assert.equal(exited.closed.length,1);assert.deepEqual(exited.quitCalls,[]);
+    assert.match(exited.files.get(exited.controlReceipt),/owned=true\nexit_requested=false$/);
+    const inspected=runHarness({controlRequest:`inspect_owned_test_host\n${nonce}`,focusedDocument});
+    assert.match(inspected.files.get(inspected.controlReceipt),/Foreign or unsaved document blocks/);
+    const foreign=runHarness({controlRequest:`quit_owned_test_host\n${nonce}`,focusedDocument,includeForeignDocument:true});
+    assert.equal(foreign.closed.length,0);assert.equal(foreign.quitCalls.length,0);
+  }
+}
+testFocusedConsumerExitKeepsOtherOperationsNarrow();
+console.log("[OK] finite generated CF6 consumers may exit; inspection and foreign-document boundaries remain closed");

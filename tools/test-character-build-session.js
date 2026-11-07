@@ -1414,4 +1414,36 @@ test('uncertain full-projection outcome never receives automatic restart authori
     assert.strictEqual(retry.payload.reconcileAfterCallId,fixture.messages[1].callId);
 });
 
+test('item-use compensation rebases the character revision before finalize without replay', () => {
+    const fixture=createFixture();openClean(fixture);
+    const ItemUseChannel=require('../launcher/web/modules/character-build/character-build-item-use-channel.js');
+    let projections=0;
+    const controller={_ports:{},_view:{},_session:fixture.session,
+        _candidateCache:{lease:'old'},_applySnapshot:()=>{projections++;}};
+    ItemUseChannel.install(controller);
+    controller._itemUseSettled({success:false,error:'no_eligible_choices'},false,{command:'stashOpen'});
+    const read=fixture.messages[1];
+    assert.strictEqual(read.cmd,'snapshot');
+    assert.strictEqual(read.payload.expectedLoadoutRevision,undefined);
+    assert.strictEqual(fixture.mux.handleResponse(responseFor(read,{
+        payload:projection(),loadoutRevision:4,liveRevision:3,
+        drugRevision:3,liveRefreshDirty:true
+    })),true);
+    assert.strictEqual(projections,1);
+    assert.strictEqual(fixture.session.debugState().loadoutRevision,4);
+    assert.strictEqual(fixture.session.debugState().liveRefreshDirty,true);
+    let finalized=false;
+    fixture.session.finalize((_,accepted)=>{finalized=accepted;});
+    const close=fixture.messages[2];
+    assert.strictEqual(close.cmd,'finalize');
+    assert.strictEqual(close.payload.expectedLoadoutRevision,4);
+    fixture.mux.handleResponse(responseFor(close,{
+        writeEpoch:1,loadoutRevision:4,liveRevision:4,
+        drugRevision:3,closed:true,active:false,liveChanged:true,
+        persistence:{success:true,changed:false}
+    }));
+    assert.strictEqual(finalized,true);
+    assert.deepStrictEqual(fixture.messages.map(message=>message.cmd),['snapshot','snapshot','finalize']);
+});
+
 process.stdout.write('Character-build session ' + passed + '/' + passed + ' passed\n');

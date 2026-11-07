@@ -1,6 +1,7 @@
 ﻿_root.cf6FixedNativeRunId="__FOCUSED_RUN_ID__";
 _root.cf6NativeDomain="cf6-fixed-projectiles";
 trace("FocusedTestRunId cf6-fixed-projectiles Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.Cf6SoldierFirepowerTest.runAllTests();
 org.flashNight.arki.scene.Cf6FixedActionsTest.runAllTests();
 _root.cf6FixedProjectileReady=function():Void {
     org.flashNight.arki.scene.Cf6FixedSoldierNativeTest.runAllTests();

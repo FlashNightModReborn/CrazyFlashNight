@@ -29,6 +29,24 @@ namespace CF7Launcher.Tests.Tasks
             return payload;
         }
 
+        [Theory]
+        [InlineData("equip", "TTI Benelli M4", 1L)]
+        [InlineData("equip", "Glock18战术版", 2L)]
+        [InlineData("material", "透镜", 1L)]
+        [InlineData("item", "00号鹿弹", 1L)]
+        public void TryParse_Cf6CommittedCapture_AcceptsExactSource(string kind, string name, long count)
+        {
+            var payload = VersionOnePayload(kind, name, count, "cf6_type61");
+            payload["reason"] = "soldier_capture";
+            Assert.True(LootFeedTask.TryParsePayload(payload,
+                out _, out _, out var actualCount, out var source, out _));
+            Assert.Equal(count, actualCount);
+            Assert.Equal("cf6_type61", source);
+            payload["source"] = "cf6_type61_unregistered";
+            Assert.False(LootFeedTask.TryParsePayload(payload,
+                out _, out _, out _, out _, out _));
+        }
+
         [Fact]
         public void TryParse_ValidPayload_PassesThrough()
         {

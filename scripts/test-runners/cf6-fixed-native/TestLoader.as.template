@@ -1,4 +1,5 @@
 ﻿trace("FocusedTestRunId cf6-fixed-native Start: __FOCUSED_RUN_ID__");
 _root.cf6FixedNativeRunId="__FOCUSED_RUN_ID__";
+org.flashNight.arki.scene.Cf6SoldierFirepowerTest.runAllTests();
 org.flashNight.arki.scene.Cf6FixedActionsTest.runAllTests();
 org.flashNight.arki.scene.Cf6FixedSoldierNativeTest.runAllTests();

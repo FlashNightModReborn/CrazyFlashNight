@@ -80,7 +80,11 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
             && packet.items.length==0 && packet.consumables.length==0
             && (packet.roll.gateEvaluated?packet.roll.reason=="roll_miss":packet.roll.reason=="quota_exhausted" || packet.roll.reason=="ineligible");
         if(packet.state!="DECIDED_HIT" && packet.state!="COMMIT_PENDING" && packet.state!="OWNED")return false;
-        if(!packet.roll.hit || !packet.roll.gateEvaluated || packet.roll.reason!="roll_hit")return false;
+        if(!packet.roll.hit || !packet.roll.gateEvaluated)return false;
+        if(packet.roll.reason=="first_weapon_guarantee"){
+            if(kind!="longgun" || typeof packet.roll.naturalHit!="boolean"
+                || !whole(packet.roll.guaranteeAfter,1,158) || !whole(packet.roll.eligibleOrdinal,packet.roll.guaranteeAfter,158))return false;
+        }else if(packet.roll.reason!="roll_hit")return false;
         if(kind=="longgun" && packet.items.length!=1 || kind=="sidearm_pair" && packet.items.length!=2
             || kind=="mod_material" && (packet.items.length!=1 || packet.consumables.length!=0))return false;
         if(kind!="longgun" && kind!="sidearm_pair" && kind!="mod_material")return false;
@@ -103,18 +107,19 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
         if(ledger==null || ledger.v!==2 || typeof ledger.rosterVersion!="string" || typeof ledger.policyVersion!="string"
             || ledger.records==null || ledger.records instanceof Array || ledger.prd==null || ledger.prd instanceof Array
             || !whole(ledger.sequence,0,10000))return false;
-        var packages:Number=0,pairs:Number=0,weapons:Number=0,materials:Number=0,records:Number=0,sources:Object={};
+        var packages:Number=0,pairs:Number=0,weapons:Number=0,materials:Number=0,records:Number=0,guarantees:Number=0,sources:Object={};
         for(var key:String in ledger.records){
             var packet:Object=ledger.records[key];records++;
             if(!validPacket(packet) || key!=="u."+packet.unitIdentity || sources["$"+packet.sourceKey])return false;
             sources["$"+packet.sourceKey]=true;
+            if(packet.roll.reason=="first_weapon_guarantee")guarantees++;
             if(packet.kind=="none")continue;
             packages++;
             if(packet.kind=="sidearm_pair"){pairs++;weapons+=2;}
             if(packet.kind=="longgun")weapons++;
             if(packet.kind=="mod_material")materials++;
         }
-        return records<=158 && packages<=6 && pairs<=2 && weapons<=8 && materials<=2
+        return records<=158 && guarantees<=1 && packages<=6 && pairs<=2 && weapons<=8 && materials<=2
             && ledger.packages===packages && ledger.pairs===pairs && ledger.weaponInstances===weapons && ledger.materials===materials;
     }
     public static function available(ledger:Object,snapshot:Object,weights:Object):Object {
@@ -125,6 +130,18 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
         if(ledger.materials<2 && typeof snapshot.material=="string" && snapshot.material!="")result.mod_material=weights.mod_material;
         if(!whole(result.longgun,0,1000) || !whole(result.sidearm_pair,0,1000) || !whole(result.mod_material,0,1000))return null;
         result.total=result.longgun+result.sidearm_pair+result.mod_material;return result;
+    }
+    /** Count only frozen, evaluated deaths; cancelled/ineligible identities are not pity progress. */
+    public static function eligibleDeaths(ledger:Object):Number {
+        var count:Number=0;
+        for(var key:String in ledger.records)if(ledger.records[key].roll.gateEvaluated===true)count++;
+        return count;
+    }
+    public static function firstWeaponDue(ledger:Object,pool:Object,policy:Object,eligible:Boolean):Boolean {
+        if(policy.firstWeaponGuarantee==null)return false;
+        var threshold=policy.firstWeaponGuarantee.afterEligibleDeaths;
+        return eligible && whole(threshold,1,158) && ledger.weaponInstances===0 && pool.longgun>0
+            && eligibleDeaths(ledger)+1>=threshold;
     }
     public static function choose(weights:Object,randomValue:Number):String {
         if(weights==null || !(weights.total>0) || !isFinite(randomValue) || randomValue<0 || randomValue>=1)return "none";
@@ -176,8 +193,11 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
             roll:PersistedSnapshot.cloneData(roll)};
     }
     public static function reserve(ledger:Object,packet:Object):Boolean {
-        if(!validPacket(packet) || ledger.records["u."+packet.unitIdentity]!==undefined)return false;
+        if(ledger==null || ledger.records==null || ledger.records instanceof Array
+            || !validPacket(packet) || ledger.records["u."+packet.unitIdentity]!==undefined)return false;
         for(var key:String in ledger.records)if(ledger.records[key].sourceKey===packet.sourceKey)return false;
+        if(packet.roll.reason=="first_weapon_guarantee" && (ledger.weaponInstances!==0
+            || packet.roll.eligibleOrdinal!==eligibleDeaths(ledger)+1))return false;
         if(packet.kind!="none" && (ledger.packages>=6
             || packet.kind=="sidearm_pair" && (ledger.pairs>=2 || ledger.weaponInstances>6)
             || packet.kind=="longgun" && ledger.weaponInstances>=8

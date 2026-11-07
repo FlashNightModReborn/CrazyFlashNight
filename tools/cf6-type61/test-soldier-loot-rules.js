@@ -185,3 +185,29 @@ test('cold normalization rejects future schema and malformed nonempty objects wi
   l.v=99;assert.equal(rules.normalizeLedger(l).ok,false);
   assert.equal(rules.normalizeSaveData(data({ext:{bookRun:{oldField:17}}})),true);
 });
+
+test('first-weapon guard respects eligibility, existing captures, packet availability and typed threshold',()=>{
+  const ledger=rules.create('fixed158-v2','candidate2');
+  for(let i=0;i<7;i++)assert.equal(rules.reserve(ledger,packet('none','miss'+i)),true);
+  const policy=data({firstWeaponGuarantee:{afterEligibleDeaths:8}}),pool=rules.available(ledger,snapshot(),weights);
+  assert.equal(rules.firstWeaponDue(ledger,pool,policy,true),true);
+  assert.equal(rules.firstWeaponDue(ledger,pool,policy,false),false);
+  pool.longgun=0;assert.equal(rules.firstWeaponDue(ledger,pool,policy,true),false);pool.longgun=45;
+  for(const threshold of [0,'8',8.5,159]){policy.firstWeaponGuarantee.afterEligibleDeaths=threshold;assert.equal(rules.firstWeaponDue(ledger,pool,policy,true),false);}
+  policy.firstWeaponGuarantee.afterEligibleDeaths=8;ledger.weaponInstances=1;
+  assert.equal(rules.firstWeaponDue(ledger,pool,policy,true),false);
+});
+test('guarantee packet requires complete evidence and exact quota reservation ordinal',()=>{
+  const ledger=rules.create('fixed158-v2','candidate2');for(let i=0;i<7;i++)rules.reserve(ledger,packet('none','m'+i));
+  const p=packet('longgun','guarantee');p.roll.reason='first_weapon_guarantee';
+  assert.equal(rules.validPacket(p),false);Object.assign(p.roll,{naturalHit:false,guaranteeAfter:8,eligibleOrdinal:8});
+  assert.equal(rules.validPacket(p),true);p.roll.eligibleOrdinal=9;assert.equal(rules.reserve(ledger,p),false);
+  p.roll.eligibleOrdinal=8;assert.equal(rules.reserve(ledger,p),true);assert.equal(rules.validLedger(ledger),true);
+  const duplicate=packet('longgun','other');Object.assign(duplicate.roll,{reason:'first_weapon_guarantee',naturalHit:false,guaranteeAfter:8,eligibleOrdinal:9});
+  assert.equal(rules.reserve(ledger,duplicate),false);assert.equal(ledger.packages,1);assert.equal(ledger.weaponInstances,1);
+});
+
+test('missing ledger cannot silently reserve a valid packet in AVM1',()=>{
+  assert.equal(rules.reserve(null,packet('longgun','missing-ledger')),false);
+  assert.equal(rules.reserve(data({}),packet('longgun','missing-records')),false);
+});

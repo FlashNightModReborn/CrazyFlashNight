@@ -145,7 +145,15 @@ class org.flashNight.arki.scene.Cf6FixedChapterNativeTest {
         check(Mover.isPointValid(pt.x,pt.y),"native collision clear at birth "+p.cf6UnitIdentity);
         var numeric:Object=_root.敌人属性表[u.兵种];
         var hp:Number=Math.floor(numeric.hp_min+(numeric.hp_max-numeric.hp_min)/59*u.等级)*u.__cf6DifficultyScale;
-        check(isFinite(hp) && hp>100 && u.hp满血值===hp,"actual level and difficulty "+p.cf6UnitIdentity+" hp="+u.hp满血值+" expected="+hp);
+        check(isFinite(hp) && hp>100 && u.hp基本满血值===hp,"actual base level and difficulty "+p.cf6UnitIdentity+" hp="+u.hp基本满血值+" expected="+hp);
+        // T181S carries negative HP. Validate its real BaseItem inputs separately from base growth.
+        var gearHp:Number=0;var gunSlots:Array=["长枪","手枪","手枪2"];
+        for(var gi:Number=0;gi<gunSlots.length;gi++){
+            var gun:BaseItem=u[gunSlots[gi]];
+            if(gun!=null){var gunData:Object=gun.getData().data;if(gunData.hp!=undefined)gearHp+=Number(gunData.hp);}
+        }
+        var equippedHp:Number=Math.max(1,hp+gearHp);
+        check(isFinite(gearHp) && u.hp满血值===equippedHp,"actual equipment HP projection "+p.cf6UnitIdentity+" hp="+u.hp满血值+" expected="+equippedHp);
         check(u.等级===row.entry.Level && u.cf6SourceSeat===p.cf6SourceSeat,"level and original seat "+p.cf6UnitIdentity);
         if(row.wave!=undefined)check(u.cf6SpawnWave===row.wave && u.cf6SpawnEntry===row.entryIndex && u.cf6SpawnOrdinal===row.ordinal,"wave provenance "+p.cf6UnitIdentity);
         if(p.cf6UnitIdentity=="CF6-M-XX")lootActor=u;

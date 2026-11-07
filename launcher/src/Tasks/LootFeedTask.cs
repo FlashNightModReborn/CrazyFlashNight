@@ -51,7 +51,7 @@ namespace CF7Launcher.Tasks
             "item_use", "task_entry", "arena_entry", "arena_reward",
             "base_upgrade", "tavern_purchase", "vehicle_service",
             "gym_training", "appearance_service", "player_revive",
-            "npc_gift", "npc_take",
+            "npc_gift", "npc_take", "cf6_type61",
             "cheat", "system_reward", "reward_inbox", "kill", "unknown", "ally_casualty"
         };
 

@@ -1,0 +1,4911 @@
+{
+  "schema": "cf6-fixed158-loadout-plan.v1",
+  "version": "fixed158-loadout-rail-2-m134-review",
+  "status": "candidate_for_acceptance",
+  "policy": "Every compatible longgun has mandatory rail plus two functional mods. Each sidearm has one independent slot; no carbine conversion or cross-hand synergy. Existing underbarrels and action/projectile budgets are preserved.",
+  "balancing": "Keep existing actor-only compensation ceilings; recalculate complete weapon raw power and independent expected B/C. No new crit, slay, shot type, projectile count, lifecycle, skill or Nano mods.",
+  "slots": {
+    "CF6-C-WA-P-01/primary": {
+      "identity": {
+        "name": "M60E3",
+        "form": "data",
+        "tier": null,
+        "enhancement": 7
+      },
+      "before": [
+        "水冷机构"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "水冷机构",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-P-02/primary": {
+      "identity": {
+        "name": "HKSL8GOLD",
+        "form": "data",
+        "tier": null,
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-P-03/primary": {
+      "identity": {
+        "name": "M4A1",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 7
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-P-04/primary": {
+      "identity": {
+        "name": "TTI Benelli M4",
+        "form": "data",
+        "tier": null,
+        "enhancement": 7
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-P-05/primary": {
+      "identity": {
+        "name": "M4A1科技白",
+        "form": "data",
+        "tier": null,
+        "enhancement": 7
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-P-06/primary": {
+      "identity": {
+        "name": "Noveske N4 突击步枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 7
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-K-01/primary": {
+      "identity": {
+        "name": "ValmetM78",
+        "form": "data",
+        "tier": null,
+        "enhancement": 7
+      },
+      "before": [
+        "水冷机构"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "水冷机构",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-K-02/primary": {
+      "identity": {
+        "name": "TTI Benelli M4",
+        "form": "data",
+        "tier": null,
+        "enhancement": 7
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-K-03/primary": {
+      "identity": {
+        "name": "M60E3",
+        "form": "data",
+        "tier": null,
+        "enhancement": 7
+      },
+      "before": [
+        "水冷机构"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "水冷机构",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-K-04/primary": {
+      "identity": {
+        "name": "炎魔枪B100",
+        "form": "data",
+        "tier": null,
+        "enhancement": 7
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-SW-10/primary": {
+      "identity": {
+        "name": "EPHI破狭者套件",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-10/secondary1": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-10/secondary2": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-C-WA-K-05/primary": {
+      "identity": {
+        "name": "诺亚卫士科技步枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-K-06/primary": {
+      "identity": {
+        "name": "SVD",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-Q-01/primary": {
+      "identity": {
+        "name": "AUG",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 8
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-Q-02/primary": {
+      "identity": {
+        "name": "XM1014",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 8
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-Q-03/primary": {
+      "identity": {
+        "name": "SAI GRY 幽灵",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-Q-04/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-Q-05/primary": {
+      "identity": {
+        "name": "XM1014",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-Q-06/primary": {
+      "identity": {
+        "name": "XM7 NGSW R",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-R-01/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-R-02/primary": {
+      "identity": {
+        "name": "Sniper",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-R-03/primary": {
+      "identity": {
+        "name": "炎魔枪B100",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-R-04/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-R-05/primary": {
+      "identity": {
+        "name": "AK74",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-WA-R-06/primary": {
+      "identity": {
+        "name": "诺亚卫士科技步枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-P-01/primary": {
+      "identity": {
+        "name": "Sniper",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-WA-01/primary": {
+      "identity": {
+        "name": "Sniper",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-01/secondary1": {
+      "identity": {
+        "name": "Glock 18",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-01/secondary2": {
+      "identity": {
+        "name": "Glock 18",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-02/primary": {
+      "identity": {
+        "name": "TTI Gen 12",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-02/secondary1": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-02/secondary2": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-03/primary": {
+      "identity": {
+        "name": "AUG",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-03/secondary1": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-03/secondary2": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-04/primary": {
+      "identity": {
+        "name": "M60E3",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8
+      },
+      "before": [
+        "水冷机构"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "水冷机构",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-04/secondary1": {
+      "identity": {
+        "name": "Glock 18",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-04/secondary2": {
+      "identity": {
+        "name": "Glock 18",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 7
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-C-CU-P-02/primary": {
+      "identity": {
+        "name": "SAI GRY 幽灵",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-P-03/primary": {
+      "identity": {
+        "name": "M60E3",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "水冷机构"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "水冷机构",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-P-04/primary": {
+      "identity": {
+        "name": "Sniper",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-P-05/primary": {
+      "identity": {
+        "name": "XM1014",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-P-06/primary": {
+      "identity": {
+        "name": "EPHI破狭者套件",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-K-01/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-K-02/primary": {
+      "identity": {
+        "name": "SVD",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-WA-05/primary": {
+      "identity": {
+        "name": "XM7 NGSW R",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-05/secondary1": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-05/secondary2": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-C-CU-K-03/primary": {
+      "identity": {
+        "name": "炎魔枪B100",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-K-04/primary": {
+      "identity": {
+        "name": "AA12丧尸",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-K-05/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-K-06/primary": {
+      "identity": {
+        "name": "AK74",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-Q-01/primary": {
+      "identity": {
+        "name": "Sniper",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-WA-06/primary": {
+      "identity": {
+        "name": "SVD",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-06/secondary1": {
+      "identity": {
+        "name": "Glock 18",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-06/secondary2": {
+      "identity": {
+        "name": "Glock 18",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-C-CU-Q-02/primary": {
+      "identity": {
+        "name": "诺亚卫士科技步枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-Q-03/primary": {
+      "identity": {
+        "name": "TTI Gen 12",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-Q-04/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-Q-05/primary": {
+      "identity": {
+        "name": "m14",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-Q-06/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-R-01/primary": {
+      "identity": {
+        "name": "AA12丧尸",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-R-02/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-WA-07/primary": {
+      "identity": {
+        "name": "SVD",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-07/secondary1": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-07/secondary2": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-C-CU-R-03/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-WA-08/primary": {
+      "identity": {
+        "name": "M4A1",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-08/secondary1": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-08/secondary2": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-C-CU-R-04/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-R-05/primary": {
+      "identity": {
+        "name": "m14",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-CU-R-06/primary": {
+      "identity": {
+        "name": "TTI Gen 12",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-P-01/primary": {
+      "identity": {
+        "name": "AUG",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-P-02/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-P-03/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-P-04/primary": {
+      "identity": {
+        "name": "m14",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-P-05/primary": {
+      "identity": {
+        "name": "AUG",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-P-06/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-K-01/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-K-02/primary": {
+      "identity": {
+        "name": "AA12丧尸",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-K-03/primary": {
+      "identity": {
+        "name": "SVD",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-K-04/primary": {
+      "identity": {
+        "name": "M4A1",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-K-05/primary": {
+      "identity": {
+        "name": "M4A1",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-WA-09/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-09/secondary1": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-09/secondary2": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-M-VII/primary": {
+      "identity": {
+        "name": "XM1014",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 10
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "instructor"
+    },
+    "CF6-M-VII/secondary1": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "instructor"
+    },
+    "CF6-M-VII/secondary2": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XII/primary": {
+      "identity": {
+        "name": "中国88式狙击步枪",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 10
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XII/secondary1": {
+      "identity": {
+        "name": "Glock18战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XII/secondary2": {
+      "identity": {
+        "name": "Glock18战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-C-SW-K-06/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 10
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-Q-01/primary": {
+      "identity": {
+        "name": "MG42战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-Q-02/primary": {
+      "identity": {
+        "name": "M82A1加强版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-Q-03/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 10
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-Q-04/primary": {
+      "identity": {
+        "name": "TTI Gen 12",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-Q-05/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 10
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-Q-06/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 10
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-WA-10/primary": {
+      "identity": {
+        "name": "AA12丧尸",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-10/secondary1": {
+      "identity": {
+        "name": "MP7极品战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-WA-10/secondary2": {
+      "identity": {
+        "name": "MP7极品战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-C-SW-R-01/primary": {
+      "identity": {
+        "name": "PKM战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-CU-01/primary": {
+      "identity": {
+        "name": "SVD",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 10
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-01/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-01/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-02/primary": {
+      "identity": {
+        "name": "雷明登870警用型",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [
+        "霰弹枪口收束器",
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-02/secondary1": {
+      "identity": {
+        "name": "Beretta90TWO",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-02/secondary2": {
+      "identity": {
+        "name": "Beretta90TWO",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-C-SW-R-02/primary": {
+      "identity": {
+        "name": "MG42战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-R-03/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 10
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-R-04/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 10
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-R-05/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-SW-R-06/primary": {
+      "identity": {
+        "name": "m14",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 10
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-P-01/primary": {
+      "identity": {
+        "name": "XM1014",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 10
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-CU-03/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 10
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-03/secondary1": {
+      "identity": {
+        "name": "Glock18战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-03/secondary2": {
+      "identity": {
+        "name": "Glock18战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-04/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "弹簧",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-04/secondary1": {
+      "identity": {
+        "name": "MP7极品战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-04/secondary2": {
+      "identity": {
+        "name": "MP7极品战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-M-IV/primary": {
+      "identity": {
+        "name": "PKM战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-IV/secondary1": {
+      "identity": {
+        "name": "Beretta90TWO",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-IV/secondary2": {
+      "identity": {
+        "name": "Beretta90TWO",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-N-CU-05/primary": {
+      "identity": {
+        "name": "MG42战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-05/secondary1": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-05/secondary2": {
+      "identity": {
+        "name": "MP40",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-06/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 10
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-06/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-06/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-C-PE-P-02/primary": {
+      "identity": {
+        "name": "CAR冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-P-03/primary": {
+      "identity": {
+        "name": "PKM战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-P-04/primary": {
+      "identity": {
+        "name": "SVD",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 10
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-P-05/primary": {
+      "identity": {
+        "name": "TTI Gen 12",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-P-06/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 10
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-K-01/primary": {
+      "identity": {
+        "name": "HK416",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 10
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-K-02/primary": {
+      "identity": {
+        "name": "PKM战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-K-03/primary": {
+      "identity": {
+        "name": "M82A1加强版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-CU-07/primary": {
+      "identity": {
+        "name": "黄金QBZ",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-07/secondary1": {
+      "identity": {
+        "name": "Glock18战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-07/secondary2": {
+      "identity": {
+        "name": "Glock18战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-M-XV/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XV/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XV/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 10
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "instructor"
+    },
+    "CF6-C-PE-K-04/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-K-05/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "ordinary"
+    },
+    "CF6-M-XVI/primary": {
+      "identity": {
+        "name": "MG42战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XVI/secondary1": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XVI/secondary2": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-C-PE-K-06/primary": {
+      "identity": {
+        "name": "PKM战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-CU-08/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-08/secondary1": {
+      "identity": {
+        "name": "战术-QBZ-192",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-08/secondary2": {
+      "identity": {
+        "name": "战术-QBZ-192",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-C-PE-Q-01/primary": {
+      "identity": {
+        "name": "中国88式狙击步枪",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-Q-02/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-Q-03/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-Q-04/primary": {
+      "identity": {
+        "name": "MG42战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-Q-05/primary": {
+      "identity": {
+        "name": "中国88式狙击步枪",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-Q-06/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-R-01/primary": {
+      "identity": {
+        "name": "XM1014",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 12
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-CU-09/primary": {
+      "identity": {
+        "name": "能量狙击枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-09/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-09/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-10/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "弹簧",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-10/secondary1": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-N-CU-10/secondary2": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-C-PE-R-02/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "ordinary"
+    },
+    "CF6-M-XIII/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XIII/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XIII/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-C-PE-R-03/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "line",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-R-04/primary": {
+      "identity": {
+        "name": "M82A1加强版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-R-05/primary": {
+      "identity": {
+        "name": "XM1014",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 12
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "ordinary"
+    },
+    "CF6-C-PE-R-06/primary": {
+      "identity": {
+        "name": "PKM战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "suppress",
+      "roleClass": "ordinary"
+    },
+    "CF6-N-SW-01/primary": {
+      "identity": {
+        "name": "M82A1加强版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-01/secondary1": {
+      "identity": {
+        "name": "Glock18战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-01/secondary2": {
+      "identity": {
+        "name": "Glock18战术版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-M-XVII/primary": {
+      "identity": {
+        "name": "战术巴雷特",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XVII/secondary1": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XVII/secondary2": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XIX/primary": {
+      "identity": {
+        "name": "M134暴力版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "水冷机构"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "水冷机构",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XIX/secondary1": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XIX/secondary2": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-N-SW-02/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-02/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-02/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-03/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-03/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-03/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-04/primary": {
+      "identity": {
+        "name": "M82A1加强版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-04/secondary1": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-04/secondary2": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-M-XVIII/primary": {
+      "identity": {
+        "name": "FSC7",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XVIII/secondary1": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XVIII/secondary2": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-N-SW-05/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "弹簧",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-05/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-05/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-M-X/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "战术握把"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "instructor"
+    },
+    "CF6-M-X/secondary1": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "instructor"
+    },
+    "CF6-M-X/secondary2": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "instructor"
+    },
+    "CF6-N-SW-06/primary": {
+      "identity": {
+        "name": "MG42",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "水冷机构",
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "水冷机构",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-06/secondary1": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-06/secondary2": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-M-VIII/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "instructor"
+    },
+    "CF6-M-VIII/secondary1": {
+      "identity": {
+        "name": "战术-QBZ-192",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "instructor"
+    },
+    "CF6-M-VIII/secondary2": {
+      "identity": {
+        "name": "战术-QBZ-192",
+        "form": "data",
+        "tier": null,
+        "enhancement": 11
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XX/primary": {
+      "identity": {
+        "name": "G1111",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XX/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XX/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-M-V/primary": {
+      "identity": {
+        "name": "G1111",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-V/secondary1": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-V/secondary2": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-N-SW-07/primary": {
+      "identity": {
+        "name": "众神之力",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-07/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-07/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-M-0/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "instructor"
+    },
+    "CF6-M-0/secondary1": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "instructor"
+    },
+    "CF6-M-0/secondary2": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "instructor"
+    },
+    "CF6-N-SW-08/primary": {
+      "identity": {
+        "name": "M82A1加强版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-08/secondary1": {
+      "identity": {
+        "name": "远古诛神短枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-08/secondary2": {
+      "identity": {
+        "name": "远古诛神短枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-M-XIV/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "M203榴弹发射器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "M203榴弹发射器",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XIV/secondary1": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XIV/secondary2": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-N-SW-09/primary": {
+      "identity": {
+        "name": "远古诛神枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-09/secondary1": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-SW-09/secondary2": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-M-XI/primary": {
+      "identity": {
+        "name": "量子能量枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XI/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XI/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "instructor"
+    },
+    "CF6-N-PE-01/primary": {
+      "identity": {
+        "name": "远古诛神枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "弹簧",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-01/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-01/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-M-VI/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-VI/secondary1": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-VI/secondary2": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-N-PE-02/primary": {
+      "identity": {
+        "name": "m14",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 13
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-02/secondary1": {
+      "identity": {
+        "name": "远古诛神短枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-02/secondary2": {
+      "identity": {
+        "name": "远古诛神短枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-M-I/primary": {
+      "identity": {
+        "name": "众神之力",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "instructor"
+    },
+    "CF6-M-I/secondary1": {
+      "identity": {
+        "name": "改造式诺亚科技冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "instructor"
+    },
+    "CF6-M-I/secondary2": {
+      "identity": {
+        "name": "改造式诺亚科技冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "instructor"
+    },
+    "CF6-N-PE-03/primary": {
+      "identity": {
+        "name": "紫色幻想",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-03/secondary1": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-03/secondary2": {
+      "identity": {
+        "name": "T181S",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-04/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-04/secondary1": {
+      "identity": {
+        "name": "远古诛神短枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-04/secondary2": {
+      "identity": {
+        "name": "远古诛神短枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "elite"
+    },
+    "CF6-M-III/primary": {
+      "identity": {
+        "name": "诛神枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-III/secondary1": {
+      "identity": {
+        "name": "远古诛神短枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-III/secondary2": {
+      "identity": {
+        "name": "远古诛神短枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "instructor"
+    },
+    "CF6-M-IX/primary": {
+      "identity": {
+        "name": "M82A1加强版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-M-IX/secondary1": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-M-IX/secondary2": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "precision",
+      "roleClass": "instructor"
+    },
+    "CF6-N-PE-05/primary": {
+      "identity": {
+        "name": "远古诛神枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "战术握把",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-05/secondary1": {
+      "identity": {
+        "name": "改造式诺亚科技冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-05/secondary2": {
+      "identity": {
+        "name": "改造式诺亚科技冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "mobile",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-06/primary": {
+      "identity": {
+        "name": "众神之力",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "霰弹枪口收束器"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "霰弹枪口收束器",
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-06/secondary1": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-06/secondary2": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "breach",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-07/primary": {
+      "identity": {
+        "name": "M134暴力版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "水冷机构"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "水冷机构",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-07/secondary1": {
+      "identity": {
+        "name": "远古诛神短枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-07/secondary2": {
+      "identity": {
+        "name": "远古诛神短枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "suppress",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-08/primary": {
+      "identity": {
+        "name": "高斯枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [],
+      "after": [
+        "战术鱼骨零件",
+        "透镜",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-08/secondary1": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-08/secondary2": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "precision",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-09/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "透镜"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-09/secondary1": {
+      "identity": {
+        "name": "改造式诺亚科技冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-09/secondary2": {
+      "identity": {
+        "name": "改造式诺亚科技冲锋枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-10/primary": {
+      "identity": {
+        "name": "远古诛神枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "强化金属管"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "弹簧",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-10/secondary1": {
+      "identity": {
+        "name": "轻量化量子能量枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [
+        "弹簧"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-N-PE-10/secondary2": {
+      "identity": {
+        "name": "轻量化量子能量枪",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "dual",
+      "roleClass": "elite"
+    },
+    "CF6-M-II/primary": {
+      "identity": {
+        "name": "战术版喷火器",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [],
+      "after": [],
+      "exception": "Factory closed modification policy",
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-M-II/secondary1": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-M-II/secondary2": {
+      "identity": {
+        "name": "极品UZI的KING版",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [],
+      "after": [],
+      "exception": "Explicit zero slots",
+      "role": "flush",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XXI/primary": {
+      "identity": {
+        "name": "战术-QBZ-191",
+        "form": "data",
+        "tier": null,
+        "enhancement": 13
+      },
+      "before": [
+        "下挂霰弹枪"
+      ],
+      "after": [
+        "战术鱼骨零件",
+        "下挂霰弹枪",
+        "加长弹匣"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XXI/secondary1": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "透镜"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "instructor"
+    },
+    "CF6-M-XXI/secondary2": {
+      "identity": {
+        "name": "KRISS印花集",
+        "form": "data",
+        "tier": null,
+        "enhancement": 12
+      },
+      "before": [
+        "透镜"
+      ],
+      "after": [
+        "强化金属管"
+      ],
+      "exception": null,
+      "role": "counter",
+      "roleClass": "instructor"
+    }
+  }
+}

@@ -2,8 +2,12 @@
 param([int]$TimeoutSeconds=1200,[int]$AsyncBehaviorTimeoutSeconds=90,[switch]$SkipCompile)
 $ErrorActionPreference='Stop'
 chcp.com 65001 | Out-Null
+& python -X utf8 -B (Join-Path $PSScriptRoot '../tools/cf6-soldier-assets/build-fixed-test-consumer.py') --firepower-projectiles
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $run=@{
     DomainId='timed-detonation'
+    CompileTargetRelativePath='scripts/Cf6FirepowerProjectileHost/Cf6FirepowerProjectileHost.xfl'
+    CompileSwfRelativePath='scripts/Cf6FirepowerProjectileHost.swf'
     TemplateRelativePath='scripts/test-runners/timed-detonation/TestLoader.as.template'
     SuiteRelativePaths=@(
         'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Lifecycle/TimedDetonationTest.as',

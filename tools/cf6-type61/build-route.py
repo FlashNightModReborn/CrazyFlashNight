@@ -307,7 +307,9 @@ def build(source=None, include_fixed=True):
         chapter=fixed_roster.apply(chapter,fixed_roster.compile_slots(chapter))
         config=chapter['type61']
         config['soldiers']['lootPolicy']=json.loads(SOURCE.with_name('soldier-loot-policy.source.json').read_text('utf8'))
-    outputs[OUTPUT]=encoded(chapter)
+    # The authored roster/profile sources stay readable. Generated fixed-instance
+    # tables use compact JSON so the additional gun profiles fit the same 2 MB budget.
+    outputs[OUTPUT]=(json.dumps(chapter,ensure_ascii=False,separators=(',',':'))+'\n').encode('utf8') if include_fixed else encoded(chapter)
     outputs[SOURCE.with_name('acquisition.generated.json')]=encoded(acquisition)
     fixture='// Generated test-only Type61 configuration; production reads the route runtime JSON.\nclass org.flashNight.arki.scene.Cf6Type61Fixture {\n'
     def fixture_method(name,value,public=False):
@@ -403,7 +405,11 @@ def build(source=None, include_fixed=True):
             ROOT/'data/crafting/进阶防具.json',ROOT/'data/crafting/铁枪会.json'}
     if include_fixed:
         inputs.update({Path(fixed_roster.__file__),SOURCE.with_name('soldier_programs.py'),
-            SOURCE.with_name('fixed-roster.source.json'),SOURCE.with_name('soldier-loot-policy.source.json'),
+            SOURCE.with_name('loadout_rules.py'),SOURCE.with_name('apply-loadout-plan.py'),
+            SOURCE.with_name('soldier-loadout-plan.source.json'),SOURCE.with_name('soldier-loot-policy.source.json'),
+            SOURCE.with_name('fixed-roster.source.json'),SOURCE.with_name('soldier-firepower.source.json'),
+            SOURCE.with_name('import-firepower-plan.py'),SOURCE.with_name('soldier-loot-policy.source.json'),
+            SOURCE.with_name('apply-firepower-adaptations.py'),SOURCE.with_name('firepower-local-adaptations.source.json'),
             SOURCE.with_name('soldier-action-contracts.source.json'),SOURCE.with_name('soldier-g1111-pair.source.json'),
             SOURCE.with_name('soldier-ammo-contract.source.json'),SOURCE.with_name('soldier-description-proposals.source.json'),
             SOURCE.with_name('build-fixed-actions-fixture.py'),SOURCE.with_name('build-fixed-roster-fixture.py'),SOURCE.with_name('build-soldier-loot-fixture.py')})
