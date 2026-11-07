@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Loader.*;
 import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
+import org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationProfile;
 
 
 class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implements IComponentLoader {
@@ -77,6 +78,12 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
                 };
                 if(attributeInfo.additionalFlags == undefined) attributeInfo.additionalFlags = 0;
                 attributeInfo.additionalFlags |= FLAG_UNIT_BULLET;
+            }
+
+            if (attributeNode.timedDetonation != undefined) {
+                var timed:TimedDetonationProfile = TimedDetonationProfile.fromXML(attributeNode.timedDetonation);
+                if (timed != null) attributeInfo.timedDetonation = timed;
+                else trace("[AttributeLoader] invalid timedDetonation: " + data.name);
             }
 
             // 仅当有预置状态位时才写入

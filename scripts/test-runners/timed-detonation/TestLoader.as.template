@@ -1,0 +1,25 @@
+﻿import org.flashNight.gesh.path.*;
+import org.flashNight.arki.bullet.Factory.*;
+import org.flashNight.arki.bullet.BulletComponent.Init.*;
+import org.flashNight.arki.bullet.BulletComponent.Movement.Util.*;
+import org.flashNight.arki.bullet.BulletComponent.Utils.*;
+import org.flashNight.arki.bullet.BulletComponent.Queue.*;
+import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.Effect.*;
+import org.flashNight.neur.Event.*;
+
+// 部分类在注册期已尝试初始化路径；独立 TestLoader 显式重新绑定本轮真实目录。
+PathManager.reset();
+var timedSuiteUrl:String=unescape(_root._url).split("\\").join("/");
+PathManager.setBasePaths([timedSuiteUrl.substring(0,timedSuiteUrl.lastIndexOf("/scripts/")+1)]);
+PathManager.initialize(timedSuiteUrl);
+trace("TimedDetonationResourceRoot "+PathManager.getBasePath());
+_root.timedDetonationAssetComplete=function():Void {
+    trace("FocusedTestRunId timed-detonation Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId timed-detonation Start: __FOCUSED_RUN_ID__");
+#include "逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as"
+org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationTest.runAllTests();
+org.flashNight.arki.bullet.BulletComponent.Queue.BulletTargetFilterTest.runAllTests();
+org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationAssetTest.runAllTests();
