@@ -5,7 +5,7 @@
   "authorization": "可行，可以合并上游，提交部署推送了",
   "candidateBase": "0b84e3204fb1d90184e8478c29498666d16d9678",
   "upstream": "9b07cb5652ed2be0aac43723fdb00f9efa92b7f6",
-  "sourceRef": "refs/tags/runtime-build-v2/20261108-cf6-fixed158-r4-v2",
+  "sourceRef": "refs/tags/runtime-build-v2/20261108-cf6-fixed158-r4-v3",
   "scope": [
     "固定158席的独立枪械成长、合法扩槽与插件组合，保持身份、等级、出生和战术编制。",
     "普通/精英/教官名义缴获包概率5%/8%/12%，首把保护及原子裁决、配额与恢复合同。",
@@ -120,9 +120,9 @@
       "resolution": "Cooldown readiness counting and cooldown-only candidate blocking now belong to the existing cooldown module; transaction orchestration stays in the item-use channel. No new module or budget increase."
     },
     {
-      "scope": "generated_file_format",
-      "issue": "Fresh Windows checkout changed byte-checked material dictionary to CRLF.",
-      "resolution": "Pin the generated dictionary to LF, matching its authoritative generator; do not alter material data."
+      "scope": "receiver_input_normalization",
+      "issue": "The existing formal checkout retained CRLF in the medium gun-mod XML while the committed input and its LF attribute were canonical. XML text was identical; only raw source SHA and aggregate provenance differed.",
+      "resolution": "Preserve the original bytes, restore the receiver input to exact Git bytes and verify the existing material dictionary. No material, mod, dictionary entries or data hash changed; remove the redundant newly added LF rule."
     }
   ]
 }
