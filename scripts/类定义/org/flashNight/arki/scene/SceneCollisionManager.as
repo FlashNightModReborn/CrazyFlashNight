@@ -72,6 +72,19 @@ class org.flashNight.arki.scene.SceneCollisionManager {
         });
     }
 
+    public function removeMovieClipCollision(mc:MovieClip):Void{
+        for(var i = this.movieClipCollisions.length - 1; i > -1; i--){
+            var mcColli:Object = this.movieClipCollisions[i];
+            if(mcColli.mc === mc){
+                mcColli.mc = null;
+                mcColli.rect = null;
+                this.movieClipCollisions.splice(i, 1);
+                this.redrawDirtyMark = true;
+                return;
+            }
+        }
+    }
+
     // update 函数，被 SceneManager 调用
     public function update():Void{
         if (this.collisionLayer == null || this.movieClipCollisions == null) return;
