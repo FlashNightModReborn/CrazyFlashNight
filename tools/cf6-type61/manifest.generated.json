@@ -814,8 +814,8 @@
     },
     {
       "path": "tools/cf6-type61/build-route.py",
-      "bytes": 35155,
-      "sha256": "d417c4d5436b66e9dd8a6e9c45189aaa757f218ac76cc01514803f510bc32141"
+      "bytes": 35231,
+      "sha256": "f9bf4f57c46a7fad41facc403304ee59c168a07cb98bdf38cd97167d9f3df6ec"
     },
     {
       "path": "tools/cf6-type61/build-soldier-loot-fixture.py",
@@ -946,8 +946,8 @@
     },
     {
       "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as",
-      "bytes": 186593,
-      "sha256": "880d82145181ce89e8677713250f0dcfdfd71284d830ea747ecb866e6df9ad20"
+      "bytes": 186862,
+      "sha256": "137ab8a50b0f2f2ecb230dee96eccde6fd4866873a3a152701c8f2bfb3ee09bd"
     },
     {
       "path": "tools/cf6-type61/acquisition.generated.json",
@@ -965,8 +965,8 @@
       "sha256": "a5564665a449b2b9de69126ed4d519d46959d3be26a7ab8fe7abd8ad499932fd"
     }
   ],
-  "generatedBytes": 1427973,
-  "bytesIncludingRuntimeSidecar": 1992257,
+  "generatedBytes": 1428242,
+  "bytesIncludingRuntimeSidecar": 1992526,
   "maxGeneratedBytes": 2000000,
   "downstreamChecks": [
     "tools/build-choice-rewards.py --check",

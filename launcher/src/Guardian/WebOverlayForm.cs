@@ -1386,6 +1386,7 @@ namespace CF7Launcher.Guardian
         internal void CloseBookComicPresentation(string instance)
         {
             if (_panelHost == null) { _bookComicTask?.OnPresentationClosed(instance,false); return; }
+            _panelHost.SceneTransition?.BeginIntroComicClose(instance);
             if (!_panelHost.TryClosePanelExact("book-comic", instance, true,
                 delegate(bool closed)
                 {
@@ -1395,6 +1396,7 @@ namespace CF7Launcher.Guardian
                     // Reuse the standard release so a following dialogue keeps its own claim.
                     CommitAcceptedPanelCloseEffects("book-comic", false, false);
                     _bookComicTask?.OnPresentationClosed(instance,true);
+                    _panelHost.SceneTransition?.IntroComicClosed(instance,true);
                 })) _bookComicTask?.OnPresentationClosed(instance,false);
         }
         private BookshelfTask _bookshelfTask;

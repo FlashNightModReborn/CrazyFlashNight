@@ -21,7 +21,15 @@
       "presentationId",
       "error"
     ],
-    "bound": false
+    "bound": false,
+    "protectedHandoff": {
+      "version": 2,
+      "fields": ["v", "presentationId", "slot", "sceneId", "pageId", "introId"],
+      "admission": "current retired loading curtain and AS2 chapter declaration",
+      "activation": "business prepared plus exact presented native instance",
+      "retry": "new presentation tuple and instance; old callbacks cannot rebind",
+      "businessRpcVersion": 1
+    }
   },
   "webCommands": {
     "prepared": {
@@ -85,7 +93,7 @@
     "story": "as2",
     "comicPause": "as2 book_chapter lease",
     "webPause": "existing PanelHost web lease",
-    "clock": "unpaused game time; Web duration is not a score"
+    "clock": "execution-granted unpaused game time; Web duration is not a score"
   },
   "assets": "launcher/web/assets/book-comic/manifest.json"
 }

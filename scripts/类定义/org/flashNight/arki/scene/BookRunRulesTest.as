@@ -12,7 +12,7 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         var oldExt:Object=_root._saveExt, oldSlot=_root.savePath, oldLevel=_root.等级;
         var codec:LiteJSON=new LiteJSON();
         var campus:String=codec.stringifySafe(BookDefinition.get("repair-campus"));
-        var fixture:Object={schema:"playable-book.v1",id:"cf6-sting",routeId:"historical",stageName:"书中历险-毒刺行动",title:"TEST ONLY",
+        var fixture:Object={schema:"playable-book.v1",id:"cf6-sting",routeId:"historical",stageName:"书中历险-毒刺行动",title:"TEST ONLY",chapterIntros:[],
             startingMoney:0,startingSkillPoints:0,actor:{name:"Andy",gender:"男",height:175,face:"face",hair:"hair",level:60,experience:157526193,
                 equipment:[{slot:"上装装备",name:"白色中山上装",enhancement:11}],skills:[{name:"小跳",level:10}]},
             maps:[{id:"A01",title:"TEST ONLY",background:"cf6/CF6_A01_BG.swf",dialogue:[],stage:{Wave:{SubWave:[{EnemyGroup:{Enemy:[{Type:"兵种1",Level:35,Quantity:1,Parameters:{掉落物:[]}}]}}]}}}]};
@@ -565,6 +565,18 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         check(codec.stringifySafe(BookRunRules.stages(1729, 6)[0]) == codec.stringifySafe(first[6]), "boss jump preserves plan");
         var config:Object = BookDefinition.get();
         check(BookDefinition.valid(config), "runtime config accepts generated data");
+        var introBad:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(config);
+        introBad.chapterIntros[0].bgmLease=1;
+        check(!BookDefinition.valid(introBad),"intro BGM lease requires an explicit boolean");
+        introBad=org.flashNight.gesh.object.PersistedSnapshot.clone(config);
+        introBad.chapterIntros.push(introBad.chapterIntros[0]);
+        check(!BookDefinition.valid(introBad),"duplicate chapter opening is rejected");
+        introBad=org.flashNight.gesh.object.PersistedSnapshot.clone(config);
+        introBad.chapterIntros[0].pageId="unknown-page";
+        check(!BookDefinition.valid(introBad),"unknown comic page cannot become a chapter opening");
+        introBad=org.flashNight.gesh.object.PersistedSnapshot.clone(config);
+        introBad.chapterIntros[0].chapter=config.maps.length;
+        check(!BookDefinition.valid(introBad),"opening cannot point beyond the owning book");
         var broken:Object = org.flashNight.gesh.object.PersistedSnapshot.clone(config);
         broken.maps[0].background = "../outside.swf";
         check(!BookDefinition.valid(broken), "runtime config rejects traversal");

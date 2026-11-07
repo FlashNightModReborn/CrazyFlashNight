@@ -49,16 +49,18 @@ class org.flashNight.arki.scene.BookComicService {
                 || typeof server.sendTaskWithCallback != "function") return false;
         var s:Object = {v:1, presentationId:"bookcomic:" + (++_seq), slot:String(_root.savePath),
             sceneId:NativeInteractionContext.getSceneId(), pageId:pageId, panelInstanceId:"",
-            owner:StageReturnFlow.worldIdentity(_root.gameworld), run:run,
-            runIdentity:cf6 ? org.flashNight.gesh.object.PersistedSnapshot.clone(run) : null,
+            owner:StageReturnFlow.worldIdentity(_root.gameworld),
+            runIdentity:org.flashNight.gesh.object.PersistedSnapshot.clone(run),
             phase:"opening", began:getTimer(), continuation:continuation, interruption:interruption,
             preparation:preparation};
+        s.intro = org.flashNight.arki.scene.StageIntroService.comicScope(pageId);
         s.lease = PauseManager.lease(true, "book_comic");
         _active = s; _records[s.presentationId] = s; _order.push(s.presentationId);
         if (_order.length > 32) delete _records[String(_order.shift())];
         ensureWatch();
-        server.sendTaskWithCallback("panel_request", {panel:"book-comic", source:"book_chapter",
-            initData:{v:1, presentationId:s.presentationId, slot:s.slot, sceneId:s.sceneId, pageId:s.pageId}},
+        var openData:Object = {v:1,presentationId:s.presentationId,slot:s.slot,sceneId:s.sceneId,pageId:s.pageId};
+        if (s.intro != null) { openData.v=2; openData.introId=s.intro.id; }
+        server.sendTaskWithCallback("panel_request", {panel:"book-comic", source:"book_chapter", initData:openData},
             null, admissionCallback(s), 20000);
         return true;
     }
@@ -77,9 +79,7 @@ class org.flashNight.arki.scene.BookComicService {
     private static function current(s:Object):Boolean {
         if (s == null) return false;
         var currentRun:Object = _root._saveExt.bookRun;
-        var sameRun:Boolean = s.runIdentity != null
-            ? org.flashNight.arki.scene.BookRunRules.sameCf6Run(s.runIdentity, currentRun)
-            : s.run === currentRun;
+        var sameRun:Boolean = org.flashNight.arki.scene.BookRunRules.sameActiveRun(s.runIdentity, currentRun);
         return s.slot === String(_root.savePath) && sameRun
             && currentRun != null && currentRun.outcome == "active" && s.owner != undefined
             && s.owner === StageReturnFlow.worldIdentity(_root.gameworld)
@@ -143,7 +143,7 @@ class org.flashNight.arki.scene.BookComicService {
         }
         // 加载失败或关窗可能发生在 prepared 之前，仍需绑定并释放本次责任。
         if (s.panelInstanceId == "") s.panelInstanceId = p.panelInstanceId;
-        var mayContinue:Boolean = !isCf6Page(s.pageId) || reason == "continue" || reason == "skip";
+        var mayContinue:Boolean = (s.interruption == null && s.intro == null) || reason == "continue" || reason == "skip";
         var follow:Function = retire(s, reason == "failed" ? "expired" : "finished", mayContinue);
         respond(p, operation, true, s.phase, "");
         if (follow != null) follow(reason, s.phase);
@@ -152,6 +152,7 @@ class org.flashNight.arki.scene.BookComicService {
         if (_active !== s || s.phase != "opening" || !current(s) || !matches(s, p)) return false;
         s.preparedError = error;
         s.phase = "presenting";
+        if (s.intro != null) org.flashNight.arki.scene.StageIntroService.prepared(s.intro);
         respond(p, "prepared", true, "presenting", error);
         return true;
     }
@@ -172,7 +173,7 @@ class org.flashNight.arki.scene.BookComicService {
     private static function retire(s:Object, phase:String, resume:Boolean):Function {
         if (s.phase == "finished" || s.phase == "expired") return null;
         var follow:Function = resume && current(s) ? s.continuation : null;
-        var interrupted:Function = !resume && isCf6Page(s.pageId) ? s.interruption : null;
+        var interrupted:Function = !resume ? s.interruption : null;
         s.phase = phase; s.continuation = null; s.interruption = null; s.preparation = null;
         if (_active === s) _active = null;
         PauseManager.releaseLease(s.lease); s.lease = undefined;
@@ -180,7 +181,7 @@ class org.flashNight.arki.scene.BookComicService {
     }
     private static function expire(s:Object, resume:Boolean, reason:String):Void {
         if (s == null || s.phase == "finished" || s.phase == "expired") return;
-        var follow:Function = retire(s, "expired", resume && !isCf6Page(s.pageId));
+        var follow:Function = retire(s, "expired", resume && s.interruption == null && s.intro == null);
         // callId 0 是游戏主动退休；prepared 前 panelInstanceId 尚未分配。
         respond({callId:0, presentationId:s.presentationId, slot:s.slot, sceneId:s.sceneId,
             pageId:s.pageId, panelInstanceId:s.panelInstanceId}, "finish", true, "expired", reason);

@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace CF7Launcher.Guardian
 {
@@ -11,6 +12,9 @@ namespace CF7Launcher.Guardian
         internal bool BookshelfReturnLoading => _sceneSettlement?.BookshelfReturnLoading == true;
         internal bool UsesTransitionSettlement => _transitionSettlementSelected;
         internal SceneTransitionController SceneTransition => _sceneSettlement;
+        internal static bool IsIntroComicEndpointPresented(string panel,string currentInstance,string expectedInstance,
+            bool documentReady,Form endpoint) => panel=="book-comic" && !string.IsNullOrEmpty(expectedInstance)
+            && currentInstance==expectedInstance && documentReady && SceneTransitionWindowOrder.IsPresented(endpoint);
         private CompositionHelpSurface SelectedCompositionSurface => _transitionSettlementSelected
             ? _sceneSettlement.SettlementSurface
             : _compositionHelpSelected ? _compositionHelp
@@ -21,6 +25,16 @@ namespace CF7Launcher.Guardian
             _sceneSettlement=controller;
             controller.SettlementSurface.AttachHostLifetime(_hostLifetime);
             controller.ConfigureExclusivePresentation(() => SceneTransitionController.IsExclusivePresentation(_activePanel, _activePanelInstanceId));
+            bool ExactIntroEndpoint(string instance) => !_disposed && IsIntroComicEndpointPresented(
+                _activePanel,_activePanelInstanceId,instance,_web?.CanAcceptPanelDocumentMessages==true,_web);
+            controller.ConfigureIntroPresentation(instance => {
+                if(!ExactIntroEndpoint(instance))return false;
+                EnsurePanelZOrder();
+                return SceneTransitionWindowOrder.IsPresented(_web);
+            // Document loss revokes activation, but the exact native panel still
+            // owns foreground while the recovery cover replaces it.
+            },instance => !_disposed && IsIntroComicEndpointPresented(_activePanel,_activePanelInstanceId,
+                instance,true,_web) && SceneTransitionWindowOrder.OwnsForeground(_web));
             controller.SettlementRequest+=p=>_web.HandleTransitionSettlementMessage(p);
             controller.SettlementTransportFailed+=()=>_web.HandleTransitionSettlementFailure();
             controller.SceneCompleted+=()=> {

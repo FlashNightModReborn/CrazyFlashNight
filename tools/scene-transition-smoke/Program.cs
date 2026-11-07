@@ -511,6 +511,34 @@ internal sealed class Probe : Form
             retire=Snapshot("hide",2);retire["requestId"]="tr:5";retire["version"]=2;
             retire["report"]=report.DeepClone();retire["reportVisible"]=true;retire["reportHandoff"]=false;
             project(retire);
+
+            // Intro uses the actual native curtain but never an ordinary revealed
+            // receipt. The target capture below remains a fixture-owned fact.
+            JObject intro(string phase,int revision,string state) {
+                var p=Snapshot(phase,revision);p["requestId"]="tr:6";p["version"]=3;
+                p["introId"]="intro:1";p["introState"]=state;return p;
+            }
+            sceneReady=true;resumeFrameHeld=false;
+            var introCover=Snapshot("cover",1);introCover["requestId"]="tr:6";project(introCover);
+            await Wait(()=>wire.Exists(p=>p.Value<string>("requestId")=="tr:6"&&p.Value<string>("kind")=="covered"),"intro starts behind a real painted curtain");
+            project(intro("loading",2,"loading"));project(intro("reveal",3,"loading"));
+            await Task.Delay(120);
+            if(!inputHeld || wire.Exists(p=>p.Value<string>("requestId")=="tr:6"&&p.Value<string>("kind")=="intro_covered"))
+                throw new Exception("intro retired before its fresh target capture");
+            checks.Add(new{label="intro keeps native input and cover while target frame is withheld",passed=true});
+            resumeFrameHeld=false;
+            await Wait(()=>wire.Exists(p=>p.Value<string>("requestId")=="tr:6"&&p.Value<string>("kind")=="intro_covered"),"intro retires the timeline under exact native cover");
+            project(intro("intro",4,"opening"));
+            await Wait(()=>wire.Exists(p=>p.Value<string>("requestId")=="tr:6"&&p.Value<int>("revision")==4&&p.Value<string>("kind")=="covered"),"retired intro still paints and acknowledges its cover");
+            if(!inputHeld || !((Form)reportSurface).Visible || wire.Exists(p=>p.Value<string>("requestId")=="tr:6"&&p.Value<string>("kind")=="revealed"))
+                throw new Exception("intro ordinary reveal escaped while waiting for comic content");
+            using(var pixels=Capture("intro-covered-retirement.png"))using(var original=new Bitmap(Path.Combine(root,"launcher","web","assets","bg","remake-andy.png"))) {
+                if(Difference(pixels.GetPixel(800,200),original.GetPixel(800,200))>15)
+                    throw new Exception("retired intro lost its opaque screen pixels");
+            }
+            checks.Add(new{label="intro covered retirement retains actual opaque pixels until a successor exists",passed=true});
+            project(intro("hide",5,"cancelled"));
+            await Wait(()=>!((Form)reportSurface).Visible&&!inputHeld,"exact intro cancellation retires only its own native protection");
         } catch(Exception e) { failure=e.ToString();Environment.ExitCode=1; }
         finally {
             (surface as IDisposable)?.Dispose();

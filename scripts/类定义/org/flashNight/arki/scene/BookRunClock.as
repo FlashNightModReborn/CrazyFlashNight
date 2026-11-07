@@ -1,10 +1,13 @@
 ﻿import org.flashNight.arki.pause.PauseManager;
 
-/** 竞速只累计未暂停的游戏时间；漫画、对白、过场及商店共用暂停权威。 */
+/** 竞速只累计可执行且未暂停的游戏时间；不取得或释放任何暂停租约。 */
 class org.flashNight.arki.scene.BookRunClock {
     private static var _installed:Boolean = false;
     private static var _session:Object;
     private static var _watch:MovieClip;
+    private static function held():Boolean {
+        return _root.暂停 === true || _root.gameworld.__stageIntroExecutionHeld === true;
+    }
 
     public static function install():Void {
         if (_installed) return;
@@ -20,7 +23,7 @@ class org.flashNight.arki.scene.BookRunClock {
         run.playTimeMs = 0;
         run.clockVersion = 1;
         _session = {slot:String(_root.savePath), seed:run.seed, startedAt:run.startedAt,
-            bookId:run.bookId, last:getTimer(), elapsed:0, paused:_root.暂停 === true};
+            bookId:run.bookId, last:getTimer(), elapsed:0, paused:held()};
         if (_watch == null || _watch._name == undefined)
             _watch = _root.createEmptyMovieClip("__bookRunClock", _root.getNextHighestDepth());
         _watch.onEnterFrame = function():Void { org.flashNight.arki.scene.BookRunClock.tick(); };
@@ -44,14 +47,14 @@ class org.flashNight.arki.scene.BookRunClock {
     }
     private static function onPause(value:Boolean, previous:Boolean, owner:String):Void {
         // 此订阅只记时间；不可嵌套增减暂停租约。
-        if (_session != null) sample(value === true);
+        if (_session != null) sample(value === true || _root.gameworld.__stageIntroExecutionHeld === true);
     }
     public static function tick():Void {
         if (_session == null) { delete _watch.onEnterFrame; return; }
-        sample(_root.暂停 === true);
+        sample(held());
     }
     public static function elapsed(run:Object):Number {
-        if (matches(run)) sample(_root.暂停 === true);
+        if (matches(run)) sample(held());
         if (run.clockVersion === 1 && typeof run.playTimeMs == "number" && !isNaN(run.playTimeMs)
                 && run.playTimeMs >= 0) return Math.max(1, run.playTimeMs);
         // 老版本的临时角色没有可恢复的暂停账；保留旧算法，不能伪造更快纪录。

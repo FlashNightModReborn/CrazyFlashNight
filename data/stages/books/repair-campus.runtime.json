@@ -894,5 +894,17 @@
     "lastMap": 5,
     "percent": 75
   },
-  "recordSp": 45
+  "recordSp": 45,
+  "chapterIntros": [
+    {
+      "chapter": 0,
+      "pageId": "prologue",
+      "bgmLease": false
+    },
+    {
+      "chapter": 6,
+      "pageId": "boss",
+      "bgmLease": false
+    }
+  ]
 }

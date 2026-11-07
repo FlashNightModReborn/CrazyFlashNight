@@ -21,6 +21,10 @@ CF6_SOURCE = ROOT / 'data/stages/books/cf6-sting.json'
 TYPE61_SOURCE = ROOT / 'data/stages/books/cf6-type61.json'
 
 
+
+from book_chapter_intros import INTRO_SOURCE, apply_chapter_intros
+
+
 def validate_cf6(data, items, skills, units, require_backgrounds=True):
     """CF6 uses authored native stages; campus random loot and boss rules do not apply."""
     if (data.get('schema'), data.get('id'), data.get('stageName')) != (
@@ -755,6 +759,7 @@ def main():
         raise ValueError('unknown items: ' + ', '.join(sorted(missing)))
     validate_loot(data, items)
     validate_boss(data, units, items)
+    data = apply_chapter_intros(data)
     literal = json.dumps(data, ensure_ascii=False, indent=4)
     # AS2 object literals require identifier keys, unlike JSON / JavaScript.
     literal = re.sub(r'"([A-Za-z_][A-Za-z0-9_]*)"(?=\s*:)', r'\1', literal)
@@ -767,11 +772,11 @@ def main():
     if CF6_SOURCE.is_file():
         cf6 = normalize_book_units(json.loads(CF6_SOURCE.read_text(encoding='utf-8-sig')), registry)
         validate_cf6(cf6, items, ET.parse(ROOT/'data/skills/skills.xml').findall('Skill'), units)
-        outputs.update(generated_cf6(cf6))
+        outputs.update(generated_cf6(apply_chapter_intros(cf6)))
     if TYPE61_SOURCE.is_file():
         type61 = normalize_book_units(json.loads(TYPE61_SOURCE.read_text(encoding='utf-8-sig')), registry)
         validate_cf6(type61, items, ET.parse(ROOT/'data/skills/skills.xml').findall('Skill'), units)
-        outputs.update(generated_cf6(type61))
+        outputs.update(generated_cf6(apply_chapter_intros(type61)))
     for path, content in outputs.items():
         if args.check:
             if not path.is_file() or path.read_bytes() != content:

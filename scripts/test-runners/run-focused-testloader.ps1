@@ -178,6 +178,7 @@ if ($AutoStopReadOnlyPlayer -or $OwnedReadOnlyHost) {
         'student-repair' = 'org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest'
         'lee-action-asset' = 'org.flashNight.arki.unit.Action.Input.EnemyActionAssetTest'
         'wing-tiger' = 'org.flashNight.arki.unit.UnitAI.Custom.WingTigerTest'
+        'stage-intro' = 'org.flashNight.arki.scene.StageIntroServiceTest,org.flashNight.arki.ui.SceneTransitionServiceTest,org.flashNight.arki.scene.BookComicServiceTest,org.flashNight.arki.scene.BookComicSequenceTest,org.flashNight.arki.scene.Cf6BookRunStoryTest,org.flashNight.arki.scene.Cf6TutorialTurretServiceTest,org.flashNight.arki.scene.BookRunRulesTest'
     }
     if ($OwnedReadOnlyHost -and @(Get-Process -Name Flash -ErrorAction SilentlyContinue).Count -gt 0) {
         throw 'OwnedReadOnlyHost requires a fresh host; an existing editor is preserved.'

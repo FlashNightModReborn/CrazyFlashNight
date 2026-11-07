@@ -5129,7 +5129,7 @@
  "integrationNotes": [
   "现役章节边界：7 仅 s4→A07；8 仅 s5→A08；18 仅 s6→A18；s5 须等待车辆玩法完成后由标准章节入口调度",
   "Web 独立内容由 build_cf6_web_content.py 派生为 book-comic-cf6-content.js；consumerMapping 保留原页字段与媒体",
-  "AS2 侧接线：BookRunService.presentChapter 在章节边界调 Cf6StoryService.beginChapter；通关权威仍由车辆/地图机关持有，剧情不跳过 A07",
+  "AS2 侧接线：BookRunService.presentChapter 从统一 chapterIntros 声明调用 BookComicSequence；通关权威仍由车辆/地图机关持有，剧情不跳过 A07",
   "原作完成/跳过殊途同归（均走切镜→目标帧）；fragment continuation 两者同一目标，取消/过期不推进",
   "旁白 narration.mp3 按原首个音频块偏移与页时钟同步；音乐和 BGM lease 沿现役独立音频通道，漫画自身不扩展战斗或持久写权威",
   "切镜(1281) frame21 原作做 自动存盘；迁移后持久化归现役 AS2 权威，漫画服务本身零持久写"

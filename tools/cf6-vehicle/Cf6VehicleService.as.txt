@@ -231,7 +231,7 @@ class org.flashNight.arki.scene.Cf6VehicleService {
             }
             return s.status;
         }
-        if(PauseManager.isPaused() || _root.场景转换中===true) return s.status;
+        if(PauseManager.isPaused() || _root.场景转换中===true || s.world.__stageIntroExecutionHeld===true) return s.status;
         s.age++;
         var input:Object={x:0,z:0,fire:false};
         if(s.rules.phase!="boss-intro") {

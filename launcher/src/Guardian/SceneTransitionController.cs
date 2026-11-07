@@ -13,7 +13,7 @@ namespace CF7Launcher.Guardian
 {
     // Owns display admission, HWND order and an already-existing capture fence.
     // A settlement may lend this same endpoint to PanelHost while scene capture continues.
-    internal sealed class SceneTransitionController : IDisposable
+    internal sealed partial class SceneTransitionController : IDisposable
     {
         private readonly Form _owner;
         private readonly Control _anchor;
@@ -37,7 +37,7 @@ namespace CF7Launcher.Guardian
         private string _resumeClose, _resumeInstance;
         private Action _resumeTail;
         private Action<long> _requireFreshFrame = _ => {};
-        internal bool OwnsCurtain => _resumeScene>0 || _latest!=null && !_revealed;
+        internal bool OwnsCurtain => _resumeScene>0 || (_intro!=null ? _intro.CoverRequired : _latest!=null && !_revealed);
         internal bool SettlementResumePending => _resumeScene>0;
         internal void ConfigurePresentationFence(Action<long> requireFreshFrame) => _requireFreshFrame=requireFreshFrame;
         internal bool DeferSettlementResumeTail(Action tail) {
@@ -142,6 +142,7 @@ namespace CF7Launcher.Guardian
             _timer.Tick+=(_,_)=>Tick(); _timer.Start();
         }
         private void Present(JObject p) {
+            ObserveIntro(p);
             if(_resumeScene>0) FinishSettlementResume();
             if(p.Value<string>("phase")=="reveal" && (_latest?.Value<string>("phase")!="reveal"
                 || _latest?.Value<long>("targetScene")!=p.Value<long>("targetScene")
@@ -225,6 +226,7 @@ namespace CF7Launcher.Guardian
                 } else { _fallback.Hide(); _surface.SuppressTransition(); }
                 return;
             }
+            if(TickIntro())return;
             _bookshelfReturn?.RetryPauseRestore();
             if (_exclusivePresentation()) { if (_fallback.Visible) _fallback.Hide(); _surface.SuppressTransition(); return; }
             if (_bookshelfReturn?.Active == true)
@@ -276,7 +278,7 @@ namespace CF7Launcher.Guardian
             var projection=(JObject)_latest.DeepClone();
             projection["type"]="scene_transition"; projection["connected"]=Task.Connected;
             projection["generation"]=Task.Epoch;
-            projection["revealAllowed"]=Task.Connected && projection.Value<string>("phase")=="reveal"
+            projection["revealAllowed"]=Task.Connected && projection.Value<long>("version")!=3 && projection.Value<string>("phase")=="reveal"
                 && _scenePresented(projection.Value<long>("targetScene"));
             if(projection.Value<bool>("revealAllowed") && projection.Value<bool?>("reportVisible")==true) {
                 _preparedScene=projection.Value<long>("targetScene"); Task.ScenePrepared();
@@ -291,6 +293,7 @@ namespace CF7Launcher.Guardian
                     +" revision="+projection.Value<int>("revision")+" reveal="+projection.Value<bool>("revealAllowed"));
             }
             RestoreWindowOrder();
+            TryRetireIntroUnderCover();
             if(_pendingAction!=null && _surface.TransitionInputReleased) {
                 var action=_pendingAction; _pendingAction=null; Task.Action(action);
             }
@@ -313,7 +316,7 @@ namespace CF7Launcher.Guardian
             if(_presentationPolicy.NonActivating && (!CurtainCanPresent || !SceneTransitionWindowOrder.IsPresented(_surface))) return;
             if(type!="scene_transition_presented") return;
             string kind=p["kind"]?.Type==JTokenType.String?p.Value<string>("kind"):null;
-            if(kind=="covered") { if(Task.Presented(p)) { _covered=true; _fallback.Hide(); } }
+            if(kind=="covered") { if(Task.Presented(p)) { _covered=true; if(_intro?.State!="failed")_fallback.Hide(); } }
             else if(kind=="revealed" && _latest.Value<bool?>("reportVisible")!=true && _latest.Value<string>("phase")=="reveal"
                 && _scenePresented(_latest.Value<long>("targetScene"))) {
                 if(!Task.Presented(p)) return;
@@ -359,6 +362,7 @@ namespace CF7Launcher.Guardian
         private void Hide() {
             if(_disposed || _latest==null) return;
             using var latency = InputLatencyProbe.Measure("transition_hide");
+            RetireIntro();
             bool retained=_surface.SettlementInstance.Length>0;
             bool complete=_handoffSent && _preparedScene>0 && _currentScene(_preparedScene);
             if(retained && complete) _retainedScene=_preparedScene;
@@ -404,6 +408,7 @@ namespace CF7Launcher.Guardian
         public void Dispose() {
             if(_disposed)return; _disposed=true;
             FinishSettlementResume();
+            RetireIntro();
             foreach(var overlay in _overlays) overlay.PresentationChanged-=OnOverlayPresented;
             _holdWorldInput(false);
             _timer.Dispose(); _surface.Dispose(); _fallback.Dispose();

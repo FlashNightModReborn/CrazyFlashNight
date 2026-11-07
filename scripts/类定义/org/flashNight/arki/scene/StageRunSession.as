@@ -343,7 +343,8 @@ class org.flashNight.arki.scene.StageRunSession {
 
     /** StageManager 每个未暂停的游戏帧调用；这是战报时间的唯一时钟。 */
     public static function tick():Void {
-        if (_run == null || _returnRequested || _run.outcome == "retreat") return;
+        if (_run == null || _returnRequested || _run.outcome == "retreat"
+                || _root.gameworld.__stageIntroExecutionHeld === true) return;
         var current:Number = Number(_run.activeFrames);
         if (isNaN(current) || current < 0) current = 0;
         if (current < 9007199254740991) _run.activeFrames = current + 1;
@@ -351,7 +352,7 @@ class org.flashNight.arki.scene.StageRunSession {
 
     public static function finish(outcome:String):Void {
         if (_run == null || (outcome != "victory" && outcome != "failure")) return;
-        if (_run.outcome != "active") return;
+        if (_run.outcome != "active" || outcome == "victory" && _root.gameworld.__stageIntroExecutionHeld === true) return;
         org.flashNight.arki.scene.PlayerSceneLifecycle.retire("run_finished");
         _run.outcome = outcome;
         org.flashNight.arki.scene.BookRunService.finish(outcome);

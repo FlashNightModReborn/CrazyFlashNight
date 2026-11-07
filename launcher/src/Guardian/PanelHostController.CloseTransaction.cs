@@ -160,6 +160,7 @@ namespace CF7Launcher.Guardian
                 }
                 tailQueued=true;
                 PostPanelClosed(panel,instance,()=> {
+                    if(panel=="book-comic" && _sceneSettlement?.DeferIntroResumeTail(instance,()=>FinishCloseFocus(context,permit))==true)return;
                     if(settlement && _sceneSettlement?.DeferSettlementResumeTail(()=>FinishCloseFocus(context,permit))==true) return;
                     FinishCloseFocus(context,permit);
                 },context);

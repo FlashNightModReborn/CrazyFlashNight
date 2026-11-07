@@ -170,6 +170,26 @@ class org.flashNight.arki.ui.SceneTransitionService {
             && fade.__transitionProjectionIdentity === s.identity;
     }
     /** 呈现等待与第 17 帧初始化标记分离；报告开窗须等成功尾帧或明确取消撤幕。 */
+    public static function supportsIntroHandoff():Boolean {
+        return owns(_session,_root.淡出动画) && _session.introVersion === 1 && _session.report == null;
+    }
+    public static function bindIntro(scope:Object):Boolean {
+        var s:Object = _session;
+        if (!supportsIntroHandoff() || s.intro != null || s.phase == "reveal" || s.phase == "error") return false;
+        s.intro=scope; scope.requestId=s.requestId;
+        // The world already exists; freeze its scene number before the v3 envelope is published.
+        s.targetScene=WorldLightingBridge.sceneNumber();
+        s.revision++; scope.wireRevision=s.revision; publish();
+        return true;
+    }
+    public static function publishIntro(scope:Object, state:String):Void {
+        var p:Object = _retired;
+        if (p == null || p.version !== 3 || p.introId !== scope.id || p.requestId !== scope.requestId) return;
+        p.revision++; scope.wireRevision=p.revision;
+        p.introState=state;
+        p.phase=(state == "complete" || state == "cancelled") ? "hide" : "intro";
+        _lastRetiredSend=getTimer(); send(p);
+    }
     public static function isPresentationPending():Boolean {
         return owns(_session,_root.淡出动画);
     }
@@ -286,6 +306,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
         publish();
     }
     public static function presented(p:Object):Void {
+        if (p != null && org.flashNight.arki.scene.StageIntroService.handleReceipt(p)) return;
         var s:Object = _session;
         if (p == null || !owns(s,s.fade) || p.requestId !== s.requestId
             || typeof p.revision != "number" || p.revision < 1 || p.revision > s.revision
@@ -294,7 +315,14 @@ class org.flashNight.arki.ui.SceneTransitionService {
         if (p.kind == "covered" && !s.covered && s.phase != "error" && s.phase != "reveal") {
             org.flashNight.dev.PanelTiming.finish("transition.covered",s.timingStarted,_sequence);
             s.covered = true;
+            s.introVersion = p.introVersion === 1 ? 1 : 0;
             if (s.fade._currentframe == 5) s.fade.play();
+        } else if (p.kind == "intro_covered" && s.intro != null && p.introId === s.intro.id
+                && s.phase == "reveal" && p.revision === s.revision && s.worldReady
+                && s.readyWorld === _root.gameworld && s.readyIdentity === _root.gameworld.__stageReturnWorldIdentity) {
+            s.introRetired=true;
+            s.fade.gotoAndStop(36);
+            clear();
         } else if (p.kind == "prepared" && s.report != null && s.phase == "reveal" && p.revision === s.revision
                 && s.worldReady && s.readyWorld === _root.gameworld
                 && s.readyIdentity === _root.gameworld.__stageReturnWorldIdentity) {
@@ -307,7 +335,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
             // 原终帧没有业务写；普通报告会暂停世界，不能再依赖其下方淡出尾部续帧。
             s.fade.gotoAndStop(36);
             clear();
-        } else if (p.kind == "revealed" && !s.revealed && (s.report == null || s.reportVisible !== true)
+        } else if (p.kind == "revealed" && s.intro == null && !s.revealed && (s.report == null || s.reportVisible !== true)
                 && s.phase == "reveal" && p.revision === s.revision && s.worldReady
                 && s.readyWorld === _root.gameworld
                 && s.readyIdentity === _root.gameworld.__stageReturnWorldIdentity) {
@@ -412,12 +440,16 @@ class org.flashNight.arki.ui.SceneTransitionService {
         var payload:Object = {version:s.report == null ? 1 : 2,requestId:s.requestId,revision:s.revision,phase:s.phase,
             imageId:s.imageId,tip:s.tip,targetScene:s.targetScene,actionPending:s.actionSent};
         if (s.report != null) { payload.report = s.report; payload.reportVisible = s.reportVisible; payload.reportHandoff = s.reportHandoff; }
+        if (s.intro != null) {
+            payload.version=3; payload.introId=s.intro.id; payload.introState="loading";
+            s.intro.wireRevision=s.revision;
+        }
         send(payload);
     }
     public static function clear():Void {
         var s:Object = _session;
         var released:Boolean = owns(s,_root.淡出动画) && s.phase == "reveal" && s.fade._currentframe == 36
-            && s.revealed === true && s.worldReady === true
+            && (s.revealed === true || s.introRetired === true) && s.worldReady === true
             && s.readyWorld === _root.gameworld
             && s.readyIdentity === _root.gameworld.__stageReturnWorldIdentity;
         if (s.calibrationOwner != null && s.targetScene != WorldLightingBridge.sceneNumber()) released = false;
@@ -426,6 +458,12 @@ class org.flashNight.arki.ui.SceneTransitionService {
             _retired = {version:s.report == null ? 1 : 2,requestId:s.requestId,revision:s.revision+1,phase:"hide",
                 imageId:s.imageId,tip:s.tip,targetScene:s.targetScene,actionPending:false};
             if (s.report != null) { _retired.report = s.report; _retired.reportVisible = false; _retired.reportHandoff = false; }
+            if (s.intro != null) {
+                _retired.version=3; _retired.introId=s.intro.id;
+                _retired.introState=released ? "opening" : "cancelled";
+                if (released) _retired.phase="intro";
+                s.intro.wireRevision=_retired.revision;
+            }
             _lastRetiredSend = getTimer(); send(_retired);
             // hide 先于任何会暂停世界的报告开窗；重复 clear 或取消都不发布成功交接。
             if (released) {

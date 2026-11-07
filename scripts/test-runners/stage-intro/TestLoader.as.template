@@ -1,0 +1,11 @@
+﻿trace("FocusedTestRunId stage-intro Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.StageIntroServiceTest.runAllTests();
+org.flashNight.arki.ui.SceneTransitionServiceTest.runAllTests();
+org.flashNight.arki.scene.BookComicServiceTest.runAllTests();
+org.flashNight.arki.scene.BookRunRulesTest.runAllTests();
+org.flashNight.arki.scene.BookComicSequenceTest.runAllTests();
+org.flashNight.arki.scene.Cf6BookRunStoryTest.runAllTests();
+org.flashNight.arki.scene.Cf6TutorialTurretServiceTest.setCompletionCallback(function():Void {
+    trace("FocusedTestRunId stage-intro Complete: __FOCUSED_RUN_ID__");
+});
+org.flashNight.arki.scene.Cf6TutorialTurretServiceTest.runAllTests();

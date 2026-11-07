@@ -7,6 +7,6 @@ $ErrorActionPreference = 'Stop'
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6TutorialTurretServiceTest.as') `
     -SuiteFqns @('org.flashNight.arki.scene.Cf6TutorialTurretServiceTest') `
     -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6TutorialTurretService.as') `
-    -ExpectedTracePatterns @('(?m)^Cf6TutorialTurretServiceTest Tests Passed: 120\r?$', '(?m)^Cf6TutorialTurretServiceTest Tests Failed: 0\r?$') `
-    -SuccessSummary '120/120 assertions (static count field-r2, confirm on fresh run); visual muzzle + marked cross-row LinearBulletMovement + ownership/pause/late-callback gates, no full chapter claim' `
+    -ExpectedTracePatterns @('(?m)^Cf6TutorialTurretServiceTest Tests Passed: 122\r?$', '(?m)^Cf6TutorialTurretServiceTest Tests Failed: 0\r?$') `
+    -SuccessSummary '122/122 assertions (static count field-r2, confirm on fresh run); visual muzzle + marked cross-row LinearBulletMovement + ownership/pause/late-callback gates, no full chapter claim' `
     -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile

@@ -64,7 +64,8 @@ node tools/cf6-story-migration/test_cf6_web_browser.js
 
 见 `generated/comic-story.fragment.json` 的 `integrationNotes`。要点：
 Host `BookComicTask.cs` Pages 白名单 + Web 独立懒加载 `book-comic-cf6-content.js` +
-AS2 章节边界调 `Cf6StoryService.beginChapter`，胜利后经 `beginFinal` 串联 s7 与 credits。
+AS2 章节边界从统一 `chapterIntros` 声明调用 `BookComicSequence`；胜利后仍由原结局 owner 串联 s7 与 credits。
+开场的全书本统一接入、执行许可、验证及回滚见[漫画开场迁移](../../docs/scene-intro-migration.md)。旧 `Cf6StoryService` 路由类已退役。
 
 现役地图路线为 TUTORIAL→A01…A20，原 A21 演出与 A22 第二形合并在 A20；S7 的原作来源仍为 A22。
 章节7只播放 S4 后进入 A07，章节8只在真实 A07 尾段完成后的标准转场中播放 S5 并进入 A08；
@@ -115,7 +116,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-cf6-story-tests.
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-audio-v2-tests.ps1
 ```
 
-第一条依次调用 `BookComicServiceTest`、`Cf6StoryServiceTest` 与 `Cf6BookRunStoryTest`，
+第一条依次调用 `BookComicServiceTest`、`BookComicSequenceTest` 与 `Cf6BookRunStoryTest`，
 使用隔离 transport fixture，不读写物理存档、不播放真实音频；AudioBridge 自身的 wire/lease
 回归由第二条独立入口覆盖。两条 runner 都复用统一编译 mutex、scratch 持久备份/inflight marker、
 fresh evidence 与字节恢复合同。

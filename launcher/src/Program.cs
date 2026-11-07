@@ -2409,6 +2409,13 @@ class Program
         commandRouter.SetBookComicTask(bookComicTask);
         panelHost?.SetBookComicTask(bookComicTask);
         webOverlay.SetBookComicTask(bookComicTask);
+        bookComicTask.IntroAdmission=sceneTransition.CanAdmitIntroComic;
+        bookComicTask.IntroPrepared=sceneTransition.QueueIntroActivation;
+        bookComicTask.IntroClosing=(data,instance)=> {
+            sceneTransition.BindIntroClosing(data,instance);
+            sceneTransition.BeginIntroComicClose(instance);
+        };
+        webOverlay.DocumentAdvanced+=bookComicTask.OnDocumentInvalidated;
         SleepTask sleepTask = new SleepTask(socketServer);
         ModifierTask modifierTask = new ModifierTask(socketServer);
         ModifierOverlay modifierOverlay = new ModifierOverlay(form, webDir,
