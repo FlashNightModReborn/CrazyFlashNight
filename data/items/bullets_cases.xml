@@ -459,9 +459,9 @@
             <func>freeFall</func>
         </movement>
         <attribute>
-            <!-- #197：命中只爆炸；1000ms 未命中才向高度方向下散 4 枚普通手雷。 -->
+            <!-- #197：命中只爆炸；500ms 未命中才向高度方向下散 4 枚普通手雷。 -->
             <timedDetonation>
-                <timeoutMs>1000</timeoutMs>
+                <timeoutMs>700</timeoutMs>
                 <explosion>
                     <type>高压爆炸</type>
                     <powerScale>0.7</powerScale>
@@ -469,11 +469,11 @@
                     <zRange>80</zRange>
                 </explosion>
                 <timeoutScatter>
-                    <type>普通手雷</type>
+                    <type>榴弹</type>
                     <count>4</count>
                     <powerScale>0.25</powerScale>
                     <fallSpeed>20</fallSpeed>
-                    <spreadDegrees>45</spreadDegrees>
+                    <spreadDegrees>30</spreadDegrees>
                     <!-- 约 1.9 倍直击横向覆盖；四点横排并交错纵深，低空受散角上限约束。 -->
                     <landingSpread>
                         <radiusX>240</radiusX>
