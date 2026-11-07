@@ -1270,6 +1270,50 @@
         <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
+        <BackgroundURL>地图-研究所接待处</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>10</Xmin>
+        <Xmax>1850</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>750</Ymax>
+        <Width>1900</Width>
+        <Height>800</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>470,330</Point>
+            <Point>0,770</Point>
+            <Point>0,330</Point>
+        </Collision>
+        <Collision>
+            <Point>490,550</Point>
+            <Point>660,330</Point>
+            <Point>450,330</Point>
+            <Point>240,550</Point>
+        </Collision>
+        <Collision>
+            <Point>1410,330</Point>
+            <Point>1870,330</Point>
+            <Point>1870,770</Point>
+        </Collision>
+        <Collision>
+            <Point>1380,550</Point>
+            <Point>1220,330</Point>
+            <Point>1870,330</Point>
+            <Point>1630,550</Point>
+        </Collision>
+        <Collision>
+            <Point>815,330</Point>
+            <Point>815,450</Point>
+            <Point>890,450</Point>
+            <Point>890,510</Point>
+            <Point>1220,510</Point>
+            <Point>1220,330</Point>
+        </Collision>
+        <BGM>Drone</BGM>
+    </Environment>
+    <Environment>
         <BackgroundURL>地图-同盟卸货站</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>120</Xmin>
@@ -1325,6 +1369,96 @@
             <Point>880,400</Point>
             <Point>980,550</Point>
             <Point>0,550</Point>
+        </Collision>
+        <BGM>Drone</BGM>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地图-同盟指挥室</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>30</Xmin>
+        <Xmax>1920</Xmax>
+        <Ymin>400</Ymin>
+        <Ymax>1030</Ymax>
+        <Width>2000</Width>
+        <Height>1100</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>0,420</Point>
+            <Point>1920,420</Point>
+            <Point>1920,300</Point>
+            <Point>0,300</Point>
+        </Collision>
+        <Collision>
+            <Point>185,420</Point>
+            <Point>370,770</Point>
+            <Point>1560,770</Point>
+            <Point>1435,420</Point>
+        </Collision>
+        <Collision>
+            <Point>185,420</Point>
+            <Point>0,1040</Point>
+            <Point>0,420</Point>
+        </Collision>
+        <Collision>
+            <Point>1745,420</Point>
+            <Point>1920,1040</Point>
+            <Point>1920,420</Point>
+        </Collision>
+        <Collision>
+            <Point>0,1040</Point>
+            <Point>1920,1040</Point>
+            <Point>1920,1200</Point>
+            <Point>0,1200</Point>
+        </Collision>
+        <BGM>Drone</BGM>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地图-同盟咖啡厅</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>145</Xmin>
+        <Xmax>1170</Xmax>
+        <Ymin>395</Ymin>
+        <Ymax>660</Ymax>
+        <Width>1400</Width>
+        <Height>740</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>145,590</Point>
+            <Point>145,395</Point>
+            <Point>355,395</Point>
+        </Collision>
+        <Collision>
+            <Point>420,395</Point>
+            <Point>440,425</Point>
+            <Point>1075,425</Point>
+            <Point>1075,395</Point>
+        </Collision>
+        <Collision>
+            <Point>620,425</Point>
+            <Point>675,510</Point>
+            <Point>1160,510</Point>
+            <Point>1160,425</Point>
+        </Collision>
+        <Collision>
+            <Point>0,600</Point>
+            <Point>680,600</Point>
+            <Point>755,660</Point>
+            <Point>0,660</Point>
+        </Collision>
+        <Collision>
+            <Point>1130,660</Point>
+            <Point>1400,660</Point>
+            <Point>1400,585</Point>
+            <Point>1170,585</Point>
+        </Collision>
+        <Collision>
+            <Point>1170,425</Point>
+            <Point>1100,425</Point>
+            <Point>1170,585</Point>
         </Collision>
         <BGM>Drone</BGM>
     </Environment>

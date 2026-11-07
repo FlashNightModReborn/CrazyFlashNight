@@ -4,7 +4,7 @@
   "kind": "merged_source_validation",
   "authorization": "可行，可以合并上游，提交部署推送了",
   "candidateBase": "0b84e3204fb1d90184e8478c29498666d16d9678",
-  "upstream": "a0dbbf645e86f34497a46123544a145ac542b5a6",
+  "upstream": "9b07cb5652ed2be0aac43723fdb00f9efa92b7f6",
   "sourceRef": "refs/tags/runtime-build-v2/20261107-cf6-fixed158-r4-v1",
   "scope": [
     "固定158席的独立枪械成长、合法扩槽与插件组合，保持身份、等级、出生和战术编制。",
@@ -55,12 +55,12 @@
       "ownership": {
         "errors": [],
         "files": 792,
-        "parsed": 6,
-        "cacheHits": 786,
+        "parsed": 1,
+        "cacheHits": 791,
         "loaderClasses": 808,
         "closureChecked": true,
         "policy": "production",
-        "milliseconds": 5446.6039
+        "milliseconds": 4548.4021
       }
     }
   },
@@ -93,5 +93,14 @@
     "historicalColdPersistence": "已验收R4的16进程冷读回留作历史证据，不冒称当前合并二进制的冷读结果。",
     "formalDeploymentClaim": false,
     "formalDeploymentAuthority": "部署事实与身份读取config/build/runtime-release-consensus.json及runtime/cf7-runtime-manifest.tsv。"
+  },
+  "upstreamDeltaAfterBehaviorTests": {
+    "paths": [
+      "data/environment/scene_environment.xml",
+      "flashswf/levels/地图-研究所接待处.fla",
+      "flashswf/levels/地图-研究所接待处.swf"
+    ],
+    "scope": "外交地图与环境数据；没有AS2或C#行为代码变更。",
+    "newMapHumanPlaythrough": false
   }
 }
