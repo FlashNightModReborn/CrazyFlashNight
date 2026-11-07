@@ -1,0 +1,80 @@
+# 漫画开场统一迁移
+
+**文档角色**：漫画开场的统一接入合同、本轮候选验收与回滚。
+**最后核对代码基线**：commit `3daedc516461ca77ff2e606b9f7de31525be9b38`（整合三个上游地图提交的 main 统一迁移）。本文记录候选业务资格；正式发布身份及状态仍读取 runtime manifest/consensus 与[发布记录](runtime-build-reproducibility.md)。
+
+已在 main 快进同步 `ed21b3ddb2`、`448be84a4f`、`fbf4006e54` 三个天网/外交地图提交；188 条上游路径与本地迁移没有文本重叠，迁移原字节完整保留。合并后重新执行原生、Host、数据/Web 回归及三次实机旅程，并由真实 CS6 重新发布配套主 SWF。未另建 worktree。
+
+上游七个新增场景仍缺 `scene_environment` 登记及主工程地图挂载实例，因此保留其制作状态，没有为未完成研究所增加现役 Web 入口。178 份变更 XML 解析、167 份脚本不变核对及外交数据审计通过；发布前后主 SWF 的 57 个实际导入 URL/符号完全一致。已接通的同盟卸货站完成普通入口实机进入；不把新增素材和配置的同步称为七个新场景已可玩。
+
+## 接入范围与权威
+
+本轮已从[有限 B 首图试点](scene-intro-pilot.md)推进到全部漫画开场。`data/books/chapter-intros.json` 是内容映射的唯一编辑入口，按书本及背景资源身份绑定漫画；生成器解析成路线各自的 `chapterIntros`。8 条内容声明生成 14 个运行时开场：修理大学 prologue/boss，以及毒刺行动史实路线、61 计划各自的 A01/A02/A03/A07/A08/A18（cf6-s1 至 s6）。地图重排无需改 AS2 分派。
+
+`BookRunRules` 生成统一的 `BasicInformation.Intro`；`StageIntroService` 校验当前书本、章节、slot、活动 run 和普通 world identity。漫画成功、原生对白完成与游戏表面恢复共同决定一次执行放行，随后才兑现待执行 Start 和初始化波次。加载、相机、通信及必要时间轴仍可推进，剧情等待与失败恢复均不计入竞速时间。
+
+`BookRunService` 的章节呈现、失败、重试和过期身份退休均走共用路径。`BookComicSequence` 承接顺序漫画及可选 BGM 租约；旧 `Cf6StoryService`、逐关编号梯子及 Host 内硬编码的漫画后继对已移除。Host 只绑定完整 v2 漫画 tuple 与 exact 原生面板实例，不再复制书本剧情映射。打开投影 v2 携带 introId，prepared/finish 业务 RPC 维持 v1，过场投影沿用 v3。
+
+CF6 机关、车辆、Boss、结局与 Lee 战后剧情继续由各自领域服务负责；无漫画章节正常进入原关卡流程。旧 Host 能力识别集中在共用入口，不再为各关保留旧开场分支。车辆执行保护已同步到生成源并重新生成；Type61 原始路线、经济和地图生成归属保持不变。
+
+## 回归与实机结果
+
+| 验证 | 本轮结果 |
+|---|---|
+| Flash 原生 | 775 项通过；新鲜编译 0 错误、0 警告；后续 2069 份 AS2 源文件摘要保持一致 |
+| Host | 8296 项通过、31 项跳过、0 失败；focused 95 项通过 |
+| 数据、生成器及浏览器 | 8 条编辑声明生成 14 个运行时开场；背景身份重排、非法配置拒绝、书本生成与 Type61 --check、漫画播放和过场/准入门通过；现役选关 63/63 |
+| 真实原生窗口 | 前轮同一 Core/闭包的 71 项通过；仅证明窗口和合成交接，本轮未把它计作新重跑 |
+| 全迁移前轮实机 | 3 次已收口旅程，8 个不同书本/路线开场；10 个作用域中 9 个完成、1 个故障后安全返回；原证据独立保留 |
+| 合并上游后实机 | 新增 3 次已收口旅程，修理大学首图及两路线 A07 共 3 种开场、4 个成功作用域；另含普通外部地图和页面重载后新实例重试 |
+
+| 实机代表 | 实际操作与结果 |
+|---|---|
+| 修理大学首图 | 正常书架进入、自动播放、跳过后原生 Andy 对白；对白完成后 Start/波次各一次，实际受伤/失败返回 |
+| 修理大学重入与故障 | 新局使用新作用域；页面重载后原生保护黑幕接管；安全返回或新实例重试，对话完成前不放行 |
+| 修理大学 Boss | 既有调试选关定位最终图，漫画正常完成后单次放行；正常返回，调试局不计成绩或奖励 |
+| CF6 史实 A01/A07/A18 | 首战、车辆与后期开场；正常继续/跳过、战斗世界恢复并正常返回。车辆页面重载/原生重试通过，执行保护期间驾驶会话未启动，完成后才进入 playing/road |
+| CF6 61 计划 A01/A07/A18 | 独立路线与 35 级角色，首战、车辆和后期开场均完成单次交接并返回原角色；共用配置没有落回史实角色 |
+
+合并后修理大学新局实测漫画保护、原生对白、实际受伤、正常撤退；重入后页面重载触发原生恢复，点击重试产生新 presentation/native instance，再跳过漫画、完成原生对白并进入波次。两条 CF6 A07 路线本轮均由自动播放自然结束进入公路，分别核实 60 级 Andy 与 35 级 61 式试验员，驾驶会话 `playing/road`、执行保护解除，再从地图正常撤退。两条车辆旅程没有取得新的暂停期只读采样，不宣称本轮重测了暂停时车龄为零；该保护由前轮实机与本轮原生回归共同覆盖。
+
+中后期代表使用原有 AS2 `书中调试` 入口在新局前定位，并核对实际背景、页面和 debug 标记；此后均使用正常界面。没有写血量、代发剧情完成或伪造通关。每个成功作用域的 `narrative_complete / execution_granted / start_published / waves_initialized` 各一次；重试创建新的 presentation/native instance，失败返回的作用域没有执行放行。
+
+全部原玩家 JSON/SOL 与种子档在各旅程结束时逐项核对。合并后各旅程分别保护 339、341、342 份非目标存档文件，原种子档摘要不变，锁及恢复记录正常释放。隔离测试克隆和生产流程新建的附属槽位独立列账，保留供复查；“恢复原角色”不等于把测试克隆文件恢复到测试前字节。两次观察工具故障按原备份完成离线恢复，原玩家存档未变；失败记录与恢复收据一并保留，最终验收使用之后的干净重跑。
+
+首次原生编译和 Host fixture 的失败及修正均保留。本轮另保留原生 owned-host 准入失败、缺少证据根的 Host 失败及外部输入导致的资格取消；最终采用未放宽规则的原生重跑和串行、无外部输入的 canonical Host 重跑，8296 通过、31 跳过。实机前还修复了素材清单的旧作者目录和换行摘要：车辆 996 项生成输出、四组角色 1011 个相关文件及其已发布 SWF 均逐字节核对；美术资源未改动。观察工具新增真实 Windows 读锁重试与书中首存创建等待回归，身份、路线、原存档及未知槽位拒绝规则未放宽。
+
+本轮验收针对开场统一接入及恢复。未完成二十图连续通关、人工听感或极限性能验收；教程原生对白、自然空波清关和出口开放已观察，工具仅支持按键点按，未把手动穿过物理出口到 A01 记为实机通过。清关/下一图的准入与幂等由原生回归覆盖。
+
+## exact 候选与编译
+
+候选 `tmp/runtime-candidates/v2/intro-all-maps-1107a`，状态为 `NOT_DEPLOYED`。Core SHA256：`407ADB274E0C741EBB69E4BEF075CA0260B111F7C2D9DE87C9E4D7D7B56A1843`。
+
+本轮 CS6 发布的 asLoader SHA256：`A63728AEB89C080306F8A71F5423B5FD449A00A1D2253D5238CB5F931016B1FA`；配套主 SWF SHA256：`BD7F513941836C2E1C3695E9A42533D82146E983E7F6C1E3A07DC3C9CB0811B0`。构建身份 `862532169CC99C1476A196794FA7D38B7A16AA9279449D4B103C83FC282333D2`，payload closure `63CD2902C9D94F50209033386B552B12CDCB224063295ECB0C7088707EBE645B`。源码、编译与合并后实机均绑定该候选；Core 及闭包与前轮 8 种开场验收逐字节一致。正式发行必须由冻结源重新取得本机 X509、GitHub 独立构建、完整 production policy，并经唯一 promotion writer 写入；开发候选不直接复制到正式 runtime。
+
+## 回滚
+
+交付包的 `rollback/manifest.json` 绑定迁移前后逐文件摘要，`rollback/before/` 保存迁移前原字节。`Restore-Migration.ps1` 使用 PowerShell 7，默认只核验；明确加 `-Apply` 才恢复。它先完整核对全部目标及备份，再把当前文件备份到仓库 `tmp/comic-intro-rollback-*` 并写日志。任何摘要漂移、路径越界或重解析点都会在改写前拒绝。
+
+```powershell
+# 在交付包根目录，用 PowerShell 7 执行；先正常退出游戏和 Flash 编辑器。
+$repo = 'C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\resources'
+pwsh -NoProfile -File .\rollback\Restore-Migration.ps1 -RepoRoot $repo
+# 上一步核验通过后，明确执行恢复：
+pwsh -NoProfile -File .\rollback\Restore-Migration.ps1 -RepoRoot $repo -Apply
+```
+
+恢复目标是已通过实机的有限 B 试点：asLoader `46DCA8E4DC09C13E9C18E18514CFD4748AC5FAAA7916E0078E3A94682A4A7D63`，旧 CF6 路由类也随源码恢复。脚本不重置 Git/main，不触及存档。回滚目标叠加保留本轮三个上游地图提交：配套主 SWF 恢复到上游发布字节 `4CE1E9B24E470640FB42BAFCDC28520E0D5264FB548C1D503EC9198166F1903D`；其余上游地图/素材不改写。试点到原主线的更早回滚包独立保留。
+
+回滚在完整真实字节的文件副本上演练，包含新增/修改/删除文件、配套 SWF、Unicode 路径、漂移拒绝及只核验模式；不属于迁移回退的上游文件和种子档哨兵保持原样，未创建 Git 仓库或 worktree。`rollback/rehearsal.json` 保存实际结果，当前 main 只运行核验，未执行回退。
+
+需要先隔离开场交接能力时，可在新候选会话启动前设置 `CF7_STAGE_INTRO_HANDOFF=0`；这只切换共用能力入口，不恢复已删除的逐关旧类，也不能清除在途保护或未知持久写。正式撤回源码与 SWF 使用上述逐文件回滚。正式 runtime 发布或回退仍走既有发布权威。上述脚本只回退源码/SWF，不能恢复已正式发布的 C# runtime/consensus；要完整撤回，须对匹配旧源码的 Host 重新完成签名发布，或依据唯一 writer 保留的 previous 做受控恢复并重新核验，不能单独复制旧 DLL。交付包独立保存发布前身份与 promotion previous 清单。
+
+<a id="formal-release-20261107"></a>
+## 2026-11-07 正式发布记录
+
+冻结源 `3daedc516461ca77ff2e606b9f7de31525be9b38`、受控标签 `runtime-build-v2/20261107-comic-intros-maps-v1`、request `993F7A5F16895938AB3922996F2EAE58815FE5C43C2264AAA793ED6E5A570601` 已完成正式列车。完整 production policy **47/47**，注册本机 X509 `builder-local-b / physical-host-b` 与 [GitHub 独立构建 42383291347](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/42383291347) 对同一 43 文件闭包达成双签名、双故障域共识；唯一 writer 于 `2026-11-07T15:12:10.5685133Z` 原子推广，完整安装入口自检通过。
+
+build identity `862532169CC99C1476A196794FA7D38B7A16AA9279449D4B103C83FC282333D2`，payload closure `63CD2902C9D94F50209033386B552B12CDCB224063295ECB0C7088707EBE645B`，Core SHA256 `407ADB274E0C741EBB69E4BEF075CA0260B111F7C2D9DE87C9E4D7D7B56A1843`，manifest `FA989ED3C4227B376881BB00D9361352E9C8A7E521DC2F77B3143CA31A0A052E`，政策回执 `46DA16FBD2078C8F1E665316A8CAE1C1EEE2B7A0AE5B227B926C46112BEEF280`。机器现役值仍读取 manifest/consensus；部署提交及远端 Audit 的最终链接保存在交付包的正式发布收据。
+
+无候选参数的普通入口完成实际进程身份、启动首屏和正常关闭复验，345 份原有 JSON/SOL 摘要不变。`standardEntryBusinessJourneyRepeated=false`：漫画业务旅程属于上文绑定同一 Core/闭包的候选实机，没有把首屏核验记为正式入口重跑全部开场。旧正式字节与证明由唯一 writer 完整保留 previous，交付包附变化文件的旧字节和全量清单，未变依赖按摘要复用；源码/SWF 回退的 76 条路径另有完整字节演练。本批为 2.718 开发增量，没有新的稳定整包。

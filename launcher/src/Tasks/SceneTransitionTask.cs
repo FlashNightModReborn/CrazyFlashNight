@@ -21,6 +21,7 @@ namespace CF7Launcher.Tasks
         private bool _actionSent, _reportCovered;
         private string _receipt;
         private string _automaticReportAttempt;
+        private readonly bool _introSupported = !string.Equals(Environment.GetEnvironmentVariable("CF7_STAGE_INTRO_HANDOFF"),"0",StringComparison.Ordinal);
         internal bool Connected { get; private set; } = true;
         internal long Epoch => Interlocked.Read(ref _epoch);
         internal SceneTransitionTask(Action<Action> dispatch, Action<JObject> present, Action hide, Func<string, bool> send)
@@ -40,6 +41,12 @@ namespace CF7Launcher.Tasks
             string[] common={"version","requestId","revision","phase","imageId","tip","targetScene","actionPending"};
             if(!Positive(p["version"],out long version)) return false;
             if(version==1) return Exact(p,common);
+            if(version==3) return Exact(p,common.Concat(new[]{"introId","introState"}).ToArray())
+                && Text(p,"introId",40,out string intro) && System.Text.RegularExpressions.Regex.IsMatch(intro,"^intro:[1-9][0-9]{0,14}$")
+                && Text(p,"introState",16,out string state)
+                && (p.Value<string>("phase") is "cover" or "loading" or "reveal" or "error" ? state=="loading"
+                    : p.Value<string>("phase")=="intro" ? state is "opening" or "narrative" or "resume" or "failed"
+                    : p.Value<string>("phase")=="hide" && state is "complete" or "cancelled");
             if(version!=2 || !Exact(p,common.Concat(new[]{"report","reportVisible","reportHandoff"}).ToArray())
                 || p["reportVisible"]?.Type!=JTokenType.Boolean || p["reportHandoff"]?.Type!=JTokenType.Boolean
                 || !LootPanelCoordinator.TryNormalizeSettlementReport(p["report"] as JObject,out var report)
@@ -60,13 +67,17 @@ namespace CF7Launcher.Tasks
                 || !Text(p,"requestId",32,out string rid) || !rid.StartsWith("tr:",StringComparison.Ordinal)
                 || !long.TryParse(rid.Substring(3),NumberStyles.None,CultureInfo.InvariantCulture,out long seq)
                 || seq<=0 || seq>9007199254740991L || rid!="tr:"+seq.ToString(CultureInfo.InvariantCulture)
-                || !Text(p,"phase",16,out string phase) || phase is not ("cover" or "loading" or "reveal" or "error" or "hide")
+                || !Text(p,"phase",16,out string phase) || phase is not ("cover" or "loading" or "reveal" or "error" or "hide" or "intro")
                 || !Text(p,"imageId",32,out string image) || !SceneTransitionCatalog.Assets.ContainsKey(image)
                 || !Text(p,"tip",2048,out _) || p["actionPending"]?.Type!=JTokenType.Boolean || seq<_maxSequence) return;
             if(seq==_maxSequence) {
                 if(_current==null || rid!=_current.Value<string>("requestId")
                     || image!=_current.Value<string>("imageId") || revision<_current.Value<int>("revision")
                     || p.Value<long>("version")!=_current.Value<long>("version")
+                        && !(p.Value<long>("version")==3 && _current.Value<long>("version")==1
+                            && _introSupported && _current.Value<string>("phase") is "cover" or "loading")
+                    || _current.Value<long>("version")==3 && (p.Value<string>("introId")!=_current.Value<string>("introId")
+                        || p.Value<long>("targetScene")!=_current.Value<long>("targetScene"))
                     || !JToken.DeepEquals(p["report"],_current["report"])
                     || _current.Value<bool?>("reportVisible")==false && p.Value<bool?>("reportVisible")==true) return;
                 if(revision==_current.Value<int>("revision")) {
@@ -76,8 +87,10 @@ namespace CF7Launcher.Tasks
                 // A stale source cannot regress a revealed/error projection within one identity.
                 var before=_current.Value<string>("phase");
                 if(before=="error" && phase is not ("error" or "hide")
+                    || before=="intro" && phase is not ("intro" or "hide")
                     || before=="reveal" && phase is "cover" or "loading") return;
             }
+            if(phase=="intro" && p.Value<long>("version")!=3) return;
             if(phase=="hide") {
                 // Tombstones are accepted even when an earlier show was lost.
                 _maxSequence=seq; _current=null; _receipt=null; _actionSent=false; _reportCovered=false; Connected=true; _hide(); return;
@@ -85,6 +98,10 @@ namespace CF7Launcher.Tasks
             if(seq>_maxSequence) { _receipt=null; _actionSent=false; _reportCovered=false; }
             if(phase=="error" && _current?.Value<string>("phase")!="error") _actionSent=false;
             if(_current?.Value<string>("phase")!=phase || _current?.Value<long>("targetScene")!=scene) _receipt=null;
+            // A retry owns a new comic close/resume cycle, even though the intro
+            // and retired transition retain their identity. Old surface receipts
+            // must not become eligible again when that new comic is prepared.
+            if(p.Value<long>("version")==3 && p.Value<string>("introState") is "failed" or "opening") _receipt=null;
             if(_current?.Value<bool?>("reportVisible")==true && p.Value<bool?>("reportVisible")==false
                 || _current?.Value<bool?>("reportHandoff")==true && p.Value<bool?>("reportHandoff")==false) _actionSent=false;
             _maxSequence=seq; _current=p; Connected=true;
@@ -96,14 +113,30 @@ namespace CF7Launcher.Tasks
                 || !Text(p,"type",40,out string type) || type!="scene_transition_presented"
                 || !MatchesWeb(p) || !Text(p,"kind",16,out string kind)) return false;
             string phase=_current.Value<string>("phase");
+            if(_current.Value<long>("version")==3 && kind=="revealed")return false;
             bool report=_current.Value<bool?>("reportVisible")==true;
-            if(kind=="covered" && (phase is "cover" or "loading" or "error" || phase=="reveal" && report)
+            if(kind=="covered" && (phase is "cover" or "loading" or "error" || phase=="reveal" && report
+                    || phase=="intro" && _current.Value<long>("version")==3)
                 || kind=="revealed" && phase=="reveal" && !report) {
                 if(kind=="covered" && report) _reportCovered=true;
                 if(kind!="covered" || _receipt!="prepared") _receipt=kind;
                 ResendReceipt(); return true;
             }
             return false;
+        }
+        internal bool RetireIntroUnderCover() {
+            if(!Connected || _current?.Value<long>("version")!=3 || _current.Value<string>("phase")!="reveal")return false;
+            _receipt="intro_covered"; return Send("sceneTransitionPresented","kind",_receipt);
+        }
+        internal bool IntroSurfaceReady() {
+            if(!Connected || _current?.Value<long>("version")!=3 || _current.Value<string>("phase")!="intro"
+                || _current.Value<string>("introState") is not ("narrative" or "resume"))return false;
+            _receipt="intro_surface"; return Send("sceneTransitionPresented","kind",_receipt);
+        }
+        internal bool IntroAction(string verb) {
+            if(!Connected || _current?.Value<long>("version")!=3 || _current.Value<string>("phase")!="intro"
+                || _current.Value<string>("introState")!="failed" || verb is not ("retry" or "return"))return false;
+            return Send("sceneTransitionPresented","kind",verb=="retry" ? "intro_retry" : "intro_return");
         }
         internal bool MatchesWeb(JObject p) => _current!=null && p["requestId"]?.Type==JTokenType.String
             && p.Value<string>("requestId")==_current.Value<string>("requestId")
@@ -202,6 +235,8 @@ namespace CF7Launcher.Tasks
         private bool Send(string action,string key,string value) {
             var wire=new JObject { ["task"]="cmd",["action"]=action,["requestId"]=_current["requestId"],
                 ["revision"]=_current["revision"],[key]=value };
+            if(_current.Value<long>("version")==3)wire["introId"]=_current["introId"];
+            if(action=="sceneTransitionPresented" && key=="kind" && value=="covered" && _introSupported)wire["introVersion"]=1;
             bool sent=_send(wire.ToString(Formatting.None)+"\0");
             LogManager.Log("event=scene_transition_reply action="+action+" id="+_current.Value<string>("requestId")
                 +" revision="+_current.Value<int>("revision")+" "+key+"="+value+" sent="+sent);

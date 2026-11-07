@@ -91,7 +91,7 @@ class org.flashNight.arki.scene.BookDefinition {
     // Runtime defense for damaged/manual files; the generator also verifies all item/unit identities.
     public static function valid(data:Object):Boolean {
         if (data.id === "cf6-sting") return validCf6(data);
-        if (!shape(data, fallback(), 0) || data.schema !== "playable-book.v1"
+        if (!validChapterIntros(data) || !shape(data, fallback(), 0) || data.schema !== "playable-book.v1"
                 || data.id !== "repair-campus" || data.stageName !== "书中历险-修理大学"
                 || data.maps.length < 6 || data.maps.length > 8) return false;
         for (var i:Number = 0; i < data.maps.length; i++) {
@@ -114,7 +114,7 @@ class org.flashNight.arki.scene.BookDefinition {
             && Math.floor(value) == value && !(value < low) && !(value > high);
     }
     private static function validCf6(data:Object):Boolean {
-        if (!finiteTree(data,0) || data.schema !== "playable-book.v1" || !isCf6Route(data.routeId)
+        if (!validChapterIntros(data) || !finiteTree(data,0) || data.schema !== "playable-book.v1" || !isCf6Route(data.routeId)
                 || data.stageName !== "书中历险-毒刺行动" || typeof data.title != "string"
                 || !whole(data.startingMoney,0,10000000) || !whole(data.startingSkillPoints,0,10000)
                 || !(data.maps instanceof Array) || data.maps.length < 1 || data.maps.length > 32) return false;
@@ -364,6 +364,18 @@ class org.flashNight.arki.scene.BookDefinition {
         }
         return true;
     }
+    private static function validChapterIntros(data:Object):Boolean {
+        if (!(data.chapterIntros instanceof Array) || !(data.maps instanceof Array) || data.chapterIntros.length > 32) return false;
+        var seen:Object = {};
+        for (var i:Number=0;i<data.chapterIntros.length;i++) {
+            var intro:Object=data.chapterIntros[i], count:Number=0;
+            for (var field:String in intro) { if (field!="chapter" && field!="pageId" && field!="bgmLease") return false; count++; }
+            if (count!=3 || !whole(intro.chapter,0,data.maps.length-1) || seen[String(intro.chapter)] === true
+                    || typeof intro.bgmLease!="boolean" || !org.flashNight.arki.scene.BookComicService.knownPage(intro.pageId)) return false;
+            seen[String(intro.chapter)]=true;
+        }
+        return true;
+    }
     private static function shape(value, example, depth:Number):Boolean {
         if (depth > 12 || value == null || typeof value != typeof example) return false;
         if (typeof example == "number") return !isNaN(value) && isFinite(value) && value >= 0 && value <= 1000000000 && (Math.floor(example) != example || Math.floor(value) == value);
@@ -377,7 +389,9 @@ class org.flashNight.arki.scene.BookDefinition {
             return true;
         }
         for (var key:String in example) {
-            if (key == "dialogue") {
+            if (key == "chapterIntros") {
+                if (!validChapterIntros(value)) return false;
+            } else if (key == "dialogue") {
                 if (!(value[key] instanceof Array) || value[key].length > 32) return false;
                 for (var lineIndex:Number = 0; lineIndex < value[key].length; lineIndex++) {
                     var line:Object = value[key][lineIndex];
@@ -1287,7 +1301,19 @@ class org.flashNight.arki.scene.BookDefinition {
         lastMap: 5,
         percent: 75
     },
-    recordSp: 45
+    recordSp: 45,
+    chapterIntros: [
+        {
+            chapter: 0,
+            pageId: "prologue",
+            bgmLease: false
+        },
+        {
+            chapter: 6,
+            pageId: "boss",
+            bgmLease: false
+        }
+    ]
 };
     }
 }

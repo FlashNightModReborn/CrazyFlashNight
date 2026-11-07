@@ -172,6 +172,11 @@ class org.flashNight.arki.scene.Cf6TutorialTurretServiceTest {
         for(i=0;i<25;i++) a.onEnterFrame();
         check(_root.__turretTestShots==1,"paused clock never advances: no shot across 25 paused frames");
         _root.暂停=false;
+        w.__stageIntroExecutionHeld=true;
+        for(i=0;i<40;i++) a.onEnterFrame();
+        check(_root.__turretTestShots==1,"intro permission freezes turret fire while ordinary pause is false");
+        check(w.__cf6TutorialTurrets.turrets[0].frame==11,"held turret keeps its exact animation and shot phase");
+        w.__stageIntroExecutionHeld=false;
         for(i=0;i<17;i++) a.onEnterFrame();
         check(_root.__turretTestShots==1,"resume keeps phase: no early or double shot");
         a.onEnterFrame();

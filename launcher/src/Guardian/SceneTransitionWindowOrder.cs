@@ -15,6 +15,13 @@ namespace CF7Launcher.Guardian
         internal static bool IsPresented(Form window) => window != null && !window.IsDisposed
             && window.IsHandleCreated && IsWindowVisible(window.Handle);
 
+        internal static bool OwnsForeground(Form window)
+        {
+            if (!IsPresented(window)) return false;
+            IntPtr foreground=GetForegroundWindow();
+            return foreground==window.Handle || foreground!=IntPtr.Zero && IsChild(window.Handle,foreground);
+        }
+
         internal static bool RaiseIfCovered(Form window, Form owner, IntPtr keepAbove = default,
             bool preserveForeignOrder = false)
         {
@@ -102,6 +109,8 @@ namespace CF7Launcher.Guardian
 
         [DllImport("user32.dll")] private static extern IntPtr GetWindow(IntPtr hwnd, uint command);
         [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hwnd);
+        [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")] private static extern bool IsChild(IntPtr parent, IntPtr child);
         [DllImport("user32.dll", EntryPoint = "GetWindowLongW")] private static extern int GetWindowLong(IntPtr hwnd, int index);
         [DllImport("user32.dll")] private static extern bool SetWindowPos(IntPtr hwnd, IntPtr after,
             int x, int y, int width, int height, uint flags);

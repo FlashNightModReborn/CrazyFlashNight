@@ -19,6 +19,7 @@ import fixed_roster
 from choice_reward_catalog import item_catalog
 from cf6_acquisition import channels, route_plan, sources as acquisition_sources, registries as acquisition_registries
 from unit_registry import UnitRegistry, normalize_book_units
+from book_chapter_intros import apply_chapter_intros
 
 MID_MODS = ['高强度合金', '枪械内构强化套件', '战术背带']
 HIGH_MODS = ['纳米执行单元', '水冷机构', '黑爪扩张弹']
@@ -346,7 +347,7 @@ def build(source=None, include_fixed=True):
     skill_inputs=[{key:(int(s.findtext(key)) if key in ('MaxLevel','UnlockLevel','UnlockSP','UpgradeSP') else s.findtext(key))
                    for key in ('Name','Type','MaxLevel','UnlockLevel','UnlockSP','UpgradeSP')} for s in skill_rows if s.findtext('Name') in actor_skills]
     fixture+=fixture_method('actorInputs',dict(items=actor_items,skills=skill_inputs),True)
-    runtime_chapter=normalize_book_units(chapter,UnitRegistry.load(ROOT))
+    runtime_chapter=apply_chapter_intros(normalize_book_units(chapter,UnitRegistry.load(ROOT)))
     fixture+=fixture_literal('metadata',{k:v for k,v in runtime_chapter.items() if k not in ('maps','type61')})
     def slim_params(p):
         if not p: return None

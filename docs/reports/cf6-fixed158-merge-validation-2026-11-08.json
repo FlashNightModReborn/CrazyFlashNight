@@ -1,0 +1,97 @@
+{
+  "schema": "cf7-cf6-fixed158-merge-validation.v1",
+  "date": "2026-11-08",
+  "kind": "merged_source_validation",
+  "authorization": "可行，可以合并上游，提交部署推送了",
+  "candidateBase": "0b84e3204fb1d90184e8478c29498666d16d9678",
+  "upstream": "a0dbbf645e86f34497a46123544a145ac542b5a6",
+  "sourceRef": "refs/tags/runtime-build-v2/20261107-cf6-fixed158-r4-v1",
+  "scope": [
+    "固定158席的独立枪械成长、合法扩槽与插件组合，保持身份、等级、出生和战术编制。",
+    "普通/精英/教官名义缴获包概率5%/8%/12%，首把保护及原子裁决、配额与恢复合同。",
+    "中级插件箱无可用选项时保留真实库存引用；面板按实际写入需求进入保存通道。",
+    "CF6-M-XIX与CF6-N-PE-07更换为M134暴力版；缴获提示精确接纳cf6_type61来源。",
+    "合并上游地图、漫画开场与弹丸生命周期；重新生成章节及发布逻辑加载文件。"
+  ],
+  "tests": {
+    "offline": {
+      "checks": 28,
+      "allPassed": true
+    },
+    "host": {
+      "total": 8331,
+      "passed": 8300,
+      "skipped": 31,
+      "failed": 0,
+      "singleMonolithicRun": true,
+      "trxSha256": "647e48b1a90497fae7848a8ce370cdefb3cb28180957181144b0fe20d1c98b77"
+    },
+    "as2": {
+      "compilerDiagnostics": "0 errors / 0 warnings; fresh behavior gates",
+      "choiceRewards": 110,
+      "type61": 114,
+      "stageIntroContractsPassed": true,
+      "timedDetonation": {
+        "logic": 98,
+        "targetFilter": 17,
+        "nativeAsset": 73,
+        "gatePassed": true,
+        "successfulRawTraceRetained": false
+      },
+      "firepower": 2783,
+      "actions": 1970,
+      "nativeFixedSoldiers": 5585,
+      "nativeActionCases": 101,
+      "actualProjectileBirths": 222,
+      "actualCollisionSettlements": 407,
+      "chapterAssertions": 1594,
+      "chapterActors": 158,
+      "chapterMaps": 12
+    },
+    "asLoader": {
+      "bytes": 7040608,
+      "sha256": "1fd5cf04bcc82a75f4cc79b1a9990eb24117905c7bfb138523ca0027f2478e0d",
+      "freshColdPublish": true,
+      "ownership": {
+        "errors": [],
+        "files": 792,
+        "parsed": 6,
+        "cacheHits": 786,
+        "loaderClasses": 808,
+        "closureChecked": true,
+        "policy": "production",
+        "milliseconds": 5446.6039
+      }
+    }
+  },
+  "mergeValidationRepairs": [
+    {
+      "scope": "test_only",
+      "issue": "延时爆炸资源测试仍硬编码旧1秒与普通手雷，且独立加载lady后缺少单位榴弹的共享库场景。",
+      "resolution": "读取真实InfoLoader配置，使用受治理的共享RSL测试宿主和空场景，继续验证到时、碰撞优先、四枚子弹、覆盖及转场取消；未改游戏数值。",
+      "failedAttemptsRetained": 3
+    },
+    {
+      "scope": "test_only",
+      "issue": "章节断言把装备后HP与兵种基础HP比较，遗漏13名双持T181S的原有负生命属性。",
+      "resolution": "分别核验基础成长和真实BaseItem装备HP投影，保留T181S原有代价。",
+      "failedActors": 13
+    },
+    {
+      "scope": "tool_environment",
+      "issue": "连续多套真实Flash测试后，CS6内存不足，第一次publish留下无效SWF。",
+      "resolution": "SWF结构门拒绝产物，保留失败文件与诊断；正常退出所有本轮拥有的宿主后冷启动重新发布。"
+    }
+  ],
+  "boundaries": {
+    "machinegunSustainedFireImplemented": false,
+    "wingsElementalSpecializationImplemented": false,
+    "groundWeaponPickupsImplemented": false,
+    "lootPresentation": "持久奖励暂存及缴获提示；没有新增地面装备或防具掉落。",
+    "allLevelGapCompensationProvenSufficient": false,
+    "mergedFullHumanChapterPlaythrough": false,
+    "historicalColdPersistence": "已验收R4的16进程冷读回留作历史证据，不冒称当前合并二进制的冷读结果。",
+    "formalDeploymentClaim": false,
+    "formalDeploymentAuthority": "部署事实与身份读取config/build/runtime-release-consensus.json及runtime/cf7-runtime-manifest.tsv。"
+  }
+}

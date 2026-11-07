@@ -32,7 +32,7 @@ class org.flashNight.arki.scene.Cf6BookRunStoryTest {
         for (var i:Number = 0; i < ids.length; i++) {
             maps.push({id:ids[i], dialogue:[], mechanism:{assetScale:1, layers:[], fixtureId:ids[i]}});
         }
-        return {id:"cf6-sting", stageName:"书中历险-毒刺行动", maps:maps};
+        return {id:"cf6-sting", stageName:"书中历险-毒刺行动", maps:maps, chapterIntros:[{chapter:1,pageId:"cf6-s1",bgmLease:true},{chapter:2,pageId:"cf6-s2",bgmLease:true},{chapter:3,pageId:"cf6-s3",bgmLease:true},{chapter:7,pageId:"cf6-s4",bgmLease:true},{chapter:8,pageId:"cf6-s5",bgmLease:true},{chapter:18,pageId:"cf6-s6",bgmLease:true}]};
     }
     private static function audioResult(request:Object):Object {
         return {wireRevision:2, requestId:request.requestId,

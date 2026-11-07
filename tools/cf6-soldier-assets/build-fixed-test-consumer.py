@@ -62,6 +62,14 @@ def main(projectiles=False,chapter=False,firepower=False):
                 for script in E.parse(str(source_file)).xpath('//*[local-name()="script"]'):
                     pending.update(re.findall(r'子弹种类\s*[=:]\s*"([^"\n]+)"',script.text or ''))
                     pending.update(re.findall(r'子弹属性初始化\(this,\s*"([^"\n]+)"',script.text or ''))
+        if firepower:
+            # The FM92 scatter now uses interceptable unit grenades. They attach
+            # to gameWorld, so its native test host needs the shared RSL namespace.
+            for name in ('fm92刺弹炮弹','高压爆炸','火焰集束手雷爆炸'):
+                source=lookup[name].get('swf')
+                if not source or not (ROOT/source).is_file():
+                    raise ValueError('Missing timed projectile source: '+name)
+                consumer.IMPORTS[name]=source
         consumer.NAME='Cf6FirepowerProjectileHost' if firepower else 'Cf6FixedProjectileHost'
     else:consumer.NAME='Cf6FixedChapterHost' if chapter else 'Cf6FixedSoldierNativeHost'
     consumer.OWNER=ROOT/'scripts'/consumer.NAME

@@ -224,6 +224,19 @@ class org.flashNight.arki.scene.BookComicServiceTest {
         clock._session.last = getTimer() - 800;
         check(BookRunClock.elapsed(_root._saveExt.bookRun) >= before + 800,
             "settlement samples the final active interval after pause release");
+        _root.gameworld.__stageIntroExecutionHeld = true;
+        BookRunClock.start(_root._saveExt.bookRun);
+        clock._session.last = getTimer() - 60000; BookRunClock.tick();
+        check(_root._saveExt.bookRun.playTimeMs == 0 && _root.暂停 === false,
+            "outer intro holds competitive time without a global pause claim");
+        lease = PauseManager.lease(true,"intro_clock_fixture"); PauseManager.releaseLease(lease);
+        clock._session.last = getTimer() - 60000; BookRunClock.tick();
+        check(_root._saveExt.bookRun.playTimeMs == 0 && clock._session.paused === true,
+            "comic claim release cannot bill failed intro waiting time");
+        _root.gameworld.__stageIntroExecutionHeld = false; BookRunClock.tick();
+        clock._session.last = getTimer() - 800;
+        check(BookRunClock.elapsed(_root._saveExt.bookRun) >= 800,
+            "execution grant starts a fresh active clock interval");
         clock._session = null;
     }
     private static function testLeeCues():Void {

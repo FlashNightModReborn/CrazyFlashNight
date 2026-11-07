@@ -309,6 +309,8 @@ class org.flashNight.arki.scene.StageManager {
         var spawnPointInfo = currentStageInfo.spawnPointInfo;
         
         gameworld = sceneManager.gameworld;
+        // Before environment/instance/callback side effects; SceneReady keeps its old meaning.
+        if (!isWarlordAction) org.flashNight.arki.scene.StageIntroService.declare(gameworld,basicInfo.Intro);
         _root.d_倒计时显示._visible = false;
 
         stageEventHandler.init(gameworld);
@@ -552,14 +554,27 @@ class org.flashNight.arki.scene.StageManager {
     /** 只接受本次世界/关卡的完成闩锁；事件重入后再次检查身份。 */
     public function onPlayerReady(gate:Object):Void {
         var bridge:Object=org.flashNight.arki.scene.PlayerSceneLifecycle;
-        if(gate.manager!==this || !bridge.isReady(gate) || gate.published!==true || gate.wavesStarted===true) return;
+        if(gate.manager!==this || !bridge.isReady(gate) || gate.published!==true || gate.wavesStarted===true
+                || gate.startDispatching===true) return;
+        if(org.flashNight.arki.scene.StageIntroService.deferStart(gate)) return;
+        gate.startDispatching=true;
         if(gate.started!==true) {
             gate.started=true;
-            gameworld.dispatcher.publish("Start");
+            try {
+                gameworld.dispatcher.publish("Start");
+                org.flashNight.arki.scene.StageIntroService.noteStart("start_published");
+            } catch(startError) {
+                gate.startDispatching=false;
+                onPlayerInitializationFailed(gate,startError);
+                return;
+            }
         }
-        if(!bridge.isReady(gate)) return;
+        gate.startDispatching=false;
+        if(!bridge.isReady(gate) || gate.wavesStarted===true
+                || org.flashNight.arki.scene.StageIntroService.deferStart(gate)) return;
         gate.wavesStarted=true;
         if(currentStageInfo.waveInfo!=null) spawner.init(currentStageInfo);
+        org.flashNight.arki.scene.StageIntroService.noteStart("waves_initialized");
     }
 
     /** 出生同步/延迟尾部统一复用 initStage 的失败返回权威。 */
@@ -1030,7 +1045,7 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function clearStage():Void{
-        if(!isActive || isFinished || isFailed) return;
+        if(!isActive || isFinished || isFailed || gameworld.__stageIntroExecutionHeld === true) return;
         if (org.flashNight.arki.scene.LeeAssaultService.interceptClear(this, gameworld)) return;
         if (org.flashNight.arki.scene.BaseSiegeController.interceptClear(this, gameworld)) return;
         if (org.flashNight.arki.scene.NewcomerRescueController.interceptClear(this, gameworld)) return;
@@ -1129,7 +1144,7 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function finishStage():Void{
-        if(!isActive || isFinished || isFailed) return;
+        if(!isActive || isFinished || isFailed || gameworld.__stageIntroExecutionHeld === true) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord finishStage rejected; CompleteSubStage required");
             return;
@@ -1288,7 +1303,7 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function nextStage():Boolean{
-        if(!isActive || isFinished || isFailed) return false;
+        if(!isActive || isFinished || isFailed || gameworld.__stageIntroExecutionHeld === true) return false;
         if (!org.flashNight.arki.scene.LeeAssaultService.canAdvance()) return false;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord nextStage rejected; typed result required");

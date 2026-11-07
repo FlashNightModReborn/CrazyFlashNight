@@ -244,7 +244,7 @@ class org.flashNight.arki.scene.WaveSpawner {
     }
 
     public function tick():Void{
-        if(!this.isActive) return;
+        if(!this.isActive || gameworld.__stageIntroExecutionHeld === true) return;
         this.tickCount++;
         this.waveSpawnWheel.minHeapTick();
         if(this.tickCount % 3 == 0) {

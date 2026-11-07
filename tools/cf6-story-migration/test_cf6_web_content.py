@@ -178,45 +178,25 @@ class Cf6WebContentTests(unittest.TestCase):
 
     def test_as2_source_contract_is_static_only_not_avm1(self):
         scene = build.REPO / "scripts" / "类定义" / "org" / "flashNight" / "arki" / "scene"
-        names = ["BookComicService.as", "BookComicServiceTest.as", "Cf6StoryService.as", "Cf6StoryServiceTest.as", "BookRunService.as"]
+        names = ["BookComicService.as", "BookComicSequence.as", "BookComicSequenceTest.as", "BookRunService.as"]
         sources = {}
         for name in names:
             data = (scene / name).read_bytes()
             self.assertTrue(data.startswith(b"\xef\xbb\xbf"), f"UTF-8 BOM missing: {name}")
-            sources[name] = data.decode("utf-8-sig").replace("\r\n", "\n")
-        router = sources["Cf6StoryService.as"]
-        self.assertNotIn("_root.gameCommands", router)
-        self.assertNotIn("book_comic_response", router)
-        self.assertNotIn("PauseManager.lease", router)
-        self.assertIn('if (index == 7) return ["cf6-s4"]', router)
-        self.assertIn('if (index == 8) return ["cf6-s5"]', router)
-        self.assertIn('if (index == 18) return ["cf6-s6"]', router)
-        self.assertNotIn('if (index == 17)', router)
-        self.assertIn('return beginSequence(["cf6-s7", "cf6-end"], continuation, interruption)', router)
-        self.assertIn("BookComicService.begin", router)
-        self.assertIn('finishSequence(state, "open_failed", "sequence", true)', router)
-        shared = sources["BookComicService.as"]
-        self.assertEqual(shared.count('sendTaskToNode("book_comic_response"'), 1)
-        self.assertIn("BookRunRules.sameCf6Run", shared)
-        self.assertIn("mayContinue", shared)
-        self.assertIn("s.interruption", shared)
+            sources[name] = data.decode("utf-8-sig")
+        sequence = sources["BookComicSequence.as"]
+        for authority in ["_root.gameCommands", "book_comic_response", "PauseManager.lease", "pagesBeforeChapter", "beginChapter"]:
+            self.assertNotIn(authority, sequence)
+        self.assertIn("BookComicService.begin", sequence)
+        self.assertNotIn("SaveManager.getInstance().flushBeforeTransition", sequence)
+        self.assertFalse((scene / "Cf6StoryService.as").exists())
         run = sources["BookRunService.as"]
-        self.assertIn("if (_ending.cf6Story) presentCf6Ending(); else persistOutcome();", run)
-        self.assertIn("ending.cf6Story === true && ending.storyCompleted !== true", run)
-        self.assertIn("BookRunRules.sameCf6Run(chapter.runIdentity", run)
-        self.assertIn("chapter.started = true", run)
-        self.assertIn("cf6ChapterInterruption(chapter)", run)
+        self.assertIn("BookRunRules.chapterIntro", run)
+        self.assertIn("chapterInterruption(chapter)", run)
+        self.assertNotIn("cf6ChapterInterruption", run)
+        self.assertIn("presentCf6Ending", run)
         self.assertIn("cf6EndingInterruption(ending)", run)
-        self.assertIn("cf6EndingRetryCallback(ending)", run)
-        self.assertIn("chapter.storyActive = true;\n                if (org.flashNight.arki.scene.Cf6StoryService.beginChapter", run)
-        self.assertIn("ending.storyActive = true;\n        if (org.flashNight.arki.scene.Cf6StoryService.beginFinal", run)
-        self.assertIn("|| _chapter !== chapter || chapter.started === true", run)
-        self.assertNotIn("beginChapter(index, cf6Follow,\n                        cf6ChapterInterruption(chapter))) chapter.storyActive = true", run)
-        tests = sources["Cf6StoryServiceTest.as"]
-        self.assertIn("synchronous admission rejection cannot reactivate a retired chapter", tests)
-        self.assertIn("synchronous ending expiry keeps victory unsettled and retryable", tests)
-        self.assertIn("late old chapter continuation cannot delete the replacement watch or start its old room", tests)
-        self.assertNotIn("SaveManager.getInstance().flushBeforeTransition", sources["Cf6StoryService.as"])
+        self.assertIn("BookRunRules.sameActiveRun", sources["BookComicService.as"])
 
 
 if __name__ == "__main__":

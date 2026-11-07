@@ -15,4 +15,18 @@ h=harness({reduced:false,page:twoPanelPage});h.open();h.decodes[0].resolve();awa
 h=harness({reduced:false,page:shakePage});h.open();h.decodes[0].resolve();await Promise.resolve();h.reply();h.prime();const shakeBase=cam(h.draws.at(-1));h.run(.1);const shaking=cam(h.draws.at(-1));assert(shaking.x!==shakeBase.x||shaking.y!==shakeBase.y,'shake displaces the camera inside its window');h.run(.5);const settled=cam(h.draws.at(-1));assert(Math.abs(settled.x-shakeBase.x)<1e-9&&Math.abs(settled.y-shakeBase.y)<1e-9&&settled.s===shakeBase.s,'shake decays back to base after its window');h.spec.onClose();
 h=harness({page:shakePage});h.open();h.decodes[0].resolve();await Promise.resolve();h.reply();h.prime();const reducedBase=cam(h.draws.at(-1));h.run(.1);const reducedShake=cam(h.draws.at(-1));assert(reducedShake.x===reducedBase.x&&reducedShake.y===reducedBase.y&&reducedShake.s===reducedBase.s,'shake stays frozen under reduced motion');h.run(2);const reducedLater=cam(h.draws.at(-1));assert(reducedLater.s===reducedBase.s&&reducedLater.x===reducedBase.x&&reducedLater.y===reducedBase.y,'every motion stays frozen under reduced motion');h.spec.onClose();
 h=harness({page:{id:'prologue',image:'silent.png',panels:[{label:'silent',rect:[0,0,1,.25],duration:3,lines:[{speaker:'',text:'',camera:{motion:'hold'}},{speaker:'Lee',text:'来。',camera:{motion:'hold'}}]}]}});h.open();h.decodes[0].resolve();await Promise.resolve();h.reply();assert.equal(h.node('[data-comic="subtitle"]').hidden,true,'silent image beat hides subtitle');h.node('[data-comic="next"]').click();assert.equal(h.node('[data-comic="subtitle"]').hidden,false,'spoken beat restores subtitle after silence');assert.equal(h.node('[data-comic="speech"]').textContent,'来。');h.spec.onClose();
+// Open v2 is content-ready only after visible frame opportunities; activation stays Host-owned.
+h=harness();h.session.v=2;h.session.introId='intro:1';h.node('document').hidden=true;h.open();h.decodes[0].resolve();await Promise.resolve();
+assert.equal(h.messages.length,0,'intro decode does not immediately send prepared');
+h.step(16);h.step(16);assert.equal(h.messages.length,0,'hidden intro cannot prepare');
+h.node('document').hidden=false;h.step(16);
+h.node('[data-comic="play"]').click();h.run(.2);
+assert.equal(h.node('[data-comic="play"]').textContent,'播放','intro cannot start its clock before exact Host activation');
+assert.equal(h.messages.length,1,'visible static frame can now request prepared');
+assert.equal(h.messages[0].cmd,'prepared');h.reply();
+assert.equal(h.node('[data-comic="play"]').textContent,'暂停','Host prepared reply activates the exact intro');
+h.node('[data-comic="play"]').click();h.reply();
+assert.equal(h.node('[data-comic="play"]').textContent,'播放','duplicate prepared reply cannot restart a manually paused comic');h.spec.onClose();
+h=harness();h.session.v=2;h.session.introId='intro:2';h.open();h.decodes[0].resolve();await Promise.resolve();h.step(16);h.spec.onClose();h.step(16);
+assert.equal(h.messages.length,0,'closed intro cannot emit delayed frame preparation');
 assert(!source.includes('sceneSelect'));assert(!source.includes('finaleScenes'));console.log('Comic Web focus clipping, exact prepared, skip, cleanup, late decode, missing-image exit, beat push/hold camera, smooth/cut panel transitions, next cancel, ending pullback, shake window and reduced-motion freeze OK')})().catch(e=>{console.error(e);process.exitCode=1});

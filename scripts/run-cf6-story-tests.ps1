@@ -4,7 +4,7 @@ $ErrorActionPreference = 'Stop'
 chcp.com 65001 | Out-Null
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$storyPath = Join-Path $projectRoot 'scripts/类定义/org/flashNight/arki/scene/Cf6StoryService.as'
+$storyPath = Join-Path $projectRoot 'scripts/类定义/org/flashNight/arki/scene/BookComicSequence.as'
 $storySource = Get-Content -LiteralPath $storyPath -Raw -Encoding UTF8
 $resolveBody = [regex]::Match($storySource,
     '(?ms)private static function resolvePrepared\(state:Object\):Void \{(.*?)(?=private static function sequenceContinuation)').Value
@@ -21,17 +21,17 @@ $focusedRun = @{
     TemplateRelativePath = 'scripts/test-runners/cf6-story/TestLoader.as.template'
     SuiteRelativePaths = @(
         'scripts/类定义/org/flashNight/arki/scene/BookComicServiceTest.as'
-        'scripts/类定义/org/flashNight/arki/scene/Cf6StoryServiceTest.as'
+        'scripts/类定义/org/flashNight/arki/scene/BookComicSequenceTest.as'
         'scripts/类定义/org/flashNight/arki/scene/Cf6BookRunStoryTest.as'
     )
     SuiteFqns = @(
         'org.flashNight.arki.scene.BookComicServiceTest'
-        'org.flashNight.arki.scene.Cf6StoryServiceTest'
+        'org.flashNight.arki.scene.BookComicSequenceTest'
         'org.flashNight.arki.scene.Cf6BookRunStoryTest'
     )
     AdditionalAsRelativePaths = @(
         'scripts/类定义/org/flashNight/arki/scene/BookComicService.as'
-        'scripts/类定义/org/flashNight/arki/scene/Cf6StoryService.as'
+        'scripts/类定义/org/flashNight/arki/scene/BookComicSequence.as'
         'scripts/类定义/org/flashNight/arki/scene/BookRunService.as'
         'scripts/类定义/org/flashNight/arki/scene/BookRunRules.as'
         'scripts/类定义/org/flashNight/arki/scene/BookDefinition.as'
@@ -51,14 +51,14 @@ $focusedRun = @{
         'scripts/类定义/org/flashNight/neur/Server/SaveManager.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^BookComicServiceTest Tests Passed: 45\r?$'
+        '(?m)^BookComicServiceTest Tests Passed: 48\r?$'
         '(?m)^BookComicServiceTest Tests Failed: 0\r?$'
-        '(?m)^Cf6StoryServiceTest Tests Passed: 108\r?$'
-        '(?m)^Cf6StoryServiceTest Tests Failed: 0\r?$'
+        '(?m)^BookComicSequenceTest Tests Passed: 104\r?$'
+        '(?m)^BookComicSequenceTest Tests Failed: 0\r?$'
         '(?m)^Cf6BookRunStoryTest Tests Passed: 51\r?$'
         '(?m)^Cf6BookRunStoryTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = '204/204 assertions; separate S4-A07/S5-A08/S6-A18 chapter gates, generic sequence preparation and unchanged final outcome lifecycle'
+    SuccessSummary = '203/203 assertions; separate S4-A07/S5-A08/S6-A18 chapter gates, generic sequence preparation and unchanged final outcome lifecycle'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

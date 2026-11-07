@@ -124,6 +124,9 @@
     <Include href="Import120.xml" itemID="6af00000-b8dee8e5" loadImmediate="false"/>
     <Include href="Import121.xml" itemID="6af00000-ff080b28" loadImmediate="false"/>
     <Include href="Import122.xml" itemID="6af00000-dcf6a00f" loadImmediate="false"/>
+    <Include href="Import123.xml" itemID="6af00000-f3e668d2" loadImmediate="false"/>
+    <Include href="Import124.xml" itemID="6af00000-dea5f339" loadImmediate="false"/>
+    <Include href="Import125.xml" itemID="6af00000-d67fe810" loadImmediate="false"/>
   </symbols>
   <timelines>
     <DOMTimeline name="场景 1">
@@ -345,7 +348,7 @@ _root.主角函数.获取装备主动战技种类 = function(装备类型, 装�
     #include "../逻辑/装备函数/RPG.as"
 };
 
-_root.cf6NativeRslAnchorCount=123;
+_root.cf6NativeRslAnchorCount=126;
 
 import org.flashNight.arki.bullet.BulletComponent.Chain.*;
 import org.flashNight.gesh.depth.*;
@@ -488,40 +491,7 @@ _root.子弹区域shoot表演=_root.子弹区域shoot;
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import102" name="source102">
-                  <matrix>
-                    <Matrix tx="-5000" ty="-5000"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import111" name="source111">
-                  <matrix>
-                    <Matrix tx="-5000" ty="-5000"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import112" name="source112">
-                  <matrix>
-                    <Matrix tx="-5000" ty="-5000"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import113" name="source113">
+                <DOMSymbolInstance libraryItemName="Import89" name="source89">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -621,6 +591,39 @@ _root.子弹区域shoot表演=_root.子弹区域shoot;
                   </color>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import122" name="source122">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import123" name="source123">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import124" name="source124">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import125" name="source125">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -1526,17 +1529,6 @@ _root.子弹区域shoot表演=_root.子弹区域shoot;
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import89" name="source89">
-                  <matrix>
-                    <Matrix tx="-5000" ty="-5000"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import90" name="source90">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
@@ -1669,6 +1661,17 @@ _root.子弹区域shoot表演=_root.子弹区域shoot;
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import102" name="source102">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import103" name="source103">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
@@ -1747,6 +1750,39 @@ _root.子弹区域shoot表演=_root.子弹区域shoot;
                   </color>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import110" name="source110">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import111" name="source111">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import112" name="source112">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import113" name="source113">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>

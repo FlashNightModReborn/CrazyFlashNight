@@ -1,5 +1,28 @@
 ﻿/** 可复现的出怪计划和有限纪录奖励。纯规则不读取或改写玩家状态。 */
 class org.flashNight.arki.scene.BookRunRules {
+    /** Pure declaration lookup; map/page bindings are generated from the content registry. */
+    public static function chapterIntro(config:Object, index:Number):Object {
+        if (!(config.chapterIntros instanceof Array) || typeof index!="number" || isNaN(index)
+                || Math.floor(index)!=index || index<0 || !(index<config.maps.length)) return null;
+        for (var i:Number=0;i<config.chapterIntros.length;i++) {
+            var entry:Object=config.chapterIntros[i];
+            if (entry.chapter===index && typeof entry.bgmLease=="boolean"
+                    && org.flashNight.arki.scene.BookComicService.knownPage(entry.pageId))
+                return {kind:"book_chapter",bookId:config.id,chapter:index,pageId:entry.pageId,bgmLease:entry.bgmLease};
+        }
+        return null;
+    }
+    public static function sameActiveRun(identity:Object, current:Object):Boolean {
+        return identity!=null && current!=null && current.outcome=="active"
+            && typeof identity.bookId=="string" && identity.bookId!="" && identity.bookId===current.bookId
+            && typeof identity.slot=="string" && identity.slot!="" && identity.slot===current.slot
+            && typeof identity.seed=="number" && isFinite(identity.seed) && !isNaN(identity.seed)
+            && identity.seed>0 && identity.seed<2147483647 && Math.floor(identity.seed)==identity.seed
+            && typeof identity.startedAt=="number" && isFinite(identity.startedAt) && !isNaN(identity.startedAt)
+            && identity.startedAt>0 && Math.floor(identity.startedAt)==identity.startedAt
+            && identity.seed===current.seed && identity.startedAt===current.startedAt
+            && identity.routeId===current.routeId && identity.planSeed===current.planSeed;
+    }
     /** RewardStash may clone bookRun during commit/rollback; compare a detached identity, not object references. */
     public static function sameCf6Run(identity:Object, current:Object):Boolean {
         if (identity == null || current == null || identity.bookId !== "cf6-sting" || current.bookId !== "cf6-sting"
@@ -124,6 +147,8 @@ class org.flashNight.arki.scene.BookRunRules {
                     + (choice != null ? "。末波掉落自选配给包：从背包打开，选定后技能直接获得，物品到暂存领取；K点仅在确认付费卡时扣除。" : "")
                     + (i > 0 ? "。出发前可打开上图的自选配给包，在装备界面的自选礼包中选择一套武器、插件与补给。" : "")}],
                 Instances:{Instance:[]}, Pickups:{Pickup:[]}};
+            var intro:Object=chapterIntro(config,i);
+            if (intro!=null) stage.BasicInformation.Intro=intro;
             if (i == config.bossEncounter.mapIndex) {
                 waves[0].EnemyGroup.Enemy[0].InstanceName = config.bossEncounter.instanceName;
                 stage.BasicInformation.BookBoss = bossPlan(config.bossEncounter, state);
@@ -149,6 +174,8 @@ class org.flashNight.arki.scene.BookRunRules {
             stage.BasicInformation.EndFrame="房间";
             stage.BasicInformation.Cf6Boss=map.bossEncounter;
             stage.BasicInformation.Cf6MapId=map.id;
+            var intro:Object=chapterIntro(config,i);
+            if (intro!=null) stage.BasicInformation.Intro=intro;
             if (!(stage.Event instanceof Array)) stage.Event=[];
             stage.Event.unshift({EventName:"Start",Callback:{Name:"书中章节",Parameter:[i]},Message:config.title+" · "+map.title});
             if (stage.Instances == null) stage.Instances={Instance:[]};

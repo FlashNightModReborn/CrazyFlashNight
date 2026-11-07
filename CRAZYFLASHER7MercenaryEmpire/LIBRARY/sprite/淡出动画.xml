@@ -223,14 +223,7 @@ stop();
             </DOMFrame>
             <DOMFrame index="4" duration="18" tweenType="shape" keyMode="17922" acceleration="-100">
               <MorphShape>
-                <morphSegments>
-                  <MorphSegment startPointA="#20.A8, #22.C8" startPointB="#20.A8, #22.C8" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
-                    <MorphCurves controlPointA="#20.F1, #22.C8" anchorPointA="#21.39, #22.C8" controlPointB="40, #22.C8" anchorPointB="#2F.58, #22.C8" isLine="true"/>
-                    <MorphCurves controlPointA="#21.39, #23.18" anchorPointA="#21.39, #23.68" controlPointB="#2F.58, #23.18" anchorPointB="#2F.58, #23.68" isLine="true"/>
-                    <MorphCurves controlPointA="#20.F1, #23.68" anchorPointA="#20.A8, #23.68" controlPointB="40, #23.68" anchorPointB="#20.A8, #23.68" isLine="true"/>
-                    <MorphCurves controlPointA="#20.A8, #23.18" anchorPointA="#20.A8, #22.C8" controlPointB="#20.A8, #23.18" anchorPointB="#20.A8, #22.C8" isLine="true"/>
-                  </MorphSegment>
-                </morphSegments>
+                <morphSegments/>
                 <morphHintsList/>
               </MorphShape>
               <elements/>

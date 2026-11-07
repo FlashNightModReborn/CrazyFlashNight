@@ -584,11 +584,18 @@
           <Include href="import/外部地图/地图-实验室.xml" itemID="67c167e0-00000bf4" lastModified="1740728289"/>
           <Include href="import/外部地图/地图-食堂.xml" itemID="6746d1da-00001c02" lastModified="1732694490"/>
           <Include href="import/外部地图/地图-隧道据点.xml" itemID="6a1ebf67-00002157" lastModified="1780400005"/>
+          <Include href="import/外部地图/地图-同盟咖啡厅.xml" itemID="6aeef82f-000003e8" lastModified="1794046181"/>
           <Include href="import/外部地图/地图-同盟通路.xml" itemID="68056075-00000405" lastModified="1745182837"/>
           <Include href="import/外部地图/地图-同盟下水道.xml" itemID="6a2674da-0000074d" lastModified="1780905204"/>
           <Include href="import/外部地图/地图-同盟卸货站.xml" itemID="68051e9f-000004b4" lastModified="1745165983"/>
+          <Include href="import/外部地图/地图-同盟指挥室.xml" itemID="6aeef845-000003f0" lastModified="1794046194"/>
           <Include href="import/外部地图/地图-小马地图.xml" itemID="66ad09e0-00000bcd" lastModified="1722616321"/>
           <Include href="import/外部地图/地图-幸存者营地.xml" itemID="65c7a1fb-000010c0" lastModified="1707581985"/>
+          <Include href="import/外部地图/地图-研究所防线.xml" itemID="6aeef897-00000410" lastModified="1794046205"/>
+          <Include href="import/外部地图/地图-研究所接待处.xml" itemID="6aeef862-000003f8" lastModified="1794046217"/>
+          <Include href="import/外部地图/地图-研究所农业园.xml" itemID="6aeef8a4-00000418" lastModified="1794046229"/>
+          <Include href="import/外部地图/地图-研究所生化室.xml" itemID="6aeef887-00000408" lastModified="1794046240"/>
+          <Include href="import/外部地图/地图-研究所通路.xml" itemID="6aeef876-00000400" lastModified="1794046251"/>
           <Include href="import/外部地图/地图-摇滚公园.xml" itemID="65c79a66-00000dc2" lastModified="1707580563"/>
           <Include href="import/外部地图/地图-摇滚排练室.xml" itemID="688caf92-00000850" lastModified="1754050450"/>
           <Include href="import/外部地图/地图-走廊.xml" itemID="6746d1f0-00001c06" lastModified="1732694512"/>
@@ -884,7 +891,7 @@
           <Include href="无限过图计时器.xml" itemID="689c1899-000001f2" lastModified="1755135414"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="150" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;29&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="134" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;29&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -2407,7 +2414,7 @@ onClipEvent (mouseDown) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="修改工具界面" color="#4676EE" parentLayerIndex="20" autoNamed="false" visible="false">
+                    <DOMLayer name="修改工具界面" color="#4676EE" parentLayerIndex="20" current="true" isSelected="true" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="134" keyMode="9728">
                                    <elements/>
@@ -2476,9 +2483,7 @@ onClipEvent (mouseDown) {
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
@@ -2623,8 +2628,7 @@ onClipEvent (mouseDown) {
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
@@ -2648,8 +2652,7 @@ onClipEvent (mouseDown) {
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
@@ -2830,7 +2833,7 @@ onClipEvent (enterFrame) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="背景" color="#7370F9" locked="true" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="背景" color="#7370F9" locked="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="211" keyMode="9728">
                                    <elements>
@@ -3296,6 +3299,7 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="207508" publishTime="1794046285"/>
           <PublishItem publishSize="529507" publishTime="1780876569"/>
           <PublishItem publishSize="1355410" publishTime="1776945103"/>
           <PublishItem publishSize="1352800" publishTime="1776570601"/>
@@ -3315,6 +3319,5 @@ onClipEvent (enterFrame) {
           <PublishItem publishSize="607404" publishTime="1775112650"/>
           <PublishItem publishSize="607404" publishTime="1775112215"/>
           <PublishItem publishSize="612145" publishTime="1775111917"/>
-          <PublishItem publishSize="616972" publishTime="1775100519"/>
      </publishHistory>
 </DOMDocument>

@@ -816,6 +816,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             render(s);
             if(!org.flashNight.arki.scene.Cf6MapPresentation.loadingCoverReady(s.world,s.owner)) return;
         }
+        if(s.world.__stageIntroExecutionHeld === true) {render(s);return;}
         var paused:Boolean=PauseManager.isPausedExcept(s.lease);
         if(!paused) s.animationFrame++;
         var cue:String;

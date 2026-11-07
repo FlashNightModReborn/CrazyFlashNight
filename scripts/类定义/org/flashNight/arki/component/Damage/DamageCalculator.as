@@ -125,6 +125,7 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
      * @return DamageResult 返回一个 DamageResult 对象，记录本次伤害计算的详细结果。
      */
     public static function calculateDamage(bullet, shooter, hitTarget, overlapRatio, dodgeState):DamageResult {
+        if (_root.gameworld.__stageIntroExecutionHeld === true) return DamageResult.NULL;
         // 获取子弹关联的 DamageManager 对象
         var manager:DamageManager = bullet.damageManager;
 

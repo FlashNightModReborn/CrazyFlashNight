@@ -135,6 +135,62 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void IntroComicPresentationUsesNativeVisibilityAndTheExactReadyDocumentInstance()
+        {
+            RunSta(() => {
+                using var owner=new ObservedForm(); owner.Show();
+                using var comic=new ObservedForm {Owner=owner};
+                Assert.True(SetWindowPos(comic.Handle,IntPtr.Zero,0,0,0,0,0x0253));
+                Assert.False(comic.Visible);
+                Assert.True(PanelHostController.IsIntroComicEndpointPresented("book-comic","panel:1","panel:1",true,comic));
+                Assert.False(PanelHostController.IsIntroComicEndpointPresented("book-comic","panel:1","panel:2",true,comic));
+                Assert.False(PanelHostController.IsIntroComicEndpointPresented("book-comic","panel:1","panel:1",false,comic));
+                Assert.False(PanelHostController.IsIntroComicEndpointPresented("bookshelf","panel:1","panel:1",true,comic));
+                Assert.True(SetWindowPos(comic.Handle,IntPtr.Zero,0,0,0,0,0x0293));
+                Assert.False(PanelHostController.IsIntroComicEndpointPresented("book-comic","panel:1","panel:1",true,comic));
+            });
+        }
+
+        [Fact]
+        public void BoundComicForegroundSignalAdmitsHandoffWithoutTrustingOtherSameProcessWindows()
+        {
+            RunSta(() => {
+                using var owner=new ObservedForm(); owner.Show();
+                using var comic=new ObservedForm {Owner=owner}; comic.Show();
+                using var curtain=new CompositionHelpSurface(owner,"unused-web-root","unused-profile",transition:true);
+                var handoff=new IntroPresentationHandoff(new Newtonsoft.Json.Linq.JObject {
+                    ["introId"]="intro:1",["requestId"]="tr:1",["targetScene"]=3,["introState"]="opening" },0);
+                handoff.TimelineRetired=true;
+                bool ready=true;
+                // Controlled foreground observation, as in CompositionRecheckTests.
+                // Native desktop activation is verified by the isolated game journey.
+                IntPtr observedForeground=comic.Handle;
+                curtain.ForegroundReaderForRecheck=()=>observedForeground;
+                bool ExactForeground(string instance) => PanelHostController.IsIntroComicEndpointPresented(
+                    "book-comic","panel:1",instance,true,comic) && observedForeground==comic.Handle;
+                bool ReadyEndpoint(string instance) => PanelHostController.IsIntroComicEndpointPresented(
+                    "book-comic","panel:1",instance,ready,comic);
+                Assert.False(curtain.CanRestoreGameFocus);
+                Assert.False(handoff.HasPresentationForeground(false,ExactForeground));
+                Assert.True(handoff.QueueActivation(new Newtonsoft.Json.Linq.JObject {
+                    ["v"]=2,["presentationId"]="bookcomic:1",["slot"]="bookrun_fixture",["sceneId"]="scene:3",
+                    ["introId"]="intro:1",["pageId"]="cf6-s4" },"panel:1",()=>{}));
+                var foreground=GetForegroundWindow();
+                Assert.True(handoff.HasPresentationForeground(curtain.CanRestoreGameFocus,ExactForeground));
+                Assert.Equal(foreground,GetForegroundWindow());
+                ready=false;
+                Assert.True(handoff.HasPresentationForeground(false,ExactForeground));
+                Assert.False(handoff.TryActivate(ReadyEndpoint)); Assert.True(handoff.CoverRequired);
+                ready=true;
+                using var sibling=new ObservedForm {Owner=owner}; sibling.Show();
+                observedForeground=sibling.Handle;
+                Assert.False(curtain.CanRestoreGameFocus);
+                Assert.False(handoff.HasPresentationForeground(false,ExactForeground));
+                Assert.Equal(foreground,GetForegroundWindow());
+            });
+        }
+
+        [Fact]
         public void NativeShownBookshelf_CanDeliverReturnAndRepairOrderWithManagedVisibilityFalse()
         {
             RunSta(() =>

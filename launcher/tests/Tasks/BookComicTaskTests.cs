@@ -11,6 +11,7 @@ namespace CF7Launcher.Tests.Tasks {
   }
   [Theory][InlineData("cf6-s4","cf6-s5","continue")][InlineData("cf6-s4","cf6-s5","skip")]
   [InlineData("cf6-s7","cf6-end","continue")][InlineData("cf6-s7","cf6-end","skip")]
+  [InlineData("prologue","boss","continue")][InlineData("cf6-s2","cf6-s3","skip")]
   public void AuthoredSuccessorWaitsForExactCloseThenUsesOriginalReservation(string first,string second,string reason){
    var sent=new List<JObject>();var closes=new List<string>();var opens=0;
    using var task=new BookComicTask(()=>true,s=>{sent.Add(JObject.Parse(s.TrimEnd('\0')));return true;});
@@ -31,13 +32,13 @@ namespace CF7Launcher.Tests.Tasks {
   }
   [Theory][InlineData("panel")][InlineData("instance")][InlineData("slot")][InlineData("scene")]
   [InlineData("page")][InlineData("presentation")]
-  public void ClosingHandoffRejectsForeignOrUnauthoredSuccessor(string boundary){
+  public void ClosingHandoffRejectsForeignOrInvalidSuccessor(string boundary){
    var sent=new List<JObject>();using var task=new BookComicTask(()=>true,s=>{sent.Add(JObject.Parse(s.TrimEnd('\0')));return true;});
    task.SetPostToWeb(s=>{},null,s=>{});var before=Data();before["pageId"]="cf6-s4";FinishCf6(task,sent,before);
    var next=Data("bookcomic:2");next["pageId"]="cf6-s5";var panel="book-comic";var instance="panel:1";
    if(boundary=="panel")panel="inventory";if(boundary=="instance")instance="foreign";
    if(boundary=="slot")next["slot"]="other";if(boundary=="scene")next["sceneId"]="other";
-   if(boundary=="page")next["pageId"]="cf6-s4";if(boundary=="presentation")next["presentationId"]=before["presentationId"];
+   if(boundary=="page")next["pageId"]="unknown-page";if(boundary=="presentation")next["presentationId"]=before["presentationId"];
    Assert.False(task.TryQueueSuccessor(next,panel,instance,d=>throw new Exception("foreign open")));
    task.OnPresentationClosed("panel:1",true);
   }

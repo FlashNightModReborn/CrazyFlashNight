@@ -60,18 +60,24 @@
         try {await image.decode();if(generation===epoch){image.hidden=false;loadedId=id;}}
         catch (_) {if(generation===epoch)loadedId=id; /* The opaque fallback still grants a truthful curtain receipt. */}
     }
-    function valid(p){return p && p.type==='scene_transition' && (p.version===1 || p.version===2
+    function introProjection(p){return p.version===3 && /^intro:[1-9][0-9]{0,14}$/.test(p.introId)
+        && Number.isSafeInteger(p.targetScene) && p.targetScene>0
+        && (p.phase==='intro' ? ['opening','narrative','resume','failed'].includes(p.introState)
+            : p.phase==='hide' ? ['complete','cancelled'].includes(p.introState) : p.introState==='loading');}
+    function valid(p){return p && p.type==='scene_transition' && (p.version===1 || introProjection(p) || p.version===2
         && typeof p.reportVisible==='boolean' && typeof p.reportHandoff==='boolean'
         && (!p.reportHandoff || p.reportVisible) && LootView.normalizeSettlementReport(p.report)
         && p.report.rewardStashed===true)
         && /^tr:[1-9][0-9]*$/.test(p.requestId) && Number.isSafeInteger(p.revision) && p.revision>0
-        && ['cover','loading','reveal','error','hide'].indexOf(p.phase)>=0 && Object.hasOwn(SceneTransitionCatalog,p.imageId)
+        && (['cover','loading','reveal','error','hide'].indexOf(p.phase)>=0 || p.version===3 && p.phase==='intro') && Object.hasOwn(SceneTransitionCatalog,p.imageId)
         && typeof p.tip==='string' && p.tip.length<=2048 && typeof p.actionPending==='boolean';}
     async function adopt(p){
         if(!valid(p))return;
         if(!Number.isSafeInteger(p.generation) || p.generation<0)return;
         if(current && current.generation===p.generation && (Number(p.requestId.slice(3))<Number(current.requestId.slice(3))
             || p.requestId===current.requestId && p.revision<current.revision))return;
+        var sameRequest=current && current.generation===p.generation && current.requestId===p.requestId;
+        if(sameRequest && current.version===3 && (p.version!==3 || p.introId!==current.introId || p.targetScene!==current.targetScene))return;
         if(p.phase==='hide'){
             epoch++;if(animation)animation.cancel();animation=null;rendering=0;covered=false;current=null;
             breathingSync(null,false);
@@ -79,13 +85,14 @@
             root.hidden=true;destroyReport();return;
         }
         var same=current && current.generation===p.generation && current.requestId===p.requestId && current.imageId===p.imageId;
-        if (same && (current.version!==p.version || JSON.stringify(current.report)!==JSON.stringify(p.report)
+        var introUpgrade=same && current.version===1 && p.version===3 && ['cover','loading'].includes(current.phase) && p.introState==='loading';
+        if (same && (current.version!==p.version && !introUpgrade || JSON.stringify(current.report)!==JSON.stringify(p.report)
             || current.reportVisible===false && p.reportVisible===true)) return;
         if(!same)reportRejected=false;
         else if(current.reportHandoff===true && p.reportHandoff===false)reportRejected=true;
         if (!same || current.phase!=='error' && p.phase==='error' || current.reportVisible===true && p.reportVisible===false
             || current.reportHandoff===true && p.reportHandoff===false) actionRequest=null;
-        var samePhase=same && current.phase===p.phase && current.revealAllowed===p.revealAllowed && current.connected===p.connected
+        var samePhase=same && current.phase===p.phase && current.introState===p.introState && current.revealAllowed===p.revealAllowed && current.connected===p.connected
             && current.reportVisible===p.reportVisible && current.reportHandoff===p.reportHandoff && current.reportReady===p.reportReady;
         current=p;root.hidden=false;scale.update();
         var showingReport=p.version===2 && p.reportVisible && p.phase!=='error';
@@ -117,7 +124,7 @@
             p.phase==='error'?'可以重试加载，或按原流程返回安全地点':'请稍候';
         if(samePhase && revealed){root.hidden=true;receipt('revealed');return;}
         if(samePhase){
-            if(!rendering && covered && (showingReport || p.phase==='cover'||p.phase==='loading'))receipt('covered');
+            if(!rendering && covered && (showingReport || p.phase==='cover'||p.phase==='loading'||p.phase==='intro'&&p.introId))receipt('covered');
             return;
         }
         var generation=++epoch;
@@ -132,11 +139,11 @@
             if(!showingReport)await imageReady;
         } else if (!showingReport && loadedId!==p.imageId) await prepareImage(p.imageId,generation);
         if(generation!==epoch)return;
-        if(!showingReport && p.phase==='reveal' && p.revealAllowed===true && p.connected!==false){
+        if(!showingReport && !p.introId && p.phase==='reveal' && p.revealAllowed===true && p.connected!==false){
             if(await fade(0,generation)){revealed=true;root.hidden=true;breathingSync(null,false);receipt('revealed');}
         } else {
             if(await fade(1,generation)) {
-                if(showingReport || p.phase==='cover'||p.phase==='loading'||p.phase==='error')receipt('covered');
+                if(showingReport || p.phase==='cover'||p.phase==='loading'||p.phase==='error'||p.phase==='intro'&&p.introId)receipt('covered');
                 if(p.phase==='error' && !pending)actions.querySelector('button').focus();
             }
         }

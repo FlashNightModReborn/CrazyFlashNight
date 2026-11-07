@@ -3160,7 +3160,7 @@ window.BOOK_COMIC_CF6_CONTENT = {
     }
   ],
   "schema": "cf6-book-comic-web-content.v1",
-  "sourceBindingSha256": "be35adf003b4a62a071e1719d940150a0654cf20cd1a3b5cae443c9997068041",
+  "sourceBindingSha256": "9a30c0417d42763bc7bcba1d696b87c59449fc7a26776d157b9482787d5a13b9",
   "vehicleAdaptation": "s4 precedes A07; only actual A07 vehicle-tail completion reaches s5 before A08; story routing grants no vehicle completion"
 }
 ;

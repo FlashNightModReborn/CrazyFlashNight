@@ -855,6 +855,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     public static function injectHit(bullet:Object, shooter:MovieClip, target:MovieClip,
                                      hitX:Number, hitY:Number, dmgMult:Number,
                                      fireLegacyHitHook:Boolean):Object {
+        // Reject before dodge/RNG/hit hooks; never repair HP after a forbidden hit.
+        if (_root.gameworld.__stageIntroExecutionHeld === true) { _injectCtx.actualHit=false; return null; }
         // 合法性兜底（§5.6：外部注入须自排自身，此处再守一道——hp>0 / 防止无限飞 / 非自身）
         if (target == bullet || !(target.hp > 0) || target.防止无限飞 == true) {
             _injectCtx.actualHit = false;
@@ -2856,7 +2858,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      */
     public static function processQueue():Void {
         
-        if (_root.暂停) {
+        if (_root.暂停 || _root.gameworld.__stageIntroExecutionHeld === true) {
             // 重置并清空消弹队列，确保暂停期间不会累积消弹区域
             BulletCancelQueueProcessor.reset();
 
@@ -3670,7 +3672,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         // 优先级1：直接移除（强力消弹+穿透弹）
                         // _root.发布消息("rank 1: removeMovieClip");
                         bullet.removeMovieClip();
-                    } else if ((killFlags & MODE_VANISH) != 0 || hitMapFinal) {
+                    } else if ((killFlags & MODE_VANISH) != 0 || hitMapFinal
+                            || bullet.__timedDetonation.timeoutRequested) {
                         // 优先级2-3：播放消失动画（普通消弹或击中地图）
                         // _root.发布消息("rank 2/3: gotoAndPlay 消失");
                         bullet.gotoAndPlay("消失");

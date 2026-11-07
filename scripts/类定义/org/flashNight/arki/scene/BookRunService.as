@@ -37,6 +37,9 @@ class org.flashNight.arki.scene.BookRunService {
         };
     }
     public static function playChapter(index:Number):Void {
+        var introScope:Object=org.flashNight.arki.scene.StageIntroService.active();
+        if (introScope != null && introScope.chapter !== index) return;
+        if (org.flashNight.arki.scene.StageIntroService.chapterAlreadyStarted(index)) return;
         var run:Object = _root._saveExt.bookRun;
         var config:Object = BookDefinition.get();
         if (run.bookId === "lee-trial") return;
@@ -44,8 +47,10 @@ class org.flashNight.arki.scene.BookRunService {
                 || index < 0 || index >= config.maps.length) return;
         var owner:Object = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
         if (_chapter != null && _chapter.owner === owner && _chapter.index === index) return;
-        _chapter = {index:index, owner:owner, slot:String(_root.savePath), run:run,
-            runIdentity:run.bookId === "cf6-sting" ? org.flashNight.gesh.object.PersistedSnapshot.clone(run) : null};
+        org.flashNight.arki.scene.StageIntroService.chapterStarting(index);
+        _chapter = {index:index, owner:owner, slot:String(_root.savePath),
+            runIdentity:org.flashNight.gesh.object.PersistedSnapshot.clone(run),
+            intro:BookRunRules.chapterIntro(config,index)};
         if (_chapterWatch == null || _chapterWatch._name == undefined)
             _chapterWatch = _root.createEmptyMovieClip("__bookChapterHandoff", _root.getNextHighestDepth());
         _chapterWatch.onEnterFrame = function():Void { org.flashNight.arki.scene.BookRunService.presentChapter(); };
@@ -65,64 +70,64 @@ class org.flashNight.arki.scene.BookRunService {
     /** 先等加载幕真实退场，再取得漫画/对白暂停；否则暂停会把旧遮幕永久留在下层。 */
     public static function presentChapter():Void {
         var chapter:Object = _chapter;
-        if (chapter == null || chapter.started === true || chapter.storyActive === true) return;
-        var currentRun:Object=_root._saveExt.bookRun;
-        var sameRun:Boolean=chapter.runIdentity != null ? BookRunRules.sameCf6Run(chapter.runIdentity,currentRun) : chapter.run === currentRun;
-        if (chapter.slot !== String(_root.savePath) || !sameRun
-                || currentRun.outcome != "active"
-                || chapter.owner !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)) {
+        if (chapter == null) return;
+        if (!currentChapter(chapter)) {
             _chapter = null; delete _chapterWatch.onEnterFrame; return;
         }
+        if (chapter.started === true || chapter.storyActive === true
+                || !org.flashNight.arki.scene.StageIntroService.canPresentChapter(chapter.index)) return;
         if (org.flashNight.arki.ui.SceneTransitionService.isPresentationPending()
                 || _root.淡出动画.__returnFadeActive === true || _root.场景转换中 === true) return;
-        // 首次可演出/可操作时才开表；后续章节不会重置已有计时。
-        BookRunClock.ensureStarted(currentRun);
-        var index:Number = chapter.index;
-        var config:Object = BookDefinition.get();
-        if (currentRun.bookId === "cf6-sting") {
-            var cf6Follow:Function = cf6ChapterContinuation(chapter);
-            if (org.flashNight.arki.scene.Cf6StoryService.hasChapterStory(index)) {
-                chapter.storyActive = true;
-                if (org.flashNight.arki.scene.Cf6StoryService.beginChapter(index, cf6Follow,
-                        cf6ChapterInterruption(chapter))) return;
-                if (_chapter === chapter && chapter.started !== true) chapter.storyActive = false;
-                return;
-            }
-            cf6Follow("continue", "route");
-            return;
-        }
-        _chapter = null; delete _chapterWatch.onEnterFrame;
-        if (index == config.bossEncounter.mapIndex) {
-            org.flashNight.arki.scene.BookBossEncounter.start(_root.gameworld,
-                _bossPlan);
-        }
-        var follow:Function = chapterContinuation(index, chapter.owner, chapter.slot);
-        var pageId:String = index == 0 ? "prologue" : (index == config.bossEncounter.mapIndex ? "boss" : "");
-        if (pageId == "" || !BookComicService.begin(pageId, follow)) follow();
+        BookRunClock.ensureStarted(_root._saveExt.bookRun);
+        var plan:Object=chapter.intro;
+        var follow:Function=chapterContinuation(chapter);
+        if (plan == null) { follow("continue", "route"); return; }
+        chapter.storyActive=true;
+        var interrupted:Function=chapterInterruption(chapter);
+        if (!org.flashNight.arki.scene.BookComicSequence.begin(plan.pageId, follow,
+                interrupted, plan.bgmLease) && chapter.storyActive === true)
+            interrupted("admission_failed", "opening");
     }
-    private static function cf6ChapterContinuation(chapter:Object):Function {
+    private static function currentChapter(chapter:Object):Boolean {
+        return chapter != null && _chapter === chapter && chapter.slot === String(_root.savePath)
+            && BookRunRules.sameActiveRun(chapter.runIdentity, _root._saveExt.bookRun)
+            && chapter.owner === org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+    }
+    private static function chapterContinuation(chapter:Object):Function {
         return function(reason:String, phase:String):Void {
-            if ((reason != "continue" && reason != "skip") || _chapter !== chapter || chapter.started === true) return;
-            var run:Object = _root._saveExt.bookRun;
-            if (chapter.slot !== String(_root.savePath)
-                    || !BookRunRules.sameCf6Run(chapter.runIdentity, run) || run.outcome != "active"
-                    || chapter.owner !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)) return;
-            var config:Object = BookDefinition.get();
+            if ((reason != "continue" && reason != "skip") || chapter.started === true
+                    || !org.flashNight.arki.scene.BookRunService.currentChapter(chapter)) return;
+            var run:Object=_root._saveExt.bookRun;
+            var config:Object=BookDefinition.get();
             if (config == null || chapter.index < 0 || chapter.index >= config.maps.length) return;
-            chapter.started = true; chapter.storyActive = false; delete _chapterWatch.onEnterFrame;
-            org.flashNight.gesh.string.Cf6NameRandomizer.bindRoomCourtDetachment(_root.gameworld, config.maps[chapter.index].id);
-            org.flashNight.arki.scene.Cf6MapMechanism.beginRoom(_root.gameworld, chapter.owner,
-                config.maps[chapter.index].id, config.maps[chapter.index].mechanism);
-            org.flashNight.arki.scene.Cf6Type61Service.beginRoom(_root.gameworld, chapter.owner, config.maps[chapter.index].id);
-            org.flashNight.arki.scene.Cf6BossEncounter.start(_root.gameworld, chapter.owner,
-                org.flashNight.arki.scene.BookRunService.cf6BossPlan(run, chapter.index));
+            chapter.started=true; chapter.storyActive=false; delete _chapterWatch.onEnterFrame;
+            // Content mechanics keep their existing owner; the chapter lifecycle is shared.
+            if (run.bookId === "cf6-sting") {
+                org.flashNight.gesh.string.Cf6NameRandomizer.bindRoomCourtDetachment(_root.gameworld, config.maps[chapter.index].id);
+                org.flashNight.arki.scene.Cf6MapMechanism.beginRoom(_root.gameworld, chapter.owner,
+                    config.maps[chapter.index].id, config.maps[chapter.index].mechanism);
+                org.flashNight.arki.scene.Cf6Type61Service.beginRoom(_root.gameworld, chapter.owner, config.maps[chapter.index].id);
+                org.flashNight.arki.scene.Cf6BossEncounter.start(_root.gameworld, chapter.owner,
+                    org.flashNight.arki.scene.BookRunService.cf6BossPlan(run, chapter.index));
+            } else if (chapter.index == config.bossEncounter.mapIndex) {
+                org.flashNight.arki.scene.BookBossEncounter.start(_root.gameworld, _bossPlan);
+            }
             org.flashNight.arki.scene.BookRunService.showChapterDialogue(chapter.index, chapter.owner, chapter.slot);
         };
     }
-    private static function cf6ChapterInterruption(chapter:Object):Function {
+    private static function chapterInterruption(chapter:Object):Function {
         return function(reason:String, phase:String):Void {
             if (_chapter !== chapter || chapter.started === true) return;
-            chapter.storyActive = false;
+            chapter.storyActive=false;
+            if (!org.flashNight.arki.scene.BookRunService.currentChapter(chapter)) {
+                _chapter=null;delete _chapterWatch.onEnterFrame;return;
+            }
+            var scope:Object=org.flashNight.arki.scene.StageIntroService.active();
+            if (scope != null && scope.chapter === chapter.index) {
+                org.flashNight.arki.scene.StageIntroService.failed(scope,reason);
+                return;
+            }
+            // Capability fallback for older Hosts uses the same chapter path.
             if (_chapterWatch == null || _chapterWatch._name == undefined)
                 _chapterWatch = _root.createEmptyMovieClip("__bookChapterHandoff", _root.getNextHighestDepth());
             _chapterWatch.onEnterFrame = function():Void { org.flashNight.arki.scene.BookRunService.presentChapter(); };
@@ -132,24 +137,33 @@ class org.flashNight.arki.scene.BookRunService {
         return run.slot === String(_root.savePath) && BookRunRules.sameCf6Run(_cf6PlanOwner,run)
             ? _cf6BossPlans[String(index)] : null;
     }
-    private static function chapterContinuation(index:Number, owner:Object, slot:String):Function {
-        return function():Void {
-            org.flashNight.arki.scene.BookRunService.showChapterDialogue(index, owner, slot);
-        };
+    public static function completeIntroChapter(owner:Object, index:Number):Void {
+        if (_chapter == null || _chapter.owner !== owner || _chapter.index !== index) return;
+        _chapter = null;
+        delete _chapterWatch.onEnterFrame;
+    }
+    public static function retryIntroChapter(owner:Object, index:Number):Void {
+        if (_chapter == null || _chapter.owner !== owner || _chapter.index !== index) return;
+        _chapter.storyActive=false;
+        presentChapter();
     }
     private static function showChapterDialogue(index:Number, owner:Object, slot:String):Void {
         if (slot !== String(_root.savePath) || owner == undefined
                 || owner !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)
                 || _root._saveExt.bookRun.outcome != "active") return;
         var lines:Array = BookDefinition.get().maps[index].dialogue;
-        if (lines.length == 0) return;
+        var introFollow:Object = org.flashNight.arki.scene.StageIntroService.dialogueFollow(index);
+        if (lines.length == 0) {
+            if (introFollow != null) org.flashNight.arki.scene.StageIntroService.completeNarrative(introFollow.args[0]);
+            return;
+        }
         var rows:Array = [];
         for (var i:Number = 0; i < lines.length; i++) {
             rows.push({name:lines[i].speaker, title:"", text:lines[i].text,
                 char:typeof lines[i].char == "string" ? lines[i].char
                     : lines[i].speaker == "Andy" ? "$PC_CHAR" : "", target:null, imageurl:""});
         }
-        org.flashNight.arki.dialogue.NativeDialogueService.beginStage(rows, null);
+        org.flashNight.arki.dialogue.NativeDialogueService.beginStage(rows, introFollow);
     }
     public static function configureDebug(seed:Number, startMap:Number, bookId:String, routeId:String):Boolean {
         if(_root._saveExt.bookRun!=null)return false;
@@ -256,6 +270,7 @@ class org.flashNight.arki.scene.BookRunService {
         queueReturnUi();
     }
     public static function finish(outcome:String):Void {
+        if (outcome == "victory" && _root.gameworld.__stageIntroExecutionHeld === true) return;
         var run:Object = _root._saveExt.bookRun;
         if (run == null || run.outcome != "active" || _ending != null
             || run.slot !== String(_root.savePath) || (outcome != "victory" && outcome != "failure" && outcome != "defeat" && outcome != "retreat")
@@ -278,8 +293,8 @@ class org.flashNight.arki.scene.BookRunService {
             _ending = null; return;
         }
         ending.storyActive = true;
-        if (org.flashNight.arki.scene.Cf6StoryService.beginFinal(cf6EndingContinuation(ending),
-                cf6EndingInterruption(ending))) return;
+        if (org.flashNight.arki.scene.BookComicSequence.beginSequence(["cf6-s7","cf6-end"], cf6EndingContinuation(ending),
+                cf6EndingInterruption(ending), true)) return;
         if (_ending !== ending || ending.storyCompleted === true) return;
         ending.storyActive = false;
         if (ending.storyRetry !== true) {

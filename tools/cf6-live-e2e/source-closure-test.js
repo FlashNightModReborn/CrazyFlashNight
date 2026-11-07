@@ -210,7 +210,7 @@ try{
     test('new consumers, turret assetUrl and actual XFL input tree are bound',()=>{
         const names=new Set(baseline.files.map(row=>row.relativePath));
         for(const ref of ['scripts/类定义/org/flashNight/arki/scene/Cf6TutorialTurretService.as',
-            'scripts/类定义/org/flashNight/arki/scene/Cf6StoryService.as','launcher/src/Audio/AudioCoordinator.cs',
+            'scripts/类定义/org/flashNight/arki/scene/BookComicSequence.as','launcher/src/Audio/AudioCoordinator.cs',
             'flashswf/backgrounds/cf6/CF6_A01_Turret.swf',xflBase+'/bin/native.dat',comicBase+'cf6-s1/narration.mp3'])assert(names.has(ref),ref);
     });
     test('missing turret assetUrl resource is rejected',()=>{fs.unlinkSync(path.join(root,'flashswf/backgrounds/cf6/CF6_A01_Turret.swf'));assert.throws(()=>C.capture(root));restoreAssets();});
