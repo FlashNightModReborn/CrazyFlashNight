@@ -12,9 +12,9 @@ namespace CF7Launcher.Guardian.Hud.Loot
     /// 左下血条上方的原生双向玩家物资/击杀播报。
     ///
     /// 渲染遵循“静态提高可读性、动态保持克制”的原则：五个共享槽位、内容驱动的微量化宽度、
-    /// 按位数稳定的计数列；只在短入场、数字区合并反馈、退场及图标首轮动画内重绘。
+    /// 按位数稳定的计数列；短 UI 反馈与完整内容循环分别计时，仅画面变化时重绘。
     /// </summary>
-    public sealed class LootFeedWidget : INativeHudWidget, IDisposable
+    public sealed partial class LootFeedWidget : INativeHudWidget, IDisposable
     {
         private const float FlashX = 5f;
         private const float FlashBottomY = 460f;
@@ -27,7 +27,6 @@ namespace CF7Launcher.Guardian.Hud.Loot
         private const int FadeInMs = 180;
         private const float EntryTravel = 4f;
         private const int CountTransitionMs = 180;
-        private const int IconAnimationMs = 450;
         private const int BossEmphasisMs = 360;
         private const int VisualSampleMs = 32; // 与 NativeHud 33 ms 合成上限对齐，实际不超过约 30 fps
         private const int BattleTagW = 30;
@@ -156,14 +155,16 @@ namespace CF7Launcher.Guardian.Hud.Loot
             }
         }
 
-        public bool Visible { get { return _model.ActiveCount > 0; } }
+        public bool Visible { get { return !_disposed && _model.ActiveCount > 0; } }
 
-        public bool WantsAnimationTick { get { return _model.WantsTick; } }
+        public bool WantsAnimationTick { get { return !_disposed && _model.WantsTick; } }
 
         public void Tick(int deltaMs)
         {
+            if (_disposed) return;
             bool wasTicking = WantsAnimationTick;
             LootFeedModel.Change change = _model.Tick(deltaMs);
+            SynchronizeContentPlayback();
 
             if ((change & LootFeedModel.Change.Geometry) != 0)
                 PublishBoundsIfChanged();
@@ -176,9 +177,10 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 _lastVisualSignature = 0;
                 return;
             }
+            if (_hostSuppressed) return;
 
             // 生命周期仍按 NativeHud 的 16 ms tick 推进；32 ms 采样与 overlay 的 33 ms
-            // 合成上限共同把动态阶段限制在约 30 fps，静态持有阶段签名不变、零重绘。
+            // 合成上限共同限制内容请求；静态内容的持有阶段签名不变、零内容重绘。
             int signature = ComputeVisualSignature();
             if (signature != _lastVisualSignature
                 && _model.NowMs - _lastRepaintAtMs >= VisualSampleMs)
@@ -271,10 +273,11 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 {
                     if (_disposed) return;
                     _icons.InvalidateDoll(iconRef);
+                    SynchronizeContentPlayback();
                     IReadOnlyList<LootFeedModel.LootCard> cards = _model.Cards;
                     for (int i = 0; i < cards.Count; i++)
                     {
-                        if (cards[i].Icon == iconRef)
+                        if (cards[i].Icon == iconRef && !_hostSuppressed)
                         {
                             _lastVisualSignature = ComputeVisualSignature();
                             _lastRepaintAtMs = _model.NowMs;
@@ -350,6 +353,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                         item.Kind, item.Name, item.Icon, item.Count, item.Source,
                         item.EliteLevel, item.Direction, item.Tier, item.ItemKey);
                 }
+                SynchronizeContentPlayback();
 
                 if ((aggregate & LootFeedModel.Change.Geometry) != 0 || wasVisible != Visible)
                     PublishBoundsIfChanged();
@@ -357,7 +361,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                     FireAnimationStateChanged();
 
                 // 首张卡必须立即可见；已在播放中的 feed 则交给下一次签名 tick 合并重绘。
-                if (!wasVisible && Visible)
+                if (!wasVisible && Visible && !_hostSuppressed)
                 {
                     _lastVisualSignature = ComputeVisualSignature();
                     _lastRepaintAtMs = _model.NowMs;
@@ -401,15 +405,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                     if (card.EliteLevel >= 2 && card.VisibleAgeMs < BossEmphasisMs)
                         signature = signature * 31 + 4000 + card.VisibleAgeMs / VisualSampleMs;
 
-                    if (card.VisibleAgeMs <= IconAnimationMs && !string.IsNullOrEmpty(card.Icon))
-                    {
-                        LootIconCatalog.LootIconFrames frames;
-                        if (_icons.TryGet(card.Icon, out frames) && frames.Animated)
-                        {
-                            int sampleMs = QuantizedIconTime(card.VisibleAgeMs);
-                            signature = signature * 31 + 5000 + SelectFrameIndex(frames, sampleMs);
-                        }
-                    }
+                    signature = signature * 31 + ContentVisualSignature(card);
                 }
                 return signature;
             }
@@ -438,12 +434,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
             DrawRankRail(g, card, rect, railWidth, accent, alpha, scale);
 
-            Bitmap icon = ResolveIcon(card);
-            if (icon != null)
-            {
-                DrawBitmapAlpha(g, icon, new Rectangle(iconX, iconY, iconSize, iconSize), alpha);
-            }
-            else
+            if (!DrawContentIcon(g, card, new Rectangle(iconX, iconY, iconSize, iconSize), alpha))
             {
                 using (SolidBrush placeholder = new SolidBrush(
                     Color.FromArgb(ToAlpha(92f * alpha), accent.R, accent.G, accent.B)))
@@ -641,27 +632,8 @@ namespace CF7Launcher.Guardian.Hud.Loot
             }
         }
 
-        private Bitmap ResolveIcon(LootFeedModel.LootCard card)
-        {
-            if (string.IsNullOrEmpty(card.Icon)) return null;
-            LootIconCatalog.LootIconFrames frames;
-            if (!_icons.TryGet(card.Icon, out frames) || frames.First == null)
-                return null;
-            if (!frames.Animated)
-                return frames.First;
-
-            int sampleMs = QuantizedIconTime(card.VisibleAgeMs);
-            return frames.Frames[SelectFrameIndex(frames, sampleMs)];
-        }
-
-        private static int QuantizedIconTime(int visibleAgeMs)
-        {
-            int bounded = Math.Max(0, Math.Min(IconAnimationMs, visibleAgeMs));
-            return bounded / VisualSampleMs * VisualSampleMs;
-        }
-
         /// <summary>
-        /// 动画选帧：逐帧时长优先，否则走均匀 fps。调用方负责把时间限制在首轮动效窗口内。
+        /// Legacy frame-set adapter; production content uses the value-only IconTimeline.
         /// </summary>
         internal static int SelectFrameIndex(LootIconCatalog.LootIconFrames frames, long animMs)
         {
@@ -824,25 +796,6 @@ namespace CF7Launcher.Guardian.Hud.Loot
             }
         }
 
-        private static void DrawBitmapAlpha(Graphics g, Bitmap bitmap, Rectangle destination, float alpha)
-        {
-            if (alpha >= 0.999f)
-            {
-                g.DrawImage(bitmap, destination, 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel);
-                return;
-            }
-
-            using (System.Drawing.Imaging.ImageAttributes attributes =
-                new System.Drawing.Imaging.ImageAttributes())
-            {
-                System.Drawing.Imaging.ColorMatrix matrix = new System.Drawing.Imaging.ColorMatrix();
-                matrix.Matrix33 = Math.Max(0f, Math.Min(1f, alpha));
-                attributes.SetColorMatrix(matrix);
-                g.DrawImage(bitmap, destination, 0, 0, bitmap.Width, bitmap.Height,
-                    GraphicsUnit.Pixel, attributes);
-            }
-        }
-
         private void EnsureFont()
         {
             float scale = GetViewportScale();
@@ -868,6 +821,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
         private void OnAnchorResize(object sender, EventArgs e)
         {
             _lastFontScale = -1f;
+            SynchronizeContentPlayback();
             PublishBoundsIfChanged();
             if (Visible)
             {
@@ -951,6 +905,8 @@ namespace CF7Launcher.Guardian.Hud.Loot
             _disposed = true;
             _anchor.Resize -= OnAnchorResize;
             _ingressQueue.Abort();
+            _contentPlayback.Clear();
+            _removedPlayback.Clear();
             if (_nameFont != null) { _nameFont.Dispose(); _nameFont = null; }
             if (_metaFont != null) { _metaFont.Dispose(); _metaFont = null; }
             _nameFormat.Dispose();

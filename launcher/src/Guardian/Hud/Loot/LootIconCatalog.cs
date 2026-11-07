@@ -34,7 +34,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
     /// 到期允许重探；烘焙完成经 InvalidateDoll 主动失效可立即重探；其余源负缓存行为不变（永久）。
     /// 解析失败/缺失一律负缓存并返回 false，由调用方画占位，不抛异常。
     /// </summary>
-    public sealed class LootIconCatalog : IDisposable
+    public sealed partial class LootIconCatalog : IDisposable
     {
         internal const int ThumbSize = 64;
         private const long ThumbBytes = (long)ThumbSize * ThumbSize * 4L;
@@ -59,6 +59,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
             internal string Format; // manifest format 字段（"webp-animated" 等）
             internal List<string> FrameUris; // 动画时间轴（含重复帧展开）；静态为 null
             internal double Fps;
+            internal bool StaticPlayback;
         }
 
         private readonly string _iconsDir;
@@ -255,7 +256,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 // webp-animated：动画帧全部在单个 .webp 内（uri 字段；f1 只是静态首帧），
                 // 走 SKCodec 逐帧合成；解码失败/单帧则落回下方静态 f1 路径
                 if ((entry.FrameUris == null || entry.FrameUris.Count == 0)
-                    && entry.Format == "webp-animated")
+                    && entry.Format == "webp-animated" && !entry.StaticPlayback)
                 {
                     int[] durationMs;
                     Bitmap[] webpFrames = LoadWebpFrames(
@@ -347,6 +348,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
             try
             {
+                PlaybackFileOpens++;
                 using (Bitmap full = MapHudImageDecoder.LoadBitmap(path))
                 {
                     bmp = CreateThumb(full);
@@ -401,14 +403,29 @@ namespace CF7Launcher.Guardian.Hud.Loot
         {
             durationMs = null;
             if (string.IsNullOrEmpty(uri)) return null;
+            if (_webpMetadata.TryGetValue(uri, out var prepared))
+            {
+                if (prepared.Failed) return null;
+                var resident = new Bitmap[prepared.Keys.Length];
+                bool complete = true;
+                for (int i = 0; i < resident.Length; i++)
+                    if (!_frameCache.TryGet(prepared.Keys[i], out resident[i])) { complete = false; break; }
+                if (complete)
+                {
+                    durationMs = prepared.Durations;
+                    return resident;
+                }
+            }
             string path = Path.Combine(_iconsDir, uri);
-            if (!File.Exists(path)) return null;
+            if (!File.Exists(path)) { _webpMetadata[uri] = new WebpMetadata { Failed = true }; return null; }
 
             try
             {
+                PlaybackFileOpens++;
                 using (SKData encoded = SKData.Create(path))
                 using (SKCodec codec = SKCodec.Create(encoded))
                 {
+                    PlaybackCodecCreations++;
                     if (codec == null || codec.FrameCount < 2) return null;
                     int frameCount = codec.FrameCount;
                     SKCodecFrameInfo[] frameInfos = codec.FrameInfo;
@@ -422,14 +439,15 @@ namespace CF7Launcher.Guardian.Hud.Loot
                     {
                         LogManager.Log("[LootIcon] animation exceeds cache budget, using static fallback: "
                             + uri + " frames=" + frameCount);
+                        _webpMetadata[uri] = new WebpMetadata { Failed = true };
                         return null;
                     }
 
-                    int[] durations = new int[frameCount];
+                    WebpMetadata metadata = StoreWebpMetadata(uri, frameInfos);
+                    int[] durations = metadata.Durations;
                     long totalDuration = 0;
                     for (int i = 0; i < frameCount; i++)
                     {
-                        durations[i] = Math.Max(0, frameInfos[i].Duration);
                         totalDuration += durations[i];
                     }
 
@@ -439,7 +457,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                     bool allCached = true;
                     for (int i = 0; i < frameCount; i++)
                     {
-                        if (!_frameCache.TryGet(uri + "#f" + i, out cachedThumbs[i]))
+                        if (!_frameCache.TryGet(metadata.Keys[i], out cachedThumbs[i]))
                         {
                             allCached = false;
                             break;
@@ -451,6 +469,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                         return cachedThumbs;
                     }
 
+                    PlaybackFullDecodes++;
                     SKImageInfo decodeInfo = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
                     Bitmap[] composited = new Bitmap[frameCount]; // 全尺寸合成态，供后续帧作 priorFrame
                     try
@@ -512,7 +531,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                         for (int i = 0; i < frameCount; i++)
                         {
                             thumbs[i] = CreateThumb(composited[i]);
-                            if (!_frameCache.TryAdd(uri + "#f" + i, thumbs[i]))
+                            if (!_frameCache.TryAdd(metadata.Keys[i], thumbs[i]))
                             {
                                 thumbs[i].Dispose();
                                 thumbs[i] = null;
@@ -534,6 +553,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
             catch (Exception ex)
             {
                 LogManager.Log("[LootIcon] webp-animated decode failed for '" + uri + "': " + ex.Message);
+                _webpMetadata[uri] = new WebpMetadata { Failed = true };
                 durationMs = null;
                 return null;
             }
@@ -844,6 +864,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                     // png-sequence 动画：frames 展开时间轴；static 标记显式不播
                     string playback = entry.Value<string>("playback");
                     bool staticPlayback = playback == "static" || playback == "static-first-frame";
+                    parsed.StaticPlayback = staticPlayback;
                     JArray framesArr = entry["frames"] as JArray;
                     if (!staticPlayback && framesArr != null && framesArr.Count > 1)
                     {
@@ -852,12 +873,13 @@ namespace CF7Launcher.Guardian.Hud.Loot
                         {
                             JObject f = framesArr[i] as JObject;
                             string uri = f != null ? f.Value<string>("uri") : null;
-                            if (!string.IsNullOrEmpty(uri)) uris.Add(uri);
+                            uris.Add(uri); // Missing logical slots must retain their original duration.
                         }
                         if (uris.Count > 1) parsed.FrameUris = uris;
                     }
 
-                    if (parsed.FrameUris == null && string.IsNullOrEmpty(parsed.F1)) continue;
+                    if (parsed.FrameUris == null && string.IsNullOrEmpty(parsed.F1)
+                        && !(parsed.Format == "webp-animated" && !string.IsNullOrEmpty(parsed.Uri))) continue;
                     map[kvp.Key] = parsed;
                 }
                 _manifest = map;
@@ -873,6 +895,10 @@ namespace CF7Launcher.Guardian.Hud.Loot
         {
             lock (_gate)
             {
+                _playbackDisposed = true;
+                _descriptions.Clear();
+                _webpMetadata.Clear();
+                _failedPlaybackFrames.Clear();
                 _frameCache.Dispose();
             }
         }

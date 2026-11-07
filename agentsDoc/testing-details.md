@@ -1471,8 +1471,8 @@ loot feed 与 panel 开关后 idle。
 协议定向测试必须覆盖 v1 必填/错型/source/正整数 safe-max、operationId+itemKey exact replay/冲突 replay、legacy 降级与 `eliteLevel` 缺失/非法/`0/1/2`，模型测试必须覆盖 gain/loss 合并隔离、饱和五槽下 reload immediate 抢占、`−1` layout、12 条任务奖励 `5/5/2` 无损轮播、pending 零老化、完整物资身份合并隔离、Boss 即时抢占、精英/拾取最小曝光后抢占、victim slot 原位复用、普通击杀身份压缩仍守恒、逻辑计数精确而视觉计数最多 8Hz，以及只在 gain `1→2`、
 loss `9→10` 等方向感知计数位数桶变化时发布几何。
 触及 `PlayerAssetTransaction` / `_root.发布物资事务回执` / `_root.发布物资变更消息` / `_root.发布战利品消息` / `_root.发布击杀播报` / `UnitUtil.getEliteLevel` 时追加精确 `scripts/compile_test.ps1 -Target publish`，只以 fresh Compiler `0/0` 与刷新后的 `asLoader.swf` 声称 publish-only 通过。
-人工视觉覆盖还要确认 12px 名称/按需右计数列在战斗底图可读，96–220px/8px 内容宽度不为 `count=1` 预留空列且「摇滚公园基础资料集」不出现省略号，5 行不遮挡战斗中心，4px/180ms SmoothStep 入场与 280ms SmoothStep 退场无横向甩动，计数 180ms/1–2px 交叉淡化及数字区色洗/底沿在割草时可感知、在拾取时克制，并且无整卡缩放/弹跳/粒子，动画图标 450ms 后冻结。
-性能采样要求 socket burst 任意时刻至多一个 UI drain 在途、同批一次决策、静态 hold 零 repaint、视觉重绘受 32ms 采样与 33ms overlay 合成硬边界限制在约 30/s、count commit 不高于 8Hz；同一计数位数桶内 count-only 不发布 bounds，跨桶只发布一次。loot feed 行为面：五个共享槽位 + 可恢复等待队列；
+人工视觉覆盖还要确认 12px 名称/按需右计数列在战斗底图可读，96–220px/8px 内容宽度不为 `count=1` 预留空列且「摇滚公园基础资料集」不出现省略号，5 行不遮挡战斗中心，4px/180ms SmoothStep 入场与 280ms SmoothStep 退场无横向甩动，计数 180ms/1–2px 交叉淡化及数字区色洗/底沿在割草时可感知、在拾取时克制，并且无整卡缩放/弹跳/粒子。动态图标在正常寿命内持续循环并跨过 450ms；完整 K 点两轮及强化石 5040ms 周期使用延长 hold 的测试夹具，不延长产品寿命。`LootFeedAnimationTests` 必须分别强制 Paint 验选帧、只依赖自身 RepaintRequested 验持续重绘；还覆盖同卡合并/抢占续播、首次 pending、新卡零相位、panel/owner 挂起、低动效 poster/恢复和 resize。
+性能采样要求 socket burst 任意时刻至多一个 UI drain 在途、同批一次决策、静态 hold 零内容 repaint；Loop 只在实际图像身份变化时请求重绘，受 32ms 请求门和 33ms overlay 稳态合成门限制在约 30/s（首次显示、几何与恢复更新单独计数）。暖态时间轴采样/驻留帧绘制为零文件打开、零 codec/整组解码及零周期性时长/Bitmap 数组；记录冷态与暖态 1/5 图标 P95/P99、托管分配及重复释放后的 native/GDI/句柄。资源层数据不能代签 Overlay commit、GPU 上传或真实窗口。count commit 不高于 8Hz；同一计数位数桶内 count-only 不发布 bounds，跨桶只发布一次。loot feed 行为面：五个共享槽位 + 可恢复等待队列；
 同 `direction/kind/itemKey/tier/派生调度策略/eliteLevel` 与一致展示合并，`operationId/reason/mergeScope/raw source` 不进入卡片身份、跨 source 只合并完全相同策略且隔离 `unknown`，等待期不计时；loss 用红色负号且数量一也显示 `−1`；`reload` 即时精确聚合；任务/通关奖励、开箱与 Boss 保真，精英/拾取可抢占杂兵，普通击杀仅身份溢出压缩；左下锚底且不与 toast 重叠；精英琥珀分段轨、Boss 金色双轨，任务/开箱不伪装为 Boss；失败提示仍走左侧文字区。
 
 ### PlayerInfo（SVG renderer / B0 系列）
