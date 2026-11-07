@@ -1373,3 +1373,10 @@ production policy **47/47**，注册本地 X509 与 [GitHub 独立构建 4103184
 冻结源 `68003ef5c51049316819751c3ad0993c100f499b`、标签 `runtime-build-v2/20261031-huofeng-set-r2` 与部署 `6ae2b8d2b4d1d6dcaddfe490566d65d814264adc` 已推送 main 并同步常用目录。production policy 47/47，本地 X509 与 GitHub hosted 独立构建对同一 43 文件闭包达成双签名、双故障域共识；唯一 writer 原子推广，部署 Audit 报告 `state=promoted / deploymentChanged=true`。
 
 标准入口只复验实际运行身份、首屏和正常关闭，未进入玩家存档或重跑实战。火凤连招、涅槃、掉落合成、护圈文案、上游修复、失败回执及回滚归档见[本批发布记录](reports/火凤套装-正式发布-2026-10-31.md)。仍为 2.718 DEV / UNSTABLE，不新增稳定整包。
+
+<a id="comic-intro-migration-release-20261107"></a>
+## 2026-11-07 漫画开场统一迁移与地图整合正式推广
+
+冻结源 `3daedc516461ca77ff2e606b9f7de31525be9b38`、受控标签 `runtime-build-v2/20261107-comic-intros-maps-v1` 完成修理大学和毒刺两路线 14 个开场的统一接入，清理逐关旧分支并同步三个上游地图提交。合并后原生 775、Host 8296 通过/31 跳过、现役选关 63 项及三次代表实机通过；未完成研究所保留上游制作状态，没有新增现役入口。
+
+production policy **47/47**，注册本机 X509 与 [GitHub 独立构建 42383291347](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/42383291347) 对同一 43 文件闭包达成双签名、双故障域共识；唯一 writer 于 `2026-11-07T15:12:10.5685133Z` 原子推广并通过完整安装自检。普通入口进程身份、首屏和正常关闭通过，345 份原有 JSON/SOL 不变；漫画业务是同一 Core/闭包的候选实机资格，未称正式入口重跑。精确身份、恢复、失败证据及源码/SWF 与正式运行库的回退区别见[迁移发布记录](scene-intro-migration.md#formal-release-20261107)，部署提交与 Audit 最终链接见交付收据。本批仍为 2.718 DEV / UNSTABLE，不新增稳定整包。

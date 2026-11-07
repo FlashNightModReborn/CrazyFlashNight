@@ -1,7 +1,7 @@
 # 漫画开场统一迁移
 
 **文档角色**：漫画开场的统一接入合同、本轮候选验收与回滚。
-**最后核对代码基线**：commit `fbf4006e548f24d491759555edc2dab5ec21bf72`，加本轮 main 统一迁移。本文记录候选业务资格；正式发布身份及状态仍读取 runtime manifest/consensus 与[发布记录](runtime-build-reproducibility.md)。
+**最后核对代码基线**：commit `3daedc516461ca77ff2e606b9f7de31525be9b38`（整合三个上游地图提交的 main 统一迁移）。本文记录候选业务资格；正式发布身份及状态仍读取 runtime manifest/consensus 与[发布记录](runtime-build-reproducibility.md)。
 
 已在 main 快进同步 `ed21b3ddb2`、`448be84a4f`、`fbf4006e54` 三个天网/外交地图提交；188 条上游路径与本地迁移没有文本重叠，迁移原字节完整保留。合并后重新执行原生、Host、数据/Web 回归及三次实机旅程，并由真实 CS6 重新发布配套主 SWF。未另建 worktree。
 
@@ -69,3 +69,12 @@ pwsh -NoProfile -File .\rollback\Restore-Migration.ps1 -RepoRoot $repo -Apply
 回滚在完整真实字节的文件副本上演练，包含新增/修改/删除文件、配套 SWF、Unicode 路径、漂移拒绝及只核验模式；不属于迁移回退的上游文件和种子档哨兵保持原样，未创建 Git 仓库或 worktree。`rollback/rehearsal.json` 保存实际结果，当前 main 只运行核验，未执行回退。
 
 需要先隔离开场交接能力时，可在新候选会话启动前设置 `CF7_STAGE_INTRO_HANDOFF=0`；这只切换共用能力入口，不恢复已删除的逐关旧类，也不能清除在途保护或未知持久写。正式撤回源码与 SWF 使用上述逐文件回滚。正式 runtime 发布或回退仍走既有发布权威。上述脚本只回退源码/SWF，不能恢复已正式发布的 C# runtime/consensus；要完整撤回，须对匹配旧源码的 Host 重新完成签名发布，或依据唯一 writer 保留的 previous 做受控恢复并重新核验，不能单独复制旧 DLL。交付包独立保存发布前身份与 promotion previous 清单。
+
+<a id="formal-release-20261107"></a>
+## 2026-11-07 正式发布记录
+
+冻结源 `3daedc516461ca77ff2e606b9f7de31525be9b38`、受控标签 `runtime-build-v2/20261107-comic-intros-maps-v1`、request `993F7A5F16895938AB3922996F2EAE58815FE5C43C2264AAA793ED6E5A570601` 已完成正式列车。完整 production policy **47/47**，注册本机 X509 `builder-local-b / physical-host-b` 与 [GitHub 独立构建 42383291347](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/42383291347) 对同一 43 文件闭包达成双签名、双故障域共识；唯一 writer 于 `2026-11-07T15:12:10.5685133Z` 原子推广，完整安装入口自检通过。
+
+build identity `862532169CC99C1476A196794FA7D38B7A16AA9279449D4B103C83FC282333D2`，payload closure `63CD2902C9D94F50209033386B552B12CDCB224063295ECB0C7088707EBE645B`，Core SHA256 `407ADB274E0C741EBB69E4BEF075CA0260B111F7C2D9DE87C9E4D7D7B56A1843`，manifest `FA989ED3C4227B376881BB00D9361352E9C8A7E521DC2F77B3143CA31A0A052E`，政策回执 `46DA16FBD2078C8F1E665316A8CAE1C1EEE2B7A0AE5B227B926C46112BEEF280`。机器现役值仍读取 manifest/consensus；部署提交及远端 Audit 的最终链接保存在交付包的正式发布收据。
+
+无候选参数的普通入口完成实际进程身份、启动首屏和正常关闭复验，345 份原有 JSON/SOL 摘要不变。`standardEntryBusinessJourneyRepeated=false`：漫画业务旅程属于上文绑定同一 Core/闭包的候选实机，没有把首屏核验记为正式入口重跑全部开场。旧正式字节与证明由唯一 writer 完整保留 previous，交付包附变化文件的旧字节和全量清单，未变依赖按摘要复用；源码/SWF 回退的 76 条路径另有完整字节演练。本批为 2.718 开发增量，没有新的稳定整包。
