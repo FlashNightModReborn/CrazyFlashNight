@@ -4,7 +4,7 @@
   "kind": "merged_source_validation",
   "authorization": "可行，可以合并上游，提交部署推送了",
   "candidateBase": "0b84e3204fb1d90184e8478c29498666d16d9678",
-  "upstream": "6b387ad36193d154b19d63341d916a64014a231d",
+  "upstream": "75e60b0c41319b81d24773f98b2645cc1516c9e7",
   "sourceRef": "refs/tags/runtime-build-v2/20261108-cf6-fixed158-r4-v3",
   "scope": [
     "固定158席的独立枪械成长、合法扩槽与插件组合，保持身份、等级、出生和战术编制。",
@@ -147,8 +147,8 @@
       "sounds/export/特效/闸门开启.mp3"
     ],
     "additionalMusicResources": {
-      "commit": "6b387ad36193d154b19d63341d916a64014a231d",
-      "scope": "MP3 resources and BGM list only; no additional behavior-code change.",
+      "commit": "75e60b0c41319b81d24773f98b2645cc1516c9e7",
+      "scope": "Two music-only commits and BGM list; no additional behavior-code change.",
       "bgmXmlParsed": true,
       "humanListeningAcceptance": false
     }
