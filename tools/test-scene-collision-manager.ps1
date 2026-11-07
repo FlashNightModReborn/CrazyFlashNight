@@ -151,8 +151,8 @@ Test-Check ($suite -match
     'class\s+org\.flashNight\.arki\.scene\.SceneCollisionManagerTest' -and
     $suite -match 'public\s+static\s+function\s+runAllTests\s*\(') `
     'AS2 regression suite exposes the focused entrypoint'
-Test-Check ([regex]::Matches($suite, '(?m)^\s*check\s*\(').Count -eq 21) `
-    'AS2 suite fixes the expected assertion count at 21'
+Test-Check ([regex]::Matches($suite, '(?m)^\s*check\s*\(').Count -eq 27) `
+    'AS2 suite fixes the expected assertion count at 27'
 Test-Check ($suite -match 'SceneCollisionManagerTest Tests Passed:' -and
     $suite -match 'SceneCollisionManagerTest Tests Failed:' -and
     $suite -match 'SceneCollisionManagerTest Cases Passed: 4/4') `
@@ -168,7 +168,7 @@ Test-Check ($suite -match '_root\.collisionLayer\s*=\s*_replacementLayer\s*;' -a
     $suite -match '_replacementLayer\.hitTest\(520,\s*60,\s*true\)') `
     'AS2 suite proves dispose leaves a replacement root layer intact'
 Test-Check ([regex]::Matches($template,
-    [regex]::Escape('__SCENE_COLLISION_RUN_ID__')).Count -eq 2 -and
+    [regex]::Escape('__FOCUSED_RUN_ID__')).Count -eq 2 -and
     $template -match 'import\s+org\.flashNight\.arki\.scene\.\*\s*;' -and
     $template -match 'SceneCollisionManagerTest\.runAllTests\s*\(\s*\)') `
     'focused frame runner uses wildcard import, exact runId framing, and the real suite'

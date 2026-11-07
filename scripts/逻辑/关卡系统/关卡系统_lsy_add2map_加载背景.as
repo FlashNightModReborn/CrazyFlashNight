@@ -51,6 +51,11 @@ _root.通过影片剪辑外框绘制地图碰撞箱 = function(mc:MovieClip) {
 	org.flashNight.arki.scene.SceneCollisionManager.instance.addMovieClipCollision(mc, rect);
 }
 
+_root.移除影片剪辑外框地图碰撞箱 = function(mc:MovieClip) {
+	org.flashNight.arki.scene.SceneCollisionManager.instance.removeMovieClipCollision(mc);
+}
+
+
 _root.贴背景图 = function(force:Boolean){
 	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用
 	var 游戏世界 = _root.gameworld;

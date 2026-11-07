@@ -151,6 +151,30 @@ class org.flashNight.arki.scene.SceneCollisionManagerTest {
             "C03 ordinary obstacles survive the unload-triggered clear/redraw");
         check(_layer.hitTest(60, 60, true) && _layer.hitTest(140, 60, true),
             "C03 all appended polygon sources survive the unload-triggered redraw");
+        var sibling:MovieClip = _world.createEmptyMovieClip("__sceneCollisionSibling", _world.getNextHighestDepth());
+        _manager.addMovieClipCollision(sibling, {xMin:500, yMin:120, xMax:530, yMax:150});
+        _manager.redraw();
+        var removedRecord:Object = _manager.movieClipCollisions[0];
+        _manager.removeMovieClipCollision(obstacle);
+        check(_manager.movieClipCollisions.length == 1 && _manager.movieClipCollisions[0].mc === sibling
+                && removedRecord.mc == null && removedRecord.rect == null,
+            "C03 explicit removal releases only its exact collision record");
+        check(obstacle._parent === _world, "C03 removing collision keeps its live visual MovieClip");
+        for (i = 0; i < 24; i++) _manager.update();
+        _layer._visible = true;
+        check(!_layer.hitTest(380, 60, true), "C03 explicit removal clears native hit geometry after throttled update");
+        check(_layer.hitTest(515, 135, true) && _layer.hitTest(60, 60, true) && _layer.hitTest(140, 60, true),
+            "C03 explicit removal preserves the sibling and both static polygon sources");
+        _manager.removeMovieClipCollision(obstacle);
+        _manager.removeMovieClipCollision(_world.createEmptyMovieClip("__sceneCollisionUnknown", _world.getNextHighestDepth()));
+        check(_manager.movieClipCollisions.length == 1 && _manager.movieClipCollisions[0].mc === sibling,
+            "C03 repeated or unknown removal cannot remove an unrelated registration");
+        _manager.removeMovieClipCollision(sibling);
+        for (i = 0; i < 24; i++) _manager.update();
+        _layer._visible = true;
+        check(_manager.movieClipCollisions.length == 0 && !_layer.hitTest(515, 135, true)
+                && _layer.hitTest(60, 60, true) && _layer.hitTest(140, 60, true),
+            "C03 removing the last MovieClip still redraws and retains static collision");
     }
 
     private static function testDisposeReleasesExactOldState():Void {
