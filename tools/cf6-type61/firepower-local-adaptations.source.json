@@ -1,0 +1,154 @@
+{
+  "schema": "cf6-fixed158-local-adaptations.v1",
+  "proposalSha256": "bbb415835015a6ade900e542a5debf13e4d2bcd624a2ac09030ba4f2a0b7f2b5",
+  "evidence": "first all-form native projectile run; original failures retained with delivery evidence",
+  "changedSlots": 5,
+  "selectedForms": 66,
+  "changes": [
+    {
+      "identity": "CF6-C-WA-R-02",
+      "slot": "primary",
+      "before": {
+        "name": "NA45",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "NA45#8##透镜"
+      },
+      "after": {
+        "name": "Sniper",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 8,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "Sniper#8#墨冰#透镜"
+      },
+      "finalRequiredLevel": 41,
+      "actorLevel": 45,
+      "rawPower": 3496,
+      "reason": "NA45 native carrier plus explosion consumes 2 damage units against the unchanged 1-unit slot; child explosion lacks complete fixed-group propagation. Use an already scoped single-projectile precision form; preserve enhancement, mods, schedule and AI.",
+      "bonusPolicy": "Retain the excluded strong-precision family: zero added growth, passive or Nano."
+    },
+    {
+      "identity": "CF6-N-WA-01",
+      "slot": "primary",
+      "before": {
+        "name": "NA45",
+        "form": "data",
+        "tier": null,
+        "enhancement": 8,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "NA45#8##透镜"
+      },
+      "after": {
+        "name": "Sniper",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 8,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "Sniper#8#狱火#透镜"
+      },
+      "finalRequiredLevel": 41,
+      "actorLevel": 45,
+      "rawPower": 3496,
+      "reason": "NA45 native carrier plus explosion consumes 2 damage units against the unchanged 1-unit slot; child explosion lacks complete fixed-group propagation. Use an already scoped single-projectile precision form; preserve enhancement, mods, schedule and AI.",
+      "bonusPolicy": "Retain the excluded strong-precision family: zero added growth, passive or Nano."
+    },
+    {
+      "identity": "CF6-C-CU-P-04",
+      "slot": "primary",
+      "before": {
+        "name": "NA45",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "NA45#9##透镜"
+      },
+      "after": {
+        "name": "Sniper",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "Sniper#9#墨冰#透镜"
+      },
+      "finalRequiredLevel": 41,
+      "actorLevel": 47,
+      "rawPower": 3876,
+      "reason": "NA45 native carrier plus explosion consumes 2 damage units against the unchanged 1-unit slot; child explosion lacks complete fixed-group propagation. Use an already scoped single-projectile precision form; preserve enhancement, mods, schedule and AI.",
+      "bonusPolicy": "Retain the excluded strong-precision family: zero added growth, passive or Nano."
+    },
+    {
+      "identity": "CF6-N-WA-06",
+      "slot": "primary",
+      "before": {
+        "name": "NA45",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "NA45#9##透镜"
+      },
+      "after": {
+        "name": "SVD",
+        "form": "data_ice",
+        "tier": "墨冰",
+        "enhancement": 9,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "SVD#9#墨冰#透镜"
+      },
+      "finalRequiredLevel": 45,
+      "actorLevel": 47,
+      "rawPower": 2244,
+      "reason": "NA45 native carrier plus explosion consumes 2 damage units against the unchanged 1-unit slot; child explosion lacks complete fixed-group propagation. Use an already scoped single-projectile precision form; preserve enhancement, mods, schedule and AI.",
+      "bonusPolicy": "Retain the excluded strong-precision family: zero added growth, passive or Nano."
+    },
+    {
+      "identity": "CF6-N-WA-07",
+      "slot": "primary",
+      "before": {
+        "name": "NA45",
+        "form": "data",
+        "tier": null,
+        "enhancement": 9,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "NA45#9##透镜"
+      },
+      "after": {
+        "name": "SVD",
+        "form": "data_fire",
+        "tier": "狱火",
+        "enhancement": 9,
+        "mods": [
+          "透镜"
+        ],
+        "serialized": "SVD#9#狱火#透镜"
+      },
+      "finalRequiredLevel": 45,
+      "actorLevel": 48,
+      "rawPower": 2244,
+      "reason": "NA45 native carrier plus explosion consumes 2 damage units against the unchanged 1-unit slot; child explosion lacks complete fixed-group propagation. Use an already scoped single-projectile precision form; preserve enhancement, mods, schedule and AI.",
+      "bonusPolicy": "Retain the excluded strong-precision family: zero added growth, passive or Nano."
+    }
+  ]
+}

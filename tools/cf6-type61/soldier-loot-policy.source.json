@@ -1,17 +1,43 @@
 {
   "schema": "cf6-fixed-loot-policy.v1",
-  "version": "fixed158-candidate-1",
+  "version": "fixed158-candidate-2",
   "status": "candidate_for_acceptance",
   "scope": "cf6-sting/type61 fixed158 only",
   "gate": "one frozen DropLuckRoller PRD decision per identity; existing inverse-skill bonus",
-  "caps": {"packages": 6, "pairs": 2, "weaponInstances": 8, "materials": 2},
+  "caps": {
+    "packages": 6,
+    "pairs": 2,
+    "weaponInstances": 8,
+    "materials": 2
+  },
   "profiles": {
-    "ordinary_rifle_or_material": {"nominalPercent": 3, "longgun": 70, "sidearm_pair": 0, "mod_material": 30},
-    "elite_rifle_xor_pair_xor_material": {"nominalPercent": 6, "longgun": 45, "sidearm_pair": 35, "mod_material": 20},
-    "major_rifle_xor_pair_xor_material": {"nominalPercent": 10, "longgun": 45, "sidearm_pair": 35, "mod_material": 20}
+    "ordinary_rifle_or_material": {
+      "nominalPercent": 5,
+      "longgun": 70,
+      "sidearm_pair": 0,
+      "mod_material": 30
+    },
+    "elite_rifle_xor_pair_xor_material": {
+      "nominalPercent": 8,
+      "longgun": 45,
+      "sidearm_pair": 35,
+      "mod_material": 20
+    },
+    "major_rifle_xor_pair_xor_material": {
+      "nominalPercent": 12,
+      "longgun": 45,
+      "sidearm_pair": 35,
+      "mod_material": 20
+    }
   },
   "categorySelection": "filter categories against remaining caps and captured equipment before the one gate; on hit make one weighted choice",
   "ammo": "one ordinary paid full reload for each delivered real weapon and its installed subweapon; exact inventory costs summed by name",
   "delivery": "same packet into RewardStashService, preferInventory=false; decision and admission have separate durable receipts",
-  "limits": "No guaranteed weapon, no replacement for unavailable identities, no shops or early pools added. Rates are candidate settings, not a final economic acceptance."
+  "limits": "First weapon by the eighth eligible fixed-soldier death when a valid primary/ammo packet exists; old decisions are immutable and an old run already past the threshold qualifies on its next new eligible death. No replacement for cancelled identities; no new shops or pools. Rates are candidate package settings, not final economic acceptance.",
+  "firstWeaponGuarantee": {
+    "afterEligibleDeaths": 8,
+    "kind": "longgun",
+    "scope": "first real weapon in this run; one frozen current identity, same quotas",
+    "prd": "Perform the normal gate exactly once; retain its natural PRD advancement even when the guarantee replaces the category. Never rewrite a prior decision."
+  }
 }

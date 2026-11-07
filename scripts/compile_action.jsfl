@@ -111,8 +111,21 @@ function main() {
 			var ownedOperation = request[1] != "stop_test_players";
 			if (ownedOperation) {
 				var ownedTargetKey = normalizeDocumentURI(projectURI + "/scripts/TestLoader/TestLoader.xfl");
+				var ownedTargetKeys = {};
+				ownedTargetKeys[ownedTargetKey] = true;
+				// Exit may also retire the finite generated CF6 focused consumers.
+				// Inspection/output leases remain exclusive to TestLoader; no prefix/glob admission.
+				if (request[1] == "quit_owned_test_host") {
+					var focusedTargets = ["Cf6FixedSoldierNativeHost/Cf6FixedSoldierNativeHost.xfl",
+						"Cf6FixedProjectileHost/Cf6FixedProjectileHost.xfl", "Cf6FixedChapterHost/Cf6FixedChapterHost.xfl",
+						"Cf6FirepowerProjectileHost/Cf6FirepowerProjectileHost.xfl",
+						"tmp-cf6-loot-cold-host/Cf6SoldierLootColdProbe.xfl"];
+					for (var focusedIndex = 0; focusedIndex < focusedTargets.length; focusedIndex++) {
+						ownedTargetKeys[normalizeDocumentURI(projectURI + "/scripts/" + focusedTargets[focusedIndex])] = true;
+					}
+				}
 				for (var ownedIndex = 0; ownedIndex < fl.documents.length; ownedIndex++) {
-					if (normalizeDocumentURI(fl.documents[ownedIndex].pathURI) != ownedTargetKey) {
+					if (ownedTargetKeys[normalizeDocumentURI(fl.documents[ownedIndex].pathURI)] !== true) {
 						throw "Foreign or unsaved document blocks owned test host operation";
 					}
 				}

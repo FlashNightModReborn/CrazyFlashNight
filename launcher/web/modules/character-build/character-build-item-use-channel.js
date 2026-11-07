@@ -192,6 +192,13 @@
             var self = this;
             if (!committed) {
                 this._itemUseResumeSelection = null;
+                // A definitive rejection may have compensated a full-save candidate,
+                // replacing inventory refs and advancing the live loadout revision.
+                // Refresh authority before another equip/close; never replay item use.
+                this._candidateCache = null;
+                this._session.refreshSnapshot(function(snapshot, accepted) {
+                    if (accepted && self._view) self._applySnapshot(snapshot.payload, false);
+                });
                 if (this._ports.toast) this._ports.toast(
                     response && response.error === 'not_committed'
                         ? '刚才的使用未执行，可重新点击。'

@@ -304,8 +304,25 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
         var mods:Array=catalog();mods[0].id="cf6.type61.mods.medium";mods[0].scope={kind:"book",bookId:"cf6-sting",routeId:"type61"};
         ItemUtil.itemDataDict["选择测试礼包"].data.rewardPack.poolId=mods[0].id;
         ChoiceRewardService.setPoolsForTests(mods);packs=Number(_root.物品栏.背包.getItem(0).value);
+        var rollbackControl:Object=ItemUtil.capturePlayerAssetSnapshot();
+        var controlRef:Object=_root.物品栏.背包.getItem(0);
+        var controlEquipmentRevision:Number=_root.物品栏.装备栏.getMutationRevision();
+        var controlDrugRevision:Number=_root.物品栏.药剂栏.getMutationRevision();
+        var controlRestored:Boolean=ItemUtil.restorePlayerAssetSnapshot(rollbackControl);
+        check(controlRestored && _root.物品栏.背包.getItem(0).value==packs,
+            "full asset rollback control preserves the unopened box contents");
+        trace("ChoiceRejectedRollbackControl: bagRefReplaced="+(_root.物品栏.背包.getItem(0)!==controlRef)
+            +" equipmentRevisionDelta="+(_root.物品栏.装备栏.getMutationRevision()-controlEquipmentRevision)
+            +" drugRevisionDelta="+(_root.物品栏.药剂栏.getMutationRevision()-controlDrugRevision));
+        var unopenedRef:Object=_root.物品栏.背包.getItem(0);
+        var equipmentRevision:Number=_root.物品栏.装备栏.getMutationRevision();
+        var drugRevision:Number=_root.物品栏.药剂栏.getMutationRevision();
         result=ItemUseService.execute("stashOpen",openRequest());
         check(!result.success && result.error=="no_eligible_choices" && _root.物品栏.背包.getItem(0).value==packs,"unusable Type61 mod options preserve the unopened box");
+        check(_root.物品栏.背包.getItem(0)===unopenedRef
+            && _root.物品栏.装备栏.getMutationRevision()===equipmentRevision
+            && _root.物品栏.药剂栏.getMutationRevision()===drugRevision,
+            "unusable mod-box preflight preserves the live item and inventory write revisions for the open character session");
         check(RewardStashService.pendingOperationId()=="" && snap().offers.length==0,"definitive unusable-mod rejection leaves no candidate or unknown write fence");
     }
 

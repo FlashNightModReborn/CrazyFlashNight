@@ -1,0 +1,641 @@
+{
+  "schema": "cf6-soldier.equipment-consumer.v2",
+  "imports": {
+    "加载MC库0": "flashswf/arts/things.swf",
+    "Au的素材": "flashswf/arts/new/Au的素材.swf",
+    "Codex特种兵素材": "flashswf/arts/new/Codex特种兵素材.swf",
+    "敌人-CF6特种兵": "flashswf/arts/new/Codex特种兵素材.swf",
+    "敌人-CF6持盾特种兵": "flashswf/arts/new/Codex特种兵素材.swf",
+    "敌人-CF6特种精英": "flashswf/arts/new/Codex特种兵素材.swf",
+    "敌人-CF6持盾特种精英": "flashswf/arts/new/Codex特种兵素材.swf",
+    "敌人-CF6特种教官": "flashswf/arts/new/Codex特种兵素材.swf",
+    "敌人-CF6持盾特种教官": "flashswf/arts/new/Codex特种兵素材.swf",
+    "CF6战术烟雾": "flashswf/arts/new/Codex特种兵素材.swf",
+    "枪-长枪-M4A1改": "flashswf/arts/things.swf",
+    "枪-长枪-AK74战术版": "flashswf/arts/things.swf",
+    "枪-长枪-M4A1战术版": "flashswf/arts/things.swf",
+    "枪-长枪-DD MK18战术版": "flashswf/arts/new/Au的素材.swf",
+    "枪-长枪-AK47": "flashswf/arts/things.swf",
+    "枪-手枪-FR506": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+    "枪-手枪-短HK53": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+    "偷吃屑鱼坟头贡品": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+    "手雷-高爆手雷": "flashswf/arts/原版素材库-子弹.swf",
+    "手雷-普通手雷": "flashswf/arts/原版素材库-子弹.swf",
+    "高爆手雷": "flashswf/arts/原版素材库-子弹.swf",
+    "普通手雷": "flashswf/arts/原版素材库-子弹.swf",
+    "普通爆炸": "flashswf/arts/原版素材库-子弹.swf",
+    "原版素材库-子弹": "flashswf/arts/原版素材库-子弹.swf",
+    "枪-长枪-M60E3": "flashswf/arts/new/原体融合生物.swf",
+    "枪-长枪-HKSL8GOLD": "flashswf/arts/new/原体融合生物.swf",
+    "枪-长枪-M4A1狱火": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-TTI Benelli M4": "flashswf/arts/new/PTXOA馆长_JohnWick系列.swf",
+    "枪-长枪-M4A1科技白": "flashswf/arts/new/3XD的素材.swf",
+    "枪-长枪-‌Noveske N4 突击步枪": "flashswf/arts/new/Au的素材.swf",
+    "枪-长枪-ValmetM78": "flashswf/arts/new/原体融合生物.swf",
+    "枪-长枪-炎魔枪B100": "flashswf/arts/things切割.swf",
+    "枪-短枪-EPHI破狭者套件": "flashswf/arts/new/3102&Leave.swf",
+    "枪-手枪-MP40墨冰": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-诺亚卫士科技步枪": "flashswf/arts/new/公共素材位0.swf",
+    "枪-长枪-SVD墨冰": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-AUG墨冰全涂装": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-XM1014墨冰": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-CAR": "flashswf/arts/new/3102&Leave.swf",
+    "枪-长枪-XM1014狱火": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-XM7 NGSW R": "flashswf/arts/new/Au的素材.swf",
+    "枪-长枪-Sniper墨冰": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-AK74狱火": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-Sniper狱火": "flashswf/arts/new/变体武器.swf",
+    "枪-手枪-Glock18狱火": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-TTI Gen 12": "flashswf/arts/new/PTXOA馆长_JohnWick系列.swf",
+    "枪-手枪-MP40狱火": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-AUG狱火": "flashswf/arts/new/变体武器.swf",
+    "枪-手枪-Glock18墨冰": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-SVD狱火": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-AA12丧尸": "flashswf/arts/new/3XD的素材.swf",
+    "枪-长枪-AK74墨冰": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-M14墨冰": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-HK416墨冰": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-M4A1墨冰": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-HK416狱火": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-M14狱火": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-墨冰88式狙击枪": "flashswf/arts/new/变体武器.swf",
+    "枪-手枪-Glock18战术版": "flashswf/arts/new/3XD的素材.swf",
+    "枪-长枪-MG42战术版": "flashswf/arts/new/3XD的素材.swf",
+    "枪-长枪-M82A1加强版": "flashswf/arts/new/3XD的素材.swf",
+    "枪-手枪-MP7极品战术版": "flashswf/arts/new/3XD的素材.swf",
+    "枪-长枪-PKP": "flashswf/arts/new/fs配置素材.swf",
+    "枪-手枪-T181S": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+    "枪-长枪-雷明登870警用型": "flashswf/arts/new/原体融合生物.swf",
+    "枪-手枪-Beretta90TWO墨冰": "flashswf/arts/new/变体武器.swf",
+    "枪-手枪-Beretta90TWO熔岩": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-黄金QBZ": "flashswf/arts/things.swf",
+    "枪-长枪-战术-QBZ-191": "flashswf/arts/new/3102&Leave.swf",
+    "枪-手枪-短剑印花集": "flashswf/arts/new/3XD的素材.swf",
+    "枪-长枪-战术-QBZ-192": "flashswf/arts/new/3102&Leave.swf",
+    "枪-长枪-狱火88式狙击枪": "flashswf/arts/new/变体武器.swf",
+    "枪-长枪-能量狙击枪": "flashswf/arts/new/乔恩.swf",
+    "枪-长枪-战术巴雷特": "flashswf/arts/things切割.swf",
+    "枪-长枪-M134暴力版": "flashswf/arts/things.swf",
+    "枪-长枪-FSC7": "flashswf/arts/new/3XD的素材.swf",
+    "枪-长枪-MG42": "flashswf/arts/things.swf",
+    "枪-长枪-G1111": "flashswf/arts/new/fs配置素材.swf",
+    "枪-手枪-极品UZI战术版": "flashswf/arts/things切割.swf",
+    "枪-长枪-众神之力": "flashswf/arts/new/3XD的素材.swf",
+    "枪-手枪-远古诛神短枪": "flashswf/arts/things.swf",
+    "枪-长枪-远古诛神枪": "flashswf/arts/things.swf",
+    "枪-长枪-量子能量枪": "flashswf/arts/things切割.swf",
+    "枪-手枪-改造式诺亚科技冲锋枪": "flashswf/arts/new/公共素材位0.swf",
+    "枪-长枪-紫色幻想": "flashswf/arts/new/乔恩.swf",
+    "枪-长枪-诛神枪": "flashswf/arts/things切割.swf",
+    "枪-长枪-高斯枪": "flashswf/arts/new/侨仔.swf",
+    "枪-手枪-轻量化量子能量枪": "flashswf/arts/things切割.swf",
+    "枪-长枪-战术版喷火器": "flashswf/arts/things切割.swf",
+    "烈焰普通子弹": "flashswf/arts/new/雾人整合特效.swf",
+    "加强普通子弹": "flashswf/arts/原版素材库-子弹.swf",
+    "横向拖尾追踪联弹": "flashswf/arts/原版素材库-子弹.swf",
+    "能量普通子弹": "flashswf/arts/new/雾人整合特效.swf",
+    "榴弹": "flashswf/arts/原版素材库-子弹.swf",
+    "巴雷特子弹": "flashswf/arts/原版素材库-子弹.swf",
+    "巨型穿刺能量子弹": "flashswf/arts/new/雾人整合特效.swf",
+    "新电球": "flashswf/arts/new/瓦巴杰克.swf",
+    "纵向机枪联弹": "flashswf/arts/原版素材库-子弹.swf",
+    "穿刺子弹": "flashswf/arts/原版素材库-子弹.swf",
+    "冰冷普通子弹": "flashswf/arts/new/雾人整合特效.swf",
+    "次级穿刺子弹": "flashswf/arts/原版素材库-子弹.swf",
+    "烈焰子弹": "flashswf/arts/new/雾人整合特效.swf",
+    "fsc7炮弹": "flashswf/arts/new/lady.swf",
+    "普通无壳子弹": "flashswf/arts/原版素材库-子弹.swf",
+    "铁枪磁轨弹": "flashswf/arts/原版素材库-子弹.swf",
+    "集束连环爆炸": "flashswf/arts/new/lady.swf",
+    "普通子弹": "flashswf/arts/原版素材库-子弹.swf",
+    "蓝紫穿刺子弹": "flashswf/arts/new/lady.swf",
+    "横向联弹": "flashswf/arts/原版素材库-子弹.swf",
+    "纵向联弹": "flashswf/arts/原版素材库-子弹.swf",
+    "冰冷子弹": "flashswf/arts/new/雾人整合特效.swf",
+    "3102&Leave": "flashswf/arts/new/3102&Leave.swf",
+    "3XD的素材": "flashswf/arts/new/3XD的素材.swf",
+    "PTXOA馆长_JohnWick系列": "flashswf/arts/new/PTXOA馆长_JohnWick系列.swf",
+    "fs配置素材": "flashswf/arts/new/fs配置素材.swf",
+    "乔恩": "flashswf/arts/new/乔恩.swf",
+    "侨仔": "flashswf/arts/new/侨仔.swf",
+    "公共素材位0": "flashswf/arts/new/公共素材位0.swf",
+    "原体融合生物": "flashswf/arts/new/原体融合生物.swf",
+    "变体武器": "flashswf/arts/new/变体武器.swf",
+    "瓦巴杰克": "flashswf/arts/new/瓦巴杰克.swf",
+    "雾人整合特效": "flashswf/arts/new/雾人整合特效.swf",
+    "things切割": "flashswf/arts/things切割.swf"
+  },
+  "canonicalFixtureFacadesSha256": "8a6b33f7cbbeb57de71d364def7648df438725c3439920287573e7cc6eb4b1a4",
+  "generatorSha256": "0fbae536dd4bd42a729467d5e7499c37ee4816deb993292b5734778bbda55847",
+  "referencePublishSettingsSha256": "04b547559cbe2b497fd8cecf81c4163c8f25d8e7d574fc959d7a1dcc845aabc5",
+  "files": [
+    {
+      "path": "LIBRARY/Import0.xml",
+      "sha256": "1e04ffeda5825f07da258bb6167106d608e3d5b67fb536c8c77945c40f985f6b"
+    },
+    {
+      "path": "LIBRARY/Import1.xml",
+      "sha256": "ebc19a6d1a605938e9e10f3793ffdc580bc330c841342164cc0d423839758605"
+    },
+    {
+      "path": "LIBRARY/Import2.xml",
+      "sha256": "d681dc95e8f82c3568d8c9c5e4e7b92653a4e733caecb6ac0a67a5a902f685b5"
+    },
+    {
+      "path": "LIBRARY/Import3.xml",
+      "sha256": "8268bef8305c1ac31c2fe8a2ff9f365f77980cd46e1bba6c279c2eb26c85c8b6"
+    },
+    {
+      "path": "LIBRARY/Import4.xml",
+      "sha256": "a141b30936fc9c73e5b508fde4387b8ccb1ebef4f8f03f0dc3c080e827388d8b"
+    },
+    {
+      "path": "LIBRARY/Import5.xml",
+      "sha256": "3de2b50c37858cbc229c37a93abc2b45e828837c06e2b641ef80053d17eebaab"
+    },
+    {
+      "path": "LIBRARY/Import6.xml",
+      "sha256": "fe25aadb46d4c50be9a4c6b58592968cc6b6ced3fab5addc553299adef5e0dd3"
+    },
+    {
+      "path": "LIBRARY/Import7.xml",
+      "sha256": "f2da056e6a04c77e6eb856f14e8770bc8917c33258f5bb74e9a033435033cb1d"
+    },
+    {
+      "path": "LIBRARY/Import8.xml",
+      "sha256": "d840c3d0c9537c3302952385d30f257be0be31445eeba592b14d61be26cbe92b"
+    },
+    {
+      "path": "LIBRARY/Import9.xml",
+      "sha256": "c2236c08fd778838a8d79270390a82231b1043f891a0135a0be26b8fd6319fee"
+    },
+    {
+      "path": "LIBRARY/Import10.xml",
+      "sha256": "77508ca84800967ac599d79bc93849a3419ec015fea4a96e86e7b9568f74b777"
+    },
+    {
+      "path": "LIBRARY/Import11.xml",
+      "sha256": "1f3e870f5d8fb0d7e5c50fd12d928e711b68f581e54cc4503f5c03383760f15e"
+    },
+    {
+      "path": "LIBRARY/Import12.xml",
+      "sha256": "468dda5876302f7844b21aa3b35e3d5420752d9e446a26c9ef5e772698a20473"
+    },
+    {
+      "path": "LIBRARY/Import13.xml",
+      "sha256": "fbea1a2e64ffa33af5454f4591a5ac076f148c08798594b6035737f084dd7717"
+    },
+    {
+      "path": "LIBRARY/Import14.xml",
+      "sha256": "5e12bea83bea16bf12585f53fae1b7661c72d10c30da26f52a5e91509b1653ce"
+    },
+    {
+      "path": "LIBRARY/Import15.xml",
+      "sha256": "822edcc0734af38baf7b396d4ef8970df7d1d8adde77d14556ededa6918018fa"
+    },
+    {
+      "path": "LIBRARY/Import16.xml",
+      "sha256": "6904c7b23e648c1fcf7c234c9acf46254bcdf1ed58c20f67c759479106062c5d"
+    },
+    {
+      "path": "LIBRARY/Import17.xml",
+      "sha256": "8539221b9f266f4de2226748d4acbac524ca6a7dcd37d5d5349b546433e34ef9"
+    },
+    {
+      "path": "LIBRARY/Import18.xml",
+      "sha256": "500ac8a442f825fccb5d5ea773223d3a0d5ff508b6ec4678040c1e590316a784"
+    },
+    {
+      "path": "LIBRARY/Import19.xml",
+      "sha256": "a8c6b104795b7c076323512529408e5576abba42a0ce3fdf612e4a4a3ce237ca"
+    },
+    {
+      "path": "LIBRARY/Import20.xml",
+      "sha256": "132b85ed13ae82a94a13000951fc753ebdde7b4c9df853647581f51ae883b777"
+    },
+    {
+      "path": "LIBRARY/Import21.xml",
+      "sha256": "47b49aac78a8a6bad135b31a64ccff1be71728b9c8dd42f7eb7c93827db5f3ae"
+    },
+    {
+      "path": "LIBRARY/Import22.xml",
+      "sha256": "bfb43043b5b05ab1a73e5bb4f7708dffdec292b712134568088fbca53daa4bcc"
+    },
+    {
+      "path": "LIBRARY/Import23.xml",
+      "sha256": "75775b44d8cf5be30f3756dbccb279c4a7e2c5b1916587e6ebe782f6bc59555f"
+    },
+    {
+      "path": "LIBRARY/Import24.xml",
+      "sha256": "ba6f99335a734446b403e11f0fb032cd5b7f03763b688f794bc0237adf67c915"
+    },
+    {
+      "path": "LIBRARY/Import25.xml",
+      "sha256": "840206d61d953c072b2b93b5397bec47f65bc4de0b8db62189577eabc8800f00"
+    },
+    {
+      "path": "LIBRARY/Import26.xml",
+      "sha256": "23f8e07eb45565702982ee91e4c5fce84102a0b926794af3d04910fb060dae0e"
+    },
+    {
+      "path": "LIBRARY/Import27.xml",
+      "sha256": "a9d5ac3648711b1af4a1c94149d1aa94b688a3597f91417d522eb0764cf35a65"
+    },
+    {
+      "path": "LIBRARY/Import28.xml",
+      "sha256": "d23ff3422181797226f2183af377f95574cb4b57e2ebeba12947b0bae3a693e6"
+    },
+    {
+      "path": "LIBRARY/Import29.xml",
+      "sha256": "0f355ec0188c1b00e149b0226fd9d7e48fc59ba27dd024f1086ee725ff59bdf6"
+    },
+    {
+      "path": "LIBRARY/Import30.xml",
+      "sha256": "c4540abbca528a18ffde209e28a577a9f4b387a197f5a823df19e395cc751ea7"
+    },
+    {
+      "path": "LIBRARY/Import31.xml",
+      "sha256": "aa8ac17a2ebd9a82871072bc388e2b73b27922828e1564ca0f14bbb4c63a54b9"
+    },
+    {
+      "path": "LIBRARY/Import32.xml",
+      "sha256": "d147714139a25d4d84412b9f3296073f83fe4b37c00c4dd747d62ab001a29473"
+    },
+    {
+      "path": "LIBRARY/Import33.xml",
+      "sha256": "a697428e5f898111828179e7867e1d32a99f0cd2384899cf4a788688919319f9"
+    },
+    {
+      "path": "LIBRARY/Import34.xml",
+      "sha256": "913e72ae820ad87446b80e63b08ca3cc8a075688771569b227f94064b469fd55"
+    },
+    {
+      "path": "LIBRARY/Import35.xml",
+      "sha256": "0aaf2ac4b7b8bd1ab1ccc9f602410ae613a7dff3e46860c0153ab313bbb540f1"
+    },
+    {
+      "path": "LIBRARY/Import36.xml",
+      "sha256": "1414e7ad8c65776d08e4c0b3717a6c2ea3678f9983c2d167fdd69f4db45531fb"
+    },
+    {
+      "path": "LIBRARY/Import37.xml",
+      "sha256": "56b6ab03ae560cfae429968403b2201179a3a7164da94f61e76da5d0eb124a9b"
+    },
+    {
+      "path": "LIBRARY/Import38.xml",
+      "sha256": "9a0ff2d255e129943ce3b49d54864c53e4c79a6802fd04dab2437d3da35b1c03"
+    },
+    {
+      "path": "LIBRARY/Import39.xml",
+      "sha256": "0227a00647eed5324d25383928ac4249e829981f759761364550a6d15e7ed639"
+    },
+    {
+      "path": "LIBRARY/Import40.xml",
+      "sha256": "10ddad8081b54272a3ce20a643afb3e5776812b95c11a9edc7fb96e6cf4c59ba"
+    },
+    {
+      "path": "LIBRARY/Import41.xml",
+      "sha256": "59c5f7b003220759572bec74f54893d7e67da712480a3f882b2bd8685ef2d653"
+    },
+    {
+      "path": "LIBRARY/Import42.xml",
+      "sha256": "c3cee90e1906aa5a71f2c3685fd37c120ac40f865b3e232b5059c2227798c326"
+    },
+    {
+      "path": "LIBRARY/Import43.xml",
+      "sha256": "c625d6292e1d755067307e079fdcdfc7394fb57b71d1ba3863c87cf84453d794"
+    },
+    {
+      "path": "LIBRARY/Import44.xml",
+      "sha256": "f1b435965f5216b759770c3c7860ee66949fc7714d071c07849ef756fef88de7"
+    },
+    {
+      "path": "LIBRARY/Import45.xml",
+      "sha256": "02f9dc4477d1c2b275b97b1b599ceab5b87a3c4d9e0c9ff483e64052d6b4a485"
+    },
+    {
+      "path": "LIBRARY/Import46.xml",
+      "sha256": "6c3f0d0552aaa04ed5ca8455a8120f364f28daabf645aaca6f153db0ccdc59d5"
+    },
+    {
+      "path": "LIBRARY/Import47.xml",
+      "sha256": "9e103055a238d14fc64a504e4f396f9cbb276b520e634df398840c9a8d3940db"
+    },
+    {
+      "path": "LIBRARY/Import48.xml",
+      "sha256": "5e79a0401a31b92d128643a3738580c1cd2f08bd0fa8548fe2630896587c6d6c"
+    },
+    {
+      "path": "LIBRARY/Import49.xml",
+      "sha256": "ecd80ad176d11769a104b24b25d1d8cdbe4d15f97a360eec582b71e91a07cb70"
+    },
+    {
+      "path": "LIBRARY/Import50.xml",
+      "sha256": "fd5835ec4592dcda302c34f2fa8139572555d60807a5a4d46f3bb8503d9006e6"
+    },
+    {
+      "path": "LIBRARY/Import51.xml",
+      "sha256": "5a2bf846bee1e5f2072ff9e4af08b37668bbe1ecc113797027798450cce59566"
+    },
+    {
+      "path": "LIBRARY/Import52.xml",
+      "sha256": "20cb089c38a429727c65aecdb4132bbe7a6868ddf80753935b1d26bbe8b1d2f9"
+    },
+    {
+      "path": "LIBRARY/Import53.xml",
+      "sha256": "9805b150e43a8e50432afbdf94b41b109c70bad231a06f25d04dd733bf9ad8ed"
+    },
+    {
+      "path": "LIBRARY/Import54.xml",
+      "sha256": "f08bfc2f4371f8ecea1e046542dec293103fc2489cc3442d097c5a55f13b3f94"
+    },
+    {
+      "path": "LIBRARY/Import55.xml",
+      "sha256": "f5039065922faf3f86ca1cee80250bd0ce394a6715a65b05ab44f6d2c10632f2"
+    },
+    {
+      "path": "LIBRARY/Import56.xml",
+      "sha256": "b050e47a6719bb1a6600eb7c911714e75732a5e9455318c596f70dded36a6626"
+    },
+    {
+      "path": "LIBRARY/Import57.xml",
+      "sha256": "22484bd120d21d5d71b51034474743a9227a6cdfd251d08d7bd23620dc88959b"
+    },
+    {
+      "path": "LIBRARY/Import58.xml",
+      "sha256": "c2879fdcb6e65b5b874f9a107fcbd36250e20a928341db4cea221ba3dd416f8c"
+    },
+    {
+      "path": "LIBRARY/Import59.xml",
+      "sha256": "61b22134617c72d8c54786b41f185d44486d2077ebea19b612df158468dc886e"
+    },
+    {
+      "path": "LIBRARY/Import60.xml",
+      "sha256": "60414e8ef9e2058c054992bca6d634be2dd1a78eddc24d4790e23cf8a2c319de"
+    },
+    {
+      "path": "LIBRARY/Import61.xml",
+      "sha256": "5d7ff9fcd395951499cce872effd3622623555fb7499b97447ad8006edc27e61"
+    },
+    {
+      "path": "LIBRARY/Import62.xml",
+      "sha256": "6099ea3b161bfa76149e69327e765467e32b090b38ea7d71b5b8fa9afaf7f840"
+    },
+    {
+      "path": "LIBRARY/Import63.xml",
+      "sha256": "48b1ca19d488807673c5974b37b27d01b9259b521ffcabe7aca81be8a2df110b"
+    },
+    {
+      "path": "LIBRARY/Import64.xml",
+      "sha256": "2e9b34ea5195051d7263f95fbcb0a0790522b3358cf52f13ada5bbac6290b177"
+    },
+    {
+      "path": "LIBRARY/Import65.xml",
+      "sha256": "7c3dc2cf3428eeec84af3a7efa4a5cbf7789cef7e10367429b85fb2193ef3c6c"
+    },
+    {
+      "path": "LIBRARY/Import66.xml",
+      "sha256": "28e7ebede24d73c3ce4e18aeac2f071f45e967b8c132fa2a243ae74e92cb4d08"
+    },
+    {
+      "path": "LIBRARY/Import67.xml",
+      "sha256": "bd49d91c16f02faa1c046e25a611f561cbebe5ceee94671c567b0db80689828b"
+    },
+    {
+      "path": "LIBRARY/Import68.xml",
+      "sha256": "99ade355fd494bbc0e0dad9e170d7799bd85974c4527c30f2f1107c0761f2d63"
+    },
+    {
+      "path": "LIBRARY/Import69.xml",
+      "sha256": "68182482ca714a492c1e2df906dc4a993d818b6916b0057255e28fefc1ea3732"
+    },
+    {
+      "path": "LIBRARY/Import70.xml",
+      "sha256": "58429f9ab2c51952b148119c43bdf14ee71a441073a9de12fa8c819a96144e36"
+    },
+    {
+      "path": "LIBRARY/Import71.xml",
+      "sha256": "871651126d52d45d873eba67b480aac7e2b4ea2cbb4adda72c31ca2589b9e752"
+    },
+    {
+      "path": "LIBRARY/Import72.xml",
+      "sha256": "6276921a81cb080e361aaa97f2643c01c174dce3e73daf775868e33fdd080cee"
+    },
+    {
+      "path": "LIBRARY/Import73.xml",
+      "sha256": "29a1e55dc3743998a5f4c8595ef0bb077091a352425952decc3a48f0e821ee4d"
+    },
+    {
+      "path": "LIBRARY/Import74.xml",
+      "sha256": "75a7913d4613f80e5a43ecabbe65f0f34c4ea1abc3974ec3957e6f38047e7440"
+    },
+    {
+      "path": "LIBRARY/Import75.xml",
+      "sha256": "f8219ba4bb4063bba02304d35b6f49d6b4531beda3df2a00dff7bcfa6ed1328d"
+    },
+    {
+      "path": "LIBRARY/Import76.xml",
+      "sha256": "7fa21e5b344054906ebb828055d5fc1f8eac6eb8c99a92123c5e3164cfeea72d"
+    },
+    {
+      "path": "LIBRARY/Import77.xml",
+      "sha256": "46762cab0a97a176e958784bf2fcf62538623a7ad2386bf15a2a352581e62243"
+    },
+    {
+      "path": "LIBRARY/Import78.xml",
+      "sha256": "45653a60610c91e724f85e535a1b8afa6c63daa03f5a3b06f305b3a9a4d04546"
+    },
+    {
+      "path": "LIBRARY/Import79.xml",
+      "sha256": "6e19da4d122f13dda32e61accdc0af0ab34987db20a0577fb36b3259409347e1"
+    },
+    {
+      "path": "LIBRARY/Import80.xml",
+      "sha256": "d46206502a6bd175b25fd11967fbdd2b79e3772ce87a405770df9802f14c319f"
+    },
+    {
+      "path": "LIBRARY/Import81.xml",
+      "sha256": "fc27042e57f54a7b10c0c2051069031864d105198a222a777c86f2f6b135652c"
+    },
+    {
+      "path": "LIBRARY/Import82.xml",
+      "sha256": "6c968aad3d1d0fc86f8616964f1ede9b0665d135a344f29b95e870a000f725c4"
+    },
+    {
+      "path": "LIBRARY/Import83.xml",
+      "sha256": "8a5153a7d9bb065e03c799d8edc9090dcaf9bb04708420ebcbcdb9e1647eceed"
+    },
+    {
+      "path": "LIBRARY/Import84.xml",
+      "sha256": "f1750572bd13fdb6d5a6e63fd22fc1f034e246a9db951541f0451eac9e2cd641"
+    },
+    {
+      "path": "LIBRARY/Import85.xml",
+      "sha256": "479d0de7c7a78f78e594482111b3b56ad667888ff300d32d896e7f3c64418f3e"
+    },
+    {
+      "path": "LIBRARY/Import86.xml",
+      "sha256": "58dacb89ee33c8fa27654572ce49841f3d084ca59c11a8896d28a75521f5038b"
+    },
+    {
+      "path": "LIBRARY/Import87.xml",
+      "sha256": "df5205179504e4cf716bee8330f5c2070d85443f748d0ec7e661baa68a742dc8"
+    },
+    {
+      "path": "LIBRARY/Import88.xml",
+      "sha256": "e03ed91521d7e4a276ac8960db3a13670a84384812b2fc98690d238dac995d28"
+    },
+    {
+      "path": "LIBRARY/Import89.xml",
+      "sha256": "99878fc0f07beac66b7f9808bf4e70e022fe58c085a4e97abfacae1dbface378"
+    },
+    {
+      "path": "LIBRARY/Import90.xml",
+      "sha256": "3671a5b8e10f8bdee51bd5e66c1d982bedea70ec06a27b3730e0c8ba7116acb5"
+    },
+    {
+      "path": "LIBRARY/Import91.xml",
+      "sha256": "72cfe6f2e86eb9f1f3ddf0aa13660801603b2cc3865500885602e8b3d0f7fd65"
+    },
+    {
+      "path": "LIBRARY/Import92.xml",
+      "sha256": "cffdd7114316f984184d45200f407ff9eed1bd32a6e31965c31371220de9b84d"
+    },
+    {
+      "path": "LIBRARY/Import93.xml",
+      "sha256": "f4d03475049ba9695f7a0b12ef1dc060587b0e39a3b4dea1fa60ec3212b6f466"
+    },
+    {
+      "path": "LIBRARY/Import94.xml",
+      "sha256": "d4f01e19fcc55a4003e7f1c052c6a1c12bdaea4786ec4c6c563af403ccad2690"
+    },
+    {
+      "path": "LIBRARY/Import95.xml",
+      "sha256": "41d4c2a24a757db33d39b6d915d836766b955a5e240df7c21fd2ffbb9827690b"
+    },
+    {
+      "path": "LIBRARY/Import96.xml",
+      "sha256": "2ad033549a7b3cfab1760f1fbf830d5632b6f3cf67d8fa935df99c2d3e7566eb"
+    },
+    {
+      "path": "LIBRARY/Import97.xml",
+      "sha256": "5e42f326d7cba5a29f98908b5e0de1e1eb63840d38bc562fe7034a844b1cb89b"
+    },
+    {
+      "path": "LIBRARY/Import98.xml",
+      "sha256": "d7072bc94744b79b5b6330793b4afa4d2bc12293a29bd465d2565d6d3ece4368"
+    },
+    {
+      "path": "LIBRARY/Import99.xml",
+      "sha256": "ff5edd9483d81c770eb900284947d2819d433c04a05357b2ef41fa2c4d245e92"
+    },
+    {
+      "path": "LIBRARY/Import100.xml",
+      "sha256": "6eb448ff8c13a6a3c0187d8d6d334bb44496190e81c9c6b0dbe84c1736029db5"
+    },
+    {
+      "path": "LIBRARY/Import101.xml",
+      "sha256": "f03cc8064612e173ff76da307f6a62c82cdab6348a2efeec0bb714ef8708238e"
+    },
+    {
+      "path": "LIBRARY/Import102.xml",
+      "sha256": "055982442b77398af345acbb2062a015cd63457be56deaae51303bcbd5b2a6f9"
+    },
+    {
+      "path": "LIBRARY/Import103.xml",
+      "sha256": "874b86968b9b815229c2648c6ccc4fd4d4fc42808ad76cb2ba210fe6599e3b32"
+    },
+    {
+      "path": "LIBRARY/Import104.xml",
+      "sha256": "3f97913d7ce7f179e6f8da1a9191093ffe25e8fbd20767c88f04e849338b0724"
+    },
+    {
+      "path": "LIBRARY/Import105.xml",
+      "sha256": "6c42b4dbac02339befc2f1bf4aac36505849cb87a37c0a5e210e6f91701efd0a"
+    },
+    {
+      "path": "LIBRARY/Import106.xml",
+      "sha256": "34dc6a865887cd1a7308cf7ac6544e509f5daead5380fee7a4b6983d3d698faf"
+    },
+    {
+      "path": "LIBRARY/Import107.xml",
+      "sha256": "26106dc150106be2dbc1aa20cfa05a54f329294d4995b6ab5a0ca25d620d64c9"
+    },
+    {
+      "path": "LIBRARY/Import108.xml",
+      "sha256": "633624b22d4ed3546e5b35205046c8c8ef05af89351e3b00979428c3d155b58b"
+    },
+    {
+      "path": "LIBRARY/Import109.xml",
+      "sha256": "9bfcb53c6f90ad9e5b983ae91af8be1f42c8f99425c5fd17c855b4638219de37"
+    },
+    {
+      "path": "LIBRARY/Import110.xml",
+      "sha256": "023efe2254f97547574c6498d9ad9761832a6c2f14c4aa1acd5c1f85b4c76ad5"
+    },
+    {
+      "path": "LIBRARY/Import111.xml",
+      "sha256": "a9afd02fe170e66e83735fdfe8bf9ab52c58a2e19054154ddbe86da857692501"
+    },
+    {
+      "path": "LIBRARY/Import112.xml",
+      "sha256": "61597740990595137b3b5cafc77392383196143e3c9c7945d8362c858595880a"
+    },
+    {
+      "path": "LIBRARY/Import113.xml",
+      "sha256": "9b7448751f5d3b7b502148cbcc82b7dd7c77550217ed7fa0f6bfdc21bf314302"
+    },
+    {
+      "path": "LIBRARY/Import114.xml",
+      "sha256": "660ecbb81333dd1445da21f6c1d64945ef3c01e2ffe3922646b3b776fc9055bb"
+    },
+    {
+      "path": "LIBRARY/Import115.xml",
+      "sha256": "1193e0fa3b018af68db13a04500770682c79fc947db61e1cab50e22390004616"
+    },
+    {
+      "path": "LIBRARY/Import116.xml",
+      "sha256": "1166ecee878e62d8efcb9df09ae6b000afcc00dff4c14f6a69bcdfd2a8368ef3"
+    },
+    {
+      "path": "LIBRARY/Import117.xml",
+      "sha256": "401e44bd442e6f022f29108a0e4c0023438753078aac4d1cf302ce937552bb94"
+    },
+    {
+      "path": "LIBRARY/Import118.xml",
+      "sha256": "645f7d4af3036a3f8b28766cfda4759f2b1e9ab73f7db76d865c5b455705dab5"
+    },
+    {
+      "path": "LIBRARY/Import119.xml",
+      "sha256": "35da06e4f6d416d991c04fb14fd957233b620be4575ced277966cd85b9fd7c22"
+    },
+    {
+      "path": "LIBRARY/Import120.xml",
+      "sha256": "f1bfce4e6a1929911cd4bbfe2b25ba4d28237753566eaa95998d2348b03f4f54"
+    },
+    {
+      "path": "LIBRARY/Import121.xml",
+      "sha256": "fd0eb730bd1a587d09006903f97bc517a149df982ab9f8504ab5450c8d6f51d0"
+    },
+    {
+      "path": "LIBRARY/Import122.xml",
+      "sha256": "f5a9fef76762e60eb9b08fdf05e74d4a005a231c8877f1d3de36cb918c3b8492"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "sha256": "ef695c410219de3a190c73ec61ca31e53a220efbe36ebfc3dc3cf0fbfaa31566"
+    },
+    {
+      "path": "Cf6FirepowerProjectileHost.xfl",
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c"
+    },
+    {
+      "path": "MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "sha256": "1c38e9e03c49af92f5e7da98707a0aa93e877ae3d959b60e754a500d9e499860"
+    }
+  ]
+}

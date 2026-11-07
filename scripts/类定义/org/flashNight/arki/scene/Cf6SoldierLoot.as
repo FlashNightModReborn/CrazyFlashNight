@@ -63,6 +63,8 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
                 || !Cf6SoldierLootRules.whole(p.longgun,0,100) || !Cf6SoldierLootRules.whole(p.sidearm_pair,0,100)
                 || !Cf6SoldierLootRules.whole(p.mod_material,0,100) || p.longgun+p.sidearm_pair+p.mod_material!==100)return false;
         }
+        var guard:Object=policy.firstWeaponGuarantee;
+        if(guard!=null && (guard.kind!=="longgun" || !Cf6SoldierLootRules.whole(guard.afterEligibleDeaths,1,158)))return false;
         return policy.profiles.ordinary_rifle_or_material.sidearm_pair===0;
     }
     private static function ensure():Boolean {
@@ -94,8 +96,11 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
             var sub:Object=actor.长枪副武器配置;
             if(sub!=null)snapshot.subAmmo={capacity:sub.capacity,reserveName:sub.reserveName,
                 consumeMode:sub.consumeMode,clipCostPerLoad:sub.clipCostPerLoad,fireCost:sub.fireCost};
+            // A gun with no installed material still has its normal weapon category.
+            // available() removes only the absent material weight before normalization.
+            if(snapshot.material==null)snapshot.material="";
             if(snapshot.primary==null || actor.soldierIsElite && (snapshot.left==null || snapshot.right==null)
-                || !ItemUtil.isItem(snapshot.material))eligible=false;
+                || snapshot.material!=="" && !ItemUtil.isItem(snapshot.material))eligible=false;
         }catch(snapshotError){eligible=false;snapshot={primary:null,left:null,right:null,material:"",lastUpdate:new Date().getTime()};}
         var luck:Number=Number(DropLuckRoller.getLuckBonus());
         if(!isFinite(luck) || luck<0 || luck>.5){lastError="invalid_loot_luck";return false;}
@@ -131,7 +136,9 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
                 if(pairAmmo==null)pool.sidearm_pair=0;
                 pool.total=pool.longgun+pool.sidearm_pair+pool.mod_material;
                 stage={pool:pool,rifleAmmo:rifleAmmo,pairAmmo:pairAmmo,evaluate:request.eligible && pool.total>0,
-                    nominalPercent:p.nominalPercent,poolKey:"cf6.fixed158."+request.profile};
+                    nominalPercent:p.nominalPercent,poolKey:"cf6.fixed158."+request.profile,
+                    guarantee:Cf6SoldierLootRules.firstWeaponDue(candidate,pool,context.policy,request.eligible),
+                    eligibleOrdinal:Cf6SoldierLootRules.eligibleDeaths(candidate)+1};
                 request.decision=stage;
             }
             if(stage.hit===undefined){
@@ -146,12 +153,16 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
             if(stage.kind===undefined){
                 if(stage.choiceAttempted)throw new Error("loot_category_outcome_unresolved");
                 stage.choiceAttempted=true;
-                stage.kind=stage.hit?Cf6SoldierLootRules.choose(stage.pool,LinearCongruentialEngine.instance.nextFloat()):"none";
+                stage.kind=stage.guarantee?"longgun":stage.hit?Cf6SoldierLootRules.choose(stage.pool,LinearCongruentialEngine.instance.nextFloat()):"none";
             }
             if(stage.packet==null){
-                var roll:Object={recorded:true,gateEvaluated:stage.evaluate,hit:stage.hit,nominalPercent:stage.nominalPercent,
+                var roll:Object={recorded:true,gateEvaluated:stage.evaluate,hit:stage.guarantee || stage.hit,nominalPercent:stage.nominalPercent,
                     luckBonus:request.luck,prdPoolKey:stage.poolKey+"|缴获包",
-                    reason:!request.eligible?"ineligible":!stage.evaluate?"quota_exhausted":stage.hit?"roll_hit":"roll_miss"};
+                    reason:!request.eligible?"ineligible":!stage.evaluate?"quota_exhausted":stage.guarantee?"first_weapon_guarantee":stage.hit?"roll_hit":"roll_miss"};
+                if(stage.guarantee){
+                    roll.naturalHit=stage.hit;roll.guaranteeAfter=context.policy.firstWeaponGuarantee.afterEligibleDeaths;
+                    roll.eligibleOrdinal=stage.eligibleOrdinal;
+                }
                 var ammo:Array=stage.kind=="longgun"?stage.rifleAmmo:stage.kind=="sidearm_pair"?stage.pairAmmo:[];
                 stage.packet=Cf6SoldierLootRules.packet(request.header,snapshot,stage.kind,roll,ammo);
             }

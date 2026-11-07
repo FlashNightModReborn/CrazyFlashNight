@@ -129,6 +129,26 @@ class FixedRosterTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             fixed.compile_slots(historical, self.source, self.items)
 
+    def test_exact_tier_admission_and_actor_profile_fingerprint(self):
+        def unknown_tier(source):
+            row=next(r for r in source['roster'] if r['primary'].get('tier'))
+            row['primary']['tier']='unknown'
+        self.reject(unknown_tier)
+        def wrong_form(source):
+            row=next(r for r in source['roster'] if r['primary'].get('tier'))
+            row['primary']['form']='data'
+        self.reject(wrong_form)
+        self.reject(lambda source: source['roster'][0]['primary'].update(enhancement=8))
+        originals={r['unitIdentity']:r for r in self.source['roster']}
+        for slots in self.compiled['slots'].values():
+            for slot in slots:
+                p=slot['parameters'];fp=p['cf6FirepowerProfile']
+                self.assertEqual((1,2),(fp['v'],fp['s']))
+                for i,key in enumerate(('primary','secondary1','secondary2')):
+                    authored=originals[p['cf6UnitIdentity']][key]
+                    if authored:
+                        self.assertEqual([authored['name'],authored['tier']],fp['g'][i][:2])
+
     def test_materialized_validation_rejects_tampering_without_count_changes(self):
         chapter=json.loads(builder.build()[builder.OUTPUT])
         fixed.validate_materialized(chapter)

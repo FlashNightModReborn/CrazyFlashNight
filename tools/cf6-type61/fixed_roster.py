@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / 'tools'))
 from choice_reward_catalog import item_catalog
 from unit_registry import UnitRegistry
 import soldier_programs
+import loadout_rules
 
 SOURCE = HERE / 'fixed-roster.source.json'
 CONTRACTS = HERE / 'soldier-action-contracts.source.json'
@@ -48,68 +49,73 @@ def mod_catalog():
             for m in ET.parse(directory / entry.text).findall('mod')}
 
 
+def effective_item(slot, items):
+    """Mirror TierSystem's explicit data and lifecycle overlay, never infer a tier."""
+    item = copy.deepcopy(items[slot['name']])
+    # ItemUtil.loadItemData assigns defaults to the base form BEFORE TierSystem
+    # overlays a tier. A tier's higher level does not recompute inherited slots.
+    base = item.find('data')
+    if base.find('modslot') is None:
+        base_level = int(base.findtext('level', '999'))
+        ET.SubElement(base, 'modslot').text = str(3 if base_level < 12 else 2 if base_level < 30 else 1)
+    form = slot.get('form', 'data')
+    tier = slot.get('tier')
+    mapping = {x.get('name'): x.get('key') for x in
+               ET.parse(ROOT / 'data/equipment/equipment_config.xml').findall('.//TierMapping')}
+    if form != (mapping.get(tier) if tier else 'data') or item.find(form) is None:
+        raise ValueError('Unknown fixed exact weapon form: ' + slot['name'])
+    if form != 'data':
+        for field in list(item.find(form)):
+            target = item if field.tag in ('icon', 'displayname', 'description', 'skill', 'lifecycle') else item.find('data')
+            old = target.find(field.tag)
+            if old is not None:
+                target.remove(old)
+            target.append(copy.deepcopy(field))
+    return item
+
+
+def firepower_source():
+    path = HERE / 'soldier-firepower.source.json'
+    return json.loads(path.read_text('utf-8')) if path.exists() else None
+
+
 def equipment(slot, use, level, items, mods, admission):
     if slot is None:
         if use == '长枪':
             raise ValueError('Every fixed soldier needs a primary weapon')
         return None
     name = slot['name']
-    if name not in admission or any(c in name for c in '#,\r\n'):
+    exact = (name, slot.get('form', 'data'), slot.get('tier'))
+    if exact not in admission or any(c in name for c in '#,\r\n'):
         raise ValueError('Weapon lacks fixed-enemy admission: ' + name)
-    item = items.get(name)
+    item = effective_item(slot, items) if name in items else None
     if item is None or item.findtext('type') != '武器' or item.findtext('use') != use:
         raise ValueError('Fixed equipment slot mismatch: ' + name)
     equip_level = int(item.findtext('data/level', '999'))
     if equip_level > level:
         raise ValueError('Fixed equipment exceeds actor level: ' + name)
     enhancement = number(slot['enhancement'], 1, 13, 'enhancement', True)
-    if slot.get('tier') is not None:
-        raise ValueError('Fixed158 admits base forms only')
     selected = slot['mods']
     if type(selected) is not list or len(set(selected)) != len(selected):
         raise ValueError('Invalid or repeated fixed mods')
-    capacity = int(item.findtext('data/modslot', str(3 if equip_level < 12 else 2 if equip_level < 30 else 1)))
-    if len(selected) > capacity:
-        raise ValueError('Fixed mod slots exceeded: ' + name)
-    tags, occupied = words(item, 'inherentTags'), set()
-    subtype = item.get('weapontype', '')
-    special = item.find('subweapon') is not None
-    for mod_name in selected:
-        mod = mods.get(mod_name)
-        if mod is None or mod_name not in items or any(c in mod_name for c in '#,\r\n'):
-            raise ValueError('Unknown fixed mod: ' + mod_name)
-        tag = mod.findtext('tag')
-        if (use not in words(mod, 'use') or subtype in words(mod, 'excludeWeapontype')
-                or words(mod, 'weapontype') and subtype not in words(mod, 'weapontype')
-                or not words(mod, 'requireTags') <= tags
-                or tag in occupied or tag in words(item, 'blockedTags')
-                or item.find('allowedModTags') is not None and tag not in words(item, 'allowedModTags')):
-            raise ValueError('Incompatible fixed mod: ' + name + ' / ' + mod_name)
-        # This closed roster uses eight audited structural mods. New complex
-        # conditions need the actual EquipmentUtil oracle before admission.
-        if mod.find('installCondition') is not None or mod.find('lifecycle') is not None or mod.find('skill') is not None:
-            raise ValueError('Unsupported fixed mod condition: ' + mod_name)
-        if mod.find('subweapon') is not None:
-            if special or item.find('.//skillLocked') is not None:
-                raise ValueError('Fixed special slot collision: ' + name)
-            special = True
-        occupied.add(tag)
-        tags |= words(mod, 'provideTags')
-    serialized = name + '#' + str(int(enhancement)) + '##' + ','.join(selected)
+    loadout_rules.validate(item, selected, mods, items)
+    serialized = name + '#' + str(int(enhancement)) + '#' + (slot.get('tier') or '') + '#' + ','.join(selected)
     if serialized != slot['serialized']:
         raise ValueError('Fixed equipment string does not round-trip: ' + name)
     ammo = item.findtext('data/clipname')
     if ammo not in items or items[ammo].findtext('use') != '弹夹':
         raise ValueError('Fixed weapon ammunition is absent: ' + name)
     overrides = slot.get('instanceValueOverrides')
+    value = dict(level=int(enhancement), mods=list(selected), shot=0)
+    if slot.get('tier'):
+        value['tier'] = slot['tier']
     if overrides is not None:
         if name != 'G1111' or set(overrides) != {'isRocketMode'} or type(overrides['isRocketMode']) is not bool:
             raise ValueError('Fixed G1111 mode must be an actual Boolean')
-        return dict(name=name, value=dict(level=int(enhancement), mods=list(selected), shot=0,
-                                         isRocketMode=overrides['isRocketMode']))
-    if name == 'G1111':
+        value['isRocketMode'] = overrides['isRocketMode']
+    elif name == 'G1111':
         raise ValueError('Missing fixed G1111 mode')
-    return serialized
+    return dict(name=name, value=value) if overrides is not None else serialized
 
 
 def profile(row, items=None):
@@ -141,8 +147,8 @@ def profile(row, items=None):
     result['extensions'] = copy.deepcopy(extension)
     if items is None:
         items = item_catalog()
-    weapon_type = items[row['primary']['name']].get('weapontype')
-    result['program'] = soldier_programs.compile_program(result, weapon_type, row['primary']['name'])
+    program_weapon = row.get('programWeapon', dict(name=row['primary']['name'], weaponType=items[row['primary']['name']].get('weapontype')))
+    result['program'] = soldier_programs.compile_program(result, program_weapon['weaponType'], program_weapon['name'])
     aim = next(stage for stage in result['program']['stages'] if stage['kind'] == 'warning')
     result['extensions']['windupFrames'] = aim['frames']
     result['extensions']['lockAimLastFrames'] = aim['lock']
@@ -190,7 +196,7 @@ def runtime_catalog(source=None, items=None):
         identities[row['unitIdentity']] = dict(profileId=key, mapId=row['mapId'],
             startingPhase=row['startingPhase'], roleClass=row['roleClass'], sourceSeat=row['sourceSeat'])
     # Version owns the executable tables as well as the authored personnel.
-    version = 'fixed158-v2-' + hashlib.sha256(canonical(dict(source=source, profiles=profiles))).hexdigest()[:16]
+    version = 'fixed158-v2-' + hashlib.sha256(canonical(dict(source=source, profiles=profiles, firepower=firepower_source()))).hexdigest()[:16]
     return dict(schema='cf6-fixed-roster.runtime.v1', version=version, profiles=profiles, identities=identities,
                 counts=dict(personnel=158, sources=len({r['sourceJsonPointer'] for r in source['roster']}), ordinary=96, elite=40, instructor=22))
 
@@ -217,12 +223,17 @@ def compile_slots(book, source=None, items=None):
         raise ValueError('Repeated fixed identity or source seat')
     if len({x['mapId'] for x in rows}) != 12:
         raise ValueError('Fixed map coverage drift')
-    admitted = {x['name'] for x in source['admission']['weapons'] if x['decision'] in ('A', 'B')}
+    admitted_names = {x['name'] for x in source['admission']['weapons'] if x['decision'] in ('A', 'B')}
+    admitted = {(x['name'], x['form'], x['tier']) for x in source['admission']['forms'] if x['name'] in admitted_names}
     admitted_mods = {x['name'] for x in source['admission']['mods'] if x['decision'] == 'A'}
     registry = UnitRegistry.load(ROOT)
     catalog = runtime_catalog(source, items)
     version = catalog['version']
     profiles, groups = {}, defaultdict(list)
+    firepower = firepower_source()
+    if firepower is not None and (firepower.get('schema') != 'cf6-fixed158-firepower.source.v1'
+            or set(firepower['profiles']) != {r['unitIdentity'] for r in rows}):
+        raise ValueError('Fixed firepower profile identity drift')
     for row in rows:
         original = pointer(book, row['sourceJsonPointer'])
         if (original['Quantity'] != row['sourceQuantity'] or original['Level'] != row['level']
@@ -244,6 +255,10 @@ def compile_slots(book, source=None, items=None):
         if authored_scale != row['difficultyScale']:
             raise ValueError('Fixed actor difficulty multiplier drift')
         projected_profile = profile(row, items)
+        installed = {m for key in ('primary', 'secondary1', 'secondary2') if row[key] for m in row[key]['mods']}
+        material = row['lootRules']['materialCandidate']
+        if material is not None and material not in installed:
+            raise ValueError('Fixed material is not installed on this actor: ' + row['unitIdentity'])
         profile_id = 'p' + hashlib.sha256(canonical(projected_profile)).hexdigest()[:16]
         profiles[profile_id] = projected_profile
         params = dict(cf6UnitIdentity=row['unitIdentity'], cf6SourceSeat=row['sourceSeat'], cf6SourceOrdinal=row['sourceInstanceOrdinal'], cf6RosterVersion=version,
@@ -251,6 +266,20 @@ def compile_slots(book, source=None, items=None):
                       cf6LootMaterial=row['lootRules']['materialCandidate'], cf6DisplayTitle=row['displayName'], 称号=row['displayName'],
                       特种兵初始阶段=row['startingPhase'], 特种兵策略=row['aiBlueprint']['strategy'],
                       特种兵烟雾弹=row['smokeAbility'], 特种兵投掷物=False, 不掉装备=True, 掉落物=[])
+        if firepower is not None:
+            fp = copy.deepcopy(firepower['profiles'][row['unitIdentity']])
+            for slot, p in fp['slots'].items():
+                actual = row[slot]
+                if any(p[k] != actual.get(k) for k in ('name', 'tier', 'enhancement', 'mods')):
+                    raise ValueError('Fixed firepower weapon fingerprint drift')
+            # Compact executable tuples; the descriptive source is kept separately.
+            # Each tuple is name, tier, family(0=excluded/1=physical/2=magic), skill, nano, enhancement.
+            params['cf6FirepowerProfile'] = dict(v=1, c=('ordinary', 'elite', 'instructor').index(fp['roleClass']),
+                q=dict(suppress=1, line=.85, mobile=.65, breach=.35, precision=.2, flush=.25, counter=.5, dual=.5)[fp['role']],
+                s=('A', 'B', 'C').index(firepower['defaultStage']),
+                g=[([p['name'], p['tier'], {'single_physical':1, 'native_magic':2}.get(p['family'],0),
+                     p['skill'], p['nano'], p['enhancement']] if (p := fp['slots'].get(slot)) else None)
+                   for slot in ('primary', 'secondary1', 'secondary2')])
         for field, slot, use in (('长枪', 'primary', '长枪'), ('手枪', 'secondary1', '手枪'), ('手枪2', 'secondary2', '手枪')):
             equipment_row = row[slot]
             if equipment_row is not None and not set(equipment_row['mods']) <= admitted_mods:

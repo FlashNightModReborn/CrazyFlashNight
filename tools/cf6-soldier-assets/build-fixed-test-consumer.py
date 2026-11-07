@@ -11,9 +11,11 @@ import build
 ROOT=build.ROOT
 sys.path.insert(0,str(ROOT/'tools'))
 from choice_reward_catalog import item_catalog
+sys.path.insert(0,str(ROOT/'tools/cf6-type61'))
+import fixed_roster
 
 
-def main(projectiles=False,chapter=False):
+def main(projectiles=False,chapter=False,firepower=False):
     spec=importlib.util.spec_from_file_location('soldier_native_consumer',Path(__file__).with_name('build-test-consumer.py'))
     consumer=importlib.util.module_from_spec(spec);spec.loader.exec_module(consumer)
     items=item_catalog()
@@ -22,8 +24,9 @@ def main(projectiles=False,chapter=False):
     lookup={x.get('id'):x for x in sources if x.get('id')}
     preferred={'枪-长枪-G36':'flashswf/arts/things.swf','枪-手枪-Glock 18':'flashswf/arts/things.swf',
                '枪-长枪-能量狙击枪':'flashswf/arts/new/乔恩.swf'}
-    for name in sorted({r[slot]['name'] for r in rows for slot in ('primary','secondary1','secondary2') if r[slot]}):
-        linkage=items[name].findtext('data/dressup');entry=lookup[linkage]
+    selected=[fixed_roster.effective_item(r[slot],items) for r in rows for slot in ('primary','secondary1','secondary2') if r[slot]]
+    for item in selected:
+        linkage=item.findtext('data/dressup');entry=lookup[linkage]
         source=entry.get('swf') or preferred.get(linkage)
         if source is None:raise ValueError('Unresolved weapon source: '+linkage)
         if not (ROOT/source).is_file():raise ValueError('Missing published source: '+source)
@@ -34,7 +37,7 @@ def main(projectiles=False,chapter=False):
             if not source:raise ValueError('Unresolved chapter native actor: '+linkage)
             consumer.IMPORTS[linkage]=source
     if projectiles:
-        pending={items[r[slot]['name']].findtext('data/bullet') for r in rows for slot in ('primary','secondary1','secondary2') if r[slot]}
+        pending={item.findtext('data/bullet') for item in selected}
         pending.update(r['subweapon']['bullet'] for r in rows if r.get('subweapon'))
         pending.update(items[r['throwable']['name']].findtext('data/bullet') for r in rows if r.get('throwable'))
         pending.update(['横向拖尾追踪联弹','普通无壳子弹','铁枪磁轨弹'])
@@ -59,7 +62,7 @@ def main(projectiles=False,chapter=False):
                 for script in E.parse(str(source_file)).xpath('//*[local-name()="script"]'):
                     pending.update(re.findall(r'子弹种类\s*[=:]\s*"([^"\n]+)"',script.text or ''))
                     pending.update(re.findall(r'子弹属性初始化\(this,\s*"([^"\n]+)"',script.text or ''))
-        consumer.NAME='Cf6FixedProjectileHost'
+        consumer.NAME='Cf6FirepowerProjectileHost' if firepower else 'Cf6FixedProjectileHost'
     else:consumer.NAME='Cf6FixedChapterHost' if chapter else 'Cf6FixedSoldierNativeHost'
     consumer.OWNER=ROOT/'scripts'/consumer.NAME
     anchors=[]
@@ -87,6 +90,7 @@ _root.cf6InstallNativeEquipmentLifecycle=function():Void {
     #include "../逻辑/装备函数/G1111.as"
     #include "../逻辑/装备函数/M134.as"
     #include "../逻辑/装备函数/M249.as"
+    #include "../逻辑/装备函数/NEGEV.as"
     #include "../逻辑/装备函数/P90.as"
     #include "../逻辑/装备函数/RPG.as"
 };
@@ -117,11 +121,12 @@ _root.cf6InstallNativeEquipmentLifecycle=function():Void {
         end=player_source.index('_root.身高百分比转换',begin)
         calculator=player_source[begin:end]
         extra+='_root.cf6InstallChapterHelpers=function():Void {\n'+loader[0]+'\n'+calculator+'\n};\n'
-    manifest='fixed-projectile-host-manifest.json' if projectiles else 'fixed-chapter-host-manifest.json' if chapter else 'fixed-test-host-manifest.json'
+    manifest='firepower-projectile-host-manifest.json' if firepower else 'fixed-projectile-host-manifest.json' if projectiles else 'fixed-chapter-host-manifest.json' if chapter else 'fixed-test-host-manifest.json'
     consumer.main(manifest,1024,576,extra,anchors)
 
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();group=parser.add_mutually_exclusive_group()
-    group.add_argument('--projectiles',action='store_true');group.add_argument('--chapter',action='store_true');args=parser.parse_args()
-    main(args.projectiles,args.chapter)
+    group.add_argument('--projectiles',action='store_true');group.add_argument('--chapter',action='store_true')
+    group.add_argument('--firepower-projectiles',action='store_true');args=parser.parse_args()
+    main(args.projectiles or args.firepower_projectiles,args.chapter,args.firepower_projectiles)

@@ -178,6 +178,37 @@ class org.flashNight.arki.item.ChoiceRewardService {
             revision:store != null && store.v === 2 ? store.commitRevision : 0,
             offers:offers, kpoints:RewardStashService.committedKPoints(), pendingOperationId:RewardStashService.pendingOperationId()};
     }
+    /** Freeze once; eligibility inspection must not start an asset write or rollback. */
+    private static function drawOptions(definition:Object):Array {
+        var options:Array=[];
+        var allowOwned:Boolean=type61MainPool(definition);
+        var groups:Array=allowOwned ? novelMainGroups(definition.groups) : definition.groups;
+        for (var g:Number = 0; g < groups.length; g++) {
+            var group:Object = groups[g];
+            var available:Array = [];
+            for (var a:Number = 0; a < group.entries.length; a++)
+                if (useful(group.entries[a],allowOwned)) available.push(group.entries[a]);
+            for (var d:Number = 0; d < group.draw && available.length > 0; d++) {
+                var total:Number = 0;
+                for (var w:Number = 0; w < available.length; w++) total += available[w].weight;
+                var hit:Number = randomInt(total), index:Number = 0;
+                while (index < available.length - 1 && hit >= available[index].weight) { hit -= available[index].weight; index++; }
+                var chosen:Object = available.splice(index, 1)[0], frozen:Array = [];
+                if (chosen.grade !== undefined && !ChoiceRewardStore.isGrade(chosen.grade)) throw new Error("invalid_reward_pack");
+                for (var e:Number = 0; e < chosen.entries.length; e++) {
+                    var entry:Object = chosen.entries[e];
+                    var item:BaseItem = BaseItem.create(String(entry.itemName), Number(entry.quantity));
+                    if (item == null) throw new Error("invalid_reward_pack");
+                    frozen.push(item.toObject());
+                }
+                var option:Object = {optionId:chosen.id, title:chosen.title, description:chosen.description, items:frozen,
+                    skills:chosen.skills == null ? [] : PersistedSnapshot.clone(chosen.skills), kCost:chosen.kCost == undefined ? 0 : chosen.kCost};
+                if (chosen.grade !== undefined) option.grade = chosen.grade;
+                options.push(option);
+            }
+        }
+        return options;
+    }
     public static function open(params:Object, source:Object, definition:Object, fingerprint:String):Object {
         var binding:Object = scope(definition);
         if (binding == null) return {success:false,error:"choice_context_unavailable"};
@@ -185,6 +216,13 @@ class org.flashNight.arki.item.ChoiceRewardService {
         if (store != null && !ChoiceRewardStore.normalize(store.choiceOffers, String(store.storeId))) return {success:false,error:"invalid_choice_store"};
         if (store != null && store.choiceOffers != null
                 && store.choiceOffers.offers.length >= ChoiceRewardStore.LIMIT) return {success:false,error:"choice_limit"};
+        var preparedOptions:Array=null;
+        if (String(definition.id).indexOf("cf6.type61.mods.") === 0) {
+            try { preparedOptions=drawOptions(definition); }
+            catch (drawError) { return {success:false,error:"invalid_reward_pack"}; }
+            if (!org.flashNight.arki.scene.Cf6Type61Service.modOfferUsable(preparedOptions,definition.id === "cf6.type61.mods.medium"))
+                return {success:false,error:"no_eligible_choices"};
+        }
         var context:Object = {source:"item_use", reason:"choice_open", operationId:params.operationId};
         if (!RewardStashService.begin(String(params.operationId), context, null, null)) return {success:false,error:RewardStashService.lastError};
         try {
@@ -195,38 +233,9 @@ class org.flashNight.arki.item.ChoiceRewardService {
             var offer:Object = {offerId:store.storeId + ".choice." + saved.sequence,
                 poolId:definition.id, poolVersion:definition.version, title:definition.title,
                 ownerSlot:binding.ownerSlot, scopeKind:binding.scopeKind, bookId:binding.bookId,
-                runIdentity:binding.runIdentity, options:[]};
+                runIdentity:binding.runIdentity,
+                options:preparedOptions == null ? drawOptions(definition) : preparedOptions};
             if (binding.routeId !== undefined) offer.routeId=binding.routeId;
-            var allowOwned:Boolean=type61MainPool(definition);
-            var groups:Array=allowOwned ? novelMainGroups(definition.groups) : definition.groups;
-            for (var g:Number = 0; g < groups.length; g++) {
-                var group:Object = groups[g];
-                var available:Array = [];
-                for (var a:Number = 0; a < group.entries.length; a++)
-                    if (useful(group.entries[a],allowOwned)) available.push(group.entries[a]);
-                for (var d:Number = 0; d < group.draw && available.length > 0; d++) {
-                    var total:Number = 0;
-                    for (var w:Number = 0; w < available.length; w++) total += available[w].weight;
-                    var hit:Number = randomInt(total), index:Number = 0;
-                    while (index < available.length - 1 && hit >= available[index].weight) { hit -= available[index].weight; index++; }
-                    var chosen:Object = available.splice(index, 1)[0], frozen:Array = [];
-                    // 目录由生成器校验过封闭枚举；编入产物若被改坏，按既有 invalid_reward_pack 失败关闭。
-                    if (chosen.grade !== undefined && !ChoiceRewardStore.isGrade(chosen.grade)) return RewardStashService.cancel("invalid_reward_pack");
-                    for (var e:Number = 0; e < chosen.entries.length; e++) {
-                        var entry:Object = chosen.entries[e];
-                        var item:BaseItem = BaseItem.create(String(entry.itemName), Number(entry.quantity));
-                        if (item == null) return RewardStashService.cancel("invalid_reward_pack");
-                        frozen.push(item.toObject());
-                    }
-                    var pushedOption:Object = {optionId:chosen.id, title:chosen.title, description:chosen.description, items:frozen,
-                        skills:chosen.skills == null ? [] : PersistedSnapshot.clone(chosen.skills), kCost:chosen.kCost == undefined ? 0 : chosen.kCost};
-                    if (chosen.grade !== undefined) pushedOption.grade = chosen.grade;
-                    offer.options.push(pushedOption);
-                }
-            }
-            if (String(definition.id).indexOf("cf6.type61.mods.") === 0
-                    && !org.flashNight.arki.scene.Cf6Type61Service.modOfferUsable(offer.options,definition.id === "cf6.type61.mods.medium"))
-                return RewardStashService.cancel("no_eligible_choices");
             saved.offers.push(offer);
             if (!ChoiceRewardStore.normalize(saved, String(store.storeId))) return RewardStashService.cancel("invalid_choice_store");
             var remaining:Number = Number(source.item.value) - 1;

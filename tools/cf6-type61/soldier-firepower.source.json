@@ -1,0 +1,5555 @@
+{
+  "schema": "cf6-fixed158-firepower.source.v1",
+  "proposalSha256": "bbb415835015a6ade900e542a5debf13e4d2bcd624a2ac09030ba4f2a0b7f2b5",
+  "proposalSourceHead": "472e7d01d476f6eac9733a42db33d34f610a058c",
+  "defaultStage": "C",
+  "profiles": {
+    "CF6-C-WA-P-01": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "M60E3",
+          "tier": null,
+          "enhancement": 7,
+          "mods": [
+            "战术鱼骨零件",
+            "水冷机构",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 955.0,
+          "expectedB": 1058.94,
+          "expectedC": 1058.94
+        }
+      }
+    },
+    "CF6-C-WA-P-02": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HKSL8GOLD",
+          "tier": null,
+          "enhancement": 7,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1846.0,
+          "expectedB": 1877.0575999999999,
+          "expectedC": 1877.0575999999999
+        }
+      }
+    },
+    "CF6-C-WA-P-03": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "M4A1",
+          "tier": "狱火",
+          "enhancement": 7,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 764.0,
+          "expectedB": 783.2102125,
+          "expectedC": 783.2102125
+        }
+      }
+    },
+    "CF6-C-WA-P-04": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "TTI Benelli M4",
+          "tier": null,
+          "enhancement": 7,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 772.0,
+          "expectedB": 772.0,
+          "expectedC": 772.0
+        }
+      }
+    },
+    "CF6-C-WA-P-05": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "M4A1科技白",
+          "tier": null,
+          "enhancement": 7,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 400.0,
+          "expectedB": 459.70739999999995,
+          "expectedC": 459.70739999999995
+        }
+      }
+    },
+    "CF6-C-WA-P-06": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "Noveske N4 突击步枪",
+          "tier": null,
+          "enhancement": 7,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 598.0,
+          "expectedB": 618.135,
+          "expectedC": 618.135
+        }
+      }
+    },
+    "CF6-C-WA-K-01": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "ValmetM78",
+          "tier": null,
+          "enhancement": 7,
+          "mods": [
+            "战术鱼骨零件",
+            "水冷机构",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 955.0,
+          "expectedB": 1058.94,
+          "expectedC": 1058.94
+        }
+      }
+    },
+    "CF6-C-WA-K-02": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "TTI Benelli M4",
+          "tier": null,
+          "enhancement": 7,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "强化金属管"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 804.0,
+          "expectedB": 804.0,
+          "expectedC": 804.0
+        }
+      }
+    },
+    "CF6-C-WA-K-03": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "M60E3",
+          "tier": null,
+          "enhancement": 7,
+          "mods": [
+            "战术鱼骨零件",
+            "水冷机构",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 955.0,
+          "expectedB": 1058.94,
+          "expectedC": 1058.94
+        }
+      }
+    },
+    "CF6-C-WA-K-04": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "炎魔枪B100",
+          "tier": null,
+          "enhancement": 7,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 415.0,
+          "expectedB": 432.39,
+          "expectedC": 432.39
+        }
+      }
+    },
+    "CF6-N-SW-10": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "EPHI破狭者套件",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 470.0,
+          "expectedB": 542.0849999999999,
+          "expectedC": 542.0849999999999
+        },
+        "secondary1": {
+          "name": "MP40",
+          "tier": "墨冰",
+          "enhancement": 7,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 381.0,
+          "expectedB": 397.0996875,
+          "expectedC": 397.0996875
+        },
+        "secondary2": {
+          "name": "MP40",
+          "tier": "墨冰",
+          "enhancement": 7,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 376.0,
+          "expectedB": 392.01843750000006,
+          "expectedC": 392.01843750000006
+        }
+      }
+    },
+    "CF6-C-WA-K-05": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "诺亚卫士科技步枪",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 440.0,
+          "expectedB": 514.8,
+          "expectedC": 514.8
+        }
+      }
+    },
+    "CF6-C-WA-K-06": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "SVD",
+          "tier": "墨冰",
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2101.0,
+          "expectedB": 2110.312,
+          "expectedC": 2110.312
+        }
+      }
+    },
+    "CF6-C-WA-Q-01": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "AUG",
+          "tier": "墨冰",
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1000.0,
+          "expectedB": 1025.6625625000001,
+          "expectedC": 1025.6625625000001
+        }
+      }
+    },
+    "CF6-C-WA-Q-02": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "XM1014",
+          "tier": "墨冰",
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "透镜"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 589.0,
+          "expectedB": 589.0,
+          "expectedC": 589.0
+        }
+      }
+    },
+    "CF6-C-WA-Q-03": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "SAI GRY 幽灵",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 736.0,
+          "expectedB": 762.2649999999999,
+          "expectedC": 762.2649999999999
+        }
+      }
+    },
+    "CF6-C-WA-Q-04": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 580.0,
+          "expectedB": 678.4000000000001,
+          "expectedC": 678.4000000000001
+        }
+      }
+    },
+    "CF6-C-WA-Q-05": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "XM1014",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "透镜"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 589.0,
+          "expectedB": 589.0,
+          "expectedC": 589.0
+        }
+      }
+    },
+    "CF6-C-WA-Q-06": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "XM7 NGSW R",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 900.0,
+          "expectedB": 999.501,
+          "expectedC": 999.501
+        }
+      }
+    },
+    "CF6-C-WA-R-01": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 580.0,
+          "expectedB": 678.4000000000001,
+          "expectedC": 678.4000000000001
+        }
+      }
+    },
+    "CF6-C-WA-R-02": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "Sniper",
+          "tier": "墨冰",
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 3629.0,
+          "expectedB": 3629.0,
+          "expectedC": 3629.0
+        }
+      }
+    },
+    "CF6-C-WA-R-03": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "炎魔枪B100",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 500.0,
+          "expectedB": 579.101,
+          "expectedC": 579.101
+        }
+      }
+    },
+    "CF6-C-WA-R-04": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 580.0,
+          "expectedB": 678.4000000000001,
+          "expectedC": 678.4000000000001
+        }
+      }
+    },
+    "CF6-C-WA-R-05": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "AK74",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 681.0,
+          "expectedB": 687.3178125,
+          "expectedC": 687.3178125
+        }
+      }
+    },
+    "CF6-C-WA-R-06": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "诺亚卫士科技步枪",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 440.0,
+          "expectedB": 514.8,
+          "expectedC": 514.8
+        }
+      }
+    },
+    "CF6-C-CU-P-01": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "Sniper",
+          "tier": "墨冰",
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 3496.0,
+          "expectedB": 3496.0,
+          "expectedC": 3496.0
+        }
+      }
+    },
+    "CF6-N-WA-01": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "Sniper",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 3629.0,
+          "expectedB": 3629.0,
+          "expectedC": 3629.0
+        },
+        "secondary1": {
+          "name": "Glock 18",
+          "tier": "狱火",
+          "enhancement": 7,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 623.0,
+          "expectedB": 629.1299999999999,
+          "expectedC": 629.1299999999999
+        },
+        "secondary2": {
+          "name": "Glock 18",
+          "tier": "狱火",
+          "enhancement": 7,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 616.0,
+          "expectedB": 622.0949999999999,
+          "expectedC": 622.0949999999999
+        }
+      }
+    },
+    "CF6-N-WA-02": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "TTI Gen 12",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 543.0,
+          "expectedB": 543.0,
+          "expectedC": 543.0
+        },
+        "secondary1": {
+          "name": "MP40",
+          "tier": "狱火",
+          "enhancement": 7,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 376.0,
+          "expectedB": 384.5859375,
+          "expectedC": 384.5859375
+        },
+        "secondary2": {
+          "name": "MP40",
+          "tier": "狱火",
+          "enhancement": 7,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 365.0,
+          "expectedB": 373.4896875,
+          "expectedC": 373.4896875
+        }
+      }
+    },
+    "CF6-N-WA-03": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "AUG",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1000.0,
+          "expectedB": 1026.1584375,
+          "expectedC": 1026.1584375
+        },
+        "secondary1": {
+          "name": "MP40",
+          "tier": "墨冰",
+          "enhancement": 7,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 365.0,
+          "expectedB": 380.8396875,
+          "expectedC": 380.8396875
+        },
+        "secondary2": {
+          "name": "MP40",
+          "tier": "墨冰",
+          "enhancement": 7,
+          "mods": [
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 365.0,
+          "expectedB": 380.8396875,
+          "expectedC": 380.8396875
+        }
+      }
+    },
+    "CF6-N-WA-04": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "M60E3",
+          "tier": null,
+          "enhancement": 8,
+          "mods": [
+            "战术鱼骨零件",
+            "水冷机构",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1045.0,
+          "expectedB": 1215.5,
+          "expectedC": 1215.5
+        },
+        "secondary1": {
+          "name": "Glock 18",
+          "tier": "墨冰",
+          "enhancement": 7,
+          "mods": [
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 598.0,
+          "expectedB": 628.3249999999999,
+          "expectedC": 628.3249999999999
+        },
+        "secondary2": {
+          "name": "Glock 18",
+          "tier": "墨冰",
+          "enhancement": 7,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 623.0,
+          "expectedB": 653.9499999999999,
+          "expectedC": 653.9499999999999
+        }
+      }
+    },
+    "CF6-C-CU-P-02": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "SAI GRY 幽灵",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 880.0,
+          "expectedB": 985.6277999999999,
+          "expectedC": 985.6277999999999
+        }
+      }
+    },
+    "CF6-C-CU-P-03": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "M60E3",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "水冷机构",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1145.0,
+          "expectedB": 1285.78,
+          "expectedC": 1285.78
+        }
+      }
+    },
+    "CF6-C-CU-P-04": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "Sniper",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 4009.0,
+          "expectedB": 4009.0,
+          "expectedC": 4009.0
+        }
+      }
+    },
+    "CF6-C-CU-P-05": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "XM1014",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 653.0,
+          "expectedB": 653.0,
+          "expectedC": 653.0
+        }
+      }
+    },
+    "CF6-C-CU-P-06": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "EPHI破狭者套件",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 517.0,
+          "expectedB": 604.1148,
+          "expectedC": 604.1148
+        }
+      }
+    },
+    "CF6-C-CU-K-01": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 638.0,
+          "expectedB": 748.36,
+          "expectedC": 748.36
+        }
+      }
+    },
+    "CF6-C-CU-K-02": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "SVD",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2321.0,
+          "expectedB": 2331.3732,
+          "expectedC": 2331.3732
+        }
+      }
+    },
+    "CF6-N-WA-05": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "XM7 NGSW R",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "强化金属管"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1022.0,
+          "expectedB": 1135.503,
+          "expectedC": 1135.503
+        },
+        "secondary1": {
+          "name": "MP40",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 405.0,
+          "expectedB": 422.81081250000005,
+          "expectedC": 422.81081250000005
+        },
+        "secondary2": {
+          "name": "MP40",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 420.0,
+          "expectedB": 438.05456250000003,
+          "expectedC": 438.05456250000003
+        }
+      }
+    },
+    "CF6-C-CU-K-03": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "炎魔枪B100",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 510.0,
+          "expectedB": 534.905,
+          "expectedC": 534.905
+        }
+      }
+    },
+    "CF6-C-CU-K-04": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "AA12丧尸",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 918.0,
+          "expectedB": 918.0,
+          "expectedC": 918.0
+        }
+      }
+    },
+    "CF6-C-CU-K-05": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 638.0,
+          "expectedB": 748.36,
+          "expectedC": 748.36
+        }
+      }
+    },
+    "CF6-C-CU-K-06": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "AK74",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 814.0,
+          "expectedB": 839.0127375000001,
+          "expectedC": 839.0127375000001
+        }
+      }
+    },
+    "CF6-C-CU-Q-01": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "Sniper",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 4009.0,
+          "expectedB": 4009.0,
+          "expectedC": 4009.0
+        }
+      }
+    },
+    "CF6-N-WA-06": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "SVD",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2244.0,
+          "expectedB": 2244.0,
+          "expectedC": 2244.0
+        },
+        "secondary1": {
+          "name": "Glock 18",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 680.0,
+          "expectedB": 686.8169999999999,
+          "expectedC": 686.8169999999999
+        },
+        "secondary2": {
+          "name": "Glock 18",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 662.0,
+          "expectedB": 668.7269999999999,
+          "expectedC": 668.7269999999999
+        }
+      }
+    },
+    "CF6-C-CU-Q-02": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "诺亚卫士科技步枪",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 449.0,
+          "expectedB": 471.45,
+          "expectedC": 471.45
+        }
+      }
+    },
+    "CF6-C-CU-Q-03": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "TTI Gen 12",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 602.0,
+          "expectedB": 602.0,
+          "expectedC": 602.0
+        }
+      }
+    },
+    "CF6-C-CU-Q-04": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 638.0,
+          "expectedB": 734.8592,
+          "expectedC": 734.8592
+        }
+      }
+    },
+    "CF6-C-CU-Q-05": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "m14",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2244.0,
+          "expectedB": 2254.3427999999994,
+          "expectedC": 2254.3427999999994
+        }
+      }
+    },
+    "CF6-C-CU-Q-06": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 638.0,
+          "expectedB": 752.6,
+          "expectedC": 752.6
+        }
+      }
+    },
+    "CF6-C-CU-R-01": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "AA12丧尸",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "强化金属管"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 950.0,
+          "expectedB": 950.0,
+          "expectedC": 950.0
+        }
+      }
+    },
+    "CF6-C-CU-R-02": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 938.0,
+          "expectedB": 946.034375,
+          "expectedC": 946.034375
+        }
+      }
+    },
+    "CF6-N-WA-07": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "SVD",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2244.0,
+          "expectedB": 2244.0,
+          "expectedC": 2244.0
+        },
+        "secondary1": {
+          "name": "MP40",
+          "tier": "墨冰",
+          "enhancement": 8,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 416.0,
+          "expectedB": 421.698,
+          "expectedC": 421.698
+        },
+        "secondary2": {
+          "name": "MP40",
+          "tier": "墨冰",
+          "enhancement": 8,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 405.0,
+          "expectedB": 410.643,
+          "expectedC": 410.643
+        }
+      }
+    },
+    "CF6-C-CU-R-03": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 638.0,
+          "expectedB": 752.6,
+          "expectedC": 752.6
+        }
+      }
+    },
+    "CF6-N-WA-08": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "M4A1",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 857.0,
+          "expectedB": 882.8163750000001,
+          "expectedC": 882.8163750000001
+        },
+        "secondary1": {
+          "name": "MP40",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 405.0,
+          "expectedB": 423.471375,
+          "expectedC": 423.471375
+        },
+        "secondary2": {
+          "name": "MP40",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 420.0,
+          "expectedB": 438.71512500000006,
+          "expectedC": 438.71512500000006
+        }
+      }
+    },
+    "CF6-C-CU-R-04": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1012.0,
+          "expectedB": 1040.398075,
+          "expectedC": 1040.398075
+        }
+      }
+    },
+    "CF6-C-CU-R-05": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "m14",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2244.0,
+          "expectedB": 2254.3427999999994,
+          "expectedC": 2254.3427999999994
+        }
+      }
+    },
+    "CF6-C-CU-R-06": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "TTI Gen 12",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "透镜"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 602.0,
+          "expectedB": 602.0,
+          "expectedC": 602.0
+        }
+      }
+    },
+    "CF6-C-SW-P-01": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "AUG",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1020.0,
+          "expectedB": 1028.3418749999998,
+          "expectedC": 1028.3418749999998
+        }
+      }
+    },
+    "CF6-C-SW-P-02": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 638.0,
+          "expectedB": 734.8592,
+          "expectedC": 734.8592
+        }
+      }
+    },
+    "CF6-C-SW-P-03": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 638.0,
+          "expectedB": 752.6,
+          "expectedC": 752.6
+        }
+      }
+    },
+    "CF6-C-SW-P-04": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "m14",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2321.0,
+          "expectedB": 2331.5737999999997,
+          "expectedC": 2331.5737999999997
+        }
+      }
+    },
+    "CF6-C-SW-P-05": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "AUG",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1020.0,
+          "expectedB": 1036.7175,
+          "expectedC": 1036.7175
+        }
+      }
+    },
+    "CF6-C-SW-P-06": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 638.0,
+          "expectedB": 752.6,
+          "expectedC": 752.6
+        }
+      }
+    },
+    "CF6-C-SW-K-01": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1012.0,
+          "expectedB": 1040.398075,
+          "expectedC": 1040.398075
+        }
+      }
+    },
+    "CF6-C-SW-K-02": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "AA12丧尸",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "强化金属管"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 950.0,
+          "expectedB": 950.0,
+          "expectedC": 950.0
+        }
+      }
+    },
+    "CF6-C-SW-K-03": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "SVD",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2244.0,
+          "expectedB": 2254.3427999999994,
+          "expectedC": 2254.3427999999994
+        }
+      }
+    },
+    "CF6-C-SW-K-04": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "M4A1",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 857.0,
+          "expectedB": 864.7306249999999,
+          "expectedC": 864.7306249999999
+        }
+      }
+    },
+    "CF6-C-SW-K-05": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "M4A1",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 857.0,
+          "expectedB": 872.495,
+          "expectedC": 872.495
+        }
+      }
+    },
+    "CF6-N-WA-09": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 938.0,
+          "expectedB": 952.562625,
+          "expectedC": 952.562625
+        },
+        "secondary1": {
+          "name": "MP40",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 405.0,
+          "expectedB": 414.89887500000003,
+          "expectedC": 414.89887500000003
+        },
+        "secondary2": {
+          "name": "MP40",
+          "tier": "狱火",
+          "enhancement": 8,
+          "mods": [
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 405.0,
+          "expectedB": 414.89887500000003,
+          "expectedC": 414.89887500000003
+        }
+      }
+    },
+    "CF6-M-VII": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "XM1014",
+          "tier": "狱火",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 723.0,
+          "expectedB": 723.0,
+          "expectedC": 723.0
+        },
+        "secondary1": {
+          "name": "MP40",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 449.0,
+          "expectedB": 461.2317125,
+          "expectedC": 461.2317125
+        },
+        "secondary2": {
+          "name": "MP40",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 464.0,
+          "expectedB": 476.41546250000005,
+          "expectedC": 476.41546250000005
+        }
+      }
+    },
+    "CF6-M-XII": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "中国88式狙击步枪",
+          "tier": "墨冰",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6729.0,
+          "expectedB": 6729.0,
+          "expectedC": 6729.0
+        },
+        "secondary1": {
+          "name": "Glock18战术版",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 408.0,
+          "expectedB": 436.56,
+          "expectedC": 436.56
+        },
+        "secondary2": {
+          "name": "Glock18战术版",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 408.0,
+          "expectedB": 436.56,
+          "expectedC": 436.56
+        }
+      }
+    },
+    "CF6-C-SW-K-06": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "墨冰",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1113.0,
+          "expectedB": 1145.2683375,
+          "expectedC": 1145.2683375
+        }
+      }
+    },
+    "CF6-C-SW-Q-01": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "MG42战术版",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 452.0,
+          "expectedB": 542.3999999999999,
+          "expectedC": 542.3999999999999
+        }
+      }
+    },
+    "CF6-C-SW-Q-02": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "M82A1加强版",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 8136.0,
+          "expectedB": 8136.0,
+          "expectedC": 8136.0
+        }
+      }
+    },
+    "CF6-C-SW-Q-03": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "狱火",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1113.0,
+          "expectedB": 1145.2683375,
+          "expectedC": 1145.2683375
+        }
+      }
+    },
+    "CF6-C-SW-Q-04": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "TTI Gen 12",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 667.0,
+          "expectedB": 667.0,
+          "expectedC": 667.0
+        }
+      }
+    },
+    "CF6-C-SW-Q-05": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "狱火",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1040.0,
+          "expectedB": 1049.1696875,
+          "expectedC": 1049.1696875
+        }
+      }
+    },
+    "CF6-C-SW-Q-06": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "墨冰",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1040.0,
+          "expectedB": 1058.37875,
+          "expectedC": 1058.37875
+        }
+      }
+    },
+    "CF6-N-WA-10": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "AA12丧尸",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1017.0,
+          "expectedB": 1017.0,
+          "expectedC": 1017.0
+        },
+        "secondary1": {
+          "name": "MP7极品战术版",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 612.0,
+          "expectedB": 663.8489999999999,
+          "expectedC": 663.8489999999999
+        },
+        "secondary2": {
+          "name": "MP7极品战术版",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 612.0,
+          "expectedB": 663.8489999999999,
+          "expectedC": 663.8489999999999
+        }
+      }
+    },
+    "CF6-C-SW-R-01": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "PKM战术版",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 452.0,
+          "expectedB": 542.3999999999999,
+          "expectedC": 542.3999999999999
+        }
+      }
+    },
+    "CF6-N-CU-01": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "SVD",
+          "tier": "狱火",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2563.0,
+          "expectedB": 2580.0359999999996,
+          "expectedC": 2580.0359999999996
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 4657.0,
+          "expectedB": 4657.0,
+          "expectedC": 4657.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "透镜"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 4657.0,
+          "expectedB": 4657.0,
+          "expectedC": 4657.0
+        }
+      }
+    },
+    "CF6-N-CU-02": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "雷明登870警用型",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1266.0,
+          "expectedB": 1266.0,
+          "expectedC": 1266.0
+        },
+        "secondary1": {
+          "name": "Beretta90TWO",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2038.0,
+          "expectedB": 2063.2468125,
+          "expectedC": 2063.2468125
+        },
+        "secondary2": {
+          "name": "Beretta90TWO",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2108.0,
+          "expectedB": 2133.8593124999998,
+          "expectedC": 2133.8593124999998
+        }
+      }
+    },
+    "CF6-C-SW-R-02": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "MG42战术版",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 452.0,
+          "expectedB": 542.3999999999999,
+          "expectedC": 542.3999999999999
+        }
+      }
+    },
+    "CF6-C-SW-R-03": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "墨冰",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1040.0,
+          "expectedB": 1049.1696875,
+          "expectedC": 1049.1696875
+        }
+      }
+    },
+    "CF6-C-SW-R-04": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "狱火",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1040.0,
+          "expectedB": 1058.37875,
+          "expectedC": 1058.37875
+        }
+      }
+    },
+    "CF6-C-SW-R-05": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 702.0,
+          "expectedB": 812.8434,
+          "expectedC": 812.8434
+        }
+      }
+    },
+    "CF6-C-SW-R-06": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "m14",
+          "tier": "墨冰",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2563.0,
+          "expectedB": 2574.9015999999997,
+          "expectedC": 2574.9015999999997
+        }
+      }
+    },
+    "CF6-C-PE-P-01": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "XM1014",
+          "tier": "墨冰",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 723.0,
+          "expectedB": 723.0,
+          "expectedC": 723.0
+        }
+      }
+    },
+    "CF6-N-CU-03": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "墨冰",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1040.0,
+          "expectedB": 1070.7718125000001,
+          "expectedC": 1070.7718125000001
+        },
+        "secondary1": {
+          "name": "Glock18战术版",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 408.0,
+          "expectedB": 482.256,
+          "expectedC": 482.256
+        },
+        "secondary2": {
+          "name": "Glock18战术版",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 408.0,
+          "expectedB": 482.256,
+          "expectedC": 482.256
+        }
+      }
+    },
+    "CF6-N-CU-04": {
+      "schema": 1,
+      "role": "dual",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "弹簧",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 670.0,
+          "expectedB": 747.6,
+          "expectedC": 747.6
+        },
+        "secondary1": {
+          "name": "MP7极品战术版",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 612.0,
+          "expectedB": 686.7,
+          "expectedC": 686.7
+        },
+        "secondary2": {
+          "name": "MP7极品战术版",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 612.0,
+          "expectedB": 686.7,
+          "expectedC": 686.7
+        }
+      }
+    },
+    "CF6-M-IV": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "PKM战术版",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 1,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 452.0,
+          "expectedB": 610.2,
+          "expectedC": 791.0
+        },
+        "secondary1": {
+          "name": "Beretta90TWO",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2108.0,
+          "expectedB": 2203.515,
+          "expectedC": 2203.515
+        },
+        "secondary2": {
+          "name": "Beretta90TWO",
+          "tier": "狱火",
+          "enhancement": 9,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2088.0,
+          "expectedB": 2182.815,
+          "expectedC": 2182.815
+        }
+      }
+    },
+    "CF6-N-CU-05": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "MG42战术版",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 452.0,
+          "expectedB": 578.5600000000001,
+          "expectedC": 578.5600000000001
+        },
+        "secondary1": {
+          "name": "MP40",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 460.0,
+          "expectedB": 493.025,
+          "expectedC": 493.025
+        },
+        "secondary2": {
+          "name": "MP40",
+          "tier": "墨冰",
+          "enhancement": 9,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 449.0,
+          "expectedB": 481.74999999999994,
+          "expectedC": 481.74999999999994
+        }
+      }
+    },
+    "CF6-N-CU-06": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "狱火",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1113.0,
+          "expectedB": 1144.9580625,
+          "expectedC": 1144.9580625
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 4657.0,
+          "expectedB": 4657.0,
+          "expectedC": 4657.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 9,
+          "mods": [
+            "透镜"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 4657.0,
+          "expectedB": 4657.0,
+          "expectedC": 4657.0
+        }
+      }
+    },
+    "CF6-C-PE-P-02": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "CAR冲锋枪",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 702.0,
+          "expectedB": 812.8434,
+          "expectedC": 812.8434
+        }
+      }
+    },
+    "CF6-C-PE-P-03": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "PKM战术版",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 452.0,
+          "expectedB": 542.3999999999999,
+          "expectedC": 542.3999999999999
+        }
+      }
+    },
+    "CF6-C-PE-P-04": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "SVD",
+          "tier": "墨冰",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2486.0,
+          "expectedB": 2497.6705999999995,
+          "expectedC": 2497.6705999999995
+        }
+      }
+    },
+    "CF6-C-PE-P-05": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "TTI Gen 12",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 667.0,
+          "expectedB": 667.0,
+          "expectedC": 667.0
+        }
+      }
+    },
+    "CF6-C-PE-P-06": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "墨冰",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1040.0,
+          "expectedB": 1049.1696875,
+          "expectedC": 1049.1696875
+        }
+      }
+    },
+    "CF6-C-PE-K-01": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "HK416",
+          "tier": "狱火",
+          "enhancement": 10,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "透镜"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1040.0,
+          "expectedB": 1058.37875,
+          "expectedC": 1058.37875
+        }
+      }
+    },
+    "CF6-C-PE-K-02": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "PKM战术版",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 500.0,
+          "expectedB": 600.0,
+          "expectedC": 600.0
+        }
+      }
+    },
+    "CF6-C-PE-K-03": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "M82A1加强版",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 9252.0,
+          "expectedB": 9252.0,
+          "expectedC": 9252.0
+        }
+      }
+    },
+    "CF6-N-CU-07": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "黄金QBZ",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "透镜"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1250.0,
+          "expectedB": 1250.0,
+          "expectedC": 1250.0
+        },
+        "secondary1": {
+          "name": "Glock18战术版",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 452.0,
+          "expectedB": 496.29600000000005,
+          "expectedC": 496.29600000000005
+        },
+        "secondary2": {
+          "name": "Glock18战术版",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 452.0,
+          "expectedB": 496.29600000000005,
+          "expectedC": 496.29600000000005
+        }
+      }
+    },
+    "CF6-M-XV": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 865.0,
+          "expectedB": 1008.9567999999999,
+          "expectedC": 1008.9567999999999
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5319.0,
+          "expectedB": 5319.0,
+          "expectedC": 5319.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 10,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5274.0,
+          "expectedB": 5274.0,
+          "expectedC": 5274.0
+        }
+      }
+    },
+    "CF6-C-PE-K-04": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 813.0,
+          "expectedB": 848.54,
+          "expectedC": 848.54
+        }
+      }
+    },
+    "CF6-C-PE-K-05": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 813.0,
+          "expectedB": 884.77,
+          "expectedC": 884.77
+        }
+      }
+    },
+    "CF6-M-XVI": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "MG42战术版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 552.0,
+          "expectedB": 552.0,
+          "expectedC": 552.0
+        },
+        "secondary1": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 859.5600000000001,
+          "expectedC": 859.5600000000001
+        },
+        "secondary2": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 668.0,
+          "expectedB": 880.08,
+          "expectedC": 880.08
+        }
+      }
+    },
+    "CF6-C-PE-K-06": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "PKM战术版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 552.0,
+          "expectedB": 662.4,
+          "expectedC": 662.4
+        }
+      }
+    },
+    "CF6-N-CU-08": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "强化金属管"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 972.0,
+          "expectedB": 1107.1739999999998,
+          "expectedC": 1107.1739999999998
+        },
+        "secondary1": {
+          "name": "战术-QBZ-192",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 905.0,
+          "expectedB": 1035.819,
+          "expectedC": 1035.819
+        },
+        "secondary2": {
+          "name": "战术-QBZ-192",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 888.0,
+          "expectedB": 1017.7139999999999,
+          "expectedC": 1017.7139999999999
+        }
+      }
+    },
+    "CF6-C-PE-Q-01": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "中国88式狙击步枪",
+          "tier": "狱火",
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 8173.0,
+          "expectedB": 8173.0,
+          "expectedC": 8173.0
+        }
+      }
+    },
+    "CF6-C-PE-Q-02": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 897.0,
+          "expectedB": 977.47,
+          "expectedC": 977.47
+        }
+      }
+    },
+    "CF6-C-PE-Q-03": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 949.0,
+          "expectedB": 1090.3074,
+          "expectedC": 1090.3074
+        }
+      }
+    },
+    "CF6-C-PE-Q-04": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "MG42战术版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 552.0,
+          "expectedB": 662.4,
+          "expectedC": 662.4
+        }
+      }
+    },
+    "CF6-C-PE-Q-05": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "中国88式狙击步枪",
+          "tier": "墨冰",
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 8173.0,
+          "expectedB": 8173.0,
+          "expectedC": 8173.0
+        }
+      }
+    },
+    "CF6-C-PE-Q-06": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 897.0,
+          "expectedB": 936.8449999999999,
+          "expectedC": 936.8449999999999
+        }
+      }
+    },
+    "CF6-C-PE-R-01": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "XM1014",
+          "tier": "墨冰",
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 883.0,
+          "expectedB": 883.0,
+          "expectedC": 883.0
+        }
+      }
+    },
+    "CF6-N-CU-09": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "能量狙击枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 8280.0,
+          "expectedB": 8280.0,
+          "expectedC": 8280.0
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5822.0,
+          "expectedB": 5822.0,
+          "expectedC": 5822.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5708.0,
+          "expectedB": 5708.0,
+          "expectedC": 5708.0
+        }
+      }
+    },
+    "CF6-N-CU-10": {
+      "schema": 1,
+      "role": "dual",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "弹簧",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 913.0,
+          "expectedB": 1013.25,
+          "expectedC": 1013.25
+        },
+        "secondary1": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 737.1,
+          "expectedC": 737.1
+        },
+        "secondary2": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 737.1,
+          "expectedC": 737.1
+        }
+      }
+    },
+    "CF6-C-PE-R-02": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 897.0,
+          "expectedB": 977.47,
+          "expectedC": 977.47
+        }
+      }
+    },
+    "CF6-M-XIII": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 897.0,
+          "expectedB": 955.305,
+          "expectedC": 955.305
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5867.0,
+          "expectedB": 5867.0,
+          "expectedC": 5867.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5822.0,
+          "expectedB": 5822.0,
+          "expectedC": 5822.0
+        }
+      }
+    },
+    "CF6-C-PE-R-03": {
+      "schema": 1,
+      "role": "line",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 949.0,
+          "expectedB": 1090.3074,
+          "expectedC": 1090.3074
+        }
+      }
+    },
+    "CF6-C-PE-R-04": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "M82A1加强版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 10188.0,
+          "expectedB": 10188.0,
+          "expectedC": 10188.0
+        }
+      }
+    },
+    "CF6-C-PE-R-05": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "XM1014",
+          "tier": "狱火",
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "强化金属管"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 906.0,
+          "expectedB": 906.0,
+          "expectedC": 906.0
+        }
+      }
+    },
+    "CF6-C-PE-R-06": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "ordinary",
+      "slots": {
+        "primary": {
+          "name": "PKM战术版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 552.0,
+          "expectedB": 662.4,
+          "expectedC": 662.4
+        }
+      }
+    },
+    "CF6-N-SW-01": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "M82A1加强版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 9936.0,
+          "expectedB": 9936.0,
+          "expectedC": 9936.0
+        },
+        "secondary1": {
+          "name": "Glock18战术版",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 500.0,
+          "expectedB": 528.0,
+          "expectedC": 528.0
+        },
+        "secondary2": {
+          "name": "Glock18战术版",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 500.0,
+          "expectedB": 528.0,
+          "expectedC": 528.0
+        }
+      }
+    },
+    "CF6-M-XVII": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "战术巴雷特",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 9936.0,
+          "expectedB": 9936.0,
+          "expectedC": 9936.0
+        },
+        "secondary1": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 692.0496,
+          "expectedC": 692.0496
+        },
+        "secondary2": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 692.0496,
+          "expectedC": 692.0496
+        }
+      }
+    },
+    "CF6-M-XIX": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "M134暴力版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "水冷机构",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 903.0,
+          "expectedB": 903.0,
+          "expectedC": 903.0
+        },
+        "secondary1": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 873.2400000000001,
+          "expectedC": 873.2400000000001
+        },
+        "secondary2": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 668.0,
+          "expectedB": 893.7600000000001,
+          "expectedC": 893.7600000000001
+        }
+      }
+    },
+    "CF6-N-SW-02": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 897.0,
+          "expectedB": 1035.606,
+          "expectedC": 1035.606
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5867.0,
+          "expectedB": 5867.0,
+          "expectedC": 5867.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5822.0,
+          "expectedB": 5822.0,
+          "expectedC": 5822.0
+        }
+      }
+    },
+    "CF6-N-SW-03": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 897.0,
+          "expectedB": 970.4159999999999,
+          "expectedC": 970.4159999999999
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5822.0,
+          "expectedB": 5822.0,
+          "expectedC": 5822.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5708.0,
+          "expectedB": 5708.0,
+          "expectedC": 5708.0
+        }
+      }
+    },
+    "CF6-N-SW-04": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "M82A1加强版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 10188.0,
+          "expectedB": 10188.0,
+          "expectedC": 10188.0
+        },
+        "secondary1": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 686.4,
+          "expectedC": 686.4
+        },
+        "secondary2": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 686.4,
+          "expectedC": 686.4
+        }
+      }
+    },
+    "CF6-M-XVIII": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "FSC7",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "explosive",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 11560.0,
+          "expectedB": 11560.0,
+          "expectedC": 11560.0
+        },
+        "secondary1": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 702.765,
+          "expectedC": 702.765
+        },
+        "secondary2": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 668.0,
+          "expectedB": 721.395,
+          "expectedC": 721.395
+        }
+      }
+    },
+    "CF6-N-SW-05": {
+      "schema": 1,
+      "role": "dual",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "弹簧",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 913.0,
+          "expectedB": 1019.5500000000001,
+          "expectedC": 1019.5500000000001
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5867.0,
+          "expectedB": 5867.0,
+          "expectedC": 5867.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 5822.0,
+          "expectedB": 5822.0,
+          "expectedC": 5822.0
+        }
+      }
+    },
+    "CF6-M-X": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "强化金属管"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 972.0,
+          "expectedB": 1142.7134,
+          "expectedC": 1142.7134
+        },
+        "secondary1": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "single_physical",
+          "skill": 4,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 663.0,
+          "expectedB": 805.5944,
+          "expectedC": 856.9275
+        },
+        "secondary2": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 4,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 791.4114,
+          "expectedC": 840.125
+        }
+      }
+    },
+    "CF6-N-SW-06": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "MG42",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "水冷机构",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 602.0,
+          "expectedB": 602.0,
+          "expectedC": 602.0
+        },
+        "secondary1": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 832.0,
+          "expectedC": 832.0
+        },
+        "secondary2": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 650.0,
+          "expectedB": 832.0,
+          "expectedC": 832.0
+        }
+      }
+    },
+    "CF6-M-VIII": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 897.0,
+          "expectedB": 1021.85,
+          "expectedC": 1021.85
+        },
+        "secondary1": {
+          "name": "战术-QBZ-192",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 888.0,
+          "expectedB": 1012.22,
+          "expectedC": 1012.22
+        },
+        "secondary2": {
+          "name": "战术-QBZ-192",
+          "tier": null,
+          "enhancement": 11,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 912.0,
+          "expectedB": 1037.9,
+          "expectedC": 1037.9
+        }
+      }
+    },
+    "CF6-M-XX": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "G1111",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "g1111",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 16894.0,
+          "expectedB": 16894.0,
+          "expectedC": 16894.0
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6461.0,
+          "expectedB": 6461.0,
+          "expectedC": 6461.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6415.0,
+          "expectedB": 6415.0,
+          "expectedC": 6415.0
+        }
+      }
+    },
+    "CF6-M-V": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "G1111",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "g1111",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 17219.0,
+          "expectedB": 17219.0,
+          "expectedC": 17219.0
+        },
+        "secondary1": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1238.0400000000002,
+          "expectedC": 1238.0400000000002
+        },
+        "secondary2": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1238.0400000000002,
+          "expectedC": 1238.0400000000002
+        }
+      }
+    },
+    "CF6-N-SW-07": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "众神之力",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "强化金属管"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 3110.0,
+          "expectedB": 3110.0,
+          "expectedC": 3110.0
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6301.0,
+          "expectedB": 6301.0,
+          "expectedC": 6301.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "透镜"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6301.0,
+          "expectedB": 6301.0,
+          "expectedC": 6301.0
+        }
+      }
+    },
+    "CF6-M-0": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 988.0,
+          "expectedB": 1163.0059999999999,
+          "expectedC": 1163.0059999999999
+        },
+        "secondary1": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 3,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 718.0,
+          "expectedB": 868.4359999999999,
+          "expectedC": 924.256
+        },
+        "secondary2": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "single_physical",
+          "skill": 3,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 736.0,
+          "expectedB": 888.074,
+          "expectedC": 944.704
+        }
+      }
+    },
+    "CF6-N-SW-08": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "M82A1加强版",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 11196.0,
+          "expectedB": 11196.0,
+          "expectedC": 11196.0
+        },
+        "secondary1": {
+          "name": "远古诛神短枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1840.0,
+          "expectedB": 1840.0,
+          "expectedC": 1840.0
+        },
+        "secondary2": {
+          "name": "远古诛神短枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1827.0,
+          "expectedB": 1827.0,
+          "expectedC": 1827.0
+        }
+      }
+    },
+    "CF6-M-XIV": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "M203榴弹发射器",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 988.0,
+          "expectedB": 1053.6299999999999,
+          "expectedC": 1053.6299999999999
+        },
+        "secondary1": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1030.86,
+          "expectedC": 1030.86
+        },
+        "secondary2": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1030.86,
+          "expectedC": 1030.86
+        }
+      }
+    },
+    "CF6-N-SW-09": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "远古诛神枪",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2853.0,
+          "expectedB": 2853.0,
+          "expectedC": 2853.0
+        },
+        "secondary1": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1111.86,
+          "expectedC": 1111.86
+        },
+        "secondary2": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1111.86,
+          "expectedC": 1111.86
+        }
+      }
+    },
+    "CF6-M-XI": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "量子能量枪",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "true_damage",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 3110.0,
+          "expectedB": 3110.0,
+          "expectedC": 3110.0
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "透镜"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6301.0,
+          "expectedB": 6301.0,
+          "expectedC": 6301.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6461.0,
+          "expectedB": 6461.0,
+          "expectedC": 6461.0
+        }
+      }
+    },
+    "CF6-N-PE-01": {
+      "schema": 1,
+      "role": "dual",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "远古诛神枪",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "弹簧",
+            "加长弹匣"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2781.0,
+          "expectedB": 2781.0,
+          "expectedC": 2781.0
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6461.0,
+          "expectedB": 6461.0,
+          "expectedC": 6461.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6415.0,
+          "expectedB": 6415.0,
+          "expectedC": 6415.0
+        }
+      }
+    },
+    "CF6-M-VI": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 1,
+          "nano": 4,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1040.0,
+          "expectedB": 1322.4,
+          "expectedC": 1660.0
+        },
+        "secondary1": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1238.0400000000002,
+          "expectedC": 1238.0400000000002
+        },
+        "secondary2": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1238.0400000000002,
+          "expectedC": 1238.0400000000002
+        }
+      }
+    },
+    "CF6-N-PE-02": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "m14",
+          "tier": "墨冰",
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 3421.0,
+          "expectedB": 3421.0,
+          "expectedC": 3421.0
+        },
+        "secondary1": {
+          "name": "远古诛神短枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1794.0,
+          "expectedB": 1794.0,
+          "expectedC": 1794.0
+        },
+        "secondary2": {
+          "name": "远古诛神短枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "透镜"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1794.0,
+          "expectedB": 1794.0,
+          "expectedC": 1794.0
+        }
+      }
+    },
+    "CF6-M-I": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "众神之力",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "强化金属管"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 3110.0,
+          "expectedB": 3110.0,
+          "expectedC": 3110.0
+        },
+        "secondary1": {
+          "name": "改造式诺亚科技冲锋枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "透镜"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2484.0,
+          "expectedB": 2484.0,
+          "expectedC": 2484.0
+        },
+        "secondary2": {
+          "name": "改造式诺亚科技冲锋枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2547.0,
+          "expectedB": 2547.0,
+          "expectedC": 2547.0
+        }
+      }
+    },
+    "CF6-N-PE-03": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "紫色幻想",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1744.0,
+          "expectedB": 1744.0,
+          "expectedC": 1744.0
+        },
+        "secondary1": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6461.0,
+          "expectedB": 6461.0,
+          "expectedC": 6461.0
+        },
+        "secondary2": {
+          "name": "T181S",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 6415.0,
+          "expectedB": 6415.0,
+          "expectedC": 6415.0
+        }
+      }
+    },
+    "CF6-N-PE-04": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 988.0,
+          "expectedB": 1100.4,
+          "expectedC": 1100.4
+        },
+        "secondary1": {
+          "name": "远古诛神短枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1827.0,
+          "expectedB": 1827.0,
+          "expectedC": 1827.0
+        },
+        "secondary2": {
+          "name": "远古诛神短枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1794.0,
+          "expectedB": 1794.0,
+          "expectedC": 1794.0
+        }
+      }
+    },
+    "CF6-M-III": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "诛神枪",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "透镜"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1699.0,
+          "expectedB": 1699.0,
+          "expectedC": 1699.0
+        },
+        "secondary1": {
+          "name": "远古诛神短枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1794.0,
+          "expectedB": 1794.0,
+          "expectedC": 1794.0
+        },
+        "secondary2": {
+          "name": "远古诛神短枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "透镜"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1794.0,
+          "expectedB": 1794.0,
+          "expectedC": 1794.0
+        }
+      }
+    },
+    "CF6-M-IX": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "M82A1加强版",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 10944.0,
+          "expectedB": 10944.0,
+          "expectedC": 10944.0
+        },
+        "secondary1": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1017.72,
+          "expectedC": 1017.72
+        },
+        "secondary2": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1017.72,
+          "expectedC": 1017.72
+        }
+      }
+    },
+    "CF6-N-PE-05": {
+      "schema": 1,
+      "role": "mobile",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "远古诛神枪",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "战术握把",
+            "加长弹匣"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2853.0,
+          "expectedB": 2853.0,
+          "expectedC": 2853.0
+        },
+        "secondary1": {
+          "name": "改造式诺亚科技冲锋枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2547.0,
+          "expectedB": 2547.0,
+          "expectedC": 2547.0
+        },
+        "secondary2": {
+          "name": "改造式诺亚科技冲锋枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2529.0,
+          "expectedB": 2529.0,
+          "expectedC": 2529.0
+        }
+      }
+    },
+    "CF6-N-PE-06": {
+      "schema": 1,
+      "role": "breach",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "众神之力",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "霰弹枪口收束器",
+            "强化金属管"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 3110.0,
+          "expectedB": 3110.0,
+          "expectedC": 3110.0
+        },
+        "secondary1": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1043.28,
+          "expectedC": 1043.28
+        },
+        "secondary2": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1043.28,
+          "expectedC": 1043.28
+        }
+      }
+    },
+    "CF6-N-PE-07": {
+      "schema": 1,
+      "role": "suppress",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "M134暴力版",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "水冷机构",
+            "加长弹匣"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 987.0,
+          "expectedB": 987.0,
+          "expectedC": 987.0
+        },
+        "secondary1": {
+          "name": "远古诛神短枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1794.0,
+          "expectedB": 1794.0,
+          "expectedC": 1794.0
+        },
+        "secondary2": {
+          "name": "远古诛神短枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "透镜"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 1794.0,
+          "expectedB": 1794.0,
+          "expectedC": 1794.0
+        }
+      }
+    },
+    "CF6-N-PE-08": {
+      "schema": 1,
+      "role": "precision",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "高斯枪",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "透镜",
+            "加长弹匣"
+          ],
+          "family": "strong_sniper",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 60800.0,
+          "expectedB": 60800.0,
+          "expectedC": 60800.0
+        },
+        "secondary1": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1009.8000000000001,
+          "expectedC": 1009.8000000000001
+        },
+        "secondary2": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1009.8000000000001,
+          "expectedC": 1009.8000000000001
+        }
+      }
+    },
+    "CF6-N-PE-09": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 988.0,
+          "expectedB": 1100.4,
+          "expectedC": 1100.4
+        },
+        "secondary1": {
+          "name": "改造式诺亚科技冲锋枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2547.0,
+          "expectedB": 2547.0,
+          "expectedC": 2547.0
+        },
+        "secondary2": {
+          "name": "改造式诺亚科技冲锋枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "unresolved_multihit",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2529.0,
+          "expectedB": 2529.0,
+          "expectedC": 2529.0
+        }
+      }
+    },
+    "CF6-N-PE-10": {
+      "schema": 1,
+      "role": "dual",
+      "roleClass": "elite",
+      "slots": {
+        "primary": {
+          "name": "远古诛神枪",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "弹簧",
+            "加长弹匣"
+          ],
+          "family": "unresolved_special",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2781.0,
+          "expectedB": 2781.0,
+          "expectedC": 2781.0
+        },
+        "secondary1": {
+          "name": "轻量化量子能量枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "弹簧"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2248.0,
+          "expectedB": 2291.2875,
+          "expectedC": 2291.2875
+        },
+        "secondary2": {
+          "name": "轻量化量子能量枪",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "加长弹匣"
+          ],
+          "family": "native_magic",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2208.0,
+          "expectedB": 2250.7875,
+          "expectedC": 2250.7875
+        }
+      }
+    },
+    "CF6-M-II": {
+      "schema": 1,
+      "role": "flush",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "战术版喷火器",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [],
+          "family": "ray",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 2584.0,
+          "expectedB": 2584.0,
+          "expectedC": 2584.0
+        },
+        "secondary1": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1030.86,
+          "expectedC": 1030.86
+        },
+        "secondary2": {
+          "name": "极品UZI的KING版",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 966.0,
+          "expectedB": 1030.86,
+          "expectedC": 1030.86
+        }
+      }
+    },
+    "CF6-M-XXI": {
+      "schema": 1,
+      "role": "counter",
+      "roleClass": "instructor",
+      "slots": {
+        "primary": {
+          "name": "战术-QBZ-191",
+          "tier": null,
+          "enhancement": 13,
+          "mods": [
+            "战术鱼骨零件",
+            "下挂霰弹枪",
+            "加长弹匣"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 988.0,
+          "expectedB": 1121.3600000000001,
+          "expectedC": 1121.3600000000001
+        },
+        "secondary1": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "透镜"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 718.0,
+          "expectedB": 832.46,
+          "expectedC": 832.46
+        },
+        "secondary2": {
+          "name": "KRISS印花集",
+          "tier": null,
+          "enhancement": 12,
+          "mods": [
+            "强化金属管"
+          ],
+          "family": "single_physical",
+          "skill": 0,
+          "nano": 0,
+          "minPhysicalFactor": 0.025,
+          "weaponOnlyRaw": 736.0,
+          "expectedB": 851.72,
+          "expectedC": 851.72
+        }
+      }
+    }
+  },
+  "localAdaptationsSha256": "3735f5b8a10713aa879732c48acb1f9d32d607f3f77661dbcad633386fb41df8",
+  "loadoutPlanSha256": "38f7b5d22e30a9f24abe39aed26fa5857150c4f83296fb1d6eebf3e7abfd0129",
+  "numericExpectationSource": "Closed XML operators + independent bisection envelope; all 282 raw powers require real EquipmentCalculator oracle."
+}

@@ -3,7 +3,7 @@ const fs=require('node:fs'),net=require('node:net'),path=require('node:path');
 const root=path.resolve(process.argv[2]);
 const valid=r=>['decide','admit','claim','read'].includes(r.phase)
   && /^[a-f0-9]{16}$/u.test(r.nonce) && r.slot==='cf7_env_cf6_loot_'+r.nonce
-  && ['longgun','sidearm_pair','none'].includes(r.kind);
+  && ['longgun','sidearm_pair','none','guarantee'].includes(r.kind);
 const server=net.createServer(socket=>{
   fs.appendFileSync(path.join(root,'connections.log'),'connect '+new Date().toISOString()+'\n');
   let buffer='';socket.on('error',()=>{});

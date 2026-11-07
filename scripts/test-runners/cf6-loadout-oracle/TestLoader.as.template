@@ -1,0 +1,3 @@
+﻿_root.cf6LoadoutOracleComplete=function():Void {trace("FocusedTestRunId cf6-loadout-oracle Complete: __FOCUSED_RUN_ID__");};
+trace("FocusedTestRunId cf6-loadout-oracle Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.item.equipment.Cf6LoadoutOracleTest.runAllTests();
