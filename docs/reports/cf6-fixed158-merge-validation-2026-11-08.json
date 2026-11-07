@@ -5,7 +5,7 @@
   "authorization": "可行，可以合并上游，提交部署推送了",
   "candidateBase": "0b84e3204fb1d90184e8478c29498666d16d9678",
   "upstream": "9b07cb5652ed2be0aac43723fdb00f9efa92b7f6",
-  "sourceRef": "refs/tags/runtime-build-v2/20261107-cf6-fixed158-r4-v1",
+  "sourceRef": "refs/tags/runtime-build-v2/20261108-cf6-fixed158-r4-v2",
   "scope": [
     "固定158席的独立枪械成长、合法扩槽与插件组合，保持身份、等级、出生和战术编制。",
     "普通/精英/教官名义缴获包概率5%/8%/12%，首把保护及原子裁决、配额与恢复合同。",
@@ -62,6 +62,15 @@
         "policy": "production",
         "milliseconds": 4548.4021
       }
+    },
+    "releasePreflightRepairs": {
+      "itemUse": 31,
+      "session": 42,
+      "workbenchRatchet": 68,
+      "releaseTreeAuditErrors": 0,
+      "releaseTreeAuditWarnings": 0,
+      "itemUseChannelLines": 269,
+      "splitThresholdUnchanged": 280
     }
   },
   "mergeValidationRepairs": [
@@ -102,5 +111,18 @@
     ],
     "scope": "外交地图与环境数据；没有AS2或C#行为代码变更。",
     "newMapHumanPlaythrough": false
-  }
+  },
+  "supersedesUnpromotedSourceRef": "refs/tags/runtime-build-v2/20261107-cf6-fixed158-r4-v1",
+  "releasePreflightRepairs": [
+    {
+      "scope": "existing_web_modules",
+      "issue": "Item-use integration exceeded its existing 280-line split threshold.",
+      "resolution": "Cooldown readiness counting and cooldown-only candidate blocking now belong to the existing cooldown module; transaction orchestration stays in the item-use channel. No new module or budget increase."
+    },
+    {
+      "scope": "generated_file_format",
+      "issue": "Fresh Windows checkout changed byte-checked material dictionary to CRLF.",
+      "resolution": "Pin the generated dictionary to LF, matching its authoritative generator; do not alter material data."
+    }
+  ]
 }

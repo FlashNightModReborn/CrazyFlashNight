@@ -47,6 +47,22 @@
         }
         return result;
     }
+    function readyCount(lanes) {
+        if (!Array.isArray(lanes) || lanes.length !== LANE_COUNT) return -1;
+        var count = 0;
+        for (var lane = 0; lane < lanes.length; lane++) {
+            if (!lanes[lane] || typeof lanes[lane].ready !== 'boolean') return -1;
+            if (lanes[lane].ready) count++;
+        }
+        return count;
+    }
+    function blockedByFullCooldown(candidate) {
+        var raw = candidate && candidate.raw || {};
+        var action = candidate && candidate.useAction || raw.useAction || {};
+        return String(action.command || '') === 'consume'
+            && String(raw.useBlockedReason || '') === 'no_available_lane';
+    }
+
     function rowsFromSnapshot(snapshot) {
         var meta = snapshot && snapshot.drugMeta || {}, lanes = [];
         for (var lane = 0; lane < LANE_COUNT; lane++) {
@@ -176,7 +192,8 @@
         return true;
     }
 
-    return {normalize:normalize, render:render,
+    return {normalize:normalize, render:render, readyCount:readyCount,
+        blockedByFullCooldown:blockedByFullCooldown,
         fromSnapshot:function(controller, snapshot) {
             return render(controller, rowsFromSnapshot(snapshot));
         }, note:note, start:start, stop:stop};

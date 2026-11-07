@@ -67,22 +67,6 @@
             requestKey:''
         };
     }
-    function readyCount(lanes) {
-        if (!Array.isArray(lanes) || lanes.length !== 4) return -1;
-        var count = 0;
-        for (var lane = 0; lane < lanes.length; lane++) {
-            if (!lanes[lane] || typeof lanes[lane].ready !== 'boolean') return -1;
-            if (lanes[lane].ready) count++;
-        }
-        return count;
-    }
-    function blockedByFullCooldown(candidate) {
-        var raw = candidate && candidate.raw || {};
-        var action = candidate && candidate.useAction || raw.useAction || {};
-        return String(action.command || '') === 'consume'
-            && String(raw.useBlockedReason || '') === 'no_available_lane';
-    }
-
     function install(controller) {
         if (!controller) throw new Error('CharacterBuildItemUseChannel requires a controller');
         Choices.install(controller);
@@ -99,10 +83,10 @@
             if (this._view) this._view.setInboxSummary(inbox && inbox.summary);
         };
         controller._itemUseCooldownChanged = function(lanes) {
-            var previousReady = readyCount(this._itemUseCooldownLanes);
+            var previousReady = Cooldown.readyCount(this._itemUseCooldownLanes);
             if (!Cooldown.render(this, lanes)) return false;
             if (previousReady === 0
-                    && readyCount(this._itemUseCooldownLanes) > 0) {
+                    && Cooldown.readyCount(this._itemUseCooldownLanes) > 0) {
                 this._refreshItemUseCandidatesForReadyLane();
             }
             return true;
@@ -119,13 +103,13 @@
                 ? this._view.getCandidates() : [];
             var needsRefresh = false;
             for (var index = 0; index < candidates.length; index++) {
-                if (blockedByFullCooldown(candidates[index])) {
+                if (Cooldown.blockedByFullCooldown(candidates[index])) {
                     needsRefresh = true;
                     break;
                 }
             }
             if (!needsRefresh) return false;
-            var resume = blockedByFullCooldown(this._selectedCandidate)
+            var resume = Cooldown.blockedByFullCooldown(this._selectedCandidate)
                 ? resumeSelection(this._selectedCandidate, this._view) : null;
             this._itemUseResumeSelection = resume;
             this._candidateCache = null;
