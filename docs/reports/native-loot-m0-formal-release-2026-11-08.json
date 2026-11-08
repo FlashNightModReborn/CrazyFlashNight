@@ -1,0 +1,1024 @@
+{
+  "schema": "cf7-native-loot-m0-formal-release.v1",
+  "date": "2026-11-08",
+  "state": "promoted",
+  "authorization": "可行，人测实战未发现明显的问题，做必要的开销收集和其他必要的测试，然后提交部署推送走发布列车",
+  "sourceCommit": "369c8cb82ce6457e2172717d4a1c0a16d20f1243",
+  "sourceTag": "runtime-build-v2/20261108-loot-icon-loop-m0-v1",
+  "releaseTreeOid": "78faa0d3391f57fa02ca9ea50964d752b63aa046",
+  "requestId": "CFC4EA59AC782E6B4F752039BACB1CC68BDEF2D0B96B8F3F5303D4AC844AA1C8",
+  "artifactSourceHash": "F1EFED8E5167A2854AE601765791B63348BDE0835B9CCBFE589E4DC1C81D3B0B",
+  "producerRecipeHash": "B2D387C83610F6DEB366677E0787A57A9CD8CDEA2C9C509087FA80075EC78FF0",
+  "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+  "policyHash": "2E12C098CCB71F01D210E199D97DD8570FB1A1A03FFDF198A5A71AC94FB3374D",
+  "buildIdentityHash": "75C28ABC710AF9FF1A2324CC09170B0BC4DDB58F85AF87C7EFBE9DF14F1BBE54",
+  "payloadClosureHash": "73C0EE99C812C411306F9BE14B7088145EF530D03E9993826CEAC67EF45D8741",
+  "manifestSha256": "8ECC9AAC67C66345EF8FB7EABD5E0AC1496992679476A5860057F17C519A417C",
+  "policyReceiptSha256": "6D9A50EA9D8A00D2A478DA7F213E36581A6F1EF8E003DB782FE349F3EB20E82D",
+  "promotedAtUtc": "2026-11-08T00:51:38.3299516Z",
+  "coreSha256": "3371204DD6B78571A423DD2C89B2A38C7286A1A3A8EE64770F56DB7AAFD2E871",
+  "nativeCompositorSha256": "F9A88C3B0CC16C06B31506A9C0FB85DC7097E61B860730C5A7E8B250CFAFBABD",
+  "asLoaderSha256": "5425C9AAF4D15D0FB8F39742C3EB0ED108F303AD831D9DCBF3574E68DD335901",
+  "humanAcceptance": {
+    "userReportedNoObviousCombatIssues": true,
+    "originalCandidateBuildIdentityHash": "8BE9EDD7DCFD2E0E89FB1EEE055E9E43C0FBA6070E11B5AE6E75C3396D8D5E49",
+    "originalCandidateCoreSha256": "2CD99B1F8E703DE9BE82D912F330A57280D1E28FF0400D1BD500DA7D6A1F1630",
+    "m0ProductionFilesStillIdentical": [
+      {
+        "path": "launcher/src/Guardian/Hud/Loot/LootFeedWidget.cs",
+        "acceptedSha256": "fe53ae6840bf2af136f8a1f3243f6b321869b0d5418fdea0446308a766b37c0a",
+        "currentSha256": "FE53AE6840BF2AF136F8A1F3243F6B321869B0D5418FDEA0446308A766B37C0A",
+        "match": true
+      },
+      {
+        "path": "launcher/src/Guardian/Hud/Loot/LootIconCatalog.cs",
+        "acceptedSha256": "619ab0dd02410819c754b9ce8bf9034d22c0b7ef7079c0a746b51c8af50564f9",
+        "currentSha256": "619AB0DD02410819C754B9CE8BF9034D22C0B7EF7079C0A746B51C8AF50564F9",
+        "match": true
+      },
+      {
+        "path": "launcher/src/Guardian/Hud/Icons/IconTimeline.cs",
+        "acceptedSha256": "9e551044929ebbb4de963506f918c8422368a4e2d29b38e692c3f59bbaca68df",
+        "currentSha256": "9E551044929EBBB4DE963506F918C8422368A4E2D29B38E692C3F59BBACA68DF",
+        "match": true
+      },
+      {
+        "path": "launcher/src/Guardian/Hud/Loot/LootFeedWidget.Playback.cs",
+        "acceptedSha256": "7626b8286784b551b8abbc2573bab66bfe0068404245c732bfbbf955b3726ad5",
+        "currentSha256": "7626B8286784B551B8ABBC2573BAB66BFE0068404245C732BFBBF955B3726AD5",
+        "match": true
+      },
+      {
+        "path": "launcher/src/Guardian/Hud/Loot/LootIconCatalog.Playback.cs",
+        "acceptedSha256": "aeee5111dadb7ec70fb2692ddb7fd4496478e9d5b22425d3737eea5358d9da49",
+        "currentSha256": "AEEE5111DADB7EC70FB2692DDB7FD4496478E9D5B22425D3737EEA5358D9DA49",
+        "match": true
+      }
+    ],
+    "newMergedFormalBuildCombatRetestClaimed": false
+  },
+  "hostTests": {
+    "canonicalFullRun": "tmp/focus-sol-20261013/integration-20261107T235518382Z/recheck.trx",
+    "fullPassed": 8252,
+    "resourceQualificationCancelled": 82,
+    "skipped": 31,
+    "qualifiedReplay": "tmp/focus-sol-20261013/integration-20261108T001109669Z/recheck.trx",
+    "replayPassed": 82,
+    "combinedPassed": 8334,
+    "unresolvedFailures": 0,
+    "boundary": "82 native resource tests were cancelled by desktop input qualification, then all 82 exact methods passed on unchanged compiled binaries. This is full coverage plus qualified replay, not a single uninterrupted all-green sweep."
+  },
+  "assetTests": {
+    "entry": "scripts/run-player-asset-transaction-tests.ps1",
+    "transactionCore": 108,
+    "rewardStash": 137,
+    "npcItemExchange": 67,
+    "totalPassed": 312,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "maxObservedFunctionCodeSizeBytes": 19072,
+    "codeSizeGate": 60000,
+    "productionAs2Changed": false,
+    "productionSwfRepublished": false,
+    "testEntryMigration": "Obsolete synchronous quest rollback assertions were replaced by the existing durable RewardStashService suite; TaskPanel projection fixtures now carry the current instance token. Static owners match the current 29 begin and 25 direct dirty contracts."
+  },
+  "candidateFixtures": {
+    "total": 34,
+    "passed": 34,
+    "failed": 0,
+    "coreMvid": "efbe7f7c-fc78-49a9-b90d-c056248cf92a",
+    "reportSha256": "69D5DD5B322065EA13EF417F28102611389D56E13FCC39908DF8ABA972EB4536",
+    "boundary": "actual production candidate Core DLL loaded from its verified deployment path; hidden STA Widget/GDI fixtures only; no Core.Main/Flash/Overlay/GPU/standard-entry acceptance",
+    "cases": [
+      {
+        "test": "LootFeedAnimationTests.ForcedPaint_ContinuesSelectingPixelsAfter450ms",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 460.9243
+      },
+      {
+        "test": "LootFeedAnimationTests.OwnRepaintRequests_ContinueChangingPixelsWithoutAnotherWidget",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 85.3552
+      },
+      {
+        "test": "LootFeedAnimationTests.StaticHoldHasNoContentRepaint_ButStillExpires",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 109.4952
+      },
+      {
+        "test": "LootFeedAnimationTests.LongStallUsesRealContentTime_NotClampedModelDelta",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 96.4405
+      },
+      {
+        "test": "LootFeedAnimationTests.SuppressionAndReducedMotionFreezePhase_ThenResumeSameCard",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 66.2539
+      },
+      {
+        "test": "LootFeedAnimationTests.MergeAndPreemptionKeepCardPhase_WhileNewCardStartsAtZero",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 64.1524
+      },
+      {
+        "test": "LootFeedAnimationTests.DisposeStopsTickAndFurtherRepaint",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 53.894
+      },
+      {
+        "test": "LootFeedAnimationTests.RealAssets_RenderBeyondEntryAndAcrossTwoFullCycles",
+        "arguments": [
+          "金钱",
+          10560000
+        ],
+        "passed": true,
+        "milliseconds": 142.8964
+      },
+      {
+        "test": "LootFeedAnimationTests.RealAssets_RenderBeyondEntryAndAcrossTwoFullCycles",
+        "arguments": [
+          "K点",
+          13333334
+        ],
+        "passed": true,
+        "milliseconds": 116.8097
+      },
+      {
+        "test": "LootFeedAnimationTests.RealAssets_RenderBeyondEntryAndAcrossTwoFullCycles",
+        "arguments": [
+          "强化石",
+          50400000
+        ],
+        "passed": true,
+        "milliseconds": 653.5207
+      },
+      {
+        "test": "LootFeedAnimationTests.IndependentCardsStartAtZero_AndResizeKeepsEachPhase",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 95.81
+      },
+      {
+        "test": "LootFeedAnimationTests.FirstPendingCardBindsOnlyOnFirstVisibility_AtPhaseZero",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 57.5164
+      },
+      {
+        "test": "LootFeedAnimationTests.SteadyWidgetTickAndOwnRepaint_RecordsOneAndFiveCardCosts",
+        "arguments": [
+          1,
+          true
+        ],
+        "passed": true,
+        "milliseconds": 167.06
+      },
+      {
+        "test": "LootFeedAnimationTests.SteadyWidgetTickAndOwnRepaint_RecordsOneAndFiveCardCosts",
+        "arguments": [
+          5,
+          true
+        ],
+        "passed": true,
+        "milliseconds": 265.0642
+      },
+      {
+        "test": "LootFeedAnimationTests.SteadyWidgetTickAndOwnRepaint_RecordsOneAndFiveCardCosts",
+        "arguments": [
+          1,
+          false
+        ],
+        "passed": true,
+        "milliseconds": 46.158
+      },
+      {
+        "test": "LootFeedAnimationTests.SteadyWidgetTickAndOwnRepaint_RecordsOneAndFiveCardCosts",
+        "arguments": [
+          5,
+          false
+        ],
+        "passed": true,
+        "milliseconds": 45.357
+      },
+      {
+        "test": "LootIconPlaybackTests.Timeline_KeepsRepeatedSlotsFractionalFpsAndLongElapsedTime",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 1.0506
+      },
+      {
+        "test": "LootIconPlaybackTests.Timeline_NonuniformHalfOpenBoundariesSkipZeroDurationSlots",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 0.7456
+      },
+      {
+        "test": "LootIconPlaybackTests.Timeline_InvalidRatesFallBackWithoutOverflow",
+        "arguments": [
+          "NaN"
+        ],
+        "passed": true,
+        "milliseconds": 0.7028
+      },
+      {
+        "test": "LootIconPlaybackTests.Timeline_InvalidRatesFallBackWithoutOverflow",
+        "arguments": [
+          "Infinity"
+        ],
+        "passed": true,
+        "milliseconds": 0.5958
+      },
+      {
+        "test": "LootIconPlaybackTests.Timeline_InvalidRatesFallBackWithoutOverflow",
+        "arguments": [
+          -1
+        ],
+        "passed": true,
+        "milliseconds": 0.3747
+      },
+      {
+        "test": "LootIconPlaybackTests.Timeline_InvalidRatesFallBackWithoutOverflow",
+        "arguments": [
+          0
+        ],
+        "passed": true,
+        "milliseconds": 0.1849
+      },
+      {
+        "test": "LootIconPlaybackTests.Timeline_InvalidRatesFallBackWithoutOverflow",
+        "arguments": [
+          1E-40
+        ],
+        "passed": true,
+        "milliseconds": 0.1625
+      },
+      {
+        "test": "LootIconPlaybackTests.CurrentPngFrame_KeepsHoldAndCanRehydrateAfterEviction",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 8.5287
+      },
+      {
+        "test": "LootIconPlaybackTests.StaticPoster_DoesNotReadAnimatedSource_AndFailureIsRemembered",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 6.455
+      },
+      {
+        "test": "LootIconPlaybackTests.MissingPngSlot_DoesNotShortenPeriod_AndBudgetFallbackUsesPoster",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 5.2036
+      },
+      {
+        "test": "LootIconPlaybackTests.RepeatedSinglePictureUsesTimelinePicture_WithoutAnimationWakeups",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 4.3636
+      },
+      {
+        "test": "LootIconPlaybackTests.CorruptPngFrameFallsBackOnce_WithoutRepeatedReads",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 13.441
+      },
+      {
+        "test": "LootIconPlaybackMetricsTests.RealTimelineMatchesContainerAndRetainsHalfOpenLoop",
+        "arguments": [
+          "金钱",
+          32,
+          10560000
+        ],
+        "passed": true,
+        "milliseconds": 16.6495
+      },
+      {
+        "test": "LootIconPlaybackMetricsTests.RealTimelineMatchesContainerAndRetainsHalfOpenLoop",
+        "arguments": [
+          "K点",
+          32,
+          13333334
+        ],
+        "passed": true,
+        "milliseconds": 17.4613
+      },
+      {
+        "test": "LootIconPlaybackMetricsTests.RealTimelineMatchesContainerAndRetainsHalfOpenLoop",
+        "arguments": [
+          "强化石",
+          119,
+          50400000
+        ],
+        "passed": true,
+        "milliseconds": 14.1839
+      },
+      {
+        "test": "LootIconPlaybackMetricsTests.ResidentSamplingAndDrawing_DoNotReopenDecodeOrAllocateArrays",
+        "arguments": [
+          1
+        ],
+        "passed": true,
+        "milliseconds": 83.8478
+      },
+      {
+        "test": "LootIconPlaybackMetricsTests.ResidentSamplingAndDrawing_DoNotReopenDecodeOrAllocateArrays",
+        "arguments": [
+          5
+        ],
+        "passed": true,
+        "milliseconds": 349.0214
+      },
+      {
+        "test": "LootIconPlaybackMetricsTests.RepeatedDecodeEvictDispose_ReleasesNativeImagesAndGdiObjects",
+        "arguments": [],
+        "passed": true,
+        "milliseconds": 1031.4226
+      }
+    ]
+  },
+  "productionPolicy": {
+    "profile": "production",
+    "passed": true,
+    "checks": 47,
+    "trackedStateBefore": "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+    "trackedStateAfter": "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B"
+  },
+  "producerQuorum": {
+    "signers": 2,
+    "faultDomains": 2,
+    "localBuilder": "builder-local-b",
+    "localFaultDomain": "physical-host-b",
+    "githubFaultDomain": "github-hosted-windows",
+    "githubRunId": 42430569436,
+    "githubRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/42430569436",
+    "artifactScope": "attestation-only"
+  },
+  "renderCostQualification": {
+    "width": 1024,
+    "height": 576,
+    "warmupSecondsPerScenario": 2,
+    "sampleSecondsPerScenario": 8,
+    "boundary": "owned 1024x576 WGC source/output; actual candidate Core and DComp native module; production Loot/NativeHud/WorldRaster/Opaque upload; two inert corners retain a viewport-sized HUD union; no Flash, save, inventory or gameplay mutation",
+    "results": [
+      {
+        "count": 1,
+        "animated": false,
+        "elapsedMs": 8003.6659,
+        "ticks": 314,
+        "repaints": 0,
+        "paints": 0,
+        "commits": 0,
+        "boundsChanges": 0,
+        "ticksPerSecond": 39.23202241612809,
+        "repaintsPerSecond": 0.0,
+        "commitsPerSecond": 0.0,
+        "coldCommits": {
+          "count": 7,
+          "meanMs": 14.053942857142857,
+          "p95Ms": 4.8254,
+          "p99Ms": 4.8254,
+          "maxMs": 83.0685
+        },
+        "tick": {
+          "count": 314,
+          "meanMs": 0.0027121019108280265,
+          "p95Ms": 0.0051,
+          "p99Ms": 0.009,
+          "maxMs": 0.0183
+        },
+        "widgetPaint": {
+          "count": 0,
+          "meanMs": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "compose": {
+          "count": 0,
+          "meanMs": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "submit": {
+          "count": 0,
+          "meanMs": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "dirtyPixels": 0,
+        "managedAllocatedBytes": 93448,
+        "managedBytesPerSecond": 11675.649779434198,
+        "processCpuMs": 265.625,
+        "gen0": 0,
+        "gen1": 0,
+        "gen2": 0,
+        "fileOpens": 0,
+        "animatedWebpCodecs": 0,
+        "fullWebpDecodes": 0,
+        "accepted": 0,
+        "copiedBytes": 0,
+        "uploads": 0,
+        "uploadedBytes": 0,
+        "draws": 0,
+        "presented": 0,
+        "gpu": {
+          "Size": 168,
+          "Enabled": 1,
+          "Retained": 0,
+          "Started": 0,
+          "Completed": 0,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 0.0,
+          "HudMsTotal": 0.0,
+          "WorldP50Ms": 0.0,
+          "WorldP95Ms": 0.0,
+          "WorldP99Ms": 0.0,
+          "HudP50Ms": 0.0,
+          "HudP95Ms": 0.0,
+          "HudP99Ms": 0.0,
+          "CopySamples": 0,
+          "CopyBytes": 0,
+          "AllocationCpuMs": 0.0,
+          "CopyCpuMs": 0.0,
+          "PoolReuses": 0,
+          "PoolAllocations": 0,
+          "CachedBytes": 4718592
+        },
+        "timing": {
+          "Size": 88,
+          "Count": 9,
+          "IntervalCount": 0,
+          "FreshCount": 1,
+          "Presented": 9,
+          "LastPresentQpcMs": 766682950.3391,
+          "IntervalP50Ms": 0.0,
+          "IntervalP95Ms": 0.0,
+          "IntervalP99Ms": 0.0,
+          "IntervalMaxMs": 0.0,
+          "SubmitP95Ms": 6.455399990081787,
+          "PresentP95Ms": 257.44459998607635,
+          "FreshAgeP95Ms": 0.0
+        },
+        "privateBytesBefore": 157429760,
+        "privateBytesAfter": 157966336,
+        "gdiBefore": 34,
+        "gdiAfter": 34
+      },
+      {
+        "count": 5,
+        "animated": false,
+        "elapsedMs": 8010.7429,
+        "ticks": 313,
+        "repaints": 0,
+        "paints": 0,
+        "commits": 0,
+        "boundsChanges": 0,
+        "ticksPerSecond": 39.07253096338918,
+        "repaintsPerSecond": 0.0,
+        "commitsPerSecond": 0.0,
+        "coldCommits": {
+          "count": 6,
+          "meanMs": 3.423466666666666,
+          "p95Ms": 1.9019,
+          "p99Ms": 1.9019,
+          "maxMs": 13.7381
+        },
+        "tick": {
+          "count": 313,
+          "meanMs": 0.005185942492012778,
+          "p95Ms": 0.0072,
+          "p99Ms": 0.0087,
+          "maxMs": 0.1458
+        },
+        "widgetPaint": {
+          "count": 0,
+          "meanMs": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "compose": {
+          "count": 0,
+          "meanMs": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "submit": {
+          "count": 0,
+          "meanMs": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "dirtyPixels": 0,
+        "managedAllocatedBytes": 92144,
+        "managedBytesPerSecond": 11502.553652046428,
+        "processCpuMs": 250.0,
+        "gen0": 0,
+        "gen1": 0,
+        "gen2": 0,
+        "fileOpens": 0,
+        "animatedWebpCodecs": 0,
+        "fullWebpDecodes": 0,
+        "accepted": 0,
+        "copiedBytes": 0,
+        "uploads": 0,
+        "uploadedBytes": 0,
+        "draws": 0,
+        "presented": 0,
+        "gpu": {
+          "Size": 168,
+          "Enabled": 1,
+          "Retained": 0,
+          "Started": 0,
+          "Completed": 0,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 0.0,
+          "HudMsTotal": 0.0,
+          "WorldP50Ms": 0.0,
+          "WorldP95Ms": 0.0,
+          "WorldP99Ms": 0.0,
+          "HudP50Ms": 0.0,
+          "HudP95Ms": 0.0,
+          "HudP99Ms": 0.0,
+          "CopySamples": 0,
+          "CopyBytes": 0,
+          "AllocationCpuMs": 0.0,
+          "CopyCpuMs": 0.0,
+          "PoolReuses": 0,
+          "PoolAllocations": 0,
+          "CachedBytes": 4718592
+        },
+        "timing": {
+          "Size": 88,
+          "Count": 17,
+          "IntervalCount": 0,
+          "FreshCount": 1,
+          "Presented": 17,
+          "LastPresentQpcMs": 766692926.8668,
+          "IntervalP50Ms": 0.0,
+          "IntervalP95Ms": 0.0,
+          "IntervalP99Ms": 0.0,
+          "IntervalMaxMs": 0.0,
+          "SubmitP95Ms": 6.455399990081787,
+          "PresentP95Ms": 257.44459998607635,
+          "FreshAgeP95Ms": 0.0
+        },
+        "privateBytesBefore": 165572608,
+        "privateBytesAfter": 159444992,
+        "gdiBefore": 35,
+        "gdiAfter": 35
+      },
+      {
+        "count": 1,
+        "animated": true,
+        "elapsedMs": 8006.3143,
+        "ticks": 309,
+        "repaints": 164,
+        "paints": 145,
+        "commits": 145,
+        "boundsChanges": 0,
+        "ticksPerSecond": 38.59453781373534,
+        "repaintsPerSecond": 20.483832367160506,
+        "commitsPerSecond": 18.110705446574837,
+        "coldCommits": {
+          "count": 37,
+          "meanMs": 2.068132432432432,
+          "p95Ms": 1.5577999999999999,
+          "p99Ms": 2.3059,
+          "maxMs": 41.250899999999994
+        },
+        "tick": {
+          "count": 309,
+          "meanMs": 0.9247485436893204,
+          "p95Ms": 2.8124,
+          "p99Ms": 3.7964,
+          "maxMs": 5.0659
+        },
+        "widgetPaint": {
+          "count": 145,
+          "meanMs": 0.38148965517241373,
+          "p95Ms": 0.6033,
+          "p99Ms": 0.9615,
+          "maxMs": 1.2383
+        },
+        "compose": {
+          "count": 145,
+          "meanMs": 0.47371448275862044,
+          "p95Ms": 0.7358,
+          "p99Ms": 1.0455,
+          "maxMs": 2.0616
+        },
+        "submit": {
+          "count": 145,
+          "meanMs": 0.4956717241379309,
+          "p95Ms": 0.9844,
+          "p99Ms": 1.1784,
+          "maxMs": 1.336
+        },
+        "dirtyPixels": 704700,
+        "managedAllocatedBytes": 342368,
+        "managedBytesPerSecond": 42762.24829195127,
+        "processCpuMs": 1218.75,
+        "gen0": 0,
+        "gen1": 0,
+        "gen2": 0,
+        "fileOpens": 0,
+        "animatedWebpCodecs": 0,
+        "fullWebpDecodes": 0,
+        "accepted": 145,
+        "copiedBytes": 342097920,
+        "uploads": 145,
+        "uploadedBytes": 342097920,
+        "draws": 145,
+        "presented": 145,
+        "gpu": {
+          "Size": 168,
+          "Enabled": 1,
+          "Retained": 144,
+          "Started": 145,
+          "Completed": 144,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 137.00203125000007,
+          "HudMsTotal": 28.355364583333348,
+          "WorldP50Ms": 0.9411979166666667,
+          "WorldP95Ms": 1.4883333333333335,
+          "WorldP99Ms": 1.8463020833333335,
+          "HudP50Ms": 0.19036458333333334,
+          "HudP95Ms": 0.20718750000000002,
+          "HudP99Ms": 0.21828125,
+          "CopySamples": 145,
+          "CopyBytes": 342097920,
+          "AllocationCpuMs": 0.2781001329421997,
+          "CopyCpuMs": 63.31480026245117,
+          "PoolReuses": 145,
+          "PoolAllocations": 0,
+          "CachedBytes": 4718592
+        },
+        "timing": {
+          "Size": 88,
+          "Count": 200,
+          "IntervalCount": 0,
+          "FreshCount": 1,
+          "Presented": 200,
+          "LastPresentQpcMs": 766712760.4254,
+          "IntervalP50Ms": 0.0,
+          "IntervalP95Ms": 0.0,
+          "IntervalP99Ms": 0.0,
+          "IntervalMaxMs": 0.0,
+          "SubmitP95Ms": 1.2899999618530273,
+          "PresentP95Ms": 1.0755999088287354,
+          "FreshAgeP95Ms": 0.0
+        },
+        "privateBytesBefore": 164974592,
+        "privateBytesAfter": 171614208,
+        "gdiBefore": 36,
+        "gdiAfter": 36
+      },
+      {
+        "count": 5,
+        "animated": true,
+        "elapsedMs": 8006.0503,
+        "ticks": 311,
+        "repaints": 165,
+        "paints": 147,
+        "commits": 147,
+        "boundsChanges": 0,
+        "ticksPerSecond": 38.84562154199806,
+        "repaintsPerSecond": 20.609413358294788,
+        "commitsPerSecond": 18.361113719208085,
+        "coldCommits": {
+          "count": 37,
+          "meanMs": 5.170421621621622,
+          "p95Ms": 5.5753,
+          "p99Ms": 7.8715,
+          "maxMs": 102.28670000000001
+        },
+        "tick": {
+          "count": 311,
+          "meanMs": 1.0213504823151125,
+          "p95Ms": 3.2728,
+          "p99Ms": 4.1368,
+          "maxMs": 5.4062
+        },
+        "widgetPaint": {
+          "count": 147,
+          "meanMs": 1.0979931972789119,
+          "p95Ms": 1.7121,
+          "p99Ms": 2.0053,
+          "maxMs": 2.681
+        },
+        "compose": {
+          "count": 147,
+          "meanMs": 1.2010312925170066,
+          "p95Ms": 1.8377,
+          "p99Ms": 2.1292,
+          "maxMs": 2.7907
+        },
+        "submit": {
+          "count": 147,
+          "meanMs": 0.47813537414965984,
+          "p95Ms": 0.6107,
+          "p99Ms": 0.7181,
+          "maxMs": 1.0794
+        },
+        "dirtyPixels": 2556036,
+        "managedAllocatedBytes": 847936,
+        "managedBytesPerSecond": 105911.90015381243,
+        "processCpuMs": 1031.25,
+        "gen0": 0,
+        "gen1": 0,
+        "gen2": 0,
+        "fileOpens": 0,
+        "animatedWebpCodecs": 0,
+        "fullWebpDecodes": 0,
+        "accepted": 147,
+        "copiedBytes": 346816512,
+        "uploads": 147,
+        "uploadedBytes": 346816512,
+        "draws": 147,
+        "presented": 147,
+        "gpu": {
+          "Size": 168,
+          "Enabled": 1,
+          "Retained": 146,
+          "Started": 147,
+          "Completed": 146,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 146.40317708333336,
+          "HudMsTotal": 28.794531250000006,
+          "WorldP50Ms": 0.9783854166666667,
+          "WorldP95Ms": 1.5260416666666667,
+          "WorldP99Ms": 1.8761458333333334,
+          "HudP50Ms": 0.1953125,
+          "HudP95Ms": 0.21250000000000002,
+          "HudP99Ms": 0.22916666666666669,
+          "CopySamples": 147,
+          "CopyBytes": 346816512,
+          "AllocationCpuMs": 0.29290032386779785,
+          "CopyCpuMs": 62.57360029220581,
+          "PoolReuses": 147,
+          "PoolAllocations": 0,
+          "CachedBytes": 4718592
+        },
+        "timing": {
+          "Size": 88,
+          "Count": 256,
+          "IntervalCount": 0,
+          "FreshCount": 0,
+          "Presented": 385,
+          "LastPresentQpcMs": 766722851.2076,
+          "IntervalP50Ms": 0.0,
+          "IntervalP95Ms": 0.0,
+          "IntervalP99Ms": 0.0,
+          "IntervalMaxMs": 0.0,
+          "SubmitP95Ms": 1.270799994468689,
+          "PresentP95Ms": 1.0696001052856445,
+          "FreshAgeP95Ms": 0.0
+        },
+        "privateBytesBefore": 175943680,
+        "privateBytesAfter": 175919104,
+        "gdiBefore": 37,
+        "gdiAfter": 37
+      }
+    ],
+    "microMetrics": [
+      {
+        "count": 1,
+        "animated": true,
+        "logicalDurationMs": 12800,
+        "ticks": 400,
+        "requests": 320,
+        "paints": 320,
+        "boundsChanges": 0,
+        "allocatedBytes": 301336,
+        "gen0": 0,
+        "tick": {
+          "samples": 400,
+          "meanUs": 2.21375,
+          "p95Us": 6.5,
+          "p99Us": 11.3
+        },
+        "paint": {
+          "samples": 320,
+          "meanUs": 148.9921875,
+          "p95Us": 370.70000000000005,
+          "p99Us": 515.3000000000001
+        },
+        "paintedPixels": 1013760,
+        "boundary": "real production Widget; injected clock; forced 32ms ticks; own-request GDI Paint; Overlay Commit/GPU upload excluded"
+      },
+      {
+        "count": 5,
+        "animated": true,
+        "logicalDurationMs": 12800,
+        "ticks": 400,
+        "requests": 320,
+        "paints": 320,
+        "boundsChanges": 0,
+        "allocatedBytes": 1376536,
+        "gen0": 0,
+        "tick": {
+          "samples": 400,
+          "meanUs": 6.71575,
+          "p95Us": 15.0,
+          "p99Us": 22.1
+        },
+        "paint": {
+          "samples": 320,
+          "meanUs": 653.71375,
+          "p95Us": 1046.9,
+          "p99Us": 1318.2
+        },
+        "paintedPixels": 4577280,
+        "boundary": "real production Widget; injected clock; forced 32ms ticks; own-request GDI Paint; Overlay Commit/GPU upload excluded"
+      },
+      {
+        "count": 1,
+        "animated": false,
+        "logicalDurationMs": 12800,
+        "ticks": 400,
+        "requests": 0,
+        "paints": 0,
+        "boundsChanges": 0,
+        "allocatedBytes": 0,
+        "gen0": 0,
+        "tick": {
+          "samples": 400,
+          "meanUs": 0.7085,
+          "p95Us": 0.7000000000000001,
+          "p99Us": 2.3000000000000003
+        },
+        "paint": {
+          "samples": 0,
+          "meanUs": 0.0,
+          "p95Us": 0.0,
+          "p99Us": 0.0
+        },
+        "paintedPixels": 0,
+        "boundary": "real production Widget; injected clock; forced 32ms ticks; own-request GDI Paint; Overlay Commit/GPU upload excluded"
+      },
+      {
+        "count": 5,
+        "animated": false,
+        "logicalDurationMs": 12800,
+        "ticks": 400,
+        "requests": 0,
+        "paints": 0,
+        "boundsChanges": 0,
+        "allocatedBytes": 0,
+        "gen0": 0,
+        "tick": {
+          "samples": 400,
+          "meanUs": 1.31,
+          "p95Us": 1.3,
+          "p99Us": 1.4000000000000001
+        },
+        "paint": {
+          "samples": 0,
+          "meanUs": 0.0,
+          "p95Us": 0.0,
+          "p99Us": 0.0
+        },
+        "paintedPixels": 0,
+        "boundary": "real production Widget; injected clock; forced 32ms ticks; own-request GDI Paint; Overlay Commit/GPU upload excluded"
+      },
+      {
+        "count": 1,
+        "iterations": 1000,
+        "coldPreparationAndAllFramesMs": 44.5283,
+        "coldFileOpens": 2,
+        "coldCodecs": 2,
+        "coldFullDecodes": 1,
+        "warmFileOpens": 0,
+        "warmCodecs": 0,
+        "warmFullDecodes": 0,
+        "warmAllocatedBytes": 0,
+        "gen0": 0,
+        "meanUs": 34.4381,
+        "p95Us": 45.5,
+        "p99Us": 61.2,
+        "boundary": "catalog prepare/sample/resident DrawImage; excludes Overlay commit and GPU upload"
+      },
+      {
+        "count": 5,
+        "iterations": 1000,
+        "coldPreparationAndAllFramesMs": 190.9898,
+        "coldFileOpens": 16,
+        "coldCodecs": 4,
+        "coldFullDecodes": 2,
+        "warmFileOpens": 0,
+        "warmCodecs": 0,
+        "warmFullDecodes": 0,
+        "warmAllocatedBytes": 0,
+        "gen0": 0,
+        "meanUs": 156.6454,
+        "p95Us": 202.2,
+        "p99Us": 274.6,
+        "boundary": "catalog prepare/sample/resident DrawImage; excludes Overlay commit and GPU upload"
+      },
+      {
+        "cycles": 30,
+        "gdiBefore": 21,
+        "gdiAfter": 21,
+        "handlesBefore": 387,
+        "handlesAfter": 387,
+        "privateBytesBefore": 30846976,
+        "privateBytesAfter": 36995072
+      }
+    ],
+    "reportSha256": "365BADED5416B521958F4E6419B1F13DE28708C5812A465C6FE7B96A08F9B7EC",
+    "notes": [
+      "The two inert corner widgets deliberately retain a full-viewport HUD union. Uploaded bytes measure the existing whole-surface upload amplification; they are not a universal gameplay bandwidth figure.",
+      "Tick includes synchronous callbacks and rendering; do not add its time to paint/compose/submit as independent stages. Process CPU includes owned capture/presentation, pumping and instrumentation.",
+      "Warmup commit maxima include first paints and are distinct from the catalog prepare-and-all-frames timing. No claim of combat frame-rate improvement or whole-frame net gain is made.",
+      "Zero warm resource reopening/codec/full-decode counts apply to tested resident icons; the full HUD path still allocates managed memory. Thirty disposal cycles return GDI and handle counts, while private-byte growth does not prove absence of native heap retention."
+    ]
+  },
+  "formalStartup": {
+    "schema": "cf7-m0-formal-startup-smoke.v1",
+    "launchedAtUtc": "2026-11-08T00:54:43.1766168Z",
+    "entry": "automation/start.ps1",
+    "arguments": [],
+    "runtimeMode": "formal_runtime",
+    "startupExitCode": 0,
+    "coreProcessId": 30076,
+    "coreProcessPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "3371204DD6B78571A423DD2C89B2A38C7286A1A3A8EE64770F56DB7AAFD2E871",
+    "buildIdentityHash": "75C28ABC710AF9FF1A2324CC09170B0BC4DDB58F85AF87C7EFBE9DF14F1BBE54",
+    "payloadClosureHash": "73C0EE99C812C411306F9BE14B7088145EF530D03E9993826CEAC67EF45D8741",
+    "bootstrapVerifyOnlyPassed": true,
+    "passed": true,
+    "launcherPageObserved": "https://bootstrap.local/bootstrap.html",
+    "windowTitleObserved": "CF7:FlashNight",
+    "frontdoorStateObserved": "Idle",
+    "confirmationPressed": false,
+    "playerSlotConfirmed": false,
+    "prewarmBehavior": "Unconfirmed prewarm reached its normal deadline, reset to Idle, and its Flash player exited with code 0.",
+    "normalUserClosingRequested": true,
+    "shutdownLogEvidence": "OnFormClosing state=Idle reason=UserClosing -> DoExit; subsequent Guardian Shutting down, XmlSocket/HTTP Stopped",
+    "coreExitObserved": true,
+    "remainingFormalWindows": 0,
+    "standardEntryBusinessJourneyExecuted": false,
+    "newFormalBuildPhysicalCombatAcceptance": false,
+    "launcherLogSha256": "F5FCC045CB4B1DDB343619A43B29BE45E4C177D013E0951ADD19C17D2645C510",
+    "completedAtUtc": "2026-11-08T00:57:14.0962061Z"
+  },
+  "saveProtection": {
+    "comparedFiles": 404,
+    "unchangedFiles": 403,
+    "playerFilesUnchanged": true,
+    "playerFileChanges": 0,
+    "launcherMetadataChanges": [
+      {
+        "file": ".launcher-version-marker.json",
+        "kind": "bytes_changed",
+        "beforeSha256": "b24a9356e22962d447ec5c619fa61690409ea1a6ee30793a8336c08ec27b26fd",
+        "afterSha256": "FD583B9A1D20307AB7876886ECA6E481C2B76A3CBC11140B262001F6806E1C88"
+      }
+    ],
+    "additionalFilesAbsentFromInitialInventory": 1,
+    "additionalFileReview": [
+      {
+        "fileName": "cf7_agent_a5_material_shop_run.sol",
+        "classification": "historical test SOL absent from initial 404-file inventory; already observed before promotion",
+        "creationTimeUtc": "2026-09-11T19:00:24.3566102Z",
+        "lastWriteTimeUtc": "2026-09-11T19:00:24.3677622Z",
+        "presentBeforePromotion": true,
+        "unchangedSinceBeforePromotion": true,
+        "sha256": "F30CAAA195372BF291BAE2DB660F66EB98C8760F95C8F04FF1F446556C8DC340"
+      }
+    ],
+    "anySaveRestored": false
+  },
+  "remainingRisks": [
+    "M1 cache/lease ownership work is outside this M0 release.",
+    "The existing compositor uploads a full HUD surface when a small animated icon dirties it; at 1024x576 this sample observed about 43 MB/s.",
+    "Cold asset preparation and first paints can spike; warmed timings must not be used as cold-load or live-combat guarantees."
+  ],
+  "retainedAttempts": [
+    "The full Host run with 82 input-qualification cancellations is retained beside the passing exact-method replay.",
+    "The first CS6 300-second timeout remains a failed attempt; its late fresh 108/108 output and compiler 0/0 were checked before task-owned recovery, then the complete 600-second suite passed.",
+    "The first production-DLL fixture harness report failed because queue CAS intentionally excludes producer metadata; the external reporter was corrected without changing the candidate, and all 34 cases were rerun successfully.",
+    "The first cloud observer exited on a GitHub API EOF. The canonical helper resumed run 42430569436 without redispatch or workflow rerun and verified its completed keyless proof."
+  ],
+  "postPushAuditAuthority": ".github/workflows/runtime-bundle-integrity.yml; first deployment push audit and signed consensus are authoritative; the run result is recorded separately after push."
+}
