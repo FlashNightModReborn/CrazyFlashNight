@@ -745,11 +745,11 @@
         <modslot>1</modslot>
         <weight>5</weight>
         <dressup>枪-手枪-Origin12战术版</dressup>
-        <capacity>20</capacity>
+        <capacity>30</capacity>
       <overload><chamber>1</chamber><ghost>0</ghost></overload>
         <split>5</split>
         <diffusion>10</diffusion>
-        <interval>200</interval>
+        <interval>266</interval>
         <velocity>40</velocity>
         <bullet>横向联弹-次级穿刺子弹</bullet>
         <bulletrename>常规穿甲弹</bulletrename>
@@ -758,7 +758,7 @@
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>79</power>
+        <power>142</power>
         <impact>12</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
@@ -778,7 +778,7 @@
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:88cef619</inputDigest>
+            <inputDigest>fnv1a32:bfadbd50</inputDigest>
             <auditRef>weapon:Origin12战术版:data</auditRef>
           </data>
         </profiles>
