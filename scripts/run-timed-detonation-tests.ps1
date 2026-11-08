@@ -28,11 +28,11 @@ $run=@{
         'scripts/类定义/org/flashNight/arki/bullet/Factory/BulletFactory.as'
     )
     ExpectedTracePatterns=@(
-        '(?m)^TimedDetonationTest Tests Passed: 98\r?$',
+        '(?m)^TimedDetonationTest Tests Passed: 113\r?$',
         '(?m)^TimedDetonationTest Tests Failed: 0\r?$',
         '(?m)^BulletTargetFilterTest Tests Passed: 17\r?$',
         '(?m)^BulletTargetFilterTest Tests Failed: 0\r?$',
-        '(?m)^TimedDetonationAssetTest Tests Passed: 73\r?$',
+        '(?m)^TimedDetonationAssetTest Tests Passed: 82\r?$',
         '(?m)^TimedDetonationAssetTest Tests Failed: 0\r?$',
         '(?m)^TimedDetonationNativeCase timeout explosions=1 children=4\r?$',
         '(?m)^TimedDetonationNativeCase contact explosions=1 children=0\r?$',

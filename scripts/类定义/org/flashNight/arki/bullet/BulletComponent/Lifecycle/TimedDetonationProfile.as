@@ -2,11 +2,13 @@
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationProfile {
     public var timeoutMs:Number;
     public var explosion:Object;
+    public var timeoutExplosion:Object;
     public var scatter:Object;
 
-    public function TimedDetonationProfile(timeoutMs:Number, explosion:Object, scatter:Object) {
+    public function TimedDetonationProfile(timeoutMs:Number, explosion:Object, scatter:Object, timeoutExplosion:Object) {
         this.timeoutMs = timeoutMs;
         this.explosion = explosion;
+        this.timeoutExplosion = timeoutExplosion != null ? timeoutExplosion : explosion;
         this.scatter = scatter;
     }
 
@@ -28,18 +30,25 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationProfil
         var timeout:Number = Number(node.timeoutMs);
         var blast:Object = readExplosion(node.explosion);
         if (!(timeout > 0) || !isFinite(timeout) || blast == null) return null;
+        var timeoutBlast:Object = blast;
+        if (node.timeoutExplosion != undefined) {
+            timeoutBlast = readExplosion(node.timeoutExplosion);
+            if (timeoutBlast == null) return null;
+        }
         var scatter:Object = null;
         if (node.timeoutScatter != undefined) {
             var source:Object = node.timeoutScatter;
             var count:Number = Number(source.count);
             var fallSpeed:Number = Number(source.fallSpeed);
             var spread:Number = Number(source.spreadDegrees);
+            var launchAngle:Number = source.launchAngle != undefined ? Number(source.launchAngle) : 0;
             var childBlast:Object = readExplosion(source.explosion);
             if (typeof source.type != "string" || length(source.type) == 0
                 || !(count > 0) || count > 32 || count != Math.floor(count)
                 || !(fallSpeed > 0) || !isFinite(fallSpeed)
                 || !nonnegative(source.powerScale) || !nonnegative(spread)
-                || spread > 45 || childBlast == null) return null;
+                || spread > 45 || !isFinite(launchAngle)
+                || launchAngle <= -90 || launchAngle >= 90 || childBlast == null) return null;
             var landing:Object = null;
             if (source.landingSpread != undefined) {
                 var radiusX:Number = Number(source.landingSpread.radiusX);
@@ -50,8 +59,9 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationProfil
             }
             scatter = {type:String(source.type), count:count,
                 powerScale:Number(source.powerScale), fallSpeed:fallSpeed,
-                spreadDegrees:spread, landingSpread:landing, explosion:childBlast};
+                spreadDegrees:spread, launchAngle:launchAngle,
+                landingSpread:landing, explosion:childBlast};
         }
-        return new TimedDetonationProfile(timeout, blast, scatter);
+        return new TimedDetonationProfile(timeout, blast, scatter, timeoutBlast);
     }
 }

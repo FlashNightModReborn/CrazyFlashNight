@@ -65,7 +65,7 @@ def main(projectiles=False,chapter=False,firepower=False):
         if firepower:
             # The FM92 scatter now uses interceptable unit grenades. They attach
             # to gameWorld, so its native test host needs the shared RSL namespace.
-            for name in ('fm92刺弹炮弹','高压爆炸','火焰集束手雷爆炸'):
+            for name in ('fm92刺弹炮弹','高压爆炸','联弹爆炸','榴弹','火焰集束手雷爆炸'):
                 source=lookup[name].get('swf')
                 if not source or not (ROOT/source).is_file():
                     raise ValueError('Missing timed projectile source: '+name)

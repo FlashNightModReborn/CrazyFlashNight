@@ -45,6 +45,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationTest {
         _root.子弹区域shoot传递=record;_root.重力加速度=0.5;_root.暂停=false;
         var profile:TimedDetonationProfile=TimedDetonationProfile.fromXML(profileNode());
         check(profile.timeoutMs==1000 && profile.scatter.count==4,"profile parses timeout and count");
+        check(profile.timeoutExplosion===profile.explosion,"omitted timeoutExplosion falls back to explosion");
+        check(profile.scatter.launchAngle==0,"omitted launchAngle defaults to 0 downward");
         var xml:XML=new XML('<bullet><name>sample</name><attribute><timedDetonation><timeoutMs>125</timeoutMs><explosion><type>其他爆炸</type><powerScale>1</powerScale><fallbackPower>5</fallbackPower><zRange>12</zRange></explosion></timedDetonation></attribute></bullet>');
         xml.ignoreWhite=true;
         var loaded:Object=new AttributeLoader().load(XMLParser.parseXMLNode(xml.firstChild));
@@ -65,6 +67,18 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationTest {
         check(TimedDetonationProfile.fromXML(node)==null,"upward launch rejected");
         node=profileNode();node.explosion.type="";
         check(TimedDetonationProfile.fromXML(node)==null,"missing explosion type rejected");
+        node=profileNode();node.timeoutExplosion={type:"联弹爆炸",powerScale:0.7,fallbackPower:800,zRange:80};
+        var dualBlast:TimedDetonationProfile=TimedDetonationProfile.fromXML(node);
+        check(dualBlast.explosion.type=="高压爆炸" && dualBlast.timeoutExplosion.type=="联弹爆炸","explicit timeoutExplosion parses separately from impact explosion");
+        node=profileNode();node.timeoutExplosion={type:"",powerScale:0.7,fallbackPower:800,zRange:80};
+        check(TimedDetonationProfile.fromXML(node)==null,"invalid timeoutExplosion rejected");
+        node=profileNode();node.timeoutScatter.launchAngle=15;
+        check(TimedDetonationProfile.fromXML(node).scatter.launchAngle==15,"valid launchAngle parses");
+        var badAngles:Array=[-90,90,NaN,Infinity];
+        for(i=0;i<badAngles.length;i++) {
+            node=profileNode();node.timeoutScatter.launchAngle=badAngles[i];
+            check(TimedDetonationProfile.fromXML(node)==null,"invalid launchAngle rejected "+i);
+        }
 
         node=profileNode();node.timeoutScatter.fallSpeed=20;node.timeoutScatter.spreadDegrees=45;
         node.timeoutScatter.landingSpread={radiusX:240,radiusZ:40};
@@ -90,28 +104,33 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationTest {
             var sumX:Number=0,sumZ:Number=0;
             var flight:Number=TimedDetonation.landingFrames(heights[h],20,1);
             for(i=0;i<4;i++) {
-                var planned:Object=TimedDetonation.launchVelocity(i,4,footprint.scatter,heights[h],1,Math.random());
+                var planned:Object=TimedDetonation.launchVelocity(i,4,footprint.scatter,heights[h],1,Math.random(),1);
                 check(close(planned.x*flight,-240+160*i) && close(planned.z*flight,i%2==0?-40:40),"height-independent staggered landing point "+h+"/"+i);
                 check(planned.down==20 && planned.x*planned.x+planned.z*planned.z<=400.0001,"footprint preserves downward cone "+h+"/"+i);
                 sumX+=planned.x;sumZ+=planned.z;
             }
             check(close(sumX,0) && close(sumZ,0),"footprint is centered at airburst "+h);
         }
-        planned=TimedDetonation.launchVelocity(0,1,footprint.scatter,600,1,0);
+        planned=TimedDetonation.launchVelocity(0,1,footprint.scatter,600,1,0,1);
         check(planned.x==0 && planned.z==0 && planned.down==20,"single child uses centered downward path");
+        var angledScatter:Object={fallSpeed:20,spreadDegrees:30,launchAngle:30,landingSpread:{radiusX:240,radiusZ:40}};
+        var angledRight:Object=TimedDetonation.launchVelocity(0,1,angledScatter,600,1,0,1);
+        check(close(angledRight.x,10) && close(angledRight.down,20*Math.cos(Math.PI/6)),"positive launchAngle tilts downward velocity forward for right-facing shot");
+        var angledLeft:Object=TimedDetonation.launchVelocity(0,1,angledScatter,600,1,0,-1);
+        check(close(angledLeft.x,-10) && close(angledLeft.down,20*Math.cos(Math.PI/6)),"left-facing shot mirrors launchAngle horizontal component");
         sumX=sumZ=0;
-        for(i=0;i<3;i++){planned=TimedDetonation.launchVelocity(i,3,footprint.scatter,600,1,0);sumX+=planned.x;sumZ+=planned.z;}
+        for(i=0;i<3;i++){planned=TimedDetonation.launchVelocity(i,3,footprint.scatter,600,1,0,1);sumX+=planned.x;sumZ+=planned.z;}
         check(close(sumX,0) && close(sumZ,0),"odd child count retains centered footprint");
-        planned=TimedDetonation.launchVelocity(0,4,footprint.scatter,20,1,0);
+        planned=TimedDetonation.launchVelocity(0,4,footprint.scatter,20,1,0,1);
         check(planned.x*planned.x+planned.z*planned.z<=400.0001 && Math.abs(planned.x)<240,"low airburst contracts footprint inside downward cone");
-        planned=TimedDetonation.launchVelocity(0,4,profile.scatter,600,1,0.5);
+        planned=TimedDetonation.launchVelocity(0,4,profile.scatter,600,1,0.5,1);
         var legacy:Object=TimedDetonation.scatterVelocity(0,4,10,8,0.5);
         check(close(planned.x,legacy.x) && close(planned.z,legacy.z) && planned.down==legacy.down,"omitted footprint keeps legacy random cone");
         records=[];_root.重力加速度=1;
         for(i=0;i<4;i++) {
             var falling:Object=fixture();falling._x=0;falling._y=-600;
             TimedDetonation.bind(falling,new TimedDetonationProfile(0,footprint.scatter.explosion,null),
-                TimedDetonation.launchVelocity(i,4,footprint.scatter,600,1,0));
+                TimedDetonation.launchVelocity(i,4,footprint.scatter,600,1,0,1));
             for(var f:Number=0;f<21;f++)TimedDetonation.advanceScatter(falling);
             check(close(records[i].shootX,-240+160*i) && close(records[i].shootZ,i%2==0?-40:40)
                 && close(records[i].shootY,records[i].shootZ),"actual grenade movement lands at planned point "+i);
@@ -135,6 +154,13 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationTest {
         target.gotoAndPlay("消失");TimedDetonation.detonate(target);
         check(records.length==5,"repeat disappearance cannot duplicate blast or children");
         check(!TimedDetonation.bind(target,profile,null),"rebinding never replaces instance ledger");
+
+        records=[];target=fixture();TimedDetonation.bind(target,dualBlast,null);target.__timedDetonation.lastMs=0;
+        TimedDetonation.advanceClock(target,1000,false);target.shouldDestroy(target);target.gotoAndPlay("消失");
+        check(records[0].子弹种类=="联弹爆炸" && close(records[0].子弹威力,70),"timeout uses timeoutExplosion type while retaining parent damage");
+        records=[];target=fixture();TimedDetonation.bind(target,dualBlast,null);target.__timedDetonation.lastMs=0;
+        TimedDetonation.advanceClock(target,500,false);target.mapHit=true;target.shouldDestroy(target);target.gotoAndPlay("消失");
+        check(records.length==1 && records[0].子弹种类=="高压爆炸","impact within fuse uses explosion type instead of timeoutExplosion");
 
         records=[];target=arm();state=target.__timedDetonation;
         TimedDetonation.advanceClock(target,1000,false);target.mapHit=true;
@@ -172,11 +198,13 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationTest {
         }
         records=[];target=fixture();
         TimedDetonation.bind(target,new TimedDetonationProfile(0,profile.scatter.explosion,null),{x:1,z:2,down:10});
+        check(close(target._rotation,Math.atan2(12,1)*180/Math.PI),"scatter bind aligns child rotation to downward trajectory");
         target.area.onEnterFrame=function():Void{this.unwanted=true;};
         check(target.area.onEnterFrame==undefined,"late legacy gravity assignment is blocked");
         TimedDetonation.advanceScatter(target);
         check(close(target._x,21) && close(target.Z轴坐标,2) && close(target._y,-108),"downward movement separates ground depth and height");
         check(close(target.__timedDetonation.velocity.down,10.5),"gravity accelerates downwards");
+        check(close(target._rotation,Math.atan2(12.5,1)*180/Math.PI),"advanceScatter updates child rotation as gravity accelerates");
         target._y=target.Z轴坐标-1;TimedDetonation.advanceScatter(target);
         check(records.length==1 && records[0].子弹种类=="火焰集束手雷爆炸","child landing emits ordinary grenade blast without recursive scatter");
         records=[];target=arm();

@@ -64,6 +64,10 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonation {
             disableLegacyGravity(target);
             target.xmov = velocity.x;
             target.ymov = velocity.z + velocity.down;
+            target._rotation = Math.atan2(target.ymov, target.xmov) * (180 / Math.PI);
+            if (target.aabbCollider != null && target.area != null) {
+                target.aabbCollider.updateFromBullet(MovieClip(target), target.area);
+            }
             target.updateMovement = function(projectile:Object):Void {
                 TimedDetonation.advanceScatter(projectile);
             };
@@ -128,23 +132,38 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonation {
      * 可选落地区域：横向均匀排布、纵深交错，避免四角大间隙与随机聚团。
      * 根据高度和本次重力预测飞行帧数；低空时整体收缩到向下散角上限内。
      * 未声明 landingSpread 时保持旧圆锥采样，供其他弹药继续复用。
+     * launchAngle 默认为 0（正向下抛射）；非 0 时按飞行朝向偏转向下抛射基准轴。
      */
     public static function launchVelocity(index:Number, count:Number, scatter:Object,
-            height:Number, gravity:Number, sample:Number):Object {
+            height:Number, gravity:Number, sample:Number, direction:Number):Object {
         var landing:Object = scatter.landingSpread;
-        if (landing == null) return scatterVelocity(index, count, scatter.fallSpeed, scatter.spreadDegrees, sample);
-        var frames:Number = landingFrames(height, scatter.fallSpeed, gravity);
-        var x:Number = count > 1 ? landing.radiusX * (2 * index / (count - 1) - 1) / frames : 0;
-        var row:Number = count > 1 ? (index % 2 == 0 ? -1 : 1) : 0;
-        if (count % 2 != 0 && index == count - 1) row = 0;
-        var z:Number = landing.radiusZ * row / frames;
-        var planar:Number = Math.sqrt(x * x + z * z);
-        var limit:Number = scatter.fallSpeed * Math.tan(scatter.spreadDegrees * Math.PI / 180);
-        if (planar > limit) {
-            var scale:Number = limit / planar;
-            x *= scale;z *= scale;
+        var velocity:Object;
+        if (landing == null) {
+            velocity = scatterVelocity(index, count, scatter.fallSpeed, scatter.spreadDegrees, sample);
+        } else {
+            var frames:Number = landingFrames(height, scatter.fallSpeed, gravity);
+            var x:Number = count > 1 ? landing.radiusX * (2 * index / (count - 1) - 1) / frames : 0;
+            var row:Number = count > 1 ? (index % 2 == 0 ? -1 : 1) : 0;
+            if (count % 2 != 0 && index == count - 1) row = 0;
+            var z:Number = landing.radiusZ * row / frames;
+            var planar:Number = Math.sqrt(x * x + z * z);
+            var limit:Number = scatter.fallSpeed * Math.tan(scatter.spreadDegrees * Math.PI / 180);
+            if (planar > limit) {
+                var scale:Number = limit / planar;
+                x *= scale;z *= scale;
+            }
+            velocity = {x:x, z:z, down:scatter.fallSpeed};
         }
-        return {x:x, z:z, down:scatter.fallSpeed};
+        var angle:Number = Number(scatter.launchAngle);
+        if (angle != 0 && isFinite(angle)) {
+            var dir:Number = direction < 0 ? -1 : 1;
+            var rad:Number = dir * angle * Math.PI / 180;
+            var cos:Number = Math.cos(rad), sin:Number = Math.sin(rad);
+            var vx:Number = velocity.x, down:Number = velocity.down;
+            velocity.x = vx * cos + down * sin;
+            velocity.down = down * cos - vx * sin;
+        }
+        return velocity;
     }
 
     public static function advanceScatter(target:Object):Void {
@@ -157,6 +176,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonation {
         target._y += velocity.z + velocity.down;
         velocity.down += _root.重力加速度;
         target.ymov = velocity.z + velocity.down;
+        target._rotation = Math.atan2(target.ymov, velocity.x) * (180 / Math.PI);
         if (!(target._y < target.Z轴坐标)) {
             target._y = target.Z轴坐标;
             target.gotoAndPlay("消失");
@@ -190,6 +210,42 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonation {
         return projectile;
     }
 
+    /** 联弹爆炸等无自带 area 的爆炸素材补齐单帧透明碰撞盒与标准 AABB，保留父弹空爆伤害。 */
+    private static function bindBlastArea(blastClip:Object, zRange:Number):Void {
+        #include "../macros/FLAG_CHAIN.as"
+        if (blastClip == null || ((blastClip.flags | 0) & FLAG_CHAIN) == 0
+            || blastClip.area != null || typeof blastClip.createEmptyMovieClip != "function") return;
+        blastClip.flags &= ~FLAG_CHAIN;
+        var oldCollider:Object = blastClip.aabbCollider;
+        if (oldCollider != null) oldCollider.getFactory().releaseCollider(oldCollider);
+        var r:Number = zRange > 0 ? zRange : 80;
+        var area:MovieClip = blastClip.createEmptyMovieClip("area", 1);
+        area._alpha = 0;
+        area.beginFill(0x000000, 0);
+        area.moveTo(-r, -r);
+        area.lineTo(r, -r);
+        area.lineTo(r, r);
+        area.lineTo(-r, r);
+        area.endFill();
+        var factory:Object = org.flashNight.arki.component.Collider.ColliderFactoryRegistry.getFactory(
+            org.flashNight.arki.component.Collider.ColliderFactoryRegistry.AABBFactory);
+        blastClip.aabbCollider = factory.createFromBullet(MovieClip(blastClip), area);
+        var precheck:Function = blastClip.onEnterFrame;
+        blastClip.__blastSettled = false;
+        blastClip.onEnterFrame = function():Boolean {
+            if (_root.暂停) return false;
+            if (!this.__blastSettled) {
+                this.__blastSettled = true;
+                return precheck.call(this);
+            }
+            if (this.area != null) {
+                this.area.removeMovieClip();
+                delete this.area;
+            }
+            return precheck.call(this);
+        };
+    }
+
     /** 幂等账本先于任何派生发射；重入、重复消失、拦截和落地均不会重复出弹。 */
     public static function detonate(target:Object):Boolean {
         var state:Object = target.__timedDetonation;
@@ -202,18 +258,22 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonation {
         state.emitted = true;
         delete target.onEnterFrame;
         var profile:TimedDetonationProfile = state.profile;
-        var blast:Object = profile.explosion;
+        var blast:Object = (timedOut && profile.timeoutExplosion != null)
+            ? profile.timeoutExplosion : profile.explosion;
         var power:Number = Number(state.snapshot.子弹威力);
         var x:Number = target._x, y:Number = target._y, z:Number = target.Z轴坐标;
         var faction:Object = state.snapshot.是否为敌人;
         var blastPower:Number = power ? power * blast.powerScale : blast.fallbackPower;
-        emit(shot(state, blast.type, blastPower, blast.zRange, x, y, z, target), faction);
+        var blastClip:Object = emit(shot(state, blast.type, blastPower, blast.zRange, x, y, z, target), faction);
+        bindBlastArea(blastClip, blast.zRange);
         var scatter:Object = profile.scatter;
         if (timedOut && scatter != null) {
+            var direction:Number = target.xmov < 0 ? -1 : (target.xmov > 0 ? 1
+                : (_root.gameworld[state.snapshot.发射者].方向 == "左" ? -1 : 1));
             var childProfile:TimedDetonationProfile = new TimedDetonationProfile(0, scatter.explosion, null);
             for (var i:Number = 0; i < scatter.count; i++) {
                 var velocity:Object = launchVelocity(i, scatter.count, scatter,
-                    z - y, Number(_root.重力加速度), Math.random());
+                    z - y, Number(_root.重力加速度), Math.random(), direction);
                 var props:Object = shot(state, scatter.type, power * scatter.powerScale,
                     scatter.explosion.zRange, x, y, z, target);
                 props.速度X = velocity.x;
