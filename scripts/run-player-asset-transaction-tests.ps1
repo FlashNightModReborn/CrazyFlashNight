@@ -18,6 +18,9 @@ $testLoaderTemplatePath = Join-Path $projectRoot `
 $equipmentTuningPath = Join-Path $projectRoot `
     'scripts\类定义\org\flashNight\arki\item\EquipmentTuningService.as'
 $questPath = Join-Path $projectRoot 'scripts\通信\通信_鸡蛋_任务系统.as'
+$taskRewardPath = Join-Path $projectRoot 'scripts\类定义\org\flashNight\arki\task\TaskRewardCommit.as'
+$rewardStashPath = Join-Path $projectRoot 'scripts\类定义\org\flashNight\arki\item\RewardStashService.as'
+$npcExchangePath = Join-Path $projectRoot 'scripts\类定义\org\flashNight\arki\item\NpcItemExchangeService.as'
 $taskPanelPath = Join-Path $projectRoot `
     'scripts\类定义\org\flashNight\arki\task\TaskPanelService.as'
 $npcShopPath = Join-Path $projectRoot 'scripts\逻辑系统分区\商店系统_兼容.as'
@@ -172,20 +175,18 @@ if ($equipmentPublishCount -ne 6 -or
 # 冻结所有生产 begin 调用者。新增显式 frame 必须先在这里声明其异常结算合同，
 # 避免“正常路径能 commit、异常路径遗留栈顶”的调用点静默增长。
 $productionBeginContracts = @(
-    @{ Name = 'quest'; Path = $questPath; ExpectedBeginCount = 1; RequiredTokens = @(
-        'catch (finishTaskAssetError)', 'settleAfterException(',
-        'ItemUtil.capturePlayerAssetSnapshot()',
-        'ItemUtil.restorePlayerAssetSnapshot(',
-        'var reversibleRewardItems:Array = [];',
-        'var progressRewardPlan:Object = progressRewardItems.length > 0',
-        'PlayerAssetTransaction.markAuthorityWrite(',
-        '_root.提交任务完成状态(taskID, taskData.chain);',
-        'restoreTaskClaimState', 'catch (levelProjectionError)',
-        'catch (nextTaskProjectionError)',
-        'catch (taskCompletionProjectionError)',
-        'catch (turnInMessageError)', 'catch (rewardSoundError)',
-        'catch (overflowMessageError)', 'catch (taskProjectionError)',
-        'catch (dialogueProjectionError)') },
+    @{ Name = 'reward-stash'; Path = $rewardStashPath; ExpectedBeginCount = 1; RequiredTokens = @(
+        'SaveManager.getInstance().beginRewardCommit(', 'PlayerAssetTransaction.begin(context)',
+        'ItemUtil.capturePlayerAssetSnapshot()', 'ItemUtil.restorePlayerAssetSnapshot(',
+        'PlayerAssetTransaction.markDirtyRequired(', 'PlayerAssetTransaction.parkForDurable(',
+        'PlayerAssetTransaction.finishDurable(p.transaction, true)',
+        'PlayerAssetTransaction.finishDurable(p.transaction, false)',
+        'finally { _pending = null; }') },
+    @{ Name = 'npc-exchange'; Path = $npcExchangePath; ExpectedBeginCount = 3; RequiredTokens = @(
+        'catch (beginError)', 'PlayerAssetTransaction.markDirtyRequired(',
+        'PlayerAssetTransaction.rollback(transaction)', 'PlayerAssetTransaction.commit(transaction)',
+        'PlayerAssetTransaction.recordEffect("loss", "intel"',
+        'PlayerAssetTransaction.recordEffect("loss", "equip"') },
     @{ Name = 'npc-shop'; Path = $npcShopPath; ExpectedBeginCount = 3; RequiredTokens = @(
         'catch (buyAssetError)', 'catch (batchSaleError)', 'catch (tradeAssetError)',
         'settleAfterException(', 'catch (buyMetricError)',
@@ -242,7 +243,7 @@ $productionBeginContracts = @(
         'return acquireExact;', 'return submitExact;') },
     @{ Name = 'drug'; Path = $drugPath; ExpectedBeginCount = 2; RequiredTokens = @(
         'catch (useError)', 'PlayerAssetTransaction.settleAfterException(',
-        'inventory.setIndexes(null)', 'catch (exhaustedMessageError)') },
+        'inventory.rebuildIndexes()', 'catch (exhaustedMessageError)') },
     @{ Name = 'pet'; Path = $petPath; ExpectedBeginCount = 7; RequiredTokens = @(
         'catch (adoptError)', 'catch (advanceError)', 'catch (expandError)',
         'catch (restoreError)', 'catch (levelError)',
@@ -311,8 +312,8 @@ foreach ($contract in $productionBeginContracts) {
         }
     }
 }
-if ($auditedProductionBeginCount -ne 26) {
-    throw "生产 PlayerAssetTransaction.begin 审计总数漂移: $auditedProductionBeginCount/26"
+if ($auditedProductionBeginCount -ne 29) {
+    throw "生产 PlayerAssetTransaction.begin 审计总数漂移: $auditedProductionBeginCount/29"
 }
 $expectedProductionBeginPaths = @($productionBeginContracts | ForEach-Object {
     [System.IO.Path]::GetFullPath($_.Path).Substring($projectRoot.Length + 1).Replace('\', '/')
@@ -334,7 +335,7 @@ if ($productionBeginPathDrift.Count -gt 0) {
         (($productionBeginPathDrift | Out-String).Trim()))
 }
 
-# 23 个直接持有领域 authority 的显式 caller 必须在首写前 fail-fast 标脏；
+# 25 个直接持有领域 authority 的显式 caller 必须在首写前 fail-fast 标脏；
 # preserve=true catch 的 receipt 已由逐写 finally 固化，因此异常清理必须先 settle，
 # 不能再让 dirty/receipt/索引修复异常把 frame 留给下一事务。装备调制仅投影已提交
 # receipt，不在本清单；制作拥有 exact snapshot，保留 restore -> finally settle(false)。
@@ -369,9 +370,15 @@ if ($itemUtilRequiredDirtyCount -ne 4 -or
 }
 
 $directAuthorityContracts = @(
-    @{ Name='quest'; Path=$questPath; Start='_root.FinishTask = function';
-        End='_root.FinishStage = function'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
-        FirstWrite='org.flashNight.arki.item.ItemUtil.submit('; Catch='finishTaskAssetError'; DirtyExact=1 },
+    @{ Name='npc-exchange-money'; Path=$npcExchangePath; Start='private static function takeMoney(';
+        End='private static function takeOrdinary('; Dirty='PlayerAssetTransaction.markDirtyRequired(';
+        FirstWrite='_root.金钱 = before - quantity;'; Catch=$null; DirtyExact=1 },
+    @{ Name='npc-exchange-intel'; Path=$npcExchangePath; Start='private static function takeInformation(';
+        End='private static function takeEquipment('; Dirty='PlayerAssetTransaction.markDirtyRequired(';
+        FirstWrite='intel.addValue(name, -quantity);'; Catch=$null; DirtyExact=1 },
+    @{ Name='npc-exchange-equipment'; Path=$npcExchangePath; Start='private static function takeEquipment(';
+        End='private static function collectOrdinary('; Dirty='PlayerAssetTransaction.markDirtyRequired(';
+        FirstWrite='bag.remove(pickedKey);'; Catch=$null; DirtyExact=1 },
     @{ Name='achievement'; Path=$achievementPath; Start='public static function handleClaim';
         End='private static function claimResp'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='ItemUtil.acquireReward('; Catch='claimAssetError'; DirtyExact=1 },
@@ -470,7 +477,7 @@ foreach ($contract in $directAuthorityContracts) {
         if ($settleIndex -lt 0) {
             throw "direct-authority catch 未结算 frame: $($contract.Name)"
         }
-        foreach ($riskyToken in @('dirtyMark', 'recordCurrencyDeltas(', 'setIndexes(')) {
+        foreach ($riskyToken in @('dirtyMark', 'recordCurrencyDeltas(', 'setIndexes(', 'rebuildIndexes(')) {
             $riskyIndex = $catchBody.IndexOf($riskyToken)
             if ($riskyIndex -ge 0 -and $riskyIndex -lt $settleIndex) {
                 throw "direct-authority catch 在 settle 前执行可抛清理: $($contract.Name) -> $riskyToken"
@@ -478,37 +485,42 @@ foreach ($contract in $directAuthorityContracts) {
         }
     }
 }
-if ($directAuthorityContracts.Count -ne 23) {
-    throw "direct-authority caller 审计清单漂移: $($directAuthorityContracts.Count)/23"
+if ($directAuthorityContracts.Count -ne 25) {
+    throw "direct-authority caller 审计清单漂移: $($directAuthorityContracts.Count)/25"
 }
-if ($auditedDirectDirtyCount -ne 23) {
-    throw "direct-authority central dirty 调用清单漂移: $auditedDirectDirtyCount/23"
+if ($auditedDirectDirtyCount -ne 25) {
+    throw "direct-authority central dirty 调用清单漂移: $auditedDirectDirtyCount/25"
 }
 
-# Quest 多资源完成必须先交付、再写可恢复奖励、最后写进度/完成状态；升级
-# 回调只能位于 commit 之后。任何顺序回退都会重新打开少扣交付物或丢奖励窗口。
-$questFinalityRegion = Get-PlayerAssetRegion -Path $questPath `
+# Quest 已迁到 durable reward candidate。入口只能委托，不能再次开启 legacy frame。
+$questFacade = Get-PlayerAssetRegion -Path $questPath `
     -StartToken '_root.FinishTask = function' -EndToken '_root.FinishStage = function'
-$questSubmitIndex = $questFinalityRegion.IndexOf(
-    'org.flashNight.arki.item.ItemUtil.submit(')
-$questAcquireIndex = $questFinalityRegion.IndexOf(
-    'org.flashNight.arki.item.ItemUtil.acquire(')
-$questExperienceIndex = $questFinalityRegion.IndexOf(
-    '_root.经验值 += experienceReward;')
-$questCompleteIndex = $questFinalityRegion.IndexOf(
-    '_root.提交任务完成状态(taskID, taskData.chain);')
-$questCommitIndex = $questFinalityRegion.IndexOf(
-    'PlayerAssetTransaction.commit(assetTransaction);')
-$questLevelProjectionIndex = $questFinalityRegion.IndexOf(
-    '_root.主角是否升级(_root.等级, _root.经验值);')
-if ($questSubmitIndex -lt 0 -or $questAcquireIndex -le $questSubmitIndex -or
-        $questExperienceIndex -le $questAcquireIndex -or
-        $questCompleteIndex -le $questExperienceIndex -or
-        $questCommitIndex -le $questCompleteIndex -or
-        $questLevelProjectionIndex -le $questCommitIndex -or
-        $questFinalityRegion.Contains('ItemUtil.acquireReward(') -or
-        $questFinalityRegion.Contains('PlayerAssetTransaction.hasAuthorityWrite(')) {
-    throw 'Quest exact finality 顺序漂移：必须 submit -> reversible acquire -> progress -> completion -> commit -> guarded level reconciliation'
+if (([regex]::Matches($questFacade, 'TaskRewardCommit\.finish\(')).Count -ne 1 -or
+        $questFacade.Contains('PlayerAssetTransaction.begin(')) {
+    throw 'Quest façade 必须只委托 TaskRewardCommit，不能重建旧事务'
+}
+$questFinalityRegion = Get-PlayerAssetRegion -Path $taskRewardPath `
+    -StartToken 'public static function finish(' -EndToken 'private static function applyGrowth('
+$questOrder = @('RewardStashService.begin(', 'ItemUtil.submit(', 'ItemUtil.planRewardAcquire(',
+    '_root.经验值 += Number(growth.经验值);', 'if (!applyGrowth())',
+    '_root.提交任务完成状态(taskId, taskData.chain);', 'RewardStashService.end(')
+$questPrevious = -1
+foreach ($token in $questOrder) {
+    $position = $questFinalityRegion.IndexOf($token)
+    if ($position -le $questPrevious) { throw "Quest durable finality 顺序漂移: $token" }
+    $questPrevious = $position
+}
+$stashBegin = Get-PlayerAssetRegion -Path $rewardStashPath `
+    -StartToken 'public static function begin(' -EndToken 'public static function end('
+# Root 上的候选投影可回滚；真实提交的 owner 是 SaveManager reward candidate。
+$stashOrder = @('assets:ItemUtil.capturePlayerAssetSnapshot()',
+    'SaveManager.getInstance().beginRewardCommit(', 'PlayerAssetTransaction.begin(context)',
+    '_root._saveExt = candidateExt;', 'PlayerAssetTransaction.markDirtyRequired(')
+$stashPrevious = -1
+foreach ($token in $stashOrder) {
+    $position = $stashBegin.IndexOf($token)
+    if ($position -le $stashPrevious) { throw "Reward candidate owner/snapshot 顺序漂移: $token" }
+    $stashPrevious = $position
 }
 
 # 战宠升级阈值函数属于可扩展旧 UI 回调，必须在 begin/dirty/扣石之前完成。
@@ -680,11 +692,19 @@ $focusedRun = @{
         'scripts\通信\通信_鸡蛋_任务系统.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^PlayerAssetTransactionTest Tests Passed: 124\r?$'
+        '(?m)^PlayerAssetTransactionTest Tests Passed: 108\r?$'
         '(?m)^PlayerAssetTransactionTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'PlayerAssetTransactionTest 124/124'
+    SuccessSummary = 'PlayerAssetTransaction core 108/108; Quest durable finality follows in RewardStash 137/137'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }
 & $commonRunner @focusedRun
+
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+if (-not $SkipCompile) {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'run-reward-stash-tests.ps1') -TimeoutSeconds $TimeoutSeconds
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'run-npc-item-exchange-tests.ps1') -TimeoutSeconds $TimeoutSeconds
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}

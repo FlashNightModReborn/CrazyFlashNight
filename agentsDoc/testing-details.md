@@ -878,11 +878,11 @@ warlord 另跑包内 Node/Edge harness、`run-minigame-qa --game warlord` 与 pa
 
 ### 玩家物资异常安全门
 
-`scripts/run-player-asset-transaction-tests.ps1` 现役门槛为 **124/124**（机器钉死：`ExpectedTracePatterns` 钉 `PlayerAssetTransactionTest Tests Passed: 124`；
-文本中 117/117 为 2026-08-23 旧值、113/113 为更早值，见归档），静态门另冻结 production begin 与 direct-authority caller 精确集合（文本记录为 26/22，待核：以 runner 静态门当前断言为准），并必须得到 fresh trace/output/errors、Compiler **0/0**、32K retry **0**；`-SkipCompile` 只证明静态合同。
+`scripts/run-player-asset-transaction-tests.ps1` 依次验证事务核心 **108/108**、现役奖励暂存/任务 durable candidate **137/137** 和 NPC 物资交互 **67/67**，各 suite 取得 fresh trace/output/errors、Compiler **0/0**、32K retry **0**；`-SkipCompile` 只证明静态合同。
+旧 124 项中的 16 项 Quest 断言使用已退役的同步 throw/rollback 完成链，现由 `RewardStashServiceTest` 覆盖任务候选、pending、实例栅栏与 durable 后可选投影；任务面板提交后投影失败的两项断言保留并携带现役 instanceToken。静态门冻结 29 个 production begin、25 个直接 dirty owner，并单独验证 reward candidate 的 snapshot/owner/完成顺序。
 runner 静态禁止 XFL 直连事务类，校验 asLoader 提供十个 `_root` 玩家物资门面（含异常结算、强制 dirty 与通用资产 snapshot/restore），冻结 production begin 精确集合，其中区分 direct-authority caller 与 XFL facade begin。AVM1 对 undefined owner 的成员赋值可能静默，已枚举 authority 首写必须经 `PlayerAssetTransaction.markDirtyRequired(saveOwner)` 显式验证、写入并读回 dirty；
 focused TestLoader 必须真实 `#include` 任务系统脚本，不能把 AdditionalAs 的 BOM 检查冒充 Quest 动态执行。`ItemUtil.acquire/submit` 必须以 raw before/after 判定请求是否完整兑现，receipt 才按请求 ownership budget 截断；同步监听器造成少发、错槽、over-acquire/over-remove 时返回 false，由现役复合领域 exact snapshot 恢复，不能用 capped receipt 反证成功。
-Quest 固定 submit 交付物→可恢复奖励→经 `require` 聚合校验的 XP/SP→任务完成→commit→guarded 升级投影顺序；任何 false/throw 恢复资产、任务、进度与 dirty，下一任务独立成功。`TaskPanelService` 在 `FinishTask=true` 后只把任务列表当可降级投影；构建异常仍回 `success:true + refreshDeferred:true`，下一 snapshot 独立恢复，禁止把已提交奖励变成永久 busy/未知重放。
+Quest façade 只委托 `TaskRewardCommit`：reward candidate begin→submit 交付物→规划/暂存奖励→经 `require` 校验的 XP/SP 与必然成长→任务完成→durable end→guarded 可选投影。确定未提交的候选恢复快照；已暴露但结果未确认的 pending 保持同 operation 与任务实例，重试不能重复 grant。`TaskPanelService` 在 `FinishTask=true` 后只把任务列表当可降级投影；构建异常仍回 `success:true + refreshDeferred:true`，下一 snapshot 独立恢复，禁止把已提交奖励变成永久 busy/未知重放。
 成就领取保留首写前 claimed one-shot，首次已提交回包异常被隔离，下一 callId 仍以既有 `already_claimed + overlay` 收敛且不重复发奖。生产 direct caller 另由 `DrugInputServiceTest`、`ManagedLongGunServiceTest`、NPC、KShop、Crafting、EquipmentTuning、Inventory 各 focused suite 覆盖（现役钉值见 [领域 suite](#domain-suites)）；
 Crafting 的 procurementPlans 与资产/dirty 同快照，submit=false 的 partial/over-remove 也必须 restore 后 settle(false)。另须运行 `node tools/test-panel-contracts.js`（机器钉值 7 domains / 42 commands）。奖励物品界面的单项按钮只能委托父时间轴共享 `领取单项`，单项/一键都采用 assets+XP+奖励列表 snapshot、dirty-before-one-shot、false/throw exact restore；
 平板基建采用 assets+等级 snapshot，先复原领域等级再返还玩家资产。两个独立 XFL 分别 direct publish/VerifySwf，asLoader 另跑 publish；commit 后的埋点、音效、提示、UI/场景重建、响应与 Achievement overlay/stringify/socket 均须隔离。
