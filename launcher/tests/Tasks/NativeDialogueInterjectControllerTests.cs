@@ -2576,23 +2576,29 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void TaskModeNeverQueriesOrSendsPlayerItemNames()
+        public void TaskModeAlsoCarriesPlayerItemNamesAndCountsFromBridgeSnapshot()
         {
+            // 任务插话物品往来与日常共用同一份持有快照；不做 daily-only 门控。
             var bridge = new FakeItemBridge();
+            bridge.ItemCounts["苹果"] = 3;
+            bridge.EquipmentNames.Add("M4A1");
             using var h = new Harness(itemExchange: bridge.Task);
             EnableTaskContext(h);
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
 
-            Assert.Equal(0, bridge.RequestCount("npcItemSummary"));
-            Assert.Empty(h.Controller.PlayerItemNamesForTest);
-            Assert.Empty(h.Controller.PlayerItemCountsForTest);
+            Assert.Equal(1, bridge.RequestCount("npcItemSummary"));
+            Assert.Equal(new[] { "苹果", "铁剑", "M4A1" }, h.Controller.PlayerItemNamesForTest);
+            Assert.Equal(100, h.Controller.PlayerItemCountsForTest["金币"]);
 
             h.Transport.Script(AddLine("嗯。", 0) + Done());
             Assert.True(h.Controller.Submit("你好"));
             JObject request = JObject.Parse(h.Transport.LastRequest);
             Assert.Equal("task", request.Value<string>("mode"));
-            Assert.Null(request["player_item_names"]);
-            Assert.Null(request["player_item_counts"]);
+            Assert.Equal(new[] { "苹果", "铁剑", "M4A1" },
+                request["player_item_names"].Values<string>());
+            Assert.Equal(3, request["player_item_counts"].Value<int>("苹果"));
+            Assert.Equal(1, request["player_item_counts"].Value<int>("M4A1"));
+            Assert.Equal(100, request["player_item_counts"].Value<int>("金币"));
         }
 
         [Fact]

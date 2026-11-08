@@ -932,13 +932,13 @@ namespace CF7Launcher.Tasks
                 }
             };
             if (action != null) request["action"] = action;
-            if (!_taskMode && _playerItemNames != null)
+            if (_playerItemNames != null)
             {
                 var names = new JArray();
                 for (int i = 0; i < _playerItemNames.Count; i++) names.Add(_playerItemNames[i]);
                 request["player_item_names"] = names;
             }
-            if (!_taskMode && _playerItemCounts != null)
+            if (_playerItemCounts != null)
             {
                 var counts = new JObject();
                 foreach (var pair in _playerItemCounts) counts[pair.Key] = pair.Value;
@@ -2759,10 +2759,11 @@ namespace CF7Launcher.Tasks
             RaiseItemClaim(null);
         }
 
-        /// <summary>刷新玩家持有名快照：只给后端索取池用，不代表数量、不进台词。</summary>
+        /// <summary>刷新玩家持有名快照：日常与任务共用的同一份持有快照，只给后端索取池用，
+        /// 不代表数量、不进台词。</summary>
         private void RefreshPlayerItemNames()
         {
-            if (_itemExchange == null || _taskMode || _session == null) return;
+            if (_itemExchange == null || _session == null) return;
             int generation = ++_playerNamesGeneration;
             TaskRunner(async () =>
             {
