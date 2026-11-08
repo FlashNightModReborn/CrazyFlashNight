@@ -1181,7 +1181,7 @@ worldview_block
 2. 所有未完委托概览
 3. 长期记忆 format_block
 4. 物品往来账本（daily/task）
-5. 本组赠送明细 → 最近往来 → 待处理索取（仅 daily，有值才给）
+5. 本组赠送明细 → 最近往来 → 待处理索取（日常/任务共用，有值才给）
 6. 检索到的设定资料
 7. 本组已播历史对话 render_played（含玩家本轮插话）
 8. 原剩余台词 render_remaining（日常无编号参考；任务带原编号）
@@ -1207,7 +1207,7 @@ worldview_block
 | 日常插话普通 | 有，8 kind | 有 | E/O/F 插话形态 | draft（原发布闸）、赠送/索取（原条件）、委派（原闸） |
 | 日常插话有草案 | 有，8 kind | 有，草案独立 | E/O/F 插话形态 | draft/confirm/cancel/update（原闸）；无赠送/索取；委派原闸 |
 | 日常插话有物品 claim | 有，8 kind | 有，不能因 claim 提前返回而丢掉 | E/O/F 插话形态 | 只取消当前索取；不加任务或委派 |
-| 任务前插话 | 有，8 kind | 有，另保留当前 task_context | E/O/F 插话形态 | 无任务类工具、无物品工具、无委派 |
+| 任务前插话 | 有，8 kind | 有，另保留当前 task_context | E/O/F 插话形态 | 无任务类工具、无委派；物品工具按 give_take/claim/result 状态注册 |
 | 任务后插话 | 有，8 kind | 有，已完成事实与当前 task_context 均保留 | E/O/F 插话形态 | 同任务前 |
 | 所有 tool-free 最终回复 | 无工具表、无可用工具描述 | 有事实块；无要求调用的尾句 | 不下发工具，记忆事实保留 | 不描述任务/物品/委派调用；已执行结果可保留 |
 | SearchRunner | 仅文本查询适配器；不递归 deep | 按主轮必要资料供给，不新增写权限 | 无 | raw 或 summary 直接结束 |
