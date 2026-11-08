@@ -15,6 +15,8 @@ class org.flashNight.gesh.json.LoadJson.TaskOverlayLoader {
     public static var TASK_FILE:String = "agent_tasks.json";
     public static var TEXT_FILE:String = "agent_text.json";
     public static var TEXT_OVERRIDE_FILE:String = "task_text_overrides.json";
+    // 任务前插话临时新增奖励：按 task id 的字段级增量，不是整条任务覆盖。
+    public static var REWARD_OVERRIDE_FILE:String = "task_reward_overrides.json";
 
     /**
      * 解析当前存档的覆盖层文件相对路径；无存档或槽位形态非法时返回 null。

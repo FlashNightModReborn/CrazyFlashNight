@@ -20,7 +20,8 @@ namespace CF7Launcher.Data
         public string Digest => MapDefinition.Hash(MapDefinition.Utf8.GetBytes(string.Join("\n", SourceBytes.OrderBy(p => p.Key, StringComparer.Ordinal).Select(p => p.Key + " " + MapDefinition.Hash(p.Value)))));
 
         public static MapTaskCatalog Load(string root, IReadOnlyDictionary<string, byte[]> overrides = null,
-            IReadOnlyList<string> extraTaskSources = null, IReadOnlyList<string> extraTextSources = null)
+            IReadOnlyList<string> extraTaskSources = null, IReadOnlyList<string> extraTextSources = null,
+            string rewardOverrideSource = null)
         {
             var catalog = new MapTaskCatalog();
             const string infrastructureFile = "data/infrastructure/infrastructure.xml";
@@ -94,7 +95,33 @@ namespace CF7Launcher.Data
             }
             foreach (string file in extraTaskSources ?? (IReadOnlyList<string>)Array.Empty<string>()) ReadExtra(file, false);
             foreach (string file in extraTextSources ?? (IReadOnlyList<string>)Array.Empty<string>()) ReadExtra(file, true);
+            if (!string.IsNullOrEmpty(rewardOverrideSource)) ApplyRewardOverride(root, overrides, catalog, rewardOverrideSource);
             return catalog;
+        }
+
+        /// <summary>任务前插话临时新增奖励覆盖层：只把 extra_rewards 追加到已存在任务的 rewards，
+        /// 不做整条任务覆盖。文件字节进 SourceBytes，于是 ChangedSources 会把它作为变化源通知 AS2。
+        /// 文件缺失＝该存档无增量；存在但形状非法＝整次加载失败，调用方保留旧内容。</summary>
+        private static void ApplyRewardOverride(string root, IReadOnlyDictionary<string, byte[]> overrides,
+            MapTaskCatalog catalog, string file)
+        {
+            byte[] replacement = null;
+            bool hasOverride = overrides != null && overrides.TryGetValue(file, out replacement);
+            if (!hasOverride && !File.Exists(MapProjectFiles.Resolve(root, file))) return;
+            MapRuleEvaluator.Need(!catalog.SourceBytes.ContainsKey(file), "任务目录重复引用源文件。");
+            byte[] bytes = hasOverride ? replacement : MapProjectFiles.Read(root, file);
+            catalog.SourceBytes[file] = bytes;
+            JObject document = MapProjectFiles.Json(bytes);
+            foreach (JProperty property in document.Properties())
+            {
+                JObject entry = property.Value as JObject;
+                MapRuleEvaluator.Need(entry != null && entry["extra_rewards"] is JArray extra
+                    && extra.Count > 0 && extra.Count <= TaskRewardOverrideStore.MaxExtraRewards,
+                    "奖励覆盖层条目不合法：" + property.Name);
+                JObject task = catalog.Tasks[property.Name] as JObject;
+                if (task == null) continue;  // 未知任务 id 静默跳过：按存档隔离，不阻断启动。
+                TaskRewardOverrideStore.AppendExtraRewards(task, entry);
+            }
         }
         private static bool LegacyAgentSourceMissing(string root, string file)
         {
@@ -116,6 +143,8 @@ namespace CF7Launcher.Data
         /// <summary>任务文本覆盖层（G4-7）：后端按存档写出的 key 级整份覆盖。必须排在 agent_text.json 之后读取，
         /// 同 key 后写赢；这个顺序是覆盖语义的唯一保证。</summary>
         public static string AgentSaveTextOverrideSource(string slotKey) => "data/rag/agent_saves/" + slotKey + "/task_text_overrides.json";
+        /// <summary>任务前插话临时新增奖励覆盖层（与 AS2 TaskOverlayLoader.REWARD_OVERRIDE_FILE 同名）。</summary>
+        public static string AgentSaveRewardOverrideSource(string slotKey) => TaskRewardOverrideStore.SourceFor(slotKey);
         /// <summary>逐文件比对任务源字节，返回变化清单（含 list.xml 与基建目录）。热重载据此只让游戏侧重读真正变化的文件。</summary>
         public static List<string> ChangedSources(MapTaskCatalog before, MapTaskCatalog after)
         {

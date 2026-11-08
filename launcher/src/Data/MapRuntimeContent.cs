@@ -66,7 +66,8 @@ namespace CF7Launcher.Data
                     {
                         MapTaskCatalog.AgentSaveTextSource(slotKey),
                         MapTaskCatalog.AgentSaveTextOverrideSource(slotKey)
-                    });
+                    },
+                    MapTaskCatalog.AgentSaveRewardOverrideSource(slotKey));
             catalog.ValidateBindings(Definition);
             return new MapRuntimeContent(this, catalog);
         }

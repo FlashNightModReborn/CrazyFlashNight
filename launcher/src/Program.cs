@@ -2887,7 +2887,11 @@ class Program
             Newtonsoft.Json.Linq.JObject save;
             string error;
             if (!archiveTask.TryLoadShadowSync(slot, out save, out error)) return null;
-            return CF7Launcher.Tasks.DialogueTaskContext.Build(content.Catalog, save, taskId, kind);
+            // 任务前插话的临时新增奖励落在按存档覆盖层：每组装一次上下文就从磁盘重读任务目录，
+            // 避免进程内 Catalog 缓存沿用旧 rewards，与 AS2 TaskRewardCommit 实时读到的覆盖层同源。
+            // 只用重读出来的 Catalog 做上下文，不替换 mapDomainTask.Content，不换投影会话。
+            CF7Launcher.Data.MapTaskCatalog catalog = content.ReloadTasks(projectRoot, slot).Catalog;
+            return CF7Launcher.Tasks.DialogueTaskContext.Build(catalog, save, taskId, kind);
         };
         nativeDialogueTask.LoadPortraitWithRect = dialoguePortraits.LoadPortrait;
         nativeDialogueTask.PrefetchPortrait = dialoguePortraits.PrefetchPortrait;
@@ -2967,7 +2971,9 @@ class Program
                 },
                 ensureBound: playerName => ragTerminalService.EnsureInterjectBindingAsync(playerName),
                 itemExchange: npcItemExchangeTask,
-                pushToClient: data => socketServer.IsClientReady && socketServer.TrySend(data));
+                pushToClient: data => socketServer.IsClientReady && socketServer.TrySend(data),
+                rewardOverrides: new CF7Launcher.Data.TaskRewardOverrideStore(
+                    projectRoot, () => CF7Launcher.RagTerminal.AgentSaveContext.CurrentSlotKey));
             var interjectController = dialogueInterject;
             // 终端就绪态变化（含自动拉起后的后台补探）：把停在“请先启动聊天终端”的输入条即时重算。
             ragTerminalService.ReadyChanged += delegate

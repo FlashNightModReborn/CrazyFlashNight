@@ -170,15 +170,51 @@ class org.flashNight.gesh.json.LoadJson.TaskDataLoader extends BaseXMLLoader {
         var self:TaskDataLoader = this;
         var base:Array = this.baseData;
         var overlayPath:String = TaskOverlayLoader.resolvePath(TaskOverlayLoader.TASK_FILE);
-        if (overlayPath == null) {
+        var rewardPath:String = TaskOverlayLoader.resolvePath(TaskOverlayLoader.REWARD_OVERRIDE_FILE);
+        if (overlayPath == null || rewardPath == null) {
             this.combinedData = base;
             if (onDone != null) onDone();
             return;
         }
         TaskOverlayLoader.load(overlayPath, function(overlay:Object):Void {
-            self.combinedData = (overlay == null) ? base : self.mergeOverlayTasks(base, overlay);
-            if (onDone != null) onDone();
+            var merged:Array = (overlay == null) ? base : self.mergeOverlayTasks(base, overlay);
+            TaskOverlayLoader.load(rewardPath, function(rewardOverlay:Object):Void {
+                self.combinedData = (rewardOverlay == null) ? merged
+                    : self.applyRewardOverrides(merged, rewardOverlay);
+                if (onDone != null) onDone();
+            });
         });
+    }
+
+    /**
+     * 任务前插话临时新增奖励：按 task id 把 extra_rewards 追加到该任务 rewards，原有奖励不动。
+     * 每次都基于未修改的 baseData 生成新对象，避免覆盖层重复重应用时把同一批奖励叠加多次。
+     * 最多两条由覆盖层写入侧保证，这里再截一次作为防御。
+     */
+    private function applyRewardOverrides(baseArr:Array, overlay:Object):Array {
+        var result:Array = [];
+        for (var i:Number = 0; i < baseArr.length; i++) {
+            var task:Object = baseArr[i];
+            var entry:Object = overlay[String(task.id)];
+            if (entry == null || !(entry.extra_rewards instanceof Array)
+                    || entry.extra_rewards.length == 0) {
+                result.push(task);
+                continue;
+            }
+            var combined:Array = [];
+            if (task.rewards instanceof Array) {
+                for (var r:Number = 0; r < task.rewards.length; r++) combined.push(task.rewards[r]);
+            }
+            var limit:Number = entry.extra_rewards.length < 2 ? entry.extra_rewards.length : 2;
+            for (var e:Number = 0; e < limit; e++) {
+                var extra = entry.extra_rewards[e];
+                if (typeof extra == "string" && extra.length > 0) combined.push(extra);
+            }
+            var copy:Object = ObjectUtil.cloneFast(task);
+            copy.rewards = combined;
+            result.push(copy);
+        }
+        return result;
     }
 
     /** 基础任务数组叠加覆盖层：同一 id 视为覆盖，存档条目优先生效并追加在末尾。 */

@@ -77,6 +77,16 @@ _root.重新加载任务数据 = function(onSuccess:Function, onError:Function, 
     }
 };
 
+// 任务前插话临时新增奖励：Host 写完按存档覆盖层后经 gameCommand 通知本侧重读该覆盖层。
+// 只传变化文件清单，reloadFiles 由 TaskOverlayLoader.isOverlayPath 判定并重应用覆盖层，
+// tryFinish 会重新 ParseTaskData，于是 TaskRewardCommit 结算读到含新增奖励的同一份数据。
+if (_root.gameCommands == undefined) _root.gameCommands = {};
+_root.gameCommands["taskRewardOverrideChanged"] = function(params:Object):Void {
+    var files:Array = null;
+    if (params != null && params.changedFiles instanceof Array) files = params.changedFiles;
+    _root.重新加载任务数据(null, null, files, true);
+};
+
 // ExternalInterface：若宿主（浏览器/部分壳）对 SWF 暴露了 JS 桥，外部可 call("reloadTaskData") 触发重新加载；独立播放器常不可用。
 if (flash.external.ExternalInterface.available) {
     flash.external.ExternalInterface.addCallback("reloadTaskData", _root, _root.重新加载任务数据);

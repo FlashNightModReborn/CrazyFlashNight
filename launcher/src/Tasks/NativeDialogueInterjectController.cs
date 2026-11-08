@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using CF7Launcher.Data;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud.Dialogue;
 using CF7Launcher.RagTerminal;
@@ -188,6 +189,12 @@ namespace CF7Launcher.Tasks
         private bool _itemDecisionBusy;
         /// <summary>已执行过的发放 action_id：SSE 重发不得二次发放。</summary>
         private readonly HashSet<string> _executedGrants = new HashSet<string>(StringComparer.Ordinal);
+
+        // ── 任务前插话临时新增奖励（P7）──
+        /// <summary>按存档覆盖层的唯一写入点；null = 未接线，动作按不可用回执。</summary>
+        private readonly TaskRewardOverrideStore _rewardOverrides;
+        /// <summary>已处理过的奖励调整 action_id：SSE 重发不得二次写盘。</summary>
+        private readonly HashSet<string> _executedRewardAdjusts = new HashSet<string>(StringComparer.Ordinal);
         /// <summary>本组玩家可索取物品名快照（只用于后端索取池）。</summary>
         private List<string> _playerItemNames;
         /// <summary>本组玩家持有数量快照（含金币），只用于索取回复轮的持有提示。</summary>
@@ -314,7 +321,8 @@ namespace CF7Launcher.Tasks
             Func<Task<bool>> llmConfigured = null,
             Func<string, Task> ensureBound = null,
             NpcItemExchangeTask itemExchange = null,
-            Func<string, bool> pushToClient = null)
+            Func<string, bool> pushToClient = null,
+            TaskRewardOverrideStore rewardOverrides = null)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
             _widget = widget ?? throw new ArgumentNullException(nameof(widget));
@@ -328,6 +336,7 @@ namespace CF7Launcher.Tasks
             _llmConfigured = llmConfigured;
             _itemExchange = itemExchange;
             _pushToClient = pushToClient;
+            _rewardOverrides = rewardOverrides;
         }
 
         internal DialogueInterjectInputState InputState { get { return _inputState; } }
@@ -1272,7 +1281,10 @@ namespace CF7Launcher.Tasks
                     AcceptPlan(evt);
                     break;
                 case DialogueInterjectEventKind.Action:
-                    AcceptItemGrantAction(evt);
+                    if (string.Equals(evt.Text("kind"), "task_reward_adjust", StringComparison.Ordinal))
+                        AcceptTaskRewardAdjustAction(evt);
+                    else
+                        AcceptItemGrantAction(evt);
                     break;
                 case DialogueInterjectEventKind.ItemClaim:
                     AcceptItemClaim(evt);
@@ -2521,6 +2533,95 @@ namespace CF7Launcher.Tasks
                         _headlessItemActionId = null;
                 }
             });
+        }
+
+        /// <summary>
+        /// 任务前插话「临时新增奖励」：只在 task_pre 且 task_id 与本组 upcoming 一致时接受，
+        /// 按 task_id 覆盖式写入按存档覆盖层，写成功才回 success；同 action_id 不重放。
+        /// 额度公式权威在后端工具，Host 只做归属与结构硬校验，额度依据原样入覆盖层供审计。
+        /// </summary>
+        private void AcceptTaskRewardAdjustAction(DialogueInterjectEvent evt)
+        {
+            string actionId = evt.Text("action_id");
+            if (actionId.Length == 0) return;
+            lock (_executedRewardAdjusts)
+            {
+                if (_executedRewardAdjusts.Contains(actionId)) return;
+                _executedRewardAdjusts.Add(actionId);
+            }
+
+            string expectedTaskId = "";
+            if (_taskMode && _session != null
+                && string.Equals(_session.DialogueKind, KindTaskPre, StringComparison.Ordinal)
+                && _taskContext != null)
+            {
+                JObject upcoming = _taskContext["upcoming"] as JObject;
+                if (upcoming != null) expectedTaskId = TaskIdText(upcoming["task_id"]);
+            }
+
+            JObject entry = null;
+            string error = "";
+            if (expectedTaskId.Length == 0) error = "not_task_pre";
+            else entry = TaskRewardOverrideStore.Normalize(evt.Data, expectedTaskId, out error);
+            if (entry == null)
+            {
+                PostActionResult(actionId, FailureAck(actionId, error));
+                return;
+            }
+            if (_rewardOverrides == null)
+            {
+                PostActionResult(actionId, FailureAck(actionId, "host_unavailable"));
+                return;
+            }
+
+            string relativePath;
+            bool written = _rewardOverrides.TryApply(entry, out relativePath, out error);
+            if (!written)
+            {
+                LogManager.Log("[DialogueInterject] reward adjust rejected action=" + actionId
+                    + " error=" + error);
+                PostActionResult(actionId, FailureAck(actionId, error));
+                return;
+            }
+
+            // 覆盖层已落盘：通知 AS2 按变化源重读，TaskDataLoader.applyOverlay 会把新增奖励
+            // 并进 TaskUtil.tasks，TaskRewardCommit 结算时实时读到。推送失败只记日志，
+            // 不解除已写入的事实，也不重放 action。
+            if (!string.IsNullOrEmpty(relativePath) && _pushToClient != null)
+            {
+                var command = new JObject
+                {
+                    ["task"] = "cmd",
+                    ["action"] = "taskRewardOverrideChanged",
+                    ["changedFiles"] = new JArray(relativePath)
+                };
+                try { _pushToClient(command.ToString(Formatting.None) + "\0"); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[DialogueInterject] reward adjust reload push failed: " + ex.Message);
+                }
+            }
+            LogManager.Log("[DialogueInterject] reward adjust applied action=" + actionId
+                + " task=" + expectedTaskId);
+            PostActionResult(actionId, new JObject { ["action_id"] = actionId, ["success"] = true });
+        }
+
+        private static JObject FailureAck(string actionId, string error)
+        {
+            return new JObject
+            {
+                ["action_id"] = actionId,
+                ["success"] = false,
+                ["error"] = string.IsNullOrEmpty(error) ? "reward_adjust_failed" : error
+            };
+        }
+
+        private static string TaskIdText(JToken token)
+        {
+            if (token == null) return "";
+            if (token.Type == JTokenType.Integer)
+                return token.Value<long>().ToString(CultureInfo.InvariantCulture);
+            return token.Type == JTokenType.String ? ((string)token).Trim() : "";
         }
 
         /// <summary>SSE action：item_grant 必须真实发放并回执，不得只播台词。</summary>

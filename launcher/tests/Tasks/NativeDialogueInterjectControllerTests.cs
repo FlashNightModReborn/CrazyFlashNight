@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CF7Launcher.Data;
 using CF7Launcher.Guardian.Hud.Dialogue;
 using CF7Launcher.RagTerminal;
 using CF7Launcher.Tasks;
@@ -278,7 +279,8 @@ namespace CF7Launcher.Tests.Tasks
 
             internal Harness(bool inline = true, Func<Task<bool>> ensureReady = null,
                 Func<Task<bool>> llmConfigured = null, bool terminalReady = true,
-                Func<string, Task> ensureBound = null, NpcItemExchangeTask itemExchange = null)
+                Func<string, Task> ensureBound = null, NpcItemExchangeTask itemExchange = null,
+                TaskRewardOverrideStore rewardOverrides = null)
             {
                 TerminalReady = terminalReady;
                 Anchor = new Control { Size = new Size(1024, 576) };
@@ -301,7 +303,8 @@ namespace CF7Launcher.Tests.Tasks
                     {
                         Pushed.Add(data);
                         return PushSuccess;
-                    });
+                    },
+                    rewardOverrides: rewardOverrides);
                 Controller.WatchdogScheduler = (delay, callback) =>
                 {
                     WatchdogDelays.Add(delay);
@@ -3102,6 +3105,285 @@ namespace CF7Launcher.Tests.Tasks
             JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
             Assert.False(ack.Value<bool>("success"));
             Assert.Equal("host_unavailable", ack.Value<string>("error"));
+        }
+
+        // ── 任务前插话临时新增奖励（功能二） ────────────────────────────────────
+
+        private const string RewardOverlayRelative =
+            "data/rag/agent_saves/slot-1/task_reward_overrides.json";
+
+        private static string NewRewardRoot()
+        {
+            string root = Path.Combine(Path.GetTempPath(),
+                "cf7-reward-test-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(root);
+            return root;
+        }
+
+        private static TaskRewardOverrideStore RewardStore(string root, string slot = "slot-1") =>
+            new TaskRewardOverrideStore(root, () => slot);
+
+        private static string RewardOverlayPath(string root) =>
+            Path.Combine(root, RewardOverlayRelative.Replace('/', Path.DirectorySeparatorChar));
+
+        private static void TryDeleteRoot(string root)
+        {
+            try { if (Directory.Exists(root)) Directory.Delete(root, true); }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+        }
+
+        /// <summary>逐字照后端 §26.2 的 action 载荷；中文额度字段名不写字母别名。</summary>
+        private static string RewardAction(string actionId, string taskId, string extraJson,
+            int cap = 99000, string basisJson = null)
+        {
+            if (basisJson == null)
+                basisJson = "{\"任务类型\":\"传话\",\"阶段\":3,\"好感度\":60,"
+                    + "\"好感度系数\":1.1,\"阶段基础上限\":30000,\"讨价还价放大倍数\":1.0}";
+            return "{\"action_id\":\"" + actionId + "\",\"kind\":\"task_reward_adjust\","
+                + "\"task_id\":" + taskId + ",\"extra_rewards\":" + extraJson
+                + ",\"额度上限\":" + cap.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                + ",\"额度依据\":" + basisJson + "}";
+        }
+
+        private static void FeedRewardAdjust(NativeDialogueInterjectController controller, string payload) =>
+            controller.OnEvent(Evt(DialogueInterjectEventKind.Action, payload));
+
+        [Fact]
+        public void RewardAdjustWritesOverlayPushesReloadAndAcksOnce()
+        {
+            string root = NewRewardRoot();
+            try
+            {
+                using var h = new Harness(rewardOverrides: RewardStore(root));
+                EnableTaskContext(h);
+                h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+
+                DialogueInterjectEvent adjust = Evt(DialogueInterjectEventKind.Action,
+                    RewardAction("r1", "200124", "[\"金币#500\",\"普通hp药剂#2\"]"));
+                h.Controller.OnEvent(adjust);
+                h.Controller.OnEvent(adjust);   // SSE 重发不得二次写盘/二次回执
+
+                Assert.Single(h.Transport.ActionResults);
+                JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+                Assert.Equal("r1", ack.Value<string>("action_id"));
+                Assert.True(ack.Value<bool>("success"));
+
+                string path = RewardOverlayPath(root);
+                Assert.True(File.Exists(path));
+                JObject overlay = JObject.Parse(File.ReadAllText(path));
+                JObject entry = (JObject)overlay["200124"];
+                Assert.Equal(new[] { "金币#500", "普通hp药剂#2" }, entry["extra_rewards"].Values<string>());
+                Assert.Equal(99000, entry.Value<int>("额度上限"));
+                Assert.Equal("传话", entry["额度依据"].Value<string>("任务类型"));
+                Assert.Equal("r1", entry.Value<string>("action_id"));
+
+                Assert.Single(h.Pushed);
+                JObject command = JObject.Parse(h.Pushed[0].TrimEnd('\0'));
+                Assert.Equal("cmd", command.Value<string>("task"));
+                Assert.Equal("taskRewardOverrideChanged", command.Value<string>("action"));
+                Assert.Equal(new[] { RewardOverlayRelative }, command["changedFiles"].Values<string>());
+            }
+            finally { TryDeleteRoot(root); }
+        }
+
+        [Fact]
+        public void RewardAdjustRejectsTaskIdOutsideCurrentUpcoming()
+        {
+            string root = NewRewardRoot();
+            try
+            {
+                using var h = new Harness(rewardOverrides: RewardStore(root));
+                EnableTaskContext(h);
+                h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+
+                FeedRewardAdjust(h.Controller, RewardAction("r2", "999999", "[\"金币#500\"]"));
+
+                Assert.Single(h.Transport.ActionResults);
+                JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+                Assert.False(ack.Value<bool>("success"));
+                Assert.Equal("malformed_action", ack.Value<string>("error"));
+                Assert.False(File.Exists(RewardOverlayPath(root)));
+                Assert.Empty(h.Pushed);
+            }
+            finally { TryDeleteRoot(root); }
+        }
+
+        [Theory]
+        [InlineData(null, "ordinary")]
+        [InlineData("task_post", "ordinary")]
+        public void RewardAdjustRejectsOutsideTaskPre(string dialogueKind, string mode)
+        {
+            string root = NewRewardRoot();
+            try
+            {
+                using var h = new Harness(rewardOverrides: RewardStore(root));
+                EnableTaskContext(h);
+                if (dialogueKind == null) h.AdoptBookInMode(7, mode, null, "又是你。");
+                else h.AdoptTaskBook(7, dialogueKind, "200124", "你来了。");
+
+                FeedRewardAdjust(h.Controller, RewardAction("r3", "200124", "[\"金币#500\"]"));
+
+                Assert.Single(h.Transport.ActionResults);
+                JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+                Assert.False(ack.Value<bool>("success"));
+                Assert.Equal("not_task_pre", ack.Value<string>("error"));
+                Assert.False(File.Exists(RewardOverlayPath(root)));
+                Assert.Empty(h.Pushed);
+            }
+            finally { TryDeleteRoot(root); }
+        }
+
+        [Theory]
+        [InlineData("[]", "invalid_extra_rewards")]
+        [InlineData("[\"金币#1\",\"金币#2\",\"金币#3\"]", "invalid_extra_rewards")]
+        [InlineData("[\"金币\"]", "invalid_extra_rewards")]
+        [InlineData("[\"金币#0\"]", "invalid_extra_rewards")]
+        [InlineData("[\"金币#1#2\"]", "invalid_extra_rewards")]
+        [InlineData("[1]", "invalid_extra_rewards")]
+        public void RewardAdjustRejectsMalformedExtraRewards(string extraJson, string error)
+        {
+            string root = NewRewardRoot();
+            try
+            {
+                using var h = new Harness(rewardOverrides: RewardStore(root));
+                EnableTaskContext(h);
+                h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+
+                FeedRewardAdjust(h.Controller, RewardAction("r4", "200124", extraJson));
+
+                Assert.Single(h.Transport.ActionResults);
+                JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+                Assert.False(ack.Value<bool>("success"));
+                Assert.Equal(error, ack.Value<string>("error"));
+                Assert.False(File.Exists(RewardOverlayPath(root)));
+            }
+            finally { TryDeleteRoot(root); }
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void RewardAdjustRejectsInvalidCap(int cap)
+        {
+            string root = NewRewardRoot();
+            try
+            {
+                using var h = new Harness(rewardOverrides: RewardStore(root));
+                EnableTaskContext(h);
+                h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+
+                FeedRewardAdjust(h.Controller, RewardAction("r5", "200124", "[\"金币#500\"]", cap));
+
+                JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+                Assert.False(ack.Value<bool>("success"));
+                Assert.Equal("invalid_cap", ack.Value<string>("error"));
+            }
+            finally { TryDeleteRoot(root); }
+        }
+
+        [Fact]
+        public void RewardAdjustWithoutStoreAcksHostUnavailable()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+
+            FeedRewardAdjust(h.Controller, RewardAction("r6", "200124", "[\"金币#500\"]"));
+
+            JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+            Assert.False(ack.Value<bool>("success"));
+            Assert.Equal("host_unavailable", ack.Value<string>("error"));
+            Assert.Empty(h.Pushed);
+        }
+
+        [Fact]
+        public void RewardAdjustWithoutSlotAcksNoSlot()
+        {
+            string root = NewRewardRoot();
+            try
+            {
+                using var h = new Harness(rewardOverrides: RewardStore(root, null));
+                EnableTaskContext(h);
+                h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+
+                FeedRewardAdjust(h.Controller, RewardAction("r7", "200124", "[\"金币#500\"]"));
+
+                JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+                Assert.False(ack.Value<bool>("success"));
+                Assert.Equal("no_slot", ack.Value<string>("error"));
+                Assert.Empty(h.Pushed);
+            }
+            finally { TryDeleteRoot(root); }
+        }
+
+        [Fact]
+        public void RewardAdjustOverwritesSameTaskInsteadOfAccumulating()
+        {
+            string root = NewRewardRoot();
+            try
+            {
+                using var h = new Harness(rewardOverrides: RewardStore(root));
+                EnableTaskContext(h);
+                h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+
+                FeedRewardAdjust(h.Controller, RewardAction("r8a", "200124", "[\"金币#500\"]"));
+                FeedRewardAdjust(h.Controller, RewardAction("r8b", "200124", "[\"经验值#10\"]"));
+
+                JObject overlay = JObject.Parse(File.ReadAllText(RewardOverlayPath(root)));
+                Assert.Single(overlay.Properties());
+                JObject entry = (JObject)overlay["200124"];
+                Assert.Equal(new[] { "经验值#10" }, entry["extra_rewards"].Values<string>());
+                Assert.Equal("r8b", entry.Value<string>("action_id"));
+                Assert.Equal(2, h.Transport.ActionResults.Count);
+                Assert.Equal(2, h.Pushed.Count);
+            }
+            finally { TryDeleteRoot(root); }
+        }
+
+        [Fact]
+        public void RewardAdjustKeepsWrittenFactWhenReloadPushFails()
+        {
+            string root = NewRewardRoot();
+            try
+            {
+                using var h = new Harness(rewardOverrides: RewardStore(root));
+                EnableTaskContext(h);
+                h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+                h.PushSuccess = false;
+
+                FeedRewardAdjust(h.Controller, RewardAction("r9", "200124", "[\"金币#500\"]"));
+
+                JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+                Assert.True(ack.Value<bool>("success"));   // 已落盘就是成功，不因推送失败回滚/重放
+                Assert.True(File.Exists(RewardOverlayPath(root)));
+                Assert.Single(h.Pushed);
+            }
+            finally { TryDeleteRoot(root); }
+        }
+
+        [Fact]
+        public void RewardAdjustRejectsCorruptExistingOverlay()
+        {
+            string root = NewRewardRoot();
+            try
+            {
+                using var h = new Harness(rewardOverrides: RewardStore(root));
+                EnableTaskContext(h);
+                h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+                string path = RewardOverlayPath(root);
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                File.WriteAllText(path, "{\"200124\":", new UTF8Encoding(false));
+
+                FeedRewardAdjust(h.Controller, RewardAction("r10", "200124", "[\"金币#500\"]"));
+
+                JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+                Assert.False(ack.Value<bool>("success"));
+                Assert.Equal("overlay_corrupt", ack.Value<string>("error"));
+                Assert.Equal("{\"200124\":", File.ReadAllText(path));   // fail-closed，绝不覆盖旧文件
+                Assert.Empty(h.Pushed);
+            }
+            finally { TryDeleteRoot(root); }
         }
 
     }

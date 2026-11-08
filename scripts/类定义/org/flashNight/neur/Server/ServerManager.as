@@ -837,6 +837,9 @@ class org.flashNight.neur.Server.ServerManager {
                 && action != "ragChatUnavailable"
                 // 只读可用性通知，不参与奖励事务，奖励未决时也不能丢。
                 && action != "ragTerminalAvailable"
+                // 任务前插话临时新增奖励：覆盖层已由 Host 落盘，这里只按变化源重读任务定义，
+                // 不写库存/奖励账本；奖励候选未决时也不能丢，否则结算会读不到已生效的增量。
+                && action != "taskRewardOverrideChanged"
                 && action != "itemUseInboxSnapshot" && action != "itemUseCooldownSnapshot") {
             trace("[GameCmd] reward candidate pending: " + action);
             return;
