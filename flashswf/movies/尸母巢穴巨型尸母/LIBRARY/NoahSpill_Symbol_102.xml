@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NoahSpill_Symbol_102" symbolType="graphic" lastModified="1702098593">
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="NoahSpill_Symbol_102" symbolType="graphic" lastModified="1702098593">
   <timeline>
     <DOMTimeline name="NoahSpill_Symbol_102">
       <layers>
@@ -9,12 +9,21 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#A6CD3E"/>
+                      <SolidColor color="#C8FF4A" />
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!9254 817|9211 854!9211 854[9308 764 9294 561!9294 561|9308 585!9308 585[9360 710 9254 817!8742 260[8343 153 7680 31!7680 31[8276 105 8742 260!4976 1500|4127 1497!4127 1497|4535 1469!4535 1469[4829 1448 6042 1451!6042 1451[5762 1496 4976  1500!746 27|1254 -14!1254 -14|375 84!375 84[451 67 746 27!1409 1198[696 1087 148 926!148 926[-168 833 -326 727!-326 727[-75 841 569 1003!569 1003[1173 1154 1409 1198"/>
+                    <Edge fillStyle1="1" edges="!9254 817|9211 854!9211 854[9308 764 9294 561!9294 561|9308 585!9308 585[9360 710 9254 817!8742 260[8343 153 7680 31!7680 31[8276 105 8742 260!4976 1500|4127 1497!4127 1497|4535 1469!4535 1469[4829 1448 6042 1451!6042 1451[5762 1496 4976  1500!746 27|1254 -14!1254 -14|375 84!375 84[451 67 746 27!1409 1198[696 1087 148 926!148 926[-168 833 -326 727!-326 727[-75 841 569 1003!569 1003[1173 1154 1409 1198" strokeStyle="1" />
                   </edges>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="1">
+                        <fill>
+                          <SolidColor color="#121E04" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
                 </DOMShape>
               </elements>
             </DOMFrame>

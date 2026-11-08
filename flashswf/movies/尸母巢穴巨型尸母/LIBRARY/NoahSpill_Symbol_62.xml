@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NoahSpill_Symbol_62" symbolType="graphic" lastModified="1702098593">
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="NoahSpill_Symbol_62" symbolType="graphic" lastModified="1702098593">
   <timeline>
     <DOMTimeline name="NoahSpill_Symbol_62">
       <layers>
@@ -9,12 +9,21 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#A6CD3E"/>
+                      <SolidColor color="#C8FF4A" />
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!7903 409[8472 724 7261 907!7261 907[6050 1089 5088 1089!5088 1089[3688 1089 2241 846!2241 846[792 602 881 437!881 437[970 272 1707 141!1707 141[817 491 1944 620!1944 620[2625 760 3322 796!3322 796|4770 892!4770 892[5525 945 6681 890 !6681 890[8281 643 7306 218!7306 218[7770 336 7903 409"/>
+                    <Edge fillStyle1="1" edges="!7903 409[8472 724 7261 907!7261 907[6050 1089 5088 1089!5088 1089[3688 1089 2241 846!2241 846[792 602 881 437!881 437[970 272 1707 141!1707 141[817 491 1944 620!1944 620[2625 760 3322 796!3322 796|4770 892!4770 892[5525 945 6681 890 !6681 890[8281 643 7306 218!7306 218[7770 336 7903 409" strokeStyle="1" />
                   </edges>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="1">
+                        <fill>
+                          <SolidColor color="#121E04" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
                 </DOMShape>
               </elements>
             </DOMFrame>

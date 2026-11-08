@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NoahSpill_Symbol_99" symbolType="graphic" lastModified="1702098593">
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="NoahSpill_Symbol_99" symbolType="graphic" lastModified="1702098593">
   <timeline>
     <DOMTimeline name="NoahSpill_Symbol_99">
       <layers>
@@ -9,12 +9,21 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#A6CD3E"/>
+                      <SolidColor color="#C8FF4A" />
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!9126 477[9207 530 9226 577!9226 577[9278 700 9174 806!9174 806[9088 892 8873 981!8873 981[9187 835 9208 595!9208 595[9213 538 9126 477!8991 402[8614 233 7587 31!7587 31[8216 110 8695 282!8695 282[8872 345 8991 402!4943 1444[4172 1447  3721 1433!3721 1433|4332 1385!4332 1385[4684 1346 6281 1383!6281 1383[5711 1441 4943 1444!264 118|678 50!678 50[935 13 1350 -6!1350 -6|167 148!167 148[108 149 264 118!216 893[-232 760 -356 598!-356 598[-289 637 -132 707!-132 707[95 809  1036 1037!1036 1037[1589 1170 1968 1240!1968 1240|1497 1168!1497 1168[770 1057 216 893"/>
+                    <Edge fillStyle1="1" edges="!9126 477[9207 530 9226 577!9226 577[9278 700 9174 806!9174 806[9088 892 8873 981!8873 981[9187 835 9208 595!9208 595[9213 538 9126 477!8991 402[8614 233 7587 31!7587 31[8216 110 8695 282!8695 282[8872 345 8991 402!4943 1444[4172 1447  3721 1433!3721 1433|4332 1385!4332 1385[4684 1346 6281 1383!6281 1383[5711 1441 4943 1444!264 118|678 50!678 50[935 13 1350 -6!1350 -6|167 148!167 148[108 149 264 118!216 893[-232 760 -356 598!-356 598[-289 637 -132 707!-132 707[95 809  1036 1037!1036 1037[1589 1170 1968 1240!1968 1240|1497 1168!1497 1168[770 1057 216 893" strokeStyle="1" />
                   </edges>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="1">
+                        <fill>
+                          <SolidColor color="#121E04" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
                 </DOMShape>
               </elements>
             </DOMFrame>

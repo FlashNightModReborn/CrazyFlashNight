@@ -2,6 +2,110 @@
   <timeline>
     <DOMTimeline name="Noah_chainUpperPiece">
       <layers>
+        <DOMLayer name="断链金属茬口" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666" />
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#000000" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-104 2120|-116 2360[-116 2500 -10 2540|30 2460[-44 2420 -40 2320|-36 2120|-104 2120" fillStyle0="1" strokeStyle="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#888888" />
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#000000" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!44 2120|56 2300[64 2420 144 2500|184 2420[120 2360 116 2260|108 2120|44 2120" fillStyle0="1" strokeStyle="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E1EAEF" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-10 2540|44 2500|30 2440|-24 2480|-10 2540" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!144 2500|196 2440|170 2380|124 2440|144 2500" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#888888" />
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="0.8" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#000000" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-160 2620|-100 2680|-60 2580|-160 2620" fillStyle0="1" strokeStyle="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC" />
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="0.8" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#000000" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!120 2640|180 2700|220 2600|120 2640" fillStyle0="1" strokeStyle="1" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="链段截取" color="#7FAA22" layerType="mask" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -9,24 +113,24 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#000000"/>
+                      <SolidColor color="#000000" />
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-1000 0|1000 0|1000 2216|-1000 2216|-1000 0"/>
+                    <Edge fillStyle1="1" edges="!-1000 0|1000 0|1000 2216|-1000 2216|-1000 0" />
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原链上段" color="#7FAA22" parentLayerIndex="0">
+        <DOMLayer name="原链上段" color="#7FAA22" parentLayerIndex="1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="锁链 长">
                   <matrix>
-                    <Matrix a="1" d="-1" tx="-5.9" ty="148.8"/>
+                    <Matrix a="1" d="-1" tx="-5.9" ty="148.8" />
                   </matrix>
                 </DOMSymbolInstance>
               </elements>

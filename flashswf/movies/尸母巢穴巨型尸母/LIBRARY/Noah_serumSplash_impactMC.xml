@@ -1,0 +1,250 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Noah_serumSplash_impactMC">
+  <timeline>
+    <DOMTimeline name="Noah_serumSplash_impactMC">
+      <layers>
+        <DOMLayer name="时钟控制" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements />
+            </DOMFrame>
+            <DOMFrame index="14" duration="1" keyMode="9728">
+              <elements />
+              <Actionscript>
+                <script>stop();</script>
+              </Actionscript>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="皇冠飞溅序列" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_55" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.72" b="0" c="0" d="0.85" tx="-166.482" ty="-11.05375" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_56" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.676274889" b="0.071079355" c="0.0857133399" d="0.815507954" tx="-21.996861" ty="-175.55641" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_56" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.96" b="0" c="0" d="1.12" tx="-8.232" ty="-243.632" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1B7A8E" />
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.2" scaleMode="normal" caps="none" joints="round">
+                        <fill>
+                          <SolidColor color="#061C24" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-560 280|720 240[640 -480 840 -1320[560 -920 320 -440[160 -1280 80 -1920[-40 -1840 -160 -1360[-280 -360 -560 280" fillStyle0="1" strokeStyle="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#88FAFF" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-320 280|240 240[80 -1040 -40 -1640[-160 -400 -320 280" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#F2FFFF" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-840 240[-400 400 0 400[360 400 880 240[400 40 0 -560[-400 40 -840 240" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_62" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.78" b="0" c="0" d="0.92" tx="-171.288" ty="-12.29" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_55" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.48" b="0" c="0" d="0.58" tx="-110.988" ty="-3.0955" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_92" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.310494632" b="-0.0774150066" c="-0.0822534445" d="0.329900547" tx="-7.23198571" ty="-58.8242326" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_88" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.323359216" b="-0.105065778" c="0.111246118" d="0.342380346" tx="-1.40566427" ty="-61.9802144" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_63" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.45" b="0" c="0" d="0.52" tx="-3.4925" ty="-93.024" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_56" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.68" b="0" c="0" d="0.58" tx="-14.081" ty="-117.488" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#F2FFFF" alpha="0.85" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!680 240[679 207 627 178[574 149 481 127[388 105 265 93[142 80 0 80[-142 80 -265 93[-388 105 -481 127[-574 149 -627 178[-679 207 -680 240[-679 273 -627 302[-574 331 -481 353[-388 375 -265 387[-142 400 0 400[142 400 265 387[388 375 481 353[574 331 627 302[679 273 680 240" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_73" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.7" b="0" c="0" d="0.88" tx="-153.265" ty="-10.688" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_62" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.52" b="0" c="0" d="0.65" tx="-114.192" ty="-4.9875" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_101" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.344682714" b="-0.0607768622" c="-0.0590403804" d="0.334834636" tx="-29.2697756" ty="-59.3960636" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_97" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.356496505" b="-0.0501023163" c="0.0487105853" d="0.346593824" tx="36.108747" ty="-63.7927444" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_63" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.47" b="0" c="0" d="0.35" tx="1.8255" ty="-53.42" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_69" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.42" b="0" c="0" d="0.48" tx="10.851" ty="-74.928" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_89" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.67" b="0" c="0" d="0.84" tx="-147.91925" ty="-10.98" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_79" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.48" b="0" c="0" d="0.62" tx="-105.768" ty="-4.553" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_108" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.318247007" b="0.0334491082" c="0.0292679697" d="0.278466131" tx="-60.2022914" ty="-43.1073665" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_105" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.318247007" b="0.0334491082" c="-0.0292679697" d="0.278466131" tx="62.2966939" ty="-41.9590945" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NoahSerumSpill_Symbol_74" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.39" b="0" c="0" d="0.45" tx="17.0675" ty="-63.9475" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

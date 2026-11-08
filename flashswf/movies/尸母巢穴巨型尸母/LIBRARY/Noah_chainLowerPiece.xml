@@ -2,6 +2,72 @@
   <timeline>
     <DOMTimeline name="Noah_chainLowerPiece">
       <layers>
+        <DOMLayer name="断链金属茬口" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666" />
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#000000" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!24 80|84 80|80 -120[76 -220 150 -260|110 -340[12 -300 12 -160|24 80" fillStyle0="1" strokeStyle="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#888888" />
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#000000" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!164 80|228 80|236 -60[240 -160 304 -220|264 -300[184 -220 176 -100|164 80" fillStyle0="1" strokeStyle="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E1EAEF" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!110 -340|96 -280|150 -240|164 -300|110 -340" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!264 -300|244 -240|290 -180|316 -240|264 -300" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="链段截取" color="#7FAA22" layerType="mask" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -9,24 +75,24 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#000000"/>
+                      <SolidColor color="#000000" />
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-1000 -20|1000 -20|1000 760|-1000 760|-1000 -20"/>
+                    <Edge fillStyle1="1" edges="!-1000 -20|1000 -20|1000 760|-1000 760|-1000 -20" />
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原链下段" color="#7FAA22" parentLayerIndex="0">
+        <DOMLayer name="原链下段" color="#7FAA22" parentLayerIndex="1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="锁链 长">
                   <matrix>
-                    <Matrix/>
+                    <Matrix />
                   </matrix>
                 </DOMSymbolInstance>
               </elements>

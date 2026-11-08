@@ -1,46 +1,128 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#000000" width="650" height="350" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="63.2009559306251" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
-     <symbols>
-          <Include href="Symbol 6.xml" itemIcon="1" loadImmediate="false" itemID="6796622a-00000233" lastModified="1738342295"/>
-          <Include href="Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="6796622a-00000237" lastModified="1727496594"/>
-          <Include href="Symbol 15.xml" itemIcon="1" loadImmediate="false" itemID="6796622a-0000023c" lastModified="1727496594"/>
-          <Include href="Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6796622a-0000023d" lastModified="1727496594"/>
-          <Include href="巨型尸母 上颚.xml" itemIcon="1" loadImmediate="false" itemID="67986281-00000124" lastModified="1738342622"/>
-          <Include href="巨型尸母 身体.xml" itemIcon="1" loadImmediate="false" itemID="679ba25e-000001f0" lastModified="1738343373"/>
-          <Include href="巨型尸母 下颚.xml" itemIcon="1" loadImmediate="false" itemID="679862a0-00000129" lastModified="1738342632"/>
-          <Include href="巨型尸母动画 登场.xml" loadImmediate="false" itemID="679bb360-00000338" lastModified="1738259181"/>
-          <Include href="巨型尸母动画 空闲.xml" loadImmediate="false" itemID="679bbb15-00000453" lastModified="1738259511"/>
-          <Include href="巨型尸母动画 喷吐.xml" loadImmediate="false" itemID="679bbb25-00000465" lastModified="1738260275"/>
-          <Include href="巨型尸母上颚张开.xml" itemIcon="1" loadImmediate="false" itemID="6798844b-00000126" lastModified="1738049630"/>
-          <Include href="锁链.xml" itemIcon="1" loadImmediate="false" itemID="679ba354-0000020b" lastModified="1738253140"/>
-          <Include href="锁链 长.xml" itemIcon="1" loadImmediate="false" itemID="679ba3cb-00000227" lastModified="1738256199"/>
-          <Include href="锁链组合1.xml" itemIcon="1" loadImmediate="false" itemID="679ba456-00000250" lastModified="1738256218"/>
-          <Include href="锁链组合1-1.xml" itemIcon="1" loadImmediate="false" itemID="679bb3f3-0000036a" lastModified="1738257396"/>
-          <Include href="锁链组合1-2.xml" itemIcon="1" loadImmediate="false" itemID="679bb43c-00000382" lastModified="1738257491"/>
-     <Include href="Noah_acidDrop.xml"/><Include href="Noah_acidFlame.xml"/><Include href="Noah_acidSplash.xml"/><Include href="Noah_serumDrop.xml"/><Include href="Noah_serumFlame.xml"/><Include href="Noah_serumSplash.xml"/><Include href="巨型尸母 上颚_战损0.xml"/><Include href="巨型尸母 上颚_战损1.xml"/><Include href="巨型尸母 上颚_战损2.xml"/><Include href="巨型尸母 下颚_战损0.xml"/><Include href="巨型尸母 下颚_战损1.xml"/><Include href="巨型尸母 下颚_战损2.xml"/><Include href="巨型尸母 身体_战损0.xml"/><Include href="巨型尸母 身体_战损1.xml"/><Include href="巨型尸母 身体_战损2.xml"/><Include href="巨型尸母上颚张开_战损0.xml"/><Include href="巨型尸母上颚张开_战损1.xml"/><Include href="巨型尸母上颚张开_战损2.xml"/><Include href="Noah_acidRupture.xml"/><Include href="Noah_chainBottom.xml"/><Include href="Noah_chainTop.xml"/><Include href="Noah_deathBody.xml"/><Include href="NoahSpill_Symbol_101.xml"/><Include href="NoahSpill_Symbol_102.xml"/><Include href="NoahSpill_Symbol_105.xml"/><Include href="NoahSpill_Symbol_106.xml"/><Include href="NoahSpill_Symbol_108.xml"/><Include href="NoahSpill_Symbol_54.xml"/><Include href="NoahSpill_Symbol_55.xml"/><Include href="NoahSpill_Symbol_56.xml"/><Include href="NoahSpill_Symbol_57.xml"/><Include href="NoahSpill_Symbol_62.xml"/><Include href="NoahSpill_Symbol_63.xml"/><Include href="NoahSpill_Symbol_68.xml"/><Include href="NoahSpill_Symbol_69.xml"/><Include href="NoahSpill_Symbol_73.xml"/><Include href="NoahSpill_Symbol_74.xml"/><Include href="NoahSpill_Symbol_79.xml"/><Include href="NoahSpill_Symbol_84.xml"/><Include href="NoahSpill_Symbol_88.xml"/><Include href="NoahSpill_Symbol_89.xml"/><Include href="NoahSpill_Symbol_92.xml"/><Include href="NoahSpill_Symbol_93.xml"/><Include href="NoahSpill_Symbol_97.xml"/><Include href="NoahSpill_Symbol_99.xml"/><Include href="巨型尸母动画 死亡.xml"/><Include href="Noah_chainLowerPiece.xml"/><Include href="Noah_chainPivot0.xml"/><Include href="Noah_chainPivot1.xml"/><Include href="Noah_chainPivot10.xml"/><Include href="Noah_chainPivot11.xml"/><Include href="Noah_chainPivot12.xml"/><Include href="Noah_chainPivot13.xml"/><Include href="Noah_chainPivot14.xml"/><Include href="Noah_chainPivot2.xml"/><Include href="Noah_chainPivot3.xml"/><Include href="Noah_chainPivot4.xml"/><Include href="Noah_chainPivot5.xml"/><Include href="Noah_chainPivot6.xml"/><Include href="Noah_chainPivot7.xml"/><Include href="Noah_chainPivot8.xml"/><Include href="Noah_chainPivot9.xml"/><Include href="Noah_chainUpperPiece.xml"/></symbols>
-     <timelines>
-          <DOMTimeline name="场景 1" currentFrame="2">
-               <layers>
-                    <DOMLayer name="label" color="#4FFF4F" autoNamed="false">
-                         <frames>
-                              <DOMFrame index="0" duration="5" name="登场" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="5" duration="5" name="空闲" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="10" duration="5" name="喷吐" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="15" duration="6" name="结束" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
-                    <DOMLayer name="as" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
-                         <frames>
-                              <DOMFrame index="0" duration="21" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[noahAssetVersion=1;
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#000000" width="650" height="350" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="63.2009559306251" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+  <symbols>
+    <Include href="Symbol 6.xml" itemIcon="1" loadImmediate="false" itemID="6796622a-00000233" lastModified="1738342295" />
+    <Include href="Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="6796622a-00000237" lastModified="1727496594" />
+    <Include href="Symbol 15.xml" itemIcon="1" loadImmediate="false" itemID="6796622a-0000023c" lastModified="1727496594" />
+    <Include href="Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6796622a-0000023d" lastModified="1727496594" />
+    <Include href="巨型尸母 上颚.xml" itemIcon="1" loadImmediate="false" itemID="67986281-00000124" lastModified="1738342622" />
+    <Include href="巨型尸母 身体.xml" itemIcon="1" loadImmediate="false" itemID="679ba25e-000001f0" lastModified="1738343373" />
+    <Include href="巨型尸母 下颚.xml" itemIcon="1" loadImmediate="false" itemID="679862a0-00000129" lastModified="1738342632" />
+    <Include href="巨型尸母动画 登场.xml" loadImmediate="false" itemID="679bb360-00000338" lastModified="1738259181" />
+    <Include href="巨型尸母动画 空闲.xml" loadImmediate="false" itemID="679bbb15-00000453" lastModified="1738259511" />
+    <Include href="巨型尸母动画 喷吐.xml" loadImmediate="false" itemID="679bbb25-00000465" lastModified="1738260275" />
+    <Include href="巨型尸母上颚张开.xml" itemIcon="1" loadImmediate="false" itemID="6798844b-00000126" lastModified="1738049630" />
+    <Include href="锁链.xml" itemIcon="1" loadImmediate="false" itemID="679ba354-0000020b" lastModified="1738253140" />
+    <Include href="锁链 长.xml" itemIcon="1" loadImmediate="false" itemID="679ba3cb-00000227" lastModified="1738256199" />
+    <Include href="锁链组合1.xml" itemIcon="1" loadImmediate="false" itemID="679ba456-00000250" lastModified="1738256218" />
+    <Include href="锁链组合1-1.xml" itemIcon="1" loadImmediate="false" itemID="679bb3f3-0000036a" lastModified="1738257396" />
+    <Include href="锁链组合1-2.xml" itemIcon="1" loadImmediate="false" itemID="679bb43c-00000382" lastModified="1738257491" />
+    <Include href="Noah_acidDrop.xml" />
+    <Include href="Noah_acidFlame.xml" />
+    <Include href="Noah_acidSplash.xml" />
+    <Include href="Noah_serumDrop.xml" />
+    <Include href="Noah_serumFlame.xml" />
+    <Include href="Noah_serumSplash.xml" />
+    <Include href="巨型尸母 上颚_战损0.xml" />
+    <Include href="巨型尸母 上颚_战损1.xml" />
+    <Include href="巨型尸母 上颚_战损2.xml" />
+    <Include href="巨型尸母 下颚_战损0.xml" />
+    <Include href="巨型尸母 下颚_战损1.xml" />
+    <Include href="巨型尸母 下颚_战损2.xml" />
+    <Include href="巨型尸母 身体_战损0.xml" />
+    <Include href="巨型尸母 身体_战损1.xml" />
+    <Include href="巨型尸母 身体_战损2.xml" />
+    <Include href="巨型尸母上颚张开_战损0.xml" />
+    <Include href="巨型尸母上颚张开_战损1.xml" />
+    <Include href="巨型尸母上颚张开_战损2.xml" />
+    <Include href="Noah_acidRupture.xml" />
+    <Include href="Noah_chainBottom.xml" />
+    <Include href="Noah_chainTop.xml" />
+    <Include href="Noah_deathBody.xml" />
+    <Include href="NoahSpill_Symbol_101.xml" />
+    <Include href="NoahSpill_Symbol_102.xml" />
+    <Include href="NoahSpill_Symbol_105.xml" />
+    <Include href="NoahSpill_Symbol_106.xml" />
+    <Include href="NoahSpill_Symbol_108.xml" />
+    <Include href="NoahSpill_Symbol_54.xml" />
+    <Include href="NoahSpill_Symbol_55.xml" />
+    <Include href="NoahSpill_Symbol_56.xml" />
+    <Include href="NoahSpill_Symbol_57.xml" />
+    <Include href="NoahSpill_Symbol_62.xml" />
+    <Include href="NoahSpill_Symbol_63.xml" />
+    <Include href="NoahSpill_Symbol_68.xml" />
+    <Include href="NoahSpill_Symbol_69.xml" />
+    <Include href="NoahSpill_Symbol_73.xml" />
+    <Include href="NoahSpill_Symbol_74.xml" />
+    <Include href="NoahSpill_Symbol_79.xml" />
+    <Include href="NoahSpill_Symbol_84.xml" />
+    <Include href="NoahSpill_Symbol_88.xml" />
+    <Include href="NoahSpill_Symbol_89.xml" />
+    <Include href="NoahSpill_Symbol_92.xml" />
+    <Include href="NoahSpill_Symbol_93.xml" />
+    <Include href="NoahSpill_Symbol_97.xml" />
+    <Include href="NoahSpill_Symbol_99.xml" />
+    <Include href="巨型尸母动画 死亡.xml" />
+    <Include href="Noah_chainLowerPiece.xml" />
+    <Include href="Noah_chainPivot0.xml" />
+    <Include href="Noah_chainPivot1.xml" />
+    <Include href="Noah_chainPivot10.xml" />
+    <Include href="Noah_chainPivot11.xml" />
+    <Include href="Noah_chainPivot12.xml" />
+    <Include href="Noah_chainPivot13.xml" />
+    <Include href="Noah_chainPivot14.xml" />
+    <Include href="Noah_chainPivot2.xml" />
+    <Include href="Noah_chainPivot3.xml" />
+    <Include href="Noah_chainPivot4.xml" />
+    <Include href="Noah_chainPivot5.xml" />
+    <Include href="Noah_chainPivot6.xml" />
+    <Include href="Noah_chainPivot7.xml" />
+    <Include href="Noah_chainPivot8.xml" />
+    <Include href="Noah_chainPivot9.xml" />
+    <Include href="Noah_chainUpperPiece.xml" />
+    <Include href="NoahSerumSpill_Symbol_55.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_56.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_62.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_63.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_69.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_73.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_74.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_79.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_88.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_89.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_92.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_97.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_101.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_105.xml" loadImmediate="false" />
+    <Include href="NoahSerumSpill_Symbol_108.xml" loadImmediate="false" />
+    <Include href="Noah_acidSplash_impactMC.xml" loadImmediate="false" />
+    <Include href="Noah_acidSplash_poolMC.xml" loadImmediate="false" />
+    <Include href="Noah_serumSplash_impactMC.xml" loadImmediate="false" />
+    <Include href="Noah_serumSplash_poolMC.xml" loadImmediate="false" />
+  </symbols>
+  <timelines>
+    <DOMTimeline name="场景 1" currentFrame="2">
+      <layers>
+        <DOMLayer name="label" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" name="登场" labelType="name" keyMode="9728">
+              <elements />
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" name="空闲" labelType="name" keyMode="9728">
+              <elements />
+            </DOMFrame>
+            <DOMFrame index="10" duration="5" name="喷吐" labelType="name" keyMode="9728">
+              <elements />
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" name="结束" labelType="name" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <Actionscript>
+                <script>noahAssetVersion=1;
 noahPresentationVersion=3;
 function noahMouth(){return {x:330,y:258};}
 function noahPose(pose,frame,phase,charge,t){
@@ -49,19 +131,19 @@ function noahPose(pose,frame,phase,charge,t){
     var motion=this.noahMotion;
     var body=pose=="结束"?motion.noahBody:motion;
     var parts=[body.noahHead,body.noahJaw,body.noahSkin,body.noahOpen];
-    for(var i=0;i<parts.length;i++)if(parts[i]!=undefined)parts[i].gotoAndStop(phase+1);
+    for(var i=0;i&lt;parts.length;i++)if(parts[i]!=undefined)parts[i].gotoAndStop(phase+1);
     if(pose=="结束"){
         var fall=Math.max(0,frame-18);
         body._x=fall==0?Math.sin(frame*2.1)*3:0;
         body._y=fall==0?Math.sin(frame*1.7)*2:Math.min(650,0.28*fall*fall);
         body._rotation=fall==0?0:Math.min(8,fall*0.18);
         var chainAngles=[59.998438,-59.998438,-15.000237,14.998548,21.498624,-20.008279,0.0,74.997848,39.997885,-74.997848,-39.997885,29.998416,-29.99961,11.003016,-14.761452];
-        for(var ci=0;ci<chainAngles.length;ci++){
+        for(var ci=0;ci&lt;chainAngles.length;ci++){
             var strand=motion.noahChainHead["noahChain"+ci];
-            strand._rotation=frame>=90?0:chainAngles[ci]*Math.exp(-fall*0.065)*Math.cos(fall*0.2);
+            strand._rotation=frame&gt;=90?0:chainAngles[ci]*Math.exp(-fall*0.065)*Math.cos(fall*0.2);
         }
-        body._visible=frame<70;
-        for(var k=0;k<3;k++){
+        body._visible=frame&lt;70;
+        for(var k=0;k&lt;3;k++){
             var nm="noahRupture"+k;var spill=body[nm];
             if(spill==undefined){
                 spill=body.attachMovie("Noah_acidRupture",nm,600+k);
@@ -70,12 +152,12 @@ function noahPose(pose,frame,phase,charge,t){
                 spill._rotation=(k==0?0:(k==1?-28:25));
             }
             var age=frame-k*5;
-            spill._visible=age>0 && age<=42;
+            spill._visible=age&gt;0 &amp;&amp; age&lt;=42;
             spill.gotoAndStop(Math.max(1,Math.min(42,age)));
         }
     }
     // 阶段切换仅播一次短喷溅；换动作不断头、不重播，使用关卡的未暂停时钟。
-    if(this.noahLastPhase!=undefined && phase>this.noahLastPhase && phase<2)this.noahPhaseBurstAt=t;
+    if(this.noahLastPhase!=undefined &amp;&amp; phase&gt;this.noahLastPhase &amp;&amp; phase&lt;2)this.noahPhaseBurstAt=t;
     this.noahLastPhase=phase;
     var head=body.noahHead;
     if(head==undefined)head=body.noahOpen;
@@ -83,7 +165,7 @@ function noahPose(pose,frame,phase,charge,t){
     var mouthOpen=body.noahOpen!=undefined;
     var burstAge=t-this.noahPhaseBurstAt+1;
     var burst=head.noahPhaseBurst;
-    if(phase==1 && !mouthOpen && burstAge>0 && burstAge<=42){
+    if(phase==1 &amp;&amp; !mouthOpen &amp;&amp; burstAge&gt;0 &amp;&amp; burstAge&lt;=42){
         if(burst==undefined){
             burst=head.attachMovie("Noah_acidRupture","noahPhaseBurst",500);
             burst._x=-18;burst._y=-85;burst._xscale=burst._yscale=120;
@@ -91,416 +173,417 @@ function noahPose(pose,frame,phase,charge,t){
         burst._visible=true;burst.gotoAndStop(burstAge);
     }else if(burst!=undefined)burst._visible=false;
     var kinds=charge==""?["acid","serum"]:[charge,charge];
-    for(var j=0;j<2;j++){
+    for(var j=0;j&lt;2;j++){
         var nm="noahEye"+j;var old=head[nm];
         if(old.noahKind!=kinds[j]){old.removeMovieClip();old=head.attachMovie("Noah_"+kinds[j]+"Flame",nm,300+j);old.noahKind=kinds[j];}
         old._x=j==0?-142:89;old._y=-22;
-        old._visible=phase<2 && !mouthOpen;
+        old._visible=phase&lt;2 &amp;&amp; !mouthOpen;
         var size=(phase==0?73:45)+(charge==""?0:32);
         old._xscale=size;old._yscale=size*(0.9+0.12*Math.sin(t*0.47+j));
-        old._alpha=phase==1?(t%13<3?35:80):90;
+        old._alpha=phase==1?(t%13&lt;3?35:80):90;
     }
 }
-stop();]]></script>
-                                   </Actionscript>
-                                   <elements/>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
-                    <DOMLayer name="背景" color="#9933CC" autoNamed="false">
-                         <frames>
-                              <DOMFrame index="0" duration="21" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="Symbol 6" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.98419189453125" b="0.173919677734375" c="-0.173919677734375" d="0.98419189453125" tx="550.3" ty="-48.75"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="Symbol 10" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.5" d="0.5" tx="173.2" ty="-76.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="Symbol 16" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.25" d="0.25" tx="696.15" ty="30.45"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="Symbol 15" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.098876953125" b="0.229293823242188" c="-0.229293823242188" d="-0.098876953125" tx="-40.1" ty="-6.65"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
-                    <DOMLayer name="巨型尸母动画" color="#FF800A" autoNamed="false">
-                         <frames>
-                              <DOMFrame index="0" duration="5" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="巨型尸母动画 登场" centerPoint3DX="327.3" centerPoint3DY="204" name="noahMotion">
-                                             <matrix>
-                                                  <Matrix tx="340.8" ty="269"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="-13.5" y="-65"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="5" duration="5" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="巨型尸母动画 空闲" centerPoint3DX="327.3" centerPoint3DY="204" name="noahMotion">
-                                             <matrix>
-                                                  <Matrix tx="340.8" ty="269"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="-13.5" y="-65"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="10" duration="5" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="巨型尸母动画 喷吐" centerPoint3DX="327.3" centerPoint3DY="204" name="noahMotion">
-                                             <matrix>
-                                                  <Matrix tx="340.8" ty="269"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="-13.5" y="-65"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="15" duration="6" keyMode="9728">
-                                   <elements><DOMSymbolInstance libraryItemName="巨型尸母动画 死亡" centerPoint3DX="327.3" centerPoint3DY="204" name="noahMotion">
-                                             <matrix>
-                                                  <Matrix tx="340.8" ty="269"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="-13.5" y="-65"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
-                    <DOMLayer name="巨型尸母 下颚" color="#FF4FFF" autoNamed="false">
-                         <frames>
-                              <DOMFrame index="0" duration="21" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
-               </layers>
-          </DOMTimeline>
-     </timelines>
-     <swatchLists>
-          <swatchList>
-               <swatches>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#003300" hue="80" saturation="239" brightness="24"/>
-                    <SolidSwatchItem color="#006600" hue="80" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#009900" hue="80" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#00CC00" hue="80" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#330000" saturation="239" brightness="24"/>
-                    <SolidSwatchItem color="#333300" hue="40" saturation="239" brightness="24"/>
-                    <SolidSwatchItem color="#336600" hue="60" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#339900" hue="67" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#33CC00" hue="70" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#33FF00" hue="72" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#660000" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#663300" hue="20" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#666600" hue="40" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#669900" hue="53" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#66CC00" hue="60" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#66FF00" hue="64" saturation="239" brightness="120"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#333333" brightness="48"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#000033" hue="160" saturation="239" brightness="24"/>
-                    <SolidSwatchItem color="#003333" hue="120" saturation="239" brightness="24"/>
-                    <SolidSwatchItem color="#006633" hue="100" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#009933" hue="93" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#00CC33" hue="90" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#00FF33" hue="88" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#330033" hue="200" saturation="239" brightness="24"/>
-                    <SolidSwatchItem color="#333333" brightness="48"/>
-                    <SolidSwatchItem color="#336633" hue="80" saturation="80" brightness="72"/>
-                    <SolidSwatchItem color="#339933" hue="80" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#33CC33" hue="80" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#33FF33" hue="80" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#660033" hue="220" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#663333" saturation="80" brightness="72"/>
-                    <SolidSwatchItem color="#666633" hue="40" saturation="80" brightness="72"/>
-                    <SolidSwatchItem color="#669933" hue="60" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#66CC33" hue="67" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#66FF33" hue="70" saturation="239" brightness="144"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#666666" brightness="96"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#000066" hue="160" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#003366" hue="140" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#006666" hue="120" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#009966" hue="107" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#00CC66" hue="100" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#00FF66" hue="96" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#330066" hue="180" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#333366" hue="160" saturation="80" brightness="72"/>
-                    <SolidSwatchItem color="#336666" hue="120" saturation="80" brightness="72"/>
-                    <SolidSwatchItem color="#339966" hue="100" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#33CC66" hue="93" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#33FF66" hue="90" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#660066" hue="200" saturation="239" brightness="48"/>
-                    <SolidSwatchItem color="#663366" hue="200" saturation="80" brightness="72"/>
-                    <SolidSwatchItem color="#666666" brightness="96"/>
-                    <SolidSwatchItem color="#669966" hue="80" saturation="48" brightness="120"/>
-                    <SolidSwatchItem color="#66CC66" hue="80" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#66FF66" hue="80" saturation="239" brightness="168"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#999999" brightness="144"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#000099" hue="160" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#003399" hue="147" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#006699" hue="133" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#009999" hue="120" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#00CC99" hue="110" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#00FF99" hue="104" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#330099" hue="173" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#333399" hue="160" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#336699" hue="140" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#339999" hue="120" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#33CC99" hue="107" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#33FF99" hue="100" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#660099" hue="187" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#663399" hue="180" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#666699" hue="160" saturation="48" brightness="120"/>
-                    <SolidSwatchItem color="#669999" hue="120" saturation="48" brightness="120"/>
-                    <SolidSwatchItem color="#66CC99" hue="100" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#66FF99" hue="93" saturation="239" brightness="168"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#0000CC" hue="160" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#0033CC" hue="150" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#0066CC" hue="140" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#0099CC" hue="130" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#00CCCC" hue="120" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#00FFCC" hue="112" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#3300CC" hue="170" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#3333CC" hue="160" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#3366CC" hue="147" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#3399CC" hue="133" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#33CCCC" hue="120" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#33FFCC" hue="110" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#6600CC" hue="180" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#6633CC" hue="173" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#6666CC" hue="160" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#6699CC" hue="140" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#66CCCC" hue="120" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#66FFCC" hue="107" saturation="239" brightness="168"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#0033FF" hue="152" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#0066FF" hue="144" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#0099FF" hue="136" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#00CCFF" hue="128" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#3300FF" hue="168" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#3333FF" hue="160" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#3366FF" hue="150" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#3399FF" hue="140" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#33CCFF" hue="130" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#33FFFF" hue="120" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#6600FF" hue="176" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#6633FF" hue="170" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#6666FF" hue="160" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#6699FF" hue="147" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#66CCFF" hue="133" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#66FFFF" hue="120" saturation="239" brightness="168"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#990000" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#993300" hue="13" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#996600" hue="27" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#999900" hue="40" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#99CC00" hue="50" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#99FF00" hue="56" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#CC0000" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#CC3300" hue="10" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#CC6600" hue="20" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#CC9900" hue="30" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#CCCC00" hue="40" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#CCFF00" hue="48" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FF3300" hue="8" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FF6600" hue="16" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FF9900" hue="24" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FFCC00" hue="32" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#990033" hue="227" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#993333" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#996633" hue="20" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#999933" hue="40" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#99CC33" hue="53" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#99FF33" hue="60" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#CC0033" hue="230" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#CC3333" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#CC6633" hue="13" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#CC9933" hue="27" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#CCCC33" hue="40" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#CCFF33" hue="50" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#FF0033" hue="232" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FF3333" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#FF6633" hue="10" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#FF9933" hue="20" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#FFCC33" hue="30" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#FFFF33" hue="40" saturation="239" brightness="144"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#990066" hue="213" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#993366" hue="220" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#996666" saturation="48" brightness="120"/>
-                    <SolidSwatchItem color="#999966" hue="40" saturation="48" brightness="120"/>
-                    <SolidSwatchItem color="#99CC66" hue="60" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#99FF66" hue="67" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#CC0066" hue="220" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#CC3366" hue="227" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#CC6666" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#CC9966" hue="20" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#CCCC66" hue="40" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#CCFF66" hue="53" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#FF0066" hue="224" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FF3366" hue="230" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#FF6666" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#FF9966" hue="13" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#FFCC66" hue="27" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#FFFF66" hue="40" saturation="239" brightness="168"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#990099" hue="200" saturation="239" brightness="72"/>
-                    <SolidSwatchItem color="#993399" hue="200" saturation="120" brightness="96"/>
-                    <SolidSwatchItem color="#996699" hue="200" saturation="48" brightness="120"/>
-                    <SolidSwatchItem color="#999999" brightness="144"/>
-                    <SolidSwatchItem color="#99CC99" hue="80" saturation="80" brightness="168"/>
-                    <SolidSwatchItem color="#99FF99" hue="80" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#CC0099" hue="210" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#CC3399" hue="213" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#CC6699" hue="220" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#CC9999" saturation="80" brightness="168"/>
-                    <SolidSwatchItem color="#CCCC99" hue="40" saturation="80" brightness="168"/>
-                    <SolidSwatchItem color="#CCFF99" hue="60" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#FF0099" hue="216" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FF3399" hue="220" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#FF6699" hue="227" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#FF9999" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#FFCC99" hue="20" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#FFFF99" hue="40" saturation="239" brightness="192"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#9900CC" hue="190" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#9933CC" hue="187" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#9966CC" hue="180" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#9999CC" hue="160" saturation="80" brightness="168"/>
-                    <SolidSwatchItem color="#99CCCC" hue="120" saturation="80" brightness="168"/>
-                    <SolidSwatchItem color="#99FFCC" hue="100" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#CC00CC" hue="200" saturation="239" brightness="96"/>
-                    <SolidSwatchItem color="#CC33CC" hue="200" saturation="144" brightness="120"/>
-                    <SolidSwatchItem color="#CC66CC" hue="200" saturation="120" brightness="144"/>
-                    <SolidSwatchItem color="#CC99CC" hue="200" saturation="80" brightness="168"/>
-                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
-                    <SolidSwatchItem color="#CCFFCC" hue="80" saturation="239" brightness="216"/>
-                    <SolidSwatchItem color="#FF00CC" hue="208" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FF33CC" hue="210" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#FF66CC" hue="213" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#FF99CC" hue="220" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#FFCCCC" saturation="239" brightness="216"/>
-                    <SolidSwatchItem color="#FFFFCC" hue="40" saturation="239" brightness="216"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
-                    <SolidSwatchItem/>
-                    <SolidSwatchItem color="#9900FF" hue="184" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#9933FF" hue="180" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#9966FF" hue="173" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#9999FF" hue="160" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#99CCFF" hue="140" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#99FFFF" hue="120" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#CC00FF" hue="192" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#CC33FF" hue="190" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#CC66FF" hue="187" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#CC99FF" hue="180" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#CCCCFF" hue="160" saturation="239" brightness="216"/>
-                    <SolidSwatchItem color="#CCFFFF" hue="120" saturation="239" brightness="216"/>
-                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
-                    <SolidSwatchItem color="#FF33FF" hue="200" saturation="239" brightness="144"/>
-                    <SolidSwatchItem color="#FF66FF" hue="200" saturation="239" brightness="168"/>
-                    <SolidSwatchItem color="#FF99FF" hue="200" saturation="239" brightness="192"/>
-                    <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216"/>
-                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
-                    <SolidSwatchItem color="#383838" brightness="53"/>
-                    <SolidSwatchItem color="#B0B8C0" hue="141" saturation="27" brightness="174"/>
-                    <SolidSwatchItem color="#8AA0AB" hue="133" saturation="39" brightness="146"/>
-                    <SolidSwatchItem color="#C8D3D9" hue="133" saturation="44" brightness="196"/>
-                    <SolidSwatchItem color="#ADBDC5" hue="133" saturation="40" brightness="174"/>
-                    <SolidSwatchItem color="#FFFFF8" hue="40" saturation="239" brightness="237"/>
-                    <SolidSwatchItem color="#E1EAEF" hue="135" saturation="73" brightness="219"/>
-                    <SolidSwatchItem color="#F5F5E8" hue="40" saturation="101" brightness="225"/>
-                    <SolidSwatchItem color="#AA6666" saturation="69" brightness="128"/>
-                    <SolidSwatchItem color="#94AAB4" hue="132" saturation="42" brightness="154"/>
-                    <SolidSwatchItem color="#CDDCE4" hue="135" saturation="73" brightness="204"/>
-               </swatches>
-          </swatchList>
-     </swatchLists>
-     <persistentData>
-          <PD n="TestMovieChecked" v="FlashPro"/>
-     </persistentData>
-     <PrinterSettings/>
-     <publishHistory>
-          <PublishItem publishSize="79040" publishTime="1738260676"/>
-          <PublishItem publishSize="79028" publishTime="1738260583"/>
-          <PublishItem publishSize="78590" publishTime="1738259250"/>
-          <PublishItem publishSize="70986" publishTime="1738259193"/>
-          <PublishItem publishSize="68789" publishTime="1738259079"/>
-          <PublishItem publishSize="68789" publishTime="1738259071"/>
-          <PublishItem publishSize="68675" publishTime="1738259014"/>
-          <PublishItem publishSize="68650" publishTime="1738259000"/>
-          <PublishItem publishSize="68611" publishTime="1738258949"/>
-          <PublishItem publishSize="68474" publishTime="1738258924"/>
-          <PublishItem publishSize="68428" publishTime="1738258825"/>
-          <PublishItem publishSize="68273" publishTime="1738258784"/>
-          <PublishItem publishSize="44808" publishTime="1738254788"/>
-          <PublishItem publishSize="22741" publishTime="1738254316"/>
-          <PublishItem publishSize="22743" publishTime="1738254148"/>
-          <PublishItem publishSize="22742" publishTime="1738254046"/>
-          <PublishItem publishSize="23081" publishTime="1738253412"/>
-          <PublishItem publishSize="25869" publishTime="1738051164"/>
-          <PublishItem publishSize="25864" publishTime="1738050771"/>
-          <PublishItem publishSize="25681" publishTime="1738049641"/>
-     </publishHistory>
+stop();</script>
+              </Actionscript>
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98419189453125" b="0.173919677734375" c="-0.173919677734375" d="0.98419189453125" tx="550.3" ty="-48.75" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Symbol 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="173.2" ty="-76.1" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Symbol 16" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25" tx="696.15" ty="30.45" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Symbol 15" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.098876953125" b="0.229293823242188" c="-0.229293823242188" d="-0.098876953125" tx="-40.1" ty="-6.65" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="巨型尸母动画" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母动画 登场" centerPoint3DX="327.3" centerPoint3DY="204" name="noahMotion">
+                  <matrix>
+                    <Matrix tx="340.8" ty="269" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-13.5" y="-65" />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母动画 空闲" centerPoint3DX="327.3" centerPoint3DY="204" name="noahMotion">
+                  <matrix>
+                    <Matrix tx="340.8" ty="269" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-13.5" y="-65" />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母动画 喷吐" centerPoint3DX="327.3" centerPoint3DY="204" name="noahMotion">
+                  <matrix>
+                    <Matrix tx="340.8" ty="269" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-13.5" y="-65" />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨型尸母动画 死亡" centerPoint3DX="327.3" centerPoint3DY="204" name="noahMotion">
+                  <matrix>
+                    <Matrix tx="340.8" ty="269" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-13.5" y="-65" />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="巨型尸母 下颚" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+  <swatchLists>
+    <swatchList>
+      <swatches>
+        <SolidSwatchItem />
+        <SolidSwatchItem />
+        <SolidSwatchItem />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#003300" hue="80" saturation="239" brightness="24" />
+        <SolidSwatchItem color="#006600" hue="80" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#009900" hue="80" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#00CC00" hue="80" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#330000" saturation="239" brightness="24" />
+        <SolidSwatchItem color="#333300" hue="40" saturation="239" brightness="24" />
+        <SolidSwatchItem color="#336600" hue="60" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#339900" hue="67" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#33CC00" hue="70" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#33FF00" hue="72" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#660000" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#663300" hue="20" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#666600" hue="40" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#669900" hue="53" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#66CC00" hue="60" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#66FF00" hue="64" saturation="239" brightness="120" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#333333" brightness="48" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#000033" hue="160" saturation="239" brightness="24" />
+        <SolidSwatchItem color="#003333" hue="120" saturation="239" brightness="24" />
+        <SolidSwatchItem color="#006633" hue="100" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#009933" hue="93" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#00CC33" hue="90" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#00FF33" hue="88" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#330033" hue="200" saturation="239" brightness="24" />
+        <SolidSwatchItem color="#333333" brightness="48" />
+        <SolidSwatchItem color="#336633" hue="80" saturation="80" brightness="72" />
+        <SolidSwatchItem color="#339933" hue="80" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#33CC33" hue="80" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#33FF33" hue="80" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#660033" hue="220" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#663333" saturation="80" brightness="72" />
+        <SolidSwatchItem color="#666633" hue="40" saturation="80" brightness="72" />
+        <SolidSwatchItem color="#669933" hue="60" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#66CC33" hue="67" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#66FF33" hue="70" saturation="239" brightness="144" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#666666" brightness="96" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#000066" hue="160" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#003366" hue="140" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#006666" hue="120" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#009966" hue="107" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#00CC66" hue="100" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#00FF66" hue="96" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#330066" hue="180" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#333366" hue="160" saturation="80" brightness="72" />
+        <SolidSwatchItem color="#336666" hue="120" saturation="80" brightness="72" />
+        <SolidSwatchItem color="#339966" hue="100" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#33CC66" hue="93" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#33FF66" hue="90" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#660066" hue="200" saturation="239" brightness="48" />
+        <SolidSwatchItem color="#663366" hue="200" saturation="80" brightness="72" />
+        <SolidSwatchItem color="#666666" brightness="96" />
+        <SolidSwatchItem color="#669966" hue="80" saturation="48" brightness="120" />
+        <SolidSwatchItem color="#66CC66" hue="80" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#66FF66" hue="80" saturation="239" brightness="168" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#999999" brightness="144" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#000099" hue="160" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#003399" hue="147" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#006699" hue="133" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#009999" hue="120" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#00CC99" hue="110" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#00FF99" hue="104" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#330099" hue="173" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#333399" hue="160" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#336699" hue="140" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#339999" hue="120" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#33CC99" hue="107" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#33FF99" hue="100" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#660099" hue="187" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#663399" hue="180" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#666699" hue="160" saturation="48" brightness="120" />
+        <SolidSwatchItem color="#669999" hue="120" saturation="48" brightness="120" />
+        <SolidSwatchItem color="#66CC99" hue="100" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#66FF99" hue="93" saturation="239" brightness="168" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#CCCCCC" brightness="192" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#0000CC" hue="160" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#0033CC" hue="150" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#0066CC" hue="140" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#0099CC" hue="130" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#00CCCC" hue="120" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#00FFCC" hue="112" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#3300CC" hue="170" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#3333CC" hue="160" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#3366CC" hue="147" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#3399CC" hue="133" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#33CCCC" hue="120" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#33FFCC" hue="110" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#6600CC" hue="180" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#6633CC" hue="173" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#6666CC" hue="160" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#6699CC" hue="140" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#66CCCC" hue="120" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#66FFCC" hue="107" saturation="239" brightness="168" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#FFFFFF" brightness="240" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#0033FF" hue="152" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#0066FF" hue="144" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#0099FF" hue="136" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#00CCFF" hue="128" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#3300FF" hue="168" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#3333FF" hue="160" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#3366FF" hue="150" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#3399FF" hue="140" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#33CCFF" hue="130" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#33FFFF" hue="120" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#6600FF" hue="176" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#6633FF" hue="170" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#6666FF" hue="160" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#6699FF" hue="147" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#66CCFF" hue="133" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#66FFFF" hue="120" saturation="239" brightness="168" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#FF0000" saturation="239" brightness="120" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#990000" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#993300" hue="13" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#996600" hue="27" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#999900" hue="40" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#99CC00" hue="50" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#99FF00" hue="56" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#CC0000" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#CC3300" hue="10" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#CC6600" hue="20" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#CC9900" hue="30" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#CCCC00" hue="40" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#CCFF00" hue="48" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FF0000" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FF3300" hue="8" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FF6600" hue="16" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FF9900" hue="24" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FFCC00" hue="32" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#990033" hue="227" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#993333" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#996633" hue="20" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#999933" hue="40" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#99CC33" hue="53" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#99FF33" hue="60" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#CC0033" hue="230" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#CC3333" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#CC6633" hue="13" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#CC9933" hue="27" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#CCCC33" hue="40" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#CCFF33" hue="50" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#FF0033" hue="232" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FF3333" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#FF6633" hue="10" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#FF9933" hue="20" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#FFCC33" hue="30" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#FFFF33" hue="40" saturation="239" brightness="144" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#990066" hue="213" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#993366" hue="220" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#996666" saturation="48" brightness="120" />
+        <SolidSwatchItem color="#999966" hue="40" saturation="48" brightness="120" />
+        <SolidSwatchItem color="#99CC66" hue="60" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#99FF66" hue="67" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#CC0066" hue="220" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#CC3366" hue="227" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#CC6666" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#CC9966" hue="20" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#CCCC66" hue="40" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#CCFF66" hue="53" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#FF0066" hue="224" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FF3366" hue="230" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#FF6666" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#FF9966" hue="13" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#FFCC66" hue="27" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#FFFF66" hue="40" saturation="239" brightness="168" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#990099" hue="200" saturation="239" brightness="72" />
+        <SolidSwatchItem color="#993399" hue="200" saturation="120" brightness="96" />
+        <SolidSwatchItem color="#996699" hue="200" saturation="48" brightness="120" />
+        <SolidSwatchItem color="#999999" brightness="144" />
+        <SolidSwatchItem color="#99CC99" hue="80" saturation="80" brightness="168" />
+        <SolidSwatchItem color="#99FF99" hue="80" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#CC0099" hue="210" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#CC3399" hue="213" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#CC6699" hue="220" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#CC9999" saturation="80" brightness="168" />
+        <SolidSwatchItem color="#CCCC99" hue="40" saturation="80" brightness="168" />
+        <SolidSwatchItem color="#CCFF99" hue="60" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#FF0099" hue="216" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FF3399" hue="220" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#FF6699" hue="227" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#FF9999" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#FFCC99" hue="20" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#FFFF99" hue="40" saturation="239" brightness="192" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#9900CC" hue="190" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#9933CC" hue="187" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#9966CC" hue="180" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#9999CC" hue="160" saturation="80" brightness="168" />
+        <SolidSwatchItem color="#99CCCC" hue="120" saturation="80" brightness="168" />
+        <SolidSwatchItem color="#99FFCC" hue="100" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#CC00CC" hue="200" saturation="239" brightness="96" />
+        <SolidSwatchItem color="#CC33CC" hue="200" saturation="144" brightness="120" />
+        <SolidSwatchItem color="#CC66CC" hue="200" saturation="120" brightness="144" />
+        <SolidSwatchItem color="#CC99CC" hue="200" saturation="80" brightness="168" />
+        <SolidSwatchItem color="#CCCCCC" brightness="192" />
+        <SolidSwatchItem color="#CCFFCC" hue="80" saturation="239" brightness="216" />
+        <SolidSwatchItem color="#FF00CC" hue="208" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FF33CC" hue="210" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#FF66CC" hue="213" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#FF99CC" hue="220" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#FFCCCC" saturation="239" brightness="216" />
+        <SolidSwatchItem color="#FFFFCC" hue="40" saturation="239" brightness="216" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120" />
+        <SolidSwatchItem />
+        <SolidSwatchItem color="#9900FF" hue="184" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#9933FF" hue="180" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#9966FF" hue="173" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#9999FF" hue="160" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#99CCFF" hue="140" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#99FFFF" hue="120" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#CC00FF" hue="192" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#CC33FF" hue="190" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#CC66FF" hue="187" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#CC99FF" hue="180" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#CCCCFF" hue="160" saturation="239" brightness="216" />
+        <SolidSwatchItem color="#CCFFFF" hue="120" saturation="239" brightness="216" />
+        <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120" />
+        <SolidSwatchItem color="#FF33FF" hue="200" saturation="239" brightness="144" />
+        <SolidSwatchItem color="#FF66FF" hue="200" saturation="239" brightness="168" />
+        <SolidSwatchItem color="#FF99FF" hue="200" saturation="239" brightness="192" />
+        <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216" />
+        <SolidSwatchItem color="#FFFFFF" brightness="240" />
+        <SolidSwatchItem color="#383838" brightness="53" />
+        <SolidSwatchItem color="#B0B8C0" hue="141" saturation="27" brightness="174" />
+        <SolidSwatchItem color="#8AA0AB" hue="133" saturation="39" brightness="146" />
+        <SolidSwatchItem color="#C8D3D9" hue="133" saturation="44" brightness="196" />
+        <SolidSwatchItem color="#ADBDC5" hue="133" saturation="40" brightness="174" />
+        <SolidSwatchItem color="#FFFFF8" hue="40" saturation="239" brightness="237" />
+        <SolidSwatchItem color="#E1EAEF" hue="135" saturation="73" brightness="219" />
+        <SolidSwatchItem color="#F5F5E8" hue="40" saturation="101" brightness="225" />
+        <SolidSwatchItem color="#AA6666" saturation="69" brightness="128" />
+        <SolidSwatchItem color="#94AAB4" hue="132" saturation="42" brightness="154" />
+        <SolidSwatchItem color="#CDDCE4" hue="135" saturation="73" brightness="204" />
+      </swatches>
+    </swatchList>
+  </swatchLists>
+  <persistentData>
+    <PD n="TestMovieChecked" v="FlashPro" />
+  </persistentData>
+  <PrinterSettings />
+  <publishHistory>
+    <PublishItem publishSize="79040" publishTime="1738260676" />
+    <PublishItem publishSize="79028" publishTime="1738260583" />
+    <PublishItem publishSize="78590" publishTime="1738259250" />
+    <PublishItem publishSize="70986" publishTime="1738259193" />
+    <PublishItem publishSize="68789" publishTime="1738259079" />
+    <PublishItem publishSize="68789" publishTime="1738259071" />
+    <PublishItem publishSize="68675" publishTime="1738259014" />
+    <PublishItem publishSize="68650" publishTime="1738259000" />
+    <PublishItem publishSize="68611" publishTime="1738258949" />
+    <PublishItem publishSize="68474" publishTime="1738258924" />
+    <PublishItem publishSize="68428" publishTime="1738258825" />
+    <PublishItem publishSize="68273" publishTime="1738258784" />
+    <PublishItem publishSize="44808" publishTime="1738254788" />
+    <PublishItem publishSize="22741" publishTime="1738254316" />
+    <PublishItem publishSize="22743" publishTime="1738254148" />
+    <PublishItem publishSize="22742" publishTime="1738254046" />
+    <PublishItem publishSize="23081" publishTime="1738253412" />
+    <PublishItem publishSize="25869" publishTime="1738051164" />
+    <PublishItem publishSize="25864" publishTime="1738050771" />
+    <PublishItem publishSize="25681" publishTime="1738049641" />
+  </publishHistory>
 </DOMDocument>
