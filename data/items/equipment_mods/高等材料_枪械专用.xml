@@ -440,7 +440,7 @@
                     <min>20</min>
                 </impact>
             </curve>
-            <merge>
+            <override>
                 <hitBehavior>
                     <type>grayGooPrimer</type>
                     <stackGroup>grayGooVulnerability</stackGroup>
@@ -456,41 +456,55 @@
                     <executeAtMax>8</executeAtMax>
                     <sameSourceOnly>true</sameSourceOnly>
                 </hitBehavior>
-            </merge>
+            </override>
             <useSwitch>
                 <!-- 大威力手枪按追猎射击双枪窗口标定：一发2格，并显式锁定双枪收益，避免继承冲锋枪补偿 -->
                 <use name="weapontype:大威力手枪">
-                    <merge>
+                    <override>
                         <hitBehavior>
+                            <type>grayGooPrimer</type>
+                            <stackGroup>grayGooVulnerability</stackGroup>
                             <profileId>highPowerHandgun</profileId>
+                            <decayDelay>90</decayDelay>
+                            <decayInterval>10</decayInterval>
+                            <maxStacks>18</maxStacks>
                             <hitStacks>2</hitStacks>
                             <breakStacks>2</breakStacks>
+                            <milestoneInterval>6</milestoneInterval>
+                            <damagePerStack>0.01</damagePerStack>
                             <crumblePerMilestone>0.1</crumblePerMilestone>
                             <executeAtMax>5</executeAtMax>
+                            <sameSourceOnly>true</sameSourceOnly>
                         </hitBehavior>
-                    </merge>
+                    </override>
                 </use>
                 <!-- 普通手枪补弱：只匹配精确 weapontype，不匹配共享 use=手枪 的冲锋手枪/大威力手枪 -->
                 <use name="weapontype:手枪">
-                    <merge>
+                    <override>
                         <hitBehavior>
+                            <type>grayGooPrimer</type>
+                            <stackGroup>grayGooVulnerability</stackGroup>
                             <profileId>handgun</profileId>
                             <decayDelay>150</decayDelay>
                             <decayInterval>15</decayInterval>
+                            <maxStacks>18</maxStacks>
                             <hitStacks>3</hitStacks>
                             <breakStacks>3</breakStacks>
+                            <milestoneInterval>6</milestoneInterval>
+                            <damagePerStack>0.01</damagePerStack>
                             <crumblePerMilestone>0.3</crumblePerMilestone>
                             <executeAtMax>8</executeAtMax>
+                            <sameSourceOnly>true</sameSourceOnly>
                         </hitBehavior>
-                    </merge>
+                    </override>
                 </use>
             </useSwitch>
         </stats>
         <description>灰蛊系列的牺牲性纳米涂层弹。
-        有效命中会沉积蚀刻层，使目标承受的伤害逐步提高，最多18层；冲锋枪、大威力手枪与普通手枪每次命中分别沉积1、2、3层。
-        每累计6层，纳米群会击溃一部分血量上限；满18层后解锁斩杀。真实破韧会追加一次本枪种等价沉积，但刚体目标的韧性阈值溢出不视为破韧。
-        冲锋枪沉积较慢，但每个结算节点具有更强的击溃能力；普通手枪的低膛压能保存更多纳米群，使层数维持更久。停止命中后层数会逐步衰减，完全退层可重新触发各阶段击溃。
-        原生冲击较弱的手枪与冲锋枪会获得显著破韧能力；原生击倒率更低的武器不会被曲线削弱。
+        有效命中会沉积蚀刻格，使目标承受的伤害逐步提高（上限18格，每格+1%易伤）；冲锋枪、大威力手枪与普通手枪每次命中分别沉积1、2、3格。
+        首次跨过6、12、18格节点时触发灰蛊击溃（头顶弹出Ⅰ/Ⅱ/Ⅲ阶裂隙标记）：按枪种档位永久削减目标血量上限并同步造成等量伤害；满18格的命中解锁斩杀。真实破韧会追加一次本枪种等价沉积，但刚体目标的韧性阈值溢出不视为破韧。
+        持续命中会刷新留存窗口，满18格连射维持期间不会重复触发节点击溃；停火衰减退至12、6、0格后将分别重装Ⅲ、Ⅱ、Ⅰ阶节点，支持脱战或换弹后的二次爆发循环，但微停火无法反复刷取同一节点。
+        冲锋枪沉积较慢，但单次节点击溃更强；普通手枪的低膛压能保存更多纳米群，使层数维持更久。原生冲击较弱的手枪与冲锋枪会获得显著破韧能力；原生击倒率更低的武器不会被曲线削弱。
         该涂层无法兼容穿刺弹的硬质侵彻外被。</description>
         <tag>弹药</tag>
     </mod>

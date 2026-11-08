@@ -217,7 +217,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 // impact 需要转换（显示值 = 500/impact）
                 // bullet/bulletrename 需要组合显示展示名
                 // split 需要单独显示
-                if (key == "damagetype" || key == "magictype" || key == "criticalhit" || key == "silence" || key == "slay" || key == "actiontype" || key == "singleshoot" || key == "reloadType" || key == "impact" || key == "bullet" || key == "bulletrename" || key == "split") continue;
+                if (key == "damagetype" || key == "magictype" || key == "criticalhit" || key == "silence" || key == "slay" || key == "actiontype" || key == "singleshoot" || key == "reloadType" || key == "impact" || key == "bullet" || key == "bulletrename" || key == "split" || key == "hitBehavior") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "override", key, statsObj.override[key], null);
             }
@@ -314,6 +314,10 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             if (statsObj.override.split != undefined) {
                 result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>" + TooltipConstants.TAG_OVERRIDE + " </FONT>");
                 result.push(TooltipConstants.LBL_PELLET_COUNT, " → ", statsObj.override.split, "<BR>");
+            }
+            // 命中行为覆盖（#208 完整档位契约）
+            if (statsObj.override.hitBehavior) {
+                appendHitBehavior(result, indent, statsObj.override.hitBehavior);
             }
         }
 
@@ -491,6 +495,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
 
     /** 已安装插件的枪种分支只显示相对基础档发生的变化。 */
     private static function buildGrayGooSummary(behavior:Object):String {
+        var isBranchProfile:Boolean = (behavior.profileId != undefined && String(behavior.profileId) != "base");
         var parts:Array = [];
         if (behavior.hitStacks != undefined && behavior.breakStacks == behavior.hitStacks) {
             parts.push("命中/破韧+" + behavior.hitStacks + "格");
@@ -498,12 +503,12 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             if (behavior.hitStacks != undefined) parts.push("命中+" + behavior.hitStacks + "格");
             if (behavior.breakStacks != undefined) parts.push("破韧+" + behavior.breakStacks + "格");
         }
-        if (behavior.maxStacks != undefined) parts.push("上限" + behavior.maxStacks + "格");
-        if (behavior.damagePerStack != undefined) {
+        if (!isBranchProfile && behavior.maxStacks != undefined) parts.push("上限" + behavior.maxStacks + "格");
+        if (!isBranchProfile && behavior.damagePerStack != undefined) {
             parts.push("每格易伤+" + formatPercent(behavior.damagePerStack));
         }
         if (behavior.crumblePerMilestone != undefined) {
-            var milestone:String = behavior.milestoneInterval != undefined
+            var milestone:String = (!isBranchProfile && behavior.milestoneInterval != undefined)
                 ? "每" + behavior.milestoneInterval + "格" : "节点";
             parts.push(milestone + "击溃" + formatRawPercent(behavior.crumblePerMilestone));
         }
@@ -516,10 +521,11 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
         return parts.join("；");
     }
 
-    /** 详细插件面板也只展示三条玩家语义，不展开内部协议字段。 */
+    /** 详细插件面板展示玩家可读语义与节点重装规则，不展开内部协议字段。 */
     private static function appendGrayGooBehavior(result:Array, indent:String,
                                                    behavior:Object):Void {
-        var isBase:Boolean = behavior.type != undefined;
+        var isBranchProfile:Boolean = (behavior.profileId != undefined && String(behavior.profileId) != "base") || indent.length > 0;
+        var isBase:Boolean = (behavior.type != undefined) && !isBranchProfile;
         if (!isBase) {
             var summary:String = buildGrayGooSummary(behavior);
             if (summary.length > 0) result.push(indent, "  ", summary, "<BR>");
@@ -558,6 +564,9 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             sustain.push("停火" + formatFramesAsSeconds(behavior.decayDelay) + "后衰减");
         }
         if (sustain.length > 0) result.push(indent, "  ", sustain.join("；"), "<BR>");
+        if (behavior.milestoneInterval == 6 && behavior.maxStacks == 18) {
+            result.push(indent, "  首跨6/12/18格削上限并伤血（Ⅰ/Ⅱ/Ⅲ阶标记）；退至12/6/0格重装<BR>");
+        }
     }
 
     private static function formatFramesAsSeconds(frameValue:Object):String {

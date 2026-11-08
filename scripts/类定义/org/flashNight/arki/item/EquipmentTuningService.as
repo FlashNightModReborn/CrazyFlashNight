@@ -923,6 +923,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         if (!resolved.success) return null;
         var item:BaseItem = BaseItem(resolved.item);
         var itemData:Object = item.getData();
+        if (itemData == null) return null;
         var value:Object = item.value;
         var afterValue:Object = ObjectUtil.clone(value);
         if (candidate.kind == "mod") {

@@ -1,0 +1,51 @@
+﻿import org.flashNight.gesh.xml.*;
+trace("FocusedTestRunId gray-goo-tests Start: __FOCUSED_RUN_ID__");
+if (_root.preloaders == undefined) _root.preloaders=[];
+if (_root.loaders == undefined) _root.loaders=[];
+if (_root.UI系统 == undefined) _root.UI系统={};
+if (_root.gameCommands == undefined) _root.gameCommands={};
+org.flashNight.arki.bullet.BulletComponent.Queue.ToughnessVulnerabilityPipelineTest.runAllTests();
+org.flashNight.arki.item.equipment.EquipmentTestSuite.runAllTests();
+org.flashNight.gesh.tooltip.test.TestDataBootstrap.runIsolated(function():Void {
+    org.flashNight.gesh.tooltip.test.BuilderContractTest.runAllTests();
+});
+_root.grayGooAssetComplete=function():Void {
+    trace("FocusedTestRunId gray-goo-tests Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest.onComplete=function():Void {
+    org.flashNight.arki.render.GrayGooAssetTest.runAllTests();
+};
+var grayProbePaths:Array=["武器_手枪_大威力手枪.xml","武器_手枪_冲锋枪.xml","武器_手枪_手枪.xml","equipment_mods/高等材料_枪械专用.xml"];
+var grayProbeIndex:Number=0;
+var grayProbeItems:Object={};
+var grayProbeMods:Array=[];
+function loadNextGrayProbe():Void {
+    if (grayProbeIndex>=grayProbePaths.length) {
+        org.flashNight.arki.item.equipment.ModRegistry.loadModData(grayProbeMods);
+        var cfg:Object=org.flashNight.arki.item.equipment.EquipmentConfigManager.getFullConfig();
+        var dict:Object=org.flashNight.arki.item.equipment.ModRegistry.getModDict();
+        var value:Object={level:1,mods:["灰蛊裂隙弹"]};
+        var w:Object=org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(grayProbeItems["Webley"],value,cfg,dict).data.hitBehavior;
+        var g:Object=org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(grayProbeItems["TTI Glock 19"],value,cfg,dict).data.hitBehavior;
+        var k:Object=org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(grayProbeItems["KRISS"],value,cfg,dict).data.hitBehavior;
+        var ok:Boolean=w.profileId=="highPowerHandgun" && w.crumblePerMilestone==0.1 && w.executeAtMax==5
+            && g.profileId=="handgun" && g.crumblePerMilestone==0.3 && g.executeAtMax==8
+            && k.profileId=="base" && k.crumblePerMilestone==1 && k.executeAtMax==8;
+        trace("GrayGooRealProfiles passed="+ok);
+        if (!ok) trace("[TEST_FAIL] gray-goo actual XML profiles");
+        org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest.runAllTests();
+        return;
+    }
+    var xml:XML=new XML(); xml.ignoreWhite=true;
+    xml.onLoad=function(ok:Boolean):Void {
+        if (!ok) { trace("[TEST_FAIL] gray-goo actual XML load"); return; }
+        var parsed:Object=XMLParser.parseXMLNode(this.firstChild);
+        var list:Array=XMLParser.configureDataAsArray(parsed.item);
+        for (var i:Number=0;i<list.length;i++) grayProbeItems[list[i].name]=list[i];
+        list=XMLParser.configureDataAsArray(parsed.mod);
+        for (var j:Number=0;j<list.length;j++) grayProbeMods.push(list[j]);
+        loadNextGrayProbe();
+    };
+    xml.load("../data/items/"+grayProbePaths[grayProbeIndex++]);
+}
+loadNextGrayProbe();

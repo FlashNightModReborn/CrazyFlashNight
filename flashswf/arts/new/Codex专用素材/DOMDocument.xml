@@ -38,6 +38,7 @@
     <DOMFolderItem name="Codex/火凤套装/背负武器/刀" itemID="78fa0000-ecedd57c"/>
     <DOMFolderItem name="Codex/火凤套装/背负武器/手枪" itemID="78fa0000-d8e2c4ad"/>
     <DOMFolderItem name="Codex/火凤套装/背负武器/手枪2" itemID="78fa0000-c72e1583"/>
+    <DOMFolderItem name="Codex/灰蛊裂隙" itemID="6b610000-00000200"/>
   </folders>
      <symbols>
           <Include href="图标-战术手电.xml" itemID="6bba6b00-00000101"/>
@@ -674,6 +675,8 @@
     <Include href="Codex/火凤套装/背负武器/长枪__元件.xml"/>
     <Include href="Codex/火凤套装/图标/火凤碎片画稿.xml" />
     <Include href="Codex/火凤套装/图标/火凤装备碎片.xml" />
+    <Include href="Codex/灰蛊裂隙/灰蛊裂隙标志.xml" loadImmediate="false" itemID="6b610000-00000201"/>
+    <Include href="Codex/灰蛊裂隙/灰蛊裂隙特效.xml" itemID="6b610000-00000202"/>
 </symbols>
      <timelines>
           <DOMTimeline name="Codex素材总览">

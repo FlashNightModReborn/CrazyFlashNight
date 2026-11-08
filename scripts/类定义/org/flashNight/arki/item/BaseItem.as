@@ -104,6 +104,9 @@ class org.flashNight.arki.item.BaseItem{
 
         if(ItemUtil.isEquipment(this.name)) {
             EquipmentUtil.calculateData(this, _itemData);
+            if (_itemData && _itemData._hitBehaviorInvalid === true) {
+                return null;
+            }
         }
 
         return _itemData; // return this.itemData = _itemData;

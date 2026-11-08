@@ -213,6 +213,8 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
             }
 
             // 显示useSwitch条件效果提示（仅显示匹配当前装备的条件）
+            var hasMatchedBranchHitBehavior:Boolean = false;
+            var defaultBranchHitBehavior:Object = null;
             if (modInfo && modInfo.stats && modInfo.stats.useSwitch && modInfo.stats.useSwitch.useCases) {
                 // 与运行时共用同一匹配器，确保 use:/weapontype: 限定符和 default 语义一致。
                 var useCases:Array = ModRegistry.matchUseSwitchAll(modInfo, itemUseLookup);
@@ -220,8 +222,16 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
 
                 for (var ucIdx:Number = 0; ucIdx < useCases.length; ucIdx++) {
                     var useCase:Object = useCases[ucIdx];
+                    if (!useCase) continue;
                     // 维持旧摘要密度：default 分支仍由基础数值区表达，不额外加条件标签。
-                    if (!useCase || useCase._isDefault || !useCase.name) continue;
+                    if (useCase._isDefault || !useCase.name) {
+                        if (!defaultBranchHitBehavior) {
+                            defaultBranchHitBehavior = (useCase.override && useCase.override.hitBehavior)
+                                ? useCase.override.hitBehavior
+                                : ((useCase.merge && useCase.merge.hitBehavior) ? useCase.merge.hitBehavior : null);
+                        }
+                        continue;
+                    }
 
                     // 收集此分支的主要效果
                     var effects:Array = [];
@@ -269,9 +279,13 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                         }
                     }
 
-                    // 声明式命中行为是嵌套 merge 对象，不能走通用 [object Object] 展示。
-                    if (useCase.merge && useCase.merge.hitBehavior) {
-                        var hitBehaviorSummary:String = UseSwitchStatsBuilder.buildHitBehaviorSummary(useCase.merge.hitBehavior);
+                    // 声明式命中行为是嵌套对象（override.hitBehavior 或兼容旧 merge.hitBehavior），不能走通用 [object Object] 展示。
+                    var branchHitBehavior:Object = (useCase.override && useCase.override.hitBehavior)
+                        ? useCase.override.hitBehavior
+                        : ((useCase.merge && useCase.merge.hitBehavior) ? useCase.merge.hitBehavior : null);
+                    if (branchHitBehavior) {
+                        hasMatchedBranchHitBehavior = true;
+                        var hitBehaviorSummary:String = UseSwitchStatsBuilder.buildHitBehaviorSummary(branchHitBehavior);
                         if (hitBehaviorSummary.length > 0) {
                             effects.push(hitBehaviorSummary);
                         }
@@ -285,6 +299,22 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
 
                 if (useSwitchHints.length > 0) {
                     overrideEffectParts.push(" <font color='" + TooltipConstants.COL_USE_SWITCH + "'>[" + useSwitchHints.join("; ") + "]</font>");
+                }
+            }
+
+            // 未命中条件 hitBehavior 分支（如冲锋枪/长枪走根级 base 档位）时，输出当前生效的基础 hitBehavior 摘要
+            if (!hasMatchedBranchHitBehavior && modInfo && modInfo.stats) {
+                var baseHitBehavior:Object = defaultBranchHitBehavior;
+                if (!baseHitBehavior) {
+                    baseHitBehavior = (modInfo.stats.override && modInfo.stats.override.hitBehavior)
+                        ? modInfo.stats.override.hitBehavior
+                        : ((modInfo.stats.merge && modInfo.stats.merge.hitBehavior) ? modInfo.stats.merge.hitBehavior : null);
+                }
+                if (baseHitBehavior) {
+                    var baseHitBehaviorSummary:String = UseSwitchStatsBuilder.buildHitBehaviorSummary(baseHitBehavior);
+                    if (baseHitBehaviorSummary.length > 0) {
+                        overrideEffectParts.push(" <font color='" + TooltipConstants.COL_USE_SWITCH + "'>[" + baseHitBehaviorSummary + "]</font>");
+                    }
                 }
             }
 

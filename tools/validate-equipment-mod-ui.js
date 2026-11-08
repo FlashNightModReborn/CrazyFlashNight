@@ -44,6 +44,184 @@ function fail(errors, message) {
   errors.push(message);
 }
 
+const hitBehaviorRequiredKeys = [
+  'type', 'stackGroup', 'profileId',
+  'decayDelay', 'decayInterval', 'maxStacks',
+  'hitStacks', 'breakStacks', 'milestoneInterval',
+  'damagePerStack', 'crumblePerMilestone', 'executeAtMax',
+  'sameSourceOnly'
+];
+const hitBehaviorAllowedKeySet = new Set(hitBehaviorRequiredKeys);
+const hitBehaviorIntKeys = new Set([
+  'decayDelay', 'decayInterval', 'maxStacks',
+  'hitStacks', 'breakStacks', 'milestoneInterval'
+]);
+const hitBehaviorFloatKeys = new Set([
+  'damagePerStack', 'crumblePerMilestone', 'executeAtMax'
+]);
+const hitBehaviorProfileIndex = new Map();
+let hitBehaviorProfileCount = 0;
+
+function parseChildTags(xmlFragment) {
+  const tags = [];
+  const re = /<([A-Za-z0-9_]+)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/g;
+  let m;
+  while ((m = re.exec(xmlFragment))) {
+    tags.push({ name: m[1], value: m[2].trim() });
+  }
+  return tags;
+}
+
+function validateHitBehaviorXmlBlock(errors, modName, location, hbXml) {
+  const childTags = parseChildTags(hbXml);
+  const map = new Map();
+  for (const t of childTags) {
+    if (!hitBehaviorAllowedKeySet.has(t.name)) {
+      fail(errors, `[hitBehavior:HB_UNKNOWN_FIELD] ${modName} (${location}) 含未知字段 <${t.name}>`);
+    }
+    if (map.has(t.name)) {
+      fail(errors, `[hitBehavior:HB_DUPLICATE_FIELD] ${modName} (${location}) 重复声明字段 <${t.name}>`);
+    }
+    map.set(t.name, t.value);
+  }
+  for (const reqKey of hitBehaviorRequiredKeys) {
+    if (!map.has(reqKey) || map.get(reqKey) === '') {
+      fail(errors, `[hitBehavior:HB_MISSING_FIELD] ${modName} (${location}) 缺少必填字段 <${reqKey}>`);
+    }
+  }
+  if (map.size < hitBehaviorRequiredKeys.length) return null;
+
+  const type = map.get('type');
+  if (type !== 'grayGooPrimer' && type !== 'toughnessVulnerabilityPrimer') {
+    fail(errors, `[hitBehavior:HB_UNSUPPORTED_BEHAVIOR_TYPE] ${modName} (${location}) 非法 type: ${type}`);
+  }
+  const stackGroup = map.get('stackGroup');
+  const profileId = map.get('profileId');
+  if (!stackGroup || stackGroup.includes('|')) {
+    fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) 非法 stackGroup: ${stackGroup}`);
+  }
+  if (!profileId || profileId.includes('|')) {
+    fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) 非法 profileId: ${profileId}`);
+  }
+  const sameSourceOnlyRaw = map.get('sameSourceOnly');
+  if (sameSourceOnlyRaw !== 'true' && sameSourceOnlyRaw !== 'false') {
+    fail(errors, `[hitBehavior:HB_TYPE_MISMATCH] ${modName} (${location}) sameSourceOnly 必须为 true/false`);
+  }
+
+  const nums = {};
+  for (const k of hitBehaviorIntKeys) {
+    const raw = map.get(k);
+    const n = Number(raw);
+    if (!Number.isFinite(n) || !/^-?\d+$/.test(raw)) {
+      fail(errors, `[hitBehavior:HB_TYPE_MISMATCH] ${modName} (${location}) <${k}> 必须为整数: ${raw}`);
+    }
+    nums[k] = n;
+  }
+  for (const k of hitBehaviorFloatKeys) {
+    const raw = map.get(k);
+    const n = Number(raw);
+    if (!Number.isFinite(n)) {
+      fail(errors, `[hitBehavior:HB_INVALID_NUMBER] ${modName} (${location}) <${k}> 必须为有限数值: ${raw}`);
+    }
+    nums[k] = n;
+  }
+
+  if (nums.decayDelay < 1) fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) decayDelay < 1`);
+  if (nums.decayInterval < 1) fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) decayInterval < 1`);
+  if (nums.maxStacks < 1 || nums.maxStacks > 18) fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) maxStacks 超出 [1,18]`);
+  if (nums.milestoneInterval < 1 || nums.milestoneInterval > nums.maxStacks || (nums.maxStacks % nums.milestoneInterval) !== 0 || (nums.maxStacks / nums.milestoneInterval) < 1 || (nums.maxStacks / nums.milestoneInterval) > 3) {
+    fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) milestoneInterval 必须整除 maxStacks 且节点数在 1..3 之间`);
+  }
+  if (nums.hitStacks < 1 || nums.hitStacks >= nums.milestoneInterval || nums.hitStacks > nums.maxStacks) {
+    fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) hitStacks 必须满足 1 <= hitStacks < milestoneInterval`);
+  }
+  if (nums.breakStacks < 1 || nums.breakStacks > nums.maxStacks) {
+    fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) breakStacks 超出 [1,maxStacks]`);
+  }
+  if (nums.damagePerStack < 0 || nums.damagePerStack > 1) fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) damagePerStack 超出 [0,1]`);
+  if (nums.crumblePerMilestone < 0 || nums.crumblePerMilestone > 100) fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) crumblePerMilestone 超出 [0,100]`);
+  if (nums.executeAtMax < 0 || nums.executeAtMax > 100) fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) executeAtMax 超出 [0,100]`);
+
+  const profile = {
+    type,
+    stackGroup,
+    profileId,
+    sameSourceOnly: sameSourceOnlyRaw === 'true',
+    ...nums
+  };
+  const identityKey = `${stackGroup}|${profileId}`;
+  const shapeJson = JSON.stringify({
+    type: profile.type,
+    maxStacks: profile.maxStacks,
+    milestoneInterval: profile.milestoneInterval,
+    damagePerStack: profile.damagePerStack,
+    sameSourceOnly: profile.sameSourceOnly,
+    decayDelay: profile.decayDelay,
+    decayInterval: profile.decayInterval,
+    hitStacks: profile.hitStacks,
+    breakStacks: profile.breakStacks,
+    crumblePerMilestone: profile.crumblePerMilestone,
+    executeAtMax: profile.executeAtMax
+  });
+  if (hitBehaviorProfileIndex.has(identityKey)) {
+    const prev = hitBehaviorProfileIndex.get(identityKey);
+    if (prev.shapeJson !== shapeJson) {
+      fail(errors, `[hitBehavior:HB_IDENTITY_SHAPE_CONFLICT] ${modName} (${location}) 的 (${identityKey}) 与 ${prev.location} 形状不一致`);
+    }
+  } else {
+    hitBehaviorProfileIndex.set(identityKey, { shapeJson, location: `${modName}:${location}`, profile });
+  }
+  hitBehaviorProfileCount += 1;
+  return profile;
+}
+
+function validateModHitBehaviorContract(errors, modName, modBlock) {
+  if (!modBlock.includes('<hitBehavior>')) return;
+
+  // 禁止在 merge / softOverride / lockOverride / baseSwitch / tagSwitch / bulletSwitch 中声明 hitBehavior
+  for (const badOp of ['merge', 'softOverride', 'lockOverride', 'baseSwitch', 'tagSwitch', 'bulletSwitch']) {
+    for (const opBlock of blocks(modBlock, badOp)) {
+      if (opBlock.includes('<hitBehavior>')) {
+        fail(errors, `[hitBehavior:HB_OPERATOR_CONFLICT] ${modName} 在 <${badOp}> 中声明了 <hitBehavior>，必须使用完整 <override><hitBehavior>`);
+      }
+    }
+  }
+
+  const statsBlocks = blocks(modBlock, 'stats');
+  if (statsBlocks.length !== 1) return;
+  const statsXml = statsBlocks[0];
+  const statsWithoutUseSwitch = statsXml.replace(/<useSwitch>[\s\S]*?<\/useSwitch>/g, '');
+  const rootOverrides = blocks(statsWithoutUseSwitch, 'override');
+  let rootHbCount = 0;
+  for (const ov of rootOverrides) {
+    for (const hb of blocks(ov, 'hitBehavior')) {
+      rootHbCount += 1;
+      validateHitBehaviorXmlBlock(errors, modName, 'stats.override.hitBehavior', hb);
+    }
+  }
+
+  const useSwitchBlocks = blocks(statsXml, 'useSwitch');
+  let branchHbCount = 0;
+  for (const us of useSwitchBlocks) {
+    const useRe = /<use(?:\s+name="([^"]*)")?\s*>([\s\S]*?)<\/use>/g;
+    let m;
+    while ((m = useRe.exec(us))) {
+      const useName = (m[1] || 'default').trim();
+      const useBody = m[2];
+      for (const ov of blocks(useBody, 'override')) {
+        for (const hb of blocks(ov, 'hitBehavior')) {
+          branchHbCount += 1;
+          validateHitBehaviorXmlBlock(errors, modName, `useSwitch[${useName}].override.hitBehavior`, hb);
+        }
+      }
+    }
+  }
+
+  if (branchHbCount > 0 && rootHbCount === 0) {
+    fail(errors, `[hitBehavior:HB_MISSING_FIELD] ${modName} 在 useSwitch 中声明了 override.hitBehavior，但缺少根级 stats.override.hitBehavior`);
+  }
+}
+
 const errors = [];
 const listXml = read(listPath);
 const presentationName = text(listXml, 'uiPresentation');
@@ -134,6 +312,27 @@ for (const fileName of sourceFiles) {
     if (!tag) fail(errors, name + ' 缺少 tag');
     if (!role) fail(errors, name + ' 的 tag 缺少默认 uiRole: ' + tag);
     else if (!roleMap.has(role)) fail(errors, name + ' 解析到未知 uiRole: ' + role);
+    validateModHitBehaviorContract(errors, name, block);
+  }
+}
+
+// 验证灰蛊裂隙弹三档完整黄金数值契约（#208）
+const expectedGrayGooProfiles = {
+  'grayGooVulnerability|base': { crumblePerMilestone: 1, executeAtMax: 8, hitStacks: 1, breakStacks: 1, decayDelay: 90, decayInterval: 10 },
+  'grayGooVulnerability|highPowerHandgun': { crumblePerMilestone: 0.1, executeAtMax: 5, hitStacks: 2, breakStacks: 2, decayDelay: 90, decayInterval: 10 },
+  'grayGooVulnerability|handgun': { crumblePerMilestone: 0.3, executeAtMax: 8, hitStacks: 3, breakStacks: 3, decayDelay: 150, decayInterval: 15 }
+};
+for (const [idKey, exp] of Object.entries(expectedGrayGooProfiles)) {
+  const entry = hitBehaviorProfileIndex.get(idKey);
+  if (!entry) {
+    fail(errors, `[hitBehavior:GOLDEN_MISSING] 缺少灰蛊裂隙弹黄金档位: ${idKey}`);
+    continue;
+  }
+  const p = entry.profile;
+  for (const [k, v] of Object.entries(exp)) {
+    if (p[k] !== v) {
+      fail(errors, `[hitBehavior:GOLDEN_MISMATCH] ${idKey}.${k} 期望 ${v}，实际 ${p[k]}`);
+    }
   }
 }
 
@@ -176,4 +375,5 @@ console.log('[equipment-mod-ui] ok mods=' + total
   + ' high=' + counts.high + ' special=' + counts.special
   + ' scopes=' + Object.entries(scopeCounts).map(([id, count]) => id + ':' + count).join(',')
   + ' tags=' + seenTags.size + ' roles=' + roleMap.size
-  + ' pluginMaterials=' + pluginMaterialNames.size);
+  + ' pluginMaterials=' + pluginMaterialNames.size
+  + ' hitBehaviorProfiles=' + hitBehaviorProfileCount);

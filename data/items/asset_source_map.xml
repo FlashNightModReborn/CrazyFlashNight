@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5943 unique assets -->
+  <!-- 5957 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -59,11 +59,19 @@
   <asset id="M24手榴弹" swf="flashswf/arts/new/公共素材位1.swf" symbolName="7.飞龙素材/M24手榴弹/M24手榴弹" />
   <asset id="MC_Button" swf="flashswf/UI/地铁线路.swf" symbolName="任务按钮/按钮" />
   <asset id="NPC头像框" swf="flashswf/UI/对话框界面.swf" />
+  <asset id="Noah_acidDrop" swf="flashswf/movies/尸母巢穴巨型尸母.swf" />
+  <asset id="Noah_acidFlame" swf="flashswf/movies/尸母巢穴巨型尸母.swf" />
+  <asset id="Noah_acidRupture" swf="flashswf/movies/尸母巢穴巨型尸母.swf" />
+  <asset id="Noah_acidSplash" swf="flashswf/movies/尸母巢穴巨型尸母.swf" />
+  <asset id="Noah_serumDrop" swf="flashswf/movies/尸母巢穴巨型尸母.swf" />
+  <asset id="Noah_serumFlame" swf="flashswf/movies/尸母巢穴巨型尸母.swf" />
+  <asset id="Noah_serumSplash" swf="flashswf/movies/尸母巢穴巨型尸母.swf" />
   <asset id="PIGBOY" swf="flashswf/arts/new/pigboy.swf" />
   <asset id="PTXOA馆长_JohnWick系列" swf="flashswf/arts/new/PTXOA馆长_JohnWick系列.swf" symbolName="JohnWick" />
   <asset id="_loc119_" swf="flashswf/arts/things0.swf" symbolName="神秘文件夹/神秘影片剪辑" />
   <asset id="buff详细图标" swf="flashswf/arts/新版人物文字信息.swf" symbolName="素材-buff详细图标/buff详细图标" />
   <asset id="fm92刺弹炮弹" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/fm刺弹炮弹文件/fm92刺弹炮弹" />
+  <asset id="fm92刺弹炮弹 副本" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/fm刺弹炮弹文件/fm92刺弹炮弹 副本" />
   <asset id="fm直射刺弹" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/fm直射刺弹素材/fm直射刺弹" />
   <asset id="fsc7炮弹" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/fsc7炮弹文件/fsc7炮弹" />
   <asset id="fs配置素材" swf="flashswf/arts/new/fs配置素材.swf" />
@@ -2373,6 +2381,8 @@
   <asset id="地图-剑道社" swf="flashswf/levels/地图-剑道社.swf" />
   <asset id="地图-同盟下水道" swf="flashswf/levels/地图-同盟下水道.swf" />
   <asset id="地图-同盟卸货站" swf="flashswf/levels/地图-同盟卸货站.swf" />
+  <asset id="地图-同盟咖啡厅" swf="flashswf/levels/地图-同盟咖啡厅.swf" />
+  <asset id="地图-同盟指挥室" swf="flashswf/levels/地图-同盟指挥室.swf" />
   <asset id="地图-同盟通路" swf="flashswf/levels/地图-同盟通路.swf" />
   <asset id="地图-堕落城商业街" swf="flashswf/levels/地图-堕落城商业街.swf" />
   <asset id="地图-堕落城酒吧" swf="flashswf/levels/地图-堕落城酒吧.swf" />
@@ -2395,8 +2405,11 @@
   <asset id="地图-测试空间" swf="flashswf/levels/地图-测试空间.swf" />
   <asset id="地图-理科教室" swf="flashswf/levels/地图-教学楼内部.swf" />
   <asset id="地图-界外街道" swf="flashswf/levels/地图-界外街道.swf" />
+  <asset id="地图-研究所农业园" swf="flashswf/levels/地图-研究所农业园.swf" />
   <asset id="地图-研究所接待处" swf="flashswf/levels/地图-研究所接待处.swf" />
+  <asset id="地图-研究所生化室" swf="flashswf/levels/地图-研究所生化室.swf" />
   <asset id="地图-研究所通路" swf="flashswf/levels/地图-研究所通路.swf" />
+  <asset id="地图-研究所防线" swf="flashswf/levels/地图-研究所防线.swf" />
   <asset id="地图-第一防线防区" swf="flashswf/levels/地图-第一防线防区.swf" />
   <asset id="地图-联合大学" swf="flashswf/levels/地图-联合大学.swf" />
   <asset id="地图-走廊" swf="flashswf/levels/地图-走廊.swf" />
@@ -4394,6 +4407,7 @@
   <asset id="灯光增幅" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/00.增幅系列/灯光增幅/灯光增幅" />
   <asset id="灰尘1" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="特效-击中效果组/灰尘1" />
   <asset id="灰烬晨星的设定书架" swf="flashswf/arts/new/灰烬晨星的设定书架.swf" />
+  <asset id="灰蛊裂隙特效" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/灰蛊裂隙/灰蛊裂隙特效" />
   <asset id="灼烧弹坑" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="特效-血液组/灼烧弹坑" />
   <asset id="炎飞燕" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/炎飞燕" />
   <asset id="炎魔刀光" swf="flashswf/arts/new/fs配置素材.swf" symbolName="炎魔斩/炎魔斩刀光/炎魔刀光" />

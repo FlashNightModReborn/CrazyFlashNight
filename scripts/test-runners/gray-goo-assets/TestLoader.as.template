@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId gray-goo-assets Start: __FOCUSED_RUN_ID__");
+_root.grayGooAssetComplete = function():Void {
+    trace("FocusedTestRunId gray-goo-assets Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.render.GrayGooAssetTest.runAllTests();

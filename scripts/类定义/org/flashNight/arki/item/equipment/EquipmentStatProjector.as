@@ -45,13 +45,15 @@ class org.flashNight.arki.item.equipment.EquipmentStatProjector {
         if (isNaN(level) || level < 1) level = 1;
         var mods:Array = (safeValue.mods instanceof Array) ? safeValue.mods : [];
 
-        EquipmentCalculator.calculateInPlace(
+        var calculated:Object = EquipmentCalculator.calculateInPlace(
             itemData,
             {level:level, tier:safeValue.tier, mods:mods},
             EquipmentConfigManager.getFullConfig(),
             ModRegistry.getModDict());
+        // 计算失败时原对象仍保留基础字段，不能将它们冒充最终生效属性。
+        if (calculated == null) return rows;
 
-        var data:Object = itemData.data;
+        var data:Object = calculated.data;
         if (data == null) return rows;
 
         // 数值属性行：仅提取 PROPERTY_DICT 收录的权威展示字段

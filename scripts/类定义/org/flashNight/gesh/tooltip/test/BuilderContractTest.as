@@ -602,8 +602,13 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
 
         assertContains(joined, TooltipConstants.LBL_GRAY_GOO_BEHAVIOR, "ModStatBuilder uses compact gray-goo label");
         assertContains(joined, "18格，每格易伤+1%", "ModStatBuilder combines cap and vulnerability");
-        assertContains(joined, "命中/破韧+1格；每6格击溃0.1%", "ModStatBuilder combines base triggers");
-        assertContains(joined, "满层斩杀5%；停火3秒后衰减", "ModStatBuilder combines sustain rules");
+        assertContains(joined, "命中/破韧+1格；每6格击溃1%", "ModStatBuilder combines base triggers");
+        assertContains(joined, "满层斩杀8%；停火3秒后衰减", "ModStatBuilder combines sustain rules");
+        assertContains(joined, "首跨6/12/18格削上限并伤血（Ⅰ/Ⅱ/Ⅲ阶标记）；退至12/6/0格重装",
+                       "ModStatBuilder explains milestone crumble and decay re-arming");
+        assertContains(joined, "武器子类：大威力手枪", "ModStatBuilder translates high-power handgun branch label");
+        assertContains(joined, "命中/破韧+2格；节点击溃0.1%；满层斩杀5%；停火3秒后衰减",
+                       "ModStatBuilder compresses high-power handgun complete profile to one line");
         assertContains(joined, "武器子类：手枪", "ModStatBuilder translates qualified useSwitch label");
         assertContains(joined, "命中/破韧+3格；节点击溃0.3%；满层斩杀8%；停火5秒后衰减",
                        "ModStatBuilder compresses handgun overrides to one line");
@@ -628,6 +633,15 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         );
         var handgunJoined:String = handgunResult.join("");
 
+        var highPowerResult:Array = [];
+        ModsBlockBuilder.build(
+            highPowerResult,
+            null,
+            {use: "手枪", weapontype: "大威力手枪"},
+            {mods: ["行为弹药插件"]}
+        );
+        var highPowerJoined:String = highPowerResult.join("");
+
         var machinePistolResult:Array = [];
         ModsBlockBuilder.build(
             machinePistolResult,
@@ -642,6 +656,11 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         assertContains(handgunJoined, "武器子类：手枪", "ModsBlockBuilder shows matched qualified handgun branch");
         assertContains(handgunJoined, "命中/破韧+3格；节点击溃0.3%；满层斩杀8%；停火5秒后衰减",
                        "ModsBlockBuilder uses one semantic handgun summary");
+        assertContains(highPowerJoined, "武器子类：大威力手枪", "ModsBlockBuilder shows matched high-power handgun branch");
+        assertContains(highPowerJoined, "命中/破韧+2格；节点击溃0.1%；满层斩杀5%；停火3秒后衰减",
+                       "ModsBlockBuilder uses one semantic high-power handgun summary");
+        assertContains(machinePistolJoined, "命中/破韧+1格；上限18格；每格易伤+1%；每6格击溃1%；满层斩杀8%；停火3秒后衰减",
+                       "ModsBlockBuilder shows base hitBehavior summary when no useSwitch branch matches");
         assertNotContains(machinePistolJoined, "武器子类：手枪", "ModsBlockBuilder does not match handgun branch for machine pistol");
         assertNotContains(machinePistolJoined, "命中/破韧+3格", "ModsBlockBuilder does not leak handgun bonus to machine pistol");
     }
@@ -903,12 +922,14 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
     private static function buildHitBehaviorUseSwitchFixture():Object {
         return {
             name: "行为弹药插件",
-            use: "手枪",
+            use: "手枪,长枪",
             tagValue: "弹药",
             stats: {
-                merge: {
+                override: {
                     hitBehavior: {
                         type: "grayGooPrimer",
+                        stackGroup: "grayGooVulnerability",
+                        profileId: "base",
                         decayDelay: 90,
                         decayInterval: 10,
                         maxStacks: 18,
@@ -916,22 +937,48 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
                         breakStacks: 1,
                         milestoneInterval: 6,
                         damagePerStack: 0.01,
-                        crumblePerMilestone: 0.1,
-                        executeAtMax: 5,
+                        crumblePerMilestone: 1,
+                        executeAtMax: 8,
                         sameSourceOnly: true
                     }
                 },
                 useSwitch: {
                     useCases: [{
-                        name: "weapontype:手枪",
-                        merge: {
+                        name: "weapontype:大威力手枪",
+                        override: {
                             hitBehavior: {
+                                type: "grayGooPrimer",
+                                stackGroup: "grayGooVulnerability",
+                                profileId: "highPowerHandgun",
+                                decayDelay: 90,
+                                decayInterval: 10,
+                                maxStacks: 18,
+                                hitStacks: 2,
+                                breakStacks: 2,
+                                milestoneInterval: 6,
+                                damagePerStack: 0.01,
+                                crumblePerMilestone: 0.1,
+                                executeAtMax: 5,
+                                sameSourceOnly: true
+                            }
+                        }
+                    }, {
+                        name: "weapontype:手枪",
+                        override: {
+                            hitBehavior: {
+                                type: "grayGooPrimer",
+                                stackGroup: "grayGooVulnerability",
+                                profileId: "handgun",
                                 decayDelay: 150,
                                 decayInterval: 15,
+                                maxStacks: 18,
                                 hitStacks: 3,
                                 breakStacks: 3,
+                                milestoneInterval: 6,
+                                damagePerStack: 0.01,
                                 crumblePerMilestone: 0.3,
-                                executeAtMax: 8
+                                executeAtMax: 8,
+                                sameSourceOnly: true
                             }
                         }
                     }]

@@ -91,6 +91,10 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         // Step 3: 累积配件修改器
         // 【扩展】传入完整 itemData 以支持 tagSwitch（基于结构的条件加成）
         var modifiers:Object = accumulateModifiers(value.mods, itemData, modRegistry);
+        if (itemData._hitBehaviorInvalid === true) {
+            if (data) delete data.hitBehavior;
+            return null;
+        }
 
         // Step 4: 按顺序应用所有运算符
         applyOperatorsInOrder(data, baseMultiplier, modifiers);
@@ -115,6 +119,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
     private static function projectSingleHand(itemData:Object, source:Object, value:Object, config:Object, mods:Object):Void {
         if (!source) return;
         var single:Object = calculateInPlace(source, value, config, mods);
+        if (!single || !single.data) return;
         itemData.data.singleHandPowerBonus = Number(single.data.power) - Number(itemData.data.power);
         itemData.data.singleHandAttackBonusType = "长枪";
     }
@@ -225,6 +230,20 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         // 提取子弹类型（用于 bulletSwitch 匹配）
         var bulletType:String = (itemData.data && itemData.data.bullet) ? itemData.data.bullet : "";
 
+        // 校验 hitBehavior 提供者与分支命中唯一性契约（#208）
+        var hbProvision:Object = ModRegistry.validateHitBehaviorProvision(mods, itemData, modRegistry, useLookup);
+        if (!hbProvision.valid) {
+            itemData._hitBehaviorDiagnostics = hbProvision.diagnostics;
+            itemData._hitBehaviorInvalid = true;
+        } else {
+            if (itemData._hitBehaviorDiagnostics != undefined) {
+                delete itemData._hitBehaviorDiagnostics;
+            }
+            if (itemData._hitBehaviorInvalid != undefined) {
+                delete itemData._hitBehaviorInvalid;
+            }
+        }
+
         // 第二轮：遍历配件，累积修改器
         for (var i:Number = 0; i < mods.length; i++) {
             var modInfo:Object = modRegistry[mods[i]];
@@ -287,6 +306,13 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             if (!subweapon && modInfo.subweapon) {
                 subweapon = SubweaponDataUtil.normalizeSubweapon(modInfo.subweapon);
             }
+        }
+
+        if (!hbProvision.valid) {
+            delete softOverrider.hitBehavior;
+            delete overrider.hitBehavior;
+            delete merger.hitBehavior;
+            delete lockOverrider.hitBehavior;
         }
 
         return {
@@ -414,6 +440,10 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         PropertyOperators.override(data, ObjectUtil.cloneFast(modifiers.overrider)); // 6. 覆盖值
         PropertyOperators.merge(data, modifiers.merger);                 // 7. 深度合并
         PropertyOperators.override(data, ObjectUtil.cloneFast(modifiers.lockOverrider)); // 8. 锁定值
+        // 确保嵌套 hitBehavior 字典不与 ModRegistry 共享引用（D03）
+        if (data.hitBehavior && typeof data.hitBehavior == "object") {
+            data.hitBehavior = ObjectUtil.cloneFast(data.hitBehavior);
+        }
 
         // 【优化】仅当baseData存在时应用cap
         if (baseData) {

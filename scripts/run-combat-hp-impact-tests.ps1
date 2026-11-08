@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param(
     [ValidateRange(1, 3600)]
     [int]$TimeoutSeconds = 240,
@@ -82,9 +82,9 @@ $focusedRun = @{
         'org.flashNight.arki.bullet.BulletComponent.Queue.ToughnessVulnerabilityPipelineTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^=== ToughnessVulnerabilityPipelineTest result: passed=159 failed=0 ===\r?$'
+        '(?m)^=== ToughnessVulnerabilityPipelineTest result: passed=191 failed=0 ===\r?$'
     )
-    SuccessSummary = 'ToughnessVulnerabilityPipelineTest 159/159 assertions'
+    SuccessSummary = 'ToughnessVulnerabilityPipelineTest 191/191 assertions'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

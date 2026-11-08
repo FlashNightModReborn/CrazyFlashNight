@@ -157,7 +157,12 @@ class org.flashNight.arki.item.equipment.TagManager {
         var mods:Array = item.value.mods || [];
         var modData:Object = ModRegistry.getModData(modName);
 
-        if (!modData) return 0; // 配件不存在
+        if (!modData) {
+            if (ModRegistry.isInvalidHitBehaviorMod(modName)) {
+                return -1024; // hitBehavior 契约校验失败被拒绝发布的配件
+            }
+            return 0; // 配件不存在
+        }
 
         // 检查槽位
         if (!itemData || !itemData.data) return 0;
@@ -263,6 +268,23 @@ class org.flashNight.arki.item.equipment.TagManager {
 
         // Independent functional lifecycles do not claim the skill/subweapon slot.
         if (modData.lifecycle != undefined && !EquipmentLifecyclePolicy.isIndependentLifecycle(modData.lifecycle)) return -1024;
+
+        // 检查 hitBehavior 配置契约与单提供者/单分支命中约束（#208）
+        if (modData._hitBehaviorValidated !== true) {
+            ModRegistry.validateModHitBehavior(modData, null);
+        }
+        if (modData._hasHitBehavior || modData.grantsUseDict || mods.length > 0) {
+            var candidateMods:Array = mods.concat([modName]);
+            var candidateUseLookup:Object = modData.grantsUseDict
+                ? buildUseLookupForMods(candidateMods, itemData, ModRegistry.getModDict())
+                : itemUseLookup;
+            var hbCheck:Object = ModRegistry.validateHitBehaviorProvision(
+                candidateMods, itemData, ModRegistry.getModDict(), candidateUseLookup
+            );
+            if (!hbCheck.valid) {
+                return -1024;
+            }
+        }
 
         // 检查子弹类型排斥
         if (modData.excludeBulletTypeDict && itemData.data && itemData.data.bullet) {
@@ -507,6 +529,24 @@ class org.flashNight.arki.item.equipment.TagManager {
                     canUse = false;
                     if (_debugMode) {
                         trace("[TagManager] 过滤掉 '" + modName + "': 安装条件不满足");
+                    }
+                }
+            }
+
+            if (canUse) {
+                if (modData._hitBehaviorValidated !== true) {
+                    ModRegistry.validateModHitBehavior(modData, null);
+                }
+                if (modData._hasHitBehavior || modData.grantsUseDict || (item.value.mods && item.value.mods.length > 0)) {
+                    var filterCandMods:Array = (item.value.mods || []).concat([modName]);
+                    var filterCandLookup:Object = modData.grantsUseDict
+                        ? buildUseLookupForMods(filterCandMods, itemData, ModRegistry.getModDict())
+                        : itemUseLookup;
+                    var filterHbCheck:Object = ModRegistry.validateHitBehaviorProvision(
+                        filterCandMods, itemData, ModRegistry.getModDict(), filterCandLookup
+                    );
+                    if (!filterHbCheck.valid) {
+                        canUse = false;
                     }
                 }
             }

@@ -126,6 +126,27 @@ class org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest {
         same(16.5,stat("M134",["磁稳贯穿弹"]),"vertical preview retains split-based shot density");
         var lines:Array=[];UseSwitchStatsBuilder.buildStatBlock(lines,{curve:{diffusion:1.414}},"");
         check(lines.join("").indexOf("压缩等级 20")>=0,"legacy compression tooltip remains intact");
+        testRejectedHitBehaviorPreview();
+    }
+    private static function testRejectedHitBehaviorPreview():Void {
+        var name:String="TTI 2011 Combat Master";
+        var value:Object={level:1,mods:["灰蛊裂隙弹"]};
+        var grayGoo:Object=ModRegistry.getModData("灰蛊裂隙弹");
+        check(grayGoo!=null && items[name]!=null,"rejected preview uses real weapon and gray-goo XML");
+        check(EquipmentStatProjector.project(name,value).length>0,"valid gray-goo equipment exposes final preview rows");
+
+        var malformed:Object=ObjectUtil.clone(grayGoo);
+        delete malformed.stats.override.hitBehavior.maxStacks;
+        ModRegistry.loadModData([malformed]);
+        check(ModRegistry.hasHitBehaviorDiagnostics(),"malformed preview fixture fails the production schema");
+        check(EquipmentStatProjector.project(name,value).length==0,"rejected provider never exposes raw weapon stats as final rows");
+
+        ModRegistry.loadModData([{name:"预览无关插件",use:"手枪",stats:{}}]);
+        check(EquipmentStatProjector.project(name,value).length==0,"missing installed provider exposes no final preview rows");
+
+        ModRegistry.loadModData(mods);
+        EquipmentUtil.modDict=ModRegistry.getModDict();
+        check(EquipmentStatProjector.project(name,value).length>0,"restoring valid resources restores the final preview");
     }
     private static function testBounds():Void {
         var monotone:Boolean=true, bounded:Boolean=true, previous:Number=0;

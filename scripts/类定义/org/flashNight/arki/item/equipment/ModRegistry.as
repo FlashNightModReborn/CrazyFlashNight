@@ -31,6 +31,13 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     // 调试模式
     private static var _debugMode:Boolean = false;
 
+    // hitBehavior 身份形状索引与诊断记录（#208）
+    private static var _hitBehaviorProfileIndex:Object = {};
+    private static var _hitBehaviorDiagnostics:Array = [];
+    private static var _hitBehaviorAllowedKeys:Object = null;
+    private static var _invalidHitBehaviorMods:Object = {};
+    private static var _knownHitBehaviorProviders:Object = {灰蛊裂隙弹: true};
+
     /**
      * 加载配件数据
      * @param modData 配件数据数组
@@ -47,6 +54,9 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         _modDict = {};
         _modList = [];
         _displayNameToModName = {}; // 【方案A实施】重置displayname索引
+        _hitBehaviorProfileIndex = {};
+        _hitBehaviorDiagnostics = [];
+        _invalidHitBehaviorMods = {};
         _modUseLists = {
             头部装备: [],
             上装装备: [],
@@ -80,17 +90,6 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         if (!mod || !mod.name) return;
 
         var name:String = mod.name;
-
-        // 1. 处理use列表（装备类型）
-        if (mod.use) {
-            var useArr:Array = mod.use.split(",");
-            for (var useIndex:Number = 0; useIndex < useArr.length; useIndex++) {
-                var useKey:String = StringUtils.trim(useArr[useIndex]);
-                if (_modUseLists[useKey]) {
-                    _modUseLists[useKey].push(name);
-                }
-            }
-        }
 
         // 2. 处理weapontype（武器类型限制 - 白名单）
         if (mod.weapontype) {
@@ -169,6 +168,25 @@ class org.flashNight.arki.item.equipment.ModRegistry {
 
         // 15. 处理和优化skillSwitch（基于装备类型的条件战技）
         processSkillSwitch(mod);
+
+        // 16. 校验并注册 hitBehavior 声明式配置契约（#208）
+        // 若 hitBehavior 校验失败，在加载边界拒绝发布该失效配件，避免其进入可用列表或半残生效
+        validateAndRegisterModHitBehavior(mod);
+        if (mod._hitBehaviorInvalid === true) {
+            _invalidHitBehaviorMods[name] = mod;
+            return;
+        }
+
+        // 1. 处理use列表（装备类型）
+        if (mod.use) {
+            var useArr:Array = mod.use.split(",");
+            for (var useIndex:Number = 0; useIndex < useArr.length; useIndex++) {
+                var useKey:String = StringUtils.trim(useArr[useIndex]);
+                if (_modUseLists[useKey]) {
+                    _modUseLists[useKey].push(name);
+                }
+            }
+        }
 
         // 添加到注册表
         _modList.push(name);
@@ -1282,5 +1300,591 @@ class org.flashNight.arki.item.equipment.ModRegistry {
 
         // AND: 全部通过返回 true；OR: 全部未通过返回 false
         return isAll;
+    }
+
+    // ==================== hitBehavior 声明式配置契约（#208） ====================
+
+    public static function getHitBehaviorDiagnostics():Array {
+        return _hitBehaviorDiagnostics;
+    }
+
+    public static function hasHitBehaviorDiagnostics():Boolean {
+        return _hitBehaviorDiagnostics != null && _hitBehaviorDiagnostics.length > 0;
+    }
+
+    public static function getHitBehaviorProfileIndex():Object {
+        return _hitBehaviorProfileIndex;
+    }
+
+    public static function isInvalidHitBehaviorMod(modName:String):Boolean {
+        return Boolean(modName && _invalidHitBehaviorMods && _invalidHitBehaviorMods[modName]);
+    }
+
+    public static function getInvalidHitBehaviorMod(modName:String):Object {
+        return (modName && _invalidHitBehaviorMods) ? _invalidHitBehaviorMods[modName] : null;
+    }
+
+    public static function isKnownHitBehaviorProvider(modName:String):Boolean {
+        if (!modName) return false;
+        if (_knownHitBehaviorProviders && _knownHitBehaviorProviders[modName]) return true;
+        if (_invalidHitBehaviorMods && _invalidHitBehaviorMods[modName]) return true;
+        if (_modDict && _modDict[modName] && _modDict[modName]._hasHitBehavior) return true;
+        return false;
+    }
+
+    private static function evictInvalidModFromRegistry(modName:String, modRef:Object):Void {
+        if (!modName) return;
+        if (modRef) {
+            _invalidHitBehaviorMods[modName] = modRef;
+            if (modRef.displayname && _displayNameToModName[modRef.displayname] === modName) {
+                delete _displayNameToModName[modRef.displayname];
+            }
+        }
+        if (_modDict && _modDict[modName]) {
+            delete _modDict[modName];
+        }
+        for (var i:Number = _modList.length - 1; i >= 0; i--) {
+            if (_modList[i] === modName) {
+                _modList.splice(i, 1);
+            }
+        }
+        for (var useKey:String in _modUseLists) {
+            var uList:Array = _modUseLists[useKey];
+            if (!uList) continue;
+            for (var j:Number = uList.length - 1; j >= 0; j--) {
+                if (uList[j] === modName) {
+                    uList.splice(j, 1);
+                }
+            }
+        }
+    }
+
+    private static function getHitBehaviorAllowedKeys():Object {
+        if (_hitBehaviorAllowedKeys) return _hitBehaviorAllowedKeys;
+        _hitBehaviorAllowedKeys = {
+            type: true,
+            stackGroup: true,
+            profileId: true,
+            decayDelay: true,
+            decayInterval: true,
+            maxStacks: true,
+            hitStacks: true,
+            breakStacks: true,
+            milestoneInterval: true,
+            damagePerStack: true,
+            crumblePerMilestone: true,
+            executeAtMax: true,
+            sameSourceOnly: true
+        };
+        return _hitBehaviorAllowedKeys;
+    }
+
+    private static function hasGrayGooFields(hb:Object):Boolean {
+        if (!hb || typeof hb != "object") return false;
+        return String(hb.type) == "grayGooPrimer" ||
+               hb.decayDelay != undefined ||
+               hb.decayInterval != undefined ||
+               hb.hitStacks != undefined ||
+               hb.breakStacks != undefined ||
+               hb.milestoneInterval != undefined ||
+               hb.crumblePerMilestone != undefined ||
+               hb.executeAtMax != undefined;
+    }
+
+    private static function hasAnyHitBehaviorInCases(cases:Array):Boolean {
+        if (!cases) return false;
+        for (var i:Number = 0; i < cases.length; i++) {
+            var c:Object = cases[i];
+            if (!c) continue;
+            if ((c.override && c.override.hitBehavior != undefined) ||
+                (c.merge && c.merge.hitBehavior != undefined) ||
+                (c.softOverride && c.softOverride.hitBehavior != undefined) ||
+                (c.lockOverride && c.lockOverride.hitBehavior != undefined)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否为旧版 duration/maxDuration 增量合成测试夹具（仅保留向后兼容单测 D02）。
+     * 任何带 override/softOverride/lockOverride 或含 13 字段灰蛊契约字段的配置均走 #208 完整校验。
+     */
+    private static function isLegacyDurationHitBehaviorMod(mod:Object):Boolean {
+        if (!mod || !mod.stats) return false;
+        var st:Object = mod.stats;
+        if ((st.override && st.override.hitBehavior != undefined) ||
+            (st.softOverride && st.softOverride.hitBehavior != undefined) ||
+            (st.lockOverride && st.lockOverride.hitBehavior != undefined)) {
+            return false;
+        }
+        var rootMergeHb:Object = st.merge ? st.merge.hitBehavior : null;
+        if (!rootMergeHb || typeof rootMergeHb != "object") return false;
+        if (String(rootMergeHb.type) != "toughnessVulnerabilityPrimer") return false;
+        if (rootMergeHb.duration == undefined && rootMergeHb.maxDuration == undefined) return false;
+        if (hasGrayGooFields(rootMergeHb)) return false;
+
+        if (st.baseSwitch && hasAnyHitBehaviorInCases(st.baseSwitch.valueCases || normalizeToArray(st.baseSwitch.value))) return false;
+        if (st.tagSwitch && hasAnyHitBehaviorInCases(st.tagSwitch.tagCases || normalizeToArray(st.tagSwitch.tag))) return false;
+        if (st.bulletSwitch && hasAnyHitBehaviorInCases(st.bulletSwitch.bulletCases || normalizeToArray(st.bulletSwitch.bullet))) return false;
+
+        if (st.useSwitch) {
+            var uCases:Array = st.useSwitch.useCases ? st.useSwitch.useCases : normalizeToArray(st.useSwitch.use);
+            for (var i:Number = 0; i < uCases.length; i++) {
+                var uc:Object = uCases[i];
+                if (!uc) continue;
+                if ((uc.override && uc.override.hitBehavior != undefined) ||
+                    (uc.softOverride && uc.softOverride.hitBehavior != undefined) ||
+                    (uc.lockOverride && uc.lockOverride.hitBehavior != undefined)) {
+                    return false;
+                }
+                if (uc.merge && uc.merge.hitBehavior != undefined) {
+                    if (typeof uc.merge.hitBehavior != "object" || hasGrayGooFields(uc.merge.hitBehavior)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public static function validateAndRegisterModHitBehavior(mod:Object):Array {
+        return validateModHitBehavior(mod, _hitBehaviorProfileIndex);
+    }
+
+    public static function validateModHitBehavior(mod:Object, profileIndex:Object):Array {
+        if (!mod) return [];
+        var st:Object = mod.stats;
+        var hasHb:Boolean = false;
+        var uCases:Array = [];
+        var bCases:Array = [];
+        var tCases:Array = [];
+        var blCases:Array = [];
+
+        if (st) {
+            if ((st.override && st.override.hitBehavior != undefined) ||
+                (st.merge && st.merge.hitBehavior != undefined) ||
+                (st.softOverride && st.softOverride.hitBehavior != undefined) ||
+                (st.lockOverride && st.lockOverride.hitBehavior != undefined)) {
+                hasHb = true;
+            }
+            if (st.useSwitch) {
+                uCases = st.useSwitch.useCases ? st.useSwitch.useCases : normalizeToArray(st.useSwitch.use);
+                if (hasAnyHitBehaviorInCases(uCases)) hasHb = true;
+            }
+            if (st.baseSwitch) {
+                bCases = st.baseSwitch.valueCases ? st.baseSwitch.valueCases : normalizeToArray(st.baseSwitch.value);
+                if (hasAnyHitBehaviorInCases(bCases)) hasHb = true;
+            }
+            if (st.tagSwitch) {
+                tCases = st.tagSwitch.tagCases ? st.tagSwitch.tagCases : normalizeToArray(st.tagSwitch.tag);
+                if (hasAnyHitBehaviorInCases(tCases)) hasHb = true;
+            }
+            if (st.bulletSwitch) {
+                blCases = st.bulletSwitch.bulletCases ? st.bulletSwitch.bulletCases : normalizeToArray(st.bulletSwitch.bullet);
+                if (hasAnyHitBehaviorInCases(blCases)) hasHb = true;
+            }
+        }
+
+        mod._hasHitBehavior = hasHb;
+        mod._hitBehaviorErrors = [];
+        mod._hitBehaviorInvalid = false;
+        mod._hitBehaviorLegacyMerge = false;
+        mod._hitBehaviorValidated = true;
+
+        if (!hasHb) return [];
+        if (mod.name) {
+            _knownHitBehaviorProviders[String(mod.name)] = true;
+        }
+
+        if (isLegacyDurationHitBehaviorMod(mod)) {
+            mod._hitBehaviorLegacyMerge = true;
+            return [];
+        }
+
+        var errors:Array = [];
+        var modLabel:String = mod.name ? String(mod.name) : "<unnamed>";
+        var idx:Object = profileIndex ? profileIndex : _hitBehaviorProfileIndex;
+
+        // 1. 禁止在非 override 运算符或非 useSwitch 分支中声明 hitBehavior
+        if (st.merge && st.merge.hitBehavior != undefined) {
+            errors.push({code: "HB_OPERATOR_CONFLICT", modName: modLabel, location: modLabel + ".stats.merge.hitBehavior", detail: "hitBehavior must use override, not merge"});
+        }
+        if (st.softOverride && st.softOverride.hitBehavior != undefined) {
+            errors.push({code: "HB_OPERATOR_CONFLICT", modName: modLabel, location: modLabel + ".stats.softOverride.hitBehavior", detail: "hitBehavior cannot use softOverride"});
+        }
+        if (st.lockOverride && st.lockOverride.hitBehavior != undefined) {
+            errors.push({code: "HB_OPERATOR_CONFLICT", modName: modLabel, location: modLabel + ".stats.lockOverride.hitBehavior", detail: "hitBehavior cannot use lockOverride"});
+        }
+        if (hasAnyHitBehaviorInCases(bCases)) {
+            errors.push({code: "HB_OPERATOR_CONFLICT", modName: modLabel, location: modLabel + ".stats.baseSwitch", detail: "hitBehavior is not allowed in baseSwitch"});
+        }
+        if (hasAnyHitBehaviorInCases(tCases)) {
+            errors.push({code: "HB_OPERATOR_CONFLICT", modName: modLabel, location: modLabel + ".stats.tagSwitch", detail: "hitBehavior is not allowed in tagSwitch"});
+        }
+        if (hasAnyHitBehaviorInCases(blCases)) {
+            errors.push({code: "HB_OPERATOR_CONFLICT", modName: modLabel, location: modLabel + ".stats.bulletSwitch", detail: "hitBehavior is not allowed in bulletSwitch"});
+        }
+
+        var hasBranchOverrideHb:Boolean = false;
+        for (var i:Number = 0; i < uCases.length; i++) {
+            var uc:Object = uCases[i];
+            if (!uc) continue;
+            var branchLabel:String = modLabel + ".useSwitch[" + (uc.name ? uc.name : "default") + "]";
+            if (uc.merge && uc.merge.hitBehavior != undefined) {
+                errors.push({code: "HB_OPERATOR_CONFLICT", modName: modLabel, location: branchLabel + ".merge.hitBehavior", detail: "useSwitch hitBehavior must use override, not merge"});
+            }
+            if (uc.softOverride && uc.softOverride.hitBehavior != undefined) {
+                errors.push({code: "HB_OPERATOR_CONFLICT", modName: modLabel, location: branchLabel + ".softOverride.hitBehavior", detail: "useSwitch hitBehavior cannot use softOverride"});
+            }
+            if (uc.lockOverride && uc.lockOverride.hitBehavior != undefined) {
+                errors.push({code: "HB_OPERATOR_CONFLICT", modName: modLabel, location: branchLabel + ".lockOverride.hitBehavior", detail: "useSwitch hitBehavior cannot use lockOverride"});
+            }
+            if (uc.override && uc.override.hitBehavior != undefined) {
+                hasBranchOverrideHb = true;
+            }
+        }
+
+        // 2. 校验根级 stats.override.hitBehavior
+        var rootHb:Object = (st.override && st.override.hitBehavior != undefined) ? st.override.hitBehavior : null;
+        if (rootHb == null && hasBranchOverrideHb) {
+            errors.push({code: "HB_MISSING_FIELD", modName: modLabel, location: modLabel + ".stats.override.hitBehavior", detail: "root stats.override.hitBehavior is required when useSwitch defines override.hitBehavior"});
+        } else if (rootHb != null) {
+            var rootSchemaErrors:Array = validateHitBehaviorSchema(rootHb, modLabel + ".stats.override.hitBehavior", modLabel);
+            if (rootSchemaErrors.length > 0) {
+                for (var rse:Number = 0; rse < rootSchemaErrors.length; rse++) {
+                    errors.push(rootSchemaErrors[rse]);
+                }
+            } else {
+                var rootIdErr:Object = registerHitBehaviorIdentity(idx, mod, rootHb, modLabel + ".stats.override.hitBehavior");
+                if (rootIdErr != null) errors.push(rootIdErr);
+            }
+        }
+
+        // 3. 校验 useSwitch 各分支的 override.hitBehavior
+        for (var j:Number = 0; j < uCases.length; j++) {
+            var uCase:Object = uCases[j];
+            if (!uCase || !uCase.override || uCase.override.hitBehavior == undefined) continue;
+            var uLoc:String = modLabel + ".useSwitch[" + (uCase.name ? uCase.name : "default") + "].override.hitBehavior";
+            var branchSchemaErrors:Array = validateHitBehaviorSchema(uCase.override.hitBehavior, uLoc, modLabel);
+            if (branchSchemaErrors.length > 0) {
+                for (var bse:Number = 0; bse < branchSchemaErrors.length; bse++) {
+                    errors.push(branchSchemaErrors[bse]);
+                }
+            } else {
+                var branchIdErr:Object = registerHitBehaviorIdentity(idx, mod, uCase.override.hitBehavior, uLoc);
+                if (branchIdErr != null) errors.push(branchIdErr);
+            }
+        }
+
+        if (errors.length > 0) {
+            mod._hitBehaviorInvalid = true;
+            mod._hitBehaviorErrors = errors;
+            for (var eIdx:Number = 0; eIdx < errors.length; eIdx++) {
+                _hitBehaviorDiagnostics.push(errors[eIdx]);
+            }
+        }
+        return errors;
+    }
+
+    public static function validateHitBehaviorSchema(profile:Object, location:String, modName:String):Array {
+        var errors:Array = [];
+        var owner:String = modName ? modName : "";
+        if (!profile || typeof profile != "object") {
+            errors.push({code: "HB_TYPE_MISMATCH", modName: owner, location: location, detail: "hitBehavior must be an Object"});
+            return errors;
+        }
+
+        var allowed:Object = getHitBehaviorAllowedKeys();
+        for (var k:String in profile) {
+            if (ObjectUtil.isInternalKey(k)) continue;
+            if (!allowed[k]) {
+                errors.push({code: "HB_UNKNOWN_FIELD", modName: owner, location: location + "." + k, detail: "unknown field: " + k});
+            }
+        }
+
+        var requiredKeys:Array = [
+            "type", "stackGroup", "profileId",
+            "decayDelay", "decayInterval", "maxStacks",
+            "hitStacks", "breakStacks", "milestoneInterval",
+            "damagePerStack", "crumblePerMilestone", "executeAtMax",
+            "sameSourceOnly"
+        ];
+        for (var r:Number = 0; r < requiredKeys.length; r++) {
+            var reqKey:String = requiredKeys[r];
+            if (profile[reqKey] == undefined || profile[reqKey] == null || profile[reqKey] === "") {
+                errors.push({code: "HB_MISSING_FIELD", modName: owner, location: location + "." + reqKey, detail: "missing field: " + reqKey});
+            }
+        }
+        if (errors.length > 0) return errors;
+
+        if (typeof profile.type != "string") {
+            errors.push({code: "HB_TYPE_MISMATCH", modName: owner, location: location + ".type", detail: "type must be String"});
+        } else if (profile.type != "grayGooPrimer" && profile.type != "toughnessVulnerabilityPrimer") {
+            errors.push({code: "HB_UNSUPPORTED_BEHAVIOR_TYPE", modName: owner, location: location + ".type", detail: "unsupported hitBehavior.type: " + profile.type});
+        }
+
+        if (typeof profile.stackGroup != "string") {
+            errors.push({code: "HB_TYPE_MISMATCH", modName: owner, location: location + ".stackGroup", detail: "stackGroup must be String"});
+        } else {
+            var sgTrim:String = StringUtils.trim(profile.stackGroup);
+            if (sgTrim.length == 0 || sgTrim.indexOf("|") >= 0) {
+                errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".stackGroup", detail: "stackGroup must be non-empty and cannot contain '|'"});
+            }
+        }
+
+        if (typeof profile.profileId != "string") {
+            errors.push({code: "HB_TYPE_MISMATCH", modName: owner, location: location + ".profileId", detail: "profileId must be String"});
+        } else {
+            var pidTrim:String = StringUtils.trim(profile.profileId);
+            if (pidTrim.length == 0 || pidTrim.indexOf("|") >= 0) {
+                errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".profileId", detail: "profileId must be non-empty and cannot contain '|'"});
+            }
+        }
+
+        if (typeof profile.sameSourceOnly != "boolean") {
+            errors.push({code: "HB_TYPE_MISMATCH", modName: owner, location: location + ".sameSourceOnly", detail: "sameSourceOnly must be Boolean"});
+        }
+
+        var intKeys:Array = ["decayDelay", "decayInterval", "maxStacks", "hitStacks", "breakStacks", "milestoneInterval"];
+        for (var ik:Number = 0; ik < intKeys.length; ik++) {
+            var iName:String = intKeys[ik];
+            var iVal = profile[iName];
+            if (typeof iVal != "number" || isNaN(iVal) || !isFinite(iVal)) {
+                errors.push({code: "HB_INVALID_NUMBER", modName: owner, location: location + "." + iName, detail: iName + " must be finite Number"});
+            } else if (Math.floor(iVal) != iVal) {
+                errors.push({code: "HB_TYPE_MISMATCH", modName: owner, location: location + "." + iName, detail: iName + " must be integer"});
+            }
+        }
+
+        var floatKeys:Array = ["damagePerStack", "crumblePerMilestone", "executeAtMax"];
+        for (var fk:Number = 0; fk < floatKeys.length; fk++) {
+            var fName:String = floatKeys[fk];
+            var fVal = profile[fName];
+            if (typeof fVal != "number" || isNaN(fVal) || !isFinite(fVal)) {
+                errors.push({code: "HB_INVALID_NUMBER", modName: owner, location: location + "." + fName, detail: fName + " must be finite Number"});
+            }
+        }
+        if (errors.length > 0) return errors;
+
+        var maxStacks:Number = Number(profile.maxStacks);
+        var milestoneInterval:Number = Number(profile.milestoneInterval);
+        var decayDelay:Number = Number(profile.decayDelay);
+        var decayInterval:Number = Number(profile.decayInterval);
+        var hitStacks:Number = Number(profile.hitStacks);
+        var breakStacks:Number = Number(profile.breakStacks);
+        var damagePerStack:Number = Number(profile.damagePerStack);
+        var crumblePerMilestone:Number = Number(profile.crumblePerMilestone);
+        var executeAtMax:Number = Number(profile.executeAtMax);
+
+        if (decayDelay < 1) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".decayDelay", detail: "decayDelay must be >= 1"});
+        }
+        if (decayInterval < 1) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".decayInterval", detail: "decayInterval must be >= 1"});
+        }
+        if (maxStacks < 1 || maxStacks > 18) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".maxStacks", detail: "maxStacks must be in [1, 18]"});
+        }
+        if (milestoneInterval < 1 || milestoneInterval > maxStacks || (maxStacks % milestoneInterval) != 0 || (maxStacks / milestoneInterval) < 1 || (maxStacks / milestoneInterval) > 3) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".milestoneInterval", detail: "milestoneInterval must divide maxStacks and yield 1..3 milestones"});
+        }
+        if (hitStacks < 1 || hitStacks >= milestoneInterval || hitStacks > maxStacks) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".hitStacks", detail: "hitStacks must be in [1, milestoneInterval - 1]"});
+        }
+        if (breakStacks < 1 || breakStacks > maxStacks) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".breakStacks", detail: "breakStacks must be in [1, maxStacks]"});
+        }
+        if (damagePerStack < 0 || damagePerStack > 1) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".damagePerStack", detail: "damagePerStack must be in [0, 1]"});
+        }
+        if (crumblePerMilestone < 0 || crumblePerMilestone > 100) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".crumblePerMilestone", detail: "crumblePerMilestone must be in [0, 100]"});
+        }
+        if (executeAtMax < 0 || executeAtMax > 100) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".executeAtMax", detail: "executeAtMax must be in [0, 100]"});
+        }
+
+        return errors;
+    }
+
+    private static function buildHitBehaviorCanonicalShape(profile:Object):Object {
+        return {
+            type: String(profile.type),
+            maxStacks: Number(profile.maxStacks),
+            milestoneInterval: Number(profile.milestoneInterval),
+            damagePerStack: Number(profile.damagePerStack),
+            sameSourceOnly: Boolean(profile.sameSourceOnly),
+            decayDelay: Number(profile.decayDelay),
+            decayInterval: Number(profile.decayInterval),
+            hitStacks: Number(profile.hitStacks),
+            breakStacks: Number(profile.breakStacks),
+            crumblePerMilestone: Number(profile.crumblePerMilestone),
+            executeAtMax: Number(profile.executeAtMax)
+        };
+    }
+
+    private static function isSameHitBehaviorShape(a:Object, b:Object):Boolean {
+        if (!a || !b) return false;
+        return a.type === b.type &&
+               a.maxStacks === b.maxStacks &&
+               a.milestoneInterval === b.milestoneInterval &&
+               a.damagePerStack === b.damagePerStack &&
+               a.sameSourceOnly === b.sameSourceOnly &&
+               a.decayDelay === b.decayDelay &&
+               a.decayInterval === b.decayInterval &&
+               a.hitStacks === b.hitStacks &&
+               a.breakStacks === b.breakStacks &&
+               a.crumblePerMilestone === b.crumblePerMilestone &&
+               a.executeAtMax === b.executeAtMax;
+    }
+
+    private static function registerHitBehaviorIdentity(profileIndex:Object, mod:Object, profile:Object, location:String):Object {
+        var key:String = StringUtils.trim(String(profile.stackGroup)) + "|" + StringUtils.trim(String(profile.profileId));
+        var shape:Object = buildHitBehaviorCanonicalShape(profile);
+        var existing:Object = profileIndex[key];
+        if (!existing) {
+            profileIndex[key] = {
+                shape: shape,
+                location: location,
+                ownerMod: mod ? mod.name : "",
+                ownerModRef: mod
+            };
+            return null;
+        }
+        if (!isSameHitBehaviorShape(existing.shape, shape)) {
+            var conflictErr:Object = {
+                code: "HB_IDENTITY_SHAPE_CONFLICT",
+                modName: mod ? String(mod.name) : "",
+                location: location,
+                identityKey: key,
+                detail: "identity (" + key + ") conflicts with " + existing.location
+            };
+            if (existing.ownerModRef && existing.ownerModRef != mod) {
+                existing.ownerModRef._hitBehaviorInvalid = true;
+                if (!existing.ownerModRef._hitBehaviorErrors) existing.ownerModRef._hitBehaviorErrors = [];
+                existing.ownerModRef._hitBehaviorErrors.push(conflictErr);
+                if (profileIndex === _hitBehaviorProfileIndex && existing.ownerMod) {
+                    evictInvalidModFromRegistry(String(existing.ownerMod), existing.ownerModRef);
+                }
+            }
+            return conflictErr;
+        }
+        return null;
+    }
+
+    /**
+     * 校验目标装备与配件组合下的 hitBehavior 提供者唯一性及分支命中唯一性（#208）。
+     */
+    public static function validateHitBehaviorProvision(mods:Array, itemData:Object, modRegistry:Object, useLookup:Object):Object {
+        var diagnostics:Array = [];
+        var hasNativeProvider:Boolean = (itemData != null && itemData.data != null && itemData.data.hitBehavior != undefined);
+        var providerCount:Number = hasNativeProvider ? 1 : 0;
+        var dict:Object = modRegistry ? modRegistry : _modDict;
+
+        if (!mods || mods.length == 0) {
+            return {valid: true, diagnostics: diagnostics, hasNativeProvider: hasNativeProvider, providerCount: providerCount};
+        }
+
+        for (var i:Number = 0; i < mods.length; i++) {
+            var modName:String = mods[i];
+            if (!modName) continue;
+            var modInfo:Object = dict ? dict[modName] : null;
+            if (!modInfo) {
+                var rejectedMod:Object = (dict === _modDict && _invalidHitBehaviorMods && _invalidHitBehaviorMods[modName])
+                    ? _invalidHitBehaviorMods[modName]
+                    : null;
+                if (rejectedMod) {
+                    providerCount++;
+                    var rejCode:String = (rejectedMod._hitBehaviorErrors && rejectedMod._hitBehaviorErrors.length > 0)
+                        ? rejectedMod._hitBehaviorErrors[0].code
+                        : "HB_INSTALLED_PROVIDER_UNAVAILABLE";
+                    diagnostics.push({
+                        code: rejCode,
+                        modName: modName,
+                        detail: "installed hitBehavior mod failed validation and was rejected"
+                    });
+                    if (rejCode != "HB_INSTALLED_PROVIDER_UNAVAILABLE") {
+                        diagnostics.push({
+                            code: "HB_INSTALLED_PROVIDER_UNAVAILABLE",
+                            modName: modName,
+                            detail: "installed hitBehavior provider mod is unavailable"
+                        });
+                    }
+                    if (providerCount > 1) {
+                        diagnostics.push({
+                            code: "HB_MULTIPLE_PROVIDERS",
+                            modName: modName,
+                            detail: "multiple hitBehavior providers are not allowed on the same item"
+                        });
+                    }
+                } else if (isKnownHitBehaviorProvider(modName) || (modRegistry != null && modRegistry !== _modDict)) {
+                    providerCount++;
+                    diagnostics.push({
+                        code: "HB_INSTALLED_PROVIDER_UNAVAILABLE",
+                        modName: modName,
+                        detail: "installed hitBehavior provider mod is missing from registry"
+                    });
+                    if (providerCount > 1) {
+                        diagnostics.push({
+                            code: "HB_MULTIPLE_PROVIDERS",
+                            modName: modName,
+                            detail: "multiple hitBehavior providers are not allowed on the same item"
+                        });
+                    }
+                }
+                continue;
+            }
+
+            if (modInfo._hitBehaviorValidated !== true) {
+                validateModHitBehavior(modInfo, _hitBehaviorProfileIndex);
+            }
+            if (!modInfo._hasHitBehavior) continue;
+
+            providerCount++;
+            if (modInfo._hitBehaviorInvalid === true) {
+                var firstCode:String = (modInfo._hitBehaviorErrors && modInfo._hitBehaviorErrors.length > 0)
+                    ? modInfo._hitBehaviorErrors[0].code
+                    : "HB_INSTALLED_PROVIDER_UNAVAILABLE";
+                diagnostics.push({
+                    code: firstCode,
+                    modName: modName,
+                    detail: "mod hitBehavior failed schema/identity/operator validation"
+                });
+            }
+
+            if (providerCount > 1) {
+                diagnostics.push({
+                    code: "HB_MULTIPLE_PROVIDERS",
+                    modName: modName,
+                    detail: "multiple hitBehavior providers are not allowed on the same item"
+                });
+            }
+
+            var matchedCases:Array = matchUseSwitchAll(modInfo, useLookup || {});
+            var matchedHbCount:Number = 0;
+            for (var mc:Number = 0; mc < matchedCases.length; mc++) {
+                var uc:Object = matchedCases[mc];
+                if (!uc) continue;
+                if ((uc.override && uc.override.hitBehavior != undefined) ||
+                    (uc.merge && uc.merge.hitBehavior != undefined)) {
+                    matchedHbCount++;
+                }
+            }
+            if (matchedHbCount > 1) {
+                diagnostics.push({
+                    code: "HB_MULTIPLE_MATCHED_PROFILES",
+                    modName: modName,
+                    detail: "multiple matched useSwitch branches provide hitBehavior (" + matchedHbCount + ")"
+                });
+            }
+        }
+
+        return {
+            valid: (diagnostics.length == 0),
+            diagnostics: diagnostics,
+            hasNativeProvider: hasNativeProvider,
+            providerCount: providerCount
+        };
     }
 }

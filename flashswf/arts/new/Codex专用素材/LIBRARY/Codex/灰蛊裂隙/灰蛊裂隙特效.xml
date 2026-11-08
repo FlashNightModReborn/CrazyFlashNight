@@ -1,0 +1,78 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/灰蛊裂隙/灰蛊裂隙特效" itemID="6b610000-00000202" linkageExportForAS="true" linkageIdentifier="灰蛊裂隙特效" lastModified="1788661207">
+  <timeline>
+    <DOMTimeline name="灰蛊裂隙特效">
+      <layers>
+        <DOMLayer name="代码" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.effectType = "灰蛊裂隙特效";
+if (this.标志 && this.targetFrame >= 1 && this.targetFrame <= 3) {
+	this.标志.gotoAndStop(this.targetFrame);
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="标志" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/灰蛊裂隙/灰蛊裂隙标志" name="标志" centerPoint3DX="0" centerPoint3DY="-18">
+                  <matrix>
+                    <Matrix tx="0" ty="-18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#00F0FF" quality="2" strength="1.6"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/灰蛊裂隙/灰蛊裂隙标志" name="标志" centerPoint3DX="0" centerPoint3DY="-34">
+                  <matrix>
+                    <Matrix tx="0" ty="-34"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="6" blurY="6" color="#00F0FF" quality="2" strength="1.2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/灰蛊裂隙/灰蛊裂隙标志" name="标志" selected="true" centerPoint3DX="0" centerPoint3DY="-52">
+                  <matrix>
+                    <Matrix tx="0" ty="-52"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

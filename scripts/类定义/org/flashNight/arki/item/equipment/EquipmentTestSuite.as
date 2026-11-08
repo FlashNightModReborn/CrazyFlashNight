@@ -1601,6 +1601,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         result += testEquipmentCalculator_BaseSwitchAndOverridePrecedence();
         result += testSwitchStrikeCore_ProfileConfiguration();
         result += testEquipmentCalculator_QualifiedHandgunHitBehavior();
+        result += testEquipmentCalculator_GrayGooCompleteProfileContract();
         result += testEquipmentCalculator_GunShieldProfile();
 
         return result;
@@ -2089,6 +2090,269 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         }
 
         return "✓ 精确手枪hitBehavior合并测试通过\n";
+    }
+
+    /**
+     * #208 声明式 hitBehavior 完整档位覆盖语义与约束审计回归测试（D01/D03~D10/D12/D13）。
+     */
+    private static function testEquipmentCalculator_GrayGooCompleteProfileContract():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.0],
+            decimalPropDict: {}
+        });
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+
+        var buildGrayGooMod:Function = function():Object {
+            return {
+                name: "灰蛊裂隙弹",
+                use: "手枪,长枪",
+                weapontype: "手枪,大威力手枪,冲锋枪",
+                tag: "弹药",
+                stats: {
+                    override: {
+                        hitBehavior: {
+                            type: "grayGooPrimer",
+                            stackGroup: "grayGooVulnerability",
+                            profileId: "base",
+                            decayDelay: 90,
+                            decayInterval: 10,
+                            maxStacks: 18,
+                            hitStacks: 1,
+                            breakStacks: 1,
+                            milestoneInterval: 6,
+                            damagePerStack: 0.01,
+                            crumblePerMilestone: 1,
+                            executeAtMax: 8,
+                            sameSourceOnly: true
+                        }
+                    },
+                    useSwitch: {
+                        use: [{
+                            name: "weapontype:大威力手枪",
+                            override: {
+                                hitBehavior: {
+                                    type: "grayGooPrimer",
+                                    stackGroup: "grayGooVulnerability",
+                                    profileId: "highPowerHandgun",
+                                    decayDelay: 90,
+                                    decayInterval: 10,
+                                    maxStacks: 18,
+                                    hitStacks: 2,
+                                    breakStacks: 2,
+                                    milestoneInterval: 6,
+                                    damagePerStack: 0.01,
+                                    crumblePerMilestone: 0.1,
+                                    executeAtMax: 5,
+                                    sameSourceOnly: true
+                                }
+                            }
+                        }, {
+                            name: "weapontype:手枪",
+                            override: {
+                                hitBehavior: {
+                                    type: "grayGooPrimer",
+                                    stackGroup: "grayGooVulnerability",
+                                    profileId: "handgun",
+                                    decayDelay: 150,
+                                    decayInterval: 15,
+                                    maxStacks: 18,
+                                    hitStacks: 3,
+                                    breakStacks: 3,
+                                    milestoneInterval: 6,
+                                    damagePerStack: 0.01,
+                                    crumblePerMilestone: 0.3,
+                                    executeAtMax: 8,
+                                    sameSourceOnly: true
+                                }
+                            }
+                        }]
+                    }
+                }
+            };
+        };
+
+        // D01 + D03: 三档完整覆盖数值（含向下修正 0.1/5 与 0.3/8）及深拷贝隔离
+        ModRegistry.loadModData([buildGrayGooMod()]);
+        var reg:Object = ModRegistry.getModDict();
+        var val:Object = {level: 1, mods: ["灰蛊裂隙弹"]};
+
+        var krissRes:Object = EquipmentCalculator.calculatePure(
+            {name: "KRISS", use: "手枪", weapontype: "冲锋枪", data: {modslot: 3}}, val, cfg, reg
+        );
+        var webleyRes:Object = EquipmentCalculator.calculatePure(
+            {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}}, val, cfg, reg
+        );
+        var glockRes:Object = EquipmentCalculator.calculatePure(
+            {name: "TTI Glock 19", use: "手枪", weapontype: "手枪", data: {modslot: 3}}, val, cfg, reg
+        );
+
+        var kb:Object = krissRes.data.hitBehavior;
+        var wb:Object = webleyRes.data.hitBehavior;
+        var gb:Object = glockRes.data.hitBehavior;
+        var d01Passed:Boolean = (
+            !ModRegistry.hasHitBehaviorDiagnostics() &&
+            kb && kb.profileId == "base" && kb.hitStacks == 1 && kb.breakStacks == 1 &&
+            kb.crumblePerMilestone == 1 && kb.executeAtMax == 8 && kb.decayDelay == 90 && kb.decayInterval == 10 &&
+            wb && wb.profileId == "highPowerHandgun" && wb.hitStacks == 2 && wb.breakStacks == 2 &&
+            wb.crumblePerMilestone == 0.1 && wb.executeAtMax == 5 && wb.decayDelay == 90 && wb.decayInterval == 10 &&
+            gb && gb.profileId == "handgun" && gb.hitStacks == 3 && gb.breakStacks == 3 &&
+            gb.crumblePerMilestone == 0.3 && gb.executeAtMax == 8 && gb.decayDelay == 150 && gb.decayInterval == 15
+        );
+        if (!d01Passed) {
+            return "✗ #208 D01 灰蛊三档完整覆盖测试失败\n";
+        }
+
+        // D03: 修改计算结果不得污染注册表原件
+        wb.executeAtMax = 999;
+        var webleyRes2:Object = EquipmentCalculator.calculatePure(
+            {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}}, val, cfg, reg
+        );
+        if (webleyRes2.data.hitBehavior.executeAtMax != 5) {
+            return "✗ #208 D03 hitBehavior 引用隔离测试失败\n";
+        }
+
+        // D04: 缺失字段拒绝且禁止静默回退到 base（装配/就绪边界返回 null）
+        var missingMod:Object = buildGrayGooMod();
+        delete missingMod.stats.useSwitch.use[0].override.hitBehavior.maxStacks;
+        ModRegistry.loadModData([missingMod]);
+        var missingRes:Object = EquipmentCalculator.calculatePure(
+            {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}},
+            val, cfg, ModRegistry.getModDict()
+        );
+        var missingProvision:Object = ModRegistry.validateHitBehaviorProvision(["灰蛊裂隙弹"], {data: {}}, {}, {});
+        var missingAvail:Number = TagManager.checkModAvailability(
+            new BaseItem("Webley", {level: 1, mods: []}),
+            {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}},
+            "灰蛊裂隙弹"
+        );
+        if (!ModRegistry.hasHitBehaviorDiagnostics() || missingRes != null || missingAvail != -1024 ||
+            missingProvision.valid || missingProvision.diagnostics.length == 0 ||
+            missingProvision.diagnostics[0].code != "HB_INSTALLED_PROVIDER_UNAVAILABLE") {
+            return "✗ #208 D04 缺失字段拒绝与禁静默回退测试失败\n";
+        }
+
+        // D05: 未知字段名拼写错误拒绝
+        var typoMod:Object = buildGrayGooMod();
+        typoMod.stats.useSwitch.use[0].override.hitBehavior.crumblePermilestone = 0.1;
+        ModRegistry.loadModData([typoMod]);
+        if (!ModRegistry.hasHitBehaviorDiagnostics() ||
+            ModRegistry.getHitBehaviorDiagnostics()[0].code != "HB_UNKNOWN_FIELD") {
+            return "✗ #208 D05 未知字段名检测测试失败\n";
+        }
+
+        // D06: 非法数值/越界/类型不匹配拒绝（含 18%5!=0、24/6>3、hitStacks>=milestoneInterval、breakStacks<=0）
+        var badRangeMod:Object = buildGrayGooMod();
+        badRangeMod.stats.override.hitBehavior.milestoneInterval = 5;
+        var rangeErrors1:Array = ModRegistry.validateHitBehaviorSchema(badRangeMod.stats.override.hitBehavior, "test.range1", "test");
+        var badBitmaskMod:Object = buildGrayGooMod();
+        badBitmaskMod.stats.override.hitBehavior.maxStacks = 24;
+        var rangeErrors2:Array = ModRegistry.validateHitBehaviorSchema(badBitmaskMod.stats.override.hitBehavior, "test.range2", "test");
+        var badHitStacksMod:Object = buildGrayGooMod();
+        badHitStacksMod.stats.override.hitBehavior.hitStacks = 6;
+        var rangeErrors3:Array = ModRegistry.validateHitBehaviorSchema(badHitStacksMod.stats.override.hitBehavior, "test.hitStacks6", "test");
+        var badBreakStacksMod:Object = buildGrayGooMod();
+        badBreakStacksMod.stats.override.hitBehavior.breakStacks = 0;
+        var rangeErrors4:Array = ModRegistry.validateHitBehaviorSchema(badBreakStacksMod.stats.override.hitBehavior, "test.breakStacks0", "test");
+        var badBoolMod:Object = buildGrayGooMod();
+        badBoolMod.stats.override.hitBehavior.sameSourceOnly = "yes";
+        var typeErrors:Array = ModRegistry.validateHitBehaviorSchema(badBoolMod.stats.override.hitBehavior, "test.bool", "test");
+        if (rangeErrors1.length == 0 || rangeErrors2.length == 0 || rangeErrors3.length == 0 || rangeErrors4.length == 0 || typeErrors.length == 0) {
+            return "✗ #208 D06 值域与类型边界检测测试失败\n";
+        }
+
+        // D07 & D08: 多提供者冲突（双插件提供者 & 武器原生 hitBehavior 提供者）
+        var modA:Object = buildGrayGooMod();
+        modA.name = "行为插件A";
+        modA.tag = "挂饰A";
+        var modB:Object = buildGrayGooMod();
+        modB.name = "行为插件B";
+        modB.tag = "挂饰B";
+        ModRegistry.loadModData([modA, modB]);
+        var multiModAvail:Number = TagManager.checkModAvailability(
+            new BaseItem("Webley", {level: 1, mods: ["行为插件A"]}),
+            {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}},
+            "行为插件B"
+        );
+        var multiModRes:Object = EquipmentCalculator.calculatePure(
+            {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}},
+            {level: 1, mods: ["行为插件A", "行为插件B"]}, cfg, ModRegistry.getModDict()
+        );
+        var nativeItem:Object = {
+            name: "原生蚀刻枪", use: "手枪", weapontype: "手枪",
+            data: {modslot: 3, hitBehavior: {type: "grayGooPrimer", profileId: "native"}}
+        };
+        var nativeAvail:Number = TagManager.checkModAvailability(
+            new BaseItem("原生蚀刻枪", {level: 1, mods: []}),
+            nativeItem,
+            "行为插件A"
+        );
+        var nativeRes:Object = EquipmentCalculator.calculatePure(
+            nativeItem, {level: 1, mods: ["行为插件A"]}, cfg, ModRegistry.getModDict()
+        );
+        if (multiModAvail != -1024 || multiModRes != null ||
+            nativeAvail != -1024 || nativeRes != null) {
+            return "✗ #208 D07/D08 多提供者互斥测试失败\n";
+        }
+
+        // D09: 同一插件多个匹配 useSwitch 分支同时声明 hitBehavior 拒绝
+        var multiBranchMod:Object = buildGrayGooMod();
+        multiBranchMod.stats.useSwitch.use[0].name = "use:手枪";
+        ModRegistry.loadModData([multiBranchMod]);
+        var multiBranchAvail:Number = TagManager.checkModAvailability(
+            new BaseItem("TTI Glock 19", {level: 1, mods: []}),
+            {name: "TTI Glock 19", use: "手枪", weapontype: "手枪", data: {modslot: 3}},
+            "灰蛊裂隙弹"
+        );
+        var multiBranchRes:Object = EquipmentCalculator.calculatePure(
+            {name: "TTI Glock 19", use: "手枪", weapontype: "手枪", data: {modslot: 3}},
+            val, cfg, ModRegistry.getModDict()
+        );
+        if (multiBranchAvail != -1024 || multiBranchRes != null) {
+            return "✗ #208 D09 多分支同时命中冲突测试失败\n";
+        }
+
+        // D10: 混用 merge.hitBehavior 与 grayGooPrimer 触发 HB_OPERATOR_CONFLICT
+        var opConflictMod:Object = buildGrayGooMod();
+        opConflictMod.stats.merge = {hitBehavior: opConflictMod.stats.override.hitBehavior};
+        ModRegistry.loadModData([opConflictMod]);
+        if (!ModRegistry.hasHitBehaviorDiagnostics() ||
+            ModRegistry.getHitBehaviorDiagnostics()[0].code != "HB_OPERATOR_CONFLICT") {
+            return "✗ #208 D10 运算符冲突检测测试失败\n";
+        }
+
+        // D12: 相同 (stackGroup, profileId) 映射不同数值形状触发 HB_IDENTITY_SHAPE_CONFLICT
+        var idConflictMod:Object = buildGrayGooMod();
+        idConflictMod.stats.useSwitch.use[0].override.hitBehavior.profileId = "base";
+        ModRegistry.loadModData([idConflictMod]);
+        if (!ModRegistry.hasHitBehaviorDiagnostics() ||
+            ModRegistry.getHitBehaviorDiagnostics()[0].code != "HB_IDENTITY_SHAPE_CONFLICT") {
+            return "✗ #208 D12 身份形状冲突检测测试失败\n";
+        }
+
+        // D13: 跨 type 别名（grayGooPrimer vs toughnessVulnerabilityPrimer）共享同一 (stackGroup, profileId) 冲突检测
+        var crossTypeMod:Object = buildGrayGooMod();
+        crossTypeMod.stats.useSwitch.use[0].override.hitBehavior = {
+            type: "toughnessVulnerabilityPrimer",
+            stackGroup: "grayGooVulnerability",
+            profileId: "base",
+            decayDelay: 90,
+            decayInterval: 10,
+            maxStacks: 18,
+            hitStacks: 1,
+            breakStacks: 1,
+            milestoneInterval: 6,
+            damagePerStack: 0.01,
+            crumblePerMilestone: 1,
+            executeAtMax: 8,
+            sameSourceOnly: true
+        };
+        ModRegistry.loadModData([crossTypeMod]);
+        if (!ModRegistry.hasHitBehaviorDiagnostics() ||
+            ModRegistry.getHitBehaviorDiagnostics()[0].code != "HB_IDENTITY_SHAPE_CONFLICT") {
+            return "✗ #208 D13 跨type别名身份冲突检测测试失败\n";
+        }
+
+        return "✓ #208 灰蛊完整档位覆盖与契约审计测试通过\n";
     }
 
     // ==================== 集成测试 ====================

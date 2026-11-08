@@ -491,11 +491,11 @@ Tooltip 显示“柔性增加，最多 +32毫秒”，预览继续投影最终�
 
 #### hitBehavior - 声明式子弹命中行为
 
-行为配置通过 `merge` 写入武器运行时数据，并由射击初始化透传到子弹。它与视觉命中特效字段相互独立；只允许注册表支持的封闭 `type`，禁止填写任意函数名或可执行字符串。
+灰蛊行为配置通过完整的 `override.hitBehavior` 写入武器运行时数据，并由射击初始化透传到子弹。根层与每个 `useSwitch` 行为分支均须显式声明下列13个字段，分支原子替换整档。全局 `PropertyOperators.merge` 的正数 MAX 规则保持不变，不能用嵌套 merge 表达向下降档。行为与视觉命中特效字段相互独立；只允许注册表支持的封闭 `type`，禁止填写任意函数名或可执行字符串。
 
 ```xml
 <stats>
-    <merge>
+    <override>
         <hitBehavior>
             <type>grayGooPrimer</type>
             <stackGroup>grayGooVulnerability</stackGroup>
@@ -511,13 +511,25 @@ Tooltip 显示“柔性增加，最多 +32毫秒”，预览继续投影最终�
             <executeAtMax>8</executeAtMax>
             <sameSourceOnly>true</sameSourceOnly>
         </hitBehavior>
-    </merge>
+    </override>
 </stats>
 ```
 
 当前类型表示：有效命中按 `hitStacks` 沉积，真实破韧按 `breakStacks` 追加；联弹全段 MISS/直感不算有效命中。每格易伤为 `damagePerStack`，每跨过 `milestoneInterval` 格为当发配给 `crumblePerMilestone` 击溃，预测达到 `maxStacks` 时配给 `executeAtMax` 斩杀。停火 `decayDelay` 帧后每 `decayInterval` 帧退一格。击溃/斩杀字段使用原始百分比（`0.1` 即 0.1%，`5` 即 5%），`damagePerStack` 使用小数倍率（`0.01` 即 1%）。
 
-`stackGroup` 定义共享最终输出的聚合域，`profileId` 定义同一来源下独立衰减的候选档位。同一组只对各候选的完整倍率取 MAX，不跨档拼接字段，也不把多来源相加。灰蛊裂隙弹基础档由冲锋枪使用：每命中 1 格、节点 `1%` 击溃、满层 `8%` 斩杀；精确 `weapontype:大威力手枪` 分支覆写为每命中 2 格，并显式锁回节点 `0.1%` 击溃与满层 `5%` 斩杀，避免深度 merge 继承冲锋枪补偿；精确 `weapontype:手枪` 分支覆写为每命中 3 格，并把衰减参数改为 `150/15` 帧、击溃改为 `0.3%`、斩杀改为 `8%`。Tooltip 不逐字段展开运行协议：基础档压缩为三条玩家语义，每个枪种分支只用一条摘要展示相对变化。`ToughnessBroken` 仅在非刚体真实破韧时发布；刚体越阈仍清槽，但不对灰蛊追加层数。
+`stackGroup` 定义共享最终输出的聚合域，`profileId` 定义同一来源下独立衰减的候选档位。同一组只对各候选的完整倍率取 MAX，不跨档拼接字段，也不把多来源相加。当前三档如下，均为18格上限、6格节点、每格1%易伤：
+
+| 档位 | 命中/破韧格数 | 节点击溃 | 满层斩杀 | 衰减延迟/间隔（帧） |
+|---|---:|---:|---:|---:|
+| 冲锋枪 `base` | 1 / 1 | 1% | 8% | 90 / 10 |
+| `weapontype:大威力手枪` | 2 / 2 | 0.1% | 5% | 90 / 10 |
+| `weapontype:手枪` | 3 / 3 | 0.3% | 8% | 150 / 15 |
+
+正式灰蛊配置要求 `1 <= hitStacks < milestoneInterval`、`1 <= breakStacks <= maxStacks <= 18`，节点间距须整除上限且节点数不超过3；数值必须有限、类型必须正确。相同 `(stackGroup, profileId)` 不允许不同完整形状；单装备只允许一个行为提供者、单插件只允许一个匹配行为分支。非法或缺失的已安装灰蛊提供者不得静默降成普通装备：计算器与 `BaseItem.getData()` 拒绝该结果，调制属性预览不输出原始字段冒充最终数值。旧 duration/maxDuration 测试夹具保留兼容，不作为新灰蛊资源写法。
+
+只有首次跨过6/12/18格才触发节点击溃；满层连射维持不会重复触发。衰减退至0/6/12格分别重装Ⅰ/Ⅱ/Ⅲ阶。真实破韧跨线的击溃由下一次有效灰蛊命中兑现，标记保留被兑现节点的真实阶数，不按兑现时的当前层数重新推断。`ToughnessBroken` 仅在非刚体真实破韧时发布；刚体越阈仍清槽，但不对灰蛊追加层数。装备提示按当前匹配档位显示摘要，独立插件页列出三档与重装规则。
+
+回归入口：`scripts/run-gray-goo-tests.ps1` 联合检查真实XML三档、命中与退层、Tooltip、非法配置预览，以及发布素材经生产 `EffectSystem` 的三档挂载和回池复用；`scripts/run-gray-goo-asset-tests.ps1` 单独检查真实素材。它们使用 TestLoader 内存夹具，不替代体育老师实战和美术体感验收。
 
 #### switchstrike - 切手技参数对象
 
