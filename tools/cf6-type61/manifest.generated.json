@@ -39,8 +39,8 @@
     },
     {
       "path": "data/crafting/武器合成.json",
-      "bytes": 17368,
-      "sha256": "691c0e77c63d4e7ad89e375d1150c7f5c11e6486c5b9868b51c395e16dfad27d"
+      "bytes": 16592,
+      "sha256": "fb09eab4dd0dd201fe1c961cade3f8f7967c0c9ba224a3feab30ae7cfc1a3962"
     },
     {
       "path": "data/crafting/烹饪.json",
@@ -74,8 +74,8 @@
     },
     {
       "path": "data/enemy_properties/CF6重制敌人.xml",
-      "bytes": 24036,
-      "sha256": "0f8b6000cef121cf4c8f2cf2278fc729057c250abdacec90f44da35b51ce9690"
+      "bytes": 24294,
+      "sha256": "74ff87cade4f5f4508e2cf0959d175e4faf9a67f5da752e216af02be5033df66"
     },
     {
       "path": "data/items/equipment_mods/list.xml",
@@ -824,8 +824,8 @@
     },
     {
       "path": "tools/cf6-type61/build-route.py",
-      "bytes": 35952,
-      "sha256": "b5cf4be8b38364b1fd28ad1a7076d8abdfea0cfcbbcff805eb31140d4da844cb"
+      "bytes": 36004,
+      "sha256": "88e30631938c72c8e141fb7a4b4a5f5a36b942dea0e0f704e9760be7148a9c1b"
     },
     {
       "path": "tools/cf6-type61/build-soldier-loot-fixture.py",
@@ -854,8 +854,8 @@
     },
     {
       "path": "tools/cf6-type61/fixed_roster.py",
-      "bytes": 25217,
-      "sha256": "fed0c33f79ba2a86921a726fb0d77e2d6cb27b22b77d00076b061c6de3fcd426"
+      "bytes": 25951,
+      "sha256": "44cd0d7e83a1d189220b8cd2c009b7a6021e2e45f8fb8c2d8ba8f6e1e4b82fad"
     },
     {
       "path": "tools/cf6-type61/import-firepower-plan.py",
@@ -904,13 +904,18 @@
     },
     {
       "path": "tools/cf6-type61/soldier-loot-policy.source.json",
-      "bytes": 1970,
-      "sha256": "4fe718212a536dc06592b4f9f873d500229132d0e0bc83c349af7b7caaaf14a6"
+      "bytes": 2660,
+      "sha256": "e51d61f3b320db791e511ba6d90208d027fe65c2f60ff70ee91090e6686a4bbd"
+    },
+    {
+      "path": "tools/cf6-type61/soldier-suppression.source.json",
+      "bytes": 432,
+      "sha256": "c958bdc1f84776884e4d47d2b71d369a3d262fa8c0420b81aa9119019902328b"
     },
     {
       "path": "tools/cf6-type61/soldier_programs.py",
-      "bytes": 12561,
-      "sha256": "96b7fc16e5784440c068f2a86dccbd43447aadae7a8637740081b411a000fad4"
+      "bytes": 14900,
+      "sha256": "9a413423d594ba29306497c8cd3aa831f7b0cc92a377588b21b778d268a1ee60"
     },
     {
       "path": "tools/cf6_acquisition.py",
@@ -976,13 +981,13 @@
     },
     {
       "path": "data/stages/books/cf6-type61.json",
-      "bytes": 590072,
-      "sha256": "c58f1985ecb2de0509ba4ddcabf274b917e34bfb97a708d27a5db7c892f6deaa"
+      "bytes": 599099,
+      "sha256": "d14e3cc70f7581f867377c2926c39e4fc7857ac62b1a8ee7552569b03dc76b23"
     },
     {
       "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as",
       "bytes": 206360,
-      "sha256": "cd0e193c7df4970a9e015cac4d5a54224596c9f709b3e5ebe271ce174cec2814"
+      "sha256": "31fc38662c3c49dec3f3fd5934773d6e32e619cd95549f892871c1aeacdf31c5"
     },
     {
       "path": "tools/cf6-type61/acquisition.generated.json",
@@ -1000,8 +1005,8 @@
       "sha256": "a5564665a449b2b9de69126ed4d519d46959d3be26a7ab8fe7abd8ad499932fd"
     }
   ],
-  "generatedBytes": 854981,
-  "bytesIncludingRuntimeSidecar": 1440272,
+  "generatedBytes": 864008,
+  "bytesIncludingRuntimeSidecar": 1458326,
   "maxGeneratedBytes": 2000000,
   "downstreamChecks": [
     "tools/build-choice-rewards.py --check",
@@ -1009,7 +1014,7 @@
   ],
   "runtimeSidecar": {
     "path": "data/stages/books/cf6-type61.runtime.json",
-    "bytes": 585291,
-    "sha256": "76af032b44ce7d5d25079858bf718021615bda83ae296856980febdbd9e3dd96"
+    "bytes": 594318,
+    "sha256": "9595655dbfd7e5346611074dca74de43b87fa1e9281b638cf9c8ed2a411c379f"
   }
 }

@@ -19,6 +19,8 @@ cf6FixedSlotReady=function(slot:String):Boolean {
 };
 cf6FixedPrepareShot=function(slot:String,props:Object):Boolean {
     var bit:Number=this.cf6FixedBit(slot);
+    var suppression:Object=this.cf6Profile.program.suppression;
+    if(slot=="长枪" && suppression!=null && this.长枪.name!==suppression.weaponName)return false;
     if(this.cf6FixedError!=undefined || bit==0 || bit!=this.cf6CurrentFireBit
         || !this.cf6FixedCanAct(this.man) || !this.cf6FixedSlotReady(slot)
         || this.dispatcher==null || this.dispatcher.isDestroyed())return false;

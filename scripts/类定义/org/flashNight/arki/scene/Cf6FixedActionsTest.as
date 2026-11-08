@@ -188,8 +188,59 @@ class org.flashNight.arki.scene.Cf6FixedActionsTest {
         world.removeMovieClip();_root.gameworld=oldWorld;_root.帧计时器=oldClock;_root.暂停=oldPause;
         Cf6SoldierActions.tick();
     }
+    private static function suppressionCases():Void {
+        var rules:Object=Cf6FixedActionsFixture.rules(),config:Object=Cf6FixedActionsFixture.config(),p:Object;
+        var count:Number=0;
+        for(var key:String in config.profiles)if(config.profiles[key].program.suppression!==undefined){
+            count++;if(config.profiles[key].roleClass=="ordinary")p=config.profiles[key];
+        }
+        var personnel:Number=0;
+        for(key in config.identities)if(config.profiles[config.identities[key].profileId].program.suppression!==undefined)personnel++;
+        check(count===11 && personnel===19 && p!=null,"nineteen actual machinegunners share eleven closed profiles");
+        var contract:Object=org.flashNight.arki.scene.Cf6SoldierProgramContract;
+        check(contract.profile(p),"closed machinegun profile admitted");
+        var spec:Object=p.program.suppression;
+        spec.fireFrames=61;check(!contract.profile(p),"sustained fire cannot exceed sixty active frames");spec.fireFrames=60;
+        var originalType:String=spec.weaponType;spec.weaponType="狙击枪";check(!contract.profile(p),"non-machinegun cannot claim sustained contract");spec.weaponType=originalType;
+        var budget:Number=p.budget.primaryTriggerLimit;p.budget.primaryTriggerLimit=61;
+        check(!contract.profile(p),"sustained physical trigger bound remains closed");p.budget.primaryTriggerLimit=budget;
+        var stage:Object;
+        for(var i:Number=0;i<p.program.stages.length;i++)if(p.program.stages[i].kind=="fire" && p.program.stages[i].mode=="primary")stage=p.program.stages[i];
+        var gap:Number=stage.gap;stage.gap=2;check(!contract.profile(p),"time window cannot drift into a separate event schedule");stage.gap=gap;
+        delete p.program.suppression;check(!contract.profile(p),"ordinary contract cannot inherit the machinegun budget");p.program.suppression=spec;
+        var o:Object=observation(),s:Object=rules.cf6RuleCreate(o.world,o.birth,o.actorVersion),c:Object={};
+        var first:Number=-1,last:Number=-1;
+        while(s.terminal==0 && o.frame<600){
+            if(s.active)o.readyMode=p.program[s.variant][s.index].mode;
+            rules.cf6RuleStep(s,p,o,c);
+            if((c.fireMask&1)!=0){
+                check(rules.cf6RuleCanCommit(s,p,o,1,cost(p,1)),"machinegun time window grants a legal frame");
+                rules.cf6RuleCommitted(s,p,o,1,cost(p,1));
+                check(!rules.cf6RuleCanCommit(s,p,o,1,cost(p,1)),"one primary commit maximum in an active frame");
+                if(first<0)first=o.frame;last=o.frame;
+            }
+            o.frame++;
+        }
+        check(s.primary===60 && last-first===59,"unthrottled model reaches exactly the physical sixty-frame ceiling");
+        check(s.cancelReason=="complete" && o.frame-last>=30,"same production interpreter enforces sustained recovery");
+        for(var mode:Number=0;mode<3;mode++){
+            o=observation();s=rules.cf6RuleCreate(o.world,o.birth,o.actorVersion);
+            while(s.primary<5 && o.frame<300){
+                if(s.active)o.readyMode=p.program[s.variant][s.index].mode;
+                rules.cf6RuleStep(s,p,o,c);
+                if((c.fireMask&1)!=0 && rules.cf6RuleCanCommit(s,p,o,1,cost(p,1)))rules.cf6RuleCommitted(s,p,o,1,cost(p,1));
+                o.frame++;
+            }
+            var previous:Number=s.primary;
+            o.paused=true;rules.cf6RuleStep(s,p,o,c);
+            check(s.primary===previous && c.fireMask===0 && s.active,"pause never advances sustained fire");o.paused=false;
+            if(mode==0)o.targetVersion++;else if(mode==1)o.lineClear=false;else o.interrupted=true;
+            rules.cf6RuleStep(s,p,o,c);
+            check(!s.active && s.primary===previous && c.fireMask===0,"sustained fire still cancels for target, wall or interruption "+mode);
+        }
+    }
     public static function runAllTests():Void {
-        passed=failed=0;runtimeAdmission();cycles();edgeCases();nativeOwnership();
+        passed=failed=0;runtimeAdmission();cycles();edgeCases();nativeOwnership();suppressionCases();
         trace("Cf6FixedActionsTest: "+passed+" passed, "+failed+" failed; 22 same-source cycles and native ownership");
         if(failed>0)trace("[TEST_FAIL] Cf6FixedActionsTest suite failed");
     }

@@ -97,6 +97,7 @@ x轴保持距离 = 50;
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();
 
+wingsEnvironmentRole={damageMultiplier:0.45,damageType:"魔法",element:"能"};
 WingsAI模式 = (_arenaCalibrationUnit === true && WingsAI模式 == "baseline") ? "baseline" : "enhanced";
 wingsClock = 0;
 wingsReadyAt = 0;
@@ -196,7 +197,10 @@ wingsShoot = function(body:MovieClip, marker:MovieClip, angle:Number):Void {
     bullet.声音 = "shoot.wav";
     bullet.霰弹值 = 1;
     bullet.子弹散射度 = 8;
-    bullet.子弹威力 = this.空手攻击力;
+    bullet.子弹威力 = this.空手攻击力 * this.wingsEnvironmentRole.damageMultiplier;
+    bullet.伤害类型 = this.wingsEnvironmentRole.damageType;
+    bullet.魔法伤害属性 = this.wingsEnvironmentRole.element;
+    bullet.毒 = 0;
     bullet.子弹速度 = 25;
     bullet.Z轴攻击范围 = 30;
     bullet.击倒率 = 10;
@@ -212,7 +216,10 @@ wingsSlash = function(body:MovieClip, area:MovieClip):Void {
     bullet.声音 = "";
     bullet.霰弹值 = 1;
     bullet.子弹散射度 = 0;
-    bullet.子弹威力 = this.空手攻击力;
+    bullet.子弹威力 = this.空手攻击力 * this.wingsEnvironmentRole.damageMultiplier;
+    bullet.伤害类型 = this.wingsEnvironmentRole.damageType;
+    bullet.魔法伤害属性 = this.wingsEnvironmentRole.element;
+    bullet.毒 = 0;
     bullet.子弹速度 = 0;
     bullet.Z轴攻击范围 = 30;
     bullet.击倒率 = 2;

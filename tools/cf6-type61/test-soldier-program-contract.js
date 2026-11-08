@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),path=require('node:path');
 const {execFileSync}=require('node:child_process');
 const {loadStaticClass}=require('../cf6-soldier-assets/offline/as2-source');
-const c=vm.createContext({isFinite,Math});
+const c=vm.createContext({isFinite,Math,length:value=>typeof value==='string'?value.length:0});
 const contract=loadStaticClass(c,path.resolve(__dirname,'../../scripts/类定义/org/flashNight/arki/scene/Cf6SoldierProgramContract.as'),'Cf6SoldierProgramContract');
 const raw=execFileSync('python',['-X','utf8','-B','-c',"import sys,json;sys.path.insert(0,'tools/cf6-type61');import fixed_roster;print(json.dumps(fixed_roster.runtime_catalog(),ensure_ascii=False))"],{cwd:path.resolve(__dirname,'../..'),encoding:'utf8'});
 const config=()=>vm.runInContext('JSON.parse('+JSON.stringify(raw)+')',c);
@@ -34,4 +34,18 @@ test('identity map cannot omit, add or redirect a fixed person to an unknown pro
  for(const edit of [d=>delete d.identities[Object.keys(d.identities)[0]],d=>d.identities.fake=Object.values(d.identities)[0],
    d=>Object.values(d.identities)[0].profileId='unknown',d=>Object.values(d.identities)[0].mapId='A99',
    d=>Object.values(d.identities)[0].roleClass='instructor']){const d=config();edit(d);assert.equal(contract.valid(d),false);}
+});
+
+test('sustained windows bind nineteen actual guns and reject drift in frames, identity and recovery',()=>{
+ const d=config(),guns=Object.values(d.profiles).filter(p=>p.program.suppression);
+ assert.equal(Object.values(d.identities).filter(row=>d.profiles[row.profileId].program.suppression).length,19);
+ assert.equal(guns.length,11);
+ for(const mutate of [p=>p.program.suppression.fireFrames=61,p=>p.program.suppression.recoveryFrames=29,
+   p=>p.program.suppression.weaponType='狙击枪',p=>p.program.suppression.weaponName='',
+   p=>p.budget.primaryTriggerLimit=61,p=>p.program.stages.at(-1).frames=29,
+   p=>{p.program.stages.find(s=>s.kind==='fire'&&s.mode==='primary').gap=2;},
+   p=>delete p.program.suppression]){
+  const p=vm.runInContext('JSON.parse('+JSON.stringify(JSON.stringify(guns[0]))+')',c);
+  mutate(p);assert.equal(contract.profile(p),false);
+ }
 });

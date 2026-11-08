@@ -121,7 +121,7 @@ bash scripts/compile_test.sh -TimeoutSeconds 120
 
 可能卡死的只读测试可显式加 `-OwnedReadOnlyHost`。前置是无既有 Flash；用既有 `FlashCS6Task` 创建新宿主，绑定 PID/创建时刻/任务 executable，并由新鲜 JSFL 回执证明文档仅为可丢弃的 TestLoader。文档 open/new/切换监视器发现其他或未保存文档即写 taint，拒绝自动结束宿主。该宿主运行期间不要用于其他编辑工作。正常/失败收尾均只停止这次任务拥有的宿主；必须确认实际进程消失、trigger 与 lifecycle 任务空闲、迟到产物稳定、原件恢复及 marker exact-match，才能清本轮闸。不会盲重放，也不结束原先用户编辑器。
 
-确需给独占测试腾出宿主时，`-QuitOwnedTestHost` 仅接受空编辑器、可丢弃 TestLoader，以及 `compile_action.jsfl` 明列的五类CF6生成测试宿主；须属于本轮且已保全磁盘源及scratch原件。使用精确路径，不按前缀或通配放行其他、未保存或美术文档。inspect/output独占租约仍仅接受TestLoader。第一轮仅关闭目标，下一轮空编辑器才退出，另核实际进程退出；不能把退出请求回执当作退出。普通发布不带这些选项。
+确需给独占测试腾出宿主时，`-QuitOwnedTestHost` 仅接受空编辑器、可丢弃 TestLoader，以及 `compile_action.jsfl` 明列的六类CF6生成测试宿主（含地面拾取RSL宿主）；须属于本轮且已保全磁盘源及scratch原件。使用精确路径，不按前缀或通配放行其他、未保存或美术文档。inspect/output独占租约仍仅接受TestLoader。第一轮仅关闭目标，下一轮空编辑器才退出，另核实际进程退出；不能把退出请求回执当作退出。普通发布不带这些选项。
 
 协议回归：`node tools/test-flash-compile-jsfl.js`、`powershell -File tools/test-testplayer-control.ps1`、`powershell -File tools/test-focused-testloader-trace.ps1`。独占路径的真实新宿主/文档事件/进程退出仍由 focused 运行证明；只读例外不改变上文一般未知写与人工恢复合同。
 

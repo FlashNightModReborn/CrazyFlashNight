@@ -148,7 +148,8 @@ def profile(row, items=None):
     if items is None:
         items = item_catalog()
     program_weapon = row.get('programWeapon', dict(name=row['primary']['name'], weaponType=items[row['primary']['name']].get('weapontype')))
-    result['program'] = soldier_programs.compile_program(result, program_weapon['weaponType'], program_weapon['name'])
+    actual_weapon = dict(name=row['primary']['name'], weaponType=items[row['primary']['name']].get('weapontype'))
+    result['program'] = soldier_programs.compile_program(result, program_weapon['weaponType'], program_weapon['name'], actual_weapon)
     aim = next(stage for stage in result['program']['stages'] if stage['kind'] == 'warning')
     result['extensions']['windupFrames'] = aim['frames']
     result['extensions']['lockAimLastFrames'] = aim['lock']
@@ -158,7 +159,7 @@ def profile(row, items=None):
     primary_cost = final.get('primaryFinalDamageUnitsPerAction', final['primaryProjectilesPerAction']) / final['primaryTriggerLimit']
     sub_cost = 2 if (row.get('subweapon') or {}).get('bullet') == '榴弹' else final['subweaponProjectilesPerAction']
     final['subweaponFinalDamageUnitsPerAction'] = sub_cost
-    cycle_max = granted_max = 0
+    cycle_max = granted_max = projectile_max = projected_max = 0
     for variant in ('stages', 'dual', 'phase2', 'fallback', 'shield', 'grenade', 'pressure'):
         counts = dict(primary=0, dual=0, sub=0, **{'throw': 0})
         for stage in result['program'].get(variant, []):
@@ -167,8 +168,15 @@ def profile(row, items=None):
         sidearms = counts['dual'] * final['sidearmProjectilesPerAction'] / max(1, final['sidearmSynchronizedTriggerLimit'])
         cycle_max = max(cycle_max, longgun + sidearms)
         granted_max = max(granted_max, max(longgun, sidearms) if result['program']['mixed'] else longgun + sidearms)
-    number(cycle_max, 1, 20, 'final cycle damage units', True)
-    number(granted_max, 1, 14, 'final granted attack damage units', True)
+        direct = counts['primary'] * final['primarySplit'] + counts['sub'] * final['subweaponProjectilesPerAction'] + counts['throw'] * 2
+        projectile_max = max(projectile_max, direct + sidearms)
+        projected_max = max(projected_max, max(direct, sidearms) if result['program']['mixed'] else direct + sidearms)
+    sustained = 'suppression' in result['program']
+    number(cycle_max, 1, 900 if sustained else 20, 'final cycle damage units', True)
+    number(granted_max, 1, 900 if sustained else 14, 'final granted attack damage units', True)
+    if sustained:
+        final['scriptedCycleProjectiles'] = int(projectile_max)
+        final['maxPlannedActionProjectiles'] = int(projected_max)
     final['scriptedCycleDamageUnits'] = int(cycle_max)
     final['maxGrantedDamageUnits'] = int(granted_max)
     return result

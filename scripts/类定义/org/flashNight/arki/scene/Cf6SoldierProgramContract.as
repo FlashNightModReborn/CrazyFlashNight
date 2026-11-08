@@ -18,9 +18,15 @@ class org.flashNight.arki.scene.Cf6SoldierProgramContract {
     }
     public static function profile(profile:Object):Boolean {
         var p:Object=profile.program,b:Object=profile.budget,e:Object=profile.extensions;
+        var suppression:Object=p.suppression, sustained:Boolean=suppression!==undefined;
+        if(sustained && (!keys(suppression,"weaponName|weaponType|fireFrames|recoveryFrames")
+            || typeof suppression.weaponName!="string" || length(suppression.weaponName)<1 || length(suppression.weaponName)>96
+            || !member(suppression.weaponType,"机枪|压制机枪") || suppression.fireFrames!==60 || suppression.recoveryFrames!==30
+            || b.primaryTriggerLimit!==60))return false;
+        var triggerCap:Number=sustained?60:8,cycleCap:Number=sustained?900:20,grantCap:Number=sustained?900:14;
         if(!member(profile.role,"line|suppress|precision|breach|flush|mobile|dual|counter")
             || !member(profile.roleClass,"ordinary|elite|instructor") || !member(profile.strategy,"line|mobile|adaptive|switch")
-            || !keys(p,"schema|trigger|waiting|stages|dual|phase2|fallback|shield|grenade|pressure|recovery|danger|maxDistance|fireDistance|minDistance|lane|stopDistance|tether|mixed|capabilities")
+            || !keys(p,"schema|trigger|waiting|stages|dual|phase2|fallback|shield|grenade|pressure|recovery|danger|maxDistance|fireDistance|minDistance|lane|stopDistance|tether|mixed|capabilities|suppression")
             || p.schema!==1 || typeof p.danger!="boolean" || typeof p.mixed!="boolean"
             || !whole(p.recovery,1,180) || !whole(p.maxDistance,95,680) || !whole(p.fireDistance,p.maxDistance,1200) || !whole(p.minDistance,0,p.maxDistance)
             || !whole(p.stopDistance,0,680) || !whole(p.lane,1,80) || !whole(p.tether,0,480)
@@ -29,12 +35,12 @@ class org.flashNight.arki.scene.Cf6SoldierProgramContract {
         if(profile.roleClass=="instructor"){
             if(!member(p.trigger,tactics) || p.trigger!==e.majorTactic || p.danger!==true)return false;
         }else if(p.trigger!=="ordinary" || e.majorTactic!=null || p.danger!==false)return false;
-        if(!whole(b.primaryTriggerLimit,1,8) || !whole(b.primarySplit,1,14)
+        if(!whole(b.primaryTriggerLimit,1,triggerCap) || !whole(b.primarySplit,1,14)
             || !whole(b.sidearmSynchronizedTriggerLimit,0,3) || !whole(b.sidearmProjectilesPerAction,0,6)
             || !whole(b.subweaponProjectilesPerAction,0,7) || !whole(b.subweaponFinalDamageUnitsPerAction,0,7)
-            || !whole(b.scriptedCycleProjectiles,1,20) || !whole(b.scriptedCycleDamageUnits,1,20)
-            || !whole(b.maxGrantedDamageUnits,1,14)
-            || !whole(b.maxPlannedActionProjectiles,1,14) || b.activeFrameRate!==30
+            || !whole(b.scriptedCycleProjectiles,1,cycleCap) || !whole(b.scriptedCycleDamageUnits,1,cycleCap)
+            || !whole(b.maxGrantedDamageUnits,1,grantCap)
+            || !whole(b.maxPlannedActionProjectiles,1,grantCap) || b.activeFrameRate!==30
             || !whole(e.subweaponBurstLimit,0,1) || !whole(e.finiteThrowableCount,0,3)
             || b.primaryTriggerLimit*b.primarySplit!==b.primaryProjectilesPerAction
             || b.primaryProjectilesPerAction+b.subweaponProjectilesPerAction!==b.longgunWithSubProjectilesPerAction
@@ -56,6 +62,7 @@ class org.flashNight.arki.scene.Cf6SoldierProgramContract {
     }
     private static function sequence(stages:Object,p:Object,b:Object,e:Object):Boolean {
         if(!(stages instanceof Array) || stages.length<2 || stages.length>16 || stages[stages.length-1].kind!=="recover")return false;
+        var sustained:Boolean=p.suppression!==undefined;
         var counts:Object={primary:0,dual:0,sub:0},warned:Object={primary:false,dual:false,sub:false};
         counts["throw"]=0;warned["throw"]=false;
         for(var i:Number=0;i<stages.length;i++){
@@ -71,7 +78,8 @@ class org.flashNight.arki.scene.Cf6SoldierProgramContract {
             if(kind=="warning"){
                 if(mode=="none" || !whole(stage.lock,0,stage.frames))return false;warned[mode]=true;
             }else if(kind=="fire"){
-                if(mode=="none" || !warned[mode] || !whole(stage.events,1,8) || !whole(stage.gap,1,90))return false;
+                if(mode=="none" || !warned[mode] || !whole(stage.events,1,sustained && mode=="primary"?60:8) || !whole(stage.gap,1,90))return false;
+                if(sustained && mode=="primary" && (stage.events!==stage.frames || stage.gap!==1))return false;
                 counts[mode]+=stage.events;
             }else if(kind=="draw"){
                 if(mode=="none")return false;
@@ -83,10 +91,11 @@ class org.flashNight.arki.scene.Cf6SoldierProgramContract {
                 if(kind=="charge" && !whole(stage.distance,1,120))return false;
             }
         }
+        if(sustained && counts.primary>0 && (counts.primary!==60 || stages[stages.length-1].frames!==30))return false;
         if(counts.primary>b.primaryTriggerLimit || counts.dual>b.sidearmSynchronizedTriggerLimit
             || counts.sub>e.subweaponBurstLimit || counts["throw"]>e.finiteThrowableCount
             || !p.mixed && counts.dual>0 && (counts.primary>0 || counts.sub>0))return false;
-        if(b.primaryFinalDamageUnitsPerAction!==undefined && (!whole(b.primaryFinalDamageUnitsPerAction,1,14)
+        if(b.primaryFinalDamageUnitsPerAction!==undefined && (!whole(b.primaryFinalDamageUnitsPerAction,1,sustained?840:14)
             || b.primaryFinalDamageUnitsPerAction<b.primaryProjectilesPerAction))return false;
         var primaryUnits:Number=b.primaryFinalDamageUnitsPerAction===undefined?b.primarySplit:
             b.primaryFinalDamageUnitsPerAction/b.primaryTriggerLimit;
@@ -94,7 +103,7 @@ class org.flashNight.arki.scene.Cf6SoldierProgramContract {
         var sidearmUnits:Number=counts.dual>0?counts.dual*b.sidearmProjectilesPerAction/b.sidearmSynchronizedTriggerLimit:0;
         var granted:Number=p.mixed?Math.max(units,sidearmUnits):units+sidearmUnits;
         units+=sidearmUnits;
-        return units>0 && units<=b.scriptedCycleDamageUnits && granted<=b.maxGrantedDamageUnits && granted<=14;
+        return units>0 && units<=b.scriptedCycleDamageUnits && granted<=b.maxGrantedDamageUnits && granted<=(sustained?900:14);
     }
     public static function valid(config:Object):Boolean {
         if(config.schema!=="cf6-fixed-roster.runtime.v1" || typeof config.version!="string" || config.version==""

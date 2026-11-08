@@ -1,4 +1,5 @@
 ﻿import flash.display.BitmapData;
+import org.flashNight.arki.component.Damage.*;
 import flash.geom.Matrix;
 import flash.geom.Rectangle;
 
@@ -11,6 +12,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6WingsAssetTest {
     private static var signalRoom:Object;
     private static var cases:Array, probes:Array, images:Object, shadows:Array;
     private static var link:String = "敌人-CF6Wings";
+    private static var roleXml:XML,roleReady:Boolean,wingsProperties:XMLNode,instructorProperties:XMLNode;
 
     private static function check(ok:Boolean, label:String):Void {
         if(ok)passed++;else {failed++;trace("[TEST_FAIL] Cf6WingsAssetTest: "+label);}
@@ -21,6 +23,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6WingsAssetTest {
     }
     public static function runAllTests():Void {
         passed=failed=ticks=0;ready=finished=false;cases=[];probes=[];images={};shadows=[];
+        roleReady=false;wingsProperties=instructorProperties=null;
+        roleXml=new XML();roleXml.ignoreWhite=true;
+        roleXml.onLoad=function(ok:Boolean):Void {Cf6WingsAssetTest.roleLoaded(this,ok);};
+        roleXml.load("../data/enemy_properties/CF6重制敌人.xml");
         library=_root.createEmptyMovieClip("__wingsLibrary",_root.getNextHighestDepth());
         driver=_root.createEmptyMovieClip("__wingsDriver",_root.getNextHighestDepth());
         library._visible=false;
@@ -113,7 +119,12 @@ class org.flashNight.arki.unit.Action.Melee.Cf6WingsAssetTest {
         if(rec==undefined)return;
         var ranged:Boolean=b.子弹种类=="穿刺子弹";
         if(ranged)rec.shots++;else rec.melee++;
-        rec.contract=rec.contract && b.子弹威力==100 && b.Z轴攻击范围==30 && b.shootZ==200
+        var target:Object={防御力:9000,等级:60,魔法抗性:{能:45}};
+        UniversalDamageHandle.getInstance().handleBulletDamage({伤害类型:b.伤害类型,魔法伤害属性:b.魔法伤害属性,
+            破坏力:b.子弹威力,是否为敌人:true},actor,target,null,new DamageResult());
+        rec.contract=rec.contract && Math.abs(target.损伤值-24.75)<0.0001
+            && b.伤害类型=="魔法" && b.魔法伤害属性=="能" && b.毒===0
+            && b.子弹威力==45 && b.Z轴攻击范围==30 && b.shootZ==200
             && !isNaN(b.shootX) && !isNaN(b.shootY)
             && (ranged ? Math.abs(b.shootX-actor._x)<250 && Math.abs(b.shootY-actor._y)<250 && b.子弹速度==25 && b.击倒率==10 && b.区域定位area==undefined
                 : b.子弹种类=="近战子弹" && b.子弹速度==0 && b.击倒率==2 && b.不硬直===true && b.区域定位area!=null);
@@ -370,8 +381,59 @@ class org.flashNight.arki.unit.Action.Melee.Cf6WingsAssetTest {
             finish();
         }
     }
+    private static function roleLoaded(data:XML,ok:Boolean):Void {
+        if(!ok)return;
+        var nodes:Array=data.firstChild.childNodes;
+        for(var i:Number=0;i<nodes.length;i++){
+            if(nodes[i].nodeName=="敌人-CF6Wings")wingsProperties=nodes[i];
+            if(nodes[i].nodeName=="敌人-CF6特种教官")instructorProperties=nodes[i];
+        }
+        roleReady=wingsProperties!=null && instructorProperties!=null;
+    }
+    private static function field(node:XMLNode,key:String):XMLNode {
+        var children:Array=node.childNodes;
+        for(var i:Number=0;i<children.length;i++)if(children[i].nodeName==key)return children[i];
+        return null;
+    }
+    private static function scalar(node:XMLNode,key:String):Number {return Number(field(node,key).firstChild.nodeValue);}
+    private static function resistances(node:XMLNode):Object {
+        var result:Object={},children:Array=field(node,"魔法抗性").childNodes;
+        for(var i:Number=0;i<children.length;i++)result[children[i].nodeName]=Number(children[i].firstChild.nodeValue);
+        return result;
+    }
+    private static function growth(node:XMLNode,key:String,level:Number):Number {
+        var low:Number=scalar(node,key+"_min"),high:Number=scalar(node,key+"_max");
+        return Math.floor(low+(high-low)/59*level);
+    }
+    private static function roleChecks():Void {
+        check(roleReady,"actual Wings and instructor property XML loaded");if(!roleReady)return;
+        var resistance:Object=resistances(wingsProperties);
+        var elements:Array=["基础","热","冷","电","波","蚀","毒","冲","能"];
+        for(var i:Number=0;i<elements.length;i++)check(resistance[elements[i]]===88.5,"explicit Wings resistance "+elements[i]);
+        check(scalar(wingsProperties,"hp_min")==3667 && scalar(wingsProperties,"hp_max")==8658
+            && scalar(wingsProperties,"基本防御力_min")==189 && scalar(wingsProperties,"基本防御力_max")==420,
+            "Wings original health and physical defence retained");
+        elements.push("unknown_element_fallback");
+        var handler:UniversalDamageHandle=UniversalDamageHandle.getInstance();
+        for(var level:Number=59;level<61;level++){
+            var w:Object={等级:level,魔法抗性:resistance,防御力:growth(wingsProperties,"基本防御力",level)};
+            var b:Object={等级:level,魔法抗性:resistances(instructorProperties),防御力:growth(instructorProperties,"基本防御力",level)};
+            var wHp:Number=growth(wingsProperties,"hp",level),bHp:Number=growth(instructorProperties,"hp",level);
+            for(i=0;i<elements.length;i++){
+                var bullet:Object={伤害类型:"魔法",魔法伤害属性:elements[i],破坏力:10000,是否为敌人:false};
+                handler.handleBulletDamage(bullet,null,w,null,new DamageResult());handler.handleBulletDamage(bullet,null,b,null,new DamageResult());
+                var ratio:Number=(wHp/w.损伤值)/(bHp/b.损伤值);
+                check(ratio>0.95 && ratio<1.05,"real attribute handler EHP near instructor "+level+" "+elements[i]);
+            }
+            handler.handleBulletDamage({伤害类型:"物理",破坏力:10000,是否为敌人:false},null,w,null,new DamageResult());
+            handler.handleBulletDamage({伤害类型:"物理",破坏力:10000,是否为敌人:false},null,b,null,new DamageResult());
+            ratio=(wHp/w.损伤值)/(bHp/b.损伤值);
+            check(ratio>0.11 && ratio<0.15,"real physical handler retains fast-kill window "+level);
+        }
+    }
+
     private static function finish():Void {
-        if(finished)return;finished=true;delete driver.onEnterFrame;
+        if(finished)return;roleChecks();finished=true;delete driver.onEnterFrame;
         if(loader!=null)loader.removeListener(listener);
         trace("Cf6WingsAssetTest: "+passed+" passed, "+failed+" failed; "+cases.length+" actual timeline cases");
         library.removeMovieClip();driver.removeMovieClip();_root.cf6WingsAssetComplete();

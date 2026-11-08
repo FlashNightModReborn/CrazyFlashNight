@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.scene.Cf6SoldierLootRules;
+import org.flashNight.arki.scene.Cf6SoldierGroundPickup;
 import org.flashNight.arki.scene.Cf6SoldierActions;
 import org.flashNight.arki.scene.Cf6Type61Service;
 import org.flashNight.arki.scene.BookDefinition;
@@ -39,7 +40,7 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
         if(run.bookId!=="cf6-sting" || run.routeId!=="type61" || run.slot!==String(_root.savePath)
             || config.lootPolicy==null || typeof config.version!="string")return false;
         if(sameRun())return true;
-        if(operation!="" || queue.length>0 || plan!=null){lastError="previous_loot_owner_unsettled";return false;}
+        if(operation!="" || queue.length>0 || plan!=null || Cf6SoldierGroundPickup.busy()){lastError="previous_loot_owner_unsettled";return false;}
         context={identity:{slot:run.slot,seed:run.seed,startedAt:run.startedAt,planSeed:run.planSeed},
             config:config,policy:config.lootPolicy,runKey:"cf6.loot."+run.seed+"."+run.startedAt,
             decisions:0,admissions:0,gateCalls:0};
@@ -99,6 +100,9 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
             // A gun with no installed material still has its normal weapon category.
             // available() removes only the absent material weight before normalization.
             if(snapshot.material==null)snapshot.material="";
+            var room:Object=Cf6SoldierActions.context();
+            if(room!=null && isFinite(actor._x) && isFinite(actor.Z轴坐标))
+                snapshot.ground={mapId:room.mapId,x:actor._x,z:actor.Z轴坐标};
             if(snapshot.primary==null || actor.soldierIsElite && (snapshot.left==null || snapshot.right==null)
                 || snapshot.material!=="" && !ItemUtil.isItem(snapshot.material))eligible=false;
         }catch(snapshotError){eligible=false;snapshot={primary:null,left:null,right:null,material:"",lastUpdate:new Date().getTime()};}
@@ -202,7 +206,19 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
                 var items:Array=packet.items.concat(packet.consumables);
                 var origin:Object={source:"cf6_type61",reason:"soldier_capture",operationId:active.operationId,
                     sourceKey:packet.sourceKey};
-                if(!RewardStashService.admit(items,false,true,origin))throw new Error("capture_admission_failed");
+                if(packet.ground!=null){
+                    var before:Number=RewardStashService.peek().entries.length;
+                    if(!RewardStashService.admit(packet.items,false,true,origin))throw new Error("capture_admission_failed");
+                    var entries:Array=RewardStashService.peek().entries;
+                    if(entries.length-before!==packet.items.length)throw new Error("capture_equipment_entry_mismatch");
+                    packet.groundEntries=[];
+                    for(var n:Number=before;n<entries.length;n++){
+                        if(entries[n].item.name!==packet.items[n-before].name || typeof entries[n].item.value!="object")
+                            throw new Error("capture_equipment_entry_mismatch");
+                        packet.groundEntries.push(entries[n].entryId);
+                    }
+                    if(!RewardStashService.admit(packet.consumables,true,true,origin))throw new Error("capture_ammo_admission_failed");
+                }else if(!RewardStashService.admit(items,false,true,origin))throw new Error("capture_admission_failed");
                 packet.state="OWNED";packet.admissionOperationId=active.operationId;
             }
         }
@@ -213,7 +229,7 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
         if(result.success!==true && result.error!="commit_pending" && operation!="")lastError=String(result.error);
     }
     private static function process(force:Boolean):Void {
-        if(processing || !ensure() || !sameRun())return;
+        if(processing || Cf6SoldierGroundPickup.busy() || !ensure() || !sameRun())return;
         if(operation!=""){
             if(RewardStashService.pendingOperationId()===operation && (force || clock%60==0))RewardStashService.resume(operation);
             return;
@@ -256,7 +272,9 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
             }else context.admissions+=active.ids.length;
             plan=null;retries=0;retryAt=clock;lastError="";
             if(active.kind=="admit"){
-                try {_root.发布消息("缴获物资已存入奖励暂存，武器与配套弹药可一起领取。");}catch(noticeError){}
+                var grounded:Boolean=false;
+                for(var k:Number=0;k<active.ids.length;k++)if(storedLedger().records["u."+active.ids[k]].ground!=null)grounded=true;
+                try {_root.发布消息(grounded?"缴获武器已落地，按拾取键或点击收取；未拾取的武器保留在奖励暂存。":"缴获物资已存入奖励暂存。");}catch(noticeError){}
             }
         }else{
             // Known rollback keeps a frozen decision. An already durable hit
@@ -269,8 +287,9 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
     }
     public static function tick():Void {
         clock++;
+        if(sameRun())Cf6SoldierGroundPickup.tick(context.identity);
         process(false);
-        if(exitRequested && settled() && sameRun()){
+        if(exitRequested && settled() && !Cf6SoldierGroundPickup.busy() && sameRun()){
             exitRequested=false;
             if(typeof _root.gameCommands.safeExit=="function")_root.gameCommands.safeExit();
         }
@@ -295,9 +314,10 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
         return exitRequested || !settled();
     }
     public static function prepareForTransition():Boolean {
-        if(!ensure())return settled();
+        if(!ensure())return settled() && !Cf6SoldierGroundPickup.busy();
+        Cf6SoldierGroundPickup.reconcile();
         process(true);
-        return settled();
+        return settled() && !Cf6SoldierGroundPickup.busy();
     }
     public static function deferSafeExit():Boolean {
         if(prepareForTransition())return false;
@@ -305,6 +325,6 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
     }
     public static function status():Object {
         return {bound:sameRun(),queued:queue.length,operationId:operation,planned:plan!=null,
-            decisions:context.decisions,admissions:context.admissions,gateCalls:context.gateCalls,error:lastError};
+            decisions:context.decisions,admissions:context.admissions,gateCalls:context.gateCalls,error:lastError,ground:Cf6SoldierGroundPickup.status()};
     }
 }

@@ -28,6 +28,11 @@ cf6FixedInstall=function():Void {
     this.cf6PoseSwitch=false;this.cf6ReloadRequested="";this.cf6LastTerminal=0;
     if(record==null){this.cf6FixedError="missing fixed roster capability/identity";trace("[CF6_FIXED_ACTION_ERROR] "+this.cf6FixedError);return;}
     this.cf6Profile=record.profile;
+    var suppression:Object=this.cf6Profile.program.suppression;
+    if(suppression!=null && (this.长枪.name!==suppression.weaponName
+        || _root.getItemData(this.长枪.name).weapontype!==suppression.weaponType)){
+        this.cf6FixedError="machinegun profile does not match actual weapon";return;
+    }
     this.cf6ActionState=this.cf6RuleCreate(this.cf6ActionApi.context().key,record.key,this.version);
     this.soldierTuning.shootRange=record.profile.program.maxDistance;
     this.soldierTuning.keepDistance=record.profile.program.stopDistance;

@@ -81,6 +81,11 @@ class org.flashNight.arki.scene.Cf6SoldierLootColdProbeTest {
     private static function exact():Void {
         var p:Object=packet(),ledger:Object=_root._saveExt.bookRun.cf6SoldierLoot;
         require(p.kind===(kind=="guarantee"?"longgun":kind) && Cf6SoldierLootRules.validLedger(ledger),"cold packet validity");
+        if(kind!="none"){
+            require(p.ground.mapId==="A19" && p.ground.x===200 && p.ground.z===300,"durable ground anchor survives process boundary");
+            if(p.state==="OWNED")require(p.groundEntries instanceof Array && p.groundEntries.length===p.items.length,
+                "durable ground entries retain exact equipment references");
+        }
         require(ledger.packages===(kind=="none"?0:1) && ledger.pairs===(kind=="sidearm_pair"?1:0),"once-only quotas");
         if(kind=="longgun" || kind=="guarantee")require(p.items[0].value.shot===4 && p.items[0].value.isRocketMode===false
             && p.items[0].value.__future.kept===17 && p.items[0].value.ammoState.reserve===3,"G1111 full boolean/value snapshot");
@@ -140,7 +145,11 @@ class org.flashNight.arki.scene.Cf6SoldierLootColdProbeTest {
             for(var attempt:Number=0;attempt<4;attempt++)Cf6SoldierLoot.prepareForTransition();
             require(Cf6SoldierLoot.prepareForTransition(),"atomic admission settles");
             require(packet().state===(kind=="none"?"DECIDED_MISS":"OWNED"),"admitted once");
-            require(RewardStashService.peek().entries.length===(kind=="none"?0:(kind=="longgun" || kind=="guarantee")?2:3),"complete stash packet");
+            require(RewardStashService.peek().entries.length===(kind=="none"?0:(kind=="longgun" || kind=="guarantee")?1:2),"complete durable equipment packet");
+            var admittedBag:Object=_root.物品栏.背包.toObject(),admittedAmmo:Number=0;
+            for(var admittedIndex:String in admittedBag)if(admittedBag[admittedIndex].name=="步枪弹药" || admittedBag[admittedIndex].name=="手枪弹药")
+                admittedAmmo+=admittedBag[admittedIndex].value;
+            require(admittedAmmo===(kind=="none"?0:(kind=="longgun" || kind=="guarantee")?1:2),"same durable admission places paired ammunition in inventory");
         }else if(phase=="claim" && kind!="none"){
             var store:Object=RewardStashService.peek(),refs:Array=[];
             for(var j:Number=0;j<store.entries.length;j++)refs.push({entryId:store.entries[j].entryId,revision:store.entries[j].revision,

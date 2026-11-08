@@ -91,7 +91,7 @@ class org.flashNight.arki.scene.Cf6FixedChapterNativeTest {
         RewardInboxService.resetForTests();
     }
     private static function beginMap():Void {
-        if(index>=maps.length){finish();return;}
+        if(index>=maps.length){beginWingsRoles();return;}
         Cf6BossEncounter.cancel();if(world!=null)world.removeMovieClip();lifeTasks=[];pending=[];expected={};
         for(var i:Number=0;i<book.maps.length;i++)if(book.maps[i].id==maps[index])map=book.maps[i];
         world=_root.createEmptyMovieClip("cf6ChapterWorld"+index,_root.getNextHighestDepth());_root.gameworld=world;
@@ -291,7 +291,10 @@ class org.flashNight.arki.scene.Cf6FixedChapterNativeTest {
             var p:Object=_root._saveExt.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"];
             check(p.kind=="longgun" && p.state=="OWNED","native combat death admits one package "+p.state+" error="+Cf6SoldierLoot.lastError);
             check(p.items[0].value.shot===4 && p.items[0].value.isRocketMode===false && p.items[0].value.chapterExtension.kept===9,"native death snapshot keeps full actual item");
-            check(_root._saveExt.bookRun.cf6SoldierLoot.packages===1 && RewardStashService.peek().entries.length>=2,"one package with ordinary reload ammo");
+            var ammo:Number=0,backpack:Object=_root.物品栏.背包.toObject();
+            for(var bagSlot:String in backpack)if(backpack[bagSlot].name===p.consumables[0].name)ammo+=Number(backpack[bagSlot].value);
+            check(_root._saveExt.bookRun.cf6SoldierLoot.packages===1 && RewardStashService.peek().entries.length===1
+                && ammo===p.consumables[0].value,"one durable ground weapon with ordinary reload ammo in inventory");
             var count:Number=RewardStashService.peek().entries.length;
             lootActor.dispatcher.publish("kill",lootActor);Cf6SoldierLoot.prepareForTransition();
             check(RewardStashService.peek().entries.length===count,"duplicate kill cannot duplicate ownership");
@@ -324,6 +327,47 @@ class org.flashNight.arki.scene.Cf6FixedChapterNativeTest {
             check(samples.length>=175 && warningPeak==0,"bounded native workload has no synthetic fire lines");beginBoss();
         }
     }
+    private static var roleProbes:Array;
+    private static function beginWingsRoles():Void {
+        var template:Object=null;
+        for(var g:Number=0;g<map.bossEncounter.groups.length;g++){
+            var enemies:Array=map.bossEncounter.groups[g].enemies;
+            for(var e:Number=0;e<enemies.length;e++)if(_root.兵种库[enemies[e].Type].兵种名==="敌人-CF6Wings")template=enemies[e];
+        }
+        check(template!=null && template.Quantity===2 && template.Parameters.cf6DifficultyScale===2.5,
+            "actual final battle keeps two specially reinforced Wings");
+        roleProbes=[];
+        for(var i:Number=0;i<3;i++){
+            var entry:Object=ObjectUtil.clone(template),name:String="__cf6WingsRole"+i;
+            var level:Number=i==0?59:60,scale:Number=i==2?2.5:1;
+            entry.InstanceName=name;entry.Quantity=1;entry.Level=level;entry.Parameters.cf6DifficultyScale=scale;
+            roleProbes.push({name:name,level:level,scale:scale});
+            var event:StageEvent=new StageEvent({EventName:"Cf6WingsRoleProbe"+i,Enemy:[entry]});event.execute();
+        }
+        phase=6;age=0;
+    }
+    private static function verifyWingsRoles():Void {
+        var elements:Array=["基础","热","冷","电","波","蚀","毒","冲","能"];
+        for(var i:Number=0;i<roleProbes.length;i++){
+            var row:Object=roleProbes[i],u:MovieClip=world[row.name];
+            check(u!=null && u.__unitInitializedVersion===u.version && u.等级===row.level,
+                "actual Wings initializer completes at intended level "+row.level+" scale="+row.scale);
+            for(var k:Number=0;k<elements.length;k++)check(Number(u.魔法抗性[elements[k]])===88.5,
+                "actual Wings resistance projection "+row.level+" scale="+row.scale+" "+elements[k]);
+            check(u.wingsEnvironmentRole.damageMultiplier===0.45 && u.wingsEnvironmentRole.damageType=="魔法"
+                && u.wingsEnvironmentRole.element=="能","published Wings energy role bound to actual chapter actor");
+            var panel:Object=_root.敌人属性表["敌人-CF6Wings"];
+            var expectedHp:Number=Math.floor(panel.hp_min+(panel.hp_max-panel.hp_min)/59*row.level)*row.scale;
+            check(isFinite(expectedHp) && expectedHp>0 && u.hp满血值===expectedHp,"actual Wings health follows unchanged panel and authored scale");
+            trace("[CF6_WINGS_NATIVE_ROLE] level="+u.等级+" scale="+row.scale+" hp="+u.hp满血值
+                +" defence="+u.防御力+" attack="+u.空手攻击力+" energyResistance="+u.魔法抗性.能);
+        }
+        var ordinary:MovieClip=world[roleProbes[1].name],reinforced:MovieClip=world[roleProbes[2].name];
+        check(reinforced.hp满血值===ordinary.hp满血值*2.5,"final special Wings retains actual 2.5 health scaling");
+        check(reinforced.空手攻击力===ordinary.空手攻击力*2.5,"final special Wings retains actual 2.5 attack scaling");
+        finish();
+    }
+
     private static function nextMap():Void {Cf6BossEncounter.cancel();index++;beginMap();}
     private static function tick():Void {
         if(finished)return;frame++;age++;_root.帧计时器.当前帧数=frame;
@@ -341,6 +385,7 @@ class org.flashNight.arki.scene.Cf6FixedChapterNativeTest {
             if(map.id=="A14"){beginPerformance();return;}
             if(map.id=="A19"){beginDeath();return;}beginBoss();return;
         }
+        if(phase==6){if(age>=20)verifyWingsRoles();return;}
         if(phase==2)bossTick();else if(phase==3)performanceTick();else if(phase==4)deathTick();else if(phase==5 && age>=2)verifyTranslatedGeometry();
     }
     private static function finish():Void {

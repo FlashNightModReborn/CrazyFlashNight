@@ -350,7 +350,7 @@ console.log("[flash-compile-jsfl] ok 11/11");
 
 function testFocusedConsumerExitKeepsOtherOperationsNarrow() {
   const nonce="a".repeat(32);
-  for(const focusedDocument of ["Cf6FirepowerProjectileHost/Cf6FirepowerProjectileHost.xfl","tmp-cf6-loot-cold-host/Cf6SoldierLootColdProbe.xfl"]){
+  for(const focusedDocument of ["Cf6FirepowerProjectileHost/Cf6FirepowerProjectileHost.xfl","Cf6SoldierLootHost/Cf6SoldierLootHost.xfl","tmp-cf6-loot-cold-host/Cf6SoldierLootColdProbe.xfl"]){
     const exited=runHarness({controlRequest:`quit_owned_test_host\n${nonce}`,focusedDocument});
     assert.equal(exited.closed.length,1);assert.deepEqual(exited.quitCalls,[]);
     assert.match(exited.files.get(exited.controlReceipt),/owned=true\nexit_requested=false$/);

@@ -1,0 +1,31 @@
+{
+  "schema": "cf6-soldier.equipment-consumer.v2",
+  "imports": {
+    "可拾取物2": "flashswf/arts/things.swf"
+  },
+  "canonicalFixtureFacadesSha256": "8a6b33f7cbbeb57de71d364def7648df438725c3439920287573e7cc6eb4b1a4",
+  "generatorSha256": "0fbae536dd4bd42a729467d5e7499c37ee4816deb993292b5734778bbda55847",
+  "referencePublishSettingsSha256": "04b547559cbe2b497fd8cecf81c4163c8f25d8e7d574fc959d7a1dcc845aabc5",
+  "files": [
+    {
+      "path": "LIBRARY/Import0.xml",
+      "sha256": "6fbb1ab289e4108a68956477ff0eee8c0109fde3a8a20504ce813ac53619ba27"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "sha256": "57065d9f65a37b590a4642a6e23243611b1da3a3a1981b4cc48ebf1d4fb0c5f3"
+    },
+    {
+      "path": "Cf6SoldierLootHost.xfl",
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c"
+    },
+    {
+      "path": "MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "sha256": "cb7f9599d46b09dd1da326fa401d3c804afef71f818a874a6d8f0e75507b3763"
+    }
+  ]
+}

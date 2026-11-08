@@ -35,6 +35,14 @@ def expected():
     values = json.loads(subprocess.check_output(node_cmd,
                                                cwd=ROOT, text=True, encoding='utf-8'))
     entry = copy.deepcopy(source)
+    environment = json.loads((HERE / 'environment-role.source.json').read_text(encoding='utf-8'))
+    assert environment['incomingElementalResistance'] == 88.5
+    resistance = entry.find('魔法抗性')
+    for key in environment['resistanceKeys']:
+        node = resistance.find(key)
+        if node is None:
+            node = E.SubElement(resistance, key)
+        node.text = str(environment['incomingElementalResistance'])
     entry.tag = LINK
     entry.find('displayname').text = DISPLAY_NAME
     for key, value in flags.items():
@@ -48,7 +56,7 @@ def expected():
     receipt = {'formula': 'tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts',
                'source': SOURCE, 'unitId': UNIT_ID, 'linkage': LINK, 'requestedStage': 7, 'requestedTier': 8,
                'input': inputs, 'integerPanel': {key: int(entry.find(key).text) for key in FIELDS},
-               'flags': flags}
+               'flags': flags, 'environmentRole': environment}
     return entry, unit, receipt, units
 
 

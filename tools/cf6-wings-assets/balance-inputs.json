@@ -38,5 +38,32 @@
     "成长系数": 1.0,
     "高攻低血防系数": 3.2,
     "高防低血系数": 3.0
+  },
+  "environmentRole": {
+    "schema": "cf6-wings-environment-role.v1",
+    "incomingElementalResistance": 88.5,
+    "resistanceKeys": [
+      "基础",
+      "热",
+      "冷",
+      "电",
+      "波",
+      "蚀",
+      "毒",
+      "冲",
+      "能"
+    ],
+    "outgoing": {
+      "type": "魔法",
+      "element": "能",
+      "powerMultiplier": 0.45
+    },
+    "baseHpAndPhysicalDefence": "unchanged",
+    "finalBattleException": {
+      "spawnScale": 2.5,
+      "preserveHpAndAttackMultiplier": true,
+      "sameElementalResistance": true
+    },
+    "calibration": "Ordinary level59/60 unshielded attribute EHP approximately matches instructor; physical EHP remains approximately13 percent. Does not normalize final-battle reinforced variants."
   }
 }

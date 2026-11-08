@@ -1,4 +1,8 @@
 ﻿import org.flashNight.arki.scene.*;
+import org.flashNight.arki.unit.Action.PickUp.PickUpManager;
+import flash.display.BitmapData;
+import flash.geom.Matrix;
+import flash.geom.Rectangle;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.pause.PauseManager;
@@ -79,14 +83,14 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
         check(storage.data.test.ext.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"].items[0].value.shot==4,"first save contains frozen actual equipment");
         drain();check(sawSaveSuccess() && !Cf6SoldierLoot.blocksSaveSuccess(),"completed admission permits save-success projection");
         var stash:Object=RewardStashService.peek();
-        check(stash.entries.length==2 && stash.entries[0].item.value.isRocketMode===false,"one weapon and actual ordinary ammo admitted");
+        check(stash.entries.length==1 && stash.entries[0].item.value.isRocketMode===false && bagQuantity("步枪弹药")==1,"one weapon and actual ordinary ammo admitted");
         check(stash.entries[0].item.value.__future.kept==17 && stash.entries[0].item.value.ammoState.reserve==3,"full serialized value retained");
         check(packet("exact").state=="OWNED" && rolls==1,"one gate becomes owned");
         check(Cf6SoldierLoot.combatDeath(unit),"duplicate death is acknowledged");drain();check(rolls==1,"duplicate never rolls again");
         var refs:Array=[];
         for(var i:Number=0;i<stash.entries.length;i++)refs.push({entryId:stash.entries[i].entryId,revision:stash.entries[i].revision,quantity:RewardStashStore.quantity(stash.entries[i].item)});
         var result:Object=RewardStashService.take({storeId:stash.storeId,expectedRevision:stash.commitRevision,operationId:"cf6.fixture.take",entries:refs});
-        check(result.success && result.accepted.length==2,"real stash claim transfers weapon plus ammunition");
+        check(result.success && result.accepted.length==1,"real stash claim transfers weapon plus ammunition");
         var bag:Object=_root.物品栏.背包.toObject(),savedBag:Object=storage.data.test.inventory.背包,found:Boolean=false;
         for(var index:String in bag)if(bag[index].name=="G1111"){
             found=true;check(bag[index].value.shot==4 && bag[index].value.isRocketMode===false && bag[index].value.__future.kept==17,"BaseItem serialization preserves exact claimed weapon");
@@ -123,7 +127,8 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
         cleanState();unit=actor("pendingAdmission");Cf6SoldierLoot.combatDeath(unit);Cf6SoldierLoot.prepareForTransition();
         sm._configureSaveFlowForTest({flushResult:"pending"});check(!Cf6SoldierLoot.prepareForTransition(),"pending admission blocks transition");
         op=RewardStashService.pendingOperationId();check(op!="" && RewardStashService.committedFeature().entries.length==0,"unconfirmed admission not projected as owned inventory");
-        sm._configureSaveFlowForTest({flushResult:true});drain();check(rolls==1 && RewardStashService.peek().entries.length==2,"pending admission commits one complete packet");
+        sm._configureSaveFlowForTest({flushResult:true});drain();check(rolls==1 && RewardStashService.peek().entries.length==1
+            && bagQuantity("步枪弹药")==1,"pending admission commits durable weapon and actual inventory ammunition together");
         cleanState();unit=actor("restart");Cf6SoldierLoot.combatDeath(unit);Cf6SoldierLoot.prepareForTransition();
         var api:Object=Cf6SoldierLoot;api.context=null;api.captured={};
         check(Cf6SoldierLoot.bind(config),"rebind durable decision after service reconstruction");drain();
@@ -132,8 +137,8 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
     private static function edgeCases():Void {
         cleanState();choice=.6;var unit:MovieClip=actor("pair");Cf6SoldierLoot.combatDeath(unit);drain();
         var stash:Object=RewardStashService.peek();
-        check(stash.entries.length==3 && stash.entries[0].item.value.shot==2 && stash.entries[1].item.value.shot==7,"both native sidearms keep independent spent rounds");
-        check(stash.entries[2].item.value==2 && packet("pair").kind=="sidearm_pair","same ammo sums both hands in one packet");
+        check(stash.entries.length==2 && stash.entries[0].item.value.shot==2 && stash.entries[1].item.value.shot==7,"both native sidearms keep independent spent rounds");
+        check(bagQuantity("手枪弹药")==2 && packet("pair").kind=="sidearm_pair","same ammo sums both hands in one packet");
         cleanState();gateHit=false;unit=actor("miss");Cf6SoldierLoot.combatDeath(unit);drain();
         check(packet("miss").state=="DECIDED_MISS" && RewardStashService.peek().entries.length==0,"real PRD miss has no consolation equipment/ammo");
         cleanState();unit=actor("break");unit.soldierPhase=1;
@@ -184,10 +189,117 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
         sm._configureSaveFlowForTest({flushResult:true});drain();
         check(rolls==1 && packet("guardPending").state=="OWNED","pending guard resolves once without reroll");
     }
+    private static function bagQuantity(name:String):Number {
+        var bag:Object=_root.物品栏.背包.toObject(),total:Number=0;
+        for(var key:String in bag)if(bag[key].name===name)total+=typeof bag[key].value=="object"?1:Number(bag[key].value);
+        return total;
+    }
+    private static function groundSetup(pair:Boolean):Object {
+        cleanState();
+        _root.pickupItemManager=new PickUpManager();
+        var hero:MovieClip=world.createEmptyMovieClip("__cf6GroundHero",world.getNextHighestDepth());
+        hero.hp=1000;hero.是否为敌人=false;hero._x=200;hero._y=hero.Z轴坐标=300;
+        _root.控制目标=hero._name;
+        var unit:MovieClip=actor("ground");
+        // Opaque mod identity persistence is tested here; compatibility is the separate fixed158 native/loadout gate.
+        unit.长枪.value.mods=["测试保留插件"];
+        if(pair){choice=.6;unit.手枪.value.mods=["测试左手保留"];unit.手枪2.value.mods=["测试右手保留"];}
+        check(Cf6SoldierLoot.combatDeath(unit),"ground native death admitted");drain();Cf6SoldierLoot.tick();
+        var p:Object=packet("ground"),manager:Object=_root.pickupItemManager;
+        check(p.state=="OWNED" && p.ground.mapId=="A19" && p.groundEntries.length===(pair?2:1),"drop points to durable exact equipment entry");
+        var mc:MovieClip=null,dict:Object=manager.getPickupItemDict();
+        for(var index:String in dict)if(dict[index].cf6GroundEntryId===p.groundEntries[0])mc=dict[index];
+        trace("[CF6_GROUND_STATE] ledger="+Cf6SoldierLootRules.validLedger(_root._saveExt.bookRun.cf6SoldierLoot)
+            +" count="+manager.getCount()+" displayed="+Cf6SoldierGroundPickup.status().displayed
+            +" error="+Cf6SoldierGroundPickup.status().error+" map="+Cf6SoldierActions.context().mapId
+            +" parent="+mc._parent+" world="+world+" entry="+p.groundEntries[0]);
+        check(mc!=null && mc._parent===world && typeof mc.cf6CaptureLabel.text=="string"
+            && mc.cf6CaptureLabel.text.indexOf("+13")>-1,"actual pickup prefab shows captured enhancement");
+        if(mc!=null){
+            var image:BitmapData=new BitmapData(400,180,true,0),matrix:Matrix=new Matrix();matrix.tx=200;matrix.ty=120;
+            image.draw(mc,matrix);var bounds:Rectangle=image.getColorBoundsRect(0xFF000000,0,false);
+            check(bounds.width>80 && bounds.height>10,"actual pickup prefab and nameplate render pixels");image.dispose();
+        }
+        return {manager:manager,mc:mc,hero:hero,packet:p};
+    }
+    private static function groundCases():Void {
+        var fixture:Object=groundSetup(),mc:MovieClip=fixture.mc;
+        check(Cf6SoldierGroundPickup.status().displayed==1 && bagQuantity("G1111")==0,"durable staging does not silently put weapon into inventory");
+        var foreign:MovieClip=_root.createEmptyMovieClip("__cf6ForeignCollector",_root.getNextHighestDepth());foreign.hp=100;
+        fixture.manager.pickup(mc,foreign,false);foreign.removeMovieClip();
+        check(!Cf6SoldierGroundPickup.busy() && mc.__pickupClaimed!==true && bagQuantity("G1111")===0,
+            "collector from another world cannot claim current ground equipment");
+        fixture.hero.__playerStatProjectionBlocked=true;fixture.manager.pickup(mc,fixture.hero,false);
+        check(!Cf6SoldierGroundPickup.busy() && mc.__pickupClaimed!==true && bagQuantity("G1111")===0,
+            "blocked actor projection cannot begin ground ownership transfer");delete fixture.hero.__playerStatProjectionBlocked;
+        sm._configureSaveFlowForTest({flushResult:"pending"});
+        fixture.manager.pickup(mc,fixture.hero,false);
+        var op:String=RewardStashService.pendingOperationId();
+        check(op!="" && Cf6SoldierGroundPickup.busy() && mc.__pickupClaimed===true,"ground unknown commit holds one entity");
+        fixture.manager.pickup(mc,fixture.hero,false);
+        check(RewardStashService.pendingOperationId()===op && rolls==1,"repeat input cannot replay take or death roll");
+        sm._configureSaveFlowForTest({flushResult:true});Cf6SoldierGroundPickup.reconcile();
+        check(!Cf6SoldierGroundPickup.busy() && bagQuantity("G1111")==1,"canonical query completes one durable pickup");
+        var bag:Object=_root.物品栏.背包.toObject(),full:Boolean=false;
+        for(var key:String in bag)if(bag[key].name=="G1111")full=bag[key].value.mods[0]=="测试保留插件"
+            && bag[key].value.level==13 && bag[key].value.ammoState.reserve==3 && bag[key].value.__future.kept==17;
+        check(full && RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")==0,"ground transfer preserves complete item value exactly once");
+        fixture.manager.pickup(mc,fixture.hero,false);Cf6SoldierLoot.tick();
+        check(bagQuantity("G1111")==1 && Cf6SoldierGroundPickup.status().displayed==0,"committed entity never respawns or grants twice");
+
+        fixture=groundSetup();mc=fixture.mc;
+        for(var i:Number=0;i<50;i++)if(_root.物品栏.背包.getItem(i)==null)_root.物品栏.背包.add(i,BaseItem.create("MP7",1));
+        fixture.manager.pickup(mc,fixture.hero,false);
+        check(!Cf6SoldierGroundPickup.busy() && mc.__pickupClaimed!==true && bagQuantity("G1111")==0
+            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")==1,"full bag keeps the actual entity and durable weapon");
+
+        fixture=groundSetup();mc=fixture.mc;
+        sm._configureSaveFlowForTest({beforeRewardExposure:function():Void {throw new Error("ground_known_rejection");}});
+        fixture.manager.pickup(mc,fixture.hero,false);
+        check(!Cf6SoldierGroundPickup.busy() && mc.__pickupClaimed!==true && bagQuantity("G1111")==0,"known rejection unlocks without adding inventory");
+        sm._configureSaveFlowForTest({beforeRewardExposure:null});fixture.manager.pickup(mc,fixture.hero,false);
+        check(bagQuantity("G1111")==1 && rolls==1,"manual retry after known rejection takes the same frozen weapon");
+
+        fixture=groundSetup();mc=fixture.mc;
+        var name:String=mc._name,index:Number=mc.index;
+        sm._configureSaveFlowForTest({flushResult:"pending"});fixture.manager.pickup(mc,fixture.hero,false);
+        mc.removeMovieClip();var replacement:MovieClip=world.createEmptyMovieClip(name,world.getNextHighestDepth());
+        var replacementMark:Object={};replacement.cf6GroundIdentity=replacementMark;replacement.index=index;
+        fixture.manager.getPickupItemDict()[index]=replacement;
+        sm._configureSaveFlowForTest({flushResult:true});Cf6SoldierGroundPickup.reconcile();
+        check(replacement._parent===world && replacement.cf6GroundIdentity===replacementMark
+            && fixture.manager.getPickupItemDict()[index]===replacement,"late receipt cannot remove a recycled MovieClip path");
+        check(bagQuantity("G1111")==1 && !Cf6SoldierGroundPickup.busy(),"late receipt still preserves durable ownership");
+
+        fixture=groundSetup();
+        var entryId:String=fixture.packet.groundEntries[0],oldRolls:Number=rolls;
+        world.removeMovieClip();world=_root.createEmptyMovieClip("__cf6LootReturn"+caseIndex,_root.getNextHighestDepth());_root.gameworld=world;
+        check(Cf6SoldierActions.bindWorld(world,StageReturnFlow.worldIdentity(world),config,"A19"),"reenter original map");
+        _root.pickupItemManager=new PickUpManager();Cf6SoldierLoot.tick();
+        check(Cf6SoldierGroundPickup.status().displayed==1 && RewardStashStore.find(RewardStashService.peek(),entryId)!=null
+            && rolls==oldRolls,"unpicked durable equipment reappears without a new reward decision");
+
+        fixture=groundSetup(true);
+        var second:MovieClip=null,all:Object=fixture.manager.getPickupItemDict();
+        for(var slotIndex:String in all)if(all[slotIndex].cf6GroundEntryId===fixture.packet.groundEntries[1])second=all[slotIndex];
+        check(second!=null && second!==fixture.mc && second._x-fixture.mc._x===44
+            && second.cf6GroundIdentity!==fixture.mc.cf6GroundIdentity,"paired same-name guns create two distinct separated ground entities");
+        fixture.manager.pickup(fixture.mc,fixture.hero,false);fixture.manager.pickup(second,fixture.hero,false);
+        var paired:Object=_root.物品栏.背包.toObject(),left:Boolean=false,right:Boolean=false;
+        for(var pairedSlot:String in paired)if(paired[pairedSlot].name==="MP7"){
+            var value:Object=paired[pairedSlot].value;
+            if(value.shot===2 && value.mods[0]==="测试左手保留")left=true;
+            if(value.shot===7 && value.mods[0]==="测试右手保留")right=true;
+        }
+        check(left && right && bagQuantity("MP7")===2 && bagQuantity("手枪弹药")===2
+            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"MP7")===0,
+            "two real pickups preserve separate spent rounds and mods with one shared two-reload supply");
+    }
+
     public static function runAllTests():Boolean {
         passed=failed=rolls=caseIndex=exitCalls=0;
         var keys:Array=["savePath","允许存档","角色名","等级","基础身价值","身价","存档系统","mydata","_saveExt","暂停","UpdateTaskProgress",
-            "物品栏","收集品栏","金钱","虚拟币","经验值","技能点数","gameworld","主角被动技能","商城已购买物品","UI系统","tasks_to_do","tasks_finished","task_chains_progress","等级限制","gameCommands"];
+            "物品栏","收集品栏","金钱","虚拟币","经验值","技能点数","gameworld","主角被动技能","商城已购买物品","UI系统","tasks_to_do","tasks_finished","task_chains_progress","等级限制","gameCommands","pickupItemManager","控制目标","getItemData","发布消息"];
         var previous:Object={},present:Object={};for(var k:Number=0;k<keys.length;k++){previous[keys[k]]=_root[keys[k]];present[keys[k]]=_root.hasOwnProperty(keys[k]);}
         var oldData:Object=ItemUtil.itemDataDict,oldEquipment:Object=ItemUtil.equipmentDict,oldMaterial:Object=ItemUtil.materialDict,oldInfo:Object=ItemUtil.informationMaxValueDict;
         var loot:Object=Cf6SoldierLoot,actions:Object=Cf6SoldierActions,oldRoom:Object=actions.room;
@@ -202,6 +314,8 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
             trace("[CF6_LOOT_FIXTURE] nonceSlot="+slot+" playerSavesOpened=false");
             _root.savePath=slot;_root.允许存档=true;_root.角色名="FixedLootFixture";_root.等级=1;_root.基础身价值=1000;_root.身价=1000;
             _root.金钱=_root.虚拟币=_root.经验值=_root.技能点数=0;_root.商城已购买物品=[];_root.主角被动技能={};_root.存档系统={dirtyMark:false};
+            _root.getItemData=function(name:String):Object {return ItemUtil.getRawItemData(name);};
+            _root.发布消息=function(text:String):Void {};
             _root.UpdateTaskProgress=function():Void {};_root.UI系统={};_root.tasks_to_do=[];_root.tasks_finished=[];_root.task_chains_progress={};_root.等级限制=100;
             ItemUtil.itemDataDict={};ItemUtil.equipmentDict={G1111:true,MP7:true};ItemUtil.materialDict={透镜:true};ItemUtil.informationMaxValueDict={};
             var items:Array=["G1111","MP7","步枪弹药","手枪弹药","透镜"];
@@ -210,7 +324,7 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
             config=Cf6FixedActionsFixture.config();config.lootPolicy=Cf6SoldierLootFixture.policy();
             // No prior player run is bound in this isolated test process.
             loot.context=null;loot.queue=[];loot.captured={};loot.plan=null;loot.operation="";
-            exactCase();failureCases();edgeCases();absentMaterialCase();firstWeaponCases();
+            exactCase();failureCases();edgeCases();absentMaterialCase();firstWeaponCases();groundCases();
             check(WeaponAmmoRuntime.quoteInventoryPacks(40,0,40)==1 && WeaponAmmoRuntime.quoteInventoryPacks(40,8,40)==1
                 && WeaponAmmoRuntime.quoteInventoryPacks(40,80,40)==0,"ordinary paid reload quote is shared with real spend");
         }catch(error){check(false,"unexpected exception: "+error);}

@@ -11,7 +11,7 @@ $consumerFlag=if($AllForms){'--firepower-projectiles'}else{'--projectiles'}
 & python -X utf8 -B (Join-Path $PSScriptRoot '../tools/cf6-soldier-assets/build-fixed-test-consumer.py') $consumerFlag
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $template='scripts/test-runners/cf6-fixed-projectiles/TestLoader.as.template'
-$birthPattern='[1-9]\d*';$materializations=158;$cases=35
+$birthPattern='[1-9]\d*';$materializations=158;$cases=37
 if($AllForms){
     if($LifetimeOnly){throw 'AllForms and LifetimeOnly are independent scopes'}
     $root=Split-Path -Parent $PSScriptRoot
@@ -22,7 +22,7 @@ if($AllForms){
     Copy-Item -LiteralPath $source -Destination $target -Force
     [IO.File]::WriteAllText($target,('_root.cf6AdmissionAllForms=true;' + "`n" + [IO.File]::ReadAllText($source,[Text.Encoding]::UTF8)),[Text.UTF8Encoding]::new($true))
     $finalSource=Get-Content -LiteralPath (Join-Path $root 'tools/cf6-type61/fixed-roster.source.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-    $cases=35+@($finalSource.admission.forms).Count
+    $cases=37+@($finalSource.admission.forms).Count
 }
 if ($LifetimeOnly) {
     $root=Split-Path -Parent $PSScriptRoot

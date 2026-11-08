@@ -6,7 +6,7 @@
   "buildInputs": [
     {
       "path": "tools/cf6-wings-assets/build.py",
-      "sha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+      "sha256": "6d972d618a52d5a97491346c4c0b65bb7d802666dc89ba43d6cab46532fa37fd"
     },
     {
       "path": "tools/cf6-wings-assets/vector.py",
@@ -14,7 +14,11 @@
     },
     {
       "path": "tools/cf6-wings-assets/WingsAI.as",
-      "sha256": "c2411690e13420727a1ce08cb308b9238355c1124b148a16455f1a4e31ce61d8"
+      "sha256": "fcef8b0221abb3d70a24792c16e22fcf28401691a8429101b8ebb97a9b1883df"
+    },
+    {
+      "path": "tools/cf6-wings-assets/environment-role.source.json",
+      "sha256": "2de5dcf04517193e8b78f484c933844bd766d50377b8614541c064708dc850be"
     },
     {
       "path": "tools/cf6-manman-assets/build.py",
@@ -34,11 +38,11 @@
     },
     {
       "path": "tools/asset-metrology/xfl_geometry.py",
-      "sha256": "7f2f7cbf557cb3054f056cd196bfddf65e9ae6a813204ddba3b0e5398383321b"
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
     },
     {
       "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
-      "sha256": "edc856186ae2a14ba1ebd5ed617d84666368114fa8eeb9e26e414f778c9ed5e6"
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
     }
   ],
   "donor": {
@@ -46,15 +50,15 @@
     "members": [
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/area框/hitbox-area框载体.xml",
-        "sha256": "1db66d7cea95c98b1b7189efff0d72a261e3beab91741ab94f4bec772a0abb99"
+        "sha256": "5a7d91aa851d06b5f3a1ce4ae345c4be56ebede535f75262e720e99ce6150b3c"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/area框/索敌框载体.xml",
-        "sha256": "d721848fbf83f2d2f1ef875197577e590a16ff7e3ccfdb055b3e6fa1280e2484"
+        "sha256": "e70586b93a67be086e949424922198d2a6c8487c147e399a1887597b13d30f24"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/思考标签.xml",
-        "sha256": "c22ae5fd71de66558d528c5bfed468c371aea2eec14d6745bc10dc7d814ba328"
+        "sha256": "1d2dc3d6c44117f852f24cfe58a3cc36a22fc899babaa6c25876ac649e72d0ae"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml",
@@ -66,23 +70,23 @@
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/方舟指挥官/透明控件.xml",
-        "sha256": "db75a9e00a987f9391e65fe5e67c006e94c2bea06836362b7f94676226520809"
+        "sha256": "9e20ba1e6e1c7d9c33aadbf825ab7d3ea7f4e26457ce58690611d296c5b0e66d"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/诺亚克隆兽/阴影.xml",
-        "sha256": "6d6bafb6652d29643dd08a168643ffaa6ae12949c8ff9b0fb2487a6ad0f47e6b"
+        "sha256": "f144212d186c288db6d9f621c99b224507fa4157ee586e5415f160cdbcaf552f"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/通用ai元件/行走ai载体.xml",
-        "sha256": "91f89695b14d289bf5fc6c403d5defccce0af1d0e837edd26b4479de6c5ae822"
+        "sha256": "74f2189f502c39a205629704f2c429d8d6ebe8e8b5c5921f7419ff545da04280"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 855.xml",
-        "sha256": "7d15744dcdcfffeeb66fb4630589f21b3281f4445d6535884036dfb9dc1ddf99"
+        "sha256": "a49450cd1e70656384d08c1e6a34ca0d4cc30da30290b1f9cee4a573177e6f19"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 856.xml",
-        "sha256": "bf9085b0be0eea36b7414d1e76e31ee971d55eca56a5672fe3ceac6136ab0cf9"
+        "sha256": "bb138a8fb18abd744110fd8b111c48491c141ced25daa23b67335b7e70d868c3"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 861.xml",
@@ -90,11 +94,11 @@
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 862.xml",
-        "sha256": "b682137f82cd31aaceca601e94733be7425b652c34b11f3f90537cfc76abd6ee"
+        "sha256": "e544a236cbe788ccb37e7751f1f9cf4e367743e5cd465224bb12164227686b5f"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 863.xml",
-        "sha256": "7430f3ebf78cbc341b8c1c196891593f7e38ff516f4f08ac976c9511f7379463"
+        "sha256": "1668f4c14ea3190bf5bbd81316967bab9c2a52420c67253eb8a59d3ba03b3bf0"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/起身.xml",
@@ -102,19 +106,19 @@
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/跑步.xml",
-        "sha256": "bf3d3de411e71f8f9d53e532f4c218cb277457ecdd9adde7c8955e16024e257a"
+        "sha256": "f43b47c8f372eb6b7c9aef843f47d719b833f56fd50656dd1243175133a01292"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/Symbol 776.xml",
-        "sha256": "e87b077374d12b38e451cd7df8af3df8f5d9c771a7f05c34eceb5e0cc467337e"
+        "sha256": "e579fcd9eb7fc0642a287be1291c2cb3bf38f3f734a7fab37a2c2a32407621f4"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/人物服装/元件 2.xml",
-        "sha256": "b43fcec95d9ba01b4ca3d5e52fab1f1feaf1f59373a29c8e2e7a42a4716727ed"
+        "sha256": "6dbc6fd22f267f0d7baa8de398d38beaf26a822fb43951d4308ebe26992760bf"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/人物服装/元件 3.xml",
-        "sha256": "8297ced3faa6938e2e183c62e28228202b6965c94c8f837de2fa6579a1f50870"
+        "sha256": "52600aa17ea2f8dee65fcb874e859498eef021728051b9bc83f4383a10814585"
       }
     ]
   },
@@ -396,8 +400,8 @@
     },
     {
       "path": "LIBRARY/Codex/Wings/敌人-CF6Wings.xml",
-      "sha256": "5cf819067e9e846cc88d078506c006af4f0ed99b4ec88ebf548ca120a453df88",
-      "bytes": 35000
+      "sha256": "2de578749da2a57f85877bb8b9b3ea252d643ec23fb9f1e3f2a9d9fb0bdb61a0",
+      "bytes": 35472
     },
     {
       "path": "LIBRARY/Codex/Wings/武器/双枪刃.xml",

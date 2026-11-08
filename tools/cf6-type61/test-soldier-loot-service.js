@@ -6,7 +6,7 @@ const path=require('node:path');
 const {loadStaticClass}=require('../cf6-soldier-assets/offline/as2-source');
 const root=path.resolve(__dirname,'../../scripts/类定义/org/flashNight/arki/scene');
 function fixture(){
-  const c=vm.createContext({isFinite,Math,trace:()=>{}});
+  const c=vm.createContext({isFinite,Math,length:value=>typeof value==='string'?value.length:0,trace:()=>{}});
   vm.runInContext(`
     var writes=0,rolls=0,choices=0,queries=0,admits=0,notices=0;
     var outcome='committed',gateHit=true,category=0,domainPending=null,saved=null;
@@ -15,7 +15,9 @@ function fixture(){
       getNextHighestDepth:function(){return 1;},createEmptyMovieClip:function(){return {_name:'watcher'};},发布消息:function(){notices++;}};
     var PauseManager={count:0,install:function(){},lease:function(){this.count++;return 'loot';},releaseLease:function(){this.count--;}};
     var Cf6Type61Service={isActive:function(){return true;}},BookDefinition={get:function(){return {type61:{soldiers:config}};}};
-    var Cf6SoldierActions={actorValid:function(r){return r.valid;}};
+    var Cf6SoldierActions={actorValid:function(r){return r.valid;},context:function(){return null;}};
+    // This legacy admission model has no world. Real ground transfer is covered in AVM1 with the imported prefab.
+    var Cf6SoldierGroundPickup={busy:function(){return false;},tick:function(){},reconcile:function(){},status:function(){return {};}};
     var ItemUtil={isItem:function(n){return n==='透镜';}};
     var DropLuckRoller={getLuckBonus:function(){return .2;},rollDropWithContext:function(key,row,luck,prd){rolls++;prd.state[key]=(prd.state[key]||0)+1;return gateHit;}};
     var LinearCongruentialEngine={instance:{nextFloat:function(){choices++;return category;}}};

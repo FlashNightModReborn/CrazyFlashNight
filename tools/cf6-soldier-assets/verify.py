@@ -221,6 +221,16 @@ def verify_body_timelines(path, scanner):
     return checked,appearances
 
 
+def verify_ordinary_sidearm_scope(text):
+    # Fixed158 shares one guarded adapter with all six native roots. Its
+    # presence is not permission for the ordinary, non-fixed AI to use duals.
+    adapter = (build.HERE/'FixedActionAdapter.as').read_text('utf-8-sig').strip()
+    assert adapter and text.count(adapter) == 1, 'Ordinary root must embed the exact shared fixed adapter once'
+    non_fixed_text = text.replace(adapter, '', 1)
+    assert 'eliteMotionConfig' not in text, 'Ordinary root acquired elite motion configuration'
+    assert '初始化混合双枪' not in non_fixed_text, 'Mixed sidearm initialization escaped the fixed adapter'
+
+
 def verify_elite_sidearm():
     owner = build.OWNER/'LIBRARY'
     motion = E.parse(str(owner/'Codex/特种兵/精英/动作/CF6战术长枪.xml'))
@@ -238,7 +248,7 @@ def verify_elite_sidearm():
         assert marker in text, 'Missing mixed weapon marker: '+marker
     ordinary = E.parse(str(owner/'Codex/特种兵/敌人-CF6特种兵.xml'))
     ordinary_text = '\n'.join(node.text or '' for node in ordinary.findall('.//x:script', build.NS))
-    assert 'eliteMotionConfig' not in ordinary_text and '初始化混合双枪' not in ordinary_text
+    verify_ordinary_sidearm_scope(ordinary_text)
     assert motion.find('.//x:DOMFrame[@index="295"][@name="双枪换弹匣"]',build.NS) is not None
     primary = motion.findall('.//x:DOMSymbolInstance[@libraryItemName="Codex/特种兵/精英/武器/可配置主手枪"]',build.NS)
     assert primary, 'Retreat must use the primary pistol instead of the long gun'

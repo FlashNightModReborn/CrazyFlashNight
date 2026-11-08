@@ -4,6 +4,8 @@ Frames below are active 30 Hz frames. Native weapon cadence, animation terminal
 events and projectile retirement are additional gates, never inferred deadlines.
 """
 import copy
+import json
+from pathlib import Path
 
 
 TACTICS = ('shield_breach reverse_rear_guard fixed_bastion pursuit_leash segmented_lane '
@@ -47,8 +49,10 @@ def dual(events, recovery, windup=18, retreat=0):
     return result + [rest(recovery)]
 
 
-def compile_program(profile, weapon_type, weapon_name):
+def compile_program(profile, weapon_type, weapon_name, actual_weapon=None):
     ext, budget, scalar = profile['extensions'], profile['budget'], profile['scalars']
+    actual_type = actual_weapon['weaponType'] if actual_weapon is not None else weapon_type
+    actual_name = actual_weapon['name'] if actual_weapon is not None else weapon_name
     tactic = ext['majorTactic']
     recovery = scalar['特种兵战术_rifleRestFrames']
     stages = primary(budget['primaryTriggerLimit'], ext['windupFrames'], recovery,
@@ -83,7 +87,7 @@ def compile_program(profile, weapon_type, weapon_name):
     p['pressure'] = primary(min(3, budget['primaryTriggerLimit']), 1,
                             18 if tactic else recovery, frames=36)
     if tactic is None:
-        return validate(p, profile)
+        return finalize(p, profile, actual_type, actual_name)
     if tactic not in TACTICS:
         raise ValueError('Unknown instructor action: ' + str(tactic))
     p.update(trigger=tactic, waiting='hold', danger=True, capabilities=p['capabilities']+['danger_lease', 'projectile_lifetime'])
@@ -177,7 +181,39 @@ def compile_program(profile, weapon_type, weapon_name):
                          fire(1,'sub',minDistance=180,maxDistance=240),rest(60)],recovery=60,
                  waiting='boss_guard',tether=220,phase2=dual(3,60,retreat=100))
         p['capabilities'] += ['human_guard','subweapon']
-    return validate(p, profile)
+    return finalize(p, profile, actual_type, actual_name)
+
+
+def finalize(program, profile, weapon_type, weapon_name):
+    policy = json.loads((Path(__file__).parent / 'soldier-suppression.source.json').read_text(encoding='utf-8'))
+    if (policy['schema'] != 'cf6-machinegun-suppression.v1' or policy['weaponTypes'] != ['机枪','压制机枪']
+            or policy['fireFrames'] != 60 or policy['minimumRecoveryFrames'] != 30):
+        raise ValueError('Unknown machinegun time budget')
+    if weapon_type not in policy['weaponTypes']:
+        return validate(program, profile)
+    budget = profile['budget']
+    original_limit = budget['primaryTriggerLimit']
+    units_per_trigger = budget.get('primaryFinalDamageUnitsPerAction', budget['primaryProjectilesPerAction']) / original_limit
+    program['suppression'] = dict(weaponName=weapon_name, weaponType=weapon_type, fireFrames=60, recoveryFrames=30)
+    # Native code can dispatch at most one primary trigger in an active frame.
+    # Sixty is the physical two-second upper bound, rather than a shorter burst cap.
+    for name in ('stages','dual','phase2','fallback','shield','grenade','pressure'):
+        stages = program.get(name, [])
+        primary_stages = [s for s in stages if s['kind'] == 'fire' and s['mode'] == 'primary']
+        if not primary_stages:
+            continue
+        total = sum(s['events'] for s in primary_stages)
+        remaining = 60
+        for index, stage in enumerate(primary_stages):
+            frames = remaining if index == len(primary_stages)-1 else max(1, min(remaining-(len(primary_stages)-index-1), 60*stage['events']//total))
+            remaining -= frames
+            stage.update(frames=frames, events=frames, gap=1)
+        stages[-1]['frames'] = 30
+    budget['primaryTriggerLimit'] = 60
+    budget['primaryProjectilesPerAction'] = 60 * budget['primarySplit']
+    budget['primaryFinalDamageUnitsPerAction'] = int(60 * units_per_trigger)
+    budget['longgunWithSubProjectilesPerAction'] = budget['primaryProjectilesPerAction'] + budget['subweaponProjectilesPerAction']
+    return validate(program, profile)
 
 
 def validate(program, profile):

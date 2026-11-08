@@ -1,0 +1,12 @@
+{
+  "schema": "cf6-machinegun-suppression.v1",
+  "weaponTypes": [
+    "机枪",
+    "压制机枪"
+  ],
+  "fireFrames": 60,
+  "minimumRecoveryFrames": 30,
+  "clock": "active 30Hz frames",
+  "triggerBound": "one real trigger per active frame; native cadence and ammunition remain authoritative",
+  "scope": "fixed158 only; retain tactical predicates, stage ordering, finite auxiliaries and all non-machinegun programs"
+}

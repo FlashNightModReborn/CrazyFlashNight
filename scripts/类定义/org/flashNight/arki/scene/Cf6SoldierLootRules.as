@@ -76,6 +76,17 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
             || !isFinite(packet.roll.luckBonus) || packet.roll.luckBonus<0 || packet.roll.luckBonus>.5
             || typeof packet.roll.prdPoolKey!="string" || packet.roll.prdPoolKey=="")return false;
         var kind:String=packet.kind;
+        if(packet.ground!==undefined && (kind!="longgun" && kind!="sidearm_pair" || !validGround(packet.ground)))return false;
+        if(packet.groundEntries!==undefined){
+            if(packet.state!=="OWNED" || packet.ground===undefined || !(packet.groundEntries instanceof Array)
+                || packet.groundEntries.length!==packet.items.length)return false;
+            var entrySeen:Object={};
+            for(var g:Number=0;g<packet.groundEntries.length;g++){
+                var entryId:String=packet.groundEntries[g];
+                if(typeof packet.groundEntries[g]!="string" || length(entryId)<1 || length(entryId)>200 || entrySeen["$"+entryId])return false;
+                entrySeen["$"+entryId]=true;
+            }
+        }
         if(kind=="none")return packet.state=="DECIDED_MISS" && !packet.roll.hit
             && packet.items.length==0 && packet.consumables.length==0
             && (packet.roll.gateEvaluated?packet.roll.reason=="roll_miss":packet.roll.reason=="quota_exhausted" || packet.roll.reason=="ineligible");
@@ -180,17 +191,28 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
         if(totals[key]===undefined){totals[key]=0;names.push(name);}
         totals[key]+=count;return whole(totals[key],1,1000000);
     }
+    public static function validGround(value:Object):Boolean {
+        if(value==null || typeof value!="object" || value instanceof Array || typeof value.mapId!="string"
+            || length(value.mapId)!=3 || value.mapId.charAt(0)!="A" || !whole(Number(value.mapId.substr(1)),1,20)
+            || typeof value.x!="number" || typeof value.z!="number" || !isFinite(value.x) || !isFinite(value.z)
+            || Math.abs(value.x)>100000 || Math.abs(value.z)>100000)return false;
+        var count:Number=0;for(var key:String in value){if(key!="mapId" && key!="x" && key!="z")return false;count++;}
+        var mapNumber:Number=Number(value.mapId.substr(1));
+        return count==3 && value.mapId==="A"+(mapNumber<10?"0":"")+mapNumber;
+    }
     public static function packet(header:Object,snapshot:Object,kind:String,roll:Object,consumables:Array):Object {
         var items:Array=[];
         if(kind=="longgun")items=[snapshot.primary];
         else if(kind=="sidearm_pair")items=[snapshot.left,snapshot.right];
         else if(kind=="mod_material")items=[{name:snapshot.material,value:1,lastUpdate:snapshot.lastUpdate}];
-        return {schema:"cf6-loot-packet.v2",sourceKey:header.sourceKey,unitIdentity:header.unitIdentity,
+        var packet:Object={schema:"cf6-loot-packet.v2",sourceKey:header.sourceKey,unitIdentity:header.unitIdentity,
             spawnIdentity:header.spawnIdentity,rosterVersion:header.rosterVersion,
             configurationFingerprint:header.configurationFingerprint,kind:kind,
             state:kind=="none"?"DECIDED_MISS":"DECIDED_HIT",
             items:PersistedSnapshot.cloneArrayData(items),consumables:PersistedSnapshot.cloneArrayData(consumables),
             roll:PersistedSnapshot.cloneData(roll)};
+        if((kind=="longgun" || kind=="sidearm_pair") && validGround(snapshot.ground))packet.ground=PersistedSnapshot.cloneData(snapshot.ground);
+        return packet;
     }
     public static function reserve(ledger:Object,packet:Object):Boolean {
         if(ledger==null || ledger.records==null || ledger.records instanceof Array

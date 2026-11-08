@@ -89,6 +89,12 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             return true;
         }
 
+        if(target.cf6GroundIdentity!==undefined){
+            // The runtime owns this feature; generic pickup does not link its full combat/save graph.
+            var capturePickup:Object=_global.org.flashNight.arki.scene.Cf6SoldierGroundPickup;
+            if(typeof capturePickup.claim!="function")return false;
+            return capturePickup.claim(this,target,actor,播放拾取动画);
+        }
         var str:String = "获得";
         var itemName:String = target.物品名;
         var value:Number = target.数量;

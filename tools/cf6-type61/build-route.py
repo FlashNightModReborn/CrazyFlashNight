@@ -404,7 +404,7 @@ def build(source=None, include_fixed=True):
     inputs={SOURCE,Path(__file__),BASE,ROOT/'tools/choice_reward_catalog.py',ROOT/'data/skills/skills.xml',
             ROOT/'data/crafting/进阶防具.json',ROOT/'data/crafting/铁枪会.json'}
     if include_fixed:
-        inputs.update({Path(fixed_roster.__file__),SOURCE.with_name('soldier_programs.py'),
+        inputs.update({Path(fixed_roster.__file__),SOURCE.with_name('soldier_programs.py'),SOURCE.with_name('soldier-suppression.source.json'),
             SOURCE.with_name('loadout_rules.py'),SOURCE.with_name('apply-loadout-plan.py'),
             SOURCE.with_name('soldier-loadout-plan.source.json'),SOURCE.with_name('soldier-loot-policy.source.json'),
             SOURCE.with_name('fixed-roster.source.json'),SOURCE.with_name('soldier-firepower.source.json'),

@@ -258,6 +258,8 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
         scenarios.push({row:find("CF6-M-XVIII"),label:"real_smoke_reload",primary:1,dual:0,sub:0,repeats:2});
         scenarios.push({row:find("CF6-C-WA-P-04"),label:"far_shotgun",primary:1,dual:0,sub:0});
         scenarios.push({row:find("CF6-C-WA-P-01"),label:"rear_crossfire",primary:3,dual:0,sub:0});
+        scenarios.push({row:find("CF6-C-WA-P-01"),label:"machinegun_suppression",primary:60,dual:0,sub:0});
+        scenarios.push({row:find("CF6-C-WA-P-01"),label:"machinegun_target_loss",primary:4,dual:0,sub:0,cancelAfterShots:4});
         scenarios.push({row:find("CF6-C-WA-P-04"),label:"same_side_flank",movementCase:true});
         scenarios.push({row:find("CF6-C-CU-K-02"),label:"lab_obstacle_lane",movementCase:true});
         var thrown:Object=find("CF6-C-WA-K-05"),throwProfile:Object=config.profiles[parameters[thrown.identity].cf6ProfileId];
@@ -361,6 +363,9 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
             return;
         }
         if(age==15){
+            if(label=="machinegun_suppression" || label=="machinegun_target_loss"){
+                currentScenario.startShot=current.长枪.value.shot;
+            }
             if(label=="ordinary_line"){
                 current.状态改变("长枪攻击");current.状态改变("投掷手雷");
                 check(current.soldierAttackOwner==null,"unscheduled base AI cannot strand a fixed shooter");
@@ -398,6 +403,14 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
             var state:Object=current.cf6ActionState;
             if(state.active && current.man.cf6Stride._currentframe>1)currentScenario.sawStride=true;
             if(current.soldierShotCount>0 && currentScenario.firstNativeShotAge===undefined)currentScenario.firstNativeShotAge=age;
+        }
+        if(currentScenario.cancelAfterShots!=undefined && !currentScenario.lossInjected){
+            var committed:Number=0;
+            for(var n:Number=0;n<emissions.length;n++)if(emissions[n].identity===current.cf6UnitIdentity
+                && emissions[n].cycle===1 && emissions[n].bit===1)committed++;
+            if(committed>=currentScenario.cancelAfterShots){
+                target.hp=0;currentScenario.lossInjected=true;currentScenario.shotsAtLoss=committed;
+            }
         }
         if(age>=16 && label=="pursuit_leash")target._x=430+Math.min(50,age-15);
         if(label=="same_side_flank" && current.cf6Observation.flank!=null)currentScenario.routed=true;
@@ -481,9 +494,31 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
             trace("[CF6_ADMISSION_FORM] "+currentScenario.admissionKey+" identity="+current.cf6UnitIdentity+" bit="+bit
                 +" phaseChanges="+current.soldierPhaseChanges+" shots="+count.join("/"));
         }else{
-        check(count[0]==currentScenario.primary && count[1]==currentScenario.dual && count[2]==currentScenario.dual
+        var sustained:Boolean=current.cf6Profile.program.suppression!==undefined && currentScenario.primary>0;
+        check((sustained?count[0]>0 && count[0]<=60:count[0]==currentScenario.primary)
+            && count[1]==currentScenario.dual && count[2]==currentScenario.dual
             && count[3]==currentScenario.sub,"native commit signature "+currentScenario.label+" = "+count.join("/"));
-        check(currentScenario.negative!=undefined?currentScenario.terminalReason=="target_or_permission":currentScenario.terminalReason=="complete","native terminal "+currentScenario.label+" reason="+currentScenario.terminalReason);
+        check(currentScenario.negative!=undefined || currentScenario.cancelAfterShots!=undefined?
+            currentScenario.terminalReason=="target_or_permission":currentScenario.terminalReason=="complete",
+            "native terminal "+currentScenario.label+" reason="+currentScenario.terminalReason);
+        }
+        if(currentScenario.label=="machinegun_suppression"){
+            var first:Number=-1,last:Number=-1;
+            for(i=0;i<emissions.length;i++)if(emissions[i].identity===current.cf6UnitIdentity && emissions[i].cycle===1 && emissions[i].bit===1){
+                if(first<0)first=emissions[i].frame;last=emissions[i].frame;
+            }
+            check(count[0]>8 && count[0]<=60 && last-first>=30 && last-first<60,
+                "real machinegun sustains beyond eight triggers inside its two-second fire window");
+            check(current.长枪.value.shot===currentScenario.startShot+count[0],
+                "every sustained native trigger consumes exactly one magazine round");
+            check(Cf6SoldierActions.now()-last>=30,"sustained fire retains at least one second of recovery");
+            trace("[CF6_MACHINEGUN_NATIVE] weapon="+current.长枪.name+" triggers="+count[0]+" first="+first+" last="+last
+                +" rest="+(Cf6SoldierActions.now()-last)+" ammo="+current.长枪.value.shot);
+        }
+        if(currentScenario.label=="machinegun_target_loss"){
+            check(currentScenario.lossInjected && currentScenario.shotsAtLoss>=4 && count[0]===currentScenario.shotsAtLoss,
+                "target loss stops a real sustained burst without later native discharge");
+            check(current.长枪.value.shot===currentScenario.startShot+count[0],"cancelled sustained fire does not refund ammunition");
         }
         if(currentScenario.flightMode!=undefined){
             // The committed shot has already entered recovery. Target loss

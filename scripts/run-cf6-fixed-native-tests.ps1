@@ -17,7 +17,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6FixedSoldierNativeTest.as','scripts/类定义/org/flashNight/arki/scene/Cf6FixedActionsTest.as','scripts/类定义/org/flashNight/arki/scene/Cf6SoldierFirepowerTest.as') `
     -SuiteFqns @('org.flashNight.arki.scene.Cf6FixedSoldierNativeTest','org.flashNight.arki.scene.Cf6FixedActionsTest','org.flashNight.arki.scene.Cf6SoldierFirepowerTest') `
     -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6SoldierFirepowerFixture.as','scripts/类定义/org/flashNight/arki/scene/Cf6FixedActionsFixture.as','scripts/类定义/org/flashNight/arki/scene/Cf6FixedRosterFixture.as') `
-    -ExpectedTracePatterns @('(?m)^Cf6SoldierFirepowerTest: [1-9]\d* passed, 0 failed; 282 independent slot anchors\r?$','(?m)^Cf6FixedActionsTest: \d+ passed, 0 failed; 22 same-source cycles and native ownership\r?$','(?m)^Cf6FixedSoldierNativeTest: \d+ passed, 0 failed; 158 fixed materializations, 33 native action cases\r?$') `
+    -ExpectedTracePatterns @('(?m)^Cf6SoldierFirepowerTest: [1-9]\d* passed, 0 failed; 282 independent slot anchors\r?$','(?m)^Cf6FixedActionsTest: \d+ passed, 0 failed; 22 same-source cycles and native ownership\r?$','(?m)^Cf6FixedSoldierNativeTest: \d+ passed, 0 failed; 158 fixed materializations, 35 native action cases\r?$') `
     -SuccessSummary 'Fixed158 real RSL equipment and native actor/core commit cases; controlled emission fixture' `
     -TimeoutSeconds $TimeoutSeconds -AsyncBehaviorTimeoutSeconds $AsyncBehaviorTimeoutSeconds -SkipCompile:$SkipCompile
 exit $LASTEXITCODE

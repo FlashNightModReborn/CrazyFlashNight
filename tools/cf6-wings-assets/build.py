@@ -56,7 +56,7 @@ def sha(path):
 
 
 def build_inputs():
-    paths = [HERE / 'build.py', HERE / 'vector.py', HERE / 'WingsAI.as',
+    paths = [HERE / 'build.py', HERE / 'vector.py', HERE / 'WingsAI.as', HERE / 'environment-role.source.json',
              ROOT / 'tools/cf6-manman-assets/build.py', ROOT / 'tools/cf6-zombie-assets/build.py',
              ROOT / 'tools/gamma-echo-assets/build.py',
              ROOT / 'tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py',
@@ -207,7 +207,12 @@ stop();''')
             root.set('linkageIdentifier', LINKAGE)
             first = next(f for f in root.findall('.//x:DOMFrame[@index="0"]', NS) if f.find('x:Actionscript', NS) is not None)
             script = first.find('x:Actionscript/x:script', NS)
-            script.text = E.CDATA((script.text or '') + '\n' + (HERE / 'WingsAI.as').read_text(encoding='utf-8-sig'))
+            role = json.loads((HERE / 'environment-role.source.json').read_text(encoding='utf-8'))
+            outgoing = role['outgoing']
+            if outgoing['type'] != '魔法' or outgoing['element'] != '能' or outgoing['powerMultiplier'] != 0.45:
+                raise ValueError('Unknown Wings energy profile')
+            role_script = 'wingsEnvironmentRole={damageMultiplier:0.45,damageType:"魔法",element:"能"};'
+            script.text = E.CDATA((script.text or '') + '\n' + role_script + '\n' + (HERE / 'WingsAI.as').read_text(encoding='utf-8-sig'))
             shadow_inst = root.find('.//x:DOMSymbolInstance[@libraryItemName="' + mapped[SHADOW] + '"]', NS)
             shadow_frame = shadow_inst.getparent().getparent()
             shadow_frames = shadow_frame.getparent()

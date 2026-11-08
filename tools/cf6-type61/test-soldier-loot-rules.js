@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const path=require('node:path');
 const vm=require('node:vm');
 const {loadStaticClass}=require('../cf6-soldier-assets/offline/as2-source');
-const context=vm.createContext({isFinite,Math});
+const context=vm.createContext({isFinite,Math,length:value=>typeof value==='string'?value.length:0});
 vm.runInContext('var PersistedSnapshot={cloneData:function(v){return JSON.parse(JSON.stringify(v));},cloneArrayData:function(v){return JSON.parse(JSON.stringify(v));}};',context);
 const rules=loadStaticClass(context,path.resolve(__dirname,'../../scripts/类定义/org/flashNight/arki/scene/Cf6SoldierLootRules.as'),'Cf6SoldierLootRules');
 const data=value=>vm.runInContext('JSON.parse('+JSON.stringify(JSON.stringify(value))+')',context);
@@ -24,6 +24,18 @@ function packet(kind='longgun',id='person1',snap=snapshot()){
   return rules.packet(header(id),snap,kind,roll(kind!=='none'),rules.ammoQuote(snap,kind,packs));
 }
 const weights=data({longgun:45,sidearm_pair:35,mod_material:20});
+
+test('ground packet keeps map and full equipment identity; owned references stay one per instance',()=>{
+  const s=snapshot();s.ground=data({mapId:'A19',x:200,z:300});
+  const p=packet('sidearm_pair','ground',s);assert.equal(rules.validPacket(p),true);
+  assert.deepEqual(plain(p.ground),{mapId:'A19',x:200,z:300});
+  s.ground.x=999;assert.equal(p.ground.x,200);
+  p.state='OWNED';p.groundEntries=data(['stash.e1','stash.e2']);assert.equal(rules.validPacket(p),true);
+  for(const edit of [q=>q.groundEntries[1]=q.groundEntries[0],q=>q.groundEntries.pop(),
+    q=>q.ground.x=Infinity,q=>q.ground.mapId='A1',q=>q.ground.extra=true,q=>q.state='DECIDED_HIT']){
+    const q=data(plain(p));edit(q);assert.equal(rules.validPacket(q),false);
+  }
+});
 
 test('fresh ledger is valid; unknown schema and mismatched counts are refused',()=>{
   const l=rules.create('fixed158-v2','candidate1');assert.equal(rules.validLedger(l),true);

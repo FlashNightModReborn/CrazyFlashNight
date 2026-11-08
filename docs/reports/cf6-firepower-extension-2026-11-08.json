@@ -1,0 +1,260 @@
+{
+  "schema": "cf6-fixed158-extension-validation.v1",
+  "date": "2026-11-08",
+  "state": "validated_published_flash_and_standard_entry",
+  "authorization": "机枪连射放宽、Wings 属性专精和地面拾取 这边也一并完成并且提交推送部署",
+  "taskBaseCommit": "29cf4bfe0ff4e7475f8664ad7e4744096c5ff256",
+  "integratedUpstreamCommit": "ce6898f9f6d14f2f1645acce38a0bb86b74cb87a",
+  "changes": {
+    "machineguns": {
+      "personnel": 19,
+      "sharedProfiles": 11,
+      "fireActiveFrames": 60,
+      "minimumRecoveryFrames": 30,
+      "activeFrameRate": 30,
+      "otherPersonnelUnchanged": 139,
+      "perTriggerPayloadUnchanged": true,
+      "nativeExample": {
+        "weapon": "M60E3",
+        "triggers": 15,
+        "firstFrame": 19,
+        "lastFrame": 76,
+        "restFrames": 42,
+        "spentRounds": 15,
+        "targetLossCommits": 4
+      }
+    },
+    "wings": {
+      "allElementalResistances": 88.5,
+      "outgoingDamageType": "魔法",
+      "outgoingElement": "能",
+      "outgoingPowerMultiplier": 0.45,
+      "baseHpAndPhysicalDefenceUnchanged": true,
+      "actualRoles": [
+        {
+          "level": 59,
+          "scale": 1,
+          "hp": 8658,
+          "defence": 420,
+          "attack": 990
+        },
+        {
+          "level": 60,
+          "scale": 1,
+          "hp": 8742,
+          "defence": 423,
+          "attack": 1000
+        },
+        {
+          "level": 60,
+          "scale": 2.5,
+          "hp": 21855,
+          "defence": 423,
+          "attack": 2500
+        }
+      ],
+      "finalTwoReinforcedWingsPreserved": true,
+      "ehpCalibrationScope": "Pure attribute damage versus unshielded instructor at level59/60; no critical/status/category bonus; mixed damage, crush, true and nano remain separate."
+    },
+    "groundPickups": {
+      "authority": "existing RewardStashService.take/query and exact entryId; full BaseItem value",
+      "newIndependentRewardLedger": false,
+      "unknownWriteReplay": false,
+      "fullBagRetainsGroundAndStash": true,
+      "mapReentryRestoresUntakenEntry": true,
+      "sameNamePairPreservesSeparateModsAndSpentRounds": true,
+      "actorWorldAndProjectionGated": true,
+      "probabilityOrQuotaChanged": false,
+      "newArmourDrops": false
+    }
+  },
+  "flashTests": [
+    {
+      "run": "wings-test-1",
+      "summary": "Cf6WingsAssetTest: 425 passed, 0 failed; 32 actual timeline cases",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "traceSha256": "361a92fbea636fbe7cee5472204ac131be25c18f5ecc895954128844f0626010"
+    },
+    {
+      "run": "loot-test-6",
+      "summary": "Cf6SoldierLootTest: 206 passed, 0 failed; isolated real save boundary",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "traceSha256": "51a70cbd9f49710201a60873921f440bd96a060e3271d7964baf32e1aaf8c486"
+    },
+    {
+      "run": "chapter-test-3",
+      "summary": "Cf6FixedChapterNativeTest: 1633 passed, 0 failed; 158 chapter actors, 12 authored maps",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "traceSha256": "a27eb7efdab8330be648dfa5ac22e499f3a10ed12fef22c415c6db6af7d83c06"
+    },
+    {
+      "run": "projectiles-test-1",
+      "summary": "Cf6FixedSoldierNativeTest: 5872 passed, 0 failed; 158 fixed materializations, 103 native action cases",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "traceSha256": "31960b2021105666fe8a4cdaadb01bd476ca09599c79eb4392b23ec56d62aa05"
+    }
+  ],
+  "additionalNativeAssertions": {
+    "firepower": 2783,
+    "actions": 2361,
+    "stash": 137,
+    "actualProjectileBirths": 308,
+    "actualCollisionSettlements": 605
+  },
+  "coldPersistence": {
+    "cases": 16,
+    "distinctProcesses": 16,
+    "passed": true,
+    "playerSavesOpened": false,
+    "coreSha256": "3371204DD6B78571A423DD2C89B2A38C7286A1A3A8EE64770F56DB7AAFD2E871",
+    "probeSwfSha256": "02C60BF29C8B129C1A6C1F2628A919DE26E6C60B9F53A2639B4801DAB2609BB8",
+    "reportSha256": "1670c2eca4332b08aff408ad24aa09e0c2fe5ae526bd79e258c622d2ab84982f",
+    "scope": "Real standalone SaveManager, staging, claim and cold-read components; not production Launcher SafeExit UI acceptance"
+  },
+  "upstreamNativeRuntime": {
+    "sourceCommit": "369c8cb82ce6457e2172717d4a1c0a16d20f1243",
+    "sourceTag": "runtime-build-v2/20261108-loot-icon-loop-m0-v1",
+    "buildIdentityHash": "75C28ABC710AF9FF1A2324CC09170B0BC4DDB58F85AF87C7EFBE9DF14F1BBE54",
+    "payloadClosureHash": "73C0EE99C812C411306F9BE14B7088145EF530D03E9993826CEAC67EF45D8741",
+    "nativeSourceOrPayloadAuthoredByThisExtension": false,
+    "strictConsensusVerified": true,
+    "signers": 2,
+    "faultDomains": 2
+  },
+  "retainedAttempts": {
+    "loot": "Initial assertion and separate-RSL fixture scope failures retained; current same-scope real prefab suite206/0.",
+    "chapter": "Deduplicated profile count, runtime unit reference and actual legacy Wings HP field assertions corrected; final1633/0.",
+    "legacyVerifier": "Base29cf already contained three mixed-init references inside the exact fixed adapter. Generic ordinary and elite-motion rejection remains; five negative/positive boundary cases pass.",
+    "cs6Foreground": "Two activate_window attempts returned failed to activate captured window; no app input sent; self-running native suites reached unique terminals."
+  },
+  "humanAcceptance": {
+    "fullNewChapter": false,
+    "newBalanceAndFeel": false,
+    "physicalInput": false
+  },
+  "recordedAtUtc": "2026-11-08T02:42:51.161335+00:00",
+  "finalAsLoader": {
+    "bytes": 7055846,
+    "sha256": "6df5dbe3f8ee67eeeebb5fe7a50e9ac344cf77fde86faff1b22547752411f39a",
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "runtimeClasses": 809,
+    "inheritanceEdges": 109,
+    "classOwnershipErrors": []
+  },
+  "standardEntry": {
+    "schema": "cf6-extension-standard-observations.v1",
+    "entry": "automation/start.ps1",
+    "arguments": [],
+    "runtimeMode": "formal_runtime",
+    "exitCode": 0,
+    "corePid": 5980,
+    "corePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreStartedAtUtc": "2026-11-08T02:23:52.3572234Z",
+    "coreSha256": "3371204DD6B78571A423DD2C89B2A38C7286A1A3A8EE64770F56DB7AAFD2E871",
+    "asLoaderSha256": "6DF5DBE3F8EE67EEEEBB5FE7A50E9AC344CF77FDE86FAFF1B22547752411F39A",
+    "buildIdentityHash": "75C28ABC710AF9FF1A2324CC09170B0BC4DDB58F85AF87C7EFBE9DF14F1BBE54",
+    "payloadClosureHash": "73C0EE99C812C411306F9BE14B7088145EF530D03E9993826CEAC67EF45D8741",
+    "playerSlotLoaded": true,
+    "bookkeepingCorrection": "Adopted the same live PID from the completed launch log after canonical path separator normalization; no relaunch",
+    "slot": "cf7_agent_cf6_extension_20261108",
+    "slotLabel": "CF6属性与缴获验收",
+    "confirmationPressed": true,
+    "baseRoomObserved": true,
+    "nativeHudObserved": true,
+    "questPanelOpened": true,
+    "questPanelClosedWithEscape": true,
+    "bookshelfOpenedFromRoom": true,
+    "bookshelfActiveOwnedLabelObserved": true,
+    "type61BookEntered": false,
+    "fullChapterHumanAcceptance": false,
+    "comprehensivePhysicalInputAcceptance": false,
+    "automationLimit": "Embedded overlay element indexes were unavailable to the Core target; coordinate close was rejected as renderer-owned. No control principal/slot allowlist was altered.",
+    "normalExitObserved": true,
+    "recordedAtUtc": "2026-11-08T02:40:06.942335+00:00",
+    "exitPath": "UserClosing -> DoExit (existing legacy hard exit)",
+    "safeExitBusinessJourneyExecuted": false,
+    "savedExitAccepted": false,
+    "coreExitObserved": true,
+    "observedAtUtc": "2026-11-08T02:42:51.044932+00:00",
+    "launcherLogSha256": "07cb4d79303e57de8142b159ed8096b7c8d8a7bcc6fbe0faae48f0026fc10ecf"
+  },
+  "saveProtection": {
+    "schema": "cf6-extension-save-check.v1",
+    "phase": "after_standard_entry",
+    "compared": 105,
+    "unchanged": 103,
+    "allowedMetadataChanges": [
+      ".launcher-version-marker.json",
+      ".slot-display-names.json"
+    ],
+    "playerFileChanges": [],
+    "newOwnedSlot": "cf7_agent_cf6_extension_20261108",
+    "ownedSlotSha256": "1313dbdd02d70ed0c02c7b026947a551a28ad91ae8893d63b6ebda93ebeb80db",
+    "otherLabelsUnchanged": true
+  },
+  "sourceTests": {
+    "fixedRoster": 17,
+    "route": 19,
+    "suppression": 5,
+    "nodeReferenceModels": 66,
+    "ordinaryVerifierBoundary": 5,
+    "jsflBoundaryPassed": true
+  },
+  "boundFiles": [
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "74ff87cade4f5f4508e2cf0959d175e4faf9a67f5da752e216af02be5033df66",
+      "bytes": 24294
+    },
+    {
+      "path": "data/stages/books/cf6-type61.runtime.json",
+      "sha256": "5d4e763b3cea1356b2950be61bd5e19ac79584425999f88c478783306c382f4d",
+      "bytes": 594625
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "6df5dbe3f8ee67eeeebb5fe7a50e9ac344cf77fde86faff1b22547752411f39a",
+      "bytes": 7055846
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "sha256": "26fcb33243634350c428eeb2f63993ec0df0cdc57b7dcbec671fac314e46b7c9",
+      "bytes": 97934
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "72d0dddc7e834f08bfd4409eede8be4f885aeecdd1c4f7a0b4a75be205ba6805",
+      "bytes": 653460
+    },
+    {
+      "path": "tools/cf6-type61/soldier-suppression.source.json",
+      "sha256": "c958bdc1f84776884e4d47d2b71d369a3d262fa8c0420b81aa9119019902328b",
+      "bytes": 432
+    },
+    {
+      "path": "tools/cf6-wings-assets/environment-role.source.json",
+      "sha256": "2de5dcf04517193e8b78f484c933844bd766d50377b8614541c064708dc850be",
+      "bytes": 711
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6SoldierGroundPickup.as",
+      "sha256": "6e12b9cdd367f253ebfcaa5c4cfda71ffa942af961f709e42a05b5131608780b",
+      "bytes": 10585
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6SoldierLoot.as",
+      "sha256": "e2f2c01137291088c36f133d8def1761e95e759a09b599336ea0e5abea531b9a",
+      "bytes": 21183
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6SoldierProgramContract.as",
+      "sha256": "0374f6d2a9579216fb7a40404b1f597e1b694d804f26d0002eb490c8928489a7",
+      "bytes": 10254
+    }
+  ]
+}

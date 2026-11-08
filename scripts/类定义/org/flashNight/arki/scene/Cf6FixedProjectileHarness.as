@@ -203,7 +203,7 @@ class org.flashNight.arki.scene.Cf6FixedProjectileHarness {
         var requiredHits:Boolean=label=="ordinary_line" || label=="primary_then_subweapon" || label=="real_launcher_load"
             || label=="g1111_rifle_fallback" || label=="g1111_rocket_fallback" || label=="bright_burst"
             || label=="reserve_gate" || label=="threshold_flush" || label=="finite_grenade";
-        if(label.indexOf("admission_")==0)requiredHits=true;
+        if(label.indexOf("admission_")==0 || label=="machinegun_suppression")requiredHits=true;
         if(requiredHits){
             var contacts:Number=0;
             for(i=0;i<groups.length;i++)if(groups[i].identity===actor.cf6UnitIdentity)contacts+=groups[i].group.fixtureHits|0;

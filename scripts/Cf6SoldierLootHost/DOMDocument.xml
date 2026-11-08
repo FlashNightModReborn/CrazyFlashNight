@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" width="550" height="400" frameRate="30" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481">
+  <symbols>
+    <Include href="Import0.xml" itemID="6af00000-58f17d19" loadImmediate="false"/>
+  </symbols>
+  <timelines>
+    <DOMTimeline name="场景 1">
+      <layers>
+        <DOMLayer name="真实 RSL 消费者" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.Component.*;
+_root.技能函数={};
+_root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持续帧数:Number, 来源ID:String):Void {
+    // 参数校验
+    if (!target || !减伤率 || 减伤率 <= 0) return;
+
+    // 限制减伤率范围 (1-99)
+    减伤率 = Math.max(Math.min(减伤率, 99), 1);
+
+    // 计算承伤系数：减伤率50% → 承伤系数0.5
+    var 承伤系数:Number = (100 - 减伤率) / 100;
+
+    // 通过 BuffManager 设置减伤
+    // 创建内部 PodBuff：修改 damageTakenMultiplier
+    // 使用 MULT_NEGATIVE 保守语义：多个减伤buff自动取最小值（最强减伤）
+    var podBuff:PodBuff = new PodBuff(
+        "damageTakenMultiplier",           // 目标属性
+        BuffCalculationType.MULT_NEGATIVE, // 保守语义：取最小值（最强减伤）
+        承伤系数                             // 承伤系数值
+    );
+
+    // 准备组件数组
+    var components:Array = [];
+
+    // 如果提供了持续帧数，添加 TimeLimitComponent 实现自动移除
+    if (持续帧数 > 0) {
+        components.push(new TimeLimitComponent(持续帧数));
+    }
+
+    // 创建 MetaBuff 包装 PodBuff
+    var metaBuff:MetaBuff = new MetaBuff(
+        [podBuff],    // 子 PodBuff 数组
+        components,   // 组件数组（可能包含 TimeLimitComponent）
+        0             // 优先级
+    );
+
+    // 根据来源ID生成buffId：不同来源可共存，同来源会替换
+    // 保守语义MULT_NEGATIVE会自动取所有减伤效果中的最小值（最强减伤）
+    var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
+    metaBuff.hudInfo = {name:"霸体减伤", description:"降低受到的伤害；同类减伤取最强效果。", polarity:"benefit", stacks:0};
+    target.buffManager.addBuff(metaBuff, buffId);
+
+};
+_root.技能函数.移除霸体减伤 = function(target:Object, 来源ID:String):Void {
+    if (!target) return;
+
+    if (target.buffManager) {
+        var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
+        target.buffManager.removeBuff(buffId);
+    }
+};
+_root.士兵测试标准行走 = function() {
+    var self = this;
+    if (self.右行 || self.左行 || self.上行 || self.下行) {
+        // 定义策略对象，封装跑和走两种移动方式的参数
+        var 移动策略 = {
+            跑: {
+                x速度: self.跑X速度,
+                y速度: self.跑Y速度,
+                状态后缀: "跑"
+            },
+            走: {
+                x速度: self.行走X速度,
+                y速度: self.行走Y速度,
+                状态后缀: "行走"
+            }
+        };
+
+        // 根据当前状态判断使用哪一种策略
+        // 如果当前状态为攻击模式+"跑"，则使用跑的参数，否则使用走的参数
+        var 初始目标状态 = self.攻击模式 + "跑";
+        var 最终策略 = (self.状态 === 初始目标状态) ? 移动策略.跑 : 移动策略.走;
+        var 最终状态 = self.攻击模式 + 最终策略.状态后缀;
+
+        // 根据方向选择对应的移动操作
+        if (self.右行) {
+            self.方向改变("右");
+            self.移动("右", 最终策略.x速度);
+        } else if (self.左行) {
+            self.方向改变("左");
+            self.移动("左", 最终策略.x速度);
+        }
+        if (self.下行) {
+            self.移动("下", 最终策略.y速度);
+        } else if (self.上行) {
+            self.移动("上", 最终策略.y速度);
+        }
+
+        // 改变状态为最终状态
+        self.状态改变(最终状态);
+    } else {
+        // 没有移动操作时，设置为攻击模式+站立状态
+        self.状态改变(self.攻击模式 + "站立");
+    }
+};
+_root.士兵测试初始化掉落物 = function() {
+    // _root.发布消息("初始化掉落物:" + this._name, ObjectUtil.stringify(this.长枪), ObjectUtil.stringify(this.手枪), ObjectUtil.stringify(this.手枪2), ObjectUtil.stringify(this.刀));
+
+    if (this.掉落物 != null || this.不掉装备) {
+        // _root.发布消息(ObjectUtil.stringify(this.掉落物));
+        return;
+    }
+    if (this.是否为敌人 == false) {
+        this.掉落物 = null;
+        // _root.发布消息("非敌人不掉落物品:" + this._name,this.是否为敌人);
+        return;
+    }
+    this.掉落物 = [];
+
+    if (this.长枪) {
+        this.掉落物.push({名字: this.长枪, 概率: 100});
+    }
+    if (this.手枪) {
+        this.掉落物.push({名字: this.手枪, 概率: 100});
+    }
+    if (this.手枪2) {
+        this.掉落物.push({名字: this.手枪2, 概率: 100});
+    }
+    if (this.刀) {
+        this.掉落物.push({名字: this.刀, 概率: 100});
+    }
+};
+_root.子弹属性初始化 = function(子弹元件:MovieClip,子弹种类:String,发射者:MovieClip){
+    var myPoint = {x:子弹元件._x,y:子弹元件._y};
+    子弹元件._parent.localToGlobal(myPoint);
+    var 转换中间y = myPoint.y;
+    _root.gameworld.globalToLocal(myPoint);
+    shootX = myPoint.x;
+    shootY = myPoint.y;
+    if(!发射者){
+        发射者 = 子弹元件._parent._parent;
+    }
+    var 子弹属性 = {
+        声音:"",
+        霰弹值:1,
+        子弹散射度:1,
+        发射效果:"",
+        子弹种类:子弹种类 == undefined ? "普通子弹" : 子弹种类,
+        子弹威力:10,
+        子弹速度:10,
+        Z轴攻击范围:10,
+        击中地图效果:"火花",
+        发射者:发射者._name,
+        shootX:shootX,
+        shootY:shootY,
+        转换中间y:转换中间y,
+        shootZ:发射者.Z轴坐标,
+        击倒率:10,
+        击中后子弹的效果:"",
+        水平击退速度:NaN,
+        垂直击退速度:NaN,
+        命中率:NaN,
+        固伤:NaN,
+        百分比伤害:NaN,
+        血量上限击溃:NaN,
+        防御粉碎:NaN,
+        吸血:NaN,
+        毒:NaN,
+        最小霰弹值:1,
+        不硬直:false,
+        区域定位area:undefined,
+        伤害类型:undefined,
+        魔法伤害属性:undefined,
+        速度X:undefined,
+        速度Y:undefined,
+        ZY比例:undefined,
+        斩杀:undefined,
+        暴击:undefined,
+        水平击退反向:false,
+        角度偏移:0
+    }
+    if(子弹元件.__cf6DamageMember != null)
+        org.flashNight.arki.scene.Cf6DamageGroups.inherit(子弹元件,子弹属性);
+    return 子弹属性;
+}
+
+#include "../TestLoader.as"]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Import0" name="source0">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

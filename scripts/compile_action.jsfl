@@ -119,6 +119,7 @@ function main() {
 					var focusedTargets = ["Cf6FixedSoldierNativeHost/Cf6FixedSoldierNativeHost.xfl",
 						"Cf6FixedProjectileHost/Cf6FixedProjectileHost.xfl", "Cf6FixedChapterHost/Cf6FixedChapterHost.xfl",
 						"Cf6FirepowerProjectileHost/Cf6FirepowerProjectileHost.xfl",
+						"Cf6SoldierLootHost/Cf6SoldierLootHost.xfl",
 						"tmp-cf6-loot-cold-host/Cf6SoldierLootColdProbe.xfl"];
 					for (var focusedIndex = 0; focusedIndex < focusedTargets.length; focusedIndex++) {
 						ownedTargetKeys[normalizeDocumentURI(projectURI + "/scripts/" + focusedTargets[focusedIndex])] = true;
