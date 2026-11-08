@@ -71,6 +71,12 @@ if (-not $node) { $node = Get-Command node -ErrorAction SilentlyContinue }
 if (-not $node) { throw 'Node.js is required to prepare Launcher release assets.' }
 $nodePath = $node.Source
 
+$python = Get-Command python.exe -ErrorAction SilentlyContinue
+if (-not $python) { $python = Get-Command python3.exe -ErrorAction SilentlyContinue }
+if (-not $python) { $python = Get-Command python -ErrorAction SilentlyContinue }
+if (-not $python) { throw 'Python is required to prepare the material catalog.' }
+$pythonPath = $python.Source
+
 $npm = Get-Command npm.cmd -ErrorAction SilentlyContinue
 if (-not $npm) { $npm = Get-Command npm -ErrorAction SilentlyContinue }
 if (-not $npm) { throw 'npm is required to prepare Launcher release assets.' }
@@ -111,6 +117,13 @@ foreach ($step in $nodeSteps) {
         -WorkingDirectory $ProjectRoot
 }
 
+$materialCatalog = Join-Path $ProjectRoot 'tools\derive-material-catalog.py'
+if (-not (Test-Path -LiteralPath $materialCatalog -PathType Leaf)) {
+    throw "Material catalog generator missing: $materialCatalog"
+}
+Invoke-Cf7PrepareCommand -Name 'derive material dictionary and source provenance' -FilePath $pythonPath `
+    -Arguments @($materialCatalog, 'derive') -WorkingDirectory $ProjectRoot
+
 $fontCtl = Join-Path $ProjectRoot 'tools\fontctl\cli.js'
 if (-not (Test-Path -LiteralPath $fontCtl -PathType Leaf)) {
     throw "Font catalog generator missing: $fontCtl"
@@ -148,6 +161,8 @@ if (-not [string]::IsNullOrWhiteSpace($SaveSchemaSource)) {
 }
 
 $generatedOutputs = @(
+    'data/dictionaries/material_dictionary.xml',
+    'data/dictionaries/material_dictionary.generated.json',
     'launcher/web/generated/guidance-catalog.js',
     'launcher/web/generated/tutorial-journeys.js',
     'launcher/web/generated/scene-transition-catalog.js',
