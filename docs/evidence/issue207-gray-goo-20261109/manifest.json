@@ -1,0 +1,32 @@
+{
+  "issue": 207,
+  "sourceCommit": "8b6be790ca482d6ccac876ff8fe8d7d6486436b2",
+  "sourceSwf": "flashswf/arts/new/Codex专用素材.swf",
+  "sourceSwfSha256": "C5746196A3B81FF5950FD5A83E49D245296259896B19F3EE718A2445FE5A5409",
+  "preview": {
+    "path": "crumble-stages.gif",
+    "sha256": "B322B297303EB01B9F49284FBBE9DCBEF54FAEF835094AE15B93A3E778589030",
+    "bytes": 49155,
+    "dimensions": [
+      480,
+      160
+    ],
+    "frames": 13
+  },
+  "generation": {
+    "tool": "JPEXS FFDec 21.1.1",
+    "exportArgs": [
+      "-selectid",
+      "3145,3158,3171",
+      "-format",
+      "sprite:png",
+      "-export",
+      "sprite",
+      "<output>",
+      "flashswf/arts/new/Codex专用素材.swf"
+    ],
+    "composition": "三档子元件逐帧导出后以原尺寸并列组合，增加档位标签和循环间隔；GIF 时序存在量化"
+  },
+  "evidenceScope": "发布 SWF 内三档击溃子动画的预览；不含真实战场、根元件辉光，不作为体育老师修补后实战录像",
+  "acceptance": "2026-11-09 维护者确认方案可行并要求收尾 issue；原生专项与玩家实战证据分开记录"
+}
