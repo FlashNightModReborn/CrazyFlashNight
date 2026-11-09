@@ -7,6 +7,7 @@
             <DOMFrame index="0" duration="30" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.effectType = "灰蛊裂隙特效";
+if (this.击溃爆发) this.击溃爆发._visible = this.grayGooCrumbleAmount > 0;
 if (this.标志 && this.targetFrame >= 1 && this.targetFrame <= 3) {
 	this.标志.gotoAndStop(this.targetFrame);
 }
@@ -23,6 +24,14 @@ if (this.标志 && this.targetFrame >= 1 && this.targetFrame <= 3) {
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="击溃爆发" color="#35D5E8"><frames>
+          <DOMFrame index="0" duration="30" keyMode="9728"><elements>
+            <DOMSymbolInstance libraryItemName="Codex/灰蛊裂隙/灰蛊击溃爆发" name="击溃爆发">
+              <matrix><Matrix tx="0" ty="-18"/></matrix><transformationPoint><Point/></transformationPoint>
+              <filters><GlowFilter blurX="4" blurY="4" color="#35D5E8" quality="1" strength="1.4"/></filters>
+            </DOMSymbolInstance>
+          </elements></DOMFrame>
+        </frames></DOMLayer>
         <DOMLayer name="标志" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">

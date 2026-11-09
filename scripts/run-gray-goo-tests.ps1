@@ -23,8 +23,8 @@ $focusedRun=@{
         '(?m)^--- BuilderContractTest: 148/148 passed, 0 failed ---\r?$',
         '(?m)^GrayGooRealProfiles passed=true\r?$',
         '(?m)^--- EquipmentIntervalCurveTest: (?<count>[1-9][0-9]*)/\k<count> passed, 0 failed ---\r?$',
-        '(?m)^GrayGooAssetTest phases: XML,I,II,III,max,pooled,reuse\r?$',
-        '(?m)^GrayGooAssetTest result: passed=17 failed=0\r?$')
+        '(?m)^GrayGooAssetTest phases: XML,I,II,III,max,pooled,reuse,zero-loss\r?$',
+        '(?m)^GrayGooAssetTest result: passed=37 failed=0\r?$')
     SuccessSummary='Gray-goo profiles, combat, tooltip, rejected previews, real asset stages and pooling'
     TimeoutSeconds=$TimeoutSeconds
     AsyncBehaviorTimeoutSeconds=60

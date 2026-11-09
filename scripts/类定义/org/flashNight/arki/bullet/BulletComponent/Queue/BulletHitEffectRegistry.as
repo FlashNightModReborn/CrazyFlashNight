@@ -56,6 +56,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
         bullet.斩杀 = bullet._grayGooBaseExecute;
         bullet._grayGooPreparedKey = null;
         bullet._grayGooPendingConsume = 0;
+        bullet._grayGooResolvedCrumble = 0;
 
         ToughnessVulnerabilityController.prepareBulletForTarget(
             target, shooter, bullet.hitBehavior, bullet
@@ -79,6 +80,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
         if (behavior.type == "titaniumFireControl") return FireControlVulnerability.applyToTarget(target, behavior);
         if (behavior.type == "cf6ElderBeam") return ElderBeamVulnerability.applyToTarget(target, behavior);
         if (!isSupported(behavior)) return false;
+        // 由真实伤害结果提供收益，不能用档位百分比推测成功或复制上一目标的值。
+        bullet._grayGooResolvedCrumble = damageResult._crumbleDamage;
         return ToughnessVulnerabilityController.applyToTarget(
             target, shooter, behavior, bullet
         );

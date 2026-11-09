@@ -1,5 +1,5 @@
 ﻿[CmdletBinding()]
-param([ValidateRange(1,3600)][int]$TimeoutSeconds=600,[switch]$SkipCompile)
+param([ValidateRange(1,3600)][int]$TimeoutSeconds=900,[switch]$SkipCompile)
 $focusedRun=@{
     DomainId='gray-goo-assets'
     TemplateRelativePath='scripts/test-runners/gray-goo-assets/TestLoader.as.template'
@@ -7,9 +7,9 @@ $focusedRun=@{
     SuiteFqns=@('org.flashNight.arki.render.GrayGooAssetTest')
     AdditionalAsRelativePaths=@('scripts/类定义/org/flashNight/arki/component/Buff/Effect/ToughnessVulnerabilityController.as')
     ExpectedTracePatterns=@(
-        '(?m)^GrayGooAssetTest phases: XML,I,II,III,max,pooled,reuse\r?$',
-        '(?m)^GrayGooAssetTest result: passed=17 failed=0\r?$')
-    SuccessSummary='GrayGooAssetTest 17/17 real asset stages and pooling'
+        '(?m)^GrayGooAssetTest phases: XML,I,II,III,max,pooled,reuse,zero-loss\r?$',
+        '(?m)^GrayGooAssetTest result: passed=37 failed=0\r?$')
+    SuccessSummary='GrayGooAssetTest 37/37: visible anchors, real crumble bursts, latest marks, ownership and pooled reset'
     TimeoutSeconds=$TimeoutSeconds
     SkipCompile=$SkipCompile
 }
