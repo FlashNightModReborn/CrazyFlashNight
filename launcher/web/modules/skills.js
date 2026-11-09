@@ -1185,9 +1185,10 @@ var SkillsPanel = (function() {
     }
     function safeNumber(value) { var number = Number(value); return isFinite(number) ? String(number) : '—'; }
     function cooldownText(value) { var ms=Number(value); return isFinite(ms) ? (ms/1000).toFixed(ms%1000?1:0)+'s' : '—'; }
-    function healthLabel(entry) { return Library.healthLabel(entry, _view); }
-    function compactStateLabel(entry) { return Library.compactStateLabel(entry, _view); }
-    function skillAriaLabel(entry) { return Library.ariaLabel(entry, _view); }
+    function trainerPlayer() { return _snapshot && _snapshot.player || null; }
+    function healthLabel(entry) { return Library.healthLabel(entry, _view, trainerPlayer()); }
+    function compactStateLabel(entry) { return Library.compactStateLabel(entry, _view, trainerPlayer()); }
+    function skillAriaLabel(entry) { return Library.ariaLabel(entry, _view, trainerPlayer()); }
     function focusSibling(node, delta) {
         var rows = Array.prototype.slice.call(_list.querySelectorAll('.skills-library-row'));
         var index = rows.indexOf(node), next = rows[index+delta]; if (next) next.focus();

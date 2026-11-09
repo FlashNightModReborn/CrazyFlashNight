@@ -120,25 +120,58 @@
         return isFinite(number) ? String(number) : '—';
     }
 
-    function healthLabel(entry, view) {
+    function trainerState(entry, player) {
+        if (!entry || typeof entry !== 'object') return {id:'blocked', label:'异常', compactLabel:'!'};
+        if (entry.stateHealth === 'duplicate') return {id:'duplicate', label:'重复', compactLabel:'!'};
+        if (entry.stateHealth !== 'ok' || entry.writeBlocked) return {id:'blocked', label:'异常', compactLabel:'!'};
+        var current = Number(entry.currentLevel || 0);
+        var max = Number(entry.maxLevel || 1);
+        if (!isFinite(current) || current < 0) current = 0;
+        if (!isFinite(max) || max < 1) max = 1;
+        if (current >= max) return {id:'maxed', label:'已满级', compactLabel:'已满级'};
+        var unlockLevel = Number(entry.unlockLevel != null ? entry.unlockLevel : 0);
+        var hasLevel = !!(player && player.level != null && isFinite(Number(player.level)));
+        var hasSP = !!(player && player.skillPoints != null && isFinite(Number(player.skillPoints)));
+        var playerLevel = hasLevel ? Math.floor(Number(player.level)) : NaN;
+        var skillPoints = hasSP ? Math.max(0, Math.floor(Number(player.skillPoints))) : NaN;
+        if (current <= 0) {
+            if (hasLevel && isFinite(unlockLevel) && playerLevel < unlockLevel) {
+                var reqLabel = '需 Lv.' + safeNumber(unlockLevel);
+                return {id:'level_locked', label:reqLabel, compactLabel:reqLabel};
+            }
+            var unlockSP = Number(entry.unlockSP != null ? entry.unlockSP : 0);
+            if (hasSP && (!isFinite(unlockSP) || unlockSP < 0 || skillPoints < unlockSP)) {
+                return {id:'insufficient_sp', label:'SP不足', compactLabel:'SP不足'};
+            }
+            if (hasLevel && hasSP) return {id:'learnable', label:'可学', compactLabel:'可学'};
+            return {id:'unlearned', label:'未学', compactLabel:'未学'};
+        }
+        var upgradeSP = Number(entry.upgradeSP != null ? entry.upgradeSP : 0);
+        var levelOk = !isFinite(unlockLevel) || (hasLevel && playerLevel >= unlockLevel);
+        var spOk = hasSP && isFinite(upgradeSP) && upgradeSP >= 0 && (upgradeSP === 0 || skillPoints >= upgradeSP);
+        if (levelOk && spOk) return {id:'upgradable', label:'可升级', compactLabel:'可升级'};
+        return {id:'learned', label:'已学', compactLabel:'已学'};
+    }
+
+    function healthLabel(entry, view, player) {
         if (entry.stateHealth === 'duplicate') return '重复';
         if (entry.stateHealth !== 'ok' || entry.writeBlocked) return '异常';
-        if (view === 'trainer') return Number(entry.currentLevel || 0) > 0 ? '已学' : '可学';
+        if (view === 'trainer') return trainerState(entry, player).label;
         if (entry.passive && !entry.equippable) return entry.enabled ? '被动 ON' : '被动 OFF';
         return entry.equippedSlots && entry.equippedSlots.length ? '槽 ' + entry.equippedSlots.join('/') : '可装备';
     }
 
-    function compactStateLabel(entry, view) {
+    function compactStateLabel(entry, view, player) {
         if (entry.stateHealth !== 'ok' || entry.writeBlocked) return '!';
-        if (view === 'trainer') return Number(entry.currentLevel || 0) > 0 ? '已学' : '可学';
+        if (view === 'trainer') return trainerState(entry, player).label;
         if (entry.passive && !entry.equippable) return entry.enabled ? 'ON' : 'OFF';
         return entry.equippedSlots && entry.equippedSlots.length ? entry.equippedSlots.join('/') : '';
     }
 
-    function ariaLabel(entry, view) {
+    function ariaLabel(entry, view, player) {
         var level = entry.currentLevel != null ? entry.currentLevel : entry.level;
         return String(entry.skillKey || '未知技能') + '，等级 ' + safeNumber(level) + '/'
-            + safeNumber(entry.maxLevel) + '，' + healthLabel(entry, view) + '；悬停查看技能说明';
+            + safeNumber(entry.maxLevel) + '，' + healthLabel(entry, view, player) + '；悬停查看技能说明';
     }
 
     return {
@@ -153,6 +186,7 @@
         filterDefinitions:filterDefinitions,
         adjacent:adjacent,
         reorderBlockReason:reorderBlockReason,
+        trainerState:trainerState,
         healthLabel:healthLabel,
         compactStateLabel:compactStateLabel,
         ariaLabel:ariaLabel

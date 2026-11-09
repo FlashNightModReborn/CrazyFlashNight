@@ -59,7 +59,7 @@ function trainerEntries(){return[
 ]}
 function authoritativeSnapshot(view,revision){
   var result={success:true,v:1,revision:revision==null?__host.revision:revision,view:view,
-    player:{level:35,skillPoints:__host.skillPoints,easyMode:false},learned:copy(learnedRows),loadout:copy(loadout),trainer:null,
+    player:{level:__host.playerLevel==null?35:__host.playerLevel,skillPoints:__host.skillPoints,easyMode:false},learned:copy(learnedRows),loadout:copy(loadout),trainer:null,
     diagnostics:[{code:'duplicate_skill_rows',skillKey:'重复技',rowCount:2}]};
   if(Array.isArray(__host.featureDefinitions))result.features=__host.featureDefinitions.map(function(d){
     var parent=learnedRows.find(function(row){return row.skillKey===d.skillKey});if(!parent)return null;
@@ -68,7 +68,7 @@ function authoritativeSnapshot(view,revision){
     return{id:d.id,skillKey:d.skillKey,label:d.label,description:d.description,minLevel:d.minLevel,
       unlocked:unlocked,enabled:enabled,effectiveEnabled:unlocked&&parent.enabled&&enabled,writeBlocked:!unlocked}
   }).filter(Boolean);
-  if(view==='trainer')result.trainer={session:__host.trainerSession,entries:__host.invalidTrainer?['闪现']:trainerEntries()};
+  if(view==='trainer')result.trainer={session:__host.trainerSession,entries:__host.invalidTrainer?['闪现']:(__host.trainerEntriesOverride?copy(__host.trainerEntriesOverride):trainerEntries())};
   return result
 }
 function emit(data){(__handlers.panel_resp||[]).slice().forEach(function(fn){fn(data)})}
@@ -658,6 +658,45 @@ window.Icons={
       sent('learnPreview').length===previewCountBeforeUnaffordable&&!document.querySelector('.skills-level-range')
       &&document.querySelector('.skills-level-stepper').textContent.indexOf('当前 SP 不足以升级')>=0
       &&document.querySelector('.skills-trainer-commit').disabled);
+    ok('trainer list badges distinguish upgradable learned and unaffordable learned skills',
+      row('闪现').querySelector('.skills-row-badge').textContent==='可升级'
+      &&row('预算训练').querySelector('.skills-row-badge').textContent==='已学'
+      &&row('新手冲拳').querySelector('.skills-row-badge').textContent==='可学'
+      &&row('重复技').querySelector('.skills-row-badge').textContent==='重复'
+      &&row('重复技').querySelector('.skills-tile-state').textContent==='!');
+    __host.trainerEntriesOverride=trainerEntries().concat([
+      {skillKey:'高阶奥义',currentLevel:0,maxLevel:10,type:'神功',passive:false,equippable:true,unlockLevel:50,unlockSP:10,upgradeSP:10,mp:20,cooldownMs:3000,iconKey:'高阶奥义',description:'需高等级',stateHealth:'ok',writeBlocked:false},
+      {skillKey:'重费体术',currentLevel:0,maxLevel:10,type:'武术',passive:false,equippable:true,unlockLevel:20,unlockSP:40,upgradeSP:15,mp:10,cooldownMs:1000,iconKey:'重费体术',description:'需大量SP',stateHealth:'ok',writeBlocked:false},
+      {skillKey:'基础剑法',currentLevel:0,maxLevel:10,type:'剑术',passive:false,equippable:true,unlockLevel:10,unlockSP:10,upgradeSP:30,mp:5,cooldownMs:800,iconKey:'基础剑法',description:'可立即学习',stateHealth:'ok',writeBlocked:false},
+      {skillKey:'满级心法',currentLevel:10,maxLevel:10,type:'内功',passive:true,equippable:false,unlockLevel:1,unlockSP:5,upgradeSP:5,mp:0,cooldownMs:0,iconKey:'满级心法',description:'已达上限',stateHealth:'ok',writeBlocked:false}
+    ]);
+    var previewsBeforeEligibilityCatalog=sent('learnPreview').length;
+    setHost({instance:'inst-trainer-eligibility',view:'trainer',trainerSession:'trainer-elig',playerLevel:30,skillPoints:25});
+    await until(function(){return row('高阶奥义')&&!SkillsPanel.debugState().previewLoading},300);
+    row('高阶奥义').dispatchEvent(new PointerEvent('pointerenter',{pointerId:71,clientX:180,clientY:180}));await wait(20);
+    var lockedTooltipState=document.querySelector('#panel-tooltip .skills-tt-state')&&document.querySelector('#panel-tooltip .skills-tt-state').textContent;
+    row('高阶奥义').dispatchEvent(new PointerEvent('pointerleave',{pointerId:71,clientX:180,clientY:180}));
+    ok('trainer catalog projects level-locked, insufficient-SP, learnable and maxed states across badge, compact tile, ARIA and tooltip without per-row preview traffic',
+      row('高阶奥义').querySelector('.skills-row-badge').textContent==='需 Lv.50'
+      &&row('高阶奥义').querySelector('.skills-tile-state').textContent==='需 Lv.50'
+      &&row('高阶奥义').getAttribute('aria-label').indexOf('需 Lv.50')>=0
+      &&lockedTooltipState==='需 Lv.50'
+      &&row('重费体术').querySelector('.skills-row-badge').textContent==='SP不足'
+      &&row('重费体术').querySelector('.skills-tile-state').textContent==='SP不足'
+      &&row('基础剑法').querySelector('.skills-row-badge').textContent==='可学'
+      &&row('满级心法').querySelector('.skills-row-badge').textContent==='已满级'
+      &&sent('learnPreview').length===previewsBeforeEligibilityCatalog+1);
+    __host.playerLevel=50;__host.skillPoints=25;__host.revision++;
+    __host.trainerEntriesOverride[6].currentLevel=1;
+    var previewsBeforeEligibilityRefresh=sent('learnPreview').length;
+    document.querySelector('.skills-refresh-btn').click();
+    await until(function(){return sent('learnPreview').length>previewsBeforeEligibilityRefresh&&!SkillsPanel.debugState().previewLoading},300);
+    ok('authoritative snapshot refresh updates trainer eligibility badges in place as level, SP and learned state change',
+      row('高阶奥义').querySelector('.skills-row-badge').textContent==='可学'
+      &&row('重费体术').querySelector('.skills-row-badge').textContent==='SP不足'
+      &&row('基础剑法').querySelector('.skills-row-badge').textContent==='已学'
+      &&sent('learnPreview').length===previewsBeforeEligibilityRefresh+1);
+    __host.trainerEntriesOverride=null;__host.playerLevel=35;
     __host.skillPoints=160;
     __host.previewBlocked=true;row('闪现').click();await until(function(){return document.querySelector('.skills-preview-result.blocked')},300);
     var blockedPreviewNode=document.querySelector('.skills-preview-result.blocked');

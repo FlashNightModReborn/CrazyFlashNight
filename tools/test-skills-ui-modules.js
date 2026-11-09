@@ -58,6 +58,33 @@ equal(Library.reorderBlockReason(learned[0], 'target', {writesDisabled:false,eas
     'equipped_skill_locked', 'equipped target remains locked');
 equal(Library.healthLabel(learned[2], 'manage'), '重复', 'duplicate health label');
 equal(Library.compactStateLabel(learned[1], 'manage'), 'ON', 'compact passive state');
+equal(Library.trainerState({skillKey:'大招',currentLevel:0,maxLevel:10,unlockLevel:30,unlockSP:10,stateHealth:'ok'},
+    {level:20,skillPoints:100}),
+    {id:'level_locked',label:'需 Lv.30',compactLabel:'需 Lv.30'}, 'trainer level-locked state');
+equal(Library.trainerState({skillKey:'大招',currentLevel:0,maxLevel:10,unlockLevel:30,unlockSP:10,stateHealth:'ok'},
+    {level:30,skillPoints:9}),
+    {id:'insufficient_sp',label:'SP不足',compactLabel:'SP不足'}, 'trainer insufficient-sp state');
+equal(Library.trainerState({skillKey:'大招',currentLevel:0,maxLevel:10,unlockLevel:30,unlockSP:10,stateHealth:'ok'},
+    {level:30,skillPoints:10}),
+    {id:'learnable',label:'可学',compactLabel:'可学'}, 'trainer learnable state');
+equal(Library.trainerState({skillKey:'大招',currentLevel:0,maxLevel:10,unlockLevel:30,unlockSP:10,stateHealth:'ok'}, null),
+    {id:'unlearned',label:'未学',compactLabel:'未学'}, 'trainer unlearned fallback without player snapshot');
+equal(Library.trainerState({skillKey:'闪现',currentLevel:2,maxLevel:10,unlockLevel:15,upgradeSP:20,stateHealth:'ok'},
+    {level:35,skillPoints:20}),
+    {id:'upgradable',label:'可升级',compactLabel:'可升级'}, 'trainer upgradable learned state');
+equal(Library.trainerState({skillKey:'闪现',currentLevel:2,maxLevel:10,unlockLevel:15,upgradeSP:20,stateHealth:'ok'},
+    {level:35,skillPoints:19}),
+    {id:'learned',label:'已学',compactLabel:'已学'}, 'trainer learned non-upgradable state');
+equal(Library.trainerState(trainerEntries[1], {level:1,skillPoints:0}),
+    {id:'maxed',label:'已满级',compactLabel:'已满级'}, 'trainer maxed state');
+equal(Library.healthLabel({skillKey:'大招',currentLevel:0,maxLevel:10,unlockLevel:30,unlockSP:10,stateHealth:'ok'},
+    'trainer', {level:20,skillPoints:100}), '需 Lv.30', 'trainer badge uses unified level-locked label');
+equal(Library.compactStateLabel({skillKey:'大招',currentLevel:0,maxLevel:10,unlockLevel:30,unlockSP:10,stateHealth:'ok'},
+    'trainer', {level:30,skillPoints:5}), 'SP不足', 'trainer compact state uses unified SP label');
+equal(Library.ariaLabel({skillKey:'大招',currentLevel:0,maxLevel:10,unlockLevel:30,unlockSP:10,stateHealth:'ok'},
+    'trainer', {level:20,skillPoints:100}), '大招，等级 0/10，需 Lv.30；悬停查看技能说明', 'trainer aria label uses unified state');
+equal(Library.compactStateLabel({skillKey:'坏数据',currentLevel:0,maxLevel:10,stateHealth:'invalid',writeBlocked:true},
+    'trainer', {level:35,skillPoints:100}), '!', 'trainer compact blocked state keeps exclamation');
 
 equal(Trainer.affordableMaxLevel({currentLevel:1,maxLevel:10,upgradeSP:30}, 160), 6,
     'available SP caps the target at the highest affordable level');
