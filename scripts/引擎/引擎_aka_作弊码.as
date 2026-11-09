@@ -391,6 +391,41 @@ _root.cheatFunction.shownpc = function() {
 	_root.最上层发布文字提示("强制显示任务NPC：" + (_root.cheatFlags.强制显示NPC ? "开" : "关") + "-切换场景生效");
 };
 
+_root.cheatFunction.completealltasks = function() {
+	if (TaskUtil.tasks == undefined || TaskUtil.task_chains == undefined
+			|| TaskUtil.task_in_chains_by_sequence == undefined) {
+		_root.最上层发布文字提示("任务数据未加载，无法设置全部任务完成");
+		return;
+	}
+	if (_root.tasks_finished == undefined) _root.tasks_finished = {};
+	if (_root.task_chains_progress == undefined) _root.task_chains_progress = {};
+
+	var total:Number = 0;
+	var added:Number = 0;
+	for (var taskKey in TaskUtil.tasks) {
+		var taskData:Object = TaskUtil.tasks[taskKey];
+		if (taskData == undefined || String(taskData.id) != String(taskKey)) continue;
+		total++;
+		if (Number(_root.tasks_finished[taskKey]) > 0) continue;
+		_root.tasks_finished[taskKey] = 1;
+		added++;
+	}
+
+	var chains:Number = 0;
+	for (var chainName in TaskUtil.task_chains) {
+		_root.task_chains_progress[chainName] = _root._cheatTaskChainMaxProgress(chainName);
+		chains++;
+	}
+	var removed:Number = _root.tasks_to_do == undefined ? 0 : _root.tasks_to_do.length;
+	if (_root.tasks_to_do != undefined) _root.tasks_to_do.splice(0);
+	if (typeof _root.UpdateTaskProgress == "function") _root.UpdateTaskProgress();
+	if (typeof _root.检查任务数据完整性 == "function") _root.检查任务数据完整性();
+	if (typeof _root.是否达成任务检测 == "function") _root.是否达成任务检测();
+	if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+	_root.最上层发布文字提示("全部主线、支线已设为完成：" + total + "项（新增" + added
+		+ "项），重建" + chains + "条任务链，清理进行中" + removed + "项；不发放任务奖励");
+};
+
 _root.cheatCode = function(作弊码){
 	if(typeof _root.cheatFunction[作弊码] === "function"){
 		_root.cheatFunction[作弊码]();
@@ -642,6 +677,7 @@ arenakills          unlockkills 的别名
 taskprogress        查看所有任务链进度
 taskstatus          taskprogress 的别名
 shownpc             强制显示任务限定NPC（toggle，本次游戏有效）
+completealltasks    设置当前加载的全部主线/支线为已完成（不发任务奖励）
 
 === 前缀命令 ===
 #level:15           设置等级为15

@@ -39,6 +39,7 @@
 - `unlockkills` — 为敌方兵种补齐击杀记录，并影响存档。
 - `unlockallenemies` — unlockkills 的别名。
 - `arenakills` — unlockkills 的别名。
+- `completealltasks` — 将当前已加载的全部主线与支线设为已完成，清理进行中任务并标脏；不发放任务奖励，也不伪造关卡胜利。
 
 ## 进度与物品前缀
 

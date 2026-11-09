@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.key.KeyManager;
 import org.flashNight.arki.ui.GameSettingsPanelService;
+import org.flashNight.arki.task.TaskUtil;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.LootContainerService;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
@@ -24,6 +25,7 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         testSubscriptionFollowsRebind();
         testVersionAndAudioPreview();
         testCheatHelpBoundary();
+        testCompleteAllTasksCheat();
         testRawCheatsConservativelyMarkDirty();
         testPartiallyAppliedSaveCheatRequiresReconcile();
         testForceControls();
@@ -423,6 +425,77 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         });
         check(!unknown.success && unknown.error == "unknown_command",
             "unknown cheat commands never reach the backend");
+    }
+
+    private static function testCompleteAllTasksCheat():Void {
+        var completeAllTasks:Function = _root.settingsTestCompleteAllTasks;
+        var realCheatCode:Function = _root.settingsTestCheatCode;
+        var previousTasks:Object = TaskUtil.tasks;
+        var previousChains:Object = TaskUtil.task_chains;
+        var previousSequences:Object = TaskUtil.task_in_chains_by_sequence;
+        resetState();
+        _root.cheatFunction.completealltasks = completeAllTasks;
+        _root.cheatCode = realCheatCode;
+
+        var main1:Object = {id:"main1", title:"主线起点", chain:["主线", 1]};
+        TaskUtil.tasks = {
+            main1:main1,
+            main2:{id:"main2", title:"主线终点", chain:["主线", 2]},
+            side1:{id:"side1", title:"铁枪会委托", chain:["铁枪会", 1]},
+            commission1:{id:"commission1", title:"无序号委托", chain:["委托"]}
+        };
+        TaskUtil.tasks["主线起点"] = main1;
+        TaskUtil.task_chains = {主线:{}, 铁枪会:{}, 委托:{}};
+        TaskUtil.task_chains.主线["1"] = "main1";
+        TaskUtil.task_chains.主线["2"] = "main2";
+        TaskUtil.task_chains.铁枪会["1"] = "side1";
+        TaskUtil.task_in_chains_by_sequence = {主线:[1, 2], 铁枪会:[1]};
+        _root.tasks_finished = {main2:1};
+        _root.task_chains_progress = {};
+        _root.task_chains_progress.主线 = 1;
+        _root.tasks_to_do = [{id:"main1"}, {id:"commission1"}];
+        var activeTasks:Array = _root.tasks_to_do;
+        _root.taskRefreshCounts = {update:0, integrity:0, availability:0};
+        _root.UpdateTaskProgress = function():Void { _root.taskRefreshCounts.update++; };
+        _root.检查任务数据完整性 = function():Void { _root.taskRefreshCounts.integrity++; };
+        _root.是否达成任务检测 = function():Void { _root.taskRefreshCounts.availability++; };
+        _root.cheatNotice = "";
+        _root.最上层发布文字提示 = function(message:String):Void { _root.cheatNotice = message; };
+
+        var response:Object = GameSettingsPanelService.execute("cheat", {
+            v:1, command:"completealltasks", confirmed:true
+        });
+        check(response.success && response.effectScope == "save" && response.dirty === true
+            && _root.tasks_finished.main1 == 1 && _root.tasks_finished.main2 == 1
+            && _root.tasks_finished.side1 == 1,
+            "completealltasks routes through cheat execution and completes every ordered task");
+
+        var finishedCount:Number = 0;
+        for (var finishedId in _root.tasks_finished) finishedCount++;
+        check(_root.tasks_finished.commission1 == 1
+            && _root.tasks_finished.主线起点 == undefined && finishedCount == 4
+            && _root.cheatNotice.indexOf("4项（新增3项）") >= 0,
+            "completealltasks includes unnumbered commissions without double-counting title aliases");
+        check(_root.task_chains_progress.主线 == 2 && _root.task_chains_progress.铁枪会 == 1
+            && _root.task_chains_progress.委托 == 0,
+            "completealltasks rebuilds every known chain to its maximum sequence");
+        check(_root.tasks_to_do === activeTasks && activeTasks.length == 0,
+            "completealltasks clears active tasks while preserving the authoritative array reference");
+        check(_root.存档系统.dirtyMark === true && _root.taskRefreshCounts.update == 1
+            && _root.taskRefreshCounts.integrity == 1 && _root.taskRefreshCounts.availability == 1,
+            "completealltasks marks save state dirty and refreshes each task projection once");
+
+        _root.cheatFunction.completealltasks();
+        finishedCount = 0;
+        for (var finishedId in _root.tasks_finished) finishedCount++;
+        check(finishedCount == 4 && activeTasks.length == 0
+            && _root.taskRefreshCounts.update == 2
+            && _root.cheatNotice.indexOf("4项（新增0项）") >= 0,
+            "repeating completealltasks is idempotent and adds no duplicate completion records");
+
+        TaskUtil.tasks = previousTasks;
+        TaskUtil.task_chains = previousChains;
+        TaskUtil.task_in_chains_by_sequence = previousSequences;
     }
 
     private static function testRawCheatsConservativelyMarkDirty():Void {

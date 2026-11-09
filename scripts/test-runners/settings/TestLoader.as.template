@@ -1,3 +1,10 @@
-﻿trace("FocusedTestRunId settings Start: __FOCUSED_RUN_ID__");
+﻿import org.flashNight.arki.task.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.gesh.pratt.*;
+import org.flashNight.gesh.string.*;
+#include "引擎/引擎_aka_作弊码.as"
+_root.settingsTestCompleteAllTasks = _root.cheatFunction.completealltasks;
+_root.settingsTestCheatCode = _root.cheatCode;
+trace("FocusedTestRunId settings Start: __FOCUSED_RUN_ID__");
 org.flashNight.arki.ui.GameSettingsPanelServiceTest.runAllTests();
 trace("FocusedTestRunId settings Complete: __FOCUSED_RUN_ID__");

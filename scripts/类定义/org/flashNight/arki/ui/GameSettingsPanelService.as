@@ -965,6 +965,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             {command:"#level:15 / #gold:99999 / #sp:99", description:"修改角色进度", effectScope:"save"},
             {command:"#give:物品名,数量", description:"给予物品", effectScope:"save"},
             {command:"#task:链名,进度", description:"修改任务链进度", effectScope:"save"},
+            {command:"completealltasks", description:"将全部主线、支线设为已完成（不发放任务奖励）", effectScope:"save"},
             {command:"#supplytime:10", description:"设置圣诞树在线补给测试分钟（本次运行）", effectScope:"session"},
             {command:"#time:22 / #time:22:30", description:"设置昼夜时刻（本次运行）", effectScope:"session"},
             {command:"#spawn:兵种,等级 / #tp:x,y", description:"召唤或传送（当前场景）", effectScope:"session"},
@@ -980,7 +981,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             if (command == "easymode" || command == "hardmode" || command == "challengemode"
                     || command == "getallmods" || command == "getallintelligence"
                     || command == "unlockkills" || command == "unlockallenemies"
-                    || command == "arenakills") return {effectScope:"save"};
+                    || command == "arenakills" || command == "completealltasks") return {effectScope:"save"};
             return {effectScope:"session"};
         }
         if (startsWith(command, "#get:") || startsWith(command, "#eval:")) {
