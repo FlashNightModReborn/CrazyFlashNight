@@ -2026,12 +2026,11 @@ namespace CF7Launcher.Tasks
         private bool TryStartHandoff(JObject publish)
         {
             if (!_turnActive || _closing || _session == null) return false;
-            if (!string.Equals(_turnActionKind, "task_accept", StringComparison.Ordinal)) return false;
             if (publish.Value<bool?>("auto_accept") != true) return false;
             int taskId = publish.Value<int?>("task_id") ?? 0;
             string npc = (publish.Value<string>("npc") ?? "").Trim();
             string slot = (publish.Value<string>("slot_key") ?? "").Trim();
-            string actionId = _turnActionId ?? "";
+            string actionId = _turnActionId ?? _turnId ?? "";
             if (taskId <= 0 || npc.Length == 0 || actionId.Length == 0)
             {
                 LogManager.Log("[DialogueInterject] handoff rejected: malformed task_publish");
@@ -2114,7 +2113,7 @@ namespace CF7Launcher.Tasks
         private void OnHandoffTimeout()
         {
             if (!_handoff || _closing || _session == null) return;
-            LogManager.Log("[DialogueInterject] handoff timeout token=" + (_turnActionId ?? ""));
+            LogManager.Log("[DialogueInterject] handoff timeout token=" + (_turnActionId ?? _turnId ?? ""));
             EndHandoffWithFallbackLine("handoff_timeout");
         }
 
