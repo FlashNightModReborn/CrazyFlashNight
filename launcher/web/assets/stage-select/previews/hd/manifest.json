@@ -2,14 +2,14 @@
   "schema": "cfn.stage-preview-runtime.v1",
   "source": "tools/stage-preview/stages.json",
   "acceptance": "tools/stage-preview/accepted.json",
-  "acceptanceSha256": "3064cdd74f762621da71f6cabb4455d17c8f299c85adaa4a595f25ff2b73f202",
-  "sourceConfigSha256": "197ab47c9a781d129f1c4e9227ae8549186bbaabfdfb6730d07445db06b29d51",
+  "acceptanceSha256": "78d728629e3a6b5e5b99ea85ffc415f0ac4c7f89c206f638ea671dc20d398305",
+  "sourceConfigSha256": "08710c91373728d062627b1a2f4ceb46355bf4450582497eceea4dcd2534221f",
   "generatorSha256": "22cb17dda22b092f64ddeb7b0a397cc3864194d33c8013b9dbeec123379d3668",
   "integratorSha256": "ef754dff34f007435c1b4df181cbd78410cd4f3f5fecf679e90ce6f85b166a74",
   "encoding": "webp-lossless-pixel-verified",
   "width": 644,
   "height": 276,
-  "imageBytes": 12404154,
+  "imageBytes": 12495528,
   "stages": [
     {
       "id": "stage_0_0",
@@ -138,6 +138,14 @@
       "sha256": "89c143c475177daf106992dee350955c3ca40ec797b1c025c635db8ac03f0345",
       "rgbSha256": "596bbb87c8e5dd593e90bbcd37f16d1c759af5007a23079b99741485b4bf0c5f",
       "bytes": 175304
+    },
+    {
+      "id": "stage_0_16",
+      "stageName": "外交-地下研究所",
+      "url": "assets/stage-select/previews/hd/stage_0_16-08737444b45c.webp",
+      "sha256": "08737444b45c5b31cc2ab82af47cc8053bacc35119b6062e8567b72d5f47d60a",
+      "rgbSha256": "1184608f936279f18700d3d115a05acc71cf22ca3a7186e321b1df3916f12501",
+      "bytes": 91374
     },
     {
       "id": "stage_10_0",

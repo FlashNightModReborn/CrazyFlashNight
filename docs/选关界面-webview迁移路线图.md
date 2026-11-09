@@ -160,15 +160,16 @@ Stage 2 明确不做：
 - labels：16
 - 源 XML 选关按钮实例：182
 - 源 XML 选关按钮实例（冻结 .fla）：182
-- Web 运行时去重渲染实例：166（.fla 基线 164 + web 手写 2：外交-隧道据点 subway、据点M）
-- 直达入口实例：14（`entryKind=map` 10 + `entryKind=task` 4）
-- 渲染外交地图按钮：10（含 subway）
-- 唯一关卡名（冻结 assetReport）：162；`stageNames` inventory 当前 164（冻结 162 + web 手写 2）
+- Web 运行时去重渲染实例：167（.fla 基线 164 + web 手写 3：外交-隧道据点 subway、据点M、外交-地下研究所）
+- 直达入口实例：15（`entryKind=map` 11 + `entryKind=task` 4）
+- 渲染外交地图按钮：11（含 subway、外交-地下研究所）
+- 唯一关卡名（冻结 assetReport）：162；`stageNames` inventory 当前 165（冻结 162 + web 手写 3）
 - 页内导航按钮：28
 - 背景 missing：0
 
 > 注：subway「外交-隧道据点」是 .fla 退役后首个纯 web 手写据点（无 .fla 源），id `stage_0_15`。
 > 「据点M」（id `stage_10_18`，基地车库页，UnlockCondition 75）来自 commit `9f7584b3cb` 情报支线半成品，新增时未补登 `stageNames` 与审计基线（审计红、harness 外交计数断言过期），2026-08-16 P0 已补登闭环。
+> 「外交-地下研究所」（id `stage_16_0`）使用独立地下设施页，不在废城地面三维图新增独立点位；接待处是唯一进图入口，内部房间仍由 SWF 门链连接。
 > 后续新增条目同此模式：id 唯一 + 补登 `stageNames` + 更新 golden 的 `expected` / `provenance`（不再手改审计工具内的数字）。
 
 当前有 6 个页面使用 FFDec 派生背景，因为对应背景来自 SWF 内嵌 bitmap/shape；导出器会优先使用 Adobe Animate 2024 / Flash CS6 自带 JRE 运行 `ffdec.jar`：
@@ -180,7 +181,7 @@ Stage 2 明确不做：
 - 异界战场
 - 坠毁战舰
 
-预览图只有少量原始 PNG，但原版 `选关按钮.xml` 会在外部 PNG 加载失败时跳到 `Symbol 3274` 的内部命名帧，再失败才停在默认预览帧。Stage 1 导出器按同一优先级生成 Web 资源：外部 PNG 12 张、内部命名帧、默认帧；审计中 `previewMissing` 必须为 0，`previewFallbacks` 记录内部/默认回退数量。P4-b 新增第四级派生预览：`tools/derive-stage-select-previews.js` 对仍停在默认帧的关卡按「StageInfo → 单关 XML 首个 Background SWF → FFDec frame 1 主视觉帧 → 异常图像拒收 → 细节滑窗裁缩 161×69 JPEG」产出 `previewSource=derived` 资产（当前 previewSources = external 12 / internal 76 / derived 65 / default 11 / missing 0，报告与 stage→background 索引在 `tmp/stage-select-preview-derive/`）。
+预览图只有少量原始 PNG，但原版 `选关按钮.xml` 会在外部 PNG 加载失败时跳到 `Symbol 3274` 的内部命名帧，再失败才停在默认预览帧。Stage 1 导出器按同一优先级生成 Web 资源：外部 PNG 12 张、内部命名帧、默认帧；审计中 `previewMissing` 必须为 0，`previewFallbacks` 记录内部/默认回退数量。P4-b 新增第四级派生预览：`tools/derive-stage-select-previews.js` 对仍停在默认帧的关卡按「StageInfo → 单关 XML 首个 Background SWF → FFDec frame 1 主视觉帧 → 异常图像拒收 → 细节滑窗裁缩 161×69 JPEG」产出 `previewSource=derived` 资产（当前 previewSources = external 12 / internal 76 / derived 65 / default 12 / missing 0，报告与 stage→background 索引在 `tmp/stage-select-preview-derive/`）。
 
 ## 4. 后续阶段
 

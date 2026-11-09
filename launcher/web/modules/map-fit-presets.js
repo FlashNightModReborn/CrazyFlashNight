@@ -51,9 +51,6 @@ var MapFitPresets = (function() {
             },
             "first_line": {
                 "maxScale": 1.6
-            },
-            "restricted": {
-                "maxScale": 2
             }
         },
         "school": {
@@ -120,13 +117,17 @@ var MapFitPresets = (function() {
         },
         "defense": {
             "first_line": "horizontal",
-            "restricted": "vertical",
+            "restricted": "horizontal",
             "all": "overview"
         },
         "school": {
             "inside": "dense",
             "outside": "focus",
             "all": "overview"
+        },
+        "research": {
+            "research": "focus",
+            "all": "focus"
         }
     };
 

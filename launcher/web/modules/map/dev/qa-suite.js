@@ -519,7 +519,7 @@ var MapPanelHarnessQA = (function() {
                 id: 'map-ui5',
                 title: 'all pages expose assembled visuals and labeled right rail buttons',
                 run: function() {
-                    var pages = ['base', 'faction', 'defense', 'school'];
+                    var pages = ['base', 'faction', 'defense', 'school', 'research'];
                     return bootMap(api, host, { defaultPageId: 'base' }).then(function() {
                         var flow = Promise.resolve();
 
@@ -695,7 +695,7 @@ var MapPanelHarnessQA = (function() {
                 id: 'map-ui10',
                 title: 'static avatar coverage matches visible slots and source metadata',
                 run: function() {
-                    var pages = ['base', 'faction', 'defense', 'school'];
+                    var pages = ['base', 'faction', 'defense', 'school', 'research'];
                     return bootMap(api, host, { defaultPageId: 'base' }).then(function() {
                         var flow = Promise.resolve();
 
@@ -1158,11 +1158,13 @@ var MapPanelHarnessQA = (function() {
                         { pageId: 'faction', filterId: 'fallen', presetId: 'faction:*', profile: 'horizontal' },
                         { pageId: 'faction', filterId: 'all', presetId: 'faction:*', profile: 'overview' },
                         { pageId: 'defense', filterId: 'first_line', presetId: 'defense:first_line', profile: 'horizontal' },
-                        { pageId: 'defense', filterId: 'restricted', presetId: 'defense:restricted', profile: 'vertical' },
+                        { pageId: 'defense', filterId: 'restricted', presetId: 'defense:*', profile: 'horizontal' },
                         { pageId: 'defense', filterId: 'all', presetId: 'defense:*', profile: 'overview' },
                         { pageId: 'school', filterId: 'inside', presetId: 'school:*', profile: 'dense' },
                         { pageId: 'school', filterId: 'outside', presetId: 'school:outside', profile: 'focus' },
-                        { pageId: 'school', filterId: 'all', presetId: 'school:*', profile: 'overview' }
+                        { pageId: 'school', filterId: 'all', presetId: 'school:*', profile: 'overview' },
+                        { pageId: 'research', filterId: 'research', presetId: 'research:research', profile: 'focus' },
+                        { pageId: 'research', filterId: 'all', presetId: 'research:all', profile: 'focus' }
                     ];
                     var details = [];
 

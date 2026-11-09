@@ -151,8 +151,8 @@ function main() {
         ' errors=' + errors.length + ' capabilityDebts=' + debtKeys.length);
     for (const debtKey of debtKeys) console.log('[map-scale][debt] ' + debts[debtKey].detail);
     for (const error of errors) console.error('[map-scale][error] ' + error);
-    if (filters !== 18) {
-        console.error('[map-scale][error] expected 18 page/filter contracts, got ' + filters);
+    if (filters !== 20) {
+        console.error('[map-scale][error] expected 20 page/filter contracts, got ' + filters);
         process.exitCode = 1;
     } else if (errors.length) {
         process.exitCode = 1;

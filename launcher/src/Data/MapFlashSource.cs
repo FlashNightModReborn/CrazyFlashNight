@@ -47,7 +47,7 @@ namespace CF7Launcher.Data
             foreach (string include in includes)
             {
                 string entry = include.StartsWith("LIBRARY/", StringComparison.Ordinal) ? include : "LIBRARY/" + include;
-                byte[] bytes = ReadEntry(entry); var document = MapProjectFiles.Xml(bytes);
+                byte[] bytes = ReadEntry(entry); var document = MapProjectFiles.Xml(bytes, 32 * 1024 * 1024);
                 string name = (string)document.Root.Attribute("name");
                 MapRuleEvaluator.Need(!string.IsNullOrEmpty(name) && !Symbols.ContainsKey(name), "XFL 库元件名重复或缺失。");
                 Symbols[name] = new Symbol { Name = name, Entry = entry, Document = document, Digest = MapDefinition.Hash(bytes) };
@@ -58,7 +58,7 @@ namespace CF7Launcher.Data
         private byte[] ReadEntry(string name)
         {
             MapRuleEvaluator.Need(name != null && !name.Contains('\\') && !name.Contains(':') && name.Split('/').All(p => p != "" && p != "." && p != ".."), "XFL Include 路径非法。");
-            const int limit = 16 * 1024 * 1024;
+            const int limit = 32 * 1024 * 1024;
             if (folder != null) return MapProjectFiles.Read(folder, name, limit);
             var entries = archive.Entries.Where(e => string.Equals(e.FullName.Replace('\\', '/'), name, StringComparison.Ordinal)).ToArray();
             MapRuleEvaluator.Need(entries.Length == 1 && entries[0].Length <= limit, "FLA XML 缺失、重复或过大：" + name);

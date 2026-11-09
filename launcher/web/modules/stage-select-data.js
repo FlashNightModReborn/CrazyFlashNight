@@ -578,6 +578,51 @@ var StageSelectData = (function() {
                             },
                             "sourceSymbol": "选关界面UI/外交地图-隧道据点"
                         }
+                    },
+                    {
+                        "id": "stage_0_16",
+                        "frameLabel": "基地门口",
+                        "stageName": "外交-地下研究所",
+                        "detail": "",
+                        "x": 462,
+                        "y": 142.4,
+                        "centerX": 532.5,
+                        "centerY": 175.7,
+                        "sourceFrameIndex": 0,
+                        "sourceKind": "config",
+                        "entryKind": "map",
+                        "visualKind": "map-direct",
+                        "stageType": "外交地图",
+                        "stageArea": "基地门口",
+                        "rootFadeTransitionFrame": "地图-研究所接待处",
+                        "libraryItemName": "选关界面UI/外交地图-地下研究所",
+                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
+                        "bannerUrl": "assets/stage-select/previews/hd/stage_0_16-08737444b45c.webp",
+                        "previewAssetName": "stage-default.jpg",
+                        "previewSource": "default",
+                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewSourceFrameIndex": 1,
+                        "previewCrop": {
+                            "x": 65,
+                            "y": 10,
+                            "w": 161,
+                            "h": 69
+                        },
+                        "previewMissing": false,
+                        "directLayout": {
+                            "marker": {
+                                "x": 70.5,
+                                "y": 14.6
+                            },
+                            "text": {
+                                "x": 2,
+                                "y": 30.3,
+                                "width": 137,
+                                "height": 34.3,
+                                "label": "前往地下研究所"
+                            },
+                            "sourceSymbol": "选关界面UI/外交地图-地下研究所"
+                        }
                     }
                 ],
                 "navButtons": [
@@ -6145,6 +6190,7 @@ var StageSelectData = (function() {
             "铁血营地",
             "同盟卸货站",
             "外交-第一防线防区",
+            "外交-地下研究所",
             "外交-堕落城酒吧",
             "外交-堕落城商业街",
             "外交-黑铁会修炼场",
@@ -6265,13 +6311,12 @@ var StageSelectData = (function() {
             "previewSources": {
                 "external": 12,
                 "internal": 76,
-                "default": 11,
+                "default": 12,
                 "derived": 65,
                 "missing": 0
             },
-            "previewFallbacks": 87
+            "previewFallbacks": 88
         }
-
     };
 
     // 「其他 -> 测试 -> 军阀演习测试」专用的隔离目录。两个按钮只存在于本 catalog，

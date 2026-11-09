@@ -55,8 +55,9 @@ const FILTER_EXPERIENCE_PROFILES = {
     faction: {
         warlord: 'vertical', rock: 'vertical', blackiron: 'vertical', fallen: 'horizontal', all: 'overview'
     },
-    defense: { first_line: 'horizontal', restricted: 'vertical', all: 'overview' },
-    school: { inside: 'dense', outside: 'focus', all: 'overview' }
+    defense: { first_line: 'horizontal', restricted: 'horizontal', all: 'overview' },
+    school: { inside: 'dense', outside: 'focus', all: 'overview' },
+    research: { research: 'focus', all: 'focus' }
 };
 // 产品级舞台异常兜底；运行时还会叠加素材清晰度与 Canvas backing-pixel 预算。
 // 与 map-scale-policy.js PRODUCT_STAGE_SCALE_MAX 保持一致。

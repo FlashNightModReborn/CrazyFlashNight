@@ -193,6 +193,15 @@ var StageSelectDioramaData = {
       "labelAnchor": "slot_metro_outpost__label",
       "focusAnchor": "slot_metro_outpost__focus",
       "building": "facility_metro"
+    },
+    "stage_0_16": {
+      "x": 865.641640174,
+      "y": 218.969348511,
+      "labelX": 0.0,
+      "labelY": -45.0,
+      "labelAnchor": "slot_metro_reserve_platform__label",
+      "focusAnchor": "slot_metro_reserve_platform__focus",
+      "building": "facility_metro"
     }
   },
   "presetKey": "cf7.stage-camera.base-gate.refined-v1"

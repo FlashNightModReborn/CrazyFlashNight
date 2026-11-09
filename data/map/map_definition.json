@@ -4,14 +4,16 @@
     "base",
     "faction",
     "defense",
-    "school"
+    "school",
+    "research"
   ],
   "pageAliases": {
     "base_floor_1": "base",
     "base": "base",
     "faction": "faction",
     "defense": "defense",
-    "school": "school"
+    "school": "school",
+    "research": "research"
   },
   "sourceRefs": {
     "xflDir": "flashswf/UI/地图界面",
@@ -55,7 +57,14 @@
     "office": true,
     "kendo_club": true,
     "science_class": true,
-    "arts_class": true
+    "arts_class": true,
+    "research_reception": true,
+    "research_corridor": true,
+    "research_biolab": true,
+    "research_defense": true,
+    "research_agriculture": true,
+    "alliance_command": true,
+    "alliance_cafe": true
   },
   "xflSourceRects": {
     "base": {
@@ -220,16 +229,28 @@
         "h": 102
       },
       "alliance_dock": {
-        "x": 38.75,
-        "y": 260.4,
-        "w": 240.3,
-        "h": 98.8
+        "x": 293.1,
+        "y": 197.0,
+        "w": 270.0,
+        "h": 128.0
       },
       "alliance_corridor": {
-        "x": 46.4,
-        "y": 299.1,
-        "w": 247.2,
-        "h": 172.6
+        "x": 300.75,
+        "y": 284.1,
+        "w": 277.0,
+        "h": 202.0
+      },
+      "alliance_command": {
+        "x": 45.75,
+        "y": 303.0,
+        "w": 262.0,
+        "h": 167.0
+      },
+      "alliance_cafe": {
+        "x": 566.75,
+        "y": 351.0,
+        "w": 282.0,
+        "h": 114.0
       }
     },
     "school": {
@@ -304,6 +325,38 @@
         "y": 200.1,
         "w": 134.8,
         "h": 67
+      }
+    },
+    "research": {
+      "research_reception": {
+        "x": 195.0,
+        "y": 336.0,
+        "w": 206.0,
+        "h": 90.0
+      },
+      "research_corridor": {
+        "x": 401.0,
+        "y": 356.0,
+        "w": 206.0,
+        "h": 70.0
+      },
+      "research_biolab": {
+        "x": 401.0,
+        "y": 266.0,
+        "w": 206.0,
+        "h": 90.0
+      },
+      "research_defense": {
+        "x": 607.0,
+        "y": 336.0,
+        "w": 216.0,
+        "h": 90.0
+      },
+      "research_agriculture": {
+        "x": 607.0,
+        "y": 190.0,
+        "w": 216.0,
+        "h": 146.0
       }
     }
   },
@@ -1848,10 +1901,10 @@
           "label": "第一防线",
           "assetUrl": "assets/map/composite/defense/first-defense.webp",
           "rect": {
-            "x": 60,
-            "y": 94.7,
-            "w": 285,
-            "h": 116
+            "x": 60.0,
+            "y": 68.0,
+            "w": 285.0,
+            "h": 116.0
           },
           "filterIds": [
             "first_line",
@@ -1866,10 +1919,10 @@
           "label": "隧道据点",
           "assetUrl": "assets/map/composite/defense/subway.webp",
           "rect": {
-            "x": 360,
-            "y": 94.7,
-            "w": 270,
-            "h": 102
+            "x": 360.0,
+            "y": 68.0,
+            "w": 270.0,
+            "h": 102.0
           },
           "filterIds": [
             "first_line",
@@ -1884,10 +1937,10 @@
           "label": "同盟卸货站",
           "assetUrl": "assets/map/composite/defense/alliance-dock.webp",
           "rect": {
-            "x": 38.75,
-            "y": 260.4,
-            "w": 270,
-            "h": 128
+            "x": 293.1,
+            "y": 197.0,
+            "w": 270.0,
+            "h": 128.0
           },
           "filterIds": [
             "restricted",
@@ -1902,10 +1955,10 @@
           "label": "同盟通路",
           "assetUrl": "assets/map/composite/defense/alliance-corridor.webp",
           "rect": {
-            "x": 46.4,
-            "y": 299.1,
-            "w": 277,
-            "h": 202
+            "x": 300.75,
+            "y": 284.1,
+            "w": 277.0,
+            "h": 202.0
           },
           "filterIds": [
             "restricted",
@@ -1913,6 +1966,42 @@
           ],
           "hotspotIds": [
             "alliance_corridor"
+          ]
+        },
+        {
+          "id": "alliance_command_visual",
+          "label": "同盟指挥室",
+          "assetUrl": "assets/map/composite/defense/alliance-command.webp",
+          "rect": {
+            "x": 45.75,
+            "y": 303.0,
+            "w": 262.0,
+            "h": 167.0
+          },
+          "filterIds": [
+            "restricted",
+            "all"
+          ],
+          "hotspotIds": [
+            "alliance_command"
+          ]
+        },
+        {
+          "id": "alliance_cafe_visual",
+          "label": "同盟咖啡厅",
+          "assetUrl": "assets/map/composite/defense/alliance-cafe.webp",
+          "rect": {
+            "x": 566.75,
+            "y": 351.0,
+            "w": 282.0,
+            "h": 114.0
+          },
+          "filterIds": [
+            "restricted",
+            "all"
+          ],
+          "hotspotIds": [
+            "alliance_cafe"
           ]
         }
       ],
@@ -2028,6 +2117,76 @@
           "relY": 43.3,
           "w": 44,
           "h": 44
+        },
+        {
+          "id": "chazai_avatar",
+          "label": "叉仔",
+          "hotspotId": "alliance_cafe",
+          "assetUrl": "assets/map/avatars/叉仔头像.webp",
+          "placementId": "place_cafe_chazai",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 79.6,
+          "relY": 12.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "the_servent_avatar",
+          "label": "The Servent",
+          "hotspotId": "alliance_cafe",
+          "assetUrl": "assets/map/avatars/TheServent头像.webp",
+          "placementId": "place_cafe_servent",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 128.0,
+          "relY": 14.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "the_robot_girl_avatar",
+          "label": "The Robot Girl",
+          "hotspotId": "alliance_cafe",
+          "assetUrl": "assets/map/avatars/TheRobotGirl头像.webp",
+          "placementId": "place_cafe_robot_girl",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 182.0,
+          "relY": 24.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "arius_avatar",
+          "label": "Arius型",
+          "hotspotId": "alliance_cafe",
+          "assetUrl": "assets/map/avatars/Arius型头像.webp",
+          "placementId": "place_cafe_arius",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 31.1,
+          "relY": 58.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "sijiaoshe_avatar",
+          "label": "四脚蛇",
+          "hotspotId": "alliance_cafe",
+          "assetUrl": "assets/map/avatars/四脚蛇头像.webp",
+          "placementId": "place_cafe_sijiaoshe",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 131.5,
+          "relY": 64.0,
+          "w": 44,
+          "h": 44
         }
       ],
       "filters": [
@@ -2051,7 +2210,9 @@
           "label": "禁区",
           "hotspotIds": [
             "alliance_dock",
-            "alliance_corridor"
+            "alliance_corridor",
+            "alliance_command",
+            "alliance_cafe"
           ],
           "buttonRect": {
             "x": 895,
@@ -2068,7 +2229,9 @@
             "first_defense",
             "subway",
             "alliance_dock",
-            "alliance_corridor"
+            "alliance_corridor",
+            "alliance_command",
+            "alliance_cafe"
           ],
           "buttonRect": {
             "x": 895,
@@ -2086,7 +2249,7 @@
           "label": "第一防线",
           "rect": {
             "x": 60.0,
-            "y": 94.7,
+            "y": 68.0,
             "w": 285.0,
             "h": 116.0
           },
@@ -2097,7 +2260,7 @@
           "label": "隧道据点",
           "rect": {
             "x": 360.0,
-            "y": 94.7,
+            "y": 68.0,
             "w": 270.0,
             "h": 102.0
           },
@@ -2107,8 +2270,8 @@
           "id": "alliance_dock",
           "label": "同盟卸货站",
           "rect": {
-            "x": 38.75,
-            "y": 260.4,
+            "x": 293.1,
+            "y": 197.0,
             "w": 270.0,
             "h": 128.0
           },
@@ -2118,12 +2281,34 @@
           "id": "alliance_corridor",
           "label": "同盟通路",
           "rect": {
-            "x": 46.4,
-            "y": 299.1,
+            "x": 300.75,
+            "y": 284.1,
             "w": 277.0,
             "h": 202.0
           },
           "locationId": "alliance_corridor"
+        },
+        {
+          "id": "alliance_command",
+          "label": "同盟指挥室",
+          "rect": {
+            "x": 45.75,
+            "y": 303.0,
+            "w": 262.0,
+            "h": 167.0
+          },
+          "locationId": "alliance_command"
+        },
+        {
+          "id": "alliance_cafe",
+          "label": "同盟咖啡厅",
+          "rect": {
+            "x": 566.75,
+            "y": 351.0,
+            "w": 282.0,
+            "h": 114.0
+          },
+          "locationId": "alliance_cafe"
         }
       ],
       "visibleWhen": {
@@ -2768,6 +2953,350 @@
         ]
       },
       "tone": "schoolOutside"
+    },
+    "research": {
+      "id": "research",
+      "title": "地下研究所",
+      "tabLabel": "研究所",
+      "renderMode": "assembled",
+      "backdropTheme": "school",
+      "backgroundUrl": "assets/map/page-school.webp",
+      "width": 1031,
+      "height": 608,
+      "sceneVisuals": [
+        {
+          "id": "research_reception_visual",
+          "label": "研究所接待处",
+          "assetUrl": "assets/map/composite/research/reception.webp",
+          "rect": {
+            "x": 195.0,
+            "y": 336.0,
+            "w": 206.0,
+            "h": 90.0
+          },
+          "filterIds": [
+            "all"
+          ],
+          "hotspotIds": [
+            "research_reception"
+          ]
+        },
+        {
+          "id": "research_corridor_visual",
+          "label": "研究所通路",
+          "assetUrl": "assets/map/composite/research/corridor.webp",
+          "rect": {
+            "x": 401.0,
+            "y": 356.0,
+            "w": 206.0,
+            "h": 70.0
+          },
+          "filterIds": [
+            "research",
+            "all"
+          ],
+          "hotspotIds": [
+            "research_corridor"
+          ]
+        },
+        {
+          "id": "research_biolab_visual",
+          "label": "研究所生化室",
+          "assetUrl": "assets/map/composite/research/biolab.webp",
+          "rect": {
+            "x": 401.0,
+            "y": 266.0,
+            "w": 206.0,
+            "h": 90.0
+          },
+          "filterIds": [
+            "research",
+            "all"
+          ],
+          "hotspotIds": [
+            "research_biolab"
+          ]
+        },
+        {
+          "id": "research_defense_visual",
+          "label": "研究所防线",
+          "assetUrl": "assets/map/composite/research/defense.webp",
+          "rect": {
+            "x": 607.0,
+            "y": 336.0,
+            "w": 216.0,
+            "h": 90.0
+          },
+          "filterIds": [
+            "research",
+            "all"
+          ],
+          "hotspotIds": [
+            "research_defense"
+          ]
+        },
+        {
+          "id": "research_agriculture_visual",
+          "label": "研究所农业园",
+          "assetUrl": "assets/map/composite/research/agriculture.webp",
+          "rect": {
+            "x": 607.0,
+            "y": 190.0,
+            "w": 216.0,
+            "h": 146.0
+          },
+          "filterIds": [
+            "research",
+            "all"
+          ],
+          "hotspotIds": [
+            "research_agriculture"
+          ]
+        }
+      ],
+      "staticAvatars": [
+        {
+          "id": "badman_avatar",
+          "label": "Badman",
+          "hotspotId": "research_reception",
+          "assetUrl": "assets/map/avatars/Badman头像.webp",
+          "placementId": "place_res_badman",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 18.0,
+          "relY": 22.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "receptionist_avatar",
+          "label": "前台",
+          "hotspotId": "research_reception",
+          "assetUrl": "assets/map/avatars/前台头像.webp",
+          "placementId": "place_res_receptionist",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 136.0,
+          "relY": 30.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "lab_guard_avatar",
+          "label": "Lab Guard",
+          "hotspotId": "research_biolab",
+          "assetUrl": "assets/map/avatars/LabGuard头像.webp",
+          "placementId": "place_res_lab_guard",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 26.0,
+          "relY": 36.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "the_hanged_man_avatar",
+          "label": "The Hanged Man",
+          "hotspotId": "research_biolab",
+          "assetUrl": "assets/map/avatars/TheHangedMan头像.webp",
+          "placementId": "place_res_hanged_man",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 76.0,
+          "relY": 14.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "the_scientist_avatar",
+          "label": "The Scientist",
+          "hotspotId": "research_biolab",
+          "assetUrl": "assets/map/avatars/TheScientist头像.webp",
+          "placementId": "place_res_scientist",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 126.0,
+          "relY": 34.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "scout_avatar",
+          "label": "Scout",
+          "hotspotId": "research_defense",
+          "assetUrl": "assets/map/avatars/Scout头像.webp",
+          "placementId": "place_res_scout",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 104.0,
+          "relY": 34.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "scout_captain_avatar",
+          "label": "侦察队队长",
+          "hotspotId": "research_defense",
+          "assetUrl": "assets/map/avatars/侦察队队长头像.webp",
+          "placementId": "place_res_scout_captain",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 154.0,
+          "relY": 18.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "the_boss_avatar",
+          "label": "The Boss",
+          "hotspotId": "research_agriculture",
+          "assetUrl": "assets/map/avatars/TheBoss头像.webp",
+          "placementId": "place_res_boss",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 16.0,
+          "relY": 56.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "the_worker_avatar",
+          "label": "The Worker",
+          "hotspotId": "research_agriculture",
+          "assetUrl": "assets/map/avatars/TheWorker头像.webp",
+          "placementId": "place_res_worker",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 98.0,
+          "relY": 54.0,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "the_steel_avatar",
+          "label": "The Steel",
+          "hotspotId": "research_agriculture",
+          "assetUrl": "assets/map/avatars/TheSteel头像.webp",
+          "placementId": "place_res_steel",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 152.0,
+          "relY": 82.0,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "dynamicAvatars": [],
+      "filters": [
+        {
+          "id": "research",
+          "label": "研究所内部",
+          "hotspotIds": [
+            "research_corridor",
+            "research_biolab",
+            "research_defense",
+            "research_agriculture"
+          ],
+          "buttonRect": {
+            "x": 895,
+            "y": 201,
+            "w": 132,
+            "h": 42
+          },
+          "tone": "schoolInside"
+        },
+        {
+          "id": "all",
+          "label": "初始化",
+          "hotspotIds": [
+            "research_reception",
+            "research_corridor",
+            "research_biolab",
+            "research_defense",
+            "research_agriculture"
+          ],
+          "buttonRect": {
+            "x": 895,
+            "y": 261,
+            "w": 132,
+            "h": 42
+          },
+          "tone": "schoolInside"
+        }
+      ],
+      "defaultFilterId": "all",
+      "hotspots": [
+        {
+          "id": "research_reception",
+          "label": "研究所接待处",
+          "rect": {
+            "x": 195.0,
+            "y": 336.0,
+            "w": 206.0,
+            "h": 90.0
+          },
+          "locationId": "research_reception"
+        },
+        {
+          "id": "research_corridor",
+          "label": "研究所通路",
+          "rect": {
+            "x": 401.0,
+            "y": 356.0,
+            "w": 206.0,
+            "h": 70.0
+          },
+          "locationId": "research_corridor"
+        },
+        {
+          "id": "research_biolab",
+          "label": "研究所生化室",
+          "rect": {
+            "x": 401.0,
+            "y": 266.0,
+            "w": 206.0,
+            "h": 90.0
+          },
+          "locationId": "research_biolab"
+        },
+        {
+          "id": "research_defense",
+          "label": "研究所防线",
+          "rect": {
+            "x": 607.0,
+            "y": 336.0,
+            "w": 216.0,
+            "h": 90.0
+          },
+          "locationId": "research_defense"
+        },
+        {
+          "id": "research_agriculture",
+          "label": "研究所农业园",
+          "rect": {
+            "x": 607.0,
+            "y": 190.0,
+            "w": 216.0,
+            "h": 146.0
+          },
+          "locationId": "research_agriculture"
+        }
+      ],
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "tone": "schoolInside"
     }
   },
   "avatarSources": {
@@ -3967,6 +4496,321 @@
         "w": 44,
         "h": 44
       }
+    },
+    "叉仔头像": {
+      "symbolName": "叉仔头像",
+      "assetUrl": "assets/map/avatars/叉仔头像.webp",
+      "hotspotId": "alliance_cafe",
+      "relX": 79.6,
+      "relY": 12.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "TheServent头像": {
+      "symbolName": "TheServent头像",
+      "assetUrl": "assets/map/avatars/TheServent头像.webp",
+      "hotspotId": "alliance_cafe",
+      "relX": 128.0,
+      "relY": 14.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "TheRobotGirl头像": {
+      "symbolName": "TheRobotGirl头像",
+      "assetUrl": "assets/map/avatars/TheRobotGirl头像.webp",
+      "hotspotId": "alliance_cafe",
+      "relX": 182.0,
+      "relY": 24.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "Arius型头像": {
+      "symbolName": "Arius型头像",
+      "assetUrl": "assets/map/avatars/Arius型头像.webp",
+      "hotspotId": "alliance_cafe",
+      "relX": 31.1,
+      "relY": 58.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "四脚蛇头像": {
+      "symbolName": "四脚蛇头像",
+      "assetUrl": "assets/map/avatars/四脚蛇头像.webp",
+      "hotspotId": "alliance_cafe",
+      "relX": 131.5,
+      "relY": 64.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "Badman头像": {
+      "symbolName": "Badman头像",
+      "assetUrl": "assets/map/avatars/Badman头像.webp",
+      "hotspotId": "research_reception",
+      "relX": 18.0,
+      "relY": 22.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "前台头像": {
+      "symbolName": "前台头像",
+      "assetUrl": "assets/map/avatars/前台头像.webp",
+      "hotspotId": "research_reception",
+      "relX": 136.0,
+      "relY": 30.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "LabGuard头像": {
+      "symbolName": "LabGuard头像",
+      "assetUrl": "assets/map/avatars/LabGuard头像.webp",
+      "hotspotId": "research_biolab",
+      "relX": 26.0,
+      "relY": 36.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "TheHangedMan头像": {
+      "symbolName": "TheHangedMan头像",
+      "assetUrl": "assets/map/avatars/TheHangedMan头像.webp",
+      "hotspotId": "research_biolab",
+      "relX": 76.0,
+      "relY": 14.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "TheScientist头像": {
+      "symbolName": "TheScientist头像",
+      "assetUrl": "assets/map/avatars/TheScientist头像.webp",
+      "hotspotId": "research_biolab",
+      "relX": 126.0,
+      "relY": 34.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "Scout头像": {
+      "symbolName": "Scout头像",
+      "assetUrl": "assets/map/avatars/Scout头像.webp",
+      "hotspotId": "research_defense",
+      "relX": 104.0,
+      "relY": 34.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "侦察队队长头像": {
+      "symbolName": "侦察队队长头像",
+      "assetUrl": "assets/map/avatars/侦察队队长头像.webp",
+      "hotspotId": "research_defense",
+      "relX": 154.0,
+      "relY": 18.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "TheBoss头像": {
+      "symbolName": "TheBoss头像",
+      "assetUrl": "assets/map/avatars/TheBoss头像.webp",
+      "hotspotId": "research_agriculture",
+      "relX": 16.0,
+      "relY": 56.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "TheWorker头像": {
+      "symbolName": "TheWorker头像",
+      "assetUrl": "assets/map/avatars/TheWorker头像.webp",
+      "hotspotId": "research_agriculture",
+      "relX": 98.0,
+      "relY": 54.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "TheSteel头像": {
+      "symbolName": "TheSteel头像",
+      "assetUrl": "assets/map/avatars/TheSteel头像.webp",
+      "hotspotId": "research_agriculture",
+      "relX": 152.0,
+      "relY": 82.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
     }
   },
   "rules": {
@@ -4175,6 +5019,15 @@
         "type": "chain",
         "key": "大学",
         "min": 7
+      }
+    },
+    "unlock.research": {
+      "label": "地下研究所",
+      "tone": "schoolInside",
+      "condition": {
+        "type": "chain",
+        "key": "主线",
+        "min": 1
       }
     }
   },
@@ -4972,6 +5825,139 @@
         "sourceSwf": "flashswf/levels/地图-彩蛋地图.swf",
         "linkage": "地图-彩蛋地图"
       }
+    },
+    "research_reception": {
+      "label": "研究所接待处",
+      "sceneName": "地图-研究所接待处",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-研究所接待处.swf",
+        "linkage": "地图-研究所接待处"
+      }
+    },
+    "research_corridor": {
+      "label": "研究所通路",
+      "sceneName": "地图-研究所通路",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-研究所通路.swf",
+        "linkage": "地图-研究所通路"
+      }
+    },
+    "research_biolab": {
+      "label": "研究所生化室",
+      "sceneName": "地图-研究所生化室",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-研究所生化室.swf",
+        "linkage": "地图-研究所生化室"
+      }
+    },
+    "research_defense": {
+      "label": "研究所防线",
+      "sceneName": "地图-研究所防线",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-研究所防线.swf",
+        "linkage": "地图-研究所防线"
+      }
+    },
+    "research_agriculture": {
+      "label": "研究所农业园",
+      "sceneName": "地图-研究所农业园",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.research"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-研究所农业园.swf",
+        "linkage": "地图-研究所农业园"
+      }
+    },
+    "alliance_command": {
+      "label": "同盟指挥室",
+      "sceneName": "地图-同盟指挥室",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.restricted"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.restricted"
+      },
+      "tone": "restricted",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-同盟指挥室.swf",
+        "linkage": "地图-同盟指挥室"
+      }
+    },
+    "alliance_cafe": {
+      "label": "同盟咖啡厅",
+      "sceneName": "地图-同盟咖啡厅",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.restricted"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.restricted"
+      },
+      "tone": "restricted",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
+        "linkage": "地图-同盟咖啡厅"
+      }
     }
   },
   "npcs": {
@@ -5565,6 +6551,126 @@
       "label": "人修罗",
       "runtimeNames": [
         "人修罗"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_cafe_chazai": {
+      "label": "叉仔",
+      "runtimeNames": [
+        "叉仔"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_cafe_servent": {
+      "label": "The Servent",
+      "runtimeNames": [
+        "The Servent"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_cafe_robot_girl": {
+      "label": "The Robot Girl",
+      "runtimeNames": [
+        "The Robot Girl"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_cafe_arius": {
+      "label": "Arius型",
+      "runtimeNames": [
+        "Arius型"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_cafe_sijiaoshe": {
+      "label": "四脚蛇",
+      "runtimeNames": [
+        "四脚蛇"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_res_badman": {
+      "label": "Badman",
+      "runtimeNames": [
+        "Badman"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_res_receptionist": {
+      "label": "前台",
+      "runtimeNames": [
+        "前台"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_res_lab_guard": {
+      "label": "Lab Guard",
+      "runtimeNames": [
+        "Lab Guard"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_res_hanged_man": {
+      "label": "The Hanged Man",
+      "runtimeNames": [
+        "The Hanged Man"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_res_scientist": {
+      "label": "The Scientist",
+      "runtimeNames": [
+        "The Scientist"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_res_scout": {
+      "label": "Scout",
+      "runtimeNames": [
+        "Scout"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_res_scout_captain": {
+      "label": "侦察队队长",
+      "runtimeNames": [
+        "侦察队队长"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_res_boss": {
+      "label": "The Boss",
+      "runtimeNames": [
+        "The Boss"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_res_worker": {
+      "label": "The Worker",
+      "runtimeNames": [
+        "The Worker"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_res_steel": {
+      "label": "The Steel",
+      "runtimeNames": [
+        "The Steel"
       ],
       "aliases": [],
       "placementPolicy": "unique"
@@ -6505,6 +7611,336 @@
       },
       "worldBinding": null,
       "legacyWorldAdapter": true
+    },
+    "place_cafe_chazai": {
+      "npcId": "npc_cafe_chazai",
+      "locationId": "alliance_cafe",
+      "label": "叉仔",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_fa6eef4b1da856f930e47f9a",
+        "sourceDigest": "C39EBD845E6E825B8E16CBF402A8318614EDFA0A46F5CCF336B126F946681895",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
+          "swfSha256": "534635D75B488881AE33844B04F7932AB964D6814122237F06BB66CD34F60AF7",
+          "sceneKey": "地图-同盟咖啡厅",
+          "runtimeName": "叉仔",
+          "taskName": "叉仔",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_cafe_servent": {
+      "npcId": "npc_cafe_servent",
+      "locationId": "alliance_cafe",
+      "label": "The Servent",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_2edf0e04c4583b7fbc9f4592",
+        "sourceDigest": "831F06C61E2718DE859B04117907DE005AC5F9AC9921CFD7EDF5CEECE2BFDD46",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
+          "swfSha256": "534635D75B488881AE33844B04F7932AB964D6814122237F06BB66CD34F60AF7",
+          "sceneKey": "地图-同盟咖啡厅",
+          "runtimeName": "The Servent",
+          "taskName": "The Servent",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_cafe_robot_girl": {
+      "npcId": "npc_cafe_robot_girl",
+      "locationId": "alliance_cafe",
+      "label": "The Robot Girl",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_e0a27c95e28e52109ba39c85",
+        "sourceDigest": "1B1DF995711069978DF6BF0619C5BBD8419F8508801F7917C3A5083E2E090DCB",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
+          "swfSha256": "534635D75B488881AE33844B04F7932AB964D6814122237F06BB66CD34F60AF7",
+          "sceneKey": "地图-同盟咖啡厅",
+          "runtimeName": "The Robot Girl",
+          "taskName": "The Robot Girl",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_cafe_arius": {
+      "npcId": "npc_cafe_arius",
+      "locationId": "alliance_cafe",
+      "label": "Arius型",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_9b54b4545ae95ac0ed6faa4b",
+        "sourceDigest": "E57347F93A5CEAA9963F2B9ECF125AC13E9D4607BA018DC1586CA4892C4AFE4F",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
+          "swfSha256": "534635D75B488881AE33844B04F7932AB964D6814122237F06BB66CD34F60AF7",
+          "sceneKey": "地图-同盟咖啡厅",
+          "runtimeName": "Arius型",
+          "taskName": "Arius型",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_cafe_sijiaoshe": {
+      "npcId": "npc_cafe_sijiaoshe",
+      "locationId": "alliance_cafe",
+      "label": "四脚蛇",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_a89ac942fd8bc0322b105bc3",
+        "sourceDigest": "C0FC3D11851B8B3A37A9663E1FFC42E16A8D8B5FE4B9C26074367D5CA0C6407E",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
+          "swfSha256": "534635D75B488881AE33844B04F7932AB964D6814122237F06BB66CD34F60AF7",
+          "sceneKey": "地图-同盟咖啡厅",
+          "runtimeName": "四脚蛇",
+          "taskName": "四脚蛇",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_res_badman": {
+      "npcId": "npc_res_badman",
+      "locationId": "research_reception",
+      "label": "Badman",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_a93d25ba1e6029cc9318cdf0",
+        "sourceDigest": "776D04665D1931C5F4DD77DB7E8460161D38C588E29AF50C1642E6589A23D7B9",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-研究所接待处.swf",
+          "swfSha256": "AE437800E1208B974AA8649B455F84682E36F275CA11E51B8D0C1F8E4BD5C521",
+          "sceneKey": "地图-研究所接待处",
+          "runtimeName": "Badman",
+          "taskName": "Badman",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_res_receptionist": {
+      "npcId": "npc_res_receptionist",
+      "locationId": "research_reception",
+      "label": "前台",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_f7cdd37c48000f19e2e5305f",
+        "sourceDigest": "E4E0BE223E679D94C0DF7C6FA694442423D52D70DBE34476F68DE156A765A72F",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-研究所接待处.swf",
+          "swfSha256": "AE437800E1208B974AA8649B455F84682E36F275CA11E51B8D0C1F8E4BD5C521",
+          "sceneKey": "地图-研究所接待处",
+          "runtimeName": "前台",
+          "taskName": "前台",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_res_lab_guard": {
+      "npcId": "npc_res_lab_guard",
+      "locationId": "research_biolab",
+      "label": "Lab Guard",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_8bb329416f83ab705a80f559",
+        "sourceDigest": "EB943C912DFBE5E589E97A6C71860D14FFE763A363BD5F1D0B25D3DA9591E460",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-研究所生化室.swf",
+          "swfSha256": "296254D2D290B05BFEAE9A9F0F4B04406F6B38FE6153CA5B16577EDE926C9BFC",
+          "sceneKey": "地图-研究所生化室",
+          "runtimeName": "Lab Guard",
+          "taskName": "Lab Guard",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_res_hanged_man": {
+      "npcId": "npc_res_hanged_man",
+      "locationId": "research_biolab",
+      "label": "The Hanged Man",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_c74233be520b0453796ac051",
+        "sourceDigest": "A1E67EF7298B2B194C1474A3820D2FC385B4CF86B5D30229B48D00F550F1F3BB",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-研究所生化室.swf",
+          "swfSha256": "296254D2D290B05BFEAE9A9F0F4B04406F6B38FE6153CA5B16577EDE926C9BFC",
+          "sceneKey": "地图-研究所生化室",
+          "runtimeName": "The Hanged Man",
+          "taskName": "The Hanged Man",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_res_scientist": {
+      "npcId": "npc_res_scientist",
+      "locationId": "research_biolab",
+      "label": "The Scientist",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_863d55b44b1ba56c56fd8d2e",
+        "sourceDigest": "0B0E07601BBDA9BE8061AB62BCC11266FED1DDB52CF0B735779FDDBD41532660",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-研究所生化室.swf",
+          "swfSha256": "296254D2D290B05BFEAE9A9F0F4B04406F6B38FE6153CA5B16577EDE926C9BFC",
+          "sceneKey": "地图-研究所生化室",
+          "runtimeName": "The Scientist",
+          "taskName": "The Scientist",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_res_scout": {
+      "npcId": "npc_res_scout",
+      "locationId": "research_defense",
+      "label": "Scout",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_5053408e5e1e8930ad10bc18",
+        "sourceDigest": "392BF7B7DC8100662178FAB8F0A984FD79732F92992489E8F3FA7FEA11376DBD",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-研究所防线.swf",
+          "swfSha256": "E2D2875DA964735D2371F66798CCA95E5D88165AA0CF5CEDF2A42B914D2FE98D",
+          "sceneKey": "地图-研究所防线",
+          "runtimeName": "Scout",
+          "taskName": "Scout",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_res_scout_captain": {
+      "npcId": "npc_res_scout_captain",
+      "locationId": "research_defense",
+      "label": "侦察队队长",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_2e8e6750c487e25ee57d4b09",
+        "sourceDigest": "22D104C1B0D92DF17994A752EA7FB246E8E33A7D236ADBB058D6102B1D9E9538",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-研究所防线.swf",
+          "swfSha256": "E2D2875DA964735D2371F66798CCA95E5D88165AA0CF5CEDF2A42B914D2FE98D",
+          "sceneKey": "地图-研究所防线",
+          "runtimeName": "侦察队队长",
+          "taskName": "侦察队队长",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_res_boss": {
+      "npcId": "npc_res_boss",
+      "locationId": "research_agriculture",
+      "label": "The Boss",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_8c522bd1dc8978cad3b0da18",
+        "sourceDigest": "0831269E4D520F8CDBBB2D9493FA49632CE0964450FC814B0CD44147C51C2525",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-研究所农业园.swf",
+          "swfSha256": "169330DECE694A9A97EDBA2B017E93A23C543FF8956F09EDC0B6972881B15B2B",
+          "sceneKey": "地图-研究所农业园",
+          "runtimeName": "The Boss",
+          "taskName": "The Boss",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_res_worker": {
+      "npcId": "npc_res_worker",
+      "locationId": "research_agriculture",
+      "label": "The Worker",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_0f5723a4a914ea0fd647c30f",
+        "sourceDigest": "DCE3452373E73A79AEB08C048D6E1EE52D6B47686EB18F4AD97AA65061E0B3DD",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-研究所农业园.swf",
+          "swfSha256": "169330DECE694A9A97EDBA2B017E93A23C543FF8956F09EDC0B6972881B15B2B",
+          "sceneKey": "地图-研究所农业园",
+          "runtimeName": "The Worker",
+          "taskName": "The Worker",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
+    },
+    "place_res_steel": {
+      "npcId": "npc_res_steel",
+      "locationId": "research_agriculture",
+      "label": "The Steel",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": {
+        "occurrenceId": "occ_3234cf2f09d6834dd393958e",
+        "sourceDigest": "DCB1743E0DA3C16C0E6EAC4065AB870274C0F85F4DA85568F8603B40F5DF36B4",
+        "runtime": {
+          "sourceSwf": "flashswf/levels/地图-研究所农业园.swf",
+          "swfSha256": "169330DECE694A9A97EDBA2B017E93A23C543FF8956F09EDC0B6972881B15B2B",
+          "sceneKey": "地图-研究所农业园",
+          "runtimeName": "The Steel",
+          "taskName": "The Steel",
+          "instanceName": ""
+        }
+      },
+      "legacyWorldAdapter": false
     }
   },
   "assets": {
@@ -7299,6 +8735,182 @@
       "format": "Webp",
       "sha256": "E75D7408C9B5EFCA4AA91532BC51C3D537189CA97030AA47A4571D66B0A4CB07",
       "assetUrl": "assets/map/roommate-male.webp"
+    },
+    "assets/map/composite/research/reception.webp": {
+      "width": 960,
+      "height": 396,
+      "bytes": 213848,
+      "format": "Webp",
+      "sha256": "B76569D44DE4675FF8CC97106B8A507AC65E1AED92219F81A132086834C3250D",
+      "assetUrl": "assets/map/composite/research/reception.webp"
+    },
+    "assets/map/composite/research/corridor.webp": {
+      "width": 960,
+      "height": 317,
+      "bytes": 190536,
+      "format": "Webp",
+      "sha256": "24ECE73C1C81E14DF748C64A753B09752786441D65E9FD2C74B743C9B88A20E4",
+      "assetUrl": "assets/map/composite/research/corridor.webp"
+    },
+    "assets/map/composite/research/biolab.webp": {
+      "width": 960,
+      "height": 395,
+      "bytes": 165770,
+      "format": "Webp",
+      "sha256": "5AE665D17CC1AE46FAAA3ADA2A75E29BBD3E35C8A32C4DB26DB6CF2C7046CCC3",
+      "assetUrl": "assets/map/composite/research/biolab.webp"
+    },
+    "assets/map/composite/research/defense.webp": {
+      "width": 960,
+      "height": 395,
+      "bytes": 216734,
+      "format": "Webp",
+      "sha256": "904F5F3CF4465C7D7B4CB7AFE77754B609B49BEBDAA8CD1E1A5CC58CAB9F4D17",
+      "assetUrl": "assets/map/composite/research/defense.webp"
+    },
+    "assets/map/composite/research/agriculture.webp": {
+      "width": 720,
+      "height": 425,
+      "bytes": 195176,
+      "format": "Webp",
+      "sha256": "909A3F67B55A58DAE26E057DDFF6A9194012F68F29AA3E244A08D8D052AB7183",
+      "assetUrl": "assets/map/composite/research/agriculture.webp"
+    },
+    "assets/map/composite/defense/alliance-command.webp": {
+      "width": 880,
+      "height": 561,
+      "bytes": 168834,
+      "format": "Webp",
+      "sha256": "92AFAF55EF337AE47B7CE67DDCCC35BA7B0E6AE90AB2A04B1FDF425760C42CCC",
+      "assetUrl": "assets/map/composite/defense/alliance-command.webp"
+    },
+    "assets/map/composite/defense/alliance-cafe.webp": {
+      "width": 880,
+      "height": 356,
+      "bytes": 125984,
+      "format": "Webp",
+      "sha256": "0721ABA265352D3CE42927FDF671194C4EC743F4C40B3B288F758AD59604D8AA",
+      "assetUrl": "assets/map/composite/defense/alliance-cafe.webp"
+    },
+    "assets/map/avatars/叉仔头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2398,
+      "format": "Webp",
+      "sha256": "76D41C7F11689DF79F012770BF5587D224294DA6CCBC4B0FE4EBE1F955B9ADBC",
+      "assetUrl": "assets/map/avatars/叉仔头像.webp"
+    },
+    "assets/map/avatars/TheServent头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3280,
+      "format": "Webp",
+      "sha256": "63DCC2864815633196B2D79FDA646CEE22708AC86AD1DBD4F5DD0237DAFAB4AC",
+      "assetUrl": "assets/map/avatars/TheServent头像.webp"
+    },
+    "assets/map/avatars/TheRobotGirl头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3514,
+      "format": "Webp",
+      "sha256": "F3B90BE0CF81018013EBCCA0B3F8B94489A58763426577B465B91DC7D05A51A2",
+      "assetUrl": "assets/map/avatars/TheRobotGirl头像.webp"
+    },
+    "assets/map/avatars/Arius型头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2938,
+      "format": "Webp",
+      "sha256": "AD6162B907FF72E04CDBF3D38C6E72B02DD05C3E052F1653883D08CC396FF9B8",
+      "assetUrl": "assets/map/avatars/Arius型头像.webp"
+    },
+    "assets/map/avatars/四脚蛇头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 1870,
+      "format": "Webp",
+      "sha256": "71FCBA410619340AA90B001D0375DF4B470E440B3B73D0C601829BF2CB7F5636",
+      "assetUrl": "assets/map/avatars/四脚蛇头像.webp"
+    },
+    "assets/map/avatars/Badman头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2094,
+      "format": "Webp",
+      "sha256": "48CC74250AEF3A52DA5A51A122A8CAA301F5FFC065CFD039023497E3CA08EECD",
+      "assetUrl": "assets/map/avatars/Badman头像.webp"
+    },
+    "assets/map/avatars/前台头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3316,
+      "format": "Webp",
+      "sha256": "9C339792A30D8D8DBCDDEF8547723844B30532632B5E3CBE6AB86482F1A361B5",
+      "assetUrl": "assets/map/avatars/前台头像.webp"
+    },
+    "assets/map/avatars/LabGuard头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 1742,
+      "format": "Webp",
+      "sha256": "6866229DA546203779970D8654B64E208A12953E8D7F8CD44AFCD56DF2FCEDDE",
+      "assetUrl": "assets/map/avatars/LabGuard头像.webp"
+    },
+    "assets/map/avatars/TheHangedMan头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2044,
+      "format": "Webp",
+      "sha256": "AF8CAFDB768AB62B021A1B6A3F3758B4B60340FF997DA5032C1873BAFEF2FE1A",
+      "assetUrl": "assets/map/avatars/TheHangedMan头像.webp"
+    },
+    "assets/map/avatars/TheScientist头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3078,
+      "format": "Webp",
+      "sha256": "047E5CE55C0758348FC8D53945E4A050D9E16A077A793A02F8D39FD92A84BAF9",
+      "assetUrl": "assets/map/avatars/TheScientist头像.webp"
+    },
+    "assets/map/avatars/Scout头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 1776,
+      "format": "Webp",
+      "sha256": "C4D1AF060467EE9D9531972D85D74F83BDBB81508F3C8FE82E7E13C3F5F59CAF",
+      "assetUrl": "assets/map/avatars/Scout头像.webp"
+    },
+    "assets/map/avatars/侦察队队长头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 1876,
+      "format": "Webp",
+      "sha256": "FE1D46D08C90763C8D0C25E56664FE1AF6BB50514953BB9314BA61836A146482",
+      "assetUrl": "assets/map/avatars/侦察队队长头像.webp"
+    },
+    "assets/map/avatars/TheBoss头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2332,
+      "format": "Webp",
+      "sha256": "5B5DA028A0EEF0A6E359147E2941D0D9BE2328DDBB182F6D7499E13B5EF6B358",
+      "assetUrl": "assets/map/avatars/TheBoss头像.webp"
+    },
+    "assets/map/avatars/TheWorker头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2988,
+      "format": "Webp",
+      "sha256": "4B8D787B6B7FF6D61D1A4C5F7FDA3BFBF6C09B4DEDA56A4E6BCF4D014568E9BD",
+      "assetUrl": "assets/map/avatars/TheWorker头像.webp"
+    },
+    "assets/map/avatars/TheSteel头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2664,
+      "format": "Webp",
+      "sha256": "B6D6CFF62E3B22A69453BE74C4F923B64D012A8DECE4E4829BF386CD1A3D62D5",
+      "assetUrl": "assets/map/avatars/TheSteel头像.webp"
     }
   }
 }
