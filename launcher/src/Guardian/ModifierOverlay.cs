@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 namespace CF7Launcher.Guardian
 {
     /// <summary>
-    /// 修改器的独立 1016×484 原生浮窗。它不进入 PanelHost 的全屏面板、
+    /// 修改器的独立 1016×550 原生浮窗。它不进入 PanelHost 的全屏面板、
     /// 不申请面板暂停，也不复用 backup/input shield；AS2 会话和写权威仍归
     /// ModifierTask / ModifierPanelService。
     /// </summary>
@@ -229,7 +229,7 @@ namespace CF7Launcher.Guardian
         {
             double scale = _owner.DeviceDpi / 96.0;
             int width = Math.Max(1, (int)Math.Round(1016 * scale));
-            int height = Math.Max(1, (int)Math.Round(484 * scale));
+            int height = Math.Max(1, (int)Math.Round(550 * scale));
             Rectangle owner = _owner.Bounds;
             int x = owner.Left + (owner.Width - width) / 2;
             int y = owner.Top + (owner.Height - height) / 2;

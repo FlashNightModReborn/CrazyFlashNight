@@ -1,0 +1,1095 @@
+{
+  "version": 1,
+  "width": 843,
+  "height": 456,
+  "pages": {
+    "economy": {
+      "background": "native-economy.png",
+      "buttons": {
+        "close": {
+          "assetRect": [
+            618.5999923706055,
+            29.75,
+            642.6,
+            54.5
+          ],
+          "hitRect": [
+            620.6,
+            31.75,
+            640.6,
+            52.5
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/close-up.png",
+            "over": "buttons/close-over.png",
+            "down": "buttons/close-down.png"
+          }
+        },
+        "drag": {
+          "assetRect": [
+            163.1,
+            31.15,
+            187.10000610351562,
+            55.94944458007812
+          ],
+          "hitRect": [
+            165.1,
+            33.15,
+            185.1,
+            53.9
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/drag-up.png",
+            "over": "buttons/drag-over.png",
+            "down": "buttons/drag-down.png"
+          }
+        },
+        "test_space": {
+          "assetRect": [
+            197.53001861572264,
+            304.45000610351565,
+            331.6782049852311,
+            345.426020059921
+          ],
+          "hitRect": [
+            199.930012512207,
+            306.85,
+            329.27821108874673,
+            343.02602616343654
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/test_space-up.png"
+          }
+        },
+        "kcoin": {
+          "assetRect": [
+            198.03001861572264,
+            229.20000610351562,
+            332.1782049852311,
+            270.1760200599209
+          ],
+          "hitRect": [
+            200.430012512207,
+            231.6,
+            329.77821108874673,
+            267.77602616343654
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/kcoin-up.png"
+          }
+        },
+        "money": {
+          "assetRect": [
+            198.03001861572264,
+            162.60000610351562,
+            332.1782049852311,
+            203.57602005992095
+          ],
+          "hitRect": [
+            200.430012512207,
+            165.0,
+            329.77821108874673,
+            201.17602616343655
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/money-up.png"
+          }
+        },
+        "tab:economy": {
+          "assetRect": [
+            50.7,
+            155.2558052062988,
+            179.8597496032716,
+            196.9978328783065
+          ],
+          "hitRect": [
+            52.7,
+            157.2558052062988,
+            177.8597496032716,
+            194.9978328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-economy-up.png",
+            "over": "buttons/tab-economy-over.png",
+            "down": "buttons/tab-economy-down.png"
+          }
+        },
+        "tab:items": {
+          "assetRect": [
+            0.6999999999999886,
+            210.15580520629877,
+            129.8597496032716,
+            251.89783287830647
+          ],
+          "hitRect": [
+            2.6999999999999886,
+            212.15580520629877,
+            127.85974960327161,
+            249.89783287830647
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-items-up.png",
+            "over": "buttons/tab-items-over.png",
+            "down": "buttons/tab-items-down.png"
+          }
+        },
+        "tab:level": {
+          "assetRect": [
+            1.0500000000000114,
+            266.00580520629876,
+            130.20974960327163,
+            307.7478328783065
+          ],
+          "hitRect": [
+            3.0500000000000114,
+            268.00580520629876,
+            128.20974960327163,
+            305.7478328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-level-up.png",
+            "over": "buttons/tab-level-over.png",
+            "down": "buttons/tab-level-down.png"
+          }
+        },
+        "tab:units": {
+          "assetRect": [
+            0.6999999999999886,
+            321.2058052062988,
+            129.8597496032716,
+            362.9478328783065
+          ],
+          "hitRect": [
+            2.6999999999999886,
+            323.2058052062988,
+            127.85974960327161,
+            360.9478328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-units-up.png",
+            "over": "buttons/tab-units-over.png",
+            "down": "buttons/tab-units-down.png"
+          }
+        }
+      }
+    },
+    "items": {
+      "background": "native-items.png",
+      "buttons": {
+        "close": {
+          "assetRect": [
+            618.5999923706055,
+            29.75,
+            642.6,
+            54.5
+          ],
+          "hitRect": [
+            620.6,
+            31.75,
+            640.6,
+            52.5
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/close-up.png",
+            "over": "buttons/close-over.png",
+            "down": "buttons/close-down.png"
+          }
+        },
+        "drag": {
+          "assetRect": [
+            163.1,
+            31.15,
+            187.10000610351562,
+            55.94944458007812
+          ],
+          "hitRect": [
+            165.1,
+            33.15,
+            185.1,
+            53.9
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/drag-up.png",
+            "over": "buttons/drag-over.png",
+            "down": "buttons/drag-down.png"
+          }
+        },
+        "item_produce": {
+          "assetRect": [
+            426.04999999999995,
+            270.5,
+            537.8404396057131,
+            304.6467651367187
+          ],
+          "hitRect": [
+            428.04999999999995,
+            272.5,
+            535.8404396057131,
+            302.6467651367187
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/item_produce-up.png"
+          }
+        },
+        "item_search": {
+          "assetRect": [
+            426.1,
+            339.6,
+            537.890439605713,
+            373.74676513671875
+          ],
+          "hitRect": [
+            428.09999999999997,
+            341.6,
+            535.890439605713,
+            371.74676513671875
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/item_search-up.png"
+          }
+        },
+        "item_plus": {
+          "assetRect": [
+            586.4,
+            238.75,
+            608.5,
+            260.85
+          ],
+          "hitRect": [
+            588.4,
+            240.75,
+            606.5,
+            258.85
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/item_plus-up.png",
+            "over": "buttons/item_plus-over.png",
+            "down": "buttons/item_plus-down.png"
+          }
+        },
+        "item_minus": {
+          "assetRect": [
+            544.5,
+            239.29999999999998,
+            566.6,
+            261.4
+          ],
+          "hitRect": [
+            546.5,
+            241.29999999999998,
+            564.6,
+            259.4
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/item_minus-up.png",
+            "over": "buttons/item_minus-over.png",
+            "down": "buttons/item_minus-down.png"
+          }
+        },
+        "item_next": {
+          "assetRect": [
+            319.75,
+            375.65,
+            343.75,
+            400.4
+          ],
+          "hitRect": [
+            321.75,
+            377.65,
+            341.75,
+            398.4
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/item_next-up.png",
+            "over": "buttons/item_next-over.png",
+            "down": "buttons/item_next-down.png"
+          }
+        },
+        "item_prev": {
+          "assetRect": [
+            236.25,
+            375.65,
+            260.25,
+            400.4
+          ],
+          "hitRect": [
+            238.25,
+            377.65,
+            258.25,
+            398.4
+          ],
+          "flipX": true,
+          "states": {
+            "up": "buttons/item_prev-up.png",
+            "over": "buttons/item_prev-over.png",
+            "down": "buttons/item_prev-down.png"
+          }
+        },
+        "item_last": {
+          "assetRect": [
+            348.75,
+            375.6,
+            372.75,
+            400.35
+          ],
+          "hitRect": [
+            350.75,
+            377.6,
+            370.75,
+            398.35
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/item_last-up.png",
+            "over": "buttons/item_last-over.png",
+            "down": "buttons/item_last-down.png"
+          }
+        },
+        "item_first": {
+          "assetRect": [
+            207.25,
+            375.6,
+            231.25,
+            400.35
+          ],
+          "hitRect": [
+            209.25,
+            377.6,
+            229.25,
+            398.35
+          ],
+          "flipX": true,
+          "states": {
+            "up": "buttons/item_first-up.png",
+            "over": "buttons/item_first-over.png",
+            "down": "buttons/item_first-down.png"
+          }
+        },
+        "tab:economy": {
+          "assetRect": [
+            0.6999999999999886,
+            155.2558052062988,
+            129.8597496032716,
+            196.9978328783065
+          ],
+          "hitRect": [
+            2.6999999999999886,
+            157.2558052062988,
+            127.85974960327161,
+            194.9978328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-economy-up.png",
+            "over": "buttons/tab-economy-over.png",
+            "down": "buttons/tab-economy-down.png"
+          }
+        },
+        "tab:items": {
+          "assetRect": [
+            48.7,
+            210.15580520629877,
+            177.8597496032716,
+            251.89783287830647
+          ],
+          "hitRect": [
+            50.7,
+            212.15580520629877,
+            175.8597496032716,
+            249.89783287830647
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-items-up.png",
+            "over": "buttons/tab-items-over.png",
+            "down": "buttons/tab-items-down.png"
+          }
+        },
+        "tab:level": {
+          "assetRect": [
+            1.0500000000000114,
+            266.00580520629876,
+            130.20974960327163,
+            307.7478328783065
+          ],
+          "hitRect": [
+            3.0500000000000114,
+            268.00580520629876,
+            128.20974960327163,
+            305.7478328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-level-up.png",
+            "over": "buttons/tab-level-over.png",
+            "down": "buttons/tab-level-down.png"
+          }
+        },
+        "tab:units": {
+          "assetRect": [
+            0.6999999999999886,
+            321.2058052062988,
+            129.8597496032716,
+            362.9478328783065
+          ],
+          "hitRect": [
+            2.6999999999999886,
+            323.2058052062988,
+            127.85974960327161,
+            360.9478328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-units-up.png",
+            "over": "buttons/tab-units-over.png",
+            "down": "buttons/tab-units-down.png"
+          }
+        }
+      }
+    },
+    "level": {
+      "background": "native-level.png",
+      "buttons": {
+        "close": {
+          "assetRect": [
+            618.5999923706055,
+            29.75,
+            642.6,
+            54.5
+          ],
+          "hitRect": [
+            620.6,
+            31.75,
+            640.6,
+            52.5
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/close-up.png",
+            "over": "buttons/close-over.png",
+            "down": "buttons/close-down.png"
+          }
+        },
+        "drag": {
+          "assetRect": [
+            163.1,
+            31.15,
+            187.10000610351562,
+            55.94944458007812
+          ],
+          "hitRect": [
+            165.1,
+            33.15,
+            185.1,
+            53.9
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/drag-up.png",
+            "over": "buttons/drag-over.png",
+            "down": "buttons/drag-down.png"
+          }
+        },
+        "unlock_stages": {
+          "assetRect": [
+            460.54999999999995,
+            213.95,
+            572.3404396057131,
+            248.09676513671874
+          ],
+          "hitRect": [
+            462.54999999999995,
+            215.95,
+            570.3404396057131,
+            246.09676513671874
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/unlock_stages-up.png"
+          }
+        },
+        "finish_stage": {
+          "assetRect": [
+            195.15,
+            326.65,
+            306.94043960571304,
+            360.7967651367187
+          ],
+          "hitRect": [
+            197.15,
+            328.65,
+            304.94043960571304,
+            358.7967651367187
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/finish_stage-up.png"
+          }
+        },
+        "kill_all": {
+          "assetRect": [
+            195.15,
+            156.55,
+            306.94043960571304,
+            190.69676513671877
+          ],
+          "hitRect": [
+            197.15,
+            158.55,
+            304.94043960571304,
+            188.69676513671877
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/kill_all-up.png"
+          }
+        },
+        "grant_task": {
+          "assetRect": [
+            460.15,
+            156.55,
+            571.940439605713,
+            190.69676513671877
+          ],
+          "hitRect": [
+            462.15,
+            158.55,
+            569.940439605713,
+            188.69676513671877
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/grant_task-up.png"
+          }
+        },
+        "finish_map": {
+          "assetRect": [
+            195.15,
+            270.65,
+            306.94043960571304,
+            304.79676513671876
+          ],
+          "hitRect": [
+            197.15,
+            272.65,
+            304.94043960571304,
+            302.79676513671876
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/finish_map-up.png"
+          }
+        },
+        "finish_wave": {
+          "assetRect": [
+            195.15,
+            212.55,
+            306.94043960571304,
+            246.69676513671877
+          ],
+          "hitRect": [
+            197.15,
+            214.55,
+            304.94043960571304,
+            244.69676513671877
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/finish_wave-up.png"
+          }
+        },
+        "tab:economy": {
+          "assetRect": [
+            0.6999999999999886,
+            155.2558052062988,
+            129.8597496032716,
+            196.9978328783065
+          ],
+          "hitRect": [
+            2.6999999999999886,
+            157.2558052062988,
+            127.85974960327161,
+            194.9978328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-economy-up.png",
+            "over": "buttons/tab-economy-over.png",
+            "down": "buttons/tab-economy-down.png"
+          }
+        },
+        "tab:items": {
+          "assetRect": [
+            0.6999999999999886,
+            210.15580520629877,
+            129.8597496032716,
+            251.89783287830647
+          ],
+          "hitRect": [
+            2.6999999999999886,
+            212.15580520629877,
+            127.85974960327161,
+            249.89783287830647
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-items-up.png",
+            "over": "buttons/tab-items-over.png",
+            "down": "buttons/tab-items-down.png"
+          }
+        },
+        "tab:level": {
+          "assetRect": [
+            50.05,
+            266.00580520629876,
+            179.20974960327163,
+            307.7478328783065
+          ],
+          "hitRect": [
+            52.05,
+            268.00580520629876,
+            177.20974960327163,
+            305.7478328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-level-up.png",
+            "over": "buttons/tab-level-over.png",
+            "down": "buttons/tab-level-down.png"
+          }
+        },
+        "tab:units": {
+          "assetRect": [
+            0.6999999999999886,
+            321.2058052062988,
+            129.8597496032716,
+            362.9478328783065
+          ],
+          "hitRect": [
+            2.6999999999999886,
+            323.2058052062988,
+            127.85974960327161,
+            360.9478328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-units-up.png",
+            "over": "buttons/tab-units-over.png",
+            "down": "buttons/tab-units-down.png"
+          }
+        }
+      }
+    },
+    "units": {
+      "background": "native-units.png",
+      "buttons": {
+        "close": {
+          "assetRect": [
+            618.5999923706055,
+            29.75,
+            642.6,
+            54.5
+          ],
+          "hitRect": [
+            620.6,
+            31.75,
+            640.6,
+            52.5
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/close-up.png",
+            "over": "buttons/close-over.png",
+            "down": "buttons/close-down.png"
+          }
+        },
+        "drag": {
+          "assetRect": [
+            163.1,
+            31.15,
+            187.10000610351562,
+            55.94944458007812
+          ],
+          "hitRect": [
+            165.1,
+            33.15,
+            185.1,
+            53.9
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/drag-up.png",
+            "over": "buttons/drag-over.png",
+            "down": "buttons/drag-down.png"
+          }
+        },
+        "unit_merc": {
+          "assetRect": [
+            505.84999999999997,
+            372.65,
+            617.640439605713,
+            406.7967651367187
+          ],
+          "hitRect": [
+            507.84999999999997,
+            374.65,
+            615.640439605713,
+            404.7967651367187
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/unit_merc-up.png"
+          }
+        },
+        "unit_spawn": {
+          "assetRect": [
+            505.84999999999997,
+            326.8,
+            617.640439605713,
+            360.9467651367188
+          ],
+          "hitRect": [
+            507.84999999999997,
+            328.8,
+            615.640439605713,
+            358.94676513671874
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/unit_spawn-up.png"
+          }
+        },
+        "unit_jump": {
+          "assetRect": [
+            376.15,
+            372.65,
+            487.94043960571304,
+            406.7967651367187
+          ],
+          "hitRect": [
+            378.15,
+            374.65,
+            485.94043960571304,
+            404.7967651367187
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/unit_jump-up.png"
+          }
+        },
+        "unit_next": {
+          "assetRect": [
+            250.9,
+            377.1,
+            274.9,
+            401.85
+          ],
+          "hitRect": [
+            252.9,
+            379.1,
+            272.9,
+            399.85
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/unit_next-up.png",
+            "over": "buttons/unit_next-over.png",
+            "down": "buttons/unit_next-down.png"
+          }
+        },
+        "unit_prev": {
+          "assetRect": [
+            219.9,
+            377.1,
+            243.9,
+            401.85
+          ],
+          "hitRect": [
+            221.9,
+            379.1,
+            241.9,
+            399.85
+          ],
+          "flipX": true,
+          "states": {
+            "up": "buttons/unit_prev-up.png",
+            "over": "buttons/unit_prev-over.png",
+            "down": "buttons/unit_prev-down.png"
+          }
+        },
+        "unit_last": {
+          "assetRect": [
+            279.9,
+            377.05,
+            303.9,
+            401.8
+          ],
+          "hitRect": [
+            281.9,
+            379.05,
+            301.9,
+            399.8
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/unit_last-up.png",
+            "over": "buttons/unit_last-over.png",
+            "down": "buttons/unit_last-down.png"
+          }
+        },
+        "unit_first": {
+          "assetRect": [
+            190.9,
+            377.05,
+            214.9,
+            401.8
+          ],
+          "hitRect": [
+            192.9,
+            379.05,
+            212.9,
+            399.8
+          ],
+          "flipX": true,
+          "states": {
+            "up": "buttons/unit_first-up.png",
+            "over": "buttons/unit_first-over.png",
+            "down": "buttons/unit_first-down.png"
+          }
+        },
+        "level_plus": {
+          "assetRect": [
+            474.29999999999995,
+            323.0,
+            496.4,
+            345.1
+          ],
+          "hitRect": [
+            476.29999999999995,
+            325.0,
+            494.4,
+            343.1
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/level_plus-up.png",
+            "over": "buttons/level_plus-over.png",
+            "down": "buttons/level_plus-down.png"
+          }
+        },
+        "level_minus": {
+          "assetRect": [
+            412.4,
+            323.0,
+            434.5,
+            345.1
+          ],
+          "hitRect": [
+            414.4,
+            325.0,
+            432.5,
+            343.1
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/level_minus-up.png",
+            "over": "buttons/level_minus-over.png",
+            "down": "buttons/level_minus-down.png"
+          }
+        },
+        "count_plus": {
+          "assetRect": [
+            474.29999999999995,
+            343.45,
+            496.4,
+            365.55
+          ],
+          "hitRect": [
+            476.29999999999995,
+            345.45,
+            494.4,
+            363.55
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/count_plus-up.png",
+            "over": "buttons/count_plus-over.png",
+            "down": "buttons/count_plus-down.png"
+          }
+        },
+        "count_minus": {
+          "assetRect": [
+            412.4,
+            344.45,
+            434.5,
+            366.55
+          ],
+          "hitRect": [
+            414.4,
+            346.45,
+            432.5,
+            364.55
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/count_minus-up.png",
+            "over": "buttons/count_minus-over.png",
+            "down": "buttons/count_minus-down.png"
+          }
+        },
+        "tab:economy": {
+          "assetRect": [
+            0.6999999999999886,
+            155.2558052062988,
+            129.8597496032716,
+            196.9978328783065
+          ],
+          "hitRect": [
+            2.6999999999999886,
+            157.2558052062988,
+            127.85974960327161,
+            194.9978328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-economy-up.png",
+            "over": "buttons/tab-economy-over.png",
+            "down": "buttons/tab-economy-down.png"
+          }
+        },
+        "tab:items": {
+          "assetRect": [
+            0.6999999999999886,
+            210.15580520629877,
+            129.8597496032716,
+            251.89783287830647
+          ],
+          "hitRect": [
+            2.6999999999999886,
+            212.15580520629877,
+            127.85974960327161,
+            249.89783287830647
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-items-up.png",
+            "over": "buttons/tab-items-over.png",
+            "down": "buttons/tab-items-down.png"
+          }
+        },
+        "tab:level": {
+          "assetRect": [
+            1.0500000000000114,
+            266.00580520629876,
+            130.20974960327163,
+            307.7478328783065
+          ],
+          "hitRect": [
+            3.0500000000000114,
+            268.00580520629876,
+            128.20974960327163,
+            305.7478328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-level-up.png",
+            "over": "buttons/tab-level-over.png",
+            "down": "buttons/tab-level-down.png"
+          }
+        },
+        "tab:units": {
+          "assetRect": [
+            49.75,
+            321.2058052062988,
+            178.90974960327162,
+            362.9478328783065
+          ],
+          "hitRect": [
+            51.75,
+            323.2058052062988,
+            176.90974960327162,
+            360.9478328783065
+          ],
+          "flipX": false,
+          "states": {
+            "up": "buttons/tab-units-up.png",
+            "over": "buttons/tab-units-over.png",
+            "down": "buttons/tab-units-down.png"
+          }
+        }
+      }
+    }
+  },
+  "unitFrameMask": [
+    382.45882873535163,
+    138.357194519043,
+    612.9704864501954,
+    275.4025741577155
+  ],
+  "unitRows": [
+    [
+      185.0,
+      139.0,
+      356.0,
+      160.0
+    ],
+    [
+      185.0,
+      168.2,
+      356.0,
+      189.2
+    ],
+    [
+      185.0,
+      197.4,
+      356.0,
+      218.4
+    ],
+    [
+      185.0,
+      226.6,
+      356.0,
+      247.6
+    ],
+    [
+      185.0,
+      255.8,
+      356.0,
+      276.8
+    ],
+    [
+      185.0,
+      285.0,
+      356.0,
+      306.0
+    ],
+    [
+      185.0,
+      314.2,
+      356.0,
+      335.2
+    ],
+    [
+      185.0,
+      343.4,
+      356.0,
+      364.4
+    ]
+  ]
+}

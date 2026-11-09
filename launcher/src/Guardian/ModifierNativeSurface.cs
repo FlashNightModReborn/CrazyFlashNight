@@ -9,12 +9,14 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CF7Launcher.Tasks;
+using CF7Launcher.Guardian.Hud.Loot;
+using CF7Launcher.Guardian.Hud.Tooltip;
 using Newtonsoft.Json.Linq;
 using SkiaSharp;
 
 namespace CF7Launcher.Guardian
 {
-    internal sealed class ModifierNativeSurface : Form
+    internal sealed class ModifierNativeSurface : OverlayBase, IMessageFilter
     {
         private sealed class ItemEntry
         {
@@ -36,11 +38,9 @@ namespace CF7Launcher.Guardian
             internal bool Hostile;
         }
 
-        private static readonly Color KeyColor = Color.FromArgb(1, 2, 3);
         private static readonly Color Gold = Color.FromArgb(255, 204, 0);
         private static readonly Color SoftGold = Color.FromArgb(216, 195, 138);
         private static readonly Color UnitText = Color.FromArgb(241, 220, 168);
-        private static readonly Color UnitMeta = Color.FromArgb(200, 184, 142);
         private static readonly Color HostileText = Color.FromArgb(255, 176, 160);
         private static readonly Color ErrorText = Color.FromArgb(255, 111, 97);
         private static readonly Color OkText = Color.FromArgb(184, 233, 134);
@@ -58,21 +58,27 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam);
 
-        private readonly Form _owner;
         private readonly string _webRoot;
         private readonly ModifierTask _task;
         private readonly object _callGate = new object();
         private readonly Dictionary<string, Action<JObject>> _calls = new Dictionary<string, Action<JObject>>(StringComparer.Ordinal);
         private readonly Dictionary<string, Image> _backgrounds = new Dictionary<string, Image>(StringComparer.Ordinal);
-        private readonly Dictionary<string, Image> _icons = new Dictionary<string, Image>(StringComparer.Ordinal);
+        private readonly Dictionary<string, Image> _artImages = new Dictionary<string, Image>(StringComparer.Ordinal);
         private readonly Dictionary<string, Image> _unitFrames = new Dictionary<string, Image>(StringComparer.Ordinal);
         private readonly HashSet<string> _unitFrameRequests = new HashSet<string>(StringComparer.Ordinal);
+        private readonly ModifierArtCatalog _art;
+        private readonly LootIconCatalog _iconCatalog;
+        private readonly NativeTooltipWidget _tooltip;
+        private readonly ModifierInputOverlay _inputOverlay;
+        private readonly Dictionary<string, JObject> _tooltipDocuments = new Dictionary<string, JObject>(StringComparer.Ordinal);
+        private readonly HashSet<string> _tooltipRequests = new HashSet<string>(StringComparer.Ordinal);
         private readonly TextBox _itemQuery;
         private readonly TextBox _itemQuantity;
         private readonly TextBox _taskId;
         private readonly TextBox _unitLevel;
         private readonly TextBox _unitCount;
         private readonly Timer _armTimer;
+        private readonly Timer _animationTimer;
         private readonly SoundPlayer _tabSound;
         private readonly Font _textFont;
         private readonly Font _smallFont;
@@ -80,7 +86,7 @@ namespace CF7Launcher.Guardian
         private readonly Font _statusFont;
         private readonly StringFormat _clip;
         private readonly StringFormat _ellipsis;
-        private JObject _iconManifest;
+        private string _tooltipItem;
         private JObject _portraitManifest;
         private bool _portraitManifestLoaded;
         private List<ItemEntry> _items;
@@ -125,16 +131,28 @@ namespace CF7Launcher.Guardian
         private bool _trackingLeave;
 
         internal ModifierNativeSurface(Form owner, string webRoot, string profileRoot, ModifierTask task)
+            : base(owner, owner, ModifierNativeLayout.Width, ModifierNativeLayout.Height)
         {
-            _owner = owner ?? throw new ArgumentNullException(nameof(owner));
             _webRoot = webRoot ?? throw new ArgumentNullException(nameof(webRoot));
             _task = task ?? throw new ArgumentNullException(nameof(task));
+            _art = new ModifierArtCatalog(webRoot);
+            _iconCatalog = new LootIconCatalog(Path.Combine(webRoot, "icons"),
+                Path.Combine(webRoot, "assets", "enemy-portraits"),
+                dollPortraitsDir: Path.Combine(webRoot, "..", "data", "doll-portraits"),
+                npcPortraitIconsDir: Path.Combine(webRoot, "..", "..", "flashswf", "portraits", "icons"));
+            _tooltip = new NativeTooltipWidget(this, _iconCatalog, null,
+                () => ModifierNativeLayout.ScaleFor(ClientSize));
+            _tooltip.RepaintRequested += delegate
+            {
+                if (_disposed) return;
+                SyncInputOverlay();
+                Invalidate();
+            };
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
             AutoScaleMode = AutoScaleMode.None;
-            BackColor = KeyColor;
-            TransparencyKey = KeyColor;
+            BackColor = Color.Black;
             DoubleBuffered = true;
             KeyPreview = true;
             base.Text = "CF7 Modifier";
@@ -148,6 +166,8 @@ namespace CF7Launcher.Guardian
             _ellipsis = new StringFormat(StringFormatFlags.NoWrap) { Trimming = StringTrimming.EllipsisCharacter };
             _armTimer = new Timer { Interval = 3000 };
             _armTimer.Tick += OnArmTimer;
+            _animationTimer = new Timer { Interval = 33 };
+            _animationTimer.Tick += OnAnimationTick;
             _tabSound = null;
             try
             {
@@ -171,11 +191,13 @@ namespace CF7Launcher.Guardian
             _unitCount = CreateInput(true);
             _unitCount.MaxLength = 3;
             _unitCount.Text = "1";
-            Controls.Add(_itemQuery);
-            Controls.Add(_itemQuantity);
-            Controls.Add(_taskId);
-            Controls.Add(_unitLevel);
-            Controls.Add(_unitCount);
+            _inputOverlay = new ModifierInputOverlay(this);
+            _inputOverlay.Controls.Add(_itemQuery);
+            _inputOverlay.Controls.Add(_itemQuantity);
+            _inputOverlay.Controls.Add(_taskId);
+            _inputOverlay.Controls.Add(_unitLevel);
+            _inputOverlay.Controls.Add(_unitCount);
+            Application.AddMessageFilter(this);
             Visible = false;
         }
 
@@ -195,6 +217,33 @@ namespace CF7Launcher.Guardian
                 if (foreground == Handle || foreground == _owner.Handle) return true;
                 return GetAncestor(foreground, 2) == Handle || GetAncestor(foreground, 2) == _owner.Handle;
             }
+        }
+
+        protected override bool IsClickThrough { get { return false; } }
+
+        internal bool OwnsFocus(IntPtr foreground)
+        {
+            if (foreground == IntPtr.Zero) return false;
+            if (foreground == Handle || foreground == _inputOverlay.Handle || foreground == _owner.Handle)
+                return true;
+            IntPtr root = GetAncestor(foreground, 2);
+            return root == Handle || root == _inputOverlay.Handle || root == _owner.Handle;
+        }
+
+        protected override bool ShouldKeepPresentedOnOwnerDeactivate
+        {
+            get { return OwnsFocus(GetForegroundWindow()); }
+        }
+
+        protected override void OnOwnerBecameHidden()
+        {
+            _inputOverlay.Sync(false, Bounds);
+        }
+
+        protected override void OnOwnerBecameVisible()
+        {
+            SyncInputOverlay();
+            Invalidate();
         }
 
         internal Task PrepareAsync()
@@ -217,8 +266,10 @@ namespace CF7Launcher.Guardian
             _closeRaised = false;
             UpdateInputLayout();
             if (!Visible) Show();
+            ShowOverlay();
             if (CanRestoreGameFocus) Activate();
             UpdateInputVisibility();
+            UpdateAnimationTimer();
             Invalidate();
             return true;
         }
@@ -232,10 +283,14 @@ namespace CF7Launcher.Guardian
             _hoverItem = -1;
             _hoverUnit = -1;
             _armTimer.Stop();
+            _animationTimer.Stop();
+            _tooltip.Reset();
+            _tooltipItem = null;
             _armedAction = null;
             Capture = false;
             ClearCalls();
-            if (Visible) Hide();
+            _inputOverlay.Sync(false, Bounds);
+            DismissOverlay();
         }
 
         internal bool CommitGeometry(Rectangle rect, int generation)
@@ -253,6 +308,7 @@ namespace CF7Launcher.Guardian
             Bounds = rect;
             UpdateInputLayout();
             if (ensureVisible && !Visible) Show();
+            if (ensureVisible) ShowOverlay();
             Invalidate();
         }
 
@@ -355,6 +411,10 @@ namespace CF7Launcher.Guardian
             _hoverUnit = -1;
             _hoverAction = 0;
             _armTimer.Stop();
+            _animationTimer.Stop();
+            _tooltip.Reset();
+            _tooltipItem = null;
+            _tooltipRequests.Clear();
             _armedAction = null;
             ClearCalls();
             UpdateInputVisibility();
@@ -456,6 +516,9 @@ namespace CF7Launcher.Guardian
             _itemTotal = (int)Math.Max(0, Math.Min(1000000, Long(response["total"])));
             _revision = Math.Max(_revision, Math.Max(0, Long(response["revision"])));
             _selectedItem = -1;
+            _hoverItem = -1;
+            _tooltip.Reset();
+            _tooltipItem = null;
             if (_statusTone == "pending") SetStatus("物品目录已更新。", "ok");
             Invalidate();
         }
@@ -696,9 +759,12 @@ namespace CF7Launcher.Guardian
             _hoverUnit = -1;
             _hoverAction = 0;
             _pressedAction = null;
+            _tooltip.Reset();
+            _tooltipItem = null;
             try { _tabSound?.Play(); } catch { }
             UpdateInputVisibility();
             UpdateInputLayout();
+            UpdateAnimationTimer();
             Invalidate();
             if (tab == "items" && _items == null) LoadItems();
             if (tab == "units" && _units == null) LoadUnits();
@@ -929,6 +995,14 @@ namespace CF7Launcher.Guardian
             _taskId.Visible = level;
             _unitLevel.Visible = units;
             _unitCount.Visible = units;
+            SyncInputOverlay();
+        }
+
+        private void SyncInputOverlay()
+        {
+            if (_inputOverlay == null) return;
+            bool hasInputs = _activeTab == "items" || _activeTab == "level" || _activeTab == "units";
+            _inputOverlay.Sync(Active && hasInputs && !_tooltip.Visible, Bounds);
         }
 
         private void UpdateInputLayout()
@@ -945,6 +1019,7 @@ namespace CF7Launcher.Guardian
             _taskId.Font = _smallFont;
             _unitLevel.Font = _smallFont;
             _unitCount.Font = _smallFont;
+            SyncInputOverlay();
         }
 
         private static Font CreateFont(float size, FontStyle style)
@@ -1031,8 +1106,8 @@ namespace CF7Launcher.Guardian
             if (_backgrounds.TryGetValue(tab, out image)) return image;
             try
             {
-                string path = Path.Combine(_webRoot, "assets", "modifier", "flash-" + tab + ".png");
-                if (!File.Exists(path)) return null;
+                string path = _art.Background(tab);
+                if (path == null) return null;
                 using (Image source = Image.FromFile(path)) image = new Bitmap(source);
                 _backgrounds[tab] = image;
                 return image;
@@ -1046,37 +1121,68 @@ namespace CF7Launcher.Guardian
             if (image != null) Invalidate();
         }
 
-        private Image IconFor(string name)
+        private Image ArtImage(string path, bool flipX)
         {
-            if (string.IsNullOrEmpty(name)) return null;
+            if (string.IsNullOrEmpty(path)) return null;
+            string key = flipX ? path + "#flipX" : path;
             Image image;
-            if (_icons.TryGetValue(name, out image)) return image;
+            if (_artImages.TryGetValue(key, out image)) return image;
             try
             {
-                if (_iconManifest == null)
-                {
-                    string manifestPath = Path.Combine(_webRoot, "icons", "manifest.json");
-                    if (!File.Exists(manifestPath)) return null;
-                    _iconManifest = JObject.Parse(File.ReadAllText(manifestPath));
-                }
-                JObject entry = _iconManifest[name] as JObject;
-                string file = Text(entry?["f1"]) ?? Text(entry?["uri"]);
-                if (string.IsNullOrEmpty(file)) return null;
-                string path = Path.Combine(_webRoot, "icons", file);
-                if (!File.Exists(path)) return null;
-                using (SKBitmap bitmap = SKBitmap.Decode(path))
-                {
-                    if (bitmap == null) return null;
-                    using (SKImage skImage = SKImage.FromBitmap(bitmap))
-                    using (SKData data = skImage.Encode(SKEncodedImageFormat.Png, 100))
-                    using (var stream = new MemoryStream(data.ToArray()))
-                    using (Image source = Image.FromStream(stream))
-                        image = new Bitmap(source);
-                }
-                _icons[name] = image;
+                using (Image source = Image.FromFile(path)) image = new Bitmap(source);
+                if (flipX) image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                _artImages[key] = image;
                 return image;
             }
             catch { return null; }
+        }
+
+        private RectangleF ArtRect(string action, Rectangle fallback, bool asset)
+        {
+            RectangleF rect = asset ? _art.AssetRect(_activeTab, action) : _art.HitRect(_activeTab, action);
+            return rect.IsEmpty ? new RectangleF(fallback.X, fallback.Y, fallback.Width, fallback.Height) : rect;
+        }
+
+        private bool ArtHit(Rectangle fallback, string action, Point logical)
+        {
+            return ArtRect(action, fallback, false).Contains(logical);
+        }
+
+        private RectangleF UnitRow(int index)
+        {
+            RectangleF row = _art.UnitRow(index);
+            return row.IsEmpty ? (RectangleF)ModifierNativeLayout.UnitRow(index) : row;
+        }
+
+        private int UnitIndexAt(Point logical)
+        {
+            for (int i = 0; i < ModifierNativeLayout.UnitRowsPerPage; i++)
+                if (UnitRow(i).Contains(logical)) return i;
+            return -1;
+        }
+
+        private bool DrawItemIcon(Graphics graphics, ItemEntry item, Rectangle destination)
+        {
+            var description = _iconCatalog.DescribeForPlayback(item.Icon, true);
+            int content = description == null ? -1 : description.Sample(
+                Environment.TickCount64 * TimeSpan.TicksPerMillisecond, true);
+            return description != null
+                && _iconCatalog.TryDrawPlayback(graphics, destination, description, content, 1f);
+        }
+
+        private void UpdateAnimationTimer()
+        {
+            bool run = Active && (_activeTab == "items" || _tooltip.WantsAnimationTick);
+            if (run && !_animationTimer.Enabled) _animationTimer.Start();
+            else if (!run && _animationTimer.Enabled) _animationTimer.Stop();
+        }
+
+        private void OnAnimationTick(object sender, EventArgs e)
+        {
+            if (!Active) { _animationTimer.Stop(); return; }
+            _tooltip.Tick(_animationTimer.Interval);
+            if (_activeTab == "items" || _tooltip.WantsAnimationTick) Invalidate();
+            UpdateAnimationTimer();
         }
 
         private static Image DecodeUnitFrame(string encoded, int width, int height)
@@ -1108,13 +1214,42 @@ namespace CF7Launcher.Guardian
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            e.Graphics.Clear(KeyColor);
+            e.Graphics.Clear(Color.Transparent);
+        }
+
+        protected override void OnInvalidated(InvalidateEventArgs e)
+        {
+            base.OnInvalidated(e);
+            if (!Active || _disposed || ClientSize.Width < 1 || ClientSize.Height < 1) return;
+            using (Bitmap bitmap = RenderFrame())
+                CommitBitmap(bitmap, Left, Top, 255);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            Graphics graphics = e.Graphics;
+            PaintSurface(e.Graphics);
+        }
+
+        internal Bitmap RenderFrame()
+        {
+            var bitmap = new Bitmap(Math.Max(1, ClientSize.Width), Math.Max(1, ClientSize.Height),
+                PixelFormat.Format32bppPArgb);
+            try
+            {
+                using (Graphics graphics = Graphics.FromImage(bitmap)) PaintSurface(graphics);
+                return bitmap;
+            }
+            catch
+            {
+                bitmap.Dispose();
+                throw;
+            }
+        }
+
+        private void PaintSurface(Graphics graphics)
+        {
+            graphics.Clear(Color.Transparent);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             Size client = ClientSize;
@@ -1126,6 +1261,8 @@ namespace CF7Launcher.Guardian
             GraphicsState state = graphics.Save();
             graphics.TranslateTransform(offset.X, offset.Y);
             graphics.ScaleTransform(scale, scale);
+            DrawButton(graphics, ModifierNativeLayout.Close, "close");
+            DrawButton(graphics, new Rectangle(163, 31, 25, 25), "drag");
             DrawTab(graphics, ModifierNativeLayout.EconomyTab, "economy");
             DrawTab(graphics, ModifierNativeLayout.ItemsTab, "items");
             DrawTab(graphics, ModifierNativeLayout.LevelTab, "level");
@@ -1155,24 +1292,48 @@ namespace CF7Launcher.Guardian
             }
             DrawStatus(graphics);
             graphics.Restore(state);
+            Point origin = IsHandleCreated ? PointToScreen(Point.Empty) : Point.Empty;
+            _tooltip.Paint(graphics, DeviceDpi / 96f, origin);
         }
 
         private void DrawTab(Graphics graphics, Rectangle rect, string tab)
         {
-            if (string.Equals(_activeTab, tab, StringComparison.Ordinal)) return;
-            if (_hoverAction == ActionId("tab:" + tab))
-                DrawOutline(graphics, rect, Color.FromArgb(70, Gold));
+            DrawButton(graphics, rect, "tab:" + tab);
         }
 
         private void DrawButton(Graphics graphics, Rectangle rect, string action)
         {
-            if (_hoverAction == ActionId(action)) DrawOutline(graphics, rect, Color.FromArgb(100, Gold));
+            bool hover = _hoverAction == ActionId(action);
+            bool pressed = hover && string.Equals(_pressedAction, action, StringComparison.Ordinal);
+            RectangleF asset = ArtRect(action, rect, true);
+            Image image = ArtImage(_art.ButtonImage(_activeTab, action, hover, pressed),
+                _art.ButtonFlipX(_activeTab, action));
+            if (image != null) graphics.DrawImage(image, asset);
+            if (hover) DrawOutline(graphics, ArtRect(action, rect, false), Color.FromArgb(100, Gold));
         }
 
-        private void DrawOutline(Graphics graphics, Rectangle rect, Color color)
+        private void DrawOutline(Graphics graphics, RectangleF rect, Color color)
         {
             using (var pen = new Pen(color, 1f))
                 graphics.DrawRectangle(pen, rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2);
+        }
+
+        private void DrawItemGrid(Graphics graphics)
+        {
+            Rectangle grid = ModifierNativeLayout.ItemGrid;
+            using (var pen = new Pen(Color.FromArgb(140, 59, 59, 57), 1f))
+            {
+                for (int column = 0; column <= ModifierNativeLayout.ItemColumns; column++)
+                {
+                    int x = grid.Left + column * ModifierNativeLayout.ItemCellSize;
+                    graphics.DrawLine(pen, x, grid.Top, x, grid.Bottom);
+                }
+                for (int row = 0; row <= ModifierNativeLayout.ItemRows; row++)
+                {
+                    int y = grid.Top + row * ModifierNativeLayout.ItemCellSize;
+                    graphics.DrawLine(pen, grid.Left, y, grid.Right, y);
+                }
+            }
         }
 
         private void DrawItems(Graphics graphics)
@@ -1185,6 +1346,7 @@ namespace CF7Launcher.Guardian
             DrawButton(graphics, ModifierNativeLayout.ItemPlus, "item_plus");
             DrawButton(graphics, ModifierNativeLayout.ItemProduce, "item_produce");
             DrawButton(graphics, ModifierNativeLayout.ItemSearch, "item_search");
+            DrawItemGrid(graphics);
             if (_items == null)
             {
                 DrawText(graphics, _itemLoading ? "读取中…" : "物品目录未加载。", ModifierNativeLayout.ItemGrid, _smallFont, Gold, _ellipsis);
@@ -1194,6 +1356,8 @@ namespace CF7Launcher.Guardian
             {
                 DrawText(graphics, "没有匹配物品。", ModifierNativeLayout.ItemGrid, _smallFont, Gold, _ellipsis);
             }
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
             for (int i = 0; i < _items.Count && i < ModifierNativeLayout.ItemColumns * ModifierNativeLayout.ItemRows; i++)
             {
                 Rectangle cell = ModifierNativeLayout.ItemCell(i);
@@ -1205,16 +1369,11 @@ namespace CF7Launcher.Guardian
                     using (var pen = new Pen(Gold, 1f))
                         graphics.DrawRectangle(pen, cell.X, cell.Y, cell.Width - 1, cell.Height - 1);
                 }
-                Image icon = IconFor(item.Icon);
-                if (icon != null)
-                    graphics.DrawImage(icon, cell.X + 3, cell.Y + 3, 22, 22);
-                else
+                if (!DrawItemIcon(graphics, item, new Rectangle(cell.X + 2, cell.Y + 2, 24, 24)))
                     DrawText(graphics, "?", new Rectangle(cell.X, cell.Y + 6, cell.Width, 18), _smallFont, Gold, _ellipsis);
                 DrawText(graphics, "1", new Rectangle(cell.Right - 8, cell.Bottom - 9, 8, 8), _tinyFont, Gold, _ellipsis);
             }
-            DrawText(graphics, PageText(_itemTotal, _itemPage, _itemPageSize), new Rectangle(360, 348, 130, 20), _smallFont, Gold, _ellipsis);
-            if (_hoverItem >= 0 && _items != null && _hoverItem < _items.Count)
-                DrawItemTooltip(graphics, _items[_hoverItem]);
+            DrawText(graphics, PageText(_itemTotal, _itemPage, _itemPageSize), new Rectangle(360, 381, 130, 20), _smallFont, Gold, _ellipsis);
         }
 
         private void DrawUnits(Graphics graphics)
@@ -1229,13 +1388,19 @@ namespace CF7Launcher.Guardian
             DrawButton(graphics, ModifierNativeLayout.UnitCountPlus, "count_plus");
             DrawButton(graphics, ModifierNativeLayout.UnitSpawn, "unit_spawn");
             DrawButton(graphics, ModifierNativeLayout.UnitMerc, "unit_merc");
+            DrawButton(graphics, new Rectangle(376, 375, 108, 30), "unit_jump");
             if (_unitFrame != null && !string.Equals(_unitFrameSprite, null, StringComparison.Ordinal))
             {
-                Rectangle frame = ModifierNativeLayout.UnitFrame;
-                float ratio = Math.Min(frame.Width / (float)_unitFrame.Width, frame.Height / (float)_unitFrame.Height);
-                int width = Math.Max(1, (int)(_unitFrame.Width * ratio));
-                int height = Math.Max(1, (int)(_unitFrame.Height * ratio));
-                graphics.DrawImage(_unitFrame, frame.X + (frame.Width - width) / 2, frame.Y + (frame.Height - height) / 2, width, height);
+                RectangleF frame = _art.UnitFrameMask;
+                if (frame.IsEmpty) frame = ModifierNativeLayout.UnitFrame;
+                float ratio = Math.Min(frame.Width / _unitFrame.Width, frame.Height / _unitFrame.Height);
+                float width = Math.Max(1f, _unitFrame.Width * ratio);
+                float height = Math.Max(1f, _unitFrame.Height * ratio);
+                GraphicsState previewState = graphics.Save();
+                graphics.SetClip(frame, CombineMode.Intersect);
+                graphics.DrawImage(_unitFrame, frame.X + (frame.Width - width) / 2,
+                    frame.Y + (frame.Height - height) / 2, width, height);
+                graphics.Restore(previewState);
             }
             if (_units == null)
             {
@@ -1245,21 +1410,18 @@ namespace CF7Launcher.Guardian
             for (int i = 0; i < _units.Count && i < ModifierNativeLayout.UnitRowsPerPage; i++)
             {
                 UnitEntry unit = _units[i];
-                Rectangle row = ModifierNativeLayout.UnitRow(i);
+                RectangleF row = UnitRow(i);
                 if (_selectedUnit == i)
-                {
                     using (var brush = new SolidBrush(Color.FromArgb(32, Gold)))
                         graphics.FillRectangle(brush, row);
-                    using (var pen = new Pen(Gold, 1f))
-                        graphics.DrawRectangle(pen, row.X, row.Y, row.Width - 1, row.Height - 1);
-                }
                 Color nameColor = unit.Hostile ? HostileText : UnitText;
+                GraphicsState rowState = graphics.Save();
+                graphics.SetClip(row, CombineMode.Intersect);
                 DrawText(graphics, unit.Name.Length > 0 ? unit.Name : unit.SpriteName,
-                    new Rectangle(row.X + 6, row.Y + 1, row.Width - 12, 12), _textFont, nameColor, _ellipsis);
-                DrawText(graphics, unit.SpriteName + " · " + unit.Level + " · " + (unit.Hostile ? "敌" : "友"),
-                    new Rectangle(row.X + 6, row.Y + 13, row.Width - 12, 11), _tinyFont, UnitMeta, _ellipsis);
+                    new RectangleF(row.X + 6, row.Y + 2, row.Width - 12, row.Height - 4), _smallFont, nameColor, _ellipsis);
+                graphics.Restore(rowState);
             }
-            DrawText(graphics, PageText(_unitTotal, _unitPage, _unitPageSize), ModifierNativeLayout.UnitPageState, _smallFont, Gold, _ellipsis);
+            DrawText(graphics, _unitPage.ToString(), ModifierNativeLayout.UnitPageState, _smallFont, Gold, _ellipsis);
             DrawHostile(graphics);
         }
 
@@ -1273,21 +1435,81 @@ namespace CF7Launcher.Guardian
                     graphics.FillRectangle(brush, rect.X + 3, rect.Y + 3, rect.Width - 6, rect.Height - 6);
         }
 
-        private void DrawItemTooltip(Graphics graphics, ItemEntry item)
+        private static JObject BasicItemDocument(ItemEntry item)
         {
             string name = item.DisplayName.Length > 0 ? item.DisplayName : item.Name;
-            string meta = "#" + item.Id + " · " + (item.Type.Length > 0 ? item.Type : "—") + " · " + (item.Use.Length > 0 ? item.Use : "—");
-            const int width = 180;
-            int x = _tooltipPoint.X + 14;
-            int y = _tooltipPoint.Y + 10;
-            if (x + width > ModifierNativeLayout.Width - 4) x = Math.Max(4, _tooltipPoint.X - width - 8);
-            if (y + 38 > ModifierNativeLayout.Height - 4) y = Math.Max(4, ModifierNativeLayout.Height - 42);
-            using (var brush = new SolidBrush(Color.FromArgb(235, Color.Black)))
-                graphics.FillRectangle(brush, x, y, width, 38);
-            using (var pen = new Pen(Color.White, 1f))
-                graphics.DrawRectangle(pen, x, y, width - 1, 37);
-            DrawText(graphics, name, new Rectangle(x + 6, y + 4, width - 12, 14), _smallFont, Color.White, _ellipsis);
-            DrawText(graphics, meta, new Rectangle(x + 6, y + 20, width - 12, 12), _tinyFont, SoftGold, _ellipsis);
+            string meta = "#" + item.Id + " · " + (item.Type.Length > 0 ? item.Type : "—")
+                + " · " + (item.Use.Length > 0 ? item.Use : "—");
+            return new JObject
+            {
+                ["version"] = 1,
+                ["title"] = name,
+                ["profile"] = "dense",
+                ["layoutType"] = "narrow",
+                ["icon"] = new JObject { ["kind"] = "item", ["name"] = item.Icon },
+                ["sections"] = new JArray
+                {
+                    new JObject
+                    {
+                        ["role"] = "description",
+                        ["runs"] = new JArray { new JObject { ["text"] = meta, ["color"] = "#D8C38A" } }
+                    }
+                }
+            };
+        }
+
+        private void ShowItemTooltip(ItemEntry item)
+        {
+            if (item == null || !Active) return;
+            _tooltipItem = item.Name;
+            JObject document;
+            if (!_tooltipDocuments.TryGetValue(item.Name, out document)) document = BasicItemDocument(item);
+            ShowTooltipDocument(item, (JObject)document.DeepClone());
+            if (!_tooltipDocuments.ContainsKey(item.Name) && _tooltipRequests.Add(item.Name))
+            {
+                SendRequest("itemTooltip", new JObject
+                {
+                    ["v"] = 1, ["token"] = _token, ["itemName"] = item.Name
+                }, response => ApplyItemTooltip(item, response));
+            }
+        }
+
+        private void ShowTooltipDocument(ItemEntry item, JObject document)
+        {
+            var payload = new JObject
+            {
+                ["version"] = 1,
+                ["requestId"] = "modifier.item." + item.Name,
+                ["sceneId"] = _instance,
+                ["owner"] = "modifier",
+                ["revision"] = _revision,
+                ["document"] = document
+            };
+            if (!_tooltip.Show(payload)) return;
+            QueueTooltipPointer();
+            UpdateAnimationTimer();
+            Invalidate();
+        }
+
+        private void ApplyItemTooltip(ItemEntry item, JObject response)
+        {
+            _tooltipRequests.Remove(item.Name);
+            if (!Active || !Bool(response["success"])) return;
+            JObject document = response["document"] as JObject;
+            if (document == null) return;
+            _tooltipDocuments[item.Name] = (JObject)document.DeepClone();
+            if (string.Equals(_tooltipItem, item.Name, StringComparison.Ordinal))
+                ShowTooltipDocument(item, (JObject)document.DeepClone());
+        }
+
+        private void QueueTooltipPointer()
+        {
+            float scale = ModifierNativeLayout.ScaleFor(ClientSize);
+            PointF offset = ModifierNativeLayout.OffsetFor(ClientSize, scale);
+            var client = new Point((int)Math.Round(offset.X + _tooltipPoint.X * scale),
+                (int)Math.Round(offset.Y + _tooltipPoint.Y * scale));
+            Point screen = IsHandleCreated ? PointToScreen(client) : client;
+            _tooltip.QueuePointerMove(screen.X, screen.Y);
         }
 
         private void DrawStatus(Graphics graphics)
@@ -1299,7 +1521,7 @@ namespace CF7Launcher.Guardian
             }
             if (string.IsNullOrEmpty(_status)) return;
             Color color = StatusColor(_statusTone);
-            DrawText(graphics, _status, new Rectangle(180, 374, 510, 20), _statusFont, color, _ellipsis);
+            DrawText(graphics, _status, new Rectangle(180, 403, 510, 20), _statusFont, color, _ellipsis);
         }
 
         private static Color StatusColor(string tone)
@@ -1314,7 +1536,7 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        private void DrawText(Graphics graphics, string text, Rectangle rect, Font font, Color color, StringFormat format)
+        private void DrawText(Graphics graphics, string text, RectangleF rect, Font font, Color color, StringFormat format)
         {
             if (string.IsNullOrEmpty(text)) return;
             using (var brush = new SolidBrush(color))
@@ -1336,52 +1558,54 @@ namespace CF7Launcher.Guardian
 
         private string HitAction(Point logical)
         {
-            string tab = ModifierNativeLayout.TabAt(logical);
-            if (tab != null) return "tab:" + tab;
-            if (ModifierNativeLayout.Close.Contains(logical)) return "close";
-            if (_unresolvedToken != null && ModifierNativeLayout.Reconcile.Contains(logical)) return "reconcile";
+            if (ArtHit(ModifierNativeLayout.EconomyTab, "tab:economy", logical)) return "tab:economy";
+            if (ArtHit(ModifierNativeLayout.ItemsTab, "tab:items", logical)) return "tab:items";
+            if (ArtHit(ModifierNativeLayout.LevelTab, "tab:level", logical)) return "tab:level";
+            if (ArtHit(ModifierNativeLayout.UnitsTab, "tab:units", logical)) return "tab:units";
+            if (ArtHit(ModifierNativeLayout.Close, "close", logical)) return "close";
+            if (_unresolvedToken != null && ArtHit(ModifierNativeLayout.Reconcile, "reconcile", logical)) return "reconcile";
             if (_activeTab == "economy")
             {
-                if (ModifierNativeLayout.Money.Contains(logical)) return "money";
-                if (ModifierNativeLayout.KCoin.Contains(logical)) return "kcoin";
-                if (ModifierNativeLayout.TestSpace.Contains(logical)) return "test_space";
+                if (ArtHit(ModifierNativeLayout.Money, "money", logical)) return "money";
+                if (ArtHit(ModifierNativeLayout.KCoin, "kcoin", logical)) return "kcoin";
+                if (ArtHit(ModifierNativeLayout.TestSpace, "test_space", logical)) return "test_space";
             }
             else if (_activeTab == "items")
             {
-                if (ModifierNativeLayout.ItemFirst.Contains(logical)) return "item_first";
-                if (ModifierNativeLayout.ItemPrevious.Contains(logical)) return "item_prev";
-                if (ModifierNativeLayout.ItemNext.Contains(logical)) return "item_next";
-                if (ModifierNativeLayout.ItemLast.Contains(logical)) return "item_last";
-                if (ModifierNativeLayout.ItemMinus.Contains(logical)) return "item_minus";
-                if (ModifierNativeLayout.ItemPlus.Contains(logical)) return "item_plus";
-                if (ModifierNativeLayout.ItemProduce.Contains(logical)) return "item_produce";
-                if (ModifierNativeLayout.ItemSearch.Contains(logical)) return "item_search";
+                if (ArtHit(ModifierNativeLayout.ItemFirst, "item_first", logical)) return "item_first";
+                if (ArtHit(ModifierNativeLayout.ItemPrevious, "item_prev", logical)) return "item_prev";
+                if (ArtHit(ModifierNativeLayout.ItemNext, "item_next", logical)) return "item_next";
+                if (ArtHit(ModifierNativeLayout.ItemLast, "item_last", logical)) return "item_last";
+                if (ArtHit(ModifierNativeLayout.ItemMinus, "item_minus", logical)) return "item_minus";
+                if (ArtHit(ModifierNativeLayout.ItemPlus, "item_plus", logical)) return "item_plus";
+                if (ArtHit(ModifierNativeLayout.ItemProduce, "item_produce", logical)) return "item_produce";
+                if (ArtHit(ModifierNativeLayout.ItemSearch, "item_search", logical)) return "item_search";
                 int index = ModifierNativeLayout.ItemIndexAt(logical);
                 if (index >= 0) return "item:" + index;
             }
             else if (_activeTab == "level")
             {
-                if (ModifierNativeLayout.KillAll.Contains(logical)) return "kill_all";
-                if (ModifierNativeLayout.FinishWave.Contains(logical)) return "finish_wave";
-                if (ModifierNativeLayout.FinishMap.Contains(logical)) return "finish_map";
-                if (ModifierNativeLayout.FinishStage.Contains(logical)) return "finish_stage";
-                if (ModifierNativeLayout.GrantTask.Contains(logical)) return "grant_task";
-                if (ModifierNativeLayout.UnlockStages.Contains(logical)) return "unlock_stages";
+                if (ArtHit(ModifierNativeLayout.KillAll, "kill_all", logical)) return "kill_all";
+                if (ArtHit(ModifierNativeLayout.FinishWave, "finish_wave", logical)) return "finish_wave";
+                if (ArtHit(ModifierNativeLayout.FinishMap, "finish_map", logical)) return "finish_map";
+                if (ArtHit(ModifierNativeLayout.FinishStage, "finish_stage", logical)) return "finish_stage";
+                if (ArtHit(ModifierNativeLayout.GrantTask, "grant_task", logical)) return "grant_task";
+                if (ArtHit(ModifierNativeLayout.UnlockStages, "unlock_stages", logical)) return "unlock_stages";
             }
             else if (_activeTab == "units")
             {
-                if (ModifierNativeLayout.UnitFirst.Contains(logical)) return "unit_first";
-                if (ModifierNativeLayout.UnitPrevious.Contains(logical)) return "unit_prev";
-                if (ModifierNativeLayout.UnitNext.Contains(logical)) return "unit_next";
-                if (ModifierNativeLayout.UnitLast.Contains(logical)) return "unit_last";
-                if (ModifierNativeLayout.UnitLevelMinus.Contains(logical)) return "level_minus";
-                if (ModifierNativeLayout.UnitLevelPlus.Contains(logical)) return "level_plus";
-                if (ModifierNativeLayout.UnitCountMinus.Contains(logical)) return "count_minus";
-                if (ModifierNativeLayout.UnitCountPlus.Contains(logical)) return "count_plus";
-                if (ModifierNativeLayout.UnitHostile.Contains(logical)) return "hostile";
-                if (ModifierNativeLayout.UnitSpawn.Contains(logical)) return "unit_spawn";
-                if (ModifierNativeLayout.UnitMerc.Contains(logical)) return "unit_merc";
-                int index = ModifierNativeLayout.UnitIndexAt(logical);
+                if (ArtHit(ModifierNativeLayout.UnitFirst, "unit_first", logical)) return "unit_first";
+                if (ArtHit(ModifierNativeLayout.UnitPrevious, "unit_prev", logical)) return "unit_prev";
+                if (ArtHit(ModifierNativeLayout.UnitNext, "unit_next", logical)) return "unit_next";
+                if (ArtHit(ModifierNativeLayout.UnitLast, "unit_last", logical)) return "unit_last";
+                if (ArtHit(ModifierNativeLayout.UnitLevelMinus, "level_minus", logical)) return "level_minus";
+                if (ArtHit(ModifierNativeLayout.UnitLevelPlus, "level_plus", logical)) return "level_plus";
+                if (ArtHit(ModifierNativeLayout.UnitCountMinus, "count_minus", logical)) return "count_minus";
+                if (ArtHit(ModifierNativeLayout.UnitCountPlus, "count_plus", logical)) return "count_plus";
+                if (ArtHit(ModifierNativeLayout.UnitHostile, "hostile", logical)) return "hostile";
+                if (ArtHit(ModifierNativeLayout.UnitSpawn, "unit_spawn", logical)) return "unit_spawn";
+                if (ArtHit(ModifierNativeLayout.UnitMerc, "unit_merc", logical)) return "unit_merc";
+                int index = UnitIndexAt(logical);
                 if (index >= 0) return "unit:" + index;
             }
             return null;
@@ -1547,6 +1771,65 @@ namespace CF7Launcher.Guardian
             input.Text = value.ToString();
         }
 
+        private string ExternalTabAt(Point logical)
+        {
+            if (ArtHit(ModifierNativeLayout.EconomyTab, "tab:economy", logical)) return "economy";
+            if (ArtHit(ModifierNativeLayout.ItemsTab, "tab:items", logical)) return "items";
+            if (ArtHit(ModifierNativeLayout.LevelTab, "tab:level", logical)) return "level";
+            if (ArtHit(ModifierNativeLayout.UnitsTab, "tab:units", logical)) return "units";
+            return null;
+        }
+
+        private void TrackExternalItem(int index, Point logical)
+        {
+            if (_items == null || index < 0 || index >= _items.Count) return;
+            _tooltipPoint = logical;
+            if (_hoverItem != index)
+            {
+                _hoverItem = index;
+                ShowItemTooltip(_items[index]);
+                Invalidate();
+            }
+            QueueTooltipPointer();
+        }
+
+        public bool PreFilterMessage(ref Message message)
+        {
+            if (_disposed || !Active) return false;
+            bool move = message.Msg == 0x0200;
+            bool down = message.Msg == 0x0201;
+            if (!move && !down && message.Msg != 0x0202) return false;
+            Point client;
+            try { client = PointToClient(Cursor.Position); }
+            catch { return false; }
+            if (!ClientRectangle.Contains(client)) return false;
+            Point logical = ModifierNativeLayout.ToLogical(client, ClientSize);
+            if (_activeTab == "items")
+            {
+                int index = ModifierNativeLayout.ItemIndexAt(logical);
+                if (index >= 0 && _items != null && index < _items.Count)
+                {
+                    if (move)
+                    {
+                        TrackExternalItem(index, logical);
+                        return false;
+                    }
+                    if (message.HWnd != Handle)
+                    {
+                        if (down) SelectItem(index);
+                        return true;
+                    }
+                }
+            }
+            string tab = ExternalTabAt(logical);
+            if (tab != null && message.HWnd != Handle)
+            {
+                if (down) SetTab(tab);
+                return true;
+            }
+            return false;
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -1558,10 +1841,16 @@ namespace CF7Launcher.Guardian
             _hoverAction = action;
             _tooltipPoint = logical;
             int item = _activeTab == "items" ? ModifierNativeLayout.ItemIndexAt(logical) : -1;
-            int unit = _activeTab == "units" ? ModifierNativeLayout.UnitIndexAt(logical) : -1;
+            int unit = _activeTab == "units" ? UnitIndexAt(logical) : -1;
+            if (item != _hoverItem)
+            {
+                if (item >= 0 && _items != null && item < _items.Count) ShowItemTooltip(_items[item]);
+                else { _tooltip.Reset(); _tooltipItem = null; }
+            }
             if (item != _hoverItem || unit != _hoverUnit) changed = true;
             _hoverItem = item;
             _hoverUnit = unit;
+            if (_tooltip.Visible) QueueTooltipPointer();
             if (changed) Invalidate();
         }
 
@@ -1573,6 +1862,9 @@ namespace CF7Launcher.Guardian
             _hoverAction = 0;
             _hoverItem = -1;
             _hoverUnit = -1;
+            _tooltip.Reset();
+            _tooltipItem = null;
+            UpdateAnimationTimer();
             Invalidate();
             _trackingLeave = false;
         }
@@ -1627,7 +1919,10 @@ namespace CF7Launcher.Guardian
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            if (!Active || _hoverAction != 0) return;
+            if (!Active) return;
+            Point screen = IsHandleCreated ? PointToScreen(e.Location) : e.Location;
+            if (_tooltip.Visible && _tooltip.TryScrollAt(screen, e.Delta)) return;
+            if (_hoverAction != 0) return;
             if (_activeTab == "items") ChangeItemPage(e.Delta > 0 ? -1 : 1, false, false);
             else if (_activeTab == "units") ChangeUnitPage(e.Delta > 0 ? -1 : 1, false, false);
         }
@@ -1672,13 +1967,19 @@ namespace CF7Launcher.Guardian
             if (disposing)
             {
                 _disposed = true;
+                Application.RemoveMessageFilter(this);
+                _inputOverlay?.Dispose();
                 _armTimer.Stop();
                 _armTimer.Dispose();
+                _animationTimer.Stop();
+                _animationTimer.Dispose();
+                _tooltip.Dispose();
+                _iconCatalog.Dispose();
                 try { _tabSound?.Dispose(); } catch { }
                 foreach (Image image in _backgrounds.Values) image.Dispose();
                 _backgrounds.Clear();
-                foreach (Image image in _icons.Values) image.Dispose();
-                _icons.Clear();
+                foreach (Image image in _artImages.Values) image.Dispose();
+                _artImages.Clear();
                 foreach (Image image in _unitFrames.Values) image.Dispose();
                 _unitFrames.Clear();
                 _unitFrame = null;

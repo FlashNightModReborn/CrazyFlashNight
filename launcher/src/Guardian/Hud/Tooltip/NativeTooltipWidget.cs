@@ -107,6 +107,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         // 宿主窗口 DPI 缩放（物理 px / 视口 CSS px）：缺省每次布局读 anchor.DeviceDpi；
         // parity fixture / 测试可注入确定性值覆盖 1/1.25/1.5 等档。
         private readonly Func<float> _dpiScaleProvider;
+        private readonly Func<float> _visualScaleProvider;
 
         private NativeTooltipDocument _doc;
         private NativeTooltipLayout.Plan _plan;
@@ -181,13 +182,15 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// 每次 EnsureLayout 重读，null → 默认读 anchor.DeviceDpi/96f。
         /// parity fixture / 测试用其覆盖 1/1.25/1.5 等档位做确定性对照。
         /// </param>
+        /// <param name="visualScaleProvider">可选的宿主视觉缩放；为空时沿用窗口高度缩放。</param>
         public NativeTooltipWidget(Control anchor, LootIconCatalog icons,
-            Func<float> dpiScaleProvider)
+            Func<float> dpiScaleProvider, Func<float> visualScaleProvider = null)
         {
             if (anchor == null) throw new ArgumentNullException("anchor");
             _anchor = anchor;
             _icons = icons;
             _dpiScaleProvider = dpiScaleProvider;
+            _visualScaleProvider = visualScaleProvider;
             _mapper = new FlashCoordinateMapper(anchor, StageW, StageH);
             // 与浏览器帧调度同样合并连续移动；hook 中只存样本，不测字、不绘制。
             _pointerMoveTimer = new Timer { Interval = 16 };
@@ -1516,7 +1519,13 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         {
             int h = _anchor.ClientSize.Height;
             if (h <= 0) return 1f;
-            return Math.Max(WebMinScale * CurrentDpiScale(), h / WebDesignHeight);
+            float baseline = Math.Max(WebMinScale * CurrentDpiScale(), h / WebDesignHeight);
+            if (_visualScaleProvider == null) return baseline;
+            float custom;
+            try { custom = _visualScaleProvider(); }
+            catch { return baseline; }
+            return float.IsNaN(custom) || float.IsInfinity(custom) || custom <= 0f
+                ? baseline : Math.Max(WebMinScale * CurrentDpiScale(), custom);
         }
 
         private void EnsureFonts(float scale)
