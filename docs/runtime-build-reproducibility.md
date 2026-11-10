@@ -24,6 +24,11 @@
 
 硬禁令（各小节正文逐条有效）：禁止 v2 → v1 降级；禁止把单机 candidate 直拷进正式 `runtime/`；禁止伪造第二 builder 或虚构独立故障域；禁止绕过远端 ruleset 移动或删除已出具证明的 tag；禁止自由文本 ID 冒充 builder、复制私钥、手改 hash / receipt / attestation。
 
+两条排序不变量（违反时门会 fail-closed，但失败点离根因很远，先按这里核对顺序）：
+
+- **先改 `sourceRef` 并 commit，再冻 tag。** `config/build/runtime-github-builder.v2.json` 本身是 `policyHash` 输入，而 `runtime-cloud-builder.yml` 断言 `cloudConfig.sourceRef` 与 `GITHUB_REF` 逐字相同。tag 一旦创建即不可移动，所以指向旧 tag 的冻结树永远拿不到云端证明；只能把 `sourceRef` 写成本列车 tag 名、提交推送，再在该提交上冻 tag，并原子 supersede 旧 request。旧 tag 保留为未出证的冻结历史，不移动不删除。
+- **部署提交必须落在与冻结源同代的 HEAD 上。** 第 5 步的事后 Audit 在 `deploymentChanged=true` 时走严格验证，而 `classify-runtime-release-state.ps1` 给验证器传 `-Staged`，读的是 Git index＝HEAD 树，**不是** `consensus.releaseTreeOid`。若上游在冻结与推送之间合入了影响 `artifactSourceHash` 的源码（`launcher/src/**`、`launcher/native/**` 等），rebase 或 merge 后再推 consensus 会让 HEAD 重算出的 identity 与已部署 consensus 不等，Audit 报 `MISMATCH artifactSourceHash` 并失败。此时唯一正解是对 newer tree 重跑完整列车；不得 force-push 改写已发布历史，不得回退他人改动，也不得靠再推一笔无内容变化的提交把 Audit 绕成 `source-ahead`。冻结后应尽快完成双 signer 与 promotion 并推送，缩短这段窗口。
+
 Audio 边界：通用 supply-chain promotion 不以 Audio H1/H2/E3、截图、听感或其他产品体验证据为前置，也不借 emergency-release 旁路（本文历史段落中的 Audio 绑定 / pending 表述均为当时记录，现役通用口径以本节及「producer 与政策闸门」「政策 receipt 与 promotion」小节为准）；实际影响 DLL 的音频源码 / 配方 / toolchain 输入仍照常进入构建闭包，Audio 专项自身的验收义务保留。
 
 ### v2 四域身份
