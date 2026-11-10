@@ -19,10 +19,12 @@ namespace CF7Launcher.Guardian
         internal static readonly Rectangle KCoin = new Rectangle(200, 231, 130, 37);
         internal static readonly Rectangle TestSpace = new Rectangle(199, 306, 131, 37);
 
-        internal static readonly Rectangle ItemFirst = new Rectangle(194, 379, 22, 23);
-        internal static readonly Rectangle ItemPrevious = new Rectangle(224, 379, 22, 23);
-        internal static readonly Rectangle ItemNext = new Rectangle(284, 379, 22, 23);
-        internal static readonly Rectangle ItemLast = new Rectangle(314, 379, 22, 23);
+        internal static readonly Rectangle ItemFirst = new Rectangle(207, 376, 24, 25);
+        internal static readonly Rectangle ItemPrevious = new Rectangle(236, 376, 24, 25);
+        internal static readonly Rectangle ItemNext = new Rectangle(320, 376, 24, 25);
+        internal static readonly Rectangle ItemLast = new Rectangle(349, 376, 24, 25);
+        internal static readonly Rectangle ItemPage = new Rectangle(378, 379, 40, 22);
+        internal static readonly Rectangle ItemPageSummary = new Rectangle(422, 381, 180, 20);
         internal static readonly Rectangle ItemQuery = new Rectangle(433, 318, 92, 24);
         internal static readonly Rectangle ItemQuantity = new Rectangle(461, 243, 75, 24);
         internal static readonly Rectangle ItemMinus = new Rectangle(547, 241, 24, 24);
@@ -42,10 +44,12 @@ namespace CF7Launcher.Guardian
         internal static readonly Rectangle GrantTask = new Rectangle(464, 158, 108, 31);
         internal static readonly Rectangle UnlockStages = new Rectangle(464, 215, 108, 31);
 
-        internal static readonly Rectangle UnitFirst = new Rectangle(194, 379, 22, 23);
-        internal static readonly Rectangle UnitPrevious = new Rectangle(224, 379, 22, 23);
-        internal static readonly Rectangle UnitNext = new Rectangle(284, 379, 22, 23);
-        internal static readonly Rectangle UnitLast = new Rectangle(314, 379, 22, 23);
+        internal static readonly Rectangle UnitFirst = new Rectangle(191, 377, 24, 25);
+        internal static readonly Rectangle UnitPrevious = new Rectangle(220, 377, 24, 25);
+        internal static readonly Rectangle UnitNext = new Rectangle(251, 377, 24, 25);
+        internal static readonly Rectangle UnitLast = new Rectangle(280, 377, 24, 25);
+        internal static readonly Rectangle UnitPage = new Rectangle(310, 379, 34, 22);
+        internal static readonly Rectangle UnitPageSummary = new Rectangle(348, 381, 120, 20);
         internal static readonly Rectangle UnitGrid = new Rectangle(183, 139, 171, 225);
         internal static readonly Rectangle UnitFrame = new Rectangle(382, 138, 231, 138);
         internal static readonly Rectangle UnitLevel = new Rectangle(428, 326, 35, 22);
@@ -57,10 +61,23 @@ namespace CF7Launcher.Guardian
         internal static readonly Rectangle UnitHostile = new Rectangle(519, 306, 12, 12);
         internal static readonly Rectangle UnitSpawn = new Rectangle(506, 329, 108, 31);
         internal static readonly Rectangle UnitMerc = new Rectangle(506, 375, 108, 31);
-        internal static readonly Rectangle UnitPageState = new Rectangle(316, 381, 48, 20);
         internal static readonly Rectangle Reconcile = new Rectangle(704, 403, 42, 18);
         internal const int UnitRowHeight = 28;
         internal const int UnitRowsPerPage = 8;
+
+        internal static int PageCount(int total, int pageSize)
+        {
+            return total > 0 ? (int)Math.Ceiling(total / (double)Math.Max(1, pageSize)) : 0;
+        }
+
+        internal static int ClampPage(int page, int total, int pageSize)
+        {
+            int pages = PageCount(total, pageSize);
+            if (pages <= 0) return 1;
+            if (page < 1) page = 1;
+            if (page > pages) page = pages;
+            return page;
+        }
 
         internal static float ScaleFor(Size client)
         {

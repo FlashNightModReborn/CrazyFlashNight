@@ -86,6 +86,59 @@ namespace Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void PaginationFallbacksMatchTheDrawnArtRects()
+        {
+            DirectoryInfo repository = new DirectoryInfo(AppContext.BaseDirectory);
+            while (repository != null && !File.Exists(Path.Combine(
+                repository.FullName, "launcher", "CRAZYFLASHER7MercenaryEmpire.csproj")))
+                repository = repository.Parent;
+            Assert.NotNull(repository);
+            var art = new ModifierArtCatalog(Path.Combine(repository.FullName, "launcher", "web"));
+            AssertNav(art, "items", "item_first", ModifierNativeLayout.ItemFirst);
+            AssertNav(art, "items", "item_prev", ModifierNativeLayout.ItemPrevious);
+            AssertNav(art, "items", "item_next", ModifierNativeLayout.ItemNext);
+            AssertNav(art, "items", "item_last", ModifierNativeLayout.ItemLast);
+            AssertNav(art, "units", "unit_first", ModifierNativeLayout.UnitFirst);
+            AssertNav(art, "units", "unit_prev", ModifierNativeLayout.UnitPrevious);
+            AssertNav(art, "units", "unit_next", ModifierNativeLayout.UnitNext);
+            AssertNav(art, "units", "unit_last", ModifierNativeLayout.UnitLast);
+        }
+
+        [Fact]
+        public void PageClampingKeepsTypedPagesInsideTheAvailableRange()
+        {
+            Assert.Equal(0, ModifierNativeLayout.PageCount(0, 64));
+            Assert.Equal(4, ModifierNativeLayout.PageCount(200, 64));
+            Assert.Equal(1, ModifierNativeLayout.ClampPage(1, 200, 64));
+            Assert.Equal(2, ModifierNativeLayout.ClampPage(2, 200, 64));
+            Assert.Equal(4, ModifierNativeLayout.ClampPage(99, 200, 64));
+            Assert.Equal(1, ModifierNativeLayout.ClampPage(0, 200, 64));
+            Assert.Equal(1, ModifierNativeLayout.ClampPage(-5, 0, 64));
+            Assert.Equal(1, ModifierNativeLayout.ClampPage(99, 0, 64));
+        }
+
+        [Fact]
+        public void PageInputsSitOutsideTheNavigationButtonArt()
+        {
+            Assert.True(ModifierNativeLayout.ItemPage.Left >= ModifierNativeLayout.ItemLast.Right);
+            Assert.True(ModifierNativeLayout.ItemPageSummary.Left >= ModifierNativeLayout.ItemPage.Right);
+            Assert.True(ModifierNativeLayout.UnitPage.Left >= ModifierNativeLayout.UnitLast.Right);
+            Assert.True(ModifierNativeLayout.UnitPageSummary.Left >= ModifierNativeLayout.UnitPage.Right);
+            Assert.True(ModifierNativeLayout.ItemPageSummary.Right <= ModifierNativeLayout.Width);
+            Assert.True(ModifierNativeLayout.UnitPageSummary.Right <= ModifierNativeLayout.Width);
+        }
+
+        private static void AssertNav(ModifierArtCatalog art, string page, string action, Rectangle expected)
+        {
+            RectangleF asset = art.AssetRect(page, action);
+            Assert.False(asset.IsEmpty);
+            Assert.InRange(Math.Abs(asset.Left - expected.Left), 0f, 1.5f);
+            Assert.InRange(Math.Abs(asset.Top - expected.Top), 0f, 1.5f);
+            Assert.InRange(Math.Abs(asset.Width - expected.Width), 0f, 1.5f);
+            Assert.InRange(Math.Abs(asset.Height - expected.Height), 0f, 1.5f);
+        }
+
+        [Fact]
         public void ArtCatalogSeparatesButtonImagesFromTheirSourceHitRects()
         {
             DirectoryInfo repository = new DirectoryInfo(AppContext.BaseDirectory);
