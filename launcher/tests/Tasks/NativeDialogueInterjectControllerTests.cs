@@ -2682,6 +2682,23 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void TypedAcceptPublishAlsoStartsHandoffWithTurnToken()
+        {
+            using var h = AcceptableDraftDialogue();
+            h.Transport.Script(DoneWithPublish(200345, "Andy Law"));
+            Assert.True(h.Controller.Submit("我接了"));
+
+            Assert.True(h.Controller.HandoffForTest);
+            Assert.Single(h.Pushed);
+            JObject packet = JObject.Parse(h.Pushed[0].TrimEnd(' '));
+            Assert.Equal("agent_task_publish", packet.Value<string>("task"));
+            Assert.Equal(200345, packet.Value<int>("taskId"));
+            // 普通打字轮没有 action_id：token 回落本轮 turn_id，AS2 侧 token 可选
+            Assert.Equal(h.Controller.CurrentTurnId, packet.Value<string>("token"));
+            Assert.False(string.IsNullOrEmpty(packet.Value<string>("token")));
+        }
+
+        [Fact]
         public void TaskAcceptRetryTransitionDoesNotReopenOptionsOrBlockHandoff()
         {
             using var h = AcceptableDraftDialogue();
