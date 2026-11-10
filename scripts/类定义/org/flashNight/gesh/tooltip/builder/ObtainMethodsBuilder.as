@@ -95,11 +95,12 @@ class org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder {
         if (craftCount > 0) rows.push({name:labelOf(TooltipConstants.TIP_OBTAIN_CRAFT), effect:""});
         for (var c:Number = 0; c < craftCount; c++) {
             var craft:Object = crafts[c];
+            var craftLabel:String = craftLocationLabel(String(craft.category));
             result.push("  <FONT COLOR='" + TooltipConstants.COL_CRAFT + "'>");
             result.push(TooltipConstants.TIP_OBTAIN_CRAFT);
             result.push("</FONT>");
-            result.push(craft.category);
-            var craftText:String = String(craft.category);
+            result.push(craftLabel);
+            var craftText:String = craftLabel;
             var craftPrice:String = "";
             if (craft.price > 0 || craft.kprice > 0) {
                 result.push(" (");
@@ -112,10 +113,10 @@ class org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder {
                 if (craft.price > 0 && craft.kprice > 0) craftText += " + ";
                 if (craft.kprice > 0) craftText += craft.kprice + "K";
                 craftText += ")";
-                craftPrice = craftText.substring(String(craft.category).length);
+                craftPrice = craftText.substring(craftLabel.length);
             }
             result.push(TooltipFormatter.br());
-            rows.push({name:String(craft.category), effect:craftPrice, depth:1});
+            rows.push({name:craftLabel, effect:craftPrice, depth:1});
         }
         if (crafts.length > maxCrafts) {
             result.push("  <FONT COLOR='" + TooltipConstants.COL_CRAFT + "'>");
@@ -269,5 +270,14 @@ class org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder {
         var last:String = tip.charAt(tip.length - 1);
         if (last == "：" || last == ":") return tip.substring(0, tip.length - 1);
         return tip;
+    }
+
+    /**
+     * 合成分类 → 玩家实际可找到的操作地点。
+     * data/crafting 的分类名面向系统；注释按玩家路径显示，不改变配方或分类白名单。
+     */
+    private static function craftLocationLabel(category:String):String {
+        if (category == "属性武器") return "堕落城商业区 → 升阶与涂装";
+        return category;
     }
 }
