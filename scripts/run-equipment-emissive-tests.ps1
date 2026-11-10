@@ -13,7 +13,7 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Dressup\EquipmentUtil\EquipmentEmissionState.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^EquipmentEmissiveTest Tests Passed: 102\r?$',
+        '(?m)^EquipmentEmissiveTest Tests Passed: 104\r?$',
         '(?m)^EquipmentEmissiveTest Tests Failed: 0\r?$'
     )
     SuccessSummary = '装备自发光：单位归并、状态观察、刀光包络、优先预算与清理'

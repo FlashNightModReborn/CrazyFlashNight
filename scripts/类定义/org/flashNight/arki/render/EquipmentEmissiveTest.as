@@ -344,6 +344,30 @@ class org.flashNight.arki.render.EquipmentEmissiveTest {
             var phRows:Array = rows();
             check(phRows.length == 1 && Number(phRows[0][4]) == 75 && Number(phRows[0][7]) == 305,
                 "Phoenix and Huofeng continuous revival pulses coalesce per actor and track altitude/radius");
+            _root.帧计时器.当前帧数 += 6;
+            var ladyBoss:MovieClip = actor(world, "ladyBoss");
+            EquipmentLightBridge.registerBullet({aabbCollider:{left:100, right:480, top:120, bottom:240}},
+                {baseAsset:"透明子弹", 子弹种类:"透明子弹", 伤害类型:"魔法", 魔法伤害属性:"冷", shootX:160, shootY:180}, ladyBoss);
+            EquipmentLightBridge.registerBullet({aabbCollider:{left:180, right:560, top:120, bottom:240}},
+                {baseAsset:"透明子弹", 子弹种类:"透明子弹", 伤害类型:"魔法", 魔法伤害属性:"冷", shootX:160, shootY:180}, ladyBoss);
+            var cryoRows:Array = rows();
+            check(cryoRows.length == 2 && Number(cryoRows[0][7]) == 247 && Number(cryoRows[1][7]) == 247,
+                "Lady cryo thrower transparent cold stream emits dual wide-span coalesced lights");
+            _root.帧计时器.当前帧数 += 8;
+            var ladyAssets:Array = ["加农炮弹","紫色小爆炸","fm92刺弹炮弹","高压爆炸","fsc7炮弹","g1炮弹","g1炮弹击中","支援飞弹","支援飞弹爆炸","爆炸狙击子弹","小火焰爆炸","高爆爆炸","普通爆炸"];
+            var ladyOk:Boolean = true;
+            for (i = 0; i < ladyAssets.length; i++) {
+                var lb:MovieClip = world.createEmptyMovieClip("lb" + i, world.getNextHighestDepth());
+                lb._x = 260; lb._y = 180;
+                EquipmentLightBridge.registerBullet(lb, {baseAsset:ladyAssets[i], 子弹种类:ladyAssets[i]}, ladyBoss);
+                if (rows().length != 1) ladyOk = false;
+                lb.removeMovieClip();
+            }
+            ladyBoss.近战招式 = "组合舞刃";
+            EquipmentLightBridge.registerBullet({aabbCollider:{left:120, right:400, top:130, bottom:230}},
+                {baseAsset:"近战子弹", 子弹种类:"近战子弹", 伤害类型:"物理", 吸血:70, shootX:260, shootY:180}, ladyBoss);
+            if (rows().length != 2) ladyOk = false;
+            check(ladyOk, "Lady skill projectiles, explosions, and crimson blade dance emit radial world lights");
             EquipmentLightBridge.disconnect(); check(rows().length == 0,"disconnect clears every persistent source");
         } catch (error) { check(false,"exception " + error); }
         world.removeMovieClip(); _root.gameworld = oldWorld; _root.帧计时器 = oldClock; _root.暂停 = oldPause; _root.控制目标 = oldHero;

@@ -625,15 +625,20 @@ class org.flashNight.arki.render.EquipmentLightBridge {
     private static function initBulletProfiles():Object {
         var m:Object = {};
         var raw:String =
-            "爆炸,260,1.75,16753226,0,-45,17,1;火球爆炸,250,1.7,16747576,0,-40,17,1;等离子爆炸,260,1.8,7399679,0,-45,17,1;" +
+            "爆炸,260,1.75,16753226,0,-45,17,1;普通爆炸,260,1.75,16753226,0,-45,18,1;火球爆炸,250,1.7,16747576,0,-40,17,1;等离子爆炸,260,1.8,7399679,0,-45,17,1;" +
             "集束连环爆炸,270,1.8,16752712,0,-45,18,1;联弹爆炸,230,1.55,16753226,0,-35,17,1;定向爆破,250,1.7,16752196,0,-40,17,1;" +
             "铁血弹爆炸,220,1.5,16746550,0,-30,15,1;空中爆炸1,230,1.55,16753226,0,-20,15,1;火焰爆发,240,1.65,16747574,150,0,17,1;" +
             "小火焰爆发,195,1.4,16747574,115,0,17,1;冰流爆发,230,1.5,7396607,145,0,17,1;" +
+            "紫色小爆炸,245,1.7,14191871,0,-40,14,1;高压爆炸,255,1.75,6739199,0,-50,14,1;支援飞弹爆炸,285,1.85,16752712,0,-95,10,1;" +
+            "g1炮弹击中,195,1.45,16766346,0,-20,6,1;小火焰爆炸,215,1.55,16753226,0,-25,13,1;高爆爆炸,210,1.5,16753226,0,-20,8,1;" +
             "加强电球,145,1.15,7919871,0,0,53,0,7,245,1.65,-35;量子爆弹,130,0.95,9234687,0,-60,52,0,33,305,1.85,-120;" +
             "火球,175,1.35,16747059,0,0,42,0;火焰,155,1.15,16745518,25,0,34,0;普通火箭弹,155,1.2,16753740,-20,0,38,0;" +
             "高爆火箭弹,165,1.25,16750656,-20,0,38,0;激光火箭弹,165,1.3,16742984,-15,0,35,0;榴弹,135,1,16754772,-10,0,34,0;" +
             "高爆榴弹,145,1.1,16751684,-10,0,34,0;穿甲榴弹,145,1.1,16756824,-10,0,34,0;集束榴弹,145,1.1,16753740,0,0,34,0;" +
             "战术集束榴弹,150,1.15,16753740,0,0,34,0;高爆子弹,135,1.05,16756824,0,0,25,0;天基炮弹,175,1.35,16758880,0,0,40,0;" +
+            "加农炮弹,165,1.3,14191871,0,-10,35,0;fm直射刺弹,155,1.2,16753740,-15,-10,35,0;fm92刺弹炮弹,155,1.2,16753740,-10,-8,35,0;" +
+            "fm92刺弹炮弹 副本,155,1.2,16753740,-10,-8,35,0;fsc7炮弹,170,1.3,16756582,-15,-5,35,0;支援飞弹,185,1.15,16762970,0,-35,25,0;" +
+            "g1炮弹,145,1.15,16766346,0,-12,30,0;爆炸狙击子弹,140,1.1,16730726,0,-4,14,0;" +
             "战斧导弹,165,1.25,16753740,-20,0,45,0;追踪导弹,150,1.15,16753740,-15,0,45,0;长钉导弹,150,1.15,16753740,-15,0,45,0;" +
             "红外制导导弹,150,1.15,16753740,-15,0,45,0;微型导弹,135,1,16753740,-10,0,40,0;连环导弹,145,1.1,16753740,-15,0,40,0;" +
             "外星导弹,155,1.2,6875391,-15,0,45,0;蓝旋反坦克炮弹,175,1.35,6086911,0,0,40,0;能量弹,170,1.35,7006463,0,0,40,0;" +
@@ -654,7 +659,9 @@ class org.flashNight.arki.render.EquipmentLightBridge {
             "火凤套装_原版火攻,180,1.35,16745010,0,-15,8,1;火凤套装_原版回旋,230,1.6,16749624,0,-35,19,1;" +
             "__phoenix_revive,260,1.8,16748086,0,-45,4,1;__phoenix_ember,135,0.85,16742952,0,-35,4,0;" +
             "__huofeng_nirvana,270,1.85,16749624,0,0,4,1;__huofeng_ember,130,0.8,16744492,0,-35,4,0;" +
-            "__pulse_heat,215,1.5,16747574,0,0,6,1;__pulse_cold,200,1.35,7396607,0,0,6,1";
+            "__pulse_heat,215,1.5,16747574,0,0,6,1;__pulse_heat_aux,215,1.4,16747574,0,0,6,1;" +
+            "__pulse_cold,200,1.35,7396607,0,0,6,1;__pulse_cold_aux,200,1.3,7396607,0,0,6,1;" +
+            "__pulse_crimson,220,1.35,16736840,0,0,6,1;__pulse_crimson_aux,210,1.25,16736840,0,0,6,1";
         var rows:Array = raw.split(";");
         for (var i:Number = 0; i < rows.length; i++) {
             var p:Array = rows[i].split(",");
@@ -695,7 +702,7 @@ class org.flashNight.arki.render.EquipmentLightBridge {
             var existing:Object = projectiles[i];
             if (existing.isPulse && existing.asset === asset && existing.scene === scene) {
                 var dx:Number = existing.x - targetX, dy:Number = existing.y - targetY;
-                if ((isActorContinuous && existing.actor === shooter) || dx * dx + dy * dy < 3600) {
+                if ((isActorContinuous && existing.actor === shooter) || dx * dx + dy * dy < 8100) {
                     existing.x = targetX;
                     existing.y = targetY;
                     existing.baseRadius = effRadius;
@@ -729,33 +736,33 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         }
         var sound:String = obj.声音;
         var magic:String = obj.魔法伤害属性;
+        var isMeleeOrArea:Boolean = (asset == "近战子弹" || asset == "透明子弹");
+        var isCrimsonDance:Boolean = isMeleeOrArea && ((shooter != null && shooter.近战招式 == "组合舞刃") || Number(obj.吸血) >= 70);
         if (sound == "火流.wav" || sound == "冰流.wav"
-            || (asset == "近战子弹" && (magic == "热" || magic == "冷"))) {
-            var pulseKey:String = (sound == "冰流.wav" || magic == "冷") ? "__pulse_cold" : "__pulse_heat";
+            || (isMeleeOrArea && (magic == "热" || magic == "冷"))
+            || isCrimsonDance) {
+            var pulseKey:String = (sound == "冰流.wav" || magic == "冷")
+                ? "__pulse_cold"
+                : (isCrimsonDance ? "__pulse_crimson" : "__pulse_heat");
             var pulseSpec:Object = map[pulseKey];
             var col:Object = bullet.aabbCollider;
             var px:Number = Number(obj.shootX);
             var py:Number = Number(obj.shootY);
+            var spanX:Number = 0;
             if (col && isFinite(col.left + col.right + col.top + col.bottom)) {
                 px = (col.left + col.right) * 0.5;
                 py = (col.top + col.bottom) * 0.5;
+                spanX = col.right - col.left;
             }
             if (!isFinite(px + py) || Math.abs(px) > 1000000 || Math.abs(py) > 1000000) return;
-            var now:Number = Number(_root.帧计时器.当前帧数);
-            if (!isFinite(now)) now = budgetTick;
-            for (var i:Number = projectiles.length - 1; i > -1; i--) {
-                var existing:Object = projectiles[i];
-                if (existing.isPulse && existing.asset === pulseKey && existing.scene === scene) {
-                    var dx:Number = existing.x - px, dy:Number = existing.y - py;
-                    if (dx * dx + dy * dy < 8100) {
-                        existing.x = px; existing.y = py;
-                        existing.birthTick = now;
-                        existing.expireTick = now + pulseSpec.totalFrames;
-                        return;
-                    }
-                }
+            if (spanX >= 180) {
+                var effRadius:Number = Math.min(280, Math.max(pulseSpec.radius, Math.round(spanX * 0.65)));
+                var effEnergy:Number = Math.min(1.75, pulseSpec.energy * 1.12);
+                emitPulseAt(pulseKey, col.left + spanX * 0.28, py, shooter, effRadius, effEnergy, pulseSpec.totalFrames);
+                emitPulseAt(pulseKey + "_aux", col.left + spanX * 0.74, py, shooter, effRadius, effEnergy * 0.92, pulseSpec.totalFrames);
+                return;
             }
-            addProjectileEntry(null, pulseKey, pulseSpec, shooter, true, px, py);
+            emitPulseAt(pulseKey, px, py, shooter, pulseSpec.radius, pulseSpec.energy, pulseSpec.totalFrames);
         }
     }
 
