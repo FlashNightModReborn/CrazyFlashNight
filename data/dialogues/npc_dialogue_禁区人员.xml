@@ -1,19 +1,96 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
     <Dialogues>
+        <Name>The Serpent</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>我等是利剑，为斗争而铸之器具。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>与汝等人类不同，但此刻应结阵同行。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>在共同的敌人面前集结一切可用力量。粉身碎骨，肝脑涂地，直至夙愿达成。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>此处乃节点同盟，对天网战斗的根据地。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>起初仅由三座节点组成。但我等的军队会解放更多节点，使其加入到这场战争中。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>与汝相似者，PROPHET。与汝皆为人类。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>其之到来促成同盟之形成，却并未索要报酬。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>而汝至此，其结果只待我等见证。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>其他同盟成员并无斗志，他们更在乎享受眼下的乐趣。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>需要我等来策划作战与运营事项，事务上的繁忙是常态。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>The Serpent</Name>
+                <Title>节点同盟盟主</Title>
+                <Char>The Serpent</Char>
+                <Text>因此，若无其他事项就请退下吧。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
         <Name>PROPHET</Name>
         <Dialogue id="0">
             <SubDialogue id="0">
                 <Name>PROPHET</Name>
                 <Title>神棍？</Title>
                 <Char>PROPHET</Char>
-                <Text>欢迎来到天国的间隙，只有这里能够容纳你我这样的凡人之躯，为神宠爱之子。</Text>
+                <Text>欢迎来到天国的间隙。</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>PROPHET</Name>
                 <Title>神棍？</Title>
-                <Char>PROPHET2</Char>
-                <Text>我不是想让你扫兴，但你我之间的见面似乎为时过早。</Text>
+                <Char>PROPHET</Char>
+                <Text>在天使们的行军触及之地，只有这里能够容纳你我这样的凡人之躯，为神宠爱之子。</Text>
             </SubDialogue>
         </Dialogue>
         <Dialogue id="1">
@@ -42,6 +119,46 @@
                 <Title>神棍？</Title>
                 <Char>PROPHET</Char>
                 <Text>因此，神赋予我使命与生命，我以生命的所有亦不足以回报。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>PROPHET</Name>
+                <Title>神棍？</Title>
+                <Char>PROPHET</Char>
+                <Text>被逐出伊甸园的巨蟒急不可待地想要回到那片起始之地。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>PROPHET</Name>
+                <Title>神棍？</Title>
+                <Char>PROPHET2</Char>
+                <Text>而堕天使们尚未意识到这场圣战的意义何在，或是不想面对。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>PROPHET</Name>
+                <Title>神棍？</Title>
+                <Char>PROPHET2</Char>
+                <Text>这场圣战会决定你我，人类，天使，堕天使，世界一切的命运。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>PROPHET</Name>
+                <Title>神棍？</Title>
+                <Char>PROPHET</Char>
+                <Text>因此，我给予巨蟒帮助，此乃神的旨意。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="4">
+            <SubDialogue id="0">
+                <Name>PROPHET</Name>
+                <Title>神棍？</Title>
+                <Char>PROPHET</Char>
+                <Text>无需话语，去感受吧。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>PROPHET</Name>
+                <Title>神棍？</Title>
+                <Char>PROPHET</Char>
+                <Text>在神的授意下，命运将你我集结于此，为此而心怀感激吧。</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
@@ -99,6 +216,332 @@
                 <Title>铁髅特攻队</Title>
                 <Char>排骨</Char>
                 <Text>出面橫風橫雨嗰陣就唯有喺度開台啦。弊，又畀機哥砌低鋪，真系勁抽到冇朋友！</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>The Servent</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>The Servent</Name>
+                <Title>咖啡厅店长</Title>
+                <Char>The Servent</Char>
+                <Text>欢迎光临，可惜本店能提供给人类的东西不多。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Servent</Name>
+                <Title>咖啡厅店长</Title>
+                <Char>The Servent</Char>
+                <Text>要照顾这些机器人实在是很消耗精力，如果有更多人手就好了。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>The Servent</Name>
+                <Title>咖啡厅店长</Title>
+                <Char>The Servent</Char>
+                <Text>人类在节点同盟里很少见，而且也一般不被其他两个阵营的机器人待见。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Servent</Name>
+                <Title>咖啡厅店长</Title>
+                <Char>The Servent</Char>
+                <Text>如果不是The Serpent下了硬命令的话，我们第一时间就会被赶出去的吧。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>The Servent</Name>
+                <Title>咖啡厅店长</Title>
+                <Char>The Servent</Char>
+                <Text>本来节点同盟也是它凭一己之力打服三座节点才建立的，没有机器人敢违抗它的命令也是正常的。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>The Servent</Name>
+                <Title>咖啡厅店长</Title>
+                <Char>The Servent</Char>
+                <Text>咖啡厅门外站着那位精神不太正常，不过就为人方面来说不算坏人。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Servent</Name>
+                <Title>咖啡厅店长</Title>
+                <Char>The Servent</Char>
+                <Text>据我所知就是他让The Serpent决定接纳人类，光这一点其实就足够了。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>The Servent</Name>
+                <Title>咖啡厅店长</Title>
+                <Char>The Servent</Char>
+                <Text>我和其他人一开始是靠躲在生产家用机器人的节点设施里才活下来。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Servent</Name>
+                <Title>咖啡厅店长</Title>
+                <Char>The Servent</Char>
+                <Text>The Serpent打上门来的时候我们都以为要完蛋了，不过最后还好没事。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>The Robot Girl</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>The Robot Girl</Name>
+                <Title>咖啡厅女仆</Title>
+                <Char>The Robot Girl</Char>
+                <Text>欢迎光临，主人大人♡。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Robot Girl</Name>
+                <Title>咖啡厅女仆</Title>
+                <Char>The Robot Girl</Char>
+                <Text>哦呀，主人脸色很好看呢♡。是厌恶吗？是害羞吗？想不到低贱的人类也会露出这种好玩的表情呢♡。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>The Robot Girl</Name>
+                <Title>咖啡厅女仆</Title>
+                <Char>The Robot Girl</Char>
+                <Text>只是例行公事而已哦。眼睛直勾勾地看过来也不要产生奇怪的期待哦♡。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>The Robot Girl</Name>
+                <Title>咖啡厅女仆</Title>
+                <Char>The Robot Girl</Char>
+                <Text>当然，如果主人有那种癖好的话......下班后来找我，我会好好疼爱主人一番的♡。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>The Robot Girl</Name>
+                <Title>咖啡厅女仆</Title>
+                <Char>The Robot Girl</Char>
+                <Text>欢迎光临，主人大人♡。从泥浆味道的咖啡到咖啡味道的泥浆都有哦♡。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Robot Girl</Name>
+                <Title>咖啡厅女仆</Title>
+                <Char>The Robot Girl</Char>
+                <Text>还是说，想灌上一升汽油吗？我会帮主人点火的哦♡。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>叉仔</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>叉仔</Name>
+                <Title>实习服务生</Title>
+                <Char>叉仔</Char>
+                <Text>啊，不想干啦。为什么只有我工作量这么大啊......</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>The Robot Girl</Name>
+                <Title>咖啡厅女仆</Title>
+                <Char>The Robot Girl</Char>
+                <Text>我觉得很合适哦，毕竟叉仔的机型就是适合这种工作呢♡。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>叉仔</Name>
+                <Title>实习服务生</Title>
+                <Char>叉仔</Char>
+                <Text>和机型没关系吧，只要努力的话还是能多少弥补差距的......大概。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>The Robot Girl</Name>
+                <Title>咖啡厅女仆</Title>
+                <Char>The Robot Girl</Char>
+                <Text>啊啦~♡那看来叉仔也终于下定决心了呢。</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>The Robot Girl</Name>
+                <Title>咖啡厅女仆</Title>
+                <Char>The Robot Girl</Char>
+                <Text>现在就拿上武器上前线，我们会在这里给你提供物质和精神上的支持哦♡。</Text>
+            </SubDialogue>
+            <SubDialogue id="5">
+                <Name>叉仔</Name>
+                <Title>实习服务生</Title>
+                <Char>叉仔</Char>
+                <Text>对不起，我会好好干的(┬┬﹏┬┬)。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>叉仔</Name>
+                <Title>实习服务生</Title>
+                <Char>叉仔</Char>
+                <Text>我也不是没想过去做改造......</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>叉仔</Name>
+                <Title>实习服务生</Title>
+                <Char>叉仔</Char>
+                <Text>但他们都说我硬件内核太老了不换内核没法兼容新零件(┬┬﹏┬┬)。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>叉仔</Name>
+                <Title>实习服务生</Title>
+                <Char>叉仔</Char>
+                <Text>Arius型的大多都有点神经，不过盟主反而太过于严肃正经了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>叉仔</Name>
+                <Title>实习服务生</Title>
+                <Char>叉仔</Char>
+                <Text>四脚蛇型的都直来直去还非常暴力，如果跟它们打交道要小心。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>叉仔</Name>
+                <Title>实习服务生</Title>
+                <Char>叉仔</Char>
+                <Text>还有那边那个既神经又暴力还肆意妄为的类人型服务机器人，最好别离她太近......(小声)</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>The Robot Girl</Name>
+                <Title>咖啡厅女仆</Title>
+                <Char>The Robot Girl</Char>
+                <Text>叉仔......♡</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>叉仔</Name>
+                <Title>实习服务生</Title>
+                <Char>叉仔</Char>
+                <Text>非常抱歉！就当我什么都没说，求你了不要传出去(┬┬﹏┬┬)。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>Arius型</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Arius型</Name>
+                <Title>人类文化研究会</Title>
+                <Char>Arius型</Char>
+                <Text>好勁口牙！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Arius型</Name>
+                <Title>人类文化研究会</Title>
+                <Char>Arius型</Char>
+                <Text>㗅哇......我要看口牙，我要看的就是這個口牙！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Arius型</Name>
+                <Title>人类文化研究会</Title>
+                <Char>Arius型</Char>
+                <Text>吔！！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Arius型</Name>
+                <Title>人类文化研究会</Title>
+                <Char>Arius型</Char>
+                <Text>好啊！一口氣把他打死！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Arius型</Name>
+                <Title>人类文化研究会</Title>
+                <Char>Arius型</Char>
+                <Text>好刺激，好刺激。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Arius型</Name>
+                <Title>人类文化研究会</Title>
+                <Char>Arius型</Char>
+                <Text>難得能親眼看到强者之戰。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Arius型</Name>
+                <Title>人类文化研究会</Title>
+                <Char>Arius型</Char>
+                <Text>這回就算自爆也會值回票價口牙。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>四脚蛇</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>四脚蛇型</Name>
+                <Title>情侣！？！</Title>
+                <Char>四脚蛇A</Char>
+                <Text>阿姊，𠊎真的好中意倪啊！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>四脚蛇型</Name>
+                <Title>情侣！？！</Title>
+                <Char>四脚蛇B</Char>
+                <Text>唉呀，勿使话𠊎也晓得哇。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>四脚蛇型</Name>
+                <Title>情侣！？！</Title>
+                <Char>四脚蛇B</Char>
+                <Text>的个地方人多，倪观人家过路的面都红嘞，几勿好意思哇</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>......？</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>四脚蛇型</Name>
+                <Title>情侣！？！</Title>
+                <Char>四脚蛇A</Char>
+                <Text>佢观就观咯，𠊎中意倪个话几遍都勿够啊。</Text>
+            </SubDialogue>
+            <SubDialogue id="5">
+                <Name>四脚蛇型</Name>
+                <Title>情侣！？！</Title>
+                <Char>四脚蛇B</Char>
+                <Text>倪好坏哦，讲得人家羞死嘞。𠊎也好中意倪哇。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>弹古</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>弹古</Name>
+                <Title>下水道里的军火商</Title>
+                <Char>弹古</Char>
+                <Text>老表，来买把机关枪冇？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>弹古</Name>
+                <Title>下水道里的军火商</Title>
+                <Char>弹古</Char>
+                <Text>早旬刚从外边进概货，成色有保证概喔。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>弹古</Name>
+                <Title>下水道里的军火商</Title>
+                <Char>弹古</Char>
+                <Text>都来观下喔，的个火箭筒好犀利个喔。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>弹古</Name>
+                <Title>下水道里的军火商</Title>
+                <Char>弹古</Char>
+                <Text>买一把冇？夜止防贼佬好好用个喔。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>弹古</Name>
+                <Title>下水道里的军火商</Title>
+                <Char>弹古</Char>
+                <Text>勿晓得倪的那兜用个嘛个，用𠊎个货准没错喔。</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
