@@ -22,6 +22,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -150,6 +151,9 @@ const REQUIRED = [
     "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
     "runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe",
     "runtime/cf7-runtime-manifest.tsv",
+    "config/build/runtime-release-consensus.json",
+    "scripts/asLoader.swf",
+    "fscommand/launch_rag.bat",
 ];
 for (const relative of REQUIRED) {
     if (!existsInPayload(relative)) fail("关键运行时文件缺失", relative);
@@ -166,8 +170,12 @@ for (const relative of FORBIDDEN) {
     if (existsInPayload(relative)) fail("运行时状态不应进包", relative);
 }
 const ragDir = path.join(payloadRoot, "data", "rag");
-if (fs.existsSync(ragDir) && walk(ragDir).length > 0) {
-    fail("运行时状态不应进包", "data/rag/ 下仍有 " + walk(ragDir).length + " 个运行时文件");
+if (fs.existsSync(ragDir)) fail("运行时状态不应进包", "data/rag/ 不得进包（包括空目录）");
+// 与 install.ps1 的防覆盖边界一致：不收玩家状态、个人配置或凭据。
+const privatePath = /^(?:data\/rag(?:\/|$)|saves(?:\/|$)|launcher\/webview2[^/]*userdata(?:\/|$))|(?:^|\/)(?:agent_tasks\.json|agent_text\.json|launcher_user_prefs\.json|\.env(?:\.[^/]*)?|credentials(?:\.[^/]*)?|secrets?(?:\.[^/]*)?|id_rsa|id_ed25519)$|\.(?:sol|db(?:-wal|-shm|-journal)?|sqlite3?(?:-wal|-shm|-journal)?|pfx|p12|pem|key)$|\.(?:local|user)\.(?:json|toml|xml|ya?ml)$/i;
+for (const file of walk(payloadRoot)) {
+    const relative = relFrom(payloadRoot, file);
+    if (privatePath.test(relative)) fail("个人数据或凭据不应进包", relative);
 }
 
 // 动态文件族：新增文件名不需要改审计，但不能整个族为空
@@ -185,23 +193,50 @@ for (const exe of ["pbrain-rapfi-windows-avx2.exe", "pbrain-rapfi-windows-sse.ex
 // ── 2. runtime 目录与 manifest ─────────────────────────────────────
 
 const manifestPath = path.join(payloadRoot, "runtime", "cf7-runtime-manifest.tsv");
-if (fs.existsSync(manifestPath)) {
-    const lines = fs.readFileSync(manifestPath, "utf8").split(/\r?\n/);
-    for (const line of lines) {
-        const fields = line.split("\t");
-        if (fields[0] !== "file" && fields[0] !== "dir") continue;
-        const relative = fields[1].replace(/\\/g, "/");
-        if (!existsInPayload(relative)) fail("runtime manifest 缺口", relative);
+// 每日包搬运现役发布字节，不重新做发布、不要求 source-ahead 必须部署。
+// 官方 IntegrityOnly 仍严格核每条 size/SHA256、精确文件集、identity 与 closure；
+// 再用当前仓库逐字节对照绑定现役部署，不能把此结果冒充签名/发布资格。
+const verifier = path.join(repoRoot, "tools", "verify-runtime-bundle-v2.ps1");
+if (!fs.existsSync(verifier)) {
+    fail("官方 runtime 校验", "缺 " + verifier);
+} else {
+    const checked = spawnSync("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass",
+        "-File", verifier, "-ProjectRoot", repoRoot, "-DeploymentRoot", payloadRoot, "-IntegrityOnly"],
+        { encoding: "utf8", timeout: 180_000, windowsHide: true, maxBuffer: 4 * 1024 * 1024 });
+    if (checked.error || checked.status !== 0) {
+        fail("官方 runtime 校验", checked.error?.message || checked.stdout + checked.stderr);
+    } else {
+        console.log(checked.stdout.trim());
     }
 }
 
-const repoRuntime = walk(path.join(repoRoot, "runtime")).map((f) => relFrom(repoRoot, f));
-const payloadRuntime = walk(path.join(payloadRoot, "runtime")).map((f) => relFrom(payloadRoot, f));
+const deploymentRoots = ["CRAZYFLASHER7MercenaryEmpire.exe", "config/build/runtime-release-consensus.json"];
+const repoRuntime = [...deploymentRoots, ...walk(path.join(repoRoot, "runtime")).map((f) => relFrom(repoRoot, f))];
+const payloadRuntime = [...deploymentRoots, ...walk(path.join(payloadRoot, "runtime")).map((f) => relFrom(payloadRoot, f))];
+const repoSet = new Set(repoRuntime);
+const payloadSet = new Set(payloadRuntime);
 for (const relative of repoRuntime) {
-    if (!payloadRuntime.includes(relative)) fail("runtime 目录与仓库不一致", "缺 " + relative);
+    const source = path.join(repoRoot, relative);
+    const target = path.join(payloadRoot, relative);
+    if (!payloadSet.has(relative) || !fs.existsSync(target)) fail("runtime 部署与仓库不一致", "缺 " + relative);
+    else if (!fs.existsSync(source) || fs.statSync(source).size !== fs.statSync(target).size || sha256(source) !== sha256(target)) {
+        fail("runtime 部署与仓库不一致", "字节不同 " + relative);
+    }
 }
 for (const relative of payloadRuntime) {
-    if (!repoRuntime.includes(relative)) fail("runtime 目录与仓库不一致", "多 " + relative);
+    if (!repoSet.has(relative)) fail("runtime 部署与仓库不一致", "多 " + relative);
+}
+try {
+    const consensus = JSON.parse(fs.readFileSync(path.join(payloadRoot, deploymentRoots[1]), "utf8").replace(/^\uFEFF/, ""));
+    const metadata = Object.fromEntries(fs.readFileSync(manifestPath, "utf8").split(/\r?\n/)
+        .map(line => line.split("\t")).filter(fields => fields.length === 2));
+    if (consensus.schema !== "cf7-runtime-release-consensus.v2") throw new Error("需要 v2 consensus");
+    for (const field of ["artifactSourceHash", "producerRecipeHash", "toolchainLockHash", "buildIdentityHash", "payloadClosureHash"]) {
+        if (String(consensus[field]).toUpperCase() !== String(metadata[field]).toUpperCase()) throw new Error(field + " 与 manifest 不符");
+    }
+    if (String(consensus.manifestSha256).toLowerCase() !== sha256(manifestPath)) throw new Error("manifestSha256 不符");
+} catch (error) {
+    fail("consensus 与 manifest 绑定", error.message);
 }
 
 // ── 3. 整目录收的运行时目录：仓库 vs 包 ─────────────────────────────

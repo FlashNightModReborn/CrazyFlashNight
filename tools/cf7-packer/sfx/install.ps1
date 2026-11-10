@@ -3,31 +3,11 @@
 param(
     [switch]$DeleteSelf,
     [string]$GamePath = "",
-    [switch]$NoPause
+    [switch]$NoPause,
+    [ValidateRange(1, 600)][int]$VerifyTimeoutSeconds = 120
 )
 
 $ErrorActionPreference = "Stop"
-
-# OS 版本检查: 需要 Windows 10 (6.2+) 以上
-# Win7=6.1, Win8=6.2, Win8.1=6.3, Win10+=10.0
-$osVer = [Environment]::OSVersion.Version
-if ($osVer.Major -lt 10) {
-    Write-Host ""
-    Write-Host "  [!] 系统版本不受支持" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "  当前系统: Windows $($osVer.Major).$($osVer.Minor)" -ForegroundColor Yellow
-    Write-Host "  最低要求: Windows 10" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "  本游戏依赖 WebView2、现代音频引擎等组件，" -ForegroundColor Gray
-    Write-Host "  无法在 Windows 7/8/8.1 上正常运行。" -ForegroundColor Gray
-    Write-Host "  请升级到 Windows 10 或更高版本后重试。" -ForegroundColor Gray
-    Write-Host ""
-    Read-Host "  按 Enter 退出"
-    exit 1
-}
-
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-$Host.UI.RawUI.WindowTitle = "闪客快打7 更新安装"
 
 $STEAM_APP_ID = "2402310"
 $GAME_DIR_NAME = "CRAZYFLASHER7StandAloneStarter"
@@ -127,59 +107,232 @@ function Select-FolderDialog {
     return $null
 }
 
+# 以下只读函数也由 ZIP 构建入口点加载；点加载不定位 Steam、不执行安装。
+function Assert-Cf7File([string]$Path) {
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf) -or (Get-Item -LiteralPath $Path).Length -eq 0) {
+        throw "必需文件缺失或为空：$Path"
+    }
+}
+
+function Get-Cf7Files([string]$Root) {
+    if (-not (Test-Path -LiteralPath $Root -PathType Container)) { throw "目录不存在：$Root" }
+    if ((Get-Item -LiteralPath $Root -Force).Attributes -band [IO.FileAttributes]::ReparsePoint) {
+        throw "不接受链接目录：$Root"
+    }
+    foreach ($item in Get-ChildItem -LiteralPath $Root -Force) {
+        if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw "不接受链接：$($item.FullName)" }
+        if ($item.PSIsContainer) { Get-Cf7Files $item.FullName } else { $item }
+    }
+}
+
+function Test-Cf7PrivatePath([string]$Relative) {
+    $p = $Relative.Replace('\', '/')
+    return $p -match '^(?:data/rag(?:/|$)|saves(?:/|$)|launcher/webview2[^/]*userdata(?:/|$))|(?:^|/)(?:agent_tasks\.json|agent_text\.json|launcher_user_prefs\.json|\.env(?:\.[^/]*)?|credentials(?:\.[^/]*)?|secrets?(?:\.[^/]*)?|id_rsa|id_ed25519)$|\.(?:sol|db(?:-wal|-shm|-journal)?|sqlite3?(?:-wal|-shm|-journal)?|pfx|p12|pem|key)$|\.(?:local|user)\.(?:json|toml|xml|ya?ml)$'
+}
+
+function Get-Cf7RuntimeInventory([string]$Root, [switch]$AllowLegacy) {
+    $manifest = Join-Path $Root 'runtime/cf7-runtime-manifest.tsv'
+    Assert-Cf7File $manifest
+    $lines = @([IO.File]::ReadAllLines($manifest) | Where-Object { $_ -ne '' })
+    if ($lines[0] -ne 'cf7-runtime-manifest-v2' -and -not ($AllowLegacy -and $lines[0] -eq 'cf7-runtime-manifest-v1')) {
+        throw "不支持的 runtime manifest：$manifest"
+    }
+    $seen = @{}
+    $metadata = @{}
+    $rows = @()
+    foreach ($line in $lines | Select-Object -Skip 1) {
+        $parts = @($line -split "`t")
+        if ($parts.Count -eq 2 -and $parts[0] -in @('publishMode','sourceTreeHash','artifactSourceHash','producerRecipeHash','toolchainLockHash','toolchainBaseline','buildIdentityHash','payloadClosureHash')) {
+            if ($metadata.ContainsKey($parts[0])) { throw "重复 manifest 元数据：$line" }
+            $metadata[$parts[0]] = $parts[1]
+            continue
+        }
+        if ($parts.Count -ne 4 -or $parts[0] -ne 'file') { throw "非法 manifest 行：$line" }
+        $p = $parts[1]
+        if ($p -cnotmatch '^(?:CRAZYFLASHER7MercenaryEmpire\.exe|runtime/[A-Za-z0-9_.() -]+(?:/[A-Za-z0-9_.() -]+)*)$' -or
+            $p -match '(^|/)\.{1,2}(/|$)' -or $p -eq 'runtime/cf7-runtime-manifest.tsv' -or $seen.ContainsKey($p)) {
+            throw "非法或重复 runtime 路径：$p"
+        }
+        $size = 0L
+        if ($parts[2] -notmatch '^\d+$' -or -not [Int64]::TryParse($parts[2], [ref]$size) -or $parts[3] -notmatch '^[0-9A-Fa-f]{64}$') {
+            throw "非法 runtime 大小或 SHA256：$line"
+        }
+        $seen[$p] = $true
+        $rows += [pscustomobject]@{ Path=$p; Size=$size; Hash=$parts[3] }
+    }
+    if (-not $seen.ContainsKey('CRAZYFLASHER7MercenaryEmpire.exe')) { throw 'manifest 缺 bootstrap' }
+    return [pscustomobject]@{ Rows=$rows; Metadata=$metadata }
+}
+
+function Assert-Cf7Runtime([string]$Root) {
+    $inventory = Get-Cf7RuntimeInventory $Root
+    $expected = @{'runtime/cf7-runtime-manifest.tsv'=$true}
+    foreach ($row in $inventory.Rows) {
+        $file = Join-Path $Root $row.Path
+        Assert-Cf7File $file
+        if ((Get-Item -LiteralPath $file).Length -ne $row.Size -or (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash -ne $row.Hash) {
+            throw "runtime 大小/SHA256 不符：$($row.Path)"
+        }
+        $expected[$row.Path] = $true
+    }
+    foreach ($file in Get-Cf7Files (Join-Path $Root 'runtime')) {
+        $rel = $file.FullName.Substring($Root.TrimEnd('\','/').Length + 1).Replace('\','/')
+        if (-not $expected.ContainsKey($rel)) { throw "未声明 runtime 文件：$rel" }
+    }
+    $consensusPath = Join-Path $Root 'config/build/runtime-release-consensus.json'
+    Assert-Cf7File $consensusPath
+    $consensus = Get-Content -LiteralPath $consensusPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($consensus.schema -ne 'cf7-runtime-release-consensus.v2') { throw '需要 v2 consensus' }
+    foreach ($key in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','buildIdentityHash','payloadClosureHash')) {
+        if ([string]$consensus.$key -notmatch '^[0-9A-Fa-f]{64}$' -or $consensus.$key -ne $inventory.Metadata[$key]) {
+            throw "consensus 与 manifest 不符：$key"
+        }
+    }
+    if ($consensus.manifestSha256 -ne (Get-FileHash -LiteralPath (Join-Path $Root 'runtime/cf7-runtime-manifest.tsv') -Algorithm SHA256).Hash) {
+        throw 'consensus manifestSha256 不符'
+    }
+}
+
+function Invoke-Cf7BootstrapVerify([string]$Root, [int]$TimeoutSeconds = 120) {
+    $exe = Join-Path $Root 'CRAZYFLASHER7MercenaryEmpire.exe'
+    Assert-Cf7File $exe
+    # 不用 ShellExecute；保留真实进程句柄，避免 GUI exe 提前返回/ExitCode 为空。
+    $info = New-Object Diagnostics.ProcessStartInfo
+    $info.FileName = $exe
+    $info.Arguments = '--verify-only'
+    $info.WorkingDirectory = $Root
+    $info.UseShellExecute = $false
+    $process = New-Object Diagnostics.Process
+    $process.StartInfo = $info
+    try {
+        if (-not $process.Start()) { throw 'bootstrap 校验进程未启动' }
+        if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
+            $process.Kill()
+            if (-not $process.WaitForExit(5000)) { throw 'bootstrap 超时且未退出；保留备份，禁止重试' }
+            throw "bootstrap --verify-only 超时（$TimeoutSeconds 秒）"
+        }
+        if ($process.ExitCode -ne 0) { throw "bootstrap --verify-only exit code=$($process.ExitCode)；检查 resources/logs/bootstrap.log" }
+    } finally { $process.Dispose() }
+}
+
 function Install-Update {
     param([string]$GamePath)
-
-    $scriptDir = Split-Path -Parent $MyInvocation.ScriptName
-    $resourcesSrc = Join-Path $scriptDir "resources"
-    $dataSrc = Join-Path $scriptDir "CrazyFlasher7StandAloneStarter_Data"
-
-    # 统计文件数
-    $fileCount = 0
-    if (Test-Path $resourcesSrc) {
-        $fileCount += (Get-ChildItem $resourcesSrc -Recurse -File).Count
+    $scriptDir = $PSScriptRoot
+    $resourcesSrc = Join-Path $scriptDir 'resources'
+    $GamePath = [IO.Path]::GetFullPath($GamePath).TrimEnd('\','/')
+    if ($scriptDir.StartsWith($GamePath + '\', [StringComparison]::OrdinalIgnoreCase) -or
+        ($GamePath + '\').StartsWith($scriptDir.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) {
+        throw '请先把安装包完整解压到游戏目录以外'
     }
-    if (Test-Path $dataSrc) {
-        $fileCount += (Get-ChildItem $dataSrc -Recurse -File).Count
+    if (@(Get-ChildItem -LiteralPath $GamePath -Force -Filter '.cf7-update-backup-*').Count) {
+        throw '发现上轮安装备份；请先核对恢复结果，不自动覆盖或清除备份'
     }
-
-    Write-Host ""
-    Write-Host "  目标路径: $GamePath" -ForegroundColor White
-    Write-Host "  文件数量: $fileCount" -ForegroundColor White
-    Write-Host ""
-
-    # 复制 resources/
-    if (Test-Path $resourcesSrc) {
-        $resDst = Join-Path $GamePath "resources"
-        Write-Host "  正在更新 resources/ ..." -ForegroundColor Yellow
-        Copy-Item -Path "$resourcesSrc\*" -Destination $resDst -Recurse -Force
-        Write-Host "  resources/ 更新完成" -ForegroundColor Green
+    Assert-Cf7Runtime $resourcesSrc
+    if (Test-Path -LiteralPath (Join-Path $resourcesSrc 'data/rag')) { throw 'data/rag 不得进包' }
+    $files = @(Get-Cf7Files $resourcesSrc)
+    $copy = @{}
+    foreach ($file in $files) {
+        $rel = $file.FullName.Substring($resourcesSrc.Length + 1).Replace('\','/')
+        if (Test-Cf7PrivatePath $rel) { throw "包内含玩家状态或凭据：$rel" }
+        $copy['resources/' + $rel] = $file.FullName
     }
-
-    # 复制 _Data/
-    if (Test-Path $dataSrc) {
-        $dataDst = Join-Path $GamePath "CrazyFlasher7StandAloneStarter_Data"
-        Write-Host "  正在更新 CrazyFlasher7StandAloneStarter_Data/ ..." -ForegroundColor Yellow
-        Copy-Item -Path "$dataSrc\*" -Destination $dataDst -Recurse -Force
-        Write-Host "  _Data/ 更新完成" -ForegroundColor Green
+    $unityRel = 'CrazyFlasher7StandAloneStarter_Data/Managed/Assembly-CSharp.dll'
+    Assert-Cf7File (Join-Path $scriptDir $unityRel)
+    $copy[$unityRel] = Join-Path $scriptDir $unityRel
+    $ragExes = @(Get-ChildItem -LiteralPath $scriptDir -Filter '*.exe' -File)
+    if ($ragExes.Count -ne 1 -or $ragExes[0].Name -cnotmatch '^CFN-RAG-v\d+\.\d+\.\d+\.exe$') {
+        throw '包内必须且只能有一个 CFN-RAG-v<主>.<次>.<补丁>.exe 终端程序'
     }
+    Assert-Cf7File $ragExes[0].FullName
+    $copy[$ragExes[0].Name] = $ragExes[0].FullName
 
-    # 游戏内终端程序放到游戏根（resources 的上一级），fscommand\launch_rag.bat 按 CFN-RAG-v*.exe 通配
-    $ragExes = @(Get-ChildItem -Path $scriptDir -Filter "CFN-RAG-v*.exe" -File -ErrorAction SilentlyContinue)
-    if ($ragExes.Count -gt 0) {
-        Write-Host "  正在放置终端程序 ..." -ForegroundColor Yellow
-        foreach ($rag in $ragExes) {
-            Copy-Item -LiteralPath $rag.FullName -Destination $GamePath -Force
+    # 旧 manifest 仅授予局部文件移除范围，绝不清空 resources/runtime 或 resources。
+    $resDst = Join-Path $GamePath 'resources'
+    $owned = @{}
+    foreach ($row in (Get-Cf7RuntimeInventory $resourcesSrc).Rows) { $owned[$row.Path] = $true }
+    $obsolete = @()
+    if (Test-Path -LiteralPath (Join-Path $resDst 'runtime/cf7-runtime-manifest.tsv')) {
+        foreach ($row in (Get-Cf7RuntimeInventory $resDst -AllowLegacy).Rows) {
+            $owned[$row.Path] = $true
+            if (-not $copy.ContainsKey('resources/' + $row.Path)) { $obsolete += 'resources/' + $row.Path }
         }
-        Write-Host "  终端程序已放到游戏根目录" -ForegroundColor Green
     }
-
-    Write-Host ""
-    Write-Host "  [OK] 安装完成！" -ForegroundColor Green
-    Write-Host ""
+    if (Test-Path -LiteralPath (Join-Path $resDst 'runtime')) {
+        foreach ($file in Get-Cf7Files (Join-Path $resDst 'runtime')) {
+            $rel = $file.FullName.Substring($resDst.Length + 1).Replace('\','/')
+            if ($rel -ne 'runtime/cf7-runtime-manifest.tsv' -and -not $owned.ContainsKey($rel)) {
+                throw "旧 runtime 含未声明文件（保留、不猜测删除）：$rel"
+            }
+        }
+    }
+    # 避免 launch_rag.bat 的通配命中旧终端；只移动合法版本名，不动其它 exe。
+    foreach ($file in Get-ChildItem -LiteralPath $GamePath -Filter 'CFN-RAG-v*.exe' -File) {
+        if ($file.Name -cnotmatch '^CFN-RAG-v\d+\.\d+\.\d+\.exe$') { throw "旧终端命名异常，请人工核对：$($file.Name)" }
+        if (-not $copy.ContainsKey($file.Name)) { $obsolete += $file.Name }
+    }
+    $changes = @(@($copy.Keys) + $obsolete | Sort-Object -Unique)
+    # 逐条预检目标及其父路径，拒绝目录冲突和 junction，防止写到玩家路径外。
+    foreach ($rel in $changes) {
+        $dest = Join-Path $GamePath $rel
+        if (Test-Path -LiteralPath $dest -PathType Container) { throw "目标文件被目录占用：$dest" }
+        $p = $dest
+        while ($p.Length -ge $GamePath.Length) {
+            if ((Test-Path -LiteralPath $p) -and ((Get-Item -LiteralPath $p -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+                throw "目标含链接，停止安装：$p"
+            }
+            $p = Split-Path -Parent $p
+        }
+    }
+    $backup = Join-Path $GamePath ('.cf7-update-backup-' + [Guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $backup | Out-Null
+    $changed = New-Object 'System.Collections.Generic.List[string]'
+    # 中断时留下原文件和清单供人工恢复；下次安装不自动吞掉未知状态。
+    @($changes | ForEach-Object { [pscustomobject]@{ path=$_; existed=(Test-Path -LiteralPath (Join-Path $GamePath $_)) } }) |
+        ConvertTo-Json -Depth 3 | Set-Content -LiteralPath (Join-Path $backup 'files.json') -Encoding UTF8
+    try {
+        foreach ($rel in $changes) {
+            $dest = Join-Path $GamePath $rel
+            if (Test-Path -LiteralPath $dest) {
+                $saved = Join-Path $backup $rel
+                New-Item -ItemType Directory -Path (Split-Path -Parent $saved) -Force | Out-Null
+                Move-Item -LiteralPath $dest -Destination $saved
+            }
+            $changed.Add($rel)
+            if ($copy.ContainsKey($rel)) {
+                New-Item -ItemType Directory -Path (Split-Path -Parent $dest) -Force | Out-Null
+                Copy-Item -LiteralPath $copy[$rel] -Destination $dest
+            }
+        }
+        Assert-Cf7Runtime $resDst
+        foreach ($rel in @($unityRel, $ragExes[0].Name)) {
+            if ((Get-FileHash -LiteralPath $copy[$rel] -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath (Join-Path $GamePath $rel) -Algorithm SHA256).Hash) {
+                throw "安装后字节不一致：$rel"
+            }
+        }
+        Invoke-Cf7BootstrapVerify $resDst $VerifyTimeoutSeconds
+    } catch {
+        $failure = $_.Exception.Message
+        $restoreErrors = @()
+        for ($i = $changed.Count - 1; $i -ge 0; $i--) {
+            $rel = $changed[$i]
+            try {
+                $dest = Join-Path $GamePath $rel
+                if (Test-Path -LiteralPath $dest -PathType Leaf) { Remove-Item -LiteralPath $dest -Force }
+                $saved = Join-Path $backup $rel
+                if (Test-Path -LiteralPath $saved -PathType Leaf) { Move-Item -LiteralPath $saved -Destination $dest }
+            } catch { $restoreErrors += "$rel : $($_.Exception.Message)" }
+        }
+        throw "安装失败：$failure；已尝试逐文件恢复。备份/清单位于 $backup；恢复错误：$($restoreErrors -join '; ')"
+    }
+    Remove-Item -LiteralPath $backup -Recurse -Force
+    Write-Host '  [OK] 安装完成，bootstrap --verify-only exit code=0（不代表实机可玩验收）' -ForegroundColor Green
 }
 
 # ── 主流程 ──
+if ($MyInvocation.InvocationName -eq '.') { return }
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$Host.UI.RawUI.WindowTitle = '闪客快打7 更新安装'
+if ([Environment]::OSVersion.Version.Major -lt 10) { throw '最低要求 Windows 10' }
 
 Write-Header
 

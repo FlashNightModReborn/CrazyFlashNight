@@ -75,6 +75,8 @@ layers:
     include:
       - "**/*.swf"
       - "**/*.png"
+      # 头像图标：tooltip-document.js 经 cfn-assets.local → flashswf/ 直接取 portraits/icons/<NPC名>.webp
+      - "**/*.webp"
       - "**/*.flv"
       - "**/*.html"
       - "portraits/**/*.xml"

@@ -71,27 +71,34 @@ npm run list-tags
 
 ### 生成可直接安装到 Steam resources 的 zip（Windows，不需要 7-Zip）
 
+每日 ZIP 入口每次从当前 worktree 重新执行 `npm run pack`，不复用旧 `PackOutput`；必须显式提供合法版本化终端 exe。当前配套版本为 `CFN-RAG-v3.0.2.exe`：
+
 ```powershell
 cd tools/cf7-packer
+npm install
+npm run typecheck
+npm test -- windows-daily-package.test.ts
 powershell -ExecutionPolicy Bypass -File sfx/build-windows-zip.ps1 `
-  -Version 2026-10-26 `
-  -RagExe "E:\program\cfn-rag-backend\CFN-RAG-v3.0.0.exe"   # 可选：AI 终端程序
+  -Version 2026-11-10 `
+  -RagExe "E:\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\project\CFN-RAG-v3.0.2.exe"
 ```
 
 产物 `output/CF7-每日包-<版本>.zip`，解压后顶层是：
 
 ```text
-resources/                              打包产物运行树（覆盖进 Steam 的 resources）
+resources/                              当前 worktree 的正式 runtime 运行树
 CrazyFlasher7StandAloneStarter_Data/    Unity 外壳补丁（Assembly-CSharp.dll）
 install.ps1                             安装脚本
 安装更新.bat                             玩家双击的入口
 使用说明.txt
-CFN-RAG-v*.exe                          可选，终端程序
+CFN-RAG-v3.0.2.exe                      必带终端程序
 ```
 
-玩家解压到任意位置后双击 `安装更新.bat`：脚本按 AppID `2402310` 定位 Steam 库并覆盖复制 `resources/`、`_Data/`，不删除原版底座里的其它文件，存档不受影响；包内带终端程序时放到游戏根目录（`resources` 的上一级），供 `fscommand/launch_rag.bat` 通配拉起。
+构建门禁：审计脚本、安装器、Unity 补丁、官方 `verify-runtime-bundle-v2.ps1` 与终端均不可缺失；runtime 按 manifest 与当前仓库逐条核对大小、SHA-256、文件集合及 v2 consensus；ZIP 生成后完整解压，再逐文件核对相对路径、大小、字节和中文条目，并对解压出的 `resources/` 执行闭包审计与 bootstrap `--verify-only`。
 
-注意两点：这份 zip 的顶层是 `resources/` 而不是打包输出目录本身，玩家不能把日期文件夹直接塞进 `resources`；zip 由 .NET 写入并带 UTF-8 文件名标志，不要改用系统自带压缩或 `tar` 重打（中文名会乱码，游戏读不到中文名数据文件）。`build-sfx.sh` 那条 `.7z` 安装器路线仍需要构建机安装 7-Zip。
+玩家解压到任意位置后双击 `安装更新.bat`：脚本按 AppID `2402310` 定位 Steam 库，逐文件备份覆盖项，只移除旧 runtime manifest 声明而新包不再使用的文件；不清空 `resources`，不覆盖存档、Agent 状态、个人配置或凭据。旧版本终端会备份后由新包替换。安装后重新校验 runtime、终端、Unity 补丁并等待 bootstrap `--verify-only` 的真实退出码；失败即恢复已备份文件，不报告成功。
+
+注意：这份 zip 的顶层是 `resources/`，不能把日期文件夹直接塞进 `resources`；zip 由 .NET 写入，不要改用系统压缩或 `tar` 重打。`--verify-only` 与闭包审计只证明文件完整，不启动 Core，也不等于新建存档、转场、终端和插话已实机可玩；交付前仍需独立沙箱运行游戏。测试夹具必须使用短路径，例如 `E:\cf7-daily-tests`，避免 Windows 深路径导致 bootstrap 探针失败。`build-sfx.sh` 的 `.7z` 路线仍需构建机安装 7-Zip。
 
 ### 输出目录模板
 

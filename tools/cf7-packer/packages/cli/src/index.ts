@@ -23,6 +23,7 @@ const { values: flags, positionals } = parseArgs({
     target: { type: "string" },
     "dry-run": { type: "boolean", default: false },
     "force-clean": { type: "boolean", default: false },
+    "require-worktree": { type: "boolean", default: false },
     all: { type: "boolean", default: false },
     version: { type: "boolean", short: "V", default: false },
     help: { type: "boolean", short: "h", default: false }
@@ -56,6 +57,9 @@ async function runPack(): Promise<void> {
   const forceClean = flags["force-clean"]!;
 
   const config = withSourceOverride(loadConfig(configPath), tag ? { tag } : undefined);
+  if (flags["require-worktree"] && config.source.mode !== "worktree") {
+    throw new Error("每日 ZIP 只接受当前 worktree，不能使用历史 tag 配置");
+  }
 
   const resolvedOutput = outputDir
     ? resolveOutputDir(config, configPath, outputDir)
@@ -247,6 +251,7 @@ function printHelp(): void {
   --output        覆盖输出目录
   --tag           使用指定 git tag 的文件快照
   --force-clean   强制清理未标记的输出目录
+  --require-worktree  拒绝历史 tag 输入（每日 ZIP 使用）
   --all           显示全部 diff 文件（不截断）
   -V, --version   显示版本号
   -h, --help      显示帮助信息
