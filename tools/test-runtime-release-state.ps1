@@ -1,4 +1,4 @@
-param([string]$TestNamePattern)
+﻿param([string]$TestNamePattern)
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
@@ -1259,6 +1259,35 @@ try {
         Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') 'v2 transition must use the normal strict path'
     }
 
+    Run-Test 'Workflow publisher guards admit aka-flashNight reject wrong missing unauthorized IDs and all reruns' {
+        $workflow = [IO.File]::ReadAllText($script:workflowSource, [Text.Encoding]::UTF8)
+        $publisherIds = @('91271520','138298913','328609522','182913479')
+        $actorClause = ($publisherIds | ForEach-Object { "github.actor_id == '$_'" }) -join ' || '
+        foreach ($jobName in @('audit-native-runtime','generated-path-regressions')) {
+            $job = [regex]::Match($workflow, ('(?ms)^  ' + [regex]::Escape($jobName) + ':\s*\r?\n.*?(?=^  [a-z][a-z0-9-]*:|\z)')).Value
+            $guardMatch = [regex]::Match($job, '(?m)^    if: >-\r?\n(?<guard>(?:^      [^\r\n]*\r?\n)+)')
+            Assert-Test $guardMatch.Success "missing job-level publisher guard: $jobName"
+            $guard = [regex]::Replace($guardMatch.Groups['guard'].Value.Trim(), '\s+', ' ')
+            Assert-Test ($guard -ceq "github.run_attempt == 1 && (github.event_name != 'workflow_dispatch' || $actorClause)") `
+                "audit publisher ID omission, wrong ID or gate drift: $jobName"
+            Assert-Test ($job.IndexOf('if: >-', [StringComparison]::Ordinal) -lt
+                $job.IndexOf('runs-on:', [StringComparison]::Ordinal)) "late authorization: $jobName"
+
+            # 精确合同通过后才执行等价布尔式；自动 push/PR 不加账号限制，但任何事件的 rerun 均拒绝。
+            $expression = $guard.Replace('github.actor_id', '$actorId').Replace('github.event_name', '$eventName').Replace('github.run_attempt', '$attempt')
+            $evaluateGuard = [scriptblock]::Create($expression.Replace('==', '-eq').Replace('!=', '-ne').Replace('&&', '-and').Replace('||', '-or'))
+            foreach ($actorId in @($publisherIds + @('182913480','999999999',''))) {
+                foreach ($eventName in @('workflow_dispatch','push','pull_request')) {
+                    foreach ($attempt in @(1,2)) {
+                        $expected = $attempt -eq 1 -and ($eventName -cne 'workflow_dispatch' -or $publisherIds -contains $actorId)
+                        Assert-Test ((& $evaluateGuard) -eq $expected) `
+                            "audit authorization mismatch: job=$jobName actor=$actorId event=$eventName attempt=$attempt"
+                    }
+                }
+            }
+        }
+    }
+
     Run-Test 'Workflow is a path-scoped native audit rather than a reusable required context' {
         $workflow = [IO.File]::ReadAllText($script:workflowSource, [Text.Encoding]::UTF8)
         Assert-Test ($workflow -match '(?m)^name:\s*Runtime native audit\s*$') 'workflow must identify itself as a post-push audit'
@@ -1362,7 +1391,8 @@ try {
         Assert-Test ($workflow -match "'-Mode', 'Audit'") 'workflow must pass Audit mode literally'
         Assert-Test ($workflow -match "github\.actor_id == '91271520'" -and
             $workflow -match "github\.actor_id == '138298913'" -and
-            $workflow -match "github\.actor_id == '328609522'") `
+            $workflow -match "github\.actor_id == '328609522'" -and
+            $workflow -match "github\.actor_id == '182913479'") `
             'manual audit allocation must use the immutable native maintainer IDs'
         $auditJob = [regex]::Match($workflow, '(?ms)^  audit-native-runtime:\s.*$').Value
         Assert-Test ($auditJob.Contains('github.run_attempt == 1') -and

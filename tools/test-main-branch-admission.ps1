@@ -1,4 +1,4 @@
-param([string]$TestNamePattern)
+﻿param([string]$TestNamePattern)
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
@@ -93,6 +93,11 @@ function New-TagCreationRuleset {
     if ($mode -eq 'tower-tag-creator-missing') {
         $bypass = @($bypass | Where-Object { $_.actor_id -ne 328609522 })
     }
+    if ($mode -eq 'aka-tag-creator-missing') { $bypass = @($bypass | Where-Object { $_.actor_id -ne 182913479 }) }
+    $akaBypass = @($bypass | Where-Object { $_.actor_id -eq 182913479 })
+    if ($mode -eq 'aka-tag-creator-wrong-id') { $akaBypass[0].actor_id = 182913480 }
+    if ($mode -eq 'aka-tag-creator-wrong-type') { $akaBypass[0].actor_type = 'RepositoryRole' }
+    if ($mode -eq 'aka-tag-creator-wrong-mode') { $akaBypass[0].bypass_mode = 'pull_request' }
     if ($mode -eq 'tag-creator-extra') {
         $bypass += [ordered]@{ actor_id=999999999; actor_type='User'; bypass_mode='always' }
     }
@@ -136,7 +141,10 @@ function New-TagImmutabilityRuleset {
 }
 
 switch -Regex ($endpoint) {
-    '^user$' { Emit ([ordered]@{ login='Crazyfs'; id=91271520 }) }
+    '^user$' {
+        if ($mode -eq 'aka-publisher') { Emit ([ordered]@{ login='aka-flashNight'; id=182913479 }) }
+        Emit ([ordered]@{ login='Crazyfs'; id=91271520 })
+    }
     '^repos/FlashNightModReborn/CrazyFlashNight$' {
         Emit ([ordered]@{ default_branch='main' })
     }
@@ -146,6 +154,10 @@ switch -Regex ($endpoint) {
         })
         if ($mode -eq 'creator-missing') { $collaborators = @($collaborators | Where-Object id -ne 91271520) }
         if ($mode -eq 'tower-creator-missing') { $collaborators = @($collaborators | Where-Object id -ne 328609522) }
+        if ($mode -eq 'aka-creator-missing') { $collaborators = @($collaborators | Where-Object id -ne 182913479) }
+        $akaCreator = @($collaborators | Where-Object id -eq 182913479)
+        if ($mode -eq 'aka-creator-wrong-id') { $akaCreator[0].id = 182913480 }
+        if ($mode -eq 'aka-creator-no-push') { $akaCreator[0].permissions.push = $false }
         $collaborators += [ordered]@{
             id=777777777
             login='UnlistedArtist'
@@ -253,21 +265,25 @@ try {
         $result = Invoke-TestAudit -ExpectedState ConfigOnly
         Assert-Test ($result.ExitCode -eq 0) $result.Output
         Assert-Test ($null -ne $result.Result -and $result.Result.passed -eq $true -and $result.Result.mainDirectPush -eq $true) $result.Output
-        Assert-Test (@($result.Result.runtimeTagCreators).Count -eq 3 -and
-            @($result.Result.runtimeTagCreators) -contains 'towerofsorcerer') 'new publisher was not admitted'
+        Assert-Test (@($result.Result.runtimeTagCreators).Count -eq 4 -and
+            @($result.Result.runtimeTagCreators) -contains 'towerofsorcerer' -and
+            @($result.Result.runtimeTagCreators) -contains 'aka-flashNight') 'new publisher was not admitted'
     }
 
-    Run-Test 'Publisher identity rejects a matching login with a wrong immutable ID or an extra creator' {
+    Run-Test 'Publisher identity rejects wrong immutable IDs missing duplicate or unauthorized creators' {
         $invalidRoot = Join-Path $testRoot 'invalid-config'
         [void](New-Item -ItemType Directory -Path (Join-Path $invalidRoot 'config\build'),(Join-Path $invalidRoot '.github') -Force)
         Copy-Item -LiteralPath $cloudBuilderConfigPath -Destination (Join-Path $invalidRoot 'config\build\runtime-github-builder.v2.json')
         Copy-Item -LiteralPath (Join-Path $repoRoot '.github\CODEOWNERS') -Destination (Join-Path $invalidRoot '.github\CODEOWNERS')
-        foreach ($mutation in @('wrong-id','extra-creator')) {
+        foreach ($mutation in @('wrong-id','aka-wrong-id','aka-missing','aka-duplicate','aka-replaced','extra-creator')) {
             $invalidConfig = Get-Content -LiteralPath $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
-            if ($mutation -eq 'wrong-id') {
-                ($invalidConfig.runtimeTagCreators | Where-Object login -eq 'towerofsorcerer').databaseId = 999999999
-            } else {
-                $invalidConfig.runtimeTagCreators += [pscustomobject]@{ databaseId=999999999; login='OtherPublisher' }
+            switch ($mutation) {
+                'wrong-id' { ($invalidConfig.runtimeTagCreators | Where-Object login -eq 'towerofsorcerer').databaseId = 999999999 }
+                'aka-wrong-id' { ($invalidConfig.runtimeTagCreators | Where-Object login -ceq 'aka-flashNight').databaseId = 182913480 }
+                'aka-missing' { $invalidConfig.runtimeTagCreators = @($invalidConfig.runtimeTagCreators | Where-Object login -cne 'aka-flashNight') }
+                'aka-duplicate' { $invalidConfig.runtimeTagCreators[-1] = $invalidConfig.runtimeTagCreators[0] }
+                'aka-replaced' { $invalidConfig.runtimeTagCreators[-1] = [pscustomobject]@{ databaseId=999999999; login='OtherPublisher' } }
+                'extra-creator' { $invalidConfig.runtimeTagCreators += [pscustomobject]@{ databaseId=999999999; login='OtherPublisher' } }
             }
             [IO.File]::WriteAllText((Join-Path $invalidRoot 'config\build\main-branch-admission.v2.json'),
                 ($invalidConfig | ConvertTo-Json -Depth 20), $utf8)
@@ -278,8 +294,8 @@ try {
         }
     }
 
-    Run-Test 'Every release workflow job pins exactly the three publisher IDs before runner allocation' {
-        $actorClause = "github.actor_id == '91271520' || github.actor_id == '138298913' || github.actor_id == '328609522'"
+    Run-Test 'Every release workflow job pins exactly the four publisher IDs before runner allocation' {
+        $actorClause = "github.actor_id == '91271520' || github.actor_id == '138298913' || github.actor_id == '328609522' || github.actor_id == '182913479'"
         $contracts = @(
             @{ Path='.github\workflows\runtime-cloud-builder.yml'; Job='build'; Guard="github.event_name == 'workflow_dispatch' && github.run_attempt == 1 && ($actorClause)" },
             @{ Path='.github\workflows\runtime-cloud-builder.yml'; Job='attest'; Guard="needs.build.result == 'success' && github.event_name == 'workflow_dispatch' && github.run_attempt == 1 && ($actorClause)" },
@@ -323,8 +339,20 @@ try {
         Assert-Test ($result.Output -match 'not sourced by the configured repository') $result.Output
     }
 
-    Run-Test 'Runtime tag creators remain the exact three immutable identities' {
-        foreach ($mode in @('creator-missing','tower-creator-missing','tower-tag-creator-missing','tag-creator-extra')) {
+    Run-Test 'aka-flashNight passes Active audit with all four immutable publisher identities in the offline fixture' {
+        $result = Invoke-TestAudit -ExpectedState Active -MockMode 'aka-publisher'
+        Assert-Test ($result.ExitCode -eq 0 -and $result.Result.passed -eq $true) $result.Output
+        Assert-Test ($result.Result.remote.authenticatedLogin -ceq 'aka-flashNight') $result.Output
+        Assert-Test (@($result.Result.remote.runtimeTagCreators).Count -eq 4 -and
+            @($result.Result.remote.runtimeTagCreators) -contains 'aka-flashNight') $result.Output
+    }
+
+    Run-Test 'Runtime tag creators remain the exact four immutable identities' {
+        foreach ($mode in @(
+            'creator-missing','tower-creator-missing','tower-tag-creator-missing','tag-creator-extra',
+            'aka-creator-missing','aka-creator-wrong-id','aka-creator-no-push',
+            'aka-tag-creator-missing','aka-tag-creator-wrong-id','aka-tag-creator-wrong-type','aka-tag-creator-wrong-mode'
+        )) {
             $result = Invoke-TestAudit -ExpectedState Active -MockMode $mode
             Assert-Test ($result.ExitCode -ne 0) "$mode passed"
             Assert-Test ($result.Output -match 'source-tag creator|source-tag creation') "$mode`: $($result.Output)"

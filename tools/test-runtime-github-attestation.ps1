@@ -1,4 +1,4 @@
-param([string]$ProjectRoot)
+﻿param([string]$ProjectRoot)
 
 $ErrorActionPreference = 'Stop'
 if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
@@ -276,16 +276,35 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
         'cloud workflow must allocate formal builds only from the protected single-segment runtime tag namespace'
     Assert-Cf7Test (([regex]::Matches($workflowText, 'runs-on:\s*windows-2022')).Count -eq 2) 'both cloud jobs must use the explicit VS 2022 image family'
     Assert-Cf7Test (-not [regex]::IsMatch($workflowText, 'runs-on:\s*(?:windows-latest|windows-2025|self-hosted)')) 'cloud builder workflow must not use a mutable major-toolchain alias or self-hosted runners'
-    foreach ($jobContract in @($buildJobText,$attestJobText)) {
-        Assert-Cf7Test ($jobContract.Contains("github.event_name == 'workflow_dispatch'") -and
-            $jobContract.Contains('github.run_attempt == 1') -and
-            $jobContract.Contains("github.actor_id == '91271520'") -and
-            $jobContract.Contains("github.actor_id == '138298913'") -and
-            $jobContract.Contains("github.actor_id == '328609522'")) `
-            'each cloud job must reject non-dispatch, rerun, and non-maintainer identities before allocation'
+    $publisherIds = @('91271520','138298913','328609522','182913479')
+    $actorClause = ($publisherIds | ForEach-Object { "github.actor_id == '$_'" }) -join ' || '
+    foreach ($jobName in @('build','attest')) {
+        $jobContract = if ($jobName -ceq 'build') { $buildJobText } else { $attestJobText }
+        $guardMatch = [regex]::Match($jobContract, '(?m)^    if: >-\r?\n(?<guard>(?:^      [^\r\n]*\r?\n)+)')
+        Assert-Cf7Test $guardMatch.Success "missing job-level publisher guard: $jobName"
+        $guard = [regex]::Replace($guardMatch.Groups['guard'].Value.Trim(), '\s+', ' ')
+        $expectedGuard = "github.event_name == 'workflow_dispatch' && github.run_attempt == 1 && ($actorClause)"
+        if ($jobName -ceq 'attest') { $expectedGuard = "needs.build.result == 'success' && $expectedGuard" }
+        Assert-Cf7Test ($guard -ceq $expectedGuard) "cloud publisher ID omission, wrong ID or gate drift: $jobName"
         Assert-Cf7Test ($jobContract.IndexOf('if: >-', [StringComparison]::Ordinal) -lt
             $jobContract.IndexOf('runs-on: windows-2022', [StringComparison]::Ordinal)) `
             'cloud authorization must be a job-level condition evaluated before runner allocation'
+
+        # 先精确核对表达式，再离线执行等价布尔式；不能把含有 ID 的文本当作授权行为证据。
+        $expression = $guard.Replace('github.actor_id', '$actorId').Replace('github.event_name', '$eventName').Replace('github.run_attempt', '$attempt').Replace('needs.build.result', '$buildResult')
+        $evaluateGuard = [scriptblock]::Create($expression.Replace('==', '-eq').Replace('&&', '-and').Replace('||', '-or'))
+        foreach ($actorId in @($publisherIds + @('182913480','999999999',''))) {
+            foreach ($eventName in @('workflow_dispatch','repository_dispatch','push','pull_request')) {
+                foreach ($attempt in @(1,2)) {
+                    foreach ($buildResult in @('success','failure','cancelled','skipped')) {
+                        $expected = $publisherIds -contains $actorId -and $eventName -ceq 'workflow_dispatch' -and
+                            $attempt -eq 1 -and ($jobName -ceq 'build' -or $buildResult -ceq 'success')
+                        Assert-Cf7Test ((& $evaluateGuard) -eq $expected) `
+                            "cloud authorization mismatch: job=$jobName actor=$actorId event=$eventName attempt=$attempt build=$buildResult"
+                    }
+                }
+            }
+        }
     }
     Assert-Cf7Test ($buildJobText.Contains('CF7_EXPECTED_IMAGE_OS: win22') -and
         $buildJobText.Contains('$env:RUNNER_ENVIRONMENT -cne ''github-hosted''') -and

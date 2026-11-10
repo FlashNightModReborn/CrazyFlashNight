@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$ProjectRoot,
     [string]$GitHubCliPath,
     [ValidateSet('ConfigOnly','Prepared','Layered','Active')]
@@ -149,8 +149,8 @@ try {
     $localCodeOwnersPath = Join-Path $root ([string]$config.codeOwners.path -replace '/', '\')
     if (-not (Test-Path -LiteralPath $localCodeOwnersPath -PathType Leaf)) { throw 'Configured CODEOWNERS file is missing.' }
 
-    if ($config.runtimeTagCreators -isnot [Array] -or @($config.runtimeTagCreators).Count -ne 3) {
-        throw 'Runtime source-tag creators must contain exactly three immutable identities.'
+    if ($config.runtimeTagCreators -isnot [Array] -or @($config.runtimeTagCreators).Count -ne 4) {
+        throw 'Runtime source-tag creators must contain exactly four immutable identities.'
     }
     $creatorKey = Get-Cf7SortedKey @($config.runtimeTagCreators | ForEach-Object {
         if (-not (Test-Cf7ExactFields $_ @('databaseId','login')) -or [int64]$_.databaseId -le 0 -or
@@ -159,9 +159,9 @@ try {
         }
         "$([int64]$_.databaseId):$([string]$_.login)"
     })
-    $expectedCreatorKey = Get-Cf7SortedKey @('91271520:Crazyfs','138298913:Flash-Night','328609522:towerofsorcerer')
+    $expectedCreatorKey = Get-Cf7SortedKey @('91271520:Crazyfs','138298913:Flash-Night','328609522:towerofsorcerer','182913479:aka-flashNight')
     if ($creatorKey -cne $expectedCreatorKey) {
-        throw 'Runtime source-tag creators must be exactly Crazyfs, Flash-Night, and towerofsorcerer by immutable database ID.'
+        throw 'Runtime source-tag creators must be exactly Crazyfs, Flash-Night, towerofsorcerer, and aka-flashNight by immutable database ID.'
     }
 
     if (-not (Test-Cf7ExactFields $config.rulesets @('globalRefIntegrity','runtimeTagCreation','runtimeTagImmutability'))) {
@@ -275,7 +275,7 @@ try {
                         [string]$_.actor_type -cne 'User' -or [string]$_.bypass_mode -cne 'always'
                     }).Count -gt 0 -or
                     (Get-Cf7SortedKey @($tagCreation.rules | ForEach-Object type)) -cne 'creation') {
-                Add-Cf7AdmissionIssue 'Runtime source-tag creation ruleset must allow only Crazyfs, Flash-Night, and towerofsorcerer as User/always creators.'
+                Add-Cf7AdmissionIssue 'Runtime source-tag creation ruleset must allow only Crazyfs, Flash-Night, towerofsorcerer, and aka-flashNight as User/always creators.'
             }
         }
 

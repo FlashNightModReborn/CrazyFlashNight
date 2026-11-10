@@ -6,7 +6,7 @@
 
 仓库继续保留 AS2、XML、XFL、Web 与 Launcher 的同提交原子性，不拆软件仓库和资产仓库。GitHub Free 公开仓库采用“全员直推 + 事后审计 + 正式发布双生产者共识”：
 
-- 所有已有 write 权限的协作者，包括 `Crazyfs`、`Flash-Night`、`towerofsorcerer`，都继续使用现有客户端 `Pull → Commit → Push main`；服务端不要求 PR、CODEOWNER 或另一人在线。
+- 所有已有 write 权限的协作者，包括 `Crazyfs`、`Flash-Night`、`towerofsorcerer`、`aka-flashNight`，都继续使用现有客户端 `Pull → Commit → Push main`；服务端不要求 PR、CODEOWNER 或另一人在线。
 - 普通文档、美术、策划、AS2、Web 与数据提交不触发 runtime integrity workflow，各自继续遵守原有专项验证。
 - C# / Rust / C / C++、项目/锁文件与其他 native 源码直推属于正常开发态。push 后审计可以成功报告 `source-ahead`，表示源码领先于当前已部署 runtime；它不是发布失败，也不要求每次提交立即重建二进制。
 - 根 EXE、`runtime/**`、manifest、signed consensus 等部署字节若发生变化，却没有完整 v2 promotion 证据，push 后 workflow 必须失败报警。报警是事后信号，不能撤销已经进入 `main` 的提交。
@@ -77,7 +77,7 @@ push 后状态分三类理解：
 
 两张票必须拥有不同 signer identity 和真实不同 `faultDomain`，且 build identity / payload closure 全等。GitHub Hosted 是自动第二生产者，不是第二名 human reviewer；它证明构建来源与字节共识，不判断源码业务意图。只要发布者拥有已登记本地证书、source-tag 创建权和 cloud dispatch 权，就不需要等待另一账号批准。
 
-cloud workflow 只接受 `Crazyfs`（GitHub actor ID `91271520`）、`Flash-Night`（`138298913`）或 `towerofsorcerer`（`328609522`）发起的 `workflow_dispatch`，并只接受 `run_attempt == 1`；失败后应重新 dispatch，不使用 Actions 的 rerun 按钮。该授权用于限制发布能力与 hosted runner 消耗，不影响任何协作者直推源码。
+cloud workflow 只接受 `Crazyfs`（GitHub actor ID `91271520`）、`Flash-Night`（`138298913`）、`towerofsorcerer`（`328609522`）或 `aka-flashNight`（`182913479`）发起的 `workflow_dispatch`，并只接受 `run_attempt == 1`；失败后应重新 dispatch，不使用 Actions 的 rerun 按钮。该授权用于限制发布能力与 hosted runner 消耗，不影响任何协作者直推源码。
 
 cloud artifact 保留期是有意缩短的临时传递窗口：
 
@@ -92,11 +92,27 @@ cloud artifact 保留期是有意缩短的临时传递窗口：
 
 发布账号与本地签名机器分别登记：账号具有仓库 write/admin 权限，不代表已获 source-tag 创建权或 cloud dispatch 授权；新增本地公钥也不授予 GitHub 权限。现役账号身份以 `config/build/main-branch-admission.v2.json` 的 login + immutable database ID 为准，机器身份以 `config/build/runtime-builders.v2.json` 为准。
 
-维护者授权新增账号时，同批更新 admission config、`audit-main-branch-admission.ps1` 的精确身份合同、cloud workflow 的 build/attest 条件、integrity workflow 的 audit/generated-path 条件及对应回归。远端只在 `runtime-source-tag-creation-v1` 添加该用户的 `User + always` 创建例外；main 完整性与 tag 不可变规则继续无 bypass。`.github/CODEOWNERS` 只是审阅提示，不是接入授权入口。
+维护者授权新增账号时，同批更新 admission config、`audit-main-branch-admission.ps1` 的精确身份合同、cloud workflow 的 build/attest 条件、integrity workflow 的 audit/generated-path 条件及对应回归。当前本地合同为上述四个发布账号，`aka-flashNight` 必须匹配 immutable database ID `182913479`；不能凭同名账号、owner/admin 身份或新增公钥替代精确授权。
+
+远端只在 `runtime-source-tag-creation-v1` 添加该用户的 `User + always` 创建例外；main 完整性与 tag 不可变规则继续无 bypass。修改前由具备授权的维护者核对 GitHub 现行 ruleset API 的实际结构；若与 `User + always` 合同不兼容，先报告差异并停止远端配置，不猜改为角色、团队或更宽泛 bypass，也不放宽本地审计。`.github/CODEOWNERS` 只是审阅提示，不是接入授权入口。
+
+本地修改完成后，在仓库根的 Windows PowerShell 5.1 会话运行以下离线检查（只验证本地合同与隔离夹具，不证明远端已接入）：
+
+```powershell
+chcp.com 65001 | Out-Null
+$utf8 = New-Object Text.UTF8Encoding($false)
+[Console]::InputEncoding = $utf8
+[Console]::OutputEncoding = $utf8
+$OutputEncoding = $utf8
+.\tools\audit-main-branch-admission.ps1 -ExpectedState ConfigOnly
+.\tools\test-main-branch-admission.ps1
+.\tools\test-runtime-github-attestation.ps1
+.\tools\test-runtime-release-state.ps1
+```
 
 新发布机按[本地 enrollment](runtime-build-reproducibility.md#builder-enrollment)生成不可导出密钥，回传公钥登记 JSON、其 SHA-256 和真实宿主/故障域说明；不要传私钥、PFX 或登录 token。维护者核对材料后合入公钥 registry，使用新机器的实际本地签名证明确认私钥可用。工具链按仓库 lock 和现有环境校验工具核对，不因是新机器而降低锁定要求。
 
-首次列车使用该开发者自己的真实开发内容：先合入全部接入改动及登记材料，完成受影响功能验证、release prepare 与配置检查，再从最终干净 source commit 冻结新 tag/request。工作流和公钥 registry 必须已经包含在这个 source tree 中；不能用旧 tag 加载 main 上的新授权。远端 Active audit、本地与 GitHub 独立生产、production receipt、strict consensus、promotion、部署提交后的 Audit 依次留证；业务标准入口验收仍按实际完成情况表述。
+首次列车使用该开发者自己的真实开发内容：先合入全部接入改动及登记材料，完成受影响功能验证、release prepare 与配置检查。获授权维护者完成远端规则核对/配置后，运行 `tools/audit-main-branch-admission.ps1 -ExpectedState Active`；失败时先处理差异，不冻结 tag。通过后再从最终干净 source commit 冻结新 tag/request。工作流和公钥 registry 必须已经包含在这个 source tree 中；不能用旧 tag 加载 main 上的新授权。本地与 GitHub 独立生产、production receipt、strict consensus、promotion、部署提交后的 Audit 按[当前发布协议](runtime-build-reproducibility.md#release-protocol)依次留证；业务标准入口验收仍按实际完成情况表述。
 
 ## GitHub 远端只保留三条零 Actions ruleset
 
@@ -105,7 +121,7 @@ cloud artifact 保留期是有意缩短的临时传递窗口：
 | Ruleset | bypass | 规则 |
 |---------|--------|------|
 | `main-global-ref-integrity-v1` | 无 | 禁止删除 `main`；禁止 non-fast-forward / force-push，正常 fast-forward 直推不受阻 |
-| `runtime-source-tag-creation-v1` | 仅获授权发布账号，`User + always` | 只有 `Crazyfs`、`Flash-Night`、`towerofsorcerer` 可创建 `refs/tags/runtime-build-v2/*` |
+| `runtime-source-tag-creation-v1` | 仅获授权发布账号，`User + always` | 只有 `Crazyfs`、`Flash-Night`、`towerofsorcerer`、`aka-flashNight` 可创建 `refs/tags/runtime-build-v2/*` |
 | `runtime-source-tag-immutability-v1` | 无 | 已创建的 runtime source tag 禁止任何 update 与 deletion |
 
 tag creation 与 immutability 必须分开：创建新 tag 的 bypass 不能同时获得移动或删除旧 tag 的能力。`.github/CODEOWNERS` 可以保留为审阅提示，但没有服务端 required-review 效力，不构成准入或发布证明。

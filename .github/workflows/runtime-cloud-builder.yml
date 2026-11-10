@@ -22,7 +22,7 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch' &&
       github.run_attempt == 1 &&
-      (github.actor_id == '91271520' || github.actor_id == '138298913' || github.actor_id == '328609522')
+      (github.actor_id == '91271520' || github.actor_id == '138298913' || github.actor_id == '328609522' || github.actor_id == '182913479')
     # windows-2025 moved to VS 2026 in June 2026. The locked 17.14/v143
     # producer belongs on GitHub's explicit VS 2022 image family.
     runs-on: windows-2022
@@ -200,7 +200,7 @@ jobs:
       needs.build.result == 'success' &&
       github.event_name == 'workflow_dispatch' &&
       github.run_attempt == 1 &&
-      (github.actor_id == '91271520' || github.actor_id == '138298913' || github.actor_id == '328609522')
+      (github.actor_id == '91271520' || github.actor_id == '138298913' || github.actor_id == '328609522' || github.actor_id == '182913479')
     runs-on: windows-2022
     timeout-minutes: 30
     permissions:
