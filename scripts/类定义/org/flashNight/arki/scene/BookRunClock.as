@@ -6,7 +6,8 @@ class org.flashNight.arki.scene.BookRunClock {
     private static var _session:Object;
     private static var _watch:MovieClip;
     private static function held():Boolean {
-        return _root.暂停 === true || _root.gameworld.__stageIntroExecutionHeld === true;
+        return _root.暂停 === true || _root.gameworld.__stageIntroExecutionHeld === true
+            || _root.gameworld.__combatAdmitted === false;
     }
 
     public static function install():Void {
@@ -47,7 +48,8 @@ class org.flashNight.arki.scene.BookRunClock {
     }
     private static function onPause(value:Boolean, previous:Boolean, owner:String):Void {
         // 此订阅只记时间；不可嵌套增减暂停租约。
-        if (_session != null) sample(value === true || _root.gameworld.__stageIntroExecutionHeld === true);
+        if (_session != null) sample(value === true || _root.gameworld.__stageIntroExecutionHeld === true
+            || _root.gameworld.__combatAdmitted === false);
     }
     public static function tick():Void {
         if (_session == null) { delete _watch.onEnterFrame; return; }

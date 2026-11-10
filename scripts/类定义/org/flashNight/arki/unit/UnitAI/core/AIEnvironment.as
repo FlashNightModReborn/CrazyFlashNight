@@ -37,7 +37,8 @@ class org.flashNight.arki.unit.UnitAI.core.AIEnvironment {
     // ═══════ 控制标志 ═══════
 
     public static function isPaused():Boolean {
-        return _root.暂停 === true || _root.gameworld.__stageIntroExecutionHeld === true;
+        return _root.暂停 === true || _root.gameworld.__stageIntroExecutionHeld === true
+            || _root.gameworld.__combatAdmitted === false;
     }
 
     public static function isFullAuto():Boolean {

@@ -154,6 +154,7 @@ class org.flashNight.neur.Server.ServerManager {
         _pendingCallbacks = {};
 
         // 启动连接：先尝试读端口文件快速连接，失败则 fallback 盲扫
+        if (!_workerMode) org.flashNight.neur.Server.Issue205SourceProbe.install();
         tryLoadPortsFile();
     }
 
@@ -664,7 +665,7 @@ class org.flashNight.neur.Server.ServerManager {
 
         // 处理服务器推送的控制台命令
         if (response.task == "console") {
-            handleConsoleCommand(response.command);
+            handleConsoleCommand(response.command,response.qualificationSlot);
             return;
         }
 
@@ -771,8 +772,14 @@ class org.flashNight.neur.Server.ServerManager {
     }
 
     // 处理从服务器推送来的控制台命令
-    private function handleConsoleCommand(command:String):Void {
+    private function handleConsoleCommand(command:String,qualificationSlot:String):Void {
         command = unescape(command);
+        if (qualificationSlot!=undefined && qualificationSlot!=""
+            && !org.flashNight.neur.Server.QualificationConsoleScope.allows(qualificationSlot,command,
+                String(_root.savePath),String(_root._saveExt.bookRun.originSlot))) {
+            sendSocketMessage(jsonParser.stringify({task:"console_result",success:false,
+                command:command,result:"qualification_role_scope_mismatch"}));return;
+        }
         trace("[Console] Executing: " + command);
 
         var result:String = "";

@@ -46,10 +46,15 @@ if ($unattendedRequested) {
         'cf7_agent_loot_target_full_v1',
         'cf7_agent_a5_material_shop_run',
         'cf7_agent_152_a28', 'cf7_agent_152_b29', 'cf7_agent_152_c68',
-        'cf7_agent_152_d69', 'cf7_agent_152_e69'
+        'cf7_agent_152_d69', 'cf7_agent_152_e69',
+        'cf7_agent_review1110', 'cf7_agent_i2051110'
     )
     if ($UnattendedSlot -cnotin $allowedUnattendedSlots) {
         throw '-UnattendedSlot is not in the frozen unattended slot allowlist.'
+    }
+    if ($UnattendedSlot -cin @('cf7_agent_review1110', 'cf7_agent_i2051110') -and
+            [string]::IsNullOrWhiteSpace($CandidateRoot)) {
+        throw 'Qualification slots require an explicit immutable candidate.'
     }
     if ($EnableLegacyHttpAutomation) {
         throw 'Unattended Agent Runtime cannot enable legacy HTTP automation.'

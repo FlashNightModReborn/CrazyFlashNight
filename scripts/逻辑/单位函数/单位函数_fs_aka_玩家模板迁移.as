@@ -493,220 +493,63 @@ _root.主角函数.初始化可用技能 = function() {
     }
 };
 
+// 两个挂接入口共享标量移动算法；玩家专有观察/飞行返回不扩散到佣兵。
 _root.主角函数.行走_玩家 = function() {
-    if(this.__cf6TraversalOwner!==undefined || this.__cf6ElevatorPoseOwner!==undefined || this.__cf6VehicleOwner!==undefined) return;
-    // 提取频繁访问的属性到局部变量
-    var self = this;
-    var isFlying = self.飞行浮空;
-    var rightMove = self.右行;
-    var leftMove = self.左行;
-    var upMove = self.上行;
-    var downMove = self.下行;
-    var currentDirection = self.方向;
-    var isShooting = org.flashNight.arki.unit.Action.Shoot.ShootCore.isAnyShooting(self);
-    var isReloading = self.man.换弹标签;
-    var isActionA = self.动作A;
-    var isActionB = self.动作B;
-
-    // 提前计算复合条件
-    var isMoving = rightMove || leftMove || upMove || downMove;
-    var isShootingRestricted = isShooting && (射击最大后摇中 || isActionA || isActionB);
-    var shouldRestrictMovement = (isShootingRestricted || isReloading);
-    var isBackwardsShooting = false;
-
-    // 飞行状态检查 - 如果在飞行状态则直接返回
-    if (isFlying) {
+    _root.主角函数.行走公共体(this, true);
+};
+_root.主角函数.行走 = function() {
+    _root.主角函数.行走公共体(this, false);
+};
+_root.主角函数.行走公共体 = function(self:MovieClip, isPlayer:Boolean):Void {
+    if (_root.gameworld.__combatAdmitted === false) return;
+    if (self.__cf6TraversalOwner!==undefined || self.__cf6ElevatorPoseOwner!==undefined || self.__cf6VehicleOwner!==undefined) return;
+    if (isPlayer && self.飞行浮空) {
         org.flashNight.arki.scene.StageRunSession.observeMovementDecision(self, false, "flying");
         return;
     }
-
-    // 重置旋转
-    self._rotation = 0;
+    if (isPlayer) self._rotation = 0;
     self.移动射击倒退 = false;
 
-    // 射击时移动限制
-    if (shouldRestrictMovement) {
-        强制奔跑 = false;
-
-        if (!self.移动射击) {
-            rightMove = leftMove = false;
-        }
-
-        if (!self.上下移动射击) {
-            upMove = downMove = false;
-        }
+    var rightMove:Boolean = self.右行;
+    var leftMove:Boolean = self.左行;
+    var upMove:Boolean = self.上行;
+    var downMove:Boolean = self.下行;
+    var man:Object = self.man;
+    var isReloading:Boolean = man.换弹标签 === true
+        || man.reloadFrameControlActive === true || man.reloadFrameControlRequest === true;
+    var fireIntent:Boolean = !!(self.动作A || self.动作B);
+    var firing:Boolean = org.flashNight.arki.unit.Action.Shoot.ShootCore.isAnyShooting(self);
+    var mode:String = self.攻击模式;
+    var firearm:Boolean = mode == "长枪" || mode == "手枪" || mode == "手枪2" || mode == "双枪";
+    var aimActive:Boolean = firearm ? (fireIntent || firing || self.射击最大后摇中 === true)
+        : (firing && (fireIntent || self.射击最大后摇中 === true));
+    var restrictMovement:Boolean = isReloading || aimActive;
+    if (restrictMovement) {
+        if (!self.移动射击) rightMove = leftMove = false;
+        if (!self.上下移动射击) upMove = downMove = false;
     }
-    isMoving = rightMove || leftMove || upMove || downMove;
-    org.flashNight.arki.scene.StageRunSession.observeMovementDecision(self, upMove,
-        shouldRestrictMovement && !self.上下移动射击 ? (isReloading ? "reloading" : "shooting_recovery") : "movement_gate_open");
-
-    // 处理移动逻辑
-    if (isMoving) {
-        var isWalking = (isReloading || self.状态 != self.攻击模式 + "跑") && !强制奔跑;
-
-        // 行走状态处理
-        if (isWalking) {
-            // 水平移动处理
-            if (rightMove) {
-                if (self.移动射击 && isShooting && currentDirection === "左") {
-                    isBackwardsShooting = true;
-                } else {
-                    self.方向改变("右");
-                }
-                self.移动("右", self.行走X速度);
-                self.状态改变(self.攻击模式 + "行走");
-            } else if (leftMove) {
-                if (self.移动射击 && isShooting && currentDirection === "右") {
-                    isBackwardsShooting = true;
-                } else {
-                    self.方向改变("左");
-                }
-                self.移动("左", self.行走X速度);
-                self.状态改变(self.攻击模式 + "行走");
-            }
-
-            // 垂直移动处理
-            if (downMove) {
-                self.移动("下", self.行走Y速度);
-                self.状态改变(self.攻击模式 + "行走");
-            } else if (upMove) {
-                self.移动("上", self.行走Y速度);
-                self.状态改变(self.攻击模式 + "行走");
-            }
-        }
-        // 奔跑状态处理
-        else {
-            // 水平奔跑处理
-            if (rightMove) {
-                self.方向改变("右");
-                self.移动("右", self.跑X速度);
-                self.状态改变(self.攻击模式 + "跑");
-            } else if (leftMove) {
-                self.方向改变("左");
-                self.移动("左", self.跑X速度);
-                self.状态改变(self.攻击模式 + "跑");
-            }
-
-            // 垂直奔跑处理
-            if (downMove) {
-                self.移动("下", self.跑Y速度);
-                self.状态改变(self.攻击模式 + "跑");
-            } else if (upMove) {
-                self.移动("上", self.跑Y速度);
-                self.状态改变(self.攻击模式 + "跑");
-            }
-        }
-    }
-    // 站立状态处理
-    else {
-        self.状态改变(self.攻击模式 + "站立");
+    if (isPlayer) {
+        org.flashNight.arki.scene.StageRunSession.observeMovementDecision(self, upMove,
+            restrictMovement && !self.上下移动射击 ? (isReloading ? "reloading" : "shooting_recovery") : "movement_gate_open");
     }
 
-    // 更新移动射击倒退状态
-    self.移动射击倒退 = isBackwardsShooting;
-};
-
-_root.主角函数.行走 = function() {
-    if(this.__cf6TraversalOwner!==undefined || this.__cf6ElevatorPoseOwner!==undefined || this.__cf6VehicleOwner!==undefined) return;
-    // 提取频繁访问的属性到局部变量
-    var self = this;
-    var rightMove = self.右行;
-    var leftMove = self.左行;
-    var upMove = self.上行;
-    var downMove = self.下行;
-    var currentDirection = self.方向;
-    var isShooting = org.flashNight.arki.unit.Action.Shoot.ShootCore.isAnyShooting(self);
-    var isReloading = self.man.换弹标签;
-    var isActionA = self.动作A;
-    var isActionB = self.动作B;
-
-    // 提前计算复合条件
-    var isMoving = rightMove || leftMove || upMove || downMove;
-    var isShootingRestricted = isShooting && (射击最大后摇中 || isActionA || isActionB);
-    var shouldRestrictMovement = (isShootingRestricted || isReloading);
-    var isBackwardsShooting = false;
-
-    // 重置移动射击倒退状态
-    self.移动射击倒退 = false;
-
-    // 射击时移动限制
-    if (shouldRestrictMovement) {
-        强制奔跑 = false;
-
-        if (!移动射击) {
-            rightMove = leftMove = false;
+    // Shift/强制奔跑是采样权威；换弹和瞄准只降级本次移动，不能写回输入。
+    var lockFacing:Boolean = self.移动射击 && (firearm ? aimActive : firing);
+    var effectiveRun:Boolean = self.强制奔跑 && !isReloading && !aimActive;
+    var isWalking:Boolean = !effectiveRun && (isReloading || aimActive || self.状态 != mode + "跑");
+    if (rightMove || leftMove || upMove || downMove) {
+        var moveDir:String = rightMove ? "右" : (leftMove ? "左" : null);
+        if (moveDir != null) {
+            if (!lockFacing) self.方向改变(moveDir);
+            self.移动(moveDir, isWalking ? self.行走X速度 : self.跑X速度);
+            self.移动射击倒退 = lockFacing && moveDir != self.方向;
         }
-
-        if (!上下移动射击) {
-            upMove = downMove = false;
-        }
+        if (downMove) self.移动("下", isWalking ? self.行走Y速度 : self.跑Y速度);
+        else if (upMove) self.移动("上", isWalking ? self.行走Y速度 : self.跑Y速度);
+        self.状态改变(mode + (isWalking ? "行走" : "跑"));
+    } else {
+        self.状态改变(mode + "站立");
     }
-    isMoving = rightMove || leftMove || upMove || downMove;
-
-    // 处理移动逻辑
-    if (isMoving) {
-        var isWalking = (isReloading || 状态 != 攻击模式 + "跑") && !强制奔跑;
-
-        // 行走状态处理
-        if (isWalking) {
-            // 水平移动处理
-            if (rightMove) {
-                if (移动射击 && isShooting && currentDirection === "左") {
-                    isBackwardsShooting = true;
-                } else {
-                    方向改变("右");
-                }
-                移动("右", 行走X速度);
-                状态改变(攻击模式 + "行走");
-            } else if (leftMove) {
-                if (移动射击 && isShooting && currentDirection === "右") {
-                    isBackwardsShooting = true;
-                } else {
-                    方向改变("左");
-                }
-                移动("左", 行走X速度);
-                状态改变(攻击模式 + "行走");
-            }
-
-            // 垂直移动处理
-            if (downMove) {
-                移动("下", 行走Y速度);
-                状态改变(攻击模式 + "行走");
-            } else if (upMove) {
-                移动("上", 行走Y速度);
-                状态改变(攻击模式 + "行走");
-            }
-        }
-        // 奔跑状态处理
-        else {
-            // 水平奔跑处理
-            if (rightMove) {
-                方向改变("右");
-                移动("右", 跑X速度);
-                状态改变(攻击模式 + "跑");
-            } else if (leftMove) {
-                方向改变("左");
-                移动("左", 跑X速度);
-                状态改变(攻击模式 + "跑");
-            }
-
-            // 垂直奔跑处理
-            if (downMove) {
-                移动("下", 跑Y速度);
-                状态改变(攻击模式 + "跑");
-            } else if (upMove) {
-                移动("上", 跑Y速度);
-                状态改变(攻击模式 + "跑");
-            }
-        }
-    }
-    // 站立状态处理
-    else {
-        状态改变(攻击模式 + "站立");
-    }
-
-    // 更新移动射击倒退状态
-    self.移动射击倒退 = isBackwardsShooting;
 };
 
 _root.主角函数.人物暂停 = function() {
@@ -844,12 +687,14 @@ _root.主角函数.被击移动 = function(移动方向, 速度, 摩擦力) {
 
 
 _root.主角函数.拾取 = function() {
+    if (_root.gameworld.__combatAdmitted === false) return;
     if (this.hp > 0 && this.状态 != "技能" && this.状态 != "战技") {
         状态改变("拾取");
     }
 };
 
 _root.主角函数.跳 = function() {
+    if (_root.gameworld.__combatAdmitted === false) return false;
     if (org.flashNight.arki.unit.Action.Huofeng.HuofengInput.locked(this)) return false;
     // 判断是否飞行浮空状态
     if (this.飞行浮空) {
@@ -1020,10 +865,12 @@ _root.主角函数.启动跳跃浮空 = function(man:MovieClip):Void {
 
 
 _root.主角函数.冲击 = function() {
+    if (_root.gameworld.__combatAdmitted === false) return;
     状态改变(攻击模式 + "冲击");
 };
 
 _root.主角函数.攻击 = function() {
+    if (_root.gameworld.__combatAdmitted === false) return;
     //适配移动射击
     var 当前攻击模式:String = this.攻击模式;
     if (当前攻击模式 === "长枪" || 当前攻击模式 === "双枪" || 当前攻击模式 === "手枪" || 当前攻击模式 === "手枪2") {
@@ -1282,6 +1129,7 @@ _root.主角函数.根据模式重新读取武器加成 = function(模式) {
 }
 
 _root.主角函数.按键控制攻击模式 = function() {
+    if (_root.gameworld.__combatAdmitted === false) return;
     if(this.__cf6TraversalOwner!==undefined || this.__cf6ElevatorPoseOwner!==undefined || this.__cf6VehicleOwner!==undefined) return;
     if (_root.当前玩家总数 == 1) {
         if (Key.isDown(_root.键1)) {
@@ -1658,6 +1506,7 @@ _root.主角函数.getPastSmallStates = function(numStates) {
     return smallState[smallState.length - 1 - numStates];
 };
 _root.主角函数.按键检测 = function(按键, ai使用率) {
+    if (_root.gameworld.__combatAdmitted === false) return false;
     if(this.__cf6TraversalOwner!==undefined || this.__cf6ElevatorPoseOwner!==undefined || this.__cf6VehicleOwner!==undefined) return false;
     if (_root.控制目标 === this._name) {
         return Key.isDown(按键);
@@ -1831,6 +1680,7 @@ _root.主角函数.刀口位置生成子弹 = BladeShootCore.shoot;
 
 //释放技能与战技
 _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值) {
+    if (_root.gameworld.__combatAdmitted === false) return false;
     if (org.flashNight.arki.unit.Action.Huofeng.HuofengInput.locked(this)) return false;
     if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.nonnegative(消耗mp))
         return org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.reject(this,"skill_cost_invalid");
@@ -1886,6 +1736,7 @@ _root.主角函数.获取装备主动战技种类 = function(装备类型, 装�
 }
 
 _root.主角函数.释放主动战技 = function() {
+    if (_root.gameworld.__combatAdmitted === false) return false;
     // F 由 class 输入服务调用，裸变量不能依赖调用方的时间轴 target。
     var 当前攻击模式:String = this.攻击模式;
     var 当前战技 = this.主动战技[当前攻击模式];

@@ -670,6 +670,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
     private static function fail(s:Object,message:String):Void {
         if(s.failed) return;
         s.failed=true;s.phase="failed";s.world.允许通行=false;
+        noteCombatAdmissionFailed(s);
         org.flashNight.arki.scene.Cf6MapPresentation.clearLoadingCover(s.world,s.owner);
         s.lifeSuspended=false;
         org.flashNight.arki.scene.Cf6VehicleService.dispose(s.vehicle);
@@ -729,6 +730,17 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         releaseElevatorActor(s);
         if(s.lease!=undefined) {PauseManager.releaseLease(s.lease);s.lease=undefined;}
     }
+    private static function noteRoomReady(s:Object):Void {
+        if(!current(s) || s.failed || s.roomReadyReported===true) return;
+        s.roomReadyReported=true;
+        if(s.stageManager!=null && typeof s.stageManager.noteRoomReady=="function") {
+            s.stageManager.noteRoomReady(s.world,s.owner,s.mapId);
+        }
+    }
+    private static function noteCombatAdmissionFailed(s:Object):Void {
+        if(s==null || s.stageManager==null || typeof s.stageManager.noteCombatAdmissionFailed!="function") return;
+        s.stageManager.noteCombatAdmissionFailed(s.world,s.owner);
+    }
     private static function suspendDeath(s:Object):Void {
         org.flashNight.arki.scene.Cf6MapPresentation.clearLoadingCover(s.world,s.owner);
         if(s.lifeSuspended===true) return;
@@ -743,7 +755,8 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         if(hero._parent!==s.world || hero!==s.world[_root.控制目标] || !(hero.hp>0)
                 || org.flashNight.arki.scene.StageRunSession.getRunAuthority().life!=="alive") return false;
         s.lifeSuspended=false;
-        if(s.kind=="elevator" && (s.phase=="closing" || s.phase=="stopping" || s.phase=="opening")) hold(s);
+        if(s.phase=="loading" || s.arrival!=null && s.arrival.rules.phase!="complete"
+                || s.kind=="elevator" && (s.phase=="closing" || s.phase=="stopping" || s.phase=="opening")) hold(s);
         if(s.phase=="ready" && s.delivered===true && s.advanceIssued!==true && s.stageManager.isCleared===true)
             s.world.允许通行=true;
         return true;
@@ -752,7 +765,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
      * navigation is issued. Durable settlement and the normal door stay authoritative. */
     private static function continueWithoutTraversal(s:Object,t:Object,arrival:Boolean):Boolean {
         if(!current(s) || s.advanceIssued===true || t.presentationActorCurrent!==true) return false;
-        if(arrival) {s.arrival=null;release(s);return true;}
+        if(arrival) {s.arrival=null;return true;}
         s.departure=null;s.phase="ready";s.delivered=true;release(s);
         if(s.manager!=undefined) s.manager.clearStage();
         return true;
@@ -767,7 +780,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             if(pendingBirths!=null && birthWindowMatches(pendingBirths,org.flashNight.arki.scene.StageManager.instance,_root.gameworld)) return;
             disposeBirthWindow(pendingBirths,true);pendingBirths=null;delete watch.onEnterFrame;return;
         }
-        if(!current(s)) {s.failed=true;s.phase="cancelled";teardown();return;}
+        if(!current(s)) {s.failed=true;s.phase="cancelled";noteCombatAdmissionFailed(s);teardown();return;}
         if(s.failed) return;
         if(s.earlyClear!=null && !pendingMatches(s.earlyClear,org.flashNight.arki.scene.StageManager.instance,s.world)) {
             fail(s,"提前清场的关卡身份已变化，取消旧请求");return;
@@ -817,17 +830,29 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             if(!org.flashNight.arki.scene.Cf6MapPresentation.loadingCoverReady(s.world,s.owner)) return;
         }
         if(s.world.__stageIntroExecutionHeld === true) {render(s);return;}
-        var paused:Boolean=PauseManager.isPausedExcept(s.lease);
-        if(!paused) s.animationFrame++;
         var cue:String;
         if(s.arrival!=null && s.arrival.rules.phase!="complete") {
-            release(s);
+            if(!s.arrival.acquired && hero!=undefined && hero===s.world[_root.控制目标]
+                    && hero.hp>0 && (hero.浮空 || hero.飞行浮空)) {
+                org.flashNight.arki.scene.Cf6TraversalService.unbindBorrowedLease(s.arrival);
+                release(s);
+                render(s);
+                return;
+            }
+            hold(s);
+            org.flashNight.arki.scene.Cf6TraversalService.borrowArrivalLease(s.arrival,s);
+            if(!PauseManager.isPausedExcept(s.lease)) s.animationFrame++;
             var arrivalCue:String=org.flashNight.arki.scene.Cf6TraversalService.tick(s.arrival,hero,false);
-            if(arrivalCue=="cancelled") {if(!continueWithoutTraversal(s,s.arrival,true)) fail(s,"到达演出未能完成");return;}
-            render(s);
-            if(arrivalCue!="complete") return;
-            paused=PauseManager.isPausedExcept(s.lease);
+            if(arrivalCue=="cancelled") {
+                if(!continueWithoutTraversal(s,s.arrival,true)) {fail(s,"到达演出未能完成");return;}
+            } else {
+                render(s);
+                if(arrivalCue!="complete") return;
+            }
+        } else if(!PauseManager.isPausedExcept(s.lease)) {
+            s.animationFrame++;
         }
+        var paused:Boolean=PauseManager.isPausedExcept(s.lease);
         if(!paused) org.flashNight.arki.scene.Cf6ExitGuideService.showClearCue(s,hero);
         // Doors wait for BOTH the real clear and the actor reaching the authored gate.
         // Lifts retain their existing stop/open sequence before the CF7 alighting extension.
@@ -846,8 +871,8 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         }
         advancePulses(s,paused);
         if(cue=="start" && s.kind=="elevator" || cue=="hold") hold(s);
-        if(cue=="start" && s.kind!="elevator") release(s);
-        if(cue=="release") release(s);
+        if(cue=="start" && s.kind!="elevator") {release(s);noteRoomReady(s);}
+        if(cue=="release") {release(s);noteRoomReady(s);}
         render(s);
         if(s.failed) return;
         if(cue=="complete" && !s.delivered) {
@@ -898,6 +923,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             render(s);
             if(!org.flashNight.arki.scene.Cf6MapPresentation.loadingCoverReady(s.world,s.owner)) return;
         }
+        if(state=="playing" && s.world.__stageIntroExecutionHeld!==true) noteRoomReady(s);
         if(!PauseManager.isPausedExcept(s.lease)) s.animationFrame++;
         render(s);
         if(s.failed || state!="complete") return;
@@ -1015,6 +1041,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         org.flashNight.arki.scene.Cf6TutorialTurretService.teardown();
         var s:Object=active;active=null;
         if(s==null) {if(watch!=undefined) delete watch.onEnterFrame;return;}
+        if(s.roomReadyReported!==true) noteCombatAdmissionFailed(s);
         org.flashNight.arki.scene.Cf6MapPresentation.clearLoadingCover(s.world,s.owner);
         s.lifeSuspended=false;
         org.flashNight.arki.scene.Cf6VehicleService.dispose(s.vehicle);

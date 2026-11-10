@@ -46,18 +46,34 @@ namespace CF7Launcher.Guardian
         // v2 retains the old preset/tier slots for paired wire compatibility; neither owns policy.
         internal static bool TryParse(string[] p,out RenderSample result)
         {
+            if(!TryParseTelemetry(p,out result,out _)
+                || !IsEligibleForExistingRenderPolicy(result,out _)) {
+                result=null;
+                return false;
+            }
+            return true;
+        }
+        internal static bool TryParseTelemetry(string[] p,out RenderSample result,out string reason)
+        {
             result=null;
-            if (p.Length!=15 || p[4]!="v2" || !I(p[2],out int tier) || tier<0 || tier>1
+            reason="invalid_shape";
+            if (p==null || p.Length!=15 || p[4]!="v2" || !I(p[2],out int tier) || tier<0 || tier>1
                 || !I(p[3],out int scene) || scene<0 || !I(p[5],out int frames) || frames<1 || frames>100000
                 || !I(p[6],out int ms) || ms<1 || ms>60000 || !I(p[7],out int slow) || slow<0 || slow>frames
                 || !I(p[8],out int max) || max<0 || max>ms || !QualityValid(p[9]) || !QualityValid(p[10])
                 || (p[11]!="0" && p[11]!="1") || (p[12]!="0" && p[12]!="1")
                 || !long.TryParse(p[13],NumberStyles.None,CultureInfo.InvariantCulture,out long seq) || seq<1
-                || !long.TryParse(p[14],NumberStyles.None,CultureInfo.InvariantCulture,out long command) || command<0
-                || frames*1000.0/ms>120) return false;
+                || !long.TryParse(p[14],NumberStyles.None,CultureInfo.InvariantCulture,out long command) || command<0) return false;
             result=new RenderSample { Scene=scene,Frames=frames,DurationMs=ms,LongFrames=slow,MaxFrameMs=max,
                 Preset=p[9],Quality=p[10],Tier=tier,Held=p[11]=="1",Paused=p[12]=="1",Sequence=seq,AppliedCommand=command };
+            reason=null;
             return true;
+        }
+        internal static bool IsEligibleForExistingRenderPolicy(RenderSample sample,out string reason)
+        {
+            if(sample==null) { reason="invalid_shape"; return false; }
+            reason=sample.Fps>120 ? "rate_out_of_policy" : null;
+            return reason==null;
         }
         private static bool I(string s,out int value) => int.TryParse(s,NumberStyles.None,CultureInfo.InvariantCulture,out value);
         internal static bool QualityValid(string value) => value=="LOW" || value=="MEDIUM" || value=="HIGH" || value=="BEST";

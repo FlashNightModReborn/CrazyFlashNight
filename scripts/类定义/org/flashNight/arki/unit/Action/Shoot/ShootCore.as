@@ -156,7 +156,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
     /** Presentation ownership also gates queued fire callbacks after native input refresh. */
     public static function isPresentationControlled(core:Object):Boolean {
-        return core.__cf6VehicleOwner!==undefined || core.__cf6TraversalOwner!==undefined
+        return _root.gameworld.__combatAdmitted === false
+            || core.__cf6VehicleOwner!==undefined || core.__cf6TraversalOwner!==undefined
             || core.__cf6ElevatorPoseOwner!==undefined;
     }
     public static function isAnyShooting(core:Object):Boolean {

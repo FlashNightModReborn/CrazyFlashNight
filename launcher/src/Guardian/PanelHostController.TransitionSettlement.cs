@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace CF7Launcher.Guardian
@@ -34,7 +35,21 @@ namespace CF7Launcher.Guardian
             // Document loss revokes activation, but the exact native panel still
             // owns foreground while the recovery cover replaces it.
             },instance => !_disposed && IsIntroComicEndpointPresented(_activePanel,_activePanelInstanceId,
-                instance,true,_web) && SceneTransitionWindowOrder.OwnsForeground(_web));
+                instance,true,_web) && SceneTransitionWindowOrder.OwnsForeground(_web),
+            instance => {
+                var context=LastCloseOutcome;
+                if(_disposed || context?.Endpoint.Panel!="book-comic" || context.Endpoint.Instance!=instance)return false;
+                if(EffectiveInputOwner.ClosingId==context.CloseId)
+                    return ClosingFocusEligible(context) && (context.SourceRetired || context.SourceIdentity?.IsCurrent()==true);
+                return _executingClose==null && !context.CleanupFailed && context.Plan==ClosePlanKind.ReturnGame
+                    && context.Authority!=AuthorityCommitState.Unknown
+                    && Interlocked.Read(ref _inputAdmissionStamp)==context.AdmissionStamp
+                    && _activePanel==null && !AnyCompositionPanelSelected && !_transitionSettlementSelected
+                    && Volatile.Read(ref _pendingInputOwner)==null
+                    && _additionalFocusGate() && !NativeInputBlocksGame()
+                    && (EffectiveInputOwner.Kind==EffectiveInputOwnerKind.Game
+                        || EffectiveInputOwner.Kind==EffectiveInputOwnerKind.Transition && Volatile.Read(ref _transitionInputHeld)!=0);
+            },() => _closeFocusManager?.IsCurrentFlashInputFocused()==true);
             controller.SettlementRequest+=p=>_web.HandleTransitionSettlementMessage(p);
             controller.SettlementTransportFailed+=()=>_web.HandleTransitionSettlementFailure();
             controller.SceneCompleted+=()=> {

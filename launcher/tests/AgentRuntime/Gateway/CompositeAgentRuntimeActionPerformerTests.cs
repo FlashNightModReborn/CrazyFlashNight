@@ -22,6 +22,48 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
+        public async Task QualificationChordRequiresCandidateCompositionAndReleasesEveryKey(bool qualified)
+        {
+            using var fixture = new PerformerFixture();
+            fixture.TreatTargetAsLauncher(qualified);
+            var action = fixture.Action(AgentCapabilitiesV1.PressKey,
+                new { key = "q205:shift+d+j", modifiers = Array.Empty<string>(), repeat = 1, durationMs = 50 });
+            Assert.True(fixture.Observations.TryGetFrame(fixture.Context, action, out var frame, out _));
+            frame.SourceLayer = SourceLayer.Launcher;
+            var result = await fixture.PerformAsync(action);
+            Assert.Equal(qualified ? ActionOutcome.InputDispatched : ActionOutcome.Rejected, result.Outcome);
+            var packets = fixture.Win32.SentBatches.SelectMany(batch => batch).ToArray();
+            if (!qualified) Assert.Empty(packets);
+            else {
+                foreach (string key in new[] { "Key:160", "Key:68", "Key:74" }) {
+                    Assert.Equal(2, packets.Count(p => p.ControlId == key && p.Transition == NativeControlTransition.Down));
+                    Assert.Single(packets.Where(p => p.ControlId == key && p.Transition == NativeControlTransition.Up));
+                }
+            }
+        }
+
+        [Fact]
+        public async Task QualificationCancellationReleasesWholeChord()
+        {
+            using var fixture = new PerformerFixture();
+            fixture.TreatTargetAsLauncher(true);
+            using var cancellation = new CancellationTokenSource();
+            var action = fixture.Action(AgentCapabilitiesV1.PressKey,
+                new { key = "q205:shift+d+j", modifiers = Array.Empty<string>(), repeat = 1, durationMs = 2000 });
+            Assert.True(fixture.Observations.TryGetFrame(fixture.Context, action, out var frame, out _));
+            frame.SourceLayer = SourceLayer.Launcher;
+            var operation = fixture.PerformAsync(action, cancellation.Token);
+            Assert.NotEmpty(fixture.Win32.SentBatches);
+            cancellation.Cancel();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => operation);
+            Assert.True(fixture.Sink.WaitFor("deadline_exceeded"));
+            Assert.True(SpinWait.SpinUntil(() => new[] { "Key:160", "Key:68", "Key:74" }.All(key =>
+                fixture.Win32.SentBatches.SelectMany(b => b).Any(p => p.ControlId == key && p.Transition == NativeControlTransition.Up)),
+                TimeSpan.FromSeconds(1)));
+        }
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
         public async Task LauncherPixelsAuthorizeTimedMovementOnly(bool timed)
         {
             using var fixture = new PerformerFixture();
@@ -798,8 +840,10 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             }
 
             private string _launcherTargetIdForTest;
-            internal void TreatTargetAsLauncher()
+            private bool _qualificationInputForTest;
+            internal void TreatTargetAsLauncher(bool qualification = false)
             {
+                _qualificationInputForTest = qualification;
                 _launcherTargetIdForTest = TargetId;
                 RebuildPerformer();
             }
@@ -935,7 +979,8 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         HairPreviews,
                         HairTargets,
                         Coordinates,
-                        _launcherTargetIdForTest);
+                        _launcherTargetIdForTest,
+                        _qualificationInputForTest);
             }
 
             private WriteLease GuiLease(string capability)

@@ -869,7 +869,8 @@ namespace CF7Launcher.AgentRuntime.Contracts
                         Integer(arguments, "durationMs", 1, 2000, errors, "$.params.arguments");
                         string heldKey = arguments.TryGetProperty("key", out var keyValue)
                             && keyValue.ValueKind == JsonValueKind.String ? keyValue.GetString()?.ToLowerInvariant() : null;
-                        if (!(heldKey is "w" or "a" or "s" or "d" or "up" or "down" or "left" or "right")
+                        if ((!(heldKey is "w" or "a" or "s" or "d" or "up" or "down" or "left" or "right")
+                            && !GameQualificationInput.TryResolve(heldKey, out _))
                             || !arguments.TryGetProperty("repeat", out var heldRepeat) || heldRepeat.ValueKind != JsonValueKind.Number || !heldRepeat.TryGetInt32(out int heldCount) || heldCount != 1
                             || !arguments.TryGetProperty("modifiers", out var heldModifiers) || heldModifiers.ValueKind != JsonValueKind.Array || heldModifiers.GetArrayLength() != 0)
                             Error(errors, "$.params.arguments", "held_key_invalid", "Timed presses require one unmodified movement key.");

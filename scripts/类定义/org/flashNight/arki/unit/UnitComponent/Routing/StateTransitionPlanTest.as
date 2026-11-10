@@ -157,6 +157,8 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionPlanTest {
         testBuild_Transition_OnlyLabelChanged();
         testBuild_NewLogicalState();
 
+        testBuild_PoseOnlyMatrix();
+
         // validate
         testValidate_EarlyReturn();
         testValidate_TransitionMissingGotoLabel();
@@ -271,6 +273,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionPlanTest {
         assertUndefined("removeDynamicMan undefined", plan.removeDynamicMan);
         assertUndefined("gotoLabel undefined", plan.gotoLabel);
         assertUndefined("transition undefined", plan.transition);
+        assertUndefined("poseOnly undefined", plan.poseOnly);
         assertUndefined("newLogicalState undefined", plan.newLogicalState);
     }
 
@@ -434,7 +437,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionPlanTest {
             storeFlyState: false, earlyReturn: false,
             attackMode: "空手", oldState: "X",
             removeDynamicMan: false,
-            gotoLabel: "", transition: true, newLogicalState: "Y"
+            gotoLabel: "", transition: true, poseOnly: false, newLogicalState: "Y"
         };
         assertFalse("transition=true 但 gotoLabel='' → validate=false",
             StateTransitionPlan.validate(plan));
@@ -446,4 +449,44 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionPlanTest {
         var plan:Object = StateTransitionPlan.build(snap, "受伤");
         assertTrue("正常 plan validate=true", StateTransitionPlan.validate(plan));
     }
+    private static function testBuild_PoseOnlyMatrix():Void {
+        var modes:Array = ["长枪", "手枪", "手枪2", "双枪"];
+        for (var i:Number = 0; i < modes.length; i++) {
+            var mode:String = modes[i];
+            var snap:Object = fakeSnap({兵种:"主角-男", 攻击模式:mode, 状态:mode+"站立"});
+            var plan:Object = StateTransitionPlan.build(snap, mode+"行走");
+            assertTrue(mode+" stand->walk retains man", plan.poseOnly);
+            assertTrue(mode+" pose plan validates", StateTransitionPlan.validate(plan));
+            snap.状态 = mode+"行走";
+            assertTrue(mode+" walk->stand retains man", StateTransitionPlan.build(snap,mode+"站立").poseOnly);
+            assertFalse(mode+" unchanged pose is not a transition", StateTransitionPlan.build(snap,mode+"行走").poseOnly);
+            var states:Array = [mode+"跑", mode+"跳", "受伤", "技能", "战技", modes[(i+1)%4]+"站立"];
+            for (var j:Number = 0; j < states.length; j++) {
+                snap.状态 = states[j];
+                assertFalse(mode+" rejects old state "+states[j],StateTransitionPlan.build(snap,mode+"行走").poseOnly);
+                snap.状态 = mode+"站立";
+                assertFalse(mode+" rejects new state "+states[j],StateTransitionPlan.build(snap,states[j]).poseOnly);
+            }
+            snap.__stateGotoLabel = "容器";
+            assertFalse(mode+" mismatched previous display label",StateTransitionPlan.build(snap,mode+"行走").poseOnly);
+            snap.__stateGotoLabel = undefined;
+            snap.jobGotoOverride = mode+"行走";
+            assertFalse(mode+" even matching job override is excluded",StateTransitionPlan.build(snap,mode+"行走").poseOnly);
+            snap.jobGotoOverride = null; snap.hasDynamicMan = true;
+            assertFalse(mode+" dynamic man excluded",StateTransitionPlan.build(snap,mode+"行走").poseOnly);
+            snap.hasDynamicMan = false; snap.兵种 = "杂兵";
+            assertFalse(mode+" other library excluded",StateTransitionPlan.build(snap,mode+"行走").poseOnly);
+        }
+        snap = fakeSnap({兵种:"主角-男",攻击模式:"空手",状态:"空手站立"});
+        assertFalse("unarmed not CP0 proven",StateTransitionPlan.build(snap,"空手行走").poseOnly);
+        plan = StateTransitionPlan.build(snap,"受伤");
+        delete plan.poseOnly;
+        assertFalse("normal plan must define boolean poseOnly",StateTransitionPlan.validate(plan));
+        plan.poseOnly = 1;
+        assertFalse("numeric poseOnly rejected",StateTransitionPlan.validate(plan));
+        plan = StateTransitionPlan.build(fakeSnap({飞行浮空:true}),"空手跑");
+        plan.poseOnly = false;
+        assertFalse("early return must omit poseOnly",StateTransitionPlan.validate(plan));
+    }
+
 }

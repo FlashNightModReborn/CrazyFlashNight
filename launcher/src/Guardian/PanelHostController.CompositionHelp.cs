@@ -134,7 +134,7 @@ namespace CF7Launcher.Guardian
         {
             get
             {
-                CompositionHelpSurface surface = SelectedOwnedCompositionSurface;
+                CompositionHelpSurface surface = SelectedCompositionSurface;
                 return surface != null && !surface.IsDisposed
                     && surface.IsHandleCreated && surface.Active && surface.Visible
                     ? surface.Handle.ToInt64() : 0;

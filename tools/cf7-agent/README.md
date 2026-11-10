@@ -408,6 +408,22 @@ The slot allow-list is:
 
 ### Interactive regression session
 
+For the 2026-11-10 review and Issue #205 qualification, the separate exact slots
+`cf7_agent_review1110` and `cf7_agent_i2051110` require an immutable candidate.
+They expose only the closed `q205:` gestures in `qualification-input.js` through
+the existing guarded Launcher input path. Every gesture remains bounded to
+1–2000 ms, checks the same foreground/focus/lease every 25 ms, and releases all
+owned keys on cancellation. Ordinary sessions and the original regression
+cohort cannot dispatch these gestures. Flash remains metadata-only.
+
+Only `cf7_agent_i2051110` has an 80-minute, process/build/save-bound bootstrap
+deadline and a 75-minute client work budget, to permit a 70-minute real-time
+run plus setup and normal shutdown. The other slots retain their existing
+limits. There is no credential rotation or time renewal. The profile does not
+advance source frames, replace worlds, kill enemies, or alter gameplay clocks.
+Use a dedicated cloned save, preserve all pre-existing saves, and record the
+actual active exposure separately from paused/background/setup time.
+
 [`regression-session.js`](regression-session.js) reuses the trusted JSONL runner
 and guarded Runtime controller. In a persistent Node session:
 

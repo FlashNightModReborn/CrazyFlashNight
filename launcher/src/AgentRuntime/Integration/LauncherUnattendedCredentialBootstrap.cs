@@ -60,8 +60,6 @@ namespace CF7Launcher.AgentRuntime.Integration
         internal const string RunnerPolicyId =
             "cf7_trusted_core_unattended_runner_v2";
         private const int MaximumRequestBytes = 32 * 1024;
-        private static readonly TimeSpan MaximumLifetime =
-            TimeSpan.FromMinutes(10);
         private static readonly TimeSpan MaximumClockSkew =
             TimeSpan.FromMinutes(1);
         private static readonly HashSet<string> PropertyNames =
@@ -332,6 +330,8 @@ namespace CF7Launcher.AgentRuntime.Integration
                 TrustedUnattendedRuntimeBundle
                     .VerifySelectedProcess(
                         document.RunnerExecutablePath);
+            TrustedUnattendedRunnerOptions.ValidateRuntimeBinding(
+                document.Slot, selectedBundle.RuntimeMode, selectedBundle.DeploymentRoot);
             if (!string.Equals(
                     selectedBundle.ProjectRoot,
                     canonicalProjectRoot,
@@ -419,9 +419,9 @@ namespace CF7Launcher.AgentRuntime.Integration
             if (issuedUtc > now.Add(MaximumClockSkew)
                 || expiresUtc <= issuedUtc
                 || expiresUtc - issuedUtc
-                    > MaximumLifetime
+                    > TrustedRegressionSlots.MaximumLifetime(document.Slot)
                 || remaining <= TimeSpan.Zero
-                || remaining > MaximumLifetime)
+                || remaining > TrustedRegressionSlots.MaximumLifetime(document.Slot))
             {
                 throw new InvalidDataException(
                     "unattended_bootstrap_expired");

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -12,6 +13,25 @@ using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Bus
 {
+    internal readonly struct PerfTransportSnapshot
+    {
+        internal PerfTransportSnapshot(int generation, long inboundCount,
+            double? transportAgeMs, bool connected)
+        {
+            Available = true;
+            Generation = generation;
+            InboundCount = inboundCount;
+            TransportAgeMs = transportAgeMs;
+            Connected = connected;
+        }
+
+        internal bool Available { get; }
+        internal int Generation { get; }
+        internal long InboundCount { get; }
+        internal double? TransportAgeMs { get; }
+        internal bool Connected { get; }
+    }
+
     /// <summary>
     /// XMLSocket TCP 服务器。
     /// 协议：\0 分割的消息，单客户端。
@@ -52,6 +72,8 @@ namespace CF7Launcher.Bus
         // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换。
         private volatile int _generation;
         private int _lastDisconnectedGeneration;
+        private long _inboundCount;
+        private long _lastInboundQpc;
         // 业务就绪标记：policy 握手完成后的首条业务消息时触发
         private volatile bool _clientReady;
 
@@ -105,6 +127,19 @@ namespace CF7Launcher.Bus
         }
 
         public int CurrentGeneration { get { return _generation; } }
+
+        internal PerfTransportSnapshot CapturePerfTransportSnapshot()
+        {
+            lock (_clientLock)
+            {
+                long now = Stopwatch.GetTimestamp();
+                double? age = _lastInboundQpc > 0
+                    ? Math.Max(0, (now - _lastInboundQpc) * 1000.0 / Stopwatch.Frequency)
+                    : (double?)null;
+                return new PerfTransportSnapshot(_generation, _inboundCount, age,
+                    _client != null && _client.Connected);
+            }
+        }
 
         /// <summary>
         /// Executes a short connection-sensitive state transition under the same total-order
@@ -298,6 +333,8 @@ namespace CF7Launcher.Bus
                     CloseClientLocked();
                     _generation++;
                     gen = _generation;
+                    _inboundCount = 0;
+                    _lastInboundQpc = 0;
                     _clientReady = false;
                 }
 
@@ -376,11 +413,13 @@ namespace CF7Launcher.Bus
                     int bytesRead = localStream.Read(readBuf, 0, readBuf.Length);
                     if (bytesRead == 0)
                         break;
+                    Issue205Probe.Current?.TransportRead(gen, Volatile.Read(ref _generation) == gen, bytesRead);
 
                     int start = 0;
                     for (int i = 0; i < bytesRead; i++)
                     {
                         if (readBuf[i] != 0) continue;
+                        Issue205Probe.Current?.Hit(Issue205Counter.Nul);
                         // 命中消息边界：把 [start, i) 段拼到 byteBuffer，整体解码并分发
                         if (i > start)
                             byteBuffer.Write(readBuf, start, i - start);
@@ -467,6 +506,9 @@ namespace CF7Launcher.Bus
                     if (connectionGen != _generation
                         || !ReferenceEquals(_client, connectionClient)
                         || !ReferenceEquals(_stream, connectionStream)) return;
+                    _inboundCount++;
+                    Issue205Probe.Current?.Hit(Issue205Counter.MessageCurrent);
+                    _lastInboundQpc = Stopwatch.GetTimestamp();
                     // policy request 不代表业务就绪；首条真实业务消息原子 claim 此 generation。
                     if (!_clientReady && message.Length > 0
                         && !FlashPolicyHandler.IsPolicyRequest(message))
@@ -517,11 +559,12 @@ namespace CF7Launcher.Bus
                 if (prefix == 'F')
                 {
                     PerfTrace.Counter("socket.fastlane.F");
+                    Issue205Probe.Current?.Hit(Issue205Counter.FPrefix);
                     // Frame 快车道：F{cam}\x01{hn}[\x02{fps}][\x03{uiState}][\x04{inputPayload}][\x05{bulletVisual}][\x06{combatFx}]
-                    if (_frameTask == null) return;
+                    if (_frameTask == null) { Issue205Probe.Current?.Hit(Issue205Counter.FNoConsumer); return; }
 
                     FrameSections sections = FrameSections.Parse(message);
-                    if (!_frameTask.AcceptWorkerFrame(sections, connectionGen)) return;
+                    if (!_frameTask.AcceptWorkerFrame(sections, connectionGen)) { Issue205Probe.Current?.Hit(Issue205Counter.WorkerRejected); return; }
                     string uiState = sections.Ui;
                     _frameTask.HandleRaw(sections.Camera, sections.HitNumbers, sections.Fps, sections.Input,
                         sections.Bullets, connectionGen, sections.Combat, sections.Rays, sections.Chains, sections.Lights, workerAdmissionChecked:true);

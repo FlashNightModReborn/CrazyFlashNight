@@ -13,6 +13,7 @@ const ALLOWED_SLOTS = new Set([
   'cf7_agent_a5_material_shop_run',
   'cf7_agent_152_a28', 'cf7_agent_152_b29', 'cf7_agent_152_c68',
   'cf7_agent_152_d69', 'cf7_agent_152_e69',
+  'cf7_agent_review1110', 'cf7_agent_i2051110',
 ]);
 const A5_SLOT = 'cf7_agent_a5_material_shop_run';
 const A5_CANDIDATE_ID = 'a5';
@@ -66,6 +67,9 @@ function parseUnattendedArguments(argv) {
     );
   }
   const a5Slot = slot === A5_SLOT;
+  if (['cf7_agent_review1110','cf7_agent_i2051110'].includes(slot)
+      && !CANDIDATE_ID.test(candidateId || ''))
+    throw new UnattendedArgumentError('candidate_invalid', 'Qualification requires an immutable candidate.');
   if (
     (a5Slot
       && candidateId !== undefined

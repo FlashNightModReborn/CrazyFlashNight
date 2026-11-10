@@ -14,6 +14,9 @@ namespace CF7Launcher.Guardian
         internal volatile bool TimelineRetired;
         internal bool Presented, NativeClosed, SurfaceReady;
         internal bool Closing { get; private set; }
+        internal bool FocusHandoffAttempted { get; private set; }
+        internal bool FocusRootVerified { get; private set; }
+        private bool _foregroundAdmitted, _focusFailureLogged;
         private Action _activation, _closeTail;
         private JObject _comic;
         internal bool CoverRequired => !Presented && !SurfaceReady;
@@ -31,6 +34,23 @@ namespace CF7Launcher.Guardian
             }
             State=state; TimelineRetired|=retired;
             if(state=="failed") { Presented=false; SurfaceReady=false; _activation=null; }
+        }
+        internal void ObserveForegroundAdmission(bool admitted)
+        {
+            if(!admitted) { _foregroundAdmitted=false; return; }
+            if(_foregroundAdmitted)return;
+            _foregroundAdmitted=true; FocusHandoffAttempted=false; FocusRootVerified=false; _focusFailureLogged=false;
+        }
+        internal bool TryBeginFocusHandoff()
+        {
+            if(!_foregroundAdmitted || FocusHandoffAttempted)return false;
+            FocusHandoffAttempted=true; return true;
+        }
+        internal void CompleteFocusHandoff(bool rootVerified) => FocusRootVerified=rootVerified;
+        internal bool ShouldLogFocusFailure()
+        {
+            if(_focusFailureLogged)return false;
+            _focusFailureLogged=true; return true;
         }
         // The UI already granted covered retirement before AS2 can send open. Its
         // next projection may still be queued behind that open on the Host UI loop.
@@ -69,11 +89,12 @@ namespace CF7Launcher.Guardian
             && State is "narrative" or "resume" && exactScene && freshFrame && admitted;
         internal bool DeferTail(string instance,Action tail)
         { if(!Closing || SurfaceReady || Instance!=instance || tail==null)return false; _closeTail+=tail; return true; }
-        internal void Resumed()
-        { SurfaceReady=true; var tail=_closeTail; _closeTail=null; tail?.Invoke(); }
+        internal void ConsumeCloseTail()
+        { var tail=_closeTail; _closeTail=null; tail?.Invoke(); }
+        internal void Resumed() => SurfaceReady=true;
         internal void FinishFailedClose()
-        { if(State!="failed" || !NativeClosed)return; var tail=_closeTail; _closeTail=null; tail?.Invoke(); }
+        { if(State!="failed" || !NativeClosed)return; ConsumeCloseTail(); }
         internal void Retire()
-        { _activation=null; var tail=_closeTail; _closeTail=null; tail?.Invoke(); }
+        { _activation=null; ConsumeCloseTail(); }
     }
 }

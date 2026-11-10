@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Routing.*;
+import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 
 /**
  * StateTransition Test Suite
@@ -156,6 +157,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionTest {
         testOldStateRecorded();
         testStateGotoLabelRecorded();
         testReadFlyStateAfterGoto();
+        testReloadPoseAndRetirement();
 
         var elapsed:Number = getTimer() - t0;
         trace("================================================================");
@@ -495,4 +497,64 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionTest {
         // 真发生跳转时 读取当前飞行状态 应被调用 1 次
         assertEquals("读取当前飞行状态 1 次", 1, u.__spy_read_count);
     }
+    private static function reloadingUnit(mode:String) {
+        var u = makeUnit("reloadTransition");
+        u.兵种 = "主角-男"; u.攻击模式 = mode; u.状态 = mode+"站立";
+        u.man = makeStaticMan(); u.man._parent = u;
+        u.man.换弹标签 = true; u.man.reloadFrameControlActive = true;
+        u.man.reloadFrameControlRequest = true; u.man._currentframe = 56;
+        u.man.reloadFrameProgress = 0.5; u.man.允许射击 = false;
+        u.man.gotoAndStop = function(label):Void {this.__idle = label;};
+        u.man.play = function():Void {this.__played = true;};
+        ReloadManager.bumpReloadGeneration(u.man);
+        return u;
+    }
+    private static function testReloadPoseAndRetirement():Void {
+        var modes:Array = ["长枪","手枪","手枪2","双枪"];
+        for (var i:Number=0; i<modes.length; i++) {
+            var mode:String = modes[i];
+            var u = reloadingUnit(mode);
+            var m = u.man;
+            var token:Object = m.__reloadIdentity;
+            var generation:Number = ReloadManager.getReloadGeneration(m);
+            StateTransition.apply(u,mode+"行走");
+            StateTransition.apply(u,mode+"站立");
+            assertSame(mode+" same static body",m,u.man);
+            assertSame(mode+" token retained",token,m.__reloadIdentity);
+            assertEquals(mode+" frame retained",56,m._currentframe);
+            assertEquals(mode+" progress retained",0.5,m.reloadFrameProgress);
+            assertEquals(mode+" control retained",true,m.reloadFrameControlActive);
+            assertEquals(mode+" request retained",true,m.reloadFrameControlRequest);
+            assertEquals(mode+" reload retained",true,m.换弹标签);
+            assertEquals(mode+" generation retained",generation,ReloadManager.getReloadGeneration(m));
+        }
+        var exits:Array = ["长枪跑","长枪跳","受伤","技能","战技","手枪行走"];
+        for (i=0; i<exits.length; i++) {
+            u = reloadingUnit("长枪"); m = u.man;
+            var late:Function = m.结束换弹;
+            if (exits[i]=="手枪行走") u.攻击模式 = "手枪";
+            u.gotoAndStop = function(label):Void {
+                StateTransitionTest.assertEquals("cleanup precedes parent goto "+label,false,this.man.换弹标签);
+                this.__spy_gotoAndStop_last=label;
+            };
+            StateTransition.apply(u,exits[i]);
+            generation=ReloadManager.getReloadGeneration(m); late();
+            assertEquals("late end preserves new action "+exits[i],exits[i],u.状态);
+            assertEquals("late end cannot bump generation "+exits[i],generation,ReloadManager.getReloadGeneration(m));
+            assertEquals("retirement never jumps idle "+exits[i],undefined,m.__idle);
+            assertEquals("retirement never plays "+exits[i],undefined,m.__played);
+            assertEquals("retirement never enables shooting "+exits[i],false,m.允许射击);
+        }
+        // 即使逻辑状态未变，动态容器也会被独立删除；仅残留 request 也必须清。
+        u = reloadingUnit("长枪"); m = u.man;
+        m.__isDynamicMan=true; m.换弹标签=false; delete m.reloadFrameControlActive;
+        m.removeMovieClip=function():Void {
+            StateTransitionTest.assertEquals("request cleared before dynamic remove",undefined,this.reloadFrameControlRequest);
+            this.__removed=true;
+        };
+        StateTransition.apply(u,"长枪站立");
+        assertTrue("no-transition dynamic man retired",m.__removed);
+        assertEquals("no-transition retirement advances generation",2,ReloadManager.getReloadGeneration(m));
+    }
+
 }

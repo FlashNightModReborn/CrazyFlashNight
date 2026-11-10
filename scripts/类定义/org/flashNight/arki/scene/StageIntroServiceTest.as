@@ -142,9 +142,18 @@ class org.flashNight.arki.scene.StageIntroServiceTest {
             check(api._run.activeFrames==12,"authoritative report clock rejects every held frame");
             org.flashNight.arki.scene.StageRunSession.finish("victory");
             check(api._run.outcome=="active","held opening cannot turn a direct victory callback into a report or reward");
+            _root.gameworld.__combatAdmitted=false;
             s.state="narrative";StageIntroService.completeNarrative(s);StageIntroService.handleReceipt(receipt(s,"intro_surface"));
+            for(i=0;i<60;i++)org.flashNight.arki.scene.StageRunSession.tick();
+            check(api._run.activeFrames==12,"report clock remains held while CF6 __combatAdmitted is false");
+            org.flashNight.arki.scene.StageRunSession.finish("victory");
+            check(api._run.outcome=="active","CF6 entry hold rejects victory before __combatAdmitted");
+            _root.gameworld.__combatAdmitted=true;
             org.flashNight.arki.scene.StageRunSession.tick();
             check(api._run.activeFrames==13,"report clock resumes on the first granted gameplay frame");
+            _root.gameworld.__combatAdmitted=false;
+            org.flashNight.arki.scene.StageRunSession.finish("failure");
+            check(api._run.outcome=="failure","failure remains reachable while __combatAdmitted is false");
         } finally {api._run=savedRun;api._returnRequested=savedReturn;}
     }
     private static function testRunAndDeclarationBoundaries():Void {
@@ -160,13 +169,104 @@ class org.flashNight.arki.scene.StageIntroServiceTest {
         wrong=descriptor();wrong.bgmLease=true;StageIntroService.declare(_root.gameworld,wrong);
         check(StageIntroService.active()==null,"BGM policy cannot be forged by the stage descriptor");
     }
+    private static function testCf6CombatAdmissionMatrix():Void {
+        var manager:org.flashNight.arki.scene.StageManager=org.flashNight.arki.scene.StageManager.getInstance();
+        var stageMock:Object=manager;
+        var bridge:Object=org.flashNight.arki.scene.PlayerSceneLifecycle;
+        var savedIsReady:Function=bridge.isReady;
+        var savedGameworld:MovieClip=manager.gameworld,savedStage:Number=manager.currentStage;
+        var savedActive=manager.isActive,savedFinished=manager.isFinished,savedFailed=manager.isFailed;
+        var savedSpawner=stageMock.spawner,savedInfo=stageMock.currentStageInfo,savedAdmission=stageMock.combatAdmission;
+        var s:Object=fixture(true,"cf6-sting",1,"historical");
+        var world:MovieClip=s.world;
+        var startCount:Number=0,waveCount:Number=0;
+        world.dispatcher.subscribe("Start",function():Void {startCount++;},null);
+        try {
+            manager.gameworld=world;manager.currentStage=0;
+            manager.isActive=true;manager.isFinished=false;manager.isFailed=false;
+            stageMock.currentStageInfo={waveInfo:[{}],basicInfo:{Cf6MapId:"A01",Cf6ChapterIndex:1}};
+            stageMock.spawner={init:function():Void {waveCount++;}};
+            var admission:Object=manager.beginCombatAdmission(world,1,"A01");
+            var enumerated:Boolean=false;
+            for(var k:String in world) if(k=="__combatAdmitted") enumerated=true;
+            check(admission!=null && world.__combatAdmitted===false && !enumerated,
+                "CF6 combatAdmission initializes non-enumerable __combatAdmitted=false");
+            var g:Object={manager:manager,world:s.owner,stage:0,published:true};
+            bridge.isReady=function(candidate:Object):Boolean {return candidate===g && _root.gameworld===world;};
+            manager.onPlayerReady(g);
+            check(startCount==0 && waveCount==0 && world.__combatAdmitted===false && s.playerGate===g,
+                "onPlayerReady records pending gate on both combatAdmission and StageIntroService");
+            manager.noteCurtainReleased(world,s.owner);
+            s.state="narrative";
+            StageIntroService.completeNarrative(s);
+            StageIntroService.handleReceipt(receipt(s,"intro_surface"));
+            check(world.__stageIntroExecutionHeld===false && world.__combatAdmitted===false
+                && startCount==0 && waveCount==0,
+                "tryGrant releases only NarrativeHold while roomReady is still false");
+            manager.noteRoomReady(world,s.owner,"A01");
+            check(world.__combatAdmitted===true && startCount==1 && waveCount==1,
+                "roomReady completes CF6 admission and dispatches Start + waves once");
+            manager.noteRoomReady(world,s.owner,"A01");
+            manager.noteNarrativeDone(world,s.owner,1);
+            manager.noteCurtainReleased(world,s.owner);
+            manager.onPlayerReady(g);
+            check(startCount==1 && waveCount==1,"duplicate completion notifications remain idempotent");
+
+            // Start callback replacing world prevents spawner.init
+            StageIntroService.retire();
+            var world2:MovieClip=_root.createEmptyMovieClip("__stageIntroWorld2",9289);
+            _root.gameworld=world2;world2.__stageReturnWorldIdentity={};
+            world2.dispatcher=new EventDispatcher();
+            var startCount2:Number=0,waveCount2:Number=0;
+            world2.dispatcher.subscribe("Start",function():Void {
+                startCount2++;
+                var world3:MovieClip=_root.createEmptyMovieClip("__stageIntroWorld3",9291);
+                _root.gameworld=world3;world3.__stageReturnWorldIdentity={};
+            },null);
+            manager.gameworld=world2;manager.currentStage=1;
+            var admission2:Object=manager.beginCombatAdmission(world2,2,"A02");
+            var g2:Object={manager:manager,world:world2.__stageReturnWorldIdentity,stage:1,published:true};
+            bridge.isReady=function(candidate:Object):Boolean {
+                return candidate===g2 && _root.gameworld===world2 && manager.gameworld===world2;
+            };
+            stageMock.spawner={init:function():Void {waveCount2++;}};
+            manager.noteCurtainReleased(world2,world2.__stageReturnWorldIdentity);
+            manager.noteNarrativeDone(world2,world2.__stageReturnWorldIdentity,2);
+            manager.noteRoomReady(world2,world2.__stageReturnWorldIdentity,"A02");
+            manager.onPlayerReady(g2);
+            check(startCount2==1 && waveCount2==0 && world2.__combatAdmitted===false && admission2.failed===true,
+                "Start callback world replacement permanently marks admission failed and revokes combat admission");
+            if(_root.gameworld!=undefined && _root.gameworld!==world && _root.gameworld!==world2) _root.gameworld.removeMovieClip();
+            _root.gameworld=world2;
+            manager.noteRoomReady(world2,world2.__stageReturnWorldIdentity,"A02");
+            manager.onPlayerReady(g2);
+            check(waveCount2==0 && world2.__combatAdmitted===false,
+                "restoring old world after Start replacement cannot re-admit or call spawner.init");
+            world2.__stageReturnWorldIdentity={};
+            var replacement:Object=manager.beginCombatAdmission(world2,2,"A02");
+            world2.__combatAdmitted=true;
+            stageMock.revokeCombatAdmission(admission2);
+            check(world2.__combatAdmitted===true && replacement.failed===false,
+                "retired record cannot revoke a new owner on the same native MovieClip handle");
+            stageMock.revokeCombatAdmission(replacement);
+            check(world2.__combatAdmitted===false && replacement.failed===true,
+                "current exact record still revokes its own native world");
+            world2.removeMovieClip();
+        } finally {
+            bridge.isReady=savedIsReady;
+            manager.gameworld=savedGameworld;manager.currentStage=savedStage;
+            manager.isActive=savedActive;manager.isFinished=savedFinished;manager.isFailed=savedFailed;
+            stageMock.spawner=savedSpawner;stageMock.currentStageInfo=savedInfo;
+            stageMock.combatAdmission=savedAdmission;
+        }
+    }
     public static function runAllTests():Void {
         passed=0;failed=0;
         var keys:Array=["gameworld","server","savePath","_saveExt","暂停","当前关卡名","淡出动画","加载背景列表","初期关卡列表","__introOpen","__introReply"];
         var definition:Object=BookDefinition,savedCf6:Object=definition._cf6,savedType61:Object=definition._type61;
         var saved:Object={};for(var i:Number=0;i<keys.length;i++)saved[keys[i]]=_root[keys[i]];
         _root.gameworld=undefined;
-        try {testPermission();testFailure();testWorldRetirement();testAllOpenings();testExecutionClock();testRunAndDeclarationBoundaries();}
+        try {testPermission();testFailure();testWorldRetirement();testAllOpenings();testExecutionClock();testRunAndDeclarationBoundaries();testCf6CombatAdmissionMatrix();}
         finally {
             definition._cf6=savedCf6;definition._type61=savedType61;
             StageIntroService.retire();BookComicService.onTransportDisconnected();SceneTransitionService.clear();

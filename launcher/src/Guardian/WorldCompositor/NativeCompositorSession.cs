@@ -372,6 +372,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if (_bulletFrame(_session, values, count, cameraX, cameraY, cameraScale,
                     frame.Epoch,frame.Frame,frame.ChainEpoch,frame.ChainFrame) != 1)
                     throw new InvalidOperationException("Native bullet frame rejected");
+                Issue205Probe.Current?.Native(frame.Epoch,frame.Frame,frame.ChainEpoch,frame.ChainFrame);
             }
             finally { ArrayPool<float>.Shared.Return(values); }
         }

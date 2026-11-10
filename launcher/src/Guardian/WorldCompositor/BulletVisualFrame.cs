@@ -226,17 +226,24 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             lock (_sync)
             {
-                if (generation < _generation) return null;
+                if (generation < _generation) { Issue205Probe.Current?.Hit(Issue205Counter.F5OldGeneration); return null; }
                 if (generation > _generation) { _generation = generation; ResetCounters(); }
+                if (frame != null) {
+                    Issue205Probe.Current?.Hit(Issue205Counter.F5Parsed);
+                    Issue205Probe.Current?.Ordinary(new BulletVisualFrameIdentity(generation, frame.Epoch, frame.Frame, frame.SnapshotSequence, frame.IsQ1));
+                }
                 if (frame == null || frame.Epoch < _epoch
                     || (frame.Epoch == _epoch && frame.SnapshotSequence <= _lastFrame))
                 {
+                    Issue205Probe.Current?.Hit(frame == null ? Issue205Counter.F5Invalid : frame.Epoch < _epoch ? Issue205Counter.F5OldEpoch : Issue205Counter.F5OldSequence);
                     if (++_invalid <= 8) LogManager.Log("event=bullet_visual_shadow_rejected");
                     return null;
                 }
                 if (frame.Epoch != _epoch) { _epoch = frame.Epoch; _lastFrame = -1; }
                 _lastFrame = frame.SnapshotSequence;
                 _packets++;
+                Issue205Probe.Current?.Hit(Issue205Counter.F5Accepted);
+                Issue205Probe.Current?.OrdinaryAccepted(new BulletVisualFrameIdentity(generation,frame.Epoch,frame.Frame,frame.SnapshotSequence,frame.IsQ1));
                 _bytes += payloadLength;
                 _maxCount = Math.Max(_maxCount, frame.Instances.Length);
                 _overflow += frame.Overflow;

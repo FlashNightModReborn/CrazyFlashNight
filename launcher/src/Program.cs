@@ -219,6 +219,15 @@ class Program
         }
     }
 
+    // Qualification needs the same real HTML endpoint that owns settlement.
+    // A selected endpoint without a live handle stays unavailable; never lend
+    // the hidden legacy window its input identity. Ordinary sessions retain
+    // their existing composition-help/intelligence routing.
+    internal static long SelectAgentRuntimeWebHandle(string slot, bool compositionSelected,
+        bool settlementSelected, long selectedHandle, long legacyHandle) =>
+        compositionSelected || TrustedRegressionSlots.IsQualification(slot) && settlementSelected
+            ? selectedHandle : legacyHandle;
+
     private static bool TryCaptureProcessIdentity(
         Process process,
         out SessionProcessIdentity identity)
@@ -3167,6 +3176,7 @@ class Program
         // any overlay suspension, task disposal, socket teardown, or Flash termination begins.
         form.OnShutdownFence = delegate
         {
+            Issue205Probe.Current?.PreserveShutdownAttempt();
             string outcome;
             bool passed =
                 characterBuildTask
@@ -3194,6 +3204,7 @@ class Program
         // 退出前回调：在 Form dispose 之前断开快车道，防退出竞态
         form.OnShutdownEarly = delegate
         {
+            Issue205Probe.Current?.Seal("guardian_shutdown_before_cleanup");
             try
             {
                 form.SetAgentRuntimeTrayActions(null, null);
@@ -3845,9 +3856,11 @@ class Program
                         ReadExistingWindowHandle(form),
                         flashHwnd,
                         flashIdentity,
-                        panelHost != null && panelHost.AnyCompositionPanelSelected
-                            ? panelHost.ExistingAgentRuntimeCompositionHandle
-                            : ReadExistingWindowHandle(webOverlay),
+                        SelectAgentRuntimeWebHandle(agentRuntimeHost?.UnattendedSlot,
+                            panelHost?.AnyCompositionPanelSelected == true,
+                            panelHost?.UsesTransitionSettlement == true,
+                            panelHost?.ExistingAgentRuntimeCompositionHandle ?? 0,
+                            ReadExistingWindowHandle(webOverlay)),
                         ReadExistingWindowHandle(nativeHud));
 
                     LauncherAgentRuntimeHost current =
@@ -4128,6 +4141,10 @@ class Program
                 bookshelfTask.SetAutomationSlotAdmission(TrustedRegressionSlots.Contains);
                 commandRouter.EnableRegressionAutomation();
             }
+            if (TrustedRegressionSlots.IsQualification(unattendedSlot))
+                httpServer.EnableQualificationConsole(unattendedSlot);
+            if (unattendedSlot == "cf7_agent_i2051110")
+                Issue205Probe.Start(projectRoot, frameTask.CaptureIssue205State);
             if (!string.IsNullOrWhiteSpace(
                     unattendedSlot))
             {

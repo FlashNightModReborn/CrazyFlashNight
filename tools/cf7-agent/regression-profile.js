@@ -8,14 +8,18 @@ const SLOTS = Object.freeze([
   "cf7_agent_152_d69", "cf7_agent_152_e69"
 ]);
 const CANDIDATE = /^c-[0-9a-f]{12}-[0-9a-f]{10}-[a-z0-9][a-z0-9-]{0,31}$/;
+const QUALIFICATION_SLOTS = Object.freeze(["cf7_agent_review1110", "cf7_agent_i2051110"]);
+const isQualification = preparation => preparation?.schema === SCHEMA
+  && QUALIFICATION_SLOTS.includes(preparation.slots?.targetSlot);
 
 function resolve(preparation) {
   if (preparation?.schema !== SCHEMA) return null;
-  assert(SLOTS.includes(preparation.slots?.targetSlot), "Regression target must belong to the closed test cohort");
+  assert(SLOTS.includes(preparation.slots?.targetSlot) || isQualification(preparation), "Regression target must belong to the closed test cohort");
+  if (isQualification(preparation)) assert(CANDIDATE.test(preparation.candidateId || ""), "Qualification requires an immutable candidate");
   assert(preparation.candidateId === undefined || CANDIDATE.test(preparation.candidateId),
     "Regression requires formal runtime or an immutable isolated candidate");
   assert(path.isAbsolute(preparation.resourcesRoot || ""), "Regression resourcesRoot must be absolute");
   return { slot: preparation.slots.targetSlot, candidateId: preparation.candidateId };
 }
 
-module.exports = { SCHEMA, SLOTS, CANDIDATE, resolve };
+module.exports = { SCHEMA, SLOTS, QUALIFICATION_SLOTS, CANDIDATE, resolve, isQualification };

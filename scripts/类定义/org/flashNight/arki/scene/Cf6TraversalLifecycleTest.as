@@ -250,6 +250,44 @@ class org.flashNight.arki.scene.Cf6TraversalLifecycleTest {
         for(i=0;i<4;i++) Cf6TraversalService.tick(t,f.hero,false);
         check(f.hero.方向=="右" && !t.acquired && f.hero.锁定方向!==true,"completed arrival keeps its final authored facing instead of snapping back");f.world.removeMovieClip();
     }
+    private static function testBorrowedArrivalLease():Void {
+        _root.暂停=false;
+        var f:Object=fixture(),t:Object=Cf6TraversalService.create(f.room,spec("arrive"));
+        f.room.lease=PauseManager.lease(true,"cf6_map_mechanism");
+        check(Cf6TraversalService.borrowArrivalLease(t,f.room) && t.ownsLease===false && t.lease===f.room.lease,
+            "arrival borrows room pause lease before first tick");
+        check(!Cf6TraversalService.isPaused(t) && _root.暂停===true,
+            "borrowed room lease is exempt from self-pause while keeping _root.暂停 true");
+        check(Cf6TraversalService.tick(t,f.hero,false)=="playing" && t.acquired && t.ownsLease===false && t.lease===f.room.lease,
+            "acquire reuses borrowed room lease without allocating a second lease");
+        PauseManager.set(true,"manual");
+        check(Cf6TraversalService.isPaused(t) && Cf6TraversalService.tick(t,f.hero,false)=="playing" && t.rules.frame==1,
+            "manual pause overlapping room lease blocks arrival advance");
+        PauseManager.set(false,"manual");
+        check(_root.暂停===true && Cf6TraversalService.tick(t,f.hero,false)=="released" && !t.acquired
+            && t.lease===f.room.lease && t.ownsLease===false,
+            "actorReleaseFrame < duration releases actor pose while keeping borrowed lease for tail frames");
+        check(Cf6TraversalService.tick(t,f.hero,false)=="playing" && t.rules.frame==3 && _root.暂停===true,
+            "tail frame after actorReleaseFrame advances without self-locking on room lease");
+        Cf6TraversalService.suspendForDeath(t);
+        check(t.rules.phase=="waiting" && t.rules.frame==0 && t.lease===undefined && _root.暂停===true,
+            "suspendForDeath resets unfinished arrival and unbinds borrowed lease without releasing room lease");
+        check(Cf6TraversalService.borrowArrivalLease(t,f.room),
+            "re-armed arrival after revival re-borrows room lease");
+        Cf6TraversalService.tick(t,f.hero,false);
+        Cf6TraversalService.tick(t,f.hero,false);
+        Cf6TraversalService.tick(t,f.hero,false);
+        check(Cf6TraversalService.tick(t,f.hero,false)=="complete" && t.lease===undefined && _root.暂停===true,
+            "arrival completion unbinds borrowed lease while room continues holding pause for closing/start");
+        Cf6TraversalService.suspendForDeath(t);
+        check(t.rules.phase=="complete","death after completed arrival never re-arms arrival choreography");
+        PauseManager.set(true,"manual");
+        PauseManager.releaseLease(f.room.lease);f.room.lease=undefined;
+        check(_root.暂停===true,"releasing room lease while manual pause is active preserves _root.暂停===true");
+        PauseManager.set(false,"manual");
+        check(_root.暂停===false,"manual resume clears pause after room lease was released");
+        f.world.removeMovieClip();
+    }
     public static function runAllTests():Void {
         passed=0;failed=0;
         var previousWorld=_root.gameworld,previousControl=_root.控制目标,previousPause=_root.暂停;
@@ -257,7 +295,7 @@ class org.flashNight.arki.scene.Cf6TraversalLifecycleTest {
         var definition:Object=BookDefinition,previousDefinition=definition._cf6;
         var previousExt=_root._saveExt,previousSlot=_root.savePath,previousStage=_root.当前关卡名;
         PauseManager.install();
-        try {testPause();testActor();testReplacement();testDepthOwnership();testPreparedArrival();testStableFacing();}
+        try {testPause();testActor();testReplacement();testDepthOwnership();testPreparedArrival();testStableFacing();testBorrowedArrivalLease();}
         finally {Cf6TraversalService.cancelPreparedArrival(null,null);definition._cf6=previousDefinition;
             _root._saveExt=previousExt;_root.savePath=previousSlot;_root.当前关卡名=previousStage;
             _root.gameworld=previousWorld;_root.控制目标=previousControl;managerClass.instance=previousManager;_root.暂停=previousPause;}

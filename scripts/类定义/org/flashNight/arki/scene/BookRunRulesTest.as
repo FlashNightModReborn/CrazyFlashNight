@@ -55,7 +55,20 @@ class org.flashNight.arki.scene.BookRunRulesTest {
             check(second[0].Wave.SubWave[0].EnemyGroup.Enemy[0].Quantity==1 && fixture.maps[0].stage.Wave.SubWave[0].EnemyGroup.Enemy[0].Quantity==1,
                 "CF6 plans cannot mutate cached authored encounters or the next run");
             check(second[0].BasicInformation.BookBoss==undefined && second[0].Instances.Instance.length==0
-                && second[0].Event[0].Callback.Name=="书中章节","CF6 owns authored encounters and receives chapter callback only");
+                && second[0].BasicInformation.Cf6ChapterIndex===0
+                && second[0].Event[0].EventName=="Start" && second[0].Event[0].Callback==undefined,
+                "CF6 owns authored encounters, records Cf6ChapterIndex and does not bind Start chapter callback");
+            var multiChapter:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture);
+            var secondMap:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture.maps[0]);
+            secondMap.id="A02";secondMap.background="cf6/CF6_A02_BG.swf";
+            multiChapter.maps.push(secondMap);
+            definition._cf6=multiChapter;
+            var shifted:Array=BookRunRules.stages(17,1,"cf6-sting");
+            check(shifted.length==1 && shifted[0].BasicInformation.Cf6MapId=="A02"
+                && shifted[0].BasicInformation.Cf6ChapterIndex===1
+                && shifted[0].Event[0].Callback==undefined,
+                "CF6 startAt > 0 preserves true Cf6ChapterIndex without Start chapter callback");
+            definition._cf6=fixture;
             check(BookRunRules.stages(17,Number.NaN,"cf6-sting").length==0,"CF6 rejects invalid debug index");
             var run:Object={bookId:"cf6-sting",routeId:"historical",slot:"bookrun_cf6_fixture",outcome:"victory",elapsedMs:12000};
             var quote:Object=BookRunRules.reward(run,{});

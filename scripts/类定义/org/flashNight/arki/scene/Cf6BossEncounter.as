@@ -138,6 +138,7 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         if(elderError!=undefined) return;
         for (var name:String in living) refreshGuard(living[name]);
         bindBoss();
+        if (world.__stageIntroExecutionHeld === true || world.__combatAdmitted === false) return;
         if (finalDeathRemoved) {finish(true);return;}
         if (elderWaiting) { advanceElder(); return; }
         if (bossDead()) {

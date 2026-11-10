@@ -1,0 +1,4 @@
+﻿import org.flashNight.neur.Server.Issue205SourceProbeTest;
+trace("FocusedTestRunId issue205-probe Start: __FOCUSED_RUN_ID__");
+org.flashNight.neur.Server.Issue205SourceProbeTest.runAllTests();
+trace("FocusedTestRunId issue205-probe Complete: __FOCUSED_RUN_ID__");

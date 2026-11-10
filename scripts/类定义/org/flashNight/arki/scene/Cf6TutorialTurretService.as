@@ -320,7 +320,8 @@ class org.flashNight.arki.scene.Cf6TutorialTurretService {
     public static function frame(s:Object, t:Object):Void {
         if (!current(s) || s.failed || !t.loaded) return;
         // 暂停冻结整钟：不推进帧、不开火；元件不进入射击帧，故无帧内枪声。
-        if (_root.暂停 || s.world.__stageIntroExecutionHeld === true) return;
+        if (_root.暂停 || s.world.__stageIntroExecutionHeld === true
+                || s.world.__combatAdmitted === false) return;
         var holder:MovieClip = s.world[t.name];
         if (holder == undefined || t.token == undefined || holder.__cf6TurretOwner !== t.token) return;
         // 必须在进入可能发声的时间轴帧之前确认能力；拒射不能先播枪声。

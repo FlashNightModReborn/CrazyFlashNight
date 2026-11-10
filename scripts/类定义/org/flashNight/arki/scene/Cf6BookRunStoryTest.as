@@ -47,6 +47,7 @@ class org.flashNight.arki.scene.Cf6BookRunStoryTest {
         var comic:Object = BookComicService;
         var clock:Object = BookRunClock;
         api._chapter = null; api._ending = null;
+        api._completedChapterOwner = null; api._completedChapterIndex = -1;
         api._cf6PlanOwner = null; api._cf6BossPlans = {};
         if (api._chapterWatch != null) delete api._chapterWatch.onEnterFrame;
         clock._session = null;
@@ -286,6 +287,79 @@ class org.flashNight.arki.scene.Cf6BookRunStoryTest {
                 && api._ending == null,
             "Lee finish keeps telemetry and direct outcome persistence without CF6 comics");
     }
+    private static function testEntryAfterPresentationAndDialogueAdmission(realDialogue:Function):Void {
+        var api:Object = BookRunService;
+        var manager:StageManager = StageManager.getInstance();
+        var savedGameworld:MovieClip = manager.gameworld, savedStage:Number = manager.currentStage;
+        var savedActive = manager.isActive, savedFinished = manager.isFinished, savedFailed = manager.isFailed;
+        var mockManager:Object = manager;
+        var savedInfo = mockManager.currentStageInfo, savedAdmission = mockManager.combatAdmission;
+        var savedBattleFlag = _root.当前为战斗地图;
+        var dialogueService:Object = org.flashNight.arki.dialogue.NativeDialogueService;
+        var savedBeginStage:Function = dialogueService.beginStage;
+        var capturedFollow:Object = null;
+        var stubDialogue:Function = api.showChapterDialogue;
+        try {
+            // 1. Uncovered direct entry via SceneReady with startAt > 0 (chapter 4 / A04, 0-line dialogue)
+            setup("cf6-sting");
+            _root.当前为战斗地图 = true;
+            api.showChapterDialogue = realDialogue;
+            var world:MovieClip = _root.gameworld;
+            world.dispatcher = new org.flashNight.neur.Event.EventDispatcher();
+            var owner:Object = StageReturnFlow.worldIdentity(world);
+            manager.gameworld = world; manager.currentStage = 0;
+            manager.isActive = true; manager.isFinished = false; manager.isFailed = false;
+            mockManager.currentStageInfo = {basicInfo:{Cf6MapId:"A04", Cf6ChapterIndex:4}};
+            var admission:Object = manager.beginCombatAdmission(world, 4, "A04");
+            EventBus.getInstance().publish("SceneReady", world, "tok", owner);
+            check(roomCalls.length == 1 && roomCalls[0].mapId == "A04"
+                && admission.curtainReleased === true && admission.narrativeDone === true
+                && world.__combatAdmitted === false,
+                "uncovered SceneReady starts Cf6ChapterIndex=4, completes 0-line narrative and waits for roomReady");
+            EventBus.getInstance().publish("SceneTransitionReleased", world, "tok", owner);
+            check(roomCalls.length == 1 && bossCalls.length == 1,
+                "late SceneTransitionReleased after uncovered entry is deduplicated");
+
+            // 2. Non-comic chapter with >0 dialogue lines waits for followingEvent before narrativeDone
+            setup("cf6-sting");
+            _root.当前为战斗地图 = true;
+            api.showChapterDialogue = realDialogue;
+            var def:Object = BookDefinition.get("cf6-sting");
+            def.maps[5].dialogue = [{speaker:"Andy", text:"推进"}];
+            world = _root.gameworld;
+            world.dispatcher = new org.flashNight.neur.Event.EventDispatcher();
+            owner = StageReturnFlow.worldIdentity(world);
+            manager.gameworld = world; manager.currentStage = 0;
+            manager.isActive = true; manager.isFinished = false; manager.isFailed = false;
+            mockManager.currentStageInfo = {basicInfo:{Cf6MapId:"A05", Cf6ChapterIndex:5}};
+            admission = manager.beginCombatAdmission(world, 5, "A05");
+            capturedFollow = null;
+            dialogueService.beginStage = function(rows:Array, follow:Object):Void {
+                capturedFollow = follow;
+            };
+            EventBus.getInstance().publish("SceneTransitionReleased", world, "tok", owner);
+            check(roomCalls.length == 1 && roomCalls[0].mapId == "A05"
+                && admission.curtainReleased === true && admission.narrativeDone === false
+                && capturedFollow != null,
+                "non-comic chapter with dialogue waits for NativeDialogueService completion");
+            world.dispatcher.publish.apply(world.dispatcher, [capturedFollow.name].concat(capturedFollow.args));
+            check(admission.narrativeDone === true,
+                "one-shot dialogue followingEvent marks narrativeDone");
+
+            // 3. BookRunService.finish("victory") rejected while __combatAdmitted === false
+            world.__combatAdmitted = false;
+            BookRunService.finish("victory");
+            check(api._ending == null && requests.length == 0,
+                "BookRunService.finish('victory') rejected while __combatAdmitted is false");
+        } finally {
+            api.showChapterDialogue = stubDialogue;
+            dialogueService.beginStage = savedBeginStage;
+            _root.当前为战斗地图 = savedBattleFlag;
+            manager.gameworld = savedGameworld; manager.currentStage = savedStage;
+            manager.isActive = savedActive; manager.isFinished = savedFinished; manager.isFailed = savedFailed;
+            mockManager.currentStageInfo = savedInfo; mockManager.combatAdmission = savedAdmission;
+        }
+    }
     public static function runAllTests():Void {
         passed = 0; failed = 0;
         var keys:Array = ["gameworld", "server", "savePath", "_saveExt", "暂停", "当前关卡名",
@@ -302,6 +376,7 @@ class org.flashNight.arki.scene.Cf6BookRunStoryTest {
         var telemetry:Object = LeeTrialTelemetry;
         var saveManager:Object = SaveManager.getInstance();
         var oldChapter:Object = api._chapter, oldEnding:Object = api._ending;
+        var oldCompletedOwner:Object = api._completedChapterOwner, oldCompletedIndex:Number = api._completedChapterIndex;
         var oldChapterWatch:Object = api._chapterWatch;
         var oldChapterHandler:Function = oldChapterWatch == null ? null : oldChapterWatch.onEnterFrame;
         var oldPlanOwner:Object = api._cf6PlanOwner, oldPlans:Object = api._cf6BossPlans;
@@ -341,6 +416,7 @@ class org.flashNight.arki.scene.Cf6BookRunStoryTest {
             testFinalInterruptionRecovery();
             testFinalRejectsNewWorldWhilePending();
             testNonCf6FinishPaths();
+            testEntryAfterPresentationAndDialogueAdmission(oldDialogue);
         } finally {
             BookComicService.onTransportDisconnected();
             if (comic._watch != null) delete comic._watch.onEnterFrame;
@@ -350,6 +426,7 @@ class org.flashNight.arki.scene.Cf6BookRunStoryTest {
             api.showChapterDialogue = oldDialogue; telemetry.finish = oldTelemetry;
             saveManager.hasRewardCommitPending = oldPending;
             api._chapter = oldChapter; api._ending = oldEnding;
+            api._completedChapterOwner = oldCompletedOwner; api._completedChapterIndex = oldCompletedIndex;
             api._cf6PlanOwner = oldPlanOwner; api._cf6BossPlans = oldPlans;
             api._chapterWatch = oldChapterWatch;
             if (oldChapterWatch != null) {

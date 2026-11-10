@@ -20,6 +20,9 @@ class org.flashNight.arki.scene.BookRunService {
     private static var _returnUi:Object;
     private static var _chapter:Object;
     private static var _chapterWatch:MovieClip;
+    private static var _completedChapterOwner:Object;
+    private static var _completedChapterIndex:Number = -1;
+    private static var _dialogueSeq:Number = 0;
     private static var _startError:String = "";
     public static function install():Void {
         if (_installed) return;
@@ -39,14 +42,18 @@ class org.flashNight.arki.scene.BookRunService {
     public static function playChapter(index:Number):Void {
         var introScope:Object=org.flashNight.arki.scene.StageIntroService.active();
         if (introScope != null && introScope.chapter !== index) return;
-        if (org.flashNight.arki.scene.StageIntroService.chapterAlreadyStarted(index)) return;
         var run:Object = _root._saveExt.bookRun;
         var config:Object = BookDefinition.get();
         if (run.bookId === "lee-trial") return;
         if (!isBookStageContext() || config == null || run.outcome != "active" || isNaN(index) || Math.floor(index) != index
                 || index < 0 || index >= config.maps.length) return;
         var owner:Object = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
-        if (_chapter != null && _chapter.owner === owner && _chapter.index === index) return;
+        if (_completedChapterOwner === owner && _completedChapterIndex === index) return;
+        if (_chapter != null && _chapter.owner === owner && _chapter.index === index) {
+            presentChapter();
+            return;
+        }
+        if (org.flashNight.arki.scene.StageIntroService.chapterAlreadyStarted(index)) return;
         org.flashNight.arki.scene.StageIntroService.chapterStarting(index);
         _chapter = {index:index, owner:owner, slot:String(_root.savePath),
             runIdentity:org.flashNight.gesh.object.PersistedSnapshot.clone(run),
@@ -56,6 +63,41 @@ class org.flashNight.arki.scene.BookRunService {
         _chapterWatch.onEnterFrame = function():Void { org.flashNight.arki.scene.BookRunService.presentChapter(); };
         presentChapter();
     }
+    public static function startEntryAfterPresentation(world:Object, identity:Object):Void {
+        if (world == null || world !== _root.gameworld || identity == null
+                || identity !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(world)) return;
+        var run:Object = _root._saveExt.bookRun;
+        if (run == null || run.bookId !== "cf6-sting" || run.outcome !== "active" || !isBookStageContext()) return;
+        var manager:Object = StageManager.instance;
+        if (manager != null && typeof manager.noteCurtainReleased == "function") {
+            manager.noteCurtainReleased(world, identity);
+        }
+        if (_chapter != null && _chapter.owner === identity) {
+            presentChapter();
+            return;
+        }
+        var index:Number = resolveCurrentChapterIndex(world, identity);
+        if (isNaN(index) || index < 0) return;
+        if (_completedChapterOwner === identity && _completedChapterIndex === index) return;
+        playChapter(index);
+    }
+    private static function resolveCurrentChapterIndex(world:Object, identity:Object):Number {
+        var introScope:Object = org.flashNight.arki.scene.StageIntroService.active();
+        if (introScope != null && introScope.world === world && introScope.owner === identity) {
+            return introScope.chapter;
+        }
+        var manager:Object = StageManager.instance;
+        if (manager == null) return -1;
+        if (typeof manager.currentBookChapterIndex == "function") {
+            var resolved:Number = manager.currentBookChapterIndex(world, identity);
+            if (!isNaN(resolved) && resolved >= 0) return resolved;
+        }
+        if (manager.gameworld === world && typeof manager.currentStage == "number"
+                && !isNaN(manager.currentStage) && manager.currentStage >= 0) {
+            return manager.currentStage;
+        }
+        return -1;
+    }
     private static function onTransitionReleased(world:Object, token:String, identity:Object):Void {
         if (world !== _root.gameworld || identity == null
                 || identity !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(world)) return;
@@ -64,6 +106,9 @@ class org.flashNight.arki.scene.BookRunService {
             BookRunClock.ensureStarted(run);
             org.flashNight.arki.scene.LeeTrialTelemetry.beginRoom(world, identity);
             org.flashNight.arki.scene.LeeAssaultService.beginRoom(world, identity);
+        } else if (run.bookId === "cf6-sting" && run.outcome === "active" && isBookStageContext()) {
+            startEntryAfterPresentation(world, identity);
+            return;
         }
         presentChapter();
     }
@@ -139,6 +184,8 @@ class org.flashNight.arki.scene.BookRunService {
     }
     public static function completeIntroChapter(owner:Object, index:Number):Void {
         if (_chapter == null || _chapter.owner !== owner || _chapter.index !== index) return;
+        _completedChapterOwner = owner;
+        _completedChapterIndex = index;
         _chapter = null;
         delete _chapterWatch.onEnterFrame;
     }
@@ -147,14 +194,45 @@ class org.flashNight.arki.scene.BookRunService {
         _chapter.storyActive=false;
         presentChapter();
     }
+    public static function completeChapterDialogue(ticket:Object):Void {
+        if (ticket == null || ticket.completed === true) return;
+        if (ticket.world !== _root.gameworld || ticket.slot !== String(_root.savePath)
+                || ticket.owner !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(ticket.world)
+                || !BookRunRules.sameActiveRun(ticket.runIdentity, _root._saveExt.bookRun)) return;
+        ticket.completed = true;
+        var manager:Object = StageManager.instance;
+        if (manager != null && typeof manager.noteNarrativeDone == "function") {
+            manager.noteNarrativeDone(ticket.world, ticket.owner, ticket.index);
+        }
+        if (ticket.introScope != null) {
+            org.flashNight.arki.scene.StageIntroService.completeNarrative(ticket.introScope);
+        } else {
+            completeIntroChapter(ticket.owner, ticket.index);
+        }
+    }
     private static function showChapterDialogue(index:Number, owner:Object, slot:String):Void {
-        if (slot !== String(_root.savePath) || owner == undefined
-                || owner !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)
-                || _root._saveExt.bookRun.outcome != "active") return;
-        var lines:Array = BookDefinition.get().maps[index].dialogue;
-        var introFollow:Object = org.flashNight.arki.scene.StageIntroService.dialogueFollow(index);
-        if (lines.length == 0) {
-            if (introFollow != null) org.flashNight.arki.scene.StageIntroService.completeNarrative(introFollow.args[0]);
+        var world:Object = _root.gameworld;
+        var run:Object = _root._saveExt.bookRun;
+        if (world == null || slot !== String(_root.savePath) || owner == undefined
+                || owner !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(world)
+                || run == null || run.outcome != "active") return;
+        var config:Object = BookDefinition.get();
+        if (config == null || index < 0 || index >= config.maps.length) return;
+        var lines:Array = config.maps[index].dialogue;
+        var introScope:Object = org.flashNight.arki.scene.StageIntroService.active();
+        if (introScope != null && introScope.chapter !== index) introScope = null;
+        var ticket:Object = {
+            id:"bookDialogue:" + (++_dialogueSeq),
+            world:world,
+            owner:owner,
+            slot:slot,
+            index:index,
+            runIdentity:org.flashNight.gesh.object.PersistedSnapshot.clone(run),
+            introScope:introScope,
+            completed:false
+        };
+        if (lines == null || lines.length == 0) {
+            completeChapterDialogue(ticket);
             return;
         }
         var rows:Array = [];
@@ -163,7 +241,15 @@ class org.flashNight.arki.scene.BookRunService {
                 char:typeof lines[i].char == "string" ? lines[i].char
                     : lines[i].speaker == "Andy" ? "$PC_CHAR" : "", target:null, imageurl:""});
         }
-        org.flashNight.arki.dialogue.NativeDialogueService.beginStage(rows, introFollow);
+        var follow:Object = null;
+        if (world.dispatcher != null && typeof world.dispatcher.subscribeOnce == "function") {
+            var eventName:String = "__bookChapterDialogue:" + ticket.id;
+            world.dispatcher.subscribeOnce(eventName, completeChapterDialogue, null);
+            follow = {name:eventName, args:[ticket]};
+        } else {
+            follow = org.flashNight.arki.scene.StageIntroService.dialogueFollow(index);
+        }
+        org.flashNight.arki.dialogue.NativeDialogueService.beginStage(rows, follow);
     }
     public static function configureDebug(seed:Number, startMap:Number, bookId:String, routeId:String):Boolean {
         if(_root._saveExt.bookRun!=null)return false;
@@ -270,7 +356,8 @@ class org.flashNight.arki.scene.BookRunService {
         queueReturnUi();
     }
     public static function finish(outcome:String):Void {
-        if (outcome == "victory" && _root.gameworld.__stageIntroExecutionHeld === true) return;
+        if (outcome == "victory" && (_root.gameworld.__stageIntroExecutionHeld === true
+                || _root.gameworld.__combatAdmitted === false)) return;
         var run:Object = _root._saveExt.bookRun;
         if (run == null || run.outcome != "active" || _ending != null
             || run.slot !== String(_root.savePath) || (outcome != "victory" && outcome != "failure" && outcome != "defeat" && outcome != "retreat")
@@ -368,8 +455,15 @@ class org.flashNight.arki.scene.BookRunService {
         }
     }
     private static function onSceneReady(world:Object, token:String, identity:Object):Void {
-        if (_root._saveExt.bookRun == null || _root.当前为战斗地图 === true
-            || world !== _root.gameworld || identity == null || identity !== world.__stageReturnWorldIdentity) return;
+        if (_root._saveExt.bookRun == null || world !== _root.gameworld
+            || identity == null || identity !== world.__stageReturnWorldIdentity) return;
+        if (_root.当前为战斗地图 === true) {
+            if (!org.flashNight.arki.ui.SceneTransitionService.isPresentationPending()
+                    && _root.淡出动画.__returnFadeActive !== true && _root.场景转换中 !== true) {
+                startEntryAfterPresentation(world, identity);
+            }
+            return;
+        }
         var run:Object = _root._saveExt.bookRun;
         if (run.started !== true && run.outcome == "active") return;
         if (run.outcome == "active") abandonIfActive();

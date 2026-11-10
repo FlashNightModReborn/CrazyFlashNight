@@ -90,28 +90,53 @@ namespace CF7Launcher.Guardian
                 _buffer.SetPerformance(_renderDisplay);
                 LogManager.Log("event=render_schedule_presented command="+command+" source="+source.Width+"x"+source.Height
                     +" quality="+selection.Quality+" effects="+selection.EffectLevel);
+                LogManager.EnqueueRenderSchedulePresented(command,selection,source,_renderSchedule.Reason);
             }
         }
         internal bool EvaluateRenderSample(string[] parts)
         {
+            return EvaluateRenderSampleCore(parts,0,0,null);
+        }
+        internal bool EvaluateRenderSample(string[] parts,int connectionGeneration,
+            long hostFrameOrdinal,double sourceReceivedMs)
+        {
+            return EvaluateRenderSampleCore(parts,connectionGeneration,hostFrameOrdinal,sourceReceivedMs);
+        }
+        private bool EvaluateRenderSampleCore(string[] parts,int connectionGeneration,
+            long hostFrameOrdinal,double? sourceReceivedMs)
+        {
             lock (_renderLock) {
-                // The retired two-tier path must never receive missing/old telemetry.
-                if (_renderSchedule==null || !IsActive || !RenderSample.TryParse(parts,out var sample)) return true;
-                if (sample.Scene<_renderScene || (sample.Scene==_renderScene && sample.Sequence<=_renderSequence)) return true;
+                if(!RenderSample.TryParseTelemetry(parts,out var sample,out _)) {
+                    Issue205Probe.Current?.Hit(Issue205Counter.FpsInvalid);
+                    _buffer.NoteSourceReject("invalid_shape",connectionGeneration);
+                    return true;
+                }
+                Issue205Probe.Current?.Hit(Issue205Counter.FpsParsed);
                 double now=_renderClock();
+                double receivedMs=sourceReceivedMs ?? now;
+                bool foreground=_activationState==null || (_activationState.IsAppActive && !_activationState.IsMinimized);
+                bool? observedForeground=_activationState==null ? (bool?)null : foreground;
+                RenderSample.IsEligibleForExistingRenderPolicy(sample,out string policyRejectReason);
+                if(!_buffer.TryRecordSourceSample(sample,connectionGeneration,hostFrameOrdinal,
+                    receivedMs,observedForeground,policyRejectReason,out _)) { Issue205Probe.Current?.Hit(Issue205Counter.FpsSourceRejected); return true; }
+                if(policyRejectReason!=null) Issue205Probe.Current?.Hit(Issue205Counter.FpsPolicyRejected);
+                if(policyRejectReason!=null || _renderSchedule==null || !IsActive) return true;
                 if(sample.Scene!=_renderScene) {
                     _renderSchedule.RequireApplication(); InvalidateRenderRequest(); _renderScene=sample.Scene;
                 }
                 if(_renderSchedule.Configure(_performancePolicy,_renderSourceHeight())) InvalidateRenderRequest();
                 if(now-_renderLastSample>2000) _renderSchedule.ResetObservations();
                 _renderLastSample=now; _renderSequence=sample.Sequence;
-                _buffer.Push((float)sample.Fps); _buffer.SetPerfLevel(sample.Tier);
                 if(float.TryParse(parts[1],NumberStyles.Float,CultureInfo.InvariantCulture,out float hour)
                     && float.IsFinite(hour) && hour>=0 && hour<24) _buffer.SetGameHour(hour);
                 _buffer.SetSceneEpoch(sample.Scene);
-                if(_renderFailed) { _buffer.SetPerformance(_renderDisplay with {Status="unavailable"}); return true; }
-                bool foreground=_activationState==null || (_activationState.IsAppActive && !_activationState.IsMinimized);
+                if(_renderFailed) {
+                    _buffer.PushAcceptedSample(sample,connectionGeneration,hostFrameOrdinal,receivedMs,observedForeground,null);
+                    _buffer.SetPerformance(_renderDisplay with {Status="unavailable"});
+                    return true;
+                }
                 bool surfaceReady=_renderAdmission();
+                _buffer.PushAcceptedSample(sample,connectionGeneration,hostFrameOrdinal,receivedMs,observedForeground,surfaceReady);
                 bool admitted=foreground && !sample.Paused && !sample.Held && surfaceReady;
                 string gate=!foreground ? "inactive" : sample.Paused ? "paused" : sample.Held ? "held" : !surfaceReady ? "surface" : "ready";
                 LogManager.Log(string.Format(CultureInfo.InvariantCulture,
@@ -149,6 +174,7 @@ namespace CF7Launcher.Guardian
                     LogManager.Log(string.Format(CultureInfo.InvariantCulture,
                         "event=render_schedule_request command={0} scene={1} stage={2} height={3} quality={4} effects={5} reason={6}",
                         _awaitCommand,sample.Scene,selection.Stage,selection.Height,selection.Quality,selection.EffectLevel,_renderSchedule.Reason));
+                    LogManager.EnqueueRenderScheduleRequest(_awaitCommand,sample.Scene,selection,_renderSchedule.Reason);
                 }
                 return true;
             }

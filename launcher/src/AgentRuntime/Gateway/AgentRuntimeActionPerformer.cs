@@ -119,6 +119,7 @@ namespace CF7Launcher.AgentRuntime.Gateway
         private readonly InputSafetyStateMachine _safety;
         private readonly AgentObservationEnvelopeStore _observations;
         private readonly string _launcherTargetId;
+        private readonly bool _qualificationInput;
         private readonly INativeScreenCoordinateNormalizer
             _coordinates;
         private readonly IAgentStructuredActionHost
@@ -138,9 +139,11 @@ namespace CF7Launcher.AgentRuntime.Gateway
             IAgentHairPreviewStore hairPreviews,
             IAgentHairDomainTargetAuthority hairTargets,
             INativeScreenCoordinateNormalizer coordinates = null,
-            string launcherTargetId = null)
+            string launcherTargetId = null,
+            bool qualificationInput = false)
         {
             _launcherTargetId = launcherTargetId;
+            _qualificationInput = qualificationInput;
             _nativeInput = nativeInput
                 ?? throw new ArgumentNullException(
                     nameof(nativeInput));
@@ -312,11 +315,29 @@ namespace CF7Launcher.AgentRuntime.Gateway
             ActionEnvelope action, WriteLease lease, CancellationToken cancellationToken)
         {
             string key = action.Arguments.GetProperty("key").GetString()?.ToLowerInvariant();
-            if (!(key is "w" or "a" or "s" or "d" or "up" or "down" or "left" or "right")
-                || action.Arguments.GetProperty("repeat").GetInt32() != 1
-                || action.Arguments.GetProperty("modifiers").GetArrayLength() != 0
-                || !TryResolveKey(key, out ushort virtualKey, out bool extended))
+            string[] keys;
+            if (GameQualificationInput.TryResolve(key, out keys)) {
+                if (!_qualificationInput || _launcherTargetId == null
+                    || action.TargetId != _launcherTargetId)
+                    return AgentActionPerformance.Rejected("unsupported_for_surface");
+            } else {
+                if (!(key is "w" or "a" or "s" or "d" or "up" or "down" or "left" or "right"))
+                    return AgentActionPerformance.Rejected("arguments_invalid");
+                keys = new[] { key };
+            }
+            if (action.Arguments.GetProperty("repeat").GetInt32() != 1
+                || action.Arguments.GetProperty("modifiers").GetArrayLength() != 0)
                 return AgentActionPerformance.Rejected("arguments_invalid");
+            var downs = new List<NativeInputPacket>();
+            var ups = new List<NativeInputPacket>();
+            foreach (string item in keys) {
+                ushort vk; bool ext = false;
+                if (item == "shift") vk = ModifierVirtualKey(item);
+                else if (!TryResolveKey(item, out vk, out ext))
+                    return AgentActionPerformance.Rejected("arguments_invalid");
+                downs.Add(NativeInputPacket.Key(vk, 0, ext ? KeyExtended : 0, false));
+                ups.Insert(0, NativeInputPacket.Key(vk, 0, ext ? KeyExtended : 0, true));
+            }
             int duration = action.Arguments.GetProperty("durationMs").GetInt32();
             if (duration < 1 || duration > 2000)
                 return AgentActionPerformance.Rejected("arguments_invalid");
@@ -329,7 +350,7 @@ namespace CF7Launcher.AgentRuntime.Gateway
                 for (int elapsed = 0; elapsed < duration; elapsed += 25)
                 {
                     AgentActionPerformance step = DispatchNative(action, lease,
-                        new[] { NativeInputPacket.Key(virtualKey, 0, extended ? KeyExtended : 0, false) },
+                        downs.ToArray(),
                         Array.Empty<NativeScreenPoint>(), true);
                     if (step.Outcome != ActionOutcome.InputDispatched)
                         return held ? AgentActionPerformance.Unknown(step.ReasonCode, ReconcileKind.VisualAmbiguous) : step;
@@ -337,7 +358,7 @@ namespace CF7Launcher.AgentRuntime.Gateway
                     await Task.Delay(Math.Min(25, duration - elapsed), cancellationToken).ConfigureAwait(false);
                 }
                 AgentActionPerformance release = DispatchNative(action, lease,
-                    new[] { NativeInputPacket.Key(virtualKey, 0, extended ? KeyExtended : 0, true) },
+                    ups.ToArray(),
                     Array.Empty<NativeScreenPoint>(), true);
                 if (release.Outcome != ActionOutcome.InputDispatched)
                     return AgentActionPerformance.Unknown(release.ReasonCode, ReconcileKind.VisualAmbiguous);

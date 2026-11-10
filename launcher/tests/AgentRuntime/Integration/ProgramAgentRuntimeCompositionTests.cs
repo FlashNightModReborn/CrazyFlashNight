@@ -10,6 +10,42 @@ namespace CF7Launcher.Tests.AgentRuntime.Integration
 {
     public sealed class ProgramAgentRuntimeCompositionTests
     {
+        [Theory]
+        [InlineData(null, false, true, 3001)]
+        [InlineData("cf7_agent_152_a28", false, true, 3001)]
+        [InlineData("cf7_agent_i2051110_near", false, true, 3001)]
+        [InlineData("cf7_agent_i2051110", false, true, 5001)]
+        [InlineData("cf7_agent_review1110", false, true, 5001)]
+        [InlineData("ordinary", true, false, 5001)]
+        public void SettlementEndpointAdmissionIsClosedToTheQualificationCohort(
+            string slot, bool composition, bool settlement, long expected)
+        {
+            long selected = global::Program.SelectAgentRuntimeWebHandle(
+                slot, composition, settlement, 5001, 3001);
+            Assert.Equal(expected, selected);
+            var launcher = new SessionProcessIdentity(101, DateTimeOffset.UtcNow, Path.GetFullPath("Core.exe"));
+            var cache = new global::Program.AgentRuntimeSurfaceCache(launcher);
+            var ids = LauncherAgentRuntimeTargetIds.Create();
+            cache.Update(1001, 0, null, selected, 4001);
+            var endpoint = cache.CreateSpecs(ids).Single(s => s.Kind == SurfaceKind.WebOverlay);
+            Assert.Equal(expected, endpoint.KnownWindowHandle);
+            Assert.Equal(ids.WebOverlay, endpoint.TargetId);
+            Assert.Equal(1001, endpoint.OwnerWindowHandle);
+            Assert.Same(launcher, endpoint.OwnerProcess);
+        }
+
+        [Fact]
+        public void SelectedSettlementWithoutLiveEndpointCannotFallBackToLegacyInput()
+        {
+            long selected = global::Program.SelectAgentRuntimeWebHandle(
+                "cf7_agent_i2051110", false, true, 0, 3001);
+            var launcher = new SessionProcessIdentity(101, DateTimeOffset.UtcNow, Path.GetFullPath("Core.exe"));
+            var cache = new global::Program.AgentRuntimeSurfaceCache(launcher);
+            cache.Update(1001, 0, null, selected, 4001);
+            Assert.DoesNotContain(cache.CreateSpecs(LauncherAgentRuntimeTargetIds.Create()),
+                s => s.Kind == SurfaceKind.WebOverlay);
+        }
+
         [Fact]
         public void SelectedWebEndpointReplacesLegacyHandleWithoutMutatingOldSpec()
         {

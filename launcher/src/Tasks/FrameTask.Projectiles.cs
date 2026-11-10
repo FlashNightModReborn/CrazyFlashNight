@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using CF7Launcher.Bus;
+using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.HitNumbers;
 using CF7Launcher.Guardian.WorldCompositor;
 
@@ -125,13 +126,15 @@ namespace CF7Launcher.Tasks
                     }
                 }
                 if(chainPayload!=null && _projectileStyleCount>0) {
-                    if(ChainVisualFrame.TryReadHeader(chainPayload,out int epoch,out _,out _)
-                        && epoch<_minimumChainEpoch)return;
+                    if(ChainVisualFrame.TryReadHeader(chainPayload,out int epoch,out int sequence,out int tick)) {
+                        Issue205Probe.Current?.Chain(generation,epoch,sequence,tick);
+                        if(epoch<_minimumChainEpoch)return;
+                    }
                     var items=_chainVisualEngine.Consume(generation,chainPayload,_projectileStyleCount);
                     if(_chainVisualEngine.NeedsResync) {
                         _chainVisualItems=Array.Empty<BulletVisualInstance>();ChainVisualRejected?.Invoke();
                     } else if(items!=null && _chainVisualEngine.Epoch>=_minimumChainEpoch)
-                        _chainVisualItems=items;
+                    { _chainVisualItems=items; Issue205Probe.Current?.ChainCache(generation,epoch,sequence,tick); }
                 }
             }
         }
@@ -141,22 +144,23 @@ namespace CF7Launcher.Tasks
         private void ObserveOrdinaryBulletVisuals(string payload,int generation,HitNumberCamera camera)
         {
             lock(_projectileLock) {
-                if(generation<_projectileGeneration)return;
+                if(generation<_projectileGeneration) { Issue205Probe.Current?.Hit(Issue205Counter.F5OldGeneration); return; }
                 bool q1 = payload.StartsWith("Q1|", StringComparison.Ordinal);
                 BulletVisualFrame visual;
                 if (q1)
                 {
                     long started = Stopwatch.GetTimestamp();
-                    if (!BulletVisualWireQ1.TryParse(payload, _bulletVisualStyleCount, out var parsed)
-                        || _visualWire?.CanDecodeQ1(generation, parsed.OfferId) != true)
-                    { BulletVisualRejected?.Invoke(); return; }
-                    if (parsed.Epoch < _minimumBulletEpoch) return;
+                    if (!BulletVisualWireQ1.TryParse(payload, _bulletVisualStyleCount, out var parsed))
+                    { Issue205Probe.Current?.Hit(Issue205Counter.F5Invalid); BulletVisualRejected?.Invoke(); return; }
+                    if (_visualWire?.CanDecodeQ1(generation, parsed.OfferId) != true)
+                    { Issue205Probe.Current?.Hit(Issue205Counter.F5NegotiationRejected); BulletVisualRejected?.Invoke(); return; }
+                    if (parsed.Epoch < _minimumBulletEpoch) { Issue205Probe.Current?.Hit(Issue205Counter.F5OldEpoch); return; }
                     visual = _bulletVisualShadow.ObserveParsed(parsed, generation, payload.Length, started);
                     if (visual != null && !_visualWire.ActivateQ1(generation)) return;
                 }
                 else
                 {
-                    if (_visualWire?.LegacyRetired(generation) == true) return;
+                    if (_visualWire?.LegacyRetired(generation) == true) { Issue205Probe.Current?.Hit(Issue205Counter.F5LegacyRetired); return; }
                     visual = _bulletVisualShadow.Observe(payload,generation);
                 }
                 if(visual!=null) {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -47,6 +48,21 @@ namespace CF7Launcher.Bus
         private MessageRouter _router;
         private Action _shutdownAction;
         private Action<string> _bootstrapLogSink;
+        private string _qualificationConsoleSlot;
+        private long _qualificationConsoleDeadline;
+
+        // Called only after the trusted candidate bootstrap has verified its
+        // exact test slot; ordinary and formal startup never enable this path.
+        internal void EnableQualificationConsole(string slot)
+        {
+            if (!CF7Launcher.AgentRuntime.TrustedRunner.TrustedRegressionSlots.IsQualification(slot))
+                throw new ArgumentException("qualification_slot_required", nameof(slot));
+            _qualificationConsoleDeadline = Stopwatch.GetTimestamp() + (long)(
+                CF7Launcher.AgentRuntime.TrustedRunner.TrustedRegressionSlots.MaximumLifetime(slot).TotalSeconds * Stopwatch.Frequency);
+            _qualificationConsoleSlot = slot;
+        }
+        private bool QualificationConsoleActive => _qualificationConsoleSlot != null
+            && Stopwatch.GetTimestamp() < _qualificationConsoleDeadline;
         private Func<JObject, JObject> _arenaWorkerControl;
         private Action<JObject> _arenaWorkerResponseWritten;
 
@@ -206,7 +222,8 @@ namespace CF7Launcher.Bus
                 }
 
                 if (LegacyHttpAccessPolicy.IsPrivilegedPath(path)
-                    && !_accessPolicy.IsAuthorized(ctx.Request))
+                    && !_accessPolicy.IsAuthorized(ctx.Request)
+                    && !(path == "/console" && method == "POST" && QualificationConsoleActive))
                 {
                     ctx.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     ctx.Response.ContentType = "application/json";
@@ -241,6 +258,7 @@ namespace CF7Launcher.Bus
                     WriteArenaWorkerResponse(response, body => WriteResponse(ctx, body), _arenaWorkerResponseWritten);
                     return;
                 }
+                if (path.StartsWith("/issue205/", StringComparison.Ordinal)) { HandleIssue205(ctx, path, method); return; }
                 if (path == "/testConnection" && method == "POST")
                     HandleTestConnection(ctx);
                 else if (path == "/getSocketPort" && method == "GET")
@@ -279,6 +297,29 @@ namespace CF7Launcher.Bus
                 }
                 catch { }
             }
+        }
+
+        private void HandleIssue205(HttpListenerContext ctx, string path, string method)
+        {
+            var probe = Issue205Probe.Current;
+            if (path == "/issue205/config" && method == "GET") {
+                ctx.Response.ContentType = "application/json";
+                WriteResponse(ctx, probe?.Enabled == true ? "{\"enabled\":true}" : "{\"enabled\":false}"); return;
+            }
+            if (probe == null) { ctx.Response.StatusCode = 404; WriteResponse(ctx, "Not Found"); return; }
+            ctx.Response.ContentType = "application/json";
+            if (path == "/issue205/snapshot" && method == "GET") {
+                WriteResponse(ctx, probe.Snapshot(ctx.Request.QueryString["evidence"] == "1").ToString(Newtonsoft.Json.Formatting.None)); return;
+            }
+            if (path == "/issue205/source" && method == "POST" && probe.Enabled) {
+                if (!TryReadBoundedBody(ctx, 8192, out string body)) return;
+                var fields = new Dictionary<string, string>(StringComparer.Ordinal);
+                foreach (string name in Issue205Probe.SourceFields) fields[name] = ParseFormValue(body, name);
+                bool accepted = probe.ReceiveSource(fields);
+                ctx.Response.StatusCode = accepted ? 200 : 400;
+                WriteResponse(ctx, accepted ? "{\"accepted\":true}" : "{\"accepted\":false}"); return;
+            }
+            ctx.Response.StatusCode = 404; WriteResponse(ctx, "Not Found");
         }
 
         private void HandleTestConnection(HttpListenerContext ctx)
@@ -386,7 +427,15 @@ namespace CF7Launcher.Bus
 
         private void HandleConsole(HttpListenerContext ctx)
         {
-            string body = ReadBody(ctx);
+            bool authenticated = _accessPolicy.IsAuthorized(ctx.Request);
+            string body;
+            if (!authenticated) {
+                if (!QualificationConsoleActive || !TryReadBoundedBody(ctx, 4096, out body)) {
+                    ctx.Response.StatusCode = 413;
+                    WriteResponse(ctx, "{\"ok\":false,\"error\":\"qualification_console_body_invalid\"}");
+                    return;
+                }
+            } else body = ReadBody(ctx);
             string command = "";
 
             // 兼容 JSON 和 form-encoded 两种格式
@@ -421,9 +470,18 @@ namespace CF7Launcher.Bus
                 }
             }
 
-            // 编码非 ASCII 为 %uXXXX
+            if (!authenticated) {
+                if (!QualificationConsolePolicy.TryApprove(_qualificationConsoleSlot, command, out string approved)) {
+                    ctx.Response.StatusCode = 403;
+                    WriteResponse(ctx, "{\"ok\":false,\"error\":\"qualification_console_command_forbidden\"}");
+                    return;
+                }
+                command = approved;
+            }
+            // 编码非 ASCII 为 %uXXXX；qualification 已转换为 UTF-8 percent ASCII。
             string safeCommand = EscapeForAS2(command);
-            string msg = "{\"task\":\"console\",\"command\":\"" + EscapeJsonString(safeCommand) + "\"}";
+            string msg = "{\"task\":\"console\",\"command\":\"" + EscapeJsonString(safeCommand) + "\""
+                + (authenticated ? "" : ",\"qualificationSlot\":\"" + EscapeJsonString(_qualificationConsoleSlot) + "\"") + "}";
 
             // 先入队再发送——防止 AS2 极速回复时 ResolveConsoleResult 找不到 entry
             ConsoleEntry entry = new ConsoleEntry();

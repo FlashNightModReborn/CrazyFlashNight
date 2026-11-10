@@ -623,6 +623,9 @@ class TrustedRuntimeController {
     const timed = settings.durationMs !== undefined;
     const regressionLauncher = kind === TARGET_KINDS.launcher
       && require("../../cf7-agent/regression-profile").resolve(this.preparation);
+    const qualificationGesture = regressionLauncher
+      && require("../../cf7-agent/regression-profile").isQualification(this.preparation)
+      && require("../../cf7-agent/qualification-input").isGesture(String(settings.key).toLowerCase());
     if (!INPUT_KINDS.has(kind) && !regressionLauncher) {
       fail("trusted_runtime_input_kind_invalid",
         "guarded key input is restricted to WebOverlay or NativeHud");
@@ -638,7 +641,7 @@ class TrustedRuntimeController {
     }
     if ((regressionLauncher && !timed) || (timed && (
       !Number.isInteger(settings.durationMs) || settings.durationMs < 1 || settings.durationMs > 2000
-      || !["w", "a", "s", "d", "up", "down", "left", "right"].includes(key.toLowerCase())
+      || (!["w", "a", "s", "d", "up", "down", "left", "right"].includes(key.toLowerCase()) && !qualificationGesture)
       || modifiers.length !== 0 || repeat !== 1)))
       fail("trusted_runtime_key_invalid", "timed movement requires one unmodified direction for 1..2000ms");
     return this._withFreshActionCapture(kind, (capture) =>

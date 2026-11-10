@@ -19,6 +19,8 @@ namespace CF7Launcher.Guardian
             _socket=socket;
         }
         public void SetActivationState(AppActivationState state) => _activationState=state;
+        internal bool? CurrentPerfForeground => _activationState==null ? null
+            : _activationState.IsAppActive && !_activationState.IsMinimized;
         public void OnSceneReset() => ResetRenderObservations();
     }
 }

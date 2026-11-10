@@ -68,6 +68,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionPlan {
     //   removeDynamicMan  : Boolean   是否需要 self.man.removeMovieClip()
     //   gotoLabel         : String    本次 gotoAndStop 实际帧标签
     //   transition        : Boolean   是否真发生 transition（gotoAndStop + executeJob）
+    //   poseOnly          : Boolean   已证明保留同一静态 man 的四火器站走转换
     //   newLogicalState   : String    transition=true 时写入 self.状态 的值
     // ====================================================================
 
@@ -105,6 +106,21 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionPlan {
         );
         plan.newLogicalState = newStateName;
 
+        var m:String = plan.attackMode;
+        var firearm:Boolean = m == "长枪" || m == "手枪"
+                           || m == "手枪2" || m == "双枪";
+        var stand:String = m + "站立";
+        var walk:String = m + "行走";
+        plan.poseOnly = plan.transition
+            && snapshot.兵种 == StateTransitionCore.HERO_KIND_MALE
+            && firearm
+            && !snapshot.hasDynamicMan
+            && snapshot.jobGotoOverride == null
+            && prevGotoLabel == snapshot.状态
+            && plan.gotoLabel == newStateName
+            && ((snapshot.状态 == stand && newStateName == walk)
+             || (snapshot.状态 == walk && newStateName == stand));
+
         return plan;
     }
 
@@ -121,8 +137,10 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionPlan {
                 && plan.removeDynamicMan === undefined
                 && plan.gotoLabel === undefined
                 && plan.transition === undefined
+                && plan.poseOnly === undefined
                 && plan.newLogicalState === undefined;
         }
+        if (typeof plan.poseOnly != "boolean") return false;
         // 正常分支：transition=true 需要 gotoLabel/newLogicalState 非空
         if (plan.transition === true) {
             if (plan.gotoLabel == undefined || plan.gotoLabel === "") return false;

@@ -174,10 +174,11 @@ class org.flashNight.arki.scene.BookRunRules {
             stage.BasicInformation.EndFrame="房间";
             stage.BasicInformation.Cf6Boss=map.bossEncounter;
             stage.BasicInformation.Cf6MapId=map.id;
+            stage.BasicInformation.Cf6ChapterIndex=i;
             var intro:Object=chapterIntro(config,i);
             if (intro!=null) stage.BasicInformation.Intro=intro;
             if (!(stage.Event instanceof Array)) stage.Event=[];
-            stage.Event.unshift({EventName:"Start",Callback:{Name:"书中章节",Parameter:[i]},Message:config.title+" · "+map.title});
+            stage.Event.unshift({EventName:"Start",Message:config.title+" · "+map.title});
             if (stage.Instances == null) stage.Instances={Instance:[]};
             if (stage.Pickups == null) stage.Pickups={Pickup:[]};
             result.push(stage);

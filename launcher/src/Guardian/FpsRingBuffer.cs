@@ -3,11 +3,35 @@ using System.Diagnostics;
 
 namespace CF7Launcher.Guardian
 {
+    internal sealed class PerfTelemetrySnapshot
+    {
+        internal int? ConnectionGeneration;
+        internal long? HostFrameOrdinal;
+        internal int? SourceScene;
+        internal long? SourceSampleSequence;
+        internal long? SampleFrame;
+        internal long? StalenessFrames;
+        internal double? SampleAgeMs;
+        internal long? AcceptedSampleFrame;
+        internal long? AcceptedStalenessFrames;
+        internal double? AcceptedSampleAgeMs;
+        internal double? FrameIngressAgeMs;
+        internal double? TransportAgeMs;
+        internal long? InboundCount;
+        internal double? SourceFps;
+        internal double? AcceptedFps;
+        internal string SampleRejectReason;
+        internal bool? Paused;
+        internal bool? Foreground;
+        internal bool? SurfaceGate;
+        internal bool? Connected;
+    }
+
     /// <summary>
     /// 线程安全的 FPS 环形缓冲。
     ///
     /// 写入：socket 线程（FrameTask.HandleRaw），约 500ms 一个样本
-    /// 读取：UI 线程（NativeHud NotchWidget 渲染循环），频率 ~60 Hz
+    /// 读取：UI 渲染循环与 1Hz 会话采样；source/accepted 身份在同一短锁内快照
     ///
     /// 使用 lock 保护——写入极低频，竞争可忽略。
     /// min/max 在被覆盖值命中极值时触发 O(n) 重算。
@@ -36,6 +60,26 @@ namespace CF7Launcher.Guardian
         private int _perfLevel;  // 当前性能等级 (0-3)
         private int _samplesAfterReset; // 场景重置后的有效样本计数
         private int _sceneEpoch;       // AS2 场景计数器（检测变化触发 warmup）
+        private int _telemetryGeneration;
+        private long _hostFrameOrdinal;
+        private bool _hasFrameIngress;
+        private double _frameIngressMs;
+        private bool _hasSourceSample;
+        private bool _hasSourceIdentity;
+        private int _sourceScene;
+        private int? _retiredResetScene;
+        private long _sourceSequence;
+        private long _sampleFrame;
+        private double _sampleReceivedMs;
+        private double _sourceFps;
+        private bool _hasAcceptedSample;
+        private long _acceptedSampleFrame;
+        private double _acceptedSampleReceivedMs;
+        private double _acceptedFps;
+        private string _sampleRejectReason;
+        private bool? _paused;
+        private bool? _foreground;
+        private bool? _surfaceGate;
 
         public FpsRingBuffer(int capacity) : this(capacity,
             () => Stopwatch.GetTimestamp() * 1000.0 / Stopwatch.Frequency) { }
@@ -58,47 +102,239 @@ namespace CF7Launcher.Guardian
 
         public void Push(float fps)
         {
+            lock (_lock) PushLocked(fps);
+        }
+
+        private void PushLocked(float fps)
+        {
+            bool wasEmpty = !_hasData;
+            float evicted = _data[_head];
+            bool needRescan = !wasEmpty && _count == _data.Length
+                && (evicted <= _min || evicted >= _max);
+
+            if (_count == _data.Length)
+                _sum -= evicted;
+
+            _data[_head] = fps;
+            _head = (_head + 1) % _data.Length;
+            if (_count < _data.Length) _count++;
+            _sum += fps;
+            _hasData = true;
+            _lastSampleMs = _nowMs();
+            _samplesAfterReset++;
+
+            if (wasEmpty)
+            {
+                _min = fps;
+                _max = fps;
+            }
+            else if (needRescan)
+            {
+                float lo = float.MaxValue;
+                float hi = float.MinValue;
+                for (int i = 0; i < _count; i++)
+                {
+                    float v = _data[i];
+                    if (v < lo) lo = v;
+                    if (v > hi) hi = v;
+                }
+                _min = lo;
+                _max = hi;
+            }
+            else
+            {
+                if (fps < _min) _min = fps;
+                if (fps > _max) _max = fps;
+            }
+        }
+
+        internal void PushAcceptedSample(RenderSample sample, int generation,
+            long hostFrameOrdinal, double receivedMs, bool? foreground, bool? surfaceReady)
+        {
             lock (_lock)
             {
-                bool wasEmpty = !_hasData;
-                float evicted = _data[_head];
-                bool needRescan = !wasEmpty && _count == _data.Length
-                    && (evicted <= _min || evicted >= _max);
+                if (generation != _telemetryGeneration) return;
+                Issue205Probe.Current?.Hit(Issue205Counter.FpsAccepted);
+                PushLocked((float)sample.Fps);
+                _perfLevel = sample.Tier;
+                _hasAcceptedSample = true;
+                _acceptedSampleFrame = hostFrameOrdinal;
+                _acceptedSampleReceivedMs = receivedMs;
+                _acceptedFps = sample.Fps;
+                _paused = sample.Paused;
+                _foreground = foreground;
+                _surfaceGate = surfaceReady;
+                _sampleRejectReason = null;
+            }
+        }
 
-                if (_count == _data.Length)
-                    _sum -= evicted;
+        internal void NotifyConnectionReady(int generation)
+        {
+            lock (_lock)
+            {
+                if (generation == _telemetryGeneration) return;
+                _telemetryGeneration = generation;
+                ResetConnectionTelemetryLocked();
+            }
+        }
 
-                _data[_head] = fps;
-                _head = (_head + 1) % _data.Length;
-                if (_count < _data.Length) _count++;
-                _sum += fps;
-                _hasData = true;
-                _lastSampleMs = _nowMs();
-                _samplesAfterReset++;
+        internal void NotifyConnectionDisconnected(int generation)
+        {
+            lock (_lock)
+            {
+                if (generation != _telemetryGeneration) return;
+                ResetSampleTelemetryLocked();
+            }
+        }
 
-                if (wasEmpty)
+        internal long ObserveFrameIngress(int generation, out double nowMs)
+        {
+            lock (_lock)
+            {
+                nowMs = _nowMs();
+                if (generation < _telemetryGeneration) return -1;
+                if (generation != _telemetryGeneration)
                 {
-                    _min = fps;
-                    _max = fps;
+                    _telemetryGeneration = generation;
+                    ResetConnectionTelemetryLocked();
                 }
-                else if (needRescan)
+                _hostFrameOrdinal++;
+                _hasFrameIngress = true;
+                _frameIngressMs = nowMs;
+                return _hostFrameOrdinal;
+            }
+        }
+
+        internal void NoteSourceReject(string reason, int generation)
+        {
+            lock (_lock)
+            {
+                if (generation == _telemetryGeneration)
+                    _sampleRejectReason = reason;
+            }
+        }
+
+        internal bool TryRecordSourceSample(RenderSample sample, int generation,
+            long hostFrameOrdinal, double receivedMs, bool? foreground,
+            string policyRejectReason, out string rejectReason)
+        {
+            lock (_lock)
+            {
+                if (generation != _telemetryGeneration)
                 {
-                    float lo = float.MaxValue;
-                    float hi = float.MinValue;
-                    for (int i = 0; i < _count; i++)
+                    rejectReason = "stale_connection";
+                    return false;
+                }
+                if (_hasSourceIdentity && (sample.Scene < _sourceScene
+                    || (_retiredResetScene.HasValue && sample.Scene == _retiredResetScene.Value)))
+                {
+                    rejectReason = "stale_scene";
+                    return false;
+                }
+                if (_hasSourceIdentity && sample.Scene == _sourceScene)
+                {
+                    if (sample.Sequence == _sourceSequence)
                     {
-                        float v = _data[i];
-                        if (v < lo) lo = v;
-                        if (v > hi) hi = v;
+                        rejectReason = "duplicate";
+                        _sampleRejectReason = rejectReason;
+                        return false;
                     }
-                    _min = lo;
-                    _max = hi;
+                    if (sample.Sequence < _sourceSequence)
+                    {
+                        rejectReason = "regressed";
+                        _sampleRejectReason = rejectReason;
+                        return false;
+                    }
                 }
-                else
+                if (!_hasSourceSample || sample.Scene != _sourceScene)
+                    _hasAcceptedSample = false;
+                _hasSourceSample = true;
+                _hasSourceIdentity = true;
+                _retiredResetScene = null;
+                _sourceScene = sample.Scene;
+                _sourceSequence = sample.Sequence;
+                _sampleFrame = hostFrameOrdinal;
+                _sampleReceivedMs = receivedMs;
+                _sourceFps = sample.Fps;
+                _paused = sample.Paused;
+                _foreground = foreground;
+                _surfaceGate = null;
+                _sampleRejectReason = policyRejectReason;
+                rejectReason = policyRejectReason;
+                return true;
+            }
+        }
+
+        private void ResetConnectionTelemetryLocked()
+        {
+            _hostFrameOrdinal = 0;
+            _hasFrameIngress = false;
+            _frameIngressMs = 0;
+            ResetSampleTelemetryLocked();
+        }
+
+        private void ResetSampleFactsLocked()
+        {
+            _hasSourceSample = false;
+            _hasAcceptedSample = false;
+            _sampleFrame = 0;
+            _acceptedSampleFrame = 0;
+            _sampleRejectReason = null;
+            _paused = null;
+            _foreground = null;
+            _surfaceGate = null;
+        }
+
+        private void ResetSampleTelemetryLocked()
+        {
+            ResetSampleFactsLocked();
+            _hasSourceIdentity = false;
+            _sourceScene = 0;
+            _retiredResetScene = null;
+            _sourceSequence = 0;
+        }
+
+        internal PerfTelemetrySnapshot CapturePerfTelemetry(
+            CF7Launcher.Bus.PerfTransportSnapshot transport)
+        {
+            lock (_lock)
+            {
+                double now = _nowMs();
+                bool hasGeneration = _telemetryGeneration > 0;
+                bool transportMatches = transport.Available
+                    && transport.Generation == _telemetryGeneration;
+                long? sampleFrame = _hasSourceSample && _sampleFrame > 0
+                    ? _sampleFrame : (long?)null;
+                long? acceptedFrame = _hasAcceptedSample && _acceptedSampleFrame > 0
+                    ? _acceptedSampleFrame : (long?)null;
+                return new PerfTelemetrySnapshot
                 {
-                    if (fps < _min) _min = fps;
-                    if (fps > _max) _max = fps;
-                }
+                    ConnectionGeneration = hasGeneration ? _telemetryGeneration : (int?)null,
+                    HostFrameOrdinal = hasGeneration ? _hostFrameOrdinal : (long?)null,
+                    SourceScene = _hasSourceSample ? _sourceScene : (int?)null,
+                    SourceSampleSequence = _hasSourceSample ? _sourceSequence : (long?)null,
+                    SampleFrame = sampleFrame,
+                    StalenessFrames = sampleFrame.HasValue
+                        ? _hostFrameOrdinal - sampleFrame.Value : (long?)null,
+                    SampleAgeMs = _hasSourceSample
+                        ? Math.Max(0, now - _sampleReceivedMs) : (double?)null,
+                    AcceptedSampleFrame = acceptedFrame,
+                    AcceptedStalenessFrames = acceptedFrame.HasValue
+                        ? _hostFrameOrdinal - acceptedFrame.Value : (long?)null,
+                    AcceptedSampleAgeMs = _hasAcceptedSample
+                        ? Math.Max(0, now - _acceptedSampleReceivedMs) : (double?)null,
+                    FrameIngressAgeMs = _hasFrameIngress
+                        ? Math.Max(0, now - _frameIngressMs) : (double?)null,
+                    TransportAgeMs = transportMatches ? transport.TransportAgeMs : null,
+                    InboundCount = transportMatches ? transport.InboundCount : (long?)null,
+                    SourceFps = _hasSourceSample ? _sourceFps : (double?)null,
+                    AcceptedFps = _hasAcceptedSample ? _acceptedFps : (double?)null,
+                    SampleRejectReason = _sampleRejectReason,
+                    Paused = _paused,
+                    Foreground = _foreground,
+                    SurfaceGate = _surfaceGate,
+                    Connected = transportMatches ? transport.Connected : (bool?)null
+                };
             }
         }
 
@@ -190,12 +426,19 @@ namespace CF7Launcher.Guardian
         // ------------------------------------------------------------------
 
         /// <summary>
-        /// 场景重置时调用。不清空 buffer（sparkline 仍需历史），
-        /// 仅归零场景内样本计数，供决策引擎做 warmup 判断。
+        /// 场景重置时调用。保留 sparkline 历史与旧场拒收屏障，
+        /// 清空当前 source/accepted 新鲜度并归零场景内有效样本计数。
         /// </summary>
         public void NotifySceneReset()
         {
-            lock (_lock) { _samplesAfterReset = 0; _lastSampleMs = double.NegativeInfinity; }
+            lock (_lock)
+            {
+                _samplesAfterReset = 0;
+                _lastSampleMs = double.NegativeInfinity;
+                if (_hasSourceIdentity)
+                    _retiredResetScene = _sourceScene;
+                ResetSampleFactsLocked();
+            }
         }
 
         public int SamplesAfterReset

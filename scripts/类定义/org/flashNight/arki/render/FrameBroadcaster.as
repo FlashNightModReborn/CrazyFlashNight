@@ -79,6 +79,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
      */
     public static function setFpsPayload(payload:String):Void {
         _fpsPayload = payload;
+        org.flashNight.neur.Server.Issue205SourceProbe.mark(8);
     }
 
     /**
@@ -109,9 +110,11 @@ class org.flashNight.arki.render.FrameBroadcaster {
      * 每帧无条件调用（只要 socket 连接），保证 C# reducer 的自然寿命动画持续推进。
      */
     public static function send():Void {
+        org.flashNight.neur.Server.Issue205SourceProbe.mark(4);
         org.flashNight.arki.weather.NightVisionUnitTint.tick();
         var sm:Object = _root.server;
         if (!sm.isSocketConnected) {
+            org.flashNight.neur.Server.Issue205SourceProbe.mark(9);
             _hnPayload = null;
             _playerHudPayload = null;
             _bulletVisualPayload = null;
@@ -123,6 +126,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
         // 实时采集摄像头数据（不缓存，消除 _camStr 状态管理复杂性）
         var gw:MovieClip = _root.gameworld;
         if (!gw) {
+            org.flashNight.neur.Server.Issue205SourceProbe.mark(10);
             // gameworld 不存在 → 无法构造有效 frame 消息
             _hnPayload = null;
             _playerHudPayload = null;
@@ -140,6 +144,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
         // 快车道前缀协议：F{cam}\x01{hn}[\x02{fps}]，绕过 C# 端 JObject.Parse
         var hn:String = (_hnPayload != null) ? _hnPayload : "";
         var msg:String = "F" + cam + "\x01" + hn;
+        org.flashNight.neur.Server.Issue205SourceProbe.mark(5);
         if (_fpsPayload != null) {
             msg += "\x02" + _fpsPayload;
             _fpsPayload = null;
@@ -178,7 +183,9 @@ class org.flashNight.arki.render.FrameBroadcaster {
             chainPayload != null ? org.flashNight.arki.render.BulletVisualProbe.nativeEpoch() : -1,
             Number(_root.帧计时器.当前帧数));
 
+        org.flashNight.neur.Server.Issue205SourceProbe.mark(6);
         sm.sendSocketMessage(msg);
+        org.flashNight.neur.Server.Issue205SourceProbe.mark(7);
 
         // 消费后清空所有数据槽
         _hnPayload = null;

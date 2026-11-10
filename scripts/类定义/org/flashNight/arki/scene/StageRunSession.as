@@ -344,7 +344,8 @@ class org.flashNight.arki.scene.StageRunSession {
     /** StageManager 每个未暂停的游戏帧调用；这是战报时间的唯一时钟。 */
     public static function tick():Void {
         if (_run == null || _returnRequested || _run.outcome == "retreat"
-                || _root.gameworld.__stageIntroExecutionHeld === true) return;
+                || _root.gameworld.__stageIntroExecutionHeld === true
+                || _root.gameworld.__combatAdmitted === false) return;
         var current:Number = Number(_run.activeFrames);
         if (isNaN(current) || current < 0) current = 0;
         if (current < 9007199254740991) _run.activeFrames = current + 1;
@@ -352,7 +353,8 @@ class org.flashNight.arki.scene.StageRunSession {
 
     public static function finish(outcome:String):Void {
         if (_run == null || (outcome != "victory" && outcome != "failure")) return;
-        if (_run.outcome != "active" || outcome == "victory" && _root.gameworld.__stageIntroExecutionHeld === true) return;
+        if (_run.outcome != "active" || outcome == "victory" && (_root.gameworld.__stageIntroExecutionHeld === true
+                || _root.gameworld.__combatAdmitted === false)) return;
         org.flashNight.arki.scene.PlayerSceneLifecycle.retire("run_finished");
         _run.outcome = outcome;
         org.flashNight.arki.scene.BookRunService.finish(outcome);
@@ -1419,21 +1421,22 @@ class org.flashNight.arki.scene.StageRunSession {
             return inspected;
         }
         var store:Object = inspected.store;
-        if (store == null || store.pending === undefined || store.pending === null) {
+        var pending:Object = store == null ? null : store.pending;
+        if (pending === undefined || pending === null) {
             settlementDiag("restore", "result=absent"
                 + " blocker=" + getSceneExitBlockReason());
             return {success:true, error:"", restored:false};
         }
-        var pendingId:String = safeText(String(store.pending.settlementId), 96, "");
+        var pendingId:String = safeText(String(pending.settlementId), 96, "");
         var decodeDiag:Object = {};
-        var decoded:Object = decodePendingSettlement(store.pending, decodeDiag);
+        var decoded:Object = decodePendingSettlement(pending, decodeDiag);
         if (decoded == null) {
             var failed:Object = settlementFailure("malformed_persisted_settlement");
             failed.settlementId = pendingId;
-            failed.runId = safeText(String(store.pending.runId), 96, "");
-            failed.reason = decodeDiag.reason == undefined
+            failed.runId = safeText(String(pending.runId), 96, "");
+            failed.reason = (decodeDiag.reason == undefined || decodeDiag.reason == "")
                 ? "record_unknown" : String(decodeDiag.reason);
-            failed.remaining = diagCount(store.pending.remainingCount);
+            failed.remaining = diagCount(pending.remainingCount);
             settlementDiag("restore", "result=decode_failed"
                 + " reason=" + failed.reason
                 + " index=" + (decodeDiag.index == undefined ? -1 : Number(decodeDiag.index))
@@ -1445,12 +1448,12 @@ class org.flashNight.arki.scene.StageRunSession {
         }
         if (_run != null || _preparedInventory != null || _preparedReport != null) {
             if (_run != null
-                    && String(_run.settlementId) === String(store.pending.settlementId)
+                    && String(_run.settlementId) === String(pending.settlementId)
                     && _preparedInventory != null && _preparedReport != null) {
                 settlementDiag("restore", "result=duplicate"
                     + " settlementId=" + pendingId);
                 return {success:true, error:"", restored:false, duplicate:true,
-                    settlementId:String(store.pending.settlementId)};
+                    settlementId:String(pending.settlementId)};
             }
             var busy:Object = settlementFailure("settlement_authority_busy");
             busy.settlementId = pendingId;
@@ -1461,16 +1464,16 @@ class org.flashNight.arki.scene.StageRunSession {
         }
 
         var report:Object = decoded.report;
-        var revision:Number = Number(store.pending.runRevision);
+        var revision:Number = Number(pending.runRevision);
         if (revision >= MAX_SAFE_INTEGER) revision = MAX_SAFE_INTEGER - 1;
         _run = {
             v:1,
-            runId:String(store.pending.runId),
+            runId:String(pending.runId),
             revision:revision + 1,
             stageName:String(report.stageName),
             difficulty:String(report.difficulty),
-            outcome:String(store.pending.outcome),
-            life:String(store.pending.life),
+            outcome:String(pending.outcome),
+            life:String(pending.life),
             activeFrames:Number(report.activeFrames),
             reportVersion:Number(report.v),
             totalKills:Number(report.totalKills),
@@ -1494,8 +1497,8 @@ class org.flashNight.arki.scene.StageRunSession {
             omittedItemFlowKeys:{},
             rewardRollOmissions:Number(report.rewardRollOmissions),
             settlement:"rewards_pending",
-            settlementId:String(store.pending.settlementId),
-            remainingRewards:Number(store.pending.remainingCount)
+            settlementId:String(pending.settlementId),
+            remainingRewards:Number(pending.remainingCount)
         };
         _processedIntents = {};
         _preparedInventory = decoded.remainingInventory;
@@ -1507,17 +1510,17 @@ class org.flashNight.arki.scene.StageRunSession {
         _stageStartReservation = null;
         pushState();
         settlementDiag("restore", "result=restored"
-            + " settlementId=" + String(store.pending.settlementId)
-            + " runId=" + String(store.pending.runId)
-            + " state=" + String(store.pending.state)
-            + " remaining=" + Number(store.pending.remainingCount)
-            + " receipts=" + Number(store.pending.receipts.length)
+            + " settlementId=" + String(pending.settlementId)
+            + " runId=" + String(pending.runId)
+            + " state=" + String(pending.state)
+            + " remaining=" + Number(pending.remainingCount)
+            + " receipts=" + Number(pending.receipts.length)
             + " blocker=" + getSceneExitBlockReason());
         return {
             success:true, error:"", restored:true,
-            settlementId:String(store.pending.settlementId),
-            remainingCount:Number(store.pending.remainingCount),
-            receiptCount:Number(store.pending.receipts.length)
+            settlementId:String(pending.settlementId),
+            remainingCount:Number(pending.remainingCount),
+            receiptCount:Number(pending.receipts.length)
         };
     }
 
@@ -2073,18 +2076,10 @@ class org.flashNight.arki.scene.StageRunSession {
 
     private static function copyDoll(value:Object):Object {
         if (value == null) return null;
-        return {
-            face:safeText(String(value.face), 128, ""),
-            hair:safeText(String(value.hair), 128, ""),
-            mask:safeText(String(value.mask), 128, ""),
-            head:safeText(String(value.head), 128, ""),
-            body:safeText(String(value.body), 128, ""),
-            leg:safeText(String(value.leg), 128, ""),
-            hand:safeText(String(value.hand), 128, ""),
-            foot:safeText(String(value.foot), 128, ""),
-            neck:safeText(String(value.neck), 128, ""),
-            gender:safeText(String(value.gender), 128, "")
-        };
+        var keys:Array = ["face", "hair", "mask", "head", "body", "leg", "hand", "foot", "neck", "gender"];
+        var result:Object = {};
+        for (var i:Number = 0; i < keys.length; i++) result[keys[i]] = safeText(String(value[keys[i]]), 128, "");
+        return result;
     }
 
     private static function safeText(value:String, maxLength:Number, fallback:String):String {
@@ -2243,26 +2238,9 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     private static function decodePendingSettlement(raw:Object, diag:Object):Object {
-        if (raw == null || typeof raw != "object" || raw instanceof Array
-                || !hasOnlyKeys(raw, ["v", "settlementId", "runId", "runRevision",
-                    "state", "outcome", "life", "capacity", "report", "manifest",
-                    "remainingManifest", "remainingCount", "receipts",
-                    "deliverAfterSettlement"])
-                || Number(raw.v) != SETTLEMENT_RECORD_VERSION
-                || !isSafeToken(String(raw.settlementId), 96)
-                || !isSafeToken(String(raw.runId), 96)
-                || !isWhole(Number(raw.runRevision)) || Number(raw.runRevision) < 1
-                || Number(raw.runRevision) > MAX_SAFE_INTEGER
-                || (raw.state != "prepared" && raw.state != "web_active"
-                    && raw.state != "rewards_pending")
-                || (raw.outcome != "victory" && raw.outcome != "failure"
-                    && raw.outcome != "retreat")
-                || (raw.life != "alive" && raw.life != "dead" && raw.life != "reviving")
-                || !isWhole(Number(raw.capacity)) || Number(raw.capacity) < 8
-                || Number(raw.capacity) > MAX_REWARD_SLOTS
-                || Number(raw.capacity) % REWARD_COLUMNS != 0
-                || typeof raw.deliverAfterSettlement != "boolean") {
-            return decodeDiagFail(diag, pendingHeaderReason(raw), -1);
+        var headerReason:String = pendingHeaderReason(raw);
+        if (headerReason != "") {
+            return decodeDiagFail(diag, headerReason, -1);
         }
         var report:Object = normalizePersistedReport(raw.report);
         if (report == null) return decodeDiagFail(diag, "report_invalid", -1);
@@ -2348,7 +2326,7 @@ class org.flashNight.arki.scene.StageRunSession {
                 || Number(raw.capacity) > MAX_REWARD_SLOTS
                 || Number(raw.capacity) % REWARD_COLUMNS != 0) return "record_capacity";
         if (typeof raw.deliverAfterSettlement != "boolean") return "record_deliver";
-        return "record_unknown";
+        return "";
     }
 
     private static function decodeDiagFail(diag:Object, reason:String, index:Number):Object {

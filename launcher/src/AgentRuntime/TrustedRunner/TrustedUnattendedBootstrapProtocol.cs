@@ -141,7 +141,9 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
             bool immutableCandidate = isolatedCandidate
                 && CandidateLeafPattern.IsMatch(
                     candidateLeaf);
-            bool valid = TrustedRegressionSlots.Contains(slot)
+            bool valid = TrustedRegressionSlots.IsQualification(slot)
+                ? immutableCandidate
+                : TrustedRegressionSlots.Contains(slot)
                 ? formalRuntime || immutableCandidate
                 : a5Slot
                 ? formalRuntime
@@ -168,8 +170,6 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
             "cf7_trusted_core_unattended_runner_v2";
         private const int MaximumCredentialBytes =
             64 * 1024;
-        private static readonly TimeSpan MaximumLifetime =
-            TimeSpan.FromMinutes(10);
         private static readonly TimeSpan
             DefaultCredentialAcquisitionPolicyMaximum =
                 TimeSpan.FromSeconds(30);
@@ -309,7 +309,7 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                 (nowOverride ?? DateTimeOffset.UtcNow)
                     .ToUniversalTime();
             DateTimeOffset expiresUtc =
-                issuedUtc.Add(MaximumLifetime);
+                issuedUtc.Add(TrustedRegressionSlots.MaximumLifetime(slot));
             byte[] nonceBytes =
                 RandomNumberGenerator.GetBytes(32);
             string requestNonce =
@@ -768,7 +768,7 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                         .Ticks
                 || expires <= DateTimeOffset.UtcNow
                 || issued >= expires
-                || expires - issued > MaximumLifetime
+                || expires - issued > TrustedRegressionSlots.MaximumLifetime(Slot)
                 || expires.UtcDateTime.Ticks
                     != ExpiresUtc.UtcDateTime.Ticks)
             {

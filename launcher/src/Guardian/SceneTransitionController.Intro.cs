@@ -10,16 +10,21 @@ namespace CF7Launcher.Guardian
         private volatile IntroPresentationHandoff _intro;
         private Func<string,bool> _presentIntroComic = _ => false;
         private Func<string,bool> _introOwnsForeground = _ => false;
+        private Func<string,bool> _introFocusAdmission = _ => false;
+        private Func<bool> _introFlashInputFocused = () => false;
         private static Button IntroActionButton(string text) => new() { Text=text,AutoSize=true,
             ForeColor=Color.White,BackColor=Color.FromArgb(45,45,45),FlatStyle=FlatStyle.Flat,
             Font=new Font("Microsoft YaHei",10.5f),MinimumSize=new Size(128,36) };
         private readonly Button _introRetry = IntroActionButton("重试漫画");
         private readonly Button _introReturn = IntroActionButton("返回书架");
         private FlowLayoutPanel _introActions;
-        internal void ConfigureIntroPresentation(Func<string,bool> present,Func<string,bool> ownsForeground)
+        internal void ConfigureIntroPresentation(Func<string,bool> present,Func<string,bool> ownsForeground,
+            Func<string,bool> focusAdmission=null,Func<bool> flashInputFocused=null)
         {
             _presentIntroComic=present;
             _introOwnsForeground=ownsForeground;
+            _introFocusAdmission=focusAdmission ?? (_=>false);
+            _introFlashInputFocused=flashInputFocused ?? (()=>false);
             _introActions=new FlowLayoutPanel { Dock=DockStyle.Bottom,Height=64,Padding=new Padding(12,8,12,8),
                 FlowDirection=FlowDirection.LeftToRight,BackColor=Color.Black,Visible=false };
             _introActions.Controls.AddRange(new Control[]{_introRetry,_introReturn});
@@ -97,17 +102,51 @@ namespace CF7Launcher.Guardian
                 _surface.RaiseTransition();
             }
         }
+        private bool ExactIntroResume(IntroPresentationHandoff intro,string id,string instance,long scene,long epoch)
+            => ReferenceEquals(_intro,intro) && Task.Epoch==epoch && intro.Id==id && intro.Instance==instance
+                && intro.Matches(_latest,epoch) && _latest?.Value<string>("phase")=="intro"
+                && (intro.State is "narrative" or "resume") && _currentScene(scene) && _scenePresented(scene);
         private bool TickIntro()
         {
             if(_intro==null || _latest?.Value<string>("phase")!="intro")return false;
             Prepare();
             _intro.FinishFailedClose();
-            if(!Task.Connected || !IntroCanPresent) { _fallback.Hide(); _surface.SuppressTransition(); return true; }
-            if(_intro.CanResume(_currentScene(_intro.Scene),_scenePresented(_intro.Scene),IntroCanPresent)) {
-                _intro.Resumed();
-                _surface.HideTransition(); _fallback.Hide(); _holdWorldInput(false);
+            bool admitted=IntroCanPresent;
+            _intro.ObserveForegroundAdmission(admitted);
+            if(!Task.Connected || !admitted) { _fallback.Hide(); _surface.SuppressTransition(); return true; }
+            if(_intro.CanResume(_currentScene(_intro.Scene),_scenePresented(_intro.Scene),admitted)) {
+                var intro=_intro;
+                string id=intro.Id, instance=intro.Instance;
+                long scene=intro.Scene, epoch=Task.Epoch;
+                bool focused=_presentationPolicy.NonActivating || _introFlashInputFocused();
+                if(!focused && !intro.FocusHandoffAttempted) {
+                    IntPtr foreground=_surface.CaptureGameForeground();
+                    bool coverAlive=!_fallback.IsDisposed && _fallback.Visible || !_surface.IsDisposed && _surface.Visible;
+                    if(foreground!=IntPtr.Zero && coverAlive && _introFocusAdmission(instance) && intro.TryBeginFocusHandoff()) {
+                        intro.CompleteFocusHandoff(_handoffFocus(foreground));
+                        focused=_introFlashInputFocused();
+                    }
+                }
+                bool waitingForRoot=!_presentationPolicy.NonActivating && !focused
+                    && (!intro.FocusHandoffAttempted || !intro.FocusRootVerified);
+                if(!_introFocusAdmission(instance) || waitingForRoot) {
+                    if(!focused && intro.FocusHandoffAttempted && !intro.FocusRootVerified && intro.ShouldLogFocusFailure())
+                        LogManager.Log("event=stage_intro_focus_restore_failed id="+id+" instance="+instance);
+                    _holdWorldInput(true); PresentIntroCover(); return true;
+                }
+                _surface.HideTransition(); _fallback.Hide();
+                intro.ConsumeCloseTail();
+                bool nativeFocused=_presentationPolicy.NonActivating || _introFlashInputFocused();
+                if(!ExactIntroResume(intro,id,instance,scene,epoch) || !IntroCanPresent || !_introFocusAdmission(instance)
+                    || !nativeFocused) {
+                    if(!nativeFocused && intro.FocusHandoffAttempted && intro.ShouldLogFocusFailure())
+                        LogManager.Log("event=stage_intro_focus_restore_failed id="+id+" instance="+instance);
+                    _holdWorldInput(true); return true;
+                }
+                _holdWorldInput(false);
+                intro.Resumed();
                 Task.IntroSurfaceReady();
-                LogManager.Log("event=stage_intro_surface_ready id="+_intro.Id+" scene="+_intro.Scene);
+                LogManager.Log("event=stage_intro_surface_ready id="+id+" scene="+scene);
                 return true;
             }
             if(_intro.SurfaceReady || _intro.Presented) {

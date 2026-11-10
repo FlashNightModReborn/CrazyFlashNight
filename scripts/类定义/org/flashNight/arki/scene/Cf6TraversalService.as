@@ -175,12 +175,33 @@ class org.flashNight.arki.scene.Cf6TraversalService {
         t.acquired=true;hero.__cf6TraversalOwner=t.token;
         // The persistent actor keeps its current callbacks. Native input
         // entry points read this lease marker even after a pose/control refresh.
-        t.lease=PauseManager.lease(true,"cf6_traversal");
+        if(t.spec.mode=="arrive" && t.ownsLease===false && typeof t.lease=="string" && t.lease!="" && t.lease===t.room.lease) {
+            // Borrowed room lease stays owned by the room until roomReady.
+        } else {
+            t.lease=PauseManager.lease(true,"cf6_traversal");
+            t.ownsLease=true;
+        }
         hero.左行=hero.右行=hero.上行=hero.下行=false;
         hero.动作A=hero.动作B=hero.动作C=false;
         hero.按住奔跑键=hero.强制奔跑=false;
         if(t.spec.actorSortY!==undefined) hero.__cf6TraversalDepthOwner=t.token;
         return true;
+    }
+    public static function borrowArrivalLease(t:Object,room:Object):Boolean {
+        if(!current(t) || t.room!==room || t.spec.mode!="arrive" || room==null
+                || room.owner!==t.rules.owner || typeof room.lease!="string" || room.lease=="") return false;
+        if(t.ownsLease===true && t.lease!=undefined && t.lease!==room.lease) {
+            PauseManager.releaseLease(t.lease);
+        }
+        t.lease=room.lease;
+        t.ownsLease=false;
+        return true;
+    }
+    public static function unbindBorrowedLease(t:Object):Void {
+        if(t!=null && t.ownsLease===false) {
+            t.lease=undefined;
+            t.ownsLease=undefined;
+        }
     }
     public static function isPaused(t:Object):Boolean {
         var pauseApi:Object=org.flashNight.arki.pause.PauseManager;
@@ -218,7 +239,10 @@ class org.flashNight.arki.scene.Cf6TraversalService {
         if(cue=="complete") {
             Cf6TraversalRules.takeCompletion(t.rules,t.room.owner);
             if(t.spec.mode=="depart") t.awaitingAdvance=true;
-            else releaseActor(t,false);
+            else {
+                releaseActor(t,false);
+                unbindBorrowedLease(t);
+            }
             return "complete";
         }
         return cue=="release-actor" ? "released" : t.rules.phase;
@@ -323,13 +347,20 @@ class org.flashNight.arki.scene.Cf6TraversalService {
             delete hero.__cf6TraversalOwner;
             if(!cancelled && hero.hp>0 && current(t) && typeof hero.状态改变=="function") hero.状态改变(hero.攻击模式+"站立");
         }
-        if(t.lease!=undefined) PauseManager.releaseLease(t.lease);
-        t.lease=undefined;t.acquired=false;
+        if(t.ownsLease===true && t.lease!=undefined) {
+            PauseManager.releaseLease(t.lease);
+            t.lease=undefined;
+            t.ownsLease=undefined;
+        } else if(cancelled && t.ownsLease===false) {
+            unbindBorrowedLease(t);
+        }
+        t.acquired=false;
     }
     public static function cancel(t:Object):Void {
         if(t==null || t.closed) return;
         releasePreparation(t.preparation,true);t.preparation=null;
         releaseActor(t,true);
+        unbindBorrowedLease(t);
         Cf6TraversalRules.cancel(t.rules,t.room.owner);t.closed=true;
     }
     /** Death ends only the owned actor pose. The same room can resume after a real revival. */
@@ -337,6 +368,7 @@ class org.flashNight.arki.scene.Cf6TraversalService {
         if(t==null || t.closed) return;
         releasePreparation(t.preparation,true);t.preparation=null;
         releaseActor(t,true);
+        unbindBorrowedLease(t);
         if(t.rules.phase=="complete") {
             if(t.advanceStatus=="accepted") t.advanceStatus="presentation-ended";
             return;

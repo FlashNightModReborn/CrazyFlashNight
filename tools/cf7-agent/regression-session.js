@@ -65,11 +65,12 @@ function createPreparation({ candidateId, slot }) {
 }
 
 async function createSession(options) {
-  return bindWorkBudget(await Controller.start(createPreparation(options)));
+  return bindWorkBudget(await Controller.start(createPreparation(options)), undefined,
+    options.slot === "cf7_agent_i2051110" ? 75 * 60 * 1000 : 8 * 60 * 1000);
 }
 
-function bindWorkBudget(session, now = () => Number(process.hrtime.bigint() / 1000000n)) {
-  const began = now(), workWindowMs = 8 * 60 * 1000;
+function bindWorkBudget(session, now = () => Number(process.hrtime.bigint() / 1000000n), workWindowMs = 8 * 60 * 1000) {
+  const began = now();
   session.getRegressionBudget = () => ({ workWindowMs,
     elapsedMs: Math.max(0, now() - began),
     remainingWorkMs: Math.max(0, workWindowMs - (now() - began)),

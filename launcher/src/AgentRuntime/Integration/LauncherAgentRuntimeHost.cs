@@ -760,7 +760,8 @@ namespace CF7Launcher.AgentRuntime.Integration
                             hair,
                             hairPreviews,
                             hairTargets,
-                            launcherTargetId: targets.Launcher);
+                            launcherTargetId: targets.Launcher,
+                            qualificationInput: TrustedRegressionSlots.IsQualification(unattendedBootstrap?.Slot));
                 }
                 else
                 {

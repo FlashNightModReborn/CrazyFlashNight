@@ -53,6 +53,7 @@ class org.flashNight.arki.scene.StageManager {
     private var warlordActionSlot:Object;
     private var lastWarlordActionBinding:Object;
     private var lastWarlordActionTerminal:Object;
+    private var combatAdmission:Object = null;
 
     public var gameworld:MovieClip; // 当前gameworld
     public var environment;
@@ -126,6 +127,7 @@ class org.flashNight.arki.scene.StageManager {
         warlordActionSlot = null;
         lastWarlordActionBinding = null;
         lastWarlordActionTerminal = null;
+        combatAdmission = null;
         stageMode = "invalid";
         stageValidationError = "";
         warlordConfig = null;
@@ -310,6 +312,12 @@ class org.flashNight.arki.scene.StageManager {
         
         gameworld = sceneManager.gameworld;
         // Before environment/instance/callback side effects; SceneReady keeps its old meaning.
+        if (!isWarlordAction && basicInfo != null
+                && (basicInfo.Cf6MapId != undefined || basicInfo.Cf6ChapterIndex != undefined)) {
+            beginCombatAdmission(gameworld, basicInfo.Cf6ChapterIndex, basicInfo.Cf6MapId);
+        } else {
+            combatAdmission = null;
+        }
         if (!isWarlordAction) org.flashNight.arki.scene.StageIntroService.declare(gameworld,basicInfo.Intro);
         _root.d_倒计时显示._visible = false;
 
@@ -551,12 +559,135 @@ class org.flashNight.arki.scene.StageManager {
         else org.flashNight.arki.scene.PlayerSceneLifecycle.finishStageSetup(resourceGate);
     }
 
+    public function beginCombatAdmission(world:MovieClip, chapterIndex:Number, mapId:String):Object {
+        if (world == null) {
+            combatAdmission = null;
+            return null;
+        }
+        var owner:Object = StageReturnFlow.worldIdentity(world);
+        world.__combatAdmitted = false;
+        _global.ASSetPropFlags(world, ["__combatAdmitted"], 1, true);
+        combatAdmission = {
+            world:world,
+            owner:owner,
+            manager:this,
+            stage:currentStage,
+            runSnapshot:org.flashNight.gesh.object.PersistedSnapshot.clone(_root._saveExt.bookRun),
+            slot:String(_root.savePath),
+            chapterIndex:chapterIndex,
+            mapId:mapId,
+            curtainReleased:false,
+            narrativeDone:false,
+            roomReady:false,
+            failed:false,
+            playerGate:null
+        };
+        return combatAdmission;
+    }
+
+    public function isCombatAdmissionCurrent(record:Object):Boolean {
+        if (record == null || record !== combatAdmission || record.manager !== this
+                || !isActive || isFinished || isFailed
+                || gameworld == null || record.world !== gameworld || record.world !== _root.gameworld
+                || record.owner == null || record.owner !== StageReturnFlow.worldIdentity(record.world)
+                || record.stage !== currentStage || record.slot !== String(_root.savePath)) {
+            return false;
+        }
+        return org.flashNight.arki.scene.BookRunRules.sameCf6Run(record.runSnapshot, _root._saveExt.bookRun);
+    }
+
+    public function canAdmitCombat(record:Object, gate:Object):Boolean {
+        var bridge:Object = org.flashNight.arki.scene.PlayerSceneLifecycle;
+        return isCombatAdmissionCurrent(record)
+            && !record.failed
+            && gate != null
+            && gate.manager === this
+            && gate.world === record.owner
+            && gate.stage === record.stage
+            && bridge.isReady(gate)
+            && gate.published === true
+            && record.curtainReleased === true
+            && record.narrativeDone === true
+            && record.roomReady === true
+            && record.world.__stageIntroExecutionHeld !== true;
+    }
+
+    private function matchesCombatAdmission(world:Object, owner:Object):Boolean {
+        return isCombatAdmissionCurrent(combatAdmission)
+            && combatAdmission.failed !== true
+            && world === combatAdmission.world
+            && owner === combatAdmission.owner;
+    }
+
+    private function retryCombatAdmissionGate():Void {
+        if (!isCombatAdmissionCurrent(combatAdmission) || combatAdmission.failed === true) return;
+        var gate:Object = combatAdmission.playerGate;
+        if (gate != null) onPlayerReady(gate);
+    }
+
+    public function noteCurtainReleased(world:Object, owner:Object):Boolean {
+        if (!matchesCombatAdmission(world, owner)) return false;
+        combatAdmission.curtainReleased = true;
+        retryCombatAdmissionGate();
+        return true;
+    }
+
+    public function noteNarrativeDone(world:Object, owner:Object, chapterIndex:Number):Boolean {
+        if (!matchesCombatAdmission(world, owner)) return false;
+        if (combatAdmission.chapterIndex != undefined && chapterIndex != undefined
+                && combatAdmission.chapterIndex !== chapterIndex) return false;
+        combatAdmission.narrativeDone = true;
+        retryCombatAdmissionGate();
+        return true;
+    }
+
+    public function noteRoomReady(world:Object, owner:Object, mapId:String):Boolean {
+        if (!matchesCombatAdmission(world, owner)) return false;
+        if (combatAdmission.mapId != undefined && mapId != undefined && mapId != ""
+                && combatAdmission.mapId !== mapId) return false;
+        combatAdmission.roomReady = true;
+        retryCombatAdmissionGate();
+        return true;
+    }
+
+    public function noteCombatAdmissionFailed(world:Object, owner:Object):Boolean {
+        if (combatAdmission == null || combatAdmission.manager !== this) return false;
+        if (world != null && combatAdmission.world !== world) return false;
+        if (owner != null && combatAdmission.owner !== owner) return false;
+        revokeCombatAdmission(combatAdmission);
+        return true;
+    }
+
+    private function revokeCombatAdmission(record:Object):Void {
+        if (record == null) return;
+        record.failed = true;
+        // MovieClip references can resolve to a same-path replacement. Only the
+        // captured plain owner and current record may revoke its world flag.
+        if (record === combatAdmission && record.manager === this && record.world != null
+                && record.owner === StageReturnFlow.worldIdentity(record.world)) {
+            record.world.__combatAdmitted = false;
+        }
+    }
+
     /** 只接受本次世界/关卡的完成闩锁；事件重入后再次检查身份。 */
     public function onPlayerReady(gate:Object):Void {
         var bridge:Object=org.flashNight.arki.scene.PlayerSceneLifecycle;
         if(gate.manager!==this || !bridge.isReady(gate) || gate.published!==true || gate.wavesStarted===true
                 || gate.startDispatching===true) return;
-        if(org.flashNight.arki.scene.StageIntroService.deferStart(gate)) return;
+        var admission:Object=this.combatAdmission;
+        var cf6Gated:Boolean=admission!=null || gameworld.__combatAdmitted!==undefined;
+        if(cf6Gated && this.isCombatAdmissionCurrent(admission)
+                && gate.world===admission.owner && gate.stage===admission.stage) {
+            admission.playerGate=gate;
+        }
+        var introHeld:Boolean=org.flashNight.arki.scene.StageIntroService.deferStart(gate);
+        if(cf6Gated) {
+            if(introHeld || !this.canAdmitCombat(admission,gate)) return;
+            gameworld.__combatAdmitted=true;
+            org.flashNight.arki.scene.BookRunClock.tick();
+        } else if(introHeld) {
+            return;
+        }
         gate.startDispatching=true;
         if(gate.started!==true) {
             gate.started=true;
@@ -565,13 +696,29 @@ class org.flashNight.arki.scene.StageManager {
                 org.flashNight.arki.scene.StageIntroService.noteStart("start_published");
             } catch(startError) {
                 gate.startDispatching=false;
+                if(cf6Gated && admission!=null) {
+                    revokeCombatAdmission(admission);
+                }
                 onPlayerInitializationFailed(gate,startError);
                 return;
             }
         }
         gate.startDispatching=false;
         if(!bridge.isReady(gate) || gate.wavesStarted===true
-                || org.flashNight.arki.scene.StageIntroService.deferStart(gate)) return;
+                || org.flashNight.arki.scene.StageIntroService.deferStart(gate)) {
+            if(cf6Gated && admission!=null && !bridge.isReady(gate)) {
+                revokeCombatAdmission(admission);
+            }
+            return;
+        }
+        if(cf6Gated) {
+            if(!this.canAdmitCombat(this.combatAdmission,gate) || gameworld.__combatAdmitted!==true) {
+                if(admission!=null) {
+                    revokeCombatAdmission(admission);
+                }
+                return;
+            }
+        }
         gate.wavesStarted=true;
         if(currentStageInfo.waveInfo!=null) spawner.init(currentStageInfo);
         org.flashNight.arki.scene.StageIntroService.noteStart("waves_initialized");
@@ -582,6 +729,7 @@ class org.flashNight.arki.scene.StageManager {
         if(gate.manager!==this || gameworld!==_root.gameworld || gameworld.__playerSceneGate!==gate
                 || gate.world!==org.flashNight.arki.scene.StageReturnFlow.worldIdentity(gameworld)
                 || currentStage!==gate.stage || !isActive || isFinished || isFailed) return;
+        noteCombatAdmissionFailed(gameworld, gate.world);
         handleInitStageFailure(false,stageStartToken,error);
     }
 
@@ -1044,8 +1192,29 @@ class org.flashNight.arki.scene.StageManager {
         return currentStageInfo == null ? "" : String(currentStageInfo.basicInfo.Cf6MapId);
     }
 
+    public function currentBookChapterIndex(world:Object, owner:Object):Number {
+        if (combatAdmission != null
+                && (world == null || combatAdmission.world === world)
+                && (owner == null || combatAdmission.owner === owner)
+                && typeof combatAdmission.chapterIndex == "number"
+                && !isNaN(combatAdmission.chapterIndex)) {
+            return combatAdmission.chapterIndex;
+        }
+        if (currentStageInfo != null && currentStageInfo.basicInfo != null
+                && (world == null || gameworld === world)
+                && typeof currentStageInfo.basicInfo.Cf6ChapterIndex == "number"
+                && !isNaN(currentStageInfo.basicInfo.Cf6ChapterIndex)) {
+            return currentStageInfo.basicInfo.Cf6ChapterIndex;
+        }
+        if (isActive && (world == null || gameworld === world) && currentStage >= 0) {
+            return currentStage;
+        }
+        return -1;
+    }
+
     public function clearStage():Void{
-        if(!isActive || isFinished || isFailed || gameworld.__stageIntroExecutionHeld === true) return;
+        if(!isActive || isFinished || isFailed || gameworld.__stageIntroExecutionHeld === true
+                || gameworld.__combatAdmitted === false) return;
         if (org.flashNight.arki.scene.LeeAssaultService.interceptClear(this, gameworld)) return;
         if (org.flashNight.arki.scene.BaseSiegeController.interceptClear(this, gameworld)) return;
         if (org.flashNight.arki.scene.NewcomerRescueController.interceptClear(this, gameworld)) return;
@@ -1144,7 +1313,8 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function finishStage():Void{
-        if(!isActive || isFinished || isFailed || gameworld.__stageIntroExecutionHeld === true) return;
+        if(!isActive || isFinished || isFailed || gameworld.__stageIntroExecutionHeld === true
+                || gameworld.__combatAdmitted === false) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord finishStage rejected; CompleteSubStage required");
             return;
@@ -1325,6 +1495,7 @@ class org.flashNight.arki.scene.StageManager {
         if (timePoolController != null) {
             leaveTimePoolBestEffort(timePoolController);
         }
+        combatAdmission = null;
         gameworld = null;
         environment = null;
         currentStageInfo = null;
@@ -1525,6 +1696,7 @@ class org.flashNight.arki.scene.StageManager {
         stageInfoList = null;
         currentStageInfo = null;
         currentStage = -1;
+        combatAdmission = null;
         gameworld = null;
         environment = null;
         spawnPoints = null;
@@ -1935,6 +2107,7 @@ class org.flashNight.arki.scene.StageManager {
         warlordActionSlot = null;
         lastWarlordActionBinding = null;
         lastWarlordActionTerminal = null;
+        combatAdmission = null;
         stageMode = "invalid";
         stageValidationError = "";
         warlordConfig = null;

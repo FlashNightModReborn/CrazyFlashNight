@@ -15,6 +15,43 @@ namespace CF7Launcher.Tests.Bus
     public sealed class HttpApiServerTests
     {
         [Fact]
+        public async Task OrdinaryHostCannotIngestIssue205SourceOrExposeAQualificationSnapshot()
+        {
+            int port = ProbeFreePort();
+            using var server = new HttpApiServer(0, CreateTempProjectRoot(), null);
+            Assert.True(server.Start(port));
+            using var handler = new HttpClientHandler { UseProxy = false };
+            using var client = new HttpClient(handler);
+            string baseUrl = "http://localhost:" + port;
+            Assert.Equal("{\"enabled\":false}", await client.GetStringAsync(baseUrl + "/issue205/config"));
+            Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync(baseUrl + "/issue205/snapshot")).StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, (await client.PostAsync(baseUrl + "/issue205/source",new StringContent("seq=1"))).StatusCode);
+        }
+        [Fact]
+        public async Task QualificationConsoleDoesNotOpenGenericCommandsOrOtherRoutes()
+        {
+            int port = ProbeFreePort();
+            using var server = new HttpApiServer(0, CreateTempProjectRoot(), null);
+            Assert.Throws<ArgumentException>(() => server.EnableQualificationConsole("cf7_agent_152_a28"));
+            server.EnableQualificationConsole("cf7_agent_review1110");
+            Assert.True(server.Start(port));
+            using var handler = new HttpClientHandler { UseProxy = false };
+            using var client = new HttpClient(handler);
+            var command = await client.PostAsync("http://localhost:" + port + "/console",
+                new StringContent("{\"command\":\"#set:level=99\"}", Encoding.UTF8, "application/json"));
+            Assert.Equal(HttpStatusCode.Forbidden, command.StatusCode);
+            var task = await client.PostAsync("http://localhost:" + port + "/task",
+                new StringContent("{\"task\":\"agent_control\",\"action\":\"shutdown\"}", Encoding.UTF8, "application/json"));
+            Assert.Equal(HttpStatusCode.Unauthorized, task.StatusCode);
+            var large = await client.PostAsync("http://localhost:" + port + "/console",
+                new StringContent(new string('x', 4097), Encoding.UTF8, "application/json"));
+            Assert.Equal(HttpStatusCode.RequestEntityTooLarge, large.StatusCode);
+            var origin = new HttpRequestMessage(HttpMethod.Post, "http://localhost:" + port + "/console");
+            origin.Headers.Add("Origin", "https://example.com");
+            origin.Content = new StringContent("{\"command\":\"#get:savePath\"}", Encoding.UTF8, "application/json");
+            Assert.Equal(HttpStatusCode.Forbidden, (await client.SendAsync(origin)).StatusCode);
+        }
+        [Fact]
         public async Task Shutdown_ReturnsAcceptedRequestSemanticsBeforeRunningAction()
         {
             int port = ProbeFreePort();

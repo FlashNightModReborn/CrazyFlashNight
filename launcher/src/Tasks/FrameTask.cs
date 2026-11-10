@@ -64,6 +64,10 @@ namespace CF7Launcher.Tasks
             {
                 _socket.OnClientReadyForGeneration -= _hitNumberReady;
                 _socket.OnClientDisconnectedForGeneration -= _hitNumberDisconnected;
+                if(_hitNumberConnectionGeneration>0) {
+                    _fpsBuffer.NotifyConnectionDisconnected(_hitNumberConnectionGeneration);
+                    _decisionEngine?.ResetRenderSource();
+                }
             }
             _socket = socket;
             _hitNumberConnectionGeneration = 0;
@@ -80,6 +84,8 @@ namespace CF7Launcher.Tasks
                         _hitNumberConnectionGeneration = generation;
                         reset = _hitNumberRuntime.ResetHealing();
                     }
+                    _fpsBuffer.NotifyConnectionReady(generation);
+                    _decisionEngine?.ResetRenderSource();
                     _overlay?.UpdateFrame(reset);
                     PublishHitNumberSourceState();
                 };
@@ -92,10 +98,13 @@ namespace CF7Launcher.Tasks
                         if (generation != _hitNumberConnectionGeneration) return;
                         reset = _hitNumberRuntime.ResetHealing();
                     }
+                    _fpsBuffer.NotifyConnectionDisconnected(generation);
+                    _decisionEngine?.ResetRenderSource();
                     _overlay?.UpdateFrame(reset);
                 };
                 _socket.OnClientReadyForGeneration += _hitNumberReady;
                 _socket.OnClientDisconnectedForGeneration += _hitNumberDisconnected;
+                StartPerfTelemetry();
             }
         }
 
@@ -116,6 +125,7 @@ namespace CF7Launcher.Tasks
         public void Stop()
         {
             _stopped = true;
+            StopPerfTelemetry();
             _bulletVisualShadow?.Reset();
             ResetProjectileVisuals();
             lock(_combatFxLock) { _combatFxEngine?.Reset();CombatFxCleared?.Invoke(); }
@@ -236,11 +246,15 @@ namespace CF7Launcher.Tasks
             string bulletVisualPayload = null, int connectionGeneration = 0,string combatFxPayload=null,
             string rayVisualPayload=null,string chainVisualPayload=null,string sceneLightPayload=null, bool workerAdmissionChecked=false)
         {
-            if (_stopped) return;
+            Issue205Probe.Current?.Hit(Issue205Counter.ConsumerEnter);
+            if (_stopped) { Issue205Probe.Current?.Hit(Issue205Counter.ConsumerStopped); return; }
             if (!workerAdmissionChecked && _workerProjection != null && (_workerProjection.ObserveForbidden("ordinaryBullet", bulletVisualPayload, connectionGeneration)
                 || _workerProjection.ObserveForbidden("ray", rayVisualPayload, connectionGeneration)
                 || _workerProjection.ObserveForbidden("chain", chainVisualPayload, connectionGeneration)
                 || _workerProjection.ObserveCombatDecorations(combatFxPayload, connectionGeneration))) return;
+            double sourceReceivedMs;
+            long hostFrameOrdinal=_fpsBuffer.ObserveFrameIngress(connectionGeneration,out sourceReceivedMs);
+            if(hostFrameOrdinal<0) { Issue205Probe.Current?.Hit(Issue205Counter.ConsumerGenerationRejected); return; }
             try
             {
                 HitNumberRuntimeSnapshot hitSnapshot;
@@ -265,6 +279,7 @@ namespace CF7Launcher.Tasks
                     if (bulletVisualPayload != null && _bulletVisualShadow != null)
                         ObserveOrdinaryBulletVisuals(bulletVisualPayload, connectionGeneration, weatherCamera);
                 } finally { VisualFrameCompleted?.Invoke(); }
+                Issue205Probe.Current?.Hit(Issue205Counter.ConsumerVisualDone);
 
                 // 搓招输入处理：解析 \x04 payload -> V8 -> K 前缀推送
                 if (!string.IsNullOrEmpty(inputPayload) && _socket != null)
@@ -317,11 +332,16 @@ namespace CF7Launcher.Tasks
                     }
                 }
 
-                if (!string.IsNullOrEmpty(fps))
-                    _decisionEngine?.EvaluateRenderSample(fps.Split('|'));
+                if (!string.IsNullOrEmpty(fps)) {
+                    Issue205Probe.Current?.Hit(Issue205Counter.FpsSection);
+                    _decisionEngine?.EvaluateRenderSample(fps.Split('|'),connectionGeneration,
+                        hostFrameOrdinal,sourceReceivedMs);
+                }
+                Issue205Probe.Current?.Hit(Issue205Counter.ConsumerDone);
             }
             catch (Exception ex)
             {
+                Issue205Probe.Current?.Hit(Issue205Counter.ConsumerException);
                 LogManager.Log("[Frame] HandleRaw error: " + ex.Message);
             }
         }

@@ -102,6 +102,10 @@ class org.flashNight.arki.scene.StageIntroService {
     public static function completeNarrative(scope:Object):Void {
         if (!current(scope) || scope !== _scope || scope.state == "failed" || scope.narrativeDone) return;
         scope.narrativeDone = true;
+        var manager:Object = org.flashNight.arki.scene.StageManager.instance;
+        if (manager != null && typeof manager.noteNarrativeDone == "function") {
+            manager.noteNarrativeDone(scope.world, scope.owner, scope.chapter);
+        }
         org.flashNight.arki.scene.BookRunService.completeIntroChapter(scope.owner, scope.chapter);
         scope.state = "resume";
         org.flashNight.arki.ui.SceneTransitionService.publishIntro(scope, "resume");
@@ -133,6 +137,7 @@ class org.flashNight.arki.scene.StageIntroService {
                 || scope.narrativeDone !== true || scope.surfaceReady !== true) return;
         scope.state = "complete";
         scope.world.__stageIntroExecutionHeld = false;
+        Selection.setFocus(null);
         org.flashNight.arki.scene.BookRunClock.tick();
         org.flashNight.arki.ui.SceneTransitionService.publishIntro(scope, "complete");
         log(scope, "execution_granted");

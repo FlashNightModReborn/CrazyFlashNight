@@ -49,6 +49,19 @@ namespace CF7Launcher.Guardian
                     && _focusApi.GetRootWindow(target.Window)==target.Root;
             } catch { return false; }
         }
+        internal bool IsCurrentFlashInputFocused()
+        {
+            IntPtr window=_flashHwnd; long epoch=Interlocked.Read(ref _focusTargetEpoch);
+            try {
+                if(!IsCurrentFlashWindow(window))return false;
+                IntPtr root=_focusApi.GetRootWindow(window);
+                if(root==IntPtr.Zero || !_focusApi.IsWindow(root) || _focusApi.GetForegroundWindow()!=root)return false;
+                return epoch==Interlocked.Read(ref _focusTargetEpoch) && IsCurrentFlashWindow(window)
+                    && _focusApi.GetRootWindow(window)==root && IsFlashInnerFocusHeld(window)
+                    && epoch==Interlocked.Read(ref _focusTargetEpoch) && IsCurrentFlashWindow(window)
+                    && _focusApi.GetForegroundWindow()==root;
+            } catch { return false; }
+        }
         internal bool HandoffFlashFocusOnce(string reason, IntPtr source, FlashFocusTarget target, Func<bool> guard,Action cleanupUnknown=null)
         {
             if(!_allowForeground || source==IntPtr.Zero)return false;

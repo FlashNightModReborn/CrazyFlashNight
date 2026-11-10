@@ -41,6 +41,7 @@ class org.flashNight.arki.scene.SceneManager {
      */
     public function initGameWorld(_gw:MovieClip):Void{
         gameworld = _gw;
+        org.flashNight.neur.Server.Issue205SourceProbe.attached(_gw);
         cleanupWorldIdentity = _gw.__stageReturnWorldIdentity;
         cleanupBlockedReason = "";
         org.flashNight.arki.item.MapChestStashService.beginWorld(gameworld);
@@ -303,6 +304,7 @@ class org.flashNight.arki.scene.SceneManager {
 
         if (gameworld.__sharedScenePlacementLease == undefined)
             gameworld.swapDepths(_root.getNextHighestDepth());
+        org.flashNight.neur.Server.Issue205SourceProbe.disposing();
         gameworld.removeMovieClip();
         SharedScenePlacement.detached(gameworld,releasedIdentity);
         DepthManager.instance = null;

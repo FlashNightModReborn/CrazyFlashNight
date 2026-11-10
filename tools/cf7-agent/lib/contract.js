@@ -800,7 +800,8 @@ function validateActionArguments(method, params) {
     const args = params.arguments;
     safeInteger(args.durationMs, 1, 2000, '$.params.arguments.durationMs');
     if (typeof args.key !== 'string'
-        || !['w', 'a', 's', 'd', 'up', 'down', 'left', 'right'].includes(args.key.toLowerCase())
+        || (!['w', 'a', 's', 'd', 'up', 'down', 'left', 'right'].includes(args.key.toLowerCase())
+            && !require('../qualification-input').isGesture(args.key.toLowerCase()))
         || args.repeat !== 1 || !Array.isArray(args.modifiers) || args.modifiers.length !== 0)
       fail('held_key_invalid', 'Timed presses require one unmodified movement key', '$.params.arguments');
   }

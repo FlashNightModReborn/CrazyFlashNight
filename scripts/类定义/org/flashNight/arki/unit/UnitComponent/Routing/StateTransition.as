@@ -33,13 +33,16 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransition {
             return;
         }
 
-        if (plan.transition && self.man.换弹标签)
-            org.flashNight.arki.unit.Action.Shoot.ReloadManager.cancelReload(self.man, false);
+        var retiring:Object = self.man;
+        var replacing:Boolean = (plan.transition && !plan.poseOnly) || plan.removeDynamicMan;
+        if (replacing && retiring != null
+                && (retiring.换弹标签 || retiring.reloadFrameControlActive || retiring.reloadFrameControlRequest)) {
+            org.flashNight.arki.unit.Action.Shoot.ReloadManager.cancelReload(retiring, false);
+        }
         self.攻击模式 = plan.attackMode;
         self.旧状态   = plan.oldState;
 
         if (plan.removeDynamicMan) {
-            var retiring = self.man;
             // AVM1 keeps a removed clip alive until its unload phase. Reusing its
             // path immediately can resolve the new first-frame area through the
             // old man (Issue 167: emitted 15, undefined bounds, queue rejected).

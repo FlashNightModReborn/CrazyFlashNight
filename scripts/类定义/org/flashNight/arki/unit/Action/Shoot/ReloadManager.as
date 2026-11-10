@@ -185,13 +185,59 @@ import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
  * ============================================================================
  */
 class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
+    /**
+     * 技能普通仓补满后，按现有付费逐发路径补幽灵弹。
+     * ghostLimit 同时校验原生结构与技能资格；不进入留膛、战术回收或副武器联动。
+     */
+    public static function fillPaidGhostAfterSkill(unit:Object, slot:String):Void {
+        if (unit == null || unit !== TargetCacheManager.findHero()
+                || unit[slot + "属性"].reloadType != "tube") return;
+        var limit:Number = WeaponAmmoRuntime.ghostLimit(unit, slot);
+        if (!(limit > 0)) return;
+        var state:Object = WeaponAmmoRuntime.ensure(unit, slot);
+        if (!state || WeaponAmmoRuntime.normal(unit[slot].value, state.capacity) != state.capacity
+                || !(state.ghost < limit)) return;
+        // 原生上限为 2；余额不足或提交无进展时立即停止，不能改走免费补给。
+        for (var i:Number = 0; i < 2 && state.ghost < limit; i++) {
+            var before:Number = state.ghost;
+            var amount:Number = WeaponAmmoRuntime.fillRounds(unit, slot, 1, true,
+                unit[slot + "属性"].clipname, true);
+            if (!(amount > 0) || !(state.ghost > before)) return;
+        }
+    }
+
     /** 同步资源补给读取此代次，识别换弹开始/提交/结束后状态恢复原值的情况。 */
     public static function getReloadGeneration(man:Object):Number {
         var generation:Number = man.__reloadGeneration;
         return generation > 0 && isFinite(generation) ? generation : 0;
     }
     public static function bumpReloadGeneration(man:Object):Void {
-        if (man) man.__reloadGeneration = getReloadGeneration(man) + 1;
+        if (man == null) return;
+        man.__reloadGeneration = getReloadGeneration(man) + 1;
+        if (man.__reloadIdentity == null) man.__reloadIdentity = {};
+        // 帧脚本的结束入口也使用调度时凭证；提交后旧代次的结束函数随即失效。
+        man.结束换弹 = createReloadCompletion(man, man.__reloadIdentity, man.__reloadGeneration);
+    }
+
+    private static function createReloadCompletion(target:Object, identity:Object, generation:Number):Function {
+        // 形参捕获普通对象，不能在回调执行时重读 token 充当凭证。
+        return function():Void {
+            if (identity == null || target.__reloadIdentity !== identity
+                    || ReloadManager.getReloadGeneration(target) !== generation) return;
+            var owner:Object = target._parent;
+            if (owner == null || owner.man !== target) return;
+            ReloadManager.finishReload(target);
+        };
+    }
+
+    /** #214 失败探针/开发入口可显式读取；不驱动动作，不自动跳空闲。 */
+    public static function snapshotReload(target:Object):Object {
+        var owner:Object = target._parent;
+        return {identity:target.__reloadIdentity, generation:getReloadGeneration(target),
+            currentMan:owner != null && owner.man === target, state:owner.状态,
+            mode:owner.攻击模式, frame:target._currentframe, reloading:target.换弹标签,
+            controlActive:target.reloadFrameControlActive, controlRequest:target.reloadFrameControlRequest,
+            progress:target.reloadFrameProgress, weaponValue:target.reloadWeaponValue};
     }
 
     
@@ -202,7 +248,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param rootRef 根引用 (原_root引用)
      */
     public static function startReload(target:MovieClip, parentRef:Object, rootRef:Object):Void {
-        if (_root.暂停 || target.换弹标签) return;
+        if (_root.暂停 || ShootCore.isPresentationControlled(parentRef) || target.换弹标签) return;
         var attackMode:String = parentRef.攻击模式;
         LongGunSubWeaponCore.clearReloadRequest(target);
         var isHero:Boolean = parentRef === TargetCacheManager.findHero();
@@ -318,13 +364,19 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * 结束换弹过程
      * @param target 目标MovieClip (原this引用)
      */
-    public static function finishReload(target:MovieClip):Void {
+    public static function finishReload(target:Object):Void {
         cancelReload(target, true);
     }
 
-    /** 与返回空闲分离，受击/换姿只清自己的事务，绝不覆盖外部状态。 */
+    /** 同步交接用 false；存活持枪站/走用 true，由空闲帧恢复射击许可。 */
     public static function cancelReload(target:Object, returnIdle:Boolean):Void {
-        bumpReloadGeneration(target);
+        if (target == null) return;
+        var owner:Object = target._parent;
+        var canReturnIdle:Boolean = returnIdle && owner != null && owner.man === target
+            && (owner.状态 == owner.攻击模式 + "站立" || owner.状态 == owner.攻击模式 + "行走");
+        // 先废弃本轮凭证。取消不退款、不改弹药、不清射速锁、不直接开放射击。
+        target.__reloadGeneration = getReloadGeneration(target) + 1;
+        delete target.__reloadIdentity;
         LongGunSubWeaponCore.clearReloadRequest(target);
         delete target.dualReloadInput;
         delete target.dualReloadStartHand;
@@ -340,14 +392,14 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         delete target.perRoundReload;
         delete target.reloadWeaponValue;
         target.换弹标签 = false;
-        if (returnIdle) target.gotoAndStop("空闲");
+        if (canReturnIdle) target.gotoAndStop("空闲");
     }
 
     public static function tryCancelForFire(target:Object, parent:Object, slot:String):Boolean {
         if (!target.换弹标签) return true;
         var loaded:Number = slot == "长枪副武器" ? LongGunSubWeaponCore.getLoadedCount(parent)
             : parent[slot + "弹匣容量"] - parent[slot].value.shot;
-        if (_root.暂停 || (parent.man != null && parent.man !== target)
+        if (_root.暂停 || ShootCore.isPresentationControlled(parent) || (parent.man != null && parent.man !== target)
                 || !(loaded > 0)) return false;
         if (!canInterruptDualReload(target, parent, slot)) return false;
         parent.__reloadFireHeld = true;
@@ -357,6 +409,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
     /** 射击优先于持续按住 R；取消后仍回到原射速/许可/半自动检查，不直接生成子弹。 */
     public static function handleReloadInput(target:Object, parent:Object):Boolean {
+        if (ShootCore.isPresentationControlled(parent)) return false;
         if (_root.控制目标 != parent._name) return false;
         if (!_root.暂停) observeDualReloadInput(target, parent);
         var firing:Boolean = parent.动作A || parent.动作B;
@@ -511,6 +564,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         
         return function():Void {
             var that:MovieClip = self;
+
+            if (_root.暂停 || ShootCore.isPresentationControlled(parentRef)) return;
             
             if (ReloadManager.handleReloadInput(that, parentRef)) return;
             // 检查换弹标签
@@ -590,11 +645,11 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         return function():Void {
             var that:MovieClip = self;
 
-            ReloadManager.bumpReloadGeneration(that);
             // 逐发换弹路径中，弹匣消耗和shot重置已在门禁中处理，此处直接返回
             if (_root.暂停 || !that.换弹标签 || that.perRoundReload) {
                 return;
             }
+            ReloadManager.bumpReloadGeneration(that);
 
             if (parentRef === TargetCacheManager.findHero()) {
                 var weaponValue:Object = parentRef[weaponType].value;
@@ -802,6 +857,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         endFrame:Number,
         audioFrames:Array
     ):Void {
+        // F 的手动副武器换弹直接进入时间轴，补上同一结束凭证合同。
+        if (target.__reloadIdentity == null) bumpReloadGeneration(target);
         // 缓存parent引用和核心属性（AS2性能优化）
         var parent:Object = target._parent;
         var attackMode:String = parent.攻击模式;
@@ -1023,6 +1080,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         endFrame:Number,
         audioFrames:Array
     ):Void {
+        if (target.__reloadIdentity == null) bumpReloadGeneration(target);
         // 记录当前段落起始帧（用于手位推断兜底；与单武器共用字段名不冲突）
         target.reloadStartFrame = startFrame;
 

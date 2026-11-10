@@ -83,9 +83,25 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(h.DeferTail("foreign",()=>tail+=100));
             Assert.True(h.DeferTail("panel:1",()=>tail++));
             Assert.False(h.Closed("foreign")); Assert.True(h.Closed("panel:1"));
-            Assert.True(h.CanResume(true,true,true)); h.Resumed(); h.Retire();
+            Assert.True(h.CanResume(true,true,true)); h.ConsumeCloseTail();
+            Assert.Equal(1,tail); Assert.False(h.SurfaceReady); Assert.True(h.CanResume(true,true,true));
+            h.ConsumeCloseTail(); h.Resumed(); h.Retire();
             Assert.Equal(1,tail); Assert.False(h.CoverRequired);
             Assert.False(h.CanResume(true,true,true));
+        }
+        [Fact] public void SkippedIntroRetiresItsTailWithoutGrantingSurfaceReadiness() {
+            var h=Handoff("narrative");int tail=0;
+            h.BindClosing(Data(),"panel:1");h.BeginClose("panel:1");h.DeferTail("panel:1",()=>tail++);
+            h.Retire();h.Retire();
+            Assert.Equal(1,tail);Assert.False(h.SurfaceReady);Assert.True(h.CoverRequired);
+        }
+        [Fact] public void OnlyANewForegroundAdmissionRestoresTheSingleHandoffAttempt() {
+            var h=Handoff("narrative");
+            h.ObserveForegroundAdmission(true);Assert.True(h.TryBeginFocusHandoff());
+            Assert.False(h.TryBeginFocusHandoff());h.ObserveForegroundAdmission(true);
+            Assert.False(h.TryBeginFocusHandoff());
+            h.ObserveForegroundAdmission(false);h.ObserveForegroundAdmission(true);
+            Assert.True(h.TryBeginFocusHandoff());Assert.False(h.TryBeginFocusHandoff());
         }
         [Theory]
         [InlineData("failed")]

@@ -1115,7 +1115,7 @@ _root.技能函数.迅斩攻击 = function(){
 
 // 翻滚换弹（SWF资源接口，保留用于资源文件调用）
 _root.技能函数.翻滚换弹 = function(){
-	SkillReloadCore.reloadAllWeapons(_parent);
+	SkillReloadCore.reloadAllWeapons(_parent, true);
 }
 
 _root.技能函数.火舞旋风攻击 = function(){
