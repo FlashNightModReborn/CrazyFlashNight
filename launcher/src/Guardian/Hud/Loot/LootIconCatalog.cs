@@ -38,6 +38,9 @@ namespace CF7Launcher.Guardian.Hud.Loot
     {
         internal const int ThumbSize = 64;
         private const long ThumbBytes = (long)ThumbSize * ThumbSize * 4L;
+        private const long DetailCacheBytes = 8L * 1024 * 1024;
+        internal const int DetailMinSize = 96;
+        internal const int DetailMaxSize = 512;
         private const double DefaultFps = 24.0;
         /// <summary>doll 源负缓存 TTL（ms）：烘焙异步落盘，到期重探。</summary>
         internal const long DollMissTtlMs = 2000;
@@ -69,6 +72,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
         private readonly string _npcPortraitIconsDir; // null = NPC 商店头像关闭
         private readonly object _gate = new object();
         private readonly BitmapLruCache _frameCache; // key = uri 文件名（头像用 "portrait:<ref>"，纸娃娃用 "doll:<ref>"）
+        private readonly BitmapLruCache _detailCache; // 大尺寸注释图标（intro/pinned）按需加载，不与 64px 播放缓存混用
         private readonly HashSet<string> _missing = new HashSet<string>(StringComparer.Ordinal);
         // doll 源专用 TTL 负缓存：ref → 上次 miss 的 NowMs（烘焙异步落盘，到期重探）
         private readonly Dictionary<string, long> _missingDoll =
@@ -95,6 +99,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
             _dollPortraitsDir = string.IsNullOrEmpty(dollPortraitsDir) ? null : dollPortraitsDir;
             _npcPortraitIconsDir = string.IsNullOrEmpty(npcPortraitIconsDir) ? null : npcPortraitIconsDir;
             _frameCache = new BitmapLruCache(maxCacheBytes, StringComparer.Ordinal);
+            _detailCache = new BitmapLruCache(DetailCacheBytes, StringComparer.Ordinal);
         }
 
         /// <summary>NPC 商店头像：仅从独立 NPC 目录解析，不与物品图标命名空间混用。</summary>
@@ -336,6 +341,152 @@ namespace CF7Launcher.Guardian.Hud.Loot
             }
         }
 
+        /// <summary>
+        /// 大尺寸注释图标：按需从原始素材（128px webp / 头像 SVG / 纸娃娃 PNG）重采样到目标边长，
+        /// 避免 64px 播放缩略图被 intro/pinned 注释框放大后发糊。返回共享位图，调用方不得 Dispose。
+        /// </summary>
+        internal Bitmap TryGetDetail(string iconName, int size)
+        {
+            if (string.IsNullOrEmpty(iconName)) return null;
+            return GetDetail("detail:" + iconName + "|", size, px => LoadDetailFrame(iconName, px));
+        }
+
+        internal Bitmap TryGetNpcDetail(string npcName, int size)
+        {
+            if (_npcPortraitIconsDir == null || string.IsNullOrEmpty(npcName)
+                || npcName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0) return null;
+            return GetDetail("detail:npc:" + npcName + "|", size, px =>
+            {
+                string path = Path.Combine(_npcPortraitIconsDir, npcName + ".webp");
+                if (!File.Exists(path)) return null;
+                using (Bitmap full = MapHudImageDecoder.LoadBitmap(path)) return FitToSquare(full, px);
+            });
+        }
+
+        internal Bitmap TryGetALegionDetail(int size)
+        {
+            return GetDetail("detail:a-legion:red|", size, px =>
+            {
+                string path = Path.GetFullPath(Path.Combine(
+                    _iconsDir, "..", "assets", "logos", "a-legion-emblem.svg"));
+                return File.Exists(path) ? RenderSvg(path, px, "#FF0000") : null;
+            });
+        }
+
+        internal Bitmap TryGetWarlordDetail(int size)
+        {
+            return GetDetail("detail:warlord:gold-black|", size, px =>
+            {
+                string path = Path.GetFullPath(Path.Combine(
+                    _iconsDir, "..", "assets", "logos", "warlord-emblem.svg"));
+                return File.Exists(path) ? RenderSvg(path, px) : null;
+            });
+        }
+
+        private Bitmap GetDetail(string prefix, int size, Func<int, Bitmap> loader)
+        {
+            size = Math.Max(DetailMinSize, Math.Min(DetailMaxSize, size));
+            string key = prefix + size;
+            lock (_gate)
+            {
+                Bitmap cached;
+                if (_detailCache.TryGet(key, out cached)) return cached;
+                Bitmap detail;
+                try { detail = loader(size); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[LootIcon] detail decode failed for '" + prefix + "': " + ex.Message);
+                    return null;
+                }
+                if (detail == null) return null;
+                if (!_detailCache.TryAdd(key, detail))
+                {
+                    detail.Dispose();
+                    return null;
+                }
+                return detail;
+            }
+        }
+
+        private Bitmap LoadDetailFrame(string iconName, int size)
+        {
+            EnsureManifestLoaded();
+            ManifestEntry entry;
+            if (_manifest != null && _manifest.TryGetValue(iconName, out entry) && entry != null)
+            {
+                string uri = !string.IsNullOrEmpty(entry.F1) ? entry.F1 : entry.Uri;
+                if (string.IsNullOrEmpty(uri)) uri = entry.Uri;
+                if (!string.IsNullOrEmpty(uri))
+                {
+                    string path = Path.Combine(_iconsDir, uri);
+                    if (File.Exists(path))
+                    {
+                        if (path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+                            return RenderSvg(path, size);
+                        using (Bitmap full = MapHudImageDecoder.LoadBitmap(path))
+                            return FitToSquare(full, size);
+                    }
+                }
+            }
+
+            EnsurePortraitManifestLoaded();
+            string rel = PortraitSubject(iconName);
+            if (!string.IsNullOrEmpty(rel) && _enemyPortraitsDir != null)
+            {
+                string path = Path.Combine(_enemyPortraitsDir, rel.Replace('/', Path.DirectorySeparatorChar));
+                if (File.Exists(path)) return RenderSvg(path, size);
+            }
+
+            string hex;
+            if (_dollPortraitsDir != null && DollBakeTaskKey.TryExtractHex(iconName, out hex))
+            {
+                string path = Path.Combine(_dollPortraitsDir, hex + ".png");
+                if (File.Exists(path))
+                {
+                    using (Bitmap full = MapHudImageDecoder.LoadBitmap(path))
+                        return FitToSquare(full, size);
+                }
+            }
+            return null;
+        }
+
+        private static Bitmap FitToSquare(Bitmap full, int size)
+        {
+            Bitmap output = new Bitmap(size, size, PixelFormat.Format32bppArgb);
+            try
+            {
+                using (Graphics g = Graphics.FromImage(output))
+                {
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.SmoothingMode = SmoothingMode.HighQuality;
+                    g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    float ratio = Math.Min(size / (float)full.Width, size / (float)full.Height);
+                    int width = Math.Max(1, (int)Math.Round(full.Width * ratio));
+                    int height = Math.Max(1, (int)Math.Round(full.Height * ratio));
+                    g.DrawImage(full, (size - width) / 2, (size - height) / 2, width, height);
+                }
+            }
+            catch
+            {
+                output.Dispose();
+                throw;
+            }
+            return output;
+        }
+
+        private string PortraitSubject(string portraitRef)
+        {
+            if (_portraitSubjects == null) return null;
+            string rel;
+            if (!_portraitSubjects.TryGetValue(portraitRef, out rel))
+            {
+                string aliasTarget;
+                if (_portraitAliases != null && _portraitAliases.TryGetValue(portraitRef, out aliasTarget))
+                    _portraitSubjects.TryGetValue(aliasTarget, out rel);
+            }
+            return rel;
+        }
+
         /// <summary>按 uri 载帧：LRU 命中直发；否则全尺寸解码 + GDI+ 缩略。失败返回 null。</summary>
         private Bitmap LoadFrame(string uri)
         {
@@ -567,13 +718,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
             Bitmap cached;
             if (_frameCache.TryGet(cacheKey, out cached)) return cached;
 
-            string rel = null;
-            if (!_portraitSubjects.TryGetValue(portraitRef, out rel))
-            {
-                string aliasTarget;
-                if (_portraitAliases != null && _portraitAliases.TryGetValue(portraitRef, out aliasTarget))
-                    _portraitSubjects.TryGetValue(aliasTarget, out rel);
-            }
+            string rel = PortraitSubject(portraitRef);
             if (string.IsNullOrEmpty(rel)) return null;
 
             string path = Path.Combine(_enemyPortraitsDir, rel.Replace('/', Path.DirectorySeparatorChar));
@@ -900,6 +1045,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 _webpMetadata.Clear();
                 _failedPlaybackFrames.Clear();
                 _frameCache.Dispose();
+                _detailCache.Dispose();
             }
         }
     }

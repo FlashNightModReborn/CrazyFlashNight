@@ -110,6 +110,84 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
             }
         }
 
+        [Fact]
+        public void TryGetDetail_ResamplesTheSourceAtTheRequestedSize()
+        {
+            string dir = Path.Combine(Path.GetTempPath(),
+                "cf7-looticon-detail-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            try
+            {
+                WritePng(Path.Combine(dir, "a.png"), Color.Red);
+                File.WriteAllText(Path.Combine(dir, "manifest.json"),
+                    "{\"图标A\":{\"f1\":\"a.png\"}}");
+
+                using (var catalog = new LootIconCatalog(dir, maxCacheBytes: OneFrameBudget))
+                {
+                    LootIconCatalog.LootIconFrames frames;
+                    Assert.True(catalog.TryGet("图标A", out frames));
+                    Assert.Equal(LootIconCatalog.ThumbSize, frames.First.Width);
+
+                    Bitmap large = catalog.TryGetDetail("图标A", 192);
+                    Assert.NotNull(large);
+                    Assert.Equal(192, large.Width);
+                    Assert.Equal(192, large.Height);
+                    Assert.Same(large, catalog.TryGetDetail("图标A", 192));
+                    Assert.NotSame(large, catalog.TryGetDetail("图标A", 128));
+                    Color center = large.GetPixel(96, 96);
+                    Assert.True(center.R > 200 && center.G < 40 && center.B < 40);
+                }
+            }
+            finally
+            {
+                Directory.Delete(dir, true);
+            }
+        }
+
+        [Fact]
+        public void TryGetDetail_ClampsTinyRequestsToTheMinimumDetailSize()
+        {
+            string dir = Path.Combine(Path.GetTempPath(),
+                "cf7-looticon-detail-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            try
+            {
+                WritePng(Path.Combine(dir, "a.png"), Color.Blue);
+                File.WriteAllText(Path.Combine(dir, "manifest.json"),
+                    "{\"图标B\":{\"f1\":\"a.png\"}}");
+                using (var catalog = new LootIconCatalog(dir, maxCacheBytes: OneFrameBudget))
+                {
+                    Bitmap small = catalog.TryGetDetail("图标B", 8);
+                    Assert.NotNull(small);
+                    Assert.Equal(LootIconCatalog.DetailMinSize, small.Width);
+                }
+            }
+            finally
+            {
+                Directory.Delete(dir, true);
+            }
+        }
+
+        [Fact]
+        public void TryGetDetail_MissingIconReturnsNullWithoutPoisoningPlayback()
+        {
+            string dir = Path.Combine(Path.GetTempPath(),
+                "cf7-looticon-detail-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            try
+            {
+                File.WriteAllText(Path.Combine(dir, "manifest.json"), "{}");
+                using (var catalog = new LootIconCatalog(dir, maxCacheBytes: OneFrameBudget))
+                {
+                    Assert.Null(catalog.TryGetDetail("不存在", 192));
+                }
+            }
+            finally
+            {
+                Directory.Delete(dir, true);
+            }
+        }
+
         private static void WritePng(string path, Color color)
         {
             using (Bitmap bitmap = new Bitmap(16, 16, PixelFormat.Format32bppArgb))

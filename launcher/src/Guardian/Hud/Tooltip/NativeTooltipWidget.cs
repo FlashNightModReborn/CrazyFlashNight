@@ -155,6 +155,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             new Dictionary<string, Bitmap>(StringComparer.Ordinal);
         private readonly List<string> _iconScaledOrder = new List<string>();
         private const int IconScaledCap = 32;
+        private const int DetailIconMinPx = 96;
 
         // ---- 淡入淡出状态机（0=静止/完全不透明，1=淡入，2=淡出）----
         private int _fadePhase;
@@ -1037,6 +1038,20 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 return;
             }
 
+            // intro/pinned 大图标从原始素材按目标尺寸重采样，避免 64px 播放缩略图放大发糊。
+            if (rect.Width >= DetailIconMinPx)
+            {
+                Bitmap detail = warlordMark ? _icons.TryGetWarlordDetail(rect.Width)
+                    : aLegionMark ? _icons.TryGetALegionDetail(rect.Width)
+                    : npcPortrait ? _icons.TryGetNpcDetail(iconName, rect.Width)
+                    : _icons.TryGetDetail(iconName, rect.Width);
+                if (detail != null)
+                {
+                    DrawBitmapWithAlpha(g, detail, rect);
+                    return;
+                }
+            }
+
             string key = (warlordMark ? "warlord:" : aLegionMark ? "a-legion:"
                 : npcPortrait ? "npc:" : "item:") + iconName
                 + "|" + rect.Width + "x" + rect.Height;
@@ -1065,9 +1080,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     }
                 }
             }
+            DrawBitmapWithAlpha(g, scaled, rect);
+        }
+
+        private void DrawBitmapWithAlpha(Graphics g, Bitmap bitmap, Rectangle rect)
+        {
             if (_paintAlpha >= 0.999f)
             {
-                g.DrawImageUnscaled(scaled, rect.X, rect.Y);
+                g.DrawImageUnscaled(bitmap, rect.X, rect.Y);
                 return;
             }
             // 淡入淡出期间用 ColorMatrix 缩 alpha（缓存的位图保持原样不重算）
@@ -1077,9 +1097,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 ColorMatrix m = new ColorMatrix();
                 m.Matrix33 = a;
                 attr.SetColorMatrix(m, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                g.DrawImage(scaled,
-                    new Rectangle(rect.X, rect.Y, scaled.Width, scaled.Height),
-                    0, 0, scaled.Width, scaled.Height, GraphicsUnit.Pixel, attr);
+                g.DrawImage(bitmap,
+                    new Rectangle(rect.X, rect.Y, bitmap.Width, bitmap.Height),
+                    0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, attr);
             }
         }
 
