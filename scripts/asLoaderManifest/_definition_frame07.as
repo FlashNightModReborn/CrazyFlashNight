@@ -111,9 +111,6 @@ import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 // === staged 同步代码函数（仅定义，无内联调用；#include 编译期展开） ===
 if (_root.__boot == undefined) _root.__boot = {};
 // 基础运行时：作弊码 / eval / 通用工具 / 调试 / 随机 / 层级。
-_root.__boot.f37_4 = function() {
-    #include "../逻辑/装备函数/吉他喷火.as"
-};
 _root.__boot.f37_5 = function() {
     #include "../逻辑/装备函数/主唱光剑.as"
     #include "../逻辑/装备函数/火药燃气液压打桩机.as"
@@ -141,4 +138,24 @@ _root.__boot.f37_6 = function() {
     #include "../逻辑/装备函数/僵尸割草机.as"
     #include "../逻辑/装备函数/混凝土切割机.as"
     #include "../逻辑/装备函数/MACSIII.as"
+};
+_root.__boot.f37_7 = function() {
+    #include "../逻辑/装备函数/等离子切割机.as"
+    #include "../逻辑/装备函数/杀戮风暴.as"
+    #include "../逻辑/装备函数/Six12_Matryoshka.as"
+
+    #include "../逻辑/装备函数/P90.as"
+    #include "../逻辑/装备函数/AR57.as"
+
+    #include "../逻辑/装备函数/GM6_LYNX.as"
+
+    #include "../逻辑/装备函数/Mark3.as"
+    #include "../逻辑/装备函数/毒液蜘蛛侠.as"
+    #include "../逻辑/装备函数/贯空天盖手套.as"
+
+    #include "../逻辑/装备函数/喷气背包.as"
+
+    #include "../逻辑/装备函数/剑圣胸甲.as"
+    #include "../逻辑/装备函数/剑圣套装.as"
+    #include "../逻辑/装备函数/剑圣头部装甲.as"
 };

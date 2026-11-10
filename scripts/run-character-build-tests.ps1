@@ -26,6 +26,7 @@ $dressupInitializerSource = Get-RepoText `
     'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\DressupInitializer.as'
 $guitarSource = Get-RepoText 'scripts\逻辑\装备函数\吉他喷火.as'
 $deadHandSource = Get-RepoText 'scripts\逻辑\装备函数\死者之手.as'
+$deadHandSource += Get-RepoText 'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Dressup\EquipmentUtil\DeadHandController.as'
 $guitarActiveSource = $guitarSource.Split(
     @('===== 原始资产代码参考 ====='),
     [System.StringSplitOptions]::None

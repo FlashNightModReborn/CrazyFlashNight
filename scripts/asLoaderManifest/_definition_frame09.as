@@ -111,20 +111,6 @@ import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 // === staged 同步代码函数（仅定义，无内联调用；#include 编译期展开） ===
 if (_root.__boot == undefined) _root.__boot = {};
 // 基础运行时：作弊码 / eval / 通用工具 / 调试 / 随机 / 层级。
-_root.__boot.f39_1 = function() {
-    #include "../逻辑/关卡系统/关卡系统_fs_佣兵刷新系统.as"
-    #include "../逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as"
-    #include "../逻辑/关卡系统/关卡系统_lsy_场景转换.as"
-    #include "../逻辑/关卡系统/关卡系统_lsy_地图元件.as"
-};
-// 刷新、回调与场景限制。
-_root.__boot.f39_2 = function() {
-    #include "../逻辑/关卡系统/关卡系统_lsy_非人形佣兵刷新系统.as"
-    #include "../逻辑/关卡系统/关卡系统_lsy_无限过图.as"
-    #include "../逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as"
-    #include "../逻辑/关卡系统/关卡系统_lsy_后景.as"
-    #include "../逻辑/关卡系统/关卡系统_lsy_限制系统.as"
-};
 _root.__boot.f40 = function() {
     #include "../逻辑/战斗系统/战斗系统_aka_特殊闪避计算函数.as"
     #include "../逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as"
@@ -132,4 +118,35 @@ _root.__boot.f40 = function() {
     #include "../逻辑/战斗系统/战斗系统_fs_减伤系统.as"
     #include "../逻辑/战斗系统/战斗系统_fs_联弹管理.as"
     #include "../逻辑/战斗系统/战斗系统_lsy_消弹判定.as"
+};
+_root.__boot.f41_1 = function() {
+    #include "../展现/UI交互/UI交互_fs_按键设定.as"
+    #include "../展现/UI交互/UI交互_fs_个人信息.as"
+    #include "../展现/UI交互/UI交互_fs_玩家信息界面.as"
+    #include "../展现/UI交互/UI交互_fs_经济面板.as"
+    #include "../展现/UI交互/UI交互_lsy_UI管理.as"
+    #include "../展现/UI交互/UI交互_lsy_对话文本.as"
+    #include "../逻辑系统分区/商城系统_WebView.as"
+    #include "../逻辑系统分区/物品系统_WebView.as"
+    #include "../逻辑系统分区/技能系统_WebView.as"
+    #include "../逻辑系统分区/地图系统_WebView.as"
+    #include "../逻辑系统分区/选关系统_WebView.as"
+    #include "../逻辑系统分区/竞技场系统_WebView.as"
+    #include "../逻辑系统分区/战宠系统_WebView.as"
+    #include "../逻辑系统分区/佣兵系统_WebView.as"
+    #include "../逻辑系统分区/任务系统_WebView.as"
+    #include "../逻辑系统分区/经脉系统_WebView.as"
+    #include "../展现/UI交互/UI交互_lsy_鼠标代理.as"
+};
+_root.__boot.f41_2 = function() {
+    #include "../展现/UI交互/UI交互_lsy_物品栏UI.as"
+};
+_root.__boot.f41_3 = function() {
+};
+_root.__boot.f41_4 = function() {
+    #include "../展现/UI交互/UI交互_lsy_任务栏UI.as"
+    #include "../展现/UI交互/UI交互_lsy_对话框UI.as"
+    #include "../展现/UI交互/UI交互_鸡蛋_fs_aka_物品图标注释.as"
+    #include "../展现/UI交互/UI交互_无名氏_改造系统.as"
+    #include "../展现/UI交互/UI交互_aka_健身房训练.as"
 };

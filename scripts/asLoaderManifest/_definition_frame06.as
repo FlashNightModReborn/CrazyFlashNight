@@ -152,3 +152,6 @@ _root.__boot.f37_3 = function() {
 
     #include "../逻辑/装备函数/键盘镰刀.as"
 };
+_root.__boot.f37_4 = function() {
+    #include "../逻辑/装备函数/吉他喷火.as"
+};

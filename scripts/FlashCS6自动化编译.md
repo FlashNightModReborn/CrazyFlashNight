@@ -170,6 +170,8 @@ compile_test.ps1 / compile_test.sh
 
 接近 AS2 单分支 32K 上限的旧类在切换 XFL 后可能出现首次 ASO 编译失败、同目标再次编译通过。JSFL 只接受保守的一行一诊断格式：唯一最终汇总可解析、errors>0、warnings=0，且汇总前恰有同数量的非空诊断行、每行自身含 `32K`。只要混有语法/链接错误、多行上下文、汇总后文本或无法解析，就不重试。重试前的完整诊断会 trace 到 `compile_output.txt`，第二轮诊断才写入最终 `compiler_errors.txt`；第二轮仍失败则照常失败。focused runner 只接受唯一闭合 runId block，且健康基线必须 `32K retry=0`；自动恢复只能作为诊断证据，不能冒充健康通过。
 
+首轮 32K 诊断在进入重试前即保存到 `compile_output.txt`，无需等第二轮完成。第二轮 `publish/testMovie` 可能清空 Output 面板；最终副本会在缺失时补回标明首轮来源的诊断段，避免把实际重试漏计为零次。长耗时或原生崩溃时先读该文件定位首轮错误，不把 CPU 活跃视为构建进展，也不因已有 suite Complete 就忽略编译器诊断或重复 runId。
+
 ### 不正确表述
 
 - 只看到 `publish_done.marker` 就说 `已编译通过`

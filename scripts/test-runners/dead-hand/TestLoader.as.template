@@ -1,0 +1,5 @@
+﻿if (!_root.装备生命周期函数) _root.装备生命周期函数 = {};
+#include "逻辑/装备函数/死者之手.as"
+trace("FocusedTestRunId dead-hand Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandControllerTest.runAllTests();
+trace("FocusedTestRunId dead-hand Complete: __FOCUSED_RUN_ID__");

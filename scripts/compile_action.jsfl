@@ -329,9 +329,13 @@ function main() {
 	// 第二次仍失败也会原样保存并由 PowerShell fail-closed。
 	if (fl.compilerErrors) fl.compilerErrors.save(compilerErrorsLog);
 	var firstCompilerErrors = FLfile.exists(compilerErrorsLog) ? FLfile.read(compilerErrorsLog) : "";
+	var retryEvidence = "";
 	if (containsOnly32KCompilerErrors(firstCompilerErrors)) {
+		retryEvidence = "[compile] ASO 32K branch detected; retry same target once\n" +
+			"[compile] first 32K compiler diagnostics (preserved before retry):\n" + firstCompilerErrors;
 		fl.trace("[compile] ASO 32K branch detected; retry same target once");
 		fl.trace("[compile] first 32K compiler diagnostics (preserved before retry):\n" + firstCompilerErrors);
+		try { fl.outputPanel.save(outputLog); } catch (retryOutputError) {}
 		try {
 			if (fl.compilerErrors && fl.compilerErrors.clear) fl.compilerErrors.clear();
 		} catch (retryClearError) {
@@ -359,6 +363,13 @@ function main() {
 	}
 	fl.trace("[compile] done");
 	fl.outputPanel.save(outputLog);
+	// publish/testMovie may clear the Output panel; retain the actual first-pass
+	// diagnostics in the final file so consumers cannot mistake a retry for zero.
+	if (retryEvidence) {
+		var finalOutput = FLfile.exists(outputLog) ? FLfile.read(outputLog) : "";
+		if (finalOutput.indexOf("[compile] ASO 32K branch detected") < 0)
+			FLfile.write(outputLog, retryEvidence + "\n" + finalOutput);
+	}
 	FLfile.write(doneMarker, "ok");
 	compileRuntimeState.phase = "complete";
 	if (quitAfterPublish) {

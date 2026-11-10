@@ -111,26 +111,6 @@ import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 // === staged 同步代码函数（仅定义，无内联调用；#include 编译期展开） ===
 if (_root.__boot == undefined) _root.__boot = {};
 // 基础运行时：作弊码 / eval / 通用工具 / 调试 / 随机 / 层级。
-_root.__boot.f37_7 = function() {
-    #include "../逻辑/装备函数/等离子切割机.as"
-    #include "../逻辑/装备函数/杀戮风暴.as"
-    #include "../逻辑/装备函数/Six12_Matryoshka.as"
-
-    #include "../逻辑/装备函数/P90.as"
-    #include "../逻辑/装备函数/AR57.as"
-
-    #include "../逻辑/装备函数/GM6_LYNX.as"
-
-    #include "../逻辑/装备函数/Mark3.as"
-    #include "../逻辑/装备函数/毒液蜘蛛侠.as"
-    #include "../逻辑/装备函数/贯空天盖手套.as"
-
-    #include "../逻辑/装备函数/喷气背包.as"
-
-    #include "../逻辑/装备函数/剑圣胸甲.as"
-    #include "../逻辑/装备函数/剑圣套装.as"
-    #include "../逻辑/装备函数/剑圣头部装甲.as"
-};
 _root.__boot.f37_8 = function() {
     #include "../逻辑/装备函数/枪械射击动画.as"
     #include "../逻辑/装备函数/枪械激光瞄准.as"
@@ -152,3 +132,17 @@ _root.__boot.f38 = function() {
     #include "../逻辑/功能函数/功能函数_fs_修改器初始化.as"
 };
 // 关卡进入与场景建立。
+_root.__boot.f39_1 = function() {
+    #include "../逻辑/关卡系统/关卡系统_fs_佣兵刷新系统.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_场景转换.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_地图元件.as"
+};
+// 刷新、回调与场景限制。
+_root.__boot.f39_2 = function() {
+    #include "../逻辑/关卡系统/关卡系统_lsy_非人形佣兵刷新系统.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_无限过图.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_后景.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_限制系统.as"
+};

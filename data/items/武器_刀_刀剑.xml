@@ -905,16 +905,61 @@
       </data>
       <lifecycle>
         <attr_0>
-          <skillInteraction>independent</skillInteraction>
+          <skillInteraction>managed</skillInteraction>
           <init>
             <initRoutines>死者之手初始化</initRoutines>
             <initParam>
               <bullet>诛神闪电</bullet>
               <range>300</range>
               <power>445%</power>
-              <probability>3</probability>
+              <probability>35</probability>
+              <gunProbability>40</gunProbability>
               <threshold>120</threshold>
-              <output>20</output>
+              <output>15</output>
+              <overloadTriggerInterval>6</overloadTriggerInterval>
+              <overloadPowerMult>1.25</overloadPowerMult>
+              <overloadDurationFrames>450</overloadDurationFrames>
+              <overloadCooldown>10000</overloadCooldown>
+              <actionTypeBlunt>狂野</actionTypeBlunt>
+              <damageTypeBlunt>破击</damageTypeBlunt>
+              <magicTypeBlunt>冲</magicTypeBlunt>
+              <powerMultBlunt>1.15</powerMultBlunt>
+              <actionTypeSpear>长柄</actionTypeSpear>
+              <damageTypeSpear>魔法</damageTypeSpear>
+              <magicTypeSpear>电</magicTypeSpear>
+              <powerMultSpear>1.0</powerMultSpear>
+              <actionTypeScythe>镰刀</actionTypeScythe>
+              <damageTypeScythe>魔法</damageTypeScythe>
+              <magicTypeScythe>电</magicTypeScythe>
+              <powerMultScythe>1.05</powerMultScythe>
+              <gunRotation>-90</gunRotation>
+              <gunOffsetX>-113.6</gunOffsetX>
+              <gunOffsetY>36.25</gunOffsetY>
+              <muzzleX>6.5</muzzleX>
+              <muzzleY>330</muzzleY>
+              <gunPowerCoeff>0.65</gunPowerCoeff>
+              <gunCapacity>36</gunCapacity>
+              <gunInterval>135</gunInterval>
+              <gunVelocity>35</gunVelocity>
+              <gunBullet>能量普通子弹</gunBullet>
+              <gunMuzzle>能量枪火</gunMuzzle>
+              <gunBulletHit>能量火花</gunBulletHit>
+              <damageTypeGun>魔法</damageTypeGun>
+              <magicTypeGun>电</magicTypeGun>
+              <skill_1>
+                <skillname>瞬步斩</skillname>
+                <description>释放一阶段战技并展开制御板进入超载强化状态。</description>
+                <cd>1000</cd>
+                <mp>25</mp>
+                <skillLocked>true</skillLocked>
+              </skill_1>
+              <skill_2>
+                <skillname>凶斩</skillname>
+                <description>超载状态下释放二阶段终结战技，释放后强制结束超载并进入冷却。</description>
+                <cd>10000</cd>
+                <mp>40</mp>
+                <skillLocked>true</skillLocked>
+              </skill_2>
             </initParam>
           </init>
           <cycle>
@@ -937,7 +982,7 @@
         <marketPrice>195000</marketPrice>
         <status>unresolved</status>
         <inputDigest>fnv1a32:0de71321</inputDigest>
-        <sourceDigest>sha256:224775604c3af645c134212801b13921c602a90ab12fd2dcb490186859746eb1</sourceDigest>
+        <sourceDigest>sha256:a8dada20571cf06e2b25cf6677bddde435810e8ae6a763474f2a05af9ab0485b</sourceDigest>
         <auditRef>melee:死者之手</auditRef>
       </balance>
     </item>

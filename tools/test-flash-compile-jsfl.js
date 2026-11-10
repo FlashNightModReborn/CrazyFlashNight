@@ -65,13 +65,16 @@ function runHarness(options = {}) {
   const tested = [];
   const playerEvents = [];
   const quitCalls = [];
+  let compilerSaveCount = 0;
   const eventListeners = new Map();
 
   const document = {
     name: "asLoader.xfl",
     pathURI: canonicalTargetURI,
     publish() {
+      if (options.clearOutputOnPublish) traces.length = 0;
       published.push(this.name);
+      if (options.onPublish) options.onPublish(published.length, files, outputLog);
     },
     testMovie() {
       playerEvents.push("test");
@@ -107,7 +110,8 @@ function runHarness(options = {}) {
     compilerErrors: {
       clear() {},
       save(uri) {
-        files.set(uri, "0 errors, 0 warnings");
+        const diagnostics = options.compilerDiagnostics || ["0 errors, 0 warnings"];
+        files.set(uri, diagnostics[Math.min(compilerSaveCount++, diagnostics.length - 1)]);
       },
     },
     trace(message) {
@@ -362,3 +366,27 @@ function testFocusedConsumerExitKeepsOtherOperationsNarrow() {
 }
 testFocusedConsumerExitKeepsOtherOperationsNarrow();
 console.log("[OK] finite generated CF6 consumers may exit; inspection and foreign-document boundaries remain closed");
+
+function testFirst32KDiagnosticsAreSavedBeforeRetry() {
+  const first = "**Error** branch exceeds 32K range\n1 errors, 0 warnings";
+  let inspectedRetry = false;
+  const result = runHarness({
+    initialDocuments: false,
+    compilerDiagnostics: [first, "0 errors, 0 warnings"],
+    clearOutputOnPublish: true,
+    onPublish(count, files, outputLog) {
+      if (count === 2) {
+        assert.ok(files.get(outputLog).includes(first), "first diagnostics must reach disk before the slow retry");
+        inspectedRetry = true;
+      }
+    },
+  });
+  assert.equal(inspectedRetry, true);
+  assert.equal(result.published.length, 2);
+  assert.equal(result.files.get(result.compilerErrorsLog), "0 errors, 0 warnings");
+  assert.equal(result.files.get(result.doneMarker), "ok");
+  assert.ok(result.files.get(result.outputLog).includes(first), "first diagnostics must survive the second publish clearing Output");
+  assert.equal((result.files.get(result.outputLog).match(/ASO 32K branch detected/g) || []).length, 1);
+}
+testFirst32KDiagnosticsAreSavedBeforeRetry();
+console.log("[OK] first 32K diagnostics survive an in-progress retry");
