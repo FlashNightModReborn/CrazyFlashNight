@@ -55,10 +55,27 @@ _root.技能函数.搓招监控 = function(招式名:String, 触发码:Number):N
 	return 触发码;
 };
 
+// 裁判：被动技能的「启用」标记是否生效。
+// 技能面板停用会把技能表第 5 列写成 false，projectPassiveSkills 同步到 主角被动技能[k].启用；
+// 旧存档存在 1/"1"/"true" 等历史取值，统一按 SkillLoadoutService.parseLegacyBoolean 的已知取值归一。
+_root.技能函数.被动技能启用 = function(技能:Object):Boolean {
+	if(技能 == null) return false;
+	var v = 技能.启用;
+	if(v === true) return true;
+	if(v === false || v == undefined || v == null) return false;
+	if(typeof v == "number") return v == 1;
+	if(typeof v == "string") {
+		var s:String = String(v).toLowerCase();
+		return s == "true" || s == "1";
+	}
+	return false;
+};
+
 _root.技能函数.使用波动拳 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能["波动拳"];
-	if(!技能 || !技能.启用) return 0;
+	// 学习即释放、停用即失效：等级达到 1 且「启用」为真，不要求装备到技能栏（2026-11-10 用户要求）
+	if(!技能 || Number(技能.等级) < 1 || !_root.技能函数.被动技能启用(技能)) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "波动拳") {
@@ -80,7 +97,8 @@ _root.技能函数.使用波动拳 = function():Number {
 _root.技能函数.使用诛杀步 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能["诛杀步"];
-	if(!技能 || !技能.启用) return 0;
+	// 学习即释放、停用即失效：只看等级≥1 与「启用」标记，不要求装备到技能栏（2026-11-10 用户要求）
+	if(!技能 || Number(技能.等级) < 1 || !_root.技能函数.被动技能启用(技能)) return 0;
 
 	var 面右 = (自机.方向 == "右");
 	var 不按后 = 面右 ? !自机.左行 : !自机.右行;
@@ -110,7 +128,8 @@ _root.技能函数.使用诛杀步 = function():Number {
 _root.技能函数.使用后撤步 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能["后撤步"];
-	if(!技能 || !技能.启用) return 0;
+	// 学习即释放、停用即失效：只看等级≥1 与「启用」标记，不要求装备到技能栏（2026-11-10 用户要求）
+	if(!技能 || Number(技能.等级) < 1 || !_root.技能函数.被动技能启用(技能)) return 0;
 
 	var 面右 = (自机.方向 == "右");
 	var 不按前 = 面右 ? !自机.右行 : !自机.左行;
@@ -135,7 +154,8 @@ _root.技能函数.使用后撤步 = function():Number {
 _root.技能函数.使用燃烧指节 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能["燃烧指节"];
-	if(!技能 || !技能.启用) return 0;
+	// 学习即释放、停用即失效：只看等级≥1 与「启用」标记，不要求装备到技能栏（2026-11-10 用户要求）
+	if(!技能 || Number(技能.等级) < 1 || !_root.技能函数.被动技能启用(技能)) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "燃烧指节") {
@@ -158,7 +178,8 @@ _root.技能函数.使用能量喷泉 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能["能量喷泉"];
 	var 所需MP = 自机.mp满血值 * 0.1;
-	if(!技能 || !技能.启用 || 自机.mp < 所需MP) return 0;
+	// 学习即释放、停用即失效：只看等级≥1 与「启用」标记，不要求装备；耗蓝仍是释放成本（2026-11-10 用户要求）
+	if(!技能 || Number(技能.等级) < 1 || !_root.技能函数.被动技能启用(技能) || 自机.mp < 所需MP) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "能量喷泉") {
@@ -177,7 +198,8 @@ _root.技能函数.使用能量喷泉 = function():Number {
 _root.技能函数.使用连环踢 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能["连环踢"];
-	if(!技能 || !技能.启用) return 0;
+	// 学习即释放、停用即失效：只看等级≥1 与「启用」标记，不要求装备到技能栏（2026-11-10 用户要求）
+	if(!技能 || Number(技能.等级) < 1 || !_root.技能函数.被动技能启用(技能)) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "连环踢") {
@@ -197,7 +219,8 @@ _root.技能函数.使用连环踢 = function():Number {
 _root.技能函数.使用回旋踢 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能["回旋踢"];
-	if(!技能 || !技能.启用) return 0;
+	// 学习即释放、停用即失效：只看等级≥1 与「启用」标记，不要求装备到技能栏（2026-11-10 用户要求）
+	if(!技能 || Number(技能.等级) < 1 || !_root.技能函数.被动技能启用(技能)) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "回旋踢") {
