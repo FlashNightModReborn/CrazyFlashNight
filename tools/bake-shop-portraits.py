@@ -31,12 +31,15 @@ from PIL import Image, __version__ as PILLOW_VERSION
 SCHEMA = "cf7-shop-portraits-v1"
 PROVENANCE_SCHEMA = "cf7-shop-portrait-provenance-v1"
 RECEIPT_SCHEMA = "cf7-shop-portrait-promotion-receipt-v1"
-GENERATOR_VERSION = "1.1.2"
+GENERATOR_VERSION = "1.1.3"
 GEOMETRY = {"width": 256, "height": 256}
 PADDING = 16
-EXPECTED_LIST_COUNT = 51
-EXPECTED_ACTIVE_COUNT = 50
+EXPECTED_LIST_COUNT = 52
+EXPECTED_ACTIVE_COUNT = 51
 EXCLUDED_SHOPS = {"幸存老兵-暂时停用"}
+# This newly opened shop already has an exact Flash dialogue portrait, but is
+# not yet in the Web dialogue manifest. Bind its real source without aliasing.
+EXTERNAL_SHOP_PORTRAITS = {"弹古": "flashswf/portraits/弹古.swf"}
 # Same character, separate inventory authority. Keep both exact runtime shopIds;
 # only these declared identities may share the existing portrait pixels.
 SHARED_SHOP_PORTRAITS = {
@@ -686,6 +689,10 @@ def build_stage(
         if shop_id == HEEHO:
             source_choices[shop_id] = {"kind": "heeho"}
             continue
+        if shop_id in EXTERNAL_SHOP_PORTRAITS:
+            source_choices[shop_id] = {"kind": "external", "path": EXTERNAL_SHOP_PORTRAITS[shop_id]}
+            external_ids.append(shop_id)
+            continue
         entry = dialogue_entries.get(shop_id)
         if shop_id == WEAPON_MASTER:
             expression = (
@@ -717,7 +724,7 @@ def build_stage(
             external_ids.append(shop_id)
         else:
             raise BakeError(f"Unsupported dialogue source for shop {shop_id}: {kind!r}")
-    if len(internal_ids) != 2 or len(external_ids) != 35:
+    if len(internal_ids) != 2 or len(external_ids) != 36:
         raise BakeError(f"Shop source partition drift: internal={len(internal_ids)} external={len(external_ids)}")
 
     internal_images, internal_evidence = build_internal_sources(
@@ -800,7 +807,7 @@ def build_stage(
         "activeShopSource": active_source,
         "dialogueManifest": artifact(dialogue_manifest_path, root),
         "sourcePartition": {
-            "externalDialogue": 35, "internalDialogue": 2, "exactXflSwfPilot": 1,
+            "externalDialogue": 36, "internalDialogue": 2, "exactXflSwfPilot": 1,
             "sharedShopPortrait": len(SHARED_SHOP_PORTRAITS),
         },
         "sources": provenance_sources,

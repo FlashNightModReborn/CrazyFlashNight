@@ -1235,8 +1235,8 @@ Arena 每档须通过当前 `qa-suite.js` 派生的全部案例，完整 2 列�
 
 **材料档案来源头像门**：触及材料 enemy/shop 头像、`ShopPortraits`、Crafting lazy closure 或 shop portrait manifest 时，固定运行 `node tools/test-portrait-resolver-runtime.js`（10/10）、`node tools/test-shop-portrait-resolver-runtime.js`（12/12：exact schema/Identity(80)、无 trim/case/alias、退避上限、固定 no-alt 占位、解码失败、
 request-token/disconnected stale fence）、`node tools/test-inventory-workbench-lazy-closure.js`（文本 25/25，待核）、`python tools/test-material-enemy-portrait-coverage.py` 与 `python tools/test-shop-portrait-assets.py`。
-前者每轮从 `data/items + data/enemy_properties` 动态派生材料敌人集合（文本记录当时为 78/78 ready / 210 个材料掉落 occurrence / 156 个 exact SVG+PNG 绑定；该门不硬编码总数，以动态派生为准），不得把 manifest 反向变成运行时发现来源；后者固定 active shop exact-set（文本 34/34，待核）并校验内容寻址 PNG、hash、256×256、非空 alpha bounds 与 provenance。
-修改 baker/Flash source/subjects/manifest 时再追加完整 `python tools/bake-shop-portraits.py --check`；日常 release policy 只接快速资产闭包门。上述静态/Node 门不代签真实 WebView2→Flash、游戏内发现制、视觉效果或部署。
+前者每轮从 `data/items + data/enemy_properties` 动态派生材料敌人集合（文本记录当时为 78/78 ready / 210 个材料掉落 occurrence / 156 个 exact SVG+PNG 绑定；该门不硬编码总数，以动态派生为准），不得把 manifest 反向变成运行时发现来源；后者固定 active shop exact-set，并校验内容寻址 PNG、hash、256×256、非空 alpha bounds 与 provenance。新增商店须同步补齐头像闭包；弹古绑定自身 `flashswf/portraits/弹古.swf` 的普通表情，不借用其他商店头像。
+修改 baker/Flash source/subjects/manifest 时再追加完整 `python tools/bake-shop-portraits.py --supersample 1 --check`（沿用该组已发布头像的 1 倍参数）；日常 release policy 只接快速资产闭包门。上述静态/Node 门不代签真实 WebView2→Flash、游戏内发现制、视觉效果或部署。
 
 ### 头像 P1 / P2 / P3 工具链
 

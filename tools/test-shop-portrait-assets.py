@@ -28,9 +28,9 @@ MANIFEST_SCHEMA = "cf7-shop-portraits-v1"
 PROVENANCE_SCHEMA = "cf7-shop-portrait-provenance-v1"
 RECEIPT_SCHEMA = "cf7-shop-portrait-promotion-receipt-v1"
 GEOMETRY = {"width": 256, "height": 256}
-EXPECTED_LIST_COUNT = 51
-EXPECTED_ACTIVE_COUNT = 50
-EXPECTED_SUBJECT_COUNT = 38
+EXPECTED_LIST_COUNT = 52
+EXPECTED_ACTIVE_COUNT = 51
+EXPECTED_SUBJECT_COUNT = 39
 EXCLUDED_SHOP = "幸存老兵-暂时停用"
 SHARED_SHOP_PORTRAITS = {
     "书中-迷之盔甲君": "迷之盔甲君",
@@ -251,9 +251,9 @@ def validate_manifest(active: list[str]) -> tuple[dict[str, dict[str, Any]], int
 def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -> dict[str, Any]:
     provenance = read_json(PROVENANCE_PATH, "ShopPortraits provenance")
     require(provenance.get("schema") == PROVENANCE_SCHEMA, "Provenance schema drift")
-    require(provenance.get("generatorVersion") == "1.1.2", "Generator version drift")
+    require(provenance.get("generatorVersion") == "1.1.3", "Generator version drift")
     require(provenance.get("geometry") == {**GEOMETRY, "padding": 16, "fit": "alpha-bounds-contain-center"}, "Provenance geometry drift")
-    require(provenance.get("sourcePartition") == {"externalDialogue": 35, "internalDialogue": 2, "exactXflSwfPilot": 1, "sharedShopPortrait": len(SHARED_SHOP_PORTRAITS)}, "Source partition drift")
+    require(provenance.get("sourcePartition") == {"externalDialogue": 36, "internalDialogue": 2, "exactXflSwfPilot": 1, "sharedShopPortrait": len(SHARED_SHOP_PORTRAITS)}, "Source partition drift")
     require(provenance.get("dialogueManifest", {}).get("path") == "launcher/web/assets/dialogue-portraits/manifest.json", "Dialogue manifest provenance drift")
 
     toolchain = provenance.get("toolchain")
@@ -284,7 +284,12 @@ def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -
             require(source_id is not None and source.get("sourceShopId") == source_id, f"Undeclared shared shop source: {shop_id}")
             original = sources.get(source_id, {})
             require(original.get("kind") != kind and source.get("extractedPngSha256") == original.get("extractedPngSha256"), f"Shared shop source pixels drift: {shop_id}")
-    require(kinds == {"external-dialogue-swf": 35, "dialogue-ui-linkage": 2, "exact-xfl-swf-pilot": 1, "shared-shop-portrait": len(SHARED_SHOP_PORTRAITS)}, f"Source-kind count drift: {kinds}")
+    require(kinds == {"external-dialogue-swf": 36, "dialogue-ui-linkage": 2, "exact-xfl-swf-pilot": 1, "shared-shop-portrait": len(SHARED_SHOP_PORTRAITS)}, f"Source-kind count drift: {kinds}")
+    dangu = sources.get("弹古", {})
+    require(dangu.get("kind") == "external-dialogue-swf"
+            and dangu.get("sourceSwf", {}).get("path") == "flashswf/portraits/弹古.swf"
+            and dangu.get("expression") == "普通",
+            "弹古 must use its exact Flash portrait and default expression")
 
     weapon = sources.get("武器大师", {})
     require(

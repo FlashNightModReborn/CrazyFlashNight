@@ -163,7 +163,7 @@
           "isHostile": true,
           "minLevel": 1,
           "maxLevel": 40,
-          "weight": 313
+          "weight": 298
         },
         {
           "type": "兵种6",
@@ -172,7 +172,7 @@
           "isHostile": true,
           "minLevel": 1,
           "maxLevel": 40,
-          "weight": 279
+          "weight": 264
         },
         {
           "type": "兵种8",
@@ -181,7 +181,7 @@
           "isHostile": true,
           "minLevel": 2,
           "maxLevel": 40,
-          "weight": 273
+          "weight": 258
         },
         {
           "type": "兵种2",
@@ -190,7 +190,7 @@
           "isHostile": true,
           "minLevel": 2,
           "maxLevel": 40,
-          "weight": 214
+          "weight": 199
         },
         {
           "type": "兵种4",
@@ -199,16 +199,16 @@
           "isHostile": true,
           "minLevel": 1,
           "maxLevel": 40,
-          "weight": 207
+          "weight": 192
         },
         {
-          "type": "兵种1",
-          "name": "僵尸",
-          "spritename": "敌人-金发女僵尸1",
+          "type": "兵种7",
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
           "isHostile": true,
           "minLevel": 2,
           "maxLevel": 40,
-          "weight": 148
+          "weight": 157
         },
         {
           "type": "兵种5",
@@ -220,13 +220,31 @@
           "weight": 137
         },
         {
-          "type": "兵种7",
-          "name": "狂暴僵尸",
-          "spritename": "敌人-帽子瘦僵尸1",
+          "type": "兵种1",
+          "name": "僵尸",
+          "spritename": "敌人-金发女僵尸1",
           "isHostile": true,
           "minLevel": 2,
           "maxLevel": 40,
-          "weight": 127
+          "weight": 133
+        },
+        {
+          "type": "兵种39",
+          "name": "狂躁僵尸",
+          "spritename": "敌人-士兵奔跑僵尸1",
+          "isHostile": true,
+          "minLevel": 18,
+          "maxLevel": 29,
+          "weight": 129
+        },
+        {
+          "type": "兵种9",
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 40,
+          "weight": 111
         },
         {
           "type": "兵种401",
@@ -254,15 +272,6 @@
           "minLevel": 40,
           "maxLevel": 60,
           "weight": 103
-        },
-        {
-          "type": "兵种39",
-          "name": "狂躁僵尸",
-          "spritename": "敌人-士兵奔跑僵尸1",
-          "isHostile": true,
-          "minLevel": 18,
-          "maxLevel": 29,
-          "weight": 99
         },
         {
           "type": "兵种400",
@@ -299,15 +308,6 @@
           "minLevel": 40,
           "maxLevel": 54,
           "weight": 83
-        },
-        {
-          "type": "兵种9",
-          "name": "兽化僵尸",
-          "spritename": "敌人-兽化僵尸1",
-          "isHostile": true,
-          "minLevel": 20,
-          "maxLevel": 40,
-          "weight": 81
         },
         {
           "type": "兵种83",
@@ -36902,7 +36902,7 @@
           "name": "僵尸",
           "spritename": "敌人-光头军人僵尸1",
           "level": 22,
-          "count": 120,
+          "count": 105,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -36913,7 +36913,7 @@
           "name": "僵尸",
           "spritename": "敌人-眼镜僵尸1",
           "level": 22,
-          "count": 120,
+          "count": 105,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -36924,7 +36924,7 @@
           "name": "僵尸",
           "spritename": "敌人-金发女僵尸1",
           "level": 23,
-          "count": 120,
+          "count": 105,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -36935,7 +36935,7 @@
           "name": "僵尸",
           "spritename": "敌人-小儿麻痹僵尸1",
           "level": 23,
-          "count": 120,
+          "count": 105,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -36946,7 +36946,7 @@
           "name": "僵尸",
           "spritename": "敌人-金发红衣服女僵尸1",
           "level": 22,
-          "count": 120,
+          "count": 105,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -36957,7 +36957,40 @@
           "name": "僵尸",
           "spritename": "敌人-黄色衣服男僵尸1",
           "level": 22,
-          "count": 120,
+          "count": 105,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种7",
+          "id": 7,
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "level": 23,
+          "count": 30,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种39",
+          "id": 39,
+          "name": "狂躁僵尸",
+          "spritename": "敌人-士兵奔跑僵尸1",
+          "level": 23,
+          "count": 30,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种9",
+          "id": 9,
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "level": 24,
+          "count": 30,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -37008,11 +37041,11 @@
         }
       ],
       "unitCount": 745,
-      "distinctTypes": 10,
-      "avgLevel": 22.4,
+      "distinctTypes": 13,
+      "avgLevel": 22.5,
       "levelMin": 22,
       "levelMax": 24,
-      "powerRating": 16680
+      "powerRating": 16770
     },
     {
       "id": "副本任务/新人救援.xml#4.0",
