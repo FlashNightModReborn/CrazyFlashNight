@@ -1182,6 +1182,33 @@
                         <SpawnIndex>5</SpawnIndex>
                     </Enemy>
                     <Enemy>
+                        <Type>僵尸.狂暴</Type>
+                        <IsHostile>true</IsHostile>
+                        <Level>23</Level>
+                        <Quantity>30</Quantity>
+                        <Interval>1500</Interval>
+                        <Delay>2500</Delay>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>僵尸.狂躁</Type>
+                        <IsHostile>true</IsHostile>
+                        <Level>23</Level>
+                        <Quantity>30</Quantity>
+                        <Interval>1500</Interval>
+                        <Delay>4500</Delay>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>僵尸.兽化.着衣</Type>
+                        <IsHostile>true</IsHostile>
+                        <Level>24</Level>
+                        <Quantity>30</Quantity>
+                        <Interval>2000</Interval>
+                        <Delay>7000</Delay>
+                        <SpawnIndex>4</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
                         <Type>僵尸.胖子</Type>
                         <IsHostile>true</IsHostile>
                         <Level>24</Level>
