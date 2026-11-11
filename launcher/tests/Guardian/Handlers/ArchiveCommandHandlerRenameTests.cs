@@ -29,6 +29,28 @@ namespace CF7Launcher.Tests.Guardian.Handlers
         }
 
         [Fact]
+        public void SlotReplyKeepsRequestIdentityOnErrorsAndRejectsAnotherSlotsData()
+        {
+            var request = new JObject { ["slot"] = "slot_b", ["requestId"] = 17 };
+            var error = BootstrapCommandHelpers.BuildSlotReply(request, "load_resp",
+                new JObject { ["success"] = false, ["error"] = "slot_tombstoned" });
+            Assert.Equal(17, (int)error["requestId"]);
+            Assert.Equal("slot_b", (string)error["slot"]);
+            Assert.Equal("slot_tombstoned", (string)error["error"]);
+
+            var result = new JObject { ["success"] = true, ["slot"] = "slot_a", ["data"] = "wrong" };
+            var wrong = BootstrapCommandHelpers.BuildSlotReply(request, "load_resp", result);
+            Assert.False((bool)wrong["ok"]);
+            Assert.Null(wrong["data"]);
+            result["slot"] = "slot_b";
+            result["warning"] = "shadow_cleanup_pending";
+            var deletion = BootstrapCommandHelpers.BuildSlotReply(request, "delete_resp", result);
+            Assert.True((bool)deletion["ok"]);
+            Assert.Equal("shadow_cleanup_pending", (string)deletion["warning"]);
+            Assert.Equal(17, (int)deletion["requestId"]);
+        }
+
+        [Fact]
         public void RenameSlot_WritesOnlyAtomicDisplayMetadataAndReturnsNormalizedName()
         {
             const string slotKey = "slot_rename";

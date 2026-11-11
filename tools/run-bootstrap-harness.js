@@ -230,12 +230,14 @@ async function main() {
         await page.goto('http://127.0.0.1:' + port + '/bootstrap.html', { waitUntil: 'load' });
 
         await check('host-list-response', async () => {
-            await page.waitForFunction(() => document.querySelectorAll('#cards .card').length === 1, null, { timeout: 10000 });
+            await page.waitForFunction(() => window.__bootstrapHarnessEvents.some(event => event.direction === 'in' && event.cmd === 'list_resp')
+                && document.querySelectorAll('#cards .save-row').length === 0
+                && document.getElementById('save-empty').textContent.includes('暂无存档'), null, { timeout: 10000 });
             const events = await page.evaluate(() => window.__bootstrapHarnessEvents.slice());
             if (!events.some(event => event.direction === 'in' && event.cmd === 'list_resp')) {
                 throw new Error('host list_resp was not delivered');
             }
-            return 'one identity-free new-save card rendered from a zero-delay empty host response';
+            return 'empty Host list displays an empty state and allocates zero list rows';
         });
 
         await check('pm19-late-subscription-replay', async () => {
@@ -532,11 +534,14 @@ async function main() {
             await button.evaluate(element => element.blur());
             if (await page.locator('.boot-tooltip.on').count() !== 0) throw new Error('blur did not hide tooltip');
             await page.locator('#btn-switch-slot').click();
-            const cardButton = page.locator('#cards .btn-newchar').first();
+            await page.evaluate(() => window.__bootstrapHarnessEmit({
+                cmd:'list_resp', slots:[{slot:'tooltip-slot', characterName:'提示样本'}]
+            }));
+            const cardButton = page.locator('#save-actions .btn-start');
             await cardButton.focus();
             await page.waitForTimeout(380);
             const delegatedText = (await page.locator('.boot-tooltip.on').textContent()) || '';
-            if (!delegatedText.includes('自动分配槽位')) throw new Error('delegated focus tooltip did not appear');
+            if (!delegatedText.includes('设为启动存档')) throw new Error('delegated focus tooltip did not appear');
             const delegatedBy = await cardButton.getAttribute('aria-describedby');
             if (!delegatedBy || !delegatedBy.split(/\s+/).includes('boot-tooltip-layer')) {
                 throw new Error('delegated focused trigger is not associated with tooltip');
@@ -554,7 +559,7 @@ async function main() {
             const modalSemantics = await page.evaluate(() => {
                 const content = document.getElementById('modal-content');
                 const labelledBy = content.getAttribute('aria-labelledby');
-                const background = Array.from(document.querySelectorAll('.topbar, .view, .bottom, #log'));
+                const background = Array.from(document.querySelectorAll('body > .topbar, body > .view, body > .bottom, #log'));
                 const rect = content.getBoundingClientRect();
                 const style = getComputedStyle(content);
                 return {
@@ -822,7 +827,7 @@ async function main() {
             await page.locator('#modal-host').waitFor({ state:'hidden' });
             const restored = await page.evaluate(() => ({
                 focusId:document.activeElement && document.activeElement.id,
-                backgroundClear:Array.from(document.querySelectorAll('.topbar, .view, .bottom, #log'))
+                backgroundClear:Array.from(document.querySelectorAll('body > .topbar, body > .view, body > .bottom, #log'))
                     .every(node => !node.inert && node.getAttribute('aria-hidden') !== 'true')
             }));
             if (restored.focusId !== 'btn-about' || !restored.backgroundClear) {
@@ -857,14 +862,6 @@ async function main() {
                 if (host && host.style.display !== 'none') window.BootstrapApp.tryCloseModal();
             });
             await page.evaluate(() => {
-                window.__bootstrapHarnessAlerts = [];
-                window.__bootstrapHarnessPromptDefaults = [];
-                window.__bootstrapHarnessPromptValue = null;
-                window.alert = message => window.__bootstrapHarnessAlerts.push(String(message));
-                window.prompt = (message, defaultValue) => {
-                    window.__bootstrapHarnessPromptDefaults.push(String(defaultValue));
-                    return window.__bootstrapHarnessPromptValue;
-                };
                 window.__bootstrapHarnessEmit({
                     cmd: 'list_resp',
                     slots: [
@@ -877,133 +874,297 @@ async function main() {
                 });
             });
             await page.locator('#btn-switch-slot').click();
-            await page.waitForFunction(() => document.querySelectorAll('#cards .btn-rename').length === 5);
-            if (await page.locator('#cards .empty-slot .btn-rename').count()) {
-                throw new Error('identity-free new-save card exposed rename');
-            }
-            for (const selector of ['.corrupt', '.tombstoned', '.inconsistent']) {
-                if (await page.locator('#cards ' + selector + ' .btn-rename').count() !== 1) {
-                    throw new Error(selector + ' card did not expose exactly one rename action');
+            const rows = page.locator('#cards .save-row');
+            const rename = page.locator('#save-actions .btn-rename');
+            if (await rows.count() !== 3) throw new Error('expected two healthy rows and one corrupt row');
+            await page.locator('#save-deleted').click();
+            if (await rows.count() !== 2) throw new Error('expected a tombstone and an inconsistent slot');
+            for (const key of ['slot_tombstone','slot_inconsistent']) {
+                await page.locator('#cards').locator('[data-slot="' + key + '"]').click();
+                if (!await rename.isVisible() || await page.locator('.btn-start').isVisible()) {
+                    throw new Error('incorrect actions for ' + key);
                 }
             }
-
-            const healthyCard = page.locator('#cards .card').filter({ has:page.locator('.btn-start') }).first();
-            const healthyNames = await healthyCard.evaluate(card => ({
-                title:card.querySelector('.slot').textContent,
-                secondary:card.querySelector('.progress').textContent
-            }));
-            if (healthyNames.title !== '阿一' || !healthyNames.secondary.includes('存档名 · 健康档')) {
-                throw new Error('save card did not prioritize characterName over displayName: '
-                    + JSON.stringify(healthyNames));
+            await page.locator('#save-live').click();
+            await page.locator('#cards').locator('[data-slot="slot_corrupt"]').click();
+            if (!await rename.isVisible() || await page.locator('.btn-start').isVisible()) throw new Error('incorrect corrupt-slot actions');
+            await page.locator('#cards').locator('[data-slot="crazyflasher7_saves"]').click();
+            if (await page.locator('#save-title').textContent() !== '阿一'
+                    || await page.locator('.save-row[aria-pressed="true"] .save-alias').textContent() !== '健康档') {
+                throw new Error('character and display names must be distinguishable');
             }
 
-            const renameButton = page.locator('#cards .card').filter({ hasText: '健康档' }).locator('.btn-rename');
-            const outboundRenameCount = () => page.evaluate(() => window.__bootstrapHarnessEvents
-                .filter(event => event.direction === 'out' && event.cmd === 'rename_slot').length);
-            const beforeInvalid = await outboundRenameCount();
-            // 无效名两次点击：各弹一次终端风 alert modal（原生 alert 已迁移到 confirm-dialog 模块），
-            // 必须读文本并关闭后才能继续点击 inert 背景里的卡片按钮。
-            const expectAlertModal = async (fragment, label) => {
-                await page.waitForFunction(() => {
-                    const host = document.getElementById('modal-host');
-                    return host && host.style.display !== 'none';
-                });
-                const text = await page.evaluate(() => document.getElementById('modal-content').textContent);
-                if (!text.includes(fragment)) {
-                    throw new Error(label + ' alert modal missing expected copy: ' + text);
-                }
-                await page.evaluate(() => window.BootstrapApp.tryCloseModal());
-                await page.waitForFunction(() => document.getElementById('modal-host').style.display === 'none');
-                return text;
+            const outbound = cmd => page.evaluate(command => window.__bootstrapHarnessEvents
+                .filter(event => event.direction === 'out' && event.cmd === command).map(event => event.payload), cmd);
+            const enterName = async value => {
+                await rename.click();
+                const field = page.locator('#confirm-field');
+                if (await field.inputValue() !== '健康档') throw new Error('rename prefill did not match this slot');
+                await field.fill(value);
+                await field.press('Enter');
             };
-            const invalidAlerts = [];
-            await page.evaluate(() => { window.__bootstrapHarnessPromptValue = '坏\u0001名字'; });
-            await renameButton.click();
-            invalidAlerts.push(await expectAlertModal('显示名无效', 'control-character name'));
-            await page.evaluate(() => { window.__bootstrapHarnessPromptValue = '界'.repeat(33); });
-            await renameButton.click();
-            invalidAlerts.push(await expectAlertModal('显示名无效', '33-grapheme name'));
-            if (await outboundRenameCount() !== beforeInvalid) {
-                throw new Error('control-character or 33-grapheme name reached Host');
+            const dismiss = async fragment => {
+                const message = page.locator('#confirm-dialog-message');
+                await message.filter({hasText:fragment}).waitFor();
+                await page.locator('#confirm-dialog-ok').click();
+            };
+            const reject = async reason => {
+                await page.evaluate(error => window.__bootstrapHarnessEmit({
+                    cmd:'rename_slot_resp', ok:false, slotKey:'crazyflasher7_saves', error
+                }), reason);
+                await dismiss(reason);
+            };
+            const before = (await outbound('rename_slot')).length;
+            for (const name of ['坏\u0001名字', '界'.repeat(33)]) {
+                await enterName(name);
+                await dismiss('1–32');
             }
-
+            if ((await outbound('rename_slot')).length !== before) throw new Error('invalid rename reached Host');
             const emojiName = 'é'.repeat(31) + '👩‍🚀';
-            await page.evaluate(value => { window.__bootstrapHarnessPromptValue = value; }, emojiName);
-            const promptCountBeforeEmoji = await page.evaluate(() => window.__bootstrapHarnessPromptDefaults.length);
-            await renameButton.evaluate(button => { button.click(); button.click(); });
-            let renameEvents = await page.evaluate(() => window.__bootstrapHarnessEvents
-                .filter(event => event.direction === 'out' && event.cmd === 'rename_slot'));
-            if (renameEvents.length !== beforeInvalid + 1
-                    || renameEvents.at(-1).payload.slotKey !== 'crazyflasher7_saves'
-                    || renameEvents.at(-1).payload.displayName !== emojiName) {
-                throw new Error('valid 32-grapheme emoji rename was not sent exactly once');
+            await enterName(emojiName);
+            await rename.evaluate(button => button.click());
+            const emojiWrites = await outbound('rename_slot');
+            if (!await rename.isDisabled() || emojiWrites.length !== before + 1
+                    || emojiWrites.at(-1).slotKey !== 'crazyflasher7_saves' || emojiWrites.at(-1).displayName !== emojiName) {
+                throw new Error('32-grapheme name must dispatch once with the original physical key');
             }
-            const promptCountAfterEmoji = await page.evaluate(() => window.__bootstrapHarnessPromptDefaults.length);
-            if (promptCountAfterEmoji !== promptCountBeforeEmoji + 1) {
-                throw new Error('double activation opened more than one rename prompt');
-            }
-            const listBeforeFailure = await page.evaluate(() => window.__bootstrapHarnessEvents
-                .filter(event => event.direction === 'out' && event.cmd === 'list').length);
+            const lists = (await outbound('list')).length;
+            await reject('harness reject');
+            if ((await outbound('list')).length !== lists) throw new Error('failed rename triggered list refresh');
+            await enterName('重复名');
+            if ((await outbound('rename_slot')).at(-1).displayName !== '重复名') throw new Error('duplicate names should be accepted');
+            await reject('duplicate probe complete');
+            await enterName('   ');
+            if ((await outbound('rename_slot')).at(-1).displayName !== '') throw new Error('blank should restore follow-character behavior');
             await page.evaluate(() => window.__bootstrapHarnessEmit({
-                cmd:'rename_slot_resp', ok:false, slotKey:'crazyflasher7_saves', error:'harness reject'
+                cmd:'rename_slot_resp', ok:true, slotKey:'crazyflasher7_saves', displayName:null, followsCharacterName:true
             }));
-            await expectAlertModal('harness reject', 'rename failure');
-            const listAfterFailure = await page.evaluate(() => window.__bootstrapHarnessEvents
-                .filter(event => event.direction === 'out' && event.cmd === 'list').length);
-            if (listAfterFailure !== listBeforeFailure) throw new Error('failed rename triggered an optimistic list refresh');
-
-            await page.evaluate(() => { window.__bootstrapHarnessPromptValue = '  重复名  '; });
-            await renameButton.click();
-            renameEvents = await page.evaluate(() => window.__bootstrapHarnessEvents
-                .filter(event => event.direction === 'out' && event.cmd === 'rename_slot'));
-            if (renameEvents.length !== beforeInvalid + 2 || renameEvents.at(-1).payload.displayName !== '重复名') {
-                throw new Error('duplicate display name was rejected or was not trimmed');
-            }
-            await page.evaluate(() => window.__bootstrapHarnessEmit({
-                cmd:'rename_slot_resp', ok:false, slotKey:'crazyflasher7_saves', error:'harness duplicate probe complete'
-            }));
-            await expectAlertModal('harness duplicate probe complete', 'duplicate rename failure');
-
-            await page.evaluate(() => { window.__bootstrapHarnessPromptValue = '   '; });
-            await renameButton.click();
-            renameEvents = await page.evaluate(() => window.__bootstrapHarnessEvents
-                .filter(event => event.direction === 'out' && event.cmd === 'rename_slot'));
-            if (renameEvents.length !== beforeInvalid + 3 || renameEvents.at(-1).payload.displayName !== '') {
-                throw new Error('clearing the display name did not request restore-follow semantics');
-            }
-            const listBeforeSuccess = await page.evaluate(() => window.__bootstrapHarnessEvents
-                .filter(event => event.direction === 'out' && event.cmd === 'list').length);
-            await page.evaluate(() => window.__bootstrapHarnessEmit({
-                cmd:'rename_slot_resp', ok:true, slotKey:'crazyflasher7_saves',
-                displayName:null, followsCharacterName:true
-            }));
-            await page.waitForFunction(expected => window.__bootstrapHarnessEvents
-                .filter(event => event.direction === 'out' && event.cmd === 'list').length === expected + 1,
-                listBeforeSuccess);
-            await page.waitForFunction(() => document.querySelectorAll('#cards .card').length === 1
-                && document.querySelector('#cards .card').classList.contains('empty-slot'));
-            const evidence = await page.evaluate(() => ({
-                defaults:window.__bootstrapHarnessPromptDefaults.slice()
-            }));
-            if (!evidence.defaults.length || evidence.defaults[0] !== '健康档') {
-                throw new Error('rename prompt did not default to the current displayName');
-            }
-            if (invalidAlerts.length !== 2) {
-                throw new Error('invalid rename values did not each present a terminal-style alert modal');
-            }
+            await page.waitForFunction(() => document.querySelectorAll('#cards .save-row').length === 0);
+            if ((await outbound('list')).length !== lists + 1) throw new Error('success should refresh exactly once');
             await page.locator('#btn-back-welcome').click();
-            return 'rename covers invalid/emoji/duplicate values and empty restore-follow; Host response alone controls refresh';
+            return 'live, corrupt and deleted detail actions, exact keys and Host-controlled refresh; invalid, emoji, duplicate and blank display names';
+        });
+
+        await check('archive-delete-and-import', async () => {
+            const live = {slot:'Field_Beta', characterName:'乙'};
+            const old = {slot:'legacy_test', characterName:'旧角色'};
+            const list = slots => page.evaluate(rows => window.__bootstrapHarnessEmit({
+                cmd:'list_resp', lastPlayedSlot:'LEGACY_TEST', slots:rows
+            }), slots);
+            const emit = msg => page.evaluate(value => window.__bootstrapHarnessEmit(value), msg);
+            const outgoing = cmd => page.evaluate(command => window.__bootstrapHarnessEvents.filter(
+                event => event.direction === 'out' && event.cmd === command).map(event => event.payload), cmd);
+            await list([live,old]);
+            if (await page.locator('#welcome-slot-name').textContent() !== '旧角色') throw new Error('case-varied last played key selected a different file');
+            await page.locator('#btn-switch-slot').click();
+            const oldRow = page.locator('.save-row[data-slot="legacy_test"]');
+            await oldRow.click();
+            const before = (await outgoing('delete')).length;
+            await page.locator('.btn-delete').click();
+            await page.locator('#confirm-dialog-cancel').click();
+            if ((await outgoing('delete')).length !== before) throw new Error('cancel sent a delete');
+            await page.locator('.btn-delete').click();
+            await page.locator('#confirm-dialog-ok').click();
+            if ((await outgoing('delete')).at(-1).slot !== old.slot) throw new Error('delete lost the selected physical key');
+            await emit({cmd:'delete_resp',ok:true,slot:live.slot});
+            if (!await oldRow.isVisible() || !await page.locator('.btn-delete').isDisabled()) throw new Error('wrong receipt applied to old row');
+            await emit({cmd:'delete_resp',ok:true,slot:old.slot});
+            await page.waitForFunction(() => document.querySelectorAll('.save-row').length === 0);
+            await list([live,{...old,tombstoned:true}]);
+            if (await oldRow.count() || await page.locator('.save-row').count() !== 1
+                    || await page.locator('#welcome-slot-name').textContent() !== '乙') throw new Error('deleted slot retained in list or welcome');
+            await page.locator('#save-deleted').click();
+            if (!await oldRow.isVisible() || await page.locator('.btn-start').isVisible()) throw new Error('incorrect deleted view actions');
+
+            const importTo = async key => {
+                await emit({cmd:'import_target',suggestedSlot:key,sourceData:'{}'});
+                await page.locator('#confirm-dialog-ok').click();
+            };
+            const imports = (await outgoing('import_commit')).length;
+            await importTo('LEGACY_TEST');
+            await page.locator('#confirm-dialog-message').filter({hasText:'该槽位已删除'}).waitFor();
+            await page.locator('#confirm-dialog-ok').click();
+            if ((await outgoing('import_commit')).length !== imports || (await outgoing('reset')).length) throw new Error('import unprotected the tombstone');
+            await importTo('field_beta');
+            await page.locator('#confirm-dialog-message').filter({hasText:'存档已存在'}).waitFor();
+            await page.locator('#confirm-dialog-ok').click();
+            if ((await outgoing('import_commit')).at(-1).slot !== live.slot) throw new Error('overwrite lost the Host spelling');
+            await importTo(live.slot);
+            await list([{...live,tombstoned:true},{...old,tombstoned:true}]);
+            await page.locator('#confirm-dialog-ok').click();
+            await page.locator('#confirm-dialog-message').filter({hasText:'该槽位已删除'}).waitFor();
+            await page.locator('#confirm-dialog-ok').click();
+            if ((await outgoing('import_commit')).length !== imports + 1) throw new Error('target deleted during confirmation was overwritten');
+            await page.locator('#save-live').click();
+            if (await page.locator('.save-row').count() || !await page.locator('#btn-new').isVisible()) throw new Error('empty state consumed a row');
+            await page.locator('#btn-back-welcome').click();
+            return 'cancel, matched delete, list/default filtering, protected imports and case-insensitive physical target confirmation';
+        });
+
+        await check('editor-late-load-and-save', async () => {
+            const emit = msg => page.evaluate(value => window.__bootstrapHarnessEmit(value), msg);
+            await emit({cmd:'list_resp', slots:[{slot:'slot-a',characterName:'甲'}, {slot:'slot-b',characterName:'乙'}]});
+            await emit({cmd:'state',state:'Idle'});
+            await page.locator('#btn-switch-slot').click();
+            const open = async key => {
+                await page.locator('.save-row[data-slot="' + key + '"]').click();
+                await page.locator('#save-actions .btn-edit').click();
+            };
+            const outgoing = cmd => page.evaluate(command => window.__bootstrapHarnessEvents.filter(
+                event => event.direction === 'out' && event.cmd === command).map(event => event.payload), cmd);
+            await open('slot-a');
+            await page.locator('#ed-cancel').click();
+            await open('slot-b');
+            if (!await page.locator('#ed-save').isDisabled() || (await outgoing('load')).at(-1).slot !== 'slot-a') {
+                throw new Error('late A must drain before B is requested');
+            }
+            const read = (slot, source) => emit({cmd:'load_resp',ok:true,slot,data:JSON.stringify({source})});
+            await read('slot-a','old A');
+            if ((await outgoing('load')).at(-1).slot !== 'slot-b' || !await page.locator('#ed-save').isDisabled()) throw new Error('late A populated B');
+            await read('slot-a','duplicate A');
+            if (!await page.locator('#ed-save').isDisabled()) throw new Error('wrong-slot duplicate armed save');
+            await read('slot-b','current B');
+            await page.locator('#tab-advanced').click();
+            if (JSON.parse(await page.locator('#raw-ta').inputValue()).source !== 'current B') throw new Error('incorrect B payload');
+            const writes = (await outgoing('save')).length;
+            await page.locator('#ed-save').evaluate(button => { button.click(); button.click(); });
+            const saved = await outgoing('save');
+            if (saved.length !== writes + 1 || saved.at(-1).slot !== 'slot-b' || JSON.parse(saved.at(-1).data).source !== 'current B') {
+                throw new Error('save must issue once for B with its own data');
+            }
+            await emit({cmd:'save_resp',ok:true,slot:'slot-a'});
+            if (!await page.locator('#ed-cancel').isDisabled()) throw new Error('wrong save receipt unlocked B');
+            await emit({cmd:'save_resp',ok:true,slot:'slot-b'});
+            await page.locator('#modal-host').waitFor({state:'hidden'});
+            await page.locator('#btn-back-welcome').click();
+            return 'delayed and wrong-key reads cannot unlock or write B; duplicate clicks and wrong save replies are ignored';
+        });
+
+        await check('save-fixed-canvas', async () => {
+            const emit = msg => page.evaluate(value => window.__bootstrapHarnessEmit(value), msg);
+            await emit({cmd:'list_resp', uiFontScale:1.75, slots:[{slot:'layout-slot',characterName:'排版样本'}]});
+            await emit({cmd:'state',state:'Idle'});
+            await page.locator('#btn-switch-slot').click();
+            const checkSizes = async (selector, buttons) => {
+                for (const size of [{width:800,height:450}, {width:1366,height:768}, {width:2560,height:1080}]) {
+                    await page.setViewportSize(size);
+                    await page.waitForFunction(({selector,buttons}) => {
+                        const el = document.querySelector(selector), box = el.getBoundingClientRect();
+                        const parent = el.parentElement, area = parent.getBoundingClientRect();
+                        const scale = Math.min(parent.clientWidth / 1024, parent.clientHeight / 576);
+                        return el.offsetWidth === 1024 && el.offsetHeight === 576
+                            && Math.abs(box.width - scale * 1024) < .2 && Math.abs(box.height - scale * 576) < .2
+                            && Math.abs(box.left + box.width/2 - area.left - area.width/2) < 1
+                            && Math.abs(box.top + box.height/2 - area.top - area.height/2) < 1
+                            && buttons.every(id => {
+                                const b = document.querySelector(id), r = b.getBoundingClientRect();
+                                return b.contains(document.elementFromPoint(r.left + r.width/2, r.top + r.height/2));
+                            });
+                    }, {selector,buttons}, {timeout:3000});
+                }
+            };
+            try {
+                await checkSizes('#save-shell',['#btn-new','#btn-import','#save-actions .btn-edit','#save-actions .btn-delete']);
+                await page.locator('#save-actions .btn-edit').click();
+                await emit({cmd:'load_resp',ok:true,slot:'layout-slot',data:'{"version":"3.0"}'});
+                await checkSizes('#modal-content',['#ed-save','#ed-cancel','#ed-close','#tab-tree']);
+            } finally {
+                await page.setViewportSize(viewport);
+                await page.evaluate(() => window.BootstrapApp.tryCloseModal());
+                await page.locator('#btn-back-welcome').click();
+            }
+            return 'centered 1024×576 logical canvas and hit-tested list/editor actions at 800×450, 1366×768 and 2560×1080';
+        });
+
+        await check('archive-directory-and-editor-density', async () => {
+            const emit = msg => page.evaluate(value => window.__bootstrapHarnessEmit(value), msg);
+            const slots = Array.from({length:20}, (_, i) => ({
+                slot:'layout_' + String(i).padStart(2,'0'), characterName:'角色' + i,
+                displayName:'归档' + i, mainProgress:'第 ' + i + ' 章', size:1200,
+                lastModified:'2026-08-29T10:00:00'
+            }));
+            const key = 'old_' + 'a'.repeat(124);
+            try {
+                await page.setViewportSize({width:800,height:450});
+                await emit({cmd:'list_resp',slots,uiFontScale:1.35});
+                await page.locator('#btn-switch-slot').click();
+                const geometry = await page.locator('#cards').evaluate(list => {
+                    const box = list.getBoundingClientRect();
+                    return {
+                        fullRows:[...list.querySelectorAll('.save-row')].filter(el => {
+                            const row = el.getBoundingClientRect();
+                            return row.top >= box.top - 1 && row.bottom <= box.bottom + 1;
+                        }).length,
+                        docked:!list.contains(document.getElementById('save-detail')),
+                        overflow:list.scrollWidth > list.clientWidth + 1
+                    };
+                });
+                if (geometry.fullRows < 10 || !geometry.docked || geometry.overflow) throw new Error('directory layout: ' + JSON.stringify(geometry));
+
+                await emit({cmd:'list_resp',slots:slots.slice(0,11),uiFontScale:1.35});
+                const editAction = page.locator('#save-actions .btn-edit');
+                await editAction.focus();
+                for (const [font, inline] of [[1.9,false],[1.35,true]]) {
+                    await page.evaluate(value => window.BootstrapApp.setUiFontScale(value), font);
+                    await page.waitForFunction(wanted => {
+                        const detail = document.getElementById('save-detail');
+                        return document.getElementById('cards').contains(detail) === wanted
+                            && document.activeElement === detail.querySelector('.btn-edit');
+                    }, inline, {timeout:3000});
+                }
+
+                const shortSlots = [
+                    slots[0], {...slots[1],slot:key,characterName:'长'.repeat(30),displayName:'档'.repeat(32)}
+                ];
+                await emit({cmd:'list_resp',uiFontScale:1.9,slots:shortSlots});
+                const selected = page.locator('.save-row[data-slot="' + key + '"]');
+                await selected.click();
+                if (!await selected.evaluate(b => b.nextElementSibling === document.getElementById('save-detail'))
+                        || await page.locator('#save-key').textContent() !== key) throw new Error('short directory lost its inline actions or exact key');
+                await emit({cmd:'state',state:'Idle'});
+                await page.locator('#save-actions .btn-edit').focus();
+                await page.keyboard.press('Enter');
+                await emit({cmd:'load_resp',ok:true,slot:key,data:JSON.stringify({version:'3.0','0':['角色','男',500,8],'7':[0,0,0,0,0]})});
+                await emit({cmd:'list_resp',uiFontScale:1.35,slots:shortSlots});
+                const panel = page.locator('#ed-panel');
+                const visibleFields = await panel.evaluate(el => {
+                    const box = el.getBoundingClientRect();
+                    return [...el.querySelectorAll('.schema-form input[data-idx], .schema-form select[data-idx]')].filter(input => {
+                        const r = input.getBoundingClientRect();
+                        return r.top >= box.top - 1 && r.bottom <= box.bottom + 1
+                            && input.contains(document.elementFromPoint(r.left + r.width/2, r.top + r.height/2));
+                    }).length;
+                });
+                if (visibleFields < 12) throw new Error('only ' + visibleFields + ' editable fields visible');
+                const level = panel.getByLabel('等级',{exact:true});
+                if (await level.inputValue() !== '8' || !await level.getAttribute('aria-describedby')) throw new Error('level control lost its value or limits');
+                await page.locator('#tab-advanced').click();
+                await page.locator('#ed-search-toggle').click();
+                await page.getByLabel('搜索字段或内容').press('Escape');
+                if (await page.locator('#ed-search').count() || !await page.locator('#ed-save').isVisible()
+                        || !await page.locator('#ed-search-toggle').evaluate(el => el === document.activeElement)) throw new Error('Escape did not return focus from search to the editor');
+                await page.locator('#tab-simple').click();
+                await level.fill('9');
+                await page.locator('#ed-save').click();
+                const write = await page.evaluate(() => window.__bootstrapHarnessEvents.filter(e => e.direction === 'out' && e.cmd === 'save').at(-1).payload);
+                if (write.slot !== key || write.data['0'][3] !== 9) throw new Error('form write lost original key or field');
+                await emit({cmd:'save_resp',ok:true,slot:key});
+                await page.locator('#modal-host').waitFor({state:'hidden'});
+                return geometry.fullRows + ' complete directory rows and ' + visibleFields + ' editable controls at 800×450; long key, keyboard actions and labeled field write verified';
+            } finally {
+                await page.setViewportSize(viewport);
+                await page.evaluate(() => window.BootstrapApp.tryCloseModal());
+                await page.locator('#btn-back-welcome').click();
+            }
         });
 
         await check('native-button-enter', async () => {
             await page.locator('#btn-switch-slot').click();
-            const button = page.locator('#cards .btn-newchar').first();
+            const button = page.locator('#btn-new');
             await button.focus();
             await button.press('Enter');
             await page.waitForFunction(() => !document.getElementById('view-character-create').hidden
                 && document.getElementById('view-slots').hidden, null, { timeout: 3000 });
-            const focusedCards = await page.locator('#cards .card.kb-focus').count();
-            if (focusedCards !== 0) throw new Error('native Enter leaked into card-navigation focus');
             const opens = await page.evaluate(() => window.__bootstrapHarnessEvents
                 .filter(event => event.direction === 'out' && event.cmd === 'character_create_open').length);
             if (opens !== 1) throw new Error('expected one character_create_open, got ' + opens);
@@ -1012,20 +1173,22 @@ async function main() {
             // the supported cancellation path while that preparation mask owns focus.
             await page.keyboard.press('Escape');
             await page.waitForFunction(() => !document.getElementById('view-slots').hidden, null, { timeout: 3000 });
-            return 'focused card button opened exactly once and preparation remained cancellable by Escape';
+            return 'focused new-save button opened exactly once and preparation remained cancellable by Escape';
         });
 
         await check('container-keyboard-navigation', async () => {
-            const cards = page.locator('#cards');
-            await cards.focus();
-            await cards.press('ArrowRight');
-            if (await page.locator('#cards .card.kb-focus').count() !== 1) {
-                throw new Error('ArrowRight did not establish one visual card focus');
-            }
-            await cards.press('Enter');
-            await page.waitForFunction(() => !document.getElementById('view-character-create').hidden
-                && document.getElementById('view-slots').hidden, null, { timeout: 3000 });
-            return 'container ArrowRight + Enter opened the identity-free new-save entry';
+            await page.evaluate(() => window.__bootstrapHarnessEmit({cmd:'list_resp', slots:[
+                {slot:'nav-a',characterName:'甲'}, {slot:'nav-b',characterName:'乙'}
+            ]}));
+            const first = page.locator('.save-row[data-slot="nav-a"]');
+            await first.focus();
+            await first.press('ArrowDown');
+            const selected = page.locator('.save-row[aria-pressed="true"]');
+            if (await selected.getAttribute('data-slot') !== 'nav-b') throw new Error('ArrowDown did not select second slot');
+            await selected.press('Enter');
+            await page.locator('#btn-switch-slot').waitFor();
+            if (await page.locator('#welcome-slot-name').textContent() !== '乙') throw new Error('Enter selected a different character');
+            return 'ArrowDown and Enter select the focused slot on the welcome page';
         });
 
         // PM19 V3：以下断言共用 pm19-arrival-kind 内 reload 出的全新控制器实例；
@@ -1256,6 +1419,48 @@ async function main() {
                 throw new Error('exchange-pair even-tick alternation is missing from the controller');
             }
             return 'skipped the live even-tick cue (no scene stays active >8s); exchange-pair parity verified in controller source';
+        });
+
+        await check('archive-correlated-replies', async () => {
+            await page.reload();
+            const emit = message => page.evaluate(m => window.__bootstrapHarnessEmit(m), message);
+            const last = cmd => page.evaluate(name => window.__bootstrapHarnessEvents
+                .filter(e => e.direction === 'out' && e.cmd === name).at(-1).payload, cmd);
+            await page.waitForFunction(() => window.__bootstrapHarnessEvents.some(e => e.cmd === 'list_resp'));
+            await emit({cmd:'state',state:'Idle'});
+            const slots = ['first','second'].map(slot => ({slot,characterName:'同名角色',displayName:slot}));
+            await emit({cmd:'list_resp',archiveRequestIds:true,slots});
+            await page.locator('#btn-switch-slot').click();
+            const open = async slot => {
+                await page.locator('.save-row[data-slot="' + slot + '"]').click();
+                await page.locator('#save-actions .btn-edit').click();
+                return last('load');
+            };
+            const first = await open('second');
+            await page.locator('#ed-cancel').click();
+            const middle = await open('first');
+            await page.locator('#ed-cancel').click();
+            const current = await open('second');
+            const ids = [first,middle,current].map(x => x.requestId);
+            if (new Set(ids).size !== 3 || !ids.every(Number.isSafeInteger)) throw new Error('reads lack distinct IDs');
+            const data = JSON.stringify({version:'3.0','0':['当前','男',1000,11]});
+            for (const old of [first,middle]) await emit({...old,cmd:'load_resp',ok:true,data});
+            await emit({cmd:'load_resp',slot:'second',ok:false,error:'late failure'});
+            if (!await page.locator('#ed-save').isDisabled()) throw new Error('an old read unlocked the editor');
+            await emit({...current,cmd:'load_resp',ok:true,data});
+            await page.locator('#ed-panel').getByLabel('等级',{exact:true}).fill('12');
+            await page.locator('#ed-save').click();
+            const save = await last('save');
+            if (save.slot !== 'second' || save.data['0'][3] !== 12) throw new Error('wrong write');
+            await emit({cmd:'save_resp',slot:save.slot,ok:true,requestId:first.requestId});
+            if (!await page.locator('#ed-cancel').isDisabled()) throw new Error('old receipt released the write');
+            await emit({cmd:'save_resp',slot:save.slot,ok:false,requestId:save.requestId,error:'slot_tombstoned'});
+            if (!(await page.locator('#ed-status').textContent()).includes('slot_tombstoned')) throw new Error('no exact rejection');
+            page.once('dialog', d => d.accept());
+            await page.locator('#ed-cancel').click();
+            await emit({cmd:'list_resp',ok:false,error:'test'});
+            if (await page.locator('.save-row').count() !== 2) throw new Error('list failure erased the directory');
+            return 'same-name, same-slot reopen, late messages, exact write rejection and failed directory refresh';
         });
 
         const brokenImages = await page.evaluate(() => Array.from(document.images)

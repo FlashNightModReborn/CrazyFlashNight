@@ -365,13 +365,13 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `character_create_submit` | 提交当前 open/attempt 的角色草稿与显式 `displayNameCustomized` |
 | `reveal_ok` | reveal receipt |
 | `retry` | 启动错误恢复 |
-| `list` | 存档列表 |
-| `delete` | 写 tombstone 并保留 catalog 身份供辨认/重建 |
+| `list` | 存档目录。成功回传 `archiveRequestIds: true` 时，Web 按原请求的槽号和编号接收读取、编辑、删除与残留清理结果 |
+| `delete` | 写 tombstone 后清理 JSON，保留显示名。文件占用时，成功回执附 `shadow_cleanup_pending` |
 | `rename_slot` | 修改 Host 权威槽位显示名；允许重名，空串恢复跟随角色名，不修改物理 `slotKey` |
 | `load` | 存档操作 |
 | `load_raw` | 存档原始读取 |
 | `save` | 存档操作 |
-| `reset` | 彻底清 shadow、tombstone 与 catalog 身份 |
+| `reset` | 清理 JSON 后保留 tombstone。默认同时移除名称映射，`residueOnly: true` 只清理已删除槽的残留副本并保留名称 |
 | `export` | 存档导出 |
 | `import_start` | 导入预检 |
 | `import_commit` | 导入提交 |

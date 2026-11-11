@@ -95,7 +95,7 @@ namespace CF7Launcher.Save
                 {
                     if (error != "metadata_not_found")
                         LogManager.Log("[SaveSlotCatalog] read fallback: " + error);
-                    return new Dictionary<string, string>(StringComparer.Ordinal);
+                    return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 }
                 return map;
             }
@@ -169,12 +169,17 @@ namespace CF7Launcher.Save
             }
         }
 
+        internal bool CanRemoveDisplayName(out string error)
+        {
+            lock (_gate)
+            {
+                return TryReadAllLocked(out _, out error) || error == "metadata_not_found";
+            }
+        }
+
         /// <summary>
-        /// Removes the optional presentation override so the slot once again
-        /// follows the character name stored in the authoritative save.
-        /// Missing metadata or an already-absent entry is a successful no-op;
-        /// malformed existing metadata remains fail-closed and is never
-        /// overwritten.
+        /// Removes the optional display name override. A missing entry is a no-op;
+        /// malformed existing metadata is never overwritten.
         /// </summary>
         public bool TryRemoveDisplayName(
             string slotKey,
@@ -223,7 +228,7 @@ namespace CF7Launcher.Save
             out Dictionary<string, string> map,
             out string error)
         {
-            map = new Dictionary<string, string>(StringComparer.Ordinal);
+            map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             error = null;
             if (!File.Exists(_path))
             {

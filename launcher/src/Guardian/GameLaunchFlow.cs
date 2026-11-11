@@ -205,6 +205,7 @@ namespace CF7Launcher.Guardian
             internal string OpenRequestId;
             internal JObject RebuildSnapshot;
             internal string RebuildSource;
+            internal string SubmittedCharacterName;
         }
 
         private CharacterCreateOpenContext _characterCreateContext;
@@ -1242,6 +1243,7 @@ namespace CF7Launcher.Guardian
                 _characterCreatePreparingSubmit = false;
                 _characterCreateDisplayNameCustomized = displayNameCustomized;
                 _characterCreateDisplayName = normalizedDisplayName;
+                context.SubmittedCharacterName = draft.Value<string>("characterName");
                 createCallId = Guid.NewGuid().ToString("N");
                 _characterCreateCallId = createCallId;
             }
@@ -1250,7 +1252,8 @@ namespace CF7Launcher.Guardian
             {
                 try
                 {
-                    _saveCtx.Archive.ResetSlotSync(exactSlot);
+                    string priorHash = _saveCtx.Resolver.CurrentSolHash(exactSlot, _saveCtx.SwfPath);
+                    _saveCtx.Archive.PrepareRebuildSync(exactSlot, createCallId, priorHash);
                 }
                 catch (Exception ex)
                 {
@@ -1711,10 +1714,12 @@ namespace CF7Launcher.Guardian
                 return null;
             if (string.Equals(phase, "durable", StringComparison.Ordinal))
             {
-                bool accepted = (message.Value<bool?>("success") ?? false)
-                    && (message.Value<bool?>("localFlush") ?? false);
+                bool accepted = message["success"]?.Type == JTokenType.Boolean && (bool)message["success"]
+                    && message["localFlush"]?.Type == JTokenType.Boolean && (bool)message["localFlush"]
+                    && (message["durable"] == null || message["durable"].Type == JTokenType.Boolean && (bool)message["durable"]);
                 string displayName;
                 bool displayNameCustomized;
+                CharacterCreateOpenContext creation;
                 lock (_stateLock)
                 {
                     if (!accepted
@@ -1732,11 +1737,24 @@ namespace CF7Launcher.Guardian
                     MaybeArmFrontdoorSceneWatchdogLocked();
                     displayName = _characterCreateDisplayName;
                     displayNameCustomized = _characterCreateDisplayNameCustomized;
+                    creation = _characterCreateContext;
                 }
 
+                bool receiptRecorded = true, shadowReady = true;
+                if (creation?.Mode == "rebuild")
+                {
+                    receiptRecorded = shadowReady = false;
+                    try
+                    {
+                        _saveCtx.Archive.ConfirmRebuildSync(slotKey, callId, creation.SubmittedCharacterName);
+                        receiptRecorded = true;
+                        shadowReady = _saveCtx.Archive.PublishConfirmedRebuild(slotKey, _saveCtx.Resolver, _saveCtx.SwfPath);
+                    }
+                    catch (Exception ex) { LogManager.Log("[CharacterCreate] rebuild remains protected: " + ex.Message); }
+                }
                 string normalized;
                 string metadataError = null;
-                bool metadataSaved = _saveCtx != null
+                bool metadataSaved = receiptRecorded && _saveCtx != null
                     && _saveCtx.Archive != null
                     && (displayNameCustomized
                         ? _saveCtx.Archive.SlotCatalog.TrySetDisplayName(
@@ -1754,6 +1772,10 @@ namespace CF7Launcher.Guardian
                 };
                 if (!metadataSaved)
                     extra["warning"] = metadataError ?? "metadata_save_failed";
+                if (!shadowReady)
+                    extra["detail"] = receiptRecorded
+                        ? "新角色已写入游戏存档。副本仍受保护，下次刷新目录时会重新核验。"
+                        : "新角色已写入游戏存档，原槽的删除保护已变更或无法更新。请检查已删除列表。";
                 PostCharacterCreateState(
                     "durable", attemptId, slotKey, null, null, extra);
                 return null;

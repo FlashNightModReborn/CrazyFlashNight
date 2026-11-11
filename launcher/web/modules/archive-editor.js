@@ -37,14 +37,17 @@
   var _searchMarkerScrollHandler = null;
 
   // DOM 引用
-  var _topbarEl = null;
   var _diagBtn = null;
   var _diagStatusEl = null;
   var _bannerEl = null;
   var _modeTabsEl = null;
   var _panelEl = null;
   var _saveBtn = null;
-  var _resetBtn = null;
+  var _opening = null;
+  var _readInFlight = null;
+  var _saving = null;
+  var _loaded = false;
+  var _scale = null;
   var _statusEl = null;
 
   function playUiCue(name) {
@@ -60,7 +63,6 @@
     _isDirty = false;
 
     _rawOnly = false;
-    _saveDisabled = false;
     _mode = 'simple';
     _currentData = null;
     _rawText = '';
@@ -69,43 +71,38 @@
     // 检查 Idle
     _idleOk = (window.BootstrapApp.getLaunchState() === 'Idle');
 
-    // 检查 inconsistent → 保存永久禁用
-    if (_slotMeta.inconsistent) _saveDisabled = true;
-
-    // 构建 UI 骨架
-    var displayName = _slot;
-    var m = /^crazyflasher7_saves(\d*)$/.exec(_slot);
-    if (m) displayName = '存档 ' + (m[1] === '' ? 1 : parseInt(m[1], 10) + 1);
-
+    _saveDisabled = !!(_slotMeta.tombstoned || _slotMeta.inconsistent);
+    _opening = {slot:_slot, op:(_slotMeta.inconsistent || _slotMeta.corrupt) ? 'load_raw' : 'load', requested:false};
+    _loaded = false;
+    _container.classList.add('save-editor', 'archive-frame', 'corner-brackets');
+    _scale = window.PanelScale.attach(_container, 1024, 576);
+    var displayName = _slotMeta.displayName || _slotMeta.characterName || _slot;
     _container.innerHTML =
-      '<div class="modal-header term-heading-rule">' +
-        '<h2>存档编辑: ' + escHtml(displayName) + ' <small class="ed-dim">(' + escHtml(_slot) + ')</small></h2>' +
-        '<button class="modal-close" id="ed-close">×</button>' +
-      '</div>' +
-      '<div id="ed-topbar" class="editor-topbar">' +
-        '<span class="topbar-spacer"></span>' +
-        '<span id="ed-diag-status" class="topbar-status"></span>' +
-        '<button id="ed-search-toggle" title="搜索 key/value（仅高级/树/已修改 模式可用）">搜索</button>' +
-        '<button id="ed-diag-export" title="把当前档 + 日志 + 配置打成 zip 发给开发者">导出诊断包</button>' +
-      '</div>' +
+      '<header class="archive-heading term-heading-rule">' +
+        '<div class="editor-heading">' +
+          '<h2>编辑存档 · ' + escHtml(displayName) + '</h2>' +
+          '<span class="editor-slot-key">槽位 · ' + escHtml(_slot) + '</span>' +
+        '</div>' +
+        '<div id="ed-mode-tabs" class="archive-modes" aria-label="编辑模式"></div>' +
+        '<button type="button" class="term-btn ed-close" id="ed-close" aria-label="关闭编辑器">关闭</button>' +
+      '</header>' +
       '<div id="ed-banner"></div>' +
-      '<div id="ed-mode-tabs" class="mode-tabs"></div>' +
-      '<div id="ed-panel" style="position:relative"></div>' +
-      '<div id="ed-status" class="ed-status"></div>' +
-      '<div class="modal-actions">' +
-        '<button id="ed-save" class="primary">保存</button>' +
-        '<button id="ed-reset-slot" class="danger">清理副本</button>' +
-        '<button id="ed-cancel">取消</button>' +
-      '</div>';
+      '<div id="ed-panel" aria-busy="true"></div>' +
+      '<footer class="archive-editor-actions">' +
+        '<button type="button" class="term-btn" id="ed-search-toggle" title="搜索字段或内容">搜索</button>' +
+        '<button type="button" class="term-btn" id="ed-diag-export" title="导出当前存档、日志与配置">导出诊断包</button>' +
+        '<span id="ed-diag-status" class="topbar-status"></span>' +
+        '<span id="ed-status" class="ed-status" role="status">正在读取…</span>' +
+        '<button type="button" class="term-btn" id="ed-cancel">取消</button>' +
+        '<button type="button" class="term-btn archive-primary" id="ed-save" disabled>保存</button>' +
+      '</footer>';
 
-    _topbarEl = document.getElementById('ed-topbar');
     _diagBtn = document.getElementById('ed-diag-export');
     _diagStatusEl = document.getElementById('ed-diag-status');
     _bannerEl = document.getElementById('ed-banner');
     _modeTabsEl = document.getElementById('ed-mode-tabs');
     _panelEl = document.getElementById('ed-panel');
     _saveBtn = document.getElementById('ed-save');
-    _resetBtn = document.getElementById('ed-reset-slot');
     _statusEl = document.getElementById('ed-status');
 
     _diagBtn.onclick = onExportDiagnostic;
@@ -121,19 +118,20 @@
         else showSearchOverlay();
       };
     }
-    // Esc 仍保留作为关闭浮层的快捷键（document 级；浮层可见时才生效，不会与 panel 路由冲突）
+    // Close the editor's search before Escape reaches the launcher's modal handler.
     _searchKeyHandler = function(e) {
       if (e.key === 'Escape' && _searchVisible) {
         e.preventDefault();
+        e.stopPropagation();
         hideSearchOverlay();
+        searchBtn.focus();
       }
     };
-    document.addEventListener('keydown', _searchKeyHandler);
+    _container.addEventListener('keydown', _searchKeyHandler);
 
     document.getElementById('ed-close').onclick = function() { window.BootstrapApp.tryCloseModal(); };
     document.getElementById('ed-cancel').onclick = function() { window.BootstrapApp.tryCloseModal(); };
     _saveBtn.onclick = onSave;
-    _resetBtn.onclick = onResetSlot;
 
     // 监听 state 变化
     _unsubs.push(window.BootstrapApp.onMessage('state', function(msg) {
@@ -146,41 +144,32 @@
       showBanner('info', '游戏运行中，编辑器为只读模式', /*priority:*/ 0);
     }
 
-    // 按 slotMeta 决定加载路径
-    if (_slotMeta.inconsistent || _slotMeta.corrupt) {
-      // 走 load_raw
-      loadRaw();
-    } else if (!_slotMeta.__empty) {
-      // 正常 slot: 走 load
-      loadNormal();
-    } else {
-      showBanner('warn', '空槽位，无数据可编辑');
-      _rawOnly = true;
-      renderModes();
-      updateButtons();
-    }
+    updateButtons();
+    requestRead();
   }
 
   function unmount() {
+    if (_readInFlight === _opening && _opening && _opening.readId !== undefined) _readInFlight = null;
+    _opening = null;
+    _loaded = false;
+    if (_scale) _scale.detach();
+    _scale = null;
+    _container.classList.remove('save-editor', 'archive-frame', 'corner-brackets');
     if (_searchKeyHandler) {
-      document.removeEventListener('keydown', _searchKeyHandler);
+      _container.removeEventListener('keydown', _searchKeyHandler);
       _searchKeyHandler = null;
     }
-    _searchVisible = false;
-    _searchHits = [];
-    _searchHitIdx = -1;
+    if (_searchVisible) hideSearchOverlay();
     _dangerUnlocked = {};
     for (var i = 0; i < _unsubs.length; i++) _unsubs[i]();
     _unsubs = [];
     _container = null;
-    _topbarEl = null;
     _diagBtn = null;
     _diagStatusEl = null;
     _bannerEl = null;
     _modeTabsEl = null;
     _panelEl = null;
     _saveBtn = null;
-    _resetBtn = null;
     _statusEl = null;
     _currentData = null;
     _rawText = '';
@@ -192,90 +181,61 @@
   }
 
   function canClose() {
+    if (_saving && _saving === _opening) return false;
     if (!_isDirty && !hasInvalidInput()) return true;
     return confirm('有未保存更改，放弃？');
   }
 
   // ==================== 加载 ====================
 
-  function loadNormal() {
-    _statusEl.textContent = '加载中...';
-    var unsub = window.BootstrapApp.onMessage('load_resp', function(msg) {
-      unsub();
-      if (!msg.ok) {
-        showBanner('error', '加载失败: ' + (msg.error || 'unknown'));
-        playUiCue('playError');
-        _rawOnly = true;
-        renderModes();
-        updateButtons();
-        return;
-      }
-      _rawText = msg.data || '';
-      try {
-        _currentData = JSON.parse(_rawText);
-        _rawOnly = false;
-        // 检查 schema 版本
-        if (_currentData.version !== window.ArchiveSchema.SCHEMA_VERSION) {
-          showBanner('warn', '存档版本 ' + (_currentData.version || '?') + ' 与预期 ' + window.ArchiveSchema.SCHEMA_VERSION + ' 不匹配，白名单可能不准确');
-        }
-        showFffdBannerIfAny();
-      } catch (e) {
-        // 降级 raw-only (TOCTOU 防御)
-        showBanner('warn', 'JSON 解析失败，降级到高级模式: ' + e.message);
-        _rawOnly = true;
-        _currentData = null;
-      }
-      _statusEl.textContent = '';
-      renderModes();
-      updateButtons();
-      playUiCue('playTransition');
-    });
-    _unsubs.push(unsub);
-    window.BootstrapApp.send({ cmd: 'load', slot: _slot });
+  // Legacy Host replies have no request ID and some errors have no slot. Keep one physical
+  // read on the wire, even when its editor closes. Then load only the latest open editor.
+  function requestRead() {
+    if (_readInFlight || !_opening || _opening.requested) return;
+    _readInFlight = _opening;
+    _opening.requested = true;
+    _opening.readId = window.BootstrapApp.nextArchiveRequestId();
+    if (!window.BootstrapApp.send({cmd:_opening.op, slot:_opening.slot, requestId:_opening.readId})) {
+      receiveRead(_opening.op, {ok:false, slot:_opening.slot, requestId:_opening.readId, error:'读取请求未能发送'});
+    }
   }
 
-  function loadRaw() {
-    _statusEl.textContent = '加载中...';
-    var unsub = window.BootstrapApp.onMessage('load_raw_resp', function(msg) {
-      unsub();
-      if (!msg.ok) {
-        showBanner('error', '加载失败: ' + (msg.error || 'unknown'));
-        playUiCue('playError');
-        _rawOnly = true;
-        renderModes();
-        updateButtons();
-        return;
+  function receiveRead(op, msg) {
+    var owner = _readInFlight;
+    if (!owner || owner.op !== op || (msg.ok !== true && msg.ok !== false)) return;
+    if (owner.readId !== undefined && (msg.requestId !== owner.readId || msg.slot !== owner.slot)) return;
+    if ((msg.slot != null || msg.ok) && msg.slot !== owner.slot) return;
+    _readInFlight = null;
+    if (owner !== _opening) { requestRead(); return; }
+    _panelEl.setAttribute('aria-busy', 'false');
+    if (!msg.ok || typeof msg.data !== 'string') {
+      _statusEl.textContent = '读取失败，可关闭后重新打开';
+      showBanner('error', msg.error || '存档答复缺少内容');
+      playUiCue('playError');
+      updateButtons();
+      return;
+    }
+    _loaded = true;
+    _rawText = msg.data;
+    _rawOnly = op === 'load_raw' && _saveDisabled;
+    try {
+      _currentData = JSON.parse(_rawText);
+      if (!_currentData || typeof _currentData !== 'object' || Array.isArray(_currentData)) throw new Error('存档根节点必须是对象');
+      if (_saveDisabled) showBanner('warn', '这是已删除档案的残留副本，仅供查看和导出。');
+      else if (_slotMeta.corrupt) showBanner('warn', '此副本已标记损坏，请检查后再保存。');
+      else if (_currentData.version !== window.ArchiveSchema.SCHEMA_VERSION) {
+        showBanner('warn', '存档版本 ' + (_currentData.version || '?') + ' 与编辑器字段定义不同。');
       }
-      _rawText = msg.data || '';
+      showFffdBannerIfAny();
+    } catch (error) {
       _rawOnly = true;
       _currentData = null;
-
-      // 尝试 parse（用于判断是否 corrupt）
-      try {
-        _currentData = JSON.parse(_rawText);
-        // parse 成功但来自 load_raw → 可能是 inconsistent
-        // inconsistent: 保存禁用 + banner
-        if (_slotMeta.inconsistent) {
-          showBanner('warn', '已标记删除，此为残留 JSON 副本。如需保存，请先"重建"走新流程。');
-        }
-        // corrupt 来自 list 阶段标记，但 parse 成功说明文件可能已修复
-        if (_slotMeta.corrupt && !_slotMeta.inconsistent) {
-          showBanner('warn', 'JSON 数据可能有问题（被标记为损坏），请检查后保存');
-          _rawOnly = false; // corrupt 但 parse 成功 → 可用简易/树
-        }
-        showFffdBannerIfAny();
-      } catch (e) {
-        showBanner('error', 'JSON 解析失败: ' + e.message);
-        playUiCue('playError');
-      }
-
-      _statusEl.textContent = '';
-      renderModes();
-      updateButtons();
-      playUiCue('playTransition');
-    });
-    _unsubs.push(unsub);
-    window.BootstrapApp.send({ cmd: 'load_raw', slot: _slot });
+      showBanner('warn', '进入原文编辑模式：' + error.message);
+    }
+    _statusEl.textContent = '';
+    renderModes();
+    updateButtons();
+    playUiCue('playTransition');
   }
 
   // ==================== 模式切换 ====================
@@ -405,7 +365,10 @@
 
       html += '<div class="schema-form">';
       for (var i = 0; i < fields.length; i++) {
-        html += renderSimpleField(fields[i]);
+        var field = fields[i];
+        var wide = field.preview || field.danger;
+        html += '<div class="archive-field' + (wide ? ' archive-field-wide' : '') + '">'
+          + renderSimpleField(field) + '</div>';
       }
       html += '</div></div>';
     }
@@ -423,7 +386,11 @@
     var idx = window.ArchiveSchema.fields.indexOf(f);  // schema 全局索引（事件回查）
     var val = window.ArchiveSchema.getByPath(_currentData, f.path);
     var pathStr = window.ArchiveSchema.pathToString(f.path);
-    var labelHtml = '<label title="' + escHtml(pathStr) + '">' + escHtml(f.label) + '</label>';
+    var inputId = 'ed-field-' + idx;
+    var fieldLabel = escHtml(f.label);
+    var labelHtml = (f.readonly || f.type === 'literal')
+      ? '<span class="archive-label" title="' + escHtml(pathStr) + '">' + fieldLabel + '</span>'
+      : '<label for="' + inputId + '" title="' + escHtml(pathStr) + '">' + fieldLabel + '</label>';
     var unlocked = !f.danger || _dangerUnlocked[pathStr];
 
     // literal: 仅显示常量，不可编辑
@@ -438,8 +405,8 @@
       var n = (val != null && !isNaN(Number(val))) ? Number(val) : (f.default != null ? f.default : min);
       var html = labelHtml +
         '<div class="audio-row">' +
-          '<input type="range" data-idx="' + idx + '" data-role="range" min="' + min + '" max="' + max + '" value="' + n + '">' +
-          '<input type="number" data-idx="' + idx + '" data-role="num" class="audio-num" value="' + n + '" min="' + min + '" max="' + max + '">' +
+          '<input type="range" aria-label="' + fieldLabel + ' 滑杆" data-idx="' + idx + '" data-role="range" min="' + min + '" max="' + max + '" value="' + n + '">' +
+          '<input type="number" id="' + inputId + '" data-idx="' + idx + '" data-role="num" class="audio-num" value="' + n + '" min="' + min + '" max="' + max + '">' +
           '<span class="audio-presets">' +
             '<button type="button" class="audio-preset" data-idx="' + idx + '" data-preset="0">静音</button>' +
             '<button type="button" class="audio-preset" data-idx="' + idx + '" data-preset="' + (f.default != null ? f.default : 50) + '">默认</button>' +
@@ -460,12 +427,12 @@
       if (f.type === 'number') {
         var minA = (f.min != null) ? ' min="' + f.min + '"' : '';
         var maxA = (f.max != null) ? ' max="' + f.max + '"' : '';
-        inputHtml = '<input type="number" data-idx="' + idx + '" value="' + (val != null ? val : 0) + '"' + minA + maxA + disabledAttr + '>';
+        inputHtml = '<input type="number" id="' + inputId + '" data-idx="' + idx + '" value="' + (val != null ? val : 0) + '"' + minA + maxA + disabledAttr + '>';
       } else if (f.type === 'string') {
         var mlA = f.maxLength ? ' maxlength="' + f.maxLength + '"' : '';
-        inputHtml = '<input type="text" data-idx="' + idx + '" value="' + escHtml(val != null ? String(val) : '') + '"' + mlA + disabledAttr + '>';
+        inputHtml = '<input type="text" id="' + inputId + '" data-idx="' + idx + '" value="' + escHtml(val != null ? String(val) : '') + '"' + mlA + disabledAttr + '>';
       } else {
-        inputHtml = '<input type="text" data-idx="' + idx + '" value="' + escHtml(val != null ? String(val) : '') + '"' + disabledAttr + '>';
+        inputHtml = '<input type="text" id="' + inputId + '" data-idx="' + idx + '" value="' + escHtml(val != null ? String(val) : '') + '"' + disabledAttr + '>';
       }
       var html = labelHtml + '<div class="danger-field">' + inputHtml +
         '<button type="button" class="' + lockClass + '" data-danger-path="' + escHtml(pathStr) + '">' + escHtml(lockText) + '</button>' +
@@ -479,7 +446,7 @@
       return labelHtml + '<span class="readonly-val">' + escHtml(val != null ? String(val) : '—') + '</span>';
     }
     if (f.type === 'enum') {
-      var html2 = labelHtml + '<select data-idx="' + idx + '">';
+      var html2 = labelHtml + '<select id="' + inputId + '" data-idx="' + idx + '">';
       for (var j = 0; j < f.options.length; j++) {
         var sel = (String(val) === f.options[j]) ? ' selected' : '';
         html2 += '<option value="' + escHtml(f.options[j]) + '"' + sel + '>' + escHtml(f.options[j]) + '</option>';
@@ -490,16 +457,17 @@
     if (f.type === 'number') {
       var minA2 = (f.min != null) ? ' min="' + f.min + '"' : '';
       var maxA2 = (f.max != null) ? ' max="' + f.max + '"' : '';
-      var html3 = labelHtml + '<input type="number" data-idx="' + idx + '" value="' + (val != null ? val : 0) + '"' + minA2 + maxA2 + '>';
-      var hint = '';
-      if (f.min != null) hint += '最小: ' + f.min;
-      if (f.max != null) hint += (hint ? ', ' : '') + '最大: ' + f.max;
-      if (hint) html3 += '<span class="hint">' + hint + '</span>';
-      return html3;
+      var range = f.min != null && f.max != null ? f.min + '–' + f.max
+        : f.min != null ? '≥' + f.min : f.max != null ? '≤' + f.max : '';
+      var hintId = inputId + '-range';
+      return labelHtml + '<div class="archive-number"><input type="number" id="' + inputId + '" data-idx="' + idx
+        + '" value="' + (val != null ? val : 0) + '"' + minA2 + maxA2
+        + (range ? ' aria-describedby="' + hintId + '"' : '') + '>'
+        + (range ? '<span class="archive-range" id="' + hintId + '">' + range + '</span>' : '') + '</div>';
     }
     if (f.type === 'string') {
       var mlA2 = f.maxLength ? ' maxlength="' + f.maxLength + '"' : '';
-      return labelHtml + '<input type="text" data-idx="' + idx + '" value="' + escHtml(val != null ? String(val) : '') + '"' + mlA2 + '>';
+      return labelHtml + '<input type="text" id="' + inputId + '" data-idx="' + idx + '" value="' + escHtml(val != null ? String(val) : '') + '"' + mlA2 + '>';
     }
     return labelHtml + '<span class="readonly-val">(unsupported type)</span>';
   }
@@ -689,6 +657,7 @@
 
     var ta = document.getElementById('raw-ta');
     var statusDiv = document.getElementById('raw-status');
+    ta.readOnly = _saveDisabled;
 
     ta.addEventListener('input', function() {
       _isDirty = true;
@@ -810,6 +779,7 @@
     appendPathHint(div, path);
 
     var input = div.querySelector('input');
+    input.readOnly = _saveDisabled;
     input.addEventListener('change', function() {
       var result = parseLeafValue(input.value, type);
       if (result.valid) {
@@ -940,12 +910,12 @@
     ov.className = 'editor-search-overlay';
     ov.id = 'ed-search';
     ov.innerHTML =
-      '<input type="text" id="ed-search-input" placeholder="搜索 key / value...">' +
+      '<input type="text" id="ed-search-input" aria-label="搜索字段或内容" placeholder="搜索字段或内容">' +
       '<span class="search-count" id="ed-search-count">0 / 0</span>' +
       '<button id="ed-search-prev" title="上一处">‹</button>' +
       '<button id="ed-search-next" title="下一处">›</button>' +
       '<button id="ed-search-close" title="关闭 (Esc)">×</button>';
-    _panelEl.appendChild(ov);
+    _container.insertBefore(ov, _panelEl);
 
     var input = document.getElementById('ed-search-input');
     var count = document.getElementById('ed-search-count');
@@ -953,7 +923,7 @@
     var debounceTimer = null;
     input.addEventListener('input', function() {
       if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(function() { runSearch(input.value, count); }, 200);
+      debounceTimer = setTimeout(function() { if (ov.isConnected && _searchVisible) runSearch(input.value, count); }, 200);
     });
     input.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
@@ -964,7 +934,10 @@
     });
     document.getElementById('ed-search-prev').onclick = function() { jumpSearch(-1, count); };
     document.getElementById('ed-search-next').onclick = function() { jumpSearch(1, count); };
-    document.getElementById('ed-search-close').onclick = hideSearchOverlay;
+    document.getElementById('ed-search-close').onclick = function() {
+      hideSearchOverlay();
+      document.getElementById('ed-search-toggle').focus();
+    };
 
     input.focus();
   }
@@ -1069,9 +1042,13 @@
     var borderTop = parseFloat(cs.borderTopWidth) || 0;
     var borderLeft = parseFloat(cs.borderLeftWidth) || 0;
 
-    var contentTopInPanel = (taRect.top - panelRect.top) + borderTop + padTop;
+    // DOMRect is in viewport pixels; marker positions are in unscaled panel content pixels.
+    var scale = panelRect.width / _panelEl.offsetWidth || 1;
+    var contentTopInPanel = (taRect.top - panelRect.top) / scale
+      + _panelEl.scrollTop - _panelEl.clientTop + borderTop + padTop;
     var top = contentTopInPanel + _searchMarkerOffsetTop - ta.scrollTop;
-    var left = (taRect.left - panelRect.left) + borderLeft + padLeft;
+    var left = (taRect.left - panelRect.left) / scale
+      + _panelEl.scrollLeft - _panelEl.clientLeft + borderLeft + padLeft;
     var width = ta.clientWidth - padLeft - padRight;
     var height = _searchMarkerHeight;
 
@@ -1221,7 +1198,7 @@
   // ==================== 操作 ====================
 
   function onSave() {
-    if (_saveDisabled || !_idleOk) return;
+    if (!_opening || !_loaded || _saving || _saveDisabled || !_idleOk) return;
 
     var data;
     if (_mode === 'advanced' || (_rawOnly && !_currentData)) {
@@ -1245,52 +1222,35 @@
       return;
     }
 
-    _saveBtn.disabled = true;
-    _statusEl.textContent = '保存中...';
-
-    var unsub = window.BootstrapApp.onMessage('save_resp', function(msg) {
-      unsub();
-      _saveBtn.disabled = false;
-      if (msg.ok) {
-        _isDirty = false;
-        _statusEl.textContent = '保存成功 (' + (msg.size || '?') + ' bytes)';
-        playUiCue('playSuccess');
-        if (msg.warnings) {
-          _statusEl.textContent += ' [警告: ' + JSON.stringify(msg.warnings) + ']';
-        }
-        window.BootstrapApp.refreshList();
-        // 延迟关闭
-        setTimeout(function() { window.BootstrapApp.closeModal(); }, 800);
-      } else {
-        _statusEl.textContent = '保存失败: ' + (msg.error || 'unknown');
-        _statusEl.classList.add('err');
-        playUiCue('playError');
-      }
-    });
-    _unsubs.push(unsub);
-    window.BootstrapApp.send({ cmd: 'save', slot: _slot, data: data });
+    _saving = _opening;
+    _saving.saveId = window.BootstrapApp.nextArchiveRequestId();
+    _statusEl.textContent = '正在保存…';
+    updateButtons();
+    if (!window.BootstrapApp.send({cmd:'save', slot:_saving.slot, data:data, requestId:_saving.saveId})) {
+      receiveSave({ok:false, slot:_saving.slot, requestId:_saving.saveId, error:'保存请求未能发送'});
+    }
   }
 
-  function onResetSlot() {
-    if (!_idleOk) return;
-    var displayName = _slot;
-    if (confirm('确定清理 "' + displayName + '" 的 launcher 副本？\n\n此操作清理 launcher 侧 JSON 备份和删除标记，不影响 Flash 内部 SOL 存档。')) {
-      _statusEl.textContent = '清理中...';
-      var unsub = window.BootstrapApp.onMessage('reset_resp', function(msg) {
-        unsub();
-        if (msg.ok) {
-          _isDirty = false;
-          _statusEl.textContent = '清理成功';
-          playUiCue('playSuccess');
-          window.BootstrapApp.refreshList();
-          setTimeout(function() { window.BootstrapApp.closeModal(); }, 600);
-        } else {
-          _statusEl.textContent = '清理失败: ' + (msg.error || 'unknown');
-          playUiCue('playError');
-        }
-      });
-      _unsubs.push(unsub);
-      window.BootstrapApp.send({ cmd: 'reset', slot: _slot, confirm: true });
+  function receiveSave(msg) {
+    var owner = _saving;
+    if (!owner || (msg.ok !== true && msg.ok !== false)) return;
+    if (owner.saveId !== undefined && (msg.requestId !== owner.saveId || msg.slot !== owner.slot)) return;
+    if ((msg.slot != null || msg.ok) && msg.slot !== owner.slot) return;
+    _saving = null;
+    if (msg.ok) window.BootstrapApp.refreshList();
+    if (owner !== _opening) { updateButtons(); return; }
+    updateButtons();
+    if (msg.ok) {
+      _isDirty = false;
+      playUiCue('playSuccess');
+      if (msg.warnings && msg.warnings.length) {
+        _statusEl.textContent = '已保存，启动器提示：' + JSON.stringify(msg.warnings);
+      } else {
+        window.BootstrapApp.closeModal();
+      }
+    } else {
+      _statusEl.textContent = '保存失败：' + (msg.error || '结果未知');
+      playUiCue('playError');
     }
   }
 
@@ -1299,7 +1259,12 @@
   function updateButtons() {
     if (!_saveBtn) return;
     // 保存按钮: inconsistent 永久禁用 / 非 Idle 禁用 / 高级模式 JSON 无效禁用
-    var disabled = _saveDisabled || !_idleOk;
+    var disabled = !_loaded || !!_saving || _saveDisabled || !_idleOk;
+    var savingHere = !!_saving && _saving === _opening;
+    _panelEl.inert = savingHere;
+    _modeTabsEl.inert = savingHere;
+    document.getElementById('ed-close').disabled = savingHere;
+    document.getElementById('ed-cancel').disabled = savingHere;
 
     // 高级模式下检查 JSON 有效性
     if (_mode === 'advanced' && !disabled) {
@@ -1316,7 +1281,6 @@
     }
 
     _saveBtn.disabled = disabled;
-    _resetBtn.disabled = !_idleOk;
 
     // 非 Idle 时追加只读提示（不覆盖已有的 error/warn banner）
     if (!_idleOk) {
@@ -1420,6 +1384,14 @@
 
   // ==================== 注册模块 ====================
 
+  window.BootstrapApp.onMessage('load_resp', function (msg) { receiveRead('load', msg); });
+  window.BootstrapApp.onMessage('load_raw_resp', function (msg) { receiveRead('load_raw', msg); });
+  window.BootstrapApp.onMessage('error', function (msg) {
+    if (_readInFlight && _readInFlight.readId === undefined && msg.msg === _readInFlight.op + ' needs an exact slot key') {
+      receiveRead(_readInFlight.op, {ok:false, error:msg.code});
+    }
+  });
+  window.BootstrapApp.onMessage('save_resp', receiveSave);
   window.BootstrapApp.registerModule('archive-editor', {
     mount: mount,
     unmount: unmount,

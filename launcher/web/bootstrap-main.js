@@ -6,7 +6,6 @@
 
   // ── 元素引用 ──
   var logEl = document.getElementById('log');
-  var cardsEl = document.getElementById('cards');
   var stateBadge = document.getElementById('state-badge');
   var retryBtn = document.getElementById('btn-retry');
   var cancelLaunchBtn = document.getElementById('btn-cancel-launch');
@@ -53,7 +52,16 @@
   // 仅保留启动阶段的小型权威状态，供晚加载的 ESM 消费者补收最新值。
   // 不缓存任意消息，避免长期持有导入数据、诊断结果等大 payload。
   var _replayMessages = {};
-  var _renamePending = null;
+  var _renamePending = '';
+  var _deletePending = '';
+  var _deleteRequestId, _deleteOp;
+  var _archiveRequestIds = false;
+  var _archiveSequence = 0;
+  function nextArchiveRequestId() { return _archiveRequestIds ? ++_archiveSequence : undefined; }
+  var saveManager = window.BootstrapSaveManager.create({
+    primaryName: slotPrimaryName, displayName: slotDisplayName,
+    formatBytes: fmtBytes, run: runSlotAction, canCleanResidue: function () { return _archiveRequestIds; }
+  });
 
   // Phase 2b: UserPrefs 字段, 初次 list_resp 前是未初始化占位 —
   //   lastPlayedSlot: null 表示"没有已记录的上次槽位" (新玩家 / 偏好文件不存在)
@@ -86,9 +94,11 @@
 
   function applyFontScale(v) {
     v = clampFontScale(v);
+    var changed = _prefsUiFontScale !== v;
     _prefsUiFontScale = v;
     // 写到 :root 上；bootstrap.css 直接以用户选择作为 --fs-scale。
     document.documentElement.style.setProperty('--user-fs-scale', String(v));
+    if (changed) saveManager.updateLayout();
   }
 
   // config_set 的"服务端权威对齐"机制 (Plan A+).
@@ -197,11 +207,6 @@
     return slotDisplayName(slot);
   }
 
-  function shortSlotKey(slotKey) {
-    slotKey = String(slotKey || '');
-    return slotKey.length <= 12 ? slotKey : slotKey.slice(0, 4) + '…' + slotKey.slice(-6);
-  }
-
   function normalizeSlotDisplayName(value) {
     var runtime = window.BootstrapCharacterCreateRuntime;
     if (!runtime || typeof runtime.normalizeDisplayName !== 'function') return null;
@@ -209,34 +214,31 @@
   }
 
   function finishRenamePending() {
-    if (_renamePending && _renamePending.button && _renamePending.button.isConnected) {
-      _renamePending.button.disabled = false;
-      _renamePending.button.textContent = '重命名';
-    }
-    _renamePending = null;
+    _renamePending = '';
+    saveManager.setRenamePending('');
   }
 
-  function renameSlot(slot, button) {
+  async function renameSlot(slot) {
     if (!slot || !slot.slot || slot.__newEntry) return false;
     if (_renamePending) {
       window.BootstrapAlert('已有存档正在重命名，请等待本地服务响应。');
       return false;
     }
     var current = slotDisplayName(slot);
-    var input = prompt('重命名存档显示名（允许重名；清空后恢复跟随角色名）', current);
+    var input = await window.BootstrapPrompt('修改存档显示名', {
+      archive:true, field:'存档名', value:current, okText:'保存', danger:false,
+      detail:'槽位 ' + slot.slot + '。清空后将跟随角色名。'
+    });
     if (input == null) return false;
     var restoreFollow = input.replace(/^\s+|\s+$/g, '') === '';
     var displayName = restoreFollow ? '' : normalizeSlotDisplayName(input);
     if (!restoreFollow && displayName === null) {
-      window.BootstrapAlert('存档显示名无效：去除首尾空白后需为 1–32 个可见 Unicode 文本元素，且不能包含控制字符。');
+      window.BootstrapAlert('存档名须为 1–32 个可见字符，且不能包含控制字符。', {archive:true});
       playUiCue('playError');
       return false;
     }
-    _renamePending = { slotKey:slot.slot, button:button };
-    if (button) {
-      button.disabled = true;
-      button.textContent = '重命名中…';
-    }
+    _renamePending = slot.slot;
+    saveManager.setRenamePending(slot.slot);
     if (!send({cmd:'rename_slot', slotKey:slot.slot, displayName:displayName})) {
       finishRenamePending();
       window.BootstrapAlert('无法发送重命名请求。');
@@ -246,25 +248,19 @@
     return true;
   }
 
-  function mergeSlots(fromLauncher) {
-    var byName = {};
-    for (var i = 0; i < fromLauncher.length; i++) byName[fromLauncher[i].slot] = fromLauncher[i];
-    var merged = [];
-    for (var j = 0; j < PRESET_SLOTS.length; j++) {
-      var slot = PRESET_SLOTS[j];
-      var data = byName[slot];
-      if (data) {
-        var preset = {};
-        for (var prop in data) if (data.hasOwnProperty(prop)) preset[prop] = data[prop];
-        preset.__preset = true;
-        merged.push(preset);
-        delete byName[slot];
-      }
-    }
-    var rest = [];
-    for (var key in byName) if (byName.hasOwnProperty(key)) rest.push(byName[key]);
-    rest.sort(function(a, b) { return a.slot < b.slot ? -1 : a.slot > b.slot ? 1 : 0; });
-    return merged.concat(rest, [newCharacterPlaceholder()]);
+  function orderedSlots(slots) {
+    return slots.slice().sort(function (left, right) {
+      var a = PRESET_SLOTS.indexOf(left.slot.toLowerCase());
+      var b = PRESET_SLOTS.indexOf(right.slot.toLowerCase());
+      if (a !== b) return (a < 0 ? PRESET_SLOTS.length : a) - (b < 0 ? PRESET_SLOTS.length : b);
+      return left.slot < right.slot ? -1 : left.slot > right.slot ? 1 : 0;
+    });
+  }
+
+  function findPhysicalSlot(slots, key) {
+    if (!key) return null;
+    var folded = key.toLowerCase();
+    return slots.find(function (entry) { return entry.slot.toLowerCase() === folded; });
   }
 
   function newCharacterPlaceholder() {
@@ -329,6 +325,7 @@
   function showWelcome() {
     var source = activeView();
     var changed = source !== viewWelcome;
+    saveManager.close();
     renderWelcomeSlot();
     document.body.classList.remove('character-create-active');
     if (changed) playUiCue('playTransition');
@@ -340,16 +337,12 @@
     document.body.classList.remove('character-create-active');
     if (changed) playUiCue('playTransition');
     switchView(viewSlots, source);
-    loadSlotsPoster();
-    if (changed) {
-      // C 期: 进入 slots 时清掉旧键盘焦点, 并聚焦卡片容器让方向键有 keydown 冒泡源
-      setKbFocus(null);
-      try { cardsEl.focus({ preventScroll: true }); } catch (e) { cardsEl.focus(); }
-    }
+    saveManager.open(source === viewWelcome, _welcomeSlot && _welcomeSlot.slot);
   }
 
   function showCharacterCreate() {
     var source = activeView();
+    saveManager.close();
     document.body.classList.add('character-create-active');
     if (source !== viewCharacterCreate) playUiCue('playTransition');
     switchView(viewCharacterCreate, source);
@@ -376,34 +369,7 @@
   }
   fillBuildMeta();
 
-  // ── B 期: slots 页随机通缉令海报装饰 (dungeon-posters/manifest.json) ──
-  // 首次调用即 fetch; 之后每次进 slots 幂等重设 (本次启动内海报不跳变).
-  // 提前到 WebView2 listener 注册之前调用, 进 slots 页时海报已就绪; 失败静默, 不影响主流程.
-  var _slotsPoster = null;
-  function loadSlotsPoster() {
-    var el = document.getElementById('slots-poster');
-    if (!el) return;
-    if (_slotsPoster) {
-      el.style.backgroundImage = 'url(assets/dungeon-posters/' + _slotsPoster + '.png)';
-      return;
-    }
-    fetch('assets/dungeon-posters/manifest.json')
-      .then(function(r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function(m) {
-        if (!m.posters || !m.posters.length) return;
-        _slotsPoster = m.posters[Math.floor(Math.random() * m.posters.length)];
-        el.style.backgroundImage = 'url(assets/dungeon-posters/' + _slotsPoster + '.png)';
-        logLine('tag-in', '[poster] ' + _slotsPoster);
-      })
-      .catch(function() { /* 海报装饰缺失静默 */ });
-  }
-  loadSlotsPoster();
-
-  // 随机垫图 + RECON 图窗喂图同样提前到 listener 注册之前 (无宿主静态预览下注册会 throw,
-  // 留在初始化段会永远跑不到; 与 loadSlotsPoster 同范式, 纯装饰 fetch 不依赖宿主)
+  // The character and archive workbenches share the launcher scene behind their surfaces.
   loadRandomBackground();
 
   // TRANSMISSION ◎ 点亮: 首个 list_resp → 第 1 行 + DLS SYNC 填健康存档比例;
@@ -439,41 +405,16 @@
   }
 
   // ── 欢迎页默认 slot 选择 ──
-  // 2b: 优先 launcher 推来的 lastPlayedSlot, 且该 slot 在当前列表里存在且可用 (非 corrupt/tombstoned/inconsistent)
-  // 回退: 第一个"有进度的正常 preset" → 第一个 preset (空槽, 触发新建流程) → 第一个 slot
   function pickDefaultSlot() {
-    var slots = mergeSlots(lastSlotsFromLauncher);
-    // 0) 用户从 slot 页主动选择的槽位优先. 若 list 刷新后该槽位状态与 mode 不兼容, 清除选择降级.
-    if (_userSelectedSlot) {
-      for (var x = 0; x < slots.length; x++) {
-        if (slots[x].slot !== _userSelectedSlot) continue;
-        var sel = slots[x];
-        var modeOk = (_userSelectedMode === 'fresh')
-          ? !sel.corrupt
-          : (!sel.__empty && !sel.corrupt && !sel.tombstoned && !sel.inconsistent);
-        if (modeOk) return sel;
-        break;
-      }
-      _userSelectedSlot = null;
-      _userSelectedMode = null;
-    }
-    // 1) 优先 lastPlayedSlot
-    if (_prefsLastPlayedSlot) {
-      for (var a = 0; a < slots.length; a++) {
-        var sa = slots[a];
-        if (sa.slot === _prefsLastPlayedSlot && !sa.__empty && !sa.corrupt && !sa.tombstoned && !sa.inconsistent) {
-          return sa;
-        }
-      }
-    }
-    // 2) 第一个"有进度的正常 preset"
-    for (var i = 0; i < slots.length; i++) {
-      var s = slots[i];
-      if (!s.__empty && !s.corrupt && !s.tombstoned && !s.inconsistent) return s;
-    }
-    // 3) 第一个已存在 preset；没有物理槽位时回退到唯一“新建存档”入口。
-    for (var j = 0; j < slots.length; j++) if (slots[j].__preset) return slots[j];
-    return slots[0] || null;
+    var viable = orderedSlots(lastSlotsFromLauncher).filter(function (s) {
+      return !window.BootstrapSaveManager.isDeleted(s) && !s.corrupt;
+    });
+    var selected = findPhysicalSlot(viable, _userSelectedSlot);
+    if (selected) return selected;
+    _userSelectedSlot = null;
+    _userSelectedMode = null;
+    return findPhysicalSlot(viable, _prefsLastPlayedSlot)
+      || viable[0] || newCharacterPlaceholder();
   }
 
   // 当前 effective mode: 用户显式 mode 优先; 未显式时按 slot 状态降级 (空槽 → fresh, 否则 normal).
@@ -696,122 +637,72 @@
     setLaunchInFlight(true);
     send({ cmd: 'start_game', slot: slotName, requireFlashReveal: true });
   }
-  function renderCards(slots) {
-    cardsEl.innerHTML = '';
-    _kbFocusCard = null;   // C 期: 重绘后旧焦点卡已不在 DOM, 清除键盘导航焦点
-    var merged = mergeSlots(slots || []);
-    for (var i = 0; i < merged.length; i++) cardsEl.appendChild(renderCard(merged[i]));
+  function saveNotice(text) { document.getElementById('save-notice').textContent = text; }
+
+  function runSlotAction(action, s) {
+    var isDeleted = window.BootstrapSaveManager.isDeleted;
+    var name = slotDisplayName(s);
+    if (action === 'start') selectSlotAndReturn(s.slot, 'normal');
+    if (action === 'edit') openModal('archive-editor', {slot:s.slot, slotMeta:s});
+    if (action === 'rename') renameSlot(s);
+    if (action === 'export') {
+      var date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      send({cmd:'export', slot:s.slot, defaultName:name + '_' + date + '.json', forceRaw:!!(s.corrupt || s.inconsistent)});
+    }
+    if (action === 'rebuild') {
+      window.BootstrapConfirm('在原槽位重建“' + name + '”？', {
+        archive:true, okText:'重建', detail:'槽位 ' + s.slot + ' 将用于创建新角色。'
+      }).then(function (ok) {
+        var current = window.BootstrapApp.getSlotMeta(s.slot);
+        if (ok && current && isDeleted(current)) openCharacterCreate('rebuild', s.slot);
+      });
+    }
+    if (action === 'delete' && !_deletePending) {
+      var cleanup = !!s.inconsistent && _archiveRequestIds;
+      window.BootstrapConfirm((cleanup ? '清理残留副本“' : '删除“') + name + '”？', {
+        archive:true, okText:cleanup ? '清理副本' : '删除', detail:cleanup
+          ? '仅清理槽位 ' + s.slot + ' 未删掉的本地副本。删除保护和槽位名称会保留。'
+          : '将删除槽位 ' + s.slot + ' 的存档副本。请先导出需要保留的进度。“已删除”中可在原槽位创建新角色。'
+      }).then(function (ok) {
+        var current = window.BootstrapApp.getSlotMeta(s.slot);
+        if (!ok || !current || _deletePending || (cleanup ? !current.inconsistent : isDeleted(current))) return;
+        _deletePending = s.slot;
+        _deleteOp = cleanup ? 'reset' : 'delete';
+        _deleteRequestId = nextArchiveRequestId();
+        saveManager.setDeletePending(s.slot);
+        saveNotice((cleanup ? '正在清理“' : '正在删除“') + name + '”…');
+        var request = {cmd:_deleteOp, slot:s.slot, requestId:_deleteRequestId};
+        if (cleanup) { request.confirm = true; request.residueOnly = true; }
+        if (!send(request)) finishDelete(false, '请求未能发送');
+      });
+    }
   }
 
-  function renderCard(s) {
-    var classes = ['card'];
-    if (s.__empty)      classes.push('empty-slot');
-    if (s.corrupt)      classes.push('corrupt');
-    if (s.tombstoned)   classes.push('tombstoned');
-    if (s.inconsistent) classes.push('inconsistent');
-    classes.push('corner-brackets');   // B 期: 四方位 L 角标
-    var card = document.createElement('div');
-    card.className = classes.join(' ');
-
-    // B 期: 菱形状态标 (配色复用 flag 色; 优先级与下方 flag 显示逻辑一致)
-    var gemCls = 'g-ok';
-    if (s.__empty)         gemCls = 'g-empty';
-    else if (s.corrupt)    gemCls = 'g-corrupt';
-    else if (s.inconsistent) gemCls = 'g-incon';
-    else if (s.tombstoned) gemCls = 'g-tomb';
-
-    var flags = '';
-    if (s.__empty && s.__preset) flags += '<span class="flag empty">空槽位</span>';
-    if (s.corrupt)      flags += '<span class="flag corrupt">损坏</span>';
-    if (s.tombstoned && !s.inconsistent) flags += '<span class="flag tombstoned">已删除</span>';
-    if (s.inconsistent) flags += '<span class="flag inconsistent">不一致</span>';
-
-    var meta = '';
-    if (!s.__empty) {
-      meta = fmtBytes(s.size);
-      if (s.lastModified) meta += ' · ' + s.lastModified.slice(0, 16).replace('T', ' ');
-    }
-
-    var displayName = slotDisplayName(s);
-    var primaryName = slotPrimaryName(s);
-    var progressParts = [];
-    if (!s.__empty && displayName !== primaryName) progressParts.push('存档名 · ' + displayName);
-    if (!s.__empty && s.mainProgress) progressParts.push(s.mainProgress);
-    var progressText = s.__empty ? '—' : (progressParts.join(' · ') || '—');
-
-    var actions = '';
-    if (s.__empty) {
-      actions = '<button class="btn-newchar">新建角色</button>';
-    } else if (s.inconsistent) {
-      actions = '<button class="btn-rebuild">重建</button>'
-              + '<button class="btn-edit">编辑</button>'
-              + '<button class="btn-export">导出</button>'
-              + '<button class="btn-reset danger">清理副本</button>';
-    } else if (s.tombstoned) {
-      actions = '<button class="btn-rebuild">重建</button>'
-              + '<button class="btn-reset danger">清理副本</button>';
-    } else if (s.corrupt) {
-      actions = '<button class="btn-edit">编辑</button>'
-              + '<button class="btn-export">导出</button>'
-              + '<button class="btn-delete danger">删除</button>'
-              + '<button class="btn-reset danger">清理副本</button>';
+  function finishDelete(ok, error, warning) {
+    var key = _deletePending;
+    var cleanup = _deleteOp === 'reset';
+    _deletePending = '';
+    _deleteOp = _deleteRequestId = undefined;
+    saveManager.setDeletePending('');
+    if (ok) {
+      // The exact delete receipt commits the tombstone; the following list reconciles the full entry.
+      var meta = window.BootstrapApp.getSlotMeta(key);
+      if (meta) {
+        lastSlotsFromLauncher = lastSlotsFromLauncher.map(function (s) {
+          return s.slot === key ? Object.assign({}, s, {tombstoned:true, inconsistent:warning === 'shadow_cleanup_pending'}) : s;
+        });
+      }
+      saveManager.update(orderedSlots(lastSlotsFromLauncher));
+      renderWelcomeSlot();
+      saveNotice(warning === 'shadow_cleanup_pending' ? '存档已删除，副本仍被占用。释放文件后可在“已删除”中清理。'
+        : cleanup ? '残留副本已清理，删除保护已保留。' : '存档已移至“已删除”。');
+      playUiCue('playSuccess');
     } else {
-      actions = '<button class="btn-start primary">选择</button>'
-              + '<button class="btn-edit">编辑</button>'
-              + '<button class="btn-export">导出</button>'
-              + '<button class="btn-delete danger">删除</button>';
+      saveNotice((cleanup ? '清理失败：' : '删除失败：') + (error === 'shadow_in_use'
+        ? '副本仍被占用，删除保护已保留。' : error || '请刷新后检查存档状态'));
+      playUiCue('playError');
     }
-    if (s.slot && !s.__newEntry) actions += '<button class="btn-rename">重命名</button>';
-
-    card.innerHTML =
-      '<div class="card-gem ' + gemCls + '" aria-hidden="true"></div>' +
-      '<div class="slot">' + escapeHtml(primaryName) + '</div>' +
-      // 卡头/信息区分隔线 (rust-dim + dls 辉光短段, 样式见 welcome.css .card-divider)
-      '<div class="card-divider" aria-hidden="true"></div>' +
-      '<div class="slot-id mono-num" aria-label="'
-        + (s.__newEntry ? '由本地服务自动分配槽位' : '槽位 ' + escapeHtml(s.slot)) + '">'
-        + (s.__newEntry ? '槽位 · 自动分配' : '槽位 · ' + escapeHtml(shortSlotKey(s.slot))) + '</div>' +
-      '<div class="progress mono-num">' + escapeHtml(progressText) + '</div>' +
-      '<div class="meta mono-num">' + flags + meta + '</div>' +
-      // 无物理 identity 的新建入口显示「＋」引导符。
-      (s.__empty ? '<div class="empty-glyph" aria-hidden="true">＋</div>' : '') +
-      '<div class="card-actions">' + actions + '</div>';
-
-    var startBtn   = card.querySelector('.btn-start');
-    var deleteBtn  = card.querySelector('.btn-delete');
-    var rebuildBtn = card.querySelector('.btn-rebuild');
-    var newCharBtn = card.querySelector('.btn-newchar');
-    var editBtn    = card.querySelector('.btn-edit');
-    var exportBtn  = card.querySelector('.btn-export');
-    var resetBtn   = card.querySelector('.btn-reset');
-    var renameBtn  = card.querySelector('.btn-rename');
-
-    if (startBtn) startBtn.onclick = function() { selectSlotAndReturn(s.slot, 'normal'); };
-    if (deleteBtn) deleteBtn.onclick = function() {
-      window.BootstrapConfirm('确定删除存档 "' + displayName + '" ?', { okText: '删除' })
-        .then(function(ok) { if (ok) send({ cmd: 'delete', slot: s.slot }); });
-    };
-    if (rebuildBtn) rebuildBtn.onclick = function() {
-      window.BootstrapConfirm('重建存档 "' + displayName + '" （原数据将丢弃）？', { okText: '重建' })
-        .then(function(ok) { if (ok) openCharacterCreate('rebuild', s.slot); });
-    };
-    if (newCharBtn) newCharBtn.onclick = function() { openCharacterCreate('new'); };
-    if (editBtn) editBtn.onclick = function() {
-      window.BootstrapApp.openModal('archive-editor', { slot: s.slot, slotMeta: s });
-    };
-    if (exportBtn) exportBtn.onclick = function() {
-      var forceRaw = !!(s.corrupt || s.inconsistent);
-      var dn = slotDisplayName(s);
-      var ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-      send({ cmd: 'export', slot: s.slot, defaultName: dn + '_' + ts + '.json', forceRaw: forceRaw });
-    };
-    if (resetBtn) resetBtn.onclick = function() {
-      window.BootstrapConfirm('确定清理 "' + displayName + '" 的 launcher 副本？',
-        { okText: '清理', detail: '此操作仅清理 launcher 侧 JSON 备份和删除标记，不影响 Flash 内部 SOL 存档。' })
-        .then(function(ok) { if (ok) send({ cmd: 'reset', slot: s.slot, confirm: true }); });
-    };
-    if (renameBtn) renameBtn.onclick = function() { renameSlot(s, renameBtn); };
-    return card;
+    send({cmd:'list'});
   }
 
   function handleNewCharacterClick() {
@@ -1124,7 +1015,7 @@
       // flash_ready 只对当前 Ready 周期有效，离开 Ready 后不得向新订阅者重放旧事件。
       if (msg.state !== 'Ready') delete _replayMessages.flash_ready;
     }
-    var arr = _handlers[cmd];
+    var arr = _handlers[cmd] && _handlers[cmd].slice();
     if (arr) for (var i = 0; i < arr.length; i++) {
       try { arr[i](msg); } catch (e) { logLine('tag-err', 'handler error [' + cmd + ']: ' + e.message); }
     }
@@ -1139,7 +1030,12 @@
 
     if (msg.cmd === 'state')            applyState(msg.state, msg.msg);
     else if (msg.cmd === 'list_resp') {
-      lastSlotsFromLauncher = msg.slots || [];
+      if (msg.ok === false || !Array.isArray(msg.slots)) {
+        saveNotice('目录读取失败，可刷新重试。');
+        return;
+      }
+      if (msg.archiveRequestIds === true) _archiveRequestIds = true;
+      lastSlotsFromLauncher = msg.slots;
       // Phase 2b: 接收 launcher 推的 UserPrefs
       if (typeof msg.lastPlayedSlot === 'string') _prefsLastPlayedSlot = msg.lastPlayedSlot;
       if (typeof msg.introEnabled === 'boolean')  _prefsIntroEnabled   = msg.introEnabled;
@@ -1153,7 +1049,7 @@
         // Ambient 的实际启停: AudioContext suspended 时 startAmbient 是 no-op, 等首次交互时恢复.
         Audio.setAmbientEnabled(_prefsAmbientEnabled);
       }
-      renderCards(lastSlotsFromLauncher);
+      saveManager.update(orderedSlots(lastSlotsFromLauncher));
       renderWelcomeSlot();
       // 首次 list_resp 拿到 prefs 后查一次字体扩展状态（幂等：requestFontPackStatus 内部去重）
       requestFontPackStatus();
@@ -1195,17 +1091,17 @@
       // Flash 封面就绪: 同步响一次就绪和弦, 并关掉环境 hum 让位给 Flash BGM.
       if (Audio) { Audio.playReady(); Audio.stopAmbient(); }
     }
-    else if (msg.cmd === 'delete_resp') {
-      if (msg.ok) {
-        playUiCue('playSuccess');
-        send({ cmd: 'list' });
-      } else {
-        logLine('tag-err', 'delete failed: ' + msg.error);
-        playUiCue('playError');
+    else if (msg.cmd === 'delete_resp' || msg.cmd === 'reset_resp') {
+      if (_deletePending && msg.cmd === _deleteOp + '_resp'
+          && (msg.ok === true || msg.ok === false)
+          && (_deleteRequestId === undefined || msg.requestId === _deleteRequestId)
+          && (msg.slot === _deletePending || (_deleteRequestId === undefined && !msg.ok && !msg.slot))) {
+        finishDelete(msg.ok === true, msg.error, msg.warning);
       }
     }
     else if (msg.cmd === 'rename_slot_resp') {
-      var pendingSlot = _renamePending && _renamePending.slotKey;
+      var pendingSlot = _renamePending;
+      if (!pendingSlot || (msg.slotKey && msg.slotKey !== pendingSlot) || (msg.ok && !msg.slotKey)) return;
       finishRenamePending();
       if (msg.ok) {
         playUiCue('playSuccess');
@@ -1213,7 +1109,7 @@
       } else {
         var renameError = msg.error || '本地服务拒绝了重命名请求';
         logLine('tag-err', 'rename failed: slot=' + (msg.slotKey || pendingSlot || '?') + ' err=' + renameError);
-        window.BootstrapAlert('重命名失败：' + renameError);
+        window.BootstrapAlert('重命名失败：' + renameError, {archive:true});
         playUiCue('playError');
       }
     }
@@ -1235,17 +1131,12 @@
         applyFontPackInstallResp(msg);
       }
     }
-    else if (msg.cmd === 'error')       { logLine('tag-err', msg.code + ': ' + msg.msg); playUiCue('playError'); }
-    else if (msg.cmd === 'pong')        logLine('tag-in', 'pong');
-    else if (msg.cmd === 'reset_resp')  {
-      if (msg.ok) {
-        playUiCue('playSuccess');
-        send({ cmd: 'list' });
-      } else {
-        logLine('tag-err', 'reset failed: ' + (msg.error || 'unknown'));
-        playUiCue('playError');
-      }
+    else if (msg.cmd === 'error') {
+      logLine('tag-err', msg.code + ': ' + msg.msg);
+      if (_deletePending && _deleteRequestId === undefined && msg.msg === 'delete needs an exact slot key') finishDelete(false, msg.code);
+      else playUiCue('playError');
     }
+    else if (msg.cmd === 'pong')        logLine('tag-in', 'pong');
     else if (msg.cmd === 'export_resp') {
       if (msg.ok) {
         logLine('tag-in', '导出成功: ' + (msg.path || ''));
@@ -1279,34 +1170,37 @@
     dispatchMessage(msg);
   });
 
-  function handleImportTarget(msg) {
+  async function handleImportTarget(msg) {
     var sourceData = msg.sourceData;
     var suggestedSlot = msg.suggestedSlot || '';
     playUiCue('playModalOpen');
-    var slot = prompt('选择目标存档槽位:\n建议: ' + suggestedSlot + '\n仅允许字母/数字/下划线/短横线, 1-32 字符', suggestedSlot);
+    var slot = await window.BootstrapPrompt('选择导入目标', {
+      archive:true, field:'目标槽位', value:suggestedSlot, okText:'继续', danger:false,
+      detail:'可输入已有槽号。新槽号可用 1–32 个英文字母、数字、下划线或短横线。'
+    });
     if (slot == null) { playUiCue('playCancel'); return; }
     slot = slot.trim();
     if (!slot) { logLine('tag-err', '导入取消: 未输入槽位名'); playUiCue('playCancel'); return; }
-    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); window.BootstrapAlert('槽位名不合法: "' + slot + '"'); return; }
-    var meta = window.BootstrapApp.getSlotMeta(slot);
+    // Import is the only path that lets the user type a physical key. Windows matches
+    // these ASCII filenames case-insensitively; keep the catalog spelling on the wire.
+    var meta = findPhysicalSlot(lastSlotsFromLauncher, slot);
+    if (!meta && !SLOT_NAME_RE.test(slot)) { playUiCue('playError'); window.BootstrapAlert('槽位名不合法: "' + slot + '"'); return; }
     if (meta == null) {
       send({ cmd: 'import_commit', slot: slot, data: sourceData });
-    } else if (meta.tombstoned || meta.inconsistent) {
-      window.BootstrapConfirm('此 slot 已标记删除/不一致，需先清理才能导入。是否自动清理？', { okText: '清理' })
-        .then(function(ok) {
-          if (!ok) return;
-          var unsub = window.BootstrapApp.onMessage('reset_resp', function(resp) {
-            unsub();
-            if (resp.ok) send({ cmd: 'import_commit', slot: slot, data: sourceData });
-            else logLine('tag-err', '清理失败: ' + (resp.error || ''));
-          });
-          send({ cmd: 'reset', slot: slot, confirm: true });
-        });
-    } else if (meta.corrupt) {
-      window.BootstrapConfirm('此存档已损坏，覆盖？', { okText: '覆盖' }).then(function(ok) { if (ok) send({ cmd: 'import_commit', slot: slot, data: sourceData }); });
-    } else {
-      window.BootstrapConfirm('存档已存在，覆盖？', { okText: '覆盖' }).then(function(ok) { if (ok) send({ cmd: 'import_commit', slot: slot, data: sourceData }); });
+      return;
     }
+    if (!window.BootstrapSaveManager.isDeleted(meta)) {
+      var ok = await window.BootstrapConfirm(meta.corrupt ? '此存档已损坏，覆盖？' : '存档已存在，覆盖？', {
+        archive:true, okText:'覆盖', detail:'槽位 ' + meta.slot
+      });
+      if (!ok) return;
+      var current = window.BootstrapApp.getSlotMeta(meta.slot);
+      if (current && !window.BootstrapSaveManager.isDeleted(current)) {
+        send({ cmd:'import_commit', slot:meta.slot, data:sourceData });
+        return;
+      }
+    }
+    window.BootstrapAlert('该槽位已删除。请导入到新的槽位，或选择其他现有存档。', {archive:true});
   }
 
   // ── Modal 管理 ──
@@ -1317,7 +1211,7 @@
     if (active) {
       if (_modalBackgroundState) return;
       _modalBackgroundState = Array.prototype.slice.call(
-        document.querySelectorAll('.topbar, .view, .bottom, #log')
+        document.querySelectorAll('body > .topbar, body > .view, body > .bottom, #log')
       ).map(function(node) {
         var state = {node:node, ariaHidden:node.getAttribute('aria-hidden')};
         node.inert = true;
@@ -1383,6 +1277,10 @@
     var host = document.getElementById('modal-host');
     var content = document.getElementById('modal-content');
     _modalReturnFocus = document.activeElement;
+    var archiveView = document.getElementById('archive-modal-view');
+    var archive = name === 'archive-editor' || (name === 'confirm-dialog' && initData && initData.archive);
+    archiveView.hidden = !archive;
+    if (archive) document.getElementById('archive-modal-anchor').appendChild(content);
     content.innerHTML = '';
     mod.mount(content, initData);
     var heading = content.querySelector('.modal-header h1, .modal-header h2, .modal-header h3');
@@ -1397,13 +1295,22 @@
     host.style.display = '';
     setModalBackgroundInert(true);
     focusModalStart();
+    var field = content.querySelector('#confirm-field');
+    if (field) { field.focus(); field.select(); }
     playUiCue('playModalOpen');
+    return true;
   }
   function closeModal() {
     if (!_currentModal) return;
     var returnFocus = _modalReturnFocus;
     if (_currentModule && _currentModule.unmount) _currentModule.unmount();
-    document.getElementById('modal-host').style.display = 'none';
+    var host = document.getElementById('modal-host');
+    host.style.display = 'none';
+    var archiveView = document.getElementById('archive-modal-view');
+    if (!archiveView.hidden) {
+      host.appendChild(document.getElementById('modal-content'));
+      archiveView.hidden = true;
+    }
     setModalBackgroundInert(false);
     _currentModal = null;
     _currentModule = null;
@@ -1479,6 +1386,7 @@
     },
     getLaunchState: function() { return _lastLaunchState; },
     getSlots: function() { return lastSlotsFromLauncher.slice(); },
+    nextArchiveRequestId: nextArchiveRequestId,
     getSlotMeta: function(slot) {
       for (var i = 0; i < lastSlotsFromLauncher.length; i++)
         if (lastSlotsFromLauncher[i].slot === slot) return lastSlotsFromLauncher[i];
@@ -1630,21 +1538,16 @@
     document.addEventListener('pointerdown', onFirstInteraction, true);
     document.addEventListener('keydown', onFirstInteraction, true);
 
-    // Hover: 所有 <button> + .card 触发, 由 audio.js 内部去抖.
+    // 操作与存档列表行都是原生按钮，悬停音效由 audio.js 去抖。
     document.addEventListener('mouseover', function (e) {
       var t = e.target;
       if (!t || !t.closest) return;
       var btn = t.closest('button');
-      if (btn) {
-        if (btn.disabled) return;
-        Audio.playHover();
-        return;
-      }
-      if (t.closest('.card:not(.empty-slot)')) Audio.playHover();
+      if (btn && !btn.disabled) Audio.playHover();
     });
 
     // Click 分类: primary (btn-go) → confirm; back/cancel/close → cancel;
-    //   slot select (start/rebuild/newchar/btn-new) → select; 其他 button → click.
+    //   slot select (start/rebuild/btn-new) → select; 其他 button → click.
     document.addEventListener('click', function (e) {
       var t = e.target;
       if (!t || !t.closest) return;
@@ -1652,7 +1555,7 @@
       if (btn && !btn.disabled) {
         if (btn.matches('.btn-go')) { Audio.playConfirm(); return; }
         if (btn.matches('.btn-back, .modal-close, #btn-cancel-launch, .intro-skip')) { Audio.playCancel(); return; }
-        if (btn.matches('.btn-start, .btn-rebuild, .btn-newchar, #btn-new, #btn-switch-slot')) { Audio.playSelect(); return; }
+        if (btn.matches('.btn-start, .btn-rebuild, #btn-new, #btn-switch-slot')) { Audio.playSelect(); return; }
         Audio.playClick();
         return;
       }
@@ -1679,73 +1582,19 @@
     TT.bind(document.getElementById('btn-refresh'), '刷新：重新扫描存档槽位');
     TT.bind(document.getElementById('btn-new'), '新建角色：由本地服务自动分配槽位');
     TT.bind(document.getElementById('btn-import'), '导入存档：从 JSON 备份导入');
-    TT.bind(document.getElementById('btn-open-dir'), '打开存档目录：在资源管理器中查看');
-    // 卡片操作按钮是动态渲染 — 事件委托按 class 匹配, renderCard 重绘不丢绑定
-    if (TT.bindDelegate) TT.bindDelegate(cardsEl, {
+    TT.bind(document.getElementById('btn-open-dir'), '在资源管理器中查看启动器的 JSON 副本');
+    // 详情区的操作按钮共用一组提示。
+    if (TT.bindDelegate) TT.bindDelegate(document.getElementById('save-actions'), {
       'btn-start': '选择：设为启动存档并返回欢迎页',
       'btn-edit': '编辑：打开存档数据编辑器',
       'btn-export': '导出：备份为 JSON 文件',
-      'btn-delete': '删除：删除存档（不可恢复）',
+      'btn-delete': '移至已删除，保留阻止旧档回填的标记',
       'btn-rebuild': '重建：清空并重新开始（原数据丢弃）',
-      'btn-reset': '清理副本：清除 launcher 侧备份与删除标记',
-      'btn-rename': '重命名：修改启动器中的存档显示名（允许重名）',
-      'btn-newchar': '新建角色：由本地服务自动分配槽位'
+      'btn-rename': '重命名：修改启动器中的存档显示名（允许重名）'
     });
   }
 
-  // 键盘导航: slots 卡片网格方向键移动焦点 + Enter 主操作; welcome 页 Enter = 确认.
-  var _kbFocusCard = null;
-  function setKbFocus(card) {
-    if (_kbFocusCard === card) return;
-    if (_kbFocusCard) _kbFocusCard.classList.remove('kb-focus');
-    _kbFocusCard = card || null;
-    if (_kbFocusCard) {
-      _kbFocusCard.classList.add('kb-focus');
-      try { _kbFocusCard.scrollIntoView({ block: 'nearest' }); } catch (e) {}
-    }
-  }
-  function kbCardList() {
-    var out = [];
-    for (var i = 0; i < cardsEl.children.length; i++) {
-      var c = cardsEl.children[i];
-      if (c.classList && c.classList.contains('card')) out.push(c);
-    }
-    return out;
-  }
-  // 列数从实际布局推: 第一行里 offsetTop 相同的卡片数 (auto-fit 网格不暴露列数)
-  function kbGridCols(cards) {
-    if (cards.length < 2) return 1;
-    var top = cards[0].offsetTop;
-    for (var i = 0; i < cards.length; i++) {
-      if (cards[i].offsetTop !== top) return Math.max(1, i);
-    }
-    return cards.length;
-  }
   function initKeyboardNav() {
-    // #cards 在 showSlots 时被聚焦 (tabindex=-1); 卡片按钮 Tab 聚焦时 keydown 也冒泡到这里
-    cardsEl.addEventListener('keydown', function(e) {
-      // 真实按钮保留浏览器原生键盘语义；容器级方向键/Enter 只处理卡片导航焦点。
-      if (e.target && e.target.closest && e.target.closest('button')) return;
-      var cards = kbCardList();
-      if (!cards.length) return;
-      var idx = cards.indexOf(_kbFocusCard);
-      var cols = kbGridCols(cards);
-      var handled = true;
-      if (e.key === 'ArrowRight')     idx = (idx < 0) ? 0 : Math.min(cards.length - 1, idx + 1);
-      else if (e.key === 'ArrowLeft') idx = (idx < 0) ? 0 : Math.max(0, idx - 1);
-      else if (e.key === 'ArrowDown') idx = (idx < 0) ? 0 : Math.min(cards.length - 1, idx + cols);
-      else if (e.key === 'ArrowUp')   idx = (idx < 0) ? 0 : Math.max(0, idx - cols);
-      else if (e.key === 'Enter') {
-        if (idx < 0) { setKbFocus(cards[0]); e.preventDefault(); return; }
-        // 主操作: 选择 / 新建角色; 异常卡 (tombstoned/inconsistent) 回退到重建
-        var primary = cards[idx].querySelector('.btn-start, .btn-newchar, .btn-rebuild');
-        if (primary) primary.click();
-      }
-      else handled = false;
-      if (!handled) return;
-      e.preventDefault();   // 拦下方向键默认滚动, 滚动由 scrollIntoView(nearest) 精细控制
-      if (e.key !== 'Enter' && idx >= 0) setKbFocus(cards[idx]);
-    });
     // welcome 页: 焦点不在任何可交互元素上 (activeElement 是 body) 时 Enter = 点「确认」
     document.addEventListener('keydown', function(e) {
       if (e.key !== 'Enter') return;
@@ -1759,7 +1608,6 @@
   }
 
   // ── 初始化 ──
-  // loadRandomBackground 已提前到 WebView2 listener 注册之前调用 (见 loadSlotsPoster 旁), 这里不重复
   initAudioBindings();
   showWelcome();   // 默认欢迎视图
   initTransmissionLights();   // TRANSMISSION ◎ 点亮订阅 (BootstrapApp 已定义; 无宿主环境到不了这里, 内部有防御)

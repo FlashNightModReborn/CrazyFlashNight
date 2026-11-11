@@ -19,7 +19,7 @@ namespace CF7Launcher.Guardian.Handlers
         internal static void HandleSave(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
         {
             BootstrapCommandHelpers.RequireIdleOrTearDown("save", bootForm, launchFlow,
-                delegate { HandleSaveInternal(msg, bootForm, archiveTask); });
+                delegate { HandleSaveInternal(msg, bootForm, archiveTask); }, msg);
         }
 
         private static void HandleSaveInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
@@ -29,7 +29,7 @@ namespace CF7Launcher.Guardian.Handlers
             if (!BootstrapCommandHelpers.TryReadWritableSlotKey(
                     msg, "slot", archiveTask, out slot, out slotError))
             {
-                BootstrapCommandHelpers.PostResp(bootForm, "save_resp", false, null, slotError);
+                BootstrapCommandHelpers.PostSlotFailure(bootForm, msg, "save_resp", slotError);
                 return;
             }
 
@@ -37,50 +37,15 @@ namespace CF7Launcher.Guardian.Handlers
             string normErr;
             if (!BootstrapCommandHelpers.NormalizeDataToJObject(msg["data"], out dataObj, out normErr))
             {
-                BootstrapCommandHelpers.PostResp(bootForm, "save_resp", false, slot, normErr);
+                BootstrapCommandHelpers.PostSlotFailure(bootForm, msg, "save_resp", normErr);
                 return;
             }
 
-            // 构造 archive shadow payload，注入 userEdit:true
-            JObject archiveMsg = new JObject();
-            archiveMsg["task"] = "archive";
-            JObject payload = new JObject();
-            payload["op"] = "shadow";
-            payload["slot"] = slot;
-            payload["data"] = dataObj;
+            var archiveMessage = BootstrapCommandHelpers.BuildArchivePayload("shadow", slot);
+            var payload = (JObject)archiveMessage["payload"];
             payload["userEdit"] = true;
-            archiveMsg["payload"] = payload;
-
-            archiveTask.HandleAsync(archiveMsg, delegate(string resultJson)
-            {
-                JObject result;
-                try { result = JObject.Parse(resultJson); }
-                catch
-                {
-                    BootstrapCommandHelpers.PostResp(bootForm, "save_resp", false, slot, "archive_task_failed");
-                    return;
-                }
-
-                bool ok = result.Value<bool?>("success") ?? false;
-                JObject outMsg = new JObject();
-                outMsg["type"] = "bootstrap";
-                outMsg["cmd"] = "save_resp";
-                outMsg["slot"] = slot;
-                outMsg["ok"] = ok;
-                if (ok)
-                {
-                    JToken size = result["size"];
-                    if (size != null) outMsg["size"] = size;
-                    JToken warnings = result["warnings"];
-                    if (warnings != null) outMsg["warnings"] = warnings;
-                }
-                else
-                {
-                    string err = result.Value<string>("error");
-                    if (err != null) outMsg["error"] = err;
-                }
-                bootForm.PostToWeb(outMsg.ToString(Formatting.None));
-            });
+            payload["data"] = dataObj;
+            BootstrapCommandHelpers.DispatchSlot(bootForm, archiveTask, msg, archiveMessage, "save_resp");
         }
 
         // ─────── reset ───────
@@ -88,7 +53,7 @@ namespace CF7Launcher.Guardian.Handlers
         internal static void HandleReset(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
         {
             BootstrapCommandHelpers.RequireIdleOrTearDown("reset", bootForm, launchFlow,
-                delegate { HandleResetInternal(msg, bootForm, archiveTask); });
+                delegate { HandleResetInternal(msg, bootForm, archiveTask); }, msg);
         }
 
         private static void HandleResetInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
@@ -98,37 +63,16 @@ namespace CF7Launcher.Guardian.Handlers
             if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
                     msg, "slot", archiveTask, out slot, out slotError))
             {
-                BootstrapCommandHelpers.PostResp(bootForm, "reset_resp", false, null, slotError);
+                BootstrapCommandHelpers.PostSlotFailure(bootForm, msg, "reset_resp", slotError);
                 return;
             }
 
             bool confirm = msg.Value<bool?>("confirm") ?? false;
-            if (!confirm) { BootstrapCommandHelpers.PostResp(bootForm, "reset_resp", false, slot, "confirm_required"); return; }
+            if (!confirm) { BootstrapCommandHelpers.PostSlotFailure(bootForm, msg, "reset_resp", "confirm_required"); return; }
 
             JObject archiveMsg = BootstrapCommandHelpers.BuildArchivePayload("reset", slot);
-            archiveTask.HandleAsync(archiveMsg, delegate(string resultJson)
-            {
-                JObject result;
-                try { result = JObject.Parse(resultJson); }
-                catch
-                {
-                    BootstrapCommandHelpers.PostResp(bootForm, "reset_resp", false, slot, "archive_task_failed");
-                    return;
-                }
-
-                bool ok = result.Value<bool?>("success") ?? false;
-                JObject outMsg = new JObject();
-                outMsg["type"] = "bootstrap";
-                outMsg["cmd"] = "reset_resp";
-                outMsg["slot"] = slot;
-                outMsg["ok"] = ok;
-                if (!ok)
-                {
-                    string err = result.Value<string>("error");
-                    if (err != null) outMsg["error"] = err;
-                }
-                bootForm.PostToWeb(outMsg.ToString(Formatting.None));
-            });
+            archiveMsg["payload"]["residueOnly"] = msg["residueOnly"]?.Type == JTokenType.Boolean && (bool)msg["residueOnly"];
+            BootstrapCommandHelpers.DispatchSlot(bootForm, archiveTask, msg, archiveMsg, "reset_resp");
         }
 
         // ─────── export ───────

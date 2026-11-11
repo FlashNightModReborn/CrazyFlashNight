@@ -110,6 +110,44 @@ namespace CF7Launcher.Tests.Save
             Assert.True(File.Exists(Path.Combine(_projectRoot, "saves", Slot + ".json")));
         }
 
+        [Fact]
+        public void RebuildRequiresExactReceiptAndANewFlushedSolAcrossRestart()
+        {
+            string path = Path.Combine(_projectRoot, "same-name.sol");
+            File.WriteAllText(path, "old bytes");
+            var locator = new StubLocator { SlotWithSol = Slot, ResultPath = path };
+            var parser = new StubParser { Data = BuildV3SoData("同名角色") };
+            var archive = new ArchiveTask(_projectRoot);
+            var resolver = new SolResolver(locator, archive, parser, archive);
+            string prior = resolver.CurrentSolHash(Slot, SwfPath);
+            archive.PrepareRebuildSync(Slot, "new-call", prior);
+            Assert.Throws<InvalidOperationException>(() => archive.ConfirmRebuildSync(Slot, "stale-call", "同名角色"));
+            new LegacyPresetSlotSeeder(archive, resolver, SwfPath).SeedAllPresetSlotsIfMissing();
+            Assert.True(archive.IsTombstoned(Slot));
+            Assert.Equal(0, parser.Calls);
+            archive.ConfirmRebuildSync(Slot, "new-call", "同名角色");
+            Assert.False(archive.PublishConfirmedRebuild(Slot, resolver, SwfPath));
+            var restarted = new ArchiveTask(_projectRoot);
+            resolver = new SolResolver(locator, restarted, parser, restarted);
+            File.WriteAllText(path, "new flushed bytes");
+            parser.Data = BuildV3SoData("其他角色");
+            restarted.RecoverConfirmedRebuilds(resolver, SwfPath);
+            Assert.True(restarted.IsTombstoned(Slot));
+            parser.Data = BuildV3SoData("同名角色");
+            parser.Data["test"]["0"][3] = 17;
+            restarted.RecoverConfirmedRebuilds(resolver, SwfPath);
+            Assert.False(restarted.IsTombstoned(Slot));
+            Assert.True(restarted.TryLoadShadowSync(Slot, out JObject snapshot, out _));
+            Assert.Equal(17, (int)snapshot["0"][3]);
+            // A later deletion supersedes even a recorded durable receipt.
+            restarted.PrepareRebuildSync(Slot, "next-call", null);
+            restarted.ConfirmRebuildSync(Slot, "next-call", "同名角色");
+            restarted.ResetSlotSync(Slot);
+            restarted.RecoverConfirmedRebuilds(resolver, SwfPath);
+            Assert.True(restarted.IsTombstoned(Slot));
+            Assert.False(restarted.TryLoadShadowSync(Slot, out _, out _));
+        }
+
         private static JObject BuildV3SoData(string name)
         {
             JObject so = new JObject();

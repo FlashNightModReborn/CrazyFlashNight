@@ -596,11 +596,19 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(SubmitCharacterCreate(harness.Flow,
                 attempt, slot, "重建已删除槽", BuildDraft(), out error), error);
 
-            Assert.False(File.Exists(tombstonePath));
+            Assert.True(File.Exists(tombstonePath));
             Assert.False(File.Exists(
                 harness.Archive.RebuildBackups.GetBackupPath(slot)));
-            Assert.Single(harness.As2, x => x.Value<string>("action")
-                == "characterCreate");
+            var create = Assert.Single(harness.As2, x => x.Value<string>("action") == "characterCreate");
+            string callId = create.Value<string>("callId");
+            harness.Send(BuildCreateResponse(attempt, slot, "older-call", "durable", true, true));
+            var negative = BuildCreateResponse(attempt, slot, callId, "durable", true, true);
+            negative["durable"] = false;
+            harness.Send(negative);
+            harness.Send(BuildCreateResponse(attempt, slot, callId, "durable", true, false));
+            Assert.Null(JObject.Parse(File.ReadAllText(tombstonePath))["confirmedCharacter"]);
+            harness.Send(BuildCreateResponse(attempt, slot, callId, "durable", true, true));
+            Assert.Equal("新角色", (string)JObject.Parse(File.ReadAllText(tombstonePath))["confirmedCharacter"]);
         }
 
         [Fact]
@@ -645,7 +653,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal("旧角色", backup["snapshot"]["0"][0].Value<string>());
             Assert.Equal("json_shadow_tombstoned", backup.Value<string>("source"));
             Assert.False(File.Exists(shadowPath));
-            Assert.False(File.Exists(tombstonePath));
+            Assert.True(File.Exists(tombstonePath));
         }
 
         [Fact]
@@ -732,6 +740,7 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.StartsWith("reset_failed:IOException", error, StringComparison.Ordinal);
             Assert.True(File.Exists(shadowPath));
+            Assert.False(harness.Archive.IsTombstoned(slot));
             Assert.True(File.Exists(harness.Archive.RebuildBackups.GetBackupPath(slot)));
             Assert.Empty(harness.As2.Where(x => x.Value<string>("action")
                 == "characterCreate"));

@@ -30,11 +30,6 @@
 .topbar { background: linear-gradient(#05090bf5,#05090be8 82%,transparent); }
 .topbar .state-badge { min-width: 0; max-width: min(29vw,360px); overflow: hidden; text-overflow: ellipsis; }
 .stage-welcome { height:auto;min-height:100%; }
-/* Existing bug: center packing with overflow made the first save row negative
-   and unreachable. Top packing gives scrolling a truthful origin. */
-#view-slots .cards { align-content: start; scroll-padding: 4px; padding-top: 4px; }
-#view-slots .slots-header, #view-slots .toolbar { flex-shrink: 0; }
-#view-slots .card .slot { overflow-wrap: anywhere; }
 #pm19-motion { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--dls-dim); }
 #pm19-motion .audio-toggle { display:flex;align-items:center;gap:8px;cursor:pointer; }
 #pm19-motion p { margin:6px 0 0;font-size:var(--fs-xs);color:#a4afb4; }
@@ -70,20 +65,6 @@
   .launch-error .welcome-fontpack { grid-row:8; }
   .bottom { height:20px;box-sizing:border-box;padding:2px 12px;font-size:11px;letter-spacing:1px;background:#05090bef; }
   .bottom>span:last-child { display:none; }
-  #view-slots { padding:calc(var(--pm19-topbar-height,46px) + 12px) 16px 26px; }
-  #view-slots .slots-header { padding-bottom:8px;margin-bottom:8px; }
-  #view-slots .toolbar { gap:6px;margin-bottom:8px; }
-  #view-slots .toolbar button { padding:5px 8px;letter-spacing:0; }
-  /* Keep the card's PRIMARY action beside its identity, not below a tall
-     metadata/action stack. Auxiliary actions and full details still scroll. */
-  #view-slots .card .slot { padding-right:112px; }
-  #view-slots .card .card-actions .btn-start,
-  #view-slots .card .card-actions .btn-rebuild,
-  #view-slots .card .card-actions .btn-newchar {
-    position:absolute;top:26px;right:12px;width:104px;min-height:34px;
-    margin:0;padding:6px 8px;
-  }
-  #view-slots .card.empty-slot .card-actions .btn-newchar { top:12px; }
 
 }
 @media (max-width: 900px) and (max-height: 500px) {

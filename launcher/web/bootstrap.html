@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="css/panels/foundation-rest.css">
 <link rel="stylesheet" href="css/character-create.css">
 <link rel="stylesheet" href="css/background-v2.css">
+<link rel="stylesheet" href="css/save-manager.css">
 </head>
 <body>
 
@@ -137,22 +138,51 @@
 
 <!-- 槽位选择视图 -->
 <div id="view-slots" class="view" hidden>
-  <!-- B 期: 随机通缉令海报装饰 (bootstrap-main.js loadSlotsPoster 填充; 元素在 #view-slots 内, welcome 视图随 hidden 自动不显示) -->
-  <div class="slots-poster" id="slots-poster" aria-hidden="true"></div>
-  <div class="wrap">
-    <div class="slots-header term-heading-rule">
-      <button class="btn-back" id="btn-back-welcome">&larr; 返回</button>
-      <h1>选择存档</h1>
-    </div>
-    <div class="toolbar">
-      <button id="btn-refresh">刷新</button>
-      <button id="btn-new">新建角色...</button>
-      <button id="btn-import">导入存档</button>
-      <button id="btn-open-dir">打开存档目录</button>
-    </div>
-    <!-- tabindex=-1: showSlots 时脚本聚焦容器, 让方向键导航 (C 期) 有 keydown 冒泡源 -->
-    <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>请重试，详情见“日志”。</span></div>
-    <div id="cards" class="cards" tabindex="-1"></div>
+  <div class="archive-stage">
+    <section id="save-shell" class="panel-scale-shell archive-frame corner-brackets" aria-labelledby="save-heading">
+      <header class="archive-heading term-heading-rule">
+        <h1 id="save-heading">存档管理</h1>
+        <div class="save-groups" aria-label="存档分组">
+          <button type="button" id="save-live" aria-controls="cards" aria-pressed="true">我的存档 <span id="save-live-count">0</span></button>
+          <button type="button" id="save-deleted" aria-controls="cards" aria-pressed="false">已删除 <span id="save-deleted-count">0</span></button>
+        </div>
+        <div class="archive-tools">
+          <div id="save-create-tools">
+            <button type="button" id="btn-new" class="term-btn">新建角色</button>
+            <button type="button" id="btn-import" class="term-btn">导入</button>
+          </div>
+          <button type="button" class="term-btn" id="btn-refresh">刷新</button>
+          <button type="button" class="term-btn" id="btn-open-dir" aria-label="打开副本目录">副本目录</button>
+          <button type="button" id="btn-back-welcome" class="term-btn">返回</button>
+        </div>
+      </header>
+      <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>请重试，详情见“日志”。</span></div>
+      <div class="save-body">
+        <div class="save-ledger">
+          <div class="save-columns" id="save-columns" aria-hidden="true">
+            <span>角色</span><span>存档名</span><span>进度</span><span>最近修改</span><span>副本大小</span>
+          </div>
+          <div id="cards" role="group" aria-label="我的存档"></div>
+          <div id="save-empty"><p id="save-empty-label">正在读取存档…</p></div>
+          <section id="save-detail" aria-label="所选存档" hidden>
+            <div class="save-selection">
+              <strong id="save-title"></strong>
+              <span class="save-key-label">槽位</span>
+              <code id="save-key"></code>
+            </div>
+            <div id="save-actions">
+              <button type="button" class="term-btn btn-start archive-primary" data-action="start">选用存档</button>
+              <button type="button" class="term-btn btn-rebuild" data-action="rebuild">原槽重建</button>
+              <button type="button" class="term-btn btn-edit" data-action="edit">编辑</button>
+              <button type="button" class="term-btn btn-rename" data-action="rename">重命名</button>
+              <button type="button" class="term-btn btn-export" data-action="export">导出</button>
+              <button type="button" class="term-btn btn-delete archive-danger" data-action="delete">删除</button>
+            </div>
+          </section>
+        </div>
+        <p id="save-notice" role="status"></p>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -176,6 +206,7 @@
 <!-- Modal host -->
 <div id="modal-host" style="display:none">
   <div class="modal-backdrop" id="modal-backdrop"></div>
+  <div id="archive-modal-view" class="view" hidden><div id="archive-modal-anchor" class="archive-stage"></div></div>
   <div class="modal-content" id="modal-content" role="dialog" aria-modal="true" tabindex="-1"></div>
 </div>
 <div id="panel-tooltip"></div>
@@ -214,6 +245,7 @@
 <script src="modules/bootstrap-character-create.js"></script>
 
 <!-- 主控 IIFE -->
+<script src="modules/bootstrap-save-manager.js"></script>
 <script src="bootstrap-main.js"></script>
 
 <!-- PM19 环境背景（缓存 Canvas2D；静态回退不影响主流程） -->

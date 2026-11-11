@@ -114,7 +114,7 @@ function readHairCatalog() {
         if (!identifier || !name) throw new Error('Malformed Hair row in ' + hairstylePath);
         rows.push({ identifier: decodeXml(identifier[1].trim()), name: decodeXml(name[1].trim()) });
     }
-    expect(rows.length === 77, 'expected 77 hairstyle.xml rows, got ' + rows.length);
+    expect(rows.length >= 77, 'maintained hairstyle catalog is incomplete: ' + rows.length);
     expect(rows[20].identifier === '发型-男式-平头' && rows[32].identifier === '发型-男式-平头',
         'expected the maintained duplicate at source indices 20 and 32');
     return rows;
@@ -408,7 +408,10 @@ async function setupPage(browser, url, viewport, reducedMotion, template, eviden
                 if (selected) emit(selected);
             },
             outbound: cmd => events.filter(event => event.direction === 'out'
-                && (!cmd || event.message.cmd === cmd)).map(event => clone(event.message))
+                && (!cmd || event.message.cmd === cmd)).map(event => clone(event.message)),
+            // The background sends a timed log batch independently of character creation.
+            commands: () => events.filter(event => event.direction === 'out' && event.message.cmd !== 'log')
+                .map(event => event.message.cmd)
         };
     }, {
         snapshot:template,
@@ -420,7 +423,8 @@ async function setupPage(browser, url, viewport, reducedMotion, template, eviden
     if (options.resetAppearanceDensity !== false) {
         await page.evaluate(() => localStorage.removeItem('cf7.itemgrid.mode.character-create-appearance'));
     }
-    await page.waitForFunction(() => document.querySelectorAll('#cards .card').length === 4, null, { timeout: 10000 });
+    await page.waitForFunction(() => document.querySelectorAll('#cards .save-row').length === 2
+        && document.getElementById('save-deleted-count').textContent === '1', null, { timeout: 10000 });
     return page;
 }
 
@@ -680,6 +684,7 @@ async function preparationPresentation(page) {
 async function run() {
     expect(fs.existsSync(playwrightModule), 'Playwright is missing; run npm --prefix launcher/perf ci --ignore-scripts');
     const hairCatalog = readHairCatalog();
+    const hairCount = hairCatalog.length;
     const template = snapshotTemplate(hairCatalog);
     verifyGraphemeFallback(template);
     const { chromium } = require(playwrightModule);
@@ -924,12 +929,12 @@ async function run() {
                             pagerAbsent:!document.getElementById('cc-hair-pager')
                         };
                     });
-                    expect(hairLayout.count === 77 && hairLayout.icons === 77
+                    expect(hairLayout.count === hairCount && hairLayout.icons === hairCount
                         && hairLayout.selected === 1 && hairLayout.tabbable === 1
                         && hairLayout.slotVisible && hairLayout.compact && hairLayout.allVisible
                         && hairLayout.square && hairLayout.contained && hairLayout.copyHidden
                         && hairLayout.noScroll && hairLayout.overflow === 'auto' && hairLayout.pagerAbsent,
-                    '77-card compact hair slot/pool contract drifted: ' + JSON.stringify(hairLayout));
+                    'compact hair slot/pool contract drifted: ' + JSON.stringify(hairLayout));
                     const selectedHair = page.locator('#cc-hair-list [tabindex="0"]');
                     await selectedHair.focus();
                     await selectedHair.press('Home');
@@ -946,7 +951,7 @@ async function run() {
 
                     const beforeDensityChange = await page.evaluate(() => ({
                         draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
-                        outbound:window.__ccHarness.events.filter(event => event.direction === 'out').length
+                        outbound:window.__ccHarness.commands().length
                     }));
                     await page.locator('.cc-density-option[data-density="full"]').click();
                     const fullLayout = await page.evaluate(() => {
@@ -1010,14 +1015,14 @@ async function run() {
                             listRect:{width:listRect.width, height:listRect.height}
                         };
                     });
-                    expect(!fullLayout.compact && fullLayout.optionCount === 77 && fullLayout.allAbsolute
-                        && fullLayout.indices[0] === 0 && fullLayout.indices[76] === 76
+                    expect(!fullLayout.compact && fullLayout.optionCount === hairCount && fullLayout.allAbsolute
+                        && fullLayout.indices[0] === 0 && fullLayout.indices.at(-1) === hairCount - 1
                         && fullLayout.pagerAbsent && fullLayout.internalScroll && fullLayout.panelNoScroll
                         && fullLayout.selectedCount === 1 && fullLayout.tabbableCount === 1
                         && fullLayout.allMounted && fullLayout.horizontallyContained
                         && fullLayout.identityVisible && fullLayout.rawNamesAccessible
                         && fullLayout.nameWrap && fullLayout.markerSeparated && fullLayout.minimumCardSize,
-                    'full hair mode is not a large-card 77-item internal scroller: '
+                    'full hair mode is not a large-card internal scroller: '
                         + JSON.stringify(fullLayout));
                     await page.locator('#cc-appearance-tab-equipment').click();
                     const equipmentFull = await page.evaluate(() => {
@@ -1044,13 +1049,16 @@ async function run() {
                     });
                     const afterScroll = await page.evaluate(() => ({
                         draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
-                        outbound:window.__ccHarness.events.filter(event => event.direction === 'out').length,
+                        commands:window.__ccHarness.commands(),
                         scrollTop:document.getElementById('cc-hair-list').scrollTop
                     }));
+                    const newCommands = afterScroll.commands.slice(beforeDensityChange.outbound);
                     expect(afterScroll.draft === beforeDensityChange.draft
-                        && afterScroll.outbound === beforeDensityChange.outbound && afterScroll.scrollTop > 0,
-                    'density/scroll navigation mutated the draft, emitted an RPC, or failed to scroll');
-                    await page.locator('#cc-hair-list [data-index="76"]').click();
+                        && newCommands.length === 0 && afterScroll.scrollTop > 0,
+                    'density/scroll navigation changed the draft or host commands, or failed to scroll: '
+                        + JSON.stringify({draftChanged:afterScroll.draft !== beforeDensityChange.draft,
+                            newCommands, scrollTop:afterScroll.scrollTop}));
+                    await page.locator('#cc-hair-list [data-index="' + (hairCount - 1) + '"]').click();
                     await page.locator('.cc-density-option[data-density="compact"]').click();
                     const compactRestored = await page.evaluate(() => {
                         const list = document.getElementById('cc-hair-list');
@@ -1063,10 +1071,10 @@ async function run() {
                             pagerAbsent:!document.getElementById('cc-hair-pager')
                         };
                     });
-                    expect(compactRestored.count === 77 && compactRestored.visible === 77
-                        && compactRestored.selected === 76 && compactRestored.noScroll
+                    expect(compactRestored.count === hairCount && compactRestored.visible === hairCount
+                        && compactRestored.selected === hairCount - 1 && compactRestored.noScroll
                         && compactRestored.pagerAbsent,
-                    'compact mode did not restore all 77 options/selection without scrolling: '
+                    'compact mode did not restore all catalog options/selection without scrolling: '
                         + JSON.stringify(compactRestored));
 
                     if (viewport.width === 1600 && viewport.height === 900
@@ -1191,7 +1199,7 @@ async function run() {
                     expect(Math.abs(equipmentLayout.fontScale - viewport.uiFontScale) < 0.001,
                         'font scale did not reach the requested layout matrix value: '
                             + JSON.stringify(equipmentLayout));
-                    return 'uniform centered 1024x576 canvas; compact 77/full 77-scroll/two-column confirm; fs='
+                    return 'uniform centered 1024x576 canvas; compact/full scroll/two-column confirm; fs='
                         + equipmentLayout.fontScale + '; reduced=' + equipmentLayout.reduced;
                 } finally {
                     await page.close();
@@ -1632,21 +1640,21 @@ async function run() {
         const page = await setupPage(browser, url, { width: 1366, height: 768 }, true, template, evidence);
 
         await check('slot-display-disambiguation', async () => {
-            const cards = await page.locator('#cards .card').evaluateAll(nodes => nodes.slice(0, 3).map(node => ({
-                title: node.querySelector('.slot').textContent,
-                progress: node.querySelector('.progress').textContent,
-                id: node.querySelector('.slot-id').textContent,
-                meta: node.querySelector('.meta').textContent
-            })));
-            expect(cards[0].title === '阿七' && cards[1].title === '阿八',
-                'characterName is not the primary save-card title');
-            expect(cards[0].progress.includes('存档名 · 远征档')
-                && cards[1].progress.includes('存档名 · 远征档'),
-            'displayName is not presented as secondary card metadata');
-            expect(cards[0].meta.includes('2026-08-29') && cards[1].meta.includes('2026-08-28'),
-                'duplicate display names are not disambiguated by time');
-            expect(cards[0].id.includes('槽位 · '), 'short slot key marker is missing');
-            return 'characterName is primary; duplicate displayName remains secondary with time/short-slot disambiguators';
+            await page.locator('#btn-switch-slot').click();
+            for (const [slot, character, date] of [
+                ['crazyflasher7_saves','阿七','2026-08-29'], ['crazyflasher7_saves1','阿八','2026-08-28']
+            ]) {
+                const row = page.locator('.save-row[data-slot="' + slot + '"]');
+                await row.click();
+                expect(await row.locator('strong').textContent() === character, 'missing character name in list');
+                expect((await row.textContent()).includes('远征档'), 'missing shared display name in list');
+                expect(await page.locator('#save-title').textContent() === character, 'incorrect character detail');
+                expect(await row.locator('.save-alias').textContent() === '远征档', 'incorrect display name');
+                expect((await row.locator('time').textContent()).includes(date), 'missing modification date');
+                expect(await page.locator('#save-key').textContent() === slot, 'incorrect physical slot key');
+            }
+            await page.locator('#btn-back-welcome').click();
+            return 'duplicate display names can be distinguished by character, modification time and exact slot key';
         });
 
         await check('new-open-and-cancel-zero-write', async () => {
@@ -1669,7 +1677,9 @@ async function run() {
         });
 
         await check('rebuild-card-open', async () => {
-            await page.locator('#cards .card').nth(2).locator('.btn-rebuild').click();
+            await page.locator('#save-deleted').click();
+            await page.locator('.save-row[data-slot="legacy-rebuild-key-123456"]').click();
+            await page.locator('#save-actions .btn-rebuild').click();
             // 重建确认已从原生 confirm() 迁到终端风 confirm-dialog modal：等框弹出并点「重建」。
             await page.waitForFunction(() => {
                 const host = document.getElementById('modal-host');
@@ -1751,7 +1761,7 @@ async function run() {
             await openCharacterCreate(page);
             await page.locator('#cc-character-name').fill('外观验收');
             await page.locator('#cc-next').click();
-            const beforeMessages = await page.evaluate(() => window.__ccHarness.outbound().length);
+            const beforeMessages = await page.evaluate(() => window.__ccHarness.commands().length);
             const aliasRow = template.appearanceCatalog.lower.male[1];
             const beforeDraft = await page.evaluate(() =>
                 JSON.stringify(window.BootstrapCharacterCreate.debugState().draft));
@@ -1847,19 +1857,17 @@ async function run() {
                 .replace(/^发型[-－_\s]*(男式|女式)[-－_\s]*/, '');
             expect(hairEvidence.view === 'hair' && hairEvidence.hair !== hairBefore
                 && hairEvidence.hair === hairCatalog[32].identifier
-                && hairEvidence.count === 77 && hairEvidence.icons === 77
+                && hairEvidence.count === hairCount && hairEvidence.icons === hairCount
                 && hairEvidence.selected === 1 && hairEvidence.tabbable === 1
                 && hairEvidence.slotText.includes(hairVisibleName)
                 && !hairEvidence.slotText.includes('发型-男式-')
                 && hairEvidence.slotAria.includes(hairCatalog[32].name),
-            'single hair slot + 77-icon pool did not preserve source order/selection: '
+            'single hair slot + catalog icon pool did not preserve source order/selection: '
                 + JSON.stringify(hairEvidence));
-            const afterMessages = await page.evaluate(() => window.__ccHarness.outbound().length);
-            expect(afterMessages === beforeMessages,
-                'appearance focus/hover emitted a Host RPC instead of using the snapshot: '
-                + beforeMessages + ' -> ' + afterMessages);
+            const extraCommands = await page.evaluate(count => window.__ccHarness.commands().slice(count), beforeMessages);
+            expect(extraCommands.length === 0, 'appearance focus/hover emitted: ' + extraCommands.join(', '));
             await page.locator('#cc-cancel').click();
-            return '3 equipment slots + one icon pool and 1 hair slot + 77 icons; rich annotation is Esc-first and zero-RPC';
+            return '3 equipment slots + one icon pool and 1 hair slot + catalog icons; rich annotation is Esc-first and zero-RPC';
         });
 
         await check('appearance-density-persistence-focus-and-draft-invariance', async () => {
@@ -1870,7 +1878,7 @@ async function run() {
                 const selected = document.querySelector('#cc-equipment-pool [aria-selected="true"]');
                 selected.focus();
                 return {
-                    messages:window.__ccHarness.outbound().length,
+                    messages:window.__ccHarness.commands().length,
                     draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
                     order:Array.from(document.querySelectorAll('#cc-equipment-pool [data-choice-key]'))
                         .map(node => node.getAttribute('data-choice-key')),
@@ -1886,7 +1894,7 @@ async function run() {
             'appearance did not default to per-view full/compact with grid focus established: ' + JSON.stringify(before));
             await page.locator('[data-density="compact"]').click();
             const compact = await page.evaluate(() => ({
-                messages:window.__ccHarness.outbound().length,
+                messages:window.__ccHarness.commands().length,
                 draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
                 order:Array.from(document.querySelectorAll('#cc-equipment-pool [data-choice-key]'))
                     .map(node => node.getAttribute('data-choice-key')),
@@ -1908,7 +1916,7 @@ async function run() {
                 + JSON.stringify({before, compact}));
             await page.locator('[data-density="full"]').click();
             const full = await page.evaluate(() => ({
-                messages:window.__ccHarness.outbound().length,
+                messages:window.__ccHarness.commands().length,
                 draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
                 order:Array.from(document.querySelectorAll('#cc-equipment-pool [data-choice-key]'))
                     .map(node => node.getAttribute('data-choice-key')),
@@ -2056,13 +2064,13 @@ async function run() {
             expect(await page.evaluate(() => document.activeElement.id) === 'cc-appearance-tab-equipment',
                 'forward Tab from height did not continue into the appearance workbench');
             await page.locator('#cc-cancel').click();
-            return '77 source rows/duplicate/defaults/IME/ARIA preserved; face stays protocol-only; height owns step-1 focus and keyboard updates';
+            return 'source catalog/duplicate/defaults/IME/ARIA preserved; face stays protocol-only; height owns step-1 focus and keyboard updates';
         });
 
         await check('difficulty-shared-tooltip-focus-hover-escape-no-rpc', async () => {
             await openCharacterCreate(page);
             await fillDefaultDraft(page, '难度说明档', '难度验收');
-            const beforeMessages = await page.evaluate(() => window.__ccHarness.outbound().length);
+            const beforeMessages = await page.evaluate(() => window.__ccHarness.commands().length);
             const selectedIndex = template.difficulties.findIndex(row =>
                 row.identifier === template.defaults.male.difficulty);
             const selected = page.locator('#cc-difficulties [data-index="' + selectedIndex + '"]');
@@ -2098,9 +2106,8 @@ async function run() {
                 return window.PanelTooltip.isVisible()
                     && tip.textContent.replace(/\s+/g, '') === description.replace(/\s+/g, '');
             }, template.difficulties[hoverIndex].description, { timeout:3000 });
-            const afterMessages = await page.evaluate(() => window.__ccHarness.outbound().length);
-            expect(afterMessages === beforeMessages,
-                'difficulty focus/hover emitted a Host RPC: ' + beforeMessages + ' -> ' + afterMessages);
+            const extraCommands = await page.evaluate(count => window.__ccHarness.commands().slice(count), beforeMessages);
+            expect(extraCommands.length === 0, 'difficulty focus/hover emitted: ' + extraCommands.join(', '));
             await page.evaluate(() => window.PanelTooltip.hide());
             await page.locator('#cc-cancel').click();
             return 'difficulty details use shared PanelTooltip with full focus/hover copy, Esc-first dismissal, and zero RPC';

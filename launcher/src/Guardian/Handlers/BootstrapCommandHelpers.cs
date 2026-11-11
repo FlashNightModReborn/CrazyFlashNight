@@ -153,11 +153,11 @@ namespace CF7Launcher.Guardian.Handlers
         ///     Reset 推到 Idle 后 flush pending queue 跑 onReady; 用户编辑不被 prewarm 挡住
         ///   - 其他非 Idle (用户已点 play, Embedding/WaitingGameReady/Ready) → reject not_idle
         /// </summary>
-        internal static void RequireIdleOrTearDown(string cmd, BootstrapPanel bootForm, GameLaunchFlow launchFlow, Action onReady)
+        internal static void RequireIdleOrTearDown(string cmd, BootstrapPanel bootForm, GameLaunchFlow launchFlow, Action onReady, JObject request = null)
         {
             if (launchFlow == null)
             {
-                PostNotIdleResp(cmd, bootForm);
+                PostNotIdleResp(cmd, bootForm, request);
                 return;
             }
             if (launchFlow.CurrentState == "Idle")
@@ -171,10 +171,10 @@ namespace CF7Launcher.Guardian.Handlers
                 launchFlow.Reset(onReady, "user_edit_" + cmd);
                 return;
             }
-            PostNotIdleResp(cmd, bootForm);
+            PostNotIdleResp(cmd, bootForm, request);
         }
 
-        internal static void PostNotIdleResp(string cmd, BootstrapPanel bootForm)
+        internal static void PostNotIdleResp(string cmd, BootstrapPanel bootForm, JObject request = null)
         {
             string outCmd;
             switch (cmd)
@@ -185,7 +185,8 @@ namespace CF7Launcher.Guardian.Handlers
                 case "import_commit": outCmd = "import_resp"; break;
                 default:              outCmd = "error";       break;
             }
-            PostResp(bootForm, outCmd, false, null, "not_idle");
+            if (request != null) PostSlotFailure(bootForm, request, outCmd, "not_idle");
+            else PostResp(bootForm, outCmd, false, null, "not_idle");
         }
 
         // ─────── archive 分发 ───────
@@ -201,92 +202,66 @@ namespace CF7Launcher.Guardian.Handlers
             return msg;
         }
 
-        /// <summary>
-        /// Phase 2a 通用 archive dispatch：透传 result 全部字段 + 映射 cmd。
-        /// 用于 load / load_raw 等需要原样转发 data/tombstoned/corrupt 字段的场景。
-        /// </summary>
-        internal static void DispatchArchiveGeneric(
-            BootstrapPanel bootForm,
-            ArchiveTask archiveTask,
-            JObject archiveMsg,
-            string outCmd)
+        internal static JObject BuildSlotReply(JObject request, string cmd, JObject result)
         {
-            archiveTask.HandleAsync(archiveMsg, delegate(string resultJson)
+            bool validKey = TryReadSlotKey(request, "slot", out string slot, out _);
+            bool ok = result?["success"]?.Type == JTokenType.Boolean && (bool)result["success"];
+            bool matches = validKey && string.Equals(result?.Value<string>("slot"), slot, StringComparison.Ordinal);
+            var reply = new JObject { ["type"] = "bootstrap", ["cmd"] = cmd, ["ok"] = ok && matches };
+            if (validKey) reply["slot"] = slot;
+            if (request?["requestId"]?.Type == JTokenType.Integer) reply["requestId"] = request["requestId"];
+            if (!ok || !matches)
             {
-                JObject result;
-                try { result = JObject.Parse(resultJson); }
-                catch
-                {
-                    PostResp(bootForm, outCmd, false, null, "archive_task_failed");
-                    return;
-                }
+                reply["error"] = ok ? "archive_slot_mismatch" : result?.Value<string>("error") ?? "archive_task_failed";
+                return reply;
+            }
+            foreach (string field in new[] { "data", "size", "warnings", "warning", "tombstoned", "corrupt", "reset" })
+                if (result[field] != null) reply[field] = result[field];
+            return reply;
+        }
 
-                bool ok = result.Value<bool?>("success") ?? false;
-                JObject outMsg = new JObject();
-                outMsg["type"] = "bootstrap";
-                outMsg["cmd"] = outCmd;
-                outMsg["ok"] = ok;
+        internal static void PostSlotFailure(BootstrapPanel panel, JObject request, string cmd, string error)
+        {
+            var failure = new JObject { ["success"] = false, ["error"] = error };
+            panel.PostToWeb(BuildSlotReply(request, cmd, failure).ToString(Formatting.None));
+        }
 
-                // 透传所有非 success/task 字段
-                foreach (var kv in result)
-                {
-                    if (kv.Key == "success" || kv.Key == "task") continue;
-                    outMsg[kv.Key] = kv.Value;
-                }
-
-                bootForm.PostToWeb(outMsg.ToString(Formatting.None));
+        internal static void DispatchSlot(BootstrapPanel panel, ArchiveTask archive, JObject request,
+            JObject archiveMessage, string cmd)
+        {
+            archive.HandleAsync(archiveMessage, json =>
+            {
+                JObject result = null;
+                try { result = JObject.Parse(json); } catch (JsonException) { }
+                panel.PostToWeb(BuildSlotReply(request, cmd, result).ToString(Formatting.None));
             });
         }
 
-        /// <summary>Phase 1 DispatchArchive（list_resp / delete_resp 专用，保留 forwardSlots 逻辑）。
-        /// Phase 2b: forwardSlots 路径 (list_resp) 附带 UserPrefs 的 lastPlayedSlot / introEnabled,
-        /// 让欢迎页一次性拿到"上次槽位 + 片头偏好", 不需要额外 roundtrip.</summary>
-        internal static void DispatchArchive(
-            BootstrapPanel bootForm,
-            ArchiveTask archiveTask,
-            JObject archiveMsg,
-            string outCmd,
-            bool forwardSlots,
-            UserPrefs userPrefs = null)
+        internal static void DispatchList(BootstrapPanel panel, ArchiveTask archive, UserPrefs prefs)
         {
-            archiveTask.HandleAsync(archiveMsg, delegate(string resultJson)
+            archive.HandleAsync(BuildArchivePayload("list", null), json =>
             {
-                JObject result;
-                try { result = JObject.Parse(resultJson); }
-                catch
+                JObject result = null;
+                try { result = JObject.Parse(json); } catch (JsonException) { }
+                if (result?.Value<bool?>("success") != true || !(result["slots"] is JArray))
                 {
-                    PostError(bootForm, "archive_task_failed", "bad archive response");
+                    PostResp(panel, "list_resp", false, null, result?.Value<string>("error") ?? "archive_task_failed");
                     return;
                 }
-
-                JObject outMsgObj = new JObject();
-                outMsgObj["type"] = "bootstrap";
-                outMsgObj["cmd"] = outCmd;
-                if (forwardSlots)
+                var reply = new JObject
                 {
-                    JToken slots = result["slots"];
-                    outMsgObj["slots"] = slots != null ? slots : (JToken)new JArray();
-                    // Phase 2b: 欢迎页偏好附带
-                    if (userPrefs != null)
-                    {
-                        if (!string.IsNullOrEmpty(userPrefs.LastPlayedSlot))
-                            outMsgObj["lastPlayedSlot"] = userPrefs.LastPlayedSlot;
-                        outMsgObj["introEnabled"] = userPrefs.IntroEnabled;
-                        outMsgObj["sfxEnabled"] = userPrefs.SfxEnabled;
-                        outMsgObj["ambientEnabled"] = userPrefs.AmbientEnabled;
-                        outMsgObj["uiFontScale"] = userPrefs.UiFontScale;
-                    }
-                }
-                else
+                    ["type"] = "bootstrap", ["cmd"] = "list_resp", ["ok"] = true,
+                    ["slots"] = result["slots"], ["archiveRequestIds"] = true
+                };
+                if (prefs != null)
                 {
-                    bool ok = result.Value<bool?>("success") ?? false;
-                    outMsgObj["ok"] = ok;
-                    string slot = result.Value<string>("slot");
-                    if (slot != null) outMsgObj["slot"] = slot;
-                    string err = result.Value<string>("error");
-                    if (!ok && err != null) outMsgObj["error"] = err;
+                    if (!string.IsNullOrEmpty(prefs.LastPlayedSlot)) reply["lastPlayedSlot"] = prefs.LastPlayedSlot;
+                    reply["introEnabled"] = prefs.IntroEnabled;
+                    reply["sfxEnabled"] = prefs.SfxEnabled;
+                    reply["ambientEnabled"] = prefs.AmbientEnabled;
+                    reply["uiFontScale"] = prefs.UiFontScale;
                 }
-                bootForm.PostToWeb(outMsgObj.ToString(Formatting.None));
+                panel.PostToWeb(reply.ToString(Formatting.None));
             });
         }
     }

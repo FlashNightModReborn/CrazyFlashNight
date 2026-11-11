@@ -131,6 +131,27 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void List_MixedCaseLegacyAliasUsesOnePhysicalRowBeforeAndAfterDelete()
+        {
+            const string key = "Patrol_A";
+            WriteJson(key + ".json", RebuildBackupStoreTests.BuildSnapshot("巡逻员", 5).ToString(Formatting.None));
+            WriteJson(".slot-display-names.json", "{\"v\":1,\"slots\":{\"PATROL_A\":{\"displayName\":\"夜巡\"}}}");
+            var live = Assert.Single(ListSlots());
+            Assert.Equal(key, (string)live["slot"]);
+            Assert.Equal("夜巡", (string)live["displayName"]);
+            Assert.True(_archive.SlotCatalog.TrySetDisplayName(key, "晚班", out _, out _));
+            Assert.Single(_archive.SlotCatalog.ReadAll());
+            Assert.True(Send("delete", key).Value<bool>("success"));
+            var removed = Assert.Single(ListSlots());
+            Assert.True((bool)removed["tombstoned"]);
+            Assert.Equal(key, (string)removed["slot"]);
+            Assert.Equal("晚班", (string)removed["displayName"]);
+            Assert.True(Send("reset", "patrol_a").Value<bool>("success"));
+            Assert.Empty(_archive.SlotCatalog.ReadAll());
+            Assert.True((bool)Assert.Single(ListSlots())["tombstoned"]);
+        }
+
+        [Fact]
         public void List_MalformedMetadataFallsBackWithoutBlocking()
         {
             JObject snapshot = RebuildBackupStoreTests.BuildSnapshot("角色乙", 3);
@@ -218,7 +239,7 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void Reset_RemovesPhysicalStateAndCatalogOnlyIdentity()
+        public void Reset_RemovesCopyAndAliasButRetainsDeletionAuthority()
         {
             const string slotKey = "slot_full_reset";
             WriteJson(
@@ -239,12 +260,10 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(response.Value<bool>("success"));
             Assert.True(response.Value<bool>("reset"));
             Assert.False(File.Exists(Path.Combine(_savesDir, slotKey + ".json")));
-            Assert.False(File.Exists(Path.Combine(_savesDir, slotKey + ".tombstone")));
+            Assert.True(File.Exists(Path.Combine(_savesDir, slotKey + ".tombstone")));
             Assert.False(_archive.SlotCatalog.ReadAll().ContainsKey(slotKey));
-            Assert.False(_archive.SlotExistsSync(slotKey));
-            Assert.DoesNotContain(
-                ListSlots(),
-                item => item.Value<string>("slotKey") == slotKey);
+            Assert.True(_archive.SlotExistsSync(slotKey));
+            Assert.True(Assert.Single(ListSlots()).Value<bool>("tombstoned"));
         }
 
         [Fact]
@@ -285,6 +304,44 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False(File.Exists(Path.Combine(_savesDir, "slot_bad.tombstone")));
         }
 
+        [Fact]
+        public void LockedShadow_CleanupFailsClosedAndRetriesWithoutChangingTheDisplayName()
+        {
+            const string key = "crazyflasher7_saves2";
+            string contents = RebuildBackupStoreTests.BuildSnapshot("同名角色", 7).ToString(Formatting.None);
+            WriteJson(key + ".json", contents);
+            Assert.True(_archive.SlotCatalog.TrySetDisplayName(key, "保留档名", out _, out _));
+            using (File.Open(Path.Combine(_savesDir, key + ".json"), FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                var deletion = Send("delete", key);
+                Assert.True(deletion.Value<bool>("success"));
+                Assert.Equal("shadow_cleanup_pending", (string)deletion["warning"]);
+                Assert.False(Send("reset", key).Value<bool>("success"));
+                Assert.False(Send("reset", key, true).Value<bool>("success"));
+                Assert.Throws<IOException>(() => _archive.ResetSlotSync(key));
+                Assert.Equal("保留档名", _archive.SlotCatalog.ReadAll()[key]);
+                Assert.False(Send("load", key).Value<bool>("success"));
+                Assert.Equal(contents, (string)Send("load_raw", key)["data"]);
+                Assert.True(Assert.Single(ListSlots()).Value<bool>("inconsistent"));
+            }
+            Assert.True(Send("reset", key, true).Value<bool>("success"));
+            Assert.True(Send("reset", key, true).Value<bool>("success"));
+            Assert.Equal("保留档名", _archive.SlotCatalog.ReadAll()[key]);
+            Assert.True(new ArchiveTask(_projectRoot).IsTombstoned(key));
+            Assert.False(File.Exists(Path.Combine(_savesDir, key + ".json")));
+        }
+
+        [Fact]
+        public void ResidueCleanupRejectsLiveSlotAndLeavesItsBytesIntact()
+        {
+            const string key = "slot_reused";
+            string contents = RebuildBackupStoreTests.BuildSnapshot("重建后的角色", 1).ToString(Formatting.None);
+            WriteJson(key + ".json", contents);
+            Assert.Equal("slot_not_deleted", (string)Send("reset", key, true)["error"]);
+            Assert.False(_archive.IsTombstoned(key));
+            Assert.Equal(contents, File.ReadAllText(Path.Combine(_savesDir, key + ".json")));
+        }
+
         // ───────────── helpers ─────────────
 
         private void WriteJson(string fileName, string content)
@@ -297,11 +354,12 @@ namespace CF7Launcher.Tests.Tasks
             return Send("list", null).Value<JArray>("slots");
         }
 
-        private JObject Send(string op, string slot)
+        private JObject Send(string op, string slot, bool residueOnly = false)
         {
             JObject msg = new JObject();
             JObject payload = new JObject();
             payload["op"] = op;
+            if (residueOnly) payload["residueOnly"] = true;
             if (slot != null) payload["slot"] = slot;
             msg["payload"] = payload;
 

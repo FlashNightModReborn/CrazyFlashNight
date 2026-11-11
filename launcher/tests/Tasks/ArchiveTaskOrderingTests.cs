@@ -162,11 +162,9 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void Fifo_DeleteResetShadow_RecreateOnlyThroughReset()
+        public void Fifo_DeleteResetShadow_CleanupNeverReopensAnOldWriter()
         {
-            // 全链路顺序语义：shadow→delete→reset→shadow 连发不等响应，
-            // FIFO 必须按到达顺序产出：delete 立墓碑、reset 显式撤销墓碑
-            // （唯一合法 recreate 路径）、后续 shadow 重新被接受。
+            // A queued shadow that follows player cleanup must not revive the deleted slot.
             const string slot = "slot_r3a_recreate";
             PendingResponse s1 = SendShadow(slot, "角色丁", 4);
             PendingResponse del = SendOp("delete", slot);
@@ -179,11 +177,10 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(rr.Value<bool>("success"));
             Assert.True(rr.Value<bool>("reset"));
             JObject r2 = s2.Result(TimeSpan.FromSeconds(5));
-            Assert.True(r2.Value<bool>("success"), "reset 后的 shadow 必须被接受: " + r2);
-
-            Assert.False(File.Exists(TombPath(slot)));
-            JObject written = ReadSlotJson(slot);
-            Assert.Equal(5, (int)((JArray)written["0"])[3]);
+            Assert.False(r2.Value<bool>("success"));
+            Assert.Equal("slot_tombstoned", r2.Value<string>("error"));
+            Assert.True(File.Exists(TombPath(slot)));
+            Assert.False(File.Exists(JsonPath(slot)));
         }
 
         [Fact]
@@ -227,7 +224,7 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(resetDone.Wait(TimeSpan.FromSeconds(5)), "ResetSlotSync 未在放行后完成");
             Assert.Null(resetFailure);
             Assert.False(File.Exists(JsonPath(slot)), "reset 后不得残留 .json");
-            Assert.False(File.Exists(TombPath(slot)), "reset 后不得残留 tombstone");
+            Assert.True(File.Exists(TombPath(slot)), "清理后继续阻止旧档回填");
         }
 
         // ==================== tombstone 语义（不清墓碑 + TOCTOU） ====================

@@ -89,7 +89,7 @@
   - Launcher 拥有启动期 SOL / shadow 快照选择权、文件保管、修复与外部编辑入口；这不是运行期领域事务权威
   - 启动前门进一步拆分物理 `slotKey`、玩家可改且允许重名的 `displayName` 与 AS2 存档内 `characterName`；Host 只保管前两者的启动期元数据，不把显示名当文件路径。建角的 `displayNameCustomized=false` 与空 rename 都删除 override、恢复长期跟随角色名
   - 新建 / 重建的 Web 草稿由 AS2 按实时理发店及服装目录复核；`SharedObject.flush() === true` 是 durable 唯一本地存档终点，Launcher shadow 和重建备份都不代签它
-  - 重建只保留每槽一份经规范化与读回校验的轮换备份；tombstone-only 可重建而不伪造备份，tombstone 与有效 shadow 并存时先备份，畸形 shadow fail closed。旧 SOL 不预删除，也不引入自动恢复状态机；普通 delete 保留 tombstone/catalog 身份，彻底 reset 必须连 catalog 一并清除
+  - 原槽重建先备份已验证的旧副本，再把本次建角调用编号写入 tombstone。仅有删除标记时可以直接准备重建。只有匹配的建角落盘回执、已变化的 SOL 和匹配的角色数据才能生成新副本并解除保护。重启后的列表会继续核验已收到落盘回执的槽位。普通删除与清理都保留 tombstone，清理残留副本也保留显示名。
   - 运行期玩家状态仍由 AS2 `_root.*` 业务对象裁决并组装 `mydata`，写入 SOL 后再把整份 shadow 推给 Launcher；`ArchiveTask` 当前没有领域 revision、CAS、幂等命令账本或多聚合事务
   - valid legacy SOL 在 Resolver 命中 `Snapshot(source=sol)` 时，会被同步 seed 到当前运行根的 `saves/{slot}.json`
   - Bootstrap `list/load/load_raw` 只对标准 10 槽做 legacy 预热；自定义 legacy 槽不自动继承

@@ -1,5 +1,4 @@
 // BMH 拆分：list / delete / load / load_raw。
-// 零行为改动，纯搬运。
 
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -14,14 +13,23 @@ namespace CF7Launcher.Guardian.Handlers
         /// <summary>Phase 2b: list_resp 额外附带 UserPrefs 里的 lastPlayedSlot / introEnabled。</summary>
         internal static void HandleList(BootstrapPanel bootForm, ArchiveTask archiveTask, SaveResolutionContext saveCtx, UserPrefs userPrefs)
         {
-            PreheatPresetSlots(saveCtx);
-            BootstrapCommandHelpers.DispatchArchive(
-                bootForm,
-                archiveTask,
-                BootstrapCommandHelpers.BuildArchivePayload("list", null),
-                "list_resp",
-                /*forwardSlots:*/ true,
-                userPrefs);
+            try
+            {
+                if (saveCtx?.Resolver != null) archiveTask.RecoverConfirmedRebuilds(saveCtx.Resolver, saveCtx.SwfPath);
+                PreheatPresetSlots(saveCtx);
+            }
+            catch (System.IO.IOException ex)
+            {
+                LogManager.Log("[Archive] list preparation failed: " + ex.Message);
+                BootstrapCommandHelpers.PostResp(bootForm, "list_resp", false, null, "archive_list_unavailable");
+                return;
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+                BootstrapCommandHelpers.PostResp(bootForm, "list_resp", false, null, "archive_list_unavailable");
+                return;
+            }
+            BootstrapCommandHelpers.DispatchList(bootForm, archiveTask, userPrefs);
         }
 
         internal static void HandleDelete(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
@@ -31,15 +39,11 @@ namespace CF7Launcher.Guardian.Handlers
             if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
                     msg, "slot", archiveTask, out slot, out slotError))
             {
-                BootstrapCommandHelpers.PostError(bootForm, slotError, "delete needs an exact slot key");
+                BootstrapCommandHelpers.PostSlotFailure(bootForm, msg, "delete_resp", slotError);
                 return;
             }
-            BootstrapCommandHelpers.DispatchArchive(
-                bootForm,
-                archiveTask,
-                BootstrapCommandHelpers.BuildArchivePayload("delete", slot),
-                "delete_resp",
-                /*forwardSlots:*/ false);
+            BootstrapCommandHelpers.DispatchSlot(bootForm, archiveTask, msg,
+                BootstrapCommandHelpers.BuildArchivePayload("delete", slot), "delete_resp");
         }
 
         internal static void HandleRename(
@@ -118,15 +122,12 @@ namespace CF7Launcher.Guardian.Handlers
             if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
                     msg, "slot", archiveTask, out slot, out slotError))
             {
-                BootstrapCommandHelpers.PostError(bootForm, slotError, "load needs an exact slot key");
+                BootstrapCommandHelpers.PostSlotFailure(bootForm, msg, "load_resp", slotError);
                 return;
             }
             PreheatPresetSlot(saveCtx, slot);
-            BootstrapCommandHelpers.DispatchArchiveGeneric(
-                bootForm,
-                archiveTask,
-                BootstrapCommandHelpers.BuildArchivePayload("load", slot),
-                "load_resp");
+            BootstrapCommandHelpers.DispatchSlot(bootForm, archiveTask, msg,
+                BootstrapCommandHelpers.BuildArchivePayload("load", slot), "load_resp");
         }
 
         internal static void HandleLoadRaw(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, SaveResolutionContext saveCtx)
@@ -136,15 +137,12 @@ namespace CF7Launcher.Guardian.Handlers
             if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
                     msg, "slot", archiveTask, out slot, out slotError))
             {
-                BootstrapCommandHelpers.PostError(bootForm, slotError, "load_raw needs an exact slot key");
+                BootstrapCommandHelpers.PostSlotFailure(bootForm, msg, "load_raw_resp", slotError);
                 return;
             }
             PreheatPresetSlot(saveCtx, slot);
-            BootstrapCommandHelpers.DispatchArchiveGeneric(
-                bootForm,
-                archiveTask,
-                BootstrapCommandHelpers.BuildArchivePayload("load_raw", slot),
-                "load_raw_resp");
+            BootstrapCommandHelpers.DispatchSlot(bootForm, archiveTask, msg,
+                BootstrapCommandHelpers.BuildArchivePayload("load_raw", slot), "load_raw_resp");
         }
 
         private static void PreheatPresetSlots(SaveResolutionContext saveCtx)

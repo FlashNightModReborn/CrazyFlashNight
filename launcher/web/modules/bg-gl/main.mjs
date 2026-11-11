@@ -70,10 +70,9 @@ function measure() {
   add('.topbar, .bottom', 8);
   // 加载指示器用压暗玻璃（erase .68）+ 大羽化：数字幽灵透出，不是挖空黑洞。
   add('#intro-ov.on.loading .loading-indicator', 72, .68);
-  add('#view-slots .slots-header, #view-slots .toolbar', 10);
+  add('#save-shell', 10);
   // Slot cards have opaque backing; masking the scrolling grid also keeps light
   // out of card gaps when reading an unfamiliar or corrupt save.
-  add('#view-slots .cards', 8);
   // lore 事件流容器也进遮罩；小字号文字保持全遮罩，无 .visible 时自然跳过。
   add('#bg-gl-log', 16);
   renderer.resize(canvas.clientWidth, canvas.clientHeight, masks);
@@ -307,7 +306,7 @@ async function main() {
   }
   if (typeof ResizeObserver === 'function') {
     const ro = new ResizeObserver(onLayout);
-    for (const selector of ['.welcome-card', '.topbar', '#cards', '.side-r .faction']) {
+    for (const selector of ['.welcome-card', '.topbar', '#save-shell', '.side-r .faction']) {
       const el = document.querySelector(selector); if (el) ro.observe(el);
     }
     observers.push(ro);
@@ -382,9 +381,9 @@ async function main() {
   }
   listen(document.getElementById('btn-confirm-start'), 'click', armLaunchIntent, true);
   listen(document.getElementById('btn-retry'), 'click', armLaunchIntent, true);
-  // PM19 V3: 槽位卡"选择"委托绑定，#cards innerHTML 重绘不失效；
+  // PM19 V3: 详情区的“选用存档”按钮；
   // 选择只是选定不是启动意图——只放列扫光（校验通道），不武装 userIntent/attempts。
-  listen(document.getElementById('cards'), 'click', event => {
+  listen(document.getElementById('save-actions'), 'click', event => {
     const btn = event.target.closest('.btn-start');
     if (!btn || btn.disabled || retired || covered()) return;
     beginCue('slots-pick', 900);

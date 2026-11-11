@@ -23,11 +23,10 @@ namespace CF7Launcher.Tasks
     /// 顺序模型（R3a）：所有 archive 操作进入进程内单 FIFO executor（全局单消费者）。
     /// XmlSocket 单 read loop 按到达顺序调用 <see cref="HandleAsync"/>，executor 严格按
     /// 入队顺序逐条执行，shadow/load/delete/reset/list/load_raw 不会互相超车；
-    /// 同步入口（<see cref="TrySeedShadowSync"/> seed/repair、<see cref="ResetSlotSync"/>
-    /// rebuild 重建）同样排队过门并阻塞等待，保证同槽操作按到达顺序生效。
+    /// 同步 seed、清理与原槽重建也经过同一顺序门。
     /// tombstone 检查、一致性基线比较、物理写入、accepted-state（_prevSnapshots）更新
     /// 在同一 _lock 临界区内完成；普通 shadow / seed / userEdit / repair 一律不清
-    /// tombstone，只有显式 reset / ResetSlotSync（recreate）能撤销墓碑。
+    /// tombstone。清理副本保留墓碑；原槽重建按建角回执提交新副本后才能解除。
     ///
     /// 协议：
     ///   请求 payload: { op: "shadow", slot: "savePath", data: {mydata} }
@@ -220,57 +219,118 @@ namespace CF7Launcher.Tasks
         }
 
         /// <summary>
-        /// Synchronous exact-slot reset used only after a verified rebuild backup.
-        /// Clears launcher shadow/tombstone only and fails closed on any residue.
-        /// 经 FIFO 顺序门排队：不能越过已入队的 shadow/delete 等先达操作。
-        /// 这是显式 recreate 路径，允许撤销 tombstone。
+        /// Physical cleanup never exposes the old Flash SOL, including on failure or restart.
         /// </summary>
         public void ResetSlotSync(string slot)
         {
-            if(!CanMutateSlot(slot))throw new InvalidOperationException("settings_recovery_required");
-            string safeName;
-            if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
-                throw new ArgumentException("invalid slot key", "slot");
-            string jsonPath = Path.Combine(_savesDir, safeName + ".json");
-            string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
+            ClearShadowSync(slot, null, null);
+        }
 
+        internal void PrepareRebuildSync(string slot, string callId, string priorSolHash)
+        {
+            if (string.IsNullOrEmpty(callId)) throw new ArgumentException("missing rebuild call", nameof(callId));
+            ClearShadowSync(slot, callId, priorSolHash);
+        }
+
+        private void ClearShadowSync(string slot, string rebuildCallId, string priorSolHash)
+        {
+            string key = SanitizeSlotName(slot);
             RunOnFifo(delegate
             {
-                if(!CanMutateSlot(safeName))throw new InvalidOperationException("settings_recovery_required");
                 lock (_lock)
                 {
-                    Exception firstFailure = null;
-                    try { if (File.Exists(jsonPath)) File.Delete(jsonPath); }
-                    catch (Exception ex)
+                    if (!CanMutateSlot(key)) throw new InvalidOperationException("settings_recovery_required");
+                    string marker = Path.Combine(_savesDir, key + ".tombstone");
+                    string shadow = Path.Combine(_savesDir, key + ".json");
+                    bool wasLive = rebuildCallId != null && !File.Exists(marker);
+                    WriteDeletionMarkerLocked(key, rebuildCallId, priorSolHash);
+                    try { File.Delete(shadow); }
+                    catch (IOException ex) when (wasLive && IsSharingViolation(ex) && File.Exists(shadow))
                     {
-                        firstFailure = ex;
-                        LogManager.Log("[ArchiveTask] reset(sync) delete json failed: " + ex.Message);
+                        // Windows refused the deletion before changing the live file. Revert only our own new guard.
+                        if (ReadDeletionMarker(marker).Value<string>("rebuildCallId") == rebuildCallId)
+                            File.Delete(marker);
+                        throw;
                     }
-
-                    try { if (File.Exists(tombPath)) File.Delete(tombPath); }
-                    catch (Exception ex)
-                    {
-                        if (firstFailure == null) firstFailure = ex;
-                        LogManager.Log("[ArchiveTask] reset(sync) delete tombstone failed: " + ex.Message);
-                    }
-
-                    bool jsonRemains = File.Exists(jsonPath);
-                    bool tombstoneRemains = File.Exists(tombPath);
-                    if (firstFailure != null || jsonRemains || tombstoneRemains)
-                    {
-                        throw new IOException(
-                            "reset_slot_failed:" + safeName
-                            + ":jsonRemains=" + jsonRemains
-                            + ":tombstoneRemains=" + tombstoneRemains,
-                            firstFailure);
-                    }
-
-                    // 物理移除成功：同一临界区内清 accepted-state 基线。
-                    _prevSnapshots.Remove(safeName);
+                    _prevSnapshots.Remove(key);
                 }
             });
+        }
 
-            LogManager.Log("[ArchiveTask] reset(sync) slot=" + safeName);
+        private void WriteDeletionMarkerLocked(string key, string rebuildCallId, string priorSolHash = null)
+        {
+            var marker = new JObject { ["deletedAt"] = DateTime.UtcNow.ToString("o") };
+            if (rebuildCallId != null) marker["rebuildCallId"] = rebuildCallId;
+            if (priorSolHash != null) marker["priorSolHash"] = priorSolHash;
+            DurableFileWriter.WriteAllText(Path.Combine(_savesDir, key + ".tombstone"),
+                marker.ToString(Formatting.None), new UTF8Encoding(false));
+        }
+
+        private static bool IsSharingViolation(IOException error)
+        {
+            int code = error.HResult & 0xffff;
+            return code == 32 || code == 33;
+        }
+
+        private static JObject ReadDeletionMarker(string path)
+        {
+            string text = File.ReadAllText(path, Encoding.UTF8);
+            try { return JObject.Parse(text); }
+            catch (JsonException) { return new JObject(); } // Older markers only recorded deletion by their presence.
+        }
+
+        internal void ConfirmRebuildSync(string slot, string callId, string characterName)
+        {
+            string key = SanitizeSlotName(slot);
+            if (string.IsNullOrEmpty(callId) || string.IsNullOrEmpty(characterName))
+                throw new InvalidDataException("rebuild_receipt_invalid");
+            RunOnFifo(delegate
+            {
+                lock (_lock)
+                {
+                    if (!CanMutateSlot(key)) throw new InvalidOperationException("settings_recovery_required");
+                    string marker = Path.Combine(_savesDir, key + ".tombstone");
+                    var deletion = ReadDeletionMarker(marker);
+                    if (!string.Equals(deletion.Value<string>("rebuildCallId"), callId, StringComparison.Ordinal))
+                        throw new InvalidOperationException("rebuild_superseded");
+                    deletion["confirmedCharacter"] = characterName;
+                    DurableFileWriter.WriteAllText(marker, deletion.ToString(Formatting.None), new UTF8Encoding(false));
+                }
+            });
+        }
+
+        internal bool PublishConfirmedRebuild(string key, SolResolver resolver, string swfPath)
+        {
+            string marker = Path.Combine(_savesDir, SanitizeSlotName(key) + ".tombstone");
+            return RunOnFifo(delegate
+            {
+                lock (_lock)
+                {
+                    if (!File.Exists(marker) || !CanMutateSlot(key)) return false;
+                    var deletion = ReadDeletionMarker(marker);
+                    string name = deletion.Value<string>("confirmedCharacter");
+                    if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(deletion.Value<string>("rebuildCallId"))) return false;
+                    JObject snapshot = resolver.ReadFlushedCharacter(key, swfPath, name, deletion.Value<string>("priorSolHash"));
+                    if (snapshot == null) return false;
+                    // Even an interrupted publication keeps the marker until the new JSON is durable.
+                    DurableFileWriter.WriteAllText(Path.Combine(_savesDir, key + ".json"),
+                        snapshot.ToString(Formatting.None), new UTF8Encoding(false));
+                    File.Delete(marker);
+                    _prevSnapshots[key] = snapshot;
+                    return true;
+                }
+            });
+        }
+
+        internal void RecoverConfirmedRebuilds(SolResolver resolver, string swfPath)
+        {
+            foreach (string path in Directory.GetFiles(_savesDir, "*.tombstone"))
+            {
+                string key = Path.GetFileNameWithoutExtension(path);
+                if (!SaveSlotKey.IsValidExisting(key)) continue;
+                try { PublishConfirmedRebuild(key, resolver, swfPath); }
+                catch (Exception ex) { LogManager.Log("[ArchiveTask] rebuild remains protected slot=" + key + " " + ex.Message); }
+            }
         }
 
         /// <summary>Reclaim only the exact terminal run already receipted by its origin.
@@ -321,7 +381,7 @@ namespace CF7Launcher.Tasks
         // 一致性校验基线（accepted-state）：每个 slot 上一份"已接受"的 shadow 快照。
         // R3a：只在写入成功且被接受后更新，且与 tombstone 检查 / 物理写入同一 _lock
         // 临界区；失败或被拒候选不得污染基线。所有访问都在 _lock 下进行。
-        private readonly Dictionary<string, JObject> _prevSnapshots = new Dictionary<string, JObject>();
+        private readonly Dictionary<string, JObject> _prevSnapshots = new Dictionary<string, JObject>(StringComparer.OrdinalIgnoreCase);
 
         // INV-4: save discovery admits exact safe ASCII stems only and excludes
         // hidden metadata, backup, repair, and other internal JSON files.
@@ -708,18 +768,15 @@ namespace CF7Launcher.Tasks
             if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
                 return BuildError("invalid_slot_key");
             string jsonPath = Path.Combine(_savesDir, safeName + ".json");
-            string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
-
             // 原子写 .tombstone：先写 .tmp 再 rename；完成后删 .json（若存在）
             // 墓碑是删除权威；提交后的 JSON 清理失败只报告残件，不反转已提交事实。
             bool cleanupPending = false;
             lock (_lock)
             {
-                string stamp = DateTime.UtcNow.ToString("o");
-                CF7Launcher.Save.DurableFileWriter.WriteAllText(tombPath, "{\"deletedAt\":\"" + stamp + "\"}",
-                    new System.Text.UTF8Encoding(false));
+                WriteDeletionMarkerLocked(safeName, null);
+                _prevSnapshots.Remove(safeName);
 
-                try { if (File.Exists(jsonPath)) File.Delete(jsonPath); }
+                try { File.Delete(jsonPath); }
                 catch (Exception ex)
                 {
                     cleanupPending = true;
@@ -745,9 +802,8 @@ namespace CF7Launcher.Tasks
         {
             JArray slots = new JArray();
             IDictionary<string, string> displayNames = _slotCatalog.ReadAll();
-            var slotNames = new HashSet<string>(
-                displayNames.Keys,
-                StringComparer.Ordinal);
+            // Windows identifies a single file across different casings. Keep its physical spelling for Flash.
+            var slotNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             if (Directory.Exists(_savesDir))
             {
                 // Merge physical shadows, tombstones, and durable Host catalog
@@ -769,6 +825,7 @@ namespace CF7Launcher.Tasks
                 }
             }
 
+            slotNames.UnionWith(displayNames.Keys);
             foreach (string slot in slotNames)
             {
                 // 内部临时角色只承载局内事务/结果，不是可续玩的常驻档案。
@@ -798,6 +855,12 @@ namespace CF7Launcher.Tasks
             // 不变式 4：.json 与 .tombstone 并存 == tombstoned（语义同 inconsistent，用单独字段区分 UX 表现）
             entry["tombstoned"] = hasTomb;
             entry["inconsistent"] = hasJson && hasTomb;
+            if (hasTomb)
+            {
+                try { entry["rebuildPending"] = ReadDeletionMarker(tombPath)["confirmedCharacter"] != null; }
+                catch (IOException) { /* The existence of the marker still protects the slot. */ }
+                catch (UnauthorizedAccessException) { }
+            }
 
             bool corrupt = false;
             string mainProgress = null;
@@ -807,11 +870,11 @@ namespace CF7Launcher.Tasks
 
             if (hasJson)
             {
-                FileInfo fi = new FileInfo(jsonPath);
-                size = fi.Length;
-                lastModified = fi.LastWriteTimeUtc.ToString("o");
                 try
                 {
+                    FileInfo fi = new FileInfo(jsonPath);
+                    size = fi.Length;
+                    lastModified = fi.LastWriteTimeUtc.ToString("o");
                     string text = File.ReadAllText(jsonPath, Encoding.UTF8);
                     JObject data = JObject.Parse(text);
                     SaveMigrator.NormalizeResolvedSnapshot(data);
@@ -876,65 +939,44 @@ namespace CF7Launcher.Tasks
 
         // ==================== reset (Phase 2a) ====================
 
-        /// <summary>
-        /// 清理 launcher 侧副本：同时删 .json + .tombstone + 清一致性快照。
-        /// 注意：不清除 Flash 侧 SOL，下次启动可能从 SOL 回填。
-        /// </summary>
+        // Ordinary cleanup can discard a shadow/name, never the guard against the old SOL.
         private string HandleReset(JObject payload)
         {
             string slot = payload.Value<string>("slot");
-            if(!CanMutateSlot(slot))return BuildError("settings_recovery_required");
-            if (string.IsNullOrEmpty(slot))
-                return BuildError("missing slot");
-
-            string safeName;
-            if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
-                return BuildError("invalid_slot_key");
-            string jsonPath = Path.Combine(_savesDir, safeName + ".json");
-            string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
-
-            // reset 表示彻底移除 Launcher 对该身份的全部认知；与 delete
-            // 保留 tombstone + 展示名以便玩家辨认/重建的语义不同。
-            // 先校验并移除 catalog，避免物理文件已删却留下 catalog-only 幽灵槽位。
-            string catalogError;
-            if (!_slotCatalog.TryRemoveDisplayName(safeName, out catalogError))
+            if (!SaveSlotKey.TryValidateExisting(slot, out string key))
+                return BuildError(string.IsNullOrEmpty(slot) ? "missing slot" : "invalid_slot_key");
+            if (!CanMutateSlot(key)) return BuildError("settings_recovery_required");
+            if (payload["residueOnly"]?.Type == JTokenType.Boolean && (bool)payload["residueOnly"])
+            {
+                // This action was offered for a deleted row. Recheck on the FIFO, in case the slot was rebuilt meanwhile.
+                lock (_lock)
+                {
+                    string marker = Path.Combine(_savesDir, key + ".tombstone");
+                    if (!File.Exists(marker)) return BuildError("slot_not_deleted");
+                    if (ReadDeletionMarker(marker)["confirmedCharacter"] != null)
+                        return BuildError("rebuild_pending");
+                    try { File.Delete(Path.Combine(_savesDir, key + ".json")); }
+                    catch (IOException ex) when (IsSharingViolation(ex)) { return BuildError("shadow_in_use"); }
+                }
+                return new JObject { ["success"] = true, ["task"] = "archive", ["slot"] = key,
+                    ["reset"] = true, ["tombstoned"] = true }.ToString(Formatting.None);
+            }
+            if (!_slotCatalog.CanRemoveDisplayName(out string catalogError))
                 return BuildError("slot_catalog_reset_failed:" + catalogError);
 
-            Exception deleteError = null;
-            lock (_lock)
+            try { ResetSlotSync(key); }
+            catch (Exception ex)
             {
-                try { if (File.Exists(jsonPath)) File.Delete(jsonPath); }
-                catch (Exception ex)
-                {
-                    deleteError = ex;
-                    LogManager.Log("[ArchiveTask] reset delete json failed: " + ex.Message);
-                }
-
-                try { if (File.Exists(tombPath)) File.Delete(tombPath); }
-                catch (Exception ex)
-                {
-                    if (deleteError == null) deleteError = ex;
-                    LogManager.Log("[ArchiveTask] reset delete tombstone failed: " + ex.Message);
-                }
-
-                if (deleteError == null)
-                {
-                    // 物理移除成功：同一临界区内清 accepted-state 基线。
-                    _prevSnapshots.Remove(safeName);
-                }
+                LogManager.Log("[ArchiveTask] cleanup failed slot=" + key + " error=" + ex.Message);
+                return BuildError("slot_reset_delete_failed:" + ex.GetType().Name);
             }
-
-            if (deleteError != null)
-                return BuildError("slot_reset_delete_failed:" + deleteError.GetType().Name);
-
-            LogManager.Log("[ArchiveTask] reset slot=" + safeName);
-
-            JObject result = new JObject();
-            result["success"] = true;
-            result["task"] = "archive";
-            result["slot"] = safeName;
-            result["reset"] = true;
-            return result.ToString(Formatting.None);
+            if (!_slotCatalog.TryRemoveDisplayName(key, out catalogError))
+                return BuildError("slot_catalog_reset_failed:" + catalogError);
+            return new JObject
+            {
+                ["success"] = true, ["task"] = "archive", ["slot"] = key,
+                ["reset"] = true, ["tombstoned"] = true
+            }.ToString(Formatting.None);
         }
 
         // ==================== load_raw (Phase 2a) ====================

@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
 using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json.Linq;
@@ -216,45 +218,21 @@ namespace CF7Launcher.Save
 
             if (ver == "3.0")
             {
-                // Early-exposure tripwire (run on RAW soData, before merge):
-                // saveAll dual-writes the same object as a top-level key and
-                // nested under mydata.{tasks,pets,shop}; a correct parse makes
-                // them deep-equal. Divergence = sol_parser reference
-                // misresolution → the snapshot is shifted and must not be
-                // trusted. Fail LOUD; do not silently consume bad data.
-                List<string> dwMismatches;
-                bool dualWriteOk = SaveMigrator.ValidateDualWriteConsistency(soData, out dwMismatches);
-                if (!dualWriteOk)
+                bool valid = TryNormalizeFlushedV3(soData, mydata, out bool dualWriteOk);
+                if (valid)
                 {
-                    for (int i = 0; i < dwMismatches.Count; i++)
-                        LogManager.Log("[SolResolver] dual-write 不一致: " + dwMismatches[i]);
-                    LogManager.Log("[SolResolver] SOL dual-write 校验失败 — sol_parser 引用解析疑似回归,不信任此 SOL");
-                }
-
-                if (dualWriteOk)
-                {
-                    SaveMigrator.MergeTopLevelKeys(mydata, soData);
-                    SaveMigrator.NormalizeResolvedSnapshot(mydata);
-                    if (SaveMigrator.ValidateResolvedSnapshot(mydata))
+                    if (shadowValid)
                     {
-                        if (shadowValid)
+                        string validSolTs = mydata.Value<string>("lastSaved");
+                        string shadowTs = shadow.Value<string>("lastSaved");
+                        if (validSolTs != null && shadowTs != null
+                            && string.Compare(shadowTs, validSolTs, StringComparison.Ordinal) > 0)
                         {
-                            string validSolTs = mydata.Value<string>("lastSaved");
-                            string shadowTs = shadow.Value<string>("lastSaved");
-                            // Once raw SOL passed the dual-write tripwire, same-second
-                            // shadow may be a stale snapshot seeded by the historical
-                            // reference-offset bug. Require strictly newer authority.
-                            if (validSolTs != null
-                                && shadowTs != null
-                                && string.Compare(shadowTs, validSolTs, StringComparison.Ordinal) > 0)
-                            {
-                                LogManager.Log("[SolResolver] v3.0 shadow newer than dual-write-validated SOL — prefer json_shadow");
-                                return NewSnapshotResult(slot, shadow, "json_shadow");
-                            }
+                            LogManager.Log("[SolResolver] v3.0 shadow newer than dual-write-validated SOL — prefer json_shadow");
+                            return NewSnapshotResult(slot, shadow, "json_shadow");
                         }
-                        return NewSnapshotResult(slot, mydata, "sol");
                     }
-                    LogManager.Log("[SolResolver] v3.0 structure invalid — shadow freshness check");
+                    return NewSnapshotResult(slot, mydata, "sol");
                 }
 
                 // SOL 不可信(dual-write 错位 或 结构非法)→ shadow 新鲜度检查 → NewCorrupt
@@ -307,6 +285,44 @@ namespace CF7Launcher.Save
             }
             LogManager.Log("[SolResolver] pre-2.7 AS2 sync migration — DeferToFlash");
             return SolResolveResult.NewDeferToFlash();
+        }
+
+        internal string CurrentSolHash(string key, string swfPath)
+        {
+            string path = _locator.FindSolFile(key, swfPath);
+            if (path == null) return null;
+            using var source = File.OpenRead(path);
+            return Convert.ToHexString(SHA256.HashData(source));
+        }
+
+        // A new character is v3. No old shadow or migration may stand in for its confirmed flush.
+        internal JObject ReadFlushedCharacter(string key, string swfPath, string expectedName, string priorHash)
+        {
+            string path = _locator.FindSolFile(key, swfPath);
+            if (path == null) return null;
+            // Hold this version stable while hashing and parsing. A matching name alone cannot distinguish two characters.
+            using var source = File.OpenRead(path);
+            if (priorHash != null && Convert.ToHexString(SHA256.HashData(source)) == priorHash) return null;
+            SolParseResult parsed = _parser.Parse(path);
+            JObject so = parsed.ReturnCode == SolParseResult.RC_OK ? parsed.Data : null;
+            JObject character = so?["test"] as JObject;
+            if (character?.Value<string>("version") != "3.0" || (so["_deleted"]?.Type == JTokenType.Boolean && (bool)so["_deleted"])
+                || !TryNormalizeFlushedV3(so, character, out _)) return null;
+            return string.Equals((string)character["0"][0], expectedName, StringComparison.Ordinal) ? character : null;
+        }
+
+        private static bool TryNormalizeFlushedV3(JObject so, JObject mydata, out bool dualWriteOk)
+        {
+            // Compare raw top-level and nested data before merging: a mismatch identifies a broken SOL reference.
+            dualWriteOk = SaveMigrator.ValidateDualWriteConsistency(so, out List<string> mismatches);
+            if (!dualWriteOk)
+            {
+                foreach (string mismatch in mismatches) LogManager.Log("[SolResolver] dual-write 不一致: " + mismatch);
+                return false;
+            }
+            SaveMigrator.MergeTopLevelKeys(mydata, so);
+            SaveMigrator.NormalizeResolvedSnapshot(mydata);
+            return SaveMigrator.ValidateResolvedSnapshot(mydata);
         }
 
         private SolResolveResult NewSnapshotResult(string slot, JObject snapshot, string source)
