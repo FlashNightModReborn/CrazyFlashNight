@@ -16,6 +16,21 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
         );
     }
 
+    /**
+     * 位移技能起手前按当前水平输入校正面向。
+     * 射击/受击时方向可能仍停在开火或受击方向，而技能位移帧读取 unit.方向；
+     * 不校正会出现“按住左右仍朝受击方向跳/闪”的方向异常。
+     * 仅处理位移技能，且只在单侧水平输入时改写，不扩大到普通攻击。
+     */
+    public static function applyMovementSkillFacing(unit:MovieClip, skillName:String):Void {
+        if (!unit || typeof unit.方向改变 != "function") return;
+        if (_root.控制目标 == undefined || String(unit._name) != String(_root.控制目标)) return;
+        if (skillName != "小跳" && skillName != "闪现" && skillName != "一瞬千击"
+            && skillName != "瞬步斩" && skillName != "拔刀斩") return;
+        if (unit.右行 && !unit.左行) unit.方向改变("右");
+        else if (unit.左行 && !unit.右行) unit.方向改变("左");
+    }
+
     public static function ensureTempY(unit:MovieClip):Void {
         unit.temp_y = RoutingLifecycleCore.resolveTempY(
             unit.temp_y,
