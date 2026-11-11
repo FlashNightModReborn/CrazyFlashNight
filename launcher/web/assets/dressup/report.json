@@ -1,12 +1,12 @@
 {
   "schema": "cf7-dressup-report-v1",
   "counts": {
-    "items": 1447,
-    "skinKeys": 3020,
-    "coveredSkinKeys": 2871,
+    "items": 1454,
+    "skinKeys": 3041,
+    "coveredSkinKeys": 2884,
     "aliasCoveredSkinKeys": 8,
-    "coveredExcludingAliasSkinKeys": 2863,
-    "missingSkinKeys": 149,
+    "coveredExcludingAliasSkinKeys": 2876,
+    "missingSkinKeys": 157,
     "holdersMale": 21,
     "holdersFemale": 21,
     "battleStates": 7,
@@ -14,55 +14,33 @@
     "compatAliasSkinKeys": 8,
     "manualCompatAliasSkinKeys": 8,
     "autoOppositeGenderCompatAliasSkinKeys": 0,
-    "missingExportSkinKeys": 5,
-    "exportedSkinKeys": 5,
-    "exportedFrames": 3144,
-    "exportedBasicKeys": 0,
-    "exportedBasicFrames": 0,
-    "metadataErrors": 0,
-    "timelineScriptErrors": 0,
-    "spriteGraphErrors": 0,
-    "staticStopSkinKeys": 0,
-    "staticStopCollapsedFrames": 0,
-    "purgedStaleFrames": 0,
-    "nestedAnimationSkinKeys": 25,
-    "nestedLayerUnsupportedDescendants": 0,
-    "nestedLayerCompositedDescendants": 0,
-    "exportedNestedLayerKeys": 0,
-    "exportedNestedLayerFrames": 0,
-    "uniqueFrameImages": 2931,
-    "duplicateFrameRefs": 213,
-    "timelineLogicalFrames": 3144,
-    "timelineFrameEntries": 2933,
-    "timelineCompressedFrameRefs": 211,
-    "conditionalVariantSkinKeys": 0,
-    "conditionalVariantFrames": 0,
-    "conditionalVariantRemovedPlaceObjects": 0,
-    "expressionSkinKeys": 0,
-    "expressionFrames": 0,
-    "expressionFrameImages": 0,
-    "missingExpressionFrame": 0,
+    "preservedSkinKeyExports": 2884,
+    "preservedBasicHolderExports": 231,
     "animatedSkinKeys": 17,
     "staticCollapsedSkinKeys": 27,
-    "preservedSkinKeyExports": 2866,
-    "preservedBasicHolderExports": 231,
-    "orphanAssetsPurged": 1
+    "nestedAnimationSkinKeys": 25,
+    "uniqueFrameImages": 2994,
+    "duplicateFrameRefs": 217,
+    "timelineLogicalFrames": 3211,
+    "timelineFrameEntries": 2996,
+    "timelineCompressedFrameRefs": 215,
+    "exportedFrames": 3157
   },
   "missingSummary": {
     "byUse": {
       "上装装备": 77,
-      "下装装备": 72
+      "下装装备": 80
     },
     "byPrefix": {
       "女变装-": 63,
-      "男变装-": 86
+      "男变装-": 94
     }
   },
   "missingSourceAudit": {
     "byReason": {
       "exact_xml_without_as_linkage": 3,
       "no_matching_source": 3,
-      "opposite_gender_only": 143
+      "opposite_gender_only": 151
     },
     "actionableSkinKeys": [],
     "samples": {
@@ -1851,7 +1829,7 @@
         "oppositeGenderAsset": {
           "key": "女变装-JK校服上臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
-          "symbolName": "4人物服饰外观/普通jk校服/女变装-JK校服上臂"
+          "symbolName": "4人物服饰外观/普通jk校服/jk校服/女变装-武装jk套装上臂"
         }
       },
       "男变装-JK校服右下臂": {
@@ -1874,7 +1852,7 @@
         "oppositeGenderAsset": {
           "key": "女变装-JK校服右下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
-          "symbolName": "4人物服饰外观/普通jk校服/女变装-JK校服右下臂"
+          "symbolName": "4人物服饰外观/普通jk校服/jk校服/女变装-JK校服右下臂"
         }
       },
       "男变装-JK校服左下臂": {
@@ -1897,7 +1875,7 @@
         "oppositeGenderAsset": {
           "key": "女变装-JK校服左下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
-          "symbolName": "4人物服饰外观/普通jk校服/女变装-JK校服左下臂"
+          "symbolName": "4人物服饰外观/普通jk校服/jk校服/女变装-JK校服左下臂"
         }
       },
       "男变装-JK校服身体": {
@@ -1920,7 +1898,7 @@
         "oppositeGenderAsset": {
           "key": "女变装-JK校服身体",
           "swf": "flashswf/arts/new/3XD的素材.swf",
-          "symbolName": "4人物服饰外观/普通jk校服/女变装-JK校服身体"
+          "symbolName": "4人物服饰外观/普通jk校服/jk校服/女变装-武装jk套装身体"
         }
       },
       "男变装-King上装上臂": {
@@ -2597,6 +2575,190 @@
           "key": "女变装-jk套装左大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
           "symbolName": "4人物服饰外观/普通jk校服/裙子/女变装-jk套装左大腿"
+        }
+      },
+      "男变装-jk套装白丝右大腿": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "jk套装白丝裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "女变装-jk套装白丝右大腿",
+          "swf": "flashswf/arts/new/3XD的素材.swf",
+          "symbolName": "4人物服饰外观/普通jk校服/jk白丝裙子/女变装-jk套装白丝右大腿"
+        }
+      },
+      "男变装-jk套装白丝小腿": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "jk套装白丝裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "女变装-jk套装白丝小腿",
+          "swf": "flashswf/arts/new/3XD的素材.swf",
+          "symbolName": "4人物服饰外观/普通jk校服/jk白丝裙子/女变装-jk套装白丝小腿"
+        }
+      },
+      "男变装-jk套装白丝屁股": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "jk套装白丝裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "女变装-jk套装白丝屁股",
+          "swf": "flashswf/arts/new/3XD的素材.swf",
+          "symbolName": "4人物服饰外观/普通jk校服/jk白丝裙子/女变装-jk套装白丝屁股"
+        }
+      },
+      "男变装-jk套装白丝左大腿": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "jk套装白丝裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "女变装-jk套装白丝左大腿",
+          "swf": "flashswf/arts/new/3XD的素材.swf",
+          "symbolName": "4人物服饰外观/普通jk校服/jk白丝裙子/女变装-jk套装白丝左大腿"
+        }
+      },
+      "男变装-jk套装黑丝右大腿": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "jk套装黑丝裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "女变装-jk套装黑丝右大腿",
+          "swf": "flashswf/arts/new/3XD的素材.swf",
+          "symbolName": "4人物服饰外观/普通jk校服/jk黑丝裙子/女变装-jk套装黑丝右大腿"
+        }
+      },
+      "男变装-jk套装黑丝小腿": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "jk套装黑丝裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "女变装-jk套装黑丝小腿",
+          "swf": "flashswf/arts/new/3XD的素材.swf",
+          "symbolName": "4人物服饰外观/普通jk校服/jk黑丝裙子/女变装-jk套装黑丝小腿"
+        }
+      },
+      "男变装-jk套装黑丝屁股": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "jk套装黑丝裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "女变装-jk套装黑丝屁股",
+          "swf": "flashswf/arts/new/3XD的素材.swf",
+          "symbolName": "4人物服饰外观/普通jk校服/jk黑丝裙子/女变装-jk套装黑丝屁股"
+        }
+      },
+      "男变装-jk套装黑丝左大腿": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "jk套装黑丝裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "女变装-jk套装黑丝左大腿",
+          "swf": "flashswf/arts/new/3XD的素材.swf",
+          "symbolName": "4人物服饰外观/普通jk校服/jk黑丝裙子/女变装-jk套装黑丝左大腿"
         }
       },
       "男变装-keyboard衣服上臂": {
@@ -5857,6 +6019,110 @@
         "防具_0-19级.xml"
       ]
     },
+    "男变装-jk套装白丝右大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装白丝小腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装白丝屁股": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装白丝左大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装黑丝右大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装黑丝小腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装黑丝屁股": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装黑丝左大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
     "男变装-keyboard衣服上臂": {
       "covered": false,
       "asset": null,
@@ -6750,54 +7016,8 @@
     }
   },
   "assetExport": {
-    "selectedSkinKeys": 5,
-    "resolvedSkinKeys": 5,
-    "exportedSkinKeys": 5,
-    "exportedFrames": 5,
-    "resolvedBasicKeys": 0,
-    "exportedBasicKeys": 0,
-    "exportedBasicFrames": 0,
-    "missingSymbol": [],
-    "missingBasicSymbol": [],
-    "symbolErrors": [],
-    "exportErrors": [],
-    "metadataErrors": [],
-    "exportFallbacks": [],
-    "missingFrame": [],
-    "missingBasicFrame": [],
-    "timelineScriptErrors": [],
-    "spriteGraphErrors": [],
-    "staticStopSkinKeys": 0,
-    "staticStopCollapsedFrames": 0,
-    "purgedStaleFrames": 0,
-    "staticStopSamples": [],
-    "nestedAnimationSkinKeys": 0,
-    "nestedAnimationSamples": [],
-    "nestedLayerUnsupportedDescendants": 0,
-    "nestedLayerCompositedDescendants": 0,
-    "exportedNestedLayerKeys": 0,
-    "exportedNestedLayerFrames": 0,
-    "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 5,
-    "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 5,
-    "timelineFrameEntries": 5,
-    "timelineCompressedFrameRefs": 0,
-    "timelineCompressionSamples": [],
-    "conditionalVariantSkinKeys": 0,
-    "conditionalVariantFrames": 0,
-    "conditionalVariantRemovedPlaceObjects": 0,
-    "conditionalVariantSamples": [],
-    "expressionSkinKeys": 0,
-    "expressionFrames": 0,
-    "expressionFrameImages": 0,
-    "missingExpressionFrame": [],
-    "preservedSkinKeyExports": 2866,
-    "preservedBasicHolderExports": 231,
-    "orphanAssetsPurged": 1,
-    "orphanAssetSamples": [
-      "skins/24c95120_1.png"
-    ]
+    "preservedSkinKeyExports": 2884,
+    "preservedBasicHolderExports": 231
   },
   "animatedSkinKeys": [
     {

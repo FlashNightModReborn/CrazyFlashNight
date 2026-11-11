@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-11-03T18:08:44+0800",
+  "generatedAt": "2026-11-11T19:14:20+0800",
   "genders": [
     "男",
     "女"
@@ -1026,23 +1026,6 @@
         "女": {
           "刀_装扮": "刀-光斧金牛",
           "刀1_装扮": "刀-光斧金牛"
-        }
-      },
-      "sourceFile": "武器_刀_狂野.xml"
-    },
-    "光刀狮子": {
-      "use": "刀",
-      "icon": "光刀狮子",
-      "dressup": "刀-光刀狮子",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "刀_装扮": "刀-光刀狮子",
-          "刀1_装扮": "刀-光刀狮子"
-        },
-        "女": {
-          "刀_装扮": "刀-光刀狮子",
-          "刀1_装扮": "刀-光刀狮子"
         }
       },
       "sourceFile": "武器_刀_狂野.xml"
@@ -2493,6 +2476,23 @@
         }
       },
       "sourceFile": "武器_刀_迅捷.xml"
+    },
+    "光刀狮子": {
+      "use": "刀",
+      "icon": "光刀狮子",
+      "dressup": "刀-光刀狮子",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "刀_装扮": "刀-光刀狮子",
+          "刀1_装扮": "刀-光刀狮子"
+        },
+        "女": {
+          "刀_装扮": "刀-光刀狮子",
+          "刀1_装扮": "刀-光刀狮子"
+        }
+      },
+      "sourceFile": "武器_刀_重斩.xml"
     },
     "风暴": {
       "use": "刀",
@@ -7090,6 +7090,21 @@
       },
       "sourceFile": "武器_长枪_发射器.xml"
     },
+    "AMML3": {
+      "use": "长枪",
+      "icon": "AMML3",
+      "dressup": "枪-长枪-AMML3",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "长枪_装扮": "枪-长枪-AMML3"
+        },
+        "女": {
+          "长枪_装扮": "枪-长枪-AMML3"
+        }
+      },
+      "sourceFile": "武器_长枪_发射器.xml"
+    },
     "M202FLASH": {
       "use": "长枪",
       "icon": "M202FLASH",
@@ -7457,6 +7472,21 @@
         }
       }
     },
+    "HSR10": {
+      "use": "长枪",
+      "icon": "HSR10",
+      "dressup": "枪-长枪-HSR10",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "长枪_装扮": "枪-长枪-HSR10"
+        },
+        "女": {
+          "长枪_装扮": "枪-长枪-HSR10"
+        }
+      },
+      "sourceFile": "武器_长枪_战斗步枪.xml"
+    },
     "m14": {
       "use": "长枪",
       "icon": "m14",
@@ -7560,6 +7590,21 @@
           }
         }
       }
+    },
+    "HSR10tac": {
+      "use": "长枪",
+      "icon": "HSR10tac",
+      "dressup": "枪-长枪-HSR10tac",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "长枪_装扮": "枪-长枪-HSR10tac"
+        },
+        "女": {
+          "长枪_装扮": "枪-长枪-HSR10tac"
+        }
+      },
+      "sourceFile": "武器_长枪_战斗步枪.xml"
     },
     "HKSL8EX": {
       "use": "长枪",
@@ -15317,6 +15362,78 @@
         },
         "女": {
           "脚": "男变装-jk套装鞋子"
+        }
+      },
+      "sourceFile": "防具_0-19级.xml"
+    },
+    "jk套装白丝裙子": {
+      "use": "下装装备",
+      "icon": "Codex-jk套装白丝裙子",
+      "dressup": "变装-jk套装白丝",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "屁股": "男变装-jk套装白丝屁股",
+          "左大腿": "男变装-jk套装白丝左大腿",
+          "右大腿": "男变装-jk套装白丝右大腿",
+          "小腿": "男变装-jk套装白丝小腿"
+        },
+        "女": {
+          "屁股": "女变装-jk套装白丝屁股",
+          "左大腿": "女变装-jk套装白丝左大腿",
+          "右大腿": "女变装-jk套装白丝右大腿",
+          "小腿": "女变装-jk套装白丝小腿"
+        }
+      },
+      "sourceFile": "防具_0-19级.xml"
+    },
+    "jk套装白丝鞋子": {
+      "use": "脚部装备",
+      "icon": "jk套装白丝鞋子",
+      "dressup": "男变装-jk套装白丝鞋子",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "脚": "男变装-jk套装白丝鞋子"
+        },
+        "女": {
+          "脚": "男变装-jk套装白丝鞋子"
+        }
+      },
+      "sourceFile": "防具_0-19级.xml"
+    },
+    "jk套装黑丝裙子": {
+      "use": "下装装备",
+      "icon": "jk套装黑丝裙子",
+      "dressup": "变装-jk套装黑丝",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "屁股": "男变装-jk套装黑丝屁股",
+          "左大腿": "男变装-jk套装黑丝左大腿",
+          "右大腿": "男变装-jk套装黑丝右大腿",
+          "小腿": "男变装-jk套装黑丝小腿"
+        },
+        "女": {
+          "屁股": "女变装-jk套装黑丝屁股",
+          "左大腿": "女变装-jk套装黑丝左大腿",
+          "右大腿": "女变装-jk套装黑丝右大腿",
+          "小腿": "女变装-jk套装黑丝小腿"
+        }
+      },
+      "sourceFile": "防具_0-19级.xml"
+    },
+    "jk套装黑丝鞋子": {
+      "use": "脚部装备",
+      "icon": "jk套装黑丝鞋子",
+      "dressup": "男变装-jk套装黑丝鞋子",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "脚": "男变装-jk套装黑丝鞋子"
+        },
+        "女": {
+          "脚": "男变装-jk套装黑丝鞋子"
         }
       },
       "sourceFile": "防具_0-19级.xml"
@@ -24198,7 +24315,7 @@
         "光刀狮子"
       ],
       "sourceFiles": [
-        "武器_刀_狂野.xml"
+        "武器_刀_重斩.xml"
       ],
       "export": {
         "format": "png",
@@ -47334,7 +47451,7 @@
       "covered": true,
       "asset": {
         "swf": "flashswf/arts/new/3XD的素材.swf",
-        "symbolName": "4人物服饰外观/普通jk校服/女变装-JK校服上臂",
+        "symbolName": "4人物服饰外观/普通jk校服/jk校服/女变装-武装jk套装上臂",
         "conflict": false,
         "matches": null
       },
@@ -47350,7 +47467,7 @@
       "export": {
         "format": "png",
         "zoom": 2,
-        "fps": 24,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/65b8eeaf_1.png",
         "width": 115,
@@ -47374,7 +47491,7 @@
       "covered": true,
       "asset": {
         "swf": "flashswf/arts/new/3XD的素材.swf",
-        "symbolName": "4人物服饰外观/普通jk校服/女变装-JK校服右下臂",
+        "symbolName": "4人物服饰外观/普通jk校服/jk校服/女变装-JK校服右下臂",
         "conflict": false,
         "matches": null
       },
@@ -47390,7 +47507,7 @@
       "export": {
         "format": "png",
         "zoom": 2,
-        "fps": 24,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/7494456e_1.png",
         "width": 122,
@@ -47414,7 +47531,7 @@
       "covered": true,
       "asset": {
         "swf": "flashswf/arts/new/3XD的素材.swf",
-        "symbolName": "4人物服饰外观/普通jk校服/女变装-JK校服左下臂",
+        "symbolName": "4人物服饰外观/普通jk校服/jk校服/女变装-JK校服左下臂",
         "conflict": false,
         "matches": null
       },
@@ -47430,7 +47547,7 @@
       "export": {
         "format": "png",
         "zoom": 2,
-        "fps": 24,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/175abecf_1.png",
         "width": 123,
@@ -47454,7 +47571,7 @@
       "covered": true,
       "asset": {
         "swf": "flashswf/arts/new/3XD的素材.swf",
-        "symbolName": "4人物服饰外观/普通jk校服/女变装-JK校服身体",
+        "symbolName": "4人物服饰外观/普通jk校服/jk校服/女变装-武装jk套装身体",
         "conflict": false,
         "matches": null
       },
@@ -47470,11 +47587,11 @@
       "export": {
         "format": "png",
         "zoom": 2,
-        "fps": 24,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/3637b200_1.png",
-        "width": 244,
-        "height": 466,
+        "width": 255,
+        "height": 473,
         "playback": "static",
         "sourceFrameCount": 1
       },
@@ -47483,10 +47600,10 @@
           "uri": "skins/3637b200_1.png",
           "frame": 1,
           "sourceFrame": 1,
-          "width": 244,
-          "height": 466,
-          "originX": 114.5,
-          "originY": 239.9
+          "width": 255,
+          "height": 473,
+          "originX": 121.2,
+          "originY": 243.4
         }
       ]
     },
@@ -50857,6 +50974,326 @@
           "sourceFrame": 1,
           "width": 158,
           "height": 314,
+          "originX": 90.3,
+          "originY": 154.9
+        }
+      ]
+    },
+    "女变装-jk套装白丝右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/jk白丝裙子/女变装-jk套装白丝右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/f6188971_1.png",
+        "width": 192,
+        "height": 389,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/f6188971_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 192,
+          "height": 389,
+          "originX": 105.3,
+          "originY": 219.3
+        }
+      ]
+    },
+    "女变装-jk套装白丝小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/jk白丝裙子/女变装-jk套装白丝小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/5a1e3633_1.png",
+        "width": 97,
+        "height": 301,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/5a1e3633_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 97,
+          "height": 301,
+          "originX": 52.3,
+          "originY": 143.9
+        }
+      ]
+    },
+    "女变装-jk套装白丝屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/jk白丝裙子/女变装-jk套装白丝屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/32efc314_1.png",
+        "width": 293,
+        "height": 201,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/32efc314_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 293,
+          "height": 201,
+          "originX": 160.7,
+          "originY": 99.7
+        }
+      ]
+    },
+    "女变装-jk套装白丝左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/jk白丝裙子/女变装-jk套装白丝左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/95d672d0_1.png",
+        "width": 158,
+        "height": 319,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/95d672d0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 158,
+          "height": 319,
+          "originX": 90.3,
+          "originY": 154.9
+        }
+      ]
+    },
+    "女变装-jk套装黑丝右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/jk黑丝裙子/女变装-jk套装黑丝右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/1ea5df7f_1.png",
+        "width": 192,
+        "height": 389,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/1ea5df7f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 192,
+          "height": 389,
+          "originX": 105.3,
+          "originY": 219.3
+        }
+      ]
+    },
+    "女变装-jk套装黑丝小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/jk黑丝裙子/女变装-jk套装黑丝小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/38be3065_1.png",
+        "width": 97,
+        "height": 302,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/38be3065_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 97,
+          "height": 302,
+          "originX": 52.3,
+          "originY": 144.1
+        }
+      ]
+    },
+    "女变装-jk套装黑丝屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/jk黑丝裙子/女变装-jk套装黑丝屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/504fc542_1.png",
+        "width": 293,
+        "height": 201,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/504fc542_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 293,
+          "height": 201,
+          "originX": 160.7,
+          "originY": 99.7
+        }
+      ]
+    },
+    "女变装-jk套装黑丝左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/jk黑丝裙子/女变装-jk套装黑丝左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/7d6b24de_1.png",
+        "width": 158,
+        "height": 319,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/7d6b24de_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 158,
+          "height": 319,
           "originX": 90.3,
           "originY": 154.9
         }
@@ -88406,6 +88843,46 @@
         }
       ]
     },
+    "枪-长枪-AMML3": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+        "symbolName": "AMML-3",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "AMML3"
+      ],
+      "sourceFiles": [
+        "武器_长枪_发射器.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/eb8fad4d_1.png",
+        "width": 684,
+        "height": 208,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/eb8fad4d_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 684,
+          "height": 208,
+          "originX": 376.2,
+          "originY": 146.1
+        }
+      ]
+    },
     "枪-长枪-AR57": {
       "covered": true,
       "asset": {
@@ -90148,6 +90625,46 @@
         }
       ]
     },
+    "枪-长枪-HSR10": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+        "symbolName": "",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "HSR10"
+      ],
+      "sourceFiles": [
+        "武器_长枪_战斗步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/42bb5ddc_1.png",
+        "width": 710,
+        "height": 207,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/42bb5ddc_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 710,
+          "height": 207,
+          "originX": 213.3,
+          "originY": 109.1
+        }
+      ]
+    },
     "枪-长枪-HSR10S": {
       "covered": true,
       "asset": {
@@ -90168,10 +90685,10 @@
       "export": {
         "format": "png",
         "zoom": 2,
-        "fps": 24,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/af47ca61_1.png",
-        "width": 705,
+        "width": 706,
         "height": 240,
         "playback": "static",
         "sourceFrameCount": 1
@@ -90181,10 +90698,50 @@
           "uri": "skins/af47ca61_1.png",
           "frame": 1,
           "sourceFrame": 1,
-          "width": 705,
+          "width": 706,
           "height": 240,
-          "originX": 208,
+          "originX": 209.0,
           "originY": 128.9
+        }
+      ]
+    },
+    "枪-长枪-HSR10tac": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+        "symbolName": "",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "HSR10tac"
+      ],
+      "sourceFiles": [
+        "武器_长枪_战斗步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d3d1f691_1.png",
+        "width": 706,
+        "height": 209,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d3d1f691_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 706,
+          "height": 209,
+          "originX": 209.0,
+          "originY": 109.3
         }
       ]
     },
@@ -108336,6 +108893,98 @@
         "防具_0-19级.xml"
       ]
     },
+    "男变装-jk套装白丝右大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装白丝小腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装白丝屁股": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装白丝左大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装白丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装白丝鞋子": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/jk白丝鞋子/男变装-武装jk套装白丝鞋子",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "脚部装备"
+      ],
+      "items": [
+        "jk套装白丝鞋子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/6f228ad4_1.png",
+        "width": 147,
+        "height": 130,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/6f228ad4_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 147,
+          "height": 130,
+          "originX": 70.9,
+          "originY": 43.1
+        }
+      ]
+    },
     "男变装-jk套装鞋子": {
       "covered": true,
       "asset": {
@@ -108373,6 +109022,98 @@
           "height": 132,
           "originX": 71.7,
           "originY": 44.6
+        }
+      ]
+    },
+    "男变装-jk套装黑丝右大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装黑丝小腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装黑丝屁股": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装黑丝左大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "jk套装黑丝裙子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-jk套装黑丝鞋子": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/普通jk校服/jk黑丝鞋子/男变装-武装jk套装黑丝鞋子",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "脚部装备"
+      ],
+      "items": [
+        "jk套装黑丝鞋子"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0d828c82_1.png",
+        "width": 147,
+        "height": 130,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/0d828c82_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 147,
+          "height": 130,
+          "originX": 70.9,
+          "originY": 43.1
         }
       ]
     },
@@ -117591,6 +118332,10 @@
           {
             "swf": "flashswf/levels/地图-第一防线防区.swf",
             "symbolName": "待整理防具相关汇总/Symbol 97"
+          },
+          {
+            "swf": "flashswf/portraits/Badman.swf",
+            "symbolName": "sprite/男变装-基本脸型"
           },
           {
             "swf": "flashswf/portraits/artist.swf",
