@@ -35,6 +35,7 @@ _root.战技路由 = {};
  */
 _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:String, playbackMode:String):MovieClip {
     unit.技能名 = skillName;
+    RoutingLifecycle.applyMovementSkillFacing(unit, skillName);
     RoutingLifecycle.ensureTempY(unit);
 
     // 兼容战技元件 onClipEvent(load) 的旧逻辑：hp<=0 时直接进入血腥死

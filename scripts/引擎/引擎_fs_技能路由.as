@@ -27,6 +27,7 @@ _root.技能路由 = {};
  */
 _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:String):Void {
     unit.技能名 = skillName;
+    RoutingLifecycle.applyMovementSkillFacing(unit, skillName);
     // issue #7 bug3：位移技能（闪现/小跳/一瞬千击）开一个短时「位移锁向」窗口，期间 HitUpdater
     // 不翻转受击面向，避免受击翻面让脱困位移反向冲进人堆。帧戳自动过期（无需 FLA 末帧清理），
     // 窗口仅覆盖这三招的位移帧。窗口值偏宽更安全：偏短=漏修一部分；偏长=受击短暂不转面向（基本无感）。
