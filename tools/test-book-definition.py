@@ -56,8 +56,10 @@ class BookDefinitionTests(unittest.TestCase):
         units = {u['id'] for u in json.loads((ROOT/'data/units/units.json').read_text('utf-8-sig'))}
         builder.validate_boss(self.data,units,self.items)
         self.assertEqual(sum(len(g['pools']) for g in self.data['bossEncounter']['groups']),8)
+        self.assertEqual({264,265,266,267,268,269,270,261},
+                         {enemy for group in self.data['bossEncounter']['groups'] for pool in group['pools'] for enemy in pool})
         for mutate in [lambda c:c.update(maxAlive=9),lambda c:c['groups'][1].update(hpRatio=0.9),
-                       lambda c:c['supplies'][0].update(name='经验值'),lambda c:c['groups'][1]['pools'][0].append(44)]:
+                       lambda c:c['supplies'][0].update(name='经验值'),lambda c:c['groups'][1]['pools'][0].append(264)]:
             data=copy.deepcopy(self.data);mutate(data['bossEncounter'])
             with self.assertRaises(ValueError):builder.validate_boss(data,units,self.items)
         for field,value in [('waves',2),('count',[1,2]),('enemies',[455,44])]:
@@ -132,12 +134,50 @@ class BookDefinitionTests(unittest.TestCase):
         self.assertTrue(any(e.get('type') == 'regen' and e.get('hp') == '200' and e.get('mode') == 'total' for e in effects))
 
     def test_military_is_after_both_student_factions_without_level_buff(self):
-        self.assertEqual([[44, 45], [48, 49], [447, 448], [436, 437], [449, 450], [444, 446], [455]],
+        self.assertEqual([[44, 45, 48, 49], [457, 367], [447, 448], [436, 437], [449, 450], [444, 446], [455]],
                          [stage['enemies'] for stage in self.data['maps']])
         self.assertEqual([5, 7], self.data['maps'][4]['level'])
+        self.assertEqual(44, self.data['maps'][0]['carBombType'])
+        self.assertEqual([3, 5], self.data['maps'][0]['count'])
+        self.assertEqual([{'type': 457, 'weight': 1}, {'type': 367, 'weight': 2}],
+                         self.data['maps'][1]['enemyWeights'])
+        self.assertEqual([6, 9], self.data['maps'][2]['wavePlan']['baseTotal'])
+        self.assertEqual([6, 9], self.data['maps'][3]['wavePlan']['baseTotal'])
+        self.assertEqual(4, self.data['maps'][2]['waves'])
+        self.assertEqual(4, self.data['maps'][3]['waves'])
+        self.assertEqual([56, 54, 55, 57], self.data['maps'][2]['wavePlan']['addTypes'])
+        self.assertEqual([264, 267, 265, 266], self.data['maps'][2]['wavePlan']['eliteTypes'])
+        self.assertEqual([47, 65, 64], self.data['maps'][3]['wavePlan']['addTypes'])
+        self.assertEqual([270, 269, 268], self.data['maps'][3]['wavePlan']['eliteTypes'])
         # Reordering the encounters must not delay the established gear unlock budget.
         self.assertEqual([9000, 45000, 77000, 140000, 110000, 120000, 160000],
                          [stage['experience'] for stage in self.data['maps']])
+
+    def test_style_choices_follow_first_six_maps_and_exclude_npc_skills(self):
+        self.assertEqual([2, 4, 5], [c['afterMap'] for c in self.data['minorChoices']])
+        self.assertEqual(list(range(6)), [c['afterMap'] for c in self.data['styleChoices']])
+        for index, choice in enumerate(self.data['styleChoices']):
+            self.assertEqual('repair-campus.style.%d' % index, choice['poolId'])
+            self.assertEqual('书中流派构筑自选包·%d' % (index + 1), choice['choiceItem'])
+            self.assertEqual(15, choice['levelCeiling'])
+        catalog = json.loads((ROOT / 'data/rewards/choice-rewards.json').read_text(encoding='utf-8'))
+        styles = [p for p in catalog['pools'] if p['id'].startswith('repair-campus.style.')]
+        self.assertEqual([6, 9, 11, 13, 14, 15], [p['skillUnlockCeiling'] for p in styles])
+        self.assertTrue(all(p['respectSkillUnlock'] for p in styles))
+        self.assertEqual(['fist', 'blade', 'gun', 'general'], [g['id'] for g in styles[0]['groups']])
+        bundles = {b['id']: b for b in catalog['bundles']}
+        fist_skills = [bundles[row['bundleId']]['skills'][0]['skillKey']
+                       for row in next(g for g in styles[0]['groups'] if g['id'] == 'fist')['entries']]
+        blade_skills = [bundles[row['bundleId']]['skills'][0]['skillKey']
+                        for row in next(g for g in styles[0]['groups'] if g['id'] == 'blade')['entries']]
+        self.assertNotIn('上挑', fist_skills)
+        self.assertNotIn('下劈', fist_skills)
+        self.assertIn('上挑', blade_skills)
+        self.assertIn('下劈', blade_skills)
+        style_skills = [grant['skillKey'] for group in styles[0]['groups'] for row in group['entries']
+                        for grant in bundles[row['bundleId']]['skills']]
+        self.assertTrue(style_skills)
+        self.assertFalse((set(style_skills) - {'气动波'}) & set(self.data['skills']))
 
     def test_local_skill_points_use_real_currency_and_bounded_counts(self):
         self.assertEqual(360, sum(stage['skillPoints'] for stage in self.data['maps']))

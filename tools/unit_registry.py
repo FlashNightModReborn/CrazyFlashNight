@@ -120,6 +120,19 @@ def normalize_book_units(source, registry):
         context = 'maps[' + str(index) + ']'
         if isinstance(stage.get('enemies'), list):
             stage['enemies'] = [registry.resolve_id(ref, context + '.enemies') for ref in stage['enemies']]
+        if 'carBombType' in stage:
+            stage['carBombType'] = registry.resolve_id(stage['carBombType'], context + '.carBombType')
+        weights = stage.get('enemyWeights')
+        if isinstance(weights, list):
+            for weight_index, entry in enumerate(weights):
+                if isinstance(entry, dict) and 'type' in entry:
+                    entry['type'] = registry.resolve_id(entry['type'], context + '.enemyWeights[' + str(weight_index) + '].type')
+
+        plan = stage.get('wavePlan')
+        if isinstance(plan, dict):
+            for key in ('addTypes', 'eliteTypes'):
+                if isinstance(plan.get(key), list):
+                    plan[key] = [registry.resolve_id(ref, context + '.wavePlan.' + key) for ref in plan[key]]
         waves = stage.get('stage', {}).get('Wave', {}).get('SubWave', [])
         if isinstance(waves, list):
             for wave_index, wave in enumerate(waves):

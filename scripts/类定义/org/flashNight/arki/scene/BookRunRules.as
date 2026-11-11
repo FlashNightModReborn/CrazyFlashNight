@@ -46,6 +46,55 @@ class org.flashNight.arki.scene.BookRunRules {
     private static function integer(state:Object, lo:Number, hi:Number):Number {
         return lo + Math.floor(next(state) * (hi - lo + 1));
     }
+    /** Local plan RNG keeps authored wave composition from perturbing loot draws. */
+    private static function planState(seed:Number, index:Number):Object {
+        return {value:(seed + (index + 1) * 7919) % 2147483646 + 1};
+    }
+    private static function spread(state:Object, total:Number, count:Number, lateBias:Boolean):Array {
+        var result:Array = [];
+        for (var i:Number = 0; i < count; i++) result.push(1);
+        for (var n:Number = count; n < total; n++) {
+            var index:Number = integer(state, 0, count - 1);
+            if (lateBias) index = Math.max(index, integer(state, 0, count - 1));
+            result[index]++;
+        }
+        return result;
+    }
+    /** Weak-to-strong wave pool: early waves favor lower combat power, later waves higher. */
+    private static function basePoolFor(map:Object, wave:Number):Array {
+        var pool:Array = [];
+        if (map.enemyPower == null) {
+            if (map.enemyWeights == null) return map.enemies;
+            for (var s:Number = 0; s < map.enemyWeights.length; s++)
+                for (var c:Number = 0; c < map.enemyWeights[s].weight; c++)
+                    pool.push(map.enemyWeights[s].type);
+            return pool;
+        }
+        var weights:Object = {};
+        if (map.enemyWeights != null)
+            for (var e:Number = 0; e < map.enemyWeights.length; e++)
+                weights[String(map.enemyWeights[e].type)] = map.enemyWeights[e].weight;
+        var maxPower:Number = 1;
+        for (var t:Number = 0; t < map.enemies.length; t++) {
+            var p:Number = Number(map.enemyPower[t]);
+            if (isFinite(p) && p > maxPower) maxPower = p;
+        }
+        var progress:Number = map.waves > 1 ? wave / (map.waves - 1) : 1;
+        // Non-final waves exclude the strongest tier so a bad roll cannot start with a heavy.
+        var allowedPower:Number = wave < map.waves - 1 && maxPower > 1 ? maxPower - 1 : maxPower;
+        for (t = 0; t < map.enemies.length; t++) {
+            var type:Number = map.enemies[t];
+            p = Number(map.enemyPower[t]);
+            if (!isFinite(p) || p < 1) p = 1;
+            if (p > allowedPower) continue;
+            var baseWeight:Number = weights[String(type)] == undefined ? 1 : weights[String(type)];
+            var factor:Number = (1 - progress) * (maxPower + 1 - p) + progress * p;
+            var repeat:Number = Math.max(1, Math.round(baseWeight * factor));
+            for (var n:Number = 0; n < repeat; n++) pool.push(type);
+        }
+        if (pool.length == 0) return map.enemies;
+        return pool;
+    }
     /** 地图 BGM：单曲、序列或 stop；缺省保持既有 Bulletproof，避免空配置退化为静音。 */
     private static function mapBgm(map:Object):Object {
         var spec:Object = map.bgm;
@@ -72,17 +121,26 @@ class org.flashNight.arki.scene.BookRunRules {
         if (config.id === "cf6-sting") return authoredStages(config, seed, startAt);
         var state:Object = {value:seed};
         if (isNaN(seed) || seed < 1 || seed >= 2147483647 || Math.floor(seed) != seed) state.value = 1;
+        var planSeed:Number = state.value;
         var result:Array = [];
         var economy:Object = config.loot;
         var supportIndex:Number = 0;
         for (var i:Number = 0; i < config.maps.length; i++) {
             var map:Object = config.maps[i], waves:Array = [];
-            var choice:Object = null;
-            for (var c:Number = 0; c < config.buildChoices.length; c++) {
-                if (config.buildChoices[c].afterMap == i) choice = config.buildChoices[c];
+            var mix:Object = null, waveCounts:Array = null;
+            if (map.wavePlan != null) {
+                mix = planState(planSeed, i);
+                waveCounts = spread(mix, integer(mix, map.wavePlan.baseTotal[0], map.wavePlan.baseTotal[1]), map.waves, true);
             }
+            var choices:Array = [];
+            for (var c:Number = 0; c < config.buildChoices.length; c++)
+                if (config.buildChoices[c].afterMap == i) choices.push(config.buildChoices[c]);
             for (var mc:Number = 0; mc < config.minorChoices.length; mc++)
-                if (config.minorChoices[mc].afterMap == i) choice = config.minorChoices[mc];
+                if (config.minorChoices[mc].afterMap == i) choices.push(config.minorChoices[mc]);
+            if (config.styleChoices != null) {
+                for (var sc:Number = 0; sc < config.styleChoices.length; sc++)
+                    if (config.styleChoices[sc].afterMap == i) choices.push(config.styleChoices[sc]);
+            }
             var optionalPercent:Number = i >= config.optionalLoot.firstMap && i <= config.optionalLoot.lastMap ? config.optionalLoot.percent : 100;
             var armorOffset:Number = integer(state, 0, map.armor.length - 1);
             for (var w:Number = 0; w < map.waves; w++) {
@@ -91,26 +149,62 @@ class org.flashNight.arki.scene.BookRunRules {
                 // 首波及第三波提供比例急救；中间一波保留随机增益，复用原补给位。
                 var medical:Boolean = w % 2 == 0;
                 if (medical) supply = economy.medicalItem;
-                var enemyType:Number = map.enemies[integer(state, 0, map.enemies.length - 1)];
+                // 同图敌池逐只轮转混编：前期少而弱，后期多而强。
+                var basePool:Array = basePoolFor(map, w);
+                var enemyOffset:Number = integer(state, 0, basePool.length - 1);
                 var enemyLevel:Number = integer(state, map.level[0], map.level[1]);
-                var quantity:Number = integer(state, map.count[0], map.count[1]);
+                var quantity:Number;
+                if (waveCounts == null) {
+                    var span:Number = map.count[1] - map.count[0];
+                    var waveLow:Number = map.count[0] + Math.floor(span * w / map.waves);
+                    var waveHigh:Number = map.count[0] + Math.floor(span * (w + 1) / map.waves);
+                    if (w == map.waves - 1) waveHigh = map.count[1];
+                    if (waveHigh < waveLow) waveHigh = waveLow;
+                    quantity = integer(state, waveLow, waveHigh);
+                } else quantity = integer(state, map.count[0], map.count[1]);
+                var baseCount:Number = waveCounts == null ? quantity : waveCounts[w];
+                var enemies:Array = [];
+                var carAssigned:Boolean = false;
+                for (var e:Number = 0; e < baseCount; e++) {
+                    var enemyType:Number = basePool[(enemyOffset + e) % basePool.length];
+                    var parameters:Object = {掉落物:[]};
+                    if (!carAssigned && map.carBombType != null && enemyType == map.carBombType) {
+                        parameters.汽车炸弹数量 = 1;
+                        carAssigned = true;
+                    }
+                    enemies.push({Type:"兵种" + enemyType, Level:enemyLevel, Quantity:1,
+                        Interval:900, Delay:e * 900, SpawnIndex:"right", Parameters:parameters});
+                }
+                if (map.wavePlan != null) {
+                    var eliteWave:Boolean = w == map.waves - 1;
+                    var addTypes:Array = eliteWave ? map.wavePlan.eliteTypes : map.wavePlan.addTypes;
+                    var addMin:Number = map.wavePlan.addCount[0];
+                    var addMax:Number = map.wavePlan.addCount[1];
+                    var addSpan:Number = addMax - addMin;
+                    var addCount:Number = eliteWave ? addTypes.length
+                        : addMin + Math.floor(addSpan * w / Math.max(1, map.waves - 2));
+                    var addLevel:Number = eliteWave ? map.wavePlan.eliteLevel : enemyLevel;
+                    var addOffset:Number = integer(mix, 0, addTypes.length - 1);
+                    for (var a:Number = 0; a < addCount; a++) enemies.push({
+                        Type:"兵种" + addTypes[(addOffset + a) % addTypes.length], Level:addLevel,
+                        Quantity:1, Interval:900, Delay:enemies.length * 900,
+                        SpawnIndex:"right", Parameters:{掉落物:[]}});
+                }
+                var carrier:Object = enemies[enemies.length - 1];
                 // 每波一名敌人携带整波配给；一堆可装多份药品/弹药，不再每敌人散落六堆。
                 // 经验总预算保持不变，且不随出怪数量或随机装备抽签减少。
                 var experience:Number = Math.ceil(map.experience / map.waves);
                 var support:Object = economy.support[supportIndex % economy.support.length];
                 var supportName:String = support.kind == "mana" ? map.manaItem : support.name;
                 supportIndex++;
-                var carrier:Object = {
-                    Type:"兵种" + enemyType, Level:enemyLevel,
-                    Quantity:1, Interval:900, Delay:(quantity - 1) * 900, SpawnIndex:"right",
-                    Parameters:{掉落物:[{名字:loot, 概率:economy.equipmentChance * optionalPercent / 100, 最小数量:1, 最大数量:1, 总数:1},
-                        {名字:supply, 概率:medical ? 100 : economy.supplyChance, 最小数量:1, 最大数量:1, 总数:1},
-                        // 敌人先查物品字典，必须使用“金币”；显示名“金钱”会被跳过。
-                        {名字:economy.moneyItem, 概率:100, 最小数量:map.money[0], 最大数量:map.money[1], 总数:map.money[1]},
-                        {名字:economy.experienceItem, 概率:100, 最小数量:experience, 最大数量:experience, 总数:experience},
-                        {名字:map.healingItem, 概率:100, 最小数量:economy.healingCount, 最大数量:economy.healingCount, 总数:economy.healingCount},
-                        {名字:supportName, 概率:100, 最小数量:support.count, 最大数量:support.count, 总数:support.count}]}
-                };
+                carrier.Parameters.掉落物 = [
+                    {名字:loot, 概率:economy.equipmentChance * optionalPercent / 100, 最小数量:1, 最大数量:1, 总数:1},
+                    {名字:supply, 概率:medical ? 100 : economy.supplyChance, 最小数量:1, 最大数量:1, 总数:1},
+                    // 敌人先查物品字典，必须使用“金币”；显示名“金钱”会被跳过。
+                    {名字:economy.moneyItem, 概率:100, 最小数量:map.money[0], 最大数量:map.money[1], 总数:map.money[1]},
+                    {名字:economy.experienceItem, 概率:100, 最小数量:experience, 最大数量:experience, 总数:experience},
+                    {名字:map.healingItem, 概率:100, 最小数量:economy.healingCount, 最大数量:economy.healingCount, 总数:economy.healingCount},
+                    {名字:supportName, 概率:100, 最小数量:support.count, 最大数量:support.count, 总数:support.count}];
                 // 前两波各一件不同防具；与武器抽签独立，不以减少武器机会换生存配额。
                 if (w < economy.armorWaves) carrier.Parameters.掉落物.push({
                     名字:map.armor[(armorOffset + w) % map.armor.length], 概率:100,
@@ -129,13 +223,10 @@ class org.flashNight.arki.scene.BookRunRules {
                     var kpoints:Number = config.kBudget.guaranteed + integer(state,0,config.kBudget.randomMax);
                     carrier.Parameters.掉落物.push({名字:"K点",概率:100,最小数量:kpoints,最大数量:kpoints,总数:kpoints});
                 }
-                // 末波一个自选配给包；打开后冻结候选，选定整套物资进入持久暂存。
-                if (choice != null && w == map.waves - 1) carrier.Parameters.掉落物.push({
-                    名字:choice.choiceItem, 概率:100, 最小数量:1, 最大数量:1, 总数:1});
-                var enemies:Array = [];
-                if (quantity > 1) enemies.push({Type:"兵种" + enemyType, Level:enemyLevel,
-                    Quantity:quantity - 1, Interval:900, SpawnIndex:"right", Parameters:{掉落物:[]}});
-                enemies.push(carrier);
+                // 末波按配置投放一个或多个自选包；打开后冻结候选，选定整套物资进入持久暂存。
+                if (w == map.waves - 1) for (var choiceIndex:Number = 0; choiceIndex < choices.length; choiceIndex++)
+                    carrier.Parameters.掉落物.push({
+                        名字:choices[choiceIndex].choiceItem, 概率:100, 最小数量:1, 最大数量:1, 总数:1});
                 waves.push({WaveInformation:{Duration:0}, EnemyGroup:{Enemy:enemies}});
             }
             var trainer:Object = {};
@@ -144,7 +235,7 @@ class org.flashNight.arki.scene.BookRunRules {
                     EndFrame:"房间", BGM:mapBgm(map)},
                 Wave:{SubWave:waves}, Event:[{EventName:"Start", Callback:{Name:"书中章节", Parameter:[i]}, Message:"修理大学 · " + (i + 1) + "/7 · " + map.title
                     + (i == 0 ? "。先找迷之盔甲君选择武器和技能；初始 " + config.startingSkillPoints + " SP。弹药补给包需在背包打开并领取。" : "")
-                    + (choice != null ? "。末波掉落自选配给包：从背包打开，选定后技能直接获得，物品到暂存领取；K点仅在确认付费卡时扣除。" : "")
+                    + (choices.length > 0 ? "。末波掉落自选配给包：从背包打开，选定后技能直接获得，物品到暂存领取；K点仅在确认付费卡时扣除。" : "")
                     + (i > 0 ? "。出发前可打开上图的自选配给包，在装备界面的自选礼包中选择一套武器、插件与补给。" : "")}],
                 Instances:{Instance:[]}, Pickups:{Pickup:[]}};
             var intro:Object=chapterIntro(config,i);

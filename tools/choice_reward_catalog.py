@@ -132,7 +132,7 @@ def load():
 def validate(data):
     exact(data, 'schema bundles pools', 'catalog')
     if data['schema'] != 'choice-rewards.v1': raise ValueError('unsupported choice catalog')
-    if type(data['bundles']) is not list or not 1 <= len(data['bundles']) <= 128: raise ValueError('invalid bundles')
+    if type(data['bundles']) is not list or not 1 <= len(data['bundles']) <= 256: raise ValueError('invalid bundles')
     if type(data['pools']) is not list or not 1 <= len(data['pools']) <= 32: raise ValueError('invalid pools')
     items = item_catalog()
     directory = ROOT / 'data/items/equipment_mods'
@@ -160,7 +160,17 @@ def validate(data):
                 raise ValueError('invalid bundle text')
         bundles[bundle['id']] = bundle
     for pool in data['pools']:
-        exact(pool, 'id version title itemName scope maxItemLevel chooseCount rerolls groups', 'pool')
+        pool_keys = 'id version title itemName scope maxItemLevel chooseCount rerolls groups'
+        if 'respectSkillUnlock' in pool:
+            if type(pool['respectSkillUnlock']) is not bool:
+                raise ValueError('invalid skill unlock filter')
+            pool_keys += ' respectSkillUnlock'
+        if 'skillUnlockCeiling' in pool:
+            if pool.get('respectSkillUnlock') is not True:
+                raise ValueError('skill unlock ceiling requires the filter')
+            integer(pool['skillUnlockCeiling'], 1, 60, 'skill unlock ceiling')
+            pool_keys += ' skillUnlockCeiling'
+        exact(pool, pool_keys, 'pool')
         if not ID.fullmatch(pool['id']) or pool['id'] in pool_ids or pool['itemName'] in item_names:
             raise ValueError('duplicate/invalid pool identity')
         pool_ids.add(pool['id']); item_names.add(pool['itemName'])
@@ -208,7 +218,7 @@ def resolve_book_choices(book, catalog=None):
     pools = {p['id']: p for p in catalog['pools']}
     bundles = {b['id']: b for b in catalog['bundles']}
     result = copy.deepcopy(book)
-    for checkpoint in result['buildChoices'] + result.get('minorChoices', []):
+    for checkpoint in result['buildChoices'] + result.get('minorChoices', []) + result.get('styleChoices', []):
         pool = pools[checkpoint['poolId']]
         if pool['scope'] != {'kind': 'book', 'bookId': book['id']} or checkpoint['choiceItem'] != pool['itemName'] or checkpoint['levelCeiling'] != pool['maxItemLevel']:
             raise ValueError('book checkpoint does not match its choice pool')

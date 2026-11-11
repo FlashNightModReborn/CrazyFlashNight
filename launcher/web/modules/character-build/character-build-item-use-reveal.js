@@ -70,6 +70,7 @@
         this.document = this.options.view.root.ownerDocument;
         var win = this.document.defaultView;
         this.icons = win && win.Icons;
+        this.tooltip = win && win.PanelTooltip;
         this.destroyed = false;
         this.page = new Components.SecondaryPage({document:this.document, role:'dialog',
             ariaLabel:'开箱结果', className:'character-build-reveal-page',
@@ -162,8 +163,13 @@
                 String(skill.skillKey || '') + ' · ' + (Number(skill.level) || 0) + '级'));
             copy.appendChild(element(self.document, 'small', '技能已直接授予，主动技能请在技能页装备'));
             if (skill.description) {
-                copy.appendChild(element(self.document, 'small', String(skill.description),
-                    'character-build-reveal-skill-description'));
+                var description = element(self.document, 'small', '',
+                    'character-build-reveal-skill-description');
+                var rawDescription = String(skill.description).replace(/\r\n|\r|\n/g, '<br>');
+                if (self.tooltip && typeof self.tooltip.convertAS2Html === 'function')
+                    description.innerHTML = self.tooltip.convertAS2Html(rawDescription);
+                else description.textContent = skill.description;
+                copy.appendChild(description);
             }
             row.appendChild(copy);
             self.grid.appendChild(row);

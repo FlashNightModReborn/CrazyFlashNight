@@ -1110,6 +1110,776 @@
         }
       ],
       "kCost": 300
+    },
+    {
+      "id": "campus.style.blade.0",
+      "grade": "low",
+      "name": "书中刀剑迅斩流派选项",
+      "title": "刀剑·迅斩",
+      "description": "直接获得迅斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "迅斩",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.1",
+      "grade": "low",
+      "name": "书中刀剑瞬步斩流派选项",
+      "title": "刀剑·瞬步斩",
+      "description": "直接获得瞬步斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "瞬步斩",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.10",
+      "grade": "low",
+      "name": "书中刀剑十六夜月华流派选项",
+      "title": "刀剑·十六夜月华",
+      "description": "直接获得十六夜月华1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "十六夜月华",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.11",
+      "grade": "low",
+      "name": "书中刀剑后撤步流派选项",
+      "title": "刀剑·后撤步",
+      "description": "直接获得后撤步1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "后撤步",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.12",
+      "grade": "low",
+      "name": "书中刀剑幻影剑舞流派选项",
+      "title": "刀剑·幻影剑舞",
+      "description": "直接获得幻影剑舞1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "幻影剑舞",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.13",
+      "grade": "low",
+      "name": "书中刀剑百万突刺流派选项",
+      "title": "刀剑·百万突刺",
+      "description": "直接获得百万突刺1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "百万突刺",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.14",
+      "grade": "low",
+      "name": "书中刀剑见切流派选项",
+      "title": "刀剑·见切",
+      "description": "直接获得见切1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "见切",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.15",
+      "grade": "low",
+      "name": "书中刀剑猎影十字流派选项",
+      "title": "刀剑·猎影十字",
+      "description": "直接获得猎影十字1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "猎影十字",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.16",
+      "grade": "medium",
+      "name": "书中刀剑火舞旋风流派选项",
+      "title": "刀剑·火舞旋风",
+      "description": "直接获得火舞旋风2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "火舞旋风",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.17",
+      "grade": "medium",
+      "name": "书中刀剑拔刀术流派选项",
+      "title": "刀剑·拔刀术",
+      "description": "直接获得拔刀术2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "拔刀术",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.18",
+      "grade": "high",
+      "name": "书中刀剑龙斩流派选项",
+      "title": "刀剑·龙斩",
+      "description": "直接获得龙斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "龙斩",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.19",
+      "grade": "high",
+      "name": "书中刀剑六连流派选项",
+      "title": "刀剑·六连",
+      "description": "直接获得六连2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "六连",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.2",
+      "grade": "low",
+      "name": "书中刀剑凶斩流派选项",
+      "title": "刀剑·凶斩",
+      "description": "直接获得凶斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "凶斩",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.20",
+      "grade": "high",
+      "name": "书中刀剑空间斩流派选项",
+      "title": "刀剑·空间斩",
+      "description": "直接获得空间斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "空间斩",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.3",
+      "grade": "medium",
+      "name": "书中刀剑刀剑空中连招流派选项",
+      "title": "刀剑·刀剑空中连招",
+      "description": "直接获得刀剑空中连招2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "刀剑空中连招",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.4",
+      "grade": "low",
+      "name": "书中刀剑蓄力重劈流派选项",
+      "title": "刀剑·蓄力重劈",
+      "description": "直接获得蓄力重劈1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "蓄力重劈",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.5",
+      "grade": "low",
+      "name": "书中刀剑剑气释放流派选项",
+      "title": "刀剑·剑气释放",
+      "description": "直接获得剑气释放1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "剑气释放",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.6",
+      "grade": "low",
+      "name": "书中刀剑贯穿突刺流派选项",
+      "title": "刀剑·贯穿突刺",
+      "description": "直接获得贯穿突刺1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "贯穿突刺",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.7",
+      "grade": "low",
+      "name": "书中刀剑次元斩流派选项",
+      "title": "刀剑·次元斩",
+      "description": "直接获得次元斩1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "次元斩",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.8",
+      "grade": "low",
+      "name": "书中刀剑月光斩流派选项",
+      "title": "刀剑·月光斩",
+      "description": "直接获得月光斩1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "月光斩",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.9",
+      "grade": "low",
+      "name": "书中刀剑粉碎切割流派选项",
+      "title": "刀剑·粉碎切割",
+      "description": "直接获得粉碎切割1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "粉碎切割",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.0",
+      "grade": "low",
+      "name": "书中拳脚踩人流派选项",
+      "title": "拳脚·踩人",
+      "description": "直接获得踩人2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "踩人",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.1",
+      "grade": "low",
+      "name": "书中拳脚霸体流派选项",
+      "title": "拳脚·霸体",
+      "description": "直接获得霸体2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "霸体",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.10",
+      "grade": "low",
+      "name": "书中拳脚日字冲拳流派选项",
+      "title": "拳脚·日字冲拳",
+      "description": "直接获得日字冲拳2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "日字冲拳",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.11",
+      "grade": "low",
+      "name": "书中拳脚组合拳流派选项",
+      "title": "拳脚·组合拳",
+      "description": "直接获得组合拳2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "组合拳",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.12",
+      "grade": "low",
+      "name": "书中拳脚震地流派选项",
+      "title": "拳脚·震地",
+      "description": "直接获得震地2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "震地",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.13",
+      "grade": "medium",
+      "name": "书中拳脚拳脚空中连招流派选项",
+      "title": "拳脚·拳脚空中连招",
+      "description": "直接获得拳脚空中连招2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "拳脚空中连招",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.14",
+      "grade": "medium",
+      "name": "书中拳脚旋风腿流派选项",
+      "title": "拳脚·旋风腿",
+      "description": "直接获得旋风腿2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "旋风腿",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.15",
+      "grade": "medium",
+      "name": "书中拳脚虎拳流派选项",
+      "title": "拳脚·虎拳",
+      "description": "直接获得虎拳2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "虎拳",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.16",
+      "grade": "high",
+      "name": "书中拳脚兽王崩拳流派选项",
+      "title": "拳脚·兽王崩拳",
+      "description": "直接获得兽王崩拳2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "兽王崩拳",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.17",
+      "grade": "medium",
+      "name": "书中拳脚一瞬千击流派选项",
+      "title": "拳脚·一瞬千击",
+      "description": "直接获得一瞬千击2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "一瞬千击",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.18",
+      "grade": "high",
+      "name": "书中拳脚径庭拳/黑闪流派选项",
+      "title": "拳脚·径庭拳/黑闪",
+      "description": "直接获得径庭拳/黑闪2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "径庭拳/黑闪",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.19",
+      "grade": "high",
+      "name": "书中拳脚龟派气功流派选项",
+      "title": "拳脚·龟派气功",
+      "description": "直接获得龟派气功2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "龟派气功",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.2",
+      "grade": "low",
+      "name": "书中拳脚裂地拳流派选项",
+      "title": "拳脚·裂地拳",
+      "description": "直接获得裂地拳2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "裂地拳",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.20",
+      "grade": "high",
+      "name": "书中拳脚觉醒霸体流派选项",
+      "title": "拳脚·觉醒霸体",
+      "description": "直接获得觉醒霸体1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "觉醒霸体",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.21",
+      "grade": "high",
+      "name": "书中拳脚地震流派选项",
+      "title": "拳脚·地震",
+      "description": "直接获得地震2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "地震",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.22",
+      "grade": "high",
+      "name": "书中拳脚觉醒震地流派选项",
+      "title": "拳脚·觉醒震地",
+      "description": "直接获得觉醒震地2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "觉醒震地",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.5",
+      "grade": "low",
+      "name": "书中拳脚燃烧指节流派选项",
+      "title": "拳脚·燃烧指节",
+      "description": "直接获得燃烧指节1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "燃烧指节",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.6",
+      "grade": "low",
+      "name": "书中拳脚连环踢流派选项",
+      "title": "拳脚·连环踢",
+      "description": "直接获得连环踢1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "连环踢",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.7",
+      "grade": "low",
+      "name": "书中拳脚回旋踢流派选项",
+      "title": "拳脚·回旋踢",
+      "description": "直接获得回旋踢1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "回旋踢",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.8",
+      "grade": "low",
+      "name": "书中拳脚波动拳流派选项",
+      "title": "拳脚·波动拳",
+      "description": "直接获得波动拳1级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "波动拳",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.style.fist.9",
+      "grade": "low",
+      "name": "书中拳脚升龙拳流派选项",
+      "title": "拳脚·升龙拳",
+      "description": "直接获得升龙拳2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "升龙拳",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.gun.0",
+      "grade": "medium",
+      "name": "书中枪械枪械师流派选项",
+      "title": "枪械·枪械师",
+      "description": "直接获得枪械师2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "枪械师",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.gun.1",
+      "grade": "medium",
+      "name": "书中枪械轰炸专家流派选项",
+      "title": "枪械·轰炸专家",
+      "description": "直接获得轰炸专家2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "轰炸专家",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.gun.2",
+      "grade": "low",
+      "name": "书中枪械追猎射击流派选项",
+      "title": "枪械·追猎射击",
+      "description": "直接获得追猎射击2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "追猎射击",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.gun.3",
+      "grade": "medium",
+      "name": "书中枪械翻滚换弹流派选项",
+      "title": "枪械·翻滚换弹",
+      "description": "直接获得翻滚换弹2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "翻滚换弹",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.gun.4",
+      "grade": "medium",
+      "name": "书中枪械火力支援流派选项",
+      "title": "枪械·火力支援",
+      "description": "直接获得火力支援2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "火力支援",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.gun.5",
+      "grade": "high",
+      "name": "书中枪械战术目镜流派选项",
+      "title": "枪械·战术目镜",
+      "description": "直接获得战术目镜2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "战术目镜",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.gun.6",
+      "grade": "high",
+      "name": "书中枪械死亡绽放流派选项",
+      "title": "枪械·死亡绽放",
+      "description": "直接获得死亡绽放2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "死亡绽放",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.gun.7",
+      "grade": "high",
+      "name": "书中枪械上帝之杖流派选项",
+      "title": "枪械·上帝之杖",
+      "description": "直接获得上帝之杖2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "上帝之杖",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.21",
+      "grade": "low",
+      "name": "书中刀剑上挑流派选项",
+      "title": "刀剑·上挑",
+      "description": "直接获得上挑2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "上挑",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.blade.22",
+      "grade": "low",
+      "name": "书中刀剑下劈流派选项",
+      "title": "刀剑·下劈",
+      "description": "直接获得下劈2级，不消耗SP；按当前角色等级与流派标签筛选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "下劈",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.general.0",
+      "grade": "low",
+      "name": "通用气动波流派选项",
+      "title": "通用·气动波",
+      "description": "直接获得气动波2级，不消耗SP；通用流派兜底候选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "气动波",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.general.1",
+      "grade": "low",
+      "name": "通用聚气流派选项",
+      "title": "通用·聚气",
+      "description": "直接获得聚气2级，不消耗SP；通用流派兜底候选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "聚气",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.style.general.2",
+      "grade": "low",
+      "name": "通用波动拳流派选项",
+      "title": "通用·波动拳",
+      "description": "直接获得波动拳1级，不消耗SP；通用流派兜底候选。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "波动拳",
+          "level": 1
+        }
+      ]
     }
   ],
   "pools": [
@@ -1617,6 +2387,1500 @@
           "entries": [
             {
               "bundleId": "campus.burst.paid",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.style.0",
+      "version": 1,
+      "title": "流派构筑·第1阶段",
+      "itemName": "书中流派构筑自选包·1",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 15,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "respectSkillUnlock": true,
+      "skillUnlockCeiling": 6,
+      "groups": [
+        {
+          "id": "fist",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.fist.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "blade",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.blade.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "gun",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.gun.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.7",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "general",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.general.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.general.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.general.2",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.style.1",
+      "version": 1,
+      "title": "流派构筑·第2阶段",
+      "itemName": "书中流派构筑自选包·2",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 15,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "respectSkillUnlock": true,
+      "skillUnlockCeiling": 9,
+      "groups": [
+        {
+          "id": "fist",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.fist.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "blade",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.blade.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "gun",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.gun.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.7",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "general",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.general.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.general.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.general.2",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.style.2",
+      "version": 1,
+      "title": "流派构筑·第3阶段",
+      "itemName": "书中流派构筑自选包·3",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 15,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "respectSkillUnlock": true,
+      "skillUnlockCeiling": 11,
+      "groups": [
+        {
+          "id": "fist",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.fist.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "blade",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.blade.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "gun",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.gun.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.7",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.style.3",
+      "version": 1,
+      "title": "流派构筑·第4阶段",
+      "itemName": "书中流派构筑自选包·4",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 15,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "respectSkillUnlock": true,
+      "skillUnlockCeiling": 13,
+      "groups": [
+        {
+          "id": "fist",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.fist.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "blade",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.blade.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "gun",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.gun.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.7",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.style.4",
+      "version": 1,
+      "title": "流派构筑·第5阶段",
+      "itemName": "书中流派构筑自选包·5",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 15,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "respectSkillUnlock": true,
+      "skillUnlockCeiling": 14,
+      "groups": [
+        {
+          "id": "fist",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.fist.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "blade",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.blade.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "gun",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.gun.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.7",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.style.5",
+      "version": 1,
+      "title": "流派构筑·第6阶段",
+      "itemName": "书中流派构筑自选包·6",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 15,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "respectSkillUnlock": true,
+      "skillUnlockCeiling": 15,
+      "groups": [
+        {
+          "id": "fist",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.fist.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.fist.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "blade",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.blade.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.9",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.10",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.11",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.12",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.13",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.14",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.15",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.16",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.17",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.18",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.19",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.20",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.21",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.blade.22",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "gun",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.style.gun.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.style.gun.7",
               "weight": 1
             }
           ]

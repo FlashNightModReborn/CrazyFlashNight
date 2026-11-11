@@ -18,6 +18,8 @@
 | `optionalLoot` | 第三至六图可选武器和材料按原概率的75%投放；基础防具、恢复、弹药、经验和SP保留 |
 | `recordSp` / `regularSp` | 首通或严格刷新个人最佳45 SP，其余成功通关5 SP；旧分钟档字段仅保留记录兼容 |
 
+地图可选维护 `wavePlan`：`baseTotal` 是本地图基础兵种总数区间，生成时按 `waves` 分摊到每一波；前三波从 `addTypes` 按 `addCount` 追加 2–3 个混编单位，末波改为 `eliteTypes` 全套精英，精英等级由 `eliteLevel` 指定。配置 `wavePlan` 时 `count` 仅保留兼容，实际基础兵种总数读 `baseTotal`。`carBombType` 指定会携带一辆自爆汽车的兵种，每波至多一辆。未配置 `wavePlan` 的地图继续使用 `enemies` 池逐只混编与 `count` 区间；`enemyWeights` 可给同一 `enemies` 池设置整数权重，展开后仍按逐只轮转，不新增兵种。`enemyPower` 与 `enemies` 同序，1–10 表示相对战力：波次越早越偏向低战力，非末波排除最高战力，末波放开；同时每波数量按图内进度从 `count` 下限递增到上限。`wavePlan` 地图的学生总数分摊和追加单位也偏向后几波。
+
 卡片价格、指定技能等级和完整武器套装维护在奖励目录。短枪构筑指定 `weaponCount:2`，插件按两把配齐，弹药数量为整套总额。付费卡只扣临时角色K点，原版章节没有SP奖励。
 
 修改后至少运行 `tools/test-book-definition.py`、`tools/test-choice-rewards.py` 以及相关生成器的 `--check`。这些检查不代替新局实机体验。

@@ -10,7 +10,7 @@
 
 每次打开一个礼包，从各组按权重无放回抽取，共展示 2–4 套，玩家选 1 套；`chooseCount=1`、`rerolls=0`。礼包不能批量打开。同一存档最多保留 16 个待选礼包，达到上限拒绝开包且不扣物品。
 
-修理大学前六图各投放一次：第一图功能技能，第二图完整构筑，第三图协同，第四图进阶构筑，第五图技能提升，第六图决战补给。两次大配给之外的四次小选择不重复发放大套装。第二图的免费候选保底一套 AK47＋蓝下挂＋对应弹药；第四图的下挂转向同样附 AK47。两池版本升至 4，旧冻结候选不变。
+修理大学第一图结束后改为投放“流派构筑”包：从拳脚、刀剑、枪械各随机一项目标技能中选一项，用于提前确定前期流派；若某组在该阶段没有满足等级的候选，则该组不出现。前两阶段枪械组没有合格的 NPC 不可学技能，因此额外加入通用兜底组（气动波/聚气/波动拳），保证三选一。第二图起每图投放两次：原有随机配给（第二图完整构筑、第三图协同、第四图进阶构筑、第五图技能提升、第六图决战补给）＋一次流派构筑。流派池只收 NPC 处不可学的候选，六张包分别按关卡预期等级 6/9/11/13/14/15 过滤 `UnlockLevel`，并同时取角色当前等级与阶段上限的较低值；同图小选择不重复发放大套装。第二图的免费候选保底一套 AK47＋蓝下挂＋对应弹药；第四图的下挂转向同样附 AK47。两池版本升至 4，旧冻结候选不变。
 
 短枪构筑按双持配给：当前 UZI、M79 各两把，UZI 插件两份，对应枪械弹药各24份。作者以 `weaponCount:2` 指定，生成器拆为两个独立装备实例，不把数量误作强化等级；旧凭证兑换包同步生成双持内容。
 
@@ -22,12 +22,12 @@
 
 | 对象 | 字段与限制 |
 | --- | --- |
-| 顶层 | `schema=choice-rewards.v1`，`bundles` 为 1–128 套，`pools` 为 1–32 池 |
+| 顶层 | `schema=choice-rewards.v1`，`bundles` 为 1–256 套，`pools` 为 1–32 池 |
 | bundle 公共字段 | `id`、`name`、`title`、`description`、`grade`；ID 稳定唯一，展示文案不作为领取身份。`grade` 为显式声明的封闭枚举 `low`/`medium`/`high`/`special`（低级/中等/高等/特殊）：初阶 `low`、进阶 `medium`、高阶（3级精进技能）`high`；`special` 金档是正交类目，只能显式声明、不可由价值派生。价值轴派生阈值待汇率口径裁决，落地前全部显式声明 |
 | 武器构筑 bundle | `weapon`、`mods`、`consumables:[{name,count}]`；短枪须附 `weaponCount:2`，其他武器缺省1且只许1；插件按武器数量配齐，消耗品数量是整套总额。检查真实装备等级、插件用途/子类/前置/互斥/槽位容量以及主枪、下挂弹药 |
 | 通用物资 bundle | 用 `items:[{itemName,quantity}]` 替代上述三个构筑字段，最多 16 项；可放药剂、防具、材料等目录中的实体物品，装备数量只能为 1，其他物品为 1–9999 |
 | bundle 可选效果 | `skills:[{skillKey,level}]` 最多两项，名称和等级需在真实技能目录内；含技能时 `items` 可为空。`kCost` 为 0–1200 整数，缺省 0；二者仅允许 book scope |
-| pool | `id`、正整数 `version`、`title`、唯一 `itemName`、`scope`、`maxItemLevel`、`chooseCount`、`rerolls`、`groups` |
+| pool | `id`、正整数 `version`、`title`、唯一 `itemName`、`scope`、`maxItemLevel`、`chooseCount`、`rerolls`、`groups`；可选 `respectSkillUnlock:true` 让开包按当前角色等级过滤技能 `UnlockLevel` |
 | scope | 普通角色用 `{kind:"character"}`；书中局次用 `{kind:"book",bookId:"repair-campus"}`。61用 `{kind:"book",bookId:"cf6-sting",routeId:"type61"}`，要求书籍、路线和局次仍 active；CF6缺省路线只属于 `historical` |
 | group | `id`、`draw`、`entries:[{bundleId,weight}]`；组内最多32项，权重为 1–10000 的整数，抽取量不能超过组内数量，各组不可重复引用同一 bundle |
 

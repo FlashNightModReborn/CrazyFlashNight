@@ -376,6 +376,12 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         var enemies:Array = wave.EnemyGroup.Enemy;
         return enemies[enemies.length - 1];
     }
+    private static function enemyPowerFor(map:Object, type:String):Number {
+        var id:String = String(type).substr(2);
+        for (var i:Number = 0; i < map.enemies.length; i++)
+            if (String(map.enemies[i]) == id) return Number(map.enemyPower[i]);
+        return 0;
+    }
     private static function testProgressionAndSupplies(plan:Array, config:Object):Void {
         var experienceValid:Boolean = true, moneyValid:Boolean = true;
         var healingValid:Boolean = true, supportValid:Boolean = true, budgetsValid:Boolean = true;
@@ -487,13 +493,17 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         var spTotal:Number = 0, tierTotal:Number = 0, stoneTotal:Number = 0;
         var hp:Array = ["普通hp药剂", "普通hp药剂", "加强抗生素药剂", "加强抗生素药剂", "大HP药剂", "大HP药剂", "大HP药剂"];
         var mp:Array = ["普通mp药剂", "普通mp药剂", "加强mp药剂", "加强mp药剂", "大MP药剂", "大MP药剂", "大MP药剂"];
-        var types:Array = [[44,45], [48,49], [447,448], [436,437], [449,450], [444,446], [455]];
         for (var m:Number = 0; m < plan.length; m++) {
             var waves:Array = plan[m].Wave.SubWave, map:Object = config.maps[m];
+            var allowedTypes:Object = {};
+            for (var t:Number = 0; t < map.enemies.length; t++) allowedTypes["兵种" + map.enemies[t]] = true;
+            if (map.wavePlan != null) {
+                for (t = 0; t < map.wavePlan.addTypes.length; t++) allowedTypes["兵种" + map.wavePlan.addTypes[t]] = true;
+                for (t = 0; t < map.wavePlan.eliteTypes.length; t++) allowedTypes["兵种" + map.wavePlan.eliteTypes[t]] = true;
+            }
             for (var w:Number = 0; w < waves.length; w++) {
                 var enemy:Object = carrier(waves[w]);
-                sequenceValid = sequenceValid && (enemy.Type == "兵种" + types[m][0]
-                    || enemy.Type == "兵种" + types[m][1]);
+                sequenceValid = sequenceValid && allowedTypes[enemy.Type] === true;
                 var sp:Object = findDrop(enemy, "技能点");
                 if (m < 6 && w == 0) {
                     spValid = spValid && sp != null && sp.概率 == 100
@@ -514,7 +524,7 @@ class org.flashNight.arki.scene.BookRunRulesTest {
                 }
             }
         }
-        check(sequenceValid, "both student factions precede military students and sword club");
+        check(sequenceValid, "generated carriers stay within each map authored pool");
         check(config.maps[4].level[0] == 5 && config.maps[4].level[1] == 7,
             "moving military later does not silently raise their existing levels");
         check(medValid, "actual pickup plans use small then medium then large HP and MP potions");
@@ -546,6 +556,25 @@ class org.flashNight.arki.scene.BookRunRulesTest {
             }
         }
         check(exact && count == 2, "only two single-use vouchers appear, at the second and fourth map finales");
+        var styleExact:Boolean = true, styleCount:Number = 0;
+        for (var sc:Number = 0; sc < config.styleChoices.length; sc++) {
+            var styleChoice:Object = config.styleChoices[sc];
+            for (m = 0; m < plan.length; m++) {
+                waves = plan[m].Wave.SubWave;
+                for (w = 0; w < waves.length; w++) {
+                    var styleVoucher:Object = findDrop(carrier(waves[w]), styleChoice.choiceItem);
+                    var styleExpected:Boolean = m == styleChoice.afterMap && w == waves.length - 1;
+                    styleExact = styleExact && ((styleVoucher != null) == styleExpected);
+                    if (styleVoucher != null) {
+                        styleCount++;
+                        styleExact = styleExact && styleVoucher.概率 == 100
+                            && styleVoucher.最小数量 == 1 && styleVoucher.最大数量 == 1
+                            && styleVoucher.总数 == 1;
+                    }
+                }
+            }
+        }
+        check(styleExact && styleCount == 6, "six style vouchers follow the first six map finales");
         check(config.startingSkillPoints == 120, "initial SP allows an early build without taking from the original character");
         var seedIndependent:Boolean = true;
         for (var seed:Number = 1; seed <= 64; seed++) {
@@ -621,20 +650,121 @@ class org.flashNight.arki.scene.BookRunRulesTest {
                 for (var t:Number = 0; t < spawnTimes.length; t++) cadence = cadence && spawnTimes[t] == (t + 1) * 900;
                 concentrated = concentrated && carriers == 1;
                 priorDropSlots += map.count[0] * 6;
-                bounded = bounded && quantity >= map.count[0] && quantity <= map.count[1];
+                var maxQuantity:Number = map.count[1];
+                if (map.wavePlan != null) maxQuantity = map.wavePlan.baseTotal[1]
+                    + Math.max(map.wavePlan.addCount[1], map.wavePlan.eliteTypes.length);
+                bounded = bounded && quantity >= map.count[0] && quantity <= maxQuantity;
                 var enemy:Object = carrier(waves[w]);
+                var choiceCount:Number = 0;
+                for (var ch:Number = 0; ch < config.buildChoices.length; ch++)
+                    if (config.buildChoices[ch].afterMap == m) choiceCount++;
+                for (ch = 0; ch < config.minorChoices.length; ch++)
+                    if (config.minorChoices[ch].afterMap == m) choiceCount++;
+                for (ch = 0; ch < config.styleChoices.length; ch++)
+                    if (config.styleChoices[ch].afterMap == m) choiceCount++;
                 var expectedSlots:Number = 6 + (w < config.loot.armorWaves ? 1 : 0)
                     + (w == 0 && map.skillPoints > 0 ? 1 : 0) + (w < map.materials.length ? 1 : 0)
-                    + (m < 6 && w == map.waves - 1 ? 2 : 0);
+                    + (m < 6 && w == map.waves - 1 ? 1 + choiceCount : 0);
                 drops = drops && enemy.Parameters.掉落物.length == expectedSlots
                     && findDrop(enemy, "金币") != null;
             }
         }
-        check(waveCount == 19 && bounded, "nineteen bounded waves");
+        check(waveCount == 21 && bounded, "twenty-one bounded waves");
+        var escalated:Boolean = true;
+        for (m = 0; m < first.length - 1; m++) {
+            var escalationWaves:Array = first[m].Wave.SubWave;
+            var firstCount:Number = 0, lastCount:Number = 0;
+            for (g = 0; g < escalationWaves[0].EnemyGroup.Enemy.length; g++)
+                firstCount += escalationWaves[0].EnemyGroup.Enemy[g].Quantity;
+            for (g = 0; g < escalationWaves[escalationWaves.length - 1].EnemyGroup.Enemy.length; g++)
+                lastCount += escalationWaves[escalationWaves.length - 1].EnemyGroup.Enemy[g].Quantity;
+            escalated = escalated && firstCount <= lastCount;
+            if (config.maps[m].enemyPower != null) {
+                var firstPower:Number = 0, lastPower:Number = 0, firstUnits:Number = 0, lastUnits:Number = 0;
+                for (g = 0; g < escalationWaves[0].EnemyGroup.Enemy.length; g++) {
+                    var firstType:String = String(escalationWaves[0].EnemyGroup.Enemy[g].Type).substr(2);
+                    firstPower += enemyPowerFor(config.maps[m], firstType) * escalationWaves[0].EnemyGroup.Enemy[g].Quantity;
+                    firstUnits += escalationWaves[0].EnemyGroup.Enemy[g].Quantity;
+                }
+                for (g = 0; g < escalationWaves[escalationWaves.length - 1].EnemyGroup.Enemy.length; g++) {
+                    var lastType:String = String(escalationWaves[escalationWaves.length - 1].EnemyGroup.Enemy[g].Type).substr(2);
+                    lastPower += enemyPowerFor(config.maps[m], lastType) * escalationWaves[escalationWaves.length - 1].EnemyGroup.Enemy[g].Quantity;
+                    lastUnits += escalationWaves[escalationWaves.length - 1].EnemyGroup.Enemy[g].Quantity;
+                }
+                escalated = escalated && firstUnits > 0 && lastUnits > 0 && firstPower <= lastPower;
+            }
+        }
+        check(escalated, "waves escalate from fewer/weaker units to more/stronger units");
         check(drops, "carrier adds at most one armor, one material and one map SP stack to existing supplies");
         check(concentrated, "exactly one carrier per wave including the single-enemy boss");
         check(cadence, "splitting the carrier preserves the original 900ms arrival cadence without a double spawn");
-        check(currentDropSlots == 163 && currentDropSlots < priorDropSlots * 0.75,
+        var mixed:Boolean = true;
+        for (m = 0; m < first.length; m++) {
+            if (config.maps[m].wavePlan != null) continue;
+            var mixedWaves:Array = first[m].Wave.SubWave;
+            for (w = 0; w < mixedWaves.length; w++) {
+                var seenTypes:Object = {}, typeCount:Number = 0;
+                var mixedGroup:Array = mixedWaves[w].EnemyGroup.Enemy;
+                for (g = 0; g < mixedGroup.length; g++) {
+                    var typeKey:String = String(mixedGroup[g].Type);
+                    if (seenTypes[typeKey] !== true) { seenTypes[typeKey] = true; typeCount++; }
+                }
+                var expectedMix:Number = config.maps[m].enemyWeights != null ? 1
+                    : Math.min(2, config.maps[m].enemies.length);
+                mixed = mixed && typeCount >= expectedMix;
+            }
+        }
+        check(mixed, "ordinary campus waves still rotate through their map enemy pool");
+        var wavePlanValid:Boolean = true, carBombValid:Boolean = true, carBombSeen:Boolean = false;
+        for (m = 0; m < first.length; m++) {
+            var planMap:Object = config.maps[m], plan:Object = planMap.wavePlan;
+            if (m == 0) {
+                var carWaves:Array = first[0].Wave.SubWave;
+                for (w = 0; w < carWaves.length; w++) {
+                    var carCount:Number = 0;
+                    for (g = 0; g < carWaves[w].EnemyGroup.Enemy.length; g++) {
+                        var carEnemy:Object = carWaves[w].EnemyGroup.Enemy[g];
+                        if (carEnemy.Type == "兵种" + planMap.carBombType) {
+                            carCount++;
+                            if (carEnemy.Parameters.汽车炸弹数量 == 1) carBombSeen = true;
+                            else carBombValid = false;
+                        }
+                    }
+                    carBombValid = carBombValid && carCount <= 1;
+                }
+            }
+            if (plan == null) continue;
+            var planWaves:Array = first[m].Wave.SubWave;
+            wavePlanValid = wavePlanValid && planWaves.length == planMap.waves;
+            var studentCount:Number = 0, normalTotal:Number = 0;
+            for (w = 0; w < planWaves.length; w++) {
+                var planGroup:Array = planWaves[w].EnemyGroup.Enemy;
+                var lastWave:Boolean = w == planWaves.length - 1;
+                var eliteSeen:Object = {}, normalSeen:Number = 0;
+                for (g = 0; g < planGroup.length; g++) {
+                    var planType:String = String(planGroup[g].Type);
+                    for (var b:Number = 0; b < planMap.enemies.length; b++)
+                        if (planType == "兵种" + planMap.enemies[b]) studentCount++;
+                    for (b = 0; b < plan.addTypes.length; b++)
+                        if (planType == "兵种" + plan.addTypes[b]) normalSeen++;
+                    for (b = 0; b < plan.eliteTypes.length; b++)
+                        if (planType == "兵种" + plan.eliteTypes[b]) eliteSeen[b] = true;
+                }
+                if (lastWave) {
+                    for (b = 0; b < plan.eliteTypes.length; b++)
+                        wavePlanValid = wavePlanValid && eliteSeen[b] === true;
+                } else {
+                    normalTotal += normalSeen;
+                    wavePlanValid = wavePlanValid && normalSeen >= plan.addCount[0]
+                        && normalSeen <= plan.addCount[1];
+                }
+            }
+            wavePlanValid = wavePlanValid && studentCount >= plan.baseTotal[0]
+                && studentCount <= plan.baseTotal[1] && normalTotal > 0;
+        }
+        check(wavePlanValid, "wave plans preserve the student budget, add 2-3 specialists and cap with elites");
+        check(carBombValid && carBombSeen, "left-wheel waves carry at most one self-destruct car");
+        check(currentDropSlots == 180 && currentDropSlots < priorDropSlots * 0.75,
             "six choice vouchers and the K budget still cut pickup rules by at least a quarter of the minimum old scatter");
         check(services, "each stage exposes existing shop and skill service");
         check(first[6].Wave.SubWave[0].EnemyGroup.Enemy[0].Type == "兵种455", "physical teacher boss");
@@ -644,17 +774,18 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         testSurvivalChoices(same, config);
         testBuildResources(same, config);
         testLoadoutChoices(same, config);
-        var kTotal:Number=0, deliveryCount:Number=0, budgetOk:Boolean=true;
+        var kTotal:Number=0, deliveryCount:Number=0, styleDeliveryCount:Number=0, budgetOk:Boolean=true;
         for(var bm:Number=0;bm<same.length;bm++) {
             var bw:Array=same[bm].Wave.SubWave;
             for(var wi:Number=0;wi<bw.length;wi++) {
                 var budgetDrop:Object=findDrop(carrier(bw[wi]),"K点");
                 if(budgetDrop!=null) {kTotal+=budgetDrop.最小数量;budgetOk=budgetOk&&bm<6&&wi==bw.length-1&&budgetDrop.最小数量>=200&&budgetDrop.最大数量<=300&&budgetDrop.概率==100;}
                 for(var mi:Number=0;mi<config.minorChoices.length;mi++) if(findDrop(carrier(bw[wi]),config.minorChoices[mi].choiceItem)!=null) deliveryCount++;
+                for(var si:Number=0;si<config.styleChoices.length;si++) if(findDrop(carrier(bw[wi]),config.styleChoices[si].choiceItem)!=null) styleDeliveryCount++;
             }
         }
         check(budgetOk&&kTotal>=1200&&kTotal<=1800,"six exact K budgets replace random coin conversion");
-        check(deliveryCount==4,"four small choices supplement two complete loadout choices");
+        check(deliveryCount==3 && styleDeliveryCount==6,"three small choices and six style choices supplement two complete loadout choices");
         findDrop(carrier(first[0].Wave.SubWave[0]), "经验值").总数 = 0;
         check(findDrop(carrier(same[0].Wave.SubWave[0]), "经验值").总数 > 0
                 && findDrop(carrier(first[0].Wave.SubWave[1]), "经验值").总数 > 0,

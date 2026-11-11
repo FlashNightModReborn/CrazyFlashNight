@@ -45,19 +45,24 @@
     {
       "title": "上学路上",
       "background": "gk12_1_BG.swf",
-      "bgm": {"sequence": "cf1"},
+      "bgm": {
+        "sequence": "cf1"
+      },
       "enemies": [
         "堕落城.左轮",
-        "堕落城.跳蚤"
+        "堕落城.跳蚤",
+        "堕落城.铁拳",
+        "堕落城.杀手"
       ],
+      "carBombType": "堕落城.左轮",
       "level": [
         1,
         3
       ],
       "waves": 3,
       "count": [
-        2,
-        4
+        3,
+        5
       ],
       "experience": 9000,
       "money": [
@@ -99,15 +104,33 @@
           "speaker": "Andy",
           "text": "先练两下。别钱还没挣到，自己先倒了……"
         }
+      ],
+      "enemyPower": [
+        1,
+        1,
+        3,
+        2
       ]
     },
     {
       "title": "校门口的混混",
       "background": "gk13_1_BG.swf",
-      "bgm": {"sequence": "cf1"},
+      "bgm": {
+        "sequence": "cf1"
+      },
       "enemies": [
-        "堕落城.铁拳",
-        "堕落城.杀手"
+        "大学.黑仔",
+        "天网.旧型号机器人"
+      ],
+      "enemyWeights": [
+        {
+          "type": "大学.黑仔",
+          "weight": 1
+        },
+        {
+          "type": "天网.旧型号机器人",
+          "weight": 2
+        }
       ],
       "level": [
         3,
@@ -165,12 +188,18 @@
           "speaker": "Andy",
           "text": "别跑！水管是不是你们砸的？"
         }
+      ],
+      "enemyPower": [
+        2,
+        1
       ]
     },
     {
       "title": "拦路的一伙",
       "background": "gk13_2_BG.swf",
-      "bgm": {"sequence": "cf1"},
+      "bgm": {
+        "sequence": "cf1"
+      },
       "enemies": [
         "大学.军阀派学生.男",
         "大学.军阀派学生.女"
@@ -179,11 +208,34 @@
         7,
         9
       ],
-      "waves": 3,
+      "waves": 4,
       "count": [
         2,
         3
       ],
+      "wavePlan": {
+        "baseTotal": [
+          6,
+          9
+        ],
+        "addTypes": [
+          "军阀.突击兵",
+          "军阀.狙击兵",
+          "军阀.重装兵",
+          "军阀.弹药兵"
+        ],
+        "addCount": [
+          2,
+          3
+        ],
+        "eliteTypes": [
+          "军阀.精英突击兵",
+          "军阀.精英狙击兵",
+          "军阀.精英重装兵",
+          "军阀.精英弹药兵"
+        ],
+        "eliteLevel": 10
+      },
       "experience": 77000,
       "money": [
         3200,
@@ -240,7 +292,9 @@
     {
       "title": "没完没了",
       "background": "gk12_3_BG.swf",
-      "bgm": {"sequence": "cf1"},
+      "bgm": {
+        "sequence": "cf1"
+      },
       "enemies": [
         "大学.黑铁会派学生.男",
         "大学.黑铁会派学生.女"
@@ -249,11 +303,32 @@
         9,
         11
       ],
-      "waves": 3,
+      "waves": 4,
       "count": [
         2,
         3
       ],
+      "wavePlan": {
+        "baseTotal": [
+          6,
+          9
+        ],
+        "addTypes": [
+          "黑铁会.黑铁死士",
+          "黑铁会.黑铁大叔",
+          "黑铁会.黑铁刺客"
+        ],
+        "addCount": [
+          2,
+          3
+        ],
+        "eliteTypes": [
+          "黑铁会.黑铁游侠",
+          "黑铁会.黑铁重锤",
+          "黑铁会.黑铁流锤"
+        ],
+        "eliteLevel": 12
+      },
       "experience": 140000,
       "money": [
         3600,
@@ -299,7 +374,9 @@
     {
       "title": "还有下一组",
       "background": "gk12_2_BG.swf",
-      "bgm": {"sequence": "cf1"},
+      "bgm": {
+        "sequence": "cf1"
+      },
       "enemies": [
         "大学.军校生.男",
         "大学.军校生.女"
@@ -371,7 +448,9 @@
     {
       "title": "谁在记分",
       "background": "gk12_4_BG.swf",
-      "bgm": {"sequence": "cf1"},
+      "bgm": {
+        "sequence": "cf1"
+      },
       "enemies": [
         "大学.剑道社社员.男",
         "大学.剑道社社员.女"
@@ -438,7 +517,9 @@
     {
       "title": "最后一堂体育课",
       "background": "gk12_5_BG.swf",
-      "bgm": {"sequence": "cf1"},
+      "bgm": {
+        "sequence": "cf1"
+      },
       "enemies": [
         "大学.体育老师"
       ],
@@ -612,55 +693,53 @@
     "groups": [
       {
         "hpRatio": 0.75,
-        "level": 8,
+        "level": 12,
         "pools": [
           [
-            "堕落城.左轮"
+            "军阀.精英突击兵"
           ],
           [
-            "堕落城.跳蚤"
+            "军阀.精英狙击兵"
           ],
           [
-            "堕落城.铁拳"
+            "军阀.精英重装兵"
           ],
           [
-            "堕落城.杀手"
+            "军阀.精英弹药兵"
           ]
         ]
       },
       {
         "hpRatio": 0.5,
-        "level": 11,
+        "level": 13,
         "pools": [
           [
-            "大学.军阀派学生.男",
-            "大学.军阀派学生.女"
+            "黑铁会.黑铁游侠"
           ],
           [
-            "大学.黑铁会派学生.男",
-            "大学.黑铁会派学生.女"
+            "黑铁会.黑铁重锤"
           ]
         ]
       },
       {
         "hpRatio": 0.25,
-        "level": 13,
+        "level": 14,
         "pools": [
           [
-            "大学.军校生.男",
-            "大学.军校生.女"
+            "黑铁会.黑铁流锤"
           ],
           [
-            "大学.剑道社社员.男",
-            "大学.剑道社社员.女"
+            "黑铁会.黑铁武士"
           ]
         ]
       }
     ],
     "rangedTypes": [
-      44,
-      449,
-      450
+      264,
+      265,
+      266,
+      267,
+      270
     ],
     "supplies": [
       {
@@ -683,12 +762,6 @@
   },
   "minorChoices": [
     {
-      "afterMap": 0,
-      "poolId": "repair-campus.opening",
-      "choiceItem": "书中入学特训自选包",
-      "levelCeiling": 15
-    },
-    {
       "afterMap": 2,
       "poolId": "repair-campus.synergy",
       "choiceItem": "书中流派协同自选包",
@@ -704,6 +777,44 @@
       "afterMap": 5,
       "poolId": "repair-campus.final",
       "choiceItem": "书中决战补给自选包",
+      "levelCeiling": 15
+    }
+  ],
+  "styleChoices": [
+    {
+      "afterMap": 0,
+      "poolId": "repair-campus.style.0",
+      "choiceItem": "书中流派构筑自选包·1",
+      "levelCeiling": 15
+    },
+    {
+      "afterMap": 1,
+      "poolId": "repair-campus.style.1",
+      "choiceItem": "书中流派构筑自选包·2",
+      "levelCeiling": 15
+    },
+    {
+      "afterMap": 2,
+      "poolId": "repair-campus.style.2",
+      "choiceItem": "书中流派构筑自选包·3",
+      "levelCeiling": 15
+    },
+    {
+      "afterMap": 3,
+      "poolId": "repair-campus.style.3",
+      "choiceItem": "书中流派构筑自选包·4",
+      "levelCeiling": 15
+    },
+    {
+      "afterMap": 4,
+      "poolId": "repair-campus.style.4",
+      "choiceItem": "书中流派构筑自选包·5",
+      "levelCeiling": 15
+    },
+    {
+      "afterMap": 5,
+      "poolId": "repair-campus.style.5",
+      "choiceItem": "书中流派构筑自选包·6",
       "levelCeiling": 15
     }
   ],

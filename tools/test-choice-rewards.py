@@ -1,5 +1,6 @@
 """Authoring failures that could make a choice impossible or misleading in game."""
 import copy
+import collections
 import json
 import unittest
 import xml.etree.ElementTree as ET
@@ -98,7 +99,7 @@ class ChoiceCatalogTests(unittest.TestCase):
         module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
         fragment=module.build_choice_fragment(module.load_item_index(),set(),[])
         merged=merge_catalogs(self.catalog,[('cf6-sting',fragment)])
-        self.assertLessEqual(len(merged['bundles']),128)
+        self.assertLessEqual(len(merged['bundles']),256)
         self.assertTrue(all(p['groups'][0]['draw']==3 and 3<len(p['groups'][0]['entries'])<=32 for p in fragment['pools']))
         allowed=set(module.weapon_pools.source()['historicalPolicy']['acceptedWeaponNames'])
         self.assertTrue(all(b['weapon'] in allowed and 'weaponTier' not in b for b in fragment['bundles'] if 'weapon' in b))
@@ -173,13 +174,18 @@ class ChoiceCatalogTests(unittest.TestCase):
 
     def test_six_deliveries_and_free_complete_rifle_before_students(self):
         book = json.loads((ROOT/'data/stages/books/repair-campus.json').read_text('utf-8'))
-        self.assertEqual(sorted(c['afterMap'] for c in book['buildChoices'] + book['minorChoices']), list(range(6)))
+        self.assertEqual({0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2},
+                         dict(collections.Counter(c['afterMap'] for c in book['buildChoices'] + book['minorChoices'] + book['styleChoices'])))
         rifle = runtime_catalog(self.catalog)[0]['groups'][0]
         self.assertEqual(rifle['draw'], 1)
         for option in rifle['entries']:
             self.assertEqual(option['kCost'], 0)
             self.assertIn('AK47', [e['itemName'] for e in option['entries']])
             self.assertTrue(option['id'].startswith('campus.rifle.'))
+        styles = [p for p in self.catalog['pools'] if p['id'].startswith('repair-campus.style.')]
+        self.assertEqual([6, 9, 11, 13, 14, 15], [p['skillUnlockCeiling'] for p in styles])
+        self.assertTrue(all(p['respectSkillUnlock'] for p in styles))
+        self.assertEqual([g['id'] for g in styles[0]['groups']], ['fist', 'blade', 'gun', 'general'])
 
     def test_skill_prices_and_scope_are_authoritative(self):
         for bad in [-1, True, 1201]:

@@ -28,6 +28,16 @@
     function plainToHtml(value) {
         return escapeHtml(value).replace(/\r?\n/g, '<br>');
     }
+    function normalizeSkillHtml(value) {
+        return String(value == null ? '' : value).replace(/\r\n|\r|\n/g, '<br>');
+    }
+    function richSkillHtml(value, tooltip) {
+        var raw = normalizeSkillHtml(value);
+        if (tooltip && typeof tooltip.convertAS2Html === 'function') {
+            try { return tooltip.convertAS2Html(raw); } catch (e) { /* fall through */ }
+        }
+        return plainToHtml(raw);
+    }
     function ChoiceView(options) {
         var self = this;
         this.options = options;
@@ -193,8 +203,10 @@
                 copy.appendChild(element(self.document, 'small', skill.currentLevel ? '现有 ' + skill.currentLevel + '级 → ' + skill.level + '级' : '直接学会，不消耗SP'));
                 // 技能注释可见性优先（速通场景悬停成本高）：完整描述留在 tooltip，卡内放可见小字行。
                 if (skill.description) {
-                    copy.appendChild(element(self.document, 'small', skill.description,
-                        'character-build-choice-skill-description'));
+                    var description = element(self.document, 'small', '',
+                        'character-build-choice-skill-description');
+                    description.innerHTML = richSkillHtml(skill.description, self.tooltip);
+                    copy.appendChild(description);
                 }
                 row.append(icon, copy); items.appendChild(row);
                 if (self.icons) self.icons.load(function() { Promise.resolve().then(paintSkillIcon); });
@@ -258,7 +270,7 @@
                 return tooltip.buildItemRichHtml({
                     iconHtml:tooltip.dynamicIconHtml(skill.skillKey, 'skills-tt-icon'),
                     introWebHTML:intro,
-                    descHTML:plainToHtml(skill.description || fallbackDescription || ''),
+                    descHTML:normalizeSkillHtml(skill.description || fallbackDescription || ''),
                     rootClass:'skills-tooltip',
                     layoutType:'wide',
                     splitMode:'auto'

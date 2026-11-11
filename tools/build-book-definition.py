@@ -557,6 +557,70 @@ def generated_deliveries(data):
     return {PACK_OUTPUT: xml, RECIPE_OUTPUT: (json.dumps(recipes, ensure_ascii=False, indent=2) + '\n').encode('utf-8')}
 
 
+def validate_enemy_weights(stage, units):
+    """Optional base-pool weights expand the same map's rotation without adding new units."""
+    weights = stage.get('enemyWeights')
+    if weights is None:
+        return
+    if not isinstance(weights, list) or not weights or len(weights) != len(stage['enemies']):
+        raise ValueError('enemy weights must cover the map enemy pool')
+    seen = set()
+    for entry in weights:
+        if set(entry) != {'type', 'weight'}:
+            raise ValueError('invalid enemy weight entry')
+        enemy = entry['type']
+        if type(enemy) is not int or enemy not in units or enemy not in stage['enemies'] or enemy in seen:
+            raise ValueError('unknown or duplicate weighted enemy')
+        seen.add(enemy)
+        bounded_integer(entry['weight'], 1, 16, 'enemy weight')
+    if seen != set(stage['enemies']):
+        raise ValueError('enemy weights must cover the map enemy pool')
+
+
+def validate_enemy_power(stage, units):
+    """Optional relative combat power used to bias weak/strong units toward later waves."""
+    power = stage.get('enemyPower')
+    if power is None:
+        return
+    if not isinstance(power, list) or len(power) != len(stage['enemies']):
+        raise ValueError('enemy power must match the map enemy pool')
+    for value in power:
+        bounded_integer(value, 1, 10, 'enemy power')
+
+
+def validate_wave_plan(stage, units):
+    """Optional mixed-wave plan: fixed student budget plus per-wave specialists/elites."""
+    plan = stage.get('wavePlan')
+    if 'carBombType' in stage:
+        if type(stage['carBombType']) is not int or stage['carBombType'] not in units:
+            raise ValueError('unknown car bomb unit')
+        if stage['carBombType'] not in stage['enemies']:
+            raise ValueError('car bomb unit must belong to the map enemy pool')
+    if plan is None:
+        return
+    if set(plan) != {'baseTotal', 'addTypes', 'addCount', 'eliteTypes', 'eliteLevel'}:
+        raise ValueError('invalid wave plan fields')
+    for key in ('baseTotal', 'addCount'):
+        values = plan[key]
+        if not isinstance(values, list) or len(values) != 2:
+            raise ValueError('invalid wave plan range ' + key)
+        bounded_integer(values[0], 1, 16, 'wave plan ' + key)
+        bounded_integer(values[1], values[0], 16, 'wave plan ' + key)
+    if plan['baseTotal'][0] < stage['waves']:
+        raise ValueError('wave plan must seed every wave')
+    for key in ('addTypes', 'eliteTypes'):
+        values = plan[key]
+        if (not isinstance(values, list) or not 1 <= len(values) <= 8
+                or len(values) != len(set(values))):
+            raise ValueError('invalid wave plan ' + key)
+        for enemy in values:
+            if type(enemy) is not int or enemy not in units:
+                raise ValueError('unknown wave plan unit ' + str(enemy))
+    if set(plan['addTypes']) & set(plan['eliteTypes']):
+        raise ValueError('wave plan normal and elite units must be distinct')
+    bounded_integer(plan['eliteLevel'], 1, 15, 'wave plan elite level')
+
+
 def validate_boss(data, units, items):
     c = data['bossEncounter']
     if set(c) != {'mapIndex','instanceName','intervalFrames','maxAlive','maxRanged','groups','rangedTypes','supplies'}:
@@ -731,7 +795,8 @@ def main():
         if path == PACK_OUTPUT: continue
         items.update((item.findtext('name'), item) for item in ET.parse(path).findall('.//item'))
     validate_choices(data, items)
-    if [c['afterMap'] for c in data['minorChoices']] != [0, 2, 4, 5]: raise ValueError('four minor deliveries must complement the two loadout checkpoints')
+    if [c['afterMap'] for c in data['minorChoices']] != [2, 4, 5]: raise ValueError('three minor deliveries must complement the two loadout checkpoints')
+    if [c['afterMap'] for c in data['styleChoices']] != [0, 1, 2, 3, 4, 5]: raise ValueError('six style deliveries must follow the first six maps')
     if data['kBudget'] != {'mapCount': 6, 'guaranteed': 200, 'randomMax': 100}: raise ValueError('invalid run K budget')
     if data['optionalLoot'] != {'firstMap': 2, 'lastMap': 5, 'percent': 75}: raise ValueError('invalid optional loot transfer')
     bounded_integer(data['recordSp'], 0, 100, 'personal best SP')
@@ -754,6 +819,9 @@ def main():
             raise ValueError('invalid levels')
         if not 1 <= stage['count'][0] <= stage['count'][1] <= 8:
             raise ValueError('invalid spawn count')
+        validate_wave_plan(stage, units)
+        validate_enemy_weights(stage, units)
+        validate_enemy_power(stage, units)
     missing = set(data['equipment'] + data['supplies']) - items.keys()
     if missing:
         raise ValueError('unknown items: ' + ', '.join(sorted(missing)))

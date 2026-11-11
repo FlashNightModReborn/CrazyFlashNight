@@ -457,16 +457,19 @@ class org.flashNight.arki.scene.BookDefinition {
             },
             enemies: [
                 44,
-                45
+                45,
+                48,
+                49
             ],
+            carBombType: 44,
             level: [
                 1,
                 3
             ],
             waves: 3,
             count: [
-                2,
-                4
+                3,
+                5
             ],
             experience: 9000,
             money: [
@@ -508,6 +511,12 @@ class org.flashNight.arki.scene.BookDefinition {
                     speaker: "Andy",
                     text: "先练两下。别钱还没挣到，自己先倒了……"
                 }
+            ],
+            enemyPower: [
+                1,
+                1,
+                3,
+                2
             ]
         },
         {
@@ -517,8 +526,18 @@ class org.flashNight.arki.scene.BookDefinition {
                 sequence: "cf1"
             },
             enemies: [
-                48,
-                49
+                457,
+                367
+            ],
+            enemyWeights: [
+                {
+                    type: 457,
+                    weight: 1
+                },
+                {
+                    type: 367,
+                    weight: 2
+                }
             ],
             level: [
                 3,
@@ -576,6 +595,10 @@ class org.flashNight.arki.scene.BookDefinition {
                     speaker: "Andy",
                     text: "别跑！水管是不是你们砸的？"
                 }
+            ],
+            enemyPower: [
+                2,
+                1
             ]
         },
         {
@@ -592,11 +615,34 @@ class org.flashNight.arki.scene.BookDefinition {
                 7,
                 9
             ],
-            waves: 3,
+            waves: 4,
             count: [
                 2,
                 3
             ],
+            wavePlan: {
+                baseTotal: [
+                    6,
+                    9
+                ],
+                addTypes: [
+                    56,
+                    54,
+                    55,
+                    57
+                ],
+                addCount: [
+                    2,
+                    3
+                ],
+                eliteTypes: [
+                    264,
+                    267,
+                    265,
+                    266
+                ],
+                eliteLevel: 10
+            },
             experience: 77000,
             money: [
                 3200,
@@ -664,11 +710,32 @@ class org.flashNight.arki.scene.BookDefinition {
                 9,
                 11
             ],
-            waves: 3,
+            waves: 4,
             count: [
                 2,
                 3
             ],
+            wavePlan: {
+                baseTotal: [
+                    6,
+                    9
+                ],
+                addTypes: [
+                    47,
+                    65,
+                    64
+                ],
+                addCount: [
+                    2,
+                    3
+                ],
+                eliteTypes: [
+                    270,
+                    269,
+                    268
+                ],
+                eliteLevel: 12
+            },
             experience: 140000,
             money: [
                 3600,
@@ -1192,55 +1259,53 @@ class org.flashNight.arki.scene.BookDefinition {
         groups: [
             {
                 hpRatio: 0.75,
-                level: 8,
+                level: 12,
                 pools: [
                     [
-                        44
+                        264
                     ],
                     [
-                        45
+                        267
                     ],
                     [
-                        48
+                        265
                     ],
                     [
-                        49
+                        266
                     ]
                 ]
             },
             {
                 hpRatio: 0.5,
-                level: 11,
+                level: 13,
                 pools: [
                     [
-                        447,
-                        448
+                        270
                     ],
                     [
-                        436,
-                        437
+                        269
                     ]
                 ]
             },
             {
                 hpRatio: 0.25,
-                level: 13,
+                level: 14,
                 pools: [
                     [
-                        449,
-                        450
+                        268
                     ],
                     [
-                        444,
-                        446
+                        261
                     ]
                 ]
             }
         ],
         rangedTypes: [
-            44,
-            449,
-            450
+            264,
+            265,
+            266,
+            267,
+            270
         ],
         supplies: [
             {
@@ -1263,13 +1328,6 @@ class org.flashNight.arki.scene.BookDefinition {
     },
     minorChoices: [
         {
-            afterMap: 0,
-            poolId: "repair-campus.opening",
-            choiceItem: "书中入学特训自选包",
-            levelCeiling: 15,
-            options: []
-        },
-        {
             afterMap: 2,
             poolId: "repair-campus.synergy",
             choiceItem: "书中流派协同自选包",
@@ -1287,6 +1345,50 @@ class org.flashNight.arki.scene.BookDefinition {
             afterMap: 5,
             poolId: "repair-campus.final",
             choiceItem: "书中决战补给自选包",
+            levelCeiling: 15,
+            options: []
+        }
+    ],
+    styleChoices: [
+        {
+            afterMap: 0,
+            poolId: "repair-campus.style.0",
+            choiceItem: "书中流派构筑自选包·1",
+            levelCeiling: 15,
+            options: []
+        },
+        {
+            afterMap: 1,
+            poolId: "repair-campus.style.1",
+            choiceItem: "书中流派构筑自选包·2",
+            levelCeiling: 15,
+            options: []
+        },
+        {
+            afterMap: 2,
+            poolId: "repair-campus.style.2",
+            choiceItem: "书中流派构筑自选包·3",
+            levelCeiling: 15,
+            options: []
+        },
+        {
+            afterMap: 3,
+            poolId: "repair-campus.style.3",
+            choiceItem: "书中流派构筑自选包·4",
+            levelCeiling: 15,
+            options: []
+        },
+        {
+            afterMap: 4,
+            poolId: "repair-campus.style.4",
+            choiceItem: "书中流派构筑自选包·5",
+            levelCeiling: 15,
+            options: []
+        },
+        {
+            afterMap: 5,
+            poolId: "repair-campus.style.5",
+            choiceItem: "书中流派构筑自选包·6",
             levelCeiling: 15,
             options: []
         }

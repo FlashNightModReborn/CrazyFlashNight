@@ -47,6 +47,19 @@ class org.flashNight.arki.item.ChoiceRewardService {
             if (!SkillLoadoutService.rewardSkillStatus(skills[i].skillKey, skills[i].level).success) return false;
         return true;
     }
+    /** Style cards respect both the current level and the checkpoint's expected level. */
+    private static function skillUnlockEligible(skills:Array, ceiling:Number):Boolean {
+        var level:Number = Number(_root.等级);
+        if (!isFinite(level) || level < 1) level = 1;
+        if (isFinite(ceiling) && ceiling > 0 && ceiling < level) level = ceiling;
+        for (var i:Number = 0; i < skills.length; i++) {
+            var metadata:Object = _root.技能表对象[skills[i].skillKey];
+            if (metadata == null) return false;
+            var unlock:Number = Number(metadata.UnlockLevel);
+            if (!isFinite(unlock) || unlock > level) return false;
+        }
+        return true;
+    }
     private static function ownedEquipment(name:String):Boolean {
         var sources:Array = [_root.物品栏.背包, _root.物品栏.装备栏];
         for (var c:Number = 0; c < sources.length; c++) {
@@ -162,7 +175,8 @@ class org.flashNight.arki.item.ChoiceRewardService {
                         var state:Object = SkillLoadoutService.inspectSkill(grant.skillKey);
                         var metadata:Object = _root.技能表对象[grant.skillKey];
                         skills.push({skillKey:grant.skillKey,level:grant.level,currentLevel:SkillLoadoutService.committedRewardSkillLevel(grant.skillKey),
-                            description:org.flashNight.gesh.string.StringUtils.htmlToPlainTextFast(String(metadata.Description || "")).substr(0,2048)});
+                            // Keep the AS2 rich-text markup here; the Web layer sanitizes it before rendering.
+                            description:String(metadata.Description || "").substr(0,2048)});
                     }
                     var projectedOption:Object = {optionId:option.optionId, title:option.title, description:option.description, items:items,
                         skills:skills,kCost:option.kCost == undefined ? 0 : option.kCost,
@@ -186,8 +200,14 @@ class org.flashNight.arki.item.ChoiceRewardService {
         for (var g:Number = 0; g < groups.length; g++) {
             var group:Object = groups[g];
             var available:Array = [];
-            for (var a:Number = 0; a < group.entries.length; a++)
-                if (useful(group.entries[a],allowOwned)) available.push(group.entries[a]);
+            for (var a:Number = 0; a < group.entries.length; a++) {
+                var candidate:Object = group.entries[a];
+                if (!useful(candidate,allowOwned)) continue;
+                if (definition.respectSkillUnlock === true
+                        && !skillUnlockEligible(candidate.skills == null ? [] : candidate.skills,
+                            Number(definition.skillUnlockCeiling))) continue;
+                available.push(candidate);
+            }
             for (var d:Number = 0; d < group.draw && available.length > 0; d++) {
                 var total:Number = 0;
                 for (var w:Number = 0; w < available.length; w++) total += available[w].weight;
