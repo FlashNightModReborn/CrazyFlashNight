@@ -201,6 +201,8 @@ Actions artifact 只是短期交接介质：unsigned candidate/envelope 保留 1
 
 在与 request tree 完全一致、tracked 内容干净的工作树中运行。正式 receipt / X509 proof / promotion 链固定由 Windows PowerShell 5.1（`$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe`）承载：当前 `pwsh` 7 的 `ConvertFrom-Json` 会把 attestation 的 ISO `createdAtUtc` 字符串自动解析成 `DateTime`，若在该宿主内直接调用 promotion，会改变 canonical payload 复算字节并按预期 fail closed。新机经 winget 安装 GitHub CLI 后，先用同一 5.1 进程确认 `Get-Command gh`；若旧父进程尚未继承新的用户级 `PATH`，重启父进程或只给本次发布进程显式补入已核验的安装目录，不复制 token、证明或私钥来绕过环境门。
 
+同一台机器首次运行 production policy 前，先按锁定依赖装好 `launcher/perf` 的 harness 依赖：`npm --prefix launcher/perf ci --ignore-scripts`。`guidance-tutorial-journeys` 会从该目录加载 `playwright` 并用系统 Edge 跑真实浏览器门，缺依赖会让整张 receipt 以 `passed=false` 结束。判断门是否真的通过要读 receipt 的 `checks[].passed` 或官方 `[RuntimePolicy] OK` 行，不能只看外层 wrapper 的退出码：包装脚本可能在子脚本 `exit 1` 之后仍以 0 结束，把失败掩盖成成功。
+
 由辅助进程启动时，编码与模块环境须在实际执行发布的 5.1 子进程内固定：先 `chcp.com 65001`，使用无 BOM 的 UTF-8 `Console.InputEncoding` / `Console.OutputEncoding` / `$OutputEncoding`，并按根目录 `本地开发启动.cmd` 隔离 Windows PowerShell 的 `PSModulePath`。父进程的设置不能替代新控制台的设置，否则 `Get-FileHash` 可能加载错误模块，中文 Git 路径也可能被误解码。外层脚本应分别保存 stdout/stderr，并检查实际子进程退出码与官方结果；普通 Git 克隆进度写入 stderr 不代表 worker 失败。失败原件和过期租约由现有队列合同处理，不删除现场或降低校验来恢复。
 
 ```powershell
