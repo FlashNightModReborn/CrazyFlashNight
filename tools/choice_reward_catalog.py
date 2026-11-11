@@ -139,6 +139,7 @@ def validate(data):
     mods = {m.findtext('name'): m for e in ET.parse(directory / 'list.xml').findall('items')
             for m in ET.parse(directory / e.text).findall('mod')}
     bundles, pool_ids, item_names, used = {}, set(), set(), set()
+    skill_catalog = {s.findtext('Name'): s for s in ET.parse(ROOT / 'data/skills/skills.xml').findall('Skill') if s.findtext('Name')}
     for bundle in data['bundles']:
         keys = 'id name title description grade items' if 'items' in bundle else 'id name title description grade weapon mods consumables'
         exact(bundle, keys + (' weaponCount' if 'weapon' in bundle and 'weaponCount' in bundle else '') + (' checkpointAmmo' if 'weapon' in bundle and 'checkpointAmmo' in bundle else '') + (' skills' if 'skills' in bundle else '') + (' kCost' if 'kCost' in bundle else ''), 'bundle')
@@ -146,7 +147,6 @@ def validate(data):
         integer(bundle.get('kCost', 0), 0, 1200, 'card K price')
         skills = bundle.get('skills', [])
         if type(skills) is not list or len(skills) > 2: raise ValueError('invalid skill rewards')
-        skill_catalog = {s.findtext('Name'): s for s in ET.parse(ROOT / 'data/skills/skills.xml').findall('Skill') if s.findtext('Name')}
         skill_names = set()
         for grant in skills:
             exact(grant, 'skillKey level', 'skill reward')
@@ -206,6 +206,10 @@ def validate(data):
                 integer(row['weight'], 1, 10000, 'bundle weight')
                 if (bundles[bid].get('skills') or bundles[bid].get('kCost')) and scope['kind'] != 'book':
                     raise ValueError('skill and K rewards require an isolated book scope')
+                if scope['kind'] == 'book' and scope['bookId'] == 'repair-campus':
+                    for grant in bundles[bid].get('skills', []):
+                        if int(skill_catalog[grant['skillKey']].findtext('UnlockLevel') or 0) > 30:
+                            raise ValueError('repair-campus draw excludes skills above unlock level 30')
                 if 'items' in bundles[bid]: validate_items(bundles[bid], pool['maxItemLevel'], items)
                 else: validate_loadout(bundles[bid], pool['maxItemLevel'], items, mods)
         if not 2 <= count <= 4: raise ValueError('offer must contain two to four candidates')

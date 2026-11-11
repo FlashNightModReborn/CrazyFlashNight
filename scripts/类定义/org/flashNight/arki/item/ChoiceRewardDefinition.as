@@ -1909,36 +1909,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.fist.18",
-                    weight: 1,
-                    title: "拳脚·径庭拳/黑闪",
-                    description: "直接获得径庭拳/黑闪2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "径庭拳/黑闪",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.19",
-                    weight: 1,
-                    title: "拳脚·龟派气功",
-                    description: "直接获得龟派气功2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "龟派气功",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.fist.20",
                     weight: 1,
                     title: "拳脚·觉醒霸体",
@@ -1963,21 +1933,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "地震",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.22",
-                    weight: 1,
-                    title: "拳脚·觉醒震地",
-                    description: "直接获得觉醒震地2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "觉醒震地",
                             level: 2
                         }
                     ],
@@ -2274,36 +2229,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.blade.19",
-                    weight: 1,
-                    title: "刀剑·六连",
-                    description: "直接获得六连2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "六连",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.blade.20",
-                    weight: 1,
-                    title: "刀剑·空间斩",
-                    description: "直接获得空间斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "空间斩",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.blade.21",
                     weight: 1,
                     title: "刀剑·上挑",
@@ -2423,36 +2348,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "战术目镜",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.6",
-                    weight: 1,
-                    title: "枪械·死亡绽放",
-                    description: "直接获得死亡绽放2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "死亡绽放",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.7",
-                    weight: 1,
-                    title: "枪械·上帝之杖",
-                    description: "直接获得上帝之杖2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "上帝之杖",
                             level: 2
                         }
                     ],
@@ -2772,36 +2667,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.fist.18",
-                    weight: 1,
-                    title: "拳脚·径庭拳/黑闪",
-                    description: "直接获得径庭拳/黑闪2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "径庭拳/黑闪",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.19",
-                    weight: 1,
-                    title: "拳脚·龟派气功",
-                    description: "直接获得龟派气功2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "龟派气功",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.fist.20",
                     weight: 1,
                     title: "拳脚·觉醒霸体",
@@ -2826,21 +2691,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "地震",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.22",
-                    weight: 1,
-                    title: "拳脚·觉醒震地",
-                    description: "直接获得觉醒震地2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "觉醒震地",
                             level: 2
                         }
                     ],
@@ -3137,36 +2987,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.blade.19",
-                    weight: 1,
-                    title: "刀剑·六连",
-                    description: "直接获得六连2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "六连",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.blade.20",
-                    weight: 1,
-                    title: "刀剑·空间斩",
-                    description: "直接获得空间斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "空间斩",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.blade.21",
                     weight: 1,
                     title: "刀剑·上挑",
@@ -3286,36 +3106,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "战术目镜",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.6",
-                    weight: 1,
-                    title: "枪械·死亡绽放",
-                    description: "直接获得死亡绽放2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "死亡绽放",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.7",
-                    weight: 1,
-                    title: "枪械·上帝之杖",
-                    description: "直接获得上帝之杖2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "上帝之杖",
                             level: 2
                         }
                     ],
@@ -3635,36 +3425,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.fist.18",
-                    weight: 1,
-                    title: "拳脚·径庭拳/黑闪",
-                    description: "直接获得径庭拳/黑闪2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "径庭拳/黑闪",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.19",
-                    weight: 1,
-                    title: "拳脚·龟派气功",
-                    description: "直接获得龟派气功2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "龟派气功",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.fist.20",
                     weight: 1,
                     title: "拳脚·觉醒霸体",
@@ -3689,21 +3449,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "地震",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.22",
-                    weight: 1,
-                    title: "拳脚·觉醒震地",
-                    description: "直接获得觉醒震地2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "觉醒震地",
                             level: 2
                         }
                     ],
@@ -4000,36 +3745,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.blade.19",
-                    weight: 1,
-                    title: "刀剑·六连",
-                    description: "直接获得六连2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "六连",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.blade.20",
-                    weight: 1,
-                    title: "刀剑·空间斩",
-                    description: "直接获得空间斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "空间斩",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.blade.21",
                     weight: 1,
                     title: "刀剑·上挑",
@@ -4149,36 +3864,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "战术目镜",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.6",
-                    weight: 1,
-                    title: "枪械·死亡绽放",
-                    description: "直接获得死亡绽放2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "死亡绽放",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.7",
-                    weight: 1,
-                    title: "枪械·上帝之杖",
-                    description: "直接获得上帝之杖2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "上帝之杖",
                             level: 2
                         }
                     ],
@@ -4448,36 +4133,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.fist.18",
-                    weight: 1,
-                    title: "拳脚·径庭拳/黑闪",
-                    description: "直接获得径庭拳/黑闪2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "径庭拳/黑闪",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.19",
-                    weight: 1,
-                    title: "拳脚·龟派气功",
-                    description: "直接获得龟派气功2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "龟派气功",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.fist.20",
                     weight: 1,
                     title: "拳脚·觉醒霸体",
@@ -4502,21 +4157,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "地震",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.22",
-                    weight: 1,
-                    title: "拳脚·觉醒震地",
-                    description: "直接获得觉醒震地2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "觉醒震地",
                             level: 2
                         }
                     ],
@@ -4813,36 +4453,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.blade.19",
-                    weight: 1,
-                    title: "刀剑·六连",
-                    description: "直接获得六连2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "六连",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.blade.20",
-                    weight: 1,
-                    title: "刀剑·空间斩",
-                    description: "直接获得空间斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "空间斩",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.blade.21",
                     weight: 1,
                     title: "刀剑·上挑",
@@ -4962,36 +4572,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "战术目镜",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.6",
-                    weight: 1,
-                    title: "枪械·死亡绽放",
-                    description: "直接获得死亡绽放2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "死亡绽放",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.7",
-                    weight: 1,
-                    title: "枪械·上帝之杖",
-                    description: "直接获得上帝之杖2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "上帝之杖",
                             level: 2
                         }
                     ],
@@ -5261,36 +4841,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.fist.18",
-                    weight: 1,
-                    title: "拳脚·径庭拳/黑闪",
-                    description: "直接获得径庭拳/黑闪2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "径庭拳/黑闪",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.19",
-                    weight: 1,
-                    title: "拳脚·龟派气功",
-                    description: "直接获得龟派气功2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "龟派气功",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.fist.20",
                     weight: 1,
                     title: "拳脚·觉醒霸体",
@@ -5315,21 +4865,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "地震",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.22",
-                    weight: 1,
-                    title: "拳脚·觉醒震地",
-                    description: "直接获得觉醒震地2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "觉醒震地",
                             level: 2
                         }
                     ],
@@ -5626,36 +5161,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.blade.19",
-                    weight: 1,
-                    title: "刀剑·六连",
-                    description: "直接获得六连2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "六连",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.blade.20",
-                    weight: 1,
-                    title: "刀剑·空间斩",
-                    description: "直接获得空间斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "空间斩",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.blade.21",
                     weight: 1,
                     title: "刀剑·上挑",
@@ -5775,36 +5280,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "战术目镜",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.6",
-                    weight: 1,
-                    title: "枪械·死亡绽放",
-                    description: "直接获得死亡绽放2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "死亡绽放",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.7",
-                    weight: 1,
-                    title: "枪械·上帝之杖",
-                    description: "直接获得上帝之杖2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "上帝之杖",
                             level: 2
                         }
                     ],
@@ -6074,36 +5549,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.fist.18",
-                    weight: 1,
-                    title: "拳脚·径庭拳/黑闪",
-                    description: "直接获得径庭拳/黑闪2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "径庭拳/黑闪",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.19",
-                    weight: 1,
-                    title: "拳脚·龟派气功",
-                    description: "直接获得龟派气功2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "龟派气功",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.fist.20",
                     weight: 1,
                     title: "拳脚·觉醒霸体",
@@ -6128,21 +5573,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "地震",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.fist.22",
-                    weight: 1,
-                    title: "拳脚·觉醒震地",
-                    description: "直接获得觉醒震地2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "觉醒震地",
                             level: 2
                         }
                     ],
@@ -6439,36 +5869,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
-                    id: "campus.style.blade.19",
-                    weight: 1,
-                    title: "刀剑·六连",
-                    description: "直接获得六连2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "六连",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.blade.20",
-                    weight: 1,
-                    title: "刀剑·空间斩",
-                    description: "直接获得空间斩2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "空间斩",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
                     id: "campus.style.blade.21",
                     weight: 1,
                     title: "刀剑·上挑",
@@ -6588,36 +5988,6 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     skills: [
                         {
                             skillKey: "战术目镜",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.6",
-                    weight: 1,
-                    title: "枪械·死亡绽放",
-                    description: "直接获得死亡绽放2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "死亡绽放",
-                            level: 2
-                        }
-                    ],
-                    kCost: 0
-                },
-                {
-                    id: "campus.style.gun.7",
-                    weight: 1,
-                    title: "枪械·上帝之杖",
-                    description: "直接获得上帝之杖2级，不消耗SP；按当前角色等级与流派标签筛选。",
-                    grade: "high",
-                    entries: [],
-                    skills: [
-                        {
-                            skillKey: "上帝之杖",
                             level: 2
                         }
                     ],

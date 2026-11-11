@@ -178,6 +178,9 @@ class BookDefinitionTests(unittest.TestCase):
                         for grant in bundles[row['bundleId']]['skills']]
         self.assertTrue(style_skills)
         self.assertFalse((set(style_skills) - {'气动波'}) & set(self.data['skills']))
+        skill_unlock = {s.findtext('Name'): int(s.findtext('UnlockLevel') or 0)
+                        for s in ET.parse(ROOT / 'data/skills/skills.xml').getroot().findall('Skill')}
+        self.assertTrue(all(skill_unlock[name] <= 30 for name in style_skills))
 
     def test_local_skill_points_use_real_currency_and_bounded_counts(self):
         self.assertEqual(360, sum(stage['skillPoints'] for stage in self.data['maps']))
