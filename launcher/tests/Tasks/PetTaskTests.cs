@@ -15,6 +15,39 @@ namespace CF7Launcher.Tests.Tasks
     {
         private const string PanelInstance = "panel.team.pet.1";
 
+        [Theory]
+        [InlineData("zombie")]
+        [InlineData("thief")]
+        [InlineData("military")]
+        public void DogForm_UsesTrustedActionAndKeepsExactInstance(string form)
+        {
+            string sent = null;
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
+            var request = Request("{\"callId\":\"dog-form\",\"slotIndex\":2,\"action\":\"petDelete\"}");
+            request["dogForm"] = form;
+            task.HandleWebRequest("change_dog_form", request);
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("petChangeDogForm", (string)msg["action"]);
+            Assert.Equal(form, (string)msg["dogForm"]);
+            Assert.Equal(2, (int)msg["slotIndex"]);
+        }
+
+        [Theory]
+        [InlineData("warlord")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void DogForm_RejectsUnknownFormWithoutSending(string form)
+        {
+            string sent = null, posted = null;
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+            var request = Request("{\"callId\":\"dog-invalid\",\"slotIndex\":0}");
+            request["dogForm"] = form;
+            task.HandleWebRequest("change_dog_form", request);
+            Assert.Null(sent);
+            Assert.Equal("invalid_dog_form", (string)JObject.Parse(posted)["error"]);
+        }
+
         [Fact]
         public void HandleWebRequest_Disconnected_ReturnsPanelError()
         {
@@ -46,6 +79,7 @@ namespace CF7Launcher.Tests.Tasks
             var msg = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal("cmd", (string)msg["task"]);
             Assert.Equal("petSnapshot", (string)msg["action"]);
+            Assert.Equal(1, (int)msg["dogFormVersion"]);
             Assert.Equal(1, (int)msg["callId"]);
             // 转发到 Flash 的消息不应残留 web 信封字段
             Assert.Null(msg["type"]);
@@ -81,6 +115,7 @@ namespace CF7Launcher.Tests.Tasks
             var msg = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal("cmd", (string)msg["task"]);
             Assert.Equal("petSnapshot", (string)msg["action"]);
+            Assert.Equal(1, (int)msg["dogFormVersion"]);
         }
 
         [Fact]

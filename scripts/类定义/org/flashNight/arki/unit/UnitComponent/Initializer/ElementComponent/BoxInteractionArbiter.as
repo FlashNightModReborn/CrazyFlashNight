@@ -259,6 +259,34 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInt
         return hero.area.hitTest(target.area);
     }
 
+    /** 只准入明确允许的普通直掉隐藏点，不触碰 Web 容器与开锁资格。 */
+    public static function companionEligible(target:Object, unit:Object):Boolean {
+        return target && unit && unit.是否为敌人 === false && unit.__dogForm != undefined
+            && target._parent === unit._parent && !target._killed
+            && target.presetName == "隐藏资源点" && target.companionOpen === true
+            && target.interactionEnabled !== false && target.pickupEnabled !== false
+            && target.__cf7InteractionHandlerInitialized === true && target.area
+            && target.row == 0 && target.col == 0 && target.unlockMode != "minigame";
+    }
+    public static function findForCompanion(unit:MovieClip, maxDistance:Number):MovieClip {
+        var entry:Object = findWorldEntry(unit._parent);
+        if (!entry) return null;
+        var winner:MovieClip = null;
+        for (var i:Number = 0; i < entry.activeRecords.length; i++) {
+            var target:MovieClip = entry.activeRecords[i].target;
+            if (!companionEligible(target,unit)) continue;
+            var dx:Number = Math.abs(target._x - unit._x);
+            if (dx < maxDistance) { maxDistance = dx; winner = target; }
+        }
+        return winner;
+    }
+    public static function openForCompanion(target:MovieClip, unit:MovieClip):Boolean {
+        if (!companionEligible(target,unit) || !(unit.hp > 0)
+                || !(Math.abs(target._x - unit._x) < 40)
+                || !(Math.abs(target.Z轴坐标 - unit.Z轴坐标) < 20)) return false;
+        return InteractionHandler.executePickup(target,unit);
+    }
+
     private static function distanceSquared(target:Object, hero:Object):Number {
         var targetX:Number = Number(target._x);
         var heroX:Number = Number(hero._x);

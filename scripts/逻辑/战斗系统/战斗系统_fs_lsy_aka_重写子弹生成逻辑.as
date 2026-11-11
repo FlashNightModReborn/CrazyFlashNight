@@ -87,6 +87,8 @@ _root.子弹区域shoot传递 = function(Obj){
 
     var gameWorld:MovieClip = _root.gameworld;
     var shooter:MovieClip = gameWorld[Obj.发射者];
+    if (shooter.__dogForm == "zombie")
+        org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.decorateBullet(shooter,Obj);
     if(shooter.__cf6ExternalRecord != null)
         org.flashNight.arki.scene.Cf6SoldierSignals.decorate(shooter,Obj);
 

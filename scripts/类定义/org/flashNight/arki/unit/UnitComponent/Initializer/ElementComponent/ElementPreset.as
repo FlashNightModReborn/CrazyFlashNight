@@ -44,6 +44,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Elemen
     // 交互属性
     public var interactionEnabled:Boolean;
     public var pickupEnabled:Boolean;
+    public var companionOpen:Boolean;
 
     // 资源箱物品栏大小
     public var row:Number;
@@ -69,6 +70,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Elemen
         this.obstacle = false;
         this.interactionEnabled = true;
         this.pickupEnabled = true;
+        this.companionOpen = false;
         this.row = 0;
         this.col = 0;
         this.customProperties = {};
@@ -157,6 +159,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Elemen
         // 应用交互属性
         target.interactionEnabled = this.interactionEnabled;
         target.pickupEnabled = this.pickupEnabled;
+        if (target.companionOpen === undefined) target.companionOpen = this.companionOpen;
 
         // 应用资源箱属性
         if(!isNaN(this.row)) target.row = this.row;

@@ -198,6 +198,15 @@ namespace CF7Launcher.Tasks
                 case "expand_slot":
                     action = "petExpandSlot";
                     break;
+                case "change_dog_form":
+                    string dogForm = parsed.Value<string>("dogForm");
+                    if (dogForm != "zombie" && dogForm != "thief" && dogForm != "military")
+                    {
+                        RespondError(webCallId, cmd, requestedInstance, "invalid_dog_form");
+                        return;
+                    }
+                    action = "petChangeDogForm";
+                    break;
                 case "rename":
                     action = "petRename";
                     break;
@@ -256,6 +265,7 @@ namespace CF7Launcher.Tasks
                     // 保留键守卫，杜绝各桥漏抄）。登记和本地发送都在 owner 锁内，
                     // replacement 不能夹在二者之间把旧实例写入送往 Flash。
                     JObject flashMsg = PanelBridge.BuildFlashCommand(action, fid, parsed);
+                    if (cmd == "snapshot") flashMsg["dogFormVersion"] = 1;
                     flashJson = flashMsg.ToString(Formatting.None);
                     LogManager.Log("[PetTask] -> Flash: " + flashJson);
                     _pendingCalls.Send(fid, flashJson + "\0");

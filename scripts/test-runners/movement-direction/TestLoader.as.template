@@ -1,0 +1,5 @@
+﻿import org.flashNight.arki.unit.UnitComponent.Routing.*;
+stop();
+trace("FocusedTestRunId movement-direction Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitComponent.Routing.MovementSkillDirectionTest.runAllTests();
+trace("FocusedTestRunId movement-direction Complete: __FOCUSED_RUN_ID__");

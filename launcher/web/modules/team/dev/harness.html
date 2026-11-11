@@ -86,6 +86,7 @@ var Bridge = {
 };
 function emit(type, data){ (listeners[type] || []).forEach(function(cb){ cb(data); }); }
 var PET_LIB = [
+  {id:0,identifier:'敌人-僵尸1-狗',rosterType:'pet',promotions:[]},
   {id:1,identifier:'敌人-李小龙',rosterType:'partner',promotions:['淬毒']},
   {id:2,identifier:'敌人-武装JK',rosterType:'pet',promotions:[]},
   {id:66,identifier:'敌人-终结者T800',rosterType:'mechanical',promotions:['终结者武器扩展','终结者全武装']}
@@ -93,6 +94,14 @@ var PET_LIB = [
 function pet(id,name,slot,lv,dep){
   var out={petId:id,name:name,slotIndex:slot,level:lv,deployed:!!dep,stamina:100,maxStamina:200,xp:10,xpNeeded:100,schemeStatus:{},
     combat:{hp:{start:520,cur:3500,max:13000},attack:{start:12,cur:90,max:270},defense:{start:150,cur:550,max:900},speed:{start:8,cur:9,max:10},startLevel:1,maxLevel:100,difficulty:1}};
+  if(id===0){
+    out.dogForm=MockHost.dogForm||'zombie';
+    out.canChangeDogForm=!MockHost.dogCombat;
+    out.identifier={zombie:'敌人-僵尸1-狗',thief:'敌人-盗贼撕咬犬',military:'敌人-制式军警犬'}[out.dogForm];
+    out.dogForms=[{value:'zombie',label:'僵尸犬',description:'咬中后90帧内目标死亡，回复15%最大生命'},
+      {value:'thief',label:'盗贼犬',description:'共享拾荒与普通隐藏点；代开锁将在后续开放'},
+      {value:'military',label:'军警犬',description:'韧性系数3，较难被打断；仍正常承受伤害'}];
+  }
   if(id===66){
     var gunCandidates=[
       {source:{containerId:'背包',slot:7,expectedLease:'lease-t800-7'},eligible:true,lockReason:'',requirementLevel:8,levelLimit:10,
@@ -316,6 +325,7 @@ var MockHost = {
         schemes:{'淬毒':{gold:500,desc:'攻击附带毒素',type:'开关',unlockLevel:1,buttonText:'进阶'},
           '终结者武器扩展':{gold:100000,desc:'开放全部长枪',type:'',unlockLevel:30,buttonText:'扩展武器接口'},
           '终结者全武装':{gold:300000,desc:'移除固定等级上限',type:'',unlockLevel:50,buttonText:'完成全武装'}},priceOverrides:{}};
+      if(this.dogFixture){ resp.snapshot.pets=[pet(0,'小黑',0,17,false)]; resp.snapshot.isCombatMap=!!this.dogCombat; }
       if(this.dualBadge && resp.snapshot.pets.length>1) resp.snapshot.pets[1].stamina=0;
       }
     }
@@ -347,6 +357,7 @@ var MockHost = {
       resp.deployed=this.deployState[msg.slotIndex];
       resp.currentDeployCount=resp.deployed?2:1;
     }
+    if(msg.panel === 'pets' && msg.cmd === 'change_dog_form'){ this.dogForm=msg.dogForm; this.lastDogForm=msg; resp.dogForm=msg.dogForm; }
     if(msg.panel === 'pets' && msg.cmd === 'restore_stamina'){ this.lastRestore=msg; resp.stamina=200; resp.gold=998999; }
     if(msg.panel === 'pets' && msg.cmd === 'level_up'){
       this.lastLevelUp=msg; resp.stoneCost=21; resp.refreshDeferred=true;
@@ -3373,6 +3384,50 @@ var MockHost = {
       MockHost.closeCount===closeBefore+2 && MockHost.lastTeamClose &&
       MockHost.lastTeamClose.panelInstanceId==='panel.team.harness.close-retry' && !Panels.isOpen(),
       'openAfterTimeout='+remainedOpen+', closeDelta='+(MockHost.closeCount-closeBefore));
+    MockHost.dogFixture=true; MockHost.dogForm='zombie'; MockHost.dogCombat=false;
+    Panels.open('team',{initialTab:'pet',panelInstanceId:'panel.team.harness.dog-forms'});
+    await waitFor(function(){return !!document.querySelector('.team-pet-card');},2000);
+    document.querySelector('.team-pet-card').click();
+    await waitFor(function(){return document.querySelectorAll('.team-act-dog-form').length===3;},2000);
+    assert('team-dog-forms','三形态来自权威快照，当前形态有 pressed 语义，能力说明可读',
+      document.querySelectorAll('.team-act-dog-form').length===3 &&
+      document.querySelector('[data-dog-form="zombie"]').getAttribute('aria-pressed')==='true' &&
+      document.querySelector('.team-dog-form-note').textContent.indexOf('90帧')>=0);
+    var dogWrites=MockHost.petRequestCounts.change_dog_form||0;
+    document.querySelector('[data-dog-form="military"]').click();
+    await waitFor(function(){return document.querySelector('[data-dog-form="military"]').getAttribute('aria-pressed')==='true';},2000);
+    assert('team-dog-switch','免费切换走 exact-instance 写命令，并由 fresh snapshot 更新形态',
+      MockHost.lastDogForm.slotIndex===0 && MockHost.lastDogForm.dogForm==='military' &&
+      MockHost.lastDogForm.panelInstanceId==='panel.team.harness.dog-forms' &&
+      MockHost.petRequestCounts.change_dog_form===dogWrites+1);
+    var dogGroup=document.querySelector('.team-dog-form-picker');
+    assert('team-dog-layout','三形态选择在详情正常流内，最低画布无横向溢出',
+      dogGroup.scrollWidth<=dogGroup.clientWidth+1);
+    Panels.close();await wait(20);MockHost.dogCombat=true;
+    Panels.open('team',{initialTab:'pet',panelInstanceId:'panel.team.harness.dog-combat'});
+    await waitFor(function(){return !!document.querySelector('.team-pet-card');},2000);
+    document.querySelector('.team-pet-card').click();await wait(20);
+    dogWrites=MockHost.petRequestCounts.change_dog_form;
+    document.querySelector('[data-dog-form="thief"]').click();await wait(20);
+    assert('team-dog-combat','战斗中切换显示阻断原因且零写入',
+      MockHost.petRequestCounts.change_dog_form===dogWrites &&
+      document.querySelector('[data-dog-form="thief"]').getAttribute('aria-disabled')==='true');
+    Panels.close();await wait(20);MockHost.dogCombat=false;
+    Panels.open('team',{initialTab:'pet',panelInstanceId:'panel.team.harness.dog-reconcile'});
+    await waitFor(function(){return !!document.querySelector('.team-pet-card');},2000);
+    document.querySelector('.team-pet-card').click();await wait(20);
+    MockHost.petDropResponseCmd='change_dog_form';MockHost.holdPetSnapshotCount=1;
+    dogWrites=MockHost.petRequestCounts.change_dog_form;
+    document.querySelector('[data-dog-form="thief"]').click();
+    await waitFor(function(){return PetPanel.getState().reconcileRequired && MockHost.heldPetSnapshots.length===1;},2000);
+    document.querySelector('[data-dog-form="zombie"]').click();await wait(20);
+    var dogOnce=MockHost.petRequestCounts.change_dog_form===dogWrites+1;
+    MockHost.releasePetSnapshot();
+    await waitFor(function(){return !PetPanel.getState().reconcileRequired;},2000);
+    assert('team-dog-reconcile','切换回包丢失后只读对账，不重复提交；新快照恢复正确形态',dogOnce &&
+      MockHost.petRequestCounts.change_dog_form===dogWrites+1 &&
+      document.querySelector('[data-dog-form="thief"]').getAttribute('aria-pressed')==='true');
+    Panels.close();await wait(20);MockHost.dogFixture=false;
     var failed=results.filter(function(x){return !x.pass;}).length;
     window.__qaResult={qa:{total:results.length,passed:results.length-failed,failed:failed,results:results}};
     document.getElementById('qa').textContent=(results.length-failed)+'/'+results.length+' passed';

@@ -296,14 +296,14 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
      * 执行拾取操作
      * @param target 要拾取的目标MovieClip
      */
-    public static function executePickup(target:MovieClip):Boolean {
-        if (!target || !target.dispatcher
+    public static function executePickup(target:MovieClip, actor:MovieClip):Boolean {
+        if (!target || target._killed || !target.dispatcher
                 || typeof target.dispatcher.publish != "function") return false;
         // 发布死亡事件
         target.dispatcher.publish("kill", target);
         
         // 获取拾取者
-        var scavenger:MovieClip = TargetCacheManager.findHero();
+        var scavenger:MovieClip = actor ? actor : TargetCacheManager.findHero();
         if (!scavenger) return true;
         
         // 播放音效

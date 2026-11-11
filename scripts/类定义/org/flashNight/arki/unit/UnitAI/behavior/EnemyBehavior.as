@@ -122,7 +122,9 @@ class org.flashNight.arki.unit.UnitAI.behavior.EnemyBehavior extends BaseUnitBeh
         if (chaseTarget && chaseTarget != "无") {
             data.target = AIEnvironment.resolveUnit(chaseTarget);
             var resolved:MovieClip = data.target;
-            if (resolved == null || !(resolved.hp > 0)) {
+            if (resolved == null || !(resolved.hp > 0)
+                    || (self.__dogForm != undefined
+                        && org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.protectedFromDog(resolved))) {
                 data.target = null;
                 self.dispatcher.publish("aggroClear", self);
                 chaseTarget = "无";
@@ -135,21 +137,31 @@ class org.flashNight.arki.unit.UnitAI.behavior.EnemyBehavior extends BaseUnitBeh
                 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, self.threatThreshold)
                 : self.threatThreshold;
             var target = TargetCacheManager.findValidEnemyForAI(self, 1, threshold);
+            if (self.__dogForm != undefined
+                    && org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.protectedFromDog(target)) {
+                target = TargetCacheManager.findNearestEnemyWithFilter(self,1,
+                    org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.validCombatTarget,undefined,undefined);
+            }
             if (target) {
                 data.target = target;
                 self.dispatcher.publish("aggroSet", self, target);
             }
         }
 
+        if (self.__dogForm != undefined)
+            self.允许拾取 = org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.canPickup(self);
+
         // Step 3: 拾取物搜索（仅当 PickupModule 已注册且单位允许拾取）
         var targetItem:MovieClip = null;
         var hasPickupModule:Boolean = (this.superMachine && this.superMachine.hasStatus("PickupModule"));
 
-        if (hasPickupModule && self.允许拾取) {
+        if (hasPickupModule && self.允许拾取
+                && (self.__dogForm == undefined
+                    || org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.canPickup(self))) {
             // 己方单位背包已满时禁用拾取
             if (self.是否为敌人 == false) {
                 if (AIEnvironment.getFirstBagVacancy() == -1) {
-                    self.允许拾取 = false;
+                    // 只跳过本次决策；背包腾位后同一单位自动恢复。
                     hasPickupModule = false;
                 }
             }
@@ -171,7 +183,8 @@ class org.flashNight.arki.unit.UnitAI.behavior.EnemyBehavior extends BaseUnitBeh
                     var 可拾取物 = pickupDict[i];
                     if (可拾取物 != null && 可拾取物.area != null) {
                         // 战场即时补给只对玩家本人生效，敌人/同伴 AI 一律不候选
-                        if (PickupEffectService.isInstantSupply(可拾取物.物品名)) continue;
+                        if (可拾取物.__pickupClaimed === true
+                                || PickupEffectService.isInstantSupply(可拾取物.物品名)) continue;
                         可拾取物距离表.push({
                             物品: 可拾取物,
                             距离: Math.abs(可拾取物._x - data.x)
@@ -200,6 +213,13 @@ class org.flashNight.arki.unit.UnitAI.behavior.EnemyBehavior extends BaseUnitBeh
                     }
                 }
             }
+        }
+
+        if (hasPickupModule && self.__dogForm != undefined && self.是否为敌人 === false) {
+            var boxLimit:Number = targetItem ? Math.abs(targetItem._x - data.x) : 800;
+            if (data.target) boxLimit = Math.min(boxLimit,Math.abs(data.target._x - data.x));
+            var hiddenBox:MovieClip = org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInteractionArbiter.findForCompanion(self,boxLimit);
+            if (hiddenBox != null) targetItem = hiddenBox;
         }
 
         // Step 4: 决策 — 按优先级选择目标状态

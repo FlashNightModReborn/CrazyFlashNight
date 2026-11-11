@@ -1,0 +1,3 @@
+﻿param([int]$TimeoutSeconds = 300)
+& (Join-Path $PSScriptRoot 'test-runners/run-focused-testloader.ps1') -DomainId dog-features -TemplateRelativePath 'scripts/test-runners/dog-features/TestLoader.as.template' -SuiteRelativePaths 'scripts/类定义/org/flashNight/arki/unit/UnitAI/Custom/DogFeatureTest.as' -SuiteFqns 'org.flashNight.arki.unit.UnitAI.Custom.DogFeatureTest' -ExpectedTracePatterns @('DogFeature forms complete','DogFeature pickup policy complete','DogFeature assist healing complete','DogFeatureTest: [1-9][0-9]* passed, 0 failed') -SuccessSummary '三犬形态、交互权限与参与击杀回血专项通过' -TimeoutSeconds $TimeoutSeconds
+exit $LASTEXITCODE

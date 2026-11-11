@@ -1,0 +1,5 @@
+﻿import org.flashNight.neur.Server.test.*;
+stop();
+_root.storageProbeRunId = "__FOCUSED_RUN_ID__";
+trace("FocusedTestRunId dog-form-storage Start: __FOCUSED_RUN_ID__");
+org.flashNight.neur.Server.test.DogFormStorageProbeTest.runAllTests();

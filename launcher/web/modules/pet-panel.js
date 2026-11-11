@@ -66,6 +66,7 @@
         advance: true,
         expand_slot: true,
         rename: true,
+        change_dog_form: true,
         restore_stamina: true,
         equip_weapon: true,
         withdraw_weapon: true,
@@ -1083,6 +1084,8 @@
         var summary = combatSummary(pet);
         if (summary) _detailEl.appendChild(summary);
 
+        renderDogForms(pet, _detailEl);
+
         // 动作行：出战 · 休息切换 / 恢复体力 / 培养
         var actions = document.createElement('div');
         actions.className = 'team-detail-action-row';
@@ -1130,6 +1133,44 @@
         if (managedGun) quickBox.appendChild(managedGunDetailPill(managedGun, pet));
         renderQuickToggles(pet, quickBox, !!managedGun);
         _detailEl.appendChild(quickBox);
+    }
+
+    function renderDogForms(pet, container) {
+        if (!Array.isArray(pet.dogForms) || pet.dogForms.length !== 3) return;
+        var group = document.createElement('div');
+        group.className = 'team-dog-form-picker';
+        group.setAttribute('role', 'group');
+        group.setAttribute('aria-label', '犬种形态');
+        var note = document.createElement('p');
+        note.className = 'team-dog-form-note';
+        var currentDescription = '';
+        pet.dogForms.forEach(function(option) {
+            var selected = option.value === pet.dogForm;
+            if (selected) currentDescription = String(option.description || '');
+            var btn = button(String(option.label || '') + (selected ? ' · 当前' : ''), 'team-action-btn team-act-dog-form', null);
+            btn.setAttribute('aria-pressed', selected ? 'true' : 'false');
+            btn.setAttribute('data-dog-form', String(option.value));
+            var reason = pet.canChangeDogForm !== true ? '仅在基地整备时可以切换犬种' : '';
+            setActionBlocked(btn, reason);
+            btn.addEventListener('click', function() {
+                if (selected || guardBlocked(this) || guardMutation()) return;
+                beginOp(btn);
+                sendPanelMsg('change_dog_form', { slotIndex: pet.slotIndex, dogForm: option.value }, function(data) {
+                    if (finishMutationOp(btn, data)) return;
+                    if (data.success) {
+                        TeamShared.toast(data.refreshDeferred ? '犬种已保存，换场景后刷新' : '已切换为' + option.label, data.refreshDeferred ? 'warning' : 'success');
+                        requestSnapshot();
+                    } else {
+                        TeamShared.toast(data.error === 'cannot_change_form_here' ? '仅在基地整备时可以切换犬种' : '切换失败，请刷新后重试', 'error');
+                        requestSnapshot();
+                    }
+                });
+            });
+            group.appendChild(btn);
+        });
+        container.appendChild(group);
+        note.textContent = '基地免费切换 · 成长保留 · 切换不回血。' + currentDescription;
+        container.appendChild(note);
     }
 
     function renderCandidateDetail() {

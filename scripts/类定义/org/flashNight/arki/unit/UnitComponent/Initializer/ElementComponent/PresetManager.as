@@ -74,6 +74,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Preset
 
         // 隐藏资源点预设
         PresetManager.registerPreset("隐藏资源点", {
+            companionOpen: true,
             hitPoint: 1,
             maxFrame: 1,
             row: 0,

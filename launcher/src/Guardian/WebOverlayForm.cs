@@ -8917,6 +8917,7 @@ namespace CF7Launcher.Guardian
                 case "rename":
                 case "pet_tooltip":
                 case "weapon_tooltip":
+                case "change_dog_form":
                 case "restore_stamina":
                 case "level_up":
                 case "delete":

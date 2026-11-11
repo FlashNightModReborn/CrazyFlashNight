@@ -27,7 +27,10 @@ inherited=0;script_count=0;mouth_frames=0
 for variant in manifest['variants']:
     current=next(u for u in units if u['id']==variant['unitId'])
     assert {k:v for k,v in current.items() if k not in ('id','key','spritename','name')}=={k:v for k,v in base.items() if k not in ('id','key','spritename','name')}
-    assert props(newprops.find(variant['linkage']))==props(oldprops),'Dog stats differ'
+    expected_props=props(oldprops)
+    if variant['linkage']=='敌人-制式军警犬': expected_props['韧性系数']='3'
+    assert props(newprops.find(variant['linkage']))==expected_props,'Dog stats differ outside reviewed toughness=3 candidate'
+
     links=[row for row in source_map if row.get('id')==variant['linkage']]
     assert len(links)==1 and links[0].tag=='asset' and links[0].get('swf')=='flashswf/arts/new/Codex专用素材.swf'
     mapping=variant['mapping'];reverse={v:k for k,v in mapping.items()}
@@ -59,6 +62,6 @@ for variant in manifest['variants']:
     assert root.get('linkageExportForAS')=='true'
 result={'result':'PASS','variants':2,'nativeSymbols':len(manifest['outputs']),'inheritedTimelinesCompared':inherited,
         'inheritedScriptsCompared':script_count,'framesWithOralCavity':mouth_frames,'identityPieces':50,
-        'unitRegistrationExactZombieDogCopy':True,'enemyPropertiesExactZombieDogCopy':True,
+        'unitRegistrationExactZombieDogCopy':True,'enemyPropertiesReviewedCandidate':True,'militaryDogToughness':3,
         'originalSourceHashesUnchanged':True,'evidence':'static_native_source_and_registration_only'}
 print(json.dumps(result,ensure_ascii=False))

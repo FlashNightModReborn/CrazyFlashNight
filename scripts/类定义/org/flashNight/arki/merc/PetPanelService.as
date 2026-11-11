@@ -28,6 +28,7 @@ import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.merc.ManagedLongGunService;
+import org.flashNight.arki.merc.DogFormService;
 import org.flashNight.gesh.object.ObjectUtil;
 
 class org.flashNight.arki.merc.PetPanelService {
@@ -58,6 +59,9 @@ class org.flashNight.arki.merc.PetPanelService {
         };
         _root.gameCommands["petExpandSlot"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handleExpandSlot(params);
+        };
+        _root.gameCommands["petChangeDogForm"] = function(params) {
+            org.flashNight.arki.merc.PetPanelService.handleChangeDogForm(params);
         };
         _root.gameCommands["petRename"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handleRename(params);
@@ -124,7 +128,7 @@ class org.flashNight.arki.merc.PetPanelService {
                 name: _root.战宠UI函数 != undefined
                     && typeof _root.战宠UI函数.获取宠物显示名 == "function"
                     ? _root.战宠UI函数.获取宠物显示名(i) : String(petDef.Name),
-                identifier: String(petDef.Identifier),
+                identifier: DogFormService.identifier(info,String(petDef.Identifier)),
                 level: Number(info[1]),
                 stamina: Number(info[2]),
                 xp: 0,
@@ -157,13 +161,18 @@ class org.flashNight.arki.merc.PetPanelService {
                 petEntry.promotions = promos;
             }
 
+            if (DogFormService.isDogSlot(info)) {
+                petEntry.dogForm = DogFormService.form(info);
+                if (Number(params.dogFormVersion) == 1) petEntry.dogForms = DogFormService.options();
+                petEntry.canChangeDogForm = _root.当前为战斗地图 === false;
+            }
             petEntry.xp = xpFromAttr;
             petEntry.xpNeeded = xpNeededFromAttr > 0 ? xpNeededFromAttr : calcXpForLevel(String(petDef.Identifier), info[1]);
             petEntry.maxStamina = 200;
 
             // 战斗数值成长展示（敌人属性表插值 + 已达成进阶方案重放，三点采样：
             // 起点 Lv.1 / 当前 / 满级）；属性缺失时不下发，JS 隐藏区块
-            var combat:Object = buildCombatStats(String(petDef.Identifier), Number(info[1]), attrs);
+            var combat:Object = buildCombatStats(String(petEntry.identifier), Number(info[1]), attrs);
             if (combat != undefined) petEntry.combat = combat;
 
             // 每方案权威完成/锁定状态（替代 JS 端按方案名查 次数 的错误推断；
@@ -809,6 +818,14 @@ class org.flashNight.arki.merc.PetPanelService {
     // ═══════════════════════════════════════════════════════════
     // handleRename — 重命名宠物
     // ═══════════════════════════════════════════════════════════
+    public static function handleChangeDogForm(params:Object):Void {
+        var result:Object = DogFormService.change(Number(params.slotIndex),String(params.dogForm));
+        if (result.success === true) refreshPetIconsSafely("dog_form");
+        result.task = "pet_response";
+        result.callId = params.callId;
+        sendResponse(result);
+    }
+
     public static function handleRename(params:Object):Void {
         var callId = params.callId;
         var slotIndex:Number = Number(params.slotIndex);

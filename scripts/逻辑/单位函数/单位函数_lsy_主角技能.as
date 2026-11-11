@@ -240,7 +240,8 @@ _root.技能函数.攻击时可改变移动方向 = function(速度){
 }
 
 _root.技能函数.攻击时可斜向改变移动方向 = function(速度){
-	var parent:MovieClip = _parent;
+	// 方法接收者是动作容器，显式取其单位，避免定义时间轴的裸 _parent 作用域。
+	var parent:MovieClip = this._parent;
 
 	if(parent._name != _root.控制目标){
 		Mover.move2D(parent, parent.方向, 速度);
@@ -1898,4 +1899,12 @@ _root.技能函数.王之财宝算威力 = function(面板:Number, 类型:String
 	else if (类型 == "刀")  对应加成 = ((冷兵 ? 冷兵 : 0) + (空手 ? 空手 : 0) * 0.2) * 配.刀加成倍率;
 	else                    对应加成 = (枪械 ? 枪械 : 0) * 配.枪械加成倍率;
 	return (面板 * 配.面板倍率 + 对应加成) * 整体倍率 * (0.5 + (等级 ? 等级 : 1) * 配.等级系数);
+};
+
+// 资源时间轴只调用注入门面，避免独立 SWF 重复携带路由 class。
+_root.技能函数.位移技能起手 = function(man, sideLabel, forwardLabel) {
+    org.flashNight.arki.unit.UnitComponent.Routing.MovementSkillDirection.begin(man, sideLabel, forwardLabel);
+};
+_root.技能函数.位移技能移动 = function(man, distance) {
+    org.flashNight.arki.unit.UnitComponent.Routing.MovementSkillDirection.move(man, distance);
 };

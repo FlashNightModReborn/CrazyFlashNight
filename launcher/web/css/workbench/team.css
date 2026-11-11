@@ -3344,3 +3344,8 @@
     font-size: 10px;
     line-height: 1.35;
 }
+
+/* 犬种选择沿用详情区正常流、动作按钮和既有焦点样式。 */
+.team-dog-form-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+.team-dog-form-picker [aria-pressed="true"] { border-color: var(--wb-accent); color: var(--wb-accent); }
+.team-dog-form-note { margin: 8px 0 12px; font-size: 13px; line-height: 1.6; color: var(--wb-muted); }

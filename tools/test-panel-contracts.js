@@ -189,7 +189,7 @@ function run() {
     const mutationNames = Array.from(mutationBlock.matchAll(/^\s*([a-z_]+): true,?$/gm))
       .map(function (match) { return match[1]; }).sort();
     assert(JSON.stringify(mutationNames) === JSON.stringify([
-      "adopt", "advance", "delete", "deploy", "equip_weapon", "expand_slot",
+      "adopt", "advance", "change_dog_form", "delete", "deploy", "equip_weapon", "expand_slot",
       "level_up", "rename", "restore_stamina", "withdraw_weapon", "world_adopt"
     ]), "pet reconcile guard must cover the exact production mutation set");
 

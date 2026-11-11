@@ -24,6 +24,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEvent
         // === 宏展开：实例状态标志位 ===
         #include "../macros/STATE_REVERSE_KNOCKBACK.as"
 
+        // 受保护箱不进入犬类破坏链；明示的不可破坏/小游戏锁也拒绝未知来源伤害。
+        if (target.breakAccess == "none" || target.unlockMode == "minigame"
+                || (org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.kind(shooter) != ""
+                    && org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.protectedFromDog(target))) return;
         target.hitPoint--;
 
 

@@ -77,6 +77,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
         if (!DamageResult.hasActualHit(damageResult)) return false;
 
         var behavior:Object = bullet.hitBehavior;
+        if (behavior.type == "zombieDogAssist")
+            return org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.mark(target,shooter,behavior);
         if (behavior.type == "titaniumFireControl") return FireControlVulnerability.applyToTarget(target, behavior);
         if (behavior.type == "cf6ElderBeam") return ElderBeamVulnerability.applyToTarget(target, behavior);
         if (!isSupported(behavior)) return false;

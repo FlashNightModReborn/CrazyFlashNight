@@ -52,8 +52,9 @@ function Invoke-FlashProbe([string]$phase,[string]$nonce,[bool]$guarded) {
     $process = $null
     try {
         if($guarded){
-            $constructor = $managerType.GetConstructor([type[]]@([string],[string]))
-            $manager = $constructor.Invoke([object[]]@([string]$flashExe,[string]$probeSwf))
+            $constructor = $managerType.GetConstructor([type[]]@([string],[string],[Action[Diagnostics.ProcessStartInfo]]))
+            if(!$constructor){throw "Production ProcessManager constructor signature does not match the probe"}
+            $manager = $constructor.Invoke([object[]]@([string]$flashExe,[string]$probeSwf,$null))
             if(!$manager.Start()){throw 'Production ProcessManager failed to prepare/start probe'}
             $process = $manager.FlashProcess
         }else{

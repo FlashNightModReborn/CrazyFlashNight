@@ -466,7 +466,7 @@ _root.敌人函数.击飞倒地 = function() {
 _root.敌人函数.尝试拾取 = function() {
     var 拾取对象 = _root.gameworld[this.拾取目标];
     this.拾取目标 = "无";
-    if (!拾取对象.area) {
+    if (!拾取对象.area || 拾取对象.__pickupClaimed === true) {
         return;
     }
     // 战场即时补给只对玩家本人生效：敌人不吞掉（不令实体消失），同伴也不代领。
@@ -480,6 +480,7 @@ _root.敌人函数.尝试拾取 = function() {
             _root.pickupItemManager.pickup(拾取对象, this, false);
         }
     } else {
+        拾取对象.__pickupClaimed = true;
         拾取对象.gotoAndPlay("消失");
     }
 }

@@ -252,7 +252,7 @@ _root.战宠UI函数.获取宠物显示名 = function(id:Number):String{
 	if(!info || info.length < 1) return "";
 	var def = _root.宠物库[info[0]];
 	if(!def) return "";
-	var baseName:String = String(def.Name);
+	var baseName:String = org.flashNight.arki.merc.DogFormService.name(info,String(def.Name));
 	var attrs:Object = info.length >= 6 && typeof info[5] == "object" ? info[5] : null;
 	if(!attrs || attrs.customName == undefined) return baseName;
 	var customName:String = String(attrs.customName);
@@ -293,7 +293,7 @@ _root.战宠UI函数.创建宠物单位 = function(id:Number, 地点X:Number, �
 
 	var 宠物数据 = _root.宠物库[当前宠物信息[0]];
 	if(!宠物数据) return null;
-	var 宠物兵种 = 宠物数据.Identifier;
+	var 宠物兵种 = org.flashNight.arki.merc.DogFormService.identifier(当前宠物信息,String(宠物数据.Identifier));
 	var 宠物等级 = 当前宠物信息[1];
 	var 宠物名字 = _root.战宠UI函数.获取宠物显示名(id);
 	var 宠物身高 = 宠物数据.Height;

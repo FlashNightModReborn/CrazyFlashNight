@@ -14,7 +14,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.UnitAIInitializer {
                 target.unitAI = new BaseUnitAI(target, "Hero");
             }else if(target.佣兵数据 != null){
                 target.unitAI = new BaseUnitAI(target, "Mecenary");
-            }else if(target.允许拾取 === true){
+            }else if(target.允许拾取 === true || target.__dogForm != undefined){
                 target.unitAI = new BaseUnitAI(target, "PickupEnemy");
             }else{
                 target.unitAI = new BaseUnitAI(target, "Enemy");

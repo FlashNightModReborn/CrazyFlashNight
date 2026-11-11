@@ -96,36 +96,12 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent.攻击时移动(-20 * (1 + 1 / 10),-20 * (1 + 1 / 10));
+                    <script><![CDATA[onClipEvent (enterFrame) {
+    _root.技能函数.位移技能移动(_parent, -20 * (1 + 1 / 10));
 }
-onClipEvent(load){
-   if(Key.isDown(_parent._parent.上键))
-   {
-      _parent.上下跳移动方向 = "上";
-      _parent.gotoAndPlay("战技上下跳");
-   }
-   else if(Key.isDown(_parent._parent.下键))
-   {
-      _parent.上下跳移动方向 = "下";
-      _parent.gotoAndPlay("战技上下跳");
-   }
-   if(_parent._parent.方向 == "右")
-   {
-      if(Key.isDown(_parent._parent.右键) == true)
-      {
-         _parent.gotoAndPlay("战技前跳");
-      }
-   }
-   else if(_parent._parent.方向 == "左")
-   {
-      if(Key.isDown(_parent._parent.左键) == true)
-      {
-         _parent.gotoAndPlay("战技前跳");
-      }
-   }
-}
-]]></script>
+onClipEvent (load) {
+    _root.技能函数.位移技能起手(_parent, "战技上下跳", "战技前跳");
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -143,18 +119,9 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-	if(!_parent.上下跳移动方向){
-		if(random(2)==0){
-			_parent.上下跳移动方向 = "上";
-		}else{
-			_parent.上下跳移动方向 = "下";
-		}
-	}
-   _parent._parent.移动(_parent.上下跳移动方向,10 * (1 + 1 / 10));
-   _parent.攻击时移动(0,10 * (1 + 1 / 10));
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+    _root.技能函数.位移技能移动(_parent, 10 * (1 + 1 / 10));
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -172,10 +139,9 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent.攻击时移动(20 * (1 + 1 / 10),20 * (1 + 1 / 10));
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+    _root.技能函数.位移技能移动(_parent, 20 * (1 + 1 / 10));
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

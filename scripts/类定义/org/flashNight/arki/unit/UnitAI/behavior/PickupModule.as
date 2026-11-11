@@ -47,7 +47,14 @@ class org.flashNight.arki.unit.UnitAI.behavior.PickupModule extends FSM_StateMac
             } else if (data.diff_x > 0) {
                 self.方向改变("右");
             }
-            self.状态改变("拾取");
+            if (self.__dogForm != undefined) {
+                org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.pickupAtTarget(self,data.target);
+                self.拾取目标 = "无";
+                self.状态改变(self.攻击模式 + "站立");
+                this.superMachine.ChangeState("Selector");
+            } else {
+                self.状态改变("拾取");
+            }
         } else {
             var sm = this.superMachine;
             if ((sm.getActionCount() & 1) == 0) {

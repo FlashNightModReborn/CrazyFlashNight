@@ -57,6 +57,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         // 主角模板此时行走X速度还不存在，会直接return，由DressupInitializer后触发
         SpeedDeriveInitializer.initialize(target);
 
+        org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.configure(target);
+        if (target.__dogForm != undefined)
+            target.尝试拾取 = _root.敌人函数.尝试拾取;
         ComponentInitializer.initialize(target);
         // BuffManager 需要在模板重初始化前先清空，否则换装/重刷可能遗留旧 Buff
         BuffManagerInitializer.reset(target);
