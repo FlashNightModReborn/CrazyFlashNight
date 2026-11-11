@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dialogue-portraits-v2",
-  "generatedAt": "2026-10-19T10:45:36.451744+00:00",
+  "generatedAt": "2026-11-11T09:35:11.819044+00:00",
   "zoom": 2,
   "baseSize": {
     "width": 2048,
@@ -3558,6 +3558,705 @@
         "sourcePath": "flashswf/portraits/前治安官.swf",
         "sourceSha256": "2b929fdd4a6717cf7e97204fa8ddd05cf31b657dfccac2ffa1c6caab9cd89984"
       }
+    },
+    "Arius型": {
+      "key": "Arius型",
+      "aliases": [
+        "arius型",
+        "ARIUS型"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Arius型.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_c250e3014f6e/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "de5d86cadc8e8c553d89e3b03dfedf9f58f8aa17daa0e52536aa193af8bae1fc",
+          "bytes": 172380,
+          "format": "webp",
+          "bounds": {
+            "x": 154,
+            "y": 230,
+            "width": 511,
+            "height": 570
+          }
+        },
+        "二号": {
+          "uri": "external/p_c250e3014f6e/e_eddb89510512.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 10,
+          "sha256": "de1603412c7dfdaf0a2dfe06f3298a1a671acc0058407e0a69ca11b3c0c479ec",
+          "bytes": 242826,
+          "format": "webp",
+          "bounds": {
+            "x": 204,
+            "y": 228,
+            "width": 896,
+            "height": 572
+          }
+        },
+        "三号": {
+          "uri": "external/p_c250e3014f6e/e_cee8014bc373.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 20,
+          "sha256": "146eea92f0396c88117e0204ebafeeec35d30b7f5e8c507862cf5e0dd8fe3ddb",
+          "bytes": 161410,
+          "format": "webp",
+          "bounds": {
+            "x": 276,
+            "y": 236,
+            "width": 526,
+            "height": 564
+          }
+        },
+        "四号": {
+          "uri": "external/p_c250e3014f6e/e_2aa1d1c76e55.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 31,
+          "sha256": "7c8f4f6dbda8beb11345058b70c0c831f3bf093b57bd43fdcbe980bc0ea73784",
+          "bytes": 226876,
+          "format": "webp",
+          "bounds": {
+            "x": 218,
+            "y": 230,
+            "width": 859,
+            "height": 570
+          }
+        }
+      }
+    },
+    "Badman": {
+      "key": "Badman",
+      "aliases": [
+        "badman",
+        "BADMAN"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Badman.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_52604d9731e8/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "5f688e19312b6546f65ca792f9ef9e11118b40dc332aa5af8389cef50613a415",
+          "bytes": 87444,
+          "format": "webp",
+          "bounds": {
+            "x": 293,
+            "y": 199,
+            "width": 541,
+            "height": 601
+          }
+        }
+      }
+    },
+    "Lab Guard": {
+      "key": "Lab Guard",
+      "aliases": [
+        "lab guard",
+        "LAB GUARD",
+        "LabGuard",
+        "labguard"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Lab Guard.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_bf2e382c40c4/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "99fd4634d41275cde174f4706a474cd316f0febc92400ff270602ec6d06504d3",
+          "bytes": 67756,
+          "format": "webp",
+          "bounds": {
+            "x": 289,
+            "y": 202,
+            "width": 469,
+            "height": 598
+          }
+        }
+      }
+    },
+    "Scout": {
+      "key": "Scout",
+      "aliases": [
+        "scout",
+        "SCOUT"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Scout.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_56be36a0f890/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "09b78f0843a4433f492681d60e8772b118389aa89afbc70794ebadf98faaa6f8",
+          "bytes": 79334,
+          "format": "webp",
+          "bounds": {
+            "x": 217,
+            "y": 204,
+            "width": 613,
+            "height": 596
+          }
+        }
+      }
+    },
+    "The Boss": {
+      "key": "The Boss",
+      "aliases": [
+        "the boss",
+        "THE BOSS",
+        "TheBoss",
+        "theboss"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/The Boss.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_917920c6ec4e/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "625700e03a01af0084529d9505e7ff09dd8376ba8c9bbaf0cfe3c8b2e3566130",
+          "bytes": 117446,
+          "format": "webp",
+          "bounds": {
+            "x": 217,
+            "y": 194,
+            "width": 553,
+            "height": 606
+          }
+        }
+      }
+    },
+    "The Hanged Man": {
+      "key": "The Hanged Man",
+      "aliases": [
+        "the hanged man",
+        "THE HANGED MAN",
+        "TheHangedMan",
+        "thehangedman"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/The Hanged Man.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_6a3a69a3b6ed/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "64bb82cd53da6f5f8d103fdf316c6e6548495e50c4b173d605f9a57d6e720c6d",
+          "bytes": 69596,
+          "format": "webp",
+          "bounds": {
+            "x": 344,
+            "y": 144,
+            "width": 434,
+            "height": 656
+          }
+        }
+      }
+    },
+    "The Robot Girl": {
+      "key": "The Robot Girl",
+      "aliases": [
+        "the robot girl",
+        "THE ROBOT GIRL",
+        "TheRobotGirl",
+        "therobotgirl"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/The Robot Girl.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_64075840c14b/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "459b3fdb82300130a6f71fc77ea6833340a105c082b7469ecdf7169682ff89c9",
+          "bytes": 117424,
+          "format": "webp",
+          "bounds": {
+            "x": 371,
+            "y": 194,
+            "width": 323,
+            "height": 606
+          }
+        },
+        "卸装": {
+          "uri": "external/p_64075840c14b/e_dfd66c5758b9.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 10,
+          "sha256": "e7af47c897649ccc6ca631817d024bd77cfd0866a12f206a4c49a1a4d8e4814f",
+          "bytes": 100798,
+          "format": "webp",
+          "bounds": {
+            "x": 371,
+            "y": 240,
+            "width": 316,
+            "height": 560
+          }
+        }
+      }
+    },
+    "The Scientist": {
+      "key": "The Scientist",
+      "aliases": [
+        "the scientist",
+        "THE SCIENTIST",
+        "TheScientist",
+        "thescientist"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/The Scientist.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_1c36e3499322/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "fa9942527d948a8a08b77e38581c69731ef6258fccb8eb02d62fcd402c95d0af",
+          "bytes": 106048,
+          "format": "webp",
+          "bounds": {
+            "x": 292,
+            "y": 225,
+            "width": 390,
+            "height": 575
+          }
+        }
+      }
+    },
+    "The Serpent": {
+      "key": "The Serpent",
+      "aliases": [
+        "the serpent",
+        "THE SERPENT",
+        "TheSerpent",
+        "theserpent"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/The Serpent.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_641eb937ad1b/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "79d61078a6323b0ad09948d313e9920c843cb0aa377c12d8b9922b1168463576",
+          "bytes": 93884,
+          "format": "webp",
+          "bounds": {
+            "x": 137,
+            "y": 109,
+            "width": 686,
+            "height": 691
+          }
+        }
+      }
+    },
+    "The Servent": {
+      "key": "The Servent",
+      "aliases": [
+        "the servent",
+        "THE SERVENT",
+        "TheServent",
+        "theservent"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/The Servent.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_3f319149f018/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "720221ce6e5e5909dbd180fb8f56bfed0d306067a84fa8b9a46417a715610005",
+          "bytes": 100510,
+          "format": "webp",
+          "bounds": {
+            "x": 371,
+            "y": 222,
+            "width": 396,
+            "height": 578
+          }
+        }
+      }
+    },
+    "The Steel": {
+      "key": "The Steel",
+      "aliases": [
+        "the steel",
+        "THE STEEL",
+        "TheSteel",
+        "thesteel"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/The Steel.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_9e0df004faf8/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "7121a5b69d190df3ea79b11876f2b9f04a6b02d987b6c4b2d60b60e5a3030b01",
+          "bytes": 94756,
+          "format": "webp",
+          "bounds": {
+            "x": 157,
+            "y": 215,
+            "width": 943,
+            "height": 585
+          }
+        }
+      }
+    },
+    "The Worker": {
+      "key": "The Worker",
+      "aliases": [
+        "the worker",
+        "THE WORKER",
+        "TheWorker",
+        "theworker"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/The Worker.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_d3ca06df3d7f/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "152061836fdebcd9568fcae5244e10a6316c6fa2f8ac94606c1a1eaace5f19ae",
+          "bytes": 130434,
+          "format": "webp",
+          "bounds": {
+            "x": 158,
+            "y": 145,
+            "width": 552,
+            "height": 655
+          }
+        }
+      }
+    },
+    "侦察队队长": {
+      "key": "侦察队队长",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/侦察队队长.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_7bbca26442e1/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "a922c0d0e3195806eb079dc8786b6724f5aa44f59e3c82d0625016c744a6b489",
+          "bytes": 60976,
+          "format": "webp",
+          "bounds": {
+            "x": 225,
+            "y": 231,
+            "width": 463,
+            "height": 569
+          }
+        }
+      }
+    },
+    "前台": {
+      "key": "前台",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/前台.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_89408f6d5a95/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "314bd4243fe0b64354f4a0a9cfa6ec087e36adb0e9d24d790c21e6da9993881b",
+          "bytes": 94908,
+          "format": "webp",
+          "bounds": {
+            "x": 340,
+            "y": 213,
+            "width": 352,
+            "height": 587
+          }
+        }
+      }
+    },
+    "叉仔": {
+      "key": "叉仔",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/叉仔.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_8d8c8dbee410/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "41353bc9f095baab21489028cacca1a944c9d2f3e72cc6dbe1b0bf67034831a7",
+          "bytes": 153630,
+          "format": "webp",
+          "bounds": {
+            "x": 0,
+            "y": 153,
+            "width": 1100,
+            "height": 647
+          }
+        }
+      }
+    },
+    "四脚蛇": {
+      "key": "四脚蛇",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/四脚蛇.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_3f7973c60c59/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "956ff5c37972cafdbf84f8204ec8c02cd052f361e8e0a7c5c0c99a5f56dd05ff",
+          "bytes": 90080,
+          "format": "webp",
+          "bounds": {
+            "x": 0,
+            "y": 389,
+            "width": 868,
+            "height": 411
+          }
+        },
+        "反向": {
+          "uri": "external/p_3f7973c60c59/e_d036db74e2f8.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 10,
+          "sha256": "51158ae86627cec3b6c497f74c56aa4914e1ee677147bd48751de7a456970364",
+          "bytes": 95016,
+          "format": "webp",
+          "bounds": {
+            "x": 122,
+            "y": 389,
+            "width": 978,
+            "height": 411
+          }
+        }
+      }
+    },
+    "弹古": {
+      "key": "弹古",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/弹古.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_25bb690eea49/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "edc4414c7497541be1a90dc07e9e66a757c9b4efdd5a698fb3de2b0f0f79c1fe",
+          "bytes": 73894,
+          "format": "webp",
+          "bounds": {
+            "x": 0,
+            "y": 428,
+            "width": 932,
+            "height": 372
+          }
+        }
+      }
+    },
+    "排骨": {
+      "key": "排骨",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/排骨.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_5c300ef07589/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "2a876cba339cf6da81656449579c361af6552ab921287d8afa7980753d87967a",
+          "bytes": 135188,
+          "format": "webp",
+          "bounds": {
+            "x": 234,
+            "y": 253,
+            "width": 504,
+            "height": 547
+          }
+        },
+        "武装": {
+          "uri": "external/p_5c300ef07589/e_d6a275b81e78.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 10,
+          "sha256": "df01589427fabd5930998cd3eb1ec781c14b7917a9dc3af0492129da7c087fe0",
+          "bytes": 161674,
+          "format": "webp",
+          "bounds": {
+            "x": 132,
+            "y": 253,
+            "width": 624,
+            "height": 547
+          }
+        },
+        "咆哮": {
+          "uri": "external/p_5c300ef07589/e_7e7266d7e5be.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 20,
+          "sha256": "f455e9df67cf2514245e07756b071afd773a67cc243f03d2f753c2e8ee7c9730",
+          "bytes": 163982,
+          "format": "webp",
+          "bounds": {
+            "x": 177,
+            "y": 245,
+            "width": 573,
+            "height": 555
+          }
+        },
+        "战斗咆哮": {
+          "uri": "external/p_5c300ef07589/e_197374180a7f.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 31,
+          "sha256": "db50f03f681e77d857b0fa2c3addc96ecbd8d9910040577acc7c5017b4c6ee9a",
+          "bytes": 184136,
+          "format": "webp",
+          "bounds": {
+            "x": 177,
+            "y": 245,
+            "width": 639,
+            "height": 555
+          }
+        }
+      }
+    },
+    "机哥": {
+      "key": "机哥",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/机哥.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_c2f6e1484f3b/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "e221326d11299a73c4610954c0de8b9c82bbeb2646245490a41fb8a22b4b7967",
+          "bytes": 58944,
+          "format": "webp",
+          "bounds": {
+            "x": 166,
+            "y": 424,
+            "width": 719,
+            "height": 376
+          }
+        }
+      }
+    },
+    "阿波": {
+      "key": "阿波",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/阿波.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_33f26a4884ef/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 1,
+          "sha256": "814e99419ee41e6dfd1690b07d656b12e8afc1c9fbd2e649534bc0dda0ca899e",
+          "bytes": 152578,
+          "format": "webp",
+          "bounds": {
+            "x": 212,
+            "y": 246,
+            "width": 563,
+            "height": 554
+          }
+        },
+        "武装": {
+          "uri": "external/p_33f26a4884ef/e_d6a275b81e78.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 10,
+          "sha256": "383fba0a0ce7665137ccffa05ad68ec67fdf5543759c465bf39f7b9c83c3e934",
+          "bytes": 186200,
+          "format": "webp",
+          "bounds": {
+            "x": 172,
+            "y": 246,
+            "width": 674,
+            "height": 554
+          }
+        },
+        "咆哮": {
+          "uri": "external/p_33f26a4884ef/e_7e7266d7e5be.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 20,
+          "sha256": "0d0388c038dfdacc84acab97b051c69c0b4007d517395f4433f04bdcf71882a8",
+          "bytes": 166478,
+          "format": "webp",
+          "bounds": {
+            "x": 160,
+            "y": 239,
+            "width": 604,
+            "height": 561
+          }
+        },
+        "战斗咆哮": {
+          "uri": "external/p_33f26a4884ef/e_197374180a7f.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 31,
+          "sha256": "a386e386ba5a653e771cac44ff5cc95153c5aaa6c5f58b67febad47ad4ee0bfe",
+          "bytes": 203564,
+          "format": "webp",
+          "bounds": {
+            "x": 133,
+            "y": 233,
+            "width": 774,
+            "height": 567
+          }
+        }
+      }
     }
   },
   "aliases": {
@@ -3617,7 +4316,49 @@
     "prophet": "PROPHET",
     "prophet2": "PROPHET2",
     "black-l": "BLACK-L",
-    "pd421": "PD421"
+    "pd421": "PD421",
+    "arius型": "Arius型",
+    "ARIUS型": "Arius型",
+    "badman": "Badman",
+    "BADMAN": "Badman",
+    "lab guard": "Lab Guard",
+    "LAB GUARD": "Lab Guard",
+    "LabGuard": "Lab Guard",
+    "labguard": "Lab Guard",
+    "scout": "Scout",
+    "SCOUT": "Scout",
+    "the boss": "The Boss",
+    "THE BOSS": "The Boss",
+    "TheBoss": "The Boss",
+    "theboss": "The Boss",
+    "the hanged man": "The Hanged Man",
+    "THE HANGED MAN": "The Hanged Man",
+    "TheHangedMan": "The Hanged Man",
+    "thehangedman": "The Hanged Man",
+    "the robot girl": "The Robot Girl",
+    "THE ROBOT GIRL": "The Robot Girl",
+    "TheRobotGirl": "The Robot Girl",
+    "therobotgirl": "The Robot Girl",
+    "the scientist": "The Scientist",
+    "THE SCIENTIST": "The Scientist",
+    "TheScientist": "The Scientist",
+    "thescientist": "The Scientist",
+    "the serpent": "The Serpent",
+    "THE SERPENT": "The Serpent",
+    "TheSerpent": "The Serpent",
+    "theserpent": "The Serpent",
+    "the servent": "The Servent",
+    "THE SERVENT": "The Servent",
+    "TheServent": "The Servent",
+    "theservent": "The Servent",
+    "the steel": "The Steel",
+    "THE STEEL": "The Steel",
+    "TheSteel": "The Steel",
+    "thesteel": "The Steel",
+    "the worker": "The Worker",
+    "THE WORKER": "The Worker",
+    "TheWorker": "The Worker",
+    "theworker": "The Worker"
   },
   "generatorInputs": [
     {
@@ -3638,21 +4379,21 @@
     },
     {
       "path": "tools/dialogue_portrait_postprocess.py",
-      "sha256": "a00205bceb068ead1483f8f91cef87feea9ab8fe8221cd21a1df6de6eec05813"
+      "sha256": "5ef751e18a606e8e4c9c8d21d5fdcabc6d3f6bde00552c4327d15d31e34d745f"
     },
     {
       "path": "flashswf/portraits/postprocess.json",
-      "sha256": "1ec639b70309dd5df8a5a81ebe24e58ea68a03465edd2a15d92583cf44c66294"
+      "sha256": "63d83fab92dbd5bdef67f6a1f081215291f07f9ab5ca72920530c51d89db8440"
     }
   ],
   "postprocessInputs": [
     {
       "path": "tools/dialogue_portrait_postprocess.py",
-      "sha256": "a00205bceb068ead1483f8f91cef87feea9ab8fe8221cd21a1df6de6eec05813"
+      "sha256": "5ef751e18a606e8e4c9c8d21d5fdcabc6d3f6bde00552c4327d15d31e34d745f"
     },
     {
       "path": "flashswf/portraits/postprocess.json",
-      "sha256": "1ec639b70309dd5df8a5a81ebe24e58ea68a03465edd2a15d92583cf44c66294"
+      "sha256": "63d83fab92dbd5bdef67f6a1f081215291f07f9ab5ca72920530c51d89db8440"
     }
   ]
 }

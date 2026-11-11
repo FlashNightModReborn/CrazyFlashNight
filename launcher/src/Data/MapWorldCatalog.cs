@@ -55,10 +55,10 @@ namespace CF7Launcher.Data
                         MapRuleEvaluator.Need(anchors.Any(anchor => mainLinks.Imports.Any(i => NormalizeImport(root, MainSwf, i.Url) == swf && i.Name == Attribute(anchor.Document.Root, "linkageIdentifier")) &&
                             published.Exports.TryGetValue(Attribute(anchor.Document.Root, "linkageIdentifier"), out var exports) && exports.Count == 1), "主文件未闭合加载该场景素材库。");
                         var reachable = source.Reachable(symbol.Document).Prepend(symbol).GroupBy(s => s.Name, StringComparer.Ordinal).Select(g => g.First()).ToArray();
-                        string digest = MapDefinition.Hash(MapDefinition.Utf8.GetBytes(mainLinks.Digest + "\n" + published.Digest + "\n" + source.DocumentDigest + "\n" +
-                            string.Join("\n", reachable.OrderBy(s => s.Name, StringComparer.Ordinal).Select(s => s.Name + " " + s.Digest))));
+                        // 逻辑摘要只锚定场景链接与根元件身份，不再混入主 SWF 整包哈希或美术图形元件字节。
+                        string digest = MapDefinition.Hash(MapDefinition.Utf8.GetBytes(scene + "\n" + linkage + "\n" + swf + "\n" + symbol.Name));
                         record["sourceDigest"] = digest; record["swfSha256"] = published.Digest; record["ready"] = true; record["reason"] = "源 Include、场景导出与主文件加载闭包均已核对";
-                        result.FindOccurrences(scene, swf, published.Digest, source, symbol.Name, reachable, digest);
+                        result.FindOccurrences(scene, swf, published.Digest, source, symbol.Name, reachable);
                     }
                     catch (Exception ex) { record["reason"] = ex.Message; }
                 }
@@ -81,7 +81,7 @@ namespace CF7Launcher.Data
             return relative.StartsWith("../", StringComparison.Ordinal) ? "" : relative;
         }
 
-        private void FindOccurrences(string scene, string swf, string swfDigest, MapFlashSource source, string rootSymbol, MapFlashSource.Symbol[] reachable, string sceneDigest)
+        private void FindOccurrences(string scene, string swf, string swfDigest, MapFlashSource source, string rootSymbol, MapFlashSource.Symbol[] reachable)
         {
             var counts = reachable.ToDictionary(s => s.Name, _ => 0, StringComparer.Ordinal); counts[rootSymbol] = 1;
             // 只需区分唯一/重复；重复父实例的歧义沿可达图传播，不把同一子元件去重成一个真实人物。
@@ -118,7 +118,7 @@ namespace CF7Launcher.Data
                         ["runtimeName"] = runtimeName, ["taskName"] = taskName, ["dialogueName"] = info["对话名"] ?? runtimeName,
                         ["shopName"] = info["商店检索名"] ?? runtimeName, ["skillName"] = info["技能检索名"] ?? runtimeName,
                         ["scriptDigest"] = MapDefinition.Hash(MapDefinition.Utf8.GetBytes(script)),
-                        ["sourceDigest"] = MapDefinition.Hash(MapDefinition.Utf8.GetBytes(sceneDigest + "\n" + identity + "\n" + script)),
+                        ["sourceDigest"] = MapDefinition.Hash(MapDefinition.Utf8.GetBytes(identity + "\n" + script)),
                         ["ready"] = ready, ["reason"] = ready ? "标准初始化与唯一字面量人物身份已识别；剧情条件由工作台显式配置" : repeated ? "人物所在父元件被重复实例化，需先区分真实实例" : (string)info["reason"],
                         ["legacyScript"] = script.Length <= 4096 ? script : script.Substring(0, 4096) + "…" };
                 }
@@ -137,12 +137,25 @@ namespace CF7Launcher.Data
             {
                 if (p.Value["worldBinding"] is not JObject binding) continue;
                 string id = (string)binding["occurrenceId"]; var occurrence = Occurrences[id] as JObject;
-                MapRuleEvaluator.Need(occurrence?.Value<bool>("ready") == true && (string)occurrence["sourceDigest"] == (string)binding["sourceDigest"], "驻点“" + (string)p.Value["label"] + "”的真实 NPC 来源缺失、变化或仍有歧义。");
+                MapRuleEvaluator.Need(occurrence?.Value<bool>("ready") == true, "驻点“" + (string)p.Value["label"] + "”的真实 NPC 来源缺失或仍有歧义。");
                 MapRuleEvaluator.Need(seen.Add(id), "同一真实 NPC 实例不能被多个驻点同时管理。");
                 var location = definition["locations"][(string)p.Value["locationId"]]; var npc = definition["npcs"][(string)p.Value["npcId"]];
                 MapRuleEvaluator.Need((string)occurrence["sceneKey"] == (string)location["sceneName"], "所选真实 NPC 不在该驻点绑定的场景。");
-                MapRuleEvaluator.Need(((JArray)npc["runtimeNames"]).Concat((JArray)npc["aliases"]).Any(n => (string)n == (string)occurrence["taskName"]), "真实 NPC 的任务检索名不属于所选人物；显示名称不能代替身份绑定。");
+                MapRuleEvaluator.Need(((JArray)npc["runtimeNames"]).Concat((JArray)npc["aliases"]).Any(n => string.Equals((string)n, (string)occurrence["taskName"], StringComparison.OrdinalIgnoreCase)), "真实 NPC 的任务检索名不属于所选人物；显示名称不能代替身份绑定。");
             }
+        }
+        public bool HasSceneNpc(JObject definition, JObject placement)
+        {
+            string sceneName = (string)definition["locations"]?[(string)placement["locationId"]]?["sceneName"] ?? "";
+            var npc = definition["npcs"]?[(string)placement["npcId"]] as JObject;
+            if (sceneName == "" || npc == null) return false;
+            var names = ((JArray)npc["runtimeNames"]).Concat((JArray)npc["aliases"]);
+            return Occurrences.Properties().Any(o =>
+                (string)o.Value?["sceneKey"] == sceneName &&
+                names.Any(n =>
+                    string.Equals((string)n, (string)o.Value?["taskName"], StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals((string)n, (string)o.Value?["runtimeName"], StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals((string)n, (string)o.Value?["dialogueName"], StringComparison.OrdinalIgnoreCase)));
         }
         public void EnrichBindings(JObject definition)
         {
@@ -156,8 +169,16 @@ namespace CF7Launcher.Data
             ValidateDefinition(definition);
             foreach (var p in ((JObject)definition["placements"]).Properties())
             {
-                if (p.Value["worldBinding"] is not JObject binding) continue;
+                var placement = (JObject)p.Value;
+                if (placement["worldBinding"] is not JObject binding)
+                {
+                    if (HasSceneNpc(definition, placement)) placement["legacyWorldAdapter"] = true;
+                    else placement.Remove("legacyWorldAdapter");
+                    continue;
+                }
+                placement.Remove("legacyWorldAdapter");
                 var occurrence = Occurrences[(string)binding["occurrenceId"]];
+                binding["sourceDigest"] = occurrence["sourceDigest"].DeepClone();
                 var runtime = new JObject();
                 foreach (string key in new[] { "sourceSwf", "swfSha256", "sceneKey", "runtimeName", "taskName", "instanceName" }) runtime[key] = occurrence[key].DeepClone();
                 binding["runtime"] = runtime;

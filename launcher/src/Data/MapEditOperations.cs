@@ -79,11 +79,11 @@ namespace CF7Launcher.Data
                     }
                     else
                     {
-                        bool identityChanged = values.Properties().Any(p => p.Name != "label" && !JToken.DeepEquals(item[p.Name], p.Value));
+                        bool bindingTargetChanged = (kind == "placement" && values.Properties().Any(p => (p.Name == "npcId" || p.Name == "locationId") && !JToken.DeepEquals(item[p.Name], p.Value))) ||
+                            (kind == "npc" && values.Properties().Any(p => (p.Name == "runtimeNames" || p.Name == "aliases") && !JToken.DeepEquals(item[p.Name], p.Value)));
                         Patch(kind, item, values);
-                        // 迁移保留的旧世界适配不能被编辑继承成“新驻点已接入”的假证明。
-                        if (kind == "placement" && identityChanged) item.Remove("legacyWorldAdapter");
-                        if (kind == "npc" && identityChanged)
+                        if (kind == "placement" && bindingTargetChanged) item.Remove("legacyWorldAdapter");
+                        if (kind == "npc" && bindingTargetChanged)
                             foreach (JObject placement in ((JObject)d["placements"]).Properties().Where(p => (string)p.Value["npcId"] == id).Select(p => p.Value)) placement.Remove("legacyWorldAdapter");
                     }
                 }

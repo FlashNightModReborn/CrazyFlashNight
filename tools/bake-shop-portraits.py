@@ -37,9 +37,6 @@ PADDING = 16
 EXPECTED_LIST_COUNT = 52
 EXPECTED_ACTIVE_COUNT = 51
 EXCLUDED_SHOPS = {"幸存老兵-暂时停用"}
-# This newly opened shop already has an exact Flash dialogue portrait, but is
-# not yet in the Web dialogue manifest. Bind its real source without aliasing.
-EXTERNAL_SHOP_PORTRAITS = {"弹古": "flashswf/portraits/弹古.swf"}
 # Same character, separate inventory authority. Keep both exact runtime shopIds;
 # only these declared identities may share the existing portrait pixels.
 SHARED_SHOP_PORTRAITS = {
@@ -688,10 +685,6 @@ def build_stage(
             continue
         if shop_id == HEEHO:
             source_choices[shop_id] = {"kind": "heeho"}
-            continue
-        if shop_id in EXTERNAL_SHOP_PORTRAITS:
-            source_choices[shop_id] = {"kind": "external", "path": EXTERNAL_SHOP_PORTRAITS[shop_id]}
-            external_ids.append(shop_id)
             continue
         entry = dialogue_entries.get(shop_id)
         if shop_id == WEAPON_MASTER:

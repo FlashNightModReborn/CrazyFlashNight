@@ -25,6 +25,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
     private static var _interestResults:Array;
     private static var _syncCalls:Number;
     private static var _lastSync:Object;
+    private static var _mockScene:Object;
 
     private static function check(ok:Boolean, label:String):Void {
         if (ok) { _passed++; trace("[PASS] " + label); }
@@ -551,10 +552,74 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             bridge._projection.placements.place.present = false; MapWorldNpcController.refresh();
             check(npc._visible === false && !MapWorldNpcController.canInteract(npc), "absent bound NPC is hidden and cannot interact");
             bridge._projection.placements.place.present = true; bridge._projection.placements.place.worldReady = false; MapWorldNpcController.refresh();
-            check(npc._visible === false, "unready published source stays fail closed");
+            check(npc._visible === true && MapWorldNpcController.canInteract(npc), "unready published source degrades to present instead of hiding NPC");
+            var unmanaged:Object = {_parent:_root.gameworld,_name:"freeNpc",名字:"路人"};
+            check(MapWorldNpcController.isManaged(npc) && !MapWorldNpcController.isManaged(unmanaged), "only world-bound NPCs require managed projection gating");
             var elsewhere:Object = {_parent:_root.gameworld,_name:"npc",名字:"甲"};
             bridge._projection.currentLocationId = "beta"; MapWorldNpcController.intercept(elsewhere); MapWorldNpcController.refresh();
             check(initialized == 2 && !managedPermit, "same name at an unbound location keeps legacy initialization");
+            var savedTasks:Object = TaskUtil.tasks;
+            var oldSceneFn:Function = sampler.scene;
+            try {
+                var mockTasks:Object = {};
+                mockTasks["10"] = {id:10,get_npc:"路人",get_npc_hotspot:"",priority:1,_loadOrder:0};
+                mockTasks["11"] = {id:11,get_endpoint:{mode:"fixed"},priority:5,_loadOrder:1};
+                mockTasks["30003"] = {id:30003,get_npc:"前治安官",get_npc_hotspot:"base_lobby",finish_npc:"前治安官",finish_npc_hotspot:"base_lobby",priority:2,_loadOrder:2};
+                mockTasks["70001"] = {id:70001,get_npc:"前治安官",get_npc_hotspot:"first_defense",finish_npc:"前治安官",finish_npc_hotspot:"first_defense",priority:3,_loadOrder:3};
+                TaskUtil.tasks = mockTasks;
+                bridge._bootstrap.structuredTaskIds = ["11"];
+                bridge._bootstrap.locationByHotspot.base_lobby = "base_lobby";
+                bridge._bootstrap.locationByHotspot.first_defense = "first_defense";
+                bridge._bootstrap.locationByHotspot.lobby_entry = "base_lobby";
+                bridge._bootstrap.locationByFrame = {};
+                var mockLabels:Object = {};
+                var lbl11:Object = {getRuntimeName:"专员",finish:"专员",finishRuntimeName:"专员"};
+                lbl11["get"] = "专员";
+                mockLabels["11"] = lbl11;
+                bridge._bootstrap.taskNpcLabels = mockLabels;
+                bridge._projection = undefined;
+                _mockScene = {stageFlag:"",frameLabel:"",entrance:"",mapFrame:"",inCombat:false};
+                sampler.scene = function():Object { return org.flashNight.arki.map.MapDomainBridgeTest._mockScene; };
+                var fallbackIds:Array = TaskUtil.getTasksForNpc("路人", "");
+                check(fallbackIds.length == 1 && fallbackIds[0] == 10 && !TaskUtil.requiresCurrentMapProjection("路人") && TaskUtil.requiresCurrentMapProjection("专员"),
+                    "legacy unbound tasks resolve without projection while structured endpoints still require current projection");
+                var unknownIds:Array = TaskUtil.getTasksForNpc("前治安官", "");
+                check(unknownIds.length == 0
+                    && !TaskUtil.taskNpcMatches(mockTasks["30003"], "finish", "前治安官", "")
+                    && !TaskUtil.taskNpcMatches(mockTasks["70001"], "finish", "前治安官", "")
+                    && TaskUtil.requiresCurrentMapProjection("前治安官"),
+                    "hotspot-restricted legacy tasks never match an unknown location and wait for projection");
+                var lobbyExplicit:Array = TaskUtil.getTasksForNpc("前治安官", "lobby_entry");
+                check(lobbyExplicit.length == 1 && lobbyExplicit[0] == 30003
+                    && TaskUtil.taskNpcMatches(mockTasks["30003"], "finish", "前治安官", "lobby_entry")
+                    && !TaskUtil.taskNpcMatches(mockTasks["70001"], "finish", "前治安官", "lobby_entry")
+                    && TaskUtil.taskNpcMatches(mockTasks["70001"], "finish", "前治安官", "first_defense"),
+                    "explicit hotspot or alias resolves only the matching scene's task");
+                var byFrame:Object = {};
+                byFrame["基地大堂"] = "base_lobby";
+                byFrame["地图-第一防线"] = "first_defense";
+                bridge._bootstrap.locationByFrame = byFrame;
+                _mockScene = {stageFlag:"",frameLabel:"基地地图",entrance:"基地大堂",mapFrame:"",inCombat:false};
+                var lobbySync:Array = TaskUtil.getTasksForNpc("前治安官", "");
+                check(lobbySync.length == 1 && lobbySync[0] == 30003
+                    && TaskUtil.taskNpcMatches(mockTasks["30003"], "finish", "前治安官", "")
+                    && !TaskUtil.taskNpcMatches(mockTasks["70001"], "finish", "前治安官", "")
+                    && !TaskUtil.requiresCurrentMapProjection("前治安官"),
+                    "bootstrap locationByFrame resolves current base scene synchronously without cross-scene misfire");
+                _mockScene = {stageFlag:"",frameLabel:"外部地图",entrance:"基地大堂",mapFrame:"地图-第一防线",inCombat:false};
+                var defenseSync:Array = TaskUtil.getTasksForNpc("前治安官", "");
+                check(defenseSync.length == 1 && defenseSync[0] == 70001
+                    && !TaskUtil.taskNpcMatches(mockTasks["30003"], "finish", "前治安官", "")
+                    && TaskUtil.taskNpcMatches(mockTasks["70001"], "finish", "前治安官", ""),
+                    "outdoor frameLabel skips stale base entrance and resolves outdoor mapFrame");
+                _mockScene = {stageFlag:"",frameLabel:"外部地图",entrance:"",mapFrame:"地图-第一防线",inCombat:true};
+                check(TaskUtil.getTasksForNpc("前治安官", "").length == 0
+                    && TaskUtil.requiresCurrentMapProjection("前治安官"),
+                    "combat scene never resolves non-combat hotspot tasks");
+            } finally {
+                TaskUtil.tasks = savedTasks;
+                sampler.scene = oldSceneFn;
+            }
             checkPanelResponses();
             checkMapReturn();
             checkInterestLifetimes();

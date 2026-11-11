@@ -11,8 +11,8 @@
   "toolchain": {
     "generator": {
       "path": "tools/bake-shop-portraits.py",
-      "sha256": "2c8a9c2c6f99616747c491b9cc7008ef5ac3d5e52570fb3a8bac465f85611072",
-      "bytes": 38077
+      "sha256": "c45aa6c70c4a186cdf9bcc72566392473e4d88c0c4dec69cb99f63541e212e65",
+      "bytes": 37640
     },
     "dialogueBaker": {
       "path": "tools/bake-dialogue-portraits.py",
@@ -20,7 +20,7 @@
       "bytes": 55096
     },
     "python": "3.13.7",
-    "pillow": "12.2.0",
+    "pillow": "12.1.0",
     "ffdecVersion": "21.1.1",
     "ffdecCli": {
       "path": "tools/ffdec/ffdec-cli.exe",
@@ -314,8 +314,8 @@
   },
   "dialogueManifest": {
     "path": "launcher/web/assets/dialogue-portraits/manifest.json",
-    "sha256": "92a791191f1f4fae143da80b9295d66fcdf0255b6b884f6629c2cf085142d44e",
-    "bytes": 103562
+    "sha256": "e3c2aaa26a1986e7d94bf3fc6191a2ab14550d92b983c9dd861bf980ca9127aa",
+    "bytes": 124100
   },
   "sourcePartition": {
     "externalDialogue": 36,

@@ -117,7 +117,7 @@ var MapFitPresets = (function() {
         },
         "defense": {
             "first_line": "horizontal",
-            "restricted": "horizontal",
+            "restricted": "overview",
             "all": "overview"
         },
         "school": {

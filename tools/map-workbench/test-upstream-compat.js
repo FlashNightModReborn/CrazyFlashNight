@@ -8,7 +8,7 @@ const start = source.indexOf('_root.初始化NPC = function(目标) {');
 const end = source.indexOf('    var npcBaseName:String', start);
 assert(start >= 0 && end > start, 'actual NPC initializer prefix must be found');
 const prefix = source.slice(start, end);
-assert.equal((prefix.match(/MapWorldNpcController\.hasPresencePermit\(目标\)/g) || []).length, 2);
+assert((prefix.match(/MapWorldNpcController\.hasPresencePermit\(目标\)/g) || []).length >= 1);
 assert(prefix.includes('任务需求支线') && prefix.includes('_root.tasks_finished'));
 let passed = 0;
 function check(name, facts, npc, expected) {

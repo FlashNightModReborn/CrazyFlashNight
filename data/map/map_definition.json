@@ -64,7 +64,8 @@
     "research_defense": true,
     "research_agriculture": true,
     "alliance_command": true,
-    "alliance_cafe": true
+    "alliance_cafe": true,
+    "alliance_sewer": true
   },
   "xflSourceRects": {
     "base": {
@@ -251,6 +252,12 @@
         "y": 351.0,
         "w": 282.0,
         "h": 114.0
+      },
+      "alliance_sewer": {
+        "x": 366.75,
+        "y": 487.0,
+        "w": 200.0,
+        "h": 108.0
       }
     },
     "school": {
@@ -1661,6 +1668,20 @@
           "relY": 59.25,
           "w": 44,
           "h": 44
+        },
+        {
+          "id": "lochan_avatar",
+          "label": "lochan",
+          "hotspotId": "fallen_bar",
+          "assetUrl": "assets/map/avatars/lochan头像.webp",
+          "placementId": "place_fallen_lochan",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 160.0,
+          "relY": 62.0,
+          "w": 44,
+          "h": 44
         }
       ],
       "filters": [
@@ -2003,6 +2024,24 @@
           "hotspotIds": [
             "alliance_cafe"
           ]
+        },
+        {
+          "id": "alliance_sewer_visual",
+          "label": "同盟下水道",
+          "assetUrl": "assets/map/composite/defense/alliance-sewer.webp",
+          "rect": {
+            "x": 366.75,
+            "y": 487.0,
+            "w": 200.0,
+            "h": 108.0
+          },
+          "filterIds": [
+            "restricted",
+            "all"
+          ],
+          "hotspotIds": [
+            "alliance_sewer"
+          ]
         }
       ],
       "staticAvatars": [
@@ -2187,6 +2226,34 @@
           "relY": 64.0,
           "w": 44,
           "h": 44
+        },
+        {
+          "id": "the_serpent_avatar",
+          "label": "The Serpent",
+          "hotspotId": "alliance_command",
+          "assetUrl": "assets/map/avatars/TheSerpent头像.webp",
+          "placementId": "place_command_serpent",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 141.0,
+          "relY": 102.4,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "tangu_avatar",
+          "label": "弹古",
+          "hotspotId": "alliance_sewer",
+          "assetUrl": "assets/map/avatars/弹古头像.webp",
+          "placementId": "place_sewer_tangu",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 100.0,
+          "relY": 38.5,
+          "w": 44,
+          "h": 44
         }
       ],
       "filters": [
@@ -2212,7 +2279,8 @@
             "alliance_dock",
             "alliance_corridor",
             "alliance_command",
-            "alliance_cafe"
+            "alliance_cafe",
+            "alliance_sewer"
           ],
           "buttonRect": {
             "x": 895,
@@ -2231,7 +2299,8 @@
             "alliance_dock",
             "alliance_corridor",
             "alliance_command",
-            "alliance_cafe"
+            "alliance_cafe",
+            "alliance_sewer"
           ],
           "buttonRect": {
             "x": 895,
@@ -2309,6 +2378,17 @@
             "h": 114.0
           },
           "locationId": "alliance_cafe"
+        },
+        {
+          "id": "alliance_sewer",
+          "label": "同盟下水道",
+          "rect": {
+            "x": 366.75,
+            "y": 487.0,
+            "w": 200.0,
+            "h": 108.0
+          },
+          "locationId": "alliance_sewer"
         }
       ],
       "visibleWhen": {
@@ -4811,6 +4891,69 @@
         "w": 44,
         "h": 44
       }
+    },
+    "TheSerpent头像": {
+      "symbolName": "TheSerpent头像",
+      "assetUrl": "assets/map/avatars/TheSerpent头像.webp",
+      "hotspotId": "alliance_command",
+      "relX": 141.0,
+      "relY": 102.4,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "弹古头像": {
+      "symbolName": "弹古头像",
+      "assetUrl": "assets/map/avatars/弹古头像.webp",
+      "hotspotId": "alliance_sewer",
+      "relX": 100.0,
+      "relY": 38.5,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
+    },
+    "lochan头像": {
+      "symbolName": "lochan头像",
+      "assetUrl": "assets/map/avatars/lochan头像.webp",
+      "hotspotId": "fallen_bar",
+      "relX": 160.0,
+      "relY": 62.0,
+      "size": {
+        "w": 44,
+        "h": 44
+      },
+      "crop": {
+        "scaleX": 1,
+        "scaleY": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "assetSize": {
+        "w": 44,
+        "h": 44
+      }
     }
   },
   "rules": {
@@ -5958,6 +6101,25 @@
         "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
         "linkage": "地图-同盟咖啡厅"
       }
+    },
+    "alliance_sewer": {
+      "label": "同盟下水道",
+      "sceneName": "地图-同盟下水道",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.restricted"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.restricted"
+      },
+      "tone": "restricted",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-同盟下水道.swf",
+        "linkage": "地图-同盟下水道"
+      }
     }
   },
   "npcs": {
@@ -6160,7 +6322,9 @@
       "runtimeNames": [
         "itinerant"
       ],
-      "aliases": [],
+      "aliases": [
+        "Itinerant"
+      ],
       "placementPolicy": "multiple"
     },
     "npc_f6997950a4917e18": {
@@ -6176,7 +6340,9 @@
       "runtimeNames": [
         "singer"
       ],
-      "aliases": [],
+      "aliases": [
+        "Singer"
+      ],
       "placementPolicy": "multiple"
     },
     "npc_91f060a9ad4b39eb": {
@@ -6184,7 +6350,9 @@
       "runtimeNames": [
         "keyboard"
       ],
-      "aliases": [],
+      "aliases": [
+        "Keyboard"
+      ],
       "placementPolicy": "multiple"
     },
     "npc_d081f5e402980b26": {
@@ -6192,7 +6360,9 @@
       "runtimeNames": [
         "guitar"
       ],
-      "aliases": [],
+      "aliases": [
+        "Guitar"
+      ],
       "placementPolicy": "multiple"
     },
     "npc_68127be21042e3f2": {
@@ -6671,6 +6841,54 @@
       "label": "The Steel",
       "runtimeNames": [
         "The Steel"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_sewer_tangu": {
+      "label": "弹古",
+      "runtimeNames": [
+        "弹古"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_command_serpent": {
+      "label": "The Serpent",
+      "runtimeNames": [
+        "The Serpent"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_fallen_lochan": {
+      "label": "lochan",
+      "runtimeNames": [
+        "lochan"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_easter_black_l": {
+      "label": "BLACK-L",
+      "runtimeNames": [
+        "BLACK-L"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_easter_karuta": {
+      "label": "歌留多",
+      "runtimeNames": [
+        "歌留多"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_easter_humiao": {
+      "label": "虎妙",
+      "runtimeNames": [
+        "虎妙"
       ],
       "aliases": [],
       "placementPolicy": "unique"
@@ -7620,19 +7838,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_fa6eef4b1da856f930e47f9a",
-        "sourceDigest": "C39EBD845E6E825B8E16CBF402A8318614EDFA0A46F5CCF336B126F946681895",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
-          "swfSha256": "534635D75B488881AE33844B04F7932AB964D6814122237F06BB66CD34F60AF7",
-          "sceneKey": "地图-同盟咖啡厅",
-          "runtimeName": "叉仔",
-          "taskName": "叉仔",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_cafe_servent": {
       "npcId": "npc_cafe_servent",
@@ -7642,19 +7849,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_2edf0e04c4583b7fbc9f4592",
-        "sourceDigest": "831F06C61E2718DE859B04117907DE005AC5F9AC9921CFD7EDF5CEECE2BFDD46",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
-          "swfSha256": "534635D75B488881AE33844B04F7932AB964D6814122237F06BB66CD34F60AF7",
-          "sceneKey": "地图-同盟咖啡厅",
-          "runtimeName": "The Servent",
-          "taskName": "The Servent",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_cafe_robot_girl": {
       "npcId": "npc_cafe_robot_girl",
@@ -7664,19 +7860,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_e0a27c95e28e52109ba39c85",
-        "sourceDigest": "1B1DF995711069978DF6BF0619C5BBD8419F8508801F7917C3A5083E2E090DCB",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
-          "swfSha256": "534635D75B488881AE33844B04F7932AB964D6814122237F06BB66CD34F60AF7",
-          "sceneKey": "地图-同盟咖啡厅",
-          "runtimeName": "The Robot Girl",
-          "taskName": "The Robot Girl",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_cafe_arius": {
       "npcId": "npc_cafe_arius",
@@ -7686,19 +7871,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_9b54b4545ae95ac0ed6faa4b",
-        "sourceDigest": "E57347F93A5CEAA9963F2B9ECF125AC13E9D4607BA018DC1586CA4892C4AFE4F",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
-          "swfSha256": "534635D75B488881AE33844B04F7932AB964D6814122237F06BB66CD34F60AF7",
-          "sceneKey": "地图-同盟咖啡厅",
-          "runtimeName": "Arius型",
-          "taskName": "Arius型",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_cafe_sijiaoshe": {
       "npcId": "npc_cafe_sijiaoshe",
@@ -7708,19 +7882,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_a89ac942fd8bc0322b105bc3",
-        "sourceDigest": "C0FC3D11851B8B3A37A9663E1FFC42E16A8D8B5FE4B9C26074367D5CA0C6407E",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-同盟咖啡厅.swf",
-          "swfSha256": "534635D75B488881AE33844B04F7932AB964D6814122237F06BB66CD34F60AF7",
-          "sceneKey": "地图-同盟咖啡厅",
-          "runtimeName": "四脚蛇",
-          "taskName": "四脚蛇",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_res_badman": {
       "npcId": "npc_res_badman",
@@ -7730,19 +7893,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_a93d25ba1e6029cc9318cdf0",
-        "sourceDigest": "776D04665D1931C5F4DD77DB7E8460161D38C588E29AF50C1642E6589A23D7B9",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-研究所接待处.swf",
-          "swfSha256": "AE437800E1208B974AA8649B455F84682E36F275CA11E51B8D0C1F8E4BD5C521",
-          "sceneKey": "地图-研究所接待处",
-          "runtimeName": "Badman",
-          "taskName": "Badman",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_res_receptionist": {
       "npcId": "npc_res_receptionist",
@@ -7752,19 +7904,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_f7cdd37c48000f19e2e5305f",
-        "sourceDigest": "E4E0BE223E679D94C0DF7C6FA694442423D52D70DBE34476F68DE156A765A72F",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-研究所接待处.swf",
-          "swfSha256": "AE437800E1208B974AA8649B455F84682E36F275CA11E51B8D0C1F8E4BD5C521",
-          "sceneKey": "地图-研究所接待处",
-          "runtimeName": "前台",
-          "taskName": "前台",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_res_lab_guard": {
       "npcId": "npc_res_lab_guard",
@@ -7774,19 +7915,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_8bb329416f83ab705a80f559",
-        "sourceDigest": "EB943C912DFBE5E589E97A6C71860D14FFE763A363BD5F1D0B25D3DA9591E460",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-研究所生化室.swf",
-          "swfSha256": "296254D2D290B05BFEAE9A9F0F4B04406F6B38FE6153CA5B16577EDE926C9BFC",
-          "sceneKey": "地图-研究所生化室",
-          "runtimeName": "Lab Guard",
-          "taskName": "Lab Guard",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_res_hanged_man": {
       "npcId": "npc_res_hanged_man",
@@ -7796,19 +7926,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_c74233be520b0453796ac051",
-        "sourceDigest": "A1E67EF7298B2B194C1474A3820D2FC385B4CF86B5D30229B48D00F550F1F3BB",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-研究所生化室.swf",
-          "swfSha256": "296254D2D290B05BFEAE9A9F0F4B04406F6B38FE6153CA5B16577EDE926C9BFC",
-          "sceneKey": "地图-研究所生化室",
-          "runtimeName": "The Hanged Man",
-          "taskName": "The Hanged Man",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_res_scientist": {
       "npcId": "npc_res_scientist",
@@ -7818,19 +7937,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_863d55b44b1ba56c56fd8d2e",
-        "sourceDigest": "0B0E07601BBDA9BE8061AB62BCC11266FED1DDB52CF0B735779FDDBD41532660",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-研究所生化室.swf",
-          "swfSha256": "296254D2D290B05BFEAE9A9F0F4B04406F6B38FE6153CA5B16577EDE926C9BFC",
-          "sceneKey": "地图-研究所生化室",
-          "runtimeName": "The Scientist",
-          "taskName": "The Scientist",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_res_scout": {
       "npcId": "npc_res_scout",
@@ -7840,19 +7948,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_5053408e5e1e8930ad10bc18",
-        "sourceDigest": "392BF7B7DC8100662178FAB8F0A984FD79732F92992489E8F3FA7FEA11376DBD",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-研究所防线.swf",
-          "swfSha256": "E2D2875DA964735D2371F66798CCA95E5D88165AA0CF5CEDF2A42B914D2FE98D",
-          "sceneKey": "地图-研究所防线",
-          "runtimeName": "Scout",
-          "taskName": "Scout",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_res_scout_captain": {
       "npcId": "npc_res_scout_captain",
@@ -7862,19 +7959,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_2e8e6750c487e25ee57d4b09",
-        "sourceDigest": "22D104C1B0D92DF17994A752EA7FB246E8E33A7D236ADBB058D6102B1D9E9538",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-研究所防线.swf",
-          "swfSha256": "E2D2875DA964735D2371F66798CCA95E5D88165AA0CF5CEDF2A42B914D2FE98D",
-          "sceneKey": "地图-研究所防线",
-          "runtimeName": "侦察队队长",
-          "taskName": "侦察队队长",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_res_boss": {
       "npcId": "npc_res_boss",
@@ -7884,19 +7970,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_8c522bd1dc8978cad3b0da18",
-        "sourceDigest": "0831269E4D520F8CDBBB2D9493FA49632CE0964450FC814B0CD44147C51C2525",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-研究所农业园.swf",
-          "swfSha256": "169330DECE694A9A97EDBA2B017E93A23C543FF8956F09EDC0B6972881B15B2B",
-          "sceneKey": "地图-研究所农业园",
-          "runtimeName": "The Boss",
-          "taskName": "The Boss",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_res_worker": {
       "npcId": "npc_res_worker",
@@ -7906,19 +7981,8 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_0f5723a4a914ea0fd647c30f",
-        "sourceDigest": "DCE3452373E73A79AEB08C048D6E1EE52D6B47686EB18F4AD97AA65061E0B3DD",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-研究所农业园.swf",
-          "swfSha256": "169330DECE694A9A97EDBA2B017E93A23C543FF8956F09EDC0B6972881B15B2B",
-          "sceneKey": "地图-研究所农业园",
-          "runtimeName": "The Worker",
-          "taskName": "The Worker",
-          "instanceName": ""
-        }
-      },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     },
     "place_res_steel": {
       "npcId": "npc_res_steel",
@@ -7928,19 +7992,93 @@
       "presenceWhen": {
         "type": "always"
       },
-      "worldBinding": {
-        "occurrenceId": "occ_3234cf2f09d6834dd393958e",
-        "sourceDigest": "DCB1743E0DA3C16C0E6EAC4065AB870274C0F85F4DA85568F8603B40F5DF36B4",
-        "runtime": {
-          "sourceSwf": "flashswf/levels/地图-研究所农业园.swf",
-          "swfSha256": "169330DECE694A9A97EDBA2B017E93A23C543FF8956F09EDC0B6972881B15B2B",
-          "sceneKey": "地图-研究所农业园",
-          "runtimeName": "The Steel",
-          "taskName": "The Steel",
-          "instanceName": ""
-        }
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_sewer_tangu": {
+      "npcId": "npc_sewer_tangu",
+      "locationId": "alliance_sewer",
+      "label": "弹古",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
       },
-      "legacyWorldAdapter": false
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_command_serpent": {
+      "npcId": "npc_command_serpent",
+      "locationId": "alliance_command",
+      "label": "The Serpent",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_fallen_lochan": {
+      "npcId": "npc_fallen_lochan",
+      "locationId": "fallen_bar",
+      "label": "lochan",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_easter_black_l": {
+      "npcId": "npc_easter_black_l",
+      "locationId": "easter_egg",
+      "label": "BLACK-L · 彩蛋地图",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_easter_karuta": {
+      "npcId": "npc_easter_karuta",
+      "locationId": "easter_egg",
+      "label": "歌留多 · 彩蛋地图",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "彩蛋",
+        "min": 12
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_easter_humiao": {
+      "npcId": "npc_easter_humiao",
+      "locationId": "easter_egg",
+      "label": "虎妙 · 彩蛋地图",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 77
+          },
+          {
+            "type": "task",
+            "key": "1000081",
+            "state": "finished"
+          },
+          {
+            "type": "task",
+            "key": "1000082",
+            "state": "notFinished"
+          }
+        ]
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
     }
   },
   "assets": {
@@ -8235,9 +8373,9 @@
     "assets/map/avatars/排骨头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 3022,
+      "bytes": 3138,
       "format": "Webp",
-      "sha256": "470F7FF1B66B349E37F254BDE32CB2A2176812389058B51EF20B602803D4F51B",
+      "sha256": "2538598AA54893C8ADDEE0D75D24A79E3B2F2D389AFDC8A95D89F20309965AA3",
       "assetUrl": "assets/map/avatars/排骨头像.webp"
     },
     "assets/map/avatars/教导主任头像.webp": {
@@ -8259,9 +8397,9 @@
     "assets/map/avatars/机哥头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 2510,
+      "bytes": 2138,
       "format": "Webp",
-      "sha256": "16CE70067B63C92434C4E83B4D1AF3630CC3BD0F994361248E090F41138D9D64",
+      "sha256": "727ECBC440C7BFEFBA3422D6AFBC8FDE1527FD6E52E14B760C6DA1CBCBDA8E49",
       "assetUrl": "assets/map/avatars/机哥头像.webp"
     },
     "assets/map/avatars/格格巫头像.webp": {
@@ -8363,9 +8501,9 @@
     "assets/map/avatars/阿波头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 2928,
+      "bytes": 3854,
       "format": "Webp",
-      "sha256": "A4AA593DA9AACB223DCD20284F8C29C15E797C603F92FB12063ADA96951CBA99",
+      "sha256": "38BC20B2B0725708439FED88F29BD054E5A1AF2563673952C1C35A2F09A8118C",
       "assetUrl": "assets/map/avatars/阿波头像.webp"
     },
     "assets/map/avatars/黑仔头像.webp": {
@@ -8795,122 +8933,154 @@
     "assets/map/avatars/叉仔头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 2398,
+      "bytes": 2978,
       "format": "Webp",
-      "sha256": "76D41C7F11689DF79F012770BF5587D224294DA6CCBC4B0FE4EBE1F955B9ADBC",
+      "sha256": "1F51A513C710564B310464582591B8ED96B2C944A92A3F436213EC7296E1FC0C",
       "assetUrl": "assets/map/avatars/叉仔头像.webp"
     },
     "assets/map/avatars/TheServent头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 3280,
+      "bytes": 3330,
       "format": "Webp",
-      "sha256": "63DCC2864815633196B2D79FDA646CEE22708AC86AD1DBD4F5DD0237DAFAB4AC",
+      "sha256": "C88CB09184AC20AA3D502738E7592A88F4CDC71509034033C7CF3007B3707A95",
       "assetUrl": "assets/map/avatars/TheServent头像.webp"
     },
     "assets/map/avatars/TheRobotGirl头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 3514,
+      "bytes": 3760,
       "format": "Webp",
-      "sha256": "F3B90BE0CF81018013EBCCA0B3F8B94489A58763426577B465B91DC7D05A51A2",
+      "sha256": "97F156D3FDDA8517E7797E89B837FF87DBFC319E7C26005E158D687165ADB3E8",
       "assetUrl": "assets/map/avatars/TheRobotGirl头像.webp"
     },
     "assets/map/avatars/Arius型头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 2938,
+      "bytes": 3286,
       "format": "Webp",
-      "sha256": "AD6162B907FF72E04CDBF3D38C6E72B02DD05C3E052F1653883D08CC396FF9B8",
+      "sha256": "9526FCA0A4BF59239893FF64C20674FD29BC20A2F5FE9E832977402D401E3C49",
       "assetUrl": "assets/map/avatars/Arius型头像.webp"
     },
     "assets/map/avatars/四脚蛇头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 1870,
+      "bytes": 2428,
       "format": "Webp",
-      "sha256": "71FCBA410619340AA90B001D0375DF4B470E440B3B73D0C601829BF2CB7F5636",
+      "sha256": "C2F73F4DACAAB56E43C3677BE9D1EE3732C7744AA64843A65BFE15400B435580",
       "assetUrl": "assets/map/avatars/四脚蛇头像.webp"
     },
     "assets/map/avatars/Badman头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 2094,
+      "bytes": 2434,
       "format": "Webp",
-      "sha256": "48CC74250AEF3A52DA5A51A122A8CAA301F5FFC065CFD039023497E3CA08EECD",
+      "sha256": "0BAF383E0649D1DD08C9A66668A0561B2ED89D0969F5F367679E3567C4D22FAE",
       "assetUrl": "assets/map/avatars/Badman头像.webp"
     },
     "assets/map/avatars/前台头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 3316,
+      "bytes": 3100,
       "format": "Webp",
-      "sha256": "9C339792A30D8D8DBCDDEF8547723844B30532632B5E3CBE6AB86482F1A361B5",
+      "sha256": "AF4CE4D010CCA95D0A8892FF6A89316D7D1DB9BE184092D1588FF99F393CCBAC",
       "assetUrl": "assets/map/avatars/前台头像.webp"
     },
     "assets/map/avatars/LabGuard头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 1742,
+      "bytes": 2024,
       "format": "Webp",
-      "sha256": "6866229DA546203779970D8654B64E208A12953E8D7F8CD44AFCD56DF2FCEDDE",
+      "sha256": "1D2685FFE08BCFCF3FBFDC4A58F7957586D555F396A64B6FCCD15691CD92E7F8",
       "assetUrl": "assets/map/avatars/LabGuard头像.webp"
     },
     "assets/map/avatars/TheHangedMan头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 2044,
+      "bytes": 2116,
       "format": "Webp",
-      "sha256": "AF8CAFDB768AB62B021A1B6A3F3758B4B60340FF997DA5032C1873BAFEF2FE1A",
+      "sha256": "6A80DB14768C10C69DD840B9106723F5C7AE2E1F05B39F6A8C4B847BAC73C9F5",
       "assetUrl": "assets/map/avatars/TheHangedMan头像.webp"
     },
     "assets/map/avatars/TheScientist头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 3078,
+      "bytes": 3236,
       "format": "Webp",
-      "sha256": "047E5CE55C0758348FC8D53945E4A050D9E16A077A793A02F8D39FD92A84BAF9",
+      "sha256": "3CC10124B121A40768F1FBBEEA9998EB081FD78BBD119FA7ABF0479B7203DFB2",
       "assetUrl": "assets/map/avatars/TheScientist头像.webp"
     },
     "assets/map/avatars/Scout头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 1776,
+      "bytes": 1908,
       "format": "Webp",
-      "sha256": "C4D1AF060467EE9D9531972D85D74F83BDBB81508F3C8FE82E7E13C3F5F59CAF",
+      "sha256": "69D0354E918142E73AA8ACA6384EEC1FD8F05CAA888FBFA58ACC563448A884DA",
       "assetUrl": "assets/map/avatars/Scout头像.webp"
     },
     "assets/map/avatars/侦察队队长头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 1876,
+      "bytes": 2376,
       "format": "Webp",
-      "sha256": "FE1D46D08C90763C8D0C25E56664FE1AF6BB50514953BB9314BA61836A146482",
+      "sha256": "B7EB2A8E5B7D17DC28B3D966CB257499BC9193D521A729051B76AB116C1ABBFC",
       "assetUrl": "assets/map/avatars/侦察队队长头像.webp"
     },
     "assets/map/avatars/TheBoss头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 2332,
+      "bytes": 2776,
       "format": "Webp",
-      "sha256": "5B5DA028A0EEF0A6E359147E2941D0D9BE2328DDBB182F6D7499E13B5EF6B358",
+      "sha256": "87F73B3A2706C494350396CA928385E9A980B46C0C2C696BC02D47CE8A4AEA4A",
       "assetUrl": "assets/map/avatars/TheBoss头像.webp"
     },
     "assets/map/avatars/TheWorker头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 2988,
+      "bytes": 3152,
       "format": "Webp",
-      "sha256": "4B8D787B6B7FF6D61D1A4C5F7FDA3BFBF6C09B4DEDA56A4E6BCF4D014568E9BD",
+      "sha256": "03E6A4AF311426213826B915BCE142D44A003FBFC3214B6A69F0E9F17CE0C67B",
       "assetUrl": "assets/map/avatars/TheWorker头像.webp"
     },
     "assets/map/avatars/TheSteel头像.webp": {
       "width": 44,
       "height": 44,
-      "bytes": 2664,
+      "bytes": 2892,
       "format": "Webp",
-      "sha256": "B6D6CFF62E3B22A69453BE74C4F923B64D012A8DECE4E4829BF386CD1A3D62D5",
+      "sha256": "1A541E39D239867B1115576ECBEF9127D63C3523CD0ADBF386C310AE5E8D181F",
       "assetUrl": "assets/map/avatars/TheSteel头像.webp"
+    },
+    "assets/map/composite/defense/alliance-sewer.webp": {
+      "width": 960,
+      "height": 519,
+      "bytes": 160808,
+      "format": "Webp",
+      "sha256": "4BA9312EEA6410E4D88949ECBA55BF744634CE4069166B34D4B236FA05D681CB",
+      "assetUrl": "assets/map/composite/defense/alliance-sewer.webp"
+    },
+    "assets/map/avatars/TheSerpent头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2446,
+      "format": "Webp",
+      "sha256": "BBEC3B10B716F53718B157D71394271557C8F350703BCE561F8A62D055773733",
+      "assetUrl": "assets/map/avatars/TheSerpent头像.webp"
+    },
+    "assets/map/avatars/弹古头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 1442,
+      "format": "Webp",
+      "sha256": "BA591F8E82F07DDF60150E15F4079C749C46AB823D35D600BCBDB7450F815528",
+      "assetUrl": "assets/map/avatars/弹古头像.webp"
+    },
+    "assets/map/avatars/lochan头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3862,
+      "format": "Webp",
+      "sha256": "D88A0614E9D4EE4360FE7D22D6C4BE6E020F95F89308091C01D1CA86FA43A685",
+      "assetUrl": "assets/map/avatars/lochan头像.webp"
     }
   }
 }

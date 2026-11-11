@@ -53,3 +53,5 @@ For changes confined to non-shop dialogue portraits, the same refresher accepts 
 The 2026-10-09 shop-set extension adds the exact `调酒师` shop from its existing external SWF and default expression. The baker and validator both freeze the extended source partition. This is a complete source rebuild, not an alias to `酒保` or a metadata-only refresh. Keep the production supersample choice explicit when replaying an existing set; this extension retains `--supersample 1`. The release record retains the previous closure and the small pixel differences found in seven older subjects across extraction environments.
 
 2026-10-15 扩展将已登记的 `Blue` 商店纳入 exact shop closure，源为现有 `flashswf/portraits/Blue.swf` 的“普通”第 1 帧。生成器 1.1.1 与 validator 同步冻结扩展后的分区，继续使用 `--supersample 1`；完整候选重建确认全部旧 entry 和 subject 字节不变，仅新增 Blue，不走 metadata-only 扩容。
+
+2026-11-11 扩展将新增禁区商店 `弹古` 纳入 exact shop closure，源为 `flashswf/portraits/弹古.swf` 的“普通”第 1 帧；生成器 1.1.3 与 validator 同步冻结 52 登记 / 51 有效 / 39 subject 分区。

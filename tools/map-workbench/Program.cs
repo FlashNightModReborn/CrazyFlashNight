@@ -16,7 +16,7 @@ if (args.FirstOrDefault() is "validate-content" or "validate-static-content")
         tasks.ValidateBindings(definition);
         MapAuthoringPlan.ValidateTaskReferences(definition, tasks.Tasks);
         MapAssetCandidates.ValidatePublished(root, definition);
-        var world = new MapRuntimeWorld(root, definition);
+        var world = new MapRuntimeWorld(root, definition, strict: true);
         var unavailable = new JArray(world.Occurrences.Properties().Where(p => p.Value.Value<bool>("ready") != true).Select(p => p.Value.DeepClone()));
         Console.WriteLine(new JObject { ["success"] = true, ["pages"] = ((JArray)definition["pageOrder"]).Count,
             ["locations"] = ((JObject)definition["locations"]).Count, ["tasks"] = tasks.Tasks.Count,
@@ -38,7 +38,7 @@ if (args.FirstOrDefault() == "prepare-definition")
         MapWorldCatalog.Load(root).EnrichBindings(definition);
         new MapAssetCandidates(root).Resolve(definition);
         MapTaskCatalog.Load(root).ValidateBindings(definition);
-        var runtimeWorld = new MapRuntimeWorld(root, definition);
+        var runtimeWorld = new MapRuntimeWorld(root, definition, strict: true);
         Console.WriteLine(new JObject { ["success"] = true, ["definition"] = definition, ["runtimeSourceCount"] = runtimeWorld.SourceHashes.Count }.ToString(Formatting.None)); return 0;
     }
     catch (Exception e) { Console.WriteLine(new JObject { ["success"] = false, ["error"] = e.Message }.ToString(Formatting.None)); return 1; }

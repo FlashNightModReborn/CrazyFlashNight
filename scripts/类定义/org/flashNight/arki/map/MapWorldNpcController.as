@@ -17,13 +17,21 @@ class org.flashNight.arki.map.MapWorldNpcController {
     public static function intercept(npc:Object):Boolean {
         if (_permit === npc) return false;
         for (var i:Number = 0; i < _entries.length; i++) if (_entries[i].npc === npc) return true;
-        var bindings:Array = org.flashNight.arki.map.MapDomainBridge.getBootstrap().worldBindings;
+        var boot:Object = org.flashNight.arki.map.MapDomainBridge.getBootstrap();
+        var bindings:Array = boot == undefined ? undefined : boot.worldBindings;
+        if (bindings == undefined) return false;
         var candidate:Boolean = false;
         for (i = 0; i < bindings.length; i++) if (matches(bindings[i], npc, String(npc._name))) candidate = true;
         if (!candidate) return false;
         _entries.push({npc:npc, originalName:String(npc._name), world:_root.gameworld, binding:null});
         npc._visible = false; npc.enabled = false;
         return true;
+    }
+    public static function isManaged(npc:Object):Boolean {
+        if (npc == undefined || npc == null) return false;
+        if (String(npc.__mapPlacementId || "") != "") return true;
+        for (var i:Number = 0; i < _entries.length; i++) if (_entries[i].npc === npc) return true;
+        return false;
     }
     public static function hasPresencePermit(npc:Object):Boolean { return _permit === npc && _permitPresence; }
     private static function initializeNpc(entry:Object, managed:Boolean):Void {
@@ -34,7 +42,8 @@ class org.flashNight.arki.map.MapWorldNpcController {
     public static function refresh():Void {
         if (_entries.length == 0) return;
         var projection:Object = org.flashNight.arki.map.MapDomainBridge.getProjection();
-        var bindings:Array = org.flashNight.arki.map.MapDomainBridge.getBootstrap().worldBindings;
+        var boot:Object = org.flashNight.arki.map.MapDomainBridge.getBootstrap();
+        var bindings:Array = boot == undefined ? [] : boot.worldBindings;
         var keep:Array = [];
         for (var i:Number = 0; i < _entries.length; i++) {
             var entry:Object = _entries[i];
@@ -56,10 +65,11 @@ class org.flashNight.arki.map.MapWorldNpcController {
                 }
                 entry.binding = binding; npc.__mapPlacementId = String(binding.placementId);
             }
-            var state:Object = projection.placements[String(binding.placementId)];
-            var present:Boolean = binding.locationId == projection.currentLocationId && binding.ready === true && state.present === true && state.worldReady === true;
+            var state:Object = projection.placements == undefined ? undefined : projection.placements[String(binding.placementId)];
+            var degraded:Boolean = binding.ready !== true || (state != undefined && state.worldReady !== true);
+            var present:Boolean = binding.locationId == projection.currentLocationId && (state == undefined ? true : state.present === true);
             npc._visible = present; npc.enabled = present;
-            if (present && npc.NPC初始化完毕 !== true) initializeNpc(entry, true);
+            if (present && npc.NPC初始化完毕 !== true) initializeNpc(entry, !degraded);
             keep.push(entry);
         }
         _entries = keep;
@@ -67,7 +77,8 @@ class org.flashNight.arki.map.MapWorldNpcController {
     public static function canInteract(npc:Object):Boolean {
         var placementId:String = String(npc.__mapPlacementId || "");
         if (placementId == "") return true;
-        var state:Object = org.flashNight.arki.map.MapDomainBridge.getProjection().placements[placementId];
-        return state.present === true && state.worldReady === true && npc._visible !== false && npc.enabled !== false;
+        var projection:Object = org.flashNight.arki.map.MapDomainBridge.getProjection();
+        var state:Object = (projection == undefined || projection.placements == undefined) ? undefined : projection.placements[placementId];
+        return (state == undefined || state.present === true) && npc._visible !== false && npc.enabled !== false;
     }
 }

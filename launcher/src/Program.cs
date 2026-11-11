@@ -1692,9 +1692,9 @@ class Program
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
         StartupDiagnostics.Mark("webview2.runtime_check_ok", "version=" + wv2ver);
         string webDir = Path.Combine(projectRoot, "launcher", "web");
-        // 磁盘批次恢复先于三个运行时消费者；地图定义与世界源进程内固定（作者应用后重启切换），
+        // 玩家启动不抢地图工作台恢复锁；地图定义与世界源进程内固定（作者应用后重启切换），
         // 任务目录层可按发布事件热重载，见 MapDomainTask 的 task_sync。
-        var mapRuntimeContent = new CF7Launcher.Data.MapRuntimeContent(projectRoot);
+        var mapRuntimeContent = new CF7Launcher.Data.MapRuntimeContent(projectRoot, msg => LogManager.Log("[MapRuntimeContent] WARN: " + msg));
         // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）。提前到 WebOverlay 构造前，
         // 因为后续 PanelHostController 也复用同一份。WebOverlay 自身的焦点回推走 flashFocusRestorer。
         Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };

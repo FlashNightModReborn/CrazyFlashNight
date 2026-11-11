@@ -147,12 +147,16 @@ function main() {
             errors.push(debtKey + ' is an unexpected capability debt');
         }
     }
+    const expectedFilters = bundle.mapData.getPageOrder().reduce((sum, pageId) => {
+        const page = bundle.mapData.getPage(pageId);
+        return sum + ((page && Array.isArray(page.filters)) ? page.filters.length : 0);
+    }, 0);
     console.log('[map-scale] filters=' + filters + ' cases=' + cases +
         ' errors=' + errors.length + ' capabilityDebts=' + debtKeys.length);
     for (const debtKey of debtKeys) console.log('[map-scale][debt] ' + debts[debtKey].detail);
     for (const error of errors) console.error('[map-scale][error] ' + error);
-    if (filters !== 20) {
-        console.error('[map-scale][error] expected 20 page/filter contracts, got ' + filters);
+    if (expectedFilters <= 0 || filters !== expectedFilters) {
+        console.error('[map-scale][error] expected ' + expectedFilters + ' page/filter contracts, got ' + filters);
         process.exitCode = 1;
     } else if (errors.length) {
         process.exitCode = 1;

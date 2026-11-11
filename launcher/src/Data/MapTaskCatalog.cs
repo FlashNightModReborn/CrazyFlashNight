@@ -203,6 +203,11 @@ namespace CF7Launcher.Data
             }
             ValidateFacts(definition);
         }
+        public void WarnBindings(JObject definition, Action<string> warn = null)
+        {
+            try { ValidateBindings(definition); }
+            catch (Exception ex) { warn?.Invoke("任务与地图绑定检查降级（未映射任务保留原逻辑）：" + ex.Message); }
+        }
         public JObject NpcLabels(JObject definition)
         {
             var result = new JObject();
@@ -213,10 +218,11 @@ namespace CF7Launcher.Data
                 {
                     string legacy = task.Value.Value<string>(role + "_npc") ?? "";
                     string npc = (task.Value[role + "_endpoint"] as JObject)?.Value<string>("npcId") ?? MapEndpointResolver.FindNpc(definition, legacy);
-                    labels[role] = definition["npcs"][npc]?.Value<string>("label") ?? legacy;
+                    JObject npcObj = npc != "" ? definition["npcs"]?[npc] as JObject : null;
+                    labels[role] = npcObj?.Value<string>("label") ?? legacy;
                     // 显示名可自由编辑；旧对白头像检索仍使用稳定的现场检索名，不把显示名当素材身份。
                     labels[role + "RuntimeName"] = task.Value[role + "_endpoint"] is JObject
-                        ? definition["npcs"][npc]?["runtimeNames"]?.First?.Value<string>() ?? "" : legacy;
+                        ? npcObj?["runtimeNames"]?.First?.Value<string>() ?? legacy : legacy;
                 }
             }
             return result;

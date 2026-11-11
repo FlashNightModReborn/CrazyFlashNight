@@ -55,7 +55,7 @@ const FILTER_EXPERIENCE_PROFILES = {
     faction: {
         warlord: 'vertical', rock: 'vertical', blackiron: 'vertical', fallen: 'horizontal', all: 'overview'
     },
-    defense: { first_line: 'horizontal', restricted: 'horizontal', all: 'overview' },
+    defense: { first_line: 'horizontal', restricted: 'overview', all: 'overview' },
     school: { inside: 'dense', outside: 'focus', all: 'overview' },
     research: { research: 'focus', all: 'focus' }
 };

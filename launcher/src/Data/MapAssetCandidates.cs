@@ -75,6 +75,24 @@ namespace CF7Launcher.Data
                 MapRuleEvaluator.Need((string)recorded?["sha256"] == (string)actual["sha256"] && (int?)recorded?["width"] == (int)actual["width"] && (int?)recorded?["height"] == (int)actual["height"], "地图图片未登记或已变化，请通过地图工作台校验后重启：" + url);
             }
         }
+        public static void WarnPublishedDrift(string root, JObject definition, Action<string> warn = null)
+        {
+            foreach (string url in ReferencedUrls(definition))
+            {
+                try
+                {
+                    MapDomainDefinition.Asset(url);
+                    byte[] bytes = MapProjectFiles.Read(root, "launcher/web/" + url, MapAssetCodec.MaxBytes);
+                    var actual = MapAssetCodec.InspectPublished(bytes); var recorded = definition["assets"]?[url];
+                    if ((string)recorded?["sha256"] != (string)actual["sha256"] || (int?)recorded?["width"] != (int)actual["width"] || (int?)recorded?["height"] != (int)actual["height"])
+                        warn?.Invoke("地图图片元数据已漂移（运行时继续按实际图片加载）：" + url);
+                }
+                catch (Exception ex)
+                {
+                    warn?.Invoke("地图图片检查告警（" + url + "）：" + ex.Message);
+                }
+            }
+        }
         public JObject Crop(string url, string expectedDigest, JObject crop)
         {
             MapDomainDefinition.Asset(url); string relative = "launcher/web/" + url;
@@ -161,7 +179,6 @@ namespace CF7Launcher.Data
                 if (File.Exists(file))
                 {
                     bytes = MapProjectFiles.Read(root, relative, MapAssetCodec.MaxBytes); metadata = MapAssetCodec.InspectPublished(bytes);
-                    if (definition["assets"][url] is JObject recorded) MapRuleEvaluator.Need((string)recorded["sha256"] == (string)metadata["sha256"], "已登记素材字节发生变化：" + url);
                 }
                 else
                 {

@@ -11,33 +11,45 @@ namespace CF7Launcher.Data
         public JObject Definition { get; }
         public MapTaskCatalog Catalog { get; }
         public JObject WorldOccurrences { get; }
+        public JObject UnreadyLocations { get; }
         public string DefinitionDigest { get; }
         public string ContentDigest { get; }
         public JObject Bootstrap { get; }
         private readonly NpcShopAccessPolicy shopAccess;
+        private readonly Action<string> warn;
         private readonly HashSet<string> taskIds;
         private readonly HashSet<string> structuredIds;
         private readonly Dictionary<string, string> worldHashes;
-        public MapRuntimeContent(string root)
+        public MapRuntimeContent(string root, Action<string> warn = null)
         {
-            MapAuthoringStore.RecoverForStartup(root);
+            this.warn = warn;
+            MapAuthoringStore.RecoverIfPending(root);
             byte[] bytes = MapProjectFiles.Read(root, MapDefinition.RelativePath);
             Definition = MapDefinition.Parse(bytes);
             MapRuleEvaluator.Need(Definition.Value<int>("version") == 2, "地图内容尚未完成第二阶段迁移。");
-            MapAssetCandidates.ValidatePublished(root, Definition);
-            Catalog = MapTaskCatalog.Load(root); Catalog.ValidateBindings(Definition);
-            var world = new MapRuntimeWorld(root, Definition); WorldOccurrences = world.Occurrences;
+            MapAssetCandidates.WarnPublishedDrift(root, Definition, warn);
+            Catalog = MapTaskCatalog.Load(root); Catalog.WarnBindings(Definition, warn);
+            var world = new MapRuntimeWorld(root, Definition, strict: false, warn: warn); WorldOccurrences = world.Occurrences; UnreadyLocations = world.UnreadyLocations;
             worldHashes = new Dictionary<string, string>(world.SourceHashes, StringComparer.Ordinal);
-            shopAccess = NpcShopAccessPolicy.Load(root, Definition);
-            foreach (var source in shopAccess.SourceHashes) worldHashes[source.Key] = source.Value;
+            try
+            {
+                shopAccess = NpcShopAccessPolicy.Load(root, Definition);
+                foreach (var source in shopAccess.SourceHashes) worldHashes[source.Key] = source.Value;
+            }
+            catch (Exception ex)
+            {
+                warn?.Invoke("商店远程准入策略降级：" + ex.Message);
+                shopAccess = null;
+            }
             DefinitionDigest = MapDefinition.Hash(bytes);
             ContentDigest = ContentDigestOf(DefinitionDigest, Catalog.Digest, worldHashes);
             taskIds = TaskIdsOf(Catalog); structuredIds = StructuredIdsOf(Catalog);
             Bootstrap = BuildBootstrap();
         }
-        internal MapRuntimeContent(JObject definition, MapTaskCatalog catalog, JObject world, NpcShopAccessPolicy shopPolicy = null)
+        internal MapRuntimeContent(JObject definition, MapTaskCatalog catalog, JObject world, NpcShopAccessPolicy shopPolicy = null, Action<string> warn = null)
         {
-            MapDefinition.Validate(definition); Definition = (JObject)definition.DeepClone(); Catalog = catalog; WorldOccurrences = (JObject)world.DeepClone();
+            this.warn = warn;
+            MapDefinition.Validate(definition); Definition = (JObject)definition.DeepClone(); Catalog = catalog; WorldOccurrences = (JObject)world.DeepClone(); UnreadyLocations = new JObject();
             worldHashes = new Dictionary<string, string>(StringComparer.Ordinal);
             shopAccess = shopPolicy;
             if (shopAccess != null) foreach (var source in shopAccess.SourceHashes) worldHashes[source.Key] = source.Value;
@@ -47,8 +59,9 @@ namespace CF7Launcher.Data
         }
         private MapRuntimeContent(MapRuntimeContent previous, MapTaskCatalog catalog)
         {
+            warn = previous.warn;
             Definition = previous.Definition; DefinitionDigest = previous.DefinitionDigest; shopAccess = previous.shopAccess;
-            WorldOccurrences = previous.WorldOccurrences; worldHashes = previous.worldHashes;
+            WorldOccurrences = previous.WorldOccurrences; UnreadyLocations = previous.UnreadyLocations; worldHashes = previous.worldHashes;
             Catalog = catalog; ContentDigest = ContentDigestOf(DefinitionDigest, catalog.Digest, worldHashes);
             taskIds = TaskIdsOf(catalog); structuredIds = StructuredIdsOf(catalog);
             Bootstrap = BuildBootstrap();
@@ -68,7 +81,7 @@ namespace CF7Launcher.Data
                         MapTaskCatalog.AgentSaveTextOverrideSource(slotKey)
                     },
                     MapTaskCatalog.AgentSaveRewardOverrideSource(slotKey));
-            catalog.ValidateBindings(Definition);
+            catalog.WarnBindings(Definition, warn);
             return new MapRuntimeContent(this, catalog);
         }
         // 摘要口径唯一：定义 + 任务目录 + 世界源。哪一层变了都换内容摘要，定义摘要单独用于「必须重启」判定。
@@ -116,13 +129,16 @@ namespace CF7Launcher.Data
             MapRuleEvaluator.Need(raw != null && raw.ToString(Newtonsoft.Json.Formatting.None).Length <= 256 * 1024, "地图事实缺失或过大。");
             MapRuleEvaluator.Keys(raw, "chains", "infrastructure", "flags", "finished", "activeOrder", "deliverableIds", "available", "scene", "navigation", "dynamic");
             foreach (string key in new[] { "chains", "infrastructure", "flags", "finished", "available", "scene", "navigation", "dynamic" }) MapRuleEvaluator.Need(raw[key] is JObject, "地图事实字段缺失：" + key);
-            var chains = (JObject)raw["chains"]; MapRuleEvaluator.Need(chains.Count <= 64, "任务链事实过多。");
-            foreach (var p in chains.Properties()) { MapRuleEvaluator.Need(Catalog.Chains.Contains(p.Name), "未知任务链事实。"); MapRuleEvaluator.Integer(p.Value, "任务链进度"); }
-            var infra = (JObject)raw["infrastructure"]; MapRuleEvaluator.Keys(infra, Catalog.Infrastructure.Properties().Select(p => p.Name).ToArray());
-            foreach (var p in infra.Properties()) if (p.Value.Type != JTokenType.Boolean) MapRuleEvaluator.Integer(p.Value, "基建等级");
+            var rawChains = (JObject)raw["chains"]; MapRuleEvaluator.Need(rawChains.Count <= 256, "任务链事实过多。");
+            var chains = new JObject();
+            foreach (var p in rawChains.Properties()) { MapRuleEvaluator.Integer(p.Value, "任务链进度"); if (Catalog.Chains.Contains(p.Name)) chains[p.Name] = p.Value.DeepClone(); }
+            var rawInfra = (JObject)raw["infrastructure"]; MapRuleEvaluator.Need(rawInfra.Count <= 256, "基建事实过多。");
+            var infra = new JObject();
+            foreach (var p in rawInfra.Properties()) { if (p.Value.Type != JTokenType.Boolean) MapRuleEvaluator.Integer(p.Value, "基建等级"); if (Catalog.Infrastructure[p.Name] != null) infra[p.Name] = p.Value.DeepClone(); }
             var flags = (JObject)raw["flags"]; MapRuleEvaluator.Keys(flags);
-            var finished = (JObject)raw["finished"]; MapRuleEvaluator.Need(finished.Count <= taskIds.Count, "任务历史事实过多。");
-            foreach (var p in finished.Properties()) { MapRuleEvaluator.Need(taskIds.Contains(p.Name), "未知任务历史标识。"); MapRuleEvaluator.Integer(p.Value, "任务完成次数"); }
+            var rawFinished = (JObject)raw["finished"]; MapRuleEvaluator.Need(rawFinished.Count <= 16384, "任务历史事实过多。");
+            var finished = new JObject();
+            foreach (var p in rawFinished.Properties()) { MapRuleEvaluator.Integer(p.Value, "任务完成次数"); if (taskIds.Contains(p.Name)) finished[p.Name] = p.Value.DeepClone(); }
             var active = ValidateTaskIds(raw["activeOrder"], 512); var deliverable = ValidateTaskIds(raw["deliverableIds"], 512);
             var activeSet = new HashSet<string>(active.Select(x => (string)x), StringComparer.Ordinal);
             var doneSet = new HashSet<string>(deliverable.Select(x => (string)x), StringComparer.Ordinal);
@@ -148,7 +164,7 @@ namespace CF7Launcher.Data
         }
         public JObject Project(JObject facts)
         {
-            var projection = MapDomainService.Project(Definition, facts, Catalog.Tasks, WorldOccurrences);
+            var projection = MapDomainService.Project(Definition, facts, Catalog.Tasks, WorldOccurrences, UnreadyLocations);
             projection["shopAccess"] = shopAccess?.Project(Definition, projection) ?? new JObject();
             return projection;
         }

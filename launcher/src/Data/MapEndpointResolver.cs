@@ -35,7 +35,8 @@ namespace CF7Launcher.Data
             var placements = (JObject)definition["placements"];
             if (endpoint != null)
             {
-                Validate(definition, endpoint);
+                try { Validate(definition, endpoint); }
+                catch (Exception ex) { return Missing("unmapped_endpoint", endpoint.Value<string>("npcId") ?? "", endpoint.Value<string>("mode") ?? "structured", ex.Message); }
                 npcId = (string)endpoint["npcId"]; mode = (string)endpoint["mode"];
                 if (mode == "fixed") placementId = (string)endpoint["placementId"];
                 else
@@ -77,9 +78,7 @@ namespace CF7Launcher.Data
             var state = (JObject)placementStates[placementId];
             var npc = (JObject)definition["npcs"][npcId];
             bool present = state?.Value<bool>("present") == true;
-            // 新结构端点不能把未接入真实场景的地图头像当可互动人物；legacy 仍保留既有世界接入。
-            bool legacyUnbound = mode == "legacy" && placement.Value<bool?>("legacyWorldAdapter") == true && placement["worldBinding"]?.Type == JTokenType.Null;
-            bool worldReady = legacyUnbound || state?.Value<bool>("worldReady") == true;
+            bool worldReady = state?.Value<bool>("worldReady") == true;
             return new JObject { ["status"] = !present ? "npc_absent" : !worldReady ? "world_binding_required" : "resolved",
                 ["resolved"] = present && worldReady, ["mode"] = mode, ["npcId"] = npcId, ["placementId"] = placementId,
                 ["locationId"] = placement["locationId"], ["npcName"] = npc["label"], ["runtimeNames"] = npc["runtimeNames"].DeepClone(),

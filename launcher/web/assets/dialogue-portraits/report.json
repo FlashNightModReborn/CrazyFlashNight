@@ -1,6 +1,6 @@
 {
-  "externalEntries": 73,
-  "externalExpressions": 130,
+  "externalEntries": 93,
+  "externalExpressions": 161,
   "internalEntries": 29,
   "internalExpressions": 29,
   "internalPortraitSpriteId": 981,
@@ -98,6 +98,15 @@
         "大笑": 4,
         "严肃": 5
       }
+    },
+    "Badman": {
+      "8": {
+        "普通": 1,
+        "愤怒": 2,
+        "微笑": 3,
+        "大笑": 4,
+        "严肃": 5
+      }
     }
   },
   "selection": {
@@ -123,14 +132,33 @@
       "internal/p_e022273fd223/e_7cda072d452b.webp",
       "internal/p_f3c00d063a27/e_7cda072d452b.webp"
     ],
-    "referencedAssets": 153,
-    "onDiskAssets": 153,
-    "totalBytes": 36206346
+    "referencedAssets": 184,
+    "onDiskAssets": 184,
+    "totalBytes": 40156516
   },
   "incrementalBake": {
     "keys": [
-      "artist"
+      "Arius型",
+      "Badman",
+      "Lab Guard",
+      "Scout",
+      "The Boss",
+      "The Hanged Man",
+      "The Robot Girl",
+      "The Scientist",
+      "The Serpent",
+      "The Servent",
+      "The Steel",
+      "The Worker",
+      "侦察队队长",
+      "前台",
+      "叉仔",
+      "四脚蛇",
+      "弹古",
+      "排骨",
+      "机哥",
+      "阿波"
     ],
-    "baseManifestSha256": "14d39a70dfdd262d9ed002230417319509b9e61134b1fe99d8c3e9ed03ab8fb7"
+    "baseManifestSha256": "92a791191f1f4fae143da80b9295d66fcdf0255b6b884f6629c2cf085142d44e"
   }
 }

@@ -16,6 +16,11 @@ namespace CF7Launcher.Data
         private readonly string root;
         public MapChangeJournal(string root) { this.root = root; }
         public static void ValidateId(string id) => MapRuleEvaluator.Need(id != null && Regex.IsMatch(id, @"\A[a-f0-9]{32}\z"), "操作编号不合法。");
+        public static bool HasPending(string root)
+        {
+            string directory = MapProjectFiles.Resolve(Path.TrimEndingDirectorySeparator(Path.GetFullPath(root)), "tmp/map-workbench/pending");
+            return Directory.Exists(directory) && Directory.EnumerateFiles(directory, "*.json").Any();
+        }
         public string PathFor(string id) { ValidateId(id); return MapProjectFiles.Resolve(root, History + id + ".json"); }
         private string PendingPath(string id) { ValidateId(id); return MapProjectFiles.Resolve(root, "tmp/map-workbench/pending/" + id + ".json"); }
         private void MarkPending(JObject record) => MapProjectFiles.Atomic(PendingPath((string)record["operationId"]), MapDefinition.Bytes(new JObject { ["operationId"] = record["operationId"], ["binding"] = record["binding"] }));

@@ -32,6 +32,7 @@ namespace CF7Launcher.Data
             finally { if (owned) mutex.ReleaseMutex(); }
         }
         public static void RecoverForStartup(string root) => new MapAuthoringStore(root).Locked(() => { new MapChangeJournal(root).RecoverPending(); return true; });
+        public static void RecoverIfPending(string root) { if (MapChangeJournal.HasPending(root)) RecoverForStartup(root); }
         public JObject Read() => Execute(new JObject { ["op"] = "read" });
         private JObject ReadCore()
         {

@@ -8,7 +8,7 @@ namespace CF7Launcher.Data
     /// <summary>生产和作者模拟使用同一个纯地图投影。不会写玩家数据或执行场景跳转。</summary>
     public static class MapDomainService
     {
-        public static JObject Project(JObject definition, JObject facts, JObject tasks, JObject worldBindings = null)
+        public static JObject Project(JObject definition, JObject facts, JObject tasks, JObject worldBindings = null, JObject unreadyLocations = null)
         {
             MapRuleEvaluator.Need(definition.Value<int>("version") == 2, "地图领域需要第二阶段定义。");
             facts ??= new JObject(); tasks ??= new JObject();
@@ -20,11 +20,14 @@ namespace CF7Launcher.Data
                 var loc = (JObject)p.Value;
                 var visible = MapRuleEvaluator.Evaluate(loc["visibleWhen"], rules, facts);
                 var enter = MapRuleEvaluator.Evaluate(loc["enterWhen"], rules, facts);
+                string sceneError = unreadyLocations?.Value<string>(p.Name) ?? "";
+                if (sceneError != "") enter = new JObject { ["state"] = "failed", ["label"] = "场景资源", ["detail"] = sceneError };
                 bool enabled = loc.Value<bool>("enabled");
-                locationStates[p.Name] = new JObject { ["visible"] = enabled && MapRuleEvaluator.Passed(visible), ["enterable"] = enabled && MapRuleEvaluator.Passed(enter),
+                bool enterable = enabled && sceneError == "" && MapRuleEvaluator.Passed(enter);
+                locationStates[p.Name] = new JObject { ["visible"] = enabled && MapRuleEvaluator.Passed(visible), ["enterable"] = enterable,
                     ["visibleReason"] = visible, ["enterReason"] = enter, ["sceneName"] = loc["sceneName"], ["sceneKind"] = loc["sceneKind"] };
                 string group = MapDomainDefinition.GroupId(p.Name, loc);
-                if (group != "") unlocks[group] = MapRuleEvaluator.Passed(enter);
+                if (group != "") unlocks[group] = enterable;
             }
             var placementStates = new JObject();
             foreach (var p in ((JObject)definition["placements"]).Properties())
@@ -34,10 +37,20 @@ namespace CF7Launcher.Data
                 var binding = placement["worldBinding"] as JObject;
                 string occurrence = binding?.Value<string>("occurrenceId") ?? "";
                 var npc = definition["npcs"][(string)placement["npcId"]];
-                bool worldReady = occurrence != "" && worldBindings?[occurrence]?.Value<bool>("ready") == true &&
-                    (string)worldBindings[occurrence]["sourceDigest"] == (string)placement["worldBinding"]["sourceDigest"] &&
-                    (string)worldBindings[occurrence]["sceneKey"] == (string)definition["locations"][(string)placement["locationId"]]["sceneName"] &&
-                    ((JArray)npc["runtimeNames"]).Concat((JArray)npc["aliases"]).Any(n => (string)n == (string)worldBindings[occurrence]["taskName"]);
+                string sceneName = (string)definition["locations"][(string)placement["locationId"]]["sceneName"];
+                var npcNames = ((JArray)npc["runtimeNames"]).Concat((JArray)npc["aliases"]);
+                // 常驻未绑定驻点由场景真实 NPC 检出（或已核对标记）确认；新建但场景尚无该人物时不伪报就绪。显式绑定只核对场景与检索名归属。
+                bool sceneBacked = binding == null && (placement.Value<bool?>("legacyWorldAdapter") == true ||
+                    (worldBindings != null && worldBindings.Properties().Any(o =>
+                        (string)o.Value?["sceneKey"] == sceneName &&
+                        npcNames.Any(n =>
+                            string.Equals((string)n, (string)o.Value?["taskName"], StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals((string)n, (string)o.Value?["runtimeName"], StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals((string)n, (string)o.Value?["dialogueName"], StringComparison.OrdinalIgnoreCase)))));
+                bool boundReady = binding != null && occurrence != "" && worldBindings?[occurrence]?.Value<bool>("ready") == true &&
+                    (string)worldBindings[occurrence]["sceneKey"] == sceneName &&
+                    npcNames.Any(n => string.Equals((string)n, (string)worldBindings[occurrence]["taskName"], StringComparison.OrdinalIgnoreCase));
+                bool worldReady = sceneBacked || boundReady;
                 placementStates[p.Name] = new JObject { ["present"] = placement.Value<bool>("enabled") && MapRuleEvaluator.Passed(reason),
                     ["worldReady"] = worldReady, ["reason"] = reason, ["npcId"] = placement["npcId"], ["locationId"] = placement["locationId"] };
             }

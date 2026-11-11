@@ -31,20 +31,137 @@ class org.flashNight.arki.task.TaskUtil{
         return tasks[index];
     }
 
-    /** 参数保留给旧 XFL；匹配集合已经由 C# 按当前物理地点投影。 */
+    /** 参数保留给旧 XFL；优先读 C# 投影，投影未就绪时回退本地旧任务字段检索，不阻断常规交互。 */
     public static function getTasksForNpc(npcName:String, hotspotId:String):Array{
-        var ids:Array = npcTaskIds(npcName, "get");
-        return ids == undefined ? [] : ids;
+        var projection:Object = org.flashNight.arki.map.MapDomainBridge.getProjection();
+        if(projection != undefined && projection.npcTasks != undefined){
+            var ids:Array = npcTaskIds(npcName, "get");
+            return ids == undefined ? [] : ids;
+        }
+        return legacyTaskIdsForNpc(npcName, "get", hotspotId);
     }
 
     public static function taskNpcMatches(taskData:Object, role:String, npcName:String, hotspotId:String):Boolean{
-        var ids:Array = npcTaskIds(npcName, role);
-        if(ids == undefined) return false;
-        for(var i:Number = 0; i < ids.length; i++) if(String(ids[i]) == String(taskData.id)) return true;
+        if(taskData == undefined) return false;
+        var projection:Object = org.flashNight.arki.map.MapDomainBridge.getProjection();
+        if(projection != undefined && projection.npcTasks != undefined){
+            var ids:Array = npcTaskIds(npcName, role);
+            if(ids == undefined) return false;
+            for(var i:Number = 0; i < ids.length; i++) if(String(ids[i]) == String(taskData.id)) return true;
+            return false;
+        }
+        return legacyTaskMatches(taskData, role, npcName, hotspotId);
+    }
+
+    public static function requiresCurrentMapProjection(npcName:String):Boolean{
+        var boot:Object = org.flashNight.arki.map.MapDomainBridge.getBootstrap();
+        if(boot != undefined && (boot.structuredTaskIds instanceof Array) && boot.structuredTaskIds.length > 0){
+            var list:Array = boot.structuredTaskIds;
+            for(var i:Number = 0; i < list.length; i++){
+                var tid:String = String(list[i]);
+                if(org.flashNight.arki.map.MapDomainBridge.taskNpcRuntimeName(tid, "get") == npcName
+                        || org.flashNight.arki.map.MapDomainBridge.taskNpcLabel(tid, "get") == npcName
+                        || org.flashNight.arki.map.MapDomainBridge.taskNpcRuntimeName(tid, "finish") == npcName
+                        || org.flashNight.arki.map.MapDomainBridge.taskNpcLabel(tid, "finish") == npcName){
+                    return true;
+                }
+            }
+        }
+        if(resolveCurrentLocationFallback("") != "" || tasks == undefined) return false;
+        for(var k:String in tasks){
+            var td:Object = tasks[k];
+            if(td == undefined) continue;
+            if(td.get_endpoint == undefined && String(td.get_npc || "") == npcName
+                    && String(td.get_npc_hotspot || "") != ""){
+                return true;
+            }
+            if(td.finish_endpoint == undefined && String(td.finish_npc || "") == npcName
+                    && String(td.finish_npc_hotspot || "") != ""){
+                return true;
+            }
+        }
         return false;
     }
 
-    // 投影尚未安装（未连宿主、任务热重载提交窗口）时返回 undefined，调用方按「没有该任务」处理。
+    private static function resolveHotspotToLocationId(id:String):String{
+        if(id == undefined || id == "") return "";
+        var boot:Object = org.flashNight.arki.map.MapDomainBridge.getBootstrap();
+        if(boot != undefined && boot.locationByHotspot != undefined){
+            var mapped:Object = boot.locationByHotspot[id];
+            if(typeof mapped == "string" && String(mapped) != "") return String(mapped);
+        }
+        return String(id);
+    }
+
+    private static function resolveCurrentLocationFallback(hotspotId:String):String{
+        if(hotspotId != undefined && String(hotspotId) != "") return resolveHotspotToLocationId(String(hotspotId));
+        var projection:Object = org.flashNight.arki.map.MapDomainBridge.getProjection();
+        if(projection != undefined){
+            if(typeof projection.currentLocationId == "string" && projection.currentLocationId != ""){
+                return resolveHotspotToLocationId(projection.currentLocationId);
+            }
+            if(projection.snapshot != undefined && typeof projection.snapshot.currentHotspotId == "string"
+                    && projection.snapshot.currentHotspotId != ""){
+                return resolveHotspotToLocationId(projection.snapshot.currentHotspotId);
+            }
+        }
+        var boot:Object = org.flashNight.arki.map.MapDomainBridge.getBootstrap();
+        if(boot == undefined || boot.locationByFrame == undefined) return "";
+        var byFrame:Object = boot.locationByFrame;
+        var scene:Object = org.flashNight.arki.map.MapFactsSampler.scene();
+        if(scene == undefined || scene.inCombat === true) return "";
+        var flagLoc:Object = byFrame[String(scene.stageFlag || "")];
+        if(typeof flagLoc == "string" && String(flagLoc) != "") return String(flagLoc);
+        var label:String = String(scene.frameLabel || "");
+        var candidates:Array = [label, String(scene.entrance || ""), String(scene.mapFrame || "")];
+        for(var i:Number = 0; i < candidates.length; i++){
+            var frameName:String = candidates[i];
+            if(frameName == "") continue;
+            var locId:Object = byFrame[frameName];
+            if(typeof locId != "string" || String(locId) == "") continue;
+            var isOutdoorFrame:Boolean = frameName.indexOf("地图-") == 0;
+            if(label == "基地地图" && isOutdoorFrame) continue;
+            if(label == "外部地图" && !isOutdoorFrame) continue;
+            return String(locId);
+        }
+        return "";
+    }
+
+    private static function legacyTaskMatches(taskData:Object, role:String, npcName:String, hotspotId:String):Boolean{
+        if(taskData[role + "_endpoint"] != undefined) return false;
+        var targetNpc:String = taskData[role + "_npc"] == undefined ? "" : String(taskData[role + "_npc"]);
+        if(targetNpc == "" || targetNpc != String(npcName)) return false;
+        var targetHotspot:String = taskData[role + "_npc_hotspot"] == undefined ? "" : String(taskData[role + "_npc_hotspot"]);
+        if(targetHotspot == "") return true;
+        var currentLocation:String = resolveCurrentLocationFallback(hotspotId);
+        if(currentLocation == "") return false;
+        return resolveHotspotToLocationId(targetHotspot) == currentLocation;
+    }
+
+    private static function legacyTaskIdsForNpc(npcName:String, role:String, hotspotId:String):Array{
+        var matched:Array = [];
+        if(tasks == undefined) return matched;
+        var seen:Object = {};
+        for(var k:String in tasks){
+            var td:Object = tasks[k];
+            if(td == undefined || td.id == undefined) continue;
+            var idStr:String = String(td.id);
+            if(seen["$" + idStr] === true) continue;
+            seen["$" + idStr] = true;
+            if(legacyTaskMatches(td, role, npcName, hotspotId)) matched.push(td);
+        }
+        InsertionSort.sort(matched, function(a:Object, b:Object):Number {
+            var pa:Number = isNaN(a.priority) ? 0 : Number(a.priority);
+            var pb:Number = isNaN(b.priority) ? 0 : Number(b.priority);
+            if(pa != pb) return pb - pa;
+            return Number(a._loadOrder) - Number(b._loadOrder);
+        });
+        var out:Array = [];
+        for(var i:Number = 0; i < matched.length; i++) out.push(matched[i].id);
+        return out;
+    }
+
+    // 投影尚未安装（未连宿主、任务热重载提交窗口）时返回 undefined，调用方按本地旧任务回退。
     private static function npcTaskIds(npcName:String, role:String):Array{
         var projection:Object = org.flashNight.arki.map.MapDomainBridge.getProjection();
         if(projection == undefined || projection.npcTasks == undefined) return undefined;

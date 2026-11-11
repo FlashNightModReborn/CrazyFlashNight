@@ -189,7 +189,7 @@ _root.检查任务数据完整性 = function() {
 }
 
 _root.NPCTaskCheck = function(npcname) {
-    var npcHotspot:String = org.flashNight.arki.map.MapHotspotResolver.resolveCurrent();
+    var npcHotspot:String = org.flashNight.arki.map.MapHotspotResolver.resolveCurrentFromSources();
     for (var index in _root.tasks_to_do) {
         var activeTaskData:Object = TaskUtil.getTaskData(_root.tasks_to_do[index].id);
         if (TaskUtil.taskNpcMatches(activeTaskData, "finish", npcname, npcHotspot) && _root.taskCompleteCheck(index)) {
@@ -478,16 +478,19 @@ _root.点击npc后检测任务 = function(npc名字, 目标) {
     if (org.flashNight.arki.scene.StageRunSession.isNpcPresentationBlocked()) {
         return "请先处理本轮战利品";
     }
-    if (!org.flashNight.arki.map.MapDomainBridge.isCurrent()) {
-        org.flashNight.arki.map.MapDomainBridge.invalidate();
-        _root.发布消息("人物状态正在更新，请稍后再点一次。");
-        return "状态更新中";
-    }
-    if (!org.flashNight.arki.map.MapWorldNpcController.canInteract(目标)) return "人物当前不在场";
     var npcTaskName:String = String(npc名字);
     if (目标 != undefined && 目标 != null && 目标.任务名 != undefined && 目标.任务名 != null && String(目标.任务名).length > 0) {
         npcTaskName = String(目标.任务名);
     }
+    if (!org.flashNight.arki.map.MapDomainBridge.isCurrent()) {
+        org.flashNight.arki.map.MapDomainBridge.invalidate();
+        if (org.flashNight.arki.map.MapWorldNpcController.isManaged(目标)
+                || TaskUtil.requiresCurrentMapProjection(npcTaskName)) {
+            _root.发布消息("人物状态正在更新，请稍后再点一次。");
+            return "状态更新中";
+        }
+    }
+    if (!org.flashNight.arki.map.MapWorldNpcController.canInteract(目标)) return "人物当前不在场";
     var ret = NPCTaskCheck(npcTaskName);
     switch (ret.result) {
         case "完成任务":

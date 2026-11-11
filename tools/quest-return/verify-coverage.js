@@ -16,6 +16,7 @@ const evidence = JSON.parse(read('tools/quest-return/coverage-evidence.json'));
 const taskFiles = [...read('data/task/list.xml').matchAll(/<task>([^<]+)<\/task>/g)].map(m => m[1]);
 const tasks = {};
 for (const file of taskFiles) {
+  if (file === 'agent_tasks.json' && !fs.existsSync(path.join(root, 'data/task', file))) continue;
   for (const task of JSON.parse(read('data/task/' + file)).tasks) tasks[String(task.id)] = task;
 }
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase();

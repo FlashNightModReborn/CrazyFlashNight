@@ -193,17 +193,69 @@ namespace CF7Launcher.Tests.Tasks
             Assert.ThrowsAny<IOException>(() => MapAssetCandidates.ValidatePublished(root, d));
         }
         [Fact]
-        public void LegacyWorldAdapterCannotCertifyANewOrEditedOrUnreadyBoundPlacement()
+        public void SceneBackedPlacementsSurviveEditsWhileUnbackedNewPlacementsRequireSceneNpc()
         {
             var d = Definition(); var tasks = MapTaskCatalog.Load(root).Tasks;
             Assert.True(MapDomainService.Project(d, new JObject(), tasks)["taskEndpoints"]["1"]["finish"].Value<bool>("resolved"));
-            Assert.True(MapDefinition.Edit(d, JArray.Parse("[{kind:'placement',id:'home_npc',values:{presenceWhen:{type:'always'}}}]"))["placements"]["home_npc"].Value<bool>("legacyWorldAdapter"));
             var edited = MapDefinition.Edit(d, JArray.Parse("[{kind:'placement',id:'home_npc',values:{presenceWhen:{type:'chain',key:'主线',min:0}}}]"));
-            Assert.Null(edited["placements"]["home_npc"]["legacyWorldAdapter"]);
-            Assert.False(MapDomainService.Project(edited, JObject.Parse("{chains:{'主线':0}}"), tasks)["taskEndpoints"]["1"]["finish"].Value<bool>("resolved"));
+            Assert.True(edited["placements"]["home_npc"].Value<bool>("legacyWorldAdapter"));
+            Assert.True(MapDomainService.Project(edited, JObject.Parse("{chains:{'主线':0}}"), tasks)["taskEndpoints"]["1"]["finish"].Value<bool>("resolved"));
+            // 新建尚未接入真实场景的驻点（无场景检出、无已核对标记）不得伪报就绪。
+            var newlyCreated = MapDefinition.Edit(Definition(), JArray.Parse("[{kind:'npc',id:'bob',action:'create',values:{label:'乙',runtimeNames:['乙'],aliases:[],placementPolicy:'unique'}},{kind:'placement',id:'bob_home',action:'create',values:{npcId:'bob',locationId:'home',label:'乙驻点',presenceWhen:{type:'always'}}}]"));
+            var bobTasks = JObject.Parse("{'99':{id:99,get_endpoint:{mode:'fixed',npcId:'bob',placementId:'bob_home'},finish_endpoint:{mode:'followCurrent',npcId:'bob'}}}");
+            var unbackedProj = MapDomainService.Project(newlyCreated, new JObject(), bobTasks, new JObject());
+            Assert.False(unbackedProj["placements"]["bob_home"].Value<bool>("worldReady"));
+            Assert.False(unbackedProj["taskEndpoints"]["99"]["get"].Value<bool>("resolved"));
+            Assert.Equal("world_binding_required", (string)unbackedProj["taskEndpoints"]["99"]["get"]["status"]);
+            Assert.False(unbackedProj["taskEndpoints"]["99"]["finish"].Value<bool>("resolved"));
+            // 一旦场景目录检出同名真实 NPC 实例（即便未显式绑 worldBinding），该驻点即就绪。
+            var backedProj = MapDomainService.Project(newlyCreated, new JObject(), bobTasks, JObject.Parse("{occ_bob:{ready:false,sceneKey:'房间',runtimeName:'乙',taskName:'乙'}}"));
+            Assert.True(backedProj["placements"]["bob_home"].Value<bool>("worldReady"));
+            Assert.True(backedProj["taskEndpoints"]["99"]["get"].Value<bool>("resolved"));
+            Assert.True(backedProj["taskEndpoints"]["99"]["finish"].Value<bool>("resolved"));
+            // 显式 worldBinding 若场景导出不可用仍标记未就绪，但不再比较易变摘要。
             d["placements"]["home_npc"]["worldBinding"] = JObject.Parse("{occurrenceId:'npc',sourceDigest:'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'}");
             Assert.False(MapDomainService.Project(d, new JObject(), tasks, JObject.Parse("{npc:{ready:false}}"))["taskEndpoints"]["1"]["finish"].Value<bool>("resolved"));
+            Assert.True(MapDomainService.Project(d, new JObject(), tasks, JObject.Parse("{npc:{ready:true,sourceDigest:'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',sceneKey:'房间',taskName:'甲'}}"))["taskEndpoints"]["1"]["finish"].Value<bool>("resolved"));
             Assert.Throws<InvalidDataException>(() => MapDefinition.Edit(Definition(), JArray.Parse("[{kind:'placement',id:'fake',action:'create',values:{npcId:'person',locationId:'home',legacyWorldAdapter:true}}]")));
+        }
+        [Fact]
+        public void RuntimeStartupRecoversPendingBatchDegradesMissingSwfPerLocationAndFiltersLegacySaveKeys()
+        {
+            // R2: 仅当存在未完成批次时自动恢复，拒绝把半截任务文件与旧地图定义混入运行态。
+            var pending = Prepared();
+            File.WriteAllBytes(PathFor("data/task/task.json"), pending.TaskAfter);
+            Assert.Equal("partial", (string)pending.Journal.State(pending.Record)["state"]);
+            var recoveredRuntime = new MapRuntimeContent(root, _ => { });
+            Assert.Equal("original", (string)pending.Journal.State(pending.Record)["state"]);
+            Assert.Null(recoveredRuntime.Catalog.Tasks["1"]["finish_endpoint"]);
+
+            // R4 + 容错降级：单地点缺失关卡 SWF 时仅禁用该地点导航，不影响端点静态身份与健康地点。
+            var d = Definition();
+            d["locations"]["broken"] = JObject.Parse("{label:'坏下水道',sceneName:'地图-坏下水道',sceneKind:'outdoor',enabled:true,enterWhen:{type:'always'},visibleWhen:{type:'always'},sceneBinding:{sourceSwf:'flashswf/levels/missing.swf',linkage:'地图-坏下水道'}}");
+            ((JArray)d["pages"]["base"]["hotspots"]).Add(JObject.Parse("{id:'broken',label:'坏下水道',locationId:'broken',rect:{x:200,y:0,w:100,h:100}}"));
+            ((JArray)d["pages"]["base"]["filters"][0]["hotspotIds"]).Add("broken");
+            File.WriteAllBytes(PathFor(MapDefinition.RelativePath), MapDefinition.Bytes(d));
+            Put("data/task/task.json", "{\"tasks\":[{\"id\":1,\"title\":\"甲任务\",\"chain\":\"主线#1\",\"get_npc\":\"甲\",\"finish_npc\":\"甲\"},{\"id\":9,\"title\":\"未映射端点\",\"chain\":\"支线#1\",\"get_endpoint\":{\"mode\":\"followCurrent\",\"npcId\":\"missing_npc\"}}]}");
+            var warnings = new System.Collections.Generic.List<string>();
+            var runtime = new MapRuntimeContent(root, warnings.Add);
+            Assert.NotEmpty(warnings);
+            var rawFacts = JObject.Parse("{chains:{'主线':1,'已删旧链':5},infrastructure:{'自行车':1,'旧基建':2},flags:{},finished:{'1':1,'999999':2},activeOrder:[],deliverableIds:[],available:{},scene:{stageFlag:'房间',frameLabel:'基地地图',entrance:'',mapFrame:'',inCombat:false},navigation:{reason:''},dynamic:{roommateGender:''}}");
+            var normalized = runtime.NormalizeFacts(rawFacts);
+            Assert.Null(normalized["chains"]["已删旧链"]);
+            Assert.Null(normalized["infrastructure"]["旧基建"]);
+            var projected = runtime.Project(normalized);
+            Assert.Equal("unmapped_endpoint", (string)projected["taskEndpoints"]["9"]["get"]["status"]);
+            Assert.True(projected["taskEndpoints"]["1"]["get"].Value<bool>("resolved"));
+            Assert.False(projected["locations"]["broken"].Value<bool>("enterable"));
+            Assert.False(projected["snapshot"]["hotspotStates"]["broken"].Value<bool>("enabled"));
+            Assert.Contains("场景资源", (string)projected["snapshot"]["hotspotStates"]["broken"]["lockedReason"]);
+            // 健康地点（无错误项）仍保持可进入。
+            var healthyOnly = MapDomainService.Project(d, normalized, runtime.Catalog.Tasks, runtime.WorldOccurrences, new JObject { ["broken"] = "缺失测试 SWF" });
+            Assert.True(healthyOnly["locations"]["home"].Value<bool>("enterable"));
+            Assert.True(healthyOnly["snapshot"]["hotspotStates"]["home"].Value<bool>("enabled"));
+            Assert.False(healthyOnly["locations"]["broken"].Value<bool>("enterable"));
+            Assert.False(healthyOnly["snapshot"]["hotspotStates"]["broken"].Value<bool>("enabled"));
         }
         [Fact]
         public void FilterReorderUpdatesTheProductionSortCoordinateAndSceneCopyUsesItsNewLabel()
