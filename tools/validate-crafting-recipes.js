@@ -127,8 +127,8 @@ function validate() {
             recipeCount++;
         });
     });
-    // Includes craft.commune-armor.016-020 (3XF special-duty set).
-    if (recipeCount !== 334) fail('expected 334 recipes, got ' + recipeCount);
+    // Reviewed current authored total, including craft.plugin.011 (pistol carbine kit).
+    if (recipeCount !== 350) fail('expected 350 recipes, got ' + recipeCount);
     process.stdout.write('Crafting recipe identity: ' + recipeCount
         + ' recipes / ' + seen.size + ' unique recipeIds passed\n');
 }

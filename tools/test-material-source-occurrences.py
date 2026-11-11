@@ -107,7 +107,7 @@ EXPECTED_BASELINES = {
     },
     "crafting": {
         "categoryCount": 14,
-        "recipeCount": 334
+        "recipeCount": 350
     },
     "enemies": {
         "manifestFileCount": 18,
