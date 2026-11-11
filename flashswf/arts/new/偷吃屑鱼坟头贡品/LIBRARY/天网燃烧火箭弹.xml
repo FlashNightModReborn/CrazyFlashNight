@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="天网燃烧火箭弹" itemID="6af40985-00001bfc" linkageExportForAS="true" linkageIdentifier="天网燃烧火箭弹" lastModified="1794378174" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="天网燃烧火箭弹" itemID="6af40985-00001bfc" linkageExportForAS="true" linkageIdentifier="天网燃烧火箭弹" lastModified="1794386720" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="天网燃烧火箭弹" currentFrame="4">
+    <DOMTimeline name="天网燃烧火箭弹" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#B1EBC9">
           <frames>
@@ -39,7 +39,7 @@ if(!子弹威力)
 }
 else
 {
-   子弹威力 *= 0.5;
+   子弹威力 *= 1;
 }
 子弹速度 = 0;
 击中地图效果 = "";
@@ -58,7 +58,7 @@ _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种�
               <Actionscript>
                 <script><![CDATA[声音 = "";
 霰弹值 = 4;
-子弹散射度 = 360;
+子弹散射度 = 60;
 发射效果 = "";
 子弹种类 = "火焰";
     子弹属性.伤害类型 = "魔法";

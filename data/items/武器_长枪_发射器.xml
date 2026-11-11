@@ -517,14 +517,14 @@
     <type>武器</type>
     <use>长枪</use>
     <price>663000</price>
-    <description>装填复合燃烧弹的火箭筒，对于装甲目标效果拔群。</description>
+    <description>装填复合燃烧弹的火箭筒，对于集群目标效果拔群。</description>
     <data>
       <level>35</level>
       <weight>25</weight>
       <dressup>枪-长枪-AMML3</dressup>
       <capacity>2</capacity>
       <split>1</split>
-      <diffusion>5</diffusion>
+      <diffusion>2</diffusion>
       <interval>2000</interval>
       <singleshoot>true</singleshoot>
       <velocity>50</velocity>
@@ -536,6 +536,8 @@
       <bulletsize>60</bulletsize>
       <power>3000</power>
       <impact>10</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
     <balance>
