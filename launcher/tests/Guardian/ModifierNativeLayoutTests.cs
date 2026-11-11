@@ -121,11 +121,13 @@ namespace Launcher.Tests.Guardian
         public void PageInputsSitOutsideTheNavigationButtonArt()
         {
             Assert.True(ModifierNativeLayout.ItemPage.Left >= ModifierNativeLayout.ItemLast.Right);
-            Assert.True(ModifierNativeLayout.ItemPageSummary.Left >= ModifierNativeLayout.ItemPage.Right);
+            Assert.True(ModifierNativeLayout.ItemPageLabel.Right <= ModifierNativeLayout.ItemPage.Left);
+            Assert.True(ModifierNativeLayout.ItemPage.Right <= ModifierNativeLayout.ItemPageTotal.Left);
             Assert.True(ModifierNativeLayout.UnitPage.Left >= ModifierNativeLayout.UnitLast.Right);
-            Assert.True(ModifierNativeLayout.UnitPageSummary.Left >= ModifierNativeLayout.UnitPage.Right);
-            Assert.True(ModifierNativeLayout.ItemPageSummary.Right <= ModifierNativeLayout.Width);
-            Assert.True(ModifierNativeLayout.UnitPageSummary.Right <= ModifierNativeLayout.Width);
+            Assert.True(ModifierNativeLayout.UnitPageLabel.Right <= ModifierNativeLayout.UnitPage.Left);
+            Assert.True(ModifierNativeLayout.UnitPage.Right <= ModifierNativeLayout.UnitPageTotal.Left);
+            Assert.True(ModifierNativeLayout.ItemPageTotal.Right <= ModifierNativeLayout.Width);
+            Assert.True(ModifierNativeLayout.UnitPageTotal.Right <= ModifierNativeLayout.Width);
         }
 
         private static void AssertNav(ModifierArtCatalog art, string page, string action, Rectangle expected)

@@ -23,8 +23,9 @@ namespace CF7Launcher.Guardian
         internal static readonly Rectangle ItemPrevious = new Rectangle(236, 376, 24, 25);
         internal static readonly Rectangle ItemNext = new Rectangle(320, 376, 24, 25);
         internal static readonly Rectangle ItemLast = new Rectangle(349, 376, 24, 25);
-        internal static readonly Rectangle ItemPage = new Rectangle(378, 379, 40, 22);
-        internal static readonly Rectangle ItemPageSummary = new Rectangle(422, 381, 180, 20);
+        internal static readonly Rectangle ItemPage = new Rectangle(428, 379, 40, 22);
+        internal static readonly Rectangle ItemPageLabel = new Rectangle(378, 381, 48, 20);
+        internal static readonly Rectangle ItemPageTotal = new Rectangle(470, 381, 80, 20);
         internal static readonly Rectangle ItemQuery = new Rectangle(433, 318, 92, 24);
         internal static readonly Rectangle ItemQuantity = new Rectangle(461, 243, 75, 24);
         internal static readonly Rectangle ItemMinus = new Rectangle(547, 241, 24, 24);
@@ -48,8 +49,9 @@ namespace CF7Launcher.Guardian
         internal static readonly Rectangle UnitPrevious = new Rectangle(220, 377, 24, 25);
         internal static readonly Rectangle UnitNext = new Rectangle(251, 377, 24, 25);
         internal static readonly Rectangle UnitLast = new Rectangle(280, 377, 24, 25);
-        internal static readonly Rectangle UnitPage = new Rectangle(310, 379, 34, 22);
-        internal static readonly Rectangle UnitPageSummary = new Rectangle(348, 381, 120, 20);
+        internal static readonly Rectangle UnitPage = new Rectangle(346, 379, 34, 22);
+        internal static readonly Rectangle UnitPageLabel = new Rectangle(310, 381, 34, 20);
+        internal static readonly Rectangle UnitPageTotal = new Rectangle(382, 381, 40, 20);
         internal static readonly Rectangle UnitGrid = new Rectangle(183, 139, 171, 225);
         internal static readonly Rectangle UnitFrame = new Rectangle(382, 138, 231, 138);
         internal static readonly Rectangle UnitLevel = new Rectangle(428, 326, 35, 22);
