@@ -201,11 +201,14 @@ async function checkReadingAndKeyboard(page, pageId, viewport) {
   assert.equal(await page.locator('[data-comic=play]').innerText(), '暂停');
   await page.keyboard.press('ArrowRight');
   assert.equal(await page.locator('[data-comic=play]').innerText(), '播放');
+  assert.equal(await page.locator('[data-comic=next]').innerText(), '下一句（E）');
+  await page.keyboard.press('e');
+  assert.equal(await page.locator('[data-comic=play]').innerText(), '播放');
   await page.screenshot({path:path.join(output, `${pageId}-focus-${viewport}.png`)});
 }
 
 async function checkBeatCamera(page, viewport) {
-  // 节拍相机：跳到 p1③（push 0.7 ease-out）播放，采样派生相机确认节拍内位移与字幕同步。
+  // 节拍相机：跳到 p1③（现为 hold，开场漫画不再逐句缩放），采样确认节拍内保持基础缩放与字幕同步。
   await page.goto(`http://127.0.0.1:${server.address().port}/fixture`);
   await page.waitForFunction(() => messages.some(message => message.cmd === 'prepared'));
   await page.waitForFunction(() => document.querySelector('[data-comic=play]').textContent === '暂停');
@@ -221,12 +224,12 @@ async function checkBeatCamera(page, viewport) {
     samples.push(await page.evaluate(() => cameras.at(-1)));
   }
   assert(samples.every(sample => sample && !sample.whole), 'beat playback keeps focus draws');
-  assert(samples[1].s > samples[0].s && samples[2].s > samples[1].s,
-    'push beat zooms in progressively: ' + samples.map(sample => sample.s).join(' -> '));
+  assert(Math.abs(samples[0].s - samples[1].s) < 1e-9 && Math.abs(samples[1].s - samples[2].s) < 1e-9,
+    'opening comic beat keeps base scale (no zoom): ' + samples.map(sample => sample.s).join(' -> '));
   assert.equal(await page.locator('[data-comic=speech]').innerText(),
     await page.evaluate(() => BOOK_COMIC_CONTENT.pages[0].panels[0].lines[2].text),
     'subtitle stays on the same beat while the camera moves');
-  await page.screenshot({path:path.join(output, `prologue-beat-push-${viewport}.png`)});
+  await page.screenshot({path:path.join(output, `prologue-beat-hold-${viewport}.png`)});
   // 过渡中帧：播过 p8（4.6s 单句短格）进入 p9 的 350ms smooth 过渡。
   await page.locator('[data-comic=play]').click();
   for (let i = 0; i < 15; i++) await page.locator('[data-comic=next]').click();

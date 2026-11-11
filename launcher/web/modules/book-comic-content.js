@@ -35,27 +35,21 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "以为做flash可以赚钱，结果还是一分钱没有，算了，我还是另外想办法。",
               "camera": {
-                "motion": "pull",
-                "intensity": 0.2,
-                "easing": "smoothstep"
+                "motion": "hold"
               }
             },
             {
               "speaker": "ANDY LAW",
               "text": "我需要钱……月薪200太少了！！离小康标准还差得远啊……55555：（",
               "camera": {
-                "motion": "push",
-                "intensity": 0.7,
-                "easing": "ease-out"
+                "motion": "hold"
               }
             },
             {
               "speaker": "ANDY LAW",
               "text": "我总有一天我会成为和小小、倒吊男Dead一样的“专家”。",
               "camera": {
-                "motion": "push",
-                "intensity": 0.35,
-                "easing": "smoothstep"
+                "motion": "hold"
               }
             }
           ]
@@ -79,18 +73,14 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "不过现在……哼哼哼……",
               "camera": {
-                "motion": "push",
-                "intensity": 0.25,
-                "easing": "ease-in"
+                "motion": "hold"
               }
             },
             {
               "speaker": "ANDY LAW",
               "text": "还是去做些高付出，高回报的事……哼哼哼！！！运气好时一次能赚5元呢",
               "camera": {
-                "motion": "push",
-                "intensity": 0.5,
-                "easing": "ease-out"
+                "motion": "hold"
               }
             }
           ]
@@ -121,9 +111,7 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "喂，是我，Andy Law.我缺钱用，有“定单”吗？",
               "camera": {
-                "motion": "push",
-                "intensity": 0.3,
-                "easing": "smoothstep"
+                "motion": "hold"
               }
             }
           ]
@@ -147,9 +135,7 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "什么？“去修理成都理工大学附近的流氓”？",
               "camera": {
-                "motion": "push",
-                "intensity": 0.5,
-                "easing": "ease-out"
+                "motion": "hold"
               }
             },
             {
@@ -163,9 +149,7 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "虽然都是“修理”，但好像性质不同吧？",
               "camera": {
-                "motion": "pull",
-                "intensity": 0.2,
-                "easing": "smoothstep"
+                "motion": "hold"
               }
             }
           ]
@@ -189,9 +173,7 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "什么？？酬劳300元人民币？！定金是50元？爽性",
               "camera": {
-                "motion": "push",
-                "intensity": 0.75,
-                "easing": "ease-out",
+                "motion": "hold",
                 "shake": 0.4
               }
             },
@@ -199,9 +181,7 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "后果自负？……没关系没关系，我接了我接了……哈哈哈",
               "camera": {
-                "motion": "push",
-                "intensity": 0.3,
-                "easing": "smoothstep"
+                "motion": "hold"
               }
             }
           ]
@@ -225,18 +205,14 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "这样以来。我就可以去荷花池批发市场买颜料了！~~~哈哈哈，谢谢你啦！",
               "camera": {
-                "motion": "push",
-                "intensity": 0.45,
-                "easing": "ease-out"
+                "motion": "hold"
               }
             },
             {
               "speaker": "ANDY LAW",
               "text": "钱入我的帐就行了，其他具体的E-mail给我就好了。886！：）",
               "camera": {
-                "motion": "pull",
-                "intensity": 0.25,
-                "easing": "smoothstep"
+                "motion": "hold"
               }
             }
           ]
@@ -267,9 +243,7 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "呼……修理人我可没有经验啊……我真是疯了。",
               "camera": {
-                "motion": "pull",
-                "intensity": 0.4,
-                "easing": "smoothstep"
+                "motion": "hold"
               }
             }
           ]
@@ -293,9 +267,7 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "接下来，我要……练习一下怎么打人",
               "camera": {
-                "motion": "push",
-                "intensity": 0.5,
-                "easing": "smoothstep"
+                "motion": "hold"
               }
             }
           ]
@@ -384,9 +356,7 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "ANDY LAW",
               "text": "恩？这么可恶的流氓？看我来收拾！！",
               "camera": {
-                "motion": "push",
-                "intensity": 0.65,
-                "easing": "ease-out",
+                "motion": "hold",
                 "anchor": [
                   0.7255,
                   0.5
@@ -414,9 +384,7 @@ window.BOOK_COMIC_CONTENT = {
               "speaker": "旁白",
               "text": "第二天",
               "camera": {
-                "motion": "pull",
-                "intensity": 0.3,
-                "easing": "smoothstep"
+                "motion": "hold"
               }
             }
           ]
