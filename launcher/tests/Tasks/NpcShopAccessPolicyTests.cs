@@ -45,6 +45,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("吸特乐", 28, 0, 1, true)]
         [InlineData("Vanshuther", 99, 6, 1, false)]
         [InlineData("Vanshuther", 0, 7, 0, true)]
+        [InlineData("黑仔", 0, 0, 0, false)]
         [InlineData("黑仔", 28, 6, 1, true)]
         [InlineData("武器订购系统", 0, 7, 0, true)]
         public void CurrentServiceUsesExistingMapRules(string shop, int main, int school, int motorcycle, bool expected)
@@ -137,8 +138,12 @@ namespace CF7Launcher.Tests.Tasks
                 })).Select(x => (string)x["shopId"]).ToHashSet(StringComparer.Ordinal);
             var policy = JObject.Parse(File.ReadAllText(Path.Combine(Root, NpcShopAccessPolicy.RelativePath)));
             var type61Nodes = new[] { "A01", "A05", "A08", "A11", "A16", "A19" };
-            Assert.Equal(31 + type61Nodes.Length, candidates.Count);
-            Assert.True(candidates.SetEquals(((JObject)policy["shops"]).Properties().Select(p => p.Name)));
+            Assert.Equal(30 + type61Nodes.Length, candidates.Count);
+            // #227改用透镜后黑仔不再供给合成前置；保留其现役剧情门槛，不能因移出采购集合而放宽整店权限。
+            Assert.DoesNotContain("黑仔", candidates);
+            Assert.Equal("placement", policy["shops"]["黑仔"].Value<string>("mode"));
+            Assert.True(candidates.Concat(new[] { "黑仔" }).ToHashSet(StringComparer.Ordinal)
+                .SetEquals(((JObject)policy["shops"]).Properties().Select(p => p.Name)));
             var loaded = NpcShopAccessPolicy.Load(Root, Definition());
             Assert.Contains(NpcShopAccessPolicy.RelativePath, loaded.SourceHashes.Keys);
             Assert.Contains("data/shops/list.xml", loaded.SourceHashes.Keys);

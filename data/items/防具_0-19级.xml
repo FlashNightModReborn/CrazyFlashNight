@@ -8377,7 +8377,7 @@
     <type>防具</type>
     <use>头部装备</use>
     <setId>black_iron_deadman</setId>
-    <price>20000</price>
+    <price>16000</price>
     <description>众志成城，黑云袭来···
     这没什么特别的，只是一条普通的围巾，并不能起到蒙面或抵御沙尘和寒风的作用，
     但是在风一吹过时，围巾会飘在空中，可能是&lt;font color="#000000"&gt;他们&lt;/font&gt;认为看起来比较帅吧。</description>
@@ -8400,19 +8400,18 @@
       <workbookVersion>1</workbookVersion>
       <weightLayers>0</weightLayers>
       <priceLayers>0</priceLayers>
-      <category>1</category>
+      <category>0.5</category>
       <damageTypeFactor>1</damageTypeFactor>
-      <balanceMode>exception</balanceMode>
-      <exceptionCode>legacy-off-formula</exceptionCode>
+      <balanceMode>formula</balanceMode>
       <currentScore>240</currentScore>
       <balanceScore>242</balanceScore>
       <weightedScore>242</weightedScore>
-      <recommendedGoldPrice>31200</recommendedGoldPrice>
+      <recommendedGoldPrice>15600</recommendedGoldPrice>
       <recommendedKPointPrice>1080</recommendedKPointPrice>
-      <marketPrice>20000</marketPrice>
-      <status>unresolved</status>
-      <inputDigest>fnv1a32:d47b3b40</inputDigest>
-      <sourceDigest>sha256:9fef0a4e35134fb5b0df38be2504431bb97d8943c1fe0d2cde96f7500f3ea438</sourceDigest>
+      <marketPrice>16000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:2a966641</inputDigest>
+      <sourceDigest>sha256:0ab4fbbc0252d1efdf7e91023e5a78ac62c94187044f91d0fb7c569da43fab7c</sourceDigest>
       <auditRef>armor:黑铁死士围巾</auditRef>
     </balance>
   </item>
@@ -9478,18 +9477,17 @@
       <workbookVersion>1</workbookVersion>
       <weightLayers>0</weightLayers>
       <priceLayers>0</priceLayers>
-      <category>1</category>
+      <category>1.5</category>
       <damageTypeFactor>1</damageTypeFactor>
-      <balanceMode>exception</balanceMode>
-      <exceptionCode>legacy-off-formula</exceptionCode>
+      <balanceMode>formula</balanceMode>
       <currentScore>280</currentScore>
       <balanceScore>270</balanceScore>
       <weightedScore>270</weightedScore>
-      <recommendedGoldPrice>33800</recommendedGoldPrice>
+      <recommendedGoldPrice>50700</recommendedGoldPrice>
       <recommendedKPointPrice>1170</recommendedKPointPrice>
       <marketPrice>50000</marketPrice>
-      <status>unresolved</status>
-      <inputDigest>fnv1a32:da27fa78</inputDigest>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:34c79fae</inputDigest>
       <sourceDigest>sha256:00671a85963ac6a1176aa2a37789292d358a7f70f648b779fa76406b18187f82</sourceDigest>
       <auditRef>armor:锐刻幻影夜视仪</auditRef>
     </balance>
@@ -9943,8 +9941,8 @@
     <type>防具</type>
     <use>头部装备</use>
     <setId>black_iron_ranger</setId>
-    <price>39000</price>
-    <description>黑色的围巾加上锐刻夜视仪，成了堕落城内黑铁会最为标志性的武力象征。
+    <price>20000</price>
+    <description>黑色的围巾加上改装目镜，成了堕落城内黑铁会最为标志性的武力象征。
     &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，效果为绿色，开启亮度等级为0~4。</description>
     <hairAbove>true</hairAbove>
     <data>
@@ -9984,21 +9982,20 @@
       <schemaVersion>1</schemaVersion>
       <formulaVersion>1</formulaVersion>
       <workbookVersion>1</workbookVersion>
-      <weightLayers>0</weightLayers>
+      <weightLayers>1</weightLayers>
       <priceLayers>0</priceLayers>
-      <category>1</category>
+      <category>0.5</category>
       <damageTypeFactor>1</damageTypeFactor>
-      <balanceMode>exception</balanceMode>
-      <exceptionCode>legacy-off-formula</exceptionCode>
-      <currentScore>414</currentScore>
+      <balanceMode>formula</balanceMode>
+      <currentScore>390</currentScore>
       <balanceScore>312</balanceScore>
-      <weightedScore>312</weightedScore>
-      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <weightedScore>390</weightedScore>
+      <recommendedGoldPrice>19500</recommendedGoldPrice>
       <recommendedKPointPrice>1350</recommendedKPointPrice>
-      <marketPrice>39000</marketPrice>
-      <status>unresolved</status>
-      <inputDigest>fnv1a32:78b672e3</inputDigest>
-      <sourceDigest>sha256:fbd6831f769e1a385ddef87d49f27ea5142987d6d61e6b92a92af46eedb73bc3</sourceDigest>
+      <marketPrice>20000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:9ec03a1c</inputDigest>
+      <sourceDigest>sha256:c82184dea31b71b3c1f77c06f35f964e5003f6e90fa3d9c863eb38b896d3f0c7</sourceDigest>
       <auditRef>armor:黑铁游侠围巾</auditRef>
     </balance>
   </item>

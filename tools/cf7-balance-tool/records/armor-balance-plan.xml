@@ -77,7 +77,7 @@
     <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.015"/>
   </budgetBreakdown>
 </record>
-    <!-- 防具_0-19级.xml：255 条 exception 机械登记 -->
+    <!-- 防具_0-19级.xml：252 条 exception 机械登记；#227 三件已逐件标定迁出 -->
     <record itemName="黑色袜子" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="黑丝灰色格子短裙" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="白色袜子" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
@@ -266,7 +266,11 @@
     <record itemName="杰森面具" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="弗莱迪手套" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="黑铁死士手套" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
-    <record itemName="黑铁死士围巾" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑铁死士围巾" sourceFile="data/items/防具_0-19级.xml" weightLayers="0" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="16000" status="confirmed" note="#227：主线任务25奖励早于外交部长主线69购买入口，按ABR-PRICE-001取种类系数0.5；M=0/E=0，不计高价层。公式价15600，按整千取16000（+2.5641%）；2026-11-11维护者确认。原data/lifecycle及其他战斗配置保留；得分240/242（-0.8264%）。获取证据data/task/tasks1.json#25及data/map/map_definition.json#place_c7e60636436b3d3e；不混算书中经济。">
+      <budgetBreakdown>
+        <entry code="acquisition.gold-standard" delta="0" ruleRef="ABR-LAYER-006" evidenceRef="data/shops/npcs/黑铁会外交部长.json#catalog.0" />
+      </budgetBreakdown>
+    </record>
     <record itemName="JK校服" sourceFile="data/items/防具_0-19级.xml" weightLayers="0" priceLayers="0" category="1" damageTypeFactor="1" adoptedGoldPrice="39000" expectedKPointPrice="1350" kpointEvidenceRef="data/kshop/末日COS☆PLAY.json" status="confirmed" note="15级轻装上衣；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分310，残差0.00%">
       <budgetBreakdown>
         <entry code="acquisition.kshop" delta="0" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/末日COS☆PLAY.json" />
@@ -302,7 +306,11 @@
     <record itemName="C级防化服手套" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="C级防化服下装" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="C级防化服上装" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
-    <record itemName="锐刻幻影夜视仪" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
+    <record itemName="锐刻幻影夜视仪" sourceFile="data/items/防具_0-19级.xml" weightLayers="0" priceLayers="0" category="1.5" damageTypeFactor="1" adoptedGoldPrice="50000" status="confirmed" note="#227：普通金币购买M=0/E=0；夜视生命周期特效按ABR-PRICE-001取种类系数1.5，不另给属性层。公式价50700，保留原整万价50000（-1.3807%）；2026-11-11维护者确认。原data/lifecycle及其他战斗配置保留；得分280/270（+3.7037%）。夜视证据为本物品lifecycle及scripts/逻辑/装备函数/红外夜视仪.as；无K点购买渠道，不伪造K点实售价。">
+      <budgetBreakdown>
+        <entry code="acquisition.gold-standard" delta="0" ruleRef="ABR-LAYER-006" evidenceRef="data/shops/npcs/Andy Law.json#catalog.18" />
+      </budgetBreakdown>
+    </record>
     <record itemName="大型拳套" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="战术套装裤子" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="战术套装上衣" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
@@ -313,7 +321,11 @@
     <record itemName="黑铁游侠手套" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="黑铁游侠下装" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="黑铁游侠上装" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
-    <record itemName="黑铁游侠围巾" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑铁游侠围巾" sourceFile="data/items/防具_0-19级.xml" weightLayers="1" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="20000" status="confirmed" note="#227：M=1仅为合成层，E=0；无成品直售，2026-11-11维护者确认本件按ABR-PRICE-001无购买途径0.5优先于夜视特效1.5，两系数不相乘，不改全局公式。公式价19500，按整万取20000（+2.5641%）。原data/lifecycle及其他战斗配置保留；重新计算偏科惩罚后得分390/390。配方改用透镜1、围巾1、帆布2、增效剂2及工费1100；按合成表成本D33取1层、种类0.5，3900+6000+4000+1100=15000，与目标15000一致；复算入口models/black-iron-scarf/acquisition.ts。">
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/黑白契约.json#craft.black-white.001" />
+      </budgetBreakdown>
+    </record>
     <record itemName="天山黑侠棕色皮鞋" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="天山黑侠裤子" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="天山黑侠上装" sourceFile="data/items/防具_0-19级.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
