@@ -93,11 +93,15 @@ const CASES = [
     { name: '【taskFinished 正向引用独立任务】（应通过）', expect: null,
       tasks: [task(1, 'A#1', { conditions: [tf(2)] }), task(2, 'B#1')] },
     { name: '两份旧Agent可选源缺失不阻断正式目录', expect: null, legacy: true, tasks: [task(1, 'A#1')] },
-    { name: '存在的Agent任务仍参加重复ID检查', expect: 'duplicate task id', legacy: true,
+    { name: '运行Agent任务不参与正式目录或其重复ID检查', expect: null, legacy: true,
       agentTasks: JSON.stringify({ tasks: [task(1, 'B#1')] }), tasks: [task(1, 'A#1')] },
-    { name: '存在的Agent任务JSON损坏仍失败', expect: 'invalid JSON', legacy: true, agentTasks: '{', tasks: [task(1, 'A#1')] },
-    { name: '存在的Agent文本JSON损坏仍失败', expect: 'invalid JSON', legacy: true, agentText: '{', tasks: [task(1, 'A#1')] },
-    { name: '同名目录不能被当成缺失可选文件', expect: 'must be a regular file', legacy: true, agentDirectory: true, tasks: [task(1, 'A#1')] },
+    { name: '本机Agent任务损坏不污染正式目录构建', expect: null, legacy: true, agentTasks: '{', tasks: [task(1, 'A#1')] },
+    { name: '本机Agent文本损坏不污染正式目录构建', expect: null, legacy: true, agentText: '{', tasks: [task(1, 'A#1')] },
+    { name: '正式目录不读取Agent运行路径上的目录', expect: null, legacy: true, agentDirectory: true, tasks: [task(1, 'A#1')] },
+    { name: '正式条件不能依赖仅在本机存在的Agent任务', expect: 'references missing task id', legacy: true,
+      agentTasks: JSON.stringify({ tasks: [task(200001, '委托')] }), tasks: [task(1, 'A#1', { conditions: [tf(200001)] })] },
+    { name: '正式文本引用不能由本机Agent文本补齐', expect: 'missing text key', legacy: true,
+      agentText: JSON.stringify({ '$LOCAL_ONLY':'private' }), tasks: [task(1, 'A#1', {title:'$LOCAL_ONLY'})] },
     { name: '普通必需源缺失继续失败', expect: 'cannot read', missingRequired: true, tasks: [] },
     { name: '缺失的可选源重复登记仍失败', expect: 'duplicate manifest source', legacy: true, duplicateAgent: true, tasks: [task(1, 'A#1')] }
 ];
@@ -146,7 +150,67 @@ for (let i = 0; i < CASES.length; i += 1) {
     console.log((err === null ? '  PASS ' : '  FAIL ') + CASES[i].name + (err === null ? '' : '\n        ' + err));
     if (err !== null) failed += 1;
 }
-fs.rmSync(tmpRoot, { recursive: true, force: true });
-console.log('[test-derive-task-conditions] ' + (CASES.length - failed) + '/' + CASES.length + ' passed'
+let isolationCases = 0;
+function isolationCase(name, run) {
+    isolationCases++;
+    try { run(); console.log('  PASS ' + name); }
+    catch (error) { failed++; console.log('  FAIL ' + name + '\n        ' + error.message.slice(0, 400)); }
+}
+
+isolationCase('发布任务目录字节不受Agent任务、文本覆盖或损坏状态影响', function() {
+    for (const file of [path.join(tmpRoot, 'agent_tasks.json'), path.join(textDir, 'agent_text.json')]) {
+        if (!fs.existsSync(file)) continue;
+        if (fs.lstatSync(file).isDirectory()) fs.rmdirSync(file); else fs.unlinkSync(file);
+    }
+    fs.writeFileSync(path.join(tmpRoot, 'list.xml'), '<root><task>tasks.json</task><task>agent_tasks.json</task></root>');
+    fs.writeFileSync(path.join(textDir, 'list.xml'), '<root><text>texts.json</text><text>agent_text.json</text></root>');
+    fs.writeFileSync(path.join(tmpRoot, 'tasks.json'), JSON.stringify({tasks:[task(1,'A#1',{title:'$BASE'})]}));
+    fs.writeFileSync(path.join(textDir, 'texts.json'), JSON.stringify({'$BASE':'正式标题'}));
+    const output = path.join(tmpRoot, 'published.json');
+    const args = [derive, '--task-dir', tmpRoot, '--output', output];
+    execFileSync(process.execPath, args, {cwd:projectRoot,stdio:'pipe'});
+    const original = fs.readFileSync(output);
+    const agentTask = JSON.stringify({tasks:[task(200001,'委托',{title:'PRIVATE_RUNTIME_TASK'})]});
+    const agentText = JSON.stringify({'$BASE':'PRIVATE_RUNTIME_OVERRIDE'});
+    fs.writeFileSync(path.join(tmpRoot,'agent_tasks.json'), agentTask);
+    fs.writeFileSync(path.join(textDir,'agent_text.json'), agentText);
+    execFileSync(process.execPath, args, {cwd:projectRoot,stdio:'pipe'});
+    if (!original.equals(fs.readFileSync(output))) throw Error('runtime tasks or text changed the published bytes');
+    if (fs.readFileSync(path.join(tmpRoot,'agent_tasks.json'),'utf8') !== agentTask
+            || fs.readFileSync(path.join(textDir,'agent_text.json'),'utf8') !== agentText) throw Error('runtime input was modified');
+    fs.writeFileSync(path.join(tmpRoot,'agent_tasks.json'), '{');
+    fs.writeFileSync(path.join(textDir,'agent_text.json'), '{');
+    execFileSync(process.execPath, args, {cwd:projectRoot,stdio:'pipe'});
+    if (!original.equals(fs.readFileSync(output))) throw Error('malformed runtime data changed the published bytes');
+});
+
+isolationCase('成就任务引用闭包不读取或发布本机Agent源', function() {
+    const fixture = path.join(tmpRoot, 'achievement-project');
+    const files = execFileSync('git', ['ls-files','-z','--cached','--','data/task','data/achievement','data/items'],
+        {cwd:projectRoot,maxBuffer:8*1024*1024}).toString('utf8').split('\0').filter(file => /\.(json|xml)$/.test(file)
+            && !['agent_tasks.json','agent_text.json'].includes(path.basename(file)));
+    files.push('tools/derive-achievement-catalog.js','tools/lib/item-icons.js','tools/lib/objective-types.js',
+        'tools/lib/optional-agent-source.js','scripts/类定义/org/flashNight/arki/achievement/AchievementMetrics.as');
+    files.forEach(function(file) {
+        const destination = path.join(fixture,file);
+        fs.mkdirSync(path.dirname(destination),{recursive:true});
+        fs.copyFileSync(path.join(projectRoot,file),destination);
+    });
+    const output = path.join(fixture,'published.json');
+    const args = [path.join(fixture,'tools/derive-achievement-catalog.js'),'--output',output];
+    execFileSync(process.execPath,args,{cwd:fixture,stdio:'pipe'});
+    const original = fs.readFileSync(output);
+    fs.writeFileSync(path.join(fixture,'data/task/agent_tasks.json'),'{');
+    fs.writeFileSync(path.join(fixture,'data/task/text/agent_text.json'),'{');
+    execFileSync(process.execPath,args,{cwd:fixture,stdio:'pipe'});
+    if (!original.equals(fs.readFileSync(output))) throw Error('runtime data changed the achievement publication');
+});
+
+const cleanupRoot = path.resolve(tmpRoot), tempBoundary = path.resolve(os.tmpdir()) + path.sep;
+if (!cleanupRoot.startsWith(tempBoundary) || !path.basename(cleanupRoot).startsWith('cf7-cond-matrix-'))
+    throw Error('Refusing to remove a fixture outside the owned temporary directory');
+fs.rmSync(cleanupRoot, { recursive: true, force: true });
+const total = CASES.length + isolationCases;
+console.log('[test-derive-task-conditions] ' + (total - failed) + '/' + total + ' passed'
     + (failed > 0 ? ' (failed=' + failed + ')' : ''));
 process.exit(failed > 0 ? 1 : 0);

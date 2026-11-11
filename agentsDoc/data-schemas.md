@@ -564,6 +564,8 @@ AS2 `MapFactsSampler` 提供链进度、正历史次数、按现役 `taskComplet
 
 `launcher/web/modules/tasks/task-catalog.json` 仍由 `tools/derive-task-catalog.js` 从 **`data/task/*.json` + `data/task/text/*.json`** 派生，`prepare-launcher-release-assets.ps1` 自动执行。端点引用校验与 NPC 显示名调用同一 C# 地图域；不再读取 NPC registry。它是原任务源的只读展示投影，消费方仍为 Web 任务面板“事件日志”tab（`fetch('modules/tasks/task-catalog.json')`），不是运行时任务／导航权威。
 
+静态任务目录与成就的任务引用闭包固定排除 `agent_tasks.json` / `agent_text.json`：两者是玩家/Agent 运行数据，文件存在、缺失或损坏均不参与发布派生，也不能覆盖正式文本或补齐正式任务引用。地图端点校验走 `validate-static-content` / `MapTaskCatalog.LoadStatic` 的相同范围。运行时 `MapTaskCatalog.Load` 与 AS2 的共享/按存档增量加载保留原有语义；存在但损坏的运行源仍由运行时验证，不创建空占位文件，也不把历史运行任务转为正式任务。
+
 形状：`{ version, taskCount, tasks:{ "<id>":{ id, chain:[name,seq|null], type, title, description, npcName, stageReq, itemReqs, rewards, req:[前置id...], hasGetConv, hasFinishConv } }, chains:{ name:[id...按seq升序] }, chainsUnsequenced:{ name:[id...] } }`。`req`=get_requirements（前置任务 id），供图表视图画前置依赖连线 + 算拓扑深度（约 +3KB；多数任务 0-1 个前置）。
 
 **不含**：对话文本本体（留 AS2，catalog 仅持 `hasGetConv/hasFinishConv` 布尔；点「接取/完成对话」时 `replayDialogue` 按需回传【单任务】对话文本行 `lines:[{speaker,sub,text}]`，web 内联展开纯文本、不关面板）、`finish_remote`（写路径权威字段留 AS2）、`conditions`（cur 是运行态读数须 AS2 现算，detail 回 `conditions:[{label,cur,target}]`；catalog 不带）。

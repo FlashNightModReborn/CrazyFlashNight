@@ -5,14 +5,15 @@ using Newtonsoft.Json.Linq;
 
 // CLI 只适配 stdin/stdout；浏览器开发服务器按显式 serve 启动，共用同一 C# 内核。
 string root = Path.GetFullPath(args.Length > 1 ? args[1] : Environment.CurrentDirectory);
-if (args.FirstOrDefault() == "validate-content")
+if (args.FirstOrDefault() is "validate-content" or "validate-static-content")
 {
     // 纯只读检查，不创建作者回执，也不恢复或修改未完成批次。
     try
     {
         var definition = MapDefinition.Load(root);
         MapRuleEvaluator.Need(definition.Value<int>("version") == 2, "地图定义须完成第二阶段迁移。");
-        var tasks = MapTaskCatalog.Load(root); tasks.ValidateBindings(definition);
+        var tasks = args[0] == "validate-static-content" ? MapTaskCatalog.LoadStatic(root) : MapTaskCatalog.Load(root);
+        tasks.ValidateBindings(definition);
         MapAuthoringPlan.ValidateTaskReferences(definition, tasks.Tasks);
         MapAssetCandidates.ValidatePublished(root, definition);
         var world = new MapRuntimeWorld(root, definition);

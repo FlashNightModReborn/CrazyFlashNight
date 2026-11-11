@@ -10,6 +10,23 @@
     'use strict';
     if (!Trainer) throw new Error('SkillsRender requires SkillsTrainer.');
 
+    function successMessage(cmd) {
+        return {learnCommit:'技能研习完成。',equip:'快捷栏已更新。',unequip:'技能已卸载。',
+            moveSlot:'快捷槽顺序已更新。',setPassive:'被动状态已更新。',setFeature:'子能力状态已更新。',reorder:'技能顺序已更新。'}[cmd] || '技能状态已更新。';
+    }
+    function errorMessage(error) {
+        var messages = {invalid_payload:'无法完成技能操作，请重试。',unsupported_cmd:'暂不支持该操作。',
+            skill_not_found:'技能已不存在。',not_learned:'该技能尚未学习。',stale_state:'技能状态已变化，请刷新。',
+            trainer_session_expired:'当前教师已无法继续研习，请重新与教师对话。',level_locked:'角色等级不足。',insufficient_sp:'技能点不足。',
+            max_level:'技能已满级。',initial_level_must_be_one:'未学技能只能先学习 1 级。',skill_table_full:'技能表已满。',
+            slot_empty:'源快捷槽为空。',
+            already_equipped:'普通模式下该技能已经装备。',not_equippable:'该技能不可装备。',corrupt_skill_state:'技能数据异常，暂时无法修改。',
+            service_not_ready:'技能功能尚未准备好，请稍后重试。',reconcile_required:'上次操作结果尚未确认。',busy:'技能功能正忙，请稍后重试。',
+            commit_pending:'奖励正在保存，请稍后再试。',commit_failed:'本次技能修改未完成，请重试。',
+            malformed_response:'技能数据异常，请重试。',timeout:'技能请求超时。',client_timeout:'技能请求超时。',disconnect:'连接已断开。'};
+        return messages[error] || '技能操作失败。';
+    }
+
     function create(ports) {
         if (!ports || typeof ports.getState !== 'function') {
             throw new Error('SkillsRender requires explicit state and intent ports.');
@@ -623,5 +640,6 @@
             }};
     }
 
-    return {create:create, createFeatureEditor:createFeatureEditor};
+    return {create:create, createFeatureEditor:createFeatureEditor,
+        successMessage:successMessage, errorMessage:errorMessage};
 });

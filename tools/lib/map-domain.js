@@ -13,4 +13,5 @@ function invoke(command,root=sourceRoot,input){
 }
 function loadRenderDefinition(root=sourceRoot){const key='render:'+path.resolve(root);if(!cache.has(key))cache.set(key,invoke('render-definition',root));return cache.get(key);}
 function validateContent(root=sourceRoot){const key='validate:'+path.resolve(root);if(!cache.has(key))cache.set(key,invoke('validate-content',root));return cache.get(key);}
-module.exports={invoke,loadRenderDefinition,validateContent};
+function validateStaticContent(root=sourceRoot){const key='validate-static:'+path.resolve(root);if(!cache.has(key))cache.set(key,invoke('validate-static-content',root));return cache.get(key);}
+module.exports={invoke,loadRenderDefinition,validateContent,validateStaticContent};

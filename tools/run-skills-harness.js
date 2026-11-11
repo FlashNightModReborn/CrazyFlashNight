@@ -71,9 +71,9 @@ function staticAudit() {
         || skillsSource.includes("button('升 1 级'")) throw new Error('trainer target level must support exact discrete range/number selection without a redundant plus-one preset');
     if (!renderer.includes("result.classList.add('stale')") || !renderer.includes('appendPreviewUpdateStatus')
         || !renderer.includes('上次消耗')) throw new Error('target adjustment must retain and clearly mark the previous authority preview');
-    if (!panelService.includes('lastTouchedAt') || !panelService.includes('session.lastTouchedAt = now()')
-        || !panelServiceTest.includes('testSuccessfulReadRenewsTrainerLease') || !panelServiceTest.includes('testIdleTrainerLeaseExpires'))
-        throw new Error('trainer capability must use a tested renewable idle lease');
+    if (!panelService.includes('CANDIDATE_TTL_MS')
+        || !panelServiceTest.includes('testActiveTrainerSurvivesIdle') || !panelServiceTest.includes('testIdleCandidateTrainerLeaseExpires'))
+        throw new Error('active teacher must survive idle while unadopted candidates remain bounded');
     if (!/panel:'skills',\s*cmd:'close',\s*panelInstanceId/.test(panel)
         || !panel.includes('onRebind: onRebind')) throw new Error('instance-bound close or rebind missing');
     if (!panel.includes("requestNavigation('manage')") || !interactions.includes("'switch_manage'")

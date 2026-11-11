@@ -147,6 +147,7 @@ try {
     $commonStub = @'
 function Get-Cf7RuntimeV2ReleaseTreeOid {
     param([string]$ProjectRoot, [string]$Mode)
+    if (Test-Path -LiteralPath (Join-Path $ProjectRoot 'tmp\invalid-tree')) { return ('0' * 40) }
     $oid = & git -C $ProjectRoot rev-parse 'HEAD^{tree}'
     if ($LASTEXITCODE -ne 0) { throw 'fixture tree unavailable' }
     return ([string]$oid).Trim().ToLowerInvariant()
@@ -241,6 +242,35 @@ exit 0
     $indexCandidateJson = Get-Content -Raw -Encoding UTF8 -LiteralPath $indexCandidateReceipt | ConvertFrom-Json
     Assert-Cf7Test ($indexCandidateRun.ExitCode -eq 0 -and $indexCandidateJson.passed -eq $true) `
         'candidate-bound receipt must support an exactly materialized staged/index release tree'
+
+    # Git may report an EOL conversion warning even when the canonical patch is
+    # empty. Do not change file bytes or suppress the warning to pass this case.
+    & git -C $fixtureRoot config core.autocrlf true
+    Write-Cf7Utf8NoBom -Path (Join-Path $fixtureRoot 'product.txt') -Text "stable`n"
+    $eolBefore = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $fixtureRoot 'product.txt')).Hash
+    $eolReceipt = Join-Path $fixtureRoot 'tmp\eol-warning-receipt.json'
+    $eolRun = Invoke-Cf7Validator -ManifestPath $passManifest -ReceiptPath $eolReceipt
+    $eolJson = Get-Content -Raw -Encoding UTF8 -LiteralPath $eolReceipt | ConvertFrom-Json
+    Assert-Cf7Test ($eolRun.Output -match 'LF will be replaced by CRLF') 'fixture must emit a real Git EOL warning'
+    Assert-Cf7Test ($eolRun.ExitCode -eq 0 -and $eolJson.passed) 'warning-only Git output must not block an unchanged release tree'
+    Assert-Cf7Test ($eolJson.trackedStateBefore -eq $passJson.trackedStateBefore) 'empty-patch fingerprints must ignore diagnostics'
+    Assert-Cf7Test ($eolBefore -eq (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $fixtureRoot 'product.txt')).Hash) 'EOL warning validation must preserve physical file bytes'
+
+    Write-Cf7Utf8NoBom -Path (Join-Path $fixtureRoot 'product.txt') -Text "changed`n"
+    $changedReceipt = Join-Path $fixtureRoot 'tmp\changed-with-warning-receipt.json'
+    $changedRun = Invoke-Cf7Validator -ManifestPath $passManifest -ReceiptPath $changedReceipt
+    $changedJson = Get-Content -Raw -Encoding UTF8 -LiteralPath $changedReceipt | ConvertFrom-Json
+    Assert-Cf7Test ($changedRun.ExitCode -ne 0 -and -not $changedJson.passed) 'a real tracked edit must still fail alongside EOL warnings'
+    Assert-Cf7Test (@($changedJson.checks | Where-Object { $_.name -eq 'release-tree-materialized' -and -not $_.passed }).Count -eq 1) 'tracked content changes must fail the materialization check'
+    & git -C $fixtureRoot config core.autocrlf false
+    Write-Cf7Utf8NoBom -Path (Join-Path $fixtureRoot 'product.txt') -Text "stable`n"
+
+    $invalidTreeMarker = Join-Path $fixtureRoot 'tmp\invalid-tree'
+    Write-Cf7Utf8NoBom -Path $invalidTreeMarker -Text ''
+    try {
+        $gitFailure = Invoke-Cf7Validator -ManifestPath $passManifest -ReceiptPath (Join-Path $fixtureRoot 'tmp\git-failure-receipt.json')
+        Assert-Cf7Test ($gitFailure.ExitCode -ne 0 -and $gitFailure.Output -match 'Cannot fingerprint tracked worktree state') 'a nonzero Git diff exit must remain a hard failure'
+    } finally { Remove-Item -LiteralPath $invalidTreeMarker }
 
     # 2. A missing required product resource fails and is preserved in the receipt.
     $missingManifest = Join-Path $fixtureRoot 'tmp\missing-manifest.json'

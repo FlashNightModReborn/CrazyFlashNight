@@ -638,9 +638,20 @@
                     var tip = document.getElementById('panel-tooltip');
                     return tip && tip.innerHTML.indexOf('类型') >= 0;
                 }, 3000);
+                var iconManifest = await fetch('icons/manifest.json').then(function(response) { return response.json(); });
+                var iconEntry = iconManifest['金钱'];
                 await waitFor(function() {
                     var tip = document.getElementById('panel-tooltip');
-                    return tip && !!tip.querySelector('.flash-tt-icon [data-icon-name="金钱"][data-icon-animated="1"]');
+                    var icon = tip && tip.querySelector('.flash-tt-icon img[data-icon-name="金钱"]');
+                    if (!icon || !icon.complete || icon.naturalWidth <= 0) return false;
+                    if (iconEntry && iconEntry.format === 'webp-animated') {
+                        // Native WebP playback has no JavaScript RAF marker. Require
+                        // the actual animated asset, never its static first frame.
+                        return iconEntry.animated === true && iconEntry.frameCount > 1 && !!iconEntry.uri &&
+                            icon.src === new URL('icons/' + iconEntry.uri, document.baseURI).href &&
+                            !icon.hasAttribute('data-icon-animated');
+                    }
+                    return Icons.isAnimated('金钱') && icon.getAttribute('data-icon-animated') === '1';
                 }, 3000);
                 return name === '金币';
             });

@@ -23,6 +23,19 @@ namespace CF7Launcher.Data
             IReadOnlyList<string> extraTaskSources = null, IReadOnlyList<string> extraTextSources = null,
             string rewardOverrideSource = null)
         {
+            return LoadCore(root, overrides, extraTaskSources, extraTextSources, rewardOverrideSource, false);
+        }
+
+        /// <summary>构建期只读取正式任务制作源，不读取本机共享或按存档的 Agent 运行数据。</summary>
+        public static MapTaskCatalog LoadStatic(string root)
+        {
+            return LoadCore(root, null, null, null, null, true);
+        }
+
+        private static MapTaskCatalog LoadCore(string root, IReadOnlyDictionary<string, byte[]> overrides,
+            IReadOnlyList<string> extraTaskSources, IReadOnlyList<string> extraTextSources,
+            string rewardOverrideSource, bool staticSourcesOnly)
+        {
             var catalog = new MapTaskCatalog();
             const string infrastructureFile = "data/infrastructure/infrastructure.xml";
             byte[] infrastructureBytes = MapProjectFiles.Read(root, infrastructureFile); catalog.SourceBytes[infrastructureFile] = infrastructureBytes;
@@ -46,6 +59,7 @@ namespace CF7Launcher.Data
                     MapRuleEvaluator.Need(Regex.IsMatch(name, @"\A[\p{L}\p{N}_. -]+\.json\z") && !name.Contains(".."), "任务目录包含非法文件名。");
                     string file = folder + name;
                     MapRuleEvaluator.Need(listedSources.Add(file), "任务目录重复引用源文件。");
+                    if (staticSourcesOnly && IsLegacyAgentSource(file)) continue;
                     byte[] replacement = null;
                     bool hasOverride = overrides != null && overrides.TryGetValue(file, out replacement);
                     // Legacy Agent entries remain registered but are not shipped with every checkout.
@@ -123,9 +137,14 @@ namespace CF7Launcher.Data
                 TaskRewardOverrideStore.AppendExtraRewards(task, entry);
             }
         }
+        private static bool IsLegacyAgentSource(string file)
+        {
+            return file == "data/task/agent_tasks.json" || file == "data/task/text/agent_text.json";
+        }
+
         private static bool LegacyAgentSourceMissing(string root, string file)
         {
-            if (file != "data/task/agent_tasks.json" && file != "data/task/text/agent_text.json") return false;
+            if (!IsLegacyAgentSource(file)) return false;
             string full = MapProjectFiles.Resolve(root, file);
             try
             {

@@ -398,9 +398,9 @@ candidate、facet 与 mutation 三处共用实例有效事实，禁止基础 cat
 必跑：
 
 - `powershell -ExecutionPolicy Bypass -File scripts/run-skill-migration-tests.ps1 -TimeoutSeconds 240`（精确计数以 runner 的新鲜 trace 为准；含 `SwordFeatureTest`、`SkillFeaturePolicyTest`、`SkillLoadoutServiceTest`、`SkillPanelServiceTest`，要求 Compiler `0/0`；该入口不再包含 LongGun / ManualCooldown / DrugInput，三者改由玩家手动输入 runner 独立守门；Loadout 覆盖旧 HUD 图标壳重建、快捷槽空目标移动/占用目标交换/no-op/坏源拒绝；
-  Panel 另覆盖 `skillPanelOpen` exact `openRequestId` 回显、缺失或畸形 `openRequestId` 均零发送；新 Host 缺 nonce 拒绝、`moveSlot` 路由、成功教师读续租与连续 120 秒空闲过期）。
-- `node tools/test-skills-ui-modules.js`（文本现役 `65/65`，待核：阈值来源为历史文本，未找到当前机器真源）。
-- `node tools/run-skills-harness.js`（文本现役 3 视口 `150/150`，待核）。
+  Panel 另覆盖 `skillPanelOpen` exact `openRequestId` 回显、缺失或畸形 `openRequestId` 均零发送；新 Host 缺 nonce 拒绝、`moveSlot` 路由、活跃教师长时静态阅读与能力复用、未接管候选 120 秒过期，以及投影失败/待处理时 exact cleanup 仍撤权且保留 dirty）。
+- `node tools/test-skills-ui-modules.js`（模块断言数量以当前实际输出为准）。
+- `node tools/run-skills-harness.js`（Edge 三视口验证，计数以当前实际输出为准）。
 - `node tools/test-item-filter.js`（文本现役 `37/37`，待核）。
 - `node tools/run-item-grid-visual-matrix.js`（文本现役 `20/20`，待核）。
 - `node tools/run-kshop-harness.js`（文本现役 `153/153` 或更晚计数，待核；以 runner 当前输出为准）。
@@ -550,7 +550,7 @@ r11 合同为初始化全程保持 exact 玩家名，用全自动与 actor hold 
 **Task Panel 必跑**：
 
 - `python tools/bake-npc-profiles.py --check` 核对小头像来源、重建字节与 NPC 缺图，见 [共享头像工具](../tools/npc-profiles/README.md)。
-- `node tools/run-tasks-harness.js --qa`。
+- `node tools/run-tasks-harness.js --qa`。`task-ui10` 对照现行图标 manifest 核对富注释、实际动图 URI 与图片加载；WebP 原生动图不得以旧 JavaScript 逐帧动画标记判定，静态首帧也不能替代动图。
 - 2026-09-11 返回专项含 119 项 Flash 回归（结算后走门、清场前拒绝、真实世界身份与延迟重试），见 [quest-return 测试矩阵](../tools/quest-return/README.md)。
 - `node tools/audit-web-item-icon-closure.js`（task-ui1~50 + ach-ui1~13，Edge headless：筛选/列表/排序/详情缓存/富物品 tooltip/空态 + 写操作交付·放弃·确认弹窗·背包满·ESC modal 栈·远程交付门控（含绕过按钮直发 finishTask→requires_npc 服务端门控自断言）·删除在途锁·前往交付·finishNavigable 不缓存固化（注册表迟到→重选复查）+ 事件日志（任务树渲染·对话按钮可见性·回放富立绘组件（不关面板）
   ·对话 AS2 htmlText(FONT/B) 经 convertAS2Html 渲染·tab 往返·图表视图（六边形+前置连线渲染/点节点选中+明细/25% 缩放/章节折叠/左键拖拽平移+点击拖拽判定/任务线配色按链区分/对话回放进度门控/重开重置工具栏）·对话回放真白名单清洗恶意标签·图表防剧透（未接取节点不进图+详情遮罩）·服务端对话门控（绕过直发 finish→locked）·共享判定条件进度行渲染（conditions {label,cur,target}+done 态）·条件进度不缓存固化（运行态字段重选后台复查→进度行就地刷新）·satisfied 权威纠偏（条件达成翻转完成态→徽章/交付按钮/列表角标同步）
@@ -564,7 +564,7 @@ Web→Flash 透传信封收口到共用 `PanelBridge.BuildFlashCommand`，含 `a
 
 **派生门**：改任务数据展示字段（title/description/chain/itemReqs·rewards.icon）须重跑 `node tools/derive-task-catalog.js`（build Step 1e；含闭包校验器，缺 `$KEY` exit 1；奖励/需求图标从 `data/items` XML 派生）刷新 `task-catalog.json`；
 任务 `conditions` 字段同走 Step 1e 校验（类型枚举/label 必填/sinceAccept 单调限定/economyCount 白名单单源/布尔型 taskFinished·itemOwned 的 target 必须=1/itemOwned count≥1/chainProgress 有序号链存在+target≤链最大 seq/条件死锁=单调 AND-OR 不动点，对齐运行时语义：taskAvailable 只查 get_requirements、链序号不约束完成顺序；
-chainProgress 按「任一 seq≥target 候选可完成」析取处理，基线可完成集 vs 带条件集之差=条件死锁，统一覆盖自链·seq 缺口·跨链/taskFinished 互锁·get_req 介导环·级联，且不误报同链独立乱序任务）；build Step 1e 固定运行 `node tools/test-derive-task-conditions.js`（23 用例正反矩阵，合成夹具走 `--task-dir` 不碰真实数据；正式数据 conditions=0 时常规派生不执行这些分支，矩阵负责持续守门）。
+chainProgress 按「任一 seq≥target 候选可完成」析取处理，基线可完成集 vs 带条件集之差=条件死锁，统一覆盖自链·seq 缺口·跨链/taskFinished 互锁·get_req 介导环·级联，且不误报同链独立乱序任务）；build Step 1e 固定运行 `node tools/test-derive-task-conditions.js`（数量以实际输出为准；合成夹具走 `--task-dir`，并在独立临时目录验证任务/成就发布字节不受 Agent 运行数据、文本覆盖或损坏影响；正式引用不能由本机 Agent 数据补齐，普通源缺失和重复登记仍拒绝）。`MapTaskCatalogOptionalSourceTests` 同时证明 `LoadStatic` 不打开被占用/损坏的 Agent 文件，而运行时 `Load` 继续读取合法任务/覆盖文本并保留原有错误校验。
 新增 objective 类型三处联动：`ObjectiveEvaluator.as` 分发 + `tools/lib/objective-types.js` 枚举 +（成就启用时）achievement derive params case。改成就数据（`data/achievement/*.json`）或 `AchievementMetrics.as` 白名单须重跑 `node tools/derive-achievement-catalog.js --check` + 真跑（build Step 1f；
 含 objective 枚举/跨域闭包/economyCount 白名单单源/hidden 脱敏校验/rewards.icon 从 `data/items` XML 派生）刷新 `achievement-catalog.json`。
 
@@ -1529,7 +1529,7 @@ v2 将 artifact source、producer recipe、toolchain lock、policy 分为四个�
 - `tools/test-runtime-dev-entry.ps1`
 - `tools/test-runtime-entry-guardrails.ps1`
 - `tools/test-runtime-build-v2.ps1`
-- `tools/test-runtime-release-policy.ps1`
+- `tools/test-runtime-release-policy.ps1`（真实 Git 换行告警不污染差异指纹；物理文件字节不变、伴随告警的真实内容变化仍拒绝、Git 非零退出仍失败）。
 - `tools/test-runtime-build-queue.ps1`
 - `tools/test-runtime-github-attestation.ps1`
 - `tools/test-invoke-runtime-github-build.ps1`

@@ -25,8 +25,9 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         testMalformedTrainerMetadataProjectsBoundedAndBlocked();
         testTrainerDiagnosticsReachSnapshot();
         testSameTrainerReusesSession();
-        testSuccessfulReadRenewsTrainerLease();
-        testIdleTrainerLeaseExpires();
+        testActiveTrainerSurvivesIdle();
+        testIdleCandidateTrainerLeaseExpires();
+        testActiveTrainerReuseAfterIdle();
         testDifferentTrainerReplacesSession();
         testManageIntentPreservesActiveSession();
         testLastTrainerIntentWinsWithoutRevokingActive();
@@ -35,7 +36,9 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         testCloseInvalidatesSession();
         testLateOldSessionCloseDoesNotKillNewSession();
         testCleanupWireAckUsesExactMinimalShape();
+        testCleanupDoesNotWaitForProjection();
         testInitialPreviewIssuesToken();
+        testLearnTokenStillExpires();
         testInitialPreviewRejectsLevelSkip();
         testUpgradePreviewUsesDeltaCost();
         testUpgradeCostBoundaryAndOverflow();
@@ -210,23 +213,35 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         check(a.success && b.success && a.trainerSession == b.trainerSession, "same npc scene and catalog reuse one trainer capability");
     }
 
-    private static function testSuccessfulReadRenewsTrainerLease():Void {
+    private static function testActiveTrainerSurvivesIdle():Void {
         var f:Object = fixture(); SkillPanelService.testOnlySetNow(1000);
         var opened:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
-        SkillPanelService.testOnlySetNow(120000);
         var snap:Object = SkillPanelService.execute("snapshot", {v:1, view:"trainer", trainerSession:opened.trainerSession});
-        SkillPanelService.testOnlySetNow(239000);
+        SkillPanelService.testOnlySetNow(901001);
         var preview:Object = SkillPanelService.execute("learnPreview", {v:1, skillKey:"闪现", desiredLevel:1,
             trainerSession:opened.trainerSession, expectedRevision:SkillLoadoutService.getRevision()});
-        check(snap.success && preview.success, "successful trainer traffic renews the 120 second idle lease beyond absolute session age");
+        check(snap.success && preview.success, "active trainer permits preview after fifteen minutes of static reading");
     }
 
-    private static function testIdleTrainerLeaseExpires():Void {
+    private static function testIdleCandidateTrainerLeaseExpires():Void {
         var f:Object = fixture(); SkillPanelService.testOnlySetNow(1000);
         var opened:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
         SkillPanelService.testOnlySetNow(121001);
         var snap:Object = SkillPanelService.execute("snapshot", {v:1, view:"trainer", trainerSession:opened.trainerSession});
-        check(!snap.success && snap.error == "trainer_session_expired", "trainer capability still expires after 120 seconds without valid traffic");
+        check(!snap.success && snap.error == "trainer_session_expired", "unadopted trainer candidate expires after 120 seconds");
+    }
+
+    private static function testActiveTrainerReuseAfterIdle():Void {
+        var f:Object = fixture(); SkillPanelService.testOnlySetNow(1000);
+        var opened:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
+        SkillPanelService.execute("snapshot", {v:1, view:"trainer", trainerSession:opened.trainerSession});
+        SkillPanelService.testOnlySetNow(901001);
+        var again:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
+        check(again.success && again.trainerSession == opened.trainerSession,
+            "active same-teacher capability is reused after idle without nonce churn");
+        SkillPanelService.execute("close", {v:1, trainerSession:opened.trainerSession});
+        var closed:Object = SkillPanelService.execute("snapshot", {v:1, view:"trainer", trainerSession:opened.trainerSession});
+        check(!closed.success && closed.error == "trainer_session_expired", "explicit close still retires a long-lived active teacher");
     }
 
     private static function testDifferentTrainerReplacesSession():Void {
@@ -319,9 +334,47 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
             "tracked cleanup wire ack uses exact minimal success shape without snapshot extras");
     }
 
+    private static function testCleanupDoesNotWaitForProjection():Void {
+        var states:Array = ["failed", "pending"];
+        for (var i:Number = 0; i < states.length; i++) {
+            var f:Object = fixture();
+            var opened:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
+            SkillPanelService.execute("snapshot", {v:1, view:"trainer", trainerSession:opened.trainerSession});
+            f.root.存档系统.dirtyMark = true;
+            SkillLoadoutService.testOnlySetProjection(makeBlockedProjection({status:states[i]}));
+            var beforeProjection:Object = SkillLoadoutService.flushProjection();
+            var result:Object = SkillPanelService.execute("close", {v:1, trainerSession:opened.trainerSession});
+            var again:Object = SkillPanelService.execute("close", {v:1, trainerSession:opened.trainerSession});
+            var projection:Object = SkillLoadoutService.flushProjection();
+            check(beforeProjection.status == states[i] && result.success && again.success && !result.changed && SkillPanelService.testOnlySession() == null
+                && projection.status == states[i] && f.root.存档系统.dirtyMark === true,
+                "exact cleanup retires permission despite " + states[i] + " projection and retains dirty state"
+                + " [first=" + result.success + ",repeat=" + again.success + ",changed=" + result.changed
+                + ",session=" + SkillPanelService.testOnlySession() + ",projection=" + projection.status
+                + ",reason=" + projection.reason + ",dirty=" + f.root.存档系统.dirtyMark + "]");
+        }
+    }
+
+    private static function makeBlockedProjection(state:Object):Function {
+        return function(mask:Number):Object { return {status:state.status, reason:"pending_component"}; };
+    }
+
     private static function testInitialPreviewIssuesToken():Void {
         var p:Object = freshPreview("闪现", 1);
         check(p.success && p.canCommit && p.currentLevel == 0 && p.cost == 20 && p.learnToken != null, "valid initial preview fixes level one and issues one token");
+    }
+
+    private static function testLearnTokenStillExpires():Void {
+        var f:Object = fixture(); SkillPanelService.testOnlySetNow(1000);
+        var opened:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
+        var preview:Object = SkillPanelService.execute("learnPreview", {v:1, skillKey:"闪现", desiredLevel:1,
+            trainerSession:opened.trainerSession, expectedRevision:SkillLoadoutService.getRevision()});
+        SkillPanelService.testOnlySetNow(31001);
+        var result:Object = SkillPanelService.execute("learnCommit", {v:1, view:"trainer",
+            trainerSession:opened.trainerSession, expectedLearnToken:preview.learnToken});
+        var snapshot:Object = SkillPanelService.execute("snapshot", {v:1, view:"trainer", trainerSession:opened.trainerSession});
+        check(!result.success && result.error == "stale_state" && snapshot.success && f.root.技能点数 == 100,
+            "thirty-second learn token still expires without revoking active teacher or spending SP");
     }
 
     private static function testInitialPreviewRejectsLevelSkip():Void {

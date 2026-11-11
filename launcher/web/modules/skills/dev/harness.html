@@ -24,7 +24,7 @@ window.__sent=[];window.__toasts=[];window.__handlers={};window.__iconKeys=[];wi
 window.__host={instance:'inst-manage',view:'manage',trainerSession:'trainer-A',revision:7,writeEpoch:0,
   skillPoints:160,
   snapshotDelay:0,previewDelay:0,invalidTrainer:false,previewBlocked:false,unknownNextWrite:false,malformedNextWrite:false,
-  expireNextSnapshot:false,expireNextPreview:false,expireNextWrite:false,writeDelay:8,pendingWriteUntil:0,switchSeq:0,
+  expireNextSnapshot:false,expireNextPreview:false,expireNextWrite:false,expireTrainerReconcile:false,writeDelay:8,pendingWriteUntil:0,switchSeq:0,
   failNextSwitchTransport:false,failNextCloseTransport:false,dropNextSwitch:false,undefinedNextSwitchReturn:false,
   canReturnTrainer:false,canReturnCharacterBuild:false,returnSession:null};
 
@@ -101,6 +101,8 @@ function applyWrite(message){var p=message.payload;
 }
 function respond(message,ctx){var base=responseBase(message,ctx),p=message.payload||{};
   if(message.cmd==='snapshot'){
+    if(p.reconcileId&&p.view==='trainer'&&__host.expireTrainerReconcile){__host.expireTrainerReconcile=false;Object.assign(base,{success:false,v:1,error:'trainer_session_expired',revision:__host.revision});emit(base);return}
+    if(p.reconcileId&&p.view==='manage'&&ctx.view==='trainer'){ctx.view='manage';__host.view='manage';__host.canReturnTrainer=false;__host.returnSession=null}
     if(__host.expireNextSnapshot){__host.expireNextSnapshot=false;Object.assign(base,{success:false,v:1,error:'trainer_session_expired',revision:__host.revision});emit(base);return}
     if(p.reconcileId&&Date.now()<__host.pendingWriteUntil){setTimeout(function(){respond(message,{instance:ctx.instance,view:ctx.view,trainerSession:ctx.trainerSession,revision:__host.revision,writeEpoch:__host.writeEpoch})},__host.pendingWriteUntil-Date.now()+4);return}
     var snap=authoritativeSnapshot(ctx.view,ctx.revision);Object.assign(base,snap);
@@ -748,6 +750,22 @@ window.Icons={
     ok('expired commit stops in place without replaying the write',Panels.getActive()==='skills'&&sent('learnCommit').slice(-1)[0].payload.expectedLearnToken==='learn.harness.token');
     document.querySelector('.skills-trainer-expired .skills-action-btn.primary').click();await until(function(){return Panels.getActive()===null});
     ok('trainer expiry has one explicit re-dialogue message',__toasts.filter(function(x){return x.indexOf('重新与教师对话')>=0}).length===3);
+    setHost({instance:'inst-trainer-recovery',view:'trainer',trainerSession:'trainer-recovery'});
+    await until(function(){return row('新手冲拳')&&!SkillsPanel.debugState().previewLoading});
+    row('新手冲拳').click();await until(function(){return document.querySelector('.skills-trainer-commit')&&!document.querySelector('.skills-trainer-commit').disabled});
+    var recoveryCommits=sent('learnCommit').length,recoveryPreviews=sent('learnPreview').length;
+    __host.malformedNextWrite=true;__host.expireTrainerReconcile=true;
+    document.querySelector('.skills-trainer-commit').click();clickModalConfirm();
+    await until(function(){return SkillsPanel.debugState().view==='manage'&&SkillsPanel.debugState().coordinator.state==='idle'},600);
+    var recoveryReads=sent('snapshot').filter(function(x){return x.panelInstanceId==='inst-trainer-recovery'&&x.payload.reconcileId});
+    ok('expired teacher is reconciled in place through management with no new permission or learning replay',
+      Panels.getActive()==='skills'&&SkillsPanel.debugState().coordinator.panelInstanceId==='inst-trainer-recovery'
+      &&recoveryReads.length===2&&recoveryReads[0].payload.view==='trainer'&&recoveryReads[1].payload.view==='manage'
+      &&!Object.prototype.hasOwnProperty.call(recoveryReads[1].payload,'trainerSession')
+      &&recoveryReads[0].payload.reconcileAfterCallId===recoveryReads[1].payload.reconcileAfterCallId
+      &&sent('learnCommit').length===recoveryCommits+1&&sent('learnPreview').length===recoveryPreviews
+      &&!document.querySelector('.skills-switch-trainer-btn')&&!document.querySelector('.skills-trainer-commit')
+      &&__toasts.some(function(x){return x.indexOf('技能状态已核对')>=0}));
     setHost({instance:'inst-trainer-switch',view:'trainer',trainerSession:'trainer-S'});await until(function(){return row('闪现')&&document.querySelector('.skills-switch-manage-btn')});
     var switchToastCount=__toasts.length,switchManageCount=sent('switch_manage').length;
     __host.failNextSwitchTransport=true;document.querySelector('.skills-switch-manage-btn').click();await wait(10);

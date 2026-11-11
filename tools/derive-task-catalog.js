@@ -9,6 +9,7 @@
 //   data/task/list.xml       → 各 *_tasks.json 的 .tasks 数组合并
 //   data/task/text/list.xml  → 各 *_text(s).json dictMerge → task_texts
 //   文本解析镜像 AS2 TaskUtil.getTaskText：'$' 前缀查 task_texts，否则字面量。
+//   发布范围排除 Agent 运行源；list.xml 中的这两项仅由运行时读取。
 //
 // 闭包校验器（设计 C2，审计 Phase 1 前置硬门控）：
 //   任务的 title/description/get_conversation/mission_briefing/finish_conversation 若值以 '$' 开头，
@@ -23,7 +24,7 @@ const fs = require('fs');
 const path = require('path');
 const { validateCondition, parseEconomyWhitelist } = require('./lib/objective-types.js');
 const { loadItemMeta, attachIcon } = require('./lib/item-icons.js');
-const { legacyAgentSourceMissing } = require('./lib/optional-agent-source.js');
+const { isRuntimeAgentSource } = require('./lib/optional-agent-source.js');
 
 const projectRoot = path.resolve(__dirname, '..');
 const metricsFile = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'achievement', 'AchievementMetrics.as');
@@ -102,7 +103,7 @@ function loadTasks() {
     const files = readManifest(path.join(taskDir, 'list.xml'), 'task');
     let merged = [];
     for (let i = 0; i < files.length; i += 1) {
-        if (legacyAgentSourceMissing(taskDir, files[i], 'agent_tasks.json', fail)) continue;
+        if (isRuntimeAgentSource(files[i], 'agent_tasks.json')) continue;
         const data = readJson(path.join(taskDir, files[i]));
         if (!data || !Array.isArray(data.tasks)) fail(files[i] + ': missing top-level "tasks" array');
         merged = merged.concat(data.tasks);
@@ -115,7 +116,7 @@ function loadTexts() {
     const files = readManifest(path.join(textDir, 'list.xml'), 'text');
     const dict = {};
     for (let i = 0; i < files.length; i += 1) {
-        if (legacyAgentSourceMissing(textDir, files[i], 'agent_text.json', fail)) continue;
+        if (isRuntimeAgentSource(files[i], 'agent_text.json')) continue;
         const data = readJson(path.join(textDir, files[i]));
         if (!data || typeof data !== 'object') fail(files[i] + ': not a text dict');
         const keys = Object.keys(data);
@@ -145,7 +146,7 @@ function parseNameCount(entry, kind) {
 
 function buildCatalog(rawTasks, taskTexts) {
     const tasks = {};
-    const mapLabels = path.resolve(taskDir) === path.resolve(defaultTaskDir) ? require('./lib/map-domain.js').validateContent(projectRoot).taskNpcLabels : null;
+    const mapLabels = path.resolve(taskDir) === path.resolve(defaultTaskDir) ? require('./lib/map-domain.js').validateStaticContent(projectRoot).taskNpcLabels : null;
     // conditions 校验（任务-成就判定层共享，可选字段；设计 docs/任务成就-判定层共享-设计-2026-06-11.md §3）。
     // economyCount 白名单惰性解析：仅当数据真用到 economyCount 才读 AchievementMetrics.as。
     let economyCounters = null;

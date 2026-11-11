@@ -275,7 +275,7 @@ coordinator.open({panelInstanceId:'panel.trace',view:'trainer',trainerSession:'s
 requests.length = 0; observedStates.length = 0;
 coordinator.retryReconcile();
 coordinator.handleResponse(reply(requests[0], {success:true,revision:5,reconciled:true,
-    reconcileId:requests[0].payload.reconcileId}));
+    view:'trainer',reconcileId:requests[0].payload.reconcileId}));
 equal(observedStates, ['idle'], 'a matching reconcile also presents an already settled gate');
 coordinator.close();
 
@@ -289,11 +289,44 @@ for (const source of ['write','reconcile']) {
     else current.retryReconcile();
     current.handleResponse(reply(sent[0], source === 'write'
         ? {success:true,snapshot:{revision:6}}
-        : {success:true,revision:6,reconciled:true,reconcileId:sent[0].payload.reconcileId}));
+        : {success:true,view:'trainer',revision:6,reconciled:true,reconcileId:sent[0].payload.reconcileId}));
     equal({state:current.getState(),activeCall:current.debugState().activeWrite.callId,
         reconcile:current.debugState().activeReconcile},
         {state:'write_pending',activeCall:sent[1].callId,reconcile:null},
         source + ' presentation cannot overwrite the gate of a reentrant new write');
+    current.close();
+}
+
+{
+    const sent = [], applied = [];
+    const current = new Runtime.SkillCoordinator({send(message) { sent.push(message); return true; },
+        validateSnapshot(value, view) { return value.view === view && value.valid !== false; },
+        onSnapshot(value) { applied.push(value); }});
+    current.open({panelInstanceId:'panel.trace',view:'trainer',trainerSession:'secret',writeEpoch:4,
+        writeState:'needs_reconcile',reconcileAfterCallId:'original.learn'});
+    current.retryReconcile();
+    current.handleResponse(reply(sent[0], {success:false,error:'trainer_session_expired',writeEpoch:4}));
+    equal(sent.map(x => ({cmd:x.cmd,view:x.payload.view,trainer:x.payload.trainerSession})),
+        [{cmd:'snapshot',view:'trainer',trainer:'secret'},{cmd:'snapshot',view:'manage',trainer:undefined}],
+        'expired teacher recovery performs one permission-free read, never a learning replay');
+    equal(sent[1].payload.reconcileAfterCallId, 'original.learn', 'management recovery retains original write identity');
+    current.handleResponse(reply(sent[1], {success:true,view:'manage',revision:8,writeEpoch:3,reconciled:true,
+        reconcileId:sent[1].payload.reconcileId}));
+    equal(current.getState(), 'needs_reconcile', 'stale management proof cannot unlock recovery');
+    current.retryReconcile();
+    equal(sent[2].payload.view, 'manage', 'manual retry keeps the recovery domain after teacher expiry');
+    current.handleResponse(reply(sent[2], {success:true,view:'manage',revision:8,writeEpoch:4,reconciled:true,
+        reconcileId:sent[2].payload.reconcileId,valid:false}));
+    equal({state:current.getState(),renders:applied.length}, {state:'needs_reconcile',renders:0},
+        'malformed management proof neither switches the view nor unlocks writing');
+    current.retryReconcile();
+    current.handleResponse(reply(sent[3], {success:true,view:'manage',revision:8,writeEpoch:4,reconciled:true,
+        reconcileId:sent[3].payload.reconcileId}));
+    equal({state:current.getState(),renders:applied.length}, {state:'idle',renders:1},
+        'validated management recovery settles the original unknown write');
+    equal(current.requestPreview({skillKey:'forbidden'}), null, 'recovery never restores teacher preview permission');
+    current.requestSnapshot();
+    equal(sent[4].payload.view, 'manage', 'future reads use management without a trainer session');
     current.close();
 }
 

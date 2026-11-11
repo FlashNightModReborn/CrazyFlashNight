@@ -52,7 +52,7 @@
 
 - 解析规则镜像 AS2 `TaskUtil.getTaskText`：`$` 前缀查 `task_texts`，否则字面量
 
-2026-10-24：两份旧Agent可选源 `data/task/agent_tasks.json` 与 `data/task/text/agent_text.json` 在未随仓库提供时允许缺失；任务/成就派生与Host `MapTaskCatalog` 使用相同边界。存在但损坏、链接/目录、读取失败或重复登记仍拒绝，不创建空占位文件。Node共用 `tools/lib/optional-agent-source.js`，纳入runtime发布policy输入；`tools/test-derive-task-conditions.js` 保留正反例。
+静态派生与运行时读取有各自范围：发布任务/成就目录不读取 `data/task/agent_tasks.json` 与 `data/task/text/agent_text.json`，本机运行数据的存在、文本覆盖或损坏不得改变发布字节。Node 共用 `tools/lib/optional-agent-source.js`，地图检查走 `validate-static-content` / `MapTaskCatalog.LoadStatic`。Host 的运行时 `MapTaskCatalog.Load` 仍允许这两份旧源缺失，存在时按原合同读取并严格校验；按存档增量和真实玩家文件不被构建器改写。普通正式源缺失、正式引用缺失与重复登记仍拒绝；不创建空占位文件。隔离与运行时保留用例由 Node 条件矩阵及 `MapTaskCatalogOptionalSourceTests` 覆盖。
 
 **闭包校验器（关键，审计 Phase 1 前置硬门控）**：
 - 对每个任务的 `title` / `description` / `get_conversation` / `finish_conversation`，若值以 `$` 开头则该键**必须存在**于合并后的 `task_texts`，否则 `exit 1`（防 `$KEY` 缺失运行时显示原始键）。

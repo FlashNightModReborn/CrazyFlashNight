@@ -11,7 +11,7 @@ class org.flashNight.arki.skill.SkillPanelService {
     private static var _learnToken:Object = null;
     private static var _sessionSeq:Number = 0;
     private static var _tokenSeq:Number = 0;
-    private static var SESSION_TTL_MS:Number = 120000;
+    private static var CANDIDATE_TTL_MS:Number = 120000;
     private static var TOKEN_TTL_MS:Number = 30000;
     private static var _testNow:Number = NaN;
 
@@ -64,8 +64,6 @@ class org.flashNight.arki.skill.SkillPanelService {
         if (commandName == "reorder") return executeWrite("reorder", params);
         if (commandName == "close") {
             if (params.trainerSession != undefined && !safeOpaque(params.trainerSession, 160)) return fail("invalid_payload");
-            var projection:Object=SkillLoadoutService.flushProjection();
-            if(projection.status=="failed" || (projection.status=="pending" && projection.reason!="pending_actor")) return fail("busy");
             // 带 session 的 tracked cleanup 只能撤销同一 capability；迟到的旧 cleanup 对新 session 幂等 no-op。
             if (params.trainerSession == undefined) closeSession();
             else {
@@ -73,6 +71,9 @@ class org.flashNight.arki.skill.SkillPanelService {
                 if (_candidateSession != null && _candidateSession.nonce == cleanupNonce) _candidateSession = null;
                 else if (_session != null && _session.nonce == cleanupNonce) closeActiveSession();
             }
+            // 能力退休不依赖数值投影成功；失败/待处理的 dirty 仍归原人物数值屏障追平。
+            // flushProjection 自身隔离投影异常，不能让显示/数值故障阻止幂等清理 ACK。
+            SkillLoadoutService.flushProjection();
             return {success:true, v:1, changed:false, revision:SkillLoadoutService.getRevision()};
         }
         return fail("unknown_command");
@@ -246,12 +247,12 @@ class org.flashNight.arki.skill.SkillPanelService {
         var npcKey:String = npcIdentity(npcRef);
         var lifecycleMode:String = trainerLifecycleMode(npcRef, npcKey);
         if (lifecycleMode == null) return fail("trainer_session_expired");
-        if (sessionMatches(_session, npcRef, npcKey, lifecycleMode, scene, normalized.signature)) {
+        if (sessionMatches(_session, npcRef, npcKey, lifecycleMode, scene, normalized.signature, false)) {
             _candidateSession = null;
             _session.lastTouchedAt = now();
             return {success:true, v:1, session:_session, reused:true, candidate:false};
         }
-        if (sessionMatches(_candidateSession, npcRef, npcKey, lifecycleMode, scene, normalized.signature)) {
+        if (sessionMatches(_candidateSession, npcRef, npcKey, lifecycleMode, scene, normalized.signature, true)) {
             _candidateSession.lastTouchedAt = now();
             return {success:true, v:1, session:_candidateSession, reused:true, candidate:true};
         }
@@ -278,7 +279,9 @@ class org.flashNight.arki.skill.SkillPanelService {
     private static function validateSessionRecord(session:Object, candidate:Boolean):Object {
         if (session == null) return fail("trainer_session_expired");
         var lastTouchedAt:Number = session.lastTouchedAt == undefined ? Number(session.createdAt) : Number(session.lastTouchedAt);
-        if (elapsed(lastTouchedAt) > SESSION_TTL_MS || session.scene != sceneSignature() || !npcStillValid(session)) {
+        // 未接管的候选能力有界存活；已激活面板的正常阅读不以协议流量计时。
+        if ((candidate && elapsed(lastTouchedAt) > CANDIDATE_TTL_MS)
+                || session.scene != sceneSignature() || !npcStillValid(session)) {
             if (candidate) _candidateSession = null; else closeActiveSession();
             return fail("trainer_session_expired");
         }
@@ -293,10 +296,10 @@ class org.flashNight.arki.skill.SkillPanelService {
         return {success:true, v:1, session:session};
     }
 
-    private static function sessionMatches(session:Object, npcRef:Object, npcKey:String, lifecycleMode:String, scene:String, signature:String):Boolean {
+    private static function sessionMatches(session:Object, npcRef:Object, npcKey:String, lifecycleMode:String, scene:String, signature:String, candidate:Boolean):Boolean {
         if (session == null) return false;
         var lastTouchedAt:Number = session.lastTouchedAt == undefined ? Number(session.createdAt) : Number(session.lastTouchedAt);
-        return elapsed(lastTouchedAt) <= SESSION_TTL_MS && session.npcRef === npcRef
+        return (!candidate || elapsed(lastTouchedAt) <= CANDIDATE_TTL_MS) && session.npcRef === npcRef
             && session.npcKey == npcKey && session.lifecycleMode == lifecycleMode
             && session.scene == scene && session.catalogSignature == signature;
     }

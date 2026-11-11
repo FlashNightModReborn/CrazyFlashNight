@@ -86,7 +86,10 @@ namespace CF7Launcher.Tasks
             "skill_not_found", "not_learned", "already_equipped", "not_equippable", "slot_empty",
             "not_passive", "invalid_target", "equipped_skill_locked", "trainer_session_expired",
             "level_locked", "insufficient_sp", "max_level", "initial_level_must_be_one", "skill_table_full",
-            "trainer_skill_forbidden", "invalid_level", "unknown_skill");
+            "trainer_skill_forbidden", "invalid_level", "unknown_skill",
+            // SkillLoadoutService rejects before mutation, or restores its captured state before returning.
+            // Other domains' commit_failed contracts are deliberately unchanged.
+            "commit_pending", "commit_failed");
 
         private readonly Func<bool> _isClientReady;
         private readonly Func<string, bool> _trySend;
@@ -458,7 +461,12 @@ namespace CF7Launcher.Tasks
             { RejectAndRemember(callId, cmd, "invalid_payload"); return; }
 
             if (!_isClientReady()) { RejectAndRemember(callId, cmd, "disconnected"); return; }
+            // Recovery reads need no teacher capability. They still pass the exact owner,
+            // original write call and epoch gates below; ordinary cross-view reads stay rejected.
+            bool trainerManageReconcile = cmd == "snapshot" && isReconcile
+                && activeView == "trainer" && normalized.Value<string>("view") == "manage";
             if (cmd == "snapshot"
+                && !trainerManageReconcile
                 && (normalized.Value<string>("view") != activeView
                     || (activeView == "trainer"
                         && normalized.Value<string>("trainerSession") != activeTrainerSession)))
@@ -480,8 +488,8 @@ namespace CF7Launcher.Tasks
                 IsWrite = isWrite,
                 IsReconcile = isReconcile,
                 NormalizedPayload = normalized,
-                ExpectedView = activeView,
-                ExpectedTrainerSession = activeTrainerSession
+                ExpectedView = trainerManageReconcile ? "manage" : activeView,
+                ExpectedTrainerSession = trainerManageReconcile ? null : activeTrainerSession
             };
             bool queueReconcile = false;
             string reject = null;
@@ -679,6 +687,19 @@ namespace CF7Launcher.Tasks
                     bool clears = succeeded && currentWatermark && _writeState != "write_pending";
                     if (clears)
                     {
+                        if (!entry.IsBackgroundReconcile && entry.ExpectedView == "manage"
+                            && _panelView == "trainer"
+                            && string.Equals(entry.PanelInstanceId, _panelInstanceId, StringComparison.Ordinal))
+                        {
+                            // A validated recovery snapshot retires teaching; it never restores permission.
+                            QueueTrainerCleanupLocked(_panelTrainerSession, false);
+                            _panelView = "manage";
+                            _panelTrainerSession = null;
+                            _trainerReturnSession = null;
+                            _preserveTrainerForNextManage = false;
+                            _panelCanReturnCharacterBuild = false;
+                            _learnTokens.Clear();
+                        }
                         _writeState = "idle";
                         CancelBackgroundReconcileRetryLocked();
                         CancelReconcileWatchdogLocked();

@@ -45,7 +45,7 @@ var SkillsPanel = (function() {
         onSnapshot: onAuthoritativeSnapshot,
         onError: onCoordinatorError,
         onResponseReceived:function(response) { _responseTrace.received(response); },
-        validateSnapshot: function(snapshot) { return validateSnapshot(snapshot, _view); }
+        validateSnapshot: function(snapshot, view) { return validateSnapshot(snapshot, view || _view); }
     });
 
     var _renderer = Presenter.create({
@@ -71,7 +71,7 @@ var SkillsPanel = (function() {
         setDesiredLevelState:function(level) { _desiredLevel = Number(level); },
         targetMaxLevel:targetMaxLevel,
         prepareLearnConfirmation:prepareLearnConfirmation, scheduleLearnPreview:scheduleLearnPreview,
-        errorMessage:errorMessage, clearPendingFocus:function() { _pendingFocusKey = ''; },
+        errorMessage:Presenter.errorMessage, clearPendingFocus:function() { _pendingFocusKey = ''; },
         onSlotClick:onSlotClick, onSlotKeyDown:onSlotKeyDown, proposeUnequip:proposeUnequip,
         entryByKey:entryByKey
     });
@@ -740,9 +740,9 @@ var SkillsPanel = (function() {
             if (response.error === 'trainer_session_expired') return;
             // 权威结果音在响应回调播放，附带的 toast 保持静默（契约 §5.3/§6）
             if (response.success !== true) {
-                toast(errorMessage(response.error)); cue('rejected');
+                toast(Presenter.errorMessage(response.error)); cue('rejected');
                 if (response.error === 'stale_state' || response.error === 'not_learned' || response.error === 'skill_not_found') requestSnapshot();
-            } else { toast(response.changed === false ? '状态未变化。' : successMessage(cmd)); cue('success'); }
+            } else { toast(response.changed === false ? '状态未变化。' : Presenter.successMessage(cmd)); cue('success'); }
         });
         // 本地拦截（协调器忙）保持静默 toast：调用方已播意图音（activate/toggle），避免同手势双响（契约 §5.2）
         if (!callId) toast('当前暂时不能修改技能，请稍后重试。');
@@ -753,13 +753,25 @@ var SkillsPanel = (function() {
         if (_coordinator.getState() !== 'idle') return false;
         return !!_coordinator.requestSnapshot(function(response) {
             if (response.error === 'trainer_session_expired') return;
-            if (response.success !== true) toast(errorMessage(response.error));
+            if (response.success !== true) toast(Presenter.errorMessage(response.error));
             refreshStateControls();
         });
     }
 
     function onAuthoritativeSnapshot(snapshot, source, response) {
-        _responseTrace.refresh(response, function() { applyAuthoritativeSnapshot(snapshot); });
+        _responseTrace.refresh(response, function() {
+            if (source === 'reconcile' && _view === 'trainer' && snapshot.view === 'manage') {
+                cleanupView(false);
+                _view = 'manage';
+                _initData = {panelInstanceId:_coordinator.getPanelInstanceId(), view:'manage'};
+                _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
+                    ? PanelTooltip.createScope('skills', {profile:'dense-inspect'}) : null;
+                _responseTrace.open(_initData.panelInstanceId);
+                buildDOM();
+                toast('技能状态已核对。教师连接已失效，已返回技能管理；研习请重新与教师对话。');
+            }
+            applyAuthoritativeSnapshot(snapshot);
+        });
     }
 
     function applyAuthoritativeSnapshot(snapshot) {
@@ -1198,21 +1210,6 @@ var SkillsPanel = (function() {
         if (!key) return;
         var nodes = _scaleEl.querySelectorAll('[data-focus-key]');
         for (var i=0;i<nodes.length;i++) if (nodes[i].getAttribute('data-focus-key') === key) { nodes[i].focus(); return; }
-    }
-    function successMessage(cmd) {
-        return {learnCommit:'技能研习完成。',equip:'快捷栏已更新。',unequip:'技能已卸载。',
-            moveSlot:'快捷槽顺序已更新。',setPassive:'被动状态已更新。',setFeature:'子能力状态已更新。',reorder:'技能顺序已更新。'}[cmd] || '技能状态已更新。';
-    }
-    function errorMessage(error) {
-        var messages = {invalid_payload:'无法完成技能操作，请重试。',unsupported_cmd:'暂不支持该操作。',
-            skill_not_found:'技能已不存在。',not_learned:'该技能尚未学习。',stale_state:'技能状态已变化，请刷新。',
-            trainer_session_expired:'当前教师已无法继续研习，请重新与教师对话。',level_locked:'角色等级不足。',insufficient_sp:'技能点不足。',
-            max_level:'技能已满级。',initial_level_must_be_one:'未学技能只能先学习 1 级。',skill_table_full:'技能表已满。',
-            slot_empty:'源快捷槽为空。',
-            already_equipped:'普通模式下该技能已经装备。',not_equippable:'该技能不可装备。',corrupt_skill_state:'技能数据异常，暂时无法修改。',
-            service_not_ready:'技能功能尚未准备好，请稍后重试。',reconcile_required:'上次操作结果尚未确认。',busy:'技能功能正忙，请稍后重试。',
-            malformed_response:'技能数据异常，请重试。',timeout:'技能请求超时。',client_timeout:'技能请求超时。',disconnect:'连接已断开。'};
-        return messages[error] || '技能操作失败。';
     }
     function toast(message) { if (typeof Toast !== 'undefined' && Toast.add) Toast.add(message); }
     // 语义音效命令式入口（契约 §8）：仅本地拦截 / 权威结果路径使用，静态元素走 data-audio-cue

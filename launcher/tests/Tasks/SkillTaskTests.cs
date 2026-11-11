@@ -197,18 +197,23 @@ namespace Launcher.Tests.Tasks
             }
         }
 
-        [Fact]
-        public void AllowlistedWriteRejection_IsDefinitiveAndReturnsIdle()
+        [Theory]
+        [InlineData("stale_state")]
+        [InlineData("commit_pending")]
+        [InlineData("commit_failed")]
+        public void AllowlistedWriteRejection_IsDefinitiveAndReturnsIdle(string error)
         {
             var sent = new List<JObject>();
             var web = new List<JObject>();
             using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
             {
                 task.HandleWebRequest("equip", Request("equip", "skill.reject.stale"));
-                task.HandleFlashResponse(ErrorResponse((int)sent[0]["callId"], "stale_state", 13), null);
+                task.HandleFlashResponse(ErrorResponse((int)sent[0]["callId"], error, 13), null);
                 Assert.Equal("idle", task.WriteState);
-                Assert.Equal("stale_state", (string)web[0]["error"]);
+                Assert.Equal(error, (string)web[0]["error"]);
                 Assert.Null(web[0]["requiresReconcile"]);
+                task.HandleWebRequest("unequip", Request("unequip", "skill.reject.next"));
+                Assert.Equal(2, sent.Count);
             }
         }
 
@@ -1088,6 +1093,78 @@ namespace Launcher.Tests.Tasks
                 task.HandleFlashResponse(CleanupAck((int)sent[4]["callId"], 13), null);
                 Assert.True(task.CanOpenTrainer);
             }
+        }
+
+        [Fact]
+        public void ExpiredTrainer_ForegroundManageReconcileSettlesWithoutRestoringTeaching()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                BindTrainerContext(task);
+                task.HandleWebRequest("learnPreview", Request("learnPreview", "skill.foreground.preview"));
+                task.HandleFlashResponse(PreviewResponse((int)sent[0]["callId"], "learn.foreground", 1), null);
+                var commit = Request("learnCommit", "skill.foreground.commit");
+                commit["payload"]["expectedLearnToken"] = "learn.foreground";
+                task.HandleWebRequest("learnCommit", commit);
+                task.HandleFlashResponse(WriteSuccess((int)sent[1]["callId"], true, 13, null), null);
+                Assert.Equal("needs_reconcile", task.WriteState);
+
+                var reconcile = ForegroundManageReconcile("skill.foreground.reconcile", "skill.foreground.commit");
+                var ordinary = (JObject)reconcile.DeepClone();
+                ordinary["callId"] = "skill.foreground.ordinary";
+                ((JObject)ordinary["payload"]).Remove("reconcileId");
+                ((JObject)ordinary["payload"]).Remove("reconcileAfterCallId");
+                task.HandleWebRequest("snapshot", ordinary);
+                Assert.Equal("panel_context_mismatch", (string)web[web.Count - 1]["error"]);
+
+                var wrongTarget = (JObject)reconcile.DeepClone();
+                wrongTarget["callId"] = "skill.foreground.wrong";
+                wrongTarget["payload"]["reconcileAfterCallId"] = "skill.some.other.write";
+                task.HandleWebRequest("snapshot", wrongTarget);
+                Assert.Equal("invalid_payload", (string)web[web.Count - 1]["error"]);
+                Assert.Equal(2, sent.Count);
+
+                task.HandleWebRequest("snapshot", reconcile);
+                Assert.Equal("manage", (string)sent[2]["view"]);
+                Assert.Null(sent[2]["trainerSession"]);
+                var malformed = Snapshot(13, null, null);
+                malformed.Remove("loadout");
+                malformed["task"] = "skill_response";
+                malformed["callId"] = (int)sent[2]["callId"];
+                task.HandleFlashResponse(malformed, null);
+                Assert.Equal("needs_reconcile", task.WriteState);
+                Assert.Equal(3, sent.Count); // No permission cleanup or write replay before valid proof.
+
+                reconcile["callId"] = "skill.foreground.retry";
+                task.HandleWebRequest("snapshot", reconcile);
+                var manage = Snapshot(13, null, null);
+                manage["task"] = "skill_response";
+                manage["callId"] = (int)sent[3]["callId"];
+                task.HandleFlashResponse(manage, null);
+                Assert.Equal("idle", task.WriteState);
+                Assert.True((bool)web[web.Count - 1]["reconciled"]);
+                Assert.Equal("manage", (string)web[web.Count - 1]["view"]);
+                Assert.Equal(JTokenType.Null, web[web.Count - 1]["trainer"].Type);
+                Assert.Equal("skillPanelClose", (string)sent[4]["action"]);
+                Assert.Equal("trainer.one", (string)sent[4]["trainerSession"]);
+                task.HandleFlashResponse(CleanupAck((int)sent[4]["callId"], 13), null);
+
+                task.HandleWebRequest("learnPreview", Request("learnPreview", "skill.foreground.no.teaching"));
+                Assert.Equal("panel_context_mismatch", (string)web[web.Count - 1]["error"]);
+                string returned;
+                Assert.False(task.TryGetTrainerReturnSession("skills.instance.trainer", out returned));
+            }
+        }
+
+        private static JObject ForegroundManageReconcile(string callId, string afterCallId)
+        {
+            var request = Request("snapshot", callId);
+            request["panelInstanceId"] = "skills.instance.trainer";
+            request["payload"]["reconcileId"] = "foreground.reconcile";
+            request["payload"]["reconcileAfterCallId"] = afterCallId;
+            return request;
         }
 
         [Fact]

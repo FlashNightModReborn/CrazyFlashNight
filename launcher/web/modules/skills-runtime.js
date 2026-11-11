@@ -256,12 +256,12 @@
         return false;
     };
 
-    SkillCoordinator.prototype._applySnapshot = function(snapshot, response, source) {
+    SkillCoordinator.prototype._applySnapshot = function(snapshot, response, source, expectedView) {
         this._lastApplyReason = '';
         this._lastValidationError = '';
         if (!snapshot || typeof snapshot !== 'object') { this._lastApplyReason = 'invalid'; return false; }
         if (this._isLate(response, snapshot)) { this._lastApplyReason = 'late'; return false; }
-        var validation = this._validateSnapshot(snapshot);
+        var validation = this._validateSnapshot(snapshot, expectedView || this._view);
         if (validation === false || validation && validation.ok === false) {
             this._lastApplyReason = 'invalid';
             this._lastValidationError = validation && validation.error ? String(validation.error) : '';
@@ -271,6 +271,12 @@
         var writeEpoch = finiteInt(response && response.writeEpoch, -1);
         if (revision >= 0) this._lastAppliedRevision = Math.max(this._lastAppliedRevision, revision);
         if (writeEpoch >= 0) this._lastAppliedWriteEpoch = Math.max(this._lastAppliedWriteEpoch, writeEpoch);
+        if (source === 'reconcile' && expectedView === 'manage') {
+            this._view = 'manage';
+            this._trainerSession = '';
+            this._mux.cancelKind('preview');
+            this._previewOrdinal++;
+        }
         // Only a validated, current write/reconcile snapshot may settle the gate. The
         // synchronous presenter must see idle so its next read-only preview is allowed.
         if (source === 'reconcile') this._activeReconcile = null;
@@ -373,14 +379,23 @@
         if (this._state !== 'needs_reconcile' || !this._activeReconcile) return null;
         var self = this;
         var reconcile = this._activeReconcile;
-        var payload = this._baseSnapshotPayload();
+        var view = reconcile.view === 'manage' ? 'manage' : this._view;
+        var payload = view === 'manage' ? {view:'manage'} : this._baseSnapshotPayload();
         payload.reconcileId = reconcile.id;
         payload.reconcileAfterCallId = reconcile.afterCallId;
         return this._mux.request('snapshot', payload, {kind:'reconcile'}, function(response) {
+            if (self._state !== 'needs_reconcile' || self._activeReconcile !== reconcile) return;
+            if (view === 'trainer' && response.success === false && response.error === 'trainer_session_expired') {
+                // One fresh read through the management domain, never a replay of the learning write.
+                reconcile.view = 'manage';
+                self._onError(response, 'reconcile');
+                self.retryReconcile(callback);
+                return;
+            }
             var matches = response.success === true && response.reconciled === true
                 && String(response.reconcileId || '') === reconcile.id
                 && String(response.panelInstanceId || '') === self._panelInstanceId;
-            if (!matches || !self._applySnapshot(response, response, 'reconcile')) {
+            if (!matches || response.view !== view || !self._applySnapshot(response, response, 'reconcile', view)) {
                 self._onError(response, 'reconcile');
                 if (callback) callback(response, false);
                 return;

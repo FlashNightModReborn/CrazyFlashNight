@@ -1,4 +1,4 @@
-param([ValidateSet('api','read','hud','serve','project','catalog','prepare-definition','render-definition','validate-content')][string]$Command = 'read', [int]$Port = 18765, [string]$ProjectRoot)
+param([ValidateSet('api','read','hud','serve','project','catalog','prepare-definition','render-definition','validate-content','validate-static-content')][string]$Command = 'read', [int]$Port = 18765, [string]$ProjectRoot)
 $ErrorActionPreference = 'Stop'
 chcp.com 65001 | Out-Null
 $OutputEncoding = [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false

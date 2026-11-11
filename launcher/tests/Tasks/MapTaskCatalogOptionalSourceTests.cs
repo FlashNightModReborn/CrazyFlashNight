@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CF7Launcher.Data;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -109,6 +110,50 @@ namespace CF7Launcher.Tests.Tasks
         {
             Put("data/task/list.xml", "<root><task>agent_tasks.json</task><task>agent_tasks.json</task></root>");
             Assert.Throws<InvalidDataException>(() => MapTaskCatalog.Load(root));
+        }
+
+        [Fact]
+        public void StaticCatalogIgnoresRuntimeTasksAndTextWithoutChangingRuntimeLoading()
+        {
+            Put("data/task/required.json", "{\"tasks\":[{\"id\":1,\"title\":\"$BASE\"}]}");
+            var before = MapTaskCatalog.LoadStatic(root);
+            Put(AgentTasks, ValidContent(AgentTasks));
+            Put(AgentText, "{\"$BASE\":\"本机覆盖\",\"$AGENT\":\"委托文本\"}");
+
+            var published = MapTaskCatalog.LoadStatic(root);
+            Assert.Equal(before.Digest, published.Digest);
+            Assert.Null(published.Tasks["200001"]);
+            Assert.Equal("基础文本", published.Title((JObject)published.Tasks["1"]));
+            Assert.False(published.SourceBytes.ContainsKey(AgentTasks));
+            Assert.False(published.SourceBytes.ContainsKey(AgentText));
+
+            var runtime = MapTaskCatalog.Load(root);
+            Assert.NotNull(runtime.Tasks["200001"]);
+            Assert.Equal("本机覆盖", runtime.Title((JObject)runtime.Tasks["1"]));
+        }
+
+        [Theory]
+        [InlineData(AgentTasks)]
+        [InlineData(AgentText)]
+        public void StaticCatalogNeverOpensLockedOrMalformedRuntimeFiles(string file)
+        {
+            Put(file, "{");
+            using (var held = new FileStream(PathFor(file), FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+            {
+                Assert.NotNull(MapTaskCatalog.LoadStatic(root).Tasks["1"]);
+                Assert.ThrowsAny<IOException>(() => MapTaskCatalog.Load(root));
+            }
+            Assert.Equal("{", File.ReadAllText(PathFor(file)));
+        }
+
+        [Fact]
+        public void StaticCatalogStillRejectsDuplicateManifestEntriesAndMissingRequiredSources()
+        {
+            Put("data/task/list.xml", "<root><task>required.json</task><task>agent_tasks.json</task><task>agent_tasks.json</task></root>");
+            Assert.Throws<InvalidDataException>(() => MapTaskCatalog.LoadStatic(root));
+            Put("data/task/list.xml", "<root><task>required.json</task><task>agent_tasks.json</task></root>");
+            File.Delete(PathFor("data/task/required.json"));
+            Assert.ThrowsAny<IOException>(() => MapTaskCatalog.LoadStatic(root));
         }
 
         public void Dispose() { if (Directory.Exists(root)) Directory.Delete(root, true); }

@@ -68,14 +68,32 @@ function Expand-Cf7PolicyToken {
 
 function Get-Cf7TrackedStateFingerprint {
     param([string]$ReferenceTree)
-    $previousPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Continue'
+    $start = New-Object Diagnostics.ProcessStartInfo
+    $start.FileName = 'git.exe'
+    $start.Arguments = "-C `"$ProjectRoot`" -c core.quotepath=false diff --binary --full-index --no-ext-diff `"$ReferenceTree`" --"
+    $start.UseShellExecute = $false
+    $start.CreateNoWindow = $true
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
+    $start.StandardOutputEncoding = New-Object Text.UTF8Encoding($false)
+    $start.StandardErrorEncoding = New-Object Text.UTF8Encoding($false)
+    $process = [Diagnostics.Process]::Start($start)
     try {
-        $rows = @(& git -C $ProjectRoot -c core.quotepath=false diff --binary --full-index --no-ext-diff $ReferenceTree -- 2>&1)
-        $gitExit = $LASTEXITCODE
-    } finally { $ErrorActionPreference = $previousPreference }
-    if ($gitExit -ne 0) { throw "Cannot fingerprint tracked worktree state: $($rows -join ' ')" }
-    return Get-Cf7Sha256Text -Text (([string]::Join("`n", [string[]]$rows)) + "`n")
+        $outputTask = $process.StandardOutput.ReadToEndAsync()
+        $errorTask = $process.StandardError.ReadToEndAsync()
+        $process.WaitForExit()
+        $diff = [string]$outputTask.Result
+        $diagnostic = [string]$errorTask.Result
+        if ($process.ExitCode -ne 0) {
+            throw "Cannot fingerprint tracked worktree state: $($diagnostic.Trim()) $($diff.Trim())"
+        }
+    } finally { $process.Dispose() }
+    if (-not [string]::IsNullOrWhiteSpace($diagnostic)) { Write-Warning $diagnostic.Trim() }
+    # Hash only the patch. Keep Git's diagnostics visible without treating an
+    # EOL warning as a tracked edit; preserve the existing line-normalized hash.
+    $diff = $diff.Replace("`r`n", "`n")
+    if ($diff.EndsWith("`n")) { $diff = $diff.Substring(0, $diff.Length - 1) }
+    return Get-Cf7Sha256Text -Text ($diff + "`n")
 }
 
 function New-Cf7RequiredPathsCheck {

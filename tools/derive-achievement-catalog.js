@@ -30,7 +30,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { legacyAgentSourceMissing } = require('./lib/optional-agent-source.js');
+const { isRuntimeAgentSource } = require('./lib/optional-agent-source.js');
 const { loadItemMeta, attachIcon } = require('./lib/item-icons.js');
 
 const projectRoot = path.resolve(__dirname, '..');
@@ -140,13 +140,13 @@ function loadValidCounters() {
     return keys;
 }
 
-// ⑤ 跨域闭包用任务域索引：合并任务 id 集 + 各有序链的最大 seq。
+// ⑤ 跨域闭包只用正式任务索引：本机 Agent 运行任务不能满足正式成就引用。
 function loadTaskIndex() {
     const files = readManifest(path.join(taskDir, 'list.xml'), 'task');
     const ids = {};
     const chainMaxSeq = {};
     for (let i = 0; i < files.length; i += 1) {
-        if (legacyAgentSourceMissing(taskDir, files[i], 'agent_tasks.json', fail)) continue;
+        if (isRuntimeAgentSource(files[i], 'agent_tasks.json')) continue;
         const data = readJson(path.join(taskDir, files[i]));
         if (!data || !Array.isArray(data.tasks)) fail(files[i] + ': missing top-level "tasks" array');
         for (let t = 0; t < data.tasks.length; t += 1) {
