@@ -1,0 +1,58 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/JK变体图标/图标-Codex-jk套装白丝裙子" itemID="3a74c07e-4d625dc7" lastModified="1794378829" linkageExportForAS="true" linkageIdentifier="图标-Codex-jk套装白丝裙子">
+  <timeline>
+    <DOMTimeline name="图标-Codex-jk套装白丝裙子">
+      <layers>
+        <DOMLayer name="Layer_1" color="#A26AF8" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/JK变体图标/依赖/add53c279d53bcc2" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="袜色提示" color="#59D751" parentLayerIndex="0">
+          <frames><DOMFrame index="0" keyMode="9728"><elements>
+                <DOMSymbolInstance libraryItemName="Codex/JK变体图标/依赖/88631a0165fa73b7" symbolType="graphic" loop="loop">
+                  <matrix><Matrix a="0.145" d="0.145" tx="6.3" ty="6.1"/></matrix>
+                  <transformationPoint><Point/></transformationPoint>
+                </DOMSymbolInstance>
+          </elements></DOMFrame></frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#59D751" parentLayerIndex="0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/JK变体图标/依赖/6d7f17d32dedeb50" symbolType="graphic" centerPoint3DX="0.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.16998291015625" d="0.16998291015625" tx="1.7" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.05" y="-1.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_3" color="#C5895E" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/JK变体图标/依赖/add53c279d53bcc2" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

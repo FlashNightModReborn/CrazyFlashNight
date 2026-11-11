@@ -5458,6 +5458,64 @@
       <note>15级轻装下装；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分310，残差0.00%</note>
     </record>
     <record>
+      <auditRef>armor:jk套装白丝裙子</auditRef>
+      <itemName>jk套装白丝裙子</itemName>
+      <sourceFile>data/items/防具_0-19级.xml</sourceFile>
+      <weightLayers>0</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>39000</adoptedGoldPrice>
+      <expectedKPointPrice>1350</expectedKPointPrice>
+      <kpointEvidenceRef>data/kshop/末日COS☆PLAY.json</kpointEvidenceRef>
+      <status>confirmed</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>39000</marketPrice>
+      <currentScore>310</currentScore>
+      <balanceScore>310</balanceScore>
+      <weightedScore>310</weightedScore>
+      <magicDefAvgCap>13</magicDefAvgCap>
+      <magicDefMaxCap>28</magicDefMaxCap>
+      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <recommendedKPointPrice>1350</recommendedKPointPrice>
+      <inputs level="15" defence="80" hp="45" mp="75" damage="10" weaponBonus="0" weight="1" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="0" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/末日COS☆PLAY.json" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:73ea8e0d</inputDigest>
+      <sourceDigest>sha256:a08dbf565439cf6e9534db800a1ff15964d064fefc3e6a388effa9c1162651a7</sourceDigest>
+      <note>#233 白丝外观变体，沿用jk套装裙子属性与定价；15级轻装下装；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分310，残差0.00%</note>
+    </record>
+    <record>
+      <auditRef>armor:jk套装黑丝裙子</auditRef>
+      <itemName>jk套装黑丝裙子</itemName>
+      <sourceFile>data/items/防具_0-19级.xml</sourceFile>
+      <weightLayers>0</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>39000</adoptedGoldPrice>
+      <expectedKPointPrice>1350</expectedKPointPrice>
+      <kpointEvidenceRef>data/kshop/末日COS☆PLAY.json</kpointEvidenceRef>
+      <status>confirmed</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>39000</marketPrice>
+      <currentScore>310</currentScore>
+      <balanceScore>310</balanceScore>
+      <weightedScore>310</weightedScore>
+      <magicDefAvgCap>13</magicDefAvgCap>
+      <magicDefMaxCap>28</magicDefMaxCap>
+      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <recommendedKPointPrice>1350</recommendedKPointPrice>
+      <inputs level="15" defence="80" hp="45" mp="75" damage="10" weaponBonus="0" weight="1" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="0" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/末日COS☆PLAY.json" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:78a8e539</inputDigest>
+      <sourceDigest>sha256:2b37ffba1804b551394d6ff4058c4000471bf2bb3c53da5ba6286aa61e8555ac</sourceDigest>
+      <note>#233 黑丝外观变体，沿用jk套装裙子属性与定价；15级轻装下装；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分310，残差0.00%</note>
+    </record>
+    <record>
       <auditRef>armor:jk套装鞋子</auditRef>
       <itemName>jk套装鞋子</itemName>
       <sourceFile>data/items/防具_0-19级.xml</sourceFile>
@@ -5485,6 +5543,64 @@
       <inputDigest>fnv1a32:29018456</inputDigest>
       <sourceDigest>sha256:d03221ab524519eb7d2eba8dc2d5f0f0864cdfb3fcc778d4a7bd34140e4b6177</sourceDigest>
       <note>15级轻装脚部；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分308，残差-0.65%</note>
+    </record>
+    <record>
+      <auditRef>armor:jk套装白丝鞋子</auditRef>
+      <itemName>jk套装白丝鞋子</itemName>
+      <sourceFile>data/items/防具_0-19级.xml</sourceFile>
+      <weightLayers>0</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>39000</adoptedGoldPrice>
+      <expectedKPointPrice>1350</expectedKPointPrice>
+      <kpointEvidenceRef>data/kshop/末日COS☆PLAY.json</kpointEvidenceRef>
+      <status>confirmed</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>39000</marketPrice>
+      <currentScore>308</currentScore>
+      <balanceScore>308</balanceScore>
+      <weightedScore>308</weightedScore>
+      <magicDefAvgCap>13</magicDefAvgCap>
+      <magicDefMaxCap>28</magicDefMaxCap>
+      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <recommendedKPointPrice>1350</recommendedKPointPrice>
+      <inputs level="15" defence="75" hp="40" mp="40" damage="26" weaponBonus="0" weight="0.8" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="0" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/末日COS☆PLAY.json" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:fd6602f0</inputDigest>
+      <sourceDigest>sha256:89db46ab15a0adea8add4b3aa19adc5693f1a6292a2e6f9e0afca640182ed8e4</sourceDigest>
+      <note>#233 白丝外观变体，沿用jk套装鞋子属性与定价；15级轻装脚部；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分308，残差-0.65%</note>
+    </record>
+    <record>
+      <auditRef>armor:jk套装黑丝鞋子</auditRef>
+      <itemName>jk套装黑丝鞋子</itemName>
+      <sourceFile>data/items/防具_0-19级.xml</sourceFile>
+      <weightLayers>0</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>39000</adoptedGoldPrice>
+      <expectedKPointPrice>1350</expectedKPointPrice>
+      <kpointEvidenceRef>data/kshop/末日COS☆PLAY.json</kpointEvidenceRef>
+      <status>confirmed</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>39000</marketPrice>
+      <currentScore>308</currentScore>
+      <balanceScore>308</balanceScore>
+      <weightedScore>308</weightedScore>
+      <magicDefAvgCap>13</magicDefAvgCap>
+      <magicDefMaxCap>28</magicDefMaxCap>
+      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <recommendedKPointPrice>1350</recommendedKPointPrice>
+      <inputs level="15" defence="75" hp="40" mp="40" damage="26" weaponBonus="0" weight="0.8" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="0" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/末日COS☆PLAY.json" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:bf8b458c</inputDigest>
+      <sourceDigest>sha256:4cb62458990e272996270635d7b007f1719d1a40fa75f9b5723d6a2c46ad5fb2</sourceDigest>
+      <note>#233 黑丝外观变体，沿用jk套装鞋子属性与定价；15级轻装脚部；商城末日COS☆PLAY武装JK套装成员；按裁定0加权层数核算，公式总分308，残差-0.65%</note>
     </record>
     <record>
       <auditRef>armor:黑铁死士鞋</auditRef>
