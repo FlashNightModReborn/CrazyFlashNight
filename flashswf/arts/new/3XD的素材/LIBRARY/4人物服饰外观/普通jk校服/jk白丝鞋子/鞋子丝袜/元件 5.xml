@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4人物服饰外观/普通jk校服/jk白丝鞋子/鞋子丝袜/元件 5" itemID="6af3df38-000001d8" symbolType="graphic" lastModified="1794367804">
+  <timeline>
+    <DOMTimeline name="元件 5">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.009613037109375" b="0.0076141357421875" c="-0.00848388671875" d="-0.0106964111328125" tx="8.8" ty="6.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.898039215686275" ratio="0.47843137254902"/>
+                        <GradientEntry color="#ADB2B9" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!413 340[359 387 327 450!327 450[209 403 153 374!153 374[95 333 67 313!67 313[17 275 0 234!0 234[33 179 52 141!52 141[77 89 118 29!118 29[172 3 288 0!288 0[368 -2 498 14!498 14[521 66 533 99!533 99|583 99!583 99[605 206 657 277!657 277
+[584 269 536 270!536 270[467 294 413 340"/>
+                    <Edge cubics="!498 14(;511,42 523,70 533,99q498 14Q521 66q533 99);"/>
+                    <Edge cubics="!533 99(;546,98 570,98 583,99q533 99 583 99);"/>
+                    <Edge cubics="!583 99(;596,162 618,224 657,277q583 99Q605 206q657 277);"/>
+                    <Edge cubics="!657 277(;616,273 576,269 536,270q657 277Q584 269q536 270);"/>
+                    <Edge cubics="!536 270(;445,302 370,365 327,450q536 270Q467 294q413 340Q359 387q327 450);"/>
+                    <Edge cubics="!327 450(;269,425 209,403 153,374q327 450Q209 403q153 374);"/>
+                    <Edge cubics="!153 374(;100,328 28,302 0,234q153 374Q95 333q67 313Q17 275q0 234);"/>
+                    <Edge cubics="!0 234(;23,197 40,166 52,141q0 234Q33 179q52 141);"/>
+                    <Edge cubics="!52 141(;68,107 90,68 118,29q52 141Q77 89q118 29);"/>
+                    <Edge cubics="!118 29(;154,12 210,2 288,0q118 29Q172 3q288 0);"/>
+                    <Edge cubics="!288 0(;342,-2 411,4 498,14q288 0Q368 -2q498 14);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
