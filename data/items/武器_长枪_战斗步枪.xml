@@ -545,6 +545,62 @@
     </data_fire>
   </item>
   <item weapontype="战斗步枪">
+    <name>HSR10</name>
+    <displayname>HSR10</displayname>
+    <icon>HSR10</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>123300</price>
+    <description>E联VI社制造的大口径战斗步枪。
+    “在面对人类目标时，这种武器的威力明显过大。
+    但当面对那些危险生物时，威力永远不够。”</description>
+    <data>
+      <level>25</level>
+      <weight>9</weight>
+      <dressup>枪-长枪-HSR10</dressup>
+      <capacity>15</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
+      <split>1</split>
+      <diffusion>8</diffusion>
+      <interval>300</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>50</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>Gun_SniperRifle_Shot01.wav</sound>
+      <muzzle>战斗步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>狙击步枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>900</power>
+      <damagetype>破击</damagetype>
+      <magictype>装甲</magictype>
+      <impact>8</impact>
+      <criticalhit>10</criticalhit>
+      <reloadPenalty>33</reloadPenalty>
+    </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1.5</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:a5c7c9c7</inputDigest>
+          <auditRef>weapon:HSR10:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
+  </item>
+  <item weapontype="战斗步枪">
     <name>m14</name>
     <displayname>m14</displayname>
     <icon>m14</icon>
@@ -857,6 +913,62 @@
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
     </data_fire>
+  </item>
+  <item weapontype="战斗步枪">
+    <name>HSR10tac</name>
+    <displayname>HSR10tac</displayname>
+    <icon>HSR10tac</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>236700</price>
+    <description>HSR-10的改进款式，于2003年推出，与30年前推出的原型对比增加了对配件的兼容性，其余差异不大。
+    “在面对人类目标时，这种武器的威力明显过大。
+    但当面对那些危险生物时，威力永远不够。”</description>
+    <data>
+      <level>30</level>
+      <weight>12</weight>
+      <dressup>枪-长枪-HSR10tac</dressup>
+      <capacity>20</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
+      <split>1</split>
+      <diffusion>6</diffusion>
+      <interval>300</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>50</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>Gun_SniperRifle_Shot01.wav</sound>
+      <muzzle>战斗步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>狙击步枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>1160</power>
+      <damagetype>破击</damagetype>
+      <magictype>装甲</magictype>
+      <impact>8</impact>
+      <criticalhit>20</criticalhit>
+      <reloadPenalty>33</reloadPenalty>
+    </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:a5c7c9c7</inputDigest>
+          <auditRef>weapon:HSR10tac:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>HKSL8EX</name>

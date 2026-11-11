@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破片枪弹" itemID="68ef571e-00000d32" linkageExportForAS="true" linkageIdentifier="破片枪弹" lastModified="1793746786" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破片枪弹" itemID="68ef571e-00000d32" linkageExportForAS="true" linkageIdentifier="破片枪弹" lastModified="1794384973" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="破片枪弹" currentFrame="2">
+    <DOMTimeline name="破片枪弹" currentFrame="3">
       <layers>
         <DOMLayer name="Labels Layer" color="#B1EBC9">
           <frames>
@@ -56,7 +56,7 @@ _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种�
               <Actionscript>
                 <script><![CDATA[声音 = "";
 霰弹值 = 8;
-子弹散射度 = 360;
+子弹散射度 = 120;
 发射效果 = "";
 子弹种类 = "次级穿刺子弹";
 

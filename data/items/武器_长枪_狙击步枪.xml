@@ -539,30 +539,32 @@
     <icon>HSR10S</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>273000</price>
-    <description>E联VI社制造的大口径狙击步枪。
+    <price>663000</price>
+    <description>E联VI社制造的大口径狙击步枪，发射穿甲性能高的破片枪弹。A国士兵在第三次大战期间大量使用，用于对抗大型人体机器人类单位。
     “在面对人类目标时，这种武器的威力明显过大。
     但当面对那些危险生物时，威力永远不够。”</description>
     <data>
       <level>35</level>
       <weight>15</weight>
       <dressup>枪-长枪-HSR10S</dressup>
-      <capacity>15</capacity>
+      <capacity>7</capacity>
       <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>1</split>
       <diffusion>3</diffusion>
-      <interval>300</interval>
+      <interval>500</interval>
       <singleshoot>true</singleshoot>
       <velocity>50</velocity>
-      <bullet>穿刺子弹</bullet>
+      <bullet>破片枪弹</bullet>
       <sound>Gun_SniperRifle_Shot01.wav</sound>
       <muzzle>战斗步枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>狙击步枪通用弹药</clipname>
       <bulletsize>50</bulletsize>
-      <power>1669</power>
-      <impact>8</impact>
-      <criticalhit>满血暴击</criticalhit>
+      <power>150</power>
+      <damagetype>破击</damagetype>
+      <magictype>装甲</magictype>
+      <impact>10</impact>
+      <criticalhit>20</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
     <balance>
@@ -572,11 +574,11 @@
       <profiles>
         <data>
           <dualWield>1</dualWield>
-          <pierce>2</pierce>
-          <damageType>1</damageType>
-          <shotgun>1</shotgun>
+          <pierce>1.5</pierce>
+          <damageType>1.5</damageType>
+          <shotgun>10</shotgun>
           <magPrice>1000</magPrice>
-          <weightLayers>0</weightLayers>
+          <weightLayers>2</weightLayers>
           <category>1</category>
           <formula>1</formula>
           <status>unresolved</status>

@@ -1,0 +1,188 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="天网燃烧火箭弹" itemID="6af40985-00001bfc" linkageExportForAS="true" linkageIdentifier="天网燃烧火箭弹" lastModified="1794378174" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="天网燃烧火箭弹" currentFrame="4">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#B1EBC9">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#BFDC2F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[声音 = "";
+霰弹值 = 1;
+子弹散射度 = 0;
+发射效果 = "";
+子弹种类 = "火焰集束爆炸声";
+    子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "热";
+if(!子弹威力)
+{
+   子弹威力 = 500;
+}
+else
+{
+   子弹威力 *= 0.5;
+}
+子弹速度 = 0;
+击中地图效果 = "";
+Z轴攻击范围 = 100;
+击倒率 = 1;
+击中后子弹的效果 = "";
+击退初速度 = 5;
+子弹敌我属性 = 子弹敌我属性值;
+shootX = this._x;
+shootY = this._y;
+_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果,击退初速度);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[声音 = "";
+霰弹值 = 4;
+子弹散射度 = 360;
+发射效果 = "";
+子弹种类 = "火焰";
+    子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "热";
+if(!子弹威力)
+{
+   子弹威力 = 100;
+}
+else
+{
+   子弹威力 *= 1;
+}
+子弹速度 = 2;
+击中地图效果 = "";
+Z轴攻击范围 = 100;
+击倒率 = 10;
+击中后子弹的效果 = "";
+击退初速度 = 0;
+shootX = this._x;
+shootY = this._y;
+if(_root.client != null && _root.me != null)
+{
+   _root.子弹区域shoot表演(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果,击退初速度);
+}
+else
+{
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果,击退初速度);
+}
+stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#908BDE">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 478" centerPoint3DY="-18">
+                  <matrix>
+                    <Matrix tx="-5" ty="-23"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#8FED89">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="15.5">
+                  <matrix>
+                    <Matrix d="0.999984741210938" tx="3" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   横向加速度 = 1;
+   横向速度 = 0;
+   this.onEnterFrame = function()
+   {
+      if(90 > _parent._rotation and _parent._rotation > -90)
+      {
+         横向速度 += 横向加速度;
+         _parent._x += 横向速度;
+      }
+      else if(360 > _parent._rotation and _parent._rotation > 270)
+      {
+         横向速度 += 横向加速度;
+         _parent._x += 横向速度;
+      }
+      else if(270 > _parent._rotation and _parent._rotation > 90)
+      {
+         横向速度 += 横向加速度;
+         _parent._x -= 横向速度;
+      }
+      else if(-90 > _parent._rotation and _parent._rotation > -270)
+      {
+         横向速度 += 横向加速度;
+         _parent._x -= 横向速度;
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#21E2CA">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="备用/62mm Rocket" centerPoint3DX="10.5" centerPoint3DY="-0.35">
+                  <matrix>
+                    <Matrix tx="-6.6" ty="-4.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.1" y="4.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

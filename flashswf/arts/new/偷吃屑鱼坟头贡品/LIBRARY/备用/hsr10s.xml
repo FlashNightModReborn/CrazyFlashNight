@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="备用/hsr10s" itemID="65f90307-000002b9" lastModified="1710818055">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="备用/hsr10s" itemID="65f90307-000002b9" lastModified="1794374937">
   <timeline>
     <DOMTimeline name="hsr10s">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMGroup>
+                <DOMGroup selected="true">
                   <members>
                     <DOMSymbolInstance libraryItemName="备用/BIPOD" centerPoint3DX="108.4" centerPoint3DY="33.75">
                       <matrix>
@@ -15,6 +15,9 @@
                       <transformationPoint>
                         <Point x="3.95" y="2.25"/>
                       </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.05" tintColor="#FFFFFF"/>
+                      </color>
                     </DOMSymbolInstance>
                     <DOMSymbolInstance libraryItemName="备用/12.7x69mm 7round" centerPoint3DX="61.5" centerPoint3DY="25.6">
                       <matrix>
@@ -23,6 +26,9 @@
                       <transformationPoint>
                         <Point x="7.05" y="8.55"/>
                       </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.05" tintColor="#FFFFFF"/>
+                      </color>
                     </DOMSymbolInstance>
                     <DOMSymbolInstance libraryItemName="备用/V.I. polymer stock" centerPoint3DX="17.7" centerPoint3DY="21.25">
                       <matrix>
@@ -79,7 +85,7 @@
                             </StrokeStyle>
                           </strokes>
                           <edges>
-                            <Edge fillStyle0="1" strokeStyle="2" edges="!1363 359|1363 263!1363 263|1073 263!1073 263|1073 359!1073 359|1363 359"/>
+                            <Edge fillStyle0="1" strokeStyle="2" edges="!1363 263|1073 263!1073 263|1073 359!1073 359|1363 359!1363 359|1363 263"/>
                             <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!1116 292|1116 334!1160 295|1160 329!1138 286|1138 340"/>
                           </edges>
                         </DOMShape>
@@ -102,7 +108,7 @@
                               </strokes>
                               <edges>
                                 <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!1201 311|1218 311"/>
-                                <Edge fillStyle1="1" strokeStyle="1" edges="!1191 300|1267 300!1267 300|1267 322!1267 322|1191 322!1191 322|1191 300"/>
+                                <Edge fillStyle1="1" strokeStyle="1" edges="!1267 300|1267 322!1267 322|1191 322!1191 322|1191 300!1191 300|1267 300"/>
                               </edges>
                             </DOMShape>
                           </members>
@@ -134,12 +140,12 @@
                             </StrokeStyle>
                           </strokes>
                           <edges>
-                            <Edge fillStyle1="1" strokeStyle="1" edges="!1351 256|1370 271!1370 271|1370 331!1370 331|1351 346!1351 346|1041 346!1041 346|1041 256!1041 256|1351 256"/>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="!1370 271|1370 331!1370 331|1351 346!1351 346|1041 346!1041 346|1041 256!1041 256|1351 256!1351 256|1370 271"/>
                           </edges>
                         </DOMShape>
                       </members>
                     </DOMGroup>
-                    <DOMSymbolInstance libraryItemName="备用/HSR-10" centerPoint3DX="79.6" centerPoint3DY="20.2">
+                    <DOMSymbolInstance libraryItemName="备用/HSR-10Sdown" selected="true" centerPoint3DX="79.6" centerPoint3DY="20.2">
                       <matrix>
                         <Matrix tx="34.05" ty="7.45"/>
                       </matrix>
@@ -154,6 +160,9 @@
                       <transformationPoint>
                         <Point x="6.55" y="2.25"/>
                       </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.05" tintColor="#FFFFFF"/>
+                      </color>
                     </DOMSymbolInstance>
                     <DOMSymbolInstance libraryItemName="备用/BipodBS" centerPoint3DX="101.65" centerPoint3DY="20.8">
                       <matrix>
@@ -162,6 +171,9 @@
                       <transformationPoint>
                         <Point x="4.45" y="4.15"/>
                       </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.05" tintColor="#FFFFFF"/>
+                      </color>
                     </DOMSymbolInstance>
                     <DOMSymbolInstance libraryItemName="备用/BIPOD" centerPoint3DX="111.55" centerPoint3DY="32.55">
                       <matrix>
@@ -170,6 +182,9 @@
                       <transformationPoint>
                         <Point x="3.95" y="2.25"/>
                       </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.05" tintColor="#FFFFFF"/>
+                      </color>
                     </DOMSymbolInstance>
                     <DOMSymbolInstance libraryItemName="备用/V.I. Scope" centerPoint3DX="54.4" centerPoint3DY="4.3">
                       <matrix>
@@ -178,6 +193,9 @@
                       <transformationPoint>
                         <Point x="20.35" y="4.3"/>
                       </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.05" tintColor="#FFFFFF"/>
+                      </color>
                     </DOMSymbolInstance>
                   </members>
                 </DOMGroup>

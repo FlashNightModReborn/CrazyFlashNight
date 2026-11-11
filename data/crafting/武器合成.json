@@ -344,20 +344,6 @@
     ]
   },
   {
-    "recipeId": "craft.weapon.057",
-    "title": "P90印花集改装图纸",
-    "name": "P90印花集",
-    "price": 55000,
-    "kprice": 0,
-    "materials": [
-      "P90#1",
-      "上色涂料#5",
-      "复合式军用塑料#1",
-      "枪械内构强化套件#1",
-      "镭射瞄准具#1"
-    ]
-  },
-  {
     "recipeId": "craft.weapon.026",
     "title": "穿刺QBZ95改装图纸",
     "name": "穿刺QBZ95",
@@ -772,6 +758,44 @@
       "巨兽#1",
       "强化金属管#1",
       "高强度合金#20"
+    ]
+  },
+  {
+    "recipeId": "craft.weapon.057",
+    "title": "P90印花集改装图纸",
+    "name": "P90印花集",
+    "price": 55000,
+    "kprice": 0,
+    "materials": [
+      "P90#1",
+      "上色涂料#5",
+      "复合式军用塑料#1",
+      "枪械内构强化套件#1",
+      "镭射瞄准具#1"
+    ]
+  },
+  {
+    "recipeId": "craft.weapon.058",
+    "title": "HSR10现代化改造",
+    "name": "HSR10tac",
+    "price": 400,
+    "kprice": 0,
+    "materials": [
+      "HSR10#1",
+      "战术鱼骨零件#1",
+      "战术导轨#3"
+    ]
+  },
+  {
+    "recipeId": "craft.weapon.059",
+    "title": "HSR10tac反器材改造",
+    "name": "HSR10S",
+    "price": 8800,
+    "kprice": 1500,
+    "materials": [
+      "HSR10tac#1",
+      "突击型光学瞄具#1",
+      "战术握把#1"
     ]
   }
 ]

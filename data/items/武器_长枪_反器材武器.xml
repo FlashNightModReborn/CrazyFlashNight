@@ -8,7 +8,7 @@
     <icon>061ABSR</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>136500</price>
+    <price>700000</price>
     <description>大口径反坦克步枪，不过现在更多是用来打人。
     在科技高度发达的这一时代，影视业的演员受益于医学与生物工学的发展而无需担忧生命安全。
     加上科技发展使得使用实物拍摄的成本大幅度下降，在拍摄影视剧过程中使用能够发射甚至具备实际战斗能力的影视道具在这个时代不再少见。
@@ -39,8 +39,10 @@
       <bullethit>火花</bullethit>
       <clipname>狙击步枪通用弹药</clipname>
       <bulletsize>75</bulletsize>
-      <power>12000</power>
+      <power>8500</power>
       <impact>1</impact>
+      <damagetype>破击</damagetype>
+      <magictype>装甲</magictype>
       <accuracy>20</accuracy>
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>50</reloadPenalty>

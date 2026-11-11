@@ -511,6 +511,56 @@
     </balance>
   </item>
   <item weapontype="发射器">
+    <name>AMML3</name>
+    <displayname>AMML-3</displayname>
+    <icon>AMML3</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>663000</price>
+    <description>装填复合燃烧弹的火箭筒，对于装甲目标效果拔群。</description>
+    <data>
+      <level>35</level>
+      <weight>25</weight>
+      <dressup>枪-长枪-AMML3</dressup>
+      <capacity>2</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>2000</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>50</velocity>
+      <bullet>天网燃烧火箭弹</bullet>
+      <sound>firerocket.wav</sound>
+      <muzzle>发射器枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>复合火箭弹弹药</clipname>
+      <bulletsize>60</bulletsize>
+      <power>3000</power>
+      <impact>10</impact>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1.5</pierce>
+          <damageType>2</damageType>
+          <shotgun>6</shotgun>
+          <magPrice>12000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:e472f705</inputDigest>
+          <auditRef>weapon:AMML3:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
+  </item>
+  <item weapontype="发射器">
     <name>M202FLASH</name>
     <displayname>M202FLASH</displayname>
     <icon>M202FLASH</icon>

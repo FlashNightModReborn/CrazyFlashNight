@@ -7,6 +7,8 @@
           <DOMFolderItem name="3.音效相关" itemID="6690f591-00003200"/>
           <DOMFolderItem name="ARMS指挥官" itemID="6655ada7-000003ff" isExpanded="true"/>
           <DOMFolderItem name="ARMS指挥官/sound" itemID="6658727d-0000239d" isExpanded="true"/>
+          <DOMFolderItem name="Codex" itemID="6acd0600-616efbe9"/>
+          <DOMFolderItem name="Codex/弹药r06" itemID="6acd0600-396a413f"/>
           <DOMFolderItem name="Graphic" itemID="58132c33-0000064e"/>
           <DOMFolderItem name="MovieClip" itemID="6655e5bc-00000c93" isExpanded="true"/>
           <DOMFolderItem name="sound" itemID="66586728-000011c7" isExpanded="true"/>
@@ -33,7 +35,7 @@
           <DOMFolderItem name="尚未整理/火焰与爆炸" itemID="665c8820-00000cfb"/>
           <DOMFolderItem name="尚未整理/火焰与爆炸/空中小火焰爆炸" itemID="665c8820-00000cfc"/>
           <DOMFolderItem name="属性标签标志元件" itemID="68099913-00003210"/>
-          <DOMFolderItem name="素材" itemID="68098aea-00002a88"/>
+          <DOMFolderItem name="素材" itemID="68098aea-00002a88" isExpanded="true"/>
           <DOMFolderItem name="特效" itemID="66585e0f-00000fef"/>
           <DOMFolderItem name="特效/1.特效文件夹" itemID="66585e0f-00000ff0" isExpanded="true"/>
           <DOMFolderItem name="特效/1.特效文件夹/06.青蓝色系" itemID="66585e0f-00000ff1" isExpanded="true"/>
@@ -70,9 +72,7 @@
           <DOMFolderItem name="重复项目文件夹2" itemID="66587d99-00005035"/>
           <DOMFolderItem name="子弹-特殊组" itemID="680991f7-000031f6" isExpanded="true"/>
           <DOMFolderItem name="自瞄准星特效" itemID="67139c16-00000684"/>
-         <DOMFolderItem name="Codex" itemID="6acd0600-616efbe9"/>
-    <DOMFolderItem name="Codex/弹药r06" itemID="6acd0600-396a413f"/>
-  </folders>
+     </folders>
      <media>
           <DOMBitmapItem name="未命名文件夹 1/bitmap11.png" itemID="65e1d4e3-000001e8" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/未命名文件夹 1/bitmap11.png" sourceLastImported="1709298915" originalCompressionType="lossless" quality="50" href="未命名文件夹 1/bitmap11.png" bitmapDataHRef="M 4 1710828681.dat" frameRight="4800" frameBottom="3000"/>
           <DOMBitmapItem name="未命名文件夹 1/bitmap13.png" itemID="65e1d4e3-000001ed" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/未命名文件夹 1/bitmap13.png" sourceLastImported="1709298915" originalCompressionType="lossless" quality="50" href="未命名文件夹 1/bitmap13.png" bitmapDataHRef="M 5 1710828681.dat" frameRight="4800" frameBottom="3000"/>
@@ -102,7 +102,7 @@
           <Include href="4XG SHOULDER EMBLEM.xml" loadImmediate="false" itemID="65e42ee4-00000367" lastModified="1710086080"/>
           <Include href="0061ABSR.xml" loadImmediate="false" itemID="666f0449-0000224e" lastModified="1718889298"/>
           <Include href="afootpart.xml" loadImmediate="false" itemID="68085cb0-0000071e" lastModified="1745378480"/>
-          <Include href="AMML-3.xml" itemID="61652486-000002dc" lastModified="1769223144"/>
+          <Include href="AMML-3.xml" itemID="61652486-000002dc" lastModified="1794373919"/>
           <Include href="area.xml" loadImmediate="false" itemID="653d1625-00000520" lastModified="1702141674"/>
           <Include href="ARM handpartA.xml" itemIcon="1" loadImmediate="false" itemID="65f68c47-0000030b" lastModified="1710656583"/>
           <Include href="ARMS arm2back.xml" itemIcon="1" loadImmediate="false" itemID="65f688a2-00000278" lastModified="1710655650"/>
@@ -145,6 +145,7 @@
           <Include href="CANNONANIMATEPART1.xml" loadImmediate="false" itemID="6653e1c9-00000586" lastModified="1716983979"/>
           <Include href="CANNONANIMATEPART2.xml" loadImmediate="false" itemID="6653e1dd-0000058a" lastModified="1716984002"/>
           <Include href="CANNONBALL.xml" loadImmediate="false" itemID="680788a1-00000e6b" lastModified="1745326168"/>
+          <Include href="Codex/弹药r06/22-天使铳的子弹.xml" itemIcon="1" loadImmediate="false" itemID="6acd0600-7fffffff"/>
           <Include href="dhg.xml" loadImmediate="false" itemID="68085d9e-00000759" lastModified="1745378718"/>
           <Include href="Graphic/shape 611.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000263" lastModified="1477651512"/>
           <Include href="Graphic/shape 612.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000264" lastModified="1477651512"/>
@@ -183,7 +184,8 @@
           <Include href="爆金币.xml" itemID="65f9377f-00003299" lastModified="1739235993"/>
           <Include href="爆炸-蘑菇云爆炸.xml" itemIcon="1" loadImmediate="false" itemID="55e94923-00001d9a" lastModified="1441354519"/>
           <Include href="备用/12.7x69mm 7round.xml" loadImmediate="false" itemID="61ed82e7-00000b9c" lastModified="1710818383"/>
-          <Include href="备用/62mm Rocket.xml" loadImmediate="false" itemID="6165256c-000002de" lastModified="1710739298"/>
+          <Include href="备用/12.7x69mm 20round.xml" loadImmediate="false" itemID="6af3fe91-000013c7" lastModified="1794375371"/>
+          <Include href="备用/62mm Rocket.xml" loadImmediate="false" itemID="6165256c-000002de" lastModified="1794378052"/>
           <Include href="备用/Angelic A.xml" loadImmediate="false" itemID="60ebce37-000001e1" lastModified="1626066487"/>
           <Include href="备用/Angelic B.xml" loadImmediate="false" itemID="60ebce3f-000001e6" lastModified="1639118023"/>
           <Include href="备用/Angelic Bullet.xml" loadImmediate="false" itemID="61b2fb20-0000037d" lastModified="1639119648"/>
@@ -197,11 +199,14 @@
           <Include href="备用/Angelic shell.xml" loadImmediate="false" itemID="60ebced2-0000020c" lastModified="1626066642"/>
           <Include href="备用/BIPOD.xml" loadImmediate="false" itemID="5eb0e226-00000210" lastModified="1710818218"/>
           <Include href="备用/BipodBS.xml" loadImmediate="false" itemID="5eb0e21e-0000020b" lastModified="1710818231"/>
-          <Include href="备用/HSR-10.xml" loadImmediate="false" itemID="61651fe3-00000249" lastModified="1710818194"/>
+          <Include href="备用/HSR-10Sdown.xml" loadImmediate="false" itemID="6af3fe43-00001001" lastModified="1794375235"/>
+          <Include href="备用/HSR-10TACdown.xml" loadImmediate="false" itemID="6af3fe51-00001007" lastModified="1794375276"/>
           <Include href="备用/HSR bolt.xml" loadImmediate="false" itemID="602ebb6b-0000050b" lastModified="1613675371"/>
           <Include href="备用/HSR boltrail.xml" loadImmediate="false" itemID="602ebb8a-00000515" lastModified="1613675402"/>
           <Include href="备用/HSR dust cover.xml" loadImmediate="false" itemID="602eba3c-000004eb" lastModified="1710818418"/>
-          <Include href="备用/hsr10s.xml" loadImmediate="false" itemID="65f90307-000002b9" lastModified="1710818055"/>
+          <Include href="备用/hsr10.xml" loadImmediate="false" itemID="6af3ff43-00001794" lastModified="1794377852"/>
+          <Include href="备用/hsr10s.xml" loadImmediate="false" itemID="65f90307-000002b9" lastModified="1794374937"/>
+          <Include href="备用/hsr10tac.xml" loadImmediate="false" itemID="6af3fe15-00000c48" lastModified="1794375321"/>
           <Include href="备用/knife blade.xml" loadImmediate="false" itemID="61655a02-0000045a" lastModified="1634032130"/>
           <Include href="备用/knife handle.xml" loadImmediate="false" itemID="61655a1b-0000045b" lastModified="1634032155"/>
           <Include href="备用/part903 please dont delete.xml" loadImmediate="false" itemID="60ebd568-00000266" lastModified="1626068328"/>
@@ -209,7 +214,7 @@
           <Include href="备用/Thunder-181 carbine left.xml" itemIcon="1" loadImmediate="false" itemID="65f689a5-000002ac" lastModified="1710655909"/>
           <Include href="备用/Thunder-181 pistol left.xml" itemIcon="1" loadImmediate="false" itemID="65f68989-000002a4" lastModified="1710655881"/>
           <Include href="备用/Thunder-181 rifle left.xml" itemIcon="1" loadImmediate="false" itemID="65f689c3-000002b4" lastModified="1710655939"/>
-          <Include href="备用/V.I. polymer stock.xml" loadImmediate="false" itemID="61651dd0-00000242" lastModified="1710818243"/>
+          <Include href="备用/V.I. polymer stock.xml" loadImmediate="false" itemID="61651dd0-00000242" lastModified="1794374882"/>
           <Include href="备用/V.I. Scope.xml" loadImmediate="false" itemID="602eb83f-000004c6" lastModified="1710818264"/>
           <Include href="备用元件.xml" loadImmediate="false" itemID="68078cb9-00000e96" lastModified="1745325241"/>
           <Include href="备用元件AVA.xml" loadImmediate="false" itemID="6808e4bb-0000075f" lastModified="1745413307"/>
@@ -341,13 +346,13 @@
           <Include href="滑行板A.xml" loadImmediate="false" itemID="6807b044-0000276c" lastModified="1745334340"/>
           <Include href="活塞杆.xml" loadImmediate="false" itemID="68078655-00000d84" lastModified="1745323605"/>
           <Include href="火力支援-天网.xml" itemID="680990de-00002ee7" lastModified="1745465853"/>
-          <Include href="火炮炮弹.xml" itemID="6655f64b-0000391e" lastModified="1745457655"/>
+          <Include href="火炮炮弹.xml" itemID="6655f64b-0000391e" lastModified="1794374228"/>
           <Include href="借用/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000644" lastModified="1710653981"/>
           <Include href="借用/Symbol 13.xml" loadImmediate="false" itemID="65f68a66-00000645" lastModified="1710653981"/>
           <Include href="借用/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6551ea57-000015ec" lastModified="1699150908"/>
           <Include href="借用/Symbol 16 副本 2.xml" itemIcon="1" loadImmediate="false" itemID="6551eb4a-00001613" lastModified="1706841619"/>
           <Include href="借用/t181S.xml" loadImmediate="false" itemID="65f8f32d-00000208" lastModified="1710813997"/>
-          <Include href="进阶火炮炮弹.xml" itemID="680799d8-000014eb" lastModified="1768065601"/>
+          <Include href="进阶火炮炮弹.xml" itemID="680799d8-000014eb" lastModified="1794374268"/>
           <Include href="近战子弹.xml" loadImmediate="false" itemID="666c5d45-00000625" lastModified="1718282919"/>
           <Include href="静止动作.xml" loadImmediate="false" itemID="6655ae5b-0000040a" lastModified="1716891249"/>
           <Include href="旧型号机器人/被击.xml" loadImmediate="false" itemID="665c7655-00000360" lastModified="1717346414"/>
@@ -435,7 +440,9 @@
           <Include href="枪-长枪-FAMAS.xml" itemID="67dcfe7c-00000546" lastModified="1742554288"/>
           <Include href="枪-长枪-HK33KA3.xml" itemID="67dd3c79-00000639" lastModified="1742554366"/>
           <Include href="枪-长枪-HK53.xml" itemID="65f81ee5-00000804" lastModified="1742554344"/>
-          <Include href="枪-长枪-HSR10S.xml" itemID="65f902fa-000002ac" lastModified="1710818310"/>
+          <Include href="枪-长枪-HSR10.xml" itemID="6af3fdc9-00000c38" lastModified="1794377895"/>
+          <Include href="枪-长枪-HSR10S.xml" itemID="65f902fa-000002ac" lastModified="1794374948"/>
+          <Include href="枪-长枪-HSR10tac.xml" itemID="6af41c5f-000005a3" lastModified="1794382943"/>
           <Include href="枪-长枪-M1915Chauchat.xml" itemID="66a4c8c4-00000534" lastModified="1722075378"/>
           <Include href="枪-长枪-MMP80.xml" itemID="666eeef0-000012a0" lastModified="1718546200"/>
           <Include href="枪-长枪-MP5A3.xml" itemID="67dc0605-0000023d" lastModified="1742554354"/>
@@ -493,8 +500,10 @@
           <Include href="特效与子弹/Symbol 13.xml" loadImmediate="false" itemID="65e08f36-00001ff0" lastModified="1702237154"/>
           <Include href="天使虫.xml" itemID="65f9297e-00002727" lastModified="1716915867"/>
           <Include href="天网炮弹.xml" itemIcon="1" loadImmediate="false" itemID="68099128-00002eeb" lastModified="1745457448"/>
+          <Include href="天网燃烧火箭弹.xml" itemID="6af40985-00001bfc" lastModified="1794378174"/>
           <Include href="偷吃屑鱼坟头贡品.xml" itemID="65f7dbbb-0000222e" lastModified="1714667557"/>
           <Include href="图标-061ABSR.xml" itemID="666ef463-000013a2" lastModified="1718609038"/>
+          <Include href="图标-AMML3.xml" itemID="6af40ac2-000005ad" lastModified="1794378558"/>
           <Include href="图标-AMTAutomagIII.xml" itemID="66a4cc05-0000060d" lastModified="1722076210"/>
           <Include href="图标-ASSKICKER.xml" itemID="666ef4ee-000013be" lastModified="1718609036"/>
           <Include href="图标-Beretta90TWO.xml" itemID="66a4cbca-000005f5" lastModified="1722076139"/>
@@ -530,6 +539,8 @@
           <Include href="图标/短hk53图标.xml" itemID="65f820c3-0000082e" lastModified="1743663033"/>
           <Include href="图标/天使铳的子弹图标.xml" itemID="65f84a4d-00002a3e" lastModified="1714665472"/>
           <Include href="图标/天使铳图标.xml" itemID="65f8469d-00002813" lastModified="1714665490"/>
+          <Include href="图标/图标-HSR10.xml" itemID="6af408a4-00000986" lastModified="1794377908"/>
+          <Include href="图标/图标-HSR10tac.xml" itemID="6af408c1-0000110f" lastModified="1794377937"/>
           <Include href="图标/图标-Z军刀.xml" itemID="66745018-000009dc" lastModified="1718899402"/>
           <Include href="图标/图标-超合金战刀刃.xml" itemID="667452bd-00000a11" lastModified="1718899582"/>
           <Include href="图标/图标-超合金战刀修复版.xml" itemID="667453a4-00000a3d" lastModified="1718899754"/>
@@ -564,6 +575,7 @@
           <Include href="未命名文件夹 1/周波剑.xml" loadImmediate="false" itemID="65f991ca-00002637" lastModified="1710854644"/>
           <Include href="无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
+          <Include href="无AS链接/Symbol 478.xml" loadImmediate="false" itemID="668e7c1e-000006d9" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 711.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000074f" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 712.xml" loadImmediate="false" itemID="668e7c1e-00000750" lastModified="1720533000"/>
           <Include href="无人机.xml" loadImmediate="false" itemID="68552985-0000095f" lastModified="1750411733"/>
@@ -969,8 +981,7 @@
           <Include href="抓取控制.xml" loadImmediate="false" itemID="5885c58b-00000107" lastModified="1485161867"/>
           <Include href="抓取判定.xml" loadImmediate="false" itemID="5885c3d5-00000105" lastModified="1485686758"/>
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1745464166"/>
-         <Include href="Codex/弹药r06/22-天使铳的子弹.xml" loadImmediate="false" itemID="6acd0600-860ffd91"/>
-  </symbols>
+     </symbols>
      <timelines>
           <DOMTimeline name="场景 1" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-184&lt;/guideline&gt;&lt;guideline direction="h"&gt;129&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
@@ -1449,6 +1460,11 @@
                          <GradientEntry color="#56380B" ratio="0.843137254901961"/>
                          <GradientEntry color="#54370B" ratio="1"/>
                     </RadialGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#7B7B7B" ratio="0"/>
+                         <GradientEntry color="#0A0A0A" ratio="1"/>
+                         <GradientEntry color="#0B0B0B" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -1457,6 +1473,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1105965" publishTime="1794374142"/>
           <PublishItem publishSize="1088136" publishTime="1768068566"/>
           <PublishItem publishSize="1086129" publishTime="1750524033"/>
           <PublishItem publishSize="1083737" publishTime="1750518958"/>
@@ -1476,6 +1493,5 @@
           <PublishItem publishSize="1056932" publishTime="1745465365"/>
           <PublishItem publishSize="1056989" publishTime="1745465141"/>
           <PublishItem publishSize="1056989" publishTime="1745465072"/>
-          <PublishItem publishSize="1057063" publishTime="1745464777"/>
      </publishHistory>
 </DOMDocument>

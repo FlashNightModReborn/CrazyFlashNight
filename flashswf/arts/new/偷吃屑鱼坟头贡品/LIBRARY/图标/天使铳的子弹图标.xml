@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="图标/天使铳的子弹图标" itemID="65f84a4d-00002a3e" linkageExportForAS="true" linkageIdentifier="图标-天使铳的子弹" lastModified="1714665472" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标/天使铳的子弹图标" itemID="65f84a4d-00002a3e" linkageExportForAS="true" linkageIdentifier="图标-天使铳的子弹" lastModified="1714665472" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="天使铳的子弹图标" currentFrame="1">
       <layers>
@@ -7,10 +6,10 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script>stop();
-</script>
+                <script><![CDATA[stop();
+]]></script>
               </Actionscript>
-              <elements />
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -20,13 +19,13 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="借用/Symbol 16" symbolType="graphic" loop="loop">
                   <transformationPoint>
-                    <Point />
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
-              <elements />
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -34,18 +33,18 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/弹药r06/22-天使铳的子弹" symbolType="graphic" loop="single frame" firstFrame="0">
+                <DOMSymbolInstance libraryItemName="Codex/弹药r06/22-天使铳的子弹" symbolType="graphic" loop="single frame">
                   <matrix>
-                    <Matrix a="0.174239109" d="0.174239109" tx="1.79084174" ty="0.167241809" />
+                    <Matrix a="0.174224853515625" d="0.174224853515625" tx="1.75" ty="0.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point />
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
-              <elements />
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -55,19 +54,19 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="借用/Symbol 16 副本 2" symbolType="graphic" loop="loop">
                   <transformationPoint>
-                    <Point />
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/弹药r06/22-天使铳的子弹" symbolType="graphic" loop="single frame" firstFrame="0">
+                <DOMSymbolInstance libraryItemName="Codex/弹药r06/22-天使铳的子弹" symbolType="graphic" loop="single frame">
                   <matrix>
-                    <Matrix a="0.233694227" d="0.233694227" tx="2.13785964" ty="0.4192185" />
+                    <Matrix a="0.233688354492188" d="0.233688354492188" tx="2.1" ty="0.4"/>
                   </matrix>
                   <transformationPoint>
-                    <Point />
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
