@@ -189,6 +189,7 @@ namespace CF7Launcher.Guardian
             _itemPageInput.Text = "1";
             _itemPageInput.KeyDown += OnItemPageKeyDown;
             _itemPageInput.Leave += OnPageInputLeave;
+            ConfigurePageInput(_itemPageInput);
             _taskId = CreateInput(true);
             _taskId.MaxLength = 3;
             _taskId.Text = "1";
@@ -203,6 +204,7 @@ namespace CF7Launcher.Guardian
             _unitPageInput.Text = "1";
             _unitPageInput.KeyDown += OnUnitPageKeyDown;
             _unitPageInput.Leave += OnPageInputLeave;
+            ConfigurePageInput(_unitPageInput);
             _inputOverlay = new ModifierInputOverlay(this);
             _inputOverlay.Controls.Add(_itemQuery);
             _inputOverlay.Controls.Add(_itemQuantity);
@@ -1059,6 +1061,31 @@ namespace CF7Launcher.Guardian
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)) e.Handled = true;
         }
 
+        private void ConfigurePageInput(TextBox input)
+        {
+            if (input == null) return;
+            input.AutoSize = false;
+            input.BorderStyle = BorderStyle.FixedSingle;
+            input.Cursor = Cursors.IBeam;
+            input.TextAlign = HorizontalAlignment.Center;
+            input.GotFocus += delegate { input.SelectAll(); };
+            input.Click += delegate { input.SelectAll(); };
+        }
+
+        private void FocusPageInput(TextBox input)
+        {
+            if (input == null || !input.Visible) return;
+            if (_tooltip.Visible)
+            {
+                _tooltip.Reset();
+                _tooltipItem = null;
+            }
+            UpdateInputVisibility();
+            if (_inputOverlay != null) _inputOverlay.BringToFront();
+            input.Focus();
+            input.SelectAll();
+        }
+
         private void UpdateInputVisibility()
         {
             if (_itemQuery == null) return;
@@ -1455,7 +1482,8 @@ namespace CF7Launcher.Guardian
                     DrawText(graphics, "?", new Rectangle(cell.X, cell.Y + 6, cell.Width, 18), _smallFont, Gold, _ellipsis);
                 DrawText(graphics, "1", new Rectangle(cell.Right - 8, cell.Bottom - 9, 8, 8), _tinyFont, Gold, _ellipsis);
             }
-            DrawText(graphics, PageText(_itemTotal, _itemPage, _itemPageSize), ModifierNativeLayout.ItemPageSummary, _smallFont, Gold, _ellipsis);
+            DrawText(graphics, "共" + _itemTotal, ModifierNativeLayout.ItemPageLabel, _smallFont, Gold, _ellipsis);
+            DrawText(graphics, "/" + ModifierNativeLayout.PageCount(_itemTotal, _itemPageSize), ModifierNativeLayout.ItemPageTotal, _smallFont, Gold, _ellipsis);
         }
 
         private void DrawUnits(Graphics graphics)
@@ -1503,7 +1531,8 @@ namespace CF7Launcher.Guardian
                     new RectangleF(row.X + 6, row.Y + 2, row.Width - 12, row.Height - 4), _smallFont, nameColor, _ellipsis);
                 graphics.Restore(rowState);
             }
-            DrawText(graphics, PageText(_unitTotal, _unitPage, _unitPageSize), ModifierNativeLayout.UnitPageSummary, _smallFont, Gold, _ellipsis);
+            DrawText(graphics, "共" + _unitTotal, ModifierNativeLayout.UnitPageLabel, _smallFont, Gold, _ellipsis);
+            DrawText(graphics, "/" + ModifierNativeLayout.PageCount(_unitTotal, _unitPageSize), ModifierNativeLayout.UnitPageTotal, _smallFont, Gold, _ellipsis);
             DrawHostile(graphics);
         }
 
@@ -1625,12 +1654,6 @@ namespace CF7Launcher.Guardian
                 graphics.DrawString(text, font, brush, rect, format ?? _clip);
         }
 
-        private static string PageText(int total, int page, int pageSize)
-        {
-            int pages = total > 0 ? (int)Math.Ceiling(total / (double)Math.Max(1, pageSize)) : 0;
-            return total + " · " + (pages > 0 ? page + "/" + pages : "0/0");
-        }
-
         private int ActionId(string action)
         {
             int hash = 17;
@@ -1654,6 +1677,8 @@ namespace CF7Launcher.Guardian
             }
             else if (_activeTab == "items")
             {
+                if (ArtHit(ModifierNativeLayout.ItemPageLabel, "item_page_label", logical)
+                    || ArtHit(ModifierNativeLayout.ItemPageTotal, "item_page_total", logical)) return "item_page_focus";
                 if (ArtHit(ModifierNativeLayout.ItemFirst, "item_first", logical)) return "item_first";
                 if (ArtHit(ModifierNativeLayout.ItemPrevious, "item_prev", logical)) return "item_prev";
                 if (ArtHit(ModifierNativeLayout.ItemNext, "item_next", logical)) return "item_next";
@@ -1676,6 +1701,8 @@ namespace CF7Launcher.Guardian
             }
             else if (_activeTab == "units")
             {
+                if (ArtHit(ModifierNativeLayout.UnitPageLabel, "unit_page_label", logical)
+                    || ArtHit(ModifierNativeLayout.UnitPageTotal, "unit_page_total", logical)) return "unit_page_focus";
                 if (ArtHit(ModifierNativeLayout.UnitFirst, "unit_first", logical)) return "unit_first";
                 if (ArtHit(ModifierNativeLayout.UnitPrevious, "unit_prev", logical)) return "unit_prev";
                 if (ArtHit(ModifierNativeLayout.UnitNext, "unit_next", logical)) return "unit_next";
@@ -1706,6 +1733,8 @@ namespace CF7Launcher.Guardian
                 case "money": IssueWrite("grantMoney", null, false); break;
                 case "kcoin": IssueWrite("grantKCoin", null, false); break;
                 case "test_space": ArmThenWrite("test_space", "levelAction", new JObject { ["levelAction"] = "test_space" }, true); break;
+                case "item_page_focus": FocusPageInput(_itemPageInput); break;
+                case "unit_page_focus": FocusPageInput(_unitPageInput); break;
                 case "item_first": ChangeItemPage(0, true, false); break;
                 case "item_prev": ChangeItemPage(-1, false, false); break;
                 case "item_next": ChangeItemPage(1, false, false); break;
