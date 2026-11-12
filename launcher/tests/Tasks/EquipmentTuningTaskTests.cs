@@ -86,6 +86,147 @@ namespace Launcher.Tests.Tasks
             public JArray RemovedMods;
         }
 
+        [Theory]
+        [InlineData("gender", "snapshot.gender")]
+        [InlineData("equipment", "snapshot.equipment")]
+        [InlineData("success", "response.envelope")]
+        [InlineData("candidateDisplay", "snapshot.modCandidates[0].displayName")]
+        [InlineData("candidateReplacements", "snapshot.modCandidates[0].replaceableFrom")]
+        public void RejectedSnapshot_LogsFieldPathWithoutPlayerValues(string field, string path)
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            var logs = new ThreadSafeLogCapture();
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+                {
+                    task.HandleWebRequest("snapshot", Request("snapshot", "tune.diag.snapshot"));
+                    JObject response = SnapshotResponse(Assert.Single(sent));
+                    if (field == "candidateDisplay") response["snapshot"]["modCandidates"][0]["displayName"] = "undefined";
+                    else if (field == "candidateReplacements") response["snapshot"]["modCandidates"][0]["replaceableFrom"] = new JArray("same", "same");
+                    else if (field == "success") response["success"] = "private-player-value";
+                    else response["snapshot"][field] = "private-player-value";
+                    task.HandleFlashResponse(response, null);
+                    Assert.Equal("malformed_response", (string)Assert.Single(web)["error"]);
+                    string receipt = Assert.Single(logs.FindAll(line =>
+                        line.Contains("event=equipment_tuning_response_rejected")));
+                    Assert.Contains("failurePath=" + Uri.EscapeDataString(path), receipt);
+                    Assert.DoesNotContain("private-player-value", receipt);
+                }
+            }
+            finally { LogManager.SetSink(null); }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void RejectedCommit_LogsSnapshotFailureAndKeepsUnknownWriteLocked(bool loadout)
+        {
+            var logs = new ThreadSafeLogCapture();
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                JObject source = loadout ? LoadoutSource(11, "手枪", 3) : Source(7, "lease.source.7");
+                using (var harness = new CommitHarness(source))
+                {
+                    JObject response = CommitResponse(harness.Command, source);
+                    response["snapshot"] = null;
+                    logs.Clear();
+                    harness.Task.HandleFlashResponse(response, null);
+                    JObject rejected = Assert.Single(harness.Web);
+                    Assert.Equal("malformed_response", (string)rejected["error"]);
+                    Assert.True((bool)rejected["requiresReconcile"]);
+                    Assert.Contains("failurePath=commit.snapshot.keys",
+                        Assert.Single(logs.FindAll(line =>
+                            line.Contains("event=equipment_tuning_response_rejected"))));
+                }
+            }
+            finally { LogManager.SetSink(null); }
+        }
+
+        [Theory]
+        [InlineData(1, true)]
+        [InlineData(0, true)]
+        [InlineData(-1, true)]
+        [InlineData(-2, true)]
+        [InlineData(-4, true)]
+        [InlineData(-8, true)]
+        [InlineData(-16, true)]
+        [InlineData(-32, true)]
+        [InlineData(-64, true)]
+        [InlineData(-128, true)]
+        [InlineData(-256, true)]
+        [InlineData(-512, true)]
+        [InlineData(-1024, true)]
+        [InlineData(-2048, false)]
+        [InlineData(-1023, false)]
+        [InlineData(-100, false)]
+        [InlineData(-3, false)]
+        [InlineData(2, false)]
+        [InlineData(100, false)]
+        public void SnapshotAvailability_MatchesClosedAs2CodesForBothSources(int code, bool accepted)
+        {
+            foreach (bool worn in new[] { false, true })
+            {
+                var sent = new List<JObject>();
+                var web = new List<JObject>();
+                using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+                {
+                    JObject source = worn ? LoadoutSource(11, "手枪", 3) : Source(7, "lease.source.7");
+                    task.HandleWebRequest("snapshot", Request("snapshot", "tune.availability", null, source));
+                    JObject response = SnapshotResponse(Assert.Single(sent));
+                    JObject candidate = (JObject)response["snapshot"]["modCandidates"][0];
+                    candidate["availabilityCode"] = code;
+                    candidate["available"] = code == 1;
+                    task.HandleFlashResponse(response, null);
+                    JObject adopted = Assert.Single(web);
+                    Assert.Equal(accepted, (bool)adopted["success"]);
+                    if (accepted)
+                    {
+                        Assert.Equal(code, (int)adopted["snapshot"]["modCandidates"][0]["availabilityCode"]);
+                        Assert.Equal(code == 1, (bool)adopted["snapshot"]["modCandidates"][0]["available"]);
+                    }
+                    else Assert.Equal("malformed_response", (string)adopted["error"]);
+                }
+            }
+        }
+
+        [Theory]
+        [InlineData(false, -128)]
+        [InlineData(false, -256)]
+        [InlineData(false, -512)]
+        [InlineData(false, -1024)]
+        [InlineData(true, -128)]
+        [InlineData(true, -256)]
+        [InlineData(true, -512)]
+        [InlineData(true, -1024)]
+        public void CommitSnapshot_WithDefinedUnavailableReason_SettlesAndAllowsNextPreview(
+            bool loadout, int code)
+        {
+            JObject source = loadout ? LoadoutSource(11, "手枪2", 3) : Source(7, "lease.source.7");
+            using (var harness = new CommitHarness(source))
+            {
+                JObject response = CommitResponse(harness.Command, source);
+                JObject candidate = (JObject)response["snapshot"]["modCandidates"][0];
+                candidate["availabilityCode"] = code;
+                candidate["available"] = false;
+                harness.Task.HandleFlashResponse(response, null);
+                JObject accepted = Assert.Single(harness.Web);
+                Assert.True((bool)accepted["success"]);
+                Assert.Null(accepted["requiresReconcile"]);
+                Assert.Equal(code, (int)accepted["snapshot"]["modCandidates"][0]["availabilityCode"]);
+
+                harness.Web.Clear();
+                harness.Task.HandleWebRequest("preview", Request("preview", "tune.after.extended.code",
+                    "enhance", (JObject)response["snapshot"]["source"]));
+                Assert.Empty(harness.Web);
+                Assert.Equal(2, harness.Sent.Count);
+                Assert.Equal("equipmentTuningPreview", (string)harness.Sent[1]["action"]);
+            }
+        }
+
         [Fact]
         public void SnapshotRequest_RebuildsStrictPayloadAndInjectsHostAuthority()
         {
