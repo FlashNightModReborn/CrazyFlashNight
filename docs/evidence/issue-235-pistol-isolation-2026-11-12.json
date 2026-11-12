@@ -1,0 +1,102 @@
+{
+  "schema": "cf7-issue-closeout.v1",
+  "issueUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/issues/235",
+  "date": "2026-11-12",
+  "sourceBaseline": "79c8e76e779c978059b1ecea61002783d4979b8a",
+  "sourceCommit": "a39796f077ca652adf14dc6fbf9d5b8bb947042e",
+  "scope": [
+    "DeadHand visual ownership and pistol isolation",
+    "AVM1 same-path placement identity and stale refresh rejection",
+    "Flash asLoader artifact and focused regression entrypoints"
+  ],
+  "acceptance": {
+    "actor": "Maintainer in this conversation",
+    "date": "2026-11-12",
+    "verdict": "accepted",
+    "authorization": "可行，可以提交推送部署并且收尾issue事务",
+    "artifactSha256": "ABBCD6221598EBA3EC3EF42306AEF35E091E7029180EF99780066B18C02894C4",
+    "candidateBuildIdentity": "51CBEA12E4207B44C410DDEE5F93BD2EBD8EBD58562705233A90C113C934DB90",
+    "candidatePayloadClosure": "38B79AAD9EB9A32788695D0AEBA2D21BB4B97E08432D906010EC60A871020425",
+    "scope": "Candidate issue acceptance; no invented per-case footage, duration or whole-campaign claim"
+  },
+  "tests": {
+    "logic": {
+      "runId": "2cf83fa2652d40608a3d81db5161c9d5",
+      "passed": 45,
+      "failed": 0
+    },
+    "realMovieClip": {
+      "fixture": "Real AVM1 MovieClip and DressupReferenceManager with TestProbeSkin; not a complete gameplay journey",
+      "runId": "2cf83fa2652d40608a3d81db5161c9d5",
+      "passed": 36,
+      "failed": 0
+    },
+    "dressup": {
+      "note": "Separate final run adds six same-path refresh checks to the earlier 121 checks",
+      "runId": "71dd090f51024b5c981cc7842863c608",
+      "passed": 127,
+      "failed": 0
+    },
+    "testCompiler": {
+      "warnings": 0,
+      "handled32kRetries": 0,
+      "errors": 0
+    },
+    "firstAttempt": {
+      "recovered": true,
+      "result": "timeout",
+      "passed": false,
+      "details": "Original failure retained locally; maintainer stopped the exact test host; scratch SHA-256 restored and late output checked before retry"
+    }
+  },
+  "flashArtifact": {
+    "warnings": 0,
+    "inheritanceErrors": 0,
+    "inheritanceEdges": 109,
+    "errors": 0,
+    "maxFunctionBytes": 46571,
+    "classes": 817,
+    "ownershipErrors": 0,
+    "handled32kRetries": 1,
+    "bytes": 7196199,
+    "path": "scripts/asLoader.swf",
+    "sha256": "ABBCD6221598EBA3EC3EF42306AEF35E091E7029180EF99780066B18C02894C4"
+  },
+  "deployment": {
+    "kind": "Flash-only update in the shared resources tree",
+    "path": "scripts/asLoader.swf",
+    "nativePayloadChanged": false,
+    "newNativePromotion": false,
+    "nativeBuildIdentity": "51CBEA12E4207B44C410DDEE5F93BD2EBD8EBD58562705233A90C113C934DB90",
+    "nativePayloadClosure": "38B79AAD9EB9A32788695D0AEBA2D21BB4B97E08432D906010EC60A871020425",
+    "coreDllSha256": "842A723EDC8C5A8DF1B9914F58479240A3D631E285274352AB40A180F4E3F253",
+    "stablePackageCreated": false,
+    "version": "2.718 DEV / UNSTABLE"
+  },
+  "standardEntry": {
+    "entry": "automation/start.ps1 without CandidateRoot",
+    "runtimeMode": "formal_runtime",
+    "corePath": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "guardianPid": 27000,
+    "bootstrapPid": 24620,
+    "bundleIntegrityFiles": 43,
+    "bundleIntegrityPassed": true,
+    "bootstrapVerifyOnlyExitCode": 0,
+    "bootstrapReady": true,
+    "prewarmReturnedToIdle": true,
+    "observation": "Startup log and window accessibility; no gameplay entered",
+    "guardianExitCode": 0,
+    "bootstrapExitCode": 0,
+    "originalFlashSolCount": 275,
+    "afterFlashSolCount": 275,
+    "originalSolChangedOrMissing": 0,
+    "saveRestoredOrOverwritten": false,
+    "businessReplay": false
+  },
+  "boundaries": [
+    "Maintainer acceptance belongs to the candidate and issue scope",
+    "Ordinary-entry check covers identity, bootstrap/idle and normal exit only",
+    "Existing native payload is retained; no new native build/signing/promotion is claimed",
+    "No stable package or campaign-wide verification is claimed"
+  ]
+}
