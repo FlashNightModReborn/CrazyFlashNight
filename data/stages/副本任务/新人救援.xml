@@ -221,7 +221,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>21</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>2</SpawnIndex>
                         <x>480</x>
@@ -232,7 +232,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>21</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>3</SpawnIndex>
                         <x>520</x>
@@ -355,7 +355,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>22</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>2</SpawnIndex>
                         <x>1120</x>
@@ -366,7 +366,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>23</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>3</SpawnIndex>
                         <x>1040</x>
@@ -377,7 +377,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>22</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>2</SpawnIndex>
                         <x>960</x>
@@ -613,7 +613,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>24</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>3</SpawnIndex>
                         <x>1310</x>
@@ -624,7 +624,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>22</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>2</SpawnIndex>
                         <x>1220</x>
@@ -635,7 +635,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>23</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>2</SpawnIndex>
                         <x>980</x>
@@ -646,7 +646,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>22</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>3</SpawnIndex>
                         <x>760</x>
@@ -1066,7 +1066,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>23</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>5</SpawnIndex>
                         <x>720</x>
@@ -1077,7 +1077,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>24</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>5</SpawnIndex>
                         <x>760</x>
@@ -1131,7 +1131,7 @@
                         <Type>僵尸.光头军人</Type>
                         <IsHostile>true</IsHostile>
                         <Level>22</Level>
-                        <Quantity>105</Quantity>
+                        <Quantity>120</Quantity>
                         <Interval>500</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>0</SpawnIndex>
@@ -1140,7 +1140,7 @@
                         <Type>僵尸.眼镜男</Type>
                         <IsHostile>true</IsHostile>
                         <Level>22</Level>
-                        <Quantity>105</Quantity>
+                        <Quantity>120</Quantity>
                         <Interval>550</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>1</SpawnIndex>
@@ -1149,7 +1149,7 @@
                         <Type>僵尸.金发女</Type>
                         <IsHostile>true</IsHostile>
                         <Level>23</Level>
-                        <Quantity>105</Quantity>
+                        <Quantity>120</Quantity>
                         <Interval>450</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>2</SpawnIndex>
@@ -1158,7 +1158,7 @@
                         <Type>僵尸.佝偻</Type>
                         <IsHostile>true</IsHostile>
                         <Level>23</Level>
-                        <Quantity>105</Quantity>
+                        <Quantity>120</Quantity>
                         <Interval>450</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>3</SpawnIndex>
@@ -1167,7 +1167,7 @@
                         <Type>僵尸.红衣金发女</Type>
                         <IsHostile>true</IsHostile>
                         <Level>22</Level>
-                        <Quantity>105</Quantity>
+                        <Quantity>120</Quantity>
                         <Interval>550</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>4</SpawnIndex>
@@ -1176,37 +1176,10 @@
                         <Type>僵尸.黄衣男</Type>
                         <IsHostile>true</IsHostile>
                         <Level>22</Level>
-                        <Quantity>105</Quantity>
+                        <Quantity>120</Quantity>
                         <Interval>500</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>5</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>僵尸.狂暴</Type>
-                        <IsHostile>true</IsHostile>
-                        <Level>23</Level>
-                        <Quantity>30</Quantity>
-                        <Interval>1500</Interval>
-                        <Delay>2500</Delay>
-                        <SpawnIndex>0</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>僵尸.狂躁</Type>
-                        <IsHostile>true</IsHostile>
-                        <Level>23</Level>
-                        <Quantity>30</Quantity>
-                        <Interval>1500</Interval>
-                        <Delay>4500</Delay>
-                        <SpawnIndex>2</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>僵尸.兽化.着衣</Type>
-                        <IsHostile>true</IsHostile>
-                        <Level>24</Level>
-                        <Quantity>30</Quantity>
-                        <Interval>2000</Interval>
-                        <Delay>7000</Delay>
-                        <SpawnIndex>4</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>僵尸.胖子</Type>
@@ -1385,7 +1358,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>23</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>2</SpawnIndex>
                         <x>640</x>
@@ -1396,7 +1369,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>24</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>3</SpawnIndex>
                         <x>1180</x>
@@ -1537,7 +1510,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>23</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>2</SpawnIndex>
                         <x>580</x>
@@ -1548,7 +1521,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>24</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>3</SpawnIndex>
                         <x>1060</x>
@@ -1830,7 +1803,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>23</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>0</SpawnIndex>
                         <x>430</x>
@@ -1841,7 +1814,7 @@
                         <IsHostile>true</IsHostile>
                         <Level>24</Level>
                         <Quantity>1</Quantity>
-                        <Interval>1000</Interval>
+                        <Interval>50</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>1</SpawnIndex>
                         <x>680</x>
@@ -2241,12 +2214,10 @@
                 <IsHostile>false</IsHostile>
                 <Level>24</Level>
                 <Quantity>1</Quantity>
-                <Interval>1700</Interval>
+                <Interval>50</Interval>
                 <Delay>0</Delay>
-                <SpawnIndex>-1</SpawnIndex>
+                <SpawnIndex>right</SpawnIndex>
                 <InstanceName>rescue_sheriff</InstanceName>
-                <x>1350</x>
-                <y>470</y>
             </Enemy>
         </Event>
         <Event>
