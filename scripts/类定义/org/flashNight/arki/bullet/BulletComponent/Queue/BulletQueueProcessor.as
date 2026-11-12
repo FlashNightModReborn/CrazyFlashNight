@@ -815,7 +815,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 死亡事件（_killed 守卫普适，D1：防 UnitBullet 重复 kill/death + killStats 按 _name 膨胀）
         if (hitTarget.hp <= 0 && !hitTarget._killed) {
             targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
-            shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
+            if (hitTarget.__armorBreakActive !== true) {
+                shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
+            }
         }
 
         // 伤害数字显示

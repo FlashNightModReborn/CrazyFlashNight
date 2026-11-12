@@ -85,10 +85,16 @@
             <DOMFrame index="105" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728" duration="7">
+            <DOMFrame index="120" duration="7" name="消失" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-          <DOMFrame index="127" keyMode="9728" name="登场" labelType="name"><elements/></DOMFrame><DOMFrame index="128" keyMode="9728" name="烟雾退场" labelType="name"><elements/></DOMFrame></frames>
+            <DOMFrame index="127" name="登场" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="128" name="烟雾退场" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
         </DOMLayer>
         <DOMLayer name="Script Layer" color="#7772F9">
           <frames>
@@ -599,31 +605,24 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-      <DOMLayer name="翅虎烟雾登退场" color="#4FFF4F">
+        <DOMLayer name="翅虎烟雾登退场" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="127">
+            <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="127" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="翅虎/烟雾登退场" name="man">
-                  <matrix>
-                    <Matrix/>
-                  </matrix>
-                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾登退场" name="man"/>
               </elements>
             </DOMFrame>
             <DOMFrame index="128" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="翅虎/烟雾登退场" name="man">
-                  <matrix>
-                    <Matrix/>
-                  </matrix>
-                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾登退场" name="man"/>
               </elements>
             </DOMFrame>
           </frames>
-        </DOMLayer></layers>
+        </DOMLayer>
+      </layers>
     </DOMTimeline>
   </timeline>
 </DOMSymbolItem>

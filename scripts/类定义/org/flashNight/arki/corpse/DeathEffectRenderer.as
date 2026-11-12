@@ -202,6 +202,38 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         if (restoreHidden) target._visible = false;
     }
 
+    public static function renderExactCorpse(target:MovieClip, layerIndex:Number):Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return;
+        if (!DeathEffectRenderer.isEnabled) return;
+        var gameWorld:MovieClip = _root.gameworld;
+        if (gameWorld == undefined || gameWorld.deadbody == undefined) return;
+        var deadbody:MovieClip = gameWorld.deadbody;
+        var origin:Object = {x: 0, y: 0};
+        var xAxis:Object = {x: 1, y: 0};
+        var yAxis:Object = {x: 0, y: 1};
+        target.localToGlobal(origin);
+        target.localToGlobal(xAxis);
+        target.localToGlobal(yAxis);
+        deadbody.globalToLocal(origin);
+        deadbody.globalToLocal(xAxis);
+        deadbody.globalToLocal(yAxis);
+        var matrix:Matrix = new Matrix();
+        matrix.a = xAxis.x - origin.x;
+        matrix.b = xAxis.y - origin.y;
+        matrix.c = yAxis.x - origin.x;
+        matrix.d = yAxis.y - origin.y;
+        matrix.tx = origin.x;
+        matrix.ty = origin.y;
+        deadbody.layers[layerIndex].draw(
+            target,
+            matrix,
+            target.transform.colorTransform,
+            "normal",
+            undefined,
+            true
+        );
+    }
+
     
     
     // ------------------ 私有工具方法 ------------------

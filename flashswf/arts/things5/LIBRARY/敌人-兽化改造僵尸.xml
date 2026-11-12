@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-兽化改造僵尸" itemID="67e614f5-000008c6" linkageExportForAS="true" linkageIdentifier="敌人-兽化改造僵尸" lastModified="1747144094">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-兽化改造僵尸" itemID="67e614f5-000008c6" linkageExportForAS="true" linkageIdentifier="敌人-兽化改造僵尸" lastModified="1794475170">
   <timeline>
-    <DOMTimeline name="敌人-兽化改造僵尸" currentFrame="88">
+    <DOMTimeline name="敌人-兽化改造僵尸" currentFrame="121">
       <layers>
         <DOMLayer name="Labels Layer" color="#8BBAFC">
           <frames>
@@ -80,6 +80,9 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="121" name="装甲破裂" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -282,7 +285,7 @@
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 357" name="man" centerPoint3DX="85.6" centerPoint3DY="14.9">
+                <DOMSymbolInstance libraryItemName="Symbol 357" name="man" selected="true" centerPoint3DX="85.6" centerPoint3DY="14.9">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -401,7 +404,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="71" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 370" name="man" centerPoint3DX="126.45" centerPoint3DY="4.05">
+                <DOMSymbolInstance libraryItemName="敌人-兽化改造僵尸-被击" name="man" centerPoint3DX="126.45" centerPoint3DY="4.05">
                   <matrix>
                     <Matrix tx="10.5" ty="-62"/>
                   </matrix>
@@ -483,7 +486,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 481" centerPoint3DX="303" centerPoint3DY="80.25">
+                <DOMSymbolInstance libraryItemName="Symbol 481" selected="true" centerPoint3DX="303" centerPoint3DY="80.25">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>
@@ -503,8 +506,29 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="120" duration="7" keyMode="9728">
+            <DOMFrame index="120" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="121" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 370" name="man" selected="true" centerPoint3DX="126.45" centerPoint3DY="4.05">
+                  <matrix>
+                    <Matrix tx="10.5" ty="-62"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a0");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>

@@ -13,6 +13,7 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.*;
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
+import org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController;
 
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer implements IInitializer {
@@ -73,6 +74,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
             target.__titaniumType61.constrainInitialShieldToPreviousHealth(hpBeforeRebuild, maxHpBeforeRebuild);
         }
         DisplayNameInitializer.initialize(target);
+        ArmorBreakZombieController.initialize(target);
 
         TargetCacheManager.addUnit(target);
 

@@ -156,7 +156,7 @@ class org.flashNight.arki.unit.UnitBattleRecord {
 
     public static function claimPlayerKill(target:MovieClip):Boolean {
         if (target == undefined || target.element || target.斗兽标定隔离 === true
-                || !(target.hp <= 0)) return false;
+                || target.__armorBreakActive === true || !(target.hp <= 0)) return false;
         onDown(target);
         var state:Object = stateFor(target);
         if (state.killReported) return false;

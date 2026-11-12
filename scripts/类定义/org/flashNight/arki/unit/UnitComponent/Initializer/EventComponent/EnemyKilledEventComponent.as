@@ -35,6 +35,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.EnemyKil
      * @param bullet {MovieClip} 造成击杀的子弹/攻击体
      */
     public static function onEnemyKilled(shooter:MovieClip, hitTarget:MovieClip, bullet:MovieClip):Void {
+        if (hitTarget.__armorBreakActive === true) return;
 
         // 判断被击杀目标的阵营，只统计敌对目标
         var targetFaction:String = FactionManager.getFactionFromUnit(hitTarget);

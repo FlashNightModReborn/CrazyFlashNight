@@ -1,6 +1,7 @@
 ﻿// 路径: org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/KillEventComponent.as
 import org.flashNight.neur.Event.EventDispatcher;
 import org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater;
+import org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEventComponent {
     /**
@@ -24,6 +25,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEven
     }
 
     public static function onKill(target:MovieClip):Void {
+        if (ArmorBreakZombieController.tryIntercept(target)) return;
         // 状态切换可能卸载时间轴，先冻结单位身份和外观。
         org.flashNight.arki.unit.UnitBattleRecord.onDown(target);
         target.状态改变("血腥死");

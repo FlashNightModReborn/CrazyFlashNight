@@ -3,6 +3,7 @@ import org.flashNight.neur.Event.EventDispatcher;
 import org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater;
 import org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEventComponent {
     private static function logDiagnostic(message:String):Void {
@@ -89,6 +90,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
     }
 
     public static function onDeath(target:MovieClip):Void {
+        if (ArmorBreakZombieController.tryIntercept(target)) return;
         ImpactStateHandler.flushPendingDiagnostics(target);
         logDeathSnapshot(target);
         if(!target.respawn){

@@ -2,6 +2,7 @@
 
 _root.add2map = _root.add2map2 = DeathEffectRenderer.renderCorpse;
 _root.add2map3 = DeathEffectRenderer.renderRotatedCorpse;
+_root.add2map4 = DeathEffectRenderer.renderExactCorpse;
 
 _root.createEmptyMovieClip("collisionLayer", _root.getNextHighestDepth());
 
