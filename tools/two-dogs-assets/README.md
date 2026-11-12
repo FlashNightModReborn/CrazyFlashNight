@@ -62,6 +62,8 @@ powershell -File scripts/run-two-dogs-asset-tests.ps1
 
 验证入口：`scripts/run-dog-features-tests.ps1`，`node tools/run-team-harness.js`，以及 `scripts/run-dog-form-storage-tests.ps1` 配合 `tools/save-storage/README.md` 的真实新进程后端驱动。就绪、组件读回、游戏旅程与正式部署分别记证；组件探针不代签完整 Launcher 存档旅程。
 
+2026-11-12，本轮三犬候选已获维护者实测验收，配套 runtime 已正式推广；军警犬保留首轮韧性 3，锁箱与代开锁继续由 #239 跟踪。人工回执、精确身份、普通入口有限复验及恢复统一见[本轮记录](../../docs/reports/issue-230-209-candidate-2026-11-12.md)。
+
 ## 验证记录
 
 首次装配的 [历史记录](evidence/20261021-native.json) 为 277 项检查、32 张实际 Flash 帧；其中整口不透明的旧美术判据已经弃用，不能用这份历史记录验收当前口腔。
