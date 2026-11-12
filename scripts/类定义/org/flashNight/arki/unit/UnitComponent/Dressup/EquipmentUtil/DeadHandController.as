@@ -52,10 +52,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
         DeadHandTuning.applyBorrowedGunTuning(ref, u, p);
 
         org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime.ensure(u, "长枪", true);
-        if (u.man && u.man.枪 && u.man.枪.枪) {
-            DressupReferenceManager.doConfig(u.man.枪.枪, u.长枪_装扮, "装扮", "长枪_引用", u);
-        }
-        if (u.man && typeof u.man.初始化长枪射击函数 == "function") {
+        if (u.攻击模式 == "长枪" && typeof u.man.初始化长枪射击函数 == "function") {
             u.man.初始化长枪射击函数();
         }
     }
@@ -125,43 +122,13 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
     }
 
     public static function 死者之手同步视觉(ref:Object):Void {
-        if (!ref || ref.已卸载 || !ref.自机) return;
+        if (!ref || ref.已卸载 || !ref.自机 || ref.自机.__deadHandOwner !== ref
+                || ref.自机.version !== ref.版本号 || ref.自机.刀 !== ref.武器条目) return;
         var u:MovieClip = ref.自机;
         var mode:String = _root.装备生命周期函数.死者之手判定武器模式(ref);
         ref.当前武器模式 = mode;
         var hasAlias:Boolean = org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.hasActiveAlias(u, "长枪", "刀");
-        var handBlade:MovieClip = (u.man && u.man.刀 && u.man.刀.刀) ? u.man.刀.刀.装扮 : null;
-        var handGun:MovieClip = (u.man && u.man.枪 && u.man.枪.枪) ? u.man.枪.枪.装扮 : null;
-        if (handBlade && handBlade._parent) u.刀_引用 = handBlade;
-        if (handGun && handGun._parent) u.长枪_引用 = handGun;
-
-        var usingGunInHand:Boolean = hasAlias && mode == "长枪" && u.状态 != "攻击模式切换";
-        var showBlade:Boolean = !usingGunInHand;
-        var cfg:Object = ref.形态配置表[ref.冷兵器模式] || ref.形态配置表["钝器"];
-
-        DeadHandTuning.syncBladeClip(u.刀_引用, ref, showBlade, cfg);
-        if (handBlade && handBlade !== u.刀_引用) DeadHandTuning.syncBladeClip(handBlade, ref, showBlade, cfg);
-
-        if (hasAlias) {
-            DeadHandTuning.syncGunClip(u.长枪_引用, ref, usingGunInHand);
-            if (handGun && handGun !== u.长枪_引用) DeadHandTuning.syncGunClip(handGun, ref, usingGunInHand);
-        }
-
-        var reg:Object = u.dressupRegistry;
-        if (reg) {
-            for (var rk:String in reg) {
-                var entry:Object = reg[rk];
-                if (!entry || !entry.mc || !entry.mc._parent) continue;
-                var skin:MovieClip = entry.mc[entry.instanceName] || u[entry.referenceName];
-                if (!skin) continue;
-                if (entry.baseReferenceName == "刀_引用") {
-                    DeadHandTuning.syncBladeClip(skin, ref, showBlade, cfg);
-                } else if (hasAlias && entry.baseReferenceName == "长枪_引用") {
-                    DeadHandTuning.syncGunClip(skin, ref, usingGunInHand);
-                }
-            }
-        }
-        ref.武器 = usingGunInHand ? (handGun || u.长枪_引用) : (handBlade || u.刀_引用);
+        DeadHandVisual.sync(ref, mode, hasAlias);
     }
 
     public static function 死者之手触发超载雷电(ref:Object, freeShot:Boolean):Void {
@@ -410,13 +377,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
                 u.兵器伤害类型 = ref.原始兵器伤害类型;
                 u.兵器魔法伤害属性 = ref.原始兵器魔法伤害属性;
             }
-            if (u.__deadHandOwner === ref && u.刀_引用) u.刀_引用._visible = true;
-            if (u.__deadHandOwner === ref && ref.借用长枪槽 && u.长枪_引用) {
-                u.长枪_引用._visible = true;
-                u.长枪_引用._rotation = 0;
-                u.长枪_引用._x = 0;
-                u.长枪_引用._y = 0;
-            }
+            DeadHandVisual.release(ref);
             if (u.主动战技 && u.主动战技.长枪 && u.主动战技.长枪.装备来源 === ref.装备名称) {
                 u.主动战技.长枪 = null;
             }
@@ -517,19 +478,9 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
                     if (自机.长枪伤害类型 !== 反射对象.长枪伤害类型配置 || 自机.长枪魔法伤害属性 !== 反射对象.长枪魔法属性配置) {
                         _root.装备生命周期函数.死者之手更新形态属性(反射对象);
                     }
-                    if (自机.man && 自机.man.枪 && 自机.man.枪.枪 && !自机.man.枪.枪.装扮 && 自机.长枪_装扮) {
-                        DressupReferenceManager.doConfig(自机.man.枪.枪, 自机.长枪_装扮, "装扮", "长枪_引用", 自机);
-                    }
                     _root.装备生命周期函数.死者之手同步视觉(反射对象);
-                    if ((!muzzle || isNaN(muzzle._x)) && 自机.man && 自机.man.枪 && 自机.man.枪.枪 && 自机.man.枪.枪.装扮) {
-                        muzzle = 自机.man.枪.枪.装扮.枪口位置;
-                    }
-                    if ((!muzzle || isNaN(muzzle._x)) && 自机.长枪_引用) {
-                        muzzle = 自机.长枪_引用.枪口位置;
-                    }
-                    if ((!muzzle || isNaN(muzzle._x)) && 自机.man && 自机.man.枪 && 自机.man.枪.枪) {
-                        muzzle = 自机.man.枪.枪;
-                    }
+                    if (!muzzle || isNaN(muzzle._x)) muzzle = 反射对象.长枪视觉.枪口位置;
+                    if (!muzzle || isNaN(muzzle._x)) return false;
                     if (bulletProps) {
                         if (自机.长枪属性) {
                             if (!bulletProps.子弹种类) bulletProps.子弹种类 = 自机.长枪属性.bullet;

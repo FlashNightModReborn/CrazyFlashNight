@@ -656,6 +656,35 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
     // Runner
     // ====================================================================
 
+    private static function test_refreshAll_真实同路径换槽不复活旧登记():Void {
+        var actor:MovieClip = _root.createEmptyMovieClip("__dressupSlotReplacement", _root.getNextHighestDepth());
+        actor.syncRefs = {}; actor.手枪_装扮 = actor.长枪_装扮 = "TestProbeSkin";
+        var man:MovieClip = actor.createEmptyMovieClip("man", actor.getNextHighestDepth());
+        actor.man = man;
+        var outer:MovieClip = man.createEmptyMovieClip("枪", man.getNextHighestDepth());
+        var inner:MovieClip = outer.createEmptyMovieClip("枪", outer.getNextHighestDepth());
+        var pistol:MovieClip = DressupReferenceManager.attach(inner, "TestProbeSkin", "装扮", "手枪_引用");
+        var oldIdentity:Object = actor.dressupRegistry["手枪_引用@装扮"].identity;
+        assertTrue("真实皮肤持有独立 placement 身份", oldIdentity != undefined && pistol.__dressupPlacementIdentity === oldIdentity);
+        outer.removeMovieClip();
+        outer = man.createEmptyMovieClip("枪", man.getNextHighestDepth());
+        inner = outer.createEmptyMovieClip("枪", outer.getNextHighestDepth());
+        var gun:MovieClip = DressupReferenceManager.attach(inner, "TestProbeSkin", "装扮", "长枪_引用");
+        assertTrue("同路径换槽产生新的普通对象身份", gun.__dressupPlacementIdentity !== oldIdentity);
+        DressupReferenceManager.refreshAll(actor);
+        assertNull("整体刷新清除旧手枪登记", actor.dressupRegistry["手枪_引用@装扮"]);
+        assertTrue("整体刷新保留当前长枪登记", inner.装扮.__dressupPlacementIdentity === actor.dressupRegistry["长枪_引用@装扮"].identity);
+        outer.removeMovieClip();
+        outer = man.createEmptyMovieClip("枪", man.getNextHighestDepth());
+        inner = outer.createEmptyMovieClip("枪", outer.getNextHighestDepth());
+        pistol = DressupReferenceManager.attach(inner, "TestProbeSkin", "装扮", "手枪_引用");
+        DressupReferenceManager.refreshAll(actor);
+        assertNull("切回手枪后整体刷新清除旧长枪登记", actor.dressupRegistry["长枪_引用@装扮"]);
+        assertTrue("切回手枪的规范引用和身份仍正确", actor.手枪_引用 === inner.装扮
+            && inner.装扮.__dressupPlacementIdentity === actor.dressupRegistry["手枪_引用@装扮"].identity);
+        actor.removeMovieClip();
+    }
+
     public static function runAll():Void {
         trace("================================================================");
         trace("DressupReferenceManager Test Suite");
@@ -685,6 +714,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         test_attach_skinKeyOverrides武器走装扮后缀();
         test_refreshAll_标记与组级事件();
         test_refreshAll_dead_entry清理与live同处理();
+        test_refreshAll_真实同路径换槽不复活旧登记();
         test_multi_unit_perAttach_scope_隔离_异步订阅();
         test_multi_unit_perAttach_scope_隔离_双订阅();
         test_SkinReadyClass_onLoad_unit_为null时不crash();

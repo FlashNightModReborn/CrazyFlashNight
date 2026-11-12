@@ -234,6 +234,8 @@ AS2 原始贡献安全上限为 256，角色/用途组使用稳定 id，输出�
 - 系统：`自机.buffManager`(addBuff/removeBuff) · `自机.主动战技` · `_root.控制目标` · `_root.gameworld`
 - 计时：`_root.帧计时器.taskManager`(addLifecycleTask/removeLifecycleTask) · `_root.帧计时器.当前帧数`
 
+刀枪复用的显示对象仍由 `DressupReferenceManager` 登记；`man.枪.枪` 也是主手手枪的挂点，不能据路径把当前素材重新赋给 `长枪_引用`。需要遍历 registry 的消费者可用 `entry.identity === skin.__dressupPlacementIdentity` 校验本轮挂载，再核对槽位与活动 `man`；`dressupPlacementVersion` 用于失效本地索引。独立普通对象身份可拒绝 AVM1 同路径重建后的旧 MovieClip 引用。死者之手的定向入口同时覆盖逻辑与真实 MovieClip 的手枪隔离、换帧和卸装。
+
 ---
 
 ## 6. 脚本索引

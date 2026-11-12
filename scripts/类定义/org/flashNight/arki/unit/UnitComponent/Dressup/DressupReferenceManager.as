@@ -187,6 +187,15 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
         // 引用始终有效：换装成功用皮肤子级，否则用基本款（与皮肤同层级）
         unit[referenceName] = skin || mc.基本款 || mc;
 
+        // 独立 placement 身份不随 AVM1 同路径 MovieClip 引用重定向；消费者可据此
+        // 拒绝已被另一槽位/新装扮替换的旧 registry entry。
+        var placement:Object = unit.dressupRegistry[referenceName + "@" + instanceName];
+        if (placement && placement.mc === mc) {
+            placement.identity = {};
+            if (skin) skin.__dressupPlacementIdentity = placement.identity;
+            unit.dressupPlacementVersion = (Number(unit.dressupPlacementVersion) || 0) + 1;
+        }
+
         // 同步通道：placement-ready 时刻
         if (unit.syncRefs[referenceName]) {
             unit.dispatcher.publish(referenceName, unit);
@@ -289,6 +298,15 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
 
             // 检查 MC 是否仍然有效（未被销毁）
             if (!mc || !mc._parent) {
+                delete registry[regKey];
+                continue;
+            }
+
+            // 同一路径已装入其他槽位的新皮肤时，旧 MC 引用可能重新指向它。
+            // 旧 entry 不能通过整体刷新重新覆盖新皮肤。
+            var currentSkin:MovieClip = mc[entry.instanceName];
+            if (entry.identity != undefined && currentSkin
+                    && currentSkin.__dressupPlacementIdentity !== entry.identity) {
                 delete registry[regKey];
                 continue;
             }

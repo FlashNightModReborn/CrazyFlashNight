@@ -58,6 +58,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
             _rotation: 0,
             _x: 0,
             _y: 0,
+            枪口位置: {_x: 10, _y: 20},
             枪头组件: makeMockSubClip(),
             握柄组件: makeMockSubClip(),
             御坂组件: makeMockSubClip(),
@@ -89,8 +90,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
         unit.状态 = "兵器站立";
         unit.刀_引用 = makeMockWeaponClip();
         unit.长枪_引用 = makeMockWeaponClip();
-        unit.man = {};
-        unit.syncRefs = {};
+        configureMockDressup(unit);
         var gunShotCount:Number = 0;
         var lastGunMuzzle:Object = null;
         unit.长枪射击 = function(m:Object, bp:Object):Boolean {
@@ -271,7 +271,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
         unit.兵器魔法伤害属性 = "";
         unit.攻击模式 = "兵器"; unit.状态 = "兵器站立";
         unit.刀_引用 = makeMockWeaponClip(); unit.长枪_引用 = makeMockWeaponClip();
-        unit.man = {}; unit.syncRefs = {};
+        configureMockDressup(unit);
         var events:Object = {};
         unit.dispatcher = {
             subscribe:function(name:String, fn:Function, scope:Object):Void { events[name] = {fn:fn, scope:scope}; },
@@ -296,6 +296,22 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
         check(RuntimeEquipmentProjection.completeCanonical(unit), "死者之手边界夹具保持 canonical 投影");
         _root.长枪配置 = originalConfig;
         return {unit:unit, ref:ref, events:events};
+    }
+
+    private static function configureMockDressup(unit:Object):Void {
+        unit.man = {}; unit.syncRefs = {}; unit.dressupRegistry = {};
+        var names:Array = ["刀_引用", "长枪_引用"];
+        for (var i:Number = 0; i < names.length; i++) {
+            var skin:Object = unit[names[i]];
+            var holder:Object = {_parent:{_parent:unit.man}, 装扮:skin};
+            var identity:Object = {};
+            skin._parent = holder; skin.__dressupPlacementIdentity = identity;
+            unit.dressupRegistry[names[i] + "@装扮"] = {
+                mc:holder, instanceName:"装扮", baseReferenceName:names[i],
+                referenceName:names[i], identity:identity
+            };
+        }
+        unit.dressupPlacementVersion = 1;
     }
 
     private static function testDeadHandBoundaries():Void {
