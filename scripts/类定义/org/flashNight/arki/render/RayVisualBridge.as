@@ -374,8 +374,12 @@ class org.flashNight.arki.render.RayVisualBridge {
     }
     private static function readLight(config:TeslaRayConfig):Array {
         var profile = typeof(config.lightProfile) == "undefined" ? "auto" : config.lightProfile;
-        if (typeof(profile) != "string" || (profile != "auto" && profile != "none" && profile != "flame"
-            && profile != "beam" && profile != "heavy" && profile != "arc" && profile != "glyph")) return null;
+        if (typeof(profile) != "string" || !profile.length || profile.length > 48) return null;
+        for (var charIndex:Number = 0; charIndex < profile.length; charIndex++) {
+            var c:Number = profile.charCodeAt(charIndex);
+            if (c >= 97 && c <= 122) continue;
+            if (charIndex == 0 || !((c >= 48 && c <= 57) || c == 45 || c == 95)) return null;
+        }
         var energy = typeof(config.lightEnergyScale) == "undefined" ? 1 : config.lightEnergyScale;
         var width = typeof(config.lightWidthScale) == "undefined" ? 1 : config.lightWidthScale;
         var color = typeof(config.lightColor) == "undefined" ? -1 : config.lightColor;

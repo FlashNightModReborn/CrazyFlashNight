@@ -19,6 +19,7 @@ import org.flashNight.gesh.json.LoadJson.TaskTextLoader;
 import org.flashNight.gesh.json.LoadJson.CraftingListLoader;
 import org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoader;
 import org.flashNight.gesh.xml.LoadXml.ArenaDropRulesLoader;
+import org.flashNight.gesh.xml.LoadXml.LightProfilesLoader;
 
 class org.flashNight.boot.BootSequencer {
     static var S_INIT:Number = 0;
@@ -241,6 +242,7 @@ class org.flashNight.boot.BootSequencer {
     function stepCrafting():Void {
         if (this.b.craftFired != true) {
             this.b.craftFired = true;
+            LightProfilesLoader.start();
             var self:BootSequencer = this;
             CraftingListLoader.getInstance().loadCraftingList(
                 function(data:Object):Void {
@@ -325,7 +327,7 @@ class org.flashNight.boot.BootSequencer {
             this.halt("arena_drop_rules_failed");
             return;
         }
-        if (this.b.craftReady == true && this.b.materialCatalogReady == true
+        if (LightProfilesLoader.settled() && this.b.craftReady == true && this.b.materialCatalogReady == true
                 && this.b.mapDomainReady == true
                 && this.b.arenaDropRulesReady == true
                 && this.b.itemDataReady == true

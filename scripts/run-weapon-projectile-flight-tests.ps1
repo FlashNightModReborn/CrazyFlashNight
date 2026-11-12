@@ -1,5 +1,5 @@
 ﻿[CmdletBinding()]
-param([int]$TimeoutSeconds=300,[switch]$SkipCompile)
+param([int]$TimeoutSeconds=300,[switch]$SkipCompile,[switch]$Player20,[string]$EvidenceDirectory)
 $ErrorActionPreference='Stop'
 chcp.com 65001 | Out-Null
 $run=@{
@@ -31,5 +31,17 @@ $run=@{
  TimeoutSeconds=$TimeoutSeconds
  SkipCompile=$SkipCompile
 }
+if ($Player20) {
+    $run.TemplateRelativePath='scripts/test-runners/weapon-projectile-flight/Player20.as.template'
+    $run.ExpectedTracePatterns=@('(?m)^WeaponProjectileFlightTest standalone handoff\r?$')
+    $run.SuccessSummary='真实弹体飞行测试已为 Flash Player 20 编译'
+}
 & (Join-Path $PSScriptRoot 'test-runners/run-focused-testloader.ps1') @run
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+if ($Player20) {
+    $project=Split-Path -Parent $PSScriptRoot
+    if (-not $EvidenceDirectory) { $EvidenceDirectory=Join-Path $project ('tmp/projectile-flight/'+[guid]::NewGuid().ToString('N')) }
+    & python -B -X utf8 (Join-Path $project 'tools/combat-fx-assets/verify_light_authoring.py') --flight `
+        --test-swf (Join-Path $PSScriptRoot 'TestLoader.swf') --compile-trace (Join-Path $PSScriptRoot 'flashlog.txt') --output $EvidenceDirectory
+}
 exit $LASTEXITCODE

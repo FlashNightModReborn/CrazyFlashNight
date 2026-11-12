@@ -10,20 +10,38 @@ namespace CF7Launcher.Guardian.WorldCompositor
     internal readonly record struct SceneLightPose(int Id,float X,float Y,float Dx,float Dy,float Scale,float Weight,float Handedness=1);
     internal sealed record SceneLightSnapshot(int Revision,string Key,JObject[] Definitions,SceneLightPose[] Poses)
     {
-        internal static bool TryParse(JToken token,out SceneLightSnapshot snapshot)
+        internal static bool TryParse(JToken token,out SceneLightSnapshot snapshot, Action<string> warn = null)
         {
             snapshot=null;if(token==null || token.Type==JTokenType.Null)return true;
-            if(token is not JObject o || o.Value<int?>("version")!=1 || o["revision"]?.Type!=JTokenType.Integer
-                || o.Value<int>("revision")<1 || o["key"]?.Type!=JTokenType.String || o.Value<string>("key").Length>256
+            if(token is not JObject o || o["version"]?.Type!=JTokenType.Integer || o["version"].ToString()!="1"
+                || o["revision"]?.Type!=JTokenType.Integer || !int.TryParse(o["revision"].ToString(),out int revision) || revision<1
+                || o["key"]?.Type!=JTokenType.String || o.Value<string>("key").Length>256
                 || o["definitions"] is not JArray defs || defs.Count>SceneLightCatalog.Limit
                 || o["poses"] is not JArray poses || poses.Count!=defs.Count)return false;
-            var d=new JObject[defs.Count];var p=new SceneLightPose[defs.Count];var keys=new HashSet<string>(StringComparer.Ordinal);
-            for(int i=0;i<d.Length;i++) {
-                if(defs[i] is not JObject v || v["Key"]?.Type!=JTokenType.String || !keys.Add(v.Value<string>("Key"))
-                    || poses[i] is not JArray a || a.Count!=8 || !Pose(string.Join(',',a.Select(v=>v.ToString(Newtonsoft.Json.Formatting.None))),out p[i]) || p[i].Id!=i+1)return false;
-                d[i]=(JObject)v.DeepClone();
+            string scope=o.Value<string>("key");
+            var definitions=new JObject[defs.Count];
+            var positions=new SceneLightPose[defs.Count];
+            var byKey=new Dictionary<string,int>(StringComparer.Ordinal);
+            for(int i=0;i<defs.Count;i++) {
+                var raw=defs[i] as JObject;
+                string key=raw?["Key"]?.Type==JTokenType.String ? (string)raw["Key"] : null;
+                if(string.IsNullOrWhiteSpace(key) || key.Length>128) {
+                    warn?.Invoke("event=scene_light_ignored scope="+scope+" row="+(i+1)+" reason=key");
+                    continue;
+                }
+                if(!byKey.TryAdd(key,i)) {
+                    definitions[byKey[key]]=null;
+                    warn?.Invoke("event=scene_light_ignored scope="+scope+" key="+key+" reason=duplicate");
+                    continue;
+                }
+                if(poses[i] is not JArray a || a.Count!=8 || !Pose(string.Join(',',a.Select(v=>v.ToString(Newtonsoft.Json.Formatting.None))),out positions[i])
+                    || positions[i].Id!=i+1) {
+                    warn?.Invoke("event=scene_light_ignored scope="+scope+" key="+key+" reason=pose");
+                    continue;
+                }
+                definitions[i]=(JObject)raw.DeepClone();
             }
-            snapshot=new(o.Value<int>("revision"),o.Value<string>("key"),d,p);return true;
+            snapshot=new(revision,scope,definitions,positions);return true;
         }
         internal static bool Pose(string row,out SceneLightPose p)
         {
@@ -45,9 +63,17 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 || !long.TryParse(header[0],NumberStyles.None,CultureInfo.InvariantCulture,out long scene) || scene<1 || scene>1000000000
                 || !int.TryParse(header[1],NumberStyles.None,CultureInfo.InvariantCulture,out int revision) || revision<1 || revision>1000000000
                 || !long.TryParse(header[2],NumberStyles.None,CultureInfo.InvariantCulture,out long sequence) || sequence<1 || sequence>1000000000)return false;
-            var poses=new SceneLightPose[rows.Length-1];var seen=new HashSet<int>();
-            for(int i=1;i<rows.Length;i++)if(!SceneLightSnapshot.Pose(rows[i],out poses[i-1]) || !seen.Add(poses[i-1].Id))return false;
-            frame=new(scene,revision,sequence,poses);return true;
+            var poses=new Dictionary<int,SceneLightPose>();
+            for(int i=1;i<rows.Length;i++) {
+                if(SceneLightSnapshot.Pose(rows[i],out var pose) && poses.TryAdd(pose.Id,pose)) continue;
+                int comma=rows[i].IndexOf(',');
+                if(comma<=0 || !int.TryParse(rows[i].AsSpan(0,comma),NumberStyles.None,CultureInfo.InvariantCulture,out int id)
+                    || id<1 || id>SceneLightCatalog.Limit) continue;
+                // Hide only the malformed or ambiguous lamp; other rows keep their original IDs.
+                poses[id]=new SceneLightPose(id,0,0,1,0,1,0);
+            }
+            if(poses.Count==0 && rows.Length>1) return false;
+            frame=new(scene,revision,sequence,poses.Values.ToArray());return true;
         }
     }
 }

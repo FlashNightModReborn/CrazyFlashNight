@@ -29,6 +29,51 @@ namespace CF7Launcher.Tests.Guardian
             return path?.FullName??throw new InvalidOperationException("Missing combat effect fixture catalog");
         }
 
+        [Fact] public void ConsumedAssetsAndWorldLightingRemainIndependent()
+        {
+            string project=ProjectRoot();
+            string root=Directory.CreateTempSubdirectory("cf7-light-catalog-").FullName;
+            try {
+                void Copy(string relative) {
+                    string dest=Path.Combine(root,relative); Directory.CreateDirectory(Path.GetDirectoryName(dest));
+                    File.Copy(Path.Combine(project,relative),dest);
+                }
+                foreach (string path in new[]{CombatFxCatalog.RelativePath,CombatFxCatalog.AtlasPath,
+                        CombatFxCatalog.LightsPath,BulletVisualCatalog.RelativePath,BulletVisualCatalog.AtlasPath}) Copy(path);
+                var effects=System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(Path.Combine(root,CombatFxCatalog.RelativePath)));
+                foreach(var asset in effects["soundAssets"].AsArray()) Copy((string)asset["path"]);
+                var soundFiles=effects["styles"].AsArray().Where(style=>(bool?)style["soundAtBirth"]==true)
+                    .SelectMany(style=>style["variantSounds"]?.AsArray().Select(id=>(string)id) ?? Array.Empty<string>())
+                    .Where(id=>!string.IsNullOrWhiteSpace(id) && !id.StartsWith("cfnfx-",StringComparison.Ordinal)).Distinct();
+                foreach(string id in soundFiles) {
+                    var file=Directory.EnumerateFiles(Path.Combine(project,"sounds","export"),id,SearchOption.AllDirectories).First();
+                    Copy(Path.GetRelativePath(project,file));
+                }
+                // Deliberately provide none of the source art SWFs in this install.
+                Assert.NotEmpty(BulletVisualCatalog.Load(root).Styles);
+                var data=System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(Path.Combine(root,CombatFxCatalog.LightsPath)));
+                data["muzzles"]["枪火"]["energy"]=1.4;
+                data["muzzles"]["突击步枪枪火"]["color"]="broken";
+                File.WriteAllText(Path.Combine(root,CombatFxCatalog.LightsPath),data.ToJsonString());
+                var warnings=new System.Collections.Generic.List<string>();
+                var settings=WorldLightSettings.Load(root,warnings.Add);
+                var fx=CombatFxCatalog.Load(root,settings,warnings.Add);
+                Assert.Equal(1.4f,settings.EquipmentPeak); Assert.Equal(.78f,settings.MaximumResponse);
+                Assert.Equal(1.4f,fx.Styles.Single(x=>x.Linkage=="枪火").Light.Energy);
+                Assert.Null(fx.Styles.Single(x=>x.Linkage=="突击步枪枪火").Light);
+                Assert.NotEmpty(warnings);
+                var sound=Path.Combine(root,(string)effects["soundAssets"][0]["path"]);
+                var bytes=File.ReadAllBytes(sound); File.WriteAllBytes(sound,new byte[]{0});
+                Assert.Throws<InvalidDataException>(()=>CombatFxCatalog.Load(root,settings)); File.WriteAllBytes(sound,bytes);
+                File.WriteAllBytes(Path.Combine(root,CombatFxCatalog.AtlasPath),new byte[]{0});
+                Assert.Throws<InvalidDataException>(()=>CombatFxCatalog.Load(root,settings));
+                var fallback=CombatFxCatalog.ForResidentLights(settings);
+                Assert.True(CombatFxFrame.TryParse("1|1|1|0;l,1,0,200,180,0,0,155,0,1.2,1,.7,.4,0,0,0,0",fallback,out var packet));
+                var engine=new CombatFxEngine(fallback); Assert.True(engine.Apply(packet,1));
+                var composer=new WorldLightComposer(settings.MaximumResponse);composer.SetCombatFx(engine.BuildDraw());
+                var draw=composer.Compose(0,0,1);Assert.Equal(1,draw.LightCount);Assert.Equal(.78f,draw.MaximumLightResponse);
+            } finally { Directory.Delete(root,true); }
+        }
         [Fact]
         public void RuntimeCasingMappingsResolveToStaticAuthoredStamps()
         {

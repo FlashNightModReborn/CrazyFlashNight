@@ -9,6 +9,7 @@ import org.flashNight.arki.render.SceneLightBridge;
 
 class org.flashNight.arki.render.CombatFxBridge {
     private static var enabled:Boolean = false;
+    private static var worldLights:Boolean = false;
     private static var generation:Number = -1;
     private static var digest:String = "";
     private static var byName:Object = {};
@@ -37,8 +38,8 @@ class org.flashNight.arki.render.CombatFxBridge {
         if (caps == null || caps.version !== 1 || typeof caps.generation != "number"
             || !isFinite(caps.generation) || caps.generation < 1 || caps.generation > 1000000000
             || caps.generation != Math.floor(caps.generation)
-            || !(caps.styles instanceof Array) || caps.styles.length < 1 || caps.styles.length > 64
-            || typeof caps.digest != "string" || caps.digest.length != 64) {
+            || !(caps.styles instanceof Array) || (caps.styles.length < 1 && caps["native"] === true) || caps.styles.length > 64
+            || typeof caps.digest != "string" || (caps.digest.length != 64 && !(caps.styles.length == 0 && caps.digest === ""))) {
             disconnect();
             return;
         }
@@ -70,7 +71,9 @@ class org.flashNight.arki.render.CombatFxBridge {
                 }
         }
         var active:Boolean = caps["native"] === true;
-        if (generation != caps.generation || enabled != active || digest != caps.digest) resetScene();
+        if (generation != caps.generation) resetScene();
+        else if (enabled != active || digest != caps.digest) resetDecorations();
+        worldLights = caps.worldLights == undefined ? active : caps.worldLights === true;
         if (digest != caps.digest) DecalStampQueue.clearCache();
         generation = caps.generation;
         digest = caps.digest;
@@ -86,20 +89,26 @@ class org.flashNight.arki.render.CombatFxBridge {
         SceneLightBridge.configureCaps(caps);
     }
 
+    public static function lightTick():Number { return gameTick; }
+    // Births before flush first appear at age zero in its upcoming snapshot.
+    public static function lightBirthTick():Number { return gameTick + (_root.暂停 ? 0 : 1); }
     public static function isEnabled():Boolean { return enabled; }
-    public static function disconnect():Void { enabled = false; generation = -1; EquipmentLightBridge.disconnect(); SceneLightBridge.configureCaps({}); resetScene(); BloodVisualBridge.disconnect(); }
+    public static function disconnect():Void { enabled = false; worldLights = false; generation = -1; EquipmentLightBridge.disconnect(); SceneLightBridge.configureCaps({}); resetScene(); BloodVisualBridge.disconnect(); }
 
     public static function resetScene():Void {
+        gameTick = 0;
+        resetDecorations();
+        EquipmentLightBridge.resetScene();
+    }
+    private static function resetDecorations():Void {
         epoch++;
         sequence = 0;
-        gameTick = 0;
         lastEvent = 0;
         spawns.length = 0;
         impacts.length = 0;
         acks.length = 0;
         DecalStampQueue.resetScene();
         BloodVisualBridge.resetScene();
-        EquipmentLightBridge.resetScene();
     }
 
     private static function visible(x:Number, y:Number):Boolean {
@@ -212,11 +221,11 @@ class org.flashNight.arki.render.CombatFxBridge {
     }
 
     public static function flush():Void {
-        if (!enabled) return;
+        if (!enabled && !worldLights) return;
         var paused:Boolean = _root.暂停 ? true : false;
         if (!paused) {
             gameTick++;
-            if (!org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) {
+            if (enabled && !org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) {
                 var drawn:Array = DecalStampQueue.flush();
                 for (var i:Number = 0; i < drawn.length && acks.length < 64; i++) acks[acks.length] = drawn[i];
             }
@@ -226,7 +235,7 @@ class org.flashNight.arki.render.CombatFxBridge {
         for (var spawnIndex:Number = 0; spawnIndex < spawns.length; spawnIndex++) payload += ";" + spawns[spawnIndex];
         for (var hitIndex:Number = 0; hitIndex < impacts.length; hitIndex++) payload += ";" + impacts[hitIndex];
         for (var ackIndex:Number = 0; ackIndex < acks.length; ackIndex++) payload += ";" + acks[ackIndex];
-        payload += BloodVisualBridge.flush();
+        if (enabled) payload += BloodVisualBridge.flush();
         spawns.length = 0;
         impacts.length = 0;
         acks.length = 0;

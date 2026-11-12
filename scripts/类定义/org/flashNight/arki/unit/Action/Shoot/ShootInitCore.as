@@ -650,6 +650,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
         bulletProps.发射效果       = wd.发射效果;
         bulletProps.子弹种类       = wd.子弹种类;
+        var lightKey = extraParams.lightBinding != undefined ? extraParams.lightBinding : weaponData.lightBinding;
+        if (typeof lightKey == "string") {
+            bulletProps.lightBinding = lightKey;
+            bulletProps.lightCastId = extraParams.lightCastId;
+            bulletProps.lightSourceSlot = extraParams.lightSourceSlot != undefined ? extraParams.lightSourceSlot : weaponData.lightSourceSlot;
+            bulletProps.lightFacing = extraParams.lightFacing;
+        }
         bulletProps.ammoCost      = BulletTypeUtil.isVertical(wd.子弹种类) ? wd.霰弹值 : 1;
 
         // 补弹率（可选覆盖）：纵向联弹默认按本次实际射击间隔自适应推导补弹率

@@ -75,10 +75,19 @@ class org.flashNight.arki.render.SceneLightBridgeTest {
         second._y = 80; wire = SceneLightBridge.flush();
         check(Number(wire.split(";")[2].split(",")[2]) == 80,"second attachment invalidates its own row");
         check(frozen[2] == 60,"cached encoding does not mutate an earlier full pose");
+        SceneLightBridge.track(replacement,"second");
+        SceneLightBridge.configure([{Key:"bound",AttachTo:"second"},{Key:"healthy",X:10,Y:20}],null,"anchor-isolation");
+        snap = SceneLightBridge.snapshot();
+        check(snap.poses[0][6] == 0 && snap.poses[1][6] == 1,"ambiguous anchor hides only its bound light");
+        SceneLightBridge.configure([{Key:"invalid",FrameCurve:"bad"},{Key:"dup"},{Key:"dup"},{Key:"healthy"}],null,"author-isolation");
+        snap = SceneLightBridge.snapshot();
+        check(snap.definitions.length == 1 && snap.definitions[0].Key == "healthy","invalid curve and duplicate key leave sibling lamp live");
+        SceneLightBridge.configure([{Key:"gate-example",X:10,Y:20}],null,"non-base");
+        check(!SceneLightBridge.hasActiveBaseLighting() && SceneLightBridge.baseCharacterInfoMinOpacity() == 0,"a key prefix cannot turn unrelated scenery into a base");
         var baseRig:MovieClip = testWorld.createEmptyMovieClip("基地灯光",3);
         var glowLayer:MovieClip = baseRig.createEmptyMovieClip("发光层",1);
         var beaconLayer:MovieClip = baseRig.createEmptyMovieClip("信标层",2);
-        SceneLightBridge.configure([{Key:"gate-door-sconce-l",X:135,Y:275},{Key:"roof-antenna-beacon",X:1445,Y:68}],null,"base-ambient");
+        SceneLightBridge.configure([{Key:"gate-door-sconce-l",BasePowerTier:0,X:135,Y:275},{Key:"roof-antenna-beacon",BasePowerTier:0,BaseBeacon:true,X:1445,Y:68}],null,"base-ambient",true);
         SceneLightBridge.syncAmbientLight(7,testWorld);
         snap = SceneLightBridge.snapshot();
         check(snap.poses[0][6] == 0 && Math.abs(snap.poses[1][6]-0.35) < 0.02 && glowLayer._visible == false && Math.abs(beaconLayer._alpha-45) < 1,"daytime turns off base illumination and dims beacon");
@@ -97,15 +106,15 @@ class org.flashNight.arki.render.SceneLightBridgeTest {
         mockDict["基地供电与照明"] = {};
         _root.基建系统 = {dict:mockDict, infrastructure:{}};
         SceneLightBridge.configure([
-            {Key:"gate-door-sconce-l",X:155,Y:380},
-            {Key:"garage-workbay-se-lamp",X:1135,Y:585},
-            {Key:"garage-truss-flood-w",X:330,Y:145},
-            {Key:"roof-helipad-flood-l",X:165,Y:235},
-            {Key:"garage-bpk-underglow",X:615,Y:365}
-        ],null,"base-infra-tiers");
+            {Key:"gate-door-sconce-l",BasePowerTier:0,X:155,Y:380},
+            {Key:"garage-workbay-se-lamp",BasePowerTier:0,X:1135,Y:585},
+            {Key:"garage-truss-flood-w",BasePowerTier:1,X:330,Y:145},
+            {Key:"roof-helipad-flood-l",BasePowerTier:2,X:165,Y:235},
+            {Key:"renamed-emblem",BasePowerTier:3,X:615,Y:365}
+        ],null,"base-infra-tiers",true);
         SceneLightBridge.syncAmbientLight(1,testWorld);
         snap = SceneLightBridge.snapshot();
-        check(_root.基建系统.infrastructure["基地供电与照明"] === 0 && snap.poses[0][6] == 0.84375 && snap.poses[1][6] == 0.84375 && snap.poses[2][6] == 0 && snap.poses[3][6] == 0 && snap.poses[4][6] == 0,"Lv.0 auto-unlocks with full walkable emergency and stall lamps active while higher-tier floods remain locked");
+        check(_root.基建系统.infrastructure["基地供电与照明"] == undefined && snap.poses[0][6] == 0.84375 && snap.poses[1][6] == 0.84375 && snap.poses[2][6] == 0 && snap.poses[3][6] == 0 && snap.poses[4][6] == 0,"Lv.0 projection never discovers infrastructure; full walkable emergency and stall lamps active while higher-tier floods remain locked");
         check(testWorld.基地灯光 == undefined && deadbody.__baseLightRig == undefined && Math.abs(SceneLightBridge.effectiveAmbientLight(1)-1.0) < 0.01 && SceneLightBridge.baseCharacterInfoMinOpacity() == 100,"Lv.0 creates no procedural vector stickers and preserves deep night ambient with 100% readable nameplates");
         _root.基建系统.infrastructure["基地供电与照明"] = 1;
         SceneLightBridge.syncAmbientLight(1,testWorld);

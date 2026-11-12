@@ -326,6 +326,7 @@ class org.flashNight.arki.render.EquipmentEmissiveTest {
             check(EquipmentLightBridge.getStats().registered==256 && hasId(rows(),lateRef.equipmentLight.lightGroup.id),
                 "a late player is protected even when the raw contributor registry is full");
             clearActors(world);EquipmentLightBridge.resetScene();
+            lateHero = actor(world,"capacityHero");
             var fb:MovieClip = world.createEmptyMovieClip("fbTest", world.getNextHighestDepth());
             fb._x = 220; fb._y = 180;
             EquipmentLightBridge.registerBullet(fb, {baseAsset:"火球", 子弹种类:"火球"}, lateHero);
@@ -334,26 +335,27 @@ class org.flashNight.arki.render.EquipmentEmissiveTest {
                 "luminous projectile emits a radial world light while alive");
             fb.removeMovieClip();
             EquipmentLightBridge.registerBullet({aabbCollider:{left:200, right:320, top:140, bottom:220}},
-                {baseAsset:"近战子弹", 子弹种类:"近战子弹", 声音:"火流.wav", 魔法伤害属性:"热", shootX:260, shootY:180}, lateHero);
+                {lightBinding:"area.heat",baseAsset:"近战子弹", 子弹种类:"近战子弹", 声音:"火流.wav", 魔法伤害属性:"热", shootX:260, shootY:180}, lateHero);
             var pulseRows:Array = rows();
-            _root.帧计时器.当前帧数 += 7;
+            var fxClock:Object = org.flashNight.arki.render.CombatFxBridge;
+            _root.帧计时器.当前帧数 += 7; fxClock["gameTick"] += 7;
             check(pulseRows.length == 1 && Number(pulseRows[0][3]) == 260 && rows().length == 0,
                 "removed projectile detaches immediately and thermal melee pulse expires cleanly");
-            EquipmentLightBridge.emitPulseAt("__phoenix_revive", 240, 200, lateHero, 245, 1.75, 4);
-            EquipmentLightBridge.emitPulseAt("__phoenix_revive", 240, 120, lateHero, 305, 1.95, 4);
+            EquipmentLightBridge.emitPulseAt("__phoenix_revive", 240, 200, lateHero, 245/260, 1.75/1.8, 1, 0);
+            EquipmentLightBridge.emitPulseAt("__phoenix_revive", 240, 120, lateHero, 305/260, 1.95/1.8, 1, 0);
             var phRows:Array = rows();
             check(phRows.length == 1 && Number(phRows[0][4]) == 75 && Number(phRows[0][7]) == 305,
                 "Phoenix and Huofeng continuous revival pulses coalesce per actor and track altitude/radius");
-            _root.帧计时器.当前帧数 += 6;
+            _root.帧计时器.当前帧数 += 6; fxClock["gameTick"] += 6;
             var ladyBoss:MovieClip = actor(world, "ladyBoss");
             EquipmentLightBridge.registerBullet({aabbCollider:{left:100, right:480, top:120, bottom:240}},
-                {baseAsset:"透明子弹", 子弹种类:"透明子弹", 伤害类型:"魔法", 魔法伤害属性:"冷", shootX:160, shootY:180}, ladyBoss);
+                {lightBinding:"area.ice-stream",lightCastId:1,baseAsset:"透明子弹", 子弹种类:"透明子弹", 伤害类型:"魔法", 魔法伤害属性:"冷", shootX:160, shootY:180}, ladyBoss);
             EquipmentLightBridge.registerBullet({aabbCollider:{left:180, right:560, top:120, bottom:240}},
-                {baseAsset:"透明子弹", 子弹种类:"透明子弹", 伤害类型:"魔法", 魔法伤害属性:"冷", shootX:160, shootY:180}, ladyBoss);
+                {lightBinding:"area.ice-stream",lightCastId:1,baseAsset:"透明子弹", 子弹种类:"透明子弹", 伤害类型:"魔法", 魔法伤害属性:"冷", shootX:160, shootY:180}, ladyBoss);
             var cryoRows:Array = rows();
             check(cryoRows.length == 2 && Number(cryoRows[0][7]) == 247 && Number(cryoRows[1][7]) == 247,
                 "Lady cryo thrower transparent cold stream emits dual wide-span coalesced lights");
-            _root.帧计时器.当前帧数 += 8;
+            _root.帧计时器.当前帧数 += 8; fxClock["gameTick"] += 8;
             var ladyAssets:Array = ["加农炮弹","紫色小爆炸","fm92刺弹炮弹","高压爆炸","fsc7炮弹","g1炮弹","g1炮弹击中","支援飞弹","支援飞弹爆炸","爆炸狙击子弹","小火焰爆炸","高爆爆炸","普通爆炸"];
             var ladyOk:Boolean = true;
             for (i = 0; i < ladyAssets.length; i++) {
@@ -365,7 +367,7 @@ class org.flashNight.arki.render.EquipmentEmissiveTest {
             }
             ladyBoss.近战招式 = "组合舞刃";
             EquipmentLightBridge.registerBullet({aabbCollider:{left:120, right:400, top:130, bottom:230}},
-                {baseAsset:"近战子弹", 子弹种类:"近战子弹", 伤害类型:"物理", 吸血:70, shootX:260, shootY:180}, ladyBoss);
+                {lightBinding:"area.blade-dance",baseAsset:"近战子弹", 子弹种类:"近战子弹", 伤害类型:"物理", 吸血:70, shootX:260, shootY:180}, ladyBoss);
             if (rows().length != 2) ladyOk = false;
             check(ladyOk, "Lady skill projectiles, explosions, and crimson blade dance emit radial world lights");
             EquipmentLightBridge.disconnect(); check(rows().length == 0,"disconnect clears every persistent source");

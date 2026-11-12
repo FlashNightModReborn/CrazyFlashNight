@@ -20,12 +20,14 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="174" duration="78" name="fm92榴弹" labelType="name" keyMode="9728">
+              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:175, lastFrame:253};]]></script></Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="252" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="253" duration="66" name="寒冰喷射器" labelType="name" keyMode="9728">
+              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:254, lastFrame:320};]]></script></Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="319" keyMode="9728">
@@ -59,12 +61,14 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="602" duration="50" name="组合舞刃" labelType="name" keyMode="9728">
+              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:603, lastFrame:653};]]></script></Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="652" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="653" duration="101" name="近喷" labelType="name" keyMode="9728">
+              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:654, lastFrame:754};]]></script></Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -1642,6 +1646,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 460;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -1702,6 +1710,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 464;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -1762,6 +1774,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 468;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -1822,6 +1838,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 472;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -1924,6 +1944,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -1984,6 +2008,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2047,6 +2075,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2110,6 +2142,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2173,6 +2209,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2239,6 +2279,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2302,6 +2346,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2365,6 +2413,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2428,6 +2480,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2491,6 +2547,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2554,6 +2614,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2617,6 +2681,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2677,6 +2745,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -2737,6 +2809,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.ice-stream";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 0;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -3969,6 +4045,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1228;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4023,6 +4103,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1229;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4079,6 +4163,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1230;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4134,6 +4222,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1232;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4198,6 +4290,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1244;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4256,6 +4352,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1246;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4311,6 +4411,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1248;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4375,6 +4479,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1280;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4430,6 +4538,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1282;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4485,6 +4597,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1284;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4540,6 +4656,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1286;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4598,6 +4718,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1290;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -4656,6 +4780,10 @@ onClipEvent(load){
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.blade-dance";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1294;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -5480,6 +5608,10 @@ onClipEvent(load){
 	子弹属性.发射效果 = "高爆枪火";
 	子弹属性.区域定位area = this.area;
 	
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1418;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>
@@ -5540,6 +5672,10 @@ onClipEvent(load){
 	子弹属性.发射效果 = "高爆枪火";
 	子弹属性.区域定位area = this.area;
 	
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1422;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>
@@ -5603,6 +5739,10 @@ onClipEvent(load){
 	子弹属性.发射效果 = "高爆枪火";
 	子弹属性.区域定位area = this.area;
 	
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1442;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>
@@ -5660,6 +5800,10 @@ onClipEvent(load){
 	子弹属性.发射效果 = "高爆枪火";
 	子弹属性.区域定位area = this.area;
 	
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 1444;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>

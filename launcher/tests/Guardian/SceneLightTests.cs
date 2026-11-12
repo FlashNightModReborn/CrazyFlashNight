@@ -63,6 +63,16 @@ namespace Launcher.Tests.Guardian
             var next=Snapshot(new JObject{["Key"]="a"});e.Configure(2,next with{Revision=2});
             Assert.False(e.Adopt(new(2,1,99,new[]{new SceneLightPose(1,100,100,1,0,1,0)})));Assert.Equal(1,e.CachedCount);
         }
+        [Fact] public void BadSceneLampKeepsOtherRowIdsAndPoseUpdates()
+        {
+            var warnings=new System.Collections.Generic.List<string>();
+            var e=new SceneLightEngine(Catalog(), warnings.Add);
+            e.Configure(1,Snapshot(new JObject{["Key"]="bad",["Preset"]="missing"},new JObject{["Key"]="healthy"}));
+            Assert.Equal(1,e.CachedCount); Assert.Equal(500,e.Cached[0]);
+            Assert.Contains(warnings, line=>line.Contains("key=bad") && line.Contains("scope=test"));
+            Assert.True(SceneLightState.TryParse("1|1|1;1,NaN,3,1,0,1,1,1;2,330,280,1,0,1,1,1",out var update));
+            Assert.True(e.Adopt(update)); Assert.Equal(1,e.CachedCount); Assert.Equal(330,e.Cached[0]);
+        }
         [Fact] public void MirroredBasisPreservesAuthoredDirection()
         {
             var e=new SceneLightEngine(Catalog());var s=Snapshot(new JObject{["Key"]="beam",["Preset"]="street"});
@@ -71,11 +81,11 @@ namespace Launcher.Tests.Guardian
         }
         [Theory]
         [InlineData("1|1|1;1,200,200,1,0,1,1,1",true)]
-        [InlineData("1|1|1;1,200,200,1,0,1,1,1;1,300,300,1,0,1,1,1",false)]
-        [InlineData("1|1|1;1,NaN,200,1,0,1,1,1",false)]
-        [InlineData("1|1|1;1,200,200,0,0,1,1,1",false)]
+        [InlineData("1|1|1;1,200,200,1,0,1,1,1;1,300,300,1,0,1,1,1",true)]
+        [InlineData("1|1|1;1,NaN,200,1,0,1,1,1",true)]
+        [InlineData("1|1|1;1,200,200,0,0,1,1,1",true)]
         [InlineData("1|1|1;129,200,200,1,0,1,1,1",false)]
-        [InlineData("1|1|1;1,200,200,1,0,1,1,0",false)]
+        [InlineData("1|1|1;1,200,200,1,0,1,1,0",true)]
         [InlineData("1|1;1,200,200,1,0,1,1,1",false)]
         public void StateWireIsBoundedAndCultureIndependent(string text,bool ok)
         {var old=CultureInfo.CurrentCulture;try{CultureInfo.CurrentCulture=new("fr-FR");Assert.Equal(ok,SceneLightState.TryParse(text,out _));}finally{CultureInfo.CurrentCulture=old;}}

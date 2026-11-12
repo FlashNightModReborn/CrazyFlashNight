@@ -37,6 +37,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("auto")]
         [InlineData("none")]
         [InlineData("flame")]
+        [InlineData("cold-beam-2")]
         [InlineData("beam")]
         [InlineData("heavy")]
         [InlineData("arc")]
@@ -59,7 +60,7 @@ namespace CF7Launcher.Tests.Guardian
         { Assert.True(Parse(Config()+";"+light,out var frame));Assert.True(frame.Configs[0].Light.IsValid); }
 
         [Theory]
-        [InlineData("l,1,unknown,1,1,-1,-1")]
+        [InlineData("l,1,bad/name,1,1,-1,-1")]
         [InlineData("l,1,Beam,1,1,-1,-1")]
         [InlineData("l,1,,1,1,-1,-1")]
         [InlineData("l,1,beam,NaN,1,-1,-1")]

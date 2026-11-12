@@ -310,7 +310,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengAction {
                 nrg=0.65+1.31*fade2;
             }
         }
-        EquipmentLightBridge.emitPulseAt("__huofeng_nirvana",px,py,unit,rad,nrg,4);
+        EquipmentLightBridge.emitPulseAt("__huofeng_nirvana",px,py,unit,rad/270,nrg/1.85,action,0);
         if (f>=HuofengRules.NIRVANA_FRAMES[action.tier]) cancel(runtime,action,true);
     }
 }

@@ -88,6 +88,10 @@
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = {};
+	子弹属性.lightSourceSlot = 72;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>

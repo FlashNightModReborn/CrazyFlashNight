@@ -3,7 +3,7 @@
 `build.py` 保留普通、加强普通两种原有三角样式，并从现役
 `flashswf/arts/原版素材库-子弹.swf` 导出穿刺、次级穿刺、无壳穿刺的飞行外观。
 单发与联弹单元的注册点、嵌套矩阵、颜色和滤镜不同，分别占用目录中的样式，不能强行复用。
-XFL 仍为唯一美术编辑源；图集和目录是派生物。
+XFL 是美术编辑源。用仓库的 CS6 入口发布原版子弹库时，会同时检查子弹外观和战斗特效的两个目录。只有替换成品 SWF 时，可调用 `python tools/combat-fx-assets/after_publish.py --swf flashswf/arts/原版素材库-子弹.swf` 完成两份派生。
 
 ```powershell
 python -B -X utf8 tools/combat-bullet-visuals/build.py
@@ -23,8 +23,7 @@ python -B -X utf8 tools/combat-bullet-visuals/build.py --check
 无对应消费方的 `ordinaryLinkage` / `gunChainUnitLinkage` 为 `null`。
 三角样式使用 `kind: triangle` 和原顶点；精细外观使用 `kind: sprite`、图集矩形、
 裁切偏移和源单位尺寸。`bullets-atlas.png` 每两个像素对应一个 Flash 单位，带双线性采样隔离边。
-目录绑定 XFL 依赖、源 SWF、生成器、FFDec 与复用导出器的摘要；运行时校验实际 SWF/PNG
-摘要、图片尺寸、矩形、比例和映射唯一性后才允许能力接管。
+构建端核对 XFL、源 SWF、生成器、FFDec 与导出器的摘要。运行时核对实际 PNG 摘要、图片尺寸、矩形、比例和映射唯一性，再启用原生子弹外观。
 
 `--check` 只检查配方、闭包、PNG 头/体积和派生元数据，不重绘，也不证明游戏观感。
 实际尺寸与体积读取本轮输出，不复制成长期性能结论。GPU 只接管表现，AS2 的碰撞、预算、

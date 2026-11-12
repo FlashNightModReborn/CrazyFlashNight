@@ -5,6 +5,7 @@
         <DOMLayer name="代码层" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="45" keyMode="9728">
+              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:1, lastFrame:46};]]></script></Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="45" keyMode="9728">
@@ -134,6 +135,10 @@
 	子弹属性.发射效果 = "高爆枪火";
 	子弹属性.区域定位area = this.area;
 	
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 38;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>
@@ -213,6 +218,10 @@
 	子弹属性.防御粉碎 = NaN;
 	*/
 	
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 42;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>
@@ -301,6 +310,10 @@
 	子弹属性.防御粉碎 = NaN;
 	*/
 	
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 60;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>
@@ -380,6 +393,10 @@
 	子弹属性.防御粉碎 = NaN;
 	*/
 	
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = _parent.__projectileLightCast;
+	子弹属性.lightSourceSlot = 64;
+	子弹属性.lightFacing = _parent._parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>

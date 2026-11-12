@@ -68,7 +68,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 }
             }
             if (!AtmosphereFrame.TryParse(value["atmosphere"],out frame.Atmosphere)) return false;
-            if (!SceneLightSnapshot.TryParse(value["sceneLights"],out frame.SceneLights)) return false;
+            if (!SceneLightSnapshot.TryParse(value["sceneLights"],out frame.SceneLights, LogManager.Log))
+                LogManager.Log("event=scene_light_snapshot_ignored scene="+frame.Scene);
             return true;
         }
         private static bool Number(JToken token, double limit, out double number)

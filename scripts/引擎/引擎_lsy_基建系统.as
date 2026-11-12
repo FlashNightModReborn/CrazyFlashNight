@@ -1,6 +1,13 @@
 ﻿if(_root.基建系统 == null) _root.基建系统 = new Object();
 _root.基建系统.infrastructure = new Object();
 
+// 进场与实物基建共用发现权威；重复进入或已升级时保留已有等级。
+_root.基建系统.发现项目 = function(key:String):Void{
+    if (this.dict[key] == null || this.infrastructure == null || this.infrastructure[key] != null) return;
+    this.infrastructure[key] = 0;
+    if (typeof _root.发布消息 == "function") _root.发布消息("发现新的基建项目：" + key);
+}
+
 _root.基建系统.初始化基建元件 = function(target:MovieClip, key:String, args:Array):Void{
 	target.stop();
 	if(_root.基建系统.dict[key] == null) return;
@@ -10,11 +17,7 @@ _root.基建系统.初始化基建元件 = function(target:MovieClip, key:String
     // });
 	target.基建项目 = key;
 	target.基建等级列表 = args.length > 0 ? args : null;
-	if(this.infrastructure[target.基建项目] == null){ 
-		this.infrastructure[target.基建项目] = 0;
-		// 弹出提示
-		_root.发布消息("发现新的基建项目：" + key);
-	}
+	this.发现项目(key);
 	_root.基建系统.更新基建元件(target);
 }
 

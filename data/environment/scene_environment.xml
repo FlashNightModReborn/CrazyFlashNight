@@ -250,6 +250,7 @@
     </Environment>
     <Environment>
         <BackgroundURL>基地房顶</BackgroundURL>
+        <BasePowerProject>基地供电与照明</BasePowerProject>
         <Alignment>true</Alignment>
         <Xmin>100</Xmin>
         <Xmax>1635</Xmax>
@@ -317,6 +318,7 @@
         <Lights>
             <Light>
                 <Key>roof-ladder-west-lamp</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>195</X>
                 <Y>345</Y>
@@ -327,6 +329,7 @@
             </Light>
             <Light>
                 <Key>roof-helipad-west-fill</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>395</X>
                 <Y>375</Y>
@@ -337,6 +340,7 @@
             </Light>
             <Light>
                 <Key>roof-deck-center-fill</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>695</X>
                 <Y>405</Y>
@@ -347,6 +351,7 @@
             </Light>
             <Light>
                 <Key>roof-bounty-lamp</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>965</X>
                 <Y>310</Y>
@@ -357,6 +362,7 @@
             </Light>
             <Light>
                 <Key>roof-stairhouse-lamp</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>1165</X>
                 <Y>375</Y>
@@ -367,6 +373,7 @@
             </Light>
             <Light>
                 <Key>roof-ladder-east-lamp</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>1445</X>
                 <Y>375</Y>
@@ -377,6 +384,8 @@
             </Light>
             <Light>
                 <Key>roof-antenna-beacon</Key>
+                <BasePowerTier>0</BasePowerTier>
+                <BaseBeacon>true</BaseBeacon>
                 <Preset>lamp</Preset>
                 <RenderMode>hybrid</RenderMode>
                 <X>1455</X>
@@ -392,6 +401,7 @@
             </Light>
             <Light>
                 <Key>roof-bounty-wall-wash</Key>
+                <BasePowerTier>1</BasePowerTier>
                 <Preset>street</Preset>
                 <X>995</X>
                 <Y>245</Y>
@@ -404,6 +414,7 @@
             </Light>
             <Light>
                 <Key>roof-helipad-flood-l</Key>
+                <BasePowerTier>2</BasePowerTier>
                 <Preset>street</Preset>
                 <X>165</X>
                 <Y>235</Y>
@@ -416,6 +427,7 @@
             </Light>
             <Light>
                 <Key>roof-helipad-flood-r</Key>
+                <BasePowerTier>2</BasePowerTier>
                 <Preset>street</Preset>
                 <X>1145</X>
                 <Y>235</Y>
@@ -428,6 +440,7 @@
             </Light>
             <Light>
                 <Key>roof-helipad-approach-c</Key>
+                <BasePowerTier>3</BasePowerTier>
                 <Preset>lamp</Preset>
                 <RenderMode>hybrid</RenderMode>
                 <X>585</X>
@@ -443,6 +456,7 @@
             </Light>
             <Light>
                 <Key>roof-perimeter-accent-e</Key>
+                <BasePowerTier>3</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>1320</X>
                 <Y>415</Y>
@@ -455,6 +469,7 @@
     </Environment>
     <Environment>
         <BackgroundURL>基地车库</BackgroundURL>
+        <BasePowerProject>基地供电与照明</BasePowerProject>
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
         <Xmax>1250</Xmax>
@@ -508,6 +523,7 @@
         <Lights>
             <Light>
                 <Key>garage-stage-exit-lamp</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>95</X>
                 <Y>355</Y>
@@ -518,6 +534,7 @@
             </Light>
             <Light>
                 <Key>garage-merchant-west-lamp</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>330</X>
                 <Y>355</Y>
@@ -528,6 +545,7 @@
             </Light>
             <Light>
                 <Key>garage-vehicle-uplight-w</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>260</X>
                 <Y>555</Y>
@@ -538,6 +556,7 @@
             </Light>
             <Light>
                 <Key>garage-center-aisle-lamp</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>665</X>
                 <Y>495</Y>
@@ -548,6 +567,7 @@
             </Light>
             <Light>
                 <Key>garage-merchant-east-lamp</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>885</X>
                 <Y>345</Y>
@@ -558,6 +578,7 @@
             </Light>
             <Light>
                 <Key>garage-door-east-lamp</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>1135</X>
                 <Y>395</Y>
@@ -568,6 +589,7 @@
             </Light>
             <Light>
                 <Key>garage-workbay-se-lamp</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>1135</X>
                 <Y>585</Y>
@@ -578,6 +600,7 @@
             </Light>
             <Light>
                 <Key>garage-truss-flood-w</Key>
+                <BasePowerTier>1</BasePowerTier>
                 <Preset>street</Preset>
                 <X>330</X>
                 <Y>145</Y>
@@ -590,6 +613,7 @@
             </Light>
             <Light>
                 <Key>garage-truss-flood-e</Key>
+                <BasePowerTier>1</BasePowerTier>
                 <Preset>street</Preset>
                 <X>960</X>
                 <Y>145</Y>
@@ -602,6 +626,7 @@
             </Light>
             <Light>
                 <Key>garage-truss-flood-c</Key>
+                <BasePowerTier>2</BasePowerTier>
                 <Preset>street</Preset>
                 <X>645</X>
                 <Y>135</Y>
@@ -614,6 +639,7 @@
             </Light>
             <Light>
                 <Key>garage-bpk-underglow</Key>
+                <BasePowerTier>3</BasePowerTier>
                 <Preset>lamp</Preset>
                 <RenderMode>hybrid</RenderMode>
                 <X>615</X>
@@ -629,6 +655,7 @@
             </Light>
             <Light>
                 <Key>garage-showroom-accent-se</Key>
+                <BasePowerTier>3</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>995</X>
                 <Y>555</Y>
@@ -641,6 +668,7 @@
     </Environment>
     <Environment>
         <BackgroundURL>基地门口</BackgroundURL>
+        <BasePowerProject>基地供电与照明</BasePowerProject>
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
         <Xmax>960</Xmax>
@@ -665,6 +693,7 @@
         <Lights>
             <Light>
                 <Key>gate-door-sconce-l</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>155</X>
                 <Y>380</Y>
@@ -675,6 +704,7 @@
             </Light>
             <Light>
                 <Key>gate-door-sconce-r</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>290</X>
                 <Y>355</Y>
@@ -685,6 +715,7 @@
             </Light>
             <Light>
                 <Key>gate-wall-flood-mid</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>480</X>
                 <Y>485</Y>
@@ -695,6 +726,7 @@
             </Light>
             <Light>
                 <Key>gate-wall-flood-east</Key>
+                <BasePowerTier>0</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>715</X>
                 <Y>445</Y>
@@ -705,6 +737,8 @@
             </Light>
             <Light>
                 <Key>gate-outpost-beacon</Key>
+                <BasePowerTier>0</BasePowerTier>
+                <BaseBeacon>true</BaseBeacon>
                 <Preset>lamp</Preset>
                 <RenderMode>hybrid</RenderMode>
                 <X>915</X>
@@ -720,6 +754,7 @@
             </Light>
             <Light>
                 <Key>gate-bunker-wall-wash</Key>
+                <BasePowerTier>1</BasePowerTier>
                 <Preset>street</Preset>
                 <X>210</X>
                 <Y>255</Y>
@@ -732,6 +767,7 @@
             </Light>
             <Light>
                 <Key>gate-cam-searchlight</Key>
+                <BasePowerTier>2</BasePowerTier>
                 <Preset>street</Preset>
                 <RenderMode>hybrid</RenderMode>
                 <X>285</X>
@@ -749,6 +785,7 @@
             </Light>
             <Light>
                 <Key>gate-watchtower-east-beam</Key>
+                <BasePowerTier>2</BasePowerTier>
                 <Preset>street</Preset>
                 <X>985</X>
                 <Y>250</Y>
@@ -761,6 +798,7 @@
             </Light>
             <Light>
                 <Key>gate-emblem-accent</Key>
+                <BasePowerTier>3</BasePowerTier>
                 <Preset>lamp</Preset>
                 <X>185</X>
                 <Y>425</Y>
@@ -771,6 +809,7 @@
             </Light>
             <Light>
                 <Key>gate-perimeter-guide-e</Key>
+                <BasePowerTier>3</BasePowerTier>
                 <Preset>lamp</Preset>
                 <RenderMode>hybrid</RenderMode>
                 <X>840</X>

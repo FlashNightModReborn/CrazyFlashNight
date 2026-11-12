@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId dynamic-light-profiles Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.render.DynamicLightProfilesTest.setRunId("__FOCUSED_RUN_ID__");
+org.flashNight.arki.render.DynamicLightProfilesTest.runAllTests();

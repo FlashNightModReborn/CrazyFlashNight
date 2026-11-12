@@ -432,7 +432,7 @@ class org.flashNight.arki.scene.StageManager {
         }
 
         // 放置出生点，初始化各个刷怪点的总个数和场上人数
-        org.flashNight.arki.render.SceneLightBridge.configure(environment.场景灯, currentStageInfo.lightInfo, basicInfo.Background + "#" + currentStage);
+        org.flashNight.arki.render.SceneLightBridge.configure(environment.场景灯, currentStageInfo.lightInfo, basicInfo.Background + "#" + currentStage, environment.基地供电项目 === "基地供电与照明");
         spawnPoints = new Array(spawnPointInfo.length);
         for (var i = 0; i < spawnPointInfo.length; i++) {
             var spinfo = spawnPointInfo[i];

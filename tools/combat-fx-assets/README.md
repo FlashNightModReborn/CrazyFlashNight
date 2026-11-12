@@ -1,5 +1,14 @@
 # 弹壳与枪火资源派生
 
+用 Flash CS6 的仓库发布入口编译美术 XFL 后，`after_publish.py` 自动核对原生消费者。Lady、雾人、fs 的库影响战斗特效目录，原版子弹库同时影响战斗特效和子弹外观目录。它比较上次已验证的 SWF、发布设置、已发布绘制与声音标签、XFL 配方及工具。仅动作脚本改变且其余输入完全匹配时，更新来源摘要并复验原图集和音频。如果 CS6 重排了库内编号，工具只对这份 SWF 中被原生消费者选用的帧重新取样，逐像素和注册点与现有图集比对，吻合即可保留图集。第一次遇到改版、导出设置变化或只有替换 SWF 时重新导出。直接导入成品 SWF 的入口如下。
+
+```powershell
+python -B -X utf8 tools/combat-fx-assets/after_publish.py --swf flashswf/arts/new/lady.swf
+```
+
+
+`scripts/run-dynamic-light-profiles-tests.ps1` 首先在 CS6 运行配置校验，随后通过本机回环地址，把同一份 SWF 和美术资源交给随游戏提供的 Flash Player 20。六次重启分别验证暗火箭、新增绑定、四类作者调参、无效配置、文件缺失与请求超时。输出目录包含资源摘要、每次读取的文件和测试结果。
+
 `build.py` 从四个明确来源的 XFL 行为定义和对应已发布 SWF
 生成 `data/combat_visuals/effects.v1.json`、`effects-atlas.png` 及
 `sounds/export/特效/cfnfx-stock-<soundId>.wav`：原版素材库-子弹、
@@ -76,7 +85,7 @@ D3D11 使用线性采样和预乘 alpha。运行时不重新解析矢量或逐�
 并记录 Pillow 版本。受摘要保护的源码/清单由 `.gitattributes` 固定 LF。
 `--check` 仅需标准库，检查来源/配方/帧序列/PNG 头/矩形/体积、声音与 `local_lights.v1.json`，
 不执行 Java，也不代表重新光栅化后的像素比对。
-Runtime 另核对目录 schema、SWF/PNG 哈希、尺寸、样式和帧索引；失败则不宣布接管能力。
+运行时核对目录格式、实际 PNG 摘要与尺寸、样式、帧索引和引用的声音。构建工具核对源 SWF 摘要。装饰特效不可用时，场景灯、装备灯和射线仍按各自的输入工作。
 PNG 上限 4 MiB、纹理每边上限 4096；实际体积与尺寸读取清单和 `--check` 输出。
 纹理、Host 像素缓存和 native 上传副本各自占内存，不能把 PNG 压缩大小当作显存大小。
 
