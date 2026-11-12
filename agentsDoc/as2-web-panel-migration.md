@@ -221,6 +221,8 @@ KShop 是显式的 legacy wire 例外，不是通用 envelope 例外。Web→Hos
 
 ### 物品身份三分离与领域证明
 
+装备调制的 `availabilityCode` 由 `EquipmentUtil.init()` 的 `modAvailabilityResults` 定义合法集合；Host 与 Web 以封闭集合验证，不能另设数值区间推断合法性。合法的不可安装原因应保留为候选反馈，不能导致整份装备快照失效。新增配件沿用现有原因时不改协议；新增原因时须同步两端验证，并由 `tools/test-equipment-tuning-runtime.js` 直接读取 AS2 定义，覆盖背包和装备栏的接纳、未知码拒绝与禁止安装边界。
+
 装备调制、KShop、Crafting 与 NPC Shop 的物品叶节点统一按三种职责解释：`name` / `itemName` 是内部规则身份，只供 selector、缓存、去重、配方、容器和 mutation；`displayName` 是玩家文案；`icon` 是 `Icons` 资产键。KShop catalog 的 `item/displayname/icon` 分别承载同三种职责，Host 重建 checkout 行时规范为 `itemName/displayName/icon`。既有 tooltip 另有窄的领域 profile：KShop 使用 `itemName/displayname/iconName` 并由 Host 与 pending catalog 行精确对齐；NPC 使用 `itemName/displayname` 及可选 `iconName`，只绑定请求 `itemName` 并逐字段净化；Crafting 的 AS2 `displayname` 只在 `CraftingTask` 边界一次翻译为 `displayName`。这些都是由具体命令和 validator 围住的 legacy adapter，不授权共享三元组 validator、Web 展示或其他领域把 `displayname`、`iconName`、内部名及相邻字段当通用别名。
 
 旧 XML/AS2 数据可能缺少独立展示名或图标名；只有拥有 ItemUtil/catalog authority 的 AS2 projection 可以在生成叶节点时用内部规则键补齐旧数据，并且投影出的 `displayName/icon` 必须是非空安全字符串。该兼容只存在于权威数据适配层：一旦越过 AS2 边界，Host 按命令 exact normalize/rebuild，Web 再独立严格验证，二者都不得二次猜测、把内部名当玩家文案或把规则键当图标键。三字段即使当前字节相同也仍是三个职责；19 个展示别名、13 个图标键差异与 3 个三名全异样本由 [testing-guide.md](testing-guide.md) 的 `PG-IDENTITY-TRIPLE` 守住。

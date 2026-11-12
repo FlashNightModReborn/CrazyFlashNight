@@ -21,6 +21,12 @@ namespace CF7Launcher.Tasks
     /// </summary>
     public sealed class EquipmentTuningTask : IDisposable
     {
+        // 与 EquipmentUtil.modAvailabilityResults 的封闭码表一致；不可安装原因仍须展示。
+        private static readonly HashSet<int> ModAvailabilityCodes = new HashSet<int>
+        {
+            1, 0, -1, -2, -4, -8, -16, -32, -64, -128, -256, -512, -1024
+        };
+
         private sealed class PendingRequest
         {
             public int FlashCallId;
@@ -617,6 +623,15 @@ namespace CF7Launcher.Tasks
                         commitStateRef = SnapshotStateReference(
                             msg["snapshot"] as JObject);
                 }
+                if (!valid)
+                {
+                    LogManager.Log("event=equipment_tuning_response_rejected"
+                        + " command=" + SafeLogField(entry.WebCmd)
+                        + " flashCallId=" + fid
+                        + " webCallId=" + SafeLogField(entry.WebCallId)
+                        + " sourceKind=" + SafeLogField(ReadString(entry.Source?["sourceKind"]))
+                        + " failurePath=" + SafeLogField(DescribeValidationFailure(msg, entry)));
+                }
                 web = valid ? SanitizeFlashResponse(msg) : new JObject
                 {
                     ["success"] = false,
@@ -684,7 +699,8 @@ namespace CF7Launcher.Tasks
                         AuthorityLogFormatter.CreateReference(
                             PreviewSourceKey(entry.Source)))
                     + " stateRef=" + SafeLogField(snapshotStateRef)
-                    + " writeEpoch=" + entry.WriteEpoch);
+                    + " writeEpoch=" + entry.WriteEpoch
+                    + " modAvailabilityCodes=" + SafeLogField(DescribeModAvailabilityCodes(msg)));
             NotifyCoordinatorSettledIfReady();
             if (respond != null) respond(null);
         }
@@ -1474,6 +1490,102 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
+        // 只诊断已被权威校验拒绝的回包；不改变采用、写锁或对账裁决，不输出玩家字段值。
+        private static string DescribeValidationFailure(JObject msg, PendingRequest entry)
+        {
+            if (msg == null || msg["success"]?.Type != JTokenType.Boolean
+                || msg.Value<bool?>("success") != true)
+                return "response.envelope";
+            if (!HasOnlyResponseKeys(msg, entry.WebCmd, true))
+                return "response.keys";
+            if (entry.WebCmd == "snapshot")
+                return DescribeSnapshotFailure(msg["snapshot"] as JObject, entry.Source)
+                    ?? "snapshot.authority";
+            if (entry.WebCmd != "commit") return "response.proof";
+            PreviewBinding binding = entry.ConsumedPreviewBinding;
+            if (binding == null || ReadString(msg["tuningToken"]) != entry.ExpectedTuningToken
+                || !IsOpaque(ReadString(msg["transactionId"]))
+                || !TryReadTuningProjectionResponse(msg, entry.Operation, false,
+                    out JObject before, out JObject after, out JArray materials,
+                    out JArray removedMods, out bool noOp, out bool canCommit))
+                return "commit.projection";
+            if (!JToken.DeepEquals(before, binding.Before)) return "commit.before";
+            if (!JToken.DeepEquals(materials, binding.Materials)) return "commit.materials";
+            if (!JToken.DeepEquals(removedMods, binding.RemovedMods)) return "commit.removedMods";
+            if (noOp != binding.NoOp || canCommit
+                || !TryMatchCommittedAfter(binding.After, after, noOp,
+                    out JObject source, out _)) return "commit.after";
+            JObject snapshot = msg["snapshot"] as JObject;
+            string snapshotFailure = DescribeSnapshotFailure(snapshot, source);
+            if (snapshotFailure != null) return "commit." + snapshotFailure;
+            if (!JToken.DeepEquals(snapshot["equipment"], after["source"]["equipment"]))
+                return "commit.snapshot.equipmentMatch";
+            if (!SnapshotMaterialsMatchCommit(snapshot["materials"] as JArray, materials))
+                return "commit.snapshot.materialsMatch";
+            if (!IsCommitResponse(msg, entry)) return "commit.inventorySnapshots";
+            return "commit.authority";
+        }
+
+        private static string DescribeSnapshotFailure(JObject snapshot, JObject expectedSource)
+        {
+            if (!IsExactObject(snapshot, SnapshotKeys)) return "snapshot.keys";
+            if (!IsExactSource(expectedSource, snapshot["source"] as JObject)) return "snapshot.source";
+            if (!TrySanitizeEquipmentProjection(snapshot["equipment"] as JObject,
+                    out JObject equipment)) return "snapshot.equipment";
+            if (!IsEnhanceProjection(snapshot["enhance"] as JObject, equipment)) return "snapshot.enhance";
+            if (!TrySanitizeTuningCandidates(snapshot, out _, out JArray modCandidates))
+                return DescribeCandidateArrayFailure(snapshot["tierCandidates"] as JArray, false)
+                    ?? DescribeCandidateArrayFailure(snapshot["modCandidates"] as JArray, true)
+                    ?? "snapshot.candidates";
+            if (!TrySanitizeSnapshotMaterials(snapshot["materials"] as JArray, out _))
+                return "snapshot.materials";
+            if (!TryReadInteger(snapshot["materialRevision"], 0, int.MaxValue, out _))
+                return "snapshot.materialRevision";
+            if (!TryReadInteger(snapshot["inventoryRevision"], 0, int.MaxValue, out _))
+                return "snapshot.inventoryRevision";
+            if (!SnapshotCandidatesMatchEquipment(modCandidates, equipment))
+                return "snapshot.installedMods";
+            string gender = ReadString(snapshot["gender"]);
+            if (gender != "男" && gender != "女") return "snapshot.gender";
+            return null;
+        }
+
+        private static string DescribeCandidateArrayFailure(JArray input, bool isMod)
+        {
+            string prefix = isMod ? "snapshot.modCandidates" : "snapshot.tierCandidates";
+            if (input == null || input.Count > 512) return prefix + ".shape";
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            for (int i = 0; i < input.Count; i++)
+            {
+                string path = prefix + "[" + i + "]";
+                JObject row = input[i] as JObject;
+                if (row == null) return path + ".shape";
+                HashSet<string> allowed = isMod ? ModCandidateKeys : TierCandidateKeys;
+                foreach (JProperty property in row.Properties())
+                    if (!allowed.Contains(property.Name)) return path + ".keys";
+                if (!IsOpaque(ReadString(row["candidateKey"]))) return path + ".candidateKey";
+                foreach (string field in new[] { "itemName", "displayName", "icon" })
+                    if (!IsIdentityTextToken(row[field], 256)) return path + "." + field;
+                if (!TryReadQuantity(row["owned"], 0, MaxQuantity, out _)) return path + ".owned";
+                if (row["available"]?.Type != JTokenType.Boolean) return path + ".available";
+                if (!IsTextToken(row["reason"], 0, 256)) return path + ".reason";
+                if (isMod)
+                {
+                    if (row["installed"]?.Type != JTokenType.Boolean) return path + ".installed";
+                    if (!IsModAvailabilityCode(row["availabilityCode"]))
+                        return path + ".availabilityCode";
+                    if (!IsOpaqueArray(row["replaceableFrom"] as JArray)) return path + ".replaceableFrom";
+                    foreach (string field in new[] { "grade", "scope", "role" })
+                        if (!IsTextToken(row[field], 1, 64)) return path + "." + field;
+                    foreach (string field in new[] { "gradeLabel", "gradeColor", "scopeLabel", "roleLabel", "symbol" })
+                        if (row[field] != null && !IsTextToken(row[field], 1, 128)) return path + "." + field;
+                }
+                else if (!IsTextToken(row["tierName"], 1, 64)) return path + ".tierName";
+                if (!seen.Add(ReadString(row["candidateKey"]))) return path + ".candidateKey.duplicate";
+            }
+            return null;
+        }
+
         private static bool IsValidResponse(JObject msg, PendingRequest entry)
         {
             if (msg == null
@@ -1789,11 +1901,9 @@ namespace CF7Launcher.Tasks
 
             if (isMod)
             {
-                int availabilityCode;
                 if (input["installed"] == null
                     || input["installed"].Type != JTokenType.Boolean
-                    || !TryReadInteger(input["availabilityCode"], -100, 100,
-                        out availabilityCode)
+                    || !IsModAvailabilityCode(input["availabilityCode"])
                     || !(input["replaceableFrom"] is JArray replaceableFrom)
                     || !IsOpaqueArray(replaceableFrom)
                     || !IsTextToken(input["grade"], 1, 64)
@@ -1819,6 +1929,20 @@ namespace CF7Launcher.Tasks
                 if (input[key] != null) result[key] = input[key].DeepClone();
             sanitized = result;
             return true;
+        }
+
+        private static bool IsModAvailabilityCode(JToken value)
+        {
+            return TryReadInteger(value, -1024, 1, out int code)
+                && ModAvailabilityCodes.Contains(code);
+        }
+
+        private static string DescribeModAvailabilityCodes(JObject response)
+        {
+            var codes = new SortedSet<int>();
+            foreach (JObject candidate in (JArray)response["snapshot"]["modCandidates"])
+                codes.Add(candidate.Value<int>("availabilityCode"));
+            return string.Join(",", codes);
         }
 
         private static bool IsOpaqueArray(JArray values)

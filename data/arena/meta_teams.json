@@ -163,7 +163,7 @@
           "isHostile": true,
           "minLevel": 1,
           "maxLevel": 40,
-          "weight": 298
+          "weight": 313
         },
         {
           "type": "兵种6",
@@ -172,7 +172,7 @@
           "isHostile": true,
           "minLevel": 1,
           "maxLevel": 40,
-          "weight": 264
+          "weight": 279
         },
         {
           "type": "兵种8",
@@ -181,7 +181,7 @@
           "isHostile": true,
           "minLevel": 2,
           "maxLevel": 40,
-          "weight": 258
+          "weight": 273
         },
         {
           "type": "兵种2",
@@ -190,7 +190,7 @@
           "isHostile": true,
           "minLevel": 2,
           "maxLevel": 40,
-          "weight": 199
+          "weight": 214
         },
         {
           "type": "兵种4",
@@ -199,16 +199,16 @@
           "isHostile": true,
           "minLevel": 1,
           "maxLevel": 40,
-          "weight": 192
+          "weight": 207
         },
         {
-          "type": "兵种7",
-          "name": "狂暴僵尸",
-          "spritename": "敌人-帽子瘦僵尸1",
+          "type": "兵种1",
+          "name": "僵尸",
+          "spritename": "敌人-金发女僵尸1",
           "isHostile": true,
           "minLevel": 2,
           "maxLevel": 40,
-          "weight": 157
+          "weight": 148
         },
         {
           "type": "兵种5",
@@ -220,31 +220,13 @@
           "weight": 137
         },
         {
-          "type": "兵种1",
-          "name": "僵尸",
-          "spritename": "敌人-金发女僵尸1",
+          "type": "兵种7",
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
           "isHostile": true,
           "minLevel": 2,
           "maxLevel": 40,
-          "weight": 133
-        },
-        {
-          "type": "兵种39",
-          "name": "狂躁僵尸",
-          "spritename": "敌人-士兵奔跑僵尸1",
-          "isHostile": true,
-          "minLevel": 18,
-          "maxLevel": 29,
-          "weight": 129
-        },
-        {
-          "type": "兵种9",
-          "name": "兽化僵尸",
-          "spritename": "敌人-兽化僵尸1",
-          "isHostile": true,
-          "minLevel": 20,
-          "maxLevel": 40,
-          "weight": 111
+          "weight": 127
         },
         {
           "type": "兵种401",
@@ -272,6 +254,15 @@
           "minLevel": 40,
           "maxLevel": 60,
           "weight": 103
+        },
+        {
+          "type": "兵种39",
+          "name": "狂躁僵尸",
+          "spritename": "敌人-士兵奔跑僵尸1",
+          "isHostile": true,
+          "minLevel": 18,
+          "maxLevel": 29,
+          "weight": 99
         },
         {
           "type": "兵种400",
@@ -308,6 +299,15 @@
           "minLevel": 40,
           "maxLevel": 54,
           "weight": 83
+        },
+        {
+          "type": "兵种9",
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 40,
+          "weight": 81
         },
         {
           "type": "兵种83",
@@ -1955,7 +1955,8 @@
             },
             "方向": "左",
             "狂暴": true,
-            "登场动画": "a1"
+            "登场动画": "a1",
+            "称号": "【狂暴】"
           }
         },
         {
@@ -1978,7 +1979,8 @@
               }
             },
             "方向": "左",
-            "狂暴": true
+            "狂暴": true,
+            "称号": "【狂暴】"
           }
         },
         {
@@ -2001,7 +2003,8 @@
               }
             },
             "方向": "左",
-            "狂暴": true
+            "狂暴": true,
+            "称号": "【狂暴】"
           }
         },
         {
@@ -2046,6 +2049,14 @@
           "maxLevel": 50,
           "weight": 1,
           "Parameters": {
+            "extra": {
+              "muti": {
+                "hp": 2,
+                "hp最大值": 2,
+                "基本防御力": 2,
+                "防御力": 2
+              }
+            },
             "魔法抗性": {
               "电子体": 0
             }
@@ -3884,7 +3895,8 @@
             },
             "方向": "左",
             "死亡动画": "a0",
-            "狂暴": true
+            "狂暴": true,
+            "称号": "【狂暴】"
           }
         },
         {
@@ -36902,7 +36914,7 @@
           "name": "僵尸",
           "spritename": "敌人-光头军人僵尸1",
           "level": 22,
-          "count": 105,
+          "count": 120,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -36913,7 +36925,7 @@
           "name": "僵尸",
           "spritename": "敌人-眼镜僵尸1",
           "level": 22,
-          "count": 105,
+          "count": 120,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -36924,7 +36936,7 @@
           "name": "僵尸",
           "spritename": "敌人-金发女僵尸1",
           "level": 23,
-          "count": 105,
+          "count": 120,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -36935,7 +36947,7 @@
           "name": "僵尸",
           "spritename": "敌人-小儿麻痹僵尸1",
           "level": 23,
-          "count": 105,
+          "count": 120,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -36946,7 +36958,7 @@
           "name": "僵尸",
           "spritename": "敌人-金发红衣服女僵尸1",
           "level": 22,
-          "count": 105,
+          "count": 120,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -36957,40 +36969,7 @@
           "name": "僵尸",
           "spritename": "敌人-黄色衣服男僵尸1",
           "level": 22,
-          "count": 105,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种7",
-          "id": 7,
-          "name": "狂暴僵尸",
-          "spritename": "敌人-帽子瘦僵尸1",
-          "level": 23,
-          "count": 30,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种39",
-          "id": 39,
-          "name": "狂躁僵尸",
-          "spritename": "敌人-士兵奔跑僵尸1",
-          "level": 23,
-          "count": 30,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种9",
-          "id": 9,
-          "name": "兽化僵尸",
-          "spritename": "敌人-兽化僵尸1",
-          "level": 24,
-          "count": 30,
+          "count": 120,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -37041,11 +37020,11 @@
         }
       ],
       "unitCount": 745,
-      "distinctTypes": 13,
-      "avgLevel": 22.5,
+      "distinctTypes": 10,
+      "avgLevel": 22.4,
       "levelMin": 22,
       "levelMax": 24,
-      "powerRating": 16770
+      "powerRating": 16680
     },
     {
       "id": "副本任务/新人救援.xml#4.0",
@@ -96749,7 +96728,8 @@
             },
             "方向": "左",
             "狂暴": true,
-            "登场动画": "a1"
+            "登场动画": "a1",
+            "称号": "【狂暴】"
           }
         },
         {
@@ -96867,7 +96847,8 @@
               }
             },
             "方向": "左",
-            "狂暴": true
+            "狂暴": true,
+            "称号": "【狂暴】"
           }
         },
         {
@@ -96963,7 +96944,8 @@
               }
             },
             "方向": "左",
-            "狂暴": true
+            "狂暴": true,
+            "称号": "【狂暴】"
           }
         },
         {
@@ -97027,7 +97009,8 @@
             },
             "方向": "左",
             "死亡动画": "a0",
-            "狂暴": true
+            "狂暴": true,
+            "称号": "【狂暴】"
           }
         },
         {
@@ -101644,7 +101627,17 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "extra": {
+              "muti": {
+                "hp": 2,
+                "hp最大值": 2,
+                "基本防御力": 2,
+                "防御力": 2
+              }
+            }
+          }
         }
       ],
       "unitCount": 1,
@@ -101671,7 +101664,17 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "extra": {
+              "muti": {
+                "hp": 2,
+                "hp最大值": 2,
+                "基本防御力": 2,
+                "防御力": 2
+              }
+            }
+          }
         }
       ],
       "unitCount": 1,
@@ -101764,6 +101767,14 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "muti": {
+                "hp": 2,
+                "hp最大值": 2,
+                "基本防御力": 2,
+                "防御力": 2
+              }
+            },
             "魔法抗性": {
               "电子体": 0
             }

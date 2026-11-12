@@ -178,6 +178,9 @@
             && value.hardMaxLevel === current.hardMaxLevel;
     }
 
+    // EquipmentUtil.modAvailabilityResults 是安装规则权威；负码表示不可安装，不是坏回包。
+    var MOD_AVAILABILITY_CODES = [1, 0, -1, -2, -4, -8, -16, -32, -64, -128, -256, -512, -1024];
+
     function candidate(value, isMod) {
         var required = isMod
             ? ['candidateKey', 'itemName', 'displayName', 'icon', 'owned',
@@ -197,7 +200,8 @@
                 || !text(value.reason, 256, true)) return false;
         if (!isMod) return identityText(value.tierName, 64);
         if (typeof value.installed !== 'boolean'
-                || !integer(value.availabilityCode, -100, 100)
+                || !integer(value.availabilityCode, -1024, 1)
+                || MOD_AVAILABILITY_CODES.indexOf(value.availabilityCode) < 0
                 || !tokenArray(value.replaceableFrom, 512)
                 || !identityText(value.grade, 64)
                 || !identityText(value.scope, 64)
