@@ -1,0 +1,22 @@
+﻿import org.flashNight.arki.bullet.BulletComponent.Chain.*;
+import org.flashNight.gesh.depth.*;
+import org.flashNight.neur.ScheduleTimer.*;
+#include "逻辑/战斗系统/战斗系统_fs_联弹管理.as"
+var flightRunId:String="__FOCUSED_RUN_ID__";
+_root.weaponProjectileFlightComplete = function():Void {
+    if (_root._url.indexOf("/light-author-proof/")>=0) {
+        var suite:Object=org.flashNight.arki.unit.Action.Shoot.WeaponProjectileFlightTest;
+        var receipt:SharedObject=SharedObject.getLocal("cf7-light-flight-"+flightRunId);
+        receipt.data.report="CF7-LIGHT-BEGIN\n"+System.capabilities.version+"\nWeaponProjectileFlightTest Tests Passed: "
+            +suite["passed"]+"\nWeaponProjectileFlightTest Tests Failed: "+suite["failed"]+"\nCF7-LIGHT-END";
+        receipt.flush();
+    }
+    trace("FocusedTestRunId weapon-projectile-flight Complete: "+flightRunId);
+};
+trace("FocusedTestRunId weapon-projectile-flight Start: __FOCUSED_RUN_ID__");
+if (_root._url.indexOf("/light-author-proof/")>=0) {
+    org.flashNight.arki.unit.Action.Shoot.WeaponProjectileFlightTest.runAllTests();
+} else {
+    trace("WeaponProjectileFlightTest standalone handoff");
+    _root.weaponProjectileFlightComplete();
+}

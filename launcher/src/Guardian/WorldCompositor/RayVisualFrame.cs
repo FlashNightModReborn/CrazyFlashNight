@@ -44,7 +44,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     // It cannot patch a previous packet, repeat, or skip over an event.
                     if(pendingLight==null || f.Length!=7
                         || !Int(f[1],1,RayVisualCatalog.ConfigLimit,out int lightId) || lightId!=pendingLight.Id
-                        || !RayLightOverrides.IsKnownProfile(f[2])
+                        || !RayLightOverrides.IsProfileName(f[2])
                         || !Float(f[3],0,2,out float energy) || !Float(f[4],.25f,4,out float width)
                         || !SignedInt(f[5],-1,0xFFFFFF,out int color)
                         || !SignedInt(f[6],-1,30,out int fadeTicks)) return false;

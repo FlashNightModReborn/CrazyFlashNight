@@ -8,9 +8,9 @@ import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
-FIELDS = set('Key Preset Shape RenderMode BudgetPool Priority X Y OffsetX OffsetY Angle Radius Length HalfWidth Energy BaseEnergy Color Color2 Animation Amplitude Rate Phase SweepAngle AttachTo Anchor FollowRotation FollowScale FollowVisibility FrameCurve StatePath Enabled'.split())
-BOOLS = set('FollowRotation FollowScale FollowVisibility Enabled'.split())
-RANGES = {'X':(-1000000,1000000),'Y':(-1000000,1000000),'OffsetX':(-1000000,1000000),'OffsetY':(-1000000,1000000),'Angle':(-36000,36000),'Radius':(1,1024),'Length':(1,1024),'HalfWidth':(.5,512),'Energy':(0,2),'BaseEnergy':(0,2),'Priority':(0,100),'Amplitude':(0,.8),'Rate':(0,30),'Phase':(-36000,36000),'SweepAngle':(0,180)}
+FIELDS = set('Key Preset Shape RenderMode BudgetPool Priority X Y OffsetX OffsetY Angle Radius Length HalfWidth Energy BaseEnergy Color Color2 Animation Amplitude Rate Phase SweepAngle AttachTo Anchor FollowRotation FollowScale FollowVisibility FrameCurve StatePath Enabled BasePowerTier BaseBeacon'.split())
+BOOLS = set('FollowRotation FollowScale FollowVisibility Enabled BaseBeacon'.split())
+RANGES = {'BasePowerTier':(0,3),'X':(-1000000,1000000),'Y':(-1000000,1000000),'OffsetX':(-1000000,1000000),'OffsetY':(-1000000,1000000),'Angle':(-36000,36000),'Radius':(1,1024),'Length':(1,1024),'HalfWidth':(.5,512),'Energy':(0,2),'BaseEnergy':(0,2),'Priority':(0,100),'Amplitude':(0,.8),'Rate':(0,30),'Phase':(-36000,36000),'SweepAngle':(0,180)}
 TEXTS = {'Key':128,'Preset':64,'Shape':16,'RenderMode':16,'BudgetPool':16,'Animation':16,'AttachTo':128,'Anchor':128,'StatePath':128,'FrameCurve':1024}
 
 def require(ok, message):
@@ -39,6 +39,9 @@ def validate_record(raw, presets):
             require(isinstance(value,bool), 'invalid boolean '+key)
         elif key in TEXTS:
             require(isinstance(value,str) and len(value)<=TEXTS[key], 'invalid text '+key)
+    if 'BasePowerTier' in data:
+        require(data['BasePowerTier']==int(data['BasePowerTier']), 'fractional BasePowerTier')
+    require('BaseBeacon' not in data or 'BasePowerTier' in data, 'BaseBeacon needs BasePowerTier')
     require(data.get('Priority',45)==int(data.get('Priority',45)), 'fractional priority')
     require(data.get('Shape','point') in ('point','cone','beam'), 'invalid Shape')
     mode=data.get('RenderMode','cached');animation=data.get('Animation','constant')
@@ -103,23 +106,30 @@ def validate_tree(root=ROOT):
         path=root/'data/environment'/name
         for env in ET.parse(path).getroot().findall('Environment'):
             defs=definitions(env,presets);refs=anchors(env)
+            project=env.findtext('BasePowerProject')
+            require(project in (None, '基地供电与照明'), 'unknown BasePowerProject')
+            require(project or not any('BasePowerTier' in d for d in defs.values()), 'base lamps need a declared BasePowerProject')
             for d in defs.values():require(not d.get('AttachTo') or d['AttachTo'] in refs,'unknown environment anchor '+d.get('AttachTo',''))
-            environments[env.findtext('BackgroundURL')]=(defs,refs)
+            environments[env.findtext('BackgroundURL')]=(defs,refs,project)
             if defs:rows.append({'path':path.relative_to(root).as_posix(),'scope':env.findtext('BackgroundURL'),'lights':len(defs)})
     for path in sorted((root/'data/stages').rglob('*.xml')):
         stage=ET.parse(path).getroot()
         for index,sub in enumerate(stage.findall('SubStage')):
             bg=Path(sub.findtext('BasicInformation/Background','')).name
-            base,refs=environments.get(bg,({},set()))
+            base,refs,project=environments.get(bg,({},set(),None))
             require(not(refs & anchors(sub)),'stage/environment anchor collision')
             refs=refs|anchors(sub)
             local=definitions(sub,presets)
             override=sub.find('BasicInformation/Environment')
             if override is not None:
+                if override.find('BasePowerProject') is not None:
+                    project=override.findtext('BasePowerProject')
+                    require(project=='基地供电与照明', 'unknown stage BasePowerProject')
                 override_defs=definitions(override,presets)
                 if override_defs:base=override_defs
             merged={k:dict(v) for k,v in base.items()}
             for key,value in local.items():merged[key]={**merged.get(key,{}),**value}
+            require(project or not any('BasePowerTier' in d for d in merged.values()), 'stage base lamps need a declared BasePowerProject')
             require(len(merged)<=128,'scene light capacity exceeded')
             for d in merged.values():
                 validate_record(d,presets);require(not d.get('AttachTo') or d['AttachTo'] in refs,'unknown stage anchor '+d.get('AttachTo',''))

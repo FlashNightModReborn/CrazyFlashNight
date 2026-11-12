@@ -233,6 +233,7 @@ class org.flashNight.arki.weather.EnvironmentConfig {
 
         // 背景元素
         info.背景元素 = rawConfig.Instances ? parseBackgroundElements(ObjectUtil.toArray(rawConfig.Instances.Instance)) : defaults.背景元素;
+        info.基地供电项目 = rawConfig.BasePowerProject;
         info.场景灯 = rawConfig.Lights ? ObjectUtil.toArray(rawConfig.Lights.Light) : defaults.场景灯;
 
         // 无限过图参数 - 门

@@ -53,6 +53,7 @@ internal static partial class Program
     {
         if (args.Length==3 && args[0]=="--host-costs") return RunHostCosts(Path.GetFullPath(args[1]),Path.GetFullPath(args[2]));
         bool caches=args.Length==4 && args[3]=="--caches";
+        bool authorLights=args.Length==5 && args[3]=="--author-lights";
         bool sceneLights=args.Length==4 && args[3]=="--scene-lights";
         bool extendedFx=args.Length==4 && args[3]=="--extended-fx";
         bool startup=args.Length==4 && args[3]=="--startup";
@@ -60,7 +61,7 @@ internal static partial class Program
         bool reference=args.Length==5 && args[3]=="--reference";
         bool channels=args.Length==5 && args[3]=="--channels";
         bool chainScenes=args.Length==5 && args[3]=="--chain-scenes";
-        if(args.Length!=3 && !startup && !rays && !field && !reference && !channels && !chainScenes && !caches && !sceneLights && !extendedFx) { Console.Error.WriteLine("Usage: CombatFxProbe <project> <native-dll> <output-dir> [--rays <CS6-trace> | --field <CS6-trace> | --reference <CS6-trace> | --channels <CS6-trace> | --startup | --caches | --extended-fx], or --host-costs <project> <output-dir>");return 2; }
+        if(args.Length!=3 && !startup && !rays && !field && !reference && !channels && !chainScenes && !caches && !sceneLights && !authorLights && !extendedFx) { Console.Error.WriteLine("Usage: CombatFxProbe <project> <native-dll> <output-dir> [--rays <CS6-trace> | --field <CS6-trace> | --reference <CS6-trace> | --channels <CS6-trace> | --startup | --caches | --scene-lights | --author-lights <Player20 receipt directory> | --extended-fx], or --host-costs <project> <output-dir>");return 2; }
         string root=Path.GetFullPath(args[0]),native=Path.GetFullPath(args[1]),output=Path.GetFullPath(args[2]);
         Directory.CreateDirectory(output);
         Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
@@ -70,7 +71,7 @@ internal static partial class Program
             Console.Error.WriteLine("Field source.png is smaller than crop (160,205,1024,576)");return 2;
         }
         using var source=new ProbeWindow("Combat FX controlled source",20,20);
-        source.Pattern=true;source.Materials=rays||channels;source.Black=reference||extendedFx;
+        source.Pattern=true;source.Materials=rays||channels||authorLights;source.Black=reference||extendedFx;
         if(field) {source.FieldImage=fieldImage;source.FieldCrop=new Rectangle(160,205,1024,576);}
         using var target=new ProbeWindow("Combat FX composed output",80,80);
         source.Show();target.Show();
@@ -84,7 +85,14 @@ internal static partial class Program
         {
             try {
                 Action<bool> black=on=>source.Invoke(new Action(()=> {source.Black=on;source.Refresh();}));
-                if(extendedFx) {
+                if(authorLights) {
+#if PERF_BASELINE
+                    throw new InvalidOperationException("Authoring proof needs the paired light consumer");
+#else
+                    await RunAuthorLights(root,native,output,sourceHwnd,targetHwnd,Path.GetFullPath(args[4]));
+#endif
+                }
+                else if(extendedFx) {
 #if PERF_BASELINE
                     throw new InvalidOperationException("Extended FX requires the paired managed blood/atlas consumers");
 #else
@@ -398,7 +406,7 @@ internal static partial class Program
 
         var catalog=CombatFxCatalog.Load(root);session.CombatFxAtlas(catalog);
         await WaitFor(()=>session.CombatFxReady,session,"authored atlas upload");
-        var gallery=new CombatFxDrawFrame(32);int count=0;
+        var gallery=new CombatFxDrawFrame(catalog.Styles.Count(style=>style.IsCasing || style.IsMuzzle));int count=0;
         foreach(var style in catalog.Styles.Where(s=>s.IsCasing))
         {
             var f=style.Frames[0];int index=count++;
@@ -414,7 +422,7 @@ internal static partial class Program
         }
         gallery.Count=count;session.CombatFxFrame(gallery,0,0,1);
         Grab(session,Path.Combine(output,"authored-gallery.png"));
-        var hits=new CombatFxDrawFrame(16);
+        var hits=new CombatFxDrawFrame(catalog.Styles.Count(style=>style.IsImpact));
         foreach(var style in catalog.Styles.Where(s=>s.IsImpact))
         {
             int index=hits.Count++;int[] animation=style.Variants[0];var f=style.Frames[animation[Math.Min(3,animation.Length-1)]];

@@ -1,0 +1,9 @@
+﻿trace("FocusedTestRunId projectile-light-benchmark Start: __FOCUSED_RUN_ID__");
+org.flashNight.gesh.xml.LoadXml.LightProfilesLoader.start();
+var profilePoll:MovieClip = this.createEmptyMovieClip("__externalLightProfiles", this.getNextHighestDepth());
+profilePoll.onEnterFrame = function():Void {
+    if (!org.flashNight.gesh.xml.LoadXml.LightProfilesLoader.settled()) return;
+    this.removeMovieClip();
+    org.flashNight.arki.render.ProjectileLightBenchmark.runAllTests();
+    trace("FocusedTestRunId projectile-light-benchmark Complete: __FOCUSED_RUN_ID__");
+};

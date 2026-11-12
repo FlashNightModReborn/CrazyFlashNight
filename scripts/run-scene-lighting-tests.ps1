@@ -8,7 +8,7 @@ $run=@{
  SuiteRelativePaths=@('scripts/类定义/org/flashNight/arki/render/SceneLightBridgeTest.as','scripts/类定义/org/flashNight/arki/render/SceneLightAssetTest.as')
  SuiteFqns=@('org.flashNight.arki.render.SceneLightBridgeTest','org.flashNight.arki.render.SceneLightAssetTest')
  AdditionalAsRelativePaths=@('scripts/类定义/org/flashNight/arki/render/SceneLightBridge.as')
- ExpectedTracePatterns=@('(?m)^SceneLightBridgeTest Tests Passed: 36\r?$','(?m)^SceneLightBridgeTest Tests Failed: 0\r?$','(?m)^SceneLightAssetTest Tests Passed: 7\r?$','(?m)^SceneLightAssetTest Tests Failed: 0\r?$')
+ ExpectedTracePatterns=@('(?m)^SceneLightBridgeTest Tests Passed: 39\r?$','(?m)^SceneLightBridgeTest Tests Failed: 0\r?$','(?m)^SceneLightAssetTest Tests Passed: 7\r?$','(?m)^SceneLightAssetTest Tests Failed: 0\r?$')
  SuccessSummary='Scene light binding tests passed'
  TimeoutSeconds=$TimeoutSeconds
 }

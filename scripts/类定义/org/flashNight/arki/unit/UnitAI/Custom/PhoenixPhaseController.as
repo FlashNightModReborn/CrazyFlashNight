@@ -106,6 +106,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
     private static function begin(u:MovieClip):Void {
         var c:Object=u.__phoenixPhase;
         c.pending=false;c.age=0;c.fired=false;
+        c.lightCast={};
         if(u.flyID!=null) {
             EnhancedCooldownWheel.I().removeTask(u.flyID);u.flyID=null;
         }
@@ -187,7 +188,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
             }
         }
         if(u) {
-            EquipmentLightBridge.emitPulseAt("__phoenix_revive",u._x,ly,u,rad,nrg,4);
+            EquipmentLightBridge.emitPulseAt("__phoenix_revive",u._x,ly,u,rad/260,nrg/1.8,c.lightCast,0);
         }
     }
 
@@ -265,6 +266,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
 
     private static function complete(u:MovieClip):Void {
         var c:Object=u.__phoenixPhase;
+        c.lightCast.cancelled=true;
         if(c.phase==0) {
             secondPhase(u);c.hp=u.hp满血值;
             _root.发布消息("燎原烈火……");
@@ -276,7 +278,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
                 if(this._currentframe>=this._totalframes-1)this.gotoAndPlay(1);
                 else this.play();
                 var host:MovieClip=this._parent;
-                if(host.hp>0)EquipmentLightBridge.emitPulseAt("__phoenix_ember",host._x,host._y,host,135,0.85,4);
+                if(host.hp>0)EquipmentLightBridge.emitPulseAt("__phoenix_ember",host._x,host._y,host,1,1,host.__phoenixPhase,0);
             };
             _root.发布消息("涅槃重生……");
         }
@@ -290,6 +292,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
     public static function dispose(u:MovieClip):Void {
         var c:Object=u.__phoenixPhase;
         if(!c)return;
+        c.cancelled=true;c.lightCast.cancelled=true;
         c.visual.removeMovieClip();c.impactArea.removeMovieClip();c.aura.removeMovieClip();
         c.visual=null;c.impactArea=null;c.aura=null;
         delete c.thinker.onEnterFrame;

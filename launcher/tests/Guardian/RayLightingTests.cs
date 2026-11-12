@@ -78,6 +78,36 @@ namespace CF7Launcher.Tests.Guardian
                 Path.Combine(ProjectRoot(), RayLightingCatalog.RelativePath)))), Catalog.Value.Sha256);
         }
 
+        [Fact]
+        public void OneInvalidProfileKeepsTheBodyAndOtherAuthoredLights()
+        {
+            var data=JsonNode.Parse(File.ReadAllText(Path.Combine(ProjectRoot(), RayLightingCatalog.RelativePath)));
+            data["profiles"]["beam"]["energy"]=20;
+            var warnings=new System.Collections.Generic.List<string>();
+            var degraded=RayLightingCatalog.Parse(Encoding.UTF8.GetBytes(data.ToJsonString()),warnings.Add);
+            Assert.Null(degraded.ForStyle(1));
+            Assert.NotNull(degraded.ForStyle(2));
+            Assert.Contains(warnings, line=>line.Contains("name=beam"));
+            var engine=Engine();
+            Assert.True(engine.Apply(Frame(1,0,Config()+";"+Spawn()),1));
+            var body=Body(engine);
+            engine.ConfigureLighting(degraded);
+            Assert.Equal(0,engine.BuildDraw().LightCount); Assert.Equal(body,Body(engine));
+            engine.ConfigureLighting(RayLightingCatalog.Disabled()); Assert.Equal(body,Body(engine));
+        }
+
+        [Fact]
+        public void AuthoredProfileNamesWorkForDefaultsAndOverrides()
+        {
+            var json = JsonNode.Parse(File.ReadAllBytes(Path.Combine(ProjectRoot(), RayLightingCatalog.RelativePath)));
+            json["profiles"]["cold-beam-2"] = json["profiles"]["beam"].DeepClone();
+            json["styles"]["prism"] = "cold-beam-2";
+            var catalog = RayLightingCatalog.Parse(Encoding.UTF8.GetBytes(json.ToJsonString()));
+            Assert.Equal("cold-beam-2", catalog.ForStyle(1).Name);
+            Assert.Equal("cold-beam-2", catalog.Resolve(0, new RayLightOverrides("cold-beam-2", 1, 1, -1, -1)).Name);
+            Assert.Null(catalog.Resolve(0, new RayLightOverrides("unmapped", 1, 1, -1, -1)));
+        }
+
         [Theory]
         [InlineData("missing-style")]
         [InlineData("unknown-style")]

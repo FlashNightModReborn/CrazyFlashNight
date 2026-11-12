@@ -127,7 +127,8 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengVisual {
         clip.__hfRotation=rotation*clip.__hfFacing;
         clip._alpha=tier==2?100:85;
         clip.gotoAndStop(1);clip._visible=true;
-        EquipmentLightBridge.emitPulseAt(ring?"火凤套装_原版回旋":"火凤套装_原版火攻",fxPoint.x,fxPoint.y,unit,0,tier==2?(ring?1.65:1.4):(ring?1.4:1.2),0);
+        EquipmentLightBridge.emitPulseAt(ring?"火凤套装_原版回旋":"火凤套装_原版火攻",fxPoint.x,fxPoint.y,unit,1,
+            (tier==2?(ring?1.65:1.4):(ring?1.4:1.2))/(ring?1.6:1.35),flameToken,slot);
     }
     private function updateFlames(action:Object,tier:Number):Void {
         // Retire attack bursts immediately on a weapon-mode switch. The
@@ -197,14 +198,14 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengVisual {
         ember._alpha=tier==2?60:35;
         ember._xscale=ember._yscale=tier==2?100:80;
         ember.gotoAndStop(age%24+1);ember._visible=true;
-        EquipmentLightBridge.emitPulseAt("__huofeng_ember",unit._x,unit._y,unit,tier==2?140:115,tier==2?0.9:0.65,4);
+        EquipmentLightBridge.emitPulseAt("__huofeng_ember",unit._x,unit._y,unit,(tier==2?140:115)/130,(tier==2?0.9:0.65)/0.8,token,0);
         updateFlames(action,tier);
     }
     public function heal(tier:Number):Void {
         EffectSystem.Effect("火凤套装_回血提示",unit._x,unit._y,tier==2?90:65,undefined,true);
     }
     public function dispose():Void {
-        if (disposed) return;disposed=true;
+        if (disposed) return;disposed=true;token.cancelled=true;
         for (var i:Number=0;i<events.length;i++) unit.dispatcher.unsubscribe(events[i].name,events[i].callback,this);
         events.length=0;
         if (layer.__huofengVisualToken===token) layer.removeMovieClip();

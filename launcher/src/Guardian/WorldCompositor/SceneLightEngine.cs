@@ -9,6 +9,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
     internal sealed class SceneLightEngine
     {
         private readonly SceneLightCatalog _catalog;
+        private readonly Action<string> _warn;
         private SceneLightDefinition[] _definitions=Array.Empty<SceneLightDefinition>();
         private SceneLightPose[] _poses=Array.Empty<SceneLightPose>();
         private SceneLightState _pendingState;
@@ -25,16 +26,24 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal WorldLightCandidate[] Realtime=>_realtime;
         internal float MaximumResponse=>_catalog.MaximumResponse;
         internal long Scene=>_scene;
-        internal SceneLightEngine(SceneLightCatalog catalog)=>_catalog=catalog;
+        internal SceneLightEngine(SceneLightCatalog catalog, Action<string> warn = null)
+        { _catalog=catalog; _warn=warn; }
         internal void Configure(long scene,SceneLightSnapshot snapshot)
         {
             if(scene<_scene || (scene==_scene && snapshot.Revision<=_revision))return;
             var definitions=new SceneLightDefinition[snapshot.Definitions.Length];
-            for(int i=0;i<definitions.Length;i++)definitions[i]=_catalog.Resolve(snapshot.Definitions[i],i+1);
+            for(int i=0;i<definitions.Length;i++) {
+                var raw=snapshot.Definitions[i];
+                if(raw == null) continue;
+                try { definitions[i]=_catalog.Resolve(raw,i+1); }
+                catch(InvalidDataException error) {
+                    _warn?.Invoke("event=scene_light_ignored scope="+snapshot.Key+" key="+raw["Key"]+" reason="+error.Message);
+                }
+            }
             _scene=scene;_revision=snapshot.Revision;_sequence=0;_definitions=definitions;
             _poses=(SceneLightPose[])snapshot.Poses.Clone();
-            _animated=false;foreach(var d in definitions)if(d.Animation!="constant" || d.Color!=d.Color2){_animated=true;break;}
-            if(_pendingState!=null && _pendingState.Scene==scene && _pendingState.Revision==_revision){var p=_pendingState;_pendingState=null;if(!Adopt(p))throw new InvalidDataException("Invalid pending scene pose");}
+            _animated=false;foreach(var d in definitions)if(d != null && (d.Animation!="constant" || d.Color!=d.Color2)){_animated=true;break;}
+            if(_pendingState!=null && _pendingState.Scene==scene && _pendingState.Revision==_revision){var p=_pendingState;_pendingState=null;Adopt(p);}
             else if(_pendingState?.Scene<scene || (_pendingState?.Scene==scene && _pendingState.Revision<_revision))_pendingState=null;
             Rebuild();
         }
@@ -51,8 +60,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _pendingState=new(state.Scene,state.Revision,state.Sequence,merged);return true;
             }
             if(state.Sequence<=_sequence)return false;
-            foreach(var p in state.Poses)if(p.Id>_poses.Length)return false;
-            foreach(var p in state.Poses)_poses[p.Id-1]=p;
+            foreach(var p in state.Poses) {
+                if(p.Id>=1 && p.Id<=_poses.Length) _poses[p.Id-1]=p;
+            }
             _sequence=state.Sequence;Rebuild();return true;
         }
         internal void Tick(int tick,bool paused)
@@ -62,7 +72,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             int cached=0,realtime=0;bool changed=false;
             for(int i=0;i<_definitions.Length;i++) {
-                var d=_definitions[i];var p=_poses[i];if(!d.Enabled || p.Weight<=0 || d.Mode=="visualOnly")continue;
+                var d=_definitions[i];var p=_poses[i];if(d==null || !d.Enabled || p.Weight<=0 || d.Mode=="visualOnly")continue;
                 double seconds=_tick/30.0,phase=seconds*d.Rate*2*Math.PI+d.Phase*Math.PI/180;
                 float pulse=d.Animation switch {"pulse"=>(float)Math.Sin(phase),"flicker"=>(float)(.65*Math.Sin(phase+Hash(d.Key))+.35*Math.Sin(phase*2.173+Hash(d.Key)*.37)),_=>0};
                 float energy=Math.Clamp(d.Energy*(1+d.Amplitude*pulse)*p.Weight,0,2),baseEnergy=d.Mode=="cached"?energy:d.Mode=="hybrid"?d.BaseEnergy*p.Weight:0;

@@ -1,5 +1,21 @@
 # 战斗表现派生资源
 
+## 弹体、特效与施放光
+
+`light_profiles.xml` 是手写的光照配置。已有弹体登记点按实际资源名匹配 `projectile`，特效按效果名匹配 `effect`。两者取相同预设可写 `asset`。例如已有 `普通火箭弹` 预设，要让使用「火箭弹」资源的 RPG 与 M3 在飞行中跟随发光，在 `Bindings` 内增加一行，重启游戏会话即可验看。
+
+RPG 与 M3 使用的精确弹体名是「火箭弹」，其 projectile 绑定复用「普通火箭弹」的橙色、155 半径和 1.2 能量。只想撤回这一项时可移除该绑定后重启。
+
+```xml
+<Binding kind="projectile" key="火箭弹" profile="普通火箭弹" />
+```
+
+`Profile` 的 `radius` 是世界像素，`energy` 是光照强度，`color` 写成 `#RRGGBB`。`forwardOffset` 沿行进方向，`offsetY` 沿世界 Y 轴。已有 `stageFrame` 的素材按影片剪辑本身的帧切阶段，配套填写 `stageRadius`、`stageEnergy`、`stageOffsetY`。普通弹体随真实实例清除并有 180 个游戏 tick 的安全寿命。爆炸依据素材帧结束和淡出。`pulse` 的 `totalFrames` 表示一次业务触发后的续租时间，暂停冻结。
+
+Lady 冰喷等透明判定保留原弹种，由施放者传 `lightBinding`、`lightCastId`、`lightSourceSlot`、`lightFacing`。`area` 的主副点可通过 `nearFraction`、`farFraction` 镜像调整，`minSpan` 决定何时分成两灯。同一角色、施放、绑定与槽位可续租。实际登记上限为 48，最终提交上限为 16。火凤业务曲线按 XML 的半径和强度作倍率运算。新增触发时机在相应动作或效果的实际发生处接线。
+
+`scripts/run-dynamic-light-profiles-tests.ps1` 验证 Flash 实际发射、素材阶段、脉冲与坏输入。`tools/combat-fx-assets/verify_light_authoring.py` 用安装的 Flash Player 20 重放同一个测试 SWF，并核对仅变更 XML 后的对照。接线改变需要重新发布 asLoader 或对应美术 SWF。
+
 `bullet_styles.v1.json` 与 `bullets-atlas.png` 由 `tools/combat-bullet-visuals/build.py` 从
 `flashswf/arts/原版素材库-子弹` 的 XFL 真源和已发布 SWF 确定性派生。不要手改目录或图片。
 
@@ -101,7 +117,7 @@ AS2 每帧最多贴 4 项、队列 64、每图 4096、每 64×64 格 32；源位
 
 静态身体来源在同一次遍历中完成校验和收集；角色公共检查与镜头参数每包共享，单一来源槽位不再重复进入归属调用链。组成员资格变化使合并参数失效，径向记录缓存固定字段，位置或刀光合并结果变化时更新。缓存不跨越身份或换装检查：同一 tick 内替换物品、同长度原位修改插件、隐藏和死亡仍即时生效；本优化不降低采样频率或实际灯预算。
 
-装备径向光在 AS2 端以普通枪火强度 1.5 标定同角色身体/兵器组合峰值，包含刀光脉冲；异色分灯按当前点光 `(1-r²)²` 衰减的上界约束重叠，仍用原有 kind=0 记录。径向输出色向白色混合 20% 以提升材质辨识，手电/激光和枪火参数保持。该上限不限制其他角色或枪火的独立贡献，场景总响应仍由 `maximumResponse` 控制；这次调整不新增 shader pass 或光源记录。
+装备径向光采用 Host 从 `local_lights.v1.json` 普通「枪火」发送的强度，标定同角色身体/兵器组合峰值，包含刀光脉冲；异色分灯按当前点光 `(1-r²)²` 衰减的上界约束重叠，仍用原有 kind=0 记录。径向输出色向白色混合 20% 以提升材质辨识，手电/激光和枪火参数保持。该上限不限制其他角色或枪火的独立贡献，场景总响应仍由 `maximumResponse` 控制；这次调整不新增 shader pass 或光源记录。
 
 CPU/GPU 灯记录为 16 个 float：`x,y,length,energy,r,g,b,kind,dx,dy,halfWidth,0,nearX,nearY,nearRadius,nearEnergy`（点光 `kind=0`）。最后四项仅手电可非零，坐标范围 ±1e6、半径 0–320、能量 0–2；半径与能量须同为正或同为 0，无近身光时末四项全 0。Host 兼容旧 13 字段 wire，其近身光为零。
 

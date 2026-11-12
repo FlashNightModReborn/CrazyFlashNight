@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightProfiles version="1">
+    <Profiles>
+        <!-- 半径与偏移使用世界坐标。普通弹体跟随素材，爆炸与阶段特效使用素材当前帧。 -->
+        <Profile id="爆炸" radius="260" energy="1.75" color="#FFA24A" forwardOffset="0" offsetY="-45" totalFrames="17" isExplosion="true" />
+        <Profile id="普通爆炸" radius="260" energy="1.75" color="#FFA24A" forwardOffset="0" offsetY="-45" totalFrames="18" isExplosion="true" />
+        <Profile id="火球爆炸" radius="250" energy="1.7" color="#FF8C38" forwardOffset="0" offsetY="-40" totalFrames="17" isExplosion="true" />
+        <Profile id="等离子爆炸" radius="260" energy="1.8" color="#70E8FF" forwardOffset="0" offsetY="-45" totalFrames="17" isExplosion="true" />
+        <Profile id="集束连环爆炸" radius="270" energy="1.8" color="#FFA048" forwardOffset="0" offsetY="-45" totalFrames="18" isExplosion="true" />
+        <Profile id="联弹爆炸" radius="230" energy="1.55" color="#FFA24A" forwardOffset="0" offsetY="-35" totalFrames="17" isExplosion="true" />
+        <Profile id="定向爆破" radius="250" energy="1.7" color="#FF9E44" forwardOffset="0" offsetY="-40" totalFrames="17" isExplosion="true" />
+        <Profile id="铁血弹爆炸" radius="220" energy="1.5" color="#FF8836" forwardOffset="0" offsetY="-30" totalFrames="15" isExplosion="true" />
+        <Profile id="空中爆炸1" radius="230" energy="1.55" color="#FFA24A" forwardOffset="0" offsetY="-20" totalFrames="15" isExplosion="true" />
+        <Profile id="火焰爆发" radius="240" energy="1.65" color="#FF8C36" forwardOffset="150" offsetY="0" totalFrames="17" isExplosion="true" />
+        <Profile id="小火焰爆发" radius="195" energy="1.4" color="#FF8C36" forwardOffset="115" offsetY="0" totalFrames="17" isExplosion="true" />
+        <Profile id="冰流爆发" radius="230" energy="1.5" color="#70DCFF" forwardOffset="145" offsetY="0" totalFrames="17" isExplosion="true" />
+        <Profile id="紫色小爆炸" radius="245" energy="1.7" color="#D88CFF" forwardOffset="0" offsetY="-40" totalFrames="14" isExplosion="true" />
+        <Profile id="高压爆炸" radius="255" energy="1.75" color="#66D4FF" forwardOffset="0" offsetY="-50" totalFrames="14" isExplosion="true" />
+        <Profile id="支援飞弹爆炸" radius="285" energy="1.85" color="#FFA048" forwardOffset="0" offsetY="-95" totalFrames="10" isExplosion="true" />
+        <Profile id="g1炮弹击中" radius="195" energy="1.45" color="#FFD58A" forwardOffset="0" offsetY="-20" totalFrames="6" isExplosion="true" />
+        <Profile id="小火焰爆炸" radius="215" energy="1.55" color="#FFA24A" forwardOffset="0" offsetY="-25" totalFrames="13" isExplosion="true" />
+        <Profile id="高爆爆炸" radius="210" energy="1.5" color="#FFA24A" forwardOffset="0" offsetY="-20" totalFrames="8" isExplosion="true" />
+        <Profile id="加强电球" radius="145" energy="1.15" color="#78D8FF" forwardOffset="0" offsetY="0" totalFrames="53" isExplosion="false" stageFrame="7" stageRadius="245" stageEnergy="1.65" stageOffsetY="-35" />
+        <Profile id="量子爆弹" radius="130" energy="0.95" color="#8CE8FF" forwardOffset="0" offsetY="-60" totalFrames="52" isExplosion="false" stageFrame="33" stageRadius="305" stageEnergy="1.85" stageOffsetY="-120" />
+        <Profile id="火球" radius="175" energy="1.35" color="#FF8A33" forwardOffset="0" offsetY="0" totalFrames="42" isExplosion="false" />
+        <Profile id="火焰" radius="155" energy="1.15" color="#FF842E" forwardOffset="25" offsetY="0" totalFrames="34" isExplosion="false" />
+        <Profile id="普通火箭弹" radius="155" energy="1.2" color="#FFA44C" forwardOffset="-20" offsetY="0" totalFrames="38" isExplosion="false" />
+        <Profile id="高爆火箭弹" radius="165" energy="1.25" color="#FF9840" forwardOffset="-20" offsetY="0" totalFrames="38" isExplosion="false" />
+        <Profile id="激光火箭弹" radius="165" energy="1.3" color="#FF7A48" forwardOffset="-15" offsetY="0" totalFrames="35" isExplosion="false" />
+        <Profile id="榴弹" radius="135" energy="1" color="#FFA854" forwardOffset="-10" offsetY="0" totalFrames="34" isExplosion="false" />
+        <Profile id="高爆榴弹" radius="145" energy="1.1" color="#FF9C44" forwardOffset="-10" offsetY="0" totalFrames="34" isExplosion="false" />
+        <Profile id="穿甲榴弹" radius="145" energy="1.1" color="#FFB058" forwardOffset="-10" offsetY="0" totalFrames="34" isExplosion="false" />
+        <Profile id="集束榴弹" radius="145" energy="1.1" color="#FFA44C" forwardOffset="0" offsetY="0" totalFrames="34" isExplosion="false" />
+        <Profile id="战术集束榴弹" radius="150" energy="1.15" color="#FFA44C" forwardOffset="0" offsetY="0" totalFrames="34" isExplosion="false" />
+        <Profile id="高爆子弹" radius="135" energy="1.05" color="#FFB058" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="天基炮弹" radius="175" energy="1.35" color="#FFB860" forwardOffset="0" offsetY="0" totalFrames="40" isExplosion="false" />
+        <Profile id="加农炮弹" radius="165" energy="1.3" color="#D88CFF" forwardOffset="0" offsetY="-10" totalFrames="35" isExplosion="false" />
+        <Profile id="fm直射刺弹" radius="155" energy="1.2" color="#FFA44C" forwardOffset="-15" offsetY="-10" totalFrames="35" isExplosion="false" />
+        <Profile id="fm92刺弹炮弹" radius="155" energy="1.2" color="#FFA44C" forwardOffset="-10" offsetY="-8" totalFrames="35" isExplosion="false" />
+        <Profile id="fm92刺弹炮弹 副本" radius="155" energy="1.2" color="#FFA44C" forwardOffset="-10" offsetY="-8" totalFrames="35" isExplosion="false" />
+        <Profile id="fsc7炮弹" radius="170" energy="1.3" color="#FFAF66" forwardOffset="-15" offsetY="-5" totalFrames="35" isExplosion="false" />
+        <Profile id="支援飞弹" radius="185" energy="1.15" color="#FFC85A" forwardOffset="0" offsetY="-35" totalFrames="25" isExplosion="false" />
+        <Profile id="g1炮弹" radius="145" energy="1.15" color="#FFD58A" forwardOffset="0" offsetY="-12" totalFrames="30" isExplosion="false" />
+        <Profile id="爆炸狙击子弹" radius="140" energy="1.1" color="#FF4A66" forwardOffset="0" offsetY="-4" totalFrames="14" isExplosion="false" />
+        <Profile id="战斧导弹" radius="165" energy="1.25" color="#FFA44C" forwardOffset="-20" offsetY="0" totalFrames="45" isExplosion="false" />
+        <Profile id="追踪导弹" radius="150" energy="1.15" color="#FFA44C" forwardOffset="-15" offsetY="0" totalFrames="45" isExplosion="false" />
+        <Profile id="长钉导弹" radius="150" energy="1.15" color="#FFA44C" forwardOffset="-15" offsetY="0" totalFrames="45" isExplosion="false" />
+        <Profile id="红外制导导弹" radius="150" energy="1.15" color="#FFA44C" forwardOffset="-15" offsetY="0" totalFrames="45" isExplosion="false" />
+        <Profile id="微型导弹" radius="135" energy="1" color="#FFA44C" forwardOffset="-10" offsetY="0" totalFrames="40" isExplosion="false" />
+        <Profile id="连环导弹" radius="145" energy="1.1" color="#FFA44C" forwardOffset="-15" offsetY="0" totalFrames="40" isExplosion="false" />
+        <Profile id="外星导弹" radius="155" energy="1.2" color="#68E8FF" forwardOffset="-15" offsetY="0" totalFrames="45" isExplosion="false" />
+        <Profile id="蓝旋反坦克炮弹" radius="175" energy="1.35" color="#5CE0FF" forwardOffset="0" offsetY="0" totalFrames="40" isExplosion="false" />
+        <Profile id="能量弹" radius="170" energy="1.35" color="#6AE8FF" forwardOffset="0" offsetY="0" totalFrames="40" isExplosion="false" />
+        <Profile id="能量球" radius="165" energy="1.3" color="#6AE8FF" forwardOffset="0" offsetY="0" totalFrames="40" isExplosion="false" />
+        <Profile id="电球" radius="145" energy="1.15" color="#78D8FF" forwardOffset="0" offsetY="0" totalFrames="35" isExplosion="false" />
+        <Profile id="等离子榴弹" radius="155" energy="1.25" color="#68E8FF" forwardOffset="0" offsetY="0" totalFrames="34" isExplosion="false" />
+        <Profile id="等离子导弹" radius="160" energy="1.25" color="#68E8FF" forwardOffset="-15" offsetY="0" totalFrames="45" isExplosion="false" />
+        <Profile id="压缩能量榴弹" radius="155" energy="1.25" color="#78E8FF" forwardOffset="0" offsetY="0" totalFrames="34" isExplosion="false" />
+        <Profile id="重型电浆弹" radius="175" energy="1.4" color="#68EEFF" forwardOffset="0" offsetY="0" totalFrames="40" isExplosion="false" />
+        <Profile id="战术电浆团" radius="165" energy="1.3" color="#68EEFF" forwardOffset="0" offsetY="0" totalFrames="40" isExplosion="false" />
+        <Profile id="外星文明的馈赠" radius="185" energy="1.45" color="#70F0FF" forwardOffset="0" offsetY="0" totalFrames="40" isExplosion="false" />
+        <Profile id="电磁弹" radius="150" energy="1.2" color="#70D8FF" forwardOffset="0" offsetY="0" totalFrames="30" isExplosion="false" />
+        <Profile id="脉冲弹" radius="150" energy="1.2" color="#70E0FF" forwardOffset="0" offsetY="0" totalFrames="30" isExplosion="false" />
+        <Profile id="蓝紫穿刺子弹" radius="155" energy="1.2" color="#9E78FF" forwardOffset="0" offsetY="0" totalFrames="30" isExplosion="false" />
+        <Profile id="紫光球" radius="150" energy="1.15" color="#C468FF" forwardOffset="0" offsetY="0" totalFrames="35" isExplosion="false" />
+        <Profile id="铁枪磁暴弹" radius="175" energy="1.35" color="#6CE4FF" forwardOffset="0" offsetY="0" totalFrames="35" isExplosion="false" />
+        <Profile id="铁枪能量弹" radius="150" energy="1.15" color="#6CE4FF" forwardOffset="0" offsetY="0" totalFrames="30" isExplosion="false" />
+        <Profile id="高斯穿刺弹" radius="145" energy="1.1" color="#80E4FF" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="重型高斯弹" radius="160" energy="1.25" color="#80E4FF" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="极寒弹" radius="140" energy="1.05" color="#78E4FF" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="急冻弹" radius="140" energy="1.05" color="#78E4FF" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="寒冰冲击波" radius="190" energy="1.35" color="#78E4FF" forwardOffset="40" offsetY="0" totalFrames="20" isExplosion="false" />
+        <Profile id="烈焰弹" radius="140" energy="1.05" color="#FF9238" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="日珥弹" radius="155" energy="1.2" color="#FFA438" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="黄金子弹" radius="135" energy="1" color="#FFD254" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="次元弹" radius="155" energy="1.2" color="#B870FF" forwardOffset="0" offsetY="0" totalFrames="30" isExplosion="false" />
+        <Profile id="破魔弹" radius="145" energy="1.1" color="#D078FF" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="生体护盾破坏弹" radius="145" energy="1.1" color="#68FF9C" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="腐蚀弹" radius="140" energy="1.05" color="#78FF60" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="剧毒弹" radius="140" energy="1.05" color="#78FF60" forwardOffset="0" offsetY="0" totalFrames="25" isExplosion="false" />
+        <Profile id="异形酸液" radius="145" energy="1.1" color="#84FF52" forwardOffset="0" offsetY="0" totalFrames="30" isExplosion="false" />
+        <Profile id="火凤火攻" radius="190" energy="1.45" color="#FF7E2E" forwardOffset="0" offsetY="-25" totalFrames="10" isExplosion="true" />
+        <Profile id="火凤回旋" radius="235" energy="1.65" color="#FF8C36" forwardOffset="0" offsetY="-45" totalFrames="20" isExplosion="true" />
+        <Profile id="中火燃" radius="195" energy="1.45" color="#FF8430" forwardOffset="0" offsetY="-35" totalFrames="15" isExplosion="true" />
+        <Profile id="熔炎裂渊" radius="245" energy="1.7" color="#FF7E2E" forwardOffset="0" offsetY="-45" totalFrames="24" isExplosion="true" />
+        <Profile id="金炎裂渊" radius="250" energy="1.75" color="#FFB844" forwardOffset="0" offsetY="-45" totalFrames="24" isExplosion="true" />
+        <Profile id="浴火重生" radius="280" energy="1.85" color="#FF9438" forwardOffset="0" offsetY="-65" totalFrames="30" isExplosion="true" />
+        <Profile id="浴火重生-火凤" radius="280" energy="1.85" color="#FF9438" forwardOffset="0" offsetY="-65" totalFrames="30" isExplosion="true" />
+        <Profile id="凤凰浴火重生" radius="300" energy="1.95" color="#FF983C" forwardOffset="0" offsetY="-75" totalFrames="30" isExplosion="true" />
+        <Profile id="凤凰浴火重生小型" radius="240" energy="1.65" color="#FF9438" forwardOffset="0" offsetY="-50" totalFrames="25" isExplosion="true" />
+        <Profile id="火凤套装_回血提示" radius="180" energy="1.3" color="#FFA240" forwardOffset="0" offsetY="-40" totalFrames="16" isExplosion="true" />
+        <Profile id="火凤套装_热附击" radius="165" energy="1.3" color="#FF8834" forwardOffset="0" offsetY="-25" totalFrames="10" isExplosion="true" />
+        <Profile id="火凤套装_完整热附击" radius="195" energy="1.5" color="#FF963C" forwardOffset="0" offsetY="-30" totalFrames="12" isExplosion="true" />
+        <Profile id="火凤套装_原版火攻" radius="180" energy="1.35" color="#FF8232" forwardOffset="0" offsetY="-15" totalFrames="8" isExplosion="true" />
+        <Profile id="火凤套装_原版回旋" radius="230" energy="1.6" color="#FF9438" forwardOffset="0" offsetY="-35" totalFrames="19" isExplosion="true" />
+        <Profile id="__phoenix_revive" radius="260" energy="1.8" color="#FF8E36" forwardOffset="0" offsetY="-45" totalFrames="4" isExplosion="true" />
+        <Profile id="__phoenix_ember" radius="135" energy="0.85" color="#FF7A28" forwardOffset="0" offsetY="-35" totalFrames="4" isExplosion="false" />
+        <Profile id="__huofeng_nirvana" radius="270" energy="1.85" color="#FF9438" forwardOffset="0" offsetY="0" totalFrames="4" isExplosion="true" />
+        <Profile id="__huofeng_ember" radius="130" energy="0.8" color="#FF802C" forwardOffset="0" offsetY="-35" totalFrames="4" isExplosion="false" />
+        <Profile id="__pulse_heat" radius="215" energy="1.5" color="#FF8C36" forwardOffset="0" offsetY="0" totalFrames="6" isExplosion="true" />
+        <Profile id="__pulse_heat_aux" radius="215" energy="1.4" color="#FF8C36" forwardOffset="0" offsetY="0" totalFrames="6" isExplosion="true" />
+        <Profile id="__pulse_cold" radius="200" energy="1.35" color="#70DCFF" forwardOffset="0" offsetY="0" totalFrames="6" isExplosion="true" />
+        <Profile id="__pulse_cold_aux" radius="200" energy="1.3" color="#70DCFF" forwardOffset="0" offsetY="0" totalFrames="6" isExplosion="true" />
+        <Profile id="__pulse_crimson" radius="220" energy="1.35" color="#FF6248" forwardOffset="0" offsetY="0" totalFrames="6" isExplosion="true" />
+        <Profile id="__pulse_crimson_aux" radius="210" energy="1.25" color="#FF6248" forwardOffset="0" offsetY="0" totalFrames="6" isExplosion="true" />
+    </Profiles>
+    <Bindings>
+        <!-- asset 同时适用弹体与特效。可用 projectile 或 effect 单独绑定各自的素材入口。 -->
+        <Binding kind="asset" key="爆炸" profile="爆炸" />
+        <Binding kind="asset" key="普通爆炸" profile="普通爆炸" />
+        <Binding kind="asset" key="火球爆炸" profile="火球爆炸" />
+        <Binding kind="asset" key="等离子爆炸" profile="等离子爆炸" />
+        <Binding kind="asset" key="集束连环爆炸" profile="集束连环爆炸" />
+        <Binding kind="asset" key="联弹爆炸" profile="联弹爆炸" />
+        <Binding kind="asset" key="定向爆破" profile="定向爆破" />
+        <Binding kind="asset" key="铁血弹爆炸" profile="铁血弹爆炸" />
+        <Binding kind="asset" key="空中爆炸1" profile="空中爆炸1" />
+        <Binding kind="asset" key="火焰爆发" profile="火焰爆发" />
+        <Binding kind="asset" key="小火焰爆发" profile="小火焰爆发" />
+        <Binding kind="asset" key="冰流爆发" profile="冰流爆发" />
+        <Binding kind="asset" key="紫色小爆炸" profile="紫色小爆炸" />
+        <Binding kind="asset" key="高压爆炸" profile="高压爆炸" />
+        <Binding kind="asset" key="支援飞弹爆炸" profile="支援飞弹爆炸" />
+        <Binding kind="asset" key="g1炮弹击中" profile="g1炮弹击中" />
+        <Binding kind="asset" key="小火焰爆炸" profile="小火焰爆炸" />
+        <Binding kind="asset" key="高爆爆炸" profile="高爆爆炸" />
+        <Binding kind="asset" key="加强电球" profile="加强电球" />
+        <Binding kind="asset" key="量子爆弹" profile="量子爆弹" />
+        <Binding kind="asset" key="火球" profile="火球" />
+        <Binding kind="asset" key="火焰" profile="火焰" />
+        <Binding kind="asset" key="普通火箭弹" profile="普通火箭弹" />
+        <Binding kind="projectile" key="火箭弹" profile="普通火箭弹" />
+        <Binding kind="asset" key="高爆火箭弹" profile="高爆火箭弹" />
+        <Binding kind="asset" key="激光火箭弹" profile="激光火箭弹" />
+        <Binding kind="asset" key="榴弹" profile="榴弹" />
+        <Binding kind="asset" key="高爆榴弹" profile="高爆榴弹" />
+        <Binding kind="asset" key="穿甲榴弹" profile="穿甲榴弹" />
+        <Binding kind="asset" key="集束榴弹" profile="集束榴弹" />
+        <Binding kind="asset" key="战术集束榴弹" profile="战术集束榴弹" />
+        <Binding kind="asset" key="高爆子弹" profile="高爆子弹" />
+        <Binding kind="asset" key="天基炮弹" profile="天基炮弹" />
+        <Binding kind="asset" key="加农炮弹" profile="加农炮弹" />
+        <Binding kind="asset" key="fm直射刺弹" profile="fm直射刺弹" />
+        <Binding kind="asset" key="fm92刺弹炮弹" profile="fm92刺弹炮弹" />
+        <Binding kind="asset" key="fm92刺弹炮弹 副本" profile="fm92刺弹炮弹 副本" />
+        <Binding kind="asset" key="fsc7炮弹" profile="fsc7炮弹" />
+        <Binding kind="asset" key="支援飞弹" profile="支援飞弹" />
+        <Binding kind="asset" key="g1炮弹" profile="g1炮弹" />
+        <Binding kind="asset" key="爆炸狙击子弹" profile="爆炸狙击子弹" />
+        <Binding kind="asset" key="战斧导弹" profile="战斧导弹" />
+        <Binding kind="asset" key="追踪导弹" profile="追踪导弹" />
+        <Binding kind="asset" key="长钉导弹" profile="长钉导弹" />
+        <Binding kind="asset" key="红外制导导弹" profile="红外制导导弹" />
+        <Binding kind="asset" key="微型导弹" profile="微型导弹" />
+        <Binding kind="asset" key="连环导弹" profile="连环导弹" />
+        <Binding kind="asset" key="外星导弹" profile="外星导弹" />
+        <Binding kind="asset" key="蓝旋反坦克炮弹" profile="蓝旋反坦克炮弹" />
+        <Binding kind="asset" key="能量弹" profile="能量弹" />
+        <Binding kind="asset" key="能量球" profile="能量球" />
+        <Binding kind="asset" key="电球" profile="电球" />
+        <Binding kind="asset" key="等离子榴弹" profile="等离子榴弹" />
+        <Binding kind="asset" key="等离子导弹" profile="等离子导弹" />
+        <Binding kind="asset" key="压缩能量榴弹" profile="压缩能量榴弹" />
+        <Binding kind="asset" key="重型电浆弹" profile="重型电浆弹" />
+        <Binding kind="asset" key="战术电浆团" profile="战术电浆团" />
+        <Binding kind="asset" key="外星文明的馈赠" profile="外星文明的馈赠" />
+        <Binding kind="asset" key="电磁弹" profile="电磁弹" />
+        <Binding kind="asset" key="脉冲弹" profile="脉冲弹" />
+        <Binding kind="asset" key="蓝紫穿刺子弹" profile="蓝紫穿刺子弹" />
+        <Binding kind="asset" key="紫光球" profile="紫光球" />
+        <Binding kind="asset" key="铁枪磁暴弹" profile="铁枪磁暴弹" />
+        <Binding kind="asset" key="铁枪能量弹" profile="铁枪能量弹" />
+        <Binding kind="asset" key="高斯穿刺弹" profile="高斯穿刺弹" />
+        <Binding kind="asset" key="重型高斯弹" profile="重型高斯弹" />
+        <Binding kind="asset" key="极寒弹" profile="极寒弹" />
+        <Binding kind="asset" key="急冻弹" profile="急冻弹" />
+        <Binding kind="asset" key="寒冰冲击波" profile="寒冰冲击波" />
+        <Binding kind="asset" key="烈焰弹" profile="烈焰弹" />
+        <Binding kind="asset" key="日珥弹" profile="日珥弹" />
+        <Binding kind="asset" key="黄金子弹" profile="黄金子弹" />
+        <Binding kind="asset" key="次元弹" profile="次元弹" />
+        <Binding kind="asset" key="破魔弹" profile="破魔弹" />
+        <Binding kind="asset" key="生体护盾破坏弹" profile="生体护盾破坏弹" />
+        <Binding kind="asset" key="腐蚀弹" profile="腐蚀弹" />
+        <Binding kind="asset" key="剧毒弹" profile="剧毒弹" />
+        <Binding kind="asset" key="异形酸液" profile="异形酸液" />
+        <Binding kind="asset" key="火凤火攻" profile="火凤火攻" />
+        <Binding kind="asset" key="火凤回旋" profile="火凤回旋" />
+        <Binding kind="asset" key="中火燃" profile="中火燃" />
+        <Binding kind="asset" key="熔炎裂渊" profile="熔炎裂渊" />
+        <Binding kind="asset" key="金炎裂渊" profile="金炎裂渊" />
+        <Binding kind="asset" key="浴火重生" profile="浴火重生" />
+        <Binding kind="asset" key="浴火重生-火凤" profile="浴火重生-火凤" />
+        <Binding kind="asset" key="凤凰浴火重生" profile="凤凰浴火重生" />
+        <Binding kind="asset" key="凤凰浴火重生小型" profile="凤凰浴火重生小型" />
+        <Binding kind="asset" key="火凤套装_回血提示" profile="火凤套装_回血提示" />
+        <Binding kind="asset" key="火凤套装_热附击" profile="火凤套装_热附击" />
+        <Binding kind="asset" key="火凤套装_完整热附击" profile="火凤套装_完整热附击" />
+        <Binding kind="asset" key="火凤套装_原版火攻" profile="火凤套装_原版火攻" />
+        <Binding kind="pulse" key="火凤套装_原版火攻" profile="火凤套装_原版火攻" />
+        <Binding kind="asset" key="火凤套装_原版回旋" profile="火凤套装_原版回旋" />
+        <Binding kind="pulse" key="火凤套装_原版回旋" profile="火凤套装_原版回旋" />
+        <Binding kind="pulse" key="__phoenix_revive" profile="__phoenix_revive" />
+        <Binding kind="pulse" key="__phoenix_ember" profile="__phoenix_ember" />
+        <Binding kind="pulse" key="__huofeng_nirvana" profile="__huofeng_nirvana" />
+        <Binding kind="pulse" key="__huofeng_ember" profile="__huofeng_ember" />
+        <!-- 宽范围攻击沿发射方向布置主、副灯。referenceRadius 为既有素材的标定值，调整 Profile 半径会按比例作用于两灯。 -->
+        <Binding kind="area" key="area.heat" profile="__pulse_heat" auxProfile="__pulse_heat_aux" minSpan="180" nearFraction="0.28" farFraction="0.74" widthScale="0.65" referenceRadius="215" maxRadius="280" energyScale="1.12" maxEnergy="1.75" auxEnergyScale="0.92" />
+        <Binding kind="area" key="area.ice-stream" profile="__pulse_cold" auxProfile="__pulse_cold_aux" minSpan="180" nearFraction="0.28" farFraction="0.74" widthScale="0.65" referenceRadius="200" maxRadius="280" energyScale="1.12" maxEnergy="1.75" auxEnergyScale="0.92" />
+        <Binding kind="area" key="area.blade-dance" profile="__pulse_crimson" auxProfile="__pulse_crimson_aux" minSpan="180" nearFraction="0.28" farFraction="0.74" widthScale="0.65" referenceRadius="220" maxRadius="280" energyScale="1.12" maxEnergy="1.75" auxEnergyScale="0.92" />
+    </Bindings>
+</LightProfiles>

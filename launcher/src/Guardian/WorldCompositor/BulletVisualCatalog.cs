@@ -68,11 +68,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 || String(root.GetProperty("sourceSwf")) != SourceSwf)
                 throw new InvalidDataException("Unsupported bullet visual catalog identity");
             Hex(root.GetProperty("generatorSha256"));
-            string expectedSwfHash = Hex(root.GetProperty("sourceSwfSha256"));
-            string swfPath = Path.Combine(projectRoot, SourceSwf.Replace('/', Path.DirectorySeparatorChar));
-            string actualSwfHash = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(swfPath)));
-            if (!string.Equals(expectedSwfHash, actualSwfHash, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException("Bullet source SWF differs from the XFL-derived catalog");
+            Hex(root.GetProperty("sourceSwfSha256")); // Provenance verified by the generator.
 
             JsonElement sources = root.GetProperty("sources");
             if (sources.ValueKind != JsonValueKind.Array || sources.GetArrayLength() < 4

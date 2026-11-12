@@ -678,7 +678,14 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             }
         }
 
-        if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasFunctionSizeFailure -or $hasOwnershipFailure -or $hasInheritanceFailure) {
+        $hasDerivedFailure = $false
+        if ($PublishOnly -and $ownershipRelative -like 'flashswf/*' -and
+            -not ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasOwnershipFailure)) {
+            & python -B -X utf8 (Join-Path $ProjectDir 'tools/combat-fx-assets/after_publish.py') --swf $VerifySwfPath --published-xfl $targetPath
+            $hasDerivedFailure = $LASTEXITCODE -ne 0
+            if ($hasDerivedFailure) { Write-Host '[ERROR] 战斗美术派生未通过，详见对应目录、图集或声音的验证结果。' }
+        }
+        if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasFunctionSizeFailure -or $hasOwnershipFailure -or $hasInheritanceFailure -or $hasDerivedFailure) {
             Remove-Item -Path $TargetCfg, $ModeCfg, $QuitCfg, $ReopenMarker -ErrorAction SilentlyContinue
             exit 1
         }

@@ -355,7 +355,7 @@ class org.flashNight.arki.weather.WeatherSystem {
         if (envInfo.最大光照 != undefined) this.maxLight = envInfo.最大光照;
         if (envInfo.最小光照 != undefined) this.minLight = envInfo.最小光照;
         if (!org.flashNight.arki.render.SceneLightBridge.isConfigured())
-            org.flashNight.arki.render.SceneLightBridge.configure(envInfo.场景灯, null, "environment");
+            org.flashNight.arki.render.SceneLightBridge.configure(envInfo.场景灯, null, "environment", envInfo.基地供电项目 === "基地供电与照明");
         var cfgLightLevel:Number = this.getCurrentLightLevel();
         org.flashNight.arki.render.SceneLightBridge.syncAmbientLight(cfgLightLevel, _root.gameworld);
         if (cfgLightLevel <= this.timeMultiplierStartLevel) {

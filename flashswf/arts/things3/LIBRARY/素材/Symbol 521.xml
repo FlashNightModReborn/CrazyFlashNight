@@ -256,6 +256,10 @@ function 透明攻击(倍率,Z轴攻击范围)
 
 	子弹属性.区域定位area = this.攻击点;
 
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = {};
+	子弹属性.lightSourceSlot = 480;
+	子弹属性.lightFacing = _parent.方向 == "左" ? -1 : 1;
 	_root.子弹区域shoot传递(子弹属性);
 }
 

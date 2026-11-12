@@ -272,7 +272,7 @@ namespace CF7Launcher.Tasks
                     WeatherCameraObserved?.Invoke(weatherCamera.OffsetX,weatherCamera.OffsetY,weatherCamera.Scale);
                     if(sceneLightPayload!=null && connectionGeneration>=_combatFxGeneration) {
                         if(SceneLightState.TryParse(sceneLightPayload,out var sceneState))SceneLightObserved?.Invoke(sceneState);
-                        else VisualFaultReported?.Invoke("scene","scene_light_frame_invalid");
+                        else LogManager.Log("event=scene_light_state_ignored reason=invalid_frame");
                     }
                     if(combatFxPayload!=null) ObserveCombatFx(combatFxPayload,connectionGeneration,weatherCamera);
                     ObserveProjectileVisuals(rayVisualPayload,chainVisualPayload,connectionGeneration,weatherCamera);

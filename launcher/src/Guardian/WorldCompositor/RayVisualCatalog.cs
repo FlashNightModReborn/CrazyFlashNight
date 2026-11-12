@@ -76,9 +76,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal RayLightOverrides(string profile,float energyScale,float widthScale,int color,int fadeTicks)
         { Profile=profile;EnergyScale=energyScale;WidthScale=widthScale;Color=color;FadeTicks=fadeTicks; }
 
-        internal static bool IsKnownProfile(string profile) =>
-            profile is "auto" or "none" or "flame" or "beam" or "heavy" or "arc" or "glyph";
-        internal bool IsValid => IsKnownProfile(Profile)
+        internal static bool IsProfileName(string profile)
+        {
+            if (string.IsNullOrEmpty(profile) || profile.Length > 48 || profile[0] is < 'a' or > 'z') return false;
+            foreach (char c in profile)
+                if (!(c is >= 'a' and <= 'z' or >= '0' and <= '9' or '-' or '_')) return false;
+            return true;
+        }
+        internal bool IsValid => IsProfileName(Profile)
             && float.IsFinite(EnergyScale) && EnergyScale>=0 && EnergyScale<=2
             && float.IsFinite(WidthScale) && WidthScale>=.25f && WidthScale<=4
             && Color>=-1 && Color<=0xFFFFFF && FadeTicks>=-1 && FadeTicks<=30;

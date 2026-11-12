@@ -79,11 +79,10 @@ def inspect_item(item, path="fixture"):
 
 def scan(root=ROOT):
     errors, bindings = [], []
-    bridge = (root / "scripts/类定义/org/flashNight/arki/render/EquipmentLightBridge.as").read_text(encoding="utf-8-sig")
-    peak = re.search(r"radialPeak:Number\s*=\s*([0-9.]+)", bridge)
     lights = json.loads((root / "data/combat_visuals/local_lights.v1.json").read_text(encoding="utf-8-sig"))
-    if not peak or float(peak.group(1)) != lights["muzzles"]["枪火"]["energy"]:
-        errors.append("equipment radial peak must match the ordinary muzzle reference")
+    peak = lights.get("muzzles", {}).get("枪火", {}).get("energy")
+    if type(peak) not in (int, float) or not math.isfinite(peak) or not 0 <= peak <= 2:
+        errors.append("ordinary muzzle must provide a finite equipment radial peak in [0, 2]")
     for entry in ET.parse(root / "data/items/list.xml").getroot().findall("items"):
         path = "data/items/" + entry.text.strip()
         for item in ET.parse(root / path).getroot().findall("item"):

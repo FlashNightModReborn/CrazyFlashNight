@@ -28,7 +28,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
             float pixelsPerUnit, byte[] pixels)
         { Sha256=sha; Styles=styles; Width=width; Height=height; PixelsPerUnit=pixelsPerUnit; PremultipliedBgra=pixels; }
 
-        internal static CombatFxCatalog Load(string root)
+        internal static CombatFxCatalog ForResidentLights(WorldLightSettings settings) =>
+            new CombatFxCatalog("", Array.Empty<CombatFxStyle>(), 0, 0, 1, Array.Empty<byte>())
+                { MaximumLightResponse = settings.MaximumResponse, LightingSha256 = settings.Sha256 };
+
+        internal static CombatFxCatalog Load(string root, WorldLightSettings settings = null, Action<string> warn = null)
         {
             byte[] bytes=File.ReadAllBytes(Path.Combine(root,RelativePath));
             if (bytes.Length>2*1024*1024) throw new InvalidDataException("Effect catalog exceeds budget");
@@ -81,8 +85,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     var library=libraries[key];
                     if(path==library.Swf)
                     {
-                        if(!HashMatches(File.ReadAllBytes(Path.Combine(root,path)),hash))
-                            throw new InvalidDataException("Effect source SWF differs from catalog");
+                        // The build verifies the authoring SWF. Runtime consumes the verified atlas and cues.
                         bound.Add(key);supported=true;break;
                     }
                     if(path.StartsWith(library.Library+"/",StringComparison.Ordinal)
@@ -181,7 +184,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
             byte[] pixels=new byte[checked(width*height*4)];
             Marshal.Copy(bitmap.GetPixels(),pixels,0,pixels.Length);
             var result=new CombatFxCatalog(Convert.ToHexString(SHA256.HashData(bytes)),styles,width,height,ppu,pixels);
-            result.LoadLights(root);return result;
+            settings ??= WorldLightSettings.Load(root, warn);
+            settings.Apply(styles, warn);
+            result.LightingSha256 = settings.Sha256;
+            result.MaximumLightResponse = settings.MaximumResponse;
+            return result;
         }
 
         // Derived timeline sounds live in the existing SFX pack. They retain exact
@@ -239,35 +246,6 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 }
             }
             if(used.Count!=assets.Count)throw new InvalidDataException("Unreferenced derived effect sound");
-        }
-
-        private void LoadLights(string root)
-        {
-            byte[] bytes=File.ReadAllBytes(Path.Combine(root,LightsPath));
-            if(bytes.Length>32768)throw new InvalidDataException("Local light presets exceed budget");
-            using var doc=JsonDocument.Parse(bytes,new JsonDocumentOptions {MaxDepth=8});
-            JsonElement data=doc.RootElement;
-            if(data.GetProperty("schema").GetString()!="cf7-combat-local-lights.v1")
-                throw new InvalidDataException("Unsupported local light presets");
-            MaximumLightResponse=Number(data.GetProperty("maximumResponse"),0,.8f);
-            var names=new HashSet<string>(StringComparer.Ordinal);
-            foreach(JsonProperty p in data.GetProperty("muzzles").EnumerateObject())
-            {
-                CombatFxStyle style=Array.Find(Styles,s=>s.Linkage==p.Name && s.IsMuzzle);
-                if(style==null || !names.Add(p.Name))throw new InvalidDataException("Unknown or duplicate light source");
-                JsonElement value=p.Value;string color=value.GetProperty("color").GetString();
-                if(color==null || color.Length!=7 || color[0]!='#'
-                    || !uint.TryParse(color.AsSpan(1),NumberStyles.HexNumber,CultureInfo.InvariantCulture,out uint rgb))
-                    throw new InvalidDataException("Invalid light color");
-                int ticks=value.GetProperty("ticks").GetInt32();
-                if(ticks<1 || ticks>6)throw new InvalidDataException("Invalid local light duration");
-                style.Light=new CombatFxLightProfile(Number(value.GetProperty("radius"),16,256),
-                    Number(value.GetProperty("energy"),0,2),ticks,
-                    ((rgb>>16)&255)/255f,((rgb>>8)&255)/255f,(rgb&255)/255f);
-            }
-            foreach(CombatFxStyle style in Styles)
-                if(style.IsMuzzle && !names.Contains(style.Linkage))throw new InvalidDataException("Missing muzzle light preset");
-            LightingSha256=Convert.ToHexString(SHA256.HashData(bytes));
         }
 
         private static bool IsHex(string s) { foreach(char c in s) if(!Uri.IsHexDigit(c)) return false; return true; }

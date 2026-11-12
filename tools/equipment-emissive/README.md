@@ -11,7 +11,7 @@ powershell -File scripts/run-equipment-emissive-asset-tests.ps1
 
 检查分组/槽位、有限数值、独立生命周期及状态适配器对应的原初始化函数。类测试覆盖贡献归并、稳定身份、预算、条件状态和刀光包络；素材测试使用真实 XML、生产生命周期装载器、已发布 SWF 和原初始化函数，在隔离演员上验证接线。它们不操作玩家存档，不代替完整游戏观感和性能验收。
 
-配置检查还要求 AS2 的组合峰值与 `local_lights.v1.json` 中普通“枪火”强度一致。身体与近色兵器合并后受同一峰值约束；异色源以点光衰减公式的上界控制重叠亮度，刀光脉冲包含在限额内。参数说明归[装备函数合同](../../scripts/逻辑/装备函数/README.md#skill-interaction)。
+Host 将 `local_lights.v1.json` 中普通“枪火”的强度随光源能力发送给 AS2，作为装备的组合峰值。身体与近色兵器合并后受同一峰值约束；异色源以点光衰减公式的上界控制重叠亮度，刀光脉冲包含在限额内。参数说明归[装备函数合同](../../scripts/逻辑/装备函数/README.md#skill-interaction)。
 
 `scripts/run-equipment-lighting-tooltip-tests.ps1` 验证自动照明注释、真实来源条件、插件合成后的说明、内置灯不获得插件防御加成，以及共享原生文档；素材 suite 另从真实装备/插件 XML 验证生成结果。注释在悬停生成阶段构建，不加入战斗逐帧路径。
 

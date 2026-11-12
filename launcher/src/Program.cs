@@ -1579,38 +1579,23 @@ class Program
         frameTask.ConfigureBulletVisualShadow(bulletVisualCatalog);
         frameTask.ConfigureProjectileVisuals(bulletVisualCatalog);
         socketServer.OnClientDisconnectedForGeneration += frameTask.ResetProjectileVisualsForGeneration;
+        var worldLightSettings = CF7Launcher.Guardian.WorldCompositor.WorldLightSettings.Load(projectRoot, LogManager.Log);
         CF7Launcher.Guardian.WorldCompositor.CombatFxCatalog combatFxCatalog=null;
         try {
-            combatFxCatalog=CF7Launcher.Guardian.WorldCompositor.CombatFxCatalog.Load(projectRoot);
+            combatFxCatalog=CF7Launcher.Guardian.WorldCompositor.CombatFxCatalog.Load(projectRoot, worldLightSettings, LogManager.Log);
             LogManager.Log("event=combat_fx_catalog_loaded sha256="+combatFxCatalog.Sha256+" styles="+combatFxCatalog.Styles.Length
                 +" lighting="+combatFxCatalog.LightingSha256);
         }
         catch(Exception error) { LogManager.Log("event=combat_fx_catalog_unavailable "+error.Message); }
-        frameTask.ConfigureCombatFx(combatFxCatalog);
-        // The migrated ray channel requires its lighting catalog. Absence uses
-        // the existing visible startup-failure path, never a silent
-        // lightingVersion=0 downgrade.
+        frameTask.ConfigureCombatFx(combatFxCatalog ?? CF7Launcher.Guardian.WorldCompositor.CombatFxCatalog.ForResidentLights(worldLightSettings));
         CF7Launcher.Guardian.WorldCompositor.RayLightingCatalog rayLightingCatalog;
         try {
-            rayLightingCatalog=CF7Launcher.Guardian.WorldCompositor.RayLightingCatalog.Load(projectRoot);
+            rayLightingCatalog=CF7Launcher.Guardian.WorldCompositor.RayLightingCatalog.Load(projectRoot, LogManager.Log);
             LogManager.Log("event=ray_lighting_catalog_loaded sha256="+rayLightingCatalog.Sha256);
         }
         catch(Exception error) {
             LogManager.Log("event=ray_lighting_catalog_unavailable "+error.Message);
-            StartupFailureReporter.ReportTerminalFailure(
-                form,
-                projectRoot,
-                "ray_lighting_catalog_unavailable",
-                "CF7-LAUNCH-RAY-LIGHTING-MISSING",
-                "射线灯光目录不可用",
-                error.Message,
-                "请通过 Steam 验证游戏文件完整性，确认配套构建完整后重新启动游戏。",
-                null,
-                null,
-                null);
-            PerfTrace.Mark("guardian.exit", "ray_lighting_catalog_unavailable");
-            PerfTrace.Shutdown();
-            return 1;
+            rayLightingCatalog=CF7Launcher.Guardian.WorldCompositor.RayLightingCatalog.Disabled();
         }
         frameTask.ConfigureRayLighting(rayLightingCatalog);
         string workerSceneLightDigest = workerPolicy?.Projection == null ? null
@@ -2166,7 +2151,7 @@ class Program
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
             windowManager.SetFlashRenderHeight, () => { if(gameOwnsInput())windowManager.RestoreFlashInputFocus("world_pointer", () => gameOwnsInput()); },
-            bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,overlays:worldOverlays,
+            bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,lightSettings:worldLightSettings,overlays:worldOverlays,
             opaqueHudEnabled:workerPolicy==null && playerInfoFixtureCase==null);
         hnOverlay.SetSharedPresentation(worldCompositor.DamagePresentation);
         if(playerInfoFixtureCase==null)playerHudRuntime?.SetSharedWorld(worldCompositor);
@@ -2267,19 +2252,20 @@ class Program
         frameTask.CombatFxObserved=worldCompositor.ObserveCombatFx;
         frameTask.CombatFxRejected=worldCompositor.RejectCombatFx;
         frameTask.CombatFxCleared=worldCompositor.ClearCombatFx;
-        if(combatFxCatalog!=null) {
+        {
             int fxCapsGeneration=0;
             var fxStyles=new List<object>();
-            foreach(var style in combatFxCatalog.Styles)
+            foreach(var style in combatFxCatalog?.Styles ?? Array.Empty<CF7Launcher.Guardian.WorldCompositor.CombatFxStyle>())
                 fxStyles.Add(new { index=style.Index,linkage=style.Linkage,
                     kind=style.IsCasing?"casing":(style.IsBlood?"blood":(style.IsImpact?"impact":"muzzle")),skipOriginYZero=style.SkipOriginYZero,
                     variantSounds=style.VariantSounds,soundAtBirth=style.SoundAtBirth,randomRotation=style.RandomRotation });
-            bool PublishFxCaps(bool available,int generation) => socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
-                task="combat_fx_caps",version=1,generation,native=available,bloodVersion=1,equipmentLights=available?2:0,equipmentRadialLights=available?1:0,sceneLightsVersion=available?1:0,digest=combatFxCatalog.Sha256,sceneLightsDigest=workerSceneLightDigest,styles=fxStyles
+            bool PublishFxCaps(bool available,bool worldLights,int generation) => socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
+                task="combat_fx_caps",version=1,generation,native=available,worldLights,bloodVersion=1,equipmentLights=worldLights?2:0,equipmentRadialLights=worldLights?1:0,
+                equipmentRadialPeak=worldLightSettings.EquipmentPeak,sceneLightsVersion=worldLights?1:0,digest=combatFxCatalog?.Sha256 ?? "",sceneLightsDigest=workerSceneLightDigest,styles=fxStyles
             })+"\0",generation);
             Action<int> readyFx=generation => {
                 Volatile.Write(ref fxCapsGeneration,generation);
-                PublishFxCaps(false,generation);
+                PublishFxCaps(false,false,generation);
             };
             socketServer.OnClientReadyForGeneration+=readyFx;
             socketServer.OnClientDisconnectedForGeneration+=generation => {
@@ -2287,9 +2273,9 @@ class Program
                 if(Interlocked.CompareExchange(ref fxCapsGeneration,0,generation)==generation)
                     worldCompositor.CombatFxConnectionLost();
             };
-            worldCompositor.CombatFxCapabilityChanged=available => {
+            worldCompositor.CombatFxCapabilityChanged=(available,worldLights) => {
                 int generation=Volatile.Read(ref fxCapsGeneration);
-                bool sent=generation>0 && PublishFxCaps(available,generation);
+                bool sent=generation>0 && PublishFxCaps(available,worldLights,generation);
                 ObserveWorkerCatalogReady(4, available, sent);return sent;
             };
             frameTask.CombatFxEventsReady=(events,generation) => {

@@ -19,7 +19,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal readonly int SceneReserve;
         internal readonly float MaximumResponse;
         internal string Sha256 { get; private set; }
-        internal SceneLightCatalog(JObject root)
+        internal SceneLightCatalog(JObject root, Action<string> warn = null)
         {
             if (root?.Value<string>("schema") != "cf7-scene-lights.v1" || root["presets"] is not JObject presets)
                 throw new InvalidDataException("Invalid scene light catalog");
@@ -27,14 +27,26 @@ namespace CF7Launcher.Guardian.WorldCompositor
             SceneReserve = (int)Number(root,"sceneReserve",2,0,8);
             if (Number(root,"sceneReserve",2,0,8) != SceneReserve) throw new InvalidDataException("Fractional scene reserve");
             MaximumResponse = (float)Number(root,"maximumResponse",.78,0,.8);
-            foreach (var p in _presets.Properties()) Resolve(new JObject { ["Key"]="validate", ["Preset"]=p.Name }, 1);
+            foreach (var preset in _presets.Properties().ToArray()) {
+                try { Resolve(new JObject { ["Key"]="validate", ["Preset"]=preset.Name }, 1); }
+                catch (InvalidDataException error) when (warn != null) {
+                    warn("event=scene_light_preset_ignored preset="+preset.Name+" reason="+error.Message);
+                    preset.Remove();
+                }
+            }
         }
-        internal static SceneLightCatalog Load(string root)
+        internal static SceneLightCatalog Load(string root, Action<string> warn = null)
         {
-            byte[] bytes = File.ReadAllBytes(Path.Combine(root, RelativePath));
-            var result = new SceneLightCatalog(JObject.Parse(Encoding.UTF8.GetString(bytes).TrimStart('\ufeff')));
-            result.Sha256 = Convert.ToHexStringLower(SHA256.HashData(bytes));
-            return result;
+            try {
+                byte[] bytes = File.ReadAllBytes(Path.Combine(root, RelativePath));
+                var result = new SceneLightCatalog(JObject.Parse(Encoding.UTF8.GetString(bytes).TrimStart('\ufeff')), warn);
+                result.Sha256 = Convert.ToHexStringLower(SHA256.HashData(bytes));
+                return result;
+            }
+            catch (Exception error) when (warn != null && error is IOException or InvalidDataException or Newtonsoft.Json.JsonException or UnauthorizedAccessException) {
+                warn("event=scene_light_catalog_unavailable reason="+error.Message);
+                return new SceneLightCatalog(new JObject { ["schema"]="cf7-scene-lights.v1", ["sceneReserve"]=0, ["presets"]=new JObject() });
+            }
         }
         private static readonly HashSet<string> Fields = new(StringComparer.Ordinal) {
             "Key","Preset","Shape","RenderMode","BudgetPool","Priority","X","Y","OffsetX","OffsetY","Angle",
@@ -84,7 +96,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {var t=o[key];if(t==null)return fallback;if(t.Type!=JTokenType.Boolean)throw new InvalidDataException("Invalid boolean "+key);return t.Value<bool>();}
         internal static int Color(JToken t)
         {
-            if(t.Type==JTokenType.Integer){int n=t.Value<int>();if(n>=0 && n<=0xffffff)return n;}
+            if(t.Type==JTokenType.Integer && int.TryParse(t.ToString(),NumberStyles.None,CultureInfo.InvariantCulture,out int rgb) && rgb<=0xffffff)return rgb;
             if(t.Type==JTokenType.String){string s=t.Value<string>();if(s.StartsWith("#"))s=s[1..];else if(s.StartsWith("0x",StringComparison.OrdinalIgnoreCase))s=s[2..];
                 if(s.Length==6 && int.TryParse(s,NumberStyles.HexNumber,CultureInfo.InvariantCulture,out int n))return n;}
             throw new InvalidDataException("Invalid light color");

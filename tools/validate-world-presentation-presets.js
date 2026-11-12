@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const {parseXml} = require('./fontctl/lib/xml');
 const root = path.resolve(__dirname, '..');
 const argv = process.argv.slice(2);
 let file = path.join(root, 'data/environment/presentation_presets.v1.json');
@@ -79,15 +80,17 @@ for (const name of weatherNames) {
 }
 let references = 0;
 for (const relative of ['data/environment/stage_environment.xml', 'data/environment/scene_environment.xml']) {
-  const xml = fs.readFileSync(path.join(root, relative), 'utf8').replace(/<!--[\s\S]*?-->/g, '');
-  for (const block of xml.matchAll(/<Environment(?:\s[^>]*)?>[\s\S]*?<\/Environment>/g))
-    if (/<Preset>/.test(block[0]) && /<Overlay>/.test(block[0]))
+  const settings = parseXml(fs.readFileSync(path.join(root, relative), 'utf8'), relative);
+  for (const environment of settings.children.filter(node => node.name === 'Environment')) {
+    const presets = environment.children.filter(node => node.name === 'Preset');
+    if (presets.length && environment.children.some(node => node.name === 'Overlay'))
       throw Error(relative + ': a named Preset with Overlay selects custom drawing; define a catalog variant instead');
-  for (const match of xml.matchAll(/<Preset>\s*([^<]+?)\s*<\/Preset>/g)) {
-    const name = match[1].trim();
-    if (['雨', '雪', '沙尘'].includes(name)) continue;
-    if (!names.has(name)) throw Error(relative + ': undefined atmosphere preset ' + name);
-    references++;
+    for (const preset of presets) {
+      const name = preset.text.trim();
+      if (['雨', '雪', '沙尘'].includes(name)) continue;
+      if (!names.has(name)) throw Error(relative + ': undefined atmosphere preset ' + name);
+      references++;
+    }
   }
 }
 console.log('[world-presentation] ok version=1 named=' + names.size + ' weather=' + weatherNames.length

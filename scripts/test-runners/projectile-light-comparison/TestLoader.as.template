@@ -1,0 +1,11 @@
+﻿var comparisonRunId:String = "__FOCUSED_RUN_ID__";
+trace("FocusedTestRunId projectile-light-comparison Start: " + comparisonRunId);
+org.flashNight.gesh.xml.LoadXml.LightProfilesLoader.start();
+var profilePoll:MovieClip = this.createEmptyMovieClip("__externalLightProfiles", this.getNextHighestDepth());
+profilePoll.onEnterFrame = function():Void {
+    if (!org.flashNight.gesh.xml.LoadXml.LightProfilesLoader.settled()) return;
+    this.removeMovieClip();
+    org.flashNight.arki.render.ProjectileLightBenchmark.setReference(org.flashNight.arki.render.LegacyLightBenchmarkBridge,comparisonRunId);
+    org.flashNight.arki.render.ProjectileLightBenchmark.runAllTests();
+    trace("FocusedTestRunId projectile-light-comparison Complete: __FOCUSED_RUN_ID__");
+};
