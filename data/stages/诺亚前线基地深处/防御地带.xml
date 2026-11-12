@@ -822,6 +822,16 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <Parameters>
+                            <extra>
+                                <muti>
+                                    <hp>2</hp>
+                                    <hp最大值>2</hp最大值>
+                                    <基本防御力>2</基本防御力>
+                                    <防御力>2</防御力>
+                                </muti>
+                            </extra>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -868,6 +878,16 @@
                         <Level>40</Level>
                         <x>460</x>
                         <y>244</y>
+                        <Parameters>
+                            <extra>
+                                <muti>
+                                    <hp>2</hp>
+                                    <hp最大值>2</hp最大值>
+                                    <基本防御力>2</基本防御力>
+                                    <防御力>2</防御力>
+                                </muti>
+                            </extra>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -1016,6 +1036,14 @@
                             <魔法抗性>
                                 <电子体>0</电子体>
                             </魔法抗性>
+                            <extra>
+                                <muti>
+                                    <hp>2</hp>
+                                    <hp最大值>2</hp最大值>
+                                    <基本防御力>2</基本防御力>
+                                    <防御力>2</防御力>
+                                </muti>
+                            </extra>
                         </Parameters>
                     </Enemy>
                 </EnemyGroup>
