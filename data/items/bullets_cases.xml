@@ -353,6 +353,17 @@
             <hitMark>灼烧弹坑</hitMark>
         </attribute>
     </bullet>
+    <!-- 平射毒刺：一次命中可拦截；保留素材内置加速，统一运动迁移另行处理。 -->
+    <bullet>
+        <name>毒刺</name>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
+    </bullet>
     <bullet>
         <name>火箭弹</name>
         <movement>
