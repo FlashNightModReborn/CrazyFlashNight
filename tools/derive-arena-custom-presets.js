@@ -4,6 +4,7 @@
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
+const { arenaStageParameters } = require("./lib/arena-stage-parameters");
 
 const ROOT = path.resolve(__dirname, "..");
 const SOURCE_PATH = path.join(ROOT, "data", "arena", "meta_teams.json");
@@ -48,9 +49,8 @@ function memberToRoster(member) {
     count: Math.floor(count),
     name: member.name || `兵种${id}`,
   };
-  if (member.parameters && typeof member.parameters === "object" && !Array.isArray(member.parameters) && Object.keys(member.parameters).length) {
-    entry.parameters = member.parameters;
-  }
+  const parameters = arenaStageParameters(member.parameters);
+  if (parameters) entry.parameters = parameters;
   return entry;
 }
 

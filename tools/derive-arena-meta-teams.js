@@ -30,6 +30,7 @@
 const fs = require('fs');
 const path = require('path');
 const { UnitRegistry, extractDirectChildXml } = require('./lib/unit-registry');
+const { arenaStageParameters } = require('./lib/arena-stage-parameters');
 const {
     inspectMercDressupPortrait,
     normalizeLegacyGender
@@ -274,7 +275,7 @@ function extractEnemies(body, context) {
         const lvl = Number(tag1(inner, 'Level'));
         const qty = Number(tag1(inner, 'Quantity'));
         const parametersBody = tag1(inner, 'Parameters');
-        const parameters = parametersBody ? stableNormalize(parseParameterBody(parametersBody)) : null;
+        const parameters = parametersBody ? arenaStageParameters(stableNormalize(parseParameterBody(parametersBody))) : null;
         list.push({
             types: types,
             random: types.length > 1,

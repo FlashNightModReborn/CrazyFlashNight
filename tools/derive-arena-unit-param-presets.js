@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const { UnitRegistry, extractDirectChildXml } = require("./lib/unit-registry");
+const { arenaStageParameters } = require("./lib/arena-stage-parameters");
 
 const ROOT = path.resolve(__dirname, "..");
 const STAGES_DIR = path.join(ROOT, "data", "stages");
@@ -192,6 +193,8 @@ function buildPresets() {
       const type = extractDirectChildXml(body, "Type", rel + ": Enemy");
       const parametersBody = tagText(body, "Parameters");
       if (!parametersBody) continue;
+      const parameters = arenaStageParameters(stableNormalize(parseParameterBody(parametersBody)));
+      if (!parameters) continue;
       enemyWithParameters += 1;
       if (!type || !type.trim() || type.indexOf("<") >= 0) {
         skippedUnknownType += 1;
@@ -201,7 +204,6 @@ function buildPresets() {
       const unitType = registry.resolveType(type, rel + ": Enemy.Type");
       const id = normalizeUnitId(unitType);
       const unit = byType[unitType];
-      const parameters = stableNormalize(parseParameterBody(parametersBody));
       const signature = stableStringify(parameters);
       const key = unitType + "::" + signature;
       const level = Number(tagText(body, "Level"));

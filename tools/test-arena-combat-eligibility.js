@@ -5,6 +5,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const { arenaStageParameters } = require('./lib/arena-stage-parameters');
 
 const ROOT = path.resolve(__dirname, '..');
 const readJson = file => JSON.parse(fs.readFileSync(path.join(ROOT, file), 'utf8'));
@@ -31,6 +32,30 @@ function test(name, run) {
 const protectedType = type => !!(byType.get(type) && byType.get(type).NPC);
 const protectedMember = member => protectedType(member.type)
     || !!((member.parameters || member.Parameters || {}).NPC);
+
+test('arena projection keeps unit parameters and drops only story focus metadata', () => {
+    const raw = {
+        focusHudRole: 'protect', focusHudLabel: '黑龙', focusHudSuccessor: '步战',
+        NPC: true, focusHudColor: 'red', empty: {}, off: false, blank: '', zero: 0,
+        list: [null, { focusHudRole: 'boss' }, { 称号: '教主', focusHudLabel: '首领' }, []],
+        wrapper: { list: [{ focusHudSuccessor: '步战' }] }
+    };
+    assert.deepStrictEqual(arenaStageParameters(raw), {
+        NPC: true, focusHudColor: 'red', empty: {}, off: false, blank: '', zero: 0,
+        list: [null, { 称号: '教主' }, []]
+    });
+    assert.strictEqual(raw.focusHudRole, 'protect');
+    assert.strictEqual(arenaStageParameters({ wrapper: { focusHudRole: 'boss' } }), undefined);
+    assert.strictEqual(arenaStageParameters({}), undefined);
+});
+
+test('generated rosters, parameter presets and custom match codes contain no story HUD tags', () => {
+    for (const file of ['data/arena/meta_teams.json', 'launcher/web/modules/arena-meta-rosters.js',
+            'launcher/web/modules/arena-unit-param-presets.js', 'launcher/web/modules/arena-custom-presets.js']) {
+        const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+        assert(!/focusHud(?:Label|Role|Successor)/.test(text), file);
+    }
+});
 
 test('Host faction/escalation source contains no protected NPC', () => {
     for (const [faction, roster] of Object.entries(meta.rosters)) {
