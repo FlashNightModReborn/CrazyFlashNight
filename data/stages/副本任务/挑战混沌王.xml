@@ -47,7 +47,13 @@
                         <Level>100</Level>
                         <x>600</x>
                         <y>600</y>
-                        <Parameters>称号:人修罗,不掉钱:true,不掉装备:true</Parameters>
+                        <Parameters>
+                            <称号>人修罗</称号>
+                            <不掉钱>true</不掉钱>
+                            <不掉装备>true</不掉装备>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>人修罗</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

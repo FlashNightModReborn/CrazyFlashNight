@@ -54,6 +54,7 @@ class org.flashNight.arki.scene.StageManager {
     private var lastWarlordActionBinding:Object;
     private var lastWarlordActionTerminal:Object;
     private var combatAdmission:Object = null;
+    private var focusScope:Object;
 
     public var gameworld:MovieClip; // 当前gameworld
     public var environment;
@@ -311,6 +312,7 @@ class org.flashNight.arki.scene.StageManager {
         var spawnPointInfo = currentStageInfo.spawnPointInfo;
         
         gameworld = sceneManager.gameworld;
+        focusScope = org.flashNight.arki.hud.FocusTargetHudService.activateScope(gameworld, StageRunSession.getCurrentRunId(), currentStage);
         // Before environment/instance/callback side effects; SceneReady keeps its old meaning.
         if (!isWarlordAction && basicInfo != null
                 && (basicInfo.Cf6MapId != undefined || basicInfo.Cf6ChapterIndex != undefined)) {
@@ -739,6 +741,7 @@ class org.flashNight.arki.scene.StageManager {
                 || stageMode != "warlord" || event == null) return;
         if (event.terminal == "CompleteSubStage") {
             isCleared = true;
+            org.flashNight.arki.hud.FocusTargetHudService.endEncounter(focusScope);
             isFinished = true;
             clearTimePoolBestEffort(timePoolController);
         StageRunSession.finish("victory");
@@ -752,6 +755,7 @@ class org.flashNight.arki.scene.StageManager {
         }
         if (event.terminal == "FailStage") {
             isFailed = true;
+            org.flashNight.arki.hud.FocusTargetHudService.endEncounter(focusScope);
             clearTimePoolBestEffort(timePoolController);
             StageRunSession.finish("failure");
             hideNativeStageUiBestEffort();
@@ -1224,6 +1228,7 @@ class org.flashNight.arki.scene.StageManager {
             return;
         }
         isCleared = true;
+        org.flashNight.arki.hud.FocusTargetHudService.endEncounter(focusScope);
 
         leaveTimePoolBestEffort(timePoolController);
 
@@ -1320,6 +1325,7 @@ class org.flashNight.arki.scene.StageManager {
             return;
         }
         isFinished = true;
+        org.flashNight.arki.hud.FocusTargetHudService.endEncounter(focusScope);
         clearTimePoolBestEffort(timePoolController);
         org.flashNight.arki.scene.StageReturnFlow.setStoryReturn(currentStageInfo.basicInfo.EndFrame);
         StageRunSession.finish("victory");
@@ -1341,6 +1347,7 @@ class org.flashNight.arki.scene.StageManager {
             return;
         }
         isFailed = true;
+        org.flashNight.arki.hud.FocusTargetHudService.endEncounter(focusScope);
 
         clearTimePoolBestEffort(timePoolController);
 
@@ -1491,6 +1498,8 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function closeStage():Void{
+        org.flashNight.arki.hud.FocusTargetHudService.endEncounter(focusScope);
+        focusScope = null;
         org.flashNight.arki.scene.DefenseElevatorController.closeForStage(gameworld, currentStage);
         if (timePoolController != null) {
             leaveTimePoolBestEffort(timePoolController);

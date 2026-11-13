@@ -61,6 +61,8 @@
                 <y>470</y>
                 <IsHostile>false</IsHostile>
                 <Parameters>
+                    <focusHudRole>protect</focusHudRole>
+                    <focusHudLabel>浮士德兄弟</focusHudLabel>
                     <publishStageEvent>true</publishStageEvent>
                     <hpEmergency>0.5</hpEmergency>
                 </Parameters>
@@ -168,6 +170,8 @@
                         <x>800</x>
                         <y>490</y>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>方舟武士</focusHudLabel>
                             <名字>方舟武士</名字>
                             <狂暴>true</狂暴>
                             <hpEmergency>0.5</hpEmergency>

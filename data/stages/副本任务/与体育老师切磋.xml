@@ -27,6 +27,10 @@
                         <Level>30</Level>
                         <x>1000</x>
                         <y>550</y>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>体育老师</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

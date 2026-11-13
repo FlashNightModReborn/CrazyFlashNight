@@ -15,6 +15,7 @@ class org.flashNight.arki.scene.BookBossEncounter {
     private var groupIndex:Number;
     private var waitFrames:Number;
     private var stopped:Boolean;
+    private var focusLease:Object;
     public static function start(world:MovieClip, plan:Object):Void {
         if (world == undefined || plan == null) return;
         new BookBossEncounter(world, plan);
@@ -41,6 +42,9 @@ class org.flashNight.arki.scene.BookBossEncounter {
         var boss:MovieClip = world[plan.instanceName];
         if (boss == undefined || !(boss.hp满血值 > 0)) return;
         if (!(boss.hp > 0)) { finishEncounter(true); return; }
+        if (focusLease == null && plan.instanceName == "bookCampusTeacher") {
+            focusLease = org.flashNight.arki.hud.FocusTargetHudService.bindInitialized(boss, "boss", "体育老师");
+        }
         while (groupIndex < plan.groups.length && boss.hp / boss.hp满血值 <= plan.groups[groupIndex].hpRatio) {
             var entries:Array = plan.groups[groupIndex++].enemies;
             for (var i:Number = 0; i < entries.length; i++) queue.push(entries[i]);
@@ -84,6 +88,10 @@ class org.flashNight.arki.scene.BookBossEncounter {
         unit.removeMovieClip();
     }
     private function finishEncounter(victory:Boolean):Void {
+        if (focusLease != null) {
+            org.flashNight.arki.hud.FocusTargetHudService.clear(focusLease);
+            focusLease = null;
+        }
         if (stopped) return;
         stopped = true; queue = [];
         delete clock.onEnterFrame;

@@ -17,7 +17,7 @@
       var p = presets[i];
       var active = scaleEq(p.value, currentScale) ? ' active' : '';
       html += '<button type="button" class="fs-preset-btn' + active + '" ' +
-              'data-scale="' + p.value.toFixed(2) + '">' +
+              'aria-pressed="' + !!active + '" data-scale="' + p.value.toFixed(2) + '">' +
               p.label + '<span class="fs-preset-x">' + p.value.toFixed(2) + 'x</span>' +
               '</button>';
     }
@@ -31,16 +31,17 @@
 
     _container.innerHTML =
       '<div class="modal-header term-heading-rule">' +
-        '<h2>DISPLAY · 显示</h2>' +
-        '<button class="modal-close" id="display-close">×</button>' +
+        '<h2>启动设置</h2>' +
+        '<button class="modal-close" id="display-close" aria-label="关闭">×</button>' +
       '</div>' +
       '<div class="about-modal display-modal">' +
-        '<h3>FONT SIZE · 字号</h3>' +
+        '<h3>界面字号</h3>' +
         '<div class="fs-preset-row" id="display-fs-row">' + buildFontScaleButtons(currentScale) + '</div>' +
-        '<p class="fs-hint">如果觉得启动器文字发虚或太小，优先在这里调大字号；Windows 高 DPI 兼容性覆盖建议保持关闭，或选择“应用程序”。</p>' +
-        '<p class="fs-hint">字号会立即生效并保存到用户配置。窗口太小时页面会改为滚动，不再偷偷限制你选择的字号。</p>' +
+        '<p class="fs-hint">字号立即生效，也会在下次启动时沿用。</p>' +
+        '<h3>启动选项</h3>' +
       '</div>';
 
+    _container.querySelector('.display-modal').appendChild(document.getElementById('display-options'));
     document.getElementById('display-close').onclick = function () {
       window.BootstrapApp.tryCloseModal();
     };
@@ -53,8 +54,9 @@
       var btns = fsRow.children;
       for (var i = 0; i < btns.length; i++) {
         var v = parseFloat(btns[i].getAttribute('data-scale'));
-        if (!isNaN(v) && scaleEq(v, current)) btns[i].classList.add('active');
-        else btns[i].classList.remove('active');
+        var selected = scaleEq(v, current);
+        btns[i].classList.toggle('active', selected);
+        btns[i].setAttribute('aria-pressed', String(selected));
       }
     }
 
@@ -82,6 +84,7 @@
       _unsubConfigResp();
       _unsubConfigResp = null;
     }
+    document.getElementById('display-options-home').appendChild(document.getElementById('display-options'));
     _container = null;
   }
 

@@ -1,0 +1,14 @@
+﻿import org.flashNight.arki.bullet.BulletComponent.Chain.*;
+#include "逻辑/战斗系统/战斗系统_fs_联弹管理.as"
+#include "test-runners/cf6-playtest/PlaytestFixture.as"
+#include "逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as"
+import org.flashNight.gesh.depth.*;
+import org.flashNight.neur.ScheduleTimer.*;
+import org.flashNight.arki.unit.Action.Shoot.*;
+_root.handgunKnockbackCombatComplete = function():Void {
+    trace("FocusedTestRunId shotgun-counterattack Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId shotgun-counterattack Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest.measureCounterattacks = true;
+org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest.loadAuthoredShotguns = true;
+org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest.runAllTests();

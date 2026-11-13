@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.bullet.Factory.BulletFactory;
+﻿import org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager;
+import org.flashNight.arki.bullet.Factory.BulletFactory;
 import org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer;
 import org.flashNight.arki.bullet.BulletComponent.Utils.ShootingAngleCalculator;
 import org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
@@ -20,6 +21,7 @@ import org.flashNight.neur.Event.EventDispatcher;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 import org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine;
+import org.flashNight.naki.RandomNumberEngine.SeededLinearCongruentialEngine;
 
 /**
  * Issue #195 P1/P2 手枪弹武器击退增强真实战斗对照实验套件
@@ -46,6 +48,9 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
 
     private static var saved:Object;
     private static var fixtureCache:Object;
+    private static var friendlyFixtureCache:Object;
+    private static var mathStream:SeededLinearCongruentialEngine;
+    private static var authoredHurtSamples:Array;
     private static var cases:Array;
     private static var activeBullets:Array;
     private static var currentBatchSpecs:Array;
@@ -73,11 +78,14 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         return result;
     }
 
+    private static function sampleMath():Number { return mathStream.nextFloat(); }
+
     private static function spread(span:Number):Number {
         return LinearCongruentialEngine.getInstance().randomOffset(span);
     }
 
     private static function acquireFixtureEnemies(unit:Object, interval:Number):Object {
+        if (measureCounterattacks && unit.faction == FactionManager.FACTION_ENEMY) return friendlyFixtureCache;
         return fixtureCache;
     }
 
@@ -94,7 +102,93 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         return b;
     }
 
-    public static function runAllTests():Void {
+    /** Load the three authored shotguns through Flash, then drive the ordinary queue and hit reactions. */
+    public static var loadAuthoredShotguns:Boolean = false;
+    public static var measureCounterattacks:Boolean = false;
+    private static function runShotguns():Void {
+        var xml:XML = new XML();
+        xml.ignoreWhite = true;
+        xml.onLoad = function(ok:Boolean):Void {
+            var guns:Array = [];
+            if (ok) {
+                for (var item:XMLNode = this.firstChild.firstChild; item != null; item = item.nextSibling) {
+                    var name:String = "";
+                    var data:Object = {};
+                    for (var part:XMLNode = item.firstChild; part != null; part = part.nextSibling) {
+                        if (part.nodeName == "name") name = String(part.firstChild.nodeValue);
+                        if (part.nodeName == "data") for (var stat:XMLNode = part.firstChild; stat != null; stat = stat.nextSibling)
+                            data[stat.nodeName] = stat.firstChild.nodeValue;
+                    }
+                    if (name == "AA12" || name == "SPAS12" || name == "雷明登870") {
+                        guns.push({id:name, mode:"长枪", intervalMs:Number(data.interval), frameInterval:Math.ceil(Number(data.interval)*.03),
+                            bullet:data.bullet, power:Number(data.power), split:Number(data.split), speed:Number(data.velocity),
+                            spread:Number(data.diffusion), zRange:Number(data.bulletsize), knockdown:Number(data.impact), authoredKnockback:ShootInitCore.calculateWeaponKnockback(null, "长枪", Number(data.knockback), "霰弹枪"),
+                            hitEffect:data.bullethit, damageType:"物理", magCapacity:Number(data.capacity)});
+                    }
+                }
+            }
+            HandgunKnockbackCombatTest.runAllTests(guns);
+        };
+        xml.load("../data/items/武器_长枪_霰弹枪.xml");
+    }
+
+    private static function buildShotgunBatches(guns:Array):Void {
+        batches = [];
+        var strengths:Array = [8, 10, 12, 14, 16];
+        var layouts:Array = [
+            {name:"贴脸单人", distance:58, count:1, chase:0, gap:0},
+            {name:"中距追击", distance:166, count:2, chase:3, gap:46},
+            {name:"三人追击", distance:166, count:3, chase:3, gap:40},
+            {name:"近敌阵亡", distance:130, count:2, chase:3, gap:48, frail:true}
+        ];
+        if (measureCounterattacks) {
+            layouts = [
+                {name:"双方就绪", distance:58},
+                {name:"枪托已起", distance:58, winding:true},
+                {name:"低血枪托已起", distance:58, winding:true, frail:true},
+                {name:"近身不射对照", distance:58, winding:true, holdFire:true},
+                {name:"界外不射对照", distance:240, winding:true, holdFire:true}
+            ];
+        }
+        var formations:Array = [layouts];
+        if (!measureCounterattacks) {
+            formations.push([
+                {name:"后排入线向右", distance:166, count:2, chase:3, gap:46, entering:true},
+                {name:"后排入线向左", distance:166, count:2, chase:3, gap:46, entering:true, leftDir:true}
+            ]);
+        }
+        for (var g:Number = 0; g < guns.length; g++) {
+            var w:Object = guns[g];
+            weaponCatalog[w.id] = w;
+            check(w.authoredKnockback === 10, w.id + " live weapon XML resolves to the selected shotgun knockback of 10");
+            // Each run begins from the same random state for all five settings of one gun.
+            // The candidate and baseline share the first contact. Later trajectories may diverge.
+            for (var sample:Number = 0; sample < 3; sample++) for (var k:Number = 0; k < strengths.length; k++) {
+                var seed:Number = 42013 + sample * 17107;
+                for (var f:Number = 0; f < formations.length; f++) {
+                    var formation:Array = formations[f];
+                    var specs:Array = [];
+                    for (var l:Number = 0; l < formation.length; l++) {
+                        var layout:Object = formation[l];
+                        specs.push({shotgun:true, scenario:layout.name, weaponId:w.id, kb:strengths[k], sample:sample,
+                            enemyCount:layout.count || 1, forcedRegime:"STD_TOUGH", chaseSpeed:layout.chase || 0,
+                            maxShots:measureCounterattacks ? (layout.holdFire ? 0 : 1) : 3,
+                            startDist:layout.distance, enemySpacing:layout.gap, frail:layout.frail,
+                            winding:layout.winding, holdFire:layout.holdFire, entering:layout.entering, leftDir:layout.leftDir});
+                    }
+                    batches.push({enemySwf:"../flashswf/arts/new/Codex光头保安素材.swf", linkage:"敌人-CF6光头保安",
+                        seed:seed, maxTicks:measureCounterattacks ? 7 + w.frameInterval : 4 + w.frameInterval * 2 + 35, specs:specs});
+                }
+            }
+        }
+    }
+
+    public static function runAllTests(shotguns:Array):Void {
+        if (loadAuthoredShotguns) {
+            loadAuthoredShotguns = false;
+            runShotguns();
+            return;
+        }
         passed = 0;
         failed = 0;
         caseCount = 0;
@@ -103,26 +197,15 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         ready = false;
         finished = false;
         activeBullets = [];
+        authoredHurtSamples = shotguns != null && !measureCounterattacks ? [0, 0] : null;
 
-        // 真实生产级被击移动与移动钝感硬直实现（严格复刻 单位函数_lsy_敌人模板迁移.as 与 单位函数_fs_aka_玩家模板迁移.as）
-        // 使用 __kbOnEnterFrame 由帧循环 stepEnemyAI 每帧单次驱动，避免舞台 MovieClip 原生 onEnterFrame 与测试循环双重叠加
+        // Use the shipped enemy impulse. The fixture advances its callback exactly once per
+        // simulation tick so the Flash stage cannot apply a second movement on the same frame.
         prodKnockbackMove = function(dir:String, speed:Number, friction:Number):Void {
-            if (this.免疫击退) {
-                return;
-            }
+            if (this.免疫击退) return;
             this.移动钝感硬直(_root.钝感硬直时间);
-            this.减速度 = friction;
-            this.speed = speed;
-            this.__kbOnEnterFrame = function():Void {
-                if (!this.硬直中) {
-                    this.speed -= this.减速度;
-                    if (this.speed <= 0) {
-                        delete this.__kbOnEnterFrame;
-                        return;
-                    }
-                    this.移动(dir, this.speed);
-                }
-            };
+            Mover.beginEnemyHitMove(this, dir, speed, friction);
+            delete this.onEnterFrame;
         };
 
         prodHitstop = function(durationMs:Number):Void {
@@ -138,7 +221,11 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         };
 
         initCatalogs();
-        buildBatches();
+        if (shotguns != null) {
+            check(shotguns.length == 3, "all three shotgun profiles loaded from live XML");
+            if (shotguns.length != 3) { finish(); return; }
+            buildShotgunBatches(shotguns);
+        } else buildBatches();
 
         var queue:Object = BulletQueueProcessor;
         var cache:Object = TargetCacheManager;
@@ -210,10 +297,24 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         BulletQueueProcessor.initialize();
         ColliderFactoryRegistry.init();
         DamageManagerFactory.init();
-        PinkNoiseEngine.getInstance();
+        var pink:Object = PinkNoiseEngine.getInstance();
+        if (shotguns != null) {
+            // DamageCalculator draws from a separate, layered PinkNoiseEngine.
+            // Preserve the live streams before fixing the same starting conditions for every kb.
+            saved.pinkState = {seed:pink.seed, counter:pink.counter, s0:pink.s0, s1:pink.s1, s2:pink.s2, s3:pink.s3, s4:pink.s4};
+            saved.nativeMath = Math.random;
+            mathStream = new SeededLinearCongruentialEngine(42013);
+            Math.random = sampleMath;
+            saved.mathReadOnly = Math.random !== sampleMath;
+            if (saved.mathReadOnly) {
+                _global.ASSetPropFlags(Math, "random", 0, 4);
+                Math.random = sampleMath;
+            }
+            check(Math.random === sampleMath, "seeded fixture math stream installed");
+        }
         Mover.init();
 
-        verifyModFormula();
+        if (shotguns == null) verifyModFormula();
 
         driver = _root.createEmptyMovieClip("__handgunKbDriver", _root.getNextHighestDepth());
         driver.onEnterFrame = function():Void {
@@ -574,6 +675,11 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         u.状态改变 = function(state:String):Void {
             if (this.状态 == state) return;
             this.状态 = state;
+            if (state == "被击" && this.__fixtureHurtPose != undefined) {
+                this.__fixtureHurtFrame = _root.帧计时器.当前帧数;
+            } else {
+                delete this.__fixtureHurtFrame;
+            }
             this.gotoAndStop(state);
         };
         u.动画完毕 = function():Void {
@@ -658,6 +764,13 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         DepthManager.instance = new DepthManager(world, 100000, 1000000, 64);
         DepthManager.instance.calibrate(-2000, 300000);
 
+        if (batches[stage].seed != undefined) {
+            var seed:Number = batches[stage].seed;
+            LinearCongruentialEngine.getInstance().restoreState(seed);
+            var pink:Object = PinkNoiseEngine.getInstance();
+            pink.seed = seed + 314159; pink.reset();
+            mathStream = new SeededLinearCongruentialEngine(seed + 161803);
+        }
         var linkage:String = batches[stage].linkage;
         for (var i:Number = 0; i < currentBatchSpecs.length; i++) {
             var spec:Object = currentBatchSpecs[i];
@@ -690,6 +803,7 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
             }
 
             var rec:Object = {
+                shotgunHits:[{}, {}, {}], positions:[],
                 shotsFired: 0,
                 bulletsSpawned: 0,
                 totalHits: 0,
@@ -733,6 +847,12 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         var spacing:Number = spec.enemySpacing || 42;
         var startX:Number = c.originX + dirSign * (spec.startDist + eIdx * spacing);
         var zDelta:Number = spec.zDelta || 0;
+        if (spec.entering && eIdx == 1) {
+            // The rear target starts outside the first shot's depth band and pursues at its authored test speed.
+            var arrivalFrames:Number = Math.ceil((spec.startDist + spacing - 30) / (c.wProps.speed + spec.chaseSpeed)) + 2;
+            zDelta = c.wProps.zRange + u.跑Y速度 * arrivalFrames;
+            u.__testEnterLane = true;
+        }
         u._x = startX;
         u._y = u.Z轴坐标 = c.laneZ + zDelta;
         u.起始Y = u.Z轴坐标;
@@ -747,7 +867,7 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         u.remainingImpactForce = 0;
         u.lastHitBulletName = "";
         delete u.onEnterFrame;
-        delete u.__kbOnEnterFrame;
+        delete u.__enemyHitMoveDriver;
         if (u.knockStiffID != null) {
             EnhancedCooldownWheel.I().removeTask(u.knockStiffID);
             u.knockStiffID = null;
@@ -780,6 +900,8 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
             u.韧性系数 = 0.03;
         }
 
+        if (spec.shotgun && !measureCounterattacks) u.__fixtureHurtPose = (spec.sample + eIdx) % 2;
+        if (spec.frail && eIdx == 0) u.hp = 1;
         u.aabbCollider.updateFromUnitArea(u);
 
         // 重置并包裹真实 HitUpdater.getUpdater(u)，确保先完成 ImpactStateHandler 状态/摩擦力结算，再统计命中分类
@@ -792,6 +914,13 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
             baseHitUpdater(target, shooter, bullet, collisionResult, damageResult);
             var rec:Object = c.record;
             rec.totalHits++;
+            if (c.spec.shotgun && bullet.testShotNumber > 0) {
+                var segments:Number = Number(damageResult.actualScatterUsed) - Number(damageResult.scatterMissCount);
+                if (segments > 0 && damageResult.damageSize > 0) {
+                    var map:Object = rec.shotgunHits[bullet.testShotNumber - 1];
+                    map[eIdx] = (Number(map[eIdx]) || 0) + segments;
+                }
+            }
             if (bullet.hkbHitTargets == undefined) {
                 bullet.hkbHitTargets = {};
                 bullet.hkbHitTargetCount = 0;
@@ -817,6 +946,39 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         }, u);
     }
 
+    /** The opposing actor's authored guardDriver owns attack timing, reach, stance and release.
+     * Give the stationary shooter the standing guard's measured hurtbox for this controlled matchup. */
+    private static function setupCounterattack(c:Object):Void {
+        var u:MovieClip = c.enemies[0];
+        var p:MovieClip = c.player;
+        var bounds:Object = u.area.getBounds(u);
+        initEnemyActor(p);
+        p._x = c.originX; p._y = p.Z轴坐标 = c.laneZ;
+        p.hp = p.hp满血值 = 10000;
+        p.是否为敌人 = false; p.攻击模式 = "长枪"; p.方向改变("右");
+        p.命中率 = p.基础命中率 = 10000;
+        var area:MovieClip = p.createEmptyMovieClip("area", p.getNextHighestDepth());
+        area.beginFill(0, 0);
+        area.moveTo(bounds.xMin, bounds.yMin); area.lineTo(bounds.xMax, bounds.yMin);
+        area.lineTo(bounds.xMax, bounds.yMax); area.lineTo(bounds.xMin, bounds.yMax);
+        area.lineTo(bounds.xMin, bounds.yMin); area.endFill();
+        p.aabbCollider.updateFromUnitArea(p);
+        var update:Function = HitUpdater.getUpdater(p);
+        c.record.firstIncoming = -1;
+        c.record.incomingDamage = 0;
+        p.dispatcher.subscribe("hit", function(target:MovieClip, shooter:MovieClip, bullet:MovieClip, collision:Object, result:Object):Void {
+            update(target, shooter, bullet, collision, result);
+            var frame:Number = HandgunKnockbackCombatTest.ticks - 5;
+            if (target !== p || shooter !== u || frame < 0 || !(result.damageSize > 0)
+                || !(result.actualScatterUsed > result.scatterMissCount)) return;
+            if (c.record.firstIncoming < 0) c.record.firstIncoming = frame;
+            if (frame < c.wProps.frameInterval) c.record.incomingDamage += result.damageSize;
+        }, p);
+        u.攻击目标 = p._name;
+        u.命中率 = u.基础命中率 = 10000;
+        if (c.spec.winding) u.状态改变("近战");
+    }
+
     private static function rebuildTargetCache():Void {
         var allEnemies:Array = [];
         var i:Number;
@@ -832,6 +994,22 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
                 }
             }
         }
+        fixtureCache = makeFixtureCache(allEnemies);
+        if (measureCounterattacks) {
+            var friendly:Array = [];
+            for (i = 0; i < cases.length; i++) {
+                var player:MovieClip = cases[i].player;
+                if (cases[i].placed && player.hp > 0) {
+                    player.aabbCollider.updateFromUnitArea(player);
+                    friendly.push(player);
+                }
+            }
+            friendlyFixtureCache = makeFixtureCache(friendly);
+        }
+    }
+
+    private static function makeFixtureCache(allEnemies:Array):Object {
+        var i:Number;
         // 按 aabbCollider.left 升序排列以满足 BulletQueueProcessor 扫描线契约
         for (i = 1; i < allEnemies.length; i++) {
             var cur:MovieClip = allEnemies[i];
@@ -854,7 +1032,7 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
             if (a.right > runMax) runMax = a.right;
             rightMax[i] = runMax;
         }
-        fixtureCache = {
+        return {
             data: allEnemies,
             leftValues: lefts,
             rightValues: rights,
@@ -888,20 +1066,55 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
             角度偏移: 0,
             命中率: 10000
         };
+        if (c.spec.shotgun) {
+            props.霰弹值 = w.split;
+            props.子弹散射度 = props.站立子弹散射度 = w.spread;
+            props.武器扩散倍率 = 1;
+            props.霰弹分配模式 = 1;
+            props.testShotNumber = c.record.shotsFired;
+            var positions:Array = [];
+            for (var pos:Number = 0; pos < c.enemies.length; pos++) {
+                var actor:MovieClip = c.enemies[pos];
+                positions.push(Math.round(actor._x - p._x) + "/" + Math.ceil(actor.hp) + "/" + (actor.硬直中 ? "stun" : actor.状态));
+            }
+            c.record.positions.push(positions.join(","));
+        }
         if (w.pierceLimit != undefined) {
             props.pierceLimit = w.pierceLimit;
         }
         var b:Object = shoot(props);
         check(b != null, "spawn bullet case=" + c.index);
+        if (c.spec.shotgun && b != null) {
+            b.testShotNumber = c.record.shotsFired;
+            delete ChainUnitManager.getLayer().onEnterFrame;
+        }
         c.record.bulletsSpawned++;
     }
 
     private static function stepEnemyAI(u:MovieClip, c:Object):Void {
-        // 复刻真实帧循环：先执行被击滑动 __kbOnEnterFrame（若存在），再执行 AI 追击移动
-        if (u.__kbOnEnterFrame != undefined) {
-            u.__kbOnEnterFrame();
+        // The native guard uses AVM1 random(2) on clip load. Both original reactions are
+        // sampled, at the same animation age for all kb settings. The selected clip's own
+        // frame action still owns recovery. Frame 1 starts a0 and frame 13 starts a1.
+        if (u.__fixtureHurtFrame != undefined) {
+            var age:Number = _root.帧计时器.当前帧数 - u.__fixtureHurtFrame;
+            if (age >= 2) {
+                var pose:Number = u.__fixtureHurtPose;
+                var lastAge:Number = pose == 0 ? 7 : 6;
+                if (age <= lastAge) {
+                    var frame:Number = (pose == 0 ? 1 : 13) + age;
+                    var hurtBody:MovieClip = u.man;
+                    hurtBody.gotoAndStop(frame);
+                    if (age == 2 && hurtBody._currentframe == frame) authoredHurtSamples[pose]++;
+                } else {
+                    check(false, "authored hurt timeline did not release its actor at the sampled end frame");
+                    delete u.__fixtureHurtFrame;
+                }
+            }
         }
-        if (u.跑X速度 <= 0) return;
+        if (u.__enemyHitMoveDriver != undefined) {
+            u.__enemyHitMoveDriver();
+        }
+        if (u.跑X速度 <= 0 || u.hp <= 0) return;
         // 真实硬直/被击/浮空/倒地门控：硬直中或处于被击/击倒状态时无法主动追击
         if (u.硬直中 || u.浮空 || u.倒地 || u.状态 == "被击" || u.状态 == "击倒") {
             return;
@@ -909,6 +1122,9 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
         var chaseDir:String = c.leftDir ? "右" : "左";
         u.方向改变(chaseDir);
         u.移动(chaseDir, u.跑X速度);
+        if (u.__testEnterLane && u.Z轴坐标 > c.laneZ) {
+            u.移动("上", Math.min(u.跑Y速度, u.Z轴坐标 - c.laneZ));
+        }
     }
 
     private static function tick():Void {
@@ -944,12 +1160,24 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
                 for (eIdx = 0; eIdx < cInit.enemies.length; eIdx++) {
                     configureEnemyRegime(cInit.enemies[eIdx], cInit.spec, cInit, eIdx);
                 }
+                if (measureCounterattacks) setupCounterattack(cInit);
                 cInit.placed = true;
             }
         }
 
-        if (ticks >= 4) {
-            var combatTick:Number = ticks - 4;
+        if (measureCounterattacks && ticks == 4) {
+            for (i = 0; i < cases.length; i++) {
+                var trial:Object = cases[i];
+                if (trial.spec.winding) {
+                    var guard:MovieClip = trial.enemies[0];
+                    check(guard.guardAttackOwner.mode == "melee", "authored wind-up armed " + trial.spec.scenario);
+                    guard.man.gotoAndStop(18 + trial.spec.sample);
+                }
+            }
+        }
+        var firstShotTick:Number = measureCounterattacks ? 5 : 4;
+        if (ticks >= firstShotTick) {
+            var combatTick:Number = ticks - firstShotTick;
             for (i = 0; i < cases.length; i++) {
                 var c:Object = cases[i];
                 var spec:Object = c.spec;
@@ -998,6 +1226,7 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
                 }
             }
             rebuildTargetCache();
+            if (cases[0].spec.shotgun) ChainUnitManager.tick();
             BulletQueueProcessor.processQueue();
 
             // 4. 采样距离、共线挤压与突围帧
@@ -1054,6 +1283,33 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
             var hps:Number = rec.bulletsSpawned > 0 ? Math.round((rec.totalHits / rec.bulletsSpawned) * 100) : 0;
 
             caseCount++;
+            if (measureCounterattacks) {
+                var deadline:Number = w.frameInterval;
+                var incoming:Boolean = rec.firstIncoming >= 0 && rec.firstIncoming < deadline;
+                check(rec.shotsFired === spec.maxShots, "one authored shot or held fire " + spec.scenario);
+                if (!spec.holdFire) check(rec.shotgunHits[0][0] > 0, "outgoing real hit " + spec.scenario);
+                if (spec.scenario == "近身不射对照") check(incoming && c.player.hp < 10000, "positive return-fire control");
+                if (spec.scenario == "界外不射对照") check(!incoming && c.player.hp == 10000, "out-of-reach return-fire control");
+                trace("[SHOTGUN_THREAT] " + w.id + "|" + spec.scenario + "|" + spec.kb + "|" + spec.sample
+                    + "|" + deadline + "|" + rec.firstIncoming + "|" + rec.incomingDamage + "|" + c.player.hp
+                    + "|" + c.enemies[0].hp + "|" + c.enemies[0].guardMeleeCount);
+                continue;
+            }
+            if (spec.shotgun) {
+                var detail:Array = [];
+                for (var shot:Number = 0; shot < 3; shot++) {
+                    var applied:Array = [];
+                    for (var enemy:Number = 0; enemy < c.enemies.length; enemy++) applied.push(rec.shotgunHits[shot][enemy] || 0);
+                    detail.push(applied.join(","));
+                }
+                check(rec.shotsFired == 3 && rec.shotgunHits[0][0] > 0, "first real non-MISS hit " + w.id + "/" + spec.scenario + "/" + spec.kb);
+                if (spec.entering) {
+                    check(!rec.shotgunHits[0][1] && c.enemies[1].Z轴坐标 - c.laneZ < w.zRange,
+                        "first shot hits only front and the rear chaser reaches the lane " + w.id + "/" + spec.scenario);
+                }
+                trace("[SHOTGUN_CONTACT] " + w.id + "|" + spec.scenario + "|" + spec.kb + "|" + detail.join(";") + "|" + rec.positions.join(";") + "|" + spec.sample);
+                continue;
+            }
             verifyCaseAssertions(c, netPush, spanX);
 
             trace('[HKB_METRIC] {"scenario":"' + spec.scenario
@@ -1148,6 +1404,13 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
             queue._raySettleProbe = saved.probe;
             cache.acquireEnemyCache = saved.acquireEnemy;
             LinearCongruentialEngine.getInstance().restoreState(saved.seed);
+            if (saved.pinkState != null) {
+                var pink:Object = PinkNoiseEngine.getInstance();
+                for (var key:String in saved.pinkState) pink[key] = saved.pinkState[key];
+                Math.random = saved.nativeMath;
+                if (saved.mathReadOnly) _global.ASSetPropFlags(Math, "random", 4, 0);
+                mathStream = null;
+            }
             _root.帧计时器.eventBus.destroy();
             _root.gameworld = saved.world;
             _root.帧计时器 = saved.clock;
@@ -1167,6 +1430,10 @@ class org.flashNight.arki.unit.Action.Shoot.HandgunKnockbackCombatTest {
             }
         }
 
+        if (authoredHurtSamples != null) {
+            check(authoredHurtSamples[0] > 0 && authoredHurtSamples[1] > 0, "both authored guard hit reactions were sampled");
+            trace("[SHOTGUN_HURT_POSES] a0=" + authoredHurtSamples[0] + " a1=" + authoredHurtSamples[1]);
+        }
         trace("HandgunKnockbackCombatTest: " + passed + " passed, " + failed + " failed; " + caseCount + " combat cases");
         trace("HandgunKnockbackCombatTest Tests Passed: " + passed);
         trace("HandgunKnockbackCombatTest Tests Failed: " + failed);

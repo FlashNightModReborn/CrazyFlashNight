@@ -30,6 +30,8 @@
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMax>简单</DifficultyMax>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>Andy Law</focusHudLabel>
                             <掉落物>
                                 <名字>绝地武士佩剑</名字>
                                 <概率>100</概率>
@@ -45,6 +47,10 @@
                         <Level>70</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>拼命之王</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

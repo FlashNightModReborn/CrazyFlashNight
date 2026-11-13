@@ -43,6 +43,7 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static var coldSkillsEnabled:Boolean = false;
     private static var focusTargetEnabled:Boolean = false;
     private static var focusTargetsEnabled:Boolean = false;
+    private static var focusTargetCapacity:Number = 4;
     private static var buffDetailsEnabled:Boolean = false;
     private static var lastFull:Number = 0;
     private static var lastProjectionError:Number = -10000;
@@ -184,14 +185,17 @@ class org.flashNight.arki.hud.PlayerHudService {
         // 避免旧解析器的白名单 Keys() 因未知组名整包拒收。
         if (p.coldSkills === true) coldSkillsEnabled = true;
         if (p.focusTarget === true) focusTargetEnabled = true;
-        if (p.focusTargets === true) focusTargetsEnabled = true;
+        if (p.focusTargets === true) {
+            focusTargetsEnabled = true;
+            focusTargetCapacity = p.focusTargetCapacity === 8 ? 8 : 4;
+        }
         if (p.buffDetails === true) { buffDetailsEnabled = true; buffProjection.setDetailsEnabled(true); }
         forceFull = true;
     }
     public static function tick():Void {
         if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("playerHud")) return;
         var online:Boolean = _root.server.isSocketConnected === true;
-        if (!online) { connected = false; weaponVisualsEnabled = false; ammoDetailsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; focusTargetEnabled = false; focusTargetsEnabled = false; buffDetailsEnabled = false; buffProjection.setDetailsEnabled(false); forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
+        if (!online) { connected = false; weaponVisualsEnabled = false; ammoDetailsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; focusTargetEnabled = false; focusTargetsEnabled = false; focusTargetCapacity = 4; buffDetailsEnabled = false; buffProjection.setDetailsEnabled(false); forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
         if (!connected) { connected = true; forceFull = true; }
         var unit:Object = hero();
         // 热路径只观察外层屏障；重算仍由领域冷路及显式读取负责。
@@ -213,9 +217,9 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (addGroup(groups, "combat", readCombat(unit), full)) count++;
         if (addGroup(groups, "loadout", loadout, full)) count++;
         if (addGroup(groups, "cooldowns", readCooldowns(), full)) count++;
-        if (addGroup(groups, "buffs", buffProjection.snapshot(), full)) count++;
+        if (addGroup(groups, "buffs", buffProjection.snapshotFor(unit), full)) count++;
         if (coldSkillsEnabled && addGroup(groups, "coldSkills", readColdSkills(unit), full)) count++;
-        if ((focusTargetsEnabled || focusTargetEnabled) && addGroup(groups, "focusTarget", focusTargetsEnabled ? FocusTargetHudService.snapshotList(unit) : FocusTargetHudService.snapshot(), full)) count++;
+        if ((focusTargetsEnabled || focusTargetEnabled) && addGroup(groups, "focusTarget", focusTargetsEnabled ? FocusTargetHudService.snapshotList(unit, focusTargetCapacity) : FocusTargetHudService.snapshot(), full)) count++;
         if (resourceHintsEnabled && addGroup(groups, "resources", SkillResourceService.snapshot(unit, loadout, rawGroups.resources), full)) count++;
         compat._pendingHpDisplayRefresh = false;
         if (count == 0) return;

@@ -323,11 +323,12 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 - `一次性领取ID`：仅用于可拾取物。成功进入背包后写入 `_root._saveExt.一次性领取[ID]` 并标记存档为脏；生成前若已领取则不再创建。背包满、未实际拾取或仅进入关卡不会消耗领取资格。`_saveExt` 由 `SaveManager` 透传，无需扩展存档主体或 `save_repair_dict.json`。
 
 首次剧情遗物推荐同时使用任务门控和一次性领取：前者控制时间线与复盘显示，后者阻止玩家在任务交付前退出重进重复领取。
+一次性领取 ID 标识奖励位；调整该位置配发的物品时沿用既有 ID，避免已领取存档再次获得奖励。
 
 ```xml
 <Pickups>
     <Pickup>
-        <Name>Type56R</Name>
+        <Name>HKSL8</Name>
         <Value>1</Value>
         <x>1200</x>
         <y>500</y>

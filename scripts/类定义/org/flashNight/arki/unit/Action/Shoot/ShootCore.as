@@ -253,7 +253,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      *                          消费后盖戳到子弹属性（发射间隔毫秒），供纵向联弹推导补弹速率。
      * @return Boolean       返回是否处于持续射击状态
      */
-    public static function continuousShoot(core:Object, attackMode:String, shootSpeed:Number, params:Object, effectiveInterval:Number):Boolean {
+    public static function continuousShoot(core:Object, attackMode:String, shootSpeed:Number, params:Object, effectiveInterval:Number, reportAccepted:Boolean, request:Object):Boolean {
         if(ShootCore.isPresentationControlled(core)) {ShootCore.cleanupLane(core,params,true);return false;}
         // 缓存常用全局对象和属性引用
         var root:Object = _root;
@@ -312,7 +312,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             if (core.下行) {
                 offset = 30;
                 jumpFrameName = "下射击" + config.prefix;
-            } else if (core.上行) {
+            } else if (request != null && request.kind == "stone" ? core.isRocketMode : core.上行) {
                 offset = -30;
                 jumpFrameName = "上射击" + config.prefix;
             }
@@ -332,7 +332,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 执行射击逻辑
         core[shootStateName] = false;
 
-        if (core[actionFlagName]) {
+        var fired:Boolean = false;
+        if (request != null || core[actionFlagName]) {
             dispatcher.publish(attackMode + "射击");
             // _root.发布消息(attackMode + "射击");
             if (typeof man.prepareStandardShotPose == "function") man.prepareStandardShotPose(jumpFrameName);
@@ -354,7 +355,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             // 全武器普及（原 fillrate=auto opt-in 已默认化）：每次射击仅一次属性写，
             // 低射速武器（如磁稳贯穿弹改装后 interval 300ms+）由此获得 <1发/帧 的隔帧补弹节奏
             core.__pendingFireInterval = (effectiveInterval > 0) ? effectiveInterval : shootSpeed;
-            core[shootStateName] = core[shootMethodName](gunRef, bulletAttr);
+            fired = core[shootMethodName](gunRef, bulletAttr);
+            core[shootStateName] = fired;
 
             // 射击成功时设置后摇状态
             if (core[shootStateName]) {
@@ -369,7 +371,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             // 更新弹匣剩余子弹数量
             var magazineRemaining:Number = bulletAttr.ammoCost * (core[magazineCapName] - core[attackMode].value.shot);
             dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField, attackMode);
-            if (core[shootStateName] && shootSpeed > 300) {
+            if (fired && !core[shootStateName]) {
+                ShootCore.scheduleRecoil(core, config.taskName, Math.min(shootSpeed, 300), null);
+            } else if (core[shootStateName] && shootSpeed > 300) {
                 ShootCore.scheduleRecoil(core, config.taskName, 300, null);
             }
         }
@@ -380,10 +384,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         }
         // 移除现有射击任务
         ShootCore.removeStoredTask(core, config.taskName);
-        return false;
+        return reportAccepted === true && fired;
     }
 
-    public static function continuousShootAs(core:Object, context:Object, effectiveInterval:Number):Boolean {
+    public static function continuousShootAs(core:Object, context:Object, effectiveInterval:Number, reportAccepted:Boolean):Boolean {
         if(ShootCore.isPresentationControlled(core)) {ShootCore.cleanupLane(core,context.params,true);return false;}
         var root:Object = _root;
         var man:Object = (context.man != null) ? context.man : core.man;
@@ -441,6 +445,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         }
 
         core[shootStateName] = false;
+        var fired:Boolean = false;
         if (core[actionFlagName]) {
             if (context.preFireEventName != null) {
                 dispatcher.publish(context.preFireEventName, core, weaponType, context);
@@ -457,7 +462,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
             var bulletAttr:Object = ShootCore.resolveBulletAttr(core, man, config, context);
             core.__pendingFireInterval = (effectiveInterval > 0) ? effectiveInterval : interval;
-            core[shootStateName] = core[context.fireMethodName](gunRef, bulletAttr);
+            fired = core[context.fireMethodName](gunRef, bulletAttr);
+            core[shootStateName] = fired;
 
             if (core[shootStateName]) {
                 ShootCore.setLaneRecoil(core, config.taskName, true);
@@ -475,7 +481,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
             var magazineRemaining:Number = ShootCore.resolveMagazineRemaining(core, weaponType, bulletAttr, context);
             dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField, weaponType);
-            if (core[shootStateName] && context.useGlobalRecoilTask && interval > 300) {
+            if (fired && !core[shootStateName]) {
+                ShootCore.scheduleRecoil(core, config.taskName, Math.min(interval, context.shootingStateCapMs > 0 ? Math.min(300, context.shootingStateCapMs) : 300), null);
+            } else if (core[shootStateName] && context.useGlobalRecoilTask && interval > 300) {
                 ShootCore.scheduleRecoil(core, config.taskName, 300, null);
             }
         }
@@ -486,7 +494,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
         ShootCore.removeStoredTask(core, config.taskName);
         if (context.recoilPolicy == "aggregate") ShootCore.updateAggregateRecoil(core);
-        return false;
+        return reportAccepted === true && fired;
     }
 
     /**
@@ -524,16 +532,19 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     public static function startShooting(
         core:Object,           // 自机对象（原 parent）
         protagonist:Object,       // 原主角函数对象（原 this）
-        params:Object             // 主副手参数（primaryParams/secondaryParams）
+        params:Object,            // 主副手参数（primaryParams/secondaryParams）
+        request:Object            // 战技可携带一个本次调用独占的单发请求
     ):Void {
         if(ShootCore.isPresentationControlled(core)) {ShootCore.cleanupLane(core,params,true);return;}
+        if (request != null && (request !== core.__borrowedLongGunShot || request.weapon !== core.长枪
+                || core.攻击模式 != "长枪" || params !== primaryParams || request.man != null)) return;
         // 若正在该状态射击中或正在换弹，直接返回
         if (core[params.shootingStateName]) return;
         if (protagonist.换弹标签 && !ReloadManager.tryCancelForFire(protagonist, core, core.攻击模式)) return;
 
         // 半自动冷却检查：锁标记存储在 core 上，随 MC 生命周期自动释放
         var semiLockProp:String = SEMI_LOCK_PREFIX + params.taskName;
-        if (core[semiLockProp]) return;
+        // 空匣长按可换弹；有弹时仍要求普通半自动松键。
 
         // 缓存攻击模式与射击速度
         var attackMode:String = core.攻击模式;
@@ -556,6 +567,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         }
 
         // 检查射击许可标签
+        if (core[semiLockProp]) return;
         if (!protagonist.射击许可标签) {
             // _root.发布消息("主角函数.射击许可", "不允许射击");
             return;
@@ -583,9 +595,20 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             return;
         }
 
-        // 调用持续射击核心逻辑（枪械师点按以 tapInterval 作为实际生效间隔传入）
-        if (ShootCore.continuousShoot(core, attackMode, interval, params, hasGunslingerSkill ? tapInterval : interval)) {
+        var dispatchInterval:Number = hasGunslingerSkill && core[chainProp + "_handoff"] === "held" ? holdInterval : tapInterval;
+        if (request != null) {
+            // 借射的订阅者仍读取当前上身的模板。所有技能投影/瞄准字段只写这一发。
+            request.man = protagonist;
+            request.template = protagonist.子弹属性;
+            if (request.template == null) return;
+            var projectile:Object = {};
+            for (var field:String in request.template) projectile[field] = request.template[field];
+            request.projectile = projectile;
+            protagonist.子弹属性 = projectile;
+        }
+        if (ShootCore.continuousShoot(core, attackMode, interval, params, dispatchInterval, true, request)) {
             if (hasGunslingerSkill) {
+                delete core[chainProp + "_handoff"];
                 // 枪械师技能：半自动武器连射
                 // 1) 点按收益：以 0.85x 作为最小射击间隔（解锁下一次 startShooting）
                 ShootCore.armRateLimit(core, params.taskName, tapInterval);
@@ -596,18 +619,25 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 var recoilTime:Number = Math.min(interval, 300) * recoilMultiplier;
                 ShootCore.scheduleRecoil(core, params.taskName, recoilTime, params.shootingStateName);
 
-                // 2) 按住自动：注册连射链（固定 1.25x 间隔）
-                core[chainProp] = EnhancedCooldownWheel.I().addTask(
-                    ShootCore._gunslingerContinuousShoot,
-                    holdInterval,
-                    false, // 一次性：由回调自行决定是否继续
-                    core,
-                    attackMode,
-                    interval, // 基础间隔
-                    params,
-                    chainProp,
-                    semiReleasedProp
-                );
+                // 技能借射只继承按键对应的期限。到期回调无权开火。
+                if (request != null) {
+                    if (!core[params.actionFlagName]) return;
+                    core[chainProp + "_handoff"] = true;
+                    core[chainProp] = EnhancedCooldownWheel.I().addTask(
+                        ShootCore.retireHandedOffChain, holdInterval, false, core, chainProp, params.actionFlagName, false);
+                } else {
+                    core[chainProp] = EnhancedCooldownWheel.I().addTask(
+                        ShootCore._gunslingerContinuousShoot,
+                        holdInterval,
+                        false, // 一次性：由回调自行决定是否继续
+                        core,
+                        attackMode,
+                        interval, // 基础间隔
+                        params,
+                        chainProp,
+                        semiReleasedProp
+                    );
+                }
 
                 // 3) 轮询检测按键释放：释放时取消连射链，避免挂起任务干扰点按节奏
                 var pollProp:String = GUNSLINGER_RELEASE_POLL_PREFIX + params.taskName;
@@ -635,7 +665,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 // 普通半自动后摇控制：与全自动对等
                 var semiRecoilTime:Number = Math.min(interval, 300);
                 ShootCore.scheduleRecoil(core, params.taskName, semiRecoilTime, params.shootingStateName);
-            } else {
+            } else if (request != null) {
+                ShootCore.scheduleRecoil(core, params.taskName, Math.min(interval, 300), params.shootingStateName);
+            } else if (core[params.shootingStateName]) {
                 // 全自动模式：注册持续射击循环任务
                 ShootCore.removeStoredTask(core, params.taskName);
                 core[params.taskName] = EnhancedCooldownWheel.I().addTask(
@@ -699,7 +731,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             return false;
         }
 
-        if (ShootCore.continuousShootAs(core, context, interval)) {
+        if (ShootCore.continuousShootAs(core, context, interval, true)) {
+            if (!core[params.shootingStateName]) return true;
             ShootCore.removeStoredTask(core, params.taskName);
             core[params.taskName] = EnhancedCooldownWheel.I().addTask(
                 ShootCore.continuousShootAs,
@@ -870,12 +903,23 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 2) 取消连射链（若仍挂起）
         var chainTaskId = core[chainTaskProp];
         delete core[chainTaskProp];
+        delete core[chainTaskProp + "_handoff"];
         if (chainTaskId != null && typeof chainTaskId == "number") {
             wheel.removeTask(chainTaskId);
         }
 
         // 3) 标记按键已释放（用于点按识别）
         if (releasedProp) core[releasedProp] = true;
+    }
+
+    // 到期旧回调只能归还射击权。按键仍按住时，新动作的第一发也使用连发间隔。
+    private static function retireHandedOffChain(core:Object, chainProp:String, action:String, reloading:Boolean):Boolean {
+        var handoff:String = chainProp + "_handoff";
+        if (core[handoff] !== true && !reloading) return false;
+        if (core[handoff] === true && core[action]) core[handoff] = "held";
+        else delete core[handoff];
+        delete core[chainProp];
+        return true;
     }
 
     /**
@@ -897,11 +941,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         chainProp:String,
         releasedProp:String
     ):Void {
-        // 防御：换弹期间停止连射链
-        if (core.man.换弹标签) {
-            delete core[chainProp];
-            return;
-        }
+        if (ShootCore.retireHandedOffChain(core, chainProp, params.actionFlagName, core.man.换弹标签)) return;
         // 检查按键是否仍被按住
         if (!core[params.actionFlagName]) {
             // 按键已释放，标记并停止连射
@@ -915,7 +955,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var tapInterval:Number = baseInterval * calcGunslingerTapMultiplier(gunslingerLevel);
 
         // 尝试射击（连按链以 holdInterval 作为实际生效间隔传入）
-        if (ShootCore.continuousShoot(core, attackMode, baseInterval, params, holdInterval)) {
+        if (ShootCore.continuousShoot(core, attackMode, baseInterval, params, holdInterval, true)) {
             // 射击成功：点按收益最小间隔（用于下一次 startShooting）
             var rateKey:String = core._name + "_" + params.taskName;
             ShootCore.armRateLimit(core, params.taskName, tapInterval);
@@ -971,11 +1011,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         chainProp:String,
         releasedProp:String
     ):Void {
-        // 防御：换弹期间停止连射链
-        if (target.换弹标签) {
-            delete core[chainProp];
-            return;
-        }
+        if (ShootCore.retireHandedOffChain(core, chainProp, actionFlagName, target.换弹标签)) return;
         // 检查按键是否仍被按住
         if (!core[actionFlagName]) {
             // 按键已释放，标记并停止连射
@@ -989,7 +1025,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var tapInterval:Number = baseInterval * calcGunslingerTapMultiplier(gunslingerLevel);
 
         // 尝试射击（连按链以 holdInterval 作为实际生效间隔传入）
-        var continueShooting:Boolean = target[continueMethodName](core, weaponType, baseInterval, target, holdInterval);
+        var continueShooting:Boolean = target[continueMethodName](core, weaponType, baseInterval, target, holdInterval, true);
         if (continueShooting) {
             // 射击成功：点按收益最小间隔（用于下一次 startShooting）
             var rateKey:String = core._name + "_" + timerProp;
@@ -1045,6 +1081,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 EnhancedCooldownWheel.I().removeTask(chainTask);
                 delete core[chainProp];
             }
+            delete core[chainProp + "_handoff"];
             if (releasedProp) core[releasedProp] = true;
         }
     }
@@ -1101,18 +1138,19 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         }
 
         var pollProp:String = GUNSLINGER_RELEASE_POLL_PREFIX + params.taskName;
-        if (core[pollProp] != null) {
-            wheel.removeTask(core[pollProp]);
-            delete core[pollProp];
-        }
-
         var chainProp:String = GUNSLINGER_CHAIN_PREFIX + params.taskName;
-        if (core[chainProp] != null) {
-            wheel.removeTask(core[chainProp]);
+        // 按住时保留原连发截止；接管后的回调只能解锁，不再代旧动作射击。
+        if (preserveCooldown && core[params.actionFlagName] &&
+                (core[chainProp] != null || core[chainProp + "_handoff"] === "held")) {
+            if (core[chainProp] != null) core[chainProp + "_handoff"] = true;
+        } else {
+            if (core[pollProp] != null) wheel.removeTask(core[pollProp]);
+            if (core[chainProp] != null) wheel.removeTask(core[chainProp]);
+            delete core[pollProp];
             delete core[chainProp];
+            delete core[chainProp + "_handoff"];
+            delete core[SEMI_RELEASED_PREFIX + params.taskName];
         }
-
-        delete core[SEMI_RELEASED_PREFIX + params.taskName];
         core[params.shootingStateName] = false;
         ShootCore.setLaneRecoil(core, params.taskName, false);
         delete core[RECOIL_LANE_PREFIX + params.taskName];

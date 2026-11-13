@@ -982,9 +982,15 @@
                 <Name>前治安官</Name>
                 <Title>第一防线·无线电</Title>
                 <Char>前治安官（无线电）</Char>
-                <Text>起爆线断了就别去车边接！拿上掩体旁老兵留下的五六式和手雷，退到右侧掩体后面，直接开火打爆吉普底舱！</Text>
+                <Text>起爆线断了就别去车边接！拿上掩体旁老兵留下的SL8和手雷，先退到右侧掩体后整备。</Text>
             </Dialogue>
             <Dialogue id="4">
+                <Name>前治安官</Name>
+                <Title>第一防线·无线电</Title>
+                <Char>前治安官（无线电）</Char>
+                <Text>那支步枪点射准、单发有劲，优先收拾逼近的军人和胖僵尸。准备好了，就直接开火打爆吉普底舱！</Text>
+            </Dialogue>
+            <Dialogue id="5">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
@@ -1000,7 +1006,7 @@
                 <Name>NewcomerRescueSignal</Name>
                 <Parameter>jeep_unlock</Parameter>
             </Callback>
-            <Message>攻击吉普弹药舱；短引信启动后立即远离车辆。</Message>
+            <Message>先在右侧掩体后换装整备，准备好后攻击吉普弹药舱；短引信启动后立即远离车辆。</Message>
         </Event>
         <Event>
             <EventName>UnitDeath</EventName>
@@ -2000,13 +2006,19 @@
                 <y>400</y>
                 <Parameters>
                     <掉落物>
-                        <名字>SPAS12</名字>
+                        <名字>雷明登870</名字>
                         <概率>100</概率>
                         <最小数量>1</最小数量>
                         <最大数量>1</最大数量>
                     </掉落物>
                     <掉落物>
                         <名字>12号霰弹弹药</名字>
+                        <概率>100</概率>
+                        <最小数量>6</最小数量>
+                        <最大数量>6</最大数量>
+                    </掉落物>
+                    <掉落物>
+                        <名字>突击步枪通用弹药</名字>
                         <概率>100</概率>
                         <最小数量>4</最小数量>
                         <最大数量>4</最大数量>
@@ -2041,7 +2053,7 @@
                 <Name>前治安官</Name>
                 <Title>第一防线·无线电</Title>
                 <Char>前治安官（无线电）</Char>
-                <Text>稳住阵脚！沙袋后方的战备箱里有霰弹枪和十二号鹿弹。等无人机压低高度投射时轰它的机头，别对着高空白费子弹！</Text>
+                <Text>稳住阵脚！沙袋后方的战备箱里有雷明登870、12号霰弹和补充的步枪弹。等无人机压低高度投射时轰它的机头，别对着高空白费子弹！</Text>
             </Dialogue>
         </Event>
         <Wave>
@@ -2200,7 +2212,7 @@
                 <Name>前治安官</Name>
                 <Title>第一防线·无线电</Title>
                 <Char>前治安官（无线电）</Char>
-                <Text>那是审判日前就已量产的自治区安保标准件，不用改装就能直接压进霰弹枪膛。趁现在抓紧换弹整备，我带预备队从后门出来接应你！</Text>
+                <Text>那是审判日前就已量产的自治区安保标准件，装到霰弹枪上能把密集人群拦下来，补给仍用原来的12号霰弹。趁现在整备，我带预备队从后门出来接应你！</Text>
             </Dialogue>
             <FollowingEvent>
                 <EventName>RescueReserveDeploy</EventName>
@@ -2208,7 +2220,7 @@
         </Event>
         <Event>
             <EventName>RescueReserveDeploy</EventName>
-            <Message>整备窗口：可将八门金锁镇暴弹装到兼容霰弹枪上。</Message>
+            <Message>整备窗口：可将八门金锁镇暴弹作为弹药配件安装到雷明登870上。</Message>
             <Enemy>
                 <Type>第一防线.前治安官</Type>
                 <IsHostile>false</IsHostile>

@@ -393,6 +393,39 @@ namespace CF7Launcher.Tests.Tasks
             AssertLevelRegression(rc, "10 -> 9");
         }
 
+        [Fact]
+        public void EditorUndoSurvivesRestartRestoresExactBytesAndRejectsReplayOrAnInterveningWrite()
+        {
+            const string slot = "editor_history_test";
+            var timeout = TimeSpan.FromSeconds(8);
+            Assert.True((bool)SendShadow(slot, "甲", 3).Result(timeout)["success"]);
+            byte[] original = File.ReadAllBytes(JsonPath(slot));
+            Assert.True((bool)SendShadow(slot, "甲", 4, true).Result(timeout)["success"]);
+            var reopened = new ArchiveTask(_projectRoot);
+            JObject Call(JObject payload)
+            {
+                var response = new PendingResponse();
+                reopened.HandleAsync(new JObject { ["payload"] = payload }, json => response.Set(json, 1));
+                return response.Result(timeout);
+            }
+            string Token() => (string)Call(new JObject { ["op"] = "list" })["slots"].First["editUndoToken"];
+            JObject Undo(string token) => Call(new JObject { ["op"] = "undo_edit", ["slot"] = slot, ["undoToken"] = token });
+            var first = Token();
+            Assert.False(string.IsNullOrEmpty(first));
+            Assert.True((bool)Undo(first)["success"]);
+            Assert.Equal(original, File.ReadAllBytes(JsonPath(slot)));
+            Assert.False((bool)Undo(first)["success"]);
+            Assert.True((bool)SendShadow(slot, "甲", 7, true).Result(timeout)["success"]);
+            var next = Token();
+            using (File.Open(JsonPath(slot), FileMode.Open, FileAccess.Read, FileShare.Read))
+                Assert.False((bool)SendShadow(slot, "甲", 8).Result(timeout)["success"]);
+            Assert.Equal(next, Token());
+            Assert.True((bool)SendShadow(slot, "甲", 8).Result(timeout)["success"]);
+            Assert.Null(Token());
+            Assert.False((bool)Undo(next)["success"]);
+            Assert.Equal(8, (int)ReadSlotJson(slot)["0"][3]);
+        }
+
         // ==================== helpers ====================
 
         private sealed class PendingResponse

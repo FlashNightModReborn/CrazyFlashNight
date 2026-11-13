@@ -69,6 +69,10 @@
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMax>修罗</DifficultyMax>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>硬化</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>僵尸.硬化</Type>
@@ -77,6 +81,10 @@
                         <Level>50</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMin>地狱</DifficultyMin>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>硬化</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

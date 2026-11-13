@@ -16,6 +16,27 @@ namespace CF7Launcher.Tests.Guardian
         private static readonly IntPtr GuardianIndicator =
             new IntPtr(0x2001);
 
+        [Theory]
+        [InlineData(0x1001, true, true, 1)]
+        [InlineData(0, true, true, 1)]
+        [InlineData(0x1000, true, true, 0)]
+        [InlineData(0x2001, true, false, 0)]
+        [InlineData(0x1001, false, false, 0)]
+        public void ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows(
+            int foreground, bool flashIsCurrent, bool expected, int foregroundChanges)
+        {
+            var api = new FakeFocusApi
+            {
+                Foreground = new IntPtr(foreground),
+                ForegroundAfterSet = FlashRoot,
+                SetForegroundResult = true
+            };
+            var manager = new WindowManager(api, flashIsCurrent ? Flash : IntPtr.Zero);
+            Assert.Equal(expected, manager.ReturnBootstrapForeground(Flash, FlashRoot));
+            Assert.Equal(foregroundChanges, api.SetForegroundCallCount);
+            Assert.Equal(0, api.AttachCallCount);
+        }
+
         [Fact]
         public void ExactFlashRootCanSatisfyPinnedRestore()
         {

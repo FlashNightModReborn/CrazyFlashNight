@@ -37,6 +37,12 @@ def channels():
 def route_plan(source, items):
     gold,kpoints,recipes=channels()
     cash={}; kunlocks={}; runlocks={}; handled={}; unresolved={}
+    # An explicitly stocked book plugin retains its original shop channel even when
+    # the main campaign later gains a crafting recipe for the same item.
+    cash_plugins=set(source['acquisition'].get('cashOnlyPlugins', []))
+    declared_plugins={name for names in source['acquisition']['pluginNodes'].values() for name in names}
+    if not cash_plugins <= declared_plugins:
+        raise ValueError('Explicit cash plugins must have an authored book node')
     def add_cash(name,node):
         if name not in cash or node<cash[name]:cash[name]=node
     def visit(name,node,stack=()):
@@ -45,6 +51,10 @@ def route_plan(source, items):
         if name in handled and handled[name]<=node:return
         handled[name]=node
         weapon=items[name].findtext('type')=='武器'
+        if name in cash_plugins:
+            if weapon: raise ValueError('Cash plugin override cannot grant a weapon: '+name)
+            add_cash(name,node)
+            return
         rows=recipes.get(name,[])
         if name in gold or (not weapon and not rows and name not in kpoints):add_cash(name,node)
         if name in kpoints and (name not in kunlocks or node<kunlocks[name]):kunlocks[name]=node

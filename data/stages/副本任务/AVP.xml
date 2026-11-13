@@ -1098,7 +1098,11 @@
                         <Level>40</Level>
                         <x>1376</x>
                         <y>425</y>
-                        <Parameters>方向:左</Parameters>
+                        <Parameters>
+                            <方向>左</方向>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>异形女王</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

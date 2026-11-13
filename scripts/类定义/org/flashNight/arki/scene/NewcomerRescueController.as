@@ -29,10 +29,11 @@ class org.flashNight.arki.scene.NewcomerRescueController {
     private static function spawnJeepSupplies(r:Object):Void {
         if(r==null || r.suppliesSpawned)return;
         r.suppliesSpawned=true;
+        // 领取ID代表老兵遗枪奖励位，换枪时沿用旧键，避免已领取存档再次领枪。
         var gates:Object={任务链名称:"铁枪会",最小任务链进度:1,最大任务链进度:1,
             要求进行中任务ID:70002,一次性领取ID:"iron_spear_70002_veteran_type56r"};
-        _root.创建可拾取物("Type56R",1,1454,510,false,gates);
-        _root.创建可拾取物("突击步枪通用弹药",1,1388,530,false);
+        _root.创建可拾取物("HKSL8",1,1454,510,false,gates);
+        _root.创建可拾取物("突击步枪通用弹药",12,1388,530,false);
         SceneManager.instance.addInstance({Identifier:"资源箱",x:1340,y:560,
             Parameters:{掉落物:[{名字:"普通手雷",概率:100,最小数量:3,最大数量:3}]}},"rescue_grenades");
     }

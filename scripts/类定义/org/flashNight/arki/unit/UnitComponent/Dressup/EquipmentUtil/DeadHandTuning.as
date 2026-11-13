@@ -1,6 +1,7 @@
 ﻿/** XML 调参与形态默认值；与控制逻辑分开，避免 CS6 类初始化分支超过 32K。 */
 class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandTuning {
     public static function configureMount(反射对象:Object, 参数对象:Object):Void {
+        反射对象.长矛外观偏移Y = isFinite(Number(参数对象.spearVisualOffsetY)) ? Number(参数对象.spearVisualOffsetY) : -12;
         反射对象.长枪旋转角度 = isFinite(Number(参数对象.gunRotation)) ? Number(参数对象.gunRotation) : -90;
         反射对象.长枪偏移X = isFinite(Number(参数对象.gunOffsetX)) ? Number(参数对象.gunOffsetX) : -113.6;
         反射对象.长枪偏移Y = isFinite(Number(参数对象.gunOffsetY)) ? Number(参数对象.gunOffsetY) : 36.25;

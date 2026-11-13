@@ -272,6 +272,10 @@
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>独狼</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -292,6 +296,10 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>50</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>铁血武士</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>铁血.狂战士</Type>

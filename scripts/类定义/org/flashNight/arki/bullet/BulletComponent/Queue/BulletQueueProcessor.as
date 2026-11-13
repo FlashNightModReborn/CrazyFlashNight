@@ -2917,6 +2917,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 外部静态系统引用缓存（AS2中减少作用域链查找）
         var shotgunGroup:ChainGroup;
         var isShotgunPattern:Boolean;
+        var hasPierceBudget:Boolean;
         var Dodge:Object = DodgeHandler;
         var Damage:Object = DamageCalculator;
         var FX:Object = EffectSystem;
@@ -3250,6 +3251,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 }
                 shotgunGroup = bullet.chainGroup;
                 isShotgunPattern = shotgunGroup.shotgun != null;
+                hasPierceBudget = shotgunGroup.pierceRemaining != null;
                 if (isShotgunPattern) isPointSet = false;
                 bulletZOffset = bullet.Z轴坐标;          // 子弹Z轴坐标
                 bulletZRange = bullet.Z轴攻击范围;       // Z轴攻击范围
@@ -3467,6 +3469,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 crCenter.y = (((areaAABB.top > uTop) ? areaAABB.top : uTop) + ((areaAABB.bottom < uBottom) ? areaAABB.bottom : uBottom)) >> 1;
                             }
 
+                            // 跨帧贴住同一目标时，余额耗尽就跳过整条命中链；后排仍继续检查。
+                            if (hasPierceBudget && !shotgunGroup.canJudgePierce(hitTarget)) continue;
                             // 确认命中后才写入hitTarget，避免无效的哈希表操作
                             bullet.hitTarget = hitTarget;
 

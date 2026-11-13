@@ -40,13 +40,13 @@ $focusedRun = @{
     )
     AdditionalAsRelativePaths = @('scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ShootCore.as','scripts/类定义/org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as')
     ExpectedTracePatterns = @(
-        '(?m)^--- LongGunSubWeaponCoreTest: 511/511 passed, 0 failed ---\r?$'
+        '(?m)^--- LongGunSubWeaponCoreTest: 514/514 passed, 0 failed ---\r?$'
         '(?m)^--- PistolRecoilCoreTest: (?<pistol>[1-9][0-9]*)/\k<pistol> passed, 0 failed ---\r?$'
         '(?m)^--- ManualCooldownServiceTest: 57/57 passed, 0 failed ---\r?$'
         '(?m)^--- DrugInputServiceTest: 58/58 passed, 0 failed ---\r?$'
         '(?m)^--- KeyManagerMigrationTest: 14/14 passed, 0 failed ---\r?$'
     )
-    SuccessSummary = 'PistolRecoil all passed, LongGun 511/511, ManualCooldown 57/57, DrugInput 58/58, KeyManagerMigration 14/14'
+    SuccessSummary = 'PistolRecoil all passed, LongGun 514/514, ManualCooldown 57/57, DrugInput 58/58, KeyManagerMigration 14/14'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

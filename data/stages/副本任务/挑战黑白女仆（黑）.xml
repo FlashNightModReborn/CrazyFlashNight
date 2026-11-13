@@ -32,12 +32,20 @@
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>医疗女仆白</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>女仆.狙击女仆黑</Type>
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>60</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>狙击女仆黑</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

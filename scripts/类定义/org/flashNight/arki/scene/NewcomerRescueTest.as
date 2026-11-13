@@ -63,6 +63,13 @@ class org.flashNight.arki.scene.NewcomerRescueTest {
         check(reserve==745 && fodder==720,"dense horde reserve is predominantly continuous basic zombies");
         check(stages[4].SpawnPoint.Point[0].NoCount && stages[5].SpawnPoint.Point[1].NoCount,"pursuit spawn points are excluded from clear counts");
         check((stages[7].Wave.SubWave[0].EnemyGroup.Enemy[0].Type=="盗贼.望风鸢" || stages[7].Wave.SubWave[0].EnemyGroup.Enemy[0].Type=="兵种456") && (stages[7].Wave.SubWave[0].EnemyGroup.Enemy[1].Type=="盗贼.撕咬犬" || stages[7].Wave.SubWave[0].EnemyGroup.Enemy[1].Type=="兵种476"),"published drone and bandit dog IDs");
+        var raidInstances:Array=XMLParser.configureDataAsArray(stages[7].Instances.Instance);
+        var crateDrops:Array=XMLParser.configureDataAsArray(raidInstances[0].Parameters.掉落物);
+        check(crateDrops.length==3 && crateDrops[0].名字=="雷明登870" && crateDrops[0].概率==100 && crateDrops[0].最小数量==1 && crateDrops[0].最大数量==1
+            && crateDrops[1].名字=="12号霰弹弹药" && crateDrops[1].概率==100 && crateDrops[1].最小数量==6 && crateDrops[1].最大数量==6
+            && crateDrops[2].名字=="突击步枪通用弹药" && crateDrops[2].概率==100 && crateDrops[2].最小数量==4 && crateDrops[2].最大数量==4,"production XML supplies usable shotgun, six matching ammo packs and four rifle ammo packs");
+        var riotDrop:Object=stages[7].Wave.SubWave[0].EnemyGroup.Enemy[0].Parameters.掉落物;
+        check(riotDrop.名字=="八门金锁镇暴弹" && riotDrop.概率==100 && riotDrop.最小数量==1 && riotDrop.最大数量==1,"teaching drone retains exactly one riot-ammo plugin");
         check(stages[2].BasicInformation.Environment.Door.Direction=="左" && stages[3].BasicInformation.Environment.Door.Direction=="右" && stages[4].BasicInformation.PlayerX==100,"jeep turns around east toward the clinic");
         var groundArrows:Number=0;
         for(var ri:Number=0;ri<stages.length;ri++){
@@ -72,7 +79,7 @@ class org.flashNight.arki.scene.NewcomerRescueTest {
         check(groundArrows==0,"no preplaced ground arrows in any room");
         var raidEnemies:Array=stages[7].Wave.SubWave[2].EnemyGroup.Enemy;var hostileBandits:Boolean=true;
         for(var ei:Number=0;ei<raidEnemies.length;ei++)if(raidEnemies[ei].IsHostile!==true || raidEnemies[ei].Type=="兵种27" || raidEnemies[ei].Type=="兵种28")hostileBandits=false;
-        check(hostileBandits && (raidEnemies[4].Type=="盗贼.铁拳" || raidEnemies[4].Type=="兵种48"),"dedicated male bandits are explicitly hostile");
+        check(hostileBandits && (raidEnemies[4].Type=="堕落城.铁拳" || raidEnemies[4].Type=="兵种48"),"dedicated male bandits are explicitly hostile");
         var clinicExplained:Boolean=false;
         for(var ci:Number=0;ci<stages[2].Event.length;ci++)if(stages[2].Event[ci].EventName=="WaveFinished" && stages[2].Event[ci].FollowingEvent.EventName=="RescueClinicExplained")clinicExplained=true;
         check(clinicExplained,"clinic contact is enabled after spoken guidance");
@@ -276,7 +283,7 @@ class org.flashNight.arki.scene.NewcomerRescueTest {
         setHero(1515,470);world.__rescueInteraction.onInteract();
         check(events.investigated==1 && NewcomerRescueController.snapshot().phase=="record","near investigation starts record");
         NewcomerRescueController.signal("jeep_unlock");NewcomerRescueController.signal("jeep_unlock");
-        check(gifts.length==2 && gifts[0].name=="Type56R" && gifts[1].name=="突击步枪通用弹药","room entry and unlock keep a single pre-placed supply set");
+        check(gifts.length==2 && gifts[0].name=="HKSL8" && gifts[0].quantity==1 && gifts[1].name=="突击步枪通用弹药" && gifts[1].quantity==12,"room entry and repeated unlock keep one SL8 and twelve rifle ammo packs");
         var gates:Object=gifts[0].gates;
         check(gates.最小任务链进度==1 && gates.最大任务链进度==1 && gates.要求进行中任务ID==70002 && gates.一次性领取ID=="iron_spear_70002_veteran_type56r","real pickup request carries all persistence gates");
         var hostile:MovieClip=world.createEmptyMovieClip("hostile",world.getNextHighestDepth());hostile.是否为敌人=true;

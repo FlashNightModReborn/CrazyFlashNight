@@ -78,7 +78,9 @@ internal static class PlayerHudNumberFormat
         => Math.Abs(value) < compactThreshold ? metrics.Envelope(raw)
             : metrics.Envelope((value < 0 ? "-" : "") + Full(Math.Max(Math.Abs(value), reference)));
 
-    private static double Unit(double magnitude) => magnitude >= 1e12 ? 1e12 : magnitude >= 1e8 ? 1e8 : 1e4;
+    internal static double Unit(double magnitude) => magnitude >= 1e12 ? 1e12 : magnitude >= 1e8 ? 1e8 : 1e4;
+
+    internal static string UnitSuffix(double divisor) => divisor == 1e12 ? "万亿" : divisor == 1e8 ? "亿" : "万";
 
     private static PlayerHudNumberText FormatNumber(double value, Metrics metrics, float width,
         double reference, bool compact, string raw, double compactThreshold = 10000)
@@ -91,7 +93,7 @@ internal static class PlayerHudNumberFormat
         var divisor = Unit(magnitude);
         // The maximum stabilizes compact mode; precision follows the current magnitude band so
         // a small remaining amount is not rounded down to whole 万 just because capacity is huge.
-        var suffix = divisor == 1e12 ? "万亿" : divisor == 1e8 ? "亿" : "万";
+        var suffix = UnitSuffix(divisor);
         var scaled = value / divisor;
         var integerTemplate = (value < 0 ? "-" : "") + Full(magnitude / divisor);
         for (var digits = 2; digits >= 0; digits--)

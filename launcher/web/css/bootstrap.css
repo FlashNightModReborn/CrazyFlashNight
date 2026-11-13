@@ -93,7 +93,7 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 .modal-content {
   position: relative; z-index: 1001;
   background: var(--bg1); border: 1px solid var(--dls-dim); border-radius: 0;
-  width: 80%; max-width: 800px; max-height: 85vh;
+  width: 80%; max-width: 800px; box-sizing:border-box;max-height:calc(100% - 32px);
   overflow-y: auto; padding: 20px 24px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 30px rgba(61,213,255,0.08);
 }
@@ -186,7 +186,7 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 .modal-content .schema-form span.readonly-val { font-family: var(--cf7-font-web-overlay-mono); }
 
 /* Phase 2a: 高级模式 textarea */
-.raw-editor { width: 100%; box-sizing: border-box; min-height: 300px; max-height: 50vh;
+.raw-editor { width: 100%; box-sizing: border-box; min-height: 300px; max-height: 288px;
   background: rgba(0,0,0,0.5); border: 1px solid var(--dls-dim); color: #d4d8dc;
   font-family: Consolas, monospace; font-size: var(--fs-base); padding: 8px;
   resize: vertical; tab-size: 2; border-radius: 0; letter-spacing: 0.5px;
@@ -248,7 +248,7 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 .diag-log-pre {
   background: rgba(0,0,0,0.6); border: 1px solid var(--dls-dim); padding: 8px;
   font-family: Consolas, monospace; font-size: var(--fs-sm); color: #c0c4c8;
-  max-height: 50vh; overflow-y: auto; white-space: pre-wrap; word-break: break-all; border-radius: 0;
+  max-height: 288px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; border-radius: 0;
 }
 .diag-log-pre .log-tag { color: var(--dls); }
 .diag-log-pre .log-warn { color: #d08040; }
@@ -407,7 +407,7 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 .rc-error { color: #e06e6e; }
 .rc-good { color: #6ed070; }
 
-.rc-decisions { max-height: 50vh; overflow-y: auto; }
+.rc-decisions { max-height: 288px; overflow-y: auto; }
 .rc-group { margin-bottom: 16px; }
 .rc-group h3 { margin: 0 0 6px; font-size: var(--fs-md); color: #4da6ff; border-bottom: 1px solid #2a3a50; padding-bottom: 3px; }
 .rc-group-l0 h3 { color: #e06e6e; border-bottom-color: #4a2020; }
@@ -480,7 +480,7 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 .tree-leaf.has-fffd input { border-color: #d08040; }
 
 /* ── confirm-dialog：终端风确认/提示框（confirm-dialog.js；替代原生 confirm/alert） ── */
-.modal-content.confirm-dialog-surface { width: min(440px, 86vw); }
+.modal-content.confirm-dialog-surface { width: 440px; }
 .confirm-dialog { display: grid; gap: 12px; }
 .confirm-dialog-message {
   margin: 0; color: var(--bone); font-size: var(--fs-md); line-height: 1.6;

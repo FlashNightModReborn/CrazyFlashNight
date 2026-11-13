@@ -35,6 +35,12 @@ namespace CF7Launcher.Config
         public const int HitNumberWorldRowLimitMax = 1000;
 
         public string LastPlayedSlot { get; set; }
+        internal JObject LastPlayedBySlot { get; private set; } = new JObject();
+        internal void RecordPlayed(string slot)
+        {
+            LastPlayedSlot = slot;
+            LastPlayedBySlot[slot] = DateTime.UtcNow.ToString("o");
+        }
         public bool IntroEnabled { get; set; }
         public bool SfxEnabled { get; set; }
         public bool AmbientEnabled { get; set; }
@@ -139,6 +145,7 @@ namespace CF7Launcher.Config
                 PreviousPerformance = PerformancePolicy.TryParse(obj["previousPerformance"], out var previousPerformance)
                     ? previousPerformance : null;
                 LastPlayedSlot = obj.Value<string>("lastPlayedSlot");
+                LastPlayedBySlot = obj["lastPlayedBySlot"] as JObject ?? new JObject();
                 bool? intro = obj.Value<bool?>("introEnabled");
                 if (intro.HasValue) IntroEnabled = intro.Value;
                 bool? sfx = obj.Value<bool?>("sfxEnabled");
@@ -203,6 +210,7 @@ namespace CF7Launcher.Config
             {
                 JObject obj = new JObject();
                 if (!string.IsNullOrEmpty(LastPlayedSlot)) obj["lastPlayedSlot"] = LastPlayedSlot;
+                if (LastPlayedBySlot.Count > 0) obj["lastPlayedBySlot"] = LastPlayedBySlot.DeepClone();
                 obj["introEnabled"] = IntroEnabled;
                 obj["sfxEnabled"] = SfxEnabled;
                 obj["ambientEnabled"] = AmbientEnabled;

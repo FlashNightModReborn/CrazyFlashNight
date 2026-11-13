@@ -1,6 +1,9 @@
 ﻿import org.flashNight.arki.hud.FocusTargetHudService;
 import org.flashNight.arki.hud.PlayerHudService;
 import org.flashNight.arki.scene.StageReturnFlow;
+import org.flashNight.arki.scene.StageEventHandler;
+import org.flashNight.arki.scene.StageEvent;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
 
 class org.flashNight.arki.hud.FocusTargetHudTest {
     private static var passed:Number;
@@ -8,6 +11,77 @@ class org.flashNight.arki.hud.FocusTargetHudTest {
     private static function check(value:Boolean, message:String):Void {
         if (value) passed++; else { failed++; trace("FAIL FocusTargetHudTest: " + message); }
     }
+    private static function checkSubstageBirths(world:MovieClip):Void {
+        var spawner:Object = org.flashNight.arki.scene.WaveSpawner.getInstance();
+        var oldSpawnWorld:MovieClip = spawner.gameworld;
+        var oldWaves:Array = spawner.waveInfo;
+        var oldSpawn:Function = _root.加载游戏世界人物;
+        var map:MovieClip = world.createEmptyMovieClip("地图", world.getNextHighestDepth());
+        try {
+            spawner.gameworld = world;
+            spawner.waveInfo = [[{SpawnIndex:-1, InstanceName:"waveHud", Parameters:{focusHudRole:"protect"}, x:5, y:10}]];
+            _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, params:Object):MovieClip {
+                var actor:MovieClip = _root.gameworld.createEmptyMovieClip(name, depth);
+                for (var key:String in params) actor[key] = params[key];
+                actor.version = 1; actor.hp = 90; actor.hp满血值 = 100;
+                return actor;
+            };
+            var oldScope:Object = FocusTargetHudService.activateScope(world, "scope-run", 0);
+            spawner.spawn({兵种名:"hud-check"}, 0, 0, 1, 0);
+            var event:StageEvent = new StageEvent({EventName:"Start", Enemy:[
+                {spritename:"hud-check", InstanceName:"eventHud", x:10, y:15, Parameters:{focusHudRole:"boss"}},
+                {spritename:"hud-check", InstanceName:"unmarkedHud", x:12, y:15}
+            ]});
+            event.execute();
+            var waveActor:MovieClip = world.waveHud;
+            var eventActor:MovieClip = world.eventHud;
+            check(oldScope != null && waveActor.__stageFocusScope === oldScope && eventActor.__stageFocusScope === oldScope,
+                "wave and event both carry the exact pre-attach scope");
+            check(world.unmarkedHud._parent === world && world.unmarkedHud.__stageFocusScope === undefined,
+                "unmarked event actor has no scope field");
+            FocusTargetHudService.onUnitInitialized(waveActor);
+            check(FocusTargetHudService.snapshotList(null, 8) == null, "not-ready stamped actor stays hidden");
+            waveActor.__unitInitializedVersion = 1;
+            FocusTargetHudService.onUnitInitialized(waveActor);
+            var oldId:Number = FocusTargetHudService.snapshotList(null, 8)[0].id;
+            check(oldId > 0 && FocusTargetHudService.activateScope(world, "scope-run", 0) === oldScope,
+                "duplicate activation preserves the active row and identity");
+            var oldLease:Object = FocusTargetHudService.bindInitialized(waveActor, "protect", "");
+            var nextScope:Object = FocusTargetHudService.activateScope(world, "scope-run", 1);
+            eventActor.__unitInitializedVersion = 1;
+            FocusTargetHudService.onUnitInitialized(eventActor);
+            waveActor.version = 2; waveActor.__unitInitializedVersion = 2;
+            FocusTargetHudService.onUnitInitialized(waveActor);
+            check(nextScope !== oldScope && nextScope.worldIdentity === oldScope.worldIdentity
+                && oldScope.closed && FocusTargetHudService.snapshotList(null, 8) == null,
+                "late ready and reinit from the previous substage cannot bind in the reused world");
+            world.unmarkedHud.focusHudRole = "boss";
+            world.unmarkedHud.__unitInitializedVersion = 1;
+            FocusTargetHudService.onUnitInitialized(world.unmarkedHud);
+            check(FocusTargetHudService.snapshotList(null, 8) == null, "tagged actor without pre-attach origin stays out");
+            spawner.waveInfo[0][0].InstanceName = "nextHud";
+            spawner.spawn({兵种名:"hud-check"}, 0, 0, 1, 0);
+            world.nextHud.__unitInitializedVersion = 1;
+            FocusTargetHudService.onUnitInitialized(world.nextHud);
+            var nextId:Number = FocusTargetHudService.snapshotList(null, 8)[0].id;
+            FocusTargetHudService.endEncounter(oldScope);
+            check(!FocusTargetHudService.clear(oldLease) && nextId > oldId && FocusTargetHudService.snapshotList(null, 8)[0].id === nextId,
+                "stale close and old lease leave the next substage target intact");
+            FocusTargetHudService.endEncounter(nextScope);
+            FocusTargetHudService.activateScope(world, "scope-run", 1);
+            FocusTargetHudService.onUnitInitialized(world.nextHud);
+            check(nextScope.closed && FocusTargetHudService.snapshotList(null, 8) == null,
+                "duplicate activation cannot reopen the accepted terminal substage");
+            var freshRun:Object = FocusTargetHudService.activateScope(world, "another-run", 1);
+            check(freshRun !== nextScope && !freshRun.closed, "new run with the same world and ordinal receives a fresh scope");
+        } finally {
+            spawner.gameworld = oldSpawnWorld;
+            spawner.waveInfo = oldWaves;
+            _root.加载游戏世界人物 = oldSpawn;
+            map.removeMovieClip();
+        }
+    }
+
     public static function runAllTests():Void {
         passed = failed = 0;
         var oldWorld:MovieClip = _root.gameworld;
@@ -131,6 +205,82 @@ class org.flashNight.arki.hud.FocusTargetHudTest {
             FocusTargetHudService.clear(pLease);
             check(FocusTargetHudService.snapshotList(hero) == null, "clearing remaining bindings with no active combat returns null");
 
+            checkSubstageBirths(world);
+            FocusTargetHudService.activateScope(world, "layout-fixture", 0);
+            var residents:Array = [];
+            for (var n:Number = 0; n < 8; n++) {
+                var resident:MovieClip = world.createEmptyMovieClip("resident" + n, 20 + n);
+                resident.version = n + 1; resident.__unitInitializedVersion = resident.version;
+                resident.hp = 300; resident.hp满血值 = 300; resident.名字 = "目标" + n;
+                resident.focusHudRole = n % 2 == 0 ? "protect" : "boss";
+                FocusTargetHudService.stampSpawn(world, resident);
+                FocusTargetHudService.onUnitInitialized(resident);
+                residents.push(resident);
+                if (n == 3) {
+                    mobHigh.hp = 100; FocusTargetHudService.recordPlayerHit(hero, mobHigh, null);
+                    var four:Array = FocusTargetHudService.snapshotList(hero, 8);
+                    check(four.length == 5 && four[4].role == "combat" && four[4].name == "精英重装兵",
+                        "four residents plus the currently hit enemy all enter the negotiated queue");
+                    var firstId:Number = four[0].id;
+                    mobHigh.hp = 0;
+                    var noEnemy:Array = FocusTargetHudService.snapshotList(hero, 8);
+                    check(noEnemy.length == 4 && noEnemy[0].id == firstId,
+                        "expired combat row releases its cell without replacing a resident");
+                    mobHigh.hp = 100;
+                    FocusTargetHudService.recordPlayerHit(hero, mobHigh, null);
+                }
+                if (n == 4) {
+                    var five:Array = FocusTargetHudService.snapshotList(hero, 8);
+                    check(five.length == 6 && five[5].role == "combat",
+                        "five residents plus the same combat enemy all enter the queue");
+                }
+            }
+            var eight:Array = FocusTargetHudService.snapshotList(hero, 8);
+            check(eight.length == 8 && eight[3].role == "protect" && eight[4].role == "boss" && eight[7].role == "boss",
+                "eight residents sorted by role with no combat overflow");
+            var legacy:Array = FocusTargetHudService.snapshotList(hero, 4);
+            check(legacy.length == 4 && legacy[3].role == "protect" && eight.length == 8,
+                "legacy four-row protocol and earlier immutable snapshot coexist");
+            for (n = 3; n < 8; n++) residents[n].removeMovieClip();
+            var reduced:Array = FocusTargetHudService.snapshotList(hero, 8);
+            check(reduced.length == 4 && reduced[3].role == "combat" && reduced[0].compact == undefined,
+                "queue shrinks to three residents and combat without a scene-wide layout latch");
+            api.clearScene();
+            var escortScope:Object = FocusTargetHudService.activateScope(world, "escort-fixture", 3);
+            var horse:MovieClip = world.createEmptyMovieClip("黑龙", 41);
+            horse.version = 1; horse.__unitInitializedVersion = 1; horse.hp = 80; horse.hp满血值 = 100;
+            horse.focusHudRole = "protect"; horse.focusHudLabel = "黑龙"; horse.focusHudSuccessor = "敌人-铠甲勇士";
+            FocusTargetHudService.stampSpawn(world, horse);
+            FocusTargetHudService.onUnitInitialized(horse);
+            var mounted:Array = FocusTargetHudService.snapshotList(null, 8);
+            check(mounted.length == 1 && mounted[0].compact == undefined, "new encounter begins single-column");
+            var foot:MovieClip = world.createEmptyMovieClip("黑龙敌人-铠甲勇士", 42);
+            foot.version = 2; foot.__unitInitializedVersion = 2; foot.hp = 220; foot.hp满血值 = 300;
+            foot.兵种 = "其他兵种"; FocusTargetHudService.onUnitInitialized(foot);
+            check(FocusTargetHudService.snapshotList(null, 8)[0].id === mounted[0].id, "lookalike spawn cannot steal escort identity");
+            foot.兵种 = "敌人-铠甲勇士"; FocusTargetHudService.onUnitInitialized(foot);
+            var dismounted:Array = FocusTargetHudService.snapshotList(null, 8);
+            check(dismounted.length == 1 && dismounted[0].id !== mounted[0].id && dismounted[0].name == "黑龙"
+                && dismounted[0].hp[0] == 220 && dismounted[0].role == "protect", "dismount transfers lease to the actual foot actor");
+            var stageEvents:StageEventHandler = StageEventHandler.getInstance();
+            world.dispatcher = new LifecycleEventDispatcher(world);
+            stageEvents.init(world);
+            stageEvents.subscribeStageEvent(new StageEvent({EventName:"UnitDeath", Parameter:"黑龙敌人-铠甲勇士", StageProgress:"Fail"}));
+            var outcome:Object = {count:0};
+            world.dispatcher.subscribe("StageFailed", function() { this.count++; }, outcome);
+            world.dispatcher.publish("UnitDeath", horse._name);
+            check(outcome.count == 0 && FocusTargetHudService.snapshotList(null, 8)[0].id === dismounted[0].id,
+                "mounted death leaves escort active");
+            world.dispatcher.publish("UnitDeath", foot._name);
+            world.dispatcher.publish("UnitDeath", foot._name);
+            check(outcome.count == 1, "matching foot death fires the authored failure once");
+            stageEvents.clear();
+            FocusTargetHudService.endEncounter(escortScope);
+            FocusTargetHudService.onUnitInitialized(horse);
+            FocusTargetHudService.recordPlayerHit(hero, mobHigh, null);
+            check(FocusTargetHudService.snapshot() == null && FocusTargetHudService.snapshotList(hero, 8) == null,
+                "accepted stage end hides objectives and ignores late actor callbacks");
+            api.clearScene();
             hud.focusTargetEnabled = false; hud.focusTargetsEnabled = false;
             PlayerHudService.testOnlyConfigure({}); check(hud.focusTargetEnabled === false && hud.focusTargetsEnabled === false, "old Host stays unextended");
             PlayerHudService.testOnlyConfigure({focusTarget:1, focusTargets:1}); check(hud.focusTargetEnabled === false && hud.focusTargetsEnabled === false, "nonboolean opt-in rejected");

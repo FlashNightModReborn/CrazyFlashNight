@@ -16,8 +16,12 @@ namespace CF7Launcher.Save
         internal static void WriteAllText(string path, string text, Encoding encoding,
             Action<string, string> commitForTests = null)
         {
+            WriteAllBytes(path, encoding.GetBytes(text), commitForTests);
+        }
+
+        internal static void WriteAllBytes(string path, byte[] bytes, Action<string, string> commitForTests = null)
+        {
             path = Path.GetFullPath(path);
-            byte[] bytes = encoding.GetBytes(text);
             string suffix = Guid.NewGuid().ToString("N");
             string temporary = path + ".tmp-" + suffix;
             string previous = path + ".previous-" + suffix;

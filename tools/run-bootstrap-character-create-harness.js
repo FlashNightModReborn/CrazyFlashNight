@@ -663,6 +663,7 @@ async function preparationPresentation(page) {
             overlayBeforeContent:getComputedStyle(overlay, '::before').content,
             overlayAfterContent:getComputedStyle(overlay, '::after').content,
             overlayRect:{left:rect.left, top:rect.top, right:rect.right, bottom:rect.bottom},
+            stageRect:document.getElementById('launcher-stage').getBoundingClientRect().toJSON(),
             backgroundLifecycle:document.body.dataset.bgGlLifecycle || '',
             viewInert:view.hasAttribute('inert'),
             viewBusy:view.getAttribute('aria-busy'),
@@ -710,7 +711,8 @@ async function run() {
             { width: 1600, height: 900, reduced: false, uiFontScale: 1.35 },
             { width: 1366, height: 768, reduced: false, uiFontScale: 1.75 },
             { width: 1366, height: 768, reduced: true, uiFontScale: 1.9 },
-            { width: 1024, height: 576, reduced: true, uiFontScale: 1.35 }
+            { width: 1024, height: 576, reduced: true, uiFontScale: 1.35 },
+            { width: 640, height: 360, reduced: false, uiFontScale: 1.0 }
         ];
         for (const viewport of viewports) {
             await check('layout-' + viewport.width + 'x' + viewport.height
@@ -721,14 +723,14 @@ async function run() {
                 try {
                     await openCharacterCreate(page);
                     await page.waitForFunction(() => {
-                        const shell = document.querySelector('.cc-scale-shell.panel-scale-shell');
+                        const shell = document.getElementById('launcher-stage');
                         const view = document.getElementById('view-character-create');
                         return shell && parseFloat(getComputedStyle(shell).getPropertyValue('--panel-scale')) > 0
                             && !view.classList.contains('view-enter')
                             && document.body.dataset.bgGlLifecycle === 'paused-covered';
                     });
                     const scaleLayout = await page.evaluate(() => {
-                        const shell = document.querySelector('.cc-scale-shell.panel-scale-shell');
+                        const shell = document.getElementById('launcher-stage');
                         const parent = shell && shell.parentElement;
                         const rect = shell.getBoundingClientRect();
                         const parentRect = parent.getBoundingClientRect();
@@ -777,305 +779,40 @@ async function run() {
                     await page.locator('#cc-character-name').fill('界'.repeat(15));
                     await page.locator('#cc-next').click();
                     const equipmentLayout = await page.evaluate(() => {
-                        const doc = document.documentElement;
-                        const root = document.getElementById('character-create-root');
-                        const shell = document.querySelector('.cc-shell').getBoundingClientRect();
-                        const titleNode = document.getElementById('cc-title');
-                        const stepsNode = document.querySelector('.cc-steps');
-                        const title = titleNode.getBoundingClientRect();
-                        const steps = stepsNode.getBoundingClientRect();
-                        const titleRow = document.querySelector('.cc-title-row');
+                        const state = window.BootstrapCharacterCreate.debugState();
                         const panel = document.querySelector('[data-cc-panel="1"]');
-                        const equipmentPool = document.getElementById('cc-equipment-pool');
-                        const heightControl = document.getElementById('cc-preview-height-control');
-                        const height = document.getElementById('cc-height');
-                        return {
-                            docOverflow: doc.scrollWidth - doc.clientWidth,
-                            rootOverflow: root.scrollWidth - root.clientWidth,
-                            rootOverflowStyle:getComputedStyle(root).overflowX,
-                            shellLeft: shell.left,
-                            shellRight: shell.right,
-                            width: innerWidth,
-                            fontScale:parseFloat(getComputedStyle(doc).getPropertyValue('--fs-scale')),
-                            reduced: matchMedia('(prefers-reduced-motion: reduce)').matches,
-                            titleAndStepsShareRow:titleNode.parentElement === stepsNode.parentElement
-                                && titleNode.parentElement === titleRow,
-                            stepsRightOfTitle:steps.left >= title.right - 1
-                                && Math.abs((steps.top + steps.bottom - title.top - title.bottom) / 2) <= 8,
-                            titleRect:{left:title.left, right:title.right, top:title.top, bottom:title.bottom},
-                            stepsRect:{left:steps.left, right:steps.right, top:steps.top, bottom:steps.bottom},
-                            stepsWidth:steps.width,
-                            workflowWidth:document.getElementById('cc-form').getBoundingClientRect().width,
-                            appearanceView:window.BootstrapCharacterCreate.debugState().appearanceView,
-                            density:window.BootstrapCharacterCreate.debugState().appearanceDensity,
-                            backgroundLifecycle:document.body.dataset.bgGlLifecycle,
-                            slots:document.querySelectorAll('.cc-equipped-slot').length,
-                            selectedSlots:document.querySelectorAll('.cc-equipped-slot[aria-checked="true"]').length,
-                            poolOptions:equipmentPool.querySelectorAll('[role="option"]').length,
-                            poolCompact:equipmentPool.classList.contains('item-grid-compact'),
-                            poolFull:equipmentPool.classList.contains('cc-choice-pool-full'),
-                            panelOverflow:getComputedStyle(panel).overflowY,
-                            panelScrollTop:panel.scrollTop,
-                            heightInPreview:heightControl.closest('.cc-preview') !== null
-                                && !heightControl.hidden && !height.disabled,
-                            heightInWorkflow:document.getElementById('cc-form').contains(heightControl),
-                            rangeAppearance:getComputedStyle(height).appearance,
-                            ranges:document.querySelectorAll('#view-character-create input[type="range"]').length,
-                            selects:document.querySelectorAll('#view-character-create select').length,
-                            visibleFaceCopy:Array.from(root.querySelectorAll('*')).some(node =>
-                                node.children.length === 0 && node.getClientRects().length > 0
-                                && node.textContent.trim() === '脸型'),
-                            legacySelects:document.querySelectorAll('#cc-upper, #cc-lower, #cc-footwear').length,
-                            randomButtons: Array.from(document.querySelectorAll('#view-character-create button'))
-                                .filter(button => /随机|random/i.test(button.textContent)).length,
-                            canvasTransform:(() => {
-                                const matrix = new DOMMatrixReadOnly(getComputedStyle(
-                                    document.getElementById('cc-preview-canvas')).transform);
-                                return {a:matrix.a, b:matrix.b, c:matrix.c, d:matrix.d};
-                            })(),
-                            skinRules:(() => {
-                                const selectors = [];
-                                Array.from(document.styleSheets).forEach(sheet => {
-                                    if (!sheet.href || !/\/css\/character-create\.css(?:$|\?)/.test(sheet.href)) return;
-                                    function visit(rules) {
-                                        Array.from(rules || []).forEach(rule => {
-                                            if (rule.selectorText) selectors.push(rule.selectorText);
-                                            if (rule.cssRules) visit(rule.cssRules);
-                                        });
-                                    }
-                                    try { visit(sheet.cssRules); } catch (e) {}
-                                });
-                                return {
-                                    rangeTrack:selectors.some(value => value.includes('::-webkit-slider-runnable-track')),
-                                    rangeThumb:selectors.some(value => value.includes('::-webkit-slider-thumb')),
-                                    scrollbar:selectors.some(value => value.includes('::-webkit-scrollbar')),
-                                    scrollbarTrack:selectors.some(value => value.includes('::-webkit-scrollbar-track')),
-                                    scrollbarThumb:selectors.some(value => value.includes('::-webkit-scrollbar-thumb'))
-                                };
-                            })()
-                        };
-                    });
-                    expect(equipmentLayout.docOverflow <= 1,
-                        'document horizontal overflow: ' + equipmentLayout.docOverflow);
-                    // A fixed 1024 logical child can make scrollWidth exceed the
-                    // smaller physical anchor even though PanelScale keeps its
-                    // transformed rect entirely in-bounds. The root must clip that
-                    // logical bookkeeping overflow; physical containment is checked
-                    // by scaleLayout above.
-                    expect(equipmentLayout.rootOverflowStyle === 'hidden',
-                        'character-create scale anchor does not clip logical overflow: '
-                            + JSON.stringify(equipmentLayout));
-                    expect(equipmentLayout.shellLeft >= -1
-                        && equipmentLayout.shellRight <= equipmentLayout.width + 1,
-                    'shell escaped viewport bounds');
-                    expect(equipmentLayout.titleAndStepsShareRow && equipmentLayout.stepsRightOfTitle
-                        && equipmentLayout.stepsWidth < equipmentLayout.workflowWidth,
-                    'step indicator is not compactly placed to the right of the title: '
-                        + JSON.stringify(equipmentLayout));
-                    expect(equipmentLayout.appearanceView === 'equipment'
-                        && equipmentLayout.density.equipment === 'full'
-                        && equipmentLayout.density.hair === 'compact'
-                        && equipmentLayout.backgroundLifecycle === 'paused-covered'
-                        && equipmentLayout.slots === 3 && equipmentLayout.selectedSlots === 1
-                        && equipmentLayout.poolOptions > 0 && !equipmentLayout.poolCompact
-                        && equipmentLayout.poolFull,
-                    'equipment-first slot/pool per-view density layout drifted: ' + JSON.stringify(equipmentLayout));
-                    expect(equipmentLayout.heightInPreview && !equipmentLayout.heightInWorkflow
-                        && equipmentLayout.ranges === 1 && equipmentLayout.rangeAppearance === 'none',
-                    'height control is duplicated, misplaced, disabled, or browser-native: '
-                        + JSON.stringify(equipmentLayout));
-                    expect(equipmentLayout.selects === 0 && !equipmentLayout.visibleFaceCopy
-                        && equipmentLayout.legacySelects === 0,
-                    'face copy or a browser-native/legacy select leaked into the appearance page');
-                    expect(equipmentLayout.skinRules.rangeTrack && equipmentLayout.skinRules.rangeThumb
-                        && equipmentLayout.skinRules.scrollbar && equipmentLayout.skinRules.scrollbarTrack
-                        && equipmentLayout.skinRules.scrollbarThumb,
-                    'character-create range/scrollbar skin is incomplete: '
-                        + JSON.stringify(equipmentLayout.skinRules));
-                    expect(Math.abs(equipmentLayout.canvasTransform.a - equipmentLayout.canvasTransform.d) <= 0.001
-                        && Math.abs(equipmentLayout.canvasTransform.b) <= 0.001
-                        && Math.abs(equipmentLayout.canvasTransform.c) <= 0.001,
-                    'paper-doll canvas uses a non-uniform transform: '
-                        + JSON.stringify(equipmentLayout.canvasTransform));
-                    expect(equipmentLayout.panelOverflow === 'hidden' && equipmentLayout.panelScrollTop === 0,
-                        'appearance outer panel retained a nested scroll surface');
-                    await page.locator('#cc-appearance-tab-hair').click();
-                    const hairLayout = await page.evaluate(() => {
+                        const options = Array.from(document.querySelectorAll('.cc-equipment-choices [role="option"]'));
+                        const heights = options.map(el => el.getBoundingClientRect());
                         const hair = document.getElementById('cc-hair-list');
-                        const cards = Array.from(hair.querySelectorAll('.cc-hair-option'));
-                        const rect = hair.getBoundingClientRect();
-                        const rects = cards.map(card => card.getBoundingClientRect());
+                        const visible = hair.getBoundingClientRect();
+                        const bounds = panel.getBoundingClientRect();
                         return {
-                            count:cards.length,
-                            icons:hair.querySelectorAll('.cc-hair-option .cc-hair-icon').length,
-                            selected:hair.querySelectorAll('[aria-selected="true"]').length,
-                            tabbable:hair.querySelectorAll('[tabindex="0"]').length,
-                            slotVisible:document.getElementById('cc-hair-slot').getClientRects().length > 0,
-                            compact:hair.classList.contains('item-grid-compact'),
-                            allVisible:cards.every(card => !card.hidden && card.getClientRects().length > 0),
-                            square:rects.length > 0 && rects.every(cardRect =>
-                                Math.abs(cardRect.width - cardRect.height) <= 1),
-                            contained:rects.every(cardRect => cardRect.left >= rect.left - 1
-                                && cardRect.right <= rect.right + 1 && cardRect.top >= rect.top - 1
-                                && cardRect.bottom <= rect.bottom + 1),
-                            copyHidden:cards.every(card =>
-                                getComputedStyle(card.querySelector('.cc-hair-copy')).display === 'none'),
-                            overflow:getComputedStyle(hair).overflowY,
-                            noScroll:hair.scrollHeight <= hair.clientHeight + 1
-                                && hair.scrollWidth <= hair.clientWidth + 1 && hair.scrollTop === 0,
-                            dimensions:{clientWidth:hair.clientWidth, clientHeight:hair.clientHeight,
-                                scrollWidth:hair.scrollWidth, scrollHeight:hair.scrollHeight},
-                            panelScrollTop:document.querySelector('[data-cc-panel="1"]').scrollTop,
-                            pagerAbsent:!document.getElementById('cc-hair-pager')
+                            groups:document.querySelectorAll('.cc-equipment-choices').length, choices:options.length,
+                            allInView: heights.every(r => r.width > 0 && r.height > 0 && r.left >= bounds.left-1 && r.right <= bounds.right+1 && r.top >= bounds.top-1 && r.bottom <= bounds.bottom+1),
+                            hairInView: visible.height > 20 && visible.bottom <= bounds.bottom+1,
+                            displayedName:document.getElementById('cc-nameplate').textContent,
+                            active:document.activeElement.id, reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,
+                            fontScale:parseFloat(getComputedStyle(document.body).getPropertyValue('--ui-font-scale')) || parseFloat(document.body.dataset.uiFontScale),
+                            classState:state.phase, randomButtons:document.querySelectorAll('#cc-random-look').length
                         };
                     });
-                    expect(hairLayout.count === hairCount && hairLayout.icons === hairCount
-                        && hairLayout.selected === 1 && hairLayout.tabbable === 1
-                        && hairLayout.slotVisible && hairLayout.compact && hairLayout.allVisible
-                        && hairLayout.square && hairLayout.contained && hairLayout.copyHidden
-                        && hairLayout.noScroll && hairLayout.overflow === 'auto' && hairLayout.pagerAbsent,
-                    'compact hair slot/pool contract drifted: ' + JSON.stringify(hairLayout));
-                    const selectedHair = page.locator('#cc-hair-list [tabindex="0"]');
-                    await selectedHair.focus();
-                    await selectedHair.press('Home');
-                    await page.waitForFunction(() =>
-                        window.BootstrapCharacterCreate.debugState().hairIndex === 0);
-                    const scroll = await page.evaluate(() => ({
-                        hair:document.getElementById('cc-hair-list').scrollTop,
-                        panel:document.querySelector('[data-cc-panel="1"]').scrollTop,
-                        hairIndex:window.BootstrapCharacterCreate.debugState().hairIndex
-                    }));
-                    expect(scroll.hair === 0 && scroll.panel === 0 && scroll.hairIndex === 0,
-                        'compact keyboard navigation moved a forbidden scroll surface: '
-                            + JSON.stringify(scroll));
-
-                    const beforeDensityChange = await page.evaluate(() => ({
-                        draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
-                        outbound:window.__ccHarness.commands().length
-                    }));
-                    await page.locator('.cc-density-option[data-density="full"]').click();
-                    const fullLayout = await page.evaluate(() => {
-                        const list = document.getElementById('cc-hair-list');
-                        const panel = document.querySelector('[data-cc-panel="1"]');
-                        const options = Array.from(list.querySelectorAll('.cc-hair-option'));
-                        const indices = options.map(option => Number(option.getAttribute('data-index')));
-                        const listStyle = getComputedStyle(list);
-                        const listRect = list.getBoundingClientRect();
-                        const optionRects = options.map(option => option.getBoundingClientRect());
-                        const selected = list.querySelector('[aria-selected="true"]');
-                        const selectedCopy = selected.querySelector('.cc-hair-copy');
-                        const selectedMarker = selected.querySelector('.cc-hair-marker');
-                        const copyRect = selectedCopy.getBoundingClientRect();
-                        const markerRect = selectedMarker.getBoundingClientRect();
-                        const firstName = options[0].querySelector('.cc-hair-copy b');
-                        const firstNameStyle = getComputedStyle(firstName);
-                        const firstCardStyle = getComputedStyle(options[0]);
-                        return {
-                            compact:list.classList.contains('item-grid-compact'),
-                            optionCount:options.length,
-                            indices:indices,
-                            allAbsolute:indices.every(Number.isInteger),
-                            pagerAbsent:!document.getElementById('cc-hair-pager'),
-                            internalScroll:list.scrollHeight > list.clientHeight + 1
-                                && list.scrollWidth <= list.clientWidth + 1 && list.scrollTop === 0,
-                            panelNoScroll:panel.scrollHeight <= panel.clientHeight + 1 && panel.scrollTop === 0,
-                            selectedCount:options.filter(option => option.getAttribute('aria-selected') === 'true').length,
-                            tabbableCount:options.filter(option => option.tabIndex === 0).length,
-                            allMounted:options.every(option => !option.hidden && option.getClientRects().length > 0),
-                            horizontallyContained:optionRects.every(rect => rect.left >= listRect.left - 1
-                                && rect.right <= listRect.right + 1),
-                            identityVisible:options.every(option => {
-                                const text = option.querySelector('.cc-hair-copy b').textContent.trim();
-                                return text.length > 0 && !/^发型[-－_]/.test(text);
-                            }),
-                            rawNamesAccessible:options.every(option => {
-                                const label = option.getAttribute('aria-label') || '';
-                                return label.startsWith('发型，') && label.length > 3;
-                            }),
-                            nameWrap:firstNameStyle.whiteSpace === 'normal'
-                                && (firstNameStyle.webkitLineClamp === '2' || firstNameStyle.webkitLineClamp === 2),
-                            markerSeparated:copyRect.right <= markerRect.left + 1
-                                && getComputedStyle(selectedMarker).position === 'static',
-                            minimumCardSize:options.every(option => option.offsetHeight >= 58 && option.offsetWidth >= 200),
-                            firstCardColumns:firstCardStyle.gridTemplateColumns,
-                            dimensions:{
-                                clientWidth:list.clientWidth, clientHeight:list.clientHeight,
-                                scrollWidth:list.scrollWidth, scrollHeight:list.scrollHeight
-                            },
-                            grid:{
-                                columns:listStyle.gridTemplateColumns,
-                                rows:listStyle.gridTemplateRows,
-                                columnGap:listStyle.columnGap,
-                                rowGap:listStyle.rowGap,
-                                padding:[listStyle.paddingTop, listStyle.paddingRight,
-                                    listStyle.paddingBottom, listStyle.paddingLeft],
-                                physicalColumns:new Set(optionRects.map(rect => rect.left.toFixed(2))).size,
-                                physicalRows:new Set(optionRects.map(rect => rect.top.toFixed(2))).size
-                            },
-                            listRect:{width:listRect.width, height:listRect.height}
-                        };
-                    });
-                    expect(!fullLayout.compact && fullLayout.optionCount === hairCount && fullLayout.allAbsolute
-                        && fullLayout.indices[0] === 0 && fullLayout.indices.at(-1) === hairCount - 1
-                        && fullLayout.pagerAbsent && fullLayout.internalScroll && fullLayout.panelNoScroll
-                        && fullLayout.selectedCount === 1 && fullLayout.tabbableCount === 1
-                        && fullLayout.allMounted && fullLayout.horizontallyContained
-                        && fullLayout.identityVisible && fullLayout.rawNamesAccessible
-                        && fullLayout.nameWrap && fullLayout.markerSeparated && fullLayout.minimumCardSize,
-                    'full hair mode is not a large-card internal scroller: '
-                        + JSON.stringify(fullLayout));
-                    await page.locator('#cc-appearance-tab-equipment').click();
-                    const equipmentFull = await page.evaluate(() => {
-                        const cards = Array.from(document.querySelectorAll('#cc-equipment-pool .cc-item-option'));
-                        return {
-                            count:cards.length,
-                            minimumSize:cards.every(card => card.offsetWidth >= 200 && card.offsetHeight >= 58),
-                            namesWrap:cards.every(card => getComputedStyle(card.querySelector('.cc-item-copy b')).whiteSpace === 'normal'),
-                            markerSeparated:cards.filter(card => card.getAttribute('aria-selected') === 'true').every(card => {
-                                const copy = card.querySelector('.cc-item-copy').getBoundingClientRect();
-                                const marker = card.querySelector('.cc-item-marker').getBoundingClientRect();
-                                return copy.right <= marker.left + 1 && getComputedStyle(card.querySelector('.cc-item-marker')).position === 'static';
-                            })
-                        };
-                    });
-                    expect(equipmentFull.count > 0 && equipmentFull.minimumSize
-                        && equipmentFull.namesWrap && equipmentFull.markerSeparated,
-                    'full equipment cards did not inherit the enlarged non-overlap contract: '
-                        + JSON.stringify(equipmentFull));
-                    await page.locator('#cc-appearance-tab-hair').click();
-                    await page.evaluate(() => {
-                        const list = document.getElementById('cc-hair-list');
-                        list.scrollTop = list.scrollHeight;
-                    });
-                    const afterScroll = await page.evaluate(() => ({
-                        draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
-                        commands:window.__ccHarness.commands(),
-                        scrollTop:document.getElementById('cc-hair-list').scrollTop
-                    }));
-                    const newCommands = afterScroll.commands.slice(beforeDensityChange.outbound);
-                    expect(afterScroll.draft === beforeDensityChange.draft
-                        && newCommands.length === 0 && afterScroll.scrollTop > 0,
-                    'density/scroll navigation changed the draft or host commands, or failed to scroll: '
-                        + JSON.stringify({draftChanged:afterScroll.draft !== beforeDensityChange.draft,
-                            newCommands, scrollTop:afterScroll.scrollTop}));
-                    await page.locator('#cc-hair-list [data-index="' + (hairCount - 1) + '"]').click();
-                    await page.locator('.cc-density-option[data-density="compact"]').click();
-                    const compactRestored = await page.evaluate(() => {
-                        const list = document.getElementById('cc-hair-list');
-                        const options = Array.from(list.querySelectorAll('.cc-hair-option'));
-                        return {
-                            count:options.length,
-                            visible:options.filter(option => option.getClientRects().length > 0).length,
-                            selected:Number(list.querySelector('[aria-selected="true"]').getAttribute('data-index')),
-                            noScroll:list.scrollHeight <= list.clientHeight + 1 && list.scrollTop === 0,
-                            pagerAbsent:!document.getElementById('cc-hair-pager')
-                        };
-                    });
-                    expect(compactRestored.count === hairCount && compactRestored.visible === hairCount
-                        && compactRestored.selected === hairCount - 1 && compactRestored.noScroll
-                        && compactRestored.pagerAbsent,
-                    'compact mode did not restore all catalog options/selection without scrolling: '
-                        + JSON.stringify(compactRestored));
+                    expect(equipmentLayout.groups === 3 && equipmentLayout.choices ===
+                        ['upper','lower','footwear'].reduce((n,key) => n + template.appearanceCatalog[key].male.length, 0)
+                        && equipmentLayout.allInView && equipmentLayout.hairInView && equipmentLayout.displayedName === '界'.repeat(15)
+                        && equipmentLayout.active === 'cc-height',
+                        'R2 simultaneous equipment and hair, nameplate and focus: ' + JSON.stringify(equipmentLayout));
+                    const hair = page.locator('#cc-hair-list');
+                    await page.locator('#cc-hair-filter [data-group="all"]').click();
+                    expect(await hair.locator('[role="option"]').count() === hairCount, 'all hairstyles must be reachable');
+                    const stateBefore = await page.evaluate(() => window.BootstrapCharacterCreate.debugState().draft);
+                    await hair.locator('[tabindex="0"]').press('End');
+                    expect(await hair.locator('[aria-selected="true"]').getAttribute('data-index') === String(hairCount - 1),
+                        'End must reach final logical option');
+                    await page.locator('[data-density-view="hair"]').click();
+                    expect(await hair.evaluate(el => el.classList.contains('item-grid-compact')), 'icon layout');
+                    await page.locator('[data-density-view="hair"]').click();
+                    expect((await page.evaluate(() => window.BootstrapCharacterCreate.debugState().draft)).height === stateBefore.height,
+                        'presentation controls must retain height');
 
                     if (viewport.width === 1600 && viewport.height === 900
                             && viewport.uiFontScale === 1.35) {
@@ -1121,86 +858,20 @@ async function run() {
                     await page.waitForFunction(() => !document.querySelector('.cc-panel-enter'));
                     const confirmationLayout = await page.evaluate(() => {
                         const panel = document.querySelector('[data-cc-panel="2"]');
-                        const panelRect = panel.getBoundingClientRect();
-                        const layout = panel.querySelector('.cc-confirm-layout');
-                        const layoutRect = layout.getBoundingClientRect();
-                        const modes = panel.querySelector('.cc-confirm-modes');
-                        const modesRect = modes.getBoundingClientRect();
-                        const summary = panel.querySelector('.cc-confirm-summary');
-                        const summaryRect = summary.getBoundingClientRect();
-                        const difficultyRects = Array.from(document.querySelectorAll('.cc-difficulty'))
-                            .map(node => node.getBoundingClientRect());
-                        const workflow = document.getElementById('cc-form');
-                        const actions = document.querySelector('.cc-actions');
-                        const required = [document.querySelector('.cc-difficulties'),
-                            document.querySelector('.cc-review')].concat(
-                            Array.from(document.querySelectorAll('.cc-difficulty')));
-                        return {
-                            panelNoScroll:panel.scrollHeight <= panel.clientHeight + 1
-                                && panel.scrollWidth <= panel.clientWidth + 1 && panel.scrollTop === 0,
-                            panelOverflow:getComputedStyle(panel).overflowY,
-                            twoColumns:getComputedStyle(layout).gridTemplateColumns.split(/\s+/).length === 2
-                                && modesRect.right < summaryRect.left,
-                            columnsUseHeight:modesRect.height >= panelRect.height * .82
-                                && summaryRect.height >= panelRect.height * .82,
-                            difficultyStack:difficultyRects.length === 3
-                                && difficultyRects.every((rect, index) => index === 0
-                                    || rect.top > difficultyRects[index - 1].bottom - 1)
-                                && difficultyRects.every(rect => Math.abs(rect.left - difficultyRects[0].left) <= 1
-                                    && Math.abs(rect.width - difficultyRects[0].width) <= 1),
-                            summaryReadable:Array.from(document.querySelectorAll('.cc-review dd')).every(node => {
-                                const style = getComputedStyle(node);
-                                return style.whiteSpace === 'normal' && style.overflow !== 'hidden';
-                            }),
-                            layoutFillsPanel:layoutRect.height >= panelRect.height - 2
-                                && layoutRect.width >= panelRect.width - 24,
-                            requiredContained:required.every(node => {
-                                const rect = node.getBoundingClientRect();
-                                return rect.left >= panelRect.left - 1 && rect.right <= panelRect.right + 1
-                                    && rect.top >= panelRect.top - 1 && rect.bottom <= panelRect.bottom + 1;
-                            }),
-                            requiredRects:required.map(node => {
-                                const rect = node.getBoundingClientRect();
-                                return {
-                                    name:node.id || node.className,
-                                    left:rect.left, top:rect.top, right:rect.right, bottom:rect.bottom,
-                                    contained:rect.left >= panelRect.left - 1 && rect.right <= panelRect.right + 1
-                                        && rect.top >= panelRect.top - 1 && rect.bottom <= panelRect.bottom + 1
-                                };
-                            }),
-                            panelRect:{left:panelRect.left, top:panelRect.top,
-                                right:panelRect.right, bottom:panelRect.bottom},
-                            actionsContained:(() => {
-                                const rect = actions.getBoundingClientRect();
-                                const host = workflow.getBoundingClientRect();
-                                return rect.left >= host.left - 1 && rect.right <= host.right + 1
-                                    && rect.top >= panelRect.bottom - 1 && rect.bottom <= host.bottom + 1;
-                            })(),
-                            viewNoScroll:(() => {
-                                const view = document.getElementById('view-character-create');
-                                return view.scrollHeight <= view.clientHeight + 1
-                                    && view.scrollWidth <= view.clientWidth + 1 && view.scrollTop === 0;
-                            })(),
-                            dimensions:{clientWidth:panel.clientWidth, clientHeight:panel.clientHeight,
-                                scrollWidth:panel.scrollWidth, scrollHeight:panel.scrollHeight}
-                        };
+                        const bounds = panel.getBoundingClientRect();
+                        const actions = document.querySelector('.cc-actions').getBoundingClientRect();
+                        const selected = panel.querySelector('.cc-difficulty[aria-checked="true"] .cc-difficulty-description');
+                        return { copy:selected.textContent, modes:panel.querySelectorAll('.cc-difficulty').length,
+                            summary:panel.querySelector('#cc-review').textContent, layout:panel.querySelector('.cc-confirm-layout').clientHeight,
+                            actions:actions.top >= bounds.bottom-1, submission:window.__ccHarness.outbound('character_create_submit').length };
                     });
-                    expect(confirmationLayout.panelNoScroll
-                        && confirmationLayout.panelOverflow === 'hidden'
-                        && confirmationLayout.twoColumns && confirmationLayout.columnsUseHeight
-                        && confirmationLayout.difficultyStack && confirmationLayout.summaryReadable
-                        && confirmationLayout.layoutFillsPanel
-                        && confirmationLayout.requiredContained && confirmationLayout.actionsContained
-                        && confirmationLayout.viewNoScroll,
-                    'confirmation page requires scrolling, clips required content, or overlaps actions: '
-                        + JSON.stringify(confirmationLayout));
-                    expect(equipmentLayout.randomButtons === 0, 'random appearance control must not exist');
+                    expect(confirmationLayout.copy === template.difficulties.find(row => row.identifier === template.defaults.male.difficulty).description
+                        && confirmationLayout.modes === 3 && confirmationLayout.summary.includes('界'.repeat(15))
+                        && confirmationLayout.layout > 0 && confirmationLayout.actions && !confirmationLayout.submission,
+                        'difficulty full text/summary/actions: ' + JSON.stringify(confirmationLayout));
+                    expect(equipmentLayout.randomButtons === 1, 'appearance page must have one randomize control');
                     expect(equipmentLayout.reduced === viewport.reduced, 'reduced-motion emulation mismatch');
-                    expect(Math.abs(equipmentLayout.fontScale - viewport.uiFontScale) < 0.001,
-                        'font scale did not reach the requested layout matrix value: '
-                            + JSON.stringify(equipmentLayout));
-                    return 'uniform centered 1024x576 canvas; compact/full scroll/two-column confirm; fs='
-                        + equipmentLayout.fontScale + '; reduced=' + equipmentLayout.reduced;
+                    return 'centered 16:9 stage, three equipment rows, hair, nameplate, keyboard and selected difficulty tested';
                 } finally {
                     await page.close();
                 }
@@ -1224,9 +895,7 @@ async function run() {
                     && starting.overlayVisibility === 'visible'
                     && starting.overlayBeforeContent === 'none'
                     && starting.overlayAfterContent === 'none'
-                    && starting.overlayRect.left === 0 && starting.overlayRect.top === 0
-                    && Math.abs(starting.overlayRect.right - starting.width) <= 1
-                    && Math.abs(starting.overlayRect.bottom - starting.height) <= 1,
+                    && ['left','top','right','bottom'].every(edge => Math.abs(starting.overlayRect[edge] - starting.stageRect[edge]) <= 1),
                 'preparation overlay is not the plain full-screen loading owner: ' + JSON.stringify(starting));
                 expect(starting.viewInert && starting.viewBusy === 'true'
                     && starting.viewVisibility === 'hidden' && starting.nameDisabled
@@ -1444,7 +1113,7 @@ async function run() {
                     window.BootstrapCharacterCreate.debugState());
                 await staleDeadlinePage.keyboard.press('Escape');
                 await staleDeadlinePage.waitForFunction(() =>
-                    !document.getElementById('view-slots').hidden);
+                    !document.getElementById('view-welcome').hidden);
                 await staleDeadlinePage.evaluate(() =>
                     window.BootstrapApp.openCharacterCreate('new', null));
                 await staleDeadlinePage.waitForFunction(oldToken => {
@@ -1473,7 +1142,7 @@ async function run() {
                     + JSON.stringify({ deadlineProbe, first, second, afterStale }));
                 await staleDeadlinePage.keyboard.press('Escape');
                 await staleDeadlinePage.waitForFunction(() =>
-                    !document.getElementById('view-slots').hidden);
+                    !document.getElementById('view-welcome').hidden);
                 return 'one or more intentionally leaked old deadlines fire after reopen but generation/token guards preserve the new full-screen mask';
             } finally {
                 await staleDeadlinePage.close();
@@ -1523,7 +1192,7 @@ async function run() {
                     window.__ccManualFrames.pendingPresentation() > previous,
                     firstFrames);
                 await latePage.keyboard.press('Escape');
-                await latePage.waitForFunction(() => !document.getElementById('view-slots').hidden);
+                await latePage.waitForFunction(() => !document.getElementById('view-welcome').hidden);
 
                 await latePage.evaluate(() => window.BootstrapApp.openCharacterCreate('new', null));
                 await latePage.waitForFunction(oldId => {
@@ -1650,7 +1319,7 @@ async function run() {
                 expect((await row.textContent()).includes('远征档'), 'missing shared display name in list');
                 expect(await page.locator('#save-title').textContent() === character, 'incorrect character detail');
                 expect(await row.locator('.save-alias').textContent() === '远征档', 'incorrect display name');
-                expect((await row.locator('time').textContent()).includes(date), 'missing modification date');
+                expect((await row.locator('time').getAttribute('datetime')).includes(date) && (await row.locator('time').getAttribute('title')).includes(date), 'missing modification date');
                 expect(await page.locator('#save-key').textContent() === slot, 'incorrect physical slot key');
             }
             await page.locator('#btn-back-welcome').click();
@@ -1766,28 +1435,27 @@ async function run() {
             const beforeDraft = await page.evaluate(() =>
                 JSON.stringify(window.BootstrapCharacterCreate.debugState().draft));
             await page.waitForFunction(expected => {
-                const host = document.getElementById('cc-equipment-pool');
-                return document.querySelectorAll('.cc-equipped-slot').length === 3
+                const host = document.getElementById('cc-pool-upper');
+                return document.querySelectorAll('.cc-equipment-choices').length === 3
                     && host.querySelectorAll('[role="option"]').length === expected
                     && host.querySelectorAll('[data-icon-name], [data-icon-layered-name]').length === expected
                     && !host.querySelector('.cc-item-icon-fallback');
             }, template.appearanceCatalog.upper.male.length, { timeout:10000 });
-            await page.locator('.cc-equipped-slot[data-index="1"]').click();
             await page.waitForFunction(expected =>
-                document.querySelectorAll('#cc-equipment-pool [role="option"]').length === expected,
+                document.querySelectorAll('#cc-pool-lower [role="option"]').length === expected,
             template.appearanceCatalog.lower.male.length);
-            await page.locator('#cc-equipment-pool [data-index="1"]').click();
-            const aliasButton = page.locator('#cc-equipment-pool [data-index="1"]');
+            await page.locator('#cc-pool-lower [data-index="1"]').click();
+            const aliasButton = page.locator('#cc-pool-lower [data-index="1"]');
             await aliasButton.press('Tab');
             await aliasButton.focus();
             await page.waitForFunction(() => {
-                const button = document.querySelector('#cc-equipment-pool [data-index="1"]');
+                const button = document.querySelector('#cc-pool-lower [data-index="1"]');
                 const tip = document.getElementById('panel-tooltip');
                 return document.activeElement === button && window.PanelTooltip.isVisible()
                     && tip && tip.textContent.includes('咖啡色多包短裤');
             }, null, { timeout:3000 });
             const aliasEvidence = await page.evaluate(() => {
-                const button = document.querySelector('#cc-equipment-pool [data-index="1"]');
+                const button = document.querySelector('#cc-pool-lower [data-index="1"]');
                 const icon = button.querySelector('[data-icon-name], [data-icon-layered-name]');
                 const tip = document.getElementById('panel-tooltip');
                 const state = window.PanelTooltip.debugState();
@@ -1800,13 +1468,13 @@ async function run() {
                     desc:!!tip.querySelector('.flash-tt-desc'),
                     text:tip.textContent,
                     keyboardOwner:state.keyboardOwnerActive,
-                    activeEquipment:create.activeEquipment,
+
                     lower:create.draft.lowerIdentifier,
                     upper:create.draft.upperIdentifier,
                     footwear:create.draft.footwearIdentifier,
-                    slots:document.querySelectorAll('.cc-equipped-slot').length,
-                    poolSelected:document.querySelectorAll('#cc-equipment-pool [aria-selected="true"]').length,
-                    poolTabbable:document.querySelectorAll('#cc-equipment-pool [tabindex="0"]').length,
+                    slots:document.querySelectorAll('.cc-equipment-choices').length,
+                    poolSelected:document.querySelectorAll('#cc-pool-lower [aria-selected="true"]').length,
+                    poolTabbable:document.querySelectorAll('#cc-pool-lower [tabindex="0"]').length,
                     legacySelects:document.querySelectorAll('#cc-upper, #cc-lower, #cc-footwear').length
                 };
             });
@@ -1817,7 +1485,7 @@ async function run() {
                 && aliasEvidence.iconName === aliasRow.iconName,
             'real XML icon alias was replaced by the item identifier');
             const parsedBeforeDraft = JSON.parse(beforeDraft);
-            expect(aliasEvidence.activeEquipment === 1 && aliasEvidence.lower === aliasRow.identifier
+            expect(aliasEvidence.lower === aliasRow.identifier
                 && aliasEvidence.upper === parsedBeforeDraft.upperIdentifier
                 && aliasEvidence.footwear === parsedBeforeDraft.footwearIdentifier
                 && aliasEvidence.slots === 3 && aliasEvidence.poolSelected === 1
@@ -1840,22 +1508,22 @@ async function run() {
             'Escape closed or navigated the character-create page before dismissing the item annotation');
             await aliasButton.hover();
             await page.waitForTimeout(180);
-            await page.locator('#cc-appearance-tab-hair').click();
+            await page.locator('#cc-hair-filter [data-group="all"]').click();
             const hairBefore = await page.evaluate(() => window.BootstrapCharacterCreate.debugState().draft.hairIdentifier);
             await page.locator('#cc-hair-32').click();
             const hairEvidence = await page.evaluate(() => ({
-                view:window.BootstrapCharacterCreate.debugState().appearanceView,
+
                 hair:window.BootstrapCharacterCreate.debugState().draft.hairIdentifier,
                 count:document.querySelectorAll('#cc-hair-list .cc-hair-option').length,
                 icons:document.querySelectorAll('#cc-hair-list .cc-hair-option .cc-hair-icon').length,
                 selected:document.querySelectorAll('#cc-hair-list [aria-selected="true"]').length,
                 tabbable:document.querySelectorAll('#cc-hair-list [tabindex="0"]').length,
-                slotText:document.getElementById('cc-hair-slot').textContent,
-                slotAria:document.getElementById('cc-hair-slot').getAttribute('aria-label') || ''
+                slotText:document.getElementById('cc-preview-hair').textContent,
+                slotAria:document.querySelector('#cc-hair-list [aria-selected="true"]').getAttribute('aria-label')
             }));
             const hairVisibleName = hairCatalog[32].name
                 .replace(/^发型[-－_\s]*(男式|女式)[-－_\s]*/, '');
-            expect(hairEvidence.view === 'hair' && hairEvidence.hair !== hairBefore
+            expect(hairEvidence.hair !== hairBefore
                 && hairEvidence.hair === hairCatalog[32].identifier
                 && hairEvidence.count === hairCount && hairEvidence.icons === hairCount
                 && hairEvidence.selected === 1 && hairEvidence.tabbable === 1
@@ -1867,82 +1535,82 @@ async function run() {
             const extraCommands = await page.evaluate(count => window.__ccHarness.commands().slice(count), beforeMessages);
             expect(extraCommands.length === 0, 'appearance focus/hover emitted: ' + extraCommands.join(', '));
             await page.locator('#cc-cancel').click();
-            return '3 equipment slots + one icon pool and 1 hair slot + catalog icons; rich annotation is Esc-first and zero-RPC';
+            return 'all equipment rows and the hair catalog; rich annotation is Esc-first and zero-RPC';
+        });
+
+        await check('small-window-keyboard-focus-preserves-entire-creation-canvas', async () => {
+            const page = await setupPage(browser, url, {width:640, height:360}, false, template, evidence);
+            try {
+                await openCharacterCreate(page);
+                for (const step of [1, 2, 0]) {
+                    await page.locator('[data-cc-step-jump="' + step + '"]').click();
+                    await page.keyboard.press('Tab');
+                    const visible = await page.evaluate(() => {
+                        const root = document.getElementById('character-create-root');
+                        const host = root.getBoundingClientRect(), form = root.querySelector('.cc-shell').getBoundingClientRect();
+                        return root.scrollLeft === 0 && root.scrollTop === 0 &&
+                            form.left >= host.left - 1 && form.right <= host.right + 1 &&
+                            form.top >= host.top - 1 && form.bottom <= host.bottom + 1;
+                    });
+                    expect(visible, 'focused step shifted the scaled character-create canvas outside the window: ' + step);
+                }
+            } finally { await page.close(); }
+        });
+
+        await check('free-navigation-hover-filter-and-random-appearance', async () => {
+            await openCharacterCreate(page);
+            const state = () => page.evaluate(() => window.BootstrapCharacterCreate.debugState());
+            await page.locator('[data-cc-step-jump="2"]').click();
+            expect((await state()).step === 2, 'difficulty must be directly reachable');
+            await page.locator('#cc-next').click();
+            expect((await state()).step === 0 && !(await state()).submitSent, 'invalid final draft must focus identity without sending');
+            expect(await page.locator('[data-cc-step-jump="0"]').getAttribute('aria-invalid') === 'true',
+                'a rejected blank name must mark the identity step');
+            await page.locator('#cc-character-name').fill('夜行者');
+            expect(await page.locator('[data-cc-step-jump="0"]').getAttribute('aria-invalid') === 'false',
+                'correcting the name must clear the identity step error');
+            await page.locator('[data-cc-step-jump="1"]').click();
+            await page.locator('#cc-hair-filter [data-group="all"]').click();
+            const original = (await state()).draft;
+            const other = page.locator('#cc-hair-list [aria-selected="false"]').last();
+            const label = await other.getAttribute('aria-label');
+            await other.hover();
+            expect(JSON.stringify((await state()).draft) === JSON.stringify(original), 'hover mutated draft');
+            await page.locator('#cc-hair-search').fill(label.replace('发型，',''));
+            expect(await page.locator('#cc-hair-list [tabindex="0"]').count() === 1, 'filtered keyboard list lost its entry point');
+            await page.locator('#cc-hair-list [tabindex="0"]').click();
+            expect((await state()).draft.hairIdentifier !== original.hairIdentifier, 'filtered result selected the wrong absolute index');
+            await page.locator('#cc-hair-search').fill('does-not-exist');
+            expect(await page.locator('#cc-hair-empty').isVisible(), 'no-result search lacks feedback');
+            await page.locator('#cc-hair-search').fill('');
+            await page.locator('#cc-random-look').click();
+            const rolled = await state();
+            expect(rolled.hairCatalog.includes(rolled.draft.hairIdentifier) && rolled.draft.upperIdentifier && rolled.draft.lowerIdentifier
+                && rolled.draft.footwearIdentifier && !rolled.submitSent, 'random look must remain an editable catalog-backed draft');
+            await page.locator('#cc-cancel').click();
+            return 'free step selection, invalid-submit focus, hover without mutation, filtered indices and random catalog appearance';
         });
 
         await check('appearance-density-persistence-focus-and-draft-invariance', async () => {
             await openCharacterCreate(page);
             await page.locator('#cc-character-name').fill('密度验收');
             await page.locator('#cc-next').click();
-            const before = await page.evaluate(() => {
-                const selected = document.querySelector('#cc-equipment-pool [aria-selected="true"]');
-                selected.focus();
-                return {
-                    messages:window.__ccHarness.commands().length,
-                    draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
-                    order:Array.from(document.querySelectorAll('#cc-equipment-pool [data-choice-key]'))
-                        .map(node => node.getAttribute('data-choice-key')),
-                    selected:selected.getAttribute('data-choice-key'),
-                    active:document.activeElement.getAttribute('data-choice-key'),
-                    density:window.BootstrapCharacterCreate.debugState().appearanceDensity,
-                    stored:localStorage.getItem('cf7.itemgrid.mode.character-create-appearance')
-                };
-            });
-            expect(before.density.equipment === 'full' && before.density.hair === 'compact'
-                && before.stored === null
-                && before.selected === before.active,
-            'appearance did not default to per-view full/compact with grid focus established: ' + JSON.stringify(before));
-            await page.locator('[data-density="compact"]').click();
-            const compact = await page.evaluate(() => ({
-                messages:window.__ccHarness.commands().length,
-                draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
-                order:Array.from(document.querySelectorAll('#cc-equipment-pool [data-choice-key]'))
-                    .map(node => node.getAttribute('data-choice-key')),
-                selected:document.querySelector('#cc-equipment-pool [aria-selected="true"]').getAttribute('data-choice-key'),
-                roving:document.querySelector('#cc-equipment-pool [tabindex="0"]').getAttribute('data-choice-key'),
-                activeDensity:document.activeElement.getAttribute('data-density'),
-                density:window.BootstrapCharacterCreate.debugState().appearanceDensity,
-                stored:localStorage.getItem('cf7.itemgrid.mode.character-create-appearance'),
-                compact:document.getElementById('cc-equipment-pool').classList.contains('item-grid-compact')
-            }));
-            expect(compact.density.equipment === 'compact' && compact.density.hair === 'compact'
-                && JSON.parse(compact.stored).equipment === 'compact'
-                && JSON.parse(compact.stored).hair === 'compact' && compact.compact
-                && compact.messages === before.messages && compact.draft === before.draft
-                && JSON.stringify(compact.order) === JSON.stringify(before.order)
-                && compact.selected === before.selected && compact.roving === before.selected
-                && compact.activeDensity === 'compact',
-            'full → compact changed RPC/draft/order/selection/roving target or pointer focus: '
-                + JSON.stringify({before, compact}));
-            await page.locator('[data-density="full"]').click();
-            const full = await page.evaluate(() => ({
-                messages:window.__ccHarness.commands().length,
-                draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
-                order:Array.from(document.querySelectorAll('#cc-equipment-pool [data-choice-key]'))
-                    .map(node => node.getAttribute('data-choice-key')),
-                selected:document.querySelector('#cc-equipment-pool [aria-selected="true"]').getAttribute('data-choice-key'),
-                roving:document.querySelector('#cc-equipment-pool [tabindex="0"]').getAttribute('data-choice-key'),
-                activeDensity:document.activeElement.getAttribute('data-density'),
-                density:window.BootstrapCharacterCreate.debugState().appearanceDensity,
-                stored:localStorage.getItem('cf7.itemgrid.mode.character-create-appearance'),
-                compact:document.getElementById('cc-equipment-pool').classList.contains('item-grid-compact')
-            }));
-            expect(full.density.equipment === 'full' && full.density.hair === 'compact'
-                && JSON.parse(full.stored).equipment === 'full'
-                && JSON.parse(full.stored).hair === 'compact' && !full.compact
-                && full.messages === before.messages && full.draft === before.draft
-                && JSON.stringify(full.order) === JSON.stringify(before.order)
-                && full.selected === before.selected && full.roving === before.selected
-                && full.activeDensity === 'full',
-            'compact → full changed RPC/draft/order/selection/roving target or pointer focus: '
-                + JSON.stringify({before, full}));
+            const list = page.locator('#cc-hair-list');
+            const toggle = page.locator('[data-density-view="hair"]');
+            const draft = await page.evaluate(() => JSON.stringify(window.BootstrapCharacterCreate.debugState().draft));
+            const selected = await list.locator('[aria-selected="true"]').getAttribute('data-choice-key');
+            await toggle.click();
+            const persisted = await list.evaluate(el => el.classList.contains('item-grid-compact'));
+            expect(await list.locator('[aria-selected="true"]').getAttribute('data-choice-key') === selected &&
+                (await page.evaluate(() => JSON.stringify(window.BootstrapCharacterCreate.debugState().draft))) === draft,
+                'density must preserve selection and draft');
             await page.locator('#cc-cancel').click();
             await openCharacterCreate(page);
-            const restored = await page.evaluate(() => window.BootstrapCharacterCreate.debugState().appearanceDensity);
-            expect(restored.equipment === 'full' && restored.hair === 'compact',
-                'persisted per-view density preference was not restored on reopen: ' + JSON.stringify(restored));
+            expect((await list.evaluate(el => el.classList.contains('item-grid-compact'))) === persisted, 'density was lost on reopen');
+            await page.locator('[data-cc-step-jump="1"]').click();
+            if (persisted) await toggle.click();
             await page.locator('#cc-cancel').click();
-            return 'per-view full/compact defaults and persistence; real pointer switches preserve RPC/draft/order/selection/roving target and keep focus on the density control';
+            return 'hair density persists across open and preserves selected source index and draft';
         });
 
         await check('catalog-defaults-ime-aria', async () => {
@@ -1988,7 +1656,7 @@ async function run() {
                 'fixed protocol face leaked into a visible/control field: ' + JSON.stringify(aria));
             expect(aria.heightControls === 1 && aria.heightInPreview
                 && aria.heightHidden && aria.heightDisabled
-                && aria.density.equipment === 'full' && aria.density.hair === 'compact',
+                && aria.density.equipment === 'full' && aria.density.hair === 'full',
             'step-0 height/density placement contract drifted: ' + JSON.stringify(aria));
 
             await page.locator('input[name="cc-gender"][value="female"]').check({ force: true });
@@ -2061,7 +1729,7 @@ async function run() {
             'height Home/End/Arrow input did not update value, ARIA, output, and draft: '
                 + JSON.stringify(heightKeyboard));
             await page.keyboard.press('Tab');
-            expect(await page.evaluate(() => document.activeElement.id) === 'cc-appearance-tab-equipment',
+            expect(await page.evaluate(() => document.activeElement.parentElement.id) === 'cc-pool-upper',
                 'forward Tab from height did not continue into the appearance workbench');
             await page.locator('#cc-cancel').click();
             return 'source catalog/duplicate/defaults/IME/ARIA preserved; face stays protocol-only; height owns step-1 focus and keyboard updates';
@@ -2127,7 +1795,7 @@ async function run() {
                 await openCharacterCreate(copyPage);
                 await copyPage.locator('#cc-character-name').fill('文案验收');
                 await copyPage.locator('#cc-next').click();
-                await copyPage.locator('#cc-appearance-tab-hair').click();
+                await copyPage.locator('#cc-hair-filter [data-group="all"]').click();
                 await copyPage.locator('#cc-hair-1').click();
                 const appearanceCopy = await copyPage.evaluate(() => {
                     const root = document.getElementById('character-create-root');
@@ -2141,7 +1809,7 @@ async function run() {
                     return {
                         text:root.innerText,
                         attributes:attributes.join('\n'),
-                        slot:document.getElementById('cc-hair-slot').textContent,
+                        slot:document.getElementById('cc-preview-hair').textContent,
                         draft:window.BootstrapCharacterCreate.debugState().draft.hairIdentifier
                     };
                 });
@@ -2178,17 +1846,14 @@ async function run() {
             await page.locator('#cc-display-name').fill('远征档🚀');
             await page.locator('#cc-character-name').fill('阿九');
             await page.locator('#cc-next').click();
-            await page.locator('.cc-equipped-slot[data-index="0"]').click();
-            await page.locator('#cc-equipment-pool [data-index="'
+            await page.locator('#cc-pool-upper [data-index="'
                 + (femaleCatalog.upper.female.length - 1) + '"]').click();
-            await page.locator('.cc-equipped-slot[data-index="1"]').click();
-            await page.locator('#cc-equipment-pool [data-index="'
+            await page.locator('#cc-pool-lower [data-index="'
                 + (femaleCatalog.lower.female.length - 1) + '"]').click();
-            await page.locator('.cc-equipped-slot[data-index="2"]').click();
-            await page.locator('#cc-equipment-pool [data-index="'
+            await page.locator('#cc-pool-footwear [data-index="'
                 + (femaleCatalog.footwear.female.length - 1) + '"]').click();
             await page.locator('#cc-height').fill('199');
-            await page.locator('#cc-appearance-tab-hair').click();
+            await page.locator('#cc-hair-filter [data-group="all"]').click();
             await page.locator('#cc-hair-32').click();
             await page.locator('#cc-next').click();
             await page.locator('#cc-difficulties [data-index="2"]').click();

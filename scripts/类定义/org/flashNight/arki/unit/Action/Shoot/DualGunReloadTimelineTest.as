@@ -34,9 +34,84 @@ class org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest {
         u.行走=function():Void {};u.操控编号=-1;u.移动射击=false;u.行走冷却帧=0;
         u.dispatcher=new EventDispatcher();u.dispatcher.subscribe("processShot",FireEventComponent.processShot,u);
         u.手枪射击=WeaponFireCore.PISTOL_SHOOT;u.手枪2射击=WeaponFireCore.PISTOL2_SHOOT;
+        if (current.hunter) setupHunter(u);
+    }
+    private static function setupHunter(u:MovieClip):Void {
+        u.手枪.name = "鲁格MK3"; u.手枪2.name = "Glock 18";
+        u.手枪属性 = {capacity:10,interval:220,singleshoot:true,clipname:"手枪通用弹药",split:1,diffusion:2,sound:"re_pistol_mk23.wav",muzzle:"紧凑手枪枪火",bullet:"普通子弹",velocity:30,bullethit:"火花",power:50,bulletsize:30,impact:1000};
+        u.手枪2属性 = {capacity:33,interval:75,clipname:"手枪通用弹药",split:1,diffusion:4,sound:"re_pistol_glock.wav",muzzle:"冲锋枪枪火",bullet:"普通子弹",velocity:20,bullethit:"火花",power:30,bulletsize:25,impact:100};
+        u.手枪弹匣容量 = u.手枪属性.capacity; u.手枪2弹匣容量 = u.手枪2属性.capacity;
+        u.手枪.value.shot = current.prior ? u.手枪弹匣容量 - 1 : 0; u.手枪2.value.shot = 0;
+        u.enableShoot = true;
+        org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.ReloadEventComponent.initialize(u);
+        u.状态改变 = function(state:String):Void { StateTransition.apply(this, state); };
+        u.动画完毕 = function():Void {
+            DualGunReloadTimelineTest.reloadProbe.endFrame = this.man._currentframe;
+            _root.__prodHeroFunctions.动画完毕.call(this);
+        };
+        u.移动 = _root.__prodHeroFunctions.移动;
+        u.方向改变 = _root.__prodHeroFunctions.方向改变;
+        u.myxscale = 100; u.身高 = 175; u.技能等级 = 2;
+        u.行走X速度 = u.行走Y速度 = 2; u.跑X速度 = u.跑Y速度 = 7;
+        u._x = 300; u._y = u.Z轴坐标 = 260;
+        u.移动射击 = true; u.上下移动射击 = false;
+        u.aabbCollider = new org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider(0,0,0,0);
+        org.flashNight.arki.spatial.move.Mover.init();
+        if (_root.collisionLayer == undefined) _root.collisionLayer = library.createEmptyMovieClip("hunterWalls", library.getNextHighestDepth());
+        if (org.flashNight.gesh.depth.DepthManager.instance == null) {
+            org.flashNight.gesh.depth.DepthManager.instance = new org.flashNight.gesh.depth.DepthManager(library,10000,100000,64);
+            org.flashNight.gesh.depth.DepthManager.instance.calibrate(0,1000);
+        }
+    }
+    private static function stepHunter():Void {
+        age++;
+        if (age > 210) {
+            check(false, "hunter timed out " + current.name + " stage=" + stage + " state=" + unit.状态 + " man=" + unit.man._currentframe + "/" + unit.man._totalframes);
+            nextCase(); return;
+        }
+        if (stage == "ready") {
+            if (typeof unit.man.主手开始射击 != "function" || typeof unit.man.副手开始射击 != "function") return;
+            if (current.prior) {
+                unit.动作A = unit.动作B = true;
+                unit.man.副手开始射击(); unit.man.主手开始射击();
+                check(unit.手枪.value.shot == unit.手枪弹匣容量 && unit.手枪2.value.shot == 1,
+                    "real ordinary dual upper body expends main last round and starts offhand");
+            }
+            unit.动作A = unit.动作B = false;
+            if (current.control) { stage = "settle"; age = 0; return; }
+            _root.技能路由.技能标签跳转_旧(unit, "追猎射击");
+            stage = "hunter"; return;
+        }
+        if (stage == "hunter") {
+            if (unit.man._totalframes == 92 && unit.状态 == "技能") {
+                reloadProbe.sawHunter = true;
+                reloadProbe.maxFrame = Math.max(Number(reloadProbe.maxFrame) || 0, unit.man._currentframe);
+            }
+            if (reloadProbe.endFrame == 92 && unit.状态 == "双枪站立") {
+                check(reloadProbe.sawHunter && reloadProbe.maxFrame >= 70 && reloadProbe.skillShots > 0,
+                    "actual 92-frame tracking shot dispatched rounds and ended through its authored route");
+                stage = "settle"; age = 0;
+            }
+            return;
+        }
+        if (stage == "settle" && age > 15) {
+            check(typeof unit.man.副手开始射击 == "function" && !unit.射击最大后摇中 && !ShootCore.isAnyShooting(unit)
+                && !unit.keepshooting && !unit.keepshooting2, "ordinary upper body restored and old lanes are clear");
+            var x:Number = unit._x, y:Number = unit.Z轴坐标;
+            unit.左行 = unit.上行 = unit.强制奔跑 = true;
+            _root.__prodHeroFunctions.行走公共体(unit, true);
+            check(unit.方向 == "左" && unit._x < x && unit.Z轴坐标 < y && unit.状态 == "双枪跑", "production movement turns, runs and crosses depth on both axes");
+            trace("[HUNTER_NATIVE] " + current.name + " max=" + reloadProbe.maxFrame + " end=" + reloadProbe.endFrame
+                + " skillShots=" + reloadProbe.skillShots + " move=" + (unit._x-x) + "," + (unit.Z轴坐标-y) + " state=" + unit.状态);
+            nextCase();
+        }
     }
     private static function stock(name:String):Number {return current.noOffStock&&name=="dual-off-mag"?0:1000;}
     private static function capture(props:Object):Void {
+        if (current.hunter) {
+            if (stage == "hunter") reloadProbe.skillShots++;
+            return;
+        }
         var side:Number=props.子弹种类=="dual-off-probe"?1:0;
         if(shots[0].length+shots[1].length==0&&!current.intent&&!current.noOffStock)
             check(reloads[0]>0&&reloads[1]>0,"held triggers wait for both initial magazine commits");
@@ -52,6 +127,9 @@ class org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest {
             {name:"offhand-out-of-stock-finishes",impact:false,noOffStock:true},
             {name:"dual-main-upper-body-reload-continuity",impact:false,continuity:true,probeHand:"主手"},
             {name:"dual-off-upper-body-reload-continuity",impact:false,continuity:true,probeHand:"副手"}];
+        cases.push({name:"hunter-full-no-prior", hunter:true}, {name:"hunter-last-main-queued-off", hunter:true, prior:true},
+            {name:"ordinary-last-main-queued-off", hunter:true, prior:true, control:true});
+        if (_root.__hunterTimelineOnly) cases = cases.slice(cases.length - 3);
         saved={world:_root.gameworld,control:_root.控制目标,pause:_root.暂停,clock:_root.帧计时器,
             save:_root.存档系统,ui:_root.玩家信息界面,sound:_root.soundEffectManager,bullet:_root.子弹区域shoot传递,
             initHero:_root.初始化主角模板,functions:_root.主角函数,playSound:_root.播放音效,
@@ -81,7 +159,7 @@ class org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest {
         if(unit){ShootCore.cleanup(unit);unit.removeMovieClip();}EnhancedCooldownWheel.I().reset();ShootCore._lastShotTimes={};
         index++;if(index>=cases.length){finish();return;}
         current=cases[index];shots=[[],[]];reloads=[0,0];age=0;stage="attach";
-        reloadProbe={progressed:false};
+        reloadProbe={progressed:false, skillShots:0, maxFrame:0};
         unit=library.attachMovie("主角-男","dualReloadHero",library.getNextHighestDepth());
         check(unit!=null,"attaches production hero");if(unit==null){finish();return;}
         initUnit(unit);_root.控制目标=unit._name;
@@ -90,6 +168,7 @@ class org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest {
         if(stage=="done")return;
         if(frame>cases.length*340+300){check(false,"native dual-gun watchdog");finish();return;}
         if(stage=="attach"){stage="ready";unit.gotoAndStop("双枪站立");return;}
+        if(current.hunter){stepHunter();return;}
         if(current.continuity){stepContinuity();return;}
         if(stage=="ready"){
             if(typeof unit.man.主手开始射击!="function"||typeof unit.man.副手开始射击!="function")return;

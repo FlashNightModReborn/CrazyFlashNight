@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.Action.Shoot.ShootCore;
+import org.flashNight.arki.unit.Action.Shoot.BorrowedLongGunShot;
 import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
 // File: org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as
 import org.flashNight.arki.unit.*;
@@ -92,6 +93,11 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
             return false;
         }
         
+        var borrow:Object = weaponType == "长枪" && commitGuard == null ? owner.__borrowedLongGunShot : null;
+        if (borrow != null && (typeof _root.子弹区域shoot传递 != "function" || !BorrowedLongGunShot.commit(owner, borrow))) {
+            owner.__pendingFireInterval = 0;
+            return false;
+        }
         var dispatcher:EventDispatcher = owner.dispatcher;
 
         var firedWeapon:Object = owner[weaponType];
@@ -130,6 +136,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
 
         // 发射子弹
         _root.子弹区域shoot传递(bulletProps);
+        if (borrow != null) BorrowedLongGunShot.dispatched(owner, borrow);
         if(fixedActor)owner.cf6FixedShotDispatched(weaponType,bulletProps);
 
         return true;

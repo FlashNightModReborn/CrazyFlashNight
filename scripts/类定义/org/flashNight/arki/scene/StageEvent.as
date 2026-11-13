@@ -195,6 +195,7 @@ class org.flashNight.arki.scene.StageEvent {
                 ObjectUtil.cloneParameters(para, emenyinfo.Parameters);
             }
             var instanceName = emenyinfo.InstanceName ? emenyinfo.InstanceName : id + "_event_" + eventName + "_" + i;
+            org.flashNight.arki.hud.FocusTargetHudService.stampSpawn(WaveSpawner.instance.gameworld, para);
             WaveSpawner.instance.spawnEnemy(id, instanceName, para, emenyinfo.SpawnIndex, emenyinfo.x, emenyinfo.y);
         }
     }

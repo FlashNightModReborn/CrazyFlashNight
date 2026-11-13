@@ -847,7 +847,12 @@ var PanelTooltip = (function() {
     }
 
     function positionFloating(pointer, anchor, anchored) {
-        var vw = window.innerWidth, vh = window.innerHeight;
+        // 默认调用方使用屏幕坐标。固定画布内的调用方要先扣除留边，再换算到画布坐标。
+        var stage = _el.closest ? _el.closest('[data-tooltip-viewport]') : null;
+        var bounds = stage && stage.getBoundingClientRect();
+        var scale = stage ? bounds.width / stage.clientWidth || 1 : 1;
+        var vw = stage ? stage.clientWidth : window.innerWidth;
+        var vh = stage ? stage.clientHeight : window.innerHeight;
         var rich = _el.querySelector('.flash-tt-rich');
         if (rich) {
             var descPanel = rich.querySelector('.flash-tt-desc');
@@ -857,16 +862,22 @@ var PanelTooltip = (function() {
             }
             rich.classList.remove('flash-tt-rich--stacked');
             var wideRect = _el.getBoundingClientRect();
-            if (wideRect.width > vw - VIEWPORT_INSET * 2) {
+            if (wideRect.width / scale > vw - VIEWPORT_INSET * 2) {
                 rich.classList.add('flash-tt-rich--stacked');
             }
         }
         var tooltipRect = _el.getBoundingClientRect();
-        var tw = tooltipRect.width || 1;
-        var th = tooltipRect.height || 1;
+        var tw = tooltipRect.width / scale || 1;
+        var th = tooltipRect.height / scale || 1;
         var anchorRect = anchorRectOf(anchor, pointer);
         var pointerX = Number(pointer && pointer.clientX);
         var pointerY = Number(pointer && pointer.clientY);
+        if (stage) {
+            anchorRect = rectAt((anchorRect.left - bounds.left) / scale, (anchorRect.top - bounds.top) / scale,
+                anchorRect.width / scale, anchorRect.height / scale);
+            pointerX = (pointerX - bounds.left) / scale;
+            pointerY = (pointerY - bounds.top) / scale;
+        }
         if (!isFinite(pointerX)) pointerX = (anchorRect.left + anchorRect.right) / 2;
         if (!isFinite(pointerY)) pointerY = (anchorRect.top + anchorRect.bottom) / 2;
         var pointerRadius = anchored ? 0 : POINTER_EXCLUSION;

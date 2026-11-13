@@ -647,6 +647,8 @@ SubWave的必要参数：
                         <x>1007</x>
                         <y>434</y>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>吉他</focusHudLabel>
                             <不掉钱>true</不掉钱>
                         </Parameters>
                     </Enemy>
@@ -658,6 +660,8 @@ SubWave的必要参数：
                         <x>1200</x>
                         <y>437</y>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>键盘</focusHudLabel>
                             <不掉钱>true</不掉钱>
                         </Parameters>
                     </Enemy>
@@ -669,6 +673,8 @@ SubWave的必要参数：
                         <x>1105</x>
                         <y>452</y>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>主唱</focusHudLabel>
                             <不掉钱>true</不掉钱>
                         </Parameters>
                     </Enemy>

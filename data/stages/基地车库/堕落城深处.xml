@@ -244,6 +244,10 @@
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>浮士德兄弟</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

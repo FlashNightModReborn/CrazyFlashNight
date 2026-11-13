@@ -2467,6 +2467,8 @@ namespace CF7Launcher.Guardian
             if (_windowManager != null) _windowManager.ResetEmbedState();
 
             SetState(State.Spawning, "");
+            // 仅为本次 spawn 留住原本正在操作的启动器。用户切走时不申请前台。
+            Action<IntPtr> returnBootstrapInput = _form?.CaptureBootstrapFocusReturn(_windowManager);
             bool ok;
             try { ok = _processManager.Start(); }
             catch (Exception ex)
@@ -2486,7 +2488,7 @@ namespace CF7Launcher.Guardian
                 // Phase C Step C1d: early reparent — Flash spawn 后立即后台 poll + SW_HIDE + SetParent 到 hidden FlashHostPanel
                 // 压缩 top-level 可见窗口时间到 100-200ms；不触发 FireEmbedResult（reveal 由 EmbedFlashWindow 终点负责）
                 if (_form != null && _form.FlashHostPanel != null)
-                    _windowManager.ArmEarlyReparent(_currentFlashProcess, _form.FlashHostPanel);
+                    _windowManager.ArmEarlyReparent(_currentFlashProcess, _form.FlashHostPanel, returnBootstrapInput);
             }
             if (_form != null)
                 _form.TrackFlashProcess(_currentFlashProcess);

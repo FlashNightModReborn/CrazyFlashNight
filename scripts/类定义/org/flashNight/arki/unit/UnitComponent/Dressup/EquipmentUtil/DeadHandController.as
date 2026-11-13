@@ -139,7 +139,6 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
                 && nowF >= ref.上次雷电帧 && (nowF - ref.上次雷电帧) < ref.超载触发间隔帧) {
             return;
         }
-        ref.上次雷电帧 = nowF;
 
         var sx:Number = isFinite(Number(u._x)) ? Number(u._x) : 0;
         var sy:Number = isFinite(Number(u._y)) ? Number(u._y) : 0;
@@ -149,7 +148,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
         if (ref.当前武器模式 == "长枪") {
             var tcm:Object = org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
             var enemy:MovieClip = (tcm && typeof tcm.findNearestEnemyAtPoint2D == "function")
-                ? tcm.findNearestEnemyAtPoint2D(u, sx, sz, 650, ref.子弹配置.Z轴攻击范围 || 240) : null;
+                ? tcm.findNearestEnemyAtPoint2D(u, 5, sx, sz, 650, ref.子弹配置.Z轴攻击范围 || 240, null) : null;
             if (enemy && enemy.hp > 0 && isFinite(Number(enemy._x))) {
                 sx = Number(enemy._x);
                 sy = isFinite(Number(enemy._y)) ? Number(enemy._y) : sy;
@@ -182,9 +181,9 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
         ref.子弹配置.shootY = sy;
         ref.子弹配置.shootZ = sz;
 
-        if (typeof _root.子弹区域shoot传递 == "function") {
-            _root.子弹区域shoot传递(ref.子弹配置);
-        }
+        if (typeof _root.子弹区域shoot传递 != "function") return;
+        _root.子弹区域shoot传递(ref.子弹配置);
+        ref.上次雷电帧 = nowF;
         if (!freeShot) {
             ref.超载能量 -= ref.能量消耗;
             if (ref.超载能量 < ref.能量消耗 && !ref.二阶段待结束超载) {
@@ -600,7 +599,8 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
             if (ref.超载模式) { bs = 2; be = 16; }
         } else if (ref.当前武器模式 == "长枪") {
             hs = 32; he = 46;
-            gs = 17; gripEnd = 31;
+            gs = ref.超载模式 ? 32 : 17;
+            gripEnd = ref.超载模式 ? 46 : 31;
             if (ref.超载模式) { bs = 2; be = 16; }
         }
 

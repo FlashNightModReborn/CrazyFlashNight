@@ -29,7 +29,7 @@
     layer.id = 'boot-tooltip-layer';
     layer.className = 'boot-tooltip';
     layer.setAttribute('role', 'tooltip');
-    document.body.appendChild(layer);
+    document.getElementById('launcher-stage').appendChild(layer);
     return layer;
   }
 
@@ -52,14 +52,14 @@
     }
     // .on 只切 visibility/opacity, 布局一直在, 量尺寸不受显隐影响
     layer.classList.add('on');
-    var r = el.getBoundingClientRect();
-    var tw = layer.offsetWidth, th = layer.offsetHeight;
-    var x = r.left + r.width / 2 - tw / 2;
-    var y = r.bottom + OFFSET;
-    if (y + th > window.innerHeight - 4) y = r.top - th - OFFSET;   // 下方放不下翻上方
-    if (y < 4) y = 4;
-    if (x < 4) x = 4;
-    if (x + tw > window.innerWidth - 4) x = window.innerWidth - tw - 4;
+    var stage = layer.parentElement, bounds = stage.getBoundingClientRect();
+    var scale = bounds.width / stage.clientWidth || 1;
+    var r = el.getBoundingClientRect(), tw = layer.offsetWidth, th = layer.offsetHeight;
+    var x = (r.left + r.width / 2 - bounds.left) / scale - tw / 2;
+    var y = (r.bottom - bounds.top) / scale + OFFSET;
+    if (y + th > stage.clientHeight - 4) y = (r.top - bounds.top) / scale - th - OFFSET;
+    y = Math.max(4, y);
+    x = Math.max(4, Math.min(x, stage.clientWidth - tw - 4));
     layer.style.left = x + 'px';
     layer.style.top = y + 'px';
   }

@@ -318,6 +318,12 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        internal void FocusWebInput()
+        {
+            if (!_webViewRetired && _webView?.CanFocus == true)
+                _webView.Focus();
+        }
+
         private void RetireWebViewForGameplay()
         {
             if (_webViewRetired)

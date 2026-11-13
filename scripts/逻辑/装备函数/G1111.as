@@ -53,6 +53,17 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
     }
 
     /* ---------- 5. 射击事件监听 ---------- */
+    ref.finishChargedRifle = function(shooter:MovieClip, request:Object):Void {
+        var hit:Object = request.directHit;
+        var enemy:MovieClip = hit.target;
+        if (!enemy || enemy.hp <= 0) return;
+        var settlement:Object = BulletFactory.createSettlementBullet(hit.props, shooter);
+        BulletQueueProcessor.injectHit(settlement, shooter, enemy, enemy._x, enemy._y, 1);
+        if (ref.是否为主角) {
+            HorizontalScroller.pushFocus(enemy, param.focusFrames || 10, param.focusSnap == "true" || param.focusSnap === true,
+                param.focusEaseSpeed || 5, 0, 0, 0, param.focusMinZoom || 3.0);
+        }
+    };
     target.dispatcher.subscribe("长枪射击", function () {
         if(ref.cf6FixedNpc)return;
         if(target.攻击模式 !== "长枪") return;
@@ -76,32 +87,15 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
                 prop.魔法伤害属性 = param.rocketMagicType || "首领";
                 prop.霰弹值 =  Math.ceil((param.chargedRocketPellets || 16) * target.铁枪之锋倍率);
             } else {
-                var chargedProp:Object = ObjectUtil.clone(prop);
-
-                chargedProp.子弹种类 = param.chargedRifleBulletType || "近战联弹";
-                chargedProp.伤害类型 = param.chargedRifleDamageType || "真伤";
-                chargedProp.霰弹值 =  Math.ceil((param.chargedRiflePellets || 1.5) * target.铁枪之锋倍率);
-
-                // _root.发布消息(param.chargedRiflePellets, target.铁枪之锋倍率, chargedProp.霰弹值);
-
-                // 狙击真伤：经 injectHit 旁路直结算到锁定目标，替代原"伪造 区域定位area
-                // + 改写 shootX/Y/Z + spawn 近战联弹蹭中"的 hack（z 轴远目标不再露怯）。
-                // chargedProp 经 createSettlementBullet 初始化为可结算子弹（含 damageManager 等），
-                // 不 spawn 飞行实体；dmgMult=1（保底首发全伤）。
-                // target = 自机 = 发射者；命中点取锁定目标自身坐标。
-                var autoTarget:MovieClip = ref.autoTarget;
-                if (autoTarget && autoTarget.hp > 0) {
-                    var settlementBullet:Object = BulletFactory.createSettlementBullet(chargedProp, target);
-                    BulletQueueProcessor.injectHit(settlementBullet, target, autoTarget, autoTarget._x, autoTarget._y, 1);
-                }
-
-                // 狙击运镜：切换到被狙击单位身上
-                var focusFrames = param.focusFrames || 10;
-                var focusSnap = (param.focusSnap == "true" || param.focusSnap === true) ? true : false;
-                var focusEaseSpeed = param.focusEaseSpeed || 5;
-                var focusMinZoom = param.focusMinZoom || 3.0;
-                if (ref.是否为主角) {
-                    HorizontalScroller.pushFocus(autoTarget, focusFrames, focusSnap, focusEaseSpeed, 0, 0, 0, focusMinZoom);
+                // 先记录本发的锁定信息。拒发不能在“长枪射击”准备事件内提前直伤或运镜。
+                var request:Object = target.__borrowedLongGunShot;
+                if (request != null && request.kind == "stone" && !request.committed) {
+                    var chargedProp:Object = ObjectUtil.clone(prop);
+                    chargedProp.子弹种类 = param.chargedRifleBulletType || "近战联弹";
+                    chargedProp.伤害类型 = param.chargedRifleDamageType || "真伤";
+                    chargedProp.霰弹值 = Math.ceil((param.chargedRiflePellets || 1.5) * target.铁枪之锋倍率);
+                    request.directHit = {props:chargedProp,target:ref.autoTarget};
+                    request.afterDispatch = ref.finishChargedRifle;
                 }
 
                 // 充能狙击：使用聚束射线（ray bullet），贯穿路径上所有目标

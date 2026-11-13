@@ -120,6 +120,16 @@ bootstrap preflight
 
 原生音频 bridge、格式能力和可观测性以 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)为准。通用 runtime promotion 只证明供应链与部署完整性；Audio H2 仍是独立产品验收，不从通用 promotion 或其他 Panel smoke 外推；状态术语见 [runtime 证据状态](../docs/runtime-build-reproducibility.md#evidence-states)。
 前门 BGM 仅走 Native Audio v2，固定循环 `sounds/PTXOA馆长/主菜单.mp3`、gain `0.4`，不读槽位音量偏好。lease 只在 `Ready` 且 source 为空时获取，不重播自身也不抢异源。无 OP 的读档/建角/提交后加载保持到 actual reveal；OP 与 legacy 在 admission 让出。`SceneReady` 不交接音频，reveal 前 reset/error 可恢复；actual reveal 以 requestId-CAS 让出并由 AS2 接权，已 supersede 时不 stop，recovery 不复活已 revoke intent。
+### 启动前门、存档库与建角
+
+启动器与游戏内面板共用固定 1024×576 画布，窗口、全屏与异形屏均居中等比缩放。首页、设置、存档、建角和片头均使用同一比例。
+
+欢迎页在人物立绘对侧显示入口。人物朝向由 `web/assets/bg/portraits.json` 指定，阵营名称与引言由 `web/modules/factions.js` 提供。PM19 启动后通过 `window.PM19Decor` 提供本次的轨道中心和可复算的签名，中央载入提示沿用现有 attempt 与 reveal 回执。顶栏与信道同步显示中文启动状态，悬停顶栏状态可查看宿主附带的细节。点击读数条可展开和收起信道。顶栏设置集中提供字号、片头和字体扩展，关于与帮助的正文独立滚动。进入前门期间原生 HUD 刘海收起。
+
+存档库可搜索、按最近游玩等条件排序，在选中项直接继续游戏或打开编辑。详情从 Host 目录投影读取名字、进度、难度、性别和可用外观。提交编辑后可以撤销最近一次成功保存，关闭并重启启动器仍有效。正常游戏写档或删除会使旧撤销失效。受损存档在前门打开原文、导出或导入修复。删除确认提示不可恢复，空出来的位置可以新建角色。
+
+建角的身份登记、外观配置、选择难度可直接切换。人物铭牌同步角色名。上装、下装、鞋与可搜索的发型同屏呈现，悬停只试穿，点击才选定。随机外观按当前性别选取衣装、发型和身高。选择难度展开完整规则，确认区按 Host 提供的槽位显示节点签名。最终提交仍校验姓名和选择。界面回归入口为 `node tools/run-bootstrap-harness.js`、`node tools/run-bootstrap-character-create-harness.js`。存档编辑跨重启、后续写入冲突和目录兼容由 `ArchiveTaskOrderingTests` 覆盖。
+
 ### Agent Runtime
 
 Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 structured-first/visual-fallback 边界见 [Contracts README](src/AgentRuntime/Contracts/README.md)与[一期范围冻结 ADR](../docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md)。历史 F7/F8 发布证据留在 ADR 和 `docs/evidence/`，不回流到本文件。
@@ -309,7 +319,7 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 记录区分探针线程调度、UI 排队、鼠标钩子分发、本地回调与下游 hook 链、光标绘制及同步窗口调用，每个窗口最多 64 条尖刺，汇总保留省略数量与峰值。
 焦点录制还每秒采集一次原生呈现的最近 256 次提交摘要；主动静止/hold 不计入连续帧间隔，统计不触发 GPU 回读。不记录鼠标移动坐标，不注入输入；提交耗时不是显示器实际呈现延迟。细节见 [U12 记录](../docs/U12过场Web迁移与人力验收-2026-10-01.md)及[启动与呈现优化](../docs/startup-input-presentation-optimization.md)。
 <!-- launcher-user-prefs-registry:start -->
-当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、
+当前字段为 `lastPlayedSlot`、`lastPlayedBySlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、
 `hudMotionMode`（`full/reduced/static`，仅控制玩家 HUD 表现）、`hitNumberMode`、`hitNumberWorldRowLimit`、`reducedPresentation`、`casEnabled`、`motionFeedbackEnabled`、`ragTerminalAutoStart`、`performance` 和 `previousPerformance`。
 
 玩家 HUD 的交互、动效与 Buff 显示合同见 [本轮优化说明](../docs/玩家HUD交互与动效优化-2026-10-23.md)。
@@ -359,6 +369,7 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 |---|---|
 | `ready` | Web ready |
 | `ping` | 健康检查 |
+| `set_fullscreen` | 启动器窗口按 `enabled` 设置全屏或还原，宿主通过 `fullscreen_state` 回报实际状态。Esc 先关闭当前弹窗或返回上一层 |
 | `cancel_launch` | 启动生命周期 |
 | `start_game` | 启动生命周期 |
 | `character_create_open` | 用当前 Web `openRequestId` 打开新建 / 重建角色草稿 |
@@ -369,6 +380,7 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `delete` | 写 tombstone 后清理 JSON，保留显示名。文件占用时，成功回执附 `shadow_cleanup_pending` |
 | `rename_slot` | 修改 Host 权威槽位显示名；允许重名，空串恢复跟随角色名，不修改物理 `slotKey` |
 | `load` | 存档操作 |
+| `undo_edit` | 按槽位、编辑凭证和当前内容核对上次编辑，成功才恢复编辑前的存档 |
 | `load_raw` | 存档原始读取 |
 | `save` | 存档操作 |
 | `reset` | 清理 JSON 后保留 tombstone。默认同时移除名称映射，`residueOnly: true` 只清理已删除槽的残留副本并保留名称 |
@@ -390,7 +402,7 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 <!-- launcher-bootstrap-command-registry:end -->
 `config_set` 只写白名单。启动前门的 attempt/slot/displayName/backup/reveal、durable/SceneReady、catalog 与 exact retry 边界见 [AS2 → Web 迁移护栏](../agentsDoc/as2-web-panel-migration.md)；`bootstrap_reveal_ready` 不代签 `s:1|ga:<attemptId>`，重建不预删 SOL。FontPack 的真实探针、exact HTTPS allow-list 与字节/ETag/WOFF2 边界见[字体目录](../fonts/README.md)。
 Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（≥501 非透明像素）后再等双 rAF 开放；失败/12 秒只降级，迟到不可揭新页。PM19 V3 在建角/Modal/视频中暂停；loading 相（建角除外）叠加 lore 事件流与阶段文字，`Ready+确认意图` 门控方环收束，>12s 允许安静换盘，cue 按优先级抢占/挂起；Error 反馈持续到宿主退出错误态，绘制失败不影响重试。双缓存、12/24Hz 和本次暂停不参与启动判定。几何避让与验收见 [PM19 背景](../docs/启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md)。
-角色名为主，存档显示名在高级选项中默认跟随；确认页仅在自定义名不同时另列。建角固定 `1024×576` + `PanelScale`，窗口/全屏只等比缩放。外观保留三装备槽、单发型槽和左侧唯一身高；紧凑/完整均挂载 77 项，完整卡片使用可辨识短名与候选池内部滚动，三步零页面滚屏；脸型只走 exact wire，注释统一用 `PanelTooltip`。作者/版本正文来自 `web/content/*.md`；版本记录为近全屏单节点浏览器，运行版本只读 `web/config/version.js`，历史证据与视频提纲按[版本考古规范](../docs/version-archaeology/README.md)收口。
+角色名为主，存档显示名在高级选项中默认跟随。确认页仅在自定义名不同时另列。建角固定 `1024×576` + `PanelScale`，窗口与全屏等比缩放。三个装备选择区与发型同屏，发型按性别、搜索词筛选，可切换名称或图标并在列表内滚动。外观页左侧提供身高滑杆。脸型仅用于角色数据，物品注释使用 `PanelTooltip`。作者与版本正文来自 `web/content/*.md`。运行版本取自 `web/config/version.js`，历史证据与视频提纲见[版本考古规范](../docs/version-archaeology/README.md)。
 <a id="panel-registry"></a>
 ## Panel 与 minigame 注册表
 **最后核对代码基线**：commit `630d7def1e78e48021334b67d32486c61ad4c051`（2026-08-17）。`Panels.open(id)` 首次命中 lazy entry 时，`lazy-loader.js` 按声明顺序加载依赖；成功 URL 按 promise 去重，失败 URL 驱逐缓存并允许重试。精确依赖顺序和注册集合以 [panels-lazy-registry.js](web/modules/panels-lazy-registry.js)为代码权威。

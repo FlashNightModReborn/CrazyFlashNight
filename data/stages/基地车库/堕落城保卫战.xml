@@ -130,6 +130,10 @@
                         <InstanceName>gazer</InstanceName>
                         <x>1700</x>
                         <y>575</y>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>gazer</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>军阀.精英突击兵</Type>
@@ -230,6 +234,10 @@
                         <IsHostile>false</IsHostile>
                         <InstanceName>itinerant</InstanceName>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>itinerant</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>军阀.精英突击兵</Type>
@@ -627,6 +635,8 @@
                         <IsHostile>false</IsHostile>
                         <InstanceName>lee</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>lee</focusHudLabel>
                             <宠物属性>
                                 <冲腿龙息>true</冲腿龙息>
                             </宠物属性>
@@ -643,6 +653,10 @@
                         <InstanceName>surveyor</InstanceName>
                         <x>1000</x>
                         <y>543</y>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>surveyor</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>堕落城.左轮</Type>
@@ -1183,6 +1197,10 @@
                         <InstanceName>牛仔</InstanceName>
                         <x>900</x>
                         <y>425</y>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>牛仔</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>通缉犯.魔女</Type>
@@ -1192,6 +1210,8 @@
                         <IsHostile>false</IsHostile>
                         <InstanceName>魔女</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>魔女</focusHudLabel>
                             <宠物属性>
                                 <晶能者>true</晶能者>
                             </宠物属性>
@@ -1410,7 +1430,7 @@
         </Event>
         <Event>
             <EventName>UnitDeath</EventName>
-            <Parameter>黑龙</Parameter>
+            <Parameter>黑龙敌人-铠甲勇士</Parameter>
             <Message>黑龙阵亡！</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
@@ -1431,7 +1451,7 @@
         </Event>
         <Event>
             <EventName>UnitEmergency</EventName>
-            <Parameter>黑龙</Parameter>
+            <Parameter>黑龙敌人-铠甲勇士</Parameter>
             <Message>黑龙情况危急！</Message>
         </Event>
         <Event>
@@ -1528,6 +1548,10 @@
                         <InstanceName>浮士德</InstanceName>
                         <x>1400</x>
                         <y>573</y>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>浮士德兄弟</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>黑铁会.黑铁重锤</Type>
@@ -1587,6 +1611,8 @@
                         <SpawnIndex>left</SpawnIndex>
                         <InstanceName>翅虎</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>翅虎</focusHudLabel>
                             <宠物属性>
                                 <超级血清>true</超级血清>
                             </宠物属性>
@@ -1728,6 +1754,8 @@
                         <SpawnIndex>left</SpawnIndex>
                         <InstanceName>火凤</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>火凤</focusHudLabel>
                             <宠物属性>
                                 <涅槃重生>true</涅槃重生>
                             </宠物属性>
@@ -1813,6 +1841,11 @@
                         <IsHostile>false</IsHostile>
                         <SpawnIndex>left</SpawnIndex>
                         <InstanceName>黑龙</InstanceName>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>黑龙</focusHudLabel>
+                            <focusHudSuccessor>敌人-铠甲勇士</focusHudSuccessor>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>黑铁会.黑铁重锤</Type>
@@ -2213,6 +2246,10 @@
                         <parameters>
                             <threat>30</threat>
                         </parameters>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>保护仪器</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>摇滚公园.吉他.友军</Type>
@@ -2222,6 +2259,8 @@
                         <IsHostile>false</IsHostile>
                         <InstanceName>吉他</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>吉他</focusHudLabel>
                             <宠物属性>
                                 <导弹烈炎炮>true</导弹烈炎炮>
                             </宠物属性>
@@ -2237,6 +2276,8 @@
                         <IsHostile>false</IsHostile>
                         <InstanceName>键盘</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>键盘</focusHudLabel>
                             <宠物属性>
                                 <弹射弧光斩>true</弹射弧光斩>
                             </宠物属性>
@@ -2252,6 +2293,8 @@
                         <IsHostile>false</IsHostile>
                         <InstanceName>主唱</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>主唱</focusHudLabel>
                             <宠物属性>
                                 <广域裂空斩>true</广域裂空斩>
                             </宠物属性>
@@ -2266,6 +2309,8 @@
                         <Level>60</Level>
                         <InstanceName>tomboy</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>Tomboy</focusHudLabel>
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                             </宠物属性>

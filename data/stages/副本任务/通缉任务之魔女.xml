@@ -69,6 +69,10 @@
                         <Level>22</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMax>修罗</DifficultyMax>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>魔女</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>通缉犯.魔女</Type>
@@ -78,6 +82,8 @@
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMin>地狱</DifficultyMin>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>魔女</focusHudLabel>
                             <宠物属性>
                                 <晶能者>true</晶能者>
                             </宠物属性>

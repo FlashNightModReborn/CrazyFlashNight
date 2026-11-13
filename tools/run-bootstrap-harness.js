@@ -251,7 +251,7 @@ async function main() {
                     && document.body.dataset.bgGlLifecycle === 'paused-static';
             }, null, { timeout: 10000 });
             const state = await backgroundState(page);
-            if (state.version !== 2 || state.hostState !== 'Ready' || state.cues !== 1
+            if (state.version !== 4 || state.hostState !== 'Ready' || state.cues !== 1
                     || state.retired || state.userIntent || state.scheduled || state.commits !== 1
                     || state.pendingSync) {
                 throw new Error('late replay must initialize once without treating prewarm Ready as confirmation: '
@@ -304,6 +304,62 @@ async function main() {
             return 'resize preserves the committed board; session pause stops scheduling and writes no config';
         });
 
+        await check('frontdoor-stage-and-fullscreen-owner', async () => {
+            const button = page.locator('#btn-fullscreen');
+            const emit = msg => page.evaluate(value => window.__bootstrapHarnessEmit(value), msg);
+            const requests = () => page.evaluate(() => window.__bootstrapHarnessEvents
+                .filter(event => event.direction === 'out' && event.cmd === 'set_fullscreen').map(event => event.payload.enabled));
+            const actions = ['#btn-confirm-start','#btn-switch-slot','#btn-welcome-new','#hud-toggle'];
+            let reference;
+            try {
+                await emit({cmd:'fullscreen_state',enabled:false});
+                await button.click();
+                if (!(await requests()).at(-1) || await button.getAttribute('aria-pressed') !== 'false') {
+                    throw new Error('fullscreen button did not request or waited for a different window owner');
+                }
+                await emit({cmd:'fullscreen_state',enabled:true});
+                if (!await button.evaluate(el => el.textContent === '退出全屏' && el.getAttribute('aria-pressed') === 'true')) {
+                    throw new Error('fullscreen state did not reach the visible button');
+                }
+                const before = (await requests()).length;
+                await page.locator('#btn-display').click();
+                await page.keyboard.press('Escape');
+                if ((await requests()).length !== before || await page.locator('#modal-content').isVisible()) {
+                    throw new Error('Escape left fullscreen before dismissing settings');
+                }
+                await page.keyboard.press('Escape');
+                if ((await requests()).at(-1) !== false) throw new Error('homepage Escape did not request window restoration');
+                for (const size of [{width:1024,height:576},{width:640,height:360},{width:1640,height:720},{width:800,height:1000}]) {
+                    await page.setViewportSize(size);
+                    await page.waitForFunction(() => {
+                        const frame = document.getElementById('launcher-stage').getBoundingClientRect();
+                        const scale = Math.min(innerWidth / 1024, innerHeight / 576);
+                        return Math.abs(frame.width / 1024 - scale) < .001
+                            && Math.abs(frame.width + 2 * frame.left - innerWidth) < 1
+                            && Math.abs(frame.height + 2 * frame.top - innerHeight) < 1;
+                    });
+                    const positions = await page.evaluate(selectors => {
+                        const frame = document.getElementById('launcher-stage').getBoundingClientRect(), scale = frame.width / 1024;
+                        return selectors.map(id => {
+                            const el = document.querySelector(id), rect = el.getBoundingClientRect();
+                            if (!el.contains(document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2))) {
+                                throw new Error('unreachable button ' + id);
+                            }
+                            return [(rect.left - frame.left) / scale, (rect.top - frame.top) / scale, rect.width / scale, rect.height / scale];
+                        }).flat();
+                    }, actions);
+                    if (reference && positions.some((value,i) => Math.abs(value - reference[i]) > 1)) {
+                        throw new Error('window size changed the logical homepage layout');
+                    }
+                    reference = positions;
+                }
+            } finally {
+                await emit({cmd:'fullscreen_state',enabled:false});
+                await page.setViewportSize(viewport);
+            }
+            return 'one centered canvas, same hit targets, acknowledged window mode and layered Escape';
+        });
+
         await check('pm19-visible-cycle-and-coverage', async () => {
             const start = await backgroundState(page);
             await page.waitForFunction(value => window.__pm19Harness.inspect().commits > value,
@@ -332,24 +388,86 @@ async function main() {
             return 'one complete legal exchange; video/character-create coverage freezes all background work';
         });
 
-        await check('pm19-right-column-remains-visible', async () => {
+        await check('pm19-portrait-and-control-columns', async () => {
             await page.setViewportSize({ width:1366, height:900 });
             await page.waitForTimeout(180);
             const pixels = await page.evaluate(() => {
-                const side = document.querySelector('.side-r').getBoundingClientRect();
-                const copy = document.querySelector('.side-r .faction').getBoundingClientRect();
+                const mask = document.querySelector('.art-figure-mask').getBoundingClientRect();
+                const hero = document.querySelector('.hero-copy').getBoundingClientRect();
+                const side = document.body.dataset.artSide;
+                if (mask.width < 400 || !(side === 'left' ? hero.left >= mask.right : hero.right <= mask.left)) {
+                    throw new Error('portrait and controls overlap on ' + side);
+                }
                 const canvas = document.getElementById('bg-gl');
-                const x = Math.ceil(side.x + 12), y = Math.ceil(copy.bottom + 24);
-                const w = Math.floor(side.width - 24), h = Math.floor(side.bottom - y - 16);
-                if (w < 1 || h < 20) throw new Error('right-column probe has no visible blank area');
-                const data = canvas.getContext('2d').getImageData(x, y, w, h).data;
-                let visible = 0;
-                for (let i = 3; i < data.length; i += 4) if (data[i] > 8) visible++;
-                return visible;
+                const bounds = canvas.getBoundingClientRect(), scale = canvas.width / bounds.width;
+                const x = side === 'left' ? Math.ceil((mask.right - bounds.left) * scale) : 0;
+                const width = side === 'left' ? canvas.width - x : Math.floor((mask.left - bounds.left) * scale);
+                const data = canvas.getContext('2d').getImageData(x, 0, width, canvas.height).data;
+                let count = 0;
+                for (let i = 3; i < data.length; i += 4) if (data[i] > 8) count++;
+                return count;
             });
             await page.setViewportSize(viewport);
-            if (pixels < 50) throw new Error('right-column blank area lost its matrix: ' + pixels);
-            return 'actual canvas pixels remain in the right-column blank area: ' + pixels;
+            if (pixels < 50) throw new Error('exposed PM19 canvas is empty');
+            return 'portrait and controls occupy opposite sides; exposed canvas has ' + pixels + ' painted pixels';
+        });
+
+        await check('home-host-states-and-short-window-readout', async () => {
+            const original = await page.evaluate(() => ({
+                font: Number(getComputedStyle(document.documentElement).getPropertyValue('--user-fs-scale')) || 1.35,
+                bannerHidden: document.getElementById('welcome-fontpack').hidden
+            }));
+            try {
+                await page.setViewportSize({ width:1066, height:600 });
+                await page.evaluate(() => {
+                    for (const [state, label] of [['Idle', '就绪'], ['RepairPending', '等待修复存档'], ['Ready', '游戏就绪']]) {
+                        window.__bootstrapHarnessEmit({ cmd:'state', state, msg:'host-detail' });
+                        const badge = document.getElementById('state-badge');
+                        if (badge.textContent !== label || !badge.title.includes('host-detail')
+                                || document.getElementById('hud-last').textContent !== label) {
+                            throw new Error('host state was not rendered in both readouts: ' + state);
+                        }
+                    }
+                    window.__bootstrapHarnessEmit({ cmd:'boot',
+                        messages:'[BootstrapAS] socket ready, firing handshake|[BootstrapAS] handshake hs=Success' });
+                    const channel = document.getElementById('hud-chan'), latest = document.getElementById('hud-last');
+                    if (!channel.textContent.includes('连接就绪，开始握手') || channel.children.length > 5
+                            || latest.textContent !== '握手成功' || latest.title !== 'handshake hs=Success') {
+                        throw new Error('batched Flash boot signals lost their readable labels or original details');
+                    }
+                    document.getElementById('welcome-fontpack').hidden = false;
+                });
+                for (const font of [1.35, 1.75]) {
+                    await page.evaluate(uiFontScale => {
+                        window.__bootstrapHarnessEmit({ cmd:'list_resp', slots:[], uiFontScale });
+                        document.getElementById('view-welcome').scrollTop = 0;
+                    }, font);
+                    await page.waitForFunction(() => {
+                        const rect = selector => document.querySelector(selector).getBoundingClientRect();
+                        const header = rect('.topbar'), footer = rect('.bottom'), logo = rect('.title-logo-wrap img');
+                        const controls = rect('.welcome-controls'), readout = rect('.hud-line');
+                        return logo.height > 0 && logo.top >= header.bottom - 1 && controls.bottom <= readout.top
+                            && readout.height > 0 && readout.bottom <= footer.top;
+                    }, null, { timeout:3000 });
+                    await page.locator('#btn-display').click();
+                    const install = page.locator('#welcome-fontpack-install');
+                    if (!await install.isVisible() || !await page.locator('#chk-intro').isVisible()) {
+                        throw new Error('opening settings lost the font action or intro option');
+                    }
+                    await page.keyboard.press('Escape');
+                    if (!await page.locator('#btn-display').evaluate(el => document.activeElement === el)) {
+                        throw new Error('closing settings lost the opener');
+                    }
+                }
+            } finally {
+                await page.evaluate(({ font, bannerHidden }) => {
+                    window.__bootstrapHarnessEmit({ cmd:'list_resp', slots:[], uiFontScale:font });
+                    document.getElementById('welcome-fontpack').hidden = bannerHidden;
+                    document.getElementById('view-welcome').scrollTop = 0;
+                }, original);
+                await page.setViewportSize(viewport);
+            }
+            return 'localized host states, visible controls and channel readouts, reachable optional action at both font sizes';
         });
 
         await check('pm19-confirm-keeps-business-authority', async () => {
@@ -524,6 +642,7 @@ async function main() {
                 throw new Error('switching focused triggers left a stale aria-describedby owner');
             }
             await nextButton.evaluate(element => element.blur());
+            await button.click();
             const intro = page.locator('.chk-intro');
             await intro.hover();
             await page.waitForTimeout(380);
@@ -531,6 +650,7 @@ async function main() {
             await intro.click();
             await page.waitForTimeout(380);
             if (await tooltip.count() !== 0) throw new Error('pointer click resurrected its tooltip through focusin');
+            await page.keyboard.press('Escape');
             await button.evaluate(element => element.blur());
             if (await page.locator('.boot-tooltip.on').count() !== 0) throw new Error('blur did not hide tooltip');
             await page.locator('#btn-switch-slot').click();
@@ -541,7 +661,7 @@ async function main() {
             await cardButton.focus();
             await page.waitForTimeout(380);
             const delegatedText = (await page.locator('.boot-tooltip.on').textContent()) || '';
-            if (!delegatedText.includes('设为启动存档')) throw new Error('delegated focus tooltip did not appear');
+            if (!delegatedText.includes('直接启动所选存档')) throw new Error('delegated focus tooltip did not appear');
             const delegatedBy = await cardButton.getAttribute('aria-describedby');
             if (!delegatedBy || !delegatedBy.split(/\s+/).includes('boot-tooltip-layer')) {
                 throw new Error('delegated focused trigger is not associated with tooltip');
@@ -559,7 +679,7 @@ async function main() {
             const modalSemantics = await page.evaluate(() => {
                 const content = document.getElementById('modal-content');
                 const labelledBy = content.getAttribute('aria-labelledby');
-                const background = Array.from(document.querySelectorAll('body > .topbar, body > .view, body > .bottom, #log'));
+                const background = Array.from(document.querySelectorAll('#launcher-stage > .topbar, #launcher-stage > .view, #launcher-stage > .bottom, #log'));
                 const rect = content.getBoundingClientRect();
                 const style = getComputedStyle(content);
                 return {
@@ -572,7 +692,8 @@ async function main() {
                     backgroundHidden:background.length > 0
                         && background.every(node => node.getAttribute('aria-hidden') === 'true'),
                     fullScreenSurface:content.classList.contains('about-surface')
-                        && rect.width >= innerWidth - 26 && rect.height >= innerHeight - 26,
+                        && Math.abs(rect.width / content.offsetWidth - rect.height / content.offsetHeight) < .002
+                        && content.offsetWidth >= 1024 - 26 && content.offsetHeight >= 576 - 26,
                     completeBorder:['borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth']
                         .every(property => parseFloat(style[property]) >= 1),
                     unclipped:style.clipPath === 'none',
@@ -827,7 +948,7 @@ async function main() {
             await page.locator('#modal-host').waitFor({ state:'hidden' });
             const restored = await page.evaluate(() => ({
                 focusId:document.activeElement && document.activeElement.id,
-                backgroundClear:Array.from(document.querySelectorAll('body > .topbar, body > .view, body > .bottom, #log'))
+                backgroundClear:Array.from(document.querySelectorAll('#launcher-stage > .topbar, #launcher-stage > .view, #launcher-stage > .bottom, #log'))
                     .every(node => !node.inert && node.getAttribute('aria-hidden') !== 'true')
             }));
             if (restored.focusId !== 'btn-about' || !restored.backgroundClear) {
@@ -1051,11 +1172,12 @@ async function main() {
                     await page.waitForFunction(({selector,buttons}) => {
                         const el = document.querySelector(selector), box = el.getBoundingClientRect();
                         const parent = el.parentElement, area = parent.getBoundingClientRect();
-                        const scale = Math.min(parent.clientWidth / 1024, parent.clientHeight / 576);
-                        return el.offsetWidth === 1024 && el.offsetHeight === 576
-                            && Math.abs(box.width - scale * 1024) < .2 && Math.abs(box.height - scale * 576) < .2
-                            && Math.abs(box.left + box.width/2 - area.left - area.width/2) < 1
-                            && Math.abs(box.top + box.height/2 - area.top - area.height/2) < 1
+                        const stage = document.getElementById('launcher-stage'), frame = stage.getBoundingClientRect();
+                        const scale = Math.min(innerWidth/1024, innerHeight/576);
+                        return stage.offsetWidth === 1024 && stage.offsetHeight === 576
+                            && Math.abs(frame.width - scale * 1024) < .2 && Math.abs(frame.height - scale * 576) < .2
+                            && Math.abs(frame.left * 2 + frame.width - innerWidth) < 1 && Math.abs(frame.top * 2 + frame.height - innerHeight) < 1
+                            && Math.abs(box.width - area.width) < 1 && Math.abs(box.height - area.height) < 1
                             && buttons.every(id => {
                                 const b = document.querySelector(id), r = b.getBoundingClientRect();
                                 return b.contains(document.elementFromPoint(r.left + r.width/2, r.top + r.height/2));
@@ -1104,13 +1226,13 @@ async function main() {
                 await emit({cmd:'list_resp',slots:slots.slice(0,11),uiFontScale:1.35});
                 const editAction = page.locator('#save-actions .btn-edit');
                 await editAction.focus();
-                for (const [font, inline] of [[1.9,false],[1.35,true]]) {
+                for (const font of [1.9,1.35]) {
                     await page.evaluate(value => window.BootstrapApp.setUiFontScale(value), font);
-                    await page.waitForFunction(wanted => {
+                    await page.waitForFunction(() => {
                         const detail = document.getElementById('save-detail');
-                        return document.getElementById('cards').contains(detail) === wanted
+                        return detail.getBoundingClientRect().left >= document.getElementById('cards').getBoundingClientRect().right
                             && document.activeElement === detail.querySelector('.btn-edit');
-                    }, inline, {timeout:3000});
+                    }, null, {timeout:3000});
                 }
 
                 const shortSlots = [
@@ -1119,8 +1241,8 @@ async function main() {
                 await emit({cmd:'list_resp',uiFontScale:1.9,slots:shortSlots});
                 const selected = page.locator('.save-row[data-slot="' + key + '"]');
                 await selected.click();
-                if (!await selected.evaluate(b => b.nextElementSibling === document.getElementById('save-detail'))
-                        || await page.locator('#save-key').textContent() !== key) throw new Error('short directory lost its inline actions or exact key');
+                if (!await selected.evaluate(b => !b.parentElement.contains(document.getElementById('save-detail')) && b.getAttribute('aria-pressed') === 'true')
+                        || await page.locator('#save-key').textContent() !== key) throw new Error('short directory lost its right-hand actions or exact key');
                 await emit({cmd:'state',state:'Idle'});
                 await page.locator('#save-actions .btn-edit').focus();
                 await page.keyboard.press('Enter');
@@ -1176,6 +1298,46 @@ async function main() {
             return 'focused new-save button opened exactly once and preparation remained cancellable by Escape';
         });
 
+        await check('catalog-search-sort-repair-and-exact-undo', async () => {
+            const emit = payload => page.evaluate(msg => window.__bootstrapHarnessEmit(msg), payload);
+            const sent = cmd => page.evaluate(c => window.__bootstrapHarnessEvents.filter(e => e.direction === 'out' && e.cmd === c).map(e => e.payload), cmd);
+            const fixture = [
+                {slot:'alpha-test', characterName:'甲', gender:'男', difficulty:'平衡模式', appearance:{face:'男脸',hair:'短发'},
+                 editUndoToken:'7a4b62551c9648779e4af94e8ee2b520', lastPlayed:'2026-10-04T09:00:00Z'},
+                {slot:'beta-test', characterName:'乙', lastPlayed:'2026-10-05T09:00:00Z'},
+                {slot:'broken-test', corrupt:true}
+            ];
+            await emit({cmd:'list_resp', archiveRequestIds:true, slots:fixture});
+            if (await page.locator('.save-row').first().getAttribute('data-slot') !== 'beta-test') throw new Error('recent play sort lost its latest slot');
+            await page.locator('#save-search').fill('alpha');
+            if (await page.locator('.save-row').count() !== 1 || !(await page.locator('#save-character-meta').innerText()).includes('短发'))
+                throw new Error('search did not retain the exact physical row and character facts');
+            await page.locator('#save-actions [data-action="undo"]').click();
+            await page.locator('#confirm-dialog-ok').click();
+            const request = (await sent('undo_edit')).at(-1);
+            if (request.slot !== fixture[0].slot || request.undoToken !== fixture[0].editUndoToken || !request.requestId)
+                throw new Error('undo must preserve the token, exact key and one live request');
+            const lists = (await sent('list')).length;
+            await emit({cmd:'undo_edit_resp', ok:true, slot:request.slot, requestId:'wrong'});
+            if ((await sent('list')).length !== lists) throw new Error('stale undo acknowledged');
+            await emit({cmd:'undo_edit_resp', ok:true, slot:request.slot, requestId:request.requestId});
+            if ((await sent('list')).length !== lists+1) throw new Error('confirmed undo did not reconcile');
+            await emit({cmd:'list_resp', slots:fixture});
+            await page.locator('#save-search').fill('');
+            await page.locator('#save-sort').selectOption('slot');
+            if (await page.locator('.save-row').first().getAttribute('data-slot') !== 'alpha-test') throw new Error('slot sort changed key order');
+            await page.locator('.save-row[data-slot="broken-test"]').click();
+            const cancels = (await sent('cancel_launch')).length;
+            await page.locator('#save-actions [data-action="repair"]').click();
+            await page.locator('#rc-export').click();
+            const exported = (await sent('export')).at(-1);
+            if (exported.slot !== 'broken-test' || !exported.forceRaw || await page.locator('#rc-force').count()) throw new Error('catalog repair did not use exact raw export');
+            await page.locator('#rc-back').click();
+            if ((await sent('cancel_launch')).length !== cancels) throw new Error('catalog repair closed a game launch');
+            await page.locator('#save-sort').selectOption('recent');
+            return 'search, character metadata, sort, editor undo identities and non-launching catalog repair verified';
+        });
+
         await check('container-keyboard-navigation', async () => {
             await page.evaluate(() => window.__bootstrapHarnessEmit({cmd:'list_resp', slots:[
                 {slot:'nav-a',characterName:'甲'}, {slot:'nav-b',characterName:'乙'}
@@ -1185,10 +1347,15 @@ async function main() {
             await first.press('ArrowDown');
             const selected = page.locator('.save-row[aria-pressed="true"]');
             if (await selected.getAttribute('data-slot') !== 'nav-b') throw new Error('ArrowDown did not select second slot');
+            const starts = () => page.evaluate(() => window.__bootstrapHarnessEvents.filter(e => e.direction === 'out' && e.cmd === 'start_game'));
+            const before = (await starts()).length;
+            const intro = await page.locator('#chk-intro').isChecked();
             await selected.press('Enter');
-            await page.locator('#btn-switch-slot').waitFor();
-            if (await page.locator('#welcome-slot-name').textContent() !== '乙') throw new Error('Enter selected a different character');
-            return 'ArrowDown and Enter select the focused slot on the welcome page';
+            const after = await starts();
+            const request = after.at(-1).payload;
+            if (after.length !== before + 1 || request.slot !== 'nav-b' || request.requireFlashReveal !== true
+                    || !!request.deferReveal !== intro) throw new Error('directory launch did not preserve the exact slot and intro setting');
+            return 'ArrowDown selects the second slot and Enter launches it once with the selected intro setting';
         });
 
         // PM19 V3：以下断言共用 pm19-arrival-kind 内 reload 出的全新控制器实例；
@@ -1289,9 +1456,10 @@ async function main() {
                 const canvas = window.__pm19Harness.inspect().canvas;
                 if (!el || !canvas) return false;
                 const rect = el.getBoundingClientRect();
-                return canvas.masks.some(mask => Math.abs(mask.x - rect.x) <= 8
-                    && Math.abs(mask.y - rect.y) <= 8
-                    && Math.abs(mask.w - rect.width) <= 8 && Math.abs(mask.h - rect.height) <= 8);
+                const frame = document.getElementById('bg-gl').getBoundingClientRect(), ratio = canvas.width / frame.width;
+                return canvas.masks.some(mask => Math.abs(mask.x - (rect.x - frame.x) * ratio) <= 8
+                    && Math.abs(mask.y - (rect.y - frame.y) * ratio) <= 8
+                    && Math.abs(mask.w - rect.width * ratio) <= 8 && Math.abs(mask.h - rect.height * ratio) <= 8);
             }, null, { timeout:3000 });
             return 'the loading mask set covers the lore stream within 8px';
         });

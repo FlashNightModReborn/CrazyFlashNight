@@ -46,6 +46,8 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandVisua
                 state.lastMuzzleX = marker._x; state.lastMuzzleY = marker._y;
             } else {
                 DeadHandTuning.syncBladeClip(skin, ref, !gunMode, config);
+                var offset:Number = !gunMode && ref.冷兵器模式 == "长矛" ? ref.长矛外观偏移Y : 0;
+                syncBladeArt(skin, state, isFinite(offset) ? offset : 0);
                 if (!blade || holder === bladeHolder) blade = skin;
             }
             state.lastVisible = skin._visible; state.lastRotation = skin._rotation;
@@ -53,6 +55,25 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandVisua
         }
         ref.长枪视觉 = gun;
         ref.武器 = gunMode ? gun : blade;
+    }
+
+    // Only move the drawn parts. Hit sockets keep the authored tuning and gun placement keeps its own transform.
+    private static function syncBladeArt(skin:MovieClip, state:Object, offset:Number):Void {
+        var parts:Array = state.art;
+        if (!parts) {
+            parts = []; state.art = parts;
+            var names:Array = ["枪头组件", "握柄组件", "御坂组件"];
+            for (var i:Number = 0; i < names.length; i++) {
+                var part:MovieClip = skin[names[i]];
+                if (typeof part == "movieclip") parts.push({mc:part, base:part._y, last:part._y});
+            }
+        }
+        for (var j:Number = 0; j < parts.length; j++) {
+            var item:Object = parts[j];
+            if (item.mc._parent === skin && item.mc._y === item.last) {
+                item.mc._y = item.base + offset; item.last = item.mc._y;
+            }
+        }
     }
 
     private static function bind(ref:Object, skin:MovieClip, isGun:Boolean, identity:Object):Object {
@@ -84,6 +105,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandVisua
             if (!skin._parent || skin.__deadHandVisualState !== state
                     || skin.__dressupPlacementIdentity !== state.placement) continue;
             // 后来的写入者已改变的属性保持原值；同路径重建也不能恢复到新素材。
+            if (state.art != null) syncBladeArt(skin, state, 0);
             if (skin._visible === state.lastVisible) skin._visible = state.visible;
             if (skin._rotation === state.lastRotation) skin._rotation = state.rotation;
             if (skin._x === state.lastX) skin._x = state.x;

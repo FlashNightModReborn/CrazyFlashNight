@@ -454,7 +454,7 @@ namespace CF7Launcher.Guardian
 
             // 4) SWP_FRAMECHANGED 强制非客户区重算
             if (!SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
-                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | (_allowForeground ? 0u : SWP_NOACTIVATE)))
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOACTIVATE))
                 LogWin32Failure("SetWindowPos(hidden framechanged)", hwnd);
 
             // 5) SetParent 到隐藏宿主
@@ -483,7 +483,7 @@ namespace CF7Launcher.Guardian
         /// MainWindowHandle 走的是 .NET IsMainWindow 启发式（owner==0+IsWindowVisible），
         /// 自带"等真主窗口"的隐式时序，唯一可靠源.
         /// </summary>
-        public void ArmEarlyReparent(Process flashProc, Panel hiddenHost)
+        public void ArmEarlyReparent(Process flashProc, Panel hiddenHost, Action<IntPtr> afterFlashHides = null)
         {
             if (flashProc == null || hiddenHost == null) return;
             int pid = flashProc.Id;
@@ -521,7 +521,10 @@ namespace CF7Launcher.Guardian
 
                     try
                     {
+                        bool flashTookForeground = afterFlashHides != null && HoldsForeground(hwnd);
                         ReparentToHidden(hwnd, hiddenHost);
+                        if (flashTookForeground && hiddenHost.IsHandleCreated)
+                            hiddenHost.BeginInvoke(afterFlashHides, hwnd);
                     }
                     finally
                     {
@@ -670,13 +673,15 @@ namespace CF7Launcher.Guardian
             if (hwnd == IntPtr.Zero || _hostPanel == null)
                 return;
 
+            // 建角仍在启动页时这个 panel 是隐藏的；嵌入只预备画面。
+            bool activate = _allowForeground && _hostPanel.Visible;
             if (needFullEmbed)
             {
                 // 完整路径与启动 hidden 路径共用菜单 / 子窗口样式处理。
                 ApplyFlashChildStyle(hwnd, "embed");
 
                 if (!SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | (_allowForeground ? 0u : SWP_NOACTIVATE)))
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | (activate ? 0u : SWP_NOACTIVATE)))
                     LogWin32Failure("SetWindowPos(embed framechanged)", hwnd);
                 SetParentLogged(hwnd, _hostPanel.Handle, "SetParent(embed host)");
             }
@@ -689,7 +694,7 @@ namespace CF7Launcher.Guardian
                 DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, ref cloakOff, sizeof(int));
             }
             catch { }
-            ShowWindow(hwnd, _allowForeground ? SW_SHOW : SW_SHOWNOACTIVATE);
+            ShowWindow(hwnd, activate ? SW_SHOW : SW_SHOWNOACTIVATE);
             ResizeFlashToPanel();
 
             _hostPanel.Resize -= OnHostPanelResize;
@@ -865,6 +870,22 @@ namespace CF7Launcher.Guardian
             var title = new StringBuilder(256);
             try { GetWindowText(hwnd, title, title.Capacity); } catch { }
             return "0x" + hwnd.ToString("X") + " pid=" + pid + " class=" + cls.ToString() + " title=\"" + title.ToString() + "\"";
+        }
+
+        internal bool HoldsForeground(IntPtr window)
+        {
+            return window != IntPtr.Zero && _focusApi.GetForegroundWindow() == window;
+        }
+
+        internal bool ReturnBootstrapForeground(IntPtr flash, IntPtr bootstrap)
+        {
+            if (!_allowForeground || bootstrap == IntPtr.Zero || !_focusApi.IsWindow(bootstrap)
+                    || !IsCurrentFlashWindow(flash)) return false;
+            IntPtr current = _focusApi.GetForegroundWindow();
+            if (current == bootstrap) return true;
+            if (current != flash && current != IntPtr.Zero) return false;
+            // 已核实这个 Flash 刚抢走本次启动前台。隐藏后它可能仍持有前台，也可能留下空窗口。
+            return _focusApi.SetForegroundWindow(bootstrap) && HoldsForeground(bootstrap);
         }
 
         /// <summary>

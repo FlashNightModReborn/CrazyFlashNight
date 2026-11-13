@@ -1,6 +1,6 @@
-// CF7 PM19 V3. The launch controller owns all commands; this module observes.
+// CF7 PM19 V4. The launch controller owns all commands; this module observes.
 import { loadPrimeMagicSeedBank, loadPrimeMagicSeed } from './pm19/binary-seed.js';
-import { PrimeMagicSeedBankOrbitEngine } from './pm19/seed-bank-engine.js';
+import { PrimeMagicOrbitEngine } from './pm19/engine.js';
 import { transformBoardInto, DIHEDRAL_KINDS } from './dihedral.mjs';
 import { EnvironmentRenderer } from './environment-renderer.mjs';
 import { mountLore } from './lore.mjs';
@@ -8,6 +8,9 @@ import { mountLore } from './lore.mjs';
 const SEED_BANK = new URL('../../assets/pm19/seed-bank.json', import.meta.url);
 const CYCLE_MS = 8000, CUE_MS = 2000;
 const CUE_PRIORITY = { error: 100, sync: 90, confirm: 80, arrival: 70, 'slots-pick': 60, 'return': 50, exchange: 40, 'exchange-pair': 40, unfreeze: 30 };
+// V4 足迹：每批真实 boot 行点亮一行等和线。行 0/18 落在顶栏/底栏遮罩下，从外圈可见行成对向中心收拢；行 9 归加载核心。
+const FOOTPRINT_ORDER = [1, 17, 2, 16, 3, 15, 4, 14, 5, 13, 6, 12, 7, 11, 8, 10];
+const N = 19;
 let pendingSync = false;
 const media = window.matchMedia('(prefers-reduced-motion: reduce)');
 let canvas = document.getElementById('bg-gl');
@@ -22,8 +25,12 @@ let lore = null, attempts = 0, loadingSince = 0, unfreezeCommits = 0, sigmaSent 
 // state 捎带通信字段：最新值或 null（宿主不带字段时保持 null，陈旧值可接受）。
 const comm = { socketPort: null, httpPort: null, flashConnected: null };
 let logSinkDead = false, orbitCenters = null, orbitMagicSum = 0;
+// 会话锁定的轨道：只调用该种子自己的引擎换盘，中心格（轨道群唯一不动点）因此整次会话不变。
+let orbitIndex = -1, seedValues = null;
+const footprints = [];
+let footprintCursor = 0;
 const unsubs = [], observers = [], disposers = [];
-const state = { kind: 'quiet', progress: 0, still: false };
+const state = { kind: 'quiet', progress: 0, still: false, footprints: [] };
 
 function listen(target, name, fn, options) {
   if (!target) return;
@@ -57,18 +64,27 @@ function syncGate() {
 
 function measure() {
   const masks = [];
+  const bounds = canvas.getBoundingClientRect();
+  const scale = bounds.width / canvas.clientWidth || 1;
   function add(selector, fade, erase) {
     for (const el of document.querySelectorAll(selector)) {
       if (!el.getClientRects().length || el.closest('[hidden]')) continue;
       const r = el.getBoundingClientRect();
-      if (r.width && r.height) masks.push({ x: r.x - 2, y: r.y - 2, width: r.width + 4, height: r.height + 4, fade, erase });
+      if (r.width && r.height) masks.push({
+        x:(r.left - bounds.left) / scale - 2, y:(r.top - bounds.top) / scale - 2,
+        width:r.width / scale + 4, height:r.height / scale + 4, fade, erase
+      });
     }
   }
   add('.welcome-card', 22);
   add('.side-l .block', 14);
   add('.side-r > .lbl, .side-r > .ver, .side-r > .ver-tail, .side-r > .row, .side-r .faction', 6);
+  // V4 传承首页：立绘人物一侧整片静默，数字只在空墙一侧渗出；hero 文字与读数条局部羽化。
+  add('.art-figure-mask', 96);
+  add('.hero-copy, .hero-extra', 18, .72);
+  add('.hud-line', 10);
   add('.topbar, .bottom', 8);
-  // 加载指示器用压暗玻璃（erase .68）+ 大羽化：数字幽灵透出，不是挖空黑洞。
+  // 加载核心（中心格）用压暗玻璃（erase .68）+ 大羽化：数字幽灵透出，不是挖空黑洞。
   add('#intro-ov.on.loading .loading-indicator', 72, .68);
   add('#save-shell', 10);
   // Slot cards have opaque backing; masking the scrolling grid also keeps light
@@ -84,6 +100,8 @@ function paint() {
   state.still = isStatic();
   state.kind = visualKind();
   state.progress = cue ? Math.min(1, (time - cue.at) / cue.duration) : 0;
+  state.footprints = loading() ? footprints.map(fp => ({ row: fp.row, age: Math.max(0, time - fp.at) })) : [];
+  state.magicSum = orbitMagicSum;
   renderer.render(time / 1000, state);
   paintDirty = false;
 }
@@ -111,7 +129,7 @@ function tryStartSync() {
   beginCue('sync', 1100);
 }
 // unfreeze 恒 nextInto 换新盘（不推进 cycles 奇偶，若随 rot180 会在两盘间往复）；
-// exchange 拍保持 cycles 奇偶交替（奇 rot180 / 偶 nextInto）。
+// exchange 拍保持 cycles 奇偶交替（奇 rot180 / 偶 nextInto）。V4 起 nextInto 只在锁定轨道内取盘。
 function commitBoard(forceNext = false) {
   if (!forceNext && cycles % 2 === 1) transformBoardInto(board, scratch, 19, DIHEDRAL_KINDS[1]);
   else engine.nextInto(scratch);
@@ -163,14 +181,11 @@ function schedule() {
 function reconcile() {
   if (retired) return;
   if (document.body.classList.contains('cf7-host-hidden')) { retire('host-retired'); return; }
-  const topHeight = document.querySelector('.topbar')?.getBoundingClientRect().height || 46;
-  const topValue = `${Math.ceil(topHeight)}px`;
-  if (document.body.style.getPropertyValue('--pm19-topbar-height') !== topValue) document.body.style.setProperty('--pm19-topbar-height', topValue);
   const wasBlocked = blocked;
   blocked = covered();
   // loading 计时锚点用 frame 时钟；lore 可见性跟随真实 DOM 相位而非 hostState。
-  if (loading() && !loadingSince) loadingSince = time;
-  else if (!loading()) { loadingSince = 0; sigmaSent = false; }
+  if (loading() && !loadingSince) { loadingSince = time; footprints.length = 0; footprintCursor = 0; }
+  else if (!loading()) { loadingSince = 0; sigmaSent = false; footprints.length = 0; footprintCursor = 0; }
   if (lore) {
     const modalOpen = !!(modalHost && modalHost.style.display !== 'none');
     // 建角准备/进行时是游戏内流程，不归启动叙事：lore 不显眼也不抢"正在准备角色"。
@@ -218,7 +233,7 @@ function updatePauseControl() {
 function updateOrbitReadout() {
   const el = document.getElementById('pm19-orbit');
   if (!el) return;
-  const idx = engine && renderer && orbitCenters ? engine.lastSeedIndex() : -1;
+  const idx = engine && renderer && orbitCenters ? orbitIndex : -1;
   const copy = idx >= 0
     ? `轨道 #${idx + 1} · 中心质数 ${orbitCenters[idx]} · Σ=${orbitMagicSum.toLocaleString()} · 单轨 743,178,240 态`
     : '轨道引擎未就绪';
@@ -265,15 +280,58 @@ function retire(reason = 'retired') {
   document.body.dataset.bgGlLifecycle = reason;
 }
 
+// V4 装饰 API（只读、纯展示）：存档节点签名与加载核心读数。签名只取验讫种子的规范盘，
+// 不读当前会话盘面，因此同一槽位每次启动都得到同一枚签名；它不进入任何业务权威链。
+function lineCells(line) {
+  const cells = [];
+  for (let i = 0; i < N; i++) {
+    if (line < N) cells.push(line * N + i);
+    else if (line < 2 * N) cells.push(i * N + (line - N));
+    else if (line === 2 * N) cells.push(i * N + i);
+    else cells.push(i * N + (N - 1 - i));
+  }
+  return cells;
+}
+function lineName(line) {
+  if (line < N) return '第 ' + (line + 1) + ' 行';
+  if (line < 2 * N) return '第 ' + (line - N + 1) + ' 列';
+  return line === 2 * N ? '主对角线' : '副对角线';
+}
+function fnv1a(text) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return h >>> 0;
+}
+function signature(key) {
+  if (!seedValues || typeof key !== 'string' || !key) return null;
+  const h = fnv1a(key), seed = h % seedValues.length, line = (h >>> 3) % (2 * N + 2);
+  const values = lineCells(line).map(i => seedValues[seed][i]);
+  return { seed, line, lineName: lineName(line), values, magicSum: orbitMagicSum };
+}
+function publishDecor() {
+  const center = board[9 * N + 9];
+  const orbitEl = document.getElementById('core-orbit');
+  const primeEl = document.getElementById('core-prime');
+  if (orbitEl) orbitEl.textContent = '轨道 #' + (orbitIndex + 1);
+  if (primeEl) primeEl.textContent = center.toLocaleString('en-US');
+  window.PM19Decor = Object.freeze({
+    ready: true, signature, magicSum: orbitMagicSum,
+    orbit: Object.freeze({ index: orbitIndex, center, seeds: seedValues.length })
+  });
+  try { window.dispatchEvent(new CustomEvent('pm19-decor-ready')); } catch (_) {}
+}
+
 // Dev-only pull inspection, no production toolbar and no hot-path snapshots.
 // Callers receive COPIES, never a mutable authoritative board or engine.
 export function inspect() {
-  return { version: 2, renderer: renderer ? 'canvas2d-cached' : null,
+  return { version: 4, renderer: renderer ? 'canvas2d-cached' : null,
     retired, failed, blocked, paused: userPaused, reduced: media.matches,
     time, commits, cycles, callbacks, cues, scheduled: !!(timer || raf),
     cue: cue ? { ...cue } : null, hostState, userIntent, visualKind: visualKind(),
     pendingSync, loadingSince, unfreezeCommits, attempts, lore: lore ? lore.lines() : null,
-    comm: { ...comm }, logSinkDead,
+    comm: { ...comm }, logSinkDead, orbitIndex,
+    centerValue: board ? board[9 * N + 9] : null,
+    footprints: footprints.map(fp => fp.row),
     canvas: renderer ? { width: renderer.width, height: renderer.height, cache: renderer.useCache,
       masks: renderer.masks.map(({ x, y, w, h }) => ({ x, y, w, h })),
       renders: renderer.renders, rebuilds: renderer.rebuilds, estimatedPixelBytes: renderer.width * renderer.height * 4 * (renderer.surfaces.length + 1) } : null,
@@ -306,7 +364,7 @@ async function main() {
   }
   if (typeof ResizeObserver === 'function') {
     const ro = new ResizeObserver(onLayout);
-    for (const selector of ['.welcome-card', '.topbar', '#save-shell', '.side-r .faction']) {
+    for (const selector of ['.hero', '.topbar', '.bottom', '#save-shell', '.side-r .faction']) {
       const el = document.querySelector(selector); if (el) ro.observe(el);
     }
     observers.push(ro);
@@ -354,10 +412,21 @@ async function main() {
     // BootstrapAS 启动日志透传：宿主不带此消息时本订阅静默；lore 未挂载前的行丢弃。
     unsubs.push(app.onMessage('boot', message => {
       try {
+        let accepted = 0;
         for (const line of String((message && message.messages) || '').split('|')) {
           if (line.indexOf('[BootstrapAS]') !== 0) continue;
           const text = line.slice('[BootstrapAS]'.length).trim();
-          if (text && lore) lore.boot(text, { frame: message.frame });
+          if (text && lore && lore.boot(text, { frame: message.frame }) !== false) accepted++;
+        }
+        // 足迹只记录真实到达的批次，不推导总数或百分比；超过可见行数后循环覆盖最老的一行。
+        if (accepted && loading() && hostState !== 'Error') {
+          const row = FOOTPRINT_ORDER[footprintCursor % FOOTPRINT_ORDER.length];
+          footprintCursor++;
+          const old = footprints.findIndex(fp => fp.row === row);
+          if (old >= 0) footprints.splice(old, 1);
+          footprints.push({ row, at: time });
+          paintDirty = true;
+          reconcile();
         }
       } catch (_) {}
     }));
@@ -380,6 +449,7 @@ async function main() {
     // Original handler continues immediately, including video/loading coverage.
   }
   listen(document.getElementById('btn-confirm-start'), 'click', armLaunchIntent, true);
+  listen(document.querySelector('[data-action="start"]'), 'click', armLaunchIntent, true);
   listen(document.getElementById('btn-retry'), 'click', armLaunchIntent, true);
   // PM19 V3: 详情区的“选用存档”按钮；
   // 选择只是选定不是启动意图——只放列扫光（校验通道），不武装 userIntent/attempts。
@@ -401,7 +471,7 @@ async function main() {
   if (retired) return;
   // lore 不依赖 renderer：种子验讫即挂，渲染器 fail() 后事件流仍可工作。
   try {
-    lore = mountLore({ sink: lines => {
+    lore = mountLore({ parent:canvas.parentElement, sink: lines => {
       // 能力探测：一旦宿主回过 unknown_cmd 即永久停用，对老宿主零噪声。
       if (logSinkDead) return;
       try { window.BootstrapApp?.send({ cmd: 'log', text: lines.join('\n') }); } catch (_) {}
@@ -415,9 +485,12 @@ async function main() {
     const loreRoot = document.getElementById('bg-gl-log');
     if (loreRoot) { const lro = new ResizeObserver(onLayout); lro.observe(loreRoot); observers.push(lro); }
   }
-  engine = new PrimeMagicSeedBankOrbitEngine(seeds, crypto.getRandomValues(new BigUint64Array(1))[0]);
-  board = new Uint32Array(engine.cellCount); scratch = new Uint32Array(engine.cellCount);
+  orbitIndex = crypto.getRandomValues(new Uint32Array(1))[0] % seeds.length;
+  engine = new PrimeMagicOrbitEngine(seeds[orbitIndex], crypto.getRandomValues(new BigUint64Array(1))[0]);
+  seedValues = seeds.map(seed => Uint32Array.from(seed.values));
+  board = new Uint32Array(N * N); scratch = new Uint32Array(N * N);
   engine.nextInto(board); commits++;
+  publishDecor();
   renderer = new EnvironmentRenderer(canvas);
   renderer.updateValues(board);
   previousNow = performance.now();

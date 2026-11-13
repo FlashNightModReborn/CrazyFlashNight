@@ -8,7 +8,9 @@ import org.flashNight.arki.unit.UnitUtil;
  * active hostile target with AOE anti-jitter and 150-frame (5s) out-of-combat expiry.
  */
 class org.flashNight.arki.hud.FocusTargetHudService {
-    public static var MAX_TARGETS:Number = 4;
+    public static var MAX_TARGETS:Number = 8;
+    private static var activeScope:Object;
+    private static var successor:Object;
     public static var COMBAT_TTL_FRAMES:Number = 150;
     public static var COMBAT_STICKY_FRAMES:Number = 15;
     public static var COMBO_TTL_FRAMES:Number = 75;
@@ -121,12 +123,81 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         return label;
     }
 
+    /** One ordinary object per substage. A duplicate activation must not reopen a closed scope. */
+    public static function activateScope(world:MovieClip, runId:String, stage:Number):Object {
+        if (typeof world != "movieclip" || world !== _root.gameworld) return null;
+        var identity:Object = StageReturnFlow.worldIdentity(world);
+        if (activeScope != null && activeScope.world === world && activeScope.worldIdentity === identity
+                && activeScope.runId === runId && activeScope.stage === stage) return activeScope;
+        install();
+        clearScene();
+        activeScope = {world:world, worldIdentity:identity, runId:runId, stage:stage, closed:false};
+        return activeScope;
+    }
+
+    /** Called after authored parameters are cloned, before attaching a marked unit. */
+    public static function stampSpawn(world:MovieClip, params:Object):Void {
+        if (params.focusHudRole != "protect" && params.focusHudRole != "boss") return;
+        params.__stageFocusScope = activeScope != null && !activeScope.closed && activeScope.world === world
+                && world.__stageReturnWorldIdentity === activeScope.worldIdentity ? activeScope : null;
+    }
+
+    /** Controller-owned spawns validate their own actor before calling this entry point. */
+    public static function bindInitialized(unit:MovieClip, role:String, label:String):Object {
+        if (unit == null || unit.__unitInitializedVersion == null || unit.__unitInitializedVersion !== unit.version
+                || (role != "protect" && role != "boss")) return null;
+        var world:MovieClip = _root.gameworld;
+        if (unit._parent !== world || typeof world != "movieclip") return null;
+        var identity:Object = unit.__focusHudSpawnIdentity;
+        if (identity == null || unit.__focusHudSpawnVersion !== unit.version) {
+            identity = {};
+            unit.__focusHudSpawnVersion = unit.version;
+            unit.__focusHudSpawnIdentity = identity;
+            _global.ASSetPropFlags(unit, ["__focusHudSpawnIdentity", "__focusHudSpawnVersion"], 1, 0);
+        }
+        for (var i:Number = 0; i < bindings.length; i++) {
+            var entry:Object = bindings[i];
+            if (entry.name === unit._name && entry.unitIdentity === identity &&
+                    entry.worldIdentity === world.__stageReturnWorldIdentity) return entry.lease;
+        }
+        return bind(world, StageReturnFlow.worldIdentity(world), unit, "__focusHudSpawnIdentity", identity, role, label);
+    }
+
+    /** The horse timeline creates name = parent name + linkage. Consume exactly that spawn. */
+    public static function onUnitInitialized(unit:MovieClip):Void {
+        if (successor != null) {
+            if (successor.world !== _root.gameworld.__stageReturnWorldIdentity) successor = null;
+            else if (unit._name === successor.name && unit.兵种 === successor.linkage && unit._parent === _root.gameworld) {
+                var next:Object = bindInitialized(unit, successor.role, successor.label);
+                if (next != null) {
+                    clear(successor.lease);
+                    successor = null;
+                }
+                return;
+            }
+        }
+        var role:String = unit.focusHudRole;
+        if (role != "protect" && role != "boss") return;
+        var scope:Object = unit.__stageFocusScope;
+        if (scope == null || scope !== activeScope || scope.closed || unit._parent !== scope.world
+                || scope.world !== _root.gameworld || scope.worldIdentity !== _root.gameworld.__stageReturnWorldIdentity) {
+            trace("[FocusTargetHud] discarded stale or unstamped focus target " + unit._name);
+            return;
+        }
+        var label:String = typeof unit.focusHudLabel == "string" ? unit.focusHudLabel : "";
+        var lease:Object = bindInitialized(unit, role, label);
+        if (lease != null && typeof unit.focusHudSuccessor == "string" && unit.focusHudSuccessor.length > 0) {
+            successor = {world:_root.gameworld.__stageReturnWorldIdentity, name:unit._name + unit.focusHudSuccessor,
+                linkage:unit.focusHudSuccessor, role:role, label:label, lease:lease};
+        }
+    }
+
     /** Caller must capture the ordinary identity marker before any delayed work. */
     public static function bind(world:MovieClip, worldIdentity:Object, unit:MovieClip,
             identityKey:String, unitIdentity:Object, role:String, label:String):Object {
         if (typeof world != "movieclip" || world !== _root.gameworld
                 || typeof worldIdentity != "object" || worldIdentity == null
-                || worldIdentity !== StageReturnFlow.worldIdentity(world)
+                || (activeScope != null && activeScope.closed && worldIdentity === activeScope.worldIdentity) || worldIdentity !== StageReturnFlow.worldIdentity(world)
                 || typeof unit != "movieclip" || unit._parent !== world
                 || world[unit._name] !== unit || typeof identityKey != "string"
                 || length(identityKey) == 0 || length(identityKey) > 96
@@ -197,7 +268,7 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         if (typeof world != "movieclip" || shooter._parent !== world || target._parent !== world
                 || world[target._name] !== target || !isHostileToHero(shooter, target)) return;
         var worldIdentity:Object = StageReturnFlow.worldIdentity(world);
-        if (typeof worldIdentity != "object" || worldIdentity == null) return;
+        if (typeof worldIdentity != "object" || worldIdentity == null || (activeScope != null && activeScope.closed && worldIdentity === activeScope.worldIdentity)) return;
         var token:Object = ensureCombatToken(target);
         if (!finite(target.hp) || !finite(target.hp满血值) || !(target.hp满血值 > 0)) return;
         install();
@@ -273,7 +344,7 @@ class org.flashNight.arki.hud.FocusTargetHudService {
                 || !finite(target.hp) || !(target.hp > 0)
                 || !finite(target.hp满血值) || !(target.hp满血值 > 0)) return;
         var worldIdentity:Object = StageReturnFlow.worldIdentity(world);
-        if (typeof worldIdentity != "object" || worldIdentity == null) return;
+        if (typeof worldIdentity != "object" || worldIdentity == null || (activeScope != null && activeScope.closed && worldIdentity === activeScope.worldIdentity)) return;
         install();
         var token:Object = ensureCombatToken(target);
         var frame:Number = currentFrame();
@@ -302,7 +373,21 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         cachedList = null;
     }
 
+    /** The owner of an accepted terminal transition can only close its own substage. */
+    public static function endEncounter(scope:Object):Void {
+        if (scope == null || scope !== activeScope || scope.closed) return;
+        scope.closed = true;
+        clearTargets();
+    }
+
     private static function clearScene():Void {
+        if (activeScope != null) activeScope.closed = true;
+        activeScope = null;
+        clearTargets();
+    }
+
+    private static function clearTargets():Void {
+        successor = null;
         binding = null;
         bindings.length = 0;
         combatState = null;
@@ -322,7 +407,7 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         if (typeof world != "movieclip" || world.__stageReturnWorldIdentity !== state.worldIdentity
                 || typeof unit != "movieclip" || unit._parent !== world
                 || unit[state.identityKey] !== state.unitIdentity) {
-            clearScene();
+            clear(state.lease);
             return null;
         }
         var hp = unit.hp;
@@ -399,10 +484,10 @@ class org.flashNight.arki.hud.FocusTargetHudService {
     }
 
     /**
-     * Multi-target projection ordered by protect > boss > combat (capped at MAX_TARGETS = 4).
+     * Multi-target projection ordered by protect > boss > combat (capped at the negotiated display capacity).
      * Reuses the returned Array reference when all items are unchanged.
      */
-    public static function snapshotList(hero:Object):Array {
+    public static function snapshotList(hero:Object, capacity:Number):Array {
         syncBindingsWithPrimary();
         var world:MovieClip = _root.gameworld;
         if (typeof world != "movieclip") {
@@ -410,6 +495,7 @@ class org.flashNight.arki.hud.FocusTargetHudService {
             return null;
         }
         var worldIdentity:Object = world.__stageReturnWorldIdentity;
+        if (activeScope != null && activeScope.closed && worldIdentity === activeScope.worldIdentity) return null;
         if (worldIdentity == null && (bindings.length > 0 || combatState != null || aggroState != null || hero != null)) {
             worldIdentity = StageReturnFlow.worldIdentity(world);
         }
@@ -458,12 +544,14 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         binding = bindings.length > 0 ? bindings[0] : null;
         if (binding == null) cached = null;
 
+        // 先按协商容量排入有效目标。行宽由 HUD 按最终人数选择。
+        var limit:Number = capacity === MAX_TARGETS ? MAX_TARGETS : 4;
         var candidates:Array = [];
         var j:Number;
-        for (j = 0; j < protectCand.length && candidates.length < MAX_TARGETS; j++) candidates.push(protectCand[j]);
-        for (j = 0; j < bossCand.length && candidates.length < MAX_TARGETS; j++) candidates.push(bossCand[j]);
+        for (j = 0; j < protectCand.length && candidates.length < limit; j++) candidates.push(protectCand[j]);
+        for (j = 0; j < bossCand.length && candidates.length < limit; j++) candidates.push(bossCand[j]);
 
-        if (candidates.length < MAX_TARGETS) {
+        if (candidates.length < limit) {
             var combatResolved:Object = resolveCombatState(combatState, world, worldIdentity, frame);
             var combatName:String = combatResolved != null ? combatState.name : "";
             if (combatResolved == null) {

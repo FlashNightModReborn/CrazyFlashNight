@@ -30,6 +30,34 @@
   function mount(containerEl, initData) {
     _container = containerEl;
     _slot = (initData && initData.slot) || '';
+    if (initData && initData.catalog) {
+      _resolved = true;
+      var key = _slot;
+      _container.innerHTML = '<div class="modal-header term-heading-rule"><h2>修复存档</h2><button class="modal-close" id="rc-back" aria-label="返回存档库">×</button></div>'
+        + '<div class="rc-body"><p>槽位 <strong>' + esc(key) + '</strong> 的本地副本无法正常读取。可以先导出原文，再用编辑器校正，或导入已有的备份。</p>'
+        + '<div class="rc-actions"><button class="term-btn" id="rc-export">导出原始副本</button>'
+        + '<button class="term-btn" id="rc-edit">打开原文编辑器</button><button class="term-btn" id="rc-import">从备份导入</button></div>'
+        + '<p id="rc-file-state" role="status"></p></div>';
+      document.getElementById('rc-back').onclick = function () { window.BootstrapApp.closeModal(); };
+      document.getElementById('rc-export').onclick = function () {
+        window.BootstrapApp.send({cmd:'export', slot:key, forceRaw:true, defaultName:key + '-原副本.json'});
+      };
+      _unsubs.push(window.BootstrapApp.onMessage('export_resp', function (msg) {
+        if (msg.slot && msg.slot !== key) return;
+        document.getElementById('rc-file-state').textContent = msg.ok ? '原始副本已导出。' : msg.error === 'cancelled' ? '已取消导出。' : '导出失败，请检查副本和保存位置。';
+      }));
+      document.getElementById('rc-edit').onclick = function () {
+        var meta = window.BootstrapApp.getSlotMeta(key);
+        if (!meta || !meta.corrupt || meta.tombstoned) return;
+        window.BootstrapApp.closeModal();
+        window.BootstrapApp.openModal('archive-editor', {slot:key, slotMeta:meta});
+      };
+      document.getElementById('rc-import').onclick = function () {
+        window.BootstrapApp.closeModal();
+        document.getElementById('btn-import').click();
+      };
+      return;
+    }
     var summary = (initData && initData.summary) || null;
     _resolved = false;
 

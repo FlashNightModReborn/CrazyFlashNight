@@ -199,6 +199,7 @@ def build(source=None, include_fixed=True):
     chapter['economy']['choices'] = []
     chapter['type61'] = {key: copy.deepcopy(value) for key, value in source.items()
                          if key not in ('schema', 'title', 'actor', 'startingMoney', 'startingSkillPoints')}
+    chapter['type61']['acquisition'].pop('cashOnlyPlugins', None)  # authoring policy only
     checkpoints = chapter['type61']['checkpoints']
     if [row['mapId'] for row in checkpoints] != ['A%02d' % n for n in range(1, 20)]:
         raise ValueError('Type61 checkpoints must be ordered A01 to A19')

@@ -210,7 +210,11 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>36</Level>
-                        <Parameters>称号:翅虎堂司暗</Parameters>
+                        <Parameters>
+                            <称号>翅虎堂司暗</称号>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>翅虎</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -231,7 +235,11 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>36</Level>
-                        <Parameters>称号:火凤堂赤旌</Parameters>
+                        <Parameters>
+                            <称号>火凤堂赤旌</称号>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>火凤</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

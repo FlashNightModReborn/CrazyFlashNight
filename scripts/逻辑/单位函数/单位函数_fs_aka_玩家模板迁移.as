@@ -869,7 +869,7 @@ _root.主角函数.冲击 = function() {
     状态改变(攻击模式 + "冲击");
 };
 
-_root.主角函数.攻击 = function() {
+_root.主角函数.攻击 = function(request:Object) {
     if (_root.gameworld.__combatAdmitted === false) return;
     //适配移动射击
     var 当前攻击模式:String = this.攻击模式;
@@ -880,7 +880,7 @@ _root.主角函数.攻击 = function() {
             this.状态改变(当前攻击模式 + "行走");
         }
 
-        this.man.开始射击();
+        this.man.开始射击(request);
     } else {
         this.状态改变(当前攻击模式 + "攻击");
     }

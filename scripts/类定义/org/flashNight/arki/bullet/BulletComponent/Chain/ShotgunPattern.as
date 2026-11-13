@@ -2,7 +2,7 @@
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.naki.DataStructures.Dictionary;
 
-/** 非敌方标准霰弹：共享有限预算，单体能力遵循旧衰减参照。 */
+/** 非敌方标准霰弹：共享有限预算，近处用弹群对目标的覆盖估算单体段数。 */
 class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern {
     public static var MAX_AGE:Number = 180;
     public var age:Number;
@@ -10,6 +10,10 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern {
     public var projectionBuilds:Number;
     public var reference:ChainGroup;
     private var contacts:Object;
+    public var travel:Number;
+    private var lastX:Number;
+    private var birthCount:Number;
+    private var spreadAdvance:Number;
     private var geometryAge:Number;
     private var invA:Number;
     private var invB:Number;
@@ -81,6 +85,10 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern {
             copies[i] = copy;
         }
         ChainUnitManager.prepareHorizontalAggregate(r);
+        birthCount = list.length;
+        lastX = b._x;
+        travel = 0;
+        spreadAdvance = 0;
         reference = r;
     }
 
@@ -115,6 +123,10 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern {
         var r:ChainGroup = reference;
         var b:Object = group.bullet;
         var rb:Object = r.bullet;
+        travel += Math.abs(b._x - lastX);
+        lastX = b._x;
+        // 与横向单元每帧 y += advance * sin 的 advance 同符号，反弹不重置散射。
+        spreadAdvance += b.xmov * group.运动方向系数;
         rb._x = b._x; rb._y = b._y;
         rb.xmov = b.xmov; rb.Z轴坐标 = b.Z轴坐标;
         rb.子弹散射度 = b.子弹散射度;
@@ -152,8 +164,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern {
         return dx < wx && dx > -wx && dy < wy && dy > -wy;
     }
 
-    /** 每个实际更新步缓存一次逆矩阵。参照决定单体段数及是否有旧有效弹道；
-     * 实际包围盒再守门，防止已经消耗/触地的弹丸产生接触。 */
+    /** 命中资格延用两道 SAT；只重算通过资格的目标在共享预算中能取得的段数。 */
     public function calculateCap(group:ChainGroup, area:Object, zOffset:Number):Number {
         if (geometryAge != age) {
             var frame:Number = _root.帧计时器.当前帧数;
@@ -191,6 +202,65 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern {
         if (r == null || !overlaps(r,cx,cy,hw,hh,lx,rx,ly,ry)) return 0;
         var count:Number = group.单元体列表.length;
         var cap:Number = r.bullet.霰弹值;
+        if (travel < 240 && birthCount > 1) {
+            var nearCap:Number = coverageCap(group, count, lx, rx, ly, ry);
+            // 200 像素内按覆盖结算；到 240 平滑收回几何增减，恢复原有远程分配。
+            cap = travel > 200 ? Math.round(cap + (nearCap - cap) * (240 - travel) / 40) : nearCap;
+            if (travel >= 90 && cap >= birthCount) cap = birthCount - 1;
+        }
         return cap < count ? cap : count;
+    }
+
+    /** 实际弹群两个端点已知，内侧弹丸按所占区间估计。每目标常数时间，无随机数与分配。 */
+    private function coverageCap(group:ChainGroup, count:Number, lx:Number, rx:Number,
+                                 ly:Number, ry:Number):Number {
+        var thickness:Number = group.最小盒高;
+        var first:Number = group.盒y;
+        var last:Number = first + group.盒高 - thickness;
+        // 刚出生、零散射和单弹同轨；通过真实及参照资格的目标覆盖所有剩余同轨弹。
+        if (count == 1 || !(last > first)) return count;
+        var low:Number = ly - ry - thickness;
+        var high:Number = ly + ry;
+
+        // 横向直射时，目标沿弹道的宽度给离轴弹丸留下进入其尾缘的机会。
+        // UID 只结算一次，将退出目标前仍可接触的轨迹一并投回当前截面。
+        // 斜射使用已有仿射矩阵投影的当前截面，避免把世界 AABB 的外包角当作未来命中。
+        var step:Number = group.bullet.xmov;
+        if (spreadAdvance != 0 && step != 0 && group.rcos != 0 && Math.abs(group.rsin) < 0.000001 && group.bullet.ymov == 0) {
+            var localStep:Number = step / group.ma;
+            var exitX:Number = localStep > 0 ? lx + rx - group.盒x : lx - rx - group.盒x - group.盒宽;
+            var ticks:Number = exitX / localStep;
+            var exitSpread:Number = spreadAdvance + ticks * step * group.运动方向系数;
+            if (ticks > 0) {
+                if (spreadAdvance * exitSpread > 0) {
+                    var ratio:Number = spreadAdvance / exitSpread;
+                    if (low * ratio < low) low *= ratio;
+                    if (high * ratio > high) high *= ratio;
+                } else {
+                    // 反弹收束后在目标宽度内跨过散射原点，两侧轨迹可能换边。
+                    if (low < 0 && high > 0) return count;
+                    var flipped:Number = exitSpread / spreadAdvance;
+                    var reachable:Number;
+                    if (low >= 0) {
+                        reachable = expectedBetween(first, last, count, low, Infinity);
+                        if (flipped < 0) reachable += expectedBetween(first, last, count, -Infinity, low / flipped);
+                    } else {
+                        reachable = expectedBetween(first, last, count, -Infinity, high);
+                        if (flipped < 0) reachable += expectedBetween(first, last, count, high / flipped, Infinity);
+                    }
+                    return Math.max(1, Math.round(reachable));
+                }
+            }
+        }
+        // 延用聚合命中资格，即使弹群仅擦过也保留一次判定。
+        return Math.max(1, Math.round(expectedBetween(first, last, count, low, high)));
+    }
+
+    private function expectedBetween(first:Number, last:Number, count:Number, low:Number, high:Number):Number {
+        if (low < first && high > last) return count;
+        var inside:Number = (first > low && first < high ? 1 : 0) + (last > low && last < high ? 1 : 0);
+        var covered:Number = Math.min(high, last) - Math.max(low, first);
+        if (covered > 0) inside += (count - 2) * covered / (last - first);
+        return inside;
     }
 }

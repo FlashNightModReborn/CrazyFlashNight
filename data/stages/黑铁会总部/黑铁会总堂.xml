@@ -119,14 +119,23 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>37</Level>
-                        <Parameters>称号:翅虎堂司暗</Parameters>
+                        <Parameters>
+                            <称号>翅虎堂司暗</称号>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>翅虎</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>黑铁会.火凤</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>37</Level>
-                        <Parameters>称号:火凤堂赤旌,保留屏外尸体:true</Parameters>
+                        <Parameters>
+                            <称号>火凤堂赤旌</称号>
+                            <保留屏外尸体>true</保留屏外尸体>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>火凤</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -335,7 +344,14 @@
                         <Level>37</Level>
                         <x>900</x>
                         <y>400</y>
-                        <Parameters>方向:左,登场动画:a0,死亡动画:a1,称号:黑铁会教主</Parameters>
+                        <Parameters>
+                            <方向>左</方向>
+                            <登场动画>a0</登场动画>
+                            <死亡动画>a1</死亡动画>
+                            <称号>黑铁会教主</称号>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>黑铁</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

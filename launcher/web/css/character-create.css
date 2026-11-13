@@ -14,7 +14,9 @@ body.character-create-active #btn-retry {
   width: 100%;
   height: 100%;
   min-width: 0;
-  overflow: hidden;
+  /* Focus moves between workflow steps. The scaled outer canvas must stay centered;
+     its individual lists own their scroll positions. */
+  overflow: clip;
   contain: strict;
 }
 
@@ -26,25 +28,27 @@ body.character-create-active #btn-retry {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  width: var(--pss-w, 1024px);
-  height: var(--pss-h, 576px);
+  width:100%;
+  height:100%;
   min-width: 0;
   margin: 0;
   border: 0;
-  outline: 1px solid var(--launcher-rust-dim);
-  background: var(--term-surface-gradient);
-  box-shadow: 0 18px 50px color-mix(in srgb, var(--launcher-bg-0) 75%, transparent);
+  outline:0;
+  background:transparent;
+  box-shadow:none;
 }
 
 /* 壳体角标旋钮：1024×576 大面板上默认 12px 角标几乎不可见，加大到与欢迎卡同档存在感。 */
 .cc-shell.corner-brackets { --cb-gap: 6px; --cb-size: 16px; }
 
-.cc-scale-shell.panel-scale-shell {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(var(--panel-scale, 1));
-  transform-origin: center;
+/* 两幅原画各取空墙的一侧，纸娃娃是建角舞台上唯一的人物。 */
+#view-character-create::before,#view-character-create::after{
+  content:"";position:absolute;top:0;bottom:0;width:50%;z-index:-1;pointer-events:none;
+  background-size:1024px 576px;background-repeat:no-repeat;
 }
+#view-character-create::before{left:0;background-image:url("../assets/bg/remake-boy.png");background-position:left center}
+#view-character-create::after{right:0;background-image:url("../assets/bg/remake-andy.png");background-position:right center}
+.cc-scale-shell{position:relative}
 
 .cc-header {
   display: grid;
@@ -87,7 +91,7 @@ body.character-create-active #btn-retry {
 
 .cc-main {
   display: grid;
-  grid-template-columns: 336px minmax(0, 1fr);
+  grid-template-columns: 36% minmax(0, 1fr);
   flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
@@ -108,8 +112,10 @@ body.character-create-active #btn-retry {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 9px;
-  overflow: hidden;
+  padding:9px;
+  overflow:hidden;
+  border-color:transparent;
+  background:transparent;
 }
 
 .cc-panel-label {
@@ -124,30 +130,14 @@ body.character-create-active #btn-retry {
   min-height: 150px;
   margin: 7px 0;
   overflow: hidden;
-  border-block: 1px solid color-mix(in srgb, var(--dls-crystal-dim) 45%, transparent);
-  background:
-    linear-gradient(90deg, transparent 49.8%, var(--dls-glow) 50%, transparent 50.2%),
-    linear-gradient(0deg, transparent 49.8%, var(--dls-glow) 50%, transparent 50.2%);
+  isolation:isolate;
 }
-
-/* 舞台底光：纸娃娃脚下垫一圈青色椭圆光，呼应欢迎页 .bg-crack 的地光叙事。
-   z-index:-1 沉到 canvas 之下、十字准线背景之上，光不盖角色。 */
-.cc-canvas-wrap::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 50%;
-  bottom: 4%;
-  width: 78%;
-  height: 64px;
-  transform: translateX(-50%);
-  background: radial-gradient(ellipse at 50% 100%,
-    color-mix(in srgb, var(--dls-crystal) 17%, transparent) 0%,
-    color-mix(in srgb, var(--dls-crystal) 5%, transparent) 45%,
-    transparent 72%);
-  pointer-events: none;
+.cc-canvas-wrap::after{
+  content:"";position:absolute;z-index:0;left:15%;right:15%;bottom:1%;height:17%;
+  border:1px solid var(--dls-crystal-dim);border-radius:50%;
+  background:radial-gradient(ellipse,transparent 55%,rgba(52,202,236,.28) 58%,transparent 62%);
+  pointer-events:none;
 }
-
 /* 换装扫描光：chooseEquipment/chooseHair/性别切换重绘纸娃娃时，
    JS 加 .is-swapping 触发一道青色光带自上而下掠过，遮住 canvas 合成硬切。 */
 .cc-canvas-wrap::before {
@@ -174,6 +164,7 @@ body.character-create-active #btn-retry {
   100% { transform: translateY(620%); opacity: 0; }
 }
 #cc-preview-canvas {
+  position:relative;z-index:1;
   width: 100%;
   height: 100%;
   transform: scale(var(--cc-height-scale, 1));
@@ -296,7 +287,7 @@ body.character-create-active #btn-retry {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   flex: 0 1 420px;
-  width: min(420px, 45vw);
+  width: 420px;
   min-width: 280px;
   margin: 0;
   padding: 0;
@@ -515,10 +506,9 @@ body.character-create-active #btn-retry {
 .cc-advanced .cc-field { margin-bottom: 6px; }
 .cc-display-reset { padding: 5px 9px; font-size: var(--fs-xs); }
 
+/* 当前步骤已在页头标明，保留面板的读屏标题。 */
 .cc-step-panel[data-cc-panel="1"] > h2 {
-  flex: 0 0 auto;
-  margin-bottom: 7px;
-  font-size: var(--fs-md);
+  position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
 }
 
 .cc-appearance-toolbar {
@@ -738,11 +728,13 @@ body.character-create-active #btn-retry {
 
 .cc-hair-slot-row {
   display: grid;
-  grid-template-columns: minmax(180px, .72fr) minmax(0, 1.28fr);
+  grid-template-columns: minmax(230px, 1.04fr) minmax(0, 1fr);
   align-items: center;
   flex: 0 0 auto;
   gap: 7px;
 }
+.cc-hair-slot .cc-slot-copy{line-height:1.2}
+.cc-hair-slot .cc-slot-copy small{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .cc-hair-slot-row p { margin: 0; color: var(--term-ink-lo); font-size: var(--fs-xs); line-height: 1.45; }
 .cc-hair-icon {
   display: grid;
@@ -879,6 +871,7 @@ body.character-create-active #btn-retry {
   grid-auto-rows: min-content;
   align-content: start;
   flex: 1 1 auto;
+  min-height:0;overflow-y:auto;overscroll-behavior:contain;
   margin-top: 0;
   padding: 8px 10px;
   column-gap: 12px;
@@ -897,7 +890,7 @@ body.character-create-active #btn-retry {
 .cc-review dt { min-width: 58px; }
 .cc-confirm-summary .cc-review dd {
   overflow: visible;
-  line-height: 1.45;
+  line-height: 1.25;
   text-overflow: clip;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -935,3 +928,98 @@ body.character-create-active #btn-retry {
   .cc-canvas-wrap.is-swapping::before { animation: none; }
   .cc-difficulty-icon { transition: none; }
 }
+
+.cc-hair-filter{display:flex;flex-wrap:wrap;gap:.5em;align-items:center;margin:.4em 0}
+.cc-hair-filter input,.cc-hair-filter select{min-width:0;font:inherit;color:var(--term-text,#e8e3db);background:#121b20;border:1px solid #536268;padding:.3em .5em}
+.cc-hair-filter input{flex:1}
+#cc-random-look {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 2;
+  min-height: 30px;
+}
+
+#cc-hair-filter{display:flex;flex-wrap:wrap;gap:3px}#cc-hair-filter [aria-pressed="true"]{color:var(--dls);border-color:currentColor}
+
+
+#cc-hair-list.item-grid-compact { grid-template-columns:repeat(auto-fill,29px); grid-auto-rows:29px; }
+#cc-hair-list.item-grid-compact .cc-choice-card { width:29px; min-width:29px; max-width:29px; height:29px; min-height:29px; grid-template-columns:27px; }
+#cc-hair-list.item-grid-compact .cc-hair-icon { width:27px; height:27px; }
+#cc-hair-list.item-grid-compact .cc-hair-icon-image { width:25px; height:25px; }
+
+/* The standing character and the form share the same fixed front-door canvas. */
+.cc-shell { display: grid; grid-template-columns: 41% minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); column-gap: 12px; padding: 8px 7px 10px; }
+.cc-main { display: contents; }
+.cc-header { grid-area: 1 / 2; display: flex; min-height: 42px; padding: 4px 10px; background: var(--term-surface-veil); }
+.cc-heading, .cc-title-row { width: 100%; }
+.cc-heading > .term-kicker { display: none; }
+.cc-title-row { justify-content: space-between; gap: 6px; }
+.cc-header h1 { font-size: var(--fs-lg); }
+.cc-header .cc-state { position: absolute; left: 12px; bottom: 1px; font-size: 11px; }
+.cc-header .cc-state:has([data-state="ready"]) { visibility: hidden; }
+.cc-preview { grid-area: 1 / 1 / 3 / 2; padding: 4px 8px 12px; justify-content: flex-end; align-items: center; }
+.cc-workflow { grid-area: 2 / 2; }
+.cc-canvas-wrap { width: 100%; min-height: 0; margin: 0; overflow: visible; }
+.cc-canvas-wrap::after { display: none; }
+#cc-preview-canvas { transform-origin: 50% 92%; }
+.cc-preview .cc-pad { position: relative; flex: 0 0 16px; width: 78%; margin: -10px auto 8px; pointer-events: none; }
+.cc-pad i { position: absolute; left: 50%; bottom: 0; width: 96%; height: 42px; border-radius: 50%; border: 1px solid var(--dls-crystal-dim); transform: translateX(-50%); }
+.cc-pad i:nth-child(2) { width: 73%; height: 31px; bottom: 5px; }
+.cc-pad i:nth-child(3) { width: 48%; height: 21px; bottom: 10px; }
+.cc-pad i.is-done { border-color: var(--dls-crystal); box-shadow: 0 0 7px var(--dls-crystal-soft); }
+@media (prefers-reduced-motion: no-preference) {
+  .cc-pad.is-committing i { transform: translateX(-50%) scale(.22); transition: transform .35s ease-out; }
+}
+#cc-nameplate { color: var(--term-ink-hi); font-size: var(--fs-lg); line-height: 1.3; max-width: 100%; overflow-wrap: anywhere; text-align: center; }
+.cc-preview .cc-preview-meta { order: 1; display: flex; gap: 14px; flex: 0 0 auto; margin: 2px 0; padding: 0; border: 0; }
+.cc-preview .cc-preview-meta div { padding: 0; border: 0; }
+.cc-preview .cc-preview-height { order: 2; width: 88%; margin: 4px 0 0; }
+.cc-steps li.is-done .cc-step-jump::after { content: '✔'; color: var(--wb-semantic-success); }
+#cc-equipment-view { flex: 0 0 auto; padding-block: 3px; }
+.cc-equipment-line { display: grid; grid-template-columns: 2.8em minmax(0, 1fr); align-items: center; gap: 5px; margin-bottom: 5px; }
+.cc-equipment-line > b, .cc-hair-filter > b { color: var(--term-ink-md); font-size: var(--fs-sm); font-weight: 500; }
+.cc-equipment-choices { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 3px; }
+.cc-equipment-choices .cc-item-option { display: flex; align-items: center; justify-content: flex-start; min-width: 0; min-height: 36px; padding: 2px 3px; gap: 3px; }
+.cc-equipment-choices .cc-item-icon, .cc-equipment-choices .cc-item-icon-image { flex: 0 0 27px; width: 27px; height: 27px; border: none; background: transparent; }
+.cc-equipment-choices .cc-item-copy b { font: 500 var(--fs-xs)/1.15 var(--sans, sans-serif); overflow-wrap: anywhere; }
+.cc-equipment-choices .cc-item-copy small, .cc-equipment-choices .cc-item-marker { display: none; }
+.cc-equipment-choices [aria-selected="true"], #cc-hair-list [aria-selected="true"], .cc-difficulty[aria-checked="true"] { border-color: var(--wb-semantic-success); background: color-mix(in srgb, var(--wb-semantic-success) 10%, var(--launcher-bg-0)); }
+#cc-hair-view { display: flex; flex: 1 1 0; min-height: 0; flex-direction: column; }
+.cc-hair-filter { flex-wrap: nowrap; gap: 5px; margin: 0 0 5px; }
+#cc-hair-search { width: 6em; }
+#cc-hair-filter { flex-wrap: nowrap; }
+.cc-hair-filter .term-btn { min-height: 26px; padding: 2px 5px; font-size: var(--fs-xs); }
+#cc-hair-list:not(.item-grid-compact) { display: grid; flex: 1 1 auto; min-height: 45px; grid-template-columns: repeat(3,minmax(0,1fr)); grid-auto-rows: minmax(30px, auto); align-content: start; gap: 3px; padding: 2px; overflow: auto; }
+#cc-hair-list:not(.item-grid-compact) .cc-hair-option { display: flex; align-items: center; justify-content: start; gap: 5px; min-height: 30px; padding: 1px 5px; }
+#cc-hair-list:not(.item-grid-compact) .cc-hair-icon, #cc-hair-list:not(.item-grid-compact) .cc-hair-icon-image { width: 22px; height: 22px; flex: 0 0 22px; }
+#cc-hair-list:not(.item-grid-compact) .cc-hair-copy b { font-weight: 500; }
+#cc-hair-list:not(.item-grid-compact) .cc-hair-copy small, #cc-hair-list:not(.item-grid-compact) .cc-hair-marker { display: none; }
+.cc-confirm-layout { display: flex; flex-direction: column; gap: 3px; overflow-y: auto; }
+.cc-confirm-modes { flex: 0 0 auto; padding: 6px 9px; }
+.cc-confirm-summary { display: grid; position: relative; grid-template-columns: minmax(0,1fr) auto; align-items: center; flex: 1 0 auto; padding: 5px 9px; }
+.cc-confirm-summary > h2 { grid-column: 1/-1; }
+.cc-confirm-summary .cc-review { grid-column: 1; grid-row: 2; display: grid; grid-template-columns: 1fr; gap: 1px; padding: 0 5px; margin: 0; }
+.cc-confirm-summary .cc-review dt, .cc-confirm-summary .cc-review dd { font-size: var(--fs-xs); line-height: 1.22; }
+.cc-confirm-summary .cc-review div { padding: 1px 0; }
+.cc-confirm-summary #cc-slot-signature { grid-column: 2; grid-row: 2; width: 98px; height: 36px; align-self: center; }
+.cc-confirm-summary #cc-slot-signature[hidden] { display: none; }
+.cc-difficulties { display: flex; flex-direction: column; gap: 3px; }
+.cc-difficulty { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 4px 8px; flex-shrink: 0; overflow: visible; }
+.cc-difficulty strong { font-size: var(--fs-sm); line-height: 1.16; }
+.cc-difficulty .cc-difficulty-icon { width: 16px; height: 16px; }
+.cc-difficulty .cc-difficulty-description { display: block; overflow: visible; line-height: 1.25; }
+.cc-recommended { top: 2px; right: 6px; }
+.cc-actions { padding-block: 4px; }
+.cc-actions .term-btn, #cc-random-look { font: 500 var(--fs-xs)/1.2 var(--sans, sans-serif); }
+.cc-actions .cc-next { min-width: 142px; min-height: 34px; font-size: var(--fs-sm); }
+.cc-actions .cc-back, .cc-actions .cc-cancel { padding-inline: 13px; }
+.cc-preview .cc-preview-height { grid-template-columns: auto minmax(0,1fr); align-items: center; gap: 8px; }
+.cc-preview .cc-preview-height em { grid-column: 1/-1; }
+.cc-pad i { height: 65px; }
+.cc-pad i:nth-child(2) { height: 48px; bottom: 8px; }
+.cc-pad i:nth-child(3) { height: 32px; bottom: 16px; }
+.cc-next:enabled { color: var(--term-ink-hi); border-color: var(--wb-semantic-success); }
+.cc-steps .cc-step-jump { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+.cc-steps li.has-error .cc-step-jump::after { content: '!'; color: var(--wb-semantic-danger); font-weight: 700; }
+.cc-gender-hint { margin: 3px 0 0; font-size: var(--fs-xs); color: var(--term-ink-md); }

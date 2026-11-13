@@ -32,6 +32,10 @@
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>15</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>武装JK</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -45,12 +49,20 @@
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>医疗女仆白</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>女仆.狙击女仆黑</Type>
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>狙击女仆黑</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -64,6 +76,10 @@
                         <Interval>50</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>诺艾尔</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -78,6 +94,8 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>吉他</focusHudLabel>
                             <掉落物>
                                 <名字>匕首</名字>
                                 <概率>0</概率>
@@ -92,6 +110,8 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>键盘</focusHudLabel>
                             <掉落物>
                                 <名字>匕首</名字>
                                 <概率>0</概率>
@@ -106,6 +126,8 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>主唱</focusHudLabel>
                             <掉落物>
                                 <名字>匕首</名字>
                                 <概率>0</概率>
@@ -126,6 +148,10 @@
                         <Interval>50</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>火凤</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -139,6 +165,10 @@
                         <Interval>50</Interval>
                         <Quantity>1</Quantity>
                         <Level>1</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>Dude</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

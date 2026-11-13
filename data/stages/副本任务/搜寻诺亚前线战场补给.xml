@@ -1035,6 +1035,10 @@
                         <Interval>9000</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>方舟兽王</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>诺亚.重型改造僵尸.常规</Type>

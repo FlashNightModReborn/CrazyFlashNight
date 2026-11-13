@@ -13,6 +13,7 @@ namespace CF7Launcher.Guardian.Hud.PlayerInfo;
 /// <summary>Multi-target strip (protect / boss / combat) in the Buff surface with portraits, clock-driven damage trail &amp; heal preview, chamfered/slanted geometry, and Aero numerals.</summary>
 internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeHudPointerSnapshot
 {
+    private const int MaxRows = 4;
     internal const float RowHeight = 30f;
     internal const float RowGap = 3f;
     internal const float BarSlant = 2.0f;
@@ -83,7 +84,7 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
     private int _criticalClockMs;
 
     protected override bool HasContent => Snapshot is { TargetList.Length: > 0 };
-    protected override RectangleF LogicalBounds => BoundsForBuffCount(Snapshot?.BuffCards.Length ?? 0, Math.Max(1, Snapshot?.TargetList.Length ?? 0));
+    protected override RectangleF LogicalBounds => BoundsForBuffCount(Snapshot?.BuffCards.Length ?? 0, Snapshot?.TargetList.Length ?? 0);
     internal double TrailRatio => Snapshot?.FocusTarget is { } t && _states.TryGetValue(t.Id, out var st) ? st.TrailRatio : 0;
     internal bool IsCritical => Snapshot?.FocusTarget is { } t && _states.TryGetValue(t.Id, out var st) && st.Critical;
     internal double GetTrailRatio(long id) => _states.TryGetValue(id, out var st) ? st.TrailRatio : 0;
@@ -101,17 +102,28 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
     // notch and its wave/pause rows. Compact to y=4 when no Buffs are active.
     internal static RectangleF BoundsForBuffCount(int count, int targetCount = 1)
     {
-        int rows = Math.Clamp(targetCount, 1, 4);
+        int rows = Math.Clamp(targetCount, 1, MaxRows);
         float top = PlayerHudBuffLayout.ContentHeight(count) + 4;
         float width = PlayerHudBuffLayout.ColumnWidth;
         float height = rows * RowHeight + (rows - 1) * RowGap;
         return new(6, top, width, height);
     }
 
-    internal static RectangleF RowBounds(int buffCount, int rowIndex)
+    // 满四行后从末行开始分半，优先级高的目标尽量保留宽行。
+    private static int FullWidthCount(int targetCount) => Math.Min(targetCount, 2 * MaxRows - targetCount);
+
+    internal static RectangleF RowBounds(int buffCount, int index, int targetCount)
     {
-        var single = BoundsForBuffCount(buffCount, 1);
-        return new(single.X, single.Y + rowIndex * (RowHeight + RowGap), single.Width, RowHeight);
+        var column = BoundsForBuffCount(buffCount, targetCount);
+        int fullRows = FullWidthCount(targetCount);
+        if (index < fullRows)
+            return new(column.X, column.Y + index * (RowHeight + RowGap), column.Width, RowHeight);
+
+        int halfIndex = index - fullRows;
+        const float gap = 4f;
+        float width = (column.Width - gap) * .5f;
+        return new(column.X + (halfIndex % 2) * (width + gap),
+            column.Y + (fullRows + halfIndex / 2) * (RowHeight + RowGap), width, RowHeight);
     }
 
     internal PlayerHudFocusTargetWidget(Control anchor, PlayerHudController controller,
@@ -179,8 +191,11 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         else if (!targets.SequenceEqual(_lastTargets))
         {
             var activeIds = new HashSet<long>();
-            foreach (var target in targets)
+            int fullRows = FullWidthCount(targets.Length);
+            for (int i = 0; i < targets.Length; i++)
             {
+                var target = targets[i];
+                bool compact = i >= fullRows;
                 activeIds.Add(target.Id);
                 var ratio = Math.Clamp(target.Hp / target.HpMax, 0, 1);
                 if (!_states.TryGetValue(target.Id, out var st))
@@ -195,7 +210,7 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
                         WindowLossAgeMs = CumulativeLossWindowMs,
                         GainAgeMs = GainDurationMs,
                         LastHits = target.Hits,
-                        ComboPulseAgeMs = target.Hits > 0 && !PlayerHudMotionSettings.StaticFeedback ? 0 : ComboPulseDurationMs,
+                        ComboPulseAgeMs = !compact && target.Hits > 0 && !PlayerHudMotionSettings.StaticFeedback ? 0 : ComboPulseDurationMs,
                         Critical = false
                     };
                     _states[target.Id] = st;
@@ -244,9 +259,9 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
                             }
                         }
 
-                        if (target.Hits > st.LastHits && target.Hits > 0)
+                        if (!compact && target.Hits > st.LastHits && target.Hits > 0)
                             st.ComboPulseAgeMs = 0;
-                        else if (target.Hits <= 0)
+                        else if (compact || target.Hits <= 0)
                             st.ComboPulseAgeMs = ComboPulseDurationMs;
                     }
                     st.LastHits = target.Hits;
@@ -341,7 +356,7 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         {
             for (int i = 0; i < targets.Length; i++)
             {
-                PaintRow(g, targets[i], RowBounds(buffCount, i));
+                PaintRow(g, targets[i], RowBounds(buffCount, i, targets.Length));
             }
         }
         finally
@@ -458,11 +473,12 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         using (var bevel = new Pen(Color.FromArgb(160, 10, 12, 14), 0.7f))
             g.DrawLine(bevel, bounds.Left + 3f, bounds.Bottom - 1f, bounds.Right - 6f, bounds.Bottom - 1f);
 
-        var portraitRect = new RectangleF(bounds.X + 3f, bounds.Y + 3f, 22f, 24f);
+        bool compact = bounds.Width < PlayerHudBuffLayout.ColumnWidth;
+        var portraitRect = new RectangleF(bounds.X + 3f, bounds.Y + 3f, compact ? 17f : 22f, compact ? 21f : 24f);
         PaintPortrait(g, portraitRect, target, isBoss, isCombat, critical);
 
-        var contentLeft = bounds.X + 27.5f;
-        var badgeWidth = isBoss || isCombat ? 34f : 48f;
+        var contentLeft = bounds.X + (compact ? 22f : 27.5f);
+        var badgeWidth = compact ? 15f : isBoss || isCombat ? 34f : 48f;
         var badgeRect = new RectangleF(contentLeft, bounds.Y + 3f, badgeWidth, 13.5f);
         var badgePoly = ShieldBadgePolygon(badgeRect);
         var badgeTop = isBoss
@@ -493,11 +509,11 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         using (var bFormat = new StringFormat(StringFormat.GenericTypographic)
             { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap })
         {
-            g.DrawString(isBoss ? "Boss" : isCombat ? "交战" : "保护目标", _badgeFont, bText, badgeRect, bFormat);
+            g.DrawString(compact ? (isBoss ? "首" : isCombat ? "战" : "护") : isBoss ? "Boss" : isCombat ? "交战" : "保护目标", _badgeFont, bText, badgeRect, bFormat);
         }
 
         // Slanted HP track (translating PlayerInfo MP/Poise slanted cell geometry + HP/Shield palette)
-        var track = new RectangleF(contentLeft, bounds.Y + 19.5f, bounds.Right - 6f - contentLeft, 6.5f);
+        var track = new RectangleF(contentLeft, bounds.Y + (compact ? 25f : 19.5f), bounds.Right - 6f - contentLeft, compact ? 3f : 6.5f);
         var trackPoly = SlantedBarPolygon(track);
         using var trackPath = new GraphicsPath();
         trackPath.AddPolygon(trackPoly);
@@ -713,6 +729,23 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
             : isEnemy
                 ? Color.FromArgb(255, 182, 172)
                 : Color.FromArgb(132, 248, 255);
+        if (compact)
+        {
+            using var nameInk = new SolidBrush(NativeHudTheme.TextPrimary);
+            using var healthInk = new SolidBrush(hpInk);
+            using var percentInk = new SolidBrush(pctInk);
+            using var left = new StringFormat(StringFormat.GenericTypographic)
+                { FormatFlags = StringFormatFlags.NoWrap, Trimming = StringTrimming.EllipsisCharacter };
+            using var right = new StringFormat(left) { Alignment = StringAlignment.Far };
+            var title = new RectangleF(badgeRect.Right + 2f, bounds.Top + 2f,
+                bounds.Right - badgeRect.Right - 7f, 14f);
+            g.DrawString(target.Name.Replace('\r', ' ').Replace('\n', ' '), _font, nameInk, title, left);
+            var values = new RectangleF(contentLeft, bounds.Top + 14f, bounds.Right - contentLeft - 5f, 11f);
+            g.DrawString(DenseValue(target.Hp) + "/" + DenseValue(target.HpMax), _badgeFont, healthInk, values, left);
+            g.DrawString(DensePercent(target.Hp, target.HpMax), _badgeFont, percentInk, values, right);
+            return;
+        }
+
         float readoutRight = bounds.Right - 6f;
         float baseline = bounds.Y + 15.2f;
         float hpWidth = _numbers.DrawRight(g, CompactHealthText(target), readoutRight, baseline, 11.2f, Scale, HpReadoutMaxWidth, hpInk, compactThreshold: ExactHpCompactThreshold);
@@ -855,9 +888,28 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
     }
 
     internal static string HealthText(PlayerHudFocusTarget target) =>
-        Value(target.Hp) + " / " + Value(target.HpMax);
+        Math.Floor(target.Hp).ToString("0", CultureInfo.InvariantCulture) + " / " + Math.Floor(target.HpMax).ToString("0", CultureInfo.InvariantCulture);
     internal static string CompactHealthText(PlayerHudFocusTarget target) =>
         Value(target.Hp) + "/" + Value(target.HpMax);
+    internal static string DensePercent(double hp, double maximum) =>
+        hp > 0 && hp < maximum / 100d ? "<1%" : PlayerHudResourceStyle.Percent(hp, maximum);
+
+    internal static string DenseValue(double value)
+    {
+        double magnitude = Math.Abs(value);
+        if (magnitude < 10_000) return Math.Floor(value).ToString("0", CultureInfo.InvariantCulture);
+        double unit = PlayerHudNumberFormat.Unit(magnitude);
+        double scaled = magnitude / unit;
+        if (scaled >= 10_000)
+        {
+            int exponent = (int)Math.Floor(Math.Log10(magnitude));
+            double leading = Math.Truncate(value / Math.Pow(10, exponent - 1)) / 10d;
+            return leading.ToString("0.#", CultureInfo.InvariantCulture) + "E" + exponent.ToString(CultureInfo.InvariantCulture);
+        }
+        double factor = scaled < 1000 ? 10d : 1d;
+        return (Math.Truncate(value / unit * factor) / factor).ToString("0.#", CultureInfo.InvariantCulture) + PlayerHudNumberFormat.UnitSuffix(unit);
+    }
+
     private static string Value(double value) => Math.Abs(value) >= 1e9
         ? value.ToString("0.##E+0", CultureInfo.InvariantCulture)
         : Math.Floor(value).ToString("0", CultureInfo.InvariantCulture);
@@ -869,7 +921,7 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         var buffCount = s.BuffCards.Length;
         for (int i = 0; i < targets.Length; i++)
         {
-            var rowRect = RowBounds(buffCount, i);
+            var rowRect = RowBounds(buffCount, i, targets.Length);
             if (rowRect.Contains(pt))
             {
                 return new("focusTarget", i, targets[i].Id.ToString(CultureInfo.InvariantCulture),

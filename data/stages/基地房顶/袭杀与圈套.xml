@@ -261,6 +261,10 @@
                         <Quantity>1</Quantity>
                         <Level>50</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>牛仔</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>军阀.狙击兵</Type>

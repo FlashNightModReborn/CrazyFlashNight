@@ -134,6 +134,10 @@
                         <IsHostile>false</IsHostile>
                         <x>900</x>
                         <y>550</y>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>牛仔</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>堕落城.街舞少女</Type>
@@ -388,6 +392,8 @@
                         <Level>50</Level>
                         <InstanceName>键盘</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>键盘</focusHudLabel>
                             <宠物属性>
                                 <弹射弧光斩>true</弹射弧光斩>
                             </宠物属性>
@@ -654,6 +660,8 @@
                         <Level>50</Level>
                         <InstanceName>键盘</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>键盘</focusHudLabel>
                             <宠物属性>
                                 <弹射弧光斩>true</弹射弧光斩>
                             </宠物属性>
@@ -670,6 +678,10 @@
                         <IsHostile>false</IsHostile>
                         <x>700</x>
                         <y>510</y>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>贝斯</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>摇滚公园.摇滚学姐</Type>
@@ -1262,6 +1274,8 @@
                         <Level>50</Level>
                         <InstanceName>键盘</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>键盘</focusHudLabel>
                             <宠物属性>
                                 <弹射弧光斩>true</弹射弧光斩>
                             </宠物属性>
@@ -1276,6 +1290,8 @@
                         <Level>50</Level>
                         <InstanceName>吉他</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>吉他</focusHudLabel>
                             <宠物属性>
                                 <导弹烈炎炮>true</导弹烈炎炮>
                             </宠物属性>
@@ -1292,6 +1308,10 @@
                         <IsHostile>false</IsHostile>
                         <x>500</x>
                         <y>510</y>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>贝斯</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>大学.诺亚虔信者.男</Type>
@@ -1605,6 +1625,8 @@
                         <Level>50</Level>
                         <InstanceName>键盘</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>键盘</focusHudLabel>
                             <宠物属性>
                                 <弹射弧光斩>true</弹射弧光斩>
                             </宠物属性>
@@ -1619,6 +1641,8 @@
                         <Level>50</Level>
                         <InstanceName>吉他</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>吉他</focusHudLabel>
                             <宠物属性>
                                 <导弹烈炎炮>true</导弹烈炎炮>
                             </宠物属性>
@@ -1633,6 +1657,8 @@
                         <Level>50</Level>
                         <InstanceName>主唱</InstanceName>
                         <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>主唱</focusHudLabel>
                             <宠物属性>
                                 <广域裂空斩>true</广域裂空斩>
                             </宠物属性>
@@ -1649,6 +1675,10 @@
                         <IsHostile>false</IsHostile>
                         <x>500</x>
                         <y>510</y>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>贝斯</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>大学.诺亚虔信者.男</Type>

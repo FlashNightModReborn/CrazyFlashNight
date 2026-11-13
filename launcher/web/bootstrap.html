@@ -16,9 +16,11 @@
 <link rel="stylesheet" href="css/save-manager.css">
 </head>
 <body>
+<div id="launcher-stage" class="panel-scale-shell" data-tooltip-viewport>
 
-<!-- 背景层栈 -->
-<div class="bg-photo" id="bg-photo"></div>
+<!-- 背景层栈：立绘（传承主角）→ PM19 数字场（电子空间介质）→ 材质叠层 -->
+<div class="bg-art" id="bg-art" data-side="left" aria-hidden="true"></div>
+<div class="art-scan" id="art-scan" aria-hidden="true"></div>
 <canvas id="bg-gl" aria-hidden="true"></canvas>
 <div class="bg-tint"></div>
 <div class="bg-rune"></div>
@@ -29,119 +31,90 @@
 <!-- 公共 topbar -->
 <div class="topbar">
   <span class="brand-seal term-brand-seal">CF7:ME</span>
-  <span class="brand-sub term-kicker">&theta;-FLOOD / AUDIT-DAY +13Y / STANDALONE 2023</span>
+  <span class="brand-sub term-kicker">&theta;-FLOOD / AUDIT-DAY +13Y</span>
   <span class="spacer"></span>
-  <span id="state-badge" class="state-badge">Idle</span>
+  <span id="state-badge" class="state-badge" role="status">就绪</span>
   <button id="btn-cancel-launch" class="danger" style="display:none">取消启动</button>
   <button id="btn-retry" style="display:none">重试</button>
-  <button id="btn-display">显示</button>
+  <button id="btn-display" aria-haspopup="dialog">设置</button>
   <button id="btn-fullscreen">全屏</button>
   <button id="btn-logs">日志</button>
-  <button id="btn-about" aria-label="其他：项目说明、作者与致谢、版本记录和音频设置">其他</button>
+  <button id="btn-about" aria-haspopup="dialog">关于与帮助</button>
 </div>
 
-<!-- 欢迎视图 -->
+<!-- 欢迎视图：立绘做主角，内容落在立绘对侧的空墙上（承接 Flash 时代欢迎页构图） -->
 <div id="view-welcome" class="view">
+  <div class="art-figure-mask" aria-hidden="true"></div>
   <div class="stage-welcome">
+    <main class="hero">
+      <div class="hero-copy">
+        <div class="title-logo-wrap"><img src="assets/logos/cf7me-title.png" alt="闪客快打 7 佣兵帝国"></div>
+        <div class="hero-edition"><b>2023 不联网单机版</b><span class="mono-num" id="hero-version"></span></div>
+        <div class="hero-maker">AN ANDY LAW GAME MADE IN 2010</div>
+        <div class="hr-rune" id="rune-divider"></div>
+        <p class="greet" id="welcome-greet">欢迎您，尊敬的闪客玩家</p>
 
-    <!-- 左栏：传输 / 地理 / 构建 -->
-    <div class="side-l">
-      <div class="block">
-        <div class="lbl">TRANSMISSION</div>
-        <div class="val">
-          <!-- dls-sync-val: 首个 list_resp 后由 bootstrap-main.js 填健康存档比例; trans-node ◎ 随启动事件逐个点亮 -->
-          <span class="pulse-dot term-status-dot" data-state="ready"></span> DLS SYNC <span class="m mono-num" id="dls-sync-val">&mdash;</span><br>
-          <span class="n trans-node" id="trans-node-1">&#9678;</span> &theta;-FLOOD HUM<br>
-          <span class="n trans-node" id="trans-node-2">&#9678;</span> 黑铁网络接入<br>
-          <span class="n trans-node" id="trans-node-3">&#9678;</span> 诺亚终端握手
+        <div class="slot-plate" id="welcome-slot">
+          <span class="slot-sig" id="welcome-slot-sig" aria-hidden="true"></span>
+          <div class="meta">
+            <div class="name" id="welcome-slot-name">&mdash;</div>
+            <div class="time" id="welcome-slot-time">&mdash;</div>
+          </div>
         </div>
-      </div>
-      <div class="block">
-        <div class="lbl">REGION</div>
-        <div class="val">堕落城 &middot; 外围<br>COORD <span class="m mono-num">31&deg;N 121&deg;E</span></div>
-      </div>
-      <div class="block">
-        <div class="lbl">BUILD</div>
-        <!-- build-val 由 bootstrap-main.js 从 config/version.js 的 APP_META 派生填充, 这里只放占位 -->
-        <div class="val val-build mono-num" id="build-val">v&mdash;<br>&mdash;</div>
-      </div>
-    </div>
 
-    <!-- 中央卡片 (corner-brackets: B 期四方位 L 角标, 见 welcome.css) -->
-    <div class="welcome-card corner-brackets">
-      <div class="title-logo-wrap"><img src="assets/logos/cf7me-title.png" alt="闪客快打 7"></div>
-      <div class="eyebrow">CRAZY FLASHER &#8566; &middot; MERCENARY EMPIRE</div>
-      <div class="welcome-sub">佣 兵 帝 国 &middot; 2023 STANDALONE MOD</div>
+        <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>请重试，详情见“日志”。</span></div>
 
-      <div class="hr-rune" id="rune-divider"></div>
+        <div class="welcome-controls">
+          <button class="btn-go" id="btn-confirm-start">继续游戏</button>
+          <div class="hero-links">
+            <button type="button" class="hero-link" id="btn-switch-slot">选择其他存档</button>
+            <span aria-hidden="true">·</span>
+            <button type="button" class="hero-link" id="btn-welcome-new">新建角色</button>
 
-      <div class="slot-plate">
-        <div class="icon"><span>&#9672;</span></div>
-        <div class="meta">
-          <div class="name">存档 &middot; <b id="welcome-slot-name">&mdash;</b></div>
-          <div class="time" id="welcome-slot-time">&mdash;</div>
+          </div>
         </div>
-        <button class="switch" id="btn-switch-slot">切换</button>
+
       </div>
+      <div class="hero-extra">
+        <div class="briefing">
+          <p>免费开源单机 MOD &middot; <span class="mark">AndyLaw</span> 与社区共有版权 &middot; <button type="button" class="hint" id="briefing-about">关于与版本</button></p>
 
-      <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>请重试，详情见“日志”。</span></div>
-
-      <div class="briefing">
-        <span class="mark">&sect;</span> 本游戏运行时将存储数据在本地，请勿禁用本地存储。<br>
-        <span class="mark">&sect;</span> 新渲染模式仅在本机处理本游戏窗口画面，不录制或上传。<br>
-        <span class="mark">&sect;</span> 单机 MOD &middot; 无充值 &middot; 无联网 &middot; 免费开源。<br>
-        <span class="mark">&sect;</span> 版权归 <span class="mark">AndyLaw</span> 及社区共同所有。作者名单 / 版本记录 / 完整说明 请开 <button type="button" class="hint" id="briefing-about">「其他」</button>。
-      </div>
-
-      <div class="welcome-controls">
-        <label class="chk-intro"><input type="checkbox" id="chk-intro"> <span>加载片头动画</span></label>
-        <button class="btn-go" id="btn-confirm-start">确 认</button>
-      </div>
-
-      <!-- 字体扩展条：异步检测，未装时显示一键安装；装好/暂不/进行中各状态由 bootstrap-main.js 切换 -->
-      <div class="welcome-fontpack" id="welcome-fontpack" hidden>
-        <div class="welcome-fontpack-row">
-          <span class="welcome-fontpack-icon" aria-hidden="true">&#9733;</span>
-          <span class="welcome-fontpack-text" id="welcome-fontpack-text">字体扩展可选</span>
-          <button class="welcome-fontpack-btn" id="welcome-fontpack-install" type="button">安装</button>
-          <button class="welcome-fontpack-cancel" id="welcome-fontpack-cancel" type="button" hidden>取消</button>
-          <button class="welcome-fontpack-skip" id="welcome-fontpack-skip" type="button" title="本次启动不再提示">&times;</button>
         </div>
-        <div class="welcome-fontpack-progress" id="welcome-fontpack-progress" hidden>
-          <div class="welcome-fontpack-bar"><div class="welcome-fontpack-bar-fill" id="welcome-fontpack-bar-fill"></div></div>
-          <span class="welcome-fontpack-bytes" id="welcome-fontpack-bytes">0 / 0 KB · 0%</span>
+
+      </div>
+
+      <!-- 电子空间读数条：替代旧两侧栏；只陈述真实事件与设定口径，悬停/聚焦展开 -->
+      <div class="hud" id="welcome-hud">
+        <div class="hud-more" id="hud-detail" hidden>
+          <div class="hud-col">
+            <div class="lbl">信道日志 &middot; CHANNEL</div>
+            <ol class="hud-chan" id="hud-chan"></ol>
+          </div>
+          <div class="hud-col">
+            <div class="lbl">派系口径 &middot; FACTIONS</div>
+            <div id="faction-list"></div>
+            <div id="active-brand"></div>
+            <div class="lbl">BUILD</div>
+            <div class="val-build mono-num" id="build-val">v&mdash;</div>
+          </div>
         </div>
+        <button type="button" class="hud-line" id="hud-toggle" aria-label="电子空间读数" aria-controls="hud-detail" aria-expanded="false">
+          <span class="hud-echo"><i class="hud-echo-dot"></i>回响 1.3s</span>
+          <span class="hud-sep" aria-hidden="true">│</span><span class="mono-num" id="hud-orbit">轨道 &mdash;</span>
+          <span class="hud-sep" aria-hidden="true">│</span><span id="hud-faction"></span>
+          <span class="hud-sep" aria-hidden="true">│</span><span class="hud-last" id="hud-last">&mdash;</span>
+        </button>
       </div>
-    </div>
-
-    <!-- 右栏：版本 + 阵营列表 -->
-    <div class="side-r">
-      <div class="lbl">VERSION</div>
-      <!-- ver / ver-tail / CHANNEL 值由 config/version.js 填充, 不要在这里写死 -->
-      <div class="ver mono-num" id="version-number"></div>
-      <div class="ver-tail" id="version-tail"></div>
-
-      <div class="row"><span class="k">CHANNEL</span><span class="v mono-num" id="version-channel"></span></div>
-      <div class="row"><span class="k">STEAM</span><span class="v g mono-num">&check; AVAILABLE</span></div>
-      <div class="row"><span class="k">ENGINE</span><span class="v mono-num">WEBVIEW2</span></div>
-      <div class="row"><span class="k">RUNTIME</span><span class="v mono-num">AVM1/SA</span></div>
-
-      <div class="faction">
-        <div class="lbl">FACTIONS</div>
-        <div id="faction-list"></div>
-        <div id="active-brand"></div>
-      </div>
-    </div>
-
+    </main>
   </div>
 </div>
 
 <!-- 槽位选择视图 -->
 <div id="view-slots" class="view" hidden>
   <div class="archive-stage">
-    <section id="save-shell" class="panel-scale-shell archive-frame corner-brackets" aria-labelledby="save-heading">
+    <section id="save-shell" class="archive-frame corner-brackets" aria-labelledby="save-heading">
       <header class="archive-heading term-heading-rule">
-        <h1 id="save-heading">存档管理</h1>
+        <h1 id="save-heading">存档库</h1>
         <div class="save-groups" aria-label="存档分组">
           <button type="button" id="save-live" aria-controls="cards" aria-pressed="true">我的存档 <span id="save-live-count">0</span></button>
           <button type="button" id="save-deleted" aria-controls="cards" aria-pressed="false">已删除 <span id="save-deleted-count">0</span></button>
@@ -158,22 +131,31 @@
       </header>
       <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>请重试，详情见“日志”。</span></div>
       <div class="save-body">
+        <div class="archive-filter">
+          <input id="save-search" type="search" aria-label="查找存档" placeholder="查找角色、存档名或槽位">
+          <select id="save-sort" aria-label="存档排序"><option value="recent">最近使用</option><option value="name">角色名称</option><option value="slot">槽位顺序</option></select>
+        </div>
         <div class="save-ledger">
           <div class="save-columns" id="save-columns" aria-hidden="true">
-            <span>角色</span><span>存档名</span><span>进度</span><span>最近修改</span><span>副本大小</span>
+            <span>角色</span><span>存档名</span><span>进度</span><span>最近使用</span><span>副本大小</span>
           </div>
           <div id="cards" role="group" aria-label="我的存档"></div>
           <div id="save-empty"><p id="save-empty-label">正在读取存档…</p></div>
           <section id="save-detail" aria-label="所选存档" hidden>
             <div class="save-selection">
+              <span class="slot-sig" id="save-detail-sig" aria-hidden="true"></span>
               <strong id="save-title"></strong>
               <span class="save-key-label">槽位</span>
               <code id="save-key"></code>
+              <span id="save-character-meta" hidden></span>
+              <span id="save-history"></span>
             </div>
             <div id="save-actions">
-              <button type="button" class="term-btn btn-start archive-primary" data-action="start">选用存档</button>
+              <button type="button" class="term-btn btn-start archive-primary" data-action="start">进入游戏</button>
               <button type="button" class="term-btn btn-rebuild" data-action="rebuild">原槽重建</button>
+              <button type="button" class="term-btn btn-repair" data-action="repair">检查修复</button>
               <button type="button" class="term-btn btn-edit" data-action="edit">编辑</button>
+              <button type="button" class="term-btn btn-undo" data-action="undo">撤销上次编辑</button>
               <button type="button" class="term-btn btn-rename" data-action="rename">重命名</button>
               <button type="button" class="term-btn btn-export" data-action="export">导出</button>
               <button type="button" class="term-btn btn-delete archive-danger" data-action="delete">删除</button>
@@ -197,7 +179,29 @@
     <img src="assets/logos/steam.svg" class="steam-ico" alt="">
     AVAILABLE ON <span class="steam">STEAM</span>
   </span>
-  <span>ANDYLAW.GAMES &middot; CF7:FLASHNIGHT LAUNCHER &middot; &theta;-FLOOD SURVIVOR BUILD</span>
+  <span>CF7:FLASHNIGHT LAUNCHER &middot; &theta;-FLOOD SURVIVOR BUILD</span>
+  <img src="assets/logos/andylaw.png" class="andylaw-mark" alt="ANDYLAW.GAMES">
+</div>
+
+<div id="display-options-home" hidden>
+  <div id="display-options">
+    <label class="chk-intro"><input type="checkbox" id="chk-intro"> <span>片头动画</span></label>
+        <!-- 字体扩展条：异步检测，未装时显示一键安装；装好/暂不/进行中各状态由 bootstrap-main.js 切换 -->
+        <div class="welcome-fontpack" id="welcome-fontpack" hidden>
+          <div class="welcome-fontpack-row">
+            <span class="welcome-fontpack-icon" aria-hidden="true">&#9733;</span>
+            <span class="welcome-fontpack-text" id="welcome-fontpack-text">字体扩展可选</span>
+            <button class="welcome-fontpack-btn" id="welcome-fontpack-install" type="button">安装</button>
+            <button class="welcome-fontpack-cancel" id="welcome-fontpack-cancel" type="button" hidden>取消</button>
+            <button class="welcome-fontpack-skip" id="welcome-fontpack-skip" type="button" title="本次启动不再提示">&times;</button>
+          </div>
+          <div class="welcome-fontpack-progress" id="welcome-fontpack-progress" hidden>
+            <div class="welcome-fontpack-bar"><div class="welcome-fontpack-bar-fill" id="welcome-fontpack-bar-fill"></div></div>
+            <span class="welcome-fontpack-bytes" id="welcome-fontpack-bytes">0 / 0 KB · 0%</span>
+          </div>
+        </div>
+    <p class="fs-hint">存档保存在本机，请勿禁用本地存储；新渲染模式只在本机处理游戏窗口画面，不录制或上传。</p>
+  </div>
 </div>
 
 <!-- 日志区 (默认隐藏, 点击日志按钮弹 modal 查看) -->
@@ -216,12 +220,18 @@
 <div class="intro-ov" id="intro-ov">
   <video id="intro-video" src="assets/intro.mp4" playsinline preload="none"></video>
   <div class="loading-indicator" id="loading-indicator">
-    <div class="spinner"></div>
+    <!-- V4 加载核心：PM19 中心格（轨道群唯一不动点）；轨道号与中心质数由 bg-gl 在种子验讫后填写 -->
+    <div class="core-cell">
+      <div class="core-orbit mono-num" id="core-orbit">轨道 &mdash;</div>
+      <div class="core-prime mono-num" id="core-prime">&mdash;</div>
+      <div class="core-label">中心质数 &middot; 共识锚点</div>
+    </div>
     <div class="loading-text">启动中</div>
     <div class="loading-hint">ESC 取消</div>
   </div>
 </div>
 <button class="intro-skip" id="intro-skip">跳 过 &middot; ESC</button>
+</div>
 
 <!-- 版本号 / CHANNEL 标签: 唯一配置点在 config/version.js, 加载时同步填充上面的 #version-* 节点 -->
 <script src="generated/font-catalog.js"></script>

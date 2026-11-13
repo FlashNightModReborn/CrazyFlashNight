@@ -47,7 +47,6 @@
   var _readInFlight = null;
   var _saving = null;
   var _loaded = false;
-  var _scale = null;
   var _statusEl = null;
 
   function playUiCue(name) {
@@ -75,7 +74,6 @@
     _opening = {slot:_slot, op:(_slotMeta.inconsistent || _slotMeta.corrupt) ? 'load_raw' : 'load', requested:false};
     _loaded = false;
     _container.classList.add('save-editor', 'archive-frame', 'corner-brackets');
-    _scale = window.PanelScale.attach(_container, 1024, 576);
     var displayName = _slotMeta.displayName || _slotMeta.characterName || _slot;
     _container.innerHTML =
       '<header class="archive-heading term-heading-rule">' +
@@ -152,8 +150,6 @@
     if (_readInFlight === _opening && _opening && _opening.readId !== undefined) _readInFlight = null;
     _opening = null;
     _loaded = false;
-    if (_scale) _scale.detach();
-    _scale = null;
     _container.classList.remove('save-editor', 'archive-frame', 'corner-brackets');
     if (_searchKeyHandler) {
       _container.removeEventListener('keydown', _searchKeyHandler);

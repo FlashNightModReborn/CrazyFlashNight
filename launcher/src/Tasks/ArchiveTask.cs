@@ -40,6 +40,7 @@ namespace CF7Launcher.Tasks
         private readonly string _savesDir;
         private readonly object _lock = new object();
         private readonly SaveSlotCatalog _slotCatalog;
+        private readonly ArchiveEditHistory _editorHistory;
         private readonly RebuildBackupStore _rebuildBackups;
         internal Func<string,bool> SettingsWriteAdmission;
         internal bool CanMutateSlot(string slot)
@@ -158,7 +159,7 @@ namespace CF7Launcher.Tasks
         /// 原子写 shadow（调用方必须已持有 _lock，且通常已在 FIFO 顺序门上）。
         /// tombstone 存在即拒绝（slot_tombstoned），任何非 recreate 路径都不得清除墓碑。
         /// </summary>
-        private bool TryWriteShadowAtomicLocked(string safeName, string data, out string targetPath, out string error)
+        private bool TryWriteShadowAtomicLocked(string safeName, string data, out string targetPath, out string error, bool editorWrite = false)
         {
             targetPath = Path.Combine(_savesDir, safeName + ".json");
             error = null;
@@ -173,7 +174,9 @@ namespace CF7Launcher.Tasks
 
             try
             {
-                CF7Launcher.Save.DurableFileWriter.WriteAllText(targetPath, data, new UTF8Encoding(false));
+                string destination = targetPath;
+                void Write() => DurableFileWriter.WriteAllText(destination, data, new UTF8Encoding(false));
+                if (editorWrite) Write(); else _editorHistory.InvalidateDuring(safeName, Write);
                 return true;
             }
             catch (Exception ex)
@@ -243,15 +246,17 @@ namespace CF7Launcher.Tasks
                     string marker = Path.Combine(_savesDir, key + ".tombstone");
                     string shadow = Path.Combine(_savesDir, key + ".json");
                     bool wasLive = rebuildCallId != null && !File.Exists(marker);
-                    WriteDeletionMarkerLocked(key, rebuildCallId, priorSolHash);
-                    try { File.Delete(shadow); }
-                    catch (IOException ex) when (wasLive && IsSharingViolation(ex) && File.Exists(shadow))
+                    _editorHistory.InvalidateDuring(key, () =>
                     {
-                        // Windows refused the deletion before changing the live file. Revert only our own new guard.
-                        if (ReadDeletionMarker(marker).Value<string>("rebuildCallId") == rebuildCallId)
-                            File.Delete(marker);
-                        throw;
-                    }
+                        WriteDeletionMarkerLocked(key, rebuildCallId, priorSolHash);
+                        try { File.Delete(shadow); }
+                        catch (IOException ex) when (wasLive && IsSharingViolation(ex) && File.Exists(shadow))
+                        {
+                            if (ReadDeletionMarker(marker).Value<string>("rebuildCallId") == rebuildCallId)
+                                File.Delete(marker);
+                            throw;
+                        }
+                    }, () => !File.Exists(marker));
                     _prevSnapshots.Remove(key);
                 }
             });
@@ -393,6 +398,7 @@ namespace CF7Launcher.Tasks
         public ArchiveTask(string projectRoot)
         {
             _savesDir = Path.Combine(projectRoot, "saves");
+            _editorHistory = new ArchiveEditHistory(_savesDir);
             if (!Directory.Exists(_savesDir))
             {
                 Directory.CreateDirectory(_savesDir);
@@ -497,6 +503,8 @@ namespace CF7Launcher.Tasks
             {
                 case "shadow":
                     return HandleShadow(payload);
+                case "undo_edit":
+                    return UndoEditorSave(payload);
                 case "load":
                     return HandleLoad(payload);
                 case "delete":
@@ -513,6 +521,20 @@ namespace CF7Launcher.Tasks
         }
 
         // ==================== shadow ====================
+
+        private string UndoEditorSave(JObject payload)
+        {
+            if (!SaveSlotKey.TryValidateExisting(payload.Value<string>("slot"), out string slot)) return BuildError("invalid_slot_key");
+            lock (_lock)
+            {
+                if (!CanMutateSlot(slot)) return BuildError("settings_recovery_required");
+                if (IsTombstoned(slot)) return BuildError("slot_tombstoned");
+                if (!_editorHistory.TryRestore(slot, Path.Combine(_savesDir, slot + ".json"), payload.Value<string>("undoToken")))
+                    return BuildError("editor_snapshot_changed");
+                _prevSnapshots.Remove(slot);
+            }
+            return new JObject { ["success"] = true, ["slot"] = slot }.ToString(Formatting.None);
+        }
 
         private string HandleShadow(JObject payload)
         {
@@ -597,7 +619,8 @@ namespace CF7Launcher.Tasks
                 else
                 {
                     warnings = ComputeConsistencyWarnings(safeName, dataObj);
-                    if (TryWriteShadowAtomicLocked(safeName, data, out writtenPath, out writeError))
+                    if (userEdit) _editorHistory.Prepare(safeName, Path.Combine(_savesDir, safeName + ".json"), data);
+                    if (TryWriteShadowAtomicLocked(safeName, data, out writtenPath, out writeError, userEdit))
                     {
                         _prevSnapshots[safeName] = dataObj;
                         accepted = true;
@@ -773,7 +796,7 @@ namespace CF7Launcher.Tasks
             bool cleanupPending = false;
             lock (_lock)
             {
-                WriteDeletionMarkerLocked(safeName, null);
+                _editorHistory.InvalidateDuring(safeName, () => WriteDeletionMarkerLocked(safeName, null));
                 _prevSnapshots.Remove(safeName);
 
                 try { File.Delete(jsonPath); }
@@ -884,6 +907,27 @@ namespace CF7Launcher.Tasks
                     }
                     characterName = DeriveCharacterName(data);
                     mainProgress = DeriveMainProgress(data);
+                    var actor = data["0"] as JArray;
+                    var gear = data["1"] as JArray;
+                    var story = data["3"];
+                    if (story?.Type == JTokenType.Integer) entry["storyProgress"] = story.DeepClone();
+                    if (actor != null)
+                    {
+                        if (actor.Count > 1 && actor[1].Type == JTokenType.String) entry["gender"] = actor[1].DeepClone();
+                        if (actor.Count > 11 && int.TryParse(actor[11]?.ToString(), out int difficulty) && difficulty >= 0 && difficulty < 3)
+                            entry["difficulty"] = new[] { "平衡模式", "逆天模式（简单）", "挑战模式（自限）" }[difficulty];
+                    }
+                    if (gear != null && gear.Count >= 2)
+                    {
+                        var look = new JObject { ["face"] = SafeStr(gear, 0), ["hair"] = SafeStr(gear, 1) };
+                        if (data["inventory"] is JObject inventory && inventory["装备栏"] is JObject equipped)
+                        {
+                            foreach (var (field, key) in new[] { ("upper", "上装装备"), ("lower", "下装装备"), ("footwear", "脚部装备") })
+                                if (equipped[key] is JObject item && item["name"]?.Type == JTokenType.String)
+                                    look[field] = item["name"].DeepClone();
+                        }
+                        entry["appearance"] = look;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -892,6 +936,16 @@ namespace CF7Launcher.Tasks
                 }
             }
 
+            if (hasJson && !hasTomb)
+            {
+                try
+                {
+                    string token = _editorHistory.Token(slot, jsonPath);
+                    if (token != null) entry["editUndoToken"] = token;
+                }
+                catch (Exception ex) when (ex is IOException || ex is JsonException || ex is UnauthorizedAccessException)
+                { LogManager.Log("[ArchiveTask] edit history unavailable: " + ex.Message); }
+            }
             entry["corrupt"] = corrupt;
             entry["size"] = size;
             entry["lastModified"] = lastModified != null ? (JToken)lastModified : JValue.CreateNull();

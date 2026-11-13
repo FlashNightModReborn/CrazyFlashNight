@@ -1,3 +1,23 @@
-﻿trace("FocusedTestRunId shoot-reload-cadence Start: __FOCUSED_RUN_ID__");
+﻿import org.flashNight.arki.render.*;
+import org.flashNight.arki.bullet.Factory.*;
+import org.flashNight.arki.bullet.BulletComponent.Queue.*;
+import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
+import org.flashNight.arki.camera.*;
+import org.flashNight.gesh.object.*;
+import org.flashNight.arki.unit.*;
+import org.flashNight.sara.util.Vector;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.component.Effect.EffectSystem;
+import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.skill.SealDomain;
+import org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
+import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.Component.TimeLimitComponent;
+import org.flashNight.arki.scene.SceneManager;
+if (!_root.装备生命周期函数) _root.装备生命周期函数={};
+#include "逻辑/装备函数/G1111.as"
+#include "逻辑/单位函数/单位函数_雾人_aka_fs_主动战技.as"
+trace("FocusedTestRunId shoot-reload-cadence Start: __FOCUSED_RUN_ID__");
 org.flashNight.arki.unit.Action.Shoot.ShootReloadCadenceTest.runAllTests();
 trace("FocusedTestRunId shoot-reload-cadence Complete: __FOCUSED_RUN_ID__");

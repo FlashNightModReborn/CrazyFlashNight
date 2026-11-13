@@ -101,6 +101,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
             g.__removed = true;
             if (g.shotgun != null) g.shotgun.dispose();
             g.shotgun = null;
+            g.pierceRemaining = null;
             pn = pool.length;
             list = g.单元体列表;
             n = list.length;
@@ -221,6 +222,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         group.__removed = true;
         if (group.shotgun != null) group.shotgun.dispose();
         group.shotgun = null;
+        group.pierceRemaining = null;
         var list:Array = group.单元体列表;
         var pool:Array = dataPool;
         var n:Number = list.length;

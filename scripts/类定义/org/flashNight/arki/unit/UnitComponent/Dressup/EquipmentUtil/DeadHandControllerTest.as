@@ -178,6 +178,16 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
                 && Math.abs(unit.长枪_引用._y - 36.25) < 0.01,
             "死者之手切到借用长枪模式时应用美术偏转(-90°, -113.6, 36.25)并隐藏刀引用");
 
+        ref.握柄当前帧 = 1;
+        _root.帧计时器.当前帧数++;
+        fns.死者之手周期(ref, {});
+        var normalFirst:Number = ref.握柄当前帧;
+        for (var poseTick:Number = 0; poseTick < 16; poseTick++) {
+            _root.帧计时器.当前帧数++;
+            fns.死者之手周期(ref, {});
+        }
+        check(normalFirst >= 17 && normalFirst < 31 && ref.握柄最大帧 == 31 && ref.握柄当前帧 == 31 && ref.枪头当前帧 == 46,
+            "常态步枪握柄只走17至31帧，枪头保持独立段");
         var shotProps:Object = {};
         unit.长枪伤害类型 = "物理";
         unit.长枪射击(null, shotProps);
@@ -224,6 +234,14 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
                 && unit.主动战技.兵器.名字 == "凶斩",
             "释放一阶段战技开启超载强化并切换为二阶段战技");
 
+        _root.帧计时器.当前帧数++;
+        fns.死者之手周期(ref, {});
+        var overloadEnd:Number = ref.握柄最大帧;
+        for (poseTick = 0; poseTick < 22; poseTick++) {
+            _root.帧计时器.当前帧数++;
+            fns.死者之手周期(ref, {});
+        }
+        check(overloadEnd == 46 && ref.握柄当前帧 == 46, "超载步枪握柄从32推进至46帧");
         unit.攻击模式 = "兵器";
         unit.状态 = "兵器站立";
         fns.死者之手处理武器切换(ref);
@@ -337,6 +355,38 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandContr
 
         var oldTimer:Object = _root.帧计时器;
         _root.帧计时器 = {当前帧数:100};
+        c = deadHandContext({}, false, false); ref = c.ref; unit = c.unit;
+        var oldEmitter:Function = _root.子弹区域shoot传递;
+        var emitted:Number = 0;
+        _root.子弹区域shoot传递 = function(props:Object):Void { emitted++; };
+        var projection:org.flashNight.arki.hud.PlayerHudBuffProjection = new org.flashNight.arki.hud.PlayerHudBuffProjection();
+        try {
+            fns.死者之手开启超载(ref);
+            var initial:Array = projection.snapshotFor(unit);
+            check(ref.超载能量 == 120 && initial[0].total == 450 && initial[0].remaining == 450, "default overload is full with a 450-frame HUD timer");
+            var atStart:Number = emitted;
+            _root.帧计时器.当前帧数 += 7;
+            _root.子弹区域shoot传递 = null;
+            fns.死者之手触发超载雷电(ref, false);
+            check(ref.超载能量 == 120 && emitted == atStart, "missing emitter preserves full energy and proc opportunity");
+            _root.子弹区域shoot传递 = function(props:Object):Void { emitted++; };
+            fns.死者之手触发超载雷电(ref, false);
+            var hot:Array = projection.snapshotFor(unit);
+            check(emitted == atStart + 1 && ref.超载能量 == 105 && ref.超载模式, "one real non-free lightning proc costs exactly 15");
+            check(hot[0].id == "死者之手" && hot[0].remaining == 443 && hot[0].info.description.indexOf("105/120") >= 0
+                && initial[0].info.description.indexOf("120/120") >= 0, "overload HUD shows live energy and immutable previous values");
+            fns.死者之手触发超载雷电(ref, false);
+            check(ref.超载能量 == 105 && emitted == atStart + 1, "same-frame duplicate proc cannot debit twice");
+            fns.死者之手触发超载雷电(ref, true);
+            check(ref.超载能量 == 105 && emitted == atStart + 2, "free finisher does not debit energy");
+            _root.帧计时器.当前帧数 = ref.超载结束帧;
+            fns.死者之手周期(ref, {});
+            check(!ref.超载模式 && projection.snapshotFor(unit).length == 0, "deadline clears dedicated card immediately");
+        } finally {
+            _root.子弹区域shoot传递 = oldEmitter;
+            fns.死者之手卸载(ref);
+            _root.帧计时器.当前帧数 = 100;
+        }
         c = deadHandContext({overloadDurationFrames:2, overloadCooldown:1000}, false, false);
         ref = c.ref; unit = c.unit;
         check(fns.死者之手开启超载(ref), "一阶段开启有期限超载");

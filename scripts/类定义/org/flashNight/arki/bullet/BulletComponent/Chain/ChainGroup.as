@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern;
+import org.flashNight.naki.DataStructures.Dictionary;
 
 // ChainGroup —— 联弹组状态对象（P5 class 化）
 //
@@ -22,6 +23,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     // 单元体数据对象列表（元素为 ChainUnitData）
     public var 单元体列表:Array;
     public var shotgun:ShotgunPattern;
+    // 每发横向穿刺联弹独有。键只存目标本次出生的数字身份，不持有单位引用。
+    public var pierceRemaining:Object;
     // 仅旧衰减参照：不注册、不渲染、不占原生预留。
     public var isDecayReference:Boolean;
     // 每帧模拟函数（ChainUnitManager.tick 以 f(group) 形态调用，不依赖 this）
@@ -127,6 +130,24 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     public var 螺旋近景增粗:Number;
     public var 拖尾扩散增益:Number;
 
+    public function canJudgePierce(target:Object):Boolean {
+        var identity:Object = target.dispatcher != null ? target.dispatcher : target;
+        return pierceRemaining[identity.__dictUID] !== 0;
+    }
+
+    // 首次有效结算时记录到达该目标的弹丸数。逐段闪避也消耗次数，其他目标另算。
+    public function takePierceSegments(target:Object, live:Number, requested:Number):Number {
+        var identity:Object = target.dispatcher != null ? target.dispatcher : target;
+        var uid:Number = identity.__dictUID;
+        if (uid === undefined) uid = Dictionary.getStaticUID(identity);
+        var remaining:Number = pierceRemaining[uid];
+        if (remaining === undefined) remaining = 2 * live;
+        var used:Number = requested < live ? requested : live;
+        if (used > remaining) used = remaining;
+        pierceRemaining[uid] = remaining - used;
+        return used;
+    }
+
     // @param areaClip  MC 壳模式的 area 子剪辑；对象化联弹传 null
     // @param bulletRef 宿主子弹（MC 或纯对象）
     // @param updateFn  每帧模拟函数
@@ -134,6 +155,12 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     public function ChainGroup(areaClip:MovieClip, bulletRef, updateFn:Function, renderFn:Function) {
         area = areaClip;
         bullet = bulletRef;
+        #include "../macros/FLAG_PIERCE.as"
+        // 工厂已解析 baseAsset；只有横向穿刺实体组持账。纵向、单发和衰减参照均不分配。
+        if ((bulletRef.flags & FLAG_PIERCE) != 0 && bulletRef.baseAsset.indexOf("横向") == 0) {
+            pierceRemaining = {};
+            bulletRef.chainGroup = this;
+        }
         update = updateFn;
         render = renderFn;
         单元体列表 = [];

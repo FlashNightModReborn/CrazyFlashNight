@@ -204,6 +204,34 @@ export class EnvironmentRenderer {
         ctx.restore();
       }
     }
+    // V4 足迹：已到达的 boot 批次各点亮一行真实等和线（骨白），新行 350ms 由左向右展开。
+    // 只表示“走过的步”，不画总数或百分比；Σ 标记陈述的是该行之和，与进度无关。
+    const footprints = state.footprints || [];
+    if (footprints.length) {
+      const font = this.font;
+      for (const fp of footprints) {
+        if (!(fp.row >= 0 && fp.row < N)) continue;
+        const reach = still ? 1 : Math.min(1, fp.age / 350);
+        const y = this.points[fp.row * N * 2 + 1];
+        ctx.save(); ctx.beginPath();
+        ctx.rect(0, y - font * 1.75, w * reach, font * 1.85);
+        ctx.clip();
+        ctx.globalAlpha = error ? .22 : (!still && fp.age < 600 ? .9 : .55);
+        if (this.useCache) ctx.drawImage(this.surfaces[1].canvas, 0, 0);
+        else this.drawBoard(ctx, true);
+        ctx.restore();
+        ctx.globalAlpha = error ? .16 : .42;
+        ctx.fillStyle = '#cfba8d';
+        ctx.fillRect(0, y + font * .3, w * reach, 1);
+        if (reach >= 1 && state.magicSum) {
+          ctx.globalAlpha = error ? .2 : .7;
+          ctx.font = `500 ${Math.max(7, font * .82)}px "JetBrains Mono", Consolas, monospace`;
+          ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+          ctx.fillText('Σ ' + state.magicSum.toLocaleString('en-US'), w - 8, y + font * .55);
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
     // Peripheral guide lights, symmetric about (9,9); they never enter the UI.
     // sync/confirm/arrival/slots-pick 无对坐标语义，沿用共享 position 近似，不跳过。
     const r = Math.min(9, Math.floor(position));

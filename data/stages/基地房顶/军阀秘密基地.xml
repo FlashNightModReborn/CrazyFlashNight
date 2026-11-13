@@ -304,6 +304,10 @@
                         <Level>25</Level>
                         <x>500</x>
                         <y>350</y>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>牛仔</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

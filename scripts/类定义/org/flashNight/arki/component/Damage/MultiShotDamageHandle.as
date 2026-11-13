@@ -97,7 +97,8 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         var EXPECTED_STATE:Number = FLAG_NORMAL;
 
         var overlapRatio:Number = manager.overlapRatio;
-        var pattern:ShotgunPattern = bullet.chainGroup.shotgun;
+        var group:ChainGroup = bullet.chainGroup;
+        var pattern:ShotgunPattern = group.shotgun;
         var isNormalNonTransparent:Boolean = (bullet.flags & RELEVANT_BITS_MASK) == EXPECTED_STATE || pattern != null;
 
         // 影子记账检测：原位位编码方案
@@ -215,8 +216,12 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
 
         // 新霰弹按组级覆盖限制单体；旧弹保持最低一段的历史合同。
         if (pattern != null && actualScatterUsed > pattern.hitCap) actualScatterUsed = pattern.hitCap;
+        var horizontalPierce:Boolean = group.pierceRemaining != null;
+        if (horizontalPierce) {
+            actualScatterUsed = group.takePierceSegments(target, availableScatter, actualScatterUsed < 1 ? 1 : actualScatterUsed);
+        }
         if (actualScatterUsed < 1) {
-            if (pattern != null) {
+            if (pattern != null || horizontalPierce) {
                 target.损伤值 = 0;
                 result.actualScatterUsed = 0;
                 result.finalScatterValue = availableScatter;

@@ -358,6 +358,10 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>50</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>原体融合生物</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

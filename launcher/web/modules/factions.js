@@ -26,6 +26,7 @@
     : "STSong, SimSun, serif";
   const FACTIONS = {
     iron: {
+      terms: { 回响周期: "天息 · 余响 · 钟鸣", 信号: "天息 / 地脉之声", 虚渊: "虚渊 / 彼岸" },
       name: '黑铁会',
       enName: 'IRON SOCIETY',
       baseStatus: 'standby',
@@ -48,6 +49,7 @@
     },
 
     noah: {
+      terms: { 回响周期: "重锁周期 / 同步拍频", 信号: "耦合信号 · 三平面协议栈", 虚渊: "深层意识分区" },
       name: '诺亚',
       enName: 'NOAH',
       baseStatus: 'standby',
@@ -67,6 +69,12 @@
       </svg>`
     },
 
+    univ: {
+      name: '联合大学', enName: 'UNITED UNIV.', baseStatus: 'standby',
+      color: '#cbba93', colorDim: '#85775e', slogan: '网络意识生态',
+      terms: { 回响周期: '共振拍频', 信号: '分层信号架构', 虚渊: '网络意识生态' },
+      rune: '<span class="univ-divider" aria-hidden="true"></span>'
+    },
     mercenary: {
       name: 'A兵团',
       enName: 'A-CORPS',
@@ -92,6 +100,7 @@
     },
 
     skynet: {
+      terms: { 回响周期: "周期性异常信号", 信号: "异常频率信号", 虚渊: "未注册网络空间" },
       name: '天网',
       enName: 'SKYNET',
       baseStatus: 'offline',
@@ -144,11 +153,13 @@
       const glow = status === 'sync' ? `box-shadow:0 0 6px ${f.color}` : '';
       const nameStyle = k === activeKey ? ' style="color:#d4d8dc"' : '';
       const statStyle = status === 'sync' ? ` style="color:${f.color}"` : '';
-      return '<div class="f">'
+      const terms = Object.entries(f.terms || {});
+      const reading = terms.map(([topic, term]) => topic + ' · ' + term).join(' / ');
+      return '<div class="f" title="' + reading + '">'
            +   '<span class="dot" style="background:' + dotColor + ';' + glow + '"></span>'
            +   '<span class="f-name"' + nameStyle + '>' + f.name + '</span>'
            +   '<span class="f-sep">·</span>'
-           +   '<span class="f-status"' + statStyle + '>' + STATUS_LABEL[status] + '</span>'
+            +   '<span class="f-term"' + statStyle + '>' + (terms.length ? terms[0][1] : f.slogan) + '</span>'
            + '</div>';
     }).join('');
   }
@@ -157,7 +168,9 @@
     const el = document.getElementById(containerId);
     if (!el || !FACTIONS[key]) return;
     const f = FACTIONS[key];
-    el.textContent = f.enName + ' · ' + f.slogan;
+    const summary = document.getElementById('hud-faction');
+    if (summary) summary.textContent = f.name + ' · ' + (f.terms ? Object.values(f.terms)[0] : f.slogan);
+    el.textContent = f.terms ? Object.entries(f.terms).map(([topic, term]) => topic + ' · ' + term).join(' / ') : f.enName + ' · ' + f.slogan;
     el.style.color = f.color;
   }
 

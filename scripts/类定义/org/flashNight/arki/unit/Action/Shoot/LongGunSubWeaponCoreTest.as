@@ -1128,6 +1128,22 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.副武器射击中 === false && unit.射击最大后摇中 === false, "subweapon movement recoil ends at the 300ms cap");
         assert(unit.长枪副武器状态.nextFireTime > getTimer(), "full subweapon fire-rate gate remains active after movement recoil ends");
         assert(!LongGunSubWeaponCore.fire(unit) && shotCount == 1, "recoil release cannot bypass the remaining subweapon fire-rate gate");
+        org.flashNight.arki.unit.Action.Shoot.ShootCore.cleanup(unit);
+        EnhancedCooldownWheel.I().reset();
+
+        unit = makeUnit();
+        unit.状态 = "长枪行走"; unit.移动射击 = true;
+        unit.man = makeActionClip(unit, 10, 20, 1, 2);
+        sub = makeSubweapon(false);
+        sub.cd = 220; sub.capacity = sub.initialLoaded = 1;
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype:"突击步枪", subweapon:sub});
+        assert(LongGunSubWeaponCore.fire(unit) && shotCount == 2 && LongGunSubWeaponCore.getLoadedCount(unit) == 0,
+            "M7 220ms lane accepts its last loaded round");
+        for (i = 0; i < 6; i++) EnhancedCooldownWheel.I().tick();
+        assert(unit.射击最大后摇中 === true, "M7 final recoil remains active through 200ms");
+        for (i = 0; i < 2; i++) EnhancedCooldownWheel.I().tick();
+        assert(unit.射击最大后摇中 === false && !LongGunSubWeaponCore.fire(unit) && shotCount == 2,
+            "M7 220ms final recoil expires without another shot");
 
         org.flashNight.arki.unit.Action.Shoot.ShootCore.cleanup(unit);
         _root.子弹区域shoot传递 = oldShoot;

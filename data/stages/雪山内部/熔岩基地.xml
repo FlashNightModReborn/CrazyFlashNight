@@ -403,6 +403,10 @@
                         <Interval>400</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>方舟妖姬</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

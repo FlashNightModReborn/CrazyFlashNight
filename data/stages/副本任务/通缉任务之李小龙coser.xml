@@ -69,6 +69,10 @@
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMax>修罗</DifficultyMax>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>Lee</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>堕落城.Lee</Type>
@@ -78,6 +82,8 @@
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMin>地狱</DifficultyMin>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>Lee</focusHudLabel>
                             <宠物属性>
                                 <冲腿龙息>true</冲腿龙息>
                             </宠物属性>

@@ -130,6 +130,8 @@ namespace CF7Launcher.Guardian
         private bool _suspendedForPanel;
         private bool _ready;
         private readonly bool _presentationEnabled;
+        private readonly bool _requireVisibleGamePanel;
+        private bool FrontDoorVisible => _requireVisibleGamePanel && !_anchor.Visible;
 
         // 上一帧 hud 屏幕原点；用于决定是否需要 SetWindowPos
         private Point _hudOrigin;
@@ -139,10 +141,12 @@ namespace CF7Launcher.Guardian
         // 默认 IntPtr.Zero → 退回 HWND_TOP（仅 widget 未注册前的过渡态使用）
         private IntPtr _zOrderInsertAfter;
 
-        public NativeHudOverlay(Form owner, Control anchor, bool presentationEnabled = true)
+        public NativeHudOverlay(Form owner, Control anchor, bool presentationEnabled = true, bool requireVisibleGamePanel = false)
             : base(owner, anchor, 1024f, 576f)
         {
             _presentationEnabled = presentationEnabled;
+            _requireVisibleGamePanel = requireVisibleGamePanel;
+            if (requireVisibleGamePanel) anchor.VisibleChanged += OnGamePanelVisibilityChanged;
             // 注册与 FocusTrace 开关解耦：注册表反映存活的 HUD 实例，
             // 诊断关闭时只是多一条注册项，probe 采集仍由 FocusTrace.Enabled 门控。
             InitializeFocusInputProbe();
@@ -434,13 +438,24 @@ namespace CF7Launcher.Guardian
             return false;
         }
 
+        private void OnGamePanelVisibilityChanged(object sender, EventArgs args)
+        {
+            if (FrontDoorVisible)
+            {
+                _animTick?.Stop();
+                DismissHudPresentation();
+                return;
+            }
+            RecomputeBounds();
+        }
+
         private void RecomputeBounds()
         {
             InvalidateWholeBitmap();
             ReconcileRightContextSlotOwner();
             if (FocusTrace.Enabled && _rightContextWidget != null)
                 FocusTrace.SetTarget(_rightContextWidget.ScreenBounds);
-            if (!_ready || _suspendedForPanel) return;
+            if (!_ready || FrontDoorVisible || _suspendedForPanel) return;
 
             INativeHudWidget[] snapshot;
             lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
@@ -551,7 +566,7 @@ namespace CF7Launcher.Guardian
 
         private void RenderToBitmapAndCommit()
         {
-            if (!_ready || _suspendedForPanel) return;
+            if (!_ready || FrontDoorVisible || _suspendedForPanel) return;
             if (_composedBitmap == null) return;
             var observer = RenderTimingObserver;
             var renderStart = observer == null ? 0 : System.Diagnostics.Stopwatch.GetTimestamp();
@@ -665,7 +680,7 @@ namespace CF7Launcher.Guardian
 
         private void RequestRenderFromUi(string source, INativeHudWidget widget)
         {
-            if (!_ready || _suspendedForPanel) return;
+            if (!_ready || FrontDoorVisible || _suspendedForPanel) return;
             if (_composedBitmap == null) return;
             InvalidateWidget(widget);
             if (!string.IsNullOrEmpty(source))
@@ -689,7 +704,7 @@ namespace CF7Launcher.Guardian
             if (_renderCoalesceTimer != null)
                 _renderCoalesceTimer.Stop();
             if (!_renderPending) return;
-            if (!_ready || _suspendedForPanel || _composedBitmap == null)
+            if (!_ready || FrontDoorVisible || _suspendedForPanel || _composedBitmap == null)
             {
                 _renderPending = false;
                 return;
@@ -726,7 +741,7 @@ namespace CF7Launcher.Guardian
 
         private void MaybeStartTick()
         {
-            if (!_ready || _suspendedForPanel) return;
+            if (!_ready || FrontDoorVisible || _suspendedForPanel) return;
             if (_animTick == null) return;
 
             INativeHudWidget[] snapshot;
@@ -1389,6 +1404,7 @@ namespace CF7Launcher.Guardian
 
         protected override void Dispose(bool disposing)
         {
+            if (disposing && _requireVisibleGamePanel) _anchor.VisibleChanged -= OnGamePanelVisibilityChanged;
             if (disposing)
             {
                 DisposeSharedPresentation();

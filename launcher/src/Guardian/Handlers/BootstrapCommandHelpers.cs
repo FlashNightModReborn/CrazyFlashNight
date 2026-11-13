@@ -179,6 +179,7 @@ namespace CF7Launcher.Guardian.Handlers
             string outCmd;
             switch (cmd)
             {
+                case "undo_edit":     outCmd = "undo_edit_resp"; break;
                 case "save":          outCmd = "save_resp";   break;
                 case "reset":         outCmd = "reset_resp";  break;
                 case "import_start":  outCmd = "import_resp"; break;
@@ -256,6 +257,11 @@ namespace CF7Launcher.Guardian.Handlers
                 if (prefs != null)
                 {
                     if (!string.IsNullOrEmpty(prefs.LastPlayedSlot)) reply["lastPlayedSlot"] = prefs.LastPlayedSlot;
+                    foreach (JObject row in (JArray)reply["slots"])
+                    {
+                        var stamp = prefs.LastPlayedBySlot.GetValue(row.Value<string>("slot"), StringComparison.OrdinalIgnoreCase);
+                        if (stamp != null && row.Value<bool?>("tombstoned") != true) row["lastPlayed"] = stamp.DeepClone();
+                    }
                     reply["introEnabled"] = prefs.IntroEnabled;
                     reply["sfxEnabled"] = prefs.SfxEnabled;
                     reply["ambientEnabled"] = prefs.AmbientEnabled;

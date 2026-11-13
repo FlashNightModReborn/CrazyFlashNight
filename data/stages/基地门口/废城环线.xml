@@ -622,6 +622,10 @@
                         <parameters>
                             <threat>30</threat>
                         </parameters>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>信号干扰仪</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Interval>1200</Interval>

@@ -598,6 +598,10 @@
                         <Level>30</Level>
                         <x>400</x>
                         <y>420</y>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>浮士德兄弟</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -650,6 +654,10 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>Lee</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

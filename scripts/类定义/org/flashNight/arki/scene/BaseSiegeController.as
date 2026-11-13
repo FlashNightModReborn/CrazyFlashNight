@@ -185,11 +185,15 @@ class org.flashNight.arki.scene.BaseSiegeController {
                 guard.man._visible=false;guard.threat=30;
                 guard.area._width=50;guard.area._height=76;guard.area._x=-25;guard.area._y=-76;
                 guard.aabbCollider.updateFromUnitArea(guard);
+                r.focusLease=org.flashNight.arki.hud.FocusTargetHudService.bindInitialized(guard,"protect","有源中继");
                 r.guardReady=true;r.counterStarted=true;
                 r.world.dispatcher.publish("SiegeCounterattack");
             }
         }
-        if(r.assetsReady && (!r.deployed || r.guardReady) && r.animPhase==null){stopLoadWatch();return;}
+        if(r.guardReady && r.focusLease==null){
+            r.focusLease=org.flashNight.arki.hud.FocusTargetHudService.bindInitialized(r.world.siege_relay_guard,"protect","有源中继");
+        }
+        if(r.assetsReady && (!r.deployed || (r.guardReady && r.focusLease!=null)) && r.animPhase==null){stopLoadWatch();return;}
         if(r.loadTicks==300 && !r.assetsReady){
             for(var i:Number=0;i<r.art.length;i++)if(!r.art[i].ready && r.art[i].attempts<2)loadArt(r,r.art[i]);
         }
@@ -257,6 +261,8 @@ class org.flashNight.arki.scene.BaseSiegeController {
             if(!BaseSiegeRules.canClearRelay(r.deployed,r.guardReady,
                     WaveSpawner.instance.isFinished===true,r.world.siege_relay_guard.hp>0))return true;
             r.done=true;r.phase="complete";r.world.siege_relay_guard.threat=0;
+            org.flashNight.arki.hud.FocusTargetHudService.clear(r.focusLease);
+            r.focusLease=null;
             r.anchor.enableInteractionKey=false;r.anchor.removeMovieClip();stopLoadWatch();
             return false;
         }
@@ -277,6 +283,7 @@ class org.flashNight.arki.scene.BaseSiegeController {
     private static function teardown():Void {
         stopLoadWatch();
         if(room!=null){
+            org.flashNight.arki.hud.FocusTargetHudService.clear(room.focusLease);
             for(var i:Number=0;i<room.art.length;i++)retireArtLoader(room.art[i]);
             room.world.dispatcher.unsubscribe("HeroMoved",refreshArt,BaseSiegeController);
         }

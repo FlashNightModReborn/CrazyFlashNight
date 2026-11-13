@@ -9,6 +9,15 @@
   var stateBadge = document.getElementById('state-badge');
   var retryBtn = document.getElementById('btn-retry');
   var cancelLaunchBtn = document.getElementById('btn-cancel-launch');
+  var stage = document.getElementById('launcher-stage');
+  var stageScale = PanelScale.attach(stage, 1024, 576);
+  window.addEventListener('pagehide', function(event) { if (!event.persisted) stageScale.detach(); });
+  var fullscreenButton = document.getElementById('btn-fullscreen');
+  var hostFullscreen = null;
+  function displayFullscreen(enabled) {
+    fullscreenButton.textContent = enabled ? '退出全屏' : '全屏';
+    fullscreenButton.setAttribute('aria-pressed', String(enabled));
+  }
   var viewWelcome = document.getElementById('view-welcome');
   var viewSlots = document.getElementById('view-slots');
   var viewCharacterCreate = document.getElementById('view-character-create');
@@ -94,11 +103,10 @@
 
   function applyFontScale(v) {
     v = clampFontScale(v);
-    var changed = _prefsUiFontScale !== v;
     _prefsUiFontScale = v;
     // 写到 :root 上；bootstrap.css 直接以用户选择作为 --fs-scale。
     document.documentElement.style.setProperty('--user-fs-scale', String(v));
-    if (changed) saveManager.updateLayout();
+
   }
 
   // config_set 的"服务端权威对齐"机制 (Plan A+).
@@ -271,9 +279,7 @@
   }
 
   // ── 视图切换 ──
-  // A 期翻新: welcome ↔ slots 进出场动画 (CSS: welcome.css 的 .view-enter/.view-leave).
-  // 源 view 播完 leave 动画 (animationend, 300ms 定时器兜底) 后才置 hidden;
-  // reduced-motion 下 CSS 已关动画, JS 侧同步退化为硬切. 首次加载源 view 已 hidden, 不播动画.
+  // 顶级视图使用同一画布；减少动态效果时立即切换。
   var _reducedMotion = false;
   try {
     var _rmQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -283,53 +289,54 @@
     else if (typeof _rmQuery.addListener === 'function') _rmQuery.addListener(_rmOnChange);
   } catch (e) {}
 
-  var _viewAnimSeq = 0;   // 递增序号: 连点切换时作废旧动画的落地回调, 避免误 hidden 当前视图
+  var currentView = viewWelcome;
+  stage.addEventListener('animationend', function(event) {
+    if (event.animationName === 'viewEnter') event.target.classList.remove('view-enter');
+  });
+  var homeOpener = null;
+  var createOrigin = null;
+  var createOpener = null;
+  var hudToggle = document.getElementById('hud-toggle');
+  var hudDetail = document.getElementById('hud-detail');
+
+  function setHudOpen(open) {
+    hudDetail.hidden = !open;
+    hudToggle.setAttribute('aria-expanded', String(open));
+  }
+  hudToggle.onclick = function() { setHudOpen(hudDetail.hidden); };
+  document.addEventListener('pointerdown', function(event) {
+    if (!hudDetail.hidden && !document.getElementById('welcome-hud').contains(event.target)) setHudOpen(false);
+  });
+  hudToggle.addEventListener('blur', function() { setHudOpen(false); });
+
   function switchView(target, source) {
-    var seq = ++_viewAnimSeq;
-    if (window.BootTooltip) window.BootTooltip.hide();   // C 期: 视图切换时收掉残留 tooltip
-    if (window.PanelTooltip) window.PanelTooltip.hide(); // 建角装备注释不得跨顶级视图残留
-    viewWelcome.classList.remove('view-enter', 'view-leave');
-    viewSlots.classList.remove('view-enter', 'view-leave');
-    viewCharacterCreate.classList.remove('view-enter', 'view-leave');
-    var animate = !_reducedMotion && source && !source.hidden && target !== source;
-    if (!animate) {
-      if (source) source.hidden = true;
-      target.hidden = false;
-      return;
-    }
-    target.hidden = false;
-    target.classList.add('view-enter');
-    source.classList.add('view-leave');
-    var done = false;
-    function finish() {
-      if (done || seq !== _viewAnimSeq) return;
-      done = true;
+    if (window.BootTooltip) window.BootTooltip.hide();
+    if (window.PanelTooltip) window.PanelTooltip.hide();
+    setHudOpen(false);
+    if (source !== target && source === viewWelcome) homeOpener = document.activeElement;
+    if (source !== target && source) {
       source.hidden = true;
-      source.classList.remove('view-leave');
-      target.classList.remove('view-enter');
+      source.classList.remove('view-enter');
     }
-    source.addEventListener('animationend', function h(ev) {
-      if (ev.animationName !== 'viewLeave') return;   // 只认离场动画, 忽略子元素冒泡
-      source.removeEventListener('animationend', h);
-      finish();
-    });
-    setTimeout(finish, 300);   // 兜底: animationend 丢失也能落地
+    currentView = target;
+    document.body.dataset.fdView = target === viewWelcome ? 'welcome' : target === viewSlots ? 'slots' : 'create';
+    target.hidden = false;
+    if (target !== source && !_reducedMotion) target.classList.add('view-enter');
   }
 
-  function activeView() {
-    if (!viewCharacterCreate.hidden) return viewCharacterCreate;
-    if (!viewSlots.hidden) return viewSlots;
-    return viewWelcome;
-  }
+  function activeView() { return currentView; }
 
   function showWelcome() {
     var source = activeView();
     var changed = source !== viewWelcome;
-    saveManager.close();
     renderWelcomeSlot();
     document.body.classList.remove('character-create-active');
     if (changed) playUiCue('playTransition');
     switchView(viewWelcome, source);
+    if (changed) {
+      var opener = homeOpener && viewWelcome.contains(homeOpener) && !homeOpener.disabled ? homeOpener : btnConfirmStart;
+      opener.focus({preventScroll:true});
+    }
   }
   function showSlots() {
     var source = activeView();
@@ -342,7 +349,6 @@
 
   function showCharacterCreate() {
     var source = activeView();
-    saveManager.close();
     document.body.classList.add('character-create-active');
     if (source !== viewCharacterCreate) playUiCue('playTransition');
     switchView(viewCharacterCreate, source);
@@ -350,6 +356,8 @@
 
   function openCharacterCreate(mode, slotKey) {
     if (!window.BootstrapCharacterCreate) return false;
+    createOrigin = activeView();
+    createOpener = document.activeElement;
     return window.BootstrapCharacterCreate.open(mode, slotKey);
   }
 
@@ -362,6 +370,7 @@
       var meta = window.APP_META;
       var buildEl = document.getElementById('build-val');
       if (!meta || !buildEl) return;
+      document.getElementById('hero-version').textContent = 'v' + (meta.version || '?');
       buildEl.innerHTML = 'v' + escapeHtml(meta.version || '?')
         + ' &middot; ' + escapeHtml(meta.channel || '?')
         + '<br>' + escapeHtml(meta.tail || '?');
@@ -372,37 +381,29 @@
   // The character and archive workbenches share the launcher scene behind their surfaces.
   loadRandomBackground();
 
-  // TRANSMISSION ◎ 点亮: 首个 list_resp → 第 1 行 + DLS SYNC 填健康存档比例;
-  // 点「确认」→ 第 2 行; flash_ready (或 state Ready) → 第 3 行.
-  // 依赖 window.BootstrapApp.onMessage, 在初始化段 (BootstrapApp 定义之后) 调用; 不可用时空转, 不报错.
-  function setTransNodeLit(idx) {
-    var el = document.getElementById('trans-node-' + idx);
-    if (el) el.classList.add('lit');
+  function channelEvent(label, detail) {
+    var list = document.getElementById('hud-chan');
+    if (!list || !label) return;
+    var entry = document.createElement('li');
+    entry.textContent = label;
+    if (detail) entry.title = detail;
+    list.appendChild(entry);
+    while (list.children.length > 5) list.firstElementChild.remove();
+    var last = document.getElementById('hud-last');
+    last.textContent = label;
+    last.title = detail || label;
   }
-  function initTransmissionLights() {
-    if (!window.BootstrapApp || typeof window.BootstrapApp.onMessage !== 'function') return;
-    var unsubList = window.BootstrapApp.onMessage('list_resp', function(msg) {
-      unsubList();
-      try {
-        var slots = (msg && msg.slots) || [];
-        var healthy = 0;
-        for (var i = 0; i < slots.length; i++) {
-          var s = slots[i];
-          if (s && !s.corrupt && !s.tombstoned) healthy++;
-        }
-        var el = document.getElementById('dls-sync-val');
-        if (el) el.textContent = slots.length ? (healthy / slots.length).toFixed(2) : '0.00';
-        setTransNodeLit(1);
-      } catch (e) {}
-    });
-    if (btnConfirmStart) btnConfirmStart.addEventListener('click', function() { setTransNodeLit(2); });
-    var thirdDone = false;
-    function lightThird() { if (thirdDone) return; thirdDone = true; setTransNodeLit(3); }
-    window.BootstrapApp.onMessage('flash_ready', lightThird);
-    window.BootstrapApp.onMessage('state', function(msg) {
-      if (msg && msg.state === 'Ready') lightThird();
-    });
+
+  function updateDecor() {
+    var decor = window.PM19Decor;
+    if (!decor || !decor.ready) return;
+    document.getElementById('hud-orbit').textContent = '轨道 #' + (decor.orbit.index + 1)
+      + ' · 中心 ' + decor.orbit.center.toLocaleString('zh-CN');
+    var badge = document.getElementById('welcome-slot-sig');
+    window.BootstrapSaveManager.paintSignature(badge, _welcomeSlot && _welcomeSlot.slot);
   }
+
+  window.addEventListener('pm19-decor-ready', updateDecor);
 
   // ── 欢迎页默认 slot 选择 ──
   function pickDefaultSlot() {
@@ -427,6 +428,7 @@
   function renderWelcomeSlot() {
     var s = pickDefaultSlot();
     _welcomeSlot = s;
+    updateDecor();
     if (!s) {
       welcomeSlotNameEl.textContent = '无可用存档';
       welcomeSlotTimeEl.textContent = '—';
@@ -446,13 +448,14 @@
     if (s.__empty) {
       welcomeSlotTimeEl.innerHTML = modeHint || '<span class="flag empty">空槽位</span>';
     } else {
-      var meta = fmtBytes(s.size);
-      if (s.lastModified) meta += ' · ' + s.lastModified.slice(0, 16).replace('T', ' ');
-      var flags = '';
-      if (s.corrupt)      flags = '<span class="flag corrupt">损坏</span>';
-      if (s.tombstoned)   flags = '<span class="flag tombstoned">已删除</span>';
-      if (s.inconsistent) flags = '<span class="flag inconsistent">不一致</span>';
-      welcomeSlotTimeEl.innerHTML = modeHint + flags + escapeHtml(meta);
+      var progress = window.BootstrapSaveManager.progressLabel(s, slotPrimaryName(s));
+      var details = [Number.isInteger(s.storyProgress) ? '主线 ' + s.storyProgress : '', s.difficulty].filter(Boolean);
+      var stamp = s.lastPlayed || s.lastModified;
+      var time = window.BootstrapSaveManager.localTime(stamp);
+      welcomeSlotTimeEl.innerHTML = modeHint + '<b>' + escapeHtml(progress) + '</b>'
+        + (details.length ? (progress ? ' · ' : '') + escapeHtml(details.join(' · ')) : '')
+        + (time ? '<span class="slot-date">' + escapeHtml(window.BootstrapSaveManager.relativeTime(stamp)) + ' · ' + escapeHtml(time) + '</span>' : '');
+
     }
     applyConfirmLabel(mode, s);
   }
@@ -462,13 +465,13 @@
     if (!btnConfirmStart) return;
     if (_lastLaunchState === 'Error') return;
     if (mode === 'fresh') {
-      btnConfirmStart.textContent = (s && s.__empty) ? '新 建 角 色' : '重 建';
+      btnConfirmStart.textContent = (s && s.__empty) ? '新建角色' : '原槽重建';
     } else {
-      btnConfirmStart.textContent = '确 认';
+      btnConfirmStart.textContent = '继续游戏';
     }
   }
 
-  // 从槽位页主动选择一个槽位, 回到欢迎页. 不直接启动 — 保留用户勾选片头动画的机会.
+  // 需要继续在欢迎页操作的重建流程保留所选槽位。
   // showWelcome() 内部会触发 renderWelcomeSlot → applyConfirmLabel 自动反映 mode.
   function selectSlotAndReturn(slotName, mode) {
     _userSelectedSlot = slotName;
@@ -476,36 +479,23 @@
     showWelcome();
   }
 
-  // ── 随机背景 ──
-  // 抽中的一张图喂给两处: .bg-photo 全屏垫图 (已退为低透明色调底) + 中央 .welcome-card
-  // 垫图 (.has-art, 深色罩 82-88% 压文字可读性, 图以质感透出). 卡片缺失时静默跳过.
   function loadRandomBackground() {
-    var bgEl = document.getElementById('bg-photo');
-    if (!bgEl) return;
-    fetch('assets/bg/manifest.json')
-      .then(function(r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function(m) {
-        if (!m.backgrounds || !m.backgrounds.length) {
-          logLine('tag-err', '[bg] manifest empty');
-          return;
-        }
-        var pick = m.backgrounds[Math.floor(Math.random() * m.backgrounds.length)];
-        bgEl.style.backgroundImage = 'url(assets/bg/' + pick + ')';
-        var cardEl = document.querySelector('.welcome-card');
-        if (cardEl) {
-          cardEl.classList.add('has-art');
-          cardEl.style.backgroundImage =
-            'linear-gradient(180deg,rgba(10,14,18,.82) 0%,rgba(4,6,9,.88) 100%),url(assets/bg/' + pick + ')';
-        }
-        logLine('tag-in', '[bg] ' + pick + ' (' + m.backgrounds.length + ' available)');
-      })
-      .catch(function(err) {
-        bgEl.style.backgroundColor = '#0a0c0f';
-        logLine('tag-err', '[bg] fetch failed: ' + (err && err.message ? err.message : err));
+    var art = document.getElementById('bg-art');
+    function paint(portrait) {
+      document.body.dataset.artSide = portrait.side;
+      art.dataset.side = portrait.side;
+      art.style.backgroundImage = 'url("assets/bg/' + portrait.file + '")';
+    }
+    paint({file:'remake-andy.png', side:'left'});
+    fetch('assets/bg/portraits.json').then(function (response) {
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      return response.json();
+    }).then(function (catalog) {
+      var entries = catalog.portraits.filter(function (p) {
+        return p && /^(left|right)$/.test(p.side) && /^remake-[a-z0-9-]+\.png$/.test(p.file);
       });
+      if (entries.length) paint(entries[Math.floor(Math.random() * entries.length)]);
+    }).catch(function (error) { logLine('tag-err', '[bg] ' + error.message); });
   }
 
   // ── 片头视频 / 加载 overlay (Phase 2b-ext: 并行 Flash 加载) ──
@@ -639,11 +629,28 @@
   }
   function saveNotice(text) { document.getElementById('save-notice').textContent = text; }
 
+  var pendingUndo = null;
+
   function runSlotAction(action, s) {
     var isDeleted = window.BootstrapSaveManager.isDeleted;
     var name = slotDisplayName(s);
-    if (action === 'start') selectSlotAndReturn(s.slot, 'normal');
+    if (action === 'start' && !isDeleted(s) && !s.corrupt && !_launchInFlight) {
+      selectSlotAndReturn(s.slot, 'normal');
+      if (chkIntro.checked) playIntroThenStart(s.slot);
+      else initiateLaunch(s.slot);
+    }
+    if (action === 'repair' && s.corrupt && !isDeleted(s)) openModal('repair-card', {slot:s.slot, catalog:true});
     if (action === 'edit') openModal('archive-editor', {slot:s.slot, slotMeta:s});
+    if (action === 'undo' && s.editUndoToken && !pendingUndo) {
+      window.BootstrapConfirm('撤销“' + name + '”的上次编辑？', {archive:true, okText:'撤销编辑', detail:'恢复这个槽位在上次编辑前的副本。'}).then(function (ok) {
+        var current = window.BootstrapApp.getSlotMeta(s.slot);
+        if (!ok || pendingUndo || !current || current.editUndoToken !== s.editUndoToken) return;
+        var request = {cmd:'undo_edit', slot:s.slot, undoToken:s.editUndoToken, requestId:++_archiveSequence};
+        pendingUndo = request;
+        if (!send(request)) { pendingUndo = null; saveNotice('撤销请求未能发送。'); }
+        else saveNotice('正在恢复编辑前的副本…');
+      });
+    }
     if (action === 'rename') renameSlot(s);
     if (action === 'export') {
       var date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -662,7 +669,7 @@
       window.BootstrapConfirm((cleanup ? '清理残留副本“' : '删除“') + name + '”？', {
         archive:true, okText:cleanup ? '清理副本' : '删除', detail:cleanup
           ? '仅清理槽位 ' + s.slot + ' 未删掉的本地副本。删除保护和槽位名称会保留。'
-          : '将删除槽位 ' + s.slot + ' 的存档副本。请先导出需要保留的进度。“已删除”中可在原槽位创建新角色。'
+          : '将删除槽位 ' + s.slot + ' 的存档副本，删除后无法恢复。请先导出需要保留的进度。“已删除”中可在原槽位创建新角色。'
       }).then(function (ok) {
         var current = window.BootstrapApp.getSlotMeta(s.slot);
         if (!ok || !current || _deletePending || (cleanup ? !current.inconsistent : isDeleted(current))) return;
@@ -695,7 +702,7 @@
       saveManager.update(orderedSlots(lastSlotsFromLauncher));
       renderWelcomeSlot();
       saveNotice(warning === 'shadow_cleanup_pending' ? '存档已删除，副本仍被占用。释放文件后可在“已删除”中清理。'
-        : cleanup ? '残留副本已清理，删除保护已保留。' : '存档已移至“已删除”。');
+        : cleanup ? '残留副本已清理，删除保护已保留。' : '存档已删除，进度无法恢复。可在原位置新建角色。');
       playUiCue('playSuccess');
     } else {
       saveNotice((cleanup ? '清理失败：' : '删除失败：') + (error === 'shadow_in_use'
@@ -711,7 +718,15 @@
   }
 
   // ── State 广播 ──
+  var launchLabels = {
+    Idle: '就绪', Spawning: '正在启动', WaitingConnect: '正在连接',
+    WaitingHandshake: '正在握手', PrewarmHandshakeHeld: '预热就绪',
+    Embedding: '正在载入画面', RepairPending: '等待修复存档', WaitingGameReady: '等待游戏就绪',
+    Ready: '游戏就绪', Error: '启动失败', Resetting: '正在重置'
+  };
   function applyState(state, msg) {
+    var label = launchLabels[state] || state;
+    if (_lastLaunchState !== state) channelEvent(label);
     var prevState = _lastLaunchState;
     _lastLaunchState = state;
     // 音频反馈: Error 进入时 tap, Idle 从非 Idle 回来时恢复 ambient.
@@ -720,8 +735,8 @@
       if (state === 'Error' && prevState !== 'Error') Audio.playError();
       if (state === 'Idle' && prevState !== 'Idle' && _prefsAmbientEnabled) Audio.startAmbient();
     }
-    stateBadge.textContent = state + (msg ? ': ' + msg : '');
-    stateBadge.title = stateBadge.textContent;
+    stateBadge.textContent = label;
+    stateBadge.title = msg ? label + ' · ' + msg : label;
     document.body.classList.toggle('launch-error', state === 'Error');
     document.querySelectorAll('.launch-feedback').forEach(function(node) {
       node.hidden = state !== 'Error';
@@ -1029,6 +1044,10 @@
     logLine('tag-in', '← ' + JSON.stringify(msg));
 
     if (msg.cmd === 'state')            applyState(msg.state, msg.msg);
+    else if (msg.cmd === 'fullscreen_state' && typeof msg.enabled === 'boolean') {
+      hostFullscreen = msg.enabled;
+      displayFullscreen(hostFullscreen);
+    }
     else if (msg.cmd === 'list_resp') {
       if (msg.ok === false || !Array.isArray(msg.slots)) {
         saveNotice('目录读取失败，可刷新重试。');
@@ -1036,6 +1055,7 @@
       }
       if (msg.archiveRequestIds === true) _archiveRequestIds = true;
       lastSlotsFromLauncher = msg.slots;
+      channelEvent('目录同步 · ' + msg.slots.length + ' 个槽位');
       // Phase 2b: 接收 launcher 推的 UserPrefs
       if (typeof msg.lastPlayedSlot === 'string') _prefsLastPlayedSlot = msg.lastPlayedSlot;
       if (typeof msg.introEnabled === 'boolean')  _prefsIntroEnabled   = msg.introEnabled;
@@ -1137,21 +1157,31 @@
       else playUiCue('playError');
     }
     else if (msg.cmd === 'pong')        logLine('tag-in', 'pong');
+    else if (msg.cmd === 'undo_edit_resp') {
+      if (!pendingUndo || msg.slot !== pendingUndo.slot || msg.requestId !== pendingUndo.requestId) return;
+      pendingUndo = null;
+      saveNotice(msg.ok ? '已恢复编辑前的副本。' : '无法撤销，副本可能已经变化，请刷新核对。');
+      send({cmd:'list'});
+    }
     else if (msg.cmd === 'export_resp') {
       if (msg.ok) {
+        saveNotice('已导出备份');
         logLine('tag-in', '导出成功: ' + (msg.path || ''));
         playUiCue('playSuccess');
       } else if (msg.error !== 'cancelled') {
+        saveNotice('导出失败' + ' · ' + (msg.error || '请重试'));
         logLine('tag-err', '导出失败: ' + (msg.error || ''));
         playUiCue('playError');
       }
     }
     else if (msg.cmd === 'import_resp') {
       if (msg.ok) {
+        saveNotice('已导入存档' + ' · ' + (msg.slot || ''));
         logLine('tag-in', '导入成功: ' + (msg.slot || ''));
         playUiCue('playSuccess');
         send({ cmd: 'list' });
       } else if (msg.error !== 'cancelled') {
+        saveNotice('导入失败' + ' · ' + (msg.error || '请重试'));
         logLine('tag-err', '导入失败: ' + (msg.error || ''));
         playUiCue('playError');
       }
@@ -1211,7 +1241,7 @@
     if (active) {
       if (_modalBackgroundState) return;
       _modalBackgroundState = Array.prototype.slice.call(
-        document.querySelectorAll('body > .topbar, body > .view, body > .bottom, #log')
+        stage.querySelectorAll(':scope > .topbar, :scope > .view, :scope > .bottom, #log')
       ).map(function(node) {
         var state = {node:node, ariaHidden:node.getAttribute('aria-hidden')};
         node.inert = true;
@@ -1272,6 +1302,9 @@
     }
     var mod = _moduleRegistry[name];
     if (!mod) { logLine('tag-err', '[Modal] unknown: ' + name); return; }
+    if (window.BootTooltip) window.BootTooltip.hide();
+    if (window.PanelTooltip) window.PanelTooltip.hide();
+    setHudOpen(false);
     _currentModal = name;
     _currentModule = mod;
     var host = document.getElementById('modal-host');
@@ -1293,8 +1326,9 @@
       content.setAttribute('aria-label', '启动器对话框');
     }
     host.style.display = '';
-    setModalBackgroundInert(true);
+    content.scrollTop = 0;
     focusModalStart();
+    setModalBackgroundInert(true);
     var field = content.querySelector('#confirm-field');
     if (field) { field.focus(); field.select(); }
     playUiCue('playModalOpen');
@@ -1346,26 +1380,24 @@
       }
       return;
     }
-    // ESC 分层: intro → tooltip → modal → 建角内部返回/取消 → slots 返回 welcome
-    if (window.PanelTooltip && window.PanelTooltip.isVisible && window.PanelTooltip.isVisible()) {
-      window.PanelTooltip.hide();
-      return;
-    }
-    if (window.BootTooltip && window.BootTooltip.isVisible && window.BootTooltip.isVisible()) {
-      window.BootTooltip.hide();
-      return;   // consumed: 本次 ESC 只关 tooltip, 不继续下落
-    }
     if (_currentModal) {
       if (Audio) Audio.playCancel();
       tryCloseModal();
       return;
     }
+    if (!hudDetail.hidden) { setHudOpen(false); return; }
+    if (window.PanelTooltip && window.PanelTooltip.isVisible && window.PanelTooltip.isVisible()) {
+      window.PanelTooltip.hide();
+      return;
+    }
+    if (window.BootTooltip) window.BootTooltip.hide();
     if (!viewCharacterCreate.hidden && window.BootstrapCharacterCreate
         && window.BootstrapCharacterCreate.handleEscape()) return;
     if (!viewSlots.hidden) {
       showWelcome();
       return;
     }
+    if (hostFullscreen) send({cmd:'set_fullscreen', enabled:false});
   });
 
   // ── 全局桥 ──
@@ -1434,7 +1466,12 @@
       onReady: finishCharacterCreatePreparation,
       onCancel: function(token) {
         finishCharacterCreatePreparation(token);
-        showSlots();
+        if (createOrigin === viewWelcome) showWelcome();
+        else showSlots();
+        if (createOpener && createOpener.isConnected && activeView().contains(createOpener)) {
+          createOpener.focus({preventScroll:true});
+        }
+        createOpener = createOrigin = null;
       },
       onLoadDurable: function() {
         showLoadingOverlay();
@@ -1503,15 +1540,19 @@
 
   btnSwitchSlot.onclick = showSlots;
   document.getElementById('btn-back-welcome').onclick = showWelcome;
-  document.getElementById('briefing-about').onclick = function() { openModal('about', {}); };
+  document.getElementById('briefing-about').onclick = function() { this.focus(); openModal('about', {}); };
 
   // Topbar 按钮
   document.getElementById('btn-display').onclick = function() { openModal('display', {}); };
   document.getElementById('btn-about').onclick = function() { openModal('about', {}); };
-  document.getElementById('btn-fullscreen').onclick = function() {
-    if (!document.fullscreenElement) { try { document.documentElement.requestFullscreen(); } catch (e) {} }
-    else { try { document.exitFullscreen(); } catch (e) {} }
+  fullscreenButton.onclick = function() {
+    if (hostFullscreen !== null) { send({cmd:'set_fullscreen', enabled:!hostFullscreen}); return; }
+    var action = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    action.catch(function(error) { logLine('tag-err', 'fullscreen: ' + error.message); });
   };
+  document.addEventListener('fullscreenchange', function() {
+    if (hostFullscreen === null) displayFullscreen(!!document.fullscreenElement);
+  });
   document.getElementById('btn-logs').onclick = function() { openModal('diagnostic-log', {}); };
 
   // Slots 视图工具栏
@@ -1570,10 +1611,10 @@
   function initBootTooltips() {
     var TT = window.BootTooltip;
     if (!TT) return;
-    TT.bind(document.getElementById('btn-display'), '显示：字号档位 / 显示偏好');
+    TT.bind(document.getElementById('btn-display'), '设置：界面字号、片头动画与字体扩展');
     TT.bind(document.getElementById('btn-fullscreen'), '全屏：切换窗口全屏');
     TT.bind(document.getElementById('btn-logs'), '日志：查看启动诊断日志');
-    TT.bind(document.getElementById('btn-about'), '其他：项目说明 / 作者与致谢 / 版本记录 / 音频');
+    TT.bind(document.getElementById('btn-about'), '关于与帮助：项目说明、作者与致谢、版本记录和音频');
     TT.bind(retryBtn, '重试：按上次参数重新启动');
     TT.bind(cancelLaunchBtn, '取消启动：中止当前启动流程');
     TT.bind(btnSwitchSlot, '切换：选择其他存档槽位');
@@ -1585,10 +1626,10 @@
     TT.bind(document.getElementById('btn-open-dir'), '在资源管理器中查看启动器的 JSON 副本');
     // 详情区的操作按钮共用一组提示。
     if (TT.bindDelegate) TT.bindDelegate(document.getElementById('save-actions'), {
-      'btn-start': '选择：设为启动存档并返回欢迎页',
+      'btn-start': '直接启动所选存档，沿用片头设置',
       'btn-edit': '编辑：打开存档数据编辑器',
       'btn-export': '导出：备份为 JSON 文件',
-      'btn-delete': '移至已删除，保留阻止旧档回填的标记',
+      'btn-delete': '删除后无法恢复，可在原位置新建角色',
       'btn-rebuild': '重建：清空并重新开始（原数据丢弃）',
       'btn-rename': '重命名：修改启动器中的存档显示名（允许重名）'
     });
@@ -1610,7 +1651,32 @@
   // ── 初始化 ──
   initAudioBindings();
   showWelcome();   // 默认欢迎视图
-  initTransmissionLights();   // TRANSMISSION ◎ 点亮订阅 (BootstrapApp 已定义; 无宿主环境到不了这里, 内部有防御)
+  document.getElementById('btn-welcome-new').onclick = handleNewCharacterClick;
+  window.BootstrapApp.onMessage('flash_ready', function () { channelEvent('游戏就绪'); });
+  // Keep the original Flash event available on hover and in the diagnostic log.
+  var bootLabels = {
+    'socket ready, firing handshake': '连接就绪，开始握手',
+    'handshake hs=Success': '握手成功',
+    'firing preload': '开始预载资源',
+    'sending ready ack': '已发送就绪回执',
+    'bootstrap complete, jumping boot_check': '启动引导完成',
+    'shim missing, stopped': '启动组件缺失'
+  };
+  function bootLabel(line) {
+    if (line.indexOf('handshake stage entered,') === 0) return '进入握手阶段';
+    if (line.indexOf('socket timeout after ') === 0) return '等待连接超时';
+    if (line.indexOf('handshake FAILED = ') === 0) return '握手失败';
+    if (line.indexOf('HALT: ') === 0) return '启动已中止';
+    return bootLabels[line] || line;
+  }
+  window.BootstrapApp.onMessage('boot', function (msg) {
+    String(msg.messages || '').split('|').filter(function (line) {
+      return line.indexOf('[BootstrapAS]') === 0;
+    }).slice(-5).forEach(function (line) {
+      var detail = line.slice(13).trim();
+      channelEvent(bootLabel(detail), detail);
+    });
+  });
   initBootTooltips();         // C 期: tooltip 绑定 (模块缺失时空转)
   initKeyboardNav();          // C 期: 方向键 / Enter 导航
 

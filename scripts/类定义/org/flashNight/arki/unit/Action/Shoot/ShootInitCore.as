@@ -92,8 +92,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      */
     private static function _bindCoreFunctions(target:MovieClip, parentRef:Object, rootRef:Object):Void {
         // ShootCore 相关函数
-        target.开始射击 = function() {
-            ShootCore.startShooting(parentRef, target, ShootCore.primaryParams);
+        target.开始射击 = function(request:Object) {
+            ShootCore.startShooting(parentRef, target, ShootCore.primaryParams, request);
         };
 
         target.开始副武器射击 = function() {
@@ -103,14 +103,14 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         
         // 持续射击函数（targetRef 为双枪调用方传入的主角函数引用，此处不使用；
         // effectiveInterval 为本次实际生效间隔，枪械师点按/连按场合与基础间隔不同，缺省回退 shootSpeed）
-        target.主手持续射击 = function(core, attackMode, shootSpeed, targetRef, effectiveInterval) {
+        target.主手持续射击 = function(core, attackMode, shootSpeed, targetRef, effectiveInterval, reportAccepted) {
             return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.primaryParams,
-                (effectiveInterval > 0) ? effectiveInterval : shootSpeed);
+                (effectiveInterval > 0) ? effectiveInterval : shootSpeed, reportAccepted);
         };
 
-        target.副手持续射击 = function(core, attackMode, shootSpeed, targetRef, effectiveInterval) {
+        target.副手持续射击 = function(core, attackMode, shootSpeed, targetRef, effectiveInterval, reportAccepted) {
             return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.secondaryParams,
-                (effectiveInterval > 0) ? effectiveInterval : shootSpeed);
+                (effectiveInterval > 0) ? effectiveInterval : shootSpeed, reportAccepted);
         };
         
         // ReloadManager 相关函数
@@ -275,7 +275,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             if (that.换弹标签 && !ReloadManager.tryCancelForFire(that, parentRef, weaponType)) return;
 
             // 半自动冷却检查（锁标记存储在 parentRef 上）
-            if (parentRef[semiLockProp]) return;
+            // 空匣先触发换弹。
 
             // 获取当前手的弹夹状态（直接检查射击次数是否超过弹匣容量）
             var magazineCapName:String = weaponType + "弹匣容量";
@@ -320,6 +320,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
             // 半自动射速间隔防御（仅玩家控制单位）
             var isSemiAuto:Boolean = that[singleShotProp] && (TargetCacheManager.findHero() === parentRef);
+            if (parentRef[semiLockProp]) return;
             var rateKey:String = parentRef._name + "_" + timerProp;
             if (ShootCore._lastShotTimes[rateKey]) return;
 
@@ -335,11 +336,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 return;
             }
 
-            // 开始持续射击（枪械师点按以 tapInterval 作为实际生效间隔传入）
-            var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, interval, that,
-                hasGunslingerSkill ? tapInterval : interval);
+            var dispatchInterval:Number = hasGunslingerSkill && parentRef[gunslingerChainProp + "_handoff"] === "held" ? holdInterval : tapInterval;
+            var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, interval, that, dispatchInterval, true);
             if (continueShooting) {
                 if (hasGunslingerSkill) {
+                    delete parentRef[gunslingerChainProp + "_handoff"];
                     // 枪械师技能：半自动可连射
                     // 1) 点按收益：以 tapInterval 作为最小射击间隔
                     ShootCore.armRateLimit(parentRef, timerProp, tapInterval);
@@ -385,7 +386,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                     parentRef[shootingFlagProp] = false;
                     ShootCore.scheduleRecoil(parentRef, timerProp, Math.min(interval, 300), shootingFlagProp);
                     ShootCore.armSemiLock(parentRef, timerProp, interval, actionFlagName);
-                } else {
+                } else if (parentRef[shootingFlagProp]) {
                     // 全自动模式：注册持续射击循环任务
                     ShootCore.removeStoredTask(parentRef, timerProp);
                     parentRef[timerProp] = EnhancedCooldownWheel.I().addTask(

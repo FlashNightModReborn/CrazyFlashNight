@@ -167,6 +167,30 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
         for (name in previous) if (previous.hasOwnProperty(name)) count--;
         return count == 0;
     }
+    private var overloadRows:Array;
+    private var overloadBase:Array;
+    private var overloadOwner:Object;
+    private var overloadRemaining:Number;
+    private var overloadEnergy:Number;
+
+    public function snapshotFor(unit:Object):Array {
+        var base:Array = snapshot();
+        var ref:Object = unit.__deadHandOwner;
+        if (!ref || ref.已卸载 || !ref.超载模式 || ref.武器条目 !== unit.刀 || ref.版本号 !== unit.version || base.length >= 256) {
+            overloadRows = null; overloadBase = null; overloadOwner = null;
+            return base;
+        }
+        var left:Number = Math.max(0, ref.超载结束帧 - Number(_root.帧计时器.当前帧数));
+        var energy:Number = ref.超载能量;
+        if (!isFinite(left) || !isFinite(energy)) return base;
+        if (overloadOwner === ref && overloadBase === base && overloadRemaining === left && overloadEnergy === energy) return overloadRows;
+        overloadOwner = ref; overloadBase = base; overloadRemaining = left; overloadEnergy = energy;
+        overloadRows = base.concat([{id:"死者之手", timed:true, total:ref.超载持续帧数, remaining:left,
+            info:{name:"死者之手 · 超载", description:"剩余能量 " + energy + "/" + ref.超载上限 + "。再次发动战技可释放终结雷电。",
+                polarity:"benefit", stacks:0}}]);
+        return overloadRows;
+    }
+
     public function snapshot():Array {
         var previous:Array = snapshotRows;
         var rows:Array = previous.length == entries.length ? null : [];

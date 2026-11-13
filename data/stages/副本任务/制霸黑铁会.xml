@@ -408,7 +408,11 @@
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>right</SpawnIndex>
-                        <Parameters>称号:黑龙堂冶魁</Parameters>
+                        <Parameters>
+                            <称号>黑龙堂冶魁</称号>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>黑龙</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>黑铁会.黑铁重锤</Type>
@@ -437,7 +441,11 @@
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>front</SpawnIndex>
-                        <Parameters>称号:翅虎堂司暗</Parameters>
+                        <Parameters>
+                            <称号>翅虎堂司暗</称号>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>翅虎</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>黑铁会.火凤</Type>
@@ -445,7 +453,11 @@
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>front</SpawnIndex>
-                        <Parameters>称号:火凤堂赤旌</Parameters>
+                        <Parameters>
+                            <称号>火凤堂赤旌</称号>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>火凤</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>黑铁会.黑铁武士</Type>
@@ -693,7 +705,11 @@
                         <Quantity>1</Quantity>
                         <Level>50</Level>
                         <SpawnIndex>right</SpawnIndex>
-                        <Parameters>称号:黑铁会教主</Parameters>
+                        <Parameters>
+                            <称号>黑铁会教主</称号>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>黑铁</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>黑铁会.黑铁武士</Type>

@@ -244,9 +244,10 @@ def build():
         ("老兵通话记录", "……车顶机枪卡死了，我们把吉普横在西街路障口断后！货车别管我们，能往防线开多远开多远，实在撑不住就找路边结实的屋子先顶住！"),
         ("老兵通话记录", "咳……后街摸上来的盗贼看穿了底舱的四箱高爆雷和死人线，趁尸群压住我们，把车顶值钱的火控座和加密匣快拆件全撬走了，还顺手剪断了起爆线……"),
         ("$PC#愤怒", "快拆件被卸得干干净净，底舱的四箱高爆雷倒还留在原位。那帮盗贼算准了老兵被尸群缠住，抢完值钱货就溜了。"),
-        ("前治安官", "起爆线断了就别去车边接！拿上掩体旁老兵留下的五六式和手雷，退到右侧掩体后面，直接开火打爆吉普底舱！"),
+        ("前治安官", "起爆线断了就别去车边接！拿上掩体旁老兵留下的SL8和手雷，先退到右侧掩体后整备。"),
+        ("前治安官", "那支步枪点射准、单发有劲，优先收拾逼近的军人和胖僵尸。准备好了，就直接开火打爆吉普底舱！"),
         ("$PC#严肃", "明白。引爆之后我守住东面路口，把西街涌来的尸潮全钉在这儿，给卫生所的人腾出撤离时间！")])
-    event(rooms[3], "RescueJeepUnlocked", signal="jeep_unlock", message="攻击吉普弹药舱；短引信启动后立即远离车辆。")
+    event(rooms[3], "RescueJeepUnlocked", signal="jeep_unlock", message="先在右侧掩体后换装整备，准备好后攻击吉普弹药舱；短引信启动后立即远离车辆。")
     event(rooms[3], "UnitDeath", "战斗吉普", progress="ForceFinishWave", signal="hold", message="继续坚守 75 秒，掩护卫生所撤离。")
     event(rooms[3], "WaveFinished", 1, follow="RescueHoldDone", lines=[
         ("卫生所幸存者", "西街的爆炸把尸群全吸引过去了！我们已经带着伤员和随身急救包撤出卫生所，正顺着东面大路往第一防线赶！"),
@@ -312,11 +313,12 @@ def build():
     crate = fields(E.SubElement(rooms[7].find("Instances"), "Instance", {"id": "0"}),
                    {"Identifier": "资源箱", "x": 1160, "y": 400})
     params = node(crate, "Parameters")
-    supply(params, "SPAS12", 1)
-    supply(params, "12号霰弹弹药", 4)
+    supply(params, "雷明登870", 1)
+    supply(params, "12号霰弹弹药", 6)
+    supply(params, "突击步枪通用弹药", 4)
     event(rooms[7], "Start", lines=[
         ("防线哨兵", "他们先放战犬顺着左侧折线通道扑过来了！天上还有挂着镇暴头的无人机在压我们的沙袋火线！"),
-        ("前治安官", "稳住阵脚！沙袋后方的战备箱里有霰弹枪和十二号鹿弹。等无人机压低高度投射时轰它的机头，别对着高空白费子弹！")])
+        ("前治安官", "稳住阵脚！沙袋后方的战备箱里有雷明登870、12号霰弹和补充的步枪弹。等无人机压低高度投射时轰它的机头，别对着高空白费子弹！")])
     g = wave(rooms[7], 0)
     drone = enemy(g, 456, 1, 23, spawn=2, Delay=500, InstanceName="rescue_drone_teaching")
     supply(node(drone, "Parameters"), "八门金锁镇暴弹", 1)
@@ -325,8 +327,8 @@ def build():
     enemy(g, 45, 3, 23, 1900, 1, Delay=3200)
     event(rooms[7], "WaveFinished", 0, follow="RescueReserveDeploy", lines=[
         ("$PC#思考", "打碎投射头后，里面掉出了一枚西南自治区旧式安保规格的八门金锁镇暴弹芯。"),
-        ("前治安官", "那是审判日前就已量产的自治区安保标准件，不用改装就能直接压进霰弹枪膛。趁现在抓紧换弹整备，我带预备队从后门出来接应你！")])
-    reserve = event(rooms[7], "RescueReserveDeploy", message="整备窗口：可将八门金锁镇暴弹装到兼容霰弹枪上。")
+        ("前治安官", "那是审判日前就已量产的自治区安保标准件，装到霰弹枪上能把密集人群拦下来，补给仍用原来的12号霰弹。趁现在整备，我带预备队从后门出来接应你！")])
+    reserve = event(rooms[7], "RescueReserveDeploy", message="整备窗口：可将八门金锁镇暴弹作为弹药配件安装到雷明登870上。")
     enemy(reserve, 458, 1, 24, 50, "right", IsHostile=False, InstanceName="rescue_sheriff")
     g = wave(rooms[7], 1, 10, -1)
     g = wave(rooms[7], 2)

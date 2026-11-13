@@ -348,48 +348,14 @@ _root.主动战技函数.长枪.铁枪之锋 = {初始化: function(自机) {
                 return false;
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
-            return ItemUtil.singleSubmit("强化石", 1,
-                {source:"skill_cost", reason:"spear_edge"});
+            return org.flashNight.arki.unit.Action.Shoot.BorrowedLongGunShot.admit(自机, "stone");
         },
 
         释放: function(自机) {
-            if(typeof 自机.cf6UnitIdentity=="string" && typeof 自机.cf6G1111FixedMode=="boolean")return;
-            // 1. 清理所有射击相关的状态和任务
-            自机.强制奔跑 = false;
-            自机.射击最大后摇中 = false;
-
-            var instance:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
-
-            // 清理可能干扰的帧计时器任务
-            instance.removeTask(自机.keepshooting);
-            instance.removeTask(自机.keepshooting2);
-            instance.removeTask(自机.taskLabel.结束射击后摇);
-
-            // 2. 重置射击状态标志
-            自机.主手射击中 = false;
-            自机.副手射击中 = false;
-            自机.长枪射击中 = false;
-
-            // 3. 确保射击许可标签为true（关键修复）
-            var man = 自机.man;
-            var lable:MovieClip = man.射击许可标签;
-            man.射击许可标签 = true;
-            自机.动作A = true;
-
-            // 4. 状态切换和攻击执行
+            if(typeof 自机.cf6UnitIdentity=="string" && typeof 自机.cf6G1111FixedMode=="boolean") return false;
+            if (_root.暂停) return false;
             自机.状态改变("长枪站立");
-            自机.铁枪之锋许可 = true;
-            自机.上行 = !!自机.isRocketMode;
-
-            // 5. 执行攻击
-            自机.攻击();
-
-
-            // 6. 清理临时状态
-            自机.上行 = false;
-            自机.铁枪之锋许可 = false;
-
-            man.射击许可标签 = lable;
+            return org.flashNight.arki.unit.Action.Shoot.BorrowedLongGunShot.run(自机, "铁枪之锋许可", "stone");
         }};
 
 _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
@@ -405,10 +371,8 @@ _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
         var prop:Object = 自机.man.子弹属性;
 
         prop.子弹种类 = 自机.气锤光炮弹药类型;
-        自机.气锤光炮原伤害 = prop.子弹威力;
         var magazineCapName:String = "长枪弹匣容量";
         var rate:Number = (自机[magazineCapName] - 自机.长枪.value.shot) * prop.霰弹值 / 3;
-        // _root.发布消息(自机.气锤光炮原伤害, rate)
         prop.子弹威力 *= rate;
         prop.霰弹值 = 1;
         prop.站立子弹散射度 = 0;
@@ -434,37 +398,7 @@ _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
             return true;
         },
         释放: function(自机) {
-
-            自机.强制奔跑 = false;
-
-            var currentA:Boolean = 自机.动作A;
-            自机.气锤光炮开启 = true;
-            自机.动作A = true;
-            自机.攻击();
-
-            自机.气锤光炮开启 = false;
-
-            var data:Object = 自机.长枪属性;
-            var prop:Object = 自机.man.子弹属性;
-
-            prop.子弹种类 = data.bullet;
-            prop.霰弹值 = data.split;
-            prop.sound = data.sound;
-            prop.发射效果 = data.muzzle;
-            prop.站立子弹散射度 = data.diffusion;
-            prop.子弹威力 = 自机.气锤光炮原伤害;
-
-            // _root.发布消息("back", prop.子弹威力)
-
-            // _root.发布消息(prop.子弹种类, prop.霰弹值, prop.子弹威力)
-
-            // 自机.动作A = currentA;
-
-            var magazineCapName:String = "长枪弹匣容量";
-            自机.长枪.value.shot = 自机[magazineCapName];
-            if (_root.控制目标 == 自机._name) {
-                _root.玩家信息界面.玩家必要信息界面["子弹数"] = 0;
-            }
+            return org.flashNight.arki.unit.Action.Shoot.BorrowedLongGunShot.run(自机, "气锤光炮开启", "cannon");
         }}
 
 _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: function(自机) {
@@ -529,7 +463,7 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
         // 模式3: 等于0时不修改,继承武器原有威力(已包含被动增幅)
 
         // 修正弹药消耗计数 (因为攻击本身会扣1发)
-        自机.长枪.value.shot += 自机.其他霰弹值 - 1;
+
 
         // 用完后立即关闭,避免影响后续正常射击
         自机.其他弹药开启 = false;
@@ -549,67 +483,11 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
             if (自机.浮空 || 自机.倒地)
                 return false;
 
-            // 优先尝试从背包/药剂栏扣除消耗品
-            if (ItemUtil.singleSubmit(自机.其他消耗物品, 1,
-                    {source:"weapon_cost", reason:"alternate_ammo"})) {
-                return true;
-            }
-
-            // Fallback: 检查手雷装备栏是否有对应消耗品
-            // 这样可以让装备在手雷栏的战术核弹也能用于战技
-            if (_root.控制目标 === 自机._name) {
-                var 装备栏 = _root.物品栏.装备栏;
-                var grenadeItem = 装备栏.getItem("手雷");
-
-                if (grenadeItem && grenadeItem.name == 自机.其他消耗物品) {
-                    // 如果是可堆叠消耗品(有数量),就减1
-                    if (!isNaN(grenadeItem.value) && grenadeItem.value > 1) {
-                        grenadeItem.value -= 1;
-                        if (_root.存档系统) _root.存档系统.dirtyMark = true;
-                        org.flashNight.arki.item.PlayerAssetTransaction.recordEffect("loss", "item",
-                            String(grenadeItem.name), 1,
-                            {source:"weapon_cost", reason:"alternate_ammo"});
-                        return true;
-                    }
-                    // 如果只有1个或是装备类型,直接移除并刷新装扮
-                    else {
-                        装备栏.remove("手雷");
-                        if (_root.存档系统) _root.存档系统.dirtyMark = true;
-                        org.flashNight.arki.item.PlayerAssetTransaction.recordEffect("loss",
-                            ItemUtil.isEquipment(String(grenadeItem.name)) ? "equip" : "item",
-                            String(grenadeItem.name), 1,
-                            {source:"weapon_cost", reason:"alternate_ammo"});
-                        _root.刷新人物装扮(自机._name);
-                        return true;
-                    }
-                }
-            }
-
+            if (org.flashNight.arki.unit.Action.Shoot.BorrowedLongGunShot.admit(自机, "alternate")) return true;
             return org.flashNight.arki.skill.SkillResourceService.reject(自机, "item");
         },
         释放: function(自机) {
-            // 1. 取消强制奔跑状态
-            自机.强制奔跑 = false;
-
-            // 2. 强制启用动作A (允许射击)
-            自机.动作A = true;
-
-            // 3. 开启战技开关,触发事件订阅
-            自机.其他弹药开启 = true;
-
-            // 4. 执行攻击 → 触发"长枪射击"事件 → 执行订阅回调修改属性
-            自机.攻击();
-
-            // 5. 恢复原始子弹属性 (防御性编程,确保不影响后续射击)
-            var data:Object = 自机.长枪属性;
-            var prop:Object = 自机.man.子弹属性;
-
-            prop.子弹种类 = data.bullet;
-            prop.霰弹值 = data.split;
-            prop.sound = data.sound;
-            prop.子弹威力 = data.power;  // 恢复原始威力
-            // _root.发布消息(prop.子弹速度, data.velocity);
-            prop.子弹速度 = data.velocity;  // 恢复原始速度
+            return org.flashNight.arki.unit.Action.Shoot.BorrowedLongGunShot.run(自机, "其他弹药开启", "alternate");
         }}
 
 
@@ -663,7 +541,7 @@ _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
         prop.子弹种类 = 自机.突击者之眼弹药类型;
         prop.霰弹值 = 自机.突击者之眼数;
         prop.sound = 自机.突击者之眼音效;
-        自机.长枪.value.shot += 自机.突击者之眼数 - 1;
+
         自机.突击者之眼开启 = false;
     });
 },
@@ -679,22 +557,7 @@ _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
             return true;
         },
         释放: function(自机) {
-
-            自机.强制奔跑 = false;
-
-            var currentA:Boolean = 自机.动作A;
-            自机.动作A = true;
-            自机.突击者之眼开启 = true;
-            自机.攻击();
-
-            var data:Object = 自机.长枪属性;
-            var prop:Object = 自机.man.子弹属性;
-
-            prop.子弹种类 = data.bullet;
-            prop.霰弹值 = data.split;
-            prop.sound = data.sound;
-
-            // 自机.动作A = currentA;
+            return org.flashNight.arki.unit.Action.Shoot.BorrowedLongGunShot.run(自机, "突击者之眼开启", "eye");
         }}
 
 _root.主动战技函数.长枪.突击者之怒 = {初始化: function(自机) {
@@ -712,7 +575,6 @@ _root.主动战技函数.长枪.突击者之怒 = {初始化: function(自机) {
 
         if (自机.突击者之怒开启) {
             prop.子弹种类 = 自机.突击者之怒弹药类型;
-            自机.突击者之怒原伤害 = prop.子弹威力;
             prop.子弹威力 *= 自机.突击者之怒倍率;
             prop.霰弹值 = 1;
             prop.发射效果 = "铁枪能量弹枪火";
@@ -722,7 +584,6 @@ _root.主动战技函数.长枪.突击者之怒 = {初始化: function(自机) {
 
         }
 
-        // _root.发布消息(自机.突击者之怒原伤害, prop.子弹威力, prop.霰弹值)
     });
 },
         释放许可判定: function(自机) {
@@ -739,28 +600,7 @@ _root.主动战技函数.长枪.突击者之怒 = {初始化: function(自机) {
             return true;
         },
         释放: function(自机) {
-
-            自机.强制奔跑 = false;
-
-            var currentA:Boolean = 自机.动作A;
-            自机.突击者之怒开启 = true;
-            自机.动作A = true;
-            自机.攻击();
-
-            自机.突击者之怒开启 = false;
-
-            var data:Object = 自机.长枪属性;
-            var prop:Object = 自机.man.子弹属性;
-
-            prop.子弹种类 = data.bullet;
-            prop.霰弹值 = data.split;
-            prop.sound = data.sound;
-            prop.发射效果 = data.muzzle;
-            prop.子弹威力 = 自机.突击者之怒原伤害;
-
-            // _root.发布消息(prop.子弹种类, prop.霰弹值, prop.子弹威力)
-
-            // 自机.动作A = currentA;
+            return org.flashNight.arki.unit.Action.Shoot.BorrowedLongGunShot.run(自机, "突击者之怒开启", "rage");
         }}
 
 _root.主动战技函数.长枪.旋转抡枪 = {初始化: null,

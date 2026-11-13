@@ -57,6 +57,8 @@ $run=@{
  ExpectedTracePatterns=@(
   '(?m)^ShotgunPatternTest Tests Passed: [1-9][0-9]*\r?$',
   '(?m)^ShotgunPatternTest Tests Failed: 0\r?$',
+  '(?m)^\[HORIZONTAL_PIERCE\] type=横向联弹-穿刺子弹 birth=6 frontLive=4 frontAttempts=8 rearLive=3 rearAttempts=6 replacementMisses=6 totalJudged=20\r?$',
+  '(?m)^\[HORIZONTAL_PIERCE\] type=横向联弹-次级穿刺子弹 birth=6 frontLive=4 frontAttempts=8 rearLive=3 rearAttempts=6 replacementMisses=6 totalJudged=20\r?$',
   '(?m)^\[SHOTGUN_COST\] units=4096 ticks=120 boundVisits=240 referenceVisits=240 maxWire=[0-9]+\r?$'
  )
  SuccessSummary='Shotgun finite budget, unique contacts, actual damage chain, natural retirement and bounded reference aggregation'
@@ -72,6 +74,7 @@ if ($Calibration) {
  $run.ExpectedTracePatterns=@(
   '(?m)^ShotgunCalibrationTest Tests Passed: [1-9][0-9]*\r?$',
   '(?m)^ShotgunCalibrationTest Tests Failed: 0\r?$',
+  '(?m)^\[SHOTGUN_MOSSBERG_COVERAGE\] samples=32 bag=[1-9][0-9]* queen=[1-9][0-9]* widerPairs=[1-9][0-9]* rear=32\r?$',
   '(?m)^\[SHOTGUN_CALIBRATION\] profiles=30 seeds=8 modes=2 groundModes=2 ages=rangeBounded targets=4 cases=[1-9][0-9]* ',
   '(?m)^\[SHOTGUN_SPAS12_CURVE\] distance:segments=70:10,175:8,280:5,420:2,490:1\r?$'
  )

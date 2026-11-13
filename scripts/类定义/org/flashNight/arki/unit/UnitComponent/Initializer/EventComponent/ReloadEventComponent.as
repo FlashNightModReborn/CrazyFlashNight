@@ -1,6 +1,5 @@
 ﻿// 路径: org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/KillEventComponent.as
 import org.flashNight.neur.Event.EventDispatcher;
-import org.flashNight.arki.unit.Action.Shoot.ShootCore;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.ReloadEventComponent {
     /**
@@ -31,7 +30,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.ReloadEv
     public static function updateNpcBullet(target:MovieClip, shootStateName:String, magazineRemaining:Number):Void
     {
         target[shootStateName] = (magazineRemaining > 0 && target[shootStateName]);
-        target.射击最大后摇中 = ShootCore.isAnyShooting(target);
     }
 
     public static function updateBulletOrigin(target:MovieClip, shootStateName:String, magazineRemaining:Number, playerBulletField:String):Void
@@ -40,6 +38,5 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.ReloadEv
             _root.玩家信息界面.玩家必要信息界面[playerBulletField] = magazineRemaining;
         }
         target[shootStateName] = (magazineRemaining > 0 && target[shootStateName]);
-        target.射击最大后摇中 = ShootCore.isAnyShooting(target);
     }
 }

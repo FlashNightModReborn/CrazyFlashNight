@@ -43,7 +43,7 @@ internal sealed record PlayerHudBuff(string Id, bool Timed, double Total, double
     string Incarnation = "", PlayerHudBuffGroup? Group = null,
     PlayerHudBuffActivation? Activation = null, PlayerHudBuffMod[]? Mods = null);
 internal sealed record PlayerHudFocusTarget(long Id, string Role, string Name, double Hp, double HpMax,
-    string Icon = "", IReadOnlyDictionary<string, string>? Doll = null, string PortraitKey = "", int Hits = 0);
+    string Icon = "", IReadOnlyDictionary<string, string>? Doll = null, string PortraitKey = "", int Hits = 0, bool Compact = false);
 internal sealed record PlayerHudColdSkill(string Name, string Icon, string Key, int Level, PlayerHudCooldown Cooldown, bool Blocked);
 internal sealed record PlayerHudSnapshot(long Epoch, long Sequence, PlayerHudVitals Vitals,
     PlayerHudCombat Combat, PlayerHudLoadout Loadout, PlayerHudCooldown[] Cooldowns, PlayerHudBuff[] Buffs, PlayerHudResourceHints? Resources = null,
@@ -302,7 +302,7 @@ internal sealed class PlayerHudState
     {
         if (token.Type == JTokenType.Null) return null;
         if (token is JObject) return new[] { ReadFocusTargetItem(token) };
-        if (token is not JArray rows || rows.Count > 4) throw new FormatException("focus_target_count");
+        if (token is not JArray rows || rows.Count > 8) throw new FormatException("focus_target_count");
         if (rows.Count == 0) return null;
         var ids = new HashSet<long>();
         return rows.Select(t =>
@@ -315,7 +315,7 @@ internal sealed class PlayerHudState
 
     private static PlayerHudFocusTarget ReadFocusTargetItem(JToken token)
     {
-        var target = Object(token); Keys(target, "id", "role", "name", "hp", "icon", "doll", "hits");
+        var target = Object(token); Keys(target, "id", "role", "name", "hp", "icon", "doll", "hits", "compact");
         var id = Integer(target["id"], 1, 9007199254740991);
         var role = Text(target["role"], 16); var name = Text(target["name"], 192);
         var hp = Numbers(target["hp"], 2);
@@ -325,7 +325,7 @@ internal sealed class PlayerHudState
         var doll = target["doll"] == null || target["doll"]!.Type == JTokenType.Null ? null : ReadFocusDoll(target["doll"]!);
         var portraitKey = doll != null ? DollPortraitKey.Compute(doll) : icon;
         var hits = target["hits"] == null || target["hits"]!.Type == JTokenType.Null ? 0 : (int)Integer(target["hits"], 1, 999999);
-        return new(id, role, name, hp[0], hp[1], icon, doll, portraitKey, hits);
+        return new(id, role, name, hp[0], hp[1], icon, doll, portraitKey, hits, target["compact"] != null && Boolean(target["compact"]));
     }
 
     private static IReadOnlyDictionary<string, string> ReadFocusDoll(JToken token)

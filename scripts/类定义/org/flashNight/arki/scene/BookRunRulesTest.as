@@ -490,6 +490,7 @@ class org.flashNight.arki.scene.BookRunRulesTest {
     private static function testBuildResources(plan:Array, config:Object):Void {
         var spValid:Boolean = true, materialValid:Boolean = true, sequenceValid:Boolean = true;
         var medValid:Boolean = true;
+        var supportIndex:Number = 0;
         var spTotal:Number = 0, tierTotal:Number = 0, stoneTotal:Number = 0;
         var hp:Array = ["普通hp药剂", "普通hp药剂", "加强抗生素药剂", "加强抗生素药剂", "大HP药剂", "大HP药剂", "大HP药剂"];
         var mp:Array = ["普通mp药剂", "普通mp药剂", "加强mp药剂", "加强mp药剂", "大MP药剂", "大MP药剂", "大MP药剂"];
@@ -511,8 +512,11 @@ class org.flashNight.arki.scene.BookRunRulesTest {
                         && sp.总数 == sp.最小数量;
                     spTotal += sp.最小数量;
                 } else spValid = spValid && sp == null;
-                medValid = medValid && findDrop(enemy, hp[m]) != null
-                    && (w != 0 || findDrop(enemy, mp[m]) != null);
+                // Support rotates across the entire book, including maps with four waves.
+                var support:Object = config.loot.support[supportIndex++ % config.loot.support.length];
+                var supportDrop:Object = findDrop(enemy, support.kind == "mana" ? mp[m] : support.name);
+                medValid = medValid && findDrop(enemy, hp[m]) != null && supportDrop != null
+                    && supportDrop.最小数量 == support.count && supportDrop.概率 == 100;
                 if (w < map.materials.length) {
                     var material:Object = map.materials[w];
                     var drop:Object = findDrop(enemy, material.name);
@@ -639,7 +643,14 @@ class org.flashNight.arki.scene.BookRunRulesTest {
                 var spawnTimes:Array = [];
                 for (var g:Number = 0; g < group.length; g++) {
                     quantity += group[g].Quantity;
-                    bounded = bounded && group[g].Level >= map.level[0] && group[g].Level <= map.level[1];
+                    var plannedElite:Boolean = false;
+                    if (map.wavePlan != null && w == waves.length - 1) {
+                        for (var elite:Number = 0; elite < map.wavePlan.eliteTypes.length; elite++) {
+                            if (group[g].Type == "兵种" + map.wavePlan.eliteTypes[elite]) plannedElite = true;
+                        }
+                    }
+                    bounded = bounded && (plannedElite ? group[g].Level == map.wavePlan.eliteLevel
+                        : (group[g].Level >= map.level[0] && group[g].Level <= map.level[1]));
                     var slots:Number = group[g].Parameters.掉落物.length;
                     currentDropSlots += slots * group[g].Quantity;
                     if (slots > 0) { carriers++; concentrated = concentrated && group[g].Quantity == 1; }

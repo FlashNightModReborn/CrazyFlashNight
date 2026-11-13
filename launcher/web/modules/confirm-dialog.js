@@ -5,7 +5,6 @@
   'use strict';
   var active = null;
   var surface = null;
-  var scale = null;
 
   function settle(value) {
     if (!active) return;
@@ -22,7 +21,6 @@
     container.classList.add('confirm-dialog-surface');
     if (data.archive) {
       container.classList.add('save-confirm');
-      scale = window.PanelScale.attach(container, 1024, 576);
     }
     container.innerHTML =
       '<div class="modal-header term-heading-rule">' +
@@ -62,8 +60,6 @@
 
   // closeModal（ESC / 背景点击 / 被新 modal 顶掉）一律视为取消；settle 幂等。
   function unmount() {
-    if (scale) scale.detach();
-    scale = null;
     if (surface) surface.classList.remove('confirm-dialog-surface', 'save-confirm');
     surface = null;
     if (active) active.resolve(active.field ? null : false);

@@ -63,7 +63,7 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
                 Close(); return;
             }
             focus = snapshot.TargetList[rowIndex];
-            var currentAnchor = PlayerHudFocusTargetWidget.RowBounds(snapshot.BuffCards.Length, rowIndex);
+            var currentAnchor = PlayerHudFocusTargetWidget.RowBounds(snapshot.BuffCards.Length, rowIndex, snapshot.TargetList.Length);
             if (focus == _lastFocusTarget && _target.Anchor == currentAnchor) return;
             _target = _target with { Slot = rowIndex, Anchor = currentAnchor };
         }

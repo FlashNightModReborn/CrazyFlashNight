@@ -48,7 +48,12 @@ namespace CF7Launcher.Guardian
             {
                 // ─────── Lifecycle ───────
                 case "ready":
+                    (bootForm?.FindForm() as GuardianForm)?.ReportBootstrapFullscreen();
                     LifecycleCommandHandler.HandleReady(launchFlow);
+                    return;
+                case "set_fullscreen":
+                    if (msg["enabled"]?.Type == JTokenType.Boolean && bootForm?.Visible == true)
+                        (bootForm.FindForm() as GuardianForm)?.SetFullscreen(msg.Value<bool>("enabled"));
                     return;
                 case "ping":
                     LifecycleCommandHandler.HandlePing(bootForm, msg["payload"]);
@@ -95,6 +100,9 @@ namespace CF7Launcher.Guardian
                     return;
 
                 // ─────── Data edit ───────
+                case "undo_edit":
+                    DataEditCommandHandler.HandleUndoEdit(msg, bootForm, archiveTask, launchFlow);
+                    return;
                 case "save":
                     DataEditCommandHandler.HandleSave(msg, bootForm, archiveTask, launchFlow);
                     return;

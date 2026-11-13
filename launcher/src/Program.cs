@@ -1867,7 +1867,7 @@ class Program
         }
         // 装配块保留独立作用域，隔离 widget 等局部变量。
         {
-            nativeHud = new NativeHudOverlay(form, form.FlashHostPanel, presentationEnabled: workerPolicy == null);
+            nativeHud = new NativeHudOverlay(form, form.FlashHostPanel, presentationEnabled: workerPolicy == null, requireVisibleGamePanel: true);
             backdrop = new NativePanelBackdrop(form);
             if (playerInfoFixtureCase != null)
             {
@@ -3582,7 +3582,7 @@ class Program
             /* persistLastPlayedSlot */ delegate(string slotKey)
             {
                 if (userPrefs == null || workerPolicy != null) return;
-                userPrefs.LastPlayedSlot = slotKey;
+                userPrefs.RecordPlayed(slotKey);
                 userPrefs.Save();
             },
             frontdoorBgmLease);

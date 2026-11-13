@@ -27,6 +27,10 @@
                         <Level>20</Level>
                         <x>850</x>
                         <y>500</y>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>Tomboy</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>大学.黑仔</Type>

@@ -1,5 +1,5 @@
-[CmdletBinding()]
-param([ValidateRange(1,3600)][int]$TimeoutSeconds=300,[switch]$SkipCompile)
+﻿[CmdletBinding()]
+param([ValidateRange(1,3600)][int]$TimeoutSeconds=300,[switch]$SkipCompile,[switch]$Hunter)
 $ErrorActionPreference='Stop'
 $projectDir=Split-Path -Parent $PSScriptRoot
 $hostSource=Join-Path $PSScriptRoot 'ShootReloadNativeHost'
@@ -66,7 +66,7 @@ $focusedRun=@{
         '(?m)^--- DualGunReloadTimelineTest: (?<dual>[1-9][0-9]*)/\k<dual> passed, 0 failed ---\r?$',
         '(?m)^--- GunslingerDualCadenceTest: (?<gunslinger>[1-9][0-9]*)/\k<gunslinger> passed, 0 failed ---\r?$',
         '(?m)^--- WeaponAmmoRuntimeTest: (?<ammo>[1-9][0-9]*)/\k<ammo> passed, 0 failed ---\r?$',
-        '(?m)^--- LongGunSubWeaponCoreTest: 511/511 passed, 0 failed ---\r?$',
+        '(?m)^--- LongGunSubWeaponCoreTest: 514/514 passed, 0 failed ---\r?$',
         '(?m)^--- PistolRecoilCoreTest: (?<pistol>[1-9][0-9]*)/\k<pistol> passed, 0 failed ---\r?$',
         '(?m)^--- ManualCooldownServiceTest: 57/57 passed, 0 failed ---\r?$',
         '(?m)^--- DrugInputServiceTest: 58/58 passed, 0 failed ---\r?$',
@@ -82,5 +82,15 @@ $focusedRun=@{
     TimeoutSeconds=$TimeoutSeconds
     AsyncBehaviorTimeoutSeconds=180
     SkipCompile=$SkipCompile
+}
+if ($Hunter) {
+    $focusedRun.DomainId = 'hunter-timeline'
+    $focusedRun.TemplateRelativePath = 'scripts/test-runners/shoot-reload-timeline/TestLoader.hunter.as.template'
+    $focusedRun.SuiteRelativePaths = @('scripts/类定义/org/flashNight/arki/unit/Action/Shoot/DualGunReloadTimelineTest.as')
+    $focusedRun.SuiteFqns = @('org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest')
+    $focusedRun.ExpectedTracePatterns = @('(?m)^--- DualGunReloadTimelineTest: (?<n>[1-9][0-9]*)/\k<n> passed, 0 failed ---\r?$',
+        '(?m)^\[HUNTER_NATIVE\] hunter-full-no-prior .*end=92', '(?m)^\[HUNTER_NATIVE\] hunter-last-main-queued-off .*end=92',
+        '(?m)^\[HUNTER_NATIVE\] ordinary-last-main-queued-off ')
+    $focusedRun.SuccessSummary = 'Production things0 dual body, tracking-shot terminal route, projectile exit and restored two-axis running'
 }
 & (Join-Path $PSScriptRoot 'test-runners/run-focused-testloader.ps1') @focusedRun

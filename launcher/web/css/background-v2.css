@@ -17,81 +17,20 @@
 .bg-scan { opacity: 0; } /* Replace low-res scan moiré with the actual 19×19 lattice. */
 .bg-grain { opacity: .025; }
 .bg-crack { opacity: .28; }
-/* The foreground remains the original card, art, width and logo geometry. */
-.welcome-card { background-color: #090e12; }
-.briefing { color: #b0b8bd; background: rgba(3,7,10,.74); }
-.slot-plate { background-color: rgba(6,12,16,.7); }
 .launch-feedback { display:flex;flex-wrap:wrap;gap:4px 12px;padding:8px 12px;margin:8px 0;
   border-left:3px solid var(--rust);background:#211010;color:#e2bab1;font-size:var(--fs-sm);line-height:1.5; }
 .launch-feedback[hidden] { display:none; }
 .launch-feedback strong { color:#ffa994; }
 .launch-error .slot-plate { border-color:var(--rust); }
-.side-l .block, .side-r { text-shadow: 0 1px 3px #000; }
-.topbar { background: linear-gradient(#05090bf5,#05090be8 82%,transparent); }
-.topbar .state-badge { min-width: 0; max-width: min(29vw,360px); overflow: hidden; text-overflow: ellipsis; }
-.stage-welcome { height:auto;min-height:100%; }
+.topbar .state-badge { min-width:0;max-width:210px;overflow:hidden;text-overflow:ellipsis; }
 #pm19-motion { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--dls-dim); }
 #pm19-motion .audio-toggle { display:flex;align-items:center;gap:8px;cursor:pointer; }
 #pm19-motion p { margin:6px 0 0;font-size:var(--fs-xs);color:#a4afb4; }
 #pm19-motion input { accent-color:var(--dls); }
 
-/* Only the constrained layout changes information order. Logo + save + confirm
-   stay together at the top; secondary copy remains reachable by ordinary scroll. */
-@media (max-width: 900px) {
-  .topbar { padding:7px 12px;gap:6px;flex-wrap:wrap; }
-  .topbar .brand-sub { display:none; }
-  .topbar .brand-seal { --term-seal-pad:5px 9px; --term-seal-ls:1px; }
-  .topbar button { padding:5px 8px;letter-spacing:0; }
-  .topbar .state-badge { max-width:130px;padding:4px 6px;letter-spacing:0; }
-  .view { height:calc(100% - 20px); padding-top:calc(var(--pm19-topbar-height,46px) + 4px); padding-bottom:8px; }
-  .stage-welcome { display:flex;align-items:flex-start;justify-content:center;height:auto;min-height:100%;padding:0 20px 12px; }
-  .side-l,.side-r { display:none; }
-  .welcome-card { width:100%;box-sizing:border-box;padding:8px 20px;
-    display:grid;grid-template-columns:112px minmax(0,1fr);column-gap:12px;row-gap:1px; }
-  .title-logo-wrap { grid-column:1;grid-row:1/3;align-items:center;padding:0; }
-  .title-logo-wrap img { max-width:104px; }
-  .eyebrow { grid-column:2;grid-row:1;align-self:end;letter-spacing:2px;line-height:1.4; }
-  .welcome-sub { grid-column:2;grid-row:2;align-self:start;margin:0;letter-spacing:1px;line-height:1.5;color:#909087; }
-  .hr-rune { grid-column:1/-1;grid-row:3; }
-  .slot-plate { grid-column:1/-1;grid-row:4; }
-  .welcome-controls { grid-column:1/-1;grid-row:5;margin:4px 0; }
-  .briefing { grid-column:1/-1;grid-row:6;margin-top:7px; }
-  .welcome-fontpack { grid-column:1/-1;grid-row:7; }
-  .welcome-card .launch-feedback { grid-column:1/-1;grid-row:5; }
-  .launch-error .welcome-controls { grid-row:6; }
-  .launch-error .title-logo-wrap img { max-width:76px; }
-  .launch-error .hr-rune { height:12px;margin:2px 0 4px; }
-  .launch-error .briefing { grid-row:7; }
-  .launch-error .welcome-fontpack { grid-row:8; }
-  .bottom { height:20px;box-sizing:border-box;padding:2px 12px;font-size:11px;letter-spacing:1px;background:#05090bef; }
-  .bottom>span:last-child { display:none; }
-
-}
-@media (max-width: 900px) and (max-height: 500px) {
-  /* 小窗报错时优先留出原因和原确认重试按钮，避免重复入口挤高顶栏。 */
-  .launch-error #btn-retry { display:none !important; }
-  .launch-error .title-logo-wrap { grid-column:1/-1;grid-row:1; }
-  .launch-error .title-logo-wrap img { max-width:52px; }
-  .launch-error .eyebrow, .launch-error .welcome-sub { display:none; }
-  .launch-error .slot-plate { padding-top:6px;padding-bottom:6px; }
-  .launch-error .launch-feedback { margin:4px 0; }
-}
-@media (max-height: 500px) and (min-width: 901px) {
-  .stage-welcome { height:auto;min-height:100%;align-items:start;padding-bottom:12px; }
-  .side-l,.side-r { align-self:stretch; }
-}
-@media (max-width: 480px) {
-  .stage-welcome { padding:0 10px 10px; }
-  .welcome-card { padding:12px;grid-template-columns:88px minmax(0,1fr);gap:2px 8px; }
-  .title-logo-wrap img { max-width:82px; }
-  .chk-intro { letter-spacing:0; }
-  .welcome-controls { gap:8px; }
-  .btn-go { padding:8px 14px; }
-}
-
 /* PM19 V3 lore: loading 相限定的双音区事件流；容器非 visible 不显示。 */
 #bg-gl-log{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:44px;z-index:3;
-  max-width:min(44vw,720px);pointer-events:none;user-select:none;
+  max-width:450px;pointer-events:none;user-select:none;
   font:11px/1.7 "JetBrains Mono",Consolas,monospace;letter-spacing:.08em;color:rgba(178,200,205,.62);
   text-shadow:0 0 6px rgba(61,213,255,.22)}
 #bg-gl-log.visible{display:block}

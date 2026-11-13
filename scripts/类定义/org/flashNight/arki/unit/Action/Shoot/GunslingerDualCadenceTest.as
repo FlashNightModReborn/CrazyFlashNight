@@ -127,6 +127,22 @@ class org.flashNight.arki.unit.Action.Shoot.GunslingerDualCadenceTest {
         }
         release(0);release(1);ticks(60);finish();
     }
+    private static function testHeldHandoff(spec:Object, side:Number):Void {
+        caseName = "held-handoff-" + side;
+        fixture(spec.level, true, true, true);
+        start(side);
+        ticks(5);
+        ShootCore.cleanup(active, true);
+        ticks(spec.holdTicks[side] - 6);
+        check(shots[side].length == 1, "handoff keeps original lane deadline");
+        ticks(1);
+        check(shots[side].length == 2 && near(stamps[side][1], spec.holdMs[side])
+            && shots[1 - side].length == 0, "resumed hand alone emits with its hold interval");
+        release(side); ticks(spec.tapTicks[side]); start(side);
+        check(shots[side].length == 3 && near(stamps[side][2], spec.tapMs[side]), "released hand returns to tap interval");
+        finish();
+    }
+
     private static function testDisabled():Void {
         caseName="disabled-ordinary-semi";fixture(1,true,true,false);start(0);start(1);ticks(90);
         check(shots[0].length==1&&shots[1].length==1,"disabled skill does not enable held semi-auto fire");
@@ -156,6 +172,7 @@ class org.flashNight.arki.unit.Action.Shoot.GunslingerDualCadenceTest {
             for(var l:Number=0;l<levels.length;l++)for(var side:Number=0;side<2;side++) {
                 testTapToHold(levels[l],side);testHoldToTap(levels[l],side);testMixed(levels[l],side);
             }
+            testHeldHandoff(levels[2], 0); testHeldHandoff(levels[2], 1);
             testDisabled();
         }catch(error){check(false,"unexpected exception: "+error);if(active!=null)finish();}
         EnhancedCooldownWheel.I().reset();

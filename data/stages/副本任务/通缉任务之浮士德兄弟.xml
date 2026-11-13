@@ -69,6 +69,10 @@
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMax>修罗</DifficultyMax>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>浮士德兄弟</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>通缉犯.浮士德兄弟</Type>
@@ -77,6 +81,8 @@
                         <Level>50</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>浮士德兄弟</focusHudLabel>
                             <宠物属性>
                                 <复仇者>true</复仇者>
                             </宠物属性>

@@ -275,6 +275,10 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>方舟爪豪</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

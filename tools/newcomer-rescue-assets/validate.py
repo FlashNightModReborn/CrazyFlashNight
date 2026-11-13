@@ -143,6 +143,31 @@ def validate(require_published=False):
     require(rooms[7].findtext("Wave/SubWave[@id='1']/WaveInformation/Duration") == "10", "Refit window drift")
     drop = rooms[7].find("Wave/SubWave[@id='0']/EnemyGroup/Enemy/Parameters/掉落物")
     require(drop.findtext("名字") == "八门金锁镇暴弹" and drop.findtext("概率") == "100", "Teaching drone must yield one plugin")
+    crate_drops = rooms[7].findall("Instances/Instance[Identifier='资源箱']/Parameters/掉落物")
+    expected_supplies = {"雷明登870": 1, "12号霰弹弹药": 6, "突击步枪通用弹药": 4}
+    require(len(crate_drops) == len(expected_supplies)
+            and {d.findtext("名字") for d in crate_drops} == set(expected_supplies)
+            and all(d.findtext("概率") == "100"
+                    and int(d.findtext("最小数量")) == expected_supplies[d.findtext("名字")]
+                    and int(d.findtext("最大数量")) == expected_supplies[d.findtext("名字")]
+                    for d in crate_drops), "Finale crate must supply an 870, six shotgun packs and four rifle packs")
+    ammo_items = {i.findtext("name"): i for i in E.parse(ROOT / "data/items/消耗品_弹夹.xml").getroot().findall("item")}
+    supplied_weapons = {}
+    for name, filename, ammo in [("HKSL8", "武器_长枪_战斗步枪.xml", "突击步枪通用弹药"),
+                                  ("雷明登870", "武器_长枪_霰弹枪.xml", "12号霰弹弹药")]:
+        item = next(i for i in E.parse(ROOT / "data/items" / filename).getroot().findall("item") if i.findtext("name") == name)
+        require(item.findtext("use") == "长枪" and float(item.findtext("data/level")) <= 13,
+                "Rescue supply must be equippable by a level-13 player: " + name)
+        require(item.findtext("data/clipname") == ammo and ammo_items[ammo].findtext("use") == "弹夹",
+                "Rescue ammunition must match the actual weapon catalog: " + name)
+        supplied_weapons[name] = item
+    riot_mod = next(m for m in E.parse(ROOT / "data/items/equipment_mods/中等材料_枪械专用.xml").getroot().findall("mod")
+                    if m.findtext("name") == "八门金锁镇暴弹")
+    shotgun = supplied_weapons["雷明登870"]
+    require(shotgun.findtext("use") in riot_mod.findtext("use").split(",")
+            and shotgun.get("weapontype") in riot_mod.findtext("weapontype").split(",")
+            and riot_mod.find("stats/override/clipname") is None,
+            "Teaching riot-ammo plugin must fit the supplied shotgun and retain its ordinary ammunition")
     assault_drop = rooms[7].find("Wave/SubWave[@id='2']/EnemyGroup/Enemy[InstanceName='rescue_drone_assault']/Parameters/掉落物")
     require(assault_drop is not None and assault_drop.findtext("名字") == "盗贼踩点记号单" and assault_drop.findtext("概率") == "100", "Assault drone must yield the bandit scouting intelligence")
 

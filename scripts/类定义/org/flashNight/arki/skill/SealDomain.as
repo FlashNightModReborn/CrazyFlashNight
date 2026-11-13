@@ -1,5 +1,6 @@
 ﻿// 路径: org/flashNight/arki/skill/SealDomain.as
 import org.flashNight.aven.Coordinator.*;
+import org.flashNight.arki.component.Effect.EffectSystem;
 /**
  * SealDomain — 「天启大封印」的封印领域运行时
  *

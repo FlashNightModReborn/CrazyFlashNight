@@ -347,6 +347,7 @@ class org.flashNight.arki.scene.WaveSpawner {
             fixedPosition=org.flashNight.arki.scene.Cf6SoldierRoster.prepare(兵种信息,spawnOrdinal,enemyPara);
         // The authored wave/entry provenance is captured before the actor is attached.
         enemyPara.cf6SpawnWave=waveIndex+1;enemyPara.cf6SpawnEntry=index-1;enemyPara.cf6SpawnOrdinal=spawnOrdinal;
+        org.flashNight.arki.hud.FocusTargetHudService.stampSpawn(gameworld, enemyPara);
         var born:MovieClip=spawnEnemy(id, instanceName, enemyPara, spawnIndex,
             fixedPosition==null?兵种信息.x:fixedPosition.x,fixedPosition==null?兵种信息.y:fixedPosition.y);
         // 本图数量闸拒绝的刷新不扣额度、不推进尸母衰竭，也不虚增出生点人数。

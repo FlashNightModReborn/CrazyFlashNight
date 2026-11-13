@@ -58,6 +58,10 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>尾上世莉架</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

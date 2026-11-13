@@ -17,6 +17,10 @@
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>Gazer</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

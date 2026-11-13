@@ -136,11 +136,20 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
             check(!newHit && current.bullet.__chainDead, label+" naturally retired physical group");
             return;
         }
-        check(oldHit===newHit && (!oldHit || cap===old.bullet.霰弹值),label+" old eligibility and effective segments");
+        var far:Boolean = current.shotgun.travel >= 240;
+        check(oldHit === newHit, label+" real and reference geometry unchanged");
+        if (far) check(!oldHit || cap === old.bullet.霰弹值, label+" old far effective segments");
+        else if (newHit) {
+            var count:Number = current.单元体列表.length;
+            check(cap >= 1 && cap <= count, label+" near cap bounded by physical budget");
+            if (current.shotgun.travel >= 90 && count > 1) check(cap < count, label+" mixed distance preserves one segment");
+        }
         var rs:Number=2718281+cases*7919;
         var a:Object=measure(old,old.bullet.霰弹值,oldHit,kind,rs);
         var b:Object=measure(current,cap,newHit,kind,rs);
-        check(a.segments===b.segments && a.damage===b.damage && a.rng===b.rng,label+" real damage, shield, dodge and RNG parity");
+        if (far || cap === old.bullet.霰弹值 || !newHit) {
+            check(a.segments===b.segments && a.damage===b.damage && a.rng===b.rng,label+" equal cap retains real damage, shield, dodge and RNG");
+        } else check(b.segments >= 0 && b.segments <= cap,label+" candidate limits actual accepted segments");
         if (oldHit) oldHits++; if (newHit) newHits++;
         oldSegments+=a.segments; newSegments+=b.segments;
         oldDamage+=a.damage; newDamage+=b.damage;
@@ -193,10 +202,63 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
     }
     private static function reportMatrix():Void {
         var list:Array=profiles();
-        check(oldHits===newHits && oldSegments===newSegments && oldDamage===newDamage,"all paired aggregate expectations identical");
+        check(oldHits===newHits && cases>0 && oldDamage>0 && newDamage>0,"all paired hit qualifications identical and both damage paths exercised");
         trace("[SHOTGUN_CALIBRATION] profiles="+list.length+" seeds=8 modes=2 groundModes=2 ages=rangeBounded targets=4 cases="+cases
             +" naturalRetireCases="+groundedCases+" oldHits="+oldHits+" newHits="+newHits
             +" oldSegments="+oldSegments+" newSegments="+newSegments+" oldDamage="+oldDamage+" newDamage="+newDamage);
+    }
+    /** 使用同一发实际展开的无改件 Mossberg500。沙袋沿用本矩阵的场景尺寸；
+     * 女王为 things2 站立帧 Symbol 75 的 25×25 矩形、实例变换及默认 450cm（257%）。
+     * 固定近缘距离、枪口高度、Z 和高血无闪避目标，以免起射向与体型混杂。 */
+    private static function mossbergCoverage():Void {
+        var profile:Array;
+        var weaponProfiles:Array = profiles();
+        for (var pi:Number = 0; pi < weaponProfiles.length; pi++) {
+            if (weaponProfiles[pi][0] == "Mossberg500") profile = weaponProfiles[pi];
+        }
+        var bagSum:Number = 0, queenSum:Number = 0, widerPairs:Number = 0;
+        var rearHits:Number = 0, samples:Number = 0;
+        for (var side:Number = 0; side < 2; side++) {
+            for (var sample:Number = 0; sample < 16; sample++) {
+                seed = (137 + sample * 271828183) | 0;
+                var g:ChainGroup = makeGroup(profile, 1, side == 1, side == 1);
+                g.bullet._y = -140;
+                for (var tick:Number = 0; tick < 8; tick++) {
+                    _root.帧计时器.当前帧数++;
+                    g.bullet._x += g.bullet.xmov;
+                    _root.联弹系统.横向联弹更新(g);
+                }
+                var x:Number = g.bullet._x;
+                var bagWidth:Number = 55.93986512;
+                var queenWidth:Number = 25 * 2.11715698242188 * 2.57;
+                var bag:Object = {left:side == 0 ? x : x - bagWidth, right:side == 0 ? x + bagWidth : x,
+                    top:-158.8, bottom:1.01407166};
+                var queen:Object = {left:side == 0 ? x : x - queenWidth, right:side == 0 ? x + queenWidth : x,
+                    top:-126.5 * 2.57, bottom:(25 * 5.48248291015625 - 126.5) * 2.57};
+                var bagCap:Number = g.shotgun.calculateCap(g, bag, 0);
+                var queenCap:Number = g.shotgun.calculateCap(g, queen, 0);
+                check(bagCap > 0 && bagCap <= queenCap && queenCap == 9, "same-range queen covers at least the bag and reserves one");
+                var bagHit:Object = measure(g, bagCap, true, 0, 9137);
+                var queenHit:Object = measure(g, queenCap, true, 0, 9137);
+                bagSum += bagHit.segments; queenSum += queenHit.segments; samples++;
+                if (bagHit.segments < queenHit.segments) widerPairs++;
+
+                // 提交前排消费，按现役规则尾删弹丸；下一帧轮到另一个真实扣血目标。
+                g.bullet.霰弹值 -= queenHit.segments;
+                ChainUnitManager.commitShotgunBudget(g);
+                g.bullet._x += g.bullet.xmov;
+                _root.帧计时器.当前帧数++;
+                _root.联弹系统.横向联弹更新(g);
+                var rear:Object = {left:g.bullet._x - 20, right:g.bullet._x + 20, top:-350, bottom:30};
+                var rearCap:Number = g.shotgun.calculateCap(g, rear, 0);
+                var rearHit:Object = measure(g, rearCap, rearCap > 0, 0, 9137);
+                if (rearHit.segments == 1 && rearHit.damage > 0) rearHits++;
+                ChainUnitManager.removeGroup(g);
+            }
+        }
+        check(widerPairs > 0 && queenSum > bagSum, "Mossberg500 larger hitbox gains real segments in paired shots");
+        check(rearHits == samples, "Mossberg500 allocated rear segment produces positive damage");
+        trace("[SHOTGUN_MOSSBERG_COVERAGE] samples="+samples+" bag="+bagSum+" queen="+queenSum+" widerPairs="+widerPairs+" rear="+rearHits);
     }
     private static function curveAndBudget():Void {
         var p:Array=["SPAS12",10,14,35]; seed=19471;
@@ -249,7 +311,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
     private static function finish(success:Boolean):Void {
         delete _root.gameworld.onEnterFrame;
         if (success) {
-            try { reportMatrix(); curveAndBudget(); }
+            try { reportMatrix(); curveAndBudget(); mossbergCoverage(); }
             catch (error) { check(false,"curve exception "+error); }
         }
         ChainVisualBridge.disconnect();

@@ -40,7 +40,7 @@ export function mountLore(options) {
   const root = document.createElement('div');
   root.id = 'bg-gl-log';
   root.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(root);
+  (options?.parent || document.body).appendChild(root);
   const timers = new Set(), records = [], writes = [];
   let disposed = false, frozen = false, wanted = false, errorHold = false;
   const sink = options && typeof options.sink === 'function' ? options.sink : null;
@@ -182,12 +182,14 @@ export function mountLore(options) {
     const flavor = EVENT_FLAVOR[name];
     if (flavor) add(flavor, EVENT_TONE[name] || '', EVENT_SUFFIX[name] || '');
   }
+  // 返回是否采纳为玩家文案；纯信号 token 与冻结期都不采纳，调用方据此决定是否点亮足迹行。
   function boot(text, meta) {
-    if (frozen || disposed) return;
+    if (frozen || disposed) return false;
     const value = String(text == null ? '' : text);
-    if (!value || BOOT_SIGNAL.test(value) || BOOT_TOKEN.test(value)) return;
+    if (!value || BOOT_SIGNAL.test(value) || BOOT_TOKEN.test(value)) return false;
     const frame = meta && meta.frame;
     add(value, '', frame == null ? 'boot' : 'boot · 批次 f' + frame);
+    return true;
   }
   function error(msg) {
     if (disposed) return;

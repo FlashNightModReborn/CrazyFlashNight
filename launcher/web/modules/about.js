@@ -116,8 +116,11 @@
       return;
     }
 
-    var intro = document.createElement('div');
+    var intro = document.createElement('details');
     intro.className = 'about-version-intro';
+    var summary = document.createElement('summary');
+    summary.textContent = '版本记录说明';
+    intro.appendChild(summary);
     nodes.slice(0, starts[0].index).forEach(function (node) { intro.appendChild(node); });
 
     var browser = document.createElement('div');

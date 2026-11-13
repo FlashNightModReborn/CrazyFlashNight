@@ -22,6 +22,20 @@ namespace CF7Launcher.Guardian.Handlers
                 delegate { HandleSaveInternal(msg, bootForm, archiveTask); }, msg);
         }
 
+        internal static void HandleUndoEdit(JObject msg, BootstrapPanel panel, ArchiveTask archive, GameLaunchFlow flow)
+        {
+            BootstrapCommandHelpers.RequireIdleOrTearDown("undo_edit", panel, flow, delegate {
+                if (!BootstrapCommandHelpers.TryReadWritableSlotKey(msg, "slot", archive, out string key, out string error))
+                {
+                    BootstrapCommandHelpers.PostSlotFailure(panel, msg, "undo_edit_resp", error);
+                    return;
+                }
+                var request = BootstrapCommandHelpers.BuildArchivePayload("undo_edit", key);
+                ((JObject)request["payload"])["undoToken"] = msg.Value<string>("undoToken");
+                BootstrapCommandHelpers.DispatchSlot(panel, archive, msg, request, "undo_edit_resp");
+            }, msg);
+        }
+
         private static void HandleSaveInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
         {
             string slot;

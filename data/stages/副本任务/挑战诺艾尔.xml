@@ -22,6 +22,10 @@
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>60</Level>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>诺艾尔</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

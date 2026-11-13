@@ -348,6 +348,10 @@
                         <Level>25</Level>
                         <x>1620</x>
                         <y>608</y>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>巨型僵尸</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>僵尸.兽化.着衣</Type>

@@ -518,6 +518,10 @@
                         <Level>40</Level>
                         <x>850</x>
                         <y>720</y>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>方舟爪豪</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

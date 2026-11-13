@@ -892,7 +892,7 @@
       <use>刀</use>
       <actiontype>刀剑</actiontype>
       <price>195000</price>
-      <description>死者之手。</description>
+      <description>可在钝器、长矛、镰刀之间变形，空长枪槽可借作能量步枪。发动战技后进入超载，满能量120，每次额外雷电消耗15，最多持续450帧。再次发动战技可释放终结雷电。</description>
       <data>
         <level>50</level>
         <weight>30</weight>
@@ -935,6 +935,7 @@
               <gunRotation>-90</gunRotation>
               <gunOffsetX>-113.6</gunOffsetX>
               <gunOffsetY>36.25</gunOffsetY>
+              <spearVisualOffsetY>-12</spearVisualOffsetY>
               <muzzleX>6.5</muzzleX>
               <muzzleY>330</muzzleY>
               <gunPowerCoeff>0.65</gunPowerCoeff>

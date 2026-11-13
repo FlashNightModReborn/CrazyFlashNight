@@ -88,6 +88,7 @@ namespace CF7Launcher.Guardian
         private bool _isFullscreen;
         private Rectangle _savedBounds;
         private FormBorderStyle _savedBorderStyle;
+        private FormWindowState _savedWindowState;
         private System.Windows.Forms.Timer _viewportSettleTimer;
         private System.Windows.Forms.Timer _viewportLongSettleTimer;
         private string _viewportSettleReason = "viewport_refresh";
@@ -410,6 +411,7 @@ namespace CF7Launcher.Guardian
                 _bootstrapPanel.Visible = true;
                 this.Controls.Add(_bootstrapPanel);
                 _bootstrapPanel.BootstrapInitFailed += OnBootstrapInitFailed;
+                _bootstrapPanel.VisibleChanged += delegate { UpdateFullscreenEscapeOwner(); };
             }
 
             this.FormClosing += OnFormClosing;
@@ -955,36 +957,74 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
-            _isFullscreen = !_isFullscreen;
-            this.SuspendLayout();
+            SetFullscreen(!_isFullscreen);
+        }
 
-            if (_isFullscreen)
+        internal Action<IntPtr> CaptureBootstrapFocusReturn(WindowManager windows)
+        {
+            if (windows == null || ArenaWorkerMode || !IsHandleCreated || _bootstrapPanel?.Visible != true
+                    || !windows.HoldsForeground(Handle)) return null;
+            return flash =>
             {
-                _savedBounds = this.Bounds;
-                _savedBorderStyle = this.FormBorderStyle;
-                this.WindowState = FormWindowState.Normal;
-                this.FormBorderStyle = FormBorderStyle.None;
-                this.WindowState = FormWindowState.Maximized;
+                if (IsDisposed || Disposing || !IsHandleCreated || WindowState == FormWindowState.Minimized
+                        || _bootstrapPanel?.Visible != true || NativeInteractionActive || _logBar.ContainsFocus) return;
+                bool restored = windows.ReturnBootstrapForeground(flash, Handle);
+                if (restored) _bootstrapPanel.FocusWebInput();
+                LogManager.Log("[Bootstrap] foreground after hidden Flash restored=" + restored);
+            };
+        }
 
-                // 全屏时启用 Escape 退出
-                if (_kbHook != null) _kbHook.SetEscapeEnabled(true);
-                else if (this.IsHandleCreated) RegisterHotKey(this.Handle, HK_ESC, 0, (uint)Keys.Escape);
+        internal void ReportBootstrapFullscreen()
+        {
+            if (_bootstrapPanel?.Visible == true)
+                _bootstrapPanel.PostToWeb(_isFullscreen
+                    ? "{\"type\":\"bootstrap\",\"cmd\":\"fullscreen_state\",\"enabled\":true}"
+                    : "{\"type\":\"bootstrap\",\"cmd\":\"fullscreen_state\",\"enabled\":false}");
+        }
+
+        internal void SetFullscreen(bool enabled)
+        {
+            if (enabled == _isFullscreen)
+            {
+                ReportBootstrapFullscreen();
+                return;
+            }
+            _isFullscreen = enabled;
+            SuspendLayout();
+            if (enabled)
+            {
+                _savedWindowState = WindowState;
+                _savedBounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
+                _savedBorderStyle = FormBorderStyle;
+                WindowState = FormWindowState.Normal;
+                FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
             }
             else
             {
-                this.WindowState = FormWindowState.Normal;
-                this.FormBorderStyle = _savedBorderStyle;
-                this.Bounds = _savedBounds;
-
-                if (_kbHook != null) _kbHook.SetEscapeEnabled(false);
-                else if (this.IsHandleCreated) UnregisterHotKey(this.Handle, HK_ESC);
+                WindowState = FormWindowState.Normal;
+                FormBorderStyle = _savedBorderStyle;
+                Bounds = _savedBounds;
+                WindowState = _savedWindowState;
             }
-
-            this.ResumeLayout(true);
-
+            ResumeLayout(true);
+            UpdateFullscreenEscapeOwner();
             _flashPanel.Invalidate();
             ScheduleViewportRefresh("toggle_fullscreen");
+            ReportBootstrapFullscreen();
             LogManager.Log("[Guardian] Fullscreen=" + _isFullscreen);
+        }
+
+        private void UpdateFullscreenEscapeOwner()
+        {
+            // 前门先处理弹窗、返回和启动取消，正式交接 Flash 后才挂游戏的全屏 Esc。
+            bool capture = _isFullscreen && _bootstrapPanel?.Visible != true;
+            if (_kbHook != null) _kbHook.SetEscapeEnabled(capture);
+            else if (IsHandleCreated && !Disposing && !IsDisposed)
+            {
+                if (capture) RegisterHotKey(Handle, HK_ESC, 0, (uint)Keys.Escape);
+                else UnregisterHotKey(Handle, HK_ESC);
+            }
         }
 
         private void ScheduleViewportRefresh(string reason)

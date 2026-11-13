@@ -84,6 +84,10 @@
                         <Level>22</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMax>修罗</DifficultyMax>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>牛仔</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>军阀.牛仔</Type>
@@ -92,6 +96,10 @@
                         <Level>50</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMin>地狱</DifficultyMin>
+                        <Parameters>
+                            <focusHudRole>boss</focusHudRole>
+                            <focusHudLabel>牛仔</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

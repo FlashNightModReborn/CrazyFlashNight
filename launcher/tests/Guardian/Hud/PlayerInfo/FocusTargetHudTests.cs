@@ -326,13 +326,133 @@ public sealed class FocusTargetHudTests
             Assert.Contains("当前交战目标", combatText);
             Assert.Contains("状态：目标生命危急", combatText);
 
-            // Duplicate IDs or >4 targets must be rejected fail-closed
+            // Duplicate IDs or >8 targets must be rejected fail-closed
             var dupPacket = PlayerHudStateTests.Full(1, 2);
             dupPacket["groups"]["focusTarget"] = new JArray(Target(1), Target(1));
             Assert.False(Receive(controller.State, dupPacket));
             var overCapPacket = PlayerHudStateTests.Full(1, 3);
-            overCapPacket["groups"]["focusTarget"] = new JArray(Target(1), Target(2), Target(3), Target(4), Target(5));
+            overCapPacket["groups"]["focusTarget"] = new JArray(Enumerable.Range(1, 9).Select(id => Target(id)));
             Assert.False(Receive(controller.State, overCapPacket));
+        });
+    }
+
+    [Fact]
+    public void EightDistinctTargetsRevertToWideRowsEvenWithLegacyCompactHints()
+    {
+        var state = new PlayerHudState();
+        var packet = Full();
+        var targets = new JArray(Enumerable.Range(1, 8).Select(id => { var t = Target(id); t["compact"] = true; return t; }));
+        packet["groups"]["focusTarget"] = targets;
+        Assert.True(Receive(state, packet));
+        Assert.Equal(8, state.Snapshot.TargetList.Length);
+        Assert.All(state.Snapshot.TargetList, row => Assert.True(row.Compact));
+        Assert.Equal(new RectangleF(155, 103, 145, 30), PlayerHudFocusTargetWidget.RowBounds(0, 7, 8));
+        Assert.Equal(new RectangleF(6, 4, 294, 129), PlayerHudFocusTargetWidget.BoundsForBuffCount(0, 8));
+        var fewer = new JArray(targets.Take(3).Select(t => t.DeepClone()));
+        Assert.True(Receive(state, Delta(2, new JObject { ["focusTarget"] = fewer })));
+        Assert.Equal(3, state.Snapshot.TargetList.Length);
+        Assert.True(state.Snapshot.TargetList[0].Compact);
+        Assert.Equal(new RectangleF(6, 70, 294, 30), PlayerHudFocusTargetWidget.RowBounds(0, 2, 3));
+        Assert.Equal("9999", PlayerHudFocusTargetWidget.DenseValue(9999));
+        Assert.Equal("1万", PlayerHudFocusTargetWidget.DenseValue(10000));
+        Assert.Equal("1.9万", PlayerHudFocusTargetWidget.DenseValue(19999));
+        Assert.Equal("9999万", PlayerHudFocusTargetWidget.DenseValue(99999999));
+        Assert.Equal("1亿", PlayerHudFocusTargetWidget.DenseValue(100_000_000));
+        Assert.Equal("1.5万亿", PlayerHudFocusTargetWidget.DenseValue(1_599_999_999_999));
+        Assert.Equal("-2亿", PlayerHudFocusTargetWidget.DenseValue(-200_000_000));
+        Assert.Equal("1E16", PlayerHudFocusTargetWidget.DenseValue(1e16));
+        Assert.Equal("<1%", PlayerHudFocusTargetWidget.DensePercent(1, 1000));
+        Assert.Equal("0%", PlayerHudFocusTargetWidget.DensePercent(0, 1000));
+    }
+
+    [Theory]
+    [InlineData(1, 1)]
+    [InlineData(2, 2)]
+    [InlineData(3, 3)]
+    [InlineData(4, 4)]
+    [InlineData(5, 3)]
+    [InlineData(6, 2)]
+    [InlineData(7, 1)]
+    [InlineData(8, 0)]
+    public void OnlyNecessaryRowsSplitAndEveryCellPaintsAndHoversItsOwnTarget(int count, int wide)
+    {
+        Sta(() =>
+        {
+            RuntimeFontCatalog.Configure(Root());
+            PlayerHudMotionSettings.Configure("full");
+            using var form = new Form { ClientSize = new Size(1024, 576), AutoScaleMode = AutoScaleMode.None };
+            using var anchor = new Panel { Dock = DockStyle.Fill };
+            form.Controls.Add(anchor);
+            form.CreateControl();
+            anchor.CreateControl();
+            using var controller = new PlayerHudController(_ => true, () => true, action => action());
+            using var tooltip = new PlayerHudResourceTooltip(anchor, controller, true);
+            using var widget = new PlayerHudFocusTargetWidget(anchor, controller);
+            var packet = Full();
+            packet["groups"]["buffs"] = new JArray();
+            string[] protects = count == 5
+                ? ["浮士德兄弟", "翅虎", "火凤", "黑龙"]
+                : ["Tomboy", "主唱", "键盘", "吉他", "保护仪器", "守卫甲", "守卫乙"];
+            packet["groups"]["focusTarget"] = new JArray(Enumerable.Range(1, count).Select(id =>
+            {
+                var row = Target(id);
+                row["name"] = id == count ? "克隆兽" : protects[id - 1];
+                row["role"] = id == count ? "combat" : "protect";
+                row["hp"] = new JArray(15743, 21800);
+                if (id == count) row["hits"] = 6;
+                return row;
+            }));
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
+            Assert.Equal(count, controller.State.Snapshot!.TargetList.Length);
+            using var bitmap = new Bitmap(1024, 576, PixelFormat.Format32bppPArgb);
+            var origin = anchor.PointToScreen(Point.Empty);
+            using (var graphics = Graphics.FromImage(bitmap))
+                widget.Paint(graphics, 1, origin);
+            var evidence = Environment.GetEnvironmentVariable("CF7_FOCUS_HUD_EVIDENCE_DIR");
+            if (!string.IsNullOrEmpty(evidence))
+            {
+                Directory.CreateDirectory(evidence);
+                using var strip = bitmap.Clone(new Rectangle(0, 0, 308, 140), bitmap.PixelFormat);
+                strip.Save(Path.Combine(evidence, $"focus-queue-{count}.png"), ImageFormat.Png);
+            }
+            for (int i = 0; i < count; i++)
+            {
+                int row = i < wide ? i : wide + (i - wide) / 2;
+                int col = i < wide ? 0 : (i - wide) % 2;
+                var cell = new Point(66 + 149 * col, 17 + 33 * row);
+                Assert.NotEqual(0, bitmap.GetPixel(cell.X, cell.Y).A);
+                var screen = anchor.PointToScreen(cell);
+                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, screen.X, screen.Y, 0), MouseEventKind.Move);
+                Assert.True(tooltip.Widget.Visible);
+                var text = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(section => section.Runs).Select(run => run.Text));
+                Assert.Contains(i + 1 == count ? "克隆兽" : protects[i], text);
+                Assert.Contains("15743 / 21800", text);
+                Assert.Equal(i < wide && i + 1 == count ? 1f : 0f, widget.GetComboPulse(i + 1));
+                var middle = new Point(153, cell.Y);
+                Assert.Equal(i < wide, bitmap.GetPixel(middle.X, middle.Y).A > 0);
+                Assert.Equal(i < wide, widget.TryHitTest(anchor.PointToScreen(middle)));
+            }
+            var bounds = PlayerHudFocusTargetWidget.BoundsForBuffCount(0, count);
+            Assert.Equal(4 + Math.Min(count, 4) * 33 - 3, bounds.Bottom);
+            Assert.Equal(bounds.Bottom, PlayerHudFocusTargetWidget.TopLeftBottomFor(0, count, false));
+
+            if (count == 5)
+            {
+                var queue = (JArray)packet["groups"]["focusTarget"]!;
+                var wideOrHalf = anchor.PointToScreen(new Point(66, 116));
+                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, wideOrHalf.X, wideOrHalf.Y, 0), MouseEventKind.Move);
+                var four = new JArray(queue.Take(4).Select(item => item.DeepClone()));
+                Assert.True(Receive(controller.State, Delta(2, new JObject { ["focusTarget"] = four })));
+                Assert.True(tooltip.Widget.Visible);
+                var current = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(run => run.Text));
+                Assert.Contains("黑龙", current);
+                var formerEnemyCell = anchor.PointToScreen(new Point(215, 116));
+                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, formerEnemyCell.X, formerEnemyCell.Y, 0), MouseEventKind.Move);
+                Assert.Contains("黑龙", string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(run => run.Text)));
+                Assert.True(Receive(controller.State, Delta(3, new JObject { ["focusTarget"] = queue.DeepClone() })));
+                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, formerEnemyCell.X, formerEnemyCell.Y, 0), MouseEventKind.Move);
+                Assert.Contains("克隆兽", string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(run => run.Text)));
+            }
         });
     }
 

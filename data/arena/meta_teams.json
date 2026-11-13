@@ -397,7 +397,7 @@
           "isHostile": true,
           "minLevel": 5,
           "maxLevel": 50,
-          "weight": 42
+          "weight": 41
         },
         {
           "type": "兵种443",
@@ -704,15 +704,6 @@
           "weight": 11
         },
         {
-          "type": "兵种42",
-          "name": "硬化僵尸",
-          "spritename": "敌人-硬化僵尸",
-          "isHostile": true,
-          "minLevel": 5,
-          "maxLevel": 50,
-          "weight": 10
-        },
-        {
           "type": "兵种189",
           "name": "亚种方舟武士",
           "spritename": "敌人-忍者BOSS",
@@ -793,6 +784,15 @@
               "电子体": 0
             }
           }
+        },
+        {
+          "type": "兵种42",
+          "name": "硬化僵尸",
+          "spritename": "敌人-硬化僵尸",
+          "isHostile": true,
+          "minLevel": 5,
+          "maxLevel": 50,
+          "weight": 8
         },
         {
           "type": "兵种203",
@@ -1364,6 +1364,19 @@
           "weight": 2
         },
         {
+          "type": "兵种42",
+          "name": "硬化僵尸",
+          "spritename": "敌人-硬化僵尸",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 50,
+          "weight": 2,
+          "Parameters": {
+            "focusHudLabel": "硬化",
+            "focusHudRole": "boss"
+          }
+        },
+        {
           "type": "兵种357",
           "name": "摇滚学姐",
           "spritename": "敌人-双喷少女",
@@ -1696,7 +1709,11 @@
           "isHostile": true,
           "minLevel": 35,
           "maxLevel": 35,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "方舟兽王",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种14",
@@ -1743,6 +1760,8 @@
           "maxLevel": 40,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "神秘忍者",
+            "focusHudRole": "boss",
             "死亡动画": "a0",
             "登场动画": "a0"
           }
@@ -1790,7 +1809,11 @@
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "gazer",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种265",
@@ -1811,7 +1834,11 @@
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "itinerant",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种347",
@@ -1867,6 +1894,8 @@
           "maxLevel": 1,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "医院异常体",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "γ-ECHO病理摘要"
             },
@@ -1885,6 +1914,19 @@
             "掉落物": {
               "名字": "商业区感染日记"
             }
+          }
+        },
+        {
+          "type": "兵种11",
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "isHostile": true,
+          "minLevel": 25,
+          "maxLevel": 25,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "巨型僵尸",
+            "focusHudRole": "boss"
           }
         },
         {
@@ -2057,6 +2099,8 @@
                 "防御力": 2
               }
             },
+            "focusHudLabel": "Surveyor",
+            "focusHudRole": "protect",
             "魔法抗性": {
               "电子体": 0
             }
@@ -2095,6 +2139,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "翅虎",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -2113,6 +2159,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "火凤",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -2131,6 +2179,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "黑龙",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -2207,7 +2257,7 @@
           }
         }
       ],
-      "unitCount": 185
+      "unitCount": 187
     },
     "天网": {
       "teamCount": 234,
@@ -2954,6 +3004,8 @@
           "maxLevel": 55,
           "weight": 4,
           "Parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -3079,6 +3131,8 @@
           "maxLevel": 55,
           "weight": 3,
           "Parameters": {
+            "focusHudLabel": "Lee",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -3288,6 +3342,8 @@
           "maxLevel": 55,
           "weight": 2,
           "Parameters": {
+            "focusHudLabel": "浮士德兄弟",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -3397,6 +3453,8 @@
           "maxLevel": 30,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "装甲恶灵",
+            "focusHudRole": "boss",
             "方向": "左",
             "登场动画": "a0"
           }
@@ -3739,6 +3797,8 @@
           "maxLevel": 60,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "翅虎",
+            "focusHudRole": "protect",
             "宠物属性": {
               "超级血清": true
             }
@@ -3762,6 +3822,8 @@
           "maxLevel": 60,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "火凤",
+            "focusHudRole": "protect",
             "宠物属性": {
               "涅槃重生": true
             }
@@ -3783,7 +3845,12 @@
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "黑龙",
+            "focusHudRole": "protect",
+            "focusHudSuccessor": "敌人-铠甲勇士"
+          }
         },
         {
           "type": "兵种269",
@@ -3803,6 +3870,8 @@
           "maxLevel": 60,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "吉他",
+            "focusHudRole": "protect",
             "宠物属性": {
               "导弹烈炎炮": true
             }
@@ -3817,6 +3886,8 @@
           "maxLevel": 60,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "宠物属性": {
               "弹射弧光斩": true
             }
@@ -3831,6 +3902,8 @@
           "maxLevel": 60,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "主唱",
+            "focusHudRole": "protect",
             "宠物属性": {
               "广域裂空斩": true
             }
@@ -3845,6 +3918,8 @@
           "maxLevel": 60,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "Tomboy",
+            "focusHudRole": "protect",
             "宠物属性": {
               "强化药剂": true
             }
@@ -4412,15 +4487,6 @@
           "weight": 3
         },
         {
-          "type": "兵种407",
-          "name": "原体融合生物",
-          "spritename": "敌人-原体融合生物",
-          "isHostile": true,
-          "minLevel": 50,
-          "maxLevel": 60,
-          "weight": 2
-        },
-        {
           "type": "兵种237",
           "name": "独狼铁血",
           "spritename": "敌人-独狼",
@@ -4569,6 +4635,8 @@
           "maxLevel": 40,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "异形女王",
+            "focusHudRole": "boss",
             "方向": "左"
           }
         },
@@ -4606,6 +4674,28 @@
             },
             "身高": 300
           }
+        },
+        {
+          "type": "兵种407",
+          "name": "原体融合生物",
+          "spritename": "敌人-原体融合生物",
+          "isHostile": true,
+          "minLevel": 50,
+          "maxLevel": 50,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "原体融合生物",
+            "focusHudRole": "boss"
+          }
+        },
+        {
+          "type": "兵种407",
+          "name": "原体融合生物",
+          "spritename": "敌人-原体融合生物",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 1
         },
         {
           "type": "兵种185",
@@ -4734,7 +4824,7 @@
           "weight": 1
         }
       ],
-      "unitCount": 85
+      "unitCount": 86
     },
     "联合大学": {
       "teamCount": 1,
@@ -4746,7 +4836,11 @@
           "isHostile": true,
           "minLevel": 30,
           "maxLevel": 30,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "体育老师",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1
@@ -5087,18 +5181,6 @@
           }
         },
         {
-          "type": "兵种67",
-          "name": "火凤",
-          "spritename": "敌人-粉红头发御姐",
-          "isHostile": true,
-          "minLevel": 34,
-          "maxLevel": 50,
-          "weight": 5,
-          "Parameters": {
-            "称号": "火凤堂赤旌"
-          }
-        },
-        {
           "type": "兵种268",
           "name": "黑铁流锤",
           "spritename": "敌人-黑铁精英流锤兵",
@@ -5231,18 +5313,6 @@
           }
         },
         {
-          "type": "兵种66",
-          "name": "翅虎",
-          "spritename": "敌人-飞刀小子",
-          "isHostile": true,
-          "minLevel": 40,
-          "maxLevel": 50,
-          "weight": 4,
-          "Parameters": {
-            "称号": "翅虎堂司暗"
-          }
-        },
-        {
           "type": "兵种68",
           "name": "黑龙",
           "spritename": "敌人-铠甲勇士战马形态",
@@ -5276,6 +5346,30 @@
             "影子倍率": 0,
             "影子单位": true,
             "透明倍率": 0.7
+          }
+        },
+        {
+          "type": "兵种66",
+          "name": "翅虎",
+          "spritename": "敌人-飞刀小子",
+          "isHostile": true,
+          "minLevel": 40,
+          "maxLevel": 50,
+          "weight": 3,
+          "Parameters": {
+            "称号": "翅虎堂司暗"
+          }
+        },
+        {
+          "type": "兵种67",
+          "name": "火凤",
+          "spritename": "敌人-粉红头发御姐",
+          "isHostile": true,
+          "minLevel": 40,
+          "maxLevel": 50,
+          "weight": 3,
+          "Parameters": {
+            "称号": "火凤堂赤旌"
           }
         },
         {
@@ -5447,6 +5541,20 @@
           }
         },
         {
+          "type": "兵种67",
+          "name": "火凤",
+          "spritename": "敌人-粉红头发御姐",
+          "isHostile": true,
+          "minLevel": 34,
+          "maxLevel": 45,
+          "weight": 2,
+          "Parameters": {
+            "focusHudLabel": "火凤",
+            "focusHudRole": "boss",
+            "称号": "火凤堂赤旌"
+          }
+        },
+        {
           "type": "兵种11",
           "name": "巨型僵尸",
           "spritename": "敌人-boss大僵尸",
@@ -5587,7 +5695,23 @@
           "maxLevel": 40,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "黑龙",
+            "focusHudRole": "boss",
             "称号": "黑龙堂冶魁"
+          }
+        },
+        {
+          "type": "兵种66",
+          "name": "翅虎",
+          "spritename": "敌人-飞刀小子",
+          "isHostile": true,
+          "minLevel": 45,
+          "maxLevel": 45,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "翅虎",
+            "focusHudRole": "boss",
+            "称号": "翅虎堂司暗"
           }
         },
         {
@@ -5599,6 +5723,8 @@
           "maxLevel": 50,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "黑铁",
+            "focusHudRole": "boss",
             "称号": "黑铁会教主"
           }
         },
@@ -5699,7 +5825,11 @@
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "浮士德兄弟",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种269",
@@ -5747,6 +5877,8 @@
                 "防御力": 3
               }
             },
+            "focusHudLabel": "方舟武士",
+            "focusHudRole": "boss",
             "hpEmergency": 0.5,
             "名字": "方舟武士",
             "狂暴": true
@@ -5842,6 +5974,8 @@
           "maxLevel": 32,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "翅虎",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "符线溯源笔记",
               "最大数量": 1,
@@ -5918,7 +6052,7 @@
           }
         }
       ],
-      "unitCount": 86
+      "unitCount": 88
     },
     "铁血": {
       "teamCount": 101,
@@ -6139,15 +6273,6 @@
           }
         },
         {
-          "type": "兵种41",
-          "name": "武士铁血",
-          "spritename": "敌人-武士铁血战士",
-          "isHostile": true,
-          "minLevel": 25,
-          "maxLevel": 50,
-          "weight": 3
-        },
-        {
           "type": "兵种237",
           "name": "独狼铁血",
           "spritename": "敌人-独狼",
@@ -6287,6 +6412,19 @@
           "weight": 3
         },
         {
+          "type": "兵种41",
+          "name": "武士铁血",
+          "spritename": "敌人-武士铁血战士",
+          "isHostile": true,
+          "minLevel": 25,
+          "maxLevel": 50,
+          "weight": 2,
+          "Parameters": {
+            "focusHudLabel": "武士",
+            "focusHudRole": "boss"
+          }
+        },
+        {
           "type": "兵种23",
           "name": "驯鹰者铁血",
           "spritename": "敌人-黄色铁血战士",
@@ -6414,6 +6552,19 @@
           "weight": 2
         },
         {
+          "type": "兵种41",
+          "name": "武士铁血",
+          "spritename": "敌人-武士铁血战士",
+          "isHostile": true,
+          "minLevel": 50,
+          "maxLevel": 50,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "铁血武士",
+            "focusHudRole": "boss"
+          }
+        },
+        {
           "type": "兵种15",
           "name": "禁卫异形",
           "spritename": "敌人-球形异形兵1",
@@ -6468,7 +6619,7 @@
           "weight": 1
         }
       ],
-      "unitCount": 45
+      "unitCount": 46
     },
     "波斯军": {
       "teamCount": 94,
@@ -6908,6 +7059,8 @@
           "maxLevel": 20,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "神秘武士",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "忍者佩剑",
               "最大数量": 1,
@@ -6961,15 +7114,6 @@
           "weight": 8
         },
         {
-          "type": "兵种60",
-          "name": "魔女",
-          "spritename": "敌人-雪女",
-          "isHostile": true,
-          "minLevel": 20,
-          "maxLevel": 55,
-          "weight": 3
-        },
-        {
           "type": "兵种297",
           "name": "邪恶霜精",
           "spritename": "敌人-邪恶霜精",
@@ -6979,27 +7123,22 @@
           "weight": 3
         },
         {
+          "type": "兵种60",
+          "name": "魔女",
+          "spritename": "敌人-雪女",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 55,
+          "weight": 2
+        },
+        {
           "type": "兵种58",
           "name": "牛仔",
           "spritename": "敌人-牛仔boss",
           "isHostile": true,
           "minLevel": 20,
-          "maxLevel": 60,
-          "weight": 2
-        },
-        {
-          "type": "兵种60",
-          "name": "魔女",
-          "spritename": "敌人-雪女",
-          "isHostile": true,
-          "minLevel": 50,
-          "maxLevel": 60,
-          "weight": 2,
-          "Parameters": {
-            "宠物属性": {
-              "晶能者": true
-            }
-          }
+          "maxLevel": 20,
+          "weight": 1
         },
         {
           "type": "兵种296",
@@ -7011,6 +7150,64 @@
           "weight": 1,
           "Parameters": {
             "可变身概率": 5
+          }
+        },
+        {
+          "type": "兵种60",
+          "name": "魔女",
+          "spritename": "敌人-雪女",
+          "isHostile": true,
+          "minLevel": 22,
+          "maxLevel": 22,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "魔女",
+            "focusHudRole": "boss"
+          }
+        },
+        {
+          "type": "兵种60",
+          "name": "魔女",
+          "spritename": "敌人-雪女",
+          "isHostile": true,
+          "minLevel": 50,
+          "maxLevel": 50,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "魔女",
+            "focusHudRole": "boss",
+            "宠物属性": {
+              "晶能者": true
+            }
+          }
+        },
+        {
+          "type": "兵种58",
+          "name": "牛仔",
+          "spritename": "敌人-牛仔boss",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "protect"
+          }
+        },
+        {
+          "type": "兵种60",
+          "name": "魔女",
+          "spritename": "敌人-雪女",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "魔女",
+            "focusHudRole": "protect",
+            "宠物属性": {
+              "晶能者": true
+            }
           }
         },
         {
@@ -7041,7 +7238,7 @@
           "weight": 1
         }
       ],
-      "unitCount": 9
+      "unitCount": 12
     },
     "军阀势力": {
       "teamCount": 63,
@@ -7321,6 +7518,8 @@
           "maxLevel": 20,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "Gazer",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "强化石",
               "最大数量": 50,
@@ -7362,6 +7561,8 @@
           "maxLevel": 28,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "将军",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "军阀撤收命令",
               "最大数量": 1,
@@ -7569,6 +7770,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -7587,6 +7790,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -7617,6 +7822,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -7640,7 +7847,11 @@
           "isHostile": true,
           "minLevel": 50,
           "maxLevel": 50,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种44",
@@ -7764,6 +7975,8 @@
           "maxLevel": 30,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "吉他",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "匕首",
               "最大数量": 1,
@@ -7781,6 +7994,8 @@
           "maxLevel": 30,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "匕首",
               "最大数量": 1,
@@ -7798,6 +8013,8 @@
           "maxLevel": 30,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "主唱",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "匕首",
               "最大数量": 1,
@@ -7973,39 +8190,12 @@
           }
         },
         {
-          "type": "兵种288",
-          "name": "医疗女仆（白）",
-          "spritename": "敌人-医疗女仆",
-          "isHostile": true,
-          "minLevel": 20,
-          "maxLevel": 60,
-          "weight": 4
-        },
-        {
-          "type": "兵种283",
-          "name": "狙击女仆（黑）",
-          "spritename": "敌人-狙击女仆",
-          "isHostile": true,
-          "minLevel": 20,
-          "maxLevel": 60,
-          "weight": 4
-        },
-        {
           "type": "兵种357",
           "name": "摇滚学姐",
           "spritename": "敌人-双喷少女",
           "isHostile": false,
           "minLevel": 35,
           "maxLevel": 40,
-          "weight": 4
-        },
-        {
-          "type": "兵种441",
-          "name": "贝斯",
-          "spritename": "敌人-摇滚公园贝斯",
-          "isHostile": true,
-          "minLevel": 45,
-          "maxLevel": 50,
           "weight": 4
         },
         {
@@ -8017,9 +8207,37 @@
           "maxLevel": 50,
           "weight": 4,
           "Parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "宠物属性": {
               "弹射弧光斩": true
             }
+          }
+        },
+        {
+          "type": "兵种288",
+          "name": "医疗女仆（白）",
+          "spritename": "敌人-医疗女仆",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 60,
+          "weight": 3,
+          "Parameters": {
+            "focusHudLabel": "医疗女仆白",
+            "focusHudRole": "boss"
+          }
+        },
+        {
+          "type": "兵种283",
+          "name": "狙击女仆（黑）",
+          "spritename": "敌人-狙击女仆",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 60,
+          "weight": 3,
+          "Parameters": {
+            "focusHudLabel": "狙击女仆黑",
+            "focusHudRole": "boss"
           }
         },
         {
@@ -8051,6 +8269,19 @@
           "minLevel": 25,
           "maxLevel": 25,
           "weight": 3
+        },
+        {
+          "type": "兵种441",
+          "name": "贝斯",
+          "spritename": "敌人-摇滚公园贝斯",
+          "isHostile": true,
+          "minLevel": 50,
+          "maxLevel": 50,
+          "weight": 3,
+          "Parameters": {
+            "focusHudLabel": "贝斯",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种50",
@@ -8151,10 +8382,30 @@
           "maxLevel": 50,
           "weight": 2,
           "Parameters": {
+            "focusHudLabel": "吉他",
+            "focusHudRole": "protect",
             "宠物属性": {
               "导弹烈炎炮": true
             }
           }
+        },
+        {
+          "type": "兵种288",
+          "name": "医疗女仆（白）",
+          "spritename": "敌人-医疗女仆",
+          "isHostile": true,
+          "minLevel": 25,
+          "maxLevel": 25,
+          "weight": 1
+        },
+        {
+          "type": "兵种283",
+          "name": "狙击女仆（黑）",
+          "spritename": "敌人-狙击女仆",
+          "isHostile": true,
+          "minLevel": 25,
+          "maxLevel": 25,
+          "weight": 1
         },
         {
           "type": "兵种284",
@@ -8249,6 +8500,19 @@
           "weight": 1
         },
         {
+          "type": "兵种441",
+          "name": "贝斯",
+          "spritename": "敌人-摇滚公园贝斯",
+          "isHostile": true,
+          "minLevel": 45,
+          "maxLevel": 45,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "贝斯",
+            "focusHudRole": "boss"
+          }
+        },
+        {
           "type": "兵种353",
           "name": "掠夺少女",
           "spritename": "敌人-劫掠少女",
@@ -8276,7 +8540,11 @@
           "isHostile": false,
           "minLevel": 50,
           "maxLevel": 50,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种270",
@@ -8332,6 +8600,8 @@
           "maxLevel": 50,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "主唱",
+            "focusHudRole": "protect",
             "宠物属性": {
               "广域裂空斩": true
             }
@@ -8347,7 +8617,7 @@
           "weight": 1
         }
       ],
-      "unitCount": 52
+      "unitCount": 55
     },
     "堕落城": {
       "teamCount": 40,
@@ -8677,6 +8947,8 @@
           "maxLevel": 60,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "lee",
+            "focusHudRole": "protect",
             "宠物属性": {
               "冲腿龙息": true
             }
@@ -8689,7 +8961,11 @@
           "isHostile": false,
           "minLevel": 60,
           "maxLevel": 60,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "surveyor",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种71",
@@ -8734,7 +9010,11 @@
           "isHostile": false,
           "minLevel": 50,
           "maxLevel": 50,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "Tomboy",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种5",
@@ -8763,6 +9043,8 @@
           "maxLevel": 30,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "吉他",
+            "focusHudRole": "boss",
             "不掉钱": true
           }
         },
@@ -8775,6 +9057,8 @@
           "maxLevel": 30,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "boss",
             "不掉钱": true
           }
         },
@@ -8787,6 +9071,8 @@
           "maxLevel": 30,
           "weight": 1,
           "Parameters": {
+            "focusHudLabel": "主唱",
+            "focusHudRole": "boss",
             "不掉钱": true
           }
         },
@@ -9664,15 +9950,6 @@
           "weight": 5
         },
         {
-          "type": "兵种111",
-          "name": "方舟巨人",
-          "spritename": "敌人-方舟巨人",
-          "isHostile": true,
-          "minLevel": 54,
-          "maxLevel": 60,
-          "weight": 4
-        },
-        {
           "type": "兵种173",
           "name": "终结者T900",
           "spritename": "敌人-终结者T800",
@@ -9680,6 +9957,15 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 4
+        },
+        {
+          "type": "兵种111",
+          "name": "方舟巨人",
+          "spritename": "敌人-方舟巨人",
+          "isHostile": true,
+          "minLevel": 54,
+          "maxLevel": 60,
+          "weight": 3
         },
         {
           "type": "兵种205",
@@ -9727,15 +10013,6 @@
           "weight": 3
         },
         {
-          "type": "兵种121",
-          "name": "方舟妖姬",
-          "spritename": "敌人-方舟妖姬",
-          "isHostile": true,
-          "minLevel": 30,
-          "maxLevel": 60,
-          "weight": 3
-        },
-        {
           "type": "兵种201",
           "name": "暴走方舟克隆巨人",
           "spritename": "敌人-方舟巨人兵",
@@ -9778,7 +10055,11 @@
           "isHostile": true,
           "minLevel": 40,
           "maxLevel": 40,
-          "weight": 2
+          "weight": 2,
+          "Parameters": {
+            "focusHudLabel": "方舟爪豪",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种78",
@@ -9796,6 +10077,15 @@
           "isHostile": true,
           "minLevel": 50,
           "maxLevel": 52,
+          "weight": 2
+        },
+        {
+          "type": "兵种121",
+          "name": "方舟妖姬",
+          "spritename": "敌人-方舟妖姬",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
           "weight": 2
         },
         {
@@ -9835,6 +10125,19 @@
           "weight": 2
         },
         {
+          "type": "兵种111",
+          "name": "方舟巨人",
+          "spritename": "敌人-方舟巨人",
+          "isHostile": true,
+          "minLevel": 54,
+          "maxLevel": 54,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "方舟巨人",
+            "focusHudRole": "boss"
+          }
+        },
+        {
           "type": "兵种81",
           "name": "兽化改造僵尸",
           "spritename": "敌人-兽化改造僵尸",
@@ -9851,6 +10154,19 @@
           "minLevel": 46,
           "maxLevel": 46,
           "weight": 1
+        },
+        {
+          "type": "兵种121",
+          "name": "方舟妖姬",
+          "spritename": "敌人-方舟妖姬",
+          "isHostile": true,
+          "minLevel": 30,
+          "maxLevel": 30,
+          "weight": 1,
+          "Parameters": {
+            "focusHudLabel": "方舟妖姬",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种169",
@@ -9889,7 +10205,7 @@
           "weight": 1
         }
       ],
-      "unitCount": 66
+      "unitCount": 68
     },
     "魔神": {
       "teamCount": 16,
@@ -25454,6 +25770,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "装甲恶灵",
+            "focusHudRole": "boss",
             "方向": "左",
             "登场动画": "a0"
           }
@@ -26100,6 +26418,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "异形女王",
+            "focusHudRole": "boss",
             "方向": "左"
           }
         }
@@ -26128,7 +26448,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "Tomboy",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种457",
@@ -26177,7 +26501,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "体育老师",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -26929,6 +27257,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "血月之影",
+            "focusHudRole": "boss",
             "名字": "血月之影",
             "红色乘数": 0.1,
             "红色偏移": 0,
@@ -28795,6 +29125,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "黑龙",
+            "focusHudRole": "boss",
             "称号": "黑龙堂冶魁"
           }
         },
@@ -28839,6 +29171,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "翅虎",
+            "focusHudRole": "boss",
             "称号": "翅虎堂司暗"
           }
         },
@@ -28853,6 +29187,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "火凤",
+            "focusHudRole": "boss",
             "称号": "火凤堂赤旌"
           }
         },
@@ -29267,6 +29603,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "黑铁",
+            "focusHudRole": "boss",
             "称号": "黑铁会教主"
           }
         },
@@ -29668,7 +30006,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "独狼",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -29695,7 +30037,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "铁血武士",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种21",
@@ -32800,6 +33146,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "Gazer",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "强化石",
               "最大数量": 50,
@@ -32835,6 +33183,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "Surveyor",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "强化石",
               "最大数量": 300,
@@ -32854,6 +33204,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "Itinerant",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "强化石",
               "最大数量": 300,
@@ -32873,6 +33225,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "Gazer",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "强化石",
               "最大数量": 300,
@@ -33955,6 +34309,8 @@
           "gender": "男",
           "humanoid": true,
           "parameters": {
+            "focusHudLabel": "Andy Law",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "绝地武士佩剑",
               "最大数量": 1,
@@ -33972,7 +34328,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "拼命之王",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 2,
@@ -34002,6 +34362,8 @@
           "gender": "男",
           "humanoid": true,
           "parameters": {
+            "focusHudLabel": "Pig",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "战术狗腿刀",
               "最大数量": 1,
@@ -34022,6 +34384,8 @@
           "gender": "男",
           "humanoid": true,
           "parameters": {
+            "focusHudLabel": "Boy",
+            "focusHudRole": "boss",
             "掉落物": [
               {
                 "名字": "P90战术版",
@@ -34056,6 +34420,8 @@
           "gender": "女",
           "humanoid": true,
           "parameters": {
+            "focusHudLabel": "King",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "战术狗腿刀",
               "最大数量": 1,
@@ -34090,7 +34456,11 @@
           "random": false,
           "isHostile": true,
           "gender": "男",
-          "humanoid": true
+          "humanoid": true,
+          "parameters": {
+            "focusHudLabel": "Blue",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -34117,7 +34487,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "Itinerant",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -34144,7 +34518,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "Gazer",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -34171,7 +34549,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "Surveyor",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -34200,6 +34582,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "混沌王",
+            "focusHudRole": "boss",
             "不掉装备": true,
             "不掉钱": true,
             "称号": "人修罗"
@@ -34232,6 +34616,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "武装JK",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "成长的勋章",
               "最大数量": 1,
@@ -34268,6 +34654,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "人修罗",
+            "focusHudRole": "boss",
             "不掉装备": true,
             "不掉钱": true,
             "称号": "人修罗"
@@ -34349,7 +34737,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "武装JK",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -34376,7 +34768,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "医疗女仆白",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种283",
@@ -34387,7 +34783,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "狙击女仆黑",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 2,
@@ -34414,7 +34814,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "诺艾尔",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -34443,6 +34847,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "吉他",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "匕首",
               "最大数量": 1,
@@ -34462,6 +34868,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "匕首",
               "最大数量": 1,
@@ -34481,6 +34889,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "主唱",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "匕首",
               "最大数量": 1,
@@ -34514,7 +34924,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "火凤",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -34541,7 +34955,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "Dude",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -34568,7 +34986,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "诺艾尔",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -34595,7 +35017,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "医疗女仆白",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种283",
@@ -34606,7 +35032,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "狙击女仆黑",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 2,
@@ -34633,7 +35063,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "医疗女仆白",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种283",
@@ -34644,7 +35078,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "狙击女仆黑",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 2,
@@ -34673,6 +35111,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "齐天大圣",
+            "focusHudRole": "boss",
             "不掉钱": true
           }
         }
@@ -36464,7 +36904,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "方舟兽王",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种70",
@@ -41405,7 +41849,11 @@
           "random": false,
           "isHostile": true,
           "gender": "女",
-          "humanoid": true
+          "humanoid": true,
+          "parameters": {
+            "focusHudLabel": "尾上世莉架",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -41913,7 +42361,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "原体融合生物",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -41940,7 +42392,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "Lee",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种40",
@@ -41953,6 +42409,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "Lee",
+            "focusHudRole": "boss",
             "宠物属性": {
               "冲腿龙息": true
             }
@@ -41983,7 +42441,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "武士",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种41",
@@ -41994,7 +42456,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "武士",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种21",
@@ -42032,7 +42498,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "浮士德兄弟",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种59",
@@ -42045,6 +42515,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "浮士德兄弟",
+            "focusHudRole": "boss",
             "宠物属性": {
               "复仇者": true
             },
@@ -42076,7 +42548,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种58",
@@ -42087,7 +42563,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 2,
@@ -42114,7 +42594,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "硬化",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种42",
@@ -42125,7 +42609,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "硬化",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 2,
@@ -42152,7 +42640,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "魔女",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种60",
@@ -42165,6 +42657,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "魔女",
+            "focusHudRole": "boss",
             "宠物属性": {
               "晶能者": true
             }
@@ -49399,6 +49893,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "神秘忍者",
+            "focusHudRole": "boss",
             "死亡动画": "a0",
             "登场动画": "a0"
           }
@@ -58136,6 +58632,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "神秘武士",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "忍者佩剑",
               "最大数量": 1,
@@ -58458,6 +58956,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "将军",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "军阀撤收命令",
               "最大数量": 1,
@@ -58771,7 +59271,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -59756,6 +60260,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -59839,6 +60345,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -59964,6 +60472,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -61016,7 +61526,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种54",
@@ -61955,7 +62469,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "浮士德兄弟",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 2,
@@ -61982,7 +62500,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "Lee",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -62378,7 +62900,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "贝斯",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种260",
@@ -62766,7 +63292,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "gazer",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种264",
@@ -62893,7 +63423,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "itinerant",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种264",
@@ -63195,6 +63729,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "lee",
+            "focusHudRole": "protect",
             "宠物属性": {
               "冲腿龙息": true
             }
@@ -63209,7 +63745,11 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "surveyor",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种44",
@@ -63602,7 +64142,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种60",
@@ -63615,6 +64159,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "魔女",
+            "focusHudRole": "protect",
             "宠物属性": {
               "晶能者": true
             }
@@ -63790,7 +64336,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "浮士德兄弟",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种269",
@@ -63874,6 +64424,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "翅虎",
+            "focusHudRole": "protect",
             "宠物属性": {
               "超级血清": true
             }
@@ -63997,6 +64549,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "火凤",
+            "focusHudRole": "protect",
             "宠物属性": {
               "涅槃重生": true
             }
@@ -64085,7 +64639,12 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "黑龙",
+            "focusHudRole": "protect",
+            "focusHudSuccessor": "敌人-铠甲勇士"
+          }
         },
         {
           "type": "兵种269",
@@ -64224,6 +64783,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "吉他",
+            "focusHudRole": "protect",
             "宠物属性": {
               "导弹烈炎炮": true
             }
@@ -64240,6 +64801,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "宠物属性": {
               "弹射弧光斩": true
             }
@@ -64256,6 +64819,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "主唱",
+            "focusHudRole": "protect",
             "宠物属性": {
               "广域裂空斩": true
             }
@@ -64272,6 +64837,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "Tomboy",
+            "focusHudRole": "protect",
             "宠物属性": {
               "强化药剂": true
             }
@@ -65105,7 +65672,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "浮士德兄弟",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -65765,7 +66336,11 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "Tomboy",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种390",
@@ -67124,6 +67699,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "吉他",
+            "focusHudRole": "boss",
             "不掉钱": true
           }
         },
@@ -67138,6 +67715,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "boss",
             "不掉钱": true
           }
         },
@@ -67152,6 +67731,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "主唱",
+            "focusHudRole": "boss",
             "不掉钱": true
           }
         },
@@ -67204,7 +67785,11 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种43",
@@ -67507,6 +68092,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "宠物属性": {
               "弹射弧光斩": true
             }
@@ -67813,6 +68400,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "宠物属性": {
               "弹射弧光斩": true
             }
@@ -67827,7 +68416,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "贝斯",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种259",
@@ -68347,6 +68940,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "宠物属性": {
               "弹射弧光斩": true
             }
@@ -68363,6 +68958,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "吉他",
+            "focusHudRole": "protect",
             "宠物属性": {
               "导弹烈炎炮": true
             }
@@ -68377,7 +68974,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "贝斯",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种451",
@@ -68660,6 +69261,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "键盘",
+            "focusHudRole": "protect",
             "宠物属性": {
               "弹射弧光斩": true
             }
@@ -68676,6 +69279,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "吉他",
+            "focusHudRole": "protect",
             "宠物属性": {
               "导弹烈炎炮": true
             }
@@ -68692,6 +69297,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "主唱",
+            "focusHudRole": "protect",
             "宠物属性": {
               "广域裂空斩": true
             }
@@ -68706,7 +69313,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "贝斯",
+            "focusHudRole": "protect"
+          }
         },
         {
           "type": "兵种451",
@@ -70247,6 +70858,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "医院异常体",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "γ-ECHO病理摘要"
             },
@@ -70730,7 +71343,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "巨型僵尸",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种9",
@@ -89461,6 +90078,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -89524,6 +90143,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "浮士德兄弟",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -89587,6 +90208,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -89601,6 +90224,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "浮士德兄弟",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -89664,6 +90289,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "Lee",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -89716,6 +90343,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -89730,6 +90359,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "Lee",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -90161,6 +90792,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "牛仔",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -90175,6 +90808,8 @@
           "isHostile": false,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "Lee",
+            "focusHudRole": "protect",
             "hpEmergency": 0.5
           }
         },
@@ -90293,6 +90928,8 @@
                 "防御力": 3
               }
             },
+            "focusHudLabel": "方舟武士",
+            "focusHudRole": "boss",
             "hpEmergency": 0.5,
             "名字": "方舟武士",
             "狂暴": true
@@ -96015,7 +96652,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "方舟爪豪",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -100757,7 +101398,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "方舟爪豪",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -101775,6 +102420,8 @@
                 "防御力": 2
               }
             },
+            "focusHudLabel": "Surveyor",
+            "focusHudRole": "protect",
             "魔法抗性": {
               "电子体": 0
             }
@@ -113823,7 +114470,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "方舟巨人",
+            "focusHudRole": "boss"
+          }
         },
         {
           "type": "兵种70",
@@ -119897,7 +120548,11 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "focusHudLabel": "方舟妖姬",
+            "focusHudRole": "boss"
+          }
         }
       ],
       "unitCount": 1,
@@ -133739,6 +134394,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "翅虎",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -133759,6 +134416,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "火凤",
+            "focusHudRole": "protect",
             "threat": 30
           }
         },
@@ -133779,6 +134438,8 @@
                 "hp满血值": 10000
               }
             },
+            "focusHudLabel": "黑龙",
+            "focusHudRole": "protect",
             "threat": 30
           }
         }
@@ -134287,6 +134948,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "翅虎",
+            "focusHudRole": "boss",
             "称号": "翅虎堂司暗"
           }
         },
@@ -134301,6 +134964,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "火凤",
+            "focusHudRole": "boss",
             "保留屏外尸体": true,
             "称号": "火凤堂赤旌"
           }
@@ -134478,6 +135143,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "黑铁",
+            "focusHudRole": "boss",
             "方向": "左",
             "死亡动画": "a1",
             "登场动画": "a0",
@@ -134769,6 +135436,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "翅虎",
+            "focusHudRole": "boss",
             "称号": "翅虎堂司暗"
           }
         }
@@ -134799,6 +135468,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "火凤",
+            "focusHudRole": "boss",
             "称号": "火凤堂赤旌"
           }
         }
@@ -135398,6 +136069,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "火凤",
+            "focusHudRole": "boss",
             "称号": "火凤堂赤旌"
           }
         },
@@ -136010,6 +136683,8 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "focusHudLabel": "翅虎",
+            "focusHudRole": "boss",
             "掉落物": {
               "名字": "符线溯源笔记",
               "最大数量": 1,

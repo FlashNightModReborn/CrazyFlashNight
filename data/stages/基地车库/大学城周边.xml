@@ -710,6 +710,10 @@
                         <InstanceName>tomboy</InstanceName>
                         <x>1216</x>
                         <y>638</y>
+                        <Parameters>
+                            <focusHudRole>protect</focusHudRole>
+                            <focusHudLabel>Tomboy</focusHudLabel>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>天网.旧型号机器人.友军</Type>
