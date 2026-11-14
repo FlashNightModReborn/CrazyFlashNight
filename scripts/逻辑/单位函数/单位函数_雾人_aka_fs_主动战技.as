@@ -1461,8 +1461,14 @@ _root.主动战技函数.长枪.天启大封印._挂宿主收尾 = function(宿�
             return;
         }
         if (this.封印状态 != undefined && this.封印状态.已结束 === true) {
-            delete this.onEnterFrame;
-            this.removeMovieClip();
+            // delete this.onEnterFrame;
+            // this.removeMovieClip();
+            if (this.收尾延时帧 == undefined) { this.收尾延时帧 = 0; }
+            this.收尾延时帧++;
+            if (this.收尾延时帧 >= 30) {
+                delete this.onEnterFrame;
+                this.removeMovieClip();
+            }
         }
     };
 };
