@@ -9,7 +9,7 @@ class org.flashNight.arki.skill.SkillFeatureRegistry {
             {id:"impact_chain.pistol_power",skillKey:"冲击连携",minLevel:1,label:"主手短枪火力",description:"保留主手短枪随父技能等级增长的火力加成。"},
             {id:"impact_chain.offhand_impact",skillKey:"冲击连携",minLevel:1,label:"混搭冲击",description:"强化副手短枪和霰弹长枪的冲击。"},
             {id:"impact_chain.subweapon_impact",skillKey:"冲击连携",minLevel:1,label:"副武器冲击",description:"强化长枪副武器的冲击。"},
-            {id:"impact_chain.subweapon_power",skillKey:"冲击连携",minLevel:1,label:"副武器火力转化",description:"随父技能等级，将装备枪械威力加成折算为副武器固定威力。"},
+            {id:"impact_chain.subweapon_power",skillKey:"冲击连携",minLevel:1,label:"副武器火力转化",description:"随父技能等级，将角色枪械加成（不含枪械自身威力）折算为副武器固定威力。"},
             {id:"impact_chain.ghost_loading",skillKey:"冲击连携",minLevel:1,label:"幽灵装填",description:"支持该机制的枪械可付费补装幽灵弹；关闭后剩余付费幽灵弹退回原弹种余额。"},
             {id:"impact_chain.shotgun_impact",skillKey:"冲击连携",minLevel:1,label:"霰弹额外冲击",description:"保留霰弹枪额外的冲击加成。"},
             {id:"impact_chain.shotgun_subweapon_power",skillKey:"冲击连携",minLevel:1,label:"霰弹副武器火力",description:"强化霰弹枪所搭载副武器的伤害。"},
