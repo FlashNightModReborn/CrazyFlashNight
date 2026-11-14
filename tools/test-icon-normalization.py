@@ -64,6 +64,55 @@ def main() -> None:
     preserved_width, preserved_height = bbox_size(preserved_bbox)
     assert preserved_width < 40 and preserved_height < 60, preserved_bbox
 
+    # A full-weapon semantic f2 may enlarge the raw canvas. The animated f1 must
+    # retain the static 24px crop and recover the child's independent PNG origin,
+    # including RGB changes over a fully opaque base (whose alpha never changes).
+    with tempfile.TemporaryDirectory() as temp_dir:
+        directory = Path(temp_dir)
+        base = make_large_ffdec_canvas()
+        eye = Image.new("RGBA", (96, 80), (0, 0, 0, 0))
+        for y in range(17, 41):
+            for x in range(12, 36):
+                eye.putpixel((x, y), (255, 40, 10, 180))
+        parent = base.copy()
+        parent.alpha_composite(eye, (430, 310))
+        for name, image in (("parent", parent), ("base", base), ("eye", eye)):
+            image.save(directory / f"{name}.png")
+        matrix = bake.Matrix(1, 0, 0, 1, 0, 0)
+        viewport, origin, base_icon, reference = bake.stopped_frame1_projection(
+            directory / "parent.png", directory / "base.png", directory / "eye.png",
+            parent.size, matrix, [],
+        )
+        assert viewport == (381, 249, 621, 489), viewport
+        assert origin == (430, 310), origin
+        projected = bake.nested_layer_frame_icon(
+            directory / "eye.png", parent.size, matrix, [], origin,
+            projection_viewport=viewport,
+        )
+        composed = bake.composite_icon_layers(base_icon, [projected])
+        assert alpha_bbox(composed) == (0, 0, 128, 128), alpha_bbox(composed)
+        # Independent expected eye center: (442+12-381,327+12-249)*128/240.
+        actual_pixel, expected_pixel = composed.getpixel((39, 48)), reference.getpixel((39, 48))
+        assert max(abs(a - b) for a, b in zip(actual_pixel, expected_pixel)) <= 1
+        assert expected_pixel == (255, 103, 82, 255)
+        assert composed.getpixel((80, 80)) == (255, 255, 255, 255)
+        calibrated, _, _, _ = bake.calibrate_layer_projection_offset(
+            parent_reference=reference, base_image=base_icon,
+            source_frame=directory / "eye.png", parent_profile_size=parent.size,
+            matrix=matrix, filters=[], search_radius=2,
+            initial_offset=(429, 309), projection_viewport=viewport,
+        )
+        assert calibrated == (430, 310), calibrated
+        try:
+            bake.stopped_frame1_projection(
+                directory / "base.png", directory / "base.png", directory / "eye.png",
+                base.size, matrix, [],
+            )
+        except ValueError as exc:
+            assert str(exc) == "frame1_projection_no_visible_layer_difference"
+        else:
+            raise AssertionError("A static layer must not receive a guessed origin")
+
     transparent = bake.normalize_icon_image(Image.new("RGBA", (100, 100), (0, 0, 0, 0)))
     assert transparent.size == (128, 128)
     assert alpha_bbox(transparent) is None

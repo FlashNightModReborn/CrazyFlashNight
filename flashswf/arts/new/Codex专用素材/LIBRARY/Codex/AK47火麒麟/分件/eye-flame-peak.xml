@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/AK47火麒麟/分件/eye-flame-peak" itemID="6af80000-0000f7c7" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="eye-flame-peak">
+      <layers>
+        <DOMLayer name="eye-flame-peak" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.06591796875" b="-0.03662109375" c="0.03662109375" d="-0.06591796875" tx="664" ty="124"/>
+                        </matrix>
+                        <GradientEntry color="#FFD438" alpha="0.949019607843137" ratio="0"/>
+                        <GradientEntry color="#FF6A00" alpha="0.858823529411765" ratio="0.27843137254902"/>
+                        <GradientEntry color="#FF2600" alpha="0.541176470588235" ratio="0.619607843137255"/>
+                        <GradientEntry color="#D40C00" alpha="0.180392156862745" ratio="0.87843137254902"/>
+                        <GradientEntry color="#990000" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!14480 2980|14240 2880!14240 2880[13920 2640 13480 2260!13480 2260[13040 1880 12540 1700!12540 1700[12700 1940 12960 2160!12960 2160[12520 1900 12040 1760!12040 1760[12280 2040 12600 2320!12600 2320[13080 2740 13640 2980!13640 2980[14080
+ 3160 14480 3090!14480 3090|14480 2980"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.048828125" b="-0.0274505615234375" c="0.0274505615234375" d="-0.048828125" tx="676" ty="130.5"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.980392156862745" ratio="0"/>
+                        <GradientEntry color="#FFE853" alpha="0.92156862745098" ratio="0.27843137254902"/>
+                        <GradientEntry color="#FF9100" alpha="0.658823529411765" ratio="0.6"/>
+                        <GradientEntry color="#FF3C00" alpha="0.2" ratio="0.87843137254902"/>
+                        <GradientEntry color="#FF1E00" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!14420 2990[13800 2740 13320 2420!13320 2420[12880 2120 12420 1940!12420 1940[12580 2160 12880 2420!12880 2420[13280 2760 13720 2960!13720 2960[14060 3120 14420 3080!14420 3080|14420 2990"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="1.25" joints="miter">
+                        <fill>
+                          <SolidColor color="#FF3300" alpha="0.819607843137255"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!14040 3110[13400 2880 12760 2400!12760 2400[12360 2100 12080 1800"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

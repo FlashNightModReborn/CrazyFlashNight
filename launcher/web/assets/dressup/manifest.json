@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-11-11T19:14:20+0800",
+  "generatedAt": "2026-11-14T21:27:00+0800",
   "genders": [
     "男",
     "女"
@@ -8850,15 +8850,15 @@
     },
     "AK47火麒麟": {
       "use": "长枪",
-      "icon": "AK47火麒麟",
-      "dressup": "枪-长枪-AK47火麒麟",
+      "icon": "Codex-AK47火麒麟",
+      "dressup": "枪-长枪-Codex-AK47火麒麟",
       "helmet": false,
       "fieldsByGender": {
         "男": {
-          "长枪_装扮": "枪-长枪-AK47火麒麟"
+          "长枪_装扮": "枪-长枪-Codex-AK47火麒麟"
         },
         "女": {
-          "长枪_装扮": "枪-长枪-AK47火麒麟"
+          "长枪_装扮": "枪-长枪-Codex-AK47火麒麟"
         }
       },
       "sourceFile": "武器_长枪_突击步枪.xml"
@@ -10842,6 +10842,54 @@
       "sourceFile": "消耗品_自选配给.xml"
     },
     "书中决战补给自选包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中流派构筑自选包·1": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中流派构筑自选包·2": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中流派构筑自选包·3": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中流派构筑自选包·4": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中流派构筑自选包·5": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中流派构筑自选包·6": {
       "use": "礼包",
       "icon": "材料盒子",
       "dressup": "",
@@ -88439,128 +88487,6 @@
         }
       ]
     },
-    "枪-长枪-AK47火麒麟": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/雾人装备调整.swf",
-        "symbolName": "2.热兵器/火麒麟AK47/枪-长枪-AK47火麒麟",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "长枪"
-      ],
-      "items": [
-        "AK47火麒麟"
-      ],
-      "sourceFiles": [
-        "武器_长枪_突击步枪.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24,
-        "frameCount": 1,
-        "uri": "skins/12d51f3c_1.png",
-        "width": 823,
-        "height": 210,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "nestedAnimation": {
-          "autoPlayingDescendants": [
-            {
-              "characterId": 800,
-              "frameCount": 3,
-              "depth": 4,
-              "path": [
-                804,
-                803,
-                802,
-                801,
-                800
-              ]
-            }
-          ],
-          "descendantCount": 1,
-          "maxDescendantFrameCount": 3,
-          "strategy": "direct-layered",
-          "directLayerCandidateCount": 1,
-          "layers": [
-            {
-              "characterId": 800,
-              "sourceParentId": 801,
-              "sourceFrameCount": 3,
-              "matrix": {
-                "a": -0.746572,
-                "b": 0,
-                "c": 0,
-                "d": 0.760824,
-                "tx": 114.275246,
-                "ty": -7.269826
-              },
-              "drawOrder": "over",
-              "path": [
-                804,
-                803,
-                802,
-                801,
-                800
-              ],
-              "export": {
-                "format": "png-sequence",
-                "zoom": 2,
-                "fps": 24,
-                "frameCount": 3,
-                "uri": "skins/12d51f3c_layer800_1.png",
-                "width": 111,
-                "height": 67
-              },
-              "frames": [
-                {
-                  "uri": "skins/12d51f3c_layer800_1.png",
-                  "frame": 1,
-                  "sourceFrame": 1,
-                  "width": 111,
-                  "height": 67,
-                  "originX": 51.7,
-                  "originY": 134.5
-                },
-                {
-                  "uri": "skins/12d51f3c_layer800_2.png",
-                  "frame": 2,
-                  "sourceFrame": 2,
-                  "width": 111,
-                  "height": 67,
-                  "originX": 51.7,
-                  "originY": 134.5
-                },
-                {
-                  "uri": "skins/12d51f3c_layer800_3.png",
-                  "frame": 3,
-                  "sourceFrame": 3,
-                  "width": 111,
-                  "height": 67,
-                  "originX": 51.7,
-                  "originY": 134.5
-                }
-              ],
-              "compositeNote": "flattened-static-chain"
-            }
-          ]
-        }
-      },
-      "frames": [
-        {
-          "uri": "skins/12d51f3c_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 823,
-          "height": 210,
-          "originX": 248.4,
-          "originY": 127.4
-        }
-      ]
-    },
     "枪-长枪-AK74": {
       "covered": true,
       "asset": {
@@ -89202,6 +89128,173 @@
           "height": 231,
           "originX": 212.3,
           "originY": 146.6
+        }
+      ]
+    },
+    "枪-长枪-Codex-AK47火麒麟": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/AK47火麒麟/枪-长枪-Codex-AK47火麒麟",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "AK47火麒麟"
+      ],
+      "sourceFiles": [
+        "武器_长枪_突击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 30.0,
+        "frameCount": 1,
+        "uri": "skins/b1a1a3a0_1.png",
+        "width": 822,
+        "height": 215,
+        "playback": "nested-animation",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true,
+        "nestedAnimation": {
+          "autoPlayingDescendants": [
+            {
+              "characterId": 13,
+              "frameCount": 8,
+              "depth": 2,
+              "path": [
+                17,
+                14,
+                13
+              ]
+            }
+          ],
+          "descendantCount": 1,
+          "maxDescendantFrameCount": 8,
+          "strategy": "direct-layered",
+          "directLayerCandidateCount": 1,
+          "layers": [
+            {
+              "characterId": 13,
+              "sourceParentId": 14,
+              "sourceFrameCount": 8,
+              "matrix": {
+                "a": 0.373383,
+                "b": 0.0,
+                "c": 0.0,
+                "d": 0.373383,
+                "tx": -126.95,
+                "ty": -94.85
+              },
+              "drawOrder": "over",
+              "path": [
+                17,
+                14,
+                13
+              ],
+              "export": {
+                "format": "png-sequence",
+                "zoom": 2,
+                "fps": 30.0,
+                "frameCount": 8,
+                "uri": "skins/b1a1a3a0_layer13_1.png",
+                "width": 330,
+                "height": 181
+              },
+              "frames": [
+                {
+                  "uri": "skins/b1a1a3a0_layer13_1.png",
+                  "frame": 1,
+                  "sourceFrame": 1,
+                  "width": 330,
+                  "height": 181,
+                  "originX": -1191.3,
+                  "originY": -170.0
+                },
+                {
+                  "uri": "skins/b1a1a3a0_layer13_2.png",
+                  "frame": 2,
+                  "sourceFrame": 2,
+                  "width": 330,
+                  "height": 181,
+                  "originX": -1191.3,
+                  "originY": -170.0
+                },
+                {
+                  "uri": "skins/b1a1a3a0_layer13_3.png",
+                  "frame": 3,
+                  "sourceFrame": 3,
+                  "width": 330,
+                  "height": 181,
+                  "originX": -1191.3,
+                  "originY": -170.0
+                },
+                {
+                  "uri": "skins/b1a1a3a0_layer13_4.png",
+                  "frame": 4,
+                  "sourceFrame": 4,
+                  "width": 330,
+                  "height": 181,
+                  "originX": -1191.3,
+                  "originY": -170.0
+                },
+                {
+                  "uri": "skins/b1a1a3a0_layer13_5.png",
+                  "frame": 5,
+                  "sourceFrame": 5,
+                  "width": 330,
+                  "height": 181,
+                  "originX": -1191.3,
+                  "originY": -170.0
+                },
+                {
+                  "uri": "skins/b1a1a3a0_layer13_6.png",
+                  "frame": 6,
+                  "sourceFrame": 6,
+                  "width": 330,
+                  "height": 181,
+                  "originX": -1191.3,
+                  "originY": -170.0
+                },
+                {
+                  "uri": "skins/b1a1a3a0_layer13_7.png",
+                  "frame": 7,
+                  "sourceFrame": 7,
+                  "width": 330,
+                  "height": 181,
+                  "originX": -1191.3,
+                  "originY": -170.0
+                },
+                {
+                  "uri": "skins/b1a1a3a0_layer13_8.png",
+                  "frame": 8,
+                  "sourceFrame": 8,
+                  "width": 330,
+                  "height": 181,
+                  "originX": -1191.3,
+                  "originY": -170.0
+                }
+              ],
+              "compositeNote": "flattened-static-chain"
+            }
+          ]
+        }
+      },
+      "frames": [
+        {
+          "uri": "skins/b1a1a3a0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 822,
+          "height": 215,
+          "originX": 217.2,
+          "originY": 129.0
         }
       ]
     },

@@ -19,7 +19,7 @@ from typing import Any
 from asset_timeline_export import FrameDedupeIndex, compressed_timeline_entries
 
 try:
-    from PIL import Image, ImageFilter
+    from PIL import Image, ImageChops, ImageFilter
 except ImportError as exc:
     raise SystemExit(
         "Pillow is required. Install it in the active Python environment before running this tool."
@@ -244,6 +244,15 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument("--dry-run", action="store_true", help="Do not write PNGs or manifest.")
+    parser.add_argument(
+        "--nested-frame1-viewport",
+        action="store_true",
+        help=(
+            "For stopped item icons with a semantic second frame and one direct animated layer, "
+            "fit the layered animation to the first frame's visible bounds. Other icons keep "
+            "their existing canvas behavior."
+        ),
+    )
     parser.add_argument(
         "--force-overwrite-existing",
         action="store_true",
@@ -1911,8 +1920,12 @@ def nested_layer_frame_icon(
     filters: list[dict[str, Any]] | None = None,
     offset: tuple[int, int] = (0, 0),
     canvas_size: int | None = None,
+    projection_viewport: tuple[int, int, int, int] | None = None,
 ) -> Image.Image:
     parent_canvas = nested_layer_frame_canvas(source_png, parent_profile_size, matrix, filters, offset)
+    if projection_viewport is not None:
+        parent_canvas = parent_canvas.crop(projection_viewport)
+        parent_profile_size = parent_canvas.size
     # canvas_size=None keeps the static 256 output (diff-gate path); animated frame composition
     # passes ANIMATED_ICON_SIZE for the smaller, byte-budget-friendly animated stream.
     return normalize_icon_image(
@@ -1921,6 +1934,48 @@ def nested_layer_frame_icon(
         canvas_size,
         preserve_canvas=True,
     )
+
+
+def stopped_frame1_projection(
+    parent_frame: Path,
+    stripped_frame: Path,
+    source_frame: Path,
+    parent_profile_size: tuple[int, int],
+    matrix: Matrix,
+    filters: list[dict[str, Any]],
+) -> tuple[tuple[int, int, int, int], tuple[int, int], Image.Image, Image.Image]:
+    """Recover the first-frame viewport and child origin from the rasterized parent.
+
+    A stopped icon's semantic full-weapon frame can enlarge every FFDec PNG canvas.
+    Locate the eye's actual placement before cropping; child PNG bounds have their
+    own origin, so the SWF instance translation alone is not a raster offset.
+    """
+    with Image.open(parent_frame) as raw:
+        parent = raw.convert("RGBA")
+    with Image.open(stripped_frame) as raw:
+        base = raw.convert("RGBA")
+    if parent.size != parent_profile_size or base.size != parent_profile_size:
+        raise ValueError("frame1_projection_canvas_mismatch")
+    viewport = parent.getchannel("A").getbbox()
+    if viewport is None:
+        raise ValueError("frame1_projection_empty_parent")
+
+    delta = ImageChops.difference(parent, base)
+    channels = delta.split()
+    changed = channels[0]
+    for channel in channels[1:]:
+        changed = ImageChops.lighter(changed, channel)
+    visible = ImageChops.lighter(parent.getchannel("A"), base.getchannel("A"))
+    changed = ImageChops.multiply(changed, visible.point(lambda value: 255 if value else 0))
+    changed_bbox = changed.getbbox()
+    child = nested_layer_frame_canvas(source_frame, parent_profile_size, matrix, filters)
+    child_bbox = child.getchannel("A").getbbox()
+    if changed_bbox is None or child_bbox is None:
+        raise ValueError("frame1_projection_no_visible_layer_difference")
+    initial_offset = (changed_bbox[0] - child_bbox[0], changed_bbox[1] - child_bbox[1])
+    base_image = normalize_icon_image(base.crop(viewport), preserve_canvas=True)
+    reference = normalize_icon_image(parent.crop(viewport), preserve_canvas=True)
+    return viewport, initial_offset, base_image, reference
 
 
 def projection_score(stats: DiffStats) -> tuple[int, int, int, int]:
@@ -1941,34 +1996,44 @@ def calibrate_layer_projection_offset(
     matrix: Matrix,
     filters: list[dict[str, Any]],
     search_radius: int = 6,
+    initial_offset: tuple[int, int] = (0, 0),
+    projection_viewport: tuple[int, int, int, int] | None = None,
 ) -> tuple[tuple[int, int], Image.Image, DiffStats, bool]:
-    best_offset = (0, 0)
-    best_image = nested_layer_frame_icon(source_frame, parent_profile_size, matrix, filters, best_offset)
+    best_offset = initial_offset
+    best_image = nested_layer_frame_icon(
+        source_frame, parent_profile_size, matrix, filters, best_offset,
+        projection_viewport=projection_viewport,
+    )
     best_composite = composite_icon_layers(base_image, [best_image])
     best_close, best_stats = full_image_diff_images(parent_reference, best_composite)
     best_score = projection_score(best_stats)
+    if projection_viewport is not None and best_stats.exact:
+        return best_offset, best_image, best_stats, best_close
 
-    for y_offset in range(-search_radius, search_radius + 1):
-        for x_offset in range(-search_radius, search_radius + 1):
-            if x_offset == 0 and y_offset == 0:
+    for y_delta in range(-search_radius, search_radius + 1):
+        for x_delta in range(-search_radius, search_radius + 1):
+            if x_delta == 0 and y_delta == 0:
                 continue
+            x_offset = initial_offset[0] + x_delta
+            y_offset = initial_offset[1] + y_delta
             layer_image = nested_layer_frame_icon(
                 source_frame,
                 parent_profile_size,
                 matrix,
                 filters,
                 (x_offset, y_offset),
+                projection_viewport=projection_viewport,
             )
             composite = composite_icon_layers(base_image, [layer_image])
             close, stats = full_image_diff_images(parent_reference, composite)
             score = projection_score(stats)
-            if close or score < best_score:
+            if score < best_score or (projection_viewport is None and close):
                 best_offset = (x_offset, y_offset)
                 best_image = layer_image
                 best_stats = stats
                 best_close = close
                 best_score = score
-                if close and icon_canvas_projection_close(stats, close):
+                if stats.exact or (projection_viewport is None and close and icon_canvas_projection_close(stats, close)):
                     return best_offset, best_image, best_stats, best_close
 
     return best_offset, best_image, best_stats, best_close
@@ -2683,6 +2748,7 @@ def write_nested_icon_canvas_frames(
     report: dict[str, Any],
     first_frame_override: Image.Image | None = None,
     crop_frames: bool = False,
+    projection_viewport: tuple[int, int, int, int] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], int]:
     frame_entries: list[dict[str, Any]] = []
     dedupe = FrameDedupeIndex()
@@ -2691,7 +2757,10 @@ def write_nested_icon_canvas_frames(
         normalized = (
             first_frame_override.copy()
             if index == 1 and first_frame_override is not None
-            else nested_layer_frame_icon(source_frame, parent_profile_size, matrix, filters, offset)
+            else nested_layer_frame_icon(
+                source_frame, parent_profile_size, matrix, filters, offset,
+                projection_viewport=projection_viewport,
+            )
         )
         image_to_write = normalized
         crop_meta: dict[str, int] = {}
@@ -3250,10 +3319,13 @@ def export_layered_icon_canvas_entry(
     report: dict[str, Any],
     timeout_seconds: int | None = None,
     f1_profile_size: tuple[int, int] | None = None,
+    frame1_viewport: bool = False,
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
     layers = list(plan.get("layers") or [])
     if not layers:
         return None, {"reason": "no_layers"}
+    if frame1_viewport and len(layers) != 1:
+        return None, {"reason": "frame1_viewport_requires_single_layer"}
     removals = set(plan.get("removals") or [])
     if not removals:
         return None, {"reason": "no_layer_removals"}
@@ -3325,6 +3397,7 @@ def export_layered_icon_canvas_entry(
     first_layer_images: list[Image.Image] = []
     layer_frame_paths: dict[int, list[Path]] = {}
     layer_offsets: dict[int, tuple[int, int]] = {}
+    projection_viewport = None
     for layer in layers:
         child_id = int(layer["characterId"])
         child_dir = find_exported_frame_dir_in_base(child_out_dir, child_id)
@@ -3337,6 +3410,15 @@ def export_layered_icon_canvas_entry(
         layer_frame_paths[child_id] = child_frames
         filters = list(layer.get("filters") or [])
         if len(layers) == 1:
+            initial_offset = (0, 0)
+            if frame1_viewport:
+                try:
+                    projection_viewport, initial_offset, base_image, parent_reference = stopped_frame1_projection(
+                        parent_frame, stripped_parent_frames[0], child_frames[0],
+                        parent_profile_size, matrix, filters,
+                    )
+                except ValueError as exc:
+                    return None, {"reason": str(exc)}
             offset, layer_image, _offset_stats, _offset_close = calibrate_layer_projection_offset(
                 parent_reference=parent_reference,
                 base_image=base_image,
@@ -3344,6 +3426,8 @@ def export_layered_icon_canvas_entry(
                 parent_profile_size=parent_profile_size,
                 matrix=matrix,
                 filters=filters,
+                initial_offset=initial_offset,
+                projection_viewport=projection_viewport,
             )
             layer_offsets[child_id] = offset
             first_layer_images.append(layer_image)
@@ -3364,8 +3448,8 @@ def export_layered_icon_canvas_entry(
     fallback_filename = f"{hash_base}_1.png"
     base_filename = f"{hash_base}_base.png"
     # The static-fallback f1 must scale against the same per-target content basis
-    # as its static sibling; base_image, layer frames, and the diff-check
-    # parent_reference stay on the raw parent canvas.
+    # as its static sibling. Layered images use the raw parent canvas by default;
+    # an explicit stopped-frame viewport crops base and all phases together.
     fallback_image = (
         normalize_icon(parent_frame, f1_profile_size)
         if f1_profile_size is not None
@@ -3416,6 +3500,7 @@ def export_layered_icon_canvas_entry(
             protect_existing_layout,
             report,
             crop_frames=True,
+            projection_viewport=projection_viewport,
         )
         layer_entry: dict[str, Any] = {
             "characterId": child_id,
@@ -3457,6 +3542,8 @@ def export_layered_icon_canvas_entry(
         "uniqueFrameImages": total_unique,
         "layerCount": len(layer_entries),
     }
+    if projection_viewport is not None:
+        entry["nestedAnimation"]["frame1Viewport"] = list(projection_viewport)
     return entry, None
 
 
@@ -4113,6 +4200,9 @@ def main() -> int:
                         report=report,
                         timeout_seconds=args.ffdec_timeout_seconds,
                         f1_profile_size=target_content_profile_size,
+                        frame1_viewport=bool(
+                            args.nested_frame1_viewport and parent_frame1_stop and preserve_semantic_frame2
+                        ),
                     )
                     if layered_canvas_entry is None:
                         record_issue(

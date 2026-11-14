@@ -8052,5 +8052,152 @@
       "renderRecipeSha256": "ff18a07874a072628bf439506f6db5523d892de6347e66d1203a80fe5407c8cc",
       "renderRgbaSha256": "96b18fee6adca2efd8f07e55cc3a67853c773500c449d124320f41bc68a076bc"
     }
+  },
+  "Codex-AK47火麒麟": {
+    "f2": "c69cb5cb_2.webp",
+    "playback": "nested-animation",
+    "animated": true,
+    "frameCount": 1,
+    "f1": "c69cb5cb_1.png",
+    "fps": 30.0,
+    "format": "layered-png-sequence",
+    "nestedAnimation": {
+      "strategy": "direct-layered-icon-canvas",
+      "base": {
+        "uri": "c69cb5cb_base.png"
+      },
+      "layers": [
+        {
+          "characterId": 20,
+          "sourceParentId": 21,
+          "sourceFrameCount": 8,
+          "depth": 545,
+          "path": [
+            21,
+            20
+          ],
+          "matrix": {
+            "a": 1.0,
+            "b": 0.0,
+            "c": 0.0,
+            "d": 1.0,
+            "tx": 0.0,
+            "ty": 0.0
+          },
+          "filters": [],
+          "offset": {
+            "x": 739,
+            "y": 188
+          },
+          "fps": 30.0,
+          "frameCount": 8,
+          "uniqueFrameImages": 8,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceFrame": 1,
+              "uri": "c69cb5cb_layer20_1.png",
+              "cropX": 0,
+              "cropY": 19,
+              "cropWidth": 95,
+              "cropHeight": 50,
+              "canvasWidth": 128,
+              "canvasHeight": 128
+            },
+            {
+              "frame": 2,
+              "sourceFrame": 2,
+              "uri": "c69cb5cb_layer20_2.png",
+              "cropX": 0,
+              "cropY": 19,
+              "cropWidth": 95,
+              "cropHeight": 50,
+              "canvasWidth": 128,
+              "canvasHeight": 128
+            },
+            {
+              "frame": 3,
+              "sourceFrame": 3,
+              "uri": "c69cb5cb_layer20_3.png",
+              "cropX": 0,
+              "cropY": 19,
+              "cropWidth": 95,
+              "cropHeight": 50,
+              "canvasWidth": 128,
+              "canvasHeight": 128
+            },
+            {
+              "frame": 4,
+              "sourceFrame": 4,
+              "uri": "c69cb5cb_layer20_4.png",
+              "cropX": 0,
+              "cropY": 19,
+              "cropWidth": 95,
+              "cropHeight": 50,
+              "canvasWidth": 128,
+              "canvasHeight": 128
+            },
+            {
+              "frame": 5,
+              "sourceFrame": 5,
+              "uri": "c69cb5cb_layer20_5.png",
+              "cropX": 0,
+              "cropY": 19,
+              "cropWidth": 95,
+              "cropHeight": 50,
+              "canvasWidth": 128,
+              "canvasHeight": 128
+            },
+            {
+              "frame": 6,
+              "sourceFrame": 6,
+              "uri": "c69cb5cb_layer20_6.png",
+              "cropX": 0,
+              "cropY": 19,
+              "cropWidth": 95,
+              "cropHeight": 50,
+              "canvasWidth": 128,
+              "canvasHeight": 128
+            },
+            {
+              "frame": 7,
+              "sourceFrame": 7,
+              "uri": "c69cb5cb_layer20_7.png",
+              "cropX": 0,
+              "cropY": 19,
+              "cropWidth": 95,
+              "cropHeight": 50,
+              "canvasWidth": 128,
+              "canvasHeight": 128
+            },
+            {
+              "frame": 8,
+              "sourceFrame": 8,
+              "uri": "c69cb5cb_layer20_8.png",
+              "cropX": 0,
+              "cropY": 19,
+              "cropWidth": 95,
+              "cropHeight": 50,
+              "canvasWidth": 128,
+              "canvasHeight": 128
+            }
+          ]
+        }
+      ],
+      "frame1Diff": {
+        "exact": false,
+        "micro": true,
+        "changedPixels": 2614,
+        "changedAlphaPixels": 34,
+        "maxChannelDelta": 255,
+        "totalChannelDelta": 14163
+      },
+      "frame1Viewport": [
+        804,
+        194,
+        1044,
+        434
+      ]
+    }
   }
 }

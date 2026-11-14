@@ -1,7 +1,7 @@
 {
   "schema": "cf7-dressup-report-v1",
   "counts": {
-    "items": 1454,
+    "items": 1460,
     "skinKeys": 3041,
     "coveredSkinKeys": 2884,
     "aliasCoveredSkinKeys": 8,
@@ -14,17 +14,37 @@
     "compatAliasSkinKeys": 8,
     "manualCompatAliasSkinKeys": 8,
     "autoOppositeGenderCompatAliasSkinKeys": 0,
-    "preservedSkinKeyExports": 2884,
-    "preservedBasicHolderExports": 231,
+    "exportedSkinKeys": 1,
+    "exportedFrames": 3157,
+    "exportedBasicKeys": 0,
+    "exportedBasicFrames": 0,
+    "metadataErrors": 0,
+    "timelineScriptErrors": 0,
+    "spriteGraphErrors": 0,
+    "staticStopSkinKeys": 0,
+    "staticStopCollapsedFrames": 0,
+    "purgedStaleFrames": 28,
+    "nestedAnimationSkinKeys": 25,
+    "nestedLayerUnsupportedDescendants": 0,
+    "nestedLayerCompositedDescendants": 0,
+    "exportedNestedLayerKeys": 1,
+    "exportedNestedLayerFrames": 8,
+    "uniqueFrameImages": 2944,
+    "duplicateFrameRefs": 213,
+    "timelineLogicalFrames": 3157,
+    "timelineFrameEntries": 2946,
+    "timelineCompressedFrameRefs": 211,
+    "conditionalVariantSkinKeys": 0,
+    "conditionalVariantFrames": 0,
+    "conditionalVariantRemovedPlaceObjects": 0,
+    "expressionSkinKeys": 0,
+    "expressionFrames": 0,
+    "expressionFrameImages": 0,
+    "missingExpressionFrame": 0,
     "animatedSkinKeys": 17,
     "staticCollapsedSkinKeys": 27,
-    "nestedAnimationSkinKeys": 25,
-    "uniqueFrameImages": 2994,
-    "duplicateFrameRefs": 217,
-    "timelineLogicalFrames": 3211,
-    "timelineFrameEntries": 2996,
-    "timelineCompressedFrameRefs": 215,
-    "exportedFrames": 3157
+    "preservedSkinKeyExports": 2883,
+    "preservedBasicHolderExports": 231
   },
   "missingSummary": {
     "byUse": {
@@ -7016,7 +7036,70 @@
     }
   },
   "assetExport": {
-    "preservedSkinKeyExports": 2884,
+    "selectedSkinKeys": 1,
+    "resolvedSkinKeys": 1,
+    "exportedSkinKeys": 1,
+    "exportedFrames": 1,
+    "resolvedBasicKeys": 0,
+    "exportedBasicKeys": 0,
+    "exportedBasicFrames": 0,
+    "missingSymbol": [],
+    "missingBasicSymbol": [],
+    "symbolErrors": [],
+    "exportErrors": [],
+    "metadataErrors": [],
+    "exportFallbacks": [],
+    "missingFrame": [],
+    "missingBasicFrame": [],
+    "timelineScriptErrors": [],
+    "spriteGraphErrors": [],
+    "staticStopSkinKeys": 0,
+    "staticStopCollapsedFrames": 0,
+    "purgedStaleFrames": 28,
+    "staticStopSamples": [],
+    "nestedAnimationSkinKeys": 1,
+    "nestedAnimationSamples": [
+      {
+        "skinKey": "枪-长枪-Codex-AK47火麒麟",
+        "characterId": 17,
+        "playback": "nested-animation",
+        "sourceFrameCount": 1,
+        "descendantCount": 1,
+        "maxDescendantFrameCount": 8,
+        "sampleDescendants": [
+          {
+            "characterId": 13,
+            "frameCount": 8,
+            "depth": 2,
+            "path": [
+              17,
+              14,
+              13
+            ]
+          }
+        ]
+      }
+    ],
+    "nestedLayerUnsupportedDescendants": 0,
+    "nestedLayerCompositedDescendants": 0,
+    "exportedNestedLayerKeys": 1,
+    "exportedNestedLayerFrames": 8,
+    "missingNestedLayerFrame": [],
+    "uniqueFrameImages": 9,
+    "duplicateFrameRefs": 0,
+    "timelineLogicalFrames": 9,
+    "timelineFrameEntries": 9,
+    "timelineCompressedFrameRefs": 0,
+    "timelineCompressionSamples": [],
+    "conditionalVariantSkinKeys": 0,
+    "conditionalVariantFrames": 0,
+    "conditionalVariantRemovedPlaceObjects": 0,
+    "conditionalVariantSamples": [],
+    "expressionSkinKeys": 0,
+    "expressionFrames": 0,
+    "expressionFrameImages": 0,
+    "missingExpressionFrame": [],
+    "preservedSkinKeyExports": 2883,
     "preservedBasicHolderExports": 231
   },
   "animatedSkinKeys": [
@@ -7763,6 +7846,22 @@
       "uri": "skins/1fc852f9_1.png"
     },
     {
+      "skinKey": "枪-长枪-Codex-AK47火麒麟",
+      "playback": "nested-animation",
+      "frameCount": 1,
+      "sourceFrameCount": 1,
+      "descendantCount": 1,
+      "maxDescendantFrameCount": 8,
+      "layerCount": 1,
+      "strategy": "direct-layered",
+      "unsupportedDescendantCount": 0,
+      "compositedDescendantCount": 0,
+      "uses": [
+        "长枪"
+      ],
+      "uri": "skins/b1a1a3a0_1.png"
+    },
+    {
       "skinKey": "枪-长枪-混凝土切割机",
       "playback": "static-parent-nested-animation",
       "frameCount": 1,
@@ -7825,22 +7924,6 @@
         "长枪"
       ],
       "uri": "skins/c455ed6e_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-AK47火麒麟",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 3,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/12d51f3c_1.png"
     },
     {
       "skinKey": "枪-长枪-M4A1雷神",

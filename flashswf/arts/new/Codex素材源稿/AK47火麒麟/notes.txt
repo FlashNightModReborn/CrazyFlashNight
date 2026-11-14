@@ -1,0 +1,33 @@
+火麒麟 SVG 重绘修改说明与验证记录（v2.0 · 多轮材质精雕版）
+
+一、主要修改与多轮材质精修要点
+1. 原型结构校准与比例统一：
+   画布严格采用透明背景 viewBox="0 0 1200 450"，枪口朝右，整枪像素包围盒为 (49, 81) 至 (1150, 370)，展示总宽 1101px，与标杆 m4_tactical_reference.svg（总宽 1099px，x=50..1149）保持一致。扳机护圈内孔与准星座减重窗均采用 fill-rule="evenodd" 实现真实透明镂空（alpha=0）。
+2. 多轮材质与微观表面层次迭代（v4.0 -> v5.0 -> v6.0）：
+   - 胡桃木肌理（buttstock / pistol-grip）：基于 clipPath 裁剪构建双色导管曲线、山纹心材木节环纹、上脊清漆受光面与下腹暗部闭塞阴影，握把加入一字槽固定螺钉、防滑内凹面板与金属底盖反光边。
+   - 冲压发蓝钢机匣与弹匣（receiver-assembly / magazine）：拆分机匣上下冲压折面并铺设 1px 冷白折边受光棱线，刻画枪托卡榫圆座与竖槽、五孔带内铆钉防尘盖加强筋、分面拉丝钢枪机框、带冲压加强槽快慢机及双铆钉金框铭牌；弧形弹匣配置上口加强领圈、后脊焊缝、双道立体鎏金压筋配深色冲压凹槽及双切面底盖金爪。
+   - 多层錾刻银雕麒麟兽首（kirin-head）：将大块平面拆解为高反差铸银浮雕切面，刻画带血槽弧形五冠角、锯齿状头冠承插底座、后掠尖锐瑞兽龙耳、双拱怒目眉弓、鎏金眼眶镶边、鼻梁三道隆起怒纹、立体卷云鼻翼、颧骨三切面鳞甲与咬肌螺旋卷云纹、四层火焰状弧形银鬃、上下各五颗弯曲圆锥黄金獠牙及多层下颌黄金喉刺，辅以阴刻接缝与微型铆钉。
+   - 鎏金导气管与五切面麒麟刺（barrel-assembly / kirin-bayonet）：金属圆柱与刀身引入二次环境反光（bounce light），导气管增设散热上棱、泄压气孔与金属箍；麒麟刺细分阶梯铆钉银护手座、刀背斜面、双层倒角血槽、主磨刃面、镜面刃线及下缘厚度面。
+3. 语义化分组与内部复用：
+   全文件共 406 个矢量几何元素、23 个具名 g 分组；在 defs 中定义钢铆钉、一字螺钉、金销钉、微型装甲铆钉、护手拱形气孔座及三切面金边银面背鳞并通过 use 复用，零位图、零文本节点、零脚本、零滤镜警告与零外部依赖。
+
+二、眼部动效周期与相位设计
+1. 动效规范：全部采用 SVG 原生 <animate attributeName="opacity" begin="0s" repeatCount="indefinite" calcMode="linear"/>，置于各自受控子组内部，统一周期 dur="1.2s"，keyTimes="0;0.25;0.5;0.75;1"。
+2. 精确对位与不遮挡设计：眼底静态铺设切面血红宝石虹膜，动态火羽自眼眶外眼角（x=722, y=154）顺太阳穴凹槽向后上方流线型延伸，使前额银金眉弓、鼻梁怒纹与兽角全程保持清晰锐利、不被光雾遮糊：
+   - t=0.0s（phase_00）：暗红宝石蓄势态，清晰展露鎏金眼眶、怒目眉弓与尖耳银雕细节；
+   - t=0.3s（phase_01）：橙金火舌自外眼角向后上方涌起（eye-flame-surge 达 0.96）；
+   - t=0.6s（phase_02）：双叉主火羽（eye-flame-peak）与炽白金瞳核同步达峰值亮度（opacity=1.0）；
+   - t=0.9s（phase_03）：上扬尾焰与离散火星（eye-flame-sparks 达 0.98）跃动闪烁，平滑闭合循环。
+
+三、使用工具与环境说明
+- 构建与验证工具：Python 3.11 参数化与手工精雕脚本（build_fire_kylin_svg.py）、题包自带 tools/check_svg.py、tools/render_svg.py、tools/svg_tools.py、Pillow 11.1.0。离线容器通过系统 librsvg-2.so.2 与 libcairo.so.2 提供兼容 cairosvg.svg2png 渲染接口（与标杆 PNG 交叉核验平均绝对误差仅 0.099/255），题包原始脚本未做任何修改。
+
+四、耗时统计
+- 首轮原型检索与基础版构建：约 33 分钟
+- 对照拆解与三轮（v4.0 -> v5.0 -> v6.0）2x 放大材质精雕循环及校验打包：约 23 分钟
+
+五、验证结果摘要
+1. python3 tools/check_svg.py submission/weapon.svg --submission：
+   返回 ok=true，viewBox=[0.0, 0.0, 1200.0, 450.0]，geometryElements=406，namedGroups=23，opacityAnimations=5，animationDurations=[1.2, 1.2, 1.2, 1.2, 1.2]，warnings=[]。
+2. python3 tools/render_svg.py submission/weapon.svg --out submission/previews：
+   返回 ok=true，成功由最终 weapon.svg 导出 phase_00..03.svg/png（1200x450）、small_00..03.png（360x135）、phases.png、eye_loop.webp（24 帧循环动图）及 render-report.json。

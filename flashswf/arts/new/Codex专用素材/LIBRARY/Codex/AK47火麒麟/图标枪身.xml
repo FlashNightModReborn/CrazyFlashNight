@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/AK47火麒麟/图标枪身" itemID="6af80000-00004b25" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="图标枪身">
+      <layers>
+        <DOMLayer name="24像素遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/图标/24像素遮罩" symbolType="graphic" loop="single frame">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="兽首特写" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/AK47火麒麟/枪身" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.131546020507813" b="-0.047882080078125" c="0.047882080078125" d="0.131546020507813" tx="-101.05" ty="10.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

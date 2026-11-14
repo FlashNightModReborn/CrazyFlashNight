@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/AK47火麒麟/枪-长枪-Codex-AK47火麒麟" itemID="6af80000-000105f3" linkageExportForAS="true" linkageIdentifier="枪-长枪-Codex-AK47火麒麟">
+  <timeline>
+    <DOMTimeline name="枪-长枪-Codex-AK47火麒麟">
+      <layers>
+        <DOMLayer name="停止" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="枪口接口" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/接口/枪口标记" name="枪口位置">
+                  <matrix>
+                    <Matrix tx="257.65" ty="-35.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生分件与眼焰" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/AK47火麒麟/动画" name="动画">
+                  <matrix>
+                    <Matrix a="0.373382568359375" d="0.373382568359375" tx="-126.95" ty="-94.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

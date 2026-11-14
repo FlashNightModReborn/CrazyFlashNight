@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/AK47火麒麟/分件/eye-ambient-aura" itemID="6af80000-0000a7ef" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="eye-ambient-aura">
+      <layers>
+        <DOMLayer name="eye-ambient-aura" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient focalPointRatio="0.0862745098039216">
+                        <matrix>
+                          <Matrix a="0.0585479736328125" b="-0.0019989013671875" c="0.0019989013671875" d="0.0585479736328125" tx="718.2" ty="150.4"/>
+                        </matrix>
+                        <GradientEntry color="#FFEE82" alpha="0.850980392156863" ratio="0"/>
+                        <GradientEntry color="#FF7B00" alpha="0.619607843137255" ratio="0.23921568627451"/>
+                        <GradientEntry color="#FF2A00" alpha="0.27843137254902" ratio="0.52156862745098"/>
+                        <GradientEntry color="#D90B00" alpha="0.0784313725490196" ratio="0.8"/>
+                        <GradientEntry color="#990000" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!13859 2691[13709 2771 13605 2867!13605 2867[13501 2962 13456 3062!13456 3062[13410 3161 13436 3254!13436 3254[13463 3345 13554 3406!13554 3406[13646 3466 13784 3492!13784 3492[13923 3518 14093 3506!14093 3506[14262 3494 14447 3442!14447
+ 3442[14631 3389 14781 3309!14781 3309[14931 3229 15035 3133!15035 3133[15139 3038 15184 2938!15184 2938[15230 2839 15204 2746!15204 2746[15177 2655 15086 2594!15086 2594[14994 2534 14856 2508!14856 2508[14717 2482 14547 2494!14547 2494
+[14378 2506 14193 2558!14193 2558[14009 2611 13859 2691"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
