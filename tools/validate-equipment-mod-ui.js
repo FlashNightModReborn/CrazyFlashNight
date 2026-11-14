@@ -52,6 +52,10 @@ const hitBehaviorRequiredKeys = [
   'sameSourceOnly'
 ];
 const hitBehaviorAllowedKeySet = new Set(hitBehaviorRequiredKeys);
+const hitBehaviorEtchRequiredKeys = [
+  'type', 'stackGroup', 'profileId', 'delayFrames', 'detonationCrumble'
+];
+const hitBehaviorEtchAllowedKeySet = new Set(hitBehaviorEtchRequiredKeys);
 const hitBehaviorIntKeys = new Set([
   'decayDelay', 'decayInterval', 'maxStacks',
   'hitStacks', 'breakStacks', 'milestoneInterval'
@@ -72,8 +76,80 @@ function parseChildTags(xmlFragment) {
   return tags;
 }
 
+function validateGrayGooEtchXmlBlock(errors, modName, location, childTags) {
+  const map = new Map();
+  for (const t of childTags) {
+    if (!hitBehaviorEtchAllowedKeySet.has(t.name)) {
+      fail(errors, `[hitBehavior:HB_UNKNOWN_FIELD] ${modName} (${location}) 含未知字段 <${t.name}>`);
+    }
+    if (map.has(t.name)) {
+      fail(errors, `[hitBehavior:HB_DUPLICATE_FIELD] ${modName} (${location}) 重复声明字段 <${t.name}>`);
+    }
+    map.set(t.name, t.value);
+  }
+  for (const reqKey of hitBehaviorEtchRequiredKeys) {
+    if (!map.has(reqKey) || map.get(reqKey) === '') {
+      fail(errors, `[hitBehavior:HB_MISSING_FIELD] ${modName} (${location}) 缺少必填字段 <${reqKey}>`);
+    }
+  }
+  if (map.size < hitBehaviorEtchRequiredKeys.length) return null;
+
+  const stackGroup = map.get('stackGroup');
+  const profileId = map.get('profileId');
+  if (!stackGroup || stackGroup.includes('|')) {
+    fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) 非法 stackGroup: ${stackGroup}`);
+  }
+  if (!profileId || profileId.includes('|')) {
+    fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) 非法 profileId: ${profileId}`);
+  }
+
+  const delayRaw = map.get('delayFrames');
+  const delayFrames = Number(delayRaw);
+  if (!Number.isFinite(delayFrames) || !/^-?\d+$/.test(delayRaw)) {
+    fail(errors, `[hitBehavior:HB_TYPE_MISMATCH] ${modName} (${location}) <delayFrames> 必须为整数: ${delayRaw}`);
+  } else if (delayFrames < 1 || delayFrames > 600) {
+    fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) delayFrames 超出 [1,600]`);
+  }
+
+  const crumbleRaw = map.get('detonationCrumble');
+  const detonationCrumble = Number(crumbleRaw);
+  if (!Number.isFinite(detonationCrumble)) {
+    fail(errors, `[hitBehavior:HB_INVALID_NUMBER] ${modName} (${location}) <detonationCrumble> 必须为有限数值: ${crumbleRaw}`);
+  } else if (detonationCrumble < 0 || detonationCrumble > 100) {
+    fail(errors, `[hitBehavior:HB_OUT_OF_RANGE] ${modName} (${location}) detonationCrumble 超出 [0,100]`);
+  }
+
+  const profile = {
+    type: 'grayGooEtch',
+    stackGroup,
+    profileId,
+    delayFrames,
+    detonationCrumble
+  };
+  const identityKey = `${stackGroup}|${profileId}`;
+  const shapeJson = JSON.stringify({
+    type: profile.type,
+    delayFrames: profile.delayFrames,
+    detonationCrumble: profile.detonationCrumble
+  });
+  if (hitBehaviorProfileIndex.has(identityKey)) {
+    const prev = hitBehaviorProfileIndex.get(identityKey);
+    if (prev.shapeJson !== shapeJson) {
+      fail(errors, `[hitBehavior:HB_IDENTITY_SHAPE_CONFLICT] ${modName} (${location}) 的 (${identityKey}) 与 ${prev.location} 形状不一致`);
+    }
+  } else {
+    hitBehaviorProfileIndex.set(identityKey, { shapeJson, location: `${modName}:${location}`, profile });
+  }
+  hitBehaviorProfileCount += 1;
+  return profile;
+}
+
 function validateHitBehaviorXmlBlock(errors, modName, location, hbXml) {
   const childTags = parseChildTags(hbXml);
+  const typeTag = childTags.find(t => t.name === 'type');
+  if (typeTag && typeTag.value === 'grayGooEtch') {
+    return validateGrayGooEtchXmlBlock(errors, modName, location, childTags);
+  }
   const map = new Map();
   for (const t of childTags) {
     if (!hitBehaviorAllowedKeySet.has(t.name)) {
@@ -316,11 +392,12 @@ for (const fileName of sourceFiles) {
   }
 }
 
-// 验证灰蛊裂隙弹三档完整黄金数值契约（#208）
+// 验证灰蛊系列黄金数值契约（#208 + 灰蛊蚀刻霰弹）
 const expectedGrayGooProfiles = {
   'grayGooVulnerability|base': { crumblePerMilestone: 1, executeAtMax: 8, hitStacks: 1, breakStacks: 1, decayDelay: 90, decayInterval: 10 },
   'grayGooVulnerability|highPowerHandgun': { crumblePerMilestone: 0.1, executeAtMax: 5, hitStacks: 2, breakStacks: 2, decayDelay: 90, decayInterval: 10 },
-  'grayGooVulnerability|handgun': { crumblePerMilestone: 0.3, executeAtMax: 8, hitStacks: 3, breakStacks: 3, decayDelay: 150, decayInterval: 15 }
+  'grayGooVulnerability|handgun': { crumblePerMilestone: 0.3, executeAtMax: 8, hitStacks: 3, breakStacks: 3, decayDelay: 150, decayInterval: 15 },
+  'grayGooShotgunEtch|shotgunBase': { delayFrames: 54, detonationCrumble: 1 }
 };
 for (const [idKey, exp] of Object.entries(expectedGrayGooProfiles)) {
   const entry = hitBehaviorProfileIndex.get(idKey);

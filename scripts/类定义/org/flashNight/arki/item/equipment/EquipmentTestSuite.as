@@ -2352,6 +2352,68 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             return "✗ #208 D13 跨type别名身份冲突检测测试失败\n";
         }
 
+        // D14: grayGooEtch（灰蛊蚀刻霰弹）5字段契约、引用隔离、边界拒绝与跨插件提供者互斥
+        var buildShotgunEtchMod:Function = function():Object {
+            return {
+                name: "灰蛊蚀刻霰弹",
+                use: "手枪,长枪",
+                weapontype: "霰弹枪",
+                tag: "弹药",
+                stats: {
+                    merge: { rout: 0.1 },
+                    flat: { accuracy: -20 },
+                    percentage: { power: 5 },
+                    override: {
+                        hitBehavior: {
+                            type: "grayGooEtch",
+                            stackGroup: "grayGooShotgunEtch",
+                            profileId: "shotgunBase",
+                            delayFrames: 54,
+                            detonationCrumble: 1
+                        }
+                    }
+                }
+            };
+        };
+        ModRegistry.loadModData([buildShotgunEtchMod(), buildGrayGooMod()]);
+        if (ModRegistry.hasHitBehaviorDiagnostics()) {
+            return "✗ D14 灰蛊蚀刻霰弹合法5字段配置加载失败\n";
+        }
+        var sgRes:Object = EquipmentCalculator.calculatePure(
+            {name: "压制者", use: "长枪", weapontype: "霰弹枪", data: {modslot: 3, bullet: "横向穿刺联弹-普通子弹", power: 100}},
+            {level: 1, mods: ["灰蛊蚀刻霰弹"]}, cfg, ModRegistry.getModDict()
+        );
+        if (!sgRes || !sgRes.data || !sgRes.data.hitBehavior ||
+            sgRes.data.hitBehavior.type != "grayGooEtch" ||
+            sgRes.data.hitBehavior.delayFrames != 54 ||
+            sgRes.data.hitBehavior.detonationCrumble != 1 ||
+            sgRes.data.rout != 0.1) {
+            return "✗ D14 灰蛊蚀刻霰弹穿刺霰弹枪装配与数值合成测试失败\n";
+        }
+        sgRes.data.hitBehavior.delayFrames = 999;
+        var sgRes2:Object = EquipmentCalculator.calculatePure(
+            {name: "压制者", use: "长枪", weapontype: "霰弹枪", data: {modslot: 3, bullet: "横向穿刺联弹-普通子弹", power: 100}},
+            {level: 1, mods: ["灰蛊蚀刻霰弹"]}, cfg, ModRegistry.getModDict()
+        );
+        if (sgRes2.data.hitBehavior.delayFrames != 54) {
+            return "✗ D14 灰蛊蚀刻霰弹引用隔离测试失败\n";
+        }
+
+        var etchMissing:Object = buildShotgunEtchMod();
+        delete etchMissing.stats.override.hitBehavior.detonationCrumble;
+        var etchExtra:Object = buildShotgunEtchMod();
+        etchExtra.stats.override.hitBehavior.maxStacks = 18;
+        var etchFloatDelay:Object = buildShotgunEtchMod();
+        etchFloatDelay.stats.override.hitBehavior.delayFrames = 54.5;
+        var etchRangeDelay:Object = buildShotgunEtchMod();
+        etchRangeDelay.stats.override.hitBehavior.delayFrames = 601;
+        if (ModRegistry.validateHitBehaviorSchema(etchMissing.stats.override.hitBehavior, "test.etchMissing", "test").length == 0 ||
+            ModRegistry.validateHitBehaviorSchema(etchExtra.stats.override.hitBehavior, "test.etchExtra", "test").length == 0 ||
+            ModRegistry.validateHitBehaviorSchema(etchFloatDelay.stats.override.hitBehavior, "test.etchFloat", "test").length == 0 ||
+            ModRegistry.validateHitBehaviorSchema(etchRangeDelay.stats.override.hitBehavior, "test.etchRange", "test").length == 0) {
+            return "✗ D14 灰蛊蚀刻霰弹缺失/冗余/非整数/越界校验测试失败\n";
+        }
+
         return "✓ #208 灰蛊完整档位覆盖与契约审计测试通过\n";
     }
 

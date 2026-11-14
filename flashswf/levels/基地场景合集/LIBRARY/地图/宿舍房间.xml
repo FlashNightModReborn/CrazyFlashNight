@@ -211,8 +211,22 @@ onClipEvent(load){
 	}
 	//第三集结点解锁  
 	//this._name = 名字 = "书架";
+	// 沿用床铺的金黄悬停/按下描边，保留书柜原有投影。
+	this._bookcaseIdleFilters = this.filters;
+	this._bookcaseHoverFilters = this._bookcaseIdleFilters.concat([new flash.filters.GlowFilter(0xFFCC00, 1, 6, 6, 10, 1, false, false)]);
+	this._bookcasePressedFilters = this._bookcaseIdleFilters.concat([new flash.filters.GlowFilter(0xFFCC00, 1, 6, 6, 2, 1, false, false)]);
+}
+on (rollOver) {
+	this.filters = this._bookcaseHoverFilters;
+}
+on (press, dragOver) {
+	this.filters = this._bookcasePressedFilters;
+}
+on (rollOut, dragOut, releaseOutside) {
+	this.filters = this._bookcaseIdleFilters;
 }
 on (release) {
+	this.filters = this._bookcaseHoverFilters;
 	_root.加载外部UI("flashswf/UI/书架界面.swf");
 }]]></script>
                   </Actionscript>

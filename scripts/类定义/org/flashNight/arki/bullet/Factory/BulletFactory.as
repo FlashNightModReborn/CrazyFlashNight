@@ -84,6 +84,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         // 2. 使用局部变量计算
         var fireCount:Number = isCombinedShot ? 1 : shotgunValue;
         Obj.联弹霰弹值 = isCombinedShot ? shotgunValue : 1;
+        Obj.初始霰弹值 = (shotgunValue > 0) ? (shotgunValue >> 0) : 1;
 
         // 3. 简化的快速通道 (核心优化)
         // 基于约定 fireCount >= 1，我们不再需要处理 <= 0 的情况。
@@ -399,6 +400,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         } else {
             Obj.霰弹值 = 1;
         }
+        Obj.初始霰弹值 = Obj.霰弹值;
 
         // 2) 纳米毒性（须在 getDamageManager 之前；无独立实例，bullet 形参传 Obj 自身）
         BulletInitializer.initializeNanoToxicfunction(Obj, Obj, shooter);

@@ -1382,6 +1382,9 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     private static function hasGrayGooFields(hb:Object):Boolean {
         if (!hb || typeof hb != "object") return false;
         return String(hb.type) == "grayGooPrimer" ||
+               String(hb.type) == "grayGooEtch" ||
+               hb.delayFrames != undefined ||
+               hb.detonationCrumble != undefined ||
                hb.decayDelay != undefined ||
                hb.decayInterval != undefined ||
                hb.hitStacks != undefined ||
@@ -1587,12 +1590,76 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         return errors;
     }
 
+    private static function validateGrayGooEtchSchema(profile:Object, location:String, owner:String):Array {
+        var errors:Array = [];
+        var etchAllowed:Object = {
+            type: true,
+            stackGroup: true,
+            profileId: true,
+            delayFrames: true,
+            detonationCrumble: true
+        };
+        for (var k:String in profile) {
+            if (ObjectUtil.isInternalKey(k)) continue;
+            if (!etchAllowed[k]) {
+                errors.push({code: "HB_UNKNOWN_FIELD", modName: owner, location: location + "." + k, detail: "unknown field: " + k});
+            }
+        }
+        var etchRequired:Array = ["type", "stackGroup", "profileId", "delayFrames", "detonationCrumble"];
+        for (var r:Number = 0; r < etchRequired.length; r++) {
+            var reqKey:String = etchRequired[r];
+            if (profile[reqKey] == undefined || profile[reqKey] == null || profile[reqKey] === "") {
+                errors.push({code: "HB_MISSING_FIELD", modName: owner, location: location + "." + reqKey, detail: "missing field: " + reqKey});
+            }
+        }
+        if (errors.length > 0) return errors;
+
+        if (typeof profile.stackGroup != "string") {
+            errors.push({code: "HB_TYPE_MISMATCH", modName: owner, location: location + ".stackGroup", detail: "stackGroup must be String"});
+        } else {
+            var sgTrim:String = StringUtils.trim(profile.stackGroup);
+            if (sgTrim.length == 0 || sgTrim.indexOf("|") >= 0) {
+                errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".stackGroup", detail: "stackGroup must be non-empty and cannot contain '|'"});
+            }
+        }
+
+        if (typeof profile.profileId != "string") {
+            errors.push({code: "HB_TYPE_MISMATCH", modName: owner, location: location + ".profileId", detail: "profileId must be String"});
+        } else {
+            var pidTrim:String = StringUtils.trim(profile.profileId);
+            if (pidTrim.length == 0 || pidTrim.indexOf("|") >= 0) {
+                errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".profileId", detail: "profileId must be non-empty and cannot contain '|'"});
+            }
+        }
+
+        var dfVal = profile.delayFrames;
+        if (typeof dfVal != "number" || isNaN(dfVal) || !isFinite(dfVal)) {
+            errors.push({code: "HB_INVALID_NUMBER", modName: owner, location: location + ".delayFrames", detail: "delayFrames must be finite Number"});
+        } else if (Math.floor(dfVal) != dfVal) {
+            errors.push({code: "HB_TYPE_MISMATCH", modName: owner, location: location + ".delayFrames", detail: "delayFrames must be integer"});
+        } else if (dfVal < 1 || dfVal > 600) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".delayFrames", detail: "delayFrames must be in [1, 600]"});
+        }
+
+        var dcVal = profile.detonationCrumble;
+        if (typeof dcVal != "number" || isNaN(dcVal) || !isFinite(dcVal)) {
+            errors.push({code: "HB_INVALID_NUMBER", modName: owner, location: location + ".detonationCrumble", detail: "detonationCrumble must be finite Number"});
+        } else if (dcVal < 0 || dcVal > 100) {
+            errors.push({code: "HB_OUT_OF_RANGE", modName: owner, location: location + ".detonationCrumble", detail: "detonationCrumble must be in [0, 100]"});
+        }
+
+        return errors;
+    }
+
     public static function validateHitBehaviorSchema(profile:Object, location:String, modName:String):Array {
         var errors:Array = [];
         var owner:String = modName ? modName : "";
         if (!profile || typeof profile != "object") {
             errors.push({code: "HB_TYPE_MISMATCH", modName: owner, location: location, detail: "hitBehavior must be an Object"});
             return errors;
+        }
+        if (profile.type === "grayGooEtch") {
+            return validateGrayGooEtchSchema(profile, location, owner);
         }
 
         var allowed:Object = getHitBehaviorAllowedKeys();
@@ -1709,6 +1776,13 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     }
 
     private static function buildHitBehaviorCanonicalShape(profile:Object):Object {
+        if (String(profile.type) == "grayGooEtch") {
+            return {
+                type: "grayGooEtch",
+                delayFrames: Number(profile.delayFrames),
+                detonationCrumble: Number(profile.detonationCrumble)
+            };
+        }
         return {
             type: String(profile.type),
             maxStacks: Number(profile.maxStacks),
@@ -1726,8 +1800,12 @@ class org.flashNight.arki.item.equipment.ModRegistry {
 
     private static function isSameHitBehaviorShape(a:Object, b:Object):Boolean {
         if (!a || !b) return false;
-        return a.type === b.type &&
-               a.maxStacks === b.maxStacks &&
+        if (a.type !== b.type) return false;
+        if (a.type === "grayGooEtch") {
+            return a.delayFrames === b.delayFrames &&
+                   a.detonationCrumble === b.detonationCrumble;
+        }
+        return a.maxStacks === b.maxStacks &&
                a.milestoneInterval === b.milestoneInterval &&
                a.damagePerStack === b.damagePerStack &&
                a.sameSourceOnly === b.sameSourceOnly &&

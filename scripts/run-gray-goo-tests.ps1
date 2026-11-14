@@ -5,22 +5,31 @@ $focusedRun=@{
     TemplateRelativePath='scripts/test-runners/gray-goo-tests/TestLoader.as.template'
     SuiteRelativePaths=@(
         'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/ToughnessVulnerabilityPipelineTest.as',
+        'scripts/类定义/org/flashNight/arki/component/Buff/Effect/GrayGooShotgunEtchTest.as',
         'scripts/类定义/org/flashNight/arki/item/equipment/EquipmentTestSuite.as',
         'scripts/类定义/org/flashNight/gesh/tooltip/test/BuilderContractTest.as',
         'scripts/类定义/org/flashNight/arki/item/equipment/EquipmentIntervalCurveTest.as',
         'scripts/类定义/org/flashNight/arki/render/GrayGooAssetTest.as')
     SuiteFqns=@(
         'org.flashNight.arki.bullet.BulletComponent.Queue.ToughnessVulnerabilityPipelineTest',
+        'org.flashNight.arki.component.Buff.Effect.GrayGooShotgunEtchTest',
         'org.flashNight.arki.item.equipment.EquipmentTestSuite',
         'org.flashNight.gesh.tooltip.test.BuilderContractTest',
         'org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest',
         'org.flashNight.arki.render.GrayGooAssetTest')
-    AdditionalAsRelativePaths=@('scripts/类定义/org/flashNight/arki/item/equipment/EquipmentStatProjector.as')
+    AdditionalAsRelativePaths=@(
+        'scripts/类定义/org/flashNight/arki/item/equipment/EquipmentStatProjector.as',
+        'scripts/类定义/org/flashNight/arki/component/Buff/Effect/GrayGooShotgunEtch.as',
+        'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletHitEffectRegistry.as',
+        'scripts/类定义/org/flashNight/arki/bullet/Factory/BulletFactory.as',
+        'scripts/类定义/org/flashNight/arki/item/equipment/ModRegistry.as',
+        'scripts/类定义/org/flashNight/gesh/tooltip/builder/UseSwitchStatsBuilder.as')
     ExpectedTracePatterns=@(
         '(?m)^=== ToughnessVulnerabilityPipelineTest result: passed=197 failed=0 ===\r?$',
+        '(?m)^=== GrayGooShotgunEtchTest result: passed=22 failed=0 ===\r?$',
         '(?s)\A(?!.*✗).*\z',
         '(?m)^✓ #208 灰蛊完整档位覆盖与契约审计测试通过\r?$',
-        '(?m)^--- BuilderContractTest: 148/148 passed, 0 failed ---\r?$',
+        '(?m)^--- BuilderContractTest: 154/154 passed, 0 failed ---\r?$',
         '(?m)^GrayGooRealProfiles passed=true\r?$',
         '(?m)^--- EquipmentIntervalCurveTest: (?<count>[1-9][0-9]*)/\k<count> passed, 0 failed ---\r?$',
         '(?m)^GrayGooAssetTest phases: XML,I,II,III,max,pooled,reuse,zero-loss\r?$',

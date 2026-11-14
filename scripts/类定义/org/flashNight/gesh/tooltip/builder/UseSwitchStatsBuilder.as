@@ -395,6 +395,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
      */
     public static function buildHitBehaviorSummary(behavior:Object):String {
         if (!behavior) return "";
+        if (isGrayGooEtchBehavior(behavior)) return buildGrayGooEtchSummary(behavior);
         if (isGrayGooBehavior(behavior)) return buildGrayGooSummary(behavior);
 
         var parts:Array = [];
@@ -439,6 +440,10 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
 
     private static function appendHitBehavior(result:Array, indent:String, behavior:Object):Void {
         if (!behavior) return;
+        if (isGrayGooEtchBehavior(behavior)) {
+            appendGrayGooEtchBehavior(result, indent, behavior);
+            return;
+        }
         if (isGrayGooBehavior(behavior)) {
             appendGrayGooBehavior(result, indent, behavior);
             return;
@@ -484,6 +489,36 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
         if (behavior.sameSourceOnly == true || behavior.sameSourceOnly == "true") {
             result.push(indent, "  ", TooltipConstants.TIP_SAME_SOURCE_ONLY, "<BR>");
         }
+    }
+
+    private static function isGrayGooEtchBehavior(behavior:Object):Boolean {
+        return String(behavior.type) == "grayGooEtch" ||
+               behavior.delayFrames != undefined ||
+               behavior.detonationCrumble != undefined;
+    }
+
+    private static function buildGrayGooEtchSummary(behavior:Object):String {
+        var parts:Array = [];
+        if (behavior.delayFrames != undefined) {
+            parts.push("延迟" + formatFramesAsSeconds(behavior.delayFrames) + "引爆贴身满伤");
+        }
+        if (behavior.detonationCrumble != undefined && Number(behavior.detonationCrumble) > 0) {
+            parts.push("引爆击溃" + formatRawPercent(behavior.detonationCrumble));
+        }
+        return parts.join("；");
+    }
+
+    private static function appendGrayGooEtchBehavior(result:Array, indent:String,
+                                                      behavior:Object):Void {
+        var summary:String = buildGrayGooEtchSummary(behavior);
+        if (indent.length > 0) {
+            if (summary.length > 0) result.push(indent, "  ", summary, "<BR>");
+            return;
+        }
+        result.push(indent, "<FONT COLOR='", TooltipConstants.COL_USE_SWITCH, "'>",
+                    TooltipConstants.LBL_GRAY_GOO_BEHAVIOR, "</FONT><BR>");
+        if (summary.length > 0) result.push(indent, "  ", summary, "<BR>");
+        result.push(indent, "  蚀刻未引爆期间不叠加不刷新；目标提前阵亡不触发<BR>");
     }
 
     private static function isGrayGooBehavior(behavior:Object):Boolean {

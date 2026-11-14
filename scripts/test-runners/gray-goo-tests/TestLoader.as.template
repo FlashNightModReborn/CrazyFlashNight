@@ -5,6 +5,7 @@ if (_root.loaders == undefined) _root.loaders=[];
 if (_root.UI系统 == undefined) _root.UI系统={};
 if (_root.gameCommands == undefined) _root.gameCommands={};
 org.flashNight.arki.bullet.BulletComponent.Queue.ToughnessVulnerabilityPipelineTest.runAllTests();
+org.flashNight.arki.component.Buff.Effect.GrayGooShotgunEtchTest.runAllTests();
 org.flashNight.arki.item.equipment.EquipmentTestSuite.runAllTests();
 org.flashNight.gesh.tooltip.test.TestDataBootstrap.runIsolated(function():Void {
     org.flashNight.gesh.tooltip.test.BuilderContractTest.runAllTests();
@@ -15,7 +16,7 @@ _root.grayGooAssetComplete=function():Void {
 org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest.onComplete=function():Void {
     org.flashNight.arki.render.GrayGooAssetTest.runAllTests();
 };
-var grayProbePaths:Array=["武器_手枪_大威力手枪.xml","武器_手枪_冲锋枪.xml","武器_手枪_手枪.xml","equipment_mods/高等材料_枪械专用.xml"];
+var grayProbePaths:Array=["武器_手枪_大威力手枪.xml","武器_手枪_冲锋枪.xml","武器_手枪_手枪.xml","武器_长枪_霰弹枪.xml","武器_手枪_霰弹枪.xml","equipment_mods/高等材料_枪械专用.xml"];
 var grayProbeIndex:Number=0;
 var grayProbeItems:Object={};
 var grayProbeMods:Array=[];
@@ -28,9 +29,19 @@ function loadNextGrayProbe():Void {
         var w:Object=org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(grayProbeItems["Webley"],value,cfg,dict).data.hitBehavior;
         var g:Object=org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(grayProbeItems["TTI Glock 19"],value,cfg,dict).data.hitBehavior;
         var k:Object=org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(grayProbeItems["KRISS"],value,cfg,dict).data.hitBehavior;
+        var etchVal:Object={level:1,mods:["灰蛊蚀刻霰弹"]};
+        var aa12:Object=org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(grayProbeItems["AA12"],etchVal,cfg,dict);
+        var supp:Object=org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(grayProbeItems["牛仔的温切斯特"],etchVal,cfg,dict);
+        var night:Object=org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(grayProbeItems["夜莺"],etchVal,cfg,dict);
+        var sawed:Object=org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(grayProbeItems["超级矮子"],etchVal,cfg,dict);
+        var etchOk:Boolean=aa12!=null && aa12.data.hitBehavior.type=="grayGooEtch" && aa12.data.hitBehavior.delayFrames==54 && aa12.data.hitBehavior.detonationCrumble==1 && aa12.data.rout==0.1
+            && supp!=null && supp.data.hitBehavior.type=="grayGooEtch" && supp.data.hitBehavior.delayFrames==54 && supp.data.hitBehavior.detonationCrumble==1
+            && night!=null && night.data.hitBehavior.type=="grayGooEtch" && night.data.hitBehavior.delayFrames==54
+            && sawed!=null && sawed.data.hitBehavior.type=="grayGooEtch" && sawed.data.hitBehavior.detonationCrumble==1;
         var ok:Boolean=w.profileId=="highPowerHandgun" && w.crumblePerMilestone==0.1 && w.executeAtMax==5
             && g.profileId=="handgun" && g.crumblePerMilestone==0.3 && g.executeAtMax==8
-            && k.profileId=="base" && k.crumblePerMilestone==1 && k.executeAtMax==8;
+            && k.profileId=="base" && k.crumblePerMilestone==1 && k.executeAtMax==8
+            && etchOk;
         trace("GrayGooRealProfiles passed="+ok);
         if (!ok) trace("[TEST_FAIL] gray-goo actual XML profiles");
         org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest.runAllTests();

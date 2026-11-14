@@ -111,6 +111,7 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         test_ModStatBuilder_skillSwitch();
         test_ModsBlockBuilder_hitBehavior_useSwitch();
         test_ModsBlockBuilder_skillSwitch();
+        test_GrayGooEtch_tooltips();
 
         test_getRailText();
         test_getMagazineInfo();
@@ -663,6 +664,51 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
                        "ModsBlockBuilder shows base hitBehavior summary when no useSwitch branch matches");
         assertNotContains(machinePistolJoined, "武器子类：手枪", "ModsBlockBuilder does not match handgun branch for machine pistol");
         assertNotContains(machinePistolJoined, "命中/破韧+3格", "ModsBlockBuilder does not leak handgun bonus to machine pistol");
+    }
+
+    private static function test_GrayGooEtch_tooltips():Void {
+        var oldDict:Object = EquipmentUtil.modDict;
+        var dict:Object = {};
+        dict["灰蛊蚀刻霰弹"] = {
+            name: "灰蛊蚀刻霰弹",
+            use: "手枪,长枪",
+            weapontype: "霰弹枪",
+            tagValue: "弹药",
+            stats: {
+                merge: { rout: 0.1 },
+                flat: { accuracy: -20 },
+                percentage: { power: 0.05 },
+                override: {
+                    hitBehavior: {
+                        type: "grayGooEtch",
+                        stackGroup: "grayGooShotgunEtch",
+                        profileId: "shotgunBase",
+                        delayFrames: 54,
+                        detonationCrumble: 1
+                    }
+                }
+            }
+        };
+        EquipmentUtil.modDict = dict;
+
+        var modDetail:String = ModStatBuilder.build("灰蛊蚀刻霰弹").join("");
+        var installedBlock:Array = [];
+        ModsBlockBuilder.build(
+            installedBlock,
+            null,
+            {use: "长枪", weapontype: "霰弹枪"},
+            {mods: ["灰蛊蚀刻霰弹"]}
+        );
+        var installedJoined:String = installedBlock.join("");
+
+        EquipmentUtil.modDict = oldDict;
+
+        assertContains(modDetail, TooltipConstants.LBL_GRAY_GOO_BEHAVIOR, "ModStatBuilder shows gray-goo header for grayGooEtch");
+        assertContains(modDetail, "延迟1.8秒引爆贴身满伤；引爆击溃1%", "ModStatBuilder renders 1.8s delay and 1% crumble for grayGooEtch");
+        assertContains(modDetail, "蚀刻未引爆期间不叠加不刷新；目标提前阵亡不触发", "ModStatBuilder explains non-stacking and early-death rule");
+        assertNotContains(modDetail, "[object Object]", "ModStatBuilder never stringifies grayGooEtch hitBehavior object");
+        assertContains(installedJoined, "延迟1.8秒引爆贴身满伤；引爆击溃1%", "ModsBlockBuilder shows compact grayGooEtch summary on shotgun");
+        assertNotContains(installedJoined, "[object Object]", "ModsBlockBuilder never stringifies grayGooEtch hitBehavior object");
     }
 
     private static function test_ModStatBuilder_skillSwitch():Void {

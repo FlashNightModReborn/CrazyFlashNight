@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.component.Damage.DamageResult;
 import org.flashNight.arki.component.Buff.Effect.ToughnessVulnerabilityController;
+import org.flashNight.arki.component.Buff.Effect.GrayGooShotgunEtch;
 import org.flashNight.arki.component.Damage.DamageManagerFactory;
 import org.flashNight.arki.component.Buff.Effect.FireControlVulnerability;
 import org.flashNight.arki.component.Buff.Effect.ElderBeamVulnerability;
@@ -8,6 +9,7 @@ import org.flashNight.arki.component.Buff.Effect.ElderBeamVulnerability;
 class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
     private static var TOUGHNESS_VULNERABILITY_PRIMER:String = "toughnessVulnerabilityPrimer";
     private static var GRAY_GOO_PRIMER:String = "grayGooPrimer";
+    private static var GRAY_GOO_ETCH:String = "grayGooEtch";
 
     private static function isSupported(behavior:Object):Boolean {
         if (!behavior) return false;
@@ -81,6 +83,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
             return org.flashNight.arki.unit.UnitAI.Custom.DogBehavior.mark(target,shooter,behavior);
         if (behavior.type == "titaniumFireControl") return FireControlVulnerability.applyToTarget(target, behavior);
         if (behavior.type == "cf6ElderBeam") return ElderBeamVulnerability.applyToTarget(target, behavior);
+        if (behavior.type == GRAY_GOO_ETCH) return GrayGooShotgunEtch.applyToTarget(target, shooter, behavior, bullet);
         if (!isSupported(behavior)) return false;
         // 由真实伤害结果提供收益，不能用档位百分比推测成功或复制上一目标的值。
         bullet._grayGooResolvedCrumble = damageResult._crumbleDamage;

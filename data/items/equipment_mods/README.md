@@ -531,7 +531,9 @@ Tooltip 显示“柔性增加，最多 +32毫秒”，预览继续投影最终�
 
 只有首次跨过6/12/18格才触发节点击溃；满层连射维持不会重复触发。衰减退至0/6/12格分别重装Ⅰ/Ⅱ/Ⅲ阶。真实破韧跨线的击溃由下一次有效灰蛊命中兑现，标记保留被兑现节点的真实阶数，不按兑现时的当前层数重新推断。`ToughnessBroken` 仅在非刚体真实破韧时发布；刚体越阈仍清槽，但不对灰蛊追加层数。装备提示按当前匹配档位显示摘要，独立插件页列出三档与重装规则。
 
-回归入口：`scripts/run-gray-goo-tests.ps1` 联合检查真实XML三档、命中与退层、Tooltip、非法配置预览，以及发布素材经生产 `EffectSystem` 的三档挂载和回池复用；`scripts/run-gray-goo-asset-tests.ps1` 单独检查真实素材。它们使用 TestLoader 内存夹具，不替代体育老师实战和美术体感验收。
+回归入口：`scripts/run-gray-goo-tests.ps1` 联合检查真实XML档位、命中与退层/延迟引爆、Tooltip、非法配置预览，以及发布素材经生产 `EffectSystem` 的三档挂载和回池复用；`scripts/run-gray-goo-asset-tests.ps1` 单独检查真实素材。它们使用 TestLoader 内存夹具，不替代体育老师实战和美术体感验收。
+
+此外，`type = grayGooEtch`（用于霰弹枪弹药插件 `灰蛊蚀刻霰弹`）使用独立的 5 字段封闭契约：`type`、`stackGroup`、`profileId`、`delayFrames`（整数帧 `1..600`，当前 `54` 帧 = `1.8s`）、`detonationCrumble`（原始百分比 `0..100`，当前 `1` = `1%`）。任意弹片真实命中未处于蚀刻倒计时中的存活目标时植入单个延迟引爆 Buff；倒计时期间再次命中不叠加、不刷新、不覆盖已锁定的射击快照；到期若目标仍存活，通过 `BulletFactory.createSettlementBullet` + `BulletQueueProcessor.injectHit` 注入一次零距离满弹片命中（兼容联弹、穿刺联弹与非联弹多发霰弹的出生弹丸数）并附带 `detonationCrumble` 击溃；结算弹体不携带 `hitBehavior`，避免自我递归重挂。
 
 #### switchstrike - 切手技参数对象
 

@@ -360,6 +360,13 @@
         对点射武器增益作用于射击轮数,适合狙击武器与发射器。</description>
         <tag>枪机</tag>
     </mod>
+    <!--
+        灰蛊蚀刻霰弹平衡锚点：
+        保留原有常态微调（+0.1%击溃、-20精准度、+5%面板威力），全霰弹枪可装（含穿刺/多发/射线/高爆，零特殊排除）。
+        核心机制统一为两旋钮延迟引爆：任意弹片有效命中未处于蚀刻倒计时中的目标时植入灰蛊蚀刻；
+        delayFrames=54（1.8s）后若目标仍存活，按植入瞬间锁定的武器快照引爆一次贴身零距离全数弹片命中，
+        并附带 detonationCrumble=1% 血量上限击溃。倒计时窗口内再次命中不叠加、不刷新。
+    -->
     <mod>
         <name>灰蛊蚀刻霰弹</name>
         <use>手枪,长枪</use>
@@ -374,8 +381,18 @@
             <percentage>
                 <power>5</power>
             </percentage>
+            <override>
+                <hitBehavior>
+                    <type>grayGooEtch</type>
+                    <stackGroup>grayGooShotgunEtch</stackGroup>
+                    <profileId>shotgunBase</profileId>
+                    <delayFrames>54</delayFrames>
+                    <detonationCrumble>1</detonationCrumble>
+                </hitBehavior>
+            </override>
         </stats>
-        <description>纳米机器弹药,能百分比击溃血量上限，但会降低精准度。</description>
+        <description>将牺牲性灰蛊纳米簇封装于霰弹弹杯内，略微提升面板威力并附带微量常态击溃，但会降低精准度。
+        任意弹片有效命中未处于蚀刻倒计时中的目标时植入灰蛊蚀刻：1.8秒后若目标仍存活，引爆一次等同于贴身零距离全数弹片命中的伤害与冲击，并附带1%血量上限击溃；倒计时期间再次命中不会叠加或刷新。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
