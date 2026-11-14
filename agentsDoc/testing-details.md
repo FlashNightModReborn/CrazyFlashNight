@@ -1,6 +1,6 @@
 # 测试正文：按需验证细节
 
-**文档角色**：验证规范层正文（由选择矩阵 `agentsDoc/testing-guide.md` 路由进入）。**最后核对代码基线**：commit `5f6ea4135319cecfb0da433ae09ecf34504a07a7` 加 2026-09-28 世界面/HUD 层级验证增量；库存索引专题核对至 `b98b6303aa409e76086e50f24cb1cfed00408204` + 2026-10-13 索引快照与 31 项专项回归，其他专题保留各节既有基线。
+**文档角色**：验证规范层正文（由选择矩阵 `agentsDoc/testing-guide.md` 路由进入）。**最后核对代码基线**：commit `c475797b8afaf37e9b5fe7d805ca932a668d4ed8`（2026-11-14 核对 Flash CS6 编译超时、机器级互斥锁与 32 位 VA 轮换；库存索引专题基线 `b98b6303aa409e76086e50f24cb1cfed00408204`，其余专题保留各节既有基线）。
 
 本页是验证矩阵的规范层正文：按主题分节，读者只读命中章节即可，不要求回头全量读 AGENTS.md、`agentsDoc/testing-guide.md` 选择矩阵或迁移回包。任务到门的触发与选择规则在矩阵页；本页承接命中主题后的完整 runner、工作目录、参数、成功判据、失败恢复条件与证据边界。
 
@@ -68,7 +68,7 @@
   与 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-boot-sequencer-tests.ps1 -TimeoutSeconds 240`（机器钉死 BootSequencer 91/91 + BootstrapHandshake 12/12），分别冻结 XML/物品目录/旧可达集合、规则顺序与概率语义、启动 fail-closed 和 `ItemObtainIndex → TooltipComposer` 来源投影。
 
 - `compile_test`、游戏内人工验证按改动面追加；近战长枪静态门不代签 Flash 或实战命中，重启后人工回归多段主伤、同一目标一次多段命中只附加一份淬毒及暴君收割机副武器隔离。
-- 触及掉落 AS2 或启动加载时发布 `scripts/compile_test.ps1 -Target publish -TimeoutSeconds 300 -VerifySwf scripts/asLoader.swf`；Web/AS2 tooltip 消费链变化再追加 tooltip corpus 门（见 [Web、工作台与小游戏](#web)）。
+- 触及掉落 AS2 或启动加载时发布 `scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900 -VerifySwf scripts/asLoader.swf`；Web/AS2 tooltip 消费链变化再追加 tooltip corpus 门（见 [Web、工作台与小游戏](#web)）。
 
 派生输出的再生与 `--check` 规则见 [派生物与生成输入](#derived)；掉落/关卡行为对真实 HUD 的验证见 [关卡、输入与战斗](#stage-input)。
 
@@ -94,7 +94,7 @@
   不得把 Output Panel 副本称为 trace，也不得仅凭 `publish_done.marker` 判成功。`scripts/TestLoader.as` 被 `.gitignore`，是本机 scratch runner，仓库不保证其当前固定调用任何 suite；每项施工必须用 tracked aggregate/template 或在记录中给出实际 runner、suite 名与断言数。template 安装后属于非 class 帧脚本，必须保留 UTF-8 BOM，且只能使用包通配 import 或全限定类名，禁止具体类 import。
   **仅逻辑层**：真 socket、跨 SWF 生命周期、真实存档落点仍须真机复核，分层见 [构建标准 §5.3](../docs/asLoader-BootSequencer-构建标准-2026-06-16.md)。
 - **asLoader / publish 模式（发布二进制，剔 trace 等功能以免性能损耗）**：**本就不出 trace**——脚本会打 `[INFO] 无 trace 输出 (publish 模式不执行 trace)`，`flashlog.txt` 不刷新属正常，**不要据此判失败**。成功 = `[OK] 编译完成` + `scripts/compiler_errors.txt` 显示 `0 个错误` + `scripts/asLoader.swf` 已刷新（mtime/size 变化）。
-  **SWF 刷新机器门**：`-Target publish` 会自动启用 `-VerifySwf scripts/asLoader.swf`，正确示例是 `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 150`；显式重复传同一路径也允许。`-Target main` 同样自动校验根主 SWF；任意 XFL/FLA 路径目标仍必须显式传对应的 `-VerifySwf <目标.swf>`。
+  **SWF 刷新机器门**：`-Target publish` 会自动启用 `-VerifySwf scripts/asLoader.swf`，正确示例是 `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900`（820+ 类冷宿主完整发布约 600~800 秒，避免过短超时留闸）；显式重复传同一路径也允许。`-Target main` 同样自动校验根主 SWF；任意 XFL/FLA 路径目标仍必须显式传对应的 `-VerifySwf <目标.swf>`。
   脚本触发前记录 SWF 的 mtime/size 基线，成功路径校验其确被重写：未变 / 不存在 → `[ERROR] 目标 SWF 未刷新` + `exit 1`（fail-closed）。
 - **main / 主文件 publish-only**：只验证主文件运行壳、资产挂载、linkage 与主时间轴相关变更；不替代 asLoader 逻辑注入验证。成功 = `compiler_errors.txt` `0 个错误` + 根目录主 SWF 刷新；`main` 不产 trace 属正常。
 - **独立资源 XFL / 子 SWF publish-only**：只验证该 XFL 对应 SWF；例如改 `flashswf/UI/玩家信息界面/LIBRARY/*.xml` 时应编 `flashswf/UI/玩家信息界面/玩家信息界面.xfl` 并校验 `flashswf/UI/玩家信息界面.swf` 刷新。成功 = `compiler_errors.txt` `0 个错误` + `-VerifySwf` 指向的子 SWF 已刷新；`main` 刷新不能替代这个判据。显式 `-Target` 会先丢弃同目标的 CS6 内存文档并从磁盘重开；
@@ -127,7 +127,7 @@
 - `publish_done.marker` **仅说明 JSFL 触发结束**，不能单独视为成功；`compile_test.ps1` 要求 `compiler_errors.txt` 存在、身份/mtime 属于本轮且内容严格为 `0/0`，缺失、空文件、旧副本或非零诊断都失败。
 - `compile_action.jsfl` 在每个目标前清空独立 Compiler Errors 面板并删除旧导出，并在任何 target/doc early return 前同时消费一次性 target/mode cfg；PowerShell terminal 路径也同时清两者，timeout/nonterminal 才保留给迟到 JSFL。
 - 32K 自动重试使用保守格式：唯一最终汇总可解析、errors>0、warnings=0，汇总前恰有同数量的非空诊断行且每行自身含 `32K`；混合错误、多行上下文、汇总后文本或不可解析格式一律不重试。首轮完整诊断保存在本轮 `compile_output.txt`，最终 `compiler_errors.txt` 属于第二轮；第二轮仍失败则照常失败。testMovie 若重试可能产生两组 trace，但 focused 健康门只接受唯一闭合 runId block 并要求 `32K retry=0`。
-- 所有正常编译共享仓库 mutex；所有 scratch writer 在写入前持久记录 `testloader_scratch_inflight.marker` 与同卷 recovery sidecar，只有 byte-exact 恢复后才 exact-match 删除。
+- 所有正常编译同时获取仓库 mutex（`Local\CF7_FlashCompile_<RepoHash>`）与机器级 mutex（`Local\CF7_FlashCompile_MachineGlobal`），防止多 worktree 并发抢占单实例 CS6；非独占租约下编译前自动检查 32 位 `Flash.exe` 的 `VirtualSize`（`asLoader > 700 MiB` / 其余目标 `> 2400 MiB` 时经 `quit_owned_test_host` 安全轮换干净宿主，遇未保存或外部文档则 fail-closed 拒编，取证见 [VA 耗尽档案](../docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md)）。所有 scratch writer 在写入前持久记录 `testloader_scratch_inflight.marker` 与同卷 recovery sidecar，只有 byte-exact 恢复后才 exact-match 删除。
 
 **异常与崩溃恢复**：`compile_test.ps1` 在触发计划任务前先写 in-flight `compile_state_uncertain.marker`，故 child host 被硬杀时：已触发则闸仍在，写闸前被杀则尚未触发 Flash；无需由每个父 runner 再把普通编译失败一律升级为人工清闸。父 runner 自身崩溃由 scratch marker 阻断普通编译；
 编译 `[TIMEOUT]`，或 focused / Gobang / 协议在 child exit 0 后仍未观察到唯一 runId 终态时，则由 `compile_state_uncertain.marker` 阻断可能迟到的 JSFL/player。marker 带本轮唯一 token，terminal 只清除内容仍 exact-match 的本轮 in-flight body，不能擦掉其他故障的新 marker。必须先确认 Flash、计划任务和旧 test player 均已静止并核对迟到 marker/SWF/diagnostics。

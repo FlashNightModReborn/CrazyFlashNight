@@ -1,13 +1,13 @@
 # 项目记忆导航
 
 **文档角色**：受限导航与术语提示；工程权威和操作权限见 [AGENTS.md](../../AGENTS.md)。
-**核对基线**：`cfb1952e88553d8e5138d7c3e9b883a9beb035d2`（2026-11-03）。
+**核对基线**：`c475797b8afaf37e9b5fe7d805ca932a668d4ed8`（2026-11-14）。
 
 ## 按任务定位
 
 | 任务 | 当前依据 |
 | --- | --- |
-| 编译目标、环境、异常恢复 | [验证选择矩阵](../../agentsDoc/testing-guide.md#as2)、[CS6 操作合同](../../scripts/FlashCS6自动化编译.md) |
+| 编译目标、环境、异常恢复 | [验证选择矩阵](../../agentsDoc/testing-guide.md#as2)、[CS6 操作合同](../../scripts/FlashCS6自动化编译.md)、[CS6 4G 地址墙取证](../../docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md) |
 | AS2 语义、BOM、跨 SWF 生命周期 | [反幻觉约束](../../agentsDoc/as2-anti-hallucination.md)、[加载时序](../../agentsDoc/as2-load-timing.md) |
 | 数据、数值与派生物 | [数据归属](../../agentsDoc/data-schemas.md#data-entry)、[游戏设计](../../agentsDoc/game-design.md) |
 | XFL、linkage、图标 | [美术装配](../../agentsDoc/art-asset-assembly.md)、[Linkage Scanner](../../tools/linkage_scanner/README.md) |

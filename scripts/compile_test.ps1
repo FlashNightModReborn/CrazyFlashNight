@@ -100,6 +100,45 @@ function Remove-OwnedCompileUncertain {
     }
 }
 
+function Get-FlashVaSnapshot {
+    $procs = @(Get-Process -Name Flash -ErrorAction SilentlyContinue)
+    if ($procs.Count -eq 0) {
+        return $null
+    }
+    $p = $procs[0]
+    return [pscustomobject]@{
+        Pid            = $p.Id
+        VirtualMiB     = [math]::Round($p.VirtualMemorySize64 / 1MB, 1)
+        PeakVirtualMiB = [math]::Round($p.PeakVirtualMemorySize64 / 1MB, 1)
+        PrivateMiB     = [math]::Round($p.PrivateMemorySize64 / 1MB, 1)
+    }
+}
+
+function Get-ValidatedFlashLifecycleTask {
+    param([Parameter(Mandatory = $true)]$TaskMode)
+
+    $editorTask = Get-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop
+    $execPath = if ($editorTask.Actions.Count -eq 1) {
+        ($editorTask.Actions[0].Execute | Out-String).Trim()
+    } else {
+        ''
+    }
+    $execValid = if ($TaskMode.IsNative) {
+        $execPath -ieq $TaskMode.Execute
+    } else {
+        ([System.IO.Path]::GetFileName($execPath) -ieq 'Flash.exe') -and
+            (Test-Path -LiteralPath $execPath -PathType Leaf)
+    }
+    if ($editorTask.Actions.Count -ne 1 -or
+        -not $execValid -or
+        -not [string]::IsNullOrWhiteSpace($editorTask.Actions[0].Arguments) -or
+        $editorTask.Principal.RunLevel -ne 'Highest' -or
+        $editorTask.Settings.ExecutionTimeLimit -ne 'PT0S') {
+        throw 'FlashCS6Task must launch the same CS6 executable without arguments or a time limit.'
+    }
+    return $editorTask
+}
+
 function Convert-ToJsflUri {
     param([Parameter(Mandatory = $true)][string]$Path)
 
@@ -259,6 +298,10 @@ try {
 $compileMutex = [System.Threading.Mutex]::new(
     $false, 'Local\CF7_FlashCompile_' + $compileRepoHash)
 $compileMutexAcquired = $false
+# 单机仅有一个共享 Flash.exe 实例、全局 Commands 配置与 ASO 缓存目录；增加机器级互斥锁防止多 worktree 并发抢占。
+$machineCompileMutex = [System.Threading.Mutex]::new(
+    $false, 'Local\CF7_FlashCompile_MachineGlobal')
+$machineCompileMutexAcquired = $false
 $compileLease = $env:CF7_FLASH_COMPILE_LEASE
 $leaseOwnerPid = 0
 try {
@@ -308,6 +351,18 @@ try {
         Write-Host '[INFO] 复用 focused runner 持有的仓库编译 mutex。'
     }
     try {
+        $machineCompileMutexAcquired = $machineCompileMutex.WaitOne(0)
+    } catch [System.Threading.AbandonedMutexException] {
+        $machineCompileMutexAcquired = $true
+        [void](Write-CompileUncertain 'machine-global Flash compile mutex was abandoned')
+        Write-Host '[ERROR] 本机上一个 Flash 编译进程异常中断；请先确认 Flash/计划任务静止并核对 marker 后再重试。'
+        exit 1
+    }
+    if (-not $machineCompileMutexAcquired) {
+        Write-Host '[ERROR] 本机另一工作树或会话正在驱动 Flash CS6；拒绝跨目录并发抢占单实例宿主。'
+        exit 1
+    }
+    try {
         Assert-Cf7TestLoaderScratchAdmission -MarkerPath $ScratchMarker `
             -RunnerPath (Join-Path $ScriptDir 'TestLoader.as') `
             -RepoHash $compileRepoHash -CompileLease $compileLease `
@@ -353,6 +408,7 @@ Remove-Item -Path $QuitCfg -ErrorAction SilentlyContinue
 Remove-Item -Path $ReopenMarker -ErrorAction SilentlyContinue
 $targetUri = ''
 $isTestLoaderTarget = $false
+$isAsLoaderTarget = $false
 # 编译动作模式：默认 test（testMovie，跑 trace / 刷新 SWF）。main（整套游戏主文件）走 publish——
 #   doc.publish() 只编译产出 SWF + 填充 fl.compilerErrors，不 testMovie 拉起全量游戏窗口（连不上 launcher
 #   socket 卡住 / 撞反盗版层 / 留僵尸窗口）。compile_action.jsfl 据 compile_mode.cfg 选 publish vs testMovie。
@@ -381,6 +437,10 @@ if ($Target) {
     $testLoaderXflPath = [System.IO.Path]::GetFullPath(
         (Join-Path $ProjectDir 'scripts\TestLoader\TestLoader.xfl'))
     $isTestLoaderTarget = [System.IO.Path]::GetFullPath($targetPath) -ieq $testLoaderXflPath
+    $asLoaderXflPath = [System.IO.Path]::GetFullPath(
+        (Join-Path $ProjectDir 'scripts\asLoader\asLoader.xfl'))
+    $isAsLoaderTarget = ([System.IO.Path]::GetFullPath($targetPath) -ieq $asLoaderXflPath) -or
+        ([System.IO.Path]::GetFileName($targetPath) -ieq 'asLoader.xfl')
     $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
     $functionSizeTool = Join-Path $ProjectDir 'tools\swf-function-sizes.js'
     if ($isTestLoaderTarget -and
@@ -493,31 +553,80 @@ if ($VerifySwf) {
     }
 }
 
-# 30秒的触发任务只负责向已运行CS6递交JSFL，不能承接冷启动编辑器的生命周期。
-# 否则大型目标尚未压缩完SWF，Task Scheduler便会终止CS6；外层timeout无法延长它。
-if ($taskMode.IsNative -and -not (Get-Process -Name Flash -ErrorAction SilentlyContinue)) {
+# 32位 Flash CS6 虚拟地址空间上限为 4095.9 MiB，关闭文档不释放编译器全局 AST/符号表池已保留的 VA slab。
+# asLoader 单次发布峰值约 3.75~3.97 GiB，要求干净宿主（<= 700 MiB）；其余目标在脏宿主 > 2400 MiB 时自动轮换。
+# 若当前持有独占测试宿主租约（testhost_ownership.marker），保持原 PID 绑定，不在此处换宿主。
+$preCompileVa = Get-FlashVaSnapshot
+$vaRotateThresholdMiB = if ($isAsLoaderTarget) { 700.0 } else { 2400.0 }
+if ($null -ne $preCompileVa -and
+    $preCompileVa.VirtualMiB -gt $vaRotateThresholdMiB -and
+    -not (Test-Path -LiteralPath (Join-Path $ScriptDir 'testhost_ownership.marker'))) {
     try {
-        $editorTask = Get-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop
-        if ($editorTask.Actions.Count -ne 1 -or
-            $editorTask.Actions[0].Execute -ine $taskMode.Execute -or
-            -not [string]::IsNullOrWhiteSpace($editorTask.Actions[0].Arguments) -or
-            $editorTask.Principal.RunLevel -ne 'Highest' -or
-            $editorTask.Settings.ExecutionTimeLimit -ne 'PT0S') {
-            throw 'FlashCS6Task must launch the same CS6 executable without arguments or a time limit.'
-        }
-        Write-Host '[INFO] 冷启动CS6：复用已登记的不限时FlashCS6Task；编译触发任务不承接编辑器生命周期。'
-        Start-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop
-        $editorDeadline = [DateTime]::UtcNow.AddSeconds(15)
-        do {
+        [void](Get-ValidatedFlashLifecycleTask -TaskMode $taskMode)
+        Write-Host ('[INFO] 检测到 CS6 脏宿主 VA 水位偏高 (PID={0}, Virtual={1} MiB > {2} MiB 阈值)；编译前自动优雅轮换干净宿主...' -f
+            $preCompileVa.Pid, $preCompileVa.VirtualMiB, $vaRotateThresholdMiB)
+        . (Join-Path $ScriptDir 'test-runners/testplayer-control.ps1')
+        $rotateResult = Invoke-Cf7StopTestPlayers -ScriptsDirectory $ScriptDir `
+            -Operation 'quit_owned_test_host' -ControlTimeoutSeconds 15
+        $exitDeadline = [DateTime]::UtcNow.AddSeconds(10)
+        while ((Get-Process -Name Flash -ErrorAction SilentlyContinue) -and
+               [DateTime]::UtcNow -lt $exitDeadline) {
             Start-Sleep -Milliseconds 250
-            $editorProcess = Get-Process -Name Flash -ErrorAction SilentlyContinue
-        } while (-not $editorProcess -and [DateTime]::UtcNow -lt $editorDeadline)
-        if (-not $editorProcess) { throw 'CS6 did not start within 15 seconds.' }
+        }
+        if (Get-Process -Name Flash -ErrorAction SilentlyContinue) {
+            throw 'quit_owned_test_host receipt observed, but Flash.exe did not exit within 10 seconds.'
+        }
+        Write-Host ('[INFO] 脏宿主已安全退出（证据：{0}）；即将冷启动干净 CS6 实例。' -f $rotateResult.receipts)
     } catch {
-        Write-Host ('[ERROR] 无法安全冷启动CS6，尚未触发编译：{0}' -f $_.Exception.Message)
+        Write-Host ('[ERROR] CS6 当前 VirtualSize={0} MiB 超过安全水位 {1} MiB，且无法安全自动轮换宿主：{2}' -f
+            $preCompileVa.VirtualMiB, $vaRotateThresholdMiB, $_.Exception.Message)
+        Write-Host '        若 CS6 中打开了未保存或非测试的美术/业务文档，请先人工保存并重启 CS6 后再执行编译。'
         exit 1
     }
 }
+
+# 30秒的触发任务只负责向已运行CS6递交JSFL，不能承接冷启动编辑器的生命周期。
+# 否则大型目标尚未压缩完SWF，Task Scheduler便会终止CS6；外层timeout无法延长它。
+if (($taskMode.IsNative -or $taskMode.IsDirect) -and
+    -not (Get-Process -Name Flash -ErrorAction SilentlyContinue)) {
+    $canColdStartViaLifecycleTask = $false
+    try {
+        [void](Get-ValidatedFlashLifecycleTask -TaskMode $taskMode)
+        $canColdStartViaLifecycleTask = $true
+    } catch {
+        if ($taskMode.IsNative) {
+            Write-Host ('[ERROR] 无法安全冷启动CS6，尚未触发编译：{0}' -f $_.Exception.Message)
+            exit 1
+        }
+        Write-Host ('[WARN] FlashCS6Task 不可用，回退到传统触发器启动：{0}' -f $_.Exception.Message)
+    }
+    if ($canColdStartViaLifecycleTask) {
+        try {
+            Write-Host '[INFO] 冷启动CS6：复用已登记的不限时FlashCS6Task；编译触发任务不承接编辑器生命周期。'
+            Start-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop
+            $editorDeadline = [DateTime]::UtcNow.AddSeconds(15)
+            do {
+                Start-Sleep -Milliseconds 250
+                $editorProcess = Get-Process -Name Flash -ErrorAction SilentlyContinue | Select-Object -First 1
+            } while (-not $editorProcess -and [DateTime]::UtcNow -lt $editorDeadline)
+            if (-not $editorProcess) { throw 'CS6 did not start within 15 seconds.' }
+            $uiReadyDeadline = [DateTime]::UtcNow.AddSeconds(10)
+            do {
+                $editorProcess.Refresh()
+                if ($editorProcess.Responding) { break }
+                Start-Sleep -Milliseconds 250
+            } while ([DateTime]::UtcNow -lt $uiReadyDeadline)
+            Start-Sleep -Milliseconds 1000
+        } catch {
+            Write-Host ('[ERROR] 无法安全冷启动CS6，尚未触发编译：{0}' -f $_.Exception.Message)
+            exit 1
+        }
+    }
+}
+
+$vaAtStart = Get-FlashVaSnapshot
+$startVirtualMiB = if ($null -ne $vaAtStart) { $vaAtStart.VirtualMiB } else { 0.0 }
+$maxPeakVirtualMiB = if ($null -ne $vaAtStart) { $vaAtStart.PeakVirtualMiB } else { 0.0 }
 
 Write-Host ('[INFO] 触发编译... (超时 {0}s)' -f $TimeoutSeconds)
 $compileStartedUtc = [System.DateTime]::UtcNow
@@ -537,10 +646,24 @@ $reopenRequestCount = 0
 Start-ScheduledTask -TaskName 'CompileTriggerTask'
 
 for ($i = 1; $i -le $TimeoutSeconds; $i++) {
+    $vaSample = Get-FlashVaSnapshot
+    if ($null -ne $vaSample -and $vaSample.PeakVirtualMiB -gt $maxPeakVirtualMiB) {
+        $maxPeakVirtualMiB = $vaSample.PeakVirtualMiB
+    }
     if (Test-Path $Marker) {
         $compileTerminalObserved = $true
         Remove-OwnedCompileUncertain -ExpectedBody $inFlightUncertainBody
         Write-Host ('[OK] 编译完成 ({0}s)' -f $i)
+        $vaAtEnd = Get-FlashVaSnapshot
+        if ($null -ne $vaAtEnd -and $vaAtEnd.PeakVirtualMiB -gt $maxPeakVirtualMiB) {
+            $maxPeakVirtualMiB = $vaAtEnd.PeakVirtualMiB
+        }
+        if ($maxPeakVirtualMiB -gt 0 -or $null -ne $vaAtEnd) {
+            $endResText = if ($null -ne $vaAtEnd) { ('{0} MiB' -f $vaAtEnd.VirtualMiB) } else { '已退出' }
+            $peakPct = [math]::Round(($maxPeakVirtualMiB / 4095.9) * 100, 1)
+            Write-Host ('[INFO] [CS6 VA 水位] 起点 {0} MiB -> 峰值 {1} MiB / 4095.9 MiB ({2}%) | 当前驻留 {3}' -f
+                $startVirtualMiB, $maxPeakVirtualMiB, $peakPct, $endResText)
+        }
         Remove-Item -Path $Marker -ErrorAction SilentlyContinue
 
         $flashTraceContent = $null
@@ -709,9 +832,9 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             Start-Sleep -Milliseconds 250
             if (-not (Get-Process -Name Flash -ErrorAction SilentlyContinue) -and
                 -not (Test-Path -LiteralPath $Marker) -and -not (Test-Path -LiteralPath $ErrorMarker)) {
-                [void](Write-CompileUncertain ('native host exited before terminal evidence; target={0}' -f $Target))
+                [void](Write-CompileUncertain ('native host exited before terminal evidence; target={0}; maxPeakVaMiB={1}' -f $Target, $maxPeakVirtualMiB))
                 $nonTerminalUncertainWritten = $true
-                Write-Host '[ERROR] CS6 已退出且没有终态编译证据；保留本轮未知状态，不继续空等。'
+                Write-Host ('[ERROR] CS6 已退出且没有终态编译证据（本轮观测峰值 VA: {0} MiB / 4095.9 MiB）；保留本轮未知状态，不继续空等。' -f $maxPeakVirtualMiB)
                 exit 1
             }
         }
@@ -782,6 +905,10 @@ exit 1
         -not $nonTerminalUncertainWritten) {
         [void](Write-CompileUncertain ('compile_test exited before a terminal marker; target={0}' -f $Target))
     }
+    if ($machineCompileMutexAcquired) {
+        $machineCompileMutex.ReleaseMutex()
+    }
+    $machineCompileMutex.Dispose()
     if ($compileMutexAcquired) {
         $compileMutex.ReleaseMutex()
     }

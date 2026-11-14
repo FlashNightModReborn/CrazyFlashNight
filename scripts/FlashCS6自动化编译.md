@@ -1,7 +1,7 @@
 # Flash CS6 自动化编译指南
 
 **文档角色**：Flash CS6 编译 smoke canonical doc。  
-**最后核对代码基线**：commit `cfb1952e88553d8e5138d7c3e9b883a9beb035d2`（2026-11-03；本轮复核目标解析、Node 门与异步行为窗口；未执行 CS6）。
+**最后核对代码基线**：commit `c475797b8afaf37e9b5fe7d805ca932a668d4ed8`（2026-11-14；补充多机器宿主兼容分流、机器级编译互斥锁、32 位 4 GiB VA 水位自动轮换与崩溃排障）。
 
 本文件只讲 **Flash CS6 编译与 smoke 验证链**：计划任务、JSFL、trace、编译器错误、截图与故障排查。  
 游戏启动与运行自动化请看 [automation/README.md](../automation/README.md)。
@@ -13,13 +13,19 @@
 - 这条链路当前仍属于 **smoke 级验证**
 - 没有目标所需的新鲜证据组合（至少本轮 `compiler_errors.txt` `0/0`；publish 另需 SWF 刷新，测试另需行为证据）时，不要直接声称“已编译通过”
 
-## 2. 前提条件
+## 2. 前提条件与多机器环境分流
 
-- 已以管理员身份运行过 `scripts/setup_compile_env.bat`
-- Flash CS6 正在运行
-- `scripts/TestLoader` XFL 已打开
+- 已以管理员身份运行过一次 `scripts/setup_compile_env.bat`（部署 `cf7_compile_loader.jsfl`、`flash_project_path.cfg`、`mm.cfg`，并登记不限时的 `FlashCS6Task` 生命周期任务与显式调用 `Flash.exe "<Loader>"` 的 `CompileTriggerTask` 触发任务）
+- 已登记 `FlashCS6Task` 时，无需事先手动启动 Flash CS6，显式传 `-Target` 时也无需预先打开 `TestLoader`（`compile_test.ps1` 会按需自动冷启动干净宿主并从盘打开目标）；仅在省略 `-Target` 沿用旧行为时才要求目标已在前台打开
 - 已安装 Node.js；TestLoader 的 `function codeSize < 60000` 是硬门，缺少 `node` 或 `tools/swf-function-sizes.js` 时会在触发 Flash 前失败。非 TestLoader 目标缺少 Node 时，预编译 BOM 门仍只告警降级
-- 如果近期更新过编译自动化脚本或换过机器，先重新运行一次 setup
+- 如果近期更新过编译自动化脚本、换过仓库路径或换过机器，先以管理员身份重新运行一次 `scripts/setup_compile_env.bat -SkipCleanup`
+
+### 多开发机兼容形态（标准安装 vs 绿色便携版）
+
+不同开发机的 CS6 安装来源不同，**不要把某台机器的兼容层注册表硬搬到所有机器**：
+
+1. **标准完整安装版 CS6（推荐新机形态）**：MSI 安装器已完整写入系统 COM / 许可项，**无需设置任何 `AppCompatFlags\Layers` 兼容标志**。直接运行一次 `scripts/setup_compile_env.bat` 建立双计划任务即可免弹窗、免 `.jsfl` 默认关联串台（与 Adobe Animate 共存时同样安全）。
+2. **绿色便携版 CS6（需提权桥接形态）**：缺少系统级注册表项时直接普通启动可能报错退出，此时在 `AppCompatFlags\Layers` 中**仅保留 `~ RUNASADMIN`**，配合双计划任务（`RunLevel=Highest`）即可从非提权终端与 Agent 会话无感调用。**严禁额外勾选或保留 `WIN7RTM` / `WINXPSP3` 兼容模式**——实测 `WIN7RTM` 会强制注入 `AcLayers.dll` 兼容堆垫片，导致 `asLoader` 单次发布慢约 `25%` 并额外吞噬约 `216 MiB` 的 32 位虚拟地址空间，大幅提高长程施工 OOM 崩溃率（量化对照与新机只读自检脚本见 [`docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md`](../docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md)）。
 
 ## 3. 使用方式
 
@@ -58,7 +64,8 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -TimeoutSecond
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target test -TimeoutSeconds 180
 
 # 发布构建：编 asLoader（别名自动走 doc.publish()，并启用 -VerifySwf scripts/asLoader.swf；无需再写 -PublishOnly）
-powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180
+# 注意：asLoader 现已超过 820 个类（~7.2 MB），冷宿主完整发布约需 600~800 秒，建议至少设 900 秒避免误超时留闸
+powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900
 
 # 主文件构建：只用于主 FLA / 资产 / linkage / 主时间轴相关改动
 # publish-only（doc.publish() 不 testMovie），不会拉起整套游戏；产出仓库根 CRAZYFLASHER7MercenaryEmpire.swf
@@ -72,11 +79,15 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target script
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flashswf/UI/玩家信息界面/玩家信息界面.xfl' -PublishOnly -VerifySwf 'flashswf/UI/玩家信息界面.swf'
 ```
 
-`test`|`testloader` → `scripts/TestLoader`（`doc.testMovie()`）；`publish`|`asloader` → `scripts/asLoader`（隐式 **publish-only** + 自动 `-VerifySwf scripts/asLoader.swf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（隐式 **publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。因此 `publish/asloader/main` 别名都可省略 `-PublishOnly`；只有任意显式 FLA/XFL 路径需要禁止 testMovie 时才额外传该开关。`-Target` 决定编哪个，无需手动切到前台；publish-only 在诊断落盘后自动以“不保存”关闭本轮目标，避免批量发布大型 XFL 时撞 Flash CS6 32 位地址空间，TestLoader/testMovie 则保持打开供调试。
+`test`|`testloader` → `scripts/TestLoader`（`doc.testMovie()`）；`publish`|`asloader` → `scripts/asLoader`（隐式 **publish-only** + 自动 `-VerifySwf scripts/asLoader.swf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（隐式 **publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。因此 `publish/asloader/main` 别名都可省略 `-PublishOnly`；只有任意显式 FLA/XFL 路径需要禁止 testMovie 时才额外传该开关。`-Target` 决定编哪个，无需手动切到前台；publish-only 在诊断落盘后自动以“不保存”关闭本轮目标，TestLoader/testMovie 则保持打开供调试。**注意：实测表明关闭 XFL 文档几乎不释放 CS6 内置 AS2 编译器全局单例池已保留的 32 位虚拟地址空间（VA）**；真正回收 VA 依赖下文的编译前脏宿主自动轮换或显式 `-QuitFlashAfterPublish` 退出进程。
 
 `run-focused-testloader.ps1` 对异步 XML/SWF 加载和后续帧检查，在子编译成功后最多额外等待 `AsyncBehaviorTimeoutSeconds` 秒，从原始 Flash 日志补读本轮 domain/runId 的后续记录。`AsyncBehaviorTimeoutSeconds` 默认 30 秒，和 `TimeoutSeconds` 均接受 1 至 3600 秒；专用 runner 可明确覆盖异步等待值，例如盾冲入口为 600 秒，异步行为窗口独立于编译 `TimeoutSeconds` 计时。延长等待不改变用例、帧数 watchdog 或结果判据。取第一个本轮 Start 或 Complete 起的完整后缀，随后仍严格要求单 Start、单 Complete、顺序正确、期望断言唯一、无失败哨兵和零 32K 重试；不接受其他 runId 或从多个重复块中挑一段通过。无 GUI 回归入口为 `powershell -File tools/test-focused-testloader-trace.ps1`（10 个正确/错误 run、顺序、重复和失败哨兵夹具）。超时未闭合仍保留原有不确定状态恢复门。
 
 批量发布大 XFL 时可额外传 `-QuitFlashAfterPublish`。该开关只接受 publish-only：JSFL 必须先完成 `doc.publish()`、保存 Compiler Errors、关闭目标并写 terminal marker，之后才 `fl.quit(false)`；调用方看到成功返回后再用既有 `FlashCS6Task` 启动干净实例。测试模式、畸形/残留 cfg 或 terminal 前退出都 fail-closed，不能用进程退出替代 SWF 刷新与 Compiler `0/0`。
+
+此外，由于 32 位 `Flash.exe` 用户态 VA 硬上限为 `4,095.9 MiB`，而 `asLoader` 单次发布峰值已达约 `3.75~3.97 GiB` 且关文档不释放编译器内存池，`compile_test.ps1` 内置了**机器级互斥锁与编译前 VA 水位自动轮换保护**：
+- **双层互斥锁**：除仓库级 `Local\CF7_FlashCompile_<RepoHash>` 外，同时获取机器级 `Local\CF7_FlashCompile_MachineGlobal`，防止同一台机器的多个 worktree 并发抢占唯一的 `Flash.exe` 实例、全局 Commands 目录与 `.aso` 缓存。
+- **编译前脏宿主自动轮换**：非独占宿主租约（无 `testhost_ownership.marker`）下，若检测到当前 `Flash.exe` 的 `VirtualSize` 超过安全阈值（`asLoader` 目标 `> 700 MiB`，其余目标 `> 2400 MiB`），脚本会在写编译 cfg 前自动调用 `quit_owned_test_host` 安全关闭可丢弃测试文档并退出旧宿主，再经 `FlashCS6Task` 冷启动干净实例；若 CS6 内打开了未保存或非测试的外部美术/业务文档，`quit_owned_test_host` 拒绝退进程并立即 fail-closed 报错，绝不丢弃人工修改。每次编译结束或异常退出时，终端均会输出本轮 `[CS6 VA 水位]` 起点、峰值占比与驻留值。
 
 显式目标若已经在 CS6 打开，`compile_action.jsfl` 会先以“不保存”关闭，写入一次性 `compile_reopen.marker`；`compile_test.ps1` 校验 exact 目标与模式后最多重触发一次，再从磁盘打开并编译，确保外部编辑的 XFL XML 是 source of truth。关闭与重开必须分属两次 JSFL 调用：Flash CS6 在同一调用栈内关闭并立即重开 XFL 时可能直接中止宿主脚本。publish-only 在完成发布、保存 Compiler Errors 后还会关闭刚发布的目标；该尾部关闭发生在 terminal marker 之前，关闭失败不能伪装成成功。比较 cfg URI 与 `doc.pathURI` 时只做纯字符串 URI 解码、斜杠和大小写归一化；不要对所有已打开文档调用 `FLfile` 平台路径转换，未保存或含非 ASCII 路径的其他 XFL 可能让 CS6 绕过 JavaScript `try/catch` 整体中止。中文路径在两处可能分别表现为直写 Unicode 与 percent-encoded URI；不归一会漏关带 `*` 的旧文档，使 `doc.publish()` 复用旧 symbol 缓存。部分独立 XFL 在重开时会弹缺失字体确认框，计划任务会一直等不到 terminal marker；编译时间异常拉长时先截图/检查 CS6 前台并人工确认，不要重复触发多个编译任务。`-VerifySwf` 只能证明文件被重写，关键 XML 帧脚本还应以 FFDec 导出 script 检查新增标志串是否进入 SWF。
 
@@ -131,8 +142,10 @@ bash scripts/compile_test.sh -TimeoutSeconds 120
 
 ```
 compile_test.ps1 / compile_test.sh
-  → 取得仓库级 CF7_FlashCompile mutex（scratch 父 runner持同一把锁，并以持久事务 marker + exact-match lease 允许子进程复用）
+  → 取得仓库级 CF7_FlashCompile_<RepoHash> mutex（scratch 父 runner 以 exact-match lease 复用）+ 机器级 CF7_FlashCompile_MachineGlobal mutex
   → 显式 TestLoader 目标先检查 node + swf-function-sizes.js；缺失则不触发 Flash
+  → 检查现有 Flash.exe VirtualSize 水位（asLoader > 700 MiB / 其余 > 2400 MiB 且无独占租约时，经 quit_owned_test_host 自动轮换干净宿主；有外部/未保存文档则 fail-closed）
+  → 若 Flash.exe 未运行，先由不限时 FlashCS6Task 冷启动编辑器并等待 UI 响应
   → Start-ScheduledTask 'CompileTriggerTask'
     → 已配置的 Flash.exe "<CF7 Loader 路径>"（Highest，不依赖 .jsfl 默认关联）
     → cf7_compile_loader.jsfl
@@ -147,8 +160,8 @@ compile_test.ps1 / compile_test.sh
         → 仅当唯一汇总可解析、warnings=0、且汇总前逐行含「32K」的诊断数恰等于 errors 时重试一次
           → 首轮诊断先 trace 到 Output Panel；混合/多行上下文/汇总后文本/不可解析格式均不重试
           → publish_done.marker / flashlog / compiler_errors
-  → marker 后要求 compiler_errors 本轮刷新且严格 0/0
-  → TestLoader 另要求 SWF 刷新与 codeSize < 60000
+  → marker 后输出本轮 [CS6 VA 水位]，要求 compiler_errors 本轮刷新且严格 0/0
+  → TestLoader 另要求 SWF 刷新与 codeSize < 60000；生产 SWF 另核类归属门与继承顺序门
 ```
 
 ## 5. 关键产物与判据
@@ -245,10 +258,16 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
 
 确认本轮独占测试宿主已退出、计划任务空闲、scratch原件按SHA-256恢复且迟到产物稳定后，按既有未知状态恢复规则收束失败；再记录空缓存的完整路径、时间、大小与摘要，将该文件移入本轮证据目录保全。只隔离已核对的异常缓存，不清空全局缓存或修改源码绕过。重新运行同一源输入，要求缓存重新生成、新鲜Compiler `0/0`和完整suite行为；失败原件继续保留。仅有导出进度变化不能称验证通过。
 
+若编译期间 `Flash.exe` 直接异常退出或卡死在 `"FlashPro Fatal Exception"` 弹窗，结合终端输出的观测峰值 VA 按以下三类分流处置（详细反汇编与 21 份转储证据见 [`docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md`](../docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md)）：
+
+1. **低水位崩溃（观测峰值 VA `< 2.0 GiB`）**：通常不是内存耗尽，而是 AS2 编译器前端在特定包通配 `import pkg.*` 或跨类符号消解时触发确定性空指针（如 `+0x1062FB0`）。此时重启宿主或电脑无效，应检查本轮新增/改动的 `.as` 与 `import` 写法。
+2. **高水位崩溃（观测峰值 VA `> 3.1 GiB`）或 32K 重试期退出**：32 位 `Flash.exe` 连续虚拟地址段耗尽（倍增内存池调用 `std::nothrow` 返回 `0` 后解引用）。核对本机 `AppCompatFlags\Layers` 未开启 `WIN7RTM`、确保在干净冷宿主上单跑 `asLoader`（`-TimeoutSeconds 900`），并检查 `compile_output.txt` 是否因单类字节码贴近 `32 KB`（`DoInitAction` 的 `SI16` 分支上限）触发了同进程二次编译重试；贴墙类应拆小以消除重试。
+3. **模态异常框卡死或长开机后期连续段挤压**：若 `Flash.exe` 卡在 `"FlashPro Fatal Exception"`（如 `0xC0000374`）使非提权终端无法 `Stop-Process`，且该实例由 `FlashCS6Task` 拉起，可执行 `Stop-ScheduledTask -TaskName 'FlashCS6Task'` 跨 UIPI 收束残留进程，再按上文核对静止态并清理本轮闸门；若干净冷宿主仍在 `~3.15 GiB` 处反复分配连续大块失败，重启 Windows 以刷新 WoW64 高地址系统 DLL 映射基址。
+
 ### 仍然弹 UAC
 
 - **`CompileTriggerTask` / `FlashCS6Task` 必须 `RunLevel=Highest`**（`setup_compile_env.ps1::Register-CompileTask` 的默认值），并且编译任务直接执行已配置的 `Flash.exe`，参数为带引号的 CF7 Loader 绝对路径。旧版 `cmd /c start` 仍会经过 `.jsfl` 文件关联；与 Animate 共存时可能弹出打开方式选择器，并在选择程序后再次请求 UAC，不能仅凭 Highest 判定整条链路免弹窗。
-- Flash CS6 在某些机器上必须保留 HKLM `SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers` 下 `Flash.exe = ~ RUNASADMIN ...` 才能启动（去掉直接运行失败），所以这条 AppCompat 不能简单清空
+- 绿色便携版 Flash CS6 在部分机器上需要在 HKCU/HKLM `SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers` 下保留 `Flash.exe = ~ RUNASADMIN` 才能启动（去掉直接运行失败），但**不要附加 `WIN7RTM`**；标准完整安装版则无需该兼容项。
 - 以管理员身份重新运行 `scripts/setup_compile_env.bat -SkipCleanup`，一次性更新两个已有任务并保留编译诊断；这次安装需要人类确认 UAC。日常触发使用计划任务，避免直接从未提升终端启动 Flash.exe。
 - 核对任务 Execute / Arguments / RunLevel 后实际触发 JSFL，再用新鲜 Compiler Errors 和 SWF 刷新验证。兼容读取旧任务不代表已修复；无需修改系统默认应用或关闭 UAC。
 
@@ -268,4 +287,6 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
 
 - 启动与运行自动化：[`automation/README.md`](../automation/README.md)
 - 测试矩阵：[`agentsDoc/testing-guide.md`](../agentsDoc/testing-guide.md)
+- 按需验证细节：[`agentsDoc/testing-details.md`](../agentsDoc/testing-details.md#flash-core)
+- 32 位 VA 耗尽取证与单机宿主对照档案：[`docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md`](../docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md)
 - 顶层硬约束：[`AGENTS.md`](../AGENTS.md)
