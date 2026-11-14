@@ -1204,7 +1204,7 @@
          模板声明联弹前缀的弹壳派生规则（casingMap：单元体材质→弹壳名）与属性覆盖；
          单元体在自身 <bullet> 条目上用 <chainUnit><material>…</material></chainUnit> 声明参与派生。
          加载期由 ChainBulletConfigResolver 交叉合并：显式 "模板-单元体" 条目始终优先，派生仅补缺。
-         横向系=霰弹枪式齐射（穿刺上限特判为 2，仅替换单元体已声明的键）；纵向系=机枪式扫射。 -->
+         横向系=霰弹枪式齐射，次级穿刺沿用单元体上限；纵向系=机枪式扫射。 -->
     <chainTemplate>
         <prefix>横向联弹</prefix>
         <shell>
@@ -1217,9 +1217,6 @@
                 <entry><material>普通</material><casing>霰弹弹壳</casing></entry>
             </casingMap>
         </shell>
-        <attributeOverride>
-            <pierceLimit>2</pierceLimit>
-        </attributeOverride>
     </chainTemplate>
     <chainTemplate>
         <prefix>横向机枪联弹</prefix>
@@ -1233,9 +1230,6 @@
                 <entry><material>普通</material><casing>重机枪弹壳</casing></entry>
             </casingMap>
         </shell>
-        <attributeOverride>
-            <pierceLimit>2</pierceLimit>
-        </attributeOverride>
     </chainTemplate>
     <chainTemplate>
         <prefix>横向手枪联弹</prefix>
@@ -1249,9 +1243,6 @@
                 <entry><material>普通</material><casing>手枪弹壳</casing></entry>
             </casingMap>
         </shell>
-        <attributeOverride>
-            <pierceLimit>2</pierceLimit>
-        </attributeOverride>
     </chainTemplate>
     <chainTemplate>
         <prefix>纵向联弹</prefix>

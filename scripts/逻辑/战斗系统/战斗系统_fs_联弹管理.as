@@ -245,7 +245,7 @@ _root.联弹系统.联弹消失 = function(clip:MovieClip):Void {
 
     // 判断条件：如果霰弹值小于等于1，或者已经击中地图，则直接移除该 MovieClip
     var group:ChainGroup = ChainUnitManager.findGroupByBullet(clip);
-    var exhausted:Boolean = group.shotgun != null ? !(clip.霰弹值 > 0) : clip.霰弹值 <= 1;
+    var exhausted:Boolean = group.pierceDepth != null || (group.shotgun != null ? !(clip.霰弹值 > 0) : clip.霰弹值 <= 1);
     if (exhausted || (clip.stateFlags & STATE_HIT_MAP) != 0) {
         // 先显式回收单元体组，再移除子弹本体
         ChainUnitManager.removeGroupByBullet(clip);
@@ -311,12 +311,14 @@ _root.联弹系统.爆炸联弹消失 = function(clip:MovieClip):Void {
 _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
     var parentMC:MovieClip = group.bullet;
     var shotgunMode:Boolean = group.shotgun != null;
+    var keepPhysical:Boolean = group.shotCoverage != null;
     if (shotgunMode && !group.shotgun.advance(group)) return;
-    if (group.nativeGroupOwned || group.isDecayReference) {
+    if (keepPhysical) group.shotCoverage.advance(group);
+    if (group.nativeGroupOwned) {
         var nativeAdvance:Number = parentMC.xmov * group.运动方向系数;
         ChainUnitManager.beginNativeStep(group, nativeAdvance, false);
         if (group.aggregate && ChainUnitManager.updateHorizontalAggregate(group, nativeAdvance)) {
-            if (!group.__removed && !group.isDecayReference) {
+            if (!group.__removed) {
                 var nativeRender:Function = group.render;
                 nativeRender(group);
             }
@@ -329,7 +331,7 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
     var sv:Number = parentMC.霰弹值;
     var sv0:Number = sv;
     var 衰竭:Number = group.衰竭计数器;
-    if (!shotgunMode) {
+    if (!keepPhysical) {
         衰竭 += (sv + parentMC.子弹散射度) / 25;
         group.衰竭计数器 = 衰竭;
     }
@@ -350,9 +352,9 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
         uy = u.y + A * u.sin;
         u.y = uy;
 
-        // 回收条件：衰竭计数到点 或 超出 Z 轴坐标限制；列表至少保留一个单元体
+        // 回收条件：衰竭计数到点 或 超出 Z 轴坐标限制；旧型保留一颗，标准霰弹和穿刺的真实末颗只在触地时回收
         // （thr 随 sv 递减实时抬升，保持旧实现"回收级联"语义，勿提为循环外常量）
-        if (((!shotgunMode && 衰竭 >= thr) || uy * cosV + py > hitZ) && (len > 1 || shotgunMode)) {
+        if (((!keepPhysical && 衰竭 >= thr) || uy * cosV + py > hitZ) && (len > 1 || keepPhysical)) {
             org.flashNight.arki.render.ChainVisualBridge.removeUnit(group, u);
             ChainUnitManager.releaseUnit(u.mc);
             ChainUnitManager.releaseUnitData(u);
@@ -368,7 +370,7 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
         if (uy < y_min) y_min = uy;
     }
     if (sv != sv0) parentMC.霰弹值 = sv;
-    if (shotgunMode && len == 0) {
+    if (keepPhysical && len == 0) {
         ChainUnitManager.removeGroup(group);
         parentMC.removeMovieClip();
         return;
@@ -378,7 +380,7 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
     group.盒y = y_min;
     var h:Number = y_max - y_min;
     var minH:Number = group.最小盒高;
-    if (shotgunMode) h += minH; // 包含旧有效单颗的厚度，避免宽相先丢失参照命中
+    if (keepPhysical) h += minH; // 包含端点厚度，宽相覆盖实际弹群
     group.盒高 = (h > minH) ? h : minH;
     var area:MovieClip = group.area;
     if (area != null) {
@@ -386,10 +388,8 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
         area._height = group.盒高;
     }
 
-    if (!group.isDecayReference) {
-        var render:Function = group.render;
-        render(group);
-    }
+    var render:Function = group.render;
+    render(group);
 };
 
 // 横向联弹组装核心（MC / 对象双模共用；调用前组的 盒x/盒y/盒宽/盒高 须已初始化）
@@ -416,7 +416,8 @@ _root.联弹系统.横向联弹组装 = function(group:ChainGroup):Void {
     }
     ChainUnitManager.prepareHorizontalAggregate(group);
     _root.联弹系统.渲染组(group);
-    if (group.shotgun != null) group.shotgun.captureReference(group);
+    if (group.shotgun != null || group.pierceDepth != null)
+        group.shotCoverage = new org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage(group);
 };
 
 // 从 area 子剪辑捕获碰撞盒初值（MC 模式；载入时即 FLA 授权矩形）
@@ -1090,12 +1091,17 @@ _root.联弹系统.对象联弹初始化 = function(bullet:Object):Void {
 };
 
 // 对象化联弹消失：复刻 MC 消失帧（联弹消失）语义——
-// 霰弹值耗尽或击中地图 → 销毁（removeMovieClip 垫片回收碰撞器与单元体组）；
-// 否则仅置 flag，剩余单元体继续由统一 tick 驱动飞行
+// 枪式横向穿刺在退场出口整组回收。其他联弹依各自预算和地图判定收尾。
 _root.联弹系统.对象联弹消失 = function(bullet:Object):Void {
     // === 宏展开：实例状态标志位 ===
     #include "../macros/STATE_HIT_MAP.as"
     bullet.flag = true;
+    // 穿刺的正常单位命中不会调用消失。到射程、地图或消弹出口时整组退场，
+    // 不能等待真实弹数按时间减到一颗。
+    if (bullet.chainGroup.pierceDepth != null) {
+        bullet.removeMovieClip();
+        return;
+    }
     var exhausted:Boolean = bullet.chainGroup.shotgun != null ? !(bullet.霰弹值 > 0) : bullet.霰弹值 <= 1;
     if (exhausted || (bullet.stateFlags & STATE_HIT_MAP) != 0) {
         bullet.removeMovieClip();

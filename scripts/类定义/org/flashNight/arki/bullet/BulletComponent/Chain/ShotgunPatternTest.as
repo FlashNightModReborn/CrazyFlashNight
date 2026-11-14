@@ -74,15 +74,18 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         g.bullet._x = 0; g.bullet._y = 0;
         g.盒x = -5; g.盒宽 = 10; g.盒y = -50; g.盒高 = 100;
         g.ma = 1; g.mb = 0; g.mc2 = 0; g.md = 1;
-        // 几何/记账夹具；真实衰减推进另由 Calibration suite 对照旧生产更新。
-        g.shotgun.reference.盒x=-5; g.shotgun.reference.盒宽=10;
-        g.shotgun.reference.盒y=-50; g.shotgun.reference.盒高=100;
+        sampleBand(g);
+    }
+    private static function sampleBand(g:ChainGroup):Void {
+        var hull:AABBCollider=new AABBCollider(0,0,0,0);
+        hull.updateFromChainObject(g.bullet);
+        g.shotCoverage.sample(g,hull);
     }
     private static function setFarTwoSegmentBand(g:ChainGroup):Void {
         // 多目标记账夹具固定在 240 px 边界；这里要验证旧参照两段的分摊与 MISS。
         setBand(g);
-        g.shotgun.travel = 240;
-        g.shotgun.reference.bullet.霰弹值 = 2;
+        g.shotCoverage.travel = 240;
+        g.shotCoverage.targetLimit = 2;
     }
     private static function geometryAndScope():Void {
         var g:ChainGroup = makeGroup(8, 1, false, 66);
@@ -95,25 +98,32 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         check(p.calculateCap(g, {left:6,right:9,top:-50,bottom:50},0) == 0, "local flight-axis separation rejects broad false positive");
         check(p.calculateCap(g, {left:-5,right:5,top:51,bottom:70},0) == 0, "scatter-axis separation rejects");
         check(p.calculateCap(g, {left:NaN,right:5,top:-5,bottom:5},0) == 0, "invalid target geometry rejects");
-        check(p.projectionBuilds == 1, "one inverse projection shared by all candidates in one update");
-        g.ma = 0; g.mb = 1; g.mc2 = -1; g.md = 0; p.age++;
+        check(g.shotCoverage.travel == 0, "target queries do not advance the shared flight distance");
+        g.ma = 0; g.mb = 1; g.mc2 = -1; g.md = 0; p.age++; sampleBand(g);
         check(p.calculateCap(g, {left:-12.5,right:12.5,top:-5,bottom:5},0) == 2, "90 degree shot preserves projected coverage");
-        g.ma = -2; g.mb = 0; g.mc2 = 0; g.md = 1; p.age++;
+        g.ma = -2; g.mb = 0; g.mc2 = 0; g.md = 1; p.age++; sampleBand(g);
         check(p.calculateCap(g, {left:-10,right:10,top:-12.5,bottom:12.5},0) == 2, "mirrored scale preserves target coverage");
-        g.ma = 0; g.md = 0; p.age++;
+        g.ma = 0; g.md = 0; p.age++; sampleBand(g);
         check(p.calculateCap(g, {left:-10,right:10,top:-5,bottom:5},0) == 0, "singular group transform rejects");
-        g.ma = 1; g.md = 1; p.age++;
+        g.ma = 1; g.md = 1; p.age++; sampleBand(g);
         var zone:MovieClip = _root.gameworld.子弹区域;
         zone._rotation = 90; zone._x = 50; zone._y = 20;
-        AABBCollider.zoneFrame = -1;
+        AABBCollider.zoneFrame = -1; sampleBand(g);
         check(p.calculateCap(g, {left:37.5,right:62.5,top:15,bottom:25},0) == 2, "real transformed bullet zone composes correctly");
         zone._rotation = 0; zone._x = 0; zone._y = 0;
         AABBCollider.zoneFrame = -1;
         var diagonal:Number=Math.sqrt(0.5);
-        g.ma=diagonal; g.mb=diagonal; g.mc2=-diagonal; g.md=diagonal; p.age++;
-        p.reference.盒y=-10; p.reference.盒高=20;
-        check(p.calculateCap(g,{left:-100,right:100,top:16,bottom:17},0)==0,
-            "world SAT rejects reference corner false positive within the wider actual envelope");
+        g.ma=diagonal; g.mb=diagonal; g.mc2=-diagonal; g.md=diagonal; p.age++; sampleBand(g);
+        check(p.calculateCap(g,{left:-100,right:100,top:16,bottom:17},0)>=1,
+            "angled actual band is eligible without a virtual pellet");
+        check(p.calculateCap(g,{left:37,right:39,top:20,bottom:23},0)==0,
+            "angled outside-corner contact rejects a broad false positive");
+        g.shotCoverage.targetLimit=1; g.shotCoverage.travel=720;
+        var clipTarget:Object=makeTarget();
+        check(p.prepareContact(g,clipTarget,{left:-100,right:100,top:16,bottom:17},0) && p.hitCap==1,
+            "distant actual-only graze receives one ordinary attempt");
+        check(!p.prepareContact(g,clipTarget,{left:-100,right:100,top:16,bottom:17},0),
+            "distant graze does not repeat on one target");
         ChainUnitManager.removeGroup(g);
         var masks:Array = [4,8,1,32];
         for (var i:Number=0; i<masks.length; i++) {
@@ -243,8 +253,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         check(g.nativeGroupOwned && g.aggregate && createdClips == before, "native shotgun uses no hidden pellet MC");
         g.bullet.Z轴坐标=1000000; g.衰竭计数器=1000000;
         ChainVisualBridge.flush();
-        var ref:ChainGroup=g.shotgun.reference;
-        var referenceVisits:Number=ref.aggregateVisits;
+        var originalLimit:Number=g.shotCoverage.targetLimit;
         var visits:Number=g.aggregateVisits; var maxWire:Number=0;
         for (var i:Number=0;i<120;i++) {
             _root.帧计时器.当前帧数++;
@@ -255,18 +264,18 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         }
         check(g.单元体列表.length == 4096 && g.bullet.霰弹值 == 4096, "no artificial time decay over 120 updates");
         check(g.aggregateVisits-visits == 240 && maxWire < 512, "steady aggregate visits two endpoints with bounded group packet");
-        check(ref.aggregateVisits-referenceVisits == 240, "old-decay reference adds two scalar endpoints per steady update");
+        check(g.shotCoverage.targetLimit >= 1 && g.shotCoverage.targetLimit < originalLimit, "only the scalar target cap falls");
         check(ChainVisualBridge.getStats().groups == 1 && ChainVisualBridge.getStats().reserved == 4096,
             "reference has no native group or visual reservation");
         trace("[SHOTGUN_COST] units=4096 ticks=120 boundVisits=" + (g.aggregateVisits-visits)
-            + " referenceVisits=" + (ref.aggregateVisits-referenceVisits) + " maxWire=" + maxWire);
+            + " targetLimit=" + g.shotCoverage.targetLimit + " maxWire=" + maxWire);
         g.bullet.霰弹值=3; ChainUnitManager.commitShotgunBudget(g);
         check(g.单元体列表.length == 3 && g.aggregateMin != null && g.aggregateMax != null, "large positive commit preserves sorted endpoints");
         ChainVisualBridge.flush();
         g.bullet._y=2000000; _root.联弹系统.横向联弹更新(g);
         var retired:String=ChainVisualBridge.flush();
         check(g.__removed && g.单元体列表.length == 0 && g.bullet.__chainDead, "native final grounded pellet retires whole group");
-        check(ref.单元体列表.length == 0 && ref.aggregateMin == null, "retirement returns reference data to pool");
+        check(g.shotCoverage == null, "retirement releases shared coverage");
         check(retired.indexOf("G,") < 0, "retirement never sends a live group with zero units");
         ChainVisualBridge.disconnect();
         g=makeGroup(1,1,false,66); g.bullet._y=1000;
@@ -284,11 +293,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         ChainUnitManager.tick();
         check(g.shotgun.age == 0, "global pause never advances shotgun TTL");
         _root.暂停=oldPause;
-        ref=g.shotgun.reference;
         ChainUnitManager.resetAll();
         check(g.__removed && g.shotgun == null, "scene reset releases per-shot contact state");
-        check(ref.__removed && ref.单元体列表.length==0 && ref.aggregateMin==null,
-            "scene reset returns remaining legacy-reference data exactly once");
+        check(g.shotCoverage==null, "scene reset releases scalar coverage");
     }
     private static function queueDamage(b,s,t,m,ds):Object {
         damages++;
@@ -326,12 +333,18 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
             if (i == 0) _root.联弹系统.横向联弹初始化(area);
             else _root.联弹系统.横向拖尾联弹初始化(area);
             var group:ChainGroup = ChainUnitManager.findGroupByBullet(b);
-            check(group != null && b.chainGroup === group && group.pierceRemaining != null,
+            check(group != null && b.chainGroup === group && (i == 0 ? group.pierceDepth != null : group.pierceRemaining != null),
                 names[i] + " real MC initializer binds the same group used by the queue");
-            var fixedTarget:Object = {};
-            check(group.takePierceSegments(fixedTarget,3,3) == 3 && group.takePierceSegments(fixedTarget,2,2) == 2
+            if (i != 0) {
+                var fixedTarget:Object = {};
+                check(group.takePierceSegments(fixedTarget,3,3) == 3 && group.takePierceSegments(fixedTarget,2,2) == 2
                 && group.takePierceSegments(fixedTarget,2,2) == 1 && !group.canJudgePierce(fixedTarget),
                 names[i] + " dispatcher-less target uses a stable identity and clips partial remainder");
+            }
+            if(i==0) {
+                _root.联弹系统.联弹消失(b);
+                check(group.__removed && group.单元体列表.length==0, "MC pierce range exit recycles a full group");
+            }
             ChainUnitManager.removeGroup(group);
             b.removeMovieClip();
         }
@@ -355,22 +368,22 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         b.Z轴攻击范围 = 100;
         b.aabbCollider = new AABBCollider(-5,5,-50,50);
         makeCtx(g);
-        // 让生产横向更新实际衰减六颗到四颗，再送入第一排的真实碰撞队列。
-        g.衰竭计数器 = -5.5;
+        // 即使旧衰竭计数器已到点，真实弹数不减少。两排各按自己的覆盖判定。
+        b._y = 0; b.xmov = 0; b.Z轴坐标 = first.Z轴坐标 = rear.Z轴坐标 = 1000;
+        g.衰竭计数器 = 1000000;
+        for (var budgetFrame:Number=0;budgetFrame<32;budgetFrame++) {
+            _root.帧计时器.当前帧数++;
+            _root.联弹系统.横向联弹更新(g);
+        }
+        check(b.flags == 6 && b.霰弹值 == 6 && g.单元体列表.length == 6
+            && g.shotCoverage.targetLimit == 1, bulletType + " reference reaches one with all six real pellets alive");
+        counters(); runPierceFrame(api,b,[first]);
+        check(first.attempts == 6 && first.hp < 5000, bulletType + " six physical pellets on near first contact");
         _root.联弹系统.横向联弹更新(g);
-        check(b.flags == 6 && b.霰弹值 == 4 && g.单元体列表.length == 4,
-            bulletType + " six born and four live on arrival");
-        counters();
-        runPierceFrame(api,b,[first]);
-        check(first.attempts == 4 && first.hp < 5000, bulletType + " four attempts on first overlap");
-        // 后排在下一帧才接触，这时剩三颗。前排不能重新领取第一次的额度。
-        g.衰竭计数器 = -4.5;
-        _root.联弹系统.横向联弹更新(g);
-        check(b.霰弹值 == 3, bulletType + " three live on rear arrival");
-        runPierceFrame(api,b,[first,rear]);
-        runPierceFrame(api,b,[first,rear]);
-        check(first.attempts == 8 && rear.attempts == 6 && b.hitCount == 14,
-            bulletType + " independent lifetime caps front=8 rear=6 including clipped final overlap");
+        check(b.霰弹值 == 6, bulletType + " full physical group reaches second target");
+        runPierceFrame(api,b,[first,rear]); runPierceFrame(api,b,[first,rear]);
+        check(first.attempts == 6 && rear.attempts == 6 && b.hitCount == 12,
+            bulletType + " independent first contact at rest front=6 rear=6");
         var frontAttempts:Number = first.attempts;
         var oldDice:Number = dice;
         var oldDamages:Number = damages;
@@ -382,22 +395,52 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
             bulletType + " exhausted overlaps never roll, shield or publish again");
 
         first.removeMovieClip();
-        first = queueTarget("pierceFront",true);
+        first = queueTarget("pierceFront",true); first.Z轴坐标 = b.Z轴坐标;
         first.attempts = 0; first.misses = 0; first.等级 = 100; first.重量 = 0;
         forcedDodge = "躲闪";
         runPierceFrame(api,b,[first]);
         runPierceFrame(api,b,[first]);
         runPierceFrame(api,b,[first]);
-        check(first.attempts == 6 && first.misses == 6 && first.hp == 5000 && b.hitCount == 20
+        check(first.attempts == 6 && first.misses == 6 && first.hp == 5000 && b.hitCount == 18
             && hooks == oldHooks && events == oldEvents,
             bulletType + " replacement identity gets six attempts and full MISS cannot retry");
-        check(b.霰弹值 == 3, bulletType + " per-target usage preserves remaining flying pellets");
-        trace("[HORIZONTAL_PIERCE] type=" + bulletType + " birth=6 frontLive=4 frontAttempts=" + frontAttempts + " rearLive=3 rearAttempts=" + rear.attempts + " replacementMisses=" + first.misses + " totalJudged=" + b.hitCount);
+        check(b.霰弹值 == 6, bulletType + " per-target usage preserves all six flying pellets");
+        trace("[HORIZONTAL_PIERCE] type=" + bulletType + " birth=6 frontLive=6 frontAttempts=" + frontAttempts + " rearLive=6 rearAttempts=" + rear.attempts + " replacementMisses=" + first.misses + " totalJudged=" + b.hitCount);
         forcedDodge = "未躲闪";
         ChainUnitManager.removeGroup(g);
-        check(g.pierceRemaining == null, bulletType + " group teardown drops the budget");
+        check(g.pierceRemaining == null && g.pierceDepth == null, bulletType + " group teardown drops the budget");
         first.removeMovieClip();
         rear.removeMovieClip();
+    }
+
+    private static function pierceGroundRetirement():Void {
+        for(var mode:Number=0;mode<2;mode++) {
+            if(mode==1)ChainVisualBridge.configure(caps());
+            var g:ChainGroup=makeGroup(8,1,mode==1,0,"横向联弹-穿刺子弹");
+            var b:Object=g.bullet;b.Z轴坐标=1000000;
+            if(mode==1)check(g.nativeGroupOwned && g.aggregate, "native pierce tests use the aggregate branch");
+            var hull:Object={left:-5,right:5,top:-105,bottom:-95};
+            _root.帧计时器.当前帧数++; g.shotCoverage.sample(g,hull);
+            var lastCount:Number=b.霰弹值;
+            for(var i:Number=0;i<40;i++){
+                b._x+=b.xmov;_root.帧计时器.当前帧数++;_root.联弹系统.横向联弹更新(g);
+                hull.left=b._x-5;hull.right=b._x+5;
+                hull.top=b._y+g.盒y;hull.bottom=hull.top+g.盒高;
+                g.shotCoverage.sample(g,hull);
+            }
+            check(b.霰弹值==lastCount && g.单元体列表.length==lastCount && g.shotCoverage.targetLimit==1,
+                "pierce timer only changes single-target cap, native=" + mode);
+            var area:Object={left:b._x,right:b._x+50,top:hull.top-10,bottom:hull.bottom+10};
+            var unit:Object={dispatcher:{}};
+            check(g.pierceDepth.prepare(g,unit,area,0) && g.pierceDepth.segments==1,
+                "far first contact receives one even with all real pellets across the section, native=" + mode);
+            check(!g.pierceDepth.prepare(g,unit,area,0), "same-frame far contact cannot reroll, native=" + mode);
+            b.Z轴坐标=-1000000;
+            _root.联弹系统.横向联弹更新(g);
+            check(b.__chainDead && g.__removed && g.单元体列表.length==0,
+                "last actual pellet retires on ground, native=" + mode);
+            if(mode==1)ChainVisualBridge.disconnect();
+        }
     }
 
     private static function queueIntegration():Void {
@@ -430,7 +473,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         check(first.hp == firstHp && g.bullet.霰弹值 == 4 && dice == 2 && damages == 2 && events == 2,
             "real next-frame queue rejects both prior contacts");
         // AVM1 可以复用同路径 MC；数字 dispatcher 身份必须允许新出生目标。
-        g.shotgun.reference.bullet.霰弹值=4;
+        g.shotCoverage.targetLimit=4;
         first.removeMovieClip(); first=queueTarget("queueFirst",true);
         var extra:MovieClip=queueTarget("queueExtra",true);
         setQueueTargets([first,extra]); _root.帧计时器.当前帧数++; g.shotgun.age++;
@@ -452,7 +495,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         ChainUnitManager.removeGroup(g);
         // 同样的旧参照只剩两段。贴脸时首个实际命中的目标拿满，后目标没有副作用。
         g = makeGroup(8,1,false,66);
-        setBand(g); g.shotgun.reference.bullet.霰弹值 = 2;
+        setBand(g); g.shotCoverage.targetLimit = 2;
         first.aabbCollider = new AABBCollider(-5,5,-50,50);
         g.bullet.发射者名 = shooter._name; g.bullet.Z轴攻击范围 = 100;
         g.bullet.aabbCollider = new AABBCollider(-5,5,-50,50);
@@ -480,7 +523,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         world.createEmptyMovieClip("子弹区域",1); _root.gameworld=world; _root.帧计时器={当前帧数:1};
         _root.随机偏移=randomOffset; manager.acquireUnit=acquireClip; manager.releaseUnit=releaseClip;
         DamageManagerFactory.init();
-        geometryAndScope(); budgetAndContacts(false); budgetAndContacts(true); missAndLastPellet(); pierceClipBindings(); queueIntegration(); lifecycleAndCost();
+        geometryAndScope(); budgetAndContacts(false); budgetAndContacts(true); missAndLastPellet(); pierceClipBindings(); queueIntegration(); lifecycleAndCost(); pierceGroundRetirement();
         ChainVisualBridge.disconnect(); manager.acquireUnit=oldAcquire; manager.releaseUnit=oldRelease;
         _root.随机偏移=oldRandom; _root.帧计时器=oldTimer; _root.gameworld=oldWorld; world.removeMovieClip();
         trace("ShotgunPatternTest Tests Passed: " + passed);

@@ -76,10 +76,10 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
             styles:[{gunChainUnitLinkage:"单元体-普通子弹"}],
             gunChainPrefixes:["横向联弹"]};
     }
-    private static function makeGroup(p:Array, marker:Number, nativeMode:Boolean, left:Boolean):ChainGroup {
+    private static function makeGroup(p:Array, marker:Number, nativeMode:Boolean, left:Boolean, muzzleY:Number):ChainGroup {
         var b:Object={子弹种类:"横向联弹-普通子弹",baseAsset:"横向联弹",flags:66,
             霰弹分配模式:marker,霰弹值:p[1],子弹散射度:p[2],xmov:left ? -p[3] : p[3],ymov:0,
-            _x:0,_y:-100,_rotation:left ? 180 : 0,_xscale:100,_yscale:100,_alpha:100,_visible:true,
+            _x:0,_y:muzzleY==undefined ? -100 : muzzleY,_rotation:left ? 180 : 0,_xscale:100,_yscale:100,_alpha:100,_visible:true,
             Z轴坐标:1000000,stateFlags:0,子弹威力:300,最小霰弹值:1,固伤:0,百分比伤害:0,
             伤害类型:"物理",命中率:100,hitCount:0};
         b.removeMovieClip=function():Void { this.__chainDead=true; ChainUnitManager.removeGroup(this.chainGroup); };
@@ -123,10 +123,16 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
         b.霰弹值=sc; b.flags=66; b.伤害类型="物理";
         return output;
     }
+    private static function sampleCoverage(g:ChainGroup):Void {
+        var box:AABBCollider=new AABBCollider(0,0,0,0);
+        box.updateFromChainObject(g.bullet);
+        g.shotCoverage.sample(g,box);
+    }
     private static function compareContact(old:ChainGroup, current:ChainGroup, area:Object, kind:Number, label:String):Void {
         var box:AABBCollider=new AABBCollider(0,0,0,0);
         box.updateFromChainObject(old.bullet);
         var oldHit:Boolean=box.right>area.left && box.left<area.right && box.bottom>area.top && box.top<area.bottom;
+        if (!current.__removed) sampleCoverage(current);
         var cap:Number=current.__removed ? 0 : current.shotgun.calculateCap(current,area,0);
         var newHit:Boolean=cap>0;
         cases++;
@@ -136,18 +142,28 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
             check(!newHit && current.bullet.__chainDead, label+" naturally retired physical group");
             return;
         }
-        var far:Boolean = current.shotgun.travel >= 240;
-        check(oldHit === newHit, label+" real and reference geometry unchanged");
-        if (far) check(!oldHit || cap === old.bullet.霰弹值, label+" old far effective segments");
-        else if (newHit) {
-            var count:Number = current.单元体列表.length;
-            check(cap >= 1 && cap <= count, label+" near cap bounded by physical budget");
-            if (current.shotgun.travel >= 90 && count > 1) check(cap < count, label+" mixed distance preserves one segment");
+        var count:Number=current.单元体列表.length;
+        if (newHit) {
+            check(cap>=1 && cap<=count,label+" valid contact respects live budget");
+            if (current.shotCoverage.travel>=240) check(cap<=current.shotCoverage.targetLimit,label+" far cap");
+            if (current.shotCoverage.travel>=90 && current.shotCoverage.travel<240 && count==current.shotCoverage.birthCount && count>1)
+                check(cap<count,label+" middle distance reserves one");
+        }
+        // 对横向实枪的每颗实际弹心单独投影，不能漏掉任何已穿入目标的弹丸。
+        var units:Array=current.单元体列表;
+        for(var i:Number=0;i<units.length;i++) {
+            var u:ChainUnitData=units[i];
+            if (current.aggregate) ChainUnitManager.materializeUnit(current,u);
+            var px:Number=current.bullet._x+current.ma*u.x+current.mc2*u.y;
+            var py:Number=current.bullet._y+current.mb*u.x+current.md*u.y;
+            if(px>area.left && px<area.right && py>area.top && py<area.bottom) {
+                check(newHit,label+" actual pellet center obtains a judgment"); break;
+            }
         }
         var rs:Number=2718281+cases*7919;
         var a:Object=measure(old,old.bullet.霰弹值,oldHit,kind,rs);
         var b:Object=measure(current,cap,newHit,kind,rs);
-        if (far || cap === old.bullet.霰弹值 || !newHit) {
+        if (newHit===oldHit && (cap===old.bullet.霰弹值 || !newHit)) {
             check(a.segments===b.segments && a.damage===b.damage && a.rng===b.rng,label+" equal cap retains real damage, shield, dodge and RNG");
         } else check(b.segments >= 0 && b.segments <= cap,label+" candidate limits actual accepted segments");
         if (oldHit) oldHits++; if (newHit) newHits++;
@@ -181,9 +197,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
                             if (tick!=0 && tick!=2 && tick!=5 && tick!=8 && tick!=12
                                 && tick!=14 && tick!=20 && tick!=25 && tick!=rangeTicks) continue;
                             if (!current.__removed) {
-                                var ref:ChainGroup=current.shotgun.reference;
-                                check(ref.盒y===old.盒y && ref.盒高===old.盒高
-                                    && ref.bullet.霰弹值===old.bullet.霰弹值,p[0]+" exact legacy reference tick "+tick);
+                                var limit:Number=current.shotCoverage.targetLimit;
+                                check(limit>=1 && limit<=p[1],p[0]+" target cap is finite tick "+tick);
+                                if (!ground) check(limit===old.bullet.霰弹值,p[0]+" old decay counts agree at tick "+tick);
                             }
                             var x:Number=old.bullet._x;
                             var label:String=p[0]+" seed="+si+" native="+mode+" ground="+ground+" tick="+tick;
@@ -202,7 +218,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
     }
     private static function reportMatrix():Void {
         var list:Array=profiles();
-        check(oldHits===newHits && cases>0 && oldDamage>0 && newDamage>0,"all paired hit qualifications identical and both damage paths exercised");
+        check(cases>0 && newHits>oldHits && oldDamage>0 && newDamage>0,"new real-pellet contacts and both damage paths exercised");
         trace("[SHOTGUN_CALIBRATION] profiles="+list.length+" seeds=8 modes=2 groundModes=2 ages=rangeBounded targets=4 cases="+cases
             +" naturalRetireCases="+groundedCases+" oldHits="+oldHits+" newHits="+newHits
             +" oldSegments="+oldSegments+" newSegments="+newSegments+" oldDamage="+oldDamage+" newDamage="+newDamage);
@@ -221,8 +237,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
         for (var side:Number = 0; side < 2; side++) {
             for (var sample:Number = 0; sample < 16; sample++) {
                 seed = (137 + sample * 271828183) | 0;
-                var g:ChainGroup = makeGroup(profile, 1, side == 1, side == 1);
-                g.bullet._y = -140;
+                var g:ChainGroup = makeGroup(profile, 1, side == 1, side == 1, -140);
                 for (var tick:Number = 0; tick < 8; tick++) {
                     _root.帧计时器.当前帧数++;
                     g.bullet._x += g.bullet.xmov;
@@ -235,6 +250,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
                     top:-158.8, bottom:1.01407166};
                 var queen:Object = {left:side == 0 ? x : x - queenWidth, right:side == 0 ? x + queenWidth : x,
                     top:-126.5 * 2.57, bottom:(25 * 5.48248291015625 - 126.5) * 2.57};
+                sampleCoverage(g);
                 var bagCap:Number = g.shotgun.calculateCap(g, bag, 0);
                 var queenCap:Number = g.shotgun.calculateCap(g, queen, 0);
                 check(bagCap > 0 && bagCap <= queenCap && queenCap == 9, "same-range queen covers at least the bag and reserves one");
@@ -250,6 +266,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
                 _root.帧计时器.当前帧数++;
                 _root.联弹系统.横向联弹更新(g);
                 var rear:Object = {left:g.bullet._x - 20, right:g.bullet._x + 20, top:-350, bottom:30};
+                sampleCoverage(g);
                 var rearCap:Number = g.shotgun.calculateCap(g, rear, 0);
                 var rearHit:Object = measure(g, rearCap, rearCap > 0, 0, 9137);
                 if (rearHit.segments == 1 && rearHit.damage > 0) rearHits++;
@@ -267,11 +284,12 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
         var output:String="";
         for (var tick:Number=0;tick<15;tick++) {
             if (tick>0) { g.bullet._x+=35; _root.联弹系统.横向联弹更新(g); }
-            check(g.shotgun.reference.bullet.霰弹值==expected[tick],"SPAS12 old time curve tick "+tick);
+            check(g.shotCoverage.targetLimit==expected[tick],"SPAS12 old time curve tick "+tick);
             if (tick==2 || tick==5 || tick==8 || tick==12 || tick==14)
-                output+=(output=="" ? "" : ",")+(tick*35)+":"+g.shotgun.reference.bullet.霰弹值;
+                output+=(output=="" ? "" : ",")+(tick*35)+":"+g.shotCoverage.targetLimit;
         }
         var x:Number=g.bullet._x;
+        sampleCoverage(g);
         var area:Object={left:x-30,right:x+30,top:-10000,bottom:10000};
         check(g.bullet.霰弹值==10 && g.单元体列表.length==10,"actual birth budget survives virtual decay");
         for (var i:Number=0;i<10;i++) {
@@ -292,8 +310,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
             if (tick==5) { old.bullet.xmov=-17; g.bullet.xmov=-17; }
             if (tick==11) { old.bullet.xmov=27; g.bullet.xmov=27; }
             _root.联弹系统.横向联弹更新(old); _root.联弹系统.横向联弹更新(g);
-            check(g.shotgun.reference.盒y===old.盒y && g.shotgun.reference.盒高===old.盒高
-                && g.shotgun.reference.bullet.霰弹值===old.bullet.霰弹值,"negative motion exact reference tick "+tick);
+            check(g.shotCoverage.targetLimit===old.bullet.霰弹值 && g.单元体列表.length==10,"reversal keeps real pellets and scalar time curve "+tick);
         }
         ChainUnitManager.removeGroup(old); ChainUnitManager.removeGroup(g);
     }

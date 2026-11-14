@@ -99,9 +99,10 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         for (var i:Number = 0; i < gn; i++) {
             g = gs[i];
             g.__removed = true;
-            if (g.shotgun != null) g.shotgun.dispose();
+            g.shotCoverage = null;
             g.shotgun = null;
             g.pierceRemaining = null;
+            g.pierceDepth = null;
             pn = pool.length;
             list = g.单元体列表;
             n = list.length;
@@ -220,9 +221,10 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         if (group == null || group.__removed) return;
         org.flashNight.arki.render.ChainVisualBridge.releaseGroup(group);
         group.__removed = true;
-        if (group.shotgun != null) group.shotgun.dispose();
+        group.shotCoverage = null;
         group.shotgun = null;
         group.pierceRemaining = null;
+        group.pierceDepth = null;
         var list:Array = group.单元体列表;
         var pool:Array = dataPool;
         var n:Number = list.length;
@@ -389,7 +391,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
 
     /** 每次实际游戏更新递增一次；暂停和 FrameBroadcaster 重发不推进。 */
     public static function beginNativeStep(group:ChainGroup, advance:Number, advanceX:Boolean):Void {
-        if (!group.nativeGroupOwned && !group.isDecayReference) return;
+        if (!group.nativeGroupOwned) return;
         if (group.aggregate) {
             var existing:Array = group.aggregateRuns;
             var previous:Object = existing[existing.length - 1];
@@ -542,13 +544,13 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         if (list.length == 0) return false;
         var sv:Number = b.霰弹值;
         var originalSv:Number = sv;
-        var shotgunMode:Boolean = group.shotgun != null;
+        var keepPhysical:Boolean = group.shotCoverage != null;
         var decay:Number = group.衰竭计数器;
-        if (!shotgunMode) {
+        if (!keepPhysical) {
             decay += (sv + b.子弹散射度) / 25;
             group.衰竭计数器 = decay;
         }
-        while (!shotgunMode && list.length > 1 && decay >= -sv) {
+        while (!keepPhysical && list.length > 1 && decay >= -sv) {
             removeAggregateUnit(group, list[list.length - 1]);
             sv--;
         }
@@ -560,7 +562,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         var py:Number = b._y;
         var hitZ:Number = b.Z轴坐标;
         var unit:ChainUnitData = cosV < 0 ? minUnit : maxUnit;
-        if ((list.length > 1 || shotgunMode) && unit.y * cosV + py > hitZ) {
+        if ((list.length > 1 || keepPhysical) && unit.y * cosV + py > hitZ) {
             // 重用 scratch；只枚举真正触地的成员与一个边界失败者。
             var victims:Array = group.aggregateSorted;
             victims.length = 0;
@@ -571,12 +573,12 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
                 unit = cosV < 0 ? unit.aggregateNext : unit.aggregatePrev;
             }
             victims.sort(compareIndexDescending);
-            for (var i:Number = 0; i < victims.length && (list.length > 1 || shotgunMode); i++) {
+            for (var i:Number = 0; i < victims.length && (list.length > 1 || keepPhysical); i++) {
                 removeAggregateUnit(group, victims[i]);
                 sv--;
             }
             victims.length = 0;
-            if (shotgunMode && list.length == 0) {
+            if (keepPhysical && list.length == 0) {
                 b.霰弹值 = 0;
                 removeGroup(group);
                 b.removeMovieClip();
@@ -592,7 +594,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         var height:Number = maxUnit.y - minUnit.y;
         // 旧单颗参照自 y 起仍有最小盒高。实际多颗外包围必须涵盖其厚度，
         // 否则边界目标在宽相被删掉，单体段数虽相同却降低了旧命中概率。
-        if (shotgunMode) height += group.最小盒高;
+        if (keepPhysical) height += group.最小盒高;
         group.盒高 = height > group.最小盒高 ? height : group.最小盒高;
         return true;
     }

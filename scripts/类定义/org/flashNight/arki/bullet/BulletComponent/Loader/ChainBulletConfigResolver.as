@@ -13,7 +13,7 @@ import org.flashNight.neur.ScheduleTimer.*;
  * 治理方案（双层配置）：
  * • 模板层：<chainTemplate> 节点声明联弹前缀（如 横向联弹）、弹壳派生规则
  *   （casingMap：单元体材质 → 弹壳名）与属性覆盖（attributeOverride，仅替换已存在键，
- *   如横向系霰弹式发射将穿刺上限特判为 2）
+ *   枪式横向次级穿刺沿用单元体的上限）
  * • 单元体层：在单元体自身 <bullet> 条目上用 <chainUnit><material>…</material></chainUnit>
  *   声明参与派生及其弹壳材质（材质未命中 casingMap 则该组合不派生弹壳，如 无壳）
  *

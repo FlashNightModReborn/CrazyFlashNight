@@ -691,6 +691,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             ctx.actualHit = false;
             return null;
         }
+        collisionResult.overlapCenter.x = group.shotCoverage.hitX;
+        collisionResult.overlapCenter.y = group.shotCoverage.hitY;
         bullet.附加层伤害计算 = 0;
         bullet.hitTarget = hitTarget;
         bullet.命中对象 = hitTarget;
@@ -2918,6 +2920,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var shotgunGroup:ChainGroup;
         var isShotgunPattern:Boolean;
         var hasPierceBudget:Boolean;
+        var pierceDepth:org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalPierceDepth;
+        var shotCoverage:org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage;
+        var unitScanRight:Number;
         var Dodge:Object = DodgeHandler;
         var Damage:Object = DamageCalculator;
         var FX:Object = EffectSystem;
@@ -3252,7 +3257,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 shotgunGroup = bullet.chainGroup;
                 isShotgunPattern = shotgunGroup.shotgun != null;
                 hasPierceBudget = shotgunGroup.pierceRemaining != null;
-                if (isShotgunPattern) isPointSet = false;
+                pierceDepth = shotgunGroup.pierceDepth;
+                shotCoverage = shotgunGroup.shotCoverage;
+                if (shotCoverage != null) isPointSet = false;
                 bulletZOffset = bullet.Z轴坐标;          // 子弹Z轴坐标
                 bulletZRange = bullet.Z轴攻击范围;       // Z轴攻击范围
                 killFlags = 0;
@@ -3262,6 +3269,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 shooter = gameWorld[bullet.发射者名];
                 Lb = bulletLeftKeys[bulletIndex];
                 Rb = bulletRightKeys[bulletIndex];
+                unitScanRight = Rb;
+                if (shotCoverage != null) {
+                    shotCoverage.sample(shotgunGroup, areaAABB);
+                    unitScanRight = shotCoverage.right;
+                }
                 // —— 读取 token：是否本帧消弹，以及具体模式
                 token = (cancelToken != null) ? (cancelToken[bulletIndex] | 0) : 0; // undefined -> 0
                 stamp = token >>> 2;
@@ -3291,7 +3303,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         __initDeferScatter(bullet);
                     }
                     // ---- 扫描线算法：双指针优化的碰撞检测窗口计算 ----
-                        queryLeft = Lb;        // 使用已缓存的子弹左边界
+                    queryLeft = Lb;        // 使用已缓存的子弹左边界
                     // 推进扫描线：跳过所有右边界小于子弹左边界的目标
                     // 循环展开优化：每次跳4个，减少循环判断开销
                     while (sweepIndex + 3 < len && unitRightKeys[sweepIndex + 3] < queryLeft) {
@@ -3302,9 +3314,20 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     while (sweepIndex < len && unitRightKeys[sweepIndex] < queryLeft) {
                         ++sweepIndex;
                     }
-                    startIndex = sweepIndex;                // 记录有效检测的起始索引
+                    startIndex = sweepIndex;
+                    // The physical keys stay sorted for cancellation and threat scans. A horizontal sweep
+                    // can reach behind this cursor; find its own start without moving the shared cursor.
+                    if (shotCoverage != null && shotCoverage.left < Lb && startIndex > 0) {
+                        var begin:Number = 0, finish:Number = startIndex;
+                        while (begin < finish) {
+                            var halfIndex:Number = (begin + finish) >>> 1;
+                            if (unitRightKeys[halfIndex] < shotCoverage.left) begin = halfIndex + 1;
+                            else finish = halfIndex;
+                        }
+                        startIndex = begin;
+                    }
                     // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
-                    effectiveRb = (hasTZ && bullet.xmov > 0) ? (Rb + WARN_PAD_X) : Rb;
+                    effectiveRb = (hasTZ && bullet.xmov > 0) ? Math.max(unitScanRight, Rb + WARN_PAD_X) : unitScanRight;
                     if (startIndex >= len || effectiveRb < unitLeftKeys[startIndex]) {
 
                         // 【僵尸子弹防御】优先检查边界标志，防止隧穿出地图的子弹逃逸
@@ -3336,7 +3359,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         // 【需要销毁】不在这里做释放/FX/移除，只声明"终止意图"，交给单出口收尾
                         else {
                             wantDestroy = true;
-                            killFlags |= MODE_VANISH;
+                            // 到射程时整组回收，普通霰弹的单位命中仍可把余额留给后排。
+                            killFlags |= (shotCoverage != null && !(bullet.stateFlags & STATE_HIT_MAP)) ? MODE_REMOVE : MODE_VANISH;
                             // 跳过单位循环（但不 continue），让流程落到统一尾部
                             startIndex = len;
                         }
@@ -3363,7 +3387,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     isUpdatePolygon = false;
 
                     // ----------- 命中循环（带右边界截断） -----------
-                    for (unitIndex = startIndex; unitIndex < len && unitLeftKeys[unitIndex] <= Rb; ++unitIndex) {
+                    for (unitIndex = startIndex; unitIndex < len && unitLeftKeys[unitIndex] <= unitScanRight; ++unitIndex) {
                         hitTarget = unitMap[unitIndex];  // 只读取目标，延迟写入
 
                         // 逐弹目标过滤：带标记子弹只结算 目标标记 一致的目标；开关断开时
@@ -3412,9 +3436,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             // getAABB内联：仅Y坐标需要zOffset投影，X坐标直接使用
                             uTop = unitArea.top + zOffset;
                             uBottom = unitArea.bottom + zOffset;
-                            if (areaAABB.left >= unitArea.right ||
+                            if (pierceDepth != null) {
+                                if (hitTarget.无敌 || hitTarget.man.无敌标签 || hitTarget.NPC ||
+                                    !pierceDepth.prepare(shotgunGroup,hitTarget,unitArea,zOffset)) continue;
+                            } else if (!isShotgunPattern && (areaAABB.left >= unitArea.right ||
                                 areaAABB.bottom <= uTop ||
-                                areaAABB.top >= uBottom) {
+                                areaAABB.top >= uBottom)) {
                                 continue;
                             }
 
@@ -3471,6 +3498,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                             // 跨帧贴住同一目标时，余额耗尽就跳过整条命中链；后排仍继续检查。
                             if (hasPierceBudget && !shotgunGroup.canJudgePierce(hitTarget)) continue;
+                            if (pierceDepth != null) { crCenter.x = shotCoverage.hitX; crCenter.y = shotCoverage.hitY; }
                             // 确认命中后才写入hitTarget，避免无效的哈希表操作
                             bullet.hitTarget = hitTarget;
 
@@ -3504,7 +3532,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 // settleHit 内含：命中对象同步(幂等) → calculateDamage → hitCount+= → publish("hit")
                                 //                → kill/death(_killed 守卫) → triggerDisplay。
                                 settlementResult = settleHit(_hitCtx, hitTarget, collisionResult,
-                                    collisionResult.overlapRatio, dodgeState, true);
+                                    pierceDepth != null ? 1 : collisionResult.overlapRatio, dodgeState, true);
                             }
                             if (_hitCtx.actualHit || settlementResult === DamageResult.NULL) {
                                 hasUnitHitFx = true;

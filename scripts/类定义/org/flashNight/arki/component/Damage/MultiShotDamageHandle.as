@@ -216,6 +216,12 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
 
         // 新霰弹按组级覆盖限制单体；旧弹保持最低一段的历史合同。
         if (pattern != null && actualScatterUsed > pattern.hitCap) actualScatterUsed = pattern.hitCap;
+        // A fast sweep may release more than one segment per covered pellet in this frame.
+        // Geometry already accepted these attempts before dodge. HP still bounds overkill.
+        if (group.pierceDepth != null) {
+            var hpCap:Number = Math.max(1,Math.ceil(B));
+            actualScatterUsed = Math.min(group.pierceDepth.segments,hpCap);
+        }
         var horizontalPierce:Boolean = group.pierceRemaining != null;
         if (horizontalPierce) {
             actualScatterUsed = group.takePierceSegments(target, availableScatter, actualScatterUsed < 1 ? 1 : actualScatterUsed);
