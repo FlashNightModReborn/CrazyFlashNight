@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>61式打磨工作台</title>
+<style>/*__CSS__*/</style>
+<header>
+  <div><span class="eyebrow">TYPE 61 · OFFLINE ART KIT</span><h1>61式打磨工作台</h1>
+  <p>对照现役稿、检查部件连接，在小尺寸下评估每次修改。</p></div>
+  <span id="loadStatus" class="badge">包内工作稿</span>
+</header>
+<main>
+<section class="controls">
+  <label>对照方式<select id="comparison"><option value="revision">打磨前后</option><option value="family">三套61参考</option></select></label>
+  <label>人模<select id="gender"><option value="male">男</option><option value="female">女</option></select></label>
+  <label class="wide">姿势<select id="pose"></select></label>
+  <label>胸甲状态<select id="state"><option value="closed">闭合</option><option value="open">开门</option><option value="fire">开火</option></select></label>
+  <label>画布高度<select id="height"><option>96</option><option>128</option><option>160</option><option>240</option><option selected>320</option><option>480</option></select></label>
+  <label>背景<select id="background"><option value="#283743">蓝灰</option><option value="#10161d">暗色</option><option value="#ded9c9">浅色</option><option value="#786d55">土色</option><option value="transparent">透明格</option></select></label>
+  <label>参考来源<select id="source"><option value="svg">可编辑矢量</option><option value="raster">现有导出像素</option></select></label>
+  <div class="checks"><label><input type="checkbox" id="mirror">朝左</label><label><input type="checkbox" id="origin">原点</label></div>
+  <div class="actions"><button id="loadFolder">载入工作文件夹</button><button id="loadFiles">载入修改的 SVG</button><button id="reset">恢复包内稿</button></div>
+  <input id="folderInput" type="file" webkitdirectory multiple hidden>
+  <input id="fileInput" type="file" accept=".svg" multiple hidden>
+</section>
+<div class="review-note" id="notice" role="status">静态姿态预览。画布像素高度是评审档位，实际游戏显示尺寸待 Windows 端核对。</div>
+<section id="mainReview" class="review-grid"></section>
+<div class="export-bar"><span id="placementInfo"></span><button id="exportSvg">导出当前 SVG</button><button id="exportPng">导出当前对照 PNG</button></div>
+<section class="section-head"><div><h2>小尺寸检查</h2><p>先按指定像素生成 PNG，再以原尺寸显示；左为基准，右为工作稿。复杂底纹为合成评审背景。</p></div><label><input type="checkbox" id="pixelZoom">2倍像素放大</label></section>
+<section id="smallReview" class="small-grid"></section>
+<section class="section-head"><div><h2>五件图标</h2><p>沿用现役取景，随工作分件更新。原生图标 SVG 与导出像素另存于 references。</p></div></section>
+<section id="iconsReview" class="icons-grid"></section>
+<section class="section-head"><div><h2>分件检查</h2><p>红色十字标出局部原点。共享上臂、小腿、鞋会各放置两次。</p></div><select id="part"></select></section>
+<section id="partsReview" class="parts-grid"></section>
+<footer>修改并保存 assets/unified 下的 SVG，再载入工作文件夹；或运行 python preview.py --refresh-viewer。浏览器不改写磁盘文件。<br>本页与全部预览均为离线重组，不执行 Flash 动作或战斗逻辑。</footer>
+</main>
+<script id="kitData" type="application/json">/*__DATA__*/</script>
+<script>/*__JS__*/</script>
+</html>

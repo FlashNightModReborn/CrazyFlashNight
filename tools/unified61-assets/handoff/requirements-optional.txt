@@ -1,0 +1,3 @@
+# Optional PNG renderer. Python SVG/HTML composition uses only the standard library.
+# The host environment must also provide the native Cairo library.
+CairoSVG==2.9.1
