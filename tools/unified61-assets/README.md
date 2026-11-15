@@ -2,6 +2,14 @@
 
 本工具目录承接 Type61 R38 的初次导入、五件数据配表与定向验证。玩法规则见[设计与实现](../../docs/统合61式装甲套装-设计与实现-2026-10-25.md)，运行属性与配方仍由现役 XML/JSON、armor plan 维护。
 
+## 外部 AI 打磨交接
+
+build_handoff.py 只读现役原生源、现有 Web 分件与姿态，生成独立压缩包；不改游戏资产、不调用 CS6。工作 SVG 从现役 XFL 导出，包含下臂覆盖修正，另附普通61/钛合金61的完整分件参考、胸甲三态、图标现役取景、原生快照与来源哈希。历史 R38 SVG 仅作为只读语义分组参考。
+
+    python -X utf8 tools/unified61-assets/build_handoff.py --output outputs/type61-ai-kit-20261115
+
+组包环境使用已有 Pillow、CairoSVG、lxml 及其运行库；不自动安装依赖。解压后的 preview.py 默认只需 Python 3.9+ 标准库，preview.html 可直接离线打开；PNG 批量生成是 CairoSVG 可选能力。包内[使用说明](handoff/README.md)、[绘制任务](handoff/AI_BRIEF.md)、[技术合同](handoff/TECHNICAL_CONTRACT.md)与[返包要求](handoff/RETURN_GUIDE.md)一起复制进包。交接后的 SVG 仍为候选，不能覆盖原生权威或沿用初次安装器重新灌入。
+
 ## 来源与编辑边界
 
 `source/` 是交接稿归档，包含20个闭合分件、男女躯干的开门/开火稿、作者姿态矩阵与输入哈希。`design.json` 保留本轮初值。首次导入之后直接维护现役XFL、物品XML和plan；不要用导入器覆盖后续原生编辑。

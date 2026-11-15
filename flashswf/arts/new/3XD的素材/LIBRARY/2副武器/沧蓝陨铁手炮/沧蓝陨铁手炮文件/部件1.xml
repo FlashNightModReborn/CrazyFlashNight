@@ -47,14 +47,16 @@
 !550 40.5|551 118.5!551 118.5|541.5 132.5!541.5 132.5|540.5 25.5!540.5 25.5|550 40.5"/>
                     <Edge fillStyle0="4" fillStyle1="1" edges="
 !417 7|526 7!526 7|528 153!528 153|526.5 155!526.5 155|417 155"/>
-                    <Edge fillStyle0="4" fillStyle1="2" edges="
-!417 155|53 155"/>
-                    <Edge fillStyle0="4" fillStyle1="1" edges="
-!53 155|21.5 155!21.5 155[#FFFFF8.71 81 23 7!23 7|53 7"/>
-                    <Edge fillStyle0="4" fillStyle1="2" edges="
-!53 7|417 7"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="
-!417 155[#196.16 #4B.FF 417 7!53 7[#2A.14 #4F.55 53 155"/>
+!417 155[#196.16 #4B.FF 417 7"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="
+!417 7|53 7"/>
+                    <Edge fillStyle0="1" fillStyle1="4" edges="
+!53 7|23 7!23 7[#FFFFF8.71 81 21.5 155!21.5 155|53 155"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="
+!53 155|417 155"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!53 7[#2A.14 #4F.55 53 155"/>
                   </edges>
                 </DOMShape>
               </elements>

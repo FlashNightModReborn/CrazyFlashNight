@@ -1,6 +1,8 @@
 ﻿import org.flashNight.arki.item.equipment.*;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.unit.Action.Melee.SwitchStrikeCore;
 
 /** 
@@ -27,6 +29,9 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
 
         var startTime:Number = getTimer();
 
+        // 注册表定义独立于传给安装门的 current；测试结束恢复共享物品源。
+        var previousItemData:Object = ItemUtil.itemDataDict;
+        ItemUtil.itemDataDict = ObjectUtil.clone(previousItemData || {});
         // 初始化测试环境
         initTestEnvironment();
 
@@ -72,6 +77,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         report += "测试完成！总耗时: " + totalTime + "ms\n";
         report += "========================================\n";
 
+        ItemUtil.itemDataDict = previousItemData;
         trace(report);
 
         return report;
@@ -940,9 +946,12 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             data: { modslot: 3 }
         };
 
+        registerFixtureDefinition("测试机枪", machineData);
+        registerFixtureDefinition("测试突击步枪", rifleData);
         var missingPower:Number = TagManager.checkModAvailability(machineItem, machineData, "条件供电插件");
         var hasPower:Number = TagManager.checkModAvailability(poweredMachineItem, machineData, "条件供电插件");
-        var rifleBypass:Number = TagManager.checkModAvailability(machineItem, rifleData, "条件供电插件");
+        var rifleItem = {name:"测试突击步枪", value:{mods:[]}};
+        var rifleBypass:Number = TagManager.checkModAvailability(rifleItem, rifleData, "条件供电插件");
         var filteredWithoutPower:Array = TagManager.filterAvailableMods(["条件供电插件"], machineItem, machineData);
         var filteredWithPower:Array = TagManager.filterAvailableMods(["条件供电插件"], poweredMachineItem, machineData);
 
@@ -2219,7 +2228,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}},
             val, cfg, ModRegistry.getModDict()
         );
-        var missingProvision:Object = ModRegistry.validateHitBehaviorProvision(["灰蛊裂隙弹"], {data: {}}, {}, {});
+        var missingProvision:Object = ModRegistry.validateHitBehaviorProvision(["灰蛊裂隙弹"], false, {}, {});
         var missingAvail:Number = TagManager.checkModAvailability(
             new BaseItem("Webley", {level: 1, mods: []}),
             {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}},
@@ -2268,6 +2277,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         modB.name = "行为插件B";
         modB.tag = "挂饰B";
         ModRegistry.loadModData([modA, modB]);
+        registerFixtureDefinition("Webley", {use:"手枪",weapontype:"大威力手枪",data:{modslot:3}});
         var multiModAvail:Number = TagManager.checkModAvailability(
             new BaseItem("Webley", {level: 1, mods: ["行为插件A"]}),
             {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}},
@@ -2281,6 +2291,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             name: "原生蚀刻枪", use: "手枪", weapontype: "手枪",
             data: {modslot: 3, hitBehavior: {type: "grayGooPrimer", profileId: "native"}}
         };
+        registerFixtureDefinition("原生蚀刻枪", nativeItem);
         var nativeAvail:Number = TagManager.checkModAvailability(
             new BaseItem("原生蚀刻枪", {level: 1, mods: []}),
             nativeItem,
@@ -2298,6 +2309,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var multiBranchMod:Object = buildGrayGooMod();
         multiBranchMod.stats.useSwitch.use[0].name = "use:手枪";
         ModRegistry.loadModData([multiBranchMod]);
+        registerFixtureDefinition("TTI Glock 19", {use:"手枪",weapontype:"手枪",data:{modslot:3}});
         var multiBranchAvail:Number = TagManager.checkModAvailability(
             new BaseItem("TTI Glock 19", {level: 1, mods: []}),
             {name: "TTI Glock 19", use: "手枪", weapontype: "手枪", data: {modslot: 3}},
@@ -2507,6 +2519,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             data: { modslot: 3 }
         };
 
+        registerFixtureDefinition("测试头盔", testItemData);
         var availability:Number = TagManager.checkModAvailability(testItem, testItemData, "高级插件");
 
         var passed:Boolean = (availability == 1);
@@ -2562,6 +2575,12 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
 
         // 初始化 modAvailabilityResults
         EquipmentUtil.initializeModAvailabilityResults();
+    }
+
+    private static function registerFixtureDefinition(name:String, definition:Object):Void {
+        var raw:Object = ObjectUtil.clone(definition);
+        raw.name = name;
+        ItemUtil.itemDataDict[name] = raw;
     }
 
     private static function getTimer():Number {

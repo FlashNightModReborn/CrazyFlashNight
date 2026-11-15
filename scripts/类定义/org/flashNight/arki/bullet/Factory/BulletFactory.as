@@ -316,6 +316,9 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         if (Obj.timedDetonation != null && !isTransparent && !isChain && !isRay) {
             TimedDetonation.bind(bulletInstance, Obj.timedDetonation, null);
         }
+        if (Obj.explosionScatter != null && !isTransparent && !isChain && !isRay) {
+            ExplosionScatter.bind(bulletInstance, Obj.explosionScatter);
+        }
         if (Obj.cf6DamageGroup != null)
             org.flashNight.arki.scene.Cf6DamageGroups.born(bulletInstance, Obj,
                 lifecycle===TransparentBulletLifecycle.BASIC?bulletInstance.__cf6OneFrameDrain:null);

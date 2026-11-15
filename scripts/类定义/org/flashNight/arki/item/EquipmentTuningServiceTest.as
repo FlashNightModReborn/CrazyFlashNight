@@ -64,6 +64,89 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         trace("=== EquipmentTuningServiceTest end ===");
     }
 
+    /** Real XML -> ItemUtil/BaseItem -> snapshot/tooltip -> preview/commit, both sources. */
+    public static function runRealModRegressionTests(items:Object, mods:Array):Void {
+        _passed = 0;
+        _failed = 0;
+        var definitions:Array = [];
+        for (var itemName:String in items) definitions.push(items[itemName]);
+        var names:Array = ["TTI Glock 19", "AA12"];
+        var providers:Array = ["灰蛊裂隙弹", "灰蛊蚀刻霰弹"];
+        for (var w:Number = 0; w < names.length; w++) {
+            for (var sourceIndex:Number = 0; sourceIndex < 2; sourceIndex++) {
+                resetFixture();
+                EquipmentUtil.loadModData(copyRealMods(mods));
+                ItemUtil.loadItemData(org.flashNight.gesh.object.ObjectUtil.clone(definitions));
+                var item:BaseItem = equipment(names[w], 1, [providers[w]]);
+                var worn:Boolean = sourceIndex == 1;
+                var fixture:Object = null;
+                if (worn) fixture = installWornFixture(w == 0 ? "手枪" : "长枪", item);
+                else _root.物品栏.背包.add(0, item);
+                var materials:Object = _root.收集品栏.材料;
+                materials.add("弹簧", 1);
+                materials.add("螺丝套件", 1);
+                materials.add("磁稳贯穿弹", 1);
+                var view:String = "real-hb-" + w + "-" + sourceIndex;
+                var before:Object = item.getData();
+                assertTrue(before.data.hitBehavior.type == (w == 0 ? "grayGooPrimer" : "grayGooEtch")
+                        && (w == 0 ? before.data.hitBehavior.profileId == "handgun"
+                            : before.data.hitBehavior.delayFrames == 54 && before.data.hitBehavior.detonationCrumble == 1),
+                    view + " 真实 provider 黄金值");
+                var snapshotParams:Object = params(view);
+                snapshotParams.source = worn ? currentWornSource(fixture) : sourceRef(inventorySnapshot(), 0);
+                var snapshot:Object = EquipmentTuningService.execute("snapshot", snapshotParams);
+                var tooltipParams:Object = params(view);
+                tooltipParams.candidateKey = findCandidateKey(snapshot.snapshot, "install_mod", "弹簧");
+                var tooltip:Object = EquipmentTuningService.execute("tooltip", tooltipParams);
+                var installed:Object = realModCommit(worn, fixture, view, "install_mod", "弹簧", "");
+                assertTrue(snapshot.success && tooltip.success && installed.preview.success
+                        && installed.preview.canCommit && installed.commit.success
+                        && materials.getValue("弹簧") == 0 && item.value.mods.length == 2
+                        && item.getData().data.hitBehavior.type == before.data.hitBehavior.type,
+                    view + " snapshot/tooltip/安装弹簧不重复计 provider");
+                var replaced:Object = realModCommit(worn, fixture, view, "replace_mod", "螺丝套件", "弹簧");
+                assertTrue(replaced.commit.success && materials.getValue("弹簧") == 1
+                        && materials.getValue("螺丝套件") == 0 && item.value.mods.length == 2
+                        && item.getData().data.hitBehavior.type == before.data.hitBehavior.type,
+                    view + " 保留 provider 替换普通插件并精确返还");
+                var denied:Object = realModCommit(worn, fixture, view, "install_mod", "磁稳贯穿弹", "");
+                assertTrue(denied.preview.success !== true && materials.getValue("磁稳贯穿弹") == 1
+                        && item.value.mods.length == 2,
+                    view + " 第二弹药仍拒绝且零写");
+                var ammo:Object = realModCommit(worn, fixture, view, "replace_mod", "磁稳贯穿弹", providers[w]);
+                assertTrue(ammo.commit.success && materials.getValue(providers[w]) == 1
+                        && materials.getValue("磁稳贯穿弹") == 0 && item.getData().data.hitBehavior == undefined,
+                    view + " 原子替换 provider 后正确移除行为");
+                var detached:Object = realModCommit(worn, fixture, view, "detach_mod", "磁稳贯穿弹", "");
+                assertTrue(detached.commit.success && materials.getValue("磁稳贯穿弹") == 1
+                        && item.getData().data.hitBehavior == undefined,
+                    view + " 卸下弹药精确返还");
+            }
+            resetFixture();
+            EquipmentUtil.loadModData(copyRealMods(mods));
+            ItemUtil.loadItemData(org.flashNight.gesh.object.ObjectUtil.clone(definitions));
+            _root.物品栏.背包.add(0, equipment(names[w], 1, [providers[w]]));
+            var shortage:Object = webCommit("real-shortage-" + w, "install_mod", 0, -1, "弹簧", undefined, "");
+            assertTrue(shortage.snapshot.success && shortage.preview.canCommit !== true
+                    && shortage.commit.success !== true,
+                "真实 provider 在材料为零时不签可提交授权 " + names[w]);
+        }
+        trace("RealEquipmentModRegressions passed=" + _passed + " failed=" + _failed);
+        resetFixture();
+    }
+
+    private static function copyRealMods(mods:Array):Array {
+        // ObjectUtil 的声明返回 Object；保留真实 Array，不用 Array(...) 构造包装。
+        var copy = org.flashNight.gesh.object.ObjectUtil.clone(mods);
+        return copy;
+    }
+
+    private static function realModCommit(worn:Boolean, fixture:Object, view:String,
+            operation:String, candidate:String, replaced:String):Object {
+        return worn ? commitWornOperation(fixture, view, operation, candidate, replaced, undefined)
+            : webCommit(view, operation, 0, -1, candidate, undefined, replaced);
+    }
+
     private static function resetFixture():Void {
         EquipmentUtil.loadEquipmentConfig({
             levelStatList:[1,1.02,1.04,1.06,1.08,1.1,1.12,1.14,1.16,1.18,1.2,1.22,1.24,1.26],

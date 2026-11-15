@@ -1,0 +1,22 @@
+﻿import org.flashNight.gesh.path.*;
+import org.flashNight.arki.bullet.Factory.*;
+import org.flashNight.arki.bullet.BulletComponent.Init.*;
+import org.flashNight.arki.bullet.BulletComponent.Movement.Util.*;
+import org.flashNight.arki.bullet.BulletComponent.Utils.*;
+import org.flashNight.arki.bullet.BulletComponent.Queue.*;
+import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.Effect.*;
+import org.flashNight.neur.Event.*;
+
+PathManager.reset();
+var scatterSuiteUrl:String = unescape(_root._url).split("\\").join("/");
+PathManager.setBasePaths([scatterSuiteUrl.substring(0, scatterSuiteUrl.lastIndexOf("/scripts/") + 1)]);
+PathManager.initialize(scatterSuiteUrl);
+trace("ExplosionScatterResourceRoot " + PathManager.getBasePath());
+_root.explosionScatterComplete = function():Void {
+    trace("FocusedTestRunId explosion-scatter Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId explosion-scatter Start: __FOCUSED_RUN_ID__");
+#include "逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as"
+org.flashNight.arki.bullet.BulletComponent.Lifecycle.ExplosionScatterTest.runAllTests();

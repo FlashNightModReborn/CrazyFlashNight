@@ -1,7 +1,7 @@
 # Issue 看板运营合同
 
 **文档角色**：GitHub Projects 施工跟踪体系的 canonical 合同——字段、label、Epic 清单、卡片模板与运营规则的唯一真源。
-**最后核对代码基线**：commit `b85332cc4d`（2026-09-18；体系落盘日）。
+**最后核对代码基线**：commit `fa11d55524`（2026-11-15；补充环境分流互斥标签与批量收口口径）。
 **看板入口**：[CFN 施工调度](https://github.com/orgs/FlashNightModReborn/projects/1)（org Project #1，已 link 本仓库）。
 
 ## 0. 净收益声明（治理要求）
@@ -16,10 +16,10 @@
 
 ## 2. 结构
 
-- **label**（4 自建 + 复用 `bug`）：`epic`（长期契约/常驻邮箱）、`sub-epic`（例外才建）、`perf`、`runtime-release`（完成条件含正式 runtime 发布；仅触及 C# 源码不触发，native source-ahead 合法）。
+- **label**（6 自建 + 复用 `bug`）：`epic`（长期契约/常驻邮箱）、`sub-epic`（例外才建）、`perf`、`runtime-release`（完成条件含正式 runtime 发布；仅触及 C# 源码不触发，native source-ahead 合法，平时本地验证、攒批走发布列车）、`flash-required`（当前剩余开发需占用本机唯一 Flash CS6 编译 `.as`/XFL 或运行 TestLoader，单台 Windows 开发机并发上限 = 1；纯改 XML/Web 或已完成编译仅待实机验收的卡不贴）、`linux-dev`（当前剩余工作为文档/对账评估、XML/JSON 数值文案、离线脚本或纯 Web 局部改动，可派云端 bot / chatbox / macOS 独立完成，不占 Windows/CS6 算力；**与 `flash-required`、`runtime-release` 严格互斥**，云端阶段收口转本机验收后移除）。
 - **Status**：Inbox / Ready / 施工中 / Blocked / 待验收 / 完成。
 - **自定义字段**：`Domain`（工程/玩法系统/数值标定/关卡任务/剧情文案/美术资产/音频；跨界按验收难点归一个值，不为分类拆卡）；`Blocker`（quota/hardware/field/art/decision/timing）；`验收方式`（机器门/需人类验收/机器门+人验/决策裁决）。
-- **视图**：调度台（按 Status 分组）、按域（按 Domain 分组）、虫（label:bug）、性能（label:perf）、现场复验（Blocker=field）、列车队列（label:runtime-release）。
+- **视图**：调度台（按 Status 分组）、按域（按 Domain 分组）、虫（label:bug）、性能（label:perf）、现场复验（Blocker=field）、列车队列（label:runtime-release）、CS6 单槽队列（label:flash-required）、轻量离机池（label:linux-dev）。
 - **关闭路径**：验收完成 = 满足全部完成条件；退出（取消/重复/被替代/不再计划）= close as not planned 归档，不计入交付；Projects 自动化配置须区分关闭原因。
 
 ## 3. Epic 清单（12 个）
@@ -51,7 +51,7 @@
 ## 5. 运营规则
 
 1. 提交说明中文 + 回归提示；普通提交用 `Refs #N` 引用，仅全部完成条件满足的提交才用 `Closes #N`。
-2. Ready 是候选队列（≈5 张），不代表并发能力；实际并发受共享文件闭包、CS6 机器、发布资源分别约束。
+2. Ready 是候选队列（≈5 张），不代表并发能力；实际并发受共享文件闭包、CS6 单实例互斥锁（同机同时至多 1 张 `flash-required`）、发布列车攒批（`runtime-release`）约束，轻量离机池（`linux-dev`）分流至云端/chatbox/macOS，已编译或已发布仅待人验的卡不挂施工环境标。
 3. Blocked：等仓内某卡用 blocked-by，其他原因填 Blocker；全部解除才回 Ready。
 4. Epic checklist 只放卡链接，不复制内容；仓内文档状态更新是完工动作的一部分。
 5. 散卡：不成批的 bug/体验增强带 label/Domain 直接落板；某主题 ≥3 张相关卡才考虑配常驻 Epic，不预建。

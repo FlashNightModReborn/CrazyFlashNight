@@ -175,6 +175,7 @@ org.flashNight.arki.bullet.BulletComponent.Movement.TrajectoryRotationComponent;
 org.flashNight.arki.bullet.BulletComponent.Movement.AcceleratedMovement;
 org.flashNight.arki.bullet.BulletComponent.Lifecycle.ChainObjectLifecycle;
 org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonation;
+org.flashNight.arki.bullet.BulletComponent.Lifecycle.ExplosionScatter;
 org.flashNight.arki.component.Damage.DamageCalculator;
 org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine;
 org.flashNight.arki.bullet.BulletComponent.Queue.RayComboCursor;

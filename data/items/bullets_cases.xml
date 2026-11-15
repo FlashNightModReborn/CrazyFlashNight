@@ -90,6 +90,22 @@
         </attribute>
     </bullet>
     <bullet>
+        <name>爆炸集束子弹</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <explosionScatter>
+                <type>次级穿刺子弹</type>
+                <count>5</count>
+                <speed>25</speed>
+                <lifetimeMs>400</lifetimeMs>
+                <powerScale>0.2</powerScale>
+                <fallbackPower>100</fallbackPower>
+                <minAngle>0</minAngle>
+                <maxAngle>360</maxAngle>
+            </explosionScatter>
+        </attribute>
+    </bullet>
+    <bullet>
         <name>子弹示例</name>
         <shell>
             <casing>能量弹壳</casing>

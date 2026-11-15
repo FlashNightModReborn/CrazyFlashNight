@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Loader.*;
 import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationProfile;
+import org.flashNight.arki.bullet.BulletComponent.Lifecycle.ExplosionScatterProfile;
 
 
 class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implements IComponentLoader {
@@ -84,6 +85,14 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
                 var timed:TimedDetonationProfile = TimedDetonationProfile.fromXML(attributeNode.timedDetonation);
                 if (timed != null) attributeInfo.timedDetonation = timed;
                 else trace("[AttributeLoader] invalid timedDetonation: " + data.name);
+            }
+
+            var rawScatter:Object = (attributeNode.explosionScatter != undefined)
+                ? attributeNode.explosionScatter : attributeNode.clusterScatter;
+            if (rawScatter != undefined) {
+                var scatterProfile:ExplosionScatterProfile = ExplosionScatterProfile.fromXml(rawScatter);
+                if (scatterProfile != null) attributeInfo.explosionScatter = scatterProfile;
+                else trace("[AttributeLoader] invalid explosionScatter: " + data.name);
             }
 
             // 仅当有预置状态位时才写入

@@ -113,6 +113,7 @@ org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader;
 org.flashNight.arki.bullet.BulletComponent.Loader.ShellLoader;
 org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader;
 org.flashNight.arki.bullet.BulletComponent.Lifecycle.TimedDetonationProfile;
+org.flashNight.arki.bullet.BulletComponent.Lifecycle.ExplosionScatterProfile;
 org.flashNight.arki.bullet.BulletComponent.Loader.MovementLoader;
 org.flashNight.gesh.xml.LoadXml.BulletsCasesLoader;
 org.flashNight.arki.bullet.BulletComponent.Loader.ChainBulletConfigResolver;

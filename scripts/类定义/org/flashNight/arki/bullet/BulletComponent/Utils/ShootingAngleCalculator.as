@@ -15,7 +15,18 @@
         var angleOffset:Number = Obj.角度偏移 | 0;
         // 提取子弹对象的速度，用于判断是否需要反转射击方向
         var bulletSpeed:Number = Obj.子弹速度;
-        
+
+        // 显式世界旋转角（如爆炸中心散射次级弹）：脱离发射者当前朝向与旋转状态
+        if (isFinite(Obj.fixedRotation)) {
+            if (bulletSpeed < 0) {
+                Obj.子弹速度 = -bulletSpeed;
+            }
+            return Obj.fixedRotation;
+        }
+
+        var shooterDirLeft:Boolean = (shooter != null && shooter.方向 == "左");
+        var shooterRot:Number = (shooter != null && isFinite(shooter._rotation)) ? shooter._rotation : 0;
+
         /*
          * 这里核心在于确定最终的射击方向：
          * 1. shooter.方向=="左" 表示射手初始朝向为左。
@@ -32,7 +43,7 @@
          * 然后逗号运算符返回 true，从而将需要反转的标识传递给异或操作。
          * 复杂副作用逻辑的目的是为了触发虚拟机寄存器使用以提高性能。
          */
-        if ((shooter.方向 == "左") 
+        if (shooterDirLeft
             // 这里 (bulletSpeed < 0) 判断子弹速度是否为负，若是则需要反转
             ^ ((bulletSpeed < 0) && 
                // 如果子弹速度为负，利用逗号运算符先将 Obj.子弹速度 取反赋值，
@@ -44,7 +55,7 @@
              * - 同时射手自身旋转角 shooter._rotation 也要参与计算，
              * - 角度偏移需要反向处理（即取 -angleOffset），并写回 Obj.角度偏移 以保留副作用。
              */
-            return 180 + shooter._rotation + (Obj.角度偏移 = -angleOffset);
+            return 180 + shooterRot + (Obj.角度偏移 = -angleOffset);
         }
 
         /*
@@ -52,6 +63,6 @@
          * - 基础射击角度为 0°（隐式，即不额外加 180°），
          * - 只需要加上射手自身旋转角 shooter._rotation 和角度偏移 angleOffset。
          */
-        return shooter._rotation + angleOffset;
+        return shooterRot + angleOffset;
     }
 }

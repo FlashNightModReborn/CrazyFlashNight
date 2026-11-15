@@ -1854,9 +1854,8 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     /**
      * 校验目标装备与配件组合下的 hitBehavior 提供者唯一性及分支命中唯一性（#208）。
      */
-    public static function validateHitBehaviorProvision(mods:Array, itemData:Object, modRegistry:Object, useLookup:Object):Object {
+    public static function validateHitBehaviorProvision(mods:Array, hasNativeProvider:Boolean, modRegistry:Object, useLookup:Object):Object {
         var diagnostics:Array = [];
-        var hasNativeProvider:Boolean = (itemData != null && itemData.data != null && itemData.data.hitBehavior != undefined);
         var providerCount:Number = hasNativeProvider ? 1 : 0;
         var dict:Object = modRegistry ? modRegistry : _modDict;
 

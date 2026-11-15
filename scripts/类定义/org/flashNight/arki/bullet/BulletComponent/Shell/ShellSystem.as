@@ -128,6 +128,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
      * 发射弹壳接口
      */
     public static function launchShell(bullet:MovieClip, myX:Number, myY:Number, xscale:Number, 必然触发:Boolean):Void {
+        if (bullet == null || bullet.noShell) return;
         var 子弹类型:String = bullet.子弹种类;
 
         #include "../macros/FLAG_VERTICAL.as"

@@ -20065,8 +20065,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:ff9a5135</inputDigest>
-      <sourceDigest>sha256:eba1375c7ecf25adc3ad2198949c2de8531f1e19e4fd9f84799d63776b2e85aa</sourceDigest>
+      <inputDigest>fnv1a32:bd6e4e24</inputDigest>
+      <sourceDigest>sha256:2f37f3b0cdc97bd81ce9407c071f45d9fd8c7fee31221045e9cfaabfd105f628</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -20084,7 +20084,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=爆炸狙击子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=爆炸集束子弹；母弹非穿刺(pierce=1)，中心散射收益待人工复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -20117,7 +20117,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；bullet=爆炸集束子弹（已入 bullets_cases，中心散射待人工复核）；无获取渠道；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:L85A1:data</auditRef>
