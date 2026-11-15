@@ -135,7 +135,7 @@
 ### A5-2b（B/C 之后可延后）
 - [ ] `revert-to-panel-data` 项落地：**0 项 → 空跳过**
 - [ ] `source-orphan` 清理：**0 项 → 空跳过**
-- [ ] `reviewOnly` 项业务定夺：**理科教授 / 文科老师**——既有 qa-suite 白名单豁免延续，**不在本阶段处理**（独立 TODO 跟进，等待美术 / 边界设计定案）
+- [x] `reviewOnly` 项业务定夺：**理科教授 / 文科老师**——2026-11-15 业务定案（#98）：维持当前 `keep-source` 显示坐标与 qa-suite `reviewOnly` 白名单豁免，结案归档
 
 ---
 
