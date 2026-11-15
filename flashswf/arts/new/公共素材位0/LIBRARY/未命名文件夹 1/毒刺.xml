@@ -93,36 +93,6 @@ this.removeMovieClip();
                   <transformationPoint>
                     <Point y="12.1"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   横向加速度 = 1;
-   横向速度 = 0;
-   this.onEnterFrame = function()
-   {
-      if(90 > _parent._rotation and _parent._rotation > -90)
-      {
-         横向速度 += 横向加速度;
-         _parent._x += 横向速度;
-      }
-      else if(360 > _parent._rotation and _parent._rotation > 270)
-      {
-         横向速度 += 横向加速度;
-         _parent._x += 横向速度;
-      }
-      else if(270 > _parent._rotation and _parent._rotation > 90)
-      {
-         横向速度 += 横向加速度;
-         _parent._x -= 横向速度;
-      }
-      else if(-90 > _parent._rotation and _parent._rotation > -270)
-      {
-         横向速度 += 横向加速度;
-         _parent._x -= 横向速度;
-      }
-   };
-}
-]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

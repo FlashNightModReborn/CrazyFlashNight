@@ -169,6 +169,7 @@ org.flashNight.arki.bullet.BulletComponent.Movement.MissileStates.TrackTargetSta
 org.flashNight.arki.bullet.BulletComponent.Movement.MissileStates.FreeFlyState;
 org.flashNight.arki.bullet.BulletComponent.Movement.MissileStates.PreLaunchState;
 org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement;
+org.flashNight.arki.bullet.BulletComponent.Movement.LoiteringMissileMovement;
 org.flashNight.arki.bullet.BulletComponent.Movement.FreeFallLinearMovement;
 org.flashNight.arki.bullet.BulletComponent.Movement.TrajectoryRotationComponent;
 org.flashNight.arki.bullet.BulletComponent.Movement.AcceleratedMovement;

@@ -60,6 +60,46 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
         navigationRatio: 4,
         angleCorrection: 0.1
     };
+
+    /** 巡飞弹内置预设（与 data/items/missileConfigs.xml 的 smallMissile 对齐，供同步/加载前兜底） */
+    private var _smallMissileConfig:Object = {
+        mode: "loitering",
+        baseVelocity: 20,
+        initialSpeedMin: 0,
+        initialSpeedMax: 3,
+        cruiseAcceleration: 0.25,
+        cruiseMaxSpeed: 5,
+        lockAccelerationBoost: 1.25,
+        lockedMaxSpeed: 80,
+        linearDrag: 0.02,
+        rotationSpeed: 36,
+        dragCoefficient: 0.001,
+        navigationRatio: 0,
+        angleCorrection: 0,
+        turnFrames: 18,
+        turnDrag: 0.05,
+        turnSpeedFloor: 5,
+        birthAngleJitter: 15,
+        birthOffsetXMin: 0,
+        birthOffsetXMax: 30,
+        birthOffsetYMin: -30,
+        birthOffsetYMax: 0,
+        upwardTossMin: -10,
+        upwardTossMax: -5,
+        upwardTossDrag: 0.4,
+        reTossOnLock: true,
+        aimYOffset: -30,
+        lockRange: 2000,
+        zDistanceWeight: 5,
+        searchBatchSize: 16,
+        searchRange: 30,
+        preLaunchFrames: {min: 2, max: 4},
+        preLaunchPeakHeight: {min: 5, max: 10},
+        preLaunchHorizAmp: {min: 1, max: 3},
+        preLaunchCycles: {min: 0.5, max: 1},
+        rotationShakeTime: {start: 0.1, end: 0.2},
+        rotationShakeAmplitude: 0.2
+    };
     
     // --------------------------
     // 构造函数
@@ -69,7 +109,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
      * 请通过 getInstance() 访问
      */
     private function MissileConfig() {
-        _configs = { _default: _defaultConfig };
+        _configs = { _default: _defaultConfig, smallMissile: _smallMissileConfig };
     }
     
     // --------------------------

@@ -271,4 +271,42 @@
         <!-- 角度修正系数: 同样设置较低，减少直接指向目标的倾向 -->
         <angleCorrection>0.1</angleCorrection>
     </config>
+
+    <!-- 巡飞弹/小型导弹配置（战术版FIM92、精英弹药兵、袁望、蛙型仿生僵尸共用）：
+         保留旧时间轴低导引巡飞弹手感：单次快照坐标+18帧有限转向燃料+上下抛散射，
+         实际速度按 velocity/20 等比缩放；不重新锁敌，避免弹幕追死玩家。 -->
+    <config name="smallMissile">
+        <mode>loitering</mode>
+        <baseVelocity>20</baseVelocity>
+        <initialSpeedRatio>0</initialSpeedRatio>
+        <initialSpeedMin>0</initialSpeedMin>
+        <initialSpeedMax>3</initialSpeedMax>
+        <cruiseAcceleration>0.25</cruiseAcceleration>
+        <cruiseMaxSpeed>5</cruiseMaxSpeed>
+        <lockAccelerationBoost>1.25</lockAccelerationBoost>
+        <lockedMaxSpeed>80</lockedMaxSpeed>
+        <acceleration>0.25</acceleration>
+        <linearDrag>0.02</linearDrag>
+        <dragCoefficient>0.001</dragCoefficient>
+        <rotationSpeed>36</rotationSpeed>
+        <turnFrames>18</turnFrames>
+        <turnDrag>0.05</turnDrag>
+        <turnSpeedFloor>5</turnSpeedFloor>
+        <birthAngleJitter>15</birthAngleJitter>
+        <birthOffsetXMin>0</birthOffsetXMin>
+        <birthOffsetXMax>30</birthOffsetXMax>
+        <birthOffsetYMin>-30</birthOffsetYMin>
+        <birthOffsetYMax>0</birthOffsetYMax>
+        <upwardTossMin>-10</upwardTossMin>
+        <upwardTossMax>-5</upwardTossMax>
+        <upwardTossDrag>0.4</upwardTossDrag>
+        <reTossOnLock>true</reTossOnLock>
+        <aimYOffset>-30</aimYOffset>
+        <lockRange>2000</lockRange>
+        <zDistanceWeight>5</zDistanceWeight>
+        <searchBatchSize>16</searchBatchSize>
+        <searchRange>30</searchRange>
+        <navigationRatio>0</navigationRatio>
+        <angleCorrection>0</angleCorrection>
+    </config>
 </missileConfigs>

@@ -150,6 +150,18 @@
             </unitBullet>
         </attribute>
     </bullet>
+    <!-- 巡飞弹/小型导弹：战术版FIM92(v=20)、精英弹药兵(v=8)、袁望(v=8)、蛙型仿生僵尸(v=16)共用；
+         使用有限转向帧+单次快照导引以保留规避窗口，且保持不可拦截（不配 unitBullet）。 -->
+    <bullet>
+        <name>小型导弹</name>
+        <movement>
+            <func>DefaultMissile</func>
+            <param>
+                <missileConfig>smallMissile</missileConfig>
+                <usePreLaunch>false</usePreLaunch>
+            </param>
+        </movement>
+    </bullet>
     <bullet>
         <name>无壳子弹</name>
         <chainUnit>
@@ -353,9 +365,12 @@
             <hitMark>灼烧弹坑</hitMark>
         </attribute>
     </bullet>
-    <!-- 平射毒刺：一次命中可拦截；保留素材内置加速，统一运动迁移另行处理。 -->
+    <!-- 平射毒刺：一次命中可拦截；精英弹药兵(v=8)与袁望(v=8)共用，沿朝向线性加速。 -->
     <bullet>
         <name>毒刺</name>
+        <movement>
+            <func>accelerated</func>
+        </movement>
         <attribute>
             <unitBullet>
                 <hitPoint>1</hitPoint>

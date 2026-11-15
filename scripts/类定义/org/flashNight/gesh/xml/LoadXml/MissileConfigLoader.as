@@ -101,6 +101,39 @@ class org.flashNight.gesh.xml.LoadXml.MissileConfigLoader extends BaseXMLLoader 
         config.navigationRatio = node.navigationRatio;
         config.angleCorrection = node.angleCorrection;
 
+        // 巡飞弹 / 扩展导弹可选字段（缺省由对应 Movement 默认值兜底）
+        if (node.mode != undefined) config.mode = node.mode;
+        if (node.baseVelocity != undefined) config.baseVelocity = node.baseVelocity;
+        if (node.initialSpeedMin != undefined) config.initialSpeedMin = node.initialSpeedMin;
+        if (node.initialSpeedMax != undefined) config.initialSpeedMax = node.initialSpeedMax;
+        if (node.cruiseAcceleration != undefined) config.cruiseAcceleration = node.cruiseAcceleration;
+        if (node.cruiseMaxSpeed != undefined) config.cruiseMaxSpeed = node.cruiseMaxSpeed;
+        if (node.lockAccelerationBoost != undefined) config.lockAccelerationBoost = node.lockAccelerationBoost;
+        if (node.lockedMaxSpeed != undefined) config.lockedMaxSpeed = node.lockedMaxSpeed;
+        if (node.linearDrag != undefined) config.linearDrag = node.linearDrag;
+        if (node.turnFrames != undefined) config.turnFrames = node.turnFrames;
+        if (node.turnDrag != undefined) config.turnDrag = node.turnDrag;
+        if (node.turnSpeedFloor != undefined) config.turnSpeedFloor = node.turnSpeedFloor;
+        if (node.birthAngleJitter != undefined) config.birthAngleJitter = node.birthAngleJitter;
+        if (node.birthOffsetXMin != undefined) config.birthOffsetXMin = node.birthOffsetXMin;
+        if (node.birthOffsetXMax != undefined) config.birthOffsetXMax = node.birthOffsetXMax;
+        if (node.birthOffsetYMin != undefined) config.birthOffsetYMin = node.birthOffsetYMin;
+        if (node.birthOffsetYMax != undefined) config.birthOffsetYMax = node.birthOffsetYMax;
+        if (node.upwardTossMin != undefined) config.upwardTossMin = node.upwardTossMin;
+        if (node.upwardTossMax != undefined) config.upwardTossMax = node.upwardTossMax;
+        if (node.upwardTossDrag != undefined) config.upwardTossDrag = node.upwardTossDrag;
+        if (node.reTossOnLock != undefined) {
+            if (typeof(node.reTossOnLock) == "boolean") {
+                config.reTossOnLock = node.reTossOnLock;
+            } else {
+                var rtStr:String = String(node.reTossOnLock).toLowerCase();
+                config.reTossOnLock = (rtStr == "true" || rtStr == "1");
+            }
+        }
+        if (node.aimYOffset != undefined) config.aimYOffset = node.aimYOffset;
+        if (node.lockRange != undefined) config.lockRange = node.lockRange;
+        if (node.zDistanceWeight != undefined) config.zDistanceWeight = node.zDistanceWeight;
+
         // 处理嵌套对象属性
         if (node.preLaunchFrames != undefined) {
             config.preLaunchFrames = {

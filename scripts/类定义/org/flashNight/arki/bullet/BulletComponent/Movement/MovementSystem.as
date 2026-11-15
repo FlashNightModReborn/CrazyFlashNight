@@ -85,16 +85,47 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MovementSystem {
                     }
                 }
                 
+                var missileCfg:Object = MissileConfig.getInstance().getConfig(configName);
+                if (missileCfg != null && missileCfg.mode == "loitering") {
+                    return org.flashNight.arki.bullet.BulletComponent.Movement.LoiteringMissileMovement.create(
+                        shooter,
+                        velocity,
+                        rotation,
+                        missileCfg,
+                        usePreLaunch
+                    );
+                }
+
                 // 构建参数并创建导弹移动
                 var missileParams:Object = DefaultMissileCallbacks.build(
                     shooter, 
                     velocity, 
                     rotation,
-                    MissileConfig.getInstance().getConfig(configName)
+                    missileCfg
                 );
                 
                 missileParams.usePreLaunch = usePreLaunch;
                 return MissileMovement.create(missileParams);
+
+            case "LoiteringMissile":
+                var loiterConfigName:String = "smallMissile";
+                var loiterPreLaunch:Boolean = false;
+                if (movementInfo.param) {
+                    if (movementInfo.param.missileConfig) {
+                        loiterConfigName = movementInfo.param.missileConfig;
+                    }
+                    if (movementInfo.param.usePreLaunch !== undefined) {
+                        loiterPreLaunch = movementInfo.param.usePreLaunch;
+                    }
+                }
+                var loiterCfg:Object = MissileConfig.getInstance().getConfig(loiterConfigName);
+                return org.flashNight.arki.bullet.BulletComponent.Movement.LoiteringMissileMovement.create(
+                    shooter,
+                    velocity,
+                    rotation,
+                    loiterCfg,
+                    loiterPreLaunch
+                );
             
             case "freeFall":
                 // 自由落体线性移动，提供给榴弹
