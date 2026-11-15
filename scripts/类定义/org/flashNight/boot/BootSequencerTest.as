@@ -24,29 +24,48 @@ class org.flashNight.boot.BootSequencerTest {
     }
 
     public function runTests():Void {
-        trace("=== BootSequencerTest start ===");
-        this.test_s0_initializesGlobals();
-        this.test_shimMissing_halts();
-        this.test_socketTimeout_halts();
-        this.test_socketReady_firesHandshake();
-        this.test_handshakeFailed_halts();
-        this.test_repairGate_spinsThenReleases();
-        this.test_s5_parsesTaskAndStartsGuide();
-        this.test_s7_preservesOrder();
-        this.test_crafting_emitsEvent();
-        this.test_crafting_dependencyFailureHalts();
-        this.test_crafting_catalogLoaderFailureHalts();
-        this.test_itemDataWaitsForEquipmentConfigSettlement();
-        this.test_handoff_emitsEvent();
-        this.test_run_idempotent();
-        this.test_s6_waitGateThenDrain();
-        this.test_s6_ceilingRelease();
-        this.test_s6_loaderQueueCurrentDefaults();
-        this.printSummary();
-        // 清理 _root 上对内置方法的影子覆盖（其余 mock 全局留着无害，TestLoader 非真游戏）
-        delete _root.play;
-        delete _root.gotoAndStop;
-        trace("=== BootSequencerTest end ===");
+        var lightLoader:Object = org.flashNight.gesh.xml.LoadXml.LightProfilesLoader;
+        var originalLightStart:Function = lightLoader.start;
+        var originalLightSettled:Function = lightLoader.settled;
+        lightLoader.start = function():Void {};
+        lightLoader.settled = function():Boolean { return true; };
+        try {
+            trace("=== BootSequencerTest start ===");
+            this.test_s0_initializesGlobals();
+            this.test_start_setsResourceRoot();
+            this.test_shimMissing_halts();
+            this.test_socketTimeout_halts();
+            this.test_socketReady_firesHandshake();
+            this.test_handshakeFailed_halts();
+            this.test_repairGate_spinsThenReleases();
+            this.test_s5_parsesTaskAndStartsGuide();
+            this.test_s7_preservesOrder();
+            this.test_s7_waitsForCatalog();
+            this.test_s7_failedCatalog();
+            this.test_s7_badCatalog(null);
+            this.test_s7_badCatalog({});
+            this.test_s7_badCatalog([]);
+            this.test_s7_badCatalog([null]);
+            this.test_crafting_emitsEvent();
+            this.test_lightProfilesGate();
+            this.test_crafting_dependencyFailureHalts();
+            this.test_crafting_catalogLoaderFailureHalts();
+            this.test_itemDataWaitsForEquipmentConfigSettlement();
+            this.test_handoff_emitsEvent();
+            this.test_handoff_negativeDepthHostSwapsBeforeRemove();
+            this.test_run_idempotent();
+            this.test_s6_waitGateThenDrain();
+            this.test_s6_ceilingRelease();
+            this.test_s6_loaderQueueCurrentDefaults();
+            this.printSummary();
+            // 清理 _root 上对内置方法的影子覆盖（其余 mock 全局留着无害，TestLoader 非真游戏）
+            delete _root.play;
+            delete _root.gotoAndStop;
+            trace("=== BootSequencerTest end ===");
+        } finally {
+            lightLoader.start = originalLightStart;
+            lightLoader.settled = originalLightSettled;
+        }
     }
 
     // ====== 夹具：重建 BootSequencer 依赖的全部 mock，返回 mock host ======
@@ -127,6 +146,26 @@ class org.flashNight.boot.BootSequencerTest {
         }
         this.assert(this._calls.globalInitialize == 1, "(S0) GlobalInitializer.initialize() 调用一次");
         this.assert(inst.state == BootSequencer.S_SYNCCODE, "(S0) 初始化后进入 S_SYNCCODE");
+    }
+
+    private function test_start_setsResourceRoot():Void {
+        var host=this.freshEnv();
+        host._url="file:///D:/fixture/resources/scripts/asLoader.swf";
+        var api:Object=org.flashNight.gesh.path.PathManager;
+        var original:Function=api.initialize;
+        var t:BootSequencerTest=this;
+        api.initialize=function(url:String):Void {
+            t._calls.pathCalls=t.inc(t._calls.pathCalls);t._calls.pathUrl=url;
+        };
+        var inst:BootSequencer=new BootSequencer(host);
+        try {
+            inst.start();
+            this.assert(this._calls.pathCalls==1,"(start) resource location initialized once before any tick");
+            this.assert(this._calls.pathUrl==host._url,"(start) resource location uses the live boot host URL");
+        } finally {
+            api.initialize=original;
+            inst.tickClip.removeMovieClip();
+        }
     }
 
     // ====== 边界 (c)：shim 缺失 → HALT shim_missing ======
@@ -260,12 +299,105 @@ class org.flashNight.boot.BootSequencerTest {
         _root.__boot.s7_syncLogic = function():Void { order.push("sync"); };
         _root.__boot.s7_miscLoaders = function():Void { order.push("misc"); };
 
+        var definition:Object = org.flashNight.arki.item.ChoiceRewardDefinition;
+        var originalCatalog:Object = definition._data;
+        definition.accept([{id:"boot.fixture",groups:[{}]}]);
         var inst:BootSequencer = new BootSequencer(host);
         inst.state = BootSequencer.S_SYNCLOGIC;
         inst.step();
+        definition._data = originalCatalog;
         this.assert(order.join("|") == "sync|print:" + expectedText + "|misc",
             "(S7) sync logic → f48 文案 → misc loaders 保序且同 tick");
         this.assert(inst.state == BootSequencer.S_FANOUT, "(S7) 完成后进入 S_FANOUT");
+    }
+
+    private function test_s7_waitsForCatalog():Void {
+        var host = this.freshEnv();
+        var definition:Object = org.flashNight.arki.item.ChoiceRewardDefinition;
+        var loaderClass:Object = org.flashNight.gesh.json.LoadJson.BaseJSONLoader;
+        var originalCatalog:Object = definition._data;
+        var originalLoad:Function = loaderClass.prototype.load;
+        var t:BootSequencerTest = this;
+        definition._data = null;
+        loaderClass.prototype.load = function(ok:Function, fail:Function):Void {
+            t._calls.catalogLoads = t.inc(t._calls.catalogLoads);
+            t._calls.catalogOk = ok; t._calls.catalogFail = fail;
+        };
+        try {
+            var inst:BootSequencer = new BootSequencer(host);
+            inst.state = BootSequencer.S_SYNCLOGIC;
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_SYNCLOGIC && this._calls.catalogLoads == 1
+                && this._calls.s7 == undefined, "(S7 catalog) starts once before installing consumers");
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_SYNCLOGIC && this._calls.catalogLoads == 1
+                && this._calls.s7misc == undefined, "(S7 catalog) delayed directory gates every original S7 action");
+            this._calls.catalogOk([{id:"boot.fixture",groups:[{}]}]);
+            this.assert(definition.ready() && inst.state == BootSequencer.S_SYNCLOGIC
+                && this._calls.s7 == undefined, "(S7 catalog) callback accepts data without running boot stages");
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_FANOUT && this._calls.s7 == 1 && this._calls.s7misc == 1,
+                "(S7 catalog) next tick executes original S7 once then S8");
+            inst.step();
+            this.assert(this._calls.s7 == 1 && this._calls.s7misc == 1, "(S7 catalog) later ticks never reinstall consumers");
+            this._calls.catalogFail("late failure");
+            this.assert(inst.state == BootSequencer.S_CRAFTING && inst.b.bootFailed == undefined,
+                "(S7 catalog) late callback cannot halt a later stage");
+        } finally {
+            definition._data = originalCatalog;
+            loaderClass.prototype.load = originalLoad;
+        }
+    }
+
+    private function test_s7_failedCatalog():Void {
+        var host = this.freshEnv();
+        var definition:Object = org.flashNight.arki.item.ChoiceRewardDefinition;
+        var loaderClass:Object = org.flashNight.gesh.json.LoadJson.BaseJSONLoader;
+        var originalCatalog:Object = definition._data;
+        var originalLoad:Function = loaderClass.prototype.load;
+        var t:BootSequencerTest = this;
+        definition._data = null;
+        loaderClass.prototype.load = function(ok:Function, fail:Function):Void {
+            t._calls.catalogOk = ok; t._calls.catalogFail = fail;
+        };
+        try {
+            var inst:BootSequencer = new BootSequencer(host);
+            inst.state = BootSequencer.S_SYNCLOGIC;
+            this.assert(!definition.ready(), "(S7 catalog) no implicit empty catalog readiness");
+            inst.step();
+            this._calls.catalogFail("missing file");
+            this.assert(inst.state == BootSequencer.S_HALT && inst.b.bootFailed == "choice_rewards_failed",
+                "(S7 catalog) failed directory halts boot explicitly");
+            this.assert(this._calls.s7 == undefined && this._calls.s7misc == undefined,
+                "(S7 catalog) failure cannot install bookshelf or other consumers");
+            this._calls.catalogOk([{id:"late.fixture",groups:[{}]}]);
+            this.assert(!definition.ready(), "(S7 catalog) late success cannot revive failed boot");
+        } finally {
+            definition._data = originalCatalog;
+            loaderClass.prototype.load = originalLoad;
+        }
+    }
+
+    private function test_s7_badCatalog(payload:Object):Void {
+        var host = this.freshEnv();
+        var definition:Object = org.flashNight.arki.item.ChoiceRewardDefinition;
+        var loaderClass:Object = org.flashNight.gesh.json.LoadJson.BaseJSONLoader;
+        var originalCatalog:Object = definition._data;
+        var originalLoad:Function = loaderClass.prototype.load;
+        definition._data = null;
+        loaderClass.prototype.load = function(ok:Function, fail:Function):Void { ok(payload); };
+        try {
+            var inst:BootSequencer = new BootSequencer(host);
+            inst.state = BootSequencer.S_SYNCLOGIC;
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_HALT && !definition.ready(),
+                "(S7 catalog) rejects damaged catalog root");
+            this.assert(this._calls.s7 == undefined && this._calls.s7misc == undefined,
+                "(S7 catalog) damaged catalog cannot pass the boot barrier");
+        } finally {
+            definition._data = originalCatalog;
+            loaderClass.prototype.load = originalLoad;
+        }
     }
 
     // ====== Finding 1：S9 合成表 + 材料档案 + 竞技场掉落三门成功 ======
@@ -407,6 +539,36 @@ class org.flashNight.boot.BootSequencerTest {
             "(S9) 三个成功回调均发可观测事件");
         this.assert(inst.state == BootSequencer.S_HANDOFF,
             "(S9) 显式 v2 停用店空 catalog 仍提供 identity；其余依赖 ready 后进入 S_HANDOFF");
+    }
+
+    private function test_lightProfilesGate():Void {
+        var host = this.freshEnv();
+        var inst:BootSequencer = new BootSequencer(host);
+        var lightLoader:Object = org.flashNight.gesh.xml.LoadXml.LightProfilesLoader;
+        var originalSettled:Function = lightLoader.settled;
+        var oldShops:Object = _root.shops;
+        var oldKshop:Object = _root.kshop_list;
+        lightLoader.settled = function():Boolean { return _root.__boot.testLightReady == true; };
+        try {
+            inst.state = BootSequencer.S_CRAFTING;
+            inst.b.craftFired = true;
+            inst.b.materialSourceIndexReady = true;
+            var flags:Array = ["craftReady","materialCatalogReady","mapDomainReady","arenaDropRulesReady",
+                "itemDataReady","enemyPropertiesReady","legacyMaterialDictionaryReady","equipmentModReady",
+                "shopCatalogReady","kshopCatalogReady"];
+            for (var i:Number = 0; i < flags.length; i++) inst.b[flags[i]] = true;
+            _root.shops = {fixture:{}};
+            _root.kshop_list = [{id:"fixture"}];
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_CRAFTING, "(S9 light) waits for lighting loader settlement");
+            inst.b.testLightReady = true;
+            inst.step();
+            this.assert(inst.state == BootSequencer.S_HANDOFF, "(S9 light) settled loader releases the final boot barrier");
+        } finally {
+            lightLoader.settled = originalSettled;
+            _root.shops = oldShops;
+            _root.kshop_list = oldKshop;
+        }
     }
 
     private function test_crafting_dependencyFailureHalts():Void {
@@ -595,6 +757,91 @@ class org.flashNight.boot.BootSequencerTest {
             "(S10) 调用顺序严格为 _root.play() → host.removeMovieClip()");
         this.assert(inst.state == BootSequencer.S_HALT, "(S10) handoff → state=HALT");
         this.assert(BootSequencer._instance == undefined, "(S10) 释放 _instance（同会话可重挂）");
+    }
+
+    // ====== S10：单帧模块内负深度时间轴 _definitions 须先 swapDepths(>=0) 再 removeMovieClip ======
+    private function test_handoff_negativeDepthHostSwapsBeforeRemove():Void {
+        var t:BootSequencerTest = this;
+        var host = this.freshEnv();
+        var removedAtDepth:Number = undefined;
+        host._depth = -16383;
+        host.getDepth = function():Number { return this._depth; };
+        host.swapDepths = function(d:Number):Void {
+            this._depth = d;
+            t._calls.handoffOrder.push("swap:" + d);
+        };
+        host.removeMovieClip = function():Void {
+            removedAtDepth = this._depth;
+            t._calls.handoffOrder.push("remove");
+            if (this._depth >= 0) {
+                t._calls.hostRemoved = t.inc(t._calls.hostRemoved);
+            }
+        };
+        var inst:BootSequencer = new BootSequencer(host);
+        inst.state = BootSequencer.S_HANDOFF;
+        inst.step();
+        this.assert(this._calls.hostRemoved == 1
+                && removedAtDepth == 0
+                && this._calls.handoffOrder.join(",") == "play,swap:0,remove",
+            "(S10) 负深度时间轴 host 先 _root.play() 再 swapDepths(0) 后卸载，避免 AVM1 静默残留");
+
+        var dynHost = this.freshEnv();
+        var dynRemovedAtDepth:Number = undefined;
+        dynHost._depth = 0;
+        dynHost.getDepth = function():Number { return this._depth; };
+        dynHost.swapDepths = function(d:Number):Void {
+            this._depth = d;
+            t._calls.handoffOrder.push("swap:" + d);
+        };
+        dynHost.removeMovieClip = function():Void {
+            dynRemovedAtDepth = this._depth;
+            t._calls.handoffOrder.push("remove");
+            if (this._depth >= 0) {
+                t._calls.hostRemoved = t.inc(t._calls.hostRemoved);
+            }
+        };
+        var dynInst:BootSequencer = new BootSequencer(dynHost);
+        dynInst.state = BootSequencer.S_HANDOFF;
+        dynInst.step();
+        this.assert(this._calls.hostRemoved == 1
+                && dynRemovedAtDepth == 0
+                && this._calls.handoffOrder.join(",") == "play,remove",
+            "(S10) 非负动态深度 host 直接卸载，不额外触发 swapDepths");
+
+        var sibHost = this.freshEnv();
+        var sibRemovedAtDepth:Number = undefined;
+        sibHost._depth = -16383;
+        sibHost._parent = {getNextHighestDepth:function():Number { return 3; }};
+        sibHost.getDepth = function():Number { return this._depth; };
+        sibHost.swapDepths = function(d:Number):Void {
+            this._depth = d;
+            t._calls.handoffOrder.push("swap:" + d);
+        };
+        sibHost.removeMovieClip = function():Void {
+            sibRemovedAtDepth = this._depth;
+            t._calls.handoffOrder.push("remove");
+            if (this._depth >= 0) {
+                t._calls.hostRemoved = t.inc(t._calls.hostRemoved);
+            }
+        };
+        var sibInst:BootSequencer = new BootSequencer(sibHost);
+        sibInst.state = BootSequencer.S_HANDOFF;
+        sibInst.step();
+        this.assert(this._calls.hostRemoved == 1
+                && sibRemovedAtDepth == 3
+                && this._calls.handoffOrder.join(",") == "play,swap:3,remove",
+            "(S10) 负深度 host 优先取 _parent.getNextHighestDepth() 交换，不覆盖已有正深度兄弟");
+
+        this.freshEnv();
+        var realBoot:MovieClip = _root.createEmptyMovieClip("__bsRealBootContainer", _root.getNextHighestDepth());
+        var realHost:MovieClip = realBoot.createEmptyMovieClip("_definitions", 2);
+        var realInst:BootSequencer = new BootSequencer(realHost);
+        realInst.state = BootSequencer.S_HANDOFF;
+        realInst.step();
+        var realHostUnloaded:Boolean = (realBoot._definitions == undefined);
+        realBoot.removeMovieClip();
+        this.assert(realHostUnloaded,
+            "(S10) 真实 MovieClip host 卸载后 _definitions 彻底销毁，不保留 AVM1 baseClip 劫持");
     }
 
     // ====== 边界 (g)：run() 幂等（已存在实例不重建） ======

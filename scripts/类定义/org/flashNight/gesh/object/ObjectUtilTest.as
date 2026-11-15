@@ -121,27 +121,6 @@ class org.flashNight.gesh.object.ObjectUtilTest {
         this.testFromJSONInvalid();
         this.testJSONRoundTrip();
 
-        // ========== Base64 序列化测试 ==========
-        this.testToBase64Basic();
-        this.testFromBase64Basic();
-        this.testBase64RoundTrip();
-
-        // ========== FNTL 序列化测试 ==========
-        this.testToFNTLBasic();
-        this.testFromFNTLBasic();
-        this.testFNTLRoundTrip();
-        this.testToFNTLSingleLine();
-
-        // ========== TOML 序列化测试 ==========
-        this.testToTOMLBasic();
-        this.testFromTOMLBasic();
-        this.testTOMLRoundTrip();
-
-        // ========== Compress 序列化测试 ==========
-        this.testToCompressBasic();
-        this.testFromCompressBasic();
-        this.testCompressRoundTrip();
-
         // ========== 边界情况测试 ==========
         this.testEmptyObject();
         this.testDeeplyNestedObject();
@@ -834,152 +813,6 @@ class org.flashNight.gesh.object.ObjectUtilTest {
         this.assert(parsed.nested.value == true, "Round trip preserves nested");
     }
 
-    // ==================== Base64 序列化测试 ====================
-
-    private function testToBase64Basic():Void {
-        trace("\n--- Test: toBase64 - Basic ---");
-        var obj:Object = {name: "Test", value: 42};
-        var base64:String = ObjectUtil.toBase64(obj, false);
-
-        this.assert(base64 != null, "Base64 string created");
-        this.assert(base64.length > 0, "Base64 string not empty");
-    }
-
-    private function testFromBase64Basic():Void {
-        trace("\n--- Test: fromBase64 - Basic ---");
-        var obj:Object = {name: "Test", value: 42};
-        var base64:String = ObjectUtil.toBase64(obj, false);
-        var parsed:Object = ObjectUtil.fromBase64(base64);
-
-        this.assert(parsed != null, "Object parsed from Base64");
-        this.assert(parsed.name == "Test", "Name property restored");
-    }
-
-    private function testBase64RoundTrip():Void {
-        trace("\n--- Test: Base64 - Round Trip ---");
-        var original:Object = {
-            text: "Hello World",
-            number: 123.456,
-            array: [1, 2, 3]
-        };
-
-        var base64:String = ObjectUtil.toBase64(original, false);
-        var parsed:Object = ObjectUtil.fromBase64(base64);
-
-        this.assert(ObjectUtil.equals(original, parsed, null), "Base64 round trip preserves data");
-    }
-
-    // ==================== FNTL 序列化测试 ====================
-
-    private function testToFNTLBasic():Void {
-        trace("\n--- Test: toFNTL - Basic ---");
-        var obj:Object = {name: "Test", value: 42};
-        var fntl:String = ObjectUtil.toFNTL(obj, false);
-
-        this.assert(fntl != null, "FNTL string created");
-    }
-
-    private function testFromFNTLBasic():Void {
-        trace("\n--- Test: fromFNTL - Basic ---");
-        var obj:Object = {name: "Test", value: 42};
-        var fntl:String = ObjectUtil.toFNTL(obj, false);
-        var parsed:Object = ObjectUtil.fromFNTL(fntl);
-
-        this.assert(parsed != null, "Object parsed from FNTL");
-    }
-
-    private function testFNTLRoundTrip():Void {
-        trace("\n--- Test: FNTL - Round Trip ---");
-        var original:Object = {
-            player: {name: "Hero", level: 10},
-            items: ["sword", "shield"]
-        };
-
-        var fntl:String = ObjectUtil.toFNTL(original, false);
-        var parsed:Object = ObjectUtil.fromFNTL(fntl);
-
-        this.assert(parsed.player.name == "Hero", "FNTL round trip preserves nested");
-    }
-
-    private function testToFNTLSingleLine():Void {
-        trace("\n--- Test: toFNTLSingleLine ---");
-        var obj:Object = {a: 1, b: 2};
-        var singleLine:String = ObjectUtil.toFNTLSingleLine(obj, true);
-
-        this.assert(singleLine != null, "Single line FNTL created");
-        // 单行格式不应包含真正的换行符
-        this.assert(singleLine.indexOf("\n") == -1 || singleLine.indexOf("\\n") != -1,
-            "Single line format correct");
-    }
-
-    // ==================== TOML 序列化测试 ====================
-
-    private function testToTOMLBasic():Void {
-        trace("\n--- Test: toTOML - Basic ---");
-        var obj:Object = {title: "Test", enabled: true, count: 42};
-        var toml:String = ObjectUtil.toTOML(obj, false);
-
-        this.assert(toml != null, "TOML string created");
-    }
-
-    private function testFromTOMLBasic():Void {
-        trace("\n--- Test: fromTOML - Basic ---");
-        var tomlString:String = 'title = "Test"\ncount = 42\n';
-        var parsed:Object = ObjectUtil.fromTOML(tomlString);
-
-        this.assert(parsed != null, "Object parsed from TOML");
-        this.assert(parsed.title == "Test", "TOML title parsed");
-        this.assert(parsed.count == 42, "TOML count parsed");
-    }
-
-    private function testTOMLRoundTrip():Void {
-        trace("\n--- Test: TOML - Round Trip ---");
-        var original:Object = {
-            title: "Game Config",
-            enabled: true,
-            score: 1000
-        };
-
-        var toml:String = ObjectUtil.toTOML(original, false);
-        var parsed:Object = ObjectUtil.fromTOML(toml);
-
-        this.assert(parsed.title == "Game Config", "TOML round trip preserves string");
-        this.assert(parsed.score == 1000, "TOML round trip preserves number");
-    }
-
-    // ==================== Compress 序列化测试 ====================
-
-    private function testToCompressBasic():Void {
-        trace("\n--- Test: toCompress - Basic ---");
-        var obj:Object = {name: "Test", value: 42};
-        var compressed:String = ObjectUtil.toCompress(obj, false);
-
-        this.assert(compressed != null, "Compressed string created");
-    }
-
-    private function testFromCompressBasic():Void {
-        trace("\n--- Test: fromCompress - Basic ---");
-        var obj:Object = {name: "Test", value: 42};
-        var compressed:String = ObjectUtil.toCompress(obj, false);
-        var parsed:Object = ObjectUtil.fromCompress(compressed);
-
-        this.assert(parsed != null, "Object parsed from compressed");
-        this.assert(parsed.name == "Test", "Name property restored");
-    }
-
-    private function testCompressRoundTrip():Void {
-        trace("\n--- Test: Compress - Round Trip ---");
-        var original:Object = {
-            text: "Hello World",
-            numbers: [1, 2, 3, 4, 5]
-        };
-
-        var compressed:String = ObjectUtil.toCompress(original, false);
-        var parsed:Object = ObjectUtil.fromCompress(compressed);
-
-        this.assert(ObjectUtil.equals(original, parsed, null), "Compress round trip preserves data");
-    }
-
     // ==================== 边界情况测试 ====================
 
     private function testEmptyObject():Void {
@@ -1152,10 +985,6 @@ class org.flashNight.gesh.object.ObjectUtilTest {
         trace("- equals/deepEquals: Equality checking");
         trace("- size: Object size calculation");
         trace("- JSON serialization: toJSON/fromJSON");
-        trace("- Base64 serialization: toBase64/fromBase64");
-        trace("- FNTL serialization: toFNTL/fromFNTL");
-        trace("- TOML serialization: toTOML/fromTOML");
-        trace("- Compress serialization: toCompress/fromCompress");
         trace("========================");
     }
 }

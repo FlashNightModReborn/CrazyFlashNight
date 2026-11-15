@@ -113,6 +113,34 @@ check("invalid text-config diagnostics never include field values", () => {
     assert.strictEqual(failure.message,"Unexpected non-SWF asset type: "+legacy);
     assert(!failure.message.includes(sentinel));
 });
+const shared='scripts/asLoaderShared.swf', boot='scripts/asLoaderLogic.swf';
+const catalog={schema:'cf7-asloader-modules.v1',
+    resident:{swf:loader,classes:['org.flashNight.Save']},
+    shared:{swf:shared,classes:['org.flashNight.Base']},
+    boot:{swf:boot,classes:['org.flashNight.Logic']}};
+function moduleFixture() {
+    write('tools/asloader-modules.json',Buffer.from(JSON.stringify(catalog)));
+    write(main,swf([],['scripts/asLoader.swf']));
+    write(loader,swf(catalog.resident.classes));write(shared,swf(catalog.shared.classes));write(boot,swf(catalog.boot.classes));
+}
+const modules=[main,loader,shared,boot];
+check('registered modules have unique complete owners',()=>{moduleFixture();assert.deepStrictEqual(auditOwnership(tmp,modules,cache).errors,[]);});
+check('missing module cannot be hidden by incremental scan',()=>assert.throws(()=>auditOwnership(tmp,[main,loader,shared],cache),/requires module/));
+check('same initializer in another module is still a duplicate',()=>{moduleFixture();write(shared,swf(['org.flashNight.Base','org.flashNight.Logic']));assert(auditOwnership(tmp,modules,cache).errors.some(e=>/foreign|authority/.test(e)));});
+check('missing registered class fails',()=>{moduleFixture();write(boot,swf());assert(auditOwnership(tmp,modules,cache).errors.some(e=>e.includes('missing owned')));});
+check('new unregistered implementation fails',()=>{moduleFixture();write(boot,swf(['org.flashNight.Logic','org.flashNight.New']));assert(auditOwnership(tmp,modules,cache).errors.some(e=>e.includes('unregistered')));});
+check('main cannot reacquire a module implementation',()=>{moduleFixture();write(main,swf(['org.flashNight.Save']));assert(auditOwnership(tmp,modules,cache).errors.some(e=>e.includes('authority')));});
+check('nested code RSL cannot replace normal module load',()=>{moduleFixture();write(boot,swf(['org.flashNight.Logic'],['asLoaderShared.swf']));assert(auditOwnership(tmp,modules,cache).errors.some(e=>e.includes('code RSL')));});
+check('duplicate catalog owner rejected',()=>{const bad=JSON.parse(JSON.stringify(catalog));bad.boot.classes.push('org.flashNight.Base');write('tools/asloader-modules.json',Buffer.from(JSON.stringify(bad)));assert.throws(()=>auditOwnership(tmp,modules,cache),/duplicate module class/);});
+const {inspectFiles}=require('./check-as2-inheritance-order');
+const ns='org.flashNight.arki.item.itemCollection.';
+const baseFile=write('inherit-base.swf',swf([ns+'ItemCollection']));
+const childFile=write('inherit-child.swf',swf([ns+'Inventory',ns+'ArrayInventory']));
+check('cross-module inheritance uses actual serial initialization order',()=>{const r=inspectFiles([baseFile,childFile]);assert.strictEqual(r.inheritanceEdges,2);assert.deepStrictEqual(r.errors,[]);});
+check('reversed module load fails inheritance order',()=>assert(inspectFiles([childFile,baseFile]).errors.length>0));
+check('missing project parent is rejected',()=>assert.throws(()=>inspectFiles([childFile]),/parent missing/));
+check('duplicate definitions across modules rejected',()=>assert.throws(()=>inspectFiles([baseFile,baseFile]),/Duplicate class/));
+check('late parent within a module rejected',()=>{const f=write('inherit-late.swf',swf([ns+'ArrayInventory',ns+'Inventory']));assert(inspectFiles([baseFile,f]).errors.length>0);});
 console.log("SWF metadata tests: " + tests + " passed");
 // Keep the tiny fixture directory on failure; successful fixtures need no cleanup gate.
 const resolvedFixture = path.resolve(tmp);

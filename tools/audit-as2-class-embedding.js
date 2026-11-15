@@ -3,6 +3,7 @@
 const fs = require("fs"), path = require("path"), cp = require("child_process");
 const { createRequire } = require("module");
 const { scanSwf, auditOwnership } = require("./swf-metadata");
+const {readCatalog,inspectModule,coreFiles} = require('./asloader-module-catalog');
 const ROOT = path.resolve(__dirname, "..");
 
 function productionFiles(root) {
@@ -35,23 +36,30 @@ function main() {
     const options = { policy: "production", root: ROOT, cache: path.join(ROOT, "tmp/swf-metadata-cache"), main: "CRAZYFLASHER7MercenaryEmpire.swf", loader: "scripts/asLoader.swf", markers: ["_repairPending", "applyRepairResolved"] };
     for (let i = 0; i < args.length; i++) {
         const a = args[i];
-        if (a === "--help" || a === "-h") { console.log("audit-as2-class-embedding.js [--policy production|single-ownership|core-ownership|child-only|dual-build] [--swf path] [--files-json path] [--root path] [--cache-dir path] [--no-cache] [--json] [--report-only]"); return; }
+        if (a === "--help" || a === "-h") { console.log("audit-as2-class-embedding.js [--policy production|single-ownership|core-ownership|child-only|dual-build] [--swf path] [--files-json path] [--root path] [--catalog path] [--no-catalog] [--cache-dir path] [--no-cache] [--json] [--report-only]"); return; }
         if (a === "--json") options.json = true;
         else if (a === "--report-only") options.reportOnly = true;
         else if (a === "--no-cache") options.cache = null;
+        else if (a === "--no-catalog") options.noCatalog = true;
         else if (a === "--no-default-markers") options.markers = [];
         else if (a === "--marker") options.markers.push(args[++i]);
-        else if (["--policy", "--root", "--main", "--loader", "--swf", "--files-json", "--cache-dir"].includes(a)) {
+        else if (["--policy", "--root", "--main", "--loader", "--swf", "--files-json", "--cache-dir", "--module", "--catalog"].includes(a)) {
             const value = args[++i]; if (!value || value.startsWith("--")) throw new Error("Missing argument: " + a);
             options[{"--files-json":"filesJson","--cache-dir":"cache"}[a] || a.slice(2)] = value;
         } else throw new Error("Unknown argument: " + a);
     }
     options.root = path.resolve(options.root);
+    const catalogOptions = { catalogFile: options.catalog, disableCatalog: Boolean(options.noCatalog) };
     const start = process.hrtime.bigint(); let result;
-    if (options.policy === "production" || options.policy === "single-ownership") {
+    if (options.module) {
+        const catalog = readCatalog(options.root, catalogOptions);
+        if (!catalog || !catalog.data[options.module]) throw Error('Unknown loader module');
+        const row=catalog.data[options.module], data=scanSwf(path.join(options.root,row.swf),options.cache);
+        result={errors:inspectModule(data,catalog,options.module),files:1,loaderClasses:data.classes.length,closureChecked:false};
+    } else if (options.policy === "production" || options.policy === "single-ownership") {
         if (options.main !== "CRAZYFLASHER7MercenaryEmpire.swf" || options.loader !== "scripts/asLoader.swf") throw new Error("Custom core paths require explicit core-ownership diagnostics");
-        const files = options.filesJson ? JSON.parse(fs.readFileSync(options.filesJson === "-" ? 0 : options.filesJson, "utf8")) : options.swf ? [options.main, options.loader, options.swf] : productionFiles(options.root);
-        result = auditOwnership(options.root, files, options.cache, { checkImports: !options.swf });
+        const files = options.filesJson ? JSON.parse(fs.readFileSync(options.filesJson === "-" ? 0 : options.filesJson, "utf8")) : options.swf ? [...coreFiles(options.root, catalogOptions), options.swf] : productionFiles(options.root);
+        result = auditOwnership(options.root, files, options.cache, { checkImports: !options.swf, ...catalogOptions });
     } else if (["core-ownership", "child-only", "dual-build"].includes(options.policy)) {
         const mainFile = path.resolve(options.root, options.main), loaderFile = path.resolve(options.root, options.loader);
         const m = scanSwf(mainFile, options.cache), l = scanSwf(loaderFile, options.cache); const errors = [];

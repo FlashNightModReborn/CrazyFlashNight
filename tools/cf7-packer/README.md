@@ -154,8 +154,8 @@ npm run audit:closure -- --payload ./output/2026-10-28
 
 | 层级 | 规则 |
 |------|------|
-| data | XML / JSON 配置 + 情报文本；排除 RAG 草稿、intelligenceMD 设计稿、unused/、`task/*_old.json` 孤立备份、levelEditor/、`**/*.md`、`**/*.xlsx`、`**/*.py`、`**/test_loader.as`、`**/*.lnk`；**排除 Agent 运行时状态 `task/agent_tasks.json` 与 `task/text/agent_text.json`**（后端按玩家写入，打进包会覆盖玩家数据；list.xml 支持缺失不阻塞） |
-| scripts | 仅 `asLoader.swf`（运行时加载器，源码不打包） |
+| data | XML / JSON 配置 + 情报文本（含 `data/rewards/choice-rewards.runtime.json` 启动配给目录）；排除 RAG 草稿、intelligenceMD 设计稿、unused/、`task/*_old.json` 孤立备份、levelEditor/、`**/*.md`、`**/*.xlsx`、`**/*.py`、`**/test_loader.as`、`**/*.lnk`；**排除 Agent 运行时状态 `task/agent_tasks.json` 与 `task/text/agent_text.json`**（后端按玩家写入，打进包会覆盖玩家数据；list.xml 支持缺失不阻塞） |
+| scripts | `asLoader.swf`、`asLoaderShared.swf`、`asLoaderLogic.swf`（三模块运行时代码闭包，源码不打包） |
 | flashswf | 编译后 .swf + 运行时资源（白名单 `**/*.{swf,png,flv,html}` + `portraits/**/*.xml` + `_ruffle/**` Ruffle 运行时；显式排除 XFL 工程附属 `**/{LIBRARY,META-INF,bin}/**` + `**/*.xfl` + `DOMDocument.xml` / `MobileSettings.xml` / `PublishSettings.xml`，以及 `.fla`、`.xlsx`、`*-备份.swf`、Ruffle 自带文档 `_ruffle/README.md` / `_ruffle/LICENSE_*` / `_ruffle/package.json`、`**/AI草稿/**` 设计稿、`arts/things*` 源目录、`unused/`、`miniGames/`、`ComicTool/`） |
 | sounds | `export/` SFX + `bgm_list.xml` + 各专辑 BGM 音频（`**/*.{mp3,wav,ogg,flac,m4a,mp4,aac,adts,opus}`，含玩家自定义，由 MusicCatalog 运行时扫描）；`export/` 下文件名即运行时 SFX id，legacy `.waz` 只要仍被 `data/items/*.xml` 引用就必须保留；XFL 残余 exclude 为防御性 |
 | runtime-release-consensus | 精确收编 `config/build/runtime-release-consensus.json`；这是 v2 promotion 原子落盘的正式部署共识记录，其余构建治理文件不进入玩家包 |

@@ -35,6 +35,18 @@ $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 
 $ScriptDir = Split-Path -Parent $PSCommandPath
 $ProjectDir = Split-Path -Parent $ScriptDir
+if ($Target -match '^(publish|asloader)$' -and (Test-Path -LiteralPath (Join-Path $ProjectDir 'tools/asloader-modules.json'))) {
+    if ($StopTestPlayers -or $QuitOwnedTestHost -or $ClearOwnedTestOutput) { throw 'Player control cannot be combined with publishing.' }
+    if ($VerifySwf) {
+        $moduleVerifyPath=if([IO.Path]::IsPathRooted($VerifySwf)){$VerifySwf}else{Join-Path $ProjectDir $VerifySwf}
+        if ([IO.Path]::GetFullPath($moduleVerifyPath) -ine (Join-Path $ScriptDir 'asLoader.swf')) { throw 'Module publish always verifies the original asLoader entry and its complete module set.' }
+    }
+    $moduleTimeout=if($PSBoundParameters.ContainsKey('TimeoutSeconds')){$TimeoutSeconds}else{900}
+    $moduleArgs=@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $ScriptDir 'publish-asloader-modules.ps1'),'-TimeoutSeconds',[string]$moduleTimeout)
+    if($QuitFlashAfterPublish){$moduleArgs+='-QuitFlashAfterPublish'}
+    & powershell @moduleArgs
+    exit $LASTEXITCODE
+}
 $Marker = Join-Path $ScriptDir 'publish_done.marker'
 $ErrorMarker = Join-Path $ScriptDir 'publish_error.marker'
 $UncertainMarker = Join-Path $ScriptDir 'compile_state_uncertain.marker'
@@ -302,7 +314,7 @@ $compileMutexAcquired = $false
 $machineCompileMutex = [System.Threading.Mutex]::new(
     $false, 'Local\CF7_FlashCompile_MachineGlobal')
 $machineCompileMutexAcquired = $false
-$compileLease = $env:CF7_FLASH_COMPILE_LEASE
+$compileLease = [string]$env:CF7_FLASH_COMPILE_LEASE
 $leaseOwnerPid = 0
 try {
     if ([string]::IsNullOrWhiteSpace($compileLease)) {
@@ -324,13 +336,22 @@ try {
         # nonce is process-local (inherited only by this child); the probe makes an
         # accidentally supplied lease fail closed unless another process really
         # holds the repository compile mutex.
-        $expectedLeasePattern = '^v1:' + [regex]::Escape($compileRepoHash) +
+        $expectedLeasePattern = '^(v1|m1):' + [regex]::Escape($compileRepoHash) +
             ':\d+:[0-9a-f]{32}$'
         if ($compileLease -notmatch $expectedLeasePattern) {
             Write-Host '[ERROR] CF7_FLASH_COMPILE_LEASE 格式或仓库身份不匹配。'
             exit 1
         }
         $leaseOwnerPid = [int]($compileLease.Split(':')[2])
+        if ($compileLease.StartsWith('m1:')) {
+            # A module parent owns the same repository mutex without installing
+            # TestLoader scratch. Its lease only admits catalogued publish XFLs.
+            if (-not $PublishOnly -or -not $Target -or $StopTestPlayers -or $QuitOwnedTestHost -or $ClearOwnedTestOutput) { throw 'Module compile lease only admits explicit module publishing.' }
+            $leaseCatalog=Get-Content -LiteralPath (Join-Path $ProjectDir 'tools/asloader-modules.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+            $leaseTarget=if([IO.Path]::IsPathRooted($Target)){$Target}else{Join-Path $ProjectDir $Target}
+            $leaseTargets=@('resident','shared','boot') | ForEach-Object {[IO.Path]::GetFullPath((Join-Path $ProjectDir $leaseCatalog.$_.xfl))}
+            if ([IO.Path]::GetFullPath($leaseTarget) -notin $leaseTargets) { throw 'Module lease target is outside its catalog.' }
+        }
         $leaseProbeAcquired = $false
         try {
             try {
@@ -348,7 +369,7 @@ try {
                 $compileMutex.ReleaseMutex()
             }
         }
-        Write-Host '[INFO] 复用 focused runner 持有的仓库编译 mutex。'
+        Write-Host '[INFO] 复用父流程持有的仓库编译 mutex。'
     }
     try {
         $machineCompileMutexAcquired = $machineCompileMutex.WaitOne(0)
@@ -365,7 +386,7 @@ try {
     try {
         Assert-Cf7TestLoaderScratchAdmission -MarkerPath $ScratchMarker `
             -RunnerPath (Join-Path $ScriptDir 'TestLoader.as') `
-            -RepoHash $compileRepoHash -CompileLease $compileLease `
+            -RepoHash $compileRepoHash -CompileLease $(if($compileLease.StartsWith('m1:')){''}else{$compileLease}) `
             -LeaseOwnerPid $leaseOwnerPid
     } catch {
         Write-Host ('[ERROR] {0}' -f $_.Exception.Message)
@@ -387,7 +408,7 @@ try {
     if (Test-Path -LiteralPath (Join-Path $ScriptDir 'testplayer_control.cfg')) {
         throw 'Unacknowledged test player control blocks compilation; inspect its receipt before recovery.'
     }
-    if ([string]::IsNullOrWhiteSpace($compileLease) -and
+    if (([string]::IsNullOrWhiteSpace($compileLease) -or $compileLease.StartsWith('m1:')) -and
         (Test-Path -LiteralPath (Join-Path $ScriptDir 'testhost_ownership.marker'))) {
         throw 'An unrecovered owned test host lease blocks ordinary compilation; preserve its documents and inspect its receipts.'
     }
@@ -557,7 +578,8 @@ if ($VerifySwf) {
 # asLoader 单次发布峰值约 3.75~3.97 GiB，要求干净宿主（<= 700 MiB）；其余目标在脏宿主 > 2400 MiB 时自动轮换。
 # 若当前持有独占测试宿主租约（testhost_ownership.marker），保持原 PID 绑定，不在此处换宿主。
 $preCompileVa = Get-FlashVaSnapshot
-$vaRotateThresholdMiB = if ($isAsLoaderTarget) { 700.0 } else { 2400.0 }
+$isHeavyLoaderTarget = $isAsLoaderTarget -or ($targetPath -and ([IO.Path]::GetFileName($targetPath) -eq 'asLoaderShared.xfl'))
+$vaRotateThresholdMiB = if ($isHeavyLoaderTarget) { 700.0 } else { 2400.0 }
 if ($null -ne $preCompileVa -and
     $preCompileVa.VirtualMiB -gt $vaRotateThresholdMiB -and
     -not (Test-Path -LiteralPath (Join-Path $ScriptDir 'testhost_ownership.marker'))) {
@@ -786,7 +808,16 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             $VerifySwfPath.StartsWith($ProjectDir + [System.IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -and
             -not ($hasCompileError -or $hasTraceFailure -or $hasSwfStale)) {
             $ownershipRelative = $VerifySwfPath.Substring($ProjectDir.Length + 1).Replace('\', '/')
-            if ($ownershipRelative -eq 'scripts/asLoader.swf' -or
+            $moduleName=$null
+            $moduleCatalogPath=Join-Path $ProjectDir 'tools/asloader-modules.json'
+            if(Test-Path -LiteralPath $moduleCatalogPath) {
+                $moduleCatalog=Get-Content -LiteralPath $moduleCatalogPath -Raw -Encoding UTF8 | ConvertFrom-Json
+                foreach($name in @('resident','shared','boot')) {if($moduleCatalog.$name.swf -eq $ownershipRelative){$moduleName=$name}}
+            }
+            if ($moduleName) {
+                & node (Join-Path $ProjectDir 'tools/audit-as2-class-embedding.js') --module $moduleName
+                if ($LASTEXITCODE -ne 0) { $hasOwnershipFailure = $true }
+            } elseif ($ownershipRelative -eq 'scripts/asLoader.swf' -or
                 $ownershipRelative -eq 'CRAZYFLASHER7MercenaryEmpire.swf' -or
                 $ownershipRelative.StartsWith('flashswf/')) {
                 & node (Join-Path $ProjectDir 'tools/audit-as2-class-embedding.js') --swf $ownershipRelative
@@ -871,6 +902,12 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
                 $ModeCfg, $reopenMode, (New-Object System.Text.UTF8Encoding($false)))
         } else {
             Remove-Item -LiteralPath $ModeCfg -ErrorAction SilentlyContinue
+        }
+        # The first JSFL invocation consumes this one-shot option before asking
+        # for a reopen; re-arm the same request for its second invocation.
+        if ($QuitFlashAfterPublish) {
+            [System.IO.File]::WriteAllText(
+                $QuitCfg, 'quit', (New-Object System.Text.UTF8Encoding($false)))
         }
         $reopenRequestCount++
         # 计划任务默认忽略并发新实例；首阶段尚在 Running 时立即重触发会丢掉重开。

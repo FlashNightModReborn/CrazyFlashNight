@@ -38,9 +38,5 @@ class org.flashNight.arki.component.Collider.ColliderFactoryRegistry {
         // 实例化并注册 RayColliderFactory
         var rayFactory:IColliderFactory = new RayColliderFactory(15);
         ColliderFactoryRegistry.registerFactory(ColliderFactoryRegistry.RayFactory, rayFactory);
-
-        // 实例化并注册 PointColliderFactory
-        var pointFactory:IColliderFactory = new PointColliderFactory(15);
-        ColliderFactoryRegistry.registerFactory(ColliderFactoryRegistry.PointFactory, pointFactory);
     }
 }

@@ -137,9 +137,12 @@ function isLegacyTextConfig(raw) {
 }
 
 function auditOwnership(root, files, cacheDir, options = {}) {
+    const {readCatalog,inspectModule,ORDER} = require('./asloader-module-catalog');
+    const catalog = readCatalog(root, options);
     const loader = "scripts/asLoader.swf", main = "CRAZYFLASHER7MercenaryEmpire.swf";
     const paths = [...new Set(files.map(f => f.replace(/\\/g, "/")))].filter(f => /\.swf$/i.test(f));
     if (!paths.includes(loader) || !paths.includes(main)) throw new Error("Production ownership requires main and asLoader");
+    if (catalog) for (const file of catalog.files) if (!paths.includes(file)) throw new Error('Production ownership requires module: '+file);
     const rows = new Map(), errors = []; let hits = 0, parsed = 0;
     for (const rel of paths) {
         const full = path.resolve(root, rel), boundary = path.resolve(root) + path.sep;
@@ -153,14 +156,16 @@ function auditOwnership(root, files, cacheDir, options = {}) {
         const data = scanSwf(full, cacheDir); rows.set(rel, data);
         if (data.cacheHit) hits++; else parsed++;
     }
-    const protectedNames = new Set(rows.get(loader).classes.map(c => c.fqn));
+    const protectedNames = new Set(catalog ? catalog.owners.keys() : rows.get(loader).classes.map(c => c.fqn));
+    if (catalog) for (const name of ORDER) errors.push(...inspectModule(rows.get(catalog.data[name].swf),catalog,name));
     if (![...protectedNames].some(n => n.startsWith("org.flashNight."))) errors.push("asLoader defines no project classes");
     for (const [rel, data] of rows) {
         const seen = new Set();
         for (const cls of data.classes) {
             if (seen.has(cls.fqn)) errors.push(rel + " defines class twice: " + cls.fqn);
             seen.add(cls.fqn);
-            if (rel !== loader && (cls.fqn.startsWith("org.flashNight.") || protectedNames.has(cls.fqn))) errors.push(rel + " duplicates asLoader authority: " + cls.fqn);
+            const correctOwner = catalog ? catalog.owners.get(cls.fqn) : loader;
+            if (rel !== correctOwner && (cls.fqn.startsWith("org.flashNight.") || protectedNames.has(cls.fqn))) errors.push(rel + " duplicates asLoader authority: " + cls.fqn);
         }
         for (const edge of options.checkImports === false ? [] : data.imports) {
             if (/^[a-z]+:/i.test(edge.url)) { errors.push(rel + " imports unbound external RSL: " + edge.url); continue; }
@@ -169,6 +174,6 @@ function auditOwnership(root, files, cacheDir, options = {}) {
             if (new Set(candidates).size !== 1) errors.push(rel + " has missing/ambiguous RSL: " + edge.url);
         }
     }
-    return { errors, files: rows.size, parsed, cacheHits: hits, loaderClasses: rows.get(loader).classes.length, closureChecked: options.checkImports !== false };
+    return { errors, files: rows.size, parsed, cacheHits: hits, loaderClasses: catalog ? catalog.owners.size : rows.get(loader).classes.length, closureChecked: options.checkImports !== false };
 }
 module.exports = { parseSwf, scanSwf, auditOwnership };

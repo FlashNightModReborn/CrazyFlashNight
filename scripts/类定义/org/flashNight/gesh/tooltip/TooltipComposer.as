@@ -30,7 +30,6 @@ import org.flashNight.gesh.tooltip.*;
 import org.flashNight.gesh.tooltip.builder.ModsBlockBuilder;
 import org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder;
 import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
-import org.flashNight.gesh.string.StringUtils;
 
 /**
  * # TooltipComposer
@@ -54,14 +53,6 @@ import org.flashNight.gesh.string.StringUtils;
  * ```
  */
 class org.flashNight.gesh.tooltip.TooltipComposer {
-
-  private static var _renderSplitScratch:Object = {
-    needSplit: false,
-    descTotal: 0,
-    descMaxLine: 0,
-    descLineCount: 0,
-    introTotal: 0
-  };
 
   // ──────────────── 基础段拼装 ────────────────
 
@@ -89,7 +80,7 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * 「战技/副武器」「夜视」「额外功能（生命周期/灯光）」「获取方式」各自拆成独立子注释框块，
    * 按序写入 subBlocks（空内容不入框）。
    * subBlocks 传 null 时行为与旧方法完全一致（全部内联进描述体）。
-   * 拆出后主描述体不再含这些块；回退旧 Flash 渲染请把 subBlocks 一并接回，
+   * 拆出后主描述体不再含这些块；需要旧 HTML 全文的消费者应把 subBlocks 一并接回，
    * 或改用 generateItemDescriptionText 全文，避免丢内容。
    *
    * docSubs 可选：与 subBlocks 一一对应的原生文档条目数组。普通子框写入
@@ -307,7 +298,7 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    *
    * **使用说明**：
    * 当前主流用法是分别调用 `generateItemDescriptionText` 和 `generateIntroPanelContent`，
-   * 然后传递给 `renderItemTooltipSmart` 进行智能渲染。本方法提供一步生成完整文本的便捷接口，
+   * 再构造 NativeTooltipDocument 交给原生或 Web 消费。本方法提供一步生成完整文本的便捷接口，
    * 适用于需要直接获取合并后文本的场景。
    *
    * @param item:Object 物品数据对象
@@ -320,7 +311,7 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * ```actionscript
    * var 描述文本 = TooltipComposer.generateItemDescriptionText(itemData, baseItem);
    * var 简介文本 = TooltipComposer.generateIntroPanelContent(baseItem, itemData);
-   * TooltipComposer.renderItemTooltipSmart(name, value, 描述文本, 简介文本, null, iconData);
+   * // 将简介与描述传给 NativeTooltipDocument 或既有 Web 投影。
    * ```
    *
    * @example 便捷用法（一步生成，适用于特殊场景）
@@ -360,126 +351,6 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     }
   }
 
-  // ──────────────── 图标渲染控制 ────────────────
-
-  /**
-   * 渲染物品图标注释：
-   * - 获取物品数据
-   * - 处理布局
-   * - 拼接文本内容
-   * - 调用渲染方法
-   *
-   * @param enable:Boolean 是否启用显示
-   * @param name:String 物品名称
-   * @param value:Object 物品数值对象
-   * @param introString:String 预先拼好的简介面板文本（简介头 + 装备段）
-   * @param extraString:String 额外显示的文本（可选；用于把短描述并入简介面板）
-   * @param itemData:Object 物品数据对象（可选，用于支持涂装图标覆盖）
-   */
-  public static function renderItemIcon(enable:Boolean, name:String, value:Object, introString:String, extraString:String, itemData:Object):Void {
-    if (enable) {
-      var data:Object = itemData ? itemData : ItemUtil.getItemData(name);
-
-      var target:MovieClip     = TooltipBridge.getIconTarget();
-      var background:MovieClip = TooltipBridge.getIntroBackground();
-      var text:MovieClip       = TooltipBridge.getIntroTextBox();
-      var layoutType:String    = (data.type == ItemUseTypes.TYPE_CONSUMABLE) ? data.use : data.type;
-
-      // ① 先构建完整内容文本（必须先于宽度测量）
-      var introduction:String = introString ? introString : "";
-      if (extraString) introduction += "<BR>" + extraString;
-
-      // ② R2: 简介面板始终使用固定宽度，不随内容自适应
-      // 避免图标左移导致的视觉断裂；换行损失由条目压缩（R1）补偿
-      var measuredIntroW:Number = TooltipConstants.BASE_NUM;
-
-      // ④ 以计算好的宽度应用布局并渲染（applyIntroLayout 内部以此锚定 _x）
-      TooltipLayout.renderIconTooltip(true, data.icon, introduction, measuredIntroW, layoutType);
-
-      TooltipBridge.clampContainerByBg(background, 8);
-    } else {
-      TooltipLayout.renderIconTooltip(false);
-    }
-  }
-
-  /**
-   * 智能显示物品注释（自适应长短内容优化）：
-   * - 根据内容长度智能选择显示策略
-   * - 长内容：分离显示（主框体+图标面板）
-   * - 短内容：合并显示（仅图标面板）
-   *
-   * @param name:String 物品名称
-   * @param value:Object 物品数值对象
-   * @param descriptionText:String 主要描述内容
-   * @param introText:String 简介面板内容
-   * @param options:Object 可选配置参数 { totalMultiplier:Number, descDivisor:Number }
-   * @param itemData:Object 物品数据对象（可选，用于支持涂装图标覆盖）
-   */
-  public static function renderItemTooltipSmart(name:String, value:Object, descriptionText:String, introText:String, options:Object, itemData:Object):Void {
-    // 保底清理
-    TooltipLayout.hideTooltip();
-
-    // 智能分栏判定 + 描述评分一次性计算（desc HTML 只扫描 1 次，而非原先的 3 次）
-    var splitInfo:Object = TooltipLayout.shouldSplitSmartWithScores(descriptionText, introText, options, _renderSplitScratch);
-
-    if (splitInfo.needSplit) {
-      // 长内容策略：分离显示
-      // 直接使用预计算的评分，跳过 estimateMainWidth 内部的重复扫描
-      var calculatedWidth:Number = TooltipLayout.estimateMainWidthFromMetrics(
-          splitInfo.descTotal, splitInfo.descMaxLine, splitInfo.descLineCount, undefined, undefined);
-      // 屏幕感知上限：确保双栏合计不超出 Stage 宽度（为简介面板保留 BASE_NUM + margin）
-      var screenMax:Number = Stage.width - TooltipConstants.BASE_NUM - TooltipConstants.DUAL_PANEL_MARGIN;
-      var effectiveMax:Number = (screenMax > TooltipConstants.MIN_W)
-          ? Math.min(TooltipConstants.MAX_W, screenMax)
-          : TooltipConstants.MAX_W;
-      // 高度约束 + 紧缩贴合（modeA 二分 / modeB shrink-to-fit）
-      calculatedWidth = TooltipLayout.balanceWidth(calculatedWidth, descriptionText, effectiveMax);
-      calculatedWidth = Math.min(calculatedWidth, effectiveMax);
-      TooltipLayout.showTooltip(calculatedWidth, descriptionText);
-      renderItemIcon(true, name, value, introText, null, itemData);
-    } else {
-      // 短内容策略：合并显示
-      // ★ R3: 溢出检查——intro+desc 合并后若超过行数上限，回退到分栏
-      var mergedForCheck:String = introText;
-      if (descriptionText && descriptionText.length > 0) {
-          mergedForCheck = introText + "<BR>" + descriptionText;
-      }
-      // 先测量 intro 单独行数（判断 split 后是否能解决溢出）
-      TooltipBridge.setTextContent("intro", introText);
-      var introOnlyLines:Number = TooltipBridge.measureRenderedLines(
-          TooltipConstants.BASE_NUM, true);
-      // 再测量合并后行数
-      TooltipBridge.setTextContent("intro", mergedForCheck);
-      var mergedLines:Number = TooltipBridge.measureRenderedLines(
-          TooltipConstants.BASE_NUM, true);
-
-      if (introOnlyLines <= TooltipConstants.MERGE_MAX_INTRO_LINES
-          && mergedLines > TooltipConstants.MERGE_MAX_INTRO_LINES) {
-          // 溢出且 split 能解决：desc 移到主框后 intro 回落到 ≤ 20 行
-          // splitInfo 在第 289 行声明（函数作用域），此处可安全访问
-          var fallbackW:Number = TooltipLayout.estimateMainWidthFromMetrics(
-              splitInfo.descTotal, splitInfo.descMaxLine, splitInfo.descLineCount,
-              undefined, undefined);
-          var screenMax:Number = Stage.width - TooltipConstants.BASE_NUM
-                               - TooltipConstants.DUAL_PANEL_MARGIN;
-          var effectiveMax:Number = (screenMax > TooltipConstants.MIN_W)
-              ? Math.min(TooltipConstants.MAX_W, screenMax)
-              : TooltipConstants.MAX_W;
-          fallbackW = TooltipLayout.balanceWidth(fallbackW, descriptionText, effectiveMax);
-          fallbackW = Math.min(fallbackW, effectiveMax);
-          TooltipLayout.showTooltip(fallbackW, descriptionText);
-          renderItemIcon(true, name, value, introText, null, itemData);
-      } else {
-          // 未溢出或 split 无法解决：正常合并显示
-          renderItemIcon(true, name, value, introText, descriptionText, itemData);
-          // 隐藏主框体
-          TooltipBridge.setTextContent("main", "");
-          TooltipBridge.setVisibility("main", false);
-          TooltipBridge.setVisibility("mainBg", false);
-      }
-    }
-  }
-
   // ──────────────── 强化/进阶入口（P2b） ────────────────
 
   /**
@@ -496,26 +367,23 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
   }
 
   /**
-   * 进阶信息注释（工作台面板专用，渲染到注释框）
+   * 进阶信息注释（保留调用签名，发布原生文档）
    * 等价于原 _root.注释(宽度, list.join("")) 调用
    *
    * @param equipDisplayName:String 装备显示名
    * @param itemName:String 物品名
    * @param tierName:String 阶名
    * @param tierData:Object 阶数据
-   * @param width:Number 显示宽度（可选，默认 BASE_NUM=200）
+   * @param width:Number 历史调用参数；布局由原生注释消费者决定
    */
   public static function renderTierInfoTooltip(equipDisplayName:String, itemName:String, tierName:String, tierData:Object, width:Number):Void {
     var lines:Array = TooltipTextBuilder.buildTierInfo(equipDisplayName, itemName, tierName, tierData);
     if (lines.length == 0) return;
-    if (width == undefined) width = TooltipConstants.BASE_NUM;
-    // 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
+    // 原生注释出口：document 经 native_interaction 下发；通道不可用时不显示，不再启用 Flash 备用绘制
     var doc:Object = NativeTooltipDocument.buildSectioned(
         equipDisplayName + " " + tierName, null,
         [NativeTooltipDocument.makeSection(NativeTooltipDocument.ROLE_BODY, lines.join(""))],
         NativeTooltipDocument.PROFILE_DENSE);
-    if (NativeTooltipBridge.show(doc) == null) {
-      TooltipLayout.showTooltip(width, lines.join(""));
-    }
+    NativeTooltipBridge.show(doc);
   }
 }

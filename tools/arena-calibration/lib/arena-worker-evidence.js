@@ -13,7 +13,15 @@ const { captureProtectedSaveSnapshot, findSolFiles } = require("./unattended-sav
 // Worker orchestration invokes it inside the evidence thread, never on its
 // HTTP control loop. Existing read-only callers keep the synchronous export.
 function captureResourceClosure(root, extras = []) {
-  const selected = ["CRAZYFLASHER7MercenaryEmpire.swf", "scripts/asLoader.swf", "data", "config", ...extras];
+  const selected = [
+    "CRAZYFLASHER7MercenaryEmpire.swf",
+    "scripts/asLoader.swf",
+    "scripts/asLoaderShared.swf",
+    "scripts/asLoaderLogic.swf",
+    "data",
+    "config",
+    ...extras,
+  ];
   const files = new Map();
   const visit = (file) => {
     assertNoReparse(file);

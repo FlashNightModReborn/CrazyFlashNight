@@ -1,12 +1,24 @@
 # asLoader 启动架构 · 导览与待测
 
 **文档角色**：asLoader 启动子系统的**入口导览**（反直觉架构的心智地图 + 验证状态 + 测试入口）。深层细节下沉到设计 / 施工 doc，本文只回答「这是什么、为什么这么怪、验了什么、还要测什么」。
-**最后核对代码基线**：commit `dabd11a89570125b6fe2125aa45b5ccaf2d60cd2` + 2026-10-18 通信段修复工作树。§5 保留 commit `b4d1267d51e5bdf4957fe56d21f6ee2c0a5049de` 后 2026-07-25 工作树的历史验证；历史计数和运行回执不代表现役产物，当前数值以重新生成、SWF 扫描及对应执行记录为准。
+**最后核对代码基线**：commit `56c697896f9a854fcb4fd81a8c47e3108e7b290e` + 2026-11-15 本地未提交三模块工作树。§5 保留 commit `b4d1267d51e5bdf4957fe56d21f6ee2c0a5049de` 后 2026-07-25 工作树的历史验证；历史计数和运行回执不代表现役产物，当前数值以重新生成、SWF 扫描及对应执行记录为准。
 **深层 doc**：[架构设计](asLoader重构-架构设计-2026-06-15.md)（为什么这么设计 + P0-P6 路线）· [BootSequencer 构建标准](asLoader-BootSequencer-构建标准-2026-06-16.md)（启动契约 + §5 边界 runbook）· [asLoader / TestLoader 维护性路线](asLoader-TestLoader维护性重构-架构路线-2026-07-24.md)（维护性施工路线；阶段状态以该文档为准，当前构建入口与门禁以本文为准）。
 
 ## 0. TL;DR（先读这段）
 
-asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**唯一承载生产 `org.flashNight.*` 类字节码 + 跑启动序列**。2026-06 将82帧中的业务与异步逻辑搬进 `BootSequencer` 状态机。2026-11-05候选把定义装载按有界源体积分帧，最后一帧才启动同一状态机；阶段调用顺序保持不变。
+asLoader 是游戏启动代码子系统。主影片仍从 `scripts/asLoader.swf` 导入同名 symbol；生产类按 `tools/asloader-modules.json` 分属原入口、共享库和启动逻辑三个 SWF，每个类只能有一个 owner。有界定义帧仍安装同一组函数，末帧才启动状态机，业务阶段顺序不变。
+
+### 编译模块与装载合同（2026-11-15 候选）
+
+原入口只驻留 `SaveManager` 并装载代码（XFL 与输出 SWF 映射：`resident` = `scripts/asLoaderBootstrap/asLoaderBootstrap.xfl` → `scripts/asLoader.swf`；`shared` = `scripts/asLoaderShared/asLoaderShared.xfl` → `scripts/asLoaderShared.swf`；`boot` = `scripts/asLoader/asLoader.xfl` → `scripts/asLoaderLogic.swf`）。原入口通过主影片的 RSL 导入保持既有 `SharedObject.getLocal` 命名空间；不得把存档类直接移动到正常加载的另一个 SWF。共享库 `scripts/asLoaderShared.swf`、启动逻辑 `scripts/asLoaderLogic.swf` 由 `MovieClipLoader` 串行加载到 `_root.__asLoaderCode`（固定深度 `65531`）下的持久子影片，显式 `_lockroot=false`。这两个代码影片须存活到 AVM1 会话结束，handoff 只删除原公共入口和定义 host（定义 host 位于单帧时间轴负深度时先换至父影片的下一空闲非负深度，再执行 `removeMovieClip()`，避免 AVM1 负深度静默残留）。嵌套 RSL 曾出现共享服务读不到真实根对象，不能用类数量或编译成功代替根身份检查。
+
+`scripts/asLoaderBootstrap.as` 负责装载；回调身份由根上的普通状态对象持有，拒绝过期/重复回调，错误或单模块60秒超时明确停止，保留失败原因，不自动重试。它在异步装载之前建立同一个 `__boot` 容器，定义帧只在不存在时建立，保证主影片 f33 提前到达的继续信号不会丢失。`BootSequencer.start()` 在任何单例初始化前用 live host URL 绑定资源目录。原入口驻留类不能依赖尚未加载的父类或 eager 跨类初始化。
+
+常驻壳在创建 `__asLoaderCode` 之前安装根层级分配器，模块静态构造器使用 1024 至 32767 的动态区。S1 沿用同一计数器，回绕时跳过仍在使用的层。可用[运行时回归夹具](../tools/asloader-runtime-regression/)复现主时间轴装入、移除真实注释框的过程，并检查冷却轮、连续射击、刀光回收和延迟存盘回调。
+
+只编辑 canonical 类源码、原 boot 输入及上述入口；`tools/build-asloader-modules.py` 从单一类归属表生成 XFL root、roots/exclude 文件和忽略目录 `tmp/asloader-modules` 中的完整编译路径镜像。非本模块的已登记类用 `intrinsic class` API 声明，仅保留签名，不产生替身实现；本模块和其他源码仍用原始字节。接口和实现切换时写入新时间戳，不能用 `copy2` 倒签日期而让 CS6 复用旧 ASO。类所有权表不持有 `BOOT_SOURCES` 或业务阶段表。
+
+标准 `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900` 自动生成并依次真实发布三个模块，使用跨阶段仓库锁、逐阶段机器锁及专用 `m1` 父锁身份，保留原 focused `v1` scratch 恢复规则。任一新鲜 Compiler、SWF刷新、零32K重试、函数尺寸、精确类归属、父类注册顺序或编译后输入检查失败都会停止；逐阶段诊断和 manifest 收据位于 `tmp/asloader-builds/`。类漏登记或跨模块重复必须修正源/归属，不能扩大排除列表掩盖。`--check` 可单独用于两个生成器。打包必须同时包含三个 SWF 和运行配给 JSON。`compiled` 收据不代表游戏已运行或已正式发布。
 
 ⚠ **反直觉点（看到别"修"，都是有意为之）**：
 1. **定义装载分帧，业务由状态机执行**。唯一 `BOOT_SOURCES` 表机械派生 `_root.__boot.fN = function(){…}`；完整函数按源体积分到定义帧，最后一帧安装6个纯装配stage、停止播放，并调用一次 `BootSequencer.run(this)`。前置帧只安装定义。
@@ -36,11 +48,11 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**唯一承�
 - `node tools/assemble-collapsed-frame.js` 写生成物；`node tools/assemble-collapsed-frame.js --check` **不写文件**，按字节确认母版、全部定义帧及符号include可由当前表与规则精确重建。两种模式都会严格检查所有输入的 UTF-8 BOM、`frameNN.as` 根目录 exact-match、phase / shape、受控 envelope、具体 import 白名单、定义 / 调用唯一性，并要求 `BootSequencer.run(this)` 是唯一且最后的启动动作。
 - 生成器会报告 canonical 源闭包度量：剥除每个源文件 BOM、把 CRLF/CR 规范为 LF，并计入 staged/loader-fire 自身源体，避免 checkout 行尾改变调查值。`70,000 B` 只用于突出复核候选，不是 hard gate，也没有 exact no-growth 例外；源字节与 AVM1 `codeSize` 不存在可证明的单调边界，不能让注释或格式增长变成构建 ratchet。高于提示线的项目以本轮生成器输出为准，仍须结合新鲜 SWF `codeSize` 扫描与行为证据判断是否拆分。
 
-2026-11-05候选采用定义分段以处理本批完整单帧发布反复退出。`240000`字节是完整函数的分组预算：超出时开启下一定义帧，不拒绝源码增长，也不代替AVM1函数体门。当前55个定义分到11帧；原六个阶段及其调用次序不变。每段在同一asLoader实例上安装函数，打印/错误门面保留时间轴作用域，末帧才启动状态机。生成器同时核对函数集合、顺序、拼接原文和唯一启动调用。诊断工程已取得Compiler 0/0、零32K重试、全部803个运行类及2213个帧函数；正式候选仍须重新发布、启动/握手回归及绑定新SWF身份的实际启动。
+2026-11-05候选采用定义分段以处理本批完整单帧发布反复退出。`240000`字节是完整函数的分组预算：超出时开启下一定义帧，不拒绝源码增长，也不代替AVM1函数体门。当前定义数量和分帧数由生成器输出核对；原六个阶段及其调用次序不变。每段在同一asLoader实例上安装函数，打印/错误门面保留时间轴作用域，末帧才启动状态机。生成器同时核对函数集合、顺序、拼接原文和唯一启动调用。诊断工程已取得Compiler 0/0、零32K重试、全部803个运行类及2213个帧函数；正式候选仍须重新发布、启动/握手回归及绑定新SWF身份的实际启动。
 
 ## 2. Boot 流（S0-S10）
 
-定义帧先执行 `this._lockroot=false`，早于任何 `_root` 读写。前置帧保持播放，仅安装定义；末帧停止、安装接线后进入业务状态机：S0 init → S1 syncCode（引擎+通信，建 `_root._bootstrap`）→ **S2 握手**（socket → handshake → 存档恢复 gate → 驱动主 SWF playhead）→ S3/S4 任务数据/文本 await → S5 parse → **S6 syncSys**（建 loader 队列 → 逐 tick 抽干，含异步 preload 等待门）→ S7 syncLogic（玩家模板/装备/UI… 大帧 chunk）→ S7 misc loaders → S8 fanout（fire-and-forget）→ S9 crafting → **S10 handoff**（`_root.play()` 必先于自删，顺序铁律）。
+定义帧先执行 `this._lockroot=false`，早于任何 `_root` 读写。前置帧保持播放，仅安装定义；末帧停止、安装接线后进入业务状态机：S0 init → S1 syncCode（引擎+通信，建 `_root._bootstrap`）→ **S2 握手**（socket → handshake → 存档恢复 gate → 驱动主 SWF playhead）→ S3/S4 任务数据/文本 await → S5 parse → **S6 syncSys**（建 loader 队列 → 逐 tick 抽干，含异步 preload 等待门）→ S7 配给目录 await → S7 syncLogic（玩家模板/装备/UI… 大帧 chunk）→ S7 misc loaders → S8 fanout（fire-and-forget）→ S9 crafting → **S10 handoff**（`_root.play()` 必先于自删，顺序铁律）。
 
 其中生成器只提供帧顶结构前导和 `s1_syncCode / s6_pre / s6_post / s7_syncLogic / s7_miscLoaders / s8_fanout` 六个无条件装配函数。`BootSequencer` 直接拥有 S0 的 `GlobalInitializer` 业务初始化、S5 任务解析与 guide fire-and-forget、S9 crafting 落地，以及 S7 的 `syncLogic → “加载杂项数据……” → misc loaders` 顺序；不要把这些业务重新塞回生成器。
 
@@ -51,6 +63,12 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**唯一承�
 - **tick 挂 `_root`**：asLoader handoff 自删后回调仍要可达。
 - **S6 异步等待门**：塌缩把多帧压成紧 tick，破坏了原版 preload→consume 依赖的隐式帧间隔时序（曾致佣兵库只载 1 条）。
 - **function form（非 typed class）**：`_root.X = function` 闭包能捕获时间轴 scope（裸 `打印加载内容` 可解析）；typed class 静态方法不捕获 → 故 boot 代码用 function form，typed class 化作独立长期 track。
+
+### S7 配给目录屏障
+
+`tools/build-choice-rewards.py` 从既有目录权威生成 `data/rewards/choice-rewards.runtime.json`；`ChoiceRewardDefinition` 只缓存解析后的运行目录，不再内嵌 pool 对象字面量。`BootSequencer.stepSyncLogic()` 在原 S7 逻辑之前一次读取该文件，使用既有 `BaseJSONLoader(..., "JSON")`。未就绪时留在 S7；缺文件、坏 JSON 或错误根形状沿 `halt("choice_rewards_failed")` 终止，不安装书架等消费者。ready 后原 `syncLogic → 文案 → misc loaders → 原生桥安装 → S8` 顺序同 tick 执行一次，异步回调本身不推进阶段。
+
+书架安装在 S7 就会启动 BookDefinition 读取，CF6 配置校验同时消费配给目录，因此不得把此屏障推迟到 S9。现有 `get()` 消费者只读目录；抽取和交易路径继续保留已有复制边界。改目录后执行生成器与 `--check`、`tools/test-choice-rewards.py`，改屏障时另跑 `scripts/run-boot-sequencer-tests.ps1`。CF6 focused 入口先加载同一运行目录，再启动原 suite。
 
 ## 4. 塌缩踩过的坑（认症状用，详见构建标准 §0）
 
@@ -74,7 +92,7 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**唯一承�
 
 ## 6. 怎么测 / 怎么改
 
-- **改 boot 同步逻辑**：从 `BOOT_SOURCES` 的语义名定位 live source（新增顶层 source 时只改这张表，不建平行清单）→ 改源 `.as` → `node tools/assemble-collapsed-frame.js` → `node tools/assemble-collapsed-frame.js --check` → `node tools/check-bom.js` → `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180`。只改外置 `.as` 时显式 `-Target` 会从盘读取，无需额外手工重开；生成器改动 `asLoader.xml` 帧数/层数/symbol 等时间轴结构时，须先让 CS6 **不保存关闭并重开**，避免内存旧版 clobber 磁盘。没有本轮新鲜 `compiler_errors.txt` `0/0`、目标 SWF 刷新，以及所需的 trace / Output Panel 副本或 IDE 复核时，不声称“编译通过”。
+- **改 boot 同步逻辑**：从 `BOOT_SOURCES` 的语义名定位 live source（新增顶层 source 时只改这张表，不建平行清单）→ 改源 `.as` → `node tools/assemble-collapsed-frame.js` → `node tools/assemble-collapsed-frame.js --check` → `node tools/check-bom.js` → `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900`。只改外置 `.as` 时显式 `-Target` 会从盘读取，无需额外手工重开；生成器改动 `asLoader.xml` 帧数/层数/symbol 等时间轴结构时，须先让 CS6 **不保存关闭并重开**，避免内存旧版 clobber 磁盘。没有本轮新鲜 `compiler_errors.txt` `0/0`、目标 SWF 刷新，以及所需的 trace / Output Panel 副本或 IDE 复核时，不声称“编译通过”。
 - **改 / 增装备生命周期函数**：编译真源是 `scripts/asLoaderManifest/frame37.as`（f37_N chunk），**不是**旧 `装备函数列表.as`（已删）。用途索引 / API 快查 / 新增 8 步见 `scripts/逻辑/装备函数/README.md`；改完依次跑生成、`--check`、BOM 与 `node tools/validate-equip-fn-coverage.js`，再由 CS6 对 asLoader 执行显式 `-Target publish`；只有同时改时间轴/XML 结构才手工重开。
 - **改 BootSequencer / bootstrap handshake**：直接改类或 shim → 先跑 TestLoader（BootSequencerTest + BootstrapHandshakeTest）→ 重编 publish（publish 模式无 trace，看 `0 错误` + SWF 刷新）。
 - **类继承注册顺序**：`node tools/check-as2-inheritance-order.js`用实际SWF根DoInitAction顺序和现役类的extends关系，拒绝父类晚于子类。`compile_test.ps1`在asLoader发布后自动执行；Compiler 0/0与类数量齐全不能替代此门。基础`ItemCollection`在运行期查找物品工厂，避免经具体物品/装备服务回连派生容器；它的公开构造、查询与序列化接口保持原合同。

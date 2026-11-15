@@ -3,6 +3,8 @@ import copy
 import collections
 import json
 import unittest
+import importlib.util
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
 from choice_reward_catalog import ROOT, SOURCE, load, validate, validate_loadout, item_catalog, runtime_catalog, resolve_book_choices, merge_catalogs
 
@@ -11,6 +13,30 @@ class ChoiceCatalogTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.catalog = validate(json.loads(SOURCE.read_text(encoding='utf-8')))
+
+    def generated_outputs(self, catalog=None):
+        spec = importlib.util.spec_from_file_location('choice_reward_builder', ROOT/'tools/build-choice-rewards.py')
+        builder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(builder)
+        if catalog is None:
+            return builder, builder.outputs()
+        with patch.object(builder, 'load', return_value=catalog):
+            return builder, builder.outputs()
+
+    def test_runtime_projection_equals_authoritative_rows(self):
+        builder, outputs = self.generated_outputs()
+        expected = runtime_catalog(load())
+        self.assertEqual(json.loads(outputs[builder.RUNTIME]), expected)
+        self.assertEqual(len(expected), 28)
+        self.assertEqual(outputs[builder.XML], builder.XML.read_bytes())
+        self.assertEqual(outputs[builder.MERGED], builder.MERGED.read_bytes())
+        self.assertLess(len(outputs[builder.AS2]), 4096)
+
+    def test_runtime_projection_preserves_escaped_text(self):
+        catalog = copy.deepcopy(load())
+        catalog['pools'][0]['title'] = '中文 "quoted" \\ path\nnext line'
+        builder, outputs = self.generated_outputs(catalog)
+        self.assertEqual(json.loads(outputs[builder.RUNTIME]), runtime_catalog(catalog))
 
     def fragment(self):
         return {'schema':'choice-rewards.v1', 'bundles':[

@@ -1,0 +1,23 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" width="500" height="500" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     <symbols><Include href="asLoader.xml" itemID="65982cdb-00001469"/><Include href="tooltip.xml" itemID="689d3d0a-0000061b"/></symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728"><Actionscript><script><![CDATA[#include "../Probe.as"]]></script></Actionscript><elements><DOMSymbolInstance libraryItemName="asLoader" name="asLoader" symbolType="movie clip"><matrix><Matrix/></matrix><transformationPoint><Point/></transformationPoint></DOMSymbolInstance></elements></DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               <DOMLayer name="timelineTooltip" color="#993300"><frames>
+<DOMFrame index="0" keyMode="9728"><elements/></DOMFrame>
+<DOMFrame index="1" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="tooltip" name="注释框"><matrix><Matrix/></matrix><transformationPoint><Point/></transformationPoint></DOMSymbolInstance></elements></DOMFrame>
+<DOMFrame index="2" keyMode="9728"><Actionscript><script><![CDATA[stop();]]></script></Actionscript><elements/></DOMFrame>
+</frames></DOMLayer></layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+          <PD n="DebugMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+</DOMDocument>

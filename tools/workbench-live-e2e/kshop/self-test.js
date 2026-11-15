@@ -1818,12 +1818,12 @@ function runSelfTests() {
       (error) => error && error.code === "evidence_mode_invalid");
   });
 
-  test("production surface inventory is the frozen 205-file current baseline", () => {
+  test("production surface inventory is the frozen 207-file current baseline", () => {
     const roles = Object.create(null);
     ProductionClosure.PRODUCTION_FILES.forEach((entry) => {
       roles[entry.role] = (roles[entry.role] || 0) + 1;
     });
-    assert.strictEqual(ProductionClosure.PRODUCTION_FILES.length, 205);
+    assert.strictEqual(ProductionClosure.PRODUCTION_FILES.length, 207);
     assert.deepStrictEqual(Object.assign({}, roles), {
       page: 1, overlay_script: 19, lazy_registry: 1, kshop_lazy_web: 18,
       style_entry: 8, style_import: 25, idle_prewarm_image: 15,
@@ -1832,7 +1832,7 @@ function runSelfTests() {
       host_composition: 1, host: 13,
       runtime_artifact_source: 1, runtime_input_descriptor: 1,
       runtime_producer_source: 10, runtime_toolchain_lock: 3,
-      as2_manifest: 2, as2_source: 2, as2_dependency: 5, as2_swf: 1,
+      as2_manifest: 2, as2_source: 2, as2_dependency: 5, as2_swf: 3,
       kshop_data_manifest: 1, kshop_data: 13,
       item_data_manifest: 1, item_data: 52,
     });

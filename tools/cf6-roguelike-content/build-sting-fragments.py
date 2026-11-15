@@ -42,7 +42,7 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 
-ROOT = r"C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight"
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(ROOT, "data/stages/books/cf6-sting-source")
 UNITS = os.path.join(ROOT, "data/units/units.json")
 SKILLS_XML = os.path.join(ROOT, "data/skills/skills.xml")

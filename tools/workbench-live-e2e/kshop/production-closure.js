@@ -116,6 +116,8 @@ const AS2_FILES = Object.freeze([
   { role: "as2_dependency", relativePath: "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as" },
   { role: "as2_dependency", relativePath: "scripts/类定义/org/flashNight/arki/pause/PauseManager.as" },
   { role: "as2_swf", relativePath: "scripts/asLoader.swf" },
+  { role: "as2_swf", relativePath: "scripts/asLoaderShared.swf" },
+  { role: "as2_swf", relativePath: "scripts/asLoaderLogic.swf" },
 ]);
 
 function exactFile(root, descriptor) {

@@ -1,16 +1,13 @@
 ﻿import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.gesh.tooltip.TooltipLayout;
 import org.flashNight.gesh.tooltip.TooltipConstants;
-import org.flashNight.gesh.tooltip.TooltipComposer;
 import org.flashNight.gesh.tooltip.test.TestDataBootstrap;
 import org.flashNight.gesh.tooltip.test.MockTooltipContainer;
-import org.flashNight.gesh.tooltip.test.MockItemFactory;
-import org.flashNight.arki.item.ItemUtil;
 
 /**
  * TooltipPerfBenchmark - 性能基准测试
  *
- * 对 tooltip 渲染热路径的关键函数进行计时，
+ * 对历史 tooltip 布局对照的关键函数进行计时，
  * 用于量化优化效果和回归检测。
  *
  * 输出格式与 RayVfxManagerTest bench 段一致：
@@ -102,7 +99,6 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         bench_shouldSplitSmartWithScores();
         bench_estimateMainWidth();
         bench_balanceWidth();
-        bench_renderItemTooltipSmart();
 
         trace("--- TooltipPerfBenchmark: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
@@ -276,28 +272,4 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         MockTooltipContainer.teardown();
     }
 
-    // === 端到端：renderItemTooltipSmart 基准 ===
-    private static function bench_renderItemTooltipSmart():Void {
-        MockTooltipContainer.install();
-
-        var item:Object = ItemUtil.getItemData("测试军刀");
-        var bi = MockItemFactory.mockBaseItem();
-        var desc:String = TooltipComposer.generateItemDescriptionText(item, bi);
-        var intro:String = TooltipComposer.generateIntroPanelContent(bi, item, bi.value);
-
-        // 预热渲染路径
-        TooltipComposer.renderItemTooltipSmart("测试军刀", {level: 1}, desc, intro, null, null);
-
-        var N:Number = 100;
-        var t0:Number = getTimer();
-        for (var i:Number = 0; i < N; i++) {
-            TooltipComposer.renderItemTooltipSmart("测试军刀", {level: 1}, desc, intro, null, null);
-        }
-        var elapsed:Number = getTimer() - t0;
-        trace("  renderItemTooltipSmart x" + N + " = " + elapsed + "ms (" + (elapsed / N) + " ms/call)");
-
-        assert(elapsed < N * 50, "bench renderSmart: < 50ms/call");
-
-        MockTooltipContainer.teardown();
-    }
 }

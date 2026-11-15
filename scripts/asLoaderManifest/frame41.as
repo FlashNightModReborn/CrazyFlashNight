@@ -53,7 +53,6 @@ _root.__boot.f41_2 = function() {
 _root.__boot.f41_3 = function() {
 };
 _root.__boot.f41_4 = function() {
-    #include "../展现/UI交互/UI交互_lsy_任务栏UI.as"
     #include "../展现/UI交互/UI交互_lsy_对话框UI.as"
     #include "../展现/UI交互/UI交互_鸡蛋_fs_aka_物品图标注释.as"
     #include "../展现/UI交互/UI交互_无名氏_改造系统.as"

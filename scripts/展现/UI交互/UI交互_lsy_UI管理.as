@@ -110,31 +110,8 @@ _root.gameCommands["togglePause"] = function() {
     }
 };
 
-_root.gameCommands["toggleSettings"] = function() {
-    var 相机诊断:Boolean = org.flashNight.arki.scene.StageRunSession.cameraObservationActive();
-    var 原显隐:Boolean = _root.修改工具界面._visible;
-    if (_root.修改工具界面._visible || _root.isChallengeMode()) {
-        _root.修改工具界面._visible = false;
-    } else {
-        _root.修改工具界面._visible = true;
-    }
-    if (相机诊断) org.flashNight.arki.scene.StageRunSession.cameraDiag("menu_toggle",
-        "before=" + 原显隐 + " visible=" + _root.修改工具界面._visible
-        + " menuDepth=" + _root.修改工具界面.getDepth() + " worldDepth=" + _root.gameworld.getDepth());
-
-};
-
 _root.gameCommands["openShop"] = function() {
     _root.最上层发布文字提示(_root.获得翻译("商城请通过 Launcher SHOP 面板打开"));
-};
-
-_root.gameCommands["openHelp"] = function() {
-    _root.加载外部UI("flashswf/UI/帮助界面.swf");
-};
-
-_root.gameCommands["togglePets"] = function() {
-    _root.宠物信息界面.排列宠物图标();
-    _root.宠物信息界面._visible = !_root.宠物信息界面._visible;
 };
 
 // toggleMercs 已移除：旧 Flash 佣兵信息界面(Symbol 923 簇) 已退役不实例化，且无任何派发方
@@ -223,10 +200,6 @@ if (_root.__mapHudStateBridgeInstalled != true) {
         _root.__pushMapHudState(true);
     }, null);
 }
-
-_root.gameCommands["openTaskUI"] = function() {
-    _root.从库中加载全屏UI("任务栏界面");
-};
 
 _root.gameCommands["openMaterialUI"] = function(params) {
     var missingOpenRequestId:Boolean = params == undefined || params == null

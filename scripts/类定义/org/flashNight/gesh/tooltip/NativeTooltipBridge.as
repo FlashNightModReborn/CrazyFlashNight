@@ -16,7 +16,7 @@
  *   本桥不另建计数器/场景ID，避免与 NPC 菜单浮层身份口径不一致。
  * - 身份安全：hide 按 requestId 匹配；迟到的 hide 不会关掉更新的请求。
  * - 通道不可用（server 缺失/未连接/上下文类未加载/发送失败）时返回 null/false，
- *   由调用方决定是否回退旧 Flash 渲染，桥本身不产生副作用。
+ *   生产调用方不再启动 Flash 备用绘制；显示失败不改变业务状态。
  *
  * - 已编译 ItemIcon 兼容（不重建 main）：install() 幂等 patch
  *   ItemIcon.prototype.RollOver，wrapper 经 getIconMovieClip() 捕获 owner 进

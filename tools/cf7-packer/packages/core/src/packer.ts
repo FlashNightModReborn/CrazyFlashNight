@@ -225,14 +225,54 @@ export async function pack(
   );
 
   // Validate actual copied bytes once, sharing content metadata with local compile checks.
+  const coreSwfPaths = new Set([
+    "scripts/asLoader.swf",
+    "scripts/asLoaderShared.swf",
+    "scripts/asLoaderLogic.swf",
+    "CRAZYFLASHER7MercenaryEmpire.swf"
+  ]);
   if (!dryRun && !cancelled && errors.length === 0 &&
-      filterResult.included.some(entry => entry.path === "scripts/asLoader.swf" || entry.path === "CRAZYFLASHER7MercenaryEmpire.swf")) {
-    const audit = spawnSync(process.execPath, [
-      path.join(repoRoot, "tools/audit-as2-class-embedding.js"), "--root", resolvedOutputDir,
-      "--files-json", "-", "--cache-dir", path.join(repoRoot, "tmp/swf-metadata-cache"), "--json"
-    ], { input: JSON.stringify(filterResult.included.map(entry => entry.path)), encoding: "utf8", maxBuffer: 2 * 1024 * 1024 });
-    if (audit.error || audit.status !== 0) {
-      errors.push({ path: resolvedOutputDir, error: "AS2 production class ownership: " + (audit.error?.message || audit.stdout || audit.stderr) });
+      filterResult.included.some(entry => coreSwfPaths.has(entry.path))) {
+    let tempCatalogDir: string | null = null;
+    try {
+      const catalogArgs: string[] = [];
+      if (isGitTag && tag) {
+        validateGitRef(tag);
+        const probe = spawnSync("git", ["cat-file", "-t", `${tag}:tools/asloader-modules.json`], {
+          cwd: repoRoot,
+          encoding: "utf8",
+          timeout: 15_000
+        });
+        if (probe.status === 0 && probe.stdout.trim() === "blob") {
+          const catalogBytes = await gitShowFile(repoRoot, tag, "tools/asloader-modules.json", signal);
+          tempCatalogDir = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-packer-catalog-"));
+          const tempCatalogPath = path.join(tempCatalogDir, "asloader-modules.json");
+          fs.writeFileSync(tempCatalogPath, catalogBytes);
+          catalogArgs.push("--catalog", tempCatalogPath);
+        } else {
+          catalogArgs.push("--no-catalog");
+        }
+      } else {
+        const worktreeCatalog = path.join(repoRoot, "tools/asloader-modules.json");
+        if (fs.existsSync(worktreeCatalog)) {
+          catalogArgs.push("--catalog", worktreeCatalog);
+        } else {
+          catalogArgs.push("--no-catalog");
+        }
+      }
+
+      const audit = spawnSync(process.execPath, [
+        path.join(repoRoot, "tools/audit-as2-class-embedding.js"), "--root", resolvedOutputDir,
+        "--files-json", "-", "--cache-dir", path.join(repoRoot, "tmp/swf-metadata-cache"), "--json",
+        ...catalogArgs
+      ], { input: JSON.stringify(filterResult.included.map(entry => entry.path)), encoding: "utf8", maxBuffer: 2 * 1024 * 1024 });
+      if (audit.error || audit.status !== 0) {
+        errors.push({ path: resolvedOutputDir, error: "AS2 production class ownership: " + (audit.error?.message || audit.stdout || audit.stderr) });
+      }
+    } finally {
+      if (tempCatalogDir) {
+        fs.rmSync(tempCatalogDir, { recursive: true, force: true });
+      }
     }
   }
 

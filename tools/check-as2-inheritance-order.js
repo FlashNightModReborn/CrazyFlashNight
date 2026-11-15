@@ -37,13 +37,25 @@ function initializerOrder(raw) {
 }
 
 function inspect(file) {
-    const raw = fs.readFileSync(file), metadata = parseSwf(raw);
-    const order = initializerOrder(raw), classes = new Map(metadata.classes.map(row => [row.fqn, row]));
+    return inspectFiles([file]);
+}
+
+function inspectFiles(files) {
+    const definitions=[], classes=new Map(); let base=0;
+    for (const file of files) {
+        const raw=fs.readFileSync(file), metadata=parseSwf(raw), order=initializerOrder(raw);
+        for (const row of metadata.classes) {
+            if (classes.has(row.fqn)) throw Error('Duplicate class across modules: '+row.fqn);
+            if (!order.has(row.spriteId)) throw Error('Class has no root initializer: '+row.fqn);
+            const item={...row,initOrder:base+order.get(row.spriteId)};
+            definitions.push(item);classes.set(row.fqn,item);
+        }
+        base+=order.size;
+    }
     const edges = [], errors = [];
-    for (const row of metadata.classes) {
+    for (const row of definitions) {
         if (!/^[\p{L}_$][\p{L}\p{N}_$]*(?:\.[\p{L}_$][\p{L}\p{N}_$]*)*$/u.test(row.fqn))
             throw Error('Invalid class name: ' + row.fqn);
-        if (!order.has(row.spriteId)) throw Error('Class has no root initializer: ' + row.fqn);
         const source = path.join(CLASS_ROOT, ...row.fqn.split('.')) + '.as';
         if (!fs.existsSync(source)) {
             if (row.fqn.startsWith('org.flashNight.')) throw Error('Missing project class source: ' + row.fqn);
@@ -77,24 +89,33 @@ function inspect(file) {
         }
         const parent = classes.get(candidates[0]);
         const edge = {child: row.fqn, parent: parent.fqn,
-            childInitOrder: order.get(row.spriteId), parentInitOrder: order.get(parent.spriteId)};
+            childInitOrder: row.initOrder, parentInitOrder: parent.initOrder};
         edges.push(edge);
         if (edge.parentInitOrder >= edge.childInitOrder) errors.push(edge);
     }
-    return {schema: 'cf7-as2-inheritance-order.v1', classDefinitions: metadata.classes.length,
+    return {schema: 'cf7-as2-inheritance-order.v1', classDefinitions: definitions.length,
         inheritanceEdges: edges.length, errors};
 }
 
 if (require.main === module) {
     try {
         let file = path.join(ROOT, 'scripts', 'asLoader.swf');
+        let modules=false;
         const args = process.argv.slice(2);
         for (let index = 0; index < args.length; index++) {
-            if (args[index] !== '--swf' || !args[index + 1]) throw Error('Usage: check-as2-inheritance-order.js [--swf file]');
-            file = path.resolve(ROOT, args[++index]);
+            if (args[index] === '--modules') modules=true;
+            else if (args[index] === '--swf' && args[index+1]) file=path.resolve(ROOT,args[++index]);
+            else throw Error('Usage: check-as2-inheritance-order.js [--swf file | --modules]');
         }
-        const result = inspect(file); console.log(JSON.stringify(result, null, 2));
+        let result;
+        if (modules) {
+            const {readCatalog,ORDER}=require('./asloader-module-catalog');
+            const catalog=readCatalog(ROOT);
+            if (!catalog) throw Error('Module catalog missing');
+            result=inspectFiles(ORDER.map(name=>path.join(ROOT,catalog.data[name].swf)));
+        } else result=inspect(file);
+        console.log(JSON.stringify(result, null, 2));
         if (result.errors.length) process.exitCode = 1;
     } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = {inspect, initializerOrder};
+module.exports = {inspect, inspectFiles, initializerOrder};

@@ -7,7 +7,6 @@
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
-import org.flashNight.gesh.tooltip.TooltipBridge;
 
 class org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder {
 
@@ -204,7 +203,11 @@ class org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder {
             var enemyCount:Number = Math.min(enemyDrops.length, maxEnemies);
             for (var e:Number = 0; e < enemyCount; e++) {
                 var enemyType:String = enemyDrops[e].enemyType;
-                var displayName:String = TooltipBridge.getEnemyDisplayName(enemyType);
+                var displayName:String = enemyType;
+                if (_root.敌人属性表 && _root.敌人属性表[enemyType]) {
+                    var enemyProps:Object = _root.敌人属性表[enemyType];
+                    if (enemyProps.displayname) displayName = enemyProps.displayname;
+                }
                 enemyNames.push(displayName);
                 rows.push({name:String(displayName), effect:"", depth:1});
             }

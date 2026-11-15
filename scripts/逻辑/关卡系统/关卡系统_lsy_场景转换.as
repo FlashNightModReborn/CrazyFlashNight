@@ -633,7 +633,9 @@ _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 
 			_root.场景进入位置名 = 对应门名;
 			_root.转场景记录数据();
 			_root.场景转换函数.上次切换帧数 = currentFrame;
-			if (目标场景帧 == "关卡地图" && _root.场景转换函数.请求打开Web选关("as2_legacy_stage_gate")) {
+			if (目标场景帧 == "关卡地图") {
+				if (!_root.场景转换函数.请求打开Web选关("as2_legacy_stage_gate"))
+					_root.最上层发布文字提示("选关面板暂时无法打开，请稍后重试。");
 				return;
 			}
 			if (开门效果 == null || 开门效果 == ""){
@@ -680,19 +682,8 @@ _root.场景转换函数.打开Web选关 = function(对应门名, 目标场景�
 			_root.转场景记录数据();
 			_root.场景转换函数.上次切换帧数 = currentFrame;
 
-			if (_root.场景转换函数.请求打开Web选关(source)) {
-				return;
-			}
-
-			if (开门效果 == null || 开门效果 == ""){
-				if (!org.flashNight.arki.scene.PlayerSceneLifecycle.requestFade(目标场景帧)) return;
-				this.gotoAndStop(3);
-			}else{
-				if (!org.flashNight.arki.scene.SceneTransitionGuard.prepareDoor(目标场景帧)) return;
-                if (!org.flashNight.arki.scene.PlayerSceneLifecycle.recordAdmittedDoor(目标场景帧)) return;
-				游戏世界[开门效果].play();
-				this.gotoAndStop(3);
-			}
+			if (!_root.场景转换函数.请求打开Web选关(source))
+				_root.最上层发布文字提示("选关面板暂时无法打开，请稍后重试。");
 		}
 	}
 }
@@ -877,7 +868,6 @@ _root.清除游戏世界组件 = function(清理请求:Object):Boolean{
 	_root.卸载外部UI();
 	_root.卸载全屏UI();
 	
-	_root.对话框UI.清理外部立绘缓存(3);
 	// 先清 followingEvent 再关：场景取消语义是“绝不执行后续事件”，
 	// 旧顺序允许 close 帧/onClose 抢跑发布。
 	_root.对话框界面.followingEvent = null;

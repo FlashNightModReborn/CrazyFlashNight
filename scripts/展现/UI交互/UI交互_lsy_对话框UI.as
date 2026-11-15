@@ -4,23 +4,6 @@
 // ===============================
 _root.对话框UI = new Object();
 
-_root.对话框UI.loadPortraitDict = new Object();
-_root.对话框UI.loadPortraitList = new Array();
-
-// （可选）兜底错误处理
-function onError():Void { /* TODO: 这里写你的错误上报或日志 */ }
-
-// 使用 BaseXMLLoader 导入 list
-var portraitLoader = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader("flashswf/portraits/list.xml");
-portraitLoader.load(function(data:Object):Void {
-    var portraits = data.portrait;
-    for (var i=0; i<portraits.length; i++) {
-        _root.对话框UI.loadPortraitDict[data.portrait[i]] = {instance:null, depth:i};
-    }
-}, function():Void {
-    onError();
-});
-
 // ===============================
 //  滤镜系统（注册表 + 统一入口）
 //  —— 默认不加滤镜；当 style="holo" 时启用全息滤镜
@@ -159,209 +142,10 @@ _root.对话框UI.setPortraitStyle = function(style:String, opts:Object):Void {
 };
 
 // ===============================
-//  外部立绘缓存清理（增强：先清滤镜再移除）
-// ===============================
-_root.对话框UI.清理外部立绘缓存 = function(保留数量){
-    if(isNaN(保留数量)) 保留数量 = 3;
-    if(保留数量 < 0) 保留数量 = 0;
-    if(this.loadPortraitList.length > 保留数量){
-        var cutlen = this.loadPortraitList.length - 保留数量;
-        for(var i = cutlen - 1; i > -1; i--){
-            var portraitInfo = this.loadPortraitDict[this.loadPortraitList[i]];
-            if (portraitInfo.instance) {
-                _root.对话框UI.__removeAllFilters(portraitInfo.instance); // 新增：先清滤镜
-                portraitInfo.instance.removeMovieClip();
-                portraitInfo.instance = null;
-            }
-        }
-        this.loadPortraitList.splice(0, cutlen);
-        // _root.发布消息("清理",cutlen,"个外部立绘缓存");
-    }
-};
-
-// ===============================
-//  立绘帧名大小写映射（保持原有行为）
-// ===============================
-_root.对话框UI.立绘大小写字典 = {
-    Boy: "boy",
-    King: "king",
-    Pig: "pig"
-};
-
-// ===============================
-//  刷新内容（增强：支持 [7]=滤镜风格, [8]=滤镜参数）
-//  —— 仅旧 MovieClip 路径使用；headless 下 clip 已被 初始化对话框界面 桩化，
-//     此处函数体保留供立绘资产/回退参考，不再挂到新实例。
-// ===============================
-_root.对话框UI.刷新内容 = function(){
-    var dialogueInfo = 本轮对话内容[对话进度];
-    if (dialogueInfo[3] != undefined){
-        this._visible = true;
-        var 上句人物名字 = 人物名字;
-        if (dialogueInfo[0] == "角色名" || dialogueInfo[0] == _root.角色名){
-            人物名字 = _root.角色名;
-        }else{
-            人物名字 = dialogueInfo[0];
-        }
-        人物称号 = _root.获得翻译(dialogueInfo[1]);
-        if (人物称号 == null){
-            人物称号 = "";
-        }
-        this.头像图标帧名 = dialogueInfo[2];
-        if (this.头像图标帧名 == null || this.头像图标帧名 == ""){
-            this.头像图标帧名 = "无头像";
-        }else if(_root.对话框UI.立绘大小写字典[this.头像图标帧名]){
-            this.头像图标帧名 = _root.对话框UI.立绘大小写字典[this.头像图标帧名]; // 解决大小写不一致问题
-        }
-        if (this.头像图标帧名 == "主角模板" && 上句人物名字 != 人物名字){
-            肖像.肖像.gotoAndStop("刷新");
-        }
-
-        对话内容 = dialogueInfo[3];
-        人物表情 = dialogueInfo[4];
-        if (人物表情 == null) 人物表情 = "普通";
-        if(dialogueInfo[0] == "Andy Law" && _root.立绘类型 && _root.立绘类型 != 1){
-            人物表情 = 人物表情 + _root.立绘类型.toString();
-        }
-        对话对象 = dialogueInfo[5];
-
-        // ——新增：滤镜风格选择（可缺省）
-        this.滤镜风格 = dialogueInfo[7]; // "none" / "holo" / 未定义沿用全局
-        this.滤镜参数 = dialogueInfo[8]; // 参数对象，可缺省
-
-        // 直接加载立绘 / 从外部文件导入立绘
-        if(_root.对话框UI.loadPortraitDict[this.头像图标帧名] != null){
-            刷新外部导入立绘();
-        }else {
-            刷新立绘();
-        }
-
-        // 加载对话图片
-        对话图片 = dialogueInfo[6];
-        if (typeof 对话图片 == "string" && 对话图片 != ""){
-            if (对话图片 == "close"){
-                _root.图片容器.卸载图片();
-            }else{
-                _root.图片容器.加载图片(对话图片);
-            }
-        }
-
-        // 打字机
-        打字内容 = "";
-        this.onEnterFrame = function(){
-            打字(对话内容);
-        };
-    }else{
-        关闭();
-    }
-};
-
-// ===============================
-//  内置立绘刷新（末尾挂滤镜）
-// ===============================
-_root.对话框UI.刷新立绘 = function(){
-    if(this.当前立绘 !== 肖像 && this.当前立绘) this.当前立绘._visible = false;
-    this.肖像._visible = true;
-    this.当前立绘 = 肖像;
-
-    肖像.gotoAndStop(头像图标帧名);
-    肖像.肖像.stop();
-    肖像.肖像.gotoAndStop(人物表情);
-    肖像.肖像.man.头.头.基本款.gotoAndStop(人物表情);
-    肖像.肖像.man.头.头.装扮.gotoAndStop(人物表情);
-
-    // ——应用滤镜（目标可改为 肖像.肖像，视你的美术层级而定）
-    var styleStr:String = (this.滤镜风格 != undefined) ? this.滤镜风格 : this.当前滤镜风格;
-    var styleOpt:Object = (this.滤镜参数 != undefined) ? this.滤镜参数 : this.当前滤镜参数;
-    _root.对话框UI.应用头像滤镜(肖像, styleStr, styleOpt);
-};
-
-// ===============================
-//  外部导入立绘刷新（就绪后挂滤镜）
-// ===============================
-_root.对话框UI.刷新外部导入立绘 = function(){
-    this.肖像._visible = false;
-    var portraitInfo = _root.对话框UI.loadPortraitDict[this.头像图标帧名];
-    if(portraitInfo.instance == null){
-        portraitInfo.instance = this.外部立绘层.createEmptyMovieClip(this.头像图标帧名, portraitInfo.depth);
-        _root.对话框UI.loadPortraitList.push(this.头像图标帧名);
-        portraitInfo.instance.loadMovie("flashswf/portraits/" + this.头像图标帧名 + ".swf");
-        portraitInfo.instance.onLoad = function(){
-            this.gotoAndStop(_root.对话框UI.人物表情 || "普通");
-        };
-    }
-    if(this.当前立绘 !== portraitInfo.instance && this.当前立绘) this.当前立绘._visible = false;
-    portraitInfo.instance._visible = true;
-
-    if(portraitInfo.instance._totalframes > 0){
-        var 跳转前帧数 = portraitInfo.instance._currentframe;
-        portraitInfo.instance.gotoAndStop(人物表情);
-        if(portraitInfo.instance._currentframe == 跳转前帧数 && 人物表情 != "普通"){
-            portraitInfo.instance.gotoAndStop("普通");
-        }
-
-        // ——应用滤镜（外部立绘）
-        var styleStr2:String = (this.滤镜风格 != undefined) ? this.滤镜风格 : this.当前滤镜风格;
-        var styleOpt2:Object = (this.滤镜参数 != undefined) ? this.滤镜参数 : this.当前滤镜参数;
-        _root.对话框UI.应用头像滤镜(portraitInfo.instance, styleStr2, styleOpt2);
-    }
-    this.当前立绘 = portraitInfo.instance;
-};
-
-// ===============================
-//  打字/结束打字/下一句/关闭/onClose（保持原逻辑）
-// ===============================
-_root.对话框UI.打字 = function(fonts){
-    if (this.i < length(fonts)){
-        this.是否打印完毕 = false;
-        打字内容 += fonts.substr(this.i, 1);
-        this.i = this.i + 1;
-    }
-    if (this.i >= length(fonts)){
-        结束打字();
-    }
-};
-
-_root.对话框UI.结束打字 = function(){
-    if (!this.是否打印完毕){
-        打字内容 = 对话内容;
-        delete this.onEnterFrame;
-        对话进度++;
-        this.是否打印完毕 = true;
-        this.i = 0;
-    }
-};
-
-_root.对话框UI.下一句 = function(){
-    if (对话进度 < 对话条数){
-        if (this.是否打印完毕){
-            刷新内容();
-        }else{
-            结束打字();
-        }
-    }else{
-        关闭();
-    }
-};
-
-_root.对话框UI.关闭 = function(){
-    this.gotoAndStop("close");
-};
-
-// headless 语义：旧 onClose 裸写 _root.暂停=false 并直接 publish
-// followingEvent 的路径禁止复活——显式结束转发给 NativeDialogueService
-// 的一次性 finish（terminal 态下重入安全），场景取消走 cancel 不触发本函数。
-_root.对话框UI.onClose = function(){
-    var svc = _global.org.flashNight.arki.dialogue.NativeDialogueService;
-    if (svc != undefined) svc.finishSession();
-};
-
-// ===============================
 //  初始化对话框界面（headless compat）
 //  authored 实例（含 AVM1 同路径重绑回来的新实例）只停住隐藏；
 //  _root.对话框界面 换绑到 NativeDialogueService 的普通 Object facade。
-//  立绘/头像源功能（loadPortraitDict、刷新NPC头像、滤镜、外部立绘缓存）
-//  仍挂在 _root.对话框UI 上供其他功能使用，不随 clip 退役。
+//  旧 MC renderer 与外部立绘缓存已退役；NPC 头像源函数另随旧平板入口收尾。
 // ===============================
 _root.对话框UI.初始化对话框界面 = function(对话框界面:MovieClip){
     对话框界面.stop();
@@ -377,9 +161,6 @@ _root.对话框UI.初始化对话框界面 = function(对话框界面:MovieClip)
         this._visible = false;
     };
     对话框界面.onClose = function(){};
-
-    对话框界面.刷新立绘 = _root.对话框UI.刷新立绘;
-    对话框界面.刷新外部导入立绘 = _root.对话框UI.刷新外部导入立绘;
 
     var svc = _global.org.flashNight.arki.dialogue.NativeDialogueService;
     if (svc != undefined) {

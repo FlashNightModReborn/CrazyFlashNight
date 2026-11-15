@@ -1,4 +1,14 @@
 ﻿var cf6EconomySuiteLink:org.flashNight.arki.scene.Cf6EconomyRulesTest;
 trace("FocusedTestRunId cf6-economy Start: __FOCUSED_RUN_ID__");
-org.flashNight.arki.scene.Cf6EconomyRulesTest.runAllTests();
-trace("FocusedTestRunId cf6-economy Complete: __FOCUSED_RUN_ID__");
+org.flashNight.gesh.path.PathManager.initialize(_root._url);
+var choiceCatalogLoader:org.flashNight.gesh.json.LoadJson.BaseJSONLoader = new org.flashNight.gesh.json.LoadJson.BaseJSONLoader("data/rewards/choice-rewards.runtime.json", "JSON");
+choiceCatalogLoader.load(function(data:Object):Void {
+    if (!org.flashNight.arki.item.ChoiceRewardDefinition.accept(data)) {
+        trace("[FAIL] choice runtime catalog rejected before CF6 tests");
+        return;
+    }
+    org.flashNight.arki.scene.Cf6EconomyRulesTest.runAllTests();
+    trace("FocusedTestRunId cf6-economy Complete: __FOCUSED_RUN_ID__");
+}, function(error:String):Void {
+    trace("[FAIL] choice runtime catalog failed before CF6 tests: " + error);
+});

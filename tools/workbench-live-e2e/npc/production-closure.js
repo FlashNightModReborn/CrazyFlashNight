@@ -1163,6 +1163,8 @@ function productionFiles(root) {
     ...BUILD_FILES.map((relativePath) => ({ role: "build_source", relativePath })),
     ...AS2_FILES.map((relativePath) => ({ role: "as2_source", relativePath })),
     { role: "as2_swf", relativePath: "scripts/asLoader.swf" },
+    { role: "as2_swf", relativePath: "scripts/asLoaderShared.swf" },
+    { role: "as2_swf", relativePath: "scripts/asLoaderLogic.swf" },
     ...listedChildren(root, "data/shops/list.xml", ["shops"], "data/shops", "shop_data"),
     ...listedChildren(root, "data/items/list.xml", ["items", "itemSets"], "data/items", "item_data"),
   ];

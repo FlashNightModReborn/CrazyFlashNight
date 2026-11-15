@@ -831,7 +831,7 @@ function runBuildGates(root, gates) {
     const result = childProcess.spawnSync(spec.command, spec.args, {
       cwd: root,
       encoding: "utf8",
-      timeout: gate.startsWith("as2-") ? 300000 : 180000,
+      timeout: gate === "as2-publish" ? 900000 : gate.startsWith("as2-") ? 300000 : 180000,
     });
     const finishedAt = new Date().toISOString();
     return {

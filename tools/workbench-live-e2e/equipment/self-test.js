@@ -673,7 +673,7 @@ function runSelfTests() {
     assert.deepStrictEqual(styles.panelStyles, ProductionClosure.PANELS_IMPORT_STYLE_WEB);
     const closure = ProductionClosure.captureProductionClosure(REPOSITORY_ROOT,
       "2026-08-04T00:00:00.000Z");
-    assert.strictEqual(closure.files.length, 170);
+    assert.strictEqual(closure.files.length, 172);
     assert.strictEqual(ProductionClosure.scriptFiles(closure).length, 53);
     assert.strictEqual(ProductionClosure.styleFiles(closure).length, 36);
     assert.strictEqual(closure.pageResourceContract.fixedImages.length, 15);

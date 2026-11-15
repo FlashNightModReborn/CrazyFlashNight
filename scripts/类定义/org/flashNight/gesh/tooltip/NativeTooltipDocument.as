@@ -25,7 +25,7 @@
  *
  * 典型用法：
  *   var doc = NativeTooltipDocument.buildItem(name, itemData, iconData, introHtml, descHtml, subHtmls);
- *   if (NativeTooltipBridge.show(doc) == null) { // 回退旧 Flash 渲染 }
+ *   NativeTooltipBridge.show(doc); // 通道不可用时不显示，不启动 Flash 备用绘制
  */
 import org.flashNight.gesh.tooltip.TooltipConstants;
 

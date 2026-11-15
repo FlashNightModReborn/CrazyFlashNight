@@ -95,10 +95,10 @@ describe("packer", () => {
     const bodies = [swf(undefined, paths[2]), swf("org.flashNight.Authority"), swf()];
     paths.forEach((rel, i) => { const file = path.join(repoRoot, rel); fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, bodies[i]); });
     fs.mkdirSync(path.join(repoRoot, "tools"), { recursive: true });
-    for (const name of ["swf-metadata.js", "audit-as2-class-embedding.js"]) {
+    for (const name of ["swf-metadata.js", "audit-as2-class-embedding.js", "asloader-module-catalog.js"]) {
       fs.copyFileSync(path.resolve(REPO_ROOT, "..", name), path.join(repoRoot, "tools", name));
     }
-    return { repoRoot, paths };
+    return { repoRoot, paths, swf };
   }
 
   it("game delivery gate accepts the complete copied classless resource closure", async () => {
@@ -129,6 +129,42 @@ describe("packer", () => {
       { dryRun: false, outputDir: path.join(getTempDir(), "output"), clean: true });
     expect(result.errors).toHaveLength(1);
     expect(result.errors[0].error).toContain("missing/ambiguous RSL");
+  });
+
+  it("game delivery gate validates 3-module asLoader catalog from repoRoot when catalog itself is not packed", async () => {
+    const { repoRoot, swf } = ownershipFixture();
+    const modulePaths = [
+      "CRAZYFLASHER7MercenaryEmpire.swf",
+      "scripts/asLoader.swf",
+      "scripts/asLoaderShared.swf",
+      "scripts/asLoaderLogic.swf",
+      "flashswf/asset.swf"
+    ];
+    fs.writeFileSync(path.join(repoRoot, "scripts/asLoader.swf"), swf("org.flashNight.neur.Server.SaveManager"));
+    fs.writeFileSync(path.join(repoRoot, "scripts/asLoaderShared.swf"), swf("org.flashNight.neur.Event.EventBus"));
+    fs.writeFileSync(path.join(repoRoot, "scripts/asLoaderLogic.swf"), swf("org.flashNight.boot.BootSequencer"));
+    fs.writeFileSync(path.join(repoRoot, "tools/asloader-modules.json"), JSON.stringify({
+      schema: "cf7-asloader-modules.v1",
+      resident: { symbol: "asLoader", swf: "scripts/asLoader.swf", xfl: "scripts/asLoaderBootstrap/asLoaderBootstrap.xfl", classes: ["org.flashNight.neur.Server.SaveManager"] },
+      shared: { symbol: "asLoaderShared", swf: "scripts/asLoaderShared.swf", xfl: "scripts/asLoaderShared/asLoaderShared.xfl", classes: ["org.flashNight.neur.Event.EventBus"] },
+      boot: { symbol: "asLoader", swf: "scripts/asLoaderLogic.swf", xfl: "scripts/asLoader/asLoader.xfl", classes: ["org.flashNight.boot.BootSequencer"] }
+    }, null, 2));
+
+    const outputDir = path.join(getTempDir(), "output");
+    const result = await pack(makeFilterResult(modulePaths), { ...makeConfig(), source: { mode: "worktree", repoRoot } },
+      { dryRun: false, outputDir, clean: true });
+    expect(result.errors).toEqual([]);
+    expect(result.copiedFiles).toBe(5);
+    expect(fs.existsSync(path.join(outputDir, "tools/asloader-modules.json"))).toBe(false);
+
+    const missingModuleOutput = path.join(getTempDir(), "output-missing-module");
+    const missingResult = await pack(
+      makeFilterResult(modulePaths.filter(p => p !== "scripts/asLoaderLogic.swf")),
+      { ...makeConfig(), source: { mode: "worktree", repoRoot } },
+      { dryRun: false, outputDir: missingModuleOutput, clean: true }
+    );
+    expect(missingResult.errors).toHaveLength(1);
+    expect(missingResult.errors[0].error).toContain("Production ownership requires module: scripts/asLoaderLogic.swf");
   });
 
   it("ownership discovery uses the same first matching layer and exclusions as packer", () => {

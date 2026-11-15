@@ -3,8 +3,12 @@ on:
   pull_request:
     paths:
       - '**/*.swf'
+      - 'scripts/类定义/**/*.as'
       - 'tools/swf-metadata.js'
+      - 'tools/asloader-modules.json'
+      - 'tools/asloader-module-catalog.js'
       - 'tools/audit-as2-class-embedding.js'
+      - 'tools/check-as2-inheritance-order.js'
       - 'tools/swf-function-sizes.js'
       - 'tools/test-swf-metadata.js'
       - 'tools/cf7-packer/pack.config.yaml'
@@ -13,8 +17,12 @@ on:
     branches: [main]
     paths:
       - '**/*.swf'
+      - 'scripts/类定义/**/*.as'
       - 'tools/swf-metadata.js'
+      - 'tools/asloader-modules.json'
+      - 'tools/asloader-module-catalog.js'
       - 'tools/audit-as2-class-embedding.js'
+      - 'tools/check-as2-inheritance-order.js'
       - 'tools/swf-function-sizes.js'
       - 'tools/test-swf-metadata.js'
       - 'tools/cf7-packer/pack.config.yaml'
@@ -42,4 +50,7 @@ jobs:
           ln -s ../../../tmp/as2-config-readers/node_modules/picomatch tools/cf7-packer/node_modules/picomatch
       - run: node tools/test-swf-metadata.js
       - run: node tools/audit-as2-class-embedding.js --json
+      - run: node tools/check-as2-inheritance-order.js --modules
       - run: node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3
+      - run: node tools/swf-function-sizes.js scripts/asLoaderShared.swf --max 60000 --top 3
+      - run: node tools/swf-function-sizes.js scripts/asLoaderLogic.swf --max 60000 --top 3

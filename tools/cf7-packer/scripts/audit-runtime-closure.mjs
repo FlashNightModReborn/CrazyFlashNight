@@ -153,6 +153,9 @@ const REQUIRED = [
     "runtime/cf7-runtime-manifest.tsv",
     "config/build/runtime-release-consensus.json",
     "scripts/asLoader.swf",
+    "scripts/asLoaderShared.swf",
+    "scripts/asLoaderLogic.swf",
+    "data/rewards/choice-rewards.runtime.json",
     "fscommand/launch_rag.bat",
 ];
 for (const relative of REQUIRED) {

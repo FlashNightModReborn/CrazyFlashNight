@@ -1,18 +1,10 @@
-﻿_root.层级管理器 = new Object();
-_root.层级管理器.highest = 1023; // 从1024开始创建新层级
+﻿#include "../引擎/引擎_lsy_根层级分配.as"
 
 _root.层级管理器.mouse = 65535; // 鼠标
 _root.层级管理器.soundManager = 65534; // 音效管理器
 _root.层级管理器.注释框 = 65533; // 注释框
 _root.层级管理器.musicManager = 65532; // BGM管理器
-
-//重写获取root新层级的函数
-// _root.original_getNextHighestDepth = _root.getNextHighestDepth;
-_root.getNextHighestDepth = function(){
-    //从1024开始创建新层级
-    _root.层级管理器.highest++;
-    return _root.层级管理器.highest;
-}
+// 65531 预留给 asLoaderBootstrap.as 的 _root.__asLoaderCode 持久代码模块容器
 
 //每次跳转地图时调用
 _root.层级管理器.检查层级范围 = function(){

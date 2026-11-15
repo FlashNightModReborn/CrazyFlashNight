@@ -63,10 +63,12 @@ layers:
       - "**/test_loader.as"
 
   - name: scripts
-    description: "运行时脚本（仅 asLoader，源码不打包）"
+    description: "运行时代码模块（原入口、共享类库、启动逻辑；源码不打包）"
     source: "scripts/"
     include:
       - "asLoader.swf"
+      - "asLoaderShared.swf"
+      - "asLoaderLogic.swf"
     exclude: []
 
   - name: flashswf

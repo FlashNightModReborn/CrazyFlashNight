@@ -65,41 +65,34 @@ _root.物品图标注释 = function(name, value, baseItem, ownerClip) {
         iconData = baseItem.getData();
     }
 
-    // 5) 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
+    // 5) 原生注释出口：document 经 native_interaction 下发；通道不可用时不显示，不再启用 Flash 备用绘制
     var doc:Object = NativeTooltipDocument.buildItem(name, itemData, iconData, 简介文本, 描述文本, docSubs, extras);
-    if (NativeTooltipBridge.show(doc, ownerClip) == null) {
-        // 回退路径无插条/弹夹框，简介需按旧版全文重建一次
-        var 回退简介:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData, value, null);
-        var 回退全文:String = 描述文本 + subBlocks.join("");
-        TooltipComposer.renderItemTooltipSmart(name, value, 回退全文, 回退简介, null, iconData);
-    }
+    NativeTooltipBridge.show(doc, ownerClip);
 };
 
 
 /**
- * 技能栏技能图标注释（智能分栏版）
+ * 技能栏技能图标注释（原生文档）
  * @param 对应数组号:Number 技能在主角技能表中的数组索引
  *
  * 布局策略：
  * - 简介面板：技能名、类型、状态、冷却、消耗、等级等基础信息
  * - 描述文本：技能的详细描述（Description），独立显示
- * - 根据内容长度自动选择单栏或双栏布局
+ * - 布局由原生注释消费者决定
  */
 _root.技能栏技能图标注释 = function(对应数组号) {
     var parts:Object = SkillTooltipComposer.describeLoadout(对应数组号);
-    if (NativeTooltipBridge.show(parts.document) == null) {
-        SkillTooltipComposer.renderSkillTooltipSmart(parts.name, parts.intro, parts.description);
-    }
+    NativeTooltipBridge.show(parts.document);
 };
 
 /**
- * 学习界面技能图标注释（智能分栏版）
+ * 学习界面技能图标注释（原生文档）
  * @param 对应数组号:Number 技能在技能表中的数组索引
  *
  * 布局策略：
  * - 简介面板：技能名、类型、等级限制、技能点需求、冷却、消耗等基础信息
  * - 描述文本：技能的详细描述（Description），独立显示
- * - 根据内容长度自动选择单栏或双栏布局
+ * - 布局由原生注释消费者决定
  */
 _root.学习界面技能图标注释 = function(对应数组号) {
     var 技能信息 = _root.技能表[对应数组号];
@@ -119,16 +112,14 @@ _root.学习界面技能图标注释 = function(对应数组号) {
     // 描述文本（独立出来，用于智能分栏）
     var 描述文本 = 技能信息.Description ? String(技能信息.Description) : "";
 
-    // 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
+    // 原生注释出口：document 经 native_interaction 下发；通道不可用时不显示，不再启用 Flash 备用绘制
     var 学习文档:Object = NativeTooltipDocument.buildSkill(技能名, 简介文本, 描述文本);
-    if (NativeTooltipBridge.show(学习文档) == null) {
-        SkillTooltipComposer.renderSkillTooltipSmart(技能名, 简介文本, 描述文本);
-    }
+    NativeTooltipBridge.show(学习文档);
 };
 
 
 /**
- * 注释显示函数 (兼容接口，优先经 native_interaction 下发；通道不可用时转发到 TooltipLayout.showTooltip)
+ * 注释显示函数（保留旧调用签名，仅经 native_interaction 下发）
  * @param 宽度:Number 注释框宽度（旧布局参考值，原生路径不以此为布局依据）
  * @param 内容:String 注释内容HTML文本
  * @param 框体:String 框体类型（可选，默认为主框体）
@@ -137,15 +128,13 @@ _root.注释 = function(宽度, 内容, 框体) {
     var doc:Object = NativeTooltipDocument.buildBody(
         (内容 == undefined || 内容 == null) ? "" : String(内容),
         NativeTooltipDocument.PROFILE_SIMPLE);
-    if (NativeTooltipBridge.show(doc) == null) {
-        TooltipLayout.showTooltip(宽度, 内容, 框体);
-    }
+    NativeTooltipBridge.show(doc);
 };
 
 /**
  * Web 面板物品注释 HTML 构造（无渲染版本，对应 _root.物品图标注释 的纯数据双胞胎）
  *
- * - 与 物品图标注释 共用同一条 TooltipComposer 调用链，仅区别在不调 renderItemTooltipSmart，
+ * - 与 物品图标注释 共用同一条 TooltipComposer 调用链，仅区别在返回内容供 Web 消费，
  *   返回 desc/intro 字符串供 Web/JSON 通道下发。
  * - wire 出口统一由消费方 sendResponse 的 LiteJSON.stringifySafe 做标准转义；
  *   这里保留 TooltipComposer 原始 htmlText（含双引号属性），不再做引号替换。
@@ -221,11 +210,10 @@ _root.Web物品注释HTML = function(name:String):Object {
 };
 
 /**
- * 注释结束函数 (兼容接口，先按身份下发 native hide，再清旧 Flash 注释兜底)
+ * 注释结束函数（按身份下发 native hide，并隐藏主 XFL 的旧占位）
  */
 _root.注释结束 = function() {
     NativeTooltipBridge.hideCurrent();
-    TooltipLayout.hideTooltip();
+    // 主 XFL 仍放置旧注释框；保留其加载时自隐，不启用旧绘制链。
+    _root.注释框._visible = false;
 };
-
-

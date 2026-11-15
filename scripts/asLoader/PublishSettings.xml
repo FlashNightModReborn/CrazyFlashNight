@@ -1,7 +1,7 @@
 <flash_profiles>
 <flash_profile version="1.0" name="默认" current="true">
   <PublishFormatProperties enabled="true">
-    <defaultNames>1</defaultNames>
+    <defaultNames>0</defaultNames>
     <flash>1</flash>
     <projectorWin>0</projectorWin>
     <projectorMac>0</projectorMac>
@@ -12,7 +12,7 @@
     <qt>0</qt>
     <rnwk>0</rnwk>
     <swc>0</swc>
-    <flashDefaultName>1</flashDefaultName>
+    <flashDefaultName>0</flashDefaultName>
     <projectorWinDefaultName>1</projectorWinDefaultName>
     <projectorMacDefaultName>1</projectorMacDefaultName>
     <htmlDefaultName>1</htmlDefaultName>
@@ -22,24 +22,24 @@
     <qtDefaultName>1</qtDefaultName>
     <rnwkDefaultName>1</rnwkDefaultName>
     <swcDefaultName>1</swcDefaultName>
-    <flashFileName>asLoader.swf</flashFileName>
-    <projectorWinFileName>asLoader.exe</projectorWinFileName>
-    <projectorMacFileName>asLoader.app</projectorMacFileName>
-    <htmlFileName>asLoader.html</htmlFileName>
-    <gifFileName>asLoader.gif</gifFileName>
-    <jpegFileName>asLoader.jpg</jpegFileName>
-    <pngFileName>asLoader.png</pngFileName>
-    <qtFileName>asLoader.mov</qtFileName>
-    <rnwkFileName>asLoader.smil</rnwkFileName>
-    <swcFileName>asLoader.swc</swcFileName>
+    <flashFileName>asLoaderLogic.swf</flashFileName>
+    <projectorWinFileName>asLoaderLogic.exe</projectorWinFileName>
+    <projectorMacFileName>asLoaderLogic.app</projectorMacFileName>
+    <htmlFileName>asLoaderLogic.html</htmlFileName>
+    <gifFileName>asLoaderLogic.gif</gifFileName>
+    <jpegFileName>asLoaderLogic.jpg</jpegFileName>
+    <pngFileName>asLoaderLogic.png</pngFileName>
+    <qtFileName>asLoaderLogic.mov</qtFileName>
+    <rnwkFileName>asLoaderLogic.smil</rnwkFileName>
+    <swcFileName>asLoaderLogic.swc</swcFileName>
   </PublishFormatProperties>
   <PublishHtmlProperties enabled="true">
     <VersionDetectionIfAvailable>0</VersionDetectionIfAvailable>
     <VersionInfo>12,0,0,0;11,2,0,0;11,1,0,0;10,3,0,0;10,2,153,0;10,1,52,0;9,0,124,0;8,0,24,0;7,0,14,0;6,0,79,0;5,0,58,0;4,0,32,0;3,0,8,0;2,0,1,12;1,0,0,1;</VersionInfo>
     <UsingDefaultContentFilename>1</UsingDefaultContentFilename>
     <UsingDefaultAlternateFilename>1</UsingDefaultAlternateFilename>
-    <ContentFilename>asLoader.xfl_content.html</ContentFilename>
-    <AlternateFilename>asLoader.xfl_alternate.html</AlternateFilename>
+    <ContentFilename>asLoaderLogic.xfl_content.html</ContentFilename>
+    <AlternateFilename>asLoaderLogic.xfl_alternate.html</AlternateFilename>
     <UsingOwnAlternateFile>0</UsingOwnAlternateFile>
     <OwnAlternateFilename></OwnAlternateFilename>
     <Width>500</Width>
@@ -76,7 +76,7 @@
     <ExternalPlayer>FlashPlayer11.2</ExternalPlayer>
     <ActionScriptVersion>2</ActionScriptVersion>
     <PackageExportFrame>1</PackageExportFrame>
-    <PackagePaths>类定义;</PackagePaths>
+    <PackagePaths>../tmp/asloader-modules/boot/types;类定义;</PackagePaths>
     <AS3PackagePaths>.</AS3PackagePaths>
     <AS3ConfigConst>CONFIG::FLASH_AUTHORING=&quot;true&quot;;</AS3ConfigConst>
     <DebuggingPermitted>0</DebuggingPermitted>

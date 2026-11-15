@@ -658,6 +658,8 @@ function productionFiles(root) {
     ...AS2_FILES.map((relativePath) => ({ role: "as2_source", relativePath })),
     ...canonicalModDataFiles(root).map((relativePath) => ({ role: "equipment_mod_data", relativePath })),
     { role: "as2_swf", relativePath: "scripts/asLoader.swf" },
+    { role: "as2_swf", relativePath: "scripts/asLoaderShared.swf" },
+    { role: "as2_swf", relativePath: "scripts/asLoaderLogic.swf" },
   ];
   if (new Set(all.map((entry) => entry.relativePath.toLowerCase())).size !== all.length) {
     fail("production_closure_inventory_invalid", "production_closure",

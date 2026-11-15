@@ -1889,6 +1889,8 @@ function runCheck() {
   } catch (error) { rejected = error && error.code === "agent_seed_forbidden"; }
   if (!rejected) throw new Error("agent-clone seed was accepted");
   if (!SOURCE_ASSETS.includes("scripts/asLoader.swf")
+      || !SOURCE_ASSETS.includes("scripts/asLoaderShared.swf")
+      || !SOURCE_ASSETS.includes("scripts/asLoaderLogic.swf")
       || !SOURCE_ASSETS.includes("launcher/web/modules/crafting.js")
       || !SOURCE_ASSETS.includes("launcher/web/modules/inventory-storage-workbench.js")) {
     throw new Error("source asset closure is incomplete");

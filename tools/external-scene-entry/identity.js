@@ -24,7 +24,12 @@ function seal(root, args) {
   const metadata = JSON.parse(fs.readFileSync(path.join(candidateRoot, 'runtime-build-metadata.v2.json'), 'utf8').replace(/^\uFEFF/, ''));
   const processPath = path.join(candidateRoot, 'runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe');
   const slotFile = path.join(root, 'saves', args.slot + '.json');
-  const products = ['scripts/asLoader.swf', 'CRAZYFLASHER7MercenaryEmpire.swf'];
+  const products = [
+    'scripts/asLoader.swf',
+    'scripts/asLoaderShared.swf',
+    'scripts/asLoaderLogic.swf',
+    'CRAZYFLASHER7MercenaryEmpire.swf',
+  ];
   if (metadata.schema !== 'cf7-runtime-candidate-metadata.v2') throw new Error('candidate metadata schema mismatch');
   if (!args.slot.startsWith('cf7_agent_')) throw new Error('isolated agent slot required');
   return { projectRoot: root, candidateRoot, processPath, coreSha256: sha256(processPath),

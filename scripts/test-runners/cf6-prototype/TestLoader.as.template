@@ -1,22 +1,32 @@
-﻿trace("FocusedTestRunId cf6-prototype Start: __FOCUSED_RUN_ID__");
-var cf6PrototypeSynchronousDone:Boolean=false,cf6PrototypeMechanismDone:Boolean=false;
-_root.cf6MapMechanismTestsComplete=function():Void {
-    cf6PrototypeMechanismDone=true;
-    if(cf6PrototypeSynchronousDone) trace("FocusedTestRunId cf6-prototype Complete: __FOCUSED_RUN_ID__");
-};
-org.flashNight.arki.scene.BookRunRulesTest.runAllTests();
-org.flashNight.arki.ui.BookshelfPanelServiceTest.runAllTests();
-org.flashNight.arki.scene.BookIterationTest.runAllTests();
-org.flashNight.arki.scene.BookComicServiceTest.runAllTests();
-org.flashNight.arki.scene.Cf6BossEncounterTest.runAllTests();
-org.flashNight.arki.scene.Cf6MapMechanismTest.runAllTests();
-org.flashNight.arki.scene.Cf6MapPresentationTest.runAllTests();
-org.flashNight.arki.scene.Cf6EconomyRulesTest.runAllTests();
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.component.Effect.*;
-org.flashNight.arki.scene.Cf6LevelCapTest.captureRoot();
-#include "引擎/引擎_lsy_等级与经验值.as"
-org.flashNight.arki.scene.Cf6LevelCapTest.runAllTests();
-org.flashNight.arki.scene.Cf6SceneInstanceTest.runAllTests();
-cf6PrototypeSynchronousDone=true;
-if(cf6PrototypeMechanismDone) _root.cf6MapMechanismTestsComplete();
+trace("FocusedTestRunId cf6-prototype Start: __FOCUSED_RUN_ID__");
+org.flashNight.gesh.path.PathManager.initialize(_root._url);
+var choiceCatalogLoader:org.flashNight.gesh.json.LoadJson.BaseJSONLoader = new org.flashNight.gesh.json.LoadJson.BaseJSONLoader("data/rewards/choice-rewards.runtime.json", "JSON");
+choiceCatalogLoader.load(function(data:Object):Void {
+    if (!org.flashNight.arki.item.ChoiceRewardDefinition.accept(data)) {
+        trace("[FAIL] choice runtime catalog rejected before CF6 tests");
+        return;
+    }
+    var cf6PrototypeSynchronousDone:Boolean=false,cf6PrototypeMechanismDone:Boolean=false;
+    _root.cf6MapMechanismTestsComplete=function():Void {
+        cf6PrototypeMechanismDone=true;
+        if(cf6PrototypeSynchronousDone) trace("FocusedTestRunId cf6-prototype Complete: __FOCUSED_RUN_ID__");
+    };
+    org.flashNight.arki.scene.BookRunRulesTest.runAllTests();
+    org.flashNight.arki.ui.BookshelfPanelServiceTest.runAllTests();
+    org.flashNight.arki.scene.BookIterationTest.runAllTests();
+    org.flashNight.arki.scene.BookComicServiceTest.runAllTests();
+    org.flashNight.arki.scene.Cf6BossEncounterTest.runAllTests();
+    org.flashNight.arki.scene.Cf6MapMechanismTest.runAllTests();
+    org.flashNight.arki.scene.Cf6MapPresentationTest.runAllTests();
+    org.flashNight.arki.scene.Cf6EconomyRulesTest.runAllTests();
+    org.flashNight.arki.scene.Cf6LevelCapTest.captureRoot();
+    #include "引擎/引擎_lsy_等级与经验值.as"
+    org.flashNight.arki.scene.Cf6LevelCapTest.runAllTests();
+    org.flashNight.arki.scene.Cf6SceneInstanceTest.runAllTests();
+    cf6PrototypeSynchronousDone=true;
+    if(cf6PrototypeMechanismDone) _root.cf6MapMechanismTestsComplete();
+}, function(error:String):Void {
+    trace("[FAIL] choice runtime catalog failed before CF6 tests: " + error);
+});

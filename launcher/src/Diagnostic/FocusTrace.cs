@@ -83,6 +83,8 @@ namespace CF7Launcher.Diagnostic
                             ["startedAtUtc"] = process.StartTime.ToUniversalTime().ToString("O") },
                         ["files"] = new JArray(FileIdentity(core, core),
                             FileIdentity(Path.Combine(projectRoot, "scripts", "asLoader.swf"), "scripts/asLoader.swf"),
+                            FileIdentity(Path.Combine(projectRoot, "scripts", "asLoaderShared.swf"), "scripts/asLoaderShared.swf"),
+                            FileIdentity(Path.Combine(projectRoot, "scripts", "asLoaderLogic.swf"), "scripts/asLoaderLogic.swf"),
                             FileIdentity(Path.Combine(projectRoot, "runtime", "cf7-runtime-manifest.tsv"), "runtime/cf7-runtime-manifest.tsv")) };
                     recording = new RollingFocusLog(Path.Combine(projectRoot, "logs", "focus-trace"), context);
                     Start(recording.Append, true, true, session, recording, projectRoot);

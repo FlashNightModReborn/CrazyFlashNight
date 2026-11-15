@@ -16,6 +16,8 @@ const SOURCE_FILES = Object.freeze([
     ['as2_session','scripts/类定义/org/flashNight/arki/ui/GymTrainingPanelService.as'],
     ['as2_projection','scripts/类定义/org/flashNight/arki/ui/GymPreviewProjection.as'],
     ['as2_publish','scripts/asLoader.swf'],
+    ['as2_publish','scripts/asLoaderShared.swf'],
+    ['as2_publish','scripts/asLoaderLogic.swf'],
     ['flash_gym_scene','flashswf/levels/基地场景合集.swf'],
     ['web_registry','launcher/web/modules/panels-lazy-registry.js'],
     ['web_panel','launcher/web/modules/gym/gym-panel.js'],

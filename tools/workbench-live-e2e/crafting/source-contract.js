@@ -400,6 +400,8 @@ const FIXED_SWF = Object.freeze([
   "CRAZYFLASHER7MercenaryEmpire.swf",
   "flashswf/levels/基地场景合集.swf",
   "scripts/asLoader.swf",
+  "scripts/asLoaderShared.swf",
+  "scripts/asLoaderLogic.swf",
 ]);
 
 function normalize(value) {

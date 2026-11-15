@@ -1577,6 +1577,8 @@ test("production closure covers exact close Host and AS2 artifact", () => withFi
     "root:launcher/src/Bus/XmlSocketServer.cs",
     "root:scripts/类定义/org/flashNight/gesh/number/NumberUtil.as",
     "root:scripts/asLoader.swf",
+    "root:scripts/asLoaderShared.swf",
+    "root:scripts/asLoaderLogic.swf",
     "root:launcher/web/modules/npcshop.js",
     "root:launcher/web/modules/npcshop-material-navigation.js",
     "root:launcher/web/modules/npcshop-runtime.js",

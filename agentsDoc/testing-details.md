@@ -65,7 +65,7 @@
 - 单位 `id/key`、刷怪引用或其生成/解析边界变化：执行 [单位身份检查](../tools/unit-registry/README.md#离线验证)；涉及 AS2 时追加其 tracked `run-unit-registry-tests.ps1`，编译目标与共享 CS6/scratch 隔离仍遵守下文 Flash 合同。离线工具输出等价不代签真实 AVM1。
 - 近战/压制近战长枪的 `bullet`、`split` 或 `data*` 变体改动固定运行 `node tools/validate-melee-longgun-chain.js`。
 - 竞技场标准佣兵掉落固定运行 `node tools/validate-arena-drop-rules.js`、`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-arena-drop-rule-tests.ps1 -TimeoutSeconds 240`（机器钉死 20/20）
-  与 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-boot-sequencer-tests.ps1 -TimeoutSeconds 240`（机器钉死 BootSequencer 91/91 + BootstrapHandshake 12/12），分别冻结 XML/物品目录/旧可达集合、规则顺序与概率语义、启动 fail-closed 和 `ItemObtainIndex → TooltipComposer` 来源投影。
+  与 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-boot-sequencer-tests.ps1 -TimeoutSeconds 240`（机器钉死 BootSequencer 117/117 + BootstrapHandshake 12/12），分别冻结 XML/物品目录/旧可达集合、规则顺序与概率语义、启动 fail-closed 和 `ItemObtainIndex → TooltipComposer` 来源投影。
 
 - `compile_test`、游戏内人工验证按改动面追加；近战长枪静态门不代签 Flash 或实战命中，重启后人工回归多段主伤、同一目标一次多段命中只附加一份淬毒及暴君收割机副武器隔离。
 - 触及掉落 AS2 或启动加载时发布 `scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900 -VerifySwf scripts/asLoader.swf`；Web/AS2 tooltip 消费链变化再追加 tooltip corpus 门（见 [Web、工作台与小游戏](#web)）。
@@ -93,8 +93,8 @@
 - **TestLoader（测试构建）**：成功 = `[OK] 编译完成` + 本次运行的新鲜行为输出 + `compiler_errors.txt` `0 个错误`。行为输出可取本轮新鲜 `scripts/flashlog.txt` trace，或在 trace 为空时取脚本本轮导出的新鲜 `scripts/compile_output.txt` / Output Panel 副本；两者都必须明确证据类型、suite 名和断言数，并且无 `[TEST_FAIL]` / `[FAIL]` / `Tests Failed: N>0`。
   不得把 Output Panel 副本称为 trace，也不得仅凭 `publish_done.marker` 判成功。`scripts/TestLoader.as` 被 `.gitignore`，是本机 scratch runner，仓库不保证其当前固定调用任何 suite；每项施工必须用 tracked aggregate/template 或在记录中给出实际 runner、suite 名与断言数。template 安装后属于非 class 帧脚本，必须保留 UTF-8 BOM，且只能使用包通配 import 或全限定类名，禁止具体类 import。
   **仅逻辑层**：真 socket、跨 SWF 生命周期、真实存档落点仍须真机复核，分层见 [构建标准 §5.3](../docs/asLoader-BootSequencer-构建标准-2026-06-16.md)。
-- **asLoader / publish 模式（发布二进制，剔 trace 等功能以免性能损耗）**：**本就不出 trace**——脚本会打 `[INFO] 无 trace 输出 (publish 模式不执行 trace)`，`flashlog.txt` 不刷新属正常，**不要据此判失败**。成功 = `[OK] 编译完成` + `scripts/compiler_errors.txt` 显示 `0 个错误` + `scripts/asLoader.swf` 已刷新（mtime/size 变化）。
-  **SWF 刷新机器门**：`-Target publish` 会自动启用 `-VerifySwf scripts/asLoader.swf`，正确示例是 `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900`（820+ 类冷宿主完整发布约 600~800 秒，避免过短超时留闸）；显式重复传同一路径也允许。`-Target main` 同样自动校验根主 SWF；任意 XFL/FLA 路径目标仍必须显式传对应的 `-VerifySwf <目标.swf>`。
+- **asLoader / publish 模式（发布二进制，剔 trace 等功能以免性能损耗）**：**本就不出 trace**——脚本会打 `[INFO] 无 trace 输出 (publish 模式不执行 trace)`，`flashlog.txt` 不刷新属正常，**不要据此判失败**。现役按 `tools/asloader-modules.json` 串行发布 `scripts/asLoader.swf`（resident RSL 壳）、`scripts/asLoaderShared.swf`（shared 库）与 `scripts/asLoaderLogic.swf`（boot 库）三模块；成功 = 三模块均 `[OK] 编译完成` + 逐件本轮 `scripts/compiler_errors.txt` 显示 `0 个错误` + 三件目标 SWF 已刷新（mtime/size 变化）+ 类归属门与跨模块继承顺序门通过。
+  **SWF 刷新机器门**：`-Target publish` 会自动委托三模块发布入口逐件校验对应 SWF，正确示例是 `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900`（冷宿主完整发布建议至少 900 秒，避免过短超时留闸）；显式重复传 `-VerifySwf scripts/asLoader.swf` 也允许。`-Target main` 同样自动校验根主 SWF；任意 XFL/FLA 路径目标仍必须显式传对应的 `-VerifySwf <目标.swf>`。
   脚本触发前记录 SWF 的 mtime/size 基线，成功路径校验其确被重写：未变 / 不存在 → `[ERROR] 目标 SWF 未刷新` + `exit 1`（fail-closed）。
 - **main / 主文件 publish-only**：只验证主文件运行壳、资产挂载、linkage 与主时间轴相关变更；不替代 asLoader 逻辑注入验证。成功 = `compiler_errors.txt` `0 个错误` + 根目录主 SWF 刷新；`main` 不产 trace 属正常。
 - **独立资源 XFL / 子 SWF publish-only**：只验证该 XFL 对应 SWF；例如改 `flashswf/UI/玩家信息界面/LIBRARY/*.xml` 时应编 `flashswf/UI/玩家信息界面/玩家信息界面.xfl` 并校验 `flashswf/UI/玩家信息界面.swf` 刷新。成功 = `compiler_errors.txt` `0 个错误` + `-VerifySwf` 指向的子 SWF 已刷新；`main` 刷新不能替代这个判据。显式 `-Target` 会先丢弃同目标的 CS6 内存文档并从磁盘重开；
@@ -104,7 +104,7 @@
 
 **fresh TestLoader SWF 函数尺寸门**：每个 fresh 产物还须跑 `node tools/swf-function-sizes.js scripts/TestLoader.swf --max 60000 --top 15`，并将 `codeSize` 与 canonical 源端单函数闭包度量、fresh 行为证据合用；源字节提示线只作调查，不是 hard gate。
 
-**生产 SWF 类归属门**：`node tools/audit-as2-class-embedding.js`（`single-ownership` 为同义入口）按打包配置选取全部生产 SWF，以 ExportAssets 对应 sprite/DoInitAction 识别真实类定义。asLoader 之外的 `org.flashNight.*` 及与 loader 同名的默认包类均失败，字节相同也不放行；完整模式同时核对 RSL 依赖存在且唯一。历史副本和测试工程按实际打包配置排除，不能因扩展名为 SWF 就把非运行工程混入生产证明。
+**生产 SWF 类归属门**：`node tools/audit-as2-class-embedding.js`（`single-ownership` 为同义入口）按打包配置选取全部生产 SWF，以 ExportAssets 对应 sprite/DoInitAction 识别真实类定义。有 `tools/asloader-modules.json` 时逐模块核对精确类集、唯一 owner、函数尺寸与无嵌套代码 RSL；main/资源不能重复提供工程类，同字节副本也不放行。无模块表的旧夹具保持单 asLoader 规则。完整模式还核对全部 RSL 依赖存在且唯一；正常装载的两个代码模块也必须进入生产文件集合。历史副本和测试工程按实际打包配置排除。现行装载和编译合同见 [asLoader 导览](../docs/asLoader-README.md)。
 单件编译后使用 `--swf <产物相对路径>`，只验证该产物与 main/asLoader 的类边界，报告明确标 `closureChecked=false`；最终打包消费实际复制文件清单，CI 对随仓发行闭包独立检查。`swf-metadata.js` 与函数尺寸门复用按内容哈希和解析版本缓存的元数据，缓存校验失败自动回读产物；缓存不存 verdict、不代替 fresh 编译或行为。首次建缓存/规则升级需完整解析，日常迭代不重复全仓解析。
 历史路径 `flashswf/gk-1-s.swf` 是主时间轴通过 `XML.load()` 读取的 UTF-16LE 文本配置。类型识别仅对该精确路径开放，要求 BOM、完整字节对、既有字段闭集且各出现一次、分号结束，并拒绝控制字符、其他路径文本及伪装成该配置的 SWF；不把某次文件长度固定为永久类型标记。这个结构检查不验证字段值的业务有效性，也不得输出配置正文。
 `--policy core-ownership` 仅作两件核心文件诊断；`child-only` / `dual-build` 是历史兼容诊断，不可代替生产归属验收。解析器/缓存/归属负例为 `node tools/test-swf-metadata.js`。原有 AVM1 64KB 能力边界继续成立。
@@ -127,7 +127,7 @@
 - `publish_done.marker` **仅说明 JSFL 触发结束**，不能单独视为成功；`compile_test.ps1` 要求 `compiler_errors.txt` 存在、身份/mtime 属于本轮且内容严格为 `0/0`，缺失、空文件、旧副本或非零诊断都失败。
 - `compile_action.jsfl` 在每个目标前清空独立 Compiler Errors 面板并删除旧导出，并在任何 target/doc early return 前同时消费一次性 target/mode cfg；PowerShell terminal 路径也同时清两者，timeout/nonterminal 才保留给迟到 JSFL。
 - 32K 自动重试使用保守格式：唯一最终汇总可解析、errors>0、warnings=0，汇总前恰有同数量的非空诊断行且每行自身含 `32K`；混合错误、多行上下文、汇总后文本或不可解析格式一律不重试。首轮完整诊断保存在本轮 `compile_output.txt`，最终 `compiler_errors.txt` 属于第二轮；第二轮仍失败则照常失败。testMovie 若重试可能产生两组 trace，但 focused 健康门只接受唯一闭合 runId block 并要求 `32K retry=0`。
-- 所有正常编译同时获取仓库 mutex（`Local\CF7_FlashCompile_<RepoHash>`）与机器级 mutex（`Local\CF7_FlashCompile_MachineGlobal`），防止多 worktree 并发抢占单实例 CS6；非独占租约下编译前自动检查 32 位 `Flash.exe` 的 `VirtualSize`（`asLoader > 700 MiB` / 其余目标 `> 2400 MiB` 时经 `quit_owned_test_host` 安全轮换干净宿主，遇未保存或外部文档则 fail-closed 拒编，取证见 [VA 耗尽档案](../docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md)）。所有 scratch writer 在写入前持久记录 `testloader_scratch_inflight.marker` 与同卷 recovery sidecar，只有 byte-exact 恢复后才 exact-match 删除。
+- 所有正常编译同时获取仓库 mutex（`Local\CF7_FlashCompile_<RepoHash>`）与机器级 mutex（`Local\CF7_FlashCompile_MachineGlobal`），防止多 worktree 并发抢占单实例 CS6；非独占租约下编译前自动检查 32 位 `Flash.exe` 的 `VirtualSize`（`asLoader` 与 `asLoaderShared` `> 700 MiB` / 包括单类驻留壳 `asLoaderBootstrap` 在内的其余目标 `> 2400 MiB` 时经 `quit_owned_test_host` 安全轮换干净宿主，遇未保存或外部文档则 fail-closed 拒编，取证见 [VA 耗尽档案](../docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md)）。所有 scratch writer 在写入前持久记录 `testloader_scratch_inflight.marker` 与同卷 recovery sidecar，只有 byte-exact 恢复后才 exact-match 删除。
 
 **异常与崩溃恢复**：`compile_test.ps1` 在触发计划任务前先写 in-flight `compile_state_uncertain.marker`，故 child host 被硬杀时：已触发则闸仍在，写闸前被杀则尚未触发 Flash；无需由每个父 runner 再把普通编译失败一律升级为人工清闸。父 runner 自身崩溃由 scratch marker 阻断普通编译；
 编译 `[TIMEOUT]`，或 focused / Gobang / 协议在 child exit 0 后仍未观察到唯一 runId 终态时，则由 `compile_state_uncertain.marker` 阻断可能迟到的 JSFL/player。marker 带本轮唯一 token，terminal 只清除内容仍 exact-match 的本轮 in-flight body，不能擦掉其他故障的新 marker。必须先确认 Flash、计划任务和旧 test player 均已静止并核对迟到 marker/SWF/diagnostics。
@@ -706,7 +706,7 @@ Reward 未知写查询、O1 观测与存档闭包合同见 [持久写与恢复](
 <a id="suite-boot"></a>
 ### Boot / Bootstrap 与材料 catalog loader
 
-**Boot/Bootstrap tracked focused 入口**：`powershell -ExecutionPolicy Bypass -File scripts/run-boot-sequencer-tests.ps1 -TimeoutSeconds 240`；当前 exact contract 为 BootSequencer **91/91** + BootstrapHandshake **12/12**（机器钉死），`-SkipCompile` 只验 template/suite/BOM/scratch 事务。旧的 36/47/58/86 计数是历史基线，见归档。
+**Boot/Bootstrap tracked focused 入口**：`powershell -ExecutionPolicy Bypass -File scripts/run-boot-sequencer-tests.ps1 -TimeoutSeconds 240`；当前 exact contract 为 BootSequencer **117/117** + BootstrapHandshake **12/12**（机器钉死），`-SkipCompile` 只验 template/suite/BOM/scratch 事务。旧的 36/47/58/86/91/113 计数是历史基线，见归档。
 
 **`material_catalog.xml` 真文件 loader 的 tracked 异步入口**：`powershell -ExecutionPolicy Bypass -File scripts/run-material-catalog-loader-tests.ps1 -TimeoutSeconds 240`；其 `-SkipCompile` 只证明 XML/source/BOM/scratch 静态门，不能代替实际双 loader `reload()` 回调。
 文本记录 2026-08-15 合并树已由生产 loader 实际 `reload()` 取得 catalog 224、legacy 58、DirectPurpose 2、`authoredDirectPurposeId` refs 27（待核：阈值来源为历史文本，未找到当前机器真源）；基建仍由 67 occurrence / 21 unique generator exact gate 约束（待核）。

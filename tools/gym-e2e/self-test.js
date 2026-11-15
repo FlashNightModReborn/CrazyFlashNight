@@ -131,7 +131,7 @@ async function main() {
     test('Gym source closure covers Host, AS2 SWF, Web, and fixed input', () => {
         const root = path.resolve(__dirname, '..', '..');
         const closure = SourceClosure.capture(root);
-        assert.strictEqual(closure.files.length, 31);
+        assert.strictEqual(closure.files.length, 33);
         assert.ok(closure.files.some(row => row.role === 'fixed_engine'
             && row.relativePath === 'launcher/webview2-runtime.lock.json'));
         assert.ok(closure.files.some(row => row.role === 'host_profile'
@@ -143,8 +143,9 @@ async function main() {
             ?.split('function Assert-Cf7PlainPath {')[0];
         assert.ok(hashBody && hashBody.includes('[Security.Cryptography.SHA256]::Create()'));
         assert.ok(!hashBody.includes('Get-FileHash'));
-        assert.ok(closure.files.some(row => row.role === 'as2_publish'
-            && row.relativePath === 'scripts/asLoader.swf'));
+        for (const swf of ['scripts/asLoader.swf', 'scripts/asLoaderShared.swf', 'scripts/asLoaderLogic.swf']) {
+            assert.ok(closure.files.some(row => row.role === 'as2_publish' && row.relativePath === swf), swf);
+        }
         assert.ok(closure.files.some(row => row.role === 'host_session'
             && row.relativePath === 'launcher/src/Tasks/GymTrainingTask.cs'));
         assert.strictEqual(SourceClosure.assertUnchanged(closure, SourceClosure.capture(root)), true);

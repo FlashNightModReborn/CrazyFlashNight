@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
@@ -27,7 +28,9 @@ function fixture() { return fs.mkdtempSync(path.join(scratch, "case-")); }
 
 const required = [
   "CRAZYFLASHER7MercenaryEmpire.swf", "CRAZYFLASHER7MercenaryEmpire.bat", "Adobe Flash Player 20.exe",
-  "config.toml", "config.xml", "crossdomain.xml", "hotkey_guard.exe", "scripts/asLoader.swf", "fscommand/launch_rag.bat",
+  "config.toml", "config.xml", "crossdomain.xml", "hotkey_guard.exe",
+  "scripts/asLoader.swf", "scripts/asLoaderShared.swf", "scripts/asLoaderLogic.swf",
+  "data/rewards/choice-rewards.runtime.json", "fscommand/launch_rag.bat",
   "launcher/web/bootstrap.html", "launcher/web/bootstrap-main.js", "launcher/web/overlay.html",
   "launcher/web/scene-transition.html", "launcher/web/composition-help.html", "launcher/web/composition-intelligence.html",
   "launcher/data/save_repair_dict.json", "launcher/data/save_schema.json", "launcher/data/guidance-catalog.json",
@@ -60,7 +63,7 @@ function payload(root: string) {
   runtime(root);
 }
 function copyOfficial(root: string) {
-  for (const name of ["verify-runtime-bundle-v2.ps1", "runtime-build-common.ps1", "runtime-build-v2-common.ps1"]) {
+  for (const name of ["verify-runtime-bundle-v2.ps1", "runtime-build-common.ps1", "runtime-build-v2-common.ps1", "asloader-module-catalog.js", "asloader-modules.json"]) {
     write(root, "tools/" + name, fs.readFileSync(path.join(repo, "tools", name)));
   }
 }
@@ -120,7 +123,7 @@ function build(f: ReturnType<typeof buildFixture>, args = `-RagExe ${q(f.rag)}`)
 
 describe.skipIf(process.platform !== "win32")("Windows 每日 ZIP 与局部升级（隔离 fixture，不运行游戏）", () => {
   beforeAll(() => {
-    const base = "E:\\cf7-daily-tests";
+    const base = fs.existsSync("E:\\") ? "E:\\cf7-daily-tests" : path.join(os.tmpdir(), "cf7-daily-tests");
     fs.mkdirSync(base, { recursive: true });
     scratch = fs.mkdtempSync(path.join(base, "case-"));
     const exe = path.join(scratch, "fixture-bootstrap.exe");

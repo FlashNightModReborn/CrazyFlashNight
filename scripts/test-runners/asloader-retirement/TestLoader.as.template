@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId asloader-retirement Start: __FOCUSED_RUN_ID__");
+org.flashNight.gesh.tooltip.test.TooltipTestSuite.runAllTests();
+trace("FocusedTestRunId asloader-retirement Complete: __FOCUSED_RUN_ID__");

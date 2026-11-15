@@ -10,7 +10,6 @@ import org.flashNight.arki.item.equipment.ModRegistry;
 import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
-import org.flashNight.gesh.tooltip.TooltipBridge;
 import org.flashNight.gesh.tooltip.TooltipTextBuilder;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
@@ -56,8 +55,8 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
 
         if(!modData) {
             modData = ModRegistry.getModDataByDisplayName(itemName);
-            if(modData && EquipmentUtil.DEBUG_MODE) {
-                TooltipBridge.debugLog("[buildModStat] 通过displayname索引找到配件: '" + itemName + "'");
+            if(modData && EquipmentUtil.DEBUG_MODE && _root.服务器 && _root.服务器.发布服务器消息) {
+                _root.服务器.发布服务器消息("[buildModStat] 通过displayname索引找到配件: '" + itemName + "'");
             }
         }
 
@@ -68,14 +67,14 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
                 if(!modData) {
                     modData = ModRegistry.getModDataByDisplayName(trimmedName);
                 }
-                if(modData && EquipmentUtil.DEBUG_MODE) {
-                    TooltipBridge.debugLog("[buildModStat] 通过trim后找到配件: '" + trimmedName + "'");
+                if(modData && EquipmentUtil.DEBUG_MODE && _root.服务器 && _root.服务器.发布服务器消息) {
+                    _root.服务器.发布服务器消息("[buildModStat] 通过trim后找到配件: '" + trimmedName + "'");
                 }
             }
         }
 
-        if(EquipmentUtil.DEBUG_MODE) {
-            TooltipBridge.debugLog("[buildModStat] itemName='" + itemName + "', 找到配件=" + (modData != undefined));
+        if(EquipmentUtil.DEBUG_MODE && _root.服务器 && _root.服务器.发布服务器消息) {
+            _root.服务器.发布服务器消息("[buildModStat] itemName='" + itemName + "', 找到配件=" + (modData != undefined));
         }
 
         if(!modData) return result;

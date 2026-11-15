@@ -1,6 +1,5 @@
 ﻿import JSON;
 import org.flashNight.gesh.object.*;
-import org.flashNight.gesh.string.*;
 class org.flashNight.gesh.string.StringUtils {
     
     // 私有静态实例，用于单例模式
@@ -97,61 +96,6 @@ class org.flashNight.gesh.string.StringUtils {
     // ------------------- 静态方法 -------------------
 
     /**
-     * 使用 RLE 和 LZW 组合压缩字符串
-     * 
-     * @param input 要压缩的字符串
-     * @return 压缩后的字符串（经过 16 进制编码）
-     */
-    public static function compress(input:String):String {
-        if (input == null || length(input) == 0) {
-            return "";
-        }
-
-        // 1. 先进行 RLE 压缩
-        var rleCompressed:String = RLE.compress(input);
-        trace("RLE 压缩后的结果: " + rleCompressed);
-        
-        // 2. 再进行 LZW 压缩
-        var lzwCompressed:String = LZW.compress(rleCompressed);
-        trace("LZW 压缩后的结果: " + lzwCompressed);
-        
-        // 3. 使用 Hex16Encoder 对最终的压缩结果进行 16 进制编码以减少存储空间
-        var hexEncoded:String = Hex16Encoder.encode(lzwCompressed);
-        trace("LZW 压缩并编码后的结果: " + hexEncoded);
-        
-        // 4. 返回压缩并编码的最终结果
-        return hexEncoded;
-    }
-
-    /**
-     * 解压缩字符串
-     * 
-     * @param compressed 压缩后的字符串（经过 16 进制编码）
-     * @return 解压缩后的原始字符串
-     */
-    public static function decompress(compressed:String):String {
-        if (compressed == null || length(compressed) == 0) {
-            return "";
-        }
-
-        // 1. 使用 Hex16Encoder 进行 16 进制解码
-        var hexDecoded:String = Hex16Encoder.decode(compressed);
-        trace("编码解码后的结果: " + hexDecoded);
-
-        // 2. 先进行 LZW 解压
-        var lzwDecompressed:String = LZW.decompress(hexDecoded);
-        trace("LZW 解压后的结果: " + lzwDecompressed);
-        
-        // 3. 再进行 RLE 解压
-        var rleDecompressed:String = RLE.decompress(lzwDecompressed);
-        trace("RLE 解压后的结果: " + rleDecompressed);
-        
-        // 4. 返回解压结果
-        return rleDecompressed;
-    }
-
-    
-    /**
      * 创建缩进字符串。
      * @param depth 缩进深度。
      * @return 缩进字符串。
@@ -181,149 +125,6 @@ class org.flashNight.gesh.string.StringUtils {
                 "\t", "\\t");
     }
 
-
-    /**
-     * 使用正则表达式在字符串中查找匹配项。
-     * 
-     * @param input 要搜索的字符串。
-     * @param pattern 正则表达式模式。
-     * @param flags 正则表达式标志，如 "g", "i", "m"。
-     * @return 一个包含所有匹配结果的数组。如果没有匹配，则返回 null。
-     */
-    public static function match(input:String, pattern:String, flags:String):Array {
-        var regex:org.flashNight.gesh.regexp.RegExp;
-        try {
-            regex = new org.flashNight.gesh.regexp.RegExp(pattern, flags);
-        } catch (e:Error) {
-            trace("StringUtils.match: 无效的正则表达式 - " + e.message);
-            return null;
-        }
-        
-        var matches:Array = [];
-        var matchResult:Array;
-        
-        // 如果设置了全局标志 'g'，则循环查找所有匹配
-        if (flags.indexOf('g') >= 0) {
-            while ((matchResult = regex.exec(input)) != null) {
-                matches.push(matchResult[0]);
-                // 防止零宽匹配导致无限循环
-                if (length(matchResult[0]) == 0) {
-                    regex.lastIndex++;
-                }
-            }
-        } else {
-            // 查找第一个匹配
-            matchResult = regex.exec(input);
-            if (matchResult != null) {
-                matches.push(matchResult[0]);
-            }
-        }
-        
-        return matches.length > 0 ? matches : null;
-    }
-    
-    /**
-     * 在字符串中搜索正则表达式的第一个匹配项，并返回其索引位置。
-     * 
-     * @param input 要搜索的字符串。
-     * @param pattern 正则表达式模式。
-     * @param flags 正则表达式标志，如 "i", "m"。
-     * @return 第一个匹配项的起始索引。如果没有匹配，则返回 -1。
-     */
-    public static function search(input:String, pattern:String, flags:String):Number {
-        var regex:org.flashNight.gesh.regexp.RegExp;
-        try {
-            regex = new org.flashNight.gesh.regexp.RegExp(pattern, flags);
-        } catch (e:Error) {
-            trace("StringUtils.search: 无效的正则表达式 - " + e.message);
-            return -1;
-        }
-        
-        var matchResult:Array = regex.exec(input);
-        if (matchResult != null && typeof(matchResult.index) == "number") {
-            return matchResult.index;
-        }
-        return -1;
-    }
-    
-    /**
-     * 使用正则表达式替换字符串中的匹配部分。
-     * 
-     * @param input 要处理的字符串。
-     * @param pattern 正则表达式模式。
-     * @param flags 正则表达式标志，如 "g", "i", "m"。
-     * @param replacement 替换字符串。
-     * @return 替换后的新字符串。
-     */
-    public static function replace(input:String, pattern:String, flags:String, replacement:String):String {
-        var regex:org.flashNight.gesh.regexp.RegExp;
-        try {
-            regex = new org.flashNight.gesh.regexp.RegExp(pattern, flags);
-        } catch (e:Error) {
-            trace("StringUtils.replace: 无效的正则表达式 - " + e.message);
-            return input;
-        }
-        
-        var result:String = "";
-        var lastIndex:Number = 0;
-        var matchResult:Array;
-        
-        while ((matchResult = regex.exec(input)) != null) {
-            var matchIndex:Number = matchResult.index;
-            var matchStr:String = matchResult[0];
-            result += input.substring(lastIndex, matchIndex) + replacement;
-            lastIndex = matchIndex + length(matchStr);
-            
-            // 如果没有设置全局标志 'g'，则只替换第一个匹配
-            if (flags.indexOf('g') < 0) {
-                break;
-            }
-            
-            // 防止零宽匹配导致无限循环
-            if (length(matchStr) == 0) {
-                lastIndex++;
-            }
-        }
-        
-        result += input.substring(lastIndex);
-        return result;
-    }
-    
-    /**
-     * 使用正则表达式将字符串拆分为数组。
-     * 
-     * @param input 要拆分的字符串。
-     * @param pattern 正则表达式模式。
-     * @param flags 正则表达式标志，如 "g", "i", "m"。
-     * @return 拆分后的字符串数组。
-     */
-    public static function split(input:String, pattern:String, flags:String):Array {
-        var regex:org.flashNight.gesh.regexp.RegExp;
-        try {
-            regex = new org.flashNight.gesh.regexp.RegExp(pattern, flags);
-        } catch (e:Error) {
-            trace("StringUtils.split: 无效的正则表达式 - " + e.message);
-            return [input];
-        }
-        
-        var result:Array = [];
-        var lastIndex:Number = 0;
-        var matchResult:Array;
-        
-        while ((matchResult = regex.exec(input)) != null) {
-            var matchIndex:Number = matchResult.index;
-            result.push(input.substring(lastIndex, matchIndex));
-            lastIndex = matchIndex + length(matchResult[0]);
-            
-            // 防止零宽匹配导致无限循环
-            if (length(matchResult[0]) == 0) {
-                lastIndex++;
-            }
-        }
-        
-        result.push(input.substring(lastIndex));
-        return result;
-    }
 
     public static function unescape(str:String):String {
         var result:String = "";
@@ -1876,29 +1677,6 @@ var html2:String = "5 > 3 & 2 < 4";
 var escaped2:String = StringUtils.escapeHTML(html2);
 var unescaped2:String = StringUtils.unescapeHTML(escaped2);
 runTest("单例模式测试 2: escapeHTML & unescapeHTML", html2, unescaped2);
-
-// 26. 压缩与解压缩
-trace("----- 测试 compress 和 decompress 方法 -----");
-
-var original1:String = "Hello, World!";
-var compressed1:String = StringUtils.compress(original1);
-var decompressed1:String = StringUtils.decompress(compressed1);
-runTest("compress/decompress ('Hello, World!')", original1, decompressed1);
-
-var original2:String = "aaaaaaaaaa";
-var compressed2:String = StringUtils.compress(original2);
-var decompressed2:String = StringUtils.decompress(compressed2);
-runTest("compress/decompress ('aaaaaaaaaa')", original2, decompressed2);
-
-var original3:String = "This is a longer test string that will be compressed and decompressed using LZW algorithm.";
-var compressed3:String = StringUtils.compress(original3);
-var decompressed3:String = StringUtils.decompress(compressed3);
-runTest("compress/decompress (long string)", original3, decompressed3);
-
-var original4:String = "你好，世界！🌍";
-var compressed4:String = StringUtils.compress(original4);
-var decompressed4:String = StringUtils.decompress(compressed4);
-runTest("compress/decompress ('你好，世界！🌍')", original4, decompressed4);
 
 // 结束测试
 trace("===== 所有测试完成 =====");

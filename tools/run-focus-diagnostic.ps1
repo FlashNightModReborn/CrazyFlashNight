@@ -207,7 +207,7 @@ try {
             } catch { $focusContext.collectionWarnings += ('滚动文件采集失败 ' + $focusName + ': ' + $_.Exception.Message) }
         }
     }
-    foreach ($focusRelative in @('runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll', 'scripts/asLoader.swf')) {
+    foreach ($focusRelative in @('runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll', 'scripts/asLoader.swf', 'scripts/asLoaderShared.swf', 'scripts/asLoaderLogic.swf')) {
         $focusSource = Join-Path $focusRoot $focusRelative
         if (-not $focusPrepared -and (Test-Path -LiteralPath $focusSource -PathType Leaf)) {
             $focusContext.files += [ordered]@{ path = $focusRelative; sha256 = (Get-FileHash -LiteralPath $focusSource -Algorithm SHA256).Hash }

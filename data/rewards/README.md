@@ -2,7 +2,7 @@
 
 核对代码基线：commit `e959fb94cbb72d2e5c9a781c68b1f9b7eb4ba643` 加当前61路线工作树；本轮验证状态见[61施工记录](../../docs/闪客快打6肉鸽-61路线施工与验证-2026-10-26.md)。
 
-`choice-rewards.json` 是基础候选内容和抽取规则的编辑源；章节附加源显式登记在 `tools/choice_reward_catalog.py` 的 `BOOK_SOURCES`，史实片段为 `data/stages/books/cf6-sting-source/choice-rewards.fragment.json`，61片段见下文。生成器按基础目录、章节目录顺序合并，拒绝身份冲突；不会改写基础目录。`tools/build-choice-rewards.py` 生成 AS2 目录、`data/items/消耗品_自选配给.xml` 和 `choice-rewards.generated.json`；最后一份是奖励包与档色静态门共用的合并投影，依靠生成器 `--check` 核对来源，运行时不另加载。生成物不能手改。
+`choice-rewards.json` 是基础候选内容和抽取规则的编辑源；章节附加源显式登记在 `tools/choice_reward_catalog.py` 的 `BOOK_SOURCES`，史实片段为 `data/stages/books/cf6-sting-source/choice-rewards.fragment.json`，61片段见下文。生成器按基础目录、章节目录顺序合并，拒绝身份冲突；不会改写基础目录。`tools/build-choice-rewards.py` 生成小型 AS2 缓存门面、`data/items/消耗品_自选配给.xml`、静态投影 `choice-rewards.generated.json` 与运行目录 `choice-rewards.runtime.json`。静态投影供奖励包与档色检查，运行目录由 BootSequencer 在 S7 安装书架和其他消费者之前通过既有 BaseJSONLoader 读取；未就绪则等待，读取或形状错误明确终止启动，不用空目录继续。所有生成物依靠 `--check` 核对来源，不能手改。
 
 ## 当前能力
 

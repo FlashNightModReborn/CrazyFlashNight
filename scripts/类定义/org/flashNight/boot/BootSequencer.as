@@ -14,6 +14,8 @@
 //  5. 握手逻辑移植自 asLoader.xml f4(socket 10s / handshake 60s / 存档恢复 gate)；失败=halt() fail-closed(主 SWF 不前进=匹配原版 hang)+恢复 f4 的 host.打印加载内容 玩家文案 + [BootstrapAS] socket 日志(便于边界 smoke 定位卡死点)。
 //  6. S6 串行序列必须含「最终化2」(原 f26 land-frame，易漏)。
 
+import org.flashNight.gesh.json.LoadJson.BaseJSONLoader;
+import org.flashNight.arki.item.ChoiceRewardDefinition;
 import org.flashNight.gesh.json.LoadJson.TaskDataLoader;
 import org.flashNight.gesh.json.LoadJson.TaskTextLoader;
 import org.flashNight.gesh.json.LoadJson.CraftingListLoader;
@@ -67,6 +69,8 @@ class org.flashNight.boot.BootSequencer {
     }
 
     function start():Void {
+        // Bind resource location from the live host before singleton initialization.
+        org.flashNight.gesh.path.PathManager.initialize(this.host._url);
         var self:BootSequencer = this;
         // tick 挂 _root（仿 DataQueryService.whenAvailable 存活模式），asLoader 自删后回调仍可达
         this.tickClip = _root.createEmptyMovieClip("__bootSeqTick", _root.getNextHighestDepth());
@@ -82,7 +86,7 @@ class org.flashNight.boot.BootSequencer {
             case S_TASKTEXT:  this.stepTaskText();     break;
             case S_PARSE:     this.parseTaskAndStartGuide(); this.state = S_SYNCSYS; break;
             case S_SYNCSYS:   this.stepSyncSys();      break;
-            case S_SYNCLOGIC: this.b.s7_syncLogic(); this.host.打印加载内容("加载杂项数据……"); this.b.s7_miscLoaders(); org.flashNight.arki.interaction.NativeMenuBridge.install(); org.flashNight.arki.dialogue.NativeDialogueService.install(); org.flashNight.arki.hud.PlayerHudService.install(); this.state = S_FANOUT; break;
+            case S_SYNCLOGIC: this.stepSyncLogic();    break;
             case S_FANOUT:    this.b.s8_fanout();      this.state = S_CRAFTING;  break;
             case S_CRAFTING:  this.stepCrafting();     break;
             case S_HANDOFF:   this.handoff();          break;
@@ -173,6 +177,37 @@ class org.flashNight.boot.BootSequencer {
             if (this.b.mainReadyToContinue == true) this.state = S_TASKDATA;
             return;
         }
+    }
+
+    // The bookshelf starts BookDefinition loads during S7; its economy rules
+    // already consume this catalog. Do not defer this barrier to S9.
+    function stepSyncLogic():Void {
+        if (!ChoiceRewardDefinition.ready()) {
+            if (this.b.choiceRewardsFired != true) {
+                this.b.choiceRewardsFired = true;
+                var self:BootSequencer = this;
+                var loader:BaseJSONLoader = new BaseJSONLoader("data/rewards/choice-rewards.runtime.json", "JSON");
+                loader.load(function(data:Object):Void {
+                    if (self.state != BootSequencer.S_SYNCLOGIC) return;
+                    if (!ChoiceRewardDefinition.accept(data)) {
+                        self.host.打印加载内容("配给目录格式错误");
+                        self.halt("choice_rewards_failed");
+                    }
+                }, function(error:String):Void {
+                    if (self.state != BootSequencer.S_SYNCLOGIC) return;
+                    self.host.打印加载内容("配给目录加载失败");
+                    self.halt("choice_rewards_failed");
+                });
+            }
+            if (this.state == S_HALT || !ChoiceRewardDefinition.ready()) return;
+        }
+        this.b.s7_syncLogic();
+        this.host.打印加载内容("加载杂项数据……");
+        this.b.s7_miscLoaders();
+        org.flashNight.arki.interaction.NativeMenuBridge.install();
+        org.flashNight.arki.dialogue.NativeDialogueService.install();
+        org.flashNight.arki.hud.PlayerHudService.install();
+        this.state = S_FANOUT;
     }
 
     // === S3/S4/S9 异步 await（失败=不前进，匹配原版 hang） ===
@@ -407,7 +442,25 @@ class org.flashNight.boot.BootSequencer {
         if (this.tickClip != undefined) this.tickClip.onEnterFrame = null;   // 判空：单测可不经 start() 直驱到 handoff（halt() 已同款判空）
         delete _root.__boot;   // 收尾：回收引导脚手架（staged 函数容器），boot 后即死代码，避免常驻 _root
         _root.play();
-        this.host.removeMovieClip();
+        if (this.host != undefined) {
+            // asLoaderLogic.swf 内 _definitions 在时间轴处于负深度（如 -16383），
+            // AVM1 对负深度直接调 removeMovieClip() 为静默 no-op；若 _definitions 残留存活，
+            // 其帧上定义的全局闭包（如 _root.初始化玩家模板）会持续以 _definitions 为 AVM1 baseClip，
+            // 使裸变量/裸调无法回退到调用方 MovieClip（导致主角出生漏跑装扮初始化并卡在 p:1）。
+            if (this.host.getDepth != undefined && this.host.swapDepths != undefined) {
+                var hostDepth:Number = this.host.getDepth();
+                if (hostDepth < 0) {
+                    var targetDepth:Number = (this.host._parent != undefined
+                            && this.host._parent.getNextHighestDepth != undefined)
+                        ? this.host._parent.getNextHighestDepth() : 0;
+                    if (isNaN(targetDepth) || targetDepth < 0) {
+                        targetDepth = 0;
+                    }
+                    this.host.swapDepths(targetDepth);
+                }
+            }
+            this.host.removeMovieClip();
+        }
         if (this.tickClip != undefined) this.tickClip.removeMovieClip();
         this.state = S_HALT;
         BootSequencer._instance = undefined;  // 释放重入保护(显式限定静态)：同会话重挂 asLoader 时 run() 才会重建实例 + tick（否则新 _root.__boot 无驱动→卡死）

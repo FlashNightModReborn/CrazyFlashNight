@@ -125,6 +125,8 @@ const PRODUCTION_SURFACE_FILES = Object.freeze([
   "launcher/web/modules/equipment-tuning-view.js",
   "launcher/web/modules/inventory-tuning-scope.js",
   "scripts/asLoader.swf",
+  "scripts/asLoaderShared.swf",
+  "scripts/asLoaderLogic.swf",
 ]);
 
 function fail(code, phase, message, details) {
