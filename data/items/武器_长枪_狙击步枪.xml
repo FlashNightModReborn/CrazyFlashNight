@@ -826,7 +826,7 @@
       <interval>400</interval>
       <singleshoot>true</singleshoot>
       <velocity>50</velocity>
-      <bullet>爆炸狙击子弹</bullet>
+      <bullet>爆炸集束子弹</bullet>
       <sound>NA45.wav</sound>
       <muzzle>战斗步枪枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -854,7 +854,7 @@
           <formula>1</formula>
           <status>unresolved</status>
           <displayEligible>false</displayEligible>
-          <inputDigest>fnv1a32:ff9a5135</inputDigest>
+          <inputDigest>fnv1a32:bd6e4e24</inputDigest>
           <auditRef>weapon:NA45:data</auditRef>
         </data>
       </profiles>
