@@ -1,0 +1,160 @@
+{
+  "schema": "cf7-equipment-plugin-b-runtime-release.v1",
+  "date": "2026-11-16",
+  "status": {
+    "runtime": "promoted",
+    "businessE2E": "pending_desktop_interaction",
+    "humanAcceptance": "pending"
+  },
+  "authorization": "Maintainer explicitly authorized scheme B on main, staged verification/commit/push and formal runtime release; no construction worktree.",
+  "source": {
+    "commit": "b4e5b622a87d6866a8cd6c40b6ad8b78112a78a4",
+    "tag": "runtime-build-v2/20261116-equipment-plugin-b-v2",
+    "releaseTreeOid": "b949cd21188c9bae9b2c3538c879ee68e015ac72",
+    "implementationCommits": [
+      "26aeca3f5bc93263209cf07cbe4f8baf130e2c16",
+      "7f977c2582d1ec2d5661dea296bd3a5bb8aa4caf",
+      "35ffc3bc5ad4e4cec2594d33ec644dacd14343f2",
+      "b4e5b622a87d6866a8cd6c40b6ad8b78112a78a4"
+    ]
+  },
+  "deploymentCommit": "f75388d56c4f115f4534ab7c5702c6ab2041ac1d",
+  "runtime": {
+    "requestId": "7AD21C5FF759F2AC1F319E3FF9D01ECC8700A012CE7241203E50FD4FF721A6C2",
+    "buildIdentity": "611FA3936FA87D9C652B9AAA549A4932A963830922079A4FD3A5FA5541D1394A",
+    "payloadClosure": "D20F3D224E87BD74B05C912422EFE4B7A54DFBB3589CDDF3A670C6A620D416D9",
+    "coreSha256": "701C75A3629CDB9BE3A317A5B9640350A284DABEA2652BE59DDDCE0C42B7694F",
+    "signerCount": 2,
+    "faultDomainCount": 2,
+    "faultDomains": [
+      "physical-host-b",
+      "github-hosted-windows"
+    ],
+    "localSignerKey": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+    "cloudSignerIdentity": "352E5CB208E9529F3C006B425B976369C301D130C2B23963A7709323C6088976"
+  },
+  "productionPolicy": {
+    "passed": true,
+    "checks": 47,
+    "profile": "production",
+    "localReceipt": "tmp/runtime-policy-receipts/equipment-plugin-b-1116-v2.v2.json"
+  },
+  "cloud": {
+    "runId": 43740975777,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43740975777",
+    "verified": true,
+    "scope": "attestation-only receipt; independent cloud candidate produced and strictly verified"
+  },
+  "deploymentAudit": {
+    "runId": 43742502414,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43742502414",
+    "head": "f75388d56c4f115f4534ab7c5702c6ab2041ac1d",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "passed": true,
+    "replayedConsensus": true,
+    "signers": 2,
+    "faultDomains": 2
+  },
+  "verification": {
+    "native": {
+      "grayRun": "d2f69e1c90124afeac82b4535a02d639",
+      "coldMissingDefinition": "2/2 before loading real mod definitions",
+      "realXmlMatrix": "44/44, TTI+primer and AA12+etch, bag and worn, install/replace/detach/refunds/type/dependency",
+      "tuningRun": "19f32c9b10194d1da777b71df651beab",
+      "service": "128/128",
+      "inventory": "194/194",
+      "bagFaults": "material false, material throw, rollback reject; all passed; unknown-write classification retained",
+      "performance": "Actual calculations: 3 whole preview = 1 independent source-authority validation + 2 in buildPlan. Commit recomputes; request freshness verified. AVM1 timing not measured.",
+      "otherSuites": {
+        "lifecycle": "28/28",
+        "closedPolicy": "31 current items, 107 mods",
+        "light": "81/81",
+        "sheriff": "47/45/23"
+      },
+      "moduleReceipt": "tmp/asloader-builds/20261115T155012-61d70bc263704cc7a4e34a91eb479284/receipt.json",
+      "productionPublish": "3 modules, 806 classes, 107 inheritance edges; fresh Compiler 0/0 each; retry 0; generator check no updates"
+    },
+    "host": {
+      "equipmentFocused": "178/178",
+      "qualifiedFull": {
+        "total": 8553,
+        "passed": 8513,
+        "failed": 9,
+        "skipped": 31
+      },
+      "qualifiedFullReceipt": "tmp/focus-sol-20261013/integration-20261115T155156522Z/recheck.trx",
+      "resourceGuardQualification": "128/128 with official input anchor and environment",
+      "remainingFailures": "Nine WorldOverlayOrderTests fail at unchanged CoverHud window-fixture setup. Isolated rerun: 1 pass, same 9 fail. Full Host suite is not green."
+    },
+    "web": {
+      "registry": "107 mods, 103 materials, 4 HB profiles, 2 providers",
+      "runtime": "Original cases +26 semantic cases +13 legacy consumer protocol cases passed",
+      "model": "90/90",
+      "confirmation": "4/4",
+      "interaction": "9/9",
+      "sourceMarker": "2/2",
+      "characterSession": "42/42",
+      "canonicalOffline": "9 suites passed",
+      "equipmentBrowser": "149/149 at each of 1024x576, 1366x768, 1920x1080",
+      "otherBrowser": "character-workbench, character-dressup, item-grid, kshop, item-filter, profile passed",
+      "knownHarnessFailure": "Standalone character-build drug-cooldown aria-disabled failure reproduced identically in clean UTF-8 baseline 822274 archive; retained, not repaired in equipment scope",
+      "legacyGateLimit": "Legacy equipment bootstrap --check stops at unchanged overlay startup closed-inventory drift before wire checks; direct 13 legacy protocol cases pass under current runtime test"
+    },
+    "sourceModel": {
+      "result": "26/26",
+      "scope": "Extracted-source plain-object JS model only; not native AVM1 or physical E2E",
+      "source": "b4e5b622a87d6866a8cd6c40b6ad8b78112a78a4"
+    },
+    "performance": "Physical production code net -681 lines including comments/blanks. Native full calculations 3=source authority1+buildPlan2; no AVM1 timing measured."
+  },
+  "formalEntry": {
+    "gate": "PG-TUNE-OPEN",
+    "passed": true,
+    "report": "tmp/equipment-tuning/unattended/20261115T172333Z-cf7_agent_equipment_tuning/run-report.json",
+    "runtimeMode": "formal_runtime",
+    "stableWindowMs": 1000,
+    "stableSamples": 10,
+    "businessClicks": false,
+    "businessWritesAttempted": false,
+    "ownedLauncherProcessesRemaining": 0,
+    "scope": "Fresh handoff/title-frame, active production workbench and first authoritative snapshot only"
+  },
+  "pendingBusinessAcceptance": {
+    "preview": false,
+    "commit": false,
+    "clonePersistenceRestart": false,
+    "wornPhysicalJourney": false,
+    "safeExitUiJourneyVerified": false,
+    "unknownWriteFaultJourneyVerified": false,
+    "desktop": "Capture was black; failed to activate captured window, then same failure after refreshing window selection. Desktop inputs stopped.",
+    "previewOnlyToolLimit": "Static check: verify-journey.js expects JSON WebDebug while current production diagnostics are redacted key/value; no relaxation applied. The commit verifier already contains a redacted-format branch. Actual preview-only qualification remains pending."
+  },
+  "openerFixtureIteration": {
+    "code": "business_action_before_clone_baseline",
+    "cause": "Level1 fixture intentionally triggered existing automatic enhance preview; no commit or inventory mutation; clone semantics unchanged; exact owned process normally shut down before preparing new seed.",
+    "remediation": "New task-owned max-level13 seeds, story780 cap13, strict OPEN passed unchanged gates."
+  },
+  "saveProtection": {
+    "playerJsonFiles": 8,
+    "readOnlySeedFiles": 5,
+    "sha256Unchanged": true,
+    "playerWrites": false,
+    "testTarget": "cf7_agent_equipment_tuning"
+  },
+  "rollbackPrevious": "tmp/runtime-promotions/20261115T170729683Z-6eda9af26d074b08b1f8ba346141432d/previous",
+  "retiredV1": {
+    "tag": "runtime-build-v2/20261115-equipment-plugin-b-v1",
+    "requestId": "26C4A0ACF580624DFA1415B0ED34A458E5A3370DAE3D571B082AA353FF3DBABB",
+    "reason": "Strict production policy rejected stale Lady SWF provenance in generated effects catalog. Canonical after_publish rerendered678frames and20sounds; atlas and sounds byte-identical, only source fingerprint changed.",
+    "cloudDispatched": false,
+    "promoted": false,
+    "oldTagRequestAndFailedReceiptPreserved": true
+  },
+  "morningAcceptance": [
+    "恢复可交互桌面后，补做专用测试档的真实预览、背包/穿戴提交和保存重启读回；这些今晚尚未验收。",
+    "用原反馈那套装备复验：安装灰蛊裂隙弹后继续安装、替换其他合法插件，确认背包与穿戴栏都能正常操作。",
+    "查看拆除或替换时的受影响插件、返还材料与拒绝提示，确认实际行为符合你的预期。",
+    "正常战斗几分钟并走一次你惯用的保存退出和重新进入流程，验收画面、手感与日常使用体验。"
+  ]
+}

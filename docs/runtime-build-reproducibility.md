@@ -344,6 +344,12 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 
 ## 历史发布记录
 
+### 2026-11-16 装备插件方案 B 正式发布（业务实机验收待续）
+
+维护者授权直接在 main 分阶段修复、推送和正式发布。冻结源 `b4e5b622a87d6866a8cd6c40b6ad8b78112a78a4`、受控标签 `runtime-build-v2/20261116-equipment-plugin-b-v2`，由本机 X509 `physical-host-b` 与 [GitHub 独立构建 43740975777](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43740975777) 达成同一 43 文件闭包共识，production policy **47/47**。唯一 writer 完成正式替换、完整安装自检和 strict v2 consensus；部署提交 `f75388d56c4f115f4534ab7c5702c6ab2041ac1d` 的 [事后审计 43742502414](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43742502414) 独立重放为 `state=promoted / deploymentChanged=true / signers=2 / faultDomains=2`。v1 因 Lady 派生来源指纹过期而退役，未发起云构建、未部署；现役工具重新导出后仅指纹变化，图片和声音字节未变，没有移动旧标签或复用失败政策收据。
+
+正式入口的 **PG-TUNE-OPEN** 已通过，绑定本次 Core、fresh handoff/title-frame、实际工作台和首个权威快照；只证明开场，不证明业务提交。窗口截图全黑，重新定位后仍两次无法激活，已停止桌面输入；真实点击、背包/穿戴提交与写后保存重启未完成，不称业务 `e2e_verified` 或 `standard_entry_verified`。8 份玩家 JSON 和 5 份只读种子 SHA-256 不变，自有测试进程正常退出。原生真实 XML **44/44**、调制 **128/128**、库存 **194/194**、Host 装备专项 **178/178**；全量 Host 保留 **8513 passed / 9 failed / 31 skipped**，9 项停在未修改的窗口夹具前置。精确身份、历史失败、工具限制、恢复位置与明早待验收项见[发布回执](evidence/equipment-plugin-b-runtime-release-2026-11-16.json)。
+
 ### 2026-11-12 三犬与位移方向正式推广
 
 维护者实测验收 #230 / #209 后明确授权提交、部署与推送。冻结源 `836a44cf8a7228a8a9df09255b37ced25e089374` 与受控标签 `runtime-build-v2/20261112-dog-forms-movement-v1`，由注册本机 X509 和 [GitHub hosted 独立构建 43128185569](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43128185569) 达成同一 43 文件闭包共识，产物与已验收候选一致。production policy 47/47，唯一 writer 于 `2026-11-12T00:46:08.1110329Z` 原子推广，strict v2 consensus 与完整安装自检通过。
