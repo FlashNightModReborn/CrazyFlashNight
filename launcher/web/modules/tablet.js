@@ -179,6 +179,7 @@
 
   function setView(name) {
     currentView = name;
+    status('');
     shell.setAttribute('data-view', name);
     // 背景帧是各视图共享的同一幅（烘焙时已从视图里拆出为 frame.svg），
     // 常驻不动；换的只有内容层
@@ -287,7 +288,7 @@
 
   // ── 各视图 ──
   function render() {
-    clearStage(); status('');
+    clearStage();
     applyIconPlaces(currentView);
     applyAmbient(currentView);
     ({ hub: renderHub, infrastructure: renderInfra, contacts: renderContacts,
@@ -335,7 +336,7 @@
       row.appendChild(ic);
       row.appendChild(el('span', '', m.name));
       if (m.infra) row.appendChild(el('em', 'tablet-mat-tag', '基建'));
-      listen(row, 'click', function () { selectedMaterial = i; render(); });
+      listen(row, 'click', function () { selectedMaterial = i; status(''); render(); });
       list.appendChild(row);
     });
     overlay.appendChild(list); overlay.appendChild(detail);
@@ -362,7 +363,7 @@
       var row = el('button', 'tablet-dom tablet-contact-row' + (i === selectedContact ? ' selected' : ''));
       row.type = 'button'; row.textContent = c.name;
       if (rows[i]) row.style.cssText = hsStyle('contacts', rows[i]);
-      listen(row, 'click', function () { selectedContact = i; render(); });
+      listen(row, 'click', function () { selectedContact = i; status(''); render(); });
       overlay.appendChild(row);
     });
     if (selectedContact < 0 && data.contacts.length) selectedContact = 0;
@@ -442,12 +443,20 @@
     });
     return rows;
   }
-  function infraRowsSatisfied(rows) {
-    if (!infraAssets) return false;
+  // 本地只做可见的缺口预判；AS2 仍是升级事务的最终权威。
+  function infraShortageText(rows) {
+    if (!infraAssets) return '资源快照未同步，请稍后重试';
+    var firstShort = '', unknown = false;
     for (var i = 0; i < rows.length; i++) {
-      if (rows[i].own == null || rows[i].own < rows[i].need) return false;
+      var r = rows[i];
+      if (r.own == null) { unknown = true; continue; }
+      if (r.own >= r.need) continue;
+      var unit = r.skill ? '级' : '';
+      var msg = r.label + '不足（需要' + r.need + unit + '，当前' + r.own + unit + '）';
+      if (r.skill) return msg; // 技能门槛优先于材料，避免长材料列表遮挡根因
+      if (!firstShort) firstShort = msg;
     }
-    return true;
+    return unknown ? '部分资源与技能持有量未同步，请稍后重试' : firstShort;
   }
   function infraCostRowEl(r) {
     var known = r.own != null;
@@ -472,8 +481,14 @@
       return;
     }
     reqEl.appendChild(el('div', 'tablet-infra-req-head', head + '，升到下一级需要：'));
+    var rows = infraCostRows(it, lv);
+    var skillGate = el('div', 'tablet-infra-req-head');
     var list = el('div', 'tablet-infra-req-list');
-    infraCostRows(it, lv).forEach(function (r) { list.appendChild(infraCostRowEl(r)); });
+    rows.forEach(function (r) {
+      // 固定显示技能门槛，只有材料/金币滚动；长列表不会藏起技能要求。
+      (r.skill ? skillGate : list).appendChild(infraCostRowEl(r));
+    });
+    if (skillGate.childNodes.length) reqEl.appendChild(skillGate);
     reqEl.appendChild(list);
   }
   // 写权走 AS2 tabletInfraUpgrade 回环；unknown 结果不乐观显示
@@ -524,7 +539,7 @@
     entries.forEach(function (it, i) {
       var row = el('button', 'tablet-infra-row' + (i === selectedInfra ? ' selected' : ''));
       row.type = 'button'; row.textContent = it.name;
-      listen(row, 'click', function () { selectedInfra = i; render(); });
+      listen(row, 'click', function () { selectedInfra = i; status(''); render(); });
       list.appendChild(row);
     });
     overlay.appendChild(list);
@@ -593,9 +608,10 @@
     if (ib.upgrade) {
       var canAct = !!(it && infraSynced && lv != null && lv < it.maxLevel && !upgradeBusy);
       var upHot = hotspot('infrastructure', ib.upgrade, '升级', function () {
-        if (!infraRowsSatisfied(infraCostRows(it, lv))) {
+        var shortage = infraShortageText(infraCostRows(it, lv));
+        if (shortage) {
           cue('illegal');
-          status('金币、材料或技能不足');
+          status(shortage);
           return;
         }
         cue('toggle');

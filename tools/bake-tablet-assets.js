@@ -335,21 +335,47 @@ function stripMeta(svg) {
 }
 
 // ── 数据投影 ──
-function parseInfrastructure() {
-  const xml = fs.readFileSync(path.join(ROOT, 'data', 'infrastructure', 'infrastructure.xml'), 'utf8');
+// <Level id="N"> can contain <Skill><Level>N</Level></Skill>.
+// Match balanced outer Level elements rather than stopping at an inner closing tag.
+function splitInfrastructureLevels(body) {
+  const token = /<\/?Level\b[^>]*>/g;
+  const blocks = [];
+  let nesting = 0, id = null, start = 0, match;
+  while ((match = token.exec(body))) {
+    if (match[0][1] !== '/') {
+      if (nesting === 0) {
+        const idMatch = /\bid="(\d+)"/.exec(match[0]);
+        if (!idMatch) throw new Error('infrastructure Level is missing id');
+        id = +idMatch[1];
+        start = token.lastIndex;
+      }
+      nesting++;
+    } else {
+      if (nesting === 0) throw new Error('unexpected closing infrastructure Level');
+      if (--nesting === 0) blocks.push({ id, xml: body.slice(start, match.index) });
+    }
+  }
+  if (nesting !== 0) throw new Error('unclosed infrastructure Level');
+  return blocks;
+}
+
+function parseInfrastructure(xmlSource) {
+  const xml = xmlSource == null
+    ? fs.readFileSync(path.join(ROOT, 'data', 'infrastructure', 'infrastructure.xml'), 'utf8')
+    : xmlSource;
   const list = [];
   for (const m of xml.matchAll(/<Infrastructure>([\s\S]*?)<\/Infrastructure>/g)) {
     const body = m[1];
     const name = (/<Name>([^<]+)<\/Name>/.exec(body) || [])[1];
     const levels = [];
-    for (const lm of body.matchAll(/<Level id="(\d+)">([\s\S]*?)<\/Level>/g)) {
-      const lb = lm[2];
+    for (const lm of splitInfrastructureLevels(body)) {
+      const lb = lm.xml;
       const val = tag => { const t = new RegExp('<' + tag + '>([\\s\\S]*?)</' + tag + '>').exec(lb); return t ? t[1].trim() : ''; };
       const materials = [...lb.matchAll(/<Material>[\s\S]*?<Name>([^<]+)<\/Name>[\s\S]*?<Value>([^<]+)<\/Value>[\s\S]*?<\/Material>/g)]
         .map(x => ({ name: x[1].trim(), count: +x[2] }));
       const skills = [...lb.matchAll(/<Skill>[\s\S]*?<Name>([^<]+)<\/Name>[\s\S]*?<Level>([^<]+)<\/Level>[\s\S]*?<\/Skill>/g)]
         .map(x => ({ name: x[1].trim(), level: +x[2] }));
-      levels.push({ id: +lm[1], description: val('Description'), price: +val('Price') || 0, materials, skills });
+      levels.push({ id: lm.id, description: val('Description'), price: +val('Price') || 0, materials, skills });
     }
     list.push({ name, levels, maxLevel: levels.length - 1 });
   }
@@ -702,4 +728,15 @@ function main() {
   console.log('infra:', infra.length, 'materials:', mats.length);
   console.log('wrote', OUT);
 }
-main();
+if (require.main === module) {
+  if (process.argv.includes('--infra-data-only')) {
+    fs.mkdirSync(OUT, { recursive: true });
+    const infra = parseInfrastructure();
+    fs.writeFileSync(path.join(OUT, 'infrastructure.json'), JSON.stringify(infra));
+    console.log('wrote infrastructure.json:', infra.length, 'projects');
+  } else {
+    main();
+  }
+}
+module.exports = { parseInfrastructure, splitInfrastructureLevels };
+
