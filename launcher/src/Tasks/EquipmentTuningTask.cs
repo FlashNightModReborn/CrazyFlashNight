@@ -21,12 +21,6 @@ namespace CF7Launcher.Tasks
     /// </summary>
     public sealed class EquipmentTuningTask : IDisposable
     {
-        // 与 EquipmentUtil.modAvailabilityResults 的封闭码表一致；不可安装原因仍须展示。
-        private static readonly HashSet<int> ModAvailabilityCodes = new HashSet<int>
-        {
-            1, 0, -1, -2, -4, -8, -16, -32, -64, -128, -256, -512, -1024
-        };
-
         private sealed class PendingRequest
         {
             public int FlashCallId;
@@ -71,12 +65,10 @@ namespace CF7Launcher.Tasks
             public JArray RemovedMods;
             public bool NoOp;
             public bool CanCommit;
-            public LinkedListNode<PreviewBinding> OrderNode;
         }
 
         private sealed class SnapshotAuthority
         {
-            public string SnapshotWebCallId;
             public string PanelInstanceId;
             public string ViewSessionId;
             public string SourceKey;
@@ -89,7 +81,6 @@ namespace CF7Launcher.Tasks
 
         private const int DefaultTimeoutMs = 10000;
         private const int RecentCallIdCapacity = 256;
-        private const int PreviewBindingCapacity = 1;
         private const int MaxPending = 24;
 
         private static readonly Regex ValidCallId = new Regex(
@@ -117,7 +108,7 @@ namespace CF7Launcher.Tasks
             "owned", "available", "reason");
         private static readonly HashSet<string> ModCandidateKeys = Set(
             "candidateKey", "itemName", "displayName", "icon", "owned",
-            "installed", "available", "availabilityCode", "reason",
+            "installed", "available", "reason",
             "replaceableFrom", "grade", "gradeLabel", "gradeColor", "scope",
             "scopeLabel", "role", "roleLabel", "symbol");
         private static readonly HashSet<string> EquipmentProjectionKeys = Set(
@@ -153,10 +144,7 @@ namespace CF7Launcher.Tasks
         private readonly HashSet<string> _activeCallIds = new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<string> _recentCallIds = new HashSet<string>(StringComparer.Ordinal);
         private readonly Queue<string> _recentCallIdOrder = new Queue<string>();
-        private readonly Dictionary<string, PreviewBinding> _previewBindings =
-            new Dictionary<string, PreviewBinding>(StringComparer.Ordinal);
-        private readonly LinkedList<PreviewBinding> _previewBindingOrder =
-            new LinkedList<PreviewBinding>();
+        private PreviewBinding _previewBinding;
         private SnapshotAuthority _snapshotAuthority;
         private string _latestSnapshotWebCallId;
         private string _latestPreviewWebCallId;
@@ -196,7 +184,7 @@ namespace CF7Launcher.Tasks
         internal string WriteState { get { lock (_lock) return _writeState; } }
         internal int WriteEpoch { get { lock (_lock) return _writeEpoch; } }
         internal int PendingCount { get { lock (_lock) return _pending.Count; } }
-        internal int PreviewBindingCount { get { lock (_lock) return _previewBindings.Count; } }
+        internal int PreviewBindingCount { get { lock (_lock) return _previewBinding == null ? 0 : 1; } }
         internal string PanelInstanceId { get { lock (_lock) return _panelInstanceId; } }
         internal string ActiveViewSessionId { get { lock (_lock) return _activeViewSessionId; } }
         public bool HasBoundPanel { get { lock (_lock) return !string.IsNullOrEmpty(_panelInstanceId); } }
@@ -520,7 +508,9 @@ namespace CF7Launcher.Tasks
                     return;
                 }
 
-                bool valid = IsValidResponse(msg, entry);
+                JObject sanitizedSnapshot;
+                string failurePath;
+                bool valid = IsValidResponse(msg, entry, out sanitizedSnapshot, out failurePath);
                 if (valid
                     && entry.WebCmd == "preview"
                     && msg.Value<bool?>("success") == true
@@ -571,11 +561,11 @@ namespace CF7Launcher.Tasks
                         StringComparison.Ordinal);
                 if (snapshotConfirmed)
                 {
-                    valid = TryRememberSnapshotAuthorityLocked(
+                    valid = RememberValidatedSnapshotAuthorityLocked(
                         entry.WebCallId,
                         entry.PanelInstanceId,
                         entry.ViewSessionId,
-                        msg["snapshot"] as JObject);
+                        sanitizedSnapshot);
                     snapshotConfirmed = valid;
                 }
                 if (snapshotConfirmed)
@@ -586,11 +576,11 @@ namespace CF7Launcher.Tasks
                     ClearSnapshotAuthorityLocked();
                     if (valid && msg.Value<bool?>("success") == true)
                     {
-                        valid = TryRememberSnapshotAuthorityLocked(
+                        valid = RememberValidatedSnapshotAuthorityLocked(
                             entry.WebCallId,
                             entry.PanelInstanceId,
                             entry.ViewSessionId,
-                            msg["snapshot"] as JObject);
+                            sanitizedSnapshot);
                     }
                 }
                 bool definitiveWrite = entry.IsWrite && valid && IsDefinitiveWriteResponse(msg);
@@ -630,9 +620,9 @@ namespace CF7Launcher.Tasks
                         + " flashCallId=" + fid
                         + " webCallId=" + SafeLogField(entry.WebCallId)
                         + " sourceKind=" + SafeLogField(ReadString(entry.Source?["sourceKind"]))
-                        + " failurePath=" + SafeLogField(DescribeValidationFailure(msg, entry)));
+                        + " failurePath=" + SafeLogField(failurePath ?? "response.authority"));
                 }
-                web = valid ? SanitizeFlashResponse(msg) : new JObject
+                web = valid ? SanitizeFlashResponse(msg, sanitizedSnapshot) : new JObject
                 {
                     ["success"] = false,
                     ["error"] = "malformed_response"
@@ -699,8 +689,7 @@ namespace CF7Launcher.Tasks
                         AuthorityLogFormatter.CreateReference(
                             PreviewSourceKey(entry.Source)))
                     + " stateRef=" + SafeLogField(snapshotStateRef)
-                    + " writeEpoch=" + entry.WriteEpoch
-                    + " modAvailabilityCodes=" + SafeLogField(DescribeModAvailabilityCodes(msg)));
+                    + " writeEpoch=" + entry.WriteEpoch);
             NotifyCoordinatorSettledIfReady();
             if (respond != null) respond(null);
         }
@@ -875,109 +864,39 @@ namespace CF7Launcher.Tasks
             _latestPreviewWebCallId = webCallId;
         }
 
-        private bool TryRememberSnapshotAuthorityLocked(
-            string webCallId,
-            string panelInstanceId,
-            string viewSessionId,
-            JObject snapshot)
+        // Validation owns schema and candidate sanitation once; adoption freezes a separate authority copy.
+        private bool RememberValidatedSnapshotAuthorityLocked(
+            string webCallId, string panelInstanceId, string viewSessionId,
+            JObject validatedSnapshot)
         {
-            JObject source;
-            JObject equipment;
-            JObject sanitizedSnapshot;
-            Dictionary<string, JObject> tierCandidates;
-            Dictionary<string, JObject> modCandidates;
-            Dictionary<string, JObject> materials;
-            if (!IsCallId(webCallId)
-                || !IsOpaque(panelInstanceId)
-                || !IsOpaque(viewSessionId)
-                || !string.Equals(
-                    _panelInstanceId,
-                    panelInstanceId,
-                    StringComparison.Ordinal)
-                || !string.Equals(
-                    _activeViewSessionId,
-                    viewSessionId,
-                    StringComparison.Ordinal)
-                || snapshot == null
-                || !TryNormalizeSourceRef(
-                    snapshot["source"] as JObject,
-                    out source)
-                || !TrySanitizeTuningSnapshot(
-                    snapshot,
-                    source,
-                    out sanitizedSnapshot)
-                || !TrySanitizeEquipmentProjection(
-                    sanitizedSnapshot["equipment"] as JObject,
-                    out equipment)
-                || !TryBuildCandidateAuthorityMap(
-                    sanitizedSnapshot["tierCandidates"] as JArray,
-                    out tierCandidates)
-                || !TryBuildCandidateAuthorityMap(
-                    sanitizedSnapshot["modCandidates"] as JArray,
-                    out modCandidates)
-                || !TryBuildMaterialAuthorityMap(
-                    sanitizedSnapshot["materials"] as JArray,
-                    out materials))
-            {
-                return false;
-            }
-
+            if (!IsCallId(webCallId) || !IsOpaque(panelInstanceId) || !IsOpaque(viewSessionId)
+                || !string.Equals(_panelInstanceId, panelInstanceId, StringComparison.Ordinal)
+                || !string.Equals(_activeViewSessionId, viewSessionId, StringComparison.Ordinal)
+                || validatedSnapshot == null) return false;
+            var source = (JObject)validatedSnapshot["source"];
             string sourceKey = PreviewSourceKey(source);
             if (string.IsNullOrEmpty(sourceKey)) return false;
             _snapshotAuthority = new SnapshotAuthority
             {
-                SnapshotWebCallId = webCallId,
                 PanelInstanceId = panelInstanceId,
                 ViewSessionId = viewSessionId,
                 SourceKey = sourceKey,
-                Source = source,
-                Equipment = equipment,
-                TierCandidates = tierCandidates,
-                ModCandidates = modCandidates,
-                Materials = materials
+                Source = (JObject)source.DeepClone(),
+                Equipment = (JObject)validatedSnapshot["equipment"].DeepClone(),
+                TierCandidates = FreezeAuthorityMap((JArray)validatedSnapshot["tierCandidates"], "candidateKey"),
+                ModCandidates = FreezeAuthorityMap((JArray)validatedSnapshot["modCandidates"], "candidateKey"),
+                Materials = FreezeAuthorityMap((JArray)validatedSnapshot["materials"], "itemName")
             };
             _latestSnapshotWebCallId = null;
             return true;
         }
 
-        private static bool TryBuildCandidateAuthorityMap(
-            JArray candidates,
-            out Dictionary<string, JObject> result)
+        private static Dictionary<string, JObject> FreezeAuthorityMap(JArray validatedRows, string identityField)
         {
-            result = null;
-            if (candidates == null || candidates.Count > 512) return false;
-            var map = new Dictionary<string, JObject>(StringComparer.Ordinal);
-            foreach (JToken token in candidates)
-            {
-                JObject candidate = token as JObject;
-                string candidateKey = ReadString(
-                    candidate != null ? candidate["candidateKey"] : null);
-                if (!IsOpaque(candidateKey)
-                    || map.ContainsKey(candidateKey)) return false;
-                map[candidateKey] = (JObject)candidate.DeepClone();
-            }
-            result = map;
-            return true;
-        }
-
-        private static bool TryBuildMaterialAuthorityMap(
-            JArray materials,
-            out Dictionary<string, JObject> result)
-        {
-            result = null;
-            if (materials == null || materials.Count > 512) return false;
-            var map = new Dictionary<string, JObject>(StringComparer.Ordinal);
-            foreach (JToken token in materials)
-            {
-                JObject material = token as JObject;
-                string itemName = ReadString(
-                    material != null ? material["itemName"] : null);
-                if (!IsIdentityText(itemName, 256)
-                    || map.ContainsKey(itemName)) return false;
-                map[itemName] = (JObject)material.DeepClone();
-            }
-            result = map;
-            return true;
+            var result = new Dictionary<string, JObject>(StringComparer.Ordinal);
+            foreach (JObject row in validatedRows)
+                result.Add(ReadString(row[identityField]), (JObject)row.DeepClone());
+            return result;
         }
 
         private static Dictionary<string, JObject> CloneAuthorityMap(
@@ -1135,10 +1054,8 @@ namespace CF7Launcher.Tasks
                     binding.PreviewWebCallId,
                     StringComparison.Ordinal)) return false;
 
-            PreviewBinding existing;
-            if (_previewBindings.TryGetValue(
-                    binding.TuningToken,
-                    out existing))
+            PreviewBinding existing = _previewBinding;
+            if (existing != null && string.Equals(existing.TuningToken, binding.TuningToken, StringComparison.Ordinal))
             {
                 return string.Equals(
                         existing.PanelInstanceId,
@@ -1191,21 +1108,7 @@ namespace CF7Launcher.Tasks
                     && existing.CanCommit == binding.CanCommit;
             }
 
-            _previewBindings[
-                binding.TuningToken] = binding;
-            binding.OrderNode =
-                _previewBindingOrder.AddLast(
-                    binding);
-            while (_previewBindings.Count
-                > PreviewBindingCapacity)
-            {
-                PreviewBinding oldest =
-                    _previewBindingOrder.First.Value;
-                _previewBindingOrder.RemoveFirst();
-                oldest.OrderNode = null;
-                _previewBindings.Remove(
-                    oldest.TuningToken);
-            }
+            _previewBinding = binding;
             return true;
         }
 
@@ -1216,10 +1119,9 @@ namespace CF7Launcher.Tasks
             out PreviewBinding binding)
         {
             binding = null;
-            PreviewBinding candidate;
-            if (!IsOpaque(tuningToken)
-                || !_previewBindings.TryGetValue(
-                    tuningToken, out candidate)
+            PreviewBinding candidate = _previewBinding;
+            if (!IsOpaque(tuningToken) || candidate == null
+                || !string.Equals(candidate.TuningToken, tuningToken, StringComparison.Ordinal)
                 || !string.Equals(
                     candidate.PanelInstanceId,
                     panelInstanceId,
@@ -1231,22 +1133,14 @@ namespace CF7Launcher.Tasks
             {
                 return false;
             }
-            _previewBindings.Remove(
-                tuningToken);
-            if (candidate.OrderNode != null)
-            {
-                _previewBindingOrder.Remove(
-                    candidate.OrderNode);
-                candidate.OrderNode = null;
-            }
+            _previewBinding = null;
             binding = candidate;
             return true;
         }
 
         private void ClearPreviewBindingsLocked()
         {
-            _previewBindings.Clear();
-            _previewBindingOrder.Clear();
+            _previewBinding = null;
             _latestPreviewWebCallId = null;
         }
 
@@ -1491,145 +1385,59 @@ namespace CF7Launcher.Tasks
         }
 
         // 只诊断已被权威校验拒绝的回包；不改变采用、写锁或对账裁决，不输出玩家字段值。
-        private static string DescribeValidationFailure(JObject msg, PendingRequest entry)
+        private static bool Reject(out string failurePath, string path)
         {
-            if (msg == null || msg["success"]?.Type != JTokenType.Boolean
-                || msg.Value<bool?>("success") != true)
-                return "response.envelope";
-            if (!HasOnlyResponseKeys(msg, entry.WebCmd, true))
-                return "response.keys";
-            if (entry.WebCmd == "snapshot")
-                return DescribeSnapshotFailure(msg["snapshot"] as JObject, entry.Source)
-                    ?? "snapshot.authority";
-            if (entry.WebCmd != "commit") return "response.proof";
-            PreviewBinding binding = entry.ConsumedPreviewBinding;
-            if (binding == null || ReadString(msg["tuningToken"]) != entry.ExpectedTuningToken
-                || !IsOpaque(ReadString(msg["transactionId"]))
-                || !TryReadTuningProjectionResponse(msg, entry.Operation, false,
-                    out JObject before, out JObject after, out JArray materials,
-                    out JArray removedMods, out bool noOp, out bool canCommit))
-                return "commit.projection";
-            if (!JToken.DeepEquals(before, binding.Before)) return "commit.before";
-            if (!JToken.DeepEquals(materials, binding.Materials)) return "commit.materials";
-            if (!JToken.DeepEquals(removedMods, binding.RemovedMods)) return "commit.removedMods";
-            if (noOp != binding.NoOp || canCommit
-                || !TryMatchCommittedAfter(binding.After, after, noOp,
-                    out JObject source, out _)) return "commit.after";
-            JObject snapshot = msg["snapshot"] as JObject;
-            string snapshotFailure = DescribeSnapshotFailure(snapshot, source);
-            if (snapshotFailure != null) return "commit." + snapshotFailure;
-            if (!JToken.DeepEquals(snapshot["equipment"], after["source"]["equipment"]))
-                return "commit.snapshot.equipmentMatch";
-            if (!SnapshotMaterialsMatchCommit(snapshot["materials"] as JArray, materials))
-                return "commit.snapshot.materialsMatch";
-            if (!IsCommitResponse(msg, entry)) return "commit.inventorySnapshots";
-            return "commit.authority";
+            failurePath = path;
+            return false;
         }
 
-        private static string DescribeSnapshotFailure(JObject snapshot, JObject expectedSource)
+        private static bool IsValidResponse(JObject msg, PendingRequest entry,
+            out JObject sanitizedSnapshot, out string failurePath)
         {
-            if (!IsExactObject(snapshot, SnapshotKeys)) return "snapshot.keys";
-            if (!IsExactSource(expectedSource, snapshot["source"] as JObject)) return "snapshot.source";
-            if (!TrySanitizeEquipmentProjection(snapshot["equipment"] as JObject,
-                    out JObject equipment)) return "snapshot.equipment";
-            if (!IsEnhanceProjection(snapshot["enhance"] as JObject, equipment)) return "snapshot.enhance";
-            if (!TrySanitizeTuningCandidates(snapshot, out _, out JArray modCandidates))
-                return DescribeCandidateArrayFailure(snapshot["tierCandidates"] as JArray, false)
-                    ?? DescribeCandidateArrayFailure(snapshot["modCandidates"] as JArray, true)
-                    ?? "snapshot.candidates";
-            if (!TrySanitizeSnapshotMaterials(snapshot["materials"] as JArray, out _))
-                return "snapshot.materials";
-            if (!TryReadInteger(snapshot["materialRevision"], 0, int.MaxValue, out _))
-                return "snapshot.materialRevision";
-            if (!TryReadInteger(snapshot["inventoryRevision"], 0, int.MaxValue, out _))
-                return "snapshot.inventoryRevision";
-            if (!SnapshotCandidatesMatchEquipment(modCandidates, equipment))
-                return "snapshot.installedMods";
-            string gender = ReadString(snapshot["gender"]);
-            if (gender != "男" && gender != "女") return "snapshot.gender";
-            return null;
-        }
-
-        private static string DescribeCandidateArrayFailure(JArray input, bool isMod)
-        {
-            string prefix = isMod ? "snapshot.modCandidates" : "snapshot.tierCandidates";
-            if (input == null || input.Count > 512) return prefix + ".shape";
-            var seen = new HashSet<string>(StringComparer.Ordinal);
-            for (int i = 0; i < input.Count; i++)
-            {
-                string path = prefix + "[" + i + "]";
-                JObject row = input[i] as JObject;
-                if (row == null) return path + ".shape";
-                HashSet<string> allowed = isMod ? ModCandidateKeys : TierCandidateKeys;
-                foreach (JProperty property in row.Properties())
-                    if (!allowed.Contains(property.Name)) return path + ".keys";
-                if (!IsOpaque(ReadString(row["candidateKey"]))) return path + ".candidateKey";
-                foreach (string field in new[] { "itemName", "displayName", "icon" })
-                    if (!IsIdentityTextToken(row[field], 256)) return path + "." + field;
-                if (!TryReadQuantity(row["owned"], 0, MaxQuantity, out _)) return path + ".owned";
-                if (row["available"]?.Type != JTokenType.Boolean) return path + ".available";
-                if (!IsTextToken(row["reason"], 0, 256)) return path + ".reason";
-                if (isMod)
-                {
-                    if (row["installed"]?.Type != JTokenType.Boolean) return path + ".installed";
-                    if (!IsModAvailabilityCode(row["availabilityCode"]))
-                        return path + ".availabilityCode";
-                    if (!IsOpaqueArray(row["replaceableFrom"] as JArray)) return path + ".replaceableFrom";
-                    foreach (string field in new[] { "grade", "scope", "role" })
-                        if (!IsTextToken(row[field], 1, 64)) return path + "." + field;
-                    foreach (string field in new[] { "gradeLabel", "gradeColor", "scopeLabel", "roleLabel", "symbol" })
-                        if (row[field] != null && !IsTextToken(row[field], 1, 128)) return path + "." + field;
-                }
-                else if (!IsTextToken(row["tierName"], 1, 64)) return path + ".tierName";
-                if (!seen.Add(ReadString(row["candidateKey"]))) return path + ".candidateKey.duplicate";
-            }
-            return null;
-        }
-
-        private static bool IsValidResponse(JObject msg, PendingRequest entry)
-        {
+            sanitizedSnapshot = null;
+            failurePath = null;
             if (msg == null
                 || ReadString(msg["task"]) != "equipment_tuning_response"
                 || ReadString(msg["command"]) != entry.WebCmd
                 || ReadString(msg["panelInstanceId"]) != entry.PanelInstanceId
                 || ReadString(msg["viewSessionId"]) != entry.ViewSessionId
-                || !HasVersion(msg)
-                || msg["success"] == null || msg["success"].Type != JTokenType.Boolean)
-                return false;
-            if (!HasOnlyResponseKeys(msg, entry.WebCmd, msg.Value<bool>("success"))) return false;
-            if (msg["reconciled"] != null && msg["reconciled"].Type != JTokenType.Boolean) return false;
-            if (msg["reconcileAfterCallId"] != null
-                && !IsCallId(ReadString(msg["reconcileAfterCallId"]))) return false;
-            int responseEpoch;
-            if (!TryReadInteger(msg["writeEpoch"], 0, int.MaxValue, out responseEpoch)
-                || responseEpoch != entry.WriteEpoch) return false;
-
+                || !HasVersion(msg) || msg["success"]?.Type != JTokenType.Boolean)
+                return Reject(out failurePath, "response.envelope");
+            if (!HasOnlyResponseKeys(msg, entry.WebCmd, msg.Value<bool>("success")))
+                return Reject(out failurePath, "response.keys");
+            if (msg["reconciled"] != null && msg["reconciled"].Type != JTokenType.Boolean)
+                return Reject(out failurePath, "response.reconciled");
+            if (msg["reconcileAfterCallId"] != null && !IsCallId(ReadString(msg["reconcileAfterCallId"])))
+                return Reject(out failurePath, "response.reconcileAfterCallId");
+            if (!TryReadInteger(msg["writeEpoch"], 0, int.MaxValue, out int epoch) || epoch != entry.WriteEpoch)
+                return Reject(out failurePath, "response.writeEpoch");
             if (!msg.Value<bool>("success"))
             {
                 if (msg["materialShortage"] != null && (entry.WebCmd != "preview" || entry.Operation != "enhance"
-                    || ReadString(msg["error"]) != "insufficient_material" || !IsMaterialShortage(msg["materialShortage"] as JObject))) return false;
+                    || ReadString(msg["error"]) != "insufficient_material"
+                    || !IsMaterialShortage(msg["materialShortage"] as JObject)))
+                    return Reject(out failurePath, "response.materialShortage");
                 if (entry.WebCmd == "commit" && msg["transactionId"] != null
-                    && !IsOpaque(ReadString(msg["transactionId"]))) return false;
-                return IsSafeText(ReadString(msg["error"]), 1, 64);
+                    && !IsOpaque(ReadString(msg["transactionId"])))
+                    return Reject(out failurePath, "response.transactionId");
+                return IsSafeText(ReadString(msg["error"]), 1, 64)
+                    || Reject(out failurePath, "response.error");
             }
-
             if (entry.WebCmd == "snapshot")
-                return IsSnapshotResponse(
-                    msg, entry.Source);
-            if (entry.WebCmd == "preview")
-                return IsPreviewResponse(
-                    msg, entry);
+                return TrySanitizeTuningSnapshot(msg["snapshot"] as JObject, entry.Source,
+                    out sanitizedSnapshot, out failurePath);
             if (entry.WebCmd == "commit")
-                return IsCommitResponse(
-                    msg, entry);
+                return IsCommitResponse(msg, entry, out sanitizedSnapshot, out failurePath);
+            if (entry.WebCmd == "preview")
+                return IsPreviewResponse(msg, entry) || Reject(out failurePath, "preview.proof");
             if (entry.WebCmd == "detach") return true;
-            return ReadString(msg["candidateKey"]) == entry.CandidateKey
-                && msg["introHTML"] != null && msg["introHTML"].Type == JTokenType.String
-                && msg["descHTML"] != null && msg["descHTML"].Type == JTokenType.String
-                && msg["itemType"] != null && msg["itemType"].Type == JTokenType.String
-                && msg["itemUse"] != null && msg["itemUse"].Type == JTokenType.String
-                && IsIdentityTextToken(msg["text"], 256)
-                && TooltipStatPairsValid(msg);
+            return (ReadString(msg["candidateKey"]) == entry.CandidateKey
+                && msg["introHTML"]?.Type == JTokenType.String
+                && msg["descHTML"]?.Type == JTokenType.String
+                && msg["itemType"]?.Type == JTokenType.String
+                && msg["itemUse"]?.Type == JTokenType.String
+                && IsIdentityTextToken(msg["text"], 256) && TooltipStatPairsValid(msg))
+                || Reject(out failurePath, "tooltip.proof");
         }
 
         // 候选试算 diff 是可选的成对字段；要么齐全且逐行合法，要么完全缺席
@@ -1685,65 +1493,36 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool IsSnapshotResponse(
-            JObject msg,
-            JObject expectedSource)
-        {
-            JObject snapshot = msg["snapshot"] as JObject;
-            JObject sanitized;
-            return TrySanitizeTuningSnapshot(
-                snapshot, expectedSource, out sanitized);
-        }
-
-        private static bool TrySanitizeTuningSnapshot(
-            JObject snapshot,
-            JObject expectedSource,
-            out JObject sanitized)
+        private static bool TrySanitizeTuningSnapshot(JObject snapshot, JObject expectedSource,
+            out JObject sanitized, out string failurePath)
         {
             sanitized = null;
-            string gender = snapshot != null ? ReadString(snapshot["gender"]) : null;
-            JArray sanitizedTierCandidates;
-            JArray sanitizedModCandidates;
-            JObject equipment;
-            JArray materials;
-            int materialRevision;
-            int inventoryRevision;
-            if (!IsExactObject(snapshot, SnapshotKeys)
-                || !IsExactSource(
-                    expectedSource,
-                    snapshot["source"] as JObject)
-                || !TrySanitizeEquipmentProjection(
-                    snapshot["equipment"] as JObject,
-                    out equipment)
-                || !IsEnhanceProjection(
-                    snapshot["enhance"] as JObject,
-                    equipment)
-                || !TrySanitizeTuningCandidates(
-                    snapshot,
-                    out sanitizedTierCandidates,
-                    out sanitizedModCandidates)
-                || !TrySanitizeSnapshotMaterials(
-                    snapshot["materials"] as JArray,
-                    out materials)
-                || !TryReadInteger(
-                    snapshot["materialRevision"],
-                    0,
-                    int.MaxValue,
-                    out materialRevision)
-                || !TryReadInteger(
-                    snapshot["inventoryRevision"],
-                    0,
-                    int.MaxValue,
-                    out inventoryRevision)
-                || !SnapshotCandidatesMatchEquipment(
-                    sanitizedModCandidates,
-                    equipment))
-                return false;
-            if (gender != "男" && gender != "女") return false;
+            failurePath = null;
+            if (!IsExactObject(snapshot, SnapshotKeys)) return Reject(out failurePath, "snapshot.keys");
+            if (!IsExactSource(expectedSource, snapshot["source"] as JObject))
+                return Reject(out failurePath, "snapshot.source");
+            if (!TrySanitizeEquipmentProjection(snapshot["equipment"] as JObject, out JObject equipment))
+                return Reject(out failurePath, "snapshot.equipment");
+            if (!IsEnhanceProjection(snapshot["enhance"] as JObject, equipment))
+                return Reject(out failurePath, "snapshot.enhance");
+            if (!TrySanitizeCandidateArray(snapshot["tierCandidates"] as JArray, false,
+                    out JArray tiers, out failurePath)
+                || !TrySanitizeCandidateArray(snapshot["modCandidates"] as JArray, true,
+                    out JArray mods, out failurePath)) return false;
+            if (!TrySanitizeSnapshotMaterials(snapshot["materials"] as JArray, out JArray materials))
+                return Reject(out failurePath, "snapshot.materials");
+            if (!TryReadInteger(snapshot["materialRevision"], 0, int.MaxValue, out _))
+                return Reject(out failurePath, "snapshot.materialRevision");
+            if (!TryReadInteger(snapshot["inventoryRevision"], 0, int.MaxValue, out _))
+                return Reject(out failurePath, "snapshot.inventoryRevision");
+            if (!SnapshotCandidatesMatchEquipment(mods, equipment))
+                return Reject(out failurePath, "snapshot.installedMods");
+            string gender = ReadString(snapshot["gender"]);
+            if (gender != "男" && gender != "女") return Reject(out failurePath, "snapshot.gender");
             sanitized = (JObject)snapshot.DeepClone();
             sanitized["equipment"] = equipment;
-            sanitized["tierCandidates"] = sanitizedTierCandidates;
-            sanitized["modCandidates"] = sanitizedModCandidates;
+            sanitized["tierCandidates"] = tiers;
+            sanitized["modCandidates"] = mods;
             sanitized["materials"] = materials;
             return true;
         }
@@ -1831,118 +1610,57 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool TrySanitizeTuningCandidates(
-            JObject snapshot,
-            out JArray tierCandidates,
-            out JArray modCandidates)
-        {
-            tierCandidates = null;
-            modCandidates = null;
-            return snapshot != null
-                && TrySanitizeCandidateArray(
-                    snapshot["tierCandidates"] as JArray,
-                    false,
-                    out tierCandidates)
-                && TrySanitizeCandidateArray(
-                    snapshot["modCandidates"] as JArray,
-                    true,
-                    out modCandidates);
-        }
-
-        private static bool TrySanitizeCandidateArray(
-            JArray input,
-            bool isMod,
-            out JArray sanitized)
+        private static bool TrySanitizeCandidateArray(JArray input, bool isMod,
+            out JArray sanitized, out string failurePath)
         {
             sanitized = null;
-            if (input == null || input.Count > 512) return false;
+            failurePath = null;
+            string prefix = isMod ? "snapshot.modCandidates" : "snapshot.tierCandidates";
+            if (input == null || input.Count > 512) return Reject(out failurePath, prefix + ".shape");
             var result = new JArray();
-            var candidateKeys = new HashSet<string>(StringComparer.Ordinal);
-            foreach (JToken token in input)
+            var keys = new HashSet<string>(StringComparer.Ordinal);
+            for (int i = 0; i < input.Count; i++)
             {
-                JObject candidate;
-                if (!TrySanitizeCandidate(token as JObject, isMod, out candidate))
-                    return false;
-                string candidateKey = ReadString(candidate["candidateKey"]);
-                if (!candidateKeys.Add(candidateKey)) return false;
-                result.Add(candidate);
+                string path = prefix + "[" + i + "]";
+                if (!TrySanitizeCandidate(input[i] as JObject, isMod, out JObject row, out string field))
+                    return Reject(out failurePath, path + "." + field);
+                if (!keys.Add(ReadString(row["candidateKey"])))
+                    return Reject(out failurePath, path + ".candidateKey.duplicate");
+                result.Add(row);
             }
             sanitized = result;
             return true;
         }
 
-        private static bool TrySanitizeCandidate(
-            JObject input,
-            bool isMod,
-            out JObject sanitized)
+        private static bool TrySanitizeCandidate(JObject input, bool isMod,
+            out JObject sanitized, out string failurePath)
         {
             sanitized = null;
+            failurePath = null;
+            if (input == null) return Reject(out failurePath, "shape");
             HashSet<string> allowed = isMod ? ModCandidateKeys : TierCandidateKeys;
-            if (input == null) return false;
             foreach (JProperty property in input.Properties())
-                if (!allowed.Contains(property.Name)) return false;
-
-            string candidateKey = ReadString(input["candidateKey"]);
-            string itemName = ReadString(input["itemName"]);
-            string displayName = ReadString(input["displayName"]);
-            string icon = ReadString(input["icon"]);
-            long owned;
-            if (!IsOpaque(candidateKey)
-                || !IsIdentityText(itemName, 256)
-                || !IsIdentityText(displayName, 256)
-                || !IsIdentityText(icon, 256)
-                || !TryReadQuantity(input["owned"], 0, MaxQuantity, out owned)
-                || input["available"] == null
-                || input["available"].Type != JTokenType.Boolean
-                || !IsTextToken(input["reason"], 0, 256))
-            {
-                return false;
-            }
-
+                if (!allowed.Contains(property.Name)) return Reject(out failurePath, "keys");
+            if (!IsOpaque(ReadString(input["candidateKey"]))) return Reject(out failurePath, "candidateKey");
+            foreach (string field in new[] { "itemName", "displayName", "icon" })
+                if (!IsIdentityTextToken(input[field], 256)) return Reject(out failurePath, field);
+            if (!TryReadQuantity(input["owned"], 0, MaxQuantity, out _)) return Reject(out failurePath, "owned");
+            if (input["available"]?.Type != JTokenType.Boolean) return Reject(out failurePath, "available");
+            if (!IsTextToken(input["reason"], 0, 256)) return Reject(out failurePath, "reason");
             if (isMod)
             {
-                if (input["installed"] == null
-                    || input["installed"].Type != JTokenType.Boolean
-                    || !IsModAvailabilityCode(input["availabilityCode"])
-                    || !(input["replaceableFrom"] is JArray replaceableFrom)
-                    || !IsOpaqueArray(replaceableFrom)
-                    || !IsTextToken(input["grade"], 1, 64)
-                    || !IsTextToken(input["scope"], 1, 64)
-                    || !IsTextToken(input["role"], 1, 64))
-                {
-                    return false;
-                }
-                foreach (string optional in new[] {
-                    "gradeLabel", "gradeColor", "scopeLabel", "roleLabel", "symbol" })
-                {
-                    if (input[optional] != null
-                        && !IsTextToken(input[optional], 1, 128)) return false;
-                }
+                if (input["installed"]?.Type != JTokenType.Boolean) return Reject(out failurePath, "installed");
+                if (!IsOpaqueArray(input["replaceableFrom"] as JArray)) return Reject(out failurePath, "replaceableFrom");
+                foreach (string field in new[] { "grade", "scope", "role" })
+                    if (!IsTextToken(input[field], 1, 64)) return Reject(out failurePath, field);
+                foreach (string field in new[] { "gradeLabel", "gradeColor", "scopeLabel", "roleLabel", "symbol" })
+                    if (input[field] != null && !IsTextToken(input[field], 1, 128)) return Reject(out failurePath, field);
             }
-            else if (!IsTextToken(input["tierName"], 1, 64))
-            {
-                return false;
-            }
-
+            else if (!IsTextToken(input["tierName"], 1, 64)) return Reject(out failurePath, "tierName");
             var result = new JObject();
-            foreach (string key in allowed)
-                if (input[key] != null) result[key] = input[key].DeepClone();
+            foreach (string key in allowed) if (input[key] != null) result[key] = input[key].DeepClone();
             sanitized = result;
             return true;
-        }
-
-        private static bool IsModAvailabilityCode(JToken value)
-        {
-            return TryReadInteger(value, -1024, 1, out int code)
-                && ModAvailabilityCodes.Contains(code);
-        }
-
-        private static string DescribeModAvailabilityCodes(JObject response)
-        {
-            var codes = new SortedSet<int>();
-            foreach (JObject candidate in (JArray)response["snapshot"]["modCandidates"])
-                codes.Add(candidate.Value<int>("availabilityCode"));
-            return string.Join(",", codes);
         }
 
         private static bool IsOpaqueArray(JArray values)
@@ -2722,8 +2440,10 @@ namespace CF7Launcher.Tasks
 
         private static bool IsCommitResponse(
             JObject msg,
-            PendingRequest entry)
+            PendingRequest entry, out JObject sanitizedSnapshot, out string failurePath)
         {
+            sanitizedSnapshot = null;
+            failurePath = "commit.projection";
             PreviewBinding binding = entry != null
                 ? entry.ConsumedPreviewBinding : null;
             JObject before;
@@ -2778,21 +2498,28 @@ namespace CF7Launcher.Tasks
                 return false;
             }
 
+            failurePath = "commit.after";
             JObject snapshot;
             if (!TrySanitizeTuningSnapshot(
                     msg["snapshot"] as JObject,
                     postSource,
-                    out snapshot)
-                || !JToken.DeepEquals(
+                    out snapshot, out failurePath))
+            {
+                failurePath = "commit." + failurePath;
+                return false;
+            }
+            if (!JToken.DeepEquals(
                     snapshot["equipment"],
                     after["source"]["equipment"])
                 || !SnapshotMaterialsMatchCommit(
                     snapshot["materials"] as JArray,
                     materials))
             {
-                return false;
+                return Reject(out failurePath, "commit.snapshot.match");
             }
 
+            sanitizedSnapshot = snapshot;
+            failurePath = "commit.inventorySnapshots";
             if (ReadString(
                     entry.Source["sourceKind"])
                 == "loadout")
@@ -3105,30 +2832,10 @@ namespace CF7Launcher.Tasks
             return DefinitiveWriteErrors.Contains(ReadString(msg["error"]));
         }
 
-        private static JObject SanitizeFlashResponse(JObject msg)
+        private static JObject SanitizeFlashResponse(JObject msg, JObject sanitizedSnapshot)
         {
-            JObject result = msg != null ? (JObject)msg.DeepClone() : new JObject();
-            JObject snapshot = result["snapshot"] as JObject;
-            if (snapshot != null)
-            {
-                JArray tierCandidates;
-                JArray modCandidates;
-                if (TrySanitizeTuningCandidates(
-                    snapshot,
-                    out tierCandidates,
-                    out modCandidates))
-                {
-                    snapshot["tierCandidates"] = tierCandidates;
-                    snapshot["modCandidates"] = modCandidates;
-                }
-                else
-                {
-                    // IsValidResponse normally makes this unreachable. Never project an
-                    // untrusted candidate leaf if validation and sanitization diverge.
-                    snapshot["tierCandidates"] = new JArray();
-                    snapshot["modCandidates"] = new JArray();
-                }
-            }
+            var result = (JObject)msg.DeepClone();
+            if (sanitizedSnapshot != null) result["snapshot"] = sanitizedSnapshot.DeepClone();
             result.Remove("task");
             result.Remove("command");
             result.Remove("callId");

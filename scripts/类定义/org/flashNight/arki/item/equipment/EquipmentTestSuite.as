@@ -2180,7 +2180,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         );
         if (!ModRegistry.hasHitBehaviorDiagnostics() || missingRes != null || missingAvail != -1024 ||
             missingProvision.valid || missingProvision.diagnostics.length == 0 ||
-            missingProvision.diagnostics[0].code != "HB_INSTALLED_PROVIDER_UNAVAILABLE") {
+            missingProvision.diagnostics[0].code != "MOD_INSTALLED_DEFINITION_UNAVAILABLE") {
             return "✗ #208 D04 缺失字段拒绝与禁静默回退测试失败\n";
         }
 

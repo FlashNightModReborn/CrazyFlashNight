@@ -219,11 +219,6 @@ class org.flashNight.arki.item.EquipmentUtil {
             return;
         }
 
-        if(modData.length <= 0) {
-            debugLog("loadModData: 没有配件数据需要加载");
-            return;
-        }
-
         debugLog("加载配件数据...");
 
         // 【修复】先设置调试模式，确保加载过程中的日志能正确输出

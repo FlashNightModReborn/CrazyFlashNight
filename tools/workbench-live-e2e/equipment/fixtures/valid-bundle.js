@@ -179,7 +179,7 @@ function equipment(mods, lastUpdate) {
 
 function candidate(identity, owned, installed) {
   return Object.assign({}, identity, {
-    owned, installed, available: !installed, availabilityCode: installed ? 1 : 0,
+    owned, installed, available: !installed,
     reason: installed ? "已安装" : "可安装", replaceableFrom: [], grade: "A",
     scope: "weapon", role: "utility",
   });

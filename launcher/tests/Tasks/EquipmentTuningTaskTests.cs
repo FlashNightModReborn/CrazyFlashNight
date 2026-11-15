@@ -147,26 +147,11 @@ namespace Launcher.Tests.Tasks
         }
 
         [Theory]
-        [InlineData(1, true)]
-        [InlineData(0, true)]
-        [InlineData(-1, true)]
-        [InlineData(-2, true)]
-        [InlineData(-4, true)]
-        [InlineData(-8, true)]
-        [InlineData(-16, true)]
-        [InlineData(-32, true)]
-        [InlineData(-64, true)]
-        [InlineData(-128, true)]
-        [InlineData(-256, true)]
-        [InlineData(-512, true)]
-        [InlineData(-1024, true)]
-        [InlineData(-2048, false)]
-        [InlineData(-1023, false)]
-        [InlineData(-100, false)]
-        [InlineData(-3, false)]
-        [InlineData(2, false)]
-        [InlineData(100, false)]
-        public void SnapshotAvailability_MatchesClosedAs2CodesForBothSources(int code, bool accepted)
+        [InlineData(true, "")]
+        [InlineData(false, "slot_full")]
+        [InlineData(false, "future_local_rule")]
+        [InlineData(false, "当前装备不满足此配件条件")]
+        public void SnapshotPresentation_UsesFlagsAndBoundedReasonForBothSources(bool available, string reason)
         {
             foreach (bool worn in new[] { false, true })
             {
@@ -175,51 +160,64 @@ namespace Launcher.Tests.Tasks
                 using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
                 {
                     JObject source = worn ? LoadoutSource(11, "手枪", 3) : Source(7, "lease.source.7");
-                    task.HandleWebRequest("snapshot", Request("snapshot", "tune.availability", null, source));
+                    task.HandleWebRequest("snapshot", Request("snapshot", "tune.presentation", null, source));
                     JObject response = SnapshotResponse(Assert.Single(sent));
                     JObject candidate = (JObject)response["snapshot"]["modCandidates"][0];
-                    candidate["availabilityCode"] = code;
-                    candidate["available"] = code == 1;
+                    candidate["available"] = available;
+                    candidate["reason"] = reason;
                     task.HandleFlashResponse(response, null);
                     JObject adopted = Assert.Single(web);
-                    Assert.Equal(accepted, (bool)adopted["success"]);
-                    if (accepted)
-                    {
-                        Assert.Equal(code, (int)adopted["snapshot"]["modCandidates"][0]["availabilityCode"]);
-                        Assert.Equal(code == 1, (bool)adopted["snapshot"]["modCandidates"][0]["available"]);
-                    }
-                    else Assert.Equal("malformed_response", (string)adopted["error"]);
+                    Assert.True((bool)adopted["success"]);
+                    Assert.Equal(available, (bool)adopted["snapshot"]["modCandidates"][0]["available"]);
+                    Assert.Equal(reason, (string)adopted["snapshot"]["modCandidates"][0]["reason"]);
+                    Assert.Null(adopted["snapshot"]["modCandidates"][0]["availabilityCode"]);
                 }
             }
         }
 
         [Theory]
-        [InlineData(false, -128)]
-        [InlineData(false, -256)]
-        [InlineData(false, -512)]
-        [InlineData(false, -1024)]
-        [InlineData(true, -128)]
-        [InlineData(true, -256)]
-        [InlineData(true, -512)]
-        [InlineData(true, -1024)]
-        public void CommitSnapshot_WithDefinedUnavailableReason_SettlesAndAllowsNextPreview(
-            bool loadout, int code)
+        [InlineData(-1024)]
+        [InlineData(1)]
+        [InlineData(-7)]
+        public void Snapshot_WithRetiredNumericCode_IsRejectedAsExtraField(int oldCode)
+        {
+            foreach (bool worn in new[] { false, true })
+            {
+                var sent = new List<JObject>();
+                var web = new List<JObject>();
+                using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+                {
+                    JObject source = worn ? LoadoutSource(11, "手枪", 3) : Source(7, "lease.source.7");
+                    task.HandleWebRequest("snapshot", Request("snapshot", "tune.old.code", null, source));
+                    JObject response = SnapshotResponse(Assert.Single(sent));
+                    response["snapshot"]["modCandidates"][0]["availabilityCode"] = oldCode;
+                    task.HandleFlashResponse(response, null);
+                    Assert.Equal("malformed_response", (string)Assert.Single(web)["error"]);
+                }
+            }
+        }
+
+        [Theory]
+        [InlineData(false, "future_local_rule")]
+        [InlineData(false, "当前装备不满足此配件条件")]
+        [InlineData(true, "future_local_rule")]
+        [InlineData(true, "当前装备不满足此配件条件")]
+        public void CommitSnapshot_WithBoundedUnavailableReason_SettlesAndAllowsNextPreview(bool loadout, string reason)
         {
             JObject source = loadout ? LoadoutSource(11, "手枪2", 3) : Source(7, "lease.source.7");
             using (var harness = new CommitHarness(source))
             {
                 JObject response = CommitResponse(harness.Command, source);
                 JObject candidate = (JObject)response["snapshot"]["modCandidates"][0];
-                candidate["availabilityCode"] = code;
                 candidate["available"] = false;
+                candidate["reason"] = reason;
                 harness.Task.HandleFlashResponse(response, null);
                 JObject accepted = Assert.Single(harness.Web);
                 Assert.True((bool)accepted["success"]);
                 Assert.Null(accepted["requiresReconcile"]);
-                Assert.Equal(code, (int)accepted["snapshot"]["modCandidates"][0]["availabilityCode"]);
-
+                Assert.Equal(reason, (string)accepted["snapshot"]["modCandidates"][0]["reason"]);
                 harness.Web.Clear();
-                harness.Task.HandleWebRequest("preview", Request("preview", "tune.after.extended.code",
+                harness.Task.HandleWebRequest("preview", Request("preview", "tune.after.reason",
                     "enhance", (JObject)response["snapshot"]["source"]));
                 Assert.Empty(harness.Web);
                 Assert.Equal(2, harness.Sent.Count);
@@ -4985,7 +4983,7 @@ namespace Launcher.Tests.Tasks
                 ["owned"] = owned,
                 ["installed"] = installed,
                 ["available"] = available,
-                ["availabilityCode"] = available ? 1 : installed ? -2 : -1,
+
                 ["reason"] = available ? "" : installed
                     ? "already_installed" : "slot_full",
                 ["replaceableFrom"] = replaceableFrom,
@@ -5347,7 +5345,7 @@ namespace Launcher.Tests.Tasks
                 ["owned"] = 4,
                 ["installed"] = true,
                 ["available"] = false,
-                ["availabilityCode"] = -2,
+
                 ["reason"] = "already_installed",
                 ["replaceableFrom"] = new JArray(),
                 ["grade"] = "common",
@@ -5393,7 +5391,7 @@ namespace Launcher.Tests.Tasks
                 ["owned"] = 1,
                 ["installed"] = false,
                 ["available"] = true,
-                ["availabilityCode"] = 1,
+
                 ["reason"] = "",
                 ["replaceableFrom"] = new JArray(),
                 ["grade"] = "high",

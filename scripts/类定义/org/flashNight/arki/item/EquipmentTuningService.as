@@ -254,15 +254,39 @@ class org.flashNight.arki.item.EquipmentTuningService {
             return commitFail("commit_failed", transactionId);
         }
 
-        // 两个容器入口均已完整预检；以下无回调提交阶段不会暴露半状态。
-        if (!bag.transactionApplyValueChanges(valueChanges)) {
-            _busy = false;
-            return commitFail("commit_failed", transactionId);
+        // 跨容器提交保留精确 receipt；材料失败只能补偿仍属于本事务的装备值。
+        var bagCommit:Object = null;
+        try {
+            bagCommit = bag.transactionApplyValueChangesWithReceipt(valueChanges);
+        } catch (bagCommitError) {
+            bagCommit = null;
         }
-        var materialCommit:Object = materials.transactionApplyDeltas(fresh.materialDeltas);
-        if (!materialCommit.success) {
+        if (bagCommit == null || bagCommit.success !== true) {
             _busy = false;
-            return commitFail("commit_failed", transactionId);
+            return commitFail("needs_reconcile", transactionId);
+        }
+        var materialCommit:Object = null;
+        try {
+            if (_testFailNextMaterialCommit) {
+                _testFailNextMaterialCommit = false;
+                materialCommit = {success:false, rollbackComplete:true};
+            } else {
+                materialCommit = materials.transactionApplyDeltas(fresh.materialDeltas);
+            }
+        } catch (materialCommitError) {
+            materialCommit = null;
+        }
+        if (materialCommit == null || materialCommit.success !== true) {
+            var bagRestored:Boolean = false;
+            try {
+                bagRestored = bag.rollbackValueTransaction(bagCommit) === true;
+            } catch (bagRollbackError) {
+                bagRestored = false;
+            }
+            _busy = false;
+            return commitFail(bagRestored && materialCommit != null
+                && materialCommit.rollbackComplete === true
+                    ? "commit_failed" : "needs_reconcile", transactionId);
         }
 
         _writeEpoch++;
@@ -1265,7 +1289,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
             materialNames[modName] = true;
             modCandidates.push(buildModCandidateProjection(
                 modKey, modName, modOwned, indexOfString(item.value.mods, modName) >= 0,
-                availability == 1 && modOwned > 0, availability,
+                availability == 1 && modOwned > 0,
                 availability == 1 ? (modOwned > 0 ? "" : "material_missing") : modAvailabilityReason(availability)
             ));
         }
@@ -1284,7 +1308,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
                 modSeen[modName] = true;
                 modCandidates.push(buildModCandidateProjection(
                     modKey, modName, materials.getValue(modName), true,
-                    false, -2, modAvailabilityReason(-2)
+                    false, modAvailabilityReason(-2)
                 ));
             }
         }
@@ -1882,9 +1906,9 @@ class org.flashNight.arki.item.EquipmentTuningService {
         return code <= 32 || code == 160;
     }
 
-    /** 将插件定义的单源元数据投影给 Web 候选目录；安装权威仍是 availabilityCode。 */
+    /** 将插件定义的单源元数据投影给 Web 候选目录；只投影可用性与原因；提交时仍由 AS2 重新核对规则、材料与 token。 */
     private static function buildModCandidateProjection(candidateKey:String, modName:String, owned:Number,
-            installed:Boolean, available:Boolean, availabilityCode:Number, reason:String):Object {
+            installed:Boolean, available:Boolean, reason:String):Object {
         var modData:Object = EquipmentUtil.modDict == undefined ? null : EquipmentUtil.modDict[modName];
         var presentation:Object = itemPresentation(modName);
         var result:Object = {
@@ -1895,7 +1919,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
             owned:owned,
             installed:installed,
             available:available,
-            availabilityCode:availabilityCode,
             reason:reason,
             replaceableFrom:[],
             grade:"unknown",

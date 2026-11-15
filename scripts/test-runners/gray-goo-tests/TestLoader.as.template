@@ -4,12 +4,14 @@ if (_root.preloaders == undefined) _root.preloaders=[];
 if (_root.loaders == undefined) _root.loaders=[];
 if (_root.UI系统 == undefined) _root.UI系统={};
 if (_root.gameCommands == undefined) _root.gameCommands={};
+function runOriginalGraySuites():Void {
 org.flashNight.arki.bullet.BulletComponent.Queue.ToughnessVulnerabilityPipelineTest.runAllTests();
 org.flashNight.arki.component.Buff.Effect.GrayGooShotgunEtchTest.runAllTests();
 org.flashNight.arki.item.equipment.EquipmentTestSuite.runAllTests();
 org.flashNight.gesh.tooltip.test.TestDataBootstrap.runIsolated(function():Void {
     org.flashNight.gesh.tooltip.test.BuilderContractTest.runAllTests();
 });
+}
 _root.grayGooAssetComplete=function():Void {
     trace("FocusedTestRunId gray-goo-tests Complete: __FOCUSED_RUN_ID__");
 };
@@ -22,6 +24,8 @@ var grayProbeItems:Object={};
 var grayProbeMods:Array=[];
 function loadNextGrayProbe():Void {
     if (grayProbeIndex>=grayProbePaths.length) {
+        org.flashNight.arki.item.EquipmentTuningServiceTest.runColdMissingModDefinitionTests(grayProbeItems,grayProbeMods);
+        runOriginalGraySuites();
         var profileMods = org.flashNight.gesh.object.ObjectUtil.clone(grayProbeMods);
         org.flashNight.arki.item.equipment.ModRegistry.loadModData(profileMods);
         var cfg:Object=org.flashNight.arki.item.equipment.EquipmentConfigManager.getFullConfig();

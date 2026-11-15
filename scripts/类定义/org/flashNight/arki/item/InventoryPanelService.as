@@ -1662,19 +1662,24 @@ class org.flashNight.arki.item.InventoryPanelService {
             }
         }
         var isEquipment:Boolean = typeof item.value == "object";
+        if (strictTier && isEquipment && data == null) return null;
+        var identityData:Object = data;
+        if (identityData == null && typeof item.getIdentityData == "function") {
+            identityData = item.getIdentityData();
+        }
         var quantity:Number = !isEquipment ? Number(item.value) : 1;
         var enhancementLevel:Number = isEquipment ? Number(item.value.level) : 0;
         if (isNaN(enhancementLevel)) enhancementLevel = 0;
         var rarity = data == null ? "" : (data.rarity != undefined ? data.rarity : data.品质);
-        var majorType = data == null ? "" : (data.type != undefined ? data.type : data.类型);
-        var useName = data == null ? "" : data.use;
+        var majorType = identityData == null ? "" : (identityData.type != undefined ? identityData.type : identityData.类型);
+        var useName = identityData == null ? "" : identityData.use;
         var actionType = data == null ? "" : (data.actiontype != undefined ? data.actiontype : data.actionType);
-        var weaponType = data == null ? "" : (data.weapontype != undefined ? data.weapontype : data.weaponType);
+        var weaponType = identityData == null ? "" : (identityData.weapontype != undefined ? identityData.weapontype : identityData.weaponType);
         var setId = data == null || data.setId == undefined ? "" : data.setId;
         var setName = data == null || data.setName == undefined ? "" : data.setName;
         var setOrder:Number = data == null ? 0 : Number(data.setOrder);
         if (isNaN(setOrder)) setOrder = 0;
-        var itemIdentity:Object = buildLegacyIdentityProjection(String(item.name), data);
+        var itemIdentity:Object = buildLegacyIdentityProjection(String(item.name), identityData);
         var iconName:String = itemIdentity.icon;
         var displayName:String = itemIdentity.displayName;
         var maxEnhancementLevel:Number = EquipmentUtil.getMaxLevel();
@@ -1707,7 +1712,7 @@ class org.flashNight.arki.item.InventoryPanelService {
                 }
             }
             // 生产库存是 BaseItem；测试/未知历史对象缺 getData 时保持关闭，不在 Web 端猜升阶资格。
-            if (typeof item.getData == "function") {
+            if (data != null && typeof item.getData == "function") {
                 try {
                     var tierOptions:Array = TierSystem.getAvailableTierMaterials(BaseItem(item));
                     if (tierOptions != null && tierOptions.length > 0) tierSlotAvailable = true;

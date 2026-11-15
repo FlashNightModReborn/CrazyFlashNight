@@ -190,9 +190,10 @@
             mod_unavailable:'该配件当前不可安装。',mod_not_installed:'目标配件已不在装备上。',busy:'Flash 正在处理另一项调制。',
             invalid_equipment:'该物品不能调制。',invalid_mods:'装备的配件数据无效。',unknown_candidate:'候选项已失效，请刷新。',
             token_invalid:'调制预览已失效，请重新预览。',token_expired:'调制预览已过期，请重新预览。',
-            view_session_expired:'调制会话已失效，请重新进入。',commit_failed:'调制提交失败，未写入存档。',
+            view_session_expired:'调制会话已失效，请重新进入。',commit_failed:'调制提交结果尚未确认，请先刷新对账。',
             timeout:'调制响应超时。',client_timeout:'调制响应超时。',disconnected:'连接已断开。',not_sent:'请求未送达 Flash。',
             malformed_response:'Flash 回包不完整。',reconcile_required:'上次提交结果需要重新对账。',
+            needs_reconcile:'上次提交结果尚未确认，请先刷新对账。',
             material_quantity_quarantined:'材料数量超出可表示范围，已在存档中隔离保留原值；请备份存档并联系维护者修复。',
             inventory_projection_failed:'同类装备读取失败，请重试。',
             inventory_projection_unavailable:'当前无法读取同类装备。'};

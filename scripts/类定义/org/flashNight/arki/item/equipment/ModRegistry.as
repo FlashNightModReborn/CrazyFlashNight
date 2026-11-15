@@ -35,14 +35,13 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     private static var _hitBehaviorDiagnostics:Array = [];
     private static var _hitBehaviorAllowedKeys:Object = null;
     private static var _invalidHitBehaviorMods:Object = {};
-    private static var _knownHitBehaviorProviders:Object = {灰蛊裂隙弹: true};
 
     /**
      * 加载配件数据
      * @param modData 配件数据数组
      */
     public static function loadModData(modData:Array):Void {
-        if (!modData || modData.length <= 0) {
+        if (modData == null) {
             if (_debugMode) {
                 trace("[ModRegistry] 没有配件数据需要加载");
             }
@@ -1284,14 +1283,6 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         return Boolean(modName && _invalidHitBehaviorMods && _invalidHitBehaviorMods[modName]);
     }
 
-    public static function isKnownHitBehaviorProvider(modName:String):Boolean {
-        if (!modName) return false;
-        if (_knownHitBehaviorProviders && _knownHitBehaviorProviders[modName]) return true;
-        if (_invalidHitBehaviorMods && _invalidHitBehaviorMods[modName]) return true;
-        if (_modDict && _modDict[modName] && _modDict[modName]._hasHitBehavior) return true;
-        return false;
-    }
-
     private static function evictInvalidModFromRegistry(modName:String, modRef:Object):Void {
         if (!modName) return;
         if (modRef) {
@@ -1397,9 +1388,6 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         mod._hitBehaviorInvalid = false;
 
         if (!hasHb) return [];
-        if (mod.name) {
-            _knownHitBehaviorProviders[String(mod.name)] = true;
-        }
 
         var errors:Array = [];
         var modLabel:String = mod.name ? String(mod.name) : "<unnamed>";
@@ -1761,51 +1749,11 @@ class org.flashNight.arki.item.equipment.ModRegistry {
 
         for (var i:Number = 0; i < mods.length; i++) {
             var modName:String = mods[i];
-            if (!modName) continue;
             var modInfo:Object = dict ? dict[modName] : null;
             if (!modInfo) {
-                var rejectedMod:Object = (dict === _modDict && _invalidHitBehaviorMods && _invalidHitBehaviorMods[modName])
-                    ? _invalidHitBehaviorMods[modName]
-                    : null;
-                if (rejectedMod) {
-                    providerCount++;
-                    var rejCode:String = (rejectedMod._hitBehaviorErrors && rejectedMod._hitBehaviorErrors.length > 0)
-                        ? rejectedMod._hitBehaviorErrors[0].code
-                        : "HB_INSTALLED_PROVIDER_UNAVAILABLE";
-                    diagnostics.push({
-                        code: rejCode,
-                        modName: modName,
-                        detail: "installed hitBehavior mod failed validation and was rejected"
-                    });
-                    if (rejCode != "HB_INSTALLED_PROVIDER_UNAVAILABLE") {
-                        diagnostics.push({
-                            code: "HB_INSTALLED_PROVIDER_UNAVAILABLE",
-                            modName: modName,
-                            detail: "installed hitBehavior provider mod is unavailable"
-                        });
-                    }
-                    if (providerCount > 1) {
-                        diagnostics.push({
-                            code: "HB_MULTIPLE_PROVIDERS",
-                            modName: modName,
-                            detail: "multiple hitBehavior providers are not allowed on the same item"
-                        });
-                    }
-                } else if (isKnownHitBehaviorProvider(modName) || (modRegistry != null && modRegistry !== _modDict)) {
-                    providerCount++;
-                    diagnostics.push({
-                        code: "HB_INSTALLED_PROVIDER_UNAVAILABLE",
-                        modName: modName,
-                        detail: "installed hitBehavior provider mod is missing from registry"
-                    });
-                    if (providerCount > 1) {
-                        diagnostics.push({
-                            code: "HB_MULTIPLE_PROVIDERS",
-                            modName: modName,
-                            detail: "multiple hitBehavior providers are not allowed on the same item"
-                        });
-                    }
-                }
+                // 冷启动与重新加载执行同一规则；未知定义不能被当成普通插件跳过。
+                diagnostics.push({code:"MOD_INSTALLED_DEFINITION_UNAVAILABLE",
+                    modName:modName, detail:"installed mod definition is unavailable; restore definitions and reload"});
                 continue;
             }
 
