@@ -28,7 +28,7 @@ $committedSideEffectsCount = [regex]::Matches(
 ).Count
 $loadoutAllowlist = [regex]::Match(
     $tuningSource,
-    'private static var _loadoutAllowedOperations:Object = \{[\s\S]*?\};'
+    'private static var _allowedOperations:Object = \{[\s\S]*?\};'
 ).Value
 if (($loadoutAllowlist -notmatch 'convert:true') -or
         ($loadoutAllowlist -notmatch 'enhance:true') -or

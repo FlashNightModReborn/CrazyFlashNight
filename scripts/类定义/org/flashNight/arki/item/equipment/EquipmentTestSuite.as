@@ -889,7 +889,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         };
 
         // 尝试安装同tag的"占位插件B"，应该返回-8（同位置插件已装备）
-        var availability:Number = TagManager.checkModAvailability(testItem, testItemData, "占位插件B");
+        var availability:Number = checkFixtureMod(testItem, testItemData, "占位插件B");
         var isExcluded:Boolean = (availability == -8);
 
         return isExcluded ? "✓ 标签互斥测试通过\n" : "✗ 标签互斥测试失败（返回码=" + availability + "，期望-8）\n";
@@ -948,12 +948,12 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
 
         registerFixtureDefinition("测试机枪", machineData);
         registerFixtureDefinition("测试突击步枪", rifleData);
-        var missingPower:Number = TagManager.checkModAvailability(machineItem, machineData, "条件供电插件");
-        var hasPower:Number = TagManager.checkModAvailability(poweredMachineItem, machineData, "条件供电插件");
+        var missingPower:Number = checkFixtureMod(machineItem, machineData, "条件供电插件");
+        var hasPower:Number = checkFixtureMod(poweredMachineItem, machineData, "条件供电插件");
         var rifleItem = {name:"测试突击步枪", value:{mods:[]}};
-        var rifleBypass:Number = TagManager.checkModAvailability(rifleItem, rifleData, "条件供电插件");
-        var filteredWithoutPower:Array = TagManager.filterAvailableMods(["条件供电插件"], machineItem, machineData);
-        var filteredWithPower:Array = TagManager.filterAvailableMods(["条件供电插件"], poweredMachineItem, machineData);
+        var rifleBypass:Number = checkFixtureMod(rifleItem, rifleData, "条件供电插件");
+        var filteredWithoutPower:Array = filterFixtureMods(["条件供电插件"], machineItem, machineData);
+        var filteredWithPower:Array = filterFixtureMods(["条件供电插件"], poweredMachineItem, machineData);
 
         var passed:Boolean = (
             missingPower == -16 &&
@@ -982,7 +982,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         };
         var testItemData = { data: { modslot: 3 } };
 
-        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "普通插件");
+        var code:Number = checkFixtureMod(testItem, testItemData, "普通插件");
         var passed:Boolean = (code == 1);
 
         return passed ? "✓ 状态码1(可装备)测试通过\n" : "✗ 状态码1测试失败（返回" + code + "）\n";
@@ -999,10 +999,10 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var testItemData = { data: { modslot: 3 } };
 
         // 测试不存在的配件
-        var code1:Number = TagManager.checkModAvailability(testItem, testItemData, "不存在的配件");
+        var code1:Number = checkFixtureMod(testItem, testItemData, "不存在的配件");
 
         // 测试 itemData.data 为空
-        var code2:Number = TagManager.checkModAvailability(testItem, {}, "普通插件");
+        var code2:Number = checkFixtureMod(testItem, {}, "普通插件");
 
         var passed:Boolean = (code1 == 0 && code2 == 0);
 
@@ -1020,7 +1020,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         };
         var testItemData = { data: { modslot: 1 } };  // 最多1个槽位
 
-        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "普通插件");
+        var code:Number = checkFixtureMod(testItem, testItemData, "普通插件");
         var passed:Boolean = (code == -1);
 
         return passed ? "✓ 状态码-1(槽位满)测试通过\n" : "✗ 状态码-1测试失败（返回" + code + "）\n";
@@ -1036,7 +1036,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         };
         var testItemData = { data: { modslot: 3 } };
 
-        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "普通插件");
+        var code:Number = checkFixtureMod(testItem, testItemData, "普通插件");
         var passed:Boolean = (code == -2);
 
         return passed ? "✓ 状态码-2(已装备)测试通过\n" : "✗ 状态码-2测试失败（返回" + code + "）\n";
@@ -1055,7 +1055,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             skill: { name: "装备自带战技" }  // 无 skillname，不是可装载的战技定义
         };
 
-        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "战技插件");
+        var code:Number = checkFixtureMod(testItem, testItemData, "战技插件");
         var passed:Boolean = (code == -4);
 
         return passed ? "✓ 状态码-4(战技冲突)测试通过\n" : "✗ 状态码-4测试失败（返回" + code + "）\n";
@@ -1075,7 +1075,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             skill: { skillname: "弧光斩", mp: 40 }  // 未声明 skillLocked = 可更换
         };
 
-        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "战技插件");
+        var code:Number = checkFixtureMod(testItem, testItemData, "战技插件");
         var passed:Boolean = (code == 1);
 
         return passed ? "✓ 状态码1(战技可更换)测试通过\n" : "✗ 战技可更换测试失败（返回" + code + "）\n";
@@ -1095,7 +1095,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             skill: { skillname: "掌炮", skillLocked: true }
         };
 
-        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "战技插件");
+        var code:Number = checkFixtureMod(testItem, testItemData, "战技插件");
         var passed:Boolean = (code == -4);
 
         return passed ? "✓ 状态码-4(战技不可更换)测试通过\n" : "✗ 战技不可更换测试失败（返回" + code + "）\n";
@@ -1123,7 +1123,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             }
         };
 
-        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "战技插件");
+        var code:Number = checkFixtureMod(testItem, testItemData, "战技插件");
         var passed:Boolean = (code == -4);
 
         return passed ? "✓ 状态码-4(无根层战技但不可更换)测试通过\n" : "✗ 无根层战技但不可更换测试失败（返回" + code + "）\n";
@@ -1140,7 +1140,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var testItemData = { data: { modslot: 3 } };
 
         // 尝试装备同tag的占位插件B
-        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "占位插件B");
+        var code:Number = checkFixtureMod(testItem, testItemData, "占位插件B");
         var passed:Boolean = (code == -8);
 
         return passed ? "✓ 状态码-8(同tag)测试通过\n" : "✗ 状态码-8测试失败（返回" + code + "）\n";
@@ -1156,7 +1156,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         };
         var testItemData = { data: { modslot: 3 } };
 
-        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "缺tag插件");
+        var code:Number = checkFixtureMod(testItem, testItemData, "缺tag插件");
         var passed:Boolean = (code == -16);
 
         return passed ? "✓ 状态码-16(缺tag)测试通过\n" : "✗ 状态码-16测试失败（返回" + code + "）\n";
@@ -1191,7 +1191,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             blockedTags: "被禁止的挂点"  // 禁止该挂点类型
         };
 
-        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "被禁止tag插件");
+        var code:Number = checkFixtureMod(testItem, testItemData, "被禁止tag插件");
         var passed:Boolean = (code == -64);
 
         return passed ? "✓ 状态码-64(被禁止)测试通过\n" : "✗ 状态码-64测试失败（返回" + code + "）\n";
@@ -1210,7 +1210,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             data: { modslot: 3, damagetype: "普通", interval: 120 }
         };
 
-        var code1:Number = TagManager.checkModAvailability(testItem1, testItemData1, "条件插件_魔法高间隔");
+        var code1:Number = checkFixtureMod(testItem1, testItemData1, "条件插件_魔法高间隔");
         var fail1:Boolean = (code1 == -256);
 
         // 满足条件的装备：damagetype="魔法", interval=250
@@ -1222,7 +1222,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             data: { modslot: 3, damagetype: "魔法", interval: 250 }
         };
 
-        var code2:Number = TagManager.checkModAvailability(testItem2, testItemData2, "条件插件_魔法高间隔");
+        var code2:Number = checkFixtureMod(testItem2, testItemData2, "条件插件_魔法高间隔");
         var pass2:Boolean = (code2 == 1);
 
         // 只满足一个条件：damagetype="魔法" 但 interval=100（不满足 above 200）
@@ -1234,7 +1234,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             data: { modslot: 3, damagetype: "魔法", interval: 100 }
         };
 
-        var code3:Number = TagManager.checkModAvailability(testItem3, testItemData3, "条件插件_魔法高间隔");
+        var code3:Number = checkFixtureMod(testItem3, testItemData3, "条件插件_魔法高间隔");
         var fail3:Boolean = (code3 == -256);
 
         var passed:Boolean = fail1 && pass2 && fail3;
@@ -1372,7 +1372,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var pathOk:Boolean = (val1 == 15 && val2 == 5 && val3 == undefined);
 
         // 通过 checkModAvailability 测试嵌套路径（条件插件_嵌套路径 要求 data.magicdefence.电 >= 10）
-        var code1:Number = TagManager.checkModAvailability(testItem, testItemData, "条件插件_嵌套路径");
+        var code1:Number = checkFixtureMod(testItem, testItemData, "条件插件_嵌套路径");
         var condOk:Boolean = (code1 == 1); // 电=15 >= 10，应通过
 
         // 不满足时
@@ -1384,7 +1384,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
                 }
             }
         };
-        var code2:Number = TagManager.checkModAvailability(testItem, testItemData2, "条件插件_嵌套路径");
+        var code2:Number = checkFixtureMod(testItem, testItemData2, "条件插件_嵌套路径");
         var condFail:Boolean = (code2 == -256); // 电=5 < 10，应拒绝
 
         var passed:Boolean = pathOk && condOk && condFail;
@@ -1410,28 +1410,28 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var testItemData1 = {
             data: { modslot: 3, damagetype: "魔法", interval: 100 }
         };
-        var code1:Number = TagManager.checkModAvailability(testItem, testItemData1, "条件插件_OR模式");
+        var code1:Number = checkFixtureMod(testItem, testItemData1, "条件插件_OR模式");
         var pass1:Boolean = (code1 == 1); // 魔法满足 → OR通过
 
         // 只满足第二个条件（不是魔法但间隔超高）→ 通过
         var testItemData2 = {
             data: { modslot: 3, damagetype: "普通", interval: 600 }
         };
-        var code2:Number = TagManager.checkModAvailability(testItem, testItemData2, "条件插件_OR模式");
+        var code2:Number = checkFixtureMod(testItem, testItemData2, "条件插件_OR模式");
         var pass2:Boolean = (code2 == 1); // interval>500 满足 → OR通过
 
         // 两个都不满足 → 拒绝
         var testItemData3 = {
             data: { modslot: 3, damagetype: "普通", interval: 100 }
         };
-        var code3:Number = TagManager.checkModAvailability(testItem, testItemData3, "条件插件_OR模式");
+        var code3:Number = checkFixtureMod(testItem, testItemData3, "条件插件_OR模式");
         var fail3:Boolean = (code3 == -256); // 都不满足 → 拒绝
 
         // 两个都满足 → 通过
         var testItemData4 = {
             data: { modslot: 3, damagetype: "魔法", interval: 600 }
         };
-        var code4:Number = TagManager.checkModAvailability(testItem, testItemData4, "条件插件_OR模式");
+        var code4:Number = checkFixtureMod(testItem, testItemData4, "条件插件_OR模式");
         var pass4:Boolean = (code4 == 1); // 都满足 → 当然通过
 
         var passed:Boolean = pass1 && pass2 && fail3 && pass4;
@@ -1458,14 +1458,14 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var testItemData1 = {
             data: { modslot: 3, damagetype: "破击", interval: 300 }
         };
-        var code1:Number = TagManager.checkModAvailability(testItem, testItemData1, "条件插件_current作用域");
+        var code1:Number = checkFixtureMod(testItem, testItemData1, "条件插件_current作用域");
         var pass1:Boolean = (code1 == 1); // 满足 damagetype=="破击"
 
         // 基础值是"魔法"，不满足 scope="current" 的条件
         var testItemData2 = {
             data: { modslot: 3, damagetype: "魔法", interval: 300 }
         };
-        var code2:Number = TagManager.checkModAvailability(testItem, testItemData2, "条件插件_current作用域");
+        var code2:Number = checkFixtureMod(testItem, testItemData2, "条件插件_current作用域");
         var fail2:Boolean = (code2 == -256); // 不满足
 
         var passed:Boolean = pass1 && fail2;
@@ -1491,28 +1491,28 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var testItemData1 = {
             data: { modslot: 3, damagetype: "破击", interval: 100 }
         };
-        var code1:Number = TagManager.checkModAvailability(testItem, testItemData1, "条件插件_嵌套组");
+        var code1:Number = checkFixtureMod(testItem, testItemData1, "条件插件_嵌套组");
         var pass1:Boolean = (code1 == 1);
 
         // 满足 group 分支: damagetype=="魔法" AND interval>200
         var testItemData2 = {
             data: { modslot: 3, damagetype: "魔法", interval: 300 }
         };
-        var code2:Number = TagManager.checkModAvailability(testItem, testItemData2, "条件插件_嵌套组");
+        var code2:Number = checkFixtureMod(testItem, testItemData2, "条件插件_嵌套组");
         var pass2:Boolean = (code2 == 1);
 
         // 不满足任何分支: damagetype=="普通"
         var testItemData3 = {
             data: { modslot: 3, damagetype: "普通", interval: 300 }
         };
-        var code3:Number = TagManager.checkModAvailability(testItem, testItemData3, "条件插件_嵌套组");
+        var code3:Number = checkFixtureMod(testItem, testItemData3, "条件插件_嵌套组");
         var fail3:Boolean = (code3 == -256);
 
         // group 分支部分满足（魔法但 interval 不够）→ 不通过，且外层 cond 也不满足
         var testItemData4 = {
             data: { modslot: 3, damagetype: "魔法", interval: 100 }
         };
-        var code4:Number = TagManager.checkModAvailability(testItem, testItemData4, "条件插件_嵌套组");
+        var code4:Number = checkFixtureMod(testItem, testItemData4, "条件插件_嵌套组");
         var fail4:Boolean = (code4 == -256);
 
         var passed:Boolean = pass1 && pass2 && fail3 && fail4;
@@ -2015,90 +2015,34 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
     }
 
     /**
-     * 精确手枪分支与嵌套 hitBehavior 合并测试。
+     * 精确手枪分支与普通嵌套属性合并测试；不再借用行为 schema 例外。
      * 普通手枪获得专属档位，冲锋手枪只保留插件基础档位。
      */
     private static function testEquipmentCalculator_QualifiedHandgunHitBehavior():String {
-        EquipmentConfigManager.loadConfig({
-            levelStatList: [1, 1.0],
-            decimalPropDict: {}
-        });
-
-        ModRegistry.loadModData([{
-            name: "手枪行为补弱测试配件",
-            use: "手枪",
-            stats: {
-                merge: {
-                    hitBehavior: {
-                        type: "toughnessVulnerabilityPrimer",
-                        stackGroup: "grayGooVulnerability",
-                        profileId: "base",
-                        duration: 180,
-                        maxDuration: 300,
-                        maxStacks: 3,
-                        damagePerStack: 0.06
-                    }
-                },
-                useSwitch: {
-                    use: [{
-                        name: "weapontype:手枪",
-                        merge: {
-                            hitBehavior: {
-                                profileId: "handgun",
-                                duration: 240,
-                                maxDuration: 360,
-                                damagePerStack: 0.07
-                            }
-                        }
-                    }]
-                }
-            }
-        }]);
-
-        var modRegistry:Object = {
-            手枪行为补弱测试配件: ModRegistry.getModData("手枪行为补弱测试配件")
-        };
-        var value:Object = {level: 1, mods: ["手枪行为补弱测试配件"]};
+        EquipmentConfigManager.loadConfig({levelStatList:[1,1], decimalPropDict:{}});
+        ModRegistry.loadModData([{name:"旧行为夹具",use:"手枪",stats:{merge:{
+            hitBehavior:{type:"toughnessVulnerabilityPrimer",duration:180,maxDuration:300}
+        }}}]);
+        var legacyRejected:Boolean = ModRegistry.getModData("旧行为夹具") == null
+            && ModRegistry.hasHitBehaviorDiagnostics();
+        ModRegistry.loadModData([{name:"手枪嵌套合并测试配件",use:"手枪",stats:{
+            merge:{magicdefence:{热:180,冷:300,电:3,基础:6}},
+            useSwitch:{use:[{name:"weapontype:手枪",merge:{magicdefence:{热:240,冷:360,基础:7}}}]}
+        }}]);
+        var value:Object = {level:1,mods:["手枪嵌套合并测试配件"]};
         var cfg:Object = EquipmentConfigManager.getFullConfig();
-
-        var standardResult:Object = EquipmentCalculator.calculatePure(
-            {name: "测试普通手枪", use: "手枪", weapontype: "手枪", data: {}},
-            value,
-            cfg,
-            modRegistry
-        );
-        var machinePistolResult:Object = EquipmentCalculator.calculatePure(
-            {name: "测试冲锋手枪", use: "手枪", weapontype: "冲锋枪", data: {}},
-            value,
-            cfg,
-            modRegistry
-        );
-
-        var standardBehavior:Object = standardResult.data.hitBehavior;
-        var machinePistolBehavior:Object = machinePistolResult.data.hitBehavior;
-        var passed:Boolean = (
-            standardBehavior.duration == 240 &&
-            standardBehavior.stackGroup == "grayGooVulnerability" &&
-            standardBehavior.profileId == "handgun" &&
-            standardBehavior.maxDuration == 360 &&
-            standardBehavior.maxStacks == 3 &&
-            standardBehavior.damagePerStack == 0.07 &&
-            machinePistolBehavior.duration == 180 &&
-            machinePistolBehavior.stackGroup == "grayGooVulnerability" &&
-            machinePistolBehavior.profileId == "base" &&
-            machinePistolBehavior.maxDuration == 300 &&
-            machinePistolBehavior.maxStacks == 3 &&
-            machinePistolBehavior.damagePerStack == 0.06
-        );
-
-        if (!passed) {
-            return "✗ 精确手枪hitBehavior合并测试失败（普通手枪=" +
-                   standardBehavior.duration + "/" + standardBehavior.maxDuration + "/" + standardBehavior.damagePerStack +
-                   "，冲锋手枪=" + machinePistolBehavior.duration + "/" +
-                   machinePistolBehavior.maxDuration + "/" + machinePistolBehavior.damagePerStack + "）\n";
-        }
-
-        return "✓ 精确手枪hitBehavior合并测试通过\n";
+        var dict:Object = ModRegistry.getModDict();
+        var standard:Object = EquipmentCalculator.calculatePure(
+            {name:"测试普通手枪",use:"手枪",weapontype:"手枪",data:{}},value,cfg,dict);
+        var machine:Object = EquipmentCalculator.calculatePure(
+            {name:"测试冲锋手枪",use:"手枪",weapontype:"冲锋枪",data:{}},value,cfg,dict);
+        var passed:Boolean = legacyRejected && standard.data.magicdefence.热 == 240
+            && standard.data.magicdefence.冷 == 360 && standard.data.magicdefence.电 == 3
+            && standard.data.magicdefence.基础 == 7 && machine.data.magicdefence.热 == 180
+            && machine.data.magicdefence.冷 == 300 && machine.data.magicdefence.电 == 3
+            && machine.data.magicdefence.基础 == 6;
+        return passed ? "✓ 精确手枪嵌套合并与旧行为拒绝测试通过\n"
+            : "✗ 精确手枪嵌套合并与旧行为拒绝测试失败\n";
     }
 
     /**
@@ -2229,7 +2173,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             val, cfg, ModRegistry.getModDict()
         );
         var missingProvision:Object = ModRegistry.validateHitBehaviorProvision(["灰蛊裂隙弹"], false, {}, {});
-        var missingAvail:Number = TagManager.checkModAvailability(
+        var missingAvail:Number = checkFixtureMod(
             new BaseItem("Webley", {level: 1, mods: []}),
             {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}},
             "灰蛊裂隙弹"
@@ -2278,7 +2222,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         modB.tag = "挂饰B";
         ModRegistry.loadModData([modA, modB]);
         registerFixtureDefinition("Webley", {use:"手枪",weapontype:"大威力手枪",data:{modslot:3}});
-        var multiModAvail:Number = TagManager.checkModAvailability(
+        var multiModAvail:Number = checkFixtureMod(
             new BaseItem("Webley", {level: 1, mods: ["行为插件A"]}),
             {name: "Webley", use: "手枪", weapontype: "大威力手枪", data: {modslot: 3}},
             "行为插件B"
@@ -2292,7 +2236,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
             data: {modslot: 3, hitBehavior: {type: "grayGooPrimer", profileId: "native"}}
         };
         registerFixtureDefinition("原生蚀刻枪", nativeItem);
-        var nativeAvail:Number = TagManager.checkModAvailability(
+        var nativeAvail:Number = checkFixtureMod(
             new BaseItem("原生蚀刻枪", {level: 1, mods: []}),
             nativeItem,
             "行为插件A"
@@ -2310,7 +2254,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         multiBranchMod.stats.useSwitch.use[0].name = "use:手枪";
         ModRegistry.loadModData([multiBranchMod]);
         registerFixtureDefinition("TTI Glock 19", {use:"手枪",weapontype:"手枪",data:{modslot:3}});
-        var multiBranchAvail:Number = TagManager.checkModAvailability(
+        var multiBranchAvail:Number = checkFixtureMod(
             new BaseItem("TTI Glock 19", {level: 1, mods: []}),
             {name: "TTI Glock 19", use: "手枪", weapontype: "手枪", data: {modslot: 3}},
             "灰蛊裂隙弹"
@@ -2520,7 +2464,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         };
 
         registerFixtureDefinition("测试头盔", testItemData);
-        var availability:Number = TagManager.checkModAvailability(testItem, testItemData, "高级插件");
+        var availability:Number = checkFixtureMod(testItem, testItemData, "高级插件");
 
         var passed:Boolean = (availability == 1);
 
@@ -2580,7 +2524,24 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
     private static function registerFixtureDefinition(name:String, definition:Object):Void {
         var raw:Object = ObjectUtil.clone(definition);
         raw.name = name;
+        if (raw.use == undefined) raw.use = "头部装备";
         ItemUtil.itemDataDict[name] = raw;
+    }
+
+    private static function fixtureItem(item, definition:Object):BaseItem {
+        registerFixtureDefinition(String(item.name), definition);
+        var value:Object = ObjectUtil.clone(item.value);
+        if (value.level == undefined) value.level = 1;
+        if (!value.mods) value.mods = [];
+        return new BaseItem(String(item.name), value, 1);
+    }
+
+    private static function checkFixtureMod(item, current:Object, modName:String):Number {
+        return TagManager.checkModAvailability(fixtureItem(item, current), current, modName);
+    }
+
+    private static function filterFixtureMods(mods:Array, item, definition:Object):Array {
+        return TagManager.filterAvailableMods(mods, fixtureItem(item, definition), definition);
     }
 
     private static function getTimer():Number {

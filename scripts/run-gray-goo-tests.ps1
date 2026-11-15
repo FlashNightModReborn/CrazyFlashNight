@@ -32,7 +32,7 @@ $focusedRun=@{
         '(?m)^✓ #208 灰蛊完整档位覆盖与契约审计测试通过\r?$',
         '(?m)^--- BuilderContractTest: 154/154 passed, 0 failed ---\r?$',
         '(?m)^GrayGooRealProfiles passed=true\r?$',
-        '(?m)^RealEquipmentModRegressions passed=28 failed=0\r?$',
+        '(?m)^RealEquipmentModRegressions passed=34 failed=0\r?$',
         '(?m)^--- EquipmentIntervalCurveTest: (?<count>[1-9][0-9]*)/\k<count> passed, 0 failed ---\r?$',
         '(?m)^GrayGooAssetTest phases: XML,I,II,III,max,pooled,reuse,zero-loss\r?$',
         '(?m)^GrayGooAssetTest result: passed=37 failed=0\r?$')

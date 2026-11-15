@@ -53,7 +53,7 @@ equipment_mods/
 
 `ui_presentation.xml` 只维护 `modGrade/catalogScope/uiRole` ID 的标签、色号、受控符号和 `tag` 默认角色，不重新分配某个插件属于哪一档或哪类。解析顺序为：插件显式 `<uiRole>` → `tagDefault`；未知用途、角色、符号、档级或未覆盖的 `tag` 会让加载/构建审计失败。符号 token 由形状与填充方式组成，白名单为 `triangle|square|circle|diamond|star` × `solid|outline`，例如火力使用 `triangle-solid`（▲）、精准与操控使用 `triangle-outline`（△）。稳定与防护、续航、结构与功能分别使用线框方形、圆形、菱形，特殊机制保留实心星。Web 使用 CSS 图形渲染，不直接执行 XML 中的任意 Unicode 或 HTML。
 
-`data/items/收集品_材料_插件.xml` 以及 `收集品_材料.xml` 中的四个特殊材料仍只负责库存、经济、图标与说明，不重复维护档级/用途/定位。审计要求 105 个 mod 名称各自唯一对应一个物品条目，并要求 `收集品_材料_插件.xml` 的 101 个条目全部存在 mod 定义。
+`data/items/收集品_材料_插件.xml` 以及 `收集品_材料.xml` 中的四个特殊材料仍只负责库存、经济、图标与说明，不重复维护档级/用途/定位。审计要求每个 mod 名称各自唯一对应一个物品条目，并要求 `收集品_材料_插件.xml` 的条目全部存在 mod 定义。目录数量以 `node tools/validate-equipment-mod-ui.js` 的本轮输出为准。
 
 `<mod><name>` 是安装、库存与规则的稳定内部键，允许与物品条目的 `<displayname>` / `<icon>` 不同。装备调制 snapshot 必须同时投影 `itemName/displayName/icon`，Web 只用 `itemName` 发起操作，用后两者显示文案与图标。`node tools/audit-web-item-icon-closure.js` 会按 `equipment_mods/list.xml` 全量核对 mod 物品、manifest 键与实际图片文件闭包。
 

@@ -43,6 +43,9 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.SheriffArsena
         xml.load("../data/items/"+files[index]);
     }
     private static function runLoaded():Void {
+        var previousItemDefinitions:Object = org.flashNight.arki.item.ItemUtil.itemDataDict;
+        org.flashNight.arki.item.ItemUtil.itemDataDict = org.flashNight.gesh.object.ObjectUtil.clone(previousItemDefinitions || {});
+        try {
         var oldWorld=_root.gameworld,oldClock=_root.帧计时器,oldPause=_root.暂停;
         var world:MovieClip=_root.createEmptyMovieClip("__sheriffArsenalTest",_root.getNextHighestDepth());
         _root.gameworld=world;_root.帧计时器={当前帧数:0};_root.暂停=false;
@@ -51,6 +54,8 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.SheriffArsena
             ModRegistry.loadModData(mods);
             var cfg:Object=EquipmentConfigManager.getFullConfig(), registry:Object=ModRegistry.getModDict();
             var shotgun:Object=definitions["特勤霰弹枪"],pistol:Object=definitions["特勤沙鹰"];
+            org.flashNight.arki.item.ItemUtil.itemDataDict[shotgun.name]=shotgun;
+            org.flashNight.arki.item.ItemUtil.itemDataDict[pistol.name]=pistol;
             var names:Array=["八门金锁镇暴弹","战术手电","矢量偏转枪盾","汲丝虹吸匣"];
             var base:Object=ObjectUtil.clone(shotgun),d:Object=base.data;
             d.power=175;d.weight=6;d.split=7;d.diffusion=20;d.impact=20;d.bulletsize=30;
@@ -63,7 +68,9 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.SheriffArsena
             var equipment = {value:{mods:[]}};
             for(i=0;i<names.length;i++)check(TagManager.checkModAvailability(equipment,shotgun,names[i])==-1,"sealed slot rejects "+names[i]);
             check(TagManager.filterAvailableMods(names,equipment,shotgun).length==0,"sealed weapon offers no install candidates");
-            check(TagManager.checkModAvailability(equipment,pistol,"汲丝虹吸匣")==1,"ordinary pistol still accepts compatible mod");
+            equipment.name=pistol.name;
+            check(TagManager.checkModAvailability(equipment,pistol,"汲丝虹吸匣")==-64,"pistol rejects shotgun/melee-only siphon by actual type contract");
+            check(TagManager.checkModAvailability(equipment,pistol,"小型液晶屏")==1,"ordinary pistol still accepts compatible sight mod");
 
             actor.hp=100;actor.version=1;actor.攻击模式="空手";actor.syncRefs={};
             actor.dispatcher=new EventDispatcher();actor.buffManager=new BuffManager(actor,{});
@@ -125,6 +132,10 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.SheriffArsena
         if(actor.buffManager)actor.buffManager.destroy();if(actor.dispatcher)actor.dispatcher.destroy();world.removeMovieClip();
         _root.gameworld=oldWorld;_root.帧计时器=oldClock;_root.暂停=oldPause;
         finish();
+
+        } finally {
+            org.flashNight.arki.item.ItemUtil.itemDataDict = previousItemDefinitions;
+        }
     }
     private static function finish():Void {
         ModRegistry.loadModData(oldMods);

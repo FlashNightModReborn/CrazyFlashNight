@@ -39,12 +39,11 @@ class org.flashNight.arki.item.equipment.TagManager {
      * 支持静态 provideTags 和条件性 provideTags（基于 useSwitch）
      * @param item 装备物品对象
      * @param itemData 原始物品数据（可选）
-     * @return 包含presentTags和slotOccupied的上下文对象
+     * @return 包含 presentTags 的上下文对象
      */
     public static function buildTagContext(item:BaseItem, itemData:Object):Object {
         var context:Object = {
-            presentTags: {},    // 当前装备具备的结构tag
-            slotOccupied: {}    // 哪些slotTag已被占用
+            presentTags: {}    // 当前装备具备的结构tag
         };
 
         // 如果没有传入itemData，则获取原始数据
@@ -58,17 +57,6 @@ class org.flashNight.arki.item.equipment.TagManager {
 
         // 【重构】复用 buildPresentTagsDict 构建 presentTags（单一真源）
         context.presentTags = buildPresentTagsDict(mods, itemData, ModRegistry.getModDict());
-
-        // 构建 slotOccupied（这是 buildTagContext 特有的逻辑）
-        for (var i:Number = 0; i < mods.length; i++) {
-            var modData:Object = ModRegistry.getModData(mods[i]);
-            if (!modData) continue;
-
-            // slotTag占位（传统tag功能）
-            if (modData.tagValue) {
-                context.slotOccupied[modData.tagValue] = mods[i];
-            }
-        }
 
         if (_debugMode) {
             var presentList:Array = [];
@@ -94,11 +82,11 @@ class org.flashNight.arki.item.equipment.TagManager {
      * @param modRegistry 配件注册表字典
      * @return presentTags 字典（key 为 tag 名称，value 为 true）
      */
-    public static function buildPresentTagsDict(mods:Array, itemData:Object, modRegistry:Object):Object {
+    public static function buildPresentTagsDict(mods:Array, itemData:Object, modRegistry:Object, useLookup:Object):Object {
         var presentTags:Object = {};
 
         // 构建装备的 use/weapontype 查找表
-        var useLookup:Object = buildUseLookupForMods(mods, itemData, modRegistry);
+        if (!useLookup) useLookup = buildUseLookupForMods(mods, itemData, modRegistry);
 
         // 1. 装备固有结构标签
         if (itemData.inherentTags) {
@@ -149,97 +137,29 @@ class org.flashNight.arki.item.equipment.TagManager {
     /**
      * 检查配件是否可以安装（标签依赖检查）
      * @param item 装备物品对象
-     * @param itemData 原始物品数据
+     * @param itemData 当前完整物品属性
      * @param modName 配件名称
      * @return 状态码
      */
-    public static function checkModAvailability(item:BaseItem, itemData:Object, modName:String):Number {
+    public static function checkModAvailability(item:BaseItem, itemData:Object, modName:String, state:Object):Number {
         var mods:Array = item.value.mods || [];
         var modData:Object = ModRegistry.getModData(modName);
-
-        if (!modData) {
-            if (ModRegistry.isInvalidHitBehaviorMod(modName)) {
-                return -1024; // hitBehavior 契约校验失败被拒绝发布的配件
-            }
-            return 0; // 配件不存在
-        }
-
-        // 检查槽位
+        if (!modData) return ModRegistry.isInvalidHitBehaviorMod(modName) ? -1024 : 0;
         if (!itemData || !itemData.data) return 0;
         var modslot:Number = itemData.data.modslot;
-        // 保持原行为：如果 modslot 为 undefined，不进行槽位限制检查
-        // 原版中 len >= undefined 返回 false，相当于没有槽位限制
-        if (modslot !== undefined && mods.length >= modslot) {
-            return -1; // 槽位已满
-        }
-
-        // 检查是否已装备
-        for (var i:Number = 0; i < mods.length; i++) {
-            if (mods[i] === modName) {
-                return -2; // 已装备同名配件
-            }
-        }
-
-        // 显式封闭改装只接受已列出的挂点；新增tag和无tag插件不能绕过有限黑名单。
-        if (!matchesAllowedModTags(modData, allowedModTagDict(itemData))) return -64;
-
-        // 构建当前装备类型；同时用于条件性结构依赖与特殊槽判定。
-        var itemUseLookup:Object = buildUseLookupForMods(mods, itemData, ModRegistry.getModDict());
-
-        // 检查 tag 依赖：根层 requireTags + 命中的 useSwitch.requireTags。
-        var requiredTagDict:Object = ModRegistry.resolveRequiredTagsForUse(modData, itemUseLookup);
-        var tagContext:Object = null;
-        for (var reqTag:String in requiredTagDict) {
-            if (!tagContext) {
-                tagContext = buildTagContext(item, itemData);
-            }
-            if (!tagContext.presentTags[reqTag]) {
-                if (_debugMode) {
-                    trace("[TagManager] 插件 '" + modName + "' 需要tag '" + reqTag + "' 但当前装备没有");
-                }
-                return -16; // 缺少前置tag
-            }
-        }
-
-        // 检查tag互斥
+        if (modslot !== undefined && mods.length >= modslot) return -1;
+        for (var i:Number = 0; i < mods.length; i++) if (mods[i] === modName) return -2;
+        if (!state || state.item !== item) state = createModState(item, itemData);
+        if (!matchesModType(modData, state) || !matchesAllowedModTags(modData, state.allowedTags)) return -64;
+        if (!matchesRequiredTags(modData, state)) return -16;
         if (modData.tagValue) {
             for (var j:Number = 0; j < mods.length; j++) {
-                var installedModData:Object = ModRegistry.getModData(mods[j]);
-                if (installedModData && installedModData.tagValue) {
-                    if (installedModData.tagValue === modData.tagValue) {
-                        return -8; // 同tag插件已装备
-                    }
-                }
+                var installedModData:Object = state.dict[mods[j]];
+                if (installedModData && installedModData.tagValue === modData.tagValue) return -8;
             }
         }
-
-        // 检查blockedTags
-        if (itemData.blockedTags && modData.tagValue) {
-            if (!itemData.blockedTagDict) {
-                itemData.blockedTagDict = buildTagDict(itemData.blockedTags);
-            }
-            if (itemData.blockedTagDict[modData.tagValue]) {
-                if (_debugMode) {
-                    trace("[TagManager] 装备 '" + item.name + "' 禁止安装挂点类型 '" + modData.tagValue + "' 的插件");
-                }
-                return -64; // 装备禁止该挂点类插件
-            }
-        }
-
-        // 检查特殊槽冲突。普通战技与长枪副武器共享同一个特殊槽。
-        //
-        // 装备自带的主动战技默认可被「战技插件」覆盖（安装即替换本体战技，由
-        // EquipmentCalculator.calculateInPlace 完成替换），因此这里不再一律拒绝。
-        // 标记跟着战技走：在声明战技的 <skill> / <skill_N> 元素内加一个子元素
-        // <skillLocked>true</skillLocked> 即不可更换；
-        // **不填 = 可更换**（判定是严格的 === true，undefined 不算锁定）。
-        // 只有以下三种情况继续返回 -4：
-        //   1. 装备自带长枪副武器——副武器是同一个特殊槽的另一种占用，且战技插件
-        //      不会清除 itemData.subweapon，放行会造成双占用；
-        //   2. 战技声明处带 <skillLocked>true</skillLocked>——专属 / 定制 /
-        //      与装备生命周期绑定的战技不可更换；
-        //   3. 装备根的 <skill> 只是说明文本等非战技定义（无 skillname）。
-        // 副武器插件（下挂武器）同理不会清掉本体战技，故对已有战技的装备仍整体拒绝。
+        if (!matchesBlockedTags(modData, state)) return -64;
+        var itemUseLookup:Object = state.useLookup;
         var resolvedModSkill:Object = ModRegistry.resolveSkillForUse(modData, itemUseLookup);
         var resolvedModSubweapon:Object = modData.subweapon;
         if (resolvedModSkill || resolvedModSubweapon) {
@@ -266,63 +186,12 @@ class org.flashNight.arki.item.equipment.TagManager {
             }
         }
 
-        // Independent functional lifecycles do not claim the skill/subweapon slot.
         if (modData.lifecycle != undefined && !EquipmentLifecyclePolicy.isIndependentLifecycle(modData.lifecycle)) return -1024;
-
-        // 检查 hitBehavior 配置契约与单提供者/单分支命中约束（#208）
-        if (modData._hitBehaviorValidated !== true) {
-            ModRegistry.validateModHitBehavior(modData, null);
-        }
-        if (modData._hasHitBehavior || modData.grantsUseDict || mods.length > 0) {
-            var candidateMods:Array = mods.concat([modName]);
-            var candidateUseLookup:Object = modData.grantsUseDict
-                ? buildUseLookupForMods(candidateMods, itemData, ModRegistry.getModDict())
-                : itemUseLookup;
-            var nativeBase:Object = EquipmentCalculator.calculateBaseData(item.name, item.value);
-            if (!nativeBase || !nativeBase.data) return -1024;
-            var hbCheck:Object = ModRegistry.validateHitBehaviorProvision(
-                candidateMods, nativeBase.data.hitBehavior != undefined,
-                ModRegistry.getModDict(), candidateUseLookup
-            );
-            if (!hbCheck.valid) {
-                return -1024;
-            }
-        }
-
-        // 检查子弹类型排斥
-        if (modData.excludeBulletTypeDict && itemData.data && itemData.data.bullet) {
-            var bulletType:String = itemData.data.bullet;
-            if (checkBulletTypeExclusion(bulletType, modData.excludeBulletTypeDict)) {
-                if (_debugMode) {
-                    trace("[TagManager] 插件 '" + modName + "' 与当前弹药类型 '" + bulletType + "' 不兼容");
-                }
-                return -128; // 弹药类型不兼容
-            }
-        }
-
-        // 检查子弹类型要求（requireBulletTypes：要求至少匹配一种）
-        if (modData.requireBulletTypeDict && itemData.data && itemData.data.bullet) {
-            var rBulletType:String = itemData.data.bullet;
-            if (!checkBulletTypeRequirement(rBulletType, modData.requireBulletTypeDict)) {
-                if (_debugMode) {
-                    trace("[TagManager] 插件 '" + modName + "' 需要特定弹药类型，当前弹药 '" + rBulletType + "' 不满足");
-                }
-                return -512; // 弹药类型不满足要求
-            }
-        }
-
-        // 检查安装条件（installCondition）
-        if (modData.installCondList) {
-            var condCheckData:Object = getConditionCheckData(modData.installCondList, item, itemData);
-            if (!ModRegistry.evaluateConditionGroup(modData.installCondList, condCheckData)) {
-                if (_debugMode) {
-                    trace("[TagManager] 插件 '" + modName + "' 的安装条件不满足");
-                }
-                return -256; // 装备属性不满足安装条件
-            }
-        }
-
-        return 1; // 允许装备
+        if (!matchesHitBehavior(modData, modName, state)) return -1024;
+        var bulletResult:Number = checkBulletConstraints(modData, state);
+        if (bulletResult != 1) return bulletResult;
+        if (!matchesInstallCondition(modData, state)) return -256;
+        return 1;
     }
 
     /**
@@ -358,54 +227,20 @@ class org.flashNight.arki.item.equipment.TagManager {
      * @return 依赖该插件的其他插件列表
      */
     public static function getDependentMods(item:BaseItem, modNameToRemove:String):Array {
-        var dependentMods:Array = [];
-        var modToRemove:Object = ModRegistry.getModData(modNameToRemove);
-
-        if (!modToRemove) {
-            return dependentMods;
-        }
-
-        var itemData:Object = ItemUtil.getRawItemData(item.name) || {};
-        var modRegistry:Object = ModRegistry.getModDict();
-
-        // 构建移除该插件后的tag上下文
-        var tempMods:Array = [];
+        var result:Array = [];
+        if (!ModRegistry.getModData(modNameToRemove)) return result;
         var mods:Array = item.value.mods || [];
-        for (var i:Number = 0; i < mods.length; i++) {
-            if (mods[i] !== modNameToRemove) {
-                tempMods.push(mods[i]);
-            }
+        var remaining:Array = [];
+        for (var i:Number = 0; i < mods.length; i++) if (mods[i] !== modNameToRemove) remaining.push(mods[i]);
+        var raw:Object = ItemUtil.getRawItemData(item.name);
+        var dict:Object = ModRegistry.getModDict();
+        var before:Object = createStructureState(raw, mods, dict);
+        var after:Object = createStructureState(raw, remaining, dict);
+        for (i = 0; i < remaining.length; i++) {
+            var mod:Object = dict[remaining[i]];
+            if (mod && losesDependency(mod, before, after)) result.push(remaining[i]);
         }
-
-        // 依赖判定只需要 presentTags。不要把普通 Object 强转为 BaseItem：
-        // AVM1 在该边界可能丢失临时 mods，令仍由另一插件提供的结构被误判为消失。
-        var presentBeforeRemoval:Object = buildPresentTagsDict(mods, itemData, modRegistry);
-        var presentAfterRemoval:Object = buildPresentTagsDict(tempMods, itemData, modRegistry);
-        var useLookupAfterRemoval:Object = buildUseLookupForMods(tempMods, itemData, modRegistry);
-
-        // 检查每个已安装的插件是否还满足依赖
-        for (var j:Number = 0; j < mods.length; j++) {
-            if (mods[j] === modNameToRemove) continue;
-
-            var installedMod:Object = ModRegistry.getModData(mods[j]);
-            if (!installedMod) continue;
-            var requiredTagDict:Object = ModRegistry.resolveRequiredTagsForUse(installedMod, useLookupAfterRemoval);
-
-            // 检查该插件的依赖是否还能满足
-            for (var reqTag:String in requiredTagDict) {
-                // 只有移除前存在、移除后消失的结构，才算对当前拆卸的真实依赖。
-                if (presentBeforeRemoval[reqTag] && !presentAfterRemoval[reqTag]) {
-                    dependentMods.push(mods[j]);
-                    break;
-                }
-            }
-        }
-
-        if (_debugMode && dependentMods.length > 0) {
-            trace("[TagManager] 移除 '" + modNameToRemove + "' 将影响以下插件: " + dependentMods.join(", "));
-        }
-
-        return dependentMods;
+        return result;
     }
 
     /**
@@ -429,141 +264,20 @@ class org.flashNight.arki.item.equipment.TagManager {
      * @param itemData 原始物品数据
      * @return 过滤后的可用配件列表
      */
-    public static function filterAvailableMods(availableMods:Array, item:BaseItem, itemData:Object):Array {
-        if (itemData.data.modslot === 0 || !availableMods || availableMods.length == 0) {
-            return [];
-        }
-
+    public static function filterAvailableMods(availableMods:Array, item:BaseItem, itemData:Object, state:Object):Array {
+        if (itemData.data.modslot === 0 || !availableMods || availableMods.length == 0) return [];
+        if (!state || state.item !== item) state = createModState(item, undefined);
         var filtered:Array = [];
-        var tagContext:Object = buildTagContext(item, itemData);
-        var itemUseLookup:Object = buildUseLookupForMods(item.value.mods || [], itemData, ModRegistry.getModDict());
-
-        // 惰性计算的装备数据（仅在需要检查子弹类型或 scope="current" 条件时才计算）
-        var calculatedItemData:Object = undefined;
-        // 无插件基础数据供 base 条件和原生行为检查共用，同一轮只计算一次
-        var baseCondData:Object = undefined;
-
-        // 处理blockedTags
-        var blockedTagDict:Object = null;
-        var allowedTagDict:Object = allowedModTagDict(itemData);
-        if (itemData.blockedTags) {
-            blockedTagDict = buildTagDict(itemData.blockedTags);
-        }
-
         for (var i:Number = 0; i < availableMods.length; i++) {
-            var modName:String = availableMods[i];
-            var modData:Object = ModRegistry.getModData(modName);
-            if (!modData) continue;
-            if (!matchesAllowedModTags(modData, allowedTagDict)) continue;
-
-            var canUse:Boolean = true;
-
-            // 检查 tag 依赖：根层 requireTags + 命中的 useSwitch.requireTags。
-            var requiredTagDict:Object = ModRegistry.resolveRequiredTagsForUse(modData, itemUseLookup);
-            for (var reqTag:String in requiredTagDict) {
-                if (!tagContext.presentTags[reqTag]) {
-                    canUse = false;
-                    if (_debugMode) {
-                        trace("[TagManager] 过滤掉 '" + modName + "': 缺少tag '" + reqTag + "'");
-                    }
-                    break;
-                }
-            }
-
-            // 检查blockedTags
-            if (canUse && blockedTagDict && modData.tagValue) {
-                if (blockedTagDict[modData.tagValue]) {
-                    canUse = false;
-                    if (_debugMode) {
-                        trace("[TagManager] 过滤掉 '" + modName + "': 挂点类型被禁止");
-                    }
-                }
-            }
-
-            // 检查子弹类型排斥（需要计算后的数据）
-            if (canUse && modData.excludeBulletTypeDict) {
-                // 惰性获取计算后的装备数据
-                if (calculatedItemData == undefined) {
-                    calculatedItemData = item.getData();
-                }
-                if (calculatedItemData.data && calculatedItemData.data.bullet) {
-                    if (checkBulletTypeExclusion(calculatedItemData.data.bullet, modData.excludeBulletTypeDict)) {
-                        canUse = false;
-                        if (_debugMode) {
-                            trace("[TagManager] 过滤掉 '" + modName + "': 弹药类型不兼容");
-                        }
-                    }
-                }
-            }
-
-            // 检查子弹类型要求（需要计算后的数据）
-            if (canUse && modData.requireBulletTypeDict) {
-                if (calculatedItemData == undefined) {
-                    calculatedItemData = item.getData();
-                }
-                if (calculatedItemData.data && calculatedItemData.data.bullet) {
-                    if (!checkBulletTypeRequirement(calculatedItemData.data.bullet, modData.requireBulletTypeDict)) {
-                        canUse = false;
-                        if (_debugMode) {
-                            trace("[TagManager] 过滤掉 '" + modName + "': 弹药类型不满足要求");
-                        }
-                    }
-                }
-            }
-
-            // 检查安装条件（installCondition）
-            if (canUse && modData.installCondList) {
-                var condCheckData:Object;
-                if (modData.installCondList.scope == "current") {
-                    // scope="current"：惰性获取计算后的装备数据（含已安装配件效果）
-                    if (calculatedItemData == undefined) {
-                        calculatedItemData = item.getData();
-                    }
-                    condCheckData = calculatedItemData;
-                } else {
-                    // scope="base"（默认）：惰性获取基础数据（仅 tier/强化，不含配件）
-                    if (baseCondData === undefined) {
-                        baseCondData = EquipmentCalculator.calculateBaseData(item.name, item.value);
-                    }
-                    condCheckData = baseCondData;
-                }
-                if (!ModRegistry.evaluateConditionGroup(modData.installCondList, condCheckData)) {
-                    canUse = false;
-                    if (_debugMode) {
-                        trace("[TagManager] 过滤掉 '" + modName + "': 安装条件不满足");
-                    }
-                }
-            }
-
-            if (canUse) {
-                if (modData._hitBehaviorValidated !== true) {
-                    ModRegistry.validateModHitBehavior(modData, null);
-                }
-                if (modData._hasHitBehavior || modData.grantsUseDict || (item.value.mods && item.value.mods.length > 0)) {
-                    var filterCandMods:Array = (item.value.mods || []).concat([modName]);
-                    var filterCandLookup:Object = modData.grantsUseDict
-                        ? buildUseLookupForMods(filterCandMods, itemData, ModRegistry.getModDict())
-                        : itemUseLookup;
-                    if (baseCondData === undefined) {
-                        baseCondData = EquipmentCalculator.calculateBaseData(item.name, item.value);
-                    }
-                    if (!baseCondData || !baseCondData.data) {
-                        canUse = false;
-                    } else {
-                        var filterHbCheck:Object = ModRegistry.validateHitBehaviorProvision(
-                            filterCandMods, baseCondData.data.hitBehavior != undefined,
-                            ModRegistry.getModDict(), filterCandLookup
-                        );
-                        if (!filterHbCheck.valid) canUse = false;
-                    }
-                }
-            }
-
-            if (canUse) {
-                filtered.push(modName);
-            }
+            var name:String = availableMods[i];
+            var mod:Object = state.dict[name];
+            // 展示保留满槽、同名、同 tag 与特殊槽占用项，安装策略单独编排。
+            if (!mod || !matchesModType(mod, state) || !matchesAllowedModTags(mod, state.allowedTags)
+                    || !matchesRequiredTags(mod, state) || !matchesBlockedTags(mod, state)
+                    || checkBulletConstraints(mod, state) != 1 || !matchesInstallCondition(mod, state)
+                    || !matchesHitBehavior(mod, name, state)) continue;
+            filtered.push(name);
         }
-
         return filtered;
     }
 
@@ -731,24 +445,123 @@ class org.flashNight.arki.item.equipment.TagManager {
         return false;
     }
 
-    /**
-     * 获取 installCondition 检查所需的装备数据
-     * scope="base" 时：获取不含任何配件的基础数据（含 tier/强化）
-     * scope="current" 时：使用传入的已计算数据（应来自 item.getData()）
-     * @param condList 条件组对象（包含 scope 属性）
-     * @param item 装备物品对象
-     * @param itemData 当前装备数据（scope="current" 时应为 item.getData() 的结果）
-     * @return 用于条件检查的装备数据
-     * @private
-     */
-    private static function getConditionCheckData(condList:Object, item:BaseItem, itemData:Object):Object {
-        if (condList.scope == "current") {
-            return itemData;
-        }
+    /** 一次同步请求内的状态；不序列化、不存档、不跨请求缓存。 */
+    public static function createModState(item:BaseItem, current:Object):Object {
+        var state:Object = createStructureState(ItemUtil.getRawItemData(item.name),
+            item.value.mods || [], ModRegistry.getModDict());
+        state.item = item;
+        state.current = current;
+        return state;
+    }
 
-        // scope="base"（默认）：委托 EquipmentCalculator 计算基础数据
-        var baseData:Object = EquipmentCalculator.calculateBaseData(item.name, item.value);
-        return baseData || itemData; // 获取失败时回退到传入数据
+    private static function createStructureState(raw:Object, mods:Array, dict:Object):Object {
+        if (!raw) raw = {};
+        var uses:Object = buildTagDict(raw.use || "");
+        var weapons:Object = {};
+        if (raw.weapontype) weapons[raw.weapontype] = true;
+        var grantedUses:Object = {};
+        for (var i:Number = 0; i < mods.length; i++) {
+            var mod:Object = dict[mods[i]];
+            for (var useKey:String in mod.grantsUseDict) {
+                uses[useKey] = true;
+                grantedUses[useKey] = true;
+            }
+            for (var weaponKey:String in mod.grantsWeapontypeDict) weapons[weaponKey] = true;
+        }
+        var lookup:Object = ModRegistry.buildItemUseLookup(raw.use || "", raw.weapontype || "", grantedUses);
+        return {raw:raw, mods:mods, dict:dict, uses:uses, weapons:weapons, useLookup:lookup,
+            presentTags:buildPresentTagsDict(mods, raw, dict, lookup),
+            allowedTags:allowedModTagDict(raw), blockedTags:buildTagDict(raw.blockedTags || "")};
+    }
+
+    /** 安装资格与 useSwitch lookup 分开：授予枪种不会扩大条件分支。 */
+    public static function matchesModType(mod:Object, state:Object):Boolean {
+        var useMatched:Boolean = false;
+        for (var useKey:String in mod.useDict) {
+            if (state.uses[useKey]) { useMatched = true; break; }
+        }
+        if (!useMatched) return false;
+        if (state.raw.use != "手枪" && state.raw.use != "长枪") return true;
+        for (var blocked:String in mod.excludeWeapontypeDict) {
+            if (state.weapons[blocked]) return false;
+        }
+        if (!mod.weapontypeDict) return true;
+        for (var allowed:String in mod.weapontypeDict) {
+            if (state.weapons[allowed]) return true;
+        }
+        return false;
+    }
+
+    private static function matchesRequiredTags(mod:Object, state:Object):Boolean {
+        var required:Object = ModRegistry.resolveRequiredTagsForUse(mod, state.useLookup);
+        for (var tag:String in required) if (!state.presentTags[tag]) return false;
+        return true;
+    }
+
+    private static function matchesBlockedTags(mod:Object, state:Object):Boolean {
+        return !mod.tagValue || !state.blockedTags[mod.tagValue];
+    }
+
+    private static function currentData(state:Object):Object {
+        if (state.current === undefined) state.current = state.item.getData();
+        return state.current;
+    }
+
+    private static function baseData(state:Object):Object {
+        if (state.base === undefined) state.base = EquipmentCalculator.calculateBaseData(state.item.name, state.item.value);
+        return state.base;
+    }
+
+    private static function checkBulletConstraints(mod:Object, state:Object):Number {
+        if (!mod.excludeBulletTypeDict && !mod.requireBulletTypeDict) return 1;
+        var current:Object = currentData(state);
+        if (!current || !current.data) return 0;
+        var bullet:String = current.data.bullet;
+        if (bullet && mod.excludeBulletTypeDict && checkBulletTypeExclusion(bullet, mod.excludeBulletTypeDict)) return -128;
+        if (bullet && mod.requireBulletTypeDict && !checkBulletTypeRequirement(bullet, mod.requireBulletTypeDict)) return -512;
+        return 1;
+    }
+
+    private static function matchesInstallCondition(mod:Object, state:Object):Boolean {
+        if (!mod.installCondList) return true;
+        var data:Object = mod.installCondList.scope == "current" ? currentData(state) : baseData(state);
+        return data != null && ModRegistry.evaluateConditionGroup(mod.installCondList, data);
+    }
+
+    private static function matchesHitBehavior(mod:Object, modName:String, state:Object):Boolean {
+        if (!mod._hasHitBehavior && !mod.grantsUseDict && state.mods.length == 0) return true;
+        var base:Object = baseData(state);
+        if (!base || !base.data) return false;
+        var candidates:Array = state.mods.concat([modName]);
+        var lookup:Object = mod.grantsUseDict
+            ? buildUseLookupForMods(candidates, state.raw, state.dict) : state.useLookup;
+        return ModRegistry.validateHitBehaviorProvision(candidates,
+            base.data.hitBehavior != undefined, state.dict, lookup).valid;
+    }
+
+    private static function losesDependency(mod:Object, before:Object, after:Object):Boolean {
+        if (matchesModType(mod, before) && !matchesModType(mod, after)) return true;
+        var oldRequired:Object = ModRegistry.resolveRequiredTagsForUse(mod, before.useLookup);
+        var required:Object = ModRegistry.resolveRequiredTagsForUse(mod, after.useLookup);
+        for (var tag:String in required) {
+            if (!after.presentTags[tag] && (before.presentTags[tag] || !oldRequired[tag])) return true;
+        }
+        return false;
+    }
+
+    /** 只拒绝本操作新造成的保留项失效，不清洗历史非法状态。 */
+    public static function hasNewInvalidModDependencies(item:BaseItem, afterMods:Array):Boolean {
+        var raw:Object = ItemUtil.getRawItemData(item.name);
+        var dict:Object = ModRegistry.getModDict();
+        var before:Object = createStructureState(raw, item.value.mods, dict);
+        var after:Object = createStructureState(raw, afterMods, dict);
+        var oldNames:Object = {};
+        for (var i:Number = 0; i < item.value.mods.length; i++) oldNames[item.value.mods[i]] = true;
+        for (i = 0; i < afterMods.length; i++) {
+            var mod:Object = dict[afterMods[i]];
+            if (oldNames[afterMods[i]] && mod && losesDependency(mod, before, after)) return true;
+        }
+        return false;
     }
 
     /**

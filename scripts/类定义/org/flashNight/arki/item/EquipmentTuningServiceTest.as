@@ -131,6 +131,39 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                     && shortage.commit.success !== true,
                 "真实 provider 在材料为零时不签可提交授权 " + names[w]);
         }
+        for (var kind:Number = 0; kind < 2; kind++) {
+            for (var scenario:Number = 0; scenario < 2; scenario++) {
+                resetFixture();
+                EquipmentUtil.loadModData(copyRealMods(mods));
+                ItemUtil.loadItemData(org.flashNight.gesh.object.ObjectUtil.clone(definitions));
+                var installedMods:Array = scenario == 0 ? ["手枪卡宾转换套件"]
+                    : ["手枪卡宾转换套件","电脑芯片","热能射线弹"];
+                var luger:BaseItem = equipment("LugerP08",1,installedMods);
+                var wornType:Boolean = kind == 1;
+                var typeFixture:Object = null;
+                if (wornType) typeFixture = installWornFixture("手枪",luger);
+                else _root.物品栏.背包.add(0,luger);
+                var typeMaterials:Object = _root.收集品栏.材料;
+                var typeView:String = "real-type-" + kind + "-" + scenario;
+                if (scenario == 0) {
+                    typeMaterials.add("热能射线弹",1);
+                    var invalidReplace:Object = realModCommit(wornType,typeFixture,typeView,
+                        "replace_mod","热能射线弹","手枪卡宾转换套件");
+                    assertTrue(invalidReplace.preview.success !== true
+                            && luger.value.mods.length == 1 && luger.value.mods[0] == "手枪卡宾转换套件"
+                            && typeMaterials.getValue("热能射线弹") == 1,
+                        typeView + " 拆旧后失去长枪资格的热能替换拒绝且零写");
+                } else {
+                    var removeGrant:Object = realModCommit(wornType,typeFixture,typeView,
+                        "detach_mod","手枪卡宾转换套件","");
+                    assertTrue(removeGrant.commit.success && luger.value.mods.length == 0
+                            && typeMaterials.getValue("手枪卡宾转换套件") == 1
+                            && typeMaterials.getValue("电脑芯片") == 1
+                            && typeMaterials.getValue("热能射线弹") == 1,
+                        typeView + " 一跳移除失去类型或结构依赖的插件并各返还一次");
+                }
+            }
+        }
         trace("RealEquipmentModRegressions passed=" + _passed + " failed=" + _failed);
         resetFixture();
     }
@@ -533,7 +566,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 && captured.indexOf('"reconcileAfterCallId":"write.not.sent"') >= 0,
             "显式 reconcile snapshot 作为有序 barrier 覆盖未送达写");
         assertTrue(captured.indexOf('"requestCallId"') < 0,
-            "requestCallId 只进入内部水位账本而不回显");
+            "requestCallId 不回显，提交防重由 token/transaction 身份负责");
         captured = "";
         _root.gameCommands.equipmentTuningDetach({
             v:1, callId:78, requestCallId:"detach.1", writeEpoch:5,

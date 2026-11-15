@@ -7,7 +7,8 @@ from lxml import etree as E
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'tmp/unified61-review'
-EXCLUDED = ('Origin12战术版', 'AA12战术版', 'Vepr12战术版', '极品UZI的KING版')
+EXCLUDED = ('极品UZI的KING版',)
+TACTICAL_SHOTGUNS = {'Origin12战术版', 'Vepr12紧凑改装型', 'KHAOS 12战术版', 'AA12战术版', 'Vepr12战术版'}
 
 
 def main():
@@ -28,7 +29,9 @@ def main():
             elif name in EXCLUDED:
                 assert item.find('allowedModTags') is None, name
                 excluded.append(copy.deepcopy(item))
-    assert len(items) == 26 and len(excluded) == 4
+    # a71b44aa23 已将五把战术连喷纳入同一封闭策略，不能再当作开放例外。
+    assert len(items) >= 31 and len(excluded) == len(EXCLUDED)
+    assert TACTICAL_SHOTGUNS <= {item.findtext("name") for item in items}
     assert sum(item.findtext('setId') == 'unified_type_61_armor' for item in items) == 5
     mods = []
     mod_list = ROOT / 'data/items/equipment_mods/list.xml'

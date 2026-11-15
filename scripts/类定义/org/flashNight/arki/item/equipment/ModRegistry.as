@@ -22,7 +22,6 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     private static var _modUseLists:Object = {};
 
     // 配件可用性结果描述
-    private static var _modAvailabilityResults:Object = {};
 
     // 【方案A实施】displayname反向索引，用于O(1)查找
     // 映射：displayname -> modName
@@ -73,9 +72,6 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         for (var i:Number = 0; i < modData.length; i++) {
             processModData(modData[i]);
         }
-
-        // 初始化可用性结果描述
-        initializeAvailabilityResults();
 
         if (_debugMode) {
             trace("[ModRegistry] 加载完成，共 " + _modList.length + " 个配件");
@@ -178,6 +174,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         }
 
         // 1. 处理use列表（装备类型）
+        mod.useDict = buildDictFromList(mod.use || "");
         if (mod.use) {
             var useArr:Array = mod.use.split(",");
             for (var useIndex:Number = 0; useIndex < useArr.length; useIndex++) {
@@ -514,27 +511,6 @@ class org.flashNight.arki.item.equipment.ModRegistry {
 
         skillSwitch.useCases = useCases;
         mod._skillSwitchProcessed = true;
-    }
-
-    /**
-     * 初始化配件可用性结果描述
-     * @private
-     */
-    private static function initializeAvailabilityResults():Void {
-        _modAvailabilityResults = {};
-        _modAvailabilityResults[1] = "可装备";
-        _modAvailabilityResults[0] = "配件数据不存在";
-        _modAvailabilityResults[-1] = "装备配件槽已满";
-        _modAvailabilityResults[-2] = "已装备";
-        _modAvailabilityResults[-4] = "配件无法覆盖装备原本的主动战技";
-        _modAvailabilityResults[-8] = "同位置插件已装备";
-        _modAvailabilityResults[-16] = "缺少前置结构支持";
-        _modAvailabilityResults[-32] = "有其他插件依赖此插件";
-        _modAvailabilityResults[-64] = "该装备禁止安装此挂点类型的插件";
-        _modAvailabilityResults[-128] = "当前弹药与此配件不兼容";
-        _modAvailabilityResults[-256] = "装备属性不满足安装条件";
-        _modAvailabilityResults[-512] = "当前弹药类型不满足此配件的要求";
-        _modAvailabilityResults[-1024] = "配件功能配置不可用";
     }
 
     // ==================== 公共查询接口 ====================
@@ -1052,14 +1028,6 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     }
 
     /**
-     * 获取配件可用性结果描述
-     * @param code 状态码
-     */
-    public static function getAvailabilityResult(code:Number):String {
-        return _modAvailabilityResults[code] || "未知错误";
-    }
-
-    /**
      * 设置调试模式
      */
     public static function setDebugMode(value:Boolean):Void {
@@ -1312,16 +1280,8 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         return _hitBehaviorDiagnostics != null && _hitBehaviorDiagnostics.length > 0;
     }
 
-    public static function getHitBehaviorProfileIndex():Object {
-        return _hitBehaviorProfileIndex;
-    }
-
     public static function isInvalidHitBehaviorMod(modName:String):Boolean {
         return Boolean(modName && _invalidHitBehaviorMods && _invalidHitBehaviorMods[modName]);
-    }
-
-    public static function getInvalidHitBehaviorMod(modName:String):Object {
-        return (modName && _invalidHitBehaviorMods) ? _invalidHitBehaviorMods[modName] : null;
     }
 
     public static function isKnownHitBehaviorProvider(modName:String):Boolean {
@@ -1379,21 +1339,6 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         return _hitBehaviorAllowedKeys;
     }
 
-    private static function hasGrayGooFields(hb:Object):Boolean {
-        if (!hb || typeof hb != "object") return false;
-        return String(hb.type) == "grayGooPrimer" ||
-               String(hb.type) == "grayGooEtch" ||
-               hb.delayFrames != undefined ||
-               hb.detonationCrumble != undefined ||
-               hb.decayDelay != undefined ||
-               hb.decayInterval != undefined ||
-               hb.hitStacks != undefined ||
-               hb.breakStacks != undefined ||
-               hb.milestoneInterval != undefined ||
-               hb.crumblePerMilestone != undefined ||
-               hb.executeAtMax != undefined;
-    }
-
     private static function hasAnyHitBehaviorInCases(cases:Array):Boolean {
         if (!cases) return false;
         for (var i:Number = 0; i < cases.length; i++) {
@@ -1407,48 +1352,6 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             }
         }
         return false;
-    }
-
-    /**
-     * 判断是否为旧版 duration/maxDuration 增量合成测试夹具（仅保留向后兼容单测 D02）。
-     * 任何带 override/softOverride/lockOverride 或含 13 字段灰蛊契约字段的配置均走 #208 完整校验。
-     */
-    private static function isLegacyDurationHitBehaviorMod(mod:Object):Boolean {
-        if (!mod || !mod.stats) return false;
-        var st:Object = mod.stats;
-        if ((st.override && st.override.hitBehavior != undefined) ||
-            (st.softOverride && st.softOverride.hitBehavior != undefined) ||
-            (st.lockOverride && st.lockOverride.hitBehavior != undefined)) {
-            return false;
-        }
-        var rootMergeHb:Object = st.merge ? st.merge.hitBehavior : null;
-        if (!rootMergeHb || typeof rootMergeHb != "object") return false;
-        if (String(rootMergeHb.type) != "toughnessVulnerabilityPrimer") return false;
-        if (rootMergeHb.duration == undefined && rootMergeHb.maxDuration == undefined) return false;
-        if (hasGrayGooFields(rootMergeHb)) return false;
-
-        if (st.baseSwitch && hasAnyHitBehaviorInCases(st.baseSwitch.valueCases || normalizeToArray(st.baseSwitch.value))) return false;
-        if (st.tagSwitch && hasAnyHitBehaviorInCases(st.tagSwitch.tagCases || normalizeToArray(st.tagSwitch.tag))) return false;
-        if (st.bulletSwitch && hasAnyHitBehaviorInCases(st.bulletSwitch.bulletCases || normalizeToArray(st.bulletSwitch.bullet))) return false;
-
-        if (st.useSwitch) {
-            var uCases:Array = st.useSwitch.useCases ? st.useSwitch.useCases : normalizeToArray(st.useSwitch.use);
-            for (var i:Number = 0; i < uCases.length; i++) {
-                var uc:Object = uCases[i];
-                if (!uc) continue;
-                if ((uc.override && uc.override.hitBehavior != undefined) ||
-                    (uc.softOverride && uc.softOverride.hitBehavior != undefined) ||
-                    (uc.lockOverride && uc.lockOverride.hitBehavior != undefined)) {
-                    return false;
-                }
-                if (uc.merge && uc.merge.hitBehavior != undefined) {
-                    if (typeof uc.merge.hitBehavior != "object" || hasGrayGooFields(uc.merge.hitBehavior)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
     }
 
     public static function validateAndRegisterModHitBehavior(mod:Object):Array {
@@ -1492,17 +1395,10 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         mod._hasHitBehavior = hasHb;
         mod._hitBehaviorErrors = [];
         mod._hitBehaviorInvalid = false;
-        mod._hitBehaviorLegacyMerge = false;
-        mod._hitBehaviorValidated = true;
 
         if (!hasHb) return [];
         if (mod.name) {
             _knownHitBehaviorProviders[String(mod.name)] = true;
-        }
-
-        if (isLegacyDurationHitBehaviorMod(mod)) {
-            mod._hitBehaviorLegacyMerge = true;
-            return [];
         }
 
         var errors:Array = [];
@@ -1913,8 +1809,10 @@ class org.flashNight.arki.item.equipment.ModRegistry {
                 continue;
             }
 
-            if (modInfo._hitBehaviorValidated !== true) {
-                validateModHitBehavior(modInfo, _hitBehaviorProfileIndex);
+            // 定义只在加载期规范化；查询不登记全局 identity。
+            if (typeof modInfo._hasHitBehavior != "boolean") {
+                diagnostics.push({code:"HB_MOD_NOT_NORMALIZED", modName:modName, detail:"mod definition was not loaded"});
+                continue;
             }
             if (!modInfo._hasHitBehavior) continue;
 

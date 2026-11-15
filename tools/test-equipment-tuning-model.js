@@ -357,7 +357,7 @@ equal(
     /if \(includeStats\)[\s\S]*?projection\.stats = EquipmentStatProjector\.project/.test(
         equipmentProjectionSource
     )
-        && /buildEquipmentProjection\(source\.item, afterSource, source\.item\.lastUpdate, true\)/.test(
+        && /buildEquipmentProjection\(source\.item, afterSource, source\.item\.lastUpdate, true, afterData\)/.test(
             tuningServiceSource
         ),
     true,

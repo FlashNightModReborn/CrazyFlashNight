@@ -14,6 +14,7 @@ import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.equipment.EquipmentStatProjector;
+import org.flashNight.arki.item.equipment.TagManager;
 import org.flashNight.neur.Event.EventBus;
 
 /** 装备调制唯一权威写服务；Web 只提交不可信意图。 */
@@ -32,8 +33,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
     private static var _tokenTransactionOrder:Array = [];
     private static var _writeEpoch:Number = 0;
     private static var _snapshotQuantityQuarantined:Boolean = false;
-    private static var _processedCalls:Object = {};
-    private static var _processedCallOrder:Array = [];
     private static var _testFailNext:Boolean = false;
     private static var _testFailNextMaterialCommit:Boolean = false;
     private static var _testFailNextSerialization:Boolean = false;
@@ -41,10 +40,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
     private static var _allowedOperations:Object = {
         enhance:true, convert:true, install_tier:true,
         install_mod:true, replace_mod:true, detach_mod:true, detach_all_mods:true
-    };
-    private static var _loadoutAllowedOperations:Object = {
-        enhance:true, convert:true, install_tier:true, install_mod:true,
-        replace_mod:true, detach_mod:true, detach_all_mods:true
     };
     private static var _inventorySourceKeys:Object = {
         sourceKind:true, containerId:true, slot:true, expectedLease:true
@@ -80,9 +75,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var response:Object = execute(commandName, params);
         response.task = "equipment_tuning_response";
         response.callId = params == undefined ? undefined : params.callId;
-        if (params != undefined && params.requestCallId != undefined) {
-            recordProcessedCall(String(params.requestCallId));
-        }
         sendResponse(response);
     }
 
@@ -135,10 +127,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
         if (_allowedOperations[operation] !== true) return fail("unsupported_operation");
         var source:Object = resolveWebSlot(params.source);
         if (!source.success) return source;
-        if (source.sourceKind == "loadout"
-                && _loadoutAllowedOperations[operation] !== true) {
-            return fail("unsupported_operation");
-        }
         var target:Object = null;
         if (operation == "convert") {
             target = resolveWebSlot(params.target);
@@ -940,7 +928,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
             afterValue.tier = tierName;
         } else return null;
         return {
-            before:EquipmentStatProjector.project(String(item.name), value),
+            before:EquipmentStatProjector.project(String(item.name), value, itemData),
             after:EquipmentStatProjector.project(String(item.name), afterValue)
         };
     }
@@ -975,6 +963,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         if (!source.success) return source;
         var sourceItem:BaseItem = BaseItem(source.item);
         var sourceValue:Object = sourceItem.value;
+        var sourceData:Object = undefined;
         var afterSource:Object = ObjectUtil.clone(sourceValue);
         var afterTarget:Object = null;
         var materialDeltas:Object = {};
@@ -1033,8 +1022,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
             fingerprint += "|tier=" + candidateName + ">" + tierName;
         } else if (operation == "install_mod") {
             if (candidateName == "") return fail("unknown_candidate");
-            var itemData:Object = sourceItem.getData();
-            var availability:Number = Number(EquipmentUtil.isModMaterialAvailable(sourceItem, itemData, candidateName));
+            sourceData = sourceItem.getData();
+            var availability:Number = Number(EquipmentUtil.isModMaterialAvailable(sourceItem, sourceData, candidateName));
             if (availability != 1) return fail("mod_unavailable");
             materialDeltas[candidateName] = -1;
             afterSource.mods = cloneArray(sourceValue.mods);
@@ -1121,12 +1110,15 @@ class org.flashNight.arki.item.EquipmentTuningService {
             changes.push({slot:source, afterValue:afterSource});
             if (afterTarget != null) changes.push({slot:target, afterValue:afterTarget});
         }
-        var before:Object = {source:{source:safeSourceRef(source), equipment:buildEquipmentProjection(source.item, sourceValue, source.item.lastUpdate, true)}};
-        var after:Object = {source:{source:safeSourceRef(source), equipment:buildEquipmentProjection(source.item, afterSource, source.item.lastUpdate, true)}};
+        if (sourceData === undefined) sourceData = sourceItem.getData();
+        var afterData:Object = noOp ? sourceData : sourceValidation.calculatedData;
+        var before:Object = {source:{source:safeSourceRef(source), equipment:buildEquipmentProjection(source.item, sourceValue, source.item.lastUpdate, true, sourceData)}};
+        var after:Object = {source:{source:safeSourceRef(source), equipment:buildEquipmentProjection(source.item, afterSource, source.item.lastUpdate, true, afterData)}};
         var affectedSlots:Array = noOp ? [] : [source.slot];
         if (target != null) {
-            before.target = {source:safeSourceRef(target), equipment:buildEquipmentProjection(target.item, target.item.value, target.item.lastUpdate, true)};
-            after.target = {source:safeSourceRef(target), equipment:buildEquipmentProjection(target.item, afterTarget, target.item.lastUpdate, true)};
+            var targetData:Object = BaseItem(target.item).getData();
+            before.target = {source:safeSourceRef(target), equipment:buildEquipmentProjection(target.item, target.item.value, target.item.lastUpdate, true, targetData)};
+            after.target = {source:safeSourceRef(target), equipment:buildEquipmentProjection(target.item, afterTarget, target.item.lastUpdate, true, noOp ? targetData : targetValidation.calculatedData)};
             if (!noOp) affectedSlots.push(target.slot);
         }
         return {
@@ -1256,17 +1248,18 @@ class org.flashNight.arki.item.EquipmentTuningService {
             });
         }
 
-        var availableMods:Array = EquipmentUtil.getAvailableModMaterials(item);
+        var itemData:Object = item.getData();
+        var modState:Object = TagManager.createModState(item, itemData);
+        var availableMods:Array = EquipmentUtil.getAvailableModMaterials(item, modState);
         var modSeen:Object = {};
         var modKeys:Object = {};
-        var itemData:Object = item.getData();
         for (i = 0; i < availableMods.length; i++) {
             var modName:String = String(availableMods[i]);
             if (modSeen[modName] == true) continue;
             modSeen[modName] = true;
             var modKey:String = "mod." + modCandidates.length;
             modKeys[modName] = modKey;
-            var availability:Number = Number(EquipmentUtil.isModMaterialAvailable(item, itemData, modName));
+            var availability:Number = Number(EquipmentUtil.isModMaterialAvailable(item, itemData, modName, modState));
             var modOwned:Number = materials.getValue(modName);
             nextCandidates[modKey] = {kind:"mod", itemName:modName};
             materialNames[modName] = true;
@@ -1306,13 +1299,17 @@ class org.flashNight.arki.item.EquipmentTuningService {
             }
         }
 
-        // 逐个模拟“先拆旧件、再装新件”的最终状态，只投影可原子替换的旧件键。
+        var replacements:Array = [];
+        for (var installedIndex:Number = 0; installedIndex < item.value.mods.length; installedIndex++) {
+            var installedName:String = String(item.value.mods[installedIndex]);
+            replacements.push(buildReplacementState(item, installedName));
+        }
         for (i = 0; i < modCandidates.length; i++) {
             var replacementProjection:Object = modCandidates[i];
             if (replacementProjection.installed == true) continue;
-            for (var installedIndex:Number = 0; installedIndex < item.value.mods.length; installedIndex++) {
-                var installedName:String = String(item.value.mods[installedIndex]);
-                if (canReplaceMod(item, installedName, String(replacementProjection.itemName))) {
+            for (installedIndex = 0; installedIndex < replacements.length; installedIndex++) {
+                installedName = String(item.value.mods[installedIndex]);
+                if (canReplaceMod(item, installedName, String(replacementProjection.itemName), replacements[installedIndex])) {
                     replacementProjection.replaceableFrom.push(String(modKeys[installedName]));
                 }
             }
@@ -1359,7 +1356,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         return {
             gender:buildGender(),
             source:sourceRef,
-            equipment:buildEquipmentProjection(item, item.value, item.lastUpdate),
+            equipment:buildEquipmentProjection(item, item.value, item.lastUpdate, false, itemData),
             enhance:{currentLevel:level, maxLevel:cap, availableMaxLevel:cap, hardMaxLevel:hardCap},
             tierCandidates:tierCandidates, modCandidates:modCandidates,
             materials:materialSnapshot,
@@ -1372,13 +1369,15 @@ class org.flashNight.arki.item.EquipmentTuningService {
         return String(_root.性别) == "女" ? "女" : "男";
     }
 
-    private static function buildEquipmentProjection(item:Object, value:Object, lastUpdate:Number, includeStats:Boolean):Object {
+    private static function buildEquipmentProjection(item:Object, value:Object, lastUpdate:Number, includeStats:Boolean, calculatedData:Object):Object {
         var raw:Object = ItemUtil.getRawItemData(item.name);
-        // preview 的 after 必须从传入 value 重算；直接读取 item.getData() 会把
-        // 替换前的等级需求与配件槽容量泄漏进 after 投影。
-        var projectionProbe:BaseItem = new BaseItem(
-            String(item.name), ObjectUtil.clone(value), lastUpdate);
-        var data:Object = projectionProbe.getData();
+        // after 只接受对应 value 的计算结果；同次 plan 已验证的数据可以复用。
+        // 不能把替换前的 item.getData() 当作 after 属性。
+        var data:Object = calculatedData;
+        if (data === undefined) {
+            var projectionProbe:BaseItem = new BaseItem(String(item.name), ObjectUtil.clone(value), lastUpdate);
+            data = projectionProbe.getData();
+        }
         // 唯一 legacy metadata 适配点：Host/Web 只消费完整三元身份，绝不再猜内部名。
         var presentation:Object = itemPresentation(String(item.name));
         var modSlotCapacity:Number = 0;
@@ -1415,7 +1414,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         // preview 的 before/after 附带结构化属性投影，供 Web 端做前后对比；
         // snapshot 不传 includeStats，保持载荷最小
         if (includeStats) {
-            projection.stats = EquipmentStatProjector.project(String(item.name), value);
+            projection.stats = EquipmentStatProjector.project(String(item.name), value, data);
         }
         return projection;
     }
@@ -1612,13 +1611,15 @@ class org.flashNight.arki.item.EquipmentTuningService {
             return fail("mod_unavailable");
         }
 
+        if (TagManager.hasNewInvalidModDependencies(item, value.mods)) return fail("mod_unavailable");
+
         if (slot != null && slot.sourceKind == "loadout") {
             if (!finiteNumber(_root.等级)) return fail("invalid_equipment");
             if (Number(itemData.data.level) > Number(_root.等级)) {
                 return fail("level_locked");
             }
         }
-        return {success:true};
+        return {success:true, calculatedData:itemData};
     }
 
     private static function finiteNumber(value):Boolean {
@@ -1735,16 +1736,26 @@ class org.flashNight.arki.item.EquipmentTuningService {
         deltas[itemName] = current + delta;
     }
 
-    private static function canReplaceMod(item:BaseItem,
-            installedName:String, candidateName:String):Boolean {
-        if (installedName == "" || candidateName == "" || installedName == candidateName) return false;
+    private static function buildReplacementState(item:BaseItem, installedName:String):Object {
         var detach:Object = buildDetachPlan(item, installedName);
-        if (!detach.success) return false;
-        var probeValue:Object = ObjectUtil.clone(item.value);
-        probeValue.mods = cloneArray(detach.remainingMods);
-        var probe:BaseItem = new BaseItem(item.name, probeValue, item.lastUpdate);
-        return Number(EquipmentUtil.isModMaterialAvailable(
-            probe, probe.getData(), candidateName)) == 1;
+        if (!detach.success) return null;
+        var value:Object = ObjectUtil.clone(item.value);
+        value.mods = cloneArray(detach.remainingMods);
+        var probe:BaseItem = new BaseItem(item.name, value, item.lastUpdate);
+        var data:Object = probe.getData();
+        return {probe:probe, data:data, state:TagManager.createModState(probe, data)};
+    }
+
+    private static function canReplaceMod(item:BaseItem, installedName:String,
+            candidateName:String, replacement:Object):Boolean {
+        if (installedName == "" || candidateName == "" || installedName == candidateName) return false;
+        if (replacement === undefined) replacement = buildReplacementState(item, installedName);
+        if (!replacement) return false;
+        if (Number(EquipmentUtil.isModMaterialAvailable(replacement.probe, replacement.data,
+                candidateName, replacement.state)) != 1) return false;
+        var afterMods:Array = cloneArray(replacement.probe.value.mods);
+        afterMods.push(candidateName);
+        return !TagManager.hasNewInvalidModDependencies(item, afterMods);
     }
 
     private static function getMaterialCollection():Object {
@@ -1820,16 +1831,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
         while (_tokenTransactionOrder.length > 64) {
             var expired:String = String(_tokenTransactionOrder.shift());
             delete _tokenTransactions[expired];
-        }
-    }
-
-    private static function recordProcessedCall(callId:String):Void {
-        if (callId == "" || _processedCalls[callId] == true) return;
-        _processedCalls[callId] = true;
-        _processedCallOrder.push(callId);
-        while (_processedCallOrder.length > 128) {
-            var expired:String = String(_processedCallOrder.shift());
-            delete _processedCalls[expired];
         }
     }
 
@@ -2018,8 +2019,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
         _plan = null;
         _writeEpoch = 0;
         _snapshotQuantityQuarantined = false;
-        _processedCalls = {};
-        _processedCallOrder = [];
         _tokenTransactions = {};
         _tokenTransactionOrder = [];
         _testFailNext = false;

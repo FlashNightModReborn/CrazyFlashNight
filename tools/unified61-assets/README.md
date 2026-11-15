@@ -49,7 +49,7 @@ node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 5
 node tools/audit-as2-class-embedding.js
 ```
 
-联合runner执行机制、资源与切枪入口、封闭插件策略套件；单独入口为 `run-unified61-set-tests.ps1`、`run-unified61-asset-tests.ps1` 和 `run-closed-mod-policy-tests.ps1`。测试不使用真实玩家存档。插件夹具由 `check_mod_policy.py` 从当前XML生成并在编译前校验，覆盖五件装甲、21件已有禁用规则的战术版武器与全部107种插件；验证菜单筛选、安装判定和真实等级计算一致。进入发布前须收束测试播放器和本轮拥有的编辑文档；退出请求不代替进程退出核对。
+联合runner执行机制、资源与切枪入口、封闭插件策略套件；单独入口为 `run-unified61-set-tests.ps1`、`run-unified61-asset-tests.ps1` 和 `run-closed-mod-policy-tests.ps1`。测试不使用真实玩家存档。插件夹具由 `check_mod_policy.py` 从当前XML生成并在编译前校验，覆盖五件装甲、现役封闭战术武器（含 a71b44aa23 纳入的五把战术连喷）与完整插件目录，实际数量和输入闭包以生成报告为准；验证菜单筛选、安装判定和真实等级计算一致。进入发布前须收束测试播放器和本轮拥有的编辑文档；退出请求不代替进程退出核对。
 
 实际胸炮段数另用 `powershell -File scripts/run-vertical-chain-damage-probe.ps1 -TimeoutSeconds 600` 诊断。它连接真实五件套事件、工厂、碰撞队列与伤害处理器，区分一次发射、跨帧接触和每次有效段数；原调查的49项检查表示[缺陷复现闭合](../../docs/统合61胸炮-纵向穿刺联弹段数调查-2026-10-25.md)，不代表判定已修复。原机制套件的发射属性检查、资源像素检查及使用固定伤害边界的飞行套件，均不能代替这一完整伤害链验证。
 
