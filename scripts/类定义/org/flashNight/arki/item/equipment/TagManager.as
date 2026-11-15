@@ -278,8 +278,11 @@ class org.flashNight.arki.item.equipment.TagManager {
             var candidateUseLookup:Object = modData.grantsUseDict
                 ? buildUseLookupForMods(candidateMods, itemData, ModRegistry.getModDict())
                 : itemUseLookup;
+            var nativeBase:Object = EquipmentCalculator.calculateBaseData(item.name, item.value);
+            if (!nativeBase || !nativeBase.data) return -1024;
             var hbCheck:Object = ModRegistry.validateHitBehaviorProvision(
-                candidateMods, itemData, ModRegistry.getModDict(), candidateUseLookup
+                candidateMods, nativeBase.data.hitBehavior != undefined,
+                ModRegistry.getModDict(), candidateUseLookup
             );
             if (!hbCheck.valid) {
                 return -1024;
@@ -437,7 +440,7 @@ class org.flashNight.arki.item.equipment.TagManager {
 
         // 惰性计算的装备数据（仅在需要检查子弹类型或 scope="current" 条件时才计算）
         var calculatedItemData:Object = undefined;
-        // 惰性计算的基础数据（仅在需要 scope="base" 条件时才计算，同一装备内缓存）
+        // 无插件基础数据供 base 条件和原生行为检查共用，同一轮只计算一次
         var baseCondData:Object = undefined;
 
         // 处理blockedTags
@@ -519,9 +522,8 @@ class org.flashNight.arki.item.equipment.TagManager {
                     condCheckData = calculatedItemData;
                 } else {
                     // scope="base"（默认）：惰性获取基础数据（仅 tier/强化，不含配件）
-                    if (baseCondData == undefined) {
+                    if (baseCondData === undefined) {
                         baseCondData = EquipmentCalculator.calculateBaseData(item.name, item.value);
-                        if (!baseCondData) baseCondData = itemData; // 回退
                     }
                     condCheckData = baseCondData;
                 }
@@ -542,11 +544,17 @@ class org.flashNight.arki.item.equipment.TagManager {
                     var filterCandLookup:Object = modData.grantsUseDict
                         ? buildUseLookupForMods(filterCandMods, itemData, ModRegistry.getModDict())
                         : itemUseLookup;
-                    var filterHbCheck:Object = ModRegistry.validateHitBehaviorProvision(
-                        filterCandMods, itemData, ModRegistry.getModDict(), filterCandLookup
-                    );
-                    if (!filterHbCheck.valid) {
+                    if (baseCondData === undefined) {
+                        baseCondData = EquipmentCalculator.calculateBaseData(item.name, item.value);
+                    }
+                    if (!baseCondData || !baseCondData.data) {
                         canUse = false;
+                    } else {
+                        var filterHbCheck:Object = ModRegistry.validateHitBehaviorProvision(
+                            filterCandMods, baseCondData.data.hitBehavior != undefined,
+                            ModRegistry.getModDict(), filterCandLookup
+                        );
+                        if (!filterHbCheck.valid) canUse = false;
                     }
                 }
             }

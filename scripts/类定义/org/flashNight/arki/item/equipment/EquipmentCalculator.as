@@ -231,7 +231,9 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         var bulletType:String = (itemData.data && itemData.data.bullet) ? itemData.data.bullet : "";
 
         // 校验 hitBehavior 提供者与分支命中唯一性契约（#208）
-        var hbProvision:Object = ModRegistry.validateHitBehaviorProvision(mods, itemData, modRegistry, useLookup);
+        // 此处已选进阶、尚未应用插件；只传递无插件的原生来源事实。
+        var hasNativeProvider:Boolean = itemData.data.hitBehavior != undefined;
+        var hbProvision:Object = ModRegistry.validateHitBehaviorProvision(mods, hasNativeProvider, modRegistry, useLookup);
         if (!hbProvision.valid) {
             itemData._hitBehaviorDiagnostics = hbProvision.diagnostics;
             itemData._hitBehaviorInvalid = true;
