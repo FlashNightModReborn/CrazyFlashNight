@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/爆炸狙击子弹/爆炸集束子弹" itemID="6af86c41-00001406" linkageExportForAS="true" linkageIdentifier="爆炸集束子弹" lastModified="1794665577" lastUniqueIdentifier="31">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/爆炸狙击子弹/爆炸集束子弹" itemID="6af86c41-00001406" linkageExportForAS="true" linkageIdentifier="爆炸集束子弹" lastModified="1794752546" lastUniqueIdentifier="31">
   <timeline>
     <DOMTimeline name="爆炸集束子弹" currentFrame="14">
       <layers>
@@ -94,7 +94,7 @@ else
 Z轴攻击范围 = 80;
 击倒率 = 1;
  击中后子弹的效果 = "";
- 击退初速度 = 25;
+ 击退初速度 = 32;
  shootX = this._x;
  shootY = this._y;
 

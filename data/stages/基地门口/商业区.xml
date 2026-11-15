@@ -68,6 +68,15 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
+        <Pickups>
+            <!-- 固定可重复拾取的碎玻璃堆；物品使用现役「玻璃」 -->
+            <Pickup>
+                <Name>玻璃</Name>
+                <Value>2</Value>
+                <x>720</x>
+                <y>520</y>
+            </Pickup>
+        </Pickups>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -190,6 +199,15 @@
             <PlayerX>90</PlayerX>
             <PlayerY>559</PlayerY>
         </BasicInformation>
+        <Pickups>
+            <!-- 固定可重复拾取的碎玻璃堆；物品使用现役「玻璃」 -->
+            <Pickup>
+                <Name>玻璃</Name>
+                <Value>3</Value>
+                <x>890</x>
+                <y>555</y>
+            </Pickup>
+        </Pickups>
         <SpawnPoint>
             <Point id="0">
                 <x>1253</x>
@@ -306,6 +324,15 @@
             <PlayerX>84</PlayerX>
             <PlayerY>505</PlayerY>
         </BasicInformation>
+        <Pickups>
+            <!-- 固定可重复拾取的碎玻璃堆；物品使用现役「玻璃」 -->
+            <Pickup>
+                <Name>玻璃</Name>
+                <Value>2</Value>
+                <x>1230</x>
+                <y>575</y>
+            </Pickup>
+        </Pickups>
         <SpawnPoint>
             <Point id="0">
                 <x>1590</x>
