@@ -1,0 +1,14 @@
+{
+  "kind": "test-definition-order-only",
+  "method": "testLegacyMapStash",
+  "methodCount": 145,
+  "everyMethodByteIdentical": true,
+  "executionOrderUnchanged": true,
+  "originalSha256": "c6c5d20ca4f2551bdc38f28b7d116480bdbafb27dc71b65ad03802b6f6c19a14",
+  "newSha256": "06351518ad2d64719db1e640756fe10707a33371bb5bd25d2b5a0a3c6185bf64",
+  "removedOwnedPart": {
+    "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\item\\LootReportTooltipTestPart.as",
+    "sha256": "2691b8ec9af8aad3717f711c19de00e3562b2239d3912a193a1b86f330f8c1f2"
+  },
+  "diagnostic": "Unchanged 32774-byte class initializer span overflowed SI16; move a definition from inside that block rather than change assertions."
+}

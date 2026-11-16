@@ -930,10 +930,10 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         var source:Object = refFrom(response, 0, 0);
         var tooltip:Object = InventoryPanelService.execute("tooltip", {v: 1, source: source});
         assertTrue(tooltip.success && tooltip.itemName == name
-            && tooltip.introHTML != undefined && tooltip.descHTML != undefined
-            && tooltip.descHTML.indexOf("&quot;") < 0
-            && tooltip.descHTML.indexOf("COLOR=\"#FF00FF\"") >= 0,
-            "tooltip 按 lease 读取真实库存实例并返回 Web 可解析的富文本");
+            && tooltip.tooltipInput.version == 1 && tooltip.tooltipInput.itemName == name
+            && tooltip.tooltipInput.value.count == 3
+            && tooltip.introHTML == "" && tooltip.descHTML == "",
+            "tooltip 按 lease 冻结真实库存输入，Host 负责内容生成");
 
         _root.物品栏.背包.remove(0);
         _root.物品栏.背包.add(0, new BaseItem(name, 1, 2));

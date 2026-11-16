@@ -213,6 +213,21 @@ namespace CF7Launcher.Tasks
                 RespondError(webCallId, cmd, requestedInstance, "panel_instance_expired");
         }
 
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            if (!_pendingCalls.TryPeek(fid, out var pending)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            var entry = pending.Context;
+            if (entry.WebCmd != "equip_tooltip" && entry.WebCmd != "loadout_tooltip") return null;
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("merc", "mercs", entry.PanelInstanceId,
+                pending.WebCallId, fid, null,
+                () => _pendingCalls.TryPeek(fid, out var current) && ReferenceEquals(current, pending),
+                () =>
+                {
+                    if (_pendingCalls.TryCompleteExact(fid, pending, out _))
+                        RespondError(pending.WebCallId, entry.WebCmd, entry.PanelInstanceId, "stale_state");
+                });
+        }
+
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             LogManager.Log("[MercTask] <- Flash response received");

@@ -3,8 +3,6 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.xml.XMLParser;
-import org.flashNight.gesh.tooltip.builder.ModStatBuilder;
-import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
 
 /** 真实XML到运算、安装规则、插件说明与预览；独立TestLoader，零库存/存档写。 */
 class org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest {
@@ -118,14 +116,10 @@ class org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest {
         return Number.NaN;
     }
     private static function testPresentation():Void {
-        var html:String=ModStatBuilder.build("磁稳贯穿弹").join("");
-        check(html.indexOf("柔性增加，最多 +32毫秒")>=0 && html.indexOf("saturatingAdd")==-1,
-            "real standalone mod tooltip uses Chinese instead of an internal type");
+        // Standalone/compression wording is asserted in the TS content engine tests.
         same(7.1,stat("TTI 2011 Combat Master",[]),"TTI before preview");
         same(5.1,stat("TTI 2011 Combat Master",["磁稳贯穿弹"]),"TTI after preview uses the real calculator");
         same(16.5,stat("M134",["磁稳贯穿弹"]),"vertical preview retains split-based shot density");
-        var lines:Array=[];UseSwitchStatsBuilder.buildStatBlock(lines,{curve:{diffusion:1.414}},"");
-        check(lines.join("").indexOf("压缩等级 20")>=0,"legacy compression tooltip remains intact");
         testRejectedHitBehaviorPreview();
     }
     private static function testRejectedHitBehaviorPreview():Void {

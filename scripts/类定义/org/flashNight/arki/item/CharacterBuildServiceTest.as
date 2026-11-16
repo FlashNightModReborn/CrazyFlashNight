@@ -1362,14 +1362,14 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && equipmentTooltip.payload.displayName == "注释头盔实例名"
                 && equipmentTooltip.payload.iconName == "注释头盔实例图标"
                 && equipmentTooltip.payload.itemType == "防具"
-                && equipmentTooltip.payload.descHTML
+                && equipmentTooltip.payload.tooltipInput.projection.calculated.description
                     .indexOf("实例装备富注释") >= 0
-                && equipmentTooltip.payload.introHTML.length > 0
-                && equipmentTooltip.payload.document != undefined
+                && equipmentTooltip.payload.introHTML == ""
+                && equipmentTooltip.payload.tooltipInput.version == 1
                 && hasOnlyKeys(equipmentTooltip.payload, {
                     v:true, target:true, itemName:true, displayName:true,
                     iconName:true, itemType:true, descHTML:true,
-                    introHTML:true, document:true
+                    introHTML:true, tooltipInput:true
                 })
                 && hasOnlyKeys(equipmentTooltip.payload.target, {
                     kind:true, slotKey:true
@@ -1445,12 +1445,13 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && drugTooltip.payload.displayName == "注释药剂显示名"
                 && drugTooltip.payload.iconName == "注释药剂图标"
                 && drugTooltip.payload.itemType == "药剂"
-                && drugTooltip.payload.descHTML.indexOf("药剂富注释") >= 0
-                && drugTooltip.payload.introHTML.length > 0
+                && drugTooltip.payload.tooltipInput.itemName == "注释药剂"
+                && drugTooltip.payload.tooltipInput.projection.drugEffects instanceof Array
+                && drugTooltip.payload.introHTML == ""
                 && hasOnlyKeys(drugTooltip.payload.target, {
                     kind:true, drugSlot:true
                 }),
-            "tooltip 初始 writeEpoch=0 的药剂槽复用 canonical composer 并保留药剂类型");
+            "tooltip 初始 writeEpoch=0 的药剂槽复用 canonical producer 并保留药剂类型");
 
         drugParams.requestCallId = "character-build.tooltip.drug-upper";
         drugParams.drugSlot = 7;
@@ -2101,6 +2102,8 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             requireTags:"电力",
             tag:"等级校正"
         };
+        // 手工注入的夹具也须经过加载期同一校验，不能绕过未知定义拒绝。
+        ModRegistry.validateModHitBehavior(modDict["电脑芯片"], {});
         EquipmentUtil.modDict = modDict;
         var itemData:Object = effectiveQualificationCatalog();
 

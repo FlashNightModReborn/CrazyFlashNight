@@ -1,0 +1,49 @@
+{
+  "checks": [
+    {
+      "name": "bundle-current",
+      "exitCode": 0,
+      "seconds": 1.156
+    },
+    {
+      "name": "engine",
+      "exitCode": 0,
+      "seconds": 1.36
+    },
+    {
+      "name": "projection",
+      "exitCode": 0,
+      "seconds": 0.109
+    },
+    {
+      "name": "capture-tools",
+      "exitCode": 0,
+      "seconds": 0.094
+    },
+    {
+      "name": "host-tests",
+      "exitCode": 0,
+      "seconds": 5.734
+    },
+    {
+      "name": "service-validation",
+      "exitCode": 0,
+      "seconds": 2.438
+    },
+    {
+      "name": "node-output",
+      "exitCode": 0,
+      "seconds": 0.656
+    },
+    {
+      "name": "v8-output",
+      "exitCode": 0,
+      "seconds": 1.641
+    }
+  ],
+  "records": 1801,
+  "crossHostEqual": true,
+  "bundleBytes": 307048,
+  "bundleSha256": "c70bc251824a7baae8a8b31b6441ba761eb90386fadb4781f5368b8a66b20885",
+  "scope": "Windows ClearScript and Node on synthetic projections; does not replace independent AVM1 parity or actual UI."
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-// 对账竞技场 XML、当前佣兵预设、物品目录与 AS2 接线。
+// 对账竞技场 XML、当前佣兵预设、物品目录及 AS2 投影/TS 展示接线。
 // 这里的旧关键词只作为迁移等价性 oracle；运行时唯一真源是 arena_drop_rules.xml。
 
 const fs = require('fs');
@@ -19,8 +19,10 @@ const INDEX_PATH = path.join(ROOT, 'scripts', '类定义', 'org', 'flashNight',
     'arki', 'item', 'obtain', 'ItemObtainIndex.as');
 const LOADER_PATH = path.join(ROOT, 'scripts', '类定义', 'org', 'flashNight',
     'gesh', 'xml', 'LoadXml', 'ArenaDropRulesLoader.as');
-const TOOLTIP_PATH = path.join(ROOT, 'scripts', '类定义', 'org', 'flashNight',
-    'gesh', 'tooltip', 'builder', 'ObtainMethodsBuilder.as');
+const TOOLTIP_PATH = path.join(ROOT, 'launcher', 'tooltip-engine', 'src',
+    'ObtainMethodsBuilder.ts');
+const TOOLTIP_PROJECTION_PATH = path.join(ROOT, 'scripts', '类定义', 'org', 'flashNight',
+    'gesh', 'tooltip', 'TooltipInputProjection.as');
 const RELEASE_POLICY_PATH = path.join(ROOT, 'tools',
     'validate-launcher-release-policy.ps1');
 
@@ -345,8 +347,11 @@ function validateWiring() {
     requireSource(INDEX_PATH, ['DROP_TYPE_ARENA:String = "arena"',
         'buildArenaDropRecords(arenaDropCatalog)', 'record.dropType !== DROP_TYPE_ARENA',
         'carrierScope:source.carrierScope']);
-    requireSource(TOOLTIP_PATH, ['TIP_OBTAIN_ARENA', 'COL_DROP_ARENA',
-        'DROP_TYPE_ARENA', 'TIP_OBTAIN_ARENA_CARRIER',
+    requireSource(TOOLTIP_PROJECTION_PATH, ['ItemObtainIndex.getInstance()',
+        'if (!index.isIndexBuilt()) return []', 'index.getObtainRecords(name)',
+        '"dropType"', '"carrierScope"']);
+    requireSource(TOOLTIP_PATH, ['ctx.projection.obtainRecords', 'TIP_OBTAIN_ARENA', 'COL_DROP_ARENA',
+        'rec.dropType === "arena"', 'TIP_OBTAIN_ARENA_CARRIER',
         'TIP_OBTAIN_ARENA_SPECIFIC_CARRIER'],
         ['arena.sourceHint', 'String(arena.arenaLabel)']);
     requireSource(RELEASE_POLICY_PATH, ['arena-drop-rules-current',

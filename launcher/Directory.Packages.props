@@ -10,6 +10,8 @@
     <PackageVersion Include="Microsoft.ClearScript.V8" Version="7.4.5" />
     <PackageVersion Include="Microsoft.ClearScript.V8.ICUData" Version="7.4.5" />
     <PackageVersion Include="Microsoft.ClearScript.V8.Native.win-x64" Version="7.4.5" />
+    <!-- Cross-platform TooltipService validation host only; production remains win-x64. -->
+    <PackageVersion Include="Microsoft.ClearScript.V8.Native.linux-x64" Version="7.4.5" />
 
     <!-- JSON 序列化（XML socket + REST + 存档迁移） -->
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />

@@ -1,9 +1,6 @@
 ﻿trace("FocusedTestRunId native-interaction Start: __FOCUSED_RUN_ID__");
 
-org.flashNight.gesh.tooltip.test.TestDataBootstrap.runIsolated(function() {
-    org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest.runAllTests();
-});
-org.flashNight.gesh.tooltip.test.NativeTooltipBridgeTest.runAllTests();
+org.flashNight.arki.interaction.NativeTooltipBridgeTest.runAllTests();
 org.flashNight.arki.merc.MercSpawnerTest.runAllTests();
 org.flashNight.arki.cursor.MouseProxyTest.runAllTests();
 org.flashNight.arki.interaction.NativeMenuBridgeTest.runAllTests();

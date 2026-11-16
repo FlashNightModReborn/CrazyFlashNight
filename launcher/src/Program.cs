@@ -25,6 +25,7 @@ using CF7Launcher.Data;
 using CF7Launcher.RagTerminal;
 using CF7Launcher.Tasks;
 using CF7Launcher.V8;
+using CF7Launcher.Tooltips;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json.Linq;
 
@@ -1572,13 +1573,19 @@ class Program
                 socketServer,
                 musicCatalog);
 
-        // V8 只承载 GameInput；打击伤害数字由 C# reducer + overlay 独立承载
+        // Realtime V8 只承载 GameInput；Tooltip 使用独立常驻 worker/engine，不竞争逐帧锁。
         string scriptsDir = Path.Combine(projectRoot, "launcher", "scripts");
         V8Runtime v8Runtime;
         using (PerfTrace.Scope("v8.construct"))
         {
             v8Runtime = new V8Runtime(scriptsDir);
         }
+        var tooltipService = new TooltipService(() => new TooltipV8Engine(projectRoot), LogManager.Log);
+        var tooltipResponses = new TooltipResponseEnricher(tooltipService, () => socketServer.CurrentGeneration, LogManager.Log);
+        router.TooltipResponses = tooltipResponses;
+        _ = tooltipService.Ready.ContinueWith(t => { _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted);
+        socketServer.OnClientDisconnected += delegate { tooltipResponses.Reset(); tooltipService.ResetRequests(); };
+        form.FormClosed += delegate { tooltipResponses.Dispose(); tooltipService.Dispose(); };
         HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
         FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
         int workerProjectionCatalogsReady = 0;
@@ -2888,11 +2895,28 @@ class Program
         }
         // native_interaction：NPC 菜单 + 文档 tooltip 共享同一任务与 AS2 身份序列（ni:<n>）。
         // 菜单/tooltip 均不经 WebPanel 暂停路径；输入观察复用 WebOverlayForm 的 WH_MOUSE_LL。
+        tooltipResponses.RegisterOwnerResolver("inventory_response", inventoryTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("shop_response", shopTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("npcshop_response", npcShopTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("crafting_response", craftingTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("equipment_tuning_response", equipmentTuningTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("loadout_response", characterBuildTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("pet_response", petTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("merc_response", mercTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("arena_response", arenaTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("task_response", taskTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("intelligence_response", intelligenceTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("blackmarket_response", blackMarketTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("modifier_response", modifierTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("loot_response", lootTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("item_use_response", itemUseTask.ResolveTooltipOwner);
         NativeInteractionTask nativeInteractionTask = new NativeInteractionTask(
             socketServer,
             npcMenuWidget,
             new CF7Launcher.Guardian.Hud.NativeTooltipSurfaceAdapter(nativeTooltipWidget),
-            delegate(Action a) { try { form.BeginInvoke(a); } catch { } });
+            delegate(Action a) { if (!form.IsDisposed && !form.Disposing) form.BeginInvoke(a); },
+            null, tooltipService, () => nativeHud != null && nativeHud.CanPresentTooltip);
+        if (nativeHud != null) nativeHud.PresentationSuppressed += nativeInteractionTask.OnHostSuppressed;
         webOverlay.SetInteractionInputProbes(
             nativeInteractionTask.NotifyPhysicalButtonDown,
             delegate(int sx, int sy, int wheelDelta)
@@ -3435,6 +3459,7 @@ class Program
             try { if (backdrop != null) backdrop.Dispose(); } catch { }
             try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
             try { hnOverlay.Dispose(); } catch { }
+            try { tooltipResponses.Dispose(); tooltipService.Dispose(); } catch { }
             try { v8Runtime.Dispose(); } catch { }
             try { harnessPipe?.Dispose(); } catch { }
             try { harnessController?.Dispose(); } catch { }
@@ -4500,6 +4525,7 @@ class Program
         try { if (backdrop != null) backdrop.Dispose(); } catch { }
         try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
         try { hnOverlay.Dispose(); } catch { }
+        try { tooltipResponses.Dispose(); tooltipService.Dispose(); } catch { }
         try { v8Runtime.Dispose(); } catch { }
         try { harnessPipe?.Dispose(); } catch { }
         try { harnessController?.Dispose(); } catch { }

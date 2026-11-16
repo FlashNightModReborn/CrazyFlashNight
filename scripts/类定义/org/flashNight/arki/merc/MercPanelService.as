@@ -581,7 +581,7 @@ class org.flashNight.arki.merc.MercPanelService {
             displayname: tooltip.displayname,
             descHTML: tooltip.descHTML,
             introHTML: tooltip.introHTML,
-            document: tooltip.document
+            tooltipInput: tooltip.tooltipInput
         });
     }
 
@@ -676,7 +676,7 @@ class org.flashNight.arki.merc.MercPanelService {
         });
     }
 
-    // tooltip 响应为 buildTooltipProjection 键（itemName/displayname/iconName/itemType/descHTML/introHTML/document）。
+    // tooltip 响应为 buildTooltipProjection 键（itemName/displayname/iconName/itemType/tooltipInput）。
     public static function handleLoadoutTooltip(params:Object):Void {
         var callId = params.callId;
         var check:Object = resolveMercForLoadout(params);
@@ -702,7 +702,7 @@ class org.flashNight.arki.merc.MercPanelService {
             itemType: String(result.itemType),
             descHTML: result.descHTML,
             introHTML: result.introHTML,
-            document: result.document
+            tooltipInput: result.tooltipInput
         });
     }
 

@@ -1,0 +1,16 @@
+$ npm test --prefix tools/cf7-packer -- --run packages/core/tests/tooltip-runtime-config.test.ts
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+npm warn Unknown project config "electron_mirror". This will stop working in the next major version of npm.
+
+> cf7-packer@0.1.0 test
+> vitest run --run packages/core/tests/tooltip-runtime-config.test.ts
+
+
+ RUN  v3.2.4 /workspace/scratch/120bad2dafab/cfn-tooltip/tools/cf7-packer
+
+ ✓ packages/core/tests/tooltip-runtime-config.test.ts (1 test) 122ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:23:27
+   Duration  673ms (transform 179ms, setup 0ms, collect 278ms, tests 122ms, environment 0ms, prepare 79ms)

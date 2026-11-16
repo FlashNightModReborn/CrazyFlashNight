@@ -1648,11 +1648,12 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         var tooltip:Object = EquipmentTuningService.execute("tooltip", tooltipParams);
         assertTrue(candidateKey.indexOf("mod.") == 0 && tooltip.success
                 && tooltip.candidateKey == candidateKey
-                && typeof tooltip.introHTML == "string" && tooltip.introHTML.length > 0
-                && typeof tooltip.descHTML == "string" && tooltip.descHTML.length > 0
+                && tooltip.tooltipInput.version == 1
+                && tooltip.tooltipInput.itemName == "普通握把"
+                && tooltip.introHTML == "" && tooltip.descHTML == ""
                 && tooltip.itemType == "收集品" && tooltip.itemUse == "材料"
                 && typeof tooltip.text == "string",
-            "snapshot 只暴露 ASCII opaque candidateKey，tooltip 只保留 intro/desc 分段与 plain text");
+            "snapshot 只暴露 ASCII opaque candidateKey，tooltip 返回候选的只读输入与 plain text 身份");
         var previewParams:Object = params("install_mod");
         previewParams.operation = "install_mod";
         previewParams.source = lease;

@@ -448,7 +448,7 @@ class org.flashNight.arki.item.CraftingPanelService {
             descHTML:String(tooltip.descHTML || ""),
             introHTML:String(tooltip.introHTML || ""),
             // COMMON v1 语义文档：纯数据透传（纯文本 title/runs，Host/Web 不得二次解析）
-            document: tooltip.document};
+            tooltipInput: tooltip.tooltipInput};
     }
 
     private static function executeCommit(params:Object):Object {

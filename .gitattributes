@@ -398,3 +398,22 @@ launcher/app.manifest text eol=lf
 
 # Unified Type61 author inputs retain the exact archived bytes bound by source-manifest.json.
 /tools/unified61-assets/source/** -text whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+
+# Issue #262: immutable oracle bytes, verified against baseline.json SHA-256.
+# Keep original whitespace; production/capture sources retain normal diff checks.
+/tools/tooltip-oracle/as2/** -text whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+
+# Tooltip catalog hashes and generated-bundle checks use stable checkout bytes.
+/data/crafting/*.json text eol=lf
+/data/tooltip/*.json text eol=lf
+/tools/build-tooltip-catalog.py text eol=lf
+/launcher/scripts/dist/tooltip-bundle.js text eol=lf
+/scripts/类定义/org/flashNight/gesh/tooltip/TooltipInputProjection.as text eol=lf
+/tools/tooltip-oracle/capture/**/*.as text eol=lf
+/tools/tooltip-oracle/capture/*.template text eol=lf
+/scripts/类定义/org/flashNight/gesh/xml/XMLParser.as text eol=lf
+/scripts/类定义/org/flashNight/gesh/object/ObjectUtil.as text eol=lf
+/scripts/类定义/org/flashNight/gesh/string/StringUtils.as text eol=lf
+/scripts/类定义/org/flashNight/arki/item/ItemUtil.as text eol=lf
+/scripts/类定义/org/flashNight/arki/item/equipment/ModRegistry.as text eol=lf
+/scripts/类定义/org/flashNight/arki/component/Damage/MagicDamageTypes.as text eol=lf

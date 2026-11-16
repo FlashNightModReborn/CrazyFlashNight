@@ -11,8 +11,6 @@ import org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard;
 import org.flashNight.arki.unit.Action.Input.UnitActionIntentService;
 import org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle;
 import org.flashNight.arki.item.ItemUtil;
-import org.flashNight.gesh.tooltip.TooltipConstants;
-import org.flashNight.gesh.tooltip.TooltipTextBuilder;
 import org.flashNight.neur.Event.EventDispatcher;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.FireEventComponent;
@@ -102,7 +100,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testPileBunkerReloadPenaltyAndSkillBypass();
         testNonHeroRollReloadRefillsSubweaponWithoutInventory();
         testHeroRollReloadRefillsSubweaponWhenMainFull();
-        testTooltipRendersSubweapon();
+        testSubweaponProjectionData();
 
         trace("--- LongGunSubWeaponCoreTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
@@ -1945,15 +1943,14 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         restoreMockInventory();
     }
 
-    private static function testTooltipRendersSubweapon():Void {
-        var result:Array = TooltipTextBuilder.buildSubweaponInfo(makeSubweapon(true));
-        var joined:String = result.join("");
-
-        assertContains(joined, TooltipConstants.LBL_SUBWEAPON, "tooltip renders subweapon block");
-        assertNotContains(joined, TooltipConstants.LBL_ACTIVE_SKILL, "tooltip does not label subweapon as active skill");
-        assertContains(joined, "火焰喷射器燃料罐", "tooltip shows subweapon ammo");
-        assertContains(joined, "破击", "tooltip shows damage type");
-        assertContains(joined, "100", "tooltip shows mp cost");
+    private static function testSubweaponProjectionData():Void {
+        var source:Object = makeSubweapon(true);
+        var result:Object = SubweaponDataUtil.normalizeSubweapon(source);
+        assert(result !== source, "normalization returns a detached projection");
+        assert(result.consumeMode == "onFire", "projection preserves resource consumption mode");
+        assert(result.reserveName == "火焰喷射器燃料罐", "projection preserves ammo identity");
+        assert(result.damageType == "破击" && result.damagetype == "破击", "projection preserves damage aliases");
+        assert(result.mp == 100 && source.damagetype === undefined, "projection preserves MP and leaves the source unchanged");
     }
 
     private static function markSubweaponEmpty(unit:Object, groupPaid:Boolean):Void {

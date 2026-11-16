@@ -95,14 +95,15 @@ class org.flashNight.arki.merc.MercPersonalityTest {
             _root.isEasyMode = function():Boolean { return false; };
             _root.基础身价值 = 1000;
 
-            var plain:Array = MercLibrary.buildMercData({level:10, name:"测试佣兵", id:"m1"});
+            // 不同定义使用独立 ID，避免命中同一条配置的定义缓存。
+            var plain:Array = MercLibrary.buildMercData({level:10, name:"测试佣兵", id:"personality.plain"});
             check(plain[19].性格 == undefined,
                 "缺省佣兵不写 merc[19].性格");
             check(plain[19].是否杂交 === false,
                 "性格缺省时 merc[19] 既有元数据键保留");
 
             var configured:Array = MercLibrary.buildMercData({
-                level:10, name:"测试佣兵", id:"m1", personality:{勇气:0.95, 谋略:1.4}
+                level:10, name:"测试佣兵", id:"personality.configured", personality:{勇气:0.95, 谋略:1.4}
             });
             check(configured[19].性格 != undefined && configured[19].性格.勇气 === 0.95,
                 "personality 经 buildMercData 落到 merc[19].性格");
@@ -112,7 +113,7 @@ class org.flashNight.arki.merc.MercPersonalityTest {
                 "部分配置只覆写列出的维度");
 
             var junk:Array = MercLibrary.buildMercData({
-                level:10, name:"测试佣兵", id:"m1", personality:{勇气:"勇气"}
+                level:10, name:"测试佣兵", id:"personality.invalid", personality:{勇气:"勇气"}
             });
             check(junk[19].性格 == undefined,
                 "全非法的 personality 不写 merc[19].性格");

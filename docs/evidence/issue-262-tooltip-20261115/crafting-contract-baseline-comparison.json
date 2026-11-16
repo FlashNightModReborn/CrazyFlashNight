@@ -1,0 +1,2294 @@
+{
+  "schema": "cf7.issue262.crafting-contract-baseline-comparison.v1",
+  "capturedAt": "2026-11-15T07:26:07.667Z",
+  "baselineCommit": "db6d3d248b80b80651987c99557c4e83b56f9301",
+  "currentHead": "40d4ccfd4d642d1ba13dd2cedaa8e69889e16ece",
+  "currentScope": "working-tree bytes (includes pending candidate changes)",
+  "method": "Both snapshots extracted and asserted using the same unmodified current SourceContract.extractAs2FunctionContract / assertAs2FunctionExpectation. Baseline sources were read by git show; no algorithm literals were rewritten.",
+  "contractModule": {
+    "relativePath": "tools/workbench-live-e2e/crafting/source-contract.js",
+    "baselineSha256": "09a67b08df688724bc59fc18ca92d442fb74e4ac159786c21d6a6ee328ab53b2",
+    "currentSha256": "f5ba98ecf01248b5145ba309c9858ff00b24bef2d79969c5a938c835774f8112",
+    "algorithmExpectationsEqual": true,
+    "extractorSourceEqual": true,
+    "assertionSourceEqual": true,
+    "tokenizerSourceEqual": true
+  },
+  "status": "no-new-algorithm-anchor-drift",
+  "summary": {
+    "anchors": 24,
+    "baselineAccepted": 23,
+    "baselineMismatches": 1,
+    "currentAccepted": 23,
+    "currentMismatches": 1,
+    "unchangedContracts": 24,
+    "identicalMemberSources": 24,
+    "changedSinceBaseline": 0,
+    "extractionErrors": 0,
+    "newlyFailingAnchors": [],
+    "preexistingDriftAnchors": [
+      {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+        "functionName": "buildPlan",
+        "mismatches": [
+          {
+            "field": "bodyTokenCount",
+            "expected": 1164,
+            "actual": 1193
+          },
+          {
+            "field": "bodyTokenSha256",
+            "expected": "401370fe701d433286283e8315df33fdcf0cac7ca738708d4eeea1092203280b",
+            "actual": "607d14b08594b4080bcf474b9e4bc1a0b2429d7aee85f658d9f4267cc8566e97"
+          },
+          {
+            "field": "tokenCount",
+            "expected": 1203,
+            "actual": 1232
+          },
+          {
+            "field": "normalizedTokenSha256",
+            "expected": "042d0e1f95095385879cb40560aad45a625e958cfbbddc693bc4ca3b413e5846",
+            "actual": "2d272ec171949045b72182b1d9b26646227d712a86c7fe52a3a143ba2eee7837"
+          }
+        ]
+      }
+    ]
+  },
+  "files": [
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+      "baselineSha256": "0675fb70bb1e8177b95e3775f02c98c5fdc03efc818c1a9135eca553e3f1339d",
+      "currentSha256": "0675fb70bb1e8177b95e3775f02c98c5fdc03efc818c1a9135eca553e3f1339d",
+      "byteIdentical": true
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+      "baselineSha256": "782dda8d6a9509aa7e4a0963d8b705682e492c1a5699300631d34f9ad83771a1",
+      "currentSha256": "782dda8d6a9509aa7e4a0963d8b705682e492c1a5699300631d34f9ad83771a1",
+      "byteIdentical": true
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+      "baselineSha256": "d5ae5b74d0fee2486b6ae16f4e5bdc0ebf5b267b72a8c67ef336424844cbe231",
+      "currentSha256": "42636e7095b62263dac569e41ee86c5e774b45820c081ea41c9e15ca1c45bcdd",
+      "byteIdentical": false
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+      "baselineSha256": "9af01a281a140e7806c7fbce1f117b9eea175c8316cf863c316033e953d2ea5a",
+      "currentSha256": "6db656fcc435f80efc4be28d4d091b683f1817a2f0a80e217aca3d4712f0c9b2",
+      "byteIdentical": false
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/BaseItem.as",
+      "baselineSha256": "8e78c12450bd934979a13a8013f8328ff35d097b6947b9f8644da41415d5e8d5",
+      "currentSha256": "8e78c12450bd934979a13a8013f8328ff35d097b6947b9f8644da41415d5e8d5",
+      "byteIdentical": true
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/EquipmentUtil.as",
+      "baselineSha256": "42ee5039092966a5d5b4a37b7ca095f1441b5d2675a0b82686b77548d27ff699",
+      "currentSha256": "42ee5039092966a5d5b4a37b7ca095f1441b5d2675a0b82686b77548d27ff699",
+      "byteIdentical": true
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/equipment/TierSystem.as",
+      "baselineSha256": "bec9a6ef4af346fa693112f59374c13a2332940056ed9de1ab6e1f136749fe1b",
+      "currentSha256": "bec9a6ef4af346fa693112f59374c13a2332940056ed9de1ab6e1f136749fe1b",
+      "byteIdentical": true
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/equipment/EquipmentConfigManager.as",
+      "baselineSha256": "b409b30e9dc032c0197191a45283a67e8b5efa0d34082264204b10b4081612df",
+      "currentSha256": "b409b30e9dc032c0197191a45283a67e8b5efa0d34082264204b10b4081612df",
+      "byteIdentical": true
+    }
+  ],
+  "anchors": [
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+      "className": "org.flashNight.arki.item.ItemUtil",
+      "functionName": "require",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+        "className": "org.flashNight.arki.item.ItemUtil",
+        "functionName": "require",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 11,
+        "signatureTokenSha256": "789fd14ed13d8e749ae5a448e181a786fa1c295e6e127363aeeb2d3d6c9e455b",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+        "bodyTokenCount": 1299,
+        "bodyTokenSha256": "b28a42b9923b328d273c1ef8e550dd830436cb978b758f1eefcef1c5f63760a9",
+        "tokenCount": 1310,
+        "normalizedTokenSha256": "07be40a777be6555d895bc4accffb17614ea6bc8fa8f8aec6468cc495982d37d"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "require",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "789fd14ed13d8e749ae5a448e181a786fa1c295e6e127363aeeb2d3d6c9e455b",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 1299,
+          "bodyTokenSha256": "b28a42b9923b328d273c1ef8e550dd830436cb978b758f1eefcef1c5f63760a9",
+          "tokenCount": 1310,
+          "normalizedTokenSha256": "07be40a777be6555d895bc4accffb17614ea6bc8fa8f8aec6468cc495982d37d",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 25793,
+          "end": 34540
+        },
+        "memberSha256": "4fa4dd4ff5590c01978b27ec57595723f0b2f8e800cb4c6c8591e798c04e6e0f",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "require",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "789fd14ed13d8e749ae5a448e181a786fa1c295e6e127363aeeb2d3d6c9e455b",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 1299,
+          "bodyTokenSha256": "b28a42b9923b328d273c1ef8e550dd830436cb978b758f1eefcef1c5f63760a9",
+          "tokenCount": 1310,
+          "normalizedTokenSha256": "07be40a777be6555d895bc4accffb17614ea6bc8fa8f8aec6468cc495982d37d",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 25793,
+          "end": 34540
+        },
+        "memberSha256": "4fa4dd4ff5590c01978b27ec57595723f0b2f8e800cb4c6c8591e798c04e6e0f",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+      "className": "org.flashNight.arki.item.ItemUtil",
+      "functionName": "acquire",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+        "className": "org.flashNight.arki.item.ItemUtil",
+        "functionName": "acquire",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 15,
+        "signatureTokenSha256": "afc6f2b897fe3bca12ea2d1de8de03ac125350dfe4d944bf4cabc76b5fdc28ef",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+        "bodyTokenCount": 2586,
+        "bodyTokenSha256": "59998e830463d309aa114cffaccf48a6c279f78a1306af3954b9d5a58bc89a14",
+        "tokenCount": 2601,
+        "normalizedTokenSha256": "95746f0f9131e893605bc964eaea6ed8fe05ebad1234a8c9d7f0929fb584f32e"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "acquire",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 15,
+          "signatureTokenSha256": "afc6f2b897fe3bca12ea2d1de8de03ac125350dfe4d944bf4cabc76b5fdc28ef",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 2586,
+          "bodyTokenSha256": "59998e830463d309aa114cffaccf48a6c279f78a1306af3954b9d5a58bc89a14",
+          "tokenCount": 2601,
+          "normalizedTokenSha256": "95746f0f9131e893605bc964eaea6ed8fe05ebad1234a8c9d7f0929fb584f32e",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 34687,
+          "end": 55181
+        },
+        "memberSha256": "5b9d5b647822f98e3a3f452b04042dc0a562c592fee799aac74b1564ea6df379",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "acquire",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 15,
+          "signatureTokenSha256": "afc6f2b897fe3bca12ea2d1de8de03ac125350dfe4d944bf4cabc76b5fdc28ef",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 2586,
+          "bodyTokenSha256": "59998e830463d309aa114cffaccf48a6c279f78a1306af3954b9d5a58bc89a14",
+          "tokenCount": 2601,
+          "normalizedTokenSha256": "95746f0f9131e893605bc964eaea6ed8fe05ebad1234a8c9d7f0929fb584f32e",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 34687,
+          "end": 55181
+        },
+        "memberSha256": "5b9d5b647822f98e3a3f452b04042dc0a562c592fee799aac74b1564ea6df379",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+      "className": "org.flashNight.arki.item.ItemUtil",
+      "functionName": "contain",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+        "className": "org.flashNight.arki.item.ItemUtil",
+        "functionName": "contain",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 11,
+        "signatureTokenSha256": "ebddea9306a313c1261d0576b8ef885cb80ead6d5b1a55569ff98bd0a4d1a0fe",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+        "bodyTokenCount": 478,
+        "bodyTokenSha256": "56174a07b5c1364a4c40a90a0c68498b24608a16516522cf763101d0f1044f01",
+        "tokenCount": 489,
+        "normalizedTokenSha256": "292b7e0b9cb5b08ab6e90f1a8706d5880e5a9940425e883144bdc9573690d4ad"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "contain",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "ebddea9306a313c1261d0576b8ef885cb80ead6d5b1a55569ff98bd0a4d1a0fe",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 478,
+          "bodyTokenSha256": "56174a07b5c1364a4c40a90a0c68498b24608a16516522cf763101d0f1044f01",
+          "tokenCount": 489,
+          "normalizedTokenSha256": "292b7e0b9cb5b08ab6e90f1a8706d5880e5a9940425e883144bdc9573690d4ad",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 55325,
+          "end": 59681
+        },
+        "memberSha256": "46a0d7a731a6aaef247d5a467b3b2a05448f7c6140271cd1af92ca57ed7247b9",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "contain",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "ebddea9306a313c1261d0576b8ef885cb80ead6d5b1a55569ff98bd0a4d1a0fe",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 478,
+          "bodyTokenSha256": "56174a07b5c1364a4c40a90a0c68498b24608a16516522cf763101d0f1044f01",
+          "tokenCount": 489,
+          "normalizedTokenSha256": "292b7e0b9cb5b08ab6e90f1a8706d5880e5a9940425e883144bdc9573690d4ad",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 55325,
+          "end": 59681
+        },
+        "memberSha256": "46a0d7a731a6aaef247d5a467b3b2a05448f7c6140271cd1af92ca57ed7247b9",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+      "className": "org.flashNight.arki.item.ItemUtil",
+      "functionName": "submit",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+        "className": "org.flashNight.arki.item.ItemUtil",
+        "functionName": "submit",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 15,
+        "signatureTokenSha256": "bc89e731db7621a35ae53ab39375a901ab82f4f034c6b8f4201391d79cccbe26",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+        "bodyTokenCount": 1498,
+        "bodyTokenSha256": "ee3f09409580ca1b6ad30fffc11a05451dd703dd46124617859de42ee3831144",
+        "tokenCount": 1513,
+        "normalizedTokenSha256": "b97beb5f0c453775b77a4991f7d6fd9dedc838e84dca159b1cd3f3f3a1d88dc5"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "submit",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 15,
+          "signatureTokenSha256": "bc89e731db7621a35ae53ab39375a901ab82f4f034c6b8f4201391d79cccbe26",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 1498,
+          "bodyTokenSha256": "ee3f09409580ca1b6ad30fffc11a05451dd703dd46124617859de42ee3831144",
+          "tokenCount": 1513,
+          "normalizedTokenSha256": "b97beb5f0c453775b77a4991f7d6fd9dedc838e84dca159b1cd3f3f3a1d88dc5",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 59885,
+          "end": 70613
+        },
+        "memberSha256": "312bd19b15f5d011545928d7c6145586f9b2d03ecccc39228a81c33270c38111",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "submit",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 15,
+          "signatureTokenSha256": "bc89e731db7621a35ae53ab39375a901ab82f4f034c6b8f4201391d79cccbe26",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 1498,
+          "bodyTokenSha256": "ee3f09409580ca1b6ad30fffc11a05451dd703dd46124617859de42ee3831144",
+          "tokenCount": 1513,
+          "normalizedTokenSha256": "b97beb5f0c453775b77a4991f7d6fd9dedc838e84dca159b1cd3f3f3a1d88dc5",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 59885,
+          "end": 70613
+        },
+        "memberSha256": "312bd19b15f5d011545928d7c6145586f9b2d03ecccc39228a81c33270c38111",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+      "className": "org.flashNight.arki.item.ItemUtil",
+      "functionName": "singleRequire",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+        "className": "org.flashNight.arki.item.ItemUtil",
+        "functionName": "singleRequire",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 15,
+        "signatureTokenSha256": "439235f2ea5c3eb3cd6bd141fee2eb5c0ca5f8cb3bd134c9fef7d3e5130ca423",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+        "bodyTokenCount": 20,
+        "bodyTokenSha256": "c70393b98a6e12b7f22edc99153e7e0585f4be7a5387df21d7c19b387090192e",
+        "tokenCount": 35,
+        "normalizedTokenSha256": "7fda6f37589d85a7d3b54f750ccfdd301a4266b51d796121006a772d818f4304"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "singleRequire",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 15,
+          "signatureTokenSha256": "439235f2ea5c3eb3cd6bd141fee2eb5c0ca5f8cb3bd134c9fef7d3e5130ca423",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 20,
+          "bodyTokenSha256": "c70393b98a6e12b7f22edc99153e7e0585f4be7a5387df21d7c19b387090192e",
+          "tokenCount": 35,
+          "normalizedTokenSha256": "7fda6f37589d85a7d3b54f750ccfdd301a4266b51d796121006a772d818f4304",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 74495,
+          "end": 74639
+        },
+        "memberSha256": "1f328002d4f65f061ea9be953bbe7637090e5713d326d71c8a369e6a5a836387",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "singleRequire",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 15,
+          "signatureTokenSha256": "439235f2ea5c3eb3cd6bd141fee2eb5c0ca5f8cb3bd134c9fef7d3e5130ca423",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 20,
+          "bodyTokenSha256": "c70393b98a6e12b7f22edc99153e7e0585f4be7a5387df21d7c19b387090192e",
+          "tokenCount": 35,
+          "normalizedTokenSha256": "7fda6f37589d85a7d3b54f750ccfdd301a4266b51d796121006a772d818f4304",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 74495,
+          "end": 74639
+        },
+        "memberSha256": "1f328002d4f65f061ea9be953bbe7637090e5713d326d71c8a369e6a5a836387",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+      "className": "org.flashNight.arki.item.ItemUtil",
+      "functionName": "singleAcquire",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+        "className": "org.flashNight.arki.item.ItemUtil",
+        "functionName": "singleAcquire",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 19,
+        "signatureTokenSha256": "3bb97678ab950bd4654fd948bfdbe1b07f2e3ac4da9c6f7d882b62a147a15095",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+        "bodyTokenCount": 22,
+        "bodyTokenSha256": "bbdba17caab464b4650ead8bccb02af960458e9b341c51f79a6b45d24c7493a8",
+        "tokenCount": 41,
+        "normalizedTokenSha256": "3468f96e8a48c16337ed89de5aca80365e986f2d4b24eb059b835bb382087426"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "singleAcquire",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 19,
+          "signatureTokenSha256": "3bb97678ab950bd4654fd948bfdbe1b07f2e3ac4da9c6f7d882b62a147a15095",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 22,
+          "bodyTokenSha256": "bbdba17caab464b4650ead8bccb02af960458e9b341c51f79a6b45d24c7493a8",
+          "tokenCount": 41,
+          "normalizedTokenSha256": "3468f96e8a48c16337ed89de5aca80365e986f2d4b24eb059b835bb382087426",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 74657,
+          "end": 74827
+        },
+        "memberSha256": "0d70fdf978b91b7becfe51088a28c745566b2558fe5f289e370f7b68935da7e8",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+          "className": "org.flashNight.arki.item.ItemUtil",
+          "functionName": "singleAcquire",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 19,
+          "signatureTokenSha256": "3bb97678ab950bd4654fd948bfdbe1b07f2e3ac4da9c6f7d882b62a147a15095",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 22,
+          "bodyTokenSha256": "bbdba17caab464b4650ead8bccb02af960458e9b341c51f79a6b45d24c7493a8",
+          "tokenCount": 41,
+          "normalizedTokenSha256": "3468f96e8a48c16337ed89de5aca80365e986f2d4b24eb059b835bb382087426",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 74657,
+          "end": 74827
+        },
+        "memberSha256": "0d70fdf978b91b7becfe51088a28c745566b2558fe5f289e370f7b68935da7e8",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+      "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+      "functionName": "add",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+        "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+        "functionName": "add",
+        "modifiers": [
+          "public"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 14,
+        "signatureTokenSha256": "01bbfacf5fabaea976e7e47327526a8eefd7d98c1b4f3eb08a6de6536e6d7d22",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+        "bodyTokenCount": 235,
+        "bodyTokenSha256": "8eb888b885bfc991569d719ba0677171e31f0d90d5cb1c4c6ac249329010a1ea",
+        "tokenCount": 249,
+        "normalizedTokenSha256": "bca63a63078284622b1ed2dff1aafeb7655fe51bed00c4072c7d36058eadfbf5"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "add",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 14,
+          "signatureTokenSha256": "01bbfacf5fabaea976e7e47327526a8eefd7d98c1b4f3eb08a6de6536e6d7d22",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 235,
+          "bodyTokenSha256": "8eb888b885bfc991569d719ba0677171e31f0d90d5cb1c4c6ac249329010a1ea",
+          "tokenCount": 249,
+          "normalizedTokenSha256": "bca63a63078284622b1ed2dff1aafeb7655fe51bed00c4072c7d36058eadfbf5",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 1731,
+          "end": 2980
+        },
+        "memberSha256": "7179dd50d3e2625b564b0b87fcefc2a0afb4e2f4f75bc6f446b7bba34ffed88b",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "add",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 14,
+          "signatureTokenSha256": "01bbfacf5fabaea976e7e47327526a8eefd7d98c1b4f3eb08a6de6536e6d7d22",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 235,
+          "bodyTokenSha256": "8eb888b885bfc991569d719ba0677171e31f0d90d5cb1c4c6ac249329010a1ea",
+          "tokenCount": 249,
+          "normalizedTokenSha256": "bca63a63078284622b1ed2dff1aafeb7655fe51bed00c4072c7d36058eadfbf5",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 1731,
+          "end": 2980
+        },
+        "memberSha256": "7179dd50d3e2625b564b0b87fcefc2a0afb4e2f4f75bc6f446b7bba34ffed88b",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+      "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+      "functionName": "getIndexes",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+        "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+        "functionName": "getIndexes",
+        "modifiers": [
+          "public"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 7,
+        "signatureTokenSha256": "111e2e81e8ed3900bb67a13a57e1a5812f60325e43983d64fdb08731d7e2936b",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+        "bodyTokenCount": 11,
+        "bodyTokenSha256": "4f4f58afde3b328384230480b2e678040137a7c8fdf084f1dc441edbaaf8a816",
+        "tokenCount": 18,
+        "normalizedTokenSha256": "a47124feec20267740b946a7337b782fc2d24d71656495e00edfc0270c4e4c3c"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "getIndexes",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 7,
+          "signatureTokenSha256": "111e2e81e8ed3900bb67a13a57e1a5812f60325e43983d64fdb08731d7e2936b",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+          "bodyTokenCount": 11,
+          "bodyTokenSha256": "4f4f58afde3b328384230480b2e678040137a7c8fdf084f1dc441edbaaf8a816",
+          "tokenCount": 18,
+          "normalizedTokenSha256": "a47124feec20267740b946a7337b782fc2d24d71656495e00edfc0270c4e4c3c",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 22534,
+          "end": 22623
+        },
+        "memberSha256": "1a7c95c1a8280757064cd0db437c1dad25f67c0f3478ee1a7a2c836109bf33e8",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "getIndexes",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 7,
+          "signatureTokenSha256": "111e2e81e8ed3900bb67a13a57e1a5812f60325e43983d64fdb08731d7e2936b",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+          "bodyTokenCount": 11,
+          "bodyTokenSha256": "4f4f58afde3b328384230480b2e678040137a7c8fdf084f1dc441edbaaf8a816",
+          "tokenCount": 18,
+          "normalizedTokenSha256": "a47124feec20267740b946a7337b782fc2d24d71656495e00edfc0270c4e4c3c",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 22534,
+          "end": 22623
+        },
+        "memberSha256": "1a7c95c1a8280757064cd0db437c1dad25f67c0f3478ee1a7a2c836109bf33e8",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+      "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+      "functionName": "getItemArray",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+        "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+        "functionName": "getItemArray",
+        "modifiers": [
+          "public"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 7,
+        "signatureTokenSha256": "9db1fe707e92968a58747e6c30ec3eb59073381128c66dc5f5c9e619880c3c98",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+        "bodyTokenCount": 67,
+        "bodyTokenSha256": "c8c60ec31dc273673672098cbd4fdb1deeab48302ac33a7bbd5ccc0fa5b3ca0b",
+        "tokenCount": 74,
+        "normalizedTokenSha256": "9cf66be3599c9130b2a9977855373313e91265c0084c19b05504001232884cb6"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "getItemArray",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 7,
+          "signatureTokenSha256": "9db1fe707e92968a58747e6c30ec3eb59073381128c66dc5f5c9e619880c3c98",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+          "bodyTokenCount": 67,
+          "bodyTokenSha256": "c8c60ec31dc273673672098cbd4fdb1deeab48302ac33a7bbd5ccc0fa5b3ca0b",
+          "tokenCount": 74,
+          "normalizedTokenSha256": "9cf66be3599c9130b2a9977855373313e91265c0084c19b05504001232884cb6",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 23973,
+          "end": 24283
+        },
+        "memberSha256": "95ba636f4d5b20be30001525ccf8d994c93bea289d47f35f861ad81e34c337c6",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "getItemArray",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 7,
+          "signatureTokenSha256": "9db1fe707e92968a58747e6c30ec3eb59073381128c66dc5f5c9e619880c3c98",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+          "bodyTokenCount": 67,
+          "bodyTokenSha256": "c8c60ec31dc273673672098cbd4fdb1deeab48302ac33a7bbd5ccc0fa5b3ca0b",
+          "tokenCount": 74,
+          "normalizedTokenSha256": "9cf66be3599c9130b2a9977855373313e91265c0084c19b05504001232884cb6",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 23973,
+          "end": 24283
+        },
+        "memberSha256": "95ba636f4d5b20be30001525ccf8d994c93bea289d47f35f861ad81e34c337c6",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+      "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+      "functionName": "searchFirstKey",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+        "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+        "functionName": "searchFirstKey",
+        "modifiers": [
+          "public"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 10,
+        "signatureTokenSha256": "8b0e2a29a111051eb42dc8a6c6856d040699bf2cb9aa7d592a5cd5f218bf201c",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "adce924caaf57b154e4eae346fc8653788320ea2ba7a6a09ee9da878965a3777",
+        "bodyTokenCount": 99,
+        "bodyTokenSha256": "d56bfcdf96dce124ca434de0313d793b4cb2bc8c6751d6e86886740d959f69ab",
+        "tokenCount": 109,
+        "normalizedTokenSha256": "20e2b689333fd833335ced8a086ed1191879aae3e746531e11d97de27c316958"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "searchFirstKey",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 10,
+          "signatureTokenSha256": "8b0e2a29a111051eb42dc8a6c6856d040699bf2cb9aa7d592a5cd5f218bf201c",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "adce924caaf57b154e4eae346fc8653788320ea2ba7a6a09ee9da878965a3777",
+          "bodyTokenCount": 99,
+          "bodyTokenSha256": "d56bfcdf96dce124ca434de0313d793b4cb2bc8c6751d6e86886740d959f69ab",
+          "tokenCount": 109,
+          "normalizedTokenSha256": "20e2b689333fd833335ced8a086ed1191879aae3e746531e11d97de27c316958",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 24326,
+          "end": 24823
+        },
+        "memberSha256": "f7eb981ba13ec23d89d9a37502240e3aa29a2e52e7009f4d71d21259980bcb2b",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "searchFirstKey",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 10,
+          "signatureTokenSha256": "8b0e2a29a111051eb42dc8a6c6856d040699bf2cb9aa7d592a5cd5f218bf201c",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "adce924caaf57b154e4eae346fc8653788320ea2ba7a6a09ee9da878965a3777",
+          "bodyTokenCount": 99,
+          "bodyTokenSha256": "d56bfcdf96dce124ca434de0313d793b4cb2bc8c6751d6e86886740d959f69ab",
+          "tokenCount": 109,
+          "normalizedTokenSha256": "20e2b689333fd833335ced8a086ed1191879aae3e746531e11d97de27c316958",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 24326,
+          "end": 24823
+        },
+        "memberSha256": "f7eb981ba13ec23d89d9a37502240e3aa29a2e52e7009f4d71d21259980bcb2b",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+      "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+      "functionName": "getFirstVacancy",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+        "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+        "functionName": "getFirstVacancy",
+        "modifiers": [
+          "public"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 7,
+        "signatureTokenSha256": "266d7e84c4fdeeba0f515bd7c4a20fadf333802693ef0209aa1e7649ea7cfeac",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "0f410e1b1feb2623691b3dc78fbb271f9df90cacc571ec662b3e89e21824fce3",
+        "bodyTokenCount": 98,
+        "bodyTokenSha256": "da44998184dd460d21af1e8d60897da297674bd7f7c1e3d55b087d56f03d3e38",
+        "tokenCount": 105,
+        "normalizedTokenSha256": "e6dc3d66b3e68d1ee75a24cd2e323069d68e0cae82e7d73e9cfe1cb52dd95925"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "getFirstVacancy",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 7,
+          "signatureTokenSha256": "266d7e84c4fdeeba0f515bd7c4a20fadf333802693ef0209aa1e7649ea7cfeac",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "0f410e1b1feb2623691b3dc78fbb271f9df90cacc571ec662b3e89e21824fce3",
+          "bodyTokenCount": 98,
+          "bodyTokenSha256": "da44998184dd460d21af1e8d60897da297674bd7f7c1e3d55b087d56f03d3e38",
+          "tokenCount": 105,
+          "normalizedTokenSha256": "e6dc3d66b3e68d1ee75a24cd2e323069d68e0cae82e7d73e9cfe1cb52dd95925",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 24871,
+          "end": 25461
+        },
+        "memberSha256": "7c697df033b0cff59af062bacfd08a1736bc37da903db1ce7ca8f25198d4cea3",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "getFirstVacancy",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 7,
+          "signatureTokenSha256": "266d7e84c4fdeeba0f515bd7c4a20fadf333802693ef0209aa1e7649ea7cfeac",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "0f410e1b1feb2623691b3dc78fbb271f9df90cacc571ec662b3e89e21824fce3",
+          "bodyTokenCount": 98,
+          "bodyTokenSha256": "da44998184dd460d21af1e8d60897da297674bd7f7c1e3d55b087d56f03d3e38",
+          "tokenCount": 105,
+          "normalizedTokenSha256": "e6dc3d66b3e68d1ee75a24cd2e323069d68e0cae82e7d73e9cfe1cb52dd95925",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 24871,
+          "end": 25461
+        },
+        "memberSha256": "7c697df033b0cff59af062bacfd08a1736bc37da903db1ce7ca8f25198d4cea3",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+      "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+      "functionName": "getVacancies",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+        "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+        "functionName": "getVacancies",
+        "modifiers": [
+          "public"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 10,
+        "signatureTokenSha256": "268e4044c3944856051ef80917097f25dbfaf2c8a598a613395d53de8cdd44b0",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+        "bodyTokenCount": 182,
+        "bodyTokenSha256": "f4dab8c1ecbe0c491898f3d6b56ce163b658dfed42a694f20b5c66ea87d9ca5d",
+        "tokenCount": 192,
+        "normalizedTokenSha256": "8dcf336edc90122ec2d95649a92eaa196b8e709dcdbe511d8ecf1e31eaa30638"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "getVacancies",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 10,
+          "signatureTokenSha256": "268e4044c3944856051ef80917097f25dbfaf2c8a598a613395d53de8cdd44b0",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+          "bodyTokenCount": 182,
+          "bodyTokenSha256": "f4dab8c1ecbe0c491898f3d6b56ce163b658dfed42a694f20b5c66ea87d9ca5d",
+          "tokenCount": 192,
+          "normalizedTokenSha256": "8dcf336edc90122ec2d95649a92eaa196b8e709dcdbe511d8ecf1e31eaa30638",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 25504,
+          "end": 26755
+        },
+        "memberSha256": "533d43d544d7e426cf590f961d0b6f674715a77a4ba7ab918ad168f6834088b4",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
+          "className": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+          "functionName": "getVacancies",
+          "modifiers": [
+            "public"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 10,
+          "signatureTokenSha256": "268e4044c3944856051ef80917097f25dbfaf2c8a598a613395d53de8cdd44b0",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+          "bodyTokenCount": 182,
+          "bodyTokenSha256": "f4dab8c1ecbe0c491898f3d6b56ce163b658dfed42a694f20b5c66ea87d9ca5d",
+          "tokenCount": 192,
+          "normalizedTokenSha256": "8dcf336edc90122ec2d95649a92eaa196b8e709dcdbe511d8ecf1e31eaa30638",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 25504,
+          "end": 26755
+        },
+        "memberSha256": "533d43d544d7e426cf590f961d0b6f674715a77a4ba7ab918ad168f6834088b4",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+      "className": "org.flashNight.arki.item.CraftingPanelService",
+      "functionName": "executeCommit",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+        "className": "org.flashNight.arki.item.CraftingPanelService",
+        "functionName": "executeCommit",
+        "modifiers": [
+          "private",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 11,
+        "signatureTokenSha256": "f3460d8207d6a51216e63393b8296b927f3a9954d91c9a3f942a2eb3acf12dcf",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+        "bodyTokenCount": 1095,
+        "bodyTokenSha256": "ab65e03ca01f3ffbd532d25e2becc1d17d8931b71d52527cf37ad623c41573da",
+        "tokenCount": 1106,
+        "normalizedTokenSha256": "c15c9df4edbebd564a34e3daefd70b25a15d1485b33a19adebfb0102091f7907"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "className": "org.flashNight.arki.item.CraftingPanelService",
+          "functionName": "executeCommit",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "f3460d8207d6a51216e63393b8296b927f3a9954d91c9a3f942a2eb3acf12dcf",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 1095,
+          "bodyTokenSha256": "ab65e03ca01f3ffbd532d25e2becc1d17d8931b71d52527cf37ad623c41573da",
+          "tokenCount": 1106,
+          "normalizedTokenSha256": "c15c9df4edbebd564a34e3daefd70b25a15d1485b33a19adebfb0102091f7907",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 21527,
+          "end": 28836
+        },
+        "memberSha256": "bb4adb4e5a5e44822b254a627dd5bdd15a84e27a371b1b992f70db440af8be41",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "className": "org.flashNight.arki.item.CraftingPanelService",
+          "functionName": "executeCommit",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "f3460d8207d6a51216e63393b8296b927f3a9954d91c9a3f942a2eb3acf12dcf",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 1095,
+          "bodyTokenSha256": "ab65e03ca01f3ffbd532d25e2becc1d17d8931b71d52527cf37ad623c41573da",
+          "tokenCount": 1106,
+          "normalizedTokenSha256": "c15c9df4edbebd564a34e3daefd70b25a15d1485b33a19adebfb0102091f7907",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 21535,
+          "end": 28844
+        },
+        "memberSha256": "bb4adb4e5a5e44822b254a627dd5bdd15a84e27a371b1b992f70db440af8be41",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+      "className": "org.flashNight.arki.item.CraftingPanelService",
+      "functionName": "buildPlan",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+        "className": "org.flashNight.arki.item.CraftingPanelService",
+        "functionName": "buildPlan",
+        "modifiers": [
+          "private",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 39,
+        "signatureTokenSha256": "e55dbc53f3873504789d6c06c91088e81bba39eb7b631b5d27629c834236fa1b",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+        "bodyTokenCount": 1164,
+        "bodyTokenSha256": "401370fe701d433286283e8315df33fdcf0cac7ca738708d4eeea1092203280b",
+        "tokenCount": 1203,
+        "normalizedTokenSha256": "042d0e1f95095385879cb40560aad45a625e958cfbbddc693bc4ca3b413e5846"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "className": "org.flashNight.arki.item.CraftingPanelService",
+          "functionName": "buildPlan",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 39,
+          "signatureTokenSha256": "e55dbc53f3873504789d6c06c91088e81bba39eb7b631b5d27629c834236fa1b",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 1193,
+          "bodyTokenSha256": "607d14b08594b4080bcf474b9e4bc1a0b2429d7aee85f658d9f4267cc8566e97",
+          "tokenCount": 1232,
+          "normalizedTokenSha256": "2d272ec171949045b72182b1d9b26646227d712a86c7fe52a3a143ba2eee7837",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 29757,
+          "end": 37475
+        },
+        "memberSha256": "89c166606f6990dfa78b3007552e9c39890c878a890e5f056d85a6aebf5c76f7",
+        "validation": {
+          "accepted": false,
+          "code": "as2_algorithm_contract_mismatch",
+          "message": "ItemUtil/ArrayInventory executable algorithm differs from its fixed versioned contract",
+          "details": {
+            "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+            "className": "org.flashNight.arki.item.CraftingPanelService",
+            "functionName": "buildPlan",
+            "field": "bodyTokenCount",
+            "expected": 1164,
+            "actual": 1193
+          }
+        },
+        "mismatches": [
+          {
+            "field": "bodyTokenCount",
+            "expected": 1164,
+            "actual": 1193
+          },
+          {
+            "field": "bodyTokenSha256",
+            "expected": "401370fe701d433286283e8315df33fdcf0cac7ca738708d4eeea1092203280b",
+            "actual": "607d14b08594b4080bcf474b9e4bc1a0b2429d7aee85f658d9f4267cc8566e97"
+          },
+          {
+            "field": "tokenCount",
+            "expected": 1203,
+            "actual": 1232
+          },
+          {
+            "field": "normalizedTokenSha256",
+            "expected": "042d0e1f95095385879cb40560aad45a625e958cfbbddc693bc4ca3b413e5846",
+            "actual": "2d272ec171949045b72182b1d9b26646227d712a86c7fe52a3a143ba2eee7837"
+          }
+        ]
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "className": "org.flashNight.arki.item.CraftingPanelService",
+          "functionName": "buildPlan",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 39,
+          "signatureTokenSha256": "e55dbc53f3873504789d6c06c91088e81bba39eb7b631b5d27629c834236fa1b",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 1193,
+          "bodyTokenSha256": "607d14b08594b4080bcf474b9e4bc1a0b2429d7aee85f658d9f4267cc8566e97",
+          "tokenCount": 1232,
+          "normalizedTokenSha256": "2d272ec171949045b72182b1d9b26646227d712a86c7fe52a3a143ba2eee7837",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 29765,
+          "end": 37483
+        },
+        "memberSha256": "89c166606f6990dfa78b3007552e9c39890c878a890e5f056d85a6aebf5c76f7",
+        "validation": {
+          "accepted": false,
+          "code": "as2_algorithm_contract_mismatch",
+          "message": "ItemUtil/ArrayInventory executable algorithm differs from its fixed versioned contract",
+          "details": {
+            "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+            "className": "org.flashNight.arki.item.CraftingPanelService",
+            "functionName": "buildPlan",
+            "field": "bodyTokenCount",
+            "expected": 1164,
+            "actual": 1193
+          }
+        },
+        "mismatches": [
+          {
+            "field": "bodyTokenCount",
+            "expected": 1164,
+            "actual": 1193
+          },
+          {
+            "field": "bodyTokenSha256",
+            "expected": "401370fe701d433286283e8315df33fdcf0cac7ca738708d4eeea1092203280b",
+            "actual": "607d14b08594b4080bcf474b9e4bc1a0b2429d7aee85f658d9f4267cc8566e97"
+          },
+          {
+            "field": "tokenCount",
+            "expected": 1203,
+            "actual": 1232
+          },
+          {
+            "field": "normalizedTokenSha256",
+            "expected": "042d0e1f95095385879cb40560aad45a625e958cfbbddc693bc4ca3b413e5846",
+            "actual": "2d272ec171949045b72182b1d9b26646227d712a86c7fe52a3a143ba2eee7837"
+          }
+        ]
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "preexisting-baseline-drift-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+      "className": "org.flashNight.arki.item.CraftingPanelService",
+      "functionName": "projectOutputDeliveryAfterSubmit",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+        "className": "org.flashNight.arki.item.CraftingPanelService",
+        "functionName": "projectOutputDeliveryAfterSubmit",
+        "modifiers": [
+          "private",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 19,
+        "signatureTokenSha256": "5d1537d5d4b0043bc9bb9e48c265aba5cba16e92d24e074907229cf51f32749a",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+        "bodyTokenCount": 375,
+        "bodyTokenSha256": "cdbe90600df31fb20adb09be6f00ba39ec7cb19f2e9f40285d842246f1047a82",
+        "tokenCount": 394,
+        "normalizedTokenSha256": "52024d3d98c0ed230d1c741a46eb9eb5e2324420a099bb67ba03ca4d2b1cd8b6"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "className": "org.flashNight.arki.item.CraftingPanelService",
+          "functionName": "projectOutputDeliveryAfterSubmit",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 19,
+          "signatureTokenSha256": "5d1537d5d4b0043bc9bb9e48c265aba5cba16e92d24e074907229cf51f32749a",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 375,
+          "bodyTokenSha256": "cdbe90600df31fb20adb09be6f00ba39ec7cb19f2e9f40285d842246f1047a82",
+          "tokenCount": 394,
+          "normalizedTokenSha256": "52024d3d98c0ed230d1c741a46eb9eb5e2324420a099bb67ba03ca4d2b1cd8b6",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 46031,
+          "end": 48090
+        },
+        "memberSha256": "b2cff29cd55d857372d4d49103d4745820ce32549a112708c4e944bdb50c481d",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "className": "org.flashNight.arki.item.CraftingPanelService",
+          "functionName": "projectOutputDeliveryAfterSubmit",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 19,
+          "signatureTokenSha256": "5d1537d5d4b0043bc9bb9e48c265aba5cba16e92d24e074907229cf51f32749a",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 375,
+          "bodyTokenSha256": "cdbe90600df31fb20adb09be6f00ba39ec7cb19f2e9f40285d842246f1047a82",
+          "tokenCount": 394,
+          "normalizedTokenSha256": "52024d3d98c0ed230d1c741a46eb9eb5e2324420a099bb67ba03ca4d2b1cd8b6",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 46039,
+          "end": 48098
+        },
+        "memberSha256": "b2cff29cd55d857372d4d49103d4745820ce32549a112708c4e944bdb50c481d",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+      "className": "org.flashNight.arki.item.CraftingPanelService",
+      "functionName": "outputReceiptMatchesPrototype",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+        "className": "org.flashNight.arki.item.CraftingPanelService",
+        "functionName": "outputReceiptMatchesPrototype",
+        "modifiers": [
+          "private",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 23,
+        "signatureTokenSha256": "5493c247adceec310e43c5281fffcd2c99ce8fc39595131e58946776f5bcef7d",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+        "bodyTokenCount": 253,
+        "bodyTokenSha256": "a7bbbd92952d5bbdd889952302e2aeccaf11ac3268257d4b706c9f2dd0335885",
+        "tokenCount": 276,
+        "normalizedTokenSha256": "8336b4589bf48aadc0d3b769cc663b6cace6ebcd8388faf3727aa6ae6e56ec1e"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "className": "org.flashNight.arki.item.CraftingPanelService",
+          "functionName": "outputReceiptMatchesPrototype",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 23,
+          "signatureTokenSha256": "5493c247adceec310e43c5281fffcd2c99ce8fc39595131e58946776f5bcef7d",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 253,
+          "bodyTokenSha256": "a7bbbd92952d5bbdd889952302e2aeccaf11ac3268257d4b706c9f2dd0335885",
+          "tokenCount": 276,
+          "normalizedTokenSha256": "8336b4589bf48aadc0d3b769cc663b6cace6ebcd8388faf3727aa6ae6e56ec1e",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 50239,
+          "end": 51879
+        },
+        "memberSha256": "699f550498b721b5eaf34354044633a6c4700b15f66fe32f174af8ac327a5cb8",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "className": "org.flashNight.arki.item.CraftingPanelService",
+          "functionName": "outputReceiptMatchesPrototype",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 23,
+          "signatureTokenSha256": "5493c247adceec310e43c5281fffcd2c99ce8fc39595131e58946776f5bcef7d",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 253,
+          "bodyTokenSha256": "a7bbbd92952d5bbdd889952302e2aeccaf11ac3268257d4b706c9f2dd0335885",
+          "tokenCount": 276,
+          "normalizedTokenSha256": "8336b4589bf48aadc0d3b769cc663b6cace6ebcd8388faf3727aa6ae6e56ec1e",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 50247,
+          "end": 51887
+        },
+        "memberSha256": "699f550498b721b5eaf34354044633a6c4700b15f66fe32f174af8ac327a5cb8",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+      "className": "org.flashNight.arki.item.CraftingPanelService",
+      "functionName": "deepEqual",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+        "className": "org.flashNight.arki.item.CraftingPanelService",
+        "functionName": "deepEqual",
+        "modifiers": [
+          "private",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 19,
+        "signatureTokenSha256": "1ced81e648e5b03972076b9b6e4dae8448d9d205f9f8e678beba577758e1ecf3",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+        "bodyTokenCount": 197,
+        "bodyTokenSha256": "5a734ac29419f9b0d3a9aba20c027095367d096e27ffa9ed7c6d2f7fbfde1fa6",
+        "tokenCount": 216,
+        "normalizedTokenSha256": "0ac7ff06b60ee548e770166714865f7c625bd15535671ce8f0a070c08533bc63"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "className": "org.flashNight.arki.item.CraftingPanelService",
+          "functionName": "deepEqual",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 19,
+          "signatureTokenSha256": "1ced81e648e5b03972076b9b6e4dae8448d9d205f9f8e678beba577758e1ecf3",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 197,
+          "bodyTokenSha256": "5a734ac29419f9b0d3a9aba20c027095367d096e27ffa9ed7c6d2f7fbfde1fa6",
+          "tokenCount": 216,
+          "normalizedTokenSha256": "0ac7ff06b60ee548e770166714865f7c625bd15535671ce8f0a070c08533bc63",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 64290,
+          "end": 65343
+        },
+        "memberSha256": "29094a0381b1807c9fcad4a8db14e361196aecf7e1b53730c62d6f6442f413f2",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+          "className": "org.flashNight.arki.item.CraftingPanelService",
+          "functionName": "deepEqual",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 19,
+          "signatureTokenSha256": "1ced81e648e5b03972076b9b6e4dae8448d9d205f9f8e678beba577758e1ecf3",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
+          "bodyTokenCount": 197,
+          "bodyTokenSha256": "5a734ac29419f9b0d3a9aba20c027095367d096e27ffa9ed7c6d2f7fbfde1fa6",
+          "tokenCount": 216,
+          "normalizedTokenSha256": "0ac7ff06b60ee548e770166714865f7c625bd15535671ce8f0a070c08533bc63",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 64298,
+          "end": 65351
+        },
+        "memberSha256": "29094a0381b1807c9fcad4a8db14e361196aecf7e1b53730c62d6f6442f413f2",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+      "className": "org.flashNight.arki.item.InventoryPanelService",
+      "functionName": "buildOutputPrototype",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+        "className": "org.flashNight.arki.item.InventoryPanelService",
+        "functionName": "buildOutputPrototype",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 15,
+        "signatureTokenSha256": "4fa20c2f073bbebd59323092ba0e6b352f42c13dda86e4958b6d29cee21424fe",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+        "bodyTokenCount": 134,
+        "bodyTokenSha256": "d85210c75c37c44fcd89a4f4be66d75ab652be88118240ab2f2a63d295dd6056",
+        "tokenCount": 149,
+        "normalizedTokenSha256": "38be8fe56776865e306cc31f7f04aa46ecb87cd2640366b9e40f4a7a0d8c8f84"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+          "className": "org.flashNight.arki.item.InventoryPanelService",
+          "functionName": "buildOutputPrototype",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 15,
+          "signatureTokenSha256": "4fa20c2f073bbebd59323092ba0e6b352f42c13dda86e4958b6d29cee21424fe",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 134,
+          "bodyTokenSha256": "d85210c75c37c44fcd89a4f4be66d75ab652be88118240ab2f2a63d295dd6056",
+          "tokenCount": 149,
+          "normalizedTokenSha256": "38be8fe56776865e306cc31f7f04aa46ecb87cd2640366b9e40f4a7a0d8c8f84",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 76589,
+          "end": 77352
+        },
+        "memberSha256": "968d7a13709fbee068539a021ddd513b3f9da498f478fefdaa3ea8c0e0d8c325",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+          "className": "org.flashNight.arki.item.InventoryPanelService",
+          "functionName": "buildOutputPrototype",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 15,
+          "signatureTokenSha256": "4fa20c2f073bbebd59323092ba0e6b352f42c13dda86e4958b6d29cee21424fe",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 134,
+          "bodyTokenSha256": "d85210c75c37c44fcd89a4f4be66d75ab652be88118240ab2f2a63d295dd6056",
+          "tokenCount": 149,
+          "normalizedTokenSha256": "38be8fe56776865e306cc31f7f04aa46ecb87cd2640366b9e40f4a7a0d8c8f84",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 73828,
+          "end": 74591
+        },
+        "memberSha256": "968d7a13709fbee068539a021ddd513b3f9da498f478fefdaa3ea8c0e0d8c325",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+      "className": "org.flashNight.arki.item.InventoryPanelService",
+      "functionName": "buildOutputReceipt",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+        "className": "org.flashNight.arki.item.InventoryPanelService",
+        "functionName": "buildOutputReceipt",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 11,
+        "signatureTokenSha256": "4945aadfe893b6b63f35cc7bb304473327217391c69099ea013ae2e2ef8ec552",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+        "bodyTokenCount": 107,
+        "bodyTokenSha256": "fc365a40b8a9f3cfd16407b2b331a5b62017a863c736ed58689437d79db97bba",
+        "tokenCount": 118,
+        "normalizedTokenSha256": "ebf9457f3cc2cfa2aa0c9094702a502eb82b3f968143d4be9bbcdd5e7807d3b6"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+          "className": "org.flashNight.arki.item.InventoryPanelService",
+          "functionName": "buildOutputReceipt",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "4945aadfe893b6b63f35cc7bb304473327217391c69099ea013ae2e2ef8ec552",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 107,
+          "bodyTokenSha256": "fc365a40b8a9f3cfd16407b2b331a5b62017a863c736ed58689437d79db97bba",
+          "tokenCount": 118,
+          "normalizedTokenSha256": "ebf9457f3cc2cfa2aa0c9094702a502eb82b3f968143d4be9bbcdd5e7807d3b6",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 77451,
+          "end": 78088
+        },
+        "memberSha256": "b5d7badb4d7fe81dc9a23167276efc572305644831783dc50a8c93beb50edc9c",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+          "className": "org.flashNight.arki.item.InventoryPanelService",
+          "functionName": "buildOutputReceipt",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "4945aadfe893b6b63f35cc7bb304473327217391c69099ea013ae2e2ef8ec552",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 107,
+          "bodyTokenSha256": "fc365a40b8a9f3cfd16407b2b331a5b62017a863c736ed58689437d79db97bba",
+          "tokenCount": 118,
+          "normalizedTokenSha256": "ebf9457f3cc2cfa2aa0c9094702a502eb82b3f968143d4be9bbcdd5e7807d3b6",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 74690,
+          "end": 75327
+        },
+        "memberSha256": "b5d7badb4d7fe81dc9a23167276efc572305644831783dc50a8c93beb50edc9c",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+      "className": "org.flashNight.arki.item.InventoryPanelService",
+      "functionName": "buildItemProjectionInternal",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+        "className": "org.flashNight.arki.item.InventoryPanelService",
+        "functionName": "buildItemProjectionInternal",
+        "modifiers": [
+          "private",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 15,
+        "signatureTokenSha256": "32eee30baaa11242cb7754cc7001c52ec7cca4e603fef27fc06c3151b2f86a72",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+        "bodyTokenCount": 982,
+        "bodyTokenSha256": "2f8e278dac4e0e8da418d40cfb71ae9941a15755f289cdca70c51af54fcd931f",
+        "tokenCount": 997,
+        "normalizedTokenSha256": "6e0d316b2d7c81c997de6303a9473c820ecc169e0c1b1ebf240907714215351b"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+          "className": "org.flashNight.arki.item.InventoryPanelService",
+          "functionName": "buildItemProjectionInternal",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 15,
+          "signatureTokenSha256": "32eee30baaa11242cb7754cc7001c52ec7cca4e603fef27fc06c3151b2f86a72",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 982,
+          "bodyTokenSha256": "2f8e278dac4e0e8da418d40cfb71ae9941a15755f289cdca70c51af54fcd931f",
+          "tokenCount": 997,
+          "normalizedTokenSha256": "6e0d316b2d7c81c997de6303a9473c820ecc169e0c1b1ebf240907714215351b",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 78094,
+          "end": 83887
+        },
+        "memberSha256": "f04b6e656c15a6f529a31ba0387c9a52d1cef17ca950352de122db8d1b1033e2",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+          "className": "org.flashNight.arki.item.InventoryPanelService",
+          "functionName": "buildItemProjectionInternal",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 15,
+          "signatureTokenSha256": "32eee30baaa11242cb7754cc7001c52ec7cca4e603fef27fc06c3151b2f86a72",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
+          "bodyTokenCount": 982,
+          "bodyTokenSha256": "2f8e278dac4e0e8da418d40cfb71ae9941a15755f289cdca70c51af54fcd931f",
+          "tokenCount": 997,
+          "normalizedTokenSha256": "6e0d316b2d7c81c997de6303a9473c820ecc169e0c1b1ebf240907714215351b",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 75333,
+          "end": 81126
+        },
+        "memberSha256": "f04b6e656c15a6f529a31ba0387c9a52d1cef17ca950352de122db8d1b1033e2",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/BaseItem.as",
+      "className": "org.flashNight.arki.item.BaseItem",
+      "functionName": "create",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/BaseItem.as",
+        "className": "org.flashNight.arki.item.BaseItem",
+        "functionName": "create",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 19,
+        "signatureTokenSha256": "63a28589a5a41a5d8b5dfabe73739938316185b8dbf1ad5d31983b29e38157f8",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "0285c572afbbf1294d59ad347259c7b9bea909b7adac34252cb510b1444f4444",
+        "bodyTokenCount": 87,
+        "bodyTokenSha256": "44d1c828b87468706151f8a3700393c8933bd92462b7047ebbf2d27a4df28bcb",
+        "tokenCount": 106,
+        "normalizedTokenSha256": "469b84ba2c45e8f91668d7da6ee8875e0985861d019b8790f40b836b1c173493"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/BaseItem.as",
+          "className": "org.flashNight.arki.item.BaseItem",
+          "functionName": "create",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 19,
+          "signatureTokenSha256": "63a28589a5a41a5d8b5dfabe73739938316185b8dbf1ad5d31983b29e38157f8",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "0285c572afbbf1294d59ad347259c7b9bea909b7adac34252cb510b1444f4444",
+          "bodyTokenCount": 87,
+          "bodyTokenSha256": "44d1c828b87468706151f8a3700393c8933bd92462b7047ebbf2d27a4df28bcb",
+          "tokenCount": 106,
+          "normalizedTokenSha256": "469b84ba2c45e8f91668d7da6ee8875e0985861d019b8790f40b836b1c173493",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 679,
+          "end": 1239
+        },
+        "memberSha256": "d38006d42fae728374cc5a21a553f77c5f803880b80ab9953818c7dcd6205f73",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/BaseItem.as",
+          "className": "org.flashNight.arki.item.BaseItem",
+          "functionName": "create",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 19,
+          "signatureTokenSha256": "63a28589a5a41a5d8b5dfabe73739938316185b8dbf1ad5d31983b29e38157f8",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "0285c572afbbf1294d59ad347259c7b9bea909b7adac34252cb510b1444f4444",
+          "bodyTokenCount": 87,
+          "bodyTokenSha256": "44d1c828b87468706151f8a3700393c8933bd92462b7047ebbf2d27a4df28bcb",
+          "tokenCount": 106,
+          "normalizedTokenSha256": "469b84ba2c45e8f91668d7da6ee8875e0985861d019b8790f40b836b1c173493",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 679,
+          "end": 1239
+        },
+        "memberSha256": "d38006d42fae728374cc5a21a553f77c5f803880b80ab9953818c7dcd6205f73",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/EquipmentUtil.as",
+      "className": "org.flashNight.arki.item.EquipmentUtil",
+      "functionName": "getMaxLevel",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/EquipmentUtil.as",
+        "className": "org.flashNight.arki.item.EquipmentUtil",
+        "functionName": "getMaxLevel",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 8,
+        "signatureTokenSha256": "e2cbae5ba4e52f20a301010a3e6ed301b83c37d20ec7dea4d65c921052fd735f",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "0f410e1b1feb2623691b3dc78fbb271f9df90cacc571ec662b3e89e21824fce3",
+        "bodyTokenCount": 9,
+        "bodyTokenSha256": "025c5ff40c1b45875336973c95428779faa806c0ecc366c5c4338a2f6931923e",
+        "tokenCount": 17,
+        "normalizedTokenSha256": "5b48631c2b9a315fcc921440dcccb672dd6a851754e66d10561dfe4f7e39a14e"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/EquipmentUtil.as",
+          "className": "org.flashNight.arki.item.EquipmentUtil",
+          "functionName": "getMaxLevel",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 8,
+          "signatureTokenSha256": "e2cbae5ba4e52f20a301010a3e6ed301b83c37d20ec7dea4d65c921052fd735f",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "0f410e1b1feb2623691b3dc78fbb271f9df90cacc571ec662b3e89e21824fce3",
+          "bodyTokenCount": 9,
+          "bodyTokenSha256": "025c5ff40c1b45875336973c95428779faa806c0ecc366c5c4338a2f6931923e",
+          "tokenCount": 17,
+          "normalizedTokenSha256": "5b48631c2b9a315fcc921440dcccb672dd6a851754e66d10561dfe4f7e39a14e",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 1652,
+          "end": 1744
+        },
+        "memberSha256": "6b6aa3ec62d3692eafa081f7fb69f87298b9c73c1167b316a1cb6223c3040165",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/EquipmentUtil.as",
+          "className": "org.flashNight.arki.item.EquipmentUtil",
+          "functionName": "getMaxLevel",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 8,
+          "signatureTokenSha256": "e2cbae5ba4e52f20a301010a3e6ed301b83c37d20ec7dea4d65c921052fd735f",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "0f410e1b1feb2623691b3dc78fbb271f9df90cacc571ec662b3e89e21824fce3",
+          "bodyTokenCount": 9,
+          "bodyTokenSha256": "025c5ff40c1b45875336973c95428779faa806c0ecc366c5c4338a2f6931923e",
+          "tokenCount": 17,
+          "normalizedTokenSha256": "5b48631c2b9a315fcc921440dcccb672dd6a851754e66d10561dfe4f7e39a14e",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 1652,
+          "end": 1744
+        },
+        "memberSha256": "6b6aa3ec62d3692eafa081f7fb69f87298b9c73c1167b316a1cb6223c3040165",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/equipment/TierSystem.as",
+      "className": "org.flashNight.arki.item.equipment.TierSystem",
+      "functionName": "getAvailableTierMaterials",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/equipment/TierSystem.as",
+        "className": "org.flashNight.arki.item.equipment.TierSystem",
+        "functionName": "getAvailableTierMaterials",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 11,
+        "signatureTokenSha256": "e32e117b09301d22bbeee2ac2a31a3bbc1c0b043e495e3b38af77c43cd5bcdea",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+        "bodyTokenCount": 214,
+        "bodyTokenSha256": "c689d9290046e18ab747291e624625f6bd8fed562b34457af3dff67b8b38cfb6",
+        "tokenCount": 225,
+        "normalizedTokenSha256": "89d7396be27348cd833f5e523eaabb1aaa640cdbbd1430e217b109e5d9da2df2"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/equipment/TierSystem.as",
+          "className": "org.flashNight.arki.item.equipment.TierSystem",
+          "functionName": "getAvailableTierMaterials",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "e32e117b09301d22bbeee2ac2a31a3bbc1c0b043e495e3b38af77c43cd5bcdea",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+          "bodyTokenCount": 214,
+          "bodyTokenSha256": "c689d9290046e18ab747291e624625f6bd8fed562b34457af3dff67b8b38cfb6",
+          "tokenCount": 225,
+          "normalizedTokenSha256": "89d7396be27348cd833f5e523eaabb1aaa640cdbbd1430e217b109e5d9da2df2",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 783,
+          "end": 2154
+        },
+        "memberSha256": "be43d24010be7284c06f26ea206006ac7e0fae62c7905679dcbf967ac730201f",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/equipment/TierSystem.as",
+          "className": "org.flashNight.arki.item.equipment.TierSystem",
+          "functionName": "getAvailableTierMaterials",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "e32e117b09301d22bbeee2ac2a31a3bbc1c0b043e495e3b38af77c43cd5bcdea",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
+          "bodyTokenCount": 214,
+          "bodyTokenSha256": "c689d9290046e18ab747291e624625f6bd8fed562b34457af3dff67b8b38cfb6",
+          "tokenCount": 225,
+          "normalizedTokenSha256": "89d7396be27348cd833f5e523eaabb1aaa640cdbbd1430e217b109e5d9da2df2",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 783,
+          "end": 2154
+        },
+        "memberSha256": "be43d24010be7284c06f26ea206006ac7e0fae62c7905679dcbf967ac730201f",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    },
+    {
+      "relativePath": "scripts/类定义/org/flashNight/arki/item/equipment/EquipmentConfigManager.as",
+      "className": "org.flashNight.arki.item.equipment.EquipmentConfigManager",
+      "functionName": "getTierKey",
+      "expected": {
+        "relativePath": "scripts/类定义/org/flashNight/arki/item/equipment/EquipmentConfigManager.as",
+        "className": "org.flashNight.arki.item.equipment.EquipmentConfigManager",
+        "functionName": "getTierKey",
+        "modifiers": [
+          "public",
+          "static"
+        ],
+        "classDepth": 0,
+        "memberDepth": 1,
+        "signatureTokenCount": 11,
+        "signatureTokenSha256": "04a1780535a10f75862d0deec00a068dfac84def76611a53019eb995827c06c0",
+        "returnTokenCount": 2,
+        "returnTokenSha256": "adce924caaf57b154e4eae346fc8653788320ea2ba7a6a09ee9da878965a3777",
+        "bodyTokenCount": 8,
+        "bodyTokenSha256": "0f7e527ea06b9f882c4024feddf36c76943798ba5a6d6678f09f4d5f6a1ede39",
+        "tokenCount": 19,
+        "normalizedTokenSha256": "9be000b9782195f69eade016d63b1728b75f526d76e6f4e88a79c4b3cbcd7f6f"
+      },
+      "baseline": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/equipment/EquipmentConfigManager.as",
+          "className": "org.flashNight.arki.item.equipment.EquipmentConfigManager",
+          "functionName": "getTierKey",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "04a1780535a10f75862d0deec00a068dfac84def76611a53019eb995827c06c0",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "adce924caaf57b154e4eae346fc8653788320ea2ba7a6a09ee9da878965a3777",
+          "bodyTokenCount": 8,
+          "bodyTokenSha256": "0f7e527ea06b9f882c4024feddf36c76943798ba5a6d6678f09f4d5f6a1ede39",
+          "tokenCount": 19,
+          "normalizedTokenSha256": "9be000b9782195f69eade016d63b1728b75f526d76e6f4e88a79c4b3cbcd7f6f",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 6178,
+          "end": 6288
+        },
+        "memberSha256": "90dbac071e82ff759fc6bf762e3a67b13f0905f4cfc86b094d569b9fbc2381c6",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "current": {
+        "observed": {
+          "relativePath": "scripts/类定义/org/flashNight/arki/item/equipment/EquipmentConfigManager.as",
+          "className": "org.flashNight.arki.item.equipment.EquipmentConfigManager",
+          "functionName": "getTierKey",
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "classDepth": 0,
+          "memberDepth": 1,
+          "signatureTokenCount": 11,
+          "signatureTokenSha256": "04a1780535a10f75862d0deec00a068dfac84def76611a53019eb995827c06c0",
+          "returnTokenCount": 2,
+          "returnTokenSha256": "adce924caaf57b154e4eae346fc8653788320ea2ba7a6a09ee9da878965a3777",
+          "bodyTokenCount": 8,
+          "bodyTokenSha256": "0f7e527ea06b9f882c4024feddf36c76943798ba5a6d6678f09f4d5f6a1ede39",
+          "tokenCount": 19,
+          "normalizedTokenSha256": "9be000b9782195f69eade016d63b1728b75f526d76e6f4e88a79c4b3cbcd7f6f",
+          "nestedFunctionCount": 0
+        },
+        "span": {
+          "start": 6178,
+          "end": 6288
+        },
+        "memberSha256": "90dbac071e82ff759fc6bf762e3a67b13f0905f4cfc86b094d569b9fbc2381c6",
+        "validation": {
+          "accepted": true
+        },
+        "mismatches": []
+      },
+      "changedFields": [],
+      "memberByteIdentical": true,
+      "classification": "matches-fixed-contract-unchanged"
+    }
+  ],
+  "limitations": [
+    "Read-only source/token contract comparison, not AVM1 execution or gameplay equivalence.",
+    "The full crafting self-test was not run here; missing fonts/fonts.xml was reported separately by the parent."
+  ]
+}

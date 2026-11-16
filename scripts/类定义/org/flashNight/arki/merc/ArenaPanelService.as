@@ -13,7 +13,7 @@
  *     arenaSnapshot      — 返回 money / playerLevel / reuseCount / reuseLimit / busy / knownEnemies
  *     arenaRollPreview   — 调 ArenaController.rollPreview，序列化 _root.出阵人员 给 web 显示
  *     arenaEquipTooltip  — (raw, level) → BaseItem.getData() 走真 calculateData，含 tier/mods
- *                          → TooltipComposer 富文本（descHTML / introHTML）
+ *                          → 实例只读 TooltipInput，由 Host 生成富注释
  *     arenaEnter         — 消费已 preview 好的 _root.出阵人员，commit 进场
  *     arenaReturnBase    — 定制赛结算页关闭后，从竞技场场景返回基地
  *
@@ -266,7 +266,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
 
     /**
      * Web hover 装备格时调：给定 (raw, level) 重建 BaseItem，走真 baseItem.getData()
-     * 让 TooltipComposer 输出带进阶的数据（而非 Web物品注释HTML 的 baseItem=null 简化路径）。
+     * 保留真实进阶计算结果（名称预览没有该实例数据），由 Host 生成文档。
      */
     public static function handleEquipTooltip(params:Object):Void {
         var callId = params.callId;
@@ -306,7 +306,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
             displayname: tooltip.displayname,
             descHTML: tooltip.descHTML,
             introHTML: tooltip.introHTML,
-            document: tooltip.document
+            tooltipInput: tooltip.tooltipInput
         });
     }
 

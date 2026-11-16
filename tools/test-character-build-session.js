@@ -624,6 +624,40 @@ test('tooltip response exact shape and revision echo fail closed without advanci
     assert.strictEqual(fixture.session.debugState().loadoutRevision, 3);
 });
 
+test('loadout tooltip accepts the Host optional document for equipment and drugs', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const document = {version:1, title:'测试展示物品', sections:[
+        {role:'body', runs:[{text:'完整说明'}]}
+    ]};
+    for (const target of [{kind:'equipment', slotKey:'长枪'}, {kind:'drug', drugSlot:2}]) {
+        let accepted;
+        fixture.session.requestLoadoutTooltip(target, (response, ok) => {
+            accepted = {response, ok};
+        });
+        const request = fixture.messages.at(-1);
+        fixture.mux.handleResponse(responseFor(request, {
+            payload:tooltipProjection(target, {document})
+        }));
+        assert(accepted && accepted.ok, target.kind + ' document response must reach its renderer');
+        assert.deepStrictEqual(accepted.response.payload.document, document);
+    }
+    assert.strictEqual(fixture.errors.length, 0);
+
+    const target = {kind:'equipment', slotKey:'长枪'};
+    const validate = value => SessionContract.validators.tooltip(value, target);
+    for (const invalidDocument of [null, undefined, [], 'content', 1, true]) {
+        assert.strictEqual(validate(tooltipProjection(target, {document:invalidDocument})), false);
+    }
+    assert.strictEqual(validate(tooltipProjection(target, {document, extra:'forbidden'})), false);
+    assert.strictEqual(validate(tooltipProjection(target, {
+        document, target:{kind:'equipment', slotKey:'刀'}
+    })), false);
+    assert.strictEqual(validate(tooltipProjection(target, {
+        document, descHTML:'', introHTML:''
+    })), false);
+});
+
 test('starting a write cancels an in-flight equipped tooltip read', () => {
     const fixture = createFixture();
     openClean(fixture);

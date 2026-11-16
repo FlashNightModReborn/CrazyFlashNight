@@ -279,6 +279,34 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            if (!_pending.TryPeek(fid, out var pending)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            var entry = pending.Context;
+            if (entry.IsWrite || entry.Cmd != "itemTooltip") return null;
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("modifier", "modifier", entry.Instance + ":" + entry.Token,
+                pending.WebCallId, fid, new JObject { ["token"] = entry.Token },
+                () => _pending.TryPeek(fid, out var current) && ReferenceEquals(current, pending),
+                () =>
+                {
+                    JObject response;
+                    lock (_gate)
+                    {
+                        if (!_pending.TryCompleteExact(fid, pending, out _)) return;
+                        response = new JObject { ["v"] = 1, ["operation"] = entry.Cmd, ["token"] = entry.Token,
+                            ["success"] = false, ["error"] = "context_changed",
+                            ["requiresReconcile"] = _unresolvedOperationId != null };
+                        if (_unresolvedOperationId != null)
+                        {
+                            response["recoveryToken"] = _unresolvedToken;
+                            response["recoveryOperationId"] = _unresolvedOperationId;
+                        }
+                        Envelope(response, pending.WebCallId, entry.Cmd, entry.Instance);
+                    }
+                    Post(response);
+                });
+        }
+
         public void HandleFlashResponse(JObject message, Action<string> respond)
         {
             PanelPendingCall<PendingRequest> call;

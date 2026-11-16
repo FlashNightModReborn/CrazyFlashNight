@@ -1,0 +1,17 @@
+$ node tools/test-tooltip-document-binding.js
+ok - init 自动注入同目录 tooltip-document.js（模块缺席时）
+ok - buildItemRichHtml({document})：document 优先，chrome 透传
+ok - buildItemRichHtml({document})：无效 document 回落 legacy
+ok - normalizeDocument / buildDocumentHtml 直通
+ok - showDocumentAtMouse：显示 + profile 映射 dense→dense-inspect
+ok - showDocumentAtMouse：非法 document 返回 false，不动当前显示
+ok - showDocumentPinned：pinned profile + header 标题取 doc.title
+ok - updateContentDocument：owner 匹配才刷新；不匹配拒绝
+ok - bindAsync document:"prefer"：回包 document 渲染，迟到回包拒绝
+ok - bindAsync document 未开启：响应带 document 仍走 renderRich（向后兼容）
+ok - bindAsync document:"only"：无效 document → renderFailure
+ok - bindAsync renderDocument 自定义渲染器优先
+ok - bindAsync：binding destroy 后回包拒绝（generation 守卫）
+ok - hide(owner)：owner 不匹配拒绝
+
+14 tests passed

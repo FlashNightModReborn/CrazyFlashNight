@@ -1,0 +1,40 @@
+{
+  "schema": "cf7.issue262.captured-windows-host.v1",
+  "status": "PASS",
+  "inputs": 5723,
+  "corpusSha256": "f912530b21c3a67467dbb4c96a03564e4e6d532991a602ecbf5fa64521133c5a",
+  "producerSha256": "0dc7c899cbab0df338d1d8f3d42791b43065d657b03119b7f2718a3790e1597f",
+  "provenance": {
+    "kind": "avm1-capture",
+    "sourceCommit": "db6d3d248b80b80651987c99557c4e83b56f9301",
+    "capturedAt": "2026-11-16T00:26:12.874Z",
+    "inputProjectionSha256": "0dc7c899cbab0df338d1d8f3d42791b43065d657b03119b7f2718a3790e1597f",
+    "catalogContentVersion": "sha256:53f3d349dab336e4087654283ac06c38d7b368c7401648196ac4c7444c23e6b2",
+    "scope": "baseline AVM1 content paired with candidate read-only input",
+    "runId": "f27ae8b520f6467db089c2fab0a500f2",
+    "traceSha256": "c3dd57ae0c9d6058fc729dc0470f8c2480246a34e8d192e430a6571e92bdc290"
+  },
+  "checks": [
+    {
+      "name": "service",
+      "exitCode": 0
+    },
+    {
+      "name": "node",
+      "exitCode": 0
+    },
+    {
+      "name": "v8",
+      "exitCode": 0
+    }
+  ],
+  "scope": "Actual AVM1 inputs through Windows production service and standalone Node/ClearScript; no real UI or promotion inferred.",
+  "normalizedOutputSha256": "45dfe70b9abebcd5b569f3a295fb510a7b1cd799379dbcb9f8a70e2d0184ea8a",
+  "service": {
+    "validatedInputs": 5723,
+    "engineIdentity": "tooltip-v1:c70bc251824a7baae8a8b31b6441ba761eb90386fadb4781f5368b8a66b20885:7d83d0a97f59cea7a8b50e0f0ea1f042abb2fcc47e1f0c528234b2014aee72e8",
+    "built": 5713,
+    "cacheEntries": 256,
+    "cacheEstimatedBytes": 1158730
+  }
+}

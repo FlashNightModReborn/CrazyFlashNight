@@ -1,0 +1,111 @@
+{
+  "schema": "cf7.tooltip-avm1-record-fixture.v1",
+  "scope": "One complete actual AVM1 row from a paused, incomplete corpus; no full-corpus acceptance is implied.",
+  "provenance": {
+    "kind": "avm1-capture",
+    "sourceCommit": "db6d3d248b80b80651987c99557c4e83b56f9301",
+    "capturedAt": "2026-11-15T15:42:57.533Z",
+    "inputProjectionSha256": "0dc7c899cbab0df338d1d8f3d42791b43065d657b03119b7f2718a3790e1597f",
+    "catalogContentVersion": "sha256:53f3d349dab336e4087654283ac06c38d7b368c7401648196ac4c7444c23e6b2",
+    "scope": "baseline AVM1 content paired with candidate read-only input"
+  },
+  "runId": "3f35dd7882a14ad5857e599019f90e26",
+  "tracePrefixSha256": "b12a154994c47d37fd1e974f4c075f35a847bb423ce53a137c7d69ab3a3a5326",
+  "record": {
+    "id": "fixture:array-holes",
+    "input": {
+      "version": 1,
+      "kind": "skill",
+      "mode": "loadout",
+      "skillName": "oracle-array-holes",
+      "skillData": {
+        "Equippable": true,
+        "Description": [
+          "first",
+          null,
+          "last"
+        ],
+        "MP": [
+          "cost",
+          {
+            "__tooltipUndefined": true
+          },
+          null,
+          {
+            "__tooltipNumber": "NaN"
+          },
+          {
+            "__tooltipNumber": "Infinity"
+          }
+        ],
+        "CD": 0,
+        "Type": "主动",
+        "Name": "数组空洞"
+      },
+      "state": {
+        "level": 1,
+        "equipped": true,
+        "enabled": false
+      }
+    },
+    "expectedDocument": {
+      "layoutType": "wide",
+      "sections": [
+        {
+          "role": "intro",
+          "runs": [
+            {
+              "bold": true,
+              "text": "数组空洞"
+            },
+            {
+              "text": "\n"
+            },
+            {
+              "text": "主动   "
+            },
+            {
+              "color": "#00FF00",
+              "text": "已装备"
+            },
+            {
+              "text": "\n"
+            },
+            {
+              "text": "冷却秒数：0"
+            },
+            {
+              "text": "\n"
+            },
+            {
+              "text": "MP消耗：cost,undefined,null,NaN,Infinity"
+            },
+            {
+              "text": "\n"
+            },
+            {
+              "text": "技能等级：1"
+            }
+          ]
+        },
+        {
+          "role": "description",
+          "runs": [
+            {
+              "text": "first,null,last"
+            }
+          ]
+        }
+      ],
+      "profile": "dense",
+      "icon": {
+        "kind": "skill",
+        "name": "oracle-array-holes"
+      },
+      "title": "oracle-array-holes",
+      "version": 1
+    },
+    "expectedIntroHTML": "<B>数组空洞</B><BR>主动   <FONT COLOR='#00FF00'>已装备</FONT><BR>冷却秒数：0<BR>MP消耗：cost,undefined,null,NaN,Infinity<BR>技能等级：1",
+    "expectedDescHTML": "first,null,last"
+  }
+}

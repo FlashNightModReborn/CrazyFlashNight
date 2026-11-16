@@ -7,7 +7,7 @@ import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.EquipmentInventory;
 import org.flashNight.arki.achievement.AchievementMetrics;
 import org.flashNight.gesh.object.ObjectUtil;
-import org.flashNight.gesh.tooltip.TooltipComposer;
+import org.flashNight.gesh.tooltip.TooltipInputProjection;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.EquipmentUtil;
@@ -908,14 +908,14 @@ class org.flashNight.arki.item.EquipmentTuningService {
         if (candidate == null) return fail("unknown_candidate");
         var itemData:Object = ItemUtil.getItemData(candidate.itemName);
         if (itemData == undefined || itemData == null) return fail("item_data_missing");
-        var descHTML:String = TooltipComposer.generateItemDescriptionText(itemData, null);
-        var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, {level:1});
+        var input:Object = TooltipInputProjection.forItem(candidate.itemName, {level:1}, null, "web");
+        if (input == null) return fail("tooltip_failed");
         var displayName:String = String(
             itemPresentation(String(candidate.itemName)).displayName);
         // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性。
         var response:Object = {success:true, candidateKey:candidateKey,
             // 分段字段是 Web 富注释自动分栏的唯一权威输入。
-            introHTML:introHTML, descHTML:descHTML,
+            introHTML:"", descHTML:"", tooltipInput:input,
             itemType:String(itemData.type), itemUse:String(itemData.use),
             text:displayName};
         // 候选试算：规则允许装上当前装备时附 before/after 属性投影，

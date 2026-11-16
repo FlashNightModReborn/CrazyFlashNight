@@ -1,0 +1,110 @@
+{
+  "schema": "cf7.issue262.weapon-ammo-data-count.v1",
+  "baselineCountAssertionUnchanged": true,
+  "staleExpectedCount": 44,
+  "actualXmlCount": 49,
+  "ghostWhitelistCount": 9,
+  "ghostWhitelist": [
+    "XM1014",
+    "FNSLP半自动霰弹枪",
+    "XM1014战术版",
+    "TTI Benelli M4",
+    "SPAS12战术版",
+    "SPAS12",
+    "特勤霰弹枪",
+    "SPAS12-B2",
+    "SAPS12"
+  ],
+  "shotguns": [
+    "单管霰弹枪",
+    "DBHshotgun",
+    "雷明登870",
+    "勃朗宁725双管霰弹枪",
+    "雷明登870急速型",
+    "雷明登870警用型",
+    "XM1014",
+    "FNSLP半自动霰弹枪",
+    "白火铳",
+    "ZUX197",
+    "XM1014战术版",
+    "TTI Benelli M4",
+    "Six12-Matryoshka",
+    "SPAS12战术版",
+    "SPAS12",
+    "Jackhammer",
+    "牛仔的温切斯特",
+    "夜莺",
+    "TTI Gen 12",
+    "黄金QBZ",
+    "双管白火铳",
+    "逻辑工作室一型",
+    "黄金QBZ的Andy版",
+    "SHRAPNEL",
+    "AA12",
+    "AA12战术版",
+    "AA12丧尸",
+    "众神之力",
+    "杠杆式霰弹枪",
+    "特勤霰弹枪",
+    "Vepr12",
+    "Vepr12战术版",
+    "超级矮子",
+    "HDBHshotgun",
+    "双管猎枪",
+    "Mossberg500",
+    "ASSKICKER",
+    "无枪托ZUX197",
+    "SPAS12-B2",
+    "SAPS12",
+    "战术版莫斯伯格590",
+    "狱之流火铳简装版",
+    "狱之流火铳",
+    "霜之流冰铳",
+    "Origin12",
+    "Origin12战术版",
+    "Vepr12紧凑改装型",
+    "KHAOS 12",
+    "KHAOS 12战术版"
+  ],
+  "dataInputs": [
+    {
+      "path": "data/items/武器_长枪_霰弹枪.xml",
+      "sha256": "b4dc9f11ffcd1b815b7bda19d6c64cff9238b0d1daf323e1f427294fef6fa925",
+      "baselineContentUnchanged": true,
+      "items": 32
+    },
+    {
+      "path": "data/items/武器_手枪_霰弹枪.xml",
+      "sha256": "381b3ca35bc9439694b9e4e0e8daa9d6a27d427cddd016386b2ee76fe2fa04f8",
+      "baselineContentUnchanged": true,
+      "items": 17
+    },
+    {
+      "path": "data/items/武器_长枪_反器材武器.xml",
+      "sha256": "58ab5b52ec49d2d9db248d1410617ea298a6d46f4dbe2b0c95b543eb912ecef5",
+      "baselineContentUnchanged": true,
+      "items": 10
+    },
+    {
+      "path": "data/items/武器_长枪_机枪.xml",
+      "sha256": "92eed73f56287e4517bea2afdc6edd8772bb398b71659de73a841d3559bfeaef",
+      "baselineContentUnchanged": true,
+      "items": 13
+    },
+    {
+      "path": "data/items/武器_长枪_战斗步枪.xml",
+      "sha256": "de4352247a668d7039b2b760f58893702d3b727baa895dd47b8e03ed2c86e418",
+      "baselineContentUnchanged": true,
+      "items": 20
+    },
+    {
+      "path": "data/items/武器_手枪_手枪.xml",
+      "sha256": "91210f29303607639f00700e974e4152a85256e66f421fbf9eb8ac45ce8d2ed0",
+      "baselineContentUnchanged": true,
+      "items": 22
+    }
+  ],
+  "beforeSha256": "3a67d4250869e7d32fc665a22d92b86048d4952d6c575810f482ef33e4916e4d",
+  "afterSha256": "f6007aac644ddba1cddad9e6f43d3a48a817312835d3a8fbbafbba8a71659f13",
+  "scope": "Only the stale aggregate count changes. Per-item quota/type assertions and the nine-item ghost whitelist remain intact."
+}

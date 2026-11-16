@@ -1,0 +1,18 @@
+{
+  "schema": "cf7.issue262.test-appendix-eol.v1",
+  "observedUtc": "2026-11-16T00:26:46.471702+00:00",
+  "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\item\\LootContainerServiceTest.as",
+  "oldSha256": "06351518ad2d64719db1e640756fe10707a33371bb5bd25d2b5a0a3c6185bf64",
+  "newSha256": "1cdc948a1d51360d22dcfc55c19784cd74d257a75454d184e3f8f4f3be8ff978",
+  "changedLineNumbers": [
+    5850,
+    5851,
+    5852,
+    5918
+  ],
+  "change": "Remove only four CR characters outside method tokens from mixed line endings introduced by fixture relocation.",
+  "normalizedBytesEqual": true,
+  "compilerTokensChanged": false,
+  "assertionsChanged": false,
+  "previousFreshTestRemainsEvidenceOfSameTokens": true
+}

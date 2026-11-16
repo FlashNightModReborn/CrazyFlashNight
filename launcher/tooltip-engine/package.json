@@ -1,0 +1,12 @@
+{
+  "name": "cf7-tooltip-content-engine",
+  "private": true,
+  "scripts": {
+    "build": "node build.cjs",
+    "check": "node build.cjs --check",
+    "test": "node --test tests/engine.test.cjs tests/source-regressions.test.cjs",
+    "fixtures": "node fixtures.cjs",
+    "benchmark": "node --expose-gc benchmark.cjs",
+    "parity": "node parity.cjs"
+  }
+}

@@ -212,6 +212,8 @@ namespace CF7Launcher.Guardian
         }
 
         public bool IsSuspended { get { return _suspendedForPanel; } }
+        internal bool CanPresentTooltip => _presentationEnabled && !_suspendedForPanel && _ownerVisible;
+        internal event Action<string> PresentationSuppressed;
 
         #endregion
 
@@ -1081,6 +1083,8 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void NotifySuppressed(string reason)
         {
+            try { PresentationSuppressed?.Invoke(reason); }
+            catch (Exception ex) { LogManager.Log("[NativeHud] pending presentation suppress throw: " + ex.Message); }
             INativeHudWidget[] snapshot;
             lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
             for (int i = 0; i < snapshot.Length; i++)

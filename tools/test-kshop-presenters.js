@@ -241,6 +241,35 @@ test('KShop protocol preserves an all-distinct identity triple', () => {
         ['rule.alpha','展示 Beta','icon.gamma']);
 });
 
+test('KShop tooltip accepts optional Host document without loosening catalog identity', () => {
+    const payload = {idx:0};
+    const business = {success:true,descHTML:'完整说明',introHTML:'完整属性',
+        itemName:'rule.alpha',displayname:'展示 Beta',iconName:'icon.gamma'};
+    const route = {type:'panel_resp',panel:'kshop',panelInstanceId:'kshop.unit',
+        cmd:'tooltip',callId:'tooltip.unit'};
+    const sanitize = (value, request = payload) => Runtime.KShopProtocol.sanitizeResponse(
+        'tooltip',request,Object.assign({},route,value),protocolAuthority);
+    assert.deepStrictEqual(sanitize(business),business);
+    const document = {version:1,title:'展示 Beta',sections:[
+        {role:'body',runs:[{text:'完整说明'}]}
+    ]};
+    const withDocument = Object.assign({},business,{document});
+    const clean = sanitize(withDocument);
+    assert.deepStrictEqual(clean,withDocument);
+    assert.notStrictEqual(clean.document,document);
+    for (const invalidDocument of [null,undefined,[],1,true,'content']) {
+        assert.strictEqual(sanitize(Object.assign({},business,{document:invalidDocument})),null);
+    }
+    for (const field of ['itemName','displayname','iconName']) {
+        assert.strictEqual(sanitize(Object.assign({},withDocument,{[field]:'wrong.identity'})),null);
+    }
+    assert.strictEqual(sanitize(withDocument,{idx:1}),null);
+    assert.strictEqual(sanitize(Object.assign({},withDocument,{extra:'forbidden'})),null);
+    assert.deepStrictEqual(sanitize({success:false,error:'item_not_found'}),
+        {success:false,error:'item_not_found'});
+    assert.strictEqual(sanitize({success:false,error:'item_not_found',document}),null);
+});
+
 test('KShop protocol rejects request extras and wrong scalar types', () => {
     assert.strictEqual(Runtime.KShopProtocol.normalizeRequest('bulkQuery',{extra:true}),null);
     assert.strictEqual(Runtime.KShopProtocol.normalizeRequest(

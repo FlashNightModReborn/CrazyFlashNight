@@ -3,7 +3,6 @@ import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.LootClaimCommitCoordinator;
-import org.flashNight.gesh.tooltip.TooltipComposer;
 import org.flashNight.gesh.object.ObjectUtil;
 
 /** 持久待领取批次与 reward_inbox Loot 适配器。 */
@@ -1664,25 +1663,11 @@ class org.flashNight.arki.item.RewardInboxService {
     }
 
     private static function buildTooltip(item:Object):Object {
-        if (item == null) return null;
-        var data:Object = ItemUtil.getItemData(String(item.name));
-        if (data == null) return null;
-        var projection:Object = InventoryPanelService.buildItemProjection(item);
-        var value:Object = typeof item.value == "object" ? item.value : {level:1};
-        var equipment = item instanceof BaseItem && typeof item.value == "object"
-            ? item : null;
-        var desc:String;
-        var intro:String;
-        try {
-            desc = TooltipComposer.generateItemDescriptionText(data, equipment);
-            intro = TooltipComposer.generateIntroPanelContent(equipment, data, value);
-        } catch (tooltipError) { return null; }
-        if (typeof desc != "string" || typeof intro != "string") return null;
-        var itemType:String = String(projection.majorType);
-        if (itemType == "消耗品" && projection.use != undefined) itemType = String(projection.use);
-        return {itemName:String(item.name), displayname:String(projection.displayName),
-            iconName:String(projection.icon), itemType:itemType,
-            descHTML:desc, introHTML:intro};
+        var projection:Object = InventoryPanelService.buildTooltipProjection(item);
+        if (projection == null || projection.success !== true) return null;
+        delete projection.success;
+        delete projection.v;
+        return projection;
     }
 
     private static function recordResponse(record:Object, success:Boolean,

@@ -1,0 +1,446 @@
+{
+  "schema": "equipment-tuning.unattended-run.v1",
+  "status": "snapshot_gate_reached",
+  "slot": "cf7_agent_equipment_tuning",
+  "seedSlot": "cf7_agent_issue262_seed",
+  "startedAt": "2026-11-16T00:01:10.625Z",
+  "finishedAt": "2026-11-16T00:02:47.637Z",
+  "reportPath": "tmp/equipment-tuning/unattended/20261116T000110Z-cf7_agent_equipment_tuning/run-report.json",
+  "reportMarkdownPath": "tmp/equipment-tuning/unattended/20261116T000110Z-cf7_agent_equipment_tuning/run-report.md",
+  "scope": {
+    "gate": "active_workbench_and_first_tuning_snapshot",
+    "productionOpenerOnly": true,
+    "uiBusinessClicks": false,
+    "businessWritesAttempted": false,
+    "businessCommandsSent": [],
+    "stopAfterSnapshot": true
+  },
+  "timeline": [
+    {
+      "phase": "runtime_identity_expected",
+      "at": "2026-11-16T00:01:10.662Z",
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tmp\\runtime-candidates\\v2\\c-c4c2a451ea50-08846e81b3-20261115t132028003z-f6e1c3ae\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "053E26B3CDB6B25DAFD6DE642FC547340F93817712028EAED9593694993D4405",
+      "buildIdentity": "C4C2A451EA507F15D7B0B575FC53D2DE7AE5E6E2CD78676CD0526A427ADAC3E7",
+      "payloadClosure": "410C0915E5082306E516E1EB97074421FCFE78DA6F97E981ACE970874D3D4910"
+    },
+    {
+      "phase": "no_existing_launcher_before_save_seed",
+      "at": "2026-11-16T00:01:12.434Z"
+    },
+    {
+      "phase": "dedicated_save_seeded",
+      "at": "2026-11-16T00:01:12.493Z",
+      "targetSlot": "cf7_agent_equipment_tuning",
+      "seedSlot": "cf7_agent_issue262_seed"
+    },
+    {
+      "phase": "started_launcher_runtime_identity_verified",
+      "at": "2026-11-16T00:02:11.083Z",
+      "runtimeMode": "isolated_candidate",
+      "pid": 7192,
+      "coreSha256": "053E26B3CDB6B25DAFD6DE642FC547340F93817712028EAED9593694993D4405"
+    },
+    {
+      "phase": "launcher_process_exclusivity_reverified_after_seed",
+      "at": "2026-11-16T00:02:12.945Z",
+      "pid": 7192
+    },
+    {
+      "phase": "pre_start_log_watermark",
+      "at": "2026-11-16T00:02:12.991Z",
+      "total": 161
+    },
+    {
+      "phase": "start_requested",
+      "at": "2026-11-16T00:02:12.998Z",
+      "slot": "cf7_agent_equipment_tuning",
+      "fresh": false
+    },
+    {
+      "phase": "fresh_handoff_observed",
+      "at": "2026-11-16T00:02:28.391Z",
+      "lineNumber": 215
+    },
+    {
+      "phase": "title_frame_observed",
+      "at": "2026-11-16T00:02:35.582Z",
+      "lineNumber": 228
+    },
+    {
+      "phase": "agent_enter_requested",
+      "at": "2026-11-16T00:02:35.589Z",
+      "attemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+      "count": 1
+    },
+    {
+      "phase": "runtime_ready",
+      "at": "2026-11-16T00:02:38.724Z",
+      "attemptId": "5af4c8c1f5b74da2ac95396f375077c8"
+    },
+    {
+      "phase": "pre_open_log_watermark",
+      "at": "2026-11-16T00:02:38.734Z",
+      "total": 304
+    },
+    {
+      "phase": "equipment_tuning_open_requested",
+      "at": "2026-11-16T00:02:38.740Z",
+      "attemptId": "5af4c8c1f5b74da2ac95396f375077c8"
+    },
+    {
+      "phase": "snapshot_gate_reached",
+      "at": "2026-11-16T00:02:41.380Z",
+      "panelInstanceId": "panel_E-9BifV7ZGfqDisOiVlqwfmv",
+      "viewSessionId": "tuning.mwii1y9i.6oh2cp"
+    },
+    {
+      "phase": "runtime_identity_reverified_after_snapshot",
+      "at": "2026-11-16T00:02:43.028Z",
+      "pid": 7192,
+      "coreSha256": "053E26B3CDB6B25DAFD6DE642FC547340F93817712028EAED9593694993D4405"
+    },
+    {
+      "phase": "post_snapshot_clone_baseline_bound",
+      "at": "2026-11-16T00:02:44.049Z",
+      "sha256": "dec6f828114e9973085ef4fcf3b453b84e637f24161c5e048f7b2c1964c1c9b4",
+      "utf8Bytes": 77686,
+      "textChars": 68053,
+      "deviceId": "3802884988",
+      "fileId": "3377699722310295",
+      "mtimeNs": "1794787357938351200",
+      "semanticContract": "startup_normalization.v1",
+      "semanticSha256": "51530f621cbe8256cf1d4c3de9bd59629da48848c7ca58e8850b2a95acb9a7df",
+      "stableWindowMs": 1000,
+      "stableSampleCount": 10,
+      "changedFromSeed": true,
+      "startupArchiveLine": 275,
+      "archiveEvidenceFloorLine": 228,
+      "postCaptureLogTotal": 354
+    },
+    {
+      "phase": "runtime_identity_reverified_after_clone_baseline",
+      "at": "2026-11-16T00:02:47.637Z",
+      "pid": 7192,
+      "coreSha256": "053E26B3CDB6B25DAFD6DE642FC547340F93817712028EAED9593694993D4405"
+    }
+  ],
+  "savePreparation": {
+    "targetSlot": "cf7_agent_equipment_tuning",
+    "seedSlot": "cf7_agent_issue262_seed",
+    "seedSource": "saves/cf7_agent_issue262_seed.json",
+    "targetJson": "saves/cf7_agent_equipment_tuning.json",
+    "seedSha256": "011e772909a11ccd986a87b4c42de5b49e7ed723f0e5d58629648a6567f966cd",
+    "semanticContract": "startup_normalization.v1",
+    "semanticSha256": "51530f621cbe8256cf1d4c3de9bd59629da48848c7ca58e8850b2a95acb9a7df",
+    "role": "fs",
+    "level": 99,
+    "backups": [],
+    "removedSolFiles": [],
+    "wroteSeed": true,
+    "seededTargetSha256": "26a056903bcdb741a88445920e2eb2eef2380166ee91f1a5f255ddfc60c701bc",
+    "targetSha256": "26a056903bcdb741a88445920e2eb2eef2380166ee91f1a5f255ddfc60c701bc",
+    "gateBaseline": {
+      "sha256": "dec6f828114e9973085ef4fcf3b453b84e637f24161c5e048f7b2c1964c1c9b4",
+      "utf8Bytes": 77686,
+      "textChars": 68053,
+      "deviceId": "3802884988",
+      "fileId": "3377699722310295",
+      "mtimeNs": "1794787357938351200",
+      "lastWriteTimeUtc": "2026-11-16T00:02:37.938Z",
+      "lastSaved": "2026-11-16 08:02:37",
+      "semanticSha256": "51530f621cbe8256cf1d4c3de9bd59629da48848c7ca58e8850b2a95acb9a7df",
+      "role": "fs",
+      "level": 99,
+      "stableStartedAt": "2026-11-16T00:02:43.043Z",
+      "capturedAt": "2026-11-16T00:02:44.049Z",
+      "stableWindowMs": 1000,
+      "stableSampleCount": 10,
+      "regularFileVerified": true,
+      "realPathBound": true,
+      "changedFromSeed": true,
+      "semanticContract": "startup_normalization.v1",
+      "archiveEvidenceFloorLine": 228,
+      "attemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+      "snapshot": {
+        "panelInstanceId": "panel_E-9BifV7ZGfqDisOiVlqwfmv",
+        "viewSessionId": "tuning.mwii1y9i.6oh2cp",
+        "callId": "tune.tune.mwii1y8i.j76v4r.1.1",
+        "sourceKey": "sha256_e6fcca2089a23d54cc6ca7e5",
+        "stateRef": "sha256_764d3f7667bd10299ae3aff5",
+        "lineNumber": 342
+      },
+      "startupArchiveReceipt": {
+        "lineNumber": 275,
+        "archiveChars": 68053,
+        "targetPath": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\saves\\cf7_agent_equipment_tuning.json"
+      },
+      "postCaptureLogWatermark": {
+        "total": 354,
+        "capturedAt": "2026-11-16T00:02:44.069Z"
+      }
+    }
+  },
+  "preparationGuard": {
+    "launcherSlot": "",
+    "runtimeSlot": ""
+  },
+  "httpPort": 1192,
+  "runtimeIdentity": {
+    "runtimeMode": "isolated_candidate",
+    "processPath": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tmp\\runtime-candidates\\v2\\c-c4c2a451ea50-08846e81b3-20261115t132028003z-f6e1c3ae\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "053E26B3CDB6B25DAFD6DE642FC547340F93817712028EAED9593694993D4405",
+    "buildIdentity": "C4C2A451EA507F15D7B0B575FC53D2DE7AE5E6E2CD78676CD0526A427ADAC3E7",
+    "payloadClosure": "410C0915E5082306E516E1EB97074421FCFE78DA6F97E981ACE970874D3D4910",
+    "pid": 7192,
+    "httpPort": 1192,
+    "verified": true,
+    "expected": {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tmp\\runtime-candidates\\v2\\c-c4c2a451ea50-08846e81b3-20261115t132028003z-f6e1c3ae\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "053E26B3CDB6B25DAFD6DE642FC547340F93817712028EAED9593694993D4405",
+      "buildIdentity": "C4C2A451EA507F15D7B0B575FC53D2DE7AE5E6E2CD78676CD0526A427ADAC3E7",
+      "payloadClosure": "410C0915E5082306E516E1EB97074421FCFE78DA6F97E981ACE970874D3D4910",
+      "pid": null,
+      "httpPort": null
+    },
+    "statusEndpointIdentityAvailable": false,
+    "identitySource": "launcher_ports.pid + Get-Process.Path + Core DLL SHA-256 + runtime manifest"
+  },
+  "startLogWatermark": {
+    "total": 161,
+    "capturedAt": "2026-11-16T00:02:12.991Z"
+  },
+  "startResponse": {
+    "success": true,
+    "ok": true,
+    "task": "agent_control",
+    "note": "start_requested",
+    "launchState": "PrewarmHandshakeHeld",
+    "revealPerformed": false,
+    "socketConnected": true,
+    "gameEnteredObserved": false,
+    "gameEnteredAttemptId": null,
+    "readyForRuntimeAutomation": false,
+    "runtimeReadyBlockedBy": [
+      "flash_not_revealed",
+      "launcher_not_ready",
+      "save_decision_unsafe",
+      "runtime_save_not_loaded",
+      "game_enter_not_observed"
+    ],
+    "readyForArenaCalibration": false,
+    "readyBlockedBy": [
+      "flash_not_revealed",
+      "launcher_not_ready",
+      "save_decision_unsafe",
+      "runtime_save_not_loaded",
+      "game_enter_not_observed"
+    ],
+    "save": {
+      "attemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+      "slot": null,
+      "decision": null,
+      "kind": null,
+      "source": null,
+      "corruptDetail": null
+    },
+    "saveRuntime": null,
+    "arenaCalibration": {
+      "success": true,
+      "ok": true,
+      "task": "arena_calibration",
+      "workerId": "guardian",
+      "sessionEpoch": "1f52e022574f411e8fba275f63c29ac1",
+      "assignmentId": null,
+      "attemptId": null,
+      "transportPoisoned": false,
+      "state": "idle",
+      "note": null,
+      "batchId": null,
+      "manifestHash": null,
+      "manifestPath": null,
+      "frozenManifestPath": null,
+      "resultPath": null,
+      "totalRuns": 0,
+      "completedRuns": 0,
+      "currentCaseId": null,
+      "currentRunId": null,
+      "lastError": null,
+      "lastResult": null
+    },
+    "activePanel": {
+      "name": null,
+      "instanceId": null
+    }
+  },
+  "runtime": {
+    "status": {
+      "success": true,
+      "ok": true,
+      "task": "agent_control",
+      "note": null,
+      "launchState": "Ready",
+      "revealPerformed": true,
+      "socketConnected": true,
+      "gameEnteredObserved": true,
+      "gameEnteredAttemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+      "readyForRuntimeAutomation": true,
+      "runtimeReadyBlockedBy": [],
+      "readyForArenaCalibration": true,
+      "readyBlockedBy": [],
+      "save": {
+        "attemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+        "slot": "cf7_agent_equipment_tuning",
+        "decision": "snapshot",
+        "kind": "Snapshot",
+        "source": "json_shadow",
+        "corruptDetail": null
+      },
+      "saveRuntime": {
+        "loaded": true,
+        "savePath": "cf7_agent_equipment_tuning",
+        "attemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+        "source": "launcher_snapshot:json_shadow",
+        "role": "fs",
+        "level": 99
+      },
+      "arenaCalibration": {
+        "success": true,
+        "ok": true,
+        "task": "arena_calibration",
+        "workerId": "guardian",
+        "sessionEpoch": "1f52e022574f411e8fba275f63c29ac1",
+        "assignmentId": null,
+        "attemptId": null,
+        "transportPoisoned": false,
+        "state": "idle",
+        "note": null,
+        "batchId": null,
+        "manifestHash": null,
+        "manifestPath": null,
+        "frozenManifestPath": null,
+        "resultPath": null,
+        "totalRuns": 0,
+        "completedRuns": 0,
+        "currentCaseId": null,
+        "currentRunId": null,
+        "lastError": null,
+        "lastResult": null
+      },
+      "activePanel": {
+        "name": null,
+        "instanceId": null
+      }
+    },
+    "expectedAttemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+    "handoffEvidence": {
+      "line": "08:02:28.304 [LogBatch] onLoad=[type Function]&messages=[BootstrapAS] event=handoff&frame=212",
+      "lineNumber": 215
+    },
+    "titleFrameEvidence": {
+      "line": "08:02:35.518 [LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared",
+      "lineNumber": 228
+    },
+    "enterRequestCount": 1,
+    "enterResponse": {
+      "result": "执行函数：_root.agentEnterResolvedSave()\n执行完毕！",
+      "command": "#func:_root.agentEnterResolvedSave()",
+      "success": true,
+      "task": "console_result"
+    },
+    "gameEnteredObserved": true,
+    "gameEnteredAttemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+    "lastLogTotal": 304
+  },
+  "openLogWatermark": {
+    "total": 304,
+    "capturedAt": "2026-11-16T00:02:38.734Z"
+  },
+  "openResponse": {
+    "success": true,
+    "ok": true,
+    "task": "agent_control",
+    "note": "equipment_tuning_panel_open_requested",
+    "launchState": "Ready",
+    "revealPerformed": true,
+    "socketConnected": true,
+    "gameEnteredObserved": true,
+    "gameEnteredAttemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+    "readyForRuntimeAutomation": true,
+    "runtimeReadyBlockedBy": [],
+    "readyForArenaCalibration": true,
+    "readyBlockedBy": [],
+    "save": {
+      "attemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+      "slot": "cf7_agent_equipment_tuning",
+      "decision": "snapshot",
+      "kind": "Snapshot",
+      "source": "json_shadow",
+      "corruptDetail": null
+    },
+    "saveRuntime": {
+      "loaded": true,
+      "savePath": "cf7_agent_equipment_tuning",
+      "attemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+      "source": "launcher_snapshot:json_shadow",
+      "role": "fs",
+      "level": 99
+    },
+    "arenaCalibration": {
+      "success": true,
+      "ok": true,
+      "task": "arena_calibration",
+      "workerId": "guardian",
+      "sessionEpoch": "1f52e022574f411e8fba275f63c29ac1",
+      "assignmentId": null,
+      "attemptId": null,
+      "transportPoisoned": false,
+      "state": "idle",
+      "note": null,
+      "batchId": null,
+      "manifestHash": null,
+      "manifestPath": null,
+      "frozenManifestPath": null,
+      "resultPath": null,
+      "totalRuns": 0,
+      "completedRuns": 0,
+      "currentCaseId": null,
+      "currentRunId": null,
+      "lastError": null,
+      "lastResult": null
+    },
+    "activePanel": {
+      "name": null,
+      "instanceId": null
+    }
+  },
+  "snapshotGate": {
+    "evidence": {
+      "activeWorkbench": {
+        "kind": "active_workbench",
+        "marker": "equipment_tuning_panel_bound",
+        "panelInstanceId": "panel_E-9BifV7ZGfqDisOiVlqwfmv",
+        "lineNumber": 338,
+        "line": "08:02:40.888 event=equipment_tuning_panel_bound panelInstanceId=panel_E-9BifV7ZGfqDisOiVlqwfmv"
+      },
+      "tuningSnapshot": {
+        "kind": "tuning_snapshot",
+        "marker": "equipment_tuning_snapshot_confirmed",
+        "callId": "tune.tune.mwii1y8i.j76v4r.1.1",
+        "panelInstanceId": "panel_E-9BifV7ZGfqDisOiVlqwfmv",
+        "viewSessionId": "tuning.mwii1y9i.6oh2cp",
+        "sourceKey": "sha256_e6fcca2089a23d54cc6ca7e5",
+        "sourceKeyRef": "sha256_e6fcca2089a23d54cc6ca7e5",
+        "stateRef": "sha256_764d3f7667bd10299ae3aff5",
+        "writeEpoch": 0,
+        "lineNumber": 342,
+        "line": "08:02:41.117 event=equipment_tuning_snapshot_confirmed callId=tune.tune.mwii1y8i.j76v4r.1.1 panelInstanceId=panel_E-9BifV7ZGfqDisOiVlqwfmv viewSessionId=tuning.mwii1y9i.6oh2cp sourceKeyRef=sha256_e6fcca2089a23d54cc6ca7e5 stateRef=sha256_764d3f7667bd10299ae3aff5 writeEpoch=0 modAvailabilityCodes=1"
+      }
+    },
+    "lastLogTotal": 344
+  },
+  "shutdownResponse": null,
+  "error": null
+}

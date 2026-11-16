@@ -1,0 +1,29 @@
+$ node -e 'console.log(JSON.stringify(require('"'"'./tools/workbench-live-e2e/crafting/as2-anchor-test'"'"').run(process.cwd())))'
+/workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/lib/evidence-artifact.js:20
+  throw new LiveE2EContractError(code, phase, message, details);
+  ^
+
+LiveE2EContractError: ItemUtil/ArrayInventory executable algorithm differs from its fixed versioned contract
+    at Object.contractFail (/workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/lib/evidence-artifact.js:20:9)
+    at fail (/workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/crafting/common.js:26:12)
+    at as2AlgorithmFail (/workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/crafting/source-contract.js:427:3)
+    at Object.assertAs2FunctionExpectation (/workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/crafting/source-contract.js:714:5)
+    at /workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/crafting/as2-anchor-test.js:54:39
+    at Array.forEach (<anonymous>)
+    at Object.run (/workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/crafting/as2-anchor-test.js:51:45)
+    at [eval]:1:91
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12 {
+  code: 'as2_algorithm_contract_mismatch',
+  phase: 'source_identity',
+  details: {
+    relativePath: 'scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as',
+    className: 'org.flashNight.arki.item.CraftingPanelService',
+    functionName: 'buildPlan',
+    field: 'bodyTokenCount',
+    expected: 1164,
+    actual: 1193
+  }
+}
+
+Node.js v24.22.1

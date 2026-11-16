@@ -368,6 +368,7 @@
                 ? global.PanelTooltip.staticIconUrl(row.iconName) : null,
             introHTML:row.introHTML,
             descHTML:row.descHTML,
+            document:row.document,
             layoutType:typeof global.PanelTooltip.inferLayoutType === 'function'
                 ? global.PanelTooltip.inferLayoutType(row.itemType) : 'wide'
         });

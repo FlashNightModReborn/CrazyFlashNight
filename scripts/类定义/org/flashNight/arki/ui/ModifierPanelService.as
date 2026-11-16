@@ -301,7 +301,7 @@ class org.flashNight.arki.ui.ModifierPanelService {
             displayname:String(tooltip.displayname || itemName),
             introHTML:String(tooltip.introHTML || ""),
             descHTML:String(tooltip.descHTML || ""),
-            document:tooltip.document == undefined ? null : tooltip.document};
+            tooltipInput:tooltip.tooltipInput};
     }
 
     private static function readUnitFrame(params:Object):Object {

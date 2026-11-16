@@ -1,0 +1,28 @@
+{
+  "schema": "cf7.issue262.merc-fixture-repair.v1",
+  "files": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/merc/MercDefinitionCacheTest.as",
+      "baselineAndHeadBlobIdentical": true,
+      "beforeSha256": "593ab0bb9c2dbf25b21497bd79fbc76bc26c5e17496b3b7b413d757b8ed756e7",
+      "afterSha256": "136398a5b45afcca79fc5a2fadb6b190bfcd1bc1aca42cd487bd93b8d80264a4",
+      "checkCallSites": 11,
+      "bomPreserved": true
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/merc/MercPersonalityTest.as",
+      "baselineAndHeadBlobIdentical": true,
+      "beforeSha256": "ec7e4af7bfe86b4009f2b9c176abc44a8593eaabe4bce0c1c4fe4ba3b57e2af6",
+      "afterSha256": "7a72c7cafeb9182ca67f05878945b1103921c35a969ce65fd96e3977d616bbf9",
+      "checkCallSites": 24,
+      "bomPreserved": true
+    }
+  ],
+  "productionCodeChanged": false,
+  "authority": [
+    "MercLibrary.buildMercData caches by raw.id; loadFromList rebuilds the cache.",
+    "data/merc/mercenaries_README.md hidden field: consumers filter metadata independent of pool position.",
+    "MercSpawnerTest.testPoolSorting already requires hidden entries in both pools."
+  ],
+  "scope": "CS6 syntax, independent fixture IDs, and existing combined-pool contract; original failed run retained."
+}

@@ -1,0 +1,67 @@
+{
+  "sourceCommit": "f20f50f48072a95a45fd11b155e3fcf9bd2142e4",
+  "root": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources",
+  "modules": [
+    {
+      "module": "resident",
+      "file": "scripts/asLoader.swf",
+      "swfBytes": 90511,
+      "swfSha256": "35c59fe9da156bc5f59e06a295285d38346b4cbb933364789f4029b993b1debc",
+      "classCount": 1,
+      "classInitializerActionBytes": 85852,
+      "tooltipInitializerActionBytes": 0,
+      "tooltipClasses": []
+    },
+    {
+      "module": "shared",
+      "file": "scripts/asLoaderShared.swf",
+      "swfBytes": 2975065,
+      "swfSha256": "0c3e4761a0a23624f4990c0caf90e086416b41003d89461da9e5716aabd06f3e",
+      "classCount": 338,
+      "classInitializerActionBytes": 2924967,
+      "tooltipInitializerActionBytes": 0,
+      "tooltipClasses": []
+    },
+    {
+      "module": "boot",
+      "file": "scripts/asLoaderLogic.swf",
+      "swfBytes": 3806261,
+      "swfSha256": "f752bbe9de989a3db7755822cebfad96e608db38dd6f0a90f6c2d9f8ed7c9c19",
+      "classCount": 429,
+      "classInitializerActionBytes": 2838974,
+      "tooltipInitializerActionBytes": 18993,
+      "tooltipClasses": [
+        {
+          "fqn": "org.flashNight.gesh.tooltip.NativeTooltipBridge",
+          "spriteId": 54,
+          "actionBytes": 4835,
+          "actionSha256": "ccad537b7eea5ef38de75fd3934f83475d4aa60273baab28a404d0590917d685"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.TooltipInputProjection",
+          "spriteId": 62,
+          "actionBytes": 9619,
+          "actionSha256": "98ea188192f2d1856b32f363c42701c67f39fa8d535183e9417d88ea761cac1a"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.TooltipDataSelector",
+          "spriteId": 63,
+          "actionBytes": 1132,
+          "actionSha256": "93b00da5a64788772fd449ba65f74c4404245f423893afba62ba7916d36e4056"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.TooltipConstants",
+          "spriteId": 321,
+          "actionBytes": 2261,
+          "actionSha256": "b0f9925674b047849a32fa46149288193953adde7256f0c11f20979d6bc30769"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.ItemUseTypes",
+          "spriteId": 322,
+          "actionBytes": 1146,
+          "actionSha256": "e9fe5875854f2fdf6691ec355da2f5842eec788fbfde2e9aa51517c2d06d8042"
+        }
+      ]
+    }
+  ]
+}

@@ -726,9 +726,13 @@
         if (cmd === 'saveCart') return sanitizeSavedCartBusiness(
             business,payload,authority);
         if (cmd === 'tooltip') {
-            if (!exactKeys(business,['success','descHTML','introHTML','itemName','displayname','iconName'])
+            var hasDocument = Object.prototype.hasOwnProperty.call(business,'document');
+            if (!exactKeys(business,['success','descHTML','introHTML','itemName','displayname','iconName'],['document'])
                     || business.success !== true || typeof business.descHTML !== 'string'
-                    || typeof business.introHTML !== 'string' || !authority) return null;
+                    || typeof business.introHTML !== 'string' || !authority
+                    || hasDocument && (business.document === null
+                        || typeof business.document !== 'object'
+                        || Array.isArray(business.document))) return null;
             var byIndex = catalogMap(authority.catalog || []), expected = byIndex[payload.idx];
             return expected && business.itemName === expected.item
                 && business.displayname === expected.displayname && business.iconName === expected.icon

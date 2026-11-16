@@ -14,8 +14,10 @@ class org.flashNight.arki.merc.MercDefinitionCacheTest {
         _root.佣兵个数限制 = 1;
         _root.同伴数据 = [];
         _root.gameworld = {菜单:{removeMovieClip:function():Void {}}};
-        _root.脸型库 = {"face.test": "脸-测试"};
-        _root.发型库 = {"hair.test": "发-测试"};
+        _root.脸型库 = {};
+        _root.脸型库["face.test"] = "脸-测试";
+        _root.发型库 = {};
+        _root.发型库["hair.test"] = "发-测试";
         var raw:Object = {
             id:"cache.test", name:"缓存测试", level:20, height:175, gender:"男",
             face:"face.test", hair:"hair.test",
@@ -57,8 +59,9 @@ class org.flashNight.arki.merc.MercDefinitionCacheTest {
 
         raw.hidden = true;
         MercLibrary.loadFromList([raw]);
-        check(_root.可雇佣兵.length === 0 && _root.隐藏的可雇佣兵.length === 1,
-            "hidden 池与 available 池数量独立");
+        check(_root.可雇佣兵.length === 1 && _root.隐藏的可雇佣兵.length === 1
+                && _root.可雇佣兵[0] === _root.隐藏的可雇佣兵[0],
+            "隐藏定义进入合并候选池，同时保留独立 hidden 索引");
         check(_root.隐藏的可雇佣兵[0][19].隐藏 === true,
             "hidden 标记只落到本次 hidden 池定义");
 

@@ -1,6 +1,5 @@
 ﻿import org.flashNight.arki.merc.ArenaDropRuleCatalog;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
-import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
 
 /** 竞技场掉落规则、来源索引与通用装备 tooltip 的 focused 回归。 */
 class org.flashNight.arki.merc.ArenaDropRuleCatalogTest {
@@ -138,16 +137,13 @@ class org.flashNight.arki.merc.ArenaDropRuleCatalogTest {
             && indexed[0].dropType == ItemObtainIndex.DROP_TYPE_ARENA,
             "clearing discoveries preserves authored arena sources");
 
-        var carrierTooltip:String = ObtainMethodsBuilder.build("斩马刀").join("");
-        var specificTooltip:String = ObtainMethodsBuilder.build("合金盔").join("");
-        check(carrierTooltip.indexOf("竞技场：") >= 0
-            && carrierTooltip.indexOf("携带该装备的佣兵") >= 0
-            && carrierTooltip.indexOf("携带该装备的特定佣兵") < 0
-            && specificTooltip.indexOf("竞技场：") >= 0
-            && specificTooltip.indexOf("携带该装备的特定佣兵") >= 0
-            && carrierTooltip.indexOf("DEATH MATCH") < 0
-            && specificTooltip.indexOf("1/7") < 0,
-            "shared TooltipComposer separates carrier and specific-carrier sources");
+        // Text expectations moved to the Launcher engine; this suite owns discovery data.
+        var carrier:Array = index.getObtainRecords("斩马刀");
+        var specific:Array = index.getObtainRecords("合金盔");
+        check(carrier.length > 0 && specific.length > 0
+            && carrier[0].carrierScope == "carrier"
+            && specific[0].carrierScope == "specific_carrier",
+            "discovery projection preserves carrier and specific-carrier source identity");
 
         index.reset(true);
         trace("ArenaDropRuleCatalogTest Tests Passed: " + passed);

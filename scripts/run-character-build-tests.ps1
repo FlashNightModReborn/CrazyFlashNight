@@ -37,6 +37,8 @@ $itemUtilSource = Get-RepoText `
     'scripts\类定义\org\flashNight\arki\item\ItemUtil.as'
 $longGunSkillSource = Get-RepoText `
     'scripts\逻辑\单位函数\单位函数_雾人_aka_fs_主动战技.as'
+$borrowedShotSource = Get-RepoText `
+    'scripts\类定义\org\flashNight\arki\unit\Action\Shoot\BorrowedLongGunShot.as'
 $drugWriter = [regex]::Match(
     $drugInputSource,
     'public static function updateSlot\([\s\S]*?\r?\n    public static function syncView'
@@ -46,8 +48,8 @@ $submitWriter = [regex]::Match(
     'public static function submit\(itemArray:Array,\s*context:Object\):Boolean\{[\s\S]*?public static function singleRequire'
 ).Value
 $grenadeWriter = [regex]::Match(
-    $longGunSkillSource,
-    '// Fallback: 检查手雷装备栏是否有对应消耗品[\s\S]*?return false;'
+    $borrowedShotSource,
+    'public static function commit\(unit:Object, scope:Object\):Boolean \{[\s\S]*?\r?\n    public static function dispatched'
 ).Value
 $readinessProbe = [regex]::Match(
     $characterBuildSource,
@@ -72,11 +74,17 @@ if (($drugWriter -notmatch
             'if\(implicitAssetTransaction\) PlayerAssetTransaction\.commit\(assetTransaction\);[\s\S]{0,100}submitCompleted\s*=\s*true;[\s\S]{0,80}return submitExact') -or
         ($submitWriter -notmatch
             'if\(wrote\) PlayerAssetTransaction\.markAuthorityWrite\(assetTransaction\);[\s\S]{0,360}if\(wrote\) PlayerAssetTransaction\.commit\(assetTransaction\)[\s\S]{0,100}else PlayerAssetTransaction\.rollback\(assetTransaction\)') -or
+        ($longGunSkillSource -notmatch
+            'BorrowedLongGunShot\.admit\(自机, "alternate"\)') -or
+        ($longGunSkillSource -notmatch
+            'BorrowedLongGunShot\.run\(自机, "其他弹药开启", "alternate"\)') -or
         ($grenadeWriter -notmatch
-            'grenadeItem\.value\s*-=\s*1[\s\S]{0,220}dirtyMark\s*=\s*true') -or
+            'kind == "alternate" && !ItemUtil\.singleSubmit\(unit\.其他消耗物品, 1, \{source:"weapon_cost", reason:"alternate_ammo"\}\)') -or
         ($grenadeWriter -notmatch
-            '装备栏\.remove\("手雷"\)[\s\S]{0,220}dirtyMark\s*=\s*true') -or
-        ($grenadeDirtyCount -ne 2) -or
+            '_root\.控制目标 !== unit\._name \|\| grenade == null \|\| grenade\.name !== unit\.其他消耗物品\) return false;') -or
+        ($grenadeWriter -notmatch
+            'var stacked:Boolean = !isNaN\(grenade\.value\) && grenade\.value > 1;[\s\S]{0,80}if \(stacked\) grenade\.value -= 1;[\s\S]{0,80}else \{ equipment\.remove\("手雷"\); scope\.refreshDressup = true; \}[\s\S]{0,100}if \(_root\.存档系统\) _root\.存档系统\.dirtyMark = true;[\s\S]{0,240}PlayerAssetTransaction\.recordEffect\("loss", !stacked && ItemUtil\.isEquipment\(name\) \? "equip" : "item",[\s\S]{0,100}name, 1, \{source:"weapon_cost", reason:"alternate_ammo"\}\)') -or
+        ($grenadeDirtyCount -ne 1) -or
         ($readinessProbe -notmatch 'resolveContainers\s*\(') -or
         ($readinessProbe -notmatch 'scanLoadout\s*\(') -or
         ($readinessProbe -notmatch 'liveContext\s*\(') -or

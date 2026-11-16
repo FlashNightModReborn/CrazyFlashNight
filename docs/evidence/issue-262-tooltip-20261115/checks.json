@@ -1,0 +1,354 @@
+[
+  {
+    "name": "catalog-current",
+    "command": [
+      "python3",
+      "tools/build-tooltip-catalog.py",
+      "--check"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.317,
+    "log": "catalog-current.log"
+  },
+  {
+    "name": "catalog-contract",
+    "command": [
+      "python3",
+      "tools/test-tooltip-catalog.py"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.383,
+    "log": "catalog-contract.log"
+  },
+  {
+    "name": "bundle-current",
+    "command": [
+      "node",
+      "launcher/tooltip-engine/build.cjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 1.133,
+    "log": "bundle-current.log"
+  },
+  {
+    "name": "engine",
+    "command": [
+      "npm",
+      "test",
+      "--prefix",
+      "launcher/tooltip-engine"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.768,
+    "log": "engine.log"
+  },
+  {
+    "name": "as2-projection-mock",
+    "command": [
+      "node",
+      "tools/test-tooltip-input-projection.js"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.075,
+    "log": "as2-projection-mock.log"
+  },
+  {
+    "name": "capture-tools",
+    "command": [
+      "node",
+      "tools/tooltip-oracle/capture/capture-tools.test.cjs"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.061,
+    "log": "capture-tools.log"
+  },
+  {
+    "name": "web-document",
+    "command": [
+      "node",
+      "tools/test-tooltip-document.js"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.072,
+    "log": "web-document.log"
+  },
+  {
+    "name": "web-binding",
+    "command": [
+      "node",
+      "tools/test-tooltip-document-binding.js"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.213,
+    "log": "web-binding.log"
+  },
+  {
+    "name": "web-consumers",
+    "command": [
+      "node",
+      "tools/test-tooltip-document-consumers.js"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.207,
+    "log": "web-consumers.log"
+  },
+  {
+    "name": "character-build-candidate",
+    "command": [
+      "node",
+      "tools/test-character-build-candidate-tooltip.js"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.057,
+    "log": "character-build-candidate.log"
+  },
+  {
+    "name": "bootstrap-document",
+    "command": [
+      "node",
+      "tools/test-bootstrap-tooltip-document.js"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.068,
+    "log": "bootstrap-document.log"
+  },
+  {
+    "name": "packer-integrity",
+    "command": [
+      "npm",
+      "test",
+      "--prefix",
+      "tools/cf7-packer",
+      "--",
+      "--run",
+      "packages/core/tests/tooltip-runtime-config.test.ts"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 1.193,
+    "log": "packer-integrity.log"
+  },
+  {
+    "name": "crafting-contract-syntax",
+    "command": [
+      "node",
+      "--check",
+      "tools/workbench-live-e2e/crafting/source-contract.js"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.057,
+    "log": "crafting-contract-syntax.log"
+  },
+  {
+    "name": "crafting-evidence-fixtures",
+    "command": [
+      "node",
+      "tools/workbench-live-e2e/crafting/self-test.js"
+    ],
+    "exitCode": 1,
+    "status": "UNAVAILABLE",
+    "elapsedSeconds": 0.135,
+    "log": "crafting-evidence-fixtures.log",
+    "classification": "missing-baseline-assets-in-sparse-worktree",
+    "reason": "fonts/fonts.xml missing; full production fixture also requires font/image/SWF asset closure"
+  },
+  {
+    "name": "source-closure",
+    "command": [
+      "python3",
+      "tools/audit-tooltip-closure.py",
+      "--report",
+      "/workspace/scratch/120bad2dafab/cfn-tooltip/tmp/issue-262/final-checks/source-closure.json"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 1.84,
+    "log": "source-closure.log"
+  },
+  {
+    "name": "asloader-current",
+    "command": [
+      "python3",
+      "tools/build-asloader-modules.py",
+      "--check"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 3.586,
+    "log": "asloader-current.log"
+  },
+  {
+    "name": "diff-whitespace",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.17,
+    "log": "diff-whitespace.log"
+  },
+  {
+    "name": "crafting-as2-anchors",
+    "command": [
+      "node",
+      "-e",
+      "console.log(JSON.stringify(require('./tools/workbench-live-e2e/crafting/as2-anchor-test').run(process.cwd())))"
+    ],
+    "environment": {},
+    "exitCode": 1,
+    "status": "BASELINE_FAILURE",
+    "elapsedSeconds": 1.826,
+    "log": "crafting-as2-anchors.log",
+    "classification": "unchanged-pre-existing-buildPlan-anchor-mismatch",
+    "baselineEvidence": "crafting-contract-baseline-comparison.json"
+  },
+  {
+    "name": "avm1-oracle",
+    "command": [
+      "node",
+      "launcher/tooltip-engine/parity.cjs"
+    ],
+    "environment": {},
+    "exitCode": 2,
+    "status": "UNAVAILABLE",
+    "elapsedSeconds": 0.068,
+    "log": "avm1-oracle.log"
+  },
+  {
+    "name": "web-geometry",
+    "command": [
+      "node",
+      "tools/test-tooltip-document-geometry.js",
+      "--out",
+      "tmp/issue-262/geometry-final",
+      "--shots",
+      "0"
+    ],
+    "environment": {
+      "CF7_TOOLTIP_BROWSER_PATH": "/usr/bin/chromium"
+    },
+    "exitCode": 2,
+    "status": "UNAVAILABLE",
+    "elapsedSeconds": 0.396,
+    "log": "web-geometry.log"
+  },
+  {
+    "name": "linux-host",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "launcher/tests/TooltipService.Host/TooltipService.Host.csproj",
+      "--no-restore",
+      "--",
+      "--test",
+      "."
+    ],
+    "status": "PASS",
+    "exitCode": 0,
+    "assertions": 34,
+    "log": "tooltip-host-tests.log"
+  },
+  {
+    "name": "windows-target-cross-compile",
+    "command": [
+      "dotnet",
+      "build",
+      "launcher/CRAZYFLASHER7MercenaryEmpire.csproj",
+      "-p:EnableWindowsTargeting=true",
+      "--no-restore",
+      "-v:minimal"
+    ],
+    "status": "PASS",
+    "exitCode": 0,
+    "warnings": 54,
+    "errors": 0,
+    "log": "tooltip-main-build-final.log",
+    "boundary": "Compile only on Linux; Windows desktop not executed"
+  },
+  {
+    "name": "node-clearscript-same-input",
+    "status": "PASS",
+    "inputs": 1801,
+    "evidence": "tooltip-runtime-parity.json",
+    "boundary": "Synthetic snapshots; same rule on two hosts, not AVM1 parity"
+  },
+  {
+    "name": "production-service-corpus",
+    "status": "PASS",
+    "inputs": 1801,
+    "evidence": "tooltip-service-corpus-validation.json"
+  },
+  {
+    "name": "character-build-session",
+    "command": [
+      "node",
+      "tools/test-character-build-session.js"
+    ],
+    "status": "PASS",
+    "exitCode": 0,
+    "elapsedSeconds": 0.173,
+    "log": "character-build-session.log"
+  },
+  {
+    "name": "kshop-presenters",
+    "command": [
+      "node",
+      "tools/test-kshop-presenters.js"
+    ],
+    "status": "PASS",
+    "exitCode": 0,
+    "elapsedSeconds": 0.136,
+    "log": "kshop-presenters.log"
+  },
+  {
+    "name": "bootstrap-document-final",
+    "command": [
+      "node",
+      "tools/test-bootstrap-tooltip-document.js"
+    ],
+    "status": "PASS",
+    "exitCode": 0,
+    "elapsedSeconds": 0.073,
+    "log": "bootstrap-document-final.log"
+  },
+  {
+    "name": "doc-governance",
+    "command": [
+      "node",
+      "tools/validate-doc-governance.js"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 1.331,
+    "log": "doc-governance.log"
+  },
+  {
+    "name": "final-diff-whitespace",
+    "command": [
+      "git",
+      "diff",
+      "db6d3d248b80b80651987c99557c4e83b56f9301",
+      "--check"
+    ],
+    "exitCode": 0,
+    "status": "PASS",
+    "elapsedSeconds": 0.501,
+    "log": "final-diff-whitespace.log"
+  }
+]

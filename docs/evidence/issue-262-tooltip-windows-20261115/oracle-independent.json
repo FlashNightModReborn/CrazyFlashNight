@@ -1,0 +1,40 @@
+{
+  "schema": "cf7.issue262.observed-independent-capture.v1",
+  "status": "PASS",
+  "runId": "f27ae8b520f6467db089c2fab0a500f2",
+  "recordedUtc": "2026-11-16T01:44:46.147675+00:00",
+  "canonicalRunnerStatus": "FAILED_TIMEOUT",
+  "canonicalRunnerOutcomeUnchanged": true,
+  "compiledSwfSha256": "7F4A918F9A1087481C4AA29E4E9C0F8568887C0B8D4008AB5D59A30E1C1C5759",
+  "checks": [
+    {
+      "name": "strict-conversion",
+      "exitCode": 0
+    },
+    {
+      "name": "strict-parity",
+      "exitCode": 0
+    }
+  ],
+  "scope": "Strict conversion and content parity of the continuous same-SWF independent AVM1 capture after the original runner timed out. This does not turn that runner into a PASS or qualify the full player UI.",
+  "records": 5723,
+  "inventoryRecords": 3898,
+  "webRecords": 1791,
+  "skillFixtures": 12,
+  "bodyFixtures": 2,
+  "configuredFixtures": 20,
+  "modDefinitions": 107,
+  "modsCovered": 107,
+  "traceSha256": "c3dd57ae0c9d6058fc729dc0470f8c2480246a34e8d192e430a6571e92bdc290",
+  "corpusSha256": "f912530b21c3a67467dbb4c96a03564e4e6d532991a602ecbf5fa64521133c5a",
+  "provenance": {
+    "kind": "avm1-capture",
+    "sourceCommit": "db6d3d248b80b80651987c99557c4e83b56f9301",
+    "capturedAt": "2026-11-16T00:26:12.874Z",
+    "inputProjectionSha256": "0dc7c899cbab0df338d1d8f3d42791b43065d657b03119b7f2718a3790e1597f",
+    "catalogContentVersion": "sha256:53f3d349dab336e4087654283ac06c38d7b368c7401648196ac4c7444c23e6b2",
+    "scope": "baseline AVM1 content paired with candidate read-only input",
+    "runId": "f27ae8b520f6467db089c2fab0a500f2",
+    "traceSha256": "c3dd57ae0c9d6058fc729dc0470f8c2480246a34e8d192e430a6571e92bdc290"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "capturedUtc": "2026-11-15T12:49:03.2202809Z",
+  "osCaption": "Microsoft Windows 11 专业版",
+  "osBuild": "26200",
+  "computerModel": "81SY",
+  "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz",
+  "physicalMemoryBytes": 34233110528,
+  "pagefiles": [
+    {
+      "Name": "C:\\pagefile.sys",
+      "AllocatedBaseSize": 49152,
+      "CurrentUsage": 90,
+      "PeakUsage": 284
+    }
+  ],
+  "sdkExecutable": "C:\\Users\\fs\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe",
+  "sdkVersion": "10.0.300",
+  "flash": {
+    "path": "C:\\Users\\fs\\Downloads\\adboeflash cs6(1)\\Adobe Flash CS6\\Flash.exe",
+    "version": "12.0.0.481",
+    "compatibilityLayer": "~ RUNASADMIN",
+    "largeAddressAwarePreviouslyVerified": true
+  },
+  "scheduledTasks": [
+    {
+      "name": "CompileTriggerTask",
+      "executable": "C:\\Users\\fs\\Downloads\\adboeflash cs6(1)\\Adobe Flash CS6\\Flash.exe",
+      "arguments": "\"C:\\Users\\fs\\AppData\\Local\\Adobe\\Flash CS6\\zh_CN\\Configuration\\Commands\\cf7_compile_loader.jsfl\"",
+      "runLevel": "Highest",
+      "executionTimeLimit": "PT30S"
+    },
+    {
+      "name": "FlashCS6Task",
+      "executable": "C:\\Users\\fs\\Downloads\\adboeflash cs6(1)\\Adobe Flash CS6\\Flash.exe",
+      "arguments": null,
+      "runLevel": "Highest",
+      "executionTimeLimit": "PT0S"
+    }
+  ],
+  "reviewedCommit": "8e2f679a763daf293035ee3fee90ab29e294dfe3",
+  "conclusion": "Existing development toolchain is complete and usable. No machine upgrade is a prerequisite. Terminal SDK selection/UTF8 and legacy compatibility settings were adjusted; 32K AS2 branch constraints require source layout treatment.",
+  "toolchainValidationLog": "work/logs/runtime-toolchain-check.log",
+  "rollbackBackups": "work/env/",
+  "scope": "Environment evidence only; not player acceptance or formal runtime deployment.",
+  "applicableLessons": {
+    "sourceReport": "docs/flash-cs6-va-exhaustion-and-host-profile-2026-11-14.md",
+    "portableExecutableVersionMatches": "12.0.0.481",
+    "flashAlreadyLargeAddressAware": true,
+    "compatibilityBefore": "~ RUNASADMIN WIN7RTM",
+    "compatibilityAfter": "~ RUNASADMIN",
+    "initialAsoFiles": 1190,
+    "initialZeroByteAso": 0,
+    "globalAsoCacheCleared": false,
+    "focusedRotationThresholdMiB": 2400,
+    "finalPublishUsesColdProcessPerModule": true,
+    "limits": "SI16 branch layout, UI16 function code size and 32-bit process address space remain separate constraints.",
+    "historicalSingleModuleTimingsReused": false,
+    "hardwareUpgradePrerequisite": false,
+    "originalSdkAlreadyInstalled": true
+  }
+}

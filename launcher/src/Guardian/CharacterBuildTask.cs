@@ -587,6 +587,30 @@ namespace CF7Launcher.Guardian
         /// Strict production response endpoint registered as task=loadout_response.
         /// Unknown/stale backend call ids are consumed only by the socket dispatcher callback.
         /// </summary>
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            PendingRequest entry;
+            lock (_gate)
+                if (!_productionPending.TryGetValue(fid, out entry)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            if (entry.IsWrite || entry.Command != "tooltip") return null;
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("loadout", "workbench", entry.PanelInstanceId,
+                entry.WebCallId, fid, entry.NormalizedPayload,
+                () => { lock (_gate) return _productionPending.TryGetValue(fid, out var current) && ReferenceEquals(current, entry); },
+                () =>
+                {
+                    if (!_pendingCalls.TryPeek(fid, out var pending) || !ReferenceEquals(pending.Context, entry)
+                        || !_pendingCalls.TryCompleteExact(fid, pending, out _)) return;
+                    lock (_gate)
+                    {
+                        _productionPending.Remove(fid);
+                        if (!IsCurrentBindingLocked(entry)) return;
+                        DecrementPendingLocked();
+                    }
+                    RespondError(entry.WebCallId, entry.Command, "stale_state", false, null, entry.PanelInstanceId, entry.WriteEpoch);
+                    NotifyCoordinatorSettledIfReady();
+                });
+        }
+
         public void HandleFlashResponse(JObject message, Action<string> respond)
         {
             int backendCallId;

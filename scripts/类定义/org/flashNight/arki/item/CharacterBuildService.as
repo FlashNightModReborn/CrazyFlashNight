@@ -1388,8 +1388,8 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (tooltip == null || tooltip.success !== true) {
             return fail("projection_failed");
         }
-        // TooltipComposer 是跨模块调用；生成期间即使发生同步回调或容器漂移，
-        // 也不能把旧实例 HTML 包进当前 revision 的成功响应。
+        // 实例投影是跨模块调用；读取期间即使发生同步回调或容器漂移，
+        // 也不能把旧实例输入包进当前 revision 的成功响应。
         var fresh:Object = synchronize(Number(params.sessionGeneration));
         if (!fresh.success) return fresh;
         if (!expectedRevisionMatches(params.expectedLoadoutRevision,
@@ -1417,7 +1417,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             itemType:String(tooltip.itemType),
             descHTML:String(tooltip.descHTML),
             introHTML:String(tooltip.introHTML),
-            document:tooltip.document
+            tooltipInput:tooltip.tooltipInput
         }};
     }
 

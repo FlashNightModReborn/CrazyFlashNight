@@ -4,8 +4,6 @@ import org.flashNight.arki.item.equipment.EquipmentConfigManager;
 import org.flashNight.arki.item.equipment.ModRegistry;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.xml.XMLParser;
-import org.flashNight.gesh.tooltip.builder.WeaponAmmoInfoBuilder;
-import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
 
 /** 真实 XML→生产解析器→配件运算器→弹药资格；不向真实库存或存档写入。 */
 class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest {
@@ -79,12 +77,11 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest {
         same(7,data.capacity,"inner does not inflate ordinary capacity");
         same(2,data.overload.ghostLimit,"real registry deep-merges ghost limit");
         same(2,WeaponAmmoRuntime.ghostLimit(actor(data),"长枪"),"effective eligible quota is merged two");
-        var annotation:String=WeaponAmmoInfoBuilder.capacitySuffix(data);
-        check(annotation.indexOf("#FFCC70'>+2")>=0 && annotation.indexOf("#9BE0E9'>+1")>=0,"real parsed TTI and inner data reach source-specific annotations");
-        var lines:Array=[];
-        UseSwitchStatsBuilder.buildStatBlock(lines,ModRegistry.getModDict()[inner].stats,"");
-        annotation=lines.join("");
-        check(annotation.indexOf("幽灵装填上限 → 2发")>=0 && annotation.indexOf("[object Object]")==-1,"real parsed inner merge receives human-readable annotation");
+        // Rendering expectations moved to TS; verify the actual domain projection remains pure.
+        check(items["TTI Benelli M4"].data.overload.ghostLimit==undefined,
+            "calculated ghost limit does not mutate the raw item definition");
+        check(ModRegistry.getModDict()[inner].stats.merge.overload.ghostLimit===2,
+            "real parsed registry retains numeric ghost-limit merge input");
         data=calc("TTI Benelli M4",[inner,choke],1,null);
         same(3,data.diffusion,"choke remains an independent spread tradeoff");
         same(46,data.velocity,"choke speed retained");
@@ -109,8 +106,8 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest {
         same(1,WeaponAmmoRuntime.chamberLimit(u,"长枪"),"GM6 chamber enabled");
         same(5,WeaponAmmoRuntime.rewardLimit(u,"长枪"),"GM6 reward cap uses normal capacity only");
         same(0,WeaponAmmoRuntime.ghostLimit(u,"长枪"),"GM6 inner does not invent carrier eligibility");
-        annotation=WeaponAmmoInfoBuilder.capacitySuffix(data);
-        check(annotation.indexOf("#CAADFF'>+5")>=0 && annotation.indexOf("#FFCC70")==-1,"real GM6 annotation separates reward from unsupported ghost");
+        check(data.overload.reward===1 && data.overload.ghost===0 && data.overload.ghostLimit===2,
+            "calculated reward and unsupported ghost retain separate authoritative fields");
         data=calc("XM1014",[inner],1,"狱火");
         same(1,data.overload.chamber,"tier inherits chamber metadata");
         same(2,data.overload.ghostLimit,"tier and inner keep merged quota");
@@ -125,7 +122,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest {
             check(typeof item.data.overload.chamber=="number" && typeof item.data.overload.ghost=="number","XML parser preserves numeric quota types "+key);
             if(item.data.overload.ghost>0)ghosts++;
         }
-        same(44,shotguns,"all shotgun records covered");
+        same(49,shotguns,"all shotgun records covered");
         same(9,ghosts,"ghost whitelist not inferred from tube or semi-auto");
     }
 

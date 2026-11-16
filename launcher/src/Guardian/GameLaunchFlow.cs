@@ -1883,7 +1883,7 @@ namespace CF7Launcher.Guardian
             foreach (JToken token in rows)
             {
                 JObject row = token as JObject;
-                if (!HasExactCharacterCreateKeys(
+                if (!CF7Launcher.Tasks.TooltipDocumentSanitizer.HasExactKeysAllowingOptionalDocument(
                         row,
                         "identifier",
                         "name",
@@ -1898,6 +1898,12 @@ namespace CF7Launcher.Guardian
                     || !IsCharacterCreateRichText(row["introHTML"])
                     || !IsCharacterCreateRichText(row["descHTML"]))
                     return false;
+                if (row["document"] != null)
+                {
+                    if (!CF7Launcher.Tasks.TooltipDocumentSanitizer.TrySanitize(row["document"], out var document))
+                        return false;
+                    row["document"] = document;
+                }
             }
             return true;
         }

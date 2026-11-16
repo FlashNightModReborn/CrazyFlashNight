@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CF7Launcher.Tooltips;
 
 namespace CF7Launcher.Bus
 {
@@ -31,6 +32,10 @@ namespace CF7Launcher.Bus
         private readonly Dictionary<string, GenerationTaskHandler> _generationHandlers = new();
 
         public event Action<string> OnConsoleResult;
+
+        // Optional production tooltip response boundary. Only its closed response-domain allowlist
+        // is eligible; frame/GameInput fast paths and ordinary task routing remain synchronous.
+        internal TooltipResponseEnricher TooltipResponses { get; set; }
 
         public MessageRouter()
         {
@@ -85,6 +90,18 @@ namespace CF7Launcher.Bus
                 return null; // 不回复
             }
 
+            if (TooltipResponses != null && TooltipResponses.TryEnrich(msg, connectionGeneration, enriched =>
+            {
+                string result = DispatchMessage(enriched, connectionGeneration, asyncRespond);
+                if (result != null) asyncRespond?.Invoke(result);
+            })) return null;
+
+            return DispatchMessage(msg, connectionGeneration, asyncRespond);
+        }
+
+        private string DispatchMessage(JObject msg, int connectionGeneration, Action<string> asyncRespond)
+        {
+            string taskType = msg.Value<string>("task");
             JToken callIdToken = msg["callId"];
 
             if (_generationHandlers.TryGetValue(taskType, out var generationHandler))

@@ -1,0 +1,51 @@
+$ npm test --prefix launcher/tooltip-engine
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test
+> node --test tests/engine.test.cjs tests/source-regressions.test.cjs
+
+✔ document port runs the existing source-defined historical JS assertions (not fresh AVM1 evidence) (6.629182ms)
+✔ AVM1 numeric conversion and non-strict comparison semantics are explicit (0.223177ms)
+✔ source-defined formatter assertions keep null, zero and float-tail distinctions (0.459833ms)
+✔ effective instance values, title and icon remain separate from base catalog (4.226119ms)
+✔ Inventory explicit display identity preserves the prior no-dedupe edge (0.714757ms)
+✔ native rails and magazine replace only their repeated introductory lines (1.231917ms)
+✔ blade count is the AS2 projection; no asset-name inference or Flash emulation (0.775239ms)
+✔ installed mod summaries consume exactly the matched branch projection (1.019577ms)
+✔ rejected standalone and installed mod definitions cannot be re-enabled by catalog data (1.795737ms)
+✔ current grayGooEtch content meets the pre-existing AS2 source assertions (1.77776ms)
+✔ gray-goo primer branch summaries preserve profile-specific stacking rules (0.328315ms)
+✔ drug effects are projected normalized records, with consumer-specific buff splitting (1.006948ms)
+✔ source discovery records and enemy display names are authoritative per input (0.699163ms)
+✔ upgrade paths use projected available tiers and structured recipe rows (1.087519ms)
+✔ electric lighting bonus reads the provided tag result, not a second tag engine (1.103603ms)
+✔ non-finite and undefined transport markers preserve a controlled distinction from null (2.440598ms)
+✔ array holes in effect projections produce no text and do not crash (0.310077ms)
+✔ plain text details keep intro-before-description, entity decoding, whitespace and length cap (1.323695ms)
+✔ ChoiceReward details keep original inline order and do not duplicate Web crit/buff subpanels (0.992075ms)
+✔ HUD descriptions retain resource state and exact vitals unavailable wording (0.559694ms)
+✔ reverse insertion enumeration preserves display order and filters internal attributes (0.18569ms)
+✔ structured subpanels preserve rows, depth, icon, runs and fallback runs (0.173802ms)
+✔ pure entry never mutates frozen inputs/catalogs and shared references are allowed (0.808969ms)
+✔ invalid inputs fail predictably and cannot poison subsequent resident-engine requests (2.398805ms)
+✔ 256 KiB transport cap and recursion bound hold before content evaluation (0.310508ms)
+✔ NUL code points obey the documented AVM1 string behavior (0.105218ms)
+✔ production catalog baseline smoke covers every item without claiming instance/oracle parity (327.608704ms)
+✔ non-equipment data follows the legacy stats selector, including explicit-null transport (0.445521ms)
+✔ EquipmentIntervalCurveTest: standalone curve text and legacy compression (2.307338ms)
+✔ WeaponAmmoDataTest: chamber, ghost and reward keep separate annotations (0.305831ms)
+✔ EquipmentEmissiveAssetTest: flashlight, laser and all authored emissions (1.224415ms)
+✔ SheriffArsenalTest: built-in flashlight describes the asserted 20-point bonus (0.160462ms)
+✔ LongGunSubWeaponCoreTest: normalized subweapon text keeps ammo, damage and cost (0.286582ms)
+✔ ArenaDropRuleCatalogTest: carrier scope determines concise acquisition wording (0.784553ms)
+✔ CraftingPanelServiceTest: grouped discovery sources preserve legacy display names (2.321879ms)
+✔ Web preview retains inline crit for current consumable grenades (3.23118ms)
+✔ catalog item clone order preserves the current golden-snake blade skill list (0.39151ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 555.396105

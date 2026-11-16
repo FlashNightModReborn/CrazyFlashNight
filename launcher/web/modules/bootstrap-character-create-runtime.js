@@ -157,6 +157,7 @@
                 itemType:itemType,
                 introHTML:introHTML,
                 descHTML:descHTML,
+                document:object(row.document),
                 sourceIndex:i
             });
         }

@@ -153,10 +153,19 @@
         return candidateValidationError(payload, target, scope) === '';
     }
     function validTooltip(payload, target) {
-        if (!ownKeys(payload, [
-                'v', 'target', 'itemName', 'displayName', 'iconName', 'itemType',
-                'descHTML', 'introHTML'
-            ]) || payload.v !== 1 || !sameTarget(payload.target, target)) return false;
+        var expected = [
+            'v', 'target', 'itemName', 'displayName', 'iconName', 'itemType',
+            'descHTML', 'introHTML'
+        ];
+        // 与 candidate-tooltip 一致：Host 净化后的 document 是可选增量字段；
+        // 内部内容交给共享 renderer 归一化，失败时仍可使用 intro/desc。
+        var hasDocument = !!payload
+            && Object.prototype.hasOwnProperty.call(payload, 'document');
+        if (!ownKeys(payload, hasDocument ? expected.concat('document') : expected)
+                || payload.v !== 1 || !sameTarget(payload.target, target)
+                || (hasDocument && (payload.document === null
+                    || typeof payload.document !== 'object'
+                    || Array.isArray(payload.document)))) return false;
         var expectedTargetKeys = target && target.kind === 'equipment'
             ? ['kind', 'slotKey'] : ['kind', 'drugSlot'];
         return ownKeys(payload.target, expectedTargetKeys)

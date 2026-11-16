@@ -90,7 +90,7 @@ namespace CF7Launcher.Guardian
     /// native open, Web binding, AS2 terminal state, and visual detach are deliberately distinct.
     /// This coordinator never invents a chest/container terminal state.
     /// </summary>
-    public sealed class LootPanelCoordinator : IDisposable
+    public sealed partial class LootPanelCoordinator : IDisposable
     {
         public const int ProtocolVersion = 1;
         public const string PanelName = "loot";
@@ -98,7 +98,6 @@ namespace CF7Launcher.Guardian
         public const string StageSettlementSource = "stage_settlement";
         public const string RewardInboxSource = "reward_inbox";
         public const string RequiredSource = MapChestSource;
-        public const int MaximumOpaqueLength = 128;
         public const int DefaultBindWatchdogMs = 2500;
         public const int DefaultCloseRetryDelayMs = 250;
         public const int DefaultCloseRetryMaximumMs = 1000;
@@ -2446,18 +2445,7 @@ namespace CF7Launcher.Guardian
             return true;
         }
 
-        public static bool IsOpaque(string value)
-        {
-            if (string.IsNullOrEmpty(value) || value.Length > MaximumOpaqueLength) return false;
-            for (int i = 0; i < value.Length; i++)
-            {
-                char c = value[i];
-                bool allowed = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
-                    || (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '~' || c == '-';
-                if (!allowed) return false;
-            }
-            return true;
-        }
+
 
         private static bool TryReadOpaque(JToken token, out string value)
         {

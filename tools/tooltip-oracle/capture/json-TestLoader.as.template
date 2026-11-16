@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId tooltip-capture-json Start: __FOCUSED_RUN_ID__");
+org.flashNight.gesh.tooltip.test.TooltipCaptureJson.runAllTests();
+trace("FocusedTestRunId tooltip-capture-json Complete: __FOCUSED_RUN_ID__");

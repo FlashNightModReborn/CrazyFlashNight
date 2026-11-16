@@ -1,0 +1,98 @@
+{
+  "schema": "cf7.tooltip-content-benchmark.v1",
+  "evidence": "supplied-inputs; no AVM1 equivalence inferred",
+  "runtime": {
+    "node": "v24.22.1",
+    "v8": "13.6.233.17-node.58",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "catalog": {
+    "contentVersion": "sha256:53f3d349dab336e4087654283ac06c38d7b368c7401648196ac4c7444c23e6b2",
+    "sha256": "7d83d0a97f59cea7a8b50e0f0ea1f042abb2fcc47e1f0c528234b2014aee72e8",
+    "bytes": 1396854
+  },
+  "bundle": {
+    "sha256": "91950c7ad695951f310b1489e8e00c2b075e21c7d128a1872ad378d37e25b4d0",
+    "bytes": 304982
+  },
+  "input": {
+    "file": "/workspace/scratch/120bad2dafab/tooltip-content-inputs.jsonl",
+    "sha256": "d717ba47be4ee18fed958e5d08c34583658dc83a3e03a578478b3bec3e08f3aa",
+    "count": 1801
+  },
+  "initializationMs": {
+    "vmAndBundle": 5.768251,
+    "catalogParseValidateFreeze": 31.957591,
+    "total": 37.725842
+  },
+  "firstCallMs": 2.543884,
+  "warmupCount": 1000,
+  "rounds": 3,
+  "perCallMs": {
+    "count": 5403,
+    "mean": 0.175071,
+    "p50": 0.164928,
+    "p95": 0.33278,
+    "p99": 0.519691,
+    "max": 4.325022
+  },
+  "batchMs": {
+    "25": {
+      "count": 20,
+      "mean": 2.637339,
+      "p50": 1.515178,
+      "p95": 6.774443,
+      "p99": 6.928525,
+      "max": 6.928525
+    },
+    "100": {
+      "count": 20,
+      "mean": 15.04403,
+      "p50": 15.723547,
+      "p95": 23.589561,
+      "p99": 23.704154,
+      "max": 23.704154
+    }
+  },
+  "measuredMs": 947.726829,
+  "cpuMs": {
+    "user": 1117.158,
+    "system": 13.813
+  },
+  "memoryBytes": {
+    "gcRequested": true,
+    "before": {
+      "heapUsed": 8866368,
+      "heapTotal": 18567168,
+      "rss": 45023232,
+      "external": 5654127
+    },
+    "initialized": {
+      "heapUsed": 14681184,
+      "heapTotal": 32067584,
+      "rss": 67555328,
+      "external": 5654131
+    },
+    "after": {
+      "heapUsed": 14621376,
+      "heapTotal": 34635776,
+      "rss": 86880256,
+      "external": 5654147
+    },
+    "catalogAndBundleDelta": {
+      "heapUsed": 5814816,
+      "heapTotal": 13500416,
+      "rss": 22532096,
+      "external": 4
+    },
+    "totalDelta": {
+      "heapUsed": 5755008,
+      "heapTotal": 16068608,
+      "rss": 41857024,
+      "external": 20
+    }
+  },
+  "outputChars": 10674953,
+  "limits": "Node process measurements; includes JSON input parsing, document/HTML composition and JSON output. Does not include host scheduling, cache, IPC or Flash projection. Memory deltas include V8/JIT overhead and are not retained-object accounting."
+}

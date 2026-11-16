@@ -8,9 +8,6 @@ function runOriginalGraySuites():Void {
 org.flashNight.arki.bullet.BulletComponent.Queue.ToughnessVulnerabilityPipelineTest.runAllTests();
 org.flashNight.arki.component.Buff.Effect.GrayGooShotgunEtchTest.runAllTests();
 org.flashNight.arki.item.equipment.EquipmentTestSuite.runAllTests();
-org.flashNight.gesh.tooltip.test.TestDataBootstrap.runIsolated(function():Void {
-    org.flashNight.gesh.tooltip.test.BuilderContractTest.runAllTests();
-});
 }
 _root.grayGooAssetComplete=function():Void {
     trace("FocusedTestRunId gray-goo-tests Complete: __FOCUSED_RUN_ID__");

@@ -478,6 +478,28 @@ namespace CF7Launcher.Tasks
             DispatchToFlash(entry);
         }
 
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            PendingRequest entry;
+            lock (_lock)
+                if (!_pending.TryGetValue(fid, out entry)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            if (entry.IsWrite || entry.WebCmd != "tooltip") return null;
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("equipment_tuning", "workbench", entry.PanelInstanceId + ":" + entry.ViewSessionId,
+                entry.WebCallId, fid, entry.NormalizedPayload,
+                () => { lock (_lock) return _pending.TryGetValue(fid, out var current) && ReferenceEquals(current, entry); },
+                () =>
+                {
+                    lock (_lock)
+                    {
+                        if (!_pending.TryGetValue(fid, out var current) || !ReferenceEquals(current, entry)) return;
+                        CompletePendingLocked(entry);
+                    }
+                    RespondError(entry.WebCallId, entry.WebCmd, "stale_state", false,
+                        entry.PanelInstanceId, entry.ViewSessionId, entry.WriteEpoch);
+                    NotifyCoordinatorSettledIfReady();
+                });
+        }
+
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             int fid;
@@ -1484,6 +1506,7 @@ namespace CF7Launcher.Tasks
                 else if (cmd == "tooltip")
                 {
                     keys.Add("candidateKey"); keys.Add("introHTML"); keys.Add("descHTML");
+                    keys.Add(TooltipDocumentSanitizer.DocumentKey);
                     keys.Add("itemType"); keys.Add("itemUse"); keys.Add("text");
                     keys.Add("statsBefore"); keys.Add("statsAfter");
                 }
@@ -2836,6 +2859,8 @@ namespace CF7Launcher.Tasks
         {
             var result = (JObject)msg.DeepClone();
             if (sanitizedSnapshot != null) result["snapshot"] = sanitizedSnapshot.DeepClone();
+            if (ReadString(result["command"]) == "tooltip")
+                TooltipDocumentSanitizer.ApplyTo(result[TooltipDocumentSanitizer.DocumentKey], result);
             result.Remove("task");
             result.Remove("command");
             result.Remove("callId");

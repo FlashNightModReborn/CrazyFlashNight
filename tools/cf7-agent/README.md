@@ -681,6 +681,15 @@ node tools/cf7-agent/register-codex-mcp.js
 
 Run live E2E verification (never modifies player saves):
 
+On Windows, the direct Core harness inherits its caller's .NET environment. If the pinned SDK/runtime is installed under the user profile, prepare that same process before starting the adapter. A long-lived Node host can retain an older environment even after the terminal profile has been corrected; its apphost dialog does not prove the machine lacks the runtime. Resolve the existing installation and set only the test process environment; do not replace machine-wide settings:
+
+```powershell
+. ./launcher/resolve-dotnet.ps1
+$cf7HarnessDotnet = Resolve-Cf7Dotnet -ProjectRoot (Get-Location).Path
+$env:DOTNET_ROOT = Split-Path -Parent $cf7HarnessDotnet
+$env:DOTNET_ROOT_X64 = $env:DOTNET_ROOT
+```
+
 ```powershell
 node tools/cf7-agent/live-e2e-journey.js --mode isolated_candidate
 node tools/cf7-agent/live-e2e-journey.js --mode formal_runtime

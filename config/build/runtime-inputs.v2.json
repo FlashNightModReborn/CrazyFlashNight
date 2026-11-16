@@ -267,6 +267,19 @@
         "tools/new-runtime-build-request.ps1",
         "tools/new-runtime-github-build-envelope.ps1",
         "tools/prepare-launcher-release-assets.ps1",
+        "tools/build-tooltip-catalog.py",
+        "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+        "scripts/类定义/org/flashNight/arki/item/equipment/ModRegistry.as",
+        "scripts/类定义/org/flashNight/gesh/object/ObjectUtil.as",
+        "scripts/类定义/org/flashNight/gesh/string/StringUtils.as",
+        "scripts/类定义/org/flashNight/gesh/xml/XMLParser.as",
+        "tools/test-tooltip-catalog.py",
+        "tools/audit-tooltip-closure.py",
+        "tools/test-tooltip-input-projection.js",
+        "tools/test-bootstrap-tooltip-document.js",
+        "data/equipment/equipment_config.xml",
+        "data/skills/skills.xml",
+        "scripts/类定义/org/flashNight/arki/component/Damage/MagicDamageTypes.as",
         "tools/run-native-dialogue-webview2-smoke.ps1",
         "tools/promote-runtime-bundle.ps1",
         "tools/resolve-runtime-trusted-base.ps1",
@@ -642,6 +655,36 @@
           "includeExtensions": [".cs", ".csproj"],
           "excludePaths": [],
           "excludePrefixes": ["tools/input-hook-diagnostic/bin/", "tools/input-hook-diagnostic/obj/"]
+        },
+        {
+          "path": "launcher/tooltip-engine",
+          "includeExtensions": [".ts", ".cjs", ".json"],
+          "excludePaths": [],
+          "excludePrefixes": []
+        },
+        {
+          "path": "data/tooltip",
+          "includeExtensions": [".json"],
+          "excludePaths": [],
+          "excludePrefixes": []
+        },
+        {
+          "path": "data/items",
+          "includeExtensions": [".xml"],
+          "excludePaths": [],
+          "excludePrefixes": []
+        },
+        {
+          "path": "data/crafting",
+          "includeExtensions": [".xml", ".json"],
+          "excludePaths": [],
+          "excludePrefixes": []
+        },
+        {
+          "path": "data/enemy_properties",
+          "includeExtensions": [".xml"],
+          "excludePaths": [],
+          "excludePrefixes": []
         },
         {
           "path": "launcher/scripts",

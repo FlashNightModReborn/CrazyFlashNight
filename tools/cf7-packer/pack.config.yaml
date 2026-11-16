@@ -31,6 +31,13 @@ output:
       # FontPackTask（manifest.sourceSha256）直接校验；压缩后会失配，
       # 字体目录与字体包双双降级。保留仓库原始字节。
       - "fonts/**"
+      # TooltipV8Engine 校验 catalog 与所有 data 来源的原始 SHA-256；致密化会使合法发行包失配。
+      - "data/tooltip/**"
+      - "data/items/**"
+      - "data/crafting/**"
+      - "data/enemy_properties/**"
+      - "data/equipment/equipment_config.xml"
+      - "data/skills/skills.xml"
 
 layers:
   - name: data
@@ -313,7 +320,7 @@ layers:
     exclude: []
 
   - name: launcher-scripts
-    description: "V8 运行时 JS bundle（伤害数字渲染 + 搓招 DFA）"
+    description: "V8 运行时 JS bundle（GameInput 搓招 DFA + 独立 Tooltip Logic）"
     source: "launcher/scripts/dist/"
     include: [ "**/*" ]
     exclude: []

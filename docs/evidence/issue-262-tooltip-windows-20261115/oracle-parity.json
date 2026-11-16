@@ -1,0 +1,21 @@
+{
+  "status": "fresh-avm1-match",
+  "compared": 5723,
+  "failures": [],
+  "failureCount": 0,
+  "provenance": {
+    "kind": "avm1-capture",
+    "sourceCommit": "db6d3d248b80b80651987c99557c4e83b56f9301",
+    "capturedAt": "2026-11-16T00:26:12.874Z",
+    "inputProjectionSha256": "0dc7c899cbab0df338d1d8f3d42791b43065d657b03119b7f2718a3790e1597f",
+    "catalogContentVersion": "sha256:53f3d349dab336e4087654283ac06c38d7b368c7401648196ac4c7444c23e6b2",
+    "scope": "baseline AVM1 content paired with candidate read-only input",
+    "runId": "f27ae8b520f6467db089c2fab0a500f2",
+    "traceSha256": "c3dd57ae0c9d6058fc729dc0470f8c2480246a34e8d192e430a6571e92bdc290"
+  },
+  "requestedCurrent": "db6d3d248b80b80651987c99557c4e83b56f9301",
+  "corpusSha256": "f912530b21c3a67467dbb4c96a03564e4e6d532991a602ecbf5fa64521133c5a",
+  "catalogContentVersion": "sha256:53f3d349dab336e4087654283ac06c38d7b368c7401648196ac4c7444c23e6b2",
+  "detailsComparison": "Web capture plaintext uses legacy Web HTML; inventory/details consumers use full-inline reward details.",
+  "limitation": "Result is limited to the supplied independent capture records."
+}

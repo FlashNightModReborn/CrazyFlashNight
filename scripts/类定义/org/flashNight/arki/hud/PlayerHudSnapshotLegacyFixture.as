@@ -12,7 +12,6 @@ import org.flashNight.arki.render.FrameBroadcaster;
 import org.flashNight.arki.scene.StageReturnFlow;
 import org.flashNight.arki.interaction.NativeInteractionContext;
 import org.flashNight.gesh.tooltip.NativeTooltipBridge;
-import org.flashNight.gesh.tooltip.NativeTooltipDocument;
 import org.flashNight.arki.hud.PlayerHudShieldProjectionLegacyFixture;
 /** Frozen 0c36a08a read paths, with independent mutable compatibility state. */
 class org.flashNight.arki.hud.PlayerHudSnapshotLegacyFixture {

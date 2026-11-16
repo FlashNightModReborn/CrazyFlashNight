@@ -1,0 +1,14 @@
+{
+  "schema": "cf7.issue262.standalone-host-benchmark-context.v1",
+  "startedUtc": "2026-11-16T00:24:31.991863+00:00",
+  "finishedUtc": "2026-11-16T00:24:36.960780+00:00",
+  "exitCode": 0,
+  "bundleBytes": 307048,
+  "bundleSha256": "c70bc251824a7baae8a8b31b6441ba761eb90386fadb4781f5368b8a66b20885",
+  "inputsSha256": "d717ba47be4ee18fed958e5d08c34583658dc83a3e03a578478b3bec3e08f3aa",
+  "syntheticInputs": 1801,
+  "actualLauncherIncrementMeasured": false,
+  "gameInputMeasured": false,
+  "concurrentWork": "Fresh baseline CS6 compilation/capture was running on this machine.",
+  "scope": "Standalone current Windows ClearScript process only; no Launcher incremental memory, game frames or causal performance claim."
+}

@@ -1,0 +1,334 @@
+{
+  "version": 1,
+  "sourceCommit": "db6d3d248b80b80651987c99557c4e83b56f9301",
+  "purpose": "offline AS2 oracle only; excluded from production classpaths",
+  "files": {
+    "scripts/类定义/org/flashNight/gesh/tooltip/ItemUseTypes.as": {
+      "sha256": "e680f2b8304940e59030a945e325dea676bec1e605941297804e7fc44b92f33d",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/ItemUseTypes.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/NativeTooltipBridge.as": {
+      "sha256": "77981b7283c35f14a514f3df71288e5bc525517fa5b75f3041b514e6154d03d0",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/NativeTooltipBridge.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/NativeTooltipDocument.as": {
+      "sha256": "21d020ccb22039672a14d0e2af0a6446fd1c3f977d08af3bebebbfb14a892b61",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/NativeTooltipDocument.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/SkillTooltipComposer.as": {
+      "sha256": "307f36ad0eaa5d1807fb3e65d469f9eed6d8bec598f68d46da3762c87720308d",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/SkillTooltipComposer.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/TooltipBridge.as": {
+      "sha256": "2c75e7e1b16a2887aa0b25af378c981cb43d091adc95e6aebca4d88f9157a72e",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/TooltipBridge.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/TooltipComposer.as": {
+      "sha256": "6cc5dd258846fc95b73e691aa6534b2f067dcd18944aab0b1eea2a97461130d5",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/TooltipComposer.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/TooltipConstants.as": {
+      "sha256": "8b457002ec3cd903fd662f489c017f58550cd530acdc569148dc915245672e40",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/TooltipConstants.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/TooltipDataSelector.as": {
+      "sha256": "f8891876d80c3505e209bdefab82157b376e3003d55594f6f0db3b2de29c64a5",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/TooltipDataSelector.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/TooltipFormatter.as": {
+      "sha256": "729e6ff2e783f11feb7d59139a74aeb1036da4436b0d19e37d717044fcf67f75",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/TooltipFormatter.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/TooltipLayout.as": {
+      "sha256": "b454bf1da214d37249dcbea1c5505ac5683680945868859b140fc516c4f08a89",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/TooltipLayout.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/TooltipTextBuilder.as": {
+      "sha256": "034f5eb35810bf88f2dc9b7f8b7a6f322497b6424eaede269facc296b78ece86",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/TooltipTextBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/ArmorStatsBuilder.as": {
+      "sha256": "c56619da556f0013966cc0977132834ca3bf686ec132eea97ed745e41da94d3f",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/ArmorStatsBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/CommonStatsBuilder.as": {
+      "sha256": "7ecfed3662b1f9c8e8f4706396f32f08b6179c35ed2e29978fe1ac4d37377bd2",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/CommonStatsBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/CriticalBlockBuilder.as": {
+      "sha256": "8cdd598accd659b53806f6ad2dc4109742b78f73799bcd36b220a17f19baea1d",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/CriticalBlockBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/DamageTypeBuilder.as": {
+      "sha256": "87aab6de432ebc3ad025cecbbcbf9352b0c03bcbb3843ce07805aa4a497f1185",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/DamageTypeBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/EquipmentLightingInfoBuilder.as": {
+      "sha256": "4fa52a719fb3d57d2bf9b455ff64aa6daf1aee628b3c6182029a675d672a2c6a",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/EquipmentLightingInfoBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/EquipmentStatsComposer.as": {
+      "sha256": "a5689175f5f6311bcc64f6e42bb7485ed970a2eda8d295bec86e6114e89869b4",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/EquipmentStatsComposer.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/GrenadeStatsBuilder.as": {
+      "sha256": "c6069cf9b03fd4cbf3af22c9375ebd67ec60b7da1659208deeb1c48edfa2a5b2",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/GrenadeStatsBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/GunStatsBuilder.as": {
+      "sha256": "243ce25940dfa5b39a2222c71d773794736087cdddbdba75922abe3c1930a9fd",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/GunStatsBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/MeleeStatsBuilder.as": {
+      "sha256": "30eead2b1e49f489429640d9a0dfce6a6aeb7f73da2de4e1c0ffcf1f7b91ddab",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/MeleeStatsBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/ModStatBuilder.as": {
+      "sha256": "627cd9592ecc7011e0910b60aa274f20000fd1c8f4e327d3b2919d194b7087cc",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/ModStatBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/ModsBlockBuilder.as": {
+      "sha256": "daf81a69138413e1e8147dc5e2691af5fa32cb3293fe3328712d0542d8b14ce4",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/ModsBlockBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/ObtainMethodsBuilder.as": {
+      "sha256": "36c8c2703a8fb68ad295cf28deb7e1d2e59de4b5f169e099651c667d32e407fa",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/ObtainMethodsBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/ResistanceBlockBuilder.as": {
+      "sha256": "418420c0f3a8cbe3d6affe2f39ef805eb881c9a752b0457777da51bbed0a34c2",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/ResistanceBlockBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/SilenceEffectBuilder.as": {
+      "sha256": "072b8a41190c33d440fc239ed08b7aa8e98d833bc8787a7e5539523eb75b91ba",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/SilenceEffectBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/SlayEffectBuilder.as": {
+      "sha256": "5d32ea2688550708c70d73e65b9b7140fc321203876f3e9453bf8c7bffd5b843",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/SlayEffectBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/TagSwitchStatsBuilder.as": {
+      "sha256": "8027ab27b46f9fa00ac9015f4bc46bde72486cadffb5beb16048de42112c6461",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/TagSwitchStatsBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/UpgradePathBuilder.as": {
+      "sha256": "385ba41fd6316ad34d656e27db812339720355c32f0e142123d483f64610c219",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/UpgradePathBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/UseSwitchStatsBuilder.as": {
+      "sha256": "b630abc3c845833b1e8ceb5cd19dd8c9560a44eeea1acfa56f400c705e4f7e77",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/UseSwitchStatsBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/WeaponAmmoInfoBuilder.as": {
+      "sha256": "63691a67e4a7756482e56a87df61993375886d62f8c9cbd16bde3e95367d157c",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/WeaponAmmoInfoBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/DrugTooltipComposer.as": {
+      "sha256": "7c919eb4c1f6c1e3025c5bc121ff50291d9d7bc3fd67e54fd7b1361ab0e33175",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/DrugTooltipComposer.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/DrugTooltipRegistry.as": {
+      "sha256": "dd3ea4fa84b74ac4f8f7a4f4186d9d40cfdc1dd8e94f485d9afa080b844ee469",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/DrugTooltipRegistry.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/DrugTooltipUtil.as": {
+      "sha256": "1a0f6a1497b94a3a45379531036075edd488843e9795824447a38502206055db",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/DrugTooltipUtil.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/IDrugTooltipBuilder.as": {
+      "sha256": "13a98c17f87c9a7ac1009dd648ff30d629ca6ab6d27a45b8e1481c88ad919b4e",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/IDrugTooltipBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/builders/BuffTooltipBuilder.as": {
+      "sha256": "988d8e679c5baa0e6db552e19a525b3f471aa56a2212e09d4c36913470d12d6a",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/builders/BuffTooltipBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/builders/GrantItemTooltipBuilder.as": {
+      "sha256": "d2a2b328946d3c845c4e171b3bd3e8bd154895854e8013ccf82f0102421268fc",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/builders/GrantItemTooltipBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/builders/HealTooltipBuilder.as": {
+      "sha256": "7415f15116b5bba0df511ad5d22bdddbbab7e770d6938fd6cb583896819f0b83",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/builders/HealTooltipBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/builders/PurifyTooltipBuilder.as": {
+      "sha256": "0aa749238f81ac46eed009294dc4cd5de89e86aab8f8e19d05e4477bbe356374",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/builders/PurifyTooltipBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/builders/RegenTooltipBuilder.as": {
+      "sha256": "2c62dc0be7217458e384789f87254206a52144ce91988f976aa031a647d742ef",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/builders/RegenTooltipBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/builders/ResistanceBuffTooltipBuilder.as": {
+      "sha256": "d841a7e4aaff86c082a09b283a37b9de45d9c225253fb194dd5caa9bf28a21fa",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/builders/ResistanceBuffTooltipBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/builders/StateTooltipBuilder.as": {
+      "sha256": "374d100fef06fd32908a9a05e1ae4a3e02090bd74847e106f6e858321e3318d0",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/builders/StateTooltipBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/builders/ToughnessBuffTooltipBuilder.as": {
+      "sha256": "49b8a85f7f6bb85427e7e09b2bb4b9086d7fa60f0a80fcf16a0871ba53f621b6",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/builders/ToughnessBuffTooltipBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/builder/drug/builders/ToughnessRestoreTooltipBuilder.as": {
+      "sha256": "e9997c8aad55a787baea9a85cbd0edf74db4ff894ff82279d5af435a4eca8c18",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/builder/drug/builders/ToughnessRestoreTooltipBuilder.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/BuilderContractTest.as": {
+      "sha256": "10c384312cd4e3688cc65584b84ed22dd8df03ee2e1557551aaf8590bcc04da1",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/BuilderContractTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/EquipmentLightingTooltipTest.as": {
+      "sha256": "11cf012340b950ff20e1209e1237b3c6024d5b8c2f1989a0f22de9fecfeffc39",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/EquipmentLightingTooltipTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/ItemUseTypesTest.as": {
+      "sha256": "44aee80e793e26433b65e723eaf556c00ff6cb8864205a97455541782dc8d482",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/ItemUseTypesTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/MockItemFactory.as": {
+      "sha256": "161c2bcd3b7e600ea4d779b16488e03661cbdfd4737f0985ccd2c9c8a14822f0",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/MockItemFactory.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/MockTooltipContainer.as": {
+      "sha256": "0eac0c29849c1f6ccac6adad368e3163bd00503a223911ac6c349c31af068c59",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/MockTooltipContainer.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/NativeTooltipBridgeTest.as": {
+      "sha256": "8d051c5d1876d4ce2121d7ea2904f787dde9cb4e0ddd7a8c1c269b3e224b0c8b",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/NativeTooltipBridgeTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/NativeTooltipDocumentTest.as": {
+      "sha256": "61685b676e485ab16c05dcbdae2f3541285a30e268a1daf693e470b17d33315c",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/NativeTooltipDocumentTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/SkillTooltipComposerTest.as": {
+      "sha256": "4a93d6c37b3bbe8d881ea6f0153401d2d263fbe11a534f8d1cf581e597aa0b53",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/SkillTooltipComposerTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/SynthesisIndexTest.as": {
+      "sha256": "a047fce488f89195c091c60c0c3e752dbd07df0b91934666ed59b6ffb5cd2271",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/SynthesisIndexTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TEST_LOG.md": {
+      "sha256": "c60790433fbbd3355465ba3345c109006221aa8123ac5132ef722e7ceb4a3959",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TEST_LOG.md"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TestDataBootstrap.as": {
+      "sha256": "66a5199e266c655d2e609773793548a2b51a620acb1b4cb6b7548c784e71e935",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TestDataBootstrap.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipBridgeTest.as": {
+      "sha256": "49aa9fa1164aa5177a59a46edaf2c7e824961b9db5354516fb39565651955936",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipBridgeTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipConstantsTest.as": {
+      "sha256": "0f87cd506557f6b335c7f83ce2055f36c9dbc06ce3782aa51b35b80a5d2bbeef",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipConstantsTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipCorpusContextLoader.as": {
+      "sha256": "496e35c62162daa5be71dfeacf637d82dcd1c49c2f9f72474976aef880086094",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipCorpusContextLoader.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipCorpusDump.as": {
+      "sha256": "9327da5634f8bf246e4298d881212b5a78e7a19e7c7fb55729d5e70133303168",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipCorpusDump.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipDataSelectorTest.as": {
+      "sha256": "3c07d901c93a2a49ea091adff24e49eb45cfe3341cd83958ac22d15da20a6f5b",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipDataSelectorTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipFormatterTest.as": {
+      "sha256": "81255deede918523b0453838d93232216feb60446a4b57e149e383bf39b6d22f",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipFormatterTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipGroundTruthDump.as": {
+      "sha256": "ef89899a1209ce3d2a022b165e0a2f588bd7fcf5054b5096271b4b67cd08f8e8",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipGroundTruthDump.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipIntegrationTest.as": {
+      "sha256": "8acc60365acdc7f354e24e3914588de38cc8c1dbcba2c4b51db61462076de806",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipIntegrationTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipLayoutTest.as": {
+      "sha256": "cce87a69f55440246055adc408d44e94b74fbddd84f4166b540aa2c729d79425",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipLayoutTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipPerfBenchmark.as": {
+      "sha256": "15a9929ec3834a1055104830936d71461d759c5d6315ff5b384cde99079123a1",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipPerfBenchmark.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipRegressionTest.as": {
+      "sha256": "20f7a03cb3cfb4905c9ef48a16466841625507c75a09bfc76221a1ab475b89d8",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipRegressionTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipTestSuite.as": {
+      "sha256": "dd431a2e779ed4257f59caea42d770ed237a9554401f5615999afae43e535447",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipTestSuite.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipWidthDiagnostic.as": {
+      "sha256": "ca354ed0be54d01ba42405cf35009cc3324061f5fed71a1a9a8119153a1475e2",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/TooltipWidthDiagnostic.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/UpgradePathBuilderTest.as": {
+      "sha256": "e0156b5520370bb0af2171d8319b90e5453a7383722f6a8f91f30b7f46194ae2",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/UpgradePathBuilderTest.as"
+    },
+    "scripts/类定义/org/flashNight/gesh/tooltip/test/WeaponAmmoTooltipTest.as": {
+      "sha256": "39d52b3d2b75dc397cb678e55586800baab4c2b8e558cfb72ffd77e8f2eabe95",
+      "path": "tools/tooltip-oracle/as2/org/flashNight/gesh/tooltip/test/WeaponAmmoTooltipTest.as"
+    }
+  },
+  "moduleClasses": {
+    "resident": 1,
+    "shared": 338,
+    "boot": 464
+  },
+  "tooltipClasses": {
+    "resident": [],
+    "shared": [],
+    "boot": [
+      "org.flashNight.gesh.tooltip.TooltipComposer",
+      "org.flashNight.gesh.tooltip.TooltipTextBuilder",
+      "org.flashNight.gesh.tooltip.TooltipConstants",
+      "org.flashNight.gesh.tooltip.TooltipFormatter",
+      "org.flashNight.gesh.tooltip.ItemUseTypes",
+      "org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder",
+      "org.flashNight.gesh.tooltip.builder.UpgradePathBuilder",
+      "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer",
+      "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipRegistry",
+      "org.flashNight.gesh.tooltip.builder.drug.IDrugTooltipBuilder",
+      "org.flashNight.gesh.tooltip.builder.drug.builders.HealTooltipBuilder",
+      "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipUtil",
+      "org.flashNight.gesh.tooltip.builder.drug.builders.RegenTooltipBuilder",
+      "org.flashNight.gesh.tooltip.builder.drug.builders.StateTooltipBuilder",
+      "org.flashNight.gesh.tooltip.builder.drug.builders.PurifyTooltipBuilder",
+      "org.flashNight.gesh.tooltip.builder.drug.builders.BuffTooltipBuilder",
+      "org.flashNight.gesh.tooltip.builder.drug.builders.ToughnessBuffTooltipBuilder",
+      "org.flashNight.gesh.tooltip.builder.drug.builders.ResistanceBuffTooltipBuilder",
+      "org.flashNight.gesh.tooltip.builder.drug.builders.ToughnessRestoreTooltipBuilder",
+      "org.flashNight.gesh.tooltip.builder.drug.builders.GrantItemTooltipBuilder",
+      "org.flashNight.gesh.tooltip.TooltipDataSelector",
+      "org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer",
+      "org.flashNight.gesh.tooltip.builder.MeleeStatsBuilder",
+      "org.flashNight.gesh.tooltip.builder.GrenadeStatsBuilder",
+      "org.flashNight.gesh.tooltip.builder.GunStatsBuilder",
+      "org.flashNight.gesh.tooltip.builder.WeaponAmmoInfoBuilder",
+      "org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder",
+      "org.flashNight.gesh.tooltip.builder.CommonStatsBuilder",
+      "org.flashNight.gesh.tooltip.builder.CriticalBlockBuilder",
+      "org.flashNight.gesh.tooltip.builder.DamageTypeBuilder",
+      "org.flashNight.gesh.tooltip.builder.ResistanceBlockBuilder",
+      "org.flashNight.gesh.tooltip.builder.ModStatBuilder",
+      "org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder",
+      "org.flashNight.gesh.tooltip.builder.SlayEffectBuilder",
+      "org.flashNight.gesh.tooltip.builder.TagSwitchStatsBuilder",
+      "org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder",
+      "org.flashNight.gesh.tooltip.builder.ModsBlockBuilder",
+      "org.flashNight.gesh.tooltip.NativeTooltipDocument",
+      "org.flashNight.gesh.tooltip.NativeTooltipBridge",
+      "org.flashNight.gesh.tooltip.SkillTooltipComposer"
+    ]
+  }
+}

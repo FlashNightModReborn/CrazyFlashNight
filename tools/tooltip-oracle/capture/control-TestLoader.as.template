@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId tooltip-capture-control Start: __FOCUSED_RUN_ID__");
+_root.__captureProbeFocusedRun = "__FOCUSED_RUN_ID__";
+_root.__captureProbeControlRunId = "__CONTROL_RUN_ID__";
+_root.__captureControlUri = __CONTROL_URI__;
+org.flashNight.gesh.tooltip.test.TooltipCaptureControlProbe.runAllTests();

@@ -328,7 +328,7 @@ class org.flashNight.gesh.tooltip.test.TooltipCorpusDump {
         }
         job.item.value.mods = frame.path.concat();
         var name:String = String(frame.candidates[frame.index++]);
-        if (EquipmentUtil.isModMaterialAvailable(job.item, job.item.getData(), name) !== 1) return;
+        if (EquipmentUtil.isModMaterialAvailable(job.item, job.data, name) !== 1) return;
         var path:Array = frame.path.concat();
         path.push(name);
         job.item.value.mods = path.concat();
@@ -380,7 +380,7 @@ class org.flashNight.gesh.tooltip.test.TooltipCorpusDump {
      */
     private static function emitDirectModCoverageAndGetFirst(sourceItem:Object, item:BaseItem):Array {
         if (item == null) return null;
-        var rawItemData:Object = item.getData();
+        var rawItemData:Object = ItemUtil.getItemData(item.name);
         var candidates:Array = EquipmentUtil.getAvailableModMaterials(item);
         if (!(candidates instanceof Array) || candidates.length == 0) return null;
         candidates.sort();

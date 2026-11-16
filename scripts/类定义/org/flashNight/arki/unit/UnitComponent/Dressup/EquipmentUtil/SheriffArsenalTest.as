@@ -9,7 +9,6 @@ import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentLig
 import org.flashNight.arki.component.Buff.BuffManager;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.xml.XMLParser;
-import org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder;
 import org.flashNight.neur.Event.EventDispatcher;
 
 // Real item/mod definitions, production modifier and shooting paths. No save writes.
@@ -84,8 +83,8 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.SheriffArsena
             check(EquipmentLightDefense.getActiveBonus(actor)==0,"sealed light has no holstered bonus");
             actor.攻击模式="长枪";EquipmentLightController.update(ref);
             check(EquipmentLightDefense.getActiveBonus(actor)==20 && near(actor.躲闪率,2.5),"declared built-in flashlight gives actual 20-point dodge pool");
-            var text:String=EquipmentLightingInfoBuilder.build(shotgun,[],false).join("");
-            check(text.indexOf("20")>=0,"tooltip describes the same built-in bonus");
+            check(shotgun.lifecycle.attr_equipmentLight.init.initParam.evasionBonus==20,
+                "built-in light keeps the authored defense input for Launcher projection");
             actor.hp=0;EquipmentLightController.update(ref);
             check(EquipmentLightDefense.getActiveBonus(actor)==0 && actor.躲闪率==3,"death retires built-in defense");
             EquipmentLightController.dispose(ref);

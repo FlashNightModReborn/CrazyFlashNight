@@ -1,0 +1,21 @@
+{
+  "kind": "standalone-host-synthetic-projections",
+  "notLauncherNetIncrement": true,
+  "startedUtc": "2026-11-15T12:07:29.298895+00:00",
+  "endedUtc": "2026-11-15T12:07:35.299075+00:00",
+  "command": [
+    "dotnet",
+    "run",
+    "--no-build",
+    "--project",
+    "launcher/tests/TooltipService.Host/TooltipService.Host.csproj",
+    "--",
+    "--bench",
+    ".",
+    "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\logs\\runtime-corpus\\inputs.jsonl"
+  ],
+  "inputCount": 1801,
+  "inputSha256": "d717ba47be4ee18fed958e5d08c34583658dc83a3e03a578478b3bec3e08f3aa",
+  "concurrentWork": "CS6 compiling an isolated focused suite on the same machine; timings are descriptive and not a controlled platform comparison.",
+  "exitCode": 0
+}

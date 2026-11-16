@@ -281,6 +281,30 @@ namespace CF7Launcher.Tasks
                 flash.ToString(Formatting.None) + "\0");
         }
 
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            if (!_pendingCalls.TryPeek(fid, out var pending)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            var entry = pending.Context;
+            if (entry.IsWrite || (entry.WebCommand != "stashTooltip" && entry.WebCommand != "stashChoices")) return null;
+            // Read-only choice batches and hover requests have independent lanes. A hover must not
+            // retire a choice snapshot, while a closed workbench invalidates either immediately.
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("item_use:" + entry.WebCommand, "workbench",
+                entry.PanelInstanceId + ":" + entry.SessionGeneration, pending.WebCallId, fid, entry.Request,
+                () => _pendingCalls.TryPeek(fid, out var current) && ReferenceEquals(current, pending)
+                    && IsCurrentBinding(entry.PanelInstanceId, entry.SessionGeneration),
+                () =>
+                {
+                    if (_pendingCalls.TryCompleteExact(fid, pending, out _)
+                        && IsCurrentBinding(entry.PanelInstanceId, entry.SessionGeneration))
+                    {
+                        var response = BuildErrorResponse(entry.PanelInstanceId, entry.WebCommand,
+                            pending.WebCallId, "stale_source", false);
+                        PostToWeb(response.ToString(Formatting.None));
+                    }
+                }, entry.WebCommand == "stashChoices" ? CF7Launcher.Tooltips.TooltipRequestKind.Response
+                    : CF7Launcher.Tooltips.TooltipRequestKind.Hover);
+        }
+
         public void HandleFlashResponse(JObject message, Action<string> respond)
         {
             int backendCallId;

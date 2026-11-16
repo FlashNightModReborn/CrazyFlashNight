@@ -1,0 +1,12 @@
+$ node tools/test-tooltip-input-projection.js
+ok - real calculated values, baseline, branch decisions and narrow identity survive detached projection
+ok - only discovered source records cross wire and runtime enemy name is frozen
+ok - preview does not compute an equipment instance and non-applicable arrays stay explicit
+ok - registered standalone mod identity and normalized subweapon cannot revive a rejected catalog entry
+ok - NaN/Infinity and undefined array entries have explicit wire tokens; null stays null
+ok - missing item and failed authoritative getData never become base-catalog success
+ok - input values are bounded data and a cyclic object fails the projection instead of hanging
+ok - skill projection reads live learned/equipped state and exports no arbitrary metadata
+ok - blade exception prefers authored count and keeps the original bounded probe/cached result
+ok - native bridge preserves request/scene/anchor identity and stale hide cannot retire the latest input
+TooltipInput producer mock: 10 passed. Evidence: JS bodies + domain stubs; AVM1 not executed.

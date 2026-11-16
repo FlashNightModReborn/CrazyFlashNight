@@ -55,8 +55,7 @@ $focusedRun = @{
     DomainId = 'native-interaction'
     TemplateRelativePath = 'scripts\test-runners\native-interaction\TestLoader.as.template'
     SuiteRelativePaths = @(
-        'scripts\类定义\org\flashNight\gesh\tooltip\test\NativeTooltipDocumentTest.as'
-        'scripts\类定义\org\flashNight\gesh\tooltip\test\NativeTooltipBridgeTest.as'
+        'scripts\类定义\org\flashNight\arki\interaction\NativeTooltipBridgeTest.as'
         'scripts\类定义\org\flashNight\arki\merc\MercSpawnerTest.as'
         'scripts\类定义\org\flashNight\arki\cursor\MouseProxyTest.as'
         'scripts\类定义\org\flashNight\arki\interaction\NativeMenuBridgeTest.as'
@@ -64,8 +63,7 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\item\InventoryTooltipProjectionTest.as'
     )
     SuiteFqns = @(
-        'org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest'
-        'org.flashNight.gesh.tooltip.test.NativeTooltipBridgeTest'
+        'org.flashNight.arki.interaction.NativeTooltipBridgeTest'
         'org.flashNight.arki.merc.MercSpawnerTest'
         'org.flashNight.arki.cursor.MouseProxyTest'
         'org.flashNight.arki.interaction.NativeMenuBridgeTest'
@@ -77,10 +75,9 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\interaction\NativeInteractionContext.as'
         'scripts\类定义\org\flashNight\arki\merc\MercSpawner.as'
         'scripts\类定义\org\flashNight\arki\cursor\MouseProxy.as'
-        'scripts\类定义\org\flashNight\gesh\tooltip\NativeTooltipDocument.as'
         'scripts\类定义\org\flashNight\gesh\tooltip\NativeTooltipBridge.as'
+        'scripts\类定义\org\flashNight\gesh\tooltip\TooltipInputProjection.as'
         'scripts\类定义\org\flashNight\boot\BootSequencer.as'
-        'scripts\类定义\org\flashNight\gesh\tooltip\TooltipComposer.as'
         'scripts\展现\UI交互\UI交互_lsy_鼠标代理.as'
     )
     ExpectedTracePatterns = @(
@@ -94,10 +91,9 @@ $focusedRun = @{
         '(?m)^MouseProxyTest Tests Failed: 0\r?$'
         '(?m)^NativeMenuBridgeTest Tests Passed: [1-9]\d*\r?$'
         '(?m)^NativeMenuBridgeTest Tests Failed: 0\r?$'
-        '(?m)^--- NativeTooltipDocumentTest: [1-9]\d*/\d+ passed, 0 failed ---\r?$'
         '(?m)^--- NativeTooltipBridgeTest: [1-9]\d*/\d+ passed, 0 failed ---\r?$'
     )
-    SuccessSummary = 'native-interaction 七套件全部通过'
+    SuccessSummary = 'native-interaction 六套件（输入投影与身份；内容测试见 TS）全部通过'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

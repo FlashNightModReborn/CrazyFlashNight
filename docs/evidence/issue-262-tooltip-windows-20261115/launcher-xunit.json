@@ -1,0 +1,79 @@
+{
+  "schema": "cf7.issue262.launcher-xunit-summary.v1",
+  "total": 8569,
+  "passed": 8410,
+  "failed": 128,
+  "skipped": 31,
+  "rawCounters": {
+    "total": "8569",
+    "executed": "8538",
+    "passed": "8410",
+    "failed": "128",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "resultOutcomes": {
+    "Passed": 8410,
+    "Failed": 128,
+    "NotExecuted": 31
+  },
+  "failureClasses": {
+    "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests": 34,
+    "CF7Launcher.Tests.Tasks.SettingsTaskTests": 41,
+    "CF7Launcher.Tests.Guardian.CompositionRecheckTests": 22,
+    "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests": 15,
+    "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests": 16
+  },
+  "failuresAllSameAdmissionError": true,
+  "sourceFingerprints": [
+    {
+      "path": "launcher/tests/Guardian/WindowManagerFocusRestoreTests.cs",
+      "unchangedFromBaselineIgnoringCheckoutEol": true,
+      "rawSha256": "9c125707ceb6b7be672bac43687edbd539eec0d242057313feb1e55df03e696b",
+      "baselineSha256": "d1d871baa36867fe3e305b9f79eb8363f20f7e5038821d44c70e586d5368daa7"
+    },
+    {
+      "path": "launcher/tests/Guardian/CompositionRecheckTests.cs",
+      "unchangedFromBaselineIgnoringCheckoutEol": true,
+      "rawSha256": "02542405cccb2f09eadad09123c244ba6c0f34d8a23bed166cb4939864f2eb2b",
+      "baselineSha256": "659d89043e2cbe11f503a5d1004e776a678a340017825a6f29b6586544a57b29"
+    },
+    {
+      "path": "launcher/tests/Tasks/SettingsTaskTests.cs",
+      "unchangedFromBaselineIgnoringCheckoutEol": true,
+      "rawSha256": "0754142330664a939abf133c4d4e0dda7e26075dd418c487a927152ab447b08c",
+      "baselineSha256": "6b01d0c7490cd1c9aa228312d25a19309ef184abbec094ae2dd6384b7006efa9"
+    },
+    {
+      "path": "launcher/tests/Guardian/SolIndependentWindowsTraceTests.cs",
+      "unchangedFromBaselineIgnoringCheckoutEol": true,
+      "rawSha256": "0a64031f8bb122831d19294cad5fdb1bd220f8a51ec4e4f1f2070720564f5142",
+      "baselineSha256": "1fce8865d5074a17148ab2d27c1d710f1d7873da30d061955a118940d398b88e"
+    },
+    {
+      "path": "launcher/tests/Diagnostic/FocusTracePhysicalHistoryTests.cs",
+      "unchangedFromBaselineIgnoringCheckoutEol": true,
+      "rawSha256": "1a87872c2dd060b5f59c2117bb1a2dbad885433a1343f2c8d1800f9730c35edf",
+      "baselineSha256": "be626a20a2348f2aa6ff6695b5ed7334aa80f3574be2789d8cbc16470c160b52"
+    },
+    {
+      "path": "launcher/tests/Guardian/FixtureResourceGuard.cs",
+      "unchangedFromBaselineIgnoringCheckoutEol": true,
+      "rawSha256": "588752b537a16bf0fa42db76c7db599bb1a75cfc663ad92b79f4a54be28663db",
+      "baselineSha256": "dbc7022ad62b59f63fe61e725bc860c71e8f0a31a1861419f0cf2cc685e545e7"
+    }
+  ],
+  "scope": "Original full-suite outcome is retained. These unchanged classes require an acknowledged physical resource window and input anchor; no guard was disabled and no fabricated anchor was supplied.",
+  "relevantFixtureTestsPassed": 956,
+  "relevantFixtureCountSource": "Prior TRX domain selection; separate production Tooltip Host also passed34."
+}

@@ -162,12 +162,20 @@ class org.flashNight.arki.item.ChoiceRewardService {
                         // A detached copy is presentation only; never attach a candidate to inventory.
                         var preview:org.flashNight.arki.item.BaseItem = org.flashNight.arki.item.BaseItem.createFromObject(
                             org.flashNight.gesh.object.PersistedSnapshot.clone(item));
-                        var detail:String = org.flashNight.gesh.tooltip.TooltipComposer.generateIntroPanelContent(preview, meta, item.value)
-                            + org.flashNight.gesh.tooltip.TooltipComposer.generateItemDescriptionText(meta, preview);
-                        detail = org.flashNight.gesh.string.StringUtils.htmlToPlainTextFast(detail);
+                        var detailInput:Object = null;
+                        try {
+                            detailInput = org.flashNight.gesh.tooltip.TooltipInputProjection.forItem(
+                                item.name, item.value, preview, "web");
+                        } catch (projectionError) {
+                            trace("[ChoiceRewardService] tooltip projection failed: " + projectionError);
+                        }
+                        // Keep the transport selector even on projection failure. Missing projection
+                        // is rejected by Host, which returns only unavailable details for this row.
+                        if (detailInput == null) detailInput = {version:1, kind:"item", itemName:String(item.name)};
+                        detailInput.output = "details";
                         items.push({itemName:item.name, displayName:String(meta.displayname || item.name),
                             quantity:RewardStashStore.quantity(item), level:Math.max(0, Number(meta.data.level) || 0),
-                            icon:String(meta.icon || item.name), details:detail.substr(0, 4096)});
+                            icon:String(meta.icon || item.name), details:"", tooltipInput:detailInput});
                     }
                     var skills:Array = [];
                     for (var s:Number = 0; s < option.skills.length; s++) {

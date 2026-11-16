@@ -1087,6 +1087,7 @@ _root.gameCommands["shopTooltip"] = function(params) {
         success: true,
         descHTML: tt.descHTML,
         introHTML: tt.introHTML,
+        tooltipInput: tt.tooltipInput,
         itemName: itemName,
         displayname: _root.UI系统.商城WebView.projectLegacyIdentityField(tt.displayname, String(itemName)),
         iconName: _root.UI系统.商城WebView.projectLegacyIdentityField(attrs[1], String(itemName))
@@ -1141,7 +1142,8 @@ _root.gameCommands["intelligenceTooltip"] = function(params) {
         itemName: itemName,
         displayname: tt.displayname,
         descHTML: tt.descHTML,
-        introHTML: tt.introHTML
+        introHTML: tt.introHTML,
+        tooltipInput: tt.tooltipInput
     });
 };
 
@@ -1162,7 +1164,8 @@ _root.gameCommands["blackmarketTooltip"] = function(params) {
         itemName: itemName,
         displayname: tt.displayname,
         descHTML: tt.descHTML,
-        introHTML: tt.introHTML
+        introHTML: tt.introHTML,
+        tooltipInput: tt.tooltipInput
     });
 };
 

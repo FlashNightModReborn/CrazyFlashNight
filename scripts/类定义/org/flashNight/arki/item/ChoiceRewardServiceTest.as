@@ -106,6 +106,19 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             var duplicateOpen:Object=ItemUseService.execute("stashOpen",opening);
             check(!duplicateOpen.success&&duplicateOpen.error=="stale_stash"&&_root.物品栏.背包.getItem(0).value==4,"initial empty-store write cannot be replayed after creation; exact query owns recovery");
             var offer:Object=snap().offers[0];
+            var tooltipProducer:Object=org.flashNight.gesh.tooltip.TooltipInputProjection;
+            var originalForItem:Function=tooltipProducer.forItem;
+            try {
+                tooltipProducer.forItem=function():Object {return null;};
+                var failedPreview:Object=snap().offers[0].options[0].items[0];
+                check(failedPreview.tooltipInput.output=="details" && failedPreview.tooltipInput.version==1
+                    && failedPreview.tooltipInput.projection==undefined && failedPreview.details=="",
+                    "missing tooltip projection preserves the details-only row selector for Host failure handling");
+                tooltipProducer.forItem=function():Object {throw new Error("fixture_projection_failure"); return null;};
+                failedPreview=snap().offers[0].options[0].items[0];
+                check(failedPreview.tooltipInput.output=="details" && failedPreview.itemName==offer.options[0].items[0].itemName,
+                    "tooltip projection exception does not discard the frozen choice snapshot");
+            } finally { tooltipProducer.forItem=originalForItem; }
             check(offer.options.length==3&&offer.options[0].optionId=="bundle.0"&&offer.options[1].optionId=="bundle.1"&&offer.options[2].optionId=="bundle.3","group guarantee and weighted draw are without replacement");
             check(offer.options[0].grade=="low"&&offer.options[1].grade=="medium"&&offer.options[2].grade=="special","frozen options project their declared grades");
             check(RewardStashService.peek().entries.length==0,"opening grants no unselected inventory");

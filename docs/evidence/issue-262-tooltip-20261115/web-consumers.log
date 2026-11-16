@@ -1,0 +1,17 @@
+$ node tools/test-tooltip-document-consumers.js
+ok - kshop catalog：响应带 document → document 渲染且 chrome 全保留
+ok - kshop catalog：无 document → legacy 路径原样工作
+ok - kshop catalog：不合法 document → 回落 legacy 不丢内容
+ok - kshop catalog：同 cache 两物品不串卡；A 迟到回包不覆盖 B
+ok - kshop owned：requestInventory 响应 document → ntt-doc + owned chrome
+ok - kshop showItemDetail：pinned 链路 document 随 cache 对象到位
+ok - owned-view richTooltip：data.document 接管且 rootClass/layout 保留
+[PanelTooltip] inferLayoutType: typeField 为空，fallback narrow
+ok - owned-view richTooltip：无 document → legacy 原样
+ok - character-build candidate：真实回包带 document → 回调交付并离开加载态
+ok - character-build candidate：HTML-only 回包（无 document）→ legacy 正常渲染
+[PanelRequestMux] response shape mismatch for character-candidate-tooltip.character-candidate-tooltip.mwhicxx9.7zxtdd.1.1
+ok - character-build candidate：回包混入未知键 → 拒绝并留在加载态
+ok - npcshop tooltipRich：rich.document 接管且 metaHTML/rootClass 保留
+
+12 tests passed

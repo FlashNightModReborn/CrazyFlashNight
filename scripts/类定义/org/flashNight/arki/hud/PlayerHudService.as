@@ -15,7 +15,7 @@ import org.flashNight.arki.render.FrameBroadcaster;
 import org.flashNight.arki.scene.StageReturnFlow;
 import org.flashNight.arki.interaction.NativeInteractionContext;
 import org.flashNight.gesh.tooltip.NativeTooltipBridge;
-import org.flashNight.gesh.tooltip.NativeTooltipDocument;
+import org.flashNight.gesh.tooltip.TooltipInputProjection;
 /**
  * Live HUD projection. No MovieClip renderer, gameplay clock or inventory authority.
  * pi:<base64(UTF8 safe JSON)> uses bounded replacement in FrameBroadcaster.
@@ -590,18 +590,21 @@ class org.flashNight.arki.hud.PlayerHudService {
             var nativeUnit:Object = hero();
             if (nativeUnit.__enemyActionRuntime.enabled === true) {
                 var action:Object = EnemyActionRuntime.hudAction(nativeUnit, slot);
-                if (action != null) NativeTooltipBridge.show(NativeTooltipDocument.buildSkill(action.name,
-                    "Lee 固定招式。按 " + current.skills[slot-1].keyLabel + " 发动；不消耗 MP。",
-                    action.description), null, "top", anchor);
+                if (action != null) NativeTooltipBridge.show({version:1, kind:"hud", mode:"action",
+                    data:{name:action.name, keyLabel:current.skills[slot-1].keyLabel,
+                        description:action.description}}, null, "top", anchor);
+                hoverRequest = NativeTooltipBridge.activeRequestId();
                 return;
             }
             var rows:Array = _root.主角技能表;
             for (var i:Number = 0; i < rows.length; i++) {
                 if (rows[i][0] === p.key) {
-                    var parts:Object = org.flashNight.gesh.tooltip.SkillTooltipComposer.describeLoadout(i);
-                    var resourceHint:Object = SkillResourceService.quick(hero(), parts.name, Number(current.skills[slot-1].mp));
-                    NativeTooltipBridge.show(NativeTooltipDocument.buildSkill(parts.name,
-                        parts.intro + SkillResourceService.describe(resourceHint), parts.description), null, "top", anchor);
+                    var parts:Object = TooltipInputProjection.loadoutSkill(i);
+                    if (parts != null) {
+                        parts.resourceHint = SkillResourceService.quick(hero(), parts.skillName,
+                            Number(current.skills[slot-1].mp));
+                        NativeTooltipBridge.show(parts, null, "top", anchor);
+                    }
                     break;
                 }
             }
@@ -609,12 +612,13 @@ class org.flashNight.arki.hud.PlayerHudService {
             var coldRows:Array = _root.主角技能表;
             for (var c:Number = 0; c < coldRows.length; c++) {
                 if (coldRows[c][0] === p.key) {
-                    var coldParts:Object = org.flashNight.gesh.tooltip.SkillTooltipComposer.describeLoadout(c);
+                    var coldParts:Object = TooltipInputProjection.loadoutSkill(c);
                     var coldData:Object = (_root.技能表对象 == undefined) ? null : _root.技能表对象[p.key];
                     var coldMp:Number = coldData == null ? 0 : finiteValue(coldData.MP);
-                    var coldHint:Object = SkillResourceService.quick(hero(), coldParts.name, coldMp);
-                    NativeTooltipBridge.show(NativeTooltipDocument.buildSkill(coldParts.name,
-                        coldParts.intro + SkillResourceService.describe(coldHint), coldParts.description), null, "top", anchor);
+                    if (coldParts != null) {
+                        coldParts.resourceHint = SkillResourceService.quick(hero(), coldParts.skillName, coldMp);
+                        NativeTooltipBridge.show(coldParts, null, "top", anchor);
+                    }
                     break;
                 }
             }
@@ -624,51 +628,34 @@ class org.flashNight.arki.hud.PlayerHudService {
             if (item != null) {
                 var projection:Object = org.flashNight.arki.item.InventoryPanelService.buildTooltipProjection(item);
                 if (projection.success) {
-                    var drugIntro:String = text(projection.introHTML);
-                    var drugCount:Number = Math.floor(finiteValue(drugCounts[slot]));
-                    if (drugCount == 1 && drugIntro.indexOf("数量：") < 0) {
-                        drugIntro += "数量：1<BR>";
-                    }
                     var lane:Number = slot % 4;
                     var drugKey:String = text(current.drugs[lane].key);
                     if (drugKey == "") drugKey = keyLabel(DrugInputService.getKeyName(lane));
-                    drugIntro += "快捷栏：" + (slot < 4 ? "A" : "B") + "组" + (lane + 1) + "号格";
-                    if (drugKey != "") drugIntro += "（快捷键：" + drugKey + "）";
-                    drugIntro += "<BR>";
-                    var drugDoc:Object = NativeTooltipDocument.buildItem(String(item.name),
-                        ItemUtil.getItemData(item.name),
-                        {displayname:projection.displayname, icon:projection.iconName},
-                        drugIntro, text(projection.descHTML));
-                    NativeTooltipBridge.show(drugDoc, null, "top", anchor);
+                    var drugInput:Object = projection.tooltipInput;
+                    drugInput.hud = {kind:"drug", count:Math.floor(finiteValue(drugCounts[slot])),
+                        slot:slot, key:drugKey};
+                    NativeTooltipBridge.show(drugInput, null, "top", anchor);
                 }
             }
         } else if (p.kind == "weapon") {
             var unit:Object = hero();
             var skill:Object = unit.主动战技[unit.攻击模式];
             if (skill != null && skill.isSubweaponControl !== true && weaponName(skill) == text(p.key)) {
-                var intro:String = "<B>" + weaponName(skill) + "</B><BR>冷却：" + finiteValue(skill.冷却时间) / 1000 + " 秒";
-                intro += "<BR>MP消耗：" + finiteValue(skill.消耗mp);
-                if (finiteValue(skill.消耗hp) > 0) intro += "<BR>生命消耗：" + finiteValue(skill.消耗hp);
-                if (finiteValue(skill.消耗sp) > 0) intro += "<BR>技能点消耗：" + finiteValue(skill.消耗sp);
-                if (text(skill.描述) != "") intro += "<BR>" + text(skill.描述);
-                if (text(skill.信息) != "") intro += "<BR>" + text(skill.信息);
-                intro += SkillResourceService.describe(SkillResourceService.weapon(unit, skill));
-                NativeTooltipBridge.show(NativeTooltipDocument.buildBody(intro, "dense"), null, "top", anchor);
+                NativeTooltipBridge.show({version:1, kind:"hud", mode:"weapon", data:{
+                    name:weaponName(skill), cooldown:finiteValue(skill.冷却时间),
+                    mp:finiteValue(skill.消耗mp), hp:finiteValue(skill.消耗hp), sp:finiteValue(skill.消耗sp),
+                    description:text(skill.描述), information:text(skill.信息),
+                    resourceHint:SkillResourceService.weapon(unit, skill)}}, null, "top", anchor);
             }
         } else if (p.kind == "switch") {
-            var hint:String = "<B>药剂组 " + (current.bank == 0 ? "I" : "II") + "</B><BR>点击或按 " + current.switchKey + " 切换另一组药剂。";
-            hint += "<BR>同一列共用冷却，换组不会重置冷却。";
-            if (!DrugInputService.hasBankStock(_root, 1 - current.bank)) hint += "<BR><FONT COLOR='#e87864'>另一组没有剩余药剂，暂时无法切换。</FONT>";
-            NativeTooltipBridge.show(NativeTooltipDocument.buildBody(hint, "simple"), null, "top", anchor);
+            NativeTooltipBridge.show({version:1, kind:"hud", mode:"switch", data:{
+                bank:current.bank, switchKey:current.switchKey,
+                otherBankHasStock:DrugInputService.hasBankStock(_root, 1-current.bank)}}, null, "top", anchor);
         } else if (p.kind == "resources") {
             var v:Object = readVitals(hero());
-            var lines:String = "生命：" + Math.floor(v.hp[0]) + " / " + Math.floor(v.hp[1]) + "（" + percentage(v.hp[0], v.hp[1]) + "）";
-            lines += "<BR>护盾：" + (!v.shieldReady ? "未就绪" : v.shieldPresent ? Math.floor(v.shield[0]) + " / " + Math.floor(v.shield[1]) : "无护盾");
-            lines += v.mp[0] == 0 && v.mp[1] == 0 ? "<BR>MP：本单位不使用此资源。"
-                : "<BR>MP：" + Math.floor(v.mp[0]) + " / " + Math.floor(v.mp[1]) + "（" + percentage(v.mp[0], v.mp[1]) + "）";
-            lines += "<BR>韧性：" + Math.floor(v.poise * 100) + "%<BR>经验：" + Math.floor(v.experience[0]) + " / " + Math.floor(v.experience[2]);
-            lines += "<BR>技能点：" + Math.floor(v.sp);
-            NativeTooltipBridge.show(NativeTooltipDocument.buildBody(lines, "dense"), null, "top", anchor);
+            NativeTooltipBridge.show({version:1, kind:"hud", mode:"resources", data:{
+                hp:v.hp, mp:v.mp, shield:v.shield, shieldReady:v.shieldReady, shieldPresent:v.shieldPresent,
+                poise:v.poise, experience:v.experience, sp:v.sp}}, null, "top", anchor);
         }
         hoverRequest = NativeTooltipBridge.activeRequestId();
     }
