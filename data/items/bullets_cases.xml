@@ -100,8 +100,29 @@
                 <lifetimeMs>400</lifetimeMs>
                 <powerScale>0.2</powerScale>
                 <fallbackPower>100</fallbackPower>
-                <minAngle>0</minAngle>
-                <maxAngle>360</maxAngle>
+                <!--
+  minAngle / maxAngle：次级弹随机偏角范围（相对母弹飞行方向）
+  数值区间 [minAngle, maxAngle]，程序在其中随机取值；min 不能大于 max。
+
+  方向规则：
+  - 母弹向右飞：正偏角 = 顺时针（0°=3点钟，90°=6点钟，180°=9点钟）
+  - 母弹向左飞：正偏角 = 逆时针（镜像，0°=9点钟，90°=12点钟，180°=3点钟）
+
+  常见范围（以母弹向右飞为例）：
+  - 0 ~ 360  ：3点顺时针一整圈，全圆随机，四面八方
+  - 0 ~ 180  ：3点 → 6点 → 9点，下半圆
+  - -90 ~ 90 ：12点 → 3点 → 6点，右半边半圆
+  - -30 ~ 30 ：约2点 → 3点 → 4点，前方 ±30° 小扇形
+
+  母弹向左飞时上下镜像：
+  - 0 ~ 180  ：9点 → 12点 → 3点，上半圆
+  - -30 ~ 30 ：前方 ±30° 小扇形（仍对称）
+
+  固定角度：min = max（如都设 30），所有子弹同方向，不会散开。
+  均匀散开需改 ExplosionScatter.as 第 278～280 行的角度计算。
+-->
+                <minAngle>-30</minAngle>
+                <maxAngle>30</maxAngle>
             </explosionScatter>
         </attribute>
     </bullet>
