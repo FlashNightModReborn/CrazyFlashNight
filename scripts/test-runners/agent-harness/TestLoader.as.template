@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId agent-harness Start: __FOCUSED_RUN_ID__");
+org.flashNight.neur.Server.test.AgentHarnessServiceTest.runAllTests();
+trace("FocusedTestRunId agent-harness Complete: __FOCUSED_RUN_ID__");

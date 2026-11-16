@@ -182,6 +182,15 @@ namespace CF7Launcher.Guardian
             try { _surface.Dispose(); } catch { }
         }
 
+        internal bool IsOpen => !_disposed && _surface != null && _surface.Active;
+
+        internal void CloseFromHost()
+        {
+            if (_disposed) return;
+            if (_owner.InvokeRequired) _owner.BeginInvoke(new Action(() => CloseCore(false)));
+            else CloseCore(false);
+        }
+
         private void OnNativeCloseRequested()
         {
             if (_disposed) return;

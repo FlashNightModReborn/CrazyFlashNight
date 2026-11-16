@@ -20,6 +20,7 @@ class org.flashNight.arki.ui.GaragePurchasePanelService {
         _root.gameCommands.garagePurchaseSnapshot = function(params) { org.flashNight.arki.ui.GaragePurchasePanelService.handle("snapshot", params); };
         _root.gameCommands.garagePurchaseCommit = function(params) { org.flashNight.arki.ui.GaragePurchasePanelService.handle("commit", params); };
         _root.gameCommands.garagePurchaseQuery = function(params) { org.flashNight.arki.ui.GaragePurchasePanelService.handle("query", params); };
+        _root.gameCommands.openGarageForAgent = function(params) { return _root._agentHarnessActive === true && org.flashNight.arki.ui.GaragePurchasePanelService.openPanel(params != undefined && params.vehicleId != undefined ? String(params.vehicleId) : "bicycle"); };
     }
 
     private static function vehicleName(id:String):String {

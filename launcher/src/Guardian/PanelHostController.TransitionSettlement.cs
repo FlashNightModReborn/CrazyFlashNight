@@ -21,6 +21,21 @@ namespace CF7Launcher.Guardian
             : _compositionHelpSelected ? _compositionHelp
             : _compositionIntelligenceSelected ? _compositionIntelligence : null;
 
+        internal Microsoft.Web.WebView2.Core.CoreWebView2 TryGetActiveHarnessWebCore(out string surfaceKind)
+        {
+            var s = SelectedCompositionSurface;
+            if (s != null && s.Active && s.InternalCoreWebView2 != null)
+            {
+                surfaceKind = _transitionSettlementSelected
+                    ? "settlement"
+                    : (_compositionHelpSelected ? "composition_help"
+                        : (_compositionIntelligenceSelected ? "composition_intelligence" : ("composition_" + (_activePanel ?? "unknown"))));
+                return s.InternalCoreWebView2;
+            }
+            surfaceKind = null;
+            return null;
+        }
+
         internal void ConfigureTransitionSettlement(SceneTransitionController controller)
         {
             _sceneSettlement=controller;
@@ -66,7 +81,7 @@ namespace CF7Launcher.Guardian
             string instance,bool tracked,Action posted)
         {
             var surface=_sceneSettlement.SettlementSurface;
-            if(!surface.PresentTransition(geometry.PanelRect)) return false;
+            if(!surface.PresentTransition(geometry.PanelRect, _sceneSettlement.AllowsHeadlessPresentation)) return false;
             _transitionSettlementSelected=true;
             try {
                 SuspendHudCompanion(); _hud.Suspend();

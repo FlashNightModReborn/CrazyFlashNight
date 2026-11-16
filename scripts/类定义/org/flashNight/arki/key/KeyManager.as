@@ -381,7 +381,9 @@ class org.flashNight.arki.key.KeyManager {
         for (var keycodeStr:String in watchedKeys) {
             var keycode:Number = Number(keycodeStr);
             var wasDown:Boolean = (keyStates[keycode] == true);
-            var isDownNow:Boolean = Key.isDown(keycode);
+            var isDownNow:Boolean = Key.isDown(keycode)
+                || (_root._agentHarnessActive === true && _root._agentHarnessBridge != undefined
+                    && _root._agentHarnessBridge.isKeyDown(keycode) === true);
 
             // 当按键状态发生变化时（按下或松开）
             if (isDownNow != wasDown) {

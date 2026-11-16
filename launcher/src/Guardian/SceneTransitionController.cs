@@ -52,11 +52,15 @@ namespace CF7Launcher.Guardian
         internal CompositionHelpSurface SettlementSurface => _surface;
         private bool _handoffSent;
         private Func<bool> _exclusivePresentation = () => false;
+        private Func<long, bool> _allowHeadlessReveal;
         private BookshelfReturnPresentation _bookshelfReturn;
+        internal bool AllowsHeadlessPresentation => _presentationPolicy.AllowsHeadlessPresentation;
+        internal void ConfigureHeadlessTransitionFallback(Func<long, bool> allowHeadlessReveal) => _allowHeadlessReveal = allowHeadlessReveal;
         internal void ConfigureBookshelfReturn(BookshelfReturnPresentation presentation) => _bookshelfReturn = presentation;
         internal bool BookshelfReturnLoading => _bookshelfReturn?.Loading == true;
         private bool BookshelfVisible => _bookshelfReturn?.CanPresent == true && _admitted()
-            && _owner.Visible && _owner.WindowState != FormWindowState.Minimized && (_bookshelfReturn.OwnsForeground || _surface.CanRestoreGameFocus);
+            && _owner.Visible && (_presentationPolicy.AllowsHeadlessPresentation
+                || (_owner.WindowState != FormWindowState.Minimized && (_bookshelfReturn.OwnsForeground || _surface.CanRestoreGameFocus)));
         internal void RestoreRetainedBookshelfOrder() { if (!_disposed && BookshelfVisible) _bookshelfReturn.RestoreOrder(); }
         internal void ConfigureExclusivePresentation(Func<bool> active) => _exclusivePresentation = active;
         internal static bool AllowsFocusHandoff(bool requested, bool admitted, bool exclusive) => requested && admitted && !exclusive;
@@ -216,12 +220,13 @@ namespace CF7Launcher.Guardian
                     FinishSettlementResume();
                     return;
                 }
-                if(_admitted() && _owner.Visible && _owner.WindowState!=FormWindowState.Minimized
-                    && _surface.CanRestoreGameFocus && !_exclusivePresentation()) {
+                if(_admitted() && _owner.Visible && (_presentationPolicy.AllowsHeadlessPresentation
+                        || (_owner.WindowState!=FormWindowState.Minimized && _surface.CanRestoreGameFocus))
+                    && !_exclusivePresentation()) {
                     if(_recovering || !_surface.Ready) {
                         _fallback.Bounds=Bounds();
                         if(!_fallback.Visible) _fallback.Show();
-                    } else _surface.PresentTransition(Bounds());
+                    } else _surface.PresentTransition(Bounds(), _presentationPolicy.AllowsHeadlessPresentation);
                     RestoreWindowOrder();
                 } else { _fallback.Hide(); _surface.SuppressTransition(); }
                 return;
@@ -256,8 +261,9 @@ namespace CF7Launcher.Guardian
             Prepare();
             if(_latest==null || _revealed) {
                 if(_surface.SettlementInstance.Length>0 && _surface.Ready) {
-                    if(_admitted() && _owner.Visible && _owner.WindowState!=FormWindowState.Minimized && _surface.CanRestoreGameFocus)
-                        _surface.PresentTransition(Bounds());
+                    if(_admitted() && _owner.Visible && (_presentationPolicy.AllowsHeadlessPresentation
+                        || (_owner.WindowState!=FormWindowState.Minimized && _surface.CanRestoreGameFocus)))
+                        _surface.PresentTransition(Bounds(), _presentationPolicy.AllowsHeadlessPresentation);
                     else _surface.SuppressTransition();
                 }
                 return;
@@ -292,6 +298,28 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("event=scene_transition_project id="+_identity+" phase="+projection.Value<string>("phase")
                     +" revision="+projection.Value<int>("revision")+" reveal="+projection.Value<bool>("revealAllowed"));
             }
+            if(_presentationPolicy.AllowsHeadlessPresentation
+                && !_revealed
+                && projection.Value<bool>("revealAllowed")
+                && projection.Value<bool?>("reportVisible") != true
+                && projection.Value<long>("version") != 3
+                && _allowHeadlessReveal != null
+                && _allowHeadlessReveal(projection.Value<long>("targetScene"))) {
+                var synthetic = new JObject {
+                    ["type"] = "scene_transition_presented",
+                    ["requestId"] = _identity,
+                    ["revision"] = _latest.Value<int>("revision"),
+                    ["generation"] = Task.Epoch,
+                    ["kind"] = "revealed"
+                };
+                if (Task.Presented(synthetic)) {
+                    _revealed = true;
+                    HidePresentation(handoff: true);
+                    CurtainReleased?.Invoke();
+                    LogManager.Log("event=scene_transition_headless_revealed id=" + _identity + " scene=" + projection.Value<long>("targetScene"));
+                    return;
+                }
+            }
             RestoreWindowOrder();
             TryRetireIntroUnderCover();
             if(_pendingAction!=null && _surface.TransitionInputReleased) {
@@ -313,7 +341,7 @@ namespace CF7Launcher.Guardian
                 return;
             }
             if(!_surface.Visible) return;
-            if(_presentationPolicy.NonActivating && (!CurtainCanPresent || !SceneTransitionWindowOrder.IsPresented(_surface))) return;
+            if(_presentationPolicy.NonActivating && !_presentationPolicy.AllowsHeadlessPresentation && (!CurtainCanPresent || !SceneTransitionWindowOrder.IsPresented(_surface))) return;
             if(type!="scene_transition_presented") return;
             string kind=p["kind"]?.Type==JTokenType.String?p.Value<string>("kind"):null;
             if(kind=="covered") { if(Task.Presented(p)) { _covered=true; if(_intro?.State!="failed")_fallback.Hide(); } }

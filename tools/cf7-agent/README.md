@@ -653,3 +653,35 @@ full product behavior, and human visual acceptance remain outside this evidence.
 
 stdout is reserved for protocol messages. Diagnostics, configuration failures,
 and malformed notification reports go to stderr.
+
+<a id="agent-harness-mcp"></a>
+## CF7 Agent Test Harness (`cf7_harness` MCP / CLI)
+
+`cf7_harness` (`tools/cf7-agent/harness-mcp.js` + `harness-cli.js` + Core `--agent-harness`)
+provides deterministic, background & Windows lock-screen (`Win+L`) compatible end-to-end game flow
+orchestration without requiring desktop Computer Use:
+
+- **Strict save isolation (`player-save-guard.js` & `save-manager.js`)**:
+  only `cf7_agent_*` slots (`^cf7_agent_[A-Za-z0-9_-]{1,64}$`) may be written, cloned, entered, or
+  deleted; real player saves and `crazyflasher7_saves*.sol` remain untouched.
+- **Persistent Host control plane (`launcher/src/AgentHarness/`)**:
+  in-process `CoreWebView2` DOM snapshot/action/capture bridge, monotonic watermarked
+  `events.wait_for` & `logs.query`, panel opener across `WebOverlayForm` / `CompositionHelpSurface` /
+  `ModifierOverlay` / AS2 panels, durable `save_and_exit` fence, and headless `SceneTransition`
+  fence support under locked desktops.
+- **AS2 world observation & virtual input (`AgentHarnessService.as`)**:
+  isolated `_root._agentHarnessActive` world snapshot, virtual input mask, key overrides,
+  `move_to` navigation, and AS2 panel openers.
+
+Register into Codex (`[mcp_servers.cf7_harness]`):
+
+```powershell
+node tools/cf7-agent/register-codex-mcp.js
+```
+
+Run live E2E verification (never modifies player saves):
+
+```powershell
+node tools/cf7-agent/live-e2e-journey.js --mode isolated_candidate
+node tools/cf7-agent/live-e2e-journey.js --mode formal_runtime
+```

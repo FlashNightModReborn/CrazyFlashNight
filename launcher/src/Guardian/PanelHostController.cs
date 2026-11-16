@@ -450,7 +450,13 @@ namespace CF7Launcher.Guardian
         private PanelGeometrySnapshot _committedGeometry;
         private readonly PanelRestoreRevalidationGate _restoreRevalidation =
             new PanelRestoreRevalidationGate();
+        private bool _allowHeadlessHarnessGeometry;
         private bool _disposed;
+
+        internal void EnableHeadlessHarnessGeometryFallback()
+        {
+            _allowHeadlessHarnessGeometry = true;
+        }
 
         public PanelHostController(
             Form ownerForm,
@@ -2172,20 +2178,39 @@ namespace CF7Launcher.Guardian
         {
             if (_ownerForm.WindowState == FormWindowState.Minimized)
             {
+                if (_allowHeadlessHarnessGeometry)
+                    return MeasureHeadlessHarnessFallbackAnchor("minimized");
                 return PanelGeometryMeasurement.ExplicitInvalid(
                     "owner_state",
                     "minimized");
             }
             if (!_ownerForm.Visible)
             {
+                if (_allowHeadlessHarnessGeometry)
+                    return MeasureHeadlessHarnessFallbackAnchor("hidden");
                 return PanelGeometryMeasurement.ExplicitInvalid(
                     "owner_state",
                     "hidden");
             }
-            return ResolveAnchorMeasurements(
+            PanelGeometryMeasurement resolved = ResolveAnchorMeasurements(
                 delegate { return _web.MeasureCurrentAnchorScreenRect(); },
                 MeasureFlashPanelAnchor,
                 MeasureOwnerClientAnchor);
+            if (resolved.Kind != PanelGeometryMeasurementKind.Valid && _allowHeadlessHarnessGeometry)
+                return MeasureHeadlessHarnessFallbackAnchor("anchor_" + resolved.Reason);
+            return resolved;
+        }
+
+        private PanelGeometryMeasurement MeasureHeadlessHarnessFallbackAnchor(string reason)
+        {
+            int w = (_ownerForm != null && !_ownerForm.IsDisposed && _ownerForm.ClientSize.Width >= 320)
+                ? _ownerForm.ClientSize.Width : 1600;
+            int h = (_ownerForm != null && !_ownerForm.IsDisposed && _ownerForm.ClientSize.Height >= 180)
+                ? _ownerForm.ClientSize.Height : 900;
+            return PanelGeometryMeasurement.Valid(
+                new Rectangle(0, 0, w, h),
+                "harness_headless",
+                reason ?? "fallback");
         }
 
         private bool TryCreateProvisionalGeometry(

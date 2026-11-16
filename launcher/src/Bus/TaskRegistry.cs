@@ -938,6 +938,22 @@ namespace CF7Launcher.Bus
             router.RegisterSyncForGeneration("worker_projection_rejected", projection.Rejected);
         }
 
+        internal static void RegisterAgentHarness(MessageRouter router, Action<JObject> onResponse, Action<JObject> onEvent)
+        {
+            router.RegisterSync("agent_harness_response", msg =>
+            {
+                JObject payload = msg["payload"] as JObject ?? msg;
+                onResponse?.Invoke(payload);
+                return "{\"ok\":true}";
+            });
+            router.RegisterSync("agent_harness_event", msg =>
+            {
+                JObject payload = msg["payload"] as JObject ?? msg;
+                onEvent?.Invoke(payload);
+                return "{\"ok\":true}";
+            });
+        }
+
         private static void BuildTaskList(StringBuilder sb)
         {
             bool first = true;
@@ -988,6 +1004,8 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "arena_calibration_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "agent_control",        "json_sync", "HTTP->C#", true, first);
             first = AppendTask(sb, "agent_runtime_status", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "agent_harness_response","json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "agent_harness_event",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "pet_response",         "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "merc_response",        "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "task_response",        "json_async","AS2<->C#",false, first);

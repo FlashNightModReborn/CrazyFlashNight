@@ -153,6 +153,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 | [src/Save](src/Save/) | 启动期存档决议、备份、repair 与用户存档操作 |
 | [src/Audio](src/Audio/) | Audio Platform v2 managed bridge、协调与专项诊断 |
 | [src/AgentRuntime](src/AgentRuntime/) | named pipe、MCP/JSON adapters、观察与写 lease |
+| [src/AgentHarness](src/AgentHarness/) | 面向 `cf7_agent_*` 槽位与后台锁屏 E2E 验证的 `--agent-harness` 宿主管线 |
 | [src/ArenaWorker](src/ArenaWorker/) | 显式斗兽 Worker 候选入口、独立进程/目录租约、固定专用槽与逐次执行身份；见 [P0–P1 合同](../docs/Arena-Worker-P0-P1-施工与验证-2026-10-11.md) |
 | [src/Config](src/Config/) | `config.toml` 与用户偏好解析 |
 | [web](web/) | Bootstrap、Overlay、Panel、minigame、样式和静态资源 |
@@ -357,6 +358,7 @@ Help composition 端点仅新增 `tutorial_preference:disable_auto_open` / `tuto
 | `--unattended-bootstrap-request` | 受信内部 | 绑定无人值守 bootstrap request 文档 |
 | `--audio-v2-qualification-run-id` | 专项内部 | 绑定 Audio v2 qualification run |
 | `--legacy-http-automation` | 兼容内部 | 显式启用 legacy HTTP automation 外层，不提升信任等级 |
+| `--agent-harness <config.json>` | 受信内部 | 隔离启用面向 `cf7_agent_*` 槽位与后台锁屏 E2E 验证的宿主管线 |
 <!-- launcher-cli-registry:end -->
 
 Agent Runtime adapter 自身的 `--adapter`、`--slot` 等 wrapper 参数见 [Contracts README](src/AgentRuntime/Contracts/README.md)，不属于 Core/Bootstrap 公共 CLI。

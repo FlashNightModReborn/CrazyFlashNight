@@ -353,6 +353,8 @@ namespace CF7Launcher.Guardian
             LogManager.Log("[Bootstrap] one-way WebView2 retirement completed");
         }
 
+        internal Microsoft.Web.WebView2.Core.CoreWebView2 InternalCoreWebView2 => TryGetCoreWebView2();
+
         private CoreWebView2 TryGetCoreWebView2()
         {
             if (_disposed || _webView == null || _webView.IsDisposed)

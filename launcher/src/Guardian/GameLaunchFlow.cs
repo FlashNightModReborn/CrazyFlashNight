@@ -3445,7 +3445,10 @@ namespace CF7Launcher.Guardian
                     {
                         CancelZombieTimer();
                         _windowManager?.ResetEmbedState();
-                        lock (_stateLock) { TransitionToError("worker_flash_exited"); }
+                        if (!GuardianLifecycle.IsShuttingDown)
+                        {
+                            lock (_stateLock) { TransitionToError("worker_flash_exited"); }
+                        }
                         return;
                     }
                     // Phase 2b-ext: Ready 但 reveal 尚未执行 → 属于"启动阶段"而非"玩家关游戏",

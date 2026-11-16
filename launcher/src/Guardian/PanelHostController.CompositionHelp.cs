@@ -25,7 +25,8 @@ namespace CF7Launcher.Guardian
         internal void ConfigureCompositionIntelligence(string webRoot, string profileRoot,
             Action<string> forwardPanelMessage,
             Action<Func<Action<string>>> acquireResponseChannel, Action restoreResponseChannel,
-            bool deferPrewarm = false)
+            bool deferPrewarm = false,
+            SceneTransitionPresentationPolicy presentationPolicy = null)
         {
             if (_compositionIntelligence != null)
                 throw new InvalidOperationException("Intelligence surface already configured");
@@ -35,7 +36,7 @@ namespace CF7Launcher.Guardian
             _intelligenceAcquireResponseChannel = acquireResponseChannel;
             _intelligenceRestoreResponseChannel = restoreResponseChannel;
             _compositionIntelligence = new CompositionHelpSurface(_ownerForm, webRoot, profileRoot,
-                CompositionPanelProfile.Intelligence);
+                CompositionPanelProfile.Intelligence, presentationPolicy: presentationPolicy);
             _compositionIntelligence.AttachHostLifetime(_hostLifetime);
             _compositionIntelligence.HostCloseRequested += context =>
             {
@@ -81,12 +82,14 @@ namespace CF7Launcher.Guardian
         }
 
         internal void ConfigureCompositionHelp(string webRoot, string profileRoot,
-            Action<bool> panelState, Func<string, bool> restoreFocus, bool deferPrewarm = false)
+            Action<bool> panelState, Func<string, bool> restoreFocus, bool deferPrewarm = false,
+            SceneTransitionPresentationPolicy presentationPolicy = null)
         {
             if (_compositionHelp != null) throw new InvalidOperationException("Help surface already configured");
             _compositionPanelState = panelState;
             _compositionRestoreFocus = restoreFocus;
-            _compositionHelp = new CompositionHelpSurface(_ownerForm, webRoot, profileRoot);
+            _compositionHelp = new CompositionHelpSurface(_ownerForm, webRoot, profileRoot,
+                presentationPolicy: presentationPolicy);
             _compositionHelp.AttachHostLifetime(_hostLifetime);
             _compositionHelp.HostCloseRequested += context =>
             {
@@ -170,6 +173,7 @@ namespace CF7Launcher.Guardian
         }
         private bool TryPostToPanelSurface(string json) => SelectedCompositionSurface!=null
             ? SelectedCompositionSurface.TryPost(json) : _web.TryPostToWeb(json);
+        internal bool PostEscapeForHarness() => TryPostToPanelSurface("{\"type\":\"panel_esc\",\"reason\":\"escape\"}");
         private void PostToPanelSurface(string json)
         {
             if (SelectedCompositionSurface!=null) SelectedCompositionSurface.TryPost(json);

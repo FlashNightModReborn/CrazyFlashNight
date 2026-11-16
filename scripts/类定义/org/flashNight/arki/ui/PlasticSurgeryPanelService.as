@@ -21,6 +21,7 @@ class org.flashNight.arki.ui.PlasticSurgeryPanelService {
         _root.gameCommands["plasticSurgerySnapshot"] = function(params) { org.flashNight.arki.ui.PlasticSurgeryPanelService.handle("snapshot", params); };
         _root.gameCommands["plasticSurgeryCommit"] = function(params) { org.flashNight.arki.ui.PlasticSurgeryPanelService.handle("commit", params); };
         _root.gameCommands["plasticSurgeryQuery"] = function(params) { org.flashNight.arki.ui.PlasticSurgeryPanelService.handle("query", params); };
+        _root.gameCommands["openSurgeryForAgent"] = function():Boolean { return _root._agentHarnessActive === true && org.flashNight.arki.ui.PlasticSurgeryPanelService.openPanel(); };
     }
 
     /** 仅专用冷启动入口在安装前锁定。普通 install、重置编辑 session 均不能重新授予写能力。 */

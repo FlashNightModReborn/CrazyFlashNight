@@ -154,7 +154,10 @@ class org.flashNight.neur.Server.ServerManager {
         _pendingCallbacks = {};
 
         // 启动连接：先尝试读端口文件快速连接，失败则 fallback 盲扫
-        if (!_workerMode) org.flashNight.neur.Server.Issue205SourceProbe.install();
+        if (!_workerMode) {
+            org.flashNight.neur.Server.Issue205SourceProbe.install();
+            org.flashNight.neur.Server.AgentHarnessService.install();
+        }
         tryLoadPortsFile();
     }
 
@@ -847,7 +850,8 @@ class org.flashNight.neur.Server.ServerManager {
                 // 任务前插话临时新增奖励：覆盖层已由 Host 落盘，这里只按变化源重读任务定义，
                 // 不写库存/奖励账本；奖励候选未决时也不能丢，否则结算会读不到已生效的增量。
                 && action != "taskRewardOverrideChanged"
-                && action != "itemUseInboxSnapshot" && action != "itemUseCooldownSnapshot") {
+                && action != "itemUseInboxSnapshot" && action != "itemUseCooldownSnapshot"
+                && !(action == "agentHarnessCmd" && params != undefined && params.sub == "world_snapshot")) {
             trace("[GameCmd] reward candidate pending: " + action);
             return;
         }
@@ -881,6 +885,7 @@ class org.flashNight.neur.Server.ServerManager {
         org.flashNight.arki.dialogue.NativeDialogueService.onTransportDisconnected();
         org.flashNight.arki.scene.BookComicService.onTransportDisconnected();
         org.flashNight.arki.ui.NativeGuidanceService.clear();
+        org.flashNight.neur.Server.AgentHarnessService.onTransportDisconnected();
 
         // loot 奖励只存在本地内存；Host 断线时直接让服务续跑 exact journal/effects，
         // 并把同一 authority 收敛到 Web-only SUSPENDED 或终态。不存在 Flash UI 回退。

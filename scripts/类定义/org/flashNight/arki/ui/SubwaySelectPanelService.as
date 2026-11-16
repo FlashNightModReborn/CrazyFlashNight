@@ -26,6 +26,7 @@ class org.flashNight.arki.ui.SubwaySelectPanelService {
         if (_root.gameCommands == undefined) _root.gameCommands = {};
         _root.gameCommands["subwaySelectSnapshot"] = function(params) { org.flashNight.arki.ui.SubwaySelectPanelService.handle("snapshot", params); };
         _root.gameCommands["subwaySelectEnter"] = function(params) { org.flashNight.arki.ui.SubwaySelectPanelService.handle("enter", params); };
+        _root.gameCommands["openSubwayForAgent"] = function():Boolean { return _root._agentHarnessActive === true && org.flashNight.arki.ui.SubwaySelectPanelService.openPanel(); };
     }
 
     public static function openPanel():Boolean {

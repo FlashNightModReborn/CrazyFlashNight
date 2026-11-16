@@ -42,7 +42,9 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             DrugInputService.syncBankView(view, inventory);
 
             var switchKeyCode:Number = Number(rootRef[DrugInputService.getSwitchKeyName()]);
-            var switchKeyDown:Boolean = !isNaN(switchKeyCode) && Key.isDown(switchKeyCode);
+            var switchKeyDown:Boolean = !isNaN(switchKeyCode) && (Key.isDown(switchKeyCode)
+                || (rootRef._agentHarnessActive === true && rootRef._agentHarnessBridge != undefined
+                    && rootRef._agentHarnessBridge.isKeyDown(switchKeyCode) === true));
             DrugInputService.syncSwitchView(view, switchKeyCode, rootRef);
             var switchResult:Object = DrugInputService.updateSwitch(
                 unit, switchKeyDown, inputEnabled, rootRef, view);
@@ -52,7 +54,9 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             for (var lane:Number = 0; lane < DrugInputService.LANE_COUNT; lane++) {
                 var keyName:String = DrugInputService.getKeyName(lane);
                 var keyCode:Number = Number(rootRef[keyName]);
-                var keyDown:Boolean = !isNaN(keyCode) && Key.isDown(keyCode);
+                var keyDown:Boolean = !isNaN(keyCode) && (Key.isDown(keyCode)
+                    || (rootRef._agentHarnessActive === true && rootRef._agentHarnessBridge != undefined
+                        && rootRef._agentHarnessBridge.isKeyDown(keyCode) === true));
                 DrugInputService.syncView(view, lane, keyCode, rootRef);
                 var result:Object = DrugInputService.updateSlot(
                     unit,

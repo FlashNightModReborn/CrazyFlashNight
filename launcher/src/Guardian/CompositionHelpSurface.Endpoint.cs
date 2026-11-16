@@ -11,6 +11,7 @@ namespace CF7Launcher.Guardian
         private long _controllerGeneration, _endpointSessionGeneration, _surfaceHandleEpoch;
         private string _endpointHostLifetime = Guid.NewGuid().ToString("N");
         private CoreWebView2 _endpointCore, _callbackCore;
+        internal CoreWebView2 InternalCoreWebView2 => _disposed ? null : _endpointCore;
         private CoreWebView2CompositionController _callbackController;
         private EventHandler<CoreWebView2WebMessageReceivedEventArgs> _messageAdapter;
         private EventHandler<CoreWebView2AcceleratorKeyPressedEventArgs> _acceleratorAdapter;

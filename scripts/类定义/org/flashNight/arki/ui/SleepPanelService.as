@@ -17,6 +17,7 @@ class org.flashNight.arki.ui.SleepPanelService {
         _root.gameCommands["sleepSnapshot"] = function(params) { org.flashNight.arki.ui.SleepPanelService.handle("snapshot", params); };
         _root.gameCommands["sleepCommit"] = function(params) { org.flashNight.arki.ui.SleepPanelService.handle("commit", params); };
         _root.gameCommands["sleepQuery"] = function(params) { org.flashNight.arki.ui.SleepPanelService.handle("query", params); };
+        _root.gameCommands["openSleepForAgent"] = function():Boolean { return _root._agentHarnessActive === true && org.flashNight.arki.ui.SleepPanelService.openPanel(); };
         EventBus.getInstance().subscribe("SceneChanged", onSceneChanged, org.flashNight.arki.ui.SleepPanelService);
     }
 
