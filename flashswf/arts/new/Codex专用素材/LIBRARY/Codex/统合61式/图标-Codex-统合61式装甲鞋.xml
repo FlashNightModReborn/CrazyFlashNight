@@ -18,90 +18,6 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="独立孔口0" color="#4FFF4F">
-          <frames>
-            <DOMFrame index="0" duration="1" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-7" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="0.278008068" b="0.000000000" c="0.000000000" d="0.278008068" tx="1.215399588" ty="-0.406391549"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="1" duration="1" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-7" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="0.278008068" b="0.000000000" c="0.000000000" d="0.278008068" tx="1.215399588" ty="-0.406391549"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="独立孔口1" color="#4FFF4F">
-          <frames>
-            <DOMFrame index="0" duration="1" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-6" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="0.278008068" b="0.000000000" c="0.000000000" d="0.278008068" tx="1.215399588" ty="-0.406391549"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="1" duration="1" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-6" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="0.278008068" b="0.000000000" c="0.000000000" d="0.278008068" tx="1.215399588" ty="-0.406391549"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="独立孔口2" color="#4FFF4F">
-          <frames>
-            <DOMFrame index="0" duration="1" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-5" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="0.278008068" b="0.000000000" c="0.000000000" d="0.278008068" tx="1.215399588" ty="-0.406391549"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="1" duration="1" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-5" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="0.278008068" b="0.000000000" c="0.000000000" d="0.278008068" tx="1.215399588" ty="-0.406391549"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="24×24物品栏遮罩3" color="#4FFF4F" layerType="mask" locked="true">
           <frames>
             <DOMFrame index="0" duration="1" keyMode="9728">
@@ -146,13 +62,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="部件特写3" color="#4FFF4F" parentLayerIndex="4" locked="true">
+        <DOMLayer name="R01 靴甲静态图形" color="#4FFF4F" parentLayerIndex="1" locked="true">
           <frames>
             <DOMFrame index="0" duration="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/统合61式/图标分层/装甲鞋-静态0" centerPoint3DX="46.15" centerPoint3DY="32.3">
+                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
-                    <Matrix a="0.278008068" d="0.278008068" tx="1.215399588" ty="-0.406391549" b="0.000000000" c="0.000000000"/>
+                    <Matrix a="0.278008068" b="0.000000000" c="0.000000000" d="0.278008068" tx="1.215399588" ty="-0.406391549"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -162,9 +78,9 @@
             </DOMFrame>
             <DOMFrame index="1" duration="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/统合61式/图标分层/装甲鞋-静态0" centerPoint3DX="46.15" centerPoint3DY="32.3">
+                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
-                    <Matrix a="0.278008068" d="0.278008068" tx="1.215399588" ty="-0.406391549" b="0.000000000" c="0.000000000"/>
+                    <Matrix a="0.278008068" b="0.000000000" c="0.000000000" d="0.278008068" tx="1.215399588" ty="-0.406391549"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
