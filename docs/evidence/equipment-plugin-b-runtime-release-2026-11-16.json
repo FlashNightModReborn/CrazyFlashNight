@@ -120,16 +120,6 @@
     "ownedLauncherProcessesRemaining": 0,
     "scope": "Fresh handoff/title-frame, active production workbench and first authoritative snapshot only"
   },
-  "pendingBusinessAcceptance": {
-    "preview": false,
-    "commit": false,
-    "clonePersistenceRestart": false,
-    "wornPhysicalJourney": false,
-    "safeExitUiJourneyVerified": false,
-    "unknownWriteFaultJourneyVerified": false,
-    "desktop": "Capture was black; failed to activate captured window, then same failure after refreshing window selection. Desktop inputs stopped.",
-    "previewOnlyToolLimit": "Static check: verify-journey.js expects JSON WebDebug while current production diagnostics are redacted key/value; no relaxation applied. The commit verifier already contains a redacted-format branch. Actual preview-only qualification remains pending."
-  },
   "openerFixtureIteration": {
     "code": "business_action_before_clone_baseline",
     "cause": "Level1 fixture intentionally triggered existing automatic enhance preview; no commit or inventory mutation; clone semantics unchanged; exact owned process normally shut down before preparing new seed.",
@@ -152,9 +142,98 @@
     "oldTagRequestAndFailedReceiptPreserved": true
   },
   "morningAcceptance": [
-    "恢复可交互桌面后，补做专用测试档的真实预览、背包/穿戴提交和保存重启读回；这些今晚尚未验收。",
-    "用原反馈那套装备复验：安装灰蛊裂隙弹后继续安装、替换其他合法插件，确认背包与穿戴栏都能正常操作。",
-    "查看拆除或替换时的受影响插件、返还材料与拒绝提示，确认实际行为符合你的预期。",
-    "正常战斗几分钟并走一次你惯用的保存退出和重新进入流程，验收画面、手感与日常使用体验。"
-  ]
+    "完成已发送的 TTI 替换、AA12 安装替换及穿戴栏拆除/安装/替换，再保存退出；Agent 将核对三件装备和材料并无播种重启读回。",
+    "由原反馈测试员以同一套装备与候选复测 #254；当前控制测试档不能代替原反馈组合。",
+    "正常战斗几分钟，验收画面、手感与日常使用体验。"
+  ],
+  "businessAcceptance": {
+    "status": "partial",
+    "operator": "user physical UI",
+    "targetSlot": "cf7_agent_equipment_tuning",
+    "fullPgGatePassed": false,
+    "targetedAcceptanceComplete": false,
+    "firstBagInstallRoundTrip": {
+      "passed": true,
+      "weapon": "TTI Glock 19",
+      "containerId": "背包",
+      "slot": 0,
+      "modsBefore": [
+        "灰蛊裂隙弹"
+      ],
+      "modsPersisted": [
+        "灰蛊裂隙弹",
+        "弹簧"
+      ],
+      "modsReloaded": [
+        "灰蛊裂隙弹",
+        "弹簧"
+      ],
+      "materialsBefore": {
+        "弹簧": 10,
+        "螺丝套件": 10,
+        "加长弹匣": 4,
+        "磁稳贯穿弹": 10
+      },
+      "materialsPersisted": {
+        "弹簧": 9,
+        "螺丝套件": 10,
+        "加长弹匣": 4,
+        "磁稳贯穿弹": 10
+      },
+      "materialsReloaded": {
+        "弹簧": 9,
+        "螺丝套件": 10,
+        "加长弹匣": 4,
+        "磁稳贯穿弹": 10
+      },
+      "savedSha256": "97702135e435997c6fce2aba5d5e6fb94e486aab82469a8d34a5d962b3ba23d7",
+      "savedUtf16Chars": 24713,
+      "oldPid": 22204,
+      "newPid": 9552,
+      "sameFormalRuntimeIdentity": true,
+      "restartReseeded": false,
+      "stateRef": "sha256_57c6055f9f3cd0a0283c93bc",
+      "reloadEvidence": {
+        "ok": true,
+        "evidence": {
+          "kind": "host_snapshot",
+          "lineNumber": 13004,
+          "callId": "tune.tune.mwiil9jy.fxotte.1.1",
+          "panelInstanceId": "panel_fiVbQN-TJV1khJ93Gzk94mTd",
+          "viewSessionId": "tuning.mwiil9ks.bswqe0",
+          "sourceKey": "sha256_c8622f864714497537605879",
+          "stateRef": "sha256_57c6055f9f3cd0a0283c93bc",
+          "writeEpoch": 0,
+          "requestLineNumber": 13002,
+          "source": {
+            "sourceKind": "inventory",
+            "containerId": "背包",
+            "slot": 0,
+            "expectedLeaseRef": "sha256_d283253b36bd315c29548d0f"
+          }
+        },
+        "assertions": {
+          "sameStableInventoryCoordinate": true,
+          "committedStateRefReadBack": true,
+          "restartLeaseMayRotate": true
+        }
+      },
+      "localReceipt": "work/live-roundtrips/tti-install.json"
+    },
+    "remaining": [
+      "bag TTI replacement/refund",
+      "bag AA12 install/replacement/refund",
+      "worn pistol2 detach/install/replacement/refund",
+      "batch save-exit/restart readback"
+    ],
+    "safeExitUiJourneyVerified": false,
+    "unknownWriteFaultJourneyVerified": false,
+    "inputAndGateLimitations": "解锁后能够读取界面，但两个界面工具均把游戏内嵌 WebView 误判为另一窗口，拒绝点击。按钮由用户物理操作，Agent 连续只读记录、核对存档并从正式入口重启同一测试副本。此前固定 2000 行日志尾窗的完整 PG 尝试因 log_gap_after_watermark 失败，失败回执保留；实际事务与重启分别通过现役纯验证器及存档检查，作为专项补充证据，不改签完整 PG 通过。",
+    "failedFullPgReceiptsPreserved": [
+      "tmp/equipment-tuning/commit-journeys/20261115T233924707Z-2760/receipt.json",
+      "tmp/equipment-tuning/commit-journeys/20261115T235055401Z-15248/receipt.json",
+      "tmp/equipment-tuning/commit-journeys/20261115T235540053Z-10768/receipt.json"
+    ],
+    "previewOnlyGatePassed": false
+  }
 }
