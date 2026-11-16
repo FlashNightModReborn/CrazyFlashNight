@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/总技能" itemID="69d8c150-00000509" lastModified="1785921743" lastUniqueIdentifier="181">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/Lady2.0/总技能" itemID="69d8c150-00000509" lastModified="1794800474" lastUniqueIdentifier="181">
   <timeline>
-    <DOMTimeline name="总技能" currentFrame="574" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-79&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;62&lt;/guideline&gt;&lt;guideline direction="h"&gt;-455&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="总技能" currentFrame="405" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-79&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;62&lt;/guideline&gt;&lt;guideline direction="h"&gt;-455&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="招式名字" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -20,14 +20,18 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="174" duration="78" name="fm92榴弹" labelType="name" keyMode="9728">
-              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:175, lastFrame:253};]]></script></Actionscript>
+              <Actionscript>
+                <script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:175, lastFrame:253};]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="252" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="253" duration="66" name="寒冰喷射器" labelType="name" keyMode="9728">
-              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:254, lastFrame:320};]]></script></Actionscript>
+              <Actionscript>
+                <script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:254, lastFrame:320};]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="319" keyMode="9728">
@@ -61,14 +65,18 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="602" duration="50" name="组合舞刃" labelType="name" keyMode="9728">
-              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:603, lastFrame:653};]]></script></Actionscript>
+              <Actionscript>
+                <script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:603, lastFrame:653};]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="652" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="653" duration="101" name="近喷" labelType="name" keyMode="9728">
-              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:654, lastFrame:754};]]></script></Actionscript>
+              <Actionscript>
+                <script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:654, lastFrame:754};]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -693,7 +701,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="位移层" color="#66FFFF" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="位移层" color="#66FFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="331" keyMode="9728">
               <elements/>
@@ -733,7 +741,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="伤害框" color="#00FF00" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="伤害框" color="#00FF00" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -3256,14 +3264,14 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.发射效果 = "战斗步枪枪火";
 	子弹属性.子弹散射度 = 3;
-	子弹属性.子弹种类 = "爆炸狙击子弹";
+	子弹属性.子弹种类 = "爆炸集束子弹";
 // 等级判断
 	if (_parent._parent.等级 >= 50) {
 		子弹属性.子弹威力 = _parent._parent.空手攻击力 * 7.5;
 	} else {
 		子弹属性.子弹威力 = _parent._parent.空手攻击力 * 4.5;
 	}
-	子弹属性.子弹速度 = 50;
+	子弹属性.子弹速度 = 60;
 	子弹属性.Z轴攻击范围 = 30.
 	子弹属性.击倒率 = 15;
 	子弹属性.水平击退速度 = NaN;
@@ -3322,14 +3330,14 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.发射效果 = "战斗步枪枪火";
 	子弹属性.子弹散射度 = 3;
-	子弹属性.子弹种类 = "爆炸狙击子弹";
+	子弹属性.子弹种类 = "爆炸集束子弹";
 // 等级判断
 	if (_parent._parent.等级 >= 50) {
 		子弹属性.子弹威力 = _parent._parent.空手攻击力 * 7.5;
 	} else {
 		子弹属性.子弹威力 = _parent._parent.空手攻击力 * 4.5;
 	}
-	子弹属性.子弹速度 = 50;
+	子弹属性.子弹速度 = 60;
 	子弹属性.Z轴攻击范围 = 30.
 	子弹属性.击倒率 = 15;
 	子弹属性.水平击退速度 = NaN;
@@ -3388,14 +3396,14 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.发射效果 = "战斗步枪枪火";
 	子弹属性.子弹散射度 = 3;
-	子弹属性.子弹种类 = "爆炸狙击子弹";
+	子弹属性.子弹种类 = "爆炸集束子弹";
 // 等级判断
 	if (_parent._parent.等级 >= 50) {
 		子弹属性.子弹威力 = _parent._parent.空手攻击力 * 7.5;
 	} else {
 		子弹属性.子弹威力 = _parent._parent.空手攻击力 * 4.5;
 	}
-	子弹属性.子弹速度 = 50;
+	子弹属性.子弹速度 = 60;
 	子弹属性.Z轴攻击范围 = 30.
 	子弹属性.击倒率 = 15;
 	子弹属性.水平击退速度 = NaN;
@@ -137713,10 +137721,10 @@ onClipEvent(load){
                   <edges>
                     <Edge fillStyle1="1" edges="!-12720 -4864|-12770 -5650!-12770 -5650[-12551 -3559 -10809 -2027!-10809 -2027|-10930 -2468!-10930 -2468|-10092 -1901!-10092 -1901|-10206 -2264!-10206 -2264|-9096.5 -1757!-9096.5 -1757[#FFD88B.F4 #FFFAE6.CE -8459 -132!-8459 -132[-11731
  -169 -12615 -3573"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="
-!-12615 -3573|-12720 -4864"/>
-                    <Edge fillStyle0="2" edges="
-!-12720 -4864|-12673 -3810!-12673 -3810[-12652 -3719 -12629 -3628!-12629 -3628[-12624 -3601 -12616 -3576!-12616 -3576[-12616 -3575 -12615 -3573"/>
+                    <Edge fillStyle1="2" edges="
+!-12615 -3573[-12616 -3575 -12616 -3576!-12616 -3576[-12624 -3601 -12629 -3628!-12629 -3628[-12652 -3719 -12673 -3810!-12673 -3810|-12720 -4864"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-12720 -4864|-12615 -3573"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">

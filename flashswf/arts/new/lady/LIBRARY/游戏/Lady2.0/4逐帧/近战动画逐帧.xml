@@ -5,7 +5,9 @@
         <DOMLayer name="代码层" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="45" keyMode="9728">
-              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:1, lastFrame:46};]]></script></Actionscript>
+              <Actionscript>
+                <script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:1, lastFrame:46};]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="45" keyMode="9728">
