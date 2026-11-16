@@ -59,7 +59,8 @@ namespace CF7Launcher.Guardian
             return command == "equipEquipment"
                 || command == "unequipEquipment"
                 || command == "equipDrug"
-                || command == "unequipDrug";
+                || command == "unequipDrug"
+                || command == "configureEmergencyInjection";
         }
 
         internal static bool IsEquipmentSlotKey(string slotKey)
@@ -123,6 +124,9 @@ namespace CF7Launcher.Guardian
                 case "unequipDrug":
                     action = "characterBuildUnequipDrug";
                     return true;
+                case "configureEmergencyInjection":
+                    action = "characterBuildConfigureEmergencyInjection";
+                    return true;
                 default:
                     action = null;
                     return false;
@@ -158,7 +162,34 @@ namespace CF7Launcher.Guardian
                 ["sessionGeneration"] = sessionGeneration
             };
 
-            if (command == "equipEquipment"
+            if (command == "configureEmergencyInjection")
+            {
+                long expectedRevision;
+                int slot;
+                if (!IsExactObject(payload, Set("v", "sessionGeneration", "expectedDrugRevision",
+                        "enabled", "drugSlot", "expectedItemName"))
+                    || payload["enabled"].Type != JTokenType.Boolean
+                    || !TryReadInteger(payload["expectedDrugRevision"], 0, int.MaxValue, out expectedRevision)
+                    || !TryReadInteger(payload["drugSlot"], -1, 7, out slot)
+                    || !IsBoundedText(payload["expectedItemName"], 160, true))
+                {
+                    error = "invalid_payload";
+                    return false;
+                }
+                bool enabled = payload.Value<bool>("enabled");
+                string itemName = payload.Value<string>("expectedItemName");
+                if (enabled ? slot < 0 || string.IsNullOrWhiteSpace(itemName)
+                    : slot != -1 || itemName != "")
+                {
+                    error = "invalid_payload";
+                    return false;
+                }
+                result["expectedDrugRevision"] = expectedRevision;
+                result["enabled"] = enabled;
+                result["drugSlot"] = slot;
+                result["expectedItemName"] = itemName;
+            }
+            else if (command == "equipEquipment"
                 || command == "unequipEquipment")
             {
                 bool equip = command == "equipEquipment";
@@ -255,7 +286,7 @@ namespace CF7Launcher.Guardian
                 || ReadString(message["operation"]) != command
                 || !TryReadInteger(
                     message["affectedBackpackSlot"],
-                    0,
+                    command == "configureEmergencyInjection" ? -1 : 0,
                     BackpackSlotCount - 1,
                     out affectedBackpackSlot)
                 || !IsLoadoutProjection(message["payload"] as JObject, true)
@@ -266,6 +297,21 @@ namespace CF7Launcher.Guardian
             }
 
             changed = message.Value<bool>("changed");
+            if (command == "configureEmergencyInjection")
+            {
+                JObject projection = (JObject)message["payload"];
+                JObject configuration = projection["emergencyInjection"] as JObject;
+                bool enabled = normalizedRequest.Value<bool>("enabled");
+                int slot = normalizedRequest.Value<int>("drugSlot");
+                string itemName = normalizedRequest.Value<string>("expectedItemName");
+                if (affectedBackpackSlot != -1 || !IsEmergencyInjectionProjection(configuration)
+                    || configuration.Value<bool>("enabled") != enabled
+                    || configuration.Value<int>("physicalSlot") != slot
+                    || configuration.Value<string>("itemKey") != itemName
+                    || configuration.Value<string>("status") != (enabled ? "authorized" : "disabled")) return false;
+                return !enabled || (projection["drugs"][slot].Value<bool>("occupied")
+                    && projection["drugs"][slot]["item"].Value<string>("name") == itemName);
+            }
             JObject source = normalizedRequest["source"] as JObject;
             if ((command == "equipEquipment" || command == "equipDrug")
                 && (source == null
@@ -338,8 +384,11 @@ namespace CF7Launcher.Guardian
                 "equipment", "drugs", "drugLayout", "portrait",
                 "stateHealth", "diagnostics");
             if (hasCandidateFacets) expectedKeys.Add("candidateFacets");
+            bool hasEmergencyInjection = payload != null && payload["emergencyInjection"] != null;
+            if (hasEmergencyInjection) expectedKeys.Add("emergencyInjection");
             if (!IsExactObject(
                     payload, expectedKeys)
+                || (hasEmergencyInjection && !IsEmergencyInjectionProjection(payload["emergencyInjection"] as JObject))
                 || !(payload["equipment"] is JArray equipment)
                 || equipment.Count != EquipmentSlots.Length
                 || !(payload["drugs"] is JArray drugs)
@@ -423,6 +472,19 @@ namespace CF7Launcher.Guardian
                     return false;
                 }
             }
+            if (hasEmergencyInjection)
+            {
+                JObject configuration = (JObject)payload["emergencyInjection"];
+                if (configuration.Value<bool>("enabled"))
+                {
+                    JObject row = (JObject)drugs[configuration.Value<int>("physicalSlot")];
+                    bool occupied = row.Value<bool>("occupied");
+                    string itemKey = occupied ? row["item"].Value<string>("name") : null;
+                    string status = configuration.Value<string>("status");
+                    bool same = occupied && itemKey == configuration.Value<string>("itemKey");
+                    if (status == "authorized" ? !same : status == "empty" ? occupied : !occupied || same) return false;
+                }
+            }
             return !hasCandidateFacets
                 || IsCandidateFacetProjection(
                     payload["candidateFacets"] as JObject);
@@ -433,6 +495,22 @@ namespace CF7Launcher.Guardian
         /// present, the complete inventory facet tree is strict and self-consistent so Web can
         /// distinguish an authoritative zero from an unavailable/unknown count.
         /// </summary>
+        internal static bool IsEmergencyInjectionProjection(JObject value)
+        {
+            int version, slot;
+            if (!IsExactObject(value, Set("v", "enabled", "physicalSlot", "itemKey", "status"))
+                || !TryReadInteger(value["v"], 1, 1, out version)
+                || value["enabled"].Type != JTokenType.Boolean
+                || !TryReadInteger(value["physicalSlot"], -1, 7, out slot)
+                || !IsBoundedText(value["itemKey"], 160, true)) return false;
+            string status = ReadString(value["status"]);
+            bool enabled = value.Value<bool>("enabled");
+            string item = value.Value<string>("itemKey");
+            if (enabled) return slot >= 0 && !string.IsNullOrWhiteSpace(item)
+                && (status == "authorized" || status == "empty" || status == "item_changed");
+            return status == "disabled" || (status == "unsupported_config" && slot == -1 && item == "");
+        }
+
         internal static bool IsCandidateFacetProjection(JObject projection)
         {
             int filterItemCount;

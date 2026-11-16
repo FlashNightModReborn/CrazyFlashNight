@@ -1047,12 +1047,12 @@ async function runViewport(browser, port, viewport) {
             };
         });
         check(cooldown.ready.every(value => value === 'false')
-            && cooldown.blocked.every(value => value === 'true')
-            && cooldown.disabled.every(value => value === 'true')
+            && cooldown.blocked.every(value => value === null)
+            && cooldown.disabled.every(value => value === null)
             && cooldown.progress.every(value => value === '33')
             && cooldown.remaining.every(value => value === '2000')
             && cooldown.switchStatus.includes('冷却 2.0s'),
-            label + ' paired drug slots and switch affordance expose the same cooldown lock',
+            label + ' paired drug slots expose shared cooldown while remaining selectable for inspection and authorization',
             JSON.stringify(cooldown));
 
         await page.evaluate(() => CharacterBuildHarness.setScenario('full'));
@@ -1525,6 +1525,43 @@ async function runViewport(browser, port, viewport) {
                 fullPage:true
             });
         }
+        const emergencyControls = await page.evaluate(() => {
+            const h = CharacterBuildHarness, v = h.view;
+            v.mount(v.root.parentNode);
+            v.mount(v.root.parentNode);
+            const row = document.querySelector('[data-emergency-row]');
+            const authorize = document.querySelector('[data-build-action="emergencyAuthorize"]');
+            const disable = document.querySelector('[data-build-action="emergencyDisable"]');
+            const legacyHidden = row.hidden;
+            const snapshot = JSON.parse(JSON.stringify(h.fixtures.full));
+            snapshot.emergencyInjection = {v:1, enabled:false, physicalSlot:-1, itemKey:'', status:'disabled'};
+            const calls = [];
+            v._onEmergencyInjection = enabled => calls.push(enabled);
+            v.setSnapshot(snapshot);
+            document.querySelector('[data-roving-key="drug:drug5"]').click();
+            const selectable = !row.hidden && !authorize.disabled && disable.hidden;
+            authorize.click();
+            snapshot.emergencyInjection = {v:1, enabled:true, physicalSlot:4,
+                itemKey:snapshot.drugs.drug5.presentation.name, status:'authorized'};
+            v.setSnapshot(snapshot);
+            document.querySelector('[data-roving-key="drug:drug5"]').click();
+            const active = authorize.disabled && !disable.hidden
+                && row.textContent.includes('第2组1号')
+                && authorize.getAttribute('aria-label').includes(snapshot.drugs.drug5.presentation.name);
+            v.setInteractionState('write_pending');
+            const pending = authorize.disabled && disable.disabled;
+            v.setInteractionState('idle');
+            disable.click();
+            const bounds = row.getBoundingClientRect();
+            const fits = bounds.left >= 0 && bounds.right <= innerWidth && row.scrollWidth <= row.clientWidth;
+            v.setSnapshot(h.fixtures.full);
+            return {legacyHidden, selectable, active, pending, fits, calls};
+        });
+        check(emergencyControls.legacyHidden && emergencyControls.selectable
+            && emergencyControls.active && emergencyControls.pending && emergencyControls.fits
+            && JSON.stringify(emergencyControls.calls) === '[true,false]',
+            label + ' emergency authorization identifies inactive physical slot, locks pending writes and fits the drug area',
+            JSON.stringify(emergencyControls));
         const candidateDestroy = await page.evaluate(() => {
             CharacterBuildHarness.setScenario('blocked');
             document.querySelector('[data-roving-key="armor:头部装备"]').click();

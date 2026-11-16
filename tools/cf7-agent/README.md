@@ -670,8 +670,14 @@ orchestration without requiring desktop Computer Use:
   `ModifierOverlay` / AS2 panels, durable `save_and_exit` fence, and headless `SceneTransition`
   fence support under locked desktops.
 - **AS2 world observation & virtual input (`AgentHarnessService.as`)**:
-  isolated `_root._agentHarnessActive` world snapshot, virtual input mask, key overrides,
+  isolated `_root._agentHarnessActive` world snapshot, virtual input mask, key overrides (including
+  the five weapon-mode keys through the authored player consumer, retaining admission/ownership guards),
   `move_to` navigation, and AS2 panel openers.
+  `hero.combatResources` adds detached, read-only pistol capacity/shot/overload fields and the
+  existing Titanium set shield/synthesis/MP counters for resource acceptance. It also projects
+  Unified61's existing buffer state and the shared emergency authorization/crisis/consumption
+  counters; these are detached snapshots, not mutation or trigger controls. Observation never
+  calls ammo migration, ticks the set, synthesizes rounds, or writes a save; normal unbound play remains inert.
 
 Register into Codex (`[mcp_servers.cf7_harness]`):
 

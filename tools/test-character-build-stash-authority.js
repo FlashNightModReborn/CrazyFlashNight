@@ -276,6 +276,7 @@ check('build suspend keeps a held channel alive and closes it after release', fu
         _candidateTooltip:null,
         _candidateCache:null,
         _stopItemUseCooldownPolling:function() { return true; },
+        _destroyChoiceRewards:Build.CharacterBuildController.prototype._destroyChoiceRewards,
         _itemUse:itemUse,
         _itemUseHolds:1,
         _itemUseBindKey:'k',

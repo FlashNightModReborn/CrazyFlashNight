@@ -2,26 +2,29 @@
  * Pure character-build mutation descriptors and response proofs.
  *
  * Session owns transport/state; controller owns UI and the inventory write gate.
- * This leaf only reconstructs the four frozen commands and validates their two
+ * This leaf reconstructs explicit loadout/configuration commands and validates their
  * authoritative write-after projections.
  */
 (function(root, factory) {
     'use strict';
-    var api = factory();
+    var controls = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-drug-controls.js') : root && root.CharacterBuildDrugControls;
+    var api = factory(controls);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
         root.CF7.CharacterBuildMutation = api;
         root.CharacterBuildMutation = api;
     }
-})(typeof window !== 'undefined' ? window : globalThis, function() {
+})(typeof window !== 'undefined' ? window : globalThis, function(DrugControls) {
     'use strict';
 
     var MUTATIONS = {
         equipEquipment:true,
         unequipEquipment:true,
         equipDrug:true,
-        unequipDrug:true
+        unequipDrug:true,
+        configureEmergencyInjection:true
     };
 
     function integer(value, min, max) {
@@ -94,6 +97,18 @@
         var equipment = intent.cmd === 'equipEquipment' || intent.cmd === 'unequipEquipment';
         var equip = intent.cmd === 'equipEquipment' || intent.cmd === 'equipDrug';
         if (payload.sessionGeneration === null) return null;
+        if (intent.cmd === 'configureEmergencyInjection') {
+            if (typeof intent.enabled !== 'boolean' || typeof intent.expectedItemName !== 'string'
+                    || intent.expectedItemName.length > 160 || /[\u0000-\u001f\u007f-\u009f]/.test(intent.expectedItemName)) return null;
+            payload.expectedDrugRevision = integer(state.drugRevision, 0, 2147483647);
+            payload.enabled = intent.enabled;
+            payload.drugSlot = integer(intent.drugSlot, -1, 7);
+            payload.expectedItemName = intent.expectedItemName;
+            if (payload.expectedDrugRevision === null || payload.drugSlot === null
+                    || (payload.enabled ? payload.drugSlot < 0 || !payload.expectedItemName.trim()
+                        : payload.drugSlot !== -1 || payload.expectedItemName !== '')) return null;
+            return payload;
+        }
         if (equipment) {
             if (!String(intent.slotKey || '')) return null;
             payload.expectedLoadoutRevision = integer(state.loadoutRevision, 0, 2147483647);
@@ -131,13 +146,14 @@
         }
         return true;
     }
-    function validMutationResult(response, command, validProjection, expectedSourceSlot) {
+    function validMutationResult(response, command, validProjection, expectedSourceSlot, expectedEmergency) {
         if (!response || MUTATIONS[command] !== true
                 || response.operation !== command
                 || typeof response.changed !== 'boolean'
-                || integer(response.affectedBackpackSlot, 0, 49) === null
+                || integer(response.affectedBackpackSlot, command === 'configureEmergencyInjection' ? -1 : 0, 49) === null
                 || !validProjection(response.payload)
                 || !validFullBackpackSnapshots(response.inventorySnapshots)) return false;
+        if (command === 'configureEmergencyInjection') return DrugControls.validMutationProof(response, expectedEmergency);
         return command.indexOf('equip') !== 0
             || response.affectedBackpackSlot === expectedSourceSlot;
     }
@@ -199,6 +215,8 @@
             callId = this._session.equipDrug(intent.drugSlot, intent.source, done);
         } else if (intent.cmd === 'unequipDrug') {
             callId = this._session.unequipDrug(intent.drugSlot, done);
+        } else if (intent.cmd === 'configureEmergencyInjection') {
+            callId = this._session.configureEmergencyInjection(intent.enabled, intent.drugSlot, intent.expectedItemName, done);
         }
         if (!callId) {
             this._completeInventory(null);
@@ -213,6 +231,9 @@
     };
     MutationCoordinator.prototype.unequip = function(target) {
         return this.start(unequipIntent(target));
+    };
+    MutationCoordinator.prototype.configureEmergencyInjection = function(enabled, target) {
+        return this.start(DrugControls.intent(this._session.getSnapshot(), enabled, target));
     };
     MutationCoordinator.prototype.reconcile = function() {
         if (!this._pending || this._session.getState() !== 'needs_reconcile') return false;

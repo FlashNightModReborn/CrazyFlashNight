@@ -126,6 +126,11 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
      */
     public static function calculateDamage(bullet, shooter, hitTarget, overlapRatio, dodgeState):DamageResult {
         if (_root.gameworld.__stageIntroExecutionHeld === true) return DamageResult.NULL;
+        // 只有明确授权的当前玩家具备此对象；其HP访问器延后到整笔最终提交再注射。
+        var injector:Object = hitTarget.__emergencyInjector;
+        if (injector != undefined && injector.damageDepth === 0) {
+            return injector.settleDamage(bullet, shooter, hitTarget, overlapRatio, dodgeState);
+        }
         // 获取子弹关联的 DamageManager 对象
         var manager:DamageManager = bullet.damageManager;
 

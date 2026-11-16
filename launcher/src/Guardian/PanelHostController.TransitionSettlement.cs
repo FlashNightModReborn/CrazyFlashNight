@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian
 {
@@ -39,6 +40,7 @@ namespace CF7Launcher.Guardian
         internal void ConfigureTransitionSettlement(SceneTransitionController controller)
         {
             _sceneSettlement=controller;
+            controller.PanelAdmissionAvailable+=OnTransitionPanelAdmissionAvailable;
             controller.SettlementSurface.AttachHostLifetime(_hostLifetime);
             controller.ConfigureExclusivePresentation(() => SceneTransitionController.IsExclusivePresentation(_activePanel, _activePanelInstanceId));
             bool ExactIntroEndpoint(string instance) => !_disposed && IsIntroComicEndpointPresented(
@@ -75,6 +77,25 @@ namespace CF7Launcher.Guardian
                 if(!_transitionSettlementPaused)
                     LogManager.Log("event=scene_settlement_pause_failed instance="+_activePanelInstanceId);
             };
+        }
+
+        private void OnTransitionPanelAdmissionAvailable()
+        {
+            if(!_disposed && _sceneSettlement?.BlocksOrdinaryPanelOpen==false)
+                FlushDeferredBarrierOpen();
+        }
+
+        private bool SceneTransitionBlocksOpen(string panel,string initJson)
+        {
+            if(_sceneSettlement?.BlocksOrdinaryPanelOpen!=true) return false;
+            // These two endpoints participate in the transition itself. Their
+            // existing exact authority checks, rather than panel names, grant entry.
+            if(panel=="loot" && _sceneSettlement.CanAdmitSettlement(initJson)) return false;
+            if(panel=="book-comic") {
+                try { if(_sceneSettlement.CanAdmitIntroComic(JObject.Parse(initJson ?? ""))) return false; }
+                catch(Newtonsoft.Json.JsonException) { }
+            }
+            return true;
         }
 
         private bool OpenTransitionSettlement(PanelGeometrySnapshot geometry,string initJson,

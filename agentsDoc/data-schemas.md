@@ -357,6 +357,8 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 ### 消耗品药效 `<effects>` 与持续效果域
 
+两套61五甲的应急注射配置独立保存在`mydata.ext.emergencyInjection = {version:1, enabled:boolean, physicalSlot:-1..7, itemKey:string}`，不提升主体存档3.0或`drugLoadout`版本。缺失默认关闭；显式开启须绑定现存物理槽及药名，关闭写`-1/空串`，换成不同物品撤销授权，同名耗尽与补充保留。未知配置版本原样透传、失败关闭；`drugLoadout`原槽亲和不是授权。唯一读写入口为`EmergencyInjectionService`，配置经既有SaveManager扩展透传与脏标记保存；危机记忆只存在当前读档会话，不进入存档。玩法与边界见[钛合金ADR §9](../docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md#9-应急自动注射器)。
+
 `data/items/消耗品_药剂*.xml` 的 `<effects>` 按物理顺序执行。现有基础类型为 `heal / regen / state / purify / buff / playEffect / message / grantItem / global`；九龙批次新增四个封闭类型：
 
 - `buffDomain domain="meal|enhancer"`：必须位于持续效果之前；移除同域旧药剂登记的 Buff，再登记本次 `buff`、`regen` 和专用 Buff 的真实返回 ID。`meal` 与 `enhancer` 各保留一个槽且可以并存，即时医疗效果不占槽。
@@ -494,6 +496,8 @@ producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、�
 插件只通过 `merge.overload.ghostLimit` 提高已有资格枪械的幽灵上限；运行时取 `max(ghost, ghostLimit)`、硬上限 2，并独立要求冲击连携启用。内构套件单独安装不能授予资格或替代技能。留膛、幽灵、奖励各占自己的配额；拆装或技能失效只收缩相应来源。装备注释由 `GunStatsBuilder` 在普通弹容数字后插入 `WeaponAmmoInfoBuilder` 生成的彩色 `+N`，按留膛青色、幽灵黄色、奖励紫色展示最终合成后的条件上限；不读取当前弹药或玩家技能状态，不逐件重复机制正文。技能要求与散布代价归「冲击连携」，完整规则与颜色图例归游戏帮助「基本操作」的装填章节。插件 `merge.overload` 保留简短上限及资格说明，不能输出原始对象或把合并值相加。具体名单以武器 XML 为准，改动后执行 `python tools/validate-weapon-ammo.py` 及 `scripts/run-weapon-ammo-data-tests.ps1`，覆盖真实 XMLParser、插件合并和运行时消费者。
 
 `value.ammoState` 是 AS2 持久化弹药状态，`shot=capacity-实际总弹数` 继续兼容旧消费者，合法超装可令 `shot` 为负。状态分别记录留膛、幽灵、奖励、付费普通/留膛计数和原弹种拆包余额。旧 tube `reloadCount` 仅迁移一次，随后该字段只承载非 tube 枪械师战术回收；不可用它覆盖付费余额。HUD 只读投影，不修复或迁移业务状态。机制及散射口径见[散射度规范](../data/items/weapon-diffusion-guidelines.md)。
+
+钛合金五甲合成弹药时，武器`data.ammoSynthesisMpPerRound`可声明固定正整数MP成本；当前仅钛合金P90声明3，仍受套装最低3MP与合法弹药包校验。其他枪械按当前弹药包基础价和改装后普通弹容折算，取整、储备与两槽调度归[套装ADR §6.2](../docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md#62-基础蓝弹守恒与p90额外发电)。该字段不改变弹容、库存换弹或射击返蓝。
 
 ### 联弹双层配置与补弹参数（2026-06-12 起）
 

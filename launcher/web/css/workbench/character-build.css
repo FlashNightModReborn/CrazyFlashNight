@@ -863,6 +863,22 @@
     display:none;
 }
 .character-build-candidate-overlay[hidden] { display:none; }
+.character-build-emergency-row {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:4px;
+    margin-top:6px;
+    color:var(--wb-muted);
+    font-size:11px;
+}
+.character-build-emergency-row[hidden] { display:none; }
+.character-build-emergency-row [data-emergency-status] {
+    flex:1 1 100%;
+    min-width:0;
+    overflow-wrap:anywhere;
+}
+.character-build-emergency-row .workbench-mode-btn { min-height:28px; }
 .character-build-workbench[data-interaction-state="write_pending"] .character-build-body,
 .character-build-workbench[data-interaction-state="needs_reconcile"] .character-build-body,
 .character-build-workbench[data-interaction-state="mutation_reconcile"] .character-build-body {

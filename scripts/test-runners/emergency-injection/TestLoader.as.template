@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId emergency-injection Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Skill.EmergencyInjectionServiceTest.runAllTests();
+trace("FocusedTestRunId emergency-injection Complete: __FOCUSED_RUN_ID__");

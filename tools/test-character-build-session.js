@@ -5,6 +5,7 @@ const Build = require('../launcher/web/modules/character-build.js');
 const Pose = require('../launcher/web/modules/character-build/character-build-pose.js');
 const SessionModule = require('../launcher/web/modules/character-build-session.js');
 const SessionContract = require('../launcher/web/modules/character-build/character-build-session-contract.js');
+const DrugControls = require('../launcher/web/modules/character-build/character-build-drug-controls.js');
 
 let passed = 0;
 function test(name, run) {
@@ -297,12 +298,12 @@ function openClean(fixture, revisions) {
     assert.strictEqual(fixture.session.getState(), 'idle');
 }
 
-test('B2B command whitelist contains six bounded reads and four frozen mutations', () => {
+test('B2B command whitelist contains six bounded reads and five explicit mutations', () => {
     assert.deepStrictEqual(
         Array.from(SessionModule.commands),
         [
             'snapshot', 'candidates', 'tooltip', 'flushLive', 'statsSnapshot', 'finalize',
-            'equipEquipment', 'unequipEquipment', 'equipDrug', 'unequipDrug'
+            'equipEquipment', 'unequipEquipment', 'equipDrug', 'unequipDrug', 'configureEmergencyInjection'
         ]
     );
     assert.strictEqual(SessionModule.commands.includes('open'), false);
@@ -1478,6 +1479,92 @@ test('item-use compensation rebases the character revision before finalize witho
     }));
     assert.strictEqual(finalized,true);
     assert.deepStrictEqual(fixture.messages.map(message=>message.cmd),['snapshot','snapshot','finalize']);
+});
+
+test('emergency projection rejects forged, future and out-of-range authorizations', () => {
+    const validate = SessionContract.validators.projection;
+    const p = projection();
+    const disabled = {v:1, enabled:false, physicalSlot:-1, itemKey:'', status:'disabled'};
+    p.emergencyInjection = disabled;
+    assert.strictEqual(validate(p), true);
+    for (const bad of [Object.assign({},disabled,{v:2}), Object.assign({},disabled,{physicalSlot:8}),
+        Object.assign({},disabled,{enabled:'true'}), Object.assign({},disabled,{extra:true}),
+        {v:1,enabled:true,physicalSlot:4,itemKey:'',status:'authorized'},
+        {v:1,enabled:true,physicalSlot:4,itemKey:'药剂',status:'disabled'}]) {
+        p.emergencyInjection = bad;
+        assert.strictEqual(validate(p), false);
+    }
+});
+
+function emergencyFixture() {
+    const f = createFixture();
+    assert(f.session.open('panel.workbench.fixture'));
+    const p = projection();
+    p.emergencyInjection = {v:1,enabled:false,physicalSlot:-1,itemKey:'',status:'disabled'};
+    p.drugs[4].occupied = true; p.drugs[4].quantity = 2;
+    p.drugs[4].item = itemProjection({name:'大HP药剂', itemKind:'stack', use:'药剂', quantity:2});
+    f.mux.handleResponse(responseFor(f.messages[0], {payload:p}));
+    assert.strictEqual(f.session.getState(), 'idle');
+    return f;
+}
+
+test('emergency controls derive identity from the selected physical row and require explicit enablement', () => {
+    const f = emergencyFixture(), snapshot = f.session.getSnapshot();
+    assert.deepStrictEqual(DrugControls.intent(snapshot,true,{kind:'drug',drugSlot:4}),
+        {cmd:'configureEmergencyInjection',enabled:true,drugSlot:4,expectedItemName:'大HP药剂'});
+    assert.strictEqual(DrugControls.intent(snapshot,true,{kind:'drug',drugSlot:7}),null);
+    assert.strictEqual(DrugControls.intent(snapshot,'true',{kind:'drug',drugSlot:4}),null);
+    assert.strictEqual(DrugControls.intent(projection(),true,{kind:'drug',drugSlot:4}),null);
+    assert.deepStrictEqual(DrugControls.intent(snapshot,false,null),
+        {cmd:'configureEmergencyInjection',enabled:false,drugSlot:-1,expectedItemName:''});
+});
+
+test('emergency authorization is an explicit exact-slot write with item identity', () => {
+    const f = emergencyFixture();
+    let accepted = false;
+    assert(f.session.configureEmergencyInjection(true,4,'大HP药剂',(_,ok)=>{accepted=ok;}));
+    const m = f.messages[1];
+    assert.strictEqual(m.cmd,'configureEmergencyInjection');
+    assert.deepStrictEqual(m.payload,{v:1,sessionGeneration:7,expectedDrugRevision:2,
+        enabled:true,drugSlot:4,expectedItemName:'大HP药剂'});
+    const p = JSON.parse(JSON.stringify(f.session.getSnapshot()));
+    p.emergencyInjection = {v:1,enabled:true,physicalSlot:4,itemKey:'大HP药剂',status:'authorized'};
+    f.mux.handleResponse(responseFor(m,{writeEpoch:1,drugRevision:3,changed:true,
+        operation:m.cmd,affectedBackpackSlot:-1,payload:p,inventorySnapshots:[fullBackpack(2)]}));
+    assert(accepted);
+    assert.strictEqual(f.session.getSnapshot().emergencyInjection.physicalSlot,4);
+    assert.strictEqual(f.session.getState(),'idle');
+    assert.strictEqual(f.session.configureEmergencyInjection(true,8,'大HP药剂'),null);
+    assert.strictEqual(f.session.configureEmergencyInjection('true',4,'大HP药剂'),null);
+    assert.strictEqual(f.session.configureEmergencyInjection(false,4,'大HP药剂'),null);
+});
+
+test('emergency success for a different item remains unknown instead of authorizing it', () => {
+    const f = emergencyFixture();
+    assert(f.session.configureEmergencyInjection(true,4,'大HP药剂'));
+    const m=f.messages[1],p=projection();
+    p.emergencyInjection={v:1,enabled:true,physicalSlot:4,itemKey:'昂贵料理',status:'authorized'};
+    f.mux.handleResponse(responseFor(m,{writeEpoch:1,drugRevision:3,changed:true,
+        operation:m.cmd,affectedBackpackSlot:-1,payload:p,inventorySnapshots:[fullBackpack(2)]}));
+    assert.strictEqual(f.session.getState(),'needs_reconcile');
+    assert.strictEqual(f.session.getSnapshot().emergencyInjection.enabled,false);
+});
+
+test('lost emergency response reconciles by snapshot without replaying the authorization', () => {
+    const f=emergencyFixture();
+    assert(f.session.configureEmergencyInjection(true,4,'大HP药剂'));
+    const original=f.messages[1];f.timers.expireLatest();
+    assert.strictEqual(f.session.getState(),'needs_reconcile');
+    let accepted=false;
+    assert(f.session.reconcileMutation((_,ok)=>{accepted=ok;}));
+    const query=f.messages[2],p=JSON.parse(JSON.stringify(f.session.getSnapshot()));
+    assert.strictEqual(query.cmd,'snapshot');
+    assert.strictEqual(query.payload.reconcileAfterCallId,original.callId);
+    p.emergencyInjection={v:1,enabled:true,physicalSlot:4,itemKey:'大HP药剂',status:'authorized'};
+    f.mux.handleResponse(responseFor(query,{writeEpoch:1,drugRevision:3,payload:p,
+        reconcileAfterCallId:original.callId,inventorySnapshots:[fullBackpack(2)]}));
+    assert(accepted);
+    assert.strictEqual(f.messages.filter(m=>m.cmd==='configureEmergencyInjection').length,1);
 });
 
 process.stdout.write('Character-build session ' + passed + '/' + passed + ' passed\n');

@@ -277,6 +277,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             },
             onTune:function() { return self._enterTuning(); },
             onUnequip:function() { return self._mutations.unequip(self._selectedTarget); },
+            onEmergencyInjection:function(enabled) { return self._mutations.configureEmergencyInjection(enabled, self._selectedTarget); },
             onReconcile:function() { return self._mutations.reconcile(); },
             renderOwnedSlot:global.InventoryUI && global.InventoryUI.renderOwnedSlot,
             iconHtml:function(name, className) {

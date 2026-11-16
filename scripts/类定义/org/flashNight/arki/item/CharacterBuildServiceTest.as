@@ -53,6 +53,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         testEquipmentLoopbackRetainsPendingProjection();
         testGrenadeMutationMergeAndFullBackpackUnequip();
         testDrugMutationMoveSwapMergeAndUnequip();
+        testEmergencyAuthorizationMutation();
         testMutationPreflightFailuresAndNoSideEffects();
         testMutationRollbackAndDispatcherReentry();
         testMutationReconcileSnapshot();
@@ -3255,6 +3256,66 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                     === backpackSame
                 && bag.getItem("0") === other,
             "手雷异名装入保持原有 exact ref swap 语义，不跨名称合并");
+        __activeMutationRoot = null;
+    }
+
+    private static function testEmergencyAuthorizationMutation():Void {
+        var root:Object = fixtureRoot(8);
+        __activeMutationRoot = root;
+        root.物品栏.药剂栏.items["4"] = stack("应急夹具药剂", 3);
+        registerCatalog(root, "应急夹具药剂", "消耗品", "药剂", 1);
+        var panel:String = "workbench.emergency";
+        var callbacks:Object = protocolCallbacks(root, false, true);
+        CharacterBuildService.testOnlyUseRoot(root);
+        CharacterBuildService.testOnlyUseCallbacks(callbacks);
+        var first:Object = wireParams(panel, "emergency.open");
+        first.emergencyInjectionVersion = 1;
+        var opened:Object = CharacterBuildService.execute("snapshot", first);
+        check(opened.success && !opened.payload.emergencyInjection.enabled
+                && !root.存档系统.dirtyMark,
+            "应急能力协商只投影默认关闭，不写存档");
+        var params:Object = drugMutationParams("unequipDrug", panel, opened, 4);
+        params.action = "characterBuildConfigureEmergencyInjection";
+        params.requestCallId = "emergency.authorize";
+        params.enabled = true;
+        params.expectedItemName = "应急夹具药剂";
+        var written:Object = CharacterBuildService.execute("configureEmergencyInjection", params);
+        check(written.success && written.changed && written.affectedBackpackSlot == -1
+                && written.operation == "configureEmergencyInjection"
+                && written.payload.emergencyInjection.enabled
+                && written.payload.emergencyInjection.physicalSlot == 4,
+            "应急授权经过 exact mutation envelope 并回传授权投影: " + written.success + ":" + written.changed
+                + ":" + written.affectedBackpackSlot + ":" + written.operation + ":"
+                + written.payload.emergencyInjection.enabled + ":" + written.payload.emergencyInjection.physicalSlot);
+        check(written.drugRevision == opened.drugRevision + 1
+                && written.loadoutRevision == opened.loadoutRevision
+                && root.物品栏.药剂栏.getItem("4").value == 3 && root.存档系统.dirtyMark,
+            "授权只推进药剂领域水位，记脏但不扣药或改变装备");
+        var stale:Object = CharacterBuildService.execute("configureEmergencyInjection", params);
+        check(!stale.success && stale.error == "stale_state"
+                && root._saveExt.emergencyInjection.itemKey == "应急夹具药剂",
+            "旧药剂水位不能覆盖当前授权");
+        params.expectedDrugRevision = written.drugRevision;
+        params.requestCallId = "emergency.same";
+        var same:Object = CharacterBuildService.execute("configureEmergencyInjection", params);
+        check(same.success && !same.changed && same.drugRevision == written.drugRevision,
+            "相同授权是领域no-op，不重复推进水位");
+        params.expectedItemName = "另一种药剂";
+        var wrong:Object = CharacterBuildService.execute("configureEmergencyInjection", params);
+        check(!wrong.success && wrong.error == "stale_state"
+                && root._saveExt.emergencyInjection.itemKey == "应急夹具药剂",
+            "物品身份漂移不能授权新药");
+        params.enabled = false; params.drugSlot = -1; params.expectedItemName = "";
+        params.requestCallId = "emergency.disable";
+        var disabled:Object = CharacterBuildService.execute("configureEmergencyInjection", params);
+        check(disabled.success && !disabled.payload.emergencyInjection.enabled
+                && disabled.drugRevision == written.drugRevision + 1,
+            "显式关闭通过同一写锁并产生独立领域水位");
+        var future:Object = wireParams(panel, "emergency.future");
+        future.sessionGeneration = opened.sessionGeneration; future.emergencyInjectionVersion = 2;
+        check(!CharacterBuildService.execute("snapshot", future).success,
+            "未知注射投影版本拒绝且不降级为猜测配置");
+        CharacterBuildService.testOnlyReset();
         __activeMutationRoot = null;
     }
 

@@ -2272,7 +2272,11 @@ namespace CF7Launcher.Guardian
             parameters["writeEpoch"] = entry.WriteEpoch;
             // Host-owned read capability; older AS2 may omit the optional projection.
             // Keeping it off Web mutation payloads preserves their exact write contract.
-            if (entry.Command == "snapshot") parameters["appearanceVersion"] = 1;
+            if (entry.Command == "snapshot")
+            {
+                parameters["appearanceVersion"] = 1;
+                parameters["emergencyInjectionVersion"] = 1;
+            }
             JObject flash = PanelBridge.BuildFlashCommand(
                 entry.FlashAction,
                 entry.BackendCallId,
@@ -3201,6 +3205,7 @@ namespace CF7Launcher.Guardian
                     return true;
                 case "equipDrug":
                 case "unequipDrug":
+                case "configureEmergencyInjection":
                     isWrite = true;
                     kind = UnknownKind.Mutation;
                     mutationTarget = MutationTarget.Drug;

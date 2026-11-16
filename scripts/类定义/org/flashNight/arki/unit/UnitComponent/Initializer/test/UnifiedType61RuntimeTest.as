@@ -195,9 +195,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.UnifiedType61Runti
             check(r!=undefined,"five-piece native lifecycle");
             var shield:Shield=Shield(u.shield.getShieldById(r.getShieldId()));
             check(shield.getCapacity()==0 && shield.getStrength()==0,"pre-resource setup cannot shield");
+            check(!r.emergencyInjectionEligible(),"pre-resource setup cannot enable emergency injection");
             advance(1);
             check(near(shield.getCapacity(),250),"five percent normal max HP");
             check(shield.getStrength()==3000,"stable defense as strength");
+            check(!r.emergencyInjectionEligible(),"own live buffer rejects emergency injection");
             check(near(u.damageTakenMultiplier,.88),"twelve percent reduction");
             check(near(u.韧性系数,3.7) && u.韧性加成==270,"five rubber toughness only");
             check(near(u.躲闪率,3/1.35) && u.闪避加成==35,"one sensor normal tier");
@@ -217,6 +219,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.UnifiedType61Runti
             shield.consumeCapacity(100);advance(30);check(near(shield.getCapacity(),150),"one second no-hit delay");
             advance(30);check(near(shield.getCapacity(),250),"one second full-capacity recharge");
             shield.consumeCapacity(999);check(shield.getStrength()==0 && !shield.getResistBypass(),"break immediately clears protection");
+            check(r.emergencyInjectionEligible() && !r.getDiagnostics().authorized,"ordinary five-piece broken buffer enables emergency injection without constellation");
             check(near(u.魔法抗性.热,14),"break immediately removes own resistance");
             check(near(u.韧性系数,3.7) && u.重量==108,"break retains core equipment aids");
             u.hp=4000;advance(149);check(shield.getCapacity()==0,"normal fixed wait not early");

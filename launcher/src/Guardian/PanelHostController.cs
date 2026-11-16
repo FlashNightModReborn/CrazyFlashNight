@@ -1439,6 +1439,12 @@ namespace CF7Launcher.Guardian
                     RejectUnpostedOpen(cmd.Name, "document_unavailable");
                     return;
                 }
+                if (SceneTransitionBlocksOpen(cmd.Name, cmd.InitDataJson))
+                {
+                    DeferOpen(cmd, "scene-transition timeline");
+                    _consecutiveFailures = 0;
+                    return;
+                }
                 if (HasVisualRetireBarrier())
                 {
                     DeferOpen(cmd, "visual-retire barrier");
@@ -1502,7 +1508,8 @@ namespace CF7Launcher.Guardian
             bool webPostAccepted = false;
             try
             {
-                if (HasVisualRetireBarrier())
+                if (HasVisualRetireBarrier()
+                    || SceneTransitionBlocksOpen(cmd.Name, cmd.InitDataJson))
                 {
                     outcome =
                         TrackedOpenOutcome.PreExecutionRejected;
@@ -1616,7 +1623,8 @@ namespace CF7Launcher.Guardian
                         "[PanelHost] exact replace execution gate threw: "
                         + ex.GetType().Name);
                 }
-                if (!gateAccepted)
+                if (!gateAccepted
+                    || SceneTransitionBlocksOpen(plan.TargetPanel, plan.ImmutableInitDataJson))
                 {
                     outcome = ExactReplaceOutcome.PreExecutionRejected;
                     return;
@@ -3281,6 +3289,8 @@ namespace CF7Launcher.Guardian
             DisposePhysicalCloseWaits();
             if (_disposed) return;
             _disposed = true;
+            if (_sceneSettlement != null)
+                _sceneSettlement.PanelAdmissionAvailable -= OnTransitionPanelAdmissionAvailable;
             if (_compositionHelp != null || _compositionIntelligence != null)
             {
                 try { if (AnyCompositionPanelSelected) RetireCompositionPanel(); } catch { }

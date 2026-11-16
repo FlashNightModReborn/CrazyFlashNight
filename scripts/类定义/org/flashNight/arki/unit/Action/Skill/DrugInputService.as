@@ -27,6 +27,16 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
     private static var activeBank:Number = 0;
     private static var switchKeyConsumed:Boolean = false;
     private static var sessionGeneration:Number = 1;
+    private static var consumingLanes:Array = [false, false, false, false];
+    private static var drugEffectDepth:Number = 0;
+
+    public static function isApplyingDrugEffect():Boolean { return drugEffectDepth > 0; }
+
+    private static function applyDrugEffect(root:Object, itemName:String):Void {
+        drugEffectDepth++;
+        try { if (root.使用药剂) root.使用药剂(itemName); }
+        finally { drugEffectDepth--; }
+    }
 
     public static function installRootBridge(root:Object):Void {
         if (!root) return;
@@ -38,6 +48,8 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             var view:Object = rootRef.玩家信息界面 ? rootRef.玩家信息界面.快捷药剂界面 : null;
             var inventory:Object = rootRef.物品栏 ? rootRef.物品栏.药剂栏 : null;
             var usedCount:Number = 0;
+
+            org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService.observeInventory(rootRef);
 
             DrugInputService.syncBankView(view, inventory);
 
@@ -162,16 +174,31 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
 
         // 与旧时间轴一致：有物品且冷却可用时即消费本次按住；死亡和零数量也要松键后重试。
         consumedSlots[lane] = true;
+        return tryConsumePhysicalSlot(unit, physicalSlot, inventory, root, null);
+    }
+
+    /** 手动与应急注射共用的精确物理槽消费；不切组、不接管手动持键锁存。 */
+    public static function tryConsumePhysicalSlot(unit:Object, physicalSlot:Number,
+                                                  inventory:Object, root:Object,
+                                                  expectedName:String):Object {
+        if (!unit || !isValidPhysicalSlot(physicalSlot) || !inventory || !inventory.getItem) return null;
+        var lane:Number = laneForPhysicalSlot(physicalSlot);
+        if (consumingLanes[lane] === true) return null;
+        var item:Object = inventory.getItem(String(physicalSlot));
+        if (!item || (expectedName != null && item.name !== expectedName)) return null;
+        var cooldownKey:String = ManualCooldownService.drugKey(lane);
+        if (!ManualCooldownService.isReady(cooldownKey)) return null;
         var itemName:String = String(item.name);
         var result:Object = {
             attempted: true,
+            effectAttempted: false,
             used: false,
             cooldownStarted: false,
             depleted: false,
             slotIndex: physicalSlot,
             physicalSlot: physicalSlot,
             lane: lane,
-            bank: activeBank,
+            bank: bankForPhysicalSlot(physicalSlot),
             itemName: itemName,
             affinityCommitted: false
         };
@@ -207,10 +234,12 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         var assetTransaction:Object = PlayerAssetTransaction.begin(assetContext);
         var quantityBefore:Number = Number(item.value);
         var remaining:Object;
+        consumingLanes[lane] = true;
         try {
             // 药效、冷却与扣药组成既有领域顺序；存档系统缺失时在任何一步前失败。
             PlayerAssetTransaction.markDirtyRequired(root.存档系统);
-            if (root && root.使用药剂) root.使用药剂(itemName);
+            result.effectAttempted = true;
+            applyDrugEffect(root, itemName);
             result.cooldownStarted = ManualCooldownService.start(cooldownKey, Number(root.吃药冷却时间));
             // addValue 会在数量写入后同步发布 ItemValueChanged/ItemRemoved；
             // dirty 必须先于监听器可见，异常路径再按 before/after 记录真实扣除。
@@ -245,6 +274,8 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
                 trace("[DrugInputService] inventory index repair failed: " + indexRepairError);
             }
             throw useError;
+        } finally {
+            consumingLanes[lane] = false;
         }
 
         if (!remaining) {
@@ -269,7 +300,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         var lane:Number;
         try {
             for (lane = 0; lane < LANE_COUNT; lane++) {
-                if (!ManualCooldownService.isReady(
+                if (consumingLanes[lane] === true || !ManualCooldownService.isReady(
                         ManualCooldownService.drugKey(lane))) continue;
                 var first:Object = inventory.getItem(String(
                     physicalSlotFor(0, lane)));
@@ -281,7 +312,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
                 }
             }
             for (lane = 0; lane < LANE_COUNT; lane++) {
-                if (ManualCooldownService.isReady(
+                if (consumingLanes[lane] !== true && ManualCooldownService.isReady(
                         ManualCooldownService.drugKey(lane))) {
                     return {success:true, lane:lane};
                 }
@@ -348,9 +379,10 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         var transaction:Object = PlayerAssetTransaction.begin(assetContext);
         var quantityBefore:Number = Number(current.value);
         var remaining:Object;
+        consumingLanes[lane] = true;
         try {
             PlayerAssetTransaction.markDirtyRequired(root.存档系统);
-            if (root.使用药剂) root.使用药剂(itemName);
+            applyDrugEffect(root, itemName);
             result.cooldownStarted = ManualCooldownService.start(
                 cooldownKey, Number(root.吃药冷却时间));
             if (!result.cooldownStarted) throw "cooldown_start_failed";
@@ -378,6 +410,8 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
                     + indexRepairError);
             }
             throw useError;
+        } finally {
+            consumingLanes[lane] = false;
         }
         if (remaining == null) {
             publishExhausted(root, itemName);
@@ -522,6 +556,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
 
     /** 新建、成功读档和删档边界调用；普通换组绝不调用。 */
     public static function resetSession():Void {
+        org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService.resetSession(_root);
         activeBank = 0;
         switchKeyConsumed = false;
         sessionGeneration++;

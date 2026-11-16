@@ -38,6 +38,10 @@ namespace CF7Launcher.Guardian
         private Action _resumeTail;
         private Action<long> _requireFreshFrame = _ => {};
         internal bool OwnsCurtain => _resumeScene>0 || (_intro!=null ? _intro.CoverRequired : _latest!=null && !_revealed);
+        // A revealed Web surface is not the AS2 timeline's terminal receipt. Pausing
+        // before hide can freeze either the fresh-world capture or frames 30..36.
+        internal bool BlocksOrdinaryPanelOpen => _resumeScene>0 || _latest!=null
+            && !(_intro?.TimelineRetired==true && _latest.Value<string>("phase")=="intro");
         internal bool SettlementResumePending => _resumeScene>0;
         internal void ConfigurePresentationFence(Action<long> requireFreshFrame) => _requireFreshFrame=requireFreshFrame;
         internal bool DeferSettlementResumeTail(Action tail) {
@@ -46,6 +50,7 @@ namespace CF7Launcher.Guardian
             return true;
         }
         internal event Action CurtainReleased;
+        internal event Action PanelAdmissionAvailable;
         internal event Action SceneCompleted;
         internal event Action<JObject> SettlementRequest;
         internal event Action SettlementTransportFailed;
@@ -109,6 +114,7 @@ namespace CF7Launcher.Guardian
             _holdWorldInput(_latest!=null && !_revealed);
             tail?.Invoke();
             CurtainReleased?.Invoke();
+            if(!BlocksOrdinaryPanelOpen) PanelAdmissionAvailable?.Invoke();
             LogManager.Log("event=scene_settlement_resume_released scene="+scene);
         }
 
@@ -146,6 +152,7 @@ namespace CF7Launcher.Guardian
             _timer.Tick+=(_,_)=>Tick(); _timer.Start();
         }
         private void Present(JObject p) {
+            bool panelAdmissionBlocked=BlocksOrdinaryPanelOpen;
             ObserveIntro(p);
             if(_resumeScene>0) FinishSettlementResume();
             if(p.Value<string>("phase")=="reveal" && (_latest?.Value<string>("phase")!="reveal"
@@ -173,6 +180,7 @@ namespace CF7Launcher.Guardian
             if(_revealed && p.Value<string>("phase")!="reveal") _revealed=false;
             InputLatencyProbe.Current?.SetPhase(p.Value<string>("phase"));
             _latest=p; _holdWorldInput(OwnsCurtain); Tick();
+            if(panelAdmissionBlocked && !BlocksOrdinaryPanelOpen) PanelAdmissionAvailable?.Invoke();
         }
         private long _preparedScene;
         private JObject _settlementReceipt;
@@ -411,6 +419,7 @@ namespace CF7Launcher.Guardian
             }
             InputLatencyProbe.Current?.SetPhase(complete ? "base_ready" : "hidden", finished: true);
             if(held) CurtainReleased?.Invoke();
+            if(!BlocksOrdinaryPanelOpen) PanelAdmissionAvailable?.Invoke();
         }
         internal void HandleBookshelfMessage(string instance, JObject p)
         {

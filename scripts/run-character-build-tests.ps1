@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param(
     [ValidateRange(1, 3600)]
     [int]$TimeoutSeconds = 240,
@@ -140,6 +140,7 @@ $expectedWebActions = @(
     'characterBuildUnequipEquipment'
     'characterBuildEquipDrug'
     'characterBuildUnequipDrug'
+    'characterBuildConfigureEmergencyInjection'
     'characterBuildFlushLive'
     'characterBuildStatsSnapshot'
     'characterBuildFinalize'
@@ -152,7 +153,7 @@ $registeredActionSet = @($registeredActions | Sort-Object) -join '|'
 $expectedActionSet = @($expectedActions | Sort-Object) -join '|'
 if ((@($registeredActions).Count -ne $expectedActions.Count) -or
         ($registeredActionSet -ne $expectedActionSet)) {
-    throw 'CharacterBuild actions must be the exact ten Web actions plus one Host-only recovery action.'
+    throw 'CharacterBuild actions must be the exact eleven Web actions plus one Host-only recovery action.'
 }
 $characterBuildHostSource = Get-RepoText `
     'launcher\src\Guardian\CharacterBuildTask.cs'
@@ -179,6 +180,7 @@ $expectedWebCommands = @(
     'unequipEquipment'
     'equipDrug'
     'unequipDrug'
+    'configureEmergencyInjection'
     'flushLive'
     'statsSnapshot'
     'finalize'
@@ -195,7 +197,7 @@ if (($productionResolver -notmatch
         (@($resolvedWebCommands).Count -ne $expectedWebCommands.Count) -or
         ((@($resolvedWebCommands | Sort-Object) -join '|') -ne
             (@($expectedWebCommands | Sort-Object) -join '|'))) {
-    throw 'CharacterBuild Web resolver must remain the exact ten-command/ten-action set.'
+    throw 'CharacterBuild Web resolver must remain the exact eleven-command/eleven-action set.'
 }
 if (($combinedResolvers -match 'RecoverDetach') -or
         ($combinedResolvers -match 'recoverDetach')) {
@@ -443,6 +445,9 @@ $focusedRun = @{
         'org.flashNight.arki.unit.PlayerStatLifecycleTest'
     )
     AdditionalAsRelativePaths = @(
+        'scripts/类定义/org/flashNight/arki/item/itemCollection/DrugInventory.as'
+        'scripts\类定义\org\flashNight\arki\unit\Action\Skill\EmergencyInjectionService.as'
+        'scripts\类定义\org\flashNight\arki\unit\Action\Skill\EmergencyInjector.as'
         'scripts\类定义\org\flashNight\arki\unit\PlayerInfoProvider.as'
         'scripts\类定义\org\flashNight\arki\unit\PlayerInfoSnapshotBuilder.as'
     )

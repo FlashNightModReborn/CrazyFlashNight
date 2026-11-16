@@ -188,14 +188,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
                           "bloodShieldRatio", "shieldLazyDodge", "bloodSkillHpRatio", "bloodSkillBuffSeconds",
                           "bloodCrumblePercent", "bloodExecutePercent", "bloodPulsePowerRatio",
                           "healBaseHpRatioPerSecond", "healMissingRatioPerSecond", "healMpPerPoint", "startupMp",
-                          "overloadCoefficient", "overloadExponent", "pulseFrames", "ammoMpPerRound", "ammoMaxPerSlotPulse"];
+                          "overloadCoefficient", "overloadExponent", "pulseFrames", "shotMpRefund",
+                          "ammoMpPerGold", "ammoMinMpPerRound", "ammoMaxPerSlotPulse"];
         for (var i:Number = 0; i < keys.length; i++) {
             var key:String = keys[i];
             var value:Number = Number(params[key]);
             if (!finite(value) || !(value > 0)) return false;
             config[key] = value;
         }
-        if (config.pulseFrames != Math.floor(config.pulseFrames) ||
+        if (config.ammoMinMpPerRound != Math.floor(config.ammoMinMpPerRound) ||
+            config.pulseFrames != Math.floor(config.pulseFrames) ||
             config.ammoMaxPerSlotPulse != Math.floor(config.ammoMaxPerSlotPulse)) return false;
         config.ammoReserveRatio = Number(params.ammoReserveRatio);
         if (!finite(config.ammoReserveRatio) || config.ammoReserveRatio < 0 || config.ammoReserveRatio > 1) return false;
@@ -305,16 +307,18 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         grantInitialShield();
         synchronizeState();
         if (disposed) return;
+        org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService.refresh(target, this, _root);
         if (pulseFrame >= 0 && frame - pulseFrame < config.pulseFrames) return;
         pulseFrame = frame;
         healFromMp();
         chargeFromMp();
         synchronizeState();
         if (disposed) return;
-        // 缺弹更多的一槽优先；相同时主手在前。每槽提交仍独立复核真实状态。
+        // 低成本槽优先；同价按缺额、再主手排序。每槽提交仍独立复核真实状态。
         var primaryAmmo:Object = readAmmo("手枪");
         var secondaryAmmo:Object = readAmmo("手枪2");
-        var secondaryFirst:Boolean = secondaryAmmo && (!primaryAmmo || secondaryAmmo.missing > primaryAmmo.missing);
+        var secondaryFirst:Boolean = secondaryAmmo && (!primaryAmmo || secondaryAmmo.mpCost < primaryAmmo.mpCost ||
+            (secondaryAmmo.mpCost == primaryAmmo.mpCost && secondaryAmmo.missing > primaryAmmo.missing));
         synthesizeAmmo(secondaryFirst ? "手枪2" : "手枪");
         synthesizeAmmo(secondaryFirst ? "手枪" : "手枪2");
         writeStatus();
@@ -601,8 +605,14 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
             container.getShieldById(shieldId) !== layer) return;
         if (!EquipmentFireIntent.isPistolSlotProcessShot(target, owner, slot, slot, target[slot], firedWeapon)) return;
         if (!finite(target.mp) || target.mp < 0 || !finite(target.mp满血值) || !(target.mp满血值 > 0)) return;
-        // 基础循环回收一发合成成本；武器的额外发电有独立生命周期，不能被套装回滚撤销。
-        baseMpEarned += HealApplier.applyMpCapped(target, config.ammoMpPerRound, target.mp满血值);
+        // 发射返蓝固定，不能跟随昂贵弹药的合成价格上涨；武器固有发电仍独立。
+        baseMpEarned += HealApplier.applyMpCapped(target, config.shotMpRefund, target.mp满血值);
+    }
+
+    public function emergencyInjectionEligible():Boolean {
+        return bindingValid() && effect.group.status == "committed" && !deathSuspended
+            && !initialShieldPending && container.getShieldById(shieldId) === layer
+            && layer.getCapacity() === 0;
     }
 
     public function getFireControlProgress():Number {
@@ -652,7 +662,19 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
             ordinary -= chamber + ghost + reward;
         } else if (shot < 0) return null;
         if (ordinary < 0 || ordinary > capacity) return null;
+        // 只在维护/合成边界查原始弹药数据，不进入逐发射击热路径或读取审计 balance。
+        var ammoItem:Object = ItemUtil.getRawItemData(attrs.clipname);
+        var ammoPrice:Number = ammoItem.price;
+        if (!ammoItem || ammoItem.name !== attrs.clipname || ammoItem.use != "弹夹" ||
+            !finite(ammoPrice) || !(ammoPrice > 0)) return null;
+        var fixedCost = source.data.ammoSynthesisMpPerRound;
+        if (fixedCost != undefined && (!finite(fixedCost) || !(fixedCost > 0) ||
+            fixedCost != Math.floor(fixedCost))) return null;
+        var mpCost:Number = Math.max(config.ammoMinMpPerRound, fixedCost == undefined ?
+            Math.ceil(ammoPrice * config.ammoMpPerGold / capacity) : fixedCost);
+        if (!finite(mpCost) || !(mpCost > 0)) return null;
         return {item:item, value:item.value, source:source, attrs:attrs, name:item.name,
+                ammoItem:ammoItem, ammoPrice:ammoPrice, fixedCost:fixedCost, mpCost:mpCost,
                 clipname:attrs.clipname, capacity:capacity, shot:shot, man:man,
                 ammoState:state, ordinary:ordinary, missing:capacity-ordinary, chamber:chamber, ghost:ghost, reward:reward,
                 generation:ReloadManager.getReloadGeneration(man)};
@@ -672,8 +694,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
             first.capacity != second.capacity || first.shot != second.shot || first.man !== second.man ||
             first.ammoState !== second.ammoState || first.ordinary != second.ordinary ||
             first.chamber != second.chamber || first.ghost != second.ghost || first.reward != second.reward ||
-            first.generation != second.generation) return 0;
-        var cost:Number = config.ammoMpPerRound;
+            first.generation != second.generation || first.ammoItem !== second.ammoItem ||
+            first.ammoPrice != second.ammoPrice || first.fixedCost !== second.fixedCost || first.mpCost != second.mpCost) return 0;
+        var cost:Number = second.mpCost;
         var reserve:Number = target.mp满血值 * config.ammoReserveRatio;
         if (!finite(cost) || !(cost > 0) || !finite(reserve) || reserve < 0 ||
             !finite(target.mp) || target.mp < 0 || !finite(config.ammoMaxPerSlotPulse) ||
@@ -735,6 +758,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
 
     public function dispose():Void {
         if (disposed) return;
+        org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService.release(target, this);
         cancelBloodCast();
         disposed = true;
         initialShieldPending = false;

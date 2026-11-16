@@ -1131,17 +1131,18 @@ _root.主角函数.根据模式重新读取武器加成 = function(模式) {
 _root.主角函数.按键控制攻击模式 = function() {
     if (_root.gameworld.__combatAdmitted === false) return;
     if(this.__cf6TraversalOwner!==undefined || this.__cf6ElevatorPoseOwner!==undefined || this.__cf6VehicleOwner!==undefined) return;
+    var harness:Object = _root._agentHarnessActive === true ? _root._agentHarnessBridge : null;
     if (_root.当前玩家总数 == 1) {
-        if (Key.isDown(_root.键1)) {
-            攻击模式切换("空手");
-        } else if (Key.isDown(_root.键2)) {
-            攻击模式切换("兵器");
-        } else if (Key.isDown(_root.键3)) {
-            攻击模式切换("手枪");
-        } else if (Key.isDown(_root.键4)) {
-            攻击模式切换("长枪");
-        } else if (Key.isDown(_root.键5)) {
-            攻击模式切换("手雷");
+        if (Key.isDown(_root.键1) || (harness && harness.isKeyDown(_root.键1))) {
+            this.攻击模式切换("空手");
+        } else if (Key.isDown(_root.键2) || (harness && harness.isKeyDown(_root.键2))) {
+            this.攻击模式切换("兵器");
+        } else if (Key.isDown(_root.键3) || (harness && harness.isKeyDown(_root.键3))) {
+            this.攻击模式切换("手枪");
+        } else if (Key.isDown(_root.键4) || (harness && harness.isKeyDown(_root.键4))) {
+            this.攻击模式切换("长枪");
+        } else if (Key.isDown(_root.键5) || (harness && harness.isKeyDown(_root.键5))) {
+            this.攻击模式切换("手雷");
         }
     }
     // if (Key.isDown(this.切换武器键))

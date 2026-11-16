@@ -7,14 +7,16 @@
     var drugLayout = typeof module !== 'undefined' && module.exports
         ? require('./character-build-drug-layout.js')
         : root && root.CharacterBuildDrugLayout;
-    var api = factory(mutation, drugLayout);
+    var controls = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-drug-controls.js') : root && root.CharacterBuildDrugControls;
+    var api = factory(mutation, drugLayout, controls);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
         root.CF7.CharacterBuildSessionContract = api;
         root.CharacterBuildSessionContract = api;
     }
-})(typeof window !== 'undefined' ? window : globalThis, function(Mutation, DrugLayout) {
+})(typeof window !== 'undefined' ? window : globalThis, function(Mutation, DrugLayout, DrugControls) {
     'use strict';
     if (!Mutation) throw new Error('CharacterBuildSessionContract requires CharacterBuildMutation');
     if (!DrugLayout || typeof DrugLayout.validSnapshot !== 'function') {
@@ -88,6 +90,8 @@
     }
     function validProjection(payload) {
         if (!payload || typeof payload !== 'object'
+                || (payload.emergencyInjection !== undefined
+                    && !DrugControls.validEmergencyInjection(payload.emergencyInjection))
                 || !Array.isArray(payload.equipment)
                 || payload.equipment.length !== 11
                 || !validLoadoutItems(payload.equipment)
@@ -97,6 +101,13 @@
                 || !payload.portrait || typeof payload.portrait !== 'object'
                 || typeof payload.stateHealth !== 'string'
                 || !Array.isArray(payload.diagnostics)) return false;
+        var cfg = payload.emergencyInjection;
+        if (cfg && cfg.enabled) {
+            var row = payload.drugs[cfg.physicalSlot];
+            var same = row.occupied && row.item.name === cfg.itemKey;
+            if (cfg.status === 'authorized' ? !same
+                    : cfg.status === 'empty' ? row.occupied : !row.occupied || same) return false;
+        }
         return true;
     }
     function candidateValidationError(payload, target, scope) {

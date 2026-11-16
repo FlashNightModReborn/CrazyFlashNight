@@ -133,6 +133,8 @@ org.flashNight.arki.unit.UnitComponent.Routing.RoutingRuntime;
 org.flashNight.arki.component.Buff.Component.ConditionComponent;
 org.flashNight.arki.skill.SkillResourceService;
 org.flashNight.arki.unit.Action.Skill.DrugInputService;
+org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService;
+org.flashNight.arki.unit.Action.Skill.EmergencyInjector;
 org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 org.flashNight.arki.item.drug.DrugProhibitionService;
 org.flashNight.arki.unit.Action.Huofeng.HuofengAudio;

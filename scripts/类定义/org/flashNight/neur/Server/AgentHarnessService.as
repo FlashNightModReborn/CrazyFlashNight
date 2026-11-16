@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.Action.Input.UnitActionIntentService;
 import org.flashNight.arki.scene.SceneInteractionManager;
 import org.flashNight.arki.dialogue.NativeDialogueService;
+import org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService;
 
 /**
  * AgentHarnessService — 受 `--agent-harness` 独占激活的 AS2 测试线束服务。
@@ -285,7 +286,8 @@ class org.flashNight.neur.Server.AgentHarnessService {
                 maxMp: isNaN(Number(hero.mp满血值)) ? 0 : Math.round(Number(hero.mp满血值)),
                 reloading: (hero.man != undefined && hero.man.换弹标签 === true),
                 virtualMask: _heldMask | _navMask,
-                navActive: _navActive
+                navActive: _navActive,
+                combatResources: projectCombatResources(hero)
             };
         }
 
@@ -627,6 +629,38 @@ class org.flashNight.neur.Server.AgentHarnessService {
         if (name == "C" || name == "c" || name == "jump" || name == "dodge" || name == "C键" || name == "跳跃" || name == "闪避") return 64;
         if (name == "run" || name == "shift" || name == "奔跑" || name == "奔跑键") return 128;
         return 0;
+    }
+
+    /** 隔离线束只读投影：不调用弹药ensure/修复，不推进套装周期或触发持久写。 */
+    public static function projectCombatResources(hero:Object):Object {
+        var slots:Array = ["手枪", "手枪2"];
+        var weapons:Array = [];
+        for (var i:Number = 0; i < slots.length; i++) {
+            var slot:String = slots[i];
+            var item:Object = hero[slot];
+            var value:Object = item.value;
+            var ammo:Object = value.ammoState;
+            weapons.push({slot:slot, name:item.name == undefined ? "" : String(item.name),
+                capacity:hero[slot + "弹匣容量"], shot:value.shot, chamber:ammo.chamber,
+                ghost:ammo.ghost, reward:ammo.reward});
+        }
+        var state:Object = hero.__titaniumType61Status;
+        var titanium:Object = null;
+        if (state) titanium = {state:state.state, capacity:state.capacity, maximum:state.maximum,
+            ammoSynthesized:state.ammoSynthesized, ammoMpSpent:state.ammoMpSpent,
+            baseMpEarned:state.baseMpEarned, mpSpent:state.mpSpent, healed:state.healed, charged:state.charged};
+        var unifiedState:Object = hero.__unified61Status;
+        var unified:Object = unifiedState == null ? null : {
+            state:unifiedState.state, capacity:unifiedState.capacity, maximum:unifiedState.maximum};
+        var memory:Object = hero.__emergencyInjectionMemory;
+        var injector:Object = hero.__emergencyInjector;
+        var emergency:Object = {authorization:EmergencyInjectionService.snapshot(_root),
+            installed:injector != undefined, crisisUsed:memory.used === true,
+            attempts:memory == null ? 0 : memory.attempts,
+            doses:memory == null ? 0 : memory.doses,
+            observedDrops:memory == null ? 0 : memory.observedDrops,
+            lastBefore:injector.lastBefore, lastAfter:injector.lastAfter, lastError:injector.lastError};
+        return {weapons:weapons, titanium:titanium, unified:unified, emergencyInjection:emergency};
     }
 
     private static function keyCodeForName(name:String, hero:MovieClip):Number {

@@ -6,7 +6,7 @@ $ErrorActionPreference = 'Stop'
     -TemplateRelativePath 'scripts/test-runners/agent-harness/TestLoader.as.template' `
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/neur/Server/test/AgentHarnessServiceTest.as') `
     -SuiteFqns @('org.flashNight.neur.Server.test.AgentHarnessServiceTest') `
-    -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/neur/Server/AgentHarnessService.as') `
+    -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/neur/Server/AgentHarnessService.as', 'scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as') `
     -ExpectedTracePatterns @(
         '(?m)^AgentHarnessServiceTest Tests Passed: (?<n>[1-9][0-9]*)\r?$',
         '(?m)^AgentHarnessServiceTest Tests Failed: 0\r?$'

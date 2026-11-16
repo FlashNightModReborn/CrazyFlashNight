@@ -1204,7 +1204,8 @@ namespace CF7Launcher.Tests.Guardian
                 AssertExactKeys(
                     flash,
                     "task", "action", "callId", "v", "panelInstanceId",
-                    "requestCallId", "writeEpoch", "appearanceVersion");
+                    "requestCallId", "writeEpoch", "appearanceVersion", "emergencyInjectionVersion");
+                Assert.Equal(1, flash.Value<int>("emergencyInjectionVersion"));
                 Assert.Equal("cmd", flash.Value<string>("task"));
                 Assert.Equal(
                     "characterBuildSnapshot", flash.Value<string>("action"));
@@ -5719,6 +5720,101 @@ namespace CF7Launcher.Tests.Guardian
                 harness.Task.HandleWebRequest("finalize",WebRequest("finalize","prod.projection.unknown",payload));
                 Assert.Empty(harness.Flash);
                 Assert.Equal("invalid_payload",Assert.Single(harness.Web).Value<string>("error"));
+            }
+        }
+
+        private static JObject EmergencyConfigurationRequest()
+        {
+            return new JObject
+            {
+                ["v"] = 1, ["sessionGeneration"] = Generation,
+                ["expectedDrugRevision"] = InitialDrugRevision,
+                ["enabled"] = true, ["drugSlot"] = 1,
+                ["expectedItemName"] = CandidateItem("药剂", "stack", 3).Value<string>("name")
+            };
+        }
+
+        private static JObject EmergencyConfigurationResponse(JObject flash)
+        {
+            const string command = "configureEmergencyInjection";
+            JObject response = SuccessResponse(flash, command, Generation, 3, 3, InitialDrugRevision + 1, false);
+            response["changed"] = true;
+            response["operation"] = command;
+            response["affectedBackpackSlot"] = -1;
+            response["payload"] = FullLoadoutPayload("equipDrug", true);
+            response["payload"]["emergencyInjection"] = new JObject
+            {
+                ["v"] = 1, ["enabled"] = true, ["physicalSlot"] = 1,
+                ["itemKey"] = EmergencyConfigurationRequest().Value<string>("expectedItemName"),
+                ["status"] = "authorized"
+            };
+            response["inventorySnapshots"] = FullBackpackSnapshots("equipDrug", 6, false);
+            return response;
+        }
+
+        [Fact]
+        public void EmergencyAuthorizationPayloadIsExactAndCannotGuessAnotherPhysicalSlot()
+        {
+            JObject normalized;
+            long generation;
+            string error;
+            const string command = "configureEmergencyInjection";
+            Assert.True(CharacterBuildProtocol.TryNormalizeMutationPayload(command,
+                EmergencyConfigurationRequest(), out normalized, out generation, out error));
+            Assert.Equal(Generation, generation);
+            Assert.Equal(1, normalized.Value<int>("drugSlot"));
+            foreach (string fault in new[] { "extra", "type", "slot", "name", "disable" })
+            {
+                JObject request = EmergencyConfigurationRequest();
+                if (fault == "extra") request["source"] = new JObject();
+                if (fault == "type") request["enabled"] = "true";
+                if (fault == "slot") request["drugSlot"] = 8;
+                if (fault == "name") request["expectedItemName"] = "";
+                if (fault == "disable") request["enabled"] = false;
+                Assert.False(CharacterBuildProtocol.TryNormalizeMutationPayload(command,
+                    request, out normalized, out generation, out error));
+            }
+        }
+
+        [Fact]
+        public void EmergencyAuthorizationProductionReplyIsValidatedAndDuplicateDoesNotReplay()
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear(); harness.Web.Clear();
+                const string command = "configureEmergencyInjection";
+                JObject request = WebRequest(command, "prod.emergency.once", EmergencyConfigurationRequest());
+                harness.Task.HandleWebRequest(command, request);
+                JObject flash = Assert.Single(harness.Flash);
+                Assert.Equal("characterBuildConfigureEmergencyInjection", flash.Value<string>("action"));
+                harness.Task.HandleFlashResponse(EmergencyConfigurationResponse(flash), null);
+                JObject web = Assert.Single(harness.Web);
+                Assert.True(web.Value<bool>("success"));
+                Assert.Equal(-1, web.Value<int>("affectedBackpackSlot"));
+                Assert.Equal(InitialDrugRevision + 1, harness.Task.DrugRevision);
+                harness.Task.HandleWebRequest(command, request);
+                Assert.Single(harness.Flash);
+                Assert.Single(harness.Web);
+                Assert.True(harness.Web[0].Value<bool>("success"));
+            }
+        }
+
+        [Fact]
+        public void EmergencyAuthorizationWrongItemReplyRequiresReconcileWithoutAdoptingIt()
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear(); harness.Web.Clear();
+                const string command = "configureEmergencyInjection";
+                harness.Task.HandleWebRequest(command, WebRequest(command,
+                    "prod.emergency.malformed", EmergencyConfigurationRequest()));
+                JObject reply = EmergencyConfigurationResponse(Assert.Single(harness.Flash));
+                reply["payload"]["emergencyInjection"]["itemKey"] = "另一种药剂";
+                harness.Task.HandleFlashResponse(reply, null);
+                Assert.Equal("needs_reconcile", harness.Task.WriteState);
+                Assert.True(Assert.Single(harness.Web).Value<bool>("requiresReconcile"));
+                Assert.Equal(InitialDrugRevision, harness.Task.DrugRevision);
+                Assert.Single(harness.Flash);
             }
         }
 

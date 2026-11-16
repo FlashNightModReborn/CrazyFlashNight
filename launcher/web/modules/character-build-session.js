@@ -390,12 +390,15 @@
             kind:'mutation',
             singleFlight:true,
             write:true,
-            metadata:{sourceSlot:payload.source ? payload.source.slot : null}
+            metadata:{sourceSlot:payload.source ? payload.source.slot : null,
+                emergency:intent.cmd === 'configureEmergencyInjection' ? {
+                    enabled:payload.enabled, drugSlot:payload.drugSlot, expectedItemName:payload.expectedItemName
+                } : null}
         }, function(response, entry) {
             var accepted = self._commonValid(response, entry, false)
                 && response.success === true
                 && Mutation.validMutationResult(
-                    response, entry.cmd, validProjection, entry.metadata.sourceSlot)
+                    response, entry.cmd, validProjection, entry.metadata.sourceSlot, entry.metadata.emergency)
                 && self._applyCommon(response);
             if (accepted) {
                 self._snapshot = response.payload;
@@ -425,6 +428,10 @@
     CharacterBuildSession.prototype.equipEquipment = function(slotKey, source, callback) {
         return this._requestMutation(
             {cmd:'equipEquipment', slotKey:slotKey, source:source}, callback);
+    };
+    CharacterBuildSession.prototype.configureEmergencyInjection = function(enabled, drugSlot, itemName, callback) {
+        return this._requestMutation({cmd:'configureEmergencyInjection', enabled:enabled,
+            drugSlot:drugSlot, expectedItemName:itemName}, callback);
     };
     CharacterBuildSession.prototype.unequipEquipment = function(slotKey, callback) {
         return this._requestMutation({cmd:'unequipEquipment', slotKey:slotKey}, callback);
