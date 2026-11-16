@@ -142,16 +142,16 @@
     "oldTagRequestAndFailedReceiptPreserved": true
   },
   "morningAcceptance": [
-    "完成已发送的 TTI 替换、AA12 安装替换及穿戴栏拆除/安装/替换，再保存退出；Agent 将核对三件装备和材料并无播种重启读回。",
-    "由原反馈测试员以同一套装备与候选复测 #254；当前控制测试档不能代替原反馈组合。",
-    "正常战斗几分钟，验收画面、手感与日常使用体验。"
+    "本次要求的背包/穿戴操作和保存重启验收已完成，无需再重复这组点击。",
+    "原反馈测试员仍可用当时同一套装备与候选复测#254；当前控制档不代替尚未明确的原反馈组合。",
+    "日常战斗画面与手感仍属于人工体验范围；完整PG自动工具资格、SAFEEXIT UI会话绑定和未知写真实故障旅程未由本轮代签。"
   ],
   "businessAcceptance": {
-    "status": "partial",
+    "status": "targeted_physical_acceptance_passed",
     "operator": "user physical UI",
     "targetSlot": "cf7_agent_equipment_tuning",
     "fullPgGatePassed": false,
-    "targetedAcceptanceComplete": false,
+    "targetedAcceptanceComplete": true,
     "firstBagInstallRoundTrip": {
       "passed": true,
       "weapon": "TTI Glock 19",
@@ -220,20 +220,345 @@
       },
       "localReceipt": "work/live-roundtrips/tti-install.json"
     },
-    "remaining": [
-      "bag TTI replacement/refund",
-      "bag AA12 install/replacement/refund",
-      "worn pistol2 detach/install/replacement/refund",
-      "batch save-exit/restart readback"
-    ],
+    "remaining": [],
     "safeExitUiJourneyVerified": false,
     "unknownWriteFaultJourneyVerified": false,
-    "inputAndGateLimitations": "解锁后能够读取界面，但两个界面工具均把游戏内嵌 WebView 误判为另一窗口，拒绝点击。按钮由用户物理操作，Agent 连续只读记录、核对存档并从正式入口重启同一测试副本。此前固定 2000 行日志尾窗的完整 PG 尝试因 log_gap_after_watermark 失败，失败回执保留；实际事务与重启分别通过现役纯验证器及存档检查，作为专项补充证据，不改签完整 PG 通过。",
+    "inputAndGateLimitations": "真实按钮由用户物理操作，Agent连续只读记录、核对实际存档并从正式入口重启同一测试副本。工具把内嵌WebView误判为另一窗口，后续一次画面读取还返回了其他应用，未以该画面签收视觉结果。完整PG的固定日志尾窗失败及解析器覆盖限制仍保留，专项实测不改签完整PG-TUNE-E2E通过。",
     "failedFullPgReceiptsPreserved": [
       "tmp/equipment-tuning/commit-journeys/20261115T233924707Z-2760/receipt.json",
       "tmp/equipment-tuning/commit-journeys/20261115T235055401Z-15248/receipt.json",
       "tmp/equipment-tuning/commit-journeys/20261115T235540053Z-10768/receipt.json"
     ],
-    "previewOnlyGatePassed": false
+    "previewOnlyGatePassed": false,
+    "agentBusinessInputs": 0,
+    "operationCounts": {
+      "install_mod": 9,
+      "detach_mod": 7,
+      "replace_mod": 5
+    },
+    "successfulCommits": 21,
+    "nonReseededSaveRestartCycles": 3,
+    "installDetachBatch": {
+      "passed": true,
+      "commits": 15,
+      "inventoryCommits": 7,
+      "loadoutCommits": 8,
+      "coverage": "TTI, AA12, worn pistol1 and pistol2; install/detach/refund; this batch did not contain replace_mod",
+      "localTranscript": "work/live-observers/install-replace-batch-commit-check.json"
+    },
+    "directReplacementBatch": {
+      "passed": true,
+      "commits": 5,
+      "coverage": [
+        "bag TTI screw-to-spring",
+        "bag TTI spring-to-screw",
+        "bag AA12 screw-to-spring",
+        "worn pistol1 screw-to-spring",
+        "worn pistol2 screw-to-spring"
+      ],
+      "exactTransactions": [
+        {
+          "webCallId": "tune.tune.mwijyczt.98vg0b.1.6",
+          "previewWebCallId": "tune.tune.mwijyczt.98vg0b.1.5",
+          "tokenRef": "sha256_1febf1125b9f0dbf67ac6866",
+          "panelInstanceId": "panel_RJ5VhChdEEfVlQ-R_aoYhgrd",
+          "viewSessionId": "tuning.mwijyd13.aahpsh",
+          "sourceKey": "sha256_0c539952a87b5e5e5db3cc21",
+          "operation": "replace_mod",
+          "candidateKey": "mod.0",
+          "intentKey": "sha256_224399f9040921e973541218",
+          "stateRef": "sha256_248c4c298c6d1e370d46cbd3",
+          "writeEpoch": 1,
+          "source": {
+            "sourceKind": "inventory",
+            "containerId": "背包",
+            "slot": 0,
+            "expectedLeaseRef": "sha256_54335cf4fda4ae11ca43a021"
+          }
+        },
+        {
+          "webCallId": "tune.tune.mwijyczt.98vg0b.1.16",
+          "previewWebCallId": "tune.tune.mwijyczt.98vg0b.1.15",
+          "tokenRef": "sha256_299529eb519d369b7187f230",
+          "panelInstanceId": "panel_RJ5VhChdEEfVlQ-R_aoYhgrd",
+          "viewSessionId": "tuning.mwijyd13.aahpsh",
+          "sourceKey": "sha256_108dd9ba2d5b373d88b1277b",
+          "operation": "replace_mod",
+          "candidateKey": "mod.1",
+          "intentKey": "sha256_bf1524857fd3944696864d98",
+          "stateRef": "sha256_a48382d0e3f6fdaf7f14d1b1",
+          "writeEpoch": 2,
+          "source": {
+            "sourceKind": "inventory",
+            "containerId": "背包",
+            "slot": 0,
+            "expectedLeaseRef": "sha256_f51a1e8f24f039f2d154e8e8"
+          }
+        },
+        {
+          "webCallId": "tune.tune.mwijyczt.98vg0b.1.25",
+          "previewWebCallId": "tune.tune.mwijyczt.98vg0b.1.24",
+          "tokenRef": "sha256_dca9a1e47cea1482e85b0216",
+          "panelInstanceId": "panel_RJ5VhChdEEfVlQ-R_aoYhgrd",
+          "viewSessionId": "tuning.mwijyd13.aahpsh",
+          "sourceKey": "sha256_a53892b3cc66a26ec93e12d5",
+          "operation": "replace_mod",
+          "candidateKey": "mod.0",
+          "intentKey": "sha256_83380488152fcf2bf67d0e03",
+          "stateRef": "sha256_b16149552b659c4f51f8e5fb",
+          "writeEpoch": 3,
+          "source": {
+            "sourceKind": "inventory",
+            "containerId": "背包",
+            "slot": 1,
+            "expectedLeaseRef": "sha256_f5c27b06ed24655abadcb430"
+          }
+        },
+        {
+          "webCallId": "tune.tune.mwik3mft.dlyker.1.9",
+          "previewWebCallId": "tune.tune.mwik3mft.dlyker.1.8",
+          "tokenRef": "sha256_95763f8064a31e021be22231",
+          "panelInstanceId": "panel_D3E91dRqF4XhPAQtEK5C_0d2",
+          "viewSessionId": "tuning.mwik3mfz.pv8ggl",
+          "sourceKey": "sha256_cacaab7e2cfd2cccae528610",
+          "operation": "replace_mod",
+          "candidateKey": "mod.34",
+          "intentKey": "sha256_03d812e9b85bd4cc3716c6da",
+          "stateRef": "sha256_b9cf9aeb736bb634f0dba1a0",
+          "writeEpoch": 4,
+          "source": {
+            "sourceKind": "loadout",
+            "sessionGeneration": 1,
+            "slotKey": "手枪",
+            "expectedLoadoutRevision": 0
+          }
+        },
+        {
+          "webCallId": "tune.tune.mwik3mft.dlyker.1.21",
+          "previewWebCallId": "tune.tune.mwik3mft.dlyker.1.20",
+          "tokenRef": "sha256_8936994a0af27b69cb27c13f",
+          "panelInstanceId": "panel_D3E91dRqF4XhPAQtEK5C_0d2",
+          "viewSessionId": "tuning.mwik3mfz.pv8ggl",
+          "sourceKey": "sha256_ccec2bcf674b6ccb7e4e5895",
+          "operation": "replace_mod",
+          "candidateKey": "mod.33",
+          "intentKey": "sha256_9ef35e9a3446577a445c2531",
+          "stateRef": "sha256_47eb07b584cddde4fbd6a0fc",
+          "writeEpoch": 5,
+          "source": {
+            "sourceKind": "loadout",
+            "sessionGeneration": 1,
+            "slotKey": "手枪2",
+            "expectedLoadoutRevision": 1
+          }
+        }
+      ],
+      "localTranscript": "work/live-observers/direct-replace-commit-check.json"
+    },
+    "saveRestartCycles": [
+      {
+        "case": "first bag spring install",
+        "oldPid": 22204,
+        "newPid": 9552,
+        "savedSha256": "97702135e435997c6fce2aba5d5e6fb94e486aab82469a8d34a5d962b3ba23d7",
+        "savedUtf16Chars": 24713,
+        "materialsReloaded": {
+          "弹簧": 9,
+          "螺丝套件": 10,
+          "加长弹匣": 4,
+          "磁稳贯穿弹": 10
+        },
+        "restartReseeded": false,
+        "passed": true
+      },
+      {
+        "case": "install/detach batch",
+        "oldPid": 9552,
+        "newPid": 7896,
+        "savedSha256": "3839a50820986e9d42157858ad407abccd9db96bc1a40b693a8e6fa53da37b58",
+        "savedUtf16Chars": 24722,
+        "materialsReloaded": {
+          "弹簧": 10,
+          "螺丝套件": 6,
+          "加长弹匣": 6,
+          "磁稳贯穿弹": 10
+        },
+        "restartReseeded": false,
+        "passed": true
+      },
+      {
+        "case": "direct replacements",
+        "oldPid": 7896,
+        "newPid": 8572,
+        "savedSha256": "bde1de8ca8dca35039650fb917f8681f93cfbdb21d3ad1a25ef3524934a2c683",
+        "savedUtf16Chars": 24715,
+        "materialsReloaded": {
+          "弹簧": 7,
+          "螺丝套件": 9,
+          "加长弹匣": 6,
+          "磁稳贯穿弹": 10
+        },
+        "restartReseeded": false,
+        "passed": true
+      }
+    ],
+    "finalMaterials": {
+      "弹簧": 7,
+      "螺丝套件": 9,
+      "加长弹匣": 6,
+      "磁稳贯穿弹": 10
+    },
+    "finalEquipment": {
+      "bag": {
+        "0": {
+          "name": "TTI Glock 19",
+          "value": {
+            "level": 13,
+            "mods": [
+              "灰蛊裂隙弹",
+              "螺丝套件"
+            ]
+          },
+          "lastUpdate": 1794790777369
+        },
+        "1": {
+          "name": "AA12",
+          "value": {
+            "level": 13,
+            "mods": [
+              "灰蛊蚀刻霰弹",
+              "弹簧"
+            ]
+          },
+          "lastUpdate": 1794790788514
+        }
+      },
+      "worn": {
+        "手枪2": {
+          "name": "御天敌V-1",
+          "value": {
+            "ammoState": {
+              "capacity": 24,
+              "chamber": 0,
+              "ghost": 0,
+              "paidChamber": 0,
+              "paidNormal": 0,
+              "reserve": 17,
+              "reserveName": "手枪通用弹药",
+              "reward": 0,
+              "rewardScope": "session:1794430714743:24917:30",
+              "v": 1
+            },
+            "level": 10,
+            "mods": [
+              "手枪卡宾转换套件",
+              "灰蛊裂隙弹",
+              "弹簧"
+            ],
+            "reloadCount": 0,
+            "shot": 0
+          },
+          "lastUpdate": 1794790807736
+        },
+        "手枪": {
+          "name": "御天敌V-1",
+          "value": {
+            "level": 10,
+            "mods": [
+              "手枪卡宾转换套件",
+              "生物催化剂",
+              "弹簧"
+            ],
+            "reloadCount": 0,
+            "shot": 0
+          },
+          "lastUpdate": 1794790802414
+        }
+      }
+    },
+    "userVisualReadbackConfirmed": true,
+    "visualAutomationVerified": false,
+    "freshPhysicalSourceReadback": {
+      "tti": {
+        "ok": true,
+        "evidence": {
+          "kind": "host_snapshot",
+          "lineNumber": 2679,
+          "callId": "tune.tune.mwik8wo1.y6339e.1.1",
+          "panelInstanceId": "panel_OxqY2ccE5NqF5Ifs_Y8w0Ho7",
+          "viewSessionId": "tuning.mwik8woy.bes0kl",
+          "sourceKey": "sha256_945ddf2dcdcc507ceb3aa6cf",
+          "stateRef": "sha256_7943a902c12ef76fc0b7d81a",
+          "writeEpoch": 0,
+          "requestLineNumber": 2677,
+          "source": {
+            "sourceKind": "inventory",
+            "containerId": "背包",
+            "slot": 0,
+            "expectedLeaseRef": "sha256_66405cc427ed2d9d552320a6"
+          }
+        },
+        "assertions": {
+          "sameStableInventoryCoordinate": true,
+          "committedStateRefReadBack": true,
+          "restartLeaseMayRotate": true
+        }
+      },
+      "aa12": {
+        "source": {
+          "sourceKind": "inventory",
+          "containerId": "背包",
+          "slot": 1,
+          "expectedLeaseRef": "sha256_a64cec0b4c2987fa0fb2b1fc"
+        },
+        "requestLineNumber": 3830,
+        "snapshot": {
+          "kind": "host_snapshot",
+          "lineNumber": 3832,
+          "callId": "tune.tune.mwik8wo1.y6339e.1.2",
+          "panelInstanceId": "panel_OxqY2ccE5NqF5Ifs_Y8w0Ho7",
+          "viewSessionId": "tuning.mwik8woy.bes0kl",
+          "sourceKey": "sha256_88a57a761ed2d3ebd54026d8",
+          "stateRef": "sha256_af5ca7d919b4bfe5ad8b7f37",
+          "writeEpoch": 0
+        }
+      },
+      "wornPistol2": {
+        "source": {
+          "sourceKind": "loadout",
+          "sessionGeneration": 1,
+          "slotKey": "手枪2",
+          "expectedLoadoutRevision": 0
+        },
+        "requestLineNumber": 4113,
+        "snapshot": {
+          "kind": "host_snapshot",
+          "lineNumber": 4115,
+          "callId": "tune.tune.mwikel5z.get4me.1.5",
+          "panelInstanceId": "panel_DX5Rrzk9jsMmDbzBijK3HgPb",
+          "viewSessionId": "tuning.mwikel62.s01wey",
+          "sourceKey": "sha256_13aae1f70d391896e94556d0",
+          "stateRef": "sha256_47eb07b584cddde4fbd6a0fc",
+          "writeEpoch": 0
+        }
+      }
+    },
+    "exactLastWornCommitStateRefReadBack": true,
+    "stateRefScope": "The last worn commit is compared directly. Earlier TTI/AA12 commit fingerprints include materials subsequently changed by other successful commits; their items/materials are verified against exact archived and reloaded values plus fresh physical-source snapshots and human display readback.",
+    "localReceipts": [
+      "work/live-roundtrips/tti-install.json",
+      "work/live-roundtrips/install-detach-batch.json",
+      "work/live-roundtrips/direct-replacement.json",
+      "work/live-roundtrips/final-authority.json",
+      "work/live-roundtrips/final-clean-shutdown.json"
+    ],
+    "normalCleanupShutdown": true,
+    "ownedLauncherProcessesRemaining": 0,
+    "cleanupInventoryAndCollectionUnchanged": true,
+    "additionalParserLimits": [
+      "valid intrinsic_unavailable UI diagnostic is outside the pure-parser allowlist",
+      "installed-rail detach does not emit candidate_hit"
+    ],
+    "humanCombatAccepted": false
   }
 }
