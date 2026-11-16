@@ -1,6 +1,6 @@
 # Issue #262：主线整合、Windows 复验与正式发布
 
-源码已对齐 `1b7a18b2ae6353399e2091db1359909df35cb7a4`；其相对已验业务基线 `650334df52b8d56b4c3b1caf9dabf8906e2409f8` 只更新现役旧底座的 DLL、manifest 与 consensus，三份 SWF 和业务源码未变，也不复用该底座签名票作为 Tooltip 发布证明。本轮源码/候选验收完成；正式发布状态和精确身份以[发布回执](../evidence/issue-262-tooltip-release-20261116/release.json)为准，不从候选结果推定已部署。
+源码已对齐 `1b7a18b2ae6353399e2091db1359909df35cb7a4`；其相对已验业务基线 `650334df52b8d56b4c3b1caf9dabf8906e2409f8` 只更新现役旧底座的 DLL、manifest 与 consensus，三份 SWF 和业务源码未变，也不复用该底座签名票作为 Tooltip 发布证明。本轮已完成源码整合、三份 SWF 重编、独立双构建、正式部署、远端审计及专用克隆档的限定标准入口旅程；精确身份和范围以[发布回执](../evidence/issue-262-tooltip-release-20261116/release.json)为准。
 
 ## 整合与真实 Flash
 
@@ -26,4 +26,12 @@
 
 ## 发布与恢复
 
-授权范围为提交推送、独立双构建、唯一 writer 推广、部署审计和标准入口复验。使用新的不可变 `runtime-build-v2/20261116-tooltip-content-v1`；不得沿用旧候选 policy 或其他功能的签名票。发布回执完成前维持 pending。最终运行库回退使用该轮 promotion 保留的 previous bundle；Flash/源码按已提交的三份 SWF 与原始 Git 历史恢复，不能混用运行库回退代替资源回退。本批继续为 DEV / UNSTABLE。
+冻结源码为 `5da48a5a2d7b9d59a8320131f036725aec9dd1aa`，新受控标签为 `runtime-build-v2/20261116-tooltip-content-v1`。注册本地 X509 `builder-local-c / physical-host-c` 与 [GitHub hosted OIDC/Sigstore 独立构建 43833443777](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43833443777) 对同一冻结树的 **43 文件闭包**达成共识，完整 production policy **50/50**。初次 policy 的 49/50 来自主目录 19 份输入的纯换行差异；只恢复冻结 Git blob 的原始字节，未改源码、expected、catalog 版本或标签，最终校验通过。
+
+唯一 writer 于 `2026-11-16T09:24:57Z` 原子部署，正式 Core 为 `FB02866DB3C38C311059826F66F9A640F84B145AE41396F568BCBF1326896A92`；它与前述未签名开发候选的 Core 字节不同，后续资格均绑定该正式 Core。部署提交 `efd1375de42317c5c813adf91e94dc199e81e295` 已普通快进推送 main。[事后 Runtime native audit 43839977275](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43839977275) success，独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain 与相同闭包。根 bootstrap 的 `--verify-only` 另以进程句柄观测 exit **0**。
+
+部署后通过现役第一方 `cf7_harness` 的 `formal_runtime`，仅在专用 `cf7_agent_*` 克隆档完成 **63 次成功调用**：入场、移动 91 像素、Help/Modifier/Settings、调制台真实数据就绪与应用内按钮关闭、商城固定检视器的防御 42/三阶路线/获取来源、显式关闭、面板关闭时隐藏、新 panel instance 重开、正常保存退出、重启及经济数值读回。实际 WebView2 PNG 已目视核对；未结账，未覆盖真实玩家槽位。全程守卫及最终独立核验确认 **288/288** 份原有 JSON/SOL/相关文件不变，未进行存档恢复。
+
+原通用正式 E2E 在调制台加载阶段的 Escape 关闭门超时，未到达保存重启，保留为失败；后续采用数据就绪后点击实际 Web 关闭按钮的限定旅程。补充脚本先后有过早读取导航结果、对原生 ModifierOverlay 错用网页 DOM 断言两次失败，均已正常保存退出并保留原记录；修正脚本后才取得上述同一正式 Core 的完整通过。第一次 promotion 的在线 Sigstore 信任初始化失败、GUI 退出码观测为空的包装器尝试也单列保留，不转写为通过；官方信任资料刷新后的完整验签重放及现役进程句柄等待均已通过。
+
+状态为 `promoted`，上述限定业务达到 `standard_entry_verified`；物理键鼠/Escape、全部 Tooltip 消费者、完整战斗体验和 GameInput 帧尾成本仍未签收。运行库恢复点为 `tmp/runtime-promotions/20261116T092256810Z-a96e97890a574c13993aa0928615f36f/previous`；Flash/源码另按已提交的三份 SWF 与 Git 历史恢复，不能用运行库回退代替资源回退。本批继续为 **2.718 DEV / UNSTABLE**。

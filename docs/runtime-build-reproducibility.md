@@ -1403,3 +1403,9 @@ production policy **47/47**，注册本地 X509 与 [GitHub 独立构建 4103184
 冻结源 `3daedc516461ca77ff2e606b9f7de31525be9b38`、受控标签 `runtime-build-v2/20261107-comic-intros-maps-v1` 完成修理大学和毒刺两路线 14 个开场的统一接入，清理逐关旧分支并同步三个上游地图提交。合并后原生 775、Host 8296 通过/31 跳过、现役选关 63 项及三次代表实机通过；未完成研究所保留上游制作状态，没有新增现役入口。
 
 production policy **47/47**，注册本机 X509 与 [GitHub 独立构建 42383291347](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/42383291347) 对同一 43 文件闭包达成双签名、双故障域共识；唯一 writer 于 `2026-11-07T15:12:10.5685133Z` 原子推广并通过完整安装自检。普通入口进程身份、首屏和正常关闭通过，345 份原有 JSON/SOL 不变；漫画业务是同一 Core/闭包的候选实机资格，未称正式入口重跑。精确身份、恢复、失败证据及源码/SWF 与正式运行库的回退区别见[迁移发布记录](scene-intro-migration.md#formal-release-20261107)，部署提交与 Audit 最终链接见交付收据。本批仍为 2.718 DEV / UNSTABLE，不新增稳定整包。
+
+## 2026-11-16 Tooltip 内容引擎主线整合正式推广
+
+冻结源 `5da48a5a2d7b9d59a8320131f036725aec9dd1aa`、受控标签 `runtime-build-v2/20261116-tooltip-content-v1` 完成最新主线整合、三份 SWF 新鲜重编及定向复验。本地 X509 `builder-local-c / physical-host-c` 与 [GitHub hosted OIDC/Sigstore 构建 43833443777](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43833443777) 达成同一 **43 文件闭包**共识，完整 production policy **50/50**。唯一 writer 原子推广后，部署 `efd1375de42317c5c813adf91e94dc199e81e295` 已快进推送 main；[事后 Audit 43839977275](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43839977275) success，独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain。根 bootstrap 以进程句柄观测 `--verify-only` exit **0**。
+
+部署后现役第一方 `cf7_harness` 的 `formal_runtime` 专用克隆档完成移动、多面板、调制台、商城固定检视器显式关闭/面板关闭/新实例重开，以及正常保存退出与重启读回；该限定业务达到 `standard_entry_verified`，288/288 份原有文件不变。实际正式 Core 与未签名开发候选分别绑定，不复用候选执行作为正式执行证明。物理键鼠、全部消费者、完整战斗和 GameInput 帧尾仍未签收；原 Escape 关闭门、补充脚本及在线验签失败均保留。精确身份、policy/实际旅程摘要和恢复点见[机器回执](evidence/issue-262-tooltip-release-20261116/release.json)，范围与负向记录见[发布报告](reports/issue-262-tooltip-release-20261116.md)。本批仍为 **2.718 DEV / UNSTABLE**。
