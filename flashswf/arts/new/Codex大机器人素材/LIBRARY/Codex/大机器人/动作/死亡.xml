@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/大机器人/动作/死亡" itemID="6af00000-0951b817">
+  <timeline>
+    <DOMTimeline name="死亡">
+      <layers>
+        <DOMLayer name="死亡控制" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[tankMode="death";tankFrameIdentity={};_parent.tankBeginDeath(this);stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" duration="10">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.tankBurstDeath(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="88">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整机体" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/原画/坦克大机器人/死亡" symbolType="graphic" loop="play once" firstFrame="0">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="88">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="散落机体" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="12">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="88">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/自有机体碎片" name="尸体碎片">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){_parent._parent.tankStartFragments(this,11);}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="无脚本机械爆裂" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="10">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="13">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/爆裂/5武器特效和子弹_爆炸狙击子弹_小火焰爆炸" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="530.35" ty="628.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="77">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="内部驱动" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/行为驱动" name="tankBodyDriver">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){bodyIdentity=_parent.tankFrameIdentity;}onClipEvent(enterFrame){_parent._parent.tankBodyTick(_parent,bodyIdentity);}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

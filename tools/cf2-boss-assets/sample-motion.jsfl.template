@@ -1,0 +1,89 @@
+// Authoring-only sampling in an isolated copy. Never publish or testMovie here.
+(function () {
+    var outputURI = "__OUTPUT_URI__";
+    var statusURI = "__STATUS_URI__";
+    var sourceURI = "__SOURCE_URI__";
+    var doc = null;
+    function encode(value) {
+        if (value === null || value === undefined) return "null";
+        if (typeof value == "string") return '"' + value.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\r/g, "\\r").replace(/\n/g, "\\n").replace(/\t/g, "\\t") + '"';
+        if (typeof value == "number" || typeof value == "boolean") return String(value);
+        var parts = [], key;
+        if (value instanceof Array) {
+            for (key = 0; key < value.length; key++) parts.push(encode(value[key]));
+            return "[" + parts.join(",") + "]";
+        }
+        for (key in value) if (typeof value[key] != "function") parts.push(encode(key) + ":" + encode(value[key]));
+        return "{" + parts.join(",") + "}";
+    }
+    function combine(parent, child) {
+        return [
+            parent.a * child.a + parent.c * child.b, parent.b * child.a + parent.d * child.b,
+            parent.a * child.c + parent.c * child.d, parent.b * child.c + parent.d * child.d,
+            parent.a * child.tx + parent.c * child.ty + parent.tx, parent.b * child.tx + parent.d * child.ty + parent.ty
+        ];
+    }
+    function channel(element, key, fallback) {
+        return typeof element[key] == "number" ? element[key] : fallback;
+    }
+    function samePath(left, right) {
+        function key(uri) {
+            return decodeURIComponent(uri).replace(/^file:\/\/\/([a-z])\|/i, "file:///$1:").replace(/\\/g, "/").toLowerCase();
+        }
+        return key(left) == key(right);
+    }
+    try {
+        if (!FLfile.write(statusURI, "started __RUN_ID__")) throw "Native sampling output is not writable";
+        if (fl.documents.length != 0) throw "Refuse to borrow an existing Animate document";
+        doc = fl.openDocument(sourceURI);
+        if (!doc || !samePath(doc.pathURI, sourceURI)) throw "Isolated sampling document identity mismatch";
+        var labels = ["常态", "跑步走路", "平a", "技能", "死亡"];
+        var report = {schema:"cf2-tank-boss.native-motion.v1", runId:"__RUN_ID__",
+            archiveSha256:"__ARCHIVE_SHA__", samplerSha256:"__SAMPLER_SHA__", version:fl.version, actions:{}};
+        for (var ai = 0; ai < labels.length; ai++) {
+            var name = labels[ai];
+            if (!doc.library.editItem("坦克大机器人/" + name)) throw "Missing author timeline: " + name;
+            var timeline = doc.getTimeline(), count = timeline.frameCount, layerNames = [];
+            for (var li = 0; li < timeline.layers.length; li++) {
+                var layer = timeline.layers[li];
+                if (typeof layer.getRigMatrixAtFrame != "function") throw "Native layer parenting API unavailable";
+                layerNames.push(layer.name);
+                layer.locked = false;
+                timeline.setSelectedLayers(li, true);
+                timeline.convertToKeyframes(0, count);
+            }
+            var poses = [];
+            for (var fi = 0; fi < count; fi++) {
+                timeline.currentFrame = fi;
+                var pose = [];
+                for (var li = 0; li < timeline.layers.length; li++) {
+                    var layer = timeline.layers[li], frame = layer.frames[fi];
+                    if (!frame) continue;
+                    var rig = layer.getRigMatrixAtFrame(fi);
+                    if (!rig) rig = {a:1,b:0,c:0,d:1,tx:0,ty:0};
+                    for (var ei = 0; ei < frame.elements.length; ei++) {
+                        var element = frame.elements[ei];
+                        if (element.elementType != "instance" || !element.libraryItem) continue;
+                        pose.push({layer:li, part:element.libraryItem.name, matrix:combine(rig, element.matrix),
+                            firstFrame:element.firstFrame, loop:element.loop,
+                            colorMult:[channel(element,"colorRedPercent",100),channel(element,"colorGreenPercent",100),
+                                channel(element,"colorBluePercent",100),channel(element,"colorAlphaPercent",100)],
+                            colorAdd:[channel(element,"colorRedAmount",0),channel(element,"colorGreenAmount",0),
+                                channel(element,"colorBlueAmount",0),channel(element,"colorAlphaAmount",0)]});
+                    }
+                }
+                poses.push(pose);
+            }
+            report.actions[name] = {frameCount:count,layers:layerNames,poses:poses};
+            FLfile.write(statusURI, "sampled __RUN_ID__ " + name + " " + count);
+        }
+        if (!FLfile.write(outputURI, encode(report))) throw "Could not preserve native motion samples";
+        FLfile.write(statusURI, "complete __RUN_ID__");
+    } catch (error) {
+        FLfile.write(statusURI, "failed __RUN_ID__: " + error);
+    } finally {
+        // Only discard our scratch copy; never close another document or app.
+        if (doc && samePath(doc.pathURI, sourceURI)) fl.closeDocument(doc, false);
+        if (fl.documents.length == 0) fl.quit(false);
+    }
+})();

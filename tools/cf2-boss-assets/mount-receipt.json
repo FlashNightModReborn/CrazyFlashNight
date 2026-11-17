@@ -1,0 +1,12 @@
+{
+  "schema": "cf2-tank-boss.mount.v1",
+  "before": "313219969f0e3d62af1ac6be303ffce19768d6e2a420d8e6f952cc0030ac19e4",
+  "after": "1e8df3c9dbab21bd85693250b4ceb0936f6054845648621fd56e02a44d722c9e",
+  "changedMembers": [
+    "DOMDocument.xml",
+    "LIBRARY/things-new.xml"
+  ],
+  "addedMember": "LIBRARY/Codex大机器人素材.xml",
+  "untouchedLocalRecordsByteIdentical": 114,
+  "recovery": "write completed before a receipt-path NameError; exact candidate reconstructed and read back, not replayed"
+}

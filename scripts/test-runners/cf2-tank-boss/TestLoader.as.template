@@ -1,0 +1,17 @@
+﻿#include "test-runners/cf6-playtest/PlaytestFixture.as"
+_root.敌人函数 = {};
+_root.敌人函数.方向改变 = function(side:String):Void {
+    if(this.锁定方向)return;
+    this.方向=side;this._xscale=side=="左"?-this.myxscale:this.myxscale;
+};
+_root.敌人函数.状态改变 = function(state:String):Void {
+    if(this.状态==state)return;
+    this.状态=state;this.gotoAndStop(state);
+};
+_root.tankCapture = false;
+_root.cf2TankBossComplete = function():Void {
+    trace("FocusedTestRunId cf2-tank-boss Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf2-tank-boss Start: __FOCUSED_RUN_ID__");
+trace("[CF2_SUITE_API] "+typeof org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest.runAllTests);
+org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest.runAllTests();
