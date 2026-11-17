@@ -2,10 +2,10 @@
  * NativeTooltipBridge - AS2 原生注释出口（COMMON 桥协议 v1）
  *
  * 职责：
- * - 把 NativeTooltipDocument 产出的 document 通过
+ * - 把 TooltipInputProjection 的只读输入通过
  *   _root.server.sendTaskToNode("native_interaction", payload, null) 发布到宿主。
  * - payload 形状：{kind:"tooltip", op:"show"|"hide", version:1,
- *   requestId:"ni:<n>", sceneId, x, y, document?, anchorRect?, placement?}
+ *   requestId:"ni:<n>", sceneId, x, y, tooltipInput?, anchorRect?, placement?}
  *   x/y 为 Flash 逻辑鼠标锚点（_root._xmouse/_ymouse）。
  *   anchorRect 可选：{x,y,width,height}，_root 系 Flash 逻辑坐标，
  *   取真实 owner/图标 MovieClip 的 getBounds(_root)；无有效 owner 时整段省略，
@@ -25,8 +25,8 @@
  *   Function，不依赖帧脚本 activation，asLoader teardown 后仍存活。
  *
  * 典型用法：
- *   var reqId = NativeTooltipBridge.show(doc);          // 成功返回 requestId
- *   var reqId = NativeTooltipBridge.show(doc, iconMc);  // 携带 anchorRect
+ *   var reqId = NativeTooltipBridge.show(input);          // 成功返回 requestId
+ *   var reqId = NativeTooltipBridge.show(input, iconMc);  // 携带 anchorRect
  *   NativeTooltipBridge.hide(reqId);                // 或 hide() 隐藏当前实例
  *   NativeTooltipBridge.reset();                    // 场景生命周期重置（as2-menu 在
  *                                                   // 更新场景身份前先调用）
@@ -93,8 +93,8 @@ class org.flashNight.gesh.tooltip.NativeTooltipBridge {
      * 缺省回退 patched ItemIcon.RollOver 捕获的 _scopedOwner；两者皆无则旧 payload。
      * placement 可选：left/right/top/bottom，非法值不下发。
      */
-    public static function show(document:Object, ownerClip:MovieClip, placement:String, hudAnchor:Object):String {
-        if (document == null || document == undefined) return null;
+    public static function show(tooltipInput:Object, ownerClip:MovieClip, placement:String, hudAnchor:Object):String {
+        if (tooltipInput == null || tooltipInput.version !== 1) return null;
         var ctx:Object = context();
         if (ctx == null) return null;
         var server:Object = _root.server;
@@ -122,7 +122,7 @@ class org.flashNight.gesh.tooltip.NativeTooltipBridge {
             sceneId: sceneId,
             x: mx,
             y: my,
-            document: document
+            tooltipInput: tooltipInput
         };
         var anchor:Object = anchorRectFor(typeof ownerClip == "movieclip" ? ownerClip : _scopedOwner);
         if (hudAnchor != null) {

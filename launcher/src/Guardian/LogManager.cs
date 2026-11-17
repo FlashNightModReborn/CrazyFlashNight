@@ -442,8 +442,12 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        internal static event Action<string> OnLogLine;
+
         public static void Log(string message)
         {
+            var tap = OnLogLine;
+            if (tap != null) { try { tap(message); } catch { } }
             var s = _sink;
             if (s != null) { s(message); return; }
 

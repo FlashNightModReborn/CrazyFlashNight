@@ -1,0 +1,138 @@
+{
+  "schema": "cf7.issue262.formal-release.v1",
+  "recordedAtUtc": "2026-11-16T09:43:14.625432+00:00",
+  "status": "standard_entry_verified",
+  "promoted": true,
+  "standardEntryVerified": true,
+  "sourceCommitOid": "5da48a5a2d7b9d59a8320131f036725aec9dd1aa",
+  "releaseTreeOid": "e705a23c80da1bc78791e7fcb28244990065c5de",
+  "deploymentCommitOid": "efd1375de42317c5c813adf91e94dc199e81e295",
+  "tag": "refs/tags/runtime-build-v2/20261116-tooltip-content-v1",
+  "requestId": "51467ED9DAC463C36C4713CDC48D3D8B00B769B6E1B50CA7AAE11046EF960880",
+  "buildIdentityHash": "CCE69E7F03C538E7C5BB662C4C79CB72B44E0711DA541774CE2527BECB0317AA",
+  "payloadClosureHash": "1CB22062BB6AC8774F4CD3ACA754529C005E7701A3F71EF424A24D05991F6DFB",
+  "payloadFileCount": 43,
+  "coreSha256": "FB02866DB3C38C311059826F66F9A640F84B145AE41396F568BCBF1326896A92",
+  "consensusSha256": "225F14486B2E30B60246512DB713A5D31DF2E1C32CE81467B6041B849C2562B8",
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "passedChecks": 50,
+    "totalChecks": 50,
+    "receiptSha256": "0F572A3FF313BA641BEBD869A6BB38E6527E917DF215E9D47200E80EA8204C76"
+  },
+  "independentBuilders": [
+    {
+      "kind": "local-x509",
+      "builder": "builder-local-c",
+      "faultDomain": "physical-host-c",
+      "builderKeyId": "CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86"
+    },
+    {
+      "kind": "github-oidc-sigstore",
+      "faultDomain": "github-hosted-windows",
+      "runId": 43833443777,
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43833443777",
+      "candidateBytesDownloaded": false,
+      "envelopeSignatureReplayedAgainstLocalCandidate": true
+    }
+  ],
+  "promotion": {
+    "exitCode": 0,
+    "completedAtUtc": "2026-11-16T09:24:57.5084922Z",
+    "previousBundleRelativePath": "tmp/runtime-promotions/20261116T092256810Z-a96e97890a574c13993aa0928615f36f/previous",
+    "rootBootstrapVerifyOnlyExitCode": 0
+  },
+  "freshFlashModules": [
+    {
+      "module": "resident",
+      "path": "scripts/asLoader.swf",
+      "bytes": 90511,
+      "classes": 1,
+      "sha256": "6614A2F6A498049BEBC90F8F37FDAA0F7A3E0DA58C060115B015C60A958EDC36"
+    },
+    {
+      "module": "shared",
+      "path": "scripts/asLoaderShared.swf",
+      "bytes": 2996949,
+      "classes": 340,
+      "sha256": "9E58E9E0321812049D818B228A4A96BAAB2D17E2197407BA122656C1E4EA7F48"
+    },
+    {
+      "module": "boot",
+      "path": "scripts/asLoaderLogic.swf",
+      "bytes": 3835511,
+      "classes": 431,
+      "sha256": "0D4D52135507E2F0F3BADCB973F50BFA859060580B1E96F318F75C1C70E44C7C"
+    }
+  ],
+  "formalJourney": {
+    "scope": "First-party cf7_harness formal_runtime; dedicated private clone; scoped business verification.",
+    "runtimeSelection": "formal_runtime",
+    "usedCandidateSelector": false,
+    "successfulToolCalls": 63,
+    "privateRawReceiptSha256": "FCA04A4E7191B3CF2B5057C5ACE9D5B03FDE607B2C8D15023A33654351FF7060",
+    "journeyScriptSha256": "6188C4C1CFD4915A767360F7C0A220FA60FD476EC99203F0EDA25C234A5E6307",
+    "movementDeltaPixels": -91,
+    "panels": [
+      "help",
+      "modifier",
+      "settings",
+      "equipment-tuning",
+      "kshop"
+    ],
+    "tuningSnapshotReady": true,
+    "tuningCloseMethod": "observed production Web header button",
+    "pinnedInspector": {
+      "contentAssertions": [
+        "defence 42",
+        "three upgrade tiers",
+        "sources"
+      ],
+      "explicitClose": true,
+      "panelCloseHides": true,
+      "freshPanelReopen": true,
+      "screenshotSha256": "232363511D137584E63E9B10290060C5FCE0001FF4445BB2E75E1E44BD91D400",
+      "screenshotBytes": 677497
+    },
+    "normalSaveAndExit": true,
+    "restartReadbackVerified": true,
+    "economyReadbackUnchanged": true,
+    "physicalInputAttestation": false,
+    "businessPurchaseExecuted": false,
+    "allTooltipConsumersVerified": false,
+    "fullCombatAcceptance": false,
+    "gameInputFrameTailMeasured": false
+  },
+  "protectedOriginalFiles": {
+    "checked": 288,
+    "unchanged": 288,
+    "restorationPerformed": false,
+    "privateRawReceiptSha256": "930A2CF38AB3501C6DE65438FF327135FBEC0DE1D7DC89C801F2A172677B986C"
+  },
+  "deploymentAudit": {
+    "runId": 43839977275,
+    "status": "completed",
+    "passed": true,
+    "conclusion": "success",
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43839977275",
+    "headCommitOid": "efd1375de42317c5c813adf91e94dc199e81e295",
+    "releaseSourceCommitOid": "5da48a5a2d7b9d59a8320131f036725aec9dd1aa",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "signers": 2,
+    "faultDomains": 2,
+    "files": 43,
+    "payloadClosureHash": "1CB22062BB6AC8774F4CD3ACA754529C005E7701A3F71EF424A24D05991F6DFB",
+    "privateLogSha256": "42EF58EB7CF999EBAE9330D9B3DDB18FDDEB3B33A1EA7C8B8BBE44CC52FA4840"
+  },
+  "negativeEvidenceRetained": [
+    "Initial production policy 49/50: primary catalog inputs had EOL-only drift; exact frozen Git bytes restored, no source or expected hash change; final 50/50.",
+    "First promotion stopped at online Sigstore trust initialization, before mutation; official root refresh and full signature replay passed on retry.",
+    "Stock formal E2E stopped at tuning Escape-close timeout while loading; it did not reach persistence qualification. Corrected scoped journey awaited ready data and used observed production Web close.",
+    "Two supplemental-script attempts failed at premature navigation sampling and inapplicable DOM assertion for native ModifierOverlay. Both private roles saved/exited normally with original-save guards passing; corrected script passed 63 calls on identical formal Core.",
+    "Start-Process wrapper initially returned no observable GUI exit code; preserved as inconclusive. Canonical ProcessStartInfo handle wait then observed root verify-only exit 0.",
+    "Earlier current-source Host input-qualified retries, visible capture timeout and original AVM1 collector timeout remain historical failures with separate bounded successful evidence."
+  ],
+  "releaseChannel": "2.718 DEV / UNSTABLE"
+}

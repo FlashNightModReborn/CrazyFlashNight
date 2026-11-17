@@ -128,6 +128,11 @@ function(EquipmentTuningModel, TuningAdapter, global) {
         loadConversionCandidates:loadConversionCandidates,
         bindSourceTooltip:bindSourceTooltip,
         openInspector:openInspector,
-        closeInspector:closeInspector
+        closeInspector:closeInspector,
+        setDensity:function(owner, mode) {
+            owner._density = mode === 'compact' ? 'compact' : 'full';
+            if (owner._mount) owner._mount.classList.toggle('item-grid-compact', owner._density === 'compact');
+            return true;
+        }
     };
 });

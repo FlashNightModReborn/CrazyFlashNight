@@ -50,8 +50,12 @@ namespace CF7Launcher.Guardian
         private const int SIZE_RESTORED = 0;
         private const int SIZE_MINIMIZED = 1;
         private const int SIZE_MAXIMIZED = 2;
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOZORDER = 0x0004;
         private const uint SWP_NOACTIVATE = 0x0010;
+        private const uint SWP_SHOWWINDOW = 0x0040;
+        private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
 
         private const int DesiredBootstrapClientWidth = 1600;
         private const int DesiredBootstrapClientHeight = 900;
@@ -114,6 +118,8 @@ namespace CF7Launcher.Guardian
             new ForegroundVacuumWatchdogPolicy();
         // 工作站锁定 / 安全桌面 / 快速用户切换：此期间默认桌面侧前台恒为 NULL，看门狗须停。
         private volatile bool _sessionLocked;
+        internal bool IsSessionLocked => _sessionLocked;
+        private bool _sessionSwitchSubscribed;
         // [Activation] lost 日志时间戳，gained 时输出 gapMs 用于区分 toast 抢焦 vs 用户切走。
         private int _lastDeactivateLogTick;
 
@@ -187,7 +193,11 @@ namespace CF7Launcher.Guardian
                 SetupHotkeys();
                 SetupForegroundWatchdog();
             }
-            else ShowInTaskbar = false;
+            else
+            {
+                ShowInTaskbar = false;
+                SubscribeSessionSwitch();
+            }
             LogManager.Init(this, _logBox);
         }
 
@@ -575,6 +585,10 @@ namespace CF7Launcher.Guardian
                 _foregroundWatchdog.Stop();
                 _foregroundWatchdog.Dispose();
                 _foregroundWatchdog = null;
+            }
+            if (_sessionSwitchSubscribed)
+            {
+                _sessionSwitchSubscribed = false;
                 // SystemEvents 持静态引用，不退订会泄漏 GuardianForm。
                 SystemEvents.SessionSwitch -= OnSessionSwitch;
             }
@@ -724,6 +738,13 @@ namespace CF7Launcher.Guardian
         // 前台属于真实外部窗口（用户自己切过去的）仍一律不抢。
         // ============================================================
 
+        private void SubscribeSessionSwitch()
+        {
+            if (_sessionSwitchSubscribed) return;
+            _sessionSwitchSubscribed = true;
+            SystemEvents.SessionSwitch += OnSessionSwitch;
+        }
+
         private void SetupForegroundWatchdog()
         {
             _foregroundWatchdog = new System.Windows.Forms.Timer();
@@ -732,7 +753,7 @@ namespace CF7Launcher.Guardian
             _foregroundWatchdog.Start();
             // 锁屏 / 安全桌面 / 快速用户切换期间，默认桌面侧 GetForegroundWindow() 恒为
             // NULL，会被误判为焦点真空——订阅会话切换，断开态直接停看门狗。
-            SystemEvents.SessionSwitch += OnSessionSwitch;
+            SubscribeSessionSwitch();
         }
 
         private void OnSessionSwitch(object sender, SessionSwitchEventArgs e)
@@ -1344,6 +1365,20 @@ namespace CF7Launcher.Guardian
             this.WindowState = FormWindowState.Normal;
             this.BringToFront();
             this.Activate();
+        }
+
+        internal void EnsureNonActivatingBackgroundVisible()
+        {
+            if (IsDisposed) return;
+            if (WindowState == FormWindowState.Minimized)
+                WindowState = FormWindowState.Normal;
+            if (!Visible)
+                Show();
+            if (IsHandleCreated)
+            {
+                SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+            }
         }
 
         // ============================================================

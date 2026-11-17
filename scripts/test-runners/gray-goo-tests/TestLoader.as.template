@@ -4,25 +4,27 @@ if (_root.preloaders == undefined) _root.preloaders=[];
 if (_root.loaders == undefined) _root.loaders=[];
 if (_root.UI系统 == undefined) _root.UI系统={};
 if (_root.gameCommands == undefined) _root.gameCommands={};
+function runOriginalGraySuites():Void {
 org.flashNight.arki.bullet.BulletComponent.Queue.ToughnessVulnerabilityPipelineTest.runAllTests();
 org.flashNight.arki.component.Buff.Effect.GrayGooShotgunEtchTest.runAllTests();
 org.flashNight.arki.item.equipment.EquipmentTestSuite.runAllTests();
-org.flashNight.gesh.tooltip.test.TestDataBootstrap.runIsolated(function():Void {
-    org.flashNight.gesh.tooltip.test.BuilderContractTest.runAllTests();
-});
+}
 _root.grayGooAssetComplete=function():Void {
     trace("FocusedTestRunId gray-goo-tests Complete: __FOCUSED_RUN_ID__");
 };
 org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest.onComplete=function():Void {
     org.flashNight.arki.render.GrayGooAssetTest.runAllTests();
 };
-var grayProbePaths:Array=["武器_手枪_大威力手枪.xml","武器_手枪_冲锋枪.xml","武器_手枪_手枪.xml","武器_长枪_霰弹枪.xml","武器_手枪_霰弹枪.xml","equipment_mods/高等材料_枪械专用.xml"];
+var grayProbePaths:Array=["武器_手枪_大威力手枪.xml","武器_手枪_冲锋枪.xml","武器_手枪_手枪.xml","武器_长枪_霰弹枪.xml","武器_手枪_霰弹枪.xml","equipment_mods/高等材料_枪械专用.xml","equipment_mods/低级材料_枪械专用.xml","equipment_mods/高等材料_通用.xml","收集品_材料_插件.xml"];
 var grayProbeIndex:Number=0;
 var grayProbeItems:Object={};
 var grayProbeMods:Array=[];
 function loadNextGrayProbe():Void {
     if (grayProbeIndex>=grayProbePaths.length) {
-        org.flashNight.arki.item.equipment.ModRegistry.loadModData(grayProbeMods);
+        org.flashNight.arki.item.EquipmentTuningServiceTest.runColdMissingModDefinitionTests(grayProbeItems,grayProbeMods);
+        runOriginalGraySuites();
+        var profileMods = org.flashNight.gesh.object.ObjectUtil.clone(grayProbeMods);
+        org.flashNight.arki.item.equipment.ModRegistry.loadModData(profileMods);
         var cfg:Object=org.flashNight.arki.item.equipment.EquipmentConfigManager.getFullConfig();
         var dict:Object=org.flashNight.arki.item.equipment.ModRegistry.getModDict();
         var value:Object={level:1,mods:["灰蛊裂隙弹"]};
@@ -44,6 +46,7 @@ function loadNextGrayProbe():Void {
             && etchOk;
         trace("GrayGooRealProfiles passed="+ok);
         if (!ok) trace("[TEST_FAIL] gray-goo actual XML profiles");
+        org.flashNight.arki.item.EquipmentTuningServiceTest.runRealModRegressionTests(grayProbeItems,grayProbeMods);
         org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest.runAllTests();
         return;
     }

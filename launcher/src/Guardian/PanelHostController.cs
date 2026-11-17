@@ -450,7 +450,13 @@ namespace CF7Launcher.Guardian
         private PanelGeometrySnapshot _committedGeometry;
         private readonly PanelRestoreRevalidationGate _restoreRevalidation =
             new PanelRestoreRevalidationGate();
+        private bool _allowHeadlessHarnessGeometry;
         private bool _disposed;
+
+        internal void EnableHeadlessHarnessGeometryFallback()
+        {
+            _allowHeadlessHarnessGeometry = true;
+        }
 
         public PanelHostController(
             Form ownerForm,
@@ -1433,6 +1439,12 @@ namespace CF7Launcher.Guardian
                     RejectUnpostedOpen(cmd.Name, "document_unavailable");
                     return;
                 }
+                if (SceneTransitionBlocksOpen(cmd.Name, cmd.InitDataJson))
+                {
+                    DeferOpen(cmd, "scene-transition timeline");
+                    _consecutiveFailures = 0;
+                    return;
+                }
                 if (HasVisualRetireBarrier())
                 {
                     DeferOpen(cmd, "visual-retire barrier");
@@ -1496,7 +1508,8 @@ namespace CF7Launcher.Guardian
             bool webPostAccepted = false;
             try
             {
-                if (HasVisualRetireBarrier())
+                if (HasVisualRetireBarrier()
+                    || SceneTransitionBlocksOpen(cmd.Name, cmd.InitDataJson))
                 {
                     outcome =
                         TrackedOpenOutcome.PreExecutionRejected;
@@ -1610,7 +1623,8 @@ namespace CF7Launcher.Guardian
                         "[PanelHost] exact replace execution gate threw: "
                         + ex.GetType().Name);
                 }
-                if (!gateAccepted)
+                if (!gateAccepted
+                    || SceneTransitionBlocksOpen(plan.TargetPanel, plan.ImmutableInitDataJson))
                 {
                     outcome = ExactReplaceOutcome.PreExecutionRejected;
                     return;
@@ -2172,20 +2186,39 @@ namespace CF7Launcher.Guardian
         {
             if (_ownerForm.WindowState == FormWindowState.Minimized)
             {
+                if (_allowHeadlessHarnessGeometry)
+                    return MeasureHeadlessHarnessFallbackAnchor("minimized");
                 return PanelGeometryMeasurement.ExplicitInvalid(
                     "owner_state",
                     "minimized");
             }
             if (!_ownerForm.Visible)
             {
+                if (_allowHeadlessHarnessGeometry)
+                    return MeasureHeadlessHarnessFallbackAnchor("hidden");
                 return PanelGeometryMeasurement.ExplicitInvalid(
                     "owner_state",
                     "hidden");
             }
-            return ResolveAnchorMeasurements(
+            PanelGeometryMeasurement resolved = ResolveAnchorMeasurements(
                 delegate { return _web.MeasureCurrentAnchorScreenRect(); },
                 MeasureFlashPanelAnchor,
                 MeasureOwnerClientAnchor);
+            if (resolved.Kind != PanelGeometryMeasurementKind.Valid && _allowHeadlessHarnessGeometry)
+                return MeasureHeadlessHarnessFallbackAnchor("anchor_" + resolved.Reason);
+            return resolved;
+        }
+
+        private PanelGeometryMeasurement MeasureHeadlessHarnessFallbackAnchor(string reason)
+        {
+            int w = (_ownerForm != null && !_ownerForm.IsDisposed && _ownerForm.ClientSize.Width >= 320)
+                ? _ownerForm.ClientSize.Width : 1600;
+            int h = (_ownerForm != null && !_ownerForm.IsDisposed && _ownerForm.ClientSize.Height >= 180)
+                ? _ownerForm.ClientSize.Height : 900;
+            return PanelGeometryMeasurement.Valid(
+                new Rectangle(0, 0, w, h),
+                "harness_headless",
+                reason ?? "fallback");
         }
 
         private bool TryCreateProvisionalGeometry(
@@ -3256,6 +3289,8 @@ namespace CF7Launcher.Guardian
             DisposePhysicalCloseWaits();
             if (_disposed) return;
             _disposed = true;
+            if (_sceneSettlement != null)
+                _sceneSettlement.PanelAdmissionAvailable -= OnTransitionPanelAdmissionAvailable;
             if (_compositionHelp != null || _compositionIntelligence != null)
             {
                 try { if (AnyCompositionPanelSelected) RetireCompositionPanel(); } catch { }

@@ -3,20 +3,10 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.EquipmentUtil;
 
 /**
- * InventoryTooltipProjectionTest — buildTooltipProjection 的 COMMON v1 document 接线回归。
- *
- * 覆盖：
- * - 真实装备实例（强化等级 + 配件 mods）的 document 与 intro/desc 同源生成；
- * - document.title / icon 与 projection.displayName / iconName 严格同源（getData 覆盖）；
- * - 简介首行标题去重只发生在 document 边界：introHTML 原字段不变，
- *   [tier] 前缀提升进 title，类型/价格/强化/词条行全保留；
- * - document 走与原生悬浮注释相同的结构拆分：类型行移交 rail 书签、
- *   弹夹名/子弹类型移交 magazine 框、配件移交 role:"sub"/kind:"attachments"
- *   子框；旧 introHTML/descHTML 出口仍保留全文；
- * - stack 物品（无 getData 覆盖）也带一致 document。
- *
- * 运行入口：runAllTests()（由 test-runners/item-panels 或主控指定 runner 调用；
- * 本文件自身不注册 runner）。
+ * Producer contract only: real instance reads, detached values, display identity,
+ * and stack quantities. Content/Document assertions run in the Launcher engine
+ * suite; this runner must not compile an old AS2 content engine back into boot.
+ * Windows execution is still required to validate these probes under AVM1.
  */
 class org.flashNight.arki.item.InventoryTooltipProjectionTest {
     private static var _passed:Number = 0;
@@ -30,60 +20,12 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         testEquipmentInstanceDocument();
         testHandEquipmentActionRail();
         testStackItemDocument();
-        testDocumentTitleDedupBoundary();
 
         trace("InventoryTooltipProjectionTest Tests Passed: " + _passed);
         trace("InventoryTooltipProjectionTest Tests Failed: " + _failed);
         trace("=== InventoryTooltipProjectionTest end ===");
     }
 
-    /** 在 runs 数组中查找包含子串的 run 文本（纯文本，不含标记）。 */
-    private static function findRunText(runs:Array, needle:String):String {
-        if (runs == null) return null;
-        for (var i:Number = 0; i < runs.length; i++) {
-            var t:String = String(runs[i].text);
-            if (t != null && t.indexOf(needle) >= 0) return t;
-        }
-        return null;
-    }
-
-    private static function sectionByRole(doc:Object, role:String):Object {
-        if (doc == null || doc.sections == null) return null;
-        for (var i:Number = 0; i < doc.sections.length; i++) {
-            if (doc.sections[i].role == role) return doc.sections[i];
-        }
-        return null;
-    }
-
-    /** 按 role+kind 找子框段（attachments 结构化子框专用）。 */
-    private static function subSectionByKind(doc:Object, kind:String):Object {
-        if (doc == null || doc.sections == null) return null;
-        for (var i:Number = 0; i < doc.sections.length; i++) {
-            var sec:Object = doc.sections[i];
-            if (sec.role == "sub" && sec.kind == kind) return sec;
-        }
-        return null;
-    }
-
-    /** 所有 section 的 runs 拼成一个数组，便于全文档查找。 */
-    private static function allRuns(doc:Object):Array {
-        var out:Array = [];
-        if (doc == null || doc.sections == null) return out;
-        for (var i:Number = 0; i < doc.sections.length; i++) {
-            var runs:Array = doc.sections[i].runs;
-            if (runs == null) continue;
-            for (var j:Number = 0; j < runs.length; j++) out.push(runs[j]);
-        }
-        return out;
-    }
-
-    /**
-     * 装备实例：value.level=3、tier=二阶、mods=[插件A,插件B]，
-     * getData() 覆盖 displayname/icon（涂装场景）。
-     * 断言 document 与回包 displayname/iconName 同源、真实强化等级进入 runs、
-     * 类型行/弹夹/配件分别移交 rail/magazine/attachments 结构部件、
-     * 标题去重后 intro 首 run 不再是名称、旧 introHTML/descHTML 全文不变。
-     */
     private static function testEquipmentInstanceDocument():Void {
         var name:String = "GateNI实例注释装备";
         var itemDictWasUndefined:Boolean = ItemUtil.itemDataDict == undefined;
@@ -100,7 +42,7 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         var previousEquipFlag:Object = ItemUtil.equipmentDict[name];
         var previousModDict:Object = EquipmentUtil.modDict;
 
-        // ItemUtil.isEquipment 只认 equipmentDict：TooltipComposer 的装备分支
+        // ItemUtil.isEquipment 只认 equipmentDict：只读 producer 的装备分支
         // （含 ModsBlockBuilder 配件块）由它门控，不注册则 descHTML 不含配件行。
         ItemUtil.equipmentDict[name] = true;
         ItemUtil.itemDataDict[name] = {
@@ -148,74 +90,28 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         assertTrue(r.displayname == "GateNI涂装名" && r.iconName == "GateNI涂装图标",
             "回包 displayname/iconName 使用 getData 涂装覆盖");
 
-        // ── document 存在且与投影同源
-        var doc:Object = r.document;
-        assertTrue(doc != null && doc.version == 1 && doc.profile == "dense",
-            "document 为 v1 dense 文档");
-        assertTrue(doc != null && doc.icon != null
-            && doc.icon.kind == "item" && doc.icon.name == "GateNI涂装图标",
-            "document.icon.name 与回包 iconName 同源（涂装图标）");
-        assertTrue(doc != null && String(doc.title).indexOf("GateNI涂装名") >= 0
-            && String(doc.title).indexOf("二阶") >= 0,
-            "document.title 保留 [tier] 前缀与涂装显示名");
-
-        // ── 标题去重：intro 首 run 不再是名称行，但 [tier] 进了 title
-        var intro:Object = sectionByRole(doc, "intro");
-        assertTrue(intro != null && intro.runs.length > 0,
-            "document.intro 段存在");
-        assertTrue(intro != null && intro.runs[0].text != null
-            && String(intro.runs[0].text).indexOf("涂装名") < 0,
-            "intro 首行名称已提升为 title，不再重复绘制");
-        // ── 类型行移交 rail 书签（与原生悬浮注释同一拆分），简介不再重复
-        assertTrue(doc.rail != null && doc.rail.length == 1 && doc.rail[0] == "手枪",
-            "武器大类移交 rail 书签");
-        assertTrue(findRunText(intro.runs, "手枪") == null,
-            "intro 不再输出类型/用途行（移交 rail）");
-
-        // ── 弹夹名/子弹类型移交弹夹框（第二行），简介不再重复
-        assertTrue(doc.magazine != null && doc.magazine.name == "GateNI通用手枪弹夹"
-            && doc.magazine.icon == "GateNI弹夹图标" && doc.magazine.ammo == "普通子弹",
-            "弹夹框承载名称/图标与子弹类型第二行");
-        assertTrue(findRunText(intro.runs, "使用弹夹") == null
-            && findRunText(intro.runs, "子弹类型") == null,
-            "intro 不再输出弹夹/子弹类型行（移交弹夹框）");
-
-        // ── 真实实例强化：level=3 的强化等级行进入 runs（不是 level1 冒充）
-        assertTrue(findRunText(allRuns(doc), "强化等级") != null
-            && findRunText(allRuns(doc), "强化等级").indexOf("3") >= 0,
-            "document 含真实实例强化等级 3");
-
-        // ── 配件 mods：descHTML 与 document 都含配件条目（同源输出）
-        // ModsBlockBuilder 输出 "  • "+条目ID+" [tagValue] (+15%)"；断言的是
-        // 条目 ID 与真实 schema 字段（tagValue/增幅），不是模组 displayname。
-        assertTrue(String(r.descHTML).indexOf("插件A") >= 0
-            && String(r.descHTML).indexOf("插件B") >= 0
-            && String(r.descHTML).indexOf("瞄具") >= 0
-            && String(r.descHTML).indexOf("15%") >= 0,
-            "descHTML 保留配件条目与 tagValue/增幅");
-        var desc:Object = sectionByRole(doc, "description");
-        assertTrue(desc == null || findRunText(desc.runs, "插件A") == null,
-            "description 段不再内联配件（移交 attachments 子框）");
-        var att:Object = subSectionByKind(doc, "attachments");
-        assertTrue(att != null && String(att.title).indexOf("已安装2个配件") >= 0,
-            "配件以 role:sub/kind:attachments 子框承载");
-        assertTrue(att != null && att.rows.length == 2
-            && String(att.rows[0].name) == "插件A" && String(att.rows[1].name) == "插件B",
-            "attachments rows 逐行对应配件");
-        assertTrue(att != null && findRunText(att.rows[0].runs, "瞄具") != null
-            && findRunText(att.rows[0].runs, "15%") != null,
-            "attachments 效果 runs 保留 tagValue/增幅");
-        assertTrue(att != null && findRunText(att.runs, "插件A") != null,
-            "attachments 保留整框 fallback runs 供旧消费端内联");
-
-        // ── 旧字段不变：introHTML 仍含完整标题/类型/弹夹行（省略只在 document 边界发生）
-        assertTrue(String(r.introHTML).indexOf("GateNI涂装名") >= 0
-            && String(r.introHTML).indexOf("二阶") >= 0,
-            "旧 introHTML 字段保留原始标题行，未被 document 去重影响");
-        assertTrue(String(r.introHTML).indexOf("手枪") >= 0
-            && String(r.introHTML).indexOf("使用弹夹") >= 0
-            && String(r.introHTML).indexOf("子弹类型") >= 0,
-            "旧 introHTML 保留类型/弹夹/子弹类型行全文，省略只发生在 document");
+        var input:Object = r.tooltipInput;
+        assertTrue(input != null && input.version == 1 && input.kind == "item"
+                && input.itemName == name && input.presentation == "inventory",
+            "返回版本化实例输入，由 Host 生成文档");
+        assertTrue(r.document == undefined && r.descHTML == "" && r.introHTML == "",
+            "AS2 不再生成 Document 或 HTML");
+        assertTrue(input.projection.displayName == r.displayname
+                && input.projection.iconName == r.iconName
+                && input.projection.calculated.displayname == "GateNI涂装名",
+            "真实 getData 身份进入展示投影，不由名称猜测");
+        assertTrue(input.value.level == 3 && input.value.tier == "二阶"
+                && input.value.mods.length == 2,
+            "强化、进阶和实际配件完整投影");
+        assertTrue(input.projection.baselineData.power == 100
+                && input.projection.calculated.data.modslot == 2,
+            "原始比较数据与最终计算数据保留独立来源");
+        assertTrue(input.projection.mods["插件A"].useCases instanceof Array
+                && input.projection.mods["插件A"].bulletCases instanceof Array,
+            "每个插件都有权威匹配结果，空数组表示没有匹配");
+        input.value.mods.push("仅修改投影");
+        assertTrue(equipment.value.mods.length == 2,
+            "返回值与真实实例没有可变数组别名");
 
         // ── 源对象未被修改
         assertTrue(equipment.value.level == 3 && equipment.value.tier == "二阶"
@@ -269,16 +165,11 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         };
 
         var r:Object = InventoryPanelService.buildTooltipProjection(equipment);
-        assertTrue(r != null && r.success === true && r.document != null,
-            "手部装备产出 document");
-        assertTrue(r.document.rail != null && r.document.rail.length == 2
-                && r.document.rail[0] == "手部装备"
-                && r.document.rail[1] == "兽形拳",
-            "手部装备 actiontype 写入 rail 下方书签");
-        var intro:Object = sectionByRole(r.document, "intro");
-        assertTrue(intro != null && intro.runs != null
-                && findRunText(intro.runs, "兽形拳") == null,
-            "rail 承载动作后 intro 不再重复动作行");
+        assertTrue(r != null && r.success === true && r.tooltipInput != null,
+            "手部装备产出 TooltipInput");
+        assertTrue(r.tooltipInput.projection.calculated.use == "手部装备"
+                && r.tooltipInput.projection.calculated.actiontype == "兽形拳",
+            "手部动作读取真实计算结果，TS 可据此生成 rail");
 
         if (previousMeta == undefined) delete ItemUtil.itemDataDict[name];
         else ItemUtil.itemDataDict[name] = previousMeta;
@@ -314,74 +205,24 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
             }
         };
         var r:Object = InventoryPanelService.buildTooltipProjection(stackItem);
-        assertTrue(r != null && r.success === true && r.document != null,
-            "stack 物品也产出 document");
-        assertTrue(r.document != null && r.document.title == "GateNI材料名"
-            && r.document.icon.name == "GateNI材料图标",
-            "stack document title/icon 与 getData 身份同源");
-        assertTrue(r.document != null && r.displayname == r.document.title
-            && r.iconName == r.document.icon.name,
-            "stack document 与回包 displayname/iconName 同源");
-        // instanceValue 固定 {level:1}：不产生"强化等级"行，证明未把 stack 冒充强化实例
-        assertTrue(findRunText(allRuns(r.document), "强化等级") == null,
-            "stack document 无强化等级行（未冒充实例）");
-        assertTrue(findRunText(allRuns(r.document), "材料描述") != null,
-            "stack document.description 保留描述文本");
-
-        // 次用例：无 getData 的裸对象——真实回落规则是 item.name（不是 itemData），
-        // 回包 displayname 与 document.title 仍严格同源。
-        var bare:Object = {name: name, value: 2, lastUpdate: 1};
+        assertTrue(r != null && r.success === true && r.tooltipInput != null,
+            "stack 物品产出输入");
+        assertTrue(r.tooltipInput.projection.calculated == null
+                && r.tooltipInput.value.level == 1 && r.tooltipInput.value.count == 42,
+            "stack 数量完整保留，不冒充装备计算实例");
+        assertTrue(r.tooltipInput.projection.displayName == "GateNI材料名"
+                && r.tooltipInput.projection.iconName == "GateNI材料图标",
+            "stack 图标名称与原展示投影同源");
+        var bare:Object = {name:name, value:2, lastUpdate:1};
         var rb:Object = InventoryPanelService.buildTooltipProjection(bare);
-        assertTrue(rb != null && rb.success === true && rb.document != null
-            && rb.displayname == name && rb.document.title == name
-            && rb.document.icon.name == name,
-            "无 getData 时身份回落 item.name，document/回包仍同源");
+        assertTrue(rb != null && rb.success === true && rb.tooltipInput != null
+                && rb.displayname == name && rb.tooltipInput.projection.displayName == name
+                && rb.tooltipInput.projection.iconName == name,
+            "无 getData 的裸对象按原规则回落内部名");
 
         if (previousMeta == undefined) delete ItemUtil.itemDataDict[name];
         else ItemUtil.itemDataDict[name] = previousMeta;
         if (itemDictWasUndefined) ItemUtil.itemDataDict = undefined;
-    }
-
-    /**
-     * 标题去重反例：intro 首行与 title 无关时不得剥除；
-     * 以名称结尾但前缀非 [tier] 形态的首行也不得误剥。
-     * （文档级行为，直接走 buildItem 验证边界）
-     */
-    private static function testDocumentTitleDedupBoundary():Void {
-        var NTD = org.flashNight.gesh.tooltip.NativeTooltipDocument;
-
-        // 反例 A：首行是内容文本（不以 title 结尾）→ 不剥
-        var docA:Object = NTD.buildItem("m1", {displayname:"甲"}, null,
-            "<B>属性说明</B><BR>正文", "");
-        assertTrue(String(docA.title) == "甲"
-            && docA.sections.length == 1
-            && docA.sections[0].runs[0].text == "属性说明",
-            "首行与 title 无关时原样保留，不剥除");
-
-        // 反例 B：首行以 title 结尾但前缀不是 [x] 形态 → 不剥
-        var docB:Object = NTD.buildItem("m2", {displayname:"刀"}, null,
-            "<B>传说之刀</B><BR>正文", "");
-        assertTrue(String(docB.title) == "刀"
-            && docB.sections[0].runs[0].text == "传说之刀",
-            "非 [tier] 前缀的首行不误剥（传说之刀 != [x]刀）");
-
-        // 正例 C：[tier]名 首行 → 提升整行进 title，intro 从第二行开始
-        var docC:Object = NTD.buildItem("m3", {displayname:"军刀"}, null,
-            "<B>[三阶]军刀</B><BR><FONT COLOR=\"#FF0000\">特效行</FONT><BR>", "");
-        assertTrue(String(docC.title) == "[三阶]军刀",
-            "[tier] 前缀随首行整体提升进 title");
-        var introC:Object = sectionByRole(docC, "intro");
-        assertTrue(introC != null && introC.runs.length > 0
-            && introC.runs[0].text == "特效行"
-            && introC.runs[0].color == "#FF0000",
-            "去重后 intro 首个 run 保留特效行与其颜色");
-
-        // 反例 D：title 行后无换行（与内容同行粘合）→ 不剥
-        var docD:Object = NTD.buildItem("m4", {displayname:"乙"}, null,
-            "<B>乙</B>紧随内容<BR>", "");
-        assertTrue(docD.sections[0].runs[0].text == "乙"
-            && docD.sections[0].runs[1].text == "紧随内容",
-            "标题行与内容粘合时不剥除首 run");
     }
 
     private static function assertTrue(condition:Boolean, message:String):Void {

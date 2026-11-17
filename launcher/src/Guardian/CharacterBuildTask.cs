@@ -587,6 +587,30 @@ namespace CF7Launcher.Guardian
         /// Strict production response endpoint registered as task=loadout_response.
         /// Unknown/stale backend call ids are consumed only by the socket dispatcher callback.
         /// </summary>
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            PendingRequest entry;
+            lock (_gate)
+                if (!_productionPending.TryGetValue(fid, out entry)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            if (entry.IsWrite || entry.Command != "tooltip") return null;
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("loadout", "workbench", entry.PanelInstanceId,
+                entry.WebCallId, fid, entry.NormalizedPayload,
+                () => { lock (_gate) return _productionPending.TryGetValue(fid, out var current) && ReferenceEquals(current, entry); },
+                () =>
+                {
+                    if (!_pendingCalls.TryPeek(fid, out var pending) || !ReferenceEquals(pending.Context, entry)
+                        || !_pendingCalls.TryCompleteExact(fid, pending, out _)) return;
+                    lock (_gate)
+                    {
+                        _productionPending.Remove(fid);
+                        if (!IsCurrentBindingLocked(entry)) return;
+                        DecrementPendingLocked();
+                    }
+                    RespondError(entry.WebCallId, entry.Command, "stale_state", false, null, entry.PanelInstanceId, entry.WriteEpoch);
+                    NotifyCoordinatorSettledIfReady();
+                });
+        }
+
         public void HandleFlashResponse(JObject message, Action<string> respond)
         {
             int backendCallId;
@@ -1027,6 +1051,10 @@ namespace CF7Launcher.Guardian
                         normalizedPayload != null
                             && normalizedPayload["expectedLoadoutRevision"] != null
                         ? normalizedPayload.Value<long>("expectedLoadoutRevision")
+                        : normalizedPayload != null
+                            && normalizedPayload["chestTarget"] is JObject
+                            && normalizedPayload["chestTarget"]["expectedLoadoutRevision"] != null
+                        ? normalizedPayload["chestTarget"].Value<long>("expectedLoadoutRevision")
                         : _loadoutRevision,
                     RequestedDrugRevision =
                         normalizedPayload != null
@@ -1750,6 +1778,7 @@ namespace CF7Launcher.Guardian
             {
                 long expected = entry.RequestedDrugRevision;
                 if (expected != entry.ExpectedDrugRevision
+                    || entry.RequestedLoadoutRevision != entry.ExpectedLoadoutRevision
                     || (changed && expected == int.MaxValue))
                 {
                     return false;
@@ -2248,7 +2277,11 @@ namespace CF7Launcher.Guardian
             parameters["writeEpoch"] = entry.WriteEpoch;
             // Host-owned read capability; older AS2 may omit the optional projection.
             // Keeping it off Web mutation payloads preserves their exact write contract.
-            if (entry.Command == "snapshot") parameters["appearanceVersion"] = 1;
+            if (entry.Command == "snapshot")
+            {
+                parameters["appearanceVersion"] = 1;
+                parameters["emergencyInjectionVersion"] = 1;
+            }
             JObject flash = PanelBridge.BuildFlashCommand(
                 entry.FlashAction,
                 entry.BackendCallId,
@@ -3177,6 +3210,7 @@ namespace CF7Launcher.Guardian
                     return true;
                 case "equipDrug":
                 case "unequipDrug":
+                case "configureEmergencyInjection":
                     isWrite = true;
                     kind = UnknownKind.Mutation;
                     mutationTarget = MutationTarget.Drug;

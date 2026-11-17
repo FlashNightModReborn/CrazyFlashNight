@@ -357,6 +357,8 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 ### 消耗品药效 `<effects>` 与持续效果域
 
+两套61五甲（`统合61式胸甲`、`钛合金61式胸甲`）的应急注射配置保存在各自胸甲物品实例的 `item.value.emergencyInjection = {version:1, enabled:boolean, physicalSlot:-1..7, itemKey:string}`（不再写入玩家全局 `mydata.ext.emergencyInjection`），不提升主体存档 3.0 或 `drugLoadout` 版本；存档修复分层规则将 `inventory/*/value/emergencyInjection/itemKey` 划为 `L1 / Item / Preserve / Clear`。缺失默认关闭；显式开启须绑定现存物理槽及药名，关闭写 `-1/空串`；仅当前穿戴的 61 胸甲安装库存观察者并在换物时即时撤权记脏，背包内 61 胸甲各自记忆所选槽位，若期间对应药槽换成不同物品，只读投影报告 `item_changed` 并在下次穿戴刷新时立即撤权记脏；同名耗尽与补充保留授权。未知配置版本原样透传、失败关闭；`drugLoadout` 原槽亲和不是授权。唯一读写入口为 `EmergencyInjectionService`，随物品 `value` 序列化保存并由既有脏标记提交；危机记忆只存在当前读档会话，穿戴切换不重置同次危机。玩法与边界见[钛合金ADR §9](../docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md#9-应急自动注射器)。
+
 `data/items/消耗品_药剂*.xml` 的 `<effects>` 按物理顺序执行。现有基础类型为 `heal / regen / state / purify / buff / playEffect / message / grantItem / global`；九龙批次新增四个封闭类型：
 
 - `buffDomain domain="meal|enhancer"`：必须位于持续效果之前；移除同域旧药剂登记的 Buff，再登记本次 `buff`、`regen` 和专用 Buff 的真实返回 ID。`meal` 与 `enhancer` 各保留一个槽且可以并存，即时医疗效果不占槽。
@@ -445,7 +447,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 `data/items/equipment_mods/*.xml` 的插件定义是档级、用途与定位的业务元数据单源。每个 `list.xml/<items>` 子文件根层必须显式声明 `<modGrade>low|medium|high|special</modGrade>` 与 `<catalogScope>armor|firearm|blade|fist|universal|underbarrel</catalogScope>`；文件名前缀只服务人类导航，运行时禁止据此推断。`catalogScope` 只用于 Web 目录分组，精确安装权限仍由每个 `<mod>` 的 `use/weapontype/excludeWeapontype` 与 `EquipmentUtil` 决定。
 
-`data/items/equipment_mods/ui_presentation.xml` 是上述 ID 的受控标签/色号词典，以及插件格角色→符号、`tag`→默认角色的展示词典；它不得重新分配单个插件的档级或目录用途。`EquipModListLoader` 并行加载词典与子文件，向 `EquipmentUtil.modDict` 投影 `modGrade/catalogScope/uiGradeLabel/uiGradeColor/uiScopeLabel/uiRole/uiRoleLabel/uiSymbol`。角色符号采用 `形状-solid|outline` 受控 token；单个插件仅在 `tag` 默认角色不准确时声明 `<uiRole>` 覆盖，禁止填写任意 Unicode/HTML 符号。`EquipmentTuningService.modCandidates[]` 暴露档级/用途/定位/受控符号供候选树和紧凑瓦片展示，未知符号由 Web 白名单回退；`InventoryPanelService` 对松散插件材料附加 `modMeta`，但 `availabilityCode` 仍是安装可用性的唯一权威。
+`data/items/equipment_mods/ui_presentation.xml` 是上述 ID 的受控标签/色号词典，以及插件格角色→符号、`tag`→默认角色的展示词典；它不得重新分配单个插件的档级或目录用途。`EquipModListLoader` 并行加载词典与子文件，向 `EquipmentUtil.modDict` 投影 `modGrade/catalogScope/uiGradeLabel/uiGradeColor/uiScopeLabel/uiRole/uiRoleLabel/uiSymbol`。角色符号采用 `形状-solid|outline` 受控 token；单个插件仅在 `tag` 默认角色不准确时声明 `<uiRole>` 覆盖，禁止填写任意 Unicode/HTML 符号。`EquipmentTuningService.modCandidates[]` 暴露档级/用途/定位/受控符号供候选树和紧凑瓦片展示，未知符号由 Web 白名单回退；`InventoryPanelService` 对松散插件材料附加 `modMeta`，安装规则和提交权威仍由 AS2 持有；wire 只携可用性 Boolean、数量、替换关系和有界原因文本，详见[装备配件规则](../docs/equipment-plugin-rules.md)。
 
 `data/items/收集品_材料_插件.xml` 与 `收集品_材料.xml` 只维护库存、经济、图标和说明，不复制档级/用途/定位。构建门 `node tools/validate-equipment-mod-ui.js` 固定校验 107 个 mod、四档、六种 scope、全部现役 `tag`/角色/符号，并要求每个 mod 名称在 `data/items/list.xml` 引用的物品文件中恰好出现一次；其中插件材料文件的 103 个条目必须全部映射到 mod。特殊档原图错色视为美术流程问题，不参与运行时取色或兼容逻辑。
 
@@ -494,6 +496,8 @@ producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、�
 插件只通过 `merge.overload.ghostLimit` 提高已有资格枪械的幽灵上限；运行时取 `max(ghost, ghostLimit)`、硬上限 2，并独立要求冲击连携启用。内构套件单独安装不能授予资格或替代技能。留膛、幽灵、奖励各占自己的配额；拆装或技能失效只收缩相应来源。装备注释由 `GunStatsBuilder` 在普通弹容数字后插入 `WeaponAmmoInfoBuilder` 生成的彩色 `+N`，按留膛青色、幽灵黄色、奖励紫色展示最终合成后的条件上限；不读取当前弹药或玩家技能状态，不逐件重复机制正文。技能要求与散布代价归「冲击连携」，完整规则与颜色图例归游戏帮助「基本操作」的装填章节。插件 `merge.overload` 保留简短上限及资格说明，不能输出原始对象或把合并值相加。具体名单以武器 XML 为准，改动后执行 `python tools/validate-weapon-ammo.py` 及 `scripts/run-weapon-ammo-data-tests.ps1`，覆盖真实 XMLParser、插件合并和运行时消费者。
 
 `value.ammoState` 是 AS2 持久化弹药状态，`shot=capacity-实际总弹数` 继续兼容旧消费者，合法超装可令 `shot` 为负。状态分别记录留膛、幽灵、奖励、付费普通/留膛计数和原弹种拆包余额。旧 tube `reloadCount` 仅迁移一次，随后该字段只承载非 tube 枪械师战术回收；不可用它覆盖付费余额。HUD 只读投影，不修复或迁移业务状态。机制及散射口径见[散射度规范](../data/items/weapon-diffusion-guidelines.md)。
+
+钛合金五甲合成弹药时，武器`data.ammoSynthesisMpPerRound`可声明固定正整数MP成本；当前仅钛合金P90声明3，仍受套装最低3MP与合法弹药包校验。其他枪械按当前弹药包基础价和改装后普通弹容折算，取整、储备与两槽调度归[套装ADR §6.2](../docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md#62-基础蓝弹守恒与p90额外发电)。该字段不改变弹容、库存换弹或射击返蓝。
 
 ### 联弹双层配置与补弹参数（2026-06-12 起）
 

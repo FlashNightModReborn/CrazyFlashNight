@@ -53,7 +53,7 @@ def main():
                     profiles += 1
     sources = [MOD.relative_to(ROOT).as_posix(),
         "scripts/类定义/org/flashNight/arki/item/equipment/PropertyOperators.as",
-        "scripts/类定义/org/flashNight/gesh/tooltip/builder/UseSwitchStatsBuilder.as",
+        "launcher/tooltip-engine/src/UseSwitchStatsBuilder.ts",
         "scripts/类定义/org/flashNight/arki/item/equipment/EquipmentIntervalCurveTest.as",
         "scripts/test-runners/equipment-interval-curve/TestLoader.as.template"]
     hashes = {}

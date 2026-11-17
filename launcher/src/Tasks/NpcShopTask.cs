@@ -561,6 +561,21 @@ namespace CF7Launcher.Tasks
             _pendingCalls.Send(fid, json + "\0");
         }
 
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            if (!_pendingCalls.TryPeek(fid, out var pending)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            if (pending.Context.IsWrite || pending.Context.WebCmd != "tooltip") return null;
+            var entry = pending.Context;
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("npcshop", entry.OwnerPanel, entry.OwnerPanelInstanceId,
+                pending.WebCallId, fid, entry.NormalizedPayload,
+                () => _pendingCalls.TryPeek(fid, out var current) && ReferenceEquals(current, pending),
+                () =>
+                {
+                    if (_pendingCalls.TryCompleteExact(fid, pending, out _))
+                        RespondError(pending.WebCallId, entry.WebCmd, entry.OwnerPanel, entry.OwnerPanelInstanceId, "stale_state");
+                });
+        }
+
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             int fid = msg != null ? msg.Value<int>("callId") : 0;

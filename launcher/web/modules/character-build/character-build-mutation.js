@@ -2,26 +2,29 @@
  * Pure character-build mutation descriptors and response proofs.
  *
  * Session owns transport/state; controller owns UI and the inventory write gate.
- * This leaf only reconstructs the four frozen commands and validates their two
+ * This leaf reconstructs explicit loadout/configuration commands and validates their
  * authoritative write-after projections.
  */
 (function(root, factory) {
     'use strict';
-    var api = factory();
+    var controls = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-drug-controls.js') : root && root.CharacterBuildDrugControls;
+    var api = factory(controls);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
         root.CF7.CharacterBuildMutation = api;
         root.CharacterBuildMutation = api;
     }
-})(typeof window !== 'undefined' ? window : globalThis, function() {
+})(typeof window !== 'undefined' ? window : globalThis, function(DrugControls) {
     'use strict';
 
     var MUTATIONS = {
         equipEquipment:true,
         unequipEquipment:true,
         equipDrug:true,
-        unequipDrug:true
+        unequipDrug:true,
+        configureEmergencyInjection:true
     };
 
     function integer(value, min, max) {
@@ -49,14 +52,13 @@
     }
     function validItemIdentity(item) {
         if (!validIdentityTriple(item)) return false;
+        if (own(item, 'emergencyInjection') && (!DrugControls || !DrugControls.supportsChestItem(item)
+                || !DrugControls.validEmergencyInjection(item.emergencyInjection))) return false;
         if (own(item, 'modSlots')) {
             if (!Array.isArray(item.modSlots) || item.modSlots.length > 3) return false;
-            for (var i = 0; i < item.modSlots.length; i++) {
-                if (!validIdentityTriple(item.modSlots[i])) return false;
-            }
+            for (var i = 0; i < item.modSlots.length; i++) { if (!validIdentityTriple(item.modSlots[i])) return false; }
         }
-        return !own(item, 'modMeta') || item.modMeta === null
-            || validIdentityTriple(item.modMeta);
+        return !own(item, 'modMeta') || item.modMeta === null || validIdentityTriple(item.modMeta);
     }
     function sourceForCandidate(candidate) {
         var raw = candidate && candidate.raw || {};
@@ -94,6 +96,21 @@
         var equipment = intent.cmd === 'equipEquipment' || intent.cmd === 'unequipEquipment';
         var equip = intent.cmd === 'equipEquipment' || intent.cmd === 'equipDrug';
         if (payload.sessionGeneration === null) return null;
+        if (intent.cmd === 'configureEmergencyInjection') {
+            var chestTarget = DrugControls && DrugControls.buildChestTargetPayload(
+                intent.chestTarget, state.loadoutRevision, integer, token);
+            if (!chestTarget || typeof intent.enabled !== 'boolean' || typeof intent.expectedItemName !== 'string'
+                    || intent.expectedItemName.length > 160 || /[\u0000-\u001f\u007f-\u009f]/.test(intent.expectedItemName)) return null;
+            payload.expectedDrugRevision = integer(state.drugRevision, 0, 2147483647);
+            payload.chestTarget = chestTarget;
+            payload.enabled = intent.enabled;
+            payload.drugSlot = integer(intent.drugSlot, -1, 7);
+            payload.expectedItemName = intent.expectedItemName;
+            if (payload.expectedDrugRevision === null || payload.drugSlot === null
+                    || (payload.enabled ? payload.drugSlot < 0 || !payload.expectedItemName.trim()
+                        : payload.drugSlot !== -1 || payload.expectedItemName !== '')) return null;
+            return payload;
+        }
         if (equipment) {
             if (!String(intent.slotKey || '')) return null;
             payload.expectedLoadoutRevision = integer(state.loadoutRevision, 0, 2147483647);
@@ -131,13 +148,14 @@
         }
         return true;
     }
-    function validMutationResult(response, command, validProjection, expectedSourceSlot) {
+    function validMutationResult(response, command, validProjection, expectedSourceSlot, expectedEmergency) {
         if (!response || MUTATIONS[command] !== true
                 || response.operation !== command
                 || typeof response.changed !== 'boolean'
-                || integer(response.affectedBackpackSlot, 0, 49) === null
+                || integer(response.affectedBackpackSlot, command === 'configureEmergencyInjection' ? -1 : 0, 49) === null
                 || !validProjection(response.payload)
                 || !validFullBackpackSnapshots(response.inventorySnapshots)) return false;
+        if (command === 'configureEmergencyInjection') return DrugControls.validMutationProof(response, expectedEmergency);
         return command.indexOf('equip') !== 0
             || response.affectedBackpackSlot === expectedSourceSlot;
     }
@@ -199,6 +217,8 @@
             callId = this._session.equipDrug(intent.drugSlot, intent.source, done);
         } else if (intent.cmd === 'unequipDrug') {
             callId = this._session.unequipDrug(intent.drugSlot, done);
+        } else if (intent.cmd === 'configureEmergencyInjection') {
+            callId = this._session.configureEmergencyInjection(intent.chestTarget, intent.enabled, intent.drugSlot, intent.expectedItemName, done);
         }
         if (!callId) {
             this._completeInventory(null);
@@ -213,6 +233,9 @@
     };
     MutationCoordinator.prototype.unequip = function(target) {
         return this.start(unequipIntent(target));
+    };
+    MutationCoordinator.prototype.configureEmergencyInjection = function(chestTarget, enabled, target) {
+        return this.start(DrugControls.intent(this._session.getSnapshot(), chestTarget, enabled, target));
     };
     MutationCoordinator.prototype.reconcile = function() {
         if (!this._pending || this._session.getState() !== 'needs_reconcile') return false;

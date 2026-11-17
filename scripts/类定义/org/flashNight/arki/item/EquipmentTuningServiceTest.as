@@ -42,6 +42,8 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testEnhancementShortageQuote();
         testSameLevelConvertNoOp();
         testStaleMaterialAndFailureRollback();
+        testBagMaterialFailureCompensation();
+        testRequestCalculationReuse();
         testCandidateAvailabilityRequiresOwnedMaterial();
         testWebCommitOperationMatrix();
         testOwnershipFlowProjection();
@@ -62,6 +64,205 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         trace("EquipmentTuningServiceTest Tests Passed: " + _passed);
         trace("EquipmentTuningServiceTest Tests Failed: " + _failed);
         trace("=== EquipmentTuningServiceTest end ===");
+    }
+
+    /** Real XML -> ItemUtil/BaseItem -> snapshot/tooltip -> preview/commit, both sources. */
+    public static function runRealModRegressionTests(items:Object, mods:Array):Void {
+        _passed = 0;
+        _failed = 0;
+        var definitions:Array = [];
+        for (var itemName:String in items) definitions.push(items[itemName]);
+        var names:Array = ["TTI Glock 19", "AA12"];
+        var providers:Array = ["灰蛊裂隙弹", "灰蛊蚀刻霰弹"];
+        for (var w:Number = 0; w < names.length; w++) {
+            for (var sourceIndex:Number = 0; sourceIndex < 2; sourceIndex++) {
+                resetFixture();
+                EquipmentUtil.loadModData(copyRealMods(mods));
+                ItemUtil.loadItemData(org.flashNight.gesh.object.ObjectUtil.clone(definitions));
+                var item:BaseItem = equipment(names[w], 1, [providers[w]]);
+                var worn:Boolean = sourceIndex == 1;
+                var fixture:Object = null;
+                if (worn) fixture = installWornFixture(w == 0 ? "手枪" : "长枪", item);
+                else _root.物品栏.背包.add(0, item);
+                var materials:Object = _root.收集品栏.材料;
+                materials.add("弹簧", 1);
+                materials.add("螺丝套件", 1);
+                materials.add("磁稳贯穿弹", 1);
+                var view:String = "real-hb-" + w + "-" + sourceIndex;
+                var before:Object = item.getData();
+                assertTrue(before.data.hitBehavior.type == (w == 0 ? "grayGooPrimer" : "grayGooEtch")
+                        && (w == 0 ? before.data.hitBehavior.profileId == "handgun"
+                            : before.data.hitBehavior.delayFrames == 54 && before.data.hitBehavior.detonationCrumble == 1),
+                    view + " 真实 provider 黄金值");
+                var snapshotParams:Object = params(view);
+                snapshotParams.source = worn ? currentWornSource(fixture) : sourceRef(inventorySnapshot(), 0);
+                var snapshot:Object = EquipmentTuningService.execute("snapshot", snapshotParams);
+                var tooltipParams:Object = params(view);
+                tooltipParams.candidateKey = findCandidateKey(snapshot.snapshot, "install_mod", "弹簧");
+                var tooltip:Object = EquipmentTuningService.execute("tooltip", tooltipParams);
+                var installed:Object = realModCommit(worn, fixture, view, "install_mod", "弹簧", "");
+                assertTrue(snapshot.success && tooltip.success && installed.preview.success
+                        && installed.preview.canCommit && installed.commit.success
+                        && materials.getValue("弹簧") == 0 && item.value.mods.length == 2
+                        && item.getData().data.hitBehavior.type == before.data.hitBehavior.type,
+                    view + " snapshot/tooltip/安装弹簧不重复计 provider");
+                var replaced:Object = realModCommit(worn, fixture, view, "replace_mod", "螺丝套件", "弹簧");
+                assertTrue(replaced.commit.success && materials.getValue("弹簧") == 1
+                        && materials.getValue("螺丝套件") == 0 && item.value.mods.length == 2
+                        && item.getData().data.hitBehavior.type == before.data.hitBehavior.type,
+                    view + " 保留 provider 替换普通插件并精确返还");
+                var denied:Object = realModCommit(worn, fixture, view, "install_mod", "磁稳贯穿弹", "");
+                assertTrue(denied.preview.success !== true && materials.getValue("磁稳贯穿弹") == 1
+                        && item.value.mods.length == 2,
+                    view + " 第二弹药仍拒绝且零写");
+                var ammo:Object = realModCommit(worn, fixture, view, "replace_mod", "磁稳贯穿弹", providers[w]);
+                assertTrue(ammo.commit.success && materials.getValue(providers[w]) == 1
+                        && materials.getValue("磁稳贯穿弹") == 0 && item.getData().data.hitBehavior == undefined,
+                    view + " 原子替换 provider 后正确移除行为");
+                var detached:Object = realModCommit(worn, fixture, view, "detach_mod", "磁稳贯穿弹", "");
+                assertTrue(detached.commit.success && materials.getValue("磁稳贯穿弹") == 1
+                        && item.getData().data.hitBehavior == undefined,
+                    view + " 卸下弹药精确返还");
+            }
+            resetFixture();
+            EquipmentUtil.loadModData(copyRealMods(mods));
+            ItemUtil.loadItemData(org.flashNight.gesh.object.ObjectUtil.clone(definitions));
+            _root.物品栏.背包.add(0, equipment(names[w], 1, [providers[w]]));
+            var shortage:Object = webCommit("real-shortage-" + w, "install_mod", 0, -1, "弹簧", undefined, "");
+            assertTrue(shortage.snapshot.success && shortage.preview.canCommit !== true
+                    && shortage.commit.success !== true,
+                "真实 provider 在材料为零时不签可提交授权 " + names[w]);
+        }
+        for (var kind:Number = 0; kind < 2; kind++) {
+            for (var scenario:Number = 0; scenario < 2; scenario++) {
+                resetFixture();
+                EquipmentUtil.loadModData(copyRealMods(mods));
+                ItemUtil.loadItemData(org.flashNight.gesh.object.ObjectUtil.clone(definitions));
+                var installedMods:Array = scenario == 0 ? ["手枪卡宾转换套件"]
+                    : ["手枪卡宾转换套件","电脑芯片","热能射线弹"];
+                var luger:BaseItem = equipment("LugerP08",1,installedMods);
+                var wornType:Boolean = kind == 1;
+                var typeFixture:Object = null;
+                if (wornType) typeFixture = installWornFixture("手枪",luger);
+                else _root.物品栏.背包.add(0,luger);
+                var typeMaterials:Object = _root.收集品栏.材料;
+                var typeView:String = "real-type-" + kind + "-" + scenario;
+                if (scenario == 0) {
+                    typeMaterials.add("热能射线弹",1);
+                    var invalidReplace:Object = realModCommit(wornType,typeFixture,typeView,
+                        "replace_mod","热能射线弹","手枪卡宾转换套件");
+                    assertTrue(invalidReplace.preview.success !== true
+                            && luger.value.mods.length == 1 && luger.value.mods[0] == "手枪卡宾转换套件"
+                            && typeMaterials.getValue("热能射线弹") == 1,
+                        typeView + " 拆旧后失去长枪资格的热能替换拒绝且零写");
+                } else {
+                    var removeGrant:Object = realModCommit(wornType,typeFixture,typeView,
+                        "detach_mod","手枪卡宾转换套件","");
+                    assertTrue(removeGrant.commit.success && luger.value.mods.length == 0
+                            && typeMaterials.getValue("手枪卡宾转换套件") == 1
+                            && typeMaterials.getValue("电脑芯片") == 1
+                            && typeMaterials.getValue("热能射线弹") == 1,
+                        typeView + " 一跳移除失去类型或结构依赖的插件并各返还一次");
+                }
+            }
+        }
+        testMissingModDefinitionRecovery(definitions, mods);
+        trace("RealEquipmentModRegressions passed=" + _passed + " failed=" + _failed);
+        resetFixture();
+    }
+
+    /** 必须在新 TestLoader 进程内、任何真实 provider 加载之前执行。 */
+    public static function runColdMissingModDefinitionTests(items:Object, mods:Array):Void {
+        _passed = 0; _failed = 0;
+        resetFixture();
+        var definitions:Array = [];
+        for (var name:String in items) definitions.push(items[name]);
+        ItemUtil.loadItemData(org.flashNight.gesh.object.ObjectUtil.clone(definitions));
+        var filtered:Array = [];
+        for (var i:Number = 0; i < mods.length; i++) {
+            if (mods[i].name != "灰蛊裂隙弹" && mods[i].name != "灰蛊蚀刻霰弹") filtered.push(mods[i]);
+        }
+        EquipmentUtil.loadModData(copyRealMods(filtered));
+        var names:Array = ["TTI Glock 19", "AA12"];
+        var providers:Array = ["灰蛊裂隙弹", "灰蛊蚀刻霰弹"];
+        for (i = 0; i < names.length; i++) {
+            var item:BaseItem = equipment(names[i], 1, [providers[i]]);
+            assertTrue(item.getData() == null && item.value.mods[0] == providers[i]
+                    && item.getIdentityData().name == names[i]
+                    && InventoryPanelService.buildOutputReceipt(item) == null,
+                "首次加载不含真实provider时关闭计算并保留身份 " + providers[i]);
+        }
+        trace("ColdMissingModDefinitions passed=" + _passed + " failed=" + _failed);
+    }
+
+    private static function testMissingModDefinitionRecovery(definitions:Array, mods:Array):Void {
+        var names:Array = ["TTI Glock 19", "AA12"];
+        var providers:Array = ["灰蛊裂隙弹", "灰蛊蚀刻霰弹"];
+        for (var w:Number = 0; w < names.length; w++) {
+            resetFixture();
+            ItemUtil.loadItemData(org.flashNight.gesh.object.ObjectUtil.clone(definitions));
+            var item:BaseItem = equipment(names[w], 1, [providers[w]]);
+            var originalValue:Object = item.value;
+            var remaining:Array = [];
+            for (var i:Number = 0; i < mods.length; i++) {
+                if (String(mods[i].name) != providers[w]) remaining.push(mods[i]);
+            }
+            EquipmentUtil.loadModData(copyRealMods(remaining));
+            var identity:Object = item.getIdentityData();
+            var projection:Object = InventoryPanelService.buildItemProjection(item);
+            assertTrue(item.getData() == null && item.value === originalValue
+                    && identity.name == names[w] && identity.mods[0] == providers[w]
+                    && identity.data == undefined && projection.name == names[w]
+                    && projection.use == (w == 0 ? "手枪" : "长枪")
+                    && projection.modSlots[0].name == providers[w]
+                    && InventoryPanelService.buildOutputReceipt(item) == null,
+                "真实定义缺失只保留身份与mods，不产生属性或产物回执 " + providers[w]);
+            EquipmentUtil.loadModData(copyRealMods(mods));
+            var restored:Object = item.getData();
+            assertTrue(restored != null && item.value === originalValue
+                    && restored.data.hitBehavior.type == (w == 0 ? "grayGooPrimer" : "grayGooEtch"),
+                "恢复定义后同一BaseItem与原始mods恢复计算 " + providers[w]);
+
+            var invalid:Array = copyRealMods(mods);
+            for (i = 0; i < invalid.length; i++) {
+                if (String(invalid[i].name) == providers[w]) {
+                    invalid[i].stats = {override:{hitBehavior:{type:"grayGooPrimer",duration:30}}};
+                }
+            }
+            EquipmentUtil.loadModData(invalid);
+            assertTrue(item.getData() == null && item.value === originalValue
+                    && org.flashNight.arki.item.equipment.ModRegistry.hasHitBehaviorDiagnostics(),
+                "畸形provider被拒绝且保留加载诊断和原始mods " + providers[w]);
+        }
+        EquipmentUtil.loadModData(copyRealMods(mods));
+        var unknown:BaseItem = equipment("TTI Glock 19", 1, ["从未加载过的独立插件"]);
+        assertTrue(unknown.getData() == null && unknown.value.mods[0] == "从未加载过的独立插件",
+            "此前从未见过的缺项同样关闭属性计算，不依赖known-provider记忆");
+        var ordinary:BaseItem = equipment("TTI Glock 19", 1, ["弹簧"]);
+        var withoutSpring:Array = [];
+        for (i = 0; i < mods.length; i++) if (mods[i].name != "弹簧") withoutSpring.push(mods[i]);
+        EquipmentUtil.loadModData(copyRealMods(withoutSpring));
+        assertTrue(ordinary.getData() == null && ordinary.value.mods[0] == "弹簧",
+            "普通插件缺失也关闭计算而非静默丢失加成");
+        EquipmentUtil.loadModData(copyRealMods(mods));
+        assertTrue(ordinary.getData() != null && ordinary.value.mods[0] == "弹簧",
+            "普通定义恢复不清空、不重复返还原始插件");
+        EquipmentUtil.loadModData([]);
+        assertTrue(ordinary.getData() == null && EquipmentUtil.modList.length == 0,
+            "显式空集合重新加载清空旧注册表，不能沿用上一轮定义");
+        EquipmentUtil.loadModData(copyRealMods(mods));
+    }
+
+    private static function copyRealMods(mods:Array):Array {
+        // ObjectUtil 的声明返回 Object；保留真实 Array，不用 Array(...) 构造包装。
+        var copy = org.flashNight.gesh.object.ObjectUtil.clone(mods);
+        return copy;
+    }
+
+    private static function realModCommit(worn:Boolean, fixture:Object, view:String,
+            operation:String, candidate:String, replaced:String):Object {
+        return worn ? commitWornOperation(fixture, view, operation, candidate, replaced, undefined)
+            : webCommit(view, operation, 0, -1, candidate, undefined, replaced);
     }
 
     private static function resetFixture():Void {
@@ -450,7 +651,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 && captured.indexOf('"reconcileAfterCallId":"write.not.sent"') >= 0,
             "显式 reconcile snapshot 作为有序 barrier 覆盖未送达写");
         assertTrue(captured.indexOf('"requestCallId"') < 0,
-            "requestCallId 只进入内部水位账本而不回显");
+            "requestCallId 不回显，提交防重由 token/transaction 身份负责");
         captured = "";
         _root.gameCommands.equipmentTuningDetach({
             v:1, callId:78, requestCallId:"detach.1", writeEpoch:5,
@@ -689,6 +890,109 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 && _root.收集品栏.材料.getMutationRevision() == materialRevision
                 && _root.存档系统.dirtyMark == false,
             "确定性失败注入发生于任何装备/材料写之前");
+    }
+
+    private static function testBagMaterialFailureCompensation():Void {
+        for (var scenario:Number = 0; scenario < 3; scenario++) {
+            resetFixture();
+            var item:BaseItem = equipment("测试手枪A", 1, []);
+            var bag:Object = _root.物品栏.背包;
+            var materials:Object = _root.收集品栏.材料;
+            bag.add(0, item);
+            materials.add("强化石",10);
+            var previewParams:Object = params("bag-material-" + scenario);
+            previewParams.operation = "enhance";
+            previewParams.source = sourceRef(inventorySnapshot(),0);
+            previewParams.targetLevel = 2;
+            var preview:Object = EquipmentTuningService.execute("preview",previewParams);
+            var beforeValue:Object = item.value;
+            var beforeTime:Number = item.lastUpdate;
+            var beforeBagRevision:Number = bag.getMutationRevision();
+            var beforeMaterialRevision:Number = materials.getMutationRevision();
+            var originalMaterialCommit:Function = materials.transactionApplyDeltas;
+            var originalRollback:Function = bag.rollbackValueTransaction;
+            if (scenario == 1) {
+                materials.transactionApplyDeltas = function(deltas:Object):Object {
+                    throw new Error("injected material commit exception");
+                    return null; // CS6 类型检查要求显式返回；运行时由 throw 退出。
+                };
+            } else EquipmentTuningService.testOnlyFailNextMaterialCommit();
+            if (scenario == 2) bag.rollbackValueTransaction = function(receipt:Object):Boolean {return false;};
+            var commitParams:Object = params("bag-material-" + scenario);
+            commitParams.expectedTuningToken = preview.tuningToken;
+            var failed:Object = null;
+            try {
+                failed = EquipmentTuningService.execute("commit",commitParams);
+            } finally {
+                materials.transactionApplyDeltas = originalMaterialCommit;
+                bag.rollbackValueTransaction = originalRollback;
+            }
+            var replay:Object = EquipmentTuningService.execute("commit",commitParams);
+            var readableParams:Object = params("bag-material-" + scenario);
+            readableParams.source = sourceRef(inventorySnapshot(),0);
+            var readable:Object = EquipmentTuningService.execute("snapshot",readableParams);
+            assertTrue(preview.success && failed != null && !failed.success
+                    && failed.error == (scenario == 0 ? "commit_failed" : "needs_reconcile")
+                    && replay.error == "token_invalid" && readable.success
+                    && materials.getValue("强化石") == 10
+                    && materials.getMutationRevision() == beforeMaterialRevision
+                    && _root.存档系统.dirtyMark == false
+                    && (scenario == 2
+                        ? item.value !== beforeValue && item.value.level == 2
+                            && bag.getMutationRevision() == beforeBagRevision + 1
+                        : item.value === beforeValue && item.lastUpdate == beforeTime
+                            && bag.getMutationRevision() == beforeBagRevision),
+                "背包材料失败补偿：0=完整回滚，1=抛异常保留未知，2=拒绝补偿不覆盖现状；场景 " + scenario);
+        }
+    }
+
+    private static function testRequestCalculationReuse():Void {
+        resetFixture();
+        var item:BaseItem = equipment("测试手枪A",1,[]);
+        _root.物品栏.背包.add(0,item);
+        _root.收集品栏.材料.add("普通握把",1);
+        var snapshotParams:Object = params("calculation-reuse");
+        snapshotParams.source = sourceRef(inventorySnapshot(),0);
+        var snapshot:Object = EquipmentTuningService.execute("snapshot",snapshotParams);
+        var previewParams:Object = params("calculation-reuse");
+        previewParams.operation = "install_mod";
+        previewParams.source = snapshotParams.source;
+        previewParams.candidateKey = findCandidateKey(snapshot.snapshot,"install_mod","普通握把");
+        var calculator:Object = org.flashNight.arki.item.equipment.EquipmentCalculator;
+        var inventoryAuthority:Object = org.flashNight.arki.item.InventoryPanelService;
+        var originalCalculate:Function = calculator.calculateInPlace;
+        var originalValidate:Function = inventoryAuthority.validateExternalSlotRef;
+        var count:Number = 0;
+        var sourceAuthorityCount:Number = 0;
+        var validatingSource:Boolean = false;
+        calculator.calculateInPlace = function(data:Object, value:Object, config:Object, registry:Object):Object {
+            count++;
+            if (validatingSource) sourceAuthorityCount++;
+            return originalCalculate.call(calculator, data, value, config, registry);
+        };
+        inventoryAuthority.validateExternalSlotRef = function(ref:Object, checkCount:Boolean):Object {
+            validatingSource = true;
+            var result:Object = null;
+            try {result = originalValidate.call(inventoryAuthority, ref, checkCount);}
+            finally {validatingSource = false;}
+            return result;
+        };
+        var preview:Object = null;
+        try {preview = EquipmentTuningService.execute("preview",previewParams);}
+        finally {
+            calculator.calculateInPlace = originalCalculate;
+            inventoryAuthority.validateExternalSlotRef = originalValidate;
+        }
+        trace("EquipmentTuningRequestCalculations installPreviewTotal=" + count
+            + " sourceAuthority=" + sourceAuthorityCount + " plan=" + (count - sourceAuthorityCount));
+        assertTrue(preview.success && count == 3 && sourceAuthorityCount == 1
+                && count - sourceAuthorityCount == 2,
+            "来源确认独立计算一次，调制计划只计算当前和最终装备各一次");
+        ItemUtil.itemDataDict["测试手枪A"].data.vampirism = 7;
+        var next:Object = EquipmentTuningService.execute("preview",previewParams);
+        var changed:Object = next.success ? statRow(next.before.source.equipment.stats,"vampirism") : null;
+        assertTrue(next.success && changed != null && Number(changed.value) == 7,
+            "新请求重新读取权威定义，上一请求复用不跨请求缓存");
     }
 
     private static function testTierProgression():Void {
@@ -1344,11 +1648,12 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         var tooltip:Object = EquipmentTuningService.execute("tooltip", tooltipParams);
         assertTrue(candidateKey.indexOf("mod.") == 0 && tooltip.success
                 && tooltip.candidateKey == candidateKey
-                && typeof tooltip.introHTML == "string" && tooltip.introHTML.length > 0
-                && typeof tooltip.descHTML == "string" && tooltip.descHTML.length > 0
+                && tooltip.tooltipInput.version == 1
+                && tooltip.tooltipInput.itemName == "普通握把"
+                && tooltip.introHTML == "" && tooltip.descHTML == ""
                 && tooltip.itemType == "收集品" && tooltip.itemUse == "材料"
                 && typeof tooltip.text == "string",
-            "snapshot 只暴露 ASCII opaque candidateKey，tooltip 只保留 intro/desc 分段与 plain text");
+            "snapshot 只暴露 ASCII opaque candidateKey，tooltip 返回候选的只读输入与 plain text 身份");
         var previewParams:Object = params("install_mod");
         previewParams.operation = "install_mod";
         previewParams.source = lease;

@@ -27,7 +27,7 @@ class org.flashNight.arki.item.equipment.ClosedModPolicyTest {
         passed=failed=0;completed=false;saved={items:ItemUtil.itemDataDict,registry:{},facade:{}};
         var registry:Object=org.flashNight.arki.item.equipment.ModRegistry;
         var facade:Object=org.flashNight.arki.item.EquipmentUtil;
-        var keys:Array=["_modDict","_modList","_modUseLists","_modAvailabilityResults","_displayNameToModName","_debugMode"];
+        var keys:Array=["_modDict","_modList","_modUseLists","_displayNameToModName","_debugMode"];
         for(var i:Number=0;i<keys.length;i++)saved.registry[keys[i]]=registry[keys[i]];
         keys=["modDict","modList","modUseLists","modAvailabilityResults"];
         for(i=0;i<keys.length;i++)saved.facade[keys[i]]=facade[keys[i]];
@@ -45,9 +45,9 @@ class org.flashNight.arki.item.equipment.ClosedModPolicyTest {
             var items:Array=XMLParser.configureDataAsArray(input.items.item);
             var mods:Array=XMLParser.configureDataAsArray(input.mods.mod);
             var excluded:Array=XMLParser.configureDataAsArray(input.excluded.item);
-            check(items.length==26,"five armor and twenty-one existing closed tactical weapons");
+            check(items.length>=31,"five armor and all closed tactical weapons including five tactical shotguns");
             check(mods.length>100,"complete live mod catalog loaded");
-            check(excluded.length==4,"three open tactical weapons and zero-slot KING variant preserved");
+            check(excluded.length==1,"zero-slot KING variant preserved");
             trace("ClosedModPolicyFixture sourceClosure="+input.sourceClosure+" items="+items.length+" mods="+mods.length);
             mods.push({name:"__policy_future",use:"头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪",tag:"未来挂点",stats:{flat:{power:1}}});
             mods.push({name:"__policy_untagged",use:"头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪",stats:{flat:{power:1}}});
@@ -78,8 +78,10 @@ class org.flashNight.arki.item.equipment.ClosedModPolicyTest {
                 check(TagManager.checkModAvailability(item,raw,"成长的勋章")<0,"one occupied level slot "+raw.name);
                 item.value.mods=[];
                 var powerless:Object=ObjectUtil.clone(raw);powerless.inherentTags="";
+                ItemUtil.itemDataDict[raw.name]=powerless;
                 check(TagManager.checkModAvailability(item,powerless,"电脑芯片")==-16,"chip still requires power "+raw.name);
                 check(TagManager.checkModAvailability(item,powerless,"成长的勋章")==1,"medal needs no power "+raw.name);
+                ItemUtil.itemDataDict[raw.name]=raw;
             }
             for(i=0;i<excluded.length;i++) {
                 raw=excluded[i];item=itemFor(raw);
@@ -87,6 +89,7 @@ class org.flashNight.arki.item.equipment.ClosedModPolicyTest {
                 check(TagManager.checkModAvailability(item,raw,"__policy_future")== (raw.data.modslot===0?-1:1),"excluded installation behavior unchanged "+raw.name);
             }
             var basic:Object={name:"__policy_basic",use:"长枪",inherentTags:"电力",data:{level:40,modslot:2}};
+            ItemUtil.itemDataDict[basic.name]=basic;
             item=itemFor(basic);
             check(TagManager.checkModAvailability(item,basic,"__policy_untagged")==1,"missing allowlist preserves legacy untagged behavior");
             var malformed:Array=["",null,[],3];

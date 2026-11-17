@@ -653,3 +653,50 @@ full product behavior, and human visual acceptance remain outside this evidence.
 
 stdout is reserved for protocol messages. Diagnostics, configuration failures,
 and malformed notification reports go to stderr.
+
+<a id="agent-harness-mcp"></a>
+## CF7 Agent Test Harness (`cf7_harness` MCP / CLI)
+
+`cf7_harness` (`tools/cf7-agent/harness-mcp.js` + `harness-cli.js` + Core `--agent-harness`)
+provides deterministic, background & Windows lock-screen (`Win+L`) compatible end-to-end game flow
+orchestration without requiring desktop Computer Use:
+
+- **Strict save isolation (`player-save-guard.js` & `save-manager.js`)**:
+  only `cf7_agent_*` slots (`^cf7_agent_[A-Za-z0-9_-]{1,64}$`) may be written, cloned, entered, or
+  deleted; real player saves and `crazyflasher7_saves*.sol` remain untouched.
+- **Persistent Host control plane (`launcher/src/AgentHarness/`)**:
+  in-process `CoreWebView2` DOM snapshot/action/capture bridge, monotonic watermarked
+  `events.wait_for` & `logs.query`, panel opener across `WebOverlayForm` / `CompositionHelpSurface` /
+  `ModifierOverlay` / AS2 panels, durable `save_and_exit` fence, and headless `SceneTransition`
+  fence support under locked desktops.
+- **AS2 world observation & virtual input (`AgentHarnessService.as`)**:
+  isolated `_root._agentHarnessActive` world snapshot, virtual input mask, key overrides (including
+  the five weapon-mode keys through the authored player consumer, retaining admission/ownership guards),
+  `move_to` navigation, and AS2 panel openers.
+  `hero.combatResources` adds detached, read-only pistol capacity/shot/overload fields and the
+  existing Titanium set shield/synthesis/MP counters for resource acceptance. It also projects
+  Unified61's existing buffer state and the shared emergency authorization/crisis/consumption
+  counters; these are detached snapshots, not mutation or trigger controls. Observation never
+  calls ammo migration, ticks the set, synthesizes rounds, or writes a save; normal unbound play remains inert.
+
+Register into Codex (`[mcp_servers.cf7_harness]`):
+
+```powershell
+node tools/cf7-agent/register-codex-mcp.js
+```
+
+Run live E2E verification (never modifies player saves):
+
+On Windows, the direct Core harness inherits its caller's .NET environment. If the pinned SDK/runtime is installed under the user profile, prepare that same process before starting the adapter. A long-lived Node host can retain an older environment even after the terminal profile has been corrected; its apphost dialog does not prove the machine lacks the runtime. Resolve the existing installation and set only the test process environment; do not replace machine-wide settings:
+
+```powershell
+. ./launcher/resolve-dotnet.ps1
+$cf7HarnessDotnet = Resolve-Cf7Dotnet -ProjectRoot (Get-Location).Path
+$env:DOTNET_ROOT = Split-Path -Parent $cf7HarnessDotnet
+$env:DOTNET_ROOT_X64 = $env:DOTNET_ROOT
+```
+
+```powershell
+node tools/cf7-agent/live-e2e-journey.js --mode isolated_candidate
+node tools/cf7-agent/live-e2e-journey.js --mode formal_runtime
+```

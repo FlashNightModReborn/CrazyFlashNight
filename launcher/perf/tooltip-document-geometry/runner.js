@@ -312,6 +312,10 @@ function edgePath() {
 }
 
 async function launchBrowser(chromium) {
+    // Linux cloud gates can use an already installed browser without downloading another copy.
+    if (process.env.CF7_TOOLTIP_BROWSER_PATH) {
+        return await chromium.launch({ headless: true, executablePath: process.env.CF7_TOOLTIP_BROWSER_PATH });
+    }
     try { return await chromium.launch({ headless: true }); }
     catch (e) {
         var ep = edgePath();

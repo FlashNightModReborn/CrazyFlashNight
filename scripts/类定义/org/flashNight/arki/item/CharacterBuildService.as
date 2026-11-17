@@ -40,6 +40,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     private static var _panelInstanceId:String = "";
     // Host explicitly opts in; older runtime keeps the exact legacy item shape.
     private static var _appearanceProjectionEnabled:Boolean = false;
+    private static var _emergencyProjectionEnabled:Boolean = false;
     private static var _active:Boolean = false;
     private static var _stale:Boolean = false;
     private static var _staleError:String = "";
@@ -106,6 +107,9 @@ class org.flashNight.arki.item.CharacterBuildService {
         };
         r.gameCommands["characterBuildUnequipDrug"] = function(params) {
             org.flashNight.arki.item.CharacterBuildService.handle("unequipDrug", params);
+        };
+        r.gameCommands["characterBuildConfigureEmergencyInjection"] = function(params) {
+            org.flashNight.arki.item.CharacterBuildService.handle("configureEmergencyInjection", params);
         };
         r.gameCommands["characterBuildFlushLive"] = function(params) {
             org.flashNight.arki.item.CharacterBuildService.handle("flushLive", params);
@@ -205,6 +209,8 @@ class org.flashNight.arki.item.CharacterBuildService {
             result = executeMutation(commandName, params);
         } else if (commandName == "unequipDrug") {
             result = executeMutation(commandName, params);
+        } else if (commandName == "configureEmergencyInjection") {
+            result = executeMutation(commandName, params);
         } else if (commandName == "flushLive") {
             result = _writeInProgress
                 ? fail("write_busy") : executeFlushLive(params);
@@ -290,6 +296,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         _generationCounter++;
         _sessionGeneration = _generationCounter;
         _appearanceProjectionEnabled = false;
+        _emergencyProjectionEnabled = false;
         _finalizeReceipt = null;
         _active = true;
         _stale = false;
@@ -1012,6 +1019,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (params.appearanceVersion !== undefined && params.appearanceVersion !== 1) {
             return fail("invalid_payload");
         }
+        if (params.emergencyInjectionVersion !== undefined && params.emergencyInjectionVersion !== 1) return fail("invalid_payload");
         var panelInstanceId:String = params.panelInstanceId == undefined
             ? "" : String(params.panelInstanceId);
         if (panelInstanceId == "") return fail("invalid_payload");
@@ -1060,6 +1068,7 @@ class org.flashNight.arki.item.CharacterBuildService {
                                                         current:Object,
                                                         clearNeedsReconcile:Boolean):Object {
         _appearanceProjectionEnabled = params.appearanceVersion === 1;
+        _emergencyProjectionEnabled = params.emergencyInjectionVersion === 1;
         var backpackSnapshot:Object = buildBackpackSnapshot();
         attachSnapshotProjection(current, backpackSnapshot);
         if (params.reconcileAfterCallId == undefined
@@ -1388,8 +1397,8 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (tooltip == null || tooltip.success !== true) {
             return fail("projection_failed");
         }
-        // TooltipComposer 是跨模块调用；生成期间即使发生同步回调或容器漂移，
-        // 也不能把旧实例 HTML 包进当前 revision 的成功响应。
+        // 实例投影是跨模块调用；读取期间即使发生同步回调或容器漂移，
+        // 也不能把旧实例输入包进当前 revision 的成功响应。
         var fresh:Object = synchronize(Number(params.sessionGeneration));
         if (!fresh.success) return fresh;
         if (!expectedRevisionMatches(params.expectedLoadoutRevision,
@@ -1417,7 +1426,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             itemType:String(tooltip.itemType),
             descHTML:String(tooltip.descHTML),
             introHTML:String(tooltip.introHTML),
-            document:tooltip.document
+            tooltipInput:tooltip.tooltipInput
         }};
     }
 
@@ -1464,7 +1473,82 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (commandName == "equipDrug") {
             return mutateEquipDrug(params);
         }
+        if (commandName == "configureEmergencyInjection") return mutateEmergencyInjection(params);
         return mutateUnequipDrug(params);
+    }
+
+    private static function mutateEmergencyInjection(params:Object):Object {
+        if (!_emergencyProjectionEnabled) return fail("unsupported_cmd");
+        if (!expectedRevisionMatches(params.expectedDrugRevision, _drugRevision)) {
+            return fail("stale_state");
+        }
+        var r:Object = root();
+        var live:Object = liveContext(r, _slotRefs);
+        if (!live || !live.hero) return fail("service_not_ready");
+        var chestTarget:Object = params.chestTarget;
+        var chestItem:Object = null;
+        var affectedSlot:Number = -1;
+        if (String(chestTarget.kind) == "loadout") {
+            if (!expectedRevisionMatches(
+                    chestTarget.expectedLoadoutRevision, _loadoutRevision)) {
+                return fail("stale_state");
+            }
+            chestItem = _equipmentInventory.getItem("上装装备");
+        } else {
+            var sourceCheck:Object = validateBackpackSource({
+                containerId:chestTarget.containerId,
+                slot:chestTarget.slot,
+                expectedLease:chestTarget.expectedLease
+            }, false);
+            if (!sourceCheck.success) return sourceCheck;
+            if (!sourceStillExact(sourceCheck)) return fail("stale_state");
+            chestItem = sourceCheck.item;
+            affectedSlot = Number(sourceCheck.slot);
+        }
+        if (chestItem == null
+                || !org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService
+                    .supportsItemName(String(chestItem.name))) {
+            return fail("incompatible_item");
+        }
+        var config:Object = org.flashNight.arki.unit.Action.Skill
+            .EmergencyInjectionService.readItem(chestItem);
+        if (!config) return fail("unsupported_version");
+        if (params.enabled) {
+            var item:Object = _drugInventory.getItem(String(params.drugSlot));
+            if (!item || item.name !== params.expectedItemName || !(item.value > 0)) {
+                return fail("stale_state");
+            }
+        }
+        var same:Boolean = config.enabled === params.enabled
+            && config.physicalSlot === params.drugSlot
+            && config.itemKey === params.expectedItemName;
+        if (same) {
+            var unchanged:Object = buildMutationSuccess(
+                "configureEmergencyInjection", affectedSlot, false, false);
+            if (unchanged.success !== true) return unchanged;
+            unchanged.changed = false;
+            unchanged.payload.targetEmergencyInjection =
+                org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService
+                    .snapshotItem(chestItem, r);
+            return unchanged;
+        }
+        _writeAuthorityTouched = true;
+        var result:Object = org.flashNight.arki.unit.Action.Skill
+            .EmergencyInjectionService.authorizeItem(
+                r, live.hero, chestItem, Number(params.drugSlot),
+                String(params.expectedItemName), params.enabled);
+        if (!result.success) {
+            _writeAuthorityTouched = false;
+            return fail(result.error == "unsupported_config" ? "unsupported_version"
+                : result.error == "incompatible_item" ? "incompatible_item"
+                : result.error == "stale_source" ? "stale_state" : "invalid_payload");
+        }
+        _drugRevision++;
+        var updated:Object = buildMutationSuccess(
+            "configureEmergencyInjection", affectedSlot, false, true);
+        if (updated.success !== true) return updated;
+        updated.payload.targetEmergencyInjection = result.emergencyInjection;
+        return updated;
     }
 
     private static function mutateEquipEquipment(params:Object):Object {
@@ -1865,6 +1949,19 @@ class org.flashNight.arki.item.CharacterBuildService {
         declareEquipmentProjection();
         invalidateBackpackSlot(backpackSlot);
         publishCommittedPlan(plan);
+        try {
+            var r:Object = root();
+            org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService
+                .observeInventory(r);
+            var hero:Object = r != null && r.gameworld != null && r.控制目标 != undefined
+                ? r.gameworld[r.控制目标] : null;
+            if (hero != null && hero.__emergencyInjectionProvider != null) {
+                org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService
+                    .refresh(hero, hero.__emergencyInjectionProvider, r);
+            }
+        } catch (emergencyEquipmentError) {
+            trace("[EmergencyInjection] committed equipment sync failed");
+        }
         return buildMutationSuccess(commandName, backpackSlot, true, false);
     }
 
@@ -2258,6 +2355,19 @@ class org.flashNight.arki.item.CharacterBuildService {
                     || typeof params.drugSlot != "number"
                     || !validDrugSlot(Number(params.drugSlot))
                     || !validSourceShape(params.source)) return false;
+        } else if (commandName == "configureEmergencyInjection") {
+            allowed.expectedDrugRevision = true;
+            allowed.chestTarget = true;
+            allowed.enabled = true;
+            allowed.drugSlot = true;
+            allowed.expectedItemName = true;
+            if (typeof params.expectedDrugRevision != "number"
+                    || !wholeInRange(params.expectedDrugRevision, 0, 2147483647)
+                    || !validChestTargetShape(params.chestTarget)
+                    || typeof params.enabled != "boolean" || typeof params.drugSlot != "number"
+                    || typeof params.expectedItemName != "string" || length(params.expectedItemName) > 160
+                    || (params.enabled ? !validDrugSlot(params.drugSlot) || params.expectedItemName == ""
+                        : params.drugSlot !== -1 || params.expectedItemName != "")) return false;
         } else if (commandName == "unequipDrug") {
             allowed.expectedDrugRevision = true;
             allowed.drugSlot = true;
@@ -2275,7 +2385,43 @@ class org.flashNight.arki.item.CharacterBuildService {
         return true;
     }
 
+    private static function validChestTargetShape(target:Object):Boolean {
+        if (target == null || typeof target != "object"
+                || typeof target.kind != "string") return false;
+        var kind:String = String(target.kind);
+        var allowed:Object = {kind:true};
+        if (kind == "loadout") {
+            allowed.slotKey = true;
+            allowed.expectedLoadoutRevision = true;
+            if (typeof target.slotKey != "string"
+                    || String(target.slotKey) != "上装装备"
+                    || typeof target.expectedLoadoutRevision != "number"
+                    || !wholeInRange(Number(target.expectedLoadoutRevision),
+                        0, 2147483647)) {
+                return false;
+            }
+        } else if (kind == "backpack") {
+            allowed.containerId = true;
+            allowed.slot = true;
+            allowed.expectedLease = true;
+            if (typeof target.containerId != "string"
+                    || String(target.containerId) != "背包"
+                    || !wholeNumber(target.slot)
+                    || typeof target.expectedLease != "string"
+                    || String(target.expectedLease) == "") {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        for (var key:String in target) {
+            if (allowed[key] !== true) return false;
+        }
+        return true;
+    }
+
     private static function mutationActionName(commandName:String):String {
+        if (commandName == "configureEmergencyInjection") return "characterBuildConfigureEmergencyInjection";
         if (commandName == "equipEquipment") {
             return "characterBuildEquipEquipment";
         }
@@ -2422,6 +2568,8 @@ class org.flashNight.arki.item.CharacterBuildService {
             stateHealth:diagnostics.length == 0 ? "ok" : "degraded",
             diagnostics:diagnostics
         };
+        if (_emergencyProjectionEnabled) payload.emergencyInjection =
+            org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService.snapshot(root());
         var candidateFacets:Object =
             buildCandidateFacetProjection(backpackSnapshot);
         if (candidateFacets != null) {
@@ -2873,6 +3021,15 @@ class org.flashNight.arki.item.CharacterBuildService {
                 };
             }
         }
+        if (_emergencyProjectionEnabled
+                && result.itemKind == "equipment"
+                && String(result.use) == "上装装备"
+                && org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService
+                    .supportsItemName(String(result.name))) {
+            result.emergencyInjection =
+                org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService
+                    .snapshotItem(item, root());
+        }
         return result;
     }
 
@@ -3047,7 +3204,8 @@ class org.flashNight.arki.item.CharacterBuildService {
                 || commandName == "equipEquipment"
                 || commandName == "unequipEquipment"
                 || commandName == "equipDrug"
-                || commandName == "unequipDrug") {
+                || commandName == "unequipDrug"
+                || commandName == "configureEmergencyInjection") {
             if (result.payload != undefined) response.payload = result.payload;
         }
         if (result.reconcileAfterCallId != undefined) {
@@ -3059,7 +3217,8 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (commandName == "equipEquipment"
                 || commandName == "unequipEquipment"
                 || commandName == "equipDrug"
-                || commandName == "unequipDrug") {
+                || commandName == "unequipDrug"
+                || commandName == "configureEmergencyInjection") {
             if (result.success === true) {
                 response.changed = result.changed === true;
                 if (result.operation != undefined) {
@@ -3534,6 +3693,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         _statTicket=null;
         _equipmentRecoveryResources=null;
         _appearanceProjectionEnabled = false;
+        _emergencyProjectionEnabled = false;
         _sessionGeneration = 0;
         _active = false;
         _stale = false;

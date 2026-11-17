@@ -1,0 +1,9 @@
+$ node tools/test-character-build-candidate-tooltip.js
+ok - exact inventory envelope carries only candidate tooltip context
+ok - cache key includes candidate identity generation slot and lease
+[PanelRequestMux] response shape mismatch for character-candidate-tooltip.candidate-tooltip-test.1.1
+ok - extra response key fails closed before exact response completes
+ok - invalidation cancels pending and late response cannot revive binding
+ok - timeout is terminal and never replays or retries
+ok - forged source is not bound or sent
+Character Build candidate tooltip: 6/6 passed

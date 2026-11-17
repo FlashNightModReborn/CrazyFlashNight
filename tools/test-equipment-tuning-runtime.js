@@ -16,7 +16,7 @@ function snapshot(lease, level, mods, lastUpdate) {
   const current=equipment(level,mods,lastUpdate),candidates=(mods||[]).map((name,index)=>({
     candidateKey:'mod.installed.'+index,itemName:name,displayName:'已安装配件 '+index,
     icon:'已安装配件图标 '+index,owned:0,installed:true,available:false,
-    availabilityCode:-2,reason:'already_installed',replaceableFrom:[],grade:'common',scope:'firearm',role:'utility'
+    reason:'already_installed',replaceableFrom:[],grade:'common',scope:'firearm',role:'utility'
   }));
   return {gender:'男',source:source(lease),equipment:current,
     enhance:{currentLevel:current.level,maxLevel:13,availableMaxLevel:13,hardMaxLevel:13},
@@ -30,7 +30,7 @@ function projection(lease, level, mods, lastUpdate) {
 }
 function modCandidate() {
   return {candidateKey:'mod.candidate.1',itemName:'测试插件A',displayName:'测试插件甲',icon:'测试插件图标甲',
-    owned:5,installed:false,available:true,availabilityCode:1,reason:'',replaceableFrom:[],
+    owned:5,installed:false,available:true,reason:'',replaceableFrom:[],
     grade:'common',scope:'firearm',role:'utility'};
 }
 function clone(value) { return JSON.parse(JSON.stringify(value)); }
@@ -459,42 +459,41 @@ assert.strictEqual(detached.requiresReconcile,false);
 assert.strictEqual(mux.request('unknown',{},()=>{}),null);
 mux.closeSession();
 assert.strictEqual(mux.debugState().pendingCount,0);
-// #241：合法的“不可安装”原因必须能随完整快照跨层；不能因拒绝码而拒绝整件装备。
+// Candidate presentation carries no AS2 numeric rule codes; strict flags and bounded reasons remain.
 {
-  const fs = require('fs'), path = require('path');
-  const as2 = fs.readFileSync(path.join(__dirname,
-    '../scripts/类定义/org/flashNight/arki/item/EquipmentUtil.as'), 'utf8');
-  const codes = [...as2.matchAll(/modAvailabilityResults\[(-?\d+)\]\s*=/g)]
-    .map(match => Number(match[1])).sort((a, b) => a - b);
-  assert.strictEqual(new Set(codes).size, 13, 'authoritative AS2 availability contract');
-  const cases = codes.map(code => [code, true]).concat(
-    [-2048, -1023, -100, -3, 2, 100, -128.5, '-128', NaN, Infinity]
-      .map(code => [code, false]));
-  for (const worn of [false, true]) for (const [code, accepted] of cases) {
-    const testMux = new RequestMux({sessionNonce:'availability-test', send(){ return true; },
-      setTimer(){ return {}; }, clearTimer(){}});
-    testMux.openSession('panel.1', 'view.1');
-    const state = snapshot('lease.1', 7, [], 1000);
-    if (worn) state.source = {sourceKind:'loadout',sessionGeneration:17,
-      slotKey:'手枪',expectedLoadoutRevision:8};
-    state.modCandidates = [Object.assign(modCandidate(),
-      {availabilityCode:code, available:code === 1})];
-    let adopted = null;
-    const id = testMux.request('snapshot', {source:state.source}, value => { adopted = value; });
-    assert.strictEqual(testMux.handleResponse(Object.assign(tuple('snapshot',id), {snapshot:state})),
-      accepted, 'availability=' + String(code) + ', source=' + state.source.sourceKind);
-    if (accepted) {
-      assert.strictEqual(adopted.snapshot.modCandidates[0].availabilityCode, code);
-      assert.strictEqual(adopted.snapshot.modCandidates[0].available, code === 1);
-      assert.strictEqual(testMux.debugState().pendingCount, 0);
+  const cases = [
+    [{available:true,reason:''},true],
+    [{available:false,reason:'future_local_rule'},true],
+    [{available:false,reason:'当前装备不满足此配件条件'},true],
+    [{available:'false'},false], [{owned:-1},false], [{installed:1},false],
+    [{reason:'x'.repeat(257)},false], [{replaceableFrom:['same','same']},false],
+    ...[-1024,1,-7,'old',null].map(code => [{availabilityCode:code},false])
+  ];
+  const legacyProtocol = require('./workbench-live-e2e/equipment/protocol');
+  for (const worn of [false,true]) for (const [patch,accepted] of cases) {
+    const testMux = new RequestMux({sessionNonce:'presentation-test',send(){return true;},
+      setTimer(){return {};},clearTimer(){}});
+    testMux.openSession('panel.1','view.1');
+    const state = snapshot('lease.1',7,[],1000);
+    if(worn) state.source={sourceKind:'loadout',sessionGeneration:17,slotKey:'手枪',expectedLoadoutRevision:8};
+    state.modCandidates=[Object.assign(modCandidate(),patch)];
+    if (!worn) {
+      const redacted = clone(state);
+      redacted.source.expectedLease = 'sha256_' + 'a'.repeat(24);
+      const verifyLegacy = () => legacyProtocol.snapshot(redacted,'wire_contract');
+      if (accepted) assert.doesNotThrow(verifyLegacy); else assert.throws(verifyLegacy);
+    }
+    let adopted=null;
+    const id=testMux.request('snapshot',{source:state.source},value=>{adopted=value;});
+    assert.strictEqual(testMux.handleResponse(Object.assign(tuple('snapshot',id),{snapshot:state})),accepted);
+    if(accepted){
+      assert.strictEqual(adopted.snapshot.modCandidates[0].available,patch.available);
+      assert.strictEqual(adopted.snapshot.modCandidates[0].reason,patch.reason);
+      assert.strictEqual(Object.hasOwn(adopted.snapshot.modCandidates[0],'availabilityCode'),false);
+      assert.strictEqual(testMux.debugState().pendingCount,0);
     }
     testMux.closeSession();
   }
-  const host = fs.readFileSync(path.join(__dirname,
-    '../launcher/src/Tasks/EquipmentTuningTask.cs'), 'utf8');
-  const registered = /ModAvailabilityCodes\s*=\s*new HashSet<int>\s*\{([^}]+)\}/.exec(host);
-  assert.ok(registered, 'Host must register a closed availability-code set');
-  assert.deepStrictEqual(registered[1].match(/-?\d+/g).map(Number).sort((a,b)=>a-b), codes);
-  console.log('Availability contract: 46 inventory/loadout positive and negative cases passed');
+  console.log('Candidate presentation contract: 26 inventory/loadout cases plus 13 legacy-consumer cases passed');
 }
 console.log('Equipment tuning runtime tests passed');

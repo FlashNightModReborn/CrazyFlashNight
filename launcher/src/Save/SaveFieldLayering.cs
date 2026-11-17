@@ -108,6 +108,11 @@ namespace CF7Launcher.Save
             if (path.Length >= 6 && path[0] == "inventory" && IsInventorySubcat(path[1]) && path[3] == "value" && path[4] == "mods")
                 return new SaveFieldRule(SaveFieldLayer.L1, SaveFieldKind.Mod, SaveFieldFallback.Preserve, SaveFieldDropMode.Splice);
 
+            // L1: per-chest emergency injection itemKey (path: inventory/<sub>/<id>/value/emergencyInjection/itemKey)
+            if (path.Length == 6 && path[0] == "inventory" && IsInventorySubcat(path[1])
+                && path[3] == "value" && path[4] == "emergencyInjection" && path[5] == "itemKey")
+                return new SaveFieldRule(SaveFieldLayer.L1, SaveFieldKind.Item, SaveFieldFallback.Preserve, SaveFieldDropMode.Clear);
+
             // L1: 装备栏槽位 key（如 '颈部装备' fffd 化）—— EquipmentSlot kind 走硬编码字典,
             // 高置信度命中即自动 RenameKey, 命中不到 (0/多候选) 才退回 Manual 让用户挑.
             if (path.Length == 3 && path[0] == "inventory" && path[1] == "装备栏")

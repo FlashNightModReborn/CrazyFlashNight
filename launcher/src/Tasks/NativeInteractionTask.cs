@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using CF7Launcher.Bus;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
+using CF7Launcher.Tooltips;
 
 namespace CF7Launcher.Tasks
 {
@@ -46,11 +47,19 @@ namespace CF7Launcher.Tasks
         private readonly INativeInteractionTooltipSurface _tooltip;
         private readonly Action<Action> _uiDispatch;
         private readonly TooltipInspectionController _inspection;
+        private readonly TooltipService _tooltipService;
+        private readonly Func<bool> _canPresentTooltip;
         private readonly object _gate = new object();
 
         private string _latestSceneId;
         private long _maxSeenSeq;
         private bool _maxSeenSeqValid;
+        private long _tooltipGeneration;
+        private string _pendingTooltipRequestId;
+        private string _pendingTooltipSceneId;
+        private int _pendingTooltipRevision;
+        private bool _pendingTooltipPinned;
+        private long _transportEpoch;
 
         /// <summary>测试钩子：拦截 TrySend 的 payload（含 \0）。非 null 时完全接管发送。</summary>
         internal Func<string, bool> SendPayloadOverride;
@@ -73,7 +82,9 @@ namespace CF7Launcher.Tasks
             NpcMenuWidget menu,
             INativeInteractionTooltipSurface tooltip,
             Action<Action> uiDispatch,
-            TooltipInspectionController inspection)
+            TooltipInspectionController inspection,
+            TooltipService tooltipService = null,
+            Func<bool> canPresentTooltip = null)
         {
             if (menu == null) throw new ArgumentNullException("menu");
             if (uiDispatch == null) throw new ArgumentNullException("uiDispatch");
@@ -81,6 +92,8 @@ namespace CF7Launcher.Tasks
             _menu = menu;
             _tooltip = tooltip;
             _uiDispatch = uiDispatch;
+            _tooltipService = tooltipService;
+            _canPresentTooltip = canPresentTooltip;
 
             _menu.ActionChosen = OnMenuActionChosen;
             _menu.SessionDismissed = OnSessionDismissed;
@@ -108,9 +121,13 @@ namespace CF7Launcher.Tasks
                 return null;
             }
             JObject captured = payload;
+            long epoch = System.Threading.Volatile.Read(ref _transportEpoch);
             try
             {
-                _uiDispatch(delegate { HandleOnUi(captured); });
+                _uiDispatch(delegate
+                {
+                    if (epoch == System.Threading.Volatile.Read(ref _transportEpoch)) HandleOnUi(captured);
+                });
             }
             catch (Exception ex)
             {
@@ -122,6 +139,7 @@ namespace CF7Launcher.Tasks
         /// <summary>socket OnClientDisconnected：全清（不发 cancel——通道已死），身份状态归零。</summary>
         public void HandleTransportDisconnected()
         {
+            System.Threading.Interlocked.Increment(ref _transportEpoch);
             try { _uiDispatch(ResetAll); }
             catch { ResetAll(); }
         }
@@ -132,6 +150,12 @@ namespace CF7Launcher.Tasks
         /// </summary>
         public void NotifyPhysicalButtonDown(int screenX, int screenY, int message)
         {
+            if (_pendingTooltipPinned && (_tooltip == null || !_tooltip.HasPinnedSession))
+            {
+                string pendingId = _pendingTooltipRequestId, pendingScene = _pendingTooltipSceneId;
+                CancelPendingTooltip();
+                SendCancel(pendingId, pendingScene);
+            }
             if (IsExternalPress(_menu.Visible, _menu.ScreenBounds, screenX, screenY))
                 _menu.DismissInteractive("outside_click");
             if (_inspection != null && _tooltip != null)
@@ -155,6 +179,10 @@ namespace CF7Launcher.Tasks
         /// <summary>Web 面板打开压隐（PanelHostController interaction companion）：双 widget 终结会话。</summary>
         internal void OnPanelSuspending()
         {
+            string pendingId = _pendingTooltipRequestId, pendingScene = _pendingTooltipSceneId;
+            CancelPendingTooltip();
+            if (pendingId != null && (_tooltip == null || _tooltip.CurrentRequestId != pendingId))
+                SendCancel(pendingId, pendingScene);
             _menu.DismissInteractive("panel_suspend");
             if (_tooltip != null)
             {
@@ -162,6 +190,15 @@ namespace CF7Launcher.Tasks
                 catch (Exception ex) { LogManager.Log("[NativeInteraction] tooltip suppress throw: " + ex.Message); }
                 SyncInspection();
             }
+        }
+
+        /// <summary>Also retire builds that have not yet created a widget when the owner is hidden.</summary>
+        internal void OnHostSuppressed(string reason)
+        {
+            string requestId = _pendingTooltipRequestId, sceneId = _pendingTooltipSceneId;
+            CancelPendingTooltip();
+            if (requestId != null && (_tooltip == null || _tooltip.CurrentRequestId != requestId))
+                SendCancel(requestId, sceneId);
         }
 
         // ── ESC 关闭（KeyboardHook 探针 + GuardianForm 派发） ─────────
@@ -175,6 +212,7 @@ namespace CF7Launcher.Tasks
         public bool IsInteractionEscapable()
         {
             if (_menu.Visible) return true;
+            if (_pendingTooltipPinned) return true;
             if (_tooltip != null && _tooltip.HasPinnedSession) return true;
             TooltipInspectionController c = _inspection;
             return c != null && c.EscConsumable;
@@ -189,6 +227,15 @@ namespace CF7Launcher.Tasks
             if (_menu.Visible)
             {
                 _menu.DismissInteractive("escape");
+                return;
+            }
+            if (_pendingTooltipPinned)
+            {
+                string pendingId = _pendingTooltipRequestId, pendingScene = _pendingTooltipSceneId;
+                CancelPendingTooltip();
+                if (_tooltip != null && _tooltip.CurrentRequestId == pendingId) _tooltip.Reset();
+                SyncInspection();
+                SendCancel(pendingId, pendingScene);
                 return;
             }
             if (_tooltip != null && _tooltip.HasPinnedSession)
@@ -225,6 +272,7 @@ namespace CF7Launcher.Tasks
                 return;
             }
             string sceneId = _tooltip.CurrentSceneId;
+            CancelPendingTooltip(requestId, sceneId);
             try { _tooltip.Hide(requestId); }
             catch (Exception ex) { LogManager.Log("[NativeInteraction] tooltip dismiss hide throw: " + ex.Message); }
             SyncInspection();
@@ -275,6 +323,15 @@ namespace CF7Launcher.Tasks
                 return;
             }
 
+            // A hover cannot advance the request frontier of an explicit Inspector. This guard also
+            // covers the interval before its asynchronous document has reached the widget.
+            if (kind == "tooltip" && !TooltipShowIsPinned(payload))
+            {
+                string pinnedScene = _pendingTooltipPinned ? _pendingTooltipSceneId
+                    : (_tooltip != null && _tooltip.HasPinnedSession ? _tooltip.CurrentSceneId : null);
+                if (pinnedScene != null && string.Equals(pinnedScene, sceneId, StringComparison.Ordinal)) return;
+            }
+
             bool sceneRolled = false;
             lock (_gate)
             {
@@ -300,8 +357,8 @@ namespace CF7Launcher.Tasks
                         }
                         else
                         {
-                            activeRid = _tooltip != null ? _tooltip.CurrentRequestId : null;
-                            activeScene = _tooltip != null ? _tooltip.CurrentSceneId : null;
+                            activeRid = _pendingTooltipRequestId ?? (_tooltip != null ? _tooltip.CurrentRequestId : null);
+                            activeScene = _pendingTooltipSceneId ?? (_tooltip != null ? _tooltip.CurrentSceneId : null);
                         }
                         if (!string.Equals(activeRid, requestId, StringComparison.Ordinal)
                             || !string.Equals(activeScene, sceneId, StringComparison.Ordinal))
@@ -323,6 +380,7 @@ namespace CF7Launcher.Tasks
 
             if (sceneRolled)
             {
+                CancelPendingTooltip();
                 // 新场景确立前清掉旧场景残留；AS2 已按序 hide，此处是丢失保险（静默，无 cancel）。
                 // 只在确有实例且场景不同才清——空 tooltip/菜单不得吃无谓 Reset。
                 string menuScene = _menu.CurrentSceneId;
@@ -346,12 +404,18 @@ namespace CF7Launcher.Tasks
             {
                 // pinned 存活期间普通（非 pinned）show 一律拒绝——web `_pinned` 守卫
                 // （悬停/焦点不得顶替显式 inspector，只有新 pinned show 可替换）。
-                if (_tooltip.HasPinnedSession && !TooltipShowIsPinned(payload))
+                if ((_tooltip.HasPinnedSession || _pendingTooltipPinned) && !TooltipShowIsPinned(payload))
                 {
                     LogManager.Log("[NativeInteraction] drop non-pinned show under pinned requestId="
                         + requestId);
                     return;
                 }
+                if (payload["tooltipInput"] != null)
+                {
+                    StartTooltipBuild(payload, requestId, sceneId);
+                    return;
+                }
+                CancelPendingTooltip();
                 try { _tooltip.Show(payload); }
                 catch (Exception ex) { LogManager.Log("[NativeInteraction] tooltip show throw: " + ex.Message); }
                 SyncInspection();
@@ -363,7 +427,90 @@ namespace CF7Launcher.Tasks
         {
             JObject doc = payload == null ? null : payload["document"] as JObject;
             string profile = doc == null ? null : ReadStringField(doc, "profile");
+            if (profile == null && payload?["tooltipInput"] is JObject input)
+                profile = ReadStringField(input, "profile");
             return string.Equals(profile, "pinned", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void StartTooltipBuild(JObject payload, string requestId, string sceneId)
+        {
+            if (_canPresentTooltip != null && !_canPresentTooltip()) return;
+            int revision = ReadIntField(payload, "revision") ?? 0;
+            if (_pendingTooltipRequestId == requestId && revision < _pendingTooltipRevision) return;
+            if (_tooltip.ActiveDocument != null && _tooltip.CurrentRequestId == requestId
+                && revision < _tooltip.ActiveDocument.Revision) return;
+            CancelPendingTooltip();
+            if (_tooltip.CurrentRequestId != requestId)
+            {
+                _tooltip.Reset();
+                SyncInspection();
+            }
+            if (_tooltipService == null || payload["tooltipInput"] is not JObject input)
+            {
+                _tooltip.Reset();
+                LogManager.Log("[NativeInteraction] tooltip content service unavailable or malformed input");
+                return;
+            }
+            _pendingTooltipRequestId = requestId; _pendingTooltipSceneId = sceneId;
+            _pendingTooltipRevision = revision; _pendingTooltipPinned = TooltipShowIsPinned(payload);
+            long generation = _tooltipGeneration;
+            var kind = _pendingTooltipPinned ? TooltipRequestKind.Inspector : TooltipRequestKind.Hover;
+            var identity = new TooltipRequestIdentity("native", requestId, sceneId,
+                revision.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                ReadStringField(payload, "lease") ?? "", kind);
+            _ = CompleteTooltipBuild(payload, identity, generation, input,
+                System.Threading.Volatile.Read(ref _transportEpoch));
+        }
+
+        private async System.Threading.Tasks.Task CompleteTooltipBuild(JObject payload,
+            TooltipRequestIdentity identity, long generation, JObject input, long transportEpoch)
+        {
+            JObject document = null;
+            Exception failure = null;
+            try { document = (await _tooltipService.BuildAsync(input, identity).ConfigureAwait(false)).ToObject()["document"] as JObject; }
+            catch (OperationCanceledException) { return; }
+            catch (Exception ex) { failure = ex; }
+            try
+            {
+                _uiDispatch(delegate
+                {
+                    if (generation != _tooltipGeneration || _pendingTooltipRequestId != identity.RequestId
+                        || _pendingTooltipSceneId != identity.SceneId || _latestSceneId != identity.SceneId
+                        || transportEpoch != System.Threading.Volatile.Read(ref _transportEpoch)) return;
+                    _pendingTooltipRequestId = null; _pendingTooltipSceneId = null; _pendingTooltipPinned = false;
+                    if (_canPresentTooltip != null && !_canPresentTooltip())
+                    {
+                        _tooltip.Reset(); SyncInspection(); SendCancel(identity.RequestId, identity.SceneId);
+                        return;
+                    }
+                    if (failure != null || document == null)
+                    {
+                        _tooltip.Reset(); SyncInspection();
+                        LogManager.Log("[NativeInteraction] tooltip content failed: " + failure?.Message);
+                        return;
+                    }
+                    // Inspector is an accepted presentation identity. Item/skill content defaults
+                    // must never downgrade its lifecycle to an ordinary hover after async generation.
+                    if (identity.Kind == TooltipRequestKind.Inspector) document["profile"] = "pinned";
+                    var completed = (JObject)payload.DeepClone();
+                    completed.Remove("tooltipInput"); completed["document"] = document;
+                    try { _tooltip.Show(completed); }
+                    catch (Exception ex) { LogManager.Log("[NativeInteraction] async tooltip show failed: " + ex.Message); }
+                    SyncInspection();
+                });
+            }
+            catch (Exception ex) { LogManager.Log("[NativeInteraction] async tooltip dispatch failed: " + ex.Message); }
+        }
+
+        private void CancelPendingTooltip(string requestId = null, string sceneId = null)
+        {
+            if (requestId != null && requestId != _pendingTooltipRequestId) return;
+            if (sceneId != null && sceneId != _pendingTooltipSceneId) return;
+            _tooltipGeneration++;
+            if (_pendingTooltipRequestId != null && _tooltipService != null)
+                _tooltipService.Cancel("native", _pendingTooltipPinned ? TooltipRequestKind.Inspector : TooltipRequestKind.Hover,
+                    _pendingTooltipRequestId, _pendingTooltipSceneId);
+            _pendingTooltipRequestId = null; _pendingTooltipSceneId = null; _pendingTooltipPinned = false;
         }
 
         private void HandleHide(string kind, string requestId, string sceneId)
@@ -374,6 +521,9 @@ namespace CF7Launcher.Tasks
             }
             else if (_tooltip != null)
             {
+                CancelPendingTooltip(requestId, sceneId);
+                if (_tooltip.CurrentRequestId == requestId
+                    && !string.Equals(_tooltip.CurrentSceneId, sceneId, StringComparison.Ordinal)) return;
                 // simple 复合悬停：owner leave 的 hide 到来时，若指针在浮层内/过桥窗内进入
                 // 则保持展示（控制器接管，稍后自行 Hide）；dense/pinned/身份不符立即生效。
                 bool deferred = false;
@@ -465,6 +615,7 @@ namespace CF7Launcher.Tasks
 
         private void ResetAll()
         {
+            CancelPendingTooltip();
             lock (_gate)
             {
                 _latestSceneId = null;

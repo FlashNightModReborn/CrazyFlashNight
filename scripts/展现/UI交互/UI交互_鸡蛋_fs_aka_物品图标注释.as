@@ -1,219 +1,32 @@
-﻿/**
- * 物品图标注释主入口函数
- * @param name:String 物品名称
- * @param value:Object 物品数值对象，包含level、tier等属性
- * @param ownerClip:MovieClip 可选，真实 owner/图标剪辑；有效时原生注释携带 _root 系 anchorRect
- */
+﻿/** Tooltip entry points: freeze input and let the Launcher generate the document. */
 _root.物品图标注释 = function(name, value, baseItem, ownerClip) {
-    var 强化等级:Number = (value.level > 0) ? value.level : 1;
-
-    // 始终使用基础数据来生成简介内容（以正确显示属性增益）
-    var itemData:Object = ItemUtil.getItemData(name);
-    if(typeof baseItem !== "object") baseItem = null;
-
-    // 1) 基础段描述（不含简介头与装备属性）；插件物品信息、战技、已安装插件与额外功能
-    //    分别拆成 role:"sub" 子注释框，药剂 Buff/缓释在简介阶段拆出；旧消费端保留全文。
-    //    docSubs 与 subBlocks 一一对应：modinfo 带层级行，已安装插件带图标行。
-    var subBlocks:Array = [];
-    var docSubs:Array = [];
-    var 描述文本:String = TooltipComposer.generateItemDescriptionTextEx(itemData, baseItem, subBlocks, docSubs);
-
-    // 2) 原生专属部件：书签式插条（武器大类/子类）与枪械弹夹独立框（第二行为子弹类型）
-    var 插条:Array = TooltipComposer.getRailText(itemData, baseItem);
-    var 弹夹:Object = TooltipComposer.getMagazineInfo(baseItem, itemData, value);
-
-    // 3) 简介面板文本。插条承载了类型行时才从面板省略该行（非武器保持原样不丢信息）；
-    //    弹夹行/子弹类型行改由独立框显示；暴击/斩杀拆到第一个子框。
-    var 暴击斩杀:Array = [];
-    var 药剂Buff:Array = [];
-    var 简介文本:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData, value, {
-        omitTypeLines: 插条 != null,
-        omitActionType: 插条 != null,
-        omitClipName: 弹夹 != null,
-        omitBulletType: 弹夹 != null && 弹夹.ammo != null,
-        omitCritSlay: true,
-        critSlay: 暴击斩杀,
-        omitBuff: true,
-        buff: 药剂Buff
-    });
-    if (药剂Buff.length > 0) {
-        var 药剂BuffHTML:String = 药剂Buff.join("");
-        subBlocks.unshift(药剂BuffHTML);
-        docSubs.unshift(药剂BuffHTML);
-    }
-    if (暴击斩杀.length > 0) {
-        var 暴击斩杀HTML:String = 暴击斩杀.join("");
-        subBlocks.unshift(暴击斩杀HTML);
-        docSubs.unshift(暴击斩杀HTML);
-    }
-
-    var extras:Object = null;
-    var 升阶信息:Object = TooltipComposer.getUpgradePathInfo(itemData, baseItem);
-    if (插条 != null || 弹夹 != null || 升阶信息 != null) {
-        extras = {};
-        if (插条 != null) extras.rail = 插条;
-        if (弹夹 != null) extras.magazine = 弹夹;
-        if (升阶信息 != null) extras.upgrades = 升阶信息;
-    }
-
-    // _root.服务器.发布服务器消息("描述文本:" + StringUtils.htmlToPlainTextFast(描述文本));
-    // _root.服务器.发布服务器消息("简介文本:" + StringUtils.htmlToPlainTextFast(简介文本));
-
-    // 4) 图标显示数据（装备实例走 getData() 以应用涂装覆盖）
-    var iconData:Object = null;
-    if(baseItem && baseItem.getData != undefined && ItemUtil.isEquipment(name)){
-        iconData = baseItem.getData();
-    }
-
-    // 5) 原生注释出口：document 经 native_interaction 下发；通道不可用时不显示，不再启用 Flash 备用绘制
-    var doc:Object = NativeTooltipDocument.buildItem(name, itemData, iconData, 简介文本, 描述文本, docSubs, extras);
-    NativeTooltipBridge.show(doc, ownerClip);
+    var input:Object = TooltipInputProjection.forItem(name, value, baseItem, "native");
+    if (input != null) NativeTooltipBridge.show(input, ownerClip);
 };
 
-
-/**
- * 技能栏技能图标注释（原生文档）
- * @param 对应数组号:Number 技能在主角技能表中的数组索引
- *
- * 布局策略：
- * - 简介面板：技能名、类型、状态、冷却、消耗、等级等基础信息
- * - 描述文本：技能的详细描述（Description），独立显示
- * - 布局由原生注释消费者决定
- */
 _root.技能栏技能图标注释 = function(对应数组号) {
-    var parts:Object = SkillTooltipComposer.describeLoadout(对应数组号);
-    NativeTooltipBridge.show(parts.document);
+    NativeTooltipBridge.show(TooltipInputProjection.loadoutSkill(对应数组号));
 };
 
-/**
- * 学习界面技能图标注释（原生文档）
- * @param 对应数组号:Number 技能在技能表中的数组索引
- *
- * 布局策略：
- * - 简介面板：技能名、类型、等级限制、技能点需求、冷却、消耗等基础信息
- * - 描述文本：技能的详细描述（Description），独立显示
- * - 布局由原生注释消费者决定
- */
 _root.学习界面技能图标注释 = function(对应数组号) {
-    var 技能信息 = _root.技能表[对应数组号];
-    var 技能名 = 技能信息.Name;
-
-    // 简介面板文本（基础信息）
-    var 简介文本 = "<B>" + 技能名 + "</B>";
-    简介文本 += "<BR>" + 技能信息.Type;
-    简介文本 += "<BR>最高等级：" + 技能信息.MaxLevel;
-    简介文本 += "<BR>解锁需要技能点数：" + 技能信息.UnlockSP;
-    if (技能信息.MaxLevel > 1)
-        简介文本 += "<BR>升级需要技能点数：" + 技能信息.UpgradeSP;
-    简介文本 += "<BR>冷却秒数：" + Math.floor(技能信息.CD / 100) / 10;
-    简介文本 += "<BR>MP消耗：" + 技能信息.MP;
-    简介文本 += "<BR>等级限制：" + 技能信息.UnlockLevel;
-
-    // 描述文本（独立出来，用于智能分栏）
-    var 描述文本 = 技能信息.Description ? String(技能信息.Description) : "";
-
-    // 原生注释出口：document 经 native_interaction 下发；通道不可用时不显示，不再启用 Flash 备用绘制
-    var 学习文档:Object = NativeTooltipDocument.buildSkill(技能名, 简介文本, 描述文本);
-    NativeTooltipBridge.show(学习文档);
+    NativeTooltipBridge.show(TooltipInputProjection.learningSkill(对应数组号));
 };
 
-
-/**
- * 注释显示函数（保留旧调用签名，仅经 native_interaction 下发）
- * @param 宽度:Number 注释框宽度（旧布局参考值，原生路径不以此为布局依据）
- * @param 内容:String 注释内容HTML文本
- * @param 框体:String 框体类型（可选，默认为主框体）
- */
+/** Kept call signature for existing scene producers; no Flash renderer or layout. */
 _root.注释 = function(宽度, 内容, 框体) {
-    var doc:Object = NativeTooltipDocument.buildBody(
-        (内容 == undefined || 内容 == null) ? "" : String(内容),
-        NativeTooltipDocument.PROFILE_SIMPLE);
-    NativeTooltipBridge.show(doc);
+    NativeTooltipBridge.show(TooltipInputProjection.body(
+        (内容 == undefined || 内容 == null) ? "" : String(内容), "simple"));
 };
 
 /**
- * Web 面板物品注释 HTML 构造（无渲染版本，对应 _root.物品图标注释 的纯数据双胞胎）
- *
- * - 与 物品图标注释 共用同一条 TooltipComposer 调用链，仅区别在返回内容供 Web 消费，
- *   返回 desc/intro 字符串供 Web/JSON 通道下发。
- * - wire 出口统一由消费方 sendResponse 的 LiteJSON.stringifySafe 做标准转义；
- *   这里保留 TooltipComposer 原始 htmlText（含双引号属性），不再做引号替换。
- * - 各 panel 的 *_WebView.as 只需做：参数解析 → 调用本函数 → 按自身 task 名包成 response → sendResponse。
- *
- * @param name:String 物品名（缺省时返回 null）
- * @return Object | null  形如 { descHTML, introHTML, displayname, itemData, document }；item 找不到返回 null
+ * Legacy function name only. Synchronous return is TooltipInput plus identity;
+ * no HTML is generated in AVM1. All live callers forward tooltipInput to Host.
  */
 _root.Web物品注释HTML = function(name:String):Object {
-    if (name == undefined || name == null || name == "") return null;
-    var itemData:Object = ItemUtil.getItemData(name);
-    if (itemData == undefined) return null;
-
-    // value 对象：Web 入口当前没有强化等级 / 涂装上下文，统一以 level=1 走基础数据
-    var value:Object = { level: 1 };
-    var subBlocks:Array = [];
-    var docSubs:Array = [];
-    var descBody:String = TooltipComposer.generateItemDescriptionTextEx(itemData, null, subBlocks, docSubs);
-    var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, value, null);
-
-    // 装备为插条/弹夹/暴击斩杀重建省略版简介，药剂为独立 Buff 子框重建；
-    // 其余非装备两次结果同文，直接复用避免重复构建。
-    var 插条:Array = TooltipComposer.getRailText(itemData, null);
-    var 弹夹:Object = TooltipComposer.getMagazineInfo(null, itemData, value);
-    var extras:Object = null;
-    var docIntro:String = introHTML;
-    if (ItemUtil.isEquipment(name)) {
-        var 暴击斩杀:Array = [];
-        docIntro = TooltipComposer.generateIntroPanelContent(null, itemData, value, {
-            omitTypeLines: 插条 != null,
-            omitActionType: 插条 != null,
-            omitClipName: 弹夹 != null,
-            omitBulletType: 弹夹 != null && 弹夹.ammo != null,
-            omitCritSlay: true,
-            critSlay: 暴击斩杀
-        });
-        if (暴击斩杀.length > 0) {
-            var 暴击斩杀HTML:String = 暴击斩杀.join("");
-            subBlocks.unshift(暴击斩杀HTML);
-            docSubs.unshift(暴击斩杀HTML);
-        }
-        var 升阶信息:Object = TooltipComposer.getUpgradePathInfo(itemData, null);
-        if (插条 != null || 弹夹 != null || 升阶信息 != null) {
-            extras = {};
-            if (插条 != null) extras.rail = 插条;
-            if (弹夹 != null) extras.magazine = 弹夹;
-            if (升阶信息 != null) extras.upgrades = 升阶信息;
-        }
-    } else if (itemData.use === "药剂") {
-        var 药剂Buff:Array = [];
-        docIntro = TooltipComposer.generateIntroPanelContent(null, itemData, value, {
-            omitBuff: true,
-            buff: 药剂Buff
-        });
-        if (药剂Buff.length > 0) {
-            var 药剂BuffHTML:String = 药剂Buff.join("");
-            subBlocks.unshift(药剂BuffHTML);
-            docSubs.unshift(药剂BuffHTML);
-        }
-    }
-
-    return {
-        // descHTML/introHTML 保持旧版全文（含子框内容与类型行）：
-        // 只读 HTML 的面板（锻造/战利品/角色构筑等）不认 document，省略即丢信息。
-        descHTML: descBody + subBlocks.join(""),
-        introHTML: introHTML,
-        displayname: String(itemData.displayname || name),
-        itemData: itemData,
-        // COMMON v1 语义文档（纯数据字段，消费方需先经白名单协调再接入 wire）
-        // subBlocks → role:"sub" 子注释框段；extras → rail/magazine 结构部件
-        document: NativeTooltipDocument.buildItem(name, itemData, null, docIntro, descBody, docSubs, extras)
-    };
+    return TooltipInputProjection.preview(name);
 };
 
-/**
- * 注释结束函数（按身份下发 native hide，并隐藏主 XFL 的旧占位）
- */
 _root.注释结束 = function() {
     NativeTooltipBridge.hideCurrent();
-    // 主 XFL 仍放置旧注释框；保留其加载时自隐，不启用旧绘制链。
     _root.注释框._visible = false;
 };

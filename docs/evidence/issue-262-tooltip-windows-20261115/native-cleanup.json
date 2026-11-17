@@ -1,0 +1,96 @@
+{
+  "schema": "cf7.issue262.native-smoke-cleanup.v1",
+  "observedUtc": "2026-11-16T00:19:57.199Z",
+  "runtimeIdentity": {
+    "runtimeMode": "isolated_candidate",
+    "processPath": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tmp\\runtime-candidates\\v2\\c-c4c2a451ea50-08846e81b3-20261115t132028003z-f6e1c3ae\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "053E26B3CDB6B25DAFD6DE642FC547340F93817712028EAED9593694993D4405",
+    "buildIdentity": "C4C2A451EA507F15D7B0B575FC53D2DE7AE5E6E2CD78676CD0526A427ADAC3E7",
+    "payloadClosure": "410C0915E5082306E516E1EB97074421FCFE78DA6F97E981ACE970874D3D4910",
+    "pid": 7192,
+    "httpPort": 1192
+  },
+  "shutdownResponse": {
+    "success": true,
+    "ok": true,
+    "task": "agent_control",
+    "note": "shutdown_requested",
+    "launchState": "Ready",
+    "revealPerformed": true,
+    "socketConnected": true,
+    "gameEnteredObserved": true,
+    "gameEnteredAttemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+    "readyForRuntimeAutomation": true,
+    "runtimeReadyBlockedBy": [],
+    "readyForArenaCalibration": true,
+    "readyBlockedBy": [],
+    "save": {
+      "attemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+      "slot": "cf7_agent_equipment_tuning",
+      "decision": "snapshot",
+      "kind": "Snapshot",
+      "source": "json_shadow",
+      "corruptDetail": null
+    },
+    "saveRuntime": {
+      "loaded": true,
+      "savePath": "cf7_agent_equipment_tuning",
+      "attemptId": "5af4c8c1f5b74da2ac95396f375077c8",
+      "source": "launcher_snapshot:json_shadow",
+      "role": "fs",
+      "level": 99
+    },
+    "arenaCalibration": {
+      "success": true,
+      "ok": true,
+      "task": "arena_calibration",
+      "workerId": "guardian",
+      "sessionEpoch": "1f52e022574f411e8fba275f63c29ac1",
+      "assignmentId": null,
+      "attemptId": null,
+      "transportPoisoned": false,
+      "state": "idle",
+      "note": null,
+      "batchId": null,
+      "manifestHash": null,
+      "manifestPath": null,
+      "frozenManifestPath": null,
+      "resultPath": null,
+      "totalRuns": 0,
+      "completedRuns": 0,
+      "currentCaseId": null,
+      "currentRunId": null,
+      "lastError": null,
+      "lastResult": null
+    },
+    "activePanel": {
+      "name": "workbench",
+      "instanceId": "panel_E-9BifV7ZGfqDisOiVlqwfmv"
+    }
+  },
+  "ownedProcessExited": true,
+  "remainingLauncherPids": [],
+  "protectedPlayerSaves": [
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\saves\\crazyflasher7_saves.json",
+      "bytes": 30014,
+      "sha256": "8B7CAD0662C83383E90F43CDC2B1A99D13CE58F0808221CDD9FAE66D19575859",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\saves\\crazyflasher7_saves1.json",
+      "bytes": 77686,
+      "sha256": "011E772909A11CCD986A87B4C42DE5B49E7ED723F0E5D58629648A6567F966CD",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\saves\\crazyflasher7_saves2.json",
+      "bytes": 4835,
+      "sha256": "128FAC5E13468AB2FE7259D36F70653CF2357B5308F1DD41FE8B383679F00CFE",
+      "unchanged": true
+    }
+  ],
+  "playerSavesUnchanged": true,
+  "previewVerified": false,
+  "deployed": false
+}

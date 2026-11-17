@@ -1,0 +1,564 @@
+{
+  "schema": "cf7-equipment-plugin-b-runtime-release.v1",
+  "date": "2026-11-16",
+  "status": {
+    "runtime": "promoted",
+    "businessE2E": "pending_desktop_interaction",
+    "humanAcceptance": "pending"
+  },
+  "authorization": "Maintainer explicitly authorized scheme B on main, staged verification/commit/push and formal runtime release; no construction worktree.",
+  "source": {
+    "commit": "b4e5b622a87d6866a8cd6c40b6ad8b78112a78a4",
+    "tag": "runtime-build-v2/20261116-equipment-plugin-b-v2",
+    "releaseTreeOid": "b949cd21188c9bae9b2c3538c879ee68e015ac72",
+    "implementationCommits": [
+      "26aeca3f5bc93263209cf07cbe4f8baf130e2c16",
+      "7f977c2582d1ec2d5661dea296bd3a5bb8aa4caf",
+      "35ffc3bc5ad4e4cec2594d33ec644dacd14343f2",
+      "b4e5b622a87d6866a8cd6c40b6ad8b78112a78a4"
+    ]
+  },
+  "deploymentCommit": "f75388d56c4f115f4534ab7c5702c6ab2041ac1d",
+  "runtime": {
+    "requestId": "7AD21C5FF759F2AC1F319E3FF9D01ECC8700A012CE7241203E50FD4FF721A6C2",
+    "buildIdentity": "611FA3936FA87D9C652B9AAA549A4932A963830922079A4FD3A5FA5541D1394A",
+    "payloadClosure": "D20F3D224E87BD74B05C912422EFE4B7A54DFBB3589CDDF3A670C6A620D416D9",
+    "coreSha256": "701C75A3629CDB9BE3A317A5B9640350A284DABEA2652BE59DDDCE0C42B7694F",
+    "signerCount": 2,
+    "faultDomainCount": 2,
+    "faultDomains": [
+      "physical-host-b",
+      "github-hosted-windows"
+    ],
+    "localSignerKey": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+    "cloudSignerIdentity": "352E5CB208E9529F3C006B425B976369C301D130C2B23963A7709323C6088976"
+  },
+  "productionPolicy": {
+    "passed": true,
+    "checks": 47,
+    "profile": "production",
+    "localReceipt": "tmp/runtime-policy-receipts/equipment-plugin-b-1116-v2.v2.json"
+  },
+  "cloud": {
+    "runId": 43740975777,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43740975777",
+    "verified": true,
+    "scope": "attestation-only receipt; independent cloud candidate produced and strictly verified"
+  },
+  "deploymentAudit": {
+    "runId": 43742502414,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43742502414",
+    "head": "f75388d56c4f115f4534ab7c5702c6ab2041ac1d",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "passed": true,
+    "replayedConsensus": true,
+    "signers": 2,
+    "faultDomains": 2
+  },
+  "verification": {
+    "native": {
+      "grayRun": "d2f69e1c90124afeac82b4535a02d639",
+      "coldMissingDefinition": "2/2 before loading real mod definitions",
+      "realXmlMatrix": "44/44, TTI+primer and AA12+etch, bag and worn, install/replace/detach/refunds/type/dependency",
+      "tuningRun": "19f32c9b10194d1da777b71df651beab",
+      "service": "128/128",
+      "inventory": "194/194",
+      "bagFaults": "material false, material throw, rollback reject; all passed; unknown-write classification retained",
+      "performance": "Actual calculations: 3 whole preview = 1 independent source-authority validation + 2 in buildPlan. Commit recomputes; request freshness verified. AVM1 timing not measured.",
+      "otherSuites": {
+        "lifecycle": "28/28",
+        "closedPolicy": "31 current items, 107 mods",
+        "light": "81/81",
+        "sheriff": "47/45/23"
+      },
+      "moduleReceipt": "tmp/asloader-builds/20261115T155012-61d70bc263704cc7a4e34a91eb479284/receipt.json",
+      "productionPublish": "3 modules, 806 classes, 107 inheritance edges; fresh Compiler 0/0 each; retry 0; generator check no updates"
+    },
+    "host": {
+      "equipmentFocused": "178/178",
+      "qualifiedFull": {
+        "total": 8553,
+        "passed": 8513,
+        "failed": 9,
+        "skipped": 31
+      },
+      "qualifiedFullReceipt": "tmp/focus-sol-20261013/integration-20261115T155156522Z/recheck.trx",
+      "resourceGuardQualification": "128/128 with official input anchor and environment",
+      "remainingFailures": "Nine WorldOverlayOrderTests fail at unchanged CoverHud window-fixture setup. Isolated rerun: 1 pass, same 9 fail. Full Host suite is not green."
+    },
+    "web": {
+      "registry": "107 mods, 103 materials, 4 HB profiles, 2 providers",
+      "runtime": "Original cases +26 semantic cases +13 legacy consumer protocol cases passed",
+      "model": "90/90",
+      "confirmation": "4/4",
+      "interaction": "9/9",
+      "sourceMarker": "2/2",
+      "characterSession": "42/42",
+      "canonicalOffline": "9 suites passed",
+      "equipmentBrowser": "149/149 at each of 1024x576, 1366x768, 1920x1080",
+      "otherBrowser": "character-workbench, character-dressup, item-grid, kshop, item-filter, profile passed",
+      "knownHarnessFailure": "Standalone character-build drug-cooldown aria-disabled failure reproduced identically in clean UTF-8 baseline 822274 archive; retained, not repaired in equipment scope",
+      "legacyGateLimit": "Legacy equipment bootstrap --check stops at unchanged overlay startup closed-inventory drift before wire checks; direct 13 legacy protocol cases pass under current runtime test"
+    },
+    "sourceModel": {
+      "result": "26/26",
+      "scope": "Extracted-source plain-object JS model only; not native AVM1 or physical E2E",
+      "source": "b4e5b622a87d6866a8cd6c40b6ad8b78112a78a4"
+    },
+    "performance": "Physical production code net -681 lines including comments/blanks. Native full calculations 3=source authority1+buildPlan2; no AVM1 timing measured."
+  },
+  "formalEntry": {
+    "gate": "PG-TUNE-OPEN",
+    "passed": true,
+    "report": "tmp/equipment-tuning/unattended/20261115T172333Z-cf7_agent_equipment_tuning/run-report.json",
+    "runtimeMode": "formal_runtime",
+    "stableWindowMs": 1000,
+    "stableSamples": 10,
+    "businessClicks": false,
+    "businessWritesAttempted": false,
+    "ownedLauncherProcessesRemaining": 0,
+    "scope": "Fresh handoff/title-frame, active production workbench and first authoritative snapshot only"
+  },
+  "openerFixtureIteration": {
+    "code": "business_action_before_clone_baseline",
+    "cause": "Level1 fixture intentionally triggered existing automatic enhance preview; no commit or inventory mutation; clone semantics unchanged; exact owned process normally shut down before preparing new seed.",
+    "remediation": "New task-owned max-level13 seeds, story780 cap13, strict OPEN passed unchanged gates."
+  },
+  "saveProtection": {
+    "playerJsonFiles": 8,
+    "readOnlySeedFiles": 5,
+    "sha256Unchanged": true,
+    "playerWrites": false,
+    "testTarget": "cf7_agent_equipment_tuning"
+  },
+  "rollbackPrevious": "tmp/runtime-promotions/20261115T170729683Z-6eda9af26d074b08b1f8ba346141432d/previous",
+  "retiredV1": {
+    "tag": "runtime-build-v2/20261115-equipment-plugin-b-v1",
+    "requestId": "26C4A0ACF580624DFA1415B0ED34A458E5A3370DAE3D571B082AA353FF3DBABB",
+    "reason": "Strict production policy rejected stale Lady SWF provenance in generated effects catalog. Canonical after_publish rerendered678frames and20sounds; atlas and sounds byte-identical, only source fingerprint changed.",
+    "cloudDispatched": false,
+    "promoted": false,
+    "oldTagRequestAndFailedReceiptPreserved": true
+  },
+  "morningAcceptance": [
+    "本次要求的背包/穿戴操作和保存重启验收已完成，无需再重复这组点击。",
+    "原反馈测试员仍可用当时同一套装备与候选复测#254；当前控制档不代替尚未明确的原反馈组合。",
+    "日常战斗画面与手感仍属于人工体验范围；完整PG自动工具资格、SAFEEXIT UI会话绑定和未知写真实故障旅程未由本轮代签。"
+  ],
+  "businessAcceptance": {
+    "status": "targeted_physical_acceptance_passed",
+    "operator": "user physical UI",
+    "targetSlot": "cf7_agent_equipment_tuning",
+    "fullPgGatePassed": false,
+    "targetedAcceptanceComplete": true,
+    "firstBagInstallRoundTrip": {
+      "passed": true,
+      "weapon": "TTI Glock 19",
+      "containerId": "背包",
+      "slot": 0,
+      "modsBefore": [
+        "灰蛊裂隙弹"
+      ],
+      "modsPersisted": [
+        "灰蛊裂隙弹",
+        "弹簧"
+      ],
+      "modsReloaded": [
+        "灰蛊裂隙弹",
+        "弹簧"
+      ],
+      "materialsBefore": {
+        "弹簧": 10,
+        "螺丝套件": 10,
+        "加长弹匣": 4,
+        "磁稳贯穿弹": 10
+      },
+      "materialsPersisted": {
+        "弹簧": 9,
+        "螺丝套件": 10,
+        "加长弹匣": 4,
+        "磁稳贯穿弹": 10
+      },
+      "materialsReloaded": {
+        "弹簧": 9,
+        "螺丝套件": 10,
+        "加长弹匣": 4,
+        "磁稳贯穿弹": 10
+      },
+      "savedSha256": "97702135e435997c6fce2aba5d5e6fb94e486aab82469a8d34a5d962b3ba23d7",
+      "savedUtf16Chars": 24713,
+      "oldPid": 22204,
+      "newPid": 9552,
+      "sameFormalRuntimeIdentity": true,
+      "restartReseeded": false,
+      "stateRef": "sha256_57c6055f9f3cd0a0283c93bc",
+      "reloadEvidence": {
+        "ok": true,
+        "evidence": {
+          "kind": "host_snapshot",
+          "lineNumber": 13004,
+          "callId": "tune.tune.mwiil9jy.fxotte.1.1",
+          "panelInstanceId": "panel_fiVbQN-TJV1khJ93Gzk94mTd",
+          "viewSessionId": "tuning.mwiil9ks.bswqe0",
+          "sourceKey": "sha256_c8622f864714497537605879",
+          "stateRef": "sha256_57c6055f9f3cd0a0283c93bc",
+          "writeEpoch": 0,
+          "requestLineNumber": 13002,
+          "source": {
+            "sourceKind": "inventory",
+            "containerId": "背包",
+            "slot": 0,
+            "expectedLeaseRef": "sha256_d283253b36bd315c29548d0f"
+          }
+        },
+        "assertions": {
+          "sameStableInventoryCoordinate": true,
+          "committedStateRefReadBack": true,
+          "restartLeaseMayRotate": true
+        }
+      },
+      "localReceipt": "work/live-roundtrips/tti-install.json"
+    },
+    "remaining": [],
+    "safeExitUiJourneyVerified": false,
+    "unknownWriteFaultJourneyVerified": false,
+    "inputAndGateLimitations": "真实按钮由用户物理操作，Agent连续只读记录、核对实际存档并从正式入口重启同一测试副本。工具把内嵌WebView误判为另一窗口，后续一次画面读取还返回了其他应用，未以该画面签收视觉结果。完整PG的固定日志尾窗失败及解析器覆盖限制仍保留，专项实测不改签完整PG-TUNE-E2E通过。",
+    "failedFullPgReceiptsPreserved": [
+      "tmp/equipment-tuning/commit-journeys/20261115T233924707Z-2760/receipt.json",
+      "tmp/equipment-tuning/commit-journeys/20261115T235055401Z-15248/receipt.json",
+      "tmp/equipment-tuning/commit-journeys/20261115T235540053Z-10768/receipt.json"
+    ],
+    "previewOnlyGatePassed": false,
+    "agentBusinessInputs": 0,
+    "operationCounts": {
+      "install_mod": 9,
+      "detach_mod": 7,
+      "replace_mod": 5
+    },
+    "successfulCommits": 21,
+    "nonReseededSaveRestartCycles": 3,
+    "installDetachBatch": {
+      "passed": true,
+      "commits": 15,
+      "inventoryCommits": 7,
+      "loadoutCommits": 8,
+      "coverage": "TTI, AA12, worn pistol1 and pistol2; install/detach/refund; this batch did not contain replace_mod",
+      "localTranscript": "work/live-observers/install-replace-batch-commit-check.json"
+    },
+    "directReplacementBatch": {
+      "passed": true,
+      "commits": 5,
+      "coverage": [
+        "bag TTI screw-to-spring",
+        "bag TTI spring-to-screw",
+        "bag AA12 screw-to-spring",
+        "worn pistol1 screw-to-spring",
+        "worn pistol2 screw-to-spring"
+      ],
+      "exactTransactions": [
+        {
+          "webCallId": "tune.tune.mwijyczt.98vg0b.1.6",
+          "previewWebCallId": "tune.tune.mwijyczt.98vg0b.1.5",
+          "tokenRef": "sha256_1febf1125b9f0dbf67ac6866",
+          "panelInstanceId": "panel_RJ5VhChdEEfVlQ-R_aoYhgrd",
+          "viewSessionId": "tuning.mwijyd13.aahpsh",
+          "sourceKey": "sha256_0c539952a87b5e5e5db3cc21",
+          "operation": "replace_mod",
+          "candidateKey": "mod.0",
+          "intentKey": "sha256_224399f9040921e973541218",
+          "stateRef": "sha256_248c4c298c6d1e370d46cbd3",
+          "writeEpoch": 1,
+          "source": {
+            "sourceKind": "inventory",
+            "containerId": "背包",
+            "slot": 0,
+            "expectedLeaseRef": "sha256_54335cf4fda4ae11ca43a021"
+          }
+        },
+        {
+          "webCallId": "tune.tune.mwijyczt.98vg0b.1.16",
+          "previewWebCallId": "tune.tune.mwijyczt.98vg0b.1.15",
+          "tokenRef": "sha256_299529eb519d369b7187f230",
+          "panelInstanceId": "panel_RJ5VhChdEEfVlQ-R_aoYhgrd",
+          "viewSessionId": "tuning.mwijyd13.aahpsh",
+          "sourceKey": "sha256_108dd9ba2d5b373d88b1277b",
+          "operation": "replace_mod",
+          "candidateKey": "mod.1",
+          "intentKey": "sha256_bf1524857fd3944696864d98",
+          "stateRef": "sha256_a48382d0e3f6fdaf7f14d1b1",
+          "writeEpoch": 2,
+          "source": {
+            "sourceKind": "inventory",
+            "containerId": "背包",
+            "slot": 0,
+            "expectedLeaseRef": "sha256_f51a1e8f24f039f2d154e8e8"
+          }
+        },
+        {
+          "webCallId": "tune.tune.mwijyczt.98vg0b.1.25",
+          "previewWebCallId": "tune.tune.mwijyczt.98vg0b.1.24",
+          "tokenRef": "sha256_dca9a1e47cea1482e85b0216",
+          "panelInstanceId": "panel_RJ5VhChdEEfVlQ-R_aoYhgrd",
+          "viewSessionId": "tuning.mwijyd13.aahpsh",
+          "sourceKey": "sha256_a53892b3cc66a26ec93e12d5",
+          "operation": "replace_mod",
+          "candidateKey": "mod.0",
+          "intentKey": "sha256_83380488152fcf2bf67d0e03",
+          "stateRef": "sha256_b16149552b659c4f51f8e5fb",
+          "writeEpoch": 3,
+          "source": {
+            "sourceKind": "inventory",
+            "containerId": "背包",
+            "slot": 1,
+            "expectedLeaseRef": "sha256_f5c27b06ed24655abadcb430"
+          }
+        },
+        {
+          "webCallId": "tune.tune.mwik3mft.dlyker.1.9",
+          "previewWebCallId": "tune.tune.mwik3mft.dlyker.1.8",
+          "tokenRef": "sha256_95763f8064a31e021be22231",
+          "panelInstanceId": "panel_D3E91dRqF4XhPAQtEK5C_0d2",
+          "viewSessionId": "tuning.mwik3mfz.pv8ggl",
+          "sourceKey": "sha256_cacaab7e2cfd2cccae528610",
+          "operation": "replace_mod",
+          "candidateKey": "mod.34",
+          "intentKey": "sha256_03d812e9b85bd4cc3716c6da",
+          "stateRef": "sha256_b9cf9aeb736bb634f0dba1a0",
+          "writeEpoch": 4,
+          "source": {
+            "sourceKind": "loadout",
+            "sessionGeneration": 1,
+            "slotKey": "手枪",
+            "expectedLoadoutRevision": 0
+          }
+        },
+        {
+          "webCallId": "tune.tune.mwik3mft.dlyker.1.21",
+          "previewWebCallId": "tune.tune.mwik3mft.dlyker.1.20",
+          "tokenRef": "sha256_8936994a0af27b69cb27c13f",
+          "panelInstanceId": "panel_D3E91dRqF4XhPAQtEK5C_0d2",
+          "viewSessionId": "tuning.mwik3mfz.pv8ggl",
+          "sourceKey": "sha256_ccec2bcf674b6ccb7e4e5895",
+          "operation": "replace_mod",
+          "candidateKey": "mod.33",
+          "intentKey": "sha256_9ef35e9a3446577a445c2531",
+          "stateRef": "sha256_47eb07b584cddde4fbd6a0fc",
+          "writeEpoch": 5,
+          "source": {
+            "sourceKind": "loadout",
+            "sessionGeneration": 1,
+            "slotKey": "手枪2",
+            "expectedLoadoutRevision": 1
+          }
+        }
+      ],
+      "localTranscript": "work/live-observers/direct-replace-commit-check.json"
+    },
+    "saveRestartCycles": [
+      {
+        "case": "first bag spring install",
+        "oldPid": 22204,
+        "newPid": 9552,
+        "savedSha256": "97702135e435997c6fce2aba5d5e6fb94e486aab82469a8d34a5d962b3ba23d7",
+        "savedUtf16Chars": 24713,
+        "materialsReloaded": {
+          "弹簧": 9,
+          "螺丝套件": 10,
+          "加长弹匣": 4,
+          "磁稳贯穿弹": 10
+        },
+        "restartReseeded": false,
+        "passed": true
+      },
+      {
+        "case": "install/detach batch",
+        "oldPid": 9552,
+        "newPid": 7896,
+        "savedSha256": "3839a50820986e9d42157858ad407abccd9db96bc1a40b693a8e6fa53da37b58",
+        "savedUtf16Chars": 24722,
+        "materialsReloaded": {
+          "弹簧": 10,
+          "螺丝套件": 6,
+          "加长弹匣": 6,
+          "磁稳贯穿弹": 10
+        },
+        "restartReseeded": false,
+        "passed": true
+      },
+      {
+        "case": "direct replacements",
+        "oldPid": 7896,
+        "newPid": 8572,
+        "savedSha256": "bde1de8ca8dca35039650fb917f8681f93cfbdb21d3ad1a25ef3524934a2c683",
+        "savedUtf16Chars": 24715,
+        "materialsReloaded": {
+          "弹簧": 7,
+          "螺丝套件": 9,
+          "加长弹匣": 6,
+          "磁稳贯穿弹": 10
+        },
+        "restartReseeded": false,
+        "passed": true
+      }
+    ],
+    "finalMaterials": {
+      "弹簧": 7,
+      "螺丝套件": 9,
+      "加长弹匣": 6,
+      "磁稳贯穿弹": 10
+    },
+    "finalEquipment": {
+      "bag": {
+        "0": {
+          "name": "TTI Glock 19",
+          "value": {
+            "level": 13,
+            "mods": [
+              "灰蛊裂隙弹",
+              "螺丝套件"
+            ]
+          },
+          "lastUpdate": 1794790777369
+        },
+        "1": {
+          "name": "AA12",
+          "value": {
+            "level": 13,
+            "mods": [
+              "灰蛊蚀刻霰弹",
+              "弹簧"
+            ]
+          },
+          "lastUpdate": 1794790788514
+        }
+      },
+      "worn": {
+        "手枪2": {
+          "name": "御天敌V-1",
+          "value": {
+            "ammoState": {
+              "capacity": 24,
+              "chamber": 0,
+              "ghost": 0,
+              "paidChamber": 0,
+              "paidNormal": 0,
+              "reserve": 17,
+              "reserveName": "手枪通用弹药",
+              "reward": 0,
+              "rewardScope": "session:1794430714743:24917:30",
+              "v": 1
+            },
+            "level": 10,
+            "mods": [
+              "手枪卡宾转换套件",
+              "灰蛊裂隙弹",
+              "弹簧"
+            ],
+            "reloadCount": 0,
+            "shot": 0
+          },
+          "lastUpdate": 1794790807736
+        },
+        "手枪": {
+          "name": "御天敌V-1",
+          "value": {
+            "level": 10,
+            "mods": [
+              "手枪卡宾转换套件",
+              "生物催化剂",
+              "弹簧"
+            ],
+            "reloadCount": 0,
+            "shot": 0
+          },
+          "lastUpdate": 1794790802414
+        }
+      }
+    },
+    "userVisualReadbackConfirmed": true,
+    "visualAutomationVerified": false,
+    "freshPhysicalSourceReadback": {
+      "tti": {
+        "ok": true,
+        "evidence": {
+          "kind": "host_snapshot",
+          "lineNumber": 2679,
+          "callId": "tune.tune.mwik8wo1.y6339e.1.1",
+          "panelInstanceId": "panel_OxqY2ccE5NqF5Ifs_Y8w0Ho7",
+          "viewSessionId": "tuning.mwik8woy.bes0kl",
+          "sourceKey": "sha256_945ddf2dcdcc507ceb3aa6cf",
+          "stateRef": "sha256_7943a902c12ef76fc0b7d81a",
+          "writeEpoch": 0,
+          "requestLineNumber": 2677,
+          "source": {
+            "sourceKind": "inventory",
+            "containerId": "背包",
+            "slot": 0,
+            "expectedLeaseRef": "sha256_66405cc427ed2d9d552320a6"
+          }
+        },
+        "assertions": {
+          "sameStableInventoryCoordinate": true,
+          "committedStateRefReadBack": true,
+          "restartLeaseMayRotate": true
+        }
+      },
+      "aa12": {
+        "source": {
+          "sourceKind": "inventory",
+          "containerId": "背包",
+          "slot": 1,
+          "expectedLeaseRef": "sha256_a64cec0b4c2987fa0fb2b1fc"
+        },
+        "requestLineNumber": 3830,
+        "snapshot": {
+          "kind": "host_snapshot",
+          "lineNumber": 3832,
+          "callId": "tune.tune.mwik8wo1.y6339e.1.2",
+          "panelInstanceId": "panel_OxqY2ccE5NqF5Ifs_Y8w0Ho7",
+          "viewSessionId": "tuning.mwik8woy.bes0kl",
+          "sourceKey": "sha256_88a57a761ed2d3ebd54026d8",
+          "stateRef": "sha256_af5ca7d919b4bfe5ad8b7f37",
+          "writeEpoch": 0
+        }
+      },
+      "wornPistol2": {
+        "source": {
+          "sourceKind": "loadout",
+          "sessionGeneration": 1,
+          "slotKey": "手枪2",
+          "expectedLoadoutRevision": 0
+        },
+        "requestLineNumber": 4113,
+        "snapshot": {
+          "kind": "host_snapshot",
+          "lineNumber": 4115,
+          "callId": "tune.tune.mwikel5z.get4me.1.5",
+          "panelInstanceId": "panel_DX5Rrzk9jsMmDbzBijK3HgPb",
+          "viewSessionId": "tuning.mwikel62.s01wey",
+          "sourceKey": "sha256_13aae1f70d391896e94556d0",
+          "stateRef": "sha256_47eb07b584cddde4fbd6a0fc",
+          "writeEpoch": 0
+        }
+      }
+    },
+    "exactLastWornCommitStateRefReadBack": true,
+    "stateRefScope": "The last worn commit is compared directly. Earlier TTI/AA12 commit fingerprints include materials subsequently changed by other successful commits; their items/materials are verified against exact archived and reloaded values plus fresh physical-source snapshots and human display readback.",
+    "localReceipts": [
+      "work/live-roundtrips/tti-install.json",
+      "work/live-roundtrips/install-detach-batch.json",
+      "work/live-roundtrips/direct-replacement.json",
+      "work/live-roundtrips/final-authority.json",
+      "work/live-roundtrips/final-clean-shutdown.json"
+    ],
+    "normalCleanupShutdown": true,
+    "ownedLauncherProcessesRemaining": 0,
+    "cleanupInventoryAndCollectionUnchanged": true,
+    "additionalParserLimits": [
+      "valid intrinsic_unavailable UI diagnostic is outside the pure-parser allowlist",
+      "installed-rail detach does not emit candidate_hit"
+    ],
+    "humanCombatAccepted": false
+  }
+}

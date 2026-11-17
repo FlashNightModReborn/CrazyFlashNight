@@ -430,6 +430,26 @@ namespace CF7Launcher.Tasks
             if (!sent) HandleSendFailure(fid);
         }
 
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            PendingRequest entry;
+            lock (_lock)
+                if (!_pending.TryGetValue(fid, out entry)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            if (entry.IsWrite || entry.WebCmd != "tooltip") return null;
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("inventory", entry.WebPanel, entry.WebPanelInstanceId,
+                entry.WebCallId, fid, entry.NormalizedPayload,
+                () => { lock (_lock) return _pending.TryGetValue(fid, out var current) && ReferenceEquals(current, entry); },
+                () =>
+                {
+                    lock (_lock)
+                    {
+                        if (!_pending.TryGetValue(fid, out var current) || !ReferenceEquals(current, entry)) return;
+                        CompletePendingLocked(fid, entry);
+                    }
+                    RespondError(entry.WebCallId, entry.WebCmd, "stale_state", entry.WebPanel, entry.WebPanelInstanceId);
+                });
+        }
+
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             int fid;

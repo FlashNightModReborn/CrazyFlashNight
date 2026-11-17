@@ -186,6 +186,7 @@
 }
 .equipment-tuning-tabs { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid #233d44; background:#081014; }
 .equipment-tuning-tabs { grid-row:2; }
+.equipment-tuning-tabs[data-customization-tabs="true"] { grid-template-columns:repeat(5,minmax(0,1fr)); }
 .equipment-tuning-tab {
     min-height:34px; padding:0 4px; border:0; border-right:1px solid #21363d; border-radius:0;
     background:#0d171b; color:#78939a; font:700 11px/1 "Microsoft YaHei",sans-serif; cursor:pointer;
@@ -752,3 +753,325 @@
     .equipment-tuning-stone-core::after { opacity:.55; }
 }
 .skills-tooltip .skills-tt-icon { display:block; width:100%; height:100%; object-fit:contain; }
+
+.cb-mech-pill {
+    display:inline-flex;
+    align-items:center;
+    flex:0 0 auto;
+    min-height:24px;
+    padding:0 8px;
+    color:var(--wb-muted);
+    background:color-mix(in srgb,var(--wb-surface) 88%,transparent);
+    border:1px solid var(--wb-line);
+    border-radius:999px;
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+    cursor:pointer;
+    white-space:nowrap;
+}
+.cb-mech-pill[data-mech-status="authorized"] {
+    color:var(--dls-crystal);
+    border-color:color-mix(in srgb,var(--dls-crystal) 58%,var(--wb-line));
+    background:rgba(var(--dls-crystal-rgb),.1);
+}
+.cb-mech-pill[data-mech-status="empty"],
+.cb-mech-pill[data-mech-status="item_changed"],
+.cb-mech-pill[data-mech-status="unsupported_config"] {
+    color:color-mix(in srgb,var(--wb-warning) 82%,var(--wb-text));
+    border-color:color-mix(in srgb,var(--wb-warning) 62%,var(--wb-line));
+    background:color-mix(in srgb,var(--wb-warning) 10%,transparent);
+}
+.cb-mech-pill.is-active,
+.cb-mech-pill:hover:not(:disabled),
+.cb-mech-pill:focus-visible {
+    color:var(--wb-text);
+    border-color:var(--dls-crystal);
+    box-shadow:0 0 8px rgba(var(--dls-crystal-rgb),.22);
+}
+.cb-mech-pill:disabled { opacity:.55; cursor:default; }
+
+.cb-mech-panel {
+    grid-row:4;
+    min-width:0;
+    min-height:0;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    padding:5px 8px;
+    font:11px/1.3 "Microsoft YaHei",sans-serif;
+    color:var(--wb-text);
+}
+.cb-mech-reactor {
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    padding:5px 8px;
+    background:
+        linear-gradient(125deg,rgba(var(--dls-crystal-rgb),.07),transparent 58%),
+        var(--wb-surface);
+    border:1px solid var(--wb-line);
+}
+.cb-mech-panel[data-config-status="authorized"] .cb-mech-reactor {
+    border-color:color-mix(in srgb,var(--dls-crystal) 48%,var(--wb-line));
+}
+.cb-mech-reactor-head {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    min-width:0;
+}
+.cb-mech-target-badge {
+    flex:0 0 auto;
+    padding:1px 6px;
+    color:var(--wb-accent);
+    background:var(--wb-accent-soft);
+    border:1px solid color-mix(in srgb,var(--wb-accent) 42%,transparent);
+    font:700 11px/1.2 "Microsoft YaHei",sans-serif;
+}
+.cb-mech-target-badge.is-worn {
+    color:var(--dls-crystal);
+    border-color:color-mix(in srgb,var(--dls-crystal) 50%,transparent);
+    background:rgba(var(--dls-crystal-rgb),.1);
+}
+.cb-mech-chest-name {
+    min-width:0;
+    overflow:hidden;
+    color:var(--wb-muted);
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.cb-mech-reactor-main {
+    display:grid;
+    grid-template-columns:34px minmax(0,1fr) auto;
+    align-items:center;
+    gap:8px;
+}
+.cb-mech-reactor-icon {
+    position:relative;
+    width:34px;
+    height:34px;
+    display:grid;
+    place-items:center;
+    background:var(--wb-bg);
+    border:1px solid var(--wb-line);
+    flex:0 0 auto;
+}
+.cb-mech-reactor-icon img,
+.cb-mech-reactor-icon .kshop-icon,
+.cb-mech-tile-icon img,
+.cb-mech-tile-icon .kshop-icon {
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+.cb-mech-reactor-sigil,
+.cb-mech-icon-fallback {
+    color:var(--wb-muted);
+    font:700 13px/1 Consolas,"Microsoft YaHei",sans-serif;
+}
+.cb-mech-reactor-copy {
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+}
+.cb-mech-reactor-copy strong {
+    color:var(--wb-text);
+    font:700 12px/1.25 "Microsoft YaHei",sans-serif;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.cb-mech-reactor-copy span {
+    color:var(--wb-muted);
+    font:11px/1.25 "Microsoft YaHei",sans-serif;
+}
+.cb-mech-reactor-actions { display:flex; align-items:center; gap:6px; flex:0 0 auto; }
+.cb-mech-action,
+.cb-mech-goto-drugs {
+    min-height:28px;
+    padding:0 10px;
+    color:var(--wb-text);
+    background:var(--wb-bg);
+    border:1px solid var(--wb-line);
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+    cursor:pointer;
+}
+.cb-mech-action:hover:not(:disabled),
+.cb-mech-action:focus-visible,
+.cb-mech-goto-drugs:hover:not(:disabled),
+.cb-mech-goto-drugs:focus-visible {
+    border-color:var(--dls-crystal);
+    color:var(--dls-crystal);
+}
+.cb-mech-action.is-warn {
+    color:color-mix(in srgb,var(--wb-warning) 85%,var(--wb-text));
+    border-color:var(--wb-warning);
+}
+.cb-mech-action:disabled,
+.cb-mech-goto-drugs:disabled { opacity:.52; cursor:default; }
+.cb-mech-guide {
+    margin:0;
+    padding:5px 8px;
+    color:var(--wb-muted);
+    background:color-mix(in srgb,var(--wb-bg) 72%,transparent);
+    border-left:2px solid var(--dls-crystal-deep);
+    font:11px/1.3 "Microsoft YaHei",sans-serif;
+}
+.cb-mech-panel[data-reconcile="required"] .cb-mech-guide {
+    color:color-mix(in srgb,var(--wb-warning) 82%,var(--wb-text));
+    border-left-color:var(--wb-warning);
+}
+.cb-mech-empty-cta {
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+    padding:12px;
+    background:var(--wb-surface);
+    border:1px dashed var(--wb-line);
+}
+.cb-mech-empty-cta p { margin:0; color:var(--wb-muted); font-size:11px; }
+.cb-mech-banks {
+    display:grid;
+    gap:7px;
+}
+.cb-mech-bank {
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    padding:6px 7px;
+    background:color-mix(in srgb,var(--wb-surface) 84%,transparent);
+    border:1px solid var(--wb-line-soft);
+}
+.cb-mech-bank-head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    font:700 11px/1.2 "Microsoft YaHei",sans-serif;
+    color:var(--wb-text);
+}
+.cb-mech-bank-head small {
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+    color:var(--wb-muted);
+}
+.cb-mech-bank-head small.is-current { color:var(--dls-crystal); }
+.cb-mech-grid {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:5px;
+}
+.cb-mech-tile {
+    display:grid;
+    grid-template-rows:auto 28px auto;
+    justify-items:center;
+    gap:3px;
+    min-height:66px;
+    padding:4px 5px;
+    box-sizing:border-box;
+    color:var(--wb-text);
+    background:var(--wb-bg);
+    border:1px solid var(--wb-line-soft);
+    text-align:center;
+    cursor:pointer;
+}
+.cb-mech-tile[data-occupied="false"][data-bound="false"] {
+    opacity:.56;
+    cursor:default;
+}
+.cb-mech-tile:hover:not(:disabled),
+.cb-mech-tile:focus-visible {
+    border-color:var(--dls-crystal);
+    background:rgba(var(--dls-crystal-rgb),.07);
+}
+.cb-mech-tile[data-bound="true"] {
+    border-color:var(--dls-crystal);
+    background:rgba(var(--dls-crystal-rgb),.12);
+    box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.36);
+}
+.cb-mech-tile[data-bound-state="empty"],
+.cb-mech-tile[data-bound-state="item_changed"] {
+    border-color:var(--wb-warning);
+    background:color-mix(in srgb,var(--wb-warning) 11%,var(--wb-bg));
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--wb-warning) 45%,transparent);
+}
+.cb-mech-tile-head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:3px;
+    width:100%;
+    min-width:0;
+}
+.cb-mech-keycap {
+    min-width:16px;
+    padding:0 4px;
+    color:var(--wb-muted);
+    background:var(--wb-surface);
+    border:1px solid var(--wb-line-soft);
+    font:700 11px/1.25 Consolas,"Microsoft YaHei",monospace;
+}
+.cb-mech-tile[data-bound="true"] .cb-mech-keycap {
+    color:var(--dls-crystal);
+    border-color:color-mix(in srgb,var(--dls-crystal) 50%,var(--wb-line));
+}
+.cb-mech-bound-tag {
+    padding:0 4px;
+    color:var(--wb-bg);
+    background:var(--dls-crystal);
+    font:700 11px/1.2 "Microsoft YaHei",sans-serif;
+}
+.cb-mech-tile[data-bound-state="empty"] .cb-mech-bound-tag,
+.cb-mech-tile[data-bound-state="item_changed"] .cb-mech-bound-tag {
+    background:var(--wb-warning);
+}
+.cb-mech-qty {
+    color:var(--wb-muted);
+    font:600 11px/1.2 Consolas,"Microsoft YaHei",monospace;
+}
+.cb-mech-tile-icon {
+    width:28px;
+    height:28px;
+    display:grid;
+    place-items:center;
+}
+.cb-mech-empty-slot-mark {
+    color:var(--wb-muted);
+    font:11px/1 "Microsoft YaHei",sans-serif;
+}
+.cb-mech-tile-name {
+    width:100%;
+    min-width:0;
+    overflow:hidden;
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.cb-mech-footer {
+    grid-row:5;
+    padding:6px 10px;
+    background:var(--wb-bg);
+    border-top:1px solid var(--wb-line-soft);
+}
+.cb-mech-rules {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:7px;
+}
+.cb-mech-rule {
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+    min-width:0;
+}
+.cb-mech-rule strong {
+    color:var(--wb-text);
+    font:700 11px/1.25 "Microsoft YaHei",sans-serif;
+}
+.cb-mech-rule span {
+    color:var(--wb-muted);
+    font:11px/1.25 "Microsoft YaHei",sans-serif;
+}

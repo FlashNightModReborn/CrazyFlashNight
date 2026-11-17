@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ClearScript.Core" />
+    <PackageReference Include="Microsoft.ClearScript.V8" />
+    <PackageReference Include="Microsoft.ClearScript.V8.ICUData" />
+    <!-- Keep both native package identities in one portable locked restore. ClearScript loads
+         the native binary matching the actual host OS; production package references are unchanged. -->
+    <PackageReference Include="Microsoft.ClearScript.V8.Native.linux-x64" />
+    <PackageReference Include="Microsoft.ClearScript.V8.Native.win-x64" />
+    <PackageReference Include="Newtonsoft.Json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="ManagedTaskIntegration.cs" />
+    <Compile Include="EquipmentTuningIntegration.cs" />
+    <Compile Include="FakeHostSurfaces.cs" />
+    <Compile Include="../../src/Tooltips/*.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Tasks/TooltipDocumentSanitizer.cs" Link="Production/TooltipDocumentSanitizer.cs" />
+    <Compile Include="../../src/Tasks/NativeInteractionTask.cs" Link="Production/NativeInteractionTask.cs" />
+    <Compile Include="../../src/Bus/MessageRouter.cs" Link="Production/MessageRouter.cs" />
+    <Compile Include="../../src/Tasks/InventoryTask.cs" Link="Production/InventoryTask.cs" />
+    <Compile Include="../../src/Tasks/EquipmentTuningTask.cs" Link="Production/EquipmentTuningTask.cs" />
+    <Compile Include="../../src/Guardian/CharacterBuildProtocol.cs" Link="Production/CharacterBuildProtocol.cs" />
+    <Compile Include="../../src/Tasks/ItemUseTask.cs" Link="Production/ItemUseTask.cs" />
+    <Compile Include="../../src/Tasks/ItemUseTask.RewardStash.cs" Link="Production/ItemUseTask.RewardStash.cs" />
+    <Compile Include="../../src/Tasks/ItemUseTask.RewardChoice.cs" Link="Production/ItemUseTask.RewardChoice.cs" />
+    <Compile Include="../../src/Tasks/PanelPendingCallTracker.cs" Link="Production/PanelPendingCallTracker.cs" />
+    <Compile Include="../../src/Tasks/PanelBridge.cs" Link="Production/PanelBridge.cs" />
+    <Compile Include="../../src/Tasks/MaterialShopSettlementWitness.cs" Link="Production/MaterialShopSettlementWitness.cs" />
+    <Compile Include="../../src/Guardian/AuthorityLogFormatter.cs" Link="Production/AuthorityLogFormatter.cs" />
+    <Compile Include="../../src/Guardian/LootPanelCoordinator.Identity.cs" Link="Production/LootPanelCoordinator.Identity.cs" />
+  </ItemGroup>
+</Project>

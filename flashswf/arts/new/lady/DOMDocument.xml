@@ -733,7 +733,7 @@
           <Include href="游戏/Lady2.0/血迹/shape/Symbol 824.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000b8e" lastModified="1702343951"/>
           <Include href="游戏/Lady2.0/血迹/sprite/Symbol 749.xml" loadImmediate="false" itemID="6577b699-00000b46" lastModified="1702343951"/>
           <Include href="游戏/Lady2.0/血迹/外面血.xml" itemIcon="1" loadImmediate="false" itemID="69720a80-00000280" lastModified="1769081472"/>
-          <Include href="游戏/Lady2.0/总技能.xml" loadImmediate="false" itemID="69d8c150-00000509" lastModified="1785921743"/>
+          <Include href="游戏/Lady2.0/总技能.xml" loadImmediate="false" itemID="69d8c150-00000509" lastModified="1794800474"/>
           <Include href="游戏/刀狙少女/其他/近战子弹.xml" loadImmediate="false" itemID="666aedb2-00001efc" lastModified="1718283773"/>
           <Include href="游戏/刀狙少女/未命名文件夹 1/定位子弹/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="65a55354-00001a7f" lastModified="1705337906"/>
           <Include href="游戏/刀狙少女/未命名文件夹 1/定位子弹/Symbol 14.xml" loadImmediate="false" itemID="65a55354-00001a7e" lastModified="1701884437"/>
@@ -749,7 +749,7 @@
           <Include href="游戏/刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
           <Include href="游戏/刀狙少女/未命名文件夹 1/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="662fbc4c-0000294f" lastModified="1714404428"/>
           <Include href="游戏/刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
-          <Include href="游戏/敌人-Lady.xml" itemID="69da1802-00000372" lastModified="1785851647"/>
+          <Include href="游戏/敌人-Lady.xml" itemID="69da1802-00000372" lastModified="1794799695"/>
           <Include href="游戏/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="662b383e-00000cb2" lastModified="1701582054"/>
           <Include href="游戏/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23 副本.xml" loadImmediate="false" itemID="69d5d1b7-00001ba7" lastModified="1701582054"/>
           <Include href="游戏/思考标签（与旧思考块）/思考标签.xml" loadImmediate="false" itemID="67e50bd8-00000c0a" lastModified="1743064061"/>
@@ -761,7 +761,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="游戏/敌人-Lady" centerPoint3DX="718.9" centerPoint3DY="177.95">
+                                        <DOMSymbolInstance libraryItemName="游戏/敌人-Lady" selected="true" centerPoint3DX="718.9" centerPoint3DY="177.95">
                                              <matrix>
                                                   <Matrix tx="262" ty="267.15"/>
                                              </matrix>
@@ -1040,6 +1040,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4854838" publishTime="1794800152"/>
+          <PublishItem publishSize="4854441" publishTime="1794799489"/>
+          <PublishItem publishSize="4854443" publishTime="1794799204"/>
+          <PublishItem publishSize="4854440" publishTime="1794798893"/>
+          <PublishItem publishSize="4854441" publishTime="1794798817"/>
+          <PublishItem publishSize="4854440" publishTime="1794798805"/>
+          <PublishItem publishSize="4854435" publishTime="1794798423"/>
           <PublishItem publishSize="4852779" publishTime="1785921734"/>
           <PublishItem publishSize="4852407" publishTime="1785920974"/>
           <PublishItem publishSize="4852402" publishTime="1785920827"/>
@@ -1053,12 +1060,5 @@
           <PublishItem publishSize="4417549" publishTime="1785841448"/>
           <PublishItem publishSize="4417505" publishTime="1785841065"/>
           <PublishItem publishSize="4417502" publishTime="1785840755"/>
-          <PublishItem publishSize="4417517" publishTime="1785840627"/>
-          <PublishItem publishSize="4417517" publishTime="1785840600"/>
-          <PublishItem publishSize="4417215" publishTime="1785840476"/>
-          <PublishItem publishSize="4417210" publishTime="1785840254"/>
-          <PublishItem publishSize="4417193" publishTime="1785840219"/>
-          <PublishItem publishSize="4412541" publishTime="1781197234"/>
-          <PublishItem publishSize="4412016" publishTime="1781196052"/>
      </publishHistory>
 </DOMDocument>

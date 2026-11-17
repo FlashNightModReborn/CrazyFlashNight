@@ -1,0 +1,7 @@
+﻿_root.tankProbeCapture = false;
+_root.cf2TankProbeComplete = function():Void {
+    trace("FocusedTestRunId cf2-tank-visual Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf2-tank-visual Start: __FOCUSED_RUN_ID__");
+trace("[CF2_PROBE_API] "+typeof org.flashNight.arki.unit.Action.Melee.Cf2TankBossVisualProbe.runAllTests);
+org.flashNight.arki.unit.Action.Melee.Cf2TankBossVisualProbe.runAllTests();

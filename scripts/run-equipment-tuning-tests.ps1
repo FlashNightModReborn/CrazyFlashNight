@@ -28,7 +28,7 @@ $committedSideEffectsCount = [regex]::Matches(
 ).Count
 $loadoutAllowlist = [regex]::Match(
     $tuningSource,
-    'private static var _loadoutAllowedOperations:Object = \{[\s\S]*?\};'
+    'private static var _allowedOperations:Object = \{[\s\S]*?\};'
 ).Value
 if (($loadoutAllowlist -notmatch 'convert:true') -or
         ($loadoutAllowlist -notmatch 'enhance:true') -or
@@ -81,12 +81,12 @@ $focusedRun = @{
         'org.flashNight.arki.item.InventoryPanelServiceTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^EquipmentTuningServiceTest Tests Passed: 123\r?$'
+        '(?m)^EquipmentTuningServiceTest Tests Passed: 128\r?$'
         '(?m)^EquipmentTuningServiceTest Tests Failed: 0\r?$'
         '(?m)^InventoryPanelServiceTest Tests Passed: 194\r?$'
         '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'Equipment 123/123, Inventory 194/194'
+    SuccessSummary = 'Equipment 128/128, Inventory 194/194'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

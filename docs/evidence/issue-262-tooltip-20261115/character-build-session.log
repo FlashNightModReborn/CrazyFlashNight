@@ -1,0 +1,45 @@
+$ node tools/test-character-build-session.js
+ok - eight-slot drug layout validator enforces exact banks, rows and paired cooldowns
+ok - B2B command whitelist contains six bounded reads and four frozen mutations
+ok - pose selector gives a selected weapon slot preview precedence
+ok - pose selector distinguishes single and dual pistols after candidate overlay
+ok - unselected pose priority is stable and ignores grenade combat state
+ok - production request route uses the exact seven-key top-level envelope
+ok - lost initial response retries with a new callId and no guessed generation
+ok - local send=false is definitive pre-open failure and releases the mux session
+ok - definitive backend open rejection closes the logical session
+ok - subsequent snapshot and candidates carry exact generation and revisions in payload
+ok - neutral backpack overview carries no slot selector and requires exact backpack target echo
+ok - candidate cache is revision fenced and reprojects one authoritative equipment backpack
+ok - equipped and drug tooltip reads carry exact target and revision fences
+ok - tooltip response exact shape and revision echo fail closed without advancing watermarks
+ok - loadout tooltip accepts the Host optional document for equipment and drugs
+ok - starting a write cancels an in-flight equipped tooltip read
+ok - A to B to A tooltip supersession releases each canceled binding for retry
+ok - candidate scope is closed, inherited by refresh callers, and response echo is exact
+ok - equipment eligibility shape fails closed in both compatible and backpack admission
+ok - candidate authority reset is centralized on candidates and snapshot admission only
+ok - latest candidate request fences a late response from the previous scope
+ok - candidate read behind a newer snapshot is stale-recovered instead of reported malformed
+ok - finalize cancels a pending candidate read before changing session state
+ok - snapshot adoption rejects blank and wrapped-case undefined loadout item identities
+ok - candidate adoption rejects blank and wrapped-case undefined item identities
+ok - snapshot, candidate and mutation adoption reject malformed nested mod triples
+ok - unknown flush uses a watermarked fresh snapshot before stats
+ok - close after unknown flush reconciles by snapshot then finalizes without replaying flush
+ok - close joins an in-flight flush reconciliation and supersedes the pending stats read
+ok - leave joins an in-flight flush reconciliation without issuing stats or another write
+ok - unknown finalize only closes after same-generation watermarked retry proof
+ok - legacy persistenceSucceeded cannot substitute the nested persistence proof
+ok - fresh ordinary snapshot recovers a deterministic flush failure after view suspension
+ok - four mutations emit only the frozen revision and lease-bound payload shapes
+ok - mutation is single-flight and deterministic success adopts both write-after snapshots
+ok - deterministic mutation failure restores idle and keeps the old authority
+ok - timeout mutation reconciles only by exact post-watermark loadout plus backpack and never replays
+ok - malformed mutation success is unknown even without a Host reconcile marker
+ok - mutation adoption rejects malformed item identities in the backpack proof
+ok - Host requiresReconcile marker preserves the exact mutation watermark
+ok - explicit retry after definitive full-projection failure carries recovery authority only for that request
+ok - uncertain full-projection outcome never receives automatic restart authority
+ok - item-use compensation rebases the character revision before finalize without replay
+Character-build session 43/43 passed

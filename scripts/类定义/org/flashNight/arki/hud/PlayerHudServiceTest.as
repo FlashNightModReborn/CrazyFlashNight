@@ -54,8 +54,11 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
             普通hp药剂:{name:"普通hp药剂", displayname:"普通hp药剂", type:"消耗品", use:"药剂", price:300, icon:"普通hp药剂", data:{hp:180}}
         };
         var projection:Object = org.flashNight.arki.item.InventoryPanelService.buildTooltipProjection({name:"普通hp药剂", value:41006});
-        check(projection != null && projection.success === true && String(projection.introHTML).indexOf("41006") >= 0,
-            "stackable consumable tooltip includes its full quantity in the default item intro");
+        check(projection != null && projection.success === true
+                && projection.tooltipInput.version === 1 && projection.tooltipInput.kind === "item"
+                && projection.tooltipInput.itemName === "普通hp药剂"
+                && projection.tooltipInput.value.count === 41006,
+            "stackable consumable input preserves the full quantity for Host intro composition");
         ItemUtil.itemDataDict = oldData;
     }
     private static function testTypedAmmoProjection():Void {

@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CF7Launcher.AgentHarness;
 using CF7Launcher.AgentRuntime.Contracts;
 using CF7Launcher.AgentRuntime.Integration;
 using CF7Launcher.AgentRuntime.Security;
@@ -24,6 +25,7 @@ using CF7Launcher.Data;
 using CF7Launcher.RagTerminal;
 using CF7Launcher.Tasks;
 using CF7Launcher.V8;
+using CF7Launcher.Tooltips;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json.Linq;
 
@@ -544,7 +546,8 @@ class Program
 
         // candidate runtime-only 是显式的人类验收能力，不能让目录 walk-up 隐式触发。
         string explicitProjectRoot = TryGetProjectRootFromArgs(args);
-        if (Array.IndexOf(args, "--arena-worker") >= 0) StartupFailureReporter.SuppressInteractiveDialogs = true;
+        if (Array.IndexOf(args, "--arena-worker") >= 0 || Array.IndexOf(args, "--agent-harness") >= 0)
+            StartupFailureReporter.SuppressInteractiveDialogs = true;
         string earlyProjectRoot = explicitProjectRoot
                                   ?? TryWalkUpForProjectRoot(Environment.ProcessPath)
                                   ?? Path.GetDirectoryName(Environment.ProcessPath);
@@ -599,9 +602,20 @@ class Program
                 "audio_v2_qualification_invocation_rejected");
             return 2;
         }
+        AgentHarnessPolicy harnessPolicy;
+        try
+        {
+            harnessPolicy = AgentHarnessPolicy.Parse(args, explicitProjectRoot, earlyProjectRoot, isolatedRuntimeCandidate);
+        }
+        catch (Exception ex)
+        {
+            StartupDiagnostics.Exception("agent_harness_invocation_rejected", ex);
+            return 2;
+        }
         using (workerPolicy)
+        using (harnessPolicy)
             return MainAfterStartupDiagnostics(
-                args, earlyProjectRoot, isolatedRuntimeCandidate, audioQualificationRunId, workerPolicy);
+                args, earlyProjectRoot, isolatedRuntimeCandidate, audioQualificationRunId, workerPolicy, harnessPolicy);
     }
 
     // Headless scripts normally probe through the native bootstrap first, but the invariant
@@ -801,7 +815,8 @@ class Program
         string earlyProjectRoot,
         bool isolatedRuntimeCandidate,
         string audioQualificationRunId,
-        ArenaWorkerPolicy workerPolicy)
+        ArenaWorkerPolicy workerPolicy,
+        AgentHarnessPolicy harnessPolicy)
     {
         long processStart = Stopwatch.GetTimestamp();
         PerfTrace.SetProcessStart(processStart);
@@ -809,7 +824,7 @@ class Program
 
         // 单例检查
         bool createdNew;
-        Mutex mutex = new Mutex(true, workerPolicy?.MutexName ?? "Global\\CF7ME_Guardian", out createdNew);
+        Mutex mutex = new Mutex(true, workerPolicy?.MutexName ?? harnessPolicy?.MutexName ?? "Global\\CF7ME_Guardian", out createdNew);
         if (!createdNew)
         {
             StartupDiagnostics.Exit("singleton_already_running");
@@ -838,7 +853,7 @@ class Program
         try
         {
             workerPolicy?.Claim();
-            return Run(args, isolatedRuntimeCandidate, audioQualificationRunId, workerPolicy);
+            return Run(args, isolatedRuntimeCandidate, audioQualificationRunId, workerPolicy, harnessPolicy);
         }
         catch (Exception ex)
         {
@@ -1030,7 +1045,8 @@ class Program
         string[] args,
         bool isolatedRuntimeCandidate,
         string audioQualificationRunId,
-        ArenaWorkerPolicy workerPolicy)
+        ArenaWorkerPolicy workerPolicy,
+        AgentHarnessPolicy harnessPolicy)
     {
         // 定位项目根目录:
         // 1. 优先 bootstrap 传 --project-root <abs>（FDD 产物在 projectRoot/runtime/ 子目录,
@@ -1151,7 +1167,7 @@ class Program
             config.WebView2AdditionalArgs,
             config.WebView2DeveloperMode,
             isolatedRuntimeCandidate,
-            arenaWorkerMode: workerPolicy != null,
+            arenaWorkerMode: workerPolicy != null || harnessPolicy != null,
             arenaWorkerMinimalRendering: workerPolicy?.Performance.MaxRenderHeight == 180);
         _guardianForm = form;
         PerfTrace.Duration("guardian.form_construct", formStart);
@@ -1180,16 +1196,18 @@ class Program
             projectRoot);
 
         // 开发用 Ctrl+G GPU 探针：仅 config.devGpuProbeHotkey=true 时启用。玩家版默认不注入。
-        if (workerPolicy == null && config.DevGpuProbeHotkey)
+        if (workerPolicy == null && harnessPolicy == null && config.DevGpuProbeHotkey)
             form.EnableDevGpuProbeHotkey();
 
         // UserGpuPreferences 在子进程创建时被 Windows 读取。WebView2 真正 spawn 发生在 Application.Run
         // 触发 BootstrapPanel.Load 之后，所以这里写入仍然赶得上；放在日志通道就绪之后可以把诊断完整写进 launcher.log。
-        if (workerPolicy == null) GpuPreferenceManager.ApplyIfNeeded(projectRoot, config.GpuPreference);
+        if (workerPolicy == null && harnessPolicy == null) GpuPreferenceManager.ApplyIfNeeded(projectRoot, config.GpuPreference);
         // Phase 2b: 用户级偏好 (lastPlayedSlot / introEnabled), 落盘到 launcher_user_prefs.json
-        CF7Launcher.Config.UserPrefs userPrefs = workerPolicy == null
-            ? new CF7Launcher.Config.UserPrefs(projectRoot)
-            : new CF7Launcher.Config.UserPrefs(projectRoot, Path.Combine(workerPolicy.StateRoot, "preferences"));
+        CF7Launcher.Config.UserPrefs userPrefs = workerPolicy != null
+            ? new CF7Launcher.Config.UserPrefs(projectRoot, Path.Combine(workerPolicy.StateRoot, "preferences"))
+            : (harnessPolicy != null
+                ? new CF7Launcher.Config.UserPrefs(projectRoot, Path.Combine(harnessPolicy.StateRoot, "preferences"))
+                : new CF7Launcher.Config.UserPrefs(projectRoot));
         CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudMotionSettings.Configure(userPrefs.HudMotionMode);
         if (workerPolicy != null)
         {
@@ -1201,7 +1219,7 @@ class Program
         HighDpiCompatibilityResult dpiCompat = DetectDpiCompatibility(projectRoot, exePath);
         DpiDiagnostics.LogProcessStartup(DpiAwarenessBootstrap.Result, dpiCompat);
         DpiDiagnostics.LogWindow("GuardianForm", form.Handle);
-        if (workerPolicy == null) HighDpiCompatibilityDetector.ScheduleRiskWarning(form, dpiCompat, userPrefs);
+        if (workerPolicy == null && harnessPolicy == null) HighDpiCompatibilityDetector.ScheduleRiskWarning(form, dpiCompat, userPrefs);
         if (busOnly)
             LogManager.Log("[Guardian] --bus-only mode: skipping Flash Player startup");
 
@@ -1352,6 +1370,15 @@ class Program
         // BeginInitialize 只代表 owner work 已入队；真实 ready 必须等待同一
         // capability digest 的 catalog qualification 完成，不能在这里冒充完成。
         PerfTrace.Mark("audio.init_dispatched");
+
+        AgentHarnessEventHub harnessEvents = null;
+        AgentHarnessController harnessController = null;
+        AgentHarnessPipeServer harnessPipe = null;
+        if (harnessPolicy != null)
+        {
+            harnessEvents = new AgentHarnessEventHub();
+            harnessEvents.AttachLogTap();
+        }
 
         // === V8 总线（两种模式都启动）===
 
@@ -1546,13 +1573,19 @@ class Program
                 socketServer,
                 musicCatalog);
 
-        // V8 只承载 GameInput；打击伤害数字由 C# reducer + overlay 独立承载
+        // Realtime V8 只承载 GameInput；Tooltip 使用独立常驻 worker/engine，不竞争逐帧锁。
         string scriptsDir = Path.Combine(projectRoot, "launcher", "scripts");
         V8Runtime v8Runtime;
         using (PerfTrace.Scope("v8.construct"))
         {
             v8Runtime = new V8Runtime(scriptsDir);
         }
+        var tooltipService = new TooltipService(() => new TooltipV8Engine(projectRoot), LogManager.Log);
+        var tooltipResponses = new TooltipResponseEnricher(tooltipService, () => socketServer.CurrentGeneration, LogManager.Log);
+        router.TooltipResponses = tooltipResponses;
+        _ = tooltipService.Ready.ContinueWith(t => { _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted);
+        socketServer.OnClientDisconnected += delegate { tooltipResponses.Reset(); tooltipService.ResetRequests(); };
+        form.FormClosed += delegate { tooltipResponses.Dispose(); tooltipService.Dispose(); };
         HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
         FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
         int workerProjectionCatalogsReady = 0;
@@ -1685,7 +1718,7 @@ class Program
         Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
         // WindowManager 早声明：WebOverlay 构造时需要它的 RestoreFlashInputFocus primitive；
         // 实际 form.BindWindowManager / perfEngine.SetActivationState / OnKillFlash 还在后面统一装配。
-        WindowManager windowManager = new WindowManager(allowForeground: workerPolicy == null);
+        WindowManager windowManager = new WindowManager(allowForeground: workerPolicy == null && harnessPolicy == null);
         Func<bool> compositionHelpOwnsInput = () => false;
         Func<bool> gameOwnsInput = () => true;
         SettingsTask settingsInputAuthority = null;
@@ -1707,7 +1740,7 @@ class Program
                 config.WebView2DisableGpu,
                 config.WebView2AdditionalArgs,
                 config.WebView2DeveloperMode,
-                workerPolicy == null && config.WebOverlayPanelTakeForeground,
+                workerPolicy == null && harnessPolicy == null && config.WebOverlayPanelTakeForeground,
                 workerPolicy == null && config.WebOverlayHotReload,
                 flashFocusRestorer, mapRuntimeContent.Definition,
                 windowManager.HandoffFlashFocusBeforePanelHide);
@@ -1716,7 +1749,7 @@ class Program
         webOverlay.IdleFlashFocusRestorer = eligible => windowManager.RestoreFlashInputFocus(
             "app_reactivated_idle", () => gameOwnsInput() && eligible());
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
-        if (workerPolicy == null && config.NativeCursorOverlayEnabled)
+        if (workerPolicy == null && harnessPolicy == null && config.NativeCursorOverlayEnabled)
         {
             string cursorAssetDir = Path.Combine(webDir, "assets", "cursor", "native");
             if (config.UseDesktopCursorOverlay)
@@ -1815,7 +1848,7 @@ class Program
         // === AI 聊天终端（CFN-RAG exe）装配 ===
         // Host 侧承担 exe 发现/静默拉起/健康轮询与存档绑定；socket 断连时 best-effort 解绑。
         CF7Launcher.RagTerminal.RagTerminalService ragTerminalService = null;
-        if (workerPolicy == null)
+        if (workerPolicy == null && harnessPolicy == null)
         {
             ragTerminalService = new CF7Launcher.RagTerminal.RagTerminalService(projectRoot, config.RagTerminalExePath);
             ragTerminalService.AutoStartPreferenceProvider = () => userPrefs.RagTerminalAutoStart;
@@ -1953,11 +1986,15 @@ class Program
             form.GameInputOwnerEligible = () => gameOwnsInput();
             form.BindPanelEscapeCapture(panelHost.CaptureNativeEscapeAction);
             // Accepted help endpoint is now the normal path in both formal and dev runtimes.
+            SceneTransitionPresentationPolicy harnessCompositionPolicy = harnessPolicy != null
+                ? SceneTransitionPresentationPolicy.AgentHarness
+                : null;
             panelHost.ConfigureCompositionHelp(webDir,
                 Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile"),
                 form.HandlePanelStateChanged,
                 reason => gameOwnsInput() && windowManager.RestoreFlashInputFocus(reason, () => gameOwnsInput()),
-                deferPrewarm: form.BootstrapPanel != null);
+                deferPrewarm: form.BootstrapPanel != null,
+                presentationPolicy: harnessCompositionPolicy);
             if (form.BootstrapPanel != null)
                 form.BootstrapPanel.InitialNavigationCompleted += () =>
                 {
@@ -1973,7 +2010,8 @@ class Program
                 json => webOverlay.HandleCompositionIntelligenceMessage(json),
                 post => webOverlay.AcquireIntelligenceResponseChannel(post),
                 () => webOverlay.RestoreIntelligenceResponseChannel(),
-                deferPrewarm: form.BootstrapPanel != null);
+                deferPrewarm: form.BootstrapPanel != null,
+                presentationPolicy: harnessCompositionPolicy);
             if (form.BootstrapPanel != null)
                 form.BootstrapPanel.InitialNavigationCompleted += () =>
                 {
@@ -2193,13 +2231,24 @@ class Program
             form, form.FlashHostPanel, projectRoot, dispatchToUi,
             wire => socketServer.IsClientReady && socketServer.TrySend(wire),
             () => !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState == "Ready",
-            worldCompositor.IsTransitionScenePresented,
+            scene => worldCompositor.IsTransitionScenePresented(scene)
+                || (harnessController != null && harnessController.ShouldSatisfySceneFenceHeadless((int)scene)),
             foreground => panelHost!=null && panelHost.HandoffTransitionToGame(windowManager,foreground),
             worldOverlays, held => { panelHost?.SetTransitionInputHeld(held); worldCompositor.HoldTransitionInput(held); },
-            presentationPolicy:workerPolicy==null ? SceneTransitionPresentationPolicy.Interactive
-                : SceneTransitionPresentationPolicy.ArenaWorker);
+            presentationPolicy:workerPolicy!=null
+                ? SceneTransitionPresentationPolicy.ArenaWorker
+                : (harnessPolicy!=null ? SceneTransitionPresentationPolicy.AgentHarness : SceneTransitionPresentationPolicy.Interactive));
         // The returned character may render below the still-visible bookshelf.
-        sceneTransition.ConfigurePresentationFence(worldCompositor.RequireFreshTransitionFrame);
+        sceneTransition.ConfigurePresentationFence(scene =>
+        {
+            worldCompositor.RequireFreshTransitionFrame(scene);
+            harnessController?.NotifyTransitionFrameRequired((int)scene);
+        });
+        if (harnessPolicy != null)
+        {
+            sceneTransition.ConfigureHeadlessTransitionFallback(scene =>
+                harnessController != null && harnessController.ShouldSatisfySceneFenceHeadless((int)scene));
+        }
         // Repair its order in the same UI callback that shows the world HWND.
         worldCompositor.PresentationShown += sceneTransition.RestoreRetainedBookshelfOrder;
         socketServer.OnClientDisconnected += sceneTransition.Task.HandleTransportDisconnected;
@@ -2425,13 +2474,15 @@ class Program
         BookshelfTask bookshelfTask = new BookshelfTask(socketServer);
         bookshelfTask.SetPermanentSlotApplied(delegate(string slotKey)
         {
-            if (userPrefs == null || userPrefs.LastPlayedSlot == slotKey) return;
+            if (userPrefs == null || harnessPolicy != null || userPrefs.LastPlayedSlot == slotKey) return;
             userPrefs.LastPlayedSlot = slotKey;
             userPrefs.Save();
         });
         GymTrainingTask gymTrainingTask = new GymTrainingTask(socketServer);
         gymTrainingTask.SetActivityProbe(delegate
         {
+            if (harnessPolicy != null)
+                return !form.IsShutdownAdmissionClosed && form.Visible;
             return form.ActivationState.IsAppActive
                 && !form.ActivationState.IsMinimized
                 && form.Visible;
@@ -2796,10 +2847,10 @@ class Program
         CF7Launcher.Save.LauncherVersionGate.GateResult versionGate = null;
         try
         {
-            versionGate = workerPolicy == null
+            versionGate = (workerPolicy == null && harnessPolicy == null)
                 ? CF7Launcher.Save.LauncherVersionGate.Check(archiveTask.SavesDir)
-                : new CF7Launcher.Save.LauncherVersionGate.GateResult { Reason = "arena_worker_no_marker_write" };
-            if (workerPolicy == null) CF7Launcher.Save.LauncherVersionGate.WriteMarker(archiveTask.SavesDir);
+                : new CF7Launcher.Save.LauncherVersionGate.GateResult { Reason = workerPolicy != null ? "arena_worker_no_marker_write" : "agent_harness_no_marker_write" };
+            if (workerPolicy == null && harnessPolicy == null) CF7Launcher.Save.LauncherVersionGate.WriteMarker(archiveTask.SavesDir);
             if (versionGate.ShouldShowToast)
             {
                 LogManager.Log("[VersionGate] WARN reason=" + versionGate.Reason
@@ -2844,11 +2895,28 @@ class Program
         }
         // native_interaction：NPC 菜单 + 文档 tooltip 共享同一任务与 AS2 身份序列（ni:<n>）。
         // 菜单/tooltip 均不经 WebPanel 暂停路径；输入观察复用 WebOverlayForm 的 WH_MOUSE_LL。
+        tooltipResponses.RegisterOwnerResolver("inventory_response", inventoryTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("shop_response", shopTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("npcshop_response", npcShopTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("crafting_response", craftingTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("equipment_tuning_response", equipmentTuningTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("loadout_response", characterBuildTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("pet_response", petTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("merc_response", mercTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("arena_response", arenaTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("task_response", taskTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("intelligence_response", intelligenceTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("blackmarket_response", blackMarketTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("modifier_response", modifierTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("loot_response", lootTask.ResolveTooltipOwner);
+        tooltipResponses.RegisterOwnerResolver("item_use_response", itemUseTask.ResolveTooltipOwner);
         NativeInteractionTask nativeInteractionTask = new NativeInteractionTask(
             socketServer,
             npcMenuWidget,
             new CF7Launcher.Guardian.Hud.NativeTooltipSurfaceAdapter(nativeTooltipWidget),
-            delegate(Action a) { try { form.BeginInvoke(a); } catch { } });
+            delegate(Action a) { if (!form.IsDisposed && !form.Disposing) form.BeginInvoke(a); },
+            null, tooltipService, () => nativeHud != null && nativeHud.CanPresentTooltip);
+        if (nativeHud != null) nativeHud.PresentationSuppressed += nativeInteractionTask.OnHostSuppressed;
         webOverlay.SetInteractionInputProbes(
             nativeInteractionTask.NotifyPhysicalButtonDown,
             delegate(int sx, int sy, int wheelDelta)
@@ -3207,6 +3275,8 @@ class Program
                     "[AgentRuntime] StopAdmission failed: "
                     + ex.Message);
             }
+            try { harnessPipe?.Dispose(); } catch { }
+            try { harnessPolicy?.Dispose(); } catch { }
             try { exactXmlSocketDetachIngress(); }
             catch (Exception ex)
             {
@@ -3389,8 +3459,12 @@ class Program
             try { if (backdrop != null) backdrop.Dispose(); } catch { }
             try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
             try { hnOverlay.Dispose(); } catch { }
+            try { tooltipResponses.Dispose(); tooltipService.Dispose(); } catch { }
             try { v8Runtime.Dispose(); } catch { }
-            try { if (workerPolicy == null || File.ReadAllText(portsFile) == portsJson) File.Delete(portsFile); } catch { }
+            try { harnessPipe?.Dispose(); } catch { }
+            try { harnessController?.Dispose(); } catch { }
+            try { harnessEvents?.Dispose(); } catch { }
+            try { if ((workerPolicy == null && harnessPolicy == null) || File.ReadAllText(portsFile) == portsJson) File.Delete(portsFile); } catch { }
             LogManager.Shutdown();
             StartupDiagnostics.Mark("bus_only.shutdown_complete");
 
@@ -3402,7 +3476,7 @@ class Program
         // 快捷键拦截（独立进程）
         string guardExe = Environment.ProcessPath;
         Process guardProc = null;
-        if (workerPolicy == null && File.Exists(guardExe))
+        if (workerPolicy == null && harnessPolicy == null && File.Exists(guardExe))
         {
             try
             {
@@ -3581,7 +3655,7 @@ class Program
                 .FLASH_REVEAL_WATCHDOG_DEFAULT_MS,
             /* persistLastPlayedSlot */ delegate(string slotKey)
             {
-                if (userPrefs == null || workerPolicy != null) return;
+                if (userPrefs == null || workerPolicy != null || harnessPolicy != null) return;
                 userPrefs.RecordPlayed(slotKey);
                 userPrefs.Save();
             },
@@ -3598,7 +3672,7 @@ class Program
         bookshelfContextTimer.Start();
         form.FormClosed += (_, _) => bookshelfContextTimer.Dispose();
         form.InitializeLaunchFlow(launchFlow);
-        agentControlTask.SetLaunchFlow(launchFlow, useBootstrapLoad: workerPolicy != null);
+        agentControlTask.SetLaunchFlow(launchFlow, useBootstrapLoad: workerPolicy != null || harnessPolicy != null);
         if (workerPolicy != null)
         {
             var windowObserver = new ArenaWorkerWindowObserver(form.Handle,
@@ -3765,7 +3839,7 @@ class Program
             };
             form.BootstrapPanel.OnJsMessage += delegate(string json)
             {
-                if (workerPolicy == null) routeBootstrap(json);
+                if (workerPolicy == null && harnessPolicy == null) routeBootstrap(json);
                 else ArenaWorkerPolicy.RouteBootstrapMessage(json, routeBootstrap);
             };
             // FontPackTask 进度推送 → bootstrap fontpack_progress 消息
@@ -3777,7 +3851,7 @@ class Program
         // lifetime only. Surface discovery is deliberately absent: UI-owned
         // callbacks refresh this exact HWND/process cache and the timer only
         // reads the frozen cache.
-        if (!legacyHttpAutomation && workerPolicy == null)
+        if (!legacyHttpAutomation && workerPolicy == null && harnessPolicy == null)
         {
         int agentRuntimeIngressDetached = 0;
         AgentRuntimeSurfaceCache agentSurfaceCache = null;
@@ -4249,6 +4323,87 @@ class Program
                 "controlPlane=legacy_http_automation");
         }
 
+        if (harnessPolicy != null)
+        {
+            var webBridge = new AgentHarnessWebBridge(
+                form, webOverlay, panelHost, sceneTransition, launchFlow, harnessPolicy);
+            var panelOpener = new AgentHarnessPanelOpener(
+                form, commandRouter, panelHost, modifierOverlay, equipmentTuningTask, characterBuildTask,
+                harnessEvents, (cmdPayload, ms) => harnessController.SendAs2CommandAsync(cmdPayload, ms),
+                webBridge.WaitForInteractiveSurfaceAsync);
+            harnessController = new AgentHarnessController(
+                harnessPolicy, form, launchFlow, agentControlTask, socketServer, harnessEvents,
+                webBridge, panelOpener, panelHost, modifierOverlay, frameTask, () => processManager.FlashProcess);
+
+            bookshelfTask.SetAutomationSlotAdmission(AgentHarnessPolicy.IsValidAgentSlot);
+            commandRouter.EnableRegressionAutomation();
+            panelHost.EnableHeadlessHarnessGeometryFallback();
+            form.BeginInvoke(new Action(form.EnsureNonActivatingBackgroundVisible));
+            TaskRegistry.RegisterAgentHarness(
+                router,
+                resp => harnessEvents.CompleteAs2Response(resp),
+                ev => harnessEvents.ObserveAs2Event(ev));
+
+            launchFlow.OnStateChanged += (st, smsg, silentAtEmit) =>
+            {
+                harnessEvents.RecordEvent(
+                    "launch_state",
+                    st + (string.IsNullOrEmpty(smsg) ? "" : ": " + smsg),
+                    new JObject { ["state"] = st ?? "", ["msg"] = smsg ?? "", ["silent"] = silentAtEmit });
+            };
+            panelHost.PanelChanged += (pName, pInst) =>
+            {
+                harnessEvents.RecordEvent(
+                    "panel_changed",
+                    (pName ?? "") + " " + (pInst ?? ""),
+                    new JObject { ["panel"] = pName ?? "", ["panelInstanceId"] = pInst ?? "" });
+            };
+            panelHost.PanelClosed += (pName, pInst) =>
+            {
+                harnessEvents.RecordEvent(
+                    "panel_closed",
+                    (pName ?? "") + " " + (pInst ?? ""),
+                    new JObject { ["panel"] = pName ?? "", ["panelInstanceId"] = pInst ?? "" });
+            };
+            panelHost.PanelOpenRejected += (pName, reason) =>
+            {
+                harnessEvents.RecordEvent(
+                    "panel_open_rejected",
+                    (pName ?? "") + ": " + (reason ?? ""),
+                    new JObject { ["panel"] = pName ?? "", ["reason"] = reason ?? "" });
+            };
+
+            harnessPipe = new AgentHarnessPipeServer(
+                harnessPolicy.PipeName,
+                harnessPolicy.SessionEpoch,
+                harnessController.HandleRpcAsync);
+            harnessPipe.Start();
+            harnessPolicy.PublishStateFile(httpPort, socketPort);
+            LogManager.Log("[AgentHarness] ready pipe=" + harnessPolicy.PipeName
+                + " stateFile=" + harnessPolicy.StateFilePath
+                + " autoSlot=" + (harnessPolicy.AutoStartSlot ?? ""));
+
+            if (!string.IsNullOrEmpty(harnessPolicy.AutoStartSlot))
+            {
+                string autoSlot = harnessPolicy.AutoStartSlot;
+                form.Shown += delegate
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await harnessController.EnterSlotInternalAsync(autoSlot, false, 45000, CancellationToken.None)
+                                .ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogManager.Log("[AgentHarness] AutoStartSlot failed: " + ex.Message);
+                        }
+                    });
+                };
+            }
+        }
+
         // Phase A Step A3: GuardianContext 单 Form 模型（原 boot.FormClosed → guard.ForceExit 桥已删除）
         CF7Launcher.Guardian.GuardianContext ctx = new CF7Launcher.Guardian.GuardianContext(form);
 
@@ -4370,8 +4525,12 @@ class Program
         try { if (backdrop != null) backdrop.Dispose(); } catch { }
         try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
         try { hnOverlay.Dispose(); } catch { }
+        try { tooltipResponses.Dispose(); tooltipService.Dispose(); } catch { }
         try { v8Runtime.Dispose(); } catch { }
-        try { if (workerPolicy == null || File.ReadAllText(portsFile) == portsJson) File.Delete(portsFile); } catch { }
+        try { harnessPipe?.Dispose(); } catch { }
+        try { harnessController?.Dispose(); } catch { }
+        try { harnessEvents?.Dispose(); } catch { }
+        try { if ((workerPolicy == null && harnessPolicy == null) || File.ReadAllText(portsFile) == portsJson) File.Delete(portsFile); } catch { }
         LogManager.Shutdown();
         StartupDiagnostics.Mark("guardian.shutdown_complete");
 
@@ -4394,7 +4553,7 @@ class Program
                 FlashTrustManager.RevokeTrust();
 
             // UserGpuPreferences 注册表条目一律在退出时清理，避免玩家卸载后残留。
-            try { if (workerPolicy == null) GpuPreferenceManager.Revert(projectRoot); } catch { }
+            try { if (workerPolicy == null && harnessPolicy == null) GpuPreferenceManager.Revert(projectRoot); } catch { }
             try { PerfTrace.Shutdown(); } catch { }
             StartupDiagnostics.Mark("core.run_finally_complete");
         }

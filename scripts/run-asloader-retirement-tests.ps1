@@ -4,9 +4,9 @@ $ErrorActionPreference = 'Stop'
 & (Join-Path $PSScriptRoot 'test-runners/run-focused-testloader.ps1') `
     -DomainId 'asloader-retirement' `
     -TemplateRelativePath 'scripts/test-runners/asloader-retirement/TestLoader.as.template' `
-    -SuiteRelativePaths @('scripts/类定义/org/flashNight/gesh/tooltip/test/TooltipTestSuite.as') `
-    -SuiteFqns @('org.flashNight.gesh.tooltip.test.TooltipTestSuite') `
-    -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/gesh/tooltip/TooltipComposer.as','scripts/类定义/org/flashNight/gesh/tooltip/SkillTooltipComposer.as','scripts/类定义/org/flashNight/gesh/tooltip/NativeTooltipDocument.as','scripts/类定义/org/flashNight/gesh/tooltip/NativeTooltipBridge.as') `
-    -ExpectedTracePatterns @('(?m)^ ALL PASSED: ([1-9][0-9]*)/\1 \(15 suites\)\r?$') `
-    -SuccessSummary '15 existing tooltip suites including native document/owner lifecycle and content builders; no save writes' `
+    -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/interaction/NativeTooltipBridgeTest.as','scripts/类定义/org/flashNight/arki/item/InventoryTooltipProjectionTest.as') `
+    -SuiteFqns @('org.flashNight.arki.interaction.NativeTooltipBridgeTest','org.flashNight.arki.item.InventoryTooltipProjectionTest') `
+    -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/gesh/tooltip/TooltipInputProjection.as','scripts/类定义/org/flashNight/gesh/tooltip/NativeTooltipBridge.as') `
+    -ExpectedTracePatterns @('(?m)^--- NativeTooltipBridgeTest: (?<bridge>[1-9][0-9]*)/\k<bridge> passed, 0 failed ---\r?$','(?m)^InventoryTooltipProjectionTest Tests Passed: [1-9]\d*\r?$','(?m)^InventoryTooltipProjectionTest Tests Failed: 0\r?$') `
+    -SuccessSummary 'native owner/anchor lifecycle and real instance input projection; content rules tested by Launcher TS' `
     -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile

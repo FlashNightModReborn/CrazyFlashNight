@@ -97,6 +97,21 @@ class org.flashNight.arki.item.BaseItem{
     /*
      * 根据物品对象获取并缓存物品数据。装备数值会在这个过程中自动计算。
      */
+    /** 仅供缺项恢复时辨认物品；不包含可用于计算或提交的装备属性。 */
+    public function getIdentityData():Object {
+        var raw:Object = ItemUtil.getRawItemData(this.name);
+        return {
+            name:this.name,
+            displayname:raw == null ? this.name : raw.displayname,
+            icon:raw == null ? this.name : raw.icon,
+            type:raw == null ? "" : raw.type,
+            use:raw == null ? "" : raw.use,
+            weapontype:raw == null ? "" : raw.weapontype,
+            mods:typeof this.value == "object"
+                ? PersistedSnapshot.cloneData(this.value.mods) : []
+        };
+    }
+
     public function getData():Object{
         // if(this.itemData) return this.itemData; // 如果有缓存的物品数据则直接返回
 

@@ -1,3 +1,4 @@
 ﻿trace("FocusedTestRunId asloader-retirement Start: __FOCUSED_RUN_ID__");
-org.flashNight.gesh.tooltip.test.TooltipTestSuite.runAllTests();
+org.flashNight.arki.interaction.NativeTooltipBridgeTest.runAllTests();
+org.flashNight.arki.item.InventoryTooltipProjectionTest.runAllTests();
 trace("FocusedTestRunId asloader-retirement Complete: __FOCUSED_RUN_ID__");

@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian
 {
@@ -21,9 +22,25 @@ namespace CF7Launcher.Guardian
             : _compositionHelpSelected ? _compositionHelp
             : _compositionIntelligenceSelected ? _compositionIntelligence : null;
 
+        internal Microsoft.Web.WebView2.Core.CoreWebView2 TryGetActiveHarnessWebCore(out string surfaceKind)
+        {
+            var s = SelectedCompositionSurface;
+            if (s != null && s.Active && s.InternalCoreWebView2 != null)
+            {
+                surfaceKind = _transitionSettlementSelected
+                    ? "settlement"
+                    : (_compositionHelpSelected ? "composition_help"
+                        : (_compositionIntelligenceSelected ? "composition_intelligence" : ("composition_" + (_activePanel ?? "unknown"))));
+                return s.InternalCoreWebView2;
+            }
+            surfaceKind = null;
+            return null;
+        }
+
         internal void ConfigureTransitionSettlement(SceneTransitionController controller)
         {
             _sceneSettlement=controller;
+            controller.PanelAdmissionAvailable+=OnTransitionPanelAdmissionAvailable;
             controller.SettlementSurface.AttachHostLifetime(_hostLifetime);
             controller.ConfigureExclusivePresentation(() => SceneTransitionController.IsExclusivePresentation(_activePanel, _activePanelInstanceId));
             bool ExactIntroEndpoint(string instance) => !_disposed && IsIntroComicEndpointPresented(
@@ -62,11 +79,30 @@ namespace CF7Launcher.Guardian
             };
         }
 
+        private void OnTransitionPanelAdmissionAvailable()
+        {
+            if(!_disposed && _sceneSettlement?.BlocksOrdinaryPanelOpen==false)
+                FlushDeferredBarrierOpen();
+        }
+
+        private bool SceneTransitionBlocksOpen(string panel,string initJson)
+        {
+            if(_sceneSettlement?.BlocksOrdinaryPanelOpen!=true) return false;
+            // These two endpoints participate in the transition itself. Their
+            // existing exact authority checks, rather than panel names, grant entry.
+            if(panel=="loot" && _sceneSettlement.CanAdmitSettlement(initJson)) return false;
+            if(panel=="book-comic") {
+                try { if(_sceneSettlement.CanAdmitIntroComic(JObject.Parse(initJson ?? ""))) return false; }
+                catch(Newtonsoft.Json.JsonException) { }
+            }
+            return true;
+        }
+
         private bool OpenTransitionSettlement(PanelGeometrySnapshot geometry,string initJson,
             string instance,bool tracked,Action posted)
         {
             var surface=_sceneSettlement.SettlementSurface;
-            if(!surface.PresentTransition(geometry.PanelRect)) return false;
+            if(!surface.PresentTransition(geometry.PanelRect, _sceneSettlement.AllowsHeadlessPresentation)) return false;
             _transitionSettlementSelected=true;
             try {
                 SuspendHudCompanion(); _hud.Suspend();

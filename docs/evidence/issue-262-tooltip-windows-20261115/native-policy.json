@@ -1,0 +1,470 @@
+{
+    "schema":  "cf7-runtime-policy-validation.v2",
+    "profile":  "production",
+    "passed":  true,
+    "releaseTreeOid":  "d9885818593494c609b73cf3409c9cab0f916836",
+    "policyHash":  "EDFDD7BBA3CB19F1F358CEF96FEA2F9592DC1A028A741774FD6EDD067DFB2AC3",
+    "artifactSourceHash":  "B2496D04CD9B56DB966D9A4574D65D6D0BB0EB382B5083013B5ECC23468948DD",
+    "producerRecipeHash":  "415D028FF6DE4F54A0A4E48695F91B3CD6BC1ED47A51B717C2BAA58669648D2B",
+    "toolchainLockHash":  "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "toolchainHash":  "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "buildIdentityHash":  "C4C2A451EA507F15D7B0B575FC53D2DE7AE5E6E2CD78676CD0526A427ADAC3E7",
+    "candidateRoot":  "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tmp\\runtime-candidates\\v2\\c-c4c2a451ea50-08846e81b3-20261115t132028003z-f6e1c3ae",
+    "candidatePayloadClosureHash":  "410C0915E5082306E516E1EB97074421FCFE78DA6F97E981ACE970874D3D4910",
+    "startedAtUtc":  "2026-11-16T00:03:07.8908699Z",
+    "completedAtUtc":  "2026-11-16T00:10:44.6931957Z",
+    "trackedStateBefore":  "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+    "trackedStateAfter":  "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+    "checks":  [
+                   {
+                       "name":  "release-tree-materialized",
+                       "kind":  "invariant",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  0,
+                       "command":  null,
+                       "detail":  "tracked worktree exactly materializes releaseTreeOid"
+                   },
+                   {
+                       "name":  "pet-roster-types",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  3256,
+                       "command":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\audit-pet-roster-types.ps1 -ProjectRoot C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "task-condition-regression",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  5524,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-derive-task-conditions.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "panel-cross-layer-contracts",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  311,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\validate-panel-contracts.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "guidance-catalog-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  80,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\generate-guidance-catalog.js --check",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "scene-transition-catalog-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  329,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\generate-scene-transition-catalog.js --check",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "scene-transition-stage-entry",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  90,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-scene-transition-stage-entry.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "guidance-tutorial-journeys",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  17961,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-guidance-tutorials.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "web-item-icon-closure",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  195,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\audit-web-item-icon-closure.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "web-icon-render-entrypoints",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  566,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\audit-web-icon-render-entrypoints.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "equipment-mod-ui",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  111,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\validate-equipment-mod-ui.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "required-tooltip-runtime-assets",
+                       "kind":  "requiredPaths",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  7,
+                       "command":  null,
+                       "detail":  "3 path(s) present"
+                   },
+                   {
+                       "name":  "tooltip-bundle-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  1297,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\launcher\\tooltip-engine\\build.cjs --check",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "tooltip-catalog-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  843,
+                       "command":  "C:\\Users\\fs\\AppData\\Local\\Programs\\Python\\Python312\\python.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\build-tooltip-catalog.py --check",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "material-catalog-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  3683,
+                       "command":  "C:\\Users\\fs\\AppData\\Local\\Programs\\Python\\Python312\\python.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\derive-material-catalog.py --check",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "combat-fx-assets-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  3943,
+                       "command":  "C:\\Users\\fs\\AppData\\Local\\Programs\\Python\\Python312\\python.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\combat-fx-assets\\build.py --check",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "combat-bullet-assets-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  447,
+                       "command":  "C:\\Users\\fs\\AppData\\Local\\Programs\\Python\\Python312\\python.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\combat-bullet-visuals\\build.py --check",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "material-enemy-portrait-coverage",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  500,
+                       "command":  "C:\\Users\\fs\\AppData\\Local\\Programs\\Python\\Python312\\python.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-material-enemy-portrait-coverage.py",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "shop-portrait-assets",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  1572,
+                       "command":  "C:\\Users\\fs\\AppData\\Local\\Programs\\Python\\Python312\\python.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-shop-portrait-assets.py",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "enemy-portrait-resolver-runtime",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  80,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-portrait-resolver-runtime.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "shop-portrait-resolver-runtime",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  85,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-shop-portrait-resolver-runtime.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "workbench-lazy-portrait-closure",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  262,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-inventory-workbench-lazy-closure.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "npc-shop-catalogs",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  138,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\validate-npc-shops.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "item-set-metadata",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  138,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\validate-item-sets.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "font-catalog-schema-and-assets",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  669,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\fontctl\\cli.js validate --json",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "font-catalog-generated-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  443,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\fontctl\\cli.js generate --check --json",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "arena-meta-teams-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  564,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\derive-arena-meta-teams.js --check",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "arena-factions-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  101,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\derive-arena-factions.js --check",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "arena-drop-rules-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  112,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\validate-arena-drop-rules.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "required-arena-authority-assets",
+                       "kind":  "requiredPaths",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  3,
+                       "command":  null,
+                       "detail":  "5 path(s) present"
+                   },
+                   {
+                       "name":  "required-arena-unit-catalog",
+                       "kind":  "requiredPaths",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  0,
+                       "command":  null,
+                       "detail":  "1 path(s) present"
+                   },
+                   {
+                       "name":  "required-web-runtime-assets",
+                       "kind":  "requiredPaths",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  214,
+                       "command":  null,
+                       "detail":  "291 path(s) present"
+                   },
+                   {
+                       "name":  "workbench-css-closure",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  477,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\check-workbench-css-bundle.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "sleep-ui-art-and-runtime",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  178,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-sleep-runtime.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "workbench-ui-ratchet-regression",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  11128,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-workbench-ui-ratchet.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "workbench-ui-release-tree-audit",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  9375,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\audit-workbench-ui.js --release-tree --text --strict-warnings",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "workbench-inspection-viewport",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  85,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-workbench-inspection-viewport.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "inventory-preparation-menu",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  74,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\test-inventory-workbench-preparation-menu.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "map-lossless-webp-closure",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  121,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\audit-map-webp-assets.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "map-scale-experience",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  6599,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\audit-map-scale-experience.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "native-cursor-contract",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  93,
+                       "command":  "C:\\Program Files\\nodejs\\node.exe C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\audit-native-cursor-assets.js",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "required-launcher-data-assets",
+                       "kind":  "requiredPaths",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  4,
+                       "command":  null,
+                       "detail":  "5 path(s) present"
+                   },
+                   {
+                       "name":  "required-font-runtime-assets",
+                       "kind":  "requiredPaths",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  5,
+                       "command":  null,
+                       "detail":  "7 path(s) present"
+                   },
+                   {
+                       "name":  "save-repair-dictionary-current",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  2477,
+                       "command":  "C:\\Program Files\\nodejs\\npm.cmd run verify --silent",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "candidate-required-artifacts",
+                       "kind":  "requiredPaths",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  2,
+                       "command":  null,
+                       "detail":  "2 path(s) present"
+                   },
+                   {
+                       "name":  "candidate-player-info-svg-contract",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  14279,
+                       "command":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\validate-player-info-svg-production-contract.ps1 -ProjectRoot C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources -CandidateRoot C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tmp\\runtime-candidates\\v2\\c-c4c2a451ea50-08846e81b3-20261115t132028003z-f6e1c3ae",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "candidate-managed-optimized",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  557,
+                       "command":  "C:\\Users\\fs\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe run C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\assert-optimized.cs -- C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tmp\\runtime-candidates\\v2\\c-c4c2a451ea50-08846e81b3-20261115t132028003z-f6e1c3ae\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "candidate-runtime-bundle",
+                       "kind":  "command",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  35883,
+                       "command":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tools\\verify-runtime-bundle-v2.ps1 -ProjectRoot C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources -DeploymentRoot C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\tmp\\runtime-candidates\\v2\\c-c4c2a451ea50-08846e81b3-20261115t132028003z-f6e1c3ae",
+                       "detail":  null
+                   },
+                   {
+                       "name":  "tracked-tree-readonly",
+                       "kind":  "invariant",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  0,
+                       "command":  null,
+                       "detail":  "tracked worktree state unchanged"
+                   },
+                   {
+                       "name":  "candidate-payload-readonly",
+                       "kind":  "invariant",
+                       "passed":  true,
+                       "exitCode":  0,
+                       "durationMs":  0,
+                       "command":  null,
+                       "detail":  "candidate payload closure unchanged: 410C0915E5082306E516E1EB97074421FCFE78DA6F97E981ACE970874D3D4910"
+                   }
+               ]
+}

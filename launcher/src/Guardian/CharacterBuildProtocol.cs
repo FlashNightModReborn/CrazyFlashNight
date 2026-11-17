@@ -59,7 +59,8 @@ namespace CF7Launcher.Guardian
             return command == "equipEquipment"
                 || command == "unequipEquipment"
                 || command == "equipDrug"
-                || command == "unequipDrug";
+                || command == "unequipDrug"
+                || command == "configureEmergencyInjection";
         }
 
         internal static bool IsEquipmentSlotKey(string slotKey)
@@ -123,10 +124,73 @@ namespace CF7Launcher.Guardian
                 case "unequipDrug":
                     action = "characterBuildUnequipDrug";
                     return true;
+                case "configureEmergencyInjection":
+                    action = "characterBuildConfigureEmergencyInjection";
+                    return true;
                 default:
                     action = null;
                     return false;
             }
+        }
+
+        internal static bool IsEmergencyInjectionChestName(string name)
+        {
+            return name == "统合61式胸甲" || name == "钛合金61式胸甲";
+        }
+
+        private static bool TryNormalizeChestTarget(
+            JObject target,
+            out JObject normalized)
+        {
+            normalized = null;
+            string kind = ReadString(target != null ? target["kind"] : null);
+            if (kind == "loadout")
+            {
+                long expectedLoadoutRevision;
+                if (!IsExactObject(
+                        target,
+                        Set("kind", "slotKey", "expectedLoadoutRevision"))
+                    || ReadString(target["slotKey"]) != "上装装备"
+                    || !TryReadInteger(
+                        target["expectedLoadoutRevision"],
+                        0,
+                        int.MaxValue,
+                        out expectedLoadoutRevision))
+                {
+                    return false;
+                }
+                normalized = new JObject
+                {
+                    ["kind"] = "loadout",
+                    ["slotKey"] = "上装装备",
+                    ["expectedLoadoutRevision"] = expectedLoadoutRevision
+                };
+                return true;
+            }
+            if (kind == "backpack")
+            {
+                if (!IsExactObject(
+                        target,
+                        Set("kind", "containerId", "slot", "expectedLease")))
+                {
+                    return false;
+                }
+                JObject sourceKeys = new JObject
+                {
+                    ["containerId"] = target["containerId"],
+                    ["slot"] = target["slot"],
+                    ["expectedLease"] = target["expectedLease"]
+                };
+                JObject normalizedSource;
+                if (!TryNormalizeBackpackSource(sourceKeys, out normalizedSource))
+                {
+                    return false;
+                }
+                normalized = normalizedSource;
+                normalized["kind"] = "backpack";
+                return true;
+            }
+            return false;
         }
 
         internal static bool TryNormalizeMutationPayload(
@@ -158,7 +222,37 @@ namespace CF7Launcher.Guardian
                 ["sessionGeneration"] = sessionGeneration
             };
 
-            if (command == "equipEquipment"
+            if (command == "configureEmergencyInjection")
+            {
+                long expectedRevision;
+                int slot;
+                JObject normalizedChestTarget;
+                if (!IsExactObject(payload, Set("v", "sessionGeneration", "expectedDrugRevision",
+                        "chestTarget", "enabled", "drugSlot", "expectedItemName"))
+                    || payload["enabled"].Type != JTokenType.Boolean
+                    || !TryReadInteger(payload["expectedDrugRevision"], 0, int.MaxValue, out expectedRevision)
+                    || !TryNormalizeChestTarget(payload["chestTarget"] as JObject, out normalizedChestTarget)
+                    || !TryReadInteger(payload["drugSlot"], -1, 7, out slot)
+                    || !IsBoundedText(payload["expectedItemName"], 160, true))
+                {
+                    error = "invalid_payload";
+                    return false;
+                }
+                bool enabled = payload.Value<bool>("enabled");
+                string itemName = payload.Value<string>("expectedItemName");
+                if (enabled ? slot < 0 || string.IsNullOrWhiteSpace(itemName)
+                    : slot != -1 || itemName != "")
+                {
+                    error = "invalid_payload";
+                    return false;
+                }
+                result["expectedDrugRevision"] = expectedRevision;
+                result["chestTarget"] = normalizedChestTarget;
+                result["enabled"] = enabled;
+                result["drugSlot"] = slot;
+                result["expectedItemName"] = itemName;
+            }
+            else if (command == "equipEquipment"
                 || command == "unequipEquipment")
             {
                 bool equip = command == "equipEquipment";
@@ -255,7 +349,7 @@ namespace CF7Launcher.Guardian
                 || ReadString(message["operation"]) != command
                 || !TryReadInteger(
                     message["affectedBackpackSlot"],
-                    0,
+                    command == "configureEmergencyInjection" ? -1 : 0,
                     BackpackSlotCount - 1,
                     out affectedBackpackSlot)
                 || !IsLoadoutProjection(message["payload"] as JObject, true)
@@ -266,6 +360,58 @@ namespace CF7Launcher.Guardian
             }
 
             changed = message.Value<bool>("changed");
+            if (command == "configureEmergencyInjection")
+            {
+                JObject chestTarget = normalizedRequest["chestTarget"] as JObject;
+                string targetKind = ReadString(chestTarget != null ? chestTarget["kind"] : null);
+                int expectedAffectedSlot = targetKind == "backpack"
+                    ? chestTarget.Value<int>("slot") : -1;
+                if (affectedBackpackSlot != expectedAffectedSlot) return false;
+
+                JObject projection = (JObject)message["payload"];
+                JObject targetConfiguration = projection["targetEmergencyInjection"] as JObject;
+                bool enabled = normalizedRequest.Value<bool>("enabled");
+                int slot = normalizedRequest.Value<int>("drugSlot");
+                string itemName = normalizedRequest.Value<string>("expectedItemName");
+                if (!IsEmergencyInjectionProjection(targetConfiguration)
+                    || targetConfiguration.Value<bool>("enabled") != enabled
+                    || targetConfiguration.Value<int>("physicalSlot") != slot
+                    || targetConfiguration.Value<string>("itemKey") != itemName
+                    || targetConfiguration.Value<string>("status") != (enabled ? "authorized" : "disabled"))
+                {
+                    return false;
+                }
+                if (targetKind == "loadout")
+                {
+                    JObject wornConfiguration = projection["emergencyInjection"] as JObject;
+                    JObject wornChestRow = FindEquipmentRow(projection, "上装装备");
+                    JObject wornItemEmergency = wornChestRow != null && wornChestRow.Value<bool>("occupied")
+                        ? wornChestRow["item"]["emergencyInjection"] as JObject : null;
+                    if (!IsEmergencyInjectionProjection(wornConfiguration)
+                        || wornItemEmergency == null
+                        || !JToken.DeepEquals(wornConfiguration, targetConfiguration)
+                        || !JToken.DeepEquals(wornItemEmergency, targetConfiguration))
+                    {
+                        return false;
+                    }
+                }
+                else if (targetKind == "backpack")
+                {
+                    JObject targetBackpack = (JObject)message["inventorySnapshots"][0];
+                    JObject targetRow = (JObject)targetBackpack["slots"][affectedBackpackSlot];
+                    if (!targetRow.Value<bool>("occupied")
+                        || !IsEmergencyInjectionChestName(ReadString(targetRow["item"]["name"])))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+                return !enabled || (projection["drugs"][slot].Value<bool>("occupied")
+                    && projection["drugs"][slot]["item"].Value<string>("name") == itemName);
+            }
             JObject source = normalizedRequest["source"] as JObject;
             if ((command == "equipEquipment" || command == "equipDrug")
                 && (source == null
@@ -338,8 +484,14 @@ namespace CF7Launcher.Guardian
                 "equipment", "drugs", "drugLayout", "portrait",
                 "stateHealth", "diagnostics");
             if (hasCandidateFacets) expectedKeys.Add("candidateFacets");
+            bool hasEmergencyInjection = payload != null && payload["emergencyInjection"] != null;
+            if (hasEmergencyInjection) expectedKeys.Add("emergencyInjection");
+            bool hasTargetEmergencyInjection = payload != null && payload["targetEmergencyInjection"] != null;
+            if (hasTargetEmergencyInjection) expectedKeys.Add("targetEmergencyInjection");
             if (!IsExactObject(
                     payload, expectedKeys)
+                || (hasEmergencyInjection && !IsEmergencyInjectionProjection(payload["emergencyInjection"] as JObject))
+                || (hasTargetEmergencyInjection && !IsEmergencyInjectionProjection(payload["targetEmergencyInjection"] as JObject))
                 || !(payload["equipment"] is JArray equipment)
                 || equipment.Count != EquipmentSlots.Length
                 || !(payload["drugs"] is JArray drugs)
@@ -423,9 +575,60 @@ namespace CF7Launcher.Guardian
                     return false;
                 }
             }
+            if (hasEmergencyInjection)
+            {
+                JObject configuration = (JObject)payload["emergencyInjection"];
+                if (!IsConsistentDrugEmergencyProjection(configuration, drugs)) return false;
+                JObject chestRow = FindEquipmentRow(payload, "上装装备");
+                bool chestOccupied = chestRow != null && chestRow.Value<bool>("occupied");
+                JObject chestItem = chestOccupied ? chestRow["item"] as JObject : null;
+                string chestName = chestItem != null ? ReadString(chestItem["name"]) : null;
+                if (chestItem != null && IsEmergencyInjectionChestName(chestName))
+                {
+                    JObject chestEmergency = chestItem["emergencyInjection"] as JObject;
+                    if (chestEmergency != null && !JToken.DeepEquals(configuration, chestEmergency))
+                    {
+                        return false;
+                    }
+                }
+                else if (configuration.Value<bool>("enabled")
+                    || ReadString(configuration["status"]) != "disabled")
+                {
+                    return false;
+                }
+            }
+            if (hasTargetEmergencyInjection
+                && !IsConsistentDrugEmergencyProjection(
+                    payload["targetEmergencyInjection"] as JObject, drugs))
+            {
+                return false;
+            }
+            for (int i = 0; i < equipment.Count; i++)
+            {
+                JObject eqRow = equipment[i] as JObject;
+                if (eqRow != null && eqRow.Value<bool>("occupied"))
+                {
+                    JObject eqEmergency = eqRow["item"]["emergencyInjection"] as JObject;
+                    if (eqEmergency != null && !IsConsistentDrugEmergencyProjection(eqEmergency, drugs))
+                    {
+                        return false;
+                    }
+                }
+            }
             return !hasCandidateFacets
                 || IsCandidateFacetProjection(
                     payload["candidateFacets"] as JObject);
+        }
+
+        private static bool IsConsistentDrugEmergencyProjection(JObject configuration, JArray drugs)
+        {
+            if (configuration == null || !configuration.Value<bool>("enabled")) return true;
+            JObject row = (JObject)drugs[configuration.Value<int>("physicalSlot")];
+            bool occupied = row.Value<bool>("occupied");
+            string itemKey = occupied ? row["item"].Value<string>("name") : null;
+            string status = configuration.Value<string>("status");
+            bool same = occupied && itemKey == configuration.Value<string>("itemKey");
+            return status == "authorized" ? same : status == "empty" ? !occupied : occupied && !same;
         }
 
         /// <summary>
@@ -433,6 +636,23 @@ namespace CF7Launcher.Guardian
         /// present, the complete inventory facet tree is strict and self-consistent so Web can
         /// distinguish an authoritative zero from an unavailable/unknown count.
         /// </summary>
+        internal static bool IsEmergencyInjectionProjection(JObject value)
+        {
+            int version, slot;
+            if (!IsExactObject(value, Set("v", "enabled", "physicalSlot", "itemKey", "status"))
+                || !TryReadInteger(value["v"], 1, 1, out version)
+                || value["enabled"].Type != JTokenType.Boolean
+                || !TryReadInteger(value["physicalSlot"], -1, 7, out slot)
+                || !IsBoundedText(value["itemKey"], 160, true)) return false;
+            string status = ReadString(value["status"]);
+            bool enabled = value.Value<bool>("enabled");
+            string item = value.Value<string>("itemKey");
+            if (enabled) return slot >= 0 && !string.IsNullOrWhiteSpace(item)
+                && (status == "authorized" || status == "empty" || status == "item_changed");
+            return slot == -1 && item == ""
+                && (status == "disabled" || status == "unsupported_config");
+        }
+
         internal static bool IsCandidateFacetProjection(JObject projection)
         {
             int filterItemCount;
@@ -469,11 +689,13 @@ namespace CF7Launcher.Guardian
 
             bool hasBalance = item["balanceSummary"] != null;
             bool hasAppearance = item["appearance"] != null;
+            bool hasEmergencyInjection = item["emergencyInjection"] != null;
             var expectedKeys = new HashSet<string>(
                 ItemKeys,
                 StringComparer.Ordinal);
             if (hasBalance) expectedKeys.Add("balanceSummary");
             if (hasAppearance) expectedKeys.Add("appearance");
+            if (hasEmergencyInjection) expectedKeys.Add("emergencyInjection");
             if (!IsExactObject(item, expectedKeys)
                 || !IsIdentityText(item["name"], 256)
                 || !IsIdentityText(item["displayName"], 256)
@@ -595,7 +817,12 @@ namespace CF7Launcher.Guardian
             return (!hasBalance
                     || IsBalanceSummary(item["balanceSummary"] as JObject))
                 && (!hasAppearance || (EquipmentSlotSet.Contains(use)
-                    && IsEquipmentAppearance(item["appearance"] as JObject)));
+                    && IsEquipmentAppearance(item["appearance"] as JObject)))
+                && (!hasEmergencyInjection
+                    || (itemKind == "equipment"
+                        && use == "上装装备"
+                        && IsEmergencyInjectionChestName(ReadString(item["name"]))
+                        && IsEmergencyInjectionProjection(item["emergencyInjection"] as JObject)));
         }
 
         private static bool IsEquipmentAppearance(JObject appearance)

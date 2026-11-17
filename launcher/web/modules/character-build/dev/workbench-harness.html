@@ -245,6 +245,11 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                 } : null
             };
             if (row.item && appearanceBySlot[slotKey]) row.item.appearance = appearanceBySlot[slotKey];
+            if (row.item && slotKey === '上装装备'
+                    && (itemName === '统合61式胸甲' || itemName === '钛合金61式胸甲')) {
+                row.item.emergencyInjection = JSON.parse(JSON.stringify(
+                    window.__routeHarness.emergencyInjection));
+            }
             return row;
         });
     }
@@ -295,6 +300,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             },
             candidateFacets:candidateFacetProjection(),
             stateHealth:'ok',
+            emergencyInjection:window.__routeHarness.emergencyInjection,
             diagnostics:[]
         };
     }
@@ -327,6 +333,19 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         } else if (message.cmd === 'unequipDrug') {
             drugNames[message.payload.drugSlot] = '';
             authority.drugRevision++;
+        } else if (message.cmd === 'configureEmergencyInjection') {
+            var nextEmergency = {v:1,enabled:message.payload.enabled,
+                physicalSlot:message.payload.enabled ? message.payload.drugSlot : -1,
+                itemKey:message.payload.enabled ? message.payload.expectedItemName : '',
+                status:message.payload.enabled ? 'authorized' : 'disabled'};
+            var chestTarget = message.payload.chestTarget;
+            if (chestTarget && chestTarget.kind === 'backpack') {
+                window.__routeHarness.backpackEmergencyInjection = nextEmergency;
+            } else {
+                window.__routeHarness.emergencyInjection = nextEmergency;
+            }
+            window.__routeHarness.lastTargetEmergencyInjection = nextEmergency;
+            authority.drugRevision++;
         }
     }
     function responseBase(message) {
@@ -351,7 +370,8 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     }
     function loadoutResponse(message) {
         var harness = window.__routeHarness;
-        var mutation = /^(equip|unequip)(Equipment|Drug)$/.test(message.cmd);
+        var mutation = /^(equip|unequip)(Equipment|Drug)$/.test(message.cmd)
+            || message.cmd === 'configureEmergencyInjection';
         if (mutation && harness.rejectNextMutation) {
             harness.rejectNextMutation = false;
             var rejected = responseBase(message);
@@ -638,11 +658,20 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         } else if (message.cmd === 'statsSnapshot') {
             response.payload = CharacterBuildStatsFixture.create();
         } else if (mutation) {
+            var target = message.cmd === 'configureEmergencyInjection'
+                ? message.payload.chestTarget : null;
             response.changed = true;
             response.operation = message.cmd;
             response.affectedBackpackSlot = message.payload.source
-                ? message.payload.source.slot : 12;
+                ? message.payload.source.slot
+                : target && target.kind === 'backpack' ? target.slot
+                : message.cmd === 'configureEmergencyInjection' ? -1 : 12;
             response.payload = projection();
+            if (message.cmd === 'configureEmergencyInjection'
+                    && window.__routeHarness.lastTargetEmergencyInjection) {
+                response.payload.targetEmergencyInjection = JSON.parse(JSON.stringify(
+                    window.__routeHarness.lastTargetEmergencyInjection));
+            }
             response.inventorySnapshots = [
                 fullBackpack(20 + harness.authority.writeEpoch)
             ];
@@ -683,11 +712,13 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         } : equipmentRows().filter(function(row) {
             return row.slotKey === slotKey;
         })[0].item;
-        return {
+        var majorType = item.majorType
+            || (item.use === '长枪' || item.use === '手枪' || item.use === '刀' ? '武器' : '防具');
+        var equipment = {
             name:item.name,
             displayName:item.displayName,
             icon:item.icon,
-            type:'武器',
+            type:majorType,
             use:item.use,
             level:level == null ? item.enhancementLevel : level,
             tier:'',
@@ -696,6 +727,15 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             maxLevel:13,
             hardMaxLevel:13
         };
+        if (majorType === '防具' && item.use === '上装装备'
+                && (item.name === '统合61式胸甲' || item.name === '钛合金61式胸甲')) {
+            equipment.emergencyInjection = JSON.parse(JSON.stringify(
+                inventorySource
+                    ? (window.__routeHarness.backpackEmergencyInjection
+                        || {v:1,enabled:false,physicalSlot:-1,itemKey:'',status:'disabled'})
+                    : window.__routeHarness.emergencyInjection));
+        }
+        return equipment;
     }
     function tuningProjection(source, level) {
         return {source:{
@@ -743,7 +783,6 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                 owned:2,
                 installed:false,
                 available:true,
-                availabilityCode:1,
                 reason:'',
                 replaceableFrom:[],
                 grade:'low',
@@ -1352,6 +1391,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/inventory-tuning-scope.js"></script>
 <script src="modules/inventory-workbench-feature-loader.js"></script>
 <script src="modules/inventory-workbench-stash-navigation.js"></script>
+<script src="modules/character-build/character-build-drug-controls.js"></script>
 <script src="modules/character-build/character-build-mutation.js"></script>
 <script src="modules/character-build/character-build-drug-layout.js"></script>
 <script src="modules/character-build/character-build-session-contract.js"></script>
@@ -1373,6 +1413,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/loadout-picker/loadout-picker.js"></script>
 <script src="modules/character-build/character-build-item-use-openmany-view.js"></script>
 <script src="modules/character-build-view.js"></script>
+<script src="modules/character-build/character-build-customization.js"></script>
 <script src="modules/character-build/character-build-tuning.js"></script>
 <script src="modules/character-build/character-build-slot-transition.js"></script>
 <script src="modules/character-build/character-build-pose.js"></script>
@@ -2201,6 +2242,106 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && InventoryWorkbench.debugState().build.view.candidateScope === 'backpack'
             && document.querySelectorAll('.character-build-candidate').length === 7,
             JSON.stringify(initialCandidateCounts));
+        if (new URLSearchParams(location.search).get('customization-probe') === '1') {
+            document.querySelector('[data-roving-key="weapon:长枪"]').click();
+            check('non-61 weapon tuning stays on 4 tabs without mechanism pill', await until(function() {
+                return !document.querySelector('[data-build-action="tune"]').disabled;
+            }));
+            document.querySelector('[data-build-action="tune"]').click();
+            check('non-61 weapon has 4 tabs only', await until(function() {
+                var t = InventoryWorkbench.debugState().build.tuning.tuning;
+                return document.querySelectorAll('.equipment-tuning-tab').length === 4
+                    && !document.querySelector('[data-customization-open]')
+                    && !document.querySelector('[data-tuning-focus-key="summary-mechanism"]')
+                    && t && t.hasSnapshot && t.hasPreview && !t.readPending && !t.busy;
+            }));
+            document.querySelector('[data-build-tuning-return]').click();
+            check('returned from weapon tuning cleanly', await until(function() {
+                return !document.querySelector('.character-build-tuning-shell');
+            }));
+
+            window.__routeHarness.setEquipment('上装装备', '统合61式胸甲');
+            window.__routeHarness.emergencyInjection = {v:1,enabled:false,physicalSlot:-1,itemKey:'',status:'disabled'};
+            check('customization obtains a fresh production build snapshot', await refreshProjection());
+            document.querySelector('[data-roving-key="armor:上装装备"]').click();
+            check('61 chest tuning entry becomes available', await until(function() {
+                return !document.querySelector('[data-build-action="tune"]').disabled;
+            }));
+            document.querySelector('[data-build-action="tune"]').click();
+            check('61 chest installs 机制 tab and clickable summary pill', await until(function() {
+                var tab = document.querySelector('[data-customization-open]');
+                var pill = document.querySelector('[data-tuning-focus-key="summary-mechanism"]');
+                return tab && !tab.disabled && tab.textContent === '机制'
+                    && pill && pill.textContent.indexOf('未设') >= 0;
+            }));
+            document.querySelector('[data-tuning-focus-key="summary-mechanism"]').click();
+            check('mechanism mode hides checkbox/commitBar and enables left drug linkage', await until(function() {
+                return document.querySelector('.equipment-tuning-view').getAttribute('data-operation') === 'customization'
+                    && !document.querySelector('.equipment-tuning-confirmation')
+                    && !document.querySelector('[data-customization-enabled]')
+                    && !document.querySelector('.equipment-tuning-commit-bar')
+                    && document.querySelector('.character-build-workbench').getAttribute('data-build-tuning-mode') === 'customization';
+            }));
+
+            var writes = commandCount('configureEmergencyInjection');
+            document.querySelector('[data-drug-slot="4"]').click();
+            check('single click on inactive bank tile immediately binds worn chest and badges left potion bar', await until(function() {
+                var saved = window.__routeHarness.emergencyInjection;
+                var pill = document.querySelector('[data-tuning-focus-key="summary-mechanism"]');
+                var leftBadge = document.querySelector('[data-slot-id="drug5"] .character-build-slot-emergency');
+                return commandCount('configureEmergencyInjection') === writes + 1
+                    && saved.enabled && saved.physicalSlot === 4 && saved.itemKey === '普通hp药剂'
+                    && pill && pill.textContent.indexOf('II-[7]') >= 0
+                    && leftBadge && leftBadge.textContent === '应急';
+            }));
+
+            document.querySelector('[data-slot-id="drug2"]').click();
+            check('clicking left potion slot directly switches bound slot in 机制 mode', await until(function() {
+                var saved = window.__routeHarness.emergencyInjection;
+                var pill = document.querySelector('[data-tuning-focus-key="summary-mechanism"]');
+                var leftBadge = document.querySelector('[data-slot-id="drug2"] .character-build-slot-emergency');
+                return commandCount('configureEmergencyInjection') === writes + 2
+                    && saved.enabled && saved.physicalSlot === 1
+                    && pill && pill.textContent.indexOf('I-[8]') >= 0
+                    && leftBadge && leftBadge.textContent === '应急'
+                    && !document.querySelector('[data-slot-id="drug5"] .character-build-slot-emergency');
+            }));
+
+            document.querySelector('[data-drug-slot="1"]').click();
+            check('clicking bound tile again unbinds in one step', await until(function() {
+                return commandCount('configureEmergencyInjection') === writes + 3
+                    && !window.__routeHarness.emergencyInjection.enabled
+                    && !document.querySelector('.character-build-slot-emergency');
+            }));
+
+            document.querySelector('[data-drug-slot="4"]').click();
+            check('re-binding slot 4 succeeds before return', await until(function() {
+                return commandCount('configureEmergencyInjection') === writes + 4
+                    && window.__routeHarness.emergencyInjection.physicalSlot === 4;
+            }));
+
+            document.querySelector('[data-build-tuning-return]').click();
+            check('saved customization detaches tuning cleanly and clears tuning mode', await until(function() {
+                return !document.querySelector('.character-build-tuning-shell')
+                    && !document.querySelector('.character-build-workbench').hasAttribute('data-build-tuning-mode');
+            }));
+            document.querySelector('[data-build-action="tune"]').click();
+            check('same equipment can reopen 机制', await until(function() {
+                var entry = document.querySelector('[data-customization-open]');
+                return entry && !entry.disabled;
+            }));
+            document.querySelector('[data-customization-open]').click();
+            check('reopened view reflects persisted slot 4 binding',
+                document.querySelector('[data-drug-slot="4"]').getAttribute('data-bound') === 'true');
+            document.querySelector('[data-customization-disable]').click();
+            check('top-card 停用 button explicitly disables emergency injection', await until(function() {
+                return commandCount('configureEmergencyInjection') === writes + 5
+                    && !window.__routeHarness.emergencyInjection.enabled;
+            }));
+            window.__qaReport = {checks:checks,boundary:{controller:'production',host:'fake_bridge'}};
+            window.__qaReady = true;
+            return;
+        }
         if (new URLSearchParams(location.search).get('issue156-probe') === '1') {
             var issue156Writes = commandCount('equipEquipment');
             var issue156Commits = tuningMessages('commit').length;
@@ -4533,7 +4674,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && state.tuning.tuning.hasPreview
                     && !state.tuning.tuning.readPending;
             }));
-        check('loadout tuning exposes the same four operation groups including exchange',
+        check('non-61 loadout tuning preserves the four operations without customization tab',
             Array.prototype.map.call(
                 document.querySelectorAll('.equipment-tuning-tab'),
                 function(node) { return node.textContent; }).join('|') === '强化度|交换|进阶|配件');

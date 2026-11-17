@@ -225,13 +225,15 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         // 【重构】调用 TagManager.buildPresentTagsDict（单一真源）
         // 收集所有 presentTags（装备固有 + 配件静态 + 配件条件性）
         // 这样 tagSwitch 可以基于完整的结构信息进行判断
-        var presentTags:Object = TagManager.buildPresentTagsDict(mods, itemData, modRegistry);
+        var presentTags:Object = TagManager.buildPresentTagsDict(mods, itemData, modRegistry, useLookup);
 
         // 提取子弹类型（用于 bulletSwitch 匹配）
         var bulletType:String = (itemData.data && itemData.data.bullet) ? itemData.data.bullet : "";
 
         // 校验 hitBehavior 提供者与分支命中唯一性契约（#208）
-        var hbProvision:Object = ModRegistry.validateHitBehaviorProvision(mods, itemData, modRegistry, useLookup);
+        // 此处已选进阶、尚未应用插件；只传递无插件的原生来源事实。
+        var hasNativeProvider:Boolean = itemData.data.hitBehavior != undefined;
+        var hbProvision:Object = ModRegistry.validateHitBehaviorProvision(mods, hasNativeProvider, modRegistry, useLookup);
         if (!hbProvision.valid) {
             itemData._hitBehaviorDiagnostics = hbProvision.diagnostics;
             itemData._hitBehaviorInvalid = true;

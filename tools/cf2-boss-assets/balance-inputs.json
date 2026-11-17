@@ -1,0 +1,144 @@
+{
+  "schema": "cf2-tank-boss.balance.v1",
+  "status": "prototype-black-iron-anchor-not-roguelike-placement",
+  "reference": "黑铁会.黑铁",
+  "stageIsBudgetProxy": true,
+  "placementLevelNotDecided": true,
+  "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+  "formulaSha256": "ecacf243e9cfff1d51d3c05ccad544bb4c407511944d42a32bd1f61eae7e6cba",
+  "input": {
+    "stage": 5,
+    "tierFactor": 27,
+    "growthFactor": 1.7,
+    "highAtkFactor": 1.3,
+    "highDefFactor": 2.2,
+    "atkSpeedFactor": 3,
+    "atkMultiplier": 1.125,
+    "segmentFactor": 6.46,
+    "speedFactor": 2,
+    "superArmorFactor": 4.2
+  },
+  "weightedTempo": 20.84,
+  "actions": [
+    {
+      "action": "melee",
+      "frames": 61,
+      "firstHit": 23,
+      "lastHit": 47,
+      "contacts": 3,
+      "kinds": {
+        "melee": 3,
+        "gun": 0,
+        "cannon": 0,
+        "laser": 0,
+        "grenade": 0
+      },
+      "typeWeightedPower": 1.8,
+      "segments": 1.875
+    },
+    {
+      "action": "gatling",
+      "frames": 44,
+      "firstHit": 14,
+      "lastHit": 30,
+      "contacts": 9,
+      "kinds": {
+        "melee": 0,
+        "gun": 9,
+        "cannon": 0,
+        "laser": 0,
+        "grenade": 0
+      },
+      "typeWeightedPower": 0.55,
+      "segments": 8.4375
+    },
+    {
+      "action": "laser",
+      "frames": 57,
+      "firstHit": 16,
+      "lastHit": 48,
+      "contacts": 10,
+      "kinds": {
+        "melee": 0,
+        "gun": 0,
+        "cannon": 0,
+        "laser": 10,
+        "grenade": 0
+      },
+      "typeWeightedPower": 1.3,
+      "segments": 4.6875
+    },
+    {
+      "action": "barrage",
+      "frames": 170,
+      "firstHit": 14,
+      "lastHit": 154,
+      "contacts": 93,
+      "kinds": {
+        "melee": 0,
+        "gun": 36,
+        "cannon": 3,
+        "laser": 24,
+        "grenade": 30
+      },
+      "typeWeightedPower": 1.0161290322580645,
+      "segments": 9.964285714285714
+    },
+    {
+      "action": "mobile",
+      "frames": 190,
+      "firstHit": 20,
+      "lastHit": 157,
+      "contacts": 67,
+      "kinds": {
+        "melee": 0,
+        "gun": 33,
+        "cannon": 4,
+        "laser": 0,
+        "grenade": 30
+      },
+      "typeWeightedPower": 0.9589552238805971,
+      "segments": 7.335766423357665
+    }
+  ],
+  "deathBurst": {
+    "power": 2.0,
+    "laneRange": 80,
+    "frame": 12
+  },
+  "grenadeBudgetBasis": {
+    "template": "榴弹",
+    "directPlusBurstEquivalent": 1.7,
+    "launchersPerLoop": 10,
+    "source": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-炮弹与爆炸组/榴弹.xml"
+  },
+  "integerPanel": {
+    "最小经验值": 23321,
+    "最大经验值": 33702,
+    "hp_min": 22402,
+    "hp_max": 90224,
+    "空手攻击力_min": 367,
+    "空手攻击力_max": 1640,
+    "基本防御力_min": 299,
+    "基本防御力_max": 927
+  },
+  "referenceSource": {
+    "unitId": 69,
+    "key": "黑铁会.黑铁",
+    "spritename": "敌人-唐装剑侠",
+    "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+    "sha256": "7ec63cf4acb7d2b85faa4ac5f3868d45179d9eee0318bf01891b5385578dca41",
+    "panel": {
+      "最小经验值": 5000,
+      "最大经验值": 20000,
+      "hp_min": 16000,
+      "hp_max": 60000,
+      "空手攻击力_min": 130,
+      "空手攻击力_max": 550,
+      "基本防御力_min": 300,
+      "基本防御力_max": 850
+    },
+    "comparison": "raw XML panel only; not same-level runtime stats or a duel verdict"
+  },
+  "scope": "initial source budget; not a duel, player-experience or roguelike-placement verdict"
+}

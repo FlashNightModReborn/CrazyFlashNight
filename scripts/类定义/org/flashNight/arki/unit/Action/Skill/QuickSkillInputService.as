@@ -41,7 +41,9 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
             for (var slotIndex:Number = 1; slotIndex <= QuickSkillInputService.SLOT_COUNT; slotIndex++) {
                 var keyName:String = QuickSkillInputService.getKeyName(slotIndex);
                 var keyCode:Number = Number(rootRef[keyName]);
-                var keyDown:Boolean = !isNaN(keyCode) && Key.isDown(keyCode);
+                var keyDown:Boolean = !isNaN(keyCode) && (Key.isDown(keyCode)
+                    || (rootRef._agentHarnessActive === true && rootRef._agentHarnessBridge != undefined
+                        && rootRef._agentHarnessBridge.isKeyDown(keyCode) === true));
 
                 QuickSkillInputService.syncKeyLabel(view, slotIndex, keyCode, rootRef);
                 var result:Object = QuickSkillInputService.updateSlot(

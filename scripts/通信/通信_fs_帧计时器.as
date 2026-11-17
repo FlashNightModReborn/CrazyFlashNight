@@ -405,7 +405,10 @@ _root.帧计时器.键盘输入控制目标 = function()
             (Key.isDown(控制对象.A键) ? 16 : 0) |
             (Key.isDown(控制对象.B键) ? 32 : 0) |
             (Key.isDown(控制对象.C键) ? 64 : 0) |
-            (Key.isDown(_root.奔跑键) ? 128 : 0); 
+            (Key.isDown(_root.奔跑键) ? 128 : 0);
+        if (_root._agentHarnessActive === true && _root._agentHarnessBridge != undefined) {
+            mask = mask | _root._agentHarnessBridge.sampleMask(控制对象, this.当前帧数);
+        }
 
         // 解码位掩码更新控制对象状态
         控制对象.左行 = (mask & 1) != 0;
@@ -506,7 +509,9 @@ _root.帧计时器.键盘输入控制目标 = function()
     // 即使暂停也必须采样松键，让已消费的本次按住能够重新武装；是否允许触发由服务内部判定。
     var 武器技能输入控制器:Object = _root.武器技能输入控制器;
     if (武器技能输入控制器 && 武器技能输入控制器.update) {
-        武器技能输入控制器.update(控制对象, Key.isDown(_root.武器技能键));
+        武器技能输入控制器.update(控制对象, Key.isDown(_root.武器技能键)
+            || (_root._agentHarnessActive === true && _root._agentHarnessBridge != undefined
+                && _root._agentHarnessBridge.isKeyDown(_root.武器技能键) === true));
     }
 
     // 12 槽快捷技能由 AS2 输入服务统一采样与编排。暂停期间仍逐帧更新，确保松键能重新武装。

@@ -125,72 +125,6 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         trace("=== LootContainerServiceTest end ===");
     }
 
-    private static function testLegacyMapStash():Void {
-        var keys:Array=["savePath","允许存档","角色名","基础身价值","身价","mydata","tasks_to_do","tasks_finished",
-            "task_chains_progress","商城已购买物品","商城购物车","主角被动技能","UpdateTaskProgress"];
-        var old:Object={}; for(var k:Number=0;k<keys.length;k++) old[keys[k]]=_root[keys[k]];
-        var sm:SaveManager=SaveManager.getInstance();
-        try {
-            for(var mode:Number=0;mode<3;mode++) {
-                resetWorld();
-                _root.savePath="CF7_LegacyMapStash_Regression_Test"; _root.允许存档=true; _root.角色名="LegacyMapStash";
-                _root.基础身价值=1000; _root.身价=1000; _root.mydata=null;
-                _root.tasks_to_do=[]; _root.tasks_finished=[]; _root.task_chains_progress={};
-                _root.商城已购买物品=[]; _root.商城购物车=[]; _root.主角被动技能={};
-                _root.物品栏.装备栏=new ArrayInventory(null,50); _root.UpdateTaskProgress=function():Void {};
-                sm._configureSaveFlowForTest({flushResult:true,beforeLocalCommit:null});
-                MapChestStashService.beginWorld(_root.gameworld);
-                var flow:Object;
-                if(mode<2) flow=activate([BaseItem.create(STACK,3)],"legacy.stash."+mode);
-                else {
-                    var target:Object=makeTarget("legacy.reserved");
-                    LootContainerService.beginMapChestOpen(target);
-                    var inv:ArrayInventory=makeInventory([BaseItem.create(STACK,3)]);
-                    LootContainerService.commitReservedOpen(target,inv,function(box:Object):Boolean {return false;});
-                    flow={target:target,inventory:inv};
-                }
-                var count:Number=sm._getSavePhysicalStatsForTest().flushAttempt;
-                if(mode==0) {
-                    var snap:Object=snapshot(flow);
-                    var params:Object=closeParams(snap,"legacy.stash.close",String(snap.closeLease),false);
-                    sm._configureSaveFlowForTest({flushResult:false});
-                    var denied:Object=LootContainerService.execute("close",params);
-                    var heldOperation:String=RewardStashService.pendingOperationId();
-                    check(!denied.success && denied.error=="commit_pending" && flow.inventory.getItem(0).value==3
-                        && heldOperation!="" && RewardStashStore.ownedQuantity(RewardStashService.committedFeature(),STACK)==0,
-                        "legacy map close false retains the exposed candidate without publishing committed stock");
-                    sm._configureSaveFlowForTest({flushResult:"pending"});
-                    var pending:Object=LootContainerService.execute("query",queryParams(snap));
-                    check(!pending.success && pending.error=="commit_pending" && RewardStashService.pendingOperationId()==heldOperation,
-                        "legacy map query pending retains the exact original candidate");
-                    sm._configureSaveFlowForTest({flushResult:true});
-                    var query:Object=LootContainerService.execute("query",queryParams(snap));
-                    check(query.success && query.remainingCount==0 && RewardStashStore.ownedQuantity(RewardStashService.peek(),STACK)==3,
-                        "legacy close query resumes the same saved source into stash");
-                    var physical:Number=sm._getSavePhysicalStatsForTest().flushAttempt;
-                    var replay:Object=LootContainerService.execute("close",params);
-                    check(replay.success && sm._getSavePhysicalStatsForTest().flushAttempt==physical
-                        && RewardStashStore.ownedQuantity(RewardStashService.peek(),STACK)==3,
-                        "legacy closed source replay cannot duplicate stock or save");
-                } else {
-                    var expired:Object=LootContainerService.expireScene("scene_cleanup");
-                    check(expired.success && expired.remainingCount==0
-                        && RewardStashStore.ownedQuantity(RewardStashService.peek(),STACK)==3
-                        && sm._getSavePhysicalStatsForTest().flushAttempt==count+1,
-                        mode==1?"opened legacy map expiry preserves remaining stock in one save":"materialized reservation expiry preserves its unique stock before kill projection");
-                }
-                check(SharedObject.getLocal(_root.savePath).data[SaveManager.SAVE_KEY].ext.mapStashSources.consumed.length==1,
-                    "legacy map durable source proof and stock share the same save "+mode);
-            }
-        } finally {
-            sm._configureSaveFlowForTest({flushResult:true,beforeLocalCommit:null});
-            if(RewardStashService.pendingOperationId()!="") RewardStashService.resume(RewardStashService.pendingOperationId());
-            sm._configureSaveFlowForTest({flushResult:undefined});
-            SharedObject.getLocal("CF7_LegacyMapStash_Regression_Test").clear();
-            for(var k:Number=0;k<keys.length;k++) _root[keys[k]]=old[keys[k]];
-            LootContainerService.testOnlyReset();
-        }
-    }
 
     private static function installMetadata():Void {
         _backup = {
@@ -2849,13 +2783,13 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var calls:Number=0;
             _root.Web物品注释HTML=function(itemName:String):Object {
                 calls++;return {displayname:itemName,descHTML:"通用完整说明",introHTML:"介绍",
-                    document:{version:1,title:itemName,sections:[{role:"body",runs:[{text:"物品属性"}]}]}};
+                    tooltipInput:{version:1,kind:"item",itemName:itemName}};
             };
             var before:String=new LiteJSON().stringify({money:_root.金钱,kpoint:_root.虚拟币,bag:_root.物品栏.背包.toObject(),dirty:_root.存档系统.dirtyMark});
             var inspected:Object=LootContainerService.execute("reportTooltip",params);
             check(inspected.success && calls==1 && inspected.tooltip.itemName==STACK
-                && inspected.tooltip.descHTML=="通用完整说明" && inspected.tooltip.document.title==STACK,
-                "report tooltip reuses common HTML and semantic document for the frozen item");
+                && inspected.tooltip.descHTML=="通用完整说明" && inspected.tooltip.tooltipInput.itemName==STACK,
+                "report tooltip forwards the common input for the frozen item; Host composes content");
             check(before==new LiteJSON().stringify({money:_root.金钱,kpoint:_root.虚拟币,bag:_root.物品栏.背包.toObject(),dirty:_root.存档系统.dirtyMark})
                 && inspected.authorityRevision==1 && _root.__lootSaveCalls==0,
                 "report inspection does not mutate inventory currency authority dirty mark or saves");
@@ -5911,6 +5845,75 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         } else {
             _failed++;
             trace("FAIL: " + message);
+        }
+    }
+
+    // Keep this legacy fixture after the main cases: CS6 SI16 trampoline placement
+    // otherwise crosses 32K in the class initializer. Execution order stays in runAllTests.
+    private static function testLegacyMapStash():Void {
+        var keys:Array=["savePath","允许存档","角色名","基础身价值","身价","mydata","tasks_to_do","tasks_finished",
+            "task_chains_progress","商城已购买物品","商城购物车","主角被动技能","UpdateTaskProgress"];
+        var old:Object={}; for(var k:Number=0;k<keys.length;k++) old[keys[k]]=_root[keys[k]];
+        var sm:SaveManager=SaveManager.getInstance();
+        try {
+            for(var mode:Number=0;mode<3;mode++) {
+                resetWorld();
+                _root.savePath="CF7_LegacyMapStash_Regression_Test"; _root.允许存档=true; _root.角色名="LegacyMapStash";
+                _root.基础身价值=1000; _root.身价=1000; _root.mydata=null;
+                _root.tasks_to_do=[]; _root.tasks_finished=[]; _root.task_chains_progress={};
+                _root.商城已购买物品=[]; _root.商城购物车=[]; _root.主角被动技能={};
+                _root.物品栏.装备栏=new ArrayInventory(null,50); _root.UpdateTaskProgress=function():Void {};
+                sm._configureSaveFlowForTest({flushResult:true,beforeLocalCommit:null});
+                MapChestStashService.beginWorld(_root.gameworld);
+                var flow:Object;
+                if(mode<2) flow=activate([BaseItem.create(STACK,3)],"legacy.stash."+mode);
+                else {
+                    var target:Object=makeTarget("legacy.reserved");
+                    LootContainerService.beginMapChestOpen(target);
+                    var inv:ArrayInventory=makeInventory([BaseItem.create(STACK,3)]);
+                    LootContainerService.commitReservedOpen(target,inv,function(box:Object):Boolean {return false;});
+                    flow={target:target,inventory:inv};
+                }
+                var count:Number=sm._getSavePhysicalStatsForTest().flushAttempt;
+                if(mode==0) {
+                    var snap:Object=snapshot(flow);
+                    var params:Object=closeParams(snap,"legacy.stash.close",String(snap.closeLease),false);
+                    sm._configureSaveFlowForTest({flushResult:false});
+                    var denied:Object=LootContainerService.execute("close",params);
+                    var heldOperation:String=RewardStashService.pendingOperationId();
+                    check(!denied.success && denied.error=="commit_pending" && flow.inventory.getItem(0).value==3
+                        && heldOperation!="" && RewardStashStore.ownedQuantity(RewardStashService.committedFeature(),STACK)==0,
+                        "legacy map close false retains the exposed candidate without publishing committed stock");
+                    sm._configureSaveFlowForTest({flushResult:"pending"});
+                    var pending:Object=LootContainerService.execute("query",queryParams(snap));
+                    check(!pending.success && pending.error=="commit_pending" && RewardStashService.pendingOperationId()==heldOperation,
+                        "legacy map query pending retains the exact original candidate");
+                    sm._configureSaveFlowForTest({flushResult:true});
+                    var query:Object=LootContainerService.execute("query",queryParams(snap));
+                    check(query.success && query.remainingCount==0 && RewardStashStore.ownedQuantity(RewardStashService.peek(),STACK)==3,
+                        "legacy close query resumes the same saved source into stash");
+                    var physical:Number=sm._getSavePhysicalStatsForTest().flushAttempt;
+                    var replay:Object=LootContainerService.execute("close",params);
+                    check(replay.success && sm._getSavePhysicalStatsForTest().flushAttempt==physical
+                        && RewardStashStore.ownedQuantity(RewardStashService.peek(),STACK)==3,
+                        "legacy closed source replay cannot duplicate stock or save");
+                } else {
+                    var expired:Object=LootContainerService.expireScene("scene_cleanup");
+                    check(expired.success && expired.remainingCount==0
+                        && RewardStashStore.ownedQuantity(RewardStashService.peek(),STACK)==3
+                        && sm._getSavePhysicalStatsForTest().flushAttempt==count+1,
+                        mode==1?"opened legacy map expiry preserves remaining stock in one save":"materialized reservation expiry preserves its unique stock before kill projection");
+                }
+                check(SharedObject.getLocal(_root.savePath).data[SaveManager.SAVE_KEY].ext.mapStashSources.consumed.length==1,
+                    "legacy map durable source proof and stock share the same save "+mode);
+            }
+        } finally {
+            sm._configureSaveFlowForTest({flushResult:true,beforeLocalCommit:null});
+            if(RewardStashService.pendingOperationId()!="") RewardStashService.resume(RewardStashService.pendingOperationId());
+            sm._configureSaveFlowForTest({flushResult:undefined});
+            SharedObject.getLocal("CF7_LegacyMapStash_Regression_Test").clear();
+            for(var k:Number=0;k<keys.length;k++) _root[keys[k]]=old[keys[k]];
+            LootContainerService.testOnlyReset();
         }
     }
 }

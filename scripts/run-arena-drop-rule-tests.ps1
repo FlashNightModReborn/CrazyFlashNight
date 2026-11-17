@@ -21,7 +21,6 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\merc\ArenaDropRuleCatalog.as'
         'scripts\类定义\org\flashNight\gesh\xml\LoadXml\ArenaDropRulesLoader.as'
         'scripts\类定义\org\flashNight\arki\item\obtain\ItemObtainIndex.as'
-        'scripts\类定义\org\flashNight\gesh\tooltip\builder\ObtainMethodsBuilder.as'
     )
     ExpectedTracePatterns = @(
         '(?m)^ArenaDropRuleCatalogTest Tests Passed: 20\r?$'

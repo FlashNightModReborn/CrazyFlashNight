@@ -108,6 +108,7 @@ Host 命令注册/审计白名单/dispatch 映射一起核对；改源码须跑�
 `powershell -File launcher/tests/run_tests.ps1` 的既有适用要求，保持 runner policy 单点维护。
 涉及配置、CLI、bootstrap、panel/minigame 注册时，精确集合巡检必须随源码保持一致。
 **候选条件：** 需要运行/视觉验证且已授权时才建隔离候选；记录实际执行的候选与身份。
+全流程无人值守 E2E 与后台/锁屏驱动使用 [cf7_harness 指南](../tools/cf7-agent/README.md#agent-harness-mcp)（仅限 `cf7_agent_*` 隔离槽）。
 `--bus-only` 只证明对应 headless bus 范围；测试 Movie/裸 Flash 不代签真实 Launcher 的 socket/trust。
 **native/发布条件：** source-ahead 可以暂不发布；只有部署闭包与授权命中才追加 [runtime](#runtime)。
 **正文：** [Host 与自动化](testing-details.md#host)。

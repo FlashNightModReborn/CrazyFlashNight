@@ -1,0 +1,23 @@
+$ node tools/workbench-live-e2e/crafting/self-test.js
+node:fs:621
+  return binding.open(
+                 ^
+
+Error: ENOENT: no such file or directory, open '/workspace/scratch/120bad2dafab/cfn-tooltip/fonts/fonts.xml'
+    at Object.openSync (node:fs:621:18)
+    at Object.readFileSync (node:fs:487:35)
+    at parseFontManifest (/workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/crafting/source-contract.js:973:27)
+    at descriptors (/workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/crafting/source-contract.js:1134:3)
+    at Object.captureSourceFingerprint (/workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/crafting/source-contract.js:1291:33)
+    at Object.<anonymous> (/workspace/scratch/120bad2dafab/cfn-tooltip/tools/workbench-live-e2e/crafting/fixtures/valid-bundle.js:37:51)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/workspace/scratch/120bad2dafab/cfn-tooltip/fonts/fonts.xml'
+}
+
+Node.js v24.22.1

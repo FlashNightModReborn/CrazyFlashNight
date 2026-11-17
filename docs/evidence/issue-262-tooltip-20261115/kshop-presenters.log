@@ -1,0 +1,43 @@
+$ node tools/test-kshop-presenters.js
+ok 1 - catalog stackability is domain-specific
+ok 2 - catalog lock combines forward and reverse levels
+ok 3 - catalog lookup accepts numeric wire ids without owning the array
+ok 4 - catalog tree exposes category, set and curated branches
+ok 5 - catalog matcher handles root, category, set and curated paths
+ok 6 - catalog activation is single-click add while drag remains an independent offer path
+ok 7 - settlement edit gate does not overwrite QuantityControl bounds
+ok 8 - cart payload is normalized and detached from authority state
+ok 9 - cart add merges stackables and rejects duplicate singles
+ok 10 - cart quantity changes are immutable and remove at zero
+ok 11 - cart totals ignore catalog entries that disappeared
+ok 12 - checkout preview requires the complete v1 authority envelope
+ok 13 - cart controller emits replacement intent and never owns authority
+ok 14 - owned slot refs preserve lease and physical identity
+ok 15 - owned snapshot presentation distinguishes lock, filter and capacity
+ok 16 - tooltip keys naturally invalidate on lease changes
+ok 17 - tooltip fact models use canonical presentation fields only
+ok 18 - owned presenters never alias internal name into display or icon identity
+ok 19 - tooltip balance metadata is confirmed-only and player-facing
+ok 20 - KShop protocol preserves an all-distinct identity triple
+ok 21 - KShop tooltip accepts optional Host document without loosening catalog identity
+ok 22 - KShop protocol rejects request extras and wrong scalar types
+ok 23 - KShop protocol rejects an extra catalog leaf
+ok 24 - KShop protocol rejects missing, blank and undefined identity fields
+ok 25 - KShop protocol rejects near-match identity and wrong selector echo
+ok 26 - KShop protocol adopts only an authority-bounded saved cart
+ok 27 - KShop protocol rejects a commit with the wrong balance postcondition
+ok 28 - KShop protocol binds refreshed checkout catalog to delivered identity and price
+ok 29 - claim write coordinator treats every capacity zero-write rejection as definitive
+ok 30 - procurement navigation init binds the exact KShop catalog identity
+ok 31 - procurement return message and failure receipt are exact
+ok 32 - presenter modules contain no mux, bridge or authority coordinator
+ok 33 - facade initializes after the documented module load order
+ok 34 - KShop facade stays below the physical slimming gate
+ok 35 - KShop protocol claim v1 requires the exact fingerprint triple binding
+ok 36 - KShop protocol claimBatch normalize gates the frozen ordered rows
+ok 37 - KShop protocol sanitizePurchased requires a lexically valid rowFingerprint
+ok 38 - KShop protocol claim success rebases duplicate ordinals like the AS2 epoch
+ok 39 - KShop protocol claimBatch fresh and replay proofs are independent at Web
+ok 40 - claimBatch write coordinator stays exclusive and reconciles unknown results
+ok 41 - claimBatch write coordinator treats definitive failures without reconcile
+KShop presenter tests passed: 41/41

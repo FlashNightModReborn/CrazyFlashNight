@@ -78,11 +78,15 @@
         node.removeAttribute('data-tuning-source-base-aria-disabled');
     }
 
-    function projectLoadoutDisabled(node, locked) {
+    function projectLoadoutDisabled(node, locked, customizationMode) {
         captureLoadoutDisabled(node);
-        var eligible = node.getAttribute('data-slot-kind') !== 'drug'
-            && node.getAttribute('data-empty') !== 'true'
-            && node.getAttribute('data-blocked') !== 'true';
+        var slotKind = node.getAttribute('data-slot-kind');
+        var eligible = slotKind === 'drug'
+            ? (customizationMode === true && node.getAttribute('data-blocked') !== 'true'
+                && (node.getAttribute('data-empty') !== 'true'
+                    || node.hasAttribute('data-emergency-bound')))
+            : (node.getAttribute('data-empty') !== 'true'
+                && node.getAttribute('data-blocked') !== 'true');
         var baseDisabled =
             node.getAttribute('data-tuning-source-base-disabled') === 'true';
         node.disabled = baseDisabled || locked || !eligible;
@@ -91,6 +95,7 @@
 
     function projectLoadout(root, slotKey, locked) {
         if (!root) return null;
+        var customizationMode = root.getAttribute('data-build-tuning-mode') === 'customization';
         var nodes = root.querySelectorAll('.character-build-slot');
         var marked = null;
         for (var i = 0; i < nodes.length; i++) {
@@ -99,7 +104,7 @@
                 marked = mark(nodes[i], false);
             }
             if (locked === true || locked === false) {
-                projectLoadoutDisabled(nodes[i], locked);
+                projectLoadoutDisabled(nodes[i], locked, customizationMode);
             } else {
                 restoreLoadoutDisabled(nodes[i]);
             }

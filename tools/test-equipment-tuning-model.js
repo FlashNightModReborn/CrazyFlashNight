@@ -146,6 +146,8 @@ equal(Model.previewIntentKey('replace_mod', {candidateKey:'new',replaceCandidate
 equal(Model.isOperation('detach_all_mods'), true, 'all-mod detach is supported');
 equal(Model.isOperation('formula'), false, 'unknown operation rejected');
 equal(Model.isOperationGroup('replace_mod'), false, 'replacement stays inside mod top-level group');
+equal(Model.errorMessage('commit_failed'), '调制提交结果尚未确认，请先刷新对账。', 'commit failure never claims no write');
+equal(Model.errorMessage('needs_reconcile'), '上次提交结果尚未确认，请先刷新对账。', 'unknown outcome directs reconciliation');
 equal(Model.errorMessage('level_locked'), '调制后的装备需要更高角色等级。',
     'loadout post-state level rejection has a specific player-facing message');
 equal(Model.errorMessage('insufficient_material', {materialShortage:{itemName:'强化石',required:13,owned:5,missing:8}}),
@@ -357,7 +359,7 @@ equal(
     /if \(includeStats\)[\s\S]*?projection\.stats = EquipmentStatProjector\.project/.test(
         equipmentProjectionSource
     )
-        && /buildEquipmentProjection\(source\.item, afterSource, source\.item\.lastUpdate, true\)/.test(
+        && /buildEquipmentProjection\(source\.item, afterSource, source\.item\.lastUpdate, true, afterData\)/.test(
             tuningServiceSource
         ),
     true,

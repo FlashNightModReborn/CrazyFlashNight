@@ -26,8 +26,8 @@ def validate_parameters(params):
         for key, value in profile.items():
             if isinstance(value, (int, float)) and (not math.isfinite(value) or value <= 0):
                 raise ValueError("invalid positive model parameter: " + key)
-        for key in ["pulseFrames", "ammoMaxPerSlotPulse"]:
-            if profile[key] != int(profile[key]):
+        for key in ["pulseFrames", "ammoMaxPerSlotPulse", "ammoMinMpPerRound"]:
+            if key in profile and profile[key] != int(profile[key]):
                 raise ValueError("fractional discrete parameter: " + key)
         if not 0 < profile["ammoReserveRatio"] < 1:
             raise ValueError("invalid ammo reserve")
@@ -77,7 +77,8 @@ def strip_comments(text):
 def load_items():
     result = {}
     for file in ["防具_20-39级.xml", "防具_40+级.xml", "武器_刀_直剑.xml",
-                 "武器_手枪_冲锋枪.xml", "武器_长枪_压制机枪.xml", "武器_长枪_机枪.xml",
+                 "武器_手枪_冲锋枪.xml", "武器_手枪_手枪.xml", "武器_手枪_发射器.xml", "消耗品_弹夹.xml",
+                 "武器_长枪_压制机枪.xml", "武器_长枪_机枪.xml",
                  "武器_刀_长柄.xml", "武器_刀_默认.xml", "武器_刀_短兵.xml", "武器_刀_刀剑.xml", "防具_颈部装备.xml"]:
         for item in ET.fromstring(read("data/items/" + file)).findall("item"):
             name = item.findtext("name")
@@ -117,8 +118,88 @@ def data(name, enhancement=1, tier="data"):
     return out
 
 
+def ammo_mp_cost(name, profile, capacity=None, clipname=None):
+    """Ordinary magazine share; extra chambers/rewards never dilute unit cost."""
+    if "ammoMpPerGold" not in profile:
+        return profile["ammoMpPerRound"]  # Frozen pre-#276 comparison profiles.
+    attrs = data(name)
+    cap = attrs["capacity"] if capacity is None else capacity
+    ammo = ITEMS.get(attrs.get("clipname") if clipname is None else clipname)
+    try:
+        price = float(ammo.findtext("price", "nan")) if ammo is not None else math.nan
+    except (TypeError, ValueError):
+        return None
+    fixed = attrs.get("ammoSynthesisMpPerRound")
+    if (not isinstance(cap, (int, float)) or not math.isfinite(cap) or cap <= 0 or cap != int(cap)
+            or ammo is None or ammo.findtext("use") != "弹夹" or not math.isfinite(price) or price <= 0
+            or (fixed is not None and (not isinstance(fixed, (int, float)) or not math.isfinite(fixed)
+                or fixed <= 0 or fixed != int(fixed)))):
+        return None
+    return max(profile["ammoMinMpPerRound"], fixed if fixed is not None
+               else math.ceil(price * profile["ammoMpPerGold"] / cap))
+
+
 def growth(lo, hi, level):
     return max(1, math.floor(lo + (hi - lo) * level / 59))
+
+
+class EmergencyState:
+    """One authorized self-heal slot; explicit final-HP events, no enemy AI or save writes."""
+
+    def __init__(self, hp_max, item="大HP药剂", stock=3, alchemy=0, enabled=False):
+        source = read("scripts/类定义/org/flashNight/arki/unit/Action/Skill/EmergencyInjectionService.as")
+        self.trigger = float(re.search(r"TRIGGER_RATIO:Number\s*=\s*([.\d]+)", source)[1])
+        self.reset = float(re.search(r"RESET_RATIO:Number\s*=\s*([.\d]+)", source)[1])
+        drug = next(row for row in ET.fromstring(read("data/items/消耗品_药剂.xml"))
+                    if row.findtext("name") == item)
+        effect = drug.find("data/effects/effect[@type='heal']")
+        if effect is None or effect.get("target") != "self":
+            raise ValueError("model supports explicit self-heal potions only")
+        base = float(effect.get("hp"))
+        self.heal = base + min(math.floor(base * alchemy * .05), 500)
+        self.price = float(drug.findtext("price"))
+        self.hp_max = self.hp = hp_max
+        self.stock, self.enabled = stock, enabled
+        self.used = False
+        self.doses = self.gold = 0
+        self.trace = []
+
+    def event(self, *, damage=0, healing=0, shield_broken=True, ready=True, prohibited=False):
+        before = self.hp
+        self.hp = max(0, min(self.hp_max, before - damage + healing))
+        if self.hp >= self.hp_max * self.reset:
+            self.used = False
+        if (self.enabled and 0 < self.hp < before and self.hp <= self.hp_max * self.trigger
+                and not self.used and shield_broken and ready and not prohibited and self.stock > 0):
+            self.used = True
+            self.hp = min(self.hp_max, self.hp + self.heal)
+            self.stock -= 1
+            self.doses += 1
+            self.gold += self.price
+            if self.hp >= self.hp_max * self.reset:
+                self.used = False
+        self.trace.append({"hpBefore": before, "damage": damage, "externalHealing": healing,
+                           "hpAfter": self.hp, "doses": self.doses, "stock": self.stock,
+                           "crisisUsed": self.used, "goldSpent": self.gold})
+        return self.hp
+
+
+def emergency_report():
+    cases = {}
+    for label, hp_max, events in [
+        ("two_independent_hits", 1000, [dict(damage=700), dict(damage=700, ready=False)]),
+        ("single_lethal_aggregate", 1000, [dict(damage=1400)]),
+        ("small_heal_does_not_rearm", 5576, [dict(damage=4500), dict(damage=500)]),
+        ("recovery_then_new_crisis", 5576, [dict(damage=3000), dict(damage=1600)])
+    ]:
+        state = EmergencyState(hp_max, enabled=True)
+        for event in events:
+            state.event(**event)
+        cases[label] = state.trace
+    return {"status": "offline_final_HP_sequence_only; not native acceptance",
+            "triggerRatio": state.trigger, "resetRatio": state.reset,
+            "potion": "大HP药剂", "baseHeal": state.heal, "unitGold": state.price,
+            "cases": cases}
 
 
 def build(set_id, level, enhancement, weapons=(), sword_tier="data_4", doom=False):
@@ -330,8 +411,10 @@ def effective_weight(b, p, shield):
 
 
 class EnergyState:
-    def __init__(self, b, p, mp_ratio=1, hp_ratio=1):
+    def __init__(self, b, p, mp_ratio=1, hp_ratio=1, weapons=("钛合金P90", "钛合金P90")):
         self.b, self.p = b, p
+        self.capacities = [data(name)["capacity"] for name in weapons]
+        self.ammo_costs = [ammo_mp_cost(name, p) for name in weapons]
         self.hp, self.mp = b["hpMax"] * hp_ratio, b["mpMax"] * mp_ratio
         self.initial_hp = self.hp
         self.initial_mp = self.mp
@@ -342,6 +425,7 @@ class EnergyState:
         self.maximum, self.strength, self.repair_per_second = shield_spec(b, p)
         self.paid = False
         self.generated = self.spent = self.healed = self.charged = self.absorbed = self.synthesized = 0.0
+        self.ammo_spent = 0.0
         self.startups = self.breaches = 0
         self.shot = [0, 0]
         self.hp_damage = self.self_damage = 0.0
@@ -365,10 +449,10 @@ class EnergyState:
         self.spent += cost
 
     def pistol_fire(self, slot, extra_mp=0):
-        if self.hp <= 0 or self.shot[slot] >= 50:
+        if self.hp <= 0 or self.shot[slot] >= self.capacities[slot]:
             return False
         self.shot[slot] += 1
-        base_mp = self.p["ammoMpPerRound"] if self.p.get("baseAmmoCycleEnabled") else 0
+        base_mp = self.p["shotMpRefund"] if self.p.get("baseAmmoCycleEnabled") else 0
         amount = max(0, min(base_mp + extra_mp, self.b["mpMax"] - self.mp))
         self.mp += amount
         self.generated += amount
@@ -422,10 +506,12 @@ class EnergyState:
                 return
         if reloading:
             return
-        for slot in sorted([0, 1], key=lambda s: (-self.shot[s], s)):
+        eligible = [slot for slot in [0, 1] if self.ammo_costs[slot] is not None]
+        for slot in sorted(eligible, key=lambda s: (self.ammo_costs[s], -self.shot[s], s)):
             available = max(0, self.mp - b["mpMax"] * p["ammoReserveRatio"])
-            n = min(self.shot[slot], math.floor((available + 1e-9) / p["ammoMpPerRound"]), p["ammoMaxPerSlotPulse"])
-            self.spend(n * p["ammoMpPerRound"])
+            n = min(self.shot[slot], math.floor((available + 1e-9) / self.ammo_costs[slot]), p["ammoMaxPerSlotPulse"])
+            self.spend(n * self.ammo_costs[slot])
+            self.ammo_spent += n * self.ammo_costs[slot]
             self.shot[slot] -= n
             self.synthesized += n
 
@@ -435,7 +521,7 @@ class EnergyState:
         assert abs(self.initial_hp + self.healed - self.hp_damage - self.self_damage - self.hp) < 1e-5
         assert -1e-7 <= self.mp <= self.b["mpMax"] + 1e-7
         assert 0 <= self.hp and math.isfinite(self.hp)
-        assert all(0 <= n <= 50 for n in self.shot)
+        assert all(0 <= n <= cap for n, cap in zip(self.shot, self.capacities))
 
 
 def run_pressure(profile, pressure, contact=1.0, mp_ratio=1.0, order="hit_pulse_fire", return_mp_ratio=None, build_override=None):
@@ -573,6 +659,53 @@ def compensation_projection(configured):
             "scope": PARAMS["bloodCompensationAnchor"]["scope"]}
 
 
+def ammo_economy_report():
+    """Ideal 30FPS, full-shield, zero-reserve-ammo projection; not field DPS."""
+    profile = PARAMS["profiles"][PARAMS["runtimeProfile"]]
+    names = ["P90", "钛合金P90", "MP5战术版", "战术版MGL", "沧蓝陨铁手炮", "M79式榴弹发射器", "加农手炮"]
+    prices = [{"weapon": name, "capacity": data(name)["capacity"], "clipname": data(name)["clipname"],
+               "packPrice": float(ITEMS[data(name)["clipname"]].findtext("price")),
+               "mpPerRound": ammo_mp_cost(name, profile)} for name in names]
+    drugs = ET.fromstring(read("data/items/消耗品_药剂.xml"))
+    potion = next(item for item in drugs.findall("item") if item.findtext("name") == "大MP药剂")
+    base_mp = float(potion.find("data/effects/effect[@type='heal']").get("mp"))
+    gold = float(potion.findtext("price"))
+    cooldown = float(re.search(r"吃药冷却时间\s*=\s*(\d+)", read("scripts/引擎/引擎_lsy_常数.as")).group(1))
+    mp_formula = read("scripts/类定义/org/flashNight/arki/item/drug/DrugContext.as").split("function calcMPWithAlchemy", 1)[1].split("}", 1)[0]
+    coefficient, cap = map(float, re.search(r"Math.min\(Math.ceil\(baseValue \* this.alchemyLevel \* ([\d.]+)\), (\d+)\)", mp_formula).groups())
+    trials = []
+    for name in ["战术版MGL", "加农手炮"]:
+        for seconds in [3, 10, 30, 60]:
+            for channels, alchemy in [(0, 0), (3, 0), (3, 10)]:
+                b = build("titanium_type_61_armor", 60, 13, ["血色光剑天秤", name, "钛合金P90", "钛合金QJZ171"])
+                state = EnergyState(b, profile, weapons=(name, "钛合金P90"))
+                state.pulse()
+                fire_frames = math.ceil(data(name)["interval"] / (1000 / PARAMS["fps"]))
+                drug_frames = math.ceil(cooldown / 1000 * PARAMS["fps"] / channels) if channels else None
+                potion_mp = base_mp + min(math.ceil(base_mp * alchemy * coefficient), cap)
+                shots = potions = recovered = wasted = 0
+                for frame in range(seconds * PARAMS["fps"]):
+                    if drug_frames and frame > 0 and frame % drug_frames == 0:
+                        actual = min(potion_mp, b["mpMax"] - state.mp)
+                        state.mp += actual
+                        state.generated += actual
+                        recovered += actual
+                        wasted += potion_mp - actual
+                        potions += 1
+                    if frame % fire_frames == 0:
+                        shots += state.pistol_fire(0)
+                    if (frame + 1) % int(profile["pulseFrames"]) == 0:
+                        state.pulse()
+                    state.check()
+                trials.append({"weapon": name, "seconds": seconds, "mpChannels": channels, "alchemy": alchemy,
+                               "shots": shots, "synthesized": state.synthesized, "ammoMpSpent": state.ammo_spent,
+                               "potions": potions, "goldSpent": potions * gold, "potionMpRecovered": recovered,
+                               "potionMpWasted": wasted, "mpFinal": state.mp, "mpMax": b["mpMax"]})
+    return {"status": "offline_projection_not_gameplay_acceptance", "rule": "max(3, ceil(packPrice * 3/8 / ordinaryCapacity)); P90 fixed 3",
+            "assumptions": "full shield, no incoming damage, no spare ammo/manual reload, ideal semi-auto input; staggered lanes; potion/fire/pulse order; starting magazines included",
+            "paidSustainedLauncherFireAllowed": True, "prices": prices, "trials": trials}
+
+
 def produce():
     # Hash the runtime sources behind the translated formulas, even when not parsed as constants.
     paths = ["scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as",
@@ -594,6 +727,10 @@ def produce():
              "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Dressup/EquipmentUtil/P90EnergyGenerator.as",
              "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ShootInitCore.as",
              "scripts/类定义/org/flashNight/arki/unit/Action/Regeneration/HealApplier.as",
+             "scripts/类定义/org/flashNight/arki/unit/Action/Skill/EmergencyInjector.as",
+             "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/UnifiedType61Runtime.as",
+             "scripts/类定义/org/flashNight/arki/unit/Action/Skill/DrugInputService.as",
+             "scripts/类定义/org/flashNight/arki/item/drug/DrugContext.as",
              "scripts/类定义/org/flashNight/arki/unit/UnitUtil.as", PARAMS["boss"]["source"]]
     for path in paths:
         read(path)
@@ -639,7 +776,10 @@ def produce():
                                    "baseHealingPerSecond": base_heal,
                                    "continuousBreachedEquilibriumMissingRatio": equilibrium_missing / b["hpMax"],
                                    "status": "local_continuous_MP_sufficient_analysis; zero_missing_returns_to_reboot; no_enemy_pressure"})
-    return {"status": PARAMS["status"], "parameters": PARAMS,
+    economy = ammo_economy_report()
+    emergency = emergency_report()
+    return {"status": PARAMS["status"], "parameters": PARAMS, "ammoEconomy": economy,
+            "emergencyInjection": emergency,
             "sourceHashes": {s: hashlib.sha256((ROOT / s).read_bytes()).hexdigest() for s in sorted(SOURCES)},
             "armorMatrix": armor_matrix(p), "swordSaint": saint, "configuredReference": reference_result, "bossContact": damage,
             "topArmorRaw": build("golden_knight_garo", 60, 13),
@@ -714,6 +854,24 @@ def markdown(result):
     for r in result["bloodCompensation"]["pressure"]:
         ttk = f"{r['bossTtk']:.2f}" if r["bossTtk"] is not None else "未击杀"
         lines.append(f"| {r['pressure']} | {r['alive']} | {ttk} | {r['elapsed']:.2f} |")
+    lines.append("")
+    lines += ["## #276 弹药经济", "", "每发先向上取整，最低3MP；钛合金P90固定3MP。发射返蓝固定3MP，与弹药价格分离。允许持续付药钱维持发射器输出。", "",
+              "| 武器 | 普通弹容 | 弹药包金币 | 每发MP |", "|---|---:|---:|---:|"]
+    for row in result["ammoEconomy"]["prices"]:
+        lines.append(f"| {row['weapon']} | {row['capacity']:.0f} | {row['packPrice']:.0f} | {row['mpPerRound']:.0f} |")
+    lines += ["", "以下为满盾、无受击、零备用弹药、理想半自动输入的离线投影，包含初始弹匣；药剂溢出按MP上限丢弃，不代表实机DPS或护盾在线率。", "",
+              "| 武器 | 秒数 | 蓝药通道 | 炼金 | 发射 | 合成 | 药剂 | 药费金币 | 剩余MP |", "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    for row in result["ammoEconomy"]["trials"]:
+        lines.append(f"| {row['weapon']} | {row['seconds']} | {row['mpChannels']} | {row['alchemy']} | {row['shots']} | {row['synthesized']:.0f} | {row['potions']} | {row['goldSpent']:.0f} | {row['mpFinal']:.0f} |")
+    lines.append("")
+    emergency = result["emergencyInjection"]
+    lines += ["## #61 共用应急注射", "",
+              "离线最终HP事件序列；护盾、冷却与禁药为显式输入，不模拟敌人或存档事务。默认关闭；两套采用同一危机规则。",
+              f"触发{emergency['triggerRatio']:.0%}，复位{emergency['resetRatio']:.0%}；{emergency['potion']}基础回复{emergency['baseHeal']:.0f}HP，每份{emergency['unitGold']:.0f}金币。", "",
+              "| 序列 | 最终HP | 份数 | 药费 |", "|---|---:|---:|---:|"]
+    for name, events in emergency["cases"].items():
+        row = events[-1]
+        lines.append(f"| {name} | {row['hpAfter']:.0f} | {row['doses']} | {row['goldSpent']:.0f} |")
     lines.append("")
     return "\n".join(lines)
 

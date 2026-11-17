@@ -24,6 +24,7 @@ class org.flashNight.arki.ui.EggSelectPanelService {
         if (_root.gameCommands == undefined) _root.gameCommands = {};
         _root.gameCommands["eggSelectSnapshot"] = function(params) { org.flashNight.arki.ui.EggSelectPanelService.handle("snapshot", params); };
         _root.gameCommands["eggSelectEnter"] = function(params) { org.flashNight.arki.ui.EggSelectPanelService.handle("enter", params); };
+        _root.gameCommands["openEggStageSelectForAgent"] = function():Boolean { return _root._agentHarnessActive === true && org.flashNight.arki.ui.EggSelectPanelService.openPanel(); };
     }
 
     public static function openPanel():Boolean {

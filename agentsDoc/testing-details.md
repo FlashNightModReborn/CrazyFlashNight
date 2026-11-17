@@ -468,6 +468,8 @@ Native 绘制变更检查 `NativeGuidanceVisualTests` 的实际像素、原场�
 
 显示就绪修正（最后核对代码基线：commit `b98b6303aa409e76086e50f24cb1cfed00408204` 加 2026-10-14 工作区）增加 `SceneTransitionResumeTests`。AS2 suite 覆盖背景未完成、成功烘焙先于原容器卸载、真实帧边界、错误目标、同路径新 ticket、世界身份替换、加载失败/同步拒绝/期限及迟到回调；Host 覆盖新揭幕捕获围栏、保留关闭画面、等待期间重复 close、foreign scene、新过场取代和唯一焦点尾部；浏览器验证报告在 exact Host close 前保留且 inert，旧/foreign close 不隐藏新视图。上述夹具不等于实际 Flash 背景加载或游戏物理像素验收。
 
+普通面板与过场争用另跑 `PanelHostSceneTransitionAdmissionTests`：新世界已创建但 fresh reveal 尚未完成时，帮助/构筑不能暂停世界；Web 已回 revealed 仍须等待 AS2 的 exact hide。覆盖最后意图替换、旧请求 hide、其他业务屏障、丢弃/销毁、tracked 与 exact replace 零副作用拒绝，以及 exact 并行报告/intro 的既有例外。v3 漫画接管后的退役时间线另核原接续、延后意图释放和 `IntroFocusRestoreTests`，不能把漫画焦点恢复再次锁成加载屏障。实机应在进图后首个战斗快照立即请求帮助或构筑，保存 actual candidate 身份、暂停状态、fresh frame→revealed→hide→面板开窗的时序；普通延后开窗通过不能代签这个竞争窗口。
+
 静态空场揭幕追加 `WorldCompositorTests`：重绘回执本身不能授予呈现资格，同场景新请求、不同场景、未就绪状态和源重置均不得继承旧回执，非有限或早于请求的时间戳须失败。调色提交只有在同一场景已有明确新鲜帧请求时才追加重绘；无请求、其他场景和源重置后的调色都不得触发。实机检查须绑定实际 candidate，记录主动重绘、后续新捕获及真实揭幕的顺序；仅有 AS2 帧率、native Present 次数或机器重启不能证明捕获已推进。
 
 背景来源先运行 `node tools/generate-scene-transition-catalog.js --check`；AS2 运行 `scripts/run-scene-transition-tests.ps1`，时间轴/初始化交接另运行 `node tools/test-scene-transition-stage-entry.js` 执行生产第 17 帧和副本 admission 的公共控制流子集，该源码夹具不替代真实 AVM1 或游戏旅程。Host 定向 `SceneTransitionTaskTests`，Web 运行 `node tools/test-scene-transition.js`；并行报告追加 `node launcher/web/modules/loot/dev/run-harness.js`，核原完整 View/生产 CSS、预览零业务命令、covered 后既有 Loot/库存提前操作、exact 实例准入、原帮助/关闭和每请求只接通一次。加载结束须保持同一 DOM/Core/HWND、阅读状态和业务模型，仅更新就绪能力；不以四项状态复制替代共用页面。未知 claim/close、失败重试、场景编号变化及重复 hide 均须覆盖。共享合成窗口和世界指针路由变化追加 `launcher/tests/run_tests.ps1` 全量回归；实际合成使用 `tools/run-scene-transition-smoke.ps1 -OutputDirectory <新的 tmp 子目录> -CandidateRoot <隔离候选目录>`，先核完整性并绑定该候选 DLL，与 GUI 编译/其他窗口测试错开。
@@ -687,11 +689,13 @@ Reward 未知写查询、O1 观测与存档闭包合同见 [持久写与恢复](
 
 **钛合金原型离线模型**：运行 `python -X utf8 -B tools/cf7-balance-tool/models/ti61/test_model.py`、同目录 `model.py` 与 `model.py --check`；[建模记录](../docs/钛合金61式套装-原型建模-2026-09-08.md) 区分设计投影与实机验收。
 
-**钛合金反馈增量（2026-09-10）**：`scripts/run-titanium-set-tests.ps1 -TimeoutSeconds 900`（机器钉死 233/233），覆盖真实复活入口、血剑强化盾量、真伤与高危闪避、起跳保护、砸地一次配给与八秒计时、取消/死亡/卸装清理、171 易伤/击溃及副仓，并覆盖破盾血剑投射、战技联弹与固定增伤。`scripts/run-blood-sword-tests.ps1`（机器钉死 95/95）追加加载真实 things0 血浪容器，检查七波发射、区域定位、视觉无额外扣血与取消；
+**钛合金反馈增量**：`scripts/run-titanium-set-tests.ps1 -TimeoutSeconds 900`（机器计数以该runner为准），覆盖真实复活入口、血剑强化盾量、真伤与高危闪避、起跳保护、砸地一次配给与八秒计时、取消/死亡/卸装清理、171 易伤/击溃及副仓，并覆盖破盾血剑投射、战技联弹与固定增伤。#276追加真实弹药/四款发射器、逐发取整、P90固定成本、普通弹容与留膛隔离、非法价格/价格漂移拒绝和低成本槽优先；真实血剑数据只在相应夹具启用，不能污染基础盾量基准。`scripts/run-blood-sword-tests.ps1`（机器钉死 95/95）追加加载真实 things0 血浪容器，检查七波发射、区域定位、视觉无额外扣血与取消；
 第五版收尾微调新增 44 帧一次释放、9 帧独立余迹、完整父变换、真实特效池、null 返回与世界卸载；不以旧 70/84/85 项记录代替，也不代签人类观感。`node tools/ti61-feedback/check_blood_wave.js` 的 10 项直接执行生产资源/路由函数体，只是 Node 合同验证。改共享输入/装填另跑手动输入 runner，改 171 开火接线另跑武器动画 runner。业务逻辑发布 asLoader；战技与图标独立发布 things0，核对新鲜 Compiler、Output、SWF 实际解压与新增导出/帧脚本，零编译错误不替代产物可读性。
 参数、证据与玩家实战清单见 [施工记录](../docs/钛合金61反馈调整-施工与验收-2026-09-10.md)；旧 S1/S2 基线见 [套装 ADR §17](../docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md#17-首轮运行反馈满血初始盾与红束火控)，focused 测试不代签正式入口体验。
 
 **血剑迁移**：另跑 `scripts/run-blood-sword-tests.ps1`（真实血剑/血浪与余波原 84 项，追加百分比自损及残血支付 11 项，共 95 项，机器钉死）；第五版视觉历史验收见 [迁移记录](../docs/血色光剑天秤-R04材质与装备脚本迁移-2026-09-08.md)，自损试点见 [反馈调整记录](../docs/钛合金61反馈调整-施工与验收-2026-09-10.md)。
+
+**两套61共用应急注射**：`scripts/run-emergency-injection-tests.ps1 -TimeoutSeconds 600`钉死当前67项，真实AVM1覆盖独立伤害间喝药、单笔/聚合/终结致死、默认关闭、物理槽与药名授权、跨组同列冷却、禁药、失败不重放、药效重入和跨场景危机记忆，并输出实际安装过访问器的性能对照；真实`DrugInventory`无dispatcher时也须在原子A→B→A提交点同步撤权，降低最大HP不能作为治疗复位。修改共用消费入口同时跑手动输入；修改两套资格分别跑`titanium-set`和`unified61-set`；授权协议另跑完整`character-build`、Host CharacterBuild测试、Web session和两种构筑浏览器harness。实机必须用独立`cf7_agent_*`槽，在真实构筑界面授权、验证两套各自破盾后的真实药效/扣量并保存重开，不能用离线模型或前一批#276证明。参数、接口与发布边界见[ADR §9](../docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md#9-应急自动注射器)。
 
 **枪械激光**：另跑 `scripts/run-weapon-laser-tests.ps1`（机器钉死 WeaponLaserSightTest 97/97；文本「三槽位 89 项」为历史），见 [激光记录](../docs/P90印花集与钛合金61式共用激光装配-2026-09-07.md)。
 

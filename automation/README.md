@@ -456,6 +456,7 @@ python ..\tools\missile-tuning-sim\run_sim.py scan --base-config cruise --object
 ## 7. 相关文档
 
 - 启动 / 运行与子系统细节：[`launcher/README.md`](../launcher/README.md)
+- 全流程后台与锁屏 E2E 测试线束（`cf7_harness` MCP）：[`tools/cf7-agent/README.md`](../tools/cf7-agent/README.md#agent-harness-mcp)
 - 测试矩阵：[`agentsDoc/testing-guide.md`](../agentsDoc/testing-guide.md#select)
 - Flash 编译 smoke：[`scripts/FlashCS6自动化编译.md`](../scripts/FlashCS6自动化编译.md)
 - 离线导弹调优：[`tools/missile-tuning-sim/README.md`](../tools/missile-tuning-sim/README.md)

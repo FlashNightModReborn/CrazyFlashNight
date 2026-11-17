@@ -1,0 +1,277 @@
+{
+  "sourceCommit": "db6d3d248b80b80651987c99557c4e83b56f9301",
+  "root": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\b\\resources",
+  "modules": [
+    {
+      "module": "resident",
+      "file": "scripts/asLoader.swf",
+      "swfBytes": 90511,
+      "swfSha256": "aeee997bba6a770e57e636a8316f1823b44108d5b9c75728457fae38abbe5f52",
+      "classCount": 1,
+      "classInitializerActionBytes": 85852,
+      "tooltipInitializerActionBytes": 0,
+      "tooltipClasses": []
+    },
+    {
+      "module": "shared",
+      "file": "scripts/asLoaderShared.swf",
+      "swfBytes": 2977445,
+      "swfSha256": "3c2a4d593e330567b24b280b09eaf11cee439e1ef8a86943119835eabaaa82dd",
+      "classCount": 338,
+      "classInitializerActionBytes": 2927347,
+      "tooltipInitializerActionBytes": 0,
+      "tooltipClasses": []
+    },
+    {
+      "module": "boot",
+      "file": "scripts/asLoaderLogic.swf",
+      "swfBytes": 3987878,
+      "swfSha256": "efffec8c939b1562d2dc167bf8476af1d48ac9c693b7aeb2069cec902595ce6e",
+      "classCount": 464,
+      "classInitializerActionBytes": 3011896,
+      "tooltipInitializerActionBytes": 189231,
+      "tooltipClasses": [
+        {
+          "fqn": "org.flashNight.gesh.tooltip.NativeTooltipBridge",
+          "spriteId": 54,
+          "actionBytes": 4816,
+          "actionSha256": "e3d670169f022fa9d608c77ba4ad1ef4dadc219d9c9cdabe8fede30d90062883"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.NativeTooltipDocument",
+          "spriteId": 62,
+          "actionBytes": 16778,
+          "actionSha256": "6bbcea0dfb769d8c0ff13dd8b1d82ffe3b66d307edac48aeef857aa11d661fe1"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.TooltipConstants",
+          "spriteId": 63,
+          "actionBytes": 11116,
+          "actionSha256": "b9c32bb1714eafb76571d9175a3c053ee0b4df471c47ef2459bcd6fb7ccece5b"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.SkillTooltipComposer",
+          "spriteId": 64,
+          "actionBytes": 1429,
+          "actionSha256": "b6616e86384d55437b10d9217d38a6cc4537964f6df7d6a434c1f6fc8db07c70"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.TooltipComposer",
+          "spriteId": 320,
+          "actionBytes": 6980,
+          "actionSha256": "9bf81e16aa6942fde60ca63c0159d7eadffe68494d73c6f7ac24eedfafce29f2"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.TooltipTextBuilder",
+          "spriteId": 321,
+          "actionBytes": 18000,
+          "actionSha256": "a2d95cb87712a026e4668982eeb1d439f20605a5174cc569e356d9afd6708433"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.TooltipFormatter",
+          "spriteId": 322,
+          "actionBytes": 4686,
+          "actionSha256": "f8eb2fee16115e60fce892a1317184cddf51bedd49a96e52622bcf3c2231b0ea"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.ItemUseTypes",
+          "spriteId": 323,
+          "actionBytes": 1146,
+          "actionSha256": "e9fe5875854f2fdf6691ec355da2f5842eec788fbfde2e9aa51517c2d06d8042"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder",
+          "spriteId": 324,
+          "actionBytes": 9817,
+          "actionSha256": "205a09a9faf62b22dbca191f72be681bb98835533c3911eac8c00a278fa3ccc0"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.UpgradePathBuilder",
+          "spriteId": 325,
+          "actionBytes": 7004,
+          "actionSha256": "9268ee03d7c20b762f74cfe4126396e3a6185a9f3cdc1583a8a37a561bdb1874"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer",
+          "spriteId": 326,
+          "actionBytes": 1630,
+          "actionSha256": "fb41f47e8874d37d3f291f19ec5bf0ab5f1d2bb0aa83a4739405817f0cde374b"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipRegistry",
+          "spriteId": 327,
+          "actionBytes": 3894,
+          "actionSha256": "8fd0af53f76b137d5ba632ba78cf715fb65015950639042089b500e455ba1365"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.IDrugTooltipBuilder",
+          "spriteId": 328,
+          "actionBytes": 638,
+          "actionSha256": "4383b2978678e40fbd94b65309dc4073f4d1727251589c0f55229f7044b4aa24"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.builders.HealTooltipBuilder",
+          "spriteId": 329,
+          "actionBytes": 2384,
+          "actionSha256": "b7233a5400e033ad120fd86ced747e1015fa0549b8995cf632aac69020fcb928"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipUtil",
+          "spriteId": 330,
+          "actionBytes": 1511,
+          "actionSha256": "e64ea8c047c5c0c6f4e32d1a7816b26e71574d1d463fc9ebbe25e8e3d589eb36"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.builders.RegenTooltipBuilder",
+          "spriteId": 331,
+          "actionBytes": 3089,
+          "actionSha256": "ac2ffd4ff7a73165c40e91a8e3ae2134fd0533a15dc965472b2a8358b9feffe6"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.builders.StateTooltipBuilder",
+          "spriteId": 332,
+          "actionBytes": 1920,
+          "actionSha256": "82a6e6320c02b1035987317130231dfd22790f7840346677ecdaed9766c19fc8"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.builders.PurifyTooltipBuilder",
+          "spriteId": 333,
+          "actionBytes": 1488,
+          "actionSha256": "7aff56034e1300697e3ceea3a9c79f12167af823bbda2b3fabe7c1030e9eae85"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.builders.BuffTooltipBuilder",
+          "spriteId": 334,
+          "actionBytes": 2159,
+          "actionSha256": "9ce995be7b8e993fc70f1569fffc5f7549335e36ad2ed3090b1a990586255827"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.builders.ToughnessBuffTooltipBuilder",
+          "spriteId": 335,
+          "actionBytes": 1743,
+          "actionSha256": "b5176d1d0e156d6dda42232458b20d1635b9a67f52502172de4d0858565e4b17"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.builders.ResistanceBuffTooltipBuilder",
+          "spriteId": 336,
+          "actionBytes": 2501,
+          "actionSha256": "4e1281fd0577ac186e6f48065e3c65199750b8fd6e17b59809c64bce5ef441c8"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.builders.ToughnessRestoreTooltipBuilder",
+          "spriteId": 337,
+          "actionBytes": 1404,
+          "actionSha256": "851862e64a0c39fe081b68ad44108e6e676afa3a568cc49bf2be6d8ea20b0c41"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.drug.builders.GrantItemTooltipBuilder",
+          "spriteId": 338,
+          "actionBytes": 2067,
+          "actionSha256": "75c57ee670a25fe4171ab78e1103954614d929cba56d7316d1ab68a99c48b5bf"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.TooltipDataSelector",
+          "spriteId": 339,
+          "actionBytes": 1132,
+          "actionSha256": "93b00da5a64788772fd449ba65f74c4404245f423893afba62ba7916d36e4056"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer",
+          "spriteId": 340,
+          "actionBytes": 1958,
+          "actionSha256": "52d342c9d25915f634d190027e5a3d82f588e47e028adffb3b549969bfc47aca"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.MeleeStatsBuilder",
+          "spriteId": 341,
+          "actionBytes": 3124,
+          "actionSha256": "475af60e4d08d7284fafe4867381d9154668972668dc125c79adb952bc186e15"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.GrenadeStatsBuilder",
+          "spriteId": 342,
+          "actionBytes": 859,
+          "actionSha256": "a95ae8e25d0e68d8ac3601dcadd4a6ad792f65962e6a5c17835316ca58a90beb"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.GunStatsBuilder",
+          "spriteId": 343,
+          "actionBytes": 6462,
+          "actionSha256": "7a9afec9d4ead46037b911f937cbf0587129bc35704ed515dfb5318ebcfc8660"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.WeaponAmmoInfoBuilder",
+          "spriteId": 344,
+          "actionBytes": 2107,
+          "actionSha256": "ce89031c760f49555390a1a9f7a0a455052dfd163d42f9ff9ff3cb8b1fcea9e5"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder",
+          "spriteId": 345,
+          "actionBytes": 3537,
+          "actionSha256": "1284568204d30cf09ca9642d37086601b9ac317c774c3f3d3646c0b4e262b1ec"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.CommonStatsBuilder",
+          "spriteId": 346,
+          "actionBytes": 2745,
+          "actionSha256": "67b0c7d0eb443bdb76dc1696e1c11dac4cf0ed68f54df57df111db8de3ddb37c"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.CriticalBlockBuilder",
+          "spriteId": 347,
+          "actionBytes": 1334,
+          "actionSha256": "268d805dfcb003bdd06d201a2976fd0101753a2e327718f2f27de783ec4bb7ba"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.DamageTypeBuilder",
+          "spriteId": 348,
+          "actionBytes": 3677,
+          "actionSha256": "41b598828c9beae171d133898bbc0be255e642dfe21239585cd171862a7d21d8"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.ResistanceBlockBuilder",
+          "spriteId": 349,
+          "actionBytes": 2001,
+          "actionSha256": "e0457140701cb2925a89f0924868a0e252cdef2e62f3a874e33b08247a385581"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.ModStatBuilder",
+          "spriteId": 350,
+          "actionBytes": 13098,
+          "actionSha256": "45823508e438200ca8d090283abec6d63f4aba37393f08530a49c7c2e4e14c2c"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder",
+          "spriteId": 351,
+          "actionBytes": 22057,
+          "actionSha256": "41b9cee2c483d42dd36b58dc1efc64356fb96c4a43253e837471c0c0696371bb"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.SlayEffectBuilder",
+          "spriteId": 352,
+          "actionBytes": 1580,
+          "actionSha256": "e51babbeb86b76079cac96613fdab81a5ed65addc8efee6d64f4d5ba33c7fa48"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.TagSwitchStatsBuilder",
+          "spriteId": 353,
+          "actionBytes": 1527,
+          "actionSha256": "88996093567358512a6ecf803d7c511db44da692276ac2e9787e5d1b019121bc"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder",
+          "spriteId": 354,
+          "actionBytes": 4032,
+          "actionSha256": "5e156a0ceed590c674c007250c6a856931ccabfa7e31f998961fd1776531d151"
+        },
+        {
+          "fqn": "org.flashNight.gesh.tooltip.builder.ModsBlockBuilder",
+          "spriteId": 355,
+          "actionBytes": 9801,
+          "actionSha256": "a132258627885d27355a84b82c08beacb1c39f8b59ab47506ba3e3e967bf1618"
+        }
+      ]
+    }
+  ]
+}

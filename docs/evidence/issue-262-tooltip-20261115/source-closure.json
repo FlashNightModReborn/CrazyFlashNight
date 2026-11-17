@@ -1,0 +1,81 @@
+{
+  "schema": "cf7.tooltip-source-closure.v1",
+  "status": "PASS",
+  "baselineCommit": "db6d3d248b80b80651987c99557c4e83b56f9301",
+  "evidence": "source/static-only; AVM1, DoInitAction bytes and CS6 memory/time not measured",
+  "moduleClassCountsBefore": {
+    "resident": 1,
+    "shared": 338,
+    "boot": 464
+  },
+  "moduleClassCountsAfter": {
+    "resident": 1,
+    "shared": 338,
+    "boot": 429
+  },
+  "tooltipCountsBefore": {
+    "resident": 0,
+    "shared": 0,
+    "boot": 40
+  },
+  "tooltipCountsAfter": {
+    "resident": 0,
+    "shared": 0,
+    "boot": 5
+  },
+  "removedRegisteredClasses": [
+    "org.flashNight.gesh.tooltip.NativeTooltipDocument",
+    "org.flashNight.gesh.tooltip.SkillTooltipComposer",
+    "org.flashNight.gesh.tooltip.TooltipComposer",
+    "org.flashNight.gesh.tooltip.TooltipFormatter",
+    "org.flashNight.gesh.tooltip.TooltipTextBuilder",
+    "org.flashNight.gesh.tooltip.builder.CommonStatsBuilder",
+    "org.flashNight.gesh.tooltip.builder.CriticalBlockBuilder",
+    "org.flashNight.gesh.tooltip.builder.DamageTypeBuilder",
+    "org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder",
+    "org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer",
+    "org.flashNight.gesh.tooltip.builder.GrenadeStatsBuilder",
+    "org.flashNight.gesh.tooltip.builder.GunStatsBuilder",
+    "org.flashNight.gesh.tooltip.builder.MeleeStatsBuilder",
+    "org.flashNight.gesh.tooltip.builder.ModStatBuilder",
+    "org.flashNight.gesh.tooltip.builder.ModsBlockBuilder",
+    "org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder",
+    "org.flashNight.gesh.tooltip.builder.ResistanceBlockBuilder",
+    "org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder",
+    "org.flashNight.gesh.tooltip.builder.SlayEffectBuilder",
+    "org.flashNight.gesh.tooltip.builder.TagSwitchStatsBuilder",
+    "org.flashNight.gesh.tooltip.builder.UpgradePathBuilder",
+    "org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder",
+    "org.flashNight.gesh.tooltip.builder.WeaponAmmoInfoBuilder",
+    "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer",
+    "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipRegistry",
+    "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipUtil",
+    "org.flashNight.gesh.tooltip.builder.drug.IDrugTooltipBuilder",
+    "org.flashNight.gesh.tooltip.builder.drug.builders.BuffTooltipBuilder",
+    "org.flashNight.gesh.tooltip.builder.drug.builders.GrantItemTooltipBuilder",
+    "org.flashNight.gesh.tooltip.builder.drug.builders.HealTooltipBuilder",
+    "org.flashNight.gesh.tooltip.builder.drug.builders.PurifyTooltipBuilder",
+    "org.flashNight.gesh.tooltip.builder.drug.builders.RegenTooltipBuilder",
+    "org.flashNight.gesh.tooltip.builder.drug.builders.ResistanceBuffTooltipBuilder",
+    "org.flashNight.gesh.tooltip.builder.drug.builders.StateTooltipBuilder",
+    "org.flashNight.gesh.tooltip.builder.drug.builders.ToughnessBuffTooltipBuilder",
+    "org.flashNight.gesh.tooltip.builder.drug.builders.ToughnessRestoreTooltipBuilder"
+  ],
+  "retainedRegisteredClasses": [
+    "org.flashNight.gesh.tooltip.ItemUseTypes",
+    "org.flashNight.gesh.tooltip.NativeTooltipBridge",
+    "org.flashNight.gesh.tooltip.TooltipConstants",
+    "org.flashNight.gesh.tooltip.TooltipDataSelector"
+  ],
+  "addedRegisteredClasses": [
+    "org.flashNight.gesh.tooltip.TooltipInputProjection"
+  ],
+  "registeredNetReduction": 35,
+  "archivedFiles": 69,
+  "sourceFilesScanned": 2607,
+  "powerShellRunnersScanned": 235,
+  "as2SourceBytesBefore": 743365,
+  "as2SourceBytesAfter": 35914,
+  "sourceBytesCaveat": "Includes retired tests/renderers; not SWF bytes or compile-memory savings",
+  "errors": []
+}

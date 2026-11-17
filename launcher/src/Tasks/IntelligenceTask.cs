@@ -276,6 +276,27 @@ namespace CF7Launcher.Tasks
             }
         }
 
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            PendingRequest entry;
+            lock (_lock)
+                if (!_pending.TryGetValue(fid, out entry)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            if (entry.WebCmd != "tooltip") return null;
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("intelligence", "intelligence", null,
+                entry.WebCallId, fid, null,
+                () => { lock (_lock) return _pending.TryGetValue(fid, out var current) && ReferenceEquals(current, entry); },
+                () =>
+                {
+                    lock (_lock)
+                    {
+                        if (!_pending.TryGetValue(fid, out var current) || !ReferenceEquals(current, entry)) return;
+                        _pending.Remove(fid);
+                        if (_timers.TryGetValue(fid, out var timer)) { timer.Dispose(); _timers.Remove(fid); }
+                    }
+                    WithResponseSink(entry.ResponseSink, () => RespondError(entry.WebCallId, entry.WebCmd, "stale_state"));
+                });
+        }
+
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             LogManager.Log("[IntelligenceTask] <- Flash response received");

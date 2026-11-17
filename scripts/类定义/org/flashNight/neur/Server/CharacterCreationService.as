@@ -545,18 +545,17 @@ class org.flashNight.neur.Server.CharacterCreationService {
                         || typeof tooltip.displayname != "string"
                         || typeof tooltip.iconName != "string"
                         || typeof tooltip.itemType != "string"
-                        || typeof tooltip.introHTML != "string"
-                        || typeof tooltip.descHTML != "string"
+                        || tooltip.tooltipInput == null
                         || tooltip.displayname == "" || tooltip.iconName == ""
-                        || tooltip.itemType == "" || tooltip.introHTML == ""
-                        || tooltip.descHTML == "") return null;
+                        || tooltip.itemType == "") return null;
                 row = {
                     identifier:identifier,
                     name:String(tooltip.displayname),
                     iconName:String(tooltip.iconName),
                     itemType:String(tooltip.itemType),
                     introHTML:String(tooltip.introHTML),
-                    descHTML:String(tooltip.descHTML)
+                    descHTML:String(tooltip.descHTML),
+                    tooltipInput:tooltip.tooltipInput
                 };
                 cache[identifier] = row;
             }

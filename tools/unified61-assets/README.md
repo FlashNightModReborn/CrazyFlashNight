@@ -10,6 +10,16 @@ build_handoff.py 只读现役原生源、现有 Web 分件与姿态，生成独�
 
 组包环境使用已有 Pillow、CairoSVG、lxml 及其运行库；不自动安装依赖。解压后的 preview.py 默认只需 Python 3.9+ 标准库，preview.html 可直接离线打开；PNG 批量生成是 CairoSVG 可选能力。包内[使用说明](handoff/README.md)、[绘制任务](handoff/AI_BRIEF.md)、[技术合同](handoff/TECHNICAL_CONTRACT.md)与[返包要求](handoff/RETURN_GUIDE.md)一起复制进包。交接后的 SVG 仍为候选，不能覆盖原生权威或沿用初次安装器重新灌入。
 
+### R01 定向回装
+
+`import_return.py` 对照交接包的 `data/catalog.json`、原 SVG 和返包哈希，先在独立目录转换24件原生绘图。`--apply` 只有在现役69符号仍匹配返包的 `sourceSnapshot` 时才写回，并保全原生源与旧 SWF。它保留全部符号名、20个纸娃娃导出外层、下臂实例矩阵和胸炮接口；下臂SVG先移除已烘焙的外层修正，避免二次拉伸。胸甲图标的静态副本同步重建；R01已去掉鞋底碎屑和肩部裁切，鞋图标改为在原矩阵与24×24遮罩下直接引用新靴甲，两帧仍仅底影不同。旧裁切辅助件保留但不再被引用。
+
+    python -X utf8 tools/unified61-assets/import_return.py --return-dir <返包目录> --baseline-dir <对应交接包目录> --work-dir tmp/unified61-return-stage
+
+先审暂存结果，再以新的工作目录追加 `--apply`。每次使用新工作目录，已有证据不覆盖。返稿归档到 `Codex素材源稿/统合61式/R01`；接回后的现役XFL继续是唯一编辑源。该命令不编译、不修改玩法配表、不重新安装整套资产。随后按本页 Flash 与工作台入口重新编译素材库、定向烘焙五件图标与装扮。导出链接与共享库锚点未变时，现有 `things-new` 导入保持有效。
+
+R01 已于2026-11-16完成回装，素材库真实CS6编译为0错误/0警告，原生资源回归107/107，五件图标与20个独立装扮分件已更新。用户随后确认实战验收通过，各分辨率与画质下视觉效果均显著更好；此处记录用户反馈，不补写未提供的具体分辨率或画质档位。输入、产物、完整性与体积记录见[本轮验证报告](../../docs/reports/unified61-r01-art-validation-2026-11-16.json)。
+
 ## 来源与编辑边界
 
 `source/` 是交接稿归档，包含20个闭合分件、男女躯干的开门/开火稿、作者姿态矩阵与输入哈希。`design.json` 保留本轮初值。首次导入之后直接维护现役XFL、物品XML和plan；不要用导入器覆盖后续原生编辑。
@@ -49,7 +59,7 @@ node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 5
 node tools/audit-as2-class-embedding.js
 ```
 
-联合runner执行机制、资源与切枪入口、封闭插件策略套件；单独入口为 `run-unified61-set-tests.ps1`、`run-unified61-asset-tests.ps1` 和 `run-closed-mod-policy-tests.ps1`。测试不使用真实玩家存档。插件夹具由 `check_mod_policy.py` 从当前XML生成并在编译前校验，覆盖五件装甲、21件已有禁用规则的战术版武器与全部107种插件；验证菜单筛选、安装判定和真实等级计算一致。进入发布前须收束测试播放器和本轮拥有的编辑文档；退出请求不代替进程退出核对。
+联合runner执行机制、资源与切枪入口、封闭插件策略套件；单独入口为 `run-unified61-set-tests.ps1`、`run-unified61-asset-tests.ps1` 和 `run-closed-mod-policy-tests.ps1`。测试不使用真实玩家存档。插件夹具由 `check_mod_policy.py` 从当前XML生成并在编译前校验，覆盖五件装甲、现役封闭战术武器（含 a71b44aa23 纳入的五把战术连喷）与完整插件目录，实际数量和输入闭包以生成报告为准；验证菜单筛选、安装判定和真实等级计算一致。进入发布前须收束测试播放器和本轮拥有的编辑文档；退出请求不代替进程退出核对。
 
 实际胸炮段数另用 `powershell -File scripts/run-vertical-chain-damage-probe.ps1 -TimeoutSeconds 600` 诊断。它连接真实五件套事件、工厂、碰撞队列与伤害处理器，区分一次发射、跨帧接触和每次有效段数；原调查的49项检查表示[缺陷复现闭合](../../docs/统合61胸炮-纵向穿刺联弹段数调查-2026-10-25.md)，不代表判定已修复。原机制套件的发射属性检查、资源像素检查及使用固定伤害边界的飞行套件，均不能代替这一完整伤害链验证。
 

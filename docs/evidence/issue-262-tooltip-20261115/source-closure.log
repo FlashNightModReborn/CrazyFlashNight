@@ -1,0 +1,2 @@
+$ python3 tools/audit-tooltip-closure.py --report /workspace/scratch/120bad2dafab/cfn-tooltip/tmp/issue-262/final-checks/source-closure.json
+PASS: tooltip boot 40 -> 5; removed 36, added 1; scanned 2607 AS2 sources/templates; static only

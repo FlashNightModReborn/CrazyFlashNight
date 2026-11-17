@@ -79,8 +79,9 @@
     "switchFrames": 9
   },
   "confirmedBehavior": {
-    "source": "maintainer_decisions_2026_09_08_after_workspace_closeout",
-    "baseCycle": "手枪两槽成功发射返还一发合成成本，满盾按同成本补弹；基础循环守恒。",
+    "source": "maintainer_decisions_2026_09_08_and_issue276_2026_11_16",
+    "baseCycle": "手枪两槽成功发射固定返还3MP；满盾补弹按弹药包基础价/当前普通弹容×3/8逐发向上取整，最低3MP，钛合金P90固定3MP。先低成本槽，同价按缺额、再主手排序。",
+    "launcherEconomy": "允许持续花药钱维持发射器输出；保留满盾、50%MP储备线、每槽每脉冲3发和维生修盾优先，不新增射速惩罚。",
     "p90": "显式武器固有效果每发额外3MP；套装外仍生效。",
     "healing": "所有护盾状态均允许MP治疗；治疗优先于充盾和补弹，可花到0。",
     "strength": "在线保持固定盾强；零容量时该层盾强归零。",

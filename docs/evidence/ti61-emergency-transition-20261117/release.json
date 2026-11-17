@@ -1,0 +1,140 @@
+{
+  "schema": "cf7-ti61-transition-release.v1",
+  "generatedAtUtc": "2026-11-17T00:23:18.365211+00:00",
+  "state": "promoted",
+  "sourceCommit": "71211dfe11df614bedbda6353fb57dcefaef36a1",
+  "sourceRef": "refs/tags/runtime-build-v2/20261117-ti61-emergency-transition-v1",
+  "requestId": "7822CAB67F49B9C17ACC99816DCC5D5B202240ED30DBC432CC26C4B2932E314D",
+  "releaseTreeOid": "9272dfa3430eaae1009af137896ff101d057ddc8",
+  "artifactSourceHash": "7106785C0D4FC3F5552016E8A1EA3D8AB560E1D3B1B8B977A71ABFB25539B692",
+  "producerRecipeHash": "3FC32F5CB2F9D518D65B61EBAA31ADCBF49688803C7D7B3B32FFF6CB1B816437",
+  "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+  "policyHash": "41726CA034F78157104126CD1937B795C113A47D16E2CC997F99239A7E80F34B",
+  "buildIdentityHash": "2284D727CFEFDAC974A7AE845E4EA9E5FB4C2D813D27983B3201335F2C7A7874",
+  "payloadClosureHash": "E1C61D0BFF92BE7705C41076463333A1334D4B31C16CAD75C4F5960C8D3B6F7E",
+  "manifestSha256": "D620E2C78755F422DD56B1162CB1F9040D549C386C61B5B01882605AD03D2D53",
+  "corePath": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+  "coreSha256": "FAF84701C5FDBAC21D03C4E42EBEB25452F170B3881EF0A3808BBDFAF4672B01",
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "checks": 50,
+    "receiptSha256": "16CCDDEE5176061493FCC06C3568969FA95082232CB29A1F7A19677BE7090279"
+  },
+  "builders": [
+    {
+      "schema": "cf7-runtime-github-build-attestation.v2",
+      "signerIdentity": "745060B178DDF3A23E8758FC81094DA723E263E1250A34C9ADE793A332B7AC12",
+      "faultDomain": "github-hosted-windows",
+      "files": 43
+    },
+    {
+      "schema": "cf7-runtime-build-attestation.v2",
+      "signerIdentity": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+      "faultDomain": "physical-host-b",
+      "files": 43
+    }
+  ],
+  "cloud": {
+    "runId": 43983849826,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43983849826"
+  },
+  "promotedAtUtc": "2026-11-17T00:11:49.5228482Z",
+  "rollbackRuntime": "tmp/runtime-promotions/20261117T001050689Z-3dec59a2e8484f4eb4e159c282dd34d5/previous",
+  "businessScope": [
+    "#276 补弹保底3MP、逐发向上取整、钛合金P90固定3MP、低成本槽优先",
+    "#61 统合61与钛合金61五甲共用明确授权的应急自动注射",
+    "战斗换图时过早开窗的加载遮罩竞态修复"
+  ],
+  "preReleaseVerification": {
+    "modelPassed": 52,
+    "hostTotal": 8577,
+    "hostPassed": 8418,
+    "hostFailed": 128,
+    "hostSkipped": 31,
+    "newOverlayTestsPassed": 16,
+    "relatedOverlayTestsPassed": 195,
+    "nativeCandidateRacePathsPassed": 2,
+    "realSaveFilesUnchanged": 376,
+    "candidateCoreDllSha256": "57A5436F7EE115A884C8529521A2ECF3811282EC464CE71E945BB9B14E76287F",
+    "candidatePayloadClosureHash": "3C69E8E2E3DA5EE88B453AADB439A4DA5DC25B30504B7A90391D6F86344FF101",
+    "candidateScope": "发布前开发候选，不能代替正式运行库执行证据"
+  },
+  "limitations": [
+    "全量Host仍有128项因缺少物理资格证据根目录失败，来自5个未改动测试类；未宣称全量全绿。",
+    "物理键鼠、完整战斗体验与人工签收未覆盖；本批继续为2.718 DEV / UNSTABLE。",
+    "原本地验收报告保留为发布前历史快照。"
+  ],
+  "preservedFailure": "本机首次worker命中WebView2缓存路径253/240限制；采用工具正式短缓存参数后成功，失败回执保留。",
+  "formalRuntimeVerification": {
+    "passed": true,
+    "scope": "formal_runtime_isolated_harness_business_checks_plus_fresh_independent_save_guard",
+    "runtimeMode": "formal_runtime",
+    "coreSha256": "FAF84701C5FDBAC21D03C4E42EBEB25452F170B3881EF0A3808BBDFAF4672B01",
+    "buildIdentityHash": "2284D727CFEFDAC974A7AE845E4EA9E5FB4C2D813D27983B3201335F2C7A7874",
+    "payloadClosureHash": "E1C61D0BFF92BE7705C41076463333A1334D4B31C16CAD75C4F5960C8D3B6F7E",
+    "description": "正式运行库在专用隔离档完成钛合金61重开与统合61应急药配置读回（第2组1号，大HP99、MP100），再次命中换图立即打开帮助再切构筑的竞态，遮罩正常结束、关窗后战斗继续；两次新基线会话均正常保存退出。独立核对376份受保护文件的内容与修改时间均未变化。该范围不包含普通无参入口、物理键鼠或本轮重新触发自动用药。",
+    "cases": [
+      {
+        "name": "titanium61_reopen_and_transition",
+        "slot": "cf7_agent_release61_20261117_ti",
+        "passed": true
+      },
+      {
+        "name": "unified61_configuration_readback",
+        "slot": "cf7_agent_release61_20261117_unified",
+        "passed": true
+      }
+    ],
+    "raceSequence": {
+      "deferred": {
+        "seq": 1016,
+        "utcMs": 1794874850165
+      },
+      "repaint": {
+        "seq": 1018,
+        "utcMs": 1794874850219
+      },
+      "revealed": {
+        "seq": 1030,
+        "utcMs": 1794874850698
+      },
+      "hide": {
+        "seq": 1038,
+        "utcMs": 1794874851013
+      },
+      "helpOpened": {
+        "seq": 1047,
+        "utcMs": 1794874851203
+      },
+      "buildOpened": {
+        "seq": 1065,
+        "utcMs": 1794874851625
+      }
+    },
+    "deferredToHelpOpenMs": 1038,
+    "automaticDoseRetested": false,
+    "freshSaveGuard": {
+      "passed": true,
+      "checkedFiles": 376,
+      "baselineCapturedAtUtc": "2026-11-17T00:19:09.840Z",
+      "verifiedAtUtc": "2026-11-17T00:22:06.249Z",
+      "contentChanges": 0,
+      "metadataChanges": 0
+    },
+    "cachedMcpGuard": {
+      "passed": false,
+      "changedFiles": 3,
+      "allChangedBeforeFirstFormalProcess": true,
+      "latestChangeUtc": "2026-11-16T23:15:22.044Z",
+      "baselineScope": "MCP进程首次克隆时的跨会话旧基线",
+      "filesRestored": false
+    },
+    "preservedFailures": [
+      "首轮enterTimeoutMs=30000超时，进程随后正常就绪；后续60000上限的两个正式会话均成功入场。",
+      "首次从未关闭的构筑面板打开地图被拒绝；正常关闭后打开成功。",
+      "一次构筑外壳已出现但数据尚未就绪的读取显示初始占位；等待正式数据后两套配置均正确。",
+      "MCP缓存守卫仍对3份测试前已变动文件报差异；原失败保留，以现役同一只读守卫函数新采样的376份基线验证后续会话，未恢复真实存档。"
+    ]
+  }
+}

@@ -189,10 +189,4 @@ class org.flashNight.arki.skill.SkillResourceService {
     public static function notify(unit:Object, kind:String, slot:Number, reason:String):Void {
         begin(unit, kind, slot); reject(unit, reason); finish(unit);
     }
-    public static function describe(hint:Object):String {
-        if (hint == null || hint.state == "ready" || hint.state == "unknown") return "";
-        var resource:String = hint.reason == "mp" ? "MP" : "消耗品";
-        return hint.state == "blocked" ? "<BR><FONT COLOR='#e87864'>" + resource + "不足，无法释放</FONT>"
-            : "<BR><FONT COLOR='#e8a080'>当前" + resource + "仅够再释放一次</FONT>";
-    }
 }

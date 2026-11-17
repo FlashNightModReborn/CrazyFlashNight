@@ -1,0 +1,963 @@
+{
+  "schema": "cf7.issue262.windows-progress.v1",
+  "completedCases": [
+    {
+      "name": "arena-drop",
+      "logicalName": "arena-drop",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:37:55.8136749Z",
+      "endedUtc": "2026-11-15T14:38:02.2770729Z",
+      "elapsedSeconds": 6.4419096,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId arena-drop-rules Start: be625f6ea2c44e12bb52695b791d7454",
+        "FocusedTestRunId arena-drop-rules Complete: be625f6ea2c44e12bb52695b791d7454"
+      ],
+      "suiteSummaries": [
+        "ArenaDropRuleCatalogTest Tests Passed: 20",
+        "ArenaDropRuleCatalogTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "CA2F350EB17D76BFCC6147E39E8D0A26784B6E60989D10ABF467BFB3C79D09BB",
+        "bytes": 27651,
+        "mtimeUtc": "2026-11-15T14:38:01.5111536Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "character-build",
+      "logicalName": "character-build",
+      "status": "FAILED",
+      "exitCode": 1,
+      "freshSwf": false,
+      "startedUtc": "2026-11-15T11:32:31.1727727Z",
+      "endedUtc": "2026-11-15T11:32:31.8953682Z",
+      "elapsedSeconds": 0.6978042,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId item-panels Start: 9fa1da32668a4afd97b6c345aa9b4b5c",
+        "FocusedTestRunId item-panels Complete: 9fa1da32668a4afd97b6c345aa9b4b5c"
+      ],
+      "suiteSummaries": [
+        "EquipmentInventoryTest Tests Passed: 28",
+        "EquipmentInventoryTest Tests Failed: 0",
+        "NpcShopPanelServiceTest Tests Passed: 108",
+        "NpcShopPanelServiceTest Tests Failed: 0",
+        "InventoryPanelServiceTest Tests Passed: 194",
+        "InventoryPanelServiceTest Tests Failed: 0",
+        "CraftingPanelServiceTest Tests Passed: 186",
+        "CraftingPanelServiceTest Tests Failed: 0",
+        "--- SynthesisIndexTest: 18/18 passed, 0 failed ---",
+        "ArrayInventoryIndexTest Tests Passed: 31",
+        "ArrayInventoryIndexTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "8A46919263C55EF3BEE478CC5D1622D73C30A429F7AB89146498BE771DBC716E",
+        "bytes": 1283314,
+        "mtimeUtc": "2026-11-15T11:32:05.4731075Z"
+      },
+      "originalFailureRetained": true
+    },
+    {
+      "name": "character-build-current-writer",
+      "logicalName": "character-build",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T11:49:11.1734251Z",
+      "endedUtc": "2026-11-15T11:54:23.3901931Z",
+      "elapsedSeconds": 312.1789027,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId character-build Start: cdb75ff553234d8b893b911b06aca47f",
+        "FocusedTestRunId character-build Complete: cdb75ff553234d8b893b911b06aca47f"
+      ],
+      "suiteSummaries": [
+        "SaveManagerQuickItem4Tests END: 13/13 passed, 0 failed",
+        "========== SaveManagerTest END: 396/396 passed, 0 failed ==========",
+        "EquipmentInventoryTest Tests Passed: 28",
+        "EquipmentInventoryTest Tests Failed: 0",
+        "InventoryPanelServiceTest Tests Passed: 194",
+        "InventoryPanelServiceTest Tests Failed: 0",
+        "CharacterBuildTransactionSpikeTest Tests Passed: 19",
+        "CharacterBuildTransactionSpikeTest Tests Failed: 0",
+        "RuntimeEquipmentProjectionTest Tests Passed: 27",
+        "RuntimeEquipmentProjectionTest Tests Failed: 0",
+        "CharacterBuildServiceTest Tests Passed: 229",
+        "CharacterBuildServiceTest Tests Failed: 0",
+        "PlayerInfoProviderTest Tests Passed: 29",
+        "PlayerInfoProviderTest Tests Failed: 0",
+        "PlayerStatLifecycleTest Tests Passed: 54",
+        "PlayerStatLifecycleTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "CF7E983987078FF943372B92E0B7110A40436F8032B04214413EE3DACC210B95",
+        "bytes": 1315201,
+        "mtimeUtc": "2026-11-15T11:53:52.7652116Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "choice-rewards",
+      "logicalName": "choice-rewards",
+      "status": "FAILED",
+      "exitCode": 1,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T11:39:22.7078773Z",
+      "endedUtc": "2026-11-15T11:43:47.3495445Z",
+      "elapsedSeconds": 264.594011,
+      "compilerDiagnostics": "**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\item\\ChoiceRewardServiceTest.as，117 行\t此函数中需要返回语句。\n\n1 个错误, 0 个警告",
+      "behaviorMarkers": [],
+      "suiteSummaries": [],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "CADD8484CF0EBA24C0F750EEBBC95FA531A5880E6687614E49B5BE00803D4B68",
+        "bytes": 1186040,
+        "mtimeUtc": "2026-11-15T11:43:43.9263033Z"
+      },
+      "originalFailureRetained": true
+    },
+    {
+      "name": "choice-rewards-cs6fix",
+      "logicalName": "choice-rewards",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T11:44:42.6899495Z",
+      "endedUtc": "2026-11-15T11:49:10.1705782Z",
+      "elapsedSeconds": 267.3818868,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId choice-rewards Start: 0063b1b1e1ed41019cd83aa4c1ecd5d5",
+        "FocusedTestRunId choice-rewards Complete: 0063b1b1e1ed41019cd83aa4c1ecd5d5"
+      ],
+      "suiteSummaries": [
+        "ChoiceRewardServiceTest Tests Passed: 112",
+        "ChoiceRewardServiceTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "08994B38A8A22D3735B7F9E884797127A522C7C1CB6A4E3BAF711C489990700B",
+        "bytes": 1186177,
+        "mtimeUtc": "2026-11-15T11:49:03.8188744Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "equipment-emissive",
+      "logicalName": "equipment-emissive",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:34:17.1508476Z",
+      "endedUtc": "2026-11-15T14:37:27.7055834Z",
+      "elapsedSeconds": 190.532772,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId equipment-emissive-assets Start: 3cd2c834b76e495daa2ca2f27d6963aa",
+        "FocusedTestRunId equipment-emissive-assets Complete: 3cd2c834b76e495daa2ca2f27d6963aa"
+      ],
+      "suiteSummaries": [
+        "EquipmentEmissiveAssetTest Tests Passed: 185",
+        "EquipmentEmissiveAssetTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "A5EF53A3B758A967C38BDC3FF20711C7055151A14223C127601D4E8789B4B7F8",
+        "bytes": 1214416,
+        "mtimeUtc": "2026-11-15T14:37:23.9223533Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "equipment-interval",
+      "logicalName": "equipment-interval",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:31:10.2990747Z",
+      "endedUtc": "2026-11-15T14:33:47.5907412Z",
+      "elapsedSeconds": 156.995499,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId equipment-interval-curve Start: 8f835d7c29d744f69d1cc0976b3437d1",
+        "FocusedTestRunId equipment-interval-curve Complete: 8f835d7c29d744f69d1cc0976b3437d1"
+      ],
+      "suiteSummaries": [
+        "--- EquipmentIntervalCurveTest: 60/60 passed, 0 failed ---"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "C290E6865284428B243FF78F9BA13810F64B2FDD985BB63A2EFD5DCC3DD8478F",
+        "bytes": 1181273,
+        "mtimeUtc": "2026-11-15T14:33:44.1761261Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "equipment-tuning",
+      "logicalName": "equipment-tuning",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T11:34:40.9087269Z",
+      "endedUtc": "2026-11-15T11:39:22.6880187Z",
+      "elapsedSeconds": 281.6838462,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId equipment-tuning Start: 341bcbb4828449838b567abec4939f3e",
+        "FocusedTestRunId equipment-tuning Complete: 341bcbb4828449838b567abec4939f3e"
+      ],
+      "suiteSummaries": [
+        "EquipmentTuningServiceTest Tests Passed: 123",
+        "EquipmentTuningServiceTest Tests Failed: 0",
+        "InventoryPanelServiceTest Tests Passed: 194",
+        "InventoryPanelServiceTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "2FE4B1116A9675DF028081FD4A0D5E99E567E8BC22DD2C9288D4ACB8099A9026",
+        "bytes": 1233903,
+        "mtimeUtc": "2026-11-15T11:38:55.4439083Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "gray-goo-settled",
+      "logicalName": "gray-goo",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T15:03:08.1177943Z",
+      "endedUtc": "2026-11-15T15:05:41.8658499Z",
+      "elapsedSeconds": 153.5861445,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId gray-goo-tests Start: d7332c74b7d6419b9b8b76b5d1228866",
+        "FocusedTestRunId gray-goo-tests Complete: d7332c74b7d6419b9b8b76b5d1228866"
+      ],
+      "suiteSummaries": [
+        "--- EquipmentIntervalCurveTest: 60/60 passed, 0 failed ---"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "E6E3963AEDA9CD368C127A8685BB35C669B2BABB13E3251FBCC631A47C7DDEC9",
+        "bytes": 1221101,
+        "mtimeUtc": "2026-11-15T15:05:27.5876760Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "hud-loadout-resource",
+      "logicalName": "hud-loadout-resource",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:12:13.0237675Z",
+      "endedUtc": "2026-11-15T14:15:39.0719305Z",
+      "elapsedSeconds": 206.0099851,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId hud-loadout-resources Start: c2e7121544484043badb786087f33edb",
+        "FocusedTestRunId hud-loadout-resources Complete: c2e7121544484043badb786087f33edb"
+      ],
+      "suiteSummaries": [
+        "PlayerHudLoadoutResourceTest Tests Passed: 107",
+        "PlayerHudLoadoutResourceTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "26296D38D0D91C4ABF3A65B960D93E303AAA29D4AC71666C782D2380F57622E3",
+        "bytes": 1202789,
+        "mtimeUtc": "2026-11-15T14:15:28.7315413Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "item-panels",
+      "logicalName": "item-panels",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T11:27:45.4322469Z",
+      "endedUtc": "2026-11-15T11:32:31.1694762Z",
+      "elapsedSeconds": 285.708438,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId item-panels Start: 9fa1da32668a4afd97b6c345aa9b4b5c",
+        "FocusedTestRunId item-panels Complete: 9fa1da32668a4afd97b6c345aa9b4b5c"
+      ],
+      "suiteSummaries": [
+        "EquipmentInventoryTest Tests Passed: 28",
+        "EquipmentInventoryTest Tests Failed: 0",
+        "NpcShopPanelServiceTest Tests Passed: 108",
+        "NpcShopPanelServiceTest Tests Failed: 0",
+        "InventoryPanelServiceTest Tests Passed: 194",
+        "InventoryPanelServiceTest Tests Failed: 0",
+        "CraftingPanelServiceTest Tests Passed: 186",
+        "CraftingPanelServiceTest Tests Failed: 0",
+        "--- SynthesisIndexTest: 18/18 passed, 0 failed ---",
+        "ArrayInventoryIndexTest Tests Passed: 31",
+        "ArrayInventoryIndexTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "8A46919263C55EF3BEE478CC5D1622D73C30A429F7AB89146498BE771DBC716E",
+        "bytes": 1283314,
+        "mtimeUtc": "2026-11-15T11:32:05.4731075Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "map-loot",
+      "logicalName": "map-loot",
+      "status": "FAILED",
+      "exitCode": 1,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T11:57:35.6099107Z",
+      "endedUtc": "2026-11-15T12:09:22.0779761Z",
+      "elapsedSeconds": 706.4361461,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [],
+      "suiteSummaries": [
+        "LootContainerServiceTest Tests Passed: 198",
+        "LootContainerServiceTest Tests Failed: 0",
+        "LootMaterializationPlannerTest Tests Passed: 12",
+        "LootMaterializationPlannerTest Tests Failed: 0",
+        "StageRunSessionTest Tests Passed: 932",
+        "StageRunSessionTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "124A073E6BFBE2552724E72D8BFD82A687B87A0AFB965DC3D0403985CB68F46C",
+        "bytes": 1346652,
+        "mtimeUtc": "2026-11-15T12:08:53.3319496Z"
+      },
+      "originalFailureRetained": true
+    },
+    {
+      "name": "map-loot-cold-confirmation",
+      "logicalName": "map-loot",
+      "status": "FAILED",
+      "exitCode": 1,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T12:10:58.2046884Z",
+      "endedUtc": "2026-11-15T12:21:45.2994827Z",
+      "elapsedSeconds": 647.011644,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [],
+      "suiteSummaries": [
+        "LootContainerServiceTest Tests Passed: 198",
+        "LootContainerServiceTest Tests Failed: 0",
+        "LootMaterializationPlannerTest Tests Passed: 12",
+        "LootMaterializationPlannerTest Tests Failed: 0",
+        "StageRunSessionTest Tests Passed: 932",
+        "StageRunSessionTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "9AE93CFAEBBAA5EC34B61010CF7F440CA1FE2457E0020259F1661F0304F34C5A",
+        "bytes": 1346653,
+        "mtimeUtc": "2026-11-15T12:21:16.7066722Z"
+      },
+      "originalFailureRetained": true
+    },
+    {
+      "name": "map-loot-si16",
+      "logicalName": "map-loot",
+      "status": "FAILED",
+      "exitCode": 1,
+      "freshSwf": false,
+      "startedUtc": "2026-11-15T12:39:59.4904968Z",
+      "endedUtc": "2026-11-15T12:55:56.4981377Z",
+      "elapsedSeconds": 956.9226071,
+      "compilerDiagnostics": "**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\item\\LootReportTooltipTestPart.as，62 行\t没有名为'activate'的方法。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\item\\LootReportTooltipTestPart.as，56 行\t没有名为'EQUIPMENT'的属性。\n**Error** \torg.flashNight.arki.item.LootContainerServiceTest:  在 40334 和 73108 之间的分支超过 32K 范围。\n\n3 个错误, 0 个警告",
+      "behaviorMarkers": [],
+      "suiteSummaries": [],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "158E4CDD8D14DF80F72653A2B463404C97324333971D55275B6932A449900A7D",
+        "bytes": 1329073,
+        "mtimeUtc": "2026-11-15T12:33:41.3314459Z"
+      },
+      "originalFailureRetained": true
+    },
+    {
+      "name": "map-loot-si16-both",
+      "logicalName": "map-loot",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T13:41:15.1224669Z",
+      "endedUtc": "2026-11-15T13:46:01.4480710Z",
+      "elapsedSeconds": 286.2092587,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [],
+      "suiteSummaries": [
+        "LootContainerServiceTest Tests Passed: 198",
+        "LootContainerServiceTest Tests Failed: 0",
+        "LootMaterializationPlannerTest Tests Passed: 12",
+        "LootMaterializationPlannerTest Tests Failed: 0",
+        "StageRunSessionTest Tests Passed: 932",
+        "StageRunSessionTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "802DB93C0410BEBFB014E309633A9E3E0D3F1D9295263CEC6832EBE95709A0F0",
+        "bytes": 1346827,
+        "mtimeUtc": "2026-11-15T13:45:32.4979160Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "map-loot-si16-ready",
+      "logicalName": "map-loot",
+      "status": "FAILED",
+      "exitCode": 1,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T13:20:16.7767091Z",
+      "endedUtc": "2026-11-15T13:30:54.6057008Z",
+      "elapsedSeconds": 637.725669,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [],
+      "suiteSummaries": [
+        "LootContainerServiceTest Tests Passed: 198",
+        "LootContainerServiceTest Tests Failed: 0",
+        "LootMaterializationPlannerTest Tests Passed: 12",
+        "LootMaterializationPlannerTest Tests Failed: 0",
+        "StageRunSessionTest Tests Passed: 932",
+        "StageRunSessionTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "6649E07A15A4D043BDAEEF51924C6E7731416ADA2F78C113AE27359986067662",
+        "bytes": 1346546,
+        "mtimeUtc": "2026-11-15T13:30:26.4042162Z"
+      },
+      "originalFailureRetained": true
+    },
+    {
+      "name": "map-loot-split",
+      "logicalName": "map-loot",
+      "status": "FAILED",
+      "exitCode": 1,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T12:29:27.2921644Z",
+      "endedUtc": "2026-11-15T12:33:44.6133830Z",
+      "elapsedSeconds": 257.2402537,
+      "compilerDiagnostics": "**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\item\\LootReportTooltipTestPart.as，62 行\t没有名为'activate'的方法。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\item\\LootReportTooltipTestPart.as，56 行\t没有名为'EQUIPMENT'的属性。\n**Error** \torg.flashNight.arki.item.LootContainerServiceTest:  在 40334 和 73108 之间的分支超过 32K 范围。\n\n3 个错误, 0 个警告",
+      "behaviorMarkers": [],
+      "suiteSummaries": [],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "158E4CDD8D14DF80F72653A2B463404C97324333971D55275B6932A449900A7D",
+        "bytes": 1329073,
+        "mtimeUtc": "2026-11-15T12:33:41.3314459Z"
+      },
+      "originalFailureRetained": true
+    },
+    {
+      "name": "merc-loadout",
+      "logicalName": "merc-loadout",
+      "status": "FAILED",
+      "exitCode": 1,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:23:02.8088560Z",
+      "endedUtc": "2026-11-15T14:25:11.6004636Z",
+      "elapsedSeconds": 128.7602291,
+      "compilerDiagnostics": "**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，33 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，35 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，37 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，17 行\t需要标识符\n**Error** 场景=场景 1, 图层=图层 1, 帧=1，6 行\t没有在包“org.flashNight.arki.merc”中找到名为“org.flashNight.arki.merc.MercDefinitionCacheTest”的类或包。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，25 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，27 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，18 行\t需要标识符\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，28 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，30 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，48 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，42 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，50 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，68 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，39 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，63 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，58 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，51 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，65 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，40 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，66 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，70 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，71 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，72 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，54 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，73 行\t遇到意外的 '}'\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，46 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，44 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，49 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，52 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，38 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，56 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，61 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n**Error** C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\类定义\\org\\flashNight\\arki\\merc\\MercDefinitionCacheTest.as，59 行\tActionScript 2.0 类脚本只能定义类或接口构造。\n\n34 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId merc-loadout Start: 2ed874b510864da9b772698485c30895",
+        "FocusedTestRunId merc-loadout Complete: 2ed874b510864da9b772698485c30895"
+      ],
+      "suiteSummaries": [
+        "MercLoadoutServiceTest Tests Passed: 125",
+        "MercLoadoutServiceTest Tests Failed: 0",
+        "MercPersonalityTest Tests Passed: 22",
+        "MercPersonalityTest Tests Failed: 2",
+        "MercDialogueTest Tests Passed: 31",
+        "MercDialogueTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "4DBC8B497144838B961F21EF4E432BCFA46516C5CD041747F3593A921EC0DCFC",
+        "bytes": 1199079,
+        "mtimeUtc": "2026-11-15T14:25:08.5146734Z"
+      },
+      "originalFailureRetained": true
+    },
+    {
+      "name": "merc-loadout-cs6fixtures",
+      "logicalName": "merc-loadout",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:28:00.0267036Z",
+      "endedUtc": "2026-11-15T14:30:40.1609239Z",
+      "elapsedSeconds": 159.8986501,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId merc-loadout Start: ba73f3227d484ac489c0f4a889d88df6",
+        "FocusedTestRunId merc-loadout Complete: ba73f3227d484ac489c0f4a889d88df6"
+      ],
+      "suiteSummaries": [
+        "MercLoadoutServiceTest Tests Passed: 125",
+        "MercLoadoutServiceTest Tests Failed: 0",
+        "MercPersonalityTest Tests Passed: 24",
+        "MercPersonalityTest Tests Failed: 0",
+        "MercDialogueTest Tests Passed: 31",
+        "MercDialogueTest Tests Failed: 0",
+        "MercDefinitionCacheTest Tests Passed: 11",
+        "MercDefinitionCacheTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "131AF8C3556C59F9AD5E8B7A851FB92D4B72ED86CDFB2D09835CFC808F3AE6B1",
+        "bytes": 1199521,
+        "mtimeUtc": "2026-11-15T14:30:35.6126945Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "native",
+      "logicalName": "native",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T11:23:58.2511501Z",
+      "endedUtc": "2026-11-15T11:27:45.4136869Z",
+      "elapsedSeconds": 227.1216094,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId native-interaction Start: d9928a6145474b43aff5a8601631be5a",
+        "FocusedTestRunId native-interaction Complete: d9928a6145474b43aff5a8601631be5a"
+      ],
+      "suiteSummaries": [
+        "--- NativeTooltipBridgeTest: 72/72 passed, 0 failed ---",
+        "MercSpawnerTest Tests Passed: 41",
+        "MercSpawnerTest Tests Failed: 0",
+        "MouseProxyTest Tests Passed: 18",
+        "MouseProxyTest Tests Failed: 0",
+        "NativeMenuBridgeTest Tests Passed: 87",
+        "NativeMenuBridgeTest Tests Failed: 0",
+        "NativeInteractionContextTest Tests Passed: 12",
+        "NativeInteractionContextTest Tests Failed: 0",
+        "InventoryTooltipProjectionTest Tests Passed: 16",
+        "InventoryTooltipProjectionTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "A692C12BB885C960349249A5FA9CBB15BD92C4F6E136127B4040F237EE274ABE",
+        "bytes": 1199364,
+        "mtimeUtc": "2026-11-15T11:27:42.1586324Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "player-hud",
+      "logicalName": "player-hud",
+      "status": "FAILED",
+      "exitCode": 1,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T13:46:31.2228565Z",
+      "endedUtc": "2026-11-15T13:50:40.5898734Z",
+      "elapsedSeconds": 249.3348635,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId player-hud Start: 254b8284b75f4f288cbb5c66fb38d2b6",
+        "FocusedTestRunId player-hud Complete: 254b8284b75f4f288cbb5c66fb38d2b6"
+      ],
+      "suiteSummaries": [
+        "--- PlayerHudServiceTest: 141/142 passed, 1 failed ---",
+        "PlayerHudHotPathTest Tests Passed: 19",
+        "PlayerHudHotPathTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "78432320A48E5BC685F658C45467F371D368E161BA1952173D26CFC8C3E2B670",
+        "bytes": 1206188,
+        "mtimeUtc": "2026-11-15T13:50:31.7362404Z"
+      },
+      "originalFailureRetained": true
+    },
+    {
+      "name": "player-hud-projection",
+      "logicalName": "player-hud",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T13:58:13.1981329Z",
+      "endedUtc": "2026-11-15T14:01:33.3314699Z",
+      "elapsedSeconds": 200.0543371,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId player-hud Start: 741c63fd97424fb69c0c1cf5023e9c0c",
+        "FocusedTestRunId player-hud Complete: 741c63fd97424fb69c0c1cf5023e9c0c"
+      ],
+      "suiteSummaries": [
+        "--- PlayerHudServiceTest: 142/142 passed, 0 failed ---",
+        "PlayerHudHotPathTest Tests Passed: 19",
+        "PlayerHudHotPathTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "C41EE5337C9C390016A9EF025E168551F2D2544980B52D06124C99060B416A4A",
+        "bytes": 1206201,
+        "mtimeUtc": "2026-11-15T14:01:23.7537193Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "player-hud-snapshot-ready",
+      "logicalName": "player-hud-snapshot",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:08:01.8468545Z",
+      "endedUtc": "2026-11-15T14:11:36.3668037Z",
+      "elapsedSeconds": 214.4677641,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId player-hud-snapshot Start: dc0a29b9d0a14f80b6784023955c18cb",
+        "FocusedTestRunId player-hud-snapshot Complete: dc0a29b9d0a14f80b6784023955c18cb"
+      ],
+      "suiteSummaries": [
+        "PlayerHudSnapshotTest Tests Passed: 182",
+        "PlayerHudSnapshotTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "2546C3565C1E5459F0595906DCA161AF3C18FC93294A5C88FE8DE19C4A85C1AE",
+        "bytes": 1201795,
+        "mtimeUtc": "2026-11-15T14:11:29.2763450Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "player-manual-input",
+      "logicalName": "player-manual-input",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:52:25.0971790Z",
+      "endedUtc": "2026-11-15T14:55:12.0647537Z",
+      "elapsedSeconds": 166.9485143,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId player-manual-input Start: e97cce0993484f0aabac23d8c8cfcbe9",
+        "FocusedTestRunId player-manual-input Complete: e97cce0993484f0aabac23d8c8cfcbe9"
+      ],
+      "suiteSummaries": [
+        "--- LongGunSubWeaponCoreTest: 514/514 passed, 0 failed ---",
+        "--- PistolRecoilCoreTest: 57/57 passed, 0 failed ---",
+        "--- ManualCooldownServiceTest: 57/57 passed, 0 failed ---",
+        "--- DrugInputServiceTest: 58/58 passed, 0 failed ---",
+        "--- KeyManagerMigrationTest: 14/14 passed, 0 failed ---"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "0D87191D3BD84F68785874B1E4AB340E0C2D37DD05A657823CC88E2723489DF6",
+        "bytes": 1215074,
+        "mtimeUtc": "2026-11-15T14:55:00.1875316Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "reward-stash",
+      "logicalName": "reward-stash",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T11:54:24.1456156Z",
+      "endedUtc": "2026-11-15T11:57:35.6043769Z",
+      "elapsedSeconds": 191.4186881,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [],
+      "suiteSummaries": [
+        "RewardStashServiceTest Tests Passed: 137",
+        "RewardStashServiceTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "F048819A8CD16C082A6EBB51D0DB30644AF8FCF10F25381522CD67A3537E5BD8",
+        "bytes": 1193069,
+        "mtimeUtc": "2026-11-15T11:57:27.4476763Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "sheriff-baton",
+      "logicalName": "sheriff-baton",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:50:01.2669932Z",
+      "endedUtc": "2026-11-15T14:51:58.5974687Z",
+      "elapsedSeconds": 117.3052299,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId sheriff-baton Start: a2bfb7bd5d154fa0b5796498a3477ab1",
+        "FocusedTestRunId sheriff-baton Complete: a2bfb7bd5d154fa0b5796498a3477ab1"
+      ],
+      "suiteSummaries": [
+        "SheriffBatonTest Tests Passed: 47",
+        "SheriffBatonTest Tests Failed: 0",
+        "SheriffArsenalTest Tests Passed: 44",
+        "SheriffArsenalTest Tests Failed: 0",
+        "EquipmentLightDefenseTest Tests Passed: 23",
+        "EquipmentLightDefenseTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "0BAAEE517DD9F5C7D8941F2FB08BD555F874FCF19D914ED646F893E05010232E",
+        "bytes": 1193315,
+        "mtimeUtc": "2026-11-15T14:51:56.3088646Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "skill-resource",
+      "logicalName": "skill-resource",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:16:21.6414500Z",
+      "endedUtc": "2026-11-15T14:19:36.5264676Z",
+      "elapsedSeconds": 194.8515166,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId skill-resource Start: 31f183d7ad69437f87d07ec81a6b1b75",
+        "FocusedTestRunId skill-resource Complete: 31f183d7ad69437f87d07ec81a6b1b75"
+      ],
+      "suiteSummaries": [
+        "SkillResourceServiceTest Tests Passed: 479",
+        "SkillResourceServiceTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "73A1CD0AA4B9A0FB0962A2F2FE059354447F6839C0F7D6AF6BE3246F72592E7B",
+        "bytes": 1177972,
+        "mtimeUtc": "2026-11-15T14:19:31.2392825Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "task-panel",
+      "logicalName": "task-panel",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:20:09.0553091Z",
+      "endedUtc": "2026-11-15T14:22:35.4708648Z",
+      "elapsedSeconds": 146.3862408,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId task-panel Start: 481af8621f474386b9117fba6f25d8ce",
+        "FocusedTestRunId task-panel Complete: 481af8621f474386b9117fba6f25d8ce"
+      ],
+      "suiteSummaries": [
+        "TaskPanelServiceTest Tests Passed: 15",
+        "TaskPanelServiceTest Tests Failed: 0"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "C1AE1E83B7E6EE7D431FE0680BBC66F080ADBE4745B8C9A95469D84049E7F588",
+        "bytes": 1190073,
+        "mtimeUtc": "2026-11-15T14:22:32.5766688Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "weapon-ammo",
+      "logicalName": "weapon-ammo",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:46:51.5388621Z",
+      "endedUtc": "2026-11-15T14:49:34.9975618Z",
+      "elapsedSeconds": 163.24998399999998,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId weapon-ammo Start: bb67157175d342bc946362d8f94f1ad1",
+        "FocusedTestRunId weapon-ammo Complete: bb67157175d342bc946362d8f94f1ad1"
+      ],
+      "suiteSummaries": [
+        "--- WeaponAmmoRuntimeTest: 413/413 passed, 0 failed ---"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "FBAFD8A5C7638E651AD65AC099F80888CA598F35803C6EB00D1E2E436F764436",
+        "bytes": 1192522,
+        "mtimeUtc": "2026-11-15T14:49:32.6399872Z"
+      },
+      "originalFailureRetained": false
+    },
+    {
+      "name": "weapon-ammo-data-catalog49",
+      "logicalName": "weapon-ammo-data",
+      "status": "PASS",
+      "exitCode": 0,
+      "freshSwf": true,
+      "startedUtc": "2026-11-15T14:43:50.5497855Z",
+      "endedUtc": "2026-11-15T14:46:20.5918342Z",
+      "elapsedSeconds": 149.82115059999998,
+      "compilerDiagnostics": "0 个错误, 0 个警告",
+      "behaviorMarkers": [
+        "FocusedTestRunId weapon-ammo-data Start: 6a08edf61f604e2a9f0f53c2f6efd2ab",
+        "FocusedTestRunId weapon-ammo-data Complete: 6a08edf61f604e2a9f0f53c2f6efd2ab"
+      ],
+      "suiteSummaries": [
+        "--- WeaponAmmoDataTest: 149/149 passed, 0 failed ---"
+      ],
+      "swfIdentity": {
+        "path": "C:\\Users\\fs\\Documents\\Codex\\2026-11-15\\https-chatgpt-com-share-6af971dd-ad70-7\\work\\c\\resources\\scripts\\TestLoader.swf",
+        "sha256": "D7D6F3D641BD612DE8F72A0D6AA15B353044879F3DE35EA8C2EE3D382CA6CB73",
+        "bytes": 1178589,
+        "mtimeUtc": "2026-11-15T14:46:17.7303369Z"
+      },
+      "originalFailureRetained": false
+    }
+  ],
+  "latestByLogicalCase": {
+    "native": {
+      "name": "native",
+      "status": "PASS"
+    },
+    "item-panels": {
+      "name": "item-panels",
+      "status": "PASS"
+    },
+    "character-build": {
+      "name": "character-build-current-writer",
+      "status": "PASS"
+    },
+    "equipment-tuning": {
+      "name": "equipment-tuning",
+      "status": "PASS"
+    },
+    "choice-rewards": {
+      "name": "choice-rewards-cs6fix",
+      "status": "PASS"
+    },
+    "reward-stash": {
+      "name": "reward-stash",
+      "status": "PASS"
+    },
+    "map-loot": {
+      "name": "map-loot-si16-both",
+      "status": "PASS"
+    },
+    "player-hud": {
+      "name": "player-hud-projection",
+      "status": "PASS"
+    },
+    "player-hud-snapshot": {
+      "name": "player-hud-snapshot-ready",
+      "status": "PASS"
+    },
+    "hud-loadout-resource": {
+      "name": "hud-loadout-resource",
+      "status": "PASS"
+    },
+    "skill-resource": {
+      "name": "skill-resource",
+      "status": "PASS"
+    },
+    "task-panel": {
+      "name": "task-panel",
+      "status": "PASS"
+    },
+    "merc-loadout": {
+      "name": "merc-loadout-cs6fixtures",
+      "status": "PASS"
+    },
+    "equipment-interval": {
+      "name": "equipment-interval",
+      "status": "PASS"
+    },
+    "equipment-emissive": {
+      "name": "equipment-emissive",
+      "status": "PASS"
+    },
+    "arena-drop": {
+      "name": "arena-drop",
+      "status": "PASS"
+    },
+    "weapon-ammo-data": {
+      "name": "weapon-ammo-data-catalog49",
+      "status": "PASS"
+    },
+    "weapon-ammo": {
+      "name": "weapon-ammo",
+      "status": "PASS"
+    },
+    "sheriff-baton": {
+      "name": "sheriff-baton",
+      "status": "PASS"
+    },
+    "player-manual-input": {
+      "name": "player-manual-input",
+      "status": "PASS"
+    },
+    "gray-goo": {
+      "name": "gray-goo-settled",
+      "status": "PASS"
+    }
+  },
+  "unreceiptedFailedAttempts": [
+    {
+      "directory": "gray-goo",
+      "evidence": {
+        "failureCategory": "preflight-control-timeout",
+        "compilationStarted": false,
+        "status": "FAILED",
+        "folder": "gray-goo",
+        "resolvedBy": "late-exit-control/exit-recovery.json",
+        "scope": "Late close and exit receipts preserved; actual editor exit and idle tasks verified before any new compile.",
+        "outerWrapperExitCode": 1
+      }
+    },
+    {
+      "directory": "gray-goo-ready",
+      "evidence": {
+        "status": "FAILED",
+        "resolvedBy": "late-readiness.json",
+        "freshReadinessReceipt": "8f4fe53541964e48932413f72146dc64",
+        "scope": "Late first readiness receipt inspected; a new two-phase readiness control passed before gray-goo-settled.",
+        "compilationStarted": false,
+        "failureCategory": "cold-readiness-timeout",
+        "folder": "gray-goo-ready",
+        "outerWrapperExitCode": 1
+      }
+    },
+    {
+      "directory": "weapon-ammo-data",
+      "evidence": {
+        "status": "FAILED",
+        "outerWrapperExitCode": 1,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "passed": 148,
+        "total": 149,
+        "failed": 1,
+        "runId": "14c00d2fbcb246328a472d744cfed82e",
+        "reason": "Stale aggregate shotgun count 44 vs actual49. Parent terminated on native stderr before result.json; original console/trace/SWF identity retained."
+      }
+    }
+  ],
+  "attemptDirectoriesWithoutResult": [
+    "function-sizes",
+    "gray-goo",
+    "gray-goo-ready",
+    "player-hud-snapshot",
+    "weapon-ammo-data"
+  ],
+  "passingLogicalCases": 21,
+  "failedLogicalCases": 0,
+  "scope": "Completed canonical runners only; no completion or real-player acceptance inferred for an active/missing case."
+}

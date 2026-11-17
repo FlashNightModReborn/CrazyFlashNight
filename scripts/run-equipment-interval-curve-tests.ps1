@@ -5,8 +5,7 @@ $focusedRun=@{
     TemplateRelativePath='scripts/test-runners/equipment-interval-curve/TestLoader.as.template'
     SuiteRelativePaths=@('scripts/类定义/org/flashNight/arki/item/equipment/EquipmentIntervalCurveTest.as')
     SuiteFqns=@('org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest')
-    AdditionalAsRelativePaths=@('scripts/类定义/org/flashNight/arki/item/equipment/PropertyOperators.as',
-        'scripts/类定义/org/flashNight/gesh/tooltip/builder/UseSwitchStatsBuilder.as')
+    AdditionalAsRelativePaths=@('scripts/类定义/org/flashNight/arki/item/equipment/PropertyOperators.as')
     ExpectedTracePatterns=@(
         '(?m)^EquipmentIntervalCurveTest Phases: operator,data,composition,presentation,bounds\r?$',
         '(?m)^--- EquipmentIntervalCurveTest: (?<count>[1-9][0-9]*)/\k<count> passed, 0 failed ---\r?$')

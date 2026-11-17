@@ -28,9 +28,12 @@
     var openManyView = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-item-use-openmany-view.js')
         : root && root.CharacterBuildItemUseOpenManyView;
+    var drugControls = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-drug-controls.js')
+        : root && root.CharacterBuildDrugControls;
     var api = factory(
         focus, components, facetCounts,
-        stats, preview, template, loadoutPresenter, loadoutPicker, openManyView);
+        stats, preview, template, loadoutPresenter, loadoutPicker, openManyView, drugControls);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -40,7 +43,7 @@
 })(typeof window !== 'undefined' ? window : globalThis,
 function(WorkbenchFocus, WorkbenchComponents,
         FacetCountsModule, StatsViewModule, DollPreviewModule, TemplateModule,
-        LoadoutPresenterModule, LoadoutPickerModule, OpenManyViewModule) {
+        LoadoutPresenterModule, LoadoutPickerModule, OpenManyViewModule, DrugControls) {
     'use strict';
     if (!WorkbenchFocus || typeof WorkbenchFocus.RovingGridFocus !== 'function') {
         throw new Error('character-build-view.js requires RovingGridFocus');
@@ -91,29 +94,6 @@ function(WorkbenchFocus, WorkbenchComponents,
             target.removeEventListener(type, handler, options);
         });
     }
-    function drugDefinitions(snapshot) {
-        var meta = snapshot && snapshot.drugMeta || {};
-        return DRUG_SLOTS.map(function(definition) {
-            var row = meta[definition.id] || null;
-            return {
-                id:definition.id,
-                label:row && row.keyLabel
-                    ? row.keyLabel : definition.label,
-                physicalSlot:definition.physicalSlot,
-                bank:definition.bank,
-                lane:definition.lane,
-                drugMeta:row
-            };
-        });
-    }
-    function switchSummary(layout) {
-        if (!layout) return '';
-        var key = text(layout.switchKeyLabel, '未绑定');
-        var cooldown = layout.switchCooldown || {};
-        if (cooldown.ready === true) return key + ' 切换';
-        var seconds = Math.max(0, Number(cooldown.remainingMs) || 0) / 1000;
-        return key + ' 切换 · 冷却 ' + seconds.toFixed(1) + 's';
-    }
     function CharacterBuildView(options) {
         options = options || {};
         var self = this;
@@ -154,6 +134,8 @@ function(WorkbenchFocus, WorkbenchComponents,
             ? options.onStatsModeChange : function() {};
         this._onDollViewportChange = typeof options.onDollViewportChange === 'function'
             ? options.onDollViewportChange : function() {};
+        this._onCustomizationDrugClick = typeof options.onCustomizationDrugClick === 'function'
+            ? options.onCustomizationDrugClick : null;
         this._statsReturnFocus = null;
         var viewSequence = ++candidateViewSequence;
         LoadoutPickerModule.initState(this, {
@@ -325,7 +307,17 @@ function(WorkbenchFocus, WorkbenchComponents,
         });
         listen(this._listeners, this._drugGrid, 'click', function(event) {
             var slot = closest(event.target, '[data-roving-key]', self._drugGrid);
-            if (slot) self._selectUserSlot(slot.getAttribute('data-roving-key'), 'click');
+            if (!slot) return;
+            if (self.root.getAttribute('data-build-subview') === 'tuning'
+                    && self.root.getAttribute('data-build-tuning-mode') === 'customization'
+                    && self._onCustomizationDrugClick) {
+                var slotMatch = /^drug([1-8])$/.exec(String(slot.getAttribute('data-slot-id') || ''));
+                if (slotMatch) {
+                    self._onCustomizationDrugClick(Number(slotMatch[1]) - 1);
+                    return;
+                }
+            }
+            self._selectUserSlot(slot.getAttribute('data-roving-key'), 'click');
         });
         listen(this._listeners, this._candidateList, 'click', function(event) {
             if (self._candidateDrag && self._candidateDrag.consumeClick()) {
@@ -629,7 +621,7 @@ function(WorkbenchFocus, WorkbenchComponents,
             this._armorGrid, ARMOR_SLOTS, this._snapshot.equipment, 'armor', this._armorRoving);
         this._renderSlotGroup(
             this._weaponGrid, WEAPON_SLOTS, this._snapshot.equipment, 'weapon', this._weaponRoving);
-        var drugSlots = drugDefinitions(this._snapshot);
+        var drugSlots = DrugControls.drugDefinitions(this._snapshot, DRUG_SLOTS);
         this._renderSlotGroup(
             this._drugBankGrids[0], drugSlots.slice(0, 4),
             this._snapshot.drugs, 'drug', this._drugRoving);
@@ -647,7 +639,7 @@ function(WorkbenchFocus, WorkbenchComponents,
                 '[data-drug-bank-state]');
             if (bankState) bankState.textContent = active ? '当前组' : '备用组';
         }
-        this._drugSwitchStatus.textContent = switchSummary(
+        this._drugSwitchStatus.textContent = DrugControls.switchSummary(
             this._snapshot.drugLayout);
         this._focusSlot(this._activeSlotKey);
         this._setCandidateState('unselected', [], '');
@@ -660,6 +652,7 @@ function(WorkbenchFocus, WorkbenchComponents,
         return true;
     };
 
+
     CharacterBuildView.prototype.setStats = function(stats) {
         if (this._destroyed || !stats || typeof stats !== 'object') return false;
         this._stats = stats;
@@ -670,6 +663,12 @@ function(WorkbenchFocus, WorkbenchComponents,
     CharacterBuildView.prototype.getCanvas = function() { return this._canvas; };
     CharacterBuildView.prototype.getStatsRoot = function() { return this._statsRoot; };
     CharacterBuildView.prototype.getSelectedSlotKey = function() { return this._selectedSlotKey; };
+    CharacterBuildView.prototype.focusDrugSlot = function(drugId) {
+        if (this._destroyed) return false;
+        var key = 'drug:' + String(drugId || 'drug1');
+        if (typeof this.restoreSlot === 'function' && this.restoreSlot(key)) return true;
+        return typeof this._selectUserSlot === 'function' ? !!this._selectUserSlot(key, 'programmatic') : false;
+    };
     CharacterBuildView.prototype.setSlotTransitionFailure = function() { this._showStatusNotice('error', '调制仍保持在原装备；可稍后重试切换。'); return true; };
     CharacterBuildView.prototype.refreshSlotNavigation = function() { this._armorRoving.refresh({preferredKey:this._activeSlotKey}); this._weaponRoving.refresh({preferredKey:this._activeSlotKey}); this._drugRoving.refresh({preferredKey:this._activeSlotKey}); return true; };
 

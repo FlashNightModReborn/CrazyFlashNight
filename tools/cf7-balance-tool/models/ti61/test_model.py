@@ -355,5 +355,121 @@ class ModelContractTests(unittest.TestCase):
         overflow.check()
 
 
+class AmmoEconomyContractTests(unittest.TestCase):
+    def setUp(self):
+        self.p = m.PARAMS["profiles"][m.PARAMS["runtimeProfile"]]
+        self.b = dict(m.build("titanium_type_61_armor", 60, 13), mpMax=3000)
+
+    def test_real_ammo_prices_cover_all_launchers_and_floor(self):
+        expected = {"P90": 3, "钛合金P90": 3, "Glock 18": 3, "MP5战术版": 7,
+                    "战术版MGL": 375, "沧蓝陨铁手炮": 375, "M79式榴弹发射器": 938, "加农手炮": 268}
+        self.assertEqual({name: m.ammo_mp_cost(name, self.p) for name in expected}, expected)
+
+    def test_effective_ordinary_capacity_and_fixed_p90(self):
+        self.assertEqual(m.ammo_mp_cost("MP5战术版", self.p, capacity=120), 4)
+        self.assertEqual(m.ammo_mp_cost("钛合金P90", self.p, capacity=1), 3)
+        ammo_price = m.ITEMS["冲锋枪钢芯穿甲弹"].find("price")
+        original = ammo_price.text
+        try:
+            ammo_price.text = "800"
+            self.assertEqual(m.ammo_mp_cost("钛合金P90", self.p), 3)
+        finally:
+            ammo_price.text = original
+
+    def test_missing_or_invalid_price_and_capacity_fail_closed(self):
+        self.assertIsNone(m.ammo_mp_cost("战术版MGL", self.p, clipname="not_registered"))
+        for capacity in [0, -1, 1.5, float("nan"), float("inf")]:
+            self.assertIsNone(m.ammo_mp_cost("战术版MGL", self.p, capacity=capacity))
+        price = m.ITEMS["火箭弹弹药"].find("price")
+        original = price.text
+        try:
+            for value in ["0", "-1", "nan", "inf", "bad_price"]:
+                price.text = value
+                self.assertIsNone(m.ammo_mp_cost("战术版MGL", self.p))
+        finally:
+            price.text = original
+
+    def test_per_round_rounding_cannot_be_changed_by_batching(self):
+        state = m.EnergyState(self.b, self.p, mp_ratio=1600/3000, weapons=("MP5战术版", "钛合金P90"))
+        state.shot[0] = 3
+        state.pulse()
+        self.assertEqual((state.mp, state.ammo_spent, state.synthesized), (1579, 21, 3))
+        state.check()
+
+    def test_cheaper_secondary_has_priority_over_missing_launcher_rounds(self):
+        state = m.EnergyState(self.b, self.p, mp_ratio=1875/3000, weapons=("战术版MGL", "钛合金P90"))
+        state.shot = [5, 1]
+        state.pulse()
+        self.assertEqual((state.shot, state.mp), ([5, 0], 1872))
+        state.check()
+
+    def test_high_price_partial_synthesis_preserves_reserve(self):
+        state = m.EnergyState(self.b, self.p, mp_ratio=.75, weapons=("战术版MGL", "钛合金P90"))
+        state.shot[0] = 5
+        state.pulse()
+        self.assertEqual((state.shot[0], state.mp, state.ammo_spent), (3, 1500, 750))
+        state.pulse()
+        self.assertEqual(state.ammo_spent, 750)
+        state.check()
+
+    def test_launcher_refund_is_fixed_not_its_synthesis_price(self):
+        state = m.EnergyState(self.b, self.p, mp_ratio=.5, weapons=("战术版MGL", "钛合金P90"))
+        self.assertTrue(state.pistol_fire(0))
+        self.assertEqual(state.mp, 1503)
+        state.check()
+
+    def test_paid_sustained_output_is_allowed_and_accounts_for_real_potions(self):
+        report = m.ammo_economy_report()
+        self.assertTrue(report["paidSustainedLauncherFireAllowed"])
+        rows = [row for row in report["trials"] if row["weapon"] == "加农手炮" and row["seconds"] == 60]
+        unpaid = next(row for row in rows if row["mpChannels"] == 0)
+        paid = next(row for row in rows if row["mpChannels"] == 3 and row["alchemy"] == 0)
+        self.assertLess(unpaid["shots"], paid["shots"])
+        self.assertEqual(paid["shots"], 300)
+        self.assertGreater(paid["goldSpent"], 0)
+        self.assertEqual(paid["goldSpent"], paid["potions"] * 2500)
+        self.assertLessEqual(paid["mpFinal"], paid["mpMax"])
+
+
+class EmergencySequenceTests(unittest.TestCase):
+    def test_default_off_and_source_bound_thresholds(self):
+        state = m.EmergencyState(1000)
+        self.assertEqual((state.trigger, state.reset), (.5, .7))
+        state.event(damage=700)
+        self.assertEqual((state.hp, state.stock, state.gold), (300, 3, 0))
+
+    def test_two_independent_hits_and_paid_real_potion(self):
+        state = m.EmergencyState(1000, enabled=True)
+        state.event(damage=700)
+        state.event(damage=700, ready=False)
+        self.assertEqual((state.hp, state.stock, state.doses, state.gold), (300, 2, 1, 2500))
+
+    def test_single_aggregate_lethal_does_not_inject(self):
+        state = m.EmergencyState(1000, enabled=True)
+        state.event(damage=1400)
+        self.assertEqual((state.hp, state.doses), (0, 0))
+
+    def test_same_low_crisis_does_not_rearm_on_ready(self):
+        state = m.EmergencyState(5576, enabled=True)
+        state.event(damage=4500)
+        state.event(damage=500)
+        self.assertEqual((state.hp, state.doses, state.gold), (2076, 1, 2500))
+
+    def test_healthy_recovery_then_descending_event_rearms(self):
+        state = m.EmergencyState(5576, enabled=True)
+        state.event(damage=3000)
+        state.event(damage=1600)
+        self.assertEqual((state.hp, state.doses, state.gold), (3976, 2, 5000))
+
+    def test_full_eligibility_and_alchemy(self):
+        state = m.EmergencyState(5576, alchemy=10, enabled=True)
+        state.event(damage=2900, shield_broken=False)
+        state.event(damage=100, prohibited=True)
+        state.event(damage=100, ready=False)
+        self.assertEqual(state.doses, 0)
+        state.event(damage=100)
+        self.assertEqual((state.hp, state.doses, state.heal), (4376, 1, 2000))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大机器人/原画/待整理防具相关汇总/复合轮胎" symbolType="graphic" itemID="6af00000-19b16460">
+  <timeline>
+    <DOMTimeline name="复合轮胎">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/原画/待整理防具相关汇总/ARCHAI/部件/轮子" symbolType="graphic" loop="loop" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-5.5633544921875" d="5.5633544921875" tx="555.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="14.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/原画/待整理防具相关汇总/ARCHAI/部件/轮子" symbolType="graphic" loop="loop" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-3.5535888671875" d="3.5535888671875" tx="401.5" ty="43.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.1" y="15.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/原画/待整理防具相关汇总/ARCHAI/部件/轮子" symbolType="graphic" loop="loop" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-3.5535888671875" d="3.5535888671875" tx="267.75" ty="43.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.1" y="15.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/原画/待整理防具相关汇总/ARCHAI/部件/轮子" symbolType="graphic" loop="loop" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-5.5633544921875" d="5.5633544921875" tx="175.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="14.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

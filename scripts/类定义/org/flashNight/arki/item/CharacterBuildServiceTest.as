@@ -53,6 +53,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         testEquipmentLoopbackRetainsPendingProjection();
         testGrenadeMutationMergeAndFullBackpackUnequip();
         testDrugMutationMoveSwapMergeAndUnequip();
+        testEmergencyAuthorizationMutation();
         testMutationPreflightFailuresAndNoSideEffects();
         testMutationRollbackAndDispatcherReentry();
         testMutationReconcileSnapshot();
@@ -1362,14 +1363,14 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && equipmentTooltip.payload.displayName == "注释头盔实例名"
                 && equipmentTooltip.payload.iconName == "注释头盔实例图标"
                 && equipmentTooltip.payload.itemType == "防具"
-                && equipmentTooltip.payload.descHTML
+                && equipmentTooltip.payload.tooltipInput.projection.calculated.description
                     .indexOf("实例装备富注释") >= 0
-                && equipmentTooltip.payload.introHTML.length > 0
-                && equipmentTooltip.payload.document != undefined
+                && equipmentTooltip.payload.introHTML == ""
+                && equipmentTooltip.payload.tooltipInput.version == 1
                 && hasOnlyKeys(equipmentTooltip.payload, {
                     v:true, target:true, itemName:true, displayName:true,
                     iconName:true, itemType:true, descHTML:true,
-                    introHTML:true, document:true
+                    introHTML:true, tooltipInput:true
                 })
                 && hasOnlyKeys(equipmentTooltip.payload.target, {
                     kind:true, slotKey:true
@@ -1445,12 +1446,13 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && drugTooltip.payload.displayName == "注释药剂显示名"
                 && drugTooltip.payload.iconName == "注释药剂图标"
                 && drugTooltip.payload.itemType == "药剂"
-                && drugTooltip.payload.descHTML.indexOf("药剂富注释") >= 0
-                && drugTooltip.payload.introHTML.length > 0
+                && drugTooltip.payload.tooltipInput.itemName == "注释药剂"
+                && drugTooltip.payload.tooltipInput.projection.drugEffects instanceof Array
+                && drugTooltip.payload.introHTML == ""
                 && hasOnlyKeys(drugTooltip.payload.target, {
                     kind:true, drugSlot:true
                 }),
-            "tooltip 初始 writeEpoch=0 的药剂槽复用 canonical composer 并保留药剂类型");
+            "tooltip 初始 writeEpoch=0 的药剂槽复用 canonical producer 并保留药剂类型");
 
         drugParams.requestCallId = "character-build.tooltip.drug-upper";
         drugParams.drugSlot = 7;
@@ -2101,6 +2103,8 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             requireTags:"电力",
             tag:"等级校正"
         };
+        // 手工注入的夹具也须经过加载期同一校验，不能绕过未知定义拒绝。
+        ModRegistry.validateModHitBehavior(modDict["电脑芯片"], {});
         EquipmentUtil.modDict = modDict;
         var itemData:Object = effectiveQualificationCatalog();
 
@@ -3252,6 +3256,155 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                     === backpackSame
                 && bag.getItem("0") === other,
             "手雷异名装入保持原有 exact ref swap 语义，不跨名称合并");
+        __activeMutationRoot = null;
+    }
+
+    private static function testEmergencyAuthorizationMutation():Void {
+        var root:Object = fixtureRoot(8);
+        __activeMutationRoot = root;
+        var wornChest:Object = equipment("统合61式胸甲", 1, "", [], 30);
+        var bagChest:Object = equipment("钛合金61式胸甲", 1, "", [], 31);
+        var normalChest:Object = equipment("普通防弹衣", 1, "", [], 32);
+        root.物品栏.装备栏.items["上装装备"] = wornChest;
+        root.物品栏.背包.items["0"] = bagChest;
+        root.物品栏.背包.items["1"] = normalChest;
+        registerCatalog(root, "统合61式胸甲", "防具", "上装装备", 1);
+        registerCatalog(root, "钛合金61式胸甲", "防具", "上装装备", 1);
+        registerCatalog(root, "普通防弹衣", "防具", "上装装备", 1);
+        root.物品栏.药剂栏.items["4"] = stack("应急夹具药剂", 3);
+        root.物品栏.药剂栏.items["5"] = stack("应急备份药剂", 2);
+        registerCatalog(root, "应急夹具药剂", "消耗品", "药剂", 1);
+        registerCatalog(root, "应急备份药剂", "消耗品", "药剂", 1);
+        var panel:String = "workbench.emergency";
+        var callbacks:Object = protocolCallbacks(root, false, true);
+        CharacterBuildService.testOnlyUseRoot(root);
+        CharacterBuildService.testOnlyUseCallbacks(callbacks);
+        var first:Object = wireParams(panel, "emergency.open");
+        first.emergencyInjectionVersion = 1;
+        var opened:Object = CharacterBuildService.execute("snapshot", first);
+        check(opened.success && !opened.payload.emergencyInjection.enabled
+                && opened.payload.equipment[1].item.emergencyInjection != null
+                && !opened.payload.equipment[1].item.emergencyInjection.enabled
+                && !root.存档系统.dirtyMark,
+            "应急能力协商只投影默认关闭，不写存档");
+
+        var params:Object = drugMutationParams("unequipDrug", panel, opened, 4);
+        params.action = "characterBuildConfigureEmergencyInjection";
+        params.requestCallId = "emergency.authorize";
+        params.chestTarget = {
+            kind:"loadout",
+            slotKey:"上装装备",
+            expectedLoadoutRevision:opened.loadoutRevision
+        };
+        params.enabled = true;
+        params.expectedItemName = "应急夹具药剂";
+        var written:Object = CharacterBuildService.execute("configureEmergencyInjection", params);
+        check(written.success && written.changed && written.affectedBackpackSlot == -1
+                && written.operation == "configureEmergencyInjection"
+                && written.payload.emergencyInjection.enabled
+                && written.payload.emergencyInjection.physicalSlot == 4
+                && written.payload.targetEmergencyInjection.enabled
+                && written.payload.targetEmergencyInjection.physicalSlot == 4
+                && written.payload.equipment[1].item.emergencyInjection.physicalSlot == 4,
+            "应急授权经过 exact mutation envelope 并回传穿戴与目标投影");
+        check(written.drugRevision == opened.drugRevision + 1
+                && written.loadoutRevision == opened.loadoutRevision
+                && wornChest.value.emergencyInjection.itemKey == "应急夹具药剂"
+                && root.物品栏.药剂栏.getItem("4").value == 3 && root.存档系统.dirtyMark,
+            "授权只推进药剂领域水位，写入胸甲实例且不扣药");
+
+        var stale:Object = CharacterBuildService.execute("configureEmergencyInjection", params);
+        check(!stale.success && stale.error == "stale_state"
+                && wornChest.value.emergencyInjection.itemKey == "应急夹具药剂",
+            "旧药剂水位不能覆盖当前授权");
+
+        var staleLoadoutParams:Object = drugMutationParams("unequipDrug", panel, written, 5);
+        staleLoadoutParams.action = "characterBuildConfigureEmergencyInjection";
+        staleLoadoutParams.requestCallId = "emergency.staleLoadout";
+        staleLoadoutParams.chestTarget = {
+            kind:"loadout",
+            slotKey:"上装装备",
+            expectedLoadoutRevision:written.loadoutRevision + 99
+        };
+        staleLoadoutParams.enabled = true;
+        staleLoadoutParams.expectedItemName = "应急备份药剂";
+        var staleLoadout:Object = CharacterBuildService.execute("configureEmergencyInjection", staleLoadoutParams);
+        check(!staleLoadout.success && staleLoadout.error == "stale_state"
+                && wornChest.value.emergencyInjection.physicalSlot == 4,
+            "旧装备水位不能写入穿戴胸甲授权");
+
+        params.expectedDrugRevision = written.drugRevision;
+        params.requestCallId = "emergency.same";
+        var same:Object = CharacterBuildService.execute("configureEmergencyInjection", params);
+        check(same.success && !same.changed && same.drugRevision == written.drugRevision
+                && same.payload.targetEmergencyInjection.physicalSlot == 4,
+            "相同授权是领域no-op，不重复推进水位");
+
+        params.expectedItemName = "另一种药剂";
+        var wrong:Object = CharacterBuildService.execute("configureEmergencyInjection", params);
+        check(!wrong.success && wrong.error == "stale_state"
+                && wornChest.value.emergencyInjection.itemKey == "应急夹具药剂",
+            "物品身份漂移不能授权新药");
+
+        var bagTargetParams:Object = drugMutationParams("unequipDrug", panel, same, 5);
+        bagTargetParams.action = "characterBuildConfigureEmergencyInjection";
+        bagTargetParams.requestCallId = "emergency.bag";
+        var bagTarget:Object = backpackSourceRef(root, 0);
+        bagTarget.kind = "backpack";
+        bagTargetParams.chestTarget = bagTarget;
+        bagTargetParams.enabled = true;
+        bagTargetParams.expectedItemName = "应急备份药剂";
+        var bagWritten:Object = CharacterBuildService.execute("configureEmergencyInjection", bagTargetParams);
+        check(bagWritten.success && bagWritten.changed && bagWritten.affectedBackpackSlot == 0
+                && bagWritten.payload.targetEmergencyInjection.enabled
+                && bagWritten.payload.targetEmergencyInjection.physicalSlot == 5
+                && bagWritten.payload.emergencyInjection.physicalSlot == 4
+                && bagChest.value.emergencyInjection.physicalSlot == 5
+                && wornChest.value.emergencyInjection.physicalSlot == 4,
+            "背包中另一件61胸甲独立保存槽位，不覆盖当前穿戴胸甲");
+
+        var badItemParams:Object = drugMutationParams("unequipDrug", panel, bagWritten, 5);
+        badItemParams.action = "characterBuildConfigureEmergencyInjection";
+        badItemParams.requestCallId = "emergency.non61";
+        var badTarget:Object = backpackSourceRef(root, 1);
+        badTarget.kind = "backpack";
+        badItemParams.chestTarget = badTarget;
+        badItemParams.enabled = true;
+        badItemParams.expectedItemName = "应急备份药剂";
+        var non61:Object = CharacterBuildService.execute("configureEmergencyInjection", badItemParams);
+        check(!non61.success && non61.error == "incompatible_item",
+            "非61胸甲拒绝写应急注射授权");
+
+        var swapParams:Object = equipmentMutationParams("equipEquipment", panel, bagWritten, "上装装备", 0);
+        swapParams.requestCallId = "emergency.swap61";
+        var swapped:Object = CharacterBuildService.execute("equipEquipment", swapParams);
+        check(swapped.success && swapped.payload.emergencyInjection.enabled
+                && swapped.payload.emergencyInjection.physicalSlot == 5
+                && swapped.payload.emergencyInjection.itemKey == "应急备份药剂",
+            "换穿背包中已配置的61胸甲后立即接管生效槽位");
+
+        var disableParams:Object = drugMutationParams("unequipDrug", panel, swapped, -1);
+        disableParams.action = "characterBuildConfigureEmergencyInjection";
+        disableParams.requestCallId = "emergency.disable";
+        disableParams.chestTarget = {
+            kind:"loadout",
+            slotKey:"上装装备",
+            expectedLoadoutRevision:swapped.loadoutRevision
+        };
+        disableParams.enabled = false;
+        disableParams.expectedItemName = "";
+        var disabled:Object = CharacterBuildService.execute("configureEmergencyInjection", disableParams);
+        check(disabled.success && !disabled.payload.emergencyInjection.enabled
+                && !disabled.payload.targetEmergencyInjection.enabled
+                && disabled.drugRevision == swapped.drugRevision + 1
+                && wornChest.value.emergencyInjection.physicalSlot == 4,
+            "显式关闭当前穿戴胸甲不影响原背包61胸甲记忆");
+
+        var future:Object = wireParams(panel, "emergency.future");
+        future.sessionGeneration = opened.sessionGeneration; future.emergencyInjectionVersion = 2;
+        check(!CharacterBuildService.execute("snapshot", future).success,
+            "未知注射投影版本拒绝且不降级为猜测配置");
+        CharacterBuildService.testOnlyReset();
         __activeMutationRoot = null;
     }
 

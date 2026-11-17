@@ -1,0 +1,6 @@
+﻿trace("FocusedTestRunId agent-harness Start: __FOCUSED_RUN_ID__");
+import org.flashNight.arki.spatial.animation.*;
+if (!_root.主角函数) _root.主角函数 = {};
+#include "逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as"
+org.flashNight.neur.Server.test.AgentHarnessServiceTest.runAllTests();
+trace("FocusedTestRunId agent-harness Complete: __FOCUSED_RUN_ID__");

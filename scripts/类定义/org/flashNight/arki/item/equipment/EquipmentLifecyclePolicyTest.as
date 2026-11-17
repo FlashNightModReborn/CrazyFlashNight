@@ -23,6 +23,9 @@ class org.flashNight.arki.item.equipment.EquipmentLifecyclePolicyTest {
         return null;
     }
     public static function runAllTests():Void {
+        var previousItemDefinitions:Object = org.flashNight.arki.item.ItemUtil.itemDataDict;
+        org.flashNight.arki.item.ItemUtil.itemDataDict = ObjectUtil.clone(previousItemDefinitions || {});
+        try {
         passed = 0; failed = 0;
         var oldMods:Array = ModRegistry.getModList();
         try {
@@ -64,6 +67,7 @@ class org.flashNight.arki.item.equipment.EquipmentLifecyclePolicyTest {
             var item = {name:"fixture", value:{level:1, mods:[]}};
             var data:Object = {type:"武器", use:"长枪", data:{power:10, capacity:5, modslot:8, bullet:"普通子弹"},
                 skill:{skillname:"原战技", skillLocked:true}, lifecycle:base};
+            org.flashNight.arki.item.ItemUtil.itemDataDict.fixture = data;
             check(TagManager.checkModAvailability(item, data, "测试灯") == 1, "独立灯可与锁定本体战技并存");
             check(TagManager.checkModAvailability(item, data, "旧配件") == 1, "无生命周期旧配件保持准入");
             check(TagManager.checkModAvailability(item, data, "测试战技") == -4, "战技插件仍受原锁保护");
@@ -86,5 +90,9 @@ class org.flashNight.arki.item.equipment.EquipmentLifecyclePolicyTest {
         if (oldMods.length > 0) ModRegistry.loadModData(oldMods);
         trace("EquipmentLifecyclePolicyTest Tests Passed: " + passed);
         trace("EquipmentLifecyclePolicyTest Tests Failed: " + failed);
+
+        } finally {
+            org.flashNight.arki.item.ItemUtil.itemDataDict = previousItemDefinitions;
+        }
     }
 }

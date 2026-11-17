@@ -1047,12 +1047,12 @@ async function runViewport(browser, port, viewport) {
             };
         });
         check(cooldown.ready.every(value => value === 'false')
-            && cooldown.blocked.every(value => value === 'true')
-            && cooldown.disabled.every(value => value === 'true')
+            && cooldown.blocked.every(value => value === null)
+            && cooldown.disabled.every(value => value === null)
             && cooldown.progress.every(value => value === '33')
             && cooldown.remaining.every(value => value === '2000')
             && cooldown.switchStatus.includes('冷却 2.0s'),
-            label + ' paired drug slots and switch affordance expose the same cooldown lock',
+            label + ' paired drug slots expose shared cooldown while remaining selectable for inspection and authorization',
             JSON.stringify(cooldown));
 
         await page.evaluate(() => CharacterBuildHarness.setScenario('full'));
@@ -1525,6 +1525,8 @@ async function runViewport(browser, port, viewport) {
                 fullPage:true
             });
         }
+        check(await page.locator('[data-emergency-row]').count() === 0,
+            label + ' emergency settings do not occupy the everyday loadout pane');
         const candidateDestroy = await page.evaluate(() => {
             CharacterBuildHarness.setScenario('blocked');
             document.querySelector('[data-roving-key="armor:头部装备"]').click();

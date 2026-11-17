@@ -122,8 +122,7 @@ namespace CF7Launcher.Guardian
             if (transitionBacking != null && !transition)
                 throw new ArgumentException("Only a transition endpoint can bind a transition backing", nameof(transitionBacking));
             _transitionBacking = transitionBacking;
-            _presentationPolicy = transition ? presentationPolicy ?? SceneTransitionPresentationPolicy.Interactive
-                : SceneTransitionPresentationPolicy.Interactive;
+            _presentationPolicy = presentationPolicy ?? SceneTransitionPresentationPolicy.Interactive;
             _profile = profile ?? CompositionPanelProfile.Help;
             _hostName = transition ? "cf7-transition.local" : _profile.HostName;
             _pageUrl = transition ? "https://cf7-transition.local/scene-transition.html" : _profile.PageUrl;
@@ -415,8 +414,9 @@ namespace CF7Launcher.Guardian
             // was created while hidden. Pair browser visibility with the live surface.
             if (_web != null)
             {
-                bool visible = Active && Visible && _owner.Visible
-                    && _owner.WindowState != FormWindowState.Minimized;
+                bool visible = Active && Visible
+                    && (_presentationPolicy.AllowsHeadlessPresentation
+                        || (_owner.Visible && _owner.WindowState != FormWindowState.Minimized));
                 if (_web.IsVisible != visible)
                 {
                     _web.IsVisible = visible;

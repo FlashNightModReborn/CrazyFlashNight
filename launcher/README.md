@@ -99,8 +99,10 @@ bootstrap preflight
 | XMLSocket | Flash ↔ Host 任务消息 | 连接、握手、业务回包分别判定；军阀 `warlord_stage_start` 使用 exact binding，Host 只在 tracked close 后回送 AS2，不放宽 `panel_request`。outer `not_started` 是吸收性父启动失败，整局恢复面已移除；父退出只用 outer cancellation 退休 Host owner |
 | `native_guidance` / `nativeGuidanceAction` | AS2 引导快照 / exact close 意图 | 5 种原版白色场景图示；2 类告示板自动打开对应 Web 帮助，使用 tracked exact instance；scene、request、revision 与图片 page epoch 隔离，AS2 保留触发与清理，不开放 Web 调用；见 [U8 基座](../docs/U8引导迁移与共享教程基座-2026-09-30.md) |
 | HTTP | 兼容查询、资源与受限控制面 | legacy automation 不是 Agent Runtime 的信任边界 |
-| V8 | 搓招 `GameInput` DFA | 单 engine/单锁，模块源与加载闭包必须可复验；不再持有伤害数字状态或渲染描述符 |
+| V8 | 搓招 `GameInput` DFA；独立 Tooltip 内容引擎 | GameInput 保留原 engine/锁；Tooltip 使用独立常驻 worker/engine，不进入输入逐帧锁。模块源与加载闭包必须可复验；V8 不持有伤害数字状态 |
 | named pipe / MCP | CF7 Agent Runtime | 观察 grant 与 write lease 分离，绑定 peer/session/frame/generation |
+
+Tooltip 内容服务的契约、消费者和当前候选证据见 [Issue #262 交付报告](../docs/reports/issue-262-tooltip-migration.md)；独立宿主复现见 [TooltipService.Host](tests/TooltipService.Host/README.md)。Windows/CS6 与真实玩家入口状态按专项证据记录。
 
 ### Loot feed 与纸娃娃烘焙协议
 
@@ -136,7 +138,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 
 <a id="source-map"></a>
 ## 源码职责地图
-**最后核对代码基线**：commit `c32d71ffd9a3ab8b307aee386cab88822450ba0b` 加 2026-09-21 合成实验工作区（本轮仅核对实验入口）；其他子系统保留原有核对范围。
+**最后核对代码基线**：commit `3a2f434ceea4c0a07bad3a915bd314921f0f6863`（2026-11-15；本轮复核 Tooltip 内容引擎、服务与宿主职责）；其他子系统保留原有核对范围。
 
 本节是职责地图，不是手写文件 inventory。C# 主项目采用 SDK 默认递归 `**/*.cs`，实际排除项以 [主 csproj 的 `DefaultItemExcludes`](CRAZYFLASHER7MercenaryEmpire.csproj)为准；测试项目同样使用 SDK 隐式项。
 
@@ -149,10 +151,13 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 | [src/Guardian](src/Guardian/) | 窗口、WebView2、Native HUD、Panel、焦点；对白呈现见 [Hud/Dialogue](src/Guardian/Hud/Dialogue/)，图像服务见 [Dialogue](src/Guardian/Dialogue/) |
 | [src/Fonts](src/Fonts/) | XML-hash runtime 投影、face-major 来源解析、已验证字节快照缓存、Native role 创建与 WebView2 exact-set/ETag 资源处理 |
 | [src/Tasks](src/Tasks/) | Flash/Host 任务与领域消息；[NativeDialogueTask](src/Tasks/NativeDialogueTask.cs) 校验对白快照与输入归属；竞技场标定仍按 session ID 反查 canonical roster |
+| [src/Tooltips](src/Tooltips/) | Tooltip 异步调度、静态目录验证、独立 Logic V8 及现役响应边界增强；AS2 保留真实实例与事务权威 |
+| [tooltip-engine](tooltip-engine/) | 同步、确定性的 TypeScript 注释内容引擎；输出共享 TooltipDocument v1 |
 | [src/Bus](src/Bus/) | HTTP、XMLSocket、V8 和消息总线 |
 | [src/Save](src/Save/) | 启动期存档决议、备份、repair 与用户存档操作 |
 | [src/Audio](src/Audio/) | Audio Platform v2 managed bridge、协调与专项诊断 |
 | [src/AgentRuntime](src/AgentRuntime/) | named pipe、MCP/JSON adapters、观察与写 lease |
+| [src/AgentHarness](src/AgentHarness/) | 面向 `cf7_agent_*` 槽位与后台锁屏 E2E 验证的 `--agent-harness` 宿主管线 |
 | [src/ArenaWorker](src/ArenaWorker/) | 显式斗兽 Worker 候选入口、独立进程/目录租约、固定专用槽与逐次执行身份；见 [P0–P1 合同](../docs/Arena-Worker-P0-P1-施工与验证-2026-10-11.md) |
 | [src/Config](src/Config/) | `config.toml` 与用户偏好解析 |
 | [web](web/) | Bootstrap、Overlay、Panel、minigame、样式和静态资源 |
@@ -191,7 +196,7 @@ Worker 默认固定 180p／LOW、最低表现预算与 320×180 输出，关闭 
 
 ## 构建、候选与发布
 
-**最后核对代码基线**：commit `dff0c4390b5788151f75954cde397d54fba54257`（2026-08-31）；2026-09-01 vNext 施工仍在未提交工作树。
+**最后核对代码基线**：commit `3a2f434ceea4c0a07bad3a915bd314921f0f6863`（2026-11-15；本轮复核 Tooltip bundle/catalog 的 prepare、policy 与打包闭包）；其他发布边界仍按下述 canonical 契约。
 ### 日常开发
 
 推荐使用仓库级开发入口：
@@ -228,7 +233,7 @@ powershell -File launcher/build.ps1 -BuilderId local-dev
 正式产物的文件数、大小与 SHA-256 只读 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)；当前共识只读 [runtime release consensus](../config/build/runtime-release-consensus.json)。普通 docs/Web/AS2 修改不因此自动触发 runtime promotion。
 
 ## 测试入口与证据边界
-**最后核对代码基线**：commit `04718fa57afb64836e95893f0c4ff821d25ca043`（2026-08-16）。
+**最后核对代码基线**：commit `3a2f434ceea4c0a07bad3a915bd314921f0f6863`（2026-11-15；本轮复核 Tooltip Linux Host、Node 与响应 schema 回归入口）。
 
 ### Launcher xUnit
 
@@ -260,6 +265,7 @@ Runner 验证 exact SDK resolver 与串行 xUnit 策略，再从仓库根执行 
 | `RagTerminal/` | 通讯终端 exe 发现/拉起/健康轮询与存档绑定 |
 | `Save/` | Protocol 2、SOL 定位、备份与 repair |
 | `Tasks/` | Flash/Host 领域任务及解析边界 |
+| `TooltipService.Host/` | Linux 可运行的生产 TooltipService / ClearScript、Fake Flash 协议与异步生命周期测试 |
 <!-- launcher-test-taxonomy:end -->
 
 ### Web、Panel 与专项验证
@@ -331,7 +337,7 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 `tutorialsAutoOpen` 默认开启，作用于全部自动教程与玩家槽位。自动教程底栏的“关闭教程弹窗”或“设置 → 本机与 Web → 自动打开教程页面”都保存同一本机偏好；失败回滚。关闭后触发教程改为一次刘海屏通知提醒，手动帮助与场景操作图示继续可用。
 Help composition 端点仅新增 `tutorial_preference:disable_auto_open` / `tutorial_preference_result` 窄协议：version 1、callId 与当前 exact panelInstanceId。只允许关闭自动弹窗，不能调用 Settings RPC、修改其他偏好或游戏状态；保存确认后关闭当前教程，结果未知不重发。
 
-<a id="打击伤害数字生产路径"></a> **打击伤害数字生产路径**：AS2 仍负责伤害结算，`HitNumberBatchProcessor` 仅发送结算后的逐段事实；C# `HitNumberRuntime` 是唯一表现状态机，负责短寿命状态、模式投影和世界行裁剪，`HitNumberOverlay` 消费 latest-wins frame 并以紧边界持久 DIB 绘制。V8 只保留 `GameInput`，Flash renderer 不再作为 fallback。
+<a id="打击伤害数字生产路径"></a> **打击伤害数字生产路径**：AS2 仍负责伤害结算，`HitNumberBatchProcessor` 仅发送结算后的逐段事实；C# `HitNumberRuntime` 是唯一表现状态机，负责短寿命状态、模式投影和世界行裁剪，`HitNumberOverlay` 消费 latest-wins frame 并以紧边界持久 DIB 绘制。打击数字不经过 V8；GameInput 与 Tooltip 分属独立 V8，Flash renderer 不再作为 fallback。
 机器全局偏好提供 `off/balanced/total/classic/detail` 五状态。默认 `balanced` 只保留同目标最近三次 Burst，并把总伤的“最新段来源色闪现→该次攻击贡献主体色”、属性来源色、固定效果色、emoji、贡献强度及吸血/护盾精确值投影到攻击摘要；`classic` 复刻旧 Flash 散射/14 帧动效，`detail` 按 Burst 原子展示逐段并按实际数字/属性标签边界扩格、缩列。四模式共用同一 11 色语义表，逐段项永远使用自身来源色；属性贡献可见度与模式标签密度为正交尺度，因此平衡/逐发可保持紧凑而不伪造低贡献。
 `total` 保留旧总伤表达：当前段颜色闪现后回落到贡献主体色，状态按伤害贡献衰减，吸血/护盾保留精确累计值，总伤与 hit 渐进追赶；伤害类型与粉碎使用独立文字槽，非 MISS 零伤保持来源色，MISS 不累计，淡出续击恢复同一条目，最新目标最后绘制，冲击脉冲受平衡字号上限约束。balanced/detail 同样把最新受击目标最后绘制。
 治疗由独立的 150ms 数值窗口输出 `CombatNumberVisualEvent`，与伤害共用四模式布局和动画；balanced 连续更新当前值，total 独立累计本周期恢复量，detail/classic 按已聚合窗口展示。只保留治疗语义的绿色、正号与独立生命周期，不进入伤害账本、hit 或总伤 reducer；见[统一表现 ADR](../docs/战斗数字统一表现管线-ADR-2026-11-05.md)。
@@ -357,6 +363,7 @@ Help composition 端点仅新增 `tutorial_preference:disable_auto_open` / `tuto
 | `--unattended-bootstrap-request` | 受信内部 | 绑定无人值守 bootstrap request 文档 |
 | `--audio-v2-qualification-run-id` | 专项内部 | 绑定 Audio v2 qualification run |
 | `--legacy-http-automation` | 兼容内部 | 显式启用 legacy HTTP automation 外层，不提升信任等级 |
+| `--agent-harness <config.json>` | 受信内部 | 隔离启用面向 `cf7_agent_*` 槽位与后台锁屏 E2E 验证的宿主管线 |
 <!-- launcher-cli-registry:end -->
 
 Agent Runtime adapter 自身的 `--adapter`、`--slot` 等 wrapper 参数见 [Contracts README](src/AgentRuntime/Contracts/README.md)，不属于 Core/Bootstrap 公共 CLI。

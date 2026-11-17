@@ -3601,6 +3601,8 @@ namespace CF7Launcher.Guardian
             return PostToWebCore(json);
         }
 
+        internal Microsoft.Web.WebView2.Core.CoreWebView2 InternalCoreWebView2 => _disposed ? null : _webView?.CoreWebView2;
+
         private bool PostToWebCore(string json)
         {
             if (_panelHost?.UsesTransitionSettlement==true) {

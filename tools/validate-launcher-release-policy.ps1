@@ -210,6 +210,12 @@ function Get-Cf7ProductionChecks {
         -Arguments @((Join-Path $ProjectRoot 'tools\audit-web-icon-render-entrypoints.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'equipment-mod-ui' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-equipment-mod-ui.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7RequiredPathsCheck -Name 'required-tooltip-runtime-assets' -Root $ProjectRoot `
+        -Paths @('launcher\scripts\dist\tooltip-bundle.js', 'data\tooltip\tooltip-catalog.json', 'data\tooltip\tooltip-catalog.manifest.json')
+    $checks += New-Cf7CommandCheck -Name 'tooltip-bundle-current' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'launcher\tooltip-engine\build.cjs'), '--check') -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'tooltip-catalog-current' -FilePath $python `
+        -Arguments @((Join-Path $ProjectRoot 'tools\build-tooltip-catalog.py'), '--check') -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'material-catalog-current' -FilePath $python `
         -Arguments @((Join-Path $ProjectRoot 'tools\derive-material-catalog.py'), '--check') -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'combat-fx-assets-current' -FilePath $python `
@@ -287,7 +293,9 @@ function Get-Cf7ProductionChecks {
         'modules\workbench-profile.js', 'modules\workbench.js',
         'modules\workbench-components.js', 'modules\workbench-inspection-viewport.js',
         'modules\character-build\character-build-mutation.js',
+        'modules\character-build\character-build-drug-controls.js',
         'modules\character-build\character-build-drug-layout.js',
+        'modules\character-build\character-build-customization.js',
         'modules\character-build\character-build-session-contract.js',
         'modules\character-build-session.js',
         'modules\loadout-picker\loadout-picker-action-view.js',

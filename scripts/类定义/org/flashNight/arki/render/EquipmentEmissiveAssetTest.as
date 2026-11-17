@@ -4,7 +4,6 @@ import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentEmi
 import org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
 import org.flashNight.neur.Event.EventDispatcher;
 import org.flashNight.gesh.xml.XMLParser;
-import org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder;
 
 // Real registered XML, production lifecycle construction, and published art.
 // Actor values are disposable fixtures; original battle cycles are not driven.
@@ -72,10 +71,11 @@ class org.flashNight.arki.render.EquipmentEmissiveAssetTest {
                     if(item.lifecycle.attr_环境光.init.initRoutines=="装备自发光初始化")count++;
                 }
                 EquipmentEmissiveAssetTest.check(count==30,"actual XML parser sees all thirty configured independent emissions");
-                var torchText:String=EquipmentLightingInfoBuilder.build(EquipmentEmissiveAssetTest.definitions["战术手电"],null,true).join("");
-                EquipmentEmissiveAssetTest.check(torchText.indexOf("近身补光")>=0 && torchText.indexOf("+20")>=0 && torchText.indexOf("+25")>=0,"actual flashlight mod XML produces conditional defense and lighting text");
-                var laserText:String=EquipmentLightingInfoBuilder.build(EquipmentEmissiveAssetTest.definitions["镭射瞄准具"],null,true).join("");
-                EquipmentEmissiveAssetTest.check(laserText.indexOf("狭窄束带")>=0 && laserText.indexOf("闪避")==-1,"actual laser mod XML produces illumination without a defense bonus");
+                // Content assertions are now in the TS engine. Retain actual XML contract checks.
+                var torch:Object=EquipmentEmissiveAssetTest.definitions["战术手电"].lifecycle.attr_equipmentLight.init.initParam;
+                EquipmentEmissiveAssetTest.check(torch.kind=="flashlight" && torch.evasionBonus==20 && torch.electricEvasionBonus==5,"actual flashlight XML preserves conditional defense inputs");
+                var laser:Object=EquipmentEmissiveAssetTest.definitions["镭射瞄准具"].lifecycle.attr_equipmentLight.init.initParam;
+                EquipmentEmissiveAssetTest.check(laser.kind=="laser" && laser.evasionBonus==undefined,"actual laser XML has no defense bonus");
                 EquipmentEmissiveAssetTest.loadAsset();
             }
         };
@@ -97,7 +97,7 @@ class org.flashNight.arki.render.EquipmentEmissiveAssetTest {
         actor[slot]={name:item.name,value:{level:1,mods:[]}};actor[slot+"数据"]=item;actor[slot+"属性"]=item.data;
         var emission:Object=item.lifecycle.attr_环境光;
         check(emission.skillInteraction=="independent" && typeof(emission.init.initParam.radius)=="number","production parser retains typed independent config "+item.name);
-        check(EquipmentLightingInfoBuilder.build(item,null,false).join("").indexOf("【照明效果】")>=0,"actual equipment XML exposes its lighting feature "+item.name);
+        check(emission.init.initRoutines=="装备自发光初始化","actual equipment XML retains its emission initializer "+item.name);
         var life:Object={attr_环境光:emission};
         if(originalInit)for(var key:String in item.lifecycle) {
             var attr:Object=item.lifecycle[key];

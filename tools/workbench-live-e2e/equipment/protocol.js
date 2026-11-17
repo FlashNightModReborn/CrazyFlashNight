@@ -31,7 +31,7 @@ const EQUIPMENT_KEYS = Object.freeze([
 ]);
 const MOD_CANDIDATE_KEYS = Object.freeze([
   "candidateKey", "itemName", "displayName", "icon", "owned", "installed",
-  "available", "availabilityCode", "reason", "replaceableFrom", "grade",
+  "available", "reason", "replaceableFrom", "grade",
   "gradeLabel", "gradeColor", "scope", "scopeLabel", "role", "roleLabel", "symbol",
 ]);
 const FLASH_ACTIONS = Object.freeze({
@@ -175,7 +175,7 @@ function candidateLeaf(candidate, isMod, phase) {
       "available", "reason"];
   const required = isMod
     ? ["candidateKey", "itemName", "displayName", "icon", "owned", "installed",
-      "available", "availabilityCode", "reason", "replaceableFrom", "grade", "scope", "role"]
+      "available", "reason", "replaceableFrom", "grade", "scope", "role"]
     : allowed;
   exactKeys(candidate, required, allowed.filter((key) => !required.includes(key)),
     isMod ? "mod_candidate_invalid" : "tier_candidate_invalid", phase);
@@ -191,8 +191,6 @@ function candidateLeaf(candidate, isMod, phase) {
     exactStringArray(candidate.replaceableFrom, 512, 128,
       "mod_candidate_invalid", phase + ".replaceableFrom", true);
     if (typeof candidate.installed !== "boolean"
-        || !Number.isInteger(candidate.availabilityCode)
-        || candidate.availabilityCode < -100 || candidate.availabilityCode > 100
         || !safeText(candidate.grade, 1, 64) || !safeText(candidate.scope, 1, 64)
         || !safeText(candidate.role, 1, 64)
         || ["gradeLabel", "gradeColor", "scopeLabel", "roleLabel", "symbol"]

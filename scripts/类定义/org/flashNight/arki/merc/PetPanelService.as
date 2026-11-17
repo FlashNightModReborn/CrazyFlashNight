@@ -945,7 +945,8 @@ class org.flashNight.arki.merc.PetPanelService {
             iconName:String(tooltip.iconName),
             itemType:String(tooltip.itemType),
             descHTML:String(tooltip.descHTML),
-            introHTML:String(tooltip.introHTML)
+            introHTML:String(tooltip.introHTML),
+            tooltipInput:tooltip.tooltipInput
         });
     }
 

@@ -173,6 +173,10 @@ class org.flashNight.arki.render.EquipmentLightAssetTest {
         if (completed < cases.length) loadAsset(); else finish();
     }
     private static function runPluginLoaded(item:Object):Void {
+        var previousItemDefinitions:Object = org.flashNight.arki.item.ItemUtil.itemDataDict;
+        org.flashNight.arki.item.ItemUtil.itemDataDict = org.flashNight.gesh.object.ObjectUtil.clone(previousItemDefinitions || {});
+        try {
+        org.flashNight.arki.item.ItemUtil.itemDataDict.M4A1 = item;
         var equipment = {name:"M4A1", value:{level:1,mods:[]}};
         check(TagManager.checkModAvailability(equipment,item,"战术手电") == 1,"M4A1 actual rail accepts flashlight");
         var cfg:Object = {levelStatList:[1,1],tierNameToKeyDict:{},defaultTierDataDict:{}};
@@ -211,6 +215,10 @@ class org.flashNight.arki.render.EquipmentLightAssetTest {
         check(!ref.lightGenerated._parent && actor.躲闪率==3,"production teardown removes both defense and beam");
         check(actor.生命周期函数列表.length==0 && actor.dispatcher["_subCount"]==0,"plugin unload leaves no callbacks");
         nextFixture();
+
+        } finally {
+            org.flashNight.arki.item.ItemUtil.itemDataDict = previousItemDefinitions;
+        }
     }
     private static function finish():Void {
         if (finished) return; finished = true;

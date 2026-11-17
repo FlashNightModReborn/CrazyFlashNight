@@ -1,0 +1,15 @@
+{
+  "schema": "cf7.tooltip-corpus-canonical-outcome.v1",
+  "recordedUtc": "2026-11-16T01:40:35.670231+00:00",
+  "status": "FAILED",
+  "canonicalProcessExitCode": null,
+  "wrapperExitCode": 1,
+  "exitCodeLimitation": "The retained process wrapper printed an empty parent ExitCode; the uncaught canonical timeout, durable marker and wrapper failure are observed.",
+  "compilerErrors": 0,
+  "compilerWarnings": 0,
+  "reason": "Original3600-second asynchronous trace-closure deadline elapsed.",
+  "uncertainMarkerSha256": "3645b547d9cd0a9bc0353d9d669c25a02b52b1e527e6e4644f9bce88469f116b",
+  "scratchRestored": true,
+  "editorContinues": true,
+  "scope": "Original runner remains FAILED. The same byte-verified TestLoader SWF is still producing independent rows under the observer machine lease. Any later complete capture is a separate result, not a rewrite of this outcome."
+}

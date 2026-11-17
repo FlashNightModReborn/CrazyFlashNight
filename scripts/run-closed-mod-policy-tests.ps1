@@ -10,7 +10,7 @@ $focusedRun = @{
     SuiteFqns = @('org.flashNight.arki.item.equipment.ClosedModPolicyTest')
     AdditionalAsRelativePaths = @('scripts\类定义\org\flashNight\arki\item\equipment\TagManager.as', 'scripts\类定义\org\flashNight\arki\item\equipment\ModRegistry.as', 'scripts\类定义\org\flashNight\arki\item\EquipmentUtil.as', 'scripts\类定义\org\flashNight\arki\item\equipment\EquipmentCalculator.as')
     ExpectedTracePatterns = @('(?m)^ClosedModPolicyTest Tests Passed: [1-9][0-9]*\r?$', '(?m)^ClosedModPolicyTest Tests Failed: 0\r?$')
-    SuccessSummary = '现役XML的26件封闭装备：目录过滤、安装门、全部插件拒绝面、等级实际计算与例外保持'
+    SuccessSummary = '现役XML的封闭装备（含战术连喷）：目录过滤、安装门、全部插件拒绝面、等级实际计算与例外保持'
     TimeoutSeconds = $TimeoutSeconds
     AsyncBehaviorTimeoutSeconds = 120
 }

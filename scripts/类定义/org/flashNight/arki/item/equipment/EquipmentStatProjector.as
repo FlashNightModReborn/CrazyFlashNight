@@ -30,14 +30,15 @@ class org.flashNight.arki.item.equipment.EquipmentStatProjector {
      * 投影装备在指定 value 下的最终属性行
      * @param itemName 装备内部名
      * @param value 装备值对象 {level, tier, mods}（允许缺省字段）
+     * @param calculatedData 同次请求已计算的对应 value 属性；null 明确表示失败，不回退重算
      * @return 有序行数组 [{key, label, value}]；任何输入异常返回 []
      */
-    public static function project(itemName:String, value:Object):Array {
+    public static function project(itemName:String, value:Object, calculatedData:Object):Array {
         var rows:Array = [];
         if (itemName == null || itemName == "") return rows;
 
         // getItemData 返回深克隆（cloneFast 递归），calculateInPlace 就地修改安全
-        var itemData:Object = ItemUtil.getItemData(itemName);
+        var itemData:Object = calculatedData === undefined ? ItemUtil.getItemData(itemName) : calculatedData;
         if (itemData == null) return rows;
 
         var safeValue:Object = (value != null) ? value : {};
@@ -45,11 +46,12 @@ class org.flashNight.arki.item.equipment.EquipmentStatProjector {
         if (isNaN(level) || level < 1) level = 1;
         var mods:Array = (safeValue.mods instanceof Array) ? safeValue.mods : [];
 
-        var calculated:Object = EquipmentCalculator.calculateInPlace(
-            itemData,
-            {level:level, tier:safeValue.tier, mods:mods},
-            EquipmentConfigManager.getFullConfig(),
-            ModRegistry.getModDict());
+        var calculated:Object = calculatedData;
+        if (calculated === undefined) {
+            calculated = EquipmentCalculator.calculateInPlace(
+                itemData, {level:level, tier:safeValue.tier, mods:mods},
+                EquipmentConfigManager.getFullConfig(), ModRegistry.getModDict());
+        }
         // 计算失败时原对象仍保留基础字段，不能将它们冒充最终生效属性。
         if (calculated == null) return rows;
 

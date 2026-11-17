@@ -297,6 +297,39 @@ namespace CF7Launcher.Tests.Save
         }
 
         [Fact]
+        public void L1_EmergencyInjectionItemKey_DictUnique_FixValue()
+        {
+            JObject s = FreshSnapshot();
+            s["inventory"]["装备栏"]["上装装备"]["name"] = "黑色功夫装";
+            s["inventory"]["装备栏"]["上装装备"]["value"]["emergencyInjection"] = JObject.Parse(@"{
+                ""version"": 1,
+                ""enabled"": true,
+                ""physicalSlot"": 0,
+                ""itemKey"": ""大HP\ufffd剂""
+            }");
+            JObject rawDict = new JObject
+            {
+                ["schemaVersion"] = 1,
+                ["generated"] = new JObject(),
+                ["items"] = JArr("黑色功夫装", "咖啡色多包裤", "棕色皮鞋", "大HP药剂"),
+                ["mods"] = JArr("攻击+5"),
+                ["enemies"] = JArr("黑铁会大叔", "军阀步兵"),
+                ["hairstyles"] = JArr("发型-男式-黑暴走头"),
+                ["skills"] = JArr("基础攻击", "空翻踢", "强化拳"),
+                ["taskChains"] = JArr("主线"),
+                ["stages"] = JArr("第一关", "第二关")
+            };
+            RepairDictionary d = new RepairDictionary(rawDict);
+
+            RepairPlan plan = RepairPolicy.BuildPlan(s, d);
+            Assert.Equal(1, plan.Scan.Total);
+            Assert.Equal(RepairActionKind.FixValue, plan.Decisions[0].Action.Kind);
+            Assert.Equal("大HP药剂", plan.Decisions[0].Action.NewValue);
+            RepairPolicy.ApplyHighConfidenceOnly(s, plan, NowUtc);
+            Assert.Equal("大HP药剂", (string)s["inventory"]["装备栏"]["上装装备"]["value"]["emergencyInjection"]["itemKey"]);
+        }
+
+        [Fact]
         public void CleanSnapshot_NoOp()
         {
             JObject s = FreshSnapshot();

@@ -1258,7 +1258,8 @@ test('facade owns registration and delegates to the bounded storage controller',
         require('../launcher/web/modules/character-build-session.js').commands,
         [
             'snapshot', 'candidates', 'tooltip', 'flushLive', 'statsSnapshot', 'finalize',
-            'equipEquipment', 'unequipEquipment', 'equipDrug', 'unequipDrug'
+            'equipEquipment', 'unequipEquipment', 'equipDrug', 'unequipDrug',
+            'configureEmergencyInjection'
         ]);
     assert(!/Panels\.register|Bridge\.send/.test(buildSession));
     assert(!/new (?:[^;\n]*\.)?(?:PanelRequestMux|InventoryCoordinator)\(/.test(sourceNavigation));

@@ -7,14 +7,16 @@
     var drugLayout = typeof module !== 'undefined' && module.exports
         ? require('./character-build-drug-layout.js')
         : root && root.CharacterBuildDrugLayout;
-    var api = factory(mutation, drugLayout);
+    var controls = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-drug-controls.js') : root && root.CharacterBuildDrugControls;
+    var api = factory(mutation, drugLayout, controls);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
         root.CF7.CharacterBuildSessionContract = api;
         root.CharacterBuildSessionContract = api;
     }
-})(typeof window !== 'undefined' ? window : globalThis, function(Mutation, DrugLayout) {
+})(typeof window !== 'undefined' ? window : globalThis, function(Mutation, DrugLayout, DrugControls) {
     'use strict';
     if (!Mutation) throw new Error('CharacterBuildSessionContract requires CharacterBuildMutation');
     if (!DrugLayout || typeof DrugLayout.validSnapshot !== 'function') {
@@ -88,6 +90,10 @@
     }
     function validProjection(payload) {
         if (!payload || typeof payload !== 'object'
+                || (payload.emergencyInjection !== undefined
+                    && !DrugControls.validEmergencyInjection(payload.emergencyInjection))
+                || (payload.targetEmergencyInjection !== undefined
+                    && !DrugControls.validEmergencyInjection(payload.targetEmergencyInjection))
                 || !Array.isArray(payload.equipment)
                 || payload.equipment.length !== 11
                 || !validLoadoutItems(payload.equipment)
@@ -97,7 +103,7 @@
                 || !payload.portrait || typeof payload.portrait !== 'object'
                 || typeof payload.stateHealth !== 'string'
                 || !Array.isArray(payload.diagnostics)) return false;
-        return true;
+        return DrugControls.validProjectionEmergency(payload);
     }
     function candidateValidationError(payload, target, scope) {
         scope = candidateScope(scope);
@@ -153,10 +159,19 @@
         return candidateValidationError(payload, target, scope) === '';
     }
     function validTooltip(payload, target) {
-        if (!ownKeys(payload, [
-                'v', 'target', 'itemName', 'displayName', 'iconName', 'itemType',
-                'descHTML', 'introHTML'
-            ]) || payload.v !== 1 || !sameTarget(payload.target, target)) return false;
+        var expected = [
+            'v', 'target', 'itemName', 'displayName', 'iconName', 'itemType',
+            'descHTML', 'introHTML'
+        ];
+        // 与 candidate-tooltip 一致：Host 净化后的 document 是可选增量字段；
+        // 内部内容交给共享 renderer 归一化，失败时仍可使用 intro/desc。
+        var hasDocument = !!payload
+            && Object.prototype.hasOwnProperty.call(payload, 'document');
+        if (!ownKeys(payload, hasDocument ? expected.concat('document') : expected)
+                || payload.v !== 1 || !sameTarget(payload.target, target)
+                || (hasDocument && (payload.document === null
+                    || typeof payload.document !== 'object'
+                    || Array.isArray(payload.document)))) return false;
         var expectedTargetKeys = target && target.kind === 'equipment'
             ? ['kind', 'slotKey'] : ['kind', 'drugSlot'];
         return ownKeys(payload.target, expectedTargetKeys)

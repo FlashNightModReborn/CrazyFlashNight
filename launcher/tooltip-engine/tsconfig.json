@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "none",
+    "outFile": "../scripts/dist/tooltip-bundle.js",
+    "rootDir": "src",
+    "strict": false,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "newLine": "lf",
+    "declaration": false,
+    "sourceMap": false,
+    "lib": ["ES2020"],
+    "removeComments": false
+  },
+  "include": ["src/**/*.ts"]
+}

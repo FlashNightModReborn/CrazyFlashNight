@@ -38,6 +38,10 @@ namespace CF7Launcher.Guardian
         private Action _resumeTail;
         private Action<long> _requireFreshFrame = _ => {};
         internal bool OwnsCurtain => _resumeScene>0 || (_intro!=null ? _intro.CoverRequired : _latest!=null && !_revealed);
+        // A revealed Web surface is not the AS2 timeline's terminal receipt. Pausing
+        // before hide can freeze either the fresh-world capture or frames 30..36.
+        internal bool BlocksOrdinaryPanelOpen => _resumeScene>0 || _latest!=null
+            && !(_intro?.TimelineRetired==true && _latest.Value<string>("phase")=="intro");
         internal bool SettlementResumePending => _resumeScene>0;
         internal void ConfigurePresentationFence(Action<long> requireFreshFrame) => _requireFreshFrame=requireFreshFrame;
         internal bool DeferSettlementResumeTail(Action tail) {
@@ -46,17 +50,22 @@ namespace CF7Launcher.Guardian
             return true;
         }
         internal event Action CurtainReleased;
+        internal event Action PanelAdmissionAvailable;
         internal event Action SceneCompleted;
         internal event Action<JObject> SettlementRequest;
         internal event Action SettlementTransportFailed;
         internal CompositionHelpSurface SettlementSurface => _surface;
         private bool _handoffSent;
         private Func<bool> _exclusivePresentation = () => false;
+        private Func<long, bool> _allowHeadlessReveal;
         private BookshelfReturnPresentation _bookshelfReturn;
+        internal bool AllowsHeadlessPresentation => _presentationPolicy.AllowsHeadlessPresentation;
+        internal void ConfigureHeadlessTransitionFallback(Func<long, bool> allowHeadlessReveal) => _allowHeadlessReveal = allowHeadlessReveal;
         internal void ConfigureBookshelfReturn(BookshelfReturnPresentation presentation) => _bookshelfReturn = presentation;
         internal bool BookshelfReturnLoading => _bookshelfReturn?.Loading == true;
         private bool BookshelfVisible => _bookshelfReturn?.CanPresent == true && _admitted()
-            && _owner.Visible && _owner.WindowState != FormWindowState.Minimized && (_bookshelfReturn.OwnsForeground || _surface.CanRestoreGameFocus);
+            && _owner.Visible && (_presentationPolicy.AllowsHeadlessPresentation
+                || (_owner.WindowState != FormWindowState.Minimized && (_bookshelfReturn.OwnsForeground || _surface.CanRestoreGameFocus)));
         internal void RestoreRetainedBookshelfOrder() { if (!_disposed && BookshelfVisible) _bookshelfReturn.RestoreOrder(); }
         internal void ConfigureExclusivePresentation(Func<bool> active) => _exclusivePresentation = active;
         internal static bool AllowsFocusHandoff(bool requested, bool admitted, bool exclusive) => requested && admitted && !exclusive;
@@ -105,6 +114,7 @@ namespace CF7Launcher.Guardian
             _holdWorldInput(_latest!=null && !_revealed);
             tail?.Invoke();
             CurtainReleased?.Invoke();
+            if(!BlocksOrdinaryPanelOpen) PanelAdmissionAvailable?.Invoke();
             LogManager.Log("event=scene_settlement_resume_released scene="+scene);
         }
 
@@ -142,6 +152,7 @@ namespace CF7Launcher.Guardian
             _timer.Tick+=(_,_)=>Tick(); _timer.Start();
         }
         private void Present(JObject p) {
+            bool panelAdmissionBlocked=BlocksOrdinaryPanelOpen;
             ObserveIntro(p);
             if(_resumeScene>0) FinishSettlementResume();
             if(p.Value<string>("phase")=="reveal" && (_latest?.Value<string>("phase")!="reveal"
@@ -169,6 +180,7 @@ namespace CF7Launcher.Guardian
             if(_revealed && p.Value<string>("phase")!="reveal") _revealed=false;
             InputLatencyProbe.Current?.SetPhase(p.Value<string>("phase"));
             _latest=p; _holdWorldInput(OwnsCurtain); Tick();
+            if(panelAdmissionBlocked && !BlocksOrdinaryPanelOpen) PanelAdmissionAvailable?.Invoke();
         }
         private long _preparedScene;
         private JObject _settlementReceipt;
@@ -216,12 +228,13 @@ namespace CF7Launcher.Guardian
                     FinishSettlementResume();
                     return;
                 }
-                if(_admitted() && _owner.Visible && _owner.WindowState!=FormWindowState.Minimized
-                    && _surface.CanRestoreGameFocus && !_exclusivePresentation()) {
+                if(_admitted() && _owner.Visible && (_presentationPolicy.AllowsHeadlessPresentation
+                        || (_owner.WindowState!=FormWindowState.Minimized && _surface.CanRestoreGameFocus))
+                    && !_exclusivePresentation()) {
                     if(_recovering || !_surface.Ready) {
                         _fallback.Bounds=Bounds();
                         if(!_fallback.Visible) _fallback.Show();
-                    } else _surface.PresentTransition(Bounds());
+                    } else _surface.PresentTransition(Bounds(), _presentationPolicy.AllowsHeadlessPresentation);
                     RestoreWindowOrder();
                 } else { _fallback.Hide(); _surface.SuppressTransition(); }
                 return;
@@ -256,8 +269,9 @@ namespace CF7Launcher.Guardian
             Prepare();
             if(_latest==null || _revealed) {
                 if(_surface.SettlementInstance.Length>0 && _surface.Ready) {
-                    if(_admitted() && _owner.Visible && _owner.WindowState!=FormWindowState.Minimized && _surface.CanRestoreGameFocus)
-                        _surface.PresentTransition(Bounds());
+                    if(_admitted() && _owner.Visible && (_presentationPolicy.AllowsHeadlessPresentation
+                        || (_owner.WindowState!=FormWindowState.Minimized && _surface.CanRestoreGameFocus)))
+                        _surface.PresentTransition(Bounds(), _presentationPolicy.AllowsHeadlessPresentation);
                     else _surface.SuppressTransition();
                 }
                 return;
@@ -292,6 +306,28 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("event=scene_transition_project id="+_identity+" phase="+projection.Value<string>("phase")
                     +" revision="+projection.Value<int>("revision")+" reveal="+projection.Value<bool>("revealAllowed"));
             }
+            if(_presentationPolicy.AllowsHeadlessPresentation
+                && !_revealed
+                && projection.Value<bool>("revealAllowed")
+                && projection.Value<bool?>("reportVisible") != true
+                && projection.Value<long>("version") != 3
+                && _allowHeadlessReveal != null
+                && _allowHeadlessReveal(projection.Value<long>("targetScene"))) {
+                var synthetic = new JObject {
+                    ["type"] = "scene_transition_presented",
+                    ["requestId"] = _identity,
+                    ["revision"] = _latest.Value<int>("revision"),
+                    ["generation"] = Task.Epoch,
+                    ["kind"] = "revealed"
+                };
+                if (Task.Presented(synthetic)) {
+                    _revealed = true;
+                    HidePresentation(handoff: true);
+                    CurtainReleased?.Invoke();
+                    LogManager.Log("event=scene_transition_headless_revealed id=" + _identity + " scene=" + projection.Value<long>("targetScene"));
+                    return;
+                }
+            }
             RestoreWindowOrder();
             TryRetireIntroUnderCover();
             if(_pendingAction!=null && _surface.TransitionInputReleased) {
@@ -313,7 +349,7 @@ namespace CF7Launcher.Guardian
                 return;
             }
             if(!_surface.Visible) return;
-            if(_presentationPolicy.NonActivating && (!CurtainCanPresent || !SceneTransitionWindowOrder.IsPresented(_surface))) return;
+            if(_presentationPolicy.NonActivating && !_presentationPolicy.AllowsHeadlessPresentation && (!CurtainCanPresent || !SceneTransitionWindowOrder.IsPresented(_surface))) return;
             if(type!="scene_transition_presented") return;
             string kind=p["kind"]?.Type==JTokenType.String?p.Value<string>("kind"):null;
             if(kind=="covered") { if(Task.Presented(p)) { _covered=true; if(_intro?.State!="failed")_fallback.Hide(); } }
@@ -383,6 +419,7 @@ namespace CF7Launcher.Guardian
             }
             InputLatencyProbe.Current?.SetPhase(complete ? "base_ready" : "hidden", finished: true);
             if(held) CurtainReleased?.Invoke();
+            if(!BlocksOrdinaryPanelOpen) PanelAdmissionAvailable?.Invoke();
         }
         internal void HandleBookshelfMessage(string instance, JObject p)
         {

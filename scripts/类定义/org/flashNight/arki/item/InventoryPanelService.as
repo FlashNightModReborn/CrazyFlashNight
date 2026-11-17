@@ -1,7 +1,6 @@
 ﻿import org.flashNight.arki.item.itemCollection.ArrayInventory;
 
-import org.flashNight.gesh.tooltip.TooltipComposer;
-import org.flashNight.gesh.tooltip.NativeTooltipDocument;
+import org.flashNight.gesh.tooltip.TooltipInputProjection;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.PlayerAssetTransaction;
@@ -232,94 +231,34 @@ class org.flashNight.arki.item.InventoryPanelService {
     }
 
     /**
-     * 对已经由所属领域完成 exact identity 校验的真实物品实例生成 canonical 富注释。
-     * 本函数只负责展示投影，不签发容器能力，也不替调用方验证 source/slot/revision。
+     * 调用方已完成 exact identity/lease 校验。本函数只冻结当前实例的只读输入；
+     * Host 在原异步响应边界补全文档，AS2 不等待 V8、不构造 HTML。
      */
     public static function buildTooltipProjection(item:Object):Object {
-        if (item == null || typeof item.name != "string") {
-            return fail("item_data_missing");
-        }
-
-        // ItemUtil.getItemData 以 __proto__ 区分 String/Number；保留 BaseItem.name 原始值，
-        // 不额外套 String(...)，否则部分 AS2 运行时会落到 null 分支。
-        var itemData:Object = org.flashNight.arki.item.ItemUtil.getItemData(item.name);
-        if (itemData == undefined) return fail("item_data_missing");
-
-        // TooltipComposer 的 baseItem 分支面向 value:Object 的装备实例；数值型 stack
-        // 若也传 BaseItem，会把数量当装备 value 读取。stack 只需基础物品数据与默认等级。
-        var stackCount:Number = typeof item.value == "number" && isFinite(item.value) ? Math.floor(Number(item.value)) : 0;
-        var instanceValue:Object = typeof item.value == "object" ? item.value : {level: 1, count: stackCount};
+        if (item == null || typeof item.name != "string") return fail("item_data_missing");
+        var stackCount:Number = typeof item.value == "number" && isFinite(item.value)
+            ? Math.floor(Number(item.value)) : 0;
+        var value:Object = typeof item.value == "object" ? item.value : {level:1, count:stackCount};
         var baseItem = typeof item.value == "object" && typeof item.getData == "function" ? item : null;
-        var descHTML:String;
-        var introHTML:String;
-        var descBody:String;
-        var docIntro:String;
-        var docSubs:Array = [];
-        var rail:Array = null;
-        var magazine:Object = null;
+        var input:Object;
+        var projection:Object;
         try {
-            // 旧 HTML 出口保持原样（战技/插件/额外功能内联在描述体里、简介含类型与弹夹行）：
-            // 不认 document 的只读消费端拿到的仍是全文。
-            descHTML = TooltipComposer.generateItemDescriptionText(itemData, baseItem);
-            introHTML = TooltipComposer.generateIntroPanelContent(baseItem, itemData, instanceValue);
-
-            // document 走与原生悬浮注释相同的拆分：战技/已安装插件/额外功能各成子框，
-            // 类型行交给插条、弹夹与子弹类型交给弹夹框，简介面板不再重复这些行。
-            var subBlocks:Array = [];
-            descBody = TooltipComposer.generateItemDescriptionTextEx(itemData, baseItem, subBlocks, docSubs);
-            rail = TooltipComposer.getRailText(itemData, baseItem);
-            magazine = TooltipComposer.getMagazineInfo(baseItem, itemData, instanceValue);
-            var upgrades:Object = TooltipComposer.getUpgradePathInfo(itemData, baseItem);
-            var critSlay:Array = [];
-            docIntro = TooltipComposer.generateIntroPanelContent(baseItem, itemData, instanceValue, {
-                omitTypeLines: rail != null,
-                omitActionType: rail != null,
-                omitClipName: magazine != null,
-                omitBulletType: magazine != null && magazine.ammo != null,
-                omitCritSlay: true,
-                critSlay: critSlay
-            });
-            if (critSlay.length > 0) {
-                var critSlayHTML:String = critSlay.join("");
-                subBlocks.unshift(critSlayHTML);
-                docSubs.unshift(critSlayHTML);
-            }
+            input = TooltipInputProjection.forItem(item.name, value, baseItem, "inventory");
+            if (input == null) return fail("item_data_missing");
+            projection = buildItemProjection(item);
         } catch (error) {
-            trace("[InventoryPanelService tooltip] compose failed: " + error);
+            trace("[InventoryPanelService tooltip] projection failed: " + error);
             return fail("tooltip_failed");
         }
-
-        var extras:Object = null;
-        if (rail != null || magazine != null || upgrades != null) {
-            extras = {};
-            if (rail != null) extras.rail = rail;
-            if (magazine != null) extras.magazine = magazine;
-            if (upgrades != null) extras.upgrades = upgrades;
-        }
-
-        var projection:Object = buildItemProjection(item);
         if (projection == null) return fail("item_data_missing");
+        // The existing item projection owns display identity, including stack and bare DTOs.
+        input.projection.displayName = String(projection.displayName);
+        input.projection.iconName = String(projection.icon);
         var itemType:String = String(projection.majorType);
         if (itemType == "消耗品" && projection.use != undefined) itemType = String(projection.use);
-        return {
-            success: true,
-            v: 1,
-            itemName: String(item.name),
-            displayname: String(projection.displayName),
-            iconName: String(projection.icon),
-            itemType: itemType,
-            // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性，
-            // Web 端 convertAS2Html 的 DOMParser 两种引号风格都正确解析。
-            descHTML: descHTML,
-            introHTML: introHTML,
-            // COMMON v1 语义文档：title/icon 与上方 projection.displayName/icon 严格一致
-            // （装备实例经 getData() 涂装覆盖）；描述体用拆分版、简介用省略版，
-            // 由 rail/magazine/upgrades 结构部件与 role:"sub" 子框承载被省略的内容。
-            // title 与 runs[].text 为已解析纯文本，Host/Web 不得二次 Flatten/解码。
-            document: NativeTooltipDocument.buildItem(String(item.name), itemData,
-                {displayname: projection.displayName, icon: projection.icon},
-                docIntro, descBody, docSubs, extras)
-        };
+        return {success:true, v:1, itemName:String(item.name),
+            displayname:String(projection.displayName), iconName:String(projection.icon), itemType:itemType,
+            descHTML:"", introHTML:"", tooltipInput:input};
     }
 
     private static function executeDiscard(params:Object):Object {
@@ -1662,19 +1601,24 @@ class org.flashNight.arki.item.InventoryPanelService {
             }
         }
         var isEquipment:Boolean = typeof item.value == "object";
+        if (strictTier && isEquipment && data == null) return null;
+        var identityData:Object = data;
+        if (identityData == null && typeof item.getIdentityData == "function") {
+            identityData = item.getIdentityData();
+        }
         var quantity:Number = !isEquipment ? Number(item.value) : 1;
         var enhancementLevel:Number = isEquipment ? Number(item.value.level) : 0;
         if (isNaN(enhancementLevel)) enhancementLevel = 0;
         var rarity = data == null ? "" : (data.rarity != undefined ? data.rarity : data.品质);
-        var majorType = data == null ? "" : (data.type != undefined ? data.type : data.类型);
-        var useName = data == null ? "" : data.use;
+        var majorType = identityData == null ? "" : (identityData.type != undefined ? identityData.type : identityData.类型);
+        var useName = identityData == null ? "" : identityData.use;
         var actionType = data == null ? "" : (data.actiontype != undefined ? data.actiontype : data.actionType);
-        var weaponType = data == null ? "" : (data.weapontype != undefined ? data.weapontype : data.weaponType);
+        var weaponType = identityData == null ? "" : (identityData.weapontype != undefined ? identityData.weapontype : identityData.weaponType);
         var setId = data == null || data.setId == undefined ? "" : data.setId;
         var setName = data == null || data.setName == undefined ? "" : data.setName;
         var setOrder:Number = data == null ? 0 : Number(data.setOrder);
         if (isNaN(setOrder)) setOrder = 0;
-        var itemIdentity:Object = buildLegacyIdentityProjection(String(item.name), data);
+        var itemIdentity:Object = buildLegacyIdentityProjection(String(item.name), identityData);
         var iconName:String = itemIdentity.icon;
         var displayName:String = itemIdentity.displayName;
         var maxEnhancementLevel:Number = EquipmentUtil.getMaxLevel();
@@ -1707,7 +1651,7 @@ class org.flashNight.arki.item.InventoryPanelService {
                 }
             }
             // 生产库存是 BaseItem；测试/未知历史对象缺 getData 时保持关闭，不在 Web 端猜升阶资格。
-            if (typeof item.getData == "function") {
+            if (data != null && typeof item.getData == "function") {
                 try {
                     var tierOptions:Array = TierSystem.getAvailableTierMaterials(BaseItem(item));
                     if (tierOptions != null && tierOptions.length > 0) tierSlotAvailable = true;

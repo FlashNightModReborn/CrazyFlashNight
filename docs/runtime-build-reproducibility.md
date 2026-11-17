@@ -344,6 +344,14 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 
 ## 历史发布记录
 
+### 2026-11-16 装备插件方案 B 正式发布（专项实机验收完成）
+
+维护者授权直接在 main 分阶段修复、推送和正式发布。冻结源 `b4e5b622a87d6866a8cd6c40b6ad8b78112a78a4`、受控标签 `runtime-build-v2/20261116-equipment-plugin-b-v2`，由本机 X509 `physical-host-b` 与 [GitHub 独立构建 43740975777](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43740975777) 达成同一 43 文件闭包共识，production policy **47/47**。唯一 writer 完成正式替换、完整安装自检和 strict v2 consensus；部署提交 `f75388d56c4f115f4534ab7c5702c6ab2041ac1d` 的 [事后审计 43742502414](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43742502414) 独立重放为 `state=promoted / deploymentChanged=true / signers=2 / faultDomains=2`。v1 因 Lady 派生来源指纹过期而退役，未发起云构建、未部署；现役工具重新导出后仅指纹变化，图片和声音字节未变，没有移动旧标签或复用失败政策收据。
+
+正式入口 **PG-TUNE-OPEN** 已通过。解锁后由用户物理操作、Agent连续只读记录，完成 **21次成功提交（安装9、拆除7、直接替换5）**：背包TTI/AA12保留对应灰蛊后继续拆装和直接替换，穿戴的两把御天敌覆盖拆除弹匣返还、安装与直接替换。实际保存退出后 **3轮同档无播种重启**，4件装备及弹药状态和材料与存档一致；末次穿戴手枪2的提交 `stateRef` 在新PID同一物理槽位完整读回，用户也确认显示无异常。最终材料为弹簧7、螺丝套件9、加长弹匣6、磁稳贯穿弹10。8份玩家JSON及5份只读种子字节不变，自有测试进程正常退出且库存/收藏未变。
+
+这属于本次要求的**专项实机验收通过**。工具将内嵌WebView误判为另一窗口，后续一次画面读取还返回其他应用，因此按钮和最终显示由用户实际操作/确认，未冒称自动视觉验收。较早完整PG在固定日志尾窗处报 `log_gap_after_watermark`；preview-only旧格式、有效拒绝事件的解析范围及已装栏拆除缺少 `candidate_hit` 等工具限制仍留证，**不改签完整PG-TUNE-E2E通过**。SAFEEXIT UI、未知写故障资格和战斗手感仍单独限定；原反馈具体组合待测试员复测。原生真实XML44/44、调制128/128、库存194/194、Host装备专项178/178；Host全量仍为8513 passed / 9 failed / 31 skipped。详细身份、逐轮保存证明和限定见[发布与验收回执](evidence/equipment-plugin-b-runtime-release-2026-11-16.json)。
+
 ### 2026-11-12 三犬与位移方向正式推广
 
 维护者实测验收 #230 / #209 后明确授权提交、部署与推送。冻结源 `836a44cf8a7228a8a9df09255b37ced25e089374` 与受控标签 `runtime-build-v2/20261112-dog-forms-movement-v1`，由注册本机 X509 和 [GitHub hosted 独立构建 43128185569](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43128185569) 达成同一 43 文件闭包共识，产物与已验收候选一致。production policy 47/47，唯一 writer 于 `2026-11-12T00:46:08.1110329Z` 原子推广，strict v2 consensus 与完整安装自检通过。
@@ -1395,3 +1403,9 @@ production policy **47/47**，注册本地 X509 与 [GitHub 独立构建 4103184
 冻结源 `3daedc516461ca77ff2e606b9f7de31525be9b38`、受控标签 `runtime-build-v2/20261107-comic-intros-maps-v1` 完成修理大学和毒刺两路线 14 个开场的统一接入，清理逐关旧分支并同步三个上游地图提交。合并后原生 775、Host 8296 通过/31 跳过、现役选关 63 项及三次代表实机通过；未完成研究所保留上游制作状态，没有新增现役入口。
 
 production policy **47/47**，注册本机 X509 与 [GitHub 独立构建 42383291347](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/42383291347) 对同一 43 文件闭包达成双签名、双故障域共识；唯一 writer 于 `2026-11-07T15:12:10.5685133Z` 原子推广并通过完整安装自检。普通入口进程身份、首屏和正常关闭通过，345 份原有 JSON/SOL 不变；漫画业务是同一 Core/闭包的候选实机资格，未称正式入口重跑。精确身份、恢复、失败证据及源码/SWF 与正式运行库的回退区别见[迁移发布记录](scene-intro-migration.md#formal-release-20261107)，部署提交与 Audit 最终链接见交付收据。本批仍为 2.718 DEV / UNSTABLE，不新增稳定整包。
+
+## 2026-11-16 Tooltip 内容引擎主线整合正式推广
+
+冻结源 `5da48a5a2d7b9d59a8320131f036725aec9dd1aa`、受控标签 `runtime-build-v2/20261116-tooltip-content-v1` 完成最新主线整合、三份 SWF 新鲜重编及定向复验。本地 X509 `builder-local-c / physical-host-c` 与 [GitHub hosted OIDC/Sigstore 构建 43833443777](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43833443777) 达成同一 **43 文件闭包**共识，完整 production policy **50/50**。唯一 writer 原子推广后，部署 `efd1375de42317c5c813adf91e94dc199e81e295` 已快进推送 main；[事后 Audit 43839977275](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/43839977275) success，独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain。根 bootstrap 以进程句柄观测 `--verify-only` exit **0**。
+
+部署后现役第一方 `cf7_harness` 的 `formal_runtime` 专用克隆档完成移动、多面板、调制台、商城固定检视器显式关闭/面板关闭/新实例重开，以及正常保存退出与重启读回；该限定业务达到 `standard_entry_verified`，288/288 份原有文件不变。实际正式 Core 与未签名开发候选分别绑定，不复用候选执行作为正式执行证明。物理键鼠、全部消费者、完整战斗和 GameInput 帧尾仍未签收；原 Escape 关闭门、补充脚本及在线验签失败均保留。精确身份、policy/实际旅程摘要和恢复点见[机器回执](evidence/issue-262-tooltip-release-20261116/release.json)，范围与负向记录见[发布报告](reports/issue-262-tooltip-release-20261116.md)。本批仍为 **2.718 DEV / UNSTABLE**。

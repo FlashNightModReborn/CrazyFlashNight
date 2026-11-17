@@ -13,7 +13,7 @@ import org.flashNight.arki.item.synthesis.SynthesisIndex;
 import org.flashNight.arki.task.TaskUtil;
 import org.flashNight.neur.Event.EventBus;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
-import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
+import org.flashNight.gesh.tooltip.TooltipInputProjection;
 
 /** CraftingPanelService C0-C3 回归测试。 */
 class org.flashNight.arki.item.CraftingPanelServiceTest {
@@ -88,7 +88,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         // 其他生产域已经挂载的 gameCommands。
         if (_root.gameCommands == undefined) _root.gameCommands = {};
         _root.Web物品注释HTML = function(name:String):Object {
-            return {displayname:name, descHTML:"desc", introHTML:"intro"};
+            return TooltipInputProjection.preview(name);
         };
         _root.soundEffectManager = {playSound:function():Void {}};
         CraftingPanelService.install();
@@ -1942,10 +1942,19 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             ItemObtainIndex.DROP_TYPE_STAGE, "测试关卡多档");
         check(restoredStage != null && restoredStage.variants.length == 5,
             "re-entering a discovered stage restores its exact grouped source");
-        var obtainTooltip:String = ObtainMethodsBuilder.build("测试矿石").join("");
-        check(obtainTooltip.indexOf("测试关卡多档") >= 0
-                && obtainTooltip.indexOf("测试四档") >= 0,
-            "legacy ObtainMethodsBuilder consumes grouped first-scalar sources without shape regression");
+        var obtainInput:Object = TooltipInputProjection.forItem("测试矿石", {level:1}, null, "web");
+        var projectedSources:Array = obtainInput.projection.obtainRecords;
+        var projectedStage:Object = findExactDrop(projectedSources,
+            ItemObtainIndex.DROP_TYPE_STAGE, "测试关卡多档");
+        var projectedEnemy:Object = findExactDrop(projectedSources,
+            ItemObtainIndex.DROP_TYPE_ENEMY, "敌人-测试四档");
+        check(projectedStage != null && projectedStage.stageName == "测试关卡多档"
+                && projectedEnemy != null && projectedEnemy.enemyDisplayName == "测试四档"
+                && projectedStage.variants == undefined && projectedEnemy.probability == undefined,
+            "tooltip input freezes discovered source identity without unused probability/occurrence payload");
+        check(projectedSources.length == index.getObtainRecords("测试矿石").length
+                && projectedStage !== restoredStage && projectedEnemy !== rebuiltFour,
+            "tooltip input is a detached view of the existing public source getter");
 
         _root.敌人属性表 = previousEnemyTable;
         resetOwned();
@@ -2807,21 +2816,22 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         check(new LiteJSON().parse(wire) == undefined,
             "quoted detail wire stays outside LiteJSON.parse's plain-scan contract");
 
-        // tooltip 链路同样逐字保真（旧 split/join 变通已随 stringifySafe 出口移除）
+        // TooltipInput 的正文同样逐字保真；内容生成已经移到 Host。
         var previousTooltip:Object = _root.Web物品注释HTML;
         _root.Web物品注释HTML = function(name:String):Object {
-            return {displayname:name,
-                descHTML:"合成<font color=\"#ff00ff\">兽王套装</font>必备\"材料\"",
-                introHTML:"intro"};
+            return {displayname:name, descHTML:"", introHTML:"",
+                tooltipInput:TooltipInputProjection.body(
+                    "合成<font color=\"#ff00ff\">兽王套装</font>必备\"材料\"", "simple")};
         };
         _root.gameCommands["craftingTooltip"]({itemName:"测试矿石", callId:31});
         _root.Web物品注释HTML = previousTooltip;
         var tipWire:String = String(_root.server.sent);
         var tipParsed:Object = new JSON(false).parse(tipWire);
         check(tipParsed != undefined && tipParsed.success && tipParsed.callId == 31
-            && String(tipParsed.descHTML)
+            && tipParsed.tooltipInput.version == 1 && tipParsed.descHTML == ""
+            && String(tipParsed.tooltipInput.html)
                 == "合成<font color=\"#ff00ff\">兽王套装</font>必备\"材料\"",
-            "tooltip wire keeps original double-quoted htmlText losslessly");
+            "tooltip wire freezes double-quoted body input losslessly without generating HTML");
     }
 
     private static function testHandleDirectDispatch():Void {

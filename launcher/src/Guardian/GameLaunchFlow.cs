@@ -1883,7 +1883,7 @@ namespace CF7Launcher.Guardian
             foreach (JToken token in rows)
             {
                 JObject row = token as JObject;
-                if (!HasExactCharacterCreateKeys(
+                if (!CF7Launcher.Tasks.TooltipDocumentSanitizer.HasExactKeysAllowingOptionalDocument(
                         row,
                         "identifier",
                         "name",
@@ -1898,6 +1898,12 @@ namespace CF7Launcher.Guardian
                     || !IsCharacterCreateRichText(row["introHTML"])
                     || !IsCharacterCreateRichText(row["descHTML"]))
                     return false;
+                if (row["document"] != null)
+                {
+                    if (!CF7Launcher.Tasks.TooltipDocumentSanitizer.TrySanitize(row["document"], out var document))
+                        return false;
+                    row["document"] = document;
+                }
             }
             return true;
         }
@@ -3445,7 +3451,10 @@ namespace CF7Launcher.Guardian
                     {
                         CancelZombieTimer();
                         _windowManager?.ResetEmbedState();
-                        lock (_stateLock) { TransitionToError("worker_flash_exited"); }
+                        if (!GuardianLifecycle.IsShuttingDown)
+                        {
+                            lock (_stateLock) { TransitionToError("worker_flash_exited"); }
+                        }
                         return;
                     }
                     // Phase 2b-ext: Ready 但 reveal 尚未执行 → 属于"启动阶段"而非"玩家关游戏",

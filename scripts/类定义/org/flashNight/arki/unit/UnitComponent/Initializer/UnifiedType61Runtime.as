@@ -288,6 +288,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.UnifiedType61Runtime {
             return;
         }
         if (dead) { dead = false; brokenAt = frame; }
+        org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService.refresh(target, this, _root);
         authorized = hasAuthorization(target, effect);
         refreshStableStats();
         var waitFrames:Number = (authorized ? config.authorizedRebuildSeconds : config.normalRebuildSeconds) * config.fps;
@@ -350,6 +351,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.UnifiedType61Runtime {
             manager.update(0);
         }
     }
+    public function emergencyInjectionEligible():Boolean {
+        return bindingValid() && effect.group.status == "committed" && started && !dead
+            && container.getShieldById(shieldId) === layer && layer.getCapacity() === 0;
+    }
+
     private function isBufferOnline():Boolean {
         return started && !disposed && !dead && target.hp > 0 && layer.getCapacity() > 0;
     }
@@ -484,6 +490,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.UnifiedType61Runtime {
     public function getShieldId():Number { return shieldId; }
     public function dispose():Void {
         if (disposed) return;
+        org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService.release(target, this);
         remember();
         var skin:MovieClip = bodySkin();
         if (skin) skin.gotoAndStop(1);

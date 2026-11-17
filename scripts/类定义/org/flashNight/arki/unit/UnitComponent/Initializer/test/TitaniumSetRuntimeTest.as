@@ -107,12 +107,14 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
                 for (var k:Number = 0; k < parsed.item.length; k++) {
                     TitaniumSetRuntimeTest.weapons[parsed.item[k].name] = parsed.item[k];
                 }
-                if (this.testIndex < 4) TitaniumSetRuntimeTest.loadDocument(this.testIndex + 1);
+                if (this.testIndex < 8) TitaniumSetRuntimeTest.loadDocument(this.testIndex + 1);
                 else TitaniumSetRuntimeTest.execute();
             }
         };
         var paths:Array = ["../data/items/item_sets.xml", "../data/items/防具_40+级.xml",
-                           "../data/items/武器_手枪_冲锋枪.xml", "../data/items/武器_长枪_机枪.xml", "../data/items/武器_刀_直剑.xml"];
+                           "../data/items/武器_手枪_冲锋枪.xml", "../data/items/武器_长枪_机枪.xml", "../data/items/武器_刀_直剑.xml",
+                           "../data/items/消耗品_弹夹.xml", "../data/items/武器_手枪_发射器.xml",
+                           "../data/items/武器_手枪_手枪.xml", "../data/items/消耗品_货币.xml"];
         document.load(paths[index]);
     }
 
@@ -177,6 +179,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
 
     private static function execute():Void {
         ItemUtil.itemSetConfigDict = configs;
+        // 基础护盾夹具不启用血剑数据；只补齐定价需要的弹药/货币权威。
+        ItemUtil.itemDataDict = {};
+        for (var fixtureName:String in weapons) {
+            if (weapons[fixtureName].use == "弹夹" || weapons[fixtureName].use == "货币")
+                ItemUtil.itemDataDict[fixtureName] = weapons[fixtureName];
+        }
         try {
             check(TitaniumSetRuntime.affordableUnits(0.15, Number("0.15"))==1,"十进制配置尾差不吞最后一点治疗");
             check(TitaniumSetRuntime.affordableUnits(0.1499, Number("0.15"))==0,"真实不足仍不授予治疗");
@@ -196,6 +204,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
             var shield:Shield = Shield(unit.shield.getShieldById(runtime.getShieldId()));
             check(shield.getName()==TitaniumSetRuntime.SHIELD_NAME,"具名专属层");
             check(shield.getCapacity()==0 && shield.getStrength()==0,"创建时零容量零特殊防护");
+            check(!runtime.emergencyInjectionEligible(),"初始资源未提交不能取得应急注射资格");
             check(shield.getRechargeRate()==0 && !shield.getResistBypass(),"禁止免费回盾与抗旁路");
             check(unit.shield.getShieldCount()==2,"与外部护盾并存");
             check(unit.shield.getCapacity()==100,"初始聚合只含外部盾");
@@ -222,6 +231,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
             check(shield.getCapacity()==1250,"四秒充满五甲HP的一半");
             check(near(runtime.getDiagnostics().mpSpent,685),"每2盾1MP加启动60");
             check(runtime.getState()=="ONLINE_FULL","满盾状态");
+            check(!runtime.emergencyInjectionEligible(),"本套专属盾在线时不放行应急注射");
             check(runtime.getHudRecoveryState().state=="full","HUD满盾无恢复倒计时");
             check(unit.externalShield.getCapacity()==100,"不消费或修复外部盾");
             unit.hp=4980; before=unit.mp; advance(6);
@@ -240,6 +250,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
             check(runtime.getHudRecoveryState().state=="mp","HUD残盾零MP显示供能受阻");
             check(near(shield.absorbDamage(100,false,1),99),"残盾实际只能吸收剩余一点");
             check(shield.getStrength()==0,"破盾立即撤销特殊防护");
+            check(runtime.emergencyInjectionEligible() && unit.externalShield.getCapacity()>0,"应急注射只认自有专属层破碎而非外部盾");
             check(unit.重量==-5,"破盾立即撤销减重");
             check(unit.shield.getStrength()==7,"外部盾强不被清零");
             unit.hp=2500; before=unit.mp; advance(6);
@@ -300,6 +311,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
             closeUnit(dying);
             testInitialShield();
             testEnergyAndAmmo();
+            testAmmoEconomy();
             testFireControl();
             testReloadInterleaving();
             testBloodPact();
@@ -494,6 +506,101 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
         outside.version++; before=outside.mp; shoot(outside,"手枪2",null);
         check(outside.mp==before,"旧版本装备回调拒绝新单位代次");
         closeUnit(outside);
+    }
+
+    /** #276：真实弹种定价、逐发取整、P90固定成本及两槽能源分配。 */
+    private static function testAmmoEconomy():Void {
+        var unit:MovieClip = makeUnit(5,0,false,false,false);
+        var runtime:TitaniumSetRuntime = unit.__titaniumType61;
+        fillShield(unit);
+        var names:Array = ["P90","钛合金P90","MP5战术版","战术版MGL","沧蓝陨铁手炮","M79式榴弹发射器","加农手炮"];
+        var costs:Array = [3,3,7,375,375,938,268];
+        var weapon:Object;
+        var before:Number;
+        for (var i:Number=0; i<names.length; i++) {
+            weapon=equipWeapon(unit,"手枪",names[i],false);
+            weapon.value.shot=1; unit.mp=3000;
+            check(runtime.synthesizeAmmo("手枪")==1 && weapon.value.shot==0 && unit.mp==3000-costs[i],
+                "真实弹种每发成本："+names[i]);
+        }
+        weapon=equipWeapon(unit,"手枪","战术版MGL",false);
+        weapon.value.shot=5; unit.mp=2250;
+        check(runtime.synthesizeAmmo("手枪")==2 && weapon.value.shot==3 && unit.mp==1500,"高价弹只合成可支付部分并守住半蓝线");
+        check(runtime.synthesizeAmmo("手枪")==0 && unit.mp==1500,"高价弹储备线内不造弹");
+        unit.mp=1874;
+        check(runtime.synthesizeAmmo("手枪")==0 && weapon.value.shot==3 && unit.mp==1874,"差1MP不透支合成火箭");
+        unit.mp=1875;
+        check(runtime.synthesizeAmmo("手枪")==1 && weapon.value.shot==2 && unit.mp==1500,"高价弹临界预算恰好合成一发");
+        weapon.value.shot=0; unit.mp=1600;
+        check(shoot(unit,"手枪",null) && unit.mp==1603,"发射器成功发射仍只返固定3MP");
+
+        weapon=equipWeapon(unit,"手枪","MP5战术版",false);
+        weapon.value.shot=3; unit.mp=1600;
+        check(runtime.synthesizeAmmo("手枪")==3 && unit.mp==1579,"逐发先取整7MP再乘三发而非整批取整");
+        unit.手枪弹匣容量=120; weapon.value.shot=3; unit.mp=1600;
+        check(runtime.synthesizeAmmo("手枪")==3 && unit.mp==1588,"使用改装后普通弹容而非原始弹容定价");
+        weapon=equipWeapon(unit,"手枪","战术版MGL",false);
+        unit.手枪属性.overload={chamber:1};
+        WeaponAmmoRuntime.ensure(unit,"手枪"); WeaponAmmoRuntime.beginReload(unit,"手枪"); unit.mp=2000;
+        check(runtime.synthesizeAmmo("手枪")==1 && weapon.value.shot==-1 && unit.mp==1625,"留膛额外容量不稀释普通弹药成本");
+
+        weapon=equipWeapon(unit,"手枪","钛合金P90",false);
+        unit.手枪弹匣容量=1; weapon.value.shot=1; unit.mp=1600;
+        check(runtime.synthesizeAmmo("手枪")==1 && unit.mp==1597,"P90固定3MP不随弹容缩减涨价");
+        var p90Ammo:Object=ItemUtil.getRawItemData(unit.手枪属性.clipname);
+        var p90Price:Number=p90Ammo.price;
+        try {
+            p90Ammo.price=800; weapon.value.shot=1; unit.mp=1600;
+            check(runtime.synthesizeAmmo("手枪")==1 && unit.mp==1597,"P90固定3MP不随弹药涨价改变");
+        } finally { p90Ammo.price=p90Price; }
+        unit.手枪数据.data.ammoSynthesisMpPerRound=0; weapon.value.shot=1; before=unit.mp;
+        check(runtime.synthesizeAmmo("手枪")==0 && unit.mp==before,"非法武器固定成本拒绝合成");
+
+        weapon=equipWeapon(unit,"手枪","战术版MGL",false);
+        var ammo:Object=ItemUtil.getRawItemData(unit.手枪属性.clipname);
+        var price:Number=ammo.price;
+        var invalid:Array=[undefined,0,-1,NaN,Infinity,"5000"];
+        try {
+            weapon.value.shot=1; unit.mp=2500;
+            for(i=0;i<invalid.length;i++) {
+                ammo.price=invalid[i];
+                check(runtime.synthesizeAmmo("手枪")==0 && unit.mp==2500 && weapon.value.shot==1,"非法弹价不回退3MP："+i);
+            }
+        } finally { ammo.price=price; }
+        unit.手枪属性.clipname="__missing_ammo_276";
+        check(runtime.synthesizeAmmo("手枪")==0 && unit.mp==2500,"未知弹种不合成不扣费");
+        unit.手枪属性.clipname="金币";
+        check(runtime.synthesizeAmmo("手枪")==0 && unit.mp==2500,"金币消费武器不按弹药包造弹");
+        unit.手枪属性.clipname="K点";
+        check(runtime.synthesizeAmmo("手枪")==0 && unit.mp==2500,"K点消费武器不按弹药包造弹");
+
+        weapon=equipWeapon(unit,"手枪","战术版MGL",false); weapon.value.shot=1; unit.mp=2500;
+        unit.__capacityReads=0;
+        unit.addProperty("手枪弹匣容量",function():Number {
+            if (++this.__capacityReads==2) ItemUtil.getRawItemData(this.手枪属性.clipname).price=5001;
+            return 5;
+        },null);
+        try { check(runtime.synthesizeAmmo("手枪")==0 && unit.mp==2500 && weapon.value.shot==1,"两次快照间弹价漂移放弃整笔"); }
+        finally { ammo.price=price; delete unit.手枪弹匣容量; unit.手枪弹匣容量=5; }
+
+        var expensive:Object=equipWeapon(unit,"手枪","战术版MGL",false);
+        var cheap:Object=equipWeapon(unit,"手枪2","钛合金P90",false);
+        expensive.value.shot=5; cheap.value.shot=1; unit.mp=1875; advance(6);
+        check(expensive.value.shot==5 && cheap.value.shot==0 && unit.mp==1872,"主手高价缺额更多也先保副手P90供弹");
+        cheap=equipWeapon(unit,"手枪","钛合金P90",false);
+        expensive=equipWeapon(unit,"手枪2","战术版MGL",false);
+        cheap.value.shot=1; expensive.value.shot=5; unit.mp=1875; advance(6);
+        check(cheap.value.shot==0 && expensive.value.shot==5 && unit.mp==1872,"低成本主手优先且高价付不起不透支");
+        unit.手枪2属性.clipname="__missing_ammo_276";
+        cheap.value.shot=1; unit.mp=1503; advance(6);
+        check(cheap.value.shot==0 && unit.mp==1500,"无效弹种槽不阻塞另一有效槽供弹");
+        var first:Object=equipWeapon(unit,"手枪","战术版MGL",false);
+        var second:Object=equipWeapon(unit,"手枪2","沧蓝陨铁手炮",false);
+        first.value.shot=2; second.value.shot=4; unit.mp=1875; advance(6);
+        check(first.value.shot==2 && second.value.shot==3 && unit.mp==1500,"同价高价弹仍按缺弹更多槽优先");
+        first.value.shot=2; second.value.shot=2; unit.mp=1875; advance(6);
+        check(first.value.shot==1 && second.value.shot==2 && unit.mp==1500,"同价同缺额仍主手优先");
+        closeUnit(unit);
     }
 
     private static function testReloadInterleaving():Void {

@@ -22,6 +22,8 @@
 
 `scene_transition` 是 AS2 单向权威快照，由独立固定 WebView2 合成表面接收。纯过场不注册普通 Panel、不暂停或取得场景导航权威；并行结算在同一端点绑定既有 Loot Panel 的 exact 身份与业务权威。AS2 继续拥有原淡出时间轴的清理、跳图、奖励暂存和保存；Host 分别核遮罩呈现、奖励绑定、目标世界合成帧及时间轴结束。身份、断连和未知操作保护及人工验收见 [U12 专项](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。本节按 commit `c724305c374de423bce06bd39de0b27e09638f4c` 加 2026-10-02 工作区核对，状态不升级为正式入口验证。
 
+2026-11-17 普通面板准入修正：手动帮助、构筑等开窗同样不能抢先暂停过场。Host 保留最后一个普通开窗意图，等 exact AS2 `hide`（含已揭幕后的时间轴尾部）或结算关闭的新画面恢复后，再经原队列与业务门处理；tracked open / exact replace 在副作用前拒绝，不自动重放。v3 已交给漫画并确认原时间线退役时，仍沿用漫画的现有接续与焦点规则，并释放先前延后的普通意图。加载期间提前接通的奖励页和漫画只凭原报告/intro 身份校验取得例外，不能仅凭 panel 名放行。
+
 地图交接在跳图受理的同步函数中先发布 cover，第 2 帧复用同一身份；Host 入幕先装不透明底板，当前 Web covered 回执后才撤掉。页面等待图片期间保持不透明，透明动效仅用于已获世界帧许可的揭幕。真实失败旅程属于自然发生时的条件人验，未遇到不要求制造故障，也不能把夹具结果称为真实失败通过。
 
 旧淡出时间轴第 17 帧的 `__returnFadeActive` 释放是副本初始化 admission 合同，不能随遮罩延长到揭幕结束；Web 遮罩由独立投影身份继续等待 `SceneReady` 和目标帧。修改这段时序需覆盖生产副本 admission，防止初始化与揭幕相互等待。
@@ -221,7 +223,7 @@ KShop 是显式的 legacy wire 例外，不是通用 envelope 例外。Web→Hos
 
 ### 物品身份三分离与领域证明
 
-装备调制的 `availabilityCode` 由 `EquipmentUtil.init()` 的 `modAvailabilityResults` 定义合法集合；Host 与 Web 以封闭集合验证，不能另设数值区间推断合法性。合法的不可安装原因应保留为候选反馈，不能导致整份装备快照失效。新增配件沿用现有原因时不改协议；新增原因时须同步两端验证，并由 `tools/test-equipment-tuning-runtime.js` 直接读取 AS2 定义，覆盖背包和装备栏的接纳、未知码拒绝与禁止安装边界。
+装备调制候选只投影 `available/installed/owned/replaceableFrom/reason`；AS2 数字可用性码仅留在本地规则接口，不进入 wire。Host/Web 严格验证结构、Boolean、数量、身份和有界原因文本；新增本地拒绝原因不要求两端维护码表，旧数字字段作为额外键拒绝。展示状态不授予提交权限，preview/commit 仍由 AS2 重核规则与材料，并由 Host 的冻结前后/材料证明、exact source、令牌和未知写对账门闭合。新 AS2 三模块、Host 与 Web 必须随同一版本重新启动，不热加载半套协议。详见[装备配件规则](../docs/equipment-plugin-rules.md)。
 
 装备调制、KShop、Crafting 与 NPC Shop 的物品叶节点统一按三种职责解释：`name` / `itemName` 是内部规则身份，只供 selector、缓存、去重、配方、容器和 mutation；`displayName` 是玩家文案；`icon` 是 `Icons` 资产键。KShop catalog 的 `item/displayname/icon` 分别承载同三种职责，Host 重建 checkout 行时规范为 `itemName/displayName/icon`。既有 tooltip 另有窄的领域 profile：KShop 使用 `itemName/displayname/iconName` 并由 Host 与 pending catalog 行精确对齐；NPC 使用 `itemName/displayname` 及可选 `iconName`，只绑定请求 `itemName` 并逐字段净化；Crafting 的 AS2 `displayname` 只在 `CraftingTask` 边界一次翻译为 `displayName`。这些都是由具体命令和 validator 围住的 legacy adapter，不授权共享三元组 validator、Web 展示或其他领域把 `displayname`、`iconName`、内部名及相邻字段当通用别名。
 

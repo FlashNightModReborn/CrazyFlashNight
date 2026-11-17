@@ -142,11 +142,25 @@
         return true;
     }
 
+    function validEmergencyInjection(value) {
+        if (!hasExactKeys(value, ['v', 'enabled', 'physicalSlot', 'itemKey', 'status'])) return false;
+        if (value.v !== 1 || typeof value.enabled !== 'boolean') return false;
+        if (integer(value.physicalSlot, -1, 7) === null) return false;
+        if (typeof value.itemKey !== 'string' || value.itemKey.length > 160
+                || /[\u0000-\u001f\u007f-\u009f]/.test(value.itemKey)) return false;
+        if (value.enabled) {
+            return value.physicalSlot >= 0 && value.itemKey.trim().length > 0
+                && ['authorized', 'empty', 'item_changed'].indexOf(value.status) >= 0;
+        }
+        return value.physicalSlot === -1 && value.itemKey === ''
+            && (value.status === 'disabled' || value.status === 'unsupported_config');
+    }
+
     function equipment(value) {
         if (!hasExactKeys(value,
                 ['name', 'displayName', 'icon', 'type', 'use', 'level', 'tier',
                     'mods', 'lastUpdate', 'maxLevel', 'hardMaxLevel'],
-                ['modSlotCapacity', 'stats'])) return false;
+                ['modSlotCapacity', 'stats', 'emergencyInjection'])) return false;
         if (!identityText(value.name, 256)
                 || !identityText(value.displayName, 256)
                 || !identityText(value.icon, 256)
@@ -162,7 +176,15 @@
                 || !identityArray(value.mods, 64)) return false;
         if (own.call(value, 'modSlotCapacity')
                 && !integer(value.modSlotCapacity, 0, 64)) return false;
-        return !own.call(value, 'stats') || statRows(value.stats);
+        if (own.call(value, 'stats') && !statRows(value.stats)) return false;
+        if (own.call(value, 'emergencyInjection')) {
+            if (value.type !== '防具' || value.use !== '上装装备'
+                    || (value.name !== '统合61式胸甲' && value.name !== '钛合金61式胸甲')
+                    || !validEmergencyInjection(value.emergencyInjection)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     function enhanceProjection(value, current) {
@@ -178,13 +200,10 @@
             && value.hardMaxLevel === current.hardMaxLevel;
     }
 
-    // EquipmentUtil.modAvailabilityResults 是安装规则权威；负码表示不可安装，不是坏回包。
-    var MOD_AVAILABILITY_CODES = [1, 0, -1, -2, -4, -8, -16, -32, -64, -128, -256, -512, -1024];
-
     function candidate(value, isMod) {
         var required = isMod
             ? ['candidateKey', 'itemName', 'displayName', 'icon', 'owned',
-                'installed', 'available', 'availabilityCode', 'reason',
+                'installed', 'available', 'reason',
                 'replaceableFrom', 'grade', 'scope', 'role']
             : ['candidateKey', 'itemName', 'displayName', 'icon', 'tierName',
                 'owned', 'available', 'reason'];
@@ -200,8 +219,6 @@
                 || !text(value.reason, 256, true)) return false;
         if (!isMod) return identityText(value.tierName, 64);
         if (typeof value.installed !== 'boolean'
-                || !integer(value.availabilityCode, -1024, 1)
-                || MOD_AVAILABILITY_CODES.indexOf(value.availabilityCode) < 0
                 || !tokenArray(value.replaceableFrom, 512)
                 || !identityText(value.grade, 64)
                 || !identityText(value.scope, 64)

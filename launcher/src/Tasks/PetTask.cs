@@ -278,6 +278,21 @@ namespace CF7Launcher.Tasks
         /// <summary>
         /// Flash 侧回包入口（MessageRouter 在 XmlSocket 线程调用）。
         /// </summary>
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            if (!_pendingCalls.TryPeek(fid, out var pending)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            var entry = pending.Context;
+            if (entry.WebCmd != "pet_tooltip" && entry.WebCmd != "weapon_tooltip") return null;
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("pet", "pets", entry.PanelInstanceId,
+                pending.WebCallId, fid, null,
+                () => _pendingCalls.TryPeek(fid, out var current) && ReferenceEquals(current, pending),
+                () =>
+                {
+                    if (_pendingCalls.TryCompleteExact(fid, pending, out _))
+                        RespondError(pending.WebCallId, entry.WebCmd, entry.PanelInstanceId, "stale_state");
+                });
+        }
+
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             LogManager.Log("[PetTask] <- Flash response received");

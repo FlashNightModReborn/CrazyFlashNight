@@ -207,6 +207,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
                     : locked ? '构筑正在结算，完成后才能进入收纳。' : '');
         }
         this._onItemUseSessionState(state, reason);
+        if (this._tuning) this._tuning.refreshCustomization();
         if (this._ports.onSessionState) this._ports.onSessionState(state, reason, debug);
     };
     CharacterBuildController.prototype._error = function(response, command) {
@@ -278,6 +279,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             onTune:function() { return self._enterTuning(); },
             onUnequip:function() { return self._mutations.unequip(self._selectedTarget); },
             onReconcile:function() { return self._mutations.reconcile(); },
+            onCustomizationDrugClick:function(slot) { return !!(self._tuning && self._tuning.handleCustomizationDrugSlot(slot)); },
             renderOwnedSlot:global.InventoryUI && global.InventoryUI.renderOwnedSlot,
             iconHtml:function(name, className) {
                 var fallback = '<span class="' + (className || 'inventory-owned-icon')
@@ -315,20 +317,14 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             session:this._session,
             view:this._view,
             ports:this._ports,
-            send:this._tuningTransport.send,
-            timeoutMs:this._tuningTransport.timeoutMs,
-            sessionNonce:this._tuningTransport.sessionNonce,
+            transport:this._tuningTransport,
             density:this._ports.getDensity ? this._ports.getDensity() : 'full',
+            mutations:this._mutations,
             projectCandidates:Projection.viewCandidates,
-            bindCandidateTooltip:this._candidateTooltip
-                ? this._candidateTooltip.bind.bind(this._candidateTooltip) : null,
-            invalidateCandidateTooltip:function() {
-                if (self._candidateTooltip) self._candidateTooltip.invalidate();
-            },
+            bindCandidateTooltip:this._candidateTooltip ? this._candidateTooltip.bind.bind(this._candidateTooltip) : null,
+            invalidateCandidateTooltip:function() { if (self._candidateTooltip) self._candidateTooltip.invalidate(); },
             adoptSnapshot:function(payload, restore) { self._applySnapshot(payload, restore); },
-            onLockChange:function() {
-                self._stateChanged(self._session.getState(), 'tuning_state', self._session.debugState());
-            }
+            onLockChange:function() { self._stateChanged(self._session.getState(), 'tuning_state', self._session.debugState()); }
         });
         this._view.setInteractionState(this._session.getState());
         return this._view;
@@ -421,6 +417,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         var projected = Projection.viewSnapshot(payload);
         this._createView().setSnapshot(projected);
         this._itemUseCooldownFromSnapshot(projected);
+        if (this._tuning) this._tuning.refreshCustomization();
         this._view.setItemUseCandidate(null);
         this._bindItemUse();
         this._ensureRenderer();

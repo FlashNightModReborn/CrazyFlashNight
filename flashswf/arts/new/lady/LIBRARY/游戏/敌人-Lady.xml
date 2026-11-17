@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/敌人-Lady" itemID="69da1802-00000372" linkageExportForAS="true" linkageIdentifier="敌人-Lady" lastModified="1785851647" lastUniqueIdentifier="60">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="游戏/敌人-Lady" itemID="69da1802-00000372" linkageExportForAS="true" linkageIdentifier="敌人-Lady" lastModified="1794799695" lastUniqueIdentifier="60">
   <timeline>
-    <DOMTimeline name="敌人-Lady" currentFrame="120">
+    <DOMTimeline name="敌人-Lady" currentFrame="39">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" autoNamed="false" heightLiteral="24">
           <frames>
@@ -97,9 +97,10 @@
                 <script><![CDATA[攻击欲望 = 1.7;
 停止机率 = 100;
 随机移动机率 = 50;
-x轴攻击范围 = 100;
+x轴攻击范围 = 150;
 y轴攻击范围 = 30;
-x轴保持距离 = 100;
+x轴保持距离 = 150;
+自定义索敌攻击 = true;
 
 最小经验值 = 351;
 最大经验值 = 1674;
@@ -134,15 +135,14 @@ hp_max = 47260;
 近战技能库.push("榴弹射击");
 近战技能库.push("近喷");
 中程技能库.push("榴弹射击");
-中程技能库.push("榴弹射击");
-中程技能库.push("反坦克炮和沙鹰射击");
-中程技能库.push("反坦克炮和沙鹰射击");
 远程技能库.push("反坦克炮和沙鹰射击");
+超远程技能库.push("反坦克炮和沙鹰射击");
 if (等级 >= 35)
 {
 	近战技能库.push("连喷");
-	近战技能库.push("连喷");
+	中程技能库.push("连喷");
 	远程技能库.push("爆炸狙击");
+	超远程技能库.push("爆炸狙击");
 }
 if (等级 >= 40)
 {

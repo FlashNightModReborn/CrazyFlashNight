@@ -113,6 +113,9 @@ async function main() {
     assert.strictEqual(calls.length, 2);
     assert(calls[1].includes('modules/character-build/character-build-drug-layout.js'));
     assert(calls[1].includes('modules/character-build/character-build-session-contract.js'));
+    assert(calls[1].includes('modules/character-build/character-build-customization.js'));
+    assert(calls[1].indexOf('modules/character-build/character-build-customization.js')
+        < calls[1].indexOf('modules/character-build/character-build-tuning.js'));
     assert(calls[1].indexOf('modules/character-build/character-build-drug-layout.js')
         < calls[1].indexOf('modules/character-build/character-build-session-contract.js'));
     assert(calls[1].includes('modules/character-build/character-build-candidate-eligibility.js'));

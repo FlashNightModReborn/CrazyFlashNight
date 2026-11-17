@@ -1,0 +1,73 @@
+$ node tools/test-tooltip-document.js
+ok - normalize 完整 payload：桥身份 + 锚点齐全
+ok - normalize 裸 document 节点（退化形态）
+ok - normalize：version 非 1 拒绝
+ok - normalize：version 两层校验——payload v1 不能掩盖 document v2
+ok - normalize：无可渲染内容拒绝
+ok - normalize：不突变输入对象
+ok - normalize：未知 role 归入 body，不丢内容
+ok - normalize：profile 大小写容错 + 缺省 simple
+ok - normalize：icon 缺 kind 按 item；缺 name 则 icon 为空
+ok - normalize：run 可为裸字符串
+ok - normalize：sections/runs 非数组不拆字符串（防 "abc"→三个 run）
+ok - normalize：空 run 段保留占位
+ok - normalize：伪造 normalized 标记不绕过校验
+ok - normalize：伪造 normalized + 合法外形仍被重新校验/转义
+ok - normalize 纯文本契约：title/runs.text 字面量 <b>/&amp; 逐字保留
+ok - buildHtml 纯文本契约：字面标记字符转义渲染，不被当标签
+ok - buildHtml：已含转义形态的文本逐字渲染（不二次解码）
+ok - parseColor：#RRGGBB / RRGGBB / 0xRRGGBB → #RRGGBB 大写归一
+ok - flattenMarkup：<font color> 与 <b> 展开为 run 样式
+ok - flattenMarkup：<br> → \n run；\n 字面保留
+ok - flattenMarkup：<p> 首段抑制，后续段落换行
+ok - flattenMarkup：未识别标签剥离、孤立 < 字面保留、实体解码
+ok - flattenMarkup：未闭合标记不跨 run 边界（显式适配出口自身语义）
+ok - flattenMarkup：run base color/bold 生效且可被内联 font 覆盖
+ok - textScore：ASCII=1 CJK=2 空白=0.5 换行=0
+ok - shouldSplit：长 desc 分栏，短文档合并
+ok - buildHtml：骨架复用 .flash-tt-rich + .ntt-doc，分栏列映射正确
+ok - buildHtml：merge 模式 desc 拼入 intro
+ok - buildHtml：chrome 参数 meta/suffix/rootClass/layoutType 透传
+ok - buildHtml：扩展 run 样式 italic/underline/fontSize/fontFace
+ok - buildHtml：fontFace 经 CF7FontCatalog.legacyFamily 映射（有 catalog 时）
+ok - normalize：扩展字段 sanitize——越界/注入一律丢弃
+ok - flattenMarkup：i/u/font size/face 标记 → run 扩展字段
+ok - buildHtml：document.layoutType 字段驱动 narrow，opts 仍可覆盖
+ok - buildHtml：文本全转义——注入标记按字面显示，不产生真实标签
+ok - buildHtml：run 内 \n → <br>；color/bold 渲染为受限标签
+ok - buildHtml：非法输入返回空串
+ok - CSS 接线：panels/tooltip-document.css 存在且 panels.css 已 import
+ok - CSS 权威：tooltip-document.css 不重写主题/字体/布局（Web 权威回归门）
+ok - 导出面：不再携带 JS 内嵌主题入口
+ok - describe：诊断串含关键身份字段
+ok - 截断上限：超长 run.text 截断不抛
+ok - normalize rail：最多 2 项、相邻去重、非纯文本丢弃
+ok - rail 不单独构成可渲染内容
+ok - buildHtml rail：书签块自上下排，横向文字无窄腰/空帽
+ok - buildHtml rail：单文本只有一块书签
+ok - buildHtml 无 rail：不产轨道也不改修饰类
+ok - buildHtml rail：文本按字面转义，不产生真实标签
+ok - normalize magazine：名称必需，图标/子弹类型可选
+ok - magazine 不单独构成可渲染内容
+ok - buildHtml magazine：第一行图标+名称，第二行子弹类型
+ok - buildHtml magazine：无 ammo 时不产第二行
+ok - buildHtml 无 magazine：不产弹夹行
+ok - normalize attachments：rows 有效才成立，无效回退保留 runs
+ok - buildHtml attachments：标题 + 逐行图标/名称/效果，runs 不叠加
+ok - attachments rows 计入可渲染内容，但结构部件本身不成立
+ok - normalize acquisition：kind 放行、商店行带头像键、空行回退
+ok - buildHtml acquisition：商店行用 cfn-assets 头像 URL，无图标行留空占位
+ok - modinfo：父类左对齐，无名称的效果行保留并按子级渲染
+ok - upgrades：原描述区显示物品图标、父子标签与同行名称
+ok - buildHtml：只有 #000000 黑色文字片段使用白底
+ok - CSS：彩色粗体继承、统一侧栏估宽与深灰背景
+ok - buildHtml：A兵团相关文案前插入徽标并加下划线
+ok - buildHtml：军阀文案使用黑黄徽标与淡金色下划线
+ok - 阵营别名：来源 NPC 同步徽标颜色下划线，军阀外圈清晰，丧尸取消特殊色
+ok - buildHtml：物品名使用独立居中大字号标题块
+ok - fadeMsForSub：子框严格慢于主组且逐层递增
+ok - buildHtml：每个 role:"sub" 段独立成框、挂在侧栏并按序携带淡入时长
+ok - buildHtml：描述栏与子框同列，淡入按时序 675/750/825
+ok - describe：诊断串含 rail 与 magazine 身份
+
+70 tests passed

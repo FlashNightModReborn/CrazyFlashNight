@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/大机器人/死亡/自有机体碎片" itemID="6af00000-3e26cd8d">
+  <timeline>
+    <DOMTimeline name="自有机体碎片">
+      <layers>
+        <DOMLayer name="预制碎片" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片1" name="碎片1">
+                  <matrix>
+                    <Matrix ty="537.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片2" name="碎片2">
+                  <matrix>
+                    <Matrix tx="669.5" ty="540.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片3" name="碎片3">
+                  <matrix>
+                    <Matrix tx="570.15" ty="596.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片4" name="碎片4">
+                  <matrix>
+                    <Matrix tx="683.8" ty="441.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片5" name="碎片5">
+                  <matrix>
+                    <Matrix tx="687.05" ty="439.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片6" name="碎片6">
+                  <matrix>
+                    <Matrix tx="821.95" ty="371.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片7" name="碎片7">
+                  <matrix>
+                    <Matrix tx="778.45" ty="471.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片8" name="碎片8">
+                  <matrix>
+                    <Matrix tx="796.9" ty="424.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片9" name="碎片9">
+                  <matrix>
+                    <Matrix tx="881.9" ty="470.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片10" name="碎片10">
+                  <matrix>
+                    <Matrix tx="221.7" ty="759.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/死亡/碎片11" name="碎片11">
+                  <matrix>
+                    <Matrix tx="86.65" ty="644.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

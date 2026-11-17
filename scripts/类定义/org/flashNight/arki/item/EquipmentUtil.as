@@ -219,11 +219,6 @@ class org.flashNight.arki.item.EquipmentUtil {
             return;
         }
 
-        if(modData.length <= 0) {
-            debugLog("loadModData: 没有配件数据需要加载");
-            return;
-        }
-
         debugLog("加载配件数据...");
 
         // 【修复】先设置调试模式，确保加载过程中的日志能正确输出
@@ -258,7 +253,7 @@ class org.flashNight.arki.item.EquipmentUtil {
         modAvailabilityResults[-8] = "同位置插件已装备";
         modAvailabilityResults[-16] = "缺少前置结构支持";
         modAvailabilityResults[-32] = "有其他插件依赖此插件";
-        modAvailabilityResults[-64] = "该装备禁止安装此挂点类型的插件";
+        modAvailabilityResults[-64] = "该装备不支持此配件类型或挂点";
         modAvailabilityResults[-128] = "当前弹药与此配件不兼容";
         modAvailabilityResults[-256] = "装备属性不满足安装条件";
         modAvailabilityResults[-512] = "当前弹药类型不满足此配件的要求";
@@ -293,123 +288,32 @@ class org.flashNight.arki.item.EquipmentUtil {
     /**
      * 查找所有可用的配件材料
      */
-    public static function getAvailableModMaterials(item:BaseItem):Array {
-        var rawItemData:Object = ItemUtil.getRawItemData(item.name);
-        var list:Array = [];
-        var mods:Array = item.value.mods;
-
-        // 获取基础可用列表 - 使用静态属性 modUseLists
-        var useList:Array = modUseLists[rawItemData.use];
-        if(!useList || useList.length == 0) return [];
-
-        // 收集所有已授予的武器类型
-        var grantedTypes:Object = {};
-        if(rawItemData.weapontype) {
-            grantedTypes[rawItemData.weapontype] = true;
+    public static function getAvailableModMaterials(item:BaseItem, state:Object):Array {
+        if (!state || state.item !== item) state = TagManager.createModState(item, undefined);
+        var raw:Object = state.raw;
+        var useList:Array = modUseLists[raw.use] || [];
+        var candidates:Object = {};
+        for (var i:Number = 0; i < useList.length; i++) candidates[useList[i]] = true;
+        var hasExtra:Boolean = false;
+        for (var useKey:String in state.uses) {
+            if (useKey == raw.use) continue;
+            hasExtra = true;
+            var pool:Array = modUseLists[useKey];
+            if (!pool) continue;
+            for (var j:Number = 0; j < pool.length; j++) candidates[pool[j]] = true;
         }
-
-        // 添加配件授予的武器类型 - 使用静态属性 modDict
-        for(var i:Number = 0; i < mods.length; i++) {
-            var installedMod:Object = modDict[mods[i]];
-            if(installedMod && installedMod.grantsWeapontypeDict) {
-                for(var grantedType:String in installedMod.grantsWeapontypeDict) {
-                    grantedTypes[grantedType] = true;
-                }
-            }
-        }
-
-        // 收集所有已授予的装备类型池访问权（grantsUse）
-        var hasGrantedUses:Boolean = false;
-        var grantedUses:Object = {};
-        for(var gi:Number = 0; gi < mods.length; gi++) {
-            var grantMod:Object = modDict[mods[gi]];
-            if(grantMod && grantMod.grantsUseDict) {
-                for(var grantedUse:String in grantMod.grantsUseDict) {
-                    grantedUses[grantedUse] = true;
-                    hasGrantedUses = true;
-                }
-            }
-        }
-
-        // 如果有跨池授权，合并额外候选列表（去重）
-        if(hasGrantedUses) {
-            var candidateDict:Object = {};
-            for(var ui:Number = 0; ui < useList.length; ui++) {
-                candidateDict[useList[ui]] = true;
-            }
-            for(var grantedUseName:String in grantedUses) {
-                var extraPool:Array = modUseLists[grantedUseName];
-                if(extraPool) {
-                    for(var ei:Number = 0; ei < extraPool.length; ei++) {
-                        candidateDict[extraPool[ei]] = true;
-                    }
-                }
-            }
+        if (hasExtra) {
             useList = [];
-            for(var candName:String in candidateDict) {
-                useList.push(candName);
-            }
+            for (var name:String in candidates) useList.push(name);
         }
-
-        // 检查每个配件的武器类型要求 - 使用静态属性 modDict
-        // 只对手枪和长枪考虑weapontype限制
-        var checkWeaponType:Boolean = (rawItemData.use == "手枪" || rawItemData.use == "长枪");
-
-        for(var j:Number = 0; j < useList.length; j++) {
-            var modName:String = useList[j];
-            var modData:Object = modDict[modName];
-            if(!modData) continue;
-
-            // 如果不是手枪/长枪，跳过weapontype检查
-            if(!checkWeaponType) {
-                list.push(modName);
-                continue;
-            }
-
-            // 1. 先检查黑名单（excludeWeapontype）
-            var excludeDict:Object = modData.excludeWeapontypeDict;
-            if(excludeDict) {
-                var isExcluded:Boolean = false;
-                for(var excludedType:String in excludeDict) {
-                    if(grantedTypes[excludedType]) {
-                        isExcluded = true;
-                        break;
-                    }
-                }
-                if(isExcluded) continue; // 被排除，跳过此配件
-            }
-
-            // 2. 再检查白名单（weapontype）
-            var weapontypeDict:Object = modData.weapontypeDict;
-            if(!weapontypeDict) {
-                // 无白名单限制，且未被黑名单排除，允许
-                list.push(modName);
-            } else {
-                // 检查武器类型匹配
-                var canUse:Boolean = false;
-                for(var requiredType:String in weapontypeDict) {
-                    if(grantedTypes[requiredType]) {
-                        canUse = true;
-                        break;
-                    }
-                }
-                if(canUse) {
-                    list.push(modName);
-                }
-            }
-        }
-
-        // 使用 TagManager 进行进一步过滤
-        list = TagManager.filterAvailableMods(list, item, rawItemData);
-
-        return list;
+        return TagManager.filterAvailableMods(useList, item, raw, state);
     }
 
     /**
      * 查找配件插件是否能合法装备
      */
-    public static function isModMaterialAvailable(item:BaseItem, itemData:Object, matName:String):Number {
-        return TagManager.checkModAvailability(item, itemData, matName);
+    public static function isModMaterialAvailable(item:BaseItem, itemData:Object, matName:String, state:Object):Number {
+        return TagManager.checkModAvailability(item, itemData, matName, state);
     }
 
     /**

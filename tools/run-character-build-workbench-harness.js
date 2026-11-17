@@ -759,6 +759,7 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
         'modules/loadout-picker/loadout-picker-candidate-drag.js',
         'modules/loadout-picker/loadout-picker-candidate-pane.js',
         'modules/loadout-picker/loadout-picker.js',
+        'modules/character-build/character-build-customization.js',
         'modules/character-build/character-build-tuning.js',
         'modules/character-build/character-build-slot-transition.js',
         'modules/character-build/character-build-pose.js',
@@ -791,6 +792,23 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
         const shotDirectory = shotArg
             ? path.resolve(shotArg.slice('--shot-dir='.length)) : '';
         if (shotDirectory) fs.mkdirSync(shotDirectory, {recursive:true});
+        for (const viewport of viewports) {
+            const customPage = await browser.newPage({viewport});
+            await routeCatalogFonts(customPage);
+            await customPage.goto('http://127.0.0.1:' + server.address().port
+                + '/modules/character-build/dev/workbench-harness.html?customization-probe=1');
+            await customPage.waitForFunction(() => window.__qaReady === true, null, {timeout:45000});
+            const customReport = await customPage.evaluate(() => window.__qaReport);
+            const failures = customReport.checks.filter(check => !check.ok);
+            if (failures.length) throw new Error('customization integration: ' + failures.map(check =>
+                check.name + (check.detail ? ': ' + check.detail : '')).join('\n'));
+            if (shotDirectory) await customPage.screenshot({path:path.join(shotDirectory,
+                'customization-production-' + viewport.width + 'x' + viewport.height + '.png')});
+            console.log('Customization production controller ' + viewport.width + 'x' + viewport.height
+                + ': ' + customReport.checks.length + '/' + customReport.checks.length + ' passed (fake Host bridge)');
+            await customPage.close();
+        }
+        if (process.argv.includes('--customization-only')) return;
         const switchProbePassed = await runStorageToBuildVisibilityProbe(
             browser, server, shotDirectory);
         const preparationMatrixPassed = await runPreparationMenuViewportMatrix(

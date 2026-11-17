@@ -1,0 +1,35 @@
+{
+  "schema": "cf7.tooltip-cloud-evidence.v1",
+  "taskDate": "2026-11-15",
+  "baselineCommit": "db6d3d248b80b80651987c99557c4e83b56f9301",
+  "codeCommit": "3a2f434ceea4c0a07bad3a915bd314921f0f6863",
+  "environment": {
+    "system": "Linux",
+    "machine": "x86_64",
+    "python": "3.12.14",
+    "node": "v24.22.1",
+    "dotnetSdk": "10.0.300",
+    "clearScript": "7.4.5"
+  },
+  "scope": "Cloud candidate only; no fresh AVM1 oracle, no CS6, no Windows execution or production deployment",
+  "runtimeAssets": {
+    "launcher/scripts/dist/tooltip-bundle.js": {
+      "bytes": 304982,
+      "sha256": "91950c7ad695951f310b1489e8e00c2b075e21c7d128a1872ad378d37e25b4d0"
+    },
+    "data/tooltip/tooltip-catalog.json": {
+      "bytes": 1396854,
+      "sha256": "7d83d0a97f59cea7a8b50e0f0ea1f042abb2fcc47e1f0c528234b2014aee72e8"
+    },
+    "data/tooltip/tooltip-catalog.manifest.json": {
+      "bytes": 14409,
+      "sha256": "019d69a5a488852d6556249919eb8e1c833ec6ce45d917f64906957dbb031d2d"
+    },
+    "tools/asloader-modules.json": {
+      "bytes": 49335,
+      "sha256": "e25975d7d6740c0d04f6a59e46ca77cf240e45b0d7f24ecc43a667d0bae80d79"
+    }
+  },
+  "performanceCodeCommit": "cb9a3e0a72b6508c60f1855ecfd55fc33735cdc0",
+  "performanceReuseBoundary": "Follow-up fixes change response schemas, unavailable text and tests only; engine/catalog/scheduler/benchmark function unchanged. Original measurements retained."
+}

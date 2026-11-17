@@ -6,7 +6,6 @@ import org.flashNight.arki.item.LootContainerValidation;
 import org.flashNight.arki.item.LootClaimCommitCoordinator;
 import org.flashNight.arki.item.MaterialArchiveProjector;
 import org.flashNight.arki.item.RewardInboxService;
-import org.flashNight.gesh.tooltip.TooltipComposer;
 
 /**
  * 地图网格箱的瞬态战利品权威。
@@ -1693,13 +1692,13 @@ class org.flashNight.arki.item.LootContainerService {
         if (itemName == "" || !ItemUtil.isItem(itemName)) return failureFor(record, "invalid_payload");
         if (typeof _root.Web物品注释HTML != "function") return failureFor(record, "tooltip_failed");
         var tooltip:Object = _root.Web物品注释HTML(itemName);
-        if (tooltip == null || typeof tooltip.descHTML != "string" || typeof tooltip.introHTML != "string")
+        if (tooltip == null || tooltip.tooltipInput == null)
             return failureFor(record, "tooltip_failed");
         var itemData:Object = ItemUtil.getItemData(itemName);
         var response:Object = recordResponse(record, true, "");
         response.tooltip = {itemName:itemName, displayname:String(tooltip.displayname || itemName),
             iconName:String(itemData.icon || itemName), itemType:String(itemData.type || "物品"),
-            descHTML:tooltip.descHTML, introHTML:tooltip.introHTML, document:tooltip.document};
+            descHTML:tooltip.descHTML, introHTML:tooltip.introHTML, tooltipInput:tooltip.tooltipInput};
         return response;
     }
 
@@ -2685,32 +2684,11 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     private static function buildTooltip(item:Object):Object {
-        if (item == null) return null;
-        var itemData:Object = ItemUtil.getItemData(item.name);
-        if (itemData == null) return null;
-        var projection:Object = InventoryPanelService.buildItemProjection(item);
-        var instanceValue:Object = typeof item.value == "object" ? item.value : {level:1};
-        var baseItem = item instanceof BaseItem && typeof item.value == "object" ? item : null;
-        var descHTML:String;
-        var introHTML:String;
-        try {
-            descHTML = TooltipComposer.generateItemDescriptionText(itemData, baseItem);
-            introHTML = TooltipComposer.generateIntroPanelContent(baseItem, itemData, instanceValue);
-        } catch (tooltipError) {
-            return null;
-        }
-        if (typeof descHTML != "string" || typeof introHTML != "string") return null;
-        var itemType:String = String(projection.majorType);
-        if (itemType == "消耗品" && projection.use != undefined) itemType = String(projection.use);
-        return {
-            itemName:String(item.name),
-            displayname:String(projection.displayName),
-            iconName:String(projection.icon),
-            itemType:itemType,
-            // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性。
-            descHTML:descHTML,
-            introHTML:introHTML
-        };
+        var projection:Object = InventoryPanelService.buildTooltipProjection(item);
+        if (projection == null || projection.success !== true) return null;
+        delete projection.success;
+        delete projection.v;
+        return projection;
     }
 
     /** mandatory effects 已完成后的 best-effort 事件；每个 flag 都先置位，保证至多一次。 */

@@ -1,0 +1,47 @@
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(16,25): warning CS0649: Field 'MaterialShopSettlementWitness.MaterialName' is never assigned to, and will always have its default value null [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(24,25): warning CS0649: Field 'MaterialShopSettlementWitness.EntryId' is never assigned to, and will always have its default value null [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(23,23): warning CS0649: Field 'MaterialShopSettlementWitness.IsKShop' is never assigned to, and will always have its default value false [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(15,25): warning CS0649: Field 'MaterialShopSettlementWitness.MaterialSnapshotId' is never assigned to, and will always have its default value null [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(18,23): warning CS0649: Field 'MaterialShopSettlementWitness.RequiresCatalogAuthority' is never assigned to, and will always have its default value false [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/NativeInteractionTask.cs(65,37): warning CS0649: Field 'NativeInteractionTask.SendPayloadOverride' is never assigned to, and will always have its default value null [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(22,22): warning CS0649: Field 'MaterialShopSettlementWitness.CatalogIndex' is never assigned to, and will always have its default value 0 [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(17,25): warning CS0649: Field 'MaterialShopSettlementWitness.ShopId' is never assigned to, and will always have its default value null [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(25,25): warning CS0649: Field 'MaterialShopSettlementWitness.KShopCategory' is never assigned to, and will always have its default value null [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(20,25): warning CS0649: Field 'MaterialShopSettlementWitness.RecipeCategory' is never assigned to, and will always have its default value null [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(19,23): warning CS0649: Field 'MaterialShopSettlementWitness.IsRecipeProcurement' is never assigned to, and will always have its default value false [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/src/Tasks/MaterialShopSettlementWitness.cs(21,22): warning CS0649: Field 'MaterialShopSettlementWitness.RecipeIndex' is never assigned to, and will always have its default value 0 [/workspace/scratch/120bad2dafab/cfn-tooltip/launcher/tests/TooltipService.Host/TooltipService.Host.csproj]
+ok 1 - one persistent engine, dedicated worker, bounded projection
+ok 2 - invalid version, kind, prototype, depth and non-finite numbers fail before V8
+ok 3 - identical snapshots coalesce across independent owners
+ok 4 - latest owner wins, older late response cannot overwrite a completed frontier
+ok 5 - 500 hover replacements keep one queued latest input
+ok 6 - queue and subscribers are bounded; cancellation frees queued capacity
+ok 7 - Inspector has an independent lane and exact cancellation cannot hide a newer request
+ok 8 - cache distinguishes revision, lease, scene and snapshot; cached object is immutable
+ok 9 - cache hits recheck cancellation and fences without admitting expired owners
+ok 10 - disconnect retires queued/running requests and permits a new sequence epoch
+ok 11 - initialization failure settles all work without per-request engine retries
+ok 12 - fake socket enriches before original strict response handler, ordinary route is synchronous
+ok 13 - nested details-only preview remains one response without extra document fields
+ok 14 - content failure preserves committed business acknowledgement and is visibly unavailable
+ok 15 - response disconnect and closed pending owner never resume stale callbacks
+ok 16 - closed pending owner is pruned before queued V8 work and cannot deliver
+ok 17 - stable Web owner supersedes pure reads and retires their original pending entries
+ok 18 - production Inventory task round-trip reuses same-item cache and distinguishes lease
+ok 19 - production Inventory pending owner supersedes hover and retires late closed responses
+ok 20 - production ItemUse choice snapshot and hover use independent pending lanes
+ok 21 - production ItemUse binding close cancels queued batch and bypasses later absent pending
+ok 22 - production ItemUse content failure preserves strict read shape and independent committed write acknowledgement
+ok 23 - production ItemUse details-only engine failure preserves the exact choice item schema
+ok 24 - production EquipmentTuning accepts real V8 document after snapshot candidate authority
+ok 25 - production EquipmentTuning content failure keeps explicit unavailable document and exact success shape
+ok 26 - production EquipmentTuning sanitizes optional document while preserving strict outer schema
+ok 27 - native hide-before-result never materializes a tooltip
+ok 28 - native rapid switch delivers only latest, wrong-scene hide leaves it alive
+ok 29 - native pending Inspector rejects hover without advancing its identity
+ok 30 - native scene roll, owner suppression and disconnect invalidate in-flight builds
+ok 31 - native revision regression is rejected before computation
+ok 32 - production initialization rejects changed catalog and stale source bytes
+ok 33 - real V8 item Inspector keeps pinned identity after content generation
+ok 34 - real ClearScript 7.4.5 executes production bundle and details-only mode
+PASS 34 tooltip host checks (production C#; fake surfaces are protocol evidence only)

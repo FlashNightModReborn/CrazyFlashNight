@@ -1,0 +1,303 @@
+{
+  "schema": "cf7.issue262.release-preflight.v1",
+  "capturedAtUtc": "2026-11-16T07:48:11.574564+00:00",
+  "sourceBase": "1b7a18b2ae6353399e2091db1359909df35cb7a4",
+  "tag": "refs/tags/runtime-build-v2/20261116-tooltip-content-v1",
+  "status": "e2e_verified (bounded isolated candidate); formal release pending",
+  "conflictResolution": "Preserve upstream sanitized tuning snapshot and real-mod GrayGoo contracts; regenerate material dictionary; normalize only the CharacterBuild chip fixture; restore the immutable oracle archive from its existing pinned Git blob.",
+  "modules": [
+    {
+      "module": "resident",
+      "beforeBytes": 90511,
+      "afterBytes": 90511,
+      "beforeClasses": 1,
+      "afterClasses": 1,
+      "sha256": "6614a2f6a498049bebc90f8f37fdaa0f7a3e0da58c060115b015c60a958edc36",
+      "tooltipInitializerBytesBefore": 0,
+      "tooltipInitializerBytesAfter": 0
+    },
+    {
+      "module": "shared",
+      "beforeBytes": 2999329,
+      "afterBytes": 2996949,
+      "beforeClasses": 340,
+      "afterClasses": 340,
+      "sha256": "9e58e9e0321812049d818b228a4a96baab2d17e2197407ba122656c1e4ea7f48",
+      "tooltipInitializerBytesBefore": 0,
+      "tooltipInitializerBytesAfter": 0
+    },
+    {
+      "module": "boot",
+      "beforeBytes": 4017125,
+      "afterBytes": 3835511,
+      "beforeClasses": 466,
+      "afterClasses": 431,
+      "sha256": "0d4d52135507e2f0f3badcb973f50bfa859060580b1e96f318f75c1c70e44c7c",
+      "tooltipInitializerBytesBefore": 189231,
+      "tooltipInitializerBytesAfter": 18993
+    }
+  ],
+  "sourceAndBinaryAudits": [
+    {
+      "name": "frame-current",
+      "exitCode": 0
+    },
+    {
+      "name": "modules-current",
+      "exitCode": 0
+    },
+    {
+      "name": "source-closure",
+      "exitCode": 0
+    },
+    {
+      "name": "class-embedding",
+      "exitCode": 0
+    },
+    {
+      "name": "inheritance",
+      "exitCode": 0
+    },
+    {
+      "name": "asLoader-functions",
+      "exitCode": 0
+    },
+    {
+      "name": "asLoaderShared-functions",
+      "exitCode": 0
+    },
+    {
+      "name": "asLoaderLogic-functions",
+      "exitCode": 0
+    }
+  ],
+  "flashFocusedCases": [
+    {
+      "name": "native",
+      "exitCode": 0,
+      "elapsedSeconds": 131.0459817,
+      "traceSha256": "AE9391BD9DE34D0D473D8DFC58CF1905A56EB69AE14B25E61C89F110F9EDE22C",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    },
+    {
+      "name": "item-panels",
+      "exitCode": 0,
+      "elapsedSeconds": 176.0580625,
+      "traceSha256": "D1593C144CB7D23822279247804EE12C50B146ADCC0EBC0618DBCB5DB19DF988",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    },
+    {
+      "name": "equipment-tuning",
+      "exitCode": 0,
+      "elapsedSeconds": 160.4966805,
+      "traceSha256": "CE82B6DA6DE71AF643233F0FFFD03CB4327DE649ED06E90B6E718FECE6363B87",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    },
+    {
+      "name": "character-build-chip-normalized",
+      "exitCode": 0,
+      "elapsedSeconds": 196.95760009999998,
+      "traceSha256": "F29642B54F01F3B2D0D0B12538755D78BDEFBB42A34D303852CDD4ED04E0A1CB",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    },
+    {
+      "name": "gray-goo",
+      "exitCode": 0,
+      "elapsedSeconds": 156.7325267,
+      "traceSha256": "875CBB70FCF61C6BF5CD14D3515E5067E338DEC3EE33E622CDF0292DB9001387",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    },
+    {
+      "name": "agent-harness-main92",
+      "exitCode": 0,
+      "elapsedSeconds": 126.5693573,
+      "traceSha256": "FC3BD6DF6A36EC0EBE8E38CF519B5704F97C76DB20EC45A895AFD9D1ABAF9D78",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    },
+    {
+      "name": "native-main92",
+      "exitCode": 0,
+      "elapsedSeconds": 151.33179389999998,
+      "traceSha256": "3E68375C1DBFD85504F68029927D50C76E8610A9F5EE985083C8BB3024EC7691",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    },
+    {
+      "name": "character-build-main92",
+      "exitCode": 0,
+      "elapsedSeconds": 217.37676299999998,
+      "traceSha256": "0557FAF50450F3AB4F530CC76B6F7E0A82A4368299AD50929EE4C43926EBB0CB",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    },
+    {
+      "name": "sheriff-baton-main92",
+      "exitCode": 0,
+      "elapsedSeconds": 161.5887093,
+      "traceSha256": "2563568A54C7D00E8C98AECC92547DA9C48BF27528A91DFB70EE02FBE6B179F8",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    },
+    {
+      "name": "weapon-ammo-main92",
+      "exitCode": 0,
+      "elapsedSeconds": 110.25826509999999,
+      "traceSha256": "EB5D567BEC0ADDE991D81ECB91ABAC7B3DAD2A3FD07A06BFC5596C8CB4C0F4FA",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    },
+    {
+      "name": "weapon-ammo-data-main92",
+      "exitCode": 0,
+      "elapsedSeconds": 105.0852915,
+      "traceSha256": "4AE5AB31AD3B44D5D382416F6A4EEE8534BAC030B57C4391FA6E7D71174D080B",
+      "compile": "fresh 0 errors / 0 warnings",
+      "retry32k": 0
+    }
+  ],
+  "managed": {
+    "schema": "cf7.issue262.main650-managed-coverage.v1",
+    "sourceBase": "650334df52b8d56b4c3b1caf9dabf8906e2409f8",
+    "full": {
+      "path": "C:\\cf7-262\\resources\\tmp\\focus-sol-20261013\\integration-20261116T063205670Z",
+      "total": 8558,
+      "passed": 8415,
+      "inputQualificationCancelled": 112,
+      "skipped": 31
+    },
+    "qualifiedRetry": {
+      "path": "C:\\cf7-262\\resources\\tmp\\focus-sol-20261013\\integration-20261116T064331936Z",
+      "passed": 128,
+      "failed": 0,
+      "userProvidedIdleWindow": true
+    },
+    "sameLoadedBinaryShaAndMvid": true,
+    "sameSourceInputsSha256": "0f8a4fc19353826242eb8b8b0b87d276db9a6a776cdd2bc2ac51651da73f4c1a",
+    "failedKeysExactlyCovered": true,
+    "coveredOriginalPassingRows": 8527,
+    "uniquePassingKeys": 8525,
+    "existingDuplicateTheoryKeys": 2,
+    "remainingUncoveredFailures": 0,
+    "singleAllGreenRun": false,
+    "priorMain92SingleGreen": {
+      "total": 8558,
+      "passed": 8527,
+      "skipped": 31,
+      "report": "host-main92-summary.json"
+    },
+    "retainedAdditionalCancellations": [
+      "integration-20261116T063736759Z",
+      "integration-20261116T064115681Z"
+    ],
+    "scope": "Canonical full + same-source/same-binary qualified retry covers every case. Preserve all earlier input cancellations; no human physical input or whole player-game acceptance inferred."
+  },
+  "managedLoadedBinaries": {
+    "coreSha256": "F3EB87D67CDABA1E55AE5118C93BA62B463F0C2E6C81E4E75D478B9B7DD45B5B",
+    "coreMvid": "e2fe6261-c405-4731-98e7-ad413db7ae8d",
+    "testsSha256": "5EEF64B1AC62FEF3AA2914ABA8BADCEA5F3F2E5978A2D50576D1204B40E82520",
+    "testsMvid": "466fc234-1428-4c07-b917-f33e0a665906"
+  },
+  "content": {
+    "catalogContentVersion": "sha256:a5fbff1edcd7a40619fa7c5872e21a0470263e6f9113e4fbc19620fe69cb86ee",
+    "bundleBytes": 307048,
+    "bundleSha256": "C70BC251824A7BAAE8A8B31B6441BA761EB90386FADB4781F5368B8A66B20885",
+    "legacyFullRecords": 5723,
+    "currentDataAvm1Records": 180,
+    "currentDataDifferences": 0,
+    "windowsProductionServiceRecords": 180,
+    "nodeClearScriptParity": true,
+    "main92ContentEquivalenceEvidenceSha256": "D41B9F9FE11229FA799FE57EDFA8486C021F6DA095D017C6F46DF807F2D4301E"
+  },
+  "nativeCandidate": {
+    "runtimeMode": "isolated_candidate",
+    "buildIdentity": "CCE69E7F03C538E7C5BB662C4C79CB72B44E0711DA541774CE2527BECB0317AA",
+    "payloadClosure": "39A9460B4C34FC044FF5AB07A36682551E08819BB9EA426D7216B2069D115B4F",
+    "coreSha256": "79151863DA64D8A4F855A5FA447F1AD152C12B8E174A558EE6FE0D11A8FD2799",
+    "candidateLeaf": "c-cce69e7f03c5-08846e81b3-20261116t060618352z-db6a9b6f",
+    "signedProductionProof": false
+  },
+  "actualUi": {
+    "firstPartyCanonicalE2e": true,
+    "entryMovementMultiSurfaceSaveRestartReadback": true,
+    "kshopPinnedInspector": true,
+    "richItemStatsUpgradeAndSources": true,
+    "explicitHideAndPanelClose": true,
+    "freshPanelInstanceReopen": true,
+    "normalPrivateSaveAndExit": true,
+    "businessPurchaseExecuted": false,
+    "cartDraftOnlyAddThenRemove": true,
+    "screenshotSha256": "1919A0CE58BFC994785A2B2D7ADB6228D38BA1F883930A205538CF24C224DC92",
+    "privateTranscriptSha256": "A3FAF123BC0C7813C895199B0AAEA9D9CE0BA861FB5FEDDEC37177F5E0B597A4",
+    "humanPhysicalInputAttestation": false,
+    "allConsumersPhysicalJourney": false,
+    "gameInputFrameTailMeasured": false,
+    "visibleCaptureAttempt": "Retained as failed: trusted visible capture and window helper timed out; process exit observed, strict protocol shutdown not signed. Never substitute it for the passing first-party WebView2 DOM/PNG inspector flow."
+  },
+  "processMemory": {
+    "samePrivateSourceSeed": true,
+    "baselineSource": "92ecd944565db32d404967918a82cd4b80e3db9d",
+    "candidateSourceBase": "650334df52b8d56b4c3b1caf9dabf8906e2409f8",
+    "baseline": {
+      "base": {
+        "samples": 6,
+        "medianWorkingSetBytes": 733487104,
+        "medianPrivateBytes": 588648448
+      },
+      "tuning": {
+        "samples": 6,
+        "medianWorkingSetBytes": 745320448,
+        "medianPrivateBytes": 594243584
+      }
+    },
+    "candidate": {
+      "base": {
+        "samples": 6,
+        "medianWorkingSetBytes": 685873152,
+        "medianPrivateBytes": 535492608
+      },
+      "tuning": {
+        "samples": 6,
+        "medianWorkingSetBytes": 702330880,
+        "medianPrivateBytes": 543387648
+      }
+    },
+    "caveat": "One new Core process per side. Background CS6 load and filesystem cache differ; the extra upstream change only refreshes combat-effect hashes. No stable or causal performance claim; GameInput frame-tail remains unmeasured."
+  },
+  "protectedOriginalFiles": {
+    "checked": 288,
+    "unchanged": 288,
+    "restored": false
+  },
+  "negativeEvidenceRetained": [
+    "original 3600s corpus runner timeout; completed same-SWF continuation separately",
+    "first character chip fixture 3 failures before public-normalizer fix",
+    "input-qualification cancellations before exact same-binary 128/128 user-idle retry",
+    "oracle archival merge drift before restoring its original pinned bytes",
+    "Node test host missing per-process .NET root; no install/global override",
+    "visible capture/window-helper timeout and the rejected stale DOM ref"
+  ],
+  "formal": {
+    "pushed": false,
+    "localSignedProof": false,
+    "githubIndependentProof": false,
+    "promoted": false,
+    "standardEntryVerified": false
+  },
+  "testedBusinessSourceBase": "650334df52b8d56b4c3b1caf9dabf8906e2409f8",
+  "upstreamDeploymentIntegrated": {
+    "commit": "1b7a18b2ae6353399e2091db1359909df35cb7a4",
+    "paths": [
+      "config/build/runtime-release-consensus.json",
+      "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "runtime/cf7-runtime-manifest.tsv"
+    ],
+    "businessSourceChanged": false,
+    "proofNotReusedForTooltip": true
+  }
+}

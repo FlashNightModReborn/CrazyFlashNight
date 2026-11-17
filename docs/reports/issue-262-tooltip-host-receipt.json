@@ -1,0 +1,287 @@
+{
+  "schema": "cf7.tooltip-host-receipt.v1",
+  "recordedAtUtc": "2026-11-15T07:37:39.627934+00:00",
+  "environment": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "dotnetSdk": "10.0.300",
+    "clearScript": "7.4.5",
+    "node": "v24.22.1"
+  },
+  "commands": {
+    "lockedRestore": "dotnet restore launcher/tests/TooltipService.Host/TooltipService.Host.csproj --locked-mode",
+    "hostChecks": "dotnet run --project launcher/tests/TooltipService.Host/TooltipService.Host.csproj --no-restore -- --test .",
+    "candidateCompile": "dotnet build launcher/CRAZYFLASHER7MercenaryEmpire.csproj -p:EnableWindowsTargeting=true --no-restore -v:minimal",
+    "inputs": "node launcher/tooltip-engine/fixtures.cjs /tmp/tooltip-content-inputs.jsonl",
+    "nodeEvaluate": "node launcher/tooltip-engine/benchmark.cjs --evaluate /tmp/tooltip-content-inputs.jsonl",
+    "clearScriptEvaluate": "dotnet run --no-build --project launcher/tests/TooltipService.Host/TooltipService.Host.csproj -- --evaluate . /tmp/tooltip-content-inputs.jsonl",
+    "serviceCorpus": "dotnet run --no-build --project launcher/tests/TooltipService.Host/TooltipService.Host.csproj -- --validate-service . /tmp/tooltip-content-inputs.jsonl",
+    "nodeBenchmark": "node --expose-gc launcher/tooltip-engine/benchmark.cjs /tmp/tooltip-content-inputs.jsonl",
+    "clearScriptBenchmark": "dotnet run --no-build --project launcher/tests/TooltipService.Host/TooltipService.Host.csproj -- --bench . /tmp/tooltip-content-inputs.jsonl",
+    "packageBytes": "npm test --prefix tools/cf7-packer -- --run packages/core/tests/tooltip-runtime-config.test.ts"
+  },
+  "hostChecks": {
+    "passed": 34,
+    "checks": [
+      "one persistent engine, dedicated worker, bounded projection",
+      "invalid version, kind, prototype, depth and non-finite numbers fail before V8",
+      "identical snapshots coalesce across independent owners",
+      "latest owner wins, older late response cannot overwrite a completed frontier",
+      "500 hover replacements keep one queued latest input",
+      "queue and subscribers are bounded; cancellation frees queued capacity",
+      "Inspector has an independent lane and exact cancellation cannot hide a newer request",
+      "cache distinguishes revision, lease, scene and snapshot; cached object is immutable",
+      "cache hits recheck cancellation and fences without admitting expired owners",
+      "disconnect retires queued/running requests and permits a new sequence epoch",
+      "initialization failure settles all work without per-request engine retries",
+      "fake socket enriches before original strict response handler, ordinary route is synchronous",
+      "nested details-only preview remains one response without extra document fields",
+      "content failure preserves committed business acknowledgement and is visibly unavailable",
+      "response disconnect and closed pending owner never resume stale callbacks",
+      "closed pending owner is pruned before queued V8 work and cannot deliver",
+      "stable Web owner supersedes pure reads and retires their original pending entries",
+      "production Inventory task round-trip reuses same-item cache and distinguishes lease",
+      "production Inventory pending owner supersedes hover and retires late closed responses",
+      "production ItemUse choice snapshot and hover use independent pending lanes",
+      "production ItemUse binding close cancels queued batch and bypasses later absent pending",
+      "production ItemUse content failure preserves strict read shape and independent committed write acknowledgement",
+      "production ItemUse details-only engine failure preserves the exact choice item schema",
+      "production EquipmentTuning accepts real V8 document after snapshot candidate authority",
+      "production EquipmentTuning content failure keeps explicit unavailable document and exact success shape",
+      "production EquipmentTuning sanitizes optional document while preserving strict outer schema",
+      "native hide-before-result never materializes a tooltip",
+      "native rapid switch delivers only latest, wrong-scene hide leaves it alive",
+      "native pending Inspector rejects hover without advancing its identity",
+      "native scene roll, owner suppression and disconnect invalidate in-flight builds",
+      "native revision regression is rejected before computation",
+      "production initialization rejects changed catalog and stale source bytes",
+      "real V8 item Inspector keeps pinned identity after content generation",
+      "real ClearScript 7.4.5 executes production bundle and details-only mode"
+    ],
+    "sources": "Production scheduler, V8 engine, enricher, router, NativeInteractionTask, InventoryTask, EquipmentTuningTask, ItemUseTask, CharacterBuildProtocol, pending tracker, bridge, sanitizer and shared identity predicate. Only platform surfaces and Flash response transport are fake.",
+    "equipmentTuningFollowUp": {
+      "productionBoundary": "EquipmentTuningTask tooltip-success whitelist allows optional document; SanitizeFlashResponse reuses TooltipDocumentSanitizer.ApplyTo.",
+      "fixtures": "Actual snapshot establishes source/lease/candidate authority before the real tooltip pending round-trip.",
+      "coverage": [
+        "real V8 success accepted by the actual strict validator",
+        "real V8 missing-projection failure returns explicit unavailable content without rewriting the response success",
+        "optional document sanitizer strips unknown nested fields",
+        "invalid or absent document preserves legacy HTML success",
+        "unrelated outer key remains malformed_response"
+      ],
+      "businessValidatorReimplemented": false
+    }
+  },
+  "candidateCompile": {
+    "warnings": 54,
+    "errors": 0,
+    "elapsed": "00:00:14.68",
+    "crossTargetCompileOnly": true,
+    "msbuildResourceOverrides": [],
+    "sparseBaselineResourcesRestoredByteForByte": [
+      "launcher/src/Guardian/Hud/PlayerInfo/Assets/hp/backplate.svg",
+      "launcher/src/Guardian/Hud/PlayerInfo/Assets/hp/fill.svg",
+      "launcher/src/Guardian/Hud/PlayerInfo/Assets/hp/rim.svg",
+      "launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/backplate.svg",
+      "launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/fill.svg",
+      "launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/rim.svg",
+      "launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/rim-vf70.svg",
+      "launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/rim-vf91.svg"
+    ],
+    "warningBaselineComparisonPerformed": false,
+    "formalRuntimeBuiltOrDeployed": false
+  },
+  "packaging": {
+    "passed": true,
+    "test": "tooltip-runtime-config.test.ts",
+    "copiedAndHashCheckedFiles": 123,
+    "preservesInputBytes": true,
+    "powerShellReleasePrepareAndPolicyExecuted": false
+  },
+  "parity": {
+    "inputLines": 1801,
+    "nodeLines": 1801,
+    "clearScriptLines": 1801,
+    "equal": true,
+    "inputSha256": "d717ba47be4ee18fed958e5d08c34583658dc83a3e03a578478b3bec3e08f3aa",
+    "outputSha256": "62ad1eee14758b13aa6b1e1a4f69e24015b967134676d1517dba3a089fc80f27",
+    "bundleSha256": "91950c7ad695951f310b1489e8e00c2b075e21c7d128a1872ad378d37e25b4d0",
+    "catalogSha256": "7d83d0a97f59cea7a8b50e0f0ea1f042abb2fcc47e1f0c528234b2014aee72e8",
+    "catalogContentVersion": "sha256:53f3d349dab336e4087654283ac06c38d7b368c7401648196ac4c7444c23e6b2",
+    "evidence": "Same TS rule under Node and ClearScript; synthetic projections, not AVM1 oracle"
+  },
+  "serviceCorpus": {
+    "validatedInputs": 1801,
+    "engineIdentity": "tooltip-v1:91950c7ad695951f310b1489e8e00c2b075e21c7d128a1872ad378d37e25b4d0:7d83d0a97f59cea7a8b50e0f0ea1f042abb2fcc47e1f0c528234b2014aee72e8",
+    "built": 1801,
+    "cacheEntries": 256,
+    "cacheEstimatedBytes": 885538
+  },
+  "nodeBenchmark": {
+    "schema": "cf7.tooltip-content-benchmark.v1",
+    "evidence": "supplied-inputs; no AVM1 equivalence inferred",
+    "runtime": {
+      "node": "v24.22.1",
+      "v8": "13.6.233.17-node.58",
+      "platform": "linux",
+      "arch": "x64"
+    },
+    "catalog": {
+      "contentVersion": "sha256:53f3d349dab336e4087654283ac06c38d7b368c7401648196ac4c7444c23e6b2",
+      "sha256": "7d83d0a97f59cea7a8b50e0f0ea1f042abb2fcc47e1f0c528234b2014aee72e8",
+      "bytes": 1396854
+    },
+    "bundle": {
+      "sha256": "91950c7ad695951f310b1489e8e00c2b075e21c7d128a1872ad378d37e25b4d0",
+      "bytes": 304982
+    },
+    "input": {
+      "file": "/tmp/tooltip-content-inputs.jsonl",
+      "sha256": "d717ba47be4ee18fed958e5d08c34583658dc83a3e03a578478b3bec3e08f3aa",
+      "count": 1801
+    },
+    "initializationMs": {
+      "vmAndBundle": 5.768251,
+      "catalogParseValidateFreeze": 31.957591,
+      "total": 37.725842
+    },
+    "firstCallMs": 2.543884,
+    "warmupCount": 1000,
+    "rounds": 3,
+    "perCallMs": {
+      "count": 5403,
+      "mean": 0.175071,
+      "p50": 0.164928,
+      "p95": 0.33278,
+      "p99": 0.519691,
+      "max": 4.325022
+    },
+    "batchMs": {
+      "25": {
+        "count": 20,
+        "mean": 2.637339,
+        "p50": 1.515178,
+        "p95": 6.774443,
+        "p99": 6.928525,
+        "max": 6.928525
+      },
+      "100": {
+        "count": 20,
+        "mean": 15.04403,
+        "p50": 15.723547,
+        "p95": 23.589561,
+        "p99": 23.704154,
+        "max": 23.704154
+      }
+    },
+    "measuredMs": 947.726829,
+    "cpuMs": {
+      "user": 1117.158,
+      "system": 13.813
+    },
+    "memoryBytes": {
+      "gcRequested": true,
+      "before": {
+        "heapUsed": 8866368,
+        "heapTotal": 18567168,
+        "rss": 45023232,
+        "external": 5654127
+      },
+      "initialized": {
+        "heapUsed": 14681184,
+        "heapTotal": 32067584,
+        "rss": 67555328,
+        "external": 5654131
+      },
+      "after": {
+        "heapUsed": 14621376,
+        "heapTotal": 34635776,
+        "rss": 86880256,
+        "external": 5654147
+      },
+      "catalogAndBundleDelta": {
+        "heapUsed": 5814816,
+        "heapTotal": 13500416,
+        "rss": 22532096,
+        "external": 4
+      },
+      "totalDelta": {
+        "heapUsed": 5755008,
+        "heapTotal": 16068608,
+        "rss": 41857024,
+        "external": 20
+      }
+    },
+    "outputChars": 10674953,
+    "limits": "Node process measurements; includes JSON input parsing, document/HTML composition and JSON output. Does not include host scheduling, cache, IPC or Flash projection. Memory deltas include V8/JIT overhead and are not retained-object accounting."
+  },
+  "clearScriptBenchmark": {
+    "evidence": "Linux ClearScript actual production bundle; no AVM1/Windows/CS6 evidence",
+    "clearScript": "7.4.5",
+    "engineIdentity": "tooltip-v1:91950c7ad695951f310b1489e8e00c2b075e21c7d128a1872ad378d37e25b4d0:7d83d0a97f59cea7a8b50e0f0ea1f042abb2fcc47e1f0c528234b2014aee72e8",
+    "inputs": 1801,
+    "samples": 10806,
+    "initializationMs": 302.0441,
+    "batchDistinctMs": 398.1786,
+    "p50Ms": 0.0809,
+    "p95Ms": 0.2625,
+    "p99Ms": 0.5355,
+    "workingSetBeforeBytes": 31989760,
+    "workingSetInitializedBytes": 158883840,
+    "workingSetAfterBytes": 157630464,
+    "cacheSamples": 1000,
+    "cacheP50Ms": 0.0218,
+    "cacheP95Ms": 0.0512,
+    "cacheP99Ms": 0.1526,
+    "cacheHits": 1000,
+    "cacheEstimatedBytes": 1272,
+    "rapidSwitchRequests": 1000,
+    "rapidSwitchCompleted": 5,
+    "rapidSwitchCanceled": 995,
+    "rapidSwitchBuilt": 173,
+    "rapidSwitchCacheHits": 1,
+    "rapidSwitchMaxQueueDepth": 1,
+    "rapidSwitchLatestTailMs": 1.042500000000004,
+    "rapidSwitchRemainingQueue": 0,
+    "rapidSwitchRemainingActive": 0,
+    "gameInputSynchronousWaitAdded": false
+  },
+  "limits": {
+    "queuedComputations": 64,
+    "activeSubscribers": 128,
+    "cacheEntries": 256,
+    "cacheEstimatedBytes": 16777216,
+    "completedOwnerFrontiers": 1024,
+    "concurrentResponseMessages": 32,
+    "pendingResponseChars": 16777216,
+    "inputsPerResponse": 1024,
+    "inputChars": 262144,
+    "inputNodes": 8192,
+    "inputDepth": 24
+  },
+  "evidenceLimits": [
+    "The 1801 inputs are 1788 catalog baselines plus 13 synthetic supplied projections; no live AVM1 corpus was captured.",
+    "Node/ClearScript output equality tests the same TS rules on two hosts, not AS2-to-TS content equivalence.",
+    "The Linux cross-target compile is not a Windows runtime, WebView2, NativeHud, CS6 or SWF execution result.",
+    "Fake presentation surfaces do not validate real window visibility, scrolling, wheel routing, layout or pointer geometry.",
+    "Cold ClearScript initialization and RSS include first-process CLR/ClearScript/V8/JIT costs; they do not measure the marginal Tooltip isolate cost in a production process already running GameInput.",
+    "The Node and ClearScript benchmark runners have different warmup/pass schedules; their results are separate measurements, not a controlled runtime speed comparison.",
+    "Inventory/ItemUse write acknowledgement schemas contain no nested tooltip. The actual task test proves an independent committed consume acknowledgement is unchanged while a concurrent tooltip read fails; the generic enricher separately tests a nested-business-ack presentation failure.",
+    "No new GameInput engine/lock dependency or synchronous wait was introduced; GameInput frame timing under Windows was not measured.",
+    "PowerShell prepare/policy wiring was reviewed and the actual packer copy/hash regression ran on Linux; the full Windows release pipeline was not executed.",
+    "Unavailable content may remain in an existing Web success-response cache until that cache lifecycle invalidates the key; the UI text does not promise a same-key hover retry."
+  ],
+  "contentFailurePresentation": {
+    "unavailableText": "注释暂不可用。",
+    "businessSuccessSchemaAndCacheBehaviorUnchanged": true,
+    "sameKeyHoverRetryGuaranteed": false
+  },
+  "lastCandidateSourceSha256": {
+    "launcher/src/Tooltips/TooltipResponseEnricher.cs": "906aa9f5b16628c5dcfce095d54355dc8b8d7147344d0f7b852304aaa4432a2f",
+    "launcher/src/Tasks/EquipmentTuningTask.cs": "e11f488e715798db65fe15d2d12b8bc8eb95e0f7562d2c75125db29e5df4e9cc",
+    "launcher/tests/TooltipService.Host/ManagedTaskIntegration.cs": "fa1697138f855c1562f9e5533d226bad6c668d43aed2328344733f8af0662669",
+    "launcher/tests/TooltipService.Host/EquipmentTuningIntegration.cs": "9c4507edaa81ed612f2cbe8aa82109b30bbe72ee1eca0a7ea01f8c9137a928ea"
+  },
+  "codeCommit": "3a2f434ceea4c0a07bad3a915bd314921f0f6863",
+  "performanceCodeCommit": "cb9a3e0a72b6508c60f1855ecfd55fc33735cdc0"
+}

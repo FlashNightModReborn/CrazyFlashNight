@@ -506,6 +506,37 @@ namespace CF7Launcher.Tasks
                 HandleSendFailure(entry.FlashCallId);
         }
 
+        internal CF7Launcher.Tooltips.TooltipResponseOwner ResolveTooltipOwner(int fid)
+        {
+            PendingRequest entry;
+            lock (_sync)
+                if (!_pending.TryGetValue(fid, out entry)) return CF7Launcher.Tooltips.TooltipResponseOwner.NoPending;
+            if (entry.IsWrite
+                    || (entry.WebCmd != "tooltip" && entry.WebCmd != "reportTooltip")) return null;
+            var binding = entry.Binding;
+            if (binding == null) return null;
+            var requestIdentity = new JObject { ["chestSessionId"] = binding.ChestSessionId,
+                ["lootContainerId"] = binding.LootContainerId, ["containerEpoch"] = binding.ContainerEpoch,
+                ["openAttemptSeq"] = binding.OpenAttemptSeq, ["expectedAuthorityRevision"] = entry.ExpectedAuthorityRevision };
+            return CF7Launcher.Tooltips.TooltipResponseOwner.Create("loot", "loot", binding.PanelInstanceId,
+                entry.WebCallId, fid, requestIdentity,
+                () =>
+                {
+                    lock (_sync)
+                        if (!_pending.TryGetValue(fid, out var current) || !ReferenceEquals(current, entry)) return false;
+                    return _coordinator.IsCurrentExact(binding);
+                },
+                () =>
+                {
+                    lock (_sync)
+                    {
+                        if (!_pending.TryGetValue(fid, out var current) || !ReferenceEquals(current, entry)) return;
+                        CompletePendingLocked(fid, entry);
+                    }
+                    RespondError(binding, entry.WebCallId, entry.WebCmd, "stale_state");
+                });
+        }
+
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             int fid;
