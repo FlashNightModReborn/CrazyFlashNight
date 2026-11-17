@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="移动射击动画层/手枪上身" itemID="6657388b-0000068a" lastModified="1769870175" lastUniqueIdentifier="150">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="移动射击动画层/手枪上身" itemID="6657388b-0000068a" lastModified="1794931935" lastUniqueIdentifier="150">
   <timeline>
-    <DOMTimeline name="手枪上身" currentFrame="39">
+    <DOMTimeline name="手枪上身" currentFrame="25">
       <layers>
         <DOMLayer name="Labels Layer" color="#F383D0">
           <frames>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="射击许可状态机" color="#DBFB77" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="射击许可状态机" color="#DBFB77" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <Actionscript>
@@ -109,14 +109,14 @@ gotoAndStop("空闲");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="射击许可标签" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="射击许可标签" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="28" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/射击许可标签" name="射击许可标签" centerPoint3DX="100" centerPoint3DY="10.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/射击许可标签" name="射击许可标签" selected="true" centerPoint3DX="100" centerPoint3DY="10.8">
                   <matrix>
                     <Matrix tx="100"/>
                   </matrix>
