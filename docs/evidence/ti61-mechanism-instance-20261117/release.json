@@ -1,0 +1,83 @@
+{
+  "schema": "cf7-ti61-mechanism-instance-release.v1",
+  "generatedAtUtc": "2026-11-17T12:53:00Z",
+  "state": "promoted",
+  "sourceCommit": "0f838a09a216a226fd1cfb165a06d7ac175cc38a",
+  "sourceRef": "refs/tags/runtime-build-v2/20261117-ti61-mechanism-instance-v1",
+  "requestId": "382D381E69A0B316F251452B4433B3629A3770769E0EAE5FE0E73E857992A43E",
+  "releaseTreeOid": "68a7103326fff059cf3a52a4ef3b548f0d0046b4",
+  "artifactSourceHash": "3C17FEB3983010C19ECE89A23636F19A4486716C194910DEC534427A97EEACBE",
+  "producerRecipeHash": "5A1A9E86C922703D8BFF11354A40B46AB9162C5366A6152666CBD4734ACD17D9",
+  "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+  "policyHash": "82DE31740E71B56B453E27816165802C9C5810AB6B1818722B9EEF11FB138F1B",
+  "buildIdentityHash": "2EC330E3073895FE1572EE57D6D21D4344A9B9E2EFC2CD5D921C40A1C4405974",
+  "payloadClosureHash": "1066111B3503BB94F0638F85697F90C3A22D5F5F31DED1491ACD21833CFDC96D",
+  "manifestSha256": "D60F3CBC7AD00A86D13DABA2EA959292DF1DB4739A18045319EE19845D4D72AD",
+  "corePath": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+  "coreSha256": "A50CD02C48091113FDA769506F289E84E81B2882DA3045C43B0E030E111F4F89",
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "checks": 50,
+    "receiptSha256": "A3A4A0435A5EAD16CF7BEEF58402079262FD46A61F528C14C44D1B2F085A5EBC"
+  },
+  "builders": [
+    {
+      "schema": "cf7-runtime-github-build-attestation.v2",
+      "signerIdentity": "611A306256345A0128E27D92D73A1DB1935926FD00C5828A45021412A480DC19",
+      "faultDomain": "github-hosted-windows",
+      "files": 43
+    },
+    {
+      "schema": "cf7-runtime-build-attestation.v2",
+      "signerIdentity": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+      "faultDomain": "physical-host-b",
+      "files": 43
+    }
+  ],
+  "cloud": {
+    "runId": 44084543963,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/44084543963"
+  },
+  "promotedAtUtc": "2026-11-17T12:50:12.5901192Z",
+  "rollbackRuntime": "tmp/runtime-promotions/20261117T124906143Z-611f21e6c17145078572c11fce4d846a/previous",
+  "businessScope": [
+    "#61 仅统合61式胸甲/钛合金61式胸甲在装备调制显示第五页签“机制”，移除未开放幻化占位与确认底栏，增加页头“应急药”摘要胶囊、左栏“应急”角标与左右双栏单步直绑",
+    "#61 应急注射授权由玩家全局 _saveExt 迁至每件 61 胸甲实例的 item.value.emergencyInjection，configureEmergencyInjection 支持显式 chestTarget（loadout/backpack）及 targetEmergencyInjection 对账，跨胸甲保持玩家单位危机记忆，补齐存档修复 L1 Clear 分层",
+    "#276 钛合金61套装补弹计价沿用 395b940d0dcc 已部署口径并随同批主线稳定收敛"
+  ],
+  "verification": {
+    "as2EmergencyInjectionTestLoaderPassed": 73,
+    "as2EmergencyInjectionTestLoaderFailed": 0,
+    "as2EquipmentTuningTestLoaderPassed": 128,
+    "as2InventoryPanelServiceTestLoaderPassed": 194,
+    "as2CharacterBuildServiceTestLoaderPassed": 241,
+    "as2CharacterBuildAllEightSuitesFailed": 0,
+    "as2CharacterBuildRunnerNote": "scripts/run-character-build-tests.ps1 在仓库 HEAD 无 BOM 导致 PowerShell 5.1 -File 解析报错，改用 UTF-8 内存加载完整运行并全数通过",
+    "asLoaderModulesCompiled": 3,
+    "asLoaderClassesVerified": 774,
+    "hostTotal": 8581,
+    "hostPassed": 8422,
+    "hostFailed": 128,
+    "hostSkipped": 31,
+    "hostTargetDomainPassed": {
+      "CharacterBuild": 352,
+      "EquipmentTuning": 215,
+      "SaveAndRepairPolicy": 211
+    },
+    "saveRepairTsPassed": 45,
+    "webMockHarness": {
+      "customizationPassed": "51/51 x3 viewports",
+      "workbenchPassed": "Customization 29/29 x3, Issue156 42/42 x3, Integration 1149/1149, StorageToBuild 12/12, PreparationMenu 18/18",
+      "equipmentTuningPassed": "149/149 x3 viewports",
+      "characterBuildPassed": "225/225 x3 viewports",
+      "sessionPassed": 48,
+      "inventoryModulesPassed": 37
+    },
+    "fullInstallVerifyOnlyExitCode": 0
+  },
+  "limitations": [
+    "全量 Host 128 项失败均属 SolIndependentWindowsTraceTests(16)、WindowManagerFocusRestoreTests(34)、CompositionRecheckTests(22)、SettingsTaskTests(41)、FocusTracePhysicalHistoryTests(15) 五个无关既有测试类，未宣称全量全绿。",
+    "本轮实机按键/切装视觉交互体验待新正式版随后续测试员日常回归验证，测试与前端 mock harness 不代签真人手感；#61 初版自动注射实机与 #276 补弹模型已于前批列车及测试门完成。"
+  ]
+}
