@@ -392,7 +392,8 @@
             write:true,
             metadata:{sourceSlot:payload.source ? payload.source.slot : null,
                 emergency:intent.cmd === 'configureEmergencyInjection' ? {
-                    enabled:payload.enabled, drugSlot:payload.drugSlot, expectedItemName:payload.expectedItemName
+                    chestTarget:payload.chestTarget, enabled:payload.enabled,
+                    drugSlot:payload.drugSlot, expectedItemName:payload.expectedItemName
                 } : null}
         }, function(response, entry) {
             var accepted = self._commonValid(response, entry, false)
@@ -429,9 +430,9 @@
         return this._requestMutation(
             {cmd:'equipEquipment', slotKey:slotKey, source:source}, callback);
     };
-    CharacterBuildSession.prototype.configureEmergencyInjection = function(enabled, drugSlot, itemName, callback) {
-        return this._requestMutation({cmd:'configureEmergencyInjection', enabled:enabled,
-            drugSlot:drugSlot, expectedItemName:itemName}, callback);
+    CharacterBuildSession.prototype.configureEmergencyInjection = function(chestTarget, enabled, drugSlot, itemName, callback) {
+        return this._requestMutation({cmd:'configureEmergencyInjection', chestTarget:chestTarget,
+            enabled:enabled, drugSlot:drugSlot, expectedItemName:itemName}, callback);
     };
     CharacterBuildSession.prototype.unequipEquipment = function(slotKey, callback) {
         return this._requestMutation({cmd:'unequipEquipment', slotKey:slotKey}, callback);
@@ -700,6 +701,9 @@
     CharacterBuildSession.prototype.getState = function() { return this._state; };
     CharacterBuildSession.prototype.getSessionGeneration = function() {
         return this._sessionGeneration;
+    };
+    CharacterBuildSession.prototype.getLoadoutRevision = function() {
+        return this._loadoutRevision;
     };
     CharacterBuildSession.prototype.debugState = function() {
         return {

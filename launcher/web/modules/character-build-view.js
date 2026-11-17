@@ -118,8 +118,6 @@ function(WorkbenchFocus, WorkbenchComponents,
             ? options.onUseCandidate : function() {};
         this._onOpenInbox = typeof options.onOpenInbox === 'function'
             ? options.onOpenInbox : function() {};
-        this._onEmergencyInjection = typeof options.onEmergencyInjection === 'function'
-            ? options.onEmergencyInjection : function() { return false; };
         this._onSlotDropEquip = typeof options.onSlotDropEquip === 'function'
             ? options.onSlotDropEquip
             : function(slotKey, candidate) {
@@ -136,6 +134,8 @@ function(WorkbenchFocus, WorkbenchComponents,
             ? options.onStatsModeChange : function() {};
         this._onDollViewportChange = typeof options.onDollViewportChange === 'function'
             ? options.onDollViewportChange : function() {};
+        this._onCustomizationDrugClick = typeof options.onCustomizationDrugClick === 'function'
+            ? options.onCustomizationDrugClick : null;
         this._statsReturnFocus = null;
         var viewSequence = ++candidateViewSequence;
         LoadoutPickerModule.initState(this, {
@@ -307,7 +307,17 @@ function(WorkbenchFocus, WorkbenchComponents,
         });
         listen(this._listeners, this._drugGrid, 'click', function(event) {
             var slot = closest(event.target, '[data-roving-key]', self._drugGrid);
-            if (slot) self._selectUserSlot(slot.getAttribute('data-roving-key'), 'click');
+            if (!slot) return;
+            if (self.root.getAttribute('data-build-subview') === 'tuning'
+                    && self.root.getAttribute('data-build-tuning-mode') === 'customization'
+                    && self._onCustomizationDrugClick) {
+                var slotMatch = /^drug([1-8])$/.exec(String(slot.getAttribute('data-slot-id') || ''));
+                if (slotMatch) {
+                    self._onCustomizationDrugClick(Number(slotMatch[1]) - 1);
+                    return;
+                }
+            }
+            self._selectUserSlot(slot.getAttribute('data-roving-key'), 'click');
         });
         listen(this._listeners, this._candidateList, 'click', function(event) {
             if (self._candidateDrag && self._candidateDrag.consumeClick()) {
@@ -653,6 +663,12 @@ function(WorkbenchFocus, WorkbenchComponents,
     CharacterBuildView.prototype.getCanvas = function() { return this._canvas; };
     CharacterBuildView.prototype.getStatsRoot = function() { return this._statsRoot; };
     CharacterBuildView.prototype.getSelectedSlotKey = function() { return this._selectedSlotKey; };
+    CharacterBuildView.prototype.focusDrugSlot = function(drugId) {
+        if (this._destroyed) return false;
+        var key = 'drug:' + String(drugId || 'drug1');
+        if (typeof this.restoreSlot === 'function' && this.restoreSlot(key)) return true;
+        return typeof this._selectUserSlot === 'function' ? !!this._selectUserSlot(key, 'programmatic') : false;
+    };
     CharacterBuildView.prototype.setSlotTransitionFailure = function() { this._showStatusNotice('error', '调制仍保持在原装备；可稍后重试切换。'); return true; };
     CharacterBuildView.prototype.refreshSlotNavigation = function() { this._armorRoving.refresh({preferredKey:this._activeSlotKey}); this._weaponRoving.refresh({preferredKey:this._activeSlotKey}); this._drugRoving.refresh({preferredKey:this._activeSlotKey}); return true; };
 
@@ -730,7 +746,6 @@ function(WorkbenchFocus, WorkbenchComponents,
             }
         }
     });
-    DrugControls.installView(CharacterBuildView.prototype);
     return {
         CharacterBuildView:CharacterBuildView,
         equipmentSlots:ARMOR_SLOTS.concat(WEAPON_SLOTS),

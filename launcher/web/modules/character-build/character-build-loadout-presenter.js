@@ -194,6 +194,26 @@ function(FacetCountsModule) {
             },
             decorateSlot:function(view, slot, kind, id) {
                 FacetCountsModule.decorateSlot(slot, view._facetCounts, kind, id);
+                if (kind === 'drug') {
+                    var emergency = view._snapshot && view._snapshot.emergencyInjection;
+                    var match = /^drug([1-8])$/.exec(String(id || ''));
+                    var slotIndex = match ? Number(match[1]) - 1 : -1;
+                    if (emergency && emergency.enabled === true
+                            && slotIndex >= 0 && Number(emergency.physicalSlot) === slotIndex) {
+                        var status = String(emergency.status || 'authorized');
+                        slot.setAttribute('data-emergency-bound', status);
+                        var badge = view._document.createElement('span');
+                        badge.className = 'character-build-slot-emergency';
+                        badge.setAttribute('aria-hidden', 'true');
+                        badge.textContent = '应急';
+                        slot.appendChild(badge);
+                        var existingAria = slot.getAttribute('aria-label') || '';
+                        var suffix = status === 'authorized' ? '，已设为应急药剂'
+                            : status === 'empty' ? '，已设为应急药剂（待补）'
+                            : '，应急药剂待重绑';
+                        slot.setAttribute('aria-label', existingAria + suffix);
+                    }
+                }
             }
         };
     }

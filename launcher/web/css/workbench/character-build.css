@@ -859,26 +859,47 @@
 .character-build-workbench[data-build-subview="tuning"] .character-build-slot:not([aria-selected="true"]) {
     opacity:.42;
 }
+.character-build-workbench[data-build-subview="tuning"][data-build-tuning-mode="customization"] .character-build-drug-grid .character-build-slot {
+    opacity:1;
+    cursor:pointer;
+}
+.character-build-workbench[data-build-subview="tuning"][data-build-tuning-mode="customization"] .character-build-drug-section {
+    padding:4px 6px 6px;
+    border:1px solid color-mix(in srgb,var(--wb-focus) 55%,transparent);
+    background:color-mix(in srgb,var(--wb-focus) 5%,transparent);
+}
+.character-build-workbench[data-build-subview="tuning"][data-build-tuning-mode="customization"] .character-build-drug-section > h3::after {
+    content:" · 点槽直接绑定应急";
+    color:var(--wb-accent);
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+}
+.character-build-slot-emergency {
+    position:absolute;
+    z-index:6;
+    top:2px;
+    left:2px;
+    padding:0 3px;
+    box-sizing:border-box;
+    color:var(--wb-bg);
+    background:var(--dls-crystal);
+    font:700 11px/1.2 "Microsoft YaHei",sans-serif;
+    pointer-events:none;
+}
+.character-build-slot[data-emergency-bound="empty"] .character-build-slot-emergency,
+.character-build-slot[data-emergency-bound="item_changed"] .character-build-slot-emergency {
+    background:var(--wb-warning);
+}
+.character-build-slot[data-emergency-bound="authorized"] .character-build-slot-card {
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dls-crystal) 72%,transparent);
+}
+.character-build-slot[data-emergency-bound="empty"] .character-build-slot-card,
+.character-build-slot[data-emergency-bound="item_changed"] .character-build-slot-card {
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--wb-warning) 75%,transparent);
+}
 .character-build-workbench[data-build-subview="tuning"] .character-build-candidate-overlay {
     display:none;
 }
 .character-build-candidate-overlay[hidden] { display:none; }
-.character-build-emergency-row {
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    gap:4px;
-    margin-top:6px;
-    color:var(--wb-muted);
-    font-size:11px;
-}
-.character-build-emergency-row[hidden] { display:none; }
-.character-build-emergency-row [data-emergency-status] {
-    flex:1 1 100%;
-    min-width:0;
-    overflow-wrap:anywhere;
-}
-.character-build-emergency-row .workbench-mode-btn { min-height:28px; }
 .character-build-workbench[data-interaction-state="write_pending"] .character-build-body,
 .character-build-workbench[data-interaction-state="needs_reconcile"] .character-build-body,
 .character-build-workbench[data-interaction-state="mutation_reconcile"] .character-build-body {

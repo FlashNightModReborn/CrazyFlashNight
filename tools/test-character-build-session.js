@@ -1481,26 +1481,52 @@ test('item-use compensation rebases the character revision before finalize witho
     assert.deepStrictEqual(fixture.messages.map(message=>message.cmd),['snapshot','snapshot','finalize']);
 });
 
+function makeEmergencyChest(name, cfg) {
+    const item = itemProjection({name:name || '统合61式胸甲', itemKind:'equipment', majorType:'防具', use:'上装装备'});
+    if (cfg) item.emergencyInjection = cfg;
+    return item;
+}
+
 test('emergency projection rejects forged, future and out-of-range authorizations', () => {
     const validate = SessionContract.validators.projection;
     const p = projection();
     const disabled = {v:1, enabled:false, physicalSlot:-1, itemKey:'', status:'disabled'};
     p.emergencyInjection = disabled;
     assert.strictEqual(validate(p), true);
+    p.equipment[1].slotKey = '上装装备';
+    p.equipment[1].occupied = true;
+    p.equipment[1].item = makeEmergencyChest('统合61式胸甲', disabled);
+    assert.strictEqual(validate(p), true);
     for (const bad of [Object.assign({},disabled,{v:2}), Object.assign({},disabled,{physicalSlot:8}),
         Object.assign({},disabled,{enabled:'true'}), Object.assign({},disabled,{extra:true}),
         {v:1,enabled:true,physicalSlot:4,itemKey:'',status:'authorized'},
-        {v:1,enabled:true,physicalSlot:4,itemKey:'药剂',status:'disabled'}]) {
+        {v:1,enabled:true,physicalSlot:4,itemKey:'药剂',status:'disabled'},
+        {v:1,enabled:false,physicalSlot:2,itemKey:'',status:'disabled'}]) {
         p.emergencyInjection = bad;
         assert.strictEqual(validate(p), false);
     }
+    const forgedOnEmptyChest = projection();
+    forgedOnEmptyChest.drugs[4].occupied = true;
+    forgedOnEmptyChest.drugs[4].quantity = 1;
+    forgedOnEmptyChest.drugs[4].item = itemProjection({name:'大HP药剂', itemKind:'stack', use:'药剂', quantity:1});
+    forgedOnEmptyChest.emergencyInjection = {v:1,enabled:true,physicalSlot:4,itemKey:'大HP药剂',status:'authorized'};
+    assert.strictEqual(validate(forgedOnEmptyChest), false);
+    const nonChestItem = projection();
+    nonChestItem.equipment[0].occupied = true;
+    nonChestItem.equipment[0].item = itemProjection({name:'普通头盔', itemKind:'equipment', majorType:'防具', use:'头部装备'});
+    nonChestItem.equipment[0].item.emergencyInjection = disabled;
+    assert.strictEqual(validate(nonChestItem), false);
 });
 
 function emergencyFixture() {
     const f = createFixture();
     assert(f.session.open('panel.workbench.fixture'));
     const p = projection();
-    p.emergencyInjection = {v:1,enabled:false,physicalSlot:-1,itemKey:'',status:'disabled'};
+    const disabled = {v:1,enabled:false,physicalSlot:-1,itemKey:'',status:'disabled'};
+    p.emergencyInjection = disabled;
+    p.equipment[1].slotKey = '上装装备';
+    p.equipment[1].occupied = true;
+    p.equipment[1].item = makeEmergencyChest('统合61式胸甲', disabled);
     p.drugs[4].occupied = true; p.drugs[4].quantity = 2;
     p.drugs[4].item = itemProjection({name:'大HP药剂', itemKind:'stack', use:'药剂', quantity:2});
     f.mux.handleResponse(responseFor(f.messages[0], {payload:p}));
@@ -1508,42 +1534,62 @@ function emergencyFixture() {
     return f;
 }
 
-test('emergency controls derive identity from the selected physical row and require explicit enablement', () => {
+const LOADOUT_CHEST_TARGET = {kind:'loadout', slotKey:'上装装备', expectedLoadoutRevision:1};
+const BAG_CHEST_TARGET = {kind:'backpack', containerId:'背包', slot:2, expectedLease:'bag.lease.2'};
+
+test('emergency controls derive identity from the selected physical row and require chest target', () => {
     const f = emergencyFixture(), snapshot = f.session.getSnapshot();
-    assert.deepStrictEqual(DrugControls.intent(snapshot,true,{kind:'drug',drugSlot:4}),
-        {cmd:'configureEmergencyInjection',enabled:true,drugSlot:4,expectedItemName:'大HP药剂'});
-    assert.strictEqual(DrugControls.intent(snapshot,true,{kind:'drug',drugSlot:7}),null);
-    assert.strictEqual(DrugControls.intent(snapshot,'true',{kind:'drug',drugSlot:4}),null);
-    assert.strictEqual(DrugControls.intent(projection(),true,{kind:'drug',drugSlot:4}),null);
-    assert.deepStrictEqual(DrugControls.intent(snapshot,false,null),
-        {cmd:'configureEmergencyInjection',enabled:false,drugSlot:-1,expectedItemName:''});
+    assert.deepStrictEqual(DrugControls.intent(snapshot, LOADOUT_CHEST_TARGET, true, {kind:'drug',drugSlot:4}),
+        {cmd:'configureEmergencyInjection',chestTarget:LOADOUT_CHEST_TARGET,enabled:true,drugSlot:4,expectedItemName:'大HP药剂'});
+    assert.strictEqual(DrugControls.intent(snapshot, null, true, {kind:'drug',drugSlot:4}), null);
+    assert.strictEqual(DrugControls.intent(snapshot, {kind:'loadout',slotKey:'头部装备'}, true, {kind:'drug',drugSlot:4}), null);
+    assert.strictEqual(DrugControls.intent(snapshot, LOADOUT_CHEST_TARGET, true, {kind:'drug',drugSlot:7}), null);
+    assert.strictEqual(DrugControls.intent(snapshot, LOADOUT_CHEST_TARGET, 'true', {kind:'drug',drugSlot:4}), null);
+    assert.strictEqual(DrugControls.intent(null, LOADOUT_CHEST_TARGET, true, {kind:'drug',drugSlot:4}), null);
+    assert.deepStrictEqual(DrugControls.intent(snapshot, BAG_CHEST_TARGET, false, null),
+        {cmd:'configureEmergencyInjection',chestTarget:BAG_CHEST_TARGET,enabled:false,drugSlot:-1,expectedItemName:''});
 });
 
-test('emergency authorization is an explicit exact-slot write with item identity', () => {
+test('emergency authorization is an explicit chest-target write with item identity', () => {
     const f = emergencyFixture();
     let accepted = false;
-    assert(f.session.configureEmergencyInjection(true,4,'大HP药剂',(_,ok)=>{accepted=ok;}));
+    assert(f.session.configureEmergencyInjection({kind:'loadout',slotKey:'上装装备'},true,4,'大HP药剂',(_,ok)=>{accepted=ok;}));
     const m = f.messages[1];
     assert.strictEqual(m.cmd,'configureEmergencyInjection');
     assert.deepStrictEqual(m.payload,{v:1,sessionGeneration:7,expectedDrugRevision:2,
+        chestTarget:{kind:'loadout',slotKey:'上装装备',expectedLoadoutRevision:3},
         enabled:true,drugSlot:4,expectedItemName:'大HP药剂'});
     const p = JSON.parse(JSON.stringify(f.session.getSnapshot()));
-    p.emergencyInjection = {v:1,enabled:true,physicalSlot:4,itemKey:'大HP药剂',status:'authorized'};
+    const authorized = {v:1,enabled:true,physicalSlot:4,itemKey:'大HP药剂',status:'authorized'};
+    p.emergencyInjection = authorized;
+    p.targetEmergencyInjection = authorized;
+    p.equipment[1].item.emergencyInjection = authorized;
     f.mux.handleResponse(responseFor(m,{writeEpoch:1,drugRevision:3,changed:true,
         operation:m.cmd,affectedBackpackSlot:-1,payload:p,inventorySnapshots:[fullBackpack(2)]}));
     assert(accepted);
     assert.strictEqual(f.session.getSnapshot().emergencyInjection.physicalSlot,4);
     assert.strictEqual(f.session.getState(),'idle');
-    assert.strictEqual(f.session.configureEmergencyInjection(true,8,'大HP药剂'),null);
-    assert.strictEqual(f.session.configureEmergencyInjection('true',4,'大HP药剂'),null);
-    assert.strictEqual(f.session.configureEmergencyInjection(false,4,'大HP药剂'),null);
+    assert.strictEqual(f.session.configureEmergencyInjection(LOADOUT_CHEST_TARGET,true,8,'大HP药剂'),null);
+    assert.strictEqual(f.session.configureEmergencyInjection(LOADOUT_CHEST_TARGET,'true',4,'大HP药剂'),null);
+    assert.strictEqual(f.session.configureEmergencyInjection(LOADOUT_CHEST_TARGET,false,4,'大HP药剂'),null);
+
+    let bagAccepted = false;
+    assert(f.session.configureEmergencyInjection(BAG_CHEST_TARGET,true,4,'大HP药剂',(_,ok)=>{bagAccepted=ok;}));
+    const bm = f.messages[2];
+    const bp = JSON.parse(JSON.stringify(f.session.getSnapshot()));
+    bp.targetEmergencyInjection = authorized;
+    f.mux.handleResponse(responseFor(bm,{writeEpoch:2,drugRevision:4,changed:true,
+        operation:bm.cmd,affectedBackpackSlot:2,payload:bp,inventorySnapshots:[fullBackpack(3)]}));
+    assert(bagAccepted);
 });
 
 test('emergency success for a different item remains unknown instead of authorizing it', () => {
     const f = emergencyFixture();
-    assert(f.session.configureEmergencyInjection(true,4,'大HP药剂'));
-    const m=f.messages[1],p=projection();
+    assert(f.session.configureEmergencyInjection(LOADOUT_CHEST_TARGET,true,4,'大HP药剂'));
+    const m=f.messages[1],p=JSON.parse(JSON.stringify(f.session.getSnapshot()));
     p.emergencyInjection={v:1,enabled:true,physicalSlot:4,itemKey:'昂贵料理',status:'authorized'};
+    p.targetEmergencyInjection={v:1,enabled:true,physicalSlot:4,itemKey:'昂贵料理',status:'authorized'};
+    p.equipment[1].item.emergencyInjection={v:1,enabled:true,physicalSlot:4,itemKey:'昂贵料理',status:'authorized'};
     f.mux.handleResponse(responseFor(m,{writeEpoch:1,drugRevision:3,changed:true,
         operation:m.cmd,affectedBackpackSlot:-1,payload:p,inventorySnapshots:[fullBackpack(2)]}));
     assert.strictEqual(f.session.getState(),'needs_reconcile');
@@ -1552,7 +1598,7 @@ test('emergency success for a different item remains unknown instead of authoriz
 
 test('lost emergency response reconciles by snapshot without replaying the authorization', () => {
     const f=emergencyFixture();
-    assert(f.session.configureEmergencyInjection(true,4,'大HP药剂'));
+    assert(f.session.configureEmergencyInjection(LOADOUT_CHEST_TARGET,true,4,'大HP药剂'));
     const original=f.messages[1];f.timers.expireLatest();
     assert.strictEqual(f.session.getState(),'needs_reconcile');
     let accepted=false;
@@ -1560,7 +1606,9 @@ test('lost emergency response reconciles by snapshot without replaying the autho
     const query=f.messages[2],p=JSON.parse(JSON.stringify(f.session.getSnapshot()));
     assert.strictEqual(query.cmd,'snapshot');
     assert.strictEqual(query.payload.reconcileAfterCallId,original.callId);
-    p.emergencyInjection={v:1,enabled:true,physicalSlot:4,itemKey:'大HP药剂',status:'authorized'};
+    const authorized={v:1,enabled:true,physicalSlot:4,itemKey:'大HP药剂',status:'authorized'};
+    p.emergencyInjection=authorized;
+    p.equipment[1].item.emergencyInjection=authorized;
     f.mux.handleResponse(responseFor(query,{writeEpoch:1,drugRevision:3,payload:p,
         reconcileAfterCallId:original.callId,inventorySnapshots:[fullBackpack(2)]}));
     assert(accepted);

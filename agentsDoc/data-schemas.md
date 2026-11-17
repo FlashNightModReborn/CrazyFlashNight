@@ -357,7 +357,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 ### 消耗品药效 `<effects>` 与持续效果域
 
-两套61五甲的应急注射配置独立保存在`mydata.ext.emergencyInjection = {version:1, enabled:boolean, physicalSlot:-1..7, itemKey:string}`，不提升主体存档3.0或`drugLoadout`版本。缺失默认关闭；显式开启须绑定现存物理槽及药名，关闭写`-1/空串`，换成不同物品撤销授权，同名耗尽与补充保留。未知配置版本原样透传、失败关闭；`drugLoadout`原槽亲和不是授权。唯一读写入口为`EmergencyInjectionService`，配置经既有SaveManager扩展透传与脏标记保存；危机记忆只存在当前读档会话，不进入存档。玩法与边界见[钛合金ADR §9](../docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md#9-应急自动注射器)。
+两套61五甲（`统合61式胸甲`、`钛合金61式胸甲`）的应急注射配置保存在各自胸甲物品实例的 `item.value.emergencyInjection = {version:1, enabled:boolean, physicalSlot:-1..7, itemKey:string}`（不再写入玩家全局 `mydata.ext.emergencyInjection`），不提升主体存档 3.0 或 `drugLoadout` 版本；存档修复分层规则将 `inventory/*/value/emergencyInjection/itemKey` 划为 `L1 / Item / Preserve / Clear`。缺失默认关闭；显式开启须绑定现存物理槽及药名，关闭写 `-1/空串`；仅当前穿戴的 61 胸甲安装库存观察者并在换物时即时撤权记脏，背包内 61 胸甲各自记忆所选槽位，若期间对应药槽换成不同物品，只读投影报告 `item_changed` 并在下次穿戴刷新时立即撤权记脏；同名耗尽与补充保留授权。未知配置版本原样透传、失败关闭；`drugLoadout` 原槽亲和不是授权。唯一读写入口为 `EmergencyInjectionService`，随物品 `value` 序列化保存并由既有脏标记提交；危机记忆只存在当前读档会话，穿戴切换不重置同次危机。玩法与边界见[钛合金ADR §9](../docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md#9-应急自动注射器)。
 
 `data/items/消耗品_药剂*.xml` 的 `<effects>` 按物理顺序执行。现有基础类型为 `heal / regen / state / purify / buff / playEffect / message / grantItem / global`；九龙批次新增四个封闭类型：
 

@@ -42,8 +42,12 @@ class org.flashNight.arki.unit.Action.Skill.EmergencyInjectionServiceTest {
         inventory.add(slot, new BaseItem("大HP药剂", count, 0));
         var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(unit);
         inventory.setDispatcher(dispatcher);
+        var chest:Object = {name:"统合61式胸甲", value:{level:1, tier:"", mods:[]}};
+        var equipment:Object = {chest:chest, getItem:function(key:String):Object {
+            return key == "上装装备" ? this.chest : null;
+        }};
         var root:Object = {当前玩家总数:1, 控制目标:"hero", 暂停:false, gameworld:{hero:unit},
-            物品栏:{药剂栏:inventory}, _saveExt:{drugLoadout:{version:2}},
+            物品栏:{药剂栏:inventory, 装备栏:equipment}, _saveExt:{drugLoadout:{version:2}},
             存档系统:{dirtyMark:false}, 吃药冷却时间:100, heal:heal, effectCalls:0};
         root.getItemData = function(name:String):Object { return {name:name, type:"消耗品", use:"药剂"}; };
         root.使用药剂 = function(name:String):Void {
@@ -54,7 +58,8 @@ class org.flashNight.arki.unit.Action.Skill.EmergencyInjectionServiceTest {
         root.发布消息 = function(message:String):Void {};
         var owner:Object = {broken:true};
         owner.emergencyInjectionEligible = function():Boolean { return this.broken; };
-        var f:Object = {unit:unit, root:root, owner:owner, inventory:inventory, slot:slot};
+        var f:Object = {unit:unit, root:root, owner:owner, inventory:inventory,
+            equipment:equipment, chest:chest, slot:slot};
         fixtures.push(f);
         EmergencyInjectionService.refresh(unit, owner, root);
         return f;
@@ -157,9 +162,68 @@ class org.flashNight.arki.unit.Action.Skill.EmergencyInjectionServiceTest {
         f = fixture(600, 2, 0);
         check(!EmergencyInjectionService.authorize(f.root, f.unit, 0, "错误药剂", true).success, "stale item name is rejected before authorization write");
         check(!f.root.存档系统.dirtyMark && !EmergencyInjectionService.read(f.root).enabled, "rejected authorization does not dirty save or enable use");
-        f.root._saveExt.emergencyInjection = {version:2, enabled:true, physicalSlot:0, itemKey:"大HP药剂"};
+        f.chest.value.emergencyInjection = {version:2, enabled:true, physicalSlot:0, itemKey:"大HP药剂"};
         EmergencyInjectionService.refresh(f.unit, f.owner, f.root);
         check(f.unit.__emergencyInjector == undefined && EmergencyInjectionService.snapshot(f.root).status == "unsupported_config", "future config fails closed without overwrite");
+    }
+
+    private static function testPerChestInstanceOwnershipAndSwap():Void {
+        var f:Object = fixture(100, 2, 0);
+        f.inventory.add("4", new BaseItem("再生药剂", 2));
+        f.equipment.chest = {name:"普通防弹背心", value:{level:1, tier:"", mods:[]}};
+        EmergencyInjectionService.refresh(f.unit, f.owner, f.root);
+        var rejected:Object = EmergencyInjectionService.authorize(f.root, f.unit, 0, "大HP药剂", true);
+        check(!rejected.success && rejected.error == "incompatible_item"
+                && !EmergencyInjectionService.read(f.root).enabled
+                && EmergencyInjectionService.snapshot(f.root).status == "disabled",
+            "non-61 chest cannot be authorized for emergency injection");
+
+        var chestA:Object = f.chest;
+        var chestB:Object = {name:"钛合金61式胸甲", value:{level:1, tier:"", mods:[]}};
+        f.equipment.chest = chestA;
+        EmergencyInjectionService.refresh(f.unit, f.owner, f.root);
+        authorize(f);
+        f.equipment.chest = chestB;
+        EmergencyInjectionService.refresh(f.unit, f.owner, f.root);
+        check(!EmergencyInjectionService.read(f.root).enabled
+                && f.unit.__emergencyInjector == undefined
+                && chestA.value.emergencyInjection.enabled
+                && chestA.value.emergencyInjection.physicalSlot == 0,
+            "swapping to unbound 61 chest disposes injector while preserving previous chest slot");
+
+        var resB:Object = EmergencyInjectionService.authorize(f.root, f.unit, 4, "再生药剂", true);
+        check(resB.success && chestB.value.emergencyInjection.physicalSlot == 4
+                && chestA.value.emergencyInjection.physicalSlot == 0,
+            "second 61 chest holds independent emergency slot");
+
+        f.unit.hp = 300;
+        var slot4After:Number = f.inventory.getItem("4").value;
+        var slot0Before:Number = f.inventory.getItem("0").value;
+        f.equipment.chest = chestA;
+        EmergencyInjectionService.refresh(f.unit, f.owner, f.root);
+        ready();
+        f.unit.hp = 200;
+        var noDoubleConsume:Boolean = f.inventory.getItem("0").value == slot0Before;
+        f.unit.hp = 700;
+        f.unit.hp = 500;
+        check(slot4After == 1 && noDoubleConsume
+                && f.inventory.getItem("0").value == 1
+                && f.inventory.getItem("4").value == 1,
+            "swapping back switches active slot without resetting shared crisis memory");
+
+        f.inventory.remove("4");
+        f.inventory.add("4", new BaseItem("止血药", 2));
+        var backpackSnap:Object = EmergencyInjectionService.snapshotItem(chestB, f.root);
+        check(backpackSnap.status == "item_changed" && chestB.value.emergencyInjection.enabled,
+            "unequipped chest reports item_changed read-only without mutating until worn");
+        f.root.存档系统.dirtyMark = false;
+        f.equipment.chest = chestB;
+        EmergencyInjectionService.refresh(f.unit, f.owner, f.root);
+        check(!EmergencyInjectionService.read(f.root).enabled
+                && !chestB.value.emergencyInjection.enabled
+                && f.unit.__emergencyInjector == undefined
+                && f.root.存档系统.dirtyMark,
+            "re-equipping a backpack chest whose drug changed immediately revokes stale authorization");
     }
 
     private static function testSynchronousDamageBoundary():Void {
@@ -341,6 +405,7 @@ class org.flashNight.arki.unit.Action.Skill.EmergencyInjectionServiceTest {
         total = passed = failed = 0; fixtures = [];
         try {
             testAuthorizationAndInactiveBank(); testCrisisAndEligibility(); testInvalidationAndLifecycle();
+            testPerChestInstanceOwnershipAndSwap();
             testSynchronousDamageBoundary(); testFailuresDoNotInterruptDamage();
             testMaximumChangesCannotRearm(); testProductionInventoryObservation(); testWorldLifecycle(); testMedicationReentry(); benchmark();
         } catch (error) { failed++; total++; trace("[FAIL] EmergencyInjection suite exception: " + error); }

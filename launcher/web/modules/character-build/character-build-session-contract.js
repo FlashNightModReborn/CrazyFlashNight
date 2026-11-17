@@ -92,6 +92,8 @@
         if (!payload || typeof payload !== 'object'
                 || (payload.emergencyInjection !== undefined
                     && !DrugControls.validEmergencyInjection(payload.emergencyInjection))
+                || (payload.targetEmergencyInjection !== undefined
+                    && !DrugControls.validEmergencyInjection(payload.targetEmergencyInjection))
                 || !Array.isArray(payload.equipment)
                 || payload.equipment.length !== 11
                 || !validLoadoutItems(payload.equipment)
@@ -101,14 +103,7 @@
                 || !payload.portrait || typeof payload.portrait !== 'object'
                 || typeof payload.stateHealth !== 'string'
                 || !Array.isArray(payload.diagnostics)) return false;
-        var cfg = payload.emergencyInjection;
-        if (cfg && cfg.enabled) {
-            var row = payload.drugs[cfg.physicalSlot];
-            var same = row.occupied && row.item.name === cfg.itemKey;
-            if (cfg.status === 'authorized' ? !same
-                    : cfg.status === 'empty' ? row.occupied : !row.occupied || same) return false;
-        }
-        return true;
+        return DrugControls.validProjectionEmergency(payload);
     }
     function candidateValidationError(payload, target, scope) {
         scope = candidateScope(scope);

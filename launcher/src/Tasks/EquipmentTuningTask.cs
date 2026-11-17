@@ -1880,6 +1880,9 @@ namespace CF7Launcher.Tasks
             bool hasStats = input != null
                 && input["stats"] != null;
             if (hasStats) keys.Add("stats");
+            bool hasEmergencyInjection = input != null
+                && input["emergencyInjection"] != null;
+            if (hasEmergencyInjection) keys.Add("emergencyInjection");
             int level;
             int maxLevel;
             int hardMaxLevel;
@@ -1924,7 +1927,14 @@ namespace CF7Launcher.Tasks
                 || (hasStats
                     && !TrySanitizeStatRows(
                         input["stats"] as JArray,
-                        out stats)))
+                        out stats))
+                || (hasEmergencyInjection
+                    && (type != "防具"
+                        || ReadString(input["use"]) != "上装装备"
+                        || !CharacterBuildProtocol.IsEmergencyInjectionChestName(
+                            ReadString(input["name"]))
+                        || !CharacterBuildProtocol.IsEmergencyInjectionProjection(
+                            input["emergencyInjection"] as JObject))))
             {
                 return false;
             }

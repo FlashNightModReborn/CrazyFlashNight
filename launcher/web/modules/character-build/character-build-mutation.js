@@ -52,14 +52,13 @@
     }
     function validItemIdentity(item) {
         if (!validIdentityTriple(item)) return false;
+        if (own(item, 'emergencyInjection') && (!DrugControls || !DrugControls.supportsChestItem(item)
+                || !DrugControls.validEmergencyInjection(item.emergencyInjection))) return false;
         if (own(item, 'modSlots')) {
             if (!Array.isArray(item.modSlots) || item.modSlots.length > 3) return false;
-            for (var i = 0; i < item.modSlots.length; i++) {
-                if (!validIdentityTriple(item.modSlots[i])) return false;
-            }
+            for (var i = 0; i < item.modSlots.length; i++) { if (!validIdentityTriple(item.modSlots[i])) return false; }
         }
-        return !own(item, 'modMeta') || item.modMeta === null
-            || validIdentityTriple(item.modMeta);
+        return !own(item, 'modMeta') || item.modMeta === null || validIdentityTriple(item.modMeta);
     }
     function sourceForCandidate(candidate) {
         var raw = candidate && candidate.raw || {};
@@ -98,9 +97,12 @@
         var equip = intent.cmd === 'equipEquipment' || intent.cmd === 'equipDrug';
         if (payload.sessionGeneration === null) return null;
         if (intent.cmd === 'configureEmergencyInjection') {
-            if (typeof intent.enabled !== 'boolean' || typeof intent.expectedItemName !== 'string'
+            var chestTarget = DrugControls && DrugControls.buildChestTargetPayload(
+                intent.chestTarget, state.loadoutRevision, integer, token);
+            if (!chestTarget || typeof intent.enabled !== 'boolean' || typeof intent.expectedItemName !== 'string'
                     || intent.expectedItemName.length > 160 || /[\u0000-\u001f\u007f-\u009f]/.test(intent.expectedItemName)) return null;
             payload.expectedDrugRevision = integer(state.drugRevision, 0, 2147483647);
+            payload.chestTarget = chestTarget;
             payload.enabled = intent.enabled;
             payload.drugSlot = integer(intent.drugSlot, -1, 7);
             payload.expectedItemName = intent.expectedItemName;
@@ -216,7 +218,7 @@
         } else if (intent.cmd === 'unequipDrug') {
             callId = this._session.unequipDrug(intent.drugSlot, done);
         } else if (intent.cmd === 'configureEmergencyInjection') {
-            callId = this._session.configureEmergencyInjection(intent.enabled, intent.drugSlot, intent.expectedItemName, done);
+            callId = this._session.configureEmergencyInjection(intent.chestTarget, intent.enabled, intent.drugSlot, intent.expectedItemName, done);
         }
         if (!callId) {
             this._completeInventory(null);
@@ -232,8 +234,8 @@
     MutationCoordinator.prototype.unequip = function(target) {
         return this.start(unequipIntent(target));
     };
-    MutationCoordinator.prototype.configureEmergencyInjection = function(enabled, target) {
-        return this.start(DrugControls.intent(this._session.getSnapshot(), enabled, target));
+    MutationCoordinator.prototype.configureEmergencyInjection = function(chestTarget, enabled, target) {
+        return this.start(DrugControls.intent(this._session.getSnapshot(), chestTarget, enabled, target));
     };
     MutationCoordinator.prototype.reconcile = function() {
         if (!this._pending || this._session.getState() !== 'needs_reconcile') return false;

@@ -89,6 +89,7 @@ var EquipmentTuningView = (function() {
         this._target = null;
         this._targetItem = null;
         this._snapshot = null;
+        this._attachCustomization(options.customization, options);
         this._preview = null;
         this._previewDiagnostic = null;
         this._tooltipEpoch = 0;
@@ -301,7 +302,7 @@ var EquipmentTuningView = (function() {
         return Interaction.interactionLockProjection({
             operation:this._operation,
             sourceKind:this._source && this._source.sourceKind || '',
-            busy:this._busy,
+            busy:this._busy || !!(this._customization && this._customization.isLocked()),
             readPending:this._readPending,
             previewPendingOperation:this._previewPendingOperation,
             previewScheduled:!!this._enhancePreviewTimer
@@ -447,6 +448,7 @@ var EquipmentTuningView = (function() {
         this._previewFocusIntent = null;
         this._detailScrollAnchor = null;
         this._interactionAnnouncement = '';
+        this._clearCustomizationMode();
         this._status = '调制会话已关闭';
         this._emit();
         this.render({preserveScroll:false});
@@ -454,6 +456,8 @@ var EquipmentTuningView = (function() {
 
     TuningView.prototype.destroy = function() {
         this.closeSession();
+        if (this._customization) this._customization.destroy();
+        this._customization = null;
         this._mux.destroy();
         if (this._modNavigator) { this._modNavigator.destroy(); this._modNavigator = null; }
         if (this._confirmationUnsubscribe) this._confirmationUnsubscribe();
@@ -472,7 +476,8 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype.canClose = function() {
-        return !this._busy && !this._readPending && !this._detaching && !this._needsReconcile
+        return !(this._customization && this._customization.isLocked())
+            && !this._busy && !this._readPending && !this._detaching && !this._needsReconcile
             && !this._refreshRetryRequired && !this._refreshRetryPending
             && !this._inventoryWriteHandle
             && !this._loadoutBarrier
@@ -530,6 +535,7 @@ var EquipmentTuningView = (function() {
         if (!ref) return false;
         this._setConversionProjection(false);
         this._resetInfoPanel();
+        this._clearCustomizationMode();
         this._source = ref;
         this._sourceItem = slot.item;
         this._target = null;
@@ -556,6 +562,7 @@ var EquipmentTuningView = (function() {
                 || !this._allowInteraction('source', false)) return false;
         this._closeInspector();
         this._setConversionProjection(false);
+        this._clearCustomizationMode();
         this._source = normalized;
         this._sourceItem = item;
         this._target = null;
@@ -615,13 +622,12 @@ var EquipmentTuningView = (function() {
         return this._openInspector(this._targetItem, String(this._snapshot.gender), 'conversion-target') !== false;
     };
 
-    TuningView.prototype.requestSnapshot = function(reconcileAfterCallId) {
+    TuningView.prototype.requestSnapshot = function(reconcileAfterCallId, options) {
         if (!this._source || this._busy || this._readPending || this._detaching
                 || this._refreshRetryRequired || this._refreshRetryPending) return false;
-        var self = this;
-        var payload = {source:this._source};
+        var self = this, payload = {source:this._source};
         if (reconcileAfterCallId) payload.reconcileAfterCallId = reconcileAfterCallId;
-        this._snapshot = null;
+        if (!(options && options.preserveSnapshot && this._snapshot)) this._snapshot = null;
         this._preview = null;
         this._previewPendingOperation = '';
         this._previewIntentKey = '';
@@ -997,16 +1003,12 @@ var EquipmentTuningView = (function() {
         return this._openInfoPanel();
     };
 
-    TuningView.prototype._resetInfoPanel = function() {
-        this._infoPanelOpen = false;
-        this._infoSubject = null;
-    };
-
     TuningView.prototype.setOperation = function(operation) {
         if (!isOperationGroup(operation)
                 || !tuningSourceSupports(this._source, operation)
                 || !this._allowInteraction('tabs')) return false;
         this._closeInspector();
+        this._clearCustomizationMode();
         if (operation !== 'enhance') {
             if (this._enhancePreviewTimer) clearTimeout(this._enhancePreviewTimer);
             this._enhancePreviewTimer = 0;
@@ -1020,10 +1022,7 @@ var EquipmentTuningView = (function() {
         this._previewIntentKey = '';
         this._quickCommitIntent = null;
         this._modIntent = null;
-        if (operation !== 'install_mod') {
-            this._replaceCandidateKey = '';
-            this._replaceCandidateName = '';
-        }
+        if (operation !== 'install_mod') { this._replaceCandidateKey = ''; this._replaceCandidateName = ''; }
         if (operation !== 'convert') { this._target = null; this._targetItem = null; }
         if (wasConvert !== (operation === 'convert')) this._setConversionProjection(operation === 'convert');
         if (operation === 'enhance' && this._snapshot) {

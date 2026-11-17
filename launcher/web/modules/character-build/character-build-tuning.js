@@ -13,8 +13,10 @@
         ? require('./character-build-tuning-adapter.js') : root && root.CharacterBuildTuningAdapter;
     var tuningPorts = typeof module !== 'undefined' && module.exports
         ? require('./character-build-tuning-ports.js') : root && root.CharacterBuildTuningPorts;
+    var customization = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-customization.js') : root && root.CharacterBuildCustomization;
     var api = factory(
-        tuningView, tuningModel, actionView, sourceMarker, tuningAdapter, tuningPorts, root);
+        tuningView, tuningModel, actionView, sourceMarker, tuningAdapter, tuningPorts, customization, root);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -23,7 +25,7 @@
     }
 })(typeof window !== 'undefined' ? window : globalThis,
 function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
-        EquipmentTuningSourceMarker, TuningAdapter, TuningPorts, global) {
+        EquipmentTuningSourceMarker, TuningAdapter, TuningPorts, Customization, global) {
     'use strict';
     if (!EquipmentTuningModel || !EquipmentTuningModel.normalizeTuningSource) {
         throw new Error('CharacterBuildTuning requires EquipmentTuningModel');
@@ -33,7 +35,7 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
     }
     if (!EquipmentTuningSourceMarker || !TuningAdapter
             || !TuningAdapter.CandidateFlow || !TuningPorts
-            || !TuningPorts.loadConversionCandidates) {
+            || !TuningPorts.loadConversionCandidates || !Customization) {
         throw new Error('CharacterBuildTuning requires source marker, candidate flow, and ports');
     }
     var findEquipment = TuningAdapter.findEquipment, sourceFor = TuningAdapter.loadoutSourceFor;
@@ -47,9 +49,11 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
         this._buildView = options.view;
         this._tuningModule = options.tuningViewModule || EquipmentTuningView;
         this._ports = options.ports || {};
-        this._send = options.send;
-        this._timeoutMs = options.timeoutMs;
-        this._sessionNonce = options.sessionNonce;
+        var transport = options.transport || options;
+        this._customizationOptions = options;
+        this._send = transport.send;
+        this._timeoutMs = transport.timeoutMs;
+        this._sessionNonce = transport.sessionNonce;
         this._adoptSnapshot = options.adoptSnapshot || function() {};
         this._onLockChange = options.onLockChange || function() {};
         this._active = false; this._slotKey = ''; this._entrySource = null;
@@ -199,20 +203,18 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
         if (!this._hideCandidatePane()) return false;
         this._active = true;
         this._pane.appendChild(this._createPane(item)); if (this._ports.syncDensityToggle) this._ports.syncDensityToggle();
+        var customPorts = Customization.createTuningPorts(this, this._customizationOptions);
         var options = {
             instanceKey:'character-build-tuning:' + this._slotKey,
-            send:this._send,
-            timeoutMs:this._timeoutMs,
-            sessionNonce:this._sessionNonce,
-            beginWrite:this._beginWrite.bind(this),
-            completeWrite:this._completeWrite.bind(this),
-            refreshInventory:this._refreshInventory.bind(this),
-            resolveSlot:this._resolveCandidateSlot.bind(this),
+            send:this._send, timeoutMs:this._timeoutMs, sessionNonce:this._sessionNonce,
+            beginWrite:this._beginWrite.bind(this), completeWrite:this._completeWrite.bind(this),
+            refreshInventory:this._refreshInventory.bind(this), resolveSlot:this._resolveCandidateSlot.bind(this),
             refreshLoadout:this._refreshLoadout.bind(this),
             loadConversionCandidates:TuningPorts.loadConversionCandidates.bind(null, this),
             bindSourceTooltip:TuningPorts.bindSourceTooltip.bind(null, this),
             onStateChange:this._notifyStateChange.bind(this),
-            toast:this._ports.toast || function() {}
+            onModeChange:customPorts.onModeChange, onNavigateToDrugSlots:customPorts.onNavigateToDrugSlots,
+            customization:customPorts.customization, toast:this._ports.toast || function() {}
         };
         if (this._ports.shell && global.EquipmentInspector && global.EquipmentInspector.open) {
             options.openInspector = TuningPorts.openInspector.bind(null, this);
@@ -295,7 +297,9 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
             this._paneChildren[i].hidden = false;
             this._paneChildren[i].removeAttribute('inert');
         }
-        this._buildView.root.removeAttribute('data-build-subview'); if (this._ports.syncDensityToggle) this._ports.syncDensityToggle();
+        this._buildView.root.removeAttribute('data-build-subview');
+        this._buildView.root.removeAttribute('data-build-tuning-mode');
+        if (this._ports.syncDensityToggle) this._ports.syncDensityToggle();
         this._active = false; this._slotKey = ''; this._entrySource = null;
         this._panelInstanceId = ''; this._pane = null; this._paneChildren = [];
         this._root = null; this._mount = null; this._returnState = null;
@@ -329,11 +333,11 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
             callback(!!detached);
         });
     };
-    CharacterBuildTuning.prototype.setDensity = function(mode) {
-        this._density = mode === 'compact' ? 'compact' : 'full';
-        if (this._mount) this._mount.classList.toggle('item-grid-compact', this._density === 'compact');
-        return true;
+    CharacterBuildTuning.prototype.handleCustomizationDrugSlot = function(slotIndex) {
+        return Customization.handleTuningDrugSlot(this, slotIndex);
     };
+    CharacterBuildTuning.prototype.setDensity = function(mode) { return TuningPorts.setDensity(this, mode); };
+    CharacterBuildTuning.prototype.refreshCustomization = Customization.refreshTuning;
     CharacterBuildTuning.prototype.openHelp = function() { return !!(this._tuningView && this._tuningView.openHelp(this._ports.openModal)); };
     CharacterBuildTuning.prototype.isActive = function() { return this._active; };
     CharacterBuildTuning.prototype.consumeEscape = function() {
@@ -357,13 +361,10 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
     };
     CharacterBuildTuning.prototype.debugState = function() {
         return {
-            active:this._active,
-            slotKey:this._slotKey,
-            entrySessionGeneration:this._entrySource
-                ? this._entrySource.sessionGeneration : 0,
+            active:this._active, slotKey:this._slotKey,
+            entrySessionGeneration:this._entrySource ? this._entrySource.sessionGeneration : 0,
             candidateSource:this._candidateFlow.isActive(),
-            writePending:!!this._writeHandle,
-            tuning:this._tuningView ? this._tuningView.debugState() : null
+            writePending:!!this._writeHandle, tuning:this._tuningView ? this._tuningView.debugState() : null
         };
     };
     return {

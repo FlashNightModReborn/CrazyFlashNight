@@ -1051,6 +1051,10 @@ namespace CF7Launcher.Guardian
                         normalizedPayload != null
                             && normalizedPayload["expectedLoadoutRevision"] != null
                         ? normalizedPayload.Value<long>("expectedLoadoutRevision")
+                        : normalizedPayload != null
+                            && normalizedPayload["chestTarget"] is JObject
+                            && normalizedPayload["chestTarget"]["expectedLoadoutRevision"] != null
+                        ? normalizedPayload["chestTarget"].Value<long>("expectedLoadoutRevision")
                         : _loadoutRevision,
                     RequestedDrugRevision =
                         normalizedPayload != null
@@ -1774,6 +1778,7 @@ namespace CF7Launcher.Guardian
             {
                 long expected = entry.RequestedDrugRevision;
                 if (expected != entry.ExpectedDrugRevision
+                    || entry.RequestedLoadoutRevision != entry.ExpectedLoadoutRevision
                     || (changed && expected == int.MaxValue))
                 {
                     return false;

@@ -294,6 +294,60 @@ namespace Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void SuccessfulSnapshot_AllowsEmergencyInjectionOnlyOnSupportedType61Chests()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                JObject validCfg = new JObject
+                {
+                    ["v"] = 1,
+                    ["enabled"] = true,
+                    ["physicalSlot"] = 4,
+                    ["itemKey"] = "大HP药剂",
+                    ["status"] = "authorized"
+                };
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "tune.ei.valid61"));
+                JObject validChest = SnapshotResponse(sent[0]);
+                validChest["snapshot"]["equipment"]["name"] = "统合61式胸甲";
+                validChest["snapshot"]["equipment"]["displayName"] = "统合61式胸甲";
+                validChest["snapshot"]["equipment"]["type"] = "防具";
+                validChest["snapshot"]["equipment"]["use"] = "上装装备";
+                validChest["snapshot"]["equipment"]["emergencyInjection"] = validCfg.DeepClone();
+                task.HandleFlashResponse(validChest, null);
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "tune.ei.non61"));
+                JObject non61 = SnapshotResponse(sent[1]);
+                non61["snapshot"]["equipment"]["type"] = "防具";
+                non61["snapshot"]["equipment"]["use"] = "上装装备";
+                non61["snapshot"]["equipment"]["emergencyInjection"] = validCfg.DeepClone();
+                task.HandleFlashResponse(non61, null);
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "tune.ei.badschema"));
+                JObject badSchema = SnapshotResponse(sent[2]);
+                badSchema["snapshot"]["equipment"]["name"] = "钛合金61式胸甲";
+                badSchema["snapshot"]["equipment"]["type"] = "防具";
+                badSchema["snapshot"]["equipment"]["use"] = "上装装备";
+                badSchema["snapshot"]["equipment"]["emergencyInjection"] = new JObject
+                {
+                    ["v"] = 1,
+                    ["enabled"] = false,
+                    ["physicalSlot"] = 2,
+                    ["itemKey"] = "",
+                    ["status"] = "disabled"
+                };
+                task.HandleFlashResponse(badSchema, null);
+
+                Assert.True((bool)web[0]["success"]);
+                Assert.Equal(4, web[0]["snapshot"]["equipment"]["emergencyInjection"].Value<int>("physicalSlot"));
+                Assert.Equal("malformed_response", (string)web[1]["error"]);
+                Assert.Equal("malformed_response", (string)web[2]["error"]);
+            }
+        }
+
+        [Fact]
         public void SuccessfulPreview_RequiresAs2SubjectProjectionShape()
         {
             var sent = new List<JObject>();

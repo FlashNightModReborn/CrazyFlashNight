@@ -142,11 +142,25 @@
         return true;
     }
 
+    function validEmergencyInjection(value) {
+        if (!hasExactKeys(value, ['v', 'enabled', 'physicalSlot', 'itemKey', 'status'])) return false;
+        if (value.v !== 1 || typeof value.enabled !== 'boolean') return false;
+        if (integer(value.physicalSlot, -1, 7) === null) return false;
+        if (typeof value.itemKey !== 'string' || value.itemKey.length > 160
+                || /[\u0000-\u001f\u007f-\u009f]/.test(value.itemKey)) return false;
+        if (value.enabled) {
+            return value.physicalSlot >= 0 && value.itemKey.trim().length > 0
+                && ['authorized', 'empty', 'item_changed'].indexOf(value.status) >= 0;
+        }
+        return value.physicalSlot === -1 && value.itemKey === ''
+            && (value.status === 'disabled' || value.status === 'unsupported_config');
+    }
+
     function equipment(value) {
         if (!hasExactKeys(value,
                 ['name', 'displayName', 'icon', 'type', 'use', 'level', 'tier',
                     'mods', 'lastUpdate', 'maxLevel', 'hardMaxLevel'],
-                ['modSlotCapacity', 'stats'])) return false;
+                ['modSlotCapacity', 'stats', 'emergencyInjection'])) return false;
         if (!identityText(value.name, 256)
                 || !identityText(value.displayName, 256)
                 || !identityText(value.icon, 256)
@@ -162,7 +176,15 @@
                 || !identityArray(value.mods, 64)) return false;
         if (own.call(value, 'modSlotCapacity')
                 && !integer(value.modSlotCapacity, 0, 64)) return false;
-        return !own.call(value, 'stats') || statRows(value.stats);
+        if (own.call(value, 'stats') && !statRows(value.stats)) return false;
+        if (own.call(value, 'emergencyInjection')) {
+            if (value.type !== '防具' || value.use !== '上装装备'
+                    || (value.name !== '统合61式胸甲' && value.name !== '钛合金61式胸甲')
+                    || !validEmergencyInjection(value.emergencyInjection)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     function enhanceProjection(value, current) {

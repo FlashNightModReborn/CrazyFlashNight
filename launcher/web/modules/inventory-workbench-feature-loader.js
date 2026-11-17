@@ -46,6 +46,7 @@
         'modules/loadout-picker/loadout-picker.js',
         'modules/character-build/character-build-item-use-openmany-view.js',
         'modules/character-build-view.js',
+        'modules/character-build/character-build-customization.js',
         'modules/character-build/character-build-tuning.js',
         'modules/character-build/character-build-slot-transition.js',
         'modules/character-build/character-build-pose.js',
@@ -95,13 +96,12 @@
     }
 
     function descriptor(view) {
-        return view === 'tuning'
-            ? {view:view, title:'装备调制', deps:TUNING_DEPS,
-                ready:tuningReady, label:'tuning feature'}
-            : view === 'build'
-                ? {view:view, title:'角色构筑', deps:BUILD_DEPS,
-                    ready:buildReady, label:'character-build feature'}
-                : null;
+        var tuning = view === 'tuning';
+        if (!tuning && view !== 'build') return null;
+        return {view:view, title:tuning ? '装备调制' : '角色构筑',
+            deps:tuning ? TUNING_DEPS : BUILD_DEPS,
+            ready:tuning ? tuningReady : buildReady,
+            label:tuning ? 'tuning feature' : 'character-build feature'};
     }
 
     function loadFeature(feature) {

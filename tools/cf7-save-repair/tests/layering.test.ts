@@ -25,6 +25,14 @@ describe('classifyField', () => {
     expect(r.kind).toBe('mod');
   });
 
+  it('L1: 装备栏.{slot}.value.emergencyInjection.itemKey', () => {
+    const r = classifyField(['inventory', '装备栏', '上装装备', 'value', 'emergencyInjection', 'itemKey']);
+    expect(r.layer).toBe('L1');
+    expect(r.kind).toBe('item');
+    expect(r.fallbackWhenDictMiss).toBe('preserve');
+    expect(r.dropMode).toBe('clear');
+  });
+
   it('L2: tasks_finished[key]', () => {
     const r = classifyField(['tasks', 'tasks_finished', 'someTask']);
     expect(r.layer).toBe('L2');

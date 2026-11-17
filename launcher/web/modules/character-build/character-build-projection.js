@@ -106,6 +106,7 @@ function(TuningAdapter, CandidateEligibility, DrugLayout) {
             drugMeta:drugs.drugMeta,
             drugLayout:payload && payload.drugLayout || null,
             emergencyInjection:payload && payload.emergencyInjection || null,
+            targetEmergencyInjection:payload && payload.targetEmergencyInjection || null,
             portrait:payload && payload.portrait || {},
             candidateFacets:payload && payload.candidateFacets || null,
             blocked:payload && payload.stateHealth !== 'ok',

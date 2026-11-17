@@ -1435,6 +1435,12 @@ class org.flashNight.arki.item.EquipmentTuningService {
         if (modSlotCapacityKnown) {
             projection.modSlotCapacity = modSlotCapacity;
         }
+        if (org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService
+                .supportsItemName(String(item.name))) {
+            projection.emergencyInjection =
+                org.flashNight.arki.unit.Action.Skill.EmergencyInjectionService
+                    .snapshotValue(String(item.name), value, _root);
+        }
         // preview 的 before/after 附带结构化属性投影，供 Web 端做前后对比；
         // snapshot 不传 includeStats，保持载荷最小
         if (includeStats) {

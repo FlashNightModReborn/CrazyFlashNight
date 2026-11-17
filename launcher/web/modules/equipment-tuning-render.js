@@ -131,23 +131,39 @@ var EquipmentTuningRender = (function() {
             self._renderFocusDeferred = false;
             self._previewFocusIntent = null;
         });
-        root.setAttribute('data-operation', this._operation === 'replace_mod' ? 'install_mod' : this._operation);
+        var customizing = this._customizationActive && this._customization
+            && this._customization.isAvailable(this._source, this._sourceItem);
+        root.setAttribute('data-operation', customizing ? 'customization'
+            : this._operation === 'replace_mod' ? 'install_mod' : this._operation);
         root.setAttribute('data-source-kind', this._source && this._source.sourceKind || 'none');
         root.setAttribute('data-reconcile', this._needsReconcile ? 'required' : 'clear');
         root.appendChild(this._renderHeader());
         root.appendChild(this._renderTabs());
         root.appendChild(this._renderInfoPanel());
-        var detail = element('section', 'equipment-tuning-detail');
-        detail.setAttribute('aria-label', '调制选项与权威预览');
-        detail.appendChild(this._renderBody());
-        detail.appendChild(this._renderPreview());
-        root.appendChild(detail);
-        root.appendChild(this._ensureCommitBar().root);
+        if (customizing) {
+            var custom = this._customization.render({
+                document:this._root.ownerDocument,
+                source:this._source,
+                item:this._sourceItem,
+                equipmentSnapshot:this._snapshot && this._snapshot.equipment || null,
+                iconHtml:iconHtml,
+                onNavigateToDrugSlots:this._onNavigateToDrugSlots || null
+            });
+            root.appendChild(custom.body);
+            root.appendChild(custom.footer);
+        } else {
+            var detail = element('section', 'equipment-tuning-detail');
+            detail.setAttribute('aria-label', '调制选项与权威预览');
+            detail.appendChild(this._renderBody());
+            detail.appendChild(this._renderPreview());
+            root.appendChild(detail);
+            root.appendChild(this._ensureCommitBar().root);
+        }
         this._root.appendChild(root);
         var nextBody = root.querySelector('.equipment-tuning-body');
         var nextPreview = root.querySelector('.equipment-tuning-preview');
         var nextDetail = root.querySelector('.equipment-tuning-detail');
-        this._updateCommitBar();
+        if (!customizing) this._updateCommitBar();
         this._applyInteractionProjection(root);
         this._syncModIntentPresentation(root);
         if (restoreFocusKey(root, focusKey)) {
@@ -339,7 +355,8 @@ var EquipmentTuningRender = (function() {
         root.setAttribute('data-interaction-phase', projection.phase);
         root.setAttribute('aria-busy', projection.blocked ? 'true' : 'false');
         if (!projection.blocked) this._interactionAnnouncement = '';
-        var statusId = this._ensureCommitBar().statusNode.id;
+        var statusId = this._customizationActive && this._customization
+            ? this._customization.statusId() : this._ensureCommitBar().statusNode.id;
         var nodes = root.querySelectorAll('[data-tuning-capability]');
         for (var i = 0; i < nodes.length; i++) {
             var node = nodes[i];
@@ -380,7 +397,7 @@ var EquipmentTuningRender = (function() {
             emptyCopy.innerHTML = '<b>选择装备</b><small>只接受当前权威来源中的武器与防具</small>';
             emptyCopy.querySelector('small').setAttribute('data-tuning-status', '');
             header.appendChild(emptyMark); header.appendChild(emptyCopy);
-            header.appendChild(this._renderConfirmationControl());
+            if (!this._customizationActive) header.appendChild(this._renderConfirmationControl());
             return header;
         }
         var item = this._sourceItem;
@@ -427,7 +444,7 @@ var EquipmentTuningRender = (function() {
         info.setAttribute('aria-expanded', this._infoPanelOpen ? 'true' : 'false');
         info.addEventListener('click', this._openInfoPanel.bind(this));
         header.appendChild(info);
-        header.appendChild(this._renderConfirmationControl());
+        if (!this._customizationActive) header.appendChild(this._renderConfirmationControl());
         return header;
     };
 
@@ -570,6 +587,11 @@ var EquipmentTuningRender = (function() {
         title.textContent = this._infoSubject.title;
         copy.textContent = this._infoSubject.detail || '暂无进一步说明。';
         return true;
+    };
+
+    TuningView.prototype._resetInfoPanel = function() {
+        this._infoPanelOpen = false;
+        this._infoSubject = null;
     };
 
     TuningView.prototype._openInfoPanel = function() {
@@ -732,7 +754,83 @@ var EquipmentTuningRender = (function() {
         if (installed.length || capacityProjection.state !== 'absent') {
             state.appendChild(modSlots);
         }
+        if (this._customization && this._customization.renderSummaryPill
+                && this._customization.isAvailable(this._source, equipment || this._sourceItem)) {
+            var mechPill = this._customization.renderSummaryPill({
+                document:this._root.ownerDocument,
+                source:this._source,
+                item:equipment || this._sourceItem,
+                equipmentSnapshot:equipment || null,
+                active:this._customizationActive,
+                disabled:!this._source || self._busy || self._readPending || self._needsReconcile
+            }, function() { self.setCustomizationActive(); });
+            if (mechPill) {
+                setCapability(mechPill, 'tabs', !this._source);
+                state.appendChild(mechPill);
+            }
+        }
         return state;
+    };
+
+    TuningView.prototype._attachCustomization = function(customization, options) {
+        this._customization = customization || null;
+        this._customizationActive = false;
+        this._lastCustomizationMode = false;
+        this._onModeChange = options && typeof options.onModeChange === 'function' ? options.onModeChange : null;
+        this._onNavigateToDrugSlots = options && typeof options.onNavigateToDrugSlots === 'function'
+            ? options.onNavigateToDrugSlots : null;
+        if (this._customization) this._customization.bind(this.refreshCustomization.bind(this));
+    };
+
+    TuningView.prototype._clearCustomizationMode = function() {
+        this._customizationActive = false;
+        this._syncCustomizationMode();
+    };
+
+    TuningView.prototype._syncCustomizationMode = function() {
+        var active = this.isCustomizationActive();
+        if (active === this._lastCustomizationMode) return;
+        this._lastCustomizationMode = active;
+        if (this._onModeChange) this._onModeChange(active);
+    };
+
+    TuningView.prototype.refreshCustomizationSnapshot = function() {
+        if (!this._source || !this._customizationActive || this._busy || this._readPending
+                || this._detaching || this._refreshRetryRequired || this._refreshRetryPending) return false;
+        return this.requestSnapshot('', {preserveSnapshot:true});
+    };
+
+    TuningView.prototype.isCustomizationActive = function() {
+        return !!(this._customizationActive && this._customization
+            && this._customization.isAvailable(this._source, this._sourceItem));
+    };
+
+    TuningView.prototype.handleCustomizationDrugSlot = function(slotIndex) {
+        if (!this.isCustomizationActive()
+                || typeof this._customization.toggleSlot !== 'function') return false;
+        return this._customization.toggleSlot(slotIndex);
+    };
+
+    TuningView.prototype.setCustomizationActive = function() {
+        if (!this._customization || !this._customization.isAvailable(this._source, this._sourceItem)
+                || !this.canClose() || !this._allowInteraction('tabs')) return false;
+        this._closeInspector();
+        if (this._enhancePreviewTimer) clearTimeout(this._enhancePreviewTimer);
+        this._enhancePreviewTimer = 0;
+        this._queuedEnhanceLevel = null;
+        this._preview = null;
+        this._quickCommitIntent = null;
+        this._previewFocusIntent = null;
+        this._resetInfoPanel();
+        this._customizationActive = true;
+        if (typeof this._syncCustomizationMode === 'function') this._syncCustomizationMode();
+        this.render({preserveScroll:false});
+        return true;
+    };
+    TuningView.prototype.refreshCustomization = function() {
+        if (!this._root || !this._customizationActive) return false;
+        this.render({preserveScroll:true});
+        return true;
     };
 
     TuningView.prototype._renderTabs = function() {
@@ -740,9 +838,9 @@ var EquipmentTuningRender = (function() {
         var self = this;
         [['enhance','强化度'],['convert','交换'],['install_tier','进阶'],['install_mod','配件']].forEach(function(pair) {
             if (self._source && !tuningSourceSupports(self._source, pair[0])) return;
-            var button = element('button', 'equipment-tuning-tab' + (self._operation === pair[0]
+            var button = element('button', 'equipment-tuning-tab' + (!self._customizationActive && (self._operation === pair[0]
                 || (pair[0] === 'install_mod' && (self._operation === 'replace_mod'
-                    || self._operation === 'detach_mod' || self._operation === 'detach_all_mods')) ? ' active' : ''));
+                    || self._operation === 'detach_mod' || self._operation === 'detach_all_mods'))) ? ' active' : ''));
             button.type = 'button'; button.textContent = pair[1];
             button.disabled = !self._source || self._busy || self._readPending;
             button.setAttribute('data-tuning-focus-key', 'operation:' + pair[0]);
@@ -750,6 +848,16 @@ var EquipmentTuningRender = (function() {
             setCapability(button, 'tabs', !self._source);
             tabs.appendChild(button);
         });
+        if (this._customization && this._customization.isAvailable(this._source, this._sourceItem)) {
+            tabs.setAttribute('data-customization-tabs', 'true');
+            var customTab = element('button', 'equipment-tuning-tab' + (this._customizationActive ? ' active' : ''));
+            customTab.type = 'button'; customTab.textContent = '机制';
+            customTab.setAttribute('data-tuning-focus-key', 'operation:customization');
+            customTab.setAttribute('data-customization-open', '');
+            customTab.addEventListener('click', function() { self.setCustomizationActive(); });
+            setCapability(customTab, 'tabs', !self._source);
+            tabs.appendChild(customTab);
+        }
         return tabs;
     };
 
