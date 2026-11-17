@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**文档角色**：顶层路由与硬约束入口。**最后核对代码基线**：commit `2e5e32321506fa1fb2693f3928205f8c45b4235e`（2026-09-17）。
+**文档角色**：顶层路由与硬约束入口。**最后核对代码基线**：commit `d4c577551a06433905f96bf1a23a1aa64852a9ee`（2026-11-18，本轮核对研究工具与产物归属）。
 
 ## 硬约束
 
@@ -44,6 +44,7 @@ asLoader 可在获授权的可用节点交付；其他 SWF 按最终归档/上�
 PowerShell 先 `chcp.com 65001`；文本直接用 UTF-8 中文，不无故改成 Unicode 转义。
 仅改数据/配置 XML 通常重启，不据此重编 SWF；修改生成输入后先执行对应生成器及 `--check`。
 不提交 node_modules、临时文件或无治理的大型派生物；运行资源例外必须有生成、manifest、完整性和体积审计。
+独立研究工具、跑批输出和历史大样本按[研究工具与证据归属](agentsDoc/documentation-governance.md#optional-research-artifacts)存放。
 提交说明用中文并给回归提示；获授权的合作者直推规则以 [贡献流程](docs/contribution-workflow.md) 为准，不额外强制 PR。
 规范随相关施工同批修正，运行文档巡检；不把历史收据追加到本入口。
 

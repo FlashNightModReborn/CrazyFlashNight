@@ -1,7 +1,7 @@
 # 项目记忆导航
 
 **文档角色**：受限导航与术语提示；工程权威和操作权限见 [AGENTS.md](../../AGENTS.md)。
-**核对基线**：`c475797b8afaf37e9b5fe7d805ca932a668d4ed8`（2026-11-14）。
+**核对基线**：`d4c577551a06433905f96bf1a23a1aa64852a9ee`（2026-11-18，研究工具归属）。
 
 ## 按任务定位
 
@@ -12,6 +12,7 @@
 | 数据、数值与派生物 | [数据归属](../../agentsDoc/data-schemas.md#data-entry)、[游戏设计](../../agentsDoc/game-design.md) |
 | XFL、linkage、图标 | [美术装配](../../agentsDoc/art-asset-assembly.md)、[Linkage Scanner](../../tools/linkage_scanner/README.md) |
 | Host / Web / 原生对话 | [源码地图](../../launcher/README.md#source-map)、[本地开发入口](../../automation/README.md) |
+| 独立研究工具、大样本与迁移 | [研究工具与证据归属](../../agentsDoc/documentation-governance.md#optional-research-artifacts) |
 | 协作、范围与经验归属 | [Agent harness](../../agentsDoc/agent-harness.md)、[记忆治理](../../agentsDoc/documentation-governance.md#agent-memory) |
 
 本入口只提供定位信息。执行依据从当前源码、对应合同和当前任务授权取得；
