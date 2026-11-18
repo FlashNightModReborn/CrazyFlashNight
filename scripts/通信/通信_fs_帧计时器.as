@@ -455,8 +455,17 @@ _root.帧计时器.键盘输入控制目标 = function()
         var frame:Number = this.当前帧数;
         var launcherCmdId:Number = FrameBroadcaster.getCmdId();
 
+        // 手枪模式（手枪搓招 / 手枪2搓招 专用的电平裁决模式）不武装 DFA 缓冲。
+        //   推断动作模组 对手枪模式返回 undefined → moduleId 落到 1（lightWeapon），
+        //   Launcher 会把 →+B 识别成冷兵器「瞬步斩」并写进 搓招缓冲名；手枪搓招本身
+        //   不吃这条名字，但它会一直留在缓冲里，等手枪搓招容器末帧
+        //   （_末帧技能容器搓招 会显式放行模式门）被消费 —— 表现为
+        //   「手枪搓招打完，莫名其妙搓出一个冷兵器技能」。
+        //   手枪模式没有消费 DFA 名字的入口，所以这里直接不武装并清空。
+        var 手枪模式:Boolean = (控制对象.攻击模式 == "手枪" || 控制对象.攻击模式 == "手枪2");
+
         // 模组切换时清空缓冲
-        if (控制对象.当前搓招模组 != 模组名) {
+        if (控制对象.当前搓招模组 != 模组名 || 手枪模式) {
             控制对象.搓招缓冲ID = 0;
             控制对象.搓招缓冲名 = "";
             控制对象.搓招缓冲已消费 = true;
@@ -465,7 +474,8 @@ _root.帧计时器.键盘输入控制目标 = function()
         控制对象.当前搓招模组 = 模组名;
 
         // Launcher DFA 命中时写入缓冲（同时缓存名字，因为下一帧 K 会清空 _cmdName）
-        if (launcherCmdId != 0) {
+        // 手枪模式除外：那条名字只会是 lightWeapon 模块的冷兵器命令（见上）。
+        if (launcherCmdId != 0 && !手枪模式) {
             控制对象.搓招缓冲ID = launcherCmdId;
             控制对象.搓招缓冲名 = FrameBroadcaster.getCmdName();
             控制对象.搓招缓冲帧 = frame;

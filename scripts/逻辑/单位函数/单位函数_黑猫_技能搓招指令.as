@@ -532,6 +532,10 @@ _root.技能函数._末帧技能容器搓招 = function(man:MovieClip, 自机:Mo
 	if (自机 == undefined || 自机 == null) return false;
 	if (自机._name != _root.控制目标) return false;
 	if (自机.倒地) return false;
+	// 手枪模式：本通道挂在 技能路由.动画完毕 上，手枪搓招容器末帧也走这里。
+	// 手枪模式下不存在任何冷兵器持械语义，DFA 也只会产出冷兵器名字；
+	// 这里硬拦一道，避免「手枪搓招打完接出一个瞬步斩/迅斩」。
+	if (自机.攻击模式 == "手枪" || 自机.攻击模式 == "手枪2") return false;
 
 	var 原卸载:Function = undefined;
 	if (自机.man != undefined) 原卸载 = 自机.man.onUnload;
