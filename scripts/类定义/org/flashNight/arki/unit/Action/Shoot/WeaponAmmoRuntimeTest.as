@@ -30,6 +30,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest {
         u.被动技能 = {冲击连携:{启用:true, 等级:10}};
         u.攻击模式 = "长枪";
         u.状态 = "长枪站立";
+        u.hp = 100;
         u.createEmptyMovieClip("man", 1);
         u.man.使用弹匣名称 = "测试弹匣";
         u.man.gotoAndPlay = function(label):Void { this.lastLabel = label; };
@@ -82,6 +83,8 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest {
             testDualRoundSegmentKeepsHalfReloadPolicy();
             testRewardExpiresOutsideEquippedSlots();
             testHeldTriggersAndLastPacket();
+            testLongGunReloadInputOwnership();
+            testDeferredPendingLifecycle();
             testPlainWeaponInitialization();
             testPauseBeforeFrameControlAdmission();
             testCancellationOwnershipAndPaidAmmo();
@@ -282,6 +285,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest {
         check(m.perRoundReload && !m.reloadHeldMode && m.lastLabel==4,"empty tap continues with separately animated ghost loading");
         ReloadManager.handleReloadGate(m);
         assertNumber(1,s.ghost,"post-magazine ghost is paid at its own animation gate");
+        check(m.reloadInputMask == undefined,"a reload with no inherited keys keeps no input latch");
         check(ReloadManager.tryCancelForFire(m,u,"长枪"),"tap ghost continuation remains fire-cancellable");
         before=s.reserve;ReloadManager.handleReloadGate(m);
         assertNumber(before,s.reserve,"late continuation gate cannot spend after fire cancellation");
@@ -501,6 +505,65 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest {
         check(ReloadManager.handleReloadInput(m,u),"loaded long-gun subweapon can interrupt empty primary reload");
         assertNumber(1,m.subAttempts,"K routes to subweapon rather than empty primary");
         check(!m.换弹标签,"subweapon cancellation clears primary frame driver");
+    }
+
+    /** #261：经过真实 begin 的旧电平，与手工置标签的新输入负例分别验证。 */
+    private static function testLongGunReloadInputOwnership():Void {
+        var u:MovieClip = unit(8, 8);
+        var m:MovieClip = u.man;
+        u.长枪属性.reloadType = "magazine";
+        u.动作A = u.动作B = true;
+        u.长枪副武器配置 = {capacity:2, consumeMode:"onLoadGroup", clipCostPerLoad:1, reserveName:"测试弹匣"};
+        u.长枪副武器状态 = {capacity:2, loaded:2, nextFireTime:0};
+        u.长枪副武器 = {value:{shot:0}};
+        ReloadManager.startReload(m, u, _root);
+        check(m.换弹标签, "primary empty enters reload with both triggers held");
+        assertNumber(3, m.reloadInputMask, "reload captures both inherited inputs without an object");
+        for (var i:Number = 0; i < 30; i++) ReloadManager.handleReloadInput(m, u);
+        check(m.换弹标签, "old K cannot cancel primary reload for thirty samples");
+        u.动作B = false; ReloadManager.handleReloadInput(m, u); u.动作B = true;
+        check(ReloadManager.tryCancelForFire(m, u, "长枪副武器"), "new K still cancels with loaded subweapon");
+        check(!m.换弹标签 && m.reloadInputMask == undefined, "cancel releases only this reload's input ownership");
+
+        u.长枪.value.shot = 1;
+        u.长枪副武器.value.shot = 2;
+        u.长枪副武器状态.loaded = 0;
+        m.开始副武器换弹 = function():Boolean { return LongGunSubWeaponCore.startManualReloadAnimation(this._parent); };
+        check(!LongGunSubWeaponCore.requestShoot(u), "empty subweapon request does not report a fired shot");
+        check(m.换弹标签 && LongGunSubWeaponCore.isManualReloadRequest(m), "empty K selects its own paid reload path");
+        ReloadManager.handleReloadInput(m, u);
+        check(m.换弹标签, "inherited J cannot cancel subweapon-first reload");
+        assertNumber(1, u.长枪.value.shot, "subweapon request leaves primary ammunition untouched");
+        ReloadManager.cancelReload(m, false);
+        ShootCore.cleanup(u);
+
+        // 本轮明确统一输入语义：普通 tube 的旧 J 也不能在首发装入后冒充新按压。
+        u = unit(8, 8); m = u.man; u.动作A = true; u.动作C = true;
+        ReloadManager.startReload(m, u, _root);
+        ReloadManager.initReloadBurden(m, 42, 50, 43, 74, [51,56,64]);
+        ReloadManager.handleReloadGate(m);
+        assertNumber(1, total(u), "held-R gate commits exactly one paid tube round");
+        check(m.换弹标签 && !ReloadManager.tryCancelForFire(m, u, "长枪"),
+            "inherited J does not stop tube reload after its first committed round");
+        var paid:Number = u.长枪.value.ammoState.reserve;
+        u.动作A = false; ReloadManager.handleReloadInput(m, u); u.动作A = true;
+        check(ReloadManager.tryCancelForFire(m, u, "长枪"), "new J can still interrupt tube reload");
+        assertNumber(paid, u.长枪.value.ammoState.reserve, "new-press interruption preserves paid reserve");
+        assertNumber(9, packs, "one tube gate charges one packet, cancellation charges nothing");
+        ShootCore.cleanup(u);
+
+        // 持续 J 入场，首发装入后只松 R。射击键的所有权和逐发装填的松键独立。
+        u = unit(8, 8); m = u.man; u.动作A = u.动作C = true;
+        ReloadManager.startReload(m, u, _root);
+        ReloadManager.initReloadBurden(m, 42, 50, 43, 74, [51,56,64]);
+        ReloadManager.handleReloadGate(m);
+        check(m.reloadHeldMode && total(u) == 1, "held J/R enters paid tube mode");
+        u.动作C = false;
+        check(ReloadManager.handleReloadInput(m, u) && !m.换弹标签 && m.lastLabel == "空闲",
+            "releasing only R stops tube reload while the inherited J stays held");
+        ReloadManager.handleReloadGate(m);
+        check(total(u) == 1 && packs == 9, "late gate cannot add a second round or charge again");
+        ShootCore.cleanup(u);
     }
 
     private static function rejectPlainShot(owner:Object, slot:String, props:Object):Boolean {
@@ -982,6 +1045,272 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest {
         delete world.__combatAdmitted;u.动作A=u.动作B=u.动作C=false;u.主手射击中=u.副手射击中=u.副武器射击中=false;
         var x:Number=u._x;functions.行走_玩家.call(u);
         check(u._x===x+2&&!AIEnvironment.isPaused()&&!ShootCore.isPresentationControlled(u),"undefined combat admission preserves legacy movement/AI/fire eligibility");
+    }
+
+    private static var deferredOriginalAdd:Function;
+
+    private static function deferredSpec():Object {
+        return {weapontype:"突击步枪", subweapon:{name:"deferred测试副武器",cd:1000,
+            consumeMode:"onFire",consumeTiming:"onFire",fireCost:1,hp:0,mp:17,
+            capacity:3,initialLoaded:3,reserveName:"测试弹匣",power:100,
+            bullet:"测试榴弹",sound:"test.wav",split:1,diffusion:0,
+            velocity:25,range:50,impact:1,damageType:"物理",hitBehavior:{}}};
+    }
+
+    private static function deferredReadyMan(u:MovieClip, ready:Boolean):MovieClip {
+        var previous:MovieClip=u.man;
+        if(previous!=null){
+            previous._name="__retiredDeferredFixture"+(++serial);
+            previous.removeMovieClip();
+        }
+        delete u.man;
+        var m:MovieClip=u.createEmptyMovieClip("man",u.getNextHighestDepth());
+        m.射击许可标签=true;m.换弹标签=false;m.射击速度=1000;
+        m.使用弹匣名称="测试弹匣";m.剩余弹匣数=10;
+        m.gotoAndPlay=function(label:String):Void {this.lastLabel=label;};
+        m.gotoAndStop=function(label:String):Void {this.lastLabel=label;};
+        if(ready){
+            var g:MovieClip=m.createEmptyMovieClip("枪",1);
+            g=g.createEmptyMovieClip("枪",1);
+            g=g.createEmptyMovieClip("装扮",1);
+            var muzzle:MovieClip=g.createEmptyMovieClip("枪口位置",1);
+            muzzle._x=7;muzzle._y=9;
+        }
+        return m;
+    }
+
+    private static function deferredUnit():MovieClip {
+        var u:MovieClip=unit(8,0);
+        u.hp=1000;u.mp=500;u.移动射击=true;u.动作A=false;u.动作B=true;
+        u.兵种="主角-男";u.状态="长枪跑";u.__stateGotoLabel="长枪跑";
+        u.方向="右";u.Z轴坐标=0;u.enableShoot=true;u.__deferredShots=0;
+        u.__deferredReadyOnGoto=false;u.__deferredMissingMan=false;
+        u.dispatcher=new org.flashNight.neur.Event.EventDispatcher();
+        org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.FireEventComponent.initialize(u);
+        u.存储当前飞行状态=function():Void {};
+        u.读取当前飞行状态=function():Void {};
+        u.状态改变=function(state:String):Void {
+            org.flashNight.arki.unit.UnitComponent.Routing.StateTransition.apply(this,state);
+        };
+        u.gotoAndStop=function(label:String):Void {
+            this.__lastDeferredGoto=label;
+            if(this.__deferredMissingMan){
+                var previous:MovieClip=this.man;
+                if(previous!=null){previous._name="__retiredMissingMan"+this._name;previous.removeMovieClip();}
+                this.man=null;
+            } else WeaponAmmoRuntimeTest.deferredReadyMan(this,this.__deferredReadyOnGoto===true);
+        };
+        LongGunSubWeaponCore.configureUnit(u,deferredSpec());
+        return u;
+    }
+
+    // Observer only: all scheduling still executes the production wheel method.
+    // Captured callback/args allow a deliberately late delivery after cancellation.
+    private static function captureDeferredTask(callback:Function, delay:Number, repeatCount):Number {
+        var params:Array=[];
+        for(var i:Number=0;i<arguments.length;i++)params.push(arguments[i]);
+        if(params.length==6 && params[3].长枪副武器状态===params[4]
+                && params[4].pendingFire===params[5]){
+            params[3].__capturedDeferred={callback:callback,unit:params[3],state:params[4],action:params[5]};
+        }
+        return deferredOriginalAdd.apply(org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel.I(),params);
+    }
+
+    private static function deliverDeferred(saved:Object):Void {
+        if(saved!=null)saved.callback(saved.unit,saved.state,saved.action);
+    }
+
+    private static function tickDeferred(count:Number):Void {
+        var wheel:Object=org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel.I();
+        for(var i:Number=0;i<count;i++)wheel.tick();
+    }
+
+    private static function recordDeferredShot(props:Object):Void {
+        var u:MovieClip=_root.gameworld[props.发射者];
+        u.__deferredShots++;
+    }
+
+    private static function rearmDeferredRequest(u:MovieClip):Void {
+        u.状态="长枪跑";u.__stateGotoLabel="长枪跑";
+        u.__deferredMissingMan=false;u.__deferredReadyOnGoto=false;
+        deferredReadyMan(u,false);
+        check(LongGunSubWeaponCore.requestShoot(u),"new pose request accepted after pending retirement");
+    }
+
+    private static function testDeferredPendingLifecycle():Void {
+        var wheel:Object=org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel.I();
+        var savedAdd:Function=wheel.addTask;
+        var savedShoot:Function=_root.子弹区域shoot传递;
+        var savedRefresh:Function=_root.玩家信息界面.刷新mp显示;
+        var savedPause:Boolean=_root.暂停;
+        var savedFrameMs:Number=wheel.每帧毫秒;
+        var firstOwner:Number=owners.length;
+        wheel.reset();wheel.每帧毫秒=1000/30;
+        deferredOriginalAdd=savedAdd;wheel.addTask=captureDeferredTask;
+        _root.子弹区域shoot传递=recordDeferredShot;
+        _root.玩家信息界面.刷新mp显示=function():Void {};
+        _root.暂停=false;
+        try {
+            testDeferredSameStateAndEquipment();
+            testDeferredCleanupAndTransitions();
+            testDeferredInvalidityBeforeReadiness();
+            testDeferredBoundedAndReady();
+        } finally {
+            for(var i:Number=firstOwner;i<owners.length;i++)ShootCore.cleanup(owners[i]);
+            wheel.addTask=savedAdd;deferredOriginalAdd=null;
+            wheel.reset();wheel.每帧毫秒=savedFrameMs;
+            _root.子弹区域shoot传递=savedShoot;
+            _root.玩家信息界面.刷新mp显示=savedRefresh;
+            _root.暂停=savedPause;
+        }
+    }
+
+    private static function testDeferredSameStateAndEquipment():Void {
+        var wheel:Object=org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel.I();
+        var u:MovieClip=deferredUnit();
+        check(LongGunSubWeaponCore.requestShoot(u),"not-ready pose request accepted");
+        var state:Object=u.长枪副武器状态;
+        var first:Object=state.pendingFire;
+        var oldDelivery:Object=u.__capturedDeferred;
+        check(first!=null && first.taskId!=null && wheel.getActiveTaskCount()==1,
+            "one pending action owns one real wheel task");
+        LongGunSubWeaponCore.cancelPendingFire(u);
+        check(state.pendingFire==undefined && wheel.getActiveTaskCount()==0,
+            "public cancellation removes the real wheel task");
+        rearmDeferredRequest(u);
+        var second:Object=state.pendingFire;
+        check(second!=null && second!==first,"same equipment creates a new ordinary action identity");
+        deliverDeferred(oldDelivery);
+        check(state.pendingFire===second && u.__deferredShots==0 && wheel.getActiveTaskCount()==1,
+            "late old action cannot run or cancel the new action in the same state");
+        deferredReadyMan(u,true);tickDeferred(2);
+        check(state.pendingFire==undefined && u.__deferredShots==1,
+            "the current pending action commits once when its current muzzle becomes ready");
+        assertNumber(2,LongGunSubWeaponCore.getLoadedCount(u),"successful deferred shot consumes one loaded round");
+        assertNumber(483,u.mp,"successful deferred shot commits MP once");
+        assertNumber(9,packs,"successful deferred shot submits one reserve cost");
+        deliverDeferred(oldDelivery);
+        check(u.__deferredShots==1,"completed old delivery remains inert");
+        ShootCore.cleanup(u);
+
+        u=deferredUnit();LongGunSubWeaponCore.requestShoot(u);
+        oldDelivery=u.__capturedDeferred;state=u.长枪副武器状态;
+        LongGunSubWeaponCore.configureUnit(u,deferredSpec());
+        check(u.长枪副武器状态!==state && state.pendingFire==undefined
+            && wheel.getActiveTaskCount()==0,"reconfiguration retires old state and its real task");
+        var replacement:Object=u.长枪副武器状态;
+        replacement.nextFireTime=getTimer()+5000;
+        var deadline:Number=replacement.nextFireTime;
+        deliverDeferred(oldDelivery);
+        check(u.长枪副武器状态===replacement && replacement.nextFireTime==deadline
+            && u.__deferredShots==0 && u.mp==500 && packs==10,
+            "old equipment callback cannot mutate replacement ammunition or cooldown");
+        ShootCore.cleanup(u);
+    }
+
+    private static function testDeferredCleanupAndTransitions():Void {
+        var wheel:Object=org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel.I();
+        var u:MovieClip=deferredUnit();LongGunSubWeaponCore.requestShoot(u);
+        var oldDelivery:Object=u.__capturedDeferred;
+        var state:Object=u.长枪副武器状态;
+        state.nextFireTime=getTimer()+5000;var deadline:Number=state.nextFireTime;
+        ShootCore.cleanupLane(u,ShootCore.subweaponParams,true);
+        check(state.pendingFire==undefined && wheel.getActiveTaskCount()==0 && state.nextFireTime==deadline,
+            "real subweapon cleanupLane cancels pending while retaining the actual cooldown");
+        deliverDeferred(oldDelivery);
+        check(u.__deferredShots==0 && state.nextFireTime==deadline,"late cleanup callback cannot reset cadence");
+        ShootCore.cleanup(u);
+
+        u=deferredUnit();LongGunSubWeaponCore.requestShoot(u);
+        oldDelivery=u.__capturedDeferred;
+        org.flashNight.arki.unit.UnitComponent.Routing.StateTransition.apply(u,"空手跳");
+        check(u.长枪副武器状态.pendingFire==undefined && wheel.getActiveTaskCount()==0,
+            "accepted StateTransition replacement retires deferred ownership before goto");
+        org.flashNight.arki.unit.UnitComponent.Routing.StateTransition.apply(u,"长枪站立");
+        deferredReadyMan(u,true);deliverDeferred(oldDelivery);tickDeferred(4);
+        check(u.__deferredShots==0 && u.mp==500 && packs==10,
+            "returning from jump cannot revive the pre-jump firing action");
+        ShootCore.cleanup(u);
+
+        u=deferredUnit();LongGunSubWeaponCore.requestShoot(u);
+        var pending:Object=u.长枪副武器状态.pendingFire;
+        u.飞行浮空=true;
+        org.flashNight.arki.unit.UnitComponent.Routing.StateTransition.apply(u,"长枪跑");
+        check(u.长枪副武器状态.pendingFire===pending && wheel.getActiveTaskCount()==1,
+            "refused flying-run transition does not retire the current pending action");
+        u.飞行浮空=false;
+        ShootCore.cleanup(u);
+
+        u=deferredUnit();LongGunSubWeaponCore.requestShoot(u);
+        oldDelivery=u.__capturedDeferred;
+        u.长枪.value.shot=u.长枪弹匣容量;u.长枪属性.reloadType="magazine";
+        ReloadManager.startReload(u.man,u,_root);
+        check(u.man.换弹标签 && u.长枪副武器状态.pendingFire==undefined
+            && wheel.getActiveTaskCount()==0,"real reload admission reaches cleanupLane and cancels pending");
+        ReloadManager.finishReload(u.man);deferredReadyMan(u,true);
+        deliverDeferred(oldDelivery);tickDeferred(4);
+        check(u.__deferredShots==0 && u.mp==500 && packs==10,
+            "reload completion does not resurrect its predecessor fire request");
+        ShootCore.cleanup(u);
+    }
+
+    private static function testDeferredInvalidityBeforeReadiness():Void {
+        var kinds:Array=["release","pause","dead","presentation","mode","airborne","down","reload","guard"];
+        for(var missing:Number=0;missing<2;missing++)for(var i:Number=0;i<kinds.length;i++){
+            var u:MovieClip=deferredUnit();u.__deferredMissingMan=missing==1;
+            LongGunSubWeaponCore.requestShoot(u);
+            var state:Object=u.长枪副武器状态;
+            check(state.pendingFire!=null,"valid request enters bounded readiness: "+kinds[i]+" missing="+missing);
+            var kind:String=kinds[i];
+            if(kind=="release")u.动作B=false;
+            else if(kind=="pause")_root.暂停=true;
+            else if(kind=="dead")u.hp=0;
+            else if(kind=="presentation")u.__cf6TraversalOwner={};
+            else if(kind=="mode"){u.攻击模式="兵器";u.状态="兵器站立";}
+            else if(kind=="airborne")u.浮空=true;
+            else if(kind=="down")u.倒地=true;
+            else if(kind=="reload")u.换弹中=true;
+            else state.fireGuard=function():Boolean {return false;};
+            tickDeferred(2);
+            check(state.pendingFire==undefined && u.__deferredShots==0
+                && u.mp==500 && packs==10 && state.nextFireTime==0,
+                "invalid action retires before readiness: "+kind+" missing="+missing);
+            check(org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel.I().getActiveTaskCount()==0,
+                "invalid action leaves no real retry task: "+kind+" missing="+missing);
+            _root.暂停=false;ShootCore.cleanup(u);
+        }
+    }
+
+    private static function testDeferredBoundedAndReady():Void {
+        var wheel:Object=org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel.I();
+        var u:MovieClip=deferredUnit();u.__deferredMissingMan=true;
+        check(LongGunSubWeaponCore.requestShoot(u),"missing man is a bounded readiness wait");
+        var pending:Object=u.长枪副武器状态.pendingFire;
+        for(var i:Number=0;i<30;i++)LongGunSubWeaponCore.requestShoot(u);
+        check(u.长枪副武器状态.pendingFire===pending && pending.retries==1 && wheel.getActiveTaskCount()==1,
+            "held input cannot restart readiness budget or add parallel tasks");
+        tickDeferred(12);
+        check(u.长枪副武器状态.pendingFire==undefined && wheel.getActiveTaskCount()==0
+            && u.__deferredShots==0,"missing-man retries exhaust without a permanent pending lock");
+        rearmDeferredRequest(u);deferredReadyMan(u,true);tickDeferred(2);
+        check(u.__deferredShots==1,"fresh request succeeds after bounded exhaustion");
+        ShootCore.cleanup(u);
+
+        u=deferredUnit();u.__deferredReadyOnGoto=true;
+        check(LongGunSubWeaponCore.requestShoot(u),"synchronously ready pose handoff remains accepted");
+        check(u.状态=="长枪行走" && u.长枪副武器状态.pendingFire==undefined
+            && u.__capturedDeferred==undefined && u.__deferredShots==1,
+            "synchronous callback reenters fireInternal once without scheduling a pending action");
+        ShootCore.cleanup(u);
+
+        u=deferredUnit();LongGunSubWeaponCore.requestShoot(u);
+        u.长枪副武器状态.nextFireTime=getTimer()+5000;
+        var deadline:Number=u.长枪副武器状态.nextFireTime;
+        deferredReadyMan(u,true);tickDeferred(2);
+        check(u.长枪副武器状态.pendingFire==undefined && u.__deferredShots==0
+            && u.长枪副武器状态.nextFireTime==deadline && u.mp==500 && packs==10,
+            "ready callback retires but cannot bypass an intervening real cooldown");
+        ShootCore.cleanup(u);
     }
 
 }

@@ -20,6 +20,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             return false;
         }
 
+        cancelPendingFire(unit);
         var config:Object = buildRuntimeConfig(sub, itemData);
         var firedCount:Number = readStoredFiredCount(unit, config);
         var reloadCount:Number = readStoredReloadCount(unit);
@@ -227,6 +228,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (!hasSubweapon(unit)) {
             return false;
         }
+        if (_root.暂停 || unit.hp <= 0
+                || org.flashNight.arki.unit.Action.Shoot.ShootCore.isPresentationControlled(unit)) return false;
         if (!passesEquipmentFireGuard(unit)) return false;
         if (unit.攻击模式 != "长枪") {
             return false;
@@ -250,10 +253,22 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         var config:Object = unit.长枪副武器配置;
         var state:Object = unit.长枪副武器状态;
         if (getLoadedCount(unit) <= 0) {
-            updateAmmoDisplay(unit);
+            // 空仓只在请求边界申请自己的装填；射击执行器继续 denyNoReload。
+            // AI 不经玩家库存。没有备弹时复用库存版本的失败报价，不逐帧扫背包。
+            if (allowPoseChange && isHero(unit) && !_root.暂停
+                    && !org.flashNight.arki.unit.Action.Shoot.ShootCore.isPresentationControlled(unit)) {
+                var reloadState:String = getNormalizedLongGunActionState(unit);
+                if (reloadState != unit.状态) {
+                    // 先切姿，下一次已有 K 采样等当前 man 的帧 0 绑定；不跨 goto 续跑。
+                    unit.行走冷却帧 = 2;
+                    changeUnitState(unit, reloadState);
+                    return false;
+                }
+                if (typeof man.开始副武器换弹 == "function") man.开始副武器换弹();
+            }
             return false;
         }
-        if (unit.__subweaponPoseChangePending == true) {
+        if (state.pendingFire != null) {
             return false;
         }
 
@@ -286,6 +301,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     public static function canReloadManual(unit:Object):Boolean {
+        if (_root.暂停 || org.flashNight.arki.unit.Action.Shoot.ShootCore.isPresentationControlled(unit)) return false;
         if (!hasSubweapon(unit)) return false;
         if (unit.攻击模式 != "长枪") return false;
         if (!isLongGunActionState(unit)) return false;
@@ -298,10 +314,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             return false;
         }
 
-        if (!hasReloadReserve(config) && !canTacticalFreeReload(unit, config, state)) {
-            updateAmmoDisplay(unit);
-            return false;
-        }
+        if (!hasReloadReserve(unit, config) && !canTacticalFreeReload(unit, config, state)) return false;
         return true;
     }
 
@@ -313,23 +326,20 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             updateAmmoDisplay(unit);
             return false;
         }
-        if (!hasReloadReserve(config) && !canTacticalFreeReload(unit, config, state)) {
-            updateAmmoDisplay(unit);
-            return false;
-        }
+        if (!hasReloadReserve(unit, config) && !canTacticalFreeReload(unit, config, state)) return false;
         return true;
     }
 
-    public static function setManualReloadRequest(target:Object, unit:Object):Object {
-        return setReloadRequest(target, unit, "manual");
+    public static function setManualReloadRequest(target:Object):Object {
+        return setReloadRequest(target, "manual");
     }
 
-    public static function setLinkedReloadRequest(target:Object, unit:Object):Object {
-        return setReloadRequest(target, unit, "linked");
+    public static function setLinkedReloadRequest(target:Object):Object {
+        return setReloadRequest(target, "linked");
     }
 
-    public static function setFreeReloadRequest(target:Object, unit:Object):Object {
-        return setReloadRequest(target, unit, "free");
+    public static function setFreeReloadRequest(target:Object):Object {
+        return setReloadRequest(target, "free");
     }
 
     public static function getReloadRequest(target:Object):Object {
@@ -355,8 +365,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     public static function clearReloadRequest(target:Object):Void {
         if (!target) return;
         delete target.subweaponReloadRequest;
-        delete target.subweaponManualReload;
-        delete target.subweaponLinkedReload;
     }
 
     public static function commitReloadRequest(target:Object, unit:Object):Boolean {
@@ -609,16 +617,13 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return burden;
     }
 
-    private static function setReloadRequest(target:Object, unit:Object, kind:String):Object {
+    private static function setReloadRequest(target:Object, kind:String):Object {
         if (!target) return null;
         var request:Object = {
             weaponType: "长枪副武器",
-            kind: kind,
-            unitName: unit ? unit._name : null
+            kind: kind
         };
         target.subweaponReloadRequest = request;
-        delete target.subweaponManualReload;
-        delete target.subweaponLinkedReload;
         return request;
     }
 
@@ -744,14 +749,30 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return payFireCosts(unit, unit.长枪副武器配置, unit.长枪副武器状态);
     }
 
-    private static function hasReloadReserve(config:Object):Boolean {
-        if (config.consumeMode == "onLoadGroup") {
-            return config.clipCostPerLoad <= 0 || ItemUtil.singleContain(config.reserveName, config.clipCostPerLoad) != null;
-        }
-        if (config.consumeMode == "onFire") {
-            return config.fireCost <= 0 || ItemUtil.singleContain(config.reserveName, config.fireCost) != null;
-        }
-        return true;
+    private static function hasReloadReserve(unit:Object, config:Object):Boolean {
+        var cost:Number = config.consumeMode == "onLoadGroup" ? config.clipCostPerLoad
+            : (config.consumeMode == "onFire" ? config.fireCost : 0);
+        if (!(cost > 0)) return true;
+        // 字典库存读取为 O(1)，不构造 contain 的提交位置表。
+        if (ItemUtil.isMaterial(config.reserveName) || ItemUtil.isInformation(config.reserveName))
+            return ItemUtil.getTotal(config.reserveName) >= cost;
+        var bag:Object = _root.物品栏.背包;
+        var drugs:Object = _root.物品栏.药剂栏;
+        var bagRevision:Number = bag.getMutationRevision();
+        var drugRevision:Number = drugs.getMutationRevision();
+        var state:Object = unit.长枪副武器状态;
+        var denied:Object = state.failedReserveProbe;
+        if (denied != null && denied.bag === bag && denied.drugs === drugs
+                && denied.bagRevision === bagRevision && denied.drugRevision === drugRevision) return false;
+        var available:Boolean = ItemUtil.singleContain(config.reserveName, cost) != null;
+        // 只记失败，不缓存余额或提交许可；实际扣费仍在 ItemUtil.singleSubmit。
+        if (!available && bagRevision != undefined && drugRevision != undefined) {
+            if (denied == null) denied = {};
+            denied.bag = bag; denied.drugs = drugs;
+            denied.bagRevision = bagRevision; denied.drugRevision = drugRevision;
+            state.failedReserveProbe = denied;
+        } else delete state.failedReserveProbe;
+        return available;
     }
 
     private static function reloadInternal(unit:Object, manual:Boolean):Boolean {
@@ -763,7 +784,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             return false;
         }
 
-        var hasReserve:Boolean = hasReloadReserve(config);
+        var hasReserve:Boolean = hasReloadReserve(unit, config);
         var hasTacticalFreeReload:Boolean = canTacticalFreeReload(unit, config, state);
         if (!hasReserve && !hasTacticalFreeReload) {
             updateAmmoDisplay(unit);
@@ -880,7 +901,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     private static function submitFireAfterPoseChange(unit:Object, targetState:String):Void {
-        unit.__subweaponPoseChangePending = true;
         var job:Object = unit.__stateTransitionJob;
         if (job == undefined) {
             job = {};
@@ -902,18 +922,29 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     private static function startShootingOnCurrentMan(unit:Object):Void {
-        if (!unit) return;
-        delete unit.__subweaponPoseChangePending;
-        var man:Object = unit ? unit.man : null;
+        if (!hasSubweapon(unit)) return;
+        if (!unit.动作B || _root.暂停 || unit.hp <= 0
+                || org.flashNight.arki.unit.Action.Shoot.ShootCore.isPresentationControlled(unit)) {
+            cancelPendingFire(unit);
+            return;
+        }
+        var man:Object = unit.man;
+        if (!canCommitFire(unit, man, true)) {
+            cancelPendingFire(unit);
+            return;
+        }
         if (!isShootManReady(man)) {
             deferFinishFireOnCurrentMan(unit);
             return;
         }
-        clearDeferredFire(unit);
-        startShootingOnMan(unit, man);
+        // 在 goto/支付之前交还所有权；就绪不是旧冷却报价的通行证。
+        cancelPendingFire(unit);
+        fireInternal(unit, man, false);
     }
 
-    private static function finishFireOnCurrentMan(unit:Object):Void {
+    private static function finishFireOnCurrentMan(unit:Object, state:Object, pending:Object):Void {
+        if (!unit || unit.长枪副武器状态 !== state || state.pendingFire !== pending) return;
+        pending.taskId = null;
         startShootingOnCurrentMan(unit);
     }
 
@@ -987,7 +1018,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         // 与普通换弹一致：状态改变返回后直接由当前 man 持有 request 与换弹标签。
         // unit 不保存跨动画移动锁；技能/受伤等替换 man 时，换弹所有权随旧 man 自然退场。
         if (!man.gotoAndPlay) return false;
-        setManualReloadRequest(man, unit);
+        setManualReloadRequest(man);
+        org.flashNight.arki.unit.Action.Shoot.ReloadManager.beginReloadInput(man, unit);
+        org.flashNight.arki.unit.Action.Shoot.ReloadManager.bumpReloadGeneration(man);
         man.换弹标签 = true;
         man.gotoAndPlay("换弹匣");
         return true;
@@ -1009,14 +1042,18 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return 0;
     }
 
-    private static function canCommitFire(unit:Object, man:Object):Boolean {
+    private static function canCommitFire(unit:Object, man:Object, allowMissingMan:Boolean):Boolean {
         if (!hasSubweapon(unit)) return false;
+        if (_root.暂停 || unit.hp <= 0
+                || org.flashNight.arki.unit.Action.Shoot.ShootCore.isPresentationControlled(unit)) return false;
         if (!passesEquipmentFireGuard(unit)) return false;
         if (unit.攻击模式 != "长枪") return false;
         if (unit.浮空 || unit.倒地) return false;
         if (!isSubweaponShootPoseReady(unit)) return false;
         if (unit.换弹中) return false;
-        if (!man || man.换弹标签) return false;
+        // 仅 readiness 泵可暂缺 man；所有 unit 资格仍须通过，真正提交从不豁免。
+        if (!man) return allowMissingMan === true;
+        if (man.换弹标签) return false;
         return true;
     }
 
@@ -1039,37 +1076,32 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
     private static function deferFinishFireOnCurrentMan(unit:Object):Void {
         if (!hasSubweapon(unit)) return;
-        var tries:Number = unit.__subweaponDeferredFireRetries || 0;
-        if (tries >= MAX_DEFERRED_RETRIES) {
+        var state:Object = unit.长枪副武器状态;
+        var pending:Object = state.pendingFire;
+        if (pending == null) {
+            // 仅未就绪时分配一次；同步切姿作业不持有跨帧状态。
+            pending = {retries:0};
+            state.pendingFire = pending;
+        }
+        if (pending.retries >= MAX_DEFERRED_RETRIES) {
             cancelPendingFire(unit);
             return;
         }
-        unit.__subweaponDeferredFireRetries = tries + 1;
-        EnhancedCooldownWheel.I().addTask(LongGunSubWeaponCore.finishFireOnCurrentMan, DEFERRED_RETRY_MS, 1, unit);
+        pending.retries++;
+        pending.taskId = EnhancedCooldownWheel.I().addTask(
+            LongGunSubWeaponCore.finishFireOnCurrentMan, DEFERRED_RETRY_MS, 1, unit, state, pending);
     }
 
-    private static function clearDeferredFire(unit:Object):Void {
-        if (!unit) return;
-        delete unit.__subweaponDeferredFireRetries;
-    }
-
-    private static function clearPendingFire(unit:Object):Void {
-        if (!unit) return;
-        delete unit.__subweaponPendingFireCdUntil;
-        delete unit.__subweaponPoseChangePending;
-        delete unit.__subweaponShootingMan;
-        clearDeferredFire(unit);
-    }
-
-    private static function cancelPendingFire(unit:Object):Void {
+    /** 由动作替换、射击 lane 清理和换装退休；不修改已经提交的射速预算。 */
+    public static function cancelPendingFire(unit:Object):Void {
         if (!unit) return;
         var state:Object = unit.长枪副武器状态;
-        var hasPending:Boolean = unit.__subweaponPendingFireCdUntil != undefined;
-        var pendingUntil:Number = Number(unit.__subweaponPendingFireCdUntil);
-        if (hasPending && state && state.nextFireTime == pendingUntil) {
-            state.nextFireTime = 0;
+        var pending:Object = state ? state.pendingFire : null;
+        if (pending != null) {
+            delete state.pendingFire;
+            if (pending.taskId != null) EnhancedCooldownWheel.I().removeTask(pending.taskId);
         }
-        clearPendingFire(unit);
+        delete unit.__subweaponShootingMan;
     }
 
     private static function writeRuntimeBridgeFields(unit:Object, config:Object):Void {

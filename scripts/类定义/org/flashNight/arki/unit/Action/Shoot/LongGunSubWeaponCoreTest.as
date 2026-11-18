@@ -1285,8 +1285,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1
                 && _root.存档系统.dirtyMark === false,
             "deferred abort neither consumes onFire reserve nor marks persistence dirty");
-        assert(unit.长枪副武器状态.nextFireTime == 0, "deferred abort clears tentative cooldown");
-        assert(unit.__subweaponPendingFireCdUntil == undefined, "deferred abort clears pending fire lock");
+        assert(unit.长枪副武器状态.nextFireTime == 0, "deferred abort does not create a cooldown");
+        assert(unit.长枪副武器状态.pendingFire == undefined, "deferred abort retires its pending action");
 
         shot = null;
         unit.man = makeActionClip(unit, 100, 50, 3, 4);
@@ -1348,8 +1348,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1
                 && _root.存档系统.dirtyMark === false,
             "invalidated deferred fire neither consumes reserve nor marks persistence dirty");
-        assert(unit.长枪副武器状态.nextFireTime == 0, "invalidated deferred fire clears tentative cooldown");
-        assert(unit.__subweaponPendingFireCdUntil == undefined, "invalidated deferred fire clears pending lock");
+        assert(unit.长枪副武器状态.nextFireTime == 0, "invalidated deferred fire does not create a cooldown");
+        assert(unit.长枪副武器状态.pendingFire == undefined, "invalidated deferred fire retires its action");
 
         _root.子弹区域shoot传递 = oldShoot;
         _root.gameworld = previousGameworld;
@@ -1509,7 +1509,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         markSubweaponEmpty(unit, true);
 
         assert(LongGunSubWeaponCore.canReloadManual(unit), "manual reload precheck passes before animation");
-        LongGunSubWeaponCore.setManualReloadRequest(unit.man, unit);
+        LongGunSubWeaponCore.setManualReloadRequest(unit.man);
         unit.man.换弹标签 = true;
 
         ReloadManager.initReloadBurden(unit.man, 42, 50, 43, 74, [51, 56, 64]);
@@ -1529,7 +1529,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         ReloadManager.finishReload(unit.man);
         assert(LongGunSubWeaponCore.getReloadRequest(unit.man) == null, "finish reload clears subweapon reload request");
-        assert(unit.man.subweaponManualReload == undefined, "finish reload clears legacy subweapon manual marker");
+        assert(unit.man.subweaponManualReload == undefined, "finish reload does not restore the retired subweapon manual marker");
         assert(unit.man.换弹标签 == false, "finish reload clears reload tag");
         assert(unit.man.stopFrame == "空闲", "finish reload returns timeline to idle");
         restoreMockInventory();
@@ -1837,7 +1837,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         ReloadManager.finishReload(unit.man);
         unit.man = makeReloadClip(unit);
-        LongGunSubWeaponCore.setLinkedReloadRequest(unit.man, unit);
+        LongGunSubWeaponCore.setLinkedReloadRequest(unit.man);
         ReloadManager.initReloadBurden(unit.man, 42, 50, 43, 74, [51, 56, 64]);
         assert(unit.man.reloadBurden == 175, "combined reload burden adds subweapon burden");
     }
@@ -1854,11 +1854,11 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         ReloadManager.initReloadBurden(unit.man,42,50,43,74,[51,56,64]);
         assert(unit.man.reloadBurden == 300,"pilebunker +200 percent means triple main reload burden");
         ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);
-        LongGunSubWeaponCore.setLinkedReloadRequest(unit.man,unit);
+        LongGunSubWeaponCore.setLinkedReloadRequest(unit.man);
         ReloadManager.initReloadBurden(unit.man,42,50,43,74,[51,56,64]);
         assert(unit.man.reloadBurden == 325,"pilebunker linked fuel adds 25 after main burden");
         ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);
-        LongGunSubWeaponCore.setManualReloadRequest(unit.man,unit);
+        LongGunSubWeaponCore.setManualReloadRequest(unit.man);
         ReloadManager.initReloadBurden(unit.man,42,50,43,74,[51,56,64]);
         assert(unit.man.reloadBurden == 25,"fuel-only refill does not inherit main reload penalty");
         ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);
@@ -1871,7 +1871,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.man.reloadBurden == 197,"gunslinger level ten retains production rounding");
         ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);
         unit.被动技能.枪械师.等级 = 1;
-        LongGunSubWeaponCore.setLinkedReloadRequest(unit.man,unit);
+        LongGunSubWeaponCore.setLinkedReloadRequest(unit.man);
         ReloadManager.initReloadBurden(unit.man,42,50,43,74,[51,56,64]);
         assert(unit.man.reloadBurden == 250,"linked fuel burden is added after gunslinger reduction");
         ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);

@@ -265,7 +265,6 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         // 枪械师技能属性名
         var gunslingerChainProp:String = "_gunslingerChain_" + timerProp;
         var gunslingerReleasePollProp:String = "_gunslingerReleasePoll_" + timerProp;
-        var gunslingerReleasedProp:String = "_semiReleased_" + timerProp;
 
         return function():Void {
             var that:MovieClip = self;
@@ -361,8 +360,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                         shootingFlagProp,
                         actionFlagName,
                         timerProp,
-                        gunslingerChainProp,
-                        gunslingerReleasedProp
+                        gunslingerChainProp
                     );
 
                     // 3) 轮询检测按键释放
@@ -372,13 +370,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                         delete parentRef[gunslingerReleasePollProp];
                     }
                     parentRef[gunslingerReleasePollProp] = EnhancedCooldownWheel.I().addTask(
-                        ShootCore._gunslingerReleasePoll,
+                        ShootCore._pollGunslingerRelease,
                         33,
                         true,
                         parentRef,
-                        actionFlagName,
+                        gunslingerReleasePollProp,
                         gunslingerChainProp,
-                        gunslingerReleasedProp
+                        actionFlagName
                     );
                 } else if (isSemiAuto) {
                     // 普通半自动模式：仅射击一发，使用两阶段冷却防止连续触发

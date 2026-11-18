@@ -35,6 +35,9 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransition {
 
         var retiring:Object = self.man;
         var replacing:Boolean = (plan.transition && !plan.poseOnly) || plan.removeDynamicMan;
+        if (replacing && self.长枪副武器状态 != null && self.长枪副武器状态.pendingFire != null) {
+            org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.cancelPendingFire(self);
+        }
         // An accepted skill transition owns the action. A refused/same-state request cannot retire a live firing lane.
         if (replacing && retiring != null && (newStateName == "技能" || newStateName == "战技")) {
             org.flashNight.arki.unit.Action.Shoot.ShootCore.cleanup(self, true);
