@@ -82,7 +82,8 @@
     const icon = info?.icon || tile.dataset.item;
     const doc = {version:1, title, profile:'dense', layoutType:'wide', icon:{kind:'item',name:icon}, sections};
     // The document renderer escapes titles and runs, including names from imported saves.
-    return window.PanelTooltip.buildItemRichHtml({document:doc, iconUrl:window.Icons?.resolveStatic(icon),
+    return window.PanelTooltip.buildItemRichHtml({document:doc,
+      iconHtml:window.PanelTooltip.dynamicIconHtml(icon), iconUrl:window.PanelTooltip.staticIconUrl(icon),
       introWebHTML:escapeText(title + ' · ' + intro.join(' · '))});
   }
 

@@ -1472,6 +1472,11 @@ async function main() {
                 document.querySelector('#panel-tooltip').textContent.includes('旧装<甲>'));
             if (await fallback.locator('img').count() || (await card.innerText()).includes('铭牌仍写着POLICE'))
                 throw new Error('unknown legacy gear should keep its literal name and have no stale artwork or description');
+            await emit([{...first,appearance:{equipment:{primary:'AK47火麒麟'}}}]);
+            await gear.locator('[data-item="AK47火麒麟"]').hover();
+            await card.locator('.flash-tt-icon [data-icon-layer-index]').first().waitFor({state:'visible',timeout:5000});
+            if (await row.locator('.save-equip img').count() !== 1 || await row.locator('[data-icon-layer-index]').count())
+                throw new Error('only the inspected item should expand into its animated layers');
             return 'real inventory art, authored description, legacy fallback, pointer and keyboard inspection before game entry';
         });
 
