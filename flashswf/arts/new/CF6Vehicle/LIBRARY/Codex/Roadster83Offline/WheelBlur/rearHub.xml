@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Roadster83Offline/WheelBlur/rearHub" symbolType="movie clip" itemID="fb4ed121-9980a335">
+  <timeline>
+    <DOMTimeline name="rearHub">
+      <layers>
+        <DOMLayer name="velocity average" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="pad" focalPointRatio="0">
+                        <matrix>
+                          <Matrix a="0.016758648476" d="0.0161152213527" tx="200.500146" ty="282.324082" />
+                        </matrix>
+                        <GradientEntry ratio="0.0" color="#29343A" alpha="1.0" />
+                        <GradientEntry ratio="0.55" color="#171E22" alpha="1.0" />
+                        <GradientEntry ratio="0.65" color="#263239" alpha="1.0" />
+                        <GradientEntry ratio="0.73" color="#56636A" alpha="0.58" />
+                        <GradientEntry ratio="0.9" color="#404D54" alpha="0.43" />
+                        <GradientEntry ratio="1.0" color="#404D54" alpha="0.0" />
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!4285 5646|4282 5612|4275 5578|4264 5545|4248 5514|4228 5486|4204 5460|4177 5437|4147 5418|4115 5403|4081 5391|4046 5385|4010 5382|3974 5385|3939 5391|3905 5403|3873 5418|3843 5437|3816 5460|3792 5486|3772 5514|3756 5545|3745 5578|3738 5612|3735 5646|3738 5681|3745 5715|3756 5748|3772 5778|3792 5807|3816 5833|3843 5856|3873 5875|3905 5890|3939 5902|3974 5908|4010 5911|4046 5908|4081 5902|4115 5890|4147 5875|4177 5856|4204 5833|4228 5807|4248 5778|4264 5748|4275 5715|4282 5681|4285 5646" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

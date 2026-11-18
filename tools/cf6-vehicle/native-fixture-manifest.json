@@ -1,16 +1,16 @@
 {
   "schema": "cf6-vehicle-native-fixture.v1",
   "nativeSwf": "flashswf/arts/new/CF6Vehicle.swf",
-  "nativeSha256": "876b2955bbf486d5a82fa15142738f6a23887577d717e947143707d4ed600855",
+  "nativeSha256": "4b8c873bffc81f7f4213b1048d74f4f8cfb5af388178297bcefeb221a8f462ec",
   "nativeStructure": {
-    "shapes": 398,
-    "bitmaps": 45,
+    "shapes": 922,
+    "bitmaps": 44,
     "public": {
       "CF6VehiclePlayer": {
         "sourceId": 1803,
         "frames": 29,
-        "closureNodes": 86,
-        "reachableShapes": 62
+        "closureNodes": 613,
+        "reachableShapes": 586
       },
       "CF6VehicleArmoredBoss": {
         "sourceId": 1813,
@@ -82,12 +82,12 @@
     "CF6VehicleShield",
     "CF6VehicleSpark"
   ],
-  "resourceSourceManifestSha256": "2a7167122ae42f296d9a4b95ed41bdd2c826e273c6d546d562d8d75b9b7f635f",
-  "runtimeManifestSha256": "189306bb114925b3532e37dbbd97ff8971f73847b4fb7276803b278850b6c5fe",
+  "resourceSourceManifestSha256": "be3fcf8bc9d481ad8b0f31dc3d0fc834d6b9980db85e20f60bc458e71e966336",
+  "runtimeManifestSha256": "7ea3856926bb670a6390da48ab49cb45be3b5caa5912fa2f8951164ad94ff5cc",
   "fixtureInputs": {
     "tools/cf6-vehicle/prepare_tests.py": "3581f93a867de8ba68515a782e9028b97039f41f3792ba2d9cd78defa7f54f38",
     "tools/cf6-vehicle/native_graph.py": "00d1f4d74a137350393bab64ff4b66f56858e255e06c274673ead86e45154cd9",
-    "tools/cf6-vehicle/Cf6VehicleTest.as.txt": "601663a1910c4b36f48c89cd4617388ac744302ce5fc8c9cfa75a10ccc8de34e",
+    "tools/cf6-vehicle/Cf6VehicleTest.as.txt": "3fe818b44900971f48e6a4719303e864ffdd8160f5423fc96ef851b7870df13f",
     "tools/cf6-vehicle/chapter_fragment.py": "af633fe0d92cb510dd4318ee4075c172752da7ff7e75b411a0e6e418a744702f"
   },
   "generated": {

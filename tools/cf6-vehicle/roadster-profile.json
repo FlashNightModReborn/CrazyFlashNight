@@ -1,0 +1,161 @@
+{
+  "schema": "cf6-a07-roadster.v1",
+  "visual_symbol": "Codex/Roadster83Offline/Visual",
+  "fitted_player_matrix": [
+    0.39898190048603616,
+    0.001697794190233783,
+    -0.001697794190233783,
+    0.39898190048603616,
+    -204.03174794342164,
+    -108.47307937298483
+  ],
+  "wheel_blur_overlays": {
+    "part20": "wheel20Blur",
+    "part19": "wheel19Blur",
+    "part15": "wheel15Blur",
+    "part14": "wheel14Blur"
+  },
+  "clock_config": {
+    "circumference": 200.09555912666826,
+    "count": 32,
+    "fullSpinTurnsPerTick": 0.08,
+    "maxSpinCount": 29.0,
+    "spinDownRate": 0.33,
+    "spinUpAmount": 5.0
+  },
+  "bindings": {
+    "controlled_parts": [
+      {
+        "clock": "nearGun",
+        "instance": "part01",
+        "phase_count": 32,
+        "source_bundle": "gun-near-depth-slot-5",
+        "symbol": "Codex/Roadster83Offline/Motion/m01"
+      },
+      {
+        "clock": "nearGun",
+        "instance": "part02",
+        "phase_count": 32,
+        "source_bundle": "gun-near-depth-slot-4",
+        "symbol": "Codex/Roadster83Offline/Motion/m02"
+      },
+      {
+        "clock": "nearGun",
+        "instance": "part03",
+        "phase_count": 32,
+        "source_bundle": "gun-near-depth-slot-3",
+        "symbol": "Codex/Roadster83Offline/Motion/m03"
+      },
+      {
+        "clock": "nearGun",
+        "instance": "part04",
+        "phase_count": 32,
+        "source_bundle": "gun-near-depth-slot-2",
+        "symbol": "Codex/Roadster83Offline/Motion/m04"
+      },
+      {
+        "clock": "nearGun",
+        "instance": "part05",
+        "phase_count": 32,
+        "source_bundle": "gun-near-depth-slot-1",
+        "symbol": "Codex/Roadster83Offline/Motion/m05"
+      },
+      {
+        "clock": "nearGun",
+        "instance": "part06",
+        "phase_count": 32,
+        "source_bundle": "gun-near-depth-slot-0",
+        "symbol": "Codex/Roadster83Offline/Motion/m06"
+      },
+      {
+        "clock": "farGun",
+        "instance": "part08",
+        "phase_count": 32,
+        "source_bundle": "gun-far-depth-slot-5",
+        "symbol": "Codex/Roadster83Offline/Motion/m08"
+      },
+      {
+        "clock": "farGun",
+        "instance": "part09",
+        "phase_count": 32,
+        "source_bundle": "gun-far-depth-slot-4",
+        "symbol": "Codex/Roadster83Offline/Motion/m09"
+      },
+      {
+        "clock": "farGun",
+        "instance": "part10",
+        "phase_count": 32,
+        "source_bundle": "gun-far-depth-slot-3",
+        "symbol": "Codex/Roadster83Offline/Motion/m10"
+      },
+      {
+        "clock": "farGun",
+        "instance": "part11",
+        "phase_count": 32,
+        "source_bundle": "gun-far-depth-slot-2",
+        "symbol": "Codex/Roadster83Offline/Motion/m11"
+      },
+      {
+        "clock": "farGun",
+        "instance": "part12",
+        "phase_count": 32,
+        "source_bundle": "gun-far-depth-slot-1",
+        "symbol": "Codex/Roadster83Offline/Motion/m12"
+      },
+      {
+        "clock": "farGun",
+        "instance": "part13",
+        "phase_count": 32,
+        "source_bundle": "gun-far-depth-slot-0",
+        "symbol": "Codex/Roadster83Offline/Motion/m13"
+      },
+      {
+        "clock": "wheels",
+        "instance": "part14",
+        "phase_count": 32,
+        "source_bundle": "wheel-front-near-hub-cover-and-lug-heads",
+        "symbol": "Codex/Roadster83Offline/Motion/m14"
+      },
+      {
+        "clock": "wheels",
+        "instance": "part15",
+        "phase_count": 32,
+        "source_bundle": "wheel-front-near-spokes",
+        "symbol": "Codex/Roadster83Offline/Motion/m15"
+      },
+      {
+        "clock": "wheels",
+        "instance": "part17",
+        "phase_count": 32,
+        "source_bundle": "wheel-front-near-rotor-drilling-marks",
+        "symbol": "Codex/Roadster83Offline/Motion/m17"
+      },
+      {
+        "clock": "wheels",
+        "instance": "part19",
+        "phase_count": 32,
+        "source_bundle": "wheel-rear-near-hub-cover-and-lug-heads",
+        "symbol": "Codex/Roadster83Offline/Motion/m19"
+      },
+      {
+        "clock": "wheels",
+        "instance": "part20",
+        "phase_count": 32,
+        "source_bundle": "wheel-rear-near-spokes",
+        "symbol": "Codex/Roadster83Offline/Motion/m20"
+      },
+      {
+        "clock": "wheels",
+        "instance": "part22",
+        "phase_count": 32,
+        "source_bundle": "wheel-rear-near-rotor-drilling-marks",
+        "symbol": "Codex/Roadster83Offline/Motion/m22"
+      }
+    ],
+    "pose_frame_fields": {
+      "farGun": "farGunFrame",
+      "nearGun": "nearGunFrame",
+      "wheels": "wheelFrame"
+    }
+  }
+}

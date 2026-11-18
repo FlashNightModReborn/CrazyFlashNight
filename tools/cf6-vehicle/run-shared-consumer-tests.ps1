@@ -12,7 +12,7 @@ if($LASTEXITCODE -ne 0){throw 'Shared consumer fixture is stale'}
     -TemplateRelativePath 'tools/cf6-vehicle/SharedConsumer.TestLoader.as.template' `
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6VehicleSharedConsumerTest.as') `
     -SuiteFqns @('org.flashNight.arki.scene.Cf6VehicleSharedConsumerTest') `
-    -ExpectedTracePatterns @('(?m)^Cf6VehicleSharedConsumerTest Tests Passed: 31\r?$','(?m)^Cf6VehicleSharedConsumerTest Tests Failed: 0\r?$') `
-    -SuccessSummary '31 actual things-new consumer checks: ten dynamic vehicle exports with source identity and native pixels' `
+    -ExpectedTracePatterns @('(?m)^Cf6VehicleSharedConsumerTest Tests Passed: 32\r?$','(?m)^Cf6VehicleSharedConsumerTest Tests Failed: 0\r?$') `
+    -SuccessSummary '32 actual things-new consumer checks including the A07 roadster and both wheel overlays' `
     -AsyncBehaviorTimeoutSeconds 180 -TimeoutSeconds $TimeoutSeconds
 exit $LASTEXITCODE

@@ -65,6 +65,8 @@ class org.flashNight.arki.scene.Cf6VehicleService {
             var source:Object=s.data.generators[i];s.generators.push({kind:source.kind,x:source.x,hp:source.hp,remaining:source.budget,active:null});
         }
         for(i=0;i<s.data.initial.length;i++) if(spawn(s,s.data.initial[i],-1)==null) return false;
+        if(!org.flashNight.arki.scene.Cf6RoadsterPresentation.begin(s)) {s.reason="roadster-visual-binding";return false;}
+        org.flashNight.arki.scene.Cf6RoadsterBurst.open(s);
         syncPlayer(s);s.status="playing";s.age=0;releaseLoading(s);return true;
     }
     private static function spawn(s:Object,source:Object,generator:Number):Object {
@@ -184,6 +186,7 @@ class org.flashNight.arki.scene.Cf6VehicleService {
         }
     }
     private static function tail(s:Object):Void {
+        org.flashNight.arki.scene.Cf6RoadsterBurst.clear(s);
         for(var i:Number=0;i<s.actors.length;i++) Cf6VehicleCombat.retire(s,s.actors[i]);s.actors=[];
         for(i=0;i<s.projectiles.length;i++) Cf6VehicleCombat.retire(s,s.projectiles[i]);s.projectiles=[];
         for(i=0;i<s.grenades.length;i++) Cf6VehicleCombat.retire(s,s.grenades[i]);s.grenades=[];
@@ -198,6 +201,8 @@ class org.flashNight.arki.scene.Cf6VehicleService {
         s.resumeStatus=s.status;s.deadCarFrame=s.player._currentframe;
         if(!s.heroDeathSound) {Cf6VehicleCombat.playCue(s,"vehicleDeath",true);s.heroDeathSound=true;}
         if(!Cf6VehicleActorAdapter.park(s.actorAdapter)) {s.reason="dead-presentation-owner-changed";dispose(s);return "cancelled";}
+        org.flashNight.arki.scene.Cf6RoadsterPresentation.close(s);
+        org.flashNight.arki.scene.Cf6RoadsterBurst.clear(s);
         releaseLoading(s);FocusTargetHudService.clear(s.hudLease);s.hudLease=null;
         s.status="dead";Cf6VehicleTimeline.pose(s.player,16);
         return s.status;
@@ -209,6 +214,7 @@ class org.flashNight.arki.scene.Cf6VehicleService {
         s.status=s.resumeStatus;s.heroDeathSound=false;
         Cf6VehicleTimeline.pose(s.player,s.deadCarFrame);syncPlayer(s);
         if(s.status=="loading")s.loadingLease=PauseManager.lease(true,"cf6_vehicle_loading");
+        else if(!org.flashNight.arki.scene.Cf6RoadsterPresentation.begin(s)) {s.reason="roadster-visual-binding";s.status="failed";return s.status;}
         if(Cf6VehicleCombat.owned(s,s.boss)) {
             s.hudLease=FocusTargetHudService.bind(s.world,s.owner,s.boss,"__cf6HudIdentity",s.hudIdentity,"boss","装甲战车");
             if(s.hudLease==null) {s.reason="revived-boss-hud-owner-rejected";s.status="failed";}
@@ -242,24 +248,28 @@ class org.flashNight.arki.scene.Cf6VehicleService {
         // hit helpers remain testable but are not used for production deduction.
         Cf6VehicleRules.observeHealth(s.rules,s.token,s.actorAdapter.hero.hp,s.boss==null?undefined:s.boss.hp);
         var intent:Object=Cf6VehicleRules.tick(s.rules,s.token,false,input);
+        var heroStartX:Number=s.actorAdapter.hero._x, roadStartFrame:Number=s.road._currentframe;
         Cf6VehicleActorAdapter.move(s.actorAdapter,intent.dx,intent.dz,s.spec.scale,s.data.player,s.data.walls);
         Cf6VehicleTimeline.pose(s.player,input.fire?8:1);Cf6VehicleTimeline.advance(s.player,true);
         Cf6VehicleTimeline.advance(s.road,false);generators(s);actors(s);
         if(intent.cue=="spawn-boss") spawnBoss(s);
-        if(intent.shots>0) Cf6VehicleCombat.fire(s);
-        boss(s,intent);Cf6VehicleCombat.projectiles(s);grenades(s);Cf6VehicleCombat.effects(s);
+        var emissions:Number=intent.shots>0?Cf6VehicleCombat.fire(s):0;
+        boss(s,intent);Cf6VehicleCombat.projectiles(s);
+        org.flashNight.arki.scene.Cf6RoadsterBurst.advance(s);
+        grenades(s);Cf6VehicleCombat.effects(s);
         if(intent.cue=="spawn-tail") tail(s);
         if(s.rules.phase=="tail") {
             var oldX:Number=s.tailX;s.tailX-=20;
             var rect:Array=s.data.endpoint.rect;
             var swept:Array=[s.tailX+rect[0],rect[1],oldX+rect[2],rect[3]];
             if(Cf6VehicleCombat.overlap(swept,0,s.data.endpoint.y,s.data.player,s.actorAdapter.hero._x/s.spec.scale,s.actorAdapter.hero.Z轴坐标/s.spec.scale)) {
-                Cf6VehicleRules.reachTail(s.rules,s.token,true);s.status="complete";
+                Cf6VehicleRules.reachTail(s.rules,s.token,true);s.status="complete";org.flashNight.arki.scene.Cf6RoadsterBurst.clear(s);
             }
         }
         syncPlayer(s);
         if(!(s.actorAdapter.hero.hp>0)) return enterDead(s);
-        else if(s.reason!="") s.status="failed";
+        if(s.reason!="") {s.status="failed";org.flashNight.arki.scene.Cf6RoadsterBurst.clear(s);}
+        else org.flashNight.arki.scene.Cf6RoadsterPresentation.advance(s,(s.actorAdapter.hero._x-heroStartX)/s.spec.scale,roadStartFrame,emissions);
         return s.status;
     }
     public static function snapshot(s:Object):Object {
@@ -270,6 +280,8 @@ class org.flashNight.arki.scene.Cf6VehicleService {
     }
     public static function dispose(s:Object):Void {
         if(s==null || s.closed) return;
+        org.flashNight.arki.scene.Cf6RoadsterPresentation.close(s);
+        org.flashNight.arki.scene.Cf6RoadsterBurst.close(s);
         FocusTargetHudService.clear(s.hudLease);releaseLoading(s);
         for(var i:Number=0;i<s.actors.length;i++) Cf6VehicleCombat.retire(s,s.actors[i]);
         for(i=0;i<s.projectiles.length;i++) Cf6VehicleCombat.retire(s,s.projectiles[i]);

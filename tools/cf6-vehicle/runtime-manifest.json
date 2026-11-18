@@ -1,14 +1,21 @@
 {
   "schema": "cf6-vehicle-runtime.v1",
   "inputs": {
-    "tools/cf6-vehicle/prepare_runtime.py": "919c4b5fd18d0995d2405e4bbe73b2e35092fd2b22ac888515c9a3b800d1af25",
+    "tools/cf6-vehicle/prepare_runtime.py": "19882f08f4821e0a7805444da4fc7f7e8cfa4005549141c975e65118516ddd42",
     "tools/cf6-vehicle/source/original-nodes.json": "2ec3c11095326219f42695737cbe4e08c2ed2e4308650ff04be797a82ca2d463",
     "tools/cf6-vehicle/audio-manifest.json": "5082dcd55385f3793d295aa58cfa969999535847169992421ea82d1e84b22da5",
     "tools/cf6-scene-completion/Cf6VehicleRules.as.txt": "88241686dfa8d825a4e85a39f88750d53503d0c57b623a7fba6c7eb858f20085",
+    "tools/cf6-vehicle/roadster-profile.json": "b963c5258228ec3b2e530a33d4668ded4ba9931ab09b15d2e2795c1938a09bbe",
+    "tools/cf6-vehicle/roadster.py": "ca428d78f077a6b9385d314a2ef223bf9f2070e96feac1e76d09e547b2ab0758",
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/CF6VehicleSource/1791.xml": "a3ae4be2fe46ecce8fd4a4cb5cd4a8555df6d700fa1034ccc9f22b96504e6272",
     "tools/cf6-vehicle/Cf6VehicleActorAdapter.as.txt": "f2bfe084383aee4092809ed67bf5510df2c9df482ce990bd65ceef14737de5b9",
-    "tools/cf6-vehicle/Cf6VehicleCombat.as.txt": "5a7edfc203dcb03ba4d1386030950cb4582db249ad90f57f5898c1fdfb724b82",
-    "tools/cf6-vehicle/Cf6VehicleService.as.txt": "3392e0289d7e60a4eb6a39ef9da4f553fd4dd9ee27f54e6a77c549eab6641620",
-    "tools/cf6-vehicle/Cf6VehicleTimeline.as.txt": "2395203a079d23d73f8eaa3000d155ff115ec9714d13f6168c53855ffbcc90f1"
+    "tools/cf6-vehicle/Cf6VehicleCombat.as.txt": "423405fc0a9174b36c926b562fcd81b170951418ad38fc1518b1669ce5fb884d",
+    "tools/cf6-vehicle/Cf6VehicleService.as.txt": "598e3323ca7d932a40155158085417b9bcec198c856557c6e40ec3017b253b5a",
+    "tools/cf6-vehicle/Cf6VehicleTimeline.as.txt": "2395203a079d23d73f8eaa3000d155ff115ec9714d13f6168c53855ffbcc90f1",
+    "tools/cf6-vehicle/Cf6RoadsterPresentation.as.txt": "cbc63b8dd17751d9316ec8dce9eaeaf8d74002c1b66a00b4d393de82825576e5",
+    "tools/cf6-vehicle/Cf6RoadsterBurst.as.txt": "42c4582828e75f52873ed694ca4cdc2ce9ff2fbaae4c5bd786477f0e3f0c2f42",
+    "tools/cf6-vehicle/RoadsterPhaseClock.as.txt": "8b8332ebd06c41c3b51e627f838870de1d32ee34d9ffb7a2679cc490d28bd346",
+    "tools/cf6-vehicle/RoadsterWheelBlend.as.txt": "6cde045b73e1dee58faeb63cf413a788d3923328241327bf95ed5e2c669bfc1e"
   },
   "outputs": {
     "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleActorAdapter.as": {
@@ -16,16 +23,32 @@
       "bytes": 3891
     },
     "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleCombat.as": {
-      "sha256": "b584f26b98b48dd72d39a34a835a8b21c6e377daf9c6de73b23bbc03dac6e757",
-      "bytes": 11248
+      "sha256": "6110156f18861ba6d346574dfe39303a4783af0bec2db3592956ca31d0e57630",
+      "bytes": 11420
     },
     "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleService.as": {
-      "sha256": "06a3789d4030777d2ce0d259aa7cc6a01a3604946520e25a100e4bd6c0172aec",
-      "bytes": 19013
+      "sha256": "fe4c7904125d03c0e14304f28f024630bb945cc4f6849a7b8ded83bda27e9fc0",
+      "bytes": 20155
     },
     "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleTimeline.as": {
       "sha256": "01db625cd8f7873cbe34670ac6a243fca3d4f673d6ee79ada17df958e2fd6a7f",
       "bytes": 1240
+    },
+    "scripts/类定义/org/flashNight/arki/scene/Cf6RoadsterPresentation.as": {
+      "sha256": "8b001de317c5d5eefd08747e35f62d6c958d0ef5194940b62f6e6afd4918707a",
+      "bytes": 4270
+    },
+    "scripts/类定义/org/flashNight/arki/scene/Cf6RoadsterBurst.as": {
+      "sha256": "11a334908df40d2f083d8aee98004a16de7bb6440781123dcbe2bc5a09dc3e77",
+      "bytes": 9952
+    },
+    "scripts/类定义/org/flashNight/arki/scene/RoadsterPhaseClock.as": {
+      "sha256": "8b8332ebd06c41c3b51e627f838870de1d32ee34d9ffb7a2679cc490d28bd346",
+      "bytes": 6422
+    },
+    "scripts/类定义/org/flashNight/arki/scene/RoadsterWheelBlend.as": {
+      "sha256": "0c55eb77707e751c7ca347a1da7b8ef85716421fb7f1c83490308b23751c7aa0",
+      "bytes": 765
     },
     "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleRules.as": {
       "sha256": "688df22187a4d74657f68aeb8a129346541dc30c2bf93553fc312065a5832011",

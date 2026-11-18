@@ -6,6 +6,8 @@ import importlib.util
 import json
 import re
 
+from roadster import PROFILE, read_profile, render_driver
+
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
 DEST=ROOT/'scripts/类定义/org/flashNight/arki/scene'
@@ -61,8 +63,14 @@ def data():
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args()
     outputs={}
-    for path in HERE.glob('Cf6Vehicle*.as.txt'):
+    templates = sorted(HERE.glob('Cf6Vehicle*.as.txt'))
+    templates += [HERE/(name+'.as.txt') for name in
+                  ('Cf6RoadsterPresentation','Cf6RoadsterBurst','RoadsterPhaseClock','RoadsterWheelBlend')]
+    for path in templates:
         outputs[DEST/path.name[:-4]]=path.read_text(encoding='utf-8-sig')
+    road_xml = ROOT/'flashswf/arts/new/CF6Vehicle/LIBRARY/CF6VehicleSource/1791.xml'
+    presentation = DEST/'Cf6RoadsterPresentation.as'
+    outputs[presentation] = render_driver(outputs[presentation], read_profile(), road_xml.read_bytes())
     rules_source=ROOT/'tools/cf6-scene-completion/Cf6VehicleRules.as.txt'
     outputs[DEST/'Cf6VehicleRules.as']=rules_source.read_text(encoding='utf-8-sig')
     outputs[DEST/'Cf6VehicleData.as']='/** Generated from pinned original nodes; do not hand-edit. */\nclass org.flashNight.arki.scene.Cf6VehicleData {\n    public static function create():Object {return '+literal(data())+';}\n}\n'
@@ -77,7 +85,9 @@ def main():
     expected=rules_source.read_text(encoding='utf-8-sig').replace('\r\n','\n').encode('utf-8-sig')
     if rules_output.read_bytes()!=expected:raise ValueError('canonical vehicle rules consumer is stale')
     generated[rules_output.relative_to(ROOT).as_posix()]={'sha256':hashlib.sha256(expected).hexdigest(),'bytes':len(expected)}
-    inputs=[Path(__file__),HERE/'source/original-nodes.json',HERE/'audio-manifest.json',rules_source]+[p for p in HERE.glob('Cf6Vehicle*.as.txt') if p.name!='Cf6VehicleTest.as.txt']
+    inputs=[Path(__file__),HERE/'source/original-nodes.json',HERE/'audio-manifest.json',rules_source,
+        PROFILE,PROFILE.with_name('roadster.py'),road_xml]
+    inputs += [p for p in templates if p.name!='Cf6VehicleTest.as.txt']
     manifest={'schema':'cf6-vehicle-runtime.v1','inputs':{p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs},'outputs':generated}
     raw=(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode('utf-8');path=HERE/'runtime-manifest.json'
     if args.check:

@@ -21,6 +21,9 @@
 /flashswf/backgrounds/cf6/** -text whitespace=cr-at-eol
 /flashswf/arts/new/CF6Vehicle/** -text whitespace=cr-at-eol
 /tools/cf6-vehicle/** -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6Roadster*.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/RoadsterPhaseClock.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/RoadsterWheelBlend.as -text whitespace=cr-at-eol
 # Preserve Adobe's fixed XMP packet padding in the original CS6 texture seed.
 /tools/cf6-vehicle/texture-seed/META-INF/metadata.xml -text whitespace=-blank-at-eol,cr-at-eol
 /flashswf/backgrounds/cf6/CF6_A01_TutorialR7Textures01/META-INF/metadata.xml -text whitespace=-blank-at-eol,cr-at-eol

@@ -184,7 +184,7 @@
     "tools/cf6-vehicle/source/ffdec/1812.svg": "30a9a9d0807165acf66f1cb76e74b5ca2497bdcc21135707d5342c44f2c8d423",
     "tools/cf6-vehicle/source/redraw/player-wheel-1.svg": "bf87680c1ba17deeea0ac7d9ebfc7af112e6c3599bd9e00da5ea11ed845428c6",
     "tools/cf6-vehicle/source/redraw/sky-extension.svg": "53508c7c93003cd139b703e58fe449eaf530203f9158973cbadf9a3e225e41c3",
-    "tools/cf6-vehicle/prepare_art.py": "39d1557e44305faddc8e0c115d49a8822a0498423cf41f064fb5d048c450aeac",
+    "tools/cf6-vehicle/prepare_art.py": "8e1e96777d8454ee340274426ede6c35b47b99f20fc5ccf8e0caaa07b392704c",
     "tools/cf6-vehicle/extract_source.py": "f7211bf153773a91b8e8787a776cbc231ee16f9a4e4961bdb41850886fff74cf",
     "tools/cf6-vehicle/prepare_redraw.py": "631419ad0260a08e24c089dbfd00c04971d44035397e9bc899ed9d22473b3d7f",
     "tools/cf6-vehicle/redraw-manifest.json": "bbb7954a92f646057f5acbcedcdcfb4a3eaacb215cb990454388a08204d3cdfc",
@@ -340,7 +340,9 @@
     "tools/cf6-vehicle/texture-seed/LIBRARY/CF6VehicleTexture_f2f8bdf6577ab0fc9084.png": "f2f8bdf6577ab0fc9084d759a12330e538aa246b0deb51c8f4a2691a67ae15cc",
     "tools/cf6-vehicle/texture-seed/bin/M 41 1792798763.dat": "208d01667710d4a14e83b0cbb71bd02c48685eaa4271a73dde159e4585a2bd33",
     "tools/cf6-vehicle/texture-seed/LIBRARY/CF6VehicleTexture_f7d974724099865188d6.png": "f7d974724099865188d6531d9403e21b63144a6e0166cc05465b08184732a86f",
-    "tools/cf6-vehicle/texture-seed/bin/M 11 1792798757.dat": "791fd62e47fd6520f9ddb4a6812138d9697aa1146c153a76baeb7b5b7fff585a"
+    "tools/cf6-vehicle/texture-seed/bin/M 11 1792798757.dat": "791fd62e47fd6520f9ddb4a6812138d9697aa1146c153a76baeb7b5b7fff585a",
+    "tools/cf6-vehicle/roadster-profile.json": "b963c5258228ec3b2e530a33d4668ded4ba9931ab09b15d2e2795c1938a09bbe",
+    "tools/cf6-vehicle/roadster.py": "ca428d78f077a6b9385d314a2ef223bf9f2070e96feac1e76d09e547b2ab0758"
   },
   "exports": {
     "1803": "CF6VehiclePlayer",
@@ -354,7 +356,7 @@
     "115": "CF6VehicleSpark",
     "391": "CF6VehicleExplosion"
   },
-  "nativeSymbols": 827,
+  "nativeSymbols": 1432,
   "sourceNodes": 210,
   "textures": 47,
   "outputs": {
@@ -547,12 +549,12 @@
       "bytes": 252761
     },
     "tools/cf6-vehicle/texture-manifest.json": {
-      "sha256": "a19a07b5db8bd649d65dfb03b61cbae464a5a2cb574c90265063f150ebe1dd18",
-      "bytes": 42918
+      "sha256": "6be2abf776d7a829bdf287bcdab7ebfbceb41e052e9d273de5e2a41d4e380d13",
+      "bytes": 37466
     },
     "tools/cf6-vehicle/import-textures.jsfl": {
-      "sha256": "edace330a135793b1fdd00ab4c14782ba62001fc3459b10cba224370ddd6e954",
-      "bytes": 12635
+      "sha256": "f25fe2f0aa6031240e68ae49cf5781947421ecb5f4fc10768719ba8b8fd0ef0b",
+      "bytes": 7071
     },
     "flashswf/arts/new/CF6Vehicle/LIBRARY/CF6VehicleTexture_046b606fd0d07fdfdc8d.png": {
       "sha256": "046b606fd0d07fdfdc8d1ac554ffcce6cd919082809735d35d7bc7ab49e9bcf3",
@@ -4211,16 +4213,16 @@
       "bytes": 2542
     },
     "flashswf/arts/new/CF6Vehicle/LIBRARY/CF6VehicleSource/1801.xml": {
-      "sha256": "300a0edb484391e02d44da1173f9660c460229cccfeb4f051de427b83fcff0ac",
-      "bytes": 6571
+      "sha256": "a4fbd0bf2f59e9717df28f38e0791542584aaa8b6da3b1c619094d5c367c8aba",
+      "bytes": 3124
     },
     "flashswf/arts/new/CF6Vehicle/LIBRARY/CF6VehicleSource/1802.xml": {
       "sha256": "33b0968de9d0060f4003d7d70bcb9c6f718093f799e0ddf0a1fa3818fedb795c",
       "bytes": 52296
     },
     "flashswf/arts/new/CF6Vehicle/LIBRARY/CF6VehicleSource/1803.xml": {
-      "sha256": "b13fbbea1c5789a70dd94edacb7b9a614876b4228f18e66c04cc1a1166167a76",
-      "bytes": 25568
+      "sha256": "8e3e8ceeea486fe1de50d868980723632e9c92e28409631b4f3c13ec1f628b69",
+      "bytes": 28682
     },
     "flashswf/arts/new/CF6Vehicle/LIBRARY/CF6VehicleSource/1810.xml": {
       "sha256": "b5f48f9d5c0395a3bc9774e951e25cd7a8714ad970711350e31bb6f8c96ff72d",
@@ -4239,8 +4241,8 @@
       "bytes": 499
     },
     "flashswf/arts/new/CF6Vehicle/DOMDocument.xml": {
-      "sha256": "2b766a7506e0383c5f2f4f53c87218b67aff0a422a61846b2aef211e2a4e2b54",
-      "bytes": 82674
+      "sha256": "865069e8207892fd88161f91007f0774df322c53e04a922cfe40a3e655c1024e",
+      "bytes": 141693
     },
     "flashswf/arts/new/CF6Vehicle/CF6Vehicle.xfl": {
       "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
@@ -4337,6 +4339,2451 @@
     "tools/cf6-vehicle/source/art-timelines.json": {
       "sha256": "f496bef021ff4eeb9708dd353b224bd5059e3b68f68ff8a87328692160981c19",
       "bytes": 4287851
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0000.xml": {
+      "sha256": "8043de702c4e734ec7f98c499b416301be2b8fa4046808379da472580075094d",
+      "bytes": 75718
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0001.xml": {
+      "sha256": "562e2e3957caaf5816bc02e07472f885868d99cb5f9284baf3a1b30761140041",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0002.xml": {
+      "sha256": "cffc244465c996303b6d9a721935ca050e157205c25c0f847c9c251f3c20d5db",
+      "bytes": 6797
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0003.xml": {
+      "sha256": "d73f6235ed4e41293bce6ef5644498117316edfd4ae79145b6974f59e2bfbf2e",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0004.xml": {
+      "sha256": "8606b66f8fda7f7c0e3ee4902402c7142a39fb106f2c4abe673cda965b24b1e8",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0005.xml": {
+      "sha256": "c25c934aba0c08cac5b33c8be9813d165e17c65be63c3f2e9c58d20ff66eab39",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0006.xml": {
+      "sha256": "c51168804a587502adfa50d30a17a9d0e2634b519d0f769f63f6c7b29a6ead53",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0007.xml": {
+      "sha256": "a156ea0ee73e4bef44bf433368f9aa5ba162b4fb008c6206a8e615de57b5b9cd",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0008.xml": {
+      "sha256": "802765bf84fc39420c4ba6c4941a423b928efa0ff6a0cd00e5cb117dca034da5",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0009.xml": {
+      "sha256": "1a4837757d26a257ad282d30aeb559c57b51d41923c24729312857db18c6cce3",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0010.xml": {
+      "sha256": "5be96e3fb18dee716ee71d35a711f06a6c84519009f12457571f0e0ab488f860",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0011.xml": {
+      "sha256": "6b7d9db7a274f05e2f8f91e013b44a30de48d9f4b1a3d272a84e08f185db23d5",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0012.xml": {
+      "sha256": "49d2f501ecae50a6bd54b0276bb3368d116d967470d8b14e1a319e6b7db7ea9a",
+      "bytes": 6797
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0013.xml": {
+      "sha256": "4129d6536f70ebb84d942c922cd57639f7025d5ded934b5526f6e84680844e3d",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0014.xml": {
+      "sha256": "05c16f1ff9c11f36053a251202937d7c9deaa25dec11c26fce525797d7f24657",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0015.xml": {
+      "sha256": "8820ba6101df8c7b1098896d8b131c041739ac6125f70687425ff28bfd954c08",
+      "bytes": 6787
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0016.xml": {
+      "sha256": "921790e05234cee77d2610ec349418378b344d5670b2e76c1252882d531b567d",
+      "bytes": 6797
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0017.xml": {
+      "sha256": "914d7892f4ebb4cba8f081dedf407649ee0b16b229645a072c18cff95d06533d",
+      "bytes": 6787
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0018.xml": {
+      "sha256": "66515f86a0cb2a2a74ccd220f2a70fd7ffb132c55c3a8640a2d973bbc22e277b",
+      "bytes": 6807
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0019.xml": {
+      "sha256": "5181e845d1699a63a13d097b96017f6b8e65da3482101cf82433eef6c5c91ff6",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0020.xml": {
+      "sha256": "f0516d5cbb12ce0acb0eb0a5f87c448585bd5974bdd9abc95d25e8cb21bc8bc5",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0021.xml": {
+      "sha256": "647810ab85008feb392e3a8f1959f63a5cf2f43c3aa39c82ae43ed5e727ddcbf",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0022.xml": {
+      "sha256": "1ba0d06b10d7253126349643e5efd6f85c60a49676ee8ca5c36f497d0f1ade03",
+      "bytes": 6797
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0023.xml": {
+      "sha256": "a92c3e42ce44529778e4cfdd233643583e1f4ca0c7cb095b35c08c4949aa85f3",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0024.xml": {
+      "sha256": "a51fde957c5169961d69d6e2d502217ca69516ab19ff46cc8105aedc77f1aeb2",
+      "bytes": 6787
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0025.xml": {
+      "sha256": "cd5b5e916e0ef93e4c9dfed404710fb80eae69d5ea4aa1212a9728fdc9e37014",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0026.xml": {
+      "sha256": "ef3fb8d0fbf405b3c3b7835eb2be44760e0e34ed524489ea20e6a5bc3c697c13",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0027.xml": {
+      "sha256": "4027fc3a98388c7cd3682e6373323328da4f06fa90cd625ceb241e929321b5fb",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0028.xml": {
+      "sha256": "2b71a1105b112f524e2a1dc971e68d4a178b74157d13d7c02ed8eeda1a190125",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0029.xml": {
+      "sha256": "68817bfcea13fdc2ffb4936ce9f16d6eda9154e435e2bf05a3b5c3d3e8b566f4",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0030.xml": {
+      "sha256": "c531d82f893836034b9e8f0c2db6706e754bc88b7f361227bd5113460df86acd",
+      "bytes": 6777
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0031.xml": {
+      "sha256": "ea6f89a8a4424c7e6e24c74f6f0582c3a754febaac52e2f3cb3779209a3717d8",
+      "bytes": 6787
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0032.xml": {
+      "sha256": "c15d4f42bad76adb49535ab82645ae0ad503f20e9b20343efc83ba57dfc893ac",
+      "bytes": 6797
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0033.xml": {
+      "sha256": "8a390f67f8cbf137cb9ff03c99839dfc6c4ff05a9d716906fd9fa8f0a80aa646",
+      "bytes": 3214
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0034.xml": {
+      "sha256": "38c1fce98a350fafed31966d15ad46b277ab4d7faf43418d42f427d95fa8df79",
+      "bytes": 9521
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0035.xml": {
+      "sha256": "e5ac84a3fa70df41e817b76b121c4ecca9e3526ceb1d2a358f6c4b1f8b660703",
+      "bytes": 9551
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0036.xml": {
+      "sha256": "567bce93f65046804c37db2ed1923550ac7d95c3e35b825890260f91fc436b9e",
+      "bytes": 9611
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0037.xml": {
+      "sha256": "509a14675743b1ab630afc0117f60391ba9434c9d37fe5277c5428ee273f9877",
+      "bytes": 9531
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0038.xml": {
+      "sha256": "0efade577356a23da1dcd4168c233035284427f0c7a07d7f0e4e00854273268f",
+      "bytes": 9491
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0039.xml": {
+      "sha256": "da8dec5fa45e45190997fcb83db0da6e8047e4b8577b693976d653c7e399578b",
+      "bytes": 9641
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0040.xml": {
+      "sha256": "f35f36c807b239cc751b1d2b8822307dd0a0bfa1075f2bfa2050e4912df18652",
+      "bytes": 9721
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0041.xml": {
+      "sha256": "2f040d8c62a9f443976a03a600c2f7f5b370de2e9c135d62a0fa11af84f4a242",
+      "bytes": 9701
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0042.xml": {
+      "sha256": "a68d18aef387224c20810bc57df574672efede795418d3925109d0b6d77caacb",
+      "bytes": 9721
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0043.xml": {
+      "sha256": "7c8a847d358caed967ab23b64f645a84039f89f1df003117f74203b4899da02a",
+      "bytes": 9791
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0044.xml": {
+      "sha256": "16e005b6ddba89c0eea6a02a2ebf066ba5c15d0345ca67757ed726e09979509c",
+      "bytes": 9771
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0045.xml": {
+      "sha256": "6e4fd140cb135a1c03fda21185e4f4de490e66e5352afc5bf1b932589e268c9f",
+      "bytes": 9671
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0046.xml": {
+      "sha256": "150b23e3b41edf6deeb8e459ffa1d6a10ad756fe3ae20ed7cc8ddf61ff667c5f",
+      "bytes": 9581
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0047.xml": {
+      "sha256": "569a02b3253d8861e644d24336096431439645e3a359751f96ac7cdf81030792",
+      "bytes": 9501
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0048.xml": {
+      "sha256": "5fa8bd5760685af9ddd5bac4f4673636decdf3fd59fd33c6c1ca41f0bf8f1fb7",
+      "bytes": 9471
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0049.xml": {
+      "sha256": "d36acc65d9f02b8c2364aa13b569dc66931349b20975c544a8299d49fc469517",
+      "bytes": 9631
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0050.xml": {
+      "sha256": "f0a9d74b64ba5d864f9cfe8721408b3d96916bd2a37505e5855f09dc2bbe865f",
+      "bytes": 9521
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0051.xml": {
+      "sha256": "737e3eeaa12f05df091e7d12aba7bf02ad301aec6cb57614fd8514c2e945a657",
+      "bytes": 9561
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0052.xml": {
+      "sha256": "e71ec3f8ac4737a55819f125db26f4e090c1b3e77ff83bf9a376b215f1c18ede",
+      "bytes": 9641
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0053.xml": {
+      "sha256": "7da26d31245c0b6bde1425fa71d85d239db3b5b15942cf438b57f4a89ab9ab50",
+      "bytes": 9681
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0054.xml": {
+      "sha256": "86d42ab2eb038e8f540997cd42c3e8b70cc21d3547202cec36d5ad0dd83bc256",
+      "bytes": 9591
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0055.xml": {
+      "sha256": "174166cda18f0813b679aaa6438878a346cdfe5f71655a9c26c7a8c9d860a811",
+      "bytes": 9741
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0056.xml": {
+      "sha256": "b3868d15f1b9c8e9a66550e4b5d9e1f92167f6010d66c5b1c8c3608a8d05dd76",
+      "bytes": 9741
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0057.xml": {
+      "sha256": "ef73f7736f8837ac9558c6d0a3fa07dc294875d8ecd110631d6dc214e502f018",
+      "bytes": 9781
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0058.xml": {
+      "sha256": "ff8d9e7c3d78d29ff06d653ba79ca3b3a4ace1fbccb9acb2df74c3e131aa24f8",
+      "bytes": 9901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0059.xml": {
+      "sha256": "34fd811a697d04154d0f022c7871d81b053fab35ac2a19339aeccae98f75e5b1",
+      "bytes": 9751
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0060.xml": {
+      "sha256": "f02a31a9857b4a7b1ccf7b3cebb5c4d7d14bc5352282c6f02a5b6f76bbc7d299",
+      "bytes": 9711
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0061.xml": {
+      "sha256": "a7e36cfbd109ffe006d3481e51c8b18a69ec295b91c591ac119de13075369038",
+      "bytes": 9701
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0062.xml": {
+      "sha256": "4a868ae513d6c80664eadb2a6feaf4099022e07e9e4a5a2d0864251ee2463f91",
+      "bytes": 9671
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0063.xml": {
+      "sha256": "36ddc0adea970fa8e551e1a616c92dd7f43b7f3b59d109b081efa80c38fb5391",
+      "bytes": 9651
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0064.xml": {
+      "sha256": "cd192645e3e72f85e9a085b51173dd7ec5a24c564dc835d5e8226a75db9c76e9",
+      "bytes": 9661
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0065.xml": {
+      "sha256": "28f1aad97447efce343c49ec8792936a43f140838455a4e1654846cb42ffa7ba",
+      "bytes": 9581
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0066.xml": {
+      "sha256": "0e9ac8ebdedaa4d66ecabcf6a3415145681a323df011cd8573ec9f29c477be8e",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0067.xml": {
+      "sha256": "1adfe131e63bfd58dc156ddf6ccca3e3ed603c403e643f77f2ca289f06e861dd",
+      "bytes": 7999
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0068.xml": {
+      "sha256": "83affb5dea6e417cde323371f9dd1f7b4fac6a1354f71ae1983d9bf25e83fb2c",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0069.xml": {
+      "sha256": "2ce0985146eda40d69f30f8b9c6423d78d9577437e0f8c824634eacc8ebff2e5",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0070.xml": {
+      "sha256": "3ec03f5386924529a82957d013e349d0d4d483bbccc14563ad58f5e8f65dc9d9",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0071.xml": {
+      "sha256": "dd46c28fcdbca77e8ed8432aed320bfa1c52f9ee9bc5137b73e55025ebfe3b8a",
+      "bytes": 7999
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0072.xml": {
+      "sha256": "8430f3add5c88919834441c6b9746816f6141189881fae364e4ce4d50055e3e2",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0073.xml": {
+      "sha256": "9b602d01ba16fdbd16648a03b772a32d5e267272b6d485fadba3a5f99c10b68b",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0074.xml": {
+      "sha256": "cb4561defa3761f4286c323bf95d308f25da0379c8789c304de4cb7123f48118",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0075.xml": {
+      "sha256": "a36958071fd08371b3cc781044ab6ffc1bb99f03d1498d822618e4a87e541c04",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0076.xml": {
+      "sha256": "0f22560e035fa2a65fd461fc7db9eb954476ed6c6bcc057c91d20574da055c1c",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0077.xml": {
+      "sha256": "abd9e30f3f863f4532c76141d671ce4e6ddc8595581544aa37176a3b788f0d6b",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0078.xml": {
+      "sha256": "eac09e664de3f6d6f66efbe5a7a605df911350aea3e5aadf3b4347ee198158ac",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0079.xml": {
+      "sha256": "748aefc5599c54371017f2b7add00d43c67740df89420d98c83dead6a5cb0519",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0080.xml": {
+      "sha256": "61da472dacc46c33c618d9a8d7540de19c3ff69c15a5ea2e11078eeaf3e60eea",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0081.xml": {
+      "sha256": "20e20dcb6c0531d8aad8a89b52624ffaec41d5247acb99a684b2dbd79227f045",
+      "bytes": 7999
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0082.xml": {
+      "sha256": "de2336bf585b96f8a4a245b1c7af8dcee1d97c48c69ae697c039e4ad2e94ae50",
+      "bytes": 8009
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0083.xml": {
+      "sha256": "aa561b79483c83224d065c7c876e574cc9e633792901d392f2b7e0f8c572c548",
+      "bytes": 7999
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0084.xml": {
+      "sha256": "ebaa9d21640fdba001f06abf9febefd177f69d8906351eb48d76356cae3e59b5",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0085.xml": {
+      "sha256": "91d1ab292a96c551f188740817b0da6a23c7495199c8f0be6ab0b333d4e5e0b5",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0086.xml": {
+      "sha256": "03a14971d5e5dda4bc2e427bdfbe4472a39c433ddc468d0f4b4a19cf405dc4bc",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0087.xml": {
+      "sha256": "6a8ea5759baef58afd2f37cde740c1d5aa03eeef610eb689acdc766cdb48b131",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0088.xml": {
+      "sha256": "bcc8256cb48f8bc790d7b469fc0b1b16bb33fbc29935f048287221fa0679b603",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0089.xml": {
+      "sha256": "0dd9d2bdf01d5671e80b9b48933299b0499bb4a0dd3bf7cf49d3404bf6e9b478",
+      "bytes": 7999
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0090.xml": {
+      "sha256": "13791860e67cba1493cabddd4fc938752b25174781ac769ab3d140a20faf3bab",
+      "bytes": 7999
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0091.xml": {
+      "sha256": "8ab8920e99c0d8b46d1453ba2cd627b52155f2fe9a5169eedd3a4bb49b7b184f",
+      "bytes": 7999
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0092.xml": {
+      "sha256": "f0b47f78b10cdbeb46072993947ba2cf12c7669ce432a064fb2ee48d4fac8157",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0093.xml": {
+      "sha256": "a7e69bcce78547ab46ef52b51b0fcc4bf04150ddc758038376ebcc0278b506fc",
+      "bytes": 7999
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0094.xml": {
+      "sha256": "d7990a0fe6624b4652c673ca02e104467838f2c9acc980a8d51822bb1c8abbaa",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0095.xml": {
+      "sha256": "3c1d173172ad393a313afdae816710fa60e730003dce025df7fc4456c24da9b3",
+      "bytes": 7999
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0096.xml": {
+      "sha256": "773c3d6e3cf9f3fd2ffb02a0f95bc2a9f2c5950ba78e0081f267ddf025f1ba54",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0097.xml": {
+      "sha256": "5b05309d36bcecdac27b74a03ac4bc2502a18d161feedb5506f177c0e95267f7",
+      "bytes": 7989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0098.xml": {
+      "sha256": "9b79c31029e2a7b3f57f332c7b43dc0079137a1b690f5170ef66e0d059ab0f82",
+      "bytes": 53169
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0099.xml": {
+      "sha256": "d3f861899caf9e6aa0316cad7f1f3a2b0916f314faff103ae3b523493f4b3da3",
+      "bytes": 7125
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0100.xml": {
+      "sha256": "0feba569fbe88943544713c6c78c6b1f1b3e870cb621ee3cdc0e493f890d307e",
+      "bytes": 7136
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0101.xml": {
+      "sha256": "2b32a5be11e75960d0c278e83de99abd46164d92474b3f9d54ac21cefb08c8a7",
+      "bytes": 7136
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0102.xml": {
+      "sha256": "2d5708eadddb464e4ac0b8e2690900461430524400fd6bb7fcb2aa0ad73ba462",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0103.xml": {
+      "sha256": "b40b37f6108fd63322aa04de299fe14f217362794566129d2cb3a9e1ebb56d30",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0104.xml": {
+      "sha256": "f66708471c46d655d328d5095c3406c7348511430c9c1c714ebbe673fd9188b2",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0105.xml": {
+      "sha256": "18157ad43af92f9a766aa9b2ab99586b0a25b3ec537b455941b3f715483fcffa",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0106.xml": {
+      "sha256": "bae71dde1896da5d5b2539ad9f3c93852cf25c6aa23bee2decf16ece5dac7c79",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0107.xml": {
+      "sha256": "ad0afbed8974c0694e0947011f48915a7942daf078af1a42db1c38fb3032dc3d",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0108.xml": {
+      "sha256": "4eb0b458328d302368d61646ed0eac786f76405080117a5fe8a29142c9d93fef",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0109.xml": {
+      "sha256": "017a6a389a7179c0727152b655df51cc31281ac6fbf668841d56b6a569e091d3",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0110.xml": {
+      "sha256": "df8d0652be8f0bbeee90689fe9a96432a46964f93984ebed899c6fcd6b8a3030",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0111.xml": {
+      "sha256": "e777132638a04f393725dfdb07d9aa6da4216ed6ca2bbd7ba489898de7b7c48b",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0112.xml": {
+      "sha256": "215df582b6b40c786665db838364595b5418dff87629206cb789482ab11bf61b",
+      "bytes": 7136
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0113.xml": {
+      "sha256": "dc7e5d361fc15acc6e883b390e8a402604338a5bf83be1313b508f72526dfc97",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0114.xml": {
+      "sha256": "60e51a771a2071b28ce00318234a13bca27b7da3301401d329f44e8621efcc27",
+      "bytes": 7136
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0115.xml": {
+      "sha256": "cb4f6bfa9bfe71cdacb747e6ca9f709e25ddcb1c0b9bb1f2812b7337758adc15",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0116.xml": {
+      "sha256": "a6932f2978c804d0da32d13f0878fc4f596e1cc0defa194193f6795f273f1585",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0117.xml": {
+      "sha256": "708ad3d8d5903f8a439c6a6d904750274e9edeb729bf636aa988ec031d93fe94",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0118.xml": {
+      "sha256": "68c0e07ee21dfcac4cd2a89836b153310ed0772d2b4702b49d437e22e53850cd",
+      "bytes": 7125
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0119.xml": {
+      "sha256": "c394c96a030eca11fe05049d3683fefc9c65ab9b1fa005752c5610b2e066191c",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0120.xml": {
+      "sha256": "12ddf0251aa95c91d07a609b1111017df2c468b1b4ecdcde5db86fbe0c662216",
+      "bytes": 7136
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0121.xml": {
+      "sha256": "010834d9f9832e9ede027e9494299c4b112e9dc6c1f0e80c8ca62f6e1bcd9186",
+      "bytes": 7125
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0122.xml": {
+      "sha256": "aed27ffa461db68783076924e495639440f0b224f245fce54fb197aa7dacaede",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0123.xml": {
+      "sha256": "39c6faf262c907f2acfa9301950f5511304cb216e0c09c8a6e4f68476904f5d7",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0124.xml": {
+      "sha256": "bf36776c0f2081b9f3f46f32ed6f7d01feefa409dec467e6c89e3c34e1a09a9b",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0125.xml": {
+      "sha256": "0e7ac3948892207e77cf9d06d516caf33a936337e8c9fef734bdb937ff1505fd",
+      "bytes": 7125
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0126.xml": {
+      "sha256": "d8aa8278ba961cfa1511e8f3058438cbd9688bfd2d928aa725c68a493e4432ee",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0127.xml": {
+      "sha256": "fd7daeb98315056897cbb829ea4a719eeff6259e4ee1178d6ad22aa1abf0f205",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0128.xml": {
+      "sha256": "2a2a7e9b39b38a66cb7cb782b265b22fd009dc8614997b2a647a98ca0492aec5",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0129.xml": {
+      "sha256": "9a08bc307b78d03384d425b2a955905f264884434af7863aa4d6d187afb6f7f9",
+      "bytes": 7114
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0130.xml": {
+      "sha256": "645130ca6179a2cd4c12b7e3a1503a53f2f9eca6ab5b0636dfdb09e08c707d0b",
+      "bytes": 7125
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0131.xml": {
+      "sha256": "e5ec8cf2a2807448485982ada1fbb35d7e7f1c467d00f4a180ec02004bb5a53a",
+      "bytes": 3242
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0132.xml": {
+      "sha256": "6933472234da67a4eb505081885adc70b7eb4c1ae5c0d954c0dd6cbe4148d81a",
+      "bytes": 9890
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0133.xml": {
+      "sha256": "c34c6c3b2f36d553d362186c8e01b3dfad7fbb3e869e2676e527e599c0cad2f6",
+      "bytes": 9934
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0134.xml": {
+      "sha256": "73b5df1b33837829ba097a63850c1e6c874a1f28132d71ded8644c3a7f867c32",
+      "bytes": 9934
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0135.xml": {
+      "sha256": "7f2113b8c2125714b1c40d13bdd7a020cb9c6753bc17243ede1de1c0a0877f21",
+      "bytes": 9912
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0136.xml": {
+      "sha256": "779cee2555d5d9a4c06dc2e818f9597400a9405c80426b0ebcdf1c02d86ebbdd",
+      "bytes": 9912
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0137.xml": {
+      "sha256": "ce2b0ad76713d3f34f1e1b637cb927b5b3703a7ebc8feabd568b6e9e3a1c83ac",
+      "bytes": 10066
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0138.xml": {
+      "sha256": "1c66a64abf3f25e2b2de0f8195065063cd0a148992023488843a43d8deac7ee7",
+      "bytes": 10220
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0139.xml": {
+      "sha256": "f65480ce2fad57f510bc0c7f17883464ab949b81741f3ec42ccc689da1281354",
+      "bytes": 10143
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0140.xml": {
+      "sha256": "3449e3ddd16add42532cbec00ec501bc95c6c9294a759cb48d35c31411877b34",
+      "bytes": 10187
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0141.xml": {
+      "sha256": "5aa398479cc5aaac1e3c9c9586b22cd969834b791583a59bf0c64b80073c613e",
+      "bytes": 10154
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0142.xml": {
+      "sha256": "7fa2309cca5273f405eaeff4ad4dc471247fdab963ccaed20742af4b8c55254a",
+      "bytes": 10143
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0143.xml": {
+      "sha256": "ef630b63e769afd0132fb3f5b7e39e53015bf2c46f4dd81ee5fa7aa533921aa9",
+      "bytes": 9989
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0144.xml": {
+      "sha256": "44552a652973f69667c9bb1cbfcf0b05e7e1fb9a812d622a9e9ece3b45e65bcb",
+      "bytes": 9956
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0145.xml": {
+      "sha256": "38f6f6cf0b37fc5270eadbe877447d686eec65a48781c5a2aa6b474d1246de2d",
+      "bytes": 9868
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0146.xml": {
+      "sha256": "c3990cf0e738f07d5c423caf89e1bc6107fae8081b46e9306f6945e8509037f6",
+      "bytes": 9901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0147.xml": {
+      "sha256": "94181096492c59c245c73cd80a43d7eaa7b5cb21b9482e315edb50e163470f11",
+      "bytes": 9945
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0148.xml": {
+      "sha256": "fcc262555f5309fd0aa5a0c89106b4b20dfbe8aaa9dad4c6b5c7ebe4c954d92c",
+      "bytes": 9934
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0149.xml": {
+      "sha256": "088debf70d3b7ae9cd1d6c1e2240b548428fa7dff2106eebc4cb463265fcacda",
+      "bytes": 9912
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0150.xml": {
+      "sha256": "a81800bd3dad7f9bbb3dc10389fd95f46468d3e5f513be1fea98f4cbf3c5e916",
+      "bytes": 10066
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0151.xml": {
+      "sha256": "e33cb54a980f403870c48fe1e38420ec19e324877eded45cbd556949451423e3",
+      "bytes": 10220
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0152.xml": {
+      "sha256": "6bd4ae733eeac8aec376c6bbb4611c10243fbe9b99bd85795fec4c4c91e5a6dd",
+      "bytes": 9967
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0153.xml": {
+      "sha256": "0d31ba417856262ac22e283573dbfb3481056d296f1fe094cb3cc4375d94e463",
+      "bytes": 10231
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0154.xml": {
+      "sha256": "a8c5b71d963d7a1a72e7b480d408675b200e19595868d8a9299f400a298dbcde",
+      "bytes": 10165
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0155.xml": {
+      "sha256": "8e0bfd834ccf0a86cbdedb4b59c64619185246424fc5b72248aece8d0e8da0ac",
+      "bytes": 10154
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0156.xml": {
+      "sha256": "4734bc3824e2324ae6181320d47ca9162067eb4462b3878ec845fc03f3938541",
+      "bytes": 10220
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0157.xml": {
+      "sha256": "ef2dc61ecfb3b9c24ade70ce26652b3e80994e30d2897a0855ede597338c3054",
+      "bytes": 10143
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0158.xml": {
+      "sha256": "0173def50010a51b18c430f8e999baffd23d33d5117d91e8456ced700d66fac2",
+      "bytes": 10088
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0159.xml": {
+      "sha256": "261a1d64807e76b7beb341baf5baed21471bcf4e5c696f56c99771d6eb21e825",
+      "bytes": 10110
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0160.xml": {
+      "sha256": "9bf2bac97b612dbde7287b8d7151932a66f24b556feb4b1dcd1fe01b7fd84e86",
+      "bytes": 10088
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0161.xml": {
+      "sha256": "22979f86a35bd12f14464d61dceee93a098148253883db2e758211293363e32c",
+      "bytes": 10000
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0162.xml": {
+      "sha256": "68909690bb338127db16cd8d52896b859e0294440a3d9d23c185c5597921658d",
+      "bytes": 10055
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0163.xml": {
+      "sha256": "45d729a7609ebd711a02ec7bac69a539f255bd693dc60b7c70bb4f7ea2271ab0",
+      "bytes": 10033
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0164.xml": {
+      "sha256": "9fece2be9ec948713e5b3642beaeed41351878ad00dd0f66283b92a0963a3fb3",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0165.xml": {
+      "sha256": "c46c704d2fb537a2afb38e61afbcdb6b20c14a59a9ef330490e35d6373c92a23",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0166.xml": {
+      "sha256": "ffafeef402eee54e38df19a49cc40aab5e6230c97b333912ce84cbb5fc450ad7",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0167.xml": {
+      "sha256": "e7ecc68e665a43c7cccbf500c99f25ee941f2028b3061e9fbc7ee297e1201e1f",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0168.xml": {
+      "sha256": "1efe77c5b785dcd2307694f4ca21260e9e5fc9d9a8a90b015fc96115cdf0c2bf",
+      "bytes": 8142
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0169.xml": {
+      "sha256": "5c21825e9a505fdd98d21d47fc951adc4e7ee9046e7750ad888cf756ae88f712",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0170.xml": {
+      "sha256": "02f951da71f833f4d11755a4c7a121c7f04b0f256f8bfa161cb14bdf40f2bf24",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0171.xml": {
+      "sha256": "8bc0d10756f8bd19b70d6c31e3a6eb7ba5c9c8d44422fbbd9bcb030f2273ff5f",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0172.xml": {
+      "sha256": "879238155f5649164f0b55b749d806ae2954de75edb37ea28e42645e34a0f8c8",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0173.xml": {
+      "sha256": "18b35d12c81c699e4a9209f45b17e19845d95d34bca8df9c74793d352bcb3e2f",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0174.xml": {
+      "sha256": "f73da1091c22a6df25bc319f1b7e13fdb9ddea7d382dda9f03a62f0bef63e29a",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0175.xml": {
+      "sha256": "b7eee43a54d8c56500d9a26c46fb4085a33372b8a93827da4f21ea43e29486ef",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0176.xml": {
+      "sha256": "59a0f5ac0bb23829b23d4a8461c86e0989e7337e188dca2b21a96c8e96bdb67b",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0177.xml": {
+      "sha256": "4c5f20fc0537bcb1c2ffba5edd40515c9df191c0bd5912e8ae79ce4b5a260b40",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0178.xml": {
+      "sha256": "5e5dc6224e2f546f46a4fde787861f01b127c958f130a44b1a380d0cc707e610",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0179.xml": {
+      "sha256": "8b501258db0cf06715b868600cb46456a067fd6d30f534b8502250680051fbbc",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0180.xml": {
+      "sha256": "64934ea9f5601cc97f3a192571d0f7ee980146ad652114d32ff715d5e01ae3d9",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0181.xml": {
+      "sha256": "034f8a2a0e3387cd79b73cdef92f814299d0e963afb5988a0670eac90e2bff30",
+      "bytes": 8142
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0182.xml": {
+      "sha256": "5b4da68396fe80524f47ece0f3e084f5c551277e49316d42c32aba668d722e11",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0183.xml": {
+      "sha256": "188bf8bab14b1ae506370f1cdce41fe4ee74e2998a231ffac72ef71c0be14b22",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0184.xml": {
+      "sha256": "8b43489e473b4620d85bf0f7490001b8c2f22995daa2169d0a1a044098019924",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0185.xml": {
+      "sha256": "50df3783c0ac05ad9676194228fe033d16e47c87b2c3ee921de429ea73e37535",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0186.xml": {
+      "sha256": "7246d00fa365cfa7fcc85fb93a0d1f7d12b523f634be487977ba6b115fc01243",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0187.xml": {
+      "sha256": "d3d23a164ba00370813b45c33cbc78d483a7959e434a275a84f92bf26591beae",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0188.xml": {
+      "sha256": "5aacff3d5ee1882bf2666350da4f5cb94d80aa4fdbf64685cacc06c33c49b866",
+      "bytes": 8153
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0189.xml": {
+      "sha256": "c067d318e33a4b5e1c371ae3bb69fa6d75a673a8739033ff6db45eb421c1ae45",
+      "bytes": 8142
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0190.xml": {
+      "sha256": "3b0e5b2472e5af0f3e4c30e93b074c83674eace0cb6d236b6cbbcd87104120da",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0191.xml": {
+      "sha256": "936d7bc7e18d5e8b8288faca3d12bc60c5a0dc7c1084307370644b09abaaf5cf",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0192.xml": {
+      "sha256": "edf2121dd8d2fbe34cccf03e81ed2395115b9d3f5fd4dcfdca51d690519c3b26",
+      "bytes": 8142
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0193.xml": {
+      "sha256": "6e21feb51371670b1718d36c224c5231fba4ea469bd1c5ebc63891ce2f0afdb8",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0194.xml": {
+      "sha256": "9f438f6cd1da4422d8e7b4817452533627e08bf715f5202066263d7227d7edc1",
+      "bytes": 8131
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0195.xml": {
+      "sha256": "e4e705615d49ab71d51ffa5ae4f78fa7a3a186fccc25356d1d33bfeffa6f6522",
+      "bytes": 8142
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0196.xml": {
+      "sha256": "f995981debf813375b3b53e705d151aaf7055f1be1700eb3bd964595e2d9c7cc",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0197.xml": {
+      "sha256": "faf3550a1dc84bc5c0551a623823ff9940f9c622d00bca1e78eb28612e22c374",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0198.xml": {
+      "sha256": "ba41fc347c3c04a2a6a36afed282a3fc93679f8ddc11c5f1d557b3fe741ce84d",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0199.xml": {
+      "sha256": "f67f43970e421c92c1f232d27249268e7ddb53f3e92ac9d3f0645e7ad45f1bac",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0200.xml": {
+      "sha256": "389117e8ed958c658ffbf5ab204bc69dae0881f32f0e362444ac754a622503f9",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0201.xml": {
+      "sha256": "25576b13179c83c057445948e976c797593c366799a0c15f15e490f9cc1cf56a",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0202.xml": {
+      "sha256": "b86213a56943d44a7810dcfa50946c98d5171f9b3daab7040c22ee1b2ca9f158",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0203.xml": {
+      "sha256": "25dcc51b35df936299579c51f24f54edec5626729f62304163ad90a36ad402e2",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0204.xml": {
+      "sha256": "5d7fb1cbf78659bdc26195ad24dbb5394254fd723d4cf7914840ae63b6ee5261",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0205.xml": {
+      "sha256": "e3418d7b1b0078ed5a90a2d90a66552b31b3d2fe4544a0d12a54feffb8fcd202",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0206.xml": {
+      "sha256": "b2ed41ad7e7e0470fe89e4f09b84199ece8f42497c059e21f0eb339985818f09",
+      "bytes": 4896
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0207.xml": {
+      "sha256": "d3ac77aa60ef318def4f82dd3b03674ef196e2217a57b1979577b98e83791a22",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0208.xml": {
+      "sha256": "f584678eacf5b06dfaf280383eafa9da8505a2f46a7cd7c86b054d01b1a629cf",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0209.xml": {
+      "sha256": "3c32686b33519ce87f2bde4384776ec3453d0c0399303dc444596aefe5e5921a",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0210.xml": {
+      "sha256": "0020224b9b4dffdc386614f83eb85415fcb8c0e69fd73798570349a891d34ab8",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0211.xml": {
+      "sha256": "2c0240e01e9f919f9adacaa54b7776cc0b7fb7f894ed085d8e2b66dae96e19ec",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0212.xml": {
+      "sha256": "25090e38896bb4697e77110f6a59be4b9c70fea7b7753ae8e532308e872260a4",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0213.xml": {
+      "sha256": "4cbe85729df779506763c3975732e0fcfe92c69f5da3b1c49d563f8c2d82788e",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0214.xml": {
+      "sha256": "4d95c78683cdd826bb69b61276f3d6bfa6220915ec4633108553d4ad0273f120",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0215.xml": {
+      "sha256": "ac377b1e35ad215805e1fd8fe2f846d38bf20d3590c2987ff096411e41e97d93",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0216.xml": {
+      "sha256": "a190930a72d07926abea80ad44c8b49b5efbcf1a0ecdc1ad74df3ff440e52fb5",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0217.xml": {
+      "sha256": "80b3126683965f911a50cdc0b7d26813ea00b17b61d380609f9d1d7075ff3b4d",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0218.xml": {
+      "sha256": "54160fb73fdf96e132c2615491bc6d71524a2e69f4e920940fb2277430e3041e",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0219.xml": {
+      "sha256": "137f95f8c8eb396a44e0e13932b58a5b69bc86a77ff2ba580aaedc00f28c1898",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0220.xml": {
+      "sha256": "a8431ea6e3709d0d2e2f00c4324b160a69e893e7638cdf9e7af73051e42d7d6a",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0221.xml": {
+      "sha256": "2b87f9e9c39158c3f9a6ee0e5a41c09a309c146711c5fd136501b471ac232f72",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0222.xml": {
+      "sha256": "2db4bc97f88a9bd97f78fdc8d074784b718b22bf7e1e128ba7ad6c642557f5b2",
+      "bytes": 4896
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0223.xml": {
+      "sha256": "eb2d16df8ab3ca28abe22e4095915ba896774c077be5002051b77c5444b5a439",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0224.xml": {
+      "sha256": "f5bf90db9e801b0eb993b09743611c660ad734c7028ed819b06bf822ce301ab9",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0225.xml": {
+      "sha256": "e4c6c184f25d64caa2c0234da80fe7fd0247d74c904c791b4f3cdf406676dea9",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0226.xml": {
+      "sha256": "0445a94c1fbb03653e5ee83f212a0ee4617fb31ef0c1367724e2f31fe1719644",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0227.xml": {
+      "sha256": "01e877cbc0e6ff2dbff40eaa2f9033c6c1e7aa515c956a107d742efb3239e667",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0228.xml": {
+      "sha256": "2e9d68effc99048d97e1b7431a6664e75861f22c697cd7a1ac98b3b9f89e1299",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0229.xml": {
+      "sha256": "a6725e507441ec618d291759be36c23b985c6317f6cd741cae37dbf737cfa504",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0230.xml": {
+      "sha256": "d445599bd5c7a84636e6e6f776af7c98112d8f7bd29ea24ce5f82e5a28ea6003",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0231.xml": {
+      "sha256": "894802fe524bef5d85cd434ad93368bc150b58a8f3b8b727d0eff83226af22fd",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0232.xml": {
+      "sha256": "99d11aaf23468e3f36d71f1c78da80e94011c5fac153b6cd5480ea7fb94f5fdd",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0233.xml": {
+      "sha256": "44464caa43c4635bef9ec5d42dcc79d3873ecc6dcf9c437239e66fdb9b5e567f",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0234.xml": {
+      "sha256": "b1e88322304855fc0fb4d777d70e90b1fe6bdadc8e4271e73a78568014c9138b",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0235.xml": {
+      "sha256": "38c63d5c8af53c5c6e90355dff5232ddaf714a57bf8d97731f0081c967e87a20",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0236.xml": {
+      "sha256": "d25027f0dc834559a4749793072b4719b63ad59b90ffe2e84c4774258a271d76",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0237.xml": {
+      "sha256": "2261e46f44774450678413bbdcf684173dfb1d2c5dd7ce90b708c7652db0947d",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0238.xml": {
+      "sha256": "e4ad2e87dfd0e4a69e250aba08e34d39ad40bbf7d8fd9a9bbec71495d5813e35",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0239.xml": {
+      "sha256": "1b714abf49cf278f8633540093fb7272fbe2b9ecb521bd62b891a79caae70272",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0240.xml": {
+      "sha256": "b78bfc48416e365b825eeb8266184eb73ae0f67e0d89721e22eef4ddbada2131",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0241.xml": {
+      "sha256": "b48d1d95b17333d61d551448e514e2072035613d40b18abfd7318b3e5904c594",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0242.xml": {
+      "sha256": "45578a0896ccdd4230ddcda325cc99b4ebea3534e0b6ba600e581e7176d4723b",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0243.xml": {
+      "sha256": "d37226b097dcccd6bef13d1ee25fc50db3a601af7a49b9ec258568973db8aa41",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0244.xml": {
+      "sha256": "e8193f9dcfe3eedfae7d301f6e22e17c8dd30566ab6db0d164eb288773cb35ff",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0245.xml": {
+      "sha256": "48caa30017702a6ac2e8718f8303c8e8987814b4de0c04055251f98f7d11ea4d",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0246.xml": {
+      "sha256": "156ec669a2a040ac93d81cea7b6ed926ab2f70957ad4aecb01e280898e162dc0",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0247.xml": {
+      "sha256": "88f26bcc94c1877ba744cac077d9aa5edff1f2a78d4958ce9002c54c059abeb1",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0248.xml": {
+      "sha256": "e8c8bf5763a6fae09a966100acc11dde7853b04010cec8ddb3fc6bfaac2ded84",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0249.xml": {
+      "sha256": "1743390a1caf5fea91f9c699aa574cad644b196b2829b145d7f8eacf2904caaa",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0250.xml": {
+      "sha256": "f381effbcb19c7576cb052ed189191cafc0976bb35886a6ec9b52f8a9e153d89",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0251.xml": {
+      "sha256": "212e0dcb586b99a6162b5357a0c311461d7b3e4398812b33be6caec28ff9ab4a",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0252.xml": {
+      "sha256": "ef73e970e9a89bcbc50749461742347a069f44f655df9cc6d29f85e655dbb57c",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0253.xml": {
+      "sha256": "392bd20dc6768bc6c83cad7f3d01208ce009d2905d22216dce010a604c63dc0a",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0254.xml": {
+      "sha256": "6e575f688b53e21a7c744640d76edf5488fd6ccc4dd790f7395c51f8622e0526",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0255.xml": {
+      "sha256": "bc27f06e9c8d348cd7a64bc0b973f588140a6b80f9b9a064591c55cc50f13ec6",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0256.xml": {
+      "sha256": "5197ad8382af8e166118e59905e235160ceec7d5d4613719baebfa885f8f436e",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0257.xml": {
+      "sha256": "a56c00281d2dc0370172ddf566d2d57601ed7b57e5c344f3894e39d10608c995",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0258.xml": {
+      "sha256": "92cd319b0329068e3baf26a0dd219692d815a0add2d5b7977f68567bc44f391e",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0259.xml": {
+      "sha256": "d9e6d3266740ac15670f6d7fa15df3436ad5b6c9a922df1c5eed465107953f7a",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0260.xml": {
+      "sha256": "2db1f326bf83b82db6e1ea10189ea3db1e75e6d95b0a8f8a03142ad2ddcb3b01",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0261.xml": {
+      "sha256": "52877694a1bfc122582074ba424d81bc3e0083eb075e8e993b8dcc9c5d3c0504",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0262.xml": {
+      "sha256": "f947c6254c1cf74c6e9ea34837b3aeee8042f17419224b15ba2b7d1797957042",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0263.xml": {
+      "sha256": "44f3e0336c99d9ed8d3d6b09946b1fdf8d962c7967b98d31b6d1eff39c34593e",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0264.xml": {
+      "sha256": "c62ffb8f405bada3aaacce7d6fe93b6b99a7395c33ffdfc0d3f210ba59d81d7e",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0265.xml": {
+      "sha256": "50bfe20507e205bc6ab31b674fd6d5d8afd3ad648cf2b500624e2886c95ee463",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0266.xml": {
+      "sha256": "15bfb1dfcd1fd944b977d305d125139941d3e094315fb1458991b65fd889bf44",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0267.xml": {
+      "sha256": "346a754f5fbaf6e0f88b0d47f607d6e8151dec6c3528ced0f6b00a6a626c2a0a",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0268.xml": {
+      "sha256": "85e959647b05849ad4056a5a4a84644757634bf61ec331d6d9b10b3da95edc04",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0269.xml": {
+      "sha256": "ca5f09e3eaea3ad119f75e7ced8dcf25c4ca8881376809541dbcf483021f0b03",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0270.xml": {
+      "sha256": "e740c2bc62c28789d391cf6191abef3e0a81fbbc69dafae535c331fa76625250",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0271.xml": {
+      "sha256": "bb75ca758947f0f6d0236bb82ea6f5c94daee668f4b211f00e21499d59f5a39c",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0272.xml": {
+      "sha256": "9069c73c94afae2af815ee4c5bca17e9973a23cd75e364f21be7b63e9e342048",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0273.xml": {
+      "sha256": "50aedf70ea12937cf9ba15986a5393b453c22d930bdd173f32fbef27e6147d08",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0274.xml": {
+      "sha256": "c4c9f328d50b0fa1a6f5d05929ba3d9ab18010015e181509353090e763cf9a89",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0275.xml": {
+      "sha256": "d171968ddac9da5e31267cdfba9b26a3e2f5663e5eb021a4cc39aafa4f3cae81",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0276.xml": {
+      "sha256": "7809a23201a05465501c1981ea97d7cfd4b08ba82d1f3234c05d09ae6327a6ac",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0277.xml": {
+      "sha256": "5801349501a0ce0ae918b1a9d929a23a6eb08537f7f7838d7058d433c5290a58",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0278.xml": {
+      "sha256": "a62f4a0cca52d55d96f815b046a5646917118421e6f18df3e2840a852edeba5f",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0279.xml": {
+      "sha256": "e43ffcd2532afe0f5e3ac2a212a9bde779383a237efdfea8a28e06eb797674de",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0280.xml": {
+      "sha256": "1901f59aafa6dc01dad0cbd79f1928b1bfad9195da32a20148b4950396da7ea8",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0281.xml": {
+      "sha256": "54a4ca5203d17037213d50681806d9db1f4336500b655804dfa5071336eb0321",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0282.xml": {
+      "sha256": "6d3bf6f87ea21d8161f2037d84378e22b8c03f456ef72936ce128a8527dbd468",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0283.xml": {
+      "sha256": "4750bc43252e6d4a38694225eb0b19b79c5df4fb3fa2c8f14557ee9d373baf63",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0284.xml": {
+      "sha256": "92a701b9459337bc7d89298d2c88564ea81c5998c2c09a6d2d7cda91adb9ecf8",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0285.xml": {
+      "sha256": "1d48cd4411cea0042aa61246481fa4db1081418d0bcec84327e3965c404dbc14",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0286.xml": {
+      "sha256": "9ec80c115dddd64373f002c1fc2b64eae7dd277f4ab6229cf13c040653ee6272",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0287.xml": {
+      "sha256": "242b005cc50f9f79e1a1739653d8a2ad4005a9dc81aa51dac5723bb6c78287b6",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0288.xml": {
+      "sha256": "61d15821294aedff7c0daf4a01ea7b3960d821b41da254a8fab98b585df85bfa",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0289.xml": {
+      "sha256": "cc5c4148e5b19fa6ab90ae789e6c61b84416c1fa1d710d0c7ffa3ccf95fba52c",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0290.xml": {
+      "sha256": "cb96772cc03b6a5c3e1bf6f094ec29f7c0afaccd30e0496248f450a3d53ee03d",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0291.xml": {
+      "sha256": "38b484edea5b0e34d0413245ba9746df1504562fb70c6595a9b17110ba7e30b1",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0292.xml": {
+      "sha256": "423bece501c4a5b41113bd94b0aa99515130f49b3d81476879e34ca828d27e50",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0293.xml": {
+      "sha256": "f8c9168f2690970dc012fc768a7af7ab4e5afc6aa7ad31e75b15d5f634f6cf42",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0294.xml": {
+      "sha256": "39d4f3f5e652bb5f7d22224c1987abb8f39170c7c858e808e3946a027487de81",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0295.xml": {
+      "sha256": "dc1a8285779f58a3a891da78ff7a80b0f6af0254039551103b0b3c9ff02d6909",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0296.xml": {
+      "sha256": "23c0a7ad77b239d5ce680e39d4bb20dcda84a042bf7b3f45a61d7ec1f7c1c902",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0297.xml": {
+      "sha256": "0b2a2bffec37617353c0d75e7d653f58ffe8c47d6fae6d5ec4af2836f460446b",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0298.xml": {
+      "sha256": "e37e0e0b2f0bdc0cfd2a1bb0fbf8acfdafa2ca9c947b7ea17eb10a2c00b657cc",
+      "bytes": 4896
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0299.xml": {
+      "sha256": "7a5e4dfee1988690423165f01e1e4ff98de37de9c80655cc9210d1fe50c0767f",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0300.xml": {
+      "sha256": "8a2f01dbd6035112f5670c4d1462337505c85150a13f4c334929e87e744918c9",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0301.xml": {
+      "sha256": "c96f43b494d152f3436e7384915c07fdf99cb667d6637c821c57a2abac32e9b4",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0302.xml": {
+      "sha256": "260903c12c4f2ca14516dbaaff15448802beca780fe25e981092977392629257",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0303.xml": {
+      "sha256": "2345325f24df423ef1c73560d05e312da8ad597a481104708e769b65b1105a76",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0304.xml": {
+      "sha256": "09a5bb6b524e93d1e29933f17f2bdb995a3e89cdb24fa72eeef9ef7d85e365ff",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0305.xml": {
+      "sha256": "82029a2959e67b63b83fd3f13c9c632621012e5d41de3ef9f4d4a1a1ea8ba11d",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0306.xml": {
+      "sha256": "d9e3b2396ebf889fa0f6bc3896f88509b8b6d5793b9881ac0b0f2382acb2047a",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0307.xml": {
+      "sha256": "6c07df3993b407896452bce49788a5c217375d3ac369166f3ea77bec8e3922ed",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0308.xml": {
+      "sha256": "d33feb950e47547092a9b5ec59612ad84b4eec011c3a8146b7f88de04aae68c0",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0309.xml": {
+      "sha256": "9c118607b22ca8a3547bcff9ce5fe8aaf56a3ec1fc1e6ed1a915bafa985aa14f",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0310.xml": {
+      "sha256": "c32eb25a75774c250200dc696ca5280d038feb1894a4cc9abd6300667585bb51",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0311.xml": {
+      "sha256": "03358dca26c965ac02ce6d14bc15a534f72b7dfe4a50a9ef435bc5b249cc2786",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0312.xml": {
+      "sha256": "4653e2206ac68ac1618c00964e706e8c7f74912441515ede0cfa8ab6bd233a50",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0313.xml": {
+      "sha256": "773795591258cd0b5f65e1130a3f1ab8a94bf1b2f0d63ef8268aa16703310a0a",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0314.xml": {
+      "sha256": "60884f763674c76d29e685481d91340ff8f544a45df6906856bfd5f4f08e383f",
+      "bytes": 4896
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0315.xml": {
+      "sha256": "bb51d708ac91b67c098a9ee0d50a920247fa6b06f04f243ad35116bdc2f0b542",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0316.xml": {
+      "sha256": "097ef01828d50731f6add11b455d84da6a3e2465a5ec2abc35827e8559515c2e",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0317.xml": {
+      "sha256": "ce13cd474ad9e12bd34f32ec931b86036dcbda77432ff29891f377d2c9724491",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0318.xml": {
+      "sha256": "a175c8e49e38d563464b714bf389e7fc8e24870056f15650fa531b923272e31d",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0319.xml": {
+      "sha256": "ecf77c34c663949a94e9ad9dcbf1bfec54bcd55d215b7f9f7da2472ac9edd804",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0320.xml": {
+      "sha256": "905615178d2143ab69680fb5e63f9e64990fc9812b28c59be814e8c476217874",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0321.xml": {
+      "sha256": "8d28384abd70f0e83f9322bc94f3d475ff05eea50f9f74e49d74a459c967c043",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0322.xml": {
+      "sha256": "bae9d7de0efd707c2e46ec5b9ad1271c5fce2aec2aac4955b594fb60b201ce98",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0323.xml": {
+      "sha256": "125c1e7fff7d3a44da10c9de061a28dbd54e06f2173cade9b78ba2c8e26d1beb",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0324.xml": {
+      "sha256": "c89896f62c469af05b11abcd864a8c998effd29fee107d75a8e55e1f428397e7",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0325.xml": {
+      "sha256": "dd4dde2430415271a02b80cabdf737cdca6ebeecfefc8c20c9d5f6bd5ff1a9eb",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0326.xml": {
+      "sha256": "99c92074e520aa4f72a9734750cae8e399087ebbdd0178ca5786e8358c117711",
+      "bytes": 4896
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0327.xml": {
+      "sha256": "3de889e5b099612986a0eafce15f5ac74c3511bd77944962d19c8968ce4c2003",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0328.xml": {
+      "sha256": "f1ca1e1305ce3498536b58edea2aa24dfb23cfc18d84f9028875689cb5a65af7",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0329.xml": {
+      "sha256": "d63cfad512bcefa895b25175d3f02e5754b3c5f74cbdaac30cc856903bec73c3",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0330.xml": {
+      "sha256": "3f4924936980e2254ce58e2f327c949204c6765a47a4556714d0a0a414792f3a",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0331.xml": {
+      "sha256": "6608b70374b7f03fcfab12d8d32fd6bf081ed18b5b596053c8599c84e507f3c6",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0332.xml": {
+      "sha256": "11fd782fae8f6e407c3e894e49328f2d292ecf74ba68c430a82da95d00738461",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0333.xml": {
+      "sha256": "f112bb37ec01916da18f7135ce4080c66d1a2e29fb94f475077cabb0ffa58c7f",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0334.xml": {
+      "sha256": "aef661a2516b8e1848a0cbcb383d6f8bdae4825a9313432945b4610997047865",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0335.xml": {
+      "sha256": "d8c714d679ccb6c80eef6d6cbc4cf9fc552821f5192faa9cd6bd052a1357e03a",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0336.xml": {
+      "sha256": "0d2ab27a43c13527f36ed5a595cb1f1f79e01015e2b2ebc28dc8e35b3e9bc4ce",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0337.xml": {
+      "sha256": "71311c56a05ad8714704e43bfd60568dc88e3df64e63033dee9fd99e08f480a9",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0338.xml": {
+      "sha256": "b0dc179fcd3a44899682ba18496f956573c0212ba61e3fa8dc3bd2733caff518",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0339.xml": {
+      "sha256": "a00fc1e5469ef539d23b2405171f7e9a2c8730d8d12ee5a9a5952ac5195518cd",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0340.xml": {
+      "sha256": "d934e8e5ffe62a566d03a2546d58a7665c8948b9952a48d505a35981c86dcac2",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0341.xml": {
+      "sha256": "c41c410ba93d8988c8a85683f120ecf7a9de54303b08e6d47aadd2379696d81f",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0342.xml": {
+      "sha256": "c0505891d53bc90903f6afbbcd28403d28ec73dda36f14cf363496b0e78bcc9e",
+      "bytes": 4896
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0343.xml": {
+      "sha256": "451bfec60e95107b0c824ac36e6c2e1d6a76db1b3a117b2f42ccac601faedc4e",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0344.xml": {
+      "sha256": "4e87cc31648412da3f053c061c7457756e8627bef8fc8b471f685e465d45c111",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0345.xml": {
+      "sha256": "be2fa183a2e452df7ed79557c9e6ff76fb1121d340d2a2c771f14d412c76e71c",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0346.xml": {
+      "sha256": "bc641f24e9bb68431a30a0a85bf2ab3640939937643dfbefcd2e07c986aaf631",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0347.xml": {
+      "sha256": "8c776a219af9b7601bbe4919f99388de9d2fe92a09c7c322d33fb02ecfc980a5",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0348.xml": {
+      "sha256": "736cda5b13064b07d8c8b1a073926b298697c3fe28e0904fb92063c06bf342aa",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0349.xml": {
+      "sha256": "c4b10225fe6a06e3d6381b0a56ec97ace624deea30091e540912a8d15c6a7eee",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0350.xml": {
+      "sha256": "df6e70ee2ec5ebfbed3dcd0911479acf4ddc4277c405538facb6d286cced741a",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0351.xml": {
+      "sha256": "ed4fd7ba928c1b076d16b3bd8f879c36a4fa6fa18b4e27ca1bb6a77303abfa39",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0352.xml": {
+      "sha256": "e3f2afcf42801a7e6557b17eefb32d0dc3143f8cb9ede84e4346b0c4b9b3149c",
+      "bytes": 4896
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0353.xml": {
+      "sha256": "75208fd1407a914397eb0178e318858b71483385a9e6376d1c76d6ea2b2915fe",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0354.xml": {
+      "sha256": "baf7356b82407ddf03b95d029314b6cd4225a04ec80681284e54734bc1ca3321",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0355.xml": {
+      "sha256": "ede7900b0581abac9db5f3830cbf0b60ccb78a3de35a81e3552cd58d4651e132",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0356.xml": {
+      "sha256": "427dce32bf4f9c5f7cd5c8f85f1c58f1300c642c783a58f45b7bc375010cb864",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0357.xml": {
+      "sha256": "3a73ea0df684a389f333d7ef5cf5b553b15cb5c0857626e361ed74cb5c90ef32",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0358.xml": {
+      "sha256": "ec74e03c7a55a6fcea12ca833baf2f0e71cf3d583757524e2b1ea9ef1ca3fa66",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0359.xml": {
+      "sha256": "8fda4d8c1df13a4e617cb6a8e5c0a35443cda4dec1b3d1f2067e92881736cb1d",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0360.xml": {
+      "sha256": "724a540c0c2fda9ed99cdd577ecc587cec2acd5f0e10960f287dd243b4d7ebac",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0361.xml": {
+      "sha256": "657b9d1026fc9d077ff564b862d20d35fd86ec4f4581477a3d83b55e1ab0787d",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0362.xml": {
+      "sha256": "0e7d02dffae82192d005d0943526e9dff56a43819c626a07a6930de6641089b9",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0363.xml": {
+      "sha256": "f746a23fde9e60759482aa32931b8c31c1b3029e5c85a4b2628cbfbedbbbc5f7",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0364.xml": {
+      "sha256": "053871731e9d001367fdea9c320e7ae3dfee729cba345562b15a714603ed9b3d",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0365.xml": {
+      "sha256": "e52389d04804b10bbd9cbbd115ad9814d939a416eabc8c73d6e774d131fda2f8",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0366.xml": {
+      "sha256": "c624da44a2dc9959a2db9a78085c9f0a532bb51fc16732a7a8003db483cff4a5",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0367.xml": {
+      "sha256": "0d082602e61c257efd5ef81eac7dfce3f1634319a7b4b0b5efa064a2c4fb6c70",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0368.xml": {
+      "sha256": "ba8f3eccb1e83fa61599c54f39295a1618a0c5219fce5165cc437946467c823f",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0369.xml": {
+      "sha256": "85f5c7defeb05e7477b7b088ec6539326266c965d6a0467fd6dc199e7e8d1e81",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0370.xml": {
+      "sha256": "a6ef2dbabed4d7db955a77f09b6f3944bdb7f31bcff5970f3efe16e067e50ab5",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0371.xml": {
+      "sha256": "5dc7c5d703aa43acd0fae56b6b6434ede184bd71c0af9d58e5a772d04a333e1c",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0372.xml": {
+      "sha256": "d1e750c3712666b8374b22c7e106244a251ddd8f26f4ba0d0757ab8f54c57987",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0373.xml": {
+      "sha256": "c26934489aec3de760410fca6e0753fa1cd499dfc02fca6a45473219f57d2c18",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0374.xml": {
+      "sha256": "8d4fca57363e2692c21a13430072a0cd4be1a06e98541a2526f5450d2ebabddf",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0375.xml": {
+      "sha256": "cbf384a4566a603a6a72aeaf92b9e29a4e5aceb45aab51a6f793d470a3681ec3",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0376.xml": {
+      "sha256": "69c0f056be8eae10f5dc403636430b9ccc60a51d8300a72907922684a1dccb7d",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0377.xml": {
+      "sha256": "2a4719c88d6b9c1fedd63aa286a57fc96d3a28a2a060b1e9ff80784e45852c85",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0378.xml": {
+      "sha256": "27f2439b9f2f496de626e040e5341d2a42dc0f3d53e9e35831f0d09f08452390",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0379.xml": {
+      "sha256": "5b75b25d4fade3610e0eb8158476958c94e230ca899f8dc59838a29b4846a12c",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0380.xml": {
+      "sha256": "96f423b9a33878033b4d3d6f4d1eeb3d52fde5b4edebc2334d2ea5da0c2b4421",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0381.xml": {
+      "sha256": "df1c30ce9531c265bc597a34a7efe814d73288642fcfa1be29bb29c8a4dbb0e7",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0382.xml": {
+      "sha256": "04d8449f8b29f3e24c86e2f425c1ad3b8ef4a06b7b8743b7ed09ee477e552b02",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0383.xml": {
+      "sha256": "7d5a9fee0e5b11abe27ba84dd1bc05f7b988d37e48907f962f0f16d56391bfce",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0384.xml": {
+      "sha256": "70e73afe0bb627e9cb2d70e2ee7c7dbc0ee9c77012d9611211793578d2a6c3f9",
+      "bytes": 4898
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0385.xml": {
+      "sha256": "5655a1b87f243b2e1022de4dcd52ed2b2cf6c5020c3542541ffb7aab2c9dcaae",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0386.xml": {
+      "sha256": "245a4c9baff1cddd792353a2a3dd6ff316cd9930932f5302608e6c2906e82a5a",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0387.xml": {
+      "sha256": "640da50c892237fd7a0d878eb6aff8480ac7eced3f73694cd0211d3efc73a92a",
+      "bytes": 4897
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0388.xml": {
+      "sha256": "8452e32fac53428df65345e76300ef471f7a18fa3694a5351a598638e55624f1",
+      "bytes": 278341
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0389.xml": {
+      "sha256": "065a4968f84896ce8166cab6574f608325b25fb91f13c3f978fa8b47a24168da",
+      "bytes": 4900
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0390.xml": {
+      "sha256": "abc1ba1e729b23fc5a788050c9b7259edd820b798ebb2ae0009bfa4d95ad188a",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0391.xml": {
+      "sha256": "26af7abd2b180493a9373562fe0848ebb73febe2334556e34f1dc8b482ba12ce",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0392.xml": {
+      "sha256": "db7eed407fe89e11697ae2981791a90cbc6dad2c166821d5058126dbc4a39fa3",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0393.xml": {
+      "sha256": "d4362ba1a2d528a26f11b26092f8126b97acf9c156440557ba3dd4da42392ec0",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0394.xml": {
+      "sha256": "e0cdd53637c461c9b46547307814e5ff8068aed8091186c5964daae17cc73656",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0395.xml": {
+      "sha256": "bdb3b1098b9f593e9a012accb403f2bdaa4f6b030abba8f6bd1818a0e3efe2b3",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0396.xml": {
+      "sha256": "48aaaa56f1c9bcf77c0b68ecbb25e68b34a4c2e21e36e07dc70717de5ae8be38",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0397.xml": {
+      "sha256": "01c4da6135dae59f9acc9b3965d54aed63e2a04e14fa89ed6a050faafa81122a",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0398.xml": {
+      "sha256": "25fed199613c4b895789f4976fbabe57f5d13010643443ae60896d8dd16108ee",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0399.xml": {
+      "sha256": "5e371ac5e7b86a28a82466f5b50764e023367f262634e22b4bc3cc8f0ea0530c",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0400.xml": {
+      "sha256": "f0a173f0c25ba6fdf6515b72a96c55332ebbdef765c516ccb29df5489da42b48",
+      "bytes": 4900
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0401.xml": {
+      "sha256": "eae1380d4a919073c9782eb944e787d728f820bb19c2bdb4074bcea9013af743",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0402.xml": {
+      "sha256": "003c13261194f36d2e0704dc28284ea17a25a95968772e6751e2496eeac44364",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0403.xml": {
+      "sha256": "d149e8d8a95462b77153bc752d55e3cb1a63f599b883a05c77f878ff8ccd01a4",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0404.xml": {
+      "sha256": "ade8885a00b7a96741be8c10da472eef13d2b5a04d739e9bc737f036bd7940c6",
+      "bytes": 4899
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0405.xml": {
+      "sha256": "111e668813036b5436ac8d76200258b714c4afb37c4edd6d94b6ba5fa6d32b6e",
+      "bytes": 4900
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0406.xml": {
+      "sha256": "a753d5d799ab6c7995fd53727e460d0b0e769f3314aee0f3961933c0e567ad1c",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0407.xml": {
+      "sha256": "2807b386035aee429b071a88525f79df90fd66fe1a24d7b5641278f177c13355",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0408.xml": {
+      "sha256": "4387f9f43e88be2646487002e7b499609c483939b79e11b8088e98b2d78dfca9",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0409.xml": {
+      "sha256": "dbb3b0cd8ccef48ff7660a6050027e9ac35c38ce97651e1f242bd7021ec84b78",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0410.xml": {
+      "sha256": "db0cd76130cfbed0ba2d437aea00ca94bd8487283a4578cf04b7c4abc50e58db",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0411.xml": {
+      "sha256": "0fbe1765c9cbbab5de4022e96ce91c6a70cba3652252b7e6941437b1bd0d9f00",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0412.xml": {
+      "sha256": "11df91630cc0610d917bfce58987aceb9cd9d34178b2b093f172e2b93678ea69",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0413.xml": {
+      "sha256": "285410fdc35c763873506f34c31929730ddd2138ca360ae7ea76e41a15c1e635",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0414.xml": {
+      "sha256": "006803378cda63865904e4eb85443505eadbe2551f581964455e2ddf4a901a98",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0415.xml": {
+      "sha256": "519203095d476aad5bcd03ef2835adf2db5c2824b92ab1cfdd41199406696a3c",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0416.xml": {
+      "sha256": "5e4e4d23dbb052bb5eaad1f0d0036cb6ab828d296adbf39b1a44795f614a620b",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0417.xml": {
+      "sha256": "ac550a95d53d9ec0fae13fddd09875e88a11e7c9f7738f802f50850baa7d5433",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0418.xml": {
+      "sha256": "f7c221fab285d40ff6261377a143419fcc0f0f0097b9449f6cf6270b471e55c3",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0419.xml": {
+      "sha256": "8c38c94151100a574dc637c769977849d5a2a1de9d36488f3c475618f18dddd1",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0420.xml": {
+      "sha256": "ea5bd69e64f2482d6c78cb45c28b47f92a29e22942baeff4cee57cc97c6ee65d",
+      "bytes": 4899
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0421.xml": {
+      "sha256": "cf0b97b45e94625556e65a5fe473b548d618789ac4e5ebd6efdd4633c5f095d8",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0422.xml": {
+      "sha256": "927fcb1dfe0dbcc392c14e8a5a642397ef79741043f0e930c43b5504740e40e5",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0423.xml": {
+      "sha256": "9c7003d2759aaa1e09a39571e80053a907a2ea538f2441688b46ff76d5a1031a",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0424.xml": {
+      "sha256": "bbd1c083f5adfae4f1a4d8301235a79d92a28db0d8830daa509ca932eebaf44c",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0425.xml": {
+      "sha256": "39e9fbf4e5ef92bfad8e10977f67c941affceef845fccec6613d66809cd8668b",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0426.xml": {
+      "sha256": "78da6d6ff975cb4677f362eb3f7b2d3dc82d8428c328dc48ac5996ee879e80c6",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0427.xml": {
+      "sha256": "227cccaa7f7d44e8b861f6dd0cd49030403a24383e266f48a9e636ed29675774",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0428.xml": {
+      "sha256": "891ea5ad115cc71de071d23fe8d5d167e84fcfaa157a90cd26f1cae7f0cdea48",
+      "bytes": 4900
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0429.xml": {
+      "sha256": "1d725ee7126eea3c62c9349adf7d297a198b7fab7ac63a28225914352cc118e8",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0430.xml": {
+      "sha256": "17035ed4d23766c86fa708060a3c3b9586366bb6fb57ce97871d15c21d66c312",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0431.xml": {
+      "sha256": "a1dc54eb43c70737a37ca0b9a71a2a38ae65265ec2f450ff59396c2efe5575e5",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0432.xml": {
+      "sha256": "328f3ce2814f1ee8f4d1ba5d5ed616947ef80c7f67edd6f832f09da1d6b9da5c",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0433.xml": {
+      "sha256": "75fe3b1631607bf34854b6d732e8ffe17654d85ae9053dd232f7328fadb7f5c1",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0434.xml": {
+      "sha256": "7a14bb7129ea12613a4f73f0b491bce3c6d3a4652fdadb93bf85efe351d080dc",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0435.xml": {
+      "sha256": "35e090b28b9b9f8b61f0f79ee126a1dd536684de2085552b680d4f7ed609fde6",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0436.xml": {
+      "sha256": "995db83c72717c77ea73f2f31c124ec58488d1d42b71124cc68dcf5524c1ade8",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0437.xml": {
+      "sha256": "5b4bb1226036ee2c3ab96a5650af6286920c9d3441f1d9a2d400a7fe75c0a601",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0438.xml": {
+      "sha256": "16d82699bacc768c243fa40f6b3ff6a7833b4ae4ff01a99718e2ce6d098016cf",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0439.xml": {
+      "sha256": "1943f1e4da20fc621af17e611971a4dc11901f39b580a89636de6add6e037ac8",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0440.xml": {
+      "sha256": "c2a0262d0ba6a9cfafed9c6a768c40b54dcc96cb57f1b60683bc2898504784bb",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0441.xml": {
+      "sha256": "c1b96e66c07931ab00bd839a84d303823719c67a4e94c7d5315abc40b127a7a5",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0442.xml": {
+      "sha256": "03b9527b5a42ae27f0140b5b1894d1cc4c2aaaec07366078f28f64a1058bd79d",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0443.xml": {
+      "sha256": "f8563e8c3681ebf316d984bfbfd38669696d348a9d3685e930addb8983ae4406",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0444.xml": {
+      "sha256": "1b71c8929f036ca386b8e6db7aada0b9f2c8a3a4e67eff4b412f964553d5049d",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0445.xml": {
+      "sha256": "1b4f868818afdc7ac2ec145c7a827c96efbdf237b1d773c173651fb82b6504d3",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0446.xml": {
+      "sha256": "4f2f71f8e3a30d90d462ebaa67dcc359649a982b705eeab5d77aab20ea1bacc9",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0447.xml": {
+      "sha256": "37860ec8b34caaa9840be74f7d8637fe06800b6e2d63cfcd0e09174f428ec034",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0448.xml": {
+      "sha256": "ce7a4e40519194457183657fc1c2bb0968929ebda12cf28cc0ebf01de3d34f7e",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0449.xml": {
+      "sha256": "43e8379285f34afc21f40128b8e39b4e86acb4a2c3cebe6f3c1b0272b77af5b2",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0450.xml": {
+      "sha256": "bb395d01575eb445a0b2adc4c6ffa7732f09db5c301ebcff57428352cf8c05b6",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0451.xml": {
+      "sha256": "3f402ee7286f0d87e95883aa38d8f2daf7277512e97f732d8e19ec3f1d79e746",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0452.xml": {
+      "sha256": "286a5e40aab1e740b0d28f6a30e0e2a8d6c824e681446968380787e8677a7c7d",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0453.xml": {
+      "sha256": "78a861ff016d7bbead538d97af8a2a189e2bf04a33a6dc909c674a53725dce3e",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0454.xml": {
+      "sha256": "b458d30811504f7c3a4e6369a864fa778d828e45599be961b16a8b01801966ef",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0455.xml": {
+      "sha256": "520c167416eaaa225d461098ab496fd5922b27370b4fe029c896f01c0f7e88de",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0456.xml": {
+      "sha256": "e053895b90e4d46b52990d463caabf3121bfaa9e8e8716747dc3d6743e167ad8",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0457.xml": {
+      "sha256": "92bb263ee423dba2c5d9e262f5250120bf3f8921a093dbf3d590bb85a15b2041",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0458.xml": {
+      "sha256": "493837e9e4cf611b8bada2368259cd4f8d2e6675e438c5fd8bd332b96417ee72",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0459.xml": {
+      "sha256": "9702762e93b54d586afef6eba417515a12fe2b2386f2e6c31a1ca62351d8f75f",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0460.xml": {
+      "sha256": "c849bd26e96a45c8ba20dc5554b0671b26be24cfe6102e9c1fc6b69848428eda",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0461.xml": {
+      "sha256": "d2d40a8ed1ab66dfa83b2954dbbfcc59814bbbe3e1c23477b05b7d7ea6dbd9c4",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0462.xml": {
+      "sha256": "c1228b1762392d656a01e56260e881ca92402da69b443dd053efd6bafe8724d4",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0463.xml": {
+      "sha256": "5896ea55963c03b646e88d15c618acd4657185bbf22aeb478da6d9c9918c9a88",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0464.xml": {
+      "sha256": "ff94ba8459a0bf4b90d55f17e98068c222da1fc2d42ec6c13eee9b645e94d6f1",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0465.xml": {
+      "sha256": "657dc12b52f093a6e868a331fa9dd1178abd359158a0344b2de7e472fe0cb7c8",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0466.xml": {
+      "sha256": "f024689aa62ec21b873a723455f71bafe0502f80bdce9a565d1d8fe1a6ba9e88",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0467.xml": {
+      "sha256": "6f487f18c3d177719f7815e72a7bf84b7cc8ec8a1ec5da079312116b44fb9a0e",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0468.xml": {
+      "sha256": "301d64a9e17347bd20bcbe5e86bf513436b1d6cfa73fde7e0d46e9725228f910",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0469.xml": {
+      "sha256": "89bf7f12d16e3fd0c083b9a42d1e7e74694608ca717091ae67f923b617a6f48c",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0470.xml": {
+      "sha256": "7197f42bd022e0480899ad7009e318e45bb4078319c6e82f618d2cdde2726975",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0471.xml": {
+      "sha256": "04d2d1e43bd6c000fcce21c4e394fd95b3ab60593e4d0772366dc5450d0d65cb",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0472.xml": {
+      "sha256": "cc3c7414fc3e1e3e9e61f0dff3b59a4eb1123dc2f35683e595cb8286aadd102b",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0473.xml": {
+      "sha256": "ee609ce324c6c5f814eefaf880c0f9f91dee345cce81b697c5600d4201ec338c",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0474.xml": {
+      "sha256": "4deb7c357b214be2795f282fdb7154287dd53b720f587bbcc190740573e272fd",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0475.xml": {
+      "sha256": "3a64d06adbf58d2bc7dc6539fb4c7c2f667173835851ed28acc72e2f35a21b75",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0476.xml": {
+      "sha256": "a1b534c5c534986f8b5798d7d6b305cc77eb5712b7765e2dba5d116fc5f2b48f",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0477.xml": {
+      "sha256": "7c649558abb7e6eab886de13f797926db857e497a4b7c89bb09be9d934d45271",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0478.xml": {
+      "sha256": "f4cf28360390556e9441d643b4753a6bce13823b9e07aa6025eb1a85af42cd53",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0479.xml": {
+      "sha256": "46b2ac2c3492d00c2db6aa8a2b8bbd35fcb7b440b354ae3946c5a633879eac3c",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0480.xml": {
+      "sha256": "eb9cd531d5b5c317d8fd64fefddc96ae277a2153fe969b363660822863d28060",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0481.xml": {
+      "sha256": "c42e1af7145cff3ccc7ddd5fb7512a665687a826ff3eeb9b1ec92ac113c35064",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0482.xml": {
+      "sha256": "acfd8daf8ac60497a81fe26ce8af63d9199ad56b0ad7d886c72192be8dbb7ee5",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0483.xml": {
+      "sha256": "56c044841962f947895df439979586acb0ee98a74b0eb774847d0beba2408acb",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0484.xml": {
+      "sha256": "3add49e4c0c796270f2bd98a002b0ff91e9b0f42dbfce0d62c424757f934e052",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0485.xml": {
+      "sha256": "1a42f615bc535dbff0bcfcad04b18fc374b8d1d2af29c09090907b79bd579491",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0486.xml": {
+      "sha256": "52979c52d54de6b118589e86685a4c0d9f9f60925e4186016373e8e7820b493e",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0487.xml": {
+      "sha256": "5bb03079c366c9e7f5b111e5b354944cc7f490f2fdadf3259e76430a4922bf1d",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0488.xml": {
+      "sha256": "04f148733dab265f5bfedfac86fc2a6a6f171e1c056db502411da1413e510565",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0489.xml": {
+      "sha256": "01d4a4878c9771cfd7b27909f49fed62ad7938ee34c91044db9cdf437a938531",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0490.xml": {
+      "sha256": "5ade8caa8fdd2ee19c26297776c42bb41728b525c1ffdbb4909209550535a8ab",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0491.xml": {
+      "sha256": "4a83dea9c32e643cf74d93ba38999c21cef24f0f53ea6c6b0a483f29b4b226c6",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0492.xml": {
+      "sha256": "e0cba147ce35a3c169267f21bd04d564220607c102693cddc1f2e8a2088c829d",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0493.xml": {
+      "sha256": "37359519c2f76376e3bf46c09c583ba21d4611dc4becaba48b3021e34890add6",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0494.xml": {
+      "sha256": "9b075aa872c41bf1c7cbaeec7e938294c9efd6f011778e9f7b78cafde4638978",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0495.xml": {
+      "sha256": "bd3190e526b81ccdd7c952d1cd4ecf53c8bed790dbce5fadb7ead7cd44fe9250",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0496.xml": {
+      "sha256": "e4be9b64cecf84cdd7efd4bdd2646786331fada4d61ba1feef7ee1cf846ee813",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0497.xml": {
+      "sha256": "60552900028a632533ad11cbd0852a383e33b8103af818c9e0a411e4e43a0d7f",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0498.xml": {
+      "sha256": "63b346acc9514eb9fae2861cb987da82f3346dbe5e7e42dec458edef441082d3",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0499.xml": {
+      "sha256": "7271120f95582564d83abc2dfe84c0ddc5129ed970c756c354371d648835a366",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0500.xml": {
+      "sha256": "fb26f5a9e52005ef39167884ce6e032457d565d9f3fb6b869c7af78b3791f9f3",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0501.xml": {
+      "sha256": "723e00a51c867118e351827fbf3faf59adbbc156de429a259c74a7f4ce0c2663",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0502.xml": {
+      "sha256": "16972fba79a47405f252cd21fc3fe5b6ee0015dba88fe9f1423247eee5f480e1",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0503.xml": {
+      "sha256": "2b7e299a923ae434bf629a71997522c7fb448de6c9680624e5e37de1001cd136",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0504.xml": {
+      "sha256": "720f33e1236e4cf57395d7485474770a977f28ee7e295972e8a0fa0e270e2bf5",
+      "bytes": 4900
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0505.xml": {
+      "sha256": "61363b24399b0c54a419777f5f0c696eb83e764c70b02ff73a230b9b1c88cc10",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0506.xml": {
+      "sha256": "f9da3fdcce17aaa20937fe7e60a5313a51a63b11ba97307ff2214cc543578569",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0507.xml": {
+      "sha256": "df6173585b5e959797ed5c78c5a78bbda6bf52f13934b80d7086d97849cb9e45",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0508.xml": {
+      "sha256": "bb7e7bb0385c1613f4013cfc1edc1725c7817cc86ff0900bc53db5d4b541a736",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0509.xml": {
+      "sha256": "a2ffa8d1ec97bdc2764d64ce01907cc96b8925373cdb34ed9de72a5b68a7f646",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0510.xml": {
+      "sha256": "70ecee3ccf0df1fc7cccb66478b1ab9302ad7d5f1587af109cb661eacce04e3f",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0511.xml": {
+      "sha256": "b62c8d96249b1fccf2f8e1be18463ce332d9cd7c8f8e8b6ca932e0c8f3ace238",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0512.xml": {
+      "sha256": "a407ec655f15f9e4db61735a29cadba63d89f9f8738d50f0cb73bc6d62d36c8e",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0513.xml": {
+      "sha256": "d92c63f22029796337c70de1c8ae9cecc9e69844abdac2db0a4db447382322b6",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0514.xml": {
+      "sha256": "7f622e7117ea3346354d15f577a6e9813fc98f11f7f4273711773b5f0b2eecad",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0515.xml": {
+      "sha256": "bc25dcf7e6ee7dcb75f0a2fcb72162e121ddfd384cc69d7b6542522e890734a7",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0516.xml": {
+      "sha256": "0fb684274c666f250f59392a875e1f0902cc5b23b4a29c2f845a6d39e5a089b7",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0517.xml": {
+      "sha256": "82362b854f985cfefeca4e9091a225e75c40d091e9b395815ffc498fd02151c5",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0518.xml": {
+      "sha256": "e59cf7ba8f6ccfd1dec157655023c4a9d9b9cfe31de0d96c6862ce18047e741f",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0519.xml": {
+      "sha256": "766094848dc4f2ca1661cb2aa82f1cda83cf7e4dee85640e8868e4ac6cd5c574",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0520.xml": {
+      "sha256": "0d299ae6eb2106d39eac93602622f053659932cbf181615eeafced63ce34a7b3",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0521.xml": {
+      "sha256": "4fc70888319bd4533ef54a34c4dea81831d84f509bd32499ca3101b5be788c60",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0522.xml": {
+      "sha256": "dd5a735e1c16e0778f45ae04756365c066dc52da2754dfc20aebf2f1802ccb44",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0523.xml": {
+      "sha256": "d1e4af64909e55218e4be58dae1d01300f1d27bae7a26652f72c3bd4b795111d",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0524.xml": {
+      "sha256": "8658d504571c9af616151675c93a4e209f0e4f76c54e6aabe3f096f7adbd3df6",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0525.xml": {
+      "sha256": "985a21286413e34a04b3b43022dcf805425e4c29f39974dbaa9d8b07e3441ff4",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0526.xml": {
+      "sha256": "6041b4726ae7496463d0db002824b7afab46d447f7212914293fa8ce8909b216",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0527.xml": {
+      "sha256": "9c032ed9c954026ee53589934798c078ce9bdf4b17f707ee82223f19a07241b9",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0528.xml": {
+      "sha256": "ec9365fc1a0f0f332cf748e3790f4759985a8c459aa602a2378b2bb3ad31771f",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0529.xml": {
+      "sha256": "940221d4b66d0abb97c2b5a12fe113d8340c8c67feebeaa8b756934a93df634f",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0530.xml": {
+      "sha256": "68fa29dcc45c45e4bbb94fcbb92ca0b6443f7845d36d24866d1b8a9c21b1f677",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0531.xml": {
+      "sha256": "1e84f50224fe6b1d4c0496dff30eb46d1a8ae1d3bdcae24f7e0129f19b561229",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0532.xml": {
+      "sha256": "d643ab580e6e4cb245dd19acf1f9d5bcf539d4b6326069282f8a34234ac21e86",
+      "bytes": 4900
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0533.xml": {
+      "sha256": "89197852641ff66e9b9637f27b4c179c687c3d00f51edd55dba95c23e05f2d87",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0534.xml": {
+      "sha256": "86e64ef28660ff3dc7900f6b93336ad923d11c1c33b39c4c6ea69219dff31c15",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0535.xml": {
+      "sha256": "2ad61996753559c6a7ef31fa66a47be789ff395bd18c6d56e8002d70cc1d21a2",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0536.xml": {
+      "sha256": "bcaee4dfe12951b2bb89c20493519d283a8cd56d8da1a219e3bc61a433d6c073",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0537.xml": {
+      "sha256": "05f73ab8057a7b7fcccf284d186d3cc50686e73e011ab9ed5f62a26d69d40d4a",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0538.xml": {
+      "sha256": "20e0347edb2f7fc809b32bb91bdac3dc3e1a0177ee8586face6dbb5e3707ab74",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0539.xml": {
+      "sha256": "2d6419a5883bb36e557e1c454c7beee0893167b21bcb536b13fa7cd9e871d7cb",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0540.xml": {
+      "sha256": "b6a2ed543e36ef0539cd49ed72b4dbcbdfdc3f9c3493f776fb6d6822d72402c3",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0541.xml": {
+      "sha256": "d39fc0e6759dd095ec0f6acf5d5af64c63be911d88915757cca133d286710e1b",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0542.xml": {
+      "sha256": "09dd74e37000bfd95a7f30de6fc0143461f2896af7637900881c292f415f9331",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0543.xml": {
+      "sha256": "a9c3040a41d49fd6b8d068797ab2716de428f7d14766f27025155c6c26026ea1",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0544.xml": {
+      "sha256": "4ee48cf277489fa50e56698ebf95d73e796e9449e88f308685a64f2e6ab46d23",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0545.xml": {
+      "sha256": "dd1e02e4543a041bf53ba49432ef678d6c03b6063510e926148fbf9ce9c30e89",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0546.xml": {
+      "sha256": "9b7a49865692773632be2facaf6b3c6e18438ebc22467ccee424687a11e47d9b",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0547.xml": {
+      "sha256": "63f9e1380b6bb4e0058b5195eea4961d403cd4ba95aea568d9baeafeaf6a1c9d",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0548.xml": {
+      "sha256": "751db3e3aced2bd5af9de902185e87b7faa1ab84a794ffa4010e8c8b9b978324",
+      "bytes": 4900
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0549.xml": {
+      "sha256": "974fe25058332d11c904c3042c1893f6a2817d9a4436cbb1db07224ee04c1d0e",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0550.xml": {
+      "sha256": "5a5c274dcde53485a134d2e26c52f8f766f2c51c6c4dcb403f3f2c2163b633c9",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0551.xml": {
+      "sha256": "0994d68e4a7f609af208d49a19d4b3e56b52551e8f483d4dad18d8c65a637d81",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0552.xml": {
+      "sha256": "67a00735ebbad73d8d98a7d2a6c641cedd245e7f747149859b27e52918ea010f",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0553.xml": {
+      "sha256": "a93dffb272eb6b332ec452eb9fc13d7e8f51a758e5e2a2b968eee8a95c9f0c3a",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0554.xml": {
+      "sha256": "2d4013fb49999ac307582415e2b9a159859523979cfc13d7997b782956dbf92d",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0555.xml": {
+      "sha256": "9ca3d646bdcfe033a4c7e43b4a17a487b4dde8b58a6986c03b9f1ea10c1b2305",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0556.xml": {
+      "sha256": "75ee57891b24c87d8d147cfa55b5b4e28f3563b08a1502f0e66816f7a6a8f2ee",
+      "bytes": 4900
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0557.xml": {
+      "sha256": "2210eb5a82394c5df1988530c22c8650fda6745c9552f5c00a2c004a72f85c97",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0558.xml": {
+      "sha256": "9f4b2703d98ed9abb7755620352cbc9b48e71e4277164ac351e53efff8e23eff",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0559.xml": {
+      "sha256": "b961e42e3d7b06ed9e6e7725d21ab077088ad73097005f4d982fc243f80416d1",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0560.xml": {
+      "sha256": "23aee253f1b4788e85193dfdea96a2c37b43bd62dfd2ced6d49c8f2b7fe4732d",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0561.xml": {
+      "sha256": "605f073858893891c4e8f644d962c1857af085d053db41b5b2a070eec0bdc414",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0562.xml": {
+      "sha256": "38ce662758c14c8303ae83b1bc898ff95de0976be62edc6cf6c6d1b77d212b19",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0563.xml": {
+      "sha256": "971aab984de2adda8106e24f03f4fe189231eaa31b7c84c2639271c938557b6d",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0564.xml": {
+      "sha256": "33ee0166762c9067f84d595b9ebf387cdf27d9ce292bc81e36a342e76d6aa873",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0565.xml": {
+      "sha256": "d980a05f4eaf6adf32f14f52a3880693c0a796fb930f58eae65343deb6fec2a4",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0566.xml": {
+      "sha256": "014dc75bfb557bec8fc0c607d6cc1e17a308f9eeb46b02615c08315457a6c6df",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0567.xml": {
+      "sha256": "44d9779ff214e80c9699aa9c5b5cf2f71845354bc5a6ec4a13273d49580cc7bf",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0568.xml": {
+      "sha256": "3fd91c5e95af493fd8ede5f119d11fb35b69b2a40e85f28c287d25e378f15073",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0569.xml": {
+      "sha256": "fb9b4d4ff475667386bce2ba546376f2be5566203bf42a7a4aab9e6839bc2667",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0570.xml": {
+      "sha256": "60fbb2c6eec6bf97614b0b125566307dd75407d4ccfe3aeb75587b65a3241ccf",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0571.xml": {
+      "sha256": "37a03e86873e9a28113133ce6f140bf59de2e48e4618e2ed4b7ec9a998e2615c",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0572.xml": {
+      "sha256": "4d7842ff98afa2305350c8874efae81a79a4e6e87734460fcfebf2d2c55af2f2",
+      "bytes": 4900
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0573.xml": {
+      "sha256": "bdae76bb4ee9d51c230245dd3de95bc6cf976f4a4c0e966e28ded4dcded77140",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0574.xml": {
+      "sha256": "b71e532d6315c048f503c32035ca67d7ea61efa12de329a05f131d34b1e84b09",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0575.xml": {
+      "sha256": "7788933b1d49944cc080070b83f855c01d800e47919439dcc68c905f8ba56fce",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0576.xml": {
+      "sha256": "e553c1c951c81d9007a08409a4d0ad2f2b1348c5807365d14cb064e1fbc1eef8",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0577.xml": {
+      "sha256": "f8d1ddc8c758ff3a3947dd0065a462cf50940fd727b5482b06301c0073ee5675",
+      "bytes": 4901
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0578.xml": {
+      "sha256": "b2546428ebf0297b887c0fe5890ac196a4d435a3ec3a066fe8c0f61c7731a9c1",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0579.xml": {
+      "sha256": "5b54863654f7228afd687555d334f60ac2dc0fff06c41838133b13be0574c4c9",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0580.xml": {
+      "sha256": "6aa3985605a1490630cc6f8241c6ccecd1d78b26b9950c6ec8795e8f42f9fd88",
+      "bytes": 4902
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Geometry/g0581.xml": {
+      "sha256": "b5064d2c94f06d51c1205f97b8f871675017b7629c7badf925eed72d894fe3c5",
+      "bytes": 22319
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m01.xml": {
+      "sha256": "1e98abd4abf3b568597fca0b565dcf705b5abfb3574c51ed8be1d32dbf626b99",
+      "bytes": 12838
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m02.xml": {
+      "sha256": "521942d960d12b5f8cf5e9485a9b76784b40fb57a12a67e355ac0344f661bf72",
+      "bytes": 12838
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m03.xml": {
+      "sha256": "253b9a9255f39ace08a9d8726c90a54f508a0d0e1ff614fed957f125c7c438cf",
+      "bytes": 12838
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m04.xml": {
+      "sha256": "ef68b831e8deca6c1bd5248bb1870ec9d42319aa6fb7e22ceba1b0d97c721382",
+      "bytes": 12838
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m05.xml": {
+      "sha256": "3c1f3597600bbb5aec516acd12cdf9ac8447fc179734be7823eb5355ab8de87c",
+      "bytes": 12838
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m06.xml": {
+      "sha256": "5efc67e04a147e5f0ae7decdbad16442ae1ce713d60a283005664fdbd59f15c5",
+      "bytes": 12838
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m08.xml": {
+      "sha256": "366242e158e0f50a5d6473d57ae7ac8bd299e00626852f1c99801f8fc71ee3b9",
+      "bytes": 12837
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m09.xml": {
+      "sha256": "609a6af6f5dea8196b394615a646d1918529104aeed6a21146d2fe95c4a96dac",
+      "bytes": 12837
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m10.xml": {
+      "sha256": "cb2302ece908a9ccdb345f32d9012973d10f166542196e4464c8522e23a31f3b",
+      "bytes": 12837
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m11.xml": {
+      "sha256": "4279eafd56f597baaa7c26bc4d3d0dd5eddbcacf256663f6cc4283294e2aa80e",
+      "bytes": 12837
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m12.xml": {
+      "sha256": "b90910e6c6be97b70c0154c12254354976f9b127d6cd4384811c82c92fe4c006",
+      "bytes": 12837
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m13.xml": {
+      "sha256": "744a48aed71c516e4abaeb810915d1088d28d57610e6b70f5eca80cc6287ff8e",
+      "bytes": 12837
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m14.xml": {
+      "sha256": "2e116c80dc6320674d3254cb9b15d74898367af29a5704f3b53c3ddf3273ae3a",
+      "bytes": 12857
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m15.xml": {
+      "sha256": "4caaf34b63361fe37b442d239e1cf7dd8125c061db666943da8fa736aa452512",
+      "bytes": 12840
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m17.xml": {
+      "sha256": "00b0c05d43abc3b72752eb06e172e1db64d4a3c596a370cd2be76b454bf8f2f5",
+      "bytes": 12854
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m19.xml": {
+      "sha256": "2e116f80139e2e9b365a5955f494e5d336b6db0b258d9b51573671732279f00b",
+      "bytes": 12856
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m20.xml": {
+      "sha256": "716dac8e2dc046becacee1a2a7d82df2fe34e4b74bac3bfdd3633bd9b3580937",
+      "bytes": 12839
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Motion/m22.xml": {
+      "sha256": "4f61c6c347d88db087d6baa1ee4347d93991d6049502916d2fc007b942bd9a79",
+      "bytes": 12853
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/Visual.xml": {
+      "sha256": "f8b22df01bf8d3dedd2d0aeb459771ab198f73ee1f1590567bd12b70470673eb",
+      "bytes": 12330
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/WheelBlur/frontHub.xml": {
+      "sha256": "19d6ee6f36b0780af9a97672a9cc7e0bc72415eff89c923322bad28af828f864",
+      "bytes": 2194
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/WheelBlur/frontSpokes.xml": {
+      "sha256": "854f77fa4a355e4fe50526033ac5516ebb3d5c7168a90ccd458aa765524396ba",
+      "bytes": 2452
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/WheelBlur/rearHub.xml": {
+      "sha256": "00b1d1f29d42c57f353950a2a9409dbffb356d6eb65380bf110c0f995108f5bf",
+      "bytes": 2143
+    },
+    "flashswf/arts/new/CF6Vehicle/LIBRARY/Codex/Roadster83Offline/WheelBlur/rearSpokes.xml": {
+      "sha256": "1bef4b93683dc8e60ebb9b27972e44ca2d099a82d40db04a02eaa14c8b26caab",
+      "bytes": 2401
+    }
+  },
+  "roadster": {
+    "fitted_player_matrix": [
+      0.39898190048603616,
+      0.001697794190233783,
+      -0.001697794190233783,
+      0.39898190048603616,
+      -204.03174794342164,
+      -108.47307937298483
+    ],
+    "preserved_body_shifts": [
+      0.0,
+      -10.0,
+      -10.0,
+      6.0,
+      6.0,
+      0.0
+    ],
+    "roadster_symbol_count": 605,
+    "wheel_blur_overlays": {
+      "part20": "wheel20Blur",
+      "part19": "wheel19Blur",
+      "part15": "wheel15Blur",
+      "part14": "wheel14Blur"
     }
   }
 }

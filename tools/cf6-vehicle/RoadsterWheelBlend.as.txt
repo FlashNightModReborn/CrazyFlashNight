@@ -1,0 +1,18 @@
+/** Blend the 32-phase wheel detail from 22.5 to 36 degrees per update. */
+class org.flashNight.arki.scene.RoadsterWheelBlend {
+    public static function percent(groundDistance:Number, phasesPerUnit:Number):Number {
+        var phaseAdvance:Number = Math.abs(groundDistance) * phasesPerUnit;
+        if (phaseAdvance <= 2) return 0;
+        if (phaseAdvance >= 3.2) return 100;
+        return Math.round((phaseAdvance - 2) * (100 / 1.2));
+    }
+
+    public static function apply(sharp:MovieClip, blurred:MovieClip, percent:Number):Void {
+        sharp._alpha = 100 - percent;
+        sharp._visible = percent < 100;
+        if (typeof blurred == "movieclip") {
+            blurred._alpha = percent;
+            blurred._visible = percent > 0;
+        }
+    }
+}
