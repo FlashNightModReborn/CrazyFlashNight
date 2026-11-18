@@ -137,9 +137,15 @@
         S._lastError = error || 'unknown_error';
         if (S._logEl) {
             S._logEl.classList.add('is-error');
-            S._logEl.textContent = S._lastError === 'pending_stage_settlement'
-                ? '上一关结算尚未完成，请关闭面板查看结算状态；若仍无响应，请导出诊断包反馈。'
-                : S._lastError;
+            var messages = {
+                pending_stage_settlement: '上一关结算尚未完成，请关闭面板查看结算状态。',
+                stage_state_changed: '场景或角色进度已变化，请重新打开选关。',
+                stage_catalog_mismatch: '启动器与游戏加载的关卡目录不同，请重启游戏。',
+                stage_facts_unavailable: '角色或结算数据尚未就绪，请稍后重新打开选关。',
+                stage_delivery_unknown: '正在确认转场结果。请先查看当前游戏场景，再重新打开选关。',
+                locked: '尚未达到该关卡的开放条件。'
+            };
+            S._logEl.textContent = messages[S._lastError] || S._lastError;
         }
     }
 

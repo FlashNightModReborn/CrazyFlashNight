@@ -1,4 +1,4 @@
-/* U7 地铁线路图：站点投影 + 目的地列表 + 进入确认。门槛与进关由 AS2 裁决。 */
+/* U7 地铁线路图：站点投影 + 目的地列表 + 进入确认。C# 裁决站点准入，AS2 执行进关。 */
 (function() {
     'use strict';
     var Runtime = window.SubwaySelectRuntime;

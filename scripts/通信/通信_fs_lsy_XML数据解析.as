@@ -237,23 +237,10 @@ _root.载入关卡数据 = function(stageType, url, onLoaded, onLoadError,
 	}
 };
 
-_root.配置外交地图关卡信息 = function(对象, StageInfo){
-	_root.配置基础关卡信息(对象,StageInfo);
-	对象.root场景进入位置名 = StageInfo.Address;
-	对象.淡出动画淡出跳转帧 = StageInfo.RootFadeTransitionFrame;
-	对象.onPress = function(){
-		if (!org.flashNight.arki.scene.StageRunSession.canNavigateAwayFromStage()) return false;
-		_root.场景进入位置名 = 对象.root场景进入位置名;
-		_root.淡出动画.淡出跳转帧(对象.淡出动画淡出跳转帧);
-		return true;
-	};
-};
-
 _root.配置基础关卡信息 = function(对象, StageInfo){
 	对象.关卡路径 = StageInfo.url;
 	对象.当前关卡名 = StageInfo.Name;
 	对象.淡出跳转帧 = StageInfo.FadeTransitionFrame;
-	对象.关卡开放条件 = StageInfo.UnlockCondition;
 	对象.详细 = StageInfo.Description;
 	对象.材料详细 = StageInfo.MaterialDetail;
 	对象.起点帧 = StageInfo.StartFrame ? StageInfo.StartFrame : null;
@@ -275,11 +262,7 @@ _root.配置关卡属性 = function(StageName:String):Void {
 			_root.配置基础关卡信息(关卡引用,StageInfo);
 			break;
 		case "外交地图" :
-			if(!_root.isStageUnlocked(StageName)){
-				this._visible = false;
-			}else{
-				_root.配置外交地图关卡信息(关卡引用,StageInfo);//外交地图数据配置
-			}
+			org.flashNight.arki.stageSelect.StageSelectPanelService.configureLegacyMap(关卡引用, StageInfo);
 			break;
 	}/// 配置缓存数据
 	// _root.配置关卡缓存数据(关卡引用,xml文件地址);

@@ -29,6 +29,8 @@ namespace CF7Launcher.Tasks
             public string WebCallId;
             public string WebCmd;
             public string PanelInstanceId;
+            public string Stage, Kind, Difficulty, AdmissionCatalog;
+            public bool CheckingOutcome;
             public long SessionGeneration;   // 0 = Web 未携带（旧客户端，守卫退化关闭）
             public long? CatalogVersion;     // snapshot 请求携带的 manifest version；null = 未携带
         }
@@ -68,6 +70,19 @@ namespace CF7Launcher.Tasks
 
         /// <summary>当前绑定的 Host 权威面板实例；null = 未绑定（尚未路由过请求 / 已关闭 / 断线）。</summary>
         public string PanelInstanceId { get { lock (_lock) return _panelInstanceId; } }
+
+        internal bool OwnsAdmission(string owner, string intent, string[] names, string kind, string difficulty, string digest)
+        {
+            if (!owner.StartsWith("panel.", StringComparison.Ordinal)
+                    || !int.TryParse(owner.Substring(6), out int fid)) return false;
+            lock (_lock)
+            {
+                if (!_pending.TryGetValue(fid, out var request) || request.CheckingOutcome
+                        || request.PanelInstanceId != _panelInstanceId || request.WebCmd != intent) return false;
+                return intent == "snapshot" || (names.Length == 1 && names[0] == request.Stage && kind == request.Kind
+                    && difficulty == request.Difficulty && request.AdmissionCatalog == digest);
+            }
+        }
 
         public void Dispose()
         {
@@ -181,26 +196,15 @@ namespace CF7Launcher.Tasks
                 {
                     WebCallId = webCallId,
                     WebCmd = cmd,
+                    Stage = (string)parsed["stageName"], Kind = (string)parsed["entryKind"] ?? "difficulty",
+                    Difficulty = (string)parsed["difficulty"] ?? "", AdmissionCatalog = (string)parsed["admissionCatalog"],
                     PanelInstanceId = boundInstance,
                     SessionGeneration = sessionGeneration,
                     CatalogVersion = catalogVersion
                 };
             }
 
-            var timer = new Timer(delegate
-            {
-                if (_disposed) return;
-
-                PendingRequest entry;
-                lock (_lock)
-                {
-                    if (!_pending.TryGetValue(fid, out entry)) return;
-                    _pending.Remove(fid);
-                    _timers.Remove(fid);
-                }
-
-                RespondError(entry.WebCallId, entry.WebCmd, "timeout", entry.PanelInstanceId);
-            }, null, 10000, Timeout.Infinite);
+            var timer = new Timer(_ => OnTimeout(fid), null, 10000, Timeout.Infinite);
 
             lock (_lock) { _timers[fid] = timer; }
 
@@ -211,6 +215,7 @@ namespace CF7Launcher.Tasks
             flashMsg.Remove("sessionGeneration");
             flashMsg.Remove("catalogVersion");
             flashMsg.Remove("catalogSchema");
+            flashMsg.Remove("admissionCatalog");
 
             string flashJson = flashMsg.ToString(Formatting.None);
             LogManager.Log("[StageSelectTask] -> Flash: " + flashJson);
@@ -349,6 +354,34 @@ namespace CF7Launcher.Tasks
             string json = msg.ToString(Formatting.None);
             PostToWeb(json);
             respond(null);
+        }
+
+        private void OnTimeout(int fid)
+        {
+            PendingRequest entry;
+            bool query;
+            lock (_lock)
+            {
+                if (_disposed || !_pending.TryGetValue(fid, out entry)) return;
+                query = entry.WebCmd == "enter" && !entry.CheckingOutcome;
+                if (query)
+                {
+                    entry.CheckingOutcome = true;
+                    _timers[fid].Change(3500, Timeout.Infinite);
+                }
+                else
+                {
+                    _pending.Remove(fid);
+                    if (_timers.Remove(fid, out var timer)) timer.Dispose();
+                }
+            }
+            if (query)
+            {
+                try { _send(PanelBridge.BuildFlashCommand("stageSelectOutcome", fid, new JObject()).ToString(Formatting.None) + "\0"); }
+                catch (Exception ex) { LogManager.Log("[StageSelect] outcome query: " + ex.Message); }
+                return;
+            }
+            RespondError(entry.WebCallId, entry.WebCmd, entry.CheckingOutcome ? "stage_delivery_unknown" : "timeout", entry.PanelInstanceId);
         }
 
         public void ClearPending()

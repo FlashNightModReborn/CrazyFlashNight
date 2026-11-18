@@ -11,17 +11,25 @@ namespace CF7Launcher.Data
     {
         public const int MaxDepth = 8, MaxNodes = 128;
         private static readonly string[] TaskStates = { "finished", "notFinished", "active", "deliverable", "available" };
+        internal static readonly string[] StageDifficulties = { "简单", "冒险", "修罗", "地狱" };
 
         public static void Validate(JToken node, JObject rules)
         {
             int remaining = MaxNodes;
-            Walk(node, rules, null, new HashSet<string>(StringComparer.Ordinal), 0, ref remaining);
+            Walk(node, rules, null, new HashSet<string>(StringComparer.Ordinal), 0, ref remaining, false);
         }
 
         public static JObject Evaluate(JToken node, JObject rules, JObject facts)
         {
             int remaining = MaxNodes;
-            return Walk(node, rules, facts ?? new JObject(), new HashSet<string>(StringComparer.Ordinal), 0, ref remaining);
+            return Walk(node, rules, facts ?? new JObject(), new HashSet<string>(StringComparer.Ordinal), 0, ref remaining, false);
+        }
+
+        // Admission has one additional positive-history leaf. Map callers retain their original grammar.
+        internal static JObject EvaluateStage(JToken node, JObject rules, JObject facts)
+        {
+            int remaining = MaxNodes;
+            return Walk(node, rules, facts, new HashSet<string>(StringComparer.Ordinal), 0, ref remaining, true);
         }
 
         public static bool Passed(JObject result) => result.Value<string>("state") == "passed";
@@ -45,7 +53,7 @@ namespace CF7Launcher.Data
                 ["infrastructure"] = new JArray(infrastructure), ["flags"] = new JArray(flags) };
         }
 
-        private static JObject Walk(JToken token, JObject rules, JObject facts, HashSet<string> visiting, int depth, ref int remaining)
+        private static JObject Walk(JToken token, JObject rules, JObject facts, HashSet<string> visiting, int depth, ref int remaining, bool stage)
         {
             Need(depth <= MaxDepth && --remaining >= 0, "条件过于复杂：最多 8 层、128 个节点。");
             Need(token is JObject, "条件必须是结构化对象。");
@@ -62,7 +70,7 @@ namespace CF7Launcher.Data
                 Keys(node, "type", "label", "children");
                 Need(node["children"] is JArray items && items.Count is > 0 and <= 32, "全部/任一条件须包含 1–32 个子条件。");
                 var children = new JArray();
-                foreach (var child in (JArray)node["children"]) children.Add(Walk(child, rules, facts, visiting, depth + 1, ref remaining));
+                foreach (var child in (JArray)node["children"]) children.Add(Walk(child, rules, facts, visiting, depth + 1, ref remaining, stage));
                 bool anyPass = children.Any(x => (string)x["state"] == "passed");
                 bool anyFail = children.Any(x => (string)x["state"] == "failed");
                 bool anyUnknown = children.Any(x => (string)x["state"] == "unknown");
@@ -78,13 +86,24 @@ namespace CF7Launcher.Data
                 string key = Text(node, "key", 100);
                 Need(rules?[key] is JObject, "引用的地图规则不存在：" + key);
                 Need(visiting.Add(key), "地图条件存在循环引用：" + key);
-                var result = Walk(rules[key]["condition"], rules, facts, visiting, depth + 1, ref remaining);
+                var result = Walk(rules[key]["condition"], rules, facts, visiting, depth + 1, ref remaining, stage);
                 visiting.Remove(key);
                 result["ruleId"] = key;
                 if (label != "") result["label"] = label;
                 return result;
             }
-            Need(new[] { "chain", "task", "infra", "flag" }.Contains(type), "未知地图条件类型：" + type);
+            if (stage && type == "stageCleared")
+            {
+                Keys(node, "type", "key", "difficulty", "label");
+                string target = Text(node, "key", 100), difficulty = Text(node, "difficulty", 16);
+                Need(difficulty == "any" || StageDifficulties.Contains(difficulty), "未知的通关难度。");
+                var history = facts?["clears"]?[target] as JArray;
+                bool observed = history != null && history.Any(d => difficulty == "any" || (string)d == difficulty);
+                return Result(observed ? true : null, label == "" ? "通关" + target : label,
+                    observed ? "已记录整关胜利" : "尚无对应难度的胜利记录");
+            }
+            Need(type == "chain" || type == "task" || (!stage && (type == "infra" || type == "flag")),
+                (stage ? "未知关卡条件类型：" : "未知地图条件类型：") + type);
             string factKey = Text(node, "key", 100);
             if (type == "chain" || type == "infra")
             {
@@ -103,7 +122,8 @@ namespace CF7Launcher.Data
             }
             if (type == "task")
             {
-                Keys(node, "type", "label", "key", "state");
+                if (stage) Keys(node, "type", "label", "key", "state", "stageObjective");
+                else Keys(node, "type", "label", "key", "state");
                 string state = Text(node, "state", 24);
                 Need(TaskStates.Contains(state), "未知任务事实：" + state);
                 JToken value = facts?["tasks"]?[factKey]?[state == "notFinished" ? "finished" : state];
@@ -114,6 +134,8 @@ namespace CF7Launcher.Data
                     passed = count == null ? null : state == "finished" ? count > 0 : count == 0;
                 }
                 else passed = value?.Type == JTokenType.Boolean ? value.Value<bool>() : null;
+                if (stage && node["stageObjective"] != null &&
+                    Text(node, "stageObjective", 125) != (string)facts?["tasks"]?[factKey]?["objective"]) passed = null;
                 string title = state == "finished" ? "历史已完成" : state == "notFinished" ? "历史未完成" : state == "active" ? "进行中" : state == "deliverable" ? "已达成交付条件" : "可接取";
                 return Result(passed, label == "" ? "任务 " + factKey + "：" + title : label,
                     passed == null ? "缺少该任务的权威事实" : "事实来自任务服务；不由链序号推断");

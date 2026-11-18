@@ -158,7 +158,7 @@
         if (S._modUnlockBtnEl) {
             S._modUnlockBtnEl.addEventListener('click', function(e) {
                 e.stopPropagation();
-                if (VM.isChallengeMode()) return;
+                if (VM.isChallengeMode() || S._forceRequest) return;
                 var next = VM.setForceUnlock(!VM.isForceUnlockActive());
                 renderCurrentFrame();
                 StageSelectBridge.requestSnapshot({ setForceUnlock: next });
@@ -298,6 +298,8 @@
         S._focusStageId = '';
         StageSelectQuick.reset();
         S._forceUnlock = false;
+        S._forceRequest = null;
+        S._latestSnapshotRequest = null;
         S._tourPinsVisible = false;
         if (S._el) S._el.classList.remove('is-tour-pins-visible');
         S._lastInputKeyboard = false; // 打磨批二轮：键盘模态位随面板打开复位（默认指针模态）

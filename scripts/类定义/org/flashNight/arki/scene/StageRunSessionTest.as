@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.item.RewardStashStore;
+﻿import org.flashNight.arki.stageSelect.StageAdmissionHostTestFixture;
+import org.flashNight.arki.item.RewardStashStore;
 import org.flashNight.neur.Server.SaveManager;
 import org.flashNight.arki.item.RewardStashService;
 import org.flashNight.aven.test.*;
@@ -121,8 +122,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testFailedReturnKeepsExactRetry();
         testRetreatCompletionIsolation();
         testMapNavigationAuthority();
+        StageAdmissionHostTestFixture.install();
         testStageSelectLifecycleAuthority();
         testTaskDeferredEntryAuthority();
+        StageAdmissionHostTestFixture.restore();
         testArenaDeferredLoadAuthority();
         testSoftlockObservationOwnerIsReadOnly();
 
@@ -140,11 +143,14 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(_root._saveExt.stageHistory == undefined, "invalid record preserves an old save");
         assertTrue(StageRunSession.begin("地铁站", "修罗"), "begin clear history run");
         assertFalse(StageClearHistory.snapshot("地铁站").cleared, "entering is not clearing");
-        assertTrue(StageRunSession.claimVictoryCompletion(), "real completion grants record");
+        assertTrue(StageRunSession.claimVictoryCompletion() && !StageClearHistory.snapshot("地铁站").cleared
+                && _root._saveExt.stageAdmissionPending["stage:地铁站"] != null,
+            "the victory screen keeps the first clear pending until the return transaction commits");
+        var durable:Boolean = StageRunSession.onReturnBaseStarted();
         var state:Object = StageClearHistory.snapshot("地铁站");
-        assertTrue(state.cleared, "actual victory unlocks intel");
+        assertTrue(durable && state.cleared && _root._saveExt.stageAdmissionPending["stage:地铁站"] == null, "durable settlement publishes the clear");
         assertEquals("修罗", state.difficulties.join(","), "only actual difficulty is recorded");
-        assertTrue(_root.存档系统.dirtyMark, "history participates in existing dirty-save flow");
+        assertTrue(_root._saveExt.stageHistory.stages["stage:地铁站"].difficulties[0] == "修罗", "the durable save contains the exact cleared difficulty");
         assertFalse(StageRunSession.claimVictoryCompletion(), "duplicate completion cannot write again");
         state.difficulties.push("地狱");
         assertEquals(1, StageClearHistory.snapshot("地铁站").difficulties.length, "UI snapshot cannot mutate authority");
@@ -2105,7 +2111,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
 
     private static function testMapNavigationAuthority():Void {
         var oldFade:Object = _root.淡出动画;
-        _root.淡出动画 = {fadeCount:0, 淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }};
+        _root.淡出动画 = {fadeCount:0, 淡出跳转帧:function(frameName:String):Boolean { this.fadeCount++; return true; }};
         var result:Object = {};
         var callback:Function = function(ok:Boolean, error:String):Void { result.ok = ok; result.error = error; };
         resetWorld(0);
@@ -2145,7 +2151,6 @@ class org.flashNight.arki.scene.StageRunSessionTest {
     private static function testStageSelectLifecycleAuthority():Void {
         var oldServer:Object = _root.server;
         var oldStageInfo:Object = _root.StageInfoDict;
-        var oldUnlock:Function = _root.isStageUnlocked;
         var oldConfigure:Function = _root.配置关卡属性;
         var oldDifficulty:Function = _root.计算难度等级;
         var oldChallenge:Function = _root.isChallengeMode;
@@ -2171,7 +2176,6 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             测试外交图:{Name:"测试外交图", Type:"外交地图", UnlockCondition:0,
                 RootFadeTransitionFrame:"测试外交帧", Address:"出生地"}
         };
-        _root.isStageUnlocked = function(stageName:String):Boolean { return true; };
         _root.isChallengeMode = function():Boolean { return false; };
         _root.计算难度等级 = function(difficulty:String):Number { return 1; };
         _root.配置关卡属性 = function(stageName:String):Void {
@@ -2184,7 +2188,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.载入关卡数据 = function():Void { loadCount++; };
         _root.淡出动画 = {
             fadeCount:0,
-            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
+            淡出跳转帧:function(frameName:String):Boolean { this.fadeCount++; return true; }
         };
         _root.当前关卡名 = "原关卡";
         _root.关卡地图帧值 = "原返回帧";
@@ -2240,7 +2244,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.当前关卡名 = "原关卡";
         _root.淡出动画 = {
             fadeCount:0,
-            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
+            淡出跳转帧:function(frameName:String):Boolean { this.fadeCount++; return true; }
         };
         loadCount = 0;
         var capturedStartToken:String = "";
@@ -2297,7 +2301,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.当前关卡名 = "回包异常前原关卡";
         _root.淡出动画 = {
             fadeCount:0,
-            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
+            淡出跳转帧:function(frameName:String):Boolean { this.fadeCount++; return true; }
         };
         var responseThrowCount:Number = 0;
         _root.server = {
@@ -2340,7 +2344,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.当前关卡名 = "错误前原关卡";
         _root.淡出动画 = {
             fadeCount:0,
-            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
+            淡出跳转帧:function(frameName:String):Boolean { this.fadeCount++; return true; }
         };
         capturedLoaded = undefined;
         capturedLoadError = undefined;
@@ -2454,8 +2458,15 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(responseSink.messages.length == responseCountBefore + 1
                 && throwingStageSelectManager.abortCalls == 1
                 && fadeFailureWire.indexOf("\"callId\":\"fade-throw\"") >= 0
-                && fadeFailureWire.indexOf("\"error\":\"stage_transition_failed\"") >= 0,
-            "stage-select fade failure preserves exact correlation and failure wire");
+                && fadeFailureWire.indexOf("\"error\":\"stage_delivery_unknown\"") >= 0,
+            "an unconfirmed abort reports unknown delivery with the original call id");
+        capturedLoaded = undefined;
+        StageSelectPanelService.handleEnter({callId:"retry-after-abort", stageName:"测试难度关",
+            difficulty:"简单", entryKind:"difficulty"});
+        var retryWire:String = String(responseSink.messages[responseSink.messages.length - 1]);
+        assertTrue(capturedLoaded === undefined && retryWire.indexOf("retry-after-abort") >= 0
+                && retryWire.indexOf("stage_delivery_unknown") >= 0,
+            "a fresh click in the same slot cannot start another load after an unconfirmed abort");
         assertTrue(_root.当前通关的关卡 == "原通关值"
                 && _root.当前关卡难度 == "原难度" && _root.难度等级 == 77
                 && _root.当前关卡名 == "淡出异常前关卡"
@@ -2527,7 +2538,6 @@ class org.flashNight.arki.scene.StageRunSessionTest {
 
         _root.server = oldServer;
         _root.StageInfoDict = oldStageInfo;
-        _root.isStageUnlocked = oldUnlock;
         _root.配置关卡属性 = oldConfigure;
         _root.计算难度等级 = oldDifficulty;
         _root.isChallengeMode = oldChallenge;
@@ -2610,7 +2620,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.对话框界面 = {_visible:true};
         _root.淡出动画 = {
             fadeCount:0,
-            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
+            淡出跳转帧:function(frameName:String):Boolean { this.fadeCount++; return true; }
         };
         var capturedLoaded:Function;
         var capturedError:Function;
@@ -2654,7 +2664,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.当前关卡名 = "响应异常前";
         _root.淡出动画 = {
             fadeCount:0,
-            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
+            淡出跳转帧:function(frameName:String):Boolean { this.fadeCount++; return true; }
         };
         var throwingServer:Object = {
             isSocketConnected:true,
@@ -2693,7 +2703,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         };
         _root.淡出动画 = {
             fadeCount:0,
-            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
+            淡出跳转帧:function(frameName:String):Boolean { this.fadeCount++; return true; }
         };
         capturedLoaded = undefined;
         capturedError = undefined;
@@ -2992,7 +3002,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.soundEffectManager = undefined;
         _root.淡出动画 = {
             fadeCount:0,
-            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
+            淡出跳转帧:function(frameName:String):Boolean { this.fadeCount++; return true; }
         };
         var arenaResponses:Object = {
             messages:[],
@@ -3131,7 +3141,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         var calibrationRoster:Array = [{兵种:"标定测试兵", 等级:1}];
         _root.淡出动画 = {
             fadeCount:0,
-            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
+            淡出跳转帧:function(frameName:String):Boolean { this.fadeCount++; return true; }
         };
         var calibrationLoads:Array = [];
         _root.载入关卡数据 = function(stageType, url, onLoaded, onLoadError,
@@ -3242,10 +3252,11 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             calls:0,
             fadeCount:0,
             throwNext:true,
-            淡出跳转帧:function(frameName:String):Void {
+            淡出跳转帧:function(frameName:String):Boolean {
                 this.calls++;
                 this.fadeCount++;
                 if (this.throwNext) throw new Error("synthetic calibration fade failure");
+                return true;
             }
         };
         _root.淡出动画 = calibrationFade;

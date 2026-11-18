@@ -106,11 +106,23 @@
         var manifest = StageSelectData.getManifest();
         var reqId = 'stage-select-snapshot-' + (++S._reqSeq);
         var currentSession = S._session;
+        S._latestSnapshotRequest = reqId;
+        if (options && typeof options.setForceUnlock === 'boolean') {
+            S._forceRequest = reqId;
+            StageSelectRenderer.renderCurrentFrame();
+        }
+        function invalidateSnapshot(error) {
+            S._forceRequest = null;
+            S._runtimeSnapshot = null;
+            StageSelectCore.showError(error);
+            StageSelectRenderer.renderCurrentFrame();
+        }
         S._pendingReq[reqId] = function(resp) {
             delete S._pendingReq[reqId];
-            if (currentSession !== S._session || !Panels.isOpen() || Panels.getActive() !== 'stage-select') return;
+            if (currentSession !== S._session || reqId !== S._latestSnapshotRequest || !Panels.isOpen() || Panels.getActive() !== 'stage-select') return;
+            S._forceRequest = null;
             if (!resp.success) {
-                StageSelectCore.showError(resp.error || 'snapshot_failed');
+                invalidateSnapshot(resp.error || 'snapshot_failed');
                 return;
             }
             // P3 stateRevision 单调守卫：乱序/迟到 snapshot 不得覆盖更新状态。
@@ -125,11 +137,10 @@
                 }
                 S._lastAppliedStateRevision = revision;
             }
-            // catalogVersion：manifest 版本回显，不一致仅记 dev log（静态打包，实践不可达）。
-            if (typeof resp.catalogVersion !== 'undefined'
-                    && Number(resp.catalogVersion) !== Number(manifest.version)) {
-                StageSelectCore.logDev('catalog version mismatch: manifest=' + manifest.version
-                    + ' resp=' + resp.catalogVersion);
+            if (Number(resp.catalogVersion) !== Number(manifest.version) || !resp.snapshot
+                    || !/^[0-9a-f]{64}$/i.test(resp.snapshot.admissionCatalog || '')) {
+                invalidateSnapshot('stage_catalog_mismatch');
+                return;
             }
             StageSelectCore.clearError();
             StageSelectRenderer.applyRuntimeSnapshot(resp.snapshot || {});
@@ -157,7 +168,7 @@
         }
         return sendPendingRequest(reqId, snapshotRequest, 'snapshot', function() {
             if (currentSession !== S._session) return;
-            StageSelectCore.showError('send_failed');
+            if (reqId === S._latestSnapshotRequest) invalidateSnapshot('send_failed');
         });
     }
 
@@ -200,6 +211,8 @@
             StageSelectCore.showError('bridge_unavailable');
             return false;
         }
+        var catalog = S._runtimeSnapshot && S._runtimeSnapshot.admissionCatalog;
+        if (!catalog || S._forceRequest || S._busyStageName) return false;
         var reqId = 'stage-select-enter-' + (++S._reqSeq);
         var currentSession = S._session;
         S._busyStageName = stageName;
@@ -208,7 +221,7 @@
         S._pendingReq[reqId] = function(resp) {
             delete S._pendingReq[reqId];
             if (currentSession !== S._session) return;
-            S._busyStageName = '';
+            if (resp.error !== 'stage_delivery_unknown') S._busyStageName = '';
             if (!resp.success) {
                 StageSelectCore.showError(resp.error || 'enter_failed');
                 StageSelectRenderer.renderCurrentFrame();
@@ -229,6 +242,7 @@
             stageName: stageName,
             difficulty: difficulty,
             entryKind: entryKind || 'difficulty',
+            admissionCatalog: catalog,
             panelInstanceId: S._panelInstanceId,
             sessionGeneration: S._session
         }, 'enter', function() {

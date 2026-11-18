@@ -11,7 +11,7 @@ $focusedRun=@{
         'scripts/类定义/org/flashNight/arki/unit/Action/Huofeng/HuofengRunState.as'
     )
     ExpectedTracePatterns=@(
-        '(?m)^StageRunSessionTest Tests Passed: 920\r?$'
+        '(?m)^StageRunSessionTest Tests Passed: 933\r?$'
         '(?m)^StageRunSessionTest Tests Failed: 0\r?$'
         '(?m)^SceneReviveTest Tests Passed: 61\r?$'
         '(?m)^SceneReviveTest Tests Failed: 0\r?$'

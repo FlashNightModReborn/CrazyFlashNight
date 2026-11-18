@@ -42,6 +42,7 @@ _root.关卡回调函数.角斗场加载 = function(){
 // 控制台调用：_root.测试角斗场怪物()  或  _root.测试角斗场怪物(等级)
 // 默认堕落城 4 盗贼（兵种44/45/48/49）。押金 0、奖金 1000，不动真经济。
 _root.测试角斗场怪物 = function(等级){
+	if (_root._agentHarnessActive !== true || String(_root.savePath).indexOf("cf7_agent_") != 0) return false;
 	if(等级 == undefined) 等级 = 30;
 	var 兵种表 = ["兵种44", "兵种45", "兵种48", "兵种49"];
 	var squad = [];
@@ -399,6 +400,7 @@ _root.角斗场清除地台 = function(){
 //   _root.测试角斗场爬升()         默认堕落城风格 4 盗贼池
 //   _root.测试角斗场爬升(势力名)   若 web rosters 数据未注入 AS2，此处用兵种库直造一个小池演示
 _root.测试角斗场爬升 = function(){
+	if (_root._agentHarnessActive !== true || String(_root.savePath).indexOf("cf7_agent_") != 0) return false;
 	var pool = [
 		{type:"兵种44", minLevel:20, maxLevel:45, weight:85},
 		{type:"兵种45", minLevel:20, maxLevel:45, weight:81},

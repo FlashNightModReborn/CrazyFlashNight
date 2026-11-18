@@ -141,7 +141,13 @@
         <Type>无限过图</Type>
         <Name>据点M</Name>
         <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>75</UnlockCondition>
+        <UnlockRule version="1">
+            <any label="击败贝斯并通关「压制摇滚公园」">
+                <stageCleared key="压制摇滚公园" difficulty="any"/>
+                <task id="54" state="deliverable" stageObjective="压制摇滚公园#简单"/>
+                <task id="54" state="finished" stageObjective="压制摇滚公园#简单"/>
+            </any>
+        </UnlockRule>
         <Description>手头上唯一的线索是一家名叫“月面保洁”的清洁公司的地址。要怎么找到据点M呢？</Description>
         <MaterialDetail></MaterialDetail>
     </StageInfo>

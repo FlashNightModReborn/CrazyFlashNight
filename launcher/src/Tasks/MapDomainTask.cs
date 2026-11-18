@@ -26,6 +26,8 @@ namespace CF7Launcher.Tasks
         private bool disposed;
         /// <summary>当前生效内容。任务目录层热重载后会换成新实例，读取方每次都取实时值。</summary>
         public MapRuntimeContent Content { get { lock (gate) return content; } }
+        internal string SessionForAdmission(int connection)
+        { lock (gate) return !disposed && generation == connection ? token : ""; }
         public MapDomainTask(XmlSocketServer socket, MapRuntimeContent content, CF7Launcher.Guardian.Hud.MapHudDataCatalog hudCatalog = null, string projectRoot = null)
         {
             this.socket = socket; this.content = content; this.hudCatalog = hudCatalog; this.projectRoot = projectRoot;

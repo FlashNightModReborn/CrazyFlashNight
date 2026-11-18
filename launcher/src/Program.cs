@@ -2809,6 +2809,20 @@ class Program
         PetTask petTask = new PetTask(socketServer, projectRoot);
         MercTask mercTask = new MercTask(socketServer);
         TaskTask taskTask = new TaskTask(socketServer);
+        var stageAdmissionTask = new StageAdmissionTask(socketServer, projectRoot, () => mapDomainTask.Content,
+            (owner, intent, names, kind, difficulty, digest, selector) =>
+            {
+                if (owner.StartsWith("legacy.", StringComparison.Ordinal))
+                    return kind == "legacy_map" || kind == "legacy_difficulty";
+                var parts = owner.Split('.');
+                if (parts.Length != 2 || !int.TryParse(parts[1], out int fid)) return false;
+                return parts[0] switch {
+                    "panel" => stageSelectTask.OwnsAdmission(owner, intent, names, kind, difficulty, digest),
+                    "egg" => kind == "egg" && eggStageSelectTask.OwnsAdmission(fid,intent,(string)selector?["entryId"]),
+                    "subway" => kind == "subway" && subwaySelectTask.OwnsAdmission(fid,intent,(string)selector?["entryId"]),
+                    "tasks" => StageTaskEntryPolicy.Supports(kind) && taskTask.OwnsStageAdmission(fid,kind,selector),
+                    _ => false };
+            }, mapDomainTask.SessionForAdmission);
         taskTask.SetDeliveryPresenter(rightContext);
         IntelligenceTask intelligenceTask = new IntelligenceTask(projectRoot, socketServer);
         MeridiansTask meridiansTask = new MeridiansTask(socketServer);
@@ -3166,7 +3180,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, subwaySelectTask, eggStageSelectTask, sleepTask, modifierTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask, meridiansTask, npcItemExchangeTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, subwaySelectTask, eggStageSelectTask, sleepTask, modifierTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask, meridiansTask, npcItemExchangeTask, stageAdmissionTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -4333,7 +4347,8 @@ class Program
                 webBridge.WaitForInteractiveSurfaceAsync);
             harnessController = new AgentHarnessController(
                 harnessPolicy, form, launchFlow, agentControlTask, socketServer, harnessEvents,
-                webBridge, panelOpener, panelHost, modifierOverlay, frameTask, () => processManager.FlashProcess);
+                webBridge, panelOpener, panelHost, modifierOverlay, frameTask, () => processManager.FlashProcess,
+                nativeDialogueTask.CaptureKeyboardAction, rightContext.TryClickVictoryReturnForAgent);
 
             bookshelfTask.SetAutomationSlotAdmission(AgentHarnessPolicy.IsValidAgentSlot);
             commandRouter.EnableRegressionAutomation();

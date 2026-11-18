@@ -1,4 +1,4 @@
-/* U7 彩蛋地图选关：三目的地 × 固定难度，彩蛋进度门投影由 AS2 裁决。 */
+/* U7 彩蛋地图选关：三目的地 × 固定难度，C# 根据当前进度裁决准入，AS2 执行进关。 */
 (function() {
     'use strict';
     var Runtime = window.EggStageSelectRuntime;

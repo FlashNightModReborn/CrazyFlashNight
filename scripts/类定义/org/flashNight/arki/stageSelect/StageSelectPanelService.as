@@ -1,4 +1,7 @@
-﻿/**
+﻿import org.flashNight.arki.stageSelect.StageAdmissionBridge;
+import org.flashNight.arki.scene.StageRunSession;
+
+/**
  * 文件：org/flashNight/arki/stageSelect/StageSelectPanelService.as
  * 说明：WebView 选关面板测试入口的真实进关桥。
  */
@@ -18,6 +21,12 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         };
         _root.gameCommands["stageSelectEnter"] = function(params) {
             org.flashNight.arki.stageSelect.StageSelectPanelService.handleEnter(params);
+        };
+        _root.gameCommands["stageSelectOutcome"] = function(params):Void {
+            var state:String = StageAdmissionBridge.statusFor("panel."+params.callId);
+            var success:Boolean = state == "committed" || state == "started";
+            sendResponse({task:"stage_select_response", callId:params.callId, success:success,
+                closePanel:success, error:state == "failed" ? "stage_transition_failed" : "stage_delivery_unknown"});
         };
         _root.gameCommands["stageSelectJumpFrame"] = function(params) {
             org.flashNight.arki.stageSelect.StageSelectPanelService.handleJumpFrame(params);
@@ -56,166 +65,128 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         } else if (challengeActive && _root.Web选关强制解锁 == true) {
             _root.Web选关强制解锁 = false;
         }
-        var forceUnlockActive:Boolean = (!challengeActive && _root.Web选关强制解锁 == true);
         var names:Array = normalizeStageNames(params.stageNames);
-        var unlocked:Object = {};
-        var nativeUnlocked:Object = {};
-        var details:Object = {};
-        var i:Number;
-
         if (requestedFrameLabel != "") _root.Web选关当前帧值 = requestedFrameLabel;
         if (requestedReturnFrameLabel != "") _root.Web选关返回帧值 = requestedReturnFrameLabel;
+        StageAdmissionBridge.request(names, "panel", "", StageAdmissionBridge.nextId(), "panel."+callId,
+            false, null, function(result:Object, error:String):Void {
+                org.flashNight.arki.stageSelect.StageSelectPanelService.publishSnapshot(callId, names, result, error);
+            });
+    }
 
-        for (i = 0; i < names.length; i++) {
-            nativeUnlocked[names[i]] = isNativeStageUnlocked(names[i]);
-            unlocked[names[i]] = canEnterStage(names[i]);
-            details[names[i]] = buildStageDetail(names[i]);
+    private static function failure(callId, error:String):Void {
+        sendResponse({task:"stage_select_response", callId:callId, success:false, error:error});
+    }
+
+    private static function publishSnapshot(callId, names:Array, result:Object, error:String):Void {
+        if (result == null) { failure(callId, error); return; }
+        var unlocked:Object = {}, nativeUnlocked:Object = {}, details:Object = {};
+        for (var i:Number = 0; i < names.length; i++) {
+            var name:String = names[i];
+            var decision:Object = result.decisions[name];
+            unlocked[name] = decision.unlocked === true;
+            nativeUnlocked[name] = decision.nativeUnlocked === true;
+            details[name] = buildStageDetail(name, String(decision.reason || ""));
         }
-
-        sendResponse({
-            task: "stage_select_response",
-            callId: callId,
-            success: true,
-            snapshot: {
-                unlockedStages: unlocked,
-                nativeUnlockedStages: nativeUnlocked,
-                forceUnlock: forceUnlockActive,
-                stageDetails: details,
-                isChallengeMode: challengeActive,
-                currentFrameLabel: resolveStageSelectFrameLabel(String(_root.Web选关当前帧值 || _root.关卡地图帧值 || "")),
-                returnFrameLabel: resolveRootReturnFrameLabel(String(_root.Web选关返回帧值 || _root.关卡地图帧值 || ""))
-            }
-        });
+        sendResponse({task:"stage_select_response", callId:callId, success:true, snapshot:{
+            unlockedStages:unlocked, nativeUnlockedStages:nativeUnlocked, stageDetails:details,
+            admissionCatalog:result.catalog, forceUnlock:result.force, isChallengeMode:result.challenge,
+            currentFrameLabel:resolveStageSelectFrameLabel(String(_root.Web选关当前帧值 || _root.关卡地图帧值 || "")),
+            returnFrameLabel:resolveRootReturnFrameLabel(String(_root.Web选关返回帧值 || _root.关卡地图帧值 || ""))}});
     }
 
     public static function handleEnter(params:Object):Void {
-        var callId = params.callId;
-        var stageName:String = String(params.stageName || "");
-        var difficulty:String = String(params.difficulty || "");
-        var entryKind:String = String(params.entryKind || "difficulty");
-        if (entryKind == "") entryKind = "difficulty";
-        var validation:Object = validateEnter(stageName, difficulty, entryKind);
-
-        if (!validation.success) {
-            validation.task = "stage_select_response";
-            validation.callId = callId;
-            sendResponse(validation);
-            return;
-        }
-
-        var lifecycleReason:String = entryKind == "map"
-            ? org.flashNight.arki.scene.StageRunSession.getSceneExitBlockReason()
-            : org.flashNight.arki.scene.StageRunSession.getStageStartBlockReason();
-        if (lifecycleReason != "") {
-            sendResponse({
-                task: "stage_select_response",
-                callId: callId,
-                success: false,
-                error: "pending_stage_settlement"
+        var name:String = String(params.stageName || "");
+        var mode:String = String(params.difficulty || "");
+        var kind:String = String(params.entryKind || "difficulty");
+        var validation:Object = validateEnter(name, mode, kind);
+        if (validation.success !== true) { failure(params.callId, String(validation.error)); return; }
+        var ordinary:Boolean = kind == "difficulty" && name != "DEATH MATCH角斗场";
+        var busy:String = kind == "map" ? StageRunSession.getSceneExitBlockReason() : StageRunSession.getStageStartBlockReason();
+        if (busy != "") { failure(params.callId, "pending_stage_settlement"); return; }
+        var id:String = ordinary ? StageRunSession.reserveStageStart("stage_select", name, mode) : StageAdmissionBridge.nextId();
+        if (id == "") { failure(params.callId, "pending_stage_settlement"); return; }
+        var ticket:Object = {callId:params.callId, id:id, name:name, mode:mode, kind:kind,
+            ordinary:ordinary, context:validation.context};
+        var guard:Function = function():Boolean {
+            return ticket.ordinary ? StageRunSession.matchesStageStartReservation(ticket.id, "stage_select", ticket.name)
+                : StageRunSession.getSceneExitBlockReason() == "";
+        };
+        StageAdmissionBridge.request([name],kind,mode,id,"panel."+params.callId,true,guard,
+            function(grant:Object, error:String):Void {
+                org.flashNight.arki.stageSelect.StageSelectPanelService.applyGrant(ticket, grant, error);
             });
-            return;
-        }
+    }
 
-        // 角斗场重定向：difficulty enter 命中 DEATH MATCH 角斗场时不跳旧 Flash 选关帧
-        // (FadeTransitionFrame="角斗场选择挑战者"), 改为通过 C# LauncherCommandRouter
-        // 打开 arena web panel。difficulty 透传到 arena enter 链路终点，让任务系统
-        // FinishStage(name, _root.当前关卡难度) 能匹配 "stage#difficulty" 完成规则
-        // （角斗场单位本身不吃难度系数，但任务挂在难度上）。
-        if (entryKind == "difficulty" && stageName == "DEATH MATCH角斗场") {
-            cleanupStageSelectState();
-            // 让 web 端 _busyStageName 复位 + UI 复位；closePanel:false 让 PanelHostController
-            // 接管 panel 切换（DoClose stage-select → DoOpen arena 序列内会 PostToWeb panel_cmd
-            // open 触发 web 端 Panels.open('arena') 时自动 close stage-select）。
-            sendResponse({
-                task: "stage_select_response",
-                callId: callId,
-                success: true,
-                closePanel: false,
-                stageName: stageName,
-                difficulty: difficulty,
-                entryKind: entryKind,
-                redirected: "arena"
-            });
-            requestOpenArenaPanel(difficulty);
+    private static function applyGrant(ticket:Object, grant:Object, error:String):Void {
+        if (grant == null || (!ticket.ordinary && !StageAdmissionBridge.seal(grant))) {
+            if (ticket.ordinary) StageRunSession.cancelStageStart(ticket.id);
+            StageAdmissionBridge.outcome(grant, "failed");
+            failure(ticket.callId, error || "stage_state_changed"); return;
+        }
+        if (ticket.ordinary) {
+            performEnter(ticket.name, ticket.context, ticket.name, ticket.mode, ticket.kind, ticket.id, ticket.callId, grant);
             return;
         }
+        var result:Object;
+        if (ticket.kind == "map") result = performMapEnter(ticket.context.stageInfo);
+        else if (ticket.kind == "task") {
+            var task:Object = _root.getTaskData(ticket.name);
+            result = {success:task.id != null && _root.gameCommands.openWebDungeon({taskId:task.id}) === true,
+                redirected:"tasks-dungeon", error:"task_ui_unavailable"};
+        } else result = {success:requestOpenArenaPanel(ticket.mode), redirected:"arena", error:"arena_ui_unavailable"};
+        StageAdmissionBridge.outcome(grant, result.success === true ? "committed" : "failed");
+        if (result.success !== true) { failure(ticket.callId, String(result.error)); return; }
+        cleanupStageSelectState();
+        sendResponse({task:"stage_select_response", callId:ticket.callId, success:true, closePanel:ticket.kind=="map",
+            stageName:ticket.name, difficulty:ticket.mode, entryKind:ticket.kind, redirected:result.redirected});
+    }
 
-        // 副本任务条目升级到 web 副本视图（task 面板 dungeon tab），与 arena 重定向同构：
-        // 不再开旧 Flash Symbol 1873(_root.委托任务界面)，发 openWebDungeon 让 PanelHostController
-        // 接管 stage-select → tasks 切换（closePanel:false）。旧 Flash 委托面板已退役。
-        if (entryKind == "task") {
-            var dungeonTask:Object = (typeof _root.getTaskData == "function") ? _root.getTaskData(stageName) : undefined;
-            if (dungeonTask == undefined || dungeonTask == null || dungeonTask.id == undefined) {
-                sendResponse({ task: "stage_select_response", callId: callId, success: false, error: "task_data_unavailable" });
-                return;
-            }
-            if (_root.gameCommands == undefined || _root.gameCommands.openWebDungeon == undefined) {
-                sendResponse({ task: "stage_select_response", callId: callId, success: false, error: "task_ui_unavailable" });
-                return;
-            }
-            cleanupStageSelectState();
-            sendResponse({
-                task: "stage_select_response",
-                callId: callId,
-                success: true,
-                closePanel: false,
-                stageName: stageName,
-                difficulty: difficulty,
-                entryKind: entryKind,
-                redirected: "tasks-dungeon"
-            });
-            _root.gameCommands.openWebDungeon({ taskId: dungeonTask.id });
-            return;
-        }
+    /** Shared executor for fixed special destinations and old SWFs. Ignore caller-supplied URL/fade/globals. */
+    public static function enterFromWorld(name:String, mode:String, kind:String, owner:String, callback:Function):Boolean {
+        var info:Object = _root.StageInfoDict[name];
+        if (info == null || !isDifficultyStageType(String(info.Type)) || !isValidDifficulty(mode)
+                || typeof _root.配置关卡属性 != "function") { callback(false, "stage_config_unavailable"); return false; }
+        var context:Object = {};
+        context.configure = _root.配置关卡属性;
+        context.configure(name);
+        var id:String = StageRunSession.reserveStageStart("stage_select", name, mode);
+        if (id == "") { callback(false, "pending_stage_settlement"); return false; }
+        var guard:Function = function():Boolean { return StageRunSession.matchesStageStartReservation(id, "stage_select", name); };
+        StageAdmissionBridge.request([name],kind,mode,id,owner,true,guard,function(grant:Object,error:String):Void {
+            if (grant == null) { StageRunSession.cancelStageStart(id); callback(false,error); return; }
+            org.flashNight.arki.stageSelect.StageSelectPanelService.performEnter(name,context,name,mode,kind,id,0,grant,callback);
+        });
+        return true;
+    }
 
-        if (entryKind == "map") {
-            var actionResult:Object = performMapEnter(validation.context.stageInfo);
-            if (!actionResult.success) {
-                actionResult.task = "stage_select_response";
-                actionResult.callId = callId;
-                sendResponse(actionResult);
-                return;
-            }
-            sendResponse({
-                task: "stage_select_response",
-                callId: callId,
-                success: true,
-                closePanel: true,
-                stageName: stageName,
-                difficulty: difficulty,
-                entryKind: entryKind
+    /** Old diplomatic map buttons have their own MovieClip owner and never use the Web force switch. */
+    public static function configureLegacyMap(clip:Object, info:Object):Void {
+        var name:String = String(info.Name);
+        var identity:String = StageAdmissionBridge.nextId();
+        clip.__admissionOwner = identity;
+        clip._visible = false;
+        clip.onPress = null;
+        var guard:Function = function():Boolean {
+            return clip.__admissionOwner === identity && clip._parent != undefined
+                && StageRunSession.getSceneExitBlockReason() == "";
+        };
+        StageAdmissionBridge.request([name], "legacy_map", "", identity, "legacy."+identity, false, guard,
+            function(result:Object, error:String):Void {
+                if (result == null || !guard() || result.decisions[name].nativeUnlocked !== true) return;
+                _root.配置基础关卡信息(clip, info);
+                clip._visible = true;
+                clip.onPress = function():Void {
+                    if (!guard()) return;
+                    StageAdmissionBridge.request([name], "legacy_map", "", StageAdmissionBridge.nextId(), "legacy."+identity,
+                        true, guard, function(grant:Object, why:String):Void {
+                            if (grant == null) return;
+                            var ok:Boolean = StageAdmissionBridge.seal(grant)
+                                && org.flashNight.arki.stageSelect.StageSelectPanelService.performMapEnter(info).success === true;
+                            StageAdmissionBridge.outcome(grant, ok ? "committed" : "failed");
+                        });
+                };
             });
-            return;
-        }
-
-        var resolvedStageInfo:Object = _root.StageInfoDict[stageName];
-        var resolvedStageName:String = resolvedStageInfo != undefined
-            ? String(resolvedStageInfo.Name || "") : "";
-        if (resolvedStageName == "") {
-            sendResponse({
-                task: "stage_select_response", callId: callId,
-                success: false, error: "stage_config_failed"
-            });
-            return;
-        }
-        var startToken:String =
-            org.flashNight.arki.scene.StageRunSession.reserveStageStart(
-                "stage_select", resolvedStageName, difficulty);
-        if (startToken == "") {
-            sendResponse({
-                task: "stage_select_response",
-                callId: callId,
-                success: false,
-                error: "pending_stage_settlement"
-            });
-            return;
-        }
-        // AS2 的异步回调不能依赖 handleEnter 这一层的闭包激活记录：
-        // XML loader 回来时，外层局部变量可能已变成 undefined，LiteJSON 会把关联字段直接省略。
-        // 把完整 correlation envelope 作为 performEnter 自身参数，让实际异步 lexical frame
-        // 直接构造 wire response，确保 Host 能用 exact callId 结清请求并关闭 Web 面板。
-        performEnter(stageName, validation.context, resolvedStageName,
-            difficulty, entryKind, startToken, callId);
     }
 
     /**
@@ -277,6 +248,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
     }
 
     public static function handleJumpFrame(params:Object):Void {
+        StageAdmissionBridge.panelClosed();
         var callId = params.callId;
         var frameLabel:String = String(params.frameLabel || params.targetFrameLabel || "");
         if (frameLabel == "") {
@@ -365,6 +337,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
     }
 
     public static function handleClose(params:Object):Void {
+        StageAdmissionBridge.panelClosed();
         cleanupStageSelectState();
     }
 
@@ -409,10 +382,10 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             return { success: false, error: "invalid_stage" };
         }
         var stageInfo:Object = _root.StageInfoDict[stageName];
+        if (stageInfo.Name !== stageName) return { success: false, error: "stage_config_failed" };
         var stageType:String = String(stageInfo.Type || "");
         if (entryKind == "map") {
             if (stageType != "外交地图") return { success: false, error: "unsupported_stage_type" };
-            if (!canEnterStage(stageName)) return { success: false, error: "locked" };
             if (stageInfo.RootFadeTransitionFrame == undefined || stageInfo.RootFadeTransitionFrame == "") {
                 return { success: false, error: "stage_config_failed" };
             }
@@ -420,7 +393,6 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         }
         if (entryKind == "task") {
             if (!isDifficultyStageType(stageType)) return { success: false, error: "unsupported_stage_type" };
-            if (!canEnterStage(stageName)) return { success: false, error: "locked" };
             return { success: true, context: { stageInfo: stageInfo } };
         }
         if (entryKind != "difficulty") {
@@ -434,9 +406,6 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         }
         if (isChallengeMode() && difficulty != "地狱") {
             return { success: false, error: "challenge_requires_hell" };
-        }
-        if (!canEnterStage(stageName)) {
-            return { success: false, error: "locked" };
         }
         if (typeof _root.配置关卡属性 != "function") {
             return { success: false, error: "stage_config_unavailable" };
@@ -453,9 +422,9 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
 
     private static function performEnter(stageKey:String, context:Object,
             resolvedStageName:String, difficulty:String, entryKind:String,
-            startToken:String, callId):Void {
+            startToken:String, callId, grant:Object, onApplied:Function):Void {
         rememberEnterResponseContext(startToken, {
-            callId:callId,
+            callId:callId, onApplied:onApplied,
             stageName:stageKey,
             difficulty:difficulty,
             entryKind:entryKind
@@ -464,8 +433,10 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         var failOnce:Function = function(errorCode:String):Void {
             if (settled) return;
             settled = true;
+            var uncertain:Boolean = false;
             try { restoreCommittedEnterTransitionState(startToken); }
             catch (restoreError) {
+                uncertain = true;
                 trace("[StageSelectPanelService] transition restore failed: "
                     + restoreError);
             }
@@ -474,15 +445,19 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
                     org.flashNight.arki.scene.StageManager.instance;
                 if (manager != null) manager.abortPreparedStage(startToken);
             } catch (managerAbortError) {
+                uncertain = true;
                 trace("[StageSelectPanelService] prepared stage abort failed: "
                     + managerAbortError);
             }
             try {
                 org.flashNight.arki.scene.StageRunSession.cancelStageStart(startToken);
             } catch (reservationCancelError) {
+                uncertain = true;
                 trace("[StageSelectPanelService] reservation cancel failed: "
                     + reservationCancelError);
             }
+            if (uncertain) errorCode = "stage_delivery_unknown";
+            StageAdmissionBridge.outcome(grant, uncertain ? "unknown" : "failed");
             var stableContext:Object = null;
             try { stableContext = takeEnterResponseContextForFailure(startToken); }
             catch (contextError) {
@@ -491,6 +466,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             }
             if (stableContext != null) {
                 try {
+                    if (stableContext.onApplied != null) { stableContext.onApplied(false, errorCode); return; }
                     sendResponse({
                         task: "stage_select_response",
                         callId: stableContext.callId,
@@ -533,7 +509,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         }
         try {
             _root.载入关卡数据(context.关卡类型, context.关卡路径,
-                function(data:Object):Void {
+                StageAdmissionBridge.afterLoad(grant, function(data:Object):Void {
                     if (settled) return;
                     if (!org.flashNight.arki.scene.StageRunSession
                             .isStageStartReservationValid(startToken)) {
@@ -548,6 +524,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
                         failOnce("stage_state_changed");
                         return;
                     }
+                    if (!StageAdmissionBridge.seal(grant)) { failOnce("stage_state_changed"); return; }
                     try {
                         if (!promoteEnterResponseContext(startToken)) {
                             throw new Error("missing deferred response context");
@@ -574,13 +551,14 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
                                 && _root.soundEffectManager.stopBGMForTransition != undefined) {
                             _root.soundEffectManager.stopBGMForTransition();
                         }
-                        _root.淡出动画.淡出跳转帧(context.淡出跳转帧);
+                        if (_root.淡出动画.淡出跳转帧(context.淡出跳转帧) !== true) throw new Error("fade_rejected");
                     } catch (transitionError) {
                         trace("[StageSelectPanelService] stage transition failed: " + transitionError);
                         failOnce("stage_transition_failed");
                         return;
                     }
                     settled = true;
+                    StageAdmissionBridge.outcome(grant, "committed");
                     try {
                         sendCommittedEnterResponse();
                     } catch (responseError) {
@@ -588,7 +566,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
                         trace("[StageSelectPanelService] committed response failed: "
                             + responseError);
                     }
-                },
+                }, failOnce),
                 function():Void { failOnce("stage_load_failed"); }, startToken);
         } catch (loadStartError) {
             trace("[StageSelectPanelService] stage load failed: " + loadStartError);
@@ -713,6 +691,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             throw new Error("missing committed response context");
         }
         var responseContext:Object = record.responseContext;
+        if (responseContext.onApplied != null) { responseContext.onApplied(true, ""); return; }
         sendResponse({
             task: "stage_select_response",
             callId: responseContext.callId,
@@ -734,36 +713,21 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         if (_root.淡出动画 == undefined || _root.淡出动画.淡出跳转帧 == undefined) {
             return { success: false, error: "stage_transition_unavailable" };
         }
+        var previous = _root.场景进入位置名;
         _root.场景进入位置名 = String(stageInfo.Address || "出生地");
-        if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
-            _root.soundEffectManager.stopBGMForTransition();
+        try {
+            if (_root.淡出动画.淡出跳转帧(stageInfo.RootFadeTransitionFrame) !== true) throw new Error("fade_rejected");
+        } catch (error) {
+            _root.场景进入位置名 = previous;
+            return {success:false, error:"stage_transition_failed"};
         }
-        _root.淡出动画.淡出跳转帧(stageInfo.RootFadeTransitionFrame);
-        return { success: true };
-    }
-
-    // performTaskOpen 已移除：副本任务条目改走 handleEnter 内的 openWebDungeon 重定向（web 副本视图），
-    // 不再依赖旧 Flash Symbol 1873(_root.委托任务界面)。这是该面板对 委托任务界面 的最后一处引用。
-
-    private static function isNativeStageUnlocked(stageName:String):Boolean {
-        if (stageName == "") return false;
-        if (_root.StageInfoDict == undefined || _root.StageInfoDict[stageName] == undefined) return false;
-        if (!isSupportedStageType(_root.StageInfoDict[stageName].Type)) return false;
-        if (typeof _root.isStageUnlocked != "function") return false;
-        return _root.isStageUnlocked(stageName) == true;
-    }
-
-    private static function canEnterStage(stageName:String):Boolean {
-        if (stageName == "") return false;
-        if (_root.StageInfoDict == undefined || _root.StageInfoDict[stageName] == undefined) return false;
-        if (!isSupportedStageType(_root.StageInfoDict[stageName].Type)) return false;
-        if (!isChallengeMode() && _root.Web选关强制解锁 == true) {
-            return true;
+        if (_root.soundEffectManager != null && typeof _root.soundEffectManager.stopBGMForTransition == "function") {
+            try { _root.soundEffectManager.stopBGMForTransition(); } catch (audioError) {}
         }
-        return isNativeStageUnlocked(stageName);
+        return {success:true};
     }
 
-    private static function buildStageDetail(stageName:String):Object {
+    private static function buildStageDetail(stageName:String, reason:String):Object {
         var taskInfo:Object = getTaskInfo(stageName);
         if (_root.StageInfoDict == undefined || _root.StageInfoDict[stageName] == undefined) {
             return {
@@ -775,7 +739,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
                 limitLevel: "",
                 task: taskInfo.task,
                 highestDifficulty: taskInfo.highestDifficulty,
-                lockReason: buildLockReason(stageName, undefined)
+                lockReason: reason
             };
         }
 
@@ -790,36 +754,8 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             task: taskInfo.task,
             highestDifficulty: taskInfo.highestDifficulty,
             clearHistory: org.flashNight.arki.stageSelect.StageClearHistory.snapshot(stageName),
-            lockReason: buildLockReason(stageName, stageInfo)
+            lockReason: reason
         };
-    }
-
-    // 逐关锁定原因（2026-08-16 专项）：仅锁定时非空，解锁恒 ""，字段恒在保持协议形状稳定。
-    // 判定与 _root.isStageUnlocked（通信_鸡蛋_XML与JSON解析.as:91-112）同序同语义：
-    // 主路径 Number(UnlockCondition) <= Number(_root.主线任务进度)；替代路径 AltUnlockCondition
-    // 可单条或多条（OR），命中条件 _root.task_chains_progress[chain] >= Number(min)。
-    private static function buildLockReason(stageName:String, info:Object):String {
-        if (info == undefined) return "关卡资料缺失，暂不可进入";
-        if (Number(info.UnlockCondition) <= Number(_root.主线任务进度)) return "";
-        var mainCurrent:Number = Number(_root.主线任务进度);
-        var reason:String = "主线任务进度达到 " + String(info.UnlockCondition) + " 解锁（当前 "
-            + (isNaN(mainCurrent) ? "0" : String(mainCurrent)) + "）";
-        var alt:Object = info.AltUnlockCondition;
-        if (alt == undefined) return reason;
-        var list = (alt instanceof Array) ? alt : [alt];
-        var progress:Object = _root.task_chains_progress;
-        for (var i:Number = 0; i < list.length; i++) {
-            var rule:Object = list[i];
-            if (rule == undefined || rule == null) continue;
-            var chainName:String = String(rule.chain);
-            if (chainName == "" || chainName == "undefined") continue;
-            var current:Number = (progress != undefined && progress[chainName] != undefined) ? Number(progress[chainName]) : 0;
-            if (isNaN(current)) current = 0;
-            // 替代路径任一命中即解锁（OR），复判与 isStageUnlocked 同序，命中时不应有锁定原因
-            if (current >= Number(rule.min)) return "";
-            reason += "或「" + chainName + "」进度达到 " + String(rule.min) + "（当前 " + String(current) + "）";
-        }
-        return reason;
     }
 
     // 限制词条键名数组（原始 Limitation 键）。web 端用 LimitationDesc 自算 limitDetail，

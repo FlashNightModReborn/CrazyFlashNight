@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EntryPolicies version="1">
+    <entry kind="egg" id="forest_depth" stage="密林深处" difficulty="简单"><always/></entry>
+    <entry kind="egg" id="machine_zone" stage="机器游荡区" difficulty="简单">
+        <all><chain key="彩蛋" min="4"/><chain key="主线" min="67"/></all>
+    </entry>
+    <entry kind="egg" id="forest_center" stage="密林中央" difficulty="冒险"><chain key="彩蛋" min="11"/></entry>
+    <entry kind="subway" id="clean_stationA" stage="总备处站清理" difficulty="简单"><chain key="主线" min="45"/></entry>
+    <entry kind="subway" id="raid_stationB" stage="密林深处" difficulty="简单"><chain key="彩蛋" min="4"/></entry>
+    <entry kind="subway" id="defend_stationC" stage="自由广场防守" displayOnly="true"><chain key="主线" min="20"/></entry>
+    <entry kind="subway" id="explore_stationD" stage="环线东北站" difficulty="简单"><always/></entry>
+</EntryPolicies>

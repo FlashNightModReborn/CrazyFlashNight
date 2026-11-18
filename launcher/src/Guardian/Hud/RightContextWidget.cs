@@ -1300,6 +1300,17 @@ namespace CF7Launcher.Guardian.Hud
             }
         }
 
+        internal bool TryClickVictoryReturnForAgent()
+        {
+            var state = _stageOutcomeState;
+            if (!ShouldPresentStageOutcome(state) || state.Outcome != "victory" || !state.CanReturnBase)
+                return false;
+            int index = _stageActions.FindIndex(action => action.Intent == "return_base" && action.Enabled);
+            if (index < 0) return false;
+            DispatchStageAction(index);
+            return true;
+        }
+
         private void DispatchStageAction(int index)
         {
             StageOutcomeState state = _stageOutcomeState;

@@ -47,7 +47,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengContractTest {
         check(near(u.hp满血值,500) && u.hp==300,"second no heal");
         check(near(HealApplier.applyHpCapped(u,9999,1000),200) && u.hp==500,"potions honor contract cap");
         u.hp=450;
-        check(near(HealApplier.applyHpOverflow(u,1000,1000,2),50) && u.hp==500,"overflow cannot erase one hit line");
+        check(near(HealApplier.applyHpOverflow(u,1000,1000,true),50) && u.hp==500,"overflow cannot erase one hit line");
         m.setBaseValue("hp满血值",2000);
         check(near(u.hp满血值,1000) && u.hp==500,"base change no free heal");
         m.recordCrumbleCeilingLoss(100);
@@ -59,7 +59,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengContractTest {
         check(near(u.hp满血值,900) && u.hp==500,"reequip retains deficit");
         m.clearHuofengHpContract(owner);
         u.hp=1800;
-        check(HealApplier.applyHpOverflow(u,100,1800,2)>0,"ordinary overflow restored");
+        check(HealApplier.applyHpOverflow(u,100,1800,true)>0,"ordinary overflow restored");
         m.destroy();
         check(u.__huofengHpContract==undefined,"destroy clears owned projection");
     }

@@ -115,7 +115,21 @@ namespace CF7Launcher.Save
                 if (!IsAbsent(tasks["tasks_to_do"]))
                     tasks["tasks_to_do"] = NormalizeTaskArray(tasks["tasks_to_do"]);
                 if (!IsAbsent(tasks["tasks_finished"]))
+                {
+                    var finished = tasks["tasks_finished"];
+                    var oldCount = finished is JObject obj ? obj["54"]
+                        : finished is JArray list && list.Count > 54 ? list[54] : null;
+                    // AMF0 stores all numbers as doubles, including legitimate integer counts.
+                    // Keep uncertainty when the legacy conversion has coerced a value to a positive integer.
+                    if (oldCount != null && TryGetIntegralValue(oldCount, out int normalized) && normalized > 0
+                            && oldCount.Type != JTokenType.Integer
+                            && (oldCount.Type != JTokenType.Float || oldCount.Value<double>() != normalized))
+                    {
+                        if (IsAbsent(mydata["ext"])) mydata["ext"] = new JObject();
+                        if (mydata["ext"] is JObject ext) ext["stageAdmissionUnknownFinished54"] = true;
+                    }
                     tasks["tasks_finished"] = NormalizeTaskFinishedObject(tasks["tasks_finished"]);
+                }
                 if (!IsAbsent(tasks["task_chains_progress"]))
                     tasks["task_chains_progress"] = NormalizeTaskChainsProgress(tasks["task_chains_progress"], mydata["3"]);
             }
@@ -512,9 +526,30 @@ namespace CF7Launcher.Save
             if (IsAbsent(stagesSource) && !IsAbsent(result["stages"]))
                 stagesSource = result["stages"];
 
+            // Normalization maps many broken legacy shapes to the same [] as a completed
+            // stage objective. Keep the original uncertainty across saves and reloads.
+            if ((obj["id"].Type == JTokenType.Integer || obj["id"].Type == JTokenType.String)
+                && obj["id"].ToString() == "54" && !CredibleBassObjective(obj["requirements"], stagesSource))
+                result["admissionStageObjectivesUnknown"] = true;
             requirements["stages"] = NormalizeListArray(stagesSource);
             result.Remove("stages");
             return result;
+        }
+
+        private static bool CredibleBassObjective(JToken requirements, JToken source)
+        {
+            if (!IsAbsent(requirements) && !(requirements is JObject)) return false;
+            if (source is JObject indexed)
+            {
+                if (indexed.Count == 0) return true;
+                if (indexed.Count != 1 || indexed.Property("0") == null) return false;
+                source = new JArray(indexed["0"].DeepClone());
+            }
+            if (!(source is JArray list) || list.Count > 1) return false;
+            if (list.Count == 0) return true;
+            return list[0] is JObject item && item["name"]?.Type == JTokenType.String
+                && (string)item["name"] == "压制摇滚公园" && item["difficulty"]?.Type == JTokenType.String
+                && (string)item["difficulty"] == "简单";
         }
 
         private static JObject NormalizeTaskFinishedObject(JToken token)

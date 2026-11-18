@@ -1,5 +1,22 @@
 ﻿/** 仅真实胜利写入；ext 随现有存档保存，不用发现记录推断通关。 */
 class org.flashNight.arki.stageSelect.StageClearHistory {
+    /** Task objectives change at the victory screen. A save or crash here must not
+        turn that intermediate task state into evidence of a settled victory. */
+    public static function pending(stageName:String, runId:String):Void {
+        if (!stageName || !runId) return;
+        if (_root._saveExt == null) _root._saveExt = {};
+        if (_root._saveExt.stageAdmissionPending == null) _root._saveExt.stageAdmissionPending = {};
+        _root._saveExt.stageAdmissionPending["stage:"+stageName] = runId;
+        if (_root.存档系统 != null) _root.存档系统.dirtyMark = true;
+    }
+
+    /** Called inside the reward transaction. Its full-save commit or rollback covers both records. */
+    public static function settle(stageName:String, difficulty:String):Void {
+        record(stageName, difficulty);
+        var pending:Object = _root._saveExt.stageAdmissionPending;
+        if (pending != null) delete pending["stage:"+stageName];
+    }
+
     public static function record(stageName:String, difficulty:String):Boolean {
         if (!stageName || stageName.length > 128 || !isDifficulty(difficulty)) return false;
         if (_root._saveExt == undefined) _root._saveExt = {};

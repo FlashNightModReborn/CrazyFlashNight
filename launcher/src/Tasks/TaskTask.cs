@@ -24,7 +24,7 @@ namespace CF7Launcher.Tasks
         private sealed class PendingRequest
         {
             public string WebCallId;
-            public string WebCmd;
+            public string WebCmd, StageTaskId, StageBoard, StageMode;
         }
 
         private readonly Func<bool> _isClientReady;
@@ -52,6 +52,14 @@ namespace CF7Launcher.Tasks
             _send = send ?? delegate { };
             _pending = new Dictionary<int, PendingRequest>();
             _timers = new Dictionary<int, Timer>();
+        }
+
+        internal bool OwnsStageAdmission(int fid, string kind, JObject selector)
+        {
+            lock (_lock) return selector != null && _pending.TryGetValue(fid, out var row)
+                && row.StageTaskId == (string)selector["taskId"] &&
+                (kind == "dispatch_board" ? row.WebCmd == "dispatchBoardEnter" && row.StageBoard == (string)selector["board"]
+                                          : row.WebCmd == "dungeonEnter" && row.StageMode == (string)selector["mode"]);
         }
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
@@ -181,7 +189,8 @@ namespace CF7Launcher.Tasks
                 _pending[fid] = new PendingRequest
                 {
                     WebCallId = webCallId,
-                    WebCmd = cmd
+                    StageTaskId = parsed["taskId"]?.ToString(), StageBoard = (string)parsed["boardId"],
+                    StageMode = (string)parsed["mode"] == "challenge" ? "challenge" : "normal", WebCmd = cmd
                 };
             }
 

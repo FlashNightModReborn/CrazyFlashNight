@@ -10,14 +10,14 @@ using Newtonsoft.Json.Linq;
 namespace CF7Launcher.Tasks
 {
     /// <summary>
-    /// U7 彩蛋地图选关的 Host 传输边界。AS2 EggSelectPanelService 保留彩蛋进度门与进关权威；
+    /// U7 彩蛋地图选关的 Host 传输边界。StageAdmission 在 Host 判定进度门，Flash 保留场景事务；
     /// enter 不写存档，重复进入由 AS2 的 StageRunSession reservation 拒绝。
     /// </summary>
     public sealed class EggStageSelectTask : IDisposable
     {
         private sealed class PendingRequest
         {
-            public string Cmd;
+            public string Cmd, EntryId;
             public string Instance;
             public bool IsWrite;
         }
@@ -25,7 +25,9 @@ namespace CF7Launcher.Tasks
         private static readonly Regex SafeId = new Regex("^[A-Za-z0-9._~-]{1,128}$", RegexOptions.Compiled);
         private static readonly HashSet<string> DefinitiveErrors = new HashSet<string>(StringComparer.Ordinal)
         { "unsupported_cmd", "unsupported_version", "invalid_payload", "unknown_destination",
-          "locked", "stage_config_unavailable", "stage_config_failed", "pending_stage_settlement", "enter_refused" };
+          "locked", "stage_config_unavailable", "stage_config_failed", "pending_stage_settlement", "enter_refused",
+          "stage_state_changed", "stage_load_failed", "stage_transition_failed", "stage_transition_unavailable",
+          "stage_catalog_mismatch", "stage_facts_unavailable", "admission_binding_expired", "panel_instance_expired" };
         private static readonly HashSet<string> DestinationIds = new HashSet<string>(StringComparer.Ordinal)
         { "forest_depth", "machine_zone", "forest_center" };
         private static readonly HashSet<string> Difficulties = new HashSet<string>(StringComparer.Ordinal)
@@ -48,6 +50,12 @@ namespace CF7Launcher.Tasks
                 try { return trySend != null && trySend(payload); }
                 catch (Exception error) { LogManager.Log("[EggStageSelect] delivery unknown: " + error.GetType().Name); return false; }
             }, timeoutMs, HandlePendingEnded);
+        }
+
+        internal bool OwnsAdmission(int fid, string intent, string entryId)
+        {
+            lock (_gate) return _pendingCalls.TryPeek(fid, out var call) && call.Context.Cmd == intent
+                && (intent == "snapshot" || call.Context.EntryId == entryId);
         }
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
@@ -76,7 +84,7 @@ namespace CF7Launcher.Tasks
                 if (isWrite && _enterInFlight) { RejectAndRemember(callId, cmd, "busy"); return; }
                 var entry = new PendingRequest
                 {
-                    Cmd = cmd, IsWrite = isWrite,
+                    Cmd = cmd, IsWrite = isWrite, EntryId = (string)normalized["destinationId"],
                     Instance = ReadString(parsed["panelInstanceId"])
                 };
                 if (!_pendingCalls.TryBegin(callId, entry, out fid)) return;

@@ -105,7 +105,11 @@ class org.flashNight.arki.scene.StageRunSession {
             trace("[StageRunSession] " + blockReason + " blocks a new stage");
             return false;
         }
+        var source:String = String(_stageStartReservation.source || "");
+        var grantedStart:Boolean = source == "stage_select" || source == "dungeon_task" || source == "dispatch_board";
         var suppliedToken:String = String(stageStartToken || "");
+        if (suppliedToken == "" && _root.StageInfoDict[name] != null) return false;
+        if (grantedStart && !org.flashNight.arki.stageSelect.StageAdmissionBridge.canBegin(suppliedToken)) return false;
         if (_stageStartReservation == null && suppliedToken != "") {
             trace("[StageRunSession] stale_or_cancelled_stage_start_token");
             return false;
@@ -182,6 +186,7 @@ class org.flashNight.arki.scene.StageRunSession {
         _victoryCompletionCommitted = false;
         _deliverAfterSettlement = false;
         _deliverNavigationFlight = null;
+        if (grantedStart) org.flashNight.arki.stageSelect.StageAdmissionBridge.started(suppliedToken);
         pushState();
         return true;
     }
@@ -211,6 +216,13 @@ class org.flashNight.arki.scene.StageRunSession {
         if (getStageStartBlockReason() != "") return "";
         var normalizedStageName:String = safeText(stageName, 96, "");
         if (normalizedStageName == "") return "";
+        if (_root.StageInfoDict[normalizedStageName] != null) {
+            if (source == "arena" || source == "arena_calibration") {
+                if (normalizedStageName != "DEATH MATCH角斗场") return "";
+            } else if (source == "new_character" || source == "character_creation" || source == "character_creation_retry") {
+                if (normalizedStageName != "教学关卡") return "";
+            } else if (source != "stage_select" && source != "dispatch_board" && source != "dungeon_task") return "";
+        }
         return createStageStartReservation(source, normalizedStageName, difficulty);
     }
 
@@ -334,6 +346,10 @@ class org.flashNight.arki.scene.StageRunSession {
         return "";
     }
 
+    public static function hasSettledAdmissionFacts():Boolean {
+        return (_run == null || (isRunTerminal() && _run.settlement != "error")) && !hasPersistedSettlementPending();
+    }
+
     private static function isRunTerminal():Boolean {
         if (_run == null) return true;
         if (!_returnRequested) return false;
@@ -368,7 +384,7 @@ class org.flashNight.arki.scene.StageRunSession {
                 || (_run.outcome != "active" && _run.outcome != "victory")) return false;
         // manager 可能已经提交 victory。先占用本轮资格，阻止投影回调同步重入。
         _victoryCompletionCommitted = true;
-        org.flashNight.arki.stageSelect.StageClearHistory.record(String(_run.stageName), String(_run.difficulty));
+        org.flashNight.arki.stageSelect.StageClearHistory.pending(String(_run.stageName), String(_run.runId));
         if (_run.outcome == "active") finish("victory");
         return true;
     }
@@ -910,6 +926,8 @@ class org.flashNight.arki.scene.StageRunSession {
                     + " error=" + String(cleared.error));
                 return false;
             }
+            if (_run.outcome == "victory")
+                org.flashNight.arki.stageSelect.StageClearHistory.settle(String(_run.stageName), String(_run.difficulty));
             var result:Object = org.flashNight.arki.item.RewardStashService.end(
                 "stage.stash.v2|" + String(_run.settlementId),
                 {success:true, kind:"stage_stash", settlementId:String(_run.settlementId)}, "stage.return_base");
@@ -2899,6 +2917,7 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     private static function resetAuthorityForRestart():Void {
+        org.flashNight.arki.stageSelect.StageAdmissionBridge.reset();
         org.flashNight.arki.scene.StageReturnSelection.reset();
         org.flashNight.arki.scene.StageReturnOptions.reset();
         org.flashNight.arki.scene.StageReturnFlow.reset();

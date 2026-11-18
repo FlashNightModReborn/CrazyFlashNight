@@ -124,7 +124,7 @@
 
     // ── 副本任务（委托任务）tab：旧 FLA Symbol 1873(_root.委托任务界面) 的 web 等价 ──
     //   严格 NPC 领取：入口由 AS2 NPC 交互发 openWebDungeon(panel_request initData{view,taskId})；
-    //   左侧仅难度档（普通/挑战），不浏览其他副本；进图写操作走 dungeonEnter（AS2 服务端硬门控）。
+    //   左侧仅难度档（普通/挑战），不浏览其他副本；进图写操作走 dungeonEnter（C# 准入授权，AS2 执行进关）。
     var _dungeonTaskId = null;   // 当前 NPC 提供的副本 taskId（null=无上下文，显示领取提示）
     var _dungeonMode = 'normal'; // normal | challenge（左侧难度档）
     var _dungeonDetail = null;   // dungeonDetail 回包缓存
@@ -1572,7 +1572,7 @@
     // ═══════════════════════════════════════════════════════════
     // 副本任务（委托任务）tab —— 旧 FLA Symbol 1873 的 web 等价。
     //   严格 NPC 领取：入口由 AS2 NPC 交互发 openWebDungeon → onOpen initData{view,taskId}。
-    //   左侧仅难度档（普通/挑战），不浏览其他副本；进图写操作走 dungeonEnter（AS2 服务端硬门控）。
+    //   左侧仅难度档（普通/挑战），不浏览其他副本；进图写操作走 dungeonEnter（C# 准入授权，AS2 执行进关）。
     // ═══════════════════════════════════════════════════════════
     function loadDungeonPosters(cb) {
         if (_dungeonPosters !== null) { cb(); return; }

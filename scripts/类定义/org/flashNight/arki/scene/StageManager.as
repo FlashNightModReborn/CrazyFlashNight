@@ -1382,8 +1382,11 @@ class org.flashNight.arki.scene.StageManager {
             if(direction=="上") keyCode=_root.上键;
             else if(direction=="左") keyCode=_root.左键;
             else if(direction=="下") keyCode=_root.下键;
+            // Player20 的隔离验收角色也必须实际站在出口、按下同一个方向键。
+            var keyDown:Boolean = Key.isDown(keyCode) || (_root._agentHarnessActive === true
+                && _root._agentHarnessBridge.isKeyDown(keyCode) === true);
             var requested:Boolean=_root.全鼠标控制
-                ? (this.hitTest(_root.鼠标) && this.被点击) : Key.isDown(keyCode);
+                ? (this.hitTest(_root.鼠标) && this.被点击) : keyDown;
             var point:Object={x:0,y:0};actor.localToGlobal(point);
             if(requested && this.hitTest(point.x,point.y,true) && manager.nextStage()) this.gotoAndStop(3);
             if(_root.全鼠标控制 && this.hitTest(point.x,point.y,true) && this.hitTest(_root.鼠标))

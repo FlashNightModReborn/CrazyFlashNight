@@ -1,4 +1,6 @@
-﻿/**
+﻿import org.flashNight.arki.stageSelect.StageAdmissionBridge;
+
+/**
  * 文件：org/flashNight/arki/task/TaskPanelService.as
  * 说明：WebView 任务面板的 AS2 端桥。
  *
@@ -110,7 +112,7 @@ class org.flashNight.arki.task.TaskPanelService {
             org.flashNight.arki.task.TaskPanelService.handleDungeonEnter(params);
         };
         _root.gameCommands["openWebDungeon"] = function(params) {
-            org.flashNight.arki.task.TaskPanelService.handleOpenWebDungeon(params);
+            return org.flashNight.arki.task.TaskPanelService.handleOpenWebDungeon(params);
         };
 
         // ── 前线调度板：聚合剧情任务目录，出击与旧委托扣费/接取链分离 ──
@@ -652,7 +654,10 @@ class org.flashNight.arki.task.TaskPanelService {
         // 当前无需在 AS2 端执行操作，仅确认收到
     }
 
+    private static var _admissionPanelEpoch:Number = 0;
+
     public static function handlePanelClose(params:Object):Void {
+        _admissionPanelEpoch++;
         // 当前无需在 AS2 端执行操作，仅确认收到
     }
 
@@ -862,12 +867,7 @@ class org.flashNight.arki.task.TaskPanelService {
             sendResponse({task: "task_response", callId: callId, success: false, error: "board_mismatch"});
             return;
         }
-        var active:Boolean = resolveIndexByTaskId(taskData.id) >= 0;
         var replay:Boolean = isDispatchTaskReplay(taskData);
-        if (!active && !replay) {
-            sendResponse({task: "task_response", callId: callId, success: false, error: "task_not_active"});
-            return;
-        }
 
         var stageName:String = dungeonStageName(taskData);
         var stageDifficulty:String = dungeonStageDifficulty(taskData);
@@ -888,7 +888,8 @@ class org.flashNight.arki.task.TaskPanelService {
             return;
         }
 
-        performTaskStageEnter(stageName, resolvedStageName, stageDifficulty, [], startToken,
+        requestTaskEntry("dispatch_board", {taskId:String(taskData.id), board:boardId},
+            stageName, resolvedStageName, stageDifficulty, [], startToken,
             {
                 callId:callId,
                 successResponse:{
@@ -905,11 +906,8 @@ class org.flashNight.arki.task.TaskPanelService {
                 if (!isDispatchTask(currentTask, boardId)) {
                     return {success:false, error:"board_mismatch"};
                 }
-                var currentActive:Boolean = resolveIndexByTaskId(currentTask.id) >= 0;
-                var currentReplay:Boolean = isDispatchTaskReplay(currentTask);
                 var currentStage:Object = _root.StageInfoDict[stageName];
-                if ((!currentActive && !currentReplay)
-                        || dungeonStageName(currentTask) != stageName
+                if (dungeonStageName(currentTask) != stageName
                         || dungeonStageDifficulty(currentTask) != stageDifficulty
                         || currentStage == undefined
                         || String(currentStage.Name || "") != resolvedStageName) {
@@ -938,19 +936,38 @@ class org.flashNight.arki.task.TaskPanelService {
         });
     }
 
+    private static function requestTaskEntry(kind:String, selector:Object, name:String, resolved:String,
+            mode:String, limits:Array, id:String, response:Object, gate:Function, commit:Function, rollback:Function):Void {
+        var ownerEpoch:Number = _admissionPanelEpoch;
+        var guard:Function = function():Boolean {
+            return ownerEpoch == _admissionPanelEpoch && !org.flashNight.arki.scene.StageReturnSelection.isOpen()
+                && org.flashNight.arki.scene.StageRunSession.matchesStageStartReservation(id,kind,resolved);
+        };
+        StageAdmissionBridge.request([name],kind,mode,id,"tasks."+response.callId,true,guard,
+            function(grant:Object,error:String):Void {
+                if (grant == null) {
+                    org.flashNight.arki.scene.StageRunSession.cancelStageStart(id);
+                    sendResponse({task:"task_response",callId:response.callId,success:false,error:error}); return;
+                }
+                performTaskStageEnter(name,resolved,mode,limits,id,response,gate,commit,rollback,grant);
+            }, selector);
+    }
+
     private static function performTaskStageEnter(stageName:String, resolvedStageName:String,
             difficulty:String, extraLimitations:Array, startToken:String,
             responseContext:Object,
             finalGate:Function, commitBeforeFade:Function,
-            rollbackCommit:Function):Void {
+            rollbackCommit:Function, grant:Object):Void {
         rememberTaskStageResponseContext(startToken, responseContext);
         var settled:Boolean = false;
         var commitCompleted:Boolean = false;
         var failOnce:Function = function(errorCode:String):Void {
             if (settled) return;
             settled = true;
+            var uncertain:Boolean = false;
             try { restoreCommittedTaskStageTransitionState(startToken); }
             catch (restoreError) {
+                uncertain = true;
                 trace("[TaskPanelService] transition restore failed: " + restoreError);
             }
             try {
@@ -958,23 +975,28 @@ class org.flashNight.arki.task.TaskPanelService {
                     org.flashNight.arki.scene.StageManager.instance;
                 if (manager != null) manager.abortPreparedStage(startToken);
             } catch (managerAbortError) {
+                uncertain = true;
                 trace("[TaskPanelService] prepared stage abort failed: "
                     + managerAbortError);
             }
             try {
                 org.flashNight.arki.scene.StageRunSession.cancelStageStart(startToken);
             } catch (reservationCancelError) {
+                uncertain = true;
                 trace("[TaskPanelService] reservation cancel failed: "
                     + reservationCancelError);
             }
             if (commitCompleted && typeof rollbackCommit == "function") {
                 try { rollbackCommit(); }
                 catch (rollbackError) {
+                    uncertain = true;
                     trace("[TaskPanelService] stage commit rollback failed: "
                         + rollbackError);
                 }
                 commitCompleted = false;
             }
+            if (uncertain) errorCode = "stage_delivery_unknown";
+            StageAdmissionBridge.outcome(grant, uncertain ? "unknown" : "failed");
             try {
                 if (prepareTaskStageFailureResponse(startToken, errorCode)) {
                     sendPreparedTaskStageFailureResponse();
@@ -1027,7 +1049,7 @@ class org.flashNight.arki.task.TaskPanelService {
         }
         try {
             _root.载入关卡数据(stageType, stageUrl,
-                function(data:Object):Void {
+                StageAdmissionBridge.afterLoad(grant, function(data:Object):Void {
                     if (settled) return;
                     if (!org.flashNight.arki.scene.StageRunSession
                             .isStageStartReservationValid(startToken)) {
@@ -1054,6 +1076,7 @@ class org.flashNight.arki.task.TaskPanelService {
                             ? String(gateResult.error) : "stage_state_changed");
                         return;
                     }
+                    if (!StageAdmissionBridge.seal(grant)) { failOnce("task_state_changed"); return; }
                     try {
                         // 资产/任务等权威提交必须先于任何场景可见副作用。提交抛错时
                         // reservation 仍可 exact-cancel，且绝不淡出。
@@ -1083,7 +1106,7 @@ class org.flashNight.arki.task.TaskPanelService {
                         // 写入只记录不驱动 NativeDialogueService 会话终结/重启；
                         // 真正的取消由场景转换的 followingEvent=null + 关闭() 完成。
                         if (_root.对话框界面 != undefined) _root.对话框界面._visible = false;
-                        _root.淡出动画.淡出跳转帧(fadeFrame);
+                        if (_root.淡出动画.淡出跳转帧(fadeFrame) !== true) throw new Error("fade_rejected");
                     } catch (transitionError) {
                         trace("[TaskPanelService] stage transition failed: " + transitionError);
                         failOnce("stage_transition_failed");
@@ -1092,6 +1115,7 @@ class org.flashNight.arki.task.TaskPanelService {
                     // 只有 commit + transition 全部成功才封口。成功回包属于提交后的
                     // 最佳努力投影：回包异常不得回滚已提交状态或取消有效 token。
                     settled = true;
+                    StageAdmissionBridge.outcome(grant,"committed");
                     try {
                         // AS2 的调用帧值会在异步返回/主时间轴切换后失效；
                         // correlation envelope 与预序列化 wire 由类级 exact-token mailbox 持有，
@@ -1101,7 +1125,7 @@ class org.flashNight.arki.task.TaskPanelService {
                         trace("[TaskPanelService] post-commit response failed: "
                             + responseError);
                     }
-                },
+                }, failOnce),
                 function():Void { failOnce("stage_load_failed"); }, startToken);
         } catch (loadStartError) {
             trace("[TaskPanelService] stage load failed: " + loadStartError);
@@ -1460,20 +1484,6 @@ class org.flashNight.arki.task.TaskPanelService {
         var kDeposit:Number = taskData.Kdeposit > 0 ? Number(taskData.Kdeposit) : 0;
         var restrictedLevel:Number = taskData.restricted_level > 0 ? Number(taskData.restricted_level) : 1;
 
-        // 服务端硬门控（复刻 Symbol 1873 按钮 :244-253 + 虚拟币支付 :83-148）
-        if (Number(_root.金钱) < deposit) {
-            sendResponse({ task: "task_response", callId: callId, success: false, error: "insufficient_money" });
-            return;
-        }
-        if (Number(_root.等级) < restrictedLevel) {
-            sendResponse({ task: "task_response", callId: callId, success: false, error: "insufficient_level" });
-            return;
-        }
-        if (kDeposit > 0 && Number(_root.虚拟币) < kDeposit) {
-            sendResponse({ task: "task_response", callId: callId, success: false, error: "insufficient_kpoint" });
-            return;
-        }
-
         var enterDifficulty:String = (mode == "challenge")
             ? String(taskData.challenge.difficulty) : dungeonStageDifficulty(taskData);
         var startToken:String =
@@ -1491,7 +1501,8 @@ class org.flashNight.arki.task.TaskPanelService {
         var dungeonCommitSnapshot:Object = null;
         // XML + TimePool 成功后再复核任务/资产权威；迟到失败零扣费、
         // 零 AddTask、零淡出，并由 exact token 只回包一次。
-        performTaskStageEnter(stageName, resolvedStageName, enterDifficulty,
+        requestTaskEntry("dungeon_task", {taskId:String(taskData.id), mode:mode},
+            stageName, resolvedStageName, enterDifficulty,
             extraLimitations, startToken,
             {
                 callId:callId,
@@ -1526,15 +1537,6 @@ class org.flashNight.arki.task.TaskPanelService {
                         || currentStage == undefined
                         || String(currentStage.Name || "") != resolvedStageName) {
                     return {success:false, error:"task_state_changed"};
-                }
-                if (Number(_root.金钱) < deposit) {
-                    return {success:false, error:"insufficient_money"};
-                }
-                if (Number(_root.等级) < restrictedLevel) {
-                    return {success:false, error:"insufficient_level"};
-                }
-                if (kDeposit > 0 && Number(_root.虚拟币) < kDeposit) {
-                    return {success:false, error:"insufficient_kpoint"};
                 }
                 return {success:true};
             },
@@ -1589,15 +1591,15 @@ class org.flashNight.arki.task.TaskPanelService {
     }
 
     // ── openWebDungeon（AS2 内部）：NPC「获得任务」触发，发 panel_request 打开 web 副本视图 ──
-    public static function handleOpenWebDungeon(params:Object):Void {
+    public static function handleOpenWebDungeon(params:Object):Boolean {
         var taskId = (params != undefined) ? params.taskId : undefined;
-        if (taskId == undefined) return;
-        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
-        sendResponse({
+        if (taskId == undefined) return false;
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
+        return _root.server.sendSocketMessage(_json.stringifySafe({
             task: "panel_request",
             panel: "tasks",
             source: "npc_dungeon",
             initData: { view: "dungeon", taskId: taskId }
-        });
+        }));
     }
 }

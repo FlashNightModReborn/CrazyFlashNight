@@ -247,6 +247,8 @@ org.flashNight.arki.task.TaskDeliverySelection;
 org.flashNight.arki.map.MapPanelService;
 org.flashNight.arki.map.MapHotspotResolver;
 org.flashNight.arki.stageSelect.StageClearHistory;
+org.flashNight.arki.stageSelect.StageAdmissionBridge;
+org.flashNight.arki.stageSelect.StageAdmissionFacts;
 org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 org.flashNight.arki.merc.DogFormService;
 org.flashNight.arki.audio.SoundEffectManager;

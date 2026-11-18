@@ -1,6 +1,9 @@
-﻿/**
+﻿import org.flashNight.arki.stageSelect.StageAdmissionBridge;
+import org.flashNight.arki.stageSelect.StageSelectPanelService;
+
+/**
  * U7 地铁线路选关（隧道据点 DefineButton2_64 入口的旧 地铁线路UI.swf 迁移）。
- * AS2 保留站点/目的地/门槛与进关权威；Web 面板只投影 snapshot 并回传目的地 id。
+ * 启动器裁决地铁入口；Flash 保留站点画面与实际转场。
  */
 class org.flashNight.arki.ui.SubwaySelectPanelService {
     private static var _installed:Boolean = false;
@@ -36,21 +39,52 @@ class org.flashNight.arki.ui.SubwaySelectPanelService {
     }
 
     public static function handle(command:String, params:Object):Void {
-        var response:Object = execute(command, params);
-        response.task = "subway_select_response";
-        response.callId = Number(params.callId);
-        if (_json == undefined) _json = new LiteJSON();
-        if (typeof _root.server.sendSocketMessage == "function") _root.server.sendSocketMessage(_json.stringifySafe(response));
+        execute(command, params, function(response:Object):Void {
+            response.task = "subway_select_response";
+            response.callId = Number(params.callId);
+            if (_json == undefined) _json = new LiteJSON();
+            if (typeof _root.server.sendSocketMessage == "function") _root.server.sendSocketMessage(_json.stringifySafe(response));
+        });
     }
 
-    public static function execute(command:String, params:Object):Object {
-        if (command != "snapshot" && command != "enter") return fail(command, "unsupported_cmd");
-        if (params == null || params.v !== 1) return fail(command, "unsupported_version");
-        if (!hasOnly(params, command == "enter"
-                ? ["v", "entryId", "task", "action", "callId"]
-                : ["v", "task", "action", "callId"])) return fail(command, "invalid_payload");
-        if (command == "snapshot") return snapshot();
-        return enter(params.entryId);
+    public static function execute(command:String, params:Object, callback:Function):Object {
+        var invalid:String = "";
+        if (command != "snapshot" && command != "enter") invalid = "unsupported_cmd";
+        else if (params == null || params.v !== 1) invalid = "unsupported_version";
+        else if (!hasOnly(params, command == "enter" ? ["v","entryId","task","action","callId"]
+                : ["v","task","action","callId"])) invalid = "invalid_payload";
+        var names:Array = [];
+        var target:Object;
+        for (var i:Number = 0; i < ENTRIES.length; i++) {
+            var item:Object = ENTRIES[i];
+            names.push(item.stageName || item.name);
+            if (item.id === params.entryId) target = item;
+        }
+        if (invalid == "" && command == "enter") {
+            if (typeof params.entryId != "string") invalid = "invalid_payload";
+            else if (target == null) invalid = "unknown_entry";
+            else if (target.stageName == "") invalid = "not_enterable";
+        }
+        if (invalid != "" || callback == null) {
+            var rejected:Object = fail(command, invalid || "admission_required");
+            if (callback != null) callback(rejected);
+            return rejected;
+        }
+        var owner:String = "subway."+params.callId;
+        if (command == "snapshot") {
+            StageAdmissionBridge.request(names,"subway","",StageAdmissionBridge.nextId(),owner,false,null,
+                function(result:Object, why:String):Void {
+                    callback(result == null ? fail(command,why) : snapshot(result.decisions));
+                });
+        } else {
+            StageSelectPanelService.enterFromWorld(target.stageName,target.difficulty,"subway",owner,
+                function(ok:Boolean, why:String):Void {
+                    if (!ok) { callback(fail(command,why)); return; }
+                    callback({v:1,operation:"enter",success:true,closePanel:true,entryId:target.id,
+                        stageName:target.stageName,difficulty:target.difficulty});
+                });
+        }
+        return null;
     }
 
     private static function mainProgress():Number {
@@ -66,15 +100,11 @@ class org.flashNight.arki.ui.SubwaySelectPanelService {
 
     // 旧 SWF 逐条目的 showCondition / getFrame 帧语义：visible 决定条目是否出现，
     // highlighted 对应旧按钮第 2 帧（达成态）。
-    private static function entryState(id:String):Object {
-        var main:Number = mainProgress();
-        var egg:Number = eggProgress();
-        if (id == "clean_stationA") return {visible:main >= 45, highlighted:main >= 30};
-        if (id == "raid_stationB") return {visible:egg >= 4, highlighted:main >= 67};
-        if (id == "defend_stationC") return {visible:main >= 20,
-            highlighted:(_root.任务进度 && _root.任务进度.自由广场已完成) ? true : false};
-        if (id == "explore_stationD") return {visible:true, highlighted:main >= 50};
-        return null;
+    private static function highlighted(id:String):Boolean {
+        if (id == "clean_stationA") return mainProgress() >= 30;
+        if (id == "raid_stationB") return mainProgress() >= 67;
+        if (id == "defend_stationC") return _root.任务进度.自由广场已完成 == true;
+        return mainProgress() >= 50;
     }
 
     // 旧线路图四站跳帧：新市场站未达 彩蛋>=4 且 主线>=67 时停在锁定帧。
@@ -85,7 +115,7 @@ class org.flashNight.arki.ui.SubwaySelectPanelService {
         return 3;
     }
 
-    private static function snapshot():Object {
+    public static function snapshot(decisions:Object):Object {
         var stations:Array = [];
         for (var i:Number = 0; i < STATIONS.length; i++) {
             stations.push({id:STATIONS[i], name:STATIONS[i], frame:stationFrame(STATIONS[i])});
@@ -93,43 +123,15 @@ class org.flashNight.arki.ui.SubwaySelectPanelService {
         var entries:Array = [];
         for (var j:Number = 0; j < ENTRIES.length; j++) {
             var entry:Object = ENTRIES[j];
-            var state:Object = entryState(entry.id);
-            if (!state.visible) continue;
+            var decision:Object = decisions[entry.stageName || entry.name];
+            if (decision.nativeUnlocked !== true) continue;
             entries.push({id:entry.id, name:entry.name, description:entry.description,
                 stageName:entry.stageName, difficulty:entry.difficulty,
-                enterable:entry.enterable, highlighted:state.highlighted});
+                enterable:decision.unlocked === true, highlighted:highlighted(entry.id)});
         }
         return {v:1, operation:"snapshot", success:true,
             progress:{main:mainProgress(), egg:eggProgress()},
             stations:stations, entries:entries};
-    }
-
-    private static function enter(entryId):Object {
-        if (typeof entryId != "string") return fail("enter", "invalid_payload");
-        var entry:Object = null;
-        for (var i:Number = 0; i < ENTRIES.length; i++) {
-            if (ENTRIES[i].id == entryId) { entry = ENTRIES[i]; break; }
-        }
-        if (entry == null) return fail("enter", "unknown_entry");
-        var state:Object = entryState(entry.id);
-        if (state == null || !state.visible) return fail("enter", "locked");
-        if (!entry.enterable) return fail("enter", "not_enterable");
-        if (_root.StageInfoDict == undefined || _root.StageInfoDict[entry.stageName] == undefined)
-            return fail("enter", "stage_config_unavailable");
-        if (org.flashNight.arki.scene.StageRunSession.getStageStartBlockReason() != "")
-            return fail("enter", "pending_stage_settlement");
-        if (typeof _root.配置关卡属性 != "function" || typeof _root.选关界面进入关卡 != "function")
-            return fail("enter", "stage_config_unavailable");
-        // 旧 SWF 的进关链：holder 上先 配置关卡属性 再 选关界面进入关卡，
-        // 后者内建 StageRunSession.reserveStageStart 的奖励未领拒绝。
-        var holder:Object = {};
-        holder.配置关卡属性 = _root.配置关卡属性;
-        holder.配置关卡属性(entry.stageName);
-        if (holder.关卡路径 == undefined || holder.关卡路径 == "") return fail("enter", "stage_config_failed");
-        holder.选关界面进入关卡 = _root.选关界面进入关卡;
-        if (holder.选关界面进入关卡(entry.difficulty) !== true) return fail("enter", "enter_refused");
-        return {v:1, operation:"enter", success:true, closePanel:true,
-            entryId:entry.id, stageName:entry.stageName, difficulty:entry.difficulty};
     }
 
     private static function hasOnly(value:Object, allowed:Array):Boolean {

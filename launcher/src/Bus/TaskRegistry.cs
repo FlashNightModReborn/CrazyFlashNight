@@ -499,7 +499,8 @@ namespace CF7Launcher.Bus
             BookComicTask bookComicTask = null,
             TabletTask tabletTask = null,
             MeridiansTask meridiansTask = null,
-            NpcItemExchangeTask npcItemExchangeTask = null)
+            NpcItemExchangeTask npcItemExchangeTask = null,
+            StageAdmissionTask stageAdmissionTask = null)
         {
             // 平板面板 domain 回包路由（tabletInfraSync/Upgrade、tabletOpenNpcShop、
             // openRagTerminal 均经 socket task "tablet_response" + callId 回执）
@@ -509,6 +510,7 @@ namespace CF7Launcher.Bus
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
             router.RegisterAsync("data_query", dataQuery.HandleAsync);
             if (mapDomainTask != null) router.RegisterAsync("map_domain", mapDomainTask.HandleAsync);
+            if (stageAdmissionTask != null) router.RegisterAsync("stage_admission", stageAdmissionTask.Handle);
             router.RegisterSync("toast", toast.Handle);
             if (stageOutcomeTask != null)
                 router.RegisterSync("stage_outcome", stageOutcomeTask.Handle);
@@ -998,6 +1000,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "skill_response",    "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_domain",     "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "stage_admission","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "arena_response",       "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "arena_calibration",    "json_sync", "AS2<->C#",true,  first);

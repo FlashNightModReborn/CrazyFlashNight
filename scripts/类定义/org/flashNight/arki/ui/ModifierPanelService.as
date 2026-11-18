@@ -484,11 +484,11 @@ class org.flashNight.arki.ui.ModifierPanelService {
     private static function applyUnlockStages(session:Object, operationId:String):Object {
         var changed:Number = 0;
         if (_root.关卡地图MC != undefined && _root.关卡地图MC._x != undefined) {
+            _root.Web选关强制解锁 = true;
             _root.关卡地图MC.强制解锁关卡 = true;
             for (var each:String in _root.关卡地图MC) {
                 var stage:Object = _root.关卡地图MC[each];
                 if (stage != undefined && stage._x != undefined && stage._currentframe != 1) {
-                    stage.关卡开放条件 = 0;
                     stage._visible = 1;
                     stage.gotoAndStop(1);
                     changed++;

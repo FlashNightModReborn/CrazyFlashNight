@@ -279,6 +279,8 @@ class org.flashNight.arki.merc.ArenaController {
     }
 
     private static function canEnterArenaTransition():Boolean {
+        if (!org.flashNight.arki.scene.StageRunSession.matchesStageStartReservation(_pendingStageStartToken,"arena","DEATH MATCH角斗场")
+            && !org.flashNight.arki.scene.StageRunSession.matchesStageStartReservation(_pendingStageStartToken,"arena_calibration","DEATH MATCH角斗场")) return false;
         var deposit:Number = Number(_root.押金);
         var money:Number = Number(_root.金钱);
         return _root.淡出动画 != undefined
@@ -323,7 +325,7 @@ class org.flashNight.arki.merc.ArenaController {
             if (_root.场景转换函数 != undefined && _root.帧计时器 != undefined) {
                 _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
             }
-            _root.淡出动画.淡出跳转帧("wuxianguotu_1");
+            if (_root.淡出动画.淡出跳转帧("wuxianguotu_1") !== true) throw new Error("fade_rejected");
         } catch (transitionError) {
             _root.金钱 = moneyBefore;
             if (_root.存档系统 != undefined) {

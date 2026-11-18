@@ -110,6 +110,7 @@ var StageSelectViewModel = (function() {
     }
 
     function setForceUnlock(active) {
+        if (isRuntimeMode()) return !isChallengeMode() && !!active;
         if (isChallengeMode()) {
             S._forceUnlock = false;
             if (S._runtimeSnapshot && typeof S._runtimeSnapshot === 'object') {
@@ -143,7 +144,7 @@ var StageSelectViewModel = (function() {
         var stages = S._fixture && S._fixture.stages || {};
         var base = stages[stageName] || {};
         var unlocks = S._runtimeSnapshot && S._runtimeSnapshot.unlockedStages;
-        var pending = isRuntimeMode() && (!unlocks || !Object.prototype.hasOwnProperty.call(unlocks, stageName));
+        var pending = isRuntimeMode() && (S._forceRequest || !unlocks || !Object.prototype.hasOwnProperty.call(unlocks, stageName));
         var fixtureUnlocked = typeof base.unlocked === 'undefined' ? true : !!base.unlocked;
         var state = {
             pending: pending,
@@ -169,7 +170,7 @@ var StageSelectViewModel = (function() {
             if (live.limitations) state.limitDetail = renderLimitDetail(live.limitations, live.limitLevel);
             else if (typeof live.limitDetail === 'string') state.limitDetail = live.limitDetail;
             state.stageType = live.stageType || state.stageType;
-            // 逐关锁定原因（AS2 buildLockReason 生成，仅锁定时非空）；缺省/非字符串按空串，
+            // 逐关锁定原因（启动器规则求值生成，仅锁定时非空）；缺省/非字符串按空串，
             // inspector 对空串回退通用文案。
             state.lockReason = typeof live.lockReason === 'string' ? live.lockReason : state.lockReason;
             state.clearHistory = live.clearHistory || null;
@@ -182,8 +183,8 @@ var StageSelectViewModel = (function() {
             state.nativeUnlocked = !!S._runtimeSnapshot.nativeUnlockedStages[stageName];
         }
         if (!state.pending && isForceUnlockActive()) {
-            state.forceUnlocked = !state.nativeUnlocked;
-            state.unlocked = true;
+            if (!isRuntimeMode()) state.unlocked = true;
+            state.forceUnlocked = state.unlocked && !state.nativeUnlocked;
         }
         return state;
     }

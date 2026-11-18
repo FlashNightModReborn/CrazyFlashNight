@@ -38,6 +38,8 @@ namespace CF7Launcher.AgentHarness
         private readonly ModifierOverlay _modifierOverlay;
         private readonly FrameTask _frameTask;
         private readonly Func<Process> _flashProcessProvider;
+        private readonly Func<uint, Action> _captureDialogueKey;
+        private readonly Func<bool> _clickVictoryReturn;
 
         private readonly long _sessionStartUtcMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         private long _reqCounter;
@@ -60,7 +62,8 @@ namespace CF7Launcher.AgentHarness
             PanelHostController panelHost,
             ModifierOverlay modifierOverlay,
             FrameTask frameTask,
-            Func<Process> flashProcessProvider)
+            Func<Process> flashProcessProvider, Func<uint, Action> captureDialogueKey = null,
+            Func<bool> clickVictoryReturn = null)
         {
             _policy = policy ?? throw new ArgumentNullException(nameof(policy));
             _form = form ?? throw new ArgumentNullException(nameof(form));
@@ -74,6 +77,8 @@ namespace CF7Launcher.AgentHarness
             _modifierOverlay = modifierOverlay;
             _frameTask = frameTask;
             _flashProcessProvider = flashProcessProvider;
+            _captureDialogueKey = captureDialogueKey;
+            _clickVictoryReturn = clickVictoryReturn;
         }
 
         internal static bool IsInputDesktopLocked()
@@ -430,6 +435,28 @@ namespace CF7Launcher.AgentHarness
         {
             JObject bindErr = await EnsureBoundForCurrentSlotAsync(ct).ConfigureAwait(false);
             if (bindErr != null) return bindErr;
+
+            // These inputs belong to the native window. Flash owns movement and combat keys.
+            string action = (string)@params?["act"];
+            if (action == "advance_dialogue" || action == "return_after_victory")
+            {
+                return await RunOnUiAsync(() =>
+                {
+                    string currentSlot = (string)ReadLaunchStatusSnapshot()["saveRuntime"]?["savePath"];
+                    if (!AgentHarnessPolicy.IsValidAgentSlot(currentSlot) || currentSlot != _boundAs2Slot)
+                        return new JObject { ["ok"] = false, ["error"] = "no_valid_agent_slot_loaded" };
+                    if (action == "return_after_victory")
+                    {
+                        if (_clickVictoryReturn?.Invoke() != true)
+                            return new JObject { ["ok"] = false, ["error"] = "victory_return_not_available" };
+                        return new JObject { ["ok"] = true, ["act"] = action };
+                    }
+                    Action pressEnter = _captureDialogueKey?.Invoke(13);
+                    if (pressEnter == null) return new JObject { ["ok"] = false, ["error"] = "dialogue_not_ready" };
+                    pressEnter();
+                    return new JObject { ["ok"] = true, ["act"] = "advance_dialogue" };
+                }, ct).ConfigureAwait(false);
+            }
 
             JObject cmd = @params != null ? (JObject)@params.DeepClone() : new JObject();
             cmd["sub"] = "world_act";

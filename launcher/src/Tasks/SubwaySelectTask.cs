@@ -17,7 +17,7 @@ namespace CF7Launcher.Tasks
     {
         private sealed class PendingRequest
         {
-            public string Cmd;
+            public string Cmd, EntryId;
             public string Instance;
             public bool IsWrite;
         }
@@ -25,7 +25,9 @@ namespace CF7Launcher.Tasks
         private static readonly Regex SafeId = new Regex("^[A-Za-z0-9._~-]{1,128}$", RegexOptions.Compiled);
         private static readonly HashSet<string> DefinitiveErrors = new HashSet<string>(StringComparer.Ordinal)
         { "unsupported_cmd", "unsupported_version", "invalid_payload", "unknown_entry", "not_enterable",
-          "locked", "stage_config_unavailable", "stage_config_failed", "pending_stage_settlement", "enter_refused" };
+          "locked", "stage_config_unavailable", "stage_config_failed", "pending_stage_settlement", "enter_refused",
+          "stage_state_changed", "stage_load_failed", "stage_transition_failed", "stage_transition_unavailable",
+          "stage_catalog_mismatch", "stage_facts_unavailable", "admission_binding_expired", "panel_instance_expired" };
         private static readonly HashSet<string> EntryIds = new HashSet<string>(StringComparer.Ordinal)
         { "clean_stationA", "raid_stationB", "defend_stationC", "explore_stationD" };
         private static readonly HashSet<string> StationIds = new HashSet<string>(StringComparer.Ordinal)
@@ -50,6 +52,12 @@ namespace CF7Launcher.Tasks
                 try { return trySend != null && trySend(payload); }
                 catch (Exception error) { LogManager.Log("[SubwaySelect] delivery unknown: " + error.GetType().Name); return false; }
             }, timeoutMs, HandlePendingEnded);
+        }
+
+        internal bool OwnsAdmission(int fid, string intent, string entryId)
+        {
+            lock (_gate) return _pendingCalls.TryPeek(fid, out var call) && call.Context.Cmd == intent
+                && (intent == "snapshot" || call.Context.EntryId == entryId);
         }
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
@@ -78,7 +86,7 @@ namespace CF7Launcher.Tasks
                 if (isWrite && _enterInFlight) { RejectAndRemember(callId, cmd, "busy"); return; }
                 var entry = new PendingRequest
                 {
-                    Cmd = cmd, IsWrite = isWrite,
+                    Cmd = cmd, IsWrite = isWrite, EntryId = (string)normalized["entryId"],
                     Instance = ReadString(parsed["panelInstanceId"])
                 };
                 if (!_pendingCalls.TryBegin(callId, entry, out fid)) return;

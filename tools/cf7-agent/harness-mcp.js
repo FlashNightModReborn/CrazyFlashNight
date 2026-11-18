@@ -183,7 +183,7 @@ const TOOLS = [
       type: 'object',
       required: ['act'],
       properties: {
-        act: { type: 'string', enum: ['release_all', 'hold_mask', 'tap_mask', 'hold_keys', 'tap_key', 'tap_keys', 'move_to', 'pickup', 'interact', 'open_panel'] },
+        act: { type: 'string', enum: ['release_all', 'hold_mask', 'tap_mask', 'hold_keys', 'tap_key', 'tap_keys', 'move_to', 'pickup', 'interact', 'advance_dialogue', 'return_after_victory', 'open_panel'] },
         mask: { type: 'number' },
         key: { type: 'string' },
         keys: { type: 'array', items: { type: 'string' } },
