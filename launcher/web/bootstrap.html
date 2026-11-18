@@ -38,7 +38,6 @@
   <button id="btn-retry" style="display:none">重试</button>
   <button id="btn-display" aria-haspopup="dialog">设置</button>
   <button id="btn-fullscreen">全屏</button>
-  <button id="btn-logs">日志</button>
   <button id="btn-about" aria-haspopup="dialog">关于与帮助</button>
 </div>
 
@@ -54,23 +53,26 @@
         <div class="hr-rune" id="rune-divider"></div>
         <p class="greet" id="welcome-greet">欢迎您，尊敬的闪客玩家</p>
 
-        <div class="slot-plate" id="welcome-slot">
-          <span class="slot-sig" id="welcome-slot-sig" aria-hidden="true"></span>
-          <div class="meta">
-            <div class="name" id="welcome-slot-name">&mdash;</div>
-            <div class="time" id="welcome-slot-time">&mdash;</div>
+        <!-- 启动卡：存档铭牌与主按钮同宽同轴，铭牌 kicker 压在上边框上不占高度。 -->
+        <div class="launch-panel">
+          <div class="slot-plate" id="welcome-slot" data-state="live">
+            <span class="slot-kicker" id="welcome-slot-kicker">继续上次</span>
+            <div class="meta">
+              <div class="name" id="welcome-slot-name">&mdash;</div>
+              <div class="time" id="welcome-slot-time">&mdash;</div>
+            </div>
+            <span class="slot-sig" id="welcome-slot-sig" aria-hidden="true"></span>
           </div>
-        </div>
 
-        <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>请重试，详情见“日志”。</span></div>
+          <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>可重试或查看日志。</span><button type="button" class="feedback-link" data-open-logs>诊断日志</button></div>
 
-        <div class="welcome-controls">
-          <button class="btn-go" id="btn-confirm-start">继续游戏</button>
-          <div class="hero-links">
-            <button type="button" class="hero-link" id="btn-switch-slot">选择其他存档</button>
-            <span aria-hidden="true">·</span>
-            <button type="button" class="hero-link" id="btn-welcome-new">新建角色</button>
-
+          <div class="welcome-controls">
+            <button class="btn-go front-primary" id="btn-confirm-start">继续游戏</button>
+            <div class="hero-links">
+              <button type="button" class="hero-link" id="btn-switch-slot">选择其他存档</button>
+              <span class="hero-link-sep" aria-hidden="true">·</span>
+              <button type="button" class="hero-link" id="btn-welcome-new">新建角色</button>
+            </div>
           </div>
         </div>
 
@@ -114,46 +116,54 @@
   <div class="archive-stage">
     <section id="save-shell" class="archive-frame corner-brackets" aria-labelledby="save-heading">
       <header class="archive-heading term-heading-rule">
+        <button type="button" id="btn-back-welcome" class="front-back" aria-label="返回首页">‹ 首页</button>
         <h1 id="save-heading">存档库</h1>
         <div class="save-groups" aria-label="存档分组">
           <button type="button" id="save-live" aria-controls="cards" aria-pressed="true">我的存档 <span id="save-live-count">0</span></button>
-          <button type="button" id="save-deleted" aria-controls="cards" aria-pressed="false">已删除 <span id="save-deleted-count">0</span></button>
+          <button type="button" id="save-deleted" aria-controls="cards" aria-pressed="false" hidden>待处理 <span id="save-deleted-count">0</span></button>
         </div>
         <div class="archive-tools">
           <div id="save-create-tools">
             <button type="button" id="btn-new" class="term-btn">新建角色</button>
             <button type="button" id="btn-import" class="term-btn">导入</button>
           </div>
-          <button type="button" class="term-btn" id="btn-refresh">刷新</button>
-          <button type="button" class="term-btn" id="btn-open-dir" aria-label="打开副本目录">副本目录</button>
-          <button type="button" id="btn-back-welcome" class="term-btn">返回</button>
+          <details class="save-more" id="save-more">
+            <summary>更多</summary>
+            <div class="save-more-items">
+              <button type="button" class="term-btn" id="btn-refresh">刷新存档</button>
+              <button type="button" class="term-btn" id="btn-open-dir">打开备份目录</button>
+            </div>
+          </details>
         </div>
       </header>
-      <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>请重试，详情见“日志”。</span></div>
+      <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>可重试或查看日志。</span><button type="button" class="feedback-link" data-open-logs>诊断日志</button></div>
       <div class="save-body">
         <div class="archive-filter">
-          <input id="save-search" type="search" aria-label="查找存档" placeholder="查找角色、存档名或槽位">
+          <input id="save-search" type="search" aria-label="查找存档" placeholder="查找角色或存档名">
+          <button type="button" class="term-btn" id="save-large-busts" aria-pressed="false">大图浏览</button>
           <select id="save-sort" aria-label="存档排序"><option value="recent">最近使用</option><option value="name">角色名称</option><option value="slot">槽位顺序</option></select>
         </div>
         <div class="save-ledger">
           <div class="save-columns" id="save-columns" aria-hidden="true">
-            <span>角色</span><span>存档名</span><span>进度</span><span>最近使用</span><span>副本大小</span>
+            <span>角色与存档</span><span class="save-gear-column">装备</span><span>进度</span>
+            <span class="save-sig-column">指纹</span><span>最近使用</span>
           </div>
           <div id="cards" role="group" aria-label="我的存档"></div>
           <div id="save-empty"><p id="save-empty-label">正在读取存档…</p></div>
           <section id="save-detail" aria-label="所选存档" hidden>
             <div class="save-selection">
-              <span class="slot-sig" id="save-detail-sig" aria-hidden="true"></span>
-              <strong id="save-title"></strong>
-              <span class="save-key-label">槽位</span>
-              <code id="save-key"></code>
-              <span id="save-character-meta" hidden></span>
-              <span id="save-history"></span>
+              <span class="save-avatar" id="save-detail-portrait" aria-hidden="true"></span>
+              <div class="save-identity"><strong id="save-title"></strong><span id="save-alias"></span></div>
             </div>
+            <p id="save-progress-detail"></p>
+            <div class="save-detail-gear" id="save-equipment" role="group" aria-label="已穿戴装备" hidden></div>
+            <p id="save-character-meta" hidden></p>
+            <p id="save-history"></p>
+            <details id="save-technical"><summary>技术信息</summary><div>槽位 <code id="save-key"></code></div><div>本地副本 <span id="save-size"></span></div></details>
             <div id="save-actions">
-              <button type="button" class="term-btn btn-start archive-primary" data-action="start">进入游戏</button>
-              <button type="button" class="term-btn btn-rebuild" data-action="rebuild">原槽重建</button>
-              <button type="button" class="term-btn btn-repair" data-action="repair">检查修复</button>
+              <button type="button" class="term-btn btn-start front-primary" data-action="start">进入游戏</button>
+              <button type="button" class="term-btn btn-rebuild front-primary" data-action="rebuild">在原位置新建</button>
+              <button type="button" class="term-btn btn-repair front-primary" data-action="repair">检查修复</button>
               <button type="button" class="term-btn btn-edit" data-action="edit">编辑</button>
               <button type="button" class="term-btn btn-undo" data-action="undo">撤销上次编辑</button>
               <button type="button" class="term-btn btn-rename" data-action="rename">重命名</button>
@@ -220,14 +230,17 @@
 <div class="intro-ov" id="intro-ov">
   <video id="intro-video" src="assets/intro.mp4" playsinline preload="none"></video>
   <div class="loading-indicator" id="loading-indicator">
-    <!-- V4 加载核心：PM19 中心格（轨道群唯一不动点）；轨道号与中心质数由 bg-gl 在种子验讫后填写 -->
-    <div class="core-cell">
-      <div class="core-orbit mono-num" id="core-orbit">轨道 &mdash;</div>
-      <div class="core-prime mono-num" id="core-prime">&mdash;</div>
-      <div class="core-label">中心质数 &middot; 共识锚点</div>
+    <div class="loading-copy" role="status" aria-live="polite" aria-atomic="true">
+      <h2 class="loading-title">正在进入游戏</h2>
+      <div class="loading-text">正在启动游戏</div>
     </div>
-    <div class="loading-text">启动中</div>
-    <div class="loading-hint">ESC 取消</div>
+    <div id="loading-stages" aria-hidden="true"><i></i><i></i><i></i></div>
+    <button type="button" class="loading-hint" id="loading-cancel">取消 <kbd>Esc</kbd></button>
+    <div id="loading-slow" hidden>仍在等待游戏画面 <button type="button" class="feedback-link" data-open-logs>诊断日志</button></div>
+    <div class="core-cell" aria-hidden="true">
+      <span class="core-orbit mono-num" id="core-orbit">轨道 &mdash;</span>
+      <span class="core-label">中心质数</span> <span class="core-prime mono-num" id="core-prime">&mdash;</span>
+    </div>
   </div>
 </div>
 <button class="intro-skip" id="intro-skip">跳 过 &middot; ESC</button>
@@ -243,18 +256,21 @@
 <!-- C 期: tooltip 层 (经典 script, 暴露 window.BootTooltip; 须先于主控加载以完成同步绑定) -->
 <script src="modules/boot-tooltip.js"></script>
 
-<!-- 建角预览与控制器：manifest 仅在进入建角后由控制器按需读取。 -->
+<!-- 建角和档案头像共用装扮素材，初次显示时按需读取。 -->
 <script src="modules/asset-timeline.js"></script>
 <script src="modules/icons.js"></script>
 <script src="modules/tooltip.js"></script>
 <script src="modules/panel-scale.js"></script>
 <script src="modules/dressup-doll-renderer.js"></script>
+<script src="modules/merc-portrait-renderer.js"></script>
 <script src="modules/character-identity-controls.js"></script>
 <script src="modules/character-appearance-preview.js"></script>
 <script src="modules/bootstrap-character-create-runtime.js"></script>
 <script src="modules/bootstrap-character-create.js"></script>
 
 <!-- 主控 IIFE -->
+<script src="modules/bootstrap-save-portraits.js"></script>
+<script src="modules/bootstrap-save-equipment.js"></script>
 <script src="modules/bootstrap-save-manager.js"></script>
 <script src="bootstrap-main.js"></script>
 

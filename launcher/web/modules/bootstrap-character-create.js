@@ -105,12 +105,11 @@
             + ' </header>'
             + ' <div class="cc-main">'
             + '  <aside class="cc-preview term-card" aria-label="角色预览">'
-            + '   <button type="button" class="term-btn" id="cc-random-look">随机外观</button>'
-            + '   <div class="cc-canvas-wrap"><canvas id="cc-preview-canvas" role="img" aria-label="当前角色外观预览"></canvas>'
+            + '   <div class="cc-canvas-wrap"><div class="cc-pad" aria-hidden="true"><div class="cc-pad-deck"></div><i></i><i></i><i></i></div><canvas id="cc-preview-canvas" role="img" aria-label="当前角色外观预览"></canvas>'
             + '    <p id="cc-preview-fallback" class="cc-preview-fallback" aria-live="polite">正在准备角色预览...</p></div>'
-            + '   <div class="cc-pad" aria-hidden="true"><i></i><i></i><i></i></div>'
             + '   <strong id="cc-nameplate">未命名</strong>'
-            + Controls.heightMarkup('cc', true, 'cc-step-title-1')
+            + '   <div class="cc-preview-tools"><button type="button" class="term-btn" id="cc-random-look">随机外观</button>'
+            + Controls.heightMarkup('cc', true, 'cc-step-title-1') + '</div>'
             + '   <dl class="cc-preview-meta"><div><dt>性别</dt><dd id="cc-preview-gender">—</dd></div>'
             + '    <div><dt>发型</dt><dd id="cc-preview-hair">—</dd></div></dl>'
             + '   <div class="cc-tt-anchor" aria-hidden="true"></div>'
@@ -126,7 +125,7 @@
             + '     <summary>高级选项 <small>存档名默认跟随角色名</small></summary>'
             + '     <label class="cc-field"><span>存档显示名 <button type="button" class="cc-help" id="cc-help-display" aria-label="说明存档显示名">?</button></span>'
             + '      <input id="cc-display-name" name="displayName" autocomplete="off" placeholder="默认使用角色名" aria-describedby="cc-display-help cc-error-displayName">'
-            + '      <small id="cc-display-help">只用于启动器辨认槽位，允许重名；留空或清空会恢复为角色名。</small><em id="cc-error-displayName" class="cc-error"></em></label>'
+            + '      <small id="cc-display-help">用来区分多个存档，可以重名。留空时使用角色名。</small><em id="cc-error-displayName" class="cc-error"></em></label>'
             + '     <button type="button" id="cc-display-reset" class="term-btn cc-display-reset">恢复跟随角色名</button>'
             + '    </details>'
             + '   </section>'
@@ -134,7 +133,7 @@
             + '    <h2 id="cc-step-title-1" tabindex="-1">外观配置</h2>'
             + '    <div id="cc-equipment-view" aria-label="初始装备"></div>'
             + '    <section id="cc-hair-view" aria-label="发型">'
-            + '     <div class="cc-hair-filter"><b>发型</b><div id="cc-hair-filter" role="group" aria-label="发型分类"></div><input id="cc-hair-search" type="search" aria-label="搜索发型" placeholder="搜索发型"><button type="button" class="term-btn cc-density-option" data-density-view="hair" aria-label="切换发型图标或名称">显示图标</button></div>'
+            + '     <div class="cc-hair-filter"><b>发型 <small id="cc-hair-count"></small></b><div id="cc-hair-filter" role="group" aria-label="发型分类"></div><input id="cc-hair-search" type="search" aria-label="搜索发型" placeholder="搜索发型"><button type="button" class="term-btn cc-density-option" data-density-view="hair" aria-label="切换发型图标或名称">显示图标</button></div>'
             + '     <div id="cc-hair-list" class="cc-choice-pool cc-hair-list" role="listbox" aria-label="可选发型"></div>'
             + '     <p id="cc-hair-empty" role="status" hidden>没有符合条件的发型。</p>'
             + '     <em id="cc-error-hairIdentifier" class="cc-error"></em>'
@@ -149,7 +148,6 @@
             + '     </section>'
             + '     <section class="cc-confirm-summary" aria-labelledby="cc-review-title">'
             + '      <h2 id="cc-review-title">建立前确认</h2>'
-            + '      <span id="cc-slot-signature" class="slot-sig" aria-label="新存档节点签名" hidden></span>'
             + '      <dl id="cc-review" class="cc-review" tabindex="0" aria-labelledby="cc-review-title"></dl>'
             + '     </section>'
             + '    </div>'
@@ -159,7 +157,7 @@
             + '    <button type="button" id="cc-cancel" class="term-btn cc-cancel">取消</button>'
             + '    <span class="cc-action-spacer"></span>'
             + '    <button type="button" id="cc-back" class="term-btn cc-back" disabled>上一步</button>'
-            + '    <button type="submit" id="cc-next" class="term-btn cc-next">下一步</button>'
+            + '    <button type="submit" id="cc-next" class="term-btn cc-next front-primary">下一步</button>'
             + '   </footer>'
             + '  </form>'
             + ' </div>'
@@ -688,6 +686,7 @@
             bindSimpleTooltip(button, 'hair:' + sourceIndex(row, index), display.raw, 'left');
         });
         var visible = list.querySelectorAll('[role="option"]');
+        byId('cc-hair-count').textContent = visible.length + ' 款';
         byId('cc-hair-empty').hidden = visible.length !== 0;
         Array.from(visible).forEach(function (button, position) {
             button.setAttribute('aria-posinset', String(position + 1));
@@ -772,7 +771,7 @@
                 var tag = document.createElement('span');
                 tag.className = 'cc-recommended';
                 tag.textContent = '推荐';
-                button.appendChild(tag);
+                title.appendChild(tag);
             }
             var description = document.createElement('span');
             description.className = 'cc-difficulty-description';
@@ -1042,7 +1041,7 @@
             errors.difficulty];
         steps.forEach(function(item, index) {
             var warn = !!invalid[index] && (validationAttempted || (index === 0 && !!named));
-            var done = !!model && !invalid[index] && (index === 0 ? !!named : visitedSteps[index]);
+            var done = !!model && index !== step && visitedSteps[index] && !invalid[index];
             item.classList.toggle('is-done', done);
             item.classList.toggle('has-error', warn);
             item.querySelector('button').setAttribute('aria-invalid', String(warn));
@@ -1167,7 +1166,6 @@
                 + ' · ' + nameOf(snapshot.appearanceCatalog.lower[gender], model.draft.lowerIdentifier)
                 + ' · ' + nameOf(snapshot.appearanceCatalog.footwear[gender], model.draft.footwearIdentifier)]
         );
-        paintSlotSignature();
         var review = byId('cc-review');
         review.innerHTML = '';
         review.classList.toggle('cc-review--display-follows', !showDisplayName);
@@ -1179,13 +1177,6 @@
             dt.textContent = row[1]; dd.textContent = row[2];
             wrap.appendChild(dt); wrap.appendChild(dd); review.appendChild(wrap);
         });
-    }
-
-    function paintSlotSignature() {
-        var badge = byId('cc-slot-signature');
-        if (!badge || !snapshot || !global.BootstrapSaveManager) return;
-        global.BootstrapSaveManager.paintSignature(badge, snapshot.slotKey);
-        badge.hidden = !badge.childElementCount;
     }
 
     function attachRenderer() {
@@ -1202,6 +1193,11 @@
                 onRender:function(meta) {
                     if (generation !== previewGeneration || token !== activeOpenRequestId) return;
                     lastRendererMeta = meta;
+                    if (meta && meta.contentBounds && meta.drawnImages > 0) {
+                        var floorY = meta.offsetY + meta.contentBounds.maxY * meta.scale;
+                        if (Number.isFinite(floorY))
+                            byId('cc-preview-canvas').parentElement.style.setProperty('--cc-floor-y', floorY + 'px');
+                    }
                     updatePreviewFallback();
                     inspectPreparationFrame(meta, generation, token);
                 }
@@ -1288,7 +1284,7 @@
             if (phase === 'preparing') schedulePreparationReveal(true, previewGeneration, activeOpenRequestId);
             return;
         }
-        manifestPromise = global.DressupDollRenderer.loadManifest('assets/dressup/manifest.json')
+        manifestPromise = global.MercPortraits.loadManifest()
             .then(function(value) {
                 manifest = value;
                 manifestPromise = null;
@@ -1668,7 +1664,6 @@
         rootEl = config.root;
         if (!rootEl) throw new Error('character-create root is required');
         mount();
-        global.addEventListener('pm19-decor-ready', paintSlotSignature);
         return api;
     }
 

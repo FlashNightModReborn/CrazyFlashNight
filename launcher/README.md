@@ -126,11 +126,16 @@ Tooltip 内容服务的契约、消费者和当前候选证据见 [Issue #262 �
 
 启动器与游戏内面板共用固定 1024×576 画布，窗口、全屏与异形屏均居中等比缩放。首页、设置、存档、建角和片头均使用同一比例。
 
-欢迎页在人物立绘对侧显示入口。人物朝向由 `web/assets/bg/portraits.json` 指定，阵营名称与引言由 `web/modules/factions.js` 提供。PM19 启动后通过 `window.PM19Decor` 提供本次的轨道中心和可复算的签名，中央载入提示沿用现有 attempt 与 reveal 回执。顶栏与信道同步显示中文启动状态，悬停顶栏状态可查看宿主附带的细节。点击读数条可展开和收起信道。顶栏设置集中提供字号、片头和字体扩展，关于与帮助的正文独立滚动。进入前门期间原生 HUD 刘海收起。
+欢迎页在人物立绘对侧显示入口。人物朝向由 `web/assets/bg/portraits.json` 指定，阵营名称与引言由 `web/modules/factions.js` 提供。PM19 启动后通过 `window.PM19Decor` 提供本次的轨道中心和可复算的签名，中央载入提示沿用现有 attempt 与 reveal 回执。顶栏与信道同步显示中文启动状态，悬停顶栏状态可查看宿主附带的细节。点击读数条可展开和收起信道。顶栏设置集中提供字号、片头和字体扩展，关于与帮助的正文独立滚动；诊断日志从“关于与帮助”或启动失败提示进入，不占顶栏。
+首页启动卡把存档铭牌与主按钮合为一块，无存档时只保留“新建角色”主动作与存档库入口；读数条按字号让位，优先保留最新信道事件。进入前门期间原生 HUD 刘海收起。加载时展示刚选择的角色与存档名，阶段跟随 Host 状态更新，等待较久时可以打开诊断日志。PM19 事件流在加载期间保留，返回欢迎页后由读数条承接。
 
-存档库可搜索、按最近游玩等条件排序，在选中项直接继续游戏或打开编辑。详情从 Host 目录投影读取名字、进度、难度、性别和可用外观。提交编辑后可以撤销最近一次成功保存，关闭并重启启动器仍有效。正常游戏写档或删除会使旧撤销失效。受损存档在前门打开原文、导出或导入修复。删除确认提示不可恢复，空出来的位置可以新建角色。
+存档库可搜索、按最近游玩等条件排序，在选中项直接继续游戏或打开编辑。列表与详情复用佣兵装备胸像，用装备栏内已穿戴的头部、上衣和武器等装扮区分角色。可选择“大图浏览”，旧 Host 只提供衣裤鞋时按可用字段展示，缺少外观资料时显示名字首字。等级取自目录已有的角色进度，物理槽位与副本大小可在技术信息中查看。提交编辑后可以撤销最近一次成功保存，关闭并重启启动器仍有效。正常游戏写档或删除会使旧撤销失效。受损存档在前门打开原文、导出或导入修复。
 
-建角的身份登记、外观配置、选择难度可直接切换。人物铭牌同步角色名。上装、下装、鞋与可搜索的发型同屏呈现，悬停只试穿，点击才选定。随机外观按当前性别选取衣装、发型和身高。选择难度展开完整规则，确认区按 Host 提供的槽位显示节点签名。最终提交仍校验姓名和选择。界面回归入口为 `node tools/run-bootstrap-harness.js`、`node tools/run-bootstrap-character-create-harness.js`。存档编辑跨重启、后续写入冲突和目录兼容由 `ArchiveTaskOrderingTests` 覆盖。
+列表优先取一件武器和一件防具，详情展示全部已穿戴装备。悬停或用键盘聚焦详情图标可读物品注释，点击可固定。注释显示物品目录中的基础属性与说明。装备资料由 `node tools/build-bootstrap-equipment-reference.js` 根据游戏注释目录生成，启动器回归会校验两者同步。首页与存档库复用同一组 19 根指纹柱，槽位决定幻方行列、起始位置和读取方向，改名、换装和排序均保留原图形。
+
+玩家确认删除后，启动器清理本槽的 JSON、当前游戏的 Flash SOL 及名称映射。内部删除标记继续阻止旧数据回流。干净的删除记录不再出现在存档库，只有物理副本待清理或建角中断时才出现“待处理”。查看旧标记不触发删除。搭配旧版启动器时显示“移出列表”，确认前说明 Flash 副本需由新版清理。
+
+建角的身份登记、外观配置、选择难度可直接切换。人物铭牌同步角色名。上装、下装、鞋与可搜索的发型同屏呈现，悬停只试穿，点击才选定。金属底座在纸娃娃后层，以当前鞋底坐标固定身高缩放的落点。随机外观按当前性别选取衣装、发型和身高。选择难度展开完整规则，确认区显示姓名、难度与所选衣装，推荐标识与难度正文分行。最终提交仍校验姓名和选择。界面回归入口为 `node tools/run-bootstrap-harness.js`、`node tools/run-bootstrap-character-create-harness.js`。存档编辑跨重启、后续写入冲突和目录兼容由 `ArchiveTaskOrderingTests` 覆盖。
 
 ### Agent Runtime
 
@@ -383,14 +388,14 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `character_create_submit` | 提交当前 open/attempt 的角色草稿与显式 `displayNameCustomized` |
 | `reveal_ok` | reveal receipt |
 | `retry` | 启动错误恢复 |
-| `list` | 存档目录。成功回传 `archiveRequestIds: true` 时，Web 按原请求的槽号和编号接收读取、编辑、删除与残留清理结果 |
-| `delete` | 写 tombstone 后清理 JSON，保留显示名。文件占用时，成功回执附 `shadow_cleanup_pending` |
+| `list` | 存档目录。成功回传 `archiveRequestIds: true` 时，Web 按原请求的槽号和编号接收读取、编辑、删除与残留清理结果。支持清理 Flash 文件的版本另回传 `archiveFileDeletion: true` |
+| `delete` | 启动器确认删除后先写防回流标记，再清理 JSON、当前游戏的 SOL 与存档显示名。文件占用时回传 `slot_cleanup_pending` |
 | `rename_slot` | 修改 Host 权威槽位显示名；允许重名，空串恢复跟随角色名，不修改物理 `slotKey` |
 | `load` | 存档操作 |
 | `undo_edit` | 按槽位、编辑凭证和当前内容核对上次编辑，成功才恢复编辑前的存档 |
 | `load_raw` | 存档原始读取 |
 | `save` | 存档操作 |
-| `reset` | 清理 JSON 后保留 tombstone。默认同时移除名称映射，`residueOnly: true` 只清理已删除槽的残留副本并保留名称 |
+| `reset` | 前门 `residueOnly: true` 只清理确已删除、无重建事务的本槽副本与名称，保留防回流标记。普通 reset 保留原有清理语义 |
 | `export` | 存档导出 |
 | `import_start` | 导入预检 |
 | `import_commit` | 导入提交 |
@@ -408,7 +413,8 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `repair_force_continue` | repair 明示继续 |
 <!-- launcher-bootstrap-command-registry:end -->
 `config_set` 只写白名单。启动前门的 attempt/slot/displayName/backup/reveal、durable/SceneReady、catalog 与 exact retry 边界见 [AS2 → Web 迁移护栏](../agentsDoc/as2-web-panel-migration.md)；`bootstrap_reveal_ready` 不代签 `s:1|ga:<attemptId>`，重建不预删 SOL。FontPack 的真实探针、exact HTTPS allow-list 与字节/ETag/WOFF2 边界见[字体目录](../fonts/README.md)。
-Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（≥501 非透明像素）后再等双 rAF 开放；失败/12 秒只降级，迟到不可揭新页。PM19 V3 在建角/Modal/视频中暂停；loading 相（建角除外）叠加 lore 事件流与阶段文字，`Ready+确认意图` 门控方环收束，>12s 允许安静换盘，cue 按优先级抢占/挂起；Error 反馈持续到宿主退出错误态，绘制失败不影响重试。双缓存、12/24Hz 和本次暂停不参与启动判定。几何避让与验收见 [PM19 背景](../docs/启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md)。
+Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（≥501 非透明像素）后再等双 rAF 开放；失败/12 秒只降级，迟到不可揭新页。
+建角准备遮罩沿用 PM19 载入数字场，进入可编辑表单、打开模态框或播放视频时暂停；loading 相（建角除外）叠加 lore 事件流与阶段文字，`Ready+确认意图` 门控方环收束，>12s 允许安静换盘，cue 按优先级抢占/挂起；Error 反馈持续到宿主退出错误态，绘制失败不影响重试。双缓存、12/24Hz 和本次暂停不参与启动判定。几何避让与验收见 [PM19 背景](../docs/启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md)。
 角色名为主，存档显示名在高级选项中默认跟随。确认页仅在自定义名不同时另列。建角固定 `1024×576` + `PanelScale`，窗口与全屏等比缩放。三个装备选择区与发型同屏，发型按性别、搜索词筛选，可切换名称或图标并在列表内滚动。外观页左侧提供身高滑杆。脸型仅用于角色数据，物品注释使用 `PanelTooltip`。作者与版本正文来自 `web/content/*.md`。运行版本取自 `web/config/version.js`，历史证据与视频提纲见[版本考古规范](../docs/version-archaeology/README.md)。
 <a id="panel-registry"></a>
 ## Panel 与 minigame 注册表

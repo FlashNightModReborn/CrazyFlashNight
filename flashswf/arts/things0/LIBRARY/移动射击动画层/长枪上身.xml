@@ -39,19 +39,19 @@ gotoAndStop("空闲");]]></script>
             </DOMFrame>
             <DOMFrame index="12" duration="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[gotoAndStop("空闲");]]></script>
+                <script><![CDATA[if (_currentframe == 13) gotoAndStop("空闲");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="26" duration="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[gotoAndStop("空闲");]]></script>
+                <script><![CDATA[if (_currentframe == 27) gotoAndStop("空闲");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="40" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[gotoAndStop("空闲");]]></script>
+                <script><![CDATA[if (_currentframe == 41) gotoAndStop("空闲");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

@@ -267,10 +267,11 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             return;
         }
         // 资格与库存已通过，才停止动作；上一发冷却和半自动松键权威继续存活。
+        beginReloadInput(target, parentRef);
         ShootCore.stopForReload(parentRef);
         WeaponAmmoRuntime.beginReload(parentRef, attackMode);
         if (isHero && _canLinkSubweaponReload(parentRef, attrs.reloadType))
-            LongGunSubWeaponCore.setLinkedReloadRequest(target, parentRef);
+            LongGunSubWeaponCore.setLinkedReloadRequest(target);
         bumpReloadGeneration(target);
         target.换弹标签 = true;
         target.gotoAndPlay("换弹匣");
@@ -378,7 +379,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         target.__reloadGeneration = getReloadGeneration(target) + 1;
         delete target.__reloadIdentity;
         LongGunSubWeaponCore.clearReloadRequest(target);
-        delete target.dualReloadInput;
+        delete target.reloadInputMask;
         delete target.dualReloadStartHand;
         delete target._dualReloadFirstInitStartFrame;
         delete target.dualReloadWeaponType;
@@ -401,7 +402,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             : parent[slot + "弹匣容量"] - parent[slot].value.shot;
         if (_root.暂停 || ShootCore.isPresentationControlled(parent) || (parent.man != null && parent.man !== target)
                 || !(loaded > 0)) return false;
-        if (!canInterruptDualReload(target, parent, slot)) return false;
+        if (_root.控制目标 == parent._name && !canInterruptReload(parent, slot, observeReloadInput(target, parent))) return false;
         parent.__reloadFireHeld = true;
         cancelReload(target, true);
         return true;
@@ -411,7 +412,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
     public static function handleReloadInput(target:Object, parent:Object):Boolean {
         if (ShootCore.isPresentationControlled(parent)) return false;
         if (_root.控制目标 != parent._name) return false;
-        if (!_root.暂停) observeDualReloadInput(target, parent);
+        var held:Number = _root.暂停 ? 0 : observeReloadInput(target, parent);
         var firing:Boolean = parent.动作A || parent.动作B;
         if (!firing) delete parent.__reloadFireHeld;
         if (_root.暂停) return target.换弹标签 == true;
@@ -424,24 +425,24 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             var subReady:Boolean = parent.动作B && (dual
                 ? parent.手枪2弹匣容量 - parent.手枪2.value.shot > 0
                 : subweapon && LongGunSubWeaponCore.getLoadedCount(parent) > 0);
-            if (dual && target.换弹标签) {
-                mainReady = mainReady && canInterruptDualReload(target, parent, "手枪");
-                subReady = subReady && canInterruptDualReload(target, parent, "手枪2");
+            if (target.换弹标签) {
+                mainReady = mainReady && canInterruptReload(parent, mainSlot, held);
+                subReady = subReady && canInterruptReload(parent, dual ? "手枪2" : "长枪副武器", held);
             }
-            if (!mainReady && !subReady) {
-                if (!target.换弹标签) delete parent.__reloadFireHeld;
-                return false;
+            if (mainReady || subReady) {
+                var slot:String = mainReady ? mainSlot : (dual ? "手枪2" : "长枪副武器");
+                if (!tryCancelForFire(target, parent, slot)) return true;
+                if (dual) {
+                    if (mainReady) target.主手开始射击();
+                    if (subReady) target.副手开始射击();
+                } else {
+                    if (mainReady) target.开始射击();
+                    if (subReady) target.开始副武器射击();
+                }
+                return true;
             }
-            var slot:String = mainReady ? mainSlot : (dual ? "手枪2" : "长枪副武器");
-            if (!tryCancelForFire(target, parent, slot)) return true;
-            if (dual) {
-                if (mainReady) target.主手开始射击();
-                if (subReady) target.副手开始射击();
-            } else {
-                if (mainReady) target.开始射击();
-                if (subReady) target.开始副武器射击();
-            }
-            return true;
+            if (!target.换弹标签) delete parent.__reloadFireHeld;
+            // 继承的射击键没有打断权，仍须消费本轮逐发装填的松 R。
         }
         if (target.换弹标签 && target.reloadHeldMode && !parent.动作C) {
             cancelReload(target, true);
@@ -520,30 +521,41 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         }
     }
     
-    /** 双枪装填前已经按住的键只恢复续射；各手分别松开后，新按压仍可主动打断。 */
-    private static function observeDualReloadInput(target:Object, parent:Object):Void {
-        var input:Object = target.dualReloadInput;
-        if (input == undefined) return;
-        if (!parent.动作A) input.main = false;
-        if (!parent.动作B) input.sub = false;
+    /** 装填入场继承的 A/B 电平：位 1 为 A，位 2 为 B；松开各自清位。 */
+    public static function beginReloadInput(target:Object, parent:Object):Void {
+        delete parent.__reloadFireHeld;
+        var held:Number = (parent.动作A ? 1 : 0) | (parent.动作B ? 2 : 0);
+        if (held && _root.控制目标 == parent._name) target.reloadInputMask = held;
+        else delete target.reloadInputMask;
     }
 
-    private static function canInterruptDualReload(target:Object, parent:Object, slot:String):Boolean {
-        if (parent.攻击模式 != "双枪" || _root.控制目标 != parent._name
-                || target.dualReloadInput == undefined) return true;
-        observeDualReloadInput(target, parent);
-        return slot == "手枪" ? !target.dualReloadInput.main
-            : slot == "手枪2" ? !target.dualReloadInput.sub : true;
+    private static function observeReloadInput(target:Object, parent:Object):Number {
+        var held:Number = target.reloadInputMask;
+        if (!held) return 0;
+        var remaining:Number = held & ((parent.动作A ? 1 : 0) | (parent.动作B ? 2 : 0));
+        if (remaining != held) {
+            if (remaining) target.reloadInputMask = remaining;
+            else delete target.reloadInputMask;
+        }
+        return remaining;
+    }
+
+    private static function canInterruptReload(parent:Object, slot:String, held:Number):Boolean {
+        // 公共射击入口也接受技能或脚本的显式请求。没有继承电平时沿用原有准入。
+        if (!held) return true;
+        if (slot == "长枪副武器" || (parent.攻击模式 == "双枪" && slot == "手枪2"))
+            return (held & 2) == 0;
+        if (parent.攻击模式 == "双枪" || (parent.攻击模式 == "长枪" && LongGunSubWeaponCore.hasSubweapon(parent)))
+            return (held & 1) == 0;
+        // 普通单枪的 A/B 均可请求主手，任一新的有效按压即可打断。
+        return (parent.动作A && (held & 1) == 0) || (parent.动作B && (held & 2) == 0);
     }
 
     private static function beginDualReloadSequence(target:MovieClip, parent:Object, hand:String):Void {
         ShootCore.stopForReload(parent);
-        delete parent.__reloadFireHeld;
+        beginReloadInput(target, parent);
         target.dualReloadStartHand = hand;
         delete target._dualReloadFirstInitStartFrame;
-        if (_root.控制目标 == parent._name)
-            target.dualReloadInput = {main:!!parent.动作A, sub:!!parent.动作B};
-        else delete target.dualReloadInput;
         bumpReloadGeneration(target);
         target.换弹标签 = true;
         target.gotoAndPlay(hand + "换弹匣");
@@ -1017,7 +1029,6 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * - target.dualReloadHandPrefix         : "主手"/"副手"
      * - target.dualReloadWeaponType         : "手枪"/"手枪2"
      * - target.dualReloadMagNameProp        : "主手使用弹匣名称"/"副手使用弹匣名称"
-     * - target.dualReloadRemainingMagProp   : "主手剩余弹匣数"/"副手剩余弹匣数"
      *
      * @param target 时间轴MovieClip（this引用）
      */
@@ -1050,7 +1061,6 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         target.dualReloadHandPrefix = handPrefix;
         target.dualReloadWeaponType = weaponType;
         target.dualReloadMagNameProp = handPrefix + "使用弹匣名称";
-        target.dualReloadRemainingMagProp = handPrefix + "剩余弹匣数";
     }
 
     /**

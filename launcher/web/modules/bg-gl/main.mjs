@@ -44,16 +44,25 @@ function clearSchedule() {
 }
 function covered() {
   const b = document.body;
-  // 普通加载是透明遮罩，背景仍可见；视频与建角才停止持续绘制。
+  // Both preparation overlays reveal the field. Stop drawing once the character form covers it.
   return document.hidden || b.classList.contains('intro-video')
-    || b.classList.contains('character-create-preparing') || b.classList.contains('character-create-active')
+    || (b.classList.contains('character-create-active') && !preparingCharacter())
     || (modalHost && modalHost.style.display !== 'none')
     || !canvas || !canvas.isConnected
     || (!loading() && ['view-welcome', 'view-slots'].every(id => document.getElementById(id)?.hidden));
 }
 function loading() { return document.body.classList.contains('intro-playing'); }
+function preparingCharacter() { return loading() && document.body.classList.contains('character-create-preparing'); }
 function isStatic() { return userPaused || media.matches || failed; }
-function visualKind() { return hostState === 'Error' ? 'error' : cue ? cue.kind : loading() ? 'loading' : 'quiet'; }
+function motionChanged() {
+  previousNow = 0;
+  paintDirty = true;
+  reconcile();
+}
+function visualKind() {
+  if (preparingCharacter()) return 'loading';
+  return hostState === 'Error' ? 'error' : cue ? cue.kind : loading() ? 'loading' : 'quiet';
+}
 // SYNC 同心收束只在"真启动且仍 loading"放行；PREWARM Ready 无 userIntent 天然不触发。
 // 建角流程同 lore 纪律一并排除：cc 的 Ready 不归启动叙事。
 function syncGate() {
@@ -140,7 +149,8 @@ function commitBoard(forceNext = false) {
 }
 function frame(now) {
   raf = 0; callbacks++;
-  if (retired || blocked || isStatic() || !renderer) return;
+  if (retired || blocked || !renderer) return;
+  if (isStatic()) { motionChanged(); return; }
   // Only visible active time advances. No resume catch-up and no hidden swaps.
   if (previousNow) time += Math.min(120, Math.max(0, now - previousNow));
   previousNow = now;
@@ -154,7 +164,7 @@ function frame(now) {
       tryStartSync();
     }
     // 解冻换盘：仅 loading 持续 >12s 才走 cue+commit（包络近零处换值）；harness 全程 <12s 不触发。
-    if (!cue && loading() && hostState !== 'Error' && !pendingSync && loadingSince && time - loadingSince > 12000) {
+    if (!cue && loading() && !preparingCharacter() && hostState !== 'Error' && !pendingSync && loadingSince && time - loadingSince > 12000) {
       beginCue('unfreeze', 1600, true);
       loadingSince = time;
     }
@@ -175,7 +185,10 @@ function schedule() {
   const delay = Math.max(0, period - (performance.now() - previousNow) - 5);
   timer = setTimeout(() => {
     timer = 0;
-    if (!retired && !blocked && !isStatic()) raf = requestAnimationFrame(frame);
+    if (retired || blocked) return;
+    // The preference can be visible to this timer before the browser delivers its change event.
+    if (isStatic()) { motionChanged(); return; }
+    raf = requestAnimationFrame(frame);
   }, delay);
 }
 function reconcile() {
@@ -306,7 +319,9 @@ function signature(key) {
   if (!seedValues || typeof key !== 'string' || !key) return null;
   const h = fnv1a(key), seed = h % seedValues.length, line = (h >>> 3) % (2 * N + 2);
   const values = lineCells(line).map(i => seedValues[seed][i]);
-  return { seed, line, lineName: lineName(line), values, magicSum: orbitMagicSum };
+  // Keep the source line intact. The slot also chooses where and in which direction its 19 bars begin.
+  return { seed, line, lineName: lineName(line), values, magicSum: orbitMagicSum,
+    offset:(h >>> 9) % N, reversed:!!(h & 0x4000) };
 }
 function publishDecor() {
   const center = board[9 * N + 9];
@@ -345,7 +360,7 @@ async function main() {
   listen(document, 'visibilitychange', reconcile);
   listen(window, 'resize', onLayout);
   listen(document, 'scroll', onLayout, true);
-  listen(media, 'change', () => { paintDirty = true; previousNow = 0; reconcile(); });
+  listen(media, 'change', motionChanged);
   listen(canvas, 'contextlost', () => fail(new Error('2D context lost')));
   const bodyObserver = new MutationObserver(onLayout);
   bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
@@ -419,7 +434,7 @@ async function main() {
           if (text && lore && lore.boot(text, { frame: message.frame }) !== false) accepted++;
         }
         // 足迹只记录真实到达的批次，不推导总数或百分比；超过可见行数后循环覆盖最老的一行。
-        if (accepted && loading() && hostState !== 'Error') {
+        if (accepted && loading() && !preparingCharacter() && hostState !== 'Error') {
           const row = FOOTPRINT_ORDER[footprintCursor % FOOTPRINT_ORDER.length];
           footprintCursor++;
           const old = footprints.findIndex(fp => fp.row === row);
@@ -442,6 +457,7 @@ async function main() {
   // loading() 挡业务已受理后的键盘 Enter 重入（按钮不失效，event.repeat 挡长按）。
   function armLaunchIntent(event) {
     if (event.currentTarget.disabled || event.repeat || retired || covered() || loading()) return;
+    if (event.currentTarget.id === 'btn-confirm-start' && document.getElementById('welcome-slot')?.dataset.state === 'empty') return;
     userIntent = true; attempts++;
     beginCue('confirm', 1200);
     if (lore) try { lore.event('confirm'); } catch (_) {}

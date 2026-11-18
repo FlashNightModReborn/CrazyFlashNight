@@ -181,6 +181,7 @@ namespace CF7Launcher.Guardian.Handlers
             {
                 case "undo_edit":     outCmd = "undo_edit_resp"; break;
                 case "save":          outCmd = "save_resp";   break;
+                case "delete":        outCmd = "delete_resp"; break;
                 case "reset":         outCmd = "reset_resp";  break;
                 case "import_start":  outCmd = "import_resp"; break;
                 case "import_commit": outCmd = "import_resp"; break;
@@ -228,17 +229,17 @@ namespace CF7Launcher.Guardian.Handlers
         }
 
         internal static void DispatchSlot(BootstrapPanel panel, ArchiveTask archive, JObject request,
-            JObject archiveMessage, string cmd)
+            JObject archiveMessage, string cmd, SaveResolutionContext catalog = null)
         {
             archive.HandleAsync(archiveMessage, json =>
             {
                 JObject result = null;
                 try { result = JObject.Parse(json); } catch (JsonException) { }
                 panel.PostToWeb(BuildSlotReply(request, cmd, result).ToString(Formatting.None));
-            });
+            }, catalog);
         }
 
-        internal static void DispatchList(BootstrapPanel panel, ArchiveTask archive, UserPrefs prefs)
+        internal static void DispatchList(BootstrapPanel panel, ArchiveTask archive, UserPrefs prefs, SaveResolutionContext catalog)
         {
             archive.HandleAsync(BuildArchivePayload("list", null), json =>
             {
@@ -252,7 +253,7 @@ namespace CF7Launcher.Guardian.Handlers
                 var reply = new JObject
                 {
                     ["type"] = "bootstrap", ["cmd"] = "list_resp", ["ok"] = true,
-                    ["slots"] = result["slots"], ["archiveRequestIds"] = true
+                    ["slots"] = result["slots"], ["archiveRequestIds"] = true, ["archiveFileDeletion"] = catalog?.Locator != null
                 };
                 if (prefs != null)
                 {
@@ -268,7 +269,7 @@ namespace CF7Launcher.Guardian.Handlers
                     reply["uiFontScale"] = prefs.UiFontScale;
                 }
                 panel.PostToWeb(reply.ToString(Formatting.None));
-            });
+            }, catalog);
         }
     }
 }

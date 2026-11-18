@@ -8,6 +8,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Tasks;
+using CF7Launcher.Save;
 
 namespace CF7Launcher.Guardian.Handlers
 {
@@ -64,13 +65,13 @@ namespace CF7Launcher.Guardian.Handlers
 
         // ─────── reset ───────
 
-        internal static void HandleReset(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
+        internal static void HandleReset(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow, SaveResolutionContext catalog)
         {
             BootstrapCommandHelpers.RequireIdleOrTearDown("reset", bootForm, launchFlow,
-                delegate { HandleResetInternal(msg, bootForm, archiveTask); }, msg);
+                delegate { HandleResetInternal(msg, bootForm, archiveTask, catalog); }, msg);
         }
 
-        private static void HandleResetInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
+        private static void HandleResetInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, SaveResolutionContext catalog)
         {
             string slot;
             string slotError;
@@ -86,7 +87,12 @@ namespace CF7Launcher.Guardian.Handlers
 
             JObject archiveMsg = BootstrapCommandHelpers.BuildArchivePayload("reset", slot);
             archiveMsg["payload"]["residueOnly"] = msg["residueOnly"]?.Type == JTokenType.Boolean && (bool)msg["residueOnly"];
-            BootstrapCommandHelpers.DispatchSlot(bootForm, archiveTask, msg, archiveMsg, "reset_resp");
+            if ((bool)archiveMsg["payload"]["residueOnly"] && catalog?.Locator == null)
+            {
+                BootstrapCommandHelpers.PostSlotFailure(bootForm, msg, "reset_resp", "save_storage_unavailable");
+                return;
+            }
+            BootstrapCommandHelpers.DispatchSlot(bootForm, archiveTask, msg, archiveMsg, "reset_resp", catalog);
         }
 
         // ─────── export ───────

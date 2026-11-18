@@ -34,7 +34,7 @@
         '<div class="confirm-dialog-actions">' +
           (alertOnly ? '' : '<button type="button" id="confirm-dialog-cancel" class="term-btn">取消</button>') +
           '<button type="button" id="confirm-dialog-ok" class="term-btn'
-            + (data.danger === false ? '' : ' confirm-dialog-ok-danger') + '">'
+            + (data.danger === false || alertOnly ? '' : ' confirm-dialog-ok-danger') + '">'
             + escapeText(data.okText || '确定') + '</button>' +
         '</div>' +
       '</div>';

@@ -360,7 +360,7 @@ async function setupPage(browser, url, viewport, reducedMotion, template, eviden
             {
                 slot: 'legacy-rebuild-key-123456', displayName: '旧角色', characterName: '旧佣兵',
                 mainProgress: '副本不一致', size: 4096, lastModified: '2026-08-20T07:01:02',
-                corrupt: false, tombstoned: false, inconsistent: true
+                corrupt: false, tombstoned: true, inconsistent: true, rebuildInProgress: true
             }
         ];
         const webview = {
@@ -877,6 +877,66 @@ async function run() {
                 }
             });
         }
+
+        await check('preparation-magic-square-and-grounded-preview', async () => {
+            const page = await setupPage(browser, url, {width:1600,height:900}, false, template, evidence,
+                {deferSnapshot:true,manifestFailure:false});
+            let phaseCheck = 'opening the preparation overlay';
+            try {
+                await page.evaluate(async () => { window.__inspectCreateField = (await import('./modules/bg-gl/main.mjs')).inspect; });
+                const inspect = () => page.evaluate(() => window.__inspectCreateField());
+                await page.locator('#btn-welcome-new').click();
+                await page.waitForFunction(() => {
+                    const s = window.__inspectCreateField();
+                    return s.visualKind === 'loading' && !s.blocked && s.canvas && s.canvas.renders > 0;
+                });
+                const first = await inspect();
+                phaseCheck = 'advancing the visible field';
+                await page.waitForFunction(prior => window.__inspectCreateField().canvas.renders > prior + 2, first.canvas.renders);
+                const moving = await inspect();
+                expect(!moving.userIntent && !moving.attempts && moving.board.length === 361,
+                    'character preparation armed a game start or lost its actual magic square');
+                phaseCheck = 'reducing motion';
+                await page.emulateMedia({reducedMotion:'reduce'});
+                await page.waitForFunction(() => document.body.dataset.bgGlLifecycle === 'paused-static');
+                const still = await inspect();
+                expect(!still.scheduled && !still.blocked, 'reduced motion must retain the static board');
+                phaseCheck = 'revealing the equipped figure';
+                await page.waitForFunction(() => window.__ccHarness.activeSnapshot() !== null);
+                await page.evaluate(() => window.__ccHarness.deliverSnapshot());
+                await page.waitForFunction(() => window.BootstrapCharacterCreate.debugState().phase === 'editing'
+                    && document.body.dataset.bgGlLifecycle === 'paused-covered');
+                const ground = await page.evaluate(() => {
+                    const canvas = document.getElementById('cc-preview-canvas');
+                    const base = document.querySelector('.cc-pad');
+                    const pixels = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+                    let lastRow = canvas.height - 1;
+                    while (lastRow > 0) {
+                        let opaque = 0;
+                        for (let x = 0; x < canvas.width; x++)
+                            if (pixels[(lastRow * canvas.width + x) * 4 + 3] > 128) opaque++;
+                        if (opaque > 2) break;
+                        lastRow--;
+                    }
+                    const floor = parseFloat(getComputedStyle(base).top);
+                    return {shared:base.parentElement === canvas.parentElement,
+                        behind:Number(getComputedStyle(base).zIndex) < Number(getComputedStyle(canvas).zIndex),
+                        floor, origin:parseFloat(getComputedStyle(canvas).transformOrigin.split(' ')[1]),
+                        soles:lastRow * canvas.clientHeight / canvas.height};
+                });
+                expect(ground.shared && ground.behind && Math.abs(ground.floor - ground.origin) < 1
+                    && Math.abs(ground.floor - ground.soles) < 8, 'floor and shoe grounding disagree: '+JSON.stringify(ground));
+                return 'live 19×19 field before the form, still when requested, floor drawn below the feet with a shared height anchor';
+            } catch (error) {
+                const state = await page.evaluate(() => {
+                    const bg = window.__inspectCreateField?.();
+                    return {phase:window.BootstrapCharacterCreate.debugState().phase, board:!!bg?.board, kind:bg?.visualKind,
+                        renders:bg?.canvas?.renders, reduced:bg?.reduced, scheduled:bg?.scheduled,
+                        visible:!document.hidden, lifecycle:document.body.dataset.bgGlLifecycle};
+                });
+                throw new Error(phaseCheck + ': ' + error.message + ' ' + JSON.stringify(state));
+            } finally { await page.close(); }
+        });
 
         await check('preparation-overlay-first-frame-double-raf-gate', async () => {
             const preloadPage = await setupPage(browser, url, { width: 1366, height: 768 }, true,
@@ -1825,6 +1885,13 @@ async function run() {
                         + String(playerCopy.match(banned)));
                 await copyPage.locator('#cc-next').click();
                 const confirmCopy = await copyPage.locator('#character-create-root').innerText();
+                const geometry = await copyPage.locator('.cc-recommended').evaluate(tag => {
+                    const description = tag.closest('button').querySelector('.cc-difficulty-description');
+                    return {badgeBottom:tag.getBoundingClientRect().bottom, descriptionTop:description.getBoundingClientRect().top,
+                        currentDone:document.querySelector('.cc-steps [aria-current="step"]').classList.contains('is-done')};
+                });
+                expect(!geometry.currentDone && geometry.badgeBottom <= geometry.descriptionTop + 1,
+                    'the active step is marked complete or the recommendation covers its description');
                 expect(!banned.test(confirmCopy),
                     'development-only wording leaked into normal confirmation UI: '
                         + String(confirmCopy.match(banned)));
