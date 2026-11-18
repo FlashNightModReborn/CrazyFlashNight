@@ -145,9 +145,11 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
         var count:Number=current.单元体列表.length;
         if (newHit) {
             check(cap>=1 && cap<=count,label+" valid contact respects live budget");
-            if (current.shotCoverage.travel>=240) check(cap<=current.shotCoverage.targetLimit,label+" far cap");
-            if (current.shotCoverage.travel>=90 && current.shotCoverage.travel<240 && count==current.shotCoverage.birthCount && count>1)
-                check(cap<count,label+" middle distance reserves one");
+            var tau:Number=current.shotCoverage.contactDist/(Math.abs(current.bullet.xmov)+10);
+            var kineticCeil:Number=tau>6 ? Math.max(1,Math.round(count/(1+0.09*(tau-6)))) : count;
+            check(cap<=kineticCeil,label+" kinetic(tau) upper bound");
+            if (!(current.shotCoverage.contactDist<100) && current.shotCoverage.birthCount>1)
+                check(cap<current.shotCoverage.birthCount,label+" contactDist>=100 reserves one");
         }
         // 对横向实枪的每颗实际弹心单独投影，不能漏掉任何已穿入目标的弹丸。
         var units:Array=current.单元体列表;
@@ -197,9 +199,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
                             if (tick!=0 && tick!=2 && tick!=5 && tick!=8 && tick!=12
                                 && tick!=14 && tick!=20 && tick!=25 && tick!=rangeTicks) continue;
                             if (!current.__removed) {
-                                var limit:Number=current.shotCoverage.targetLimit;
-                                check(limit>=1 && limit<=p[1],p[0]+" target cap is finite tick "+tick);
-                                if (!ground) check(limit===old.bullet.霰弹值,p[0]+" old decay counts agree at tick "+tick);
+                                check(current.单元体列表.length>=1 && current.单元体列表.length<=p[1],p[0]+" live unit count bounded tick "+tick);
+                                if (!ground) check(current.单元体列表.length===p[1] && current.bullet.霰弹值===p[1],p[0]+" keeps all real pellets airborne tick "+tick);
                             }
                             var x:Number=old.bullet._x;
                             var label:String=p[0]+" seed="+si+" native="+mode+" ground="+ground+" tick="+tick;
@@ -280,39 +281,75 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest {
     private static function curveAndBudget():Void {
         var p:Array=["SPAS12",10,14,35]; seed=19471;
         var g:ChainGroup=makeGroup(p,1,true,false);
-        var expected:Array=[10,10,10,9,9,8,7,6,5,4,4,3,2,2,1];
+        var chokeProfile:Array=["SPAS12_Choke",10,4.2,40.25]; seed=19471;
+        var cg:ChainGroup=makeGroup(chokeProfile,1,true,false);
+        var prevCap:Number=10;
+        var capAt490:Number=0, chokeCapAt483:Number=0;
         var output:String="";
         for (var tick:Number=0;tick<15;tick++) {
-            if (tick>0) { g.bullet._x+=35; _root.联弹系统.横向联弹更新(g); }
-            check(g.shotCoverage.targetLimit==expected[tick],"SPAS12 old time curve tick "+tick);
-            if (tick==2 || tick==5 || tick==8 || tick==12 || tick==14)
-                output+=(output=="" ? "" : ",")+(tick*35)+":"+g.shotCoverage.targetLimit;
+            if (tick>0) {
+                _root.帧计时器.当前帧数++;
+                g.bullet._x+=35; _root.联弹系统.横向联弹更新(g);
+                cg.bullet._x+=40.25; _root.联弹系统.横向联弹更新(cg);
+            }
+            if (tick==2 || tick==5 || tick==8 || tick==12 || tick==14) {
+                var bx:Number=g.bullet._x;
+                var bag:Object={left:bx-27.96993256,right:bx+27.96993256,top:-158.8,bottom:1.01407166};
+                sampleCoverage(g);
+                var bagCap:Number=g.shotgun.calculateCap(g,bag,0);
+                check(bagCap>=1 && bagCap<=prevCap,"SPAS12 monotonic curve tick "+tick);
+                if (tick==2) check(bagCap==10,"SPAS12 point-blank 70px full ten segments");
+                if (tick>=5) check(bagCap<=9,"SPAS12 >=175px reserves crowd segment");
+                prevCap=bagCap;
+                if (tick==12) {
+                    var cbx:Number=cg.bullet._x;
+                    var cbag:Object={left:cbx-27.96993256,right:cbx+27.96993256,top:-158.8,bottom:1.01407166};
+                    sampleCoverage(cg);
+                    chokeCapAt483=cg.shotgun.calculateCap(cg,cbag,0);
+                }
+                if (tick==14) {
+                    capAt490=bagCap;
+                    check(chokeCapAt483>capAt490,"choke (-70% diff, +15% vel) strictly improves ~490px SPAS12 bag segments");
+                }
+                output+=(output=="" ? "" : ",")+(tick*35)+":"+bagCap;
+            }
         }
         var x:Number=g.bullet._x;
         sampleCoverage(g);
         var area:Object={left:x-30,right:x+30,top:-10000,bottom:10000};
-        check(g.bullet.霰弹值==10 && g.单元体列表.length==10,"actual birth budget survives virtual decay");
-        for (var i:Number=0;i<10;i++) {
+        check(g.bullet.霰弹值==10 && g.单元体列表.length==10,"actual birth budget survives flight");
+        var spentTargets:Number=0;
+        while (g.bullet.霰弹值>0 && spentTargets<10) {
+            var remainBefore:Number=g.bullet.霰弹值;
             var target:Object={dispatcher:{}};
-            check(g.shotgun.prepareContact(g,target,area,0) && g.shotgun.hitCap==1,"far distinct target limited to one old-effective segment");
-            var r:Object=measure(g,1,true,0,12345+i);
-            check(r.segments==1,"far actual damage uses one segment");
-            g.bullet.霰弹值--;
+            check(g.shotgun.prepareContact(g,target,area,0) && g.shotgun.hitCap>=1 && g.shotgun.hitCap<=remainBefore,
+                "distant distinct target bounded by kinetic cap and remaining budget");
+            var usedCap:Number=g.shotgun.hitCap;
+            var r:Object=measure(g,usedCap,true,0,12345+spentTargets);
+            check(r.segments==usedCap,"distant actual damage consumes exact hitCap");
+            g.bullet.霰弹值-=r.segments;
+            ChainUnitManager.commitShotgunBudget(g);
             check(!g.shotgun.prepareContact(g,target,area,0),"same numeric target cannot retry");
+            spentTargets++;
         }
-        check(!g.shotgun.prepareContact(g,{dispatcher:{}},area,0),"eleventh distinct target rejected by finite shared budget");
+        check(g.bullet.霰弹值==0 && spentTargets>=2,"finite shared budget drains cleanly across distinct targets");
+        check(!g.shotgun.prepareContact(g,{dispatcher:{}},area,0),"exhausted distinct target rejected by finite shared budget");
+        ChainUnitManager.removeGroup(cg);
         ChainUnitManager.removeGroup(g);
-        trace("[SHOTGUN_SPAS12_CURVE] distance:segments="+output);
-        // 异常变速/负推进覆盖聚合退出后的旧逐单元公式，仍不增加显示对象。
-        seed=5191; var old:ChainGroup=makeGroup(p,0,false,false);
+        trace("[SHOTGUN_SPAS12_CURVE] distance:segments="+output+" choke490="+chokeCapAt483+" base490="+capAt490);
+        // 异常变速/负推进保留真实弹数与正向累计路程，仍不增加显示对象。
         seed=5191; g=makeGroup(p,1,true,false);
+        var expectedTravel:Number=0;
         for (tick=0;tick<20;tick++) {
-            if (tick==5) { old.bullet.xmov=-17; g.bullet.xmov=-17; }
-            if (tick==11) { old.bullet.xmov=27; g.bullet.xmov=27; }
-            _root.联弹系统.横向联弹更新(old); _root.联弹系统.横向联弹更新(g);
-            check(g.shotCoverage.targetLimit===old.bullet.霰弹值 && g.单元体列表.length==10,"reversal keeps real pellets and scalar time curve "+tick);
+            if (tick==5) { g.bullet.xmov=-17; }
+            if (tick==11) { g.bullet.xmov=27; }
+            g.bullet._x+=g.bullet.xmov;
+            expectedTravel+=Math.abs(g.bullet.xmov);
+            _root.联弹系统.横向联弹更新(g);
+            check(g.shotCoverage.travel===expectedTravel && g.单元体列表.length==10 && g.bullet.霰弹值==10,
+                "reversal keeps real pellets and scalar travel "+tick);
         }
-        ChainUnitManager.removeGroup(old); ChainUnitManager.removeGroup(g);
+        ChainUnitManager.removeGroup(g);
     }
     public static function stepMatrix():Void {
         trace("[SHOTGUN_CALIBRATION_BATCH] profile="+profileIndex+" cases="+cases);

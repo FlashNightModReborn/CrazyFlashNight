@@ -311,7 +311,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             c.手枪属性=dominator;c.__modeWeaponWrites.手枪=dominator;
             c.手枪伤害类型=mode=="分解模式" ? "真伤" : "物理";
         }
-        var modeKey:String = c.攻击模式;
+        var modeKey:String = (c.攻击模式 == "双枪")
+            ? ((owner.手枪 || input.slots.手枪.item != null) ? "手枪" : ((owner.手枪2 || input.slots.手枪2.item != null) ? "手枪2" : "双枪"))
+            : c.攻击模式;
         c.伤害类型 = c[modeKey + "伤害类型"] ? (c[modeKey + "伤害类型"] || "物理") : (c.基础伤害类型 || "物理");
         c.魔法伤害属性 = c[modeKey + "魔法伤害属性"] ? c[modeKey + "魔法伤害属性"] : c.基础魔法伤害属性;
         c.毒 = (c.基础毒 ? Number(c.基础毒) : 0) + (c[modeKey + "毒"] ? Number(c[modeKey + "毒"]) : 0);
@@ -595,7 +597,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         var mode:String=String(target.攻击模式);
         var slots:Array=mode=="双枪" ? ["手枪","手枪2"] : [mode];
         var init:Object=org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
-        var statKeys:Array=["子弹威力","命中率","击倒率","伤害类型","魔法伤害属性","毒","吸血","血量上限击溃","暴击","斩杀","移动子弹散射度"];
+        var statKeys:Array=["子弹威力","命中率","击倒率","伤害类型","魔法伤害属性","毒","吸血","血量上限击溃","暴击","__slotBaseCrit","slotWeaponProjected","斩杀","移动子弹散射度"];
         var modeKeys:Array=["霰弹值","子弹散射度","站立子弹散射度","声音","发射效果","子弹种类","ammoCost","子弹速度","击中地图效果","Z轴攻击范围","击中后子弹的效果"];
         for(var i:Number=0;i<slots.length;i++) {
             var slot:String=slots[i];
@@ -606,6 +608,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             var fresh:Object=init.generateBulletProps(target,slot,target[slot+"属性"],{});
             if(!isFinite(Number(fresh.子弹威力)) || !isFinite(Number(fresh.命中率))) throw new Error("stat_weapon_cache_invalid");
             for(var k:Number=0;k<statKeys.length;k++) current[statKeys[k]]=fresh[statKeys[k]];
+            current.击溃 = fresh.血量上限击溃 > 0 ? fresh.血量上限击溃 : 0;
             if(record.unbuffed.__modeWeaponWrites[slot]!=undefined) {
                 for(k=0;k<modeKeys.length;k++) current[modeKeys[k]]=fresh[modeKeys[k]];
             }
@@ -964,7 +967,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             target.基础命中率 = (isFinite(fallbackHitRate) && fallbackHitRate > 0) ? fallbackHitRate : defaultHitRate;
         }
 
-        var modeKey:String = target.攻击模式;
+        var modeKey:String = (target.攻击模式 == "双枪") ? (target.手枪 ? "手枪" : (target.手枪2 ? "手枪2" : "双枪")) : target.攻击模式;
         target.伤害类型 = target[modeKey + "伤害类型"] ? (target[modeKey + "伤害类型"] || "物理") : (target.基础伤害类型 || "物理");
         target.魔法伤害属性 = target[modeKey + "魔法伤害属性"] ? target[modeKey + "魔法伤害属性"] : target.基础魔法伤害属性;
         target.毒 = (target.基础毒 ? Number(target.基础毒) : 0) + (target[modeKey + "毒"] ? Number(target[modeKey + "毒"]) : 0);
@@ -1134,6 +1137,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
                     }
                     return 1;
                 };
+            } else {
+                target[prefix + "暴击"] = null;
             }
             target[prefix + "斩杀"] = data.slay ? data.slay : 0;
             // 处理消音属性

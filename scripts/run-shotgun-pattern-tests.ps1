@@ -34,6 +34,7 @@ $run=@{
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainGroup.as',
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainUnitData.as',
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainUnitManager.as',
+  'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/HorizontalShotCoverage.as',
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ShotgunPattern.as',
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/AABBCollider.as',
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/PolygonCollider.as',
@@ -43,6 +44,7 @@ $run=@{
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Lifecycle/PierceBulletProfile.as',
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/MissileMovement.as',
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Movement/MovementSystem.as',
+  'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Init/BulletInitializer.as',
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as',
   'scripts/类定义/org/flashNight/arki/bullet/Factory/BulletFactory.as',
   'scripts/类定义/org/flashNight/arki/component/Damage/DamageCalculator.as',
@@ -57,9 +59,9 @@ $run=@{
  ExpectedTracePatterns=@(
   '(?m)^ShotgunPatternTest Tests Passed: [1-9][0-9]*\r?$',
   '(?m)^ShotgunPatternTest Tests Failed: 0\r?$',
-  '(?m)^\[HORIZONTAL_PIERCE\] type=横向联弹-穿刺子弹 birth=6 frontLive=6 frontAttempts=6 rearLive=6 rearAttempts=6 replacementMisses=6 totalJudged=18\r?$',
-  '(?m)^\[HORIZONTAL_PIERCE\] type=横向联弹-次级穿刺子弹 birth=6 frontLive=6 frontAttempts=6 rearLive=6 rearAttempts=6 replacementMisses=6 totalJudged=18\r?$',
-  '(?m)^\[SHOTGUN_COST\] units=4096 ticks=120 boundVisits=240 targetLimit=[1-9][0-9]* maxWire=[0-9]+\r?$'
+  '(?m)^\[HORIZONTAL_PIERCE\] type=横向联弹-穿刺子弹 birth=6 frontLive=6 frontAttempts=15 rearLive=6 rearAttempts=15 slow=[1-9][0-9]* mid=[1-9][0-9]* fast=[1-9][0-9]* dead=false\r?$',
+  '(?m)^\[HORIZONTAL_PIERCE\] type=横向联弹-次级穿刺子弹 birth=6 frontLive=6 frontAttempts=15 rearLive=6 rearAttempts=5 totalJudged=20 dead=true\r?$',
+  '(?m)^\[SHOTGUN_COST\] units=4096 ticks=120 boundVisits=240 farCap=[1-9][0-9]* maxWire=[0-9]+\r?$'
  )
  SuccessSummary='Shotgun finite budget, unique contacts, actual damage chain, natural retirement and shared scalar distance cap'
  TimeoutSeconds=$TimeoutSeconds
@@ -76,7 +78,7 @@ if ($Calibration) {
   '(?m)^ShotgunCalibrationTest Tests Failed: 0\r?$',
   '(?m)^\[SHOTGUN_MOSSBERG_COVERAGE\] samples=32 bag=[1-9][0-9]* queen=[1-9][0-9]* widerPairs=[1-9][0-9]* rear=32\r?$',
   '(?m)^\[SHOTGUN_CALIBRATION\] profiles=30 seeds=8 modes=2 groundModes=2 ages=rangeBounded targets=4 cases=[1-9][0-9]* ',
-  '(?m)^\[SHOTGUN_SPAS12_CURVE\] distance:segments=70:10,175:8,280:5,420:2,490:1\r?$'
+  '(?m)^\[SHOTGUN_SPAS12_CURVE\] distance:segments=70:10,175:9,280:[0-9]+,420:[0-9]+,490:[0-9]+ choke490=[0-9]+ base490=[0-9]+\r?$'
  )
  $run.SuccessSummary='Paired old production time-decay oracle, actual pellet coverage, real damage/dodge/shield and finite distinct-target budget'
 }

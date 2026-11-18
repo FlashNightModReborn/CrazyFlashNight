@@ -82,10 +82,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         g.shotCoverage.sample(g,hull);
     }
     private static function setFarTwoSegmentBand(g:ChainGroup):Void {
-        // 多目标记账夹具固定在 240 px 边界；这里要验证旧参照两段的分摊与 MISS。
+        // 接触距离 150px 处于 100px 对群阈值之外且在存速平台内，[-12.5, 12.5] 稳定分摊 2 段。
         setBand(g);
-        g.shotCoverage.travel = 240;
-        g.shotCoverage.targetLimit = 2;
+        g.shotCoverage.travel = 150;
     }
     private static function geometryAndScope():Void {
         var g:ChainGroup = makeGroup(8, 1, false, 66);
@@ -118,12 +117,29 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
             "angled actual band is eligible without a virtual pellet");
         check(p.calculateCap(g,{left:37,right:39,top:20,bottom:23},0)==0,
             "angled outside-corner contact rejects a broad false positive");
-        g.shotCoverage.targetLimit=1; g.shotCoverage.travel=720;
+        g.shotCoverage.travel=720;
         var clipTarget:Object=makeTarget();
         check(p.prepareContact(g,clipTarget,{left:-100,right:100,top:16,bottom:17},0) && p.hitCap==1,
             "distant actual-only graze receives one ordinary attempt");
         check(!p.prepareContact(g,clipTarget,{left:-100,right:100,top:16,bottom:17},0),
             "distant graze does not repeat on one target");
+        g.ma=1; g.mb=0; g.mc2=0; g.md=1; p.age++; sampleBand(g);
+        g.shotCoverage.travel=95;
+        check(p.calculateCap(g,{left:-5,right:5,top:-50,bottom:50},0)==8,
+            "point-blank under 100px contactDist allows full eight segments");
+        g.shotCoverage.travel=100;
+        check(p.calculateCap(g,{left:-5,right:5,top:-50,bottom:50},0)==7,
+            "100px contactDist reserves one pellet for crowd follow-up");
+        g.shotCoverage.travel=260;
+        check(p.calculateCap(g,{left:-5,right:5,top:-50,bottom:50},0)==7,
+            "260px fast shot remains strong while still reserving one for crowd");
+        g.shotCoverage.travel=450; g.bullet.xmov=15;
+        var slowLongCap:Number=p.calculateCap(g,{left:-5,right:5,top:-50,bottom:50},0);
+        g.bullet.xmov=45;
+        var fastLongCap:Number=p.calculateCap(g,{left:-5,right:5,top:-50,bottom:50},0);
+        g.bullet.xmov=25;
+        check(slowLongCap>=1 && fastLongCap>slowLongCap && fastLongCap<=7,
+            "higher bullet velocity retains more segments at long range");
         ChainUnitManager.removeGroup(g);
         var masks:Array = [4,8,1,32];
         for (var i:Number=0; i<masks.length; i++) {
@@ -158,7 +174,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         props = ShootInitCore.generateBulletProps(actor,"长枪",wd,{});
         check(BulletTypesetter.setTypeFlags(props) == 6, "secondary-pierce tactical shotgun bullet resolves to FLAG_CHAIN|FLAG_PIERCE");
         g = makeGroup(props.霰弹值, props.霰弹分配模式, false, props.flags);
-        check(g.shotgun == null, "secondary-pierce tactical shotgun or pierce-modded shotgun is excluded from ShotgunPattern");
+        check(g.shotgun == null && g.horizontalPierce === true, "secondary-pierce tactical shotgun routes to horizontalPierce instead of ShotgunPattern");
         ChainUnitManager.removeGroup(g);
         wd.split=1; wd.bullet="高爆子弹";
         props = ShootInitCore.generateBulletProps(actor,"手枪",wd,{});
@@ -253,7 +269,6 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         check(g.nativeGroupOwned && g.aggregate && createdClips == before, "native shotgun uses no hidden pellet MC");
         g.bullet.Z轴坐标=1000000; g.衰竭计数器=1000000;
         ChainVisualBridge.flush();
-        var originalLimit:Number=g.shotCoverage.targetLimit;
         var visits:Number=g.aggregateVisits; var maxWire:Number=0;
         for (var i:Number=0;i<120;i++) {
             _root.帧计时器.当前帧数++;
@@ -264,11 +279,15 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         }
         check(g.单元体列表.length == 4096 && g.bullet.霰弹值 == 4096, "no artificial time decay over 120 updates");
         check(g.aggregateVisits-visits == 240 && maxWire < 512, "steady aggregate visits two endpoints with bounded group packet");
-        check(g.shotCoverage.targetLimit >= 1 && g.shotCoverage.targetLimit < originalLimit, "only the scalar target cap falls");
+        var costBox:AABBCollider=new AABBCollider(0,0,0,0);
+        costBox.updateFromChainObject(g.bullet);
+        g.shotCoverage.sample(g,costBox);
+        var farCap:Number=g.shotgun.calculateCap(g,{left:g.bullet._x-5,right:g.bullet._x+5,top:-100000,bottom:100000},0);
+        check(farCap >= 1 && farCap < 4096, "kinetic falloff reduces distant cap while keeping floor >= 1");
         check(ChainVisualBridge.getStats().groups == 1 && ChainVisualBridge.getStats().reserved == 4096,
             "reference has no native group or visual reservation");
         trace("[SHOTGUN_COST] units=4096 ticks=120 boundVisits=" + (g.aggregateVisits-visits)
-            + " targetLimit=" + g.shotCoverage.targetLimit + " maxWire=" + maxWire);
+            + " farCap=" + farCap + " maxWire=" + maxWire);
         g.bullet.霰弹值=3; ChainUnitManager.commitShotgunBudget(g);
         check(g.单元体列表.length == 3 && g.aggregateMin != null && g.aggregateMax != null, "large positive commit preserves sorted endpoints");
         ChainVisualBridge.flush();
@@ -333,7 +352,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
             if (i == 0) _root.联弹系统.横向联弹初始化(area);
             else _root.联弹系统.横向拖尾联弹初始化(area);
             var group:ChainGroup = ChainUnitManager.findGroupByBullet(b);
-            check(group != null && b.chainGroup === group && (i == 0 ? group.pierceDepth != null : group.pierceRemaining != null),
+            check(group != null && b.chainGroup === group && (i == 0 ? group.horizontalPierce === true : group.pierceRemaining != null),
                 names[i] + " real MC initializer binds the same group used by the queue");
             if (i != 0) {
                 var fixedTarget:Object = {};
@@ -350,16 +369,46 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         }
     }
 
-    private static function runPierceFrame(api:Object, b:Object, targets:Array):Void {
+    private static function runPierceFrame(api:Object, g:ChainGroup, targets:Array):Void {
+        var b:Object = g.bullet;
         _root.帧计时器.当前帧数++;
+        b._x += b.xmov;
+        _root.联弹系统.横向联弹更新(g);
+        if (g.__removed || b.__chainDead) return;
+        b.aabbCollider.updateFromChainObject(b);
         setQueueTargets(targets);
         api.add(b);
         api.processQueue();
     }
 
+    private static function runVelocityProbe(api:Object, shooter:MovieClip, speed:Number):Number {
+        var target:MovieClip = queueTarget("pierceVel" + speed, true);
+        target.Z轴坐标 = 1000;
+        target.aabbCollider = new AABBCollider(20, 76, -200, 200);
+        target.attempts = 0;
+        var g:ChainGroup = makeGroup(6, 1, false, 0, "横向联弹-穿刺子弹");
+        var b:Object = g.bullet;
+        b.发射者名 = shooter._name;
+        b.Z轴攻击范围 = 100;
+        b.Z轴坐标 = 1000;
+        b._x = -speed; b._y = 0; b.xmov = speed;
+        b.aabbCollider = new AABBCollider(-5, 5, -50, 50);
+        makeCtx(g);
+        for (var tick:Number = 0; tick < 10; tick++) {
+            runPierceFrame(api, g, [target]);
+        }
+        var total:Number = target.attempts;
+        ChainUnitManager.removeGroup(g);
+        target.removeMovieClip();
+        return total;
+    }
+
     private static function pierceQueue(api:Object, shooter:MovieClip, bulletType:String):Void {
+        var isSecondary:Boolean = bulletType.indexOf("次级") >= 0;
         var first:MovieClip = queueTarget("pierceFront", true);
         var rear:MovieClip = queueTarget("pierceRear", true);
+        first.aabbCollider = new AABBCollider(20, 76, -200, 200);
+        rear.aabbCollider = new AABBCollider(110, 166, -200, 200);
         first.attempts = rear.attempts = 0;
         first.misses = rear.misses = 0;
         var g:ChainGroup = makeGroup(6, 1, false, 0, bulletType);
@@ -367,48 +416,61 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         b.发射者名 = shooter._name;
         b.Z轴攻击范围 = 100;
         b.aabbCollider = new AABBCollider(-5,5,-50,50);
+        if (isSecondary) b.pierceLimit = 18;
         makeCtx(g);
-        // 即使旧衰竭计数器已到点，真实弹数不减少。两排各按自己的覆盖判定。
-        b._y = 0; b.xmov = 0; b.Z轴坐标 = first.Z轴坐标 = rear.Z轴坐标 = 1000;
+        // 即使旧衰竭计数器极深，横穿实弹不因时间枯竭；两排均按扫掠和 5/9 系数连续结算。
+        b._y = 0; b._x = -30; b.xmov = 30; b.Z轴坐标 = first.Z轴坐标 = rear.Z轴坐标 = 1000;
         g.衰竭计数器 = 1000000;
-        for (var budgetFrame:Number=0;budgetFrame<32;budgetFrame++) {
-            _root.帧计时器.当前帧数++;
-            _root.联弹系统.横向联弹更新(g);
+        check(b.flags == 6 && g.horizontalPierce === true, bulletType + " binds unified horizontalPierce route");
+        counters();
+        for (var tick:Number = 0; tick < 8; tick++) {
+            runPierceFrame(api, g, [first, rear]);
         }
-        check(b.flags == 6 && b.霰弹值 == 6 && g.单元体列表.length == 6
-            && g.shotCoverage.targetLimit == 1, bulletType + " reference reaches one with all six real pellets alive");
-        counters(); runPierceFrame(api,b,[first]);
-        check(first.attempts == 6 && first.hp < 5000, bulletType + " six physical pellets on near first contact");
-        _root.联弹系统.横向联弹更新(g);
-        check(b.霰弹值 == 6, bulletType + " full physical group reaches second target");
-        runPierceFrame(api,b,[first,rear]); runPierceFrame(api,b,[first,rear]);
-        check(first.attempts == 6 && rear.attempts == 6 && b.hitCount == 12,
-            bulletType + " independent first contact at rest front=6 rear=6");
-        var frontAttempts:Number = first.attempts;
-        var oldDice:Number = dice;
-        var oldDamages:Number = damages;
-        var oldEvents:Number = events;
-        var oldShields:Number = shields;
-        var oldHooks:Number = hooks;
-        runPierceFrame(api,b,[first,rear]);
-        check(dice == oldDice && damages == oldDamages && events == oldEvents && shields == oldShields && hooks == oldHooks,
-            bulletType + " exhausted overlaps never roll, shield or publish again");
+        if (!isSecondary) {
+            check(b.霰弹值 == 6 && g.单元体列表.length == 6 && !g.__removed,
+                bulletType + " true pierce keeps all six live pellets alive after passing targets");
+            check(first.attempts == 15 && rear.attempts == 15 && first.hp < 5000 && rear.hp < 5000 && b.hitCount == 30,
+                bulletType + " 5/9 applies on each swept frame (front=15 rear=15)");
+            var oldDice:Number = dice;
+            var oldDamages:Number = damages;
+            var oldEvents:Number = events;
+            var oldShields:Number = shields;
+            var oldHooks:Number = hooks;
+            runPierceFrame(api, g, [first, rear]);
+            check(dice == oldDice && damages == oldDamages && events == oldEvents && shields == oldShields && hooks == oldHooks,
+                bulletType + " swept past targets triggers zero extra checks");
 
-        first.removeMovieClip();
-        first = queueTarget("pierceFront",true); first.Z轴坐标 = b.Z轴坐标;
-        first.attempts = 0; first.misses = 0; first.等级 = 100; first.重量 = 0;
-        forcedDodge = "躲闪";
-        runPierceFrame(api,b,[first]);
-        runPierceFrame(api,b,[first]);
-        runPierceFrame(api,b,[first]);
-        check(first.attempts == 6 && first.misses == 6 && first.hp == 5000 && b.hitCount == 18
-            && hooks == oldHooks && events == oldEvents,
-            bulletType + " replacement identity gets six attempts and full MISS cannot retry");
-        check(b.霰弹值 == 6, bulletType + " per-target usage preserves all six flying pellets");
-        trace("[HORIZONTAL_PIERCE] type=" + bulletType + " birth=6 frontLive=6 frontAttempts=" + frontAttempts + " rearLive=6 rearAttempts=" + rear.attempts + " replacementMisses=" + first.misses + " totalJudged=" + b.hitCount);
-        forcedDodge = "未躲闪";
+            // 验证全段 MISS（躲闪）不触发 hit 事件与旧钩子且不扣减霰弹值，同时验证慢速增益 > 中速 > 高速且高速不隧穿。
+            var missTarget:MovieClip = queueTarget("pierceMiss", true);
+            missTarget.Z轴坐标 = b.Z轴坐标;
+            missTarget.aabbCollider = new AABBCollider(220, 276, -200, 200);
+            missTarget.attempts = 0; missTarget.misses = 0; missTarget.等级 = 100; missTarget.重量 = 0;
+            forcedDodge = "躲闪";
+            runPierceFrame(api, g, [missTarget]);
+            check(missTarget.attempts == 5 && missTarget.misses == 5 && missTarget.hp == 5000
+                && hooks == oldHooks && events == oldEvents && b.霰弹值 == 6,
+                bulletType + " full-frame MISS stays zero-damage with zero hook/event and keeps all pellets ("
+                + missTarget.attempts + " attempts, " + missTarget.misses + " misses)");
+            forcedDodge = "未躲闪";
+            missTarget.removeMovieClip();
+
+            var slowHits:Number = runVelocityProbe(api, shooter, 15);
+            var midHits:Number = runVelocityProbe(api, shooter, 30);
+            var fastHits:Number = runVelocityProbe(api, shooter, 45);
+            check(slowHits > midHits && midHits > fastHits && fastHits > 6,
+                bulletType + " preserves slow-pierce linger buff while swept collision prevents fast tunneling ("
+                + slowHits + ">" + midHits + ">" + fastHits + ")");
+            trace("[HORIZONTAL_PIERCE] type=" + bulletType + " birth=6 frontLive=6 frontAttempts=" + first.attempts
+                + " rearLive=6 rearAttempts=" + rear.attempts + " slow=" + slowHits + " mid=" + midHits
+                + " fast=" + fastHits + " dead=false");
+        } else {
+            check(first.attempts == 15 && rear.attempts == 5 && b.hitCount == 20 && b.__chainDead && g.__removed,
+                bulletType + " secondary pierce settles uniformly then retires on pierceLimit");
+            trace("[HORIZONTAL_PIERCE] type=" + bulletType + " birth=6 frontLive=6 frontAttempts=" + first.attempts
+                + " rearLive=6 rearAttempts=" + rear.attempts + " totalJudged=" + b.hitCount + " dead=true");
+        }
         ChainUnitManager.removeGroup(g);
-        check(g.pierceRemaining == null && g.pierceDepth == null, bulletType + " group teardown drops the budget");
+        check(g.pierceRemaining == null && !g.horizontalPierce, bulletType + " group teardown clears pierce state");
         first.removeMovieClip();
         rear.removeMovieClip();
     }
@@ -421,6 +483,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
             if(mode==1)check(g.nativeGroupOwned && g.aggregate, "native pierce tests use the aggregate branch");
             var hull:Object={left:-5,right:5,top:-105,bottom:-95};
             _root.帧计时器.当前帧数++; g.shotCoverage.sample(g,hull);
+            var areaNear:Object={left:b._x,right:b._x+50,top:-300,bottom:100};
+            var nearCover:Number=g.shotCoverage.contact(g,areaNear,0,false);
             var lastCount:Number=b.霰弹值;
             for(var i:Number=0;i<40;i++){
                 b._x+=b.xmov;_root.帧计时器.当前帧数++;_root.联弹系统.横向联弹更新(g);
@@ -428,13 +492,12 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
                 hull.top=b._y+g.盒y;hull.bottom=hull.top+g.盒高;
                 g.shotCoverage.sample(g,hull);
             }
-            check(b.霰弹值==lastCount && g.单元体列表.length==lastCount && g.shotCoverage.targetLimit==1,
-                "pierce timer only changes single-target cap, native=" + mode);
+            check(b.霰弹值==lastCount && g.单元体列表.length==lastCount && g.horizontalPierce,
+                "pierce keeps all physical pellets airborne until ground exit, native=" + mode);
             var area:Object={left:b._x,right:b._x+50,top:hull.top-10,bottom:hull.bottom+10};
-            var unit:Object={dispatcher:{}};
-            check(g.pierceDepth.prepare(g,unit,area,0) && g.pierceDepth.segments==1,
-                "far first contact receives one even with all real pellets across the section, native=" + mode);
-            check(!g.pierceDepth.prepare(g,unit,area,0), "same-frame far contact cannot reroll, native=" + mode);
+            var farCover:Number=g.shotCoverage.contact(g,area,0,false);
+            check(farCover>=1 && farCover<nearCover,
+                "distant pierce contact scales down by kinetic(tau) with floor >= 1, native=" + mode);
             b.Z轴坐标=-1000000;
             _root.联弹系统.横向联弹更新(g);
             check(b.__chainDead && g.__removed && g.单元体列表.length==0,
@@ -473,7 +536,6 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         check(first.hp == firstHp && g.bullet.霰弹值 == 4 && dice == 2 && damages == 2 && events == 2,
             "real next-frame queue rejects both prior contacts");
         // AVM1 可以复用同路径 MC；数字 dispatcher 身份必须允许新出生目标。
-        g.shotCoverage.targetLimit=4;
         first.removeMovieClip(); first=queueTarget("queueFirst",true);
         var extra:MovieClip=queueTarget("queueExtra",true);
         setQueueTargets([first,extra]); _root.帧计时器.当前帧数++; g.shotgun.age++;
@@ -493,9 +555,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         check(g.bullet.霰弹值 == 6 && dice == 1 && damages == 1 && g.bullet.polygonCollider == undefined,
             "angled real queue uses scalar group coverage without allocating old fixed OBB");
         ChainUnitManager.removeGroup(g);
-        // 同样的旧参照只剩两段。贴脸时首个实际命中的目标拿满，后目标没有副作用。
+        // 贴身（contactDist<100）时首个完整命中目标拿满，后目标没有副作用。
         g = makeGroup(8,1,false,66);
-        setBand(g); g.shotCoverage.targetLimit = 2;
+        setBand(g);
         first.aabbCollider = new AABBCollider(-5,5,-50,50);
         g.bullet.发射者名 = shooter._name; g.bullet.Z轴攻击范围 = 100;
         g.bullet.aabbCollider = new AABBCollider(-5,5,-50,50);
@@ -505,6 +567,21 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         api.add(g.bullet); api.processQueue();
         check(first.hp < firstHp && extra.hp == 5000 && g.bullet.霰弹值 == 0 && g.__removed
             && dice == 1 && damages == 1 && events == 1, "point-blank queue spends all eight on one eligible target");
+        // 中距（contactDist>=100）全覆盖前排封顶 N-1，稳定漏至少 1 发打中后排并耗尽退场。
+        first.removeMovieClip(); second.removeMovieClip();
+        g = makeGroup(8,1,false,66);
+        setFarTwoSegmentBand(g);
+        first = queueTarget("crowdFront", true); first.aabbCollider = new AABBCollider(-5,5,-50,50);
+        second = queueTarget("crowdRear", true); second.aabbCollider = new AABBCollider(-5,5,-50,50);
+        g.bullet.发射者名 = shooter._name; g.bullet.Z轴攻击范围 = 100;
+        g.bullet.aabbCollider = new AABBCollider(-5,5,-50,50);
+        g.bullet.gotoAndPlay = function():Void { _root.联弹系统.对象联弹消失(this); };
+        makeCtx(g); counters();
+        setQueueTargets([first, second]); _root.帧计时器.当前帧数++;
+        api.add(g.bullet); api.processQueue();
+        check(first.hp < 5000 && second.hp < 5000 && g.bullet.霰弹值 == 0 && g.__removed
+            && dice == 2 && damages == 2 && events == 2,
+            "mid-range queue reserves one pellet from full-cover front target to hit rear");
         pierceQueue(api,shooter,"横向联弹-穿刺子弹");
         pierceQueue(api,shooter,"横向联弹-次级穿刺子弹");
         api.activeQueues=saved.queues; api.fakeUnits=saved.fake; api.queueUIDs=saved.uids;
@@ -515,6 +592,99 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         first.removeMovieClip(); second.removeMovieClip(); extra.removeMovieClip(); shooter.removeMovieClip();
         queueCache=null; realDamage=null;
     }
+    private static function dualGunAttributeIsolation():Void {
+        var oldSuccessRate:Function = _root.成功率;
+        _root.成功率 = function(rate:Number):Boolean { return rate >= 100; };
+        try {
+            var factoryApi:Object = org.flashNight.arki.bullet.Factory.BulletFactory;
+            var initApi:Object = org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer;
+            var actor:Object = {
+                _name: "dualActor", hasDressup: true, 是否为敌人: false, 攻击模式: "双枪",
+                被动技能: {}, 基础命中率: 100, 基础命中加成: 0, 命中率: 100, 伤害加成: 0,
+                手枪: {name: "Mossberg500"}, 手枪2: {name: "Mossberg500"},
+                基础伤害类型: "物理", 基础魔法伤害属性: undefined,
+                基础毒: 0, 基础吸血: 0, 基础击溃: 0, 基础斩杀: 0,
+                手枪伤害类型: "破击", 手枪魔法伤害属性: null,
+                手枪毒: 8, 手枪吸血: 5, 手枪击溃: 0.1, 手枪斩杀: 6, 手枪暴击: "满血暴击", 手枪命中加成: 0,
+                手枪2伤害类型: "物理", 手枪2魔法伤害属性: null,
+                手枪2毒: 0, 手枪2吸血: 0, 手枪2击溃: 0, 手枪2斩杀: 0, 手枪2暴击: null, 手枪2命中加成: 0,
+                // 模拟切换双枪时单位共享通用字段被主手覆盖后的污染状态
+                伤害类型: "破击", 魔法伤害属性: null, 毒: 8, 吸血: 5, 击溃: 0.1, 斩杀: 6,
+                暴击: ShootInitCore.createCritLogic("满血暴击"),
+                手枪属性: {split: 10, diffusion: 17, bullet: "横向联弹-普通子弹", power: 84, impact: 15, velocity: 25, interval: 330, clipname: "12号霰弹弹药", bulletsize: 35, weapontype: "霰弹枪"},
+                手枪2属性: {split: 10, diffusion: 17, bullet: "横向联弹-次级穿刺子弹", power: 84, impact: 15, velocity: 25, interval: 330, clipname: "12号霰弹弹药", bulletsize: 35, weapontype: "霰弹枪"},
+                手枪数据: {weapontype: "霰弹枪"}, 手枪2数据: {weapontype: "霰弹枪"}
+            };
+
+            // 验证 initDualGun 不再因 mainExtra/subExtra 遮蔽非武器 基础* 加成，且副手不被主手污染
+            // AS2 中 MovieClip(plainObject) 强转运行时为 null，测试桩需保持无类型传参
+            var manMock = {刷新弹匣数显示: function():Void {}};
+            ShootInitCore.initDualGun(manMock, actor);
+            var mainProps:Object = manMock.子弹属性;
+            var subProps:Object = manMock.子弹属性2;
+            factoryApi.prepareBulletData(mainProps, actor);
+            initApi.initializeNanoToxicfunction(mainProps, mainProps, actor);
+            factoryApi.prepareBulletData(subProps, actor);
+            initApi.initializeNanoToxicfunction(subProps, subProps, actor);
+
+            var lowHpTarget:Object = {hp: 100, hp满血值: 1000};
+            var fullHpTarget:Object = {hp: 1000, hp满血值: 1000};
+            check(Math.abs(mainProps.击溃 - 0.1) < 0.0001 && mainProps.吸血 == 5 && mainProps.毒 == 8
+                && mainProps.nanoToxic == 8 && mainProps.伤害类型 == "破击" && mainProps.斩杀 == 6
+                && typeof mainProps.暴击 == "function" && mainProps.暴击({hitTarget: fullHpTarget}) == 1.5
+                && mainProps.暴击({hitTarget: lowHpTarget}) == 1,
+                "dual-gun main hand retains its own crumble, lifesteal, poison, damage type, execute and crit");
+            check(subProps.击溃 === 0 && subProps.吸血 === 0 && subProps.毒 === 0 && !(subProps.nanoToxic > 0)
+                && subProps.伤害类型 == "物理" && subProps.魔法伤害属性 == undefined && subProps.斩杀 === 0
+                && subProps.暴击 == null,
+                "dual-gun off-hand does not inherit main-hand crumble, lifesteal, poison, execute or crit via shooter");
+
+            // 非武器防具/饰品基础词条须通过 initDualGun 等量叠加到双手，副手仍不沾染主手击溃/吸血
+            actor.基础毒 = 2; actor.基础吸血 = 3; actor.基础击溃 = 0.5; actor.基础斩杀 = 4;
+            ShootInitCore.initDualGun(manMock, actor);
+            var baseMain:Object = manMock.子弹属性;
+            var baseSub:Object = manMock.子弹属性2;
+            factoryApi.prepareBulletData(baseMain, actor);
+            initApi.initializeNanoToxicfunction(baseMain, baseMain, actor);
+            factoryApi.prepareBulletData(baseSub, actor);
+            initApi.initializeNanoToxicfunction(baseSub, baseSub, actor);
+            check(Math.abs(baseMain.击溃 - 0.6) < 0.0001 && baseMain.吸血 == 8 && baseMain.毒 == 10 && baseMain.斩杀 == 10
+                && Math.abs(baseSub.击溃 - 0.5) < 0.0001 && baseSub.吸血 == 3 && baseSub.毒 == 2
+                && baseSub.nanoToxic == 2 && baseSub.斩杀 == 4,
+                "non-weapon base traits stack identically into both dual-gun hands without cross-hand leak");
+
+            // 可复用模板上的药剂暴击率/淬毒须对双手生效，并在药效归零后下一发干净复原
+            actor.基础毒 = 0; actor.基础吸血 = 0; actor.基础击溃 = 0; actor.基础斩杀 = 0;
+            actor.暴击率 = 100; actor.淬毒 = 25;
+            var reusedSub:Object = ShootInitCore.generateBulletProps(actor, "手枪2", actor.手枪2属性, {});
+            var shot1:Object = {flags: 0};
+            factoryApi.prepareBulletData(reusedSub, actor);
+            initApi.initializeNanoToxicfunction(reusedSub, shot1, actor);
+            check(typeof reusedSub.暴击 == "function" && reusedSub.暴击({hitTarget: lowHpTarget}) == 1.5
+                && shot1.nanoToxic == 25 && reusedSub.毒 == 0,
+                "dual-gun off-hand reused template receives active potion crit and coating poison");
+            actor.暴击率 = 0; actor.淬毒 = 0;
+            var shot2:Object = {flags: 0};
+            factoryApi.prepareBulletData(reusedSub, actor);
+            initApi.initializeNanoToxicfunction(reusedSub, shot2, actor);
+            check(reusedSub.暴击 == null && !(shot2.nanoToxic > 0) && reusedSub.击溃 === 0 && reusedSub.毒 === 0,
+                "dual-gun off-hand reused template cleanly reverts potion crit and poison once expired");
+
+            // 无换装与槽位前缀的纯旧版敌人仍保留 legacy 继承行为
+            var legacyShooter:Object = {_name: "legacyBot", 被动技能: {}, 命中率: 50, 是否为敌人: true,
+                伤害类型: "魔法", 魔法伤害属性: "热", 吸血: 7, 击溃: 2, 斩杀: 9, 毒: 4};
+            var legacyProps:Object = ShootInitCore.generateBulletProps(legacyShooter, "手枪", actor.手枪2属性, {});
+            factoryApi.prepareBulletData(legacyProps, legacyShooter);
+            initApi.initializeNanoToxicfunction(legacyProps, legacyProps, legacyShooter);
+            check(legacyProps.slotWeaponProjected !== true && legacyProps.击溃 == 2 && legacyProps.吸血 == 7
+                && legacyProps.毒 == 4 && legacyProps.nanoToxic == 4 && legacyProps.伤害类型 == "魔法"
+                && legacyProps.魔法伤害属性 == "热" && legacyProps.斩杀 == 9,
+                "legacy non-dressup enemy without slot projection preserves shooter inheritance");
+        } finally {
+            _root.成功率 = oldSuccessRate;
+        }
+    }
+
     public static function runAllTests():Void {
         passed=0; failed=0; clipId=0; createdClips=0;
         var oldWorld:MovieClip=_root.gameworld; var oldTimer:Object=_root.帧计时器; var oldRandom:Function=_root.随机偏移;
@@ -523,7 +693,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         world.createEmptyMovieClip("子弹区域",1); _root.gameworld=world; _root.帧计时器={当前帧数:1};
         _root.随机偏移=randomOffset; manager.acquireUnit=acquireClip; manager.releaseUnit=releaseClip;
         DamageManagerFactory.init();
-        geometryAndScope(); budgetAndContacts(false); budgetAndContacts(true); missAndLastPellet(); pierceClipBindings(); queueIntegration(); lifecycleAndCost(); pierceGroundRetirement();
+        geometryAndScope(); budgetAndContacts(false); budgetAndContacts(true); missAndLastPellet(); pierceClipBindings(); queueIntegration(); lifecycleAndCost(); pierceGroundRetirement(); dualGunAttributeIsolation();
         ChainVisualBridge.disconnect(); manager.acquireUnit=oldAcquire; manager.releaseUnit=oldRelease;
         _root.随机偏移=oldRandom; _root.帧计时器=oldTimer; _root.gameworld=oldWorld; world.removeMovieClip();
         trace("ShotgunPatternTest Tests Passed: " + passed);

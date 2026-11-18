@@ -2920,7 +2920,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var shotgunGroup:ChainGroup;
         var isShotgunPattern:Boolean;
         var hasPierceBudget:Boolean;
-        var pierceDepth:org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalPierceDepth;
+        var isHorizontalPierce:Boolean;
+        var pierceCover:Number;
+        var pierceLive:Number;
         var shotCoverage:org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage;
         var unitScanRight:Number;
         var Dodge:Object = DodgeHandler;
@@ -3257,8 +3259,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 shotgunGroup = bullet.chainGroup;
                 isShotgunPattern = shotgunGroup.shotgun != null;
                 hasPierceBudget = shotgunGroup.pierceRemaining != null;
-                pierceDepth = shotgunGroup.pierceDepth;
                 shotCoverage = shotgunGroup.shotCoverage;
+                isHorizontalPierce = shotgunGroup.horizontalPierce === true && shotCoverage != null;
                 if (shotCoverage != null) isPointSet = false;
                 bulletZOffset = bullet.Z轴坐标;          // 子弹Z轴坐标
                 bulletZRange = bullet.Z轴攻击范围;       // Z轴攻击范围
@@ -3436,9 +3438,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             // getAABB内联：仅Y坐标需要zOffset投影，X坐标直接使用
                             uTop = unitArea.top + zOffset;
                             uBottom = unitArea.bottom + zOffset;
-                            if (pierceDepth != null) {
-                                if (hitTarget.无敌 || hitTarget.man.无敌标签 || hitTarget.NPC ||
-                                    !pierceDepth.prepare(shotgunGroup,hitTarget,unitArea,zOffset)) continue;
+                            if (isHorizontalPierce) {
+                                pierceLive = shotgunGroup.单元体列表.length;
+                                if (!(pierceLive > 0)) continue;
+                                pierceCover = shotCoverage.contact(shotgunGroup, unitArea, zOffset, false);
+                                if (!(pierceCover > 0)) continue;
                             } else if (!isShotgunPattern && (areaAABB.left >= unitArea.right ||
                                 areaAABB.bottom <= uTop ||
                                 areaAABB.top >= uBottom)) {
@@ -3498,7 +3502,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                             // 跨帧贴住同一目标时，余额耗尽就跳过整条命中链；后排仍继续检查。
                             if (hasPierceBudget && !shotgunGroup.canJudgePierce(hitTarget)) continue;
-                            if (pierceDepth != null) { crCenter.x = shotCoverage.hitX; crCenter.y = shotCoverage.hitY; }
+                            if (isHorizontalPierce) { crCenter.x = shotCoverage.hitX; crCenter.y = shotCoverage.hitY; }
                             // 确认命中后才写入hitTarget，避免无效的哈希表操作
                             bullet.hitTarget = hitTarget;
 
@@ -3532,7 +3536,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 // settleHit 内含：命中对象同步(幂等) → calculateDamage → hitCount+= → publish("hit")
                                 //                → kill/death(_killed 守卫) → triggerDisplay。
                                 settlementResult = settleHit(_hitCtx, hitTarget, collisionResult,
-                                    pierceDepth != null ? 1 : collisionResult.overlapRatio, dodgeState, true);
+                                    isHorizontalPierce ? (pierceCover / pierceLive) : collisionResult.overlapRatio, dodgeState, true);
                             }
                             if (_hitCtx.actualHit || settlementResult === DamageResult.NULL) {
                                 hasUnitHitFx = true;

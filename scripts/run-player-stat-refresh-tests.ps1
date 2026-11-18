@@ -11,6 +11,8 @@ $ErrorActionPreference = 'Stop'
     -SuiteFqns @('org.flashNight.arki.ui.MeridianGetterRegistrationTest', 'org.flashNight.neur.Server.test.SaveManagerTest', 'org.flashNight.arki.item.itemCollection.EquipmentInventoryTest', 'org.flashNight.arki.item.InventoryPanelServiceTest', 'org.flashNight.arki.item.CharacterBuildTransactionSpikeTest', 'org.flashNight.arki.unit.UnitComponent.Initializer.test.RuntimeEquipmentProjectionTest', 'org.flashNight.arki.item.CharacterBuildServiceTest', 'org.flashNight.arki.unit.PlayerInfoProviderTest', 'org.flashNight.arki.unit.PlayerStatProjectionTest', 'org.flashNight.arki.ui.MeridianPanelServiceTest', 'org.flashNight.arki.unit.PlayerStatRefreshCoordinatorTest', 'org.flashNight.arki.unit.PlayerStatProductionAdapterTest', 'org.flashNight.arki.unit.PlayerStatLifecycleTest') `
     -AdditionalAsRelativePaths @(
         'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\DressupInitializer.as',
+        'scripts\类定义\org\flashNight\arki\unit\Action\Shoot\ShootInitCore.as',
+        'scripts\类定义\org\flashNight\arki\bullet\BulletComponent\Init\BulletInitializer.as',
         'scripts\类定义\org\flashNight\arki\unit\Action\Regeneration\HealApplier.as',
         'scripts\类定义\org\flashNight\arki\unit\Action\Regeneration\HealApplierTest.as'
     ) `

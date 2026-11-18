@@ -259,23 +259,30 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
             return;
         }
 
-        var objDmgType:Object = Obj.伤害类型;
-        var shooterDmgType:Object = shooter.伤害类型;
-        Obj.伤害类型 = (!objDmgType && shooterDmgType) ? shooterDmgType : objDmgType;
-        var objMagicDmg:Object = Obj.魔法伤害属性;
-        var shooterMagicDmg:Object = shooter.魔法伤害属性;
-        Obj.魔法伤害属性 = (!objMagicDmg && shooterMagicDmg) ? shooterMagicDmg : objMagicDmg;
-        if (Obj.吸血 || shooter.吸血) {
-            Obj.吸血 = Math.max(Obj.吸血 > 0 ? Obj.吸血 : 0, shooter.吸血 > 0 ? shooter.吸血 : 0);
-        }
-        if (Obj.血量上限击溃 || shooter.击溃) {
-            Obj.击溃 = Math.max(Obj.血量上限击溃 > 0 ? Obj.血量上限击溃 : 0, shooter.击溃 > 0 ? shooter.击溃 : 0);
-        }
-        if (Obj.斩杀 || shooter.斩杀) {
-            Obj.斩杀 = Math.max(Obj.斩杀 > 0 ? Obj.斩杀 : 0, shooter.斩杀 > 0 ? shooter.斩杀 : 0);
-        }
-        if (!Obj.暴击 && shooter.暴击) {
-            Obj.暴击 = shooter.暴击;
+        if (Obj.slotWeaponProjected === true) {
+            Obj.击溃 = (Obj.血量上限击溃 > 0) ? Obj.血量上限击溃 : 0;
+            if (Obj.__slotBaseCrit !== undefined || Obj.暴击 !== undefined) {
+                Obj.暴击 = Obj.__slotBaseCrit;
+            }
+        } else {
+            var objDmgType:Object = Obj.伤害类型;
+            var shooterDmgType:Object = shooter.伤害类型;
+            Obj.伤害类型 = (!objDmgType && shooterDmgType) ? shooterDmgType : objDmgType;
+            var objMagicDmg:Object = Obj.魔法伤害属性;
+            var shooterMagicDmg:Object = shooter.魔法伤害属性;
+            Obj.魔法伤害属性 = (!objMagicDmg && shooterMagicDmg) ? shooterMagicDmg : objMagicDmg;
+            if (Obj.吸血 || shooter.吸血) {
+                Obj.吸血 = Math.max(Obj.吸血 > 0 ? Obj.吸血 : 0, shooter.吸血 > 0 ? shooter.吸血 : 0);
+            }
+            if (Obj.血量上限击溃 || shooter.击溃) {
+                Obj.击溃 = Math.max(Obj.血量上限击溃 > 0 ? Obj.血量上限击溃 : 0, shooter.击溃 > 0 ? shooter.击溃 : 0);
+            }
+            if (Obj.斩杀 || shooter.斩杀) {
+                Obj.斩杀 = Math.max(Obj.斩杀 > 0 ? Obj.斩杀 : 0, shooter.斩杀 > 0 ? shooter.斩杀 : 0);
+            }
+            if (!Obj.暴击 && shooter.暴击) {
+                Obj.暴击 = shooter.暴击;
+            }
         }
         // 暴击率加成（药剂/酒水 buff 写入 shooter.暴击率）：与子弹既有暴击判定并行，
         // 原判定未暴击时按加成概率追加一次独立的 1.5 倍判定
@@ -337,10 +344,13 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
             return;
         }
 
-        if (Obj.毒 || shooter.淬毒 || shooter.毒) {
-            var shooterToxic:Number = shooter.淬毒 | 0;
-            Obj.毒 = Math.max(Obj.毒 | 0, shooter.毒 | 0);
-            if (shooterToxic && shooterToxic > Obj.毒) {
+        var slotProjected:Boolean = (Obj.slotWeaponProjected === true);
+        var equipToxic:Number = slotProjected ? (Obj.毒 | 0) : Math.max(Obj.毒 | 0, shooter.毒 | 0);
+        var shooterToxic:Number = shooter.淬毒 | 0;
+        if (equipToxic || shooterToxic) {
+            Obj.毒 = equipToxic;
+            bullet.毒 = equipToxic;
+            if (shooterToxic && shooterToxic > equipToxic) {
                 bullet.nanoToxic = shooterToxic;
                 bullet.nanoToxicDecay = 1;
                 
@@ -399,7 +409,11 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
                 }
             } else {
                 bullet.nanoToxic = Obj.毒;
+                bullet.nanoToxicDecay = 0;
             }
+        } else if (slotProjected && bullet.nanoToxic) {
+            bullet.nanoToxic = 0;
+            bullet.nanoToxicDecay = 0;
         }
     }
 }

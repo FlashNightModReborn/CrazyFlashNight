@@ -126,9 +126,11 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
             scatterForCalc = currentScatter;
         }
 
-        // 纵向穿刺削弱（覆盖率降至39%）
+        // 穿刺覆盖率折算：纵向长弹链重叠帧数多采用 7/18；横向薄波前重叠帧数少采用 5/9
         if ((bullet.flags & PIERCE_AND_VERTICAL_MASK) == PIERCE_AND_VERTICAL_MASK) {
             overlapRatio = overlapRatio * 7 / 18;
+        } else if (group.horizontalPierce === true) {
+            overlapRatio = overlapRatio * 5 / 9;
         }
 
         // 核心伤害计算
@@ -216,18 +218,12 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
 
         // 新霰弹按组级覆盖限制单体；旧弹保持最低一段的历史合同。
         if (pattern != null && actualScatterUsed > pattern.hitCap) actualScatterUsed = pattern.hitCap;
-        // A fast sweep may release more than one segment per covered pellet in this frame.
-        // Geometry already accepted these attempts before dodge. HP still bounds overkill.
-        if (group.pierceDepth != null) {
-            var hpCap:Number = Math.max(1,Math.ceil(B));
-            actualScatterUsed = Math.min(group.pierceDepth.segments,hpCap);
-        }
-        var horizontalPierce:Boolean = group.pierceRemaining != null;
-        if (horizontalPierce) {
+        var hasPierceRemaining:Boolean = group.pierceRemaining != null;
+        if (hasPierceRemaining) {
             actualScatterUsed = group.takePierceSegments(target, availableScatter, actualScatterUsed < 1 ? 1 : actualScatterUsed);
         }
         if (actualScatterUsed < 1) {
-            if (pattern != null || horizontalPierce) {
+            if (pattern != null || hasPierceRemaining) {
                 target.损伤值 = 0;
                 result.actualScatterUsed = 0;
                 result.finalScatterValue = availableScatter;

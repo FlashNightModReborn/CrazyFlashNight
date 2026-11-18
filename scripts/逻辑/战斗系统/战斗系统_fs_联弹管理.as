@@ -245,7 +245,7 @@ _root.联弹系统.联弹消失 = function(clip:MovieClip):Void {
 
     // 判断条件：如果霰弹值小于等于1，或者已经击中地图，则直接移除该 MovieClip
     var group:ChainGroup = ChainUnitManager.findGroupByBullet(clip);
-    var exhausted:Boolean = group.pierceDepth != null || (group.shotgun != null ? !(clip.霰弹值 > 0) : clip.霰弹值 <= 1);
+    var exhausted:Boolean = group.horizontalPierce || (group.shotgun != null ? !(clip.霰弹值 > 0) : clip.霰弹值 <= 1);
     if (exhausted || (clip.stateFlags & STATE_HIT_MAP) != 0) {
         // 先显式回收单元体组，再移除子弹本体
         ChainUnitManager.removeGroupByBullet(clip);
@@ -416,7 +416,7 @@ _root.联弹系统.横向联弹组装 = function(group:ChainGroup):Void {
     }
     ChainUnitManager.prepareHorizontalAggregate(group);
     _root.联弹系统.渲染组(group);
-    if (group.shotgun != null || group.pierceDepth != null)
+    if (group.shotgun != null || group.horizontalPierce)
         group.shotCoverage = new org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage(group);
 };
 
@@ -1098,7 +1098,7 @@ _root.联弹系统.对象联弹消失 = function(bullet:Object):Void {
     bullet.flag = true;
     // 穿刺的正常单位命中不会调用消失。到射程、地图或消弹出口时整组退场，
     // 不能等待真实弹数按时间减到一颗。
-    if (bullet.chainGroup.pierceDepth != null) {
+    if (bullet.chainGroup.horizontalPierce) {
         bullet.removeMovieClip();
         return;
     }

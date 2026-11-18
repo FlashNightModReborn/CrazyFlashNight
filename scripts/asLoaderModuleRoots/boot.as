@@ -181,7 +181,6 @@ org.flashNight.arki.bullet.BulletComponent.Lifecycle.ExplosionScatter;
 org.flashNight.arki.component.Damage.DamageCalculator;
 org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine;
 org.flashNight.arki.bullet.BulletComponent.Queue.RayComboCursor;
-org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalPierceDepth;
 org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage;
 org.flashNight.arki.scene.Cf6InteractivePropService;
 org.flashNight.arki.scene.Cf6TransportService;

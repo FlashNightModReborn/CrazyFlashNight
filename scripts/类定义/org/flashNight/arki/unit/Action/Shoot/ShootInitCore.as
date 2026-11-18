@@ -721,37 +721,93 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             bulletProps.命中率 = Number(parentRef.命中率);
         }
 
-        // 处理动态参数：伤害类型、魔法伤害属性、毒、吸血、击溃（击溃对应 bulletProps.血量上限击溃）
-        var optionalKeys:Array = ["伤害类型", "魔法伤害属性", "毒", "吸血", "击溃"];
-        for (var i:Number = 0; i < optionalKeys.length; i++) {
-            var key:String = optionalKeys[i];
-            var targetKey:String = (key == "击溃") ? "血量上限击溃" : key;
-            if (extraParams[key]) {
-                bulletProps[targetKey] = extraParams[key];
-            } else if (parentRef[weaponType + key]) {
-                bulletProps[targetKey] = parentRef[weaponType + key];
+        // 换装/双枪武器槽显式固化「基础属性 + 当前武器槽属性」，避免 BulletInitializer 从单位通用字段跨手回填；
+        // 无任何槽位或基础字段的旧版非换装敌人保持 legacy 回退。
+        var hasSlotProjection:Boolean = (weaponType == "长枪" || weaponType == "手枪" || weaponType == "手枪2")
+            && (parentRef.hasDressup === true
+                || parentRef.基础伤害类型 !== undefined
+                || parentRef.基础毒 !== undefined
+                || parentRef.基础吸血 !== undefined
+                || parentRef.基础击溃 !== undefined
+                || parentRef.基础斩杀 !== undefined
+                || hasOwnWeaponSlotTraits(parentRef, weaponType)
+                || (weaponType == "手枪" && (parentRef.手枪2 !== undefined || hasOwnWeaponSlotTraits(parentRef, "手枪2")))
+                || (weaponType == "手枪2" && (parentRef.手枪 !== undefined || hasOwnWeaponSlotTraits(parentRef, "手枪"))));
+
+        if (hasSlotProjection) {
+            bulletProps.slotWeaponProjected = true;
+
+            if (extraParams.伤害类型) {
+                bulletProps.伤害类型 = extraParams.伤害类型;
+            } else {
+                var slotDmgType:Object = parentRef[weaponType + "伤害类型"];
+                bulletProps.伤害类型 = slotDmgType
+                    ? ((slotDmgType == "物理" && parentRef.基础伤害类型) ? parentRef.基础伤害类型 : slotDmgType)
+                    : (parentRef.基础伤害类型 || "物理");
             }
-        }
 
-        // 处理暴击逻辑，使用严格检查以确保不漏掉 false 以外的有效值
-        var critValue:Object = (extraParams.暴击 !== undefined) ? extraParams.暴击 : parentRef[weaponType + "暴击"];
-        if (critValue) {
-            bulletProps.暴击 = ShootInitCore.createCritLogic(critValue);
-        }
+            if (extraParams.魔法伤害属性 !== undefined) {
+                bulletProps.魔法伤害属性 = extraParams.魔法伤害属性;
+            } else {
+                bulletProps.魔法伤害属性 = parentRef[weaponType + "魔法伤害属性"]
+                    ? parentRef[weaponType + "魔法伤害属性"]
+                    : parentRef.基础魔法伤害属性;
+            }
 
-        // 处理斩杀属性，确保数值有效后转换为 Number；非武器装备(项链/防具等)的基础斩杀与武器斩杀叠加
-        var killValue:Object;
-        if (extraParams.斩杀 !== undefined) {
-            killValue = extraParams.斩杀;
+            var scalarKeys:Array = ["毒", "吸血", "击溃", "斩杀"];
+            for (var si:Number = 0; si < scalarKeys.length; si++) {
+                var sKey:String = scalarKeys[si];
+                var sTargetKey:String = (sKey == "击溃") ? "血量上限击溃" : sKey;
+                var sVal:Number;
+                if (extraParams[sKey] !== undefined) {
+                    sVal = Number(extraParams[sKey]);
+                    bulletProps[sTargetKey] = (isFinite(sVal) && sVal > 0) ? sVal : 0;
+                } else {
+                    var baseBonus:Number = Number(parentRef["基础" + sKey]);
+                    var slotBonus:Number = Number(parentRef[weaponType + sKey]);
+                    sVal = (isFinite(baseBonus) && baseBonus > 0 ? baseBonus : 0)
+                        + (isFinite(slotBonus) && slotBonus > 0 ? slotBonus : 0);
+                    bulletProps[sTargetKey] = sVal;
+                }
+            }
+
+            var slotCritValue:Object = (extraParams.暴击 !== undefined) ? extraParams.暴击 : parentRef[weaponType + "暴击"];
+            var slotCritFn:Function = slotCritValue ? ShootInitCore.createCritLogic(slotCritValue) : null;
+            bulletProps.暴击 = slotCritFn;
+            bulletProps.__slotBaseCrit = slotCritFn;
         } else {
-            var weaponSlay:Number = Number(parentRef[weaponType + "斩杀"]);
-            if (isNaN(weaponSlay)) weaponSlay = 0;
-            var baseSlay:Number = Number(parentRef.基础斩杀);
-            if (isNaN(baseSlay)) baseSlay = 0;
-            killValue = weaponSlay + baseSlay;
-        }
-        if (killValue && !isNaN(Number(killValue))) {
-            bulletProps.斩杀 = Number(killValue);
+            // 处理动态参数：伤害类型、魔法伤害属性、毒、吸血、击溃（击溃对应 bulletProps.血量上限击溃）
+            var optionalKeys:Array = ["伤害类型", "魔法伤害属性", "毒", "吸血", "击溃"];
+            for (var i:Number = 0; i < optionalKeys.length; i++) {
+                var key:String = optionalKeys[i];
+                var targetKey:String = (key == "击溃") ? "血量上限击溃" : key;
+                if (extraParams[key]) {
+                    bulletProps[targetKey] = extraParams[key];
+                } else if (parentRef[weaponType + key]) {
+                    bulletProps[targetKey] = parentRef[weaponType + key];
+                }
+            }
+
+            // 处理暴击逻辑，使用严格检查以确保不漏掉 false 以外的有效值
+            var critValue:Object = (extraParams.暴击 !== undefined) ? extraParams.暴击 : parentRef[weaponType + "暴击"];
+            if (critValue) {
+                bulletProps.暴击 = ShootInitCore.createCritLogic(critValue);
+            }
+
+            // 处理斩杀属性，确保数值有效后转换为 Number；非武器装备(项链/防具等)的基础斩杀与武器斩杀叠加
+            var killValue:Object;
+            if (extraParams.斩杀 !== undefined) {
+                killValue = extraParams.斩杀;
+            } else {
+                var weaponSlay:Number = Number(parentRef[weaponType + "斩杀"]);
+                if (isNaN(weaponSlay)) weaponSlay = 0;
+                var baseSlay:Number = Number(parentRef.基础斩杀);
+                if (isNaN(baseSlay)) baseSlay = 0;
+                killValue = weaponSlay + baseSlay;
+            }
+            if (killValue && !isNaN(Number(killValue))) {
+                bulletProps.斩杀 = Number(killValue);
+            }
         }
 
         // 处理消音策略：仅引用，不创建闭包
@@ -765,6 +821,16 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         if(typeof parentRef.cf6UnitIdentity=="string")
             org.flashNight.arki.scene.Cf6SoldierFirepower.applyPoison(parentRef,weaponType,bulletProps);
         return bulletProps;
+    }
+
+    private static function hasOwnWeaponSlotTraits(parentRef:Object, slot:String):Boolean {
+        return parentRef[slot + "伤害类型"] !== undefined
+            || parentRef[slot + "魔法伤害属性"] !== undefined
+            || parentRef[slot + "毒"] !== undefined
+            || parentRef[slot + "吸血"] !== undefined
+            || parentRef[slot + "击溃"] !== undefined
+            || parentRef[slot + "暴击"] !== undefined
+            || parentRef[slot + "斩杀"] !== undefined;
     }
 
     /**
@@ -882,35 +948,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      * @param parentRef 父级引用
      */
     public static function initDualGun(target:MovieClip, parentRef:Object):Void {
-        // 创建主手额外参数对象
-        var mainExtra:Object = {
-            伤害类型        : parentRef.手枪伤害类型,
-            魔法伤害属性    : parentRef.手枪魔法伤害属性,
-            毒              : parentRef.手枪毒,
-            吸血            : parentRef.手枪吸血,
-            击溃            : parentRef.手枪击溃,
-            暴击            : parentRef.手枪暴击,
-            斩杀            : parentRef.手枪斩杀
-        };
-        
-        // 创建副手额外参数对象
-        var subExtra:Object = {
-            伤害类型        : parentRef.手枪2伤害类型,
-            魔法伤害属性    : parentRef.手枪2魔法伤害属性,
-            毒              : parentRef.手枪2毒,
-            吸血            : parentRef.手枪2吸血,
-            击溃            : parentRef.手枪2击溃,
-            暴击            : parentRef.手枪2暴击,
-            斩杀            : parentRef.手枪2斩杀
-        };
-        
-        // 创建双枪配置
+        // 创建双枪配置：特殊属性统一由 generateBulletProps 按 "基础* + 槽位*" 投影，避免额外参数遮蔽非武器基础加成
         var config:Object = {
             weaponType     : "双枪",
             isDualGun      : true,
             mainWeaponData : parentRef.手枪属性,
             subWeaponData  : parentRef.手枪2属性,
-            extraParams    : { main: mainExtra, sub: subExtra }
+            extraParams    : {}
         };
 
         /*
