@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Roadster83Offline/Geometry/g0088" symbolType="graphic" itemID="e008ec88-56269946">
+  <timeline>
+    <DOMTimeline name="g0088">
+      <layers>
+        <DOMLayer name="mesh-lines-wheel-rear-near-hub-cover-and-lug-heads" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="0.92" scaleMode="normal" caps="round" joints="round">
+                        <fill>
+                          <SolidColor color="#191719" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!3761 5611|3766 5692|3780 5737|3803 5778|3834 5814|3872 5844|3915 5866|3961 5880|4010 5885|4059 5880|4105 5866|4148 5844|4186 5814|4217 5778|4240 5737|4254 5692|4259 5645|4254 5565|4240 5520|4217 5478|4186 5442|4148 5412|4105 5390|4059 5377|4010 5372|3961 5377|3915 5390|3872 5412|3834 5442|3803 5478|3780 5520|3766 5565|3761 5611" strokeStyle="1" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="wheel-rear-near-hub-cover-and-lug-heads" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient spreadMethod="pad" interpolationMethod="rgb">
+                            <matrix>
+                              <Matrix a="0" b="0.0903320312" c="-0.0903320312" d="0" tx="0" ty="281.13" />
+                            </matrix>
+                            <GradientEntry color="#798489" ratio="0" />
+                            <GradientEntry color="#798489" ratio="0.179688" />
+                            <GradientEntry color="#4B555B" ratio="0.179688" />
+                            <GradientEntry color="#4B555B" ratio="0.421875" />
+                            <GradientEntry color="#1E272C" ratio="0.421875" />
+                            <GradientEntry color="#1E272C" ratio="0.507812" />
+                            <GradientEntry color="#4B555B" ratio="0.507812" />
+                            <GradientEntry color="#4B555B" ratio="0.804688" />
+                            <GradientEntry color="#1E272C" ratio="0.804688" />
+                            <GradientEntry color="#1E272C" ratio="1" />
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge edges="!3761 5611|3766 5692|3780 5737|3803 5778|3834 5814|3872 5844|3915 5866|3961 5880|4010 5885|4059 5880|4105 5866|4148 5844|4186 5814|4217 5778|4240 5737|4254 5692|4259 5645|4254 5565|4240 5520|4217 5478|4186 5442|4148 5412|4105 5390|4059 5377|4010 5372|3961 5377|3915 5390|3872 5412|3834 5442|3803 5478|3780 5520|3766 5565|3761 5611" fillStyle0="1" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient spreadMethod="pad" interpolationMethod="rgb">
+                            <matrix>
+                              <Matrix a="0" b="0.0903320312" c="-0.0903320312" d="0" tx="0" ty="281.13" />
+                            </matrix>
+                            <GradientEntry color="#D6DDDF" ratio="0" />
+                            <GradientEntry color="#D6DDDF" ratio="0.191406" />
+                            <GradientEntry color="#3F4A51" ratio="0.191406" />
+                            <GradientEntry color="#3F4A51" ratio="0.457031" />
+                            <GradientEntry color="#D6DDDF" ratio="0.457031" />
+                            <GradientEntry color="#D6DDDF" ratio="0.589844" />
+                            <GradientEntry color="#3F4A51" ratio="0.589844" />
+                            <GradientEntry color="#3F4A51" ratio="0.746094" />
+                            <GradientEntry color="#D6DDDF" ratio="0.746094" />
+                            <GradientEntry color="#D6DDDF" ratio="0.90625" />
+                            <GradientEntry color="#3F4A51" ratio="0.90625" />
+                            <GradientEntry color="#3F4A51" ratio="1" />
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge edges="!3804 5653|3804 5671|3815 5682|3831 5682|3842 5671|3842 5653|3831 5642|3815 5642|3804 5653" fillStyle0="1" />
+                        <Edge edges="!3919 5472|3919 5490|3930 5501|3946 5501|3957 5490|3957 5472|3946 5461|3930 5461|3919 5472" fillStyle0="1" />
+                        <Edge edges="!4151 5733|4151 5751|4164 5762|4178 5762|4189 5751|4189 5733|4178 5722|4162 5722|4151 5733" fillStyle0="1" />
+                        <Edge edges="!4134 5521|4134 5540|4145 5550|4161 5550|4172 5540|4172 5521|4161 5511|4145 5511|4134 5521" fillStyle0="1" />
+                        <Edge edges="!3947 5814|3947 5833|3958 5843|3974 5843|3985 5833|3985 5814|3974 5804|3958 5804|3947 5814" fillStyle0="1" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient spreadMethod="pad" interpolationMethod="rgb" focalPointRatio="0">
+                            <matrix>
+                              <Matrix a="0.0903320312" b="0" c="0" d="0.0903320312" tx="200.5" ty="281.13" />
+                            </matrix>
+                            <GradientEntry color="#323D42" ratio="0" />
+                            <GradientEntry color="#323D42" ratio="0.039062" />
+                            <GradientEntry color="#1D262B" ratio="0.039062" />
+                            <GradientEntry color="#1D262B" ratio="0.71875" />
+                            <GradientEntry color="#323D42" ratio="0.71875" />
+                            <GradientEntry color="#323D42" ratio="0.785156" />
+                            <GradientEntry color="#48545A" ratio="0.785156" />
+                            <GradientEntry color="#48545A" ratio="0.90625" />
+                            <GradientEntry color="#323D42" ratio="0.90625" />
+                            <GradientEntry color="#323D42" ratio="0.960938" />
+                            <GradientEntry color="#1D262B" ratio="0.960938" />
+                            <GradientEntry color="#1D262B" ratio="1" />
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge edges="!3839 5638|3841 5675|3852 5710|3870 5743|3896 5770|3927 5792|3963 5806|4000 5812|4039 5810|4076 5800|4109 5782|4138 5757|4160 5727|4175 5693|4181 5655|4179 5618|4168 5583|4150 5550|4124 5523|4093 5501|4057 5487|4020 5481|3981 5483|3944 5493|3911 5511|3882 5536|3860 5566|3845 5600|3839 5638" fillStyle0="1" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

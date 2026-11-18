@@ -16,6 +16,8 @@ import sys
 import xml.etree.ElementTree as ET
 from PIL import Image
 
+from roadster import PROFILE, install_a07, read_profile
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SOURCE = HERE/'source'
@@ -127,7 +129,7 @@ def prepare():
             with Image.open(io.BytesIO(raw)) as im:
                 size = list(im.size);suffix = '.jpg' if im.format == 'JPEG' else '.png'
             name = 'CF6VehicleTexture_'+identity[:20]+suffix
-            record = {'name':name,'pixels':size,'sha256':identity,'path':str(SOURCE/'textures'/name)}
+            record = {'name':name,'pixels':size,'sha256':identity,'path':(SOURCE/'textures'/name).relative_to(HERE).as_posix()}
             if identity in textures and textures[identity] != record:raise ValueError('texture identity conflict')
             textures[identity] = record;outputs[SOURCE/'textures'/name] = raw
             element.set('href','data:image/'+('jpeg' if suffix == '.jpg' else 'png')+';base64,'+href.split(',',1)[1]);element.attrib.pop(XLINK,None)
@@ -136,8 +138,9 @@ def prepare():
     assets = [{'path':r['path'],'name':r['name']} for r in textures.values()]
     recipe = '''// Root-owned CS6 only. Creates one new seed; never replaces an existing document.
 (function(){
-var target=FLfile.platformPathToURI(%s), assets=%s, doc=null;
-function uri(path){return encodeURI(decodeURI(FLfile.platformPathToURI(path)));}
+var base=fl.scriptURI.slice(0, fl.scriptURI.lastIndexOf("/") + 1);
+function uri(path){return encodeURI(decodeURI(base)+path);}
+var target=uri(%s), assets=%s, doc=null;
 if(FLfile.exists(target))throw new Error("Vehicle texture seed already exists");
 try{doc=fl.createDocument();if(!doc)throw new Error("No seed document");
 doc.asVersion=2;doc.frameRate=30;doc.width=600;doc.height=350;
@@ -150,11 +153,11 @@ for(var i=0;i<assets.length;i++){
  doc.deleteSelection();
 }
 doc.getTimeline().layers[0].frames[0].actionScript="stop();";
-if(!fl.saveDocument(doc,encodeURI(decodeURI(target))))throw new Error("Seed save failed");
+if(!fl.saveDocument(doc,target))throw new Error("Seed save failed");
 fl.trace("CF6_VEHICLE_TEXTURE_SEED_SAVED "+target);
 }finally{if(doc)fl.closeDocument(doc,false);}
 })();
-''' % (json.dumps(str(SEED/'CF6VehicleTextureSeed.xfl')),json.dumps(assets))
+''' % (json.dumps((SEED/'CF6VehicleTextureSeed.xfl').relative_to(HERE).as_posix()),json.dumps(assets))
     outputs[HERE/'import-textures.jsfl'] = recipe.encode('utf-8')
     return nodes, trees, textures, outputs, inputs
 
@@ -361,6 +364,22 @@ def main():
     nodes,trees,textures,outputs,inputs=prepare()
     if args.assemble:
         manifest=assemble(nodes,trees,textures,outputs,inputs)
+        roadster = read_profile()
+        library = DEST/'LIBRARY'
+        native = library/Path(roadster['visual_symbol']).parent
+        authored = {path.relative_to(library).as_posix(): path.read_bytes()
+                    for path in sorted(native.rglob('*.xml'))}
+        a07 = {path.relative_to(DEST).as_posix(): raw for path, raw in outputs.items()
+               if path.is_relative_to(DEST)}
+        assembly = install_a07(a07, authored, roadster)
+        for name, raw in a07.items():
+            path = DEST/name
+            outputs[path] = raw
+            manifest['outputs'][path.relative_to(ROOT).as_posix()] = {'sha256': sha(raw), 'bytes': len(raw)}
+        manifest['nativeSymbols'] += assembly['roadster_symbol_count']
+        manifest['roadster'] = assembly
+        for path in (PROFILE, PROFILE.with_name('roadster.py')):
+            manifest['inputs'][path.relative_to(ROOT).as_posix()] = sha(path.read_bytes())
         projects=[DEST,ROOT/'flashswf/backgrounds/cf6/CF6_A07_BG',ROOT/'flashswf/backgrounds/cf6/CF6_A07_sky']
         expected={p for p in outputs if any(p.is_relative_to(project) for project in projects)}
         actual={p for project in projects if project.exists() for p in project.rglob('*') if p.is_file()}
@@ -370,6 +389,8 @@ def main():
         if not args.check and previous_path.exists():
             previous=json.loads(previous_path.read_text(encoding='utf-8'))['outputs']
             for path in actual:
+                if path.is_relative_to(native):
+                    continue  # Read directly from the authoritative native library.
                 old=previous.get(path.relative_to(ROOT).as_posix())
                 if old is None or sha(path.read_bytes())!=old['sha256']:
                     raise ValueError('preserve independently edited or unowned native file: '+str(path))

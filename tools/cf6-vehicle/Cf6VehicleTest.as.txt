@@ -109,12 +109,27 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             if(specs[i][2]==115 || specs[i][2]==391)c.gotoAndStop(2);
             check(pixels(c)>0,"real RSL nonempty art "+specs[i][0]);c.removeMovieClip();
         }
-        check(s.player.p1.p2!==s.player.p1.p4,"redrawn front and rear wheels are independent original timelines");
-        check(s.player.p1.p2._totalframes==4 && s.player.p1.p4._totalframes==4,"both wheels preserve four source frames");
+        var vis:MovieClip=s.player.p1.roadster;
+        check(typeof vis=="movieclip" && vis["part14"]._totalframes===32,"vehicle RSL contains the new 32-phase car");
+        check(s.player.p1.p2===undefined && s.player.p1.p4===undefined,"legacy wheel placements have been removed");
+        check(vis["part14"]._visible && !vis["wheel14Blur"]._visible,"parked wheel starts with its original sharp detail");
+        vis.__roadsterTestIdentity={};
     }
     public static function tick():Void {
         if(done)return;frame++;age++;_root.帧计时器.当前帧数=frame;
-        if(frame>2400 || getTimer()-startedAt>150000) {abort("native suite timeout phase="+phase+" state="+s.status+" reason="+s.reason);return;}
+        if(frame>5400 || getTimer()-startedAt>240000) {abort("native suite timeout phase="+phase+" state="+s.status+" reason="+s.reason);return;}
+        if(phase>=12) {
+            if(s.status!="playing") {
+                var replayStatus:String=Cf6VehicleService.tick(s);
+                if(replayStatus=="failed" || replayStatus=="cancelled") abort("burst fixture load "+s.reason);
+                if(replayStatus!="playing") return;
+            }
+            if(phase===12) {
+                burstCollisionChecks(); bossReference=[]; burstReplay=null; fresh(); phase=13; return;
+            }
+            if(burstReplay==null) {startBossReplay();return;}
+            bossReplayTick(); return;
+        }
         if(phase==0) {
             if(s==null) {abort("begin rejected actual known-mask fixture");return;}
             var state:String=Cf6VehicleService.tick(s);
@@ -122,7 +137,11 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             if(state!="playing")return;
             check(s.loadingLease===undefined,"loading lease released once assets are ready");
             check(!hero._visible && hero.行走===walk && hero.按键检测===checkKey && hero.__cf6VehicleOwner!==undefined,"real hero hidden while retaining native callbacks");
-            nativeArtChecks();keys[68]=true;phase=1;age=0;paused={x:hero._x,wheel:s.player.p1.p2._currentframe};return;
+            nativeArtChecks();
+            world.__combatAdmitted=false;Cf6VehicleService.tick(s);
+            check(s.age===0 && s.roadsterClock.wheel===0,"closed combat admission holds the roadster");
+            delete world.__combatAdmitted;
+            keys[68]=true;phase=1;age=0;paused={x:hero._x,visualId:s.player.p1.roadster.__roadsterTestIdentity};return;
         }
         if(phase==1) {
             Cf6VehicleService.tick(s);
@@ -132,18 +151,26 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             check(s.generators.length==3 && s.generators[0].active!=null && s.generators[1].active!=null && s.generators[2].active!=null,"three source generators produce their one concurrent actor at frame ten");
             check(s.generators[0].remaining==200 && s.generators[1].remaining==15 && s.generators[2].remaining==200,"source death budgets are not an invented 415-kill target");
             check(s.actors[0].clip.hp==100 && s.generators[0].active.clip.hp==10 && s.generators[1].active.clip.hp==200,"initial and generated actor health retain different source values");
+            check(s.roadsterClock.wheel>0 && s.roadsterClock.nearSpin===0 && s.roadsterClock.farSpin===0,"actual road and hero travel spin the wheels while idle guns stay stopped");
+            var rolling:MovieClip=s.player.p1.roadster;
+            check(s.roadsterWheelBlur===100 && !rolling["part14"]._visible && rolling["wheel14Blur"]._visible,"forward road travel uses continuous blurred faces");
             keys[68]=false;keys[74]=true;Cf6VehicleService.tick(s);
+            check(s.player.p1.roadster.__roadsterTestIdentity===paused.visualId && paused.visualId!=null,"idle to firing retains the same roadster display instance");
+            check(s.roadsterClock.nearSpin>0 && s.roadsterClock.farSpin>0,"successful dual emissions accelerate the two barrels");
+            check(s.roadsterBurst.active===4,"each accepted barrel schedules exactly two trailing rounds");
             var flight:Object=s.projectiles[0];
             check(flight!=null && Math.abs(flight.dx*flight.dx+flight.dy*flight.dy-400)<0.00001,"original spread changes direction while preserving speed twenty");
             check(Math.abs(flight.dy)<=20*Math.sin(4*3.14/180)+0.00001,"original random-five spread stays within four degrees");
             check(flight.clip._totalframes==1 && flight.clip.p3._totalframes==14,"projectile consumes original nested fourteen-frame body");
-            paused={x:hero._x,road:s.road._currentframe,shots:s.shots,clock:s.rules.frame,keyCalls:keyCalls,audio:audioCalls['CF6Vehicle_1169.mp3']};
+            paused={x:hero._x,road:s.road._currentframe,shots:s.shots,clock:s.rules.frame,keyCalls:keyCalls,audio:audioCalls['CF6Vehicle_1169.mp3'],wheel:s.roadsterClock.wheel,nearPhase:s.roadsterClock.nearPhase,slotAge:s.roadsterBurst.slots[0].age,slotDue:s.roadsterBurst.slots[0].due};
             pauseLease=PauseManager.lease(true,"foreign_panel");phase=2;age=0;return;
         }
         if(phase==2) {
             Cf6VehicleService.tick(s);if(age<8)return;
             check(s.rules.frame==paused.clock && s.road._currentframe==paused.road,"external pause freezes encounter and original road timeline");
             check(s.shots==paused.shots && keyCalls==paused.keyCalls,"pause neither polls input nor spends fire clock");
+            check(s.roadsterClock.wheel===paused.wheel && s.roadsterClock.nearPhase===paused.nearPhase,"external pause freezes vehicle phase");
+            check(s.roadsterBurst.slots[0].age===paused.slotAge && s.roadsterBurst.slots[0].due===paused.slotDue,"external pause freezes trailing rounds");
             check(hero._x==paused.x,"paused current hero stays fixed");PauseManager.releaseLease(pauseLease);pauseLease=null;
             check(audioCalls['CF6Vehicle_1169.mp3']==paused.audio,"external pause suppresses both barrel audio calls");
             keys[74]=false;
@@ -249,6 +276,10 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             check(audioCalls['CF6_0915.mp3']>0 && audioCalls['CF6_1009.mp3']>=3,"boss departure and grenade animation route original death and explosion cues");
             phase=7;age=0;return;
         }
+        tickTeardownChecks();
+    }
+
+    private static function tickTeardownChecks():Void {
         if(phase==7) {
             Cf6VehicleService.tick(s);
             if(s.status!="complete")return;
@@ -277,8 +308,10 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             check(!Cf6VehicleCombat.damageHero(s,g) && hero.hp==hp-150,"accepted grenade event is never replayed");
             hero.hp=100;hero._killed=false;g={clip:grenade,attempted:false};var kills:Number=killEvents;
             check(Cf6VehicleCombat.damageHero(s,g) && hero.hp==0 && killEvents==kills+1,"native damage settles lethal HP and publishes one kill");
-            StageRunSession.onHeroDeath();var seedBefore:Number=s.rng;
+            StageRunSession.onHeroDeath();var seedBefore:Number=s.rng, deadClock:Object=s.roadsterClock;
             check(Cf6VehicleService.tick(s)=="dead" && room.stageManager.isFailed===false,"ordinary hero death suspends car encounter without StageFailed");
+            check(deadClock.closed===true && s.roadsterClock===null,"death closes the previous life animation clock");
+            check(s.roadsterBurst.active===0 && !s.roadsterBurst.painted,"death discards trailing rounds and their marks");
             var deathAdapter:Object=s.actorAdapter,deathToken:Object=s.actorAdapter.token;
             var life:Object=StageRunSession.testOnlySnapshot();
             check(life.life=="dead" && life.outcome=="active","actual run life and outcome remain orthogonal during death");
@@ -293,6 +326,7 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             check(hero.hp==hero.hp满血值 && !hero._killed && StageRunSession.testOnlySnapshot().life=="alive","actual RespawnEventComponent restores same actor and run life");
             check(Cf6VehicleService.tick(s)=="playing" && s.actorAdapter.hero===hero && !hero._visible,"same-world actual respawn reacquires car presentation without replacing hero");
             check(s.actorAdapter===deathAdapter && s.actorAdapter.token===deathToken && hero.行走===revivedWalk && s.hudLease!=null && s.boss.hp==4200 && s.rules.bossFrame==deadFrame && s.rules.roadKills==30 && s.rng==seedBefore,"resume retains the same adapter and current callbacks with unchanged encounter identity");
+            check(s.roadsterClock!==deadClock && s.roadsterClock.wheel===0 && s.roadsterClock.nearSpin===0,"same-world respawn starts a fresh animation clock");
             check(!Cf6VehicleCombat.damageHero(s,g) && hero.hp==hero.hp满血值,"revival does not clear already-attempted grenade identity");
             grenade.removeMovieClip();Cf6VehicleService.dispose(s);
             check(hero.行走===revivedWalk,"post-revival teardown restores the fresh native callback, not stale pre-death callback");
@@ -335,9 +369,173 @@ class org.flashNight.arki.scene.Cf6VehicleTest {
             check(!Cf6VehicleCombat.damageHero(s,unknown) && hero.hp==beforeUnknown-150 && unknownCalls==1,"unknown grenade outcome never replays the accepted debit");
             hero.dispatcher.publish=originalPublish;
             check(Cf6VehicleService.tick(s)=="failed" && s.reason=="grenade-delivery-unknown","unknown consumer outcome stops encounter advancement");
-            unknownGrenade.removeMovieClip();finish();
+            unknownGrenade.removeMovieClip();fresh();phase=12;return;
         }
     }
+    private static var burstReplay:Object;
+    private static var bossReference:Array;
+    private static var baselineTiming:String;
+
+    private static function burstCollisionChecks():Void {
+        for (var i:Number = 0; i < s.actors.length; i++) Cf6VehicleCombat.retire(s, s.actors[i]);
+        s.actors = [];
+        // Two short moving-sweep contacts in the same tick, using real vehicle
+        // actors with synthetic small bounds so the expected hit order is exact.
+        s.data.bullet = [0, -1, 1, 1];
+        s.data.raider = [-1, -10, 1, 10];
+        s.data.boss = [-1, -10, 1, 10];
+        s.data.muzzles = [[10, 0], [10, 0]];
+        s.data.walls = [];
+        var scale:Number = s.spec.scale;
+        var hx:Number = hero._x / scale, hy:Number = hero.Z轴坐标 / scale;
+        for (i = 0; i < 2; i++) {
+            fixtureRaider();
+            var row:Object = s.actors[i];
+            row.clip._x = (hx + 15 + i * 9) * scale;
+            row.clip._y = hero.Z轴坐标;
+            row.previousX = row.clip._x / scale;
+            row.previousY = row.clip._y / scale;
+        }
+        var burst:Object = s.roadsterBurst;
+        s.age = 1;
+        Cf6RoadsterBurst.schedule(s, 0, 20, 0);
+        Cf6RoadsterBurst.advance(s);
+        check(burst.active === 2 && !burst.painted && burst.slots[0].due === 3
+            && burst.slots[1].due === 4, "two tail rounds wait for the integer 50/100 ms deadlines");
+        s.age = 3;
+        Cf6RoadsterBurst.advance(s);
+        check(s.actors[0].resolved && s.actors[1].resolved && s.rules.roadKills === 2
+            && s.shots === 0 && s.projectiles.length === 0 && burst.active === 2,
+            "one native tail sweep pierces two road raiders; it is still travelling afterward");
+        s.age = 4;
+        Cf6RoadsterBurst.advance(s);
+        check(s.rules.roadKills === 2, "closely spaced tail sweeps do not count defeated raiders again");
+        Cf6RoadsterBurst.clear(s);
+
+        var api:Object = Cf6VehicleService;
+        api.spawnBoss(s);
+        s.rules.phase = "boss";
+        s.boss._x = (hx + 23) * scale; s.boss._y = hy * scale;
+        s.bossPreviousX = s.boss._x / scale; s.bossPreviousY = s.boss._y / scale;
+        s.data.walls = [[hx + 17, hy - 5, hx + 18, hy + 5]];
+        s.rules.fireCredit = 500;
+        s.age = 5;
+        var seed:Number = s.rng, hp:Number = s.boss.hp, serialBefore:Number = s.serial;
+        var fx:Number = s.effects.length;
+        var audioTotal:Number = (audioCalls["CF6Vehicle_1169.mp3"] | 0) + (audioCalls["CF6_0915.mp3"] | 0);
+        Cf6RoadsterBurst.schedule(s, 0, 20, 0);
+        check(burst.slots[0].due === 6 && burst.slots[1].due === 8,
+            "fractional 150 ms shot remainder shifts the first tail round one tick earlier");
+        s.age = 6;
+        Cf6RoadsterBurst.advance(s);
+        check(burst.flashes[0].until === 0 && burst.active === 1 && !burst.painted,
+            "a wall in front of the live Boss occludes the tail impact");
+        Cf6RoadsterBurst.clear(s);
+
+        s.data.walls = [];
+        s.age = 10;
+        Cf6RoadsterBurst.schedule(s, 0, 20, 0);
+        // Expose exactly one round so the two-frame flash can be measured alone.
+        burst.slots[1].due = 0; burst.active--;
+        s.age = 11; Cf6RoadsterBurst.advance(s);
+        var visible:Number = pixels(burst.layer);
+        check(burst.flashes[0].until === 13 && burst.flashes[1].until === 0
+            && burst.flashes[0].x > hx + 20 && burst.flashes[0].x < hx + 25
+            && burst.active === 0 && visible > 0 && burst.layer.getDepth() > s.boss.getDepth(),
+            "tail contact draws a visible two-frame mark in front of the Boss");
+        check(s.boss.hp === hp && s.bossHits === 0 && s.rng === seed && s.serial === serialBefore
+            && s.effects.length === fx && s.projectiles.length === 0 && s.shots === 0
+            && audioTotal === (audioCalls["CF6Vehicle_1169.mp3"] | 0) + (audioCalls["CF6_0915.mp3"] | 0),
+            "the tail mark adds no Boss damage, damage hit, random draw, audio or authoritative projectile");
+        s.age = 12; Cf6RoadsterBurst.advance(s);
+        var continued:Boolean = burst.painted;
+        s.age = 13; Cf6RoadsterBurst.advance(s);
+        check(continued && !burst.painted, "the mark lasts exactly two active ticks");
+        for (i = 0; i < 12; i++) {
+            Cf6RoadsterBurst.schedule(s, 0, 20, 0);
+            Cf6RoadsterBurst.schedule(s, 1, 20, 0);
+        }
+        check(burst.active === 16 && burst.slots.length === 16 && s.projectiles.length === 0,
+            "rapid tapping stays inside eight tail slots per gun and never occupies the primary queue");
+        var layerName:String = burst.layer._name;
+        Cf6VehicleService.dispose(s);
+        check(s.roadsterBurst == null && typeof world[layerName] != "movieclip", "teardown removes its one dedicated display layer");
+    }
+
+    private static function startBossReplay():Void {
+        for (var i:Number = 0; i < s.actors.length; i++) Cf6VehicleCombat.retire(s, s.actors[i]);
+        s.actors = [];
+        keys = {};
+        audioCalls = {};
+        var api:Object = Cf6VehicleService;
+        api.spawnBoss(s);
+        s.boss._x = hero._x + 500 * s.spec.scale;
+        s.boss._y = hero.Z轴坐标;
+        s.rules.phase = "boss";
+        if (phase === 13) Cf6RoadsterBurst.close(s);
+        burstReplay = {ticks:0, mismatch:0, sparks:0, throws:0, samples:[], totalMs:0, frameIntervals:[],
+            lastTickAt:0, peakSlots:0};
+    }
+
+    private static function bossReplayTick():Void {
+        var run:Object = burstReplay;
+        var tick:Number = ++run.ticks;
+        var cycle:Number = tick % 144;
+        keys[74] = cycle < 129;
+        keys[68] = cycle > 0 && cycle < 12;
+        keys[65] = cycle >= 12 && cycle < 24;
+        keys[83] = cycle >= 25 && cycle < 32;
+        keys[87] = cycle >= 58 && cycle < 65;
+        if (s.grenadeHits > 0) hero.无敌 = true;
+        _root.帧计时器.当前帧数 = tick;
+        var begin:Number = getTimer();
+        if (run.lastTickAt > 0) run.frameIntervals.push(begin - run.lastTickAt);
+        run.lastTickAt = begin;
+        var status:String = Cf6VehicleService.tick(s);
+        var elapsed:Number = getTimer() - begin;
+        run.samples.push(elapsed); run.totalMs += elapsed;
+        if (s.rules.phase === "boss" && s.rules.bossFrame === 19) run.throws++;
+        var grenade:MovieClip = s.grenades[0].clip;
+        var shotTrace:String = [s.rules.phase, s.rules.bossFrame, s.boss.hp, s.bossHits, s.rng, s.shots,
+            s.grenadeHits, s.grenades.length, grenade._currentframe, hero.hp, hero._x, hero.Z轴坐标,
+            s.effects.length, audioCalls["CF6Vehicle_1169.mp3"], audioCalls["CF6_1009.mp3"]].join("|");
+        if (phase === 13) bossReference.push(shotTrace);
+        else {
+            if (run.mismatch === 0 && shotTrace !== bossReference[tick - 1]) run.mismatch = tick;
+            var burst:Object = s.roadsterBurst;
+            run.peakSlots = Math.max(run.peakSlots, burst.active);
+            if (burst.flashes[0].until === s.age + 2 || burst.flashes[1].until === s.age + 2) run.sparks++;
+        }
+        if (status !== "playing" || tick > 1300) { abort("paired Boss replay did not finish, tick=" + tick); return; }
+        if (phase===14 && tick===12) {
+            var slower:MovieClip=s.player.p1.roadster;
+            check(s.roadsterWheelBlur===0 && slower["part14"]._visible && !slower["wheel14Blur"]._visible && slower["part14"]._currentframe===Math.floor(s.roadsterClock.wheel)+1,"leftward input recovers the current physical wheel phase with a sharp face");
+        }
+        if (phase===14 && tick===24) {
+            var cruising:MovieClip=s.player.p1.roadster;
+            check(s.roadsterWheelBlur>=85 && s.roadsterWheelBlur<=90 && cruising["part14"]._visible && cruising["wheel14Blur"]._visible,"neutral cruise mixes faint spokes with the blurred face");
+        }
+        if (s.rules.phase !== "boss-death") return;
+        run.samples.sort(Array.NUMERIC);
+        run.frameIntervals.sort(Array.NUMERIC);
+        var timings:String = "ticks=" + tick + " throws=" + run.throws + " logicTotalMs=" + run.totalMs
+            + " logicP95Ms=" + run.samples[Math.floor(0.95 * (run.samples.length - 1))]
+            + " frameP95Ms=" + run.frameIntervals[Math.floor(0.95 * (run.frameIntervals.length - 1))];
+        if (phase === 13) {
+            baselineTiming = timings;
+            check(s.bossHits === 250 && run.throws >= 2, "reference Boss replay reaches real defeat with 250 primary hits and grenade throws");
+            fresh(); burstReplay = null; phase = 14; return;
+        }
+        trace("ROADSTER_BOSS_BASELINE " + baselineTiming);
+        trace("ROADSTER_BOSS_BURST " + timings + " pairedMismatchTick=" + run.mismatch
+            + " cosmeticContactTicks=" + run.sparks + " peakTailSlots=" + run.peakSlots);
+        check(run.mismatch === 0 && tick === bossReference.length && s.bossHits === 250,
+            "same moving Boss replay matches HP, effective hit, RNG, input position, effects and grenades on every tick");
+        check(run.sparks > 0 && run.peakSlots > 0 && run.peakSlots <= 16,
+            "fully enabled Boss replay exercises the real bounded cosmetic tail route");
+        finish();
+    }
+
     public static function abort(reason:String):Void {check(false,reason);finish();}
     private static function finish():Void {
         if(done)return;done=true;Cf6VehicleService.dispose(s);if(pauseLease!=null)PauseManager.releaseLease(pauseLease);

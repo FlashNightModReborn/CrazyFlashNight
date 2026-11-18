@@ -52,10 +52,18 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern {
 
     public function calculateCap(group:ChainGroup,area:Object,zOffset:Number):Number {
         var s:HorizontalShotCoverage = group.shotCoverage;
-        var cap:Number = Math.round(s.contact(group,area,zOffset,true));
-        // 普通霰弹沿用中距离给后排留一颗的规则。
-        if (s.travel >= 90 && s.travel < 240 && s.birthCount > 1 && cap >= s.birthCount)
+        var effCover:Number = s.contact(group,area,zOffset,true);
+        if (!(effCover > 0)) return 0;
+        var cap:Number = Math.round(effCover);
+        // 接触距离 >= 100px（对应角色间距约 >= 200px）且出生至少两段时，单体最多拿 N-1，留至少 1 颗保对群。
+        if (!(s.contactDist < 100) && s.birthCount > 1 && cap >= s.birthCount) {
             cap = s.birthCount-1;
-        return cap;
+        }
+        var live:Number = group.单元体列表.length;
+        var sc:Number = group.bullet.霰弹值;
+        var budget:Number = sc < -65535 ? ((-sc) & 0xFFFF) : sc;
+        if (budget < live) live = budget;
+        if (cap > live) cap = live;
+        return cap < 1 ? 1 : cap;
     }
 }

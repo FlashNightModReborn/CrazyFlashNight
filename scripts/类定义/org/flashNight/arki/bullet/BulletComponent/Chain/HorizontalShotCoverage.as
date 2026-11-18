@@ -1,13 +1,14 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup;
 import org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider;
 
-/** 枪式横向齐射的实际弹群、首次接触和单目标额度。逐次查询复用本帧投影。 */
+/** 枪式横向齐射的实际弹群、扫掠几何覆盖与弹道存速衰减。逐次查询复用本帧投影。 */
 class org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage {
-    private static var NEAR:Number = 200;
-    private static var FAR:Number = 240;
-    public var targetLimit:Number, birthCount:Number, travel:Number;
+    private static var KINETIC_SPEED_BIAS:Number = 10;
+    private static var KINETIC_PLATEAU:Number = 6;
+    private static var KINETIC_DECAY:Number = 0.09;
+    public var birthCount:Number, travel:Number, contactDist:Number;
     public var left:Number, right:Number, hitX:Number, hitY:Number;
-    private var charge:Number, lastX:Number, lastY:Number, spreadAdvance:Number, tip:Number;
+    private var lastX:Number, lastY:Number, spreadAdvance:Number, tip:Number;
     private var frame:Number;
     public var x:Number, y:Number, oldX:Number, oldY:Number;
     private var valid:Boolean;
@@ -18,25 +19,19 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage {
     private var top:Number, bottom:Number;
 
     public function HorizontalShotCoverage(g:ChainGroup) {
-        birthCount = targetLimit = g.单元体列表.length;
-        charge = g.衰竭计数器;
+        birthCount = g.单元体列表.length;
         lastX = g.bullet._x; lastY = g.bullet._y;
-        travel = spreadAdvance = 0;
+        travel = spreadAdvance = contactDist = 0;
         frame = -1;
     }
 
-    /** 沿用出生时的衰减曲线，折算为每目标额度。没有影子弹群或逐颗更新。 */
+    /** 仅推进实际飞行路程与散射推进量；实弹不随时间删除。 */
     public function advance(g:ChainGroup):Void {
         var b:Object = g.bullet;
         var dx:Number = b._x-lastX, dy:Number = b._y-lastY;
         travel += dy == 0 ? Math.abs(dx) : Math.sqrt(dx*dx+dy*dy);
         lastX = b._x; lastY = b._y;
         spreadAdvance += b.xmov*g.运动方向系数;
-        if (targetLimit > 1) {
-            charge += (targetLimit+b.子弹散射度)/25;
-            // 与逐颗降至 limit < -charge 等价，包括正好碰到整数阈值的情况。
-            targetLimit = Math.max(1, Math.min(targetLimit, Math.ceil(-charge)-1));
-        }
     }
 
     /** 队列只用扩大后的窗口查询单位，消弹、地图与预警仍使用弹体本身的碰撞盒。 */
@@ -122,12 +117,14 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage {
         if (!(low < high && high > bandLow && low < bandHigh)) return 0;
         var n:Number = g.单元体列表.length;
         if (n < 1) return 0;
+        var backtrack:Number = step > 0 ? Math.max(0,Math.min(step,d-lo)) : 0;
+        contactDist = Math.max(0,travel-backtrack);
         hitX = Math.max(box.left,Math.min(box.right,x-t*sweepDX));
         hitY = Math.max(box.top+z,Math.min(box.bottom+z,y-t*sweepDY));
         var cover:Number = n;
         if (bandHigh > bandLow && n > 1) {
             cover = countBetween(n,low,high);
-            if (projectExit && travel < FAR && spreadAdvance != 0 && Math.abs(fy)<0.000001 && g.bullet.ymov==0) {
+            if (projectExit && spreadAdvance != 0 && Math.abs(fy)<0.000001 && g.bullet.ymov==0) {
                 // 目标只领一次普通霰弹。直射时把退出目标前仍能相交的轨迹投回本截面。
                 var speed:Number = Math.abs(g.bullet.xmov);
                 if (speed > 0) {
@@ -145,10 +142,15 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage {
                 }
             }
         }
-        // 有效覆盖的首次判定至少一段。衰减只对真实覆盖设置上限。
+        // 正交施加弹道存速衰减，保留高速弹丸的远距压制红利；任意有效接触至少保底 1 段。
+        var bvx:Number = g.bullet.xmov, bvy:Number = g.bullet.ymov;
+        var bulletSpeed:Number = bvy == 0 ? Math.abs(bvx) : Math.sqrt(bvx*bvx+bvy*bvy);
+        if (!(bulletSpeed > 0)) bulletSpeed = 0;
+        var tau:Number = contactDist / (bulletSpeed + KINETIC_SPEED_BIAS);
+        if (tau > KINETIC_PLATEAU) {
+            cover = cover / (1 + KINETIC_DECAY * (tau - KINETIC_PLATEAU));
+        }
         cover = Math.max(1,Math.min(n,cover));
-        if (travel > NEAR && cover > targetLimit)
-            cover += (targetLimit-cover)*Math.min(1,(travel-NEAR)/(FAR-NEAR));
         return cover;
     }
 

@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Roadster83Offline/WheelBlur/rearSpokes" symbolType="movie clip" itemID="97319471-8528748e">
+  <timeline>
+    <DOMTimeline name="rearSpokes">
+      <layers>
+        <DOMLayer name="velocity average" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="pad" focalPointRatio="0">
+                        <matrix>
+                          <Matrix a="0.0766805601782" d="0.0737365070031" tx="200.500146" ty="280.265270" />
+                        </matrix>
+                        <GradientEntry ratio="0.0" color="#273238" alpha="0.0" />
+                        <GradientEntry ratio="0.18" color="#273238" alpha="0.0" />
+                        <GradientEntry ratio="0.28" color="#39454C" alpha="0.52" />
+                        <GradientEntry ratio="0.41" color="#4B565D" alpha="0.4" />
+                        <GradientEntry ratio="0.66" color="#48545A" alpha="0.31" />
+                        <GradientEntry ratio="0.8" color="#566269" alpha="0.41" />
+                        <GradientEntry ratio="0.9" color="#758087" alpha="0.46" />
+                        <GradientEntry ratio="0.96" color="#38444C" alpha="0.54" />
+                        <GradientEntry ratio="1.0" color="#38444C" alpha="0.0" />
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!5266 5605|5256 5448|5224 5293|5171 5143|5098 5001|5007 4870|4898 4751|4775 4647|4638 4559|4491 4489|4335 4438|4174 4408|4010 4397|3846 4408|3685 4438|3529 4489|3382 4559|3245 4647|3122 4751|3013 4870|2922 5001|2849 5143|2796 5293|2764 5448|2754 5605|2764 5763|2796 5918|2849 6068|2922 6209|3013 6341|3122 6460|3245 6564|3382 6652|3529 6721|3685 6772|3846 6803|4010 6813|4174 6803|4335 6772|4491 6721|4638 6652|4775 6564|4898 6460|5007 6341|5098 6209|5171 6068|5224 5918|5256 5763|5266 5605" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

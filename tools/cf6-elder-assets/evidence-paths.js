@@ -2,7 +2,8 @@
 const path = require("path");
 const OLD_PREFIXES = [
   "tools/cf6-elder-assets/evidence/20261017-calibration",
-  "tools/cf6-elder-assets/evidence/20261018-loader-size-followup"
+  "tools/cf6-elder-assets/evidence/20261018-loader-size-followup",
+  "tools/cf6-elder-assets/e/l18"
 ];
 function validateOutput(target, root) {
   const absolute = path.resolve(target), base = path.resolve(root);

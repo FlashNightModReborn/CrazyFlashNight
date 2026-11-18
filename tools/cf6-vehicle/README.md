@@ -12,10 +12,16 @@
 | 完整嵌套原生时间轴、无旧行为脚本 | `prepare_art.py` → `art-manifest.json` |
 | 原声无损提取／已有 CF6 原声复用 | `prepare_audio.py` → `audio-manifest.json` |
 | 源碰撞形状、初始／尾部放置、声音名 | `prepare_runtime.py` → `Cf6VehicleData.as` |
-| AS2 生产源码 | 此目录四个 production `.as.txt`；`Cf6VehicleRules` 的唯一编辑源仍在 `tools/cf6-scene-completion` |
-| 六个生产类的字节身份 | `runtime-manifest.json` |
+| AS2 生产源码 | 此目录的车辆与赛车 `.as.txt`；`Cf6VehicleRules` 由 `tools/cf6-scene-completion` 维护 |
+| 赛车原生素材与运行绑定 | `CF6Vehicle/LIBRARY/Codex/Roadster83Offline` 与 `roadster-profile.json` |
+| 生产类的字节身份 | `runtime-manifest.json` |
 | 章节片段／精确环境墙／stage 固定天空 | `chapter_fragment.py`；根章节生成器拥有最终合并、剧情与奖励 |
 | things-new 共享库装配 | 根协调者拥有 `mount-shared-library.py`，本资源生成器不修改该工程 |
+
+A07 的正常入口从 `things-new` 挂载 `CF6Vehicle.swf`，启动车辆段时由 `asLoaderLogic.swf` 提供车辆类。
+`prepare_art.py --assemble` 从车辆库读取可编辑的 Roadster 原生分件，重新装配原车状态包装。
+运行时生成器读取同一份相位与实例配置。轮组按每帧 22.5° 到 36° 渐变，后移、巡航和前移分别显示清晰、混合和环状轮辐。
+本机验收从常用启动器进入 CF6 的 A07，在 Boss 战用左右走位对照巡航和减速时的轮组表现。
 
 `Cf6VehicleService.begin(room,spec)` 返回会话或拒绝；`tick(session)` 返回 `loading / playing / dead / complete / failed / cancelled`；`dispose(session)` 只释放自己持有的对象和回调；`snapshot(session)` 只读。服务不调用切章、清场、奖励、存档或扣币 API。
 
@@ -79,6 +85,6 @@ tools/cf6-vehicle/run-tests.ps1
 
 原生车辆夹具实际加载发布 RSL、绘制原生像素、消费输入和动画帧，并调用实际 BQP／DamageManager、StageRunSession 和 RespawnEventComponent。hero 是带真实出生 mask 身份的 MovieClip 夹具，不能冒称已经覆盖完整玩家初始化。声音观察器证明调用，不证明输出端听音。生产 things-new 的实际导入链由根侧独立 consumer 夹具核验。通过数量、源与 SWF 哈希、失败和修复身份以本轮运行回执为准。
 
-车辆输入夹具替换普通 `readInput()` 方法，给真实服务提供受控方向和开火意图；生产默认仍读取 `_root` 四向键与 A 键的 `Key.isDown`。准备工具核对默认映射源码，原生 trace 标记 `controlled_intent` 与 `source_fixture_only`。AVM1 原生 `Key.isDown` 不可用赋值模拟，故此夹具不声称物理键输入验收。坐标断言按 MovieClip 的一个世界 twip（1/20 像素）量化界限比较；150 秒墙钟与 2400 帧上限均只触发失败收尾，不产生通过。
+车辆输入夹具替换普通 `readInput()` 方法，给真实服务提供受控方向和开火意图；生产默认仍读取 `_root` 四向键与 A 键的 `Key.isDown`。准备工具核对默认映射源码，原生 trace 标记 `controlled_intent` 与 `source_fixture_only`。AVM1 原生 `Key.isDown` 不可用赋值模拟，故此夹具不声称物理键输入验收。坐标断言按 MovieClip 的一个世界 twip（1/20 像素）量化界限比较；240 秒墙钟与 5400 帧上限均只触发失败收尾，不产生通过。
 
 2026-10-24已取得三份资源的新鲜Compiler 0/0、生产things-new导入链31项和车辆原生行为99项通过；后者含真实伤害、同人死亡复活、三种死亡分支与未知命中不重放。动画变体应用与推进分在相邻tick，避免读取旧帧元数据；测试人物使用现役空壳护盾初始化，未绕过生产伤害计算。失败原件保留在本轮诊断目录，当前通过版为`vehicle/native-r4`，共享消费者为`vehicle/shared-native-r1`。三个运行SWF合计5,951,032字节，六个新增声音70,400字节，均有源清单与摘要；标准入口、物理键及驾驶听感继续单列。

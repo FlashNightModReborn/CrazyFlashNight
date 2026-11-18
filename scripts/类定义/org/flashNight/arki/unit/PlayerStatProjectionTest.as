@@ -28,6 +28,7 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
             testWeaponModes();
             testDressupEnemyHitAndDodgeGuard();
             testHumanEnemyTemplateResistance();
+            testDualGunProjectionAndCacheRefresh();
         } catch (error) {
             check(false,"suite exception: " + error);
         } finally {
@@ -422,14 +423,15 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
         var dodgeApi:Object = org.flashNight.arki.component.StatHandler.DodgeHandler;
 
         var prodModeCallback:Function = function(攻击模式:String):Void {
-            this.伤害类型 = this[攻击模式 + "伤害类型"] ? (this[攻击模式 + "伤害类型"] || "物理") : (this.基础伤害类型 || "物理");
-            this.魔法伤害属性 = this[攻击模式 + "魔法伤害属性"] ? this[攻击模式 + "魔法伤害属性"] : this.基础魔法伤害属性;
-            this.毒 = (this.基础毒 ? Number(this.基础毒) : 0) + (this[攻击模式 + "毒"] ? Number(this[攻击模式 + "毒"]) : 0);
-            this.吸血 = (this.基础吸血 ? Number(this.基础吸血) : 0) + (this[攻击模式 + "吸血"] ? Number(this[攻击模式 + "吸血"]) : 0);
-            this.击溃 = (this.基础击溃 ? Number(this.基础击溃) : 0) + (this[攻击模式 + "击溃"] ? Number(this[攻击模式 + "击溃"]) : 0);
-            this.命中加成 = (this.基础命中加成 ? Number(this.基础命中加成) : 0) + (this[攻击模式 + "命中加成"] ? Number(this[攻击模式 + "命中加成"]) : 0);
-            this.暴击 = this[攻击模式 + "暴击"] ? this[攻击模式 + "暴击"] : undefined;
-            this.斩杀 = (this.基础斩杀 ? Number(this.基础斩杀) : 0) + (this[攻击模式 + "斩杀"] ? Number(this[攻击模式 + "斩杀"]) : 0);
+            var modeKey:String = (攻击模式 == "双枪") ? (this.手枪 ? "手枪" : (this.手枪2 ? "手枪2" : "双枪")) : 攻击模式;
+            this.伤害类型 = this[modeKey + "伤害类型"] ? (this[modeKey + "伤害类型"] || "物理") : (this.基础伤害类型 || "物理");
+            this.魔法伤害属性 = this[modeKey + "魔法伤害属性"] ? this[modeKey + "魔法伤害属性"] : this.基础魔法伤害属性;
+            this.毒 = (this.基础毒 ? Number(this.基础毒) : 0) + (this[modeKey + "毒"] ? Number(this[modeKey + "毒"]) : 0);
+            this.吸血 = (this.基础吸血 ? Number(this.基础吸血) : 0) + (this[modeKey + "吸血"] ? Number(this[modeKey + "吸血"]) : 0);
+            this.击溃 = (this.基础击溃 ? Number(this.基础击溃) : 0) + (this[modeKey + "击溃"] ? Number(this[modeKey + "击溃"]) : 0);
+            this.命中加成 = (this.基础命中加成 ? Number(this.基础命中加成) : 0) + (this[modeKey + "命中加成"] ? Number(this[modeKey + "命中加成"]) : 0);
+            this.暴击 = this[modeKey + "暴击"] ? this[modeKey + "暴击"] : undefined;
+            this.斩杀 = (this.基础斩杀 ? Number(this.基础斩杀) : 0) + (this[modeKey + "斩杀"] ? Number(this[modeKey + "斩杀"]) : 0);
             if (!isFinite(Number(this.基础命中率)) || Number(this.基础命中率) <= 0) {
                 var fallbackHitRate:Number = Number(this.命中率);
                 var defaultHitRate:Number = isFinite(Number(dodgeApi.DEFAULT_HIT_RATE)) ? Number(dodgeApi.DEFAULT_HIT_RATE) : 10;
@@ -501,5 +503,60 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
             check(isFinite(rate) && Math.abs(rate - baselineDodge) < 0.000001,
                 "DodgeHandler.calcDodgeRateByLevel guards invalid hitRate case=" + i);
         }
+    }
+
+    private static function testDualGunProjectionAndCacheRefresh():Void {
+        var api:Object = org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+        var bulletApi:Object = org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer;
+        var t:Object = persistentFixture();
+        t.攻击模式 = "双枪";
+        t.man = {子弹属性: {}, 子弹属性2: {}};
+        var slotsInput:Object = t.__persistentEquipmentInputV1.slots;
+        slotsInput.头部装备.data.rout = 0.2;
+        slotsInput.头部装备.data.vampirism = 1;
+        slotsInput.头部装备.data.poison = 3;
+        slotsInput.头部装备.data.slay = 2;
+        slotsInput.手枪.data.power = 84;
+        slotsInput.手枪.data.rout = 0.1;
+        slotsInput.手枪.data.vampirism = 5;
+        slotsInput.手枪.data.poison = 4;
+        slotsInput.手枪.data.slay = 6;
+        slotsInput.手枪.data.damagetype = "破击";
+        slotsInput.手枪.data.criticalhit = "满血暴击";
+        slotsInput.手枪2.data.power = 90;
+        slotsInput.手枪2.data.rout = 0;
+        slotsInput.手枪2.data.vampirism = 0;
+        slotsInput.手枪2.data.poison = 0;
+        slotsInput.手枪2.data.slay = 0;
+        slotsInput.手枪2.data.damagetype = "物理";
+
+        var record:Object = api.buildPersistentSnapshot(t);
+        api.applyPersistentSnapshot(t, record);
+        check(Math.abs(t.击溃 - 0.3) < 0.0001 && t.吸血 == 6 && t.毒 == 7 && t.伤害类型 == "破击"
+            && typeof t.手枪暴击 == "function",
+            "dual-gun persistent projection preserves main-hand panel stats plus non-weapon base bonuses");
+
+        api.refreshPersistentWeaponCaches(t, record);
+        var mainBullet:Object = t.man.子弹属性;
+        var subBullet:Object = t.man.子弹属性2;
+        bulletApi.inheritShooterAttributes(mainBullet, t);
+        bulletApi.inheritShooterAttributes(subBullet, t);
+        check(Math.abs(mainBullet.击溃 - 0.3) < 0.0001 && mainBullet.吸血 == 6 && mainBullet.毒 == 7
+            && mainBullet.斩杀 == 8 && mainBullet.伤害类型 == "破击" && typeof mainBullet.暴击 == "function",
+            "dual-gun cache refresh projects main-hand plus base traits cleanly");
+        check(Math.abs(subBullet.击溃 - 0.2) < 0.0001 && subBullet.吸血 == 1 && subBullet.毒 == 3
+            && subBullet.斩杀 == 2 && subBullet.伤害类型 == "物理" && subBullet.暴击 == null,
+            "dual-gun off-hand cache refresh carries base bonuses without inheriting main-hand slot traits");
+
+        // 模拟主手卸下击溃与暴击插件后重刷持久化缓存，确认旧 击溃 与 旧暴击闭包被清除
+        slotsInput.手枪.data.rout = 0;
+        slotsInput.手枪.data.criticalhit = null;
+        delete slotsInput.手枪.data.criticalhit;
+        var strippedRecord:Object = api.buildPersistentSnapshot(t);
+        api.applyPersistentSnapshot(t, strippedRecord);
+        api.refreshPersistentWeaponCaches(t, strippedRecord);
+        bulletApi.inheritShooterAttributes(t.man.子弹属性, t);
+        check(t.手枪暴击 === null && Math.abs(t.man.子弹属性.击溃 - 0.2) < 0.0001 && t.man.子弹属性.暴击 == null,
+            "unequipping main-hand rout and crit clears stale slot crit and bullet crumble cache");
     }
 }

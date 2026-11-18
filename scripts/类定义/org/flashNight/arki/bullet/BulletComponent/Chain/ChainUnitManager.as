@@ -102,7 +102,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
             g.shotCoverage = null;
             g.shotgun = null;
             g.pierceRemaining = null;
-            g.pierceDepth = null;
+            g.horizontalPierce = false;
             pn = pool.length;
             list = g.单元体列表;
             n = list.length;
@@ -224,7 +224,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         group.shotCoverage = null;
         group.shotgun = null;
         group.pierceRemaining = null;
-        group.pierceDepth = null;
+        group.horizontalPierce = false;
         var list:Array = group.单元体列表;
         var pool:Array = dataPool;
         var n:Number = list.length;

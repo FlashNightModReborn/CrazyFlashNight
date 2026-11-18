@@ -97,21 +97,24 @@ class org.flashNight.arki.scene.Cf6VehicleCombat {
         }
         return true;
     }
-    public static function fire(s:Object):Void {
-        if(s.projectiles.length>=80) return;
+    public static function fire(s:Object):Number {
+        if(s.projectiles.length>=80) return 0;
+        var emissions:Number=0;
         for(var i:Number=0;i<s.data.muzzles.length;i++) {
             var muzzle:Array=s.data.muzzles[i];
             var name:String="__cf6VehicleBullet"+(++s.serial);
             var clip:MovieClip=s.world.attachMovie(s.spec.symbols.bullet,name,s.world.getNextHighestDepth());
-            if(typeof clip!="movieclip") {s.reason="bullet-linkage-missing";return;}
+            if(typeof clip!="movieclip") {s.reason="bullet-linkage-missing";return emissions;}
             clip.__cf6VehicleOwner=s.token;
             var angle:Number=(nextRandom(s,2)==0?-1:1)*nextRandom(s,5)*3.14/180;
             var row:Object={clip:clip,x:s.actorAdapter.hero._x/s.spec.scale+muzzle[0],
                 y:s.actorAdapter.hero.Z轴坐标/s.spec.scale+muzzle[1],age:0,closed:false,
                 dx:s.spec.projectileSpeed*Math.cos(angle),dy:s.spec.projectileSpeed*Math.sin(angle)};
             clip._xscale=clip._yscale=s.spec.scale*100;clip._x=row.x*s.spec.scale;clip._y=row.y*s.spec.scale;
-            s.projectiles.push(row);s.shots++;playCue(s,"gun");
+            s.projectiles.push(row);s.shots++;emissions|=1<<i;
+            org.flashNight.arki.scene.Cf6RoadsterBurst.schedule(s,i,row.dx,row.dy);playCue(s,"gun");
         }
+        return emissions;
     }
     public static function projectiles(s:Object):Void {
         for(var i:Number=s.projectiles.length-1;i>=0;i--) {

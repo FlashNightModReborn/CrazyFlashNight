@@ -48,7 +48,7 @@ _root.__cf6SharedCheck=function(value:Boolean,message:String):Void {
 };
 _root.__cf6SharedFinish=function():Void {
     delete _root.__cf6SharedPump.onEnterFrame;
-    if(_root.__cf6SharedFailed==0 && _root.__cf6SharedPassed==31) {
+    if(_root.__cf6SharedFailed==0 && _root.__cf6SharedPassed==32) {
         // Leave a read-only native display sheet after the behavior terminal, so
         // the actual shared-library pixels can also be inspected in Test Movie.
         var gallery:MovieClip=_root.__cf6SharedWorld;
@@ -112,6 +112,10 @@ sharedPump.onEnterFrame=function():Void {
         }
         _root.__cf6SharedCheck(visible,"production shared consumer has real native pixels: "+this.names[i]);
     }
+    var roadster:MovieClip=this.clips[0].p1.roadster;
+    _root.__cf6SharedCheck(typeof roadster=="movieclip" && roadster.part14._totalframes===32
+        && typeof roadster.wheel14Blur=="movieclip" && typeof roadster.wheel19Blur=="movieclip",
+        "production things-new loads the A07 roadster and both high-speed wheel overlays");
     _root.__cf6SharedFinish();
 };
 '''

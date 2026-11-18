@@ -1,0 +1,65 @@
+/** A07 presentation adapter. The encounter continues to own movement and emission. */
+class org.flashNight.arki.scene.Cf6RoadsterPresentation {
+    private static var config:Object = __ROADSTER_CLOCK_CONFIG__;
+    private static var parts:Array = __ROADSTER_PART_ROUTES__;
+    private static var roadSteps:Array = __ROADSTER_ASPHALT_STEPS__;
+    private static var wheelBlurEnabled:Boolean = __ROADSTER_WHEEL_BLUR_ENABLED__;
+
+    public static function begin(session:Object):Boolean {
+        var visual:MovieClip = session.player.p1.roadster;
+        if (typeof visual != "movieclip") return false;
+        var routes:Array = parts;
+        var count:Number = config.count;
+        for (var i:Number = 0; i < routes.length; i++) {
+            var route:Array = routes[i];
+            var part:MovieClip = visual[route[0]];
+            if (typeof part != "movieclip" || part._totalframes !== count) return false;
+            if (route[2] != null && typeof visual[route[2]] != "movieclip") return false;
+        }
+        var clock:Object = org.flashNight.arki.scene.RoadsterPhaseClock.create(config);
+        if (clock == null) return false;
+        session.roadsterClock = clock;
+        session.roadsterWheelBlur = -1;
+        apply(session, visual, org.flashNight.arki.scene.RoadsterPhaseClock.pose(clock), 0);
+        return true;
+    }
+
+    private static function apply(session:Object, visual:MovieClip, pose:Object, blur:Number):Void {
+        var routes:Array = parts;
+        var count:Number = routes.length;
+        var blendChanged:Boolean = wheelBlurEnabled && session.roadsterWheelBlur !== blur;
+        for (var i:Number = 0; i < count; i++) {
+            var route:Array = routes[i];
+            var part:MovieClip = visual[route[0]];
+            var wheel:Boolean = wheelBlurEnabled && route[1] === "wheelFrame";
+            if (!wheel || blur < 100) {
+                var frame:Number = pose[route[1]];
+                if (part._currentframe !== frame) part.gotoAndStop(frame);
+            }
+            if (wheel && blendChanged) {
+                var softened:MovieClip = route[2] == null ? null : visual[route[2]];
+                org.flashNight.arki.scene.RoadsterWheelBlend.apply(part, softened, blur);
+            }
+        }
+        session.roadsterWheelBlur = blur;
+    }
+
+    public static function advance(session:Object, heroDistance:Number,
+                                   roadFrameBefore:Number, emissions:Number):Void {
+        var clock:Object = session.roadsterClock;
+        var scroll:Number = session.road._currentframe === roadFrameBefore ? 0 : roadSteps[roadFrameBefore - 1];
+        var groundDistance:Number = heroDistance - scroll;
+        if (org.flashNight.arki.scene.RoadsterPhaseClock.step(clock, false, groundDistance,
+                (emissions & 1) !== 0, (emissions & 2) !== 0)) {
+            var blur:Number = wheelBlurEnabled
+                ? org.flashNight.arki.scene.RoadsterWheelBlend.percent(groundDistance, clock.count / clock.circumference) : 0;
+            apply(session, session.player.p1.roadster, org.flashNight.arki.scene.RoadsterPhaseClock.pose(clock), blur);
+        }
+    }
+
+    public static function close(session:Object):Void {
+        org.flashNight.arki.scene.RoadsterPhaseClock.close(session.roadsterClock);
+        session.roadsterClock = null;
+        session.roadsterWheelBlur = 0;
+    }
+}

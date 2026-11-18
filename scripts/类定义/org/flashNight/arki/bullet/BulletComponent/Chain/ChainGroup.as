@@ -23,9 +23,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     // 单元体数据对象列表（元素为 ChainUnitData）
     public var 单元体列表:Array;
     public var shotgun:ShotgunPattern;
-    // 每发横向穿刺联弹独有。键只存目标本次出生的数字身份，不持有单位引用。
+    // 枪式横向穿刺改用布尔路由统一接入 7/18 覆盖率惩罚；特殊横向弹型仍保留各自计数账本。
     public var pierceRemaining:Object;
-    public var pierceDepth:org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalPierceDepth;
+    public var horizontalPierce:Boolean;
     public var shotCoverage:org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage;
     // 每帧模拟函数（ChainUnitManager.tick 以 f(group) 形态调用，不依赖 this）
     public var update:Function;
@@ -156,11 +156,11 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
         area = areaClip;
         bullet = bulletRef;
         #include "../macros/FLAG_PIERCE.as"
-        // 工厂已解析 baseAsset；只有横向穿刺实体组持账。纵向、单发均不分配。
+        horizontalPierce = false;
+        // 工厂已解析 baseAsset；枪式横向穿刺路由到逐帧覆盖模型，特殊横向弹型继续持账。纵向、单发均不分配。
         if ((bulletRef.flags & FLAG_PIERCE) != 0 && bulletRef.baseAsset.indexOf("横向") == 0) {
-            // 枪式齐射按覆盖与穿深。旧计数器仍服务其他尚未标定的横向特殊弹型。
             if (bulletRef.baseAsset == "横向联弹" || bulletRef.baseAsset == "横向手枪联弹" || bulletRef.baseAsset == "横向机枪联弹") {
-                pierceDepth = new org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalPierceDepth();
+                horizontalPierce = true;
             } else {
                 pierceRemaining = {};
             }

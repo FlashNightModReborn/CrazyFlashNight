@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 OLD_PREFIXES = (
     'tools/cf6-elder-assets/evidence/20261017-calibration',
     'tools/cf6-elder-assets/evidence/20261018-loader-size-followup',
+    'tools/cf6-elder-assets/e/l18',
 )
 MAP_FILE = Path(__file__).with_name('evidence-path-map.json')
 

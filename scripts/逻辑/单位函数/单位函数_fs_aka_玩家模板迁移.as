@@ -1080,43 +1080,45 @@ _root.主角函数.攻击模式切换 = function(模式) {
 
 
 _root.主角函数.根据模式重新读取武器加成 = function(模式) {
-    if (this[模式 + "伤害类型"]) {
-        this.伤害类型 = this[模式 + "伤害类型"] || "物理";
+    // 双枪模式下单位通用面板展示以主手为准；单发子弹通过 ShootInitCore 按槽位独立投影，避免跨手串台
+    var modeKey = (模式 === "双枪") ? (this.手枪 ? "手枪" : (this.手枪2 ? "手枪2" : "双枪")) : 模式;
+    if (this[modeKey + "伤害类型"]) {
+        this.伤害类型 = this[modeKey + "伤害类型"] || "物理";
     } else {
         this.伤害类型 = this.基础伤害类型 || "物理";
     }
-    if (this[模式 + "魔法伤害属性"]) {
-        this.魔法伤害属性 = this[模式 + "魔法伤害属性"];
+    if (this[modeKey + "魔法伤害属性"]) {
+        this.魔法伤害属性 = this[modeKey + "魔法伤害属性"];
     } else {
         this.魔法伤害属性 = this.基础魔法伤害属性
     }
-    if (this[模式 + "毒"]) {
-        this.毒 = this.基础毒 + this[模式 + "毒"];
+    if (this[modeKey + "毒"]) {
+        this.毒 = this.基础毒 + this[modeKey + "毒"];
     } else {
         this.毒 = this.基础毒;
     }
-    if (this[模式 + "吸血"]) {
-        this.吸血 = this.基础吸血 + this[模式 + "吸血"];
+    if (this[modeKey + "吸血"]) {
+        this.吸血 = this.基础吸血 + this[modeKey + "吸血"];
     } else {
         this.吸血 = this.基础吸血;
     }
-    if (this[模式 + "击溃"]) {
-        this.击溃 = this.基础击溃 + this[模式 + "击溃"];
+    if (this[modeKey + "击溃"]) {
+        this.击溃 = this.基础击溃 + this[modeKey + "击溃"];
     } else {
         this.击溃 = this.基础击溃;
     }
-    if (this[模式 + "命中加成"]) {
-        this.命中加成 = this.基础命中加成 + this[模式 + "命中加成"];
+    if (this[modeKey + "命中加成"]) {
+        this.命中加成 = this.基础命中加成 + this[modeKey + "命中加成"];
     } else {
         this.命中加成 = this.基础命中加成;
     }
-    if (this[模式 + "暴击"]) {
-        this.暴击 = this[模式 + "暴击"];
+    if (this[modeKey + "暴击"]) {
+        this.暴击 = this[modeKey + "暴击"];
     } else {
         this.暴击 = undefined;
     }
     // 斩杀 = 非武器装备(项链/防具等)的基础斩杀 + 当前武器模式斩杀；字段缺失时按 0 处理，避免 undefined 参与运算得到 NaN
-    this.斩杀 = (this.基础斩杀 ? Number(this.基础斩杀) : 0) + (this[模式 + "斩杀"] ? Number(this[模式 + "斩杀"]) : 0);
+    this.斩杀 = (this.基础斩杀 ? Number(this.基础斩杀) : 0) + (this[modeKey + "斩杀"] ? Number(this[modeKey + "斩杀"]) : 0);
     if (!isFinite(Number(this.基础命中率)) || Number(this.基础命中率) <= 0) {
         var fallbackHitRate = Number(this.命中率);
         var defaultHitRate = isFinite(Number(DodgeHandler.DEFAULT_HIT_RATE)) ? Number(DodgeHandler.DEFAULT_HIT_RATE) : 10;

@@ -33,6 +33,20 @@ class org.flashNight.arki.unit.UnitComponent.Routing.SkillContainerTransitionTes
     public static function runAllTests():Void {
         passed=failed=0;index=-1;
         check(org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionTest.runAll(),"existing state transition regression");
+        var dualProbe:Object = {
+            基础伤害类型: "物理", 基础魔法伤害属性: undefined, 基础毒: 1, 基础吸血: 2, 基础击溃: 0,
+            基础命中加成: 0, 基础斩杀: 1, 基础命中率: 100,
+            手枪: {}, 手枪2: {},
+            手枪伤害类型: "破击", 手枪魔法伤害属性: undefined, 手枪毒: 4, 手枪吸血: 5, 手枪击溃: 0.1, 手枪命中加成: 0, 手枪斩杀: 6,
+            手枪2伤害类型: "物理", 手枪2魔法伤害属性: undefined, 手枪2毒: 0, 手枪2吸血: 0, 手枪2击溃: 0.3, 手枪2命中加成: 0, 手枪2斩杀: 0
+        };
+        _root.主角函数.根据模式重新读取武器加成.call(dualProbe, "双枪");
+        var dualMainOk:Boolean = (dualProbe.伤害类型 == "破击" && Math.abs(dualProbe.击溃 - 0.1) < 0.0001
+            && dualProbe.毒 == 5 && dualProbe.吸血 == 7 && dualProbe.斩杀 == 7);
+        dualProbe.手枪 = null;
+        _root.主角函数.根据模式重新读取武器加成.call(dualProbe, "双枪");
+        check(dualMainOk && Math.abs(dualProbe.击溃 - 0.3) < 0.0001 && dualProbe.毒 == 1 && dualProbe.吸血 == 2 && dualProbe.斩杀 == 1,
+            "dual-gun bonus reload preserves main-hand stats and falls back to off-hand without clearing");
         rows=[{name:"idle-to-strike",kind:"strike"},
             {name:"spin-to-strike",kind:"strike",before:"旋风腿",cut:2},
             {name:"slash-to-strike",kind:"strike",before:"凶斩",cut:2},

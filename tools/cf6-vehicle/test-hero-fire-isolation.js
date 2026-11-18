@@ -6,7 +6,8 @@ const baseline=process.argv.includes('--baseline');
 const corePath='scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ShootCore.as';
 const firePath='scripts/类定义/org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as';
 const results=[];
-function fixture(marker){
+const coreSource=source.read(corePath).text;
+function fixture(marker,combatAdmitted=true){
     const counts={shots:0,events:0,removed:0,ammoChecks:0,projectiles:0};
     const params={shootingStateName:'主手射击中',actionFlagName:'动作A',prefix:'',bulletAttrKeys:['子弹属性'],
         shootBulletAttrKey:'子弹属性',taskName:'keepshooting',playerBulletField:'子弹数',gunPath:'枪.枪.装扮.枪口位置'};
@@ -16,15 +17,16 @@ function fixture(marker){
     unit.dispatcher={publish(name){counts.events++;if(name==='processShot')unit.长枪.value.shot++;}};
     unit.长枪射击=()=>{counts.shots++;unit.长枪.value.shot++;return true;};
     if(marker)unit[marker]={};
-    const rootPort={控制目标:'hero',暂停:false,子弹区域shoot传递(){counts.projectiles++;}};
+    const rootPort={控制目标:'hero',暂停:false,gameworld:{__combatAdmitted:combatAdmitted},
+        子弹区域shoot传递(){counts.projectiles++;}};
     const corePort={_paramsCache:{1:{...params,gunPathArray:params.gunPath.split('.'),baseShootFrame:'射击'}},setLaneRecoil(){},armRateLimit(){},scheduleRecoil(){},
         removeStoredTask(core,key){counts.removed++;delete core[key];},
         cleanupLane(core,p){counts.removed++;delete core[p.taskName];core[p.shootingStateName]=false;}};
-    if(source.read(corePath).text.includes('function isPresentationControlled('))
-        corePort.isPresentationControlled=source.fn(corePath,'function isPresentationControlled(');
     const globals={_root:rootPort,ShootCore:corePort,_paramsCache:corePort._paramsCache,Dictionary:{getStaticUID:()=>1},
         TargetCacheManager:{findHero:()=>unit},WeaponAmmoRuntime:{ensure(){counts.ammoChecks++;},ghostMultiplier:()=>1},
         WeaponSpreadRuntime:{applyShot(){}},RayVisualBridge:{captureShot(){}}};
+    if(coreSource.includes('function isPresentationControlled('))
+        corePort.isPresentationControlled=source.fn(corePath,'function isPresentationControlled(',globals);
     return {counts,params,unit,globals};
 }
 const markers=[undefined,'__cf6VehicleOwner','__cf6TraversalOwner','__cf6ElevatorPoseOwner'];
@@ -48,6 +50,19 @@ for(const marker of markers){
     assert.equal(f.counts.ammoChecks,denied?0:1);
     results.push({path:'executeShot',marker:marker||'none',projectiles:f.counts.projectiles,
         result:marker&&baseline?'ownership-leak-observed':'expected'});
+}
+if(coreSource.includes('_root.gameworld.__combatAdmitted === false')){
+    const queued=fixture(undefined,false),direct=fixture(undefined,false);
+    const continuous=source.fn(corePath,'function continuousShoot(',queued.globals);
+    assert.equal(continuous(queued.unit,'长枪',50,queued.params,50),false);
+    assert.equal(queued.counts.shots,0);
+    assert.equal(queued.unit.keepshooting,undefined);
+    const execute=source.fn(firePath,'function executeShot(',direct.globals);
+    assert.equal(execute(direct.unit,'长枪',null,{子弹散射度:1,站立子弹散射度:1},null),false);
+    assert.equal(direct.counts.ammoChecks,0);
+    assert.equal(direct.counts.projectiles,0);
+    results.push({path:'continuousShoot',marker:'combat-not-admitted',shots:0,result:'expected'},
+        {path:'executeShot',marker:'combat-not-admitted',projectiles:0,result:'expected'});
 }
 const report={schema:'cf6-hero-fire-isolation-source.v1',mode:baseline?'baseline':'fixed',
     evidenceTier:'node-source-extraction',cases:results.length,results,sourceEvidence:source.evidence,
