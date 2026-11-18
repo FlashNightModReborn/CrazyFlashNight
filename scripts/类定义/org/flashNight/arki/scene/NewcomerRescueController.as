@@ -151,21 +151,18 @@ class org.flashNight.arki.scene.NewcomerRescueController {
             r.jeepGround=r.world.createEmptyMovieClip("__rescueJeepGround",r.world.getNextHighestDepth());
             r.coverGround=r.world.createEmptyMovieClip("__rescueCoverGround",r.world.getNextHighestDepth());
         }
-        collision.addMovieClipCollision(r.jeepGround,{xMin:628,yMin:310.5,xMax:1051,yMax:393.3});
+        collision.addMovieClipCollision(r.jeepGround,{xMin:628,yMin:310.5,xMax:1051,yMax:393.3},false);
         var cover:Object=state=="wreck"?{xMin:1402,yMin:389.8,xMax:1493.2,yMax:440.2}:
             state=="detonating"?{xMin:1400.7,yMin:357.8,xMax:1491.8,yMax:426.2}:
             {xMin:1405,yMin:375,xMax:1502,yMax:384};
-        collision.addMovieClipCollision(r.coverGround,cover);collision.redraw();
+        collision.addMovieClipCollision(r.coverGround,cover);
     }
     private static function removeGround(r:Object):Void {
         var collision:SceneCollisionManager=SceneCollisionManager.instance;
-        var changed:Boolean=false;
-        for(var i:Number=collision.movieClipCollisions.length-1;i>=0;i--){
-            var mc:MovieClip=collision.movieClipCollisions[i].mc;
-            if(mc===r.jeepGround || mc===r.coverGround){collision.movieClipCollisions.splice(i,1);changed=true;}
-        }
+        var jeepRemoved:Boolean=collision.removeMovieClipCollision(r.jeepGround);
+        var coverRemoved:Boolean=collision.removeMovieClipCollision(r.coverGround);
         r.jeepGround.removeMovieClip();r.coverGround.removeMovieClip();
-        if(changed)collision.redraw();
+        if(jeepRemoved || coverRemoved)collision.redraw();
     }
     private static function rectangle(mc:MovieClip,x0:Number,y0:Number,x1:Number,y1:Number):Void {
         mc.beginFill(0,0);mc.moveTo(x0,y0);mc.lineTo(x1,y0);mc.lineTo(x1,y1);

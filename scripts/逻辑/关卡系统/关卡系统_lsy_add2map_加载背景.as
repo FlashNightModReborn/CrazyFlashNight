@@ -44,16 +44,12 @@ _root.通过数组绘制地图碰撞箱 = function(arr:Array) {
 	org.flashNight.arki.scene.SceneCollisionManager.instance.addCollisions(arr);
 }
 
-_root.通过影片剪辑外框绘制地图碰撞箱 = function(mc:MovieClip) {
-	// 获取影片剪辑的边界矩形
-	var rect:Object = mc.area.getRect(_root.gameworld);
-	// 调用统一渲染器绘制矩形碰撞箱
-	CollisionLayerRenderer.drawRect(_root.collisionLayer, rect);
-	org.flashNight.arki.scene.SceneCollisionManager.instance.addMovieClipCollision(mc, rect);
+_root.通过影片剪辑外框绘制地图碰撞箱 = function(mc:MovieClip, forceUpdate:Boolean) {
+	org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.ObstacleRenderer.renderMovieClipCollision(mc, forceUpdate);
 }
 
-_root.移除影片剪辑外框地图碰撞箱 = function(mc:MovieClip) {
-	org.flashNight.arki.scene.SceneCollisionManager.instance.removeMovieClipCollision(mc);
+_root.移除影片剪辑外框地图碰撞箱 = function(mc:MovieClip, forceUpdate:Boolean) {
+	org.flashNight.arki.scene.SceneCollisionManager.instance.removeMovieClipCollision(mc, forceUpdate);
 }
 
 

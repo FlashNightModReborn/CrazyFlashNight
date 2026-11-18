@@ -17,19 +17,23 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Obstac
             return;
         }
 
-        var rect:Object = target.area.getRect(_root.gameworld);
-        var collisionLayer:MovieClip = _root.collisionLayer;
+        renderMovieClipCollision(target);
+    }
 
-        if (collisionLayer) {
-            CollisionLayerRenderer.drawObstacle(collisionLayer, rect, true);
-
-            // AVM1 的 for..in 不保证枚举时间轴 / createEmptyMovieClip 子实例。
-            // 初绘成功时直接登记同一 MC 与矩形，后续 clear/redraw 才有完整权威来源。
-            var sceneCollisionManager:SceneCollisionManager = SceneCollisionManager.instance;
-            if (sceneCollisionManager != null &&
-                sceneCollisionManager.collisionLayer === collisionLayer) {
-                sceneCollisionManager.addMovieClipCollision(target, rect);
-            }
+    // 关卡也会直接传入 area。移动后用同一入口重新采集边界。
+    public static function renderMovieClipCollision(target:MovieClip, forceUpdate:Boolean):Void {
+        var layer:MovieClip = _root.collisionLayer;
+        if (target == null || layer == null) return;
+        var area:MovieClip = target.area || target;
+        var rect:Object = area.getRect(_root.gameworld);
+        // 老版 AVM1 子片可能只提供 getBounds。两种取法都要转换到游戏世界。
+        if (rect.xMin === undefined) rect = area.getBounds(_root.gameworld);
+        var manager:SceneCollisionManager = SceneCollisionManager.instance;
+        if (manager != null && manager.collisionLayer === layer) {
+            manager.addMovieClipCollision(target, rect, forceUpdate);
+        } else {
+            // 兼容场景管理器绑定之前的独立初绘。
+            CollisionLayerRenderer.drawRect(layer, rect);
         }
     }
 
