@@ -88,6 +88,7 @@ class org.flashNight.arki.unit.Action.Shoot.GunslingerDualCadenceTest {
         check(near(stamps[side][3],holdMs),"held continuation carries current-level hold interval");
         release(side);ticks(holdTicks+2);
         check(shots[side].length==4&&shots[1-side].length==0,"release stops continuation without firing the other hand");
+        check(EnhancedCooldownWheel.I().getActiveTaskCount()==0,"released dual gunslinger retires poll without cleanup");
         finish();
     }
     private static function testHoldToTap(spec:Object, side:Number):Void {

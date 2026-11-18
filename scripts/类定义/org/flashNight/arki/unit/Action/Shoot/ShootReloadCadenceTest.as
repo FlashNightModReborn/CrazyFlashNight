@@ -85,8 +85,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootReloadCadenceTest {
         check(oldUnit===u,"stale callbacks exercise actual same-path MovieClip rebinding");
         var fresh:Object=ShootCore._lastShotTimes[key];
         ShootCore._clearRateLimit(key,oldRate);
-        ShootCore._onSemiCooldownDone(oldUnit,"_semiLock_keepshooting","动作A",null,oldSemi);
-        ShootCore._pollRelease(oldUnit,"_semiLock_keepshooting","动作A",null,oldSemi);
+        ShootCore._onSemiCooldownDone(oldUnit,"_semiLock_keepshooting","动作A",oldSemi);
+        ShootCore._pollRelease(oldUnit,"_semiLock_keepshooting","动作A",oldSemi);
         check(ShootCore._lastShotTimes[key]===fresh,"late prior shot cannot clear replacement cooldown");
         check(u._semiLock_keepshooting===true,"late prior semi callback cannot replace the new press lock");
         ShootCore.cleanup(u);check(EnhancedCooldownWheel.I().getActiveTaskCount()==0,"teardown cancels rate, pending unlock and polling tasks");

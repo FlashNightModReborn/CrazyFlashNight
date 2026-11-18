@@ -81,8 +81,7 @@ class org.flashNight.arki.unit.Action.Shoot.PistolRecoilCoreTest {
         ShootCore._gunslingerDualGunContinuousShoot(unit, unit.man, off ? "手枪2" : "手枪", interval,
             off ? "副手持续射击" : "主手持续射击", off ? "副手射击中" : "主手射击中",
             off ? "动作B" : "动作A", off ? "keepshooting2" : "keepshooting",
-            off ? "_gunslingerChain_keepshooting2" : "_gunslingerChain_keepshooting",
-            off ? "_semiReleased_keepshooting2" : "_semiReleased_keepshooting");
+            off ? "_gunslingerChain_keepshooting2" : "_gunslingerChain_keepshooting");
     }
 
     private static function testPresentationOwnership():Void {

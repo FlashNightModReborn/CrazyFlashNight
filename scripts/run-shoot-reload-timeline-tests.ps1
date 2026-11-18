@@ -1,6 +1,7 @@
 ﻿[CmdletBinding()]
-param([ValidateRange(1,3600)][int]$TimeoutSeconds=300,[switch]$SkipCompile,[switch]$Hunter)
+param([ValidateRange(1,3600)][int]$TimeoutSeconds=300,[switch]$SkipCompile,[switch]$Hunter,[switch]$Awp)
 $ErrorActionPreference='Stop'
+if ($Hunter -and $Awp) { throw '-Hunter and -Awp select different native matrices; run them separately.' }
 $projectDir=Split-Path -Parent $PSScriptRoot
 $hostSource=Join-Path $PSScriptRoot 'ShootReloadNativeHost'
 $hostTarget=Join-Path $PSScriptRoot 'tmp-shoot-reload-native-host'
@@ -62,6 +63,8 @@ $focusedRun=@{
         'scripts/类定义/org/flashNight/arki/scene/StageRunSession.as')
     ExpectedTracePatterns=@(
         '(?m)^--- ShootReloadTimelineTest: (?<native>[1-9][0-9]*)/\k<native> passed, 0 failed ---\r?$',
+        '(?m)^\[COUPLED_RELOAD\] case=primary-first mainPacks=1 subPacks=1 resumedMain=[1-9][0-9]* resumedSub=[1-9][0-9]*\r?$',
+        '(?m)^\[COUPLED_RELOAD\] case=secondary-first mainPacks=0 subPacks=1 resumedMain=[1-9][0-9]* resumedSub=[1-9][0-9]*\r?$',
         '(?m)^--- ShootReloadCadenceTest: (?<cadence>[1-9][0-9]*)/\k<cadence> passed, 0 failed ---\r?$',
         '(?m)^--- DualGunReloadTimelineTest: (?<dual>[1-9][0-9]*)/\k<dual> passed, 0 failed ---\r?$',
         '(?m)^--- GunslingerDualCadenceTest: (?<gunslinger>[1-9][0-9]*)/\k<gunslinger> passed, 0 failed ---\r?$',
@@ -92,5 +95,23 @@ if ($Hunter) {
         '(?m)^\[HUNTER_NATIVE\] hunter-full-no-prior .*end=92', '(?m)^\[HUNTER_NATIVE\] hunter-last-main-queued-off .*end=92',
         '(?m)^\[HUNTER_NATIVE\] ordinary-last-main-queued-off ')
     $focusedRun.SuccessSummary = 'Production things0 dual body, tracking-shot terminal route, projectile exit and restored two-axis running'
+}
+if ($Awp) {
+    $focusedRun.DomainId = 'awp-timeline'
+    $focusedRun.TemplateRelativePath = 'scripts/test-runners/shoot-reload-timeline/TestLoader.awp.as.template'
+    $focusedRun.SuiteRelativePaths = @('scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ShootReloadTimelineTest.as')
+    $focusedRun.SuiteFqns = @('org.flashNight.arki.unit.Action.Shoot.ShootReloadTimelineTest')
+    $focusedRun.ExpectedTracePatterns = @(
+        '(?m)^--- ShootReloadTimelineTest: (?<n>[1-9][0-9]*)/\k<n> passed, 0 failed ---\r?$',
+        '(?m)^\[AWP_CASE\] case=awp-nine-rounds-R-control-before .*debit=1 .*result=observed\r?$',
+        '(?m)^\[AWP_CASE\] case=awp-last-round-J-control-before .*debit=1 .*result=observed\r?$',
+        '(?m)^\[AWP_CASE\] case=awp-last-round-R-control-after .*debit=1 .*result=observed\r?$',
+        '(?m)^\[AWP_CASE\] case=awp-up-return-R-wheel-before .*debit=1 .*result=observed\r?$',
+        '(?m)^\[AWP_CASE\] case=awp-flat-return-R-wheel-after .*debit=1 .*result=observed\r?$',
+        '(?m)^\[AWP_CASE\] case=awp-up-return-R-wheel-after .*debit=1 .*result=observed\r?$',
+        '(?m)^\[AWP_CASE\] case=awp-down-return-J-wheel-after .*debit=1 .*result=observed\r?$',
+        '(?m)^\[AWP_CASE\] case=awp-companion-moving-return .*debit=0 .*result=observed\r?$',
+        '(?m)^\[AWP_CASE\] case=awp-run-ready-R-wheel-after .*debit=1 .*result=observed\r?$')
+    $focusedRun.SuccessSummary = 'Production AWP control-block inputs, reload phases and bounded failure capture'
 }
 & (Join-Path $PSScriptRoot 'test-runners/run-focused-testloader.ps1') @focusedRun

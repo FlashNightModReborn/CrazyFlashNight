@@ -1,12 +1,16 @@
 # 装填打断射速回归
 
-唯一入口：`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-shoot-reload-timeline-tests.ps1 -TimeoutSeconds 300`。
+默认运行 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-shoot-reload-timeline-tests.ps1 -TimeoutSeconds 600`。同一入口另有 `-Awp` 和 `-Hunter` 两组定向用例，分别单独执行。
 
 测试由真实 CS6 `testMovie()` 执行，不读取玩家槽位。`ShootReloadNativeHost` 的 XFL 真源位于 `scripts/ShootReloadNativeHost/`；runner 将其确定性复制到`scripts/` 下被忽略的 `tmp-shoot-reload-native-host/`，产出根目录被忽略的 `ShootReloadNativeHost.swf`。宿主源放在 `scripts/` 以保持生产宏的相对 include 基准；DOM include 为 `../TestLoader.as`，类路径为 `类定义;`，输出为 `../ShootReloadNativeHost.swf`。这是测试宿主，不属于生产 SWF 或正式 runtime。
 
 SWF 在根目录执行是必要的：现役 `things0.swf` 还导入 `flashswf/arts/新版人物文字信息.swf`，必须沿用游戏的相对 URL 基准。不得修改生产资源的 RSL URL，也不能用嵌套 `loadMovie` 的空附件结果冒充角色验证。代理 `.xfl` 内容相同时不重复覆盖，避免覆盖 CS6 持有的同名文件锁；每次编译仍由现役两阶段关闭/重开事务从盘读取目标。
 
 `ShootReloadTimelineTest` 使用现役 `主角-男`、长枪上身及其换弹标签时间轴，并从物品 XML 读取逐发装填的 53 式步骑枪和整匣装填的战术巴雷特。后者覆盖交替 R/J、按住 J 点 R、按住 R 点 J，以及一发后点 R 再按住 J；既检查最小间隔，也检查不能靠 R 重新武装持续按住的普通半自动。单位基础字段、动作标志、库存与弹体出口是隔离夹具；射击、换弹、`processShot` 和弹药消耗走生产实现。输入经 `man.开始射击/开始换弹`，不把该夹具称作真实键盘或完整游戏状态机验收。
+
+#261 的两例使用 HK416 战术版的物品 XML、男主的持枪控制块和长枪上身。在主仓或副仓只余一发时持续置 J/K，分别检查先空的一侧、装填请求种类和两种备弹的实际扣数。结束后必须在两键持续按住时再次观察到两种弹体出口。`WeaponAmmoRuntimeTest` 另查逐发装填中保持 J、只松 R 时已装弹数与余额。
+
+#265 的 `-Awp` 观察真实控制块和时间轮。平射、上射、下射分别在第 12、26、40 帧注入空仓输入，覆盖下一帧已经排队的射击结束脚本。若换弹已经进入第 42 帧又退回空闲，并且帧控制仍待接管，测试立即记录 `AWP_RETURN_STALL`。成功需要实际补弹、单次支付及松开重按后的出弹。移动同伴用例走非玩家行走函数和 AI 的换弹执行入口，玩家库存扣数应为零。测试驱动输入并隔离地图位移，完整战斗中的 AI 决策和键盘手感另作游戏内验收。
 
 帧戳来自真实 `CooldownWheel.tick` 调用的观察包装，结束时恢复原方法；不会额外推进时间轮。另有 `ShootReloadCadenceTest` 在真实 AVM1 中手动推进同一时间轮，精确检查最小间隔、暂停拒绝、无库存拒绝、迟到解锁、卸载清理和持续点射。所有观察包装仅存在于测试源。
 
