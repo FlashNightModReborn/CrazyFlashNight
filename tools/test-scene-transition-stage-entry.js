@@ -4,11 +4,10 @@ const fs = require('fs'), path = require('path'), vm = require('vm'), assert = r
 const root = path.resolve(__dirname, '..');
 const fadeXml = fs.readFileSync(path.join(root, 'CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/淡出动画.xml'), 'utf8');
 const runSource = fs.readFileSync(path.join(root, 'scripts/类定义/org/flashNight/arki/scene/StageRunSession.as'), 'utf8');
-const start = runSource.indexOf('private static function getStageStartBlockReasonIgnoringReservation(coveredBookEntry:Boolean):String');
-const end = runSource.indexOf('private static function isRunTerminal()', start);
-assert.ok(start >= 0 && end > start, 'production admission function must exist');
-const admission = runSource.slice(start, end);
-const body = admission.slice(admission.indexOf('{') + 1, admission.lastIndexOf('}'));
+// Match the method's own closing brace so adjacent AS2 declarations never enter the JS VM.
+const admission = /^([ \t]*)private static function getStageStartBlockReasonIgnoringReservation\(coveredBookEntry:Boolean\):String[ \t]*\{([\s\S]*?)^\1\}/m.exec(runSource);
+assert.ok(admission, 'production admission function must exist');
+const body = admission[2];
 const frames = [...fadeXml.matchAll(/<DOMFrame\b([^>]*)>([\s\S]*?)<\/DOMFrame>/g)];
 const frame17 = frames.find(m => /\bindex="16"/.test(m[1]) && m[2].includes('<Actionscript>'));
 assert.ok(frame17, 'production fade frame 17 must exist');
