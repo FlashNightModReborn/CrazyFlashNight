@@ -29,21 +29,27 @@ namespace CF7Launcher.Guardian.Handlers
                 BootstrapCommandHelpers.PostResp(bootForm, "list_resp", false, null, "archive_list_unavailable");
                 return;
             }
-            BootstrapCommandHelpers.DispatchList(bootForm, archiveTask, userPrefs);
+            BootstrapCommandHelpers.DispatchList(bootForm, archiveTask, userPrefs, saveCtx);
         }
 
-        internal static void HandleDelete(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
+        internal static void HandleDelete(JObject msg, BootstrapPanel panel, ArchiveTask archive,
+            GameLaunchFlow flow, SaveResolutionContext saveCtx)
         {
-            string slot;
-            string slotError;
-            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
-                    msg, "slot", archiveTask, out slot, out slotError))
+            BootstrapCommandHelpers.RequireIdleOrTearDown("delete", panel, flow, delegate
             {
-                BootstrapCommandHelpers.PostSlotFailure(bootForm, msg, "delete_resp", slotError);
-                return;
-            }
-            BootstrapCommandHelpers.DispatchSlot(bootForm, archiveTask, msg,
-                BootstrapCommandHelpers.BuildArchivePayload("delete", slot), "delete_resp");
+                if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(msg, "slot", archive, out string slot, out string error))
+                {
+                    BootstrapCommandHelpers.PostSlotFailure(panel, msg, "delete_resp", error);
+                    return;
+                }
+                if (saveCtx?.Locator == null)
+                {
+                    BootstrapCommandHelpers.PostSlotFailure(panel, msg, "delete_resp", "save_storage_unavailable");
+                    return;
+                }
+                BootstrapCommandHelpers.DispatchSlot(panel, archive, msg,
+                    BootstrapCommandHelpers.BuildArchivePayload("delete", slot), "delete_resp", saveCtx);
+            }, msg);
         }
 
         internal static void HandleRename(

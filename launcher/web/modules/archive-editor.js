@@ -458,7 +458,7 @@
       var hintId = inputId + '-range';
       return labelHtml + '<div class="archive-number"><input type="number" id="' + inputId + '" data-idx="' + idx
         + '" value="' + (val != null ? val : 0) + '"' + minA2 + maxA2
-        + (range ? ' aria-describedby="' + hintId + '"' : '') + '>'
+        + (range ? ' aria-describedby="' + hintId + '" title="可输入 ' + range + '"' : '') + '>'
         + (range ? '<span class="archive-range" id="' + hintId + '">' + range + '</span>' : '') + '</div>';
     }
     if (f.type === 'string') {

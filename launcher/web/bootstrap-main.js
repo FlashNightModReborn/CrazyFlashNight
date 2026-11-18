@@ -25,6 +25,8 @@
   var welcomeSlotTimeEl = document.getElementById('welcome-slot-time');
   var btnConfirmStart = document.getElementById('btn-confirm-start');
   var btnSwitchSlot = document.getElementById('btn-switch-slot');
+  var btnWelcomeNew = document.getElementById('btn-welcome-new');
+  var btnWelcomeNewSep = document.querySelector('#view-welcome .hero-link-sep');
   var chkIntro = document.getElementById('chk-intro');
   var fontPackBox = document.getElementById('welcome-fontpack');
   var fontPackText = document.getElementById('welcome-fontpack-text');
@@ -65,11 +67,13 @@
   var _deletePending = '';
   var _deleteRequestId, _deleteOp;
   var _archiveRequestIds = false;
+  var _archiveFileDeletion = false;
   var _archiveSequence = 0;
   function nextArchiveRequestId() { return _archiveRequestIds ? ++_archiveSequence : undefined; }
   var saveManager = window.BootstrapSaveManager.create({
     primaryName: slotPrimaryName, displayName: slotDisplayName,
-    formatBytes: fmtBytes, run: runSlotAction, canCleanResidue: function () { return _archiveRequestIds; }
+    formatBytes: fmtBytes, run: runSlotAction, canDeleteFiles: function () { return _archiveFileDeletion; },
+    canCleanResidue: function () { return _archiveRequestIds; }
   });
 
   // Phase 2b: UserPrefs 字段, 初次 list_resp 前是未初始化占位 —
@@ -233,9 +237,9 @@
       return false;
     }
     var current = slotDisplayName(slot);
-    var input = await window.BootstrapPrompt('修改存档显示名', {
-      archive:true, field:'存档名', value:current, okText:'保存', danger:false,
-      detail:'槽位 ' + slot.slot + '。清空后将跟随角色名。'
+    var input = await window.BootstrapPrompt('为“' + slotPrimaryName(slot) + '”设置存档名。', {
+      archive:true, title:'重命名存档', field:'存档名', value:current, okText:'保存', danger:false,
+      detail:'留空时使用角色名。'
     });
     if (input == null) return false;
     var restoreFollow = input.replace(/^\s+|\s+$/g, '') === '';
@@ -381,17 +385,22 @@
   // The character and archive workbenches share the launcher scene behind their surfaces.
   loadRandomBackground();
 
-  function channelEvent(label, detail) {
+  // 首页读数条是前门的叙事信道：加载相由 PM19 lore 流讲述，回到首页后由这里承接（含失败语气）。
+  function channelEvent(label, detail, tone) {
     var list = document.getElementById('hud-chan');
     if (!list || !label) return;
     var entry = document.createElement('li');
     entry.textContent = label;
     if (detail) entry.title = detail;
+    if (tone) entry.dataset.tone = tone;
     list.appendChild(entry);
     while (list.children.length > 5) list.firstElementChild.remove();
     var last = document.getElementById('hud-last');
     last.textContent = label;
     last.title = detail || label;
+    var hud = document.getElementById('welcome-hud');
+    if (tone) hud.dataset.tone = tone;
+    else delete hud.dataset.tone;
   }
 
   function updateDecor() {
@@ -429,34 +438,49 @@
     var s = pickDefaultSlot();
     _welcomeSlot = s;
     updateDecor();
+    var plate = document.getElementById('welcome-slot');
+    var kicker = document.getElementById('welcome-slot-kicker');
+    var hasRecords = lastSlotsFromLauncher.some(function (row) {
+      return !window.BootstrapSaveManager.isDeleted(row) || window.BootstrapSaveManager.needsAttention(row);
+    });
+    // 首启只保留一个“新建角色”主动作；次级入口改为存档库（导入和待处理项仍在那里）。
+    btnWelcomeNew.hidden = !!(s && s.__empty);
+    btnWelcomeNewSep.hidden = btnWelcomeNew.hidden;
+    btnSwitchSlot.textContent = s && !s.__empty ? '选择其他存档' : '导入或管理存档';
     if (!s) {
+      plate.dataset.state = 'none';
+      kicker.textContent = '存档';
       welcomeSlotNameEl.textContent = '无可用存档';
       welcomeSlotTimeEl.textContent = '—';
       applyConfirmLabel('normal', null);
       return;
     }
-    welcomeSlotNameEl.textContent = slotPrimaryName(s);
-
     var mode = effectiveMode(s);
-    var modeHint = '';
-    if (mode === 'fresh') {
-      modeHint = s.__empty
-        ? '<span class="flag fresh-mode">将新建角色</span>'
-        : '<span class="flag fresh-mode">将重建 · 原数据丢弃</span>';
-    }
-
     if (s.__empty) {
-      welcomeSlotTimeEl.innerHTML = modeHint || '<span class="flag empty">空槽位</span>';
-    } else {
-      var progress = window.BootstrapSaveManager.progressLabel(s, slotPrimaryName(s));
-      var details = [Number.isInteger(s.storyProgress) ? '主线 ' + s.storyProgress : '', s.difficulty].filter(Boolean);
-      var stamp = s.lastPlayed || s.lastModified;
-      var time = window.BootstrapSaveManager.localTime(stamp);
-      welcomeSlotTimeEl.innerHTML = modeHint + '<b>' + escapeHtml(progress) + '</b>'
-        + (details.length ? (progress ? ' · ' : '') + escapeHtml(details.join(' · ')) : '')
-        + (time ? '<span class="slot-date">' + escapeHtml(window.BootstrapSaveManager.relativeTime(stamp)) + ' · ' + escapeHtml(time) + '</span>' : '');
-
+      plate.dataset.state = 'empty';
+      kicker.textContent = '新的开始';
+      welcomeSlotNameEl.textContent = hasRecords ? '暂无可继续的角色' : '还没有佣兵档案';
+      welcomeSlotTimeEl.textContent = hasRecords ? '可以建立新角色，也可以前往存档库查看记录。' : '建立你的第一个角色，开始佣兵生涯。';
+      applyConfirmLabel(mode, s);
+      return;
     }
+    welcomeSlotNameEl.textContent = slotPrimaryName(s);
+    plate.dataset.state = mode === 'fresh' ? 'rebuild' : 'live';
+    kicker.textContent = mode === 'fresh' ? '原槽重建' : '继续上次';
+
+    var display = slotDisplayName(s);
+    var progress = window.BootstrapSaveManager.progressLabel(s, slotPrimaryName(s));
+    var chips = [];
+    if (mode === 'fresh') chips.push('<span class="slot-chip warn">将重建 · 原数据丢弃</span>');
+    if (progress) chips.push('<span class="slot-chip progress">' + escapeHtml(progress) + '</span>');
+    if (s.difficulty) chips.push('<span class="slot-chip">' + escapeHtml(s.difficulty) + '</span>');
+    if (Number.isInteger(s.storyProgress)) chips.push('<span class="slot-chip">主线 ' + s.storyProgress + '</span>');
+    var stamp = s.lastPlayed || s.lastModified;
+    var time = window.BootstrapSaveManager.localTime(stamp);
+    var dateLine = [display !== slotPrimaryName(s) ? display : '',
+      time ? window.BootstrapSaveManager.relativeTime(stamp) + ' · ' + time : ''].filter(Boolean).join(' · ');
+    welcomeSlotTimeEl.innerHTML = (chips.length ? '<span class="slot-chips">' + chips.join('') + '</span>' : '')
+      + (dateLine ? '<span class="slot-date">' + escapeHtml(dateLine) + '</span>' : '');
     applyConfirmLabel(mode, s);
   }
 
@@ -514,10 +538,55 @@
   // 无片头路径类似: start_game 也带 requireFlashReveal:true (不带 deferReveal),
   // loading spinner 覆盖 Flash 初始化期, 等 Flash 封面帧到达自动 swap.
 
+  var lastLaunchTitle = '';
+  var loadingSlowTimer;
+  var loadingIndicator = document.getElementById('loading-indicator');
+  var loadingStages = document.getElementById('loading-stages');
+  var loadingCancel = document.getElementById('loading-cancel');
+  var loadingSlow = document.getElementById('loading-slow');
+  var launchStages = {
+    Spawning:[1, '正在启动游戏'], WaitingConnect:[1, '正在连接游戏'],
+    WaitingHandshake:[1, '正在连接游戏'], Embedding:[2, '正在载入游戏画面'],
+    WaitingGameReady:[2, '正在准备游戏场景'], Ready:[3, '正在等待游戏画面']
+  };
+
+  function setLoadingStage(stage, label) {
+    loadingStages.dataset.stage = String(stage);
+    loadingIndicator.querySelector('.loading-text').textContent = label;
+  }
+
+  function resetLoadingCopy() {
+    clearTimeout(loadingSlowTimer);
+    loadingSlow.hidden = true;
+    var preparing = !!_characterCreatePrepToken;
+    loadingIndicator.querySelector('.loading-title').textContent = preparing ? '建立角色' : lastLaunchTitle || '正在进入游戏';
+    loadingStages.hidden = preparing;
+    setLoadingStage(1, preparing ? '正在准备角色' : '正在启动游戏');
+  }
+
+  function watchLoadingDelay() {
+    clearTimeout(loadingSlowTimer);
+    if (!_characterCreatePrepToken) {
+      loadingSlowTimer = setTimeout(function () { loadingSlow.hidden = false; }, 15000);
+    }
+  }
+
+  function cancelOverlay() {
+    if (!_introActive) return;
+    if (_characterCreatePrepToken) {
+      if (window.BootstrapCharacterCreate) window.BootstrapCharacterCreate.handleEscape();
+    } else {
+      if (Audio) Audio.playCancel();
+      send({cmd:'cancel_launch'});
+    }
+  }
+  loadingCancel.onclick = cancelOverlay;
+
   function playIntroThenStart(slot) {
     var ov = document.getElementById('intro-ov');
     var vid = document.getElementById('intro-video');
     var skipBtn = document.getElementById('intro-skip');
+    resetLoadingCopy();
     _introActive = true;
     document.body.classList.add('intro-playing', 'intro-video');
     ov.classList.remove('loading');
@@ -534,7 +603,7 @@
     send({ cmd: 'start_game', slot: slot.slot, deferReveal: true, requireFlashReveal: true });
     var fired = false;
     function onVideoDone(reason) {
-      if (fired) return;
+      if (fired || !_introActive || skipBtn.onclick !== skipIntro) return;
       fired = true;
       if (reason) logLine('tag-in', 'intro handoff: ' + reason);
       try { vid.pause(); vid.onended = null; vid.onerror = null; } catch (e) {}
@@ -543,6 +612,7 @@
       // 片头结束, 恢复背景层栈显示.
       document.body.classList.remove('intro-video');
       ov.classList.add('loading');
+      watchLoadingDelay();
       send({ cmd: 'reveal_ok' });
     }
     vid.onended = function() { onVideoDone('video_end'); };
@@ -551,7 +621,8 @@
       logLine('tag-err', 'intro video error: ' + err);
       onVideoDone('video_error');
     };
-    skipBtn.onclick = function() { onVideoDone('user_skip'); };
+    function skipIntro() { onVideoDone('user_skip'); }
+    skipBtn.onclick = skipIntro;
     var p = vid.play();
     if (p && typeof p.then === 'function') {
       p.catch(function(e) {
@@ -564,13 +635,11 @@
   function showLoadingOverlay() {
     var ov = document.getElementById('intro-ov');
     var skipBtn = document.getElementById('intro-skip');
-    var loadingText = ov.querySelector('.loading-text');
-    var loadingHint = ov.querySelector('.loading-hint');
+    resetLoadingCopy();
     _introActive = true;
     document.body.classList.add('intro-playing');
     ov.classList.add('on', 'loading');
-    if (loadingText) loadingText.textContent = '启动中';
-    if (loadingHint) loadingHint.textContent = 'ESC 取消';
+    watchLoadingDelay();
     skipBtn.onclick = null;
     skipBtn.style.display = 'none';
   }
@@ -583,9 +652,6 @@
     document.body.classList.add('character-create-preparing');
     viewCharacterCreate.setAttribute('inert', '');
     viewCharacterCreate.setAttribute('aria-busy', 'true');
-    var ov = document.getElementById('intro-ov');
-    var loadingText = ov.querySelector('.loading-text');
-    if (loadingText) loadingText.textContent = '正在准备角色';
     var active = document.activeElement;
     if (active && typeof active.blur === 'function') active.blur();
     return true;
@@ -608,6 +674,9 @@
     var vid = document.getElementById('intro-video');
     var skipBtn = document.getElementById('intro-skip');
     _introActive = false;
+    clearTimeout(loadingSlowTimer);
+    if (_currentModal === 'diagnostic-log' && loadingSlow.contains(_modalReturnFocus)) closeModal();
+    loadingSlow.hidden = true;
     try { vid.pause(); vid.onended = null; vid.onerror = null; } catch (e) {}
     ov.classList.remove('on', 'loading');
     document.body.classList.remove('intro-playing', 'intro-video');
@@ -618,31 +687,31 @@
     skipBtn.textContent = '跳 过 · ESC';
   }
 
-  // 所有"无片头" start_game 入口统一封装: loading overlay + 带 requireFlashReveal flag.
-  // 欢迎页无片头分支 / 槽位卡片"开始" / "新建角色" 都走这里.
-  // requireFlashReveal 让 panel swap 等 Flash 封面帧, 遮掩 Flash 自身初始化期间.
-  function initiateLaunch(slotName) {
+  function launchSlot(slot) {
     if (_launchInFlight) return;
+    var character = slotPrimaryName(slot);
+    var display = slotDisplayName(slot);
+    lastLaunchTitle = character + (display !== character ? ' · ' + display : '');
+    if (chkIntro.checked) { playIntroThenStart(slot); return; }
     showLoadingOverlay();
     setLaunchInFlight(true);
-    send({ cmd: 'start_game', slot: slotName, requireFlashReveal: true });
+    send({cmd:'start_game', slot:slot.slot, requireFlashReveal:true});
   }
   function saveNotice(text) { document.getElementById('save-notice').textContent = text; }
 
   var pendingUndo = null;
 
-  function runSlotAction(action, s) {
+  function runSlotAction(action, s, catalogLabel) {
     var isDeleted = window.BootstrapSaveManager.isDeleted;
-    var name = slotDisplayName(s);
+    var name = isDeleted(s) && catalogLabel ? catalogLabel : slotDisplayName(s);
     if (action === 'start' && !isDeleted(s) && !s.corrupt && !_launchInFlight) {
       selectSlotAndReturn(s.slot, 'normal');
-      if (chkIntro.checked) playIntroThenStart(s.slot);
-      else initiateLaunch(s.slot);
+      launchSlot(s);
     }
     if (action === 'repair' && s.corrupt && !isDeleted(s)) openModal('repair-card', {slot:s.slot, catalog:true});
     if (action === 'edit') openModal('archive-editor', {slot:s.slot, slotMeta:s});
     if (action === 'undo' && s.editUndoToken && !pendingUndo) {
-      window.BootstrapConfirm('撤销“' + name + '”的上次编辑？', {archive:true, okText:'撤销编辑', detail:'恢复这个槽位在上次编辑前的副本。'}).then(function (ok) {
+      window.BootstrapConfirm('撤销“' + name + '”的上次编辑？', {archive:true, title:'撤销存档编辑', okText:'撤销编辑', detail:'恢复这个槽位在上次编辑前的副本。'}).then(function (ok) {
         var current = window.BootstrapApp.getSlotMeta(s.slot);
         if (!ok || pendingUndo || !current || current.editUndoToken !== s.editUndoToken) return;
         var request = {cmd:'undo_edit', slot:s.slot, undoToken:s.editUndoToken, requestId:++_archiveSequence};
@@ -657,22 +726,26 @@
       send({cmd:'export', slot:s.slot, defaultName:name + '_' + date + '.json', forceRaw:!!(s.corrupt || s.inconsistent)});
     }
     if (action === 'rebuild') {
-      window.BootstrapConfirm('在原槽位重建“' + name + '”？', {
-        archive:true, okText:'重建', detail:'槽位 ' + s.slot + ' 将用于创建新角色。'
+      window.BootstrapConfirm('使用“' + name + '”的位置建立新角色？', {
+        archive:true, title:'在原位置新建角色', danger:false, okText:'开始建角', detail:'新角色将从头开始。'
       }).then(function (ok) {
         var current = window.BootstrapApp.getSlotMeta(s.slot);
         if (ok && current && isDeleted(current)) openCharacterCreate('rebuild', s.slot);
       });
     }
     if (action === 'delete' && !_deletePending) {
-      var cleanup = !!s.inconsistent && _archiveRequestIds;
-      window.BootstrapConfirm((cleanup ? '清理残留副本“' : '删除“') + name + '”？', {
-        archive:true, okText:cleanup ? '清理副本' : '删除', detail:cleanup
-          ? '仅清理槽位 ' + s.slot + ' 未删掉的本地副本。删除保护和槽位名称会保留。'
-          : '将删除槽位 ' + s.slot + ' 的存档副本，删除后无法恢复。请先导出需要保留的进度。“已删除”中可在原槽位创建新角色。'
+      var cleanup = !!(s.inconsistent || s.cleanupPending) && _archiveRequestIds;
+      var label = cleanup ? '清理残留副本' : _archiveFileDeletion ? '删除存档' : '移出存档库';
+      var question = cleanup ? '清理“' + name + '”的残留副本？' : _archiveFileDeletion
+        ? '删除“' + name + '”？' : '将“' + name + '”移出存档库？';
+      var detail = cleanup ? '确认后将清理这份存档剩余的本地副本。'
+        : '角色将从存档库移除，进度无法恢复。如需保留，请先导出。';
+      if (!_archiveFileDeletion) detail = '此版本会清理启动器副本并阻止旧进度载入。清理 Flash 副本需要更新启动器。';
+      window.BootstrapConfirm(question, {
+        archive:true, title:label, danger:true, okText:label, detail:detail
       }).then(function (ok) {
         var current = window.BootstrapApp.getSlotMeta(s.slot);
-        if (!ok || !current || _deletePending || (cleanup ? !current.inconsistent : isDeleted(current))) return;
+        if (!ok || !current || _deletePending || (cleanup ? !(current.inconsistent || current.cleanupPending) || current.rebuildPending || current.rebuildInProgress : isDeleted(current))) return;
         _deletePending = s.slot;
         _deleteOp = cleanup ? 'reset' : 'delete';
         _deleteRequestId = nextArchiveRequestId();
@@ -692,17 +765,19 @@
     _deleteOp = _deleteRequestId = undefined;
     saveManager.setDeletePending('');
     if (ok) {
+      var pending = warning === 'shadow_cleanup_pending' || warning === 'slot_cleanup_pending';
       // The exact delete receipt commits the tombstone; the following list reconciles the full entry.
       var meta = window.BootstrapApp.getSlotMeta(key);
       if (meta) {
         lastSlotsFromLauncher = lastSlotsFromLauncher.map(function (s) {
-          return s.slot === key ? Object.assign({}, s, {tombstoned:true, inconsistent:warning === 'shadow_cleanup_pending'}) : s;
+          return s.slot === key ? Object.assign({}, s, {tombstoned:true, cleanupPending:pending, inconsistent:warning === 'shadow_cleanup_pending'}) : s;
         });
       }
       saveManager.update(orderedSlots(lastSlotsFromLauncher));
       renderWelcomeSlot();
-      saveNotice(warning === 'shadow_cleanup_pending' ? '存档已删除，副本仍被占用。释放文件后可在“已删除”中清理。'
-        : cleanup ? '残留副本已清理，删除保护已保留。' : '存档已删除，进度无法恢复。可在原位置新建角色。');
+      saveNotice(pending ? '角色已移除，仍有副本待清理。请在“待处理”中检查后重试。'
+        : !_archiveFileDeletion ? '角色已移出存档库。更新启动器后可清理残留的 Flash 副本。'
+        : cleanup ? '残留副本已清理。' : '存档已删除。');
       playUiCue('playSuccess');
     } else {
       saveNotice((cleanup ? '清理失败：' : '删除失败：') + (error === 'shadow_in_use'
@@ -720,13 +795,17 @@
   // ── State 广播 ──
   var launchLabels = {
     Idle: '就绪', Spawning: '正在启动', WaitingConnect: '正在连接',
-    WaitingHandshake: '正在握手', PrewarmHandshakeHeld: '预热就绪',
+    WaitingHandshake: '正在连接', PrewarmHandshakeHeld: '准备就绪',
     Embedding: '正在载入画面', RepairPending: '等待修复存档', WaitingGameReady: '等待游戏就绪',
     Ready: '游戏就绪', Error: '启动失败', Resetting: '正在重置'
   };
   function applyState(state, msg) {
     var label = launchLabels[state] || state;
-    if (_lastLaunchState !== state) channelEvent(label);
+    // 失败沿用 lore 的“链路中断”语气，技术原因留在悬停详情里。
+    if (_lastLaunchState !== state) {
+      if (state === 'Error') channelEvent(label + ' · 链路中断', msg || label, 'error');
+      else channelEvent(label, msg || '');
+    }
     var prevState = _lastLaunchState;
     _lastLaunchState = state;
     // 音频反馈: Error 进入时 tap, Idle 从非 Idle 回来时恢复 ambient.
@@ -751,18 +830,14 @@
                          || state === 'WaitingGameReady');
     cancelLaunchBtn.style.display = launchInProgress ? '' : 'none';
     // PM19 V3: loading 相阶段文字随真实 state 更新；建角准备文案优先；容忍跳态（只写最新到达的）。
-    var stageTextMap = { Spawning:'正在拉起进程', WaitingConnect:'正在连接渲染进程',
-                         WaitingHandshake:'正在终端握手', Embedding:'正在嵌入沙箱',
-                         WaitingGameReady:'正在等待游戏就绪' };
-    if (!_characterCreatePrepToken && stageTextMap[state]) {
-      var stageEl = document.querySelector('#intro-ov .loading-text');
-      if (stageEl) stageEl.textContent = stageTextMap[state];
-    }
+    var currentStage = launchStages[state];
+    if (!_characterCreatePrepToken && currentStage) setLoadingStage(currentStage[0], currentStage[1]);
 
     // 欢迎页确认按钮在 Error 态切成重试样式
     if (btnConfirmStart) {
-      if (state === 'Error') btnConfirmStart.classList.add('retry');
-      else btnConfirmStart.classList.remove('retry');
+      btnConfirmStart.classList.toggle('retry', state === 'Error');
+      if (state === 'Error') btnConfirmStart.textContent = '重试启动';
+      else if (prevState === 'Error') applyConfirmLabel(effectiveMode(_welcomeSlot), _welcomeSlot);
     }
 
     if (state === 'Idle') {
@@ -1054,6 +1129,7 @@
         return;
       }
       if (msg.archiveRequestIds === true) _archiveRequestIds = true;
+      _archiveFileDeletion = msg.archiveFileDeletion === true;
       lastSlotsFromLauncher = msg.slots;
       channelEvent('目录同步 · ' + msg.slots.length + ' 个槽位');
       // Phase 2b: 接收 launcher 推的 UserPrefs
@@ -1205,7 +1281,7 @@
     var suggestedSlot = msg.suggestedSlot || '';
     playUiCue('playModalOpen');
     var slot = await window.BootstrapPrompt('选择导入目标', {
-      archive:true, field:'目标槽位', value:suggestedSlot, okText:'继续', danger:false,
+      archive:true, title:'导入存档', field:'目标槽位', value:suggestedSlot, okText:'继续', danger:false,
       detail:'可输入已有槽号。新槽号可用 1–32 个英文字母、数字、下划线或短横线。'
     });
     if (slot == null) { playUiCue('playCancel'); return; }
@@ -1221,7 +1297,7 @@
     }
     if (!window.BootstrapSaveManager.isDeleted(meta)) {
       var ok = await window.BootstrapConfirm(meta.corrupt ? '此存档已损坏，覆盖？' : '存档已存在，覆盖？', {
-        archive:true, okText:'覆盖', detail:'槽位 ' + meta.slot
+        archive:true, title:'覆盖存档', danger:true, okText:'覆盖', detail:'槽位 ' + meta.slot
       });
       if (!ok) return;
       var current = window.BootstrapApp.getSlotMeta(meta.slot);
@@ -1241,9 +1317,9 @@
     if (active) {
       if (_modalBackgroundState) return;
       _modalBackgroundState = Array.prototype.slice.call(
-        stage.querySelectorAll(':scope > .topbar, :scope > .view, :scope > .bottom, #log')
+        stage.querySelectorAll(':scope > .topbar, :scope > .view, :scope > .bottom, #log, #intro-ov, #intro-skip')
       ).map(function(node) {
-        var state = {node:node, ariaHidden:node.getAttribute('aria-hidden')};
+        var state = {node:node, inert:node.inert, ariaHidden:node.getAttribute('aria-hidden')};
         node.inert = true;
         node.setAttribute('aria-hidden', 'true');
         return state;
@@ -1251,7 +1327,7 @@
       return;
     }
     (_modalBackgroundState || []).forEach(function(state) {
-      state.node.inert = false;
+      state.node.inert = state.inert;
       if (state.ariaHidden == null) state.node.removeAttribute('aria-hidden');
       else state.node.setAttribute('aria-hidden', state.ariaHidden);
     });
@@ -1362,27 +1438,24 @@
   document.addEventListener('keydown', function(e) {
     if (trapModalTab(e)) return;
     if (e.key !== 'Escape') return;
-    if (_introActive) {
-      if (_characterCreatePrepToken) {
-        if (window.BootstrapCharacterCreate) window.BootstrapCharacterCreate.handleEscape();
-        return;
-      }
-      var ovEsc = document.getElementById('intro-ov');
-      if (ovEsc.classList.contains('loading')) {
-        // loading 相: ESC → cancel_launch, 由 Idle 广播回头 hideLaunchOverlay
-        if (Audio) Audio.playCancel();
-        send({ cmd: 'cancel_launch' });
-      } else {
-        // 视频相: ESC = 跳过 (=触发跳过按钮, 走 onVideoDone)
-        if (Audio) Audio.playCancel();
-        var skipBtn = document.getElementById('intro-skip');
-        if (skipBtn.onclick) skipBtn.onclick();
-      }
-      return;
-    }
     if (_currentModal) {
       if (Audio) Audio.playCancel();
       tryCloseModal();
+      return;
+    }
+    if (_introActive) {
+      if (document.getElementById('intro-ov').classList.contains('loading')) {
+        if (!e.repeat) cancelOverlay();
+      } else {
+        if (Audio) Audio.playCancel();
+        document.getElementById('intro-skip').click();
+      }
+      return;
+    }
+    var more = document.getElementById('save-more');
+    if (!viewSlots.hidden && more.open) {
+      more.open = false;
+      more.querySelector('summary').focus();
       return;
     }
     if (!hudDetail.hidden) { setHudOpen(false); return; }
@@ -1473,7 +1546,9 @@
         }
         createOpener = createOrigin = null;
       },
-      onLoadDurable: function() {
+      onLoadDurable: function(slotKey) {
+        var entry = window.BootstrapApp.getSlotMeta(slotKey);
+        lastLaunchTitle = entry ? slotPrimaryName(entry) : '正在载入新角色';
         showLoadingOverlay();
         setLaunchInFlight(true);
         if (send({cmd:'retry'})) return true;
@@ -1518,23 +1593,21 @@
     }
     if (_launchInFlight) return;
     var s = _welcomeSlot;
-    if (!s) { window.BootstrapAlert('没有可启动的存档，请点「切换」选择槽位'); return; }
+    if (!s) { window.BootstrapAlert('没有可启动的存档，请进入存档库选择或新建角色'); return; }
     var mode = effectiveMode(s);
     if (s.corrupt) {
-      window.BootstrapAlert('存档已损坏，无法启动；请点「切换」到槽位页编辑或删除');
+      window.BootstrapAlert('存档已损坏，无法启动；请进入存档库检查修复');
       return;
     }
     if (mode === 'normal' && (s.__empty || s.tombstoned || s.inconsistent)) {
       // 这些状态下不应该是 normal 模式 — pickDefaultSlot 已做降级, 这里兜底防御
-      window.BootstrapAlert('当前默认存档处于异常状态，请点「切换」到槽位页处理');
+      window.BootstrapAlert('当前默认存档处于异常状态，请进入存档库处理');
       return;
     }
     if (mode === 'fresh') {
       openCharacterCreate(s.__empty ? 'new' : 'rebuild', s.__empty ? null : s.slot);
-    } else if (chkIntro.checked) {
-      playIntroThenStart(s);
     } else {
-      initiateLaunch(s.slot);
+      launchSlot(s);
     }
   };
 
@@ -1553,7 +1626,11 @@
   document.addEventListener('fullscreenchange', function() {
     if (hostFullscreen === null) displayFullscreen(!!document.fullscreenElement);
   });
-  document.getElementById('btn-logs').onclick = function() { openModal('diagnostic-log', {}); };
+  // 诊断日志不再占顶栏：从“关于与帮助”或启动失败提示进入。
+  document.addEventListener('click', function(event) {
+    var trigger = event.target && event.target.closest && event.target.closest('[data-open-logs]');
+    if (trigger && !trigger.disabled) openModal('diagnostic-log', {});
+  });
 
   // Slots 视图工具栏
   document.getElementById('btn-refresh').onclick = function() { send({ cmd: 'list' }); };
@@ -1611,13 +1688,16 @@
   function initBootTooltips() {
     var TT = window.BootTooltip;
     if (!TT) return;
+    TT.bind(document.querySelector('#save-columns .save-sig-column'), '每个存档都有固定的柱形，改名和换装后仍可用来辨认。');
+    TT.bind(document.getElementById('welcome-slot-sig'), function () {
+      return ['存档指纹', document.getElementById('welcome-slot-sig').dataset.lineLabel].filter(Boolean).join(' · ');
+    });
     TT.bind(document.getElementById('btn-display'), '设置：界面字号、片头动画与字体扩展');
     TT.bind(document.getElementById('btn-fullscreen'), '全屏：切换窗口全屏');
-    TT.bind(document.getElementById('btn-logs'), '日志：查看启动诊断日志');
-    TT.bind(document.getElementById('btn-about'), '关于与帮助：项目说明、作者与致谢、版本记录和音频');
+    TT.bind(document.getElementById('btn-about'), '关于与帮助：项目说明、作者与致谢、版本记录、音频与诊断日志');
     TT.bind(retryBtn, '重试：按上次参数重新启动');
     TT.bind(cancelLaunchBtn, '取消启动：中止当前启动流程');
-    TT.bind(btnSwitchSlot, '切换：选择其他存档槽位');
+    TT.bind(btnSwitchSlot, '存档库：选择、导入或管理存档');
     TT.bind(document.querySelector('.chk-intro'), '加载片头动画：启动时播放开场视频');
     TT.bind(document.getElementById('btn-back-welcome'), '返回：回到欢迎页 (ESC)');
     TT.bind(document.getElementById('btn-refresh'), '刷新：重新扫描存档槽位');
@@ -1629,7 +1709,7 @@
       'btn-start': '直接启动所选存档，沿用片头设置',
       'btn-edit': '编辑：打开存档数据编辑器',
       'btn-export': '导出：备份为 JSON 文件',
-      'btn-delete': '删除后无法恢复，可在原位置新建角色',
+      'btn-delete': '管理此存档的本地副本',
       'btn-rebuild': '重建：清空并重新开始（原数据丢弃）',
       'btn-rename': '重命名：修改启动器中的存档显示名（允许重名）'
     });

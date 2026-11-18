@@ -143,6 +143,7 @@ function assertMagicBoard(board, original) {
 }
 
 async function main() {
+    require('./build-bootstrap-equipment-reference').verify();
     const args = parseArgs(process.argv.slice(2));
     if (!args) return;
     if (!fs.existsSync(playwrightModule)) {
@@ -157,6 +158,7 @@ async function main() {
     let browser = null;
     const checks = [];
     const failedRequests = [];
+    const cancelledIntroStreams = [];
     const pageErrors = [];
     const consoleLogs = [];
 
@@ -175,6 +177,13 @@ async function main() {
         await page.emulateMedia({ reducedMotion: 'reduce' });
         page.on('requestfailed', request => {
             const failure = request.failure();
+            // Reloading the player or leaving a skipped intro cancels its in-flight media stream.
+            // The navigation case below independently requires a decoded frame from this exact file.
+            if (request.resourceType() === 'media' && request.url() === 'http://127.0.0.1:' + port + '/assets/intro.mp4'
+                    && failure?.errorText === 'net::ERR_ABORTED') {
+                cancelledIntroStreams.push(request.url());
+                return;
+            }
             failedRequests.push(request.url() + ' :: ' + (failure && failure.errorText || 'failed'));
         });
         page.on('pageerror', error => pageErrors.push(error && error.message ? error.message : String(error)));
@@ -309,9 +318,20 @@ async function main() {
             const emit = msg => page.evaluate(value => window.__bootstrapHarnessEmit(value), msg);
             const requests = () => page.evaluate(() => window.__bootstrapHarnessEvents
                 .filter(event => event.direction === 'out' && event.cmd === 'set_fullscreen').map(event => event.payload.enabled));
-            const actions = ['#btn-confirm-start','#btn-switch-slot','#btn-welcome-new','#hud-toggle'];
+            // 空目录首启：主按钮即“新建角色”，次级只留存档库入口，不再重复新建链接。
+            const actions = ['#btn-confirm-start','#btn-switch-slot','#hud-toggle'];
             let reference;
             try {
+                const firstRun = await page.evaluate(() => ({
+                    primary: document.getElementById('btn-confirm-start').textContent,
+                    duplicateHidden: document.getElementById('btn-welcome-new').hidden,
+                    library: document.getElementById('btn-switch-slot').textContent,
+                    logsInTopbar: !!document.querySelector('.topbar #btn-logs, .topbar [data-open-logs]')
+                }));
+                if (firstRun.primary !== '新建角色' || !firstRun.duplicateHidden
+                        || firstRun.library !== '导入或管理存档' || firstRun.logsInTopbar) {
+                    throw new Error('first-run homepage kept duplicate or developer actions: ' + JSON.stringify(firstRun));
+                }
                 await emit({cmd:'fullscreen_state',enabled:false});
                 await button.click();
                 if (!(await requests()).at(-1) || await button.getAttribute('aria-pressed') !== 'false') {
@@ -371,8 +391,7 @@ async function main() {
                     + JSON.stringify({ start:{ ...start, board:start.board && start.board.length },
                         exchanged:{ ...exchanged, board:exchanged.board && exchanged.board.length } }));
             }
-            for (const className of ['intro-video',
-                'character-create-preparing', 'character-create-active']) {
+            for (const className of ['intro-video', 'character-create-active']) {
                 await page.evaluate(name => document.body.classList.add(name), className);
                 await page.waitForFunction(() => document.body.dataset.bgGlLifecycle === 'paused-covered');
                 const covered = await backgroundState(page);
@@ -494,6 +513,7 @@ async function main() {
             // V3: lore 事件流在 loading 相可见且必须自带遮罩（光不许从文字下过）——
             // 把它的矩形排除在"隐藏前景遮罩未清"判定之外；其余超规格遮罩仍判失败。
             const loreBox = await page.locator('#bg-gl-log.visible').boundingBox().catch(() => null);
+            if (loreBox && loreBox.y < indicator.y + indicator.height) throw new Error('loading lore overlaps player controls');
             const foreignMask = waiting.canvas.masks.some(mask => {
                 if (mask.w <= indicator.width + 8 && mask.h <= indicator.height + 8) return false;
                 if (loreBox && Math.abs(mask.x - loreBox.x) <= 12 && Math.abs(mask.y - loreBox.y) <= 12
@@ -508,6 +528,8 @@ async function main() {
             await page.locator('#view-welcome .launch-feedback').waitFor({ state:'visible' });
             await page.waitForTimeout(1900);
             const error = await backgroundState(page);
+            if (await page.locator('#bg-gl-log').isVisible() || await page.locator('#btn-confirm-start').textContent() !== '重试启动')
+                throw new Error('returning to welcome retained the lore stream or lost the retry action');
             if (error.visualKind !== 'error' || error.cue || error.commits !== waiting.commits
                     || !(await page.locator('#btn-confirm-start.retry').isVisible())) {
                 throw new Error('error feedback ended before the host left Error');
@@ -999,13 +1021,11 @@ async function main() {
             const rename = page.locator('#save-actions .btn-rename');
             if (await rows.count() !== 3) throw new Error('expected two healthy rows and one corrupt row');
             await page.locator('#save-deleted').click();
-            if (await rows.count() !== 2) throw new Error('expected a tombstone and an inconsistent slot');
-            for (const key of ['slot_tombstone','slot_inconsistent']) {
-                await page.locator('#cards').locator('[data-slot="' + key + '"]').click();
-                if (!await rename.isVisible() || await page.locator('.btn-start').isVisible()) {
-                    throw new Error('incorrect actions for ' + key);
-                }
-            }
+            if (await rows.count() !== 1 || await page.locator('[data-slot="slot_tombstone"]').count())
+                throw new Error('clean deletion markers leaked into the pending-work group');
+            await page.locator('#cards [data-slot="slot_inconsistent"]').click();
+            if (await rename.isVisible() || await page.locator('.btn-start').isVisible() || await page.locator('.btn-rebuild').isVisible())
+                throw new Error('deleted residue offered ordinary character actions');
             await page.locator('#save-live').click();
             await page.locator('#cards').locator('[data-slot="slot_corrupt"]').click();
             if (!await rename.isVisible() || await page.locator('.btn-start').isVisible()) throw new Error('incorrect corrupt-slot actions');
@@ -1081,7 +1101,9 @@ async function main() {
             const oldRow = page.locator('.save-row[data-slot="legacy_test"]');
             await oldRow.click();
             const before = (await outgoing('delete')).length;
+            if (await page.locator('.btn-delete').innerText() !== '移出列表') throw new Error('legacy removal promised file deletion');
             await page.locator('.btn-delete').click();
+            if (!(await page.locator('#confirm-dialog-detail').innerText()).includes('更新启动器')) throw new Error('legacy confirmation omitted the Flash copy');
             await page.locator('#confirm-dialog-cancel').click();
             if ((await outgoing('delete')).length !== before) throw new Error('cancel sent a delete');
             await page.locator('.btn-delete').click();
@@ -1094,8 +1116,8 @@ async function main() {
             await list([live,{...old,tombstoned:true}]);
             if (await oldRow.count() || await page.locator('.save-row').count() !== 1
                     || await page.locator('#welcome-slot-name').textContent() !== '乙') throw new Error('deleted slot retained in list or welcome');
-            await page.locator('#save-deleted').click();
-            if (!await oldRow.isVisible() || await page.locator('.btn-start').isVisible()) throw new Error('incorrect deleted view actions');
+            if (await page.locator('#save-deleted').isVisible() || await oldRow.count())
+                throw new Error('a completed deletion retained a recyclable slot');
 
             const importTo = async key => {
                 await emit({cmd:'import_target',suggestedSlot:key,sourceData:'{}'});
@@ -1221,6 +1243,17 @@ async function main() {
                         overflow:list.scrollWidth > list.clientWidth + 1
                     };
                 });
+                await page.mouse.move(1, 1);
+                const scrollSkin = await page.evaluate(() => ['cards','save-detail'].map(id => {
+                    const pane = document.getElementById(id);
+                    const pseudo = name => getComputedStyle(pane, '::-webkit-scrollbar' + name);
+                    return [pseudo('').width, pseudo('-track').backgroundColor, pseudo('-thumb').backgroundColor,
+                        pseudo('-button').display, pseudo('-button').height];
+                }));
+                if (JSON.stringify(scrollSkin[0]) !== JSON.stringify(scrollSkin[1])
+                    || scrollSkin[0][0] !== '7px' || scrollSkin[0][1] === 'rgba(0, 0, 0, 0)'
+                    || scrollSkin[0][1] === scrollSkin[0][2] || scrollSkin[0][3] !== 'none' || scrollSkin[0][4] !== '0px')
+                    throw new Error('archive scrollbar skin: ' + JSON.stringify(scrollSkin));
                 if (geometry.fullRows < 10 || !geometry.docked || geometry.overflow) throw new Error('directory layout: ' + JSON.stringify(geometry));
 
                 await emit({cmd:'list_resp',slots:slots.slice(0,11),uiFontScale:1.35});
@@ -1260,6 +1293,12 @@ async function main() {
                 if (visibleFields < 12) throw new Error('only ' + visibleFields + ' editable fields visible');
                 const level = panel.getByLabel('等级',{exact:true});
                 if (await level.inputValue() !== '8' || !await level.getAttribute('aria-describedby')) throw new Error('level control lost its value or limits');
+                await level.focus();
+                const rangeClearsInput = await level.evaluate(input => {
+                    const hint = document.getElementById(input.getAttribute('aria-describedby'));
+                    return hint.getBoundingClientRect().top >= input.getBoundingClientRect().bottom;
+                });
+                if (!rangeClearsInput) throw new Error('the numeric range covers the editable value');
                 await page.locator('#tab-advanced').click();
                 await page.locator('#ed-search-toggle').click();
                 await page.getByLabel('搜索字段或内容').press('Escape');
@@ -1338,24 +1377,201 @@ async function main() {
             return 'search, character metadata, sort, editor undo identities and non-launching catalog repair verified';
         });
 
+        await check('archive-equipment-busts-and-level', async () => {
+            const emit = message => page.evaluate(value => window.__bootstrapHarnessEmit(value), message);
+            const face = {face:'男变装-基本脸型',hair:'发型-男式-Andy发型'};
+            const live = {slot:'portrait-a',characterName:'阿七',displayName:'远征',mainProgress:'阿七 Lv.35',
+                gender:'男',appearance:{...face,upper:'浅灰背心'}};
+            const other = {...live,slot:'portrait-b',appearance:{...face,equipment:{body:'剑圣胸甲'}}};
+            const legacy = {slot:'portrait-old',characterName:'巡逻员',mainProgress:'任务进行中'};
+            await emit({cmd:'list_resp',slots:[live,other,legacy]});
+            const row = key => page.locator('.save-row[data-slot="' + key + '"]');
+            const detail = page.locator('#save-detail-portrait');
+            const image = async tile => {
+                const img = tile.locator('img:not([hidden]):not(.save-equip img)');
+                await img.waitFor({state:'visible',timeout:6000});
+                return img.getAttribute('src');
+            };
+            await row(live.slot).click();
+            const shirt = await image(detail);
+            if (await image(row(live.slot)) !== shirt
+                    || !(await page.locator('#save-progress-detail').innerText()).includes('Lv.35'))
+                throw new Error('the list and detail disagree on the legacy outfit or level');
+            await row(other.slot).click();
+            const armor = await image(detail);
+            if (armor === shirt || armor !== await image(row(other.slot)))
+                throw new Error('the same face and hair with a different chest item must produce a different bust');
+            const helmet = {...other,appearance:{...face,equipment:{body:'剑圣胸甲',head:'黑色摩托头盔'}}};
+            await emit({cmd:'list_resp',slots:[live,helmet,legacy]});
+            const helmetArt = await image(detail);
+            if (helmetArt === armor || helmetArt !== await image(row(other.slot)))
+                throw new Error('changing only a helmet reused the old outfit');
+            const small = await row(live.slot).locator('.save-avatar').boundingBox();
+            await page.locator('#save-large-busts').click();
+            const large = await row(live.slot).locator('.save-avatar').boundingBox();
+            if (large.width <= small.width) throw new Error('large-bust browsing did not enlarge the gear');
+            await page.locator('#save-large-busts').click();
+            await row(legacy.slot).click();
+            if (await detail.locator('img:not([hidden])').count() || await detail.getAttribute('data-initial') !== '巡'
+                    || await page.locator('#save-progress-detail').innerText() !== '任务进行中')
+                throw new Error('partial legacy data fabricated an outfit or lost stored progress');
+            const sidearm = {...other,appearance:{...face,equipment:{secondary1:'M1911',hand:'训练手套'}}};
+            await emit({cmd:'list_resp',slots:[live,sidearm,legacy]});
+            await row(other.slot).click();
+            if (await row(other.slot).locator('.save-equip[data-item="M1911"]').count() !== 1
+                    || await page.locator('#save-equipment .save-equip[data-item="训练手套"]').count() !== 1)
+                throw new Error('a sidearm or gloves must identify an outfit without a chest item');
+            await emit({cmd:'list_resp',slots:[{...live,corrupt:true},other,legacy]});
+            await row(live.slot).click();
+            if (await detail.locator('img:not([hidden])').count() || await page.locator('.btn-start').isVisible())
+                throw new Error('a damaged archive inherited a playable character');
+            return 'original mercenary busts distinguish chest and head equipment with identical face/hair, including refreshed slots and old Host fields';
+        });
+
+        await check('archive-equipment-art-and-inspection', async () => {
+            const emit = slots => page.evaluate(list => window.__bootstrapHarnessEmit({cmd:'list_resp',slots:list}), slots);
+            const equipment = {primary:'特勤霰弹枪',grenade:'压缩胶囊之盗贼',body:'重装特勤背心',head:'重装特勤头盔',foot:'重装特勤战靴'};
+            const first = {slot:'archive-outfit-a',characterName:'巡逻员',displayName:'第一班',appearance:{equipment}};
+            const legacy = {slot:'archive-outfit-b',characterName:'巡逻员',appearance:{upper:'旧装<甲>'}};
+            await emit([first,legacy]);
+            const row = page.locator('.save-row[data-slot="archive-outfit-a"]');
+            await row.click();
+            const gear = page.locator('#save-equipment');
+            if (await row.locator('.save-equip').count() !== 2 || await gear.locator('button').count() !== 5
+                    || await row.locator('.save-alias').innerText() !== '第一班')
+                throw new Error('row and detail must preserve the alias, two preview icons and the complete outfit');
+            const body = gear.getByRole('button',{name:'上装 · 重装特勤背心',exact:true});
+            await page.waitForFunction(() => {
+                const img = document.querySelector('#save-equipment [data-item="重装特勤背心"] img');
+                return img?.complete && img.naturalWidth > 0 && img.getAttribute('src') === window.Icons.resolveStatic('Codex-重装特勤背心');
+            }, null, {timeout:6000});
+            const card = page.locator('#panel-tooltip');
+            await row.locator('[data-item="特勤霰弹枪"]').hover();
+            await page.waitForFunction(() => window.PanelTooltip.isVisible() && document.querySelector('#panel-tooltip').textContent.includes('第一防线'));
+            await body.click();
+            await card.locator('.panel-tooltip-inspector-header').waitFor({state:'visible'});
+            const text = await card.innerText();
+            if (!['重装特勤背心','等级限制 21','基础属性','铭牌仍写着POLICE'].every(value => text.includes(value)))
+                throw new Error('pinned archive tooltip lost authored content or stat context');
+            await page.keyboard.press('Escape');
+            if (await page.evaluate(() => window.PanelTooltip.isVisible()) || !await page.locator('#cards').isVisible())
+                throw new Error('Escape should dismiss only the pinned gear');
+            await page.mouse.move(1, 1);
+            const capsule = gear.getByRole('button',{name:'手雷 · 实体投影之盗贼',exact:true});
+            await capsule.focus();
+            await page.keyboard.press('Tab');
+            await page.waitForFunction(() => document.activeElement?.dataset.item === '重装特勤背心' &&
+                window.PanelTooltip.isVisible() && document.querySelector('#panel-tooltip').textContent.includes('铭牌仍写着POLICE'));
+            await capsule.hover();
+            await card.locator('.ntt-doc span[style*="color"]').filter({hasText:'降兵'}).first().waitFor({state:'visible'});
+            if ((await card.innerText()).includes('<font')) throw new Error('source markup leaked into the description');
+            await page.locator('.save-row[data-slot="archive-outfit-b"]').click();
+            const fallback = gear.getByRole('button',{name:'上装 · 旧装<甲>',exact:true});
+            await fallback.hover();
+            await page.waitForFunction(() => window.PanelTooltip.isVisible() &&
+                document.querySelector('#panel-tooltip').textContent.includes('旧装<甲>'));
+            if (await fallback.locator('img').count() || (await card.innerText()).includes('铭牌仍写着POLICE'))
+                throw new Error('unknown legacy gear should keep its literal name and have no stale artwork or description');
+            return 'real inventory art, authored description, legacy fallback, pointer and keyboard inspection before game entry';
+        });
+
+        await check('archive-signatures-match-home-and-survive-catalog-changes', async () => {
+            const first = {slot:'signature-a',characterName:'阿七',appearance:{upper:'剑圣胸甲'}};
+            const other = {...first,slot:'signature-b'};
+            const emit = slots => page.evaluate(list => window.__bootstrapHarnessEmit({cmd:'list_resp',slots:list,lastPlayedSlot:'signature-a'}), slots);
+            const row = key => page.locator('.save-row[data-slot="'+key+'"]');
+            const bars = async badge => {
+                await badge.locator('i').nth(18).waitFor({state:'attached',timeout:5000});
+                return badge.locator('i').evaluateAll(nodes => nodes.map(node => node.style.height).join(','));
+            };
+            await emit([first,other]);
+            const origin = await bars(row(first.slot).locator('.slot-sig'));
+            if (origin === await bars(row(other.slot).locator('.slot-sig')))
+                throw new Error('same-name same-equipment save copies should be visually distinguishable in this fixture');
+            await row(first.slot).click();
+            await page.locator('#btn-back-welcome').click();
+            if (await bars(page.locator('#welcome-slot-sig')) !== origin) throw new Error('home and archive fingerprints differ');
+            await page.locator('#btn-switch-slot').click();
+            await emit([other,{...first,displayName:'新名称',appearance:{upper:'重装特勤背心'}}]);
+            await page.locator('#save-sort').selectOption('name');
+            if (await bars(row(first.slot).locator('.slot-sig')) !== origin) throw new Error('rename, outfit or reordering changed a fingerprint');
+            await page.locator('#save-sort').selectOption('recent');
+            return '19 bars are stable across home, selection, rename, kit changes, sorting and catalog refresh';
+        });
+
+        await check('archive-large-font-keeps-progress-and-paints-visible-signatures', async () => {
+            const previousSize = page.viewportSize();
+            const slots = Array.from({length:100}, (_,i) => ({
+                slot:'density-'+i, characterName:'巡逻员', mainProgress:'巡逻员 Lv.99', storyProgress:780,
+                lastModified:new Date(Date.now() - (i+1)*3600000).toISOString(), appearance:{upper:'重装特勤背心'}
+            }));
+            const update = scale => page.evaluate(input => window.__bootstrapHarnessEmit(input),
+                {cmd:'list_resp',slots,uiFontScale:scale});
+            const button = page.locator('#save-large-busts');
+            const first = page.locator('.save-row').first();
+            const last = page.locator('.save-row').last();
+            try {
+                await page.setViewportSize({width:800,height:450});
+                await update(1.9);
+                await first.locator('.slot-sig i').nth(18).waitFor({state:'attached'});
+                if (await last.locator('.slot-sig i').count()) throw new Error('off-screen fingerprints painted before scrolling');
+                for (const large of [false,true]) {
+                    if ((await button.getAttribute('aria-pressed') === 'true') !== large) await button.click();
+                    if (!await first.evaluate(row => ['.save-progress','time'].every(selector => {
+                        const cell = row.querySelector(selector);
+                        return cell.scrollWidth <= cell.clientWidth;
+                    }))) throw new Error('progress or recent time clipped at the maximum font size');
+                }
+                await last.scrollIntoViewIfNeeded();
+                await last.locator('.slot-sig i').nth(18).waitFor({state:'attached'});
+            } finally {
+                if (await button.getAttribute('aria-pressed') === 'true') await button.click();
+                await page.setViewportSize(previousSize);
+                await update(1.35);
+            }
+            return 'normal and enlarged busts retain level, story and time at 800×450 with 100 saves';
+        });
+
         await check('container-keyboard-navigation', async () => {
-            await page.evaluate(() => window.__bootstrapHarnessEmit({cmd:'list_resp', slots:[
-                {slot:'nav-a',characterName:'甲'}, {slot:'nav-b',characterName:'乙'}
-            ]}));
-            const first = page.locator('.save-row[data-slot="nav-a"]');
-            await first.focus();
-            await first.press('ArrowDown');
-            const selected = page.locator('.save-row[aria-pressed="true"]');
-            if (await selected.getAttribute('data-slot') !== 'nav-b') throw new Error('ArrowDown did not select second slot');
-            const starts = () => page.evaluate(() => window.__bootstrapHarnessEvents.filter(e => e.direction === 'out' && e.cmd === 'start_game'));
-            const before = (await starts()).length;
-            const intro = await page.locator('#chk-intro').isChecked();
-            await selected.press('Enter');
-            const after = await starts();
-            const request = after.at(-1).payload;
-            if (after.length !== before + 1 || request.slot !== 'nav-b' || request.requireFlashReveal !== true
-                    || !!request.deferReveal !== intro) throw new Error('directory launch did not preserve the exact slot and intro setting');
-            return 'ArrowDown selects the second slot and Enter launches it once with the selected intro setting';
+            const slots = [{slot:'nav-a',characterName:'甲'},{slot:'nav-b',characterName:'乙',displayName:'远征'}];
+            const emit = message => page.evaluate(value => window.__bootstrapHarnessEmit(value), message);
+            const sent = cmd => page.evaluate(key => window.__bootstrapHarnessEvents
+                .filter(e => e.direction === 'out' && e.cmd === key).map(e => e.payload), cmd);
+            for (const intro of [false,true]) {
+                await emit({cmd:'list_resp',slots,introEnabled:intro});
+                if (!await page.locator('#cards').isVisible()) await page.locator('#btn-switch-slot').click();
+                const first = page.locator('.save-row[data-slot="nav-a"]');
+                await first.click();
+                await first.press('ArrowDown');
+                const selected = page.locator('.save-row[aria-pressed="true"]');
+                if (await selected.getAttribute('data-slot') !== 'nav-b') throw new Error('ArrowDown lost the intended slot');
+                const before = (await sent('start_game')).length;
+                const reveals = (await sent('reveal_ok')).length;
+                await selected.press('Enter');
+                const requests = await sent('start_game'), request = requests.at(-1);
+                if (requests.length !== before + 1 || request.slot !== 'nav-b' || request.requireFlashReveal !== true
+                        || !!request.deferReveal !== intro) throw new Error('directory launch lost slot, intro setting or reveal fence');
+                if (intro) {
+                    await page.waitForFunction(() => {
+                        const video = document.getElementById('intro-video');
+                        return video.readyState >= video.HAVE_CURRENT_DATA && video.videoWidth > 0;
+                    }, null, {timeout:10000});
+                    if (await page.locator('#intro-skip').isVisible()) await page.locator('#intro-skip').click();
+                    await page.waitForFunction(count => window.__bootstrapHarnessEvents.filter(e => e.direction === 'out'
+                        && e.cmd === 'reveal_ok').length === count + 1, reveals);
+                }
+                if (await page.locator('.loading-title').innerText() !== '乙 · 远征') throw new Error('loading shows the wrong save');
+                await emit({cmd:'state',state:'WaitingGameReady'});
+                await emit({cmd:'state',state:'Ready'});
+                if (!await page.locator('#intro-ov.loading').isVisible()
+                        || await page.locator('#loading-stages').getAttribute('data-stage') !== '3')
+                    throw new Error('Ready incorrectly handed off the screen');
+                const cancels = (await sent('cancel_launch')).length;
+                if (intro) await page.keyboard.press('Escape'); else await page.locator('#loading-cancel').click();
+                if ((await sent('cancel_launch')).length !== cancels + 1) throw new Error('cancel did not reach the current launch once');
+                await emit({cmd:'state',state:'Idle'});
+            }
+            return 'both intro settings preserve the chosen slot, single launch, player title, real state and click/Esc cancel';
         });
 
         // PM19 V3：以下断言共用 pm19-arrival-kind 内 reload 出的全新控制器实例；
@@ -1409,7 +1625,8 @@ async function main() {
             });
             await page.waitForFunction(() => {
                 const el = document.querySelector('#intro-ov .loading-text');
-                return el && el.textContent === '正在嵌入沙箱';
+                return el && el.textContent === '正在载入游戏画面'
+                    && document.getElementById('loading-stages').dataset.stage === '2';
             }, null, { timeout:3000 });
             return 'loading stage text follows the real host state';
         });
@@ -1646,6 +1863,7 @@ async function main() {
         viewport: args.viewport,
         checks,
         failedRequests,
+        cancelledIntroStreams,
         pageErrors,
         consoleLogs
     };

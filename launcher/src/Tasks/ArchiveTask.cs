@@ -472,13 +472,15 @@ namespace CF7Launcher.Tasks
         /// bus 入口：消息按到达顺序入队，FIFO 消费者逐条处理。
         /// 替换原 ThreadPool.QueueUserWorkItem（完成顺序乱序，最后完成者覆写 slot）。
         /// </summary>
-        public void HandleAsync(JObject message, Action<string> respond)
+        public void HandleAsync(JObject message, Action<string> respond) => HandleAsync(message, respond, null);
+
+        internal void HandleAsync(JObject message, Action<string> respond, SaveResolutionContext catalog)
         {
             _opQueue.Add(delegate
             {
                 try
                 {
-                    string result = Process(message);
+                    string result = Process(message, catalog);
                     respond(result);
                 }
                 catch (Exception ex)
@@ -489,7 +491,7 @@ namespace CF7Launcher.Tasks
             });
         }
 
-        private string Process(JObject message)
+        private string Process(JObject message, SaveResolutionContext catalog)
         {
             JObject payload = message.Value<JObject>("payload");
             if (payload == null)
@@ -508,10 +510,12 @@ namespace CF7Launcher.Tasks
                 case "load":
                     return HandleLoad(payload);
                 case "delete":
-                    return HandleDelete(payload);
+                    return catalog == null ? HandleDelete(payload) : DeleteCatalogSlot(payload, catalog, false);
                 case "list":
-                    return HandleList();
+                    return HandleList(catalog);
                 case "reset":
+                    if (catalog != null && payload["residueOnly"]?.Type == JTokenType.Boolean && (bool)payload["residueOnly"])
+                        return DeleteCatalogSlot(payload, catalog, true);
                     return HandleReset(payload);
                 case "load_raw":
                     return HandleLoadRaw(payload);
@@ -819,9 +823,52 @@ namespace CF7Launcher.Tasks
             return result.ToString(Formatting.None);
         }
 
+        // Player-facing deletion runs after Flash releases the slot. The bus notification and
+        // rebuild paths retain their own order and never unlink a live SharedObject.
+        private string DeleteCatalogSlot(JObject payload, SaveResolutionContext catalog, bool residueOnly)
+        {
+            if (!SaveSlotKey.TryValidateExisting(payload.Value<string>("slot"), out string key))
+                return BuildError("invalid_slot_key");
+            if (catalog.Archive != this || catalog.Locator == null || !Path.IsPathFullyQualified(catalog.SwfPath ?? ""))
+                return BuildError("save_storage_unavailable");
+            lock (_lock)
+            {
+                if (!CanMutateSlot(key)) return BuildError("settings_recovery_required");
+                string path = Path.Combine(_savesDir, key + ".tombstone");
+                bool deleted = File.Exists(path);
+                if (residueOnly && !deleted) return BuildError("slot_not_deleted");
+                if (!deleted && !SlotExistsSync(key)) return BuildError("slot_not_found");
+                var marker = deleted ? ReadDeletionMarker(path) : new JObject();
+                if (marker["rebuildCallId"] != null || marker["confirmedCharacter"] != null)
+                    return BuildError("rebuild_pending");
+                if (!_slotCatalog.CanRemoveDisplayName(out string error)) return BuildError("slot_catalog_unavailable");
+                if (marker["deletedAt"] == null) marker["deletedAt"] = DateTime.UtcNow.ToString("o");
+                marker["catalogCleanupPending"] = true;
+                _editorHistory.InvalidateDuring(key, () => DurableFileWriter.WriteAllText(path,
+                    marker.ToString(Formatting.None), new UTF8Encoding(false)));
+                _prevSnapshots.Remove(key);
+                var result = new JObject { ["success"] = true, ["slot"] = key, ["task"] = "archive", ["tombstoned"] = true };
+                if (residueOnly) result["reset"] = true;
+                try
+                {
+                    File.Delete(Path.Combine(_savesDir, key + ".json"));
+                    catalog.Locator.DeleteAllSolFiles(key, catalog.SwfPath);
+                    if (!_slotCatalog.TryRemoveDisplayName(key, out error)) throw new IOException(error);
+                    marker["catalogCleanupPending"] = false;
+                    DurableFileWriter.WriteAllText(path, marker.ToString(Formatting.None), new UTF8Encoding(false));
+                }
+                catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    LogManager.Log("[ArchiveTask] deleted slot has cleanup pending: " + key + " " + ex.Message);
+                    result["warning"] = "slot_cleanup_pending";
+                }
+                return result.ToString(Formatting.None);
+            }
+        }
+
         // ==================== list ====================
 
-        private string HandleList()
+        private string HandleList(SaveResolutionContext catalog)
         {
             JArray slots = new JArray();
             IDictionary<string, string> displayNames = _slotCatalog.ReadAll();
@@ -853,7 +900,7 @@ namespace CF7Launcher.Tasks
             {
                 // 内部临时角色只承载局内事务/结果，不是可续玩的常驻档案。
                 if (slot.StartsWith("bookrun_", StringComparison.OrdinalIgnoreCase)) continue;
-                slots.Add(BuildListEntry(slot, displayNames));
+                slots.Add(BuildListEntry(slot, displayNames, catalog));
             }
 
             JObject result = new JObject();
@@ -863,9 +910,18 @@ namespace CF7Launcher.Tasks
             return result.ToString(Formatting.None);
         }
 
+        // Slot names consumed by MercPortraits. Only equipped item names leave the archive list.
+        private static readonly (string Field, string Slot)[] PortraitEquipmentSlots =
+        {
+            ("head", "头部装备"), ("body", "上装装备"), ("hand", "手部装备"),
+            ("leg", "下装装备"), ("foot", "脚部装备"), ("neck", "颈部装备"),
+            ("primary", "长枪"), ("secondary1", "手枪"), ("secondary2", "手枪2"),
+            ("melee", "刀"), ("grenade", "手雷")
+        };
+
         private JObject BuildListEntry(
             string slot,
-            IDictionary<string, string> displayNames)
+            IDictionary<string, string> displayNames, SaveResolutionContext catalog)
         {
             string jsonPath = Path.Combine(_savesDir, slot + ".json");
             string tombPath = Path.Combine(_savesDir, slot + ".tombstone");
@@ -880,9 +936,23 @@ namespace CF7Launcher.Tasks
             entry["inconsistent"] = hasJson && hasTomb;
             if (hasTomb)
             {
-                try { entry["rebuildPending"] = ReadDeletionMarker(tombPath)["confirmedCharacter"] != null; }
-                catch (IOException) { /* The existence of the marker still protects the slot. */ }
-                catch (UnauthorizedAccessException) { }
+                try
+                {
+                    var marker = ReadDeletionMarker(tombPath);
+                    entry["rebuildPending"] = marker["confirmedCharacter"] != null;
+                    entry["rebuildInProgress"] = marker["rebuildCallId"] != null;
+                    if (catalog?.Locator != null && marker["rebuildCallId"] == null)
+                    {
+                        // Old markers may still have a Flash copy. Inspect without changing player files.
+                        var recorded = marker["catalogCleanupPending"];
+                        entry["cleanupPending"] = hasJson || (recorded?.Type == JTokenType.Boolean
+                            ? (bool)recorded : catalog.Locator.CollectSolCandidates(slot, catalog.SwfPath).Count != 0);
+                    }
+                }
+                catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    entry["cleanupPending"] = true;
+                }
             }
 
             bool corrupt = false;
@@ -922,9 +992,15 @@ namespace CF7Launcher.Tasks
                         var look = new JObject { ["face"] = SafeStr(gear, 0), ["hair"] = SafeStr(gear, 1) };
                         if (data["inventory"] is JObject inventory && inventory["装备栏"] is JObject equipped)
                         {
-                            foreach (var (field, key) in new[] { ("upper", "上装装备"), ("lower", "下装装备"), ("footwear", "脚部装备") })
+                            var outfit = new JObject();
+                            foreach (var (field, key) in PortraitEquipmentSlots)
                                 if (equipped[key] is JObject item && item["name"]?.Type == JTokenType.String)
-                                    look[field] = item["name"].DeepClone();
+                                    outfit[field] = item["name"].DeepClone();
+                            look["equipment"] = outfit;
+                            // Keep the original list fields for Web builds that predate the bust.
+                            if (outfit["body"] != null) look["upper"] = outfit["body"].DeepClone();
+                            if (outfit["leg"] != null) look["lower"] = outfit["leg"].DeepClone();
+                            if (outfit["foot"] != null) look["footwear"] = outfit["foot"].DeepClone();
                         }
                         entry["appearance"] = look;
                     }

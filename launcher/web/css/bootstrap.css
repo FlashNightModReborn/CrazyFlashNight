@@ -506,3 +506,43 @@ body.cf7-host-hidden *::after {
   animation: none !important;
   transition: none !important;
 }
+
+/* 前门共用金属主按钮。各页面只决定位置、尺寸及是否显示键帽。 */
+#launcher-stage .front-primary {
+  --front-accent:var(--wb-semantic-success);
+  color:var(--term-ink-hi);
+  border:1px solid #65716d;
+  border-top-color:#95a09a;
+  background:linear-gradient(180deg,#4a5050,#333a38 47%,#292f2e 50%,#202524);
+  box-shadow:inset 0 1px rgba(255,255,255,.12),inset 0 -2px var(--front-accent);
+  text-shadow:0 1px 2px #000;
+  font-weight:700;
+  cursor:pointer;
+}
+#launcher-stage .front-primary:is(:hover,:focus-visible):enabled {
+  color:white;
+  border-color:#afc4b6;
+  background:linear-gradient(180deg,#57625e,#414c46 47%,#323d36 50%,#27332c);
+  box-shadow:inset 0 -3px var(--front-accent),0 0 10px color-mix(in srgb,var(--front-accent) 22%,transparent);
+}
+#launcher-stage .front-primary:active:enabled { transform:translateY(1px); }
+#launcher-stage .front-primary:disabled { opacity:.45; cursor:not-allowed; }
+#launcher-stage .front-primary.retry { --front-accent:var(--wb-semantic-danger); }
+#launcher-stage .term-btn { clip-path:none; }
+#launcher-stage :is(.archive-danger,.confirm-dialog-ok-danger) {
+  color:var(--wb-semantic-danger); border-color:color-mix(in srgb,var(--wb-semantic-danger) 62%,transparent);
+}
+#launcher-stage :is(.archive-danger,.confirm-dialog-ok-danger):is(:hover,:focus-visible):enabled {
+  color:var(--term-ink-hi); background:color-mix(in srgb,var(--wb-semantic-danger) 28%,var(--launcher-bg-0));
+  border-color:var(--wb-semantic-danger);
+}
+#modal-content.confirm-dialog-surface { clip-path:none; border:1px solid var(--dls-crystal-dim); }
+#launcher-stage .term-heading-rule::after { background:var(--dls-crystal-dim); }
+#launcher-stage .modal-close { color:var(--term-ink-md); border-color:var(--dls-crystal-dim); }
+#launcher-stage .modal-close:hover { color:var(--term-ink-hi); background:var(--term-surface-card); }
+
+/* Native scroll surfaces in the fixed bootstrap canvas and its dialogs share one skin. */
+@media (forced-colors: none) {
+  :root { color-scheme: dark; scrollbar-color: var(--wb-scrollbar-thumb) var(--wb-scrollbar-track); }
+  :where(#launcher-stage, #modal-host) :where(*) { scrollbar-width: thin; }
+}

@@ -126,67 +126,67 @@ namespace CF7Launcher.Save
 
         public int DeleteAllSolFiles(string slot, string swfPath)
         {
-            HashSet<string> candidates = CollectSolCandidates(slot, swfPath);
-            List<string> ordered = new List<string>(candidates);
-            ordered.Sort(StringComparer.OrdinalIgnoreCase);
-            LogManager.Log("[SolFileLocator] delete candidates slot=" + slot
-                + " count=" + ordered.Count
-                + (ordered.Count > 0 ? " => " + string.Join(" | ", ordered.ToArray()) : string.Empty));
-
-            int deleted = 0;
-            for (int i = 0; i < ordered.Count; i++)
+            var candidates = CollectSolCandidates(slot, swfPath);
+            foreach (string path in candidates)
             {
-                string path = ordered[i];
-                try
-                {
-                    File.Delete(path);
-                    deleted++;
-                    LogManager.Log("[SolFileLocator] deleted SOL: " + path);
-                }
-                catch (Exception ex)
-                {
-                    LogManager.Log("[SolFileLocator] delete SOL failed: " + path + " ex=" + ex.Message);
-                }
+                if (!ExistsInShareRoot(path)) continue;
+                File.Delete(path);
+                LogManager.Log("[SolFileLocator] deleted SOL: " + path);
             }
-
-            if (deleted > 0)
+            if (CollectSolCandidates(slot, swfPath).Count != 0)
+                throw new IOException("sol_cleanup_pending");
+            lock (_cacheLock)
             {
-                lock (_cacheLock)
-                {
-                    _hashCache = null;
-                    _probeCache = ProbeKind.Unknown;
-                }
+                _hashCache = null;
+                _probeCache = ProbeKind.Unknown;
             }
-
-            return deleted;
+            return candidates.Count;
         }
 
-        private HashSet<string> CollectSolCandidates(string slot, string swfPath)
+        // Only the exact slot below this game's SWF/projector namespace is a deletion target.
+        // Missing directories mean there is no copy. Access failures must reach the caller.
+        internal HashSet<string> CollectSolCandidates(string slot, string swfPath)
         {
-            HashSet<string> hits = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            if (string.IsNullOrEmpty(slot) || string.IsNullOrEmpty(swfPath))
-                return hits;
-            if (!Directory.Exists(_shareRoot))
-                return hits;
-
-            string solFileName = SanitizeSlot(slot) + ".sol";
-            string swfFileName = Path.GetFileName(swfPath);
-            string exeFileName = Path.GetFileName(Path.ChangeExtension(swfPath, ".exe"));
-            string[] hashDirs = EnumerateHashDirs();
-            if (hashDirs == null || hashDirs.Length == 0) return hits;
-
-            for (int i = 0; i < hashDirs.Length; i++)
+            if (!SaveSlotKey.IsValidExisting(slot) || !Path.IsPathFullyQualified(swfPath ?? ""))
+                throw new ArgumentException("invalid_slot_or_game_path");
+            var hits = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (!ExistsInShareRoot(_shareRoot)) return hits;
+            string file = slot + ".sol";
+            string swf = Path.GetFileName(swfPath);
+            string exe = Path.ChangeExtension(swf, ".exe");
+            var options = new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = false,
+                AttributesToSkip = FileAttributes.ReparsePoint, MatchType = MatchType.Simple };
+            foreach (string hash in Directory.GetDirectories(_shareRoot))
             {
-                DirectProbe[] probes = BuildDirectProbes(hashDirs[i], swfPath, solFileName);
-                for (int j = 0; j < probes.Length; j++)
+                foreach (string scopedRoot in BuildScopedRoots(hash, swfPath))
                 {
-                    if (File.Exists(probes[j].Path))
-                        hits.Add(probes[j].Path);
+                    if (!ExistsInShareRoot(scopedRoot)) continue;
+                    foreach (string path in Directory.EnumerateFiles(scopedRoot, file, options))
+                        if (IsCurrentRootMatch(path, swf, exe)) hits.Add(path);
                 }
-                AddRootScopedMatches(hashDirs[i], swfPath, solFileName, swfFileName, exeFileName, hits);
             }
-
             return hits;
+        }
+
+        private bool ExistsInShareRoot(string path)
+        {
+            string root = Path.GetFullPath(_shareRoot);
+            string relative = Path.GetRelativePath(root, Path.GetFullPath(path));
+            if (Path.IsPathRooted(relative) || relative == ".." || relative.StartsWith(".." + Path.DirectorySeparatorChar))
+                throw new IOException("outside_shared_objects");
+            string current = root;
+            foreach (string part in ("." + Path.DirectorySeparatorChar + relative).Split(Path.DirectorySeparatorChar))
+            {
+                if (part != ".") current = Path.Combine(current, part);
+                try
+                {
+                    if ((File.GetAttributes(current) & FileAttributes.ReparsePoint) != 0)
+                        throw new IOException("linked_save_path");
+                }
+                catch (FileNotFoundException) { return false; }
+                catch (DirectoryNotFoundException) { return false; }
+            }
+            return true;
         }
 
         private void Cache(string hash, ProbeKind probe)
@@ -369,32 +369,6 @@ namespace CF7Launcher.Save
             }
 
             return null;
-        }
-
-        private static void AddRootScopedMatches(string hashDir, string swfPath, string solFileName, string swfFileName, string exeFileName, ISet<string> hits)
-        {
-            string[] scopedRoots = BuildScopedRoots(hashDir, swfPath);
-            try
-            {
-                for (int i = 0; i < scopedRoots.Length; i++)
-                {
-                    string scopedRoot = scopedRoots[i];
-                    if (!Directory.Exists(scopedRoot))
-                        continue;
-
-                    string[] candidates = Directory.GetFiles(scopedRoot, solFileName, SearchOption.AllDirectories);
-                    Array.Sort(candidates, StringComparer.OrdinalIgnoreCase);
-                    for (int j = 0; j < candidates.Length; j++)
-                    {
-                        if (IsCurrentRootMatch(candidates[j], swfFileName, exeFileName))
-                            hits.Add(candidates[j]);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogManager.Log("[SolFileLocator] root-scoped collect failed: " + ex.Message);
-            }
         }
 
         private static bool IsCurrentRootMatch(string candidate, string swfFileName, string exeFileName)

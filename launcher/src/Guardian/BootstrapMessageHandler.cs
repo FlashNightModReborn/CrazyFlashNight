@@ -87,7 +87,7 @@ namespace CF7Launcher.Guardian
                     ArchiveCommandHandler.HandleList(bootForm, archiveTask, saveCtx, userPrefs);
                     return;
                 case "delete":
-                    ArchiveCommandHandler.HandleDelete(msg, bootForm, archiveTask);
+                    ArchiveCommandHandler.HandleDelete(msg, bootForm, archiveTask, launchFlow, saveCtx);
                     return;
                 case "rename_slot":
                     ArchiveCommandHandler.HandleRename(msg, bootForm, archiveTask);
@@ -107,7 +107,7 @@ namespace CF7Launcher.Guardian
                     DataEditCommandHandler.HandleSave(msg, bootForm, archiveTask, launchFlow);
                     return;
                 case "reset":
-                    DataEditCommandHandler.HandleReset(msg, bootForm, archiveTask, launchFlow);
+                    DataEditCommandHandler.HandleReset(msg, bootForm, archiveTask, launchFlow, saveCtx);
                     return;
                 case "export":
                     DataEditCommandHandler.HandleExport(msg, bootForm, archiveTask);

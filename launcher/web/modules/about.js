@@ -314,7 +314,7 @@
         '</div>' +
         '<section id="about-pane-document" role="tabpanel" aria-labelledby="about-tab-document" data-about-pane="document">' +
           '<h3>DOCUMENT</h3>' +
-          '<p>1. 本游戏游戏过程中将存储数据在本地，请勿设置禁止储存数据。</p>' +
+          '<p>1. 本游戏会在游戏过程中将数据存储在本地，请勿设置禁止储存数据。</p>' +
           '<p>2. 本游戏为无网单机版。无充值系统，无与网络相关的功能。如果要体验完整联机功能，请选择《闪客快打 7 佣兵帝国》网络版。</p>' +
           '<p>3. 然而网络版已经停服，你现在玩到的是玩家重置的单机版 MOD。</p>' +
           '<p>4. 请首先在 Steam 平台购买正版游戏，按照指南覆盖 MOD 文件包。本 MOD 为免费开源项目，如果您不慎支付购买，请保留交易证据并联系我们。</p>' +
@@ -323,6 +323,11 @@
           '<div class="audio-toggles">' +
             '<label class="audio-toggle"><input type="checkbox" id="about-sfx"' + (sfxOn ? ' checked' : '') + '> <span>UI 音效 · hover / click / confirm / error</span></label>' +
             '<label class="audio-toggle"><input type="checkbox" id="about-ambient"' + (ambOn ? ' checked' : '') + '> <span>环境 hum · θ-FLOOD 背景低频</span></label>' +
+          '</div>' +
+          '<h3>DIAGNOSTICS</h3>' +
+          '<div class="about-diagnostics">' +
+            '<p>启动失败或卡住时，可查看启动诊断日志，反馈问题时请一并附上。</p>' +
+            '<button type="button" class="term-btn" id="about-open-logs" data-open-logs>查看诊断日志</button>' +
           '</div>' +
           '<p class="foot">本 MOD 版权归原游戏开发者 <span class="b">AndyLaw</span> 及社区共同所有。作者名单和版本记录已迁移为首页可读的 Markdown 文档。</p>' +
         '</section>' +
