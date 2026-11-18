@@ -101,6 +101,7 @@ _root.战技路由.动画完毕(this,_parent);
 	if(自机.等级 < 12){
 		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
 	}
+	子弹属性.子弹威力 *= 10 / 9;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -168,6 +169,7 @@ _root.战技路由.动画完毕(this,_parent);
 	if(自机.等级 < 12){
 		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
 	}
+	子弹属性.子弹威力 *= 10 / 9;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -235,6 +237,7 @@ _root.战技路由.动画完毕(this,_parent);
 	if(自机.等级 < 12){
 		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
 	}
+	子弹属性.子弹威力 *= 10 / 9;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -302,6 +305,7 @@ _root.战技路由.动画完毕(this,_parent);
 	if(自机.等级 < 12){
 		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
 	}
+	子弹属性.子弹威力 *= 10 / 9;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -369,6 +373,7 @@ _root.战技路由.动画完毕(this,_parent);
 	if(自机.等级 < 12){
 		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
 	}
+	子弹属性.子弹威力 *= 10 / 9;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -436,6 +441,7 @@ _root.战技路由.动画完毕(this,_parent);
 	if(自机.等级 < 12){
 		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
 	}
+	子弹属性.子弹威力 *= 10 / 9;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -503,6 +509,7 @@ _root.战技路由.动画完毕(this,_parent);
 	if(自机.等级 < 12){
 		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
 	}
+	子弹属性.子弹威力 *= 10 / 9;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -570,6 +577,7 @@ _root.战技路由.动画完毕(this,_parent);
 	if(自机.等级 < 12){
 		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
 	}
+	子弹属性.子弹威力 *= 10 / 9;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -615,73 +623,6 @@ _root.战技路由.动画完毕(this,_parent);
             </DOMFrame>
             <DOMFrame index="34" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="53.9" centerPoint3DY="-235.25">
-                  <matrix>
-                    <Matrix tx="41.4" ty="-247.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	声音 = "";
-	霰弹值 = 1;
-	子弹散射度 = 0;
-	发射效果 = "";
-	子弹种类 = "近战子弹";
-	var temp = 1;
-	/*
-	if (_parent._parent.刀 == "上古青萍元气剑")
-	{
-		temp = 3;
-	}
-	*/
-	自机 = _root.获得父节点(this,2);
-	mp溢出加成 = mp溢出 * 2;
-	子弹威力 = (自机.空手攻击力 * 0.1 + 100) * (2 + 自机.刀属性.power * temp + mp溢出加成);
-	/*
-	if (_parent._parent.mp攻击加成)
-	{
-		子弹威力 += _parent._parent.mp攻击加成;
-	}
-	*/
-	子弹速度 = 0;
-	击中地图效果 = "";
-	Z轴攻击范围 = 30;
-	击倒率 = 10;
-	击中后子弹的效果 = "空手攻击火花";
-	if (_parent._parent.是否为敌人 == true)
-	{
-		子弹敌我属性 = false;
-	}
-	else
-	{
-		子弹敌我属性 = true;
-	}
-	i = 1;
-	while (i <= 3)
-	{
-		if (_parent.刀.刀.装扮["刀口位置" + i]._x != undefined)
-		{
-			var myPoint = {x:_parent.刀.刀.装扮["刀口位置" + i]._x, y:_parent.刀.刀.装扮["刀口位置" + i]._y};
-			_parent.刀.刀.装扮.localToGlobal(myPoint);
-			if (myPoint.y == _parent.刀.刀.装扮["刀口位置" + i]._y)
-			{
-				_parent.动画完毕();
-			}
-			_root.gameworld.globalToLocal(myPoint);
-			shootX = myPoint.x;
-			shootY = myPoint.y;
-			_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-		}
-		i++;
-	}
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="462.5" centerPoint3DY="-264.5">
                   <matrix>
                     <Matrix a="3.814453125" d="3.8629150390625" tx="426.65" ty="-252.6"/>
@@ -704,6 +645,7 @@ _root.战技路由.动画完毕(this,_parent);
 	if(自机.等级 < 12){
 		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
 	}
+	子弹属性.子弹威力 *= 10 / 9;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
@@ -845,118 +787,7 @@ _root.战技路由.动画完毕(this,_parent);
               <elements/>
             </DOMFrame>
             <DOMFrame index="18" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="53.9" centerPoint3DY="-235.25">
-                  <matrix>
-                    <Matrix tx="41.4" ty="-247.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   var temp = 1;
-   if(_root.刀 == "匕首")
-   {
-      temp = 10;
-   }
-   if(_root.刀 == "大剑")
-   {
-      temp = 2.5;
-   }
-   if(_root.刀 == "短棒")
-   {
-      temp = 4;
-   }
-   if(_root.刀 == "水管")
-   {
-      temp = 6;
-   }
-   if(_root.刀 == "棒球棒")
-   {
-      temp = 3;
-   }
-   if(_root.刀 == "破旧军刀")
-   {
-      temp = 4;
-   }
-   if(_root.刀 == "光刃摩羯")
-   {
-      temp = 8;
-   }
-   if(_root.刀 == "光剑天秤")
-   {
-      temp = 4;
-   }
-   if(_root.刀 == "战术狗腿刀")
-   {
-      temp = 4;
-   }
-   if(_root.刀 == "金蛇剑")
-   {
-      temp = 3;
-   }
-   if(_root.刀 == "秋月")
-   {
-      temp = 4;
-   }
-   if(_root.刀 == "虎彻")
-   {
-      temp = 6;
-   }
-   if(_root.刀 == "镜之虎彻")
-   {
-      temp = 8;
-   }
-   if(_root.刀 == "饮血野太刀")
-   {
-      temp = 3;
-   }
-   子弹威力 = _parent._parent.空手攻击力 / 4 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 1.8;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   i = 1;
-   while(i <= 3)
-   {
-      if(_parent.刀.刀.装扮["刀口位置" + i]._x != undefined)
-      {
-         var myPoint = {x:_parent.刀.刀.装扮["刀口位置" + i]._x,y:_parent.刀.刀.装扮["刀口位置" + i]._y};
-         _parent.刀.刀.装扮.localToGlobal(myPoint);
-         if(myPoint.y == _parent.刀.刀.装扮["刀口位置" + i]._y)
-         {
-            _parent.动画完毕();
-         }
-         _root.gameworld.globalToLocal(myPoint);
-         shootX = myPoint.x;
-         shootY = myPoint.y;
-         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-      }
-      i++;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="19" keyMode="9728">
               <elements/>

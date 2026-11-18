@@ -116,7 +116,7 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
 	
 	自机 = _root.获得父节点(this,2);
 	hp溢出加成 = _parent.hp溢出 * 3;
-	子弹属性.子弹威力 = 自机.空手攻击力 * 0.1 + 1000 + 自机.刀属性.power * 3 + hp溢出加成;
+	子弹属性.子弹威力 = (自机.空手攻击力 * 0.1 + 1000 + 自机.刀属性.power * 3) * 9 / 8 + hp溢出加成;
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -187,7 +187,7 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
 	
 	自机 = _root.获得父节点(this,2);
 	hp溢出加成 = _parent.hp溢出 * 3;
-	子弹属性.子弹威力 = 自机.空手攻击力 * 0.1 + 1000 + 自机.刀属性.power * 3 + hp溢出加成;
+	子弹属性.子弹威力 = (自机.空手攻击力 * 0.1 + 1000 + 自机.刀属性.power * 3) * 9 / 8 + hp溢出加成;
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -256,7 +256,7 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
 	
 	自机 = _root.获得父节点(this,2);
 	hp溢出加成 = _parent.hp溢出 * 3;
-	子弹属性.子弹威力 = 自机.空手攻击力 * 0.1 + 1000 + 自机.刀属性.power * 3 + hp溢出加成;
+	子弹属性.子弹威力 = (自机.空手攻击力 * 0.1 + 1000 + 自机.刀属性.power * 3) * 9 / 8 + hp溢出加成;
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -303,139 +303,6 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="25" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="53.9" centerPoint3DY="-235.25">
-                  <matrix>
-                    <Matrix tx="41.4" ty="-247.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   var temp = 1;
-   if(_parent._parent.刀 == "砍刀")
-   {
-      temp = 4;
-   }
-   if(_parent._parent.刀 == "单刀")
-   {
-      temp = 4;
-   }
-   if(_parent._parent.刀 == "大剑")
-   {
-      temp = 2.5;
-   }
-   if(_parent._parent.刀 == "金蛇剑")
-   {
-      temp = 3;
-   }
-   if(_parent._parent.刀 == "棒球棍")
-   {
-      temp = 4;
-   }
-   if(_parent._parent.刀 == "双面斧")
-   {
-      temp = 4;
-   }
-   if(_parent._parent.刀 == "单刃斧头")
-   {
-      temp = 4;
-   }
-   if(_parent._parent.刀 == "拆迁铁锤")
-   {
-      temp = 6;
-   }
-   if(_parent._parent.刀 == "中国战刀")
-   {
-      temp = 4;
-   }
-   if(_parent._parent.刀 == "西洋重剑")
-   {
-      temp = 8.5;
-   }
-   if(_parent._parent.刀 == "斩马刀")
-   {
-      temp = 8.5;
-   }
-   if(_parent._parent.刀 == "烈焰斩马刀")
-   {
-      temp = 10;
-   }
-   if(_parent._parent.刀 == "雷神之锤")
-   {
-      temp = 8;
-   }
-   if(_parent._parent.刀 == "光斧金牛")
-   {
-      temp = 8;
-   }
-   if(_parent._parent.刀 == "光刀狮子")
-   {
-      temp = 10;
-   }
-   if(_parent._parent.刀 == "血色光剑天秤")
-   {
-      temp = 6;
-   }
-   if(_parent._parent.刀 == "电子音乐键盘")
-   {
-      temp = 10;
-   }
-   if(_parent._parent.刀 == "红色电子吉他")
-   {
-      temp = 10;
-   }
-   if(_parent._parent.刀 == "桔色电子吉他")
-   {
-      temp = 10;
-   }
-   子弹威力 =( _parent._parent.空手攻击力 * 0.1 + 300) * (2 + _parent._parent.技能等级 * 1) + _parent._parent.刀属性.power * temp;
-	if(_parent._parent.mp攻击加成){
-		子弹威力 += _parent._parent.mp攻击加成;
-	}
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 0;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   i = 1;
-   while(i <= 3)
-   {
-      if(_parent.刀.刀.装扮["刀口位置" + i]._x != undefined)
-      {
-         var myPoint = {x:_parent.刀.刀.装扮["刀口位置" + i]._x,y:_parent.刀.刀.装扮["刀口位置" + i]._y};
-         _parent.刀.刀.装扮.localToGlobal(myPoint);
-         if(myPoint.y == _parent.刀.刀.装扮["刀口位置" + i]._y)
-         {
-            _parent.动画完毕();
-         }
-         _root.gameworld.globalToLocal(myPoint);
-         shootX = myPoint.x;
-         shootY = myPoint.y;
-         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-      }
-      i++;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-189.95" centerPoint3DY="348.4">
                   <matrix>
                     <Matrix a="7.1331787109375" d="3.65121459960938" tx="441.6" ty="60.1"/>
@@ -455,7 +322,7 @@ _root.战技路由.动画完毕(this,_parent);]]></script>
 	
 	自机 = _root.获得父节点(this,2);
 	hp溢出加成 = _parent.hp溢出 * 3;
-	子弹属性.子弹威力 = 自机.空手攻击力 * 0.1 + 1000 + 自机.刀属性.power * 3 + hp溢出加成;
+	子弹属性.子弹威力 = (自机.空手攻击力 * 0.1 + 1000 + 自机.刀属性.power * 3) * 9 / 8 + hp溢出加成;
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
