@@ -13,10 +13,8 @@ import org.flashNight.gesh.object.ObjectUtil;
  *   4. 库存补充：loadMore / loadMoreByExpression / requireExpression（callback 风格）
  *   5. 价格计算：calculatePrice
  *
- * 当 mercs_list 迁到 launcher 时，只需把 loadMore 内部的 `_root.mercs_list` 读取
- * 改成 `DataQueryService.query("mercs_list", ...)`。其余调用方零改动。
- *
  * 数据存储约束：
+ *   - 原始定义由启动装入一次，仅由本类持有和读取。Arena 按 ID 同步构造独立实例。
  *   - _root.可雇佣兵 / _root.隐藏的可雇佣兵 仍是公共可变数组（被 XML 直接读写），
  *     MercLibrary 对它们读写，不做"私有副本"。这是兼容性边界，不下沉。
  *   - bundle 数据是私有缓存（_bundle），只读访问通过 MercLibrary.bundle。
@@ -40,6 +38,8 @@ class org.flashNight.arki.merc.MercLibrary {
     // MercDialogueTest 的门数，留作独立清理。见 buildDialogueGroups 的取用点。
     private static var _dialoguesByName:Object = {};
     private static var _mercDataCache:Object = {};
+    private static var _definitions:Array = [];
+    private static var _definitionsById:Object = {};
 
     public static function get bundle():Object {
         return _bundle;
@@ -76,12 +76,31 @@ class org.flashNight.arki.merc.MercLibrary {
 
     // ─── Marshalling: rawList → mercData[20] ──────────────────────────────
 
+    /** 启动加载器交付原始定义，后续只向调用方提供可变实例。 */
+    public static function installDefinitions(rawList:Array):Void {
+        var definitionsById:Object = {};
+        for (var i:Number = 0; i < rawList.length; i++) {
+            var raw:Object = rawList[i];
+            // 保留 Arena 旧索引的顺序语义，同 ID 取清单中的最后一条定义。
+            definitionsById["id:" + raw.id] = raw;
+        }
+        _definitions = rawList;
+        _definitionsById = definitionsById;
+        _mercDataCache = {};
+        _dialoguesByName = {};
+    }
+
+    /** Arena 混编同步读取，隐藏项和未知 ID 由调用方跳过。 */
+    public static function buildVisibleMercById(mercId:String):Array {
+        var raw:Object = _definitionsById["id:" + mercId];
+        if (raw == undefined) raw = _definitionsById["id:" + Number(mercId)];
+        if (raw == undefined || raw.hidden == true) return null;
+        return buildMercData(raw);
+    }
+
     /**
-     * 从 raw 数据源（当前是 _root.mercs_list）构建 _root.可雇佣兵 / _root.隐藏的可雇佣兵。
-     * 已雇佣的（_root.同伴数据 中存在）会被去重跳过。
-     *
-     * 迁移点：未来 rawList 可来自 launcher data_query，而非 _root.mercs_list。
-     * 调用方只需把 loadMore 中的数据源读取改了即可，本函数不变。
+     * 按当前角色重建可雇佣兵和隐藏池，跳过该角色已雇下的库记录。
+     * 用户难度、身价和同伴状态均在本轮读取。
      */
     public static function loadFromList(rawList):Void {
         _root.可雇佣兵 = [];
@@ -123,9 +142,11 @@ class org.flashNight.arki.merc.MercLibrary {
     }
 
     public static function buildMercData(raw:Object):Array {
-        var cacheKey:String = raw.id == undefined ? "" : String(raw.id);
-        if (cacheKey != "" && _mercDataCache[cacheKey] != undefined) {
-            return arrayFromObject(ObjectUtil.clone(_mercDataCache[cacheKey]));
+        var cacheKey:String = raw.id == undefined || String(raw.id) == "" ? "" : "id:" + raw.id;
+        var cached:Object = _mercDataCache[cacheKey];
+        // 两条不同的原始定义可以有相同 ID，例如 5528。
+        if (cached != undefined && cached.raw === raw) {
+            return arrayFromObject(ObjectUtil.clone(cached.instance));
         }
         var merc:Array = new Array(20);
         var equipment:Object = raw.equipment;
@@ -158,7 +179,7 @@ class org.flashNight.arki.merc.MercLibrary {
             merc[19].装备强化度 = raw.enhancement;
         }
         if (raw.passive) {
-            merc[19].被动技能 = raw.passive;
+            merc[19].被动技能 = ObjectUtil.clone(raw.passive);
         }
         if (raw.equiplocked) {
             merc[19].装备锁定 = true;
@@ -177,7 +198,7 @@ class org.flashNight.arki.merc.MercLibrary {
             _dialoguesByName[raw.name] = 对话配置;
         }
         if (cacheKey != "") {
-            _mercDataCache[cacheKey] = ObjectUtil.clone(merc);
+            _mercDataCache[cacheKey] = {raw: raw, instance: ObjectUtil.clone(merc)};
         }
         return merc;
     }
@@ -278,12 +299,9 @@ class org.flashNight.arki.merc.MercLibrary {
         return groups;
     }
 
-    /**
-     * 重新加载完整佣兵库。当前数据源是 _root.mercs_list（legacy XML loader 装填）。
-     * 迁移点：把这里改成 DataQueryService.query("mercs_list", ...) 即可。
-     */
+    /** 使用同一份原始定义按当前角色刷新可变池。 */
     public static function refreshPool(callback:Function, callbackArg):Void {
-        loadFromList(_root.mercs_list);
+        loadFromList(_definitions);
         if (callback != undefined) {
             callback(callbackArg);
         }

@@ -360,10 +360,10 @@ $focusedRun = @{
         '(?m)^MercPersonalityTest Tests Failed: 0\r?$'
         '(?m)^MercDialogueTest Tests Passed: 31\r?$'
         '(?m)^MercDialogueTest Tests Failed: 0\r?$'
-        '(?m)^MercDefinitionCacheTest Tests Passed: 11\r?$'
+        '(?m)^MercDefinitionCacheTest Tests Passed: 21\r?$'
         '(?m)^MercDefinitionCacheTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'MercLoadoutServiceTest 125/125 + MercPersonalityTest 24/24 + MercDialogueTest 31/31 + MercDefinitionCacheTest 11/11 passed'
+    SuccessSummary = 'MercLoadoutServiceTest 125/125 + MercPersonalityTest 24/24 + MercDialogueTest 31/31 + MercDefinitionCacheTest 21/21 passed'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

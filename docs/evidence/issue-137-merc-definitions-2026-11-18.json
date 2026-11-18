@@ -1,0 +1,404 @@
+{
+  "schema": "cf7.issue137.closure.v1",
+  "issue": 137,
+  "candidate": "B",
+  "date": "2026-11-18",
+  "productionBuild": {
+    "upstreamBase": "be7d5fd20a573ed043b63773b55fe34a07856831",
+    "producer": "Adobe Flash Professional CS6 GUI",
+    "compiledModules": [
+      "resident",
+      "shared",
+      "boot"
+    ],
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "checkedClasses": 777,
+    "checkedInheritanceEdges": 107,
+    "swfs": [
+      {
+        "file": "scripts/asLoader.swf",
+        "sha256": "e5b2fa5053d4953924cdfdf20f9b2ebd1c089337311857c1bfef1419e57c2a56"
+      },
+      {
+        "file": "scripts/asLoaderShared.swf",
+        "sha256": "988cee3c04d87881ebdedc10f854b616fd3eae83c57710b012a4719a6cb914d5"
+      },
+      {
+        "file": "scripts/asLoaderLogic.swf",
+        "sha256": "f5c011658cd3ded0a7d487ec7d26f5b100e903f281c521dd68271cb7b8f655f7"
+      }
+    ],
+    "absentSymbolsAcrossStartupSwfs": [
+      "[Issue137]",
+      "mercs_list",
+      "merc_indices_by_id",
+      "mercs_easy_list",
+      "merc_easy_indices_by_id",
+      "getMercEasyData"
+    ]
+  },
+  "pairedRuntime": {
+    "scope": "Minimal B changed reads and parses only. This benchmark predates the final ownership changes.",
+    "source": "0c3c88c36c463f5df198888d0ada44ef7346370d",
+    "runtime": "Windows Flash Player 20, standard launcher in separate A/B worktrees",
+    "method": {
+      "bootMs": "new gameplay projector AVM1 start to BootSequencer S10",
+      "refreshMs": "MercLibrary.refreshPool from the verified SOL read and role load, excluding earlier preparation calls",
+      "memory": "per-player medians of 15 one-second samples, starting 10 seconds after successful role load and an advancing world frame"
+    },
+    "runs": [
+      {
+        "runId": "cold1-a",
+        "arm": "a",
+        "mercReadCount": 2,
+        "mercParseCount": 2,
+        "mercParseMs": 387,
+        "mercLoaderMs": 392,
+        "mercPreloadToReadyMs": 1400,
+        "coldFlashToS10Ms": 15720,
+        "saveRefreshMs": 51,
+        "available": 205,
+        "hidden": 6,
+        "memorySamples": 15,
+        "PrivateBytes": 507977728,
+        "WorkingSetBytes": 531705856
+      },
+      {
+        "runId": "cold1-b",
+        "arm": "b",
+        "mercReadCount": 1,
+        "mercParseCount": 1,
+        "mercParseMs": 218,
+        "mercLoaderMs": 222,
+        "mercPreloadToReadyMs": 1244,
+        "coldFlashToS10Ms": 15927,
+        "saveRefreshMs": 52,
+        "available": 205,
+        "hidden": 6,
+        "memorySamples": 15,
+        "PrivateBytes": 509378560,
+        "WorkingSetBytes": 533336064
+      },
+      {
+        "runId": "cold2-b",
+        "arm": "b",
+        "mercReadCount": 1,
+        "mercParseCount": 1,
+        "mercParseMs": 216,
+        "mercLoaderMs": 219,
+        "mercPreloadToReadyMs": 1246,
+        "coldFlashToS10Ms": 15416,
+        "saveRefreshMs": 54,
+        "available": 205,
+        "hidden": 6,
+        "memorySamples": 15,
+        "PrivateBytes": 514940928,
+        "WorkingSetBytes": 538886144
+      },
+      {
+        "runId": "cold2-a-r2",
+        "arm": "a",
+        "mercReadCount": 2,
+        "mercParseCount": 2,
+        "mercParseMs": 351,
+        "mercLoaderMs": 355,
+        "mercPreloadToReadyMs": 1382,
+        "coldFlashToS10Ms": 15745,
+        "saveRefreshMs": 54,
+        "available": 205,
+        "hidden": 6,
+        "memorySamples": 15,
+        "PrivateBytes": 517136384,
+        "WorkingSetBytes": 540950528
+      },
+      {
+        "runId": "cold3-a",
+        "arm": "a",
+        "mercReadCount": 2,
+        "mercParseCount": 2,
+        "mercParseMs": 363,
+        "mercLoaderMs": 367,
+        "mercPreloadToReadyMs": 1398,
+        "coldFlashToS10Ms": 15678,
+        "saveRefreshMs": 65,
+        "available": 205,
+        "hidden": 6,
+        "memorySamples": 15,
+        "PrivateBytes": 503767040,
+        "WorkingSetBytes": 527654912
+      },
+      {
+        "runId": "cold3-b",
+        "arm": "b",
+        "mercReadCount": 1,
+        "mercParseCount": 1,
+        "mercParseMs": 218,
+        "mercLoaderMs": 222,
+        "mercPreloadToReadyMs": 1231,
+        "coldFlashToS10Ms": 15716,
+        "saveRefreshMs": 52,
+        "available": 205,
+        "hidden": 6,
+        "memorySamples": 15,
+        "PrivateBytes": 500310016,
+        "WorkingSetBytes": 524283904
+      }
+    ],
+    "pairs": [
+      {
+        "pair": 1,
+        "order": [
+          "cold1-a",
+          "cold1-b"
+        ],
+        "a": "cold1-a",
+        "b": "cold1-b",
+        "bMinusA": {
+          "coldFlashToS10Ms": 207,
+          "mercParseMs": -169,
+          "mercLoaderMs": -170,
+          "mercPreloadToReadyMs": -156,
+          "saveRefreshMs": 1,
+          "PrivateBytes": 1400832,
+          "WorkingSetBytes": 1630208
+        }
+      },
+      {
+        "pair": 2,
+        "order": [
+          "cold2-b",
+          "cold2-a-r2"
+        ],
+        "a": "cold2-a-r2",
+        "b": "cold2-b",
+        "bMinusA": {
+          "coldFlashToS10Ms": -329,
+          "mercParseMs": -135,
+          "mercLoaderMs": -136,
+          "mercPreloadToReadyMs": -136,
+          "saveRefreshMs": 0,
+          "PrivateBytes": -2195456,
+          "WorkingSetBytes": -2064384
+        }
+      },
+      {
+        "pair": 3,
+        "order": [
+          "cold3-a",
+          "cold3-b"
+        ],
+        "a": "cold3-a",
+        "b": "cold3-b",
+        "bMinusA": {
+          "coldFlashToS10Ms": 38,
+          "mercParseMs": -145,
+          "mercLoaderMs": -145,
+          "mercPreloadToReadyMs": -167,
+          "saveRefreshMs": -13,
+          "PrivateBytes": -3457024,
+          "WorkingSetBytes": -3371008
+        }
+      }
+    ],
+    "summary": {
+      "coldFlashToS10Ms": {
+        "pairedMedian": 38,
+        "pairedRange": [
+          -329,
+          207
+        ]
+      },
+      "mercParseMs": {
+        "pairedMedian": -145,
+        "pairedRange": [
+          -169,
+          -135
+        ]
+      },
+      "mercLoaderMs": {
+        "pairedMedian": -145,
+        "pairedRange": [
+          -170,
+          -136
+        ]
+      },
+      "mercPreloadToReadyMs": {
+        "pairedMedian": -156,
+        "pairedRange": [
+          -167,
+          -136
+        ]
+      },
+      "saveRefreshMs": {
+        "pairedMedian": 0,
+        "pairedRange": [
+          -13,
+          1
+        ]
+      },
+      "PrivateBytes": {
+        "pairedMedian": -2195456,
+        "pairedRange": [
+          -3457024,
+          1400832
+        ]
+      },
+      "WorkingSetBytes": {
+        "pairedMedian": -2064384,
+        "pairedRange": [
+          -3371008,
+          1630208
+        ]
+      }
+    }
+  },
+  "finalLoaderOffline": {
+    "evidence": "offline execution of the actual frame script with mocked I/O and parser",
+    "loaderSha256": "9d71c1c76ad608b1b64a044e73562b4d79219b4b17120bebf838d341733eef42",
+    "stock": {
+      "reads": 1,
+      "parses": 1,
+      "orderedDefinitions": 205,
+      "hiddenDefinitions": 6
+    },
+    "mixed": {
+      "reads": 2,
+      "parses": 2,
+      "orderedDefinitions": 3
+    },
+    "empty": {
+      "reads": 0,
+      "parses": 0,
+      "orderedDefinitions": 0
+    },
+    "released": [
+      "preload text chunks",
+      "merc_sources",
+      "merc_jsons_list",
+      "four legacy _root fields"
+    ]
+  },
+  "flashRegression": {
+    "upstreamBase": "8f55063b30712c4c0edb751fae4d3560d44326d9",
+    "scope": "Same issue changes, tested before the unrelated upstream updates. Each suite used a fresh CS6 build and Flash trace.",
+    "passed": {
+      "MercLoadoutServiceTest": 125,
+      "MercPersonalityTest": 24,
+      "MercDialogueTest": 31,
+      "MercDefinitionCacheTest": 21,
+      "NativeTooltipBridgeTest": 72,
+      "MercSpawnerTest": 41,
+      "MouseProxyTest": 18,
+      "NativeMenuBridgeTest": 87,
+      "NativeInteractionContextTest": 12,
+      "InventoryTooltipProjectionTest": 16,
+      "ArenaPanelAuthorityTest": 13,
+      "BootSequencerTest": 117,
+      "BootstrapHandshakeTest": 12
+    },
+    "failed": 0,
+    "arenaEligibilityNodeCasesOnFinalBase": 11
+  },
+  "finalRuntime": {
+    "mode": "Windows standard launcher with isolated save slots, using the repository runtime and the new startup SWF",
+    "headlessFallback": false,
+    "normalRole": {
+      "loadSource": "launcher_snapshot:sol",
+      "mercenary": "管家",
+      "goldPrice": 9000,
+      "hire": {
+        "name": "管家",
+        "price": "价格 9,000 金",
+        "goldBefore": 250000,
+        "goldAfter": 241000,
+        "absentFromNewFirstPage": true
+      },
+      "dismiss": {
+        "name": "管家",
+        "absentFromRoster": true,
+        "restoredToMarket": true
+      }
+    },
+    "easyRole": {
+      "loadSource": "launcher_snapshot:json_shadow",
+      "mercenary": "管家",
+      "goldPrice": 1500
+    },
+    "sameFirstPage": [
+      "管家",
+      "艾米",
+      "克里斯",
+      "奥斯",
+      "李想",
+      "科斯",
+      "地下拳王",
+      "杰克",
+      "尚誉",
+      "左疼君"
+    ],
+    "arena": {
+      "stage": "DEATH MATCH角斗场",
+      "deposit": 5000,
+      "goldAfter": 245000,
+      "preview": [
+        {
+          "name": "鹏",
+          "mercId": 239,
+          "level": 9
+        },
+        {
+          "name": "僵尸",
+          "type": "兵种6",
+          "level": 6
+        },
+        {
+          "name": "僵尸",
+          "type": "兵种4",
+          "level": 6
+        },
+        {
+          "name": "僵尸",
+          "type": "兵种1",
+          "level": 6
+        },
+        {
+          "name": "僵尸",
+          "type": "兵种3",
+          "level": 6
+        },
+        {
+          "name": "僵尸",
+          "type": "兵种2",
+          "level": 6
+        },
+        {
+          "name": "僵尸",
+          "type": "兵种5",
+          "level": 6
+        },
+        {
+          "name": "掠夺少女",
+          "type": "兵种353",
+          "level": 10
+        },
+        {
+          "name": "僵尸",
+          "type": "兵种3",
+          "level": 6
+        }
+      ],
+      "spawnedEnemyNames": [
+        "掠夺少女",
+        "鹏",
+        "僵尸",
+        "僵尸",
+        "僵尸",
+        "僵尸",
+        "僵尸",
+        "僵尸",
+        "僵尸"
+      ]
+    }
+  }
+}
