@@ -47,7 +47,7 @@ const GRAN_ARG = (process.argv.find(a => a.indexOf('--granularity=') === 0) || '
 const GRANULARITY = GRAN_ARG === 'substage' ? 'substage' : 'subwave';
 
 // 跳过非关卡 XML
-const SKIP_FILES = new Set(['list.xml', 'loading_data.xml']);
+const SKIP_FILES = new Set(['list.xml', 'loading_data.xml', 'entry-policies.xml']);
 function isSkipped(name) {
     return SKIP_FILES.has(name) || name === '__list__.xml' || !name.toLowerCase().endsWith('.xml');
 }

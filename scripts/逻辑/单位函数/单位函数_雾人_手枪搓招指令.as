@@ -7,7 +7,8 @@
  * 指令表（8 向归一化，前 = 朝向）：
  *   后跳射击 Shift + ← + B   （Shift 修饰，向身后跳撤；判在 前冲 之前，见后键缓冲）
  *   前冲射击 Shift + → + B   （Shift 修饰，向前冲刺射击）
- *   后射     → + B            （按住朝向 + B，回身向后射击）
+ *   后射     ← + B            （朝后方向键 + B，向后回射；2026-11-19 由 →B 改为 ←B，
+ *                              朝向在释放前回正到按下后键那一刻的朝向，全程不转身）
  *
  * ⚠ 「后」的判定：行走公共体会在按住反方向键的下一帧把 方向 翻过去，
  *   所以 Shift+← 按久了 ← 就变成「前」。这里用 _手枪后键采样 在按键沿那帧
@@ -60,7 +61,7 @@
 _root.技能函数.手枪搓招表 = [
 	{技能: "后跳射击", 键: "shift后"},
 	{技能: "前冲射击", 键: "shift前"},
-	{技能: "后射",     键: "前"}
+	{技能: "后射",     键: "后"}
 ];
 
 // 后键意图窗口（帧）：30fps 下 12 帧 ≈ 400ms。
@@ -87,6 +88,10 @@ _root.技能函数._手枪按后 = function(自机:MovieClip):Boolean {
  * 电平为假但最近 后键窗口 帧内按下过反方向键，也算命中（覆盖「先按方向、后按 B」）。
  */
 _root.技能函数._手枪后键有效 = function(自机:MovieClip):Boolean {
+	// 电平：后键按当下朝向判（与 后跳射击 同一口径）。人物被行走翻转后，
+	// 原后键电平会失效，此时由下面 12 帧窗口兜底「点一下后键再按 B」的用法。
+	// 注意不用「按下那一刻的朝向」做持续基准：先←走一段再按→走回来时，
+	// 陈旧基准会把「→+B 正常前进射击」误判成回射。
 	if (_root.技能函数._手枪按后(自机)) return true;
 	var 按下帧:Number = 自机.__手枪后键帧;
 	if (按下帧 == undefined) return false;
@@ -112,7 +117,11 @@ _root.技能函数._手枪后键采样 = function(自机:MovieClip):Void {
 	}
 	if (键码 != 自机.__手枪方向键码) {
 		自机.__手枪方向键码 = 键码;
-		自机.__手枪后键帧 = _root.技能函数._手枪按后(自机) ? _root.帧计时器.当前帧数 : undefined;
+		var 是后键:Boolean = _root.技能函数._手枪按后(自机);
+		自机.__手枪后键帧 = 是后键 ? _root.帧计时器.当前帧数 : undefined;
+		// 后键按下这一帧 方向 还没被 行走 翻转，把此时的朝向存下来：
+		// 后跳射击要用它把人物转回原朝向（按住 ← 之后行走已经把人物转过去了）。
+		自机.__手枪后键方向 = 是后键 ? 自机.方向 : undefined;
 	}
 };
 
@@ -124,8 +133,29 @@ _root.技能函数._手枪后键采样 = function(自机:MovieClip):Void {
 _root.技能函数._手枪方向命中 = function(自机:MovieClip, 键:String):Boolean {
 	if (键 == "shift前") return (自机.按住奔跑键 && _root.技能函数._按前(自机)) ? true : false;
 	if (键 == "shift后") return (自机.按住奔跑键 && _root.技能函数._手枪后键有效(自机)) ? true : false;
+	if (键 == "后")      return _root.技能函数._手枪后键有效(自机) ? true : false;
 	if (键 == "前")      return _root.技能函数._按前(自机);
 	return false;
+};
+
+/**
+ * 后向招式（后跳射击 / 后射）：把朝向转回「按下后键之前」的朝向。
+ *
+ * 行走公共体在按住反方向键的下一帧就 方向改变(反方向)（移动射击未锁朝向时），
+ * 所以 ←（或 →）搓出来的后向招式往往是在人物已经转身之后才释放的 ——
+ * 表现就是「释放中转身」。后键按下那一帧的朝向存在 __手枪后键方向，
+ * 这里在释放前转回去，再交给 锁定方向 保持到技能结束：
+ *   后跳射击 = 保持原朝向、朝身后位移、枪口朝前开火；
+ *   后射     = 保持原朝向、原地不动、枪口朝后开火（回射不转身）。
+ */
+_root.技能函数._手枪后向朝向回正 = function(自机:MovieClip):Void {
+	var 目标方向:String = 自机.__手枪后键方向;
+	if (目标方向 == undefined || 目标方向 == 自机.方向) return;
+	// 方向改变 自带 锁定方向 门，这里临时让开再原样收回（只收回自己的锁）
+	var 原锁:Object = 自机.锁定方向;
+	自机.锁定方向 = false;
+	自机.方向改变(目标方向);
+	自机.锁定方向 = 原锁;
 };
 
 // ============================================================================
@@ -177,6 +207,33 @@ _root.技能函数.__job_挂载手枪搓招容器 = function(u:MovieClip):Void {
 	var man:MovieClip = attachResult.man;
 	org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle.handleFloat(man, u, "技能浮空");
 	org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle.bindEndCleanup(man, u, "战技", "技能结束", "技能浮空");
+
+	// ── 朝向守卫（用户反馈：后射打完朝向像被翻过去）─────────────────────────
+	// 技能演出全程禁止改朝向，结束（man 卸载）时按快照还原 —— 保证「任何时刻朝向都不变」。
+	// 与 Cf6TraversalService / Cf6VehicleActorAdapter 的 锁定方向 快照-还原同一约定：
+	// 只收回自己上的锁，别人的锁值原样写回；方向/缩放也一并回写快照。
+	// （必须放在 bindEndCleanup 之后：让它的 onUnload 先跑完状态收尾，再做朝向还原。）
+	var 原锁存在:Boolean = (u.锁定方向 !== undefined);
+	var 原锁值:Object = u.锁定方向;
+	var 原方向:String = u.方向;
+	var 原Xscale:Number = u._xscale;
+	// 人物文字信息跟着 方向改变 一起翻转（-100/100），还原时一并回写
+	var 原文字X:Number = (u.新版人物文字信息 != undefined) ? u.新版人物文字信息._xscale : undefined;
+	u.锁定方向 = true;
+	var 原卸载:Function = man.onUnload;
+	man.onUnload = function():Void {
+		if (原卸载 != undefined) 原卸载.apply(this);
+		if (原锁存在) u.锁定方向 = 原锁值;
+		else delete u.锁定方向;
+		if (原方向 != undefined && u.方向 != 原方向) {
+			u.方向 = 原方向;
+			if (原Xscale != undefined && !isNaN(原Xscale)) u._xscale = 原Xscale;
+			if (原文字X != undefined && u.新版人物文字信息 != undefined) {
+				u.新版人物文字信息._xscale = 原文字X;
+			}
+		}
+	};
+
 	// 容器首帧即招式段（label 在帧 1），与 技能容器-* 相同从帧 1 自动播放，无需 gotoAndPlay。
 	// AI 事件：技能释放开始（对齐 技能路由.技能标签跳转_旧）
 	if (u.dispatcher != undefined && u.dispatcher != null) {
@@ -260,6 +317,12 @@ _root.技能函数.手枪搓招检查 = function(自机:MovieClip):Number {
 		// 命中：锁存本次按下，清掉旧 DFA 预输入与后键意图（避免同一次输入连出两招）
 		自机.__手枪搓招B已消费 = true;
 		自机.__手枪后键帧 = undefined;
+		// 后向招式（后跳射击/后射）：先转回按下后键前的朝向，再释放
+		//（否则人物已被行走翻转，表现就是「转身」）
+		if (表[i].技能 == "后跳射击" || 表[i].技能 == "后射") {
+			_root.技能函数._手枪后向朝向回正(自机);
+		}
+		自机.__手枪后键方向 = undefined;
 		if (typeof _root.技能函数._清预输入 == "function") {
 			_root.技能函数._清预输入(自机);
 		}

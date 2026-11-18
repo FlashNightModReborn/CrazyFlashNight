@@ -600,9 +600,9 @@ U11 从“是否迁移待选择”进入源码施工：NativeHud `SETTINGS` 改�
 验证结果、身份、闭包、产物与修复边界见 [本地候选证据](../docs/evidence/u13-garage-local-2026-09-30.json) 与 [正式发布回执](../docs/evidence/u13-garage-release-2026-10-01.json)。2026-10-01 已 promoted：新冻结树的双独立构建一致，production policy 43/43、原子部署、安装完整性校验及远端审计通过。此前候选的三车单次扣费、保存确认和界面认可单独保留；保存重启读回、完整权益专项与新产物的正式入口业务复验仍待验证。共享服务和情报名词注记配色已归入唯一色板，普通/发布树 strict 样式门均为 0 error / 0 warning，颜色与透明度保持一致。
 
 <a id="u7-stage-doors"></a>
-### U7 地铁与彩蛋选关（2026-10-12 本地施工，候选未定版）
+### U7 地铁与彩蛋选关
 
-隧道据点 `DefineButton2_64` 与彩蛋地图电脑分别调 `_root.加载外部UI("flashswf/UI/地铁线路.swf")` / `("flashswf/UI/彩蛋地图关卡界面.swf")`；两个 URL 在 UI 管理脚本顶部转接新 Web 面板 `subway` / `egg-stage-select`，发送失败可见报错且不回流旧 SWF。旧 SWF/FLA 保留不删，通用 UI 宿主不退役。AS2 `SubwaySelectPanelService` / `EggSelectPanelService` 保留门槛、目的地与固定难度权威（Web 只投影 snapshot）；`enter` 在 holder 上复用旧 `配置关卡属性` + `选关界面进入关卡` 链（内建 `StageRunSession.reserveStageStart` 奖励未领拒绝），进入成功回 `closePanel:true` 后 Web 普通关闭。不写存档，无 token/对账；`enter` 单飞，超时/断线回 `enterUnknown` 提示观察游戏状态，绝不自动重放。
+隧道据点 `DefineButton2_64` 与彩蛋地图电脑分别调 `_root.加载外部UI("flashswf/UI/地铁线路.swf")` / `("flashswf/UI/彩蛋地图关卡界面.swf")`；两个 URL 在 UI 管理脚本顶部转接新 Web 面板 `subway` / `egg-stage-select`，发送失败可见报错且不回流旧 SWF。旧 SWF/FLA 保留不删，通用 UI 宿主不退役。C# `StageAdmissionTask` 读取 `data/stages/entry-policies.xml`，按请求核对入口归属、目的地、固定难度和当前角色事实。Web 展示返回的快照，AS2 的 `SubwaySelectPanelService` 和 `EggSelectPanelService` 在核准后调用现有进关执行链。奖励待领取时仍会阻止新的关卡会话。进入成功后 Web 关闭面板。超时或断线时提示玩家观察游戏状态，重复请求不会重放进关。
 
 | Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
 |---------|-----------|-------------|-------------------|---------------|------------|--------|

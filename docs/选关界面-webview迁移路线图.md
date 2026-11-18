@@ -1,7 +1,7 @@
 # 选关界面 WebView 迁移路线图
 
 **文档角色**：`flashswf/UI/选关界面` 到 Launcher WebView panel 的 canonical migration doc。  
-**当前阶段**：Stage 2 Step 2 工程实现已落地；正式选关入口走 Web `stage-select`，普通关卡结算按既有目的地返回并停留在 Flash，旧 Flash `关卡地图` 保留为通信失败 fallback。Stage 3 已实现废城三维试点和全地图双栏聚焦，本地验证与正式游戏复验分开记录，不代表承诺 16 页全量 3D 化。
+**当前阶段**：Stage 2 Step 2 工程实现已落地；正式选关入口走 Web `stage-select`，关卡门槛和进关许可由 C# 裁决，AS2 提供角色事实并执行进关。普通关卡结算按既有目的地返回并停留在 Flash，旧 Flash `关卡地图` 保留为通信失败 fallback。Stage 3 已实现废城三维试点和全地图双栏聚焦，本地验证与正式游戏复验分开记录，不代表承诺 16 页全量 3D 化。
 
 ### 2026-10-24 当前交互反馈收口（工作树候选）
 

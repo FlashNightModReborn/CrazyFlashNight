@@ -40,11 +40,12 @@ _root.空中控制器._hasAnySource = function(air:Object):Boolean {
 _root.空中控制器.停止 = function(unit:MovieClip):Void {
     if (!unit || !unit.__air) return;
     EnhancedCooldownWheel.I().removeTaskByLabel(unit, "__air.step");
+    delete unit.__air.jetStepDone;
     delete unit.__air.running;
 };
 
 /** 启动控制器任务（每单位一个） */
-_root.空中控制器.启动 = function(unit:MovieClip):Void {
+_root.空中控制器.启动 = function(unit:MovieClip, scheduleOnly:Boolean):Void {
     if (!unit) return;
     var air:Object = _root.空中控制器.确保(unit);
     if (!air) return;
@@ -52,8 +53,11 @@ _root.空中控制器.启动 = function(unit:MovieClip):Void {
     if (air.running) return;
     air.running = true;
 
-    // 即刻执行一次，避免“等一帧才生效”的体感延迟
-    _root.空中控制器._tick(unit);
+    // 装备回调接手本次物理步时，只登记后续定时任务。
+    if (!scheduleOnly) {
+        _root.空中控制器._tick(unit);
+        if (!air.running) return;
+    }
 
     EnhancedCooldownWheel.I().addOrUpdateTask(
         unit,
@@ -220,28 +224,55 @@ _root.空中控制器.关闭被击飞浮空 = function(unit:MovieClip):Void {
  * @param unit:MovieClip
  * @param active:Boolean 是否处于喷气背包飞行流程（喷气背包开始飞行/飞行浮空）
  * @param thrust:Number  当前帧期望推力（0 表示不推）
+ * @param legacyImpulse:Number 普通喷气这一装备周期各次调用的实际升高量之和；省略时沿用定时推力接口。
  * @param onlyHoverInSkill:Boolean 技能/战技期间的特殊模式：
  *        - 允许技能自身的上升（如升龙拳）
  *        - 允许喷气推力上升（玩家按住飞行键）
  *        - 禁止自然下坠（不施加重力）
  */
-_root.空中控制器.更新喷气背包 = function(unit:MovieClip, active:Boolean, thrust:Number, onlyHoverInSkill:Boolean):Void {
+_root.空中控制器.更新喷气背包 = function(unit:MovieClip, active:Boolean, thrust:Number, onlyHoverInSkill:Boolean, legacyImpulse:Number):Void {
     if (!active) {
         _root.空中控制器.清除源(unit, "jetpack");
         return;
     }
-    _root.空中控制器.设置源(unit, "jetpack", {
-        active: true,
-        thrust: thrust || 0,
-        onlyHoverInSkill: (onlyHoverInSkill == true)
-    });
+    var air:Object = _root.空中控制器.确保(unit);
+    if (!air) return;
+    var jet:Object = air.sources.jetpack;
+    if (!jet) {
+        jet = { active: true };
+        air.sources.jetpack = jet;
+    }
+    jet.thrust = thrust || 0;
+    jet.onlyHoverInSkill = (onlyHoverInSkill == true);
+    if (legacyImpulse === undefined) {
+        jet.equipmentDriven = false;
+    } else if (!jet.equipmentDriven && _root.空中控制器._普通喷气(unit, air.sources)) {
+        jet.equipmentDriven = true;
+    }
+    if (jet.equipmentDriven) {
+        // 一次装备采样只推进一次。整段飞行沿用这个节拍，技能接手时由同一 _tick 选择来源。
+        // 下一次时间轮回调只确认这一步；缺少后续装备采样时，时间轮自动接回重力。
+        _root.空中控制器.启动(unit, true);
+        air.jetStepDone = true;
+        _root.空中控制器._tick(unit, legacyImpulse || 0);
+    } else {
+        _root.空中控制器.启动(unit);
+    }
+};
+
+_root.空中控制器._普通喷气 = function(unit:MovieClip, sources:Object):Boolean {
+    var state:String = unit.状态;
+    return sources.skillFloat == undefined && sources.naturalFall == undefined &&
+        sources.jumpFloat == undefined && sources.fastFall == undefined && sources.knockback == undefined &&
+        state != "技能" && state != "战技" && state.indexOf("跳") == -1 &&
+        state.indexOf("击倒") == -1 && state.indexOf("倒地") == -1;
 };
 
 // =============================================================================
 // 核心：统一纵向物理 tick
 // =============================================================================
 
-_root.空中控制器._tick = function(unit:MovieClip):Void {
+_root.空中控制器._tick = function(unit:MovieClip, jetImpulse:Number):Void {
     // unit 可能已被卸载
     if (!unit || unit._parent == undefined) {
         return;
@@ -250,16 +281,24 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
     if (!air || !air.sources) {
         return;
     }
+    if (jetImpulse === undefined && air.jetStepDone) {
+        air.jetStepDone = false;
+        return;
+    }
     if (!_root.空中控制器._hasAnySource(air)) {
         _root.空中控制器.停止(unit);
         return;
     }
 
+    var jet:Object = air.sources.jetpack;
+
     var tol:Number = _root.空中控制器._TOL;
     var z:Number = unit.Z轴坐标;
-    if (isNaN(z)) {
-        // 无 Z 轴信息无法判定落地，直接退出（保守）
-        return;
+    if (!isFinite(z)) {
+        // 已升空的背包保有上次确认的地面。位置被其他回调写坏时，仍能按这条地面落下。
+        if (!jet || !isFinite(unit.起始Y)) return;
+        z = unit.起始Y;
+        unit.Z轴坐标 = z;
     }
 
     var state:String = unit.状态;
@@ -285,7 +324,6 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
     }
 
     // 需要纵向积分的来源：任意一个存在即可
-    var jet:Object = air.sources.jetpack;
     var ff:Object = air.sources.fastFall;
     var kb:Object = air.sources.knockback;
     var hasPhysics:Boolean = (air.sources.skillFloat != undefined) || (air.sources.naturalFall != undefined) || (air.sources.jumpFloat != undefined) || (jet && jet.active) || (ff != undefined) || (kb != undefined);
@@ -296,6 +334,13 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
     }
 
     if (isNaN(unit.垂直速度)) unit.垂直速度 = 0;
+    var ordinaryJet:Boolean = jet && jet.equipmentDriven && _root.空中控制器._普通喷气(unit, air.sources);
+    if (jet) {
+        // 技能、急落或受击接管后的实际速度由该来源决定。返回普通喷气时不得找回旧的上升速度。
+        if (ordinaryJet && jet.resumeFromOther && jetImpulse === undefined) unit.flySpeed = -unit.垂直速度;
+        jet.resumeFromOther = !ordinaryJet;
+        if (jet.equipmentDriven && jetImpulse === undefined) jet.thrust = 0;
+    }
 
     // 快速下落模式：使用自定义重力，独立处理
     if (ff != undefined) {
@@ -378,7 +423,20 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
     // 技能浮空悬停：用于“空中读条”技能（例如龟派气功），仅暂停重力下坠
     var sfHover:Boolean = (air.sources.skillFloat != undefined && air.sources.skillFloat.hover == true && (state == "技能" || state == "战技"));
 
-    if (hoverInSkill) {
+    // 每次普通喷气的即时位移，加上当期 flySpeed；松键后仅惯性和重力继续生效。
+    if (ordinaryJet) {
+        var legacySpeed:Number = unit.flySpeed;
+        if ((legacySpeed - legacySpeed) != 0) legacySpeed = -unit.垂直速度;
+        // 场景或动作可先把角色放回地面。旧的上升惯性不能越过这次接地，飞行键的新推力仍可正常起飞。
+        if (!jetImpulse && unit._y >= z - tol) legacySpeed = 0;
+        unit._y -= (jetImpulse || 0) + legacySpeed;
+        unit.temp_y = unit._y;
+        legacySpeed -= _root.重力加速度;
+        unit.flySpeed = legacySpeed;
+        // 旧 flySpeed 向上为正，技能和受击读取的垂直速度向下为正。
+        unit.垂直速度 = -legacySpeed;
+        unit.浮空 = (unit._y < z - tol);
+    } else if (hoverInSkill) {
         // 技能/战技期间：允许技能上升 + 允许喷气推力上升，但禁止自然下坠
         // 1. 先应用喷气推力（玩家按住飞行键时提供上升）
         if (jet.thrust > 0) {
@@ -490,7 +548,13 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
             unit.flyType = -1;
             unit.飞行浮空 = false;
             unit.喷气背包开始飞行 = 0;
+            unit.leftFlySpeed = unit.rightFlySpeed = 0;
+            unit.upFlySpeed = unit.downFlySpeed = 0;
             unit._rotation = 0;
+            // 恢复角色阴影素材的地面注册点，静止到下一次切换动作也能正确贴地。
+            unit.shadow._x = -15.2;
+            unit.shadow._y = 233.05;
+            unit.shadow._rotation = 0;
             _root.fly_isFly1 = false;
             _root.fly_isFly2 = false;
             // 仅在落地时补一次落地效果（避免与 jumpFloat 重复）

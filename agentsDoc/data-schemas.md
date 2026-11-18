@@ -561,7 +561,9 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 
 同一 role 迁移后删除旧 `get_npc / get_npc_hotspot` 或 `finish_npc / finish_npc_hotspot`；未迁移 role 保留原字段。固定驻点不在场时不可达；跟随必须在当前事实下唯一且真实实例就绪。旧任务空 hotspot 保留“任意同名现场”语义，不强行固定；已填写的 hotspot 按同一物理地点解析。任务增删、ID、前置、奖励、对白、`finish_remote` 均不属于地图编辑范围。显示名与旧头像检索名分别由同一 C# 人物身份生成，不把显示名当图片身份。
 
-AS2 `MapFactsSampler` 提供链进度、正历史次数、按现役 `taskCompleteCheck` 采样的活动／交付状态、有限可接取状态、基建等级、四源场景和生命周期阻止原因；`tasks_finished > 0` 不代表可交付，链最大序号不代表之前全部完成。C# 通过仅 XMLSocket 的 `map_domain` 返回 snapshot v4；会话／内容／事实 revision／scene epoch 及 AS2 执行前同帧复核共同拒绝迟到导航。纯内容应用后重启，具体关卡解锁仍由现役关卡系统裁决。
+AS2 `MapFactsSampler` 提供链进度、正历史次数、按现役 `taskCompleteCheck` 采样的活动／交付状态、有限可接取状态、基建等级、四源场景和生命周期阻止原因；`tasks_finished > 0` 不代表可交付，链最大序号不代表之前全部完成。C# 通过仅 XMLSocket 的 `map_domain` 返回 snapshot v4；会话／内容／事实 revision／scene epoch 及 AS2 执行前同帧复核共同拒绝迟到导航。纯内容应用后重启。C# `StageAdmissionCatalog` 读取关卡 XML，`StageAdmissionTask` 根据当前角色事实裁决显示与进关。
+
+同一 `StageInfo` 可沿用旧 `UnlockCondition` 与 `AltUnlockCondition` 的任选一条语义，或使用只有一个根条件的 `<UnlockRule version="1">`。新旧字段混写会使目录加载失败，空字段也算混写。`stageCleared` 按关卡和难度读取已成功结算的记录。地铁和彩蛋入口的目的地和固定难度由 `data/stages/entry-policies.xml` 指定。
 
 `node tools/audit-map-taskmarkers.js`、`node tools/audit-map-avatar-visibility.js` 和 task catalog 的端点校验均调用同一 C# `validate-content`，不各自保存名称、别名、阈值副本。
 
