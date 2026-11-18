@@ -1148,4 +1148,46 @@
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
+    <Skill id="85">
+        <Name>后射</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;手枪后射&lt;/font&gt;：手枪站立、行走、奔跑中&lt;font color="#ffee00"&gt;→+B&lt;/font&gt;。转身向后射击，过程中连续换向开火。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
+        <CD>0</CD>
+        <MP>0</MP>
+    </Skill>
+    <Skill id="86">
+        <Name>前冲射击</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;手枪前冲射击&lt;/font&gt;：手枪站立、行走、奔跑中&lt;font color="#ffee00"&gt;Shift+→+B&lt;/font&gt;。向前突进，过程中连续换向开火。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
+        <CD>0</CD>
+        <MP>0</MP>
+    </Skill>
+    <Skill id="87">
+        <Name>后跳射击</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;手枪后跳射击&lt;/font&gt;：手枪站立、行走、奔跑中&lt;font color="#ffee00"&gt;Shift+←+B&lt;/font&gt;。向后跳撤，过程中连续换向开火。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
+        <CD>0</CD>
+        <MP>0</MP>
+    </Skill>
 </Skills>

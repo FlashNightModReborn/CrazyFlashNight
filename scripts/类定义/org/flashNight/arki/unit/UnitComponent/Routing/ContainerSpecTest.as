@@ -54,6 +54,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpecTest {
         testBuildLinkageName_Weapon();
         testBuildLinkageName_Skill();
         testBuildLinkageName_BattleSkill();
+        testBuildLinkageName_PistolSkill();
         testGetLinkagePrefix_AllKinds();
         testGetLinkagePrefix_UnknownKind();
         testGetMissingFallback_Current();
@@ -101,6 +102,16 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpecTest {
             ContainerSpec.buildLinkageName(ContainerSpec.KIND_BATTLE_SKILL, "双刀变长柄"));
     }
 
+    private static function testBuildLinkageName_PistolSkill():Void {
+        trace("\n--- testBuildLinkageName_PistolSkill ---");
+        assertEquals("pistolSkill + 后射",
+            "手枪搓招容器-后射",
+            ContainerSpec.buildLinkageName(ContainerSpec.KIND_PISTOL_SKILL, "后射"));
+        assertEquals("pistolSkill + 后射2（手枪2 变体）",
+            "手枪搓招容器-后射2",
+            ContainerSpec.buildLinkageName(ContainerSpec.KIND_PISTOL_SKILL, "后射2"));
+    }
+
     // ====================================================================
     // getLinkagePrefix
     // ====================================================================
@@ -111,6 +122,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpecTest {
         assertEquals("weapon",      "兵器攻击容器", ContainerSpec.getLinkagePrefix(ContainerSpec.KIND_WEAPON));
         assertEquals("skill",       "技能容器",     ContainerSpec.getLinkagePrefix(ContainerSpec.KIND_SKILL));
         assertEquals("battleSkill", "战技容器",     ContainerSpec.getLinkagePrefix(ContainerSpec.KIND_BATTLE_SKILL));
+        assertEquals("pistolSkill", "手枪搓招容器", ContainerSpec.getLinkagePrefix(ContainerSpec.KIND_PISTOL_SKILL));
     }
 
     private static function testGetLinkagePrefix_UnknownKind():Void {
@@ -127,7 +139,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpecTest {
     private static function testGetMissingFallback_Current():Void {
         trace("\n--- testGetMissingFallback_Current ---");
         // 当前现状（documented in ContainerSpec）：
-        // unarmed/weapon → ABORT；skill/battleSkill → SILENT_CONTINUE
+        // unarmed/weapon/pistolSkill → ABORT；skill/battleSkill → SILENT_CONTINUE
         assertEquals("unarmed → ABORT",
             ContainerSpec.FALLBACK_ABORT,
             ContainerSpec.getMissingFallback(ContainerSpec.KIND_UNARMED));
@@ -140,6 +152,9 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpecTest {
         assertEquals("battleSkill → SILENT_CONTINUE",
             ContainerSpec.FALLBACK_SILENT_CONTINUE,
             ContainerSpec.getMissingFallback(ContainerSpec.KIND_BATTLE_SKILL));
+        assertEquals("pistolSkill → ABORT",
+            ContainerSpec.FALLBACK_ABORT,
+            ContainerSpec.getMissingFallback(ContainerSpec.KIND_PISTOL_SKILL));
     }
 
     private static function testGetMissingFallback_UnknownKind():Void {
@@ -156,7 +171,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpecTest {
     private static function testAllKinds_AreLookupable():Void {
         trace("\n--- testAllKinds_AreLookupable ---");
         var kinds:Array = ContainerSpec.allKinds();
-        assertEquals("allKinds 长度 = 4", 4, kinds.length);
+        assertEquals("allKinds 长度 = 5", 5, kinds.length);
     }
 
     /**

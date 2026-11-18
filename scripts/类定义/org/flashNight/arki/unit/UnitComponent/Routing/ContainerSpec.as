@@ -30,6 +30,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpec {
     public static var KIND_WEAPON:String       = "weapon";
     public static var KIND_SKILL:String        = "skill";
     public static var KIND_BATTLE_SKILL:String = "battleSkill";
+    public static var KIND_PISTOL_SKILL:String = "pistolSkill";
 
     // ════════════════════════════════════════════════════════════════════
     // Linkage 前缀 — 与 Flash 库里 attachMovie 容器元件名严格对齐
@@ -38,6 +39,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpec {
     public static var LINKAGE_PREFIX_WEAPON:String       = "兵器攻击容器";
     public static var LINKAGE_PREFIX_SKILL:String        = "技能容器";
     public static var LINKAGE_PREFIX_BATTLE_SKILL:String = "战技容器";
+    public static var LINKAGE_PREFIX_PISTOL_SKILL:String = "手枪搓招容器";
 
     // ════════════════════════════════════════════════════════════════════
     // Missing symbol fallback 策略
@@ -65,6 +67,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpec {
         if (kind === KIND_WEAPON)       return LINKAGE_PREFIX_WEAPON;
         if (kind === KIND_SKILL)        return LINKAGE_PREFIX_SKILL;
         if (kind === KIND_BATTLE_SKILL) return LINKAGE_PREFIX_BATTLE_SKILL;
+        if (kind === KIND_PISTOL_SKILL) return LINKAGE_PREFIX_PISTOL_SKILL;
         return undefined;
     }
 
@@ -78,13 +81,16 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpec {
         if (kind === KIND_WEAPON)       return FALLBACK_ABORT;
         if (kind === KIND_SKILL)        return FALLBACK_SILENT_CONTINUE;
         if (kind === KIND_BATTLE_SKILL) return FALLBACK_SILENT_CONTINUE;
+        // 手枪搓招容器缺失（linkage 未发布/变体名拼错）时让调用方立即恢复站立，
+        // 避免"状态已进技能、man 缺失"的空容器卡死。
+        if (kind === KIND_PISTOL_SKILL) return FALLBACK_ABORT;
         return undefined;
     }
 
     /**
-     * 4 kind 集合，便于测试遍历 + 防止注册漏。
+     * 5 kind 集合，便于测试遍历 + 防止注册漏。
      */
     public static function allKinds():Array {
-        return [KIND_UNARMED, KIND_WEAPON, KIND_SKILL, KIND_BATTLE_SKILL];
+        return [KIND_UNARMED, KIND_WEAPON, KIND_SKILL, KIND_BATTLE_SKILL, KIND_PISTOL_SKILL];
     }
 }

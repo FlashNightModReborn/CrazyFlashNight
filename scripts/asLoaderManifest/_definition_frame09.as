@@ -455,6 +455,7 @@ _root.__boot.s7_syncLogic = function() {
     _root.__boot.f36_8();
     _root.__boot.f36_12();
     _root.__boot.f36_13();
+    _root.__boot.f36_14();
     _root.__boot.f36_9();
     _root.__boot.f36_11();
     _root.__boot.f36_10();

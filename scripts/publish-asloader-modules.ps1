@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param([int]$TimeoutSeconds=900,[switch]$QuitFlashAfterPublish)
 $ErrorActionPreference='Stop'
 $repo=Split-Path -Parent $PSScriptRoot
@@ -12,6 +12,18 @@ $runRoot=$null
 $receipt=[ordered]@{schema='cf7-asloader-publish.v1';state='failed';startedUtc=[DateTime]::UtcNow.ToString('o');stages=@()}
 $result=1
 Push-Location $repo
+    # python 解析：PATH 上的 python 可能是 WindowsApps stub（存在但一律 9009），过滤后回退 .workbuddy 便携安装。
+    $script:PythonExe = $null
+    $pyOnPath = (Get-Command python -ErrorAction SilentlyContinue).Source
+    if ($pyOnPath -and -not ($pyOnPath -like '*Microsoft\WindowsApps*')) { $script:PythonExe = $pyOnPath }
+    if (-not $script:PythonExe) {
+        $pyVersions = Join-Path $env:USERPROFILE '.workbuddy\binaries\python\versions'
+        if (Test-Path -LiteralPath $pyVersions) {
+            $latestPy = Get-ChildItem -LiteralPath $pyVersions -Directory | Sort-Object Name -Descending | Select-Object -First 1
+            if ($latestPy -and (Test-Path -LiteralPath (Join-Path $latestPy.FullName 'python.exe'))) { $script:PythonExe = Join-Path $latestPy.FullName 'python.exe' }
+        }
+    }
+    if (-not $script:PythonExe) { throw '未找到可用 python 解释器（PATH 仅有 WindowsApps stub）；asLoader 模块生成需要 python。' }
 try {
     if([string]::IsNullOrWhiteSpace($previousLease)) {
         try {$held=$mutex.WaitOne(0)} catch [Threading.AbandonedMutexException] {
@@ -33,9 +45,9 @@ try {
     New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
     & node tools/assemble-collapsed-frame.js
     if($LASTEXITCODE -ne 0){throw 'Boot definition generation failed.'}
-    & python -B -X utf8 tools/build-choice-rewards.py --check
+    & $script:PythonExe -B -X utf8 tools/build-choice-rewards.py --check
     if($LASTEXITCODE -ne 0){throw 'Runtime reward catalog is stale; regenerate its owned data first.'}
-    & python -B -X utf8 tools/build-asloader-modules.py
+    & $script:PythonExe -B -X utf8 tools/build-asloader-modules.py
     if($LASTEXITCODE -ne 0){throw 'Module generation failed.'}
     Copy-Item -LiteralPath (Join-Path $repo 'tmp/asloader-modules/manifest.json') -Destination (Join-Path $runRoot 'inputs.json')
     $receipt.inputManifestSha256=(Get-FileHash -LiteralPath (Join-Path $runRoot 'inputs.json') -Algorithm SHA256).Hash
@@ -63,9 +75,9 @@ try {
     if($LASTEXITCODE -ne 0){throw 'Module initialization order failed.'}
     & node tools/assemble-collapsed-frame.js --check
     if($LASTEXITCODE -ne 0){throw 'Boot sources changed during compilation.'}
-    & python -B -X utf8 tools/build-choice-rewards.py --check
+    & $script:PythonExe -B -X utf8 tools/build-choice-rewards.py --check
     if($LASTEXITCODE -ne 0){throw 'Reward catalog sources changed during compilation.'}
-    & python -B -X utf8 tools/build-asloader-modules.py --check
+    & $script:PythonExe -B -X utf8 tools/build-asloader-modules.py --check
     if($LASTEXITCODE -ne 0){throw 'Module inputs changed during compilation.'}
     $receipt.state='compiled'
     $result=0

@@ -120,6 +120,9 @@ _root.__boot.f36_12 = function() {
 _root.__boot.f36_13 = function() {
     #include "../逻辑/单位函数/单位函数_黑猫_技能搓招指令.as"
 };
+_root.__boot.f36_14 = function() {
+    #include "../逻辑/单位函数/单位函数_雾人_手枪搓招指令.as"
+};
 _root.__boot.f36_9 = function() {
     #include "../逻辑/单位函数/单位函数_aka_战宠进阶.as"
 };

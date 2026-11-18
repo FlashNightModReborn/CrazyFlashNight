@@ -835,9 +835,27 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         $hasDerivedFailure = $false
         if ($PublishOnly -and $ownershipRelative -like 'flashswf/*' -and
             -not ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasOwnershipFailure)) {
-            & python -B -X utf8 (Join-Path $ProjectDir 'tools/combat-fx-assets/after_publish.py') --swf $VerifySwfPath --published-xfl $targetPath
-            $hasDerivedFailure = $LASTEXITCODE -ne 0
-            if ($hasDerivedFailure) { Write-Host '[ERROR] 战斗美术派生未通过，详见对应目录、图集或声音的验证结果。' }
+            # python 解析：PATH 上的 python 可能是 WindowsApps stub（存在但一律 9009），过滤后回退 .workbuddy 便携安装；
+            # 找不到可用解释器则告警降级（不伪装成验证通过）。
+            $pythonExe = $null
+            $pyOnPath = (Get-Command python -ErrorAction SilentlyContinue).Source
+            if ($pyOnPath -and -not ($pyOnPath -like '*Microsoft\WindowsApps*')) { $pythonExe = $pyOnPath }
+            if (-not $pythonExe) {
+                $pyVersions = Join-Path $env:USERPROFILE '.workbuddy\binaries\python\versions'
+                if (Test-Path -LiteralPath $pyVersions) {
+                    $latestPy = Get-ChildItem -LiteralPath $pyVersions -Directory | Sort-Object Name -Descending | Select-Object -First 1
+                    if ($latestPy -and (Test-Path -LiteralPath (Join-Path $latestPy.FullName 'python.exe'))) {
+                        $pythonExe = Join-Path $latestPy.FullName 'python.exe'
+                    }
+                }
+            }
+            if ($pythonExe) {
+                & $pythonExe -B -X utf8 (Join-Path $ProjectDir 'tools/combat-fx-assets/after_publish.py') --swf $VerifySwfPath --published-xfl $targetPath
+                $hasDerivedFailure = $LASTEXITCODE -ne 0
+                if ($hasDerivedFailure) { Write-Host '[ERROR] 战斗美术派生未通过，详见对应目录、图集或声音的验证结果。' }
+            } else {
+                Write-Host '[WARN] 未找到 python（PATH 仅有 WindowsApps stub 且无 .workbuddy 回退），跳过战斗美术派生验证；素材库清单内目标请先配置 python。'
+            }
         }
         if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasFunctionSizeFailure -or $hasOwnershipFailure -or $hasInheritanceFailure -or $hasDerivedFailure) {
             Remove-Item -Path $TargetCfg, $ModeCfg, $QuitCfg, $ReopenMarker -ErrorAction SilentlyContinue
