@@ -393,11 +393,12 @@ class org.flashNight.arki.spatial.move.Mover {
         }
 
 
-        // 获取实体当前局部坐标
-        var point:Vector = new Vector(entity._x, entity._y);
+        // 碰撞在地面 X/Z 平面求解。场景通知可能早于环境边界到达，挤出时取本关已生效的边界。
+        var point:Vector = new Vector(x, y);
         
         // 1. 计算指向场景中心的归一化向量（中心回归向量）
-        var center:Vector = SceneCoordinateManager.center;
+        var center:Vector = SceneCoordinateManager.calculateCenter();
+        var safeRadius:Number = SceneCoordinateManager.calculateSafeRadius();
         var centerVec:Vector = center.minusNew(point);
         centerVec.normalize();
         
@@ -405,8 +406,8 @@ class org.flashNight.arki.spatial.move.Mover {
         var dir2D:Vector = new Vector(dir.x, dir.y);
 
         // 3. 根据实体与中心的距离，计算自适应混合比率
-        var adaptiveRatio:Number = Math.max(0, 
-                                   Math.min(1, 1 - (SceneCoordinateManager.safeRadius / point.distance(center))));
+        var distance:Number = point.distance(center);
+        var adaptiveRatio:Number = distance > 0 ? Math.max(0, Math.min(1, 1 - safeRadius / distance)) : 0;
         // 4. 对原始向量和中心回归向量进行线性插值，获得最终挤出向量
         var finalVec:Vector = dir2D.lerp(centerVec, adaptiveRatio);
         // _root.发布消息(dir2D + " " + adaptiveRatio + " " + finalVec)
@@ -414,6 +415,8 @@ class org.flashNight.arki.spatial.move.Mover {
         // 5. 对最终向量进行归一化，并乘以步长（speed 与 5 中较大值）
         finalVec.normalize();
         finalVec.mult(Math.max(speed, 5));
+        // 边界未就绪或移动参数无效时保留原位置，避免只把逻辑 Z 写成 NaN，令落地永远无法成立。
+        if (!isFinite(finalVec.x) || !isFinite(finalVec.y)) return;
         
         // 6. 更新实体位置（同步更新 _x、Z轴坐标及 _y 与碰撞箱）
         entity._x += finalVec.x;

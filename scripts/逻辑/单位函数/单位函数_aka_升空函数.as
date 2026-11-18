@@ -447,6 +447,7 @@ _root.主角的升空函数 = [];
 _root.jetpack = function(flySpeed, type, left, right, up, down)
 {
          自机 = this;
+         var legacyImpulse:Number = 0;
 		 flySpeed = flySpeed ? flySpeed : 10;
 		 type = type ? type : 0;
 		 left = left ? left : 0;
@@ -491,7 +492,7 @@ _root.jetpack = function(flySpeed, type, left, right, up, down)
          }
          if(自机.状态.indexOf("击倒") > -1 || 自机.状态.indexOf("倒地") > -1)
          {
-            return undefined;
+            return 0;
          }
           自机.flyType = 1;
           if(自机.状态.indexOf("跳") == -1)
@@ -502,7 +503,11 @@ _root.jetpack = function(flySpeed, type, left, right, up, down)
                 自机.动画完毕();
              }
              // 统一以 Z 轴为地面基准；纵向位移交给“空中控制器”处理
-             自机.起始Y = 自机.Z轴坐标;
+             if (isFinite(自机.Z轴坐标)) 自机.起始Y = 自机.Z轴坐标;
+             // 普通喷气每次调用按实际 flySpeed 增高一次，由空中控制器统一写入位置。
+             if (自机.状态 != "技能" && 自机.状态 != "战技") {
+                legacyImpulse = 自机.flySpeed;
+             }
           }
           else if(自机.垂直速度 > -1)
           {
@@ -526,11 +531,19 @@ _root.jetpack = function(flySpeed, type, left, right, up, down)
                _loc9_._y = 233.05 + (自机.起始Y - 自机._y) * 3.5;
             }
          }
+    return legacyImpulse;
 };
 
 _root.jetpackCheck = function()
 {
          自机 = this;
+         var air:Object = 自机.__air;
+         var jet:Object = air && air.sources ? air.sources.jetpack : null;
+         if (jet && jet.resumeFromOther && _root.空中控制器._普通喷气(自机, air.sources)) {
+            自机.flySpeed = -自机.垂直速度 || 0;
+            jet.resumeFromOther = false;
+         }
+         var legacyImpulseNow:Number = 0; // 每次 jetpack 调用冲量的和，不是速度倍率
          var thrustNow:Number = 0; // 本帧喷气推力（0=不推；纵向物理由空中控制器统一处理）
          if(!自机.喷气背包气槽 && 自机.喷气背包气槽 != 0)
          {
@@ -571,53 +584,54 @@ _root.jetpackCheck = function()
              thrustNow = 飞行速度;
              if(自机.按键检测(自机.左键,0))
              {
-                自机.jetpack(飞行速度,1,15,0,0,0);
+                legacyImpulseNow += 自机.jetpack(飞行速度,1,15,0,0,0);
              }
             else if(自机.按键检测(自机.右键,0))
             {
-               自机.jetpack(飞行速度,1,0,15,0,0);
+               legacyImpulseNow += 自机.jetpack(飞行速度,1,0,15,0,0);
             }
             if(自机.按键检测(自机.上键,0))
             {
-               自机.jetpack(飞行速度,1,0,0,15,0);
+               legacyImpulseNow += 自机.jetpack(飞行速度,1,0,0,15,0);
             }
             else if(自机.按键检测(自机.下键,0))
             {
-               自机.jetpack(飞行速度,1,0,0,0,15);
+               legacyImpulseNow += 自机.jetpack(飞行速度,1,0,0,0,15);
             }
             else
             {
-               自机.jetpack(飞行速度,1);
+               legacyImpulseNow += 自机.jetpack(飞行速度,1);
              }
           }
-          else if(自机.飞行浮空 && 自机.喷气背包气槽 > 0)
+          // 切换动作或贴地修正可能先更新位置，方向键只在真实离地时短喷。
+          else if(自机.飞行浮空 && 自机.喷气背包气槽 > 0 && 自机._y < 自机.Z轴坐标 - _root.空中控制器._TOL)
           {
             if(自机.按键检测(自机.左键,0))
             {
-               自机.jetpack(5,1,10,0);
+               legacyImpulseNow += 自机.jetpack(5,1,10,0);
                自机.正在充气 = 1;
             }
             else if(自机.按键检测(自机.右键,0))
             {
-               自机.jetpack(5,1,0,10);
+               legacyImpulseNow += 自机.jetpack(5,1,0,10);
                自机.正在充气 = 1;
             }
             //if(自机.按键检测(自机.上键,0) && ((自机.状态.indexOf("攻击") == -1 || 自机.状态.indexOf("枪") == -1) || 自机.按键检测(_root.奔跑键,0)))
             if(自机.按键检测(自机.上键,0) && (自机.状态.indexOf("枪") == -1 || 自机.按键检测(_root.奔跑键,0)))
             {
-               自机.jetpack(5,1,0,0,10,0);
+               legacyImpulseNow += 自机.jetpack(5,1,0,0,10,0);
                自机.正在充气 = 1;
             }
             else if(自机.按键检测(自机.下键,0) && (自机.状态.indexOf("枪") == -1 || 自机.按键检测(_root.奔跑键,0)))
             {
-               自机.jetpack(5,1,0,0,0,10);
+               legacyImpulseNow += 自机.jetpack(5,1,0,0,0,10);
                自机.正在充气 = 1;
              }
           }
 
           // 纵向物理统一交给空中控制器（技能/战技期间 onlyHoverInSkill=true → 只悬停）
           if (_root.空中控制器 && _root.空中控制器.更新喷气背包) {
-             _root.空中控制器.更新喷气背包(自机, 自机.喷气背包开始飞行 == 1, thrustNow, true);
+             _root.空中控制器.更新喷气背包(自机, 自机.喷气背包开始飞行 == 1, thrustNow, true, legacyImpulseNow);
           }
 
           if(自机.喷气背包开始飞行 == 1)
@@ -638,6 +652,16 @@ _root.jetpackCheck = function()
 			   if(!自机.按键检测(_root.奔跑键,0) && 自机._rotation - 自机.rightFlySpeed < 11 && 自机._rotation - 自机.rightFlySpeed > -11){
                		自机._rotation = 自机.rightFlySpeed;
 			   }
+            }
+            // 喷气横移独立于步行碰撞。横向惯性只能到关卡边缘，向场内的分量仍然有效。
+            if (_root.Xmin < _root.Xmax) {
+               if (自机._x < _root.Xmin) {
+                  自机._x = _root.Xmin;
+                  自机.leftFlySpeed = 0;
+               } else if (自机._x > _root.Xmax) {
+                  自机._x = _root.Xmax;
+                  自机.rightFlySpeed = 0;
+               }
             }
             if(自机.攻击模式.indexOf("枪") == -1 || 自机.按键检测(_root.奔跑键,0))
             {
