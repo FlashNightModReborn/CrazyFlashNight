@@ -54,35 +54,60 @@ class org.flashNight.arki.scene.SceneCollisionManager {
         }
     }
 
-    public function addMovieClipCollision(mc:MovieClip, rect):Void{
-        if (this.collisionLayer == null || mc == null || rect == null) return;
+    // rect 是调用方提交的世界坐标快照。障碍移动或改形后再次提交；
+    // 默认当帧生效。批量提交传 false，最后 redraw()，或等待 update()。
+    public function addMovieClipCollision(mc:MovieClip, rect:Object, forceUpdate:Boolean):Void {
+        // AVM1 的原生 getRect 结果带四个坐标，却可能与 null 松比较相等。
+        if (this.collisionLayer == null || mc == null ||
+            rect.xMin === undefined || rect.xMax === undefined ||
+            rect.yMin === undefined || rect.yMax === undefined) return;
         if (this.movieClipCollisions == null) this.movieClipCollisions = [];
 
-        // 同一 MC 重新计算边界时更新原记录，避免重入重复绘制。
+        var immediate:Boolean = forceUpdate !== false;
         for (var i:Number = 0; i < this.movieClipCollisions.length; i++) {
             var current:Object = this.movieClipCollisions[i];
             if (current.mc === mc) {
-                current.rect = ObjectUtil.clone(rect);
+                var old:Object = current.rect;
+                if (old.xMin != rect.xMin || old.yMin != rect.yMin ||
+                    old.xMax != rect.xMax || old.yMax != rect.yMax) {
+                    current.rect = copyBounds(rect);
+                    this.redrawDirtyMark = true;
+                }
+                if (immediate && this.redrawDirtyMark) redraw();
                 return;
             }
         }
-        this.movieClipCollisions.push({
-            mc: mc,
-            rect: ObjectUtil.clone(rect)
-        });
+        var bounds:Object = copyBounds(rect);
+        this.movieClipCollisions.push({mc: mc, rect: bounds});
+        if (!immediate) {
+            this.redrawDirtyMark = true;
+        } else if (this.redrawDirtyMark) {
+            redraw();
+        } else {
+            // 首绘只追加这一个矩形。登记先于绘制完成通知。
+            CollisionLayerRenderer.drawRect(this.collisionLayer, bounds);
+        }
     }
 
-    public function removeMovieClipCollision(mc:MovieClip):Void{
-        for(var i = this.movieClipCollisions.length - 1; i > -1; i--){
+    private static function copyBounds(rect:Object):Object {
+        return {xMin:rect.xMin, yMin:rect.yMin, xMax:rect.xMax, yMax:rect.yMax};
+    }
+
+    // 默认合并移除。需要本次调用返回时即可通行的机关传 true。
+    public function removeMovieClipCollision(mc:MovieClip, forceUpdate:Boolean):Boolean {
+        if (mc == null || this.movieClipCollisions == null) return false;
+        for (var i:Number = this.movieClipCollisions.length - 1; i >= 0; i--) {
             var mcColli:Object = this.movieClipCollisions[i];
-            if(mcColli.mc === mc){
+            if (mcColli.mc === mc) {
                 mcColli.mc = null;
                 mcColli.rect = null;
                 this.movieClipCollisions.splice(i, 1);
                 this.redrawDirtyMark = true;
-                return;
+                if (forceUpdate) redraw();
+                return true;
             }
         }
+        return false;
     }
 
     // update 函数，被 SceneManager 调用
@@ -101,7 +126,7 @@ class org.flashNight.arki.scene.SceneCollisionManager {
                 }
             }
         }
-        // 根据脏标记触发重绘，间隔最低20帧
+        // 上次重绘后，第 21 次及以后的有效更新可以提交待处理的变更。
         if(this.redrawDirtyMark && this.drawCount > 20){
             redraw();
         }
@@ -109,8 +134,9 @@ class org.flashNight.arki.scene.SceneCollisionManager {
 
     // 重绘所有碰撞箱
     public function redraw():Void{
-        if (this.collisionLayer == null) return;
-        CollisionLayerRenderer.clearAll();
+        var layer:MovieClip = this.collisionLayer;
+        if (layer == null) return;
+        layer.clear();
 
         // 再次计算边界坐标并绘制外框
         var point:Vector = SceneCoordinateManager.calculateOffset();
@@ -120,25 +146,27 @@ class org.flashNight.arki.scene.SceneCollisionManager {
 		var ymax:Number = _root.Ymax - point.y;
 		// 调用统一渲染器绘制边界碰撞箱
 		CollisionLayerRenderer.drawBoundary(
-			collisionLayer,
+			layer,
 			xmin, xmax, ymin, ymax,
 			300,  // margin
-			_root.调试模式
+			_root.调试模式, true
 		);
         
         // 根据存储的数组再次绘制碰撞箱
         if (this.collisions != null){
-            CollisionLayerRenderer.drawPolygons(collisionLayer, this.collisions);
+            CollisionLayerRenderer.drawPolygons(layer, this.collisions, true);
         }
 
         // 再次绘制影片剪辑碰撞箱
         for(var i = 0; i < this.movieClipCollisions.length; i++){
             var mcColli:Object = this.movieClipCollisions[i];
-            CollisionLayerRenderer.drawRect(collisionLayer, mcColli.rect);
+            CollisionLayerRenderer.drawRect(layer, mcColli.rect, true);
         }
 
         this.redrawDirtyMark = false;
         this.drawCount = 0;
+        // 订阅者可以在回调内再次修改碰撞。先提交本轮状态，再通知。
+        CollisionLayerRenderer.finishDrawing(layer, _root.调试模式);
     }
 
     /**

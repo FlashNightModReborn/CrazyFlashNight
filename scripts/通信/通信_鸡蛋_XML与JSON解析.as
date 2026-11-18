@@ -130,12 +130,3 @@ _root.getNPCShop = function(name){
 	}
 	return _root.duplicateOf(_root.units[_root.unit_indices_by_id[Number(index)]]);
 }*/
-
-//佣兵
-// 未使用 - 可移除
-/*_root.getMercData = function(index){
-	return _root.duplicateOf(_root.mercs_list[_root.merc_indices_by_id[index]]);
-};
-_root.getMercEasyData = function(index){
-	return _root.duplicateOf(_root.mercs_easy_list[_root.merc_easy_indices_by_id[index]]);
-};*/

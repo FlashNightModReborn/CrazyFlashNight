@@ -1,6 +1,8 @@
 ﻿import org.flashNight.arki.scene.SceneCollisionManager;
 
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.ObstacleRenderer;
+import org.flashNight.arki.collision.CollisionLayerRenderer;
+import org.flashNight.neur.Event.EventBus;
 
 /** SceneCollisionManager 聚合、完整重绘与卸载回归。 */
 class org.flashNight.arki.scene.SceneCollisionManagerTest {
@@ -42,16 +44,18 @@ class org.flashNight.arki.scene.SceneCollisionManagerTest {
             _caseCount++;
             testRedrawRetainsAllProductionSources();
             _caseCount++;
+            testSameFrameMoveAndRemoval();
+            _caseCount++;
             testDisposeReleasesExactOldState();
             _caseCount++;
 
             trace("SceneCollisionManagerTest Tests Passed: " + _passed);
             trace("SceneCollisionManagerTest Tests Failed: " + _failed);
-            if (_failed > 0 || _caseCount != 4) {
+            if (_failed > 0 || _caseCount != 5) {
                 throw new Error("SceneCollisionManagerTest failed: "
-                    + _failed + " checks, " + _caseCount + "/4 cases");
+                    + _failed + " checks, " + _caseCount + "/5 cases");
             }
-            trace("SceneCollisionManagerTest Cases Passed: 4/4");
+            trace("SceneCollisionManagerTest Cases Passed: 5/5");
         } finally {
             try {
                 cleanupScene();
@@ -118,11 +122,6 @@ class org.flashNight.arki.scene.SceneCollisionManagerTest {
         obstacle.area.lineTo(360, 80);
         obstacle.area.lineTo(360, 40);
         obstacle.area.endFill();
-        // TestLoader 动态空 MC 的原生 getRect 在 AVM1 testMovie 下可能返回 undefined；
-        // 固定生产 API 的返回值，专项只验证 renderer→authority→redraw 生命周期。
-        obstacle.area.getRect = function(referenceClip:MovieClip):Object {
-            return {xMin:360, yMin:40, xMax:400, yMax:80};
-        };
         ObstacleRenderer.renderObstacle(obstacle);
 
         _manager.redraw();
@@ -177,6 +176,91 @@ class org.flashNight.arki.scene.SceneCollisionManagerTest {
             "C03 removing the last MovieClip still redraws and retains static collision");
     }
 
+    private static function testSameFrameMoveAndRemoval():Void {
+        var moving:MovieClip = _world.createEmptyMovieClip("__moving", _world.getNextHighestDepth());
+        moving.obstacle = true;
+        moving._x = 220;
+        moving._y = 180;
+        var area:MovieClip = moving.createEmptyMovieClip("area", 1);
+        area.beginFill(0);
+        area.moveTo(0, 0); area.lineTo(20, 0); area.lineTo(20, 20);
+        area.lineTo(0, 20); area.lineTo(0, 0); area.endFill();
+        var sibling:MovieClip = _world.createEmptyMovieClip("__sibling", _world.getNextHighestDepth());
+        var siblingRect:Object = {xMin:400, xMax:420, yMin:180, yMax:200};
+        _root.调试模式 = true;
+        _manager.addMovieClipCollision(sibling, siblingRect);
+        ObstacleRenderer.renderObstacle(moving);
+        var measured:Object = area.getRect(_world);
+        var ink:Object = area.getBounds(_world);
+        var recorded:Object = _manager.movieClipCollisions[1].rect;
+        trace("C05 A actual rect/bounds/record=" + measured.xMin + "," + measured.yMin
+            + "/" + ink.xMin + "," + ink.yMin + "/" + recorded.xMin + "," + recorded.yMin
+            + " clip=" + moving.area + " eligible=" + ObstacleRenderer.canRenderObstacle(moving)
+            + " nativeRectNull=" + (measured == null) + " count=" + _manager.movieClipCollisions.length);
+        check(_layer.hitTest(230, 190, true) && !_layer.hitTest(310, 190, true)
+                && _layer.hitTest(410, 190, true), "C05 initial geometry blocks A and sibling only");
+
+        var notifications:Number = 0;
+        var sawFinalMove:Boolean = false;
+        var listener:Function = function():Void {
+            notifications++;
+            var layer:MovieClip = _root.collisionLayer;
+            sawFinalMove = !layer.hitTest(230, 190, true) && layer.hitTest(310, 190, true)
+                && layer.hitTest(410, 190, true) && layer._visible;
+        };
+        var bus:EventBus = EventBus.getInstance();
+        var eventName:String = CollisionLayerRenderer.EVENT_COLLISION_CHANGED;
+        bus.subscribe(eventName, listener, null);
+        try {
+            var revision:Number = CollisionLayerRenderer.revision;
+            moving._x = 300;
+            ObstacleRenderer.renderObstacle(moving);
+            trace("C05 moved hits=" + _layer.hitTest(230, 190, true) + "," + _layer.hitTest(310, 190, true)
+                + "," + _layer.hitTest(410, 190, true) + " events=" + notifications
+                + " revisionDelta=" + (CollisionLayerRenderer.revision - revision));
+            check(!_layer.hitTest(230, 190, true) && _layer.hitTest(310, 190, true)
+                    && _layer.hitTest(410, 190, true), "C05 same-frame move opens A, blocks B and preserves sibling");
+            check(notifications == 1 && sawFinalMove && CollisionLayerRenderer.revision == revision + 1,
+                "C05 one move notification sees final geometry and visible debug layer");
+            check(_layer._visible && _layer._alpha == 50, "C05 debug overlay survives polygon and rect replay");
+            ObstacleRenderer.renderObstacle(moving);
+            check(notifications == 1, "C05 identical submitted bounds do not repaint");
+
+            _root.调试模式 = false;
+            _manager.removeMovieClipCollision(moving, true);
+            check(!_layer.hitTest(310, 190, true) && _layer.hitTest(410, 190, true)
+                    && _layer.hitTest(60, 60, true), "C05 forced removal clears B in-frame and preserves other collisions");
+            check(!_layer._visible && notifications == 2 && CollisionLayerRenderer.revision == revision + 2,
+                "C05 forced redraw hides debug geometry and publishes once");
+            _manager.removeMovieClipCollision(moving, true);
+            check(notifications == 2, "C05 repeated forced removal is a no-op");
+
+            var staged:Object = {xMin:480, xMax:500, yMin:180, yMax:200};
+            _manager.addMovieClipCollision(moving, staged, false);
+            _manager.removeMovieClipCollision(sibling);
+            check(!_layer.hitTest(490, 190, true) && _layer.hitTest(410, 190, true)
+                    && notifications == 2, "C05 deferred add and removal retain the last published geometry");
+            for (var i:Number = 0; i < 20; i++) _manager.update();
+            check(notifications == 2, "C05 deferred batch waits through the twentieth update");
+            _manager.update();
+            check(_layer.hitTest(490, 190, true) && !_layer.hitTest(410, 190, true)
+                    && notifications == 3, "C05 twenty-first update commits both changes in one redraw");
+
+            _manager.addMovieClipCollision(moving, siblingRect, false);
+            _manager.addMovieClipCollision(sibling, staged, false);
+            check(!_layer.hitTest(410, 190, true) && notifications == 3, "C05 deferred move leaves its old snapshot intact");
+            _manager.redraw();
+            check(_layer.hitTest(410, 190, true) && _layer.hitTest(490, 190, true)
+                    && notifications == 4, "C05 explicit batch redraw commits custom bounds in-frame");
+        } finally {
+            bus.unsubscribe(eventName, listener, null);
+        }
+        _manager.removeMovieClipCollision(moving);
+        _manager.removeMovieClipCollision(sibling, true);
+        moving.removeMovieClip();
+        sibling.removeMovieClip();
+    }
+
     private static function testDisposeReleasesExactOldState():Void {
         var retained:MovieClip = _world.createEmptyMovieClip(
             "__sceneCollisionRetained", _world.getNextHighestDepth());
@@ -195,6 +279,13 @@ class org.flashNight.arki.scene.SceneCollisionManagerTest {
         _replacementLayer.lineTo(500, 40);
         _replacementLayer.endFill();
         _root.collisionLayer = _replacementLayer;
+
+        CollisionLayerRenderer.drawRect(_layer, {xMin:542, xMax:566, yMin:205, yMax:225});
+        _manager.redraw();
+        check(!_layer.hitTest(554, 215, true) && _layer.hitTest(455, 55, true),
+            "C04 redraw clears stale geometry and replays records on its bound layer");
+        check(_replacementLayer.hitTest(520, 60, true) && !_replacementLayer.hitTest(455, 55, true),
+            "C04 redraw leaves the new root layer untouched");
 
         _manager.dispose();
         _layer._visible = true;

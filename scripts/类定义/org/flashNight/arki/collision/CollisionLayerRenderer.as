@@ -47,7 +47,7 @@ class org.flashNight.arki.collision.CollisionLayerRenderer {
         xmin:Number, xmax:Number,
         ymin:Number, ymax:Number,
         margin:Number,
-        debugMode:Boolean
+        debugMode:Boolean, deferFinish:Boolean
     ):Void {
         if (margin == undefined) margin = 300;
 
@@ -77,16 +77,7 @@ class org.flashNight.arki.collision.CollisionLayerRenderer {
 
         collisionLayer.endFill();
 
-        // 设置可见性
-        if (debugMode) {
-            collisionLayer._visible = true;
-            collisionLayer._alpha = 50;
-        } else {
-            collisionLayer._visible = false;
-        }
-
-        // 标记脏并发布事件
-        markDirty();
+        if (!deferFinish) finishDrawing(collisionLayer, debugMode);
     }
 
     /**
@@ -96,7 +87,7 @@ class org.flashNight.arki.collision.CollisionLayerRenderer {
      * @param collisionLayer 碰撞层 MovieClip
      * @param polygonArray 多边形数组，每个元素包含 Point 数组
      */
-    public static function drawPolygons(collisionLayer:MovieClip, polygonArray:Array):Void {
+    public static function drawPolygons(collisionLayer:MovieClip, polygonArray:Array, deferFinish:Boolean):Void {
         if (!polygonArray || polygonArray.length == 0) return;
 
         for (var i:Number = 0; i < polygonArray.length; i++) {
@@ -122,10 +113,7 @@ class org.flashNight.arki.collision.CollisionLayerRenderer {
             collisionLayer.endFill();
         }
 
-        collisionLayer._visible = false;
-
-        // 标记脏并发布事件
-        markDirty();
+        if (!deferFinish) finishDrawing(collisionLayer, _root.调试模式);
     }
 
     /**
@@ -135,26 +123,15 @@ class org.flashNight.arki.collision.CollisionLayerRenderer {
      * @param collisionLayer 碰撞层 MovieClip
      * @param rect 矩形对象 {xMin, yMin, xMax, yMax}
      */
-    public static function drawRect(collisionLayer:MovieClip, rect:Object):Void {
+    public static function drawRect(collisionLayer:MovieClip, rect:Object, deferFinish:Boolean):Void {
         if (!rect) return;
-
-        collisionLayer.beginFill(0x000000);
-        collisionLayer.moveTo(rect.xMin, rect.yMin);
-        collisionLayer.lineTo(rect.xMax, rect.yMin);
-        collisionLayer.lineTo(rect.xMax, rect.yMax);
-        collisionLayer.lineTo(rect.xMin, rect.yMax);
-        collisionLayer.lineTo(rect.xMin, rect.yMin);
-        collisionLayer.endFill();
-
-        collisionLayer._visible = false;
-
-        // 标记脏并发布事件
-        markDirty();
+        fillRect(collisionLayer, rect);
+        if (!deferFinish) finishDrawing(collisionLayer, _root.调试模式);
     }
 
     /**
      * 绘制单个障碍物矩形（供 ObstacleRenderer 调用）
-     * 不改变可见性，不单独发布事件（批量绘制时由调用者统一处理）
+     * 保留独立障碍物绘制入口的可见性与通知约定。
      *
      * @param collisionLayer 碰撞层 MovieClip
      * @param rect 矩形对象 {xMin, yMin, xMax, yMax}
@@ -163,14 +140,7 @@ class org.flashNight.arki.collision.CollisionLayerRenderer {
     public static function drawObstacle(collisionLayer:MovieClip, rect:Object, publishEvent:Boolean):Void {
         if (!rect) return;
         if (publishEvent == undefined) publishEvent = true;
-
-        collisionLayer.beginFill(0x000000);
-        collisionLayer.moveTo(rect.xMin, rect.yMin);
-        collisionLayer.lineTo(rect.xMax, rect.yMin);
-        collisionLayer.lineTo(rect.xMax, rect.yMax);
-        collisionLayer.lineTo(rect.xMin, rect.yMax);
-        collisionLayer.lineTo(rect.xMin, rect.yMin);
-        collisionLayer.endFill();
+        fillRect(collisionLayer, rect);
 
         if (publishEvent) {
             markDirty();
@@ -178,6 +148,23 @@ class org.flashNight.arki.collision.CollisionLayerRenderer {
             // 仅标记脏，不发布事件
             _dirty = true;
         }
+    }
+
+    private static function fillRect(layer:MovieClip, rect:Object):Void {
+        layer.beginFill(0x000000);
+        layer.moveTo(rect.xMin, rect.yMin);
+        layer.lineTo(rect.xMax, rect.yMin);
+        layer.lineTo(rect.xMax, rect.yMax);
+        layer.lineTo(rect.xMin, rect.yMax);
+        layer.lineTo(rect.xMin, rect.yMin);
+        layer.endFill();
+    }
+
+    // 一次公开绘制或一次完整重绘在最终几何和调试显示就绪后发布一次。
+    public static function finishDrawing(layer:MovieClip, debugMode:Boolean):Void {
+        layer._visible = Boolean(debugMode);
+        if (debugMode) layer._alpha = 50;
+        markDirty();
     }
 
     /**

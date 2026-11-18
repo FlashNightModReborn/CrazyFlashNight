@@ -134,16 +134,6 @@ class org.flashNight.arki.merc.ArenaPanelService {
         return String(spriteName || "").indexOf("主角") >= 0;
     }
 
-    private static function buildArenaMercById(mercId:String):Array {
-        if (_root.mercs_list == undefined || _root.merc_indices_by_id == undefined) return null;
-        var idx = _root.merc_indices_by_id[mercId];
-        if (idx == undefined) idx = _root.merc_indices_by_id[Number(mercId)];
-        if (idx == undefined || _root.mercs_list[idx] == undefined) return null;
-        var raw:Object = _root.mercs_list[idx];
-        if (raw.hidden == true) return null; // 竞技场混编默认不抽隐藏/彩蛋佣兵
-        return MercLibrary.buildMercData(raw);
-    }
-
     /**
      * 抽一批对手并序列化给 Web 显示。
      * 输出 opponents: [{ id, name, level, gender, height, face, hair,
@@ -433,7 +423,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
             for (var ri:Number = 0; ri < rosterParam.length; ri++) {
                 var rKind:String = String(rosterParam[ri].kind || "");
                 if (rKind == "merc" || rosterParam[ri].mercId != undefined) {
-                    var merc:Array = buildArenaMercById(String(rosterParam[ri].mercId));
+                    var merc:Array = MercLibrary.buildVisibleMercById(String(rosterParam[ri].mercId));
                     if (merc == null) continue;
                     squad.push({ 类型: "merc", 佣兵: merc, 禁收益: customPve });
                     continue;

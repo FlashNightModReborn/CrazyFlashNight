@@ -2,34 +2,27 @@
 {
     this.merc_jsons_list = new XML();
     this.merc_jsons_list.ignoreWhite = true;
-    this.merc_strarrs = [];
-    this.merc_easy_strarrs = [];
+    this.merc_sources = [];
     this.merc_jsons_list.onLoad = function(success)
     {
-        var merc_files = [];
-        var merc_easy_files = [];
+        var sources = _root.preloaders.merc_sources;
+        var sourcesByPath = {};
         _root.XmlNodeToDict(this.lastChild, null, function(name, value)
         {
-            if(name == "merc")
+            if (name == "merc")
             {
-                merc_files.push(value);
-            }
-            if(name == "merc_easy")
-            {
-                merc_easy_files.push(value);
+                var path = "data/merc/" + value;
+                var source = sourcesByPath[path];
+                if (source == undefined)
+                {
+                    source = {chunks: []};
+                    sourcesByPath[path] = source;
+                    _root.GetFileByPath(path, source.chunks);
+                }
+                sources.push(source);
             }
             return null;
         });
-        for (var i = 0; i < merc_files.length; i++)
-        {
-            _root.preloaders.merc_strarrs.push([]);
-            _root.GetFileByPath("data/merc/" + merc_files[i], _root.preloaders.merc_strarrs[i]);
-        }
-        for (var i = 0; i < merc_easy_files.length; i++)
-        {
-            _root.preloaders.merc_easy_strarrs.push([]);
-            _root.GetFileByPath("data/merc/" + merc_easy_files[i], _root.preloaders.merc_easy_strarrs[i]);
-        }
     };
 
     this.merc_jsons_list.load("data/merc/list.xml");
@@ -37,42 +30,21 @@
 
 _root.loaders.push(function ()
 {
-    this.merc_srcs = [];
-    this.mercs_list = [];
-    this.merc_indices_by_id = {};
-    this.merc_easy_srcs = [];
-    this.mercs_easy_list = [];
-    this.merc_easy_indices_by_id = {};
-    this.json_parser = new LiteJSON();
-
-    for (var i = 0; i < _root.preloaders.merc_strarrs.length; i++)
+    var parser = new LiteJSON();
+    var rows = [];
+    var sources = _root.preloaders.merc_sources;
+    for (var i = 0; i < sources.length; i++)
     {
-        this.merc_srcs.push(_root.preloaders.merc_strarrs[i].join(""));
+        var source = sources[i];
+        if (source.chunks != undefined)
+        {
+            source.rows = parser.parse(source.chunks.join(""));
+            delete source.chunks;
+        }
+        rows = rows.concat(source.rows);
     }
-    for (var i = 0; i < _root.preloaders.merc_easy_strarrs.length; i++)
-    {
-        this.merc_easy_srcs.push(_root.preloaders.merc_easy_strarrs[i].join(""));
-    }
-
-    for (var i = 0; i < this.merc_srcs.length; i++)
-    {
-        this.mercs_list = this.mercs_list.concat(this.json_parser.parse(this.merc_srcs[i]));
-    }
-    for (var i = 0; i < this.mercs_list.length; i++)
-    {
-        this.merc_indices_by_id[this.mercs_list[i].id] = i;
-    }
-    for (var i = 0; i < this.merc_easy_srcs.length; i++)
-    {
-        this.mercs_easy_list = this.mercs_easy_list.concat(this.json_parser.parse(this.merc_easy_srcs[i]));
-    }
-    for (var i = 0; i < this.mercs_easy_list.length; i++)
-    {
-        this.merc_easy_indices_by_id[this.mercs_easy_list[i].id] = i;
-    }
-
-    _root.mercs_list = this.mercs_list;
-    _root.merc_indices_by_id = this.merc_indices_by_id;
-    _root.mercs_easy_list = this.mercs_easy_list;
-    _root.merc_easy_indices_by_id = this.merc_easy_indices_by_id;
+    // 启动等待门已确认文件落地，定稿后由 MercLibrary 持有唯一的定义集合。
+    delete _root.preloaders.merc_sources;
+    delete _root.preloaders.merc_jsons_list;
+    org.flashNight.arki.merc.MercLibrary.installDefinitions(rows);
 });

@@ -91,7 +91,7 @@ Test-Check ($addBody -notmatch
 
 $addMovieBody = Get-MethodBody $manager 'public\s+function\s+addMovieClipCollision\s*\('
 Test-Check ($addMovieBody -match 'current\.mc\s*===\s*mc' -and
-    $addMovieBody -match 'current\.rect\s*=\s*ObjectUtil\.clone\s*\(\s*rect\s*\)') `
+    $addMovieBody -match 'current\.rect\s*=\s*copyBounds\s*\(\s*rect\s*\)') `
     'MovieClip re-registration updates one stable cloned record'
 
 $updateBody = Get-MethodBody $manager 'public\s+function\s+update\s*\('
@@ -101,26 +101,21 @@ Test-Check ($updateBody -match 'mcColli\.mc\s*=\s*null\s*;' -and
     'unloaded MovieClip pruning severs references before removal'
 
 $redrawBody = Get-MethodBody $manager 'public\s+function\s+redraw\s*\('
-Test-Check ($redrawBody.IndexOf('CollisionLayerRenderer.clearAll();') -ge 0 -and
-    $redrawBody.IndexOf('CollisionLayerRenderer.clearAll();') -lt
+Test-Check ($redrawBody -match 'layer:MovieClip\s*=\s*this\.collisionLayer' -and
+    $redrawBody.IndexOf('layer.clear();') -ge 0 -and
+    $redrawBody.IndexOf('layer.clear();') -lt
         $redrawBody.IndexOf('CollisionLayerRenderer.drawBoundary(')) `
-    'full redraw clears once before replaying registered sources'
+    'full redraw clears its bound layer before replaying registered sources'
 Test-Check ($redrawBody -match 'drawPolygons\s*\(' -and
     $redrawBody -match 'drawRect\s*\(') `
     'full redraw still restores polygon and registered MovieClip sources'
 
 $renderObstacleBody = Get-MethodBody $obstacleRenderer `
-    'public\s+static\s+function\s+renderObstacle\s*\('
-$drawObstacleIndex = $renderObstacleBody.IndexOf(
-    'CollisionLayerRenderer.drawObstacle(collisionLayer, rect, true);')
-$registerObstacleIndex = $renderObstacleBody.IndexOf(
-    'sceneCollisionManager.addMovieClipCollision(target, rect);')
-Test-Check ($drawObstacleIndex -ge 0 -and
-    $registerObstacleIndex -gt $drawObstacleIndex -and
-    $renderObstacleBody -match
-        'sceneCollisionManager\.collisionLayer\s*===\s*collisionLayer' -and
+    'public\s+static\s+function\s+renderMovieClipCollision\s*\('
+Test-Check ($renderObstacleBody -match 'manager\.collisionLayer\s*===\s*layer' -and
+    $renderObstacleBody -match 'manager\.addMovieClipCollision\(target, rect, forceUpdate\)' -and
     $manager -notmatch 'for\s*\([^\)]*\s+in\s+gameworld\s*\)') `
-    'ordinary obstacles register after initial draw; redraw never trusts AVM1 child enumeration'
+    'ordinary obstacles submit their bounds to the bound manager without enumerating children'
 
 $disposeBody = Get-MethodBody $manager 'public\s+function\s+dispose\s*\('
 Test-Check ($disposeBody -match
@@ -151,11 +146,11 @@ Test-Check ($suite -match
     'class\s+org\.flashNight\.arki\.scene\.SceneCollisionManagerTest' -and
     $suite -match 'public\s+static\s+function\s+runAllTests\s*\(') `
     'AS2 regression suite exposes the focused entrypoint'
-Test-Check ([regex]::Matches($suite, '(?m)^\s*check\s*\(').Count -eq 27) `
-    'AS2 suite fixes the expected assertion count at 27'
+Test-Check ([regex]::Matches($suite, '(?m)^\s*check\s*\(').Count -eq 42) `
+    'AS2 suite fixes the expected assertion count at 42'
 Test-Check ($suite -match 'SceneCollisionManagerTest Tests Passed:' -and
     $suite -match 'SceneCollisionManagerTest Tests Failed:' -and
-    $suite -match 'SceneCollisionManagerTest Cases Passed: 4/4') `
+    $suite -match 'SceneCollisionManagerTest Cases Passed: 5/5') `
     'AS2 suite emits machine-verifiable pass/fail/case sentinels'
 Test-Check ($suite -match '_hadGameworld\s*=\s*_root\.hasOwnProperty\("gameworld"\)' -and
     $suite -match '_hadCollisionLayer\s*=\s*_root\.hasOwnProperty\("collisionLayer"\)' -and

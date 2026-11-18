@@ -1,7 +1,7 @@
 ﻿[CmdletBinding()]
 param(
     [ValidateRange(1, 3600)]
-    [int]$TimeoutSeconds = 240,
+    [int]$TimeoutSeconds = 900,
     [switch]$SkipCompile
 )
 
@@ -17,11 +17,11 @@ $focusedRun = @{
         'org.flashNight.arki.scene.SceneCollisionManagerTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^SceneCollisionManagerTest Tests Passed: 27\r?$'
+        '(?m)^SceneCollisionManagerTest Tests Passed: 42\r?$'
         '(?m)^SceneCollisionManagerTest Tests Failed: 0\r?$'
-        '(?m)^SceneCollisionManagerTest Cases Passed: 4/4\r?$'
+        '(?m)^SceneCollisionManagerTest Cases Passed: 5/5\r?$'
     )
-    SuccessSummary = '27/27 assertions, 4/4 cases'
+    SuccessSummary = '42/42 assertions, 5/5 cases'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }
