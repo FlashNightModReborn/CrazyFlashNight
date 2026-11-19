@@ -17,6 +17,7 @@ on:
       - 'tools/build-tooltip-catalog.py'
       - 'tools/build-bootstrap-equipment-reference.js'
       - 'tools/test-tooltip-catalog.cjs'
+      - 'tools/tooltip-parity-corpus.test.js'
       - 'tools/test-tooltip-checkout-upgrade.cjs'
       - '.github/workflows/tooltip-data.yml'
   push:
@@ -48,6 +49,7 @@ jobs:
             /tools/build-tooltip-catalog.py
             /tools/build-bootstrap-equipment-reference.js
             /tools/test-tooltip-catalog.cjs
+            /tools/tooltip-parity-corpus.test.js
             /tools/test-tooltip-checkout-upgrade.cjs
       - uses: actions/setup-node@v4
         with:
