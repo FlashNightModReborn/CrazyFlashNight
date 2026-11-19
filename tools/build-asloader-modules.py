@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+from functools import lru_cache
 from pathlib import Path
 import re
 import sys
@@ -18,6 +19,12 @@ def digest(data):
 
 def as_bytes(text):
     return BOM + text.replace('\r\n', '\n').replace('\n', '\r\n').encode('utf-8')
+
+@lru_cache(maxsize=1024)
+def projected_declaration(source, fqn, provider):
+    # Both foreign modules project the same provider bytes. Reuse the pure
+    # computation across captures; changes to the file bytes are part of the key.
+    return as_bytes(declaration(source.decode('utf-8-sig').replace('\r\n','\n'), fqn, provider))
 
 def include_fingerprints(root, roots, include_base=None):
     root=root.resolve();inputs={};visited=set()
@@ -42,11 +49,29 @@ def include_fingerprints(root, roots, include_base=None):
         capture(p,include_base or p.parent)
     return inputs
 
-def plan(root=ROOT):
+def project_paths(catalog):
+    paths = {}
+    for name in ORDER:
+        xfl = Path(catalog[name]['xfl'])
+        directory = xfl.parent
+        row = {'roots': f'scripts/asLoaderModuleRoots/{name}.as',
+               'exclude': (directory/(xfl.stem+'_exclude.xml')).as_posix(),
+               'profile': (directory/'PublishSettings.xml').as_posix(),
+               'document': (directory/'DOMDocument.xml').as_posix()}
+        if name != 'boot':
+            row.update(xfl=xfl.as_posix(), mobile=(directory/'MobileSettings.xml').as_posix())
+        if name == 'resident':
+            row['symbol'] = (directory/'LIBRARY/asLoader.xml').as_posix()
+        paths[name] = row
+    return paths
+
+
+def plan(root=ROOT, *, class_sources=None, template_bytes=None):
     if not (root/'scripts/asLoaderBootstrap.as').read_bytes().startswith(BOM):
         raise ValueError('scripts/asLoaderBootstrap.as requires UTF-8 BOM before CS6 inclusion')
     catalog_raw = (root/'tools/asloader-modules.json').read_bytes()
     catalog = json.loads(catalog_raw)
+    projects = project_paths(catalog)
     if catalog['schema'] != 'cf7-asloader-modules.v1':
         raise ValueError('Unsupported module catalog')
     owners = {}
@@ -59,8 +84,11 @@ def plan(root=ROOT):
     # implementation in the original RSL, whose importer is the main movie.
     if catalog['resident']['classes'] != ['org.flashNight.neur.Server.SaveManager']:
         raise ValueError('The original RSL must retain the save namespace authority')
-    sources = {p.relative_to(root/'scripts/类定义').as_posix():p.read_bytes()
-               for p in sorted((root/'scripts/类定义').rglob('*.as'))}
+    sources = class_sources
+    if sources is None:
+        class_root = root/'scripts/类定义'
+        sources = {p.relative_to(class_root).as_posix():p.read_bytes()
+                   for p in sorted(class_root.rglob('*.as'))}
     for fqn in owners:
         if fqn.replace('.', '/')+'.as' not in sources:
             raise ValueError('Missing owned class: '+fqn)
@@ -75,8 +103,7 @@ def plan(root=ROOT):
         for rel, data in sources.items():
             fqn = rel[:-3].replace('/', '.')
             if fqn in owners and owners[fqn] != name:
-                data = as_bytes(declaration(data.decode('utf-8-sig').replace('\r\n','\n'), fqn,
-                                            catalog[owners[fqn]]['swf']))
+                data = projected_declaration(data, fqn, catalog[owners[fqn]]['swf'])
             outputs['tmp/asloader-modules/'+name+'/types/'+rel] = data
         refs = ['// Generated module roots; edit tools/asloader-modules.json.',
                 'this._lockroot = false;', 'this.stop();']
@@ -84,39 +111,41 @@ def plan(root=ROOT):
             source = sources[fqn.replace('.', '/')+'.as'].decode('utf-8-sig')
             if not re.search(r'\binterface\s+'+re.escape(fqn)+r'\b', source):
                 refs.append(fqn+';')
-        outputs['scripts/asLoaderModuleRoots/'+name+'.as'] = as_bytes('\n'.join(refs)+'\n')
+        outputs[projects[name]['roots']] = as_bytes('\n'.join(refs)+'\n')
         excluded = [fqn for fqn in owners if owners[fqn] != name]
-        xfl = Path(catalog[name]['xfl'])
-        outputs[(xfl.parent/(xfl.stem+'_exclude.xml')).as_posix()] = (
+        outputs[projects[name]['exclude']] = (
             '<excludeAssets>\n'+''.join('  <asset name="'+fqn+'"/>\n' for fqn in excluded)
             +'</excludeAssets>\n').encode('utf-8')
     origin = root/'scripts/asLoader'
-    settings = (origin/'PublishSettings.xml').read_text('utf-8').replace('\r\n','\n')
+    def template(rel):
+        data = (root/rel).read_bytes() if template_bytes is None else template_bytes[rel]
+        return data.decode('utf-8').replace('\r\n','\n').replace('\r','\n')
+    settings = template('scripts/asLoader/PublishSettings.xml')
     # Normalize only this generator's fields, preserving the author's settings.
     settings = settings.replace('asLoaderLogic', 'asLoader')
     settings = re.sub(r'<PackagePaths>[^<]*</PackagePaths>', '<PackagePaths>类定义;</PackagePaths>', settings)
-    document = (origin/'DOMDocument.xml').read_text('utf-8').replace('\r\n','\n')
+    document = template('scripts/asLoader/DOMDocument.xml')
     document = re.sub(r'\s*<publishHistory>[\s\S]*?</publishHistory>', '', document)
     symbols = re.search(r'\s*<symbols>[\s\S]*?</symbols>', document)
     frame = re.search(r'<DOMFrame\b[^>]*>[\s\S]*?</DOMFrame>', document)
     if not symbols or not frame or len(re.findall(r'<DOMFrame\b', document)) != 1:
         raise ValueError('Loader root must remain one owned frame')
     for name in ORDER:
-        row = catalog[name]; dest = Path(row['xfl']).parent
+        row = catalog[name]
         stem = Path(row['swf']).stem
         profile = settings.replace('asLoader.', stem+'.')
         profile = profile.replace('<flashDefaultName>1</flashDefaultName>', '<flashDefaultName>0</flashDefaultName>')
         profile = profile.replace('<defaultNames>1</defaultNames>', '<defaultNames>0</defaultNames>')
         profile = profile.replace('<PackagePaths>类定义;</PackagePaths>',
             '<PackagePaths>../tmp/asloader-modules/'+name+'/types;类定义;</PackagePaths>')
-        outputs[(dest/'PublishSettings.xml').as_posix()] = profile.encode('utf-8')
+        outputs[projects[name]['profile']] = profile.encode('utf-8')
         if name != 'boot':
-            outputs[row['xfl']] = (origin/'asLoader.xfl').read_bytes()
-            outputs[(dest/'MobileSettings.xml').as_posix()] = (origin/'MobileSettings.xml').read_bytes()
+            outputs[projects[name]['xfl']] = (origin/'asLoader.xfl').read_bytes()
+            outputs[projects[name]['mobile']] = (origin/'MobileSettings.xml').read_bytes()
         if name == 'resident':
             imports = '<symbols><Include href="asLoader.xml" itemID="65982cdb-00001469"/></symbols>'
             root_frame = '<DOMFrame index="0" keyMode="9728"><elements/></DOMFrame>'
-            outputs[(dest/'LIBRARY/asLoader.xml').as_posix()] = (
+            outputs[projects[name]['symbol']] = (
                 '<DOMSymbolItem xmlns="'+NS+'" name="asLoader" linkageExportForAS="true" linkageIdentifier="asLoader">'
                 '<timeline><DOMTimeline name="asLoader"><layers><DOMLayer name="bootstrap"><frames>'
                 '<DOMFrame index="0" keyMode="9728"><Actionscript><script><![CDATA['
@@ -136,7 +165,7 @@ def plan(root=ROOT):
         # Later invocations normalize a prior generated self-closing symbols node.
         if name == 'shared' and '<symbols/>' not in doc:
             raise ValueError('Shared document symbol normalization failed')
-        outputs[(dest/'DOMDocument.xml').as_posix()] = doc.encode('utf-8')
+        outputs[projects[name]['document']] = doc.encode('utf-8')
     for rel in ['tools/asloader_module_api.py','tools/build-asloader-modules.py',
                 'tools/assemble-collapsed-frame.js','tools/asloader-definition-frames.js',
                 'tools/swf-metadata.js','tools/asloader-module-catalog.js',
@@ -160,10 +189,14 @@ def plan(root=ROOT):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check',action='store_true')
+    parser.add_argument('--check-projects',action='store_true',
+                        help='Check only the generator-owned project files under scripts/')
     args=parser.parse_args()
     outputs, manifest = plan()
+    if args.check_projects:
+        outputs = {p: data for p, data in outputs.items() if p.startswith('scripts/')}
     stale = [rel for rel,data in outputs.items() if not (ROOT/rel).is_file() or (ROOT/rel).read_bytes()!=data]
-    if args.check:
+    if args.check or args.check_projects:
         if stale:
             print('Stale module outputs: '+', '.join(stale[:15]),file=sys.stderr);return 1
     else:
@@ -172,7 +205,7 @@ def main():
             # Write fresh bytes when switching an intrinsic/implementation. copy2
             # can backdate sources behind a CS6 ASO and silently reuse the wrong kind.
             target.write_bytes(outputs[rel])
-    print(json.dumps({'ok':True,'check':args.check,'updated':len(stale),'classes':manifest['owners'],'sourceFiles':len(manifest['inputs'])}))
+    print(json.dumps({'ok':True,'check':args.check or args.check_projects,'updated':len(stale),'classes':manifest['owners'],'sourceFiles':len(manifest['inputs'])}))
     return 0
 
 if __name__=='__main__':

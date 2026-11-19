@@ -317,6 +317,50 @@ if ($LASTEXITCODE -ne 0) {
 $verifyArgument = if ($runtimeMode -eq 'isolated_candidate') { '--verify-runtime-only' } else { '--verify-only' }
 Invoke-Cf7RuntimeVerifier -Executable $selectedBootstrapExe -Arguments $verifyArgument -WorkingDirectory $selectedDeploymentRoot
 
+# Share the publisher's OS file lock from before process creation until a
+# discoverable Guardian exists. Unattended mode keeps it until its runner exits.
+function Enter-AsLoaderReadGuard([string]$ProjectRoot) {
+    $state = Join-Path $ProjectRoot 'tmp\asloader-artifact-set'
+    [void][IO.Directory]::CreateDirectory($state)
+    $guard = [IO.File]::Open((Join-Path $state 'guard.lock'),
+        [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::Read, [IO.FileShare]::Read)
+    try {
+        if ([IO.File]::Exists((Join-Path $state 'pending.json'))) {
+            throw 'An asLoader set update requires recovery before launching this project.'
+        }
+        $index = Join-Path $state 'active.json'
+        if ([IO.File]::Exists($index)) {
+            $digest = (Get-Content -LiteralPath $index -Raw -Encoding UTF8 | ConvertFrom-Json).receiptSha256
+            if ($digest -cnotmatch '^[0-9a-f]{64}$') { throw 'Invalid active asLoader index.' }
+            $record = Join-Path $state ('receipts\' + $digest)
+            if ((Get-Cf7Sha256 -Path $record) -ine $digest) {
+                throw 'Active asLoader receipt changed.'
+            }
+            $modules = (Get-Content -LiteralPath $record -Raw -Encoding UTF8 | ConvertFrom-Json).modules
+            $files = @{resident='asLoader.swf'; shared='asLoaderShared.swf'; boot='asLoaderLogic.swf'}
+            if (@($modules.PSObject.Properties).Count -ne 3) { throw 'Invalid active asLoader module inventory.' }
+            $mismatch = $false
+            foreach ($module in $files.Keys) {
+                $file = Join-Path $ProjectRoot ('scripts\' + $files[$module])
+                if ($modules.$module.sha256 -notmatch '^[0-9a-f]{64}$') { throw 'Invalid asLoader module receipt.' }
+                if ((Get-Cf7Sha256 -Path $file) -ine $modules.$module.sha256) {
+                    $mismatch = $true
+                }
+            }
+            if ($mismatch -and -not (& (Join-Path $ProjectRoot 'tools\asloader-git-set.ps1') -ProjectRoot $ProjectRoot)) {
+                throw 'Installed asLoader modules differ from both the active receipt and Git HEAD.'
+            }
+        } elseif ([IO.File]::Exists((Join-Path $state 'last-good.json'))) {
+            throw 'Managed asLoader set lost its active index.'
+        }
+        return $guard
+    } catch {
+        $guard.Dispose()
+        throw
+    }
+}
+$setGuard = Enter-AsLoaderReadGuard $launchProjectRoot
+try {
 $portsFile = Join-Path $launchProjectRoot 'launcher_ports.json'
 if (Test-Path -LiteralPath $portsFile) {
     try {
@@ -464,4 +508,7 @@ try {
     }
     Write-Host "Failed to start guardian: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
+}
+} finally {
+    $setGuard.Dispose()
 }

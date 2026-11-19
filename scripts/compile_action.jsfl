@@ -30,6 +30,26 @@ var compileRuntimeState = {
 	targetURI: ""
 };
 
+function assertActiveModuleAllowed(projectURI, docURI, fields) {
+	var stateURI = projectURI + "/tmp/asloader-artifact-set/";
+	if (!FLfile.exists(stateURI + "active.json") && !FLfile.exists(stateURI + "pending.json")
+			&& !FLfile.exists(stateURI + "last-good.json")) return;
+	var key = normalizeDocumentURI(docURI);
+	if (key.indexOf(normalizeDocumentURI(projectURI) + "/scripts/") != 0 || !/\.xfl$/.test(key)) return;
+	if (fields.length != 5 || fields[0] != "test" || fields[1] != "managed-active-v1")
+		throw Error("Cannot verify managed active document; use compile_test.ps1 with an explicit target.");
+	var seen = {};
+	for (var i = 2; i < fields.length; i++) {
+		var rel = fields[i];
+		if (!/^scripts\/(?:[^\/\\:%\r\n]+\/)+[^\/\\:%\r\n]+\.xfl$/.test(rel) || /\/\.{1,2}\//.test(rel))
+			throw Error("Invalid managed active-document module path.");
+		var target = normalizeDocumentURI(projectURI + "/" + rel);
+		if (seen[target]) throw Error("Duplicate managed active-document module path.");
+		seen[target] = true;
+	}
+	if (seen[key]) throw Error("Managed asLoader module: publish with -Target publish or its exact XFL -PublishOnly.");
+}
+
 function describeJsflError(error) {
 	var parts = [];
 	try {
@@ -220,10 +240,14 @@ function main() {
 	var modeCfg = projectURI + "/scripts/compile_mode.cfg";
 	var quitCfg = projectURI + "/scripts/compile_quit_after_publish.cfg";
 	var compileMode = "test";
+	var modeFields = ["test"];
 	if (FLfile.exists(modeCfg)) {
 		var _m = FLfile.read(modeCfg);
 		FLfile.remove(modeCfg);
-		if (_m) compileMode = _m.replace(/^[\s﻿]+/, "").replace(/[\s]+$/, "");
+		if (_m) {
+			modeFields = _m.replace(/^[\s﻿]+/, "").replace(/[\s]+$/, "").split(/\r?\n/);
+			compileMode = modeFields[0];
+		}
 	}
 	var quitAfterPublish = false;
 	if (FLfile.exists(quitCfg)) {
@@ -239,6 +263,8 @@ function main() {
 		quitAfterPublish = true;
 	}
 
+	if (modeFields.length > 1 && (targetURI || compileMode != "test" || modeFields[1] != "managed-active-v1"))
+		throw Error("Invalid multiline compile mode.");
 	var doc;
 	if (targetURI) {
 		compileRuntimeState.targetURI = targetURI;
@@ -292,6 +318,8 @@ function main() {
 			// "明明改了源文件，编译错误还指向旧行号 / 旧符号"。
 			var docUri = doc.pathURI;
 			compileRuntimeState.targetURI = docUri;
+			compileRuntimeState.phase = "admit_active_document";
+			assertActiveModuleAllowed(projectURI, docUri, modeFields);
 			fl.trace("[compile] reload from disk: " + docUri);
 			compileRuntimeState.phase = "close_active_target";
 			fl.closeDocument(doc, false);  // false = 不提示保存（外部源是 SOT，丢弃 in-memory 改动）
