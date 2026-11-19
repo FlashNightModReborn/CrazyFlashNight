@@ -1,6 +1,13 @@
 ﻿[CmdletBinding()]
-param([int]$TimeoutSeconds=900,[switch]$QuitFlashAfterPublish)
+param([int]$TimeoutSeconds=900,[switch]$QuitFlashAfterPublish,
+    [switch]$Incremental,[switch]$PlanOnly,[switch]$ForceFull,
+    [switch]$ExperimentSource,[ValidateScript({ $_ -cmatch '^[a-z0-9][a-z0-9-]{0,55}$' })][string]$ExperimentOutput,
+    [ValidateSet('mirror','overlay')][string]$ExperimentLayout,
+    [ValidateSet('resident','shared','boot')][string]$ExperimentModule,
+    [ValidateSet('resident','shared','boot')][string]$ForceModule,
+    [ValidateSet('Mirror','Overlay')][string]$ModuleLayout)
 $ErrorActionPreference='Stop'
+if ($ModuleLayout -and $ExperimentLayout) { throw 'Choose either -ModuleLayout or -ExperimentLayout.' }
 $repo=Split-Path -Parent $PSScriptRoot
 $normalized=[IO.Path]::GetFullPath($repo).TrimEnd('\').ToUpperInvariant()
 $hasher=[Security.Cryptography.SHA256]::Create()
@@ -41,6 +48,76 @@ try {
     }
     . (Join-Path $PSScriptRoot 'test-runners/testloader-scratch-transaction.ps1')
     Assert-Cf7TestLoaderScratchAdmission -MarkerPath (Join-Path $PSScriptRoot 'testloader_scratch_inflight.marker') -RunnerPath (Join-Path $PSScriptRoot 'TestLoader.as') -RepoHash $repoHash -CompileLease '' -LeaseOwnerPid 0
+    $flashTask = Get-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction SilentlyContinue
+    $trigger = Get-ScheduledTask -TaskName 'CompileTriggerTask' -ErrorAction SilentlyContinue
+    $native = $flashTask -and $trigger -and $flashTask.Actions.Count -eq 1 -and
+        $trigger.Actions.Count -eq 1 -and $trigger.Actions[0].Execute -ieq $flashTask.Actions[0].Execute -and
+        [IO.Path]::GetFileName($flashTask.Actions[0].Execute) -ieq 'Flash.exe'
+    $setDirectory = Join-Path $repo 'tmp/asloader-artifact-set'
+    $managed = @( 'pending.json', 'active.json', 'last-good.json' ) |
+        Where-Object { Test-Path -LiteralPath (Join-Path $setDirectory $_) }
+    if ($native -or $managed -or $Incremental -or $PlanOnly -or $ForceFull -or $ForceModule -or $ModuleLayout -or $ExperimentOutput -or $ExperimentSource -or $ExperimentLayout -or $ExperimentModule) {
+        if (-not $native) { throw 'Managed module publishing and explicit layout or experiment options require the bound native CS6 task.' }
+        $flash = $flashTask.Actions[0].Execute
+        $loader = $trigger.Actions[0].Arguments.Trim('"')
+        if ($flashTask.Actions.Count -ne 1 -or $trigger.Actions.Count -ne 1 -or
+            $trigger.Actions[0].Execute -ine $flash -or -not (Test-Path -LiteralPath $loader -PathType Leaf)) {
+            throw 'Cannot identify the bound native Flash compiler and Commands loader for incremental builds.'
+        }
+        $incrementalArgs = @('-B','-X','utf8','tools/publish_asloader_incremental.py','--flash',$flash,
+            '--loader',$loader,'--timeout',[string]$TimeoutSeconds)
+        if ($PlanOnly) { $incrementalArgs += '--plan-only' }
+        if ($ForceFull) { $incrementalArgs += '--force-full' }
+        if ($QuitFlashAfterPublish) { $incrementalArgs += '--quit-after-publish' }
+        if ($ExperimentSource) { $incrementalArgs += '--experiment-source' }
+        if ($ExperimentOutput) { $incrementalArgs += @('--experiment-output',$ExperimentOutput) }
+        if ($ModuleLayout) { $incrementalArgs += @('--module-layout',$ModuleLayout.ToLowerInvariant()) }
+        if ($ExperimentLayout) { $incrementalArgs += @('--layout',$ExperimentLayout.ToLowerInvariant()) }
+        if ($ExperimentModule) { $incrementalArgs += @('--force-module',$ExperimentModule) }
+        if ($ForceModule) { $incrementalArgs += @('--force-module',$ForceModule) }
+        # These files are read or imported by the live driver, Node/PowerShell
+        # children, and CS6's scheduled JSFL loader. Pin the actual control
+        # bytes before Python imports them; the game sources remain editable.
+        $toolPaths = @($PSCommandPath, $loader, (Join-Path (Split-Path -Parent $loader) 'flash_project_path.cfg'))
+        $liveTools = @(
+            'scripts/compile_test.ps1','scripts/compile_action.jsfl',
+            'scripts/test-runners/testloader-scratch-transaction.ps1','scripts/test-runners/testplayer-control.ps1',
+            'tools/publish_asloader_incremental.py','tools/asloader_toolchain.py','tools/asloader_artifact_set.py',
+            'tools/asloader_incremental_inputs.py','tools/build-asloader-modules.py','tools/asloader_module_api.py',
+            'tools/asloader_overlay_experiment.py',
+            'tools/asloader-git-set.ps1','tools/assert-asloader-consumers-idle.ps1',
+            'tools/audit-as2-class-embedding.js','tools/asloader-module-catalog.js','tools/swf-metadata.js',
+            'tools/swf-function-sizes.js','tools/check-as2-inheritance-order.js','tools/check-bom.js')
+        foreach ($relative in $liveTools) { $toolPaths += Join-Path $repo $relative }
+        $sourceTools = @('tools/assemble-collapsed-frame.js','tools/asloader-definition-frames.js',
+            'tools/build-choice-rewards.py','tools/choice_reward_catalog.py')
+        foreach ($relative in $sourceTools) {
+            $toolPaths += Join-Path $repo $relative
+            if ($ExperimentSource) { $toolPaths += Join-Path (Join-Path $repo 'tmp/asloader-p1/bench-source') $relative }
+        }
+        $handles = [Collections.Generic.List[IO.FileStream]]::new()
+        $previousPrefix = [Environment]::GetEnvironmentVariable('PYTHONPYCACHEPREFIX','Process')
+        try {
+            foreach ($path in $toolPaths) {
+                $handles.Add([IO.File]::Open($path,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::Read))
+            }
+            if (-not [string]::Equals([IO.File]::ReadAllText($PSCommandPath),
+                    $MyInvocation.MyCommand.ScriptBlock.Ast.Extent.Text, [StringComparison]::Ordinal)) {
+                throw 'Module publisher source changed after PowerShell loaded it.'
+            }
+            # -B suppresses writes, not reads of timestamp-valid old .pyc files.
+            # Children inherit the unused prefix; no cache directory is created.
+            $prefix = Join-Path $repo ('tmp/asloader-p1/pycache-' + [Guid]::NewGuid().ToString('N'))
+            if ([IO.Directory]::Exists($prefix) -or [IO.File]::Exists($prefix)) { throw 'Python cache prefix already exists.' }
+            [Environment]::SetEnvironmentVariable('PYTHONPYCACHEPREFIX',$prefix,'Process')
+            & $script:PythonExe @incrementalArgs
+            $nativeExit = $LASTEXITCODE
+        } finally {
+            [Environment]::SetEnvironmentVariable('PYTHONPYCACHEPREFIX',$previousPrefix,'Process')
+            foreach ($handle in $handles) { $handle.Dispose() }
+        }
+        exit $nativeExit
+    }
     $runRoot=Join-Path $repo ('tmp/asloader-builds/'+[DateTime]::UtcNow.ToString('yyyyMMddTHHmmss')+'-'+[Guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
     & node tools/assemble-collapsed-frame.js
@@ -67,7 +144,9 @@ try {
         if(Test-Path -LiteralPath $module.swf){$stage.sha256=(Get-FileHash -LiteralPath $module.swf -Algorithm SHA256).Hash;$stage.bytes=(Get-Item -LiteralPath $module.swf).Length}
         $receipt.stages+=,$stage
         if($stageExit -ne 0){throw ('Module compile failed: '+$name)}
-        if(Select-String -LiteralPath $log -Pattern 'ASO 32K branch detected' -Quiet){throw ('Module required a 32K recovery retry: '+$name)}
+        $savedOutput=Join-Path $stageRoot 'compile_output.txt'
+        if(-not (Test-Path -LiteralPath $savedOutput) -or
+            (Select-String -LiteralPath $savedOutput -Pattern 'ASO 32K branch detected' -Quiet)){throw ('Missing healthy Output evidence: '+$name)}
     }
     & node tools/audit-as2-class-embedding.js --swf scripts/asLoader.swf
     if($LASTEXITCODE -ne 0){throw 'Complete loader ownership check failed.'}

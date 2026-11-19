@@ -102,7 +102,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
                 initObject: initObject
             });
             if (this.failLinkages[linkage]) return undefined;
-            var skin = { _parent: this, _name: instanceName };
+            var skin = { _parent: this, _name: instanceName, linkage: linkage };
             skin.removeMovieClip = function():Void { delete this._parent[this._name]; };
             if (initObject) {
                 for (var k:String in initObject) skin[k] = initObject[k];
@@ -418,6 +418,32 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
             unit.dressupRegistry["身体_引用@装扮"].skinKeyName);
     }
 
+    private static function test_refreshAll_成对肢体的装备与女性底图():Void {
+        var fields:Array = ["小腿", "脚", "上臂"];
+        for (var i:Number = 0; i < fields.length; i++) {
+            var field:String = fields[i];
+            var unit = makeMockUnit("正常", "女");
+            var refs:Array = [field + "_引用", field + "_引用", field + "1_引用"];
+            var holders:Array = [];
+            for (var j:Number = 0; j < refs.length; j++) {
+                var mc = makeMockMC();
+                wireParentChain(mc, unit);
+                DressupReferenceManager.attach(mc, "原装备", "装扮", refs[j]);
+                holders.push(mc);
+            }
+            unit[field] = null;
+            DressupReferenceManager.refreshAll(unit);
+            for (j = 0; j < holders.length; j++) {
+                assertEquals("脱装显示女性底图 " + field + j, "女变装-裸体" + field, holders[j].装扮.linkage);
+            }
+            unit[field] = "新装备" + field;
+            DressupReferenceManager.refreshAll(unit);
+            for (j = 0; j < holders.length; j++) {
+                assertEquals("重穿从同一部位读取装备 " + field + j, unit[field], holders[j].装扮.linkage);
+            }
+        }
+    }
+
     private static function test_refreshAll_标记与组级事件():Void {
         trace("--- refreshAll: dressupRefreshing 标记与组级事件 ---");
         var unit = makeMockUnit("正常", "男");
@@ -682,6 +708,16 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         assertNull("切回手枪后整体刷新清除旧长枪登记", actor.dressupRegistry["长枪_引用@装扮"]);
         assertTrue("切回手枪的规范引用和身份仍正确", actor.手枪_引用 === inner.装扮
             && inner.装扮.__dressupPlacementIdentity === actor.dressupRegistry["手枪_引用@装扮"].identity);
+        // 新槽位已经登记，但当前没有皮肤可用来区分同路径的两个槽位。
+        actor.长枪_装扮 = null;
+        DressupReferenceManager.attach(inner, null, "装扮", "长枪_引用");
+        DressupReferenceManager.refreshAll(actor);
+        assertNull("空挂点换槽后旧手枪登记已清除", actor.dressupRegistry["手枪_引用@装扮"]);
+        assertNotNull("空挂点保留当前长枪登记", actor.dressupRegistry["长枪_引用@装扮"]);
+        actor.长枪_装扮 = "TestProbeSkin";
+        DressupReferenceManager.refreshAll(actor);
+        assertTrue("空挂点重穿后挂上真实长枪皮肤", inner.装扮._parent === inner
+            && inner.装扮.__dressupPlacementIdentity === actor.dressupRegistry["长枪_引用@装扮"].identity);
         actor.removeMovieClip();
     }
 
@@ -711,6 +747,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         test_attach_失效MC复用regKey();
         test_attach_活动man接管旧分支规范引用();
         test_attach_活动man同分支真实并存仍溢出();
+        test_refreshAll_成对肢体的装备与女性底图();
         test_attach_skinKeyOverrides武器走装扮后缀();
         test_refreshAll_标记与组级事件();
         test_refreshAll_dead_entry清理与live同处理();

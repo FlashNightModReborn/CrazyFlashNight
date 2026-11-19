@@ -1170,6 +1170,9 @@ class Program
             arenaWorkerMode: workerPolicy != null || harnessPolicy != null,
             arenaWorkerMinimalRendering: workerPolicy?.Performance.MaxRenderHeight == 180);
         _guardianForm = form;
+        var tooltipCatalog = new TooltipCatalogSource(projectRoot, LogManager.Log);
+        if (form.BootstrapPanel != null && tooltipCatalog.IsCheckout)
+            form.BootstrapPanel.CheckoutEquipmentReference = () => tooltipCatalog.Snapshot.Archive;
         PerfTrace.Duration("guardian.form_construct", formStart);
         PerfTrace.Mark("guardian.form_constructed");
         StartupDiagnostics.Mark("guardian.form_construct_ok");
@@ -1580,7 +1583,7 @@ class Program
         {
             v8Runtime = new V8Runtime(scriptsDir);
         }
-        var tooltipService = new TooltipService(() => new TooltipV8Engine(projectRoot), LogManager.Log);
+        var tooltipService = new TooltipService(() => new TooltipV8Engine(projectRoot, tooltipCatalog), LogManager.Log);
         var tooltipResponses = new TooltipResponseEnricher(tooltipService, () => socketServer.CurrentGeneration, LogManager.Log);
         router.TooltipResponses = tooltipResponses;
         _ = tooltipService.Ready.ContinueWith(t => { _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted);

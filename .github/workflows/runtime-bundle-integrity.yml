@@ -172,6 +172,7 @@ jobs:
             .github/workflows/runtime-bundle-integrity.yml
             config/build/
             tools/classify-runtime-release-state.ps1
+            tools/runtime-release-admission.ps1
             tools/runtime-build-attestation-v2-common.ps1
             tools/runtime-build-common.ps1
             tools/runtime-build-queue-common.ps1
@@ -231,7 +232,11 @@ jobs:
             config/build/main-branch-admission.v2.json
             config/build/runtime-builders.v2.json
             tools/classify-runtime-release-state.ps1
+            tools/runtime-release-admission.ps1
             tools/test-runtime-release-state.ps1
+            tools/test-runtime-publication.ps1
+            tools/invoke-runtime-publication.ps1
+            tools/runtime-build-queue-common.ps1
             tools/runtime-build-v2-common.ps1
             tools/runtime-build-attestation-v2-common.ps1
             tools/runtime-webview-paths.ps1
@@ -244,6 +249,11 @@ jobs:
         shell: pwsh
         run: |
           & .\tools\test-runtime-release-state.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify publication competition on a local Git remote
+        shell: powershell
+        run: |
+          & .\tools\test-runtime-publication.ps1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Verify generated WebView2 path and replacement boundaries
         shell: pwsh

@@ -1,11 +1,11 @@
 # Flash CS6 自动化编译指南
 
 **文档角色**：Flash CS6 编译 smoke canonical doc。  
-**最后核对代码基线**：commit `c475797b8afaf37e9b5fe7d805ca932a668d4ed8`（2026-11-14；补充多机器宿主兼容分流、机器级编译互斥锁、32 位 4 GiB VA 水位自动轮换与崩溃排障）。
+**最后核对代码基线**：commit `6b83cc4ec22f204da2a997b69b217b751d7123b6` 及 2026-11-20 本地增量构建改动，本轮核对默认 Overlay、镜像回退及日常构建记录。2026-11-14 的 `c475797b8afaf37e9b5fe7d805ca932a668d4ed8` 记录多机器宿主与 VA 轮换基线。
 
 本文件只讲 **Flash CS6 编译与 smoke 验证链**：计划任务、JSFL、trace、编译器错误、截图与故障排查。  
 游戏启动与运行自动化请看 [automation/README.md](../automation/README.md)。
-`compile_test.ps1` 只保存本次新增 Flash trace 到 `scripts/flashlog.txt`，并将 `[TEST_FAIL]` / `[FAIL]` / `Tests Failed: N>0`、缺失/陈旧/非 `0/0` 的 Compiler Errors 视为失败。
+Test Movie 只保存本次新增的 Flash trace 到 `scripts/flashlog.txt`，并检查失败断言。纯 publish 读取本轮 Compiler 和 Output。两种模式均要求新鲜 Compiler Errors 为 0/0。
 
 ## 1. 当前定位
 
@@ -64,8 +64,12 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -TimeoutSecond
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target test -TimeoutSeconds 180
 
 # 发布构建：编 asLoader（别名自动走 doc.publish()，并启用 -VerifySwf scripts/asLoader.swf；无需再写 -PublishOnly）
-# 注意：asLoader 现已超过 820 个类（~7.2 MB），冷宿主完整发布约需 600~800 秒，建议至少设 900 秒避免误超时留闸
+# 超时按实际发布的单个模块计算；首次建立本机基线会串行编译三次。
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900
+
+# 只看哪些模块需要编译，或在同一套隔离、验证和恢复流程里强制全编。
+powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -PlanOnly
+powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -ForceFull -TimeoutSeconds 900
 
 # 主文件构建：只用于主 FLA / 资产 / linkage / 主时间轴相关改动
 # publish-only（doc.publish() 不 testMovie），不会拉起整套游戏；产出仓库根 CRAZYFLASHER7MercenaryEmpire.swf
@@ -86,7 +90,17 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flash
 批量发布大 XFL 时可额外传 `-QuitFlashAfterPublish`。该开关只接受 publish-only：JSFL 必须先完成 `doc.publish()`、保存 Compiler Errors、关闭目标并写 terminal marker，之后才 `fl.quit(false)`；调用方看到成功返回后再用既有 `FlashCS6Task` 启动干净实例。测试模式、畸形/残留 cfg 或 terminal 前退出都 fail-closed，不能用进程退出替代 SWF 刷新与 Compiler `0/0`。
 
 此外，由于 32 位 `Flash.exe` 用户态 VA 硬上限为 `4,095.9 MiB`，而 `asLoader` 单次发布峰值已达约 `3.75~3.97 GiB` 且关文档不释放编译器内存池，`compile_test.ps1` 内置了**机器级互斥锁与编译前 VA 水位自动轮换保护**：
-**三模块候选**：标准 publish 在仓库锁下生成完整 API 镜像，依次真实发布三个模块，保留逐件新鲜证据；使用仅准目录表内显式 XFL publish 的 `m1` 父锁，不借用 focused `v1` scratch 权限。编译后核对传递 include/运行 JSON 指纹、精确唯一类 owner 和 resident→shared→boot 父类注册顺序。SaveManager 驻留原 RSL 保持存档命名空间，另两件代码影片须正常加载并持久存活；三件须成套分发。详见 [启动导览](../docs/asLoader-README.md)。
+**三模块增量发布**使用已绑定的原生 CS6 触发任务，在仓库编译锁下按模块规划。默认布局为 Overlay Stubs。首轮建立本机原生全量基线。Overlay 从固定隔离目录 `tmp/asloader-p1/overlay-live` 读取本模块实现和外部类型声明；显式镜像使用 `tmp/asloader-p1/live`。每项 BUILD 均核验本轮 Compiler 0/0、Output 中的结束与零 32K 重试、SWF 刷新及类归属。SKIP 核验有效输入键、已安装 SWF 的原始 SHA 和原编译日志。三个模块保持既有装载次序和 SaveManager 的原 RSL 存档域。传统文件关联触发配置仍走旧全编入口；管理中的产物集要求已绑定的原生任务。
+
+每轮报告在控制台所列的 `tmp/asloader-p1/runs/<run>/result.json`。其中记录实际发布次数、逐阶段墙钟、单件来源和编译回执。改变验证策略可以仅重验完整集合。三个文件全部通过归属和初始化顺序检查后才进入工作树安装。启动、工作树打包和发布共用集合读写保护；对照实验写到独立候选目录。
+
+复评默认布局时，各开发机运行 `python -B tools/summarize_asloader_runs.py` 即可汇总本机已经落盘的日常发布回执。编译准入前的拒绝可在当次控制台查看。用 `--output <新文件.json>` 导出统计，供协作者自行分享。比较同一台机器、相同模块组合下的耗时、慢样本和失败数；首次全编、切换布局与强制全编单列。遇到疑似布局回归，可在同一源码上用 `-ModuleLayout Mirror` 复核。缺少同机对照时，日常样本适合观察趋势。
+
+需要回退或做同源码对照时，在标准命令上加 `-ModuleLayout Mirror`。此选项只作用于本次发布；去掉它即恢复项目默认的 Overlay。切换布局会重新编译三件，随后同布局可正常复用。`-ForceFull` 单独控制本次是否强制全编。受版本管理的 XFL 始终由原生成器维护，Overlay 的声明路径只写入隔离副本。
+
+要在独立目录验证当前默认值，可执行 `powershell -File scripts/compile_test.ps1 -Target publish -ExperimentOutput layout-preview`，候选在 `tmp/asloader-p1/outputs/layout-preview/scripts/`。独立 A/B 仍支持父发布器的 `-ExperimentLayout`。
+
+发现 `pending.json` 时先按现有 CS6 所有权、scratch 和未知结果合同核对现场。编译写入已静止后，在同一工程根执行 `python -B tools/asloader_artifact_set.py recover --root .`，再重新走标准发布入口。恢复程序逐件验旧、新 SHA；遇到第三方字节会保留现场。正常流程以 `-ForceFull` 关闭本次复用。详见[启动导览](../docs/asLoader-README.md)。
 
 - **双层互斥锁**：除仓库级 `Local\CF7_FlashCompile_<RepoHash>` 外，同时获取机器级 `Local\CF7_FlashCompile_MachineGlobal`，防止同一台机器的多个 worktree 并发抢占唯一的 `Flash.exe` 实例、全局 Commands 目录与 `.aso` 缓存。
 - **编译前脏宿主自动轮换**：非独占宿主租约（无 `testhost_ownership.marker`）下，若检测到当前 `Flash.exe` 的 `VirtualSize` 超过安全阈值（`asLoader` 与共享库 `asLoaderShared` 目标 `> 700 MiB`，包括单类驻留壳 `asLoaderBootstrap` 在内的其余目标 `> 2400 MiB`），脚本会在写编译 cfg 前自动调用 `quit_owned_test_host` 安全关闭可丢弃测试文档并退出旧宿主，再经 `FlashCS6Task` 冷启动干净实例；若 CS6 内打开了未保存或非测试的外部美术/业务文档，`quit_owned_test_host` 拒绝退进程并立即 fail-closed 报错，绝不丢弃人工修改。每次编译结束或异常退出时，终端均会输出本轮 `[CS6 VA 水位]` 起点、峰值占比与驻留值。

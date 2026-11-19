@@ -1,0 +1,65 @@
+name: Tooltip source data
+on:
+  pull_request:
+    paths: &tooltip_paths
+      - 'data/crafting/**'
+      - 'data/items/**'
+      - 'data/enemy_properties/**'
+      - 'data/equipment/equipment_config.xml'
+      - 'launcher/src/Tooltips/**'
+      - 'launcher/tooltip-engine/**'
+      - 'launcher/scripts/dist/tooltip*.js'
+      - 'launcher/scripts/package*.json'
+      - 'launcher/web/modules/bootstrap-save-equipment.js'
+      - 'scripts/类定义/org/flashNight/gesh/string/StringUtils.as'
+      - 'scripts/类定义/org/flashNight/arki/component/Damage/MagicDamageTypes.as'
+      - 'tools/tooltip-catalog.cjs'
+      - 'tools/build-tooltip-catalog.py'
+      - 'tools/build-bootstrap-equipment-reference.js'
+      - 'tools/test-tooltip-catalog.cjs'
+      - 'tools/tooltip-parity-corpus.test.js'
+      - 'tools/test-tooltip-checkout-upgrade.cjs'
+      - '.github/workflows/tooltip-data.yml'
+  push:
+    branches: [main]
+    paths: *tooltip_paths
+permissions:
+  contents: read
+jobs:
+  source-only-upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /global.json
+            /data/crafting/
+            /data/items/
+            /data/enemy_properties/
+            /data/equipment/
+            /launcher/src/
+            /launcher/tests/TooltipService.Host/
+            /launcher/Directory.Packages.props
+            /launcher/tooltip-engine/
+            /launcher/scripts/
+            /scripts/类定义/org/flashNight/gesh/string/StringUtils.as
+            /scripts/类定义/org/flashNight/arki/component/Damage/MagicDamageTypes.as
+            /tools/tooltip-catalog.cjs
+            /tools/build-tooltip-catalog.py
+            /tools/build-bootstrap-equipment-reference.js
+            /tools/test-tooltip-catalog.cjs
+            /tools/tooltip-parity-corpus.test.js
+            /tools/test-tooltip-checkout-upgrade.cjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: npm ci --prefix launcher/scripts --ignore-scripts
+      - run: node launcher/tooltip-engine/build.cjs --check
+      - run: node --test tools/test-tooltip-catalog.cjs
+      - run: node tools/test-tooltip-checkout-upgrade.cjs
+      - run: npm test --prefix launcher/tooltip-engine
+      - run: dotnet run --project launcher/tests/TooltipService.Host/TooltipService.Host.csproj -c Release --no-build

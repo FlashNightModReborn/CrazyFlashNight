@@ -56,14 +56,16 @@ function Get-Cf7RuntimeV2RelativePath {
 function Get-Cf7RuntimeV2GitIndexBlobBytes {
     param(
         [Parameter(Mandatory=$true)][string]$ProjectRoot,
-        [Parameter(Mandatory=$true)][string]$RelativePath
+        [Parameter(Mandatory=$true)][string]$RelativePath,
+        [ValidatePattern('^(?:[0-9a-f]{40}|[0-9a-f]{64})$')][string]$ObjectId
     )
     if ($RelativePath -match '(^|/)\.\.(/|$)' -or $RelativePath.IndexOf([char]0) -ge 0) {
         throw "Unsafe Git path: $RelativePath"
     }
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = 'git.exe'
-    $psi.Arguments = "-C `"$ProjectRoot`" cat-file blob `":$RelativePath`""
+    $object = if ($ObjectId) { $ObjectId } else { ':' + $RelativePath }
+    $psi.Arguments = "-C `"$ProjectRoot`" cat-file blob `"$object`""
     $psi.UseShellExecute = $false
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true
@@ -86,14 +88,21 @@ function Read-Cf7RuntimeV2Config {
     param(
         [Parameter(Mandatory=$true)][string]$ProjectRoot,
         [ValidateSet('Worktree','Index')][string]$Mode = 'Worktree',
-        [string]$ConfigPath
+        [string]$ConfigPath,
+        [System.Collections.Generic.Dictionary[string,string]]$IndexEntries
     )
     $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
     if (-not $ConfigPath) { $ConfigPath = Join-Path $root 'config\build\runtime-inputs.v2.json' }
     if (-not [IO.Path]::IsPathRooted($ConfigPath)) { $ConfigPath = Join-Path $root $ConfigPath }
     $relative = Get-Cf7RuntimeV2RelativePath -ProjectRoot $root -Path $ConfigPath
     if ($Mode -eq 'Index') {
-        $bytes = Get-Cf7RuntimeV2GitIndexBlobBytes -ProjectRoot $root -RelativePath $relative
+        $blobArgs = @{}
+        if ($null -ne $IndexEntries) {
+            $configOid = $IndexEntries[$relative]
+            if (-not $configOid) { throw "Runtime input config has no stage-0 Git index entry: $relative" }
+            $blobArgs.ObjectId = $configOid
+        }
+        $bytes = Get-Cf7RuntimeV2GitIndexBlobBytes -ProjectRoot $root -RelativePath $relative @blobArgs
         $json = [Text.Encoding]::UTF8.GetString($bytes)
     } else {
         if (-not (Test-Path -LiteralPath $ConfigPath -PathType Leaf)) { throw "Runtime v2 input config missing: $ConfigPath" }
@@ -131,10 +140,16 @@ function Get-Cf7RuntimeV2DomainFiles {
         [Parameter(Mandatory=$true)][string]$ProjectRoot,
         [Parameter(Mandatory=$true)][ValidateSet('artifactSource','producerRecipe','toolchainLock','policy')][string]$Domain,
         [ValidateSet('Worktree','Index')][string]$Mode = 'Worktree',
-        [string]$ConfigPath
+        [string]$ConfigPath,
+        $IndexSnapshot
     )
     $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
-    $config = Read-Cf7RuntimeV2Config -ProjectRoot $root -Mode $Mode -ConfigPath $ConfigPath
+    if ($Mode -eq 'Index') {
+        if ($null -eq $IndexSnapshot) { $IndexSnapshot = Get-Cf7RuntimeV2IndexSnapshot -ProjectRoot $root -ConfigPath $ConfigPath }
+        $config = $IndexSnapshot.Config
+    } else {
+        $config = Read-Cf7RuntimeV2Config -ProjectRoot $root -Mode $Mode -ConfigPath $ConfigPath
+    }
     $domainConfig = $config.domains.PSObject.Properties[$Domain].Value
     $files = New-Object 'System.Collections.Generic.List[string]'
 
@@ -142,12 +157,7 @@ function Get-Cf7RuntimeV2DomainFiles {
         $fixed = ([string]$fixedValue).Replace('\', '/')
         if ($fixed -match '(^|/)\.\.(/|$)' -or [IO.Path]::IsPathRooted($fixed)) { throw "Unsafe runtime input path: $fixed" }
         if ($Mode -eq 'Index') {
-            # Do not compare `git ls-files` display text with the logical path. On a clean
-            # hosted runner core.quotepath defaults to true, so non-ASCII names are emitted
-            # as quoted octal escapes even though the index entry exists. cat-file checks
-            # the exact stage-0 index object without depending on terminal/output encoding.
-            & git -C $root cat-file -e (':' + $fixed) 2>$null
-            if ($LASTEXITCODE -ne 0) { throw "Required $Domain input is absent from Git index: $fixed" }
+            if (-not $IndexSnapshot.Entries[$fixed]) { throw "Required $Domain input is absent from Git index stage 0: $fixed" }
         } else {
             $full = Join-Path $root ($fixed -replace '/', '\')
             if (-not (Test-Path -LiteralPath $full -PathType Leaf)) { throw "Required $Domain input missing: $fixed" }
@@ -160,8 +170,17 @@ function Get-Cf7RuntimeV2DomainFiles {
         if (-not $base -or $base -match '(^|/)\.\.(/|$)' -or [IO.Path]::IsPathRooted($base)) { throw "Unsafe runtime input tree: $base" }
         $extensions = @($tree.includeExtensions | ForEach-Object { ([string]$_).ToLowerInvariant() })
         if ($Mode -eq 'Index') {
-            $candidates = @(& git -c core.quotepath=false -C $root ls-files -- $base)
-            if ($LASTEXITCODE -ne 0) { throw "Cannot enumerate runtime input tree from Git index: $base" }
+            # Stage-zero paths are ordinally sorted once per index snapshot. A prefix
+            # range avoids scanning the entire index for each declared input tree.
+            $prefix = $base + '/'
+            $paths = $IndexSnapshot.Paths
+            $first = [Array]::BinarySearch($paths, $prefix, [StringComparer]::Ordinal)
+            if ($first -lt 0) { $first = -bnot $first }
+            $candidates = New-Object 'System.Collections.Generic.List[string]'
+            if ($IndexSnapshot.Entries.ContainsKey($base)) { $candidates.Add($base) }
+            for ($i = $first; $i -lt $paths.Length -and $paths[$i].StartsWith($prefix, [StringComparison]::Ordinal); $i++) {
+                $candidates.Add($paths[$i])
+            }
         } else {
             $baseFull = Join-Path $root ($base -replace '/', '\')
             if (-not (Test-Path -LiteralPath $baseFull -PathType Container)) { throw "Required $Domain input tree missing: $base" }
@@ -174,6 +193,9 @@ function Get-Cf7RuntimeV2DomainFiles {
             $extension = [IO.Path]::GetExtension($candidate).ToLowerInvariant()
             if ($extensions.Count -gt 0 -and -not ($extensions -contains $extension)) { continue }
             if (Test-Cf7RuntimeV2PathExcluded -RelativePath $candidate -ExcludePaths @($tree.excludePaths) -ExcludePrefixes @($tree.excludePrefixes)) { continue }
+            if ($Mode -eq 'Index' -and -not $IndexSnapshot.Entries[$candidate]) {
+                throw "Runtime input has no unique stage-0 Git index entry: $candidate"
+            }
             $files.Add($candidate)
         }
     }
@@ -212,34 +234,20 @@ function Get-Cf7RuntimeV2GitObjectId {
     return ([string]$oid[0]).Trim().ToLowerInvariant()
 }
 
-function Get-Cf7RuntimeV2WorktreeObjectIds {
+function Invoke-Cf7RuntimeV2GitWithInput {
     param(
         [Parameter(Mandatory=$true)][string]$ProjectRoot,
-        [Parameter(Mandatory=$true)][string[]]$RelativePaths
+        [Parameter(Mandatory=$true)][ValidateSet('hash-object --stdin-paths','update-index -z --index-info')][string]$Command,
+        [Parameter(Mandatory=$true)][AllowEmptyCollection()][byte[]]$StdinBytes
     )
-    # Batched worktree identity: one git process consumes every repository-relative path via
-    # --stdin-paths (forward slashes, LF-separated, UTF-8-no-BOM stdin) instead of one process
-    # spawn per file. Byte-equivalent to per-file `hash-object --path=<rel> -- <full>`: under
-    # --stdin-paths Git resolves .gitattributes and file bytes through the same relative path.
-    $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
-    $oids = New-Object 'System.Collections.Generic.List[string]'
-    if ($RelativePaths.Count -eq 0) { return @($oids) }
-    foreach ($relative in $RelativePaths) {
-        if ([string]::IsNullOrEmpty($relative) -or $relative.Contains("`n") -or $relative.Contains("`r") -or
-                $relative.IndexOf([char]0) -ge 0 -or [IO.Path]::IsPathRooted($relative) -or
-                $relative.Contains('\') -or $relative -match '(^|/)\.\.(/|$)') {
-            throw "Runtime input path cannot enter the batch Git identity channel: $relative"
-        }
-    }
     # Do not pipe the path list through the PowerShell native pipeline: once the console runs
     # under code page 65001, Windows PowerShell 5.1 prepends a UTF-8 BOM to native stdin and
     # corrupts the first path. Drive the process directly and write exact bytes instead. The
     # Process.StandardInput writer is created from Console.InputEncoding, so pin that encoding
     # to preamble-free UTF-8 before the first access; otherwise its BOM lands on the wire.
-    $stdinBytes = [Text.Encoding]::UTF8.GetBytes(([string]::Join("`n", $RelativePaths) + "`n"))
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = 'git.exe'
-    $psi.Arguments = "-C `"$root`" hash-object --stdin-paths"
+    $psi.Arguments = "-C `"$ProjectRoot`" $Command"
     $psi.UseShellExecute = $false
     $psi.RedirectStandardInput = $true
     $psi.RedirectStandardOutput = $true
@@ -277,10 +285,10 @@ function Get-Cf7RuntimeV2WorktreeObjectIds {
         $stdoutText = [string]$stdoutTask.Result
         $stderrText = [string]$stderrTask.Result
         if ($process.ExitCode -ne 0) {
-            throw "Cannot batch-hash runtime inputs ($($RelativePaths.Count) paths): $($stderrText.Trim())"
+            throw "Git $Command failed: $($stderrText.Trim())"
         }
         if ($stdinFailure) {
-            throw "Cannot feed runtime inputs to batch Git identity: $stdinFailure"
+            throw "Cannot write input to git $Command`: $stdinFailure"
         }
     } finally {
         $process.Dispose()
@@ -288,6 +296,30 @@ function Get-Cf7RuntimeV2WorktreeObjectIds {
             try { [Console]::InputEncoding = $previousInputEncoding } catch { }
         }
     }
+    return $stdoutText
+}
+
+function Get-Cf7RuntimeV2WorktreeObjectIds {
+    param(
+        [Parameter(Mandatory=$true)][string]$ProjectRoot,
+        [Parameter(Mandatory=$true)][string[]]$RelativePaths
+    )
+    # Batched worktree identity: one git process consumes every repository-relative path via
+    # --stdin-paths (forward slashes, LF-separated, UTF-8-no-BOM stdin) instead of one process
+    # spawn per file. Byte-equivalent to per-file `hash-object --path=<rel> -- <full>`: under
+    # --stdin-paths Git resolves .gitattributes and file bytes through the same relative path.
+    $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
+    $oids = New-Object 'System.Collections.Generic.List[string]'
+    if ($RelativePaths.Count -eq 0) { return @($oids) }
+    foreach ($relative in $RelativePaths) {
+        if ([string]::IsNullOrEmpty($relative) -or $relative.Contains("`n") -or $relative.Contains("`r") -or
+                $relative.IndexOf([char]0) -ge 0 -or [IO.Path]::IsPathRooted($relative) -or
+                $relative.Contains('\') -or $relative -match '(^|/)\.\.(/|$)') {
+            throw "Runtime input path cannot enter the batch Git identity channel: $relative"
+        }
+    }
+    $stdinBytes = [Text.Encoding]::UTF8.GetBytes(([string]::Join("`n", $RelativePaths) + "`n"))
+    $stdoutText = Invoke-Cf7RuntimeV2GitWithInput -ProjectRoot $root -Command 'hash-object --stdin-paths' -StdinBytes $stdinBytes
     $rows = @($stdoutText -split "`n" | Where-Object { $_ -ne '' })
     if ($rows.Count -ne $RelativePaths.Count) {
         throw "Batch Git identity returned $($rows.Count) rows for $($RelativePaths.Count) runtime inputs."
@@ -301,7 +333,11 @@ function Get-Cf7RuntimeV2WorktreeObjectIds {
 }
 
 function Get-Cf7RuntimeV2IndexObjectIdTable {
-    param([Parameter(Mandatory=$true)][string]$ProjectRoot)
+    param(
+        [Parameter(Mandatory=$true)][string]$ProjectRoot,
+        [System.Collections.Generic.Dictionary[string,string]]$Modes,
+        [switch]$IncludeUnmerged
+    )
     # Batched index identity: parse one full `ls-files -s` into a stage-0 lookup table instead
     # of one process spawn per file. Drive the process directly with an explicit UTF-8 stdout
     # encoding: core.quotepath=false emits raw UTF-8 paths, and the PowerShell 5.1 native
@@ -309,7 +345,7 @@ function Get-Cf7RuntimeV2IndexObjectIdTable {
     $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = 'git.exe'
-    $psi.Arguments = "-c core.quotepath=false -C `"$root`" ls-files -s"
+    $psi.Arguments = "-c core.quotepath=false -C `"$root`" ls-files -s -z"
     $psi.UseShellExecute = $false
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true
@@ -324,17 +360,30 @@ function Get-Cf7RuntimeV2IndexObjectIdTable {
     } finally {
         $process.Dispose()
     }
-    $rows = @($stdoutText -split "`n" | Where-Object { $_ -ne '' })
     $table = New-Object 'System.Collections.Generic.Dictionary[string,string]' ([StringComparer]::Ordinal)
-    foreach ($row in $rows) {
-        if ([string]$row -notmatch '^[0-9]+\s+([0-9a-fA-F]+)\s+([0-9]+)\t(.+)$') { throw "Invalid Git index row: $row" }
-        if ([string]$Matches[2] -cne '0') { continue }
-        $path = [string]$Matches[3]
-        $oid = ([string]$Matches[1]).ToLowerInvariant()
-        if ($table.ContainsKey($path)) { throw "Git index contains duplicate stage-0 entries: $path" }
-        $table.Add($path, $oid)
+    foreach ($row in $stdoutText.Split([char[]]@([char]0), [StringSplitOptions]::RemoveEmptyEntries)) {
+        if ($row -cnotmatch '^(?<mode>[0-7]{6}) (?<oid>[0-9a-f]{40}(?:[0-9a-f]{24})?) (?<stage>[0-3])\t(?<path>[\s\S]+)$') { throw "Invalid Git index row: $row" }
+        $path = $Matches.path
+        if ($Matches.stage -ne '0') {
+            if ($IncludeUnmerged) { $table[$path] = '' }
+            continue
+        }
+        $table.Add($path, $Matches.oid)
+        if ($null -ne $Modes) { $Modes.Add($path, $Matches.mode) }
     }
     return $table
+}
+
+function Get-Cf7RuntimeV2IndexSnapshot {
+    param([Parameter(Mandatory=$true)][string]$ProjectRoot, [string]$ConfigPath)
+
+    $modes = New-Object 'System.Collections.Generic.Dictionary[string,string]' ([StringComparer]::Ordinal)
+    $entries = Get-Cf7RuntimeV2IndexObjectIdTable -ProjectRoot $ProjectRoot -Modes $modes -IncludeUnmerged
+    $paths = [string[]]$entries.Keys
+    [Array]::Sort($paths, [StringComparer]::Ordinal)
+    # Read the descriptor by its captured blob OID, even if the caller's index changes.
+    $config = Read-Cf7RuntimeV2Config -ProjectRoot $ProjectRoot -Mode Index -ConfigPath $ConfigPath -IndexEntries $entries
+    return [pscustomobject]@{ Config=$config; Entries=$entries; Modes=$modes; Paths=$paths }
 }
 
 function Get-Cf7RuntimeV2DomainHash {
@@ -342,14 +391,25 @@ function Get-Cf7RuntimeV2DomainHash {
         [Parameter(Mandatory=$true)][string]$ProjectRoot,
         [Parameter(Mandatory=$true)][ValidateSet('artifactSource','producerRecipe','toolchainLock','policy')][string]$Domain,
         [ValidateSet('Worktree','Index')][string]$Mode = 'Worktree',
-        [string]$ConfigPath
+        [string]$ConfigPath,
+        $IndexSnapshot,
+        [hashtable]$PathOwners
     )
     $root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
-    $files = @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $root -Domain $Domain -Mode $Mode -ConfigPath $ConfigPath)
+    if ($Mode -eq 'Index' -and $null -eq $IndexSnapshot) {
+        $IndexSnapshot = Get-Cf7RuntimeV2IndexSnapshot -ProjectRoot $root -ConfigPath $ConfigPath
+    }
+    $files = @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $root -Domain $Domain -Mode $Mode -ConfigPath $ConfigPath -IndexSnapshot $IndexSnapshot)
+    if ($null -ne $PathOwners) {
+        foreach ($path in $files) {
+            if ($PathOwners.ContainsKey($path)) { throw "Runtime v2 input domains overlap: $path ($($PathOwners[$path]),$Domain)" }
+            $PathOwners[$path] = $Domain
+        }
+    }
     $oids = @()
     if ($files.Count -gt 0) {
         if ($Mode -eq 'Index') {
-            $indexTable = Get-Cf7RuntimeV2IndexObjectIdTable -ProjectRoot $root
+            $indexTable = $IndexSnapshot.Entries
             $resolved = New-Object 'System.Collections.Generic.List[string]'
             foreach ($relative in $files) {
                 $oid = $null
@@ -410,26 +470,24 @@ function Get-Cf7RuntimeV2Identity {
     param(
         [Parameter(Mandatory=$true)][string]$ProjectRoot,
         [ValidateSet('Worktree','Index')][string]$Mode = 'Worktree',
-        [string]$ConfigPath
+        [string]$ConfigPath,
+        $IndexSnapshot
     )
-    $owners = @{}
-    foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
-        foreach ($path in Get-Cf7RuntimeV2DomainFiles -ProjectRoot $ProjectRoot -Domain $domain -Mode $Mode -ConfigPath $ConfigPath) {
-            if ($owners.ContainsKey($path)) { throw "Runtime v2 input domains overlap: $path ($($owners[$path]),$domain)" }
-            $owners[$path] = $domain
-        }
+    if ($Mode -eq 'Index' -and $null -eq $IndexSnapshot) {
+        $IndexSnapshot = Get-Cf7RuntimeV2IndexSnapshot -ProjectRoot $ProjectRoot -ConfigPath $ConfigPath
     }
-    $artifact = Get-Cf7RuntimeArtifactSourceHash -ProjectRoot $ProjectRoot -Mode $Mode -ConfigPath $ConfigPath
-    $producer = Get-Cf7RuntimeProducerRecipeHash -ProjectRoot $ProjectRoot -Mode $Mode -ConfigPath $ConfigPath
-    $toolchain = Get-Cf7RuntimeToolchainLockHashV2 -ProjectRoot $ProjectRoot -Mode $Mode -ConfigPath $ConfigPath
-    $policy = Get-Cf7RuntimePolicyHash -ProjectRoot $ProjectRoot -Mode $Mode -ConfigPath $ConfigPath
+    $owners = @{}
+    $hash = @{}
+    foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
+        $hash[$domain] = Get-Cf7RuntimeV2DomainHash -ProjectRoot $ProjectRoot -Domain $domain -Mode $Mode -ConfigPath $ConfigPath -IndexSnapshot $IndexSnapshot -PathOwners $owners
+    }
     return [pscustomobject][ordered]@{
         schema = 'cf7-runtime-build-identity.v2'
-        artifactSourceHash = $artifact
-        producerRecipeHash = $producer
-        toolchainLockHash = $toolchain
-        policyHash = $policy
-        buildIdentityHash = Get-Cf7RuntimeV2BuildIdentityHash -ArtifactSourceHash $artifact -ProducerRecipeHash $producer -ToolchainLockHash $toolchain
+        artifactSourceHash = $hash.artifactSource
+        producerRecipeHash = $hash.producerRecipe
+        toolchainLockHash = $hash.toolchainLock
+        policyHash = $hash.policy
+        buildIdentityHash = Get-Cf7RuntimeV2BuildIdentityHash -ArtifactSourceHash $hash.artifactSource -ProducerRecipeHash $hash.producerRecipe -ToolchainLockHash $hash.toolchainLock
     }
 }
 

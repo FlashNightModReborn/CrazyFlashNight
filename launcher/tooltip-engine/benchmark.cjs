@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const crypto = require('node:crypto');
 const { performance } = require('node:perf_hooks');
-const { createInputs, defaultCatalog, repo } = require('./fixtures.cjs');
+const { createInputs, catalogText, repo } = require('./fixtures.cjs');
 const hash = x => crypto.createHash('sha256').update(x).digest('hex');
 const round = x => Math.round(x * 1e6) / 1e6;
 function summarize(values) {
@@ -28,7 +28,7 @@ function main() {
     if (args.length > 2 || (evaluate && args.length !== 1)) throw new Error('usage: benchmark.cjs [--bench] [inputs.jsonl] [rounds] | --evaluate inputs.jsonl');
     const rounds = args[1] == null ? 3 : Number(args[1]);
     if (!Number.isInteger(rounds) || rounds < 1 || rounds > 100) throw new Error('rounds must be 1..100');
-    const catalogBytes = fs.readFileSync(defaultCatalog);
+    const catalogBytes = Buffer.from(catalogText(),'utf8');
     const bundleBytes = fs.readFileSync(path.join(repo, 'launcher/scripts/dist/tooltip-bundle.js'));
     const fixtureText = args[0] ? fs.readFileSync(args[0], 'utf8') :
         createInputs(JSON.parse(catalogBytes.toString('utf8'))).map(input => JSON.stringify(input)).join('\n') + '\n';

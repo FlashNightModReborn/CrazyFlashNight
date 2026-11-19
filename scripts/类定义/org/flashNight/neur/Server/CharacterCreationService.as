@@ -26,6 +26,21 @@ class org.flashNight.neur.Server.CharacterCreationService {
     private static var _startHookForTests:Function = null;
     private static var _reserveHookForTests:Function = null;
 
+    // 按资源标识筛选建角款；全目录及其重复行由理发师维护。
+    private static var STARTER_HAIR:Array = [
+        "光头", "发型-男式-黑中分头", "发型-男式-黑长发",
+        "发型-男式-黑圆平头", "发型-男式-黑贴头", "发型-男式-黑碎平头",
+        "发型-男式-黑蓬头", "发型-男式-黑朋克头", "发型-男式-黑妹妹头",
+        "发型-男式-黑猫王头", "发型-男式-黑马尾头", "发型-男式-黑韩式头2",
+        "发型-男式-黑韩式头", "发型-男式-黑暴走头", "发型-男式-平头",
+        "发型-女式-银色清爽直发", "发型-女式-玫红色马尾", "发型-女式-咖啡色丸子头",
+        "发型-女式-金色中长头发", "发型-女式-深蓝色挑染短发", "发型-女式-金色长发",
+        "发型-女式-咖啡色中长马尾", "发型-男式-精武短发", "发型-男式-黑色辫子头",
+        "发型-女式-白发双马尾头", "发型-女式-棕发大姐头", "发型-女式-中性遮发眼头",
+        "发型-男式-短碎卷发", "发型-男式-淡金卷", "发型-男式-藏蓝偏分",
+        "发型-男式-亚麻短发"
+    ];
+
     private static var SNAPSHOT_KEYS:Array = [
         "task", "action", "v", "attemptId", "slotKey", "callId"
     ];
@@ -412,13 +427,19 @@ class org.flashNight.neur.Server.CharacterCreationService {
                     ? "catalog_not_ready" : String(result.error)
             };
         }
-        if (!(result.catalog instanceof Array) || result.catalog.length < 1
-                || !isValidHairCatalog(result.catalog)
-                || !catalogContains(result.catalog, "发型-男式-黑暴走头")
-                || !catalogContains(result.catalog, "发型-女式-咖啡色中长马尾")) {
+        if (!(result.catalog instanceof Array) || !isValidHairCatalog(result.catalog)) {
             return {success:false, error:"catalog_not_ready"};
         }
-        return {success:true, catalog:result.catalog};
+        var starter:Array = [];
+        for (var i:Number = 0; i < result.catalog.length; i++) {
+            var row:Object = result.catalog[i];
+            if (stringArrayContains(STARTER_HAIR, row.identifier)) starter.push(row);
+        }
+        if (!catalogContains(starter, "发型-男式-黑暴走头")
+                || !catalogContains(starter, "发型-女式-咖啡色中长马尾")) {
+            return {success:false, error:"catalog_not_ready"};
+        }
+        return {success:true, catalog:starter};
     }
 
     private static function isValidHairCatalog(catalog:Array):Boolean {

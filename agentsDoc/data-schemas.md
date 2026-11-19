@@ -2,6 +2,8 @@
 
 <a id="data-entry"></a>
 
+装备和配方的 Tooltip 直接消费本次工作区的数据。配方用物品内部名登记，只有显示名时可先在 `data/items` 对照 `displayname` 与 `name`，再在 `data/crafting` 查对应条目。日常编辑 XML/JSON 后按普通流程提交、更新并重启即可。发行打包从实际交付文件生成注释目录和启动页装备索引。配方错误会在日志中指出文件、配方及字段。
+
 **数据入口**：XML 加载链与隐式类型规则集中在 §1–3（loader 组件分工、`XMLParser` 同名节点合并为数组、自动类型转换、XML 编写规范），各数据目录归属与 list.xml 主从模式见 §4。数据改动后应执行哪些验证由 [测试选择矩阵的数据行](testing-guide.md#data) 决定，具体 validator 与 runner 命令见 [测试正文的数据段](testing-details.md#data)；本文只承载数据规范本身，不复制这两处清单。
 
 ---
@@ -342,6 +344,12 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
     </Pickup>
 </Pickups>
 ```
+
+### 子弹首次有效命中后的续穿概率 `<continuationChance>`
+
+在 `data/items/bullets_cases.xml` 的 `<bullet><attribute>` 内填写百分数，允许值为 `0`、`25`、`50`、`75`、`100`。缺省或填 `0` 表示关闭续穿。其他值在加载时按关闭处理，专项测试会报告数据中的非法配置。联弹模板的 `attributeOverride` 使用相同的五档规则。普通直射弹和已对象化的枪式横纵联弹消费此字段；枪式联弹按最终全名使用既有的模板与单元体属性派生，显式组合属性优先。换弹种的配件和技能以发射时的最终弹种为准。
+
+每个有效首击段按概率保留一次命中其他目标的机会。护盾吸收计入有效首击，全 MISS 与无敌不发放续段。续段沿原剩余射程、地图碰撞和命中回调继续执行，命中使用原伤害管线。同一段最多续一次。专用穿刺弹的 `pierceLimit` 另由原生命周期处理。运行与配装回归入口为 `scripts/run-half-pierce-tests.ps1`。
 
 ### 实际命中终结 `<actualTerminal>`
 

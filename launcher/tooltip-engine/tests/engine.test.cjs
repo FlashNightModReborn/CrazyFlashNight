@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { load, catalog, input, plain, docText, deepFreeze, repo } = require('./helpers.cjs');
+const { catalogText } = require('../fixtures.cjs');
 const E = load();
 
 test('document port runs the existing source-defined historical JS assertions (not fresh AVM1 evidence)', () => {
@@ -319,7 +320,7 @@ test('NUL code points obey the documented AVM1 string behavior', () => {
 });
 
 test('production catalog baseline smoke covers every item without claiming instance/oracle parity', () => {
-    const c = JSON.parse(fs.readFileSync(path.join(repo, 'data/tooltip/tooltip-catalog.json'), 'utf8'));
+    const c = JSON.parse(catalogText());
     for (const name of Object.keys(c.items)) {
         const i = input(c, name, { projection: { registeredModName: c.mods[name] ? name : null } });
         const r = E.buildProjection(i, c);
@@ -327,6 +328,33 @@ test('production catalog baseline smoke covers every item without claiming insta
         assert.ok(Array.isArray(r.document.sections), name);
         assert.ok(r.details.length <= 4096, name);
     }
+});
+
+test('recipesUnavailable preserves tier upgrade options and avoids polluting unrelated items', () => {
+    const c = catalog();
+    c.recipesUnavailable = true;
+    c.recipeTargets = { gun: true };
+    c.items.knife = { name: 'knife', displayname: '测试刀', icon: '刀图标', type: '武器', use: '刀', price: 5, data: { level: 1 } };
+    const gunRes = E.buildProjection(input(c, 'gun', { projection: {
+        tierOptions: [{ name: '二阶', available: true, material: 'material' }] } }), c);
+    const gunUpgrades = gunRes.document.sections.find(s => s.kind === 'upgrades');
+    assert.ok(gunUpgrades, 'affected item should keep upgrades section');
+    assert.ok(gunUpgrades.rows.some(x => x.name === '合成材料暂不可用'));
+    assert.ok(gunUpgrades.rows.some(x => x.name === '二阶'));
+    assert.ok(gunRes.descHTML.includes(E.TooltipConstants.LBL_UPGRADE_PATH));
+    assert.ok(gunRes.descHTML.includes('合成材料暂不可用'));
+    assert.ok(gunRes.descHTML.includes('二阶'));
+
+    const knifeClean = E.buildProjection(input(c, 'knife'), c);
+    assert.ok(!knifeClean.document.sections.some(s => s.kind === 'upgrades'));
+    assert.ok(!knifeClean.descHTML.includes('合成材料暂不可用'));
+
+    delete c.recipeTargets;
+    const knifeFallback = E.buildProjection(input(c, 'knife', { projection: {
+        tierOptions: [{ name: '二阶', available: true, material: 'material' }] } }), c);
+    const fallbackUpgrades = knifeFallback.document.sections.find(s => s.kind === 'upgrades');
+    assert.ok(fallbackUpgrades && fallbackUpgrades.rows.some(x => x.name === '合成材料暂不可用'));
+    assert.ok(fallbackUpgrades.rows.some(x => x.name === '二阶'));
 });
 
 test('non-equipment data follows the legacy stats selector, including explicit-null transport', () => {

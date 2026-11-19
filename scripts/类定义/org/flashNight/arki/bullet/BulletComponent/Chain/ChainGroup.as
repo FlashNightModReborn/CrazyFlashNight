@@ -23,6 +23,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     // 单元体数据对象列表（元素为 ChainUnitData）
     public var 单元体列表:Array;
     public var shotgun:ShotgunPattern;
+    public var halfPierce:org.flashNight.arki.bullet.BulletComponent.Chain.HalfPierceBudget;
     // 枪式横向穿刺改用布尔路由统一接入 7/18 覆盖率惩罚；特殊横向弹型仍保留各自计数账本。
     public var pierceRemaining:Object;
     public var horizontalPierce:Boolean;

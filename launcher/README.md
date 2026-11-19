@@ -131,7 +131,7 @@ Tooltip 内容服务的契约、消费者和当前候选证据见 [Issue #262 �
 
 存档库可搜索、按最近游玩等条件排序，在选中项直接继续游戏或打开编辑。列表与详情复用佣兵装备胸像，用装备栏内已穿戴的头部、上衣和武器等装扮区分角色。可选择“大图浏览”，旧 Host 只提供衣裤鞋时按可用字段展示，缺少外观资料时显示名字首字。等级取自目录已有的角色进度，物理槽位与副本大小可在技术信息中查看。提交编辑后可以撤销最近一次成功保存，关闭并重启启动器仍有效。正常游戏写档或删除会使旧撤销失效。受损存档在前门打开原文、导出或导入修复。
 
-列表优先取一件武器和一件防具，详情展示全部已穿戴装备。悬停或用键盘聚焦详情图标可读物品注释，点击可固定。注释显示物品目录中的基础属性与说明。装备资料由 `node tools/build-bootstrap-equipment-reference.js` 根据游戏注释目录生成，启动器回归会校验两者同步。首页与存档库复用同一组 19 根指纹柱，槽位决定幻方行列、起始位置和读取方向，改名、换装和排序均保留原图形。
+列表优先取一件武器和一件防具，详情展示全部已穿戴装备。悬停或用键盘聚焦详情图标可读物品注释，点击可固定。注释显示物品目录中的基础属性与说明。装备资料在源码工作区按当前物品表即时提供，发行包在打包时写出快照；可用 `node tools/build-bootstrap-equipment-reference.js --check` 校验。首页与存档库复用同一组 19 根指纹柱，槽位决定幻方行列、起始位置和读取方向，改名、换装和排序均保留原图形。
 
 玩家确认删除后，启动器清理本槽的 JSON、当前游戏的 Flash SOL 及名称映射。内部删除标记继续阻止旧数据回流。干净的删除记录不再出现在存档库，只有物理副本待清理或建角中断时才出现“待处理”。查看旧标记不触发删除。搭配旧版启动器时显示“移出列表”，确认前说明 Flash 副本需由新版清理。
 
@@ -143,7 +143,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 
 <a id="source-map"></a>
 ## 源码职责地图
-**最后核对代码基线**：commit `3a2f434ceea4c0a07bad3a915bd314921f0f6863`（2026-11-15；本轮复核 Tooltip 内容引擎、服务与宿主职责）；其他子系统保留原有核对范围。
+**最后核对代码基线**：commit `7f9b41951413d985022ac4b8c0517f2b67bd86e2`（2026-11-19；本轮复核 Tooltip 源码工作区即时编译与包快照职责）；其他子系统保留原有核对范围。
 
 本节是职责地图，不是手写文件 inventory。C# 主项目采用 SDK 默认递归 `**/*.cs`，实际排除项以 [主 csproj 的 `DefaultItemExcludes`](CRAZYFLASHER7MercenaryEmpire.csproj)为准；测试项目同样使用 SDK 隐式项。
 
@@ -156,8 +156,8 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 | [src/Guardian](src/Guardian/) | 窗口、WebView2、Native HUD、Panel、焦点；对白呈现见 [Hud/Dialogue](src/Guardian/Hud/Dialogue/)，图像服务见 [Dialogue](src/Guardian/Dialogue/) |
 | [src/Fonts](src/Fonts/) | XML-hash runtime 投影、face-major 来源解析、已验证字节快照缓存、Native role 创建与 WebView2 exact-set/ETag 资源处理 |
 | [src/Tasks](src/Tasks/) | Flash/Host 任务与领域消息；[NativeDialogueTask](src/Tasks/NativeDialogueTask.cs) 校验对白快照与输入归属；竞技场标定仍按 session ID 反查 canonical roster |
-| [src/Tooltips](src/Tooltips/) | Tooltip 异步调度、静态目录验证、独立 Logic V8 及现役响应边界增强；AS2 保留真实实例与事务权威 |
-| [tooltip-engine](tooltip-engine/) | 同步、确定性的 TypeScript 注释内容引擎；输出共享 TooltipDocument v1 |
+| [src/Tooltips](src/Tooltips/) | Tooltip 异步调度、源码工作区即时编译/包快照校验、独立 Logic V8 及现役响应边界增强；AS2 保留真实实例与事务权威 |
+| [tooltip-engine](tooltip-engine/) | 同步、确定性的 TypeScript 注释内容引擎与共享目录编译器；输出共享 TooltipDocument v1 |
 | [src/Bus](src/Bus/) | HTTP、XMLSocket、V8 和消息总线 |
 | [src/Save](src/Save/) | 启动期存档决议、备份、repair 与用户存档操作 |
 | [src/Audio](src/Audio/) | Audio Platform v2 managed bridge、协调与专项诊断 |

@@ -1,8 +1,10 @@
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName='Request')]
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$true,ParameterSetName='Source')]
     [ValidatePattern('^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$')]
     [string]$SourceCommitOid,
+    [Parameter(Mandatory=$true,ParameterSetName='Request')][ValidatePattern('^[0-9a-fA-F]{64}$')][string]$RequestId,
+    [Parameter(ParameterSetName='Request')][string]$QueueRoot,
     [string]$ProjectRoot,
     [string]$OutputRoot,
     [string]$ConfigPath,
@@ -25,29 +27,19 @@ $ErrorActionPreference = 'Stop'
 if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
 $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
 . (Join-Path $ProjectRoot 'tools\runtime-build-queue-common.ps1')
+. (Join-Path $PSScriptRoot 'runtime-build-attestation-v2-common.ps1')
+$request = $null
+if ($RequestId) {
+    $QueueRoot = Get-Cf7RuntimeQueueRoot -ProjectRoot $ProjectRoot -QueueRoot $QueueRoot
+    $request = Read-Cf7RuntimeBuildRequest -QueueRoot $QueueRoot -RequestId $RequestId
+    if ([string]$request.requestId -ine $RequestId) {
+        throw 'Hosted build requires the named immutable commit request.'
+    }
+    $SourceCommitOid = [string]$request.sourceCommitOid
+}
 $SourceCommitOid = $SourceCommitOid.ToLowerInvariant()
 if (-not $ConfigPath) { $ConfigPath = Join-Path $ProjectRoot 'config\build\runtime-github-builder.v2.json' }
 $ConfigPath = (Resolve-Path -LiteralPath $ConfigPath).Path
-
-function Read-Cf7CloudBuilderConfig {
-    $config = Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
-    if ($null -eq $config -or [string]$config.schema -ne 'cf7-runtime-github-builder.v2') {
-        throw 'Unsupported GitHub runtime builder config schema.'
-    }
-    if ($config.enabled -isnot [bool] -or -not [bool]$config.enabled) { throw 'GitHub runtime builder is disabled.' }
-    if ([string]$config.repository -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$') { throw 'Invalid GitHub runtime repository.' }
-    if ([string]$config.signerWorkflow -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml$') {
-        throw 'Invalid GitHub runtime signer workflow.'
-    }
-    if ([string]$config.sourceRef -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') {
-        throw 'GitHub runtime sourceRef must be one canonical protected runtime-build-v2 tag.'
-    }
-    if ([string]$config.identityProvider -ne 'github-oidc-sigstore' -or
-            $config.longLivedPrivateKey -isnot [bool] -or [bool]$config.longLivedPrivateKey) {
-        throw 'GitHub runtime builder must use keyless OIDC/Sigstore identity.'
-    }
-    return $config
-}
 
 function Resolve-Cf7GitHubCli {
     if ([IO.Path]::IsPathRooted($GitHubCliPath) -or $GitHubCliPath.Contains('\') -or $GitHubCliPath.Contains('/')) {
@@ -785,7 +777,11 @@ function Invoke-Cf7ProofVerifier(
     return $proof
 }
 
-$config = Read-Cf7CloudBuilderConfig
+$rawConfig = Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$config = Get-Cf7RuntimeGitHubBuilderBinding -Config $rawConfig -SourceCommitOid $SourceCommitOid
+if ($null -ne $rawConfig.PSObject.Properties['sourceRefNamespace'] -and -not $request) {
+    throw 'A commit-derived runtime tag requires -RequestId from the immutable queue.'
+}
 $script:GitHubCli = Resolve-Cf7GitHubCli
 $workflowFile = [IO.Path]::GetFileName([string]$config.signerWorkflow)
 $sourceRefName = ([string]$config.sourceRef) -replace '^refs/(?:heads|tags)/', ''
@@ -801,7 +797,7 @@ $artifactName = if ($IncludeCandidateArchive) {
     "runtime-cloud-attestation-$SourceCommitOid"
 }
 $artifactTransportMode = Resolve-Cf7ArtifactTransportMode -ParameterValue $GitHubArtifactTransport -EnvironmentValue $env:CF7_GITHUB_ARTIFACT_TRANSPORT
-$artifactQueueRoot = Get-Cf7RuntimeQueueRoot -ProjectRoot $ProjectRoot
+$artifactQueueRoot = Get-Cf7RuntimeQueueRoot -ProjectRoot $ProjectRoot -QueueRoot $QueueRoot
 
 $head = Invoke-Cf7GitText @('rev-parse','HEAD^{commit}')
 if ($head.ToLowerInvariant() -cne $SourceCommitOid) {
@@ -809,6 +805,10 @@ if ($head.ToLowerInvariant() -cne $SourceCommitOid) {
 }
 Invoke-Cf7GitText @('diff','--quiet','--exit-code') | Out-Null
 Invoke-Cf7GitText @('diff','--cached','--quiet','--exit-code') | Out-Null
+if ($request) {
+    $sourceTree = Invoke-Cf7GitText @('rev-parse', "$($SourceCommitOid)^{tree}")
+    if ($sourceTree -cne [string]$request.releaseTreeOid) { throw 'Hosted build source tree differs from immutable request.' }
+}
 $sourceTagCommit = Resolve-Cf7ConfiguredSourceTagCommit -Config $config
 if ($sourceTagCommit -cne $SourceCommitOid) {
     throw "Configured GitHub source tag does not resolve to SourceCommitOid: ref=$($config.sourceRef) expected=$SourceCommitOid actual=$sourceTagCommit"

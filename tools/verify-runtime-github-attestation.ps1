@@ -8,11 +8,13 @@ param(
     [ValidatePattern('^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$')][string]$ExpectedSourceCommitOid,
     [ValidateSet('Worktree','Index')][string]$SourceMode = 'Worktree',
     [switch]$ReplayFromReleaseRecord,
+    [switch]$HistoricalSource,
     [switch]$WithoutCandidateArchive,
     [string]$OutputPath
 )
 
 $ErrorActionPreference = 'Stop'
+if ($HistoricalSource) { $ReplayFromReleaseRecord = $true }
 if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
 $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
 if ($WithoutCandidateArchive) {
@@ -27,9 +29,9 @@ $EnvelopePath = (Resolve-Path -LiteralPath $EnvelopePath).Path
 $BundlePath = (Resolve-Path -LiteralPath $BundlePath).Path
 if (-not $ConfigPath) { $ConfigPath = Join-Path $ProjectRoot 'config\build\runtime-github-builder.v2.json' }
 if (-not [IO.Path]::IsPathRooted($ConfigPath)) { $ConfigPath = Join-Path $ProjectRoot $ConfigPath }
-$ConfigPath = if ($SourceMode -eq 'Index') { [IO.Path]::GetFullPath($ConfigPath) } else { (Resolve-Path -LiteralPath $ConfigPath).Path }
-. (Join-Path $ProjectRoot 'tools\runtime-build-v2-common.ps1')
-. (Join-Path $ProjectRoot 'tools\runtime-build-attestation-v2-common.ps1')
+$ConfigPath = if ($SourceMode -eq 'Index' -or $HistoricalSource) { [IO.Path]::GetFullPath($ConfigPath) } else { (Resolve-Path -LiteralPath $ConfigPath).Path }
+. (Join-Path $PSScriptRoot 'runtime-build-v2-common.ps1')
+. (Join-Path $PSScriptRoot 'runtime-build-attestation-v2-common.ps1')
 
 function Read-Cf7GitHubBuilderConfig {
     if ($SourceMode -eq 'Index') {
@@ -39,19 +41,6 @@ function Read-Cf7GitHubBuilderConfig {
         $configText = [IO.File]::ReadAllText($ConfigPath, [Text.Encoding]::UTF8)
     }
     $config = $configText.TrimStart([char]0xFEFF) | ConvertFrom-Json
-    if ($null -eq $config -or [string]$config.schema -ne 'cf7-runtime-github-builder.v2') { throw 'Unsupported GitHub runtime builder config schema.' }
-    if ($config.enabled -isnot [bool] -or -not [bool]$config.enabled) { throw 'GitHub runtime builder is disabled.' }
-    if ([string]$config.repository -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$') { throw 'Invalid GitHub runtime builder repository.' }
-    if ([string]$config.signerWorkflow -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml$') { throw 'Invalid GitHub runtime signer workflow.' }
-    if ([string]$config.sourceRef -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') {
-        throw 'GitHub runtime sourceRef must be one canonical protected runtime-build-v2 tag.'
-    }
-    foreach ($field in @('faultDomain','runnerClass')) {
-        if ([string]$config.$field -notmatch '^[a-z0-9][a-z0-9._-]{1,63}$') { throw "Invalid GitHub runtime builder field: $field" }
-    }
-    if ([string]$config.identityProvider -ne 'github-oidc-sigstore' -or $config.longLivedPrivateKey -isnot [bool] -or [bool]$config.longLivedPrivateKey) {
-        throw 'GitHub runtime builder must use keyless GitHub OIDC/Sigstore identity.'
-    }
     return $config
 }
 
@@ -159,7 +148,6 @@ function ConvertTo-Cf7GitHubNormalizedPayloadText {
 if ($SourceMode -eq 'Index' -and -not $WithoutCandidateArchive -and $CandidateRoot -ne $ProjectRoot) {
     throw 'Index source mode requires CandidateRoot to equal ProjectRoot.'
 }
-$config = Read-Cf7GitHubBuilderConfig
 $envelopeBytes = [IO.File]::ReadAllBytes($EnvelopePath)
 if ($envelopeBytes.Length -ge 3 -and $envelopeBytes[0] -eq 0xEF -and $envelopeBytes[1] -eq 0xBB -and $envelopeBytes[2] -eq 0xBF) { throw 'GitHub runtime envelope must be UTF-8 without BOM.' }
 $envelopeRaw = [Text.Encoding]::UTF8.GetString($envelopeBytes)
@@ -174,9 +162,6 @@ foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHas
 }
 if ([string]$envelope.sourceCommitOid -cnotmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$' -or [string]$envelope.releaseTreeOid -cnotmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$') {
     throw 'GitHub runtime envelope has an invalid source Git identity.'
-}
-foreach ($field in @('repository','signerWorkflow','sourceRef','faultDomain','runnerClass')) {
-    if ([string]$envelope.$field -cne [string]$config.$field) { throw "GitHub runtime envelope/config mismatch: $field" }
 }
 $expectedBuildIdentity = Get-Cf7RuntimeV2BuildIdentityHash -ArtifactSourceHash $envelope.artifactSourceHash -ProducerRecipeHash $envelope.producerRecipeHash -ToolchainLockHash $envelope.toolchainLockHash
 if ($expectedBuildIdentity -cne [string]$envelope.buildIdentityHash) { throw 'GitHub runtime envelope build identity is internally inconsistent.' }
@@ -204,12 +189,71 @@ if ($ReplayFromReleaseRecord) {
 $expectedTree = (Invoke-Cf7GitText -Arguments @('rev-parse',"$ExpectedSourceCommitOid^{tree}")).ToLowerInvariant()
 if ([string]$envelope.releaseTreeOid -cne $expectedTree) { throw "GitHub runtime release tree mismatch: expected=$expectedTree actual=$($envelope.releaseTreeOid)" }
 
-$identity = Get-Cf7RuntimeV2Identity -ProjectRoot $ProjectRoot -Mode $SourceMode
+if ($ReplayFromReleaseRecord) {
+    # Read only configuration bytes at the attested source. The verifier and its
+    # identity implementation are taken from the current trusted tools.
+    . (Join-Path $PSScriptRoot 'runtime-release-admission.ps1')
+    $frozenBytes = Get-Cf7RuntimeFrozenBlobBytes -ProjectRoot $ProjectRoot -SourceCommitOid $ExpectedSourceCommitOid -RelativePath 'config/build/runtime-github-builder.v2.json'
+    $sourceConfig = [Text.Encoding]::UTF8.GetString($frozenBytes).TrimStart([char]0xFEFF) | ConvertFrom-Json
+    $config = Get-Cf7RuntimeGitHubBuilderBinding -Config $sourceConfig -SourceCommitOid $ExpectedSourceCommitOid
+    if (-not $HistoricalSource) {
+        $currentTrust = Get-Cf7RuntimeGitHubBuilderBinding -Config (Read-Cf7GitHubBuilderConfig) -SourceCommitOid $ExpectedSourceCommitOid
+        foreach ($field in @('repository','signerWorkflow','faultDomain','runnerClass')) {
+            if ([string]$config.$field -cne [string]$currentTrust.$field) { throw "Current GitHub producer policy differs from attested source: $field" }
+        }
+    }
+    $sourceInputBytes = Get-Cf7RuntimeFrozenBlobBytes -ProjectRoot $ProjectRoot -SourceCommitOid $ExpectedSourceCommitOid -RelativePath 'config/build/runtime-inputs.v2.json'
+    $sourceInputs = [Text.Encoding]::UTF8.GetString($sourceInputBytes).TrimStart([char]0xFEFF) | ConvertFrom-Json
+    if (-not $HistoricalSource) {
+        $actualInputs = Read-Cf7RuntimeV2Config -ProjectRoot $ProjectRoot -Mode $SourceMode
+        if (($sourceInputs.payload | ConvertTo-Json -Depth 20 -Compress) -cne ($actualInputs.payload | ConvertTo-Json -Depth 20 -Compress)) {
+            throw 'Current and frozen runtime payload definitions differ for this publication.'
+        }
+    }
+    $identity = Get-Cf7RuntimeFrozenIdentity -ProjectRoot $ProjectRoot -SourceCommitOid $ExpectedSourceCommitOid
+} else {
+    $config = Get-Cf7RuntimeGitHubBuilderBinding -Config (Read-Cf7GitHubBuilderConfig) -SourceCommitOid $ExpectedSourceCommitOid
+    $identity = Get-Cf7RuntimeV2Identity -ProjectRoot $ProjectRoot -Mode $SourceMode
+}
+foreach ($field in @('repository','signerWorkflow','sourceRef','faultDomain','runnerClass')) {
+    if ([string]$envelope.$field -cne [string]$config.$field) { throw "GitHub runtime envelope/config mismatch: $field" }
+}
 foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','buildIdentityHash')) {
     if ([string]$envelope.$field -cne [string]$identity.$field) { throw "GitHub runtime envelope/source identity mismatch: $field" }
 }
 if (-not $WithoutCandidateArchive) {
-    $closure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $ProjectRoot -DeploymentRoot $CandidateRoot -Mode $SourceMode
+    if ($HistoricalSource) {
+        # The strict bundle reader independently enumerates the entire deployment
+        # target and hashes its actual index/disk bytes, including undeclared files.
+        # Its integrity-only subcheck supplies the inventory; the source, signature
+        # and identity of this proof are still verified here.
+        $inventoryPath = Join-Path ([IO.Path]::GetTempPath()) ('cf7-historical-cloud-' + [guid]::NewGuid().ToString('N') + '.json')
+        try {
+            $argsForBundle = @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $PSScriptRoot 'verify-runtime-bundle-v2.ps1'),
+                '-ProjectRoot',$ProjectRoot,'-DeploymentRoot',$CandidateRoot,'-IntegrityOnly','-FileInventoryPath',$inventoryPath)
+            if ($SourceMode -eq 'Index') { $argsForBundle += '-Staged' }
+            & powershell.exe @argsForBundle | Out-Host
+            if ($LASTEXITCODE -ne 0) { throw 'Historical deployment bytes or manifest failed integrity verification.' }
+            $inventory = Get-Content -LiteralPath $inventoryPath -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($inventory.schema -cne 'cf7-runtime-bundle-file-inventory.v2') { throw 'Unexpected historical deployment inventory.' }
+            $paths = New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+            foreach ($row in $inventory.files) {
+                $path = [string]$row.path
+                $inTree = @($sourceInputs.payload.trees | Where-Object { $path.StartsWith(([string]$_ + '/'), [StringComparison]::Ordinal) }).Count -gt 0
+                if ((-not $inTree -and $sourceInputs.payload.fixedRoots -cnotcontains $path) -or
+                    (Test-Cf7RuntimeV2PathExcluded -RelativePath $path -ExcludePaths $sourceInputs.payload.excludePaths -ExcludePrefixes $sourceInputs.payload.excludePrefixes)) {
+                    throw "Verified file outside frozen payload definition: $path"
+                }
+                [void]$paths.Add($path)
+            }
+            foreach ($fixed in $sourceInputs.payload.fixedRoots) {
+                if (-not $paths.Contains($fixed)) { throw "Missing frozen payload root: $fixed" }
+            }
+            $closure = @{ files=$inventory.files; payloadClosureHash=(Get-Cf7RuntimeV2CanonicalClosureHash -Files $inventory.files) }
+        } finally { if ([IO.File]::Exists($inventoryPath)) { [IO.File]::Delete($inventoryPath) } }
+    } else {
+        $closure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $ProjectRoot -DeploymentRoot $CandidateRoot -Mode $SourceMode
+    }
     if ([string]$closure.payloadClosureHash -cne [string]$envelope.payloadClosureHash) { throw 'GitHub runtime candidate bytes do not match the attested payload closure.' }
     Assert-Cf7FileInventoriesEqual -Expected @($envelope.files) -Actual @($closure.files)
     $manifest = Read-Cf7CandidateManifestV2
@@ -252,6 +296,7 @@ $ghArguments = @(
     '--repo',[string]$config.repository,
     '--signer-workflow',[string]$config.signerWorkflow,
     '--source-ref',[string]$config.sourceRef,
+    '--source-digest',$ExpectedSourceCommitOid,
     '--deny-self-hosted-runners',
     '--bundle',$BundlePath,
     '--predicate-type','https://slsa.dev/provenance/v1',
@@ -278,6 +323,18 @@ foreach ($verified in $verifiedAttestations) {
             $null -eq $verified.verificationResult.PSObject.Properties['verifiedTimestamps'] -or
             [string]$verified.verificationResult.statement.predicateType -cne 'https://slsa.dev/provenance/v1') {
         throw 'GitHub provenance verifier returned an unexpected verification result.'
+    }
+    $definition = $verified.verificationResult.statement.predicate.buildDefinition
+    $workflow = $definition.externalParameters.workflow
+    $repositoryUrl = 'https://github.com/' + $config.repository
+    $workflowPath = $config.signerWorkflow.Substring($config.repository.Length + 1)
+    $expectedDependency = 'git+' + $repositoryUrl + '@' + $config.sourceRef
+    $sourceDependencies = @($definition.resolvedDependencies | Where-Object { [string]$_.uri -ceq $expectedDependency })
+    if ([string]$definition.buildType -cne 'https://actions.github.io/buildtypes/workflow/v1' -or
+            [string]$workflow.repository -cne $repositoryUrl -or [string]$workflow.path -cne $workflowPath -or
+            [string]$workflow.ref -cne $config.sourceRef -or $sourceDependencies.Count -ne 1 -or
+            [string]$sourceDependencies[0].digest.gitCommit -cne $ExpectedSourceCommitOid) {
+        throw 'Verified GitHub provenance does not bind the expected source commit, repository, ref, and workflow.'
     }
 }
 

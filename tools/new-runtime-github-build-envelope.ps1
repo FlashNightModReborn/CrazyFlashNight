@@ -16,24 +16,6 @@ $ConfigPath = (Resolve-Path -LiteralPath $ConfigPath).Path
 . (Join-Path $ProjectRoot 'tools\runtime-build-v2-common.ps1')
 . (Join-Path $ProjectRoot 'tools\runtime-build-attestation-v2-common.ps1')
 
-function Read-Cf7GitHubBuilderConfig {
-    $config = [IO.File]::ReadAllText($ConfigPath, [Text.Encoding]::UTF8).TrimStart([char]0xFEFF) | ConvertFrom-Json
-    if ($null -eq $config -or [string]$config.schema -ne 'cf7-runtime-github-builder.v2') { throw 'Unsupported GitHub runtime builder config schema.' }
-    if ($config.enabled -isnot [bool] -or -not [bool]$config.enabled) { throw 'GitHub runtime builder is disabled.' }
-    if ([string]$config.repository -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$') { throw 'Invalid GitHub runtime builder repository.' }
-    if ([string]$config.signerWorkflow -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml$') { throw 'Invalid GitHub runtime signer workflow.' }
-    if ([string]$config.sourceRef -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') {
-        throw 'GitHub runtime sourceRef must be one canonical protected runtime-build-v2 tag.'
-    }
-    foreach ($field in @('faultDomain','runnerClass')) {
-        if ([string]$config.$field -notmatch '^[a-z0-9][a-z0-9._-]{1,63}$') { throw "Invalid GitHub runtime builder field: $field" }
-    }
-    if ([string]$config.identityProvider -ne 'github-oidc-sigstore' -or $config.longLivedPrivateKey -isnot [bool] -or [bool]$config.longLivedPrivateKey) {
-        throw 'GitHub runtime builder must use keyless GitHub OIDC/Sigstore identity.'
-    }
-    return $config
-}
-
 function Invoke-Cf7GitText {
     param([Parameter(Mandatory=$true)][string[]]$Arguments)
     $result = @(& git -C $ProjectRoot @Arguments)
@@ -129,7 +111,7 @@ function ConvertTo-Cf7GitHubEnvelopeText {
     return [string]::Join('', $parts.ToArray())
 }
 
-$config = Read-Cf7GitHubBuilderConfig
+$config = Get-Cf7RuntimeGitHubBuilderBinding -Config (Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json) -SourceCommitOid $SourceCommitOid.ToLowerInvariant()
 $normalizedCommit = $SourceCommitOid.ToLowerInvariant()
 $headCommit = (Invoke-Cf7GitText -Arguments @('rev-parse','HEAD^{commit}')).ToLowerInvariant()
 if ($headCommit -ne $normalizedCommit) { throw "Checked-out HEAD does not match sourceCommitOid: expected=$normalizedCommit actual=$headCommit" }

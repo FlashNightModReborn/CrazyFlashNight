@@ -58,6 +58,7 @@ org.flashNight.sara.util.LightObjectPool;
 org.flashNight.arki.component.Collider.AbstractColliderFactory;
 org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider;
 org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup;
+org.flashNight.arki.bullet.BulletComponent.Chain.HalfPierceBudget;
 org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern;
 org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager;
 org.flashNight.arki.render.ChainVisualBridge;

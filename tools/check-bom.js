@@ -16,15 +16,12 @@
  *   check-bom --dir <d>  额外扫描目录 d 下所有 .as
  *   check-bom --file <f> 额外扫描单个 .as
  *   check-bom --xml <f>  指定起点 symbol xml（默认 scripts/asLoader/LIBRARY/asLoader.xml）
+ *   --module-scope / --compile-scope  同步检查编译入口附加目录；后者也含本地 TestLoader.as
  * 任一 .as 缺 BOM → 列出并 exit 1。
  */
 
 var fs = require("fs");
 var path = require("path");
-
-var REPO = path.resolve(__dirname, "..");
-var INCLUDE_BASE = path.join(REPO, "scripts", "asLoader");   // #include 解析基准
-var DEFAULT_XML = path.join(REPO, "scripts", "asLoader", "LIBRARY", "asLoader.xml");
 
 function hasBom(file) {
   var fd = fs.openSync(file, "r");
@@ -44,15 +41,30 @@ function extractIncludes(text) {
 
 function main() {
   var argv = process.argv.slice(2);
-  var xmlPath = DEFAULT_XML;
+  var repo = path.resolve(__dirname, "..");
+  var xmlPath;
   var extraDirs = [];
   var extraFiles = [];
+  var scope = "";
   for (var i = 0; i < argv.length; i++) {
-    if (argv[i] === "--xml" && argv[i + 1]) { xmlPath = path.resolve(argv[++i]); }
+    if (argv[i] === "--root" && argv[i + 1]) { repo = path.resolve(argv[++i]); }
+    else if (argv[i] === "--xml" && argv[i + 1]) { xmlPath = path.resolve(argv[++i]); }
     else if (argv[i] === "--dir" && argv[i + 1]) { extraDirs.push(path.resolve(argv[++i])); }
     else if (argv[i] === "--file" && argv[i + 1]) { extraFiles.push(path.resolve(argv[++i])); }
+    else if (argv[i] === "--module-scope" || argv[i] === "--compile-scope") { scope = argv[i]; }
+  }
+  if (scope) {
+    var classes = path.join(repo, "scripts", "类定义", "org", "flashNight");
+    ["boot", "neur/Server", "neur/StateMachine", "arki/task", "arki/merc", "arki/skill",
+      "arki/stageSelect", "arki/scene"].forEach(function (dir) { extraDirs.push(path.join(classes, dir)); });
+    extraDirs.push(path.join(repo, "scripts", "通信"));
+    var optional = [path.join(classes, "arki/unit/UnitComponent/Initializer/ElementComponent/ObstacleRenderer.as")];
+    if (scope === "--compile-scope") optional.push(path.join(repo, "scripts", "TestLoader.as"));
+    optional.forEach(function (file) { if (fs.existsSync(file)) extraFiles.push(file); });
   }
 
+  var includeBase = path.join(repo, "scripts", "asLoader");
+  xmlPath = xmlPath || path.join(includeBase, "LIBRARY", "asLoader.xml");
   var visited = {};       // resolved abs path -> true
   var missing = [];       // {file, includedFrom}
   var notFound = [];      // {ref, includedFrom}
@@ -61,18 +73,18 @@ function main() {
   // 起点：symbol xml 里的全部 #include
   if (!fs.existsSync(xmlPath)) { console.error("[check-bom] 起点 xml 不存在: " + xmlPath); process.exit(2); }
   extractIncludes(fs.readFileSync(xmlPath, "utf8")).forEach(function (ref) {
-    queue.push({ ref: ref, from: path.relative(REPO, xmlPath).replace(/\\/g, "/") });
+    queue.push({ ref: ref, from: path.relative(repo, xmlPath).replace(/\\/g, "/") });
   });
 
   while (queue.length) {
     var item = queue.shift();
     // 所有 #include 一律以 INCLUDE_BASE 为基准解析（含嵌套）
-    var abs = path.resolve(INCLUDE_BASE, item.ref);
+    var abs = path.resolve(includeBase, item.ref);
     if (visited[abs]) continue;
     visited[abs] = true;
     if (!fs.existsSync(abs)) { notFound.push({ ref: item.ref, from: item.from }); continue; }
-    if (!hasBom(abs)) missing.push({ file: path.relative(REPO, abs).replace(/\\/g, "/"), from: item.from });
-    var rel = path.relative(REPO, abs).replace(/\\/g, "/");
+    if (!hasBom(abs)) missing.push({ file: path.relative(repo, abs).replace(/\\/g, "/"), from: item.from });
+    var rel = path.relative(repo, abs).replace(/\\/g, "/");
     extractIncludes(fs.readFileSync(abs, "utf8")).forEach(function (ref) {
       queue.push({ ref: ref, from: rel });
     });
@@ -87,17 +99,17 @@ function main() {
         var abs = path.resolve(p);
         if (visited[abs]) return;
         visited[abs] = true;
-        if (!hasBom(abs)) missing.push({ file: path.relative(REPO, abs).replace(/\\/g, "/"), from: "(--dir)" });
+        if (!hasBom(abs)) missing.push({ file: path.relative(repo, abs).replace(/\\/g, "/"), from: "(--dir)" });
       }
     });
   }
   extraDirs.forEach(function (d) { if (fs.existsSync(d)) walkDir(d); });
   extraFiles.forEach(function (f) {
-    if (!fs.existsSync(f)) { notFound.push({ ref: path.relative(REPO, f).replace(/\\/g, "/"), from: "(--file)" }); return; }
+    if (!fs.existsSync(f)) { notFound.push({ ref: path.relative(repo, f).replace(/\\/g, "/"), from: "(--file)" }); return; }
     var abs = path.resolve(f);
     if (visited[abs]) return;
     visited[abs] = true;
-    if (!hasBom(abs)) missing.push({ file: path.relative(REPO, abs).replace(/\\/g, "/"), from: "(--file)" });
+    if (!hasBom(abs)) missing.push({ file: path.relative(repo, abs).replace(/\\/g, "/"), from: "(--file)" });
   });
 
   var scanned = Object.keys(visited).length;

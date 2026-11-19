@@ -7,9 +7,17 @@ if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $
 $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
 . (Join-Path $ProjectRoot 'tools\runtime-build-v2-common.ps1')
 
+$sourceHead = & git -C $ProjectRoot rev-parse --verify HEAD
+if ($LASTEXITCODE -ne 0) { throw 'Cannot pin the source commit for sparse materialization.' }
+& git -C $ProjectRoot diff --quiet --exit-code
+if ($LASTEXITCODE -ne 0) { throw 'Runtime sparse materialization requires unchanged tracked worktree bytes.' }
+& git -C $ProjectRoot diff --cached --quiet --exit-code $sourceHead
+if ($LASTEXITCODE -ne 0) { throw 'Runtime sparse materialization requires the requested source index.' }
+
+$snapshot = Get-Cf7RuntimeV2IndexSnapshot -ProjectRoot $ProjectRoot
 $paths = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
 foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
-    foreach ($path in Get-Cf7RuntimeV2DomainFiles -ProjectRoot $ProjectRoot -Domain $domain -Mode Index) {
+    foreach ($path in Get-Cf7RuntimeV2DomainFiles -ProjectRoot $ProjectRoot -Domain $domain -Mode Index -IndexSnapshot $snapshot) {
         if (-not $path -or $path -match '^[A-Za-z]:' -or $path -match '(^|/)\.\.(/|$)') {
             throw "Unsafe runtime sparse-checkout path: $path"
         }
@@ -47,8 +55,11 @@ foreach ($relativePath in $ordered) {
 }
 & git -C $ProjectRoot diff --quiet --exit-code
 if ($LASTEXITCODE -ne 0) { throw 'Runtime sparse materialization changed tracked worktree bytes.' }
-& git -C $ProjectRoot diff --cached --quiet --exit-code
+& git -C $ProjectRoot diff --cached --quiet --exit-code $sourceHead
 if ($LASTEXITCODE -ne 0) { throw 'Runtime sparse materialization changed the Git index.' }
+
+$currentHead = & git -C $ProjectRoot rev-parse --verify HEAD
+if ($LASTEXITCODE -ne 0 -or $sourceHead -cne $currentHead) { throw 'Source commit changed during runtime sparse materialization.' }
 
 Write-Host "[RuntimeSparseCheckout] OK files=$($ordered.Count) bytes=$totalBytes" -ForegroundColor Green
 return [pscustomobject]@{ files=$ordered.Count; bytes=$totalBytes }

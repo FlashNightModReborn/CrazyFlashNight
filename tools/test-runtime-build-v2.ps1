@@ -187,6 +187,13 @@ try {
         Assert-Equal "AS2 ownership workflow and execution closure are policy-bound: $as2PolicyInput" 'policy' `
             $repositoryInputOwners[$as2PolicyInput]
     }
+    foreach ($blueprintInput in @(
+        '.github/workflows/weapon-blueprints.yml', 'tools/bake-armory-blueprints.js',
+        'tools/lib/armory-blueprint-coverage.js', 'tools/lib/blueprint-svg.js', 'tools/lib/item-icons.js'
+    )) {
+        Assert-Equal "Weapon blueprint coverage workflow and scripts are policy-bound: $blueprintInput" 'policy' `
+            $repositoryInputOwners[$blueprintInput]
+    }
     if ($InputClassificationOnly) {
         Write-Host "Runtime v2 input classification passed: $script:checks checks; no build, signatures or certificate writes." -ForegroundColor Green
         return
@@ -474,11 +481,13 @@ try {
             -not $promotionScript.Contains('validate-emergency-owner-authorization.js') -and
             -not $promotionScript.Contains('h1-decision-manifest.v4.json') -and
             -not $promotionScript.Contains('nonH2Compliant'))
-    Assert-Equal 'promotion verification window remains bound to the exact immutable request tree' $true `
-        ($verificationWindowFunctionText.Contains('[string]$ReleaseTreeOid') -and
-            $verificationWindowFunctionText.Contains('diff --quiet --no-ext-diff $ReleaseTreeOid --') -and
+    Assert-Equal 'verification window binds the observed publication head and admission binds the frozen request' $true `
+        ($verificationWindowFunctionText.Contains('[string]$HeadCommitOid') -and
+            $verificationWindowFunctionText.Contains('Assert-Cf7PromotionTargetClean -ProjectRoot $ProjectRoot -ExpectedHead $HeadCommitOid') -and
             -not $verificationWindowFunctionText.Contains('[string]$WorktreeTreeish') -and
-            $promotionScript.Contains('ReleaseTreeOid = [string]$request.releaseTreeOid'))
+            $promotionScript.Contains('$publicationHead = Get-Cf7ReleaseGitOid $ProjectRoot ''HEAD^{commit}''') -and
+            $promotionScript.Contains('HeadCommitOid = $publicationHead') -and
+            $promotionScript.Contains('Assert-Cf7RuntimeReleaseAdmission -ProjectRoot $ProjectRoot -SourceCommitOid $request.sourceCommitOid -ReleaseTreeOid $request.releaseTreeOid -HeadCommitOid $publicationHead'))
     Assert-Equal 'bootstrap keeps runtime-only and full-install preflights separate' $true `
         ($bootstrapSource.Contains('static bool PreflightRuntimeFiles') -and $bootstrapSource.Contains('static bool PreflightCriticalFiles'))
     Assert-Equal 'bootstrap rejects ambiguous verification modes' $true `
@@ -528,7 +537,10 @@ try {
             }
             producerRecipe = [pscustomobject][ordered]@{ fixedFiles = @('recipe.ps1'); trees = @() }
             toolchainLock = [pscustomobject][ordered]@{ fixedFiles = @('toolchain.json'); trees = @() }
-            policy = [pscustomobject][ordered]@{ fixedFiles = @('policy.ps1',$unicodePolicyFile); trees = @() }
+            policy = [pscustomobject][ordered]@{
+                fixedFiles = @('policy.ps1',$unicodePolicyFile)
+                trees = @($repositoryPolicyTrees | Where-Object { $_.path -ceq 'launcher/tests' })
+            }
         }
         payload = [pscustomobject][ordered]@{
             fixedRoots = @('CRAZYFLASHER7MercenaryEmpire.exe')
@@ -557,6 +569,12 @@ try {
     Write-TestText (Join-Path $testRoot 'runtime\attestations\old.json') 'old-attestation'
     Write-TestText (Join-Path $testRoot '.gitattributes') "*.cs text eol=lf`n"
 
+    $tooltipHost = 'launcher/tests/TooltipService.Host'
+    foreach ($name in @('Program.cs', 'TooltipService.Host.csproj')) {
+        $relative = "$tooltipHost/$name"
+        Write-TestText (Join-Path $testRoot $relative) ([IO.File]::ReadAllText((Join-Path $ProjectRoot $relative)))
+    }
+
     & git -C $testRoot init --quiet
     if ($LASTEXITCODE -ne 0) { throw 'Cannot initialize runtime v2 Git fixture.' }
     & git -C $testRoot config core.quotepath true
@@ -564,10 +582,63 @@ try {
     & git -C $testRoot add --all
     if ($LASTEXITCODE -ne 0) { throw 'Cannot stage runtime v2 Git fixture.' }
 
+    # These seven local outputs are present after a Release build of the standalone test host.
+    $tooltipOutputs = @(
+        'bin/Release/net10.0/TooltipService.Host.deps.json'
+        'bin/Release/net10.0/TooltipService.Host.runtimeconfig.json'
+        'obj/Release/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs'
+        'obj/Release/net10.0/TooltipService.Host.AssemblyInfo.cs'
+        'obj/Release/net10.0/TooltipService.Host.sourcelink.json'
+        'obj/TooltipService.Host.csproj.nuget.dgspec.json'
+        'obj/project.assets.json'
+    )
+    foreach ($output in $tooltipOutputs) { Write-TestText (Join-Path $testRoot "$tooltipHost/$output") 'generated' }
+
     $baseWorktree = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
     $baseIndex = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Index -ConfigPath $configPath
     foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
         Assert-Equal "Worktree/Index baseline $field" $baseWorktree.$field $baseIndex.$field
+    }
+
+    & git -C $testRoot add --force -- "$tooltipHost/bin" "$tooltipHost/obj"
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot stage generated test host output in fixture.' }
+    foreach ($mode in @('Worktree', 'Index')) {
+        $policyFiles = @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -ConfigPath $configPath -Domain policy -Mode $mode)
+        Assert-Equal "Test host policy keeps only sources and project in $mode" "$tooltipHost/Program.cs,$tooltipHost/TooltipService.Host.csproj" (
+            @($policyFiles | Where-Object { $_.StartsWith("$tooltipHost/", [StringComparison]::Ordinal) }) -join ',')
+    }
+    $newTestSource = Join-Path $testRoot "$tooltipHost/NewTest.cs"
+    Write-TestText $newTestSource 'class NewTest {}'
+    Assert-NotEqual 'new untracked test-host source invalidates the recorded policy' $baseIndex.policyHash (
+        Get-Cf7RuntimeV2DomainHash -ProjectRoot $testRoot -ConfigPath $configPath -Domain policy -Mode Worktree)
+    [IO.File]::Delete($newTestSource)
+
+    # A snapshot retains the exact descriptor, stage-0 modes and OIDs under later index edits.
+    $savedIndexTree = [string](& git -C $testRoot write-tree)
+    $snapshot = Get-Cf7RuntimeV2IndexSnapshot -ProjectRoot $testRoot -ConfigPath $configPath
+    try {
+        $scopeOid = $snapshot.Entries['src/app.cs']
+        & git -C $testRoot update-index --force-remove -- 'src/app.cs'
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot prepare the missing input fixture.' }
+        Expect-Failure 'new index enumeration rejects a missing fixed input' {
+            Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -ConfigPath $configPath -Domain artifactSource -Mode Index | Out-Null
+        }
+        $frozenIdentity = Get-Cf7RuntimeV2Identity -ProjectRoot $testRoot -Mode Index -IndexSnapshot $snapshot
+        Assert-Equal 'a captured index snapshot cannot mix old and new bytes' $baseIndex.artifactSourceHash $frozenIdentity.artifactSourceHash
+
+        # Model an unresolved entry discovered only through a configured tree.
+        $conflict = "100644 $scopeOid 2`tsrc/unmerged.CS" + [char]0
+        Invoke-Cf7RuntimeV2GitWithInput -ProjectRoot $testRoot -Command 'update-index -z --index-info' -StdinBytes ([Text.Encoding]::UTF8.GetBytes($conflict)) | Out-Null
+        & git -C $testRoot update-index --add --cacheinfo "100644,$scopeOid,src/app.cs"
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot restore fixed index fixture input.' }
+        Expect-Failure 'in-scope unmerged tree member fails closed even with uppercase extension' {
+            Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -ConfigPath $configPath -Domain artifactSource -Mode Index | Out-Null
+        }
+        $policyPaths = @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -ConfigPath $configPath -Domain policy -Mode Index)
+        Assert-Equal 'unrelated unmerged path leaves other domain intact' 4 $policyPaths.Count
+    } finally {
+        & git -C $testRoot read-tree $savedIndexTree
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot restore the runtime index fixture.' }
     }
 
     # A clean Windows checkout may physically contain CRLF even when its Git identity is the

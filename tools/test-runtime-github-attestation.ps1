@@ -30,7 +30,7 @@ function Assert-Cf7Throws([scriptblock]$Action, [string]$Message) {
 
 try {
     New-Item -ItemType Directory -Path $toolsRoot,$configRoot,(Join-Path $candidateRoot 'runtime') -Force | Out-Null
-    foreach ($name in @('runtime-build-v2-common.ps1','runtime-build-attestation-v2-common.ps1','new-runtime-github-build-envelope.ps1','verify-runtime-github-attestation.ps1')) {
+    foreach ($name in @('runtime-build-common.ps1','verify-runtime-bundle-v2.ps1','runtime-build-v2-common.ps1','runtime-build-attestation-v2-common.ps1','runtime-release-admission.ps1','new-runtime-github-build-envelope.ps1','verify-runtime-github-attestation.ps1')) {
         Copy-Item -LiteralPath (Join-Path (Join-Path $ProjectRoot 'tools') $name) -Destination (Join-Path $toolsRoot $name)
     }
     Write-Cf7TestText (Join-Path $fixtureRoot 'source.txt') "source-v1`n"
@@ -46,7 +46,7 @@ try {
             policy=[ordered]@{ fixedFiles=@('policy.txt'); trees=@() }
         }
         payload=[ordered]@{
-            fixedRoots=@('app.exe')
+            fixedRoots=@('CRAZYFLASHER7MercenaryEmpire.exe')
             trees=@('runtime')
             excludePaths=@('runtime/cf7-runtime-manifest.tsv')
             excludePrefixes=@()
@@ -75,7 +75,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Cannot create Git fixture.' }
     $sourceCommit = ([string](& git -C $fixtureRoot rev-parse HEAD)).Trim().ToLowerInvariant()
 
-    [IO.File]::WriteAllBytes((Join-Path $candidateRoot 'app.exe'), [byte[]](1,2,3,4,5))
+    [IO.File]::WriteAllBytes((Join-Path $candidateRoot 'CRAZYFLASHER7MercenaryEmpire.exe'), [byte[]](1,2,3,4,5))
     [IO.File]::WriteAllBytes((Join-Path $candidateRoot 'runtime\core.dll'), [byte[]](9,8,7,6))
     . (Join-Path $toolsRoot 'runtime-build-v2-common.ps1')
     . (Join-Path $toolsRoot 'runtime-build-attestation-v2-common.ps1')
@@ -128,8 +128,47 @@ if /I "%CF7_FAKE_GH_MODE%"=="wrongpredicate" (
   echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"verifiedTimestamps":[],"statement":{"predicateType":"https://example.invalid/wrong"}}}]
   exit /b 0
 )
-echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"verifiedTimestamps":[],"statement":{"predicateType":"https://slsa.dev/provenance/v1"}}}]
+type "%~dp0verified-source.json"
 '@ -replace "`r?`n", "`r`n")
+    $verifiedPath = Join-Path $testRoot 'verified-source.json'
+    $verifiedStatement = @'
+[
+  {
+    "attestation": {},
+    "verificationResult": {
+      "signature": {
+        "certificate": {}
+      },
+      "verifiedTimestamps": [],
+      "statement": {
+        "predicateType": "https://slsa.dev/provenance/v1",
+        "predicate": {
+          "buildDefinition": {
+            "buildType": "https://actions.github.io/buildtypes/workflow/v1",
+            "externalParameters": {
+              "workflow": {
+                "path": ".github/workflows/runtime-cloud-builder.yml",
+                "ref": "refs/tags/runtime-build-v2/test-release",
+                "repository": "https://github.com/FlashNightModReborn/CrazyFlashNight"
+              }
+            },
+            "resolvedDependencies": [
+              {
+                "uri": "git+https://github.com/FlashNightModReborn/CrazyFlashNight@refs/tags/runtime-build-v2/test-release",
+                "digest": {
+                  "gitCommit": "FIXTURE_COMMIT"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+]
+'@
+    $verifiedSource = $verifiedStatement.Replace('FIXTURE_COMMIT', $sourceCommit)
+    Write-Cf7TestText $verifiedPath $verifiedSource
     $argsPath = Join-Path $testRoot 'gh-args.txt'
     $env:CF7_FAKE_GH_ARGS = $argsPath
     $env:CF7_FAKE_GH_MODE = 'ok'
@@ -145,7 +184,7 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     Assert-Cf7Test ([Convert]::FromBase64String([string]$wrapper.envelopeBase64).Length -eq $envelopeBytesA.Length) 'wrapper embeds envelope bytes'
     Assert-Cf7Test ([Convert]::FromBase64String([string]$wrapper.bundleBase64).Length -eq [IO.File]::ReadAllBytes($bundlePath).Length) 'wrapper embeds bundle bytes'
     $ghArgs = [IO.File]::ReadAllText($argsPath, [Text.Encoding]::Default)
-    foreach ($required in @('attestation verify','--repo FlashNightModReborn/CrazyFlashNight','--signer-workflow FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml','--source-ref refs/tags/runtime-build-v2/test-release','--deny-self-hosted-runners','--bundle','--predicate-type https://slsa.dev/provenance/v1','--format json')) {
+    foreach ($required in @('attestation verify','--repo FlashNightModReborn/CrazyFlashNight','--signer-workflow FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml','--source-ref refs/tags/runtime-build-v2/test-release',"--source-digest $sourceCommit",'--deny-self-hosted-runners','--bundle','--predicate-type https://slsa.dev/provenance/v1','--format json')) {
         Assert-Cf7Test ($ghArgs.Contains($required)) "gh argument missing: $required"
     }
     Assert-Cf7Test ($ghArgs.Contains($envelopeA)) 'gh must verify the exact envelope path'
@@ -186,6 +225,30 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
         Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit } "gh output mode must fail closed: $invalidGhMode"
     }
     $env:CF7_FAKE_GH_MODE = 'ok'
+
+    foreach ($wrongStatement in @(
+        $verifiedSource.Replace($sourceCommit, ('0' * $sourceCommit.Length)),
+        $verifiedSource.Replace('test-release', 'other-release'),
+        $verifiedSource.Replace('.github/workflows/runtime-cloud-builder.yml', '.github/workflows/other.yml'),
+        $verifiedSource.Replace('/CrazyFlashNight', '/OtherRepo')
+    )) {
+        Write-Cf7TestText $verifiedPath $wrongStatement
+        Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit } 'verified statement must bind the exact source independently of the envelope'
+    }
+    Write-Cf7TestText $verifiedPath $verifiedSource
+
+    $derivedConfig = ($githubConfig | ConvertTo-Json | ConvertFrom-Json)
+    $derivedConfig.PSObject.Properties.Remove('sourceRef')
+    $derivedConfig | Add-Member -NotePropertyName sourceRefNamespace -NotePropertyValue 'refs/tags/runtime-build-v2/'
+    Assert-Cf7Test ((Resolve-Cf7RuntimeGitHubSourceRef -Config $derivedConfig -SourceCommitOid $sourceCommit) -ceq ('refs/tags/runtime-build-v2/' + $sourceCommit)) 'derive the exact immutable source tag'
+    foreach ($invalidNamespace in @('refs/heads/runtime-build-v2/','refs/tags/runtime-build-v2/nested/','refs/tags/runtime-build-v2')) {
+        $derivedConfig.sourceRefNamespace = $invalidNamespace
+        Assert-Cf7Throws { Resolve-Cf7RuntimeGitHubSourceRef -Config $derivedConfig -SourceCommitOid $sourceCommit } 'reject a namespace outside the protected contract'
+    }
+    $derivedConfig.sourceRefNamespace = 'refs/tags/runtime-build-v2/'
+    $derivedConfig | Add-Member -NotePropertyName sourceRef -NotePropertyValue $githubConfig.sourceRef
+    Assert-Cf7Throws { Resolve-Cf7RuntimeGitHubSourceRef -Config $derivedConfig -SourceCommitOid $sourceCommit } 'ambiguous legacy and namespace config must fail'
+    $derivedConfig.PSObject.Properties.Remove('sourceRef')
 
     $canonicalEnvelopeText = [IO.File]::ReadAllText($envelopeA, [Text.Encoding]::UTF8)
     $identityTamperCases = @(
@@ -245,10 +308,10 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
             "attestation verifier must reject a source ref outside the protected single-segment tag namespace: $unsafeSourceRef"
     }
 
-    $originalApp = [IO.File]::ReadAllBytes((Join-Path $candidateRoot 'app.exe'))
-    [IO.File]::WriteAllBytes((Join-Path $candidateRoot 'app.exe'), [byte[]](1,2,3,4,0))
+    $originalApp = [IO.File]::ReadAllBytes((Join-Path $candidateRoot 'CRAZYFLASHER7MercenaryEmpire.exe'))
+    [IO.File]::WriteAllBytes((Join-Path $candidateRoot 'CRAZYFLASHER7MercenaryEmpire.exe'), [byte[]](1,2,3,4,0))
     Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit } 'tampered candidate bytes must fail'
-    [IO.File]::WriteAllBytes((Join-Path $candidateRoot 'app.exe'), $originalApp)
+    [IO.File]::WriteAllBytes((Join-Path $candidateRoot 'CRAZYFLASHER7MercenaryEmpire.exe'), $originalApp)
 
     $wrongArtifactHash = 'F' * 64
     Write-Cf7TestText $manifestPath ($originalManifest.Replace([string]$identity.artifactSourceHash, $wrongArtifactHash))
@@ -269,7 +332,7 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     Assert-Cf7Test ($workflowText.Contains("-cnotmatch '^(?:[0-9a-f]{40}|[0-9a-f]{64})$'")) 'cloud dispatch must canonicalize source identity by requiring lowercase full SHA'
     Assert-Cf7Test ($workflowText.Contains('if ([string]$env:GITHUB_SHA -cne $normalizedRequested)')) `
         'cloud workflow must reject a workflow ref whose resolved SHA differs from the requested source commit'
-    Assert-Cf7Test ($workflowText.Contains('if ([string]$cloudConfig.sourceRef -cne $env:GITHUB_REF)')) `
+    Assert-Cf7Test ($workflowText.Contains('if ($expectedRef -cne $env:GITHUB_REF)')) `
         'checked-out cloud config must bind its exact sourceRef to the workflow GITHUB_REF'
     Assert-Cf7Test ($workflowText.Contains("GITHUB_REF -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$'") -and
         -not $workflowText.Contains("GITHUB_REF -cne 'refs/heads/main'")) `
@@ -460,16 +523,16 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $layoutArchive = [IO.Compression.ZipFile]::OpenRead($layoutZip)
     try {
         $layoutEntries = @($layoutArchive.Entries | ForEach-Object { $_.FullName.Replace('\','/') })
-        Assert-Cf7Test ($layoutEntries -contains 'app.exe') 'candidate archive must place the root executable directly at archive root'
+        Assert-Cf7Test ($layoutEntries -contains 'CRAZYFLASHER7MercenaryEmpire.exe') 'candidate archive must place the root executable directly at archive root'
         Assert-Cf7Test ($layoutEntries -contains 'runtime/cf7-runtime-manifest.tsv') 'candidate archive must place runtime directly at archive root'
     } finally { $layoutArchive.Dispose() }
 
-    Copy-Item -LiteralPath (Join-Path $candidateRoot 'app.exe') -Destination (Join-Path $fixtureRoot 'app.exe') -Force
+    Copy-Item -LiteralPath (Join-Path $candidateRoot 'CRAZYFLASHER7MercenaryEmpire.exe') -Destination (Join-Path $fixtureRoot 'CRAZYFLASHER7MercenaryEmpire.exe') -Force
     New-Item -ItemType Directory -Path (Join-Path $fixtureRoot 'runtime') -Force | Out-Null
     Get-ChildItem -LiteralPath (Join-Path $candidateRoot 'runtime') -File | ForEach-Object {
         Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $fixtureRoot 'runtime') -Force
     }
-    & git -C $fixtureRoot add -- app.exe runtime
+    & git -C $fixtureRoot add -- CRAZYFLASHER7MercenaryEmpire.exe runtime
     if ($LASTEXITCODE -ne 0) { throw 'Cannot stage the index-mode deployment fixture.' }
     $indexWrapper = & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $fixtureRoot -EnvelopePath $envelopeA -BundlePath $bundlePath `
         -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit -SourceMode Index -ReplayFromReleaseRecord
@@ -481,9 +544,59 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     & git -C $fixtureRoot commit -q -m successor
     if ($LASTEXITCODE -ne 0) { throw 'Cannot create successor fixture commit.' }
     Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit } 'default import must require exact source HEAD'
+    Write-Cf7TestText $githubConfigPath ($derivedConfig | ConvertTo-Json)
     $replayed = & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit -ReplayFromReleaseRecord
-    Assert-Cf7Test ([string]$replayed.payload.sourceCommitOid -ceq $sourceCommit) 'release replay must accept a source commit ancestor when product identity is unchanged'
+    Assert-Cf7Test ([string]$replayed.payload.sourceCommitOid -ceq $sourceCommit) 'legacy source must replay under the new namespace policy'
+    # H evolves its descriptor. Historical D is judged using S and the complete
+    # actual disk/index deployment; a new publication still checks current policy.
+    $inputsPath = Join-Path $configRoot 'runtime-inputs.v2.json'
+    $sourceInputsText = [IO.File]::ReadAllText($inputsPath)
+    $futureInputs = $sourceInputsText | ConvertFrom-Json
+    $futureInputs.payload.excludePaths += @('runtime/core.dll','runtime/future-only.dll')
+    Write-Cf7TestText $inputsPath ($futureInputs | ConvertTo-Json -Depth 10)
+    & git -C $fixtureRoot add -- config/build/runtime-inputs.v2.json
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot stage future descriptor.' }
+    foreach ($mode in @('Worktree','Index')) {
+        $target = if ($mode -ceq 'Index') { $fixtureRoot } else { $candidateRoot }
+        $historicalArgs = @{ ProjectRoot=$fixtureRoot; CandidateRoot=$target; EnvelopePath=$envelopeA; BundlePath=$bundlePath
+            SourceMode=$mode; GitHubCliPath=$fakeGh; ExpectedSourceCommitOid=$sourceCommit }
+        Assert-Cf7Throws { & $verifier @historicalArgs -ReplayFromReleaseRecord } 'new publication must enforce current payload policy'
+        $past = & $verifier @historicalArgs -HistoricalSource
+        Assert-Cf7Test ($past.canonicalPayloadSha256 -ceq $wrapper.canonicalPayloadSha256) 'historical deployment survives a later descriptor change'
+        $extra = Join-Path $target 'runtime/future-only.dll'
+        Write-Cf7TestText $extra 'undeclared historical payload'
+        if ($mode -ceq 'Index') { & git -C $fixtureRoot add -- runtime/future-only.dll }
+        else { [IO.File]::SetAttributes($extra, ([IO.File]::GetAttributes($extra) -bor [IO.FileAttributes]::Hidden)) }
+        Assert-Cf7Throws { & $verifier @historicalArgs -HistoricalSource } 'historical verification must reject extra bytes hidden by the later descriptor'
+        if ($mode -ceq 'Index') { & git -C $fixtureRoot restore --staged -- runtime/future-only.dll }
+        [IO.File]::Delete($extra)
+    }
+    Write-Cf7TestText $inputsPath $sourceInputsText
+    & git -C $fixtureRoot restore --staged -- config/build/runtime-inputs.v2.json
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot restore fixture descriptor index.' }
+    $derivedConfig.enabled = $false
+    Write-Cf7TestText $githubConfigPath ($derivedConfig | ConvertTo-Json)
+    Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit -ReplayFromReleaseRecord } 'current policy must prevent a retired producer from voting for a new release'
+    $historical = & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $envelopeA -BundlePath $bundlePath -ConfigPath $githubConfigPath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $sourceCommit -HistoricalSource
+    Assert-Cf7Test ($historical.canonicalPayloadSha256 -ceq $wrapper.canonicalPayloadSha256) 'historical verification preserves original canonical proof bytes'
+    Write-Cf7TestText $githubConfigPath (($githubConfig | ConvertTo-Json -Depth 5) + "`n")
 
+    $derivedConfig.enabled = $true
+    Write-Cf7TestText $githubConfigPath (($derivedConfig | ConvertTo-Json) + "`n")
+    & git -C $fixtureRoot add -- config/build/runtime-github-builder.v2.json
+    & git -C $fixtureRoot commit -q -m 'adopt commit-derived source tags'
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot create namespace fixture source.' }
+    $newSource = ([string](& git -C $fixtureRoot rev-parse HEAD)).Trim()
+    $newRef = $derivedConfig.sourceRefNamespace + $newSource
+    $newEnvelope = Join-Path $testRoot 'envelope-derived.json'
+    $generated = & $generator -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -SourceCommitOid $newSource -OutputPath $newEnvelope
+    Assert-Cf7Test ($generated.sourceRef -ceq $newRef) 'new envelope must bind the exact source-derived tag'
+    $verifiedForNewSource = $verifiedSource.Replace($sourceCommit,$newSource).Replace($githubConfig.sourceRef,$newRef)
+    Write-Cf7TestText $verifiedPath $verifiedForNewSource
+    $newWrapper = & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $newEnvelope -BundlePath $bundlePath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $newSource
+    Assert-Cf7Test ($newWrapper.payload.sourceRef -ceq $newRef) 'new proof must retain exact tag in canonical builder identity'
+    Write-Cf7TestText $verifiedPath $verifiedSource
+    Assert-Cf7Throws { & $verifier -ProjectRoot $fixtureRoot -CandidateRoot $candidateRoot -EnvelopePath $newEnvelope -BundlePath $bundlePath -GitHubCliPath $fakeGh -ExpectedSourceCommitOid $newSource } 'proof for another legitimate release ref must not validate the new source'
     $sameTree = ([string](& git -C $fixtureRoot rev-parse 'HEAD^{tree}')).Trim()
     $unrelatedCommit = ("unrelated replay fixture`n" | & git -C $fixtureRoot commit-tree $sameTree).Trim()
     if ($LASTEXITCODE -ne 0 -or $unrelatedCommit -notmatch '^[0-9a-fA-F]{40,64}$') { throw 'Cannot create unrelated fixture commit.' }

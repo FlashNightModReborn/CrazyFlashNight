@@ -1,6 +1,54 @@
 # CF7 runtime v2 X509 builder registry, attestation, and consensus helpers.
 # Dot-source runtime-build-v2-common.ps1 before this file.
 
+function Resolve-Cf7RuntimeGitHubSourceRef {
+    [CmdletBinding(DefaultParameterSetName='Resolve')]
+    param(
+        [Parameter(Mandatory=$true)]$Config,
+        [Parameter(Mandatory=$true,ParameterSetName='Resolve')][ValidatePattern('\A(?:[0-9a-f]{40}|[0-9a-f]{64})\z')][string]$SourceCommitOid,
+        [Parameter(Mandatory=$true,ParameterSetName='Validate')][switch]$ValidateOnly
+    )
+    if (-not $ValidateOnly -and $SourceCommitOid -cne $SourceCommitOid.ToLowerInvariant()) { throw 'Source commit OID must be lowercase.' }
+    $legacy = $null -ne $Config.PSObject.Properties['sourceRef']
+    $derived = $null -ne $Config.PSObject.Properties['sourceRefNamespace']
+    if ($legacy -eq $derived) { throw 'GitHub builder must declare exactly one sourceRef or sourceRefNamespace.' }
+    if ($legacy) {
+        if ($Config.sourceRef -isnot [string] -or $Config.sourceRef -cnotmatch '\Arefs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}\z' -or
+                $Config.sourceRef.Contains('..') -or $Config.sourceRef.EndsWith('.') -or $Config.sourceRef.EndsWith('.lock')) {
+            throw 'GitHub runtime sourceRef must be one canonical protected runtime-build-v2 tag.'
+        }
+        return $Config.sourceRef
+    }
+    if ($Config.sourceRefNamespace -isnot [string] -or $Config.sourceRefNamespace -cne 'refs/tags/runtime-build-v2/') {
+        throw 'Invalid protected runtime source tag namespace.'
+    }
+    if ($ValidateOnly) { return }
+    return $Config.sourceRefNamespace + $SourceCommitOid
+}
+
+function Get-Cf7RuntimeGitHubBuilderBinding {
+    param([Parameter(Mandatory=$true)]$Config, [Parameter(Mandatory=$true)][string]$SourceCommitOid)
+    if ([string]$Config.schema -cne 'cf7-runtime-github-builder.v2') { throw 'Unsupported GitHub runtime builder config schema.' }
+    if ($Config.enabled -isnot [bool] -or -not $Config.enabled) { throw 'GitHub runtime builder is disabled.' }
+    if ([string]$Config.repository -cnotmatch '\A[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\z' -or
+            [string]$Config.signerWorkflow -cnotmatch ('\A' + [regex]::Escape($Config.repository) + '/\.github/workflows/[A-Za-z0-9_.-]+\.ya?ml\z')) {
+        throw 'Invalid GitHub runtime repository or signer workflow.'
+    }
+    foreach ($field in @('faultDomain','runnerClass')) {
+        if ([string]$Config.$field -cnotmatch '\A[a-z0-9][a-z0-9._-]{1,63}\z') { throw "Invalid GitHub runtime builder field: $field" }
+    }
+    if ([string]$Config.identityProvider -cne 'github-oidc-sigstore' -or $Config.longLivedPrivateKey -isnot [bool] -or $Config.longLivedPrivateKey) {
+        throw 'GitHub runtime builder must use keyless GitHub OIDC/Sigstore identity.'
+    }
+    return [pscustomobject]@{
+        repository = $Config.repository
+        signerWorkflow = $Config.signerWorkflow
+        faultDomain = $Config.faultDomain
+        runnerClass = $Config.runnerClass
+        sourceRef = Resolve-Cf7RuntimeGitHubSourceRef -Config $Config -SourceCommitOid $SourceCommitOid
+    }
+}
+
 function ConvertTo-Cf7RuntimeV2JsonString {
     param([AllowEmptyString()][string]$Value)
     if ($null -eq $Value) { return 'null' }

@@ -122,7 +122,7 @@ function staticAudit() {
     }
     if (!harness.includes('character-appearance-preview.js')
         || !harness.includes('__portraitOverride')
-        || !harness.includes('compact icon grid renders 76 real artwork images')
+        || !harness.includes('compact icon grid renders real artwork for each hairstyle')
         || !harness.includes('current hair card mirrors the saved style')
         || !harness.includes('change summary contrasts saved and trial styles')
         || !harness.includes('gender tabs expose deterministic name-prefix groups')
@@ -133,8 +133,8 @@ function staticAudit() {
         || !harness.includes('full-body preview draws battle equipment plus the trial hair even under a helmet')) {
         throw new Error('hairdresser grid/tab/summary/full-body harness journeys missing');
     }
-    if (rows.length !== 77 || rows.some((row, index) => row.id !== index)) {
-        throw new Error('AS2 hairstyle source no longer contains ordered ids 0..76');
+    if (rows.length < 78 || rows.some((row, index) => row.id !== index)) {
+        throw new Error('AS2 hairstyle source no longer contains the complete ordered catalog');
     }
     const duplicateRows = rows.filter(row => row.identifier === '发型-男式-平头');
     if (duplicateRows.length !== 2 || duplicateRows[0].id !== 20 || duplicateRows[1].id !== 32) {

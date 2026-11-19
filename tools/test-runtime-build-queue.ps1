@@ -122,11 +122,24 @@ try {
         $_ -ceq 'launcher/THIRD-PARTY-NOTICES.txt' -or
             $_.StartsWith('launcher/src/Guardian/Hud/PlayerInfo/Assets/', [StringComparison]::Ordinal)
     })
-    Assert-QueueTest ($actualPlayerInfoRuntimeInputs.Count -eq 10) `
-        "player-info runtime input closure must contain exactly 8 SVG + manifest + notice; actual=$($actualPlayerInfoRuntimeInputs.Count)"
-    Assert-QueueTest (@($actualPlayerInfoRuntimeInputs | Where-Object {
-        $_.EndsWith('.svg', [StringComparison]::Ordinal)
-    }).Count -eq 8) 'player-info artifact source does not contain exactly eight SVG assets'
+    # The project embeds the eight HP/MP SVGs, while the input descriptor also
+    # tracks the four named live HUD source drawings in this directory.
+    [xml]$launcherProject = Get-Content -LiteralPath (Join-Path $ProjectRoot 'launcher\CRAZYFLASHER7MercenaryEmpire.csproj') -Raw -Encoding UTF8
+    $embeddedPlayerInfo = @($launcherProject.Project.ItemGroup.EmbeddedResource | Where-Object {
+        $_ -and $_.Include -like 'src\Guardian\Hud\PlayerInfo\Assets\*'
+    } | ForEach-Object { 'launcher/' + $_.Include.Replace('\','/') })
+    $expectedEmbedded = @($expectedPlayerInfoRuntimeInputs | Where-Object { $_ -ne 'launcher/THIRD-PARTY-NOTICES.txt' })
+    Assert-QueueTest ($embeddedPlayerInfo.Count -eq $expectedEmbedded.Count) 'player-info embed set must contain eight SVGs and one manifest'
+    foreach ($required in $expectedEmbedded) {
+        Assert-QueueTest ($embeddedPlayerInfo -ccontains $required) "expected player-info embedding missing from the project: $required"
+    }
+    $expectedPlayerInfoRuntimeInputs += @(
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/live/ammo-magazine.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/live/ammo-round.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/live/skill-label.svg',
+        'launcher/src/Guardian/Hud/PlayerInfo/Assets/live/sp-label.svg'
+    )
+    Assert-QueueTest ($actualPlayerInfoRuntimeInputs.Count -eq $expectedPlayerInfoRuntimeInputs.Count) "unexpected player-info build input count: $($actualPlayerInfoRuntimeInputs.Count)"
     foreach ($required in $expectedPlayerInfoRuntimeInputs) {
         Assert-QueueTest ($artifactSet.Contains($required)) "player-info runtime input is absent from artifactSource: $required"
     }
@@ -167,12 +180,22 @@ try {
         $relative = $source.FullName.Substring($ProjectRoot.Length + 1).Replace('\','/')
         Assert-QueueTest ($artifactSet.Contains($relative)) "managed compile input is outside artifactSource: $relative"
     }
+    $compositorTestInputs = @(
+        'launcher/native/world-compositor/InputBridgeSelfTest.cpp',
+        'launcher/native/world-compositor/RayBucketSelfTest.cpp',
+        'launcher/native/world-compositor/g1-fixture/G1Target.cpp',
+        'launcher/native/world-compositor/input-ownership-fixture/C1Scene.cpp'
+    )
     foreach ($source in @(Get-ChildItem -LiteralPath (Join-Path $ProjectRoot 'launcher\native') -Recurse -File | Where-Object {
         @('.c','.cpp','.h','.rc') -contains $_.Extension.ToLowerInvariant()
     })) {
         $relative = $source.FullName.Substring($ProjectRoot.Length + 1).Replace('\','/')
         if ($relative.StartsWith('launcher/native/tests/', [StringComparison]::Ordinal)) { continue }
-        Assert-QueueTest ($artifactSet.Contains($relative)) "native compile input is outside artifactSource: $relative"
+        if ($compositorTestInputs -ccontains $relative) {
+            Assert-QueueTest ($policySet.Contains($relative) -and -not $artifactSet.Contains($relative)) "compositor test input must be policy-only: $relative"
+        } else {
+            Assert-QueueTest ($artifactSet.Contains($relative)) "native compile input is outside artifactSource: $relative"
+        }
     }
     foreach ($source in @(Get-ChildItem -LiteralPath (Join-Path $ProjectRoot 'launcher\native\tests') -Recurse -File | Where-Object {
         @('.c','.cpp','.ps1') -contains $_.Extension.ToLowerInvariant()
@@ -251,6 +274,10 @@ try {
     Copy-Item -LiteralPath (Join-Path $gitDirectory 'index') -Destination $customIndex
     $env:GIT_INDEX_FILE = $customIndex
 
+    # Freeze a non-default mode as well as Unicode paths and staged-vs-worktree bytes.
+    & git -C $fixtureRepo update-index --chmod=+x -- 'config/build/toolchain.txt'
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot set executable mode on the caller-owned fixture index.' }
+
     $queueRoot = New-ShortQueueTestRoot -Prefix 'q'
     $newRequestScript = Join-Path $ProjectRoot 'tools\new-runtime-build-request.ps1'
     $longQueueRoot = Join-Path $testRoot ('queue-' + ('x' * 96))
@@ -281,6 +308,27 @@ try {
     Assert-QueueTest ([string]$requestA.schema -eq 'cf7-runtime-build-request.v2') 'sparse request did not use the v2 schema'
     Assert-QueueTest ([string]$env:GIT_INDEX_FILE -ceq $customIndex) 'request creation did not restore the caller-owned Git index'
     Assert-QueueTest ($requestA.requestId -eq $requestB.requestId) 'identical release tree + policy was not deduplicated'
+    # Independent single-entry Git reference for the same six declared fixture paths.
+    $rows = foreach ($domain in ($fixtureConfig | ConvertFrom-Json).domains.PSObject.Properties) {
+        foreach ($path in $domain.Value.fixedFiles) {
+            $row = [string](& git -C $fixtureRepo ls-files -s -- $path)
+            if ($LASTEXITCODE -ne 0 -or $row -notmatch '^([0-7]{6}) ([0-9a-f]+) 0\t') { throw "Invalid fixture index row: $row" }
+            [pscustomobject]@{ Mode=$Matches[1]; Oid=$Matches[2]; Path=$path }
+        }
+    }
+    try {
+        $env:GIT_INDEX_FILE = Join-Path $testRoot 'single-entry-reference.index'
+        & git -C $fixtureRepo read-tree --empty
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot initialize the reference index.' }
+        foreach ($row in $rows) {
+            & git -C $fixtureRepo update-index --add --cacheinfo $row.Mode $row.Oid $row.Path
+            if ($LASTEXITCODE -ne 0) { throw "Cannot add reference bundle entry: $($row.Path)" }
+        }
+        $referenceTree = [string](& git -C $fixtureRepo write-tree)
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot write the reference bundle tree.' }
+        Assert-QueueTest ($requestA.bundleTreeOid -ceq $referenceTree) 'batch bundle tree differs from the exact single-entry reference'
+    } finally { $env:GIT_INDEX_FILE = $customIndex }
+
     $requestDirectories = @(Get-ChildItem -LiteralPath (Join-Path $queueRoot 'requests') -Directory | Where-Object { -not $_.Name.StartsWith('.') })
     Assert-QueueTest ($requestDirectories.Count -eq 1) 'deduplicated request created more than one immutable directory'
     $checks++

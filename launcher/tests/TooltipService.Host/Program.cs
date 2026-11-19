@@ -63,7 +63,8 @@ internal static partial class Program
         var dir = new DirectoryInfo(Environment.CurrentDirectory);
         while (dir != null)
         {
-            if (File.Exists(Path.Combine(dir.FullName, "data", "tooltip", "tooltip-catalog.json"))) return dir.FullName;
+            if (File.Exists(Path.Combine(dir.FullName, "launcher", "scripts", "dist", "tooltip-catalog-compiler.js"))
+                || File.Exists(Path.Combine(dir.FullName, "data", "tooltip", "tooltip-catalog.json"))) return dir.FullName;
             dir = dir.Parent;
         }
         throw new DirectoryNotFoundException("Run from the repository or pass --test <project-root>.");
@@ -345,38 +346,84 @@ internal static partial class Program
         await ManagedTaskTests(root);
         await EquipmentTuningTests(root);
         await NativeTests();
-        await Check("production initialization rejects changed catalog and stale source bytes", async () =>
+        await Check("package integrity covers its snapshot and needs no authoring sources", async () =>
         {
             string temp = Path.Combine(Path.GetTempPath(), "cf7-tooltip-stale-" + Guid.NewGuid().ToString("N"));
             try
             {
-                foreach (string relative in new[] { "launcher/scripts/dist/tooltip-bundle.js", "data/tooltip/tooltip-catalog.json", "data/tooltip/tooltip-catalog.manifest.json" })
-                {
-                    string target = Path.Combine(temp, relative); Directory.CreateDirectory(Path.GetDirectoryName(target));
-                    File.Copy(Path.Combine(root, relative), target);
-                }
+                string bundleDest = Path.Combine(temp, "launcher/scripts/dist/tooltip-bundle.js");
+                Directory.CreateDirectory(Path.GetDirectoryName(bundleDest));
+                File.Copy(Path.Combine(root, "launcher/scripts/dist/tooltip-bundle.js"), bundleDest);
+                var snap = new TooltipCatalogSource(root).Snapshot;
                 string catalogPath = Path.Combine(temp, "data/tooltip/tooltip-catalog.json");
+                string manifestPath = Path.Combine(temp, "data/tooltip/tooltip-catalog.manifest.json");
+                Directory.CreateDirectory(Path.GetDirectoryName(catalogPath));
+                File.WriteAllText(catalogPath, snap.Catalog);
+                var manifest = new JObject
+                {
+                    ["version"] = 1,
+                    ["output"] = "data/tooltip/tooltip-catalog.json",
+                    ["outputSha256"] = snap.Digest,
+                    ["contentVersion"] = JObject.Parse(snap.Catalog).Value<string>("contentVersion")
+                };
+                File.WriteAllText(manifestPath, manifest.ToString(Formatting.None));
                 File.AppendAllText(catalogPath, " ");
                 using (var changed = new TooltipService(() => new TooltipV8Engine(temp)))
                     await Fails(changed.Ready);
-                File.Copy(Path.Combine(root, "data/tooltip/tooltip-catalog.json"), catalogPath, true);
-                var manifest = JObject.Parse(File.ReadAllText(Path.Combine(temp, "data/tooltip/tooltip-catalog.manifest.json")));
-                foreach (var source in ((JObject)manifest["sourceFiles"]).Properties())
+                var lf = snap.Catalog.Replace("\r\n", "\n");
+                File.WriteAllText(catalogPath, lf.Replace("\n", "\r\n"));
+                using var packaged = new TooltipService(() => new TooltipV8Engine(temp));
+                await packaged.Ready.WaitAsync(Deadline);
+                Assert(packaged.GetMetrics().EngineIdentity.StartsWith("tooltip-v1:"), "prepared snapshot did not load");
+            }
+            finally { Directory.Delete(temp, true); }
+        });
+        await Check("source archive without .git compiles live sources and tolerates empty crafting files", async () =>
+        {
+            string temp = Path.Combine(Path.GetTempPath(), "cf7-tooltip-archive-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                foreach (string relative in new[]
                 {
-                    if (!source.Name.StartsWith("data/", StringComparison.Ordinal)) continue;
-                    string target = Path.Combine(temp, source.Name); Directory.CreateDirectory(Path.GetDirectoryName(target));
-                    File.Copy(Path.Combine(root, source.Name), target);
+                    "tools/tooltip-catalog.cjs",
+                    "launcher/scripts/dist/tooltip-catalog-compiler.js",
+                    "launcher/scripts/dist/tooltip-bundle.js",
+                    "data/equipment/equipment_config.xml"
+                })
+                {
+                    string target = Path.Combine(temp, relative);
+                    Directory.CreateDirectory(Path.GetDirectoryName(target));
+                    File.Copy(Path.Combine(root, relative), target);
                 }
-                string firstSource = ((JObject)manifest["sourceFiles"]).Properties().First(p => p.Name.StartsWith("data/", StringComparison.Ordinal)).Name;
-                File.AppendAllText(Path.Combine(temp, firstSource), " ");
-                using var stale = new TooltipService(() => new TooltipV8Engine(temp));
-                await Fails(stale.Ready); Assert(stale.GetMetrics().Built == 0, "stale static source was served");
+                void WriteTempFile(string relative, string content)
+                {
+                    string target = Path.Combine(temp, relative);
+                    Directory.CreateDirectory(Path.GetDirectoryName(target));
+                    File.WriteAllText(target, content);
+                }
+                WriteTempFile("data/items/list.xml", "<root><items>test.xml</items></root>");
+                WriteTempFile("data/items/test.xml", "<root><item><name>测试刀</name><displayname>源包测试刀</displayname><type>武器</type><use>刀</use><price>10</price><description>说明</description><data><level>1</level><power>50</power></data></item></root>");
+                WriteTempFile("data/items/equipment_mods/list.xml", "<root/>");
+                WriteTempFile("data/enemy_properties/list.xml", "<root/>");
+                WriteTempFile("data/crafting/list.xml", "<root><list>empty</list></root>");
+                string emptyRecipePath = Path.Combine(temp, "data/crafting/empty.json");
+                Directory.CreateDirectory(Path.GetDirectoryName(emptyRecipePath));
+                File.WriteAllBytes(emptyRecipePath, Array.Empty<byte>());
+                WriteTempFile("data/tooltip/tooltip-catalog.json", "{}");
+
+                var logs = new List<string>();
+                var source = new TooltipCatalogSource(temp, logs.Add);
+                Assert(source.IsCheckout, "source archive carrying tools/tooltip-catalog.cjs must run in checkout mode");
+                using var service = new TooltipService(() => new TooltipV8Engine(temp, source), logs.Add);
+                await service.Ready.WaitAsync(Deadline);
+                Assert(logs.Any(l => l.Contains("data/crafting/empty.json")), "empty recipe diagnostic missing");
+                Assert(JObject.Parse(source.Snapshot.Catalog).Value<bool>("recipesUnavailable"), "recipesUnavailable not flagged");
             }
             finally { Directory.Delete(temp, true); }
         });
         await Check("real V8 item Inspector keeps pinned identity after content generation", async () =>
         {
-            var catalog = JObject.Parse(File.ReadAllText(Path.Combine(root, "data", "tooltip", "tooltip-catalog.json")));
+            var catalog = JObject.Parse(new TooltipCatalogSource(root).Snapshot.Catalog);
             var itemEntry = ((JObject)catalog["items"]).Properties().First(entry => entry.Value.Value<string>("type") == "武器");
             var item = (JObject)itemEntry.Value;
             var input = new JObject { ["version"] = 1, ["kind"] = "item", ["itemName"] = itemEntry.Name,

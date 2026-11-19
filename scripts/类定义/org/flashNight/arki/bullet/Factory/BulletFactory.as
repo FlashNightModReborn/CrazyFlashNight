@@ -11,6 +11,7 @@ import org.flashNight.arki.bullet.BulletComponent.Movement.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
 import org.flashNight.arki.bullet.BulletComponent.Init.*;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
+import org.flashNight.arki.bullet.BulletComponent.Chain.HalfPierceBudget;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.bullet.Factory.*;
 import org.flashNight.arki.bullet.BulletComponent.Movement.Util.*;
@@ -312,6 +313,11 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
         // 绑定生命周期逻辑
         lifecycle.bindLifecycle(bulletInstance);
+        if (bulletInstance.continuationChance > 0 && !isChain && lifecycle === NormalBulletLifecycle.BASIC
+                && HalfPierceBudget.accepts(bulletInstance)
+                && Obj.timedDetonation == null && Obj.explosionScatter == null) {
+            bulletInstance.__halfPierceSingle = bulletInstance.continuationChance;
+        }
         // 只接管有明确配置的普通/可拦截 MovieClip；透明弹、射线和联弹保留原合同。
         if (Obj.timedDetonation != null && !isTransparent && !isChain && !isRay) {
             TimedDetonation.bind(bulletInstance, Obj.timedDetonation, null);

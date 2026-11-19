@@ -126,8 +126,10 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
     public static function doConfig(mc:MovieClip, skinConfig:String,
             instanceName:String, referenceName:String, unit:MovieClip):MovieClip {
 
-        // 基础引用名（用于查找映射表和深度配置）
-        var baseRefName:String = refNameAliases[referenceName] || referenceName;
+        var placement:Object = unit.dressupRegistry[referenceName + "@" + instanceName];
+        // #N 区分同一部位的多个挂点；素材、女性底图与深度按原始部位查找。
+        var authoredRef:String = placement ? placement.baseReferenceName : referenceName;
+        var baseRefName:String = refNameAliases[authoredRef] || authoredRef;
 
         // 巨拳模式排除
         if (unit.空手动作类型 == "巨拳" || unit.空手动作类型 == "单臂巨拳") {
@@ -137,8 +139,9 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
         }
 
         // 移除旧装扮
-        if (mc[instanceName]) {
-            mc[instanceName].removeMovieClip();
+        var previousSkin:MovieClip = mc[instanceName];
+        if (previousSkin._parent === mc) {
+            previousSkin.removeMovieClip();
         }
 
         // ============ Plan B-精准：deferred 通道 register-attach-unregister ============
@@ -189,7 +192,6 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
 
         // 独立 placement 身份不随 AVM1 同路径 MovieClip 引用重定向；消费者可据此
         // 拒绝已被另一槽位/新装扮替换的旧 registry entry。
-        var placement:Object = unit.dressupRegistry[referenceName + "@" + instanceName];
         if (placement && placement.mc === mc) {
             placement.identity = {};
             if (skin) skin.__dressupPlacementIdentity = placement.identity;
@@ -268,12 +270,17 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
             counter++;
         }
 
+        var baseRefName:String = refNameAliases[referenceName] || referenceName;
+        // 挂点的归属在脱到基本款后仍然有效。同一挂点的其他槽位重新登记时接管它。
+        var owner:Object = {};
+        movieClip["__dressupOwner_" + instanceName] = owner;
         unit.dressupRegistry[regKey] = {
             mc: movieClip,
+            owner: owner,
             instanceName: instanceName,
             referenceName: actualRefName,
             baseReferenceName: referenceName,
-            skinKeyName: skinKeyOverrides[referenceName] || referenceName.split("_引用")[0]
+            skinKeyName: skinKeyOverrides[baseRefName] || baseRefName.split("_引用")[0]
         };
 
         return doConfig(movieClip, skinConfig, instanceName, actualRefName, unit);
@@ -296,17 +303,8 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
             var entry:Object = registry[regKey];
             var mc:MovieClip = entry.mc;
 
-            // 检查 MC 是否仍然有效（未被销毁）
-            if (!mc || !mc._parent) {
-                delete registry[regKey];
-                continue;
-            }
-
-            // 同一路径已装入其他槽位的新皮肤时，旧 MC 引用可能重新指向它。
-            // 旧 entry 不能通过整体刷新重新覆盖新皮肤。
-            var currentSkin:MovieClip = mc[entry.instanceName];
-            if (entry.identity != undefined && currentSkin
-                    && currentSkin.__dressupPlacementIdentity !== entry.identity) {
+            // AVM1 可把旧引用重定向到同路径新剪辑。即使新槽位也为空，仍以挂点登记为准。
+            if (!mc || !mc._parent || mc["__dressupOwner_" + entry.instanceName] !== entry.owner) {
                 delete registry[regKey];
                 continue;
             }

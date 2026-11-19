@@ -7,12 +7,20 @@ import { OutputDirNotOwnedError } from "./types.js";
 import { isPathInsideRoot } from "./path-utils.js";
 import { getTagBlobInfo } from "./content-hash.js";
 import { spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 import { validateGitRef, validateGitPath } from "./git-utils.js";
 import { createMinifyPathMatcher, minifyByExtension } from "./minify.js";
 import { applyEstimatedSizes } from "./summary.js";
 import { estimateEtaMs } from "./format.js";
 
 const OUTPUT_DIR_MARKER = ".cf7-packer-output";
+const tooltipCompiler = "launcher/scripts/dist/tooltip-catalog-compiler.js";
+const tooltipReceipt = "data/tooltip/tooltip-catalog.manifest.json";
+const preparedTooltips = new Set(["data/tooltip/tooltip-catalog.json", tooltipReceipt, "launcher/web/generated/archive-equipment.json"]);
+const loaderModules = new Map([
+  ["scripts/asLoader.swf", "resident"], ["scripts/asLoaderShared.swf", "shared"], ["scripts/asLoaderLogic.swf", "boot"]
+]);
 
 /**
  * 校验输出目录安全性。此校验无论 forceClean 如何，一律执行，不可跳过。
@@ -83,6 +91,47 @@ export async function pack(
   config: PackConfig,
   options: PackerOptions
 ): Promise<PackResult> {
+  const selected = filterResult.included.map(entry => loaderModules.get(entry.path)).filter((name): name is string => Boolean(name));
+  if (options.dryRun || config.source.mode === "git-tag" || selected.length === 0) {
+    return packFiles(filterResult, config, options);
+  }
+  validateOutputDir(options.outputDir, config.source.repoRoot);
+  const started = Date.now();
+  // Snapshot only the selected loaders under one short resource lock. All
+  // later work, including unrelated file copies, reads those immutable bytes.
+  const snapshot = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-asloader-pack-"));
+  try {
+    const windows = process.platform === "win32";
+    // The Electron build bundles this module into web/dist/electron/main.cjs;
+    // CLI, source and bundle all sit under the same pack.config.yaml.
+    let packerRoot = path.dirname(fileURLToPath(import.meta.url));
+    while (!fs.existsSync(path.join(packerRoot, "pack.config.yaml"))) {
+      const parent = path.dirname(packerRoot);
+      if (parent === packerRoot) throw new Error("Cannot locate the cf7-packer workspace");
+      packerRoot = parent;
+    }
+    const helper = windows ? path.join(packerRoot, "scripts/snapshot-asloader.ps1")
+      : path.resolve(packerRoot, "../asloader_artifact_set.py");
+    const args = windows
+      ? ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", helper,
+         "-ProjectRoot", config.source.repoRoot, "-Destination", snapshot, "-Modules", selected.join(",")]
+      : [helper, "copy", "--root", config.source.repoRoot, "--destination", snapshot, "--modules", ...selected];
+    const result = spawnSync(windows ? "powershell.exe" : "python3", args, { encoding: "utf8", windowsHide: true });
+    if (result.error || result.status !== 0) {
+      return {mode: "execute", cancelled: false, totalFiles: filterResult.included.length, copiedFiles: 0,
+        totalSize: 0, layers: filterResult.layers, outputDir: path.resolve(options.outputDir), duration: Date.now() - started,
+        errors: [{ path: config.source.repoRoot, error: "Cannot read the asLoader set: " + (result.error?.message || result.stderr) }]};
+    }
+    const packed = await packFiles(filterResult, config, options, snapshot);
+    packed.duration = Date.now() - started;
+    return packed;
+  } finally {
+    fs.rmSync(snapshot, { recursive: true, force: true });
+  }
+}
+
+async function packFiles(filterResult: FilterResult, config: PackConfig, options: PackerOptions,
+  loaderSnapshot?: string): Promise<PackResult> {
   const startTime = Date.now();
   const { dryRun, outputDir, clean, forceClean, signal, onProgress } = options;
   const repoRoot = config.source.repoRoot;
@@ -91,12 +140,15 @@ export async function pack(
 
   const resolvedOutputDir = path.resolve(outputDir);
   const shouldMinifyPath = createMinifyPathMatcher(config.output.minify);
+  const generatesTooltips = filterResult.included.some(entry => entry.path === tooltipCompiler);
 
   // 安全校验（无论 dryRun/forceClean 均执行）
   validateOutputDir(resolvedOutputDir, repoRoot);
 
   if (!dryRun) {
     prepareOutputDir(resolvedOutputDir, clean, forceClean ?? false);
+    // An interrupted incremental pack cannot advertise an older snapshot as ready.
+    if (generatesTooltips) fs.rmSync(path.join(resolvedOutputDir, tooltipReceipt), {force:true});
   }
 
   // git-tag 模式下预取文件大小（单次 git ls-tree -rl）
@@ -159,6 +211,8 @@ export async function pack(
       continue;
     }
 
+    // Prepared after all selected source files have been copied, including tag packs.
+    if (generatesTooltips && preparedTooltips.has(entry.path)) continue;
     // 实际复制
     const destPath = path.join(resolvedOutputDir, entry.path);
     const destDir = path.dirname(destPath);
@@ -182,7 +236,9 @@ export async function pack(
         totalSize += content.length;
         packedEntries.set(entry.path, content.length);
       } else {
-        const srcPath = path.join(repoRoot, entry.path);
+        const srcPath = loaderSnapshot && loaderModules.has(entry.path)
+          ? path.join(loaderSnapshot, path.basename(entry.path))
+          : path.join(repoRoot, entry.path);
         const ext = path.extname(entry.path).toLowerCase();
         const srcStat = fs.statSync(srcPath);
         if (shouldMinifyPath(entry.path)) {
@@ -213,6 +269,23 @@ export async function pack(
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       errors.push({ path: entry.path, error: message });
+    }
+  }
+
+  // Worktree and tag packs both derive from the files actually selected and copied.
+  // Old tags without the shared compiler keep their original launcher's assets.
+  if (!dryRun && !cancelled && !errors.length && generatesTooltips) {
+    try {
+      const producer = createRequire(import.meta.url)("../../../../tooltip-catalog.cjs");
+      const result = producer.preparePackage(resolvedOutputDir, packedEntries);
+      for (const file of Object.keys(producer.assets(result))) {
+        const size = fs.statSync(path.join(resolvedOutputDir, file)).size;
+        if (!packedEntries.has(file)) copiedFiles++;
+        totalSize += size - (packedEntries.get(file) ?? 0);
+        packedEntries.set(file, size);
+      }
+    } catch (err) {
+      errors.push({ path: "data/tooltip/tooltip-catalog.json", error: err instanceof Error ? err.message : String(err) });
     }
   }
 

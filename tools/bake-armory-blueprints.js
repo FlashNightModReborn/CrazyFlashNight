@@ -4,12 +4,13 @@
  *  流程：按 swf 分组 → ffdec 导 symbolClass CSV 取 characterId → -selectid 导 sprite:svg
  *        首帧 SVG 后处理成白线稿（去填充/去滤镜/统一描边）→ launcher/web/assets/armory-blueprints/
  *  产出：blueprints/*.svg + manifest.json（图标名 → 文件名）
- *  用法：node tools/bake-armory-blueprints.js [--dry-run]
+ *  用法：node tools/bake-armory-blueprints.js [--dry-run]。--check-weapons 只读核对武器配方覆盖。
  *  方案与踩坑：docs/武器库蓝图描线-Flash素材烘焙与引用解析方案-2026-10-10.md
  */
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { loadItemMeta, itemIcon } = require('./lib/item-icons');
 // ffdec 导出与 SVG 线稿化/拼合已抽到共享库（情报插图烘焙同用）
 const {
   FFDEC, exportFirstFrameSvg, exportShapeSvg,
@@ -64,35 +65,57 @@ function dressupSlot(name) {
 }
 const DRY = process.argv.includes('--dry-run');
 const REUSE = process.argv.includes('--reuse');
+const CHECK_WEAPONS = process.argv.includes('--check-weapons');
+const ADVISORY = process.argv.includes('--advisory');
+for (const arg of process.argv.slice(2)) {
+  if (!['--dry-run', '--reuse', '--check-weapons', '--advisory'].includes(arg)) throw new Error('未知参数 ' + arg);
+}
+if (ADVISORY && !CHECK_WEAPONS) throw new Error('--advisory 仅适用于 --check-weapons');
 
 // ── 0. 物品名 → 运行时图标名：UI 按 output.icon 找蓝图文件，
 //    必须与物品 XML 的 <icon> 字段一致（韦森686改装版 → 图标「韦森686」）。
-const iconByName = {};
-const itemsDir = path.join(ROOT, 'data', 'items');
-for (const f of fs.readdirSync(itemsDir)) {
-  if (!/\.xml$/i.test(f)) continue;
-  const c = fs.readFileSync(path.join(itemsDir, f), 'utf8');
-  for (const m of c.matchAll(/<name>([^<]+)<\/name>[\s\S]{0,600}?<icon>([^<]*)<\/icon>/g)) {
-    const nm = m[1].trim(), ic = m[2].trim();
-    if (nm && ic) iconByName[nm] = ic;
+const itemMeta = loadItemMeta(ROOT, message => { throw new Error(message); });
+function readProducts(category) {
+  const file = path.join(ROOT, 'data', 'crafting', category + '.json');
+  const recipes = JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
+  return (Array.isArray(recipes) ? recipes : Object.values(recipes)).map(recipe => {
+    const name = recipe?.name || '';
+    const icon = itemIcon(itemMeta, name);
+    // 对齐 CraftingPanelService 对旧物品空值及字符串 undefined 的处理。
+    return {
+      recipeId: recipe?.recipeId,
+      name,
+      icon: icon.toLowerCase() === 'undefined' ? name : icon,
+      source: itemMeta[name]?.source,
+    };
+  });
+}
+
+if (CHECK_WEAPONS) {
+  const { checkWeaponBlueprints } = require('./lib/armory-blueprint-coverage');
+  const { findings, covered, exempt } = checkWeaponBlueprints(readProducts('武器合成'), OUT_DIR, BP_TUNE);
+  for (const finding of findings) {
+    if (process.env.GITHUB_ACTIONS === 'true') {
+      const escaped = finding.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+      console.log('::warning file=data/crafting/武器合成.json,title=武器合成蓝图::' + escaped);
+    } else console.warn(finding);
   }
+  console.log(`武器合成蓝图：覆盖 ${covered}，设计跳过 ${exempt}，待处理 ${findings.length}。`);
+  if (findings.length) {
+    console.log('请核对产物 icon。需补图时，在可运行 FFDec 的工作副本执行 node tools/bake-armory-blueprints.js，检查生成的 SVG 和 manifest.json。');
+    if (!ADVISORY) process.exitCode = 1;
+  }
+  return;
 }
 
 // ── 1. 收集产物图标名 ──
 // 饰品类（项链/军牌/耳坠/手镯）按设计不出蓝图：armory 面板对
 // 「饰品合成」类目不挂线稿层，这里直接不生成。
 const iconNames = new Set(); // 这里存「运行时图标名」= 文件名
-const recipeOf = {};         // iconName -> recipe name（审计用）
 for (const cat of CATEGORIES) {
   if (cat === '饰品合成') continue;
-  const file = path.join(ROOT, 'data', 'crafting', cat + '.json');
-  const recipes = JSON.parse(fs.readFileSync(file, 'utf8'));
-  const list = Array.isArray(recipes) ? recipes : Object.values(recipes);
-  for (const r of list) {
-    if (!r || !r.name) continue;
-    const icon = iconByName[r.name] || r.name;
-    iconNames.add(icon);
-    recipeOf[icon] = r.name;
+  for (const product of readProducts(cat)) {
+    if (product.name) iconNames.add(product.icon);
   }
 }
 console.log('product icon names:', iconNames.size);

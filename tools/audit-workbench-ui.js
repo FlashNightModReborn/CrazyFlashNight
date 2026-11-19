@@ -6,6 +6,10 @@ var path = require('path');
 var cssBundleReader = require('./lib/read-css-bundle.js');
 var uiRatchet = require('./lib/workbench-ui-ratchet.js');
 
+// Fixtures call the CLI's report writer in a child process without scanning the release tree.
+module.exports = finishAudit;
+if (require.main !== module) return;
+
 var ROOT = path.resolve(__dirname, '..');
 var errors = [];
 var warnings = [];
@@ -1302,25 +1306,29 @@ collectFiles('launcher/web/modules', '.js').filter(isProductionModule).forEach(f
         'WB026', 'domain modules must not install direct Bridge response listeners outside PanelResponseRouter', rel);
 });
 
-var strictWarnings = process.argv.indexOf('--strict-warnings') !== -1;
-var report = {
-    schemaVersion:1,
-    kind:'cf7-workbench-ui-audit',
-    baseline:'3343c1ef2244e0c6253fc95f5b6334095f049f57',
-    summary:{errors:errors.length, warnings:warnings.length, strictWarnings:strictWarnings},
-    metrics:metrics,
-    errors:errors,
-    warnings:warnings
-};
+finishAudit(errors, warnings, metrics, process.argv);
 
-if (process.argv.indexOf('--text') !== -1) {
-    console.log('[workbench-ui-audit] errors=' + errors.length + ' warnings=' + warnings.length);
-    errors.concat(warnings).forEach(function (item) {
-        console.log(' - ' + item.level.toUpperCase() + ' ' + item.code + ' ' + item.message
-            + (item.file ? ' [' + item.file + (item.line ? ':' + item.line : '') + ']' : ''));
-    });
-} else {
-    console.log(JSON.stringify(report, null, 2));
+function finishAudit(errors, warnings, metrics, args) {
+    var strictWarnings = args.indexOf('--strict-warnings') !== -1;
+    var report = {
+        schemaVersion:1,
+        kind:'cf7-workbench-ui-audit',
+        baseline:'3343c1ef2244e0c6253fc95f5b6334095f049f57',
+        summary:{errors:errors.length, warnings:warnings.length, strictWarnings:strictWarnings},
+        metrics:metrics,
+        errors:errors,
+        warnings:warnings
+    };
+
+    if (args.indexOf('--text') !== -1) {
+        console.log('[workbench-ui-audit] errors=' + errors.length + ' warnings=' + warnings.length);
+        errors.concat(warnings).forEach(function (item) {
+            console.log(' - ' + item.level.toUpperCase() + ' ' + item.code + ' ' + item.message
+                + (item.file ? ' [' + item.file + (item.line ? ':' + item.line : '') + ']' : ''));
+        });
+    } else {
+        console.log(JSON.stringify(report, null, 2));
+    }
+
+    process.exitCode = errors.length || (strictWarnings && warnings.length) ? 1 : 0;
 }
-
-if (errors.length || (strictWarnings && warnings.length)) process.exit(1);

@@ -117,7 +117,16 @@ function readHairCatalog() {
     expect(rows.length >= 77, 'maintained hairstyle catalog is incomplete: ' + rows.length);
     expect(rows[20].identifier === '发型-男式-平头' && rows[32].identifier === '发型-男式-平头',
         'expected the maintained duplicate at source indices 20 and 32');
-    return rows;
+    const service = fs.readFileSync(characterCreationServicePath, 'utf8');
+    const allowlist = /STARTER_HAIR:Array = \[([\s\S]*?)\];/.exec(service);
+    expect(allowlist, 'missing starter hair identifiers');
+    const identifiers = new Set(quotedValues(allowlist[1]));
+    const starter = rows.filter(row => identifiers.has(row.identifier));
+    expect(new Set(starter.map(row => row.identifier)).size === identifiers.size,
+        'a starter identifier is missing from the full catalog');
+    expect(rows.some(row => row.identifier === '发型-男式-盗贼风镜蒙面')
+        && !identifiers.has('发型-男式-盗贼风镜蒙面'), 'barber-only example must stay at the barber');
+    return starter;
 }
 
 function functionBody(source, name) {
@@ -686,6 +695,10 @@ async function run() {
     expect(fs.existsSync(playwrightModule), 'Playwright is missing; run npm --prefix launcher/perf ci --ignore-scripts');
     const hairCatalog = readHairCatalog();
     const hairCount = hairCatalog.length;
+    const flatTop = '发型-男式-平头';
+    const flatTopIndices = hairCatalog.flatMap((row, index) => row.identifier === flatTop ? [index] : []);
+    expect(flatTopIndices.length === 2, 'both flat-top source rows should be available');
+    const secondFlatTop = flatTopIndices[1];
     const template = snapshotTemplate(hairCatalog);
     verifyGraphemeFallback(template);
     const { chromium } = require(playwrightModule);
@@ -803,7 +816,7 @@ async function run() {
                         'R2 simultaneous equipment and hair, nameplate and focus: ' + JSON.stringify(equipmentLayout));
                     const hair = page.locator('#cc-hair-list');
                     await page.locator('#cc-hair-filter [data-group="all"]').click();
-                    expect(await hair.locator('[role="option"]').count() === hairCount, 'all hairstyles must be reachable');
+                    expect(await hair.locator('[role="option"]').count() === hairCount, 'all starter hairstyles must be reachable');
                     const stateBefore = await page.evaluate(() => window.BootstrapCharacterCreate.debugState().draft);
                     await hair.locator('[tabindex="0"]').press('End');
                     expect(await hair.locator('[aria-selected="true"]').getAttribute('data-index') === String(hairCount - 1),
@@ -1570,7 +1583,7 @@ async function run() {
             await page.waitForTimeout(180);
             await page.locator('#cc-hair-filter [data-group="all"]').click();
             const hairBefore = await page.evaluate(() => window.BootstrapCharacterCreate.debugState().draft.hairIdentifier);
-            await page.locator('#cc-hair-32').click();
+            await page.locator('#cc-hair-' + secondFlatTop).click();
             const hairEvidence = await page.evaluate(() => ({
 
                 hair:window.BootstrapCharacterCreate.debugState().draft.hairIdentifier,
@@ -1581,15 +1594,15 @@ async function run() {
                 slotText:document.getElementById('cc-preview-hair').textContent,
                 slotAria:document.querySelector('#cc-hair-list [aria-selected="true"]').getAttribute('aria-label')
             }));
-            const hairVisibleName = hairCatalog[32].name
+            const hairVisibleName = hairCatalog[secondFlatTop].name
                 .replace(/^发型[-－_\s]*(男式|女式)[-－_\s]*/, '');
             expect(hairEvidence.hair !== hairBefore
-                && hairEvidence.hair === hairCatalog[32].identifier
+                && hairEvidence.hair === hairCatalog[secondFlatTop].identifier
                 && hairEvidence.count === hairCount && hairEvidence.icons === hairCount
                 && hairEvidence.selected === 1 && hairEvidence.tabbable === 1
                 && hairEvidence.slotText.includes(hairVisibleName)
                 && !hairEvidence.slotText.includes('发型-男式-')
-                && hairEvidence.slotAria.includes(hairCatalog[32].name),
+                && hairEvidence.slotAria.includes(hairCatalog[secondFlatTop].name),
             'single hair slot + catalog icon pool did not preserve source order/selection: '
                 + JSON.stringify(hairEvidence));
             const extraCommands = await page.evaluate(count => window.__ccHarness.commands().slice(count), beforeMessages);
@@ -1683,7 +1696,7 @@ async function run() {
                 'male defaults do not match Host snapshot');
             expect(JSON.stringify(initial.hairCatalog) === JSON.stringify(hairCatalog.map(row => row.identifier)),
                 'hair catalog order changed between hairstyle.xml and production DOM runtime');
-            expect(initial.hairCatalog[20] === initial.hairCatalog[32], 'duplicate hairstyle was removed');
+            expect(initial.hairCatalog[flatTopIndices[0]] === initial.hairCatalog[secondFlatTop], 'duplicate hairstyle was removed');
             await page.locator('#cc-display-name').fill('不可被快照覆盖');
             await page.evaluate(() => window.__ccHarness.emit(window.__ccHarness.activeSnapshot()));
             const afterReplay = await page.evaluate(() => window.BootstrapCharacterCreate.debugState());
@@ -1921,7 +1934,7 @@ async function run() {
                 + (femaleCatalog.footwear.female.length - 1) + '"]').click();
             await page.locator('#cc-height').fill('199');
             await page.locator('#cc-hair-filter [data-group="all"]').click();
-            await page.locator('#cc-hair-32').click();
+            await page.locator('#cc-hair-' + secondFlatTop).click();
             await page.locator('#cc-next').click();
             await page.locator('#cc-difficulties [data-index="2"]').click();
             const expectedDraft = {

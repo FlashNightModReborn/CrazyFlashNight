@@ -213,6 +213,9 @@
         <chainUnit>
             <material>无壳</material>
         </chainUnit>
+        <attribute>
+            <continuationChance>25</continuationChance>
+        </attribute>
     </bullet>
     <bullet>
         <name>红色针弹</name>
@@ -328,6 +331,12 @@
         </attribute>
     </bullet>
     <bullet>
+        <name>精制普通子弹</name>
+        <attribute>
+            <continuationChance>25</continuationChance>
+        </attribute>
+    </bullet>
+    <bullet>
         <name>加强普通子弹</name>
         <chainUnit>
             <material>加强</material>
@@ -339,6 +348,7 @@
             <yOffset>0</yOffset>
         </shell>
         <attribute>
+            <continuationChance>50</continuationChance>
             <hitMark>弹坑</hitMark>
         </attribute>
     </bullet>
@@ -351,6 +361,7 @@
             <yOffset>0</yOffset>
         </shell>
         <attribute>
+            <continuationChance>75</continuationChance>
             <hitMark>弹坑</hitMark>
         </attribute>
     </bullet>
@@ -363,6 +374,7 @@
             <yOffset>0</yOffset>
         </shell>
         <attribute>
+            <continuationChance>100</continuationChance>
             <hitMark>弹坑</hitMark>
         </attribute>
     </bullet>
@@ -676,6 +688,7 @@
             <yOffset>0</yOffset>
         </shell>
         <attribute>
+            <continuationChance>50</continuationChance>
             <hitMark>灼烧弹坑</hitMark>
         </attribute>
     </bullet>

@@ -25,27 +25,94 @@ param(
     # 有界播放器控制，复用本事务/JSFL，仅关闭 Test Movie；不编译、不退出编辑器、不清未知闸。
     [switch]$StopTestPlayers,
     [switch]$QuitOwnedTestHost,
-    [switch]$ClearOwnedTestOutput
+    [switch]$ClearOwnedTestOutput,
+    [switch]$PlanOnly,
+    [switch]$ForceFull,
+    [switch]$Incremental,
+    # A module parent may publish only its exact catalog XFL/SWF pair in a fixed workspace.
+    [string]$ModuleWorkspace = '',
+    [ValidateSet('Mirror','Overlay')][string]$ModuleLayout,
+    [ValidateScript({ $_ -cmatch '^[a-z0-9][a-z0-9-]{0,55}$' })][string]$ExperimentOutput
 )
 
 $ErrorActionPreference = 'Stop'
+$childClock = [Diagnostics.Stopwatch]::StartNew()
+$moduleObservations = [ordered]@{}
+$observeModule = $false
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 
 $ScriptDir = Split-Path -Parent $PSCommandPath
 $ProjectDir = Split-Path -Parent $ScriptDir
-if ($Target -match '^(publish|asloader)$' -and (Test-Path -LiteralPath (Join-Path $ProjectDir 'tools/asloader-modules.json'))) {
+$moduleRoot = $ProjectDir
+$allowedRoots = @('live','workspace','overlay-workspace','overlay-live') | ForEach-Object {
+    Join-Path (Join-Path $ProjectDir 'tmp\asloader-p1') $_
+}
+if ($ModuleWorkspace) {
+    $moduleRoot = [IO.Path]::GetFullPath($ModuleWorkspace).TrimEnd('\')
+    if ($moduleRoot -notin $allowedRoots -or $env:CF7_FLASH_COMPILE_LEASE -notlike 'm1:*' -or
+        -not [IO.Path]::IsPathRooted($Target) -or -not [IO.Path]::IsPathRooted($VerifySwf) -or
+        -not $PublishOnly) { throw 'An exact workspace module publish requires its module parent and absolute XFL/SWF pair.' }
+} else {
+    foreach ($argument in @($Target,$VerifySwf)) {
+        if (-not $argument) { continue }
+        $path = if ([IO.Path]::IsPathRooted($argument)) { $argument } else { Join-Path $ProjectDir $argument }
+        foreach ($reserved in $allowedRoots) {
+            if ([IO.Path]::GetFullPath($path).StartsWith($reserved + '\', [StringComparison]::OrdinalIgnoreCase)) {
+                throw 'Use the module parent to publish an isolated module target.'
+            }
+        }
+    }
+}
+$catalogFile = Join-Path $ProjectDir 'tools/asloader-modules.json'
+$directModule = $null
+if ($Target -match '\.xfl$' -and -not $ModuleWorkspace -and (Test-Path -LiteralPath $catalogFile)) {
+    $directPath = if ([IO.Path]::IsPathRooted($Target)) { $Target } else { Join-Path $ProjectDir $Target }
+    $directCatalog = Get-Content -LiteralPath $catalogFile -Raw -Encoding UTF8 | ConvertFrom-Json
+    foreach ($name in @('resident','shared','boot')) {
+        if ([IO.Path]::GetFullPath($directPath) -ieq [IO.Path]::GetFullPath((Join-Path $ProjectDir $directCatalog.$name.xfl))) {
+            $directModule = $name
+        }
+    }
+}
+$managedDirectory = Join-Path $ProjectDir 'tmp/asloader-artifact-set'
+function Test-ManagedLoaderSet {
+    foreach ($name in @('active.json','pending.json','last-good.json')) {
+        if (Test-Path -LiteralPath (Join-Path $managedDirectory $name)) { return $true }
+    }
+    return $false
+}
+$publicModulePublish = $directModule -and $PublishOnly -and -not $env:CF7_FLASH_COMPILE_LEASE
+$routeDirect = $publicModulePublish -and (Test-ManagedLoaderSet)
+if ($publicModulePublish -and -not $routeDirect) {
+    # A native first publish must seed the whole set. A legacy file-association
+    # trigger still follows its pre-existing single-XFL flow on unmanaged roots.
+    $directTrigger = Get-ScheduledTask -TaskName 'CompileTriggerTask' -ErrorAction SilentlyContinue
+    $routeDirect = $directTrigger -and $directTrigger.Actions.Count -eq 1 -and
+        [IO.Path]::GetFileName($directTrigger.Actions[0].Execute) -ieq 'Flash.exe'
+}
+if (($Target -match '^(publish|asloader)$' -or $routeDirect) -and (Test-Path -LiteralPath $catalogFile)) {
     if ($StopTestPlayers -or $QuitOwnedTestHost -or $ClearOwnedTestOutput) { throw 'Player control cannot be combined with publishing.' }
     if ($VerifySwf) {
         $moduleVerifyPath=if([IO.Path]::IsPathRooted($VerifySwf)){$VerifySwf}else{Join-Path $ProjectDir $VerifySwf}
-        if ([IO.Path]::GetFullPath($moduleVerifyPath) -ine (Join-Path $ScriptDir 'asLoader.swf')) { throw 'Module publish always verifies the original asLoader entry and its complete module set.' }
+        $expected = if ($routeDirect) { Join-Path $ProjectDir $directCatalog.$directModule.swf } else { Join-Path $ScriptDir 'asLoader.swf' }
+        if ([IO.Path]::GetFullPath($moduleVerifyPath) -ine [IO.Path]::GetFullPath($expected)) { throw 'Target and verified loader artifact do not match.' }
     }
     $moduleTimeout=if($PSBoundParameters.ContainsKey('TimeoutSeconds')){$TimeoutSeconds}else{900}
     $moduleArgs=@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $ScriptDir 'publish-asloader-modules.ps1'),'-TimeoutSeconds',[string]$moduleTimeout)
     if($QuitFlashAfterPublish){$moduleArgs+='-QuitFlashAfterPublish'}
+    if($routeDirect){$moduleArgs+=@('-ForceModule',$directModule)}
+    if($ModuleLayout){$moduleArgs+=@('-ModuleLayout',$ModuleLayout)}
+    if($ExperimentOutput){$moduleArgs+=@('-ExperimentOutput',$ExperimentOutput)}
+    foreach ($switchName in @('PlanOnly','ForceFull','Incremental')) {
+        if ($PSBoundParameters[$switchName]) { $moduleArgs += ('-' + $switchName) }
+    }
     & powershell @moduleArgs
     exit $LASTEXITCODE
+}
+if ($PlanOnly -or $ForceFull -or $Incremental -or $ModuleLayout -or $ExperimentOutput) {
+    throw 'Module options require -Target publish or a supported direct module publish.'
 }
 $Marker = Join-Path $ScriptDir 'publish_done.marker'
 $ErrorMarker = Join-Path $ScriptDir 'publish_error.marker'
@@ -118,6 +185,33 @@ function Get-FlashVaSnapshot {
         return $null
     }
     $p = $procs[0]
+    if ($observeModule) {
+        foreach ($process in $procs) {
+            $created = $null
+            $cpu = $null
+            try { $created = $process.StartTime.ToUniversalTime().ToString('o') } catch {}
+            try {
+                $processorTime = $process.TotalProcessorTime
+                if ($null -ne $processorTime) { $cpu = $processorTime.TotalSeconds }
+            } catch {}
+            $identity = '{0}/{1}' -f $process.Id, $created
+            $virtual = [math]::Round($process.VirtualMemorySize64 / 1MB, 1)
+            $sample = $moduleObservations[$identity]
+            if (-not $sample) {
+                $sample = [ordered]@{pid=$process.Id; createdUtc=$created; firstAtSeconds=$childClock.Elapsed.TotalSeconds
+                    startVirtualMiB=$virtual; sampledPeakVirtualMiB=$virtual; firstCpuSeconds=$cpu; samples=0}
+                $moduleObservations[$identity] = $sample
+            }
+            $sample.samples += 1
+            $sample.sampledPeakVirtualMiB = [math]::Max($virtual, $sample.sampledPeakVirtualMiB)
+            $sample.lastVirtualMiB = $virtual
+            $sample.lifetimePeakVirtualMiB = [math]::Round($process.PeakVirtualMemorySize64 / 1MB, 1)
+            $sample.lastAtSeconds = $childClock.Elapsed.TotalSeconds
+            $sample.cpuDeltaSeconds = if ($created -and $null -ne $cpu -and $null -ne $sample.firstCpuSeconds) {
+                $cpu - $sample.firstCpuSeconds
+            } else { $null }
+        }
+    }
     return [pscustomobject]@{
         Pid            = $p.Id
         VirtualMiB     = [math]::Round($p.VirtualMemorySize64 / 1MB, 1)
@@ -347,10 +441,33 @@ try {
             # A module parent owns the same repository mutex without installing
             # TestLoader scratch. Its lease only admits catalogued publish XFLs.
             if (-not $PublishOnly -or -not $Target -or $StopTestPlayers -or $QuitOwnedTestHost -or $ClearOwnedTestOutput) { throw 'Module compile lease only admits explicit module publishing.' }
-            $leaseCatalog=Get-Content -LiteralPath (Join-Path $ProjectDir 'tools/asloader-modules.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+            $leaseCatalog=Get-Content -LiteralPath (Join-Path $moduleRoot 'tools/asloader-modules.json') -Raw -Encoding UTF8 | ConvertFrom-Json
             $leaseTarget=if([IO.Path]::IsPathRooted($Target)){$Target}else{Join-Path $ProjectDir $Target}
-            $leaseTargets=@('resident','shared','boot') | ForEach-Object {[IO.Path]::GetFullPath((Join-Path $ProjectDir $leaseCatalog.$_.xfl))}
-            if ([IO.Path]::GetFullPath($leaseTarget) -notin $leaseTargets) { throw 'Module lease target is outside its catalog.' }
+            $leaseSwf=if([IO.Path]::IsPathRooted($VerifySwf)){$VerifySwf}else{Join-Path $ProjectDir $VerifySwf}
+            $moduleName = @('resident','shared','boot') | Where-Object {
+                [IO.Path]::GetFullPath($leaseTarget) -eq [IO.Path]::GetFullPath((Join-Path $moduleRoot $leaseCatalog.$_.xfl)) -and
+                [IO.Path]::GetFullPath($leaseSwf) -eq [IO.Path]::GetFullPath((Join-Path $moduleRoot $leaseCatalog.$_.swf))
+            }
+            if (@($moduleName).Count -ne 1) { throw 'Module lease requires exactly one catalog XFL/SWF pair.' }
+            $observeModule = $true
+            if ($ModuleWorkspace) {
+                $shadowScripts = (Join-Path $moduleRoot 'scripts') + '\'
+                foreach ($leaf in @($leaseTarget, $leaseSwf)) {
+                    $full = [IO.Path]::GetFullPath($leaf)
+                    if (-not $full.StartsWith($shadowScripts, [StringComparison]::OrdinalIgnoreCase)) {
+                        throw 'Shadow module target is outside its scripts directory.'
+                    }
+                    for ($p=$full; $p -ine $ProjectDir; $p=Split-Path -Parent $p) {
+                        if ((Test-Path -LiteralPath $p) -and ((Get-Item -LiteralPath $p -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+                            throw ('A shadow module path is redirected: ' + $p)
+                        }
+                    }
+                }
+                $profile = [xml][IO.File]::ReadAllText((Join-Path (Split-Path -Parent $leaseTarget) 'PublishSettings.xml'))
+                $format = $profile.SelectSingleNode('/flash_profiles/flash_profile[@current="true"]/PublishFormatProperties')
+                if (-not $format -or $format.flashFileName -cne [IO.Path]::GetFileName($leaseSwf) -or
+                    $format.flash -ne '1' -or $format.flashDefaultName -ne '0') { throw 'Shadow publish profile does not target its catalog SWF.' }
+            }
         }
         $leaseProbeAcquired = $false
         try {
@@ -419,6 +536,9 @@ try {
     }
 
 # 编译目标切换：把 -Target 解析成具体 FLA/XFL，写 scripts/compile_target.cfg（file:/// URI）供 compile_action.jsfl 读取。
+if ($directModule -and (Test-ManagedLoaderSet)) {
+    throw 'A managed loader set must be built through -Target publish or an exact module -PublishOnly request.'
+}
 #   不传 -Target → 删除该文件 → JSFL 回退「当前活动文档」（向后兼容）。传 -Target → JSFL 读到后删除，避免旧目标残留。
 $TargetCfg = Join-Path $ScriptDir 'compile_target.cfg'
 $ModeCfg = Join-Path $ScriptDir 'compile_mode.cfg'
@@ -498,46 +618,24 @@ if ($QuitFlashAfterPublish -and $compileMode -ne 'publish') {
 #   （DoAction 0 字节，compiler_errors 仍报 0 错误），现有冒烟链抓不到。先 fail-fast，
 #   省掉一次 77-113s 的无效编译。非 TestLoader 目标在 node 缺失时仍降级为告警；
 #   TestLoader 已在目标解析后 fail-fast，因为其 function codeSize<60000 是硬门。
-$BomChecker = Join-Path $ProjectDir 'tools\check-bom.js'
+$BomChecker = Join-Path $moduleRoot 'tools\check-bom.js'
+if ($ModuleWorkspace -and -not (Test-Path -LiteralPath $BomChecker -PathType Leaf)) {
+    throw 'Frozen asLoader BOM validator is missing.'
+}
 if (Test-Path $BomChecker) {
     if (-not $nodeCmd) {
         $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
     }
     if ($nodeCmd) {
-        # asLoader #include 闭包 + import 类包/TestLoader 入口：
-        #   import 目标不在 #include 图内 → 显式覆盖，避免 CS6 静默跳过类体或首行语法错。
-        $BootClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\boot'
-        $ServerClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\neur\Server'
-        $StateMachineDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\neur\StateMachine'
-        $CommDir = Join-Path $ProjectDir 'scripts\通信'
-        $TestLoaderEntry = Join-Path $ProjectDir 'scripts\TestLoader.as'
-        # 主文件 classpath = scripts\类定义\；web-panel 迁移类（task/merc/skill/stageSelect）近期高频编辑，
-        #   BOM 丢失会被 CS6 静默跳过整类 → 入门 BOM 门覆盖这些 arki 子树，配合 main 目标 publish 验证。
-        $TaskClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\task'
-        $MercClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\merc'
-        $SkillClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\skill'
-        $StageSelectClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\stageSelect'
-        $SceneClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\scene'
-        $ObstacleRendererFile = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\ElementComponent\ObstacleRenderer.as'
-        $BomArgs = @()
-        if (Test-Path $BootClassDir) { $BomArgs += @('--dir', $BootClassDir) }
-        if (Test-Path $ServerClassDir) { $BomArgs += @('--dir', $ServerClassDir) }
-        if (Test-Path $StateMachineDir) { $BomArgs += @('--dir', $StateMachineDir) }
-        if (Test-Path $CommDir) { $BomArgs += @('--dir', $CommDir) }
-        if (Test-Path $TaskClassDir) { $BomArgs += @('--dir', $TaskClassDir) }
-        if (Test-Path $MercClassDir) { $BomArgs += @('--dir', $MercClassDir) }
-        if (Test-Path $SkillClassDir) { $BomArgs += @('--dir', $SkillClassDir) }
-        if (Test-Path $StageSelectClassDir) { $BomArgs += @('--dir', $StageSelectClassDir) }
-        if (Test-Path $SceneClassDir) { $BomArgs += @('--dir', $SceneClassDir) }
-        if (Test-Path $ObstacleRendererFile) { $BomArgs += @('--file', $ObstacleRendererFile) }
-        if (Test-Path $TestLoaderEntry) { $BomArgs += @('--file', $TestLoaderEntry) }
-        Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as'
-        & node $BomChecker @BomArgs
+        $bomScope = if ($ModuleWorkspace) { '--module-scope' } else { '--compile-scope' }
+        Write-Host "[INFO] 预编译 BOM 门: check-bom $bomScope"
+        & node $BomChecker --root $moduleRoot $bomScope
         if ($LASTEXITCODE -ne 0) {
             Write-Host '[ERROR] BOM 门失败：存在缺 BOM 的 #include .as，编译器会静默跳过其内容。修复后重试。'
             exit 1
         }
     } else {
+        if ($ModuleWorkspace) { throw 'Node is required for the frozen asLoader BOM gate.' }
         Write-Host '[WARN] 未找到 node，跳过预编译 BOM 门（建议安装 node 以启用静默-跳过防护）'
     }
 }
@@ -545,7 +643,8 @@ if (Test-Path $BomChecker) {
 Remove-Item -Path $Marker -ErrorAction SilentlyContinue
 Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
 
-$flashLogBeforeItem = if (Test-Path $FlashLog) { Get-Item $FlashLog } else { $null }
+$capturePlayerTrace = $compileMode -ne 'publish'
+$flashLogBeforeItem = if ($capturePlayerTrace -and (Test-Path $FlashLog)) { Get-Item $FlashLog } else { $null }
 $flashLogBefore = if ($flashLogBeforeItem) { $flashLogBeforeItem.LastWriteTimeUtc } else { $null }
 $flashLogBeforeBytes = if ($flashLogBeforeItem) {
     Read-FlashLogBytes -Path $FlashLog
@@ -652,12 +751,29 @@ $maxPeakVirtualMiB = if ($null -ne $vaAtStart) { $vaAtStart.PeakVirtualMiB } els
 
 Write-Host ('[INFO] 触发编译... (超时 {0}s)' -f $TimeoutSeconds)
 $compileStartedUtc = [System.DateTime]::UtcNow
+$compileClock = [Diagnostics.Stopwatch]::StartNew()
 if ($targetUri) {
     [System.IO.File]::WriteAllText($TargetCfg, $targetUri, (New-Object System.Text.UTF8Encoding($false)))
 }
 # publish 模式（main）→ 写 compile_mode.cfg，compile_action.jsfl 读到后用 doc.publish() 而非 testMovie。
 if ($compileMode -eq 'publish') {
     [System.IO.File]::WriteAllText($ModeCfg, $compileMode, (New-Object System.Text.UTF8Encoding($false)))
+} elseif (-not $Target -and (Test-ManagedLoaderSet)) {
+    # CS6 gets this request's three exact XFL paths as data; JSON parsing
+    # belongs to PowerShell. The existing one-shot mode file is consumed by JSFL.
+    $activeCatalog = Get-Content -LiteralPath $catalogFile -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($activeCatalog.schema -cne 'cf7-asloader-modules.v1') { throw 'Invalid asLoader catalog for active-document compilation.' }
+    $paths = @(foreach ($name in @('resident','shared','boot')) {
+        $rel = [string]$activeCatalog.$name.xfl
+        if ($rel -cnotmatch '^scripts/(?:[^/\\:%\r\n]+/)+[^/\\:%\r\n]+\.xfl$' -or
+                $rel.Split('/') -contains '..' -or $rel.Split('/') -contains '.') {
+            throw "Invalid active-document module path: $name"
+        }
+        $rel
+    })
+    if (@($paths | Sort-Object -Unique).Count -ne 3) { throw 'Expected three distinct asLoader XFL paths.' }
+    $activeRequest = (@('test','managed-active-v1') + $paths) -join [Environment]::NewLine
+    [System.IO.File]::WriteAllText($ModeCfg, $activeRequest, (New-Object System.Text.UTF8Encoding($false)))
 }
 if ($QuitFlashAfterPublish) {
     [System.IO.File]::WriteAllText($QuitCfg, 'quit', (New-Object System.Text.UTF8Encoding($false)))
@@ -667,7 +783,7 @@ $compileTriggered = $true
 $reopenRequestCount = 0
 Start-ScheduledTask -TaskName 'CompileTriggerTask'
 
-for ($i = 1; $i -le $TimeoutSeconds; $i++) {
+while ($compileClock.Elapsed.TotalSeconds -lt $TimeoutSeconds) {
     $vaSample = Get-FlashVaSnapshot
     if ($null -ne $vaSample -and $vaSample.PeakVirtualMiB -gt $maxPeakVirtualMiB) {
         $maxPeakVirtualMiB = $vaSample.PeakVirtualMiB
@@ -675,7 +791,7 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
     if (Test-Path $Marker) {
         $compileTerminalObserved = $true
         Remove-OwnedCompileUncertain -ExpectedBody $inFlightUncertainBody
-        Write-Host ('[OK] 编译完成 ({0}s)' -f $i)
+        Write-Host ('[OK] 编译完成 ({0:N2}s)' -f $compileClock.Elapsed.TotalSeconds)
         $vaAtEnd = Get-FlashVaSnapshot
         if ($null -ne $vaAtEnd -and $vaAtEnd.PeakVirtualMiB -gt $maxPeakVirtualMiB) {
             $maxPeakVirtualMiB = $vaAtEnd.PeakVirtualMiB
@@ -689,7 +805,7 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         Remove-Item -Path $Marker -ErrorAction SilentlyContinue
 
         $flashTraceContent = $null
-        if (Test-Path $FlashLog) {
+        if ($capturePlayerTrace -and (Test-Path $FlashLog)) {
             $flashLogItem = Get-Item $FlashLog
             if ($flashLogBefore -and $flashLogItem.LastWriteTimeUtc -le $flashLogBefore) {
                 Write-Host '[WARN] flashlog.txt 未刷新，本次 trace 可能还是旧日志'
@@ -723,21 +839,35 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
                 Write-Host '=== END ==='
                 [System.IO.File]::WriteAllText($LocalFlashLog, $flashTraceContent, [System.Text.UTF8Encoding]::new($false))
             }
-        } else {
-            Write-Host '[INFO] 无 trace 输出 (publish 模式不执行 trace)'
+        } elseif ($capturePlayerTrace) {
+            Write-Host '[INFO] 本轮未发现播放器 trace 文件。'
         }
 
+        $freshOutput = $false
         if (Test-Path $CompileOutput) {
             $compileOutputItem = Get-Item $CompileOutput
-            if ($compileOutputBefore -and $compileOutputItem.LastWriteTimeUtc -le $compileOutputBefore) {
+            if (($compileOutputBefore -and $compileOutputItem.LastWriteTimeUtc -le $compileOutputBefore) -or
+                $compileOutputItem.LastWriteTimeUtc -lt $compileStartedUtc.AddSeconds(-1)) {
                 Write-Host '[WARN] compile_output.txt 未刷新；若本次需要看 Output Panel，请直接检查 Flash IDE 面板'
             } else {
+                $freshOutput = $true
                 Write-Host ('[INFO] compile_output.txt 已刷新: {0}' -f $compileOutputItem.LastWriteTime)
             }
         }
 
         # Compiler Errors 是所有目标的成功必需证据：必须由本轮重新导出且严格为 0/0。
         $hasCompileError = $false
+        if ($compileLease.StartsWith('m1:')) {
+            $outputText = if ($freshOutput) { [IO.File]::ReadAllText($CompileOutput) } else { '' }
+            if ($outputText -notmatch '(?m)^\[compile\] done\s*$') {
+                Write-Host '[ERROR] Module publish lacks a fresh terminal Output Panel record.'
+                $hasCompileError = $true
+            }
+            if ($outputText.Contains('[compile] ASO 32K branch detected')) {
+                Write-Host '[ERROR] Module required a 32K recovery retry; see compile_output.txt.'
+                $hasCompileError = $true
+            }
+        }
         if (-not (Test-Path $CompilerErrors)) {
             Write-Host '[ERROR] 本轮没有导出 compiler_errors.txt；不能用 marker 或 SWF 刷新替代编译器 0/0 证据。'
             $hasCompileError = $true
@@ -805,17 +935,17 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         $hasOwnershipFailure = $false
         $hasInheritanceFailure = $false
         if (-not $isTestLoaderTarget -and $VerifySwfPath -and
-            $VerifySwfPath.StartsWith($ProjectDir + [System.IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -and
+            $VerifySwfPath.StartsWith($moduleRoot + [System.IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -and
             -not ($hasCompileError -or $hasTraceFailure -or $hasSwfStale)) {
-            $ownershipRelative = $VerifySwfPath.Substring($ProjectDir.Length + 1).Replace('\', '/')
+            $ownershipRelative = $VerifySwfPath.Substring($moduleRoot.Length + 1).Replace('\', '/')
             $moduleName=$null
-            $moduleCatalogPath=Join-Path $ProjectDir 'tools/asloader-modules.json'
+            $moduleCatalogPath=Join-Path $moduleRoot 'tools/asloader-modules.json'
             if(Test-Path -LiteralPath $moduleCatalogPath) {
                 $moduleCatalog=Get-Content -LiteralPath $moduleCatalogPath -Raw -Encoding UTF8 | ConvertFrom-Json
                 foreach($name in @('resident','shared','boot')) {if($moduleCatalog.$name.swf -eq $ownershipRelative){$moduleName=$name}}
             }
             if ($moduleName) {
-                & node (Join-Path $ProjectDir 'tools/audit-as2-class-embedding.js') --module $moduleName
+                & node (Join-Path $ProjectDir 'tools/audit-as2-class-embedding.js') --root $moduleRoot --module $moduleName
                 if ($LASTEXITCODE -ne 0) { $hasOwnershipFailure = $true }
             } elseif ($ownershipRelative -eq 'scripts/asLoader.swf' -or
                 $ownershipRelative -eq 'CRAZYFLASHER7MercenaryEmpire.swf' -or
@@ -955,6 +1085,12 @@ Write-Host '  - 慢 CPU / 低压平板编译未结束 → 用 -TimeoutSeconds �
 $nonTerminalUncertainWritten = $true
 exit 1
 } finally {
+    if ($observeModule) {
+        $timing = [ordered]@{target=$Target; childSeconds=$childClock.Elapsed.TotalSeconds
+            dispatchThroughChecksSeconds=if ($compileClock) { $compileClock.Elapsed.TotalSeconds } else { $null }
+            terminalObserved=$compileTerminalObserved; flashProcesses=@($moduleObservations.Values)}
+        Write-Host ('[CS6 telemetry] ' + ($timing | ConvertTo-Json -Depth 5 -Compress))
+    }
     if (-not $StopTestPlayers -and -not $QuitOwnedTestHost) { Remove-Item -LiteralPath $QuitCfg -ErrorAction SilentlyContinue }
     if ($compileTriggered -and -not $compileTerminalObserved -and
         -not $nonTerminalUncertainWritten) {

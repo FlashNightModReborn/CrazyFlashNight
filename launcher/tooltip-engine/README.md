@@ -20,7 +20,7 @@ TooltipEngine.buildProjection(input: TooltipInput, catalog: TooltipCatalog): {
 
 | 数据 | 生产来源 | TypeScript 职责 |
 | --- | --- | --- |
-| 名称、描述、图标、插件说明、配方与材料引用 | `data/tooltip/tooltip-catalog.json` | 查表与展示 |
+| 名称、描述、图标、插件说明、配方与材料引用 | 源码工作区即时快照 / 发行包 `data/tooltip/tooltip-catalog.json` | 查表与展示 |
 | 装备最终属性、涂装、技能、生命周期 | AS2 真实 `BaseItem.getData()` 的字段白名单 | 直接展示，不复算 |
 | 品阶覆盖后的基底属性 | AS2 `TooltipDataSelector.getEquipmentData()` | 展示基础值及差值；任何有 `data` 且不是药剂的物品均需要此投影 |
 | 已安装插件的注册状态、已匹配 use/bullet 分支及有效技能 | 原 `ModRegistry` | 消费匹配结果，不重做资格或条件选择 |
@@ -104,7 +104,7 @@ npm test --prefix launcher/tooltip-engine
 python3 tools/build-tooltip-catalog.py --check
 ```
 
-唯一生产产物是 `launcher/scripts/dist/tooltip-bundle.js`。`build.cjs --check` 在临时目录编译并逐字比较，防止提交的 bundle 与 TS 源码漂移。
+生产脚本产物为 `launcher/scripts/dist/tooltip-bundle.js` 与 `launcher/scripts/dist/tooltip-catalog-compiler.js`；`build-tooltip-catalog.py --check` 只读校验源数据，不改写工作区文件。`build.cjs --check` 在临时目录编译并逐字比较，防止提交的 bundle 与 TS 源码漂移。
 
 现有测试分开记录以下证据：
 

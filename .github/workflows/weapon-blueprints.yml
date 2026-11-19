@@ -1,0 +1,40 @@
+name: 武器合成蓝图
+# 工作流及其读取蓝图的脚本登记在 config/build/runtime-inputs.v2.json 的 policy.fixedFiles。
+
+on:
+  pull_request:
+    paths: &blueprint_paths
+      - 'data/crafting/武器合成.json'
+      - 'data/items/**/*.xml'
+      - 'launcher/web/assets/armory-blueprints/**'
+      - 'tools/bake-armory-blueprints.js'
+      - 'tools/lib/armory-blueprint-coverage.js'
+      - 'tools/lib/blueprint-svg.js'
+      - 'tools/lib/item-icons.js'
+      - '.github/workflows/weapon-blueprints.yml'
+  push:
+    branches: [main]
+    paths: *blueprint_paths
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    name: 武器合成蓝图覆盖提醒
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /data/crafting/武器合成.json
+            /data/items/**/*.xml
+            /launcher/web/assets/armory-blueprints/
+            /tools/bake-armory-blueprints.js
+            /tools/lib/armory-blueprint-coverage.js
+            /tools/lib/blueprint-svg.js
+            /tools/lib/item-icons.js
+      - name: 核对配方产物、图标名与蓝图文件
+        run: node tools/bake-armory-blueprints.js --check-weapons --advisory

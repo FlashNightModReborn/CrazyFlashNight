@@ -3,6 +3,7 @@ param(
     [string]$DeploymentRoot,
     [switch]$Staged,
     [switch]$IntegrityOnly,
+    [string]$FrozenSourceCommitOid,
     [string]$FileInventoryPath,
     [switch]$Json
 )
@@ -14,8 +15,8 @@ if (-not $DeploymentRoot) { $DeploymentRoot = $ProjectRoot }
 $DeploymentRoot = (Resolve-Path -LiteralPath $DeploymentRoot).Path.TrimEnd('\')
 if ($Staged -and $DeploymentRoot -ne $ProjectRoot) { throw '-Staged cannot use a separate DeploymentRoot.' }
 
-. (Join-Path $ProjectRoot 'tools\runtime-build-common.ps1')
-. (Join-Path $ProjectRoot 'tools\runtime-build-v2-common.ps1')
+. (Join-Path $PSScriptRoot 'runtime-build-common.ps1')
+. (Join-Path $PSScriptRoot 'runtime-build-v2-common.ps1')
 
 function Test-Cf7V2ManifestPath([string]$Path) {
     if ([string]::IsNullOrWhiteSpace($Path) -or $Path.Contains('\') -or $Path.Contains(':')) { return $false }
@@ -30,19 +31,19 @@ function Get-Cf7V2DeploymentPaths {
         $paths = @(& git -C $ProjectRoot ls-files -- 'CRAZYFLASHER7MercenaryEmpire.exe' 'runtime')
         if ($LASTEXITCODE -ne 0) { throw 'Cannot enumerate staged runtime deployment.' }
         return @($paths | ForEach-Object { $_.Replace('\','/') } |
-            Where-Object { $_ -ne 'runtime/cf7-runtime-manifest.tsv' } | Sort-Object -Unique)
+            Where-Object { $_ -cne 'runtime/cf7-runtime-manifest.tsv' })
     }
     $paths = @()
     $rootExe = Join-Path $DeploymentRoot 'CRAZYFLASHER7MercenaryEmpire.exe'
     if (Test-Path -LiteralPath $rootExe -PathType Leaf) { $paths += 'CRAZYFLASHER7MercenaryEmpire.exe' }
     $runtimeDir = Join-Path $DeploymentRoot 'runtime'
     if (Test-Path -LiteralPath $runtimeDir -PathType Container) {
-        Get-ChildItem -LiteralPath $runtimeDir -Recurse -File | ForEach-Object {
+        Get-ChildItem -LiteralPath $runtimeDir -Force -Recurse -File | ForEach-Object {
             $relative = $_.FullName.Substring($DeploymentRoot.Length + 1).Replace('\','/')
-            if ($relative -ne 'runtime/cf7-runtime-manifest.tsv') { $paths += $relative }
+            if ($relative -cne 'runtime/cf7-runtime-manifest.tsv') { $paths += $relative }
         }
     }
-    return @($paths | Sort-Object -Unique)
+    return $paths
 }
 
 function Get-Cf7V2PathBytes([string]$RelativePath) {
@@ -105,12 +106,15 @@ if (-not $manifestPaths.Contains('CRAZYFLASHER7MercenaryEmpire.exe')) { throw 'M
 
 $errors = @()
 $actualPaths = @(Get-Cf7V2DeploymentPaths)
-$actualSet = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+$actualSet = New-Object 'System.Collections.Generic.Dictionary[string,string]' ([StringComparer]::OrdinalIgnoreCase)
 foreach ($path in $actualPaths) {
-    if (-not $actualSet.Add($path)) { throw "Duplicate/case-colliding deployed path: $path" }
+    if ($actualSet.ContainsKey($path)) { throw "Duplicate/case-colliding deployed path: $path" }
+    $actualSet.Add($path,$path)
 }
-foreach ($path in $manifestPaths) { if (-not $actualSet.Contains($path)) { $errors += "manifest path missing: $path" } }
-foreach ($path in $actualSet) { if (-not $manifestPaths.Contains($path)) { $errors += "undeclared deployment file: $path" } }
+foreach ($path in $manifestPaths) {
+    if (-not $actualSet.ContainsKey($path) -or $actualSet[$path] -cne $path) { $errors += "manifest path missing or case mismatch: $path" }
+}
+foreach ($path in $actualSet.Keys) { if (-not $manifestPaths.Contains($path)) { $errors += "undeclared deployment file: $path" } }
 
 foreach ($row in $fileRows) {
     try {
@@ -138,7 +142,17 @@ if ($manifestBuildIdentity -ne $metadata.buildIdentityHash) {
 
 $mode = if ($Staged) { 'Index' } else { 'Worktree' }
 $state = 'integrity-only'
-if (-not $IntegrityOnly) {
+if ($IntegrityOnly -and $FrozenSourceCommitOid) { throw 'Frozen source verification requires full identity checks.' }
+if ($FrozenSourceCommitOid) {
+    . (Join-Path $PSScriptRoot 'runtime-release-admission.ps1')
+    $frozenIdentity = Get-Cf7RuntimeFrozenIdentity -ProjectRoot $ProjectRoot -SourceCommitOid $FrozenSourceCommitOid
+    foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','buildIdentityHash')) {
+        if ([string]$frozenIdentity.$field -cne [string]$metadata.$field) {
+            $errors += "frozen $field expected=$($metadata.$field) actual=$($frozenIdentity.$field)"
+        }
+    }
+    $state = 'frozen-source'
+} elseif (-not $IntegrityOnly) {
     $actualArtifactSourceHash = Get-Cf7RuntimeArtifactSourceHash -ProjectRoot $ProjectRoot -Mode $mode
     $actualProducerRecipeHash = Get-Cf7RuntimeProducerRecipeHash -ProjectRoot $ProjectRoot -Mode $mode
     $actualToolchainLockHash = Get-Cf7RuntimeToolchainLockHashV2 -ProjectRoot $ProjectRoot -Mode $mode

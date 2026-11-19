@@ -196,6 +196,21 @@ exit 0
 
     # 1. Passing checks produce a fully bound v2 receipt and do not touch tracked bytes.
     $passManifest = Join-Path $fixtureRoot 'tmp\pass-manifest.json'
+    # The optional source-only mode must fail a genuine missing tool/input and
+    # cannot enter either the explicit or default production receipt path.
+    $preflightReceipt = Join-Path $fixtureRoot 'tmp\unexpected-preflight-receipt.json'
+    $previousPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $failedQuick = @(& $powershell -NoProfile -ExecutionPolicy Bypass -File $validator -ProjectRoot $fixtureRoot -Preflight 2>&1)
+        $quickExit = $LASTEXITCODE
+        $null = & $powershell -NoProfile -ExecutionPolicy Bypass -File $validator -ProjectRoot $fixtureRoot -Preflight -ReceiptPath $preflightReceipt 2>&1
+        $mixedExit = $LASTEXITCODE
+    } finally { $ErrorActionPreference = $previousPreference }
+    Assert-Cf7Test ($quickExit -ne 0 -and ($failedQuick -join ' ').Contains('[RuntimePolicyPreflight] material-catalog-current passed=False')) 'source preflight must execute and fail a missing built-in check'
+    Assert-Cf7Test ($mixedExit -ne 0 -and -not (Test-Path -LiteralPath $preflightReceipt)) 'preflight and release receipt parameters must be mutually exclusive'
+    Assert-Cf7Test (-not (Test-Path -LiteralPath (Join-Path $fixtureRoot 'tmp\runtime-policy-receipts'))) 'preflight must not write a default production receipt'
+
     $passReceipt = Join-Path $fixtureRoot 'tmp\pass-receipt.json'
     Write-Cf7TestManifest -Path $passManifest -Entries @(
         [ordered]@{ name = 'fixture-resource'; kind = 'requiredPaths'; root = '${PROJECT_ROOT}\assets'; paths = @('present.txt') },
