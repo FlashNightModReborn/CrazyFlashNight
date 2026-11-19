@@ -75,6 +75,7 @@ jobs:
           sparse-checkout: |
             /config/build/runtime-github-builder.v2.json
             /config/build/runtime-inputs.v2.json
+            /tools/runtime-build-attestation-v2-common.ps1
             /tools/materialize-runtime-build-inputs.ps1
             /tools/runtime-build-v2-common.ps1
 
@@ -92,8 +93,10 @@ jobs:
           git diff --cached --quiet --exit-code
           if ($LASTEXITCODE -ne 0) { throw 'Index changed immediately after checkout.' }
           $cloudConfig = Get-Content -LiteralPath .\config\build\runtime-github-builder.v2.json -Raw -Encoding UTF8 | ConvertFrom-Json
-          if ([string]$cloudConfig.sourceRef -cne $env:GITHUB_REF) {
-            throw "Requested tree is not bound to this workflow ref: config=$($cloudConfig.sourceRef) actual=$env:GITHUB_REF"
+          . .\tools\runtime-build-attestation-v2-common.ps1
+          $expectedRef = Resolve-Cf7RuntimeGitHubSourceRef -Config $cloudConfig -SourceCommitOid $head
+          if ($expectedRef -cne $env:GITHUB_REF) {
+            throw "Requested tree is not bound to this workflow ref: config=$expectedRef actual=$env:GITHUB_REF"
           }
 
       - name: Materialize exact runtime identity domains

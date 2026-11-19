@@ -98,6 +98,7 @@ function New-TestFixture([ValidateSet('v1','v2')][string]$ManifestVersion = 'v1'
     $root = Join-Path $script:testRoot ([Guid]::NewGuid().ToString('N'))
     [void](New-Item -ItemType Directory -Path $root -Force)
     [void](New-Item -ItemType Directory -Path (Join-Path $root 'tools') -Force)
+    Copy-Item -LiteralPath (Join-Path $repoRoot 'tools/runtime-release-admission.ps1') -Destination (Join-Path $root 'tools/runtime-release-admission.ps1')
     Copy-Item -LiteralPath $script:classifierSource -Destination (Join-Path $root 'tools\classify-runtime-release-state.ps1')
     Copy-Item -LiteralPath $script:runtimeV2CommonSource -Destination (Join-Path $root 'tools\runtime-build-v2-common.ps1')
     Copy-Item -LiteralPath $script:runtimeAttestationCommonSource -Destination (Join-Path $root 'tools\runtime-build-attestation-v2-common.ps1')
@@ -114,9 +115,9 @@ exit $code
     Set-TestFile (Join-Path $root 'tools\verify-runtime-bundle.ps1') ($bundleStub.Replace('__KIND__','v1'))
     Set-TestFile (Join-Path $root 'tools\verify-runtime-bundle-v2.ps1') ($bundleStub.Replace('__KIND__','v2'))
     Set-TestFile (Join-Path $root 'tools\verify-runtime-consensus.ps1') @'
-param([string]$ProjectRoot, [switch]$Staged, [switch]$IntegrityOnly)
+param([string]$ProjectRoot, [switch]$Staged, [switch]$IntegrityOnly, [switch]$HistoricalSource)
 $control = Get-Content -LiteralPath (Join-Path $ProjectRoot '.cf7-test-control.json') -Raw | ConvertFrom-Json
-$phase = if ($IntegrityOnly) { 'integrity' } else { 'strict' }
+$phase = if ($IntegrityOnly) { 'integrity' } elseif ($HistoricalSource) { 'history' } else { 'strict' }
 [IO.File]::AppendAllText((Join-Path $ProjectRoot '.cf7-calls.log'), "consensus:$phase`n")
 $code = if ($IntegrityOnly) { [int]$control.consensusIntegrityExit } else { [int]$control.consensusExit }
 Write-Host "[StubConsensus] phase=$phase exit=$code"
@@ -165,6 +166,7 @@ exit $code
                     'data/map/map_definition.json',
                     'tools/lib/map-domain.js',
                     'tools/classify-runtime-release-state.ps1',
+                    'tools/runtime-release-admission.ps1',
                     'tools/verify-runtime-bundle.ps1',
                     'tools/verify-runtime-bundle-v2.ps1',
                     'tools/verify-runtime-consensus.ps1'
@@ -483,6 +485,36 @@ try {
         Assert-Test ($failedResult.ExitCode -ne 0) 'deployment without strict consensus unexpectedly passed audit'
         Assert-Test ((Get-TestCalls $failing) -join ',' -eq 'v2:integrity,v2:strict,consensus:strict') `
             'failed deployment audit must reach and enforce strict consensus'
+    }
+
+    Run-Test 'Batch push verifies both actual deployment parents and reports a later source tip' {
+        # Verifier stubs below record entry and order. Real signature/byte checks
+        # belong to test-runtime-release-consensus-v2 and the production audit.
+        $f = New-TestFixture v2
+        $settings = @{
+            'config/build/runtime-github-builder.v2.json' = '{"sourceRefNamespace":"refs/tags/runtime-build-v2/"}'
+            'tools/invoke-runtime-publication.ps1' = '# fixture marks the installed reader-first protocol'
+            'tools/asloader-modules.json' = '{"schema":"cf7-asloader-modules.v1","shared":{"classes":["org.flashNight.arki.bullet.Example"]}}'
+            'scripts/类定义/org/flashNight/arki/bullet/Example.as' = '// frozen compiled class source'
+        }
+        $initialSource = Add-TestFilesCommit $f $settings 'install publication reader'
+        function New-TestReleaseRecord([string]$source) {
+            $tree = @(Invoke-TestGit $f.Root @('rev-parse',"$source^{tree}"))[0]
+            [void](Invoke-TestGit $f.Root @('tag',"runtime-build-v2/$source",$source))
+            return (@{ schema='cf7-runtime-release-consensus.v2'; sourceCommitOid=$source; releaseTreeOid=$tree
+                buildIdentityHash=('D'*64); payloadClosureHash=('F'*64); attestations=@() } | ConvertTo-Json -Compress)
+        }
+        $recordPath = 'config/build/runtime-release-consensus.json'
+        $previous = Add-TestCommit $f $recordPath (New-TestReleaseRecord $initialSource)
+        $s1 = Add-TestCommit $f 'docs/reports/first.md' 'first source'
+        $s2 = Add-TestFilesCommit $f @{'docs/reports/second.md'='second source'; 'scripts/类定义/org/flashNight/arki/bullet/Example.as'='// later uncompiled edit'} 'advance source'
+        $p1 = Add-TestCommit $f $recordPath (New-TestReleaseRecord $s1)
+        $p2 = Add-TestCommit $f $recordPath (New-TestReleaseRecord $s2)
+        [void](Add-TestCommit $f 'docs/later.md' 'development continued after publication')
+        $result = Invoke-Classifier $f Audit $previous
+        Assert-Test ($result.ExitCode -eq 0 -and $result.Output -match 'state=source-ahead' -and $result.Output -match 'verifiedPublications=2') $result.Output
+        Assert-Test ($result.Output -match "publication=$p1 parent=$s2" -and $result.Output -match "publication=$p2 parent=$p1") $result.Output
+        Assert-Test ((Get-TestCalls $f) -join ',' -eq 'consensus:history,consensus:strict,consensus:history,consensus:strict') 'each publication needs its previous and new deployment checked'
     }
 
     Run-Test 'Manual Audit release-readiness forces the complete verifier chain' {

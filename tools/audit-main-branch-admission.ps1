@@ -135,10 +135,9 @@ try {
     $cloudBuilderConfigPath = Join-Path $root 'config\build\runtime-github-builder.v2.json'
     $cloudBuilderRaw = [IO.File]::ReadAllText($cloudBuilderConfigPath, $strictUtf8).TrimStart([char]0xFEFF)
     $cloudBuilderConfig = $cloudBuilderRaw | ConvertFrom-Json
-    if ([string]$cloudBuilderConfig.schema -cne 'cf7-runtime-github-builder.v2' -or
-            [string]$cloudBuilderConfig.sourceRef -cnotmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') {
-        throw 'Cloud builder sourceRef must be one canonical tag covered by the runtime source-tag rulesets.'
-    }
+    if ([string]$cloudBuilderConfig.schema -cne 'cf7-runtime-github-builder.v2') { throw 'Unsupported GitHub runtime builder config.' }
+    . (Join-Path $PSScriptRoot 'runtime-build-attestation-v2-common.ps1')
+    $null = Resolve-Cf7RuntimeGitHubSourceRef -Config $cloudBuilderConfig -ValidateOnly
 
     $codeOwnerFields = @('path','mode')
     if (-not (Test-Cf7ExactFields $config.codeOwners $codeOwnerFields) -or

@@ -86,101 +86,7 @@ function Get-Cf7BytesSha256([byte[]]$Bytes) {
     finally { $sha.Dispose() }
 }
 
-function Invoke-Cf7GitBinary([string[]]$Arguments) {
-    $gitCommand = Get-Command git -ErrorAction Stop
-    $quoted = New-Object 'Collections.Generic.List[string]'
-    foreach ($argumentValue in $Arguments) {
-        $argument = [string]$argumentValue
-        if ($argument.IndexOfAny([char[]]@([char]0, [char]10, [char]13, [char]34)) -ge 0) {
-            throw 'Unsafe character in binary Git command argument.'
-        }
-        # All dynamic repository paths are normalized to forward slashes and cannot end in a
-        # backslash, so ordinary Windows command-line quoting is unambiguous here.
-        [void]$quoted.Add('"' + $argument + '"')
-    }
-    $psi = New-Object Diagnostics.ProcessStartInfo
-    $psi.FileName = $gitCommand.Source
-    $psi.WorkingDirectory = $ProjectRoot
-    $psi.Arguments = [string]::Join(' ', $quoted.ToArray())
-    $psi.UseShellExecute = $false
-    $psi.RedirectStandardOutput = $true
-    $psi.RedirectStandardError = $true
-    $process = [Diagnostics.Process]::Start($psi)
-    $memory = New-Object IO.MemoryStream
-    try {
-        $process.StandardOutput.BaseStream.CopyTo($memory)
-        $errorText = $process.StandardError.ReadToEnd()
-        $process.WaitForExit()
-        if ($process.ExitCode -ne 0) {
-            throw "Binary Git command failed (git $($Arguments -join ' ')): $errorText"
-        }
-        return ,$memory.ToArray()
-    } finally {
-        $memory.Dispose()
-        $process.Dispose()
-    }
-}
-
-function ConvertFrom-Cf7NulDelimitedUtf8([byte[]]$Bytes, [string]$Label) {
-    if ($Bytes.Length -eq 0) { return @() }
-    $utf8 = New-Object Text.UTF8Encoding($false, $true)
-    try { $text = $utf8.GetString($Bytes) }
-    catch { throw "$Label is not strict UTF-8." }
-    if ($text[$text.Length - 1] -ne [char]0) { throw "$Label lacks its final NUL delimiter." }
-    $tokens = @($text.Split([char]0))
-    if ($tokens[$tokens.Count - 1] -ne '') { throw "$Label has an invalid NUL-delimited tail." }
-    if ($tokens.Count -eq 1) { return @() }
-    return @($tokens[0..($tokens.Count - 2)])
-}
-
-function ConvertTo-Cf7SafeRepoPath([AllowNull()][string]$Value, [string]$Label, [switch]$AllowTrailingSlash) {
-    if ([string]::IsNullOrWhiteSpace($Value)) { throw "$Label is empty." }
-    $path = [string]$Value
-    if ($path.Contains('\') -or $path.Contains(':') -or $path.StartsWith('/') -or $path.Contains('//') -or
-            $path.IndexOfAny([char[]]@([char]0, [char]10, [char]13, [char]34, [char]42, [char]60, [char]62, [char]63, [char]124, [char]127)) -ge 0) {
-        throw "$Label is not a safe repository-relative path: $path"
-    }
-    for ($index = 0; $index -lt $path.Length; $index++) {
-        $character = $path[$index]
-        $codeUnit = [int]$character
-        if ($codeUnit -lt 32) { throw "$Label contains a control character." }
-        if ([char]::IsHighSurrogate($character)) {
-            if ($index + 1 -ge $path.Length -or -not [char]::IsLowSurrogate($path[$index + 1])) {
-                throw "$Label contains an unpaired Unicode surrogate."
-            }
-            $scalar = [char]::ConvertToUtf32($character, $path[$index + 1])
-            $index++
-        } elseif ([char]::IsLowSurrogate($character)) {
-            throw "$Label contains an unpaired Unicode surrogate."
-        } else {
-            $scalar = $codeUnit
-        }
-        if (($scalar -ge 0xFDD0 -and $scalar -le 0xFDEF) -or (($scalar -band 0xFFFF) -ge 0xFFFE)) {
-            throw "$Label contains a Unicode noncharacter."
-        }
-    }
-    if ($path.EndsWith('/') -and -not $AllowTrailingSlash) { throw "$Label cannot end with '/': $path" }
-    $segments = @($path.TrimEnd('/').Split('/'))
-    if ($segments.Count -eq 0 -or @($segments | Where-Object { $_ -eq '' -or $_ -eq '.' -or $_ -eq '..' }).Count -gt 0) {
-        throw "$Label contains an unsafe path segment: $path"
-    }
-    foreach ($segment in $segments) {
-        if ($segment.Length -gt 255) {
-            throw "$Label contains a path segment longer than 255 UTF-16 code units: $path"
-        }
-        if ($segment.EndsWith('.') -or $segment.EndsWith(' ')) {
-            throw "$Label contains a Windows-ambiguous trailing character: $path"
-        }
-        $deviceStem = ([string]$segment.Split('.')[0]).TrimEnd(' ', '.')
-        if ($deviceStem -match '^(?i:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$') {
-            throw "$Label contains a reserved Windows device name: $path"
-        }
-    }
-    if ($path.Normalize([Text.NormalizationForm]::FormC) -cne $path) {
-        throw "$Label is not Unicode NFC: $path"
-    }
-    return $path
-}
+. (Join-Path $PSScriptRoot 'runtime-release-admission.ps1')
 
 function Add-Cf7ProtectedPath($Dictionary, [string]$Path, [string]$Origin) {
     $safe = ConvertTo-Cf7SafeRepoPath -Value $Path -Label $Origin
@@ -540,41 +446,6 @@ function Assert-Cf7HeadTreePathSafety([string]$BaseCommit, [string]$HeadCommit) 
     }
 }
 
-function Get-Cf7RawChangedEntries([string]$BaseCommit, [string]$HeadCommit) {
-    $rawBytes = Invoke-Cf7GitBinary @('diff','--raw','-z','--full-index','--no-renames',$BaseCommit,$HeadCommit,'--')
-    $tokens = @(ConvertFrom-Cf7NulDelimitedUtf8 -Bytes $rawBytes -Label 'raw base/head diff')
-    if (($tokens.Count % 2) -ne 0) { throw 'Raw base/head diff has an invalid token count.' }
-    $entries = New-Object 'Collections.Generic.List[object]'
-    $caseMap = New-Object 'Collections.Generic.Dictionary[string,string]' ([StringComparer]::OrdinalIgnoreCase)
-    for ($index = 0; $index -lt $tokens.Count; $index += 2) {
-        $header = [string]$tokens[$index]
-        if ($header -notmatch '^:([0-7]{6}) ([0-7]{6}) ([0-9a-fA-F]{7,64}) ([0-9a-fA-F]{7,64}) ([A-Z])$') {
-            throw "Unsupported raw Git diff record: $header"
-        }
-        $oldMode = [string]$Matches[1]
-        $newMode = [string]$Matches[2]
-        $oldOid = ([string]$Matches[3]).ToLowerInvariant()
-        $newOid = ([string]$Matches[4]).ToLowerInvariant()
-        $status = [string]$Matches[5]
-        $validModeShape = switch ($status) {
-            'A' { $oldMode -eq '000000' -and $newMode -eq '100644' -and $oldOid -match '^0+$' -and $newOid -notmatch '^0+$' }
-            'D' { $oldMode -eq '100644' -and $newMode -eq '000000' -and $oldOid -notmatch '^0+$' -and $newOid -match '^0+$' }
-            'M' { $oldMode -eq '100644' -and $newMode -eq '100644' -and $oldOid -notmatch '^0+$' -and $newOid -notmatch '^0+$' }
-            default { $false }
-        }
-        if (-not $validModeShape) {
-            throw "Content fast path rejects inconsistent, executable, symlink, gitlink, or non-regular changes: status=$status old=$oldMode new=$newMode"
-        }
-        $path = ConvertTo-Cf7SafeRepoPath -Value ([string]$tokens[$index + 1]) -Label 'changed path'
-        if ($caseMap.ContainsKey($path)) {
-            throw "Changed paths have a duplicate or case collision: $($caseMap[$path]) and $path"
-        }
-        $caseMap.Add($path, $path)
-        $entries.Add([pscustomobject]@{ Path=$path; Status=$status; OldMode=$oldMode; NewMode=$newMode; OldOid=$oldOid; NewOid=$newOid })
-    }
-    return @($entries.ToArray())
-}
-
 function Test-Cf7ProtectedFastPath([string]$Path, $Protection) {
     if ($Protection.Fixed.ContainsKey($Path)) { return $true }
     if ($Protection.GlobalExtensions.Contains([IO.Path]::GetExtension($Path))) { return $true }
@@ -832,6 +703,90 @@ function Assert-Cf7Passed($Result) {
     if ($Result.ExitCode -ne 0) { throw "$($Result.Label) failed with exit code $($Result.ExitCode)." }
 }
 
+# An event can contain P1, P2 and later source-only commits. Verify each deployed
+# revision against its actual parent using separate indexes, never a checkout of
+# historical executable code. The slow path runs only for deployment changes.
+function Assert-Cf7PublicationSequence($BaseCommit, $HeadCommit, [string[]]$Pathspecs) {
+    $revisions = @(& git -C $ProjectRoot log --first-parent --diff-merges=first-parent --no-patch --full-history --reverse --format=%H "$BaseCommit..$HeadCommit" -- @Pathspecs)
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot enumerate deployments in the push.' }
+    if ($revisions.Count -eq 0) { return @() }
+    $publicationCommits = New-Object 'Collections.Generic.List[string]'
+    $otherTransitions = New-Object 'Collections.Generic.List[string]'
+    foreach ($revision in $revisions) {
+        $parents = @(& git -C $ProjectRoot show -s --format=%P $revision)
+        if ($LASTEXITCODE -ne 0 -or $parents.Count -ne 1) { throw "Cannot locate publication parent at $revision." }
+        $parent = ([string]$parents[0]).Split(' ')[0]
+        if (!$parent -or !(Get-Cf7RevisionBlobOid $parent 'tools/invoke-runtime-publication.ps1' -Optional)) {
+            $otherTransitions.Add($revision)
+            continue
+        }
+        if ([string]$parents[0] -cnotmatch '\A(?:[0-9a-f]{40}|[0-9a-f]{64})\z') { throw 'A deployment commit must have exactly one parent.' }
+        $entries = @(Get-Cf7RawChangedEntries $parent $revision)
+        $writes = @($entries | Where-Object { Test-Cf7RuntimeDeploymentPath $_.Path })
+        if ($writes.Count -eq 0) {
+            # A registry/fuse-only change uses the existing strict control path.
+            $otherTransitions.Add($revision)
+            continue
+        }
+        if ($writes.Count -ne $entries.Count -or $writes.Path -cnotcontains 'config/build/runtime-release-consensus.json') {
+            throw "Publication $revision must change only the coherent deployment set, including consensus."
+        }
+        if ($publicationCommits.Count -eq 0) {
+            . (Join-Path $PSScriptRoot 'runtime-build-attestation-v2-common.ps1')
+            $script:PowerShellExecutable = Get-Cf7PowerShellExecutable
+        }
+        $verifier = Join-Path $PSScriptRoot 'verify-runtime-consensus.ps1'
+        $common = @('-ProjectRoot',$ProjectRoot,'-Staged')
+        $old = Get-Cf7RevisionText $parent 'config/build/runtime-release-consensus.json' | ConvertFrom-Json
+        $next = Get-Cf7RevisionText $revision 'config/build/runtime-release-consensus.json' | ConvertFrom-Json
+        foreach ($record in @($old,$next)) {
+            if ($record.schema -cne 'cf7-runtime-release-consensus.v2') { throw 'Concurrent publication requires v2 consensus.' }
+        }
+        foreach ($commit in @($parent,$revision)) {
+            if ((Get-Cf7ManifestHeader (Get-Cf7RevisionText $commit $manifestPath)) -cne 'cf7-runtime-manifest-v2') {
+                throw 'Concurrent publication requires v2 runtime manifests.'
+            }
+        }
+        if ([string]$next.sourceCommitOid -cnotmatch '\A(?:[0-9a-f]{40}|[0-9a-f]{64})\z') { throw "Deployment $revision needs the immutable source commit." }
+        Invoke-Cf7RuntimeRevisionIndex $ProjectRoot $parent {
+            Assert-Cf7Passed (Invoke-Cf7Verifier 'previous deployment and historical producer proofs' $verifier ($common + '-HistoricalSource'))
+        }
+        Assert-Cf7RuntimeReleaseSuccessor $ProjectRoot $old $next.sourceCommitOid $next.buildIdentityHash $next.payloadClosureHash
+        if ((Resolve-Cf7RuntimeRecordSource $ProjectRoot $old) -ceq $next.sourceCommitOid) {
+            throw 'An already deployed source cannot create another publication.'
+        }
+        Assert-Cf7RuntimeReleaseAdmission $ProjectRoot $next.sourceCommitOid $next.releaseTreeOid $parent -AllowVerifiedDeploymentChanges
+        Invoke-Cf7RuntimeRevisionIndex $ProjectRoot $revision {
+            Assert-Cf7Passed (Invoke-Cf7Verifier 'publication bytes and strict producer proofs' $verifier $common)
+        }
+        Write-Host "[RuntimeReleaseState] verified publication=$revision parent=$parent frozenSource=$($next.sourceCommitOid)"
+        $publicationCommits.Add($revision)
+    }
+    if ($publicationCommits.Count) {
+        $distance = @(& git -C $ProjectRoot rev-list --count --first-parent "$BaseCommit..$HeadCommit")
+        if ($LASTEXITCODE -ne 0 -or $distance.Count -ne 1 -or $distance[0] -notmatch '^[1-9][0-9]*$' -or
+            (Get-Cf7ReleaseGitOid $ProjectRoot "$HeadCommit~$($distance[0])") -cne $BaseCommit) {
+            throw 'Cannot identify an unambiguous main first-parent publication history.'
+        }
+    }
+    if ($publicationCommits.Count) {
+        foreach ($other in $otherTransitions) {
+            # A source commit that changes the registry or the first reader rollout
+            # can share a push with a later P. Replay the old strict contract at
+            # that exact revision. A consumed migration fuse must be preserved.
+            $before = Get-Cf7ReleaseGitOid $ProjectRoot "$other^1"
+            $marker = Get-Cf7RevisionBlobOid $before 'config/build/runtime-v2-migration-bootstrap.json' -Optional
+            if (!$marker -or $marker -cne (Get-Cf7RevisionBlobOid $other 'config/build/runtime-v2-migration-bootstrap.json' -Optional)) {
+                throw "The historical migration transition at $other requires its original protected audit."
+            }
+            Invoke-Cf7RuntimeRevisionIndex $ProjectRoot $other {
+                Assert-Cf7Passed (Invoke-Cf7Verifier 'strict control transition' $verifier $common)
+            }
+        }
+    }
+    return $publicationCommits.ToArray()
+}
+
 try {
     if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
     $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\\')
@@ -898,6 +853,13 @@ try {
     Assert-Cf7NativeChangesReleaseBound -Entries $admissionChangedEntries `
         -BaseProtection $admissionBaseProtection -HeadProtection $headProtection
 
+    $manifestPath = 'runtime/cf7-runtime-manifest.tsv'
+    $migrationMarkerPath = 'config/build/runtime-v2-migration-bootstrap.json'
+    $builderRegistryPath = 'config/build/runtime-builders.v2.json'
+    $consensusRecordPath = 'config/build/runtime-release-consensus.json'
+
+    $pathspecs = @('CRAZYFLASHER7MercenaryEmpire.exe','runtime',$consensusRecordPath,$builderRegistryPath,$migrationMarkerPath)
+
     # A protected non-native change inherits deployment consensus only from the external
     # green-check anchor. Event base remains separate for strict deployment/migration semantics.
     # The formal policy domain can accumulate content/tooling changes;
@@ -912,7 +874,9 @@ try {
             $protectedIntersection = @($changedEntries | Where-Object {
                 Test-Cf7ProtectedFastPath -Path ([string]$_.Path) -Protection $protection
             })
-            if ($changedEntries.Count -gt 0 -and $protectedIntersection.Count -eq 0) {
+            $touches = @(& git -C $ProjectRoot log -1 --first-parent --diff-merges=first-parent --no-patch --format=%H "$trustedBaseCommit..$headCommit" -- @pathspecs)
+            if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect the protected deployment interval.' }
+            if ($changedEntries.Count -gt 0 -and $protectedIntersection.Count -eq 0 -and $touches.Count -eq 0) {
                 $changedPaths = [string[]]@($changedEntries | ForEach-Object { [string]$_.Path })
                 [Array]::Sort($changedPaths, [StringComparer]::Ordinal)
                 $changedPathBytes = [Text.Encoding]::UTF8.GetBytes(([string]::Join("`n", $changedPaths) + "`n"))
@@ -957,25 +921,26 @@ try {
         }
     }
 
-    $manifestPath = 'runtime/cf7-runtime-manifest.tsv'
-    $migrationMarkerPath = 'config/build/runtime-v2-migration-bootstrap.json'
-    $builderRegistryPath = 'config/build/runtime-builders.v2.json'
-    $consensusRecordPath = 'config/build/runtime-release-consensus.json'
-
     $deploymentChanged = $true
     $changedDeploymentPaths = @()
     if ($baseCommit) {
-        $pathspecs = @(
-            'CRAZYFLASHER7MercenaryEmpire.exe',
-            'runtime',
-            $consensusRecordPath,
-            $builderRegistryPath,
-            $migrationMarkerPath
-        )
         $changedDeploymentPaths = @(& git -C $ProjectRoot diff --name-only --no-renames $baseCommit $headCommit -- @pathspecs)
         if ($LASTEXITCODE -ne 0) { throw 'Cannot compare runtime deployment paths between base and head.' }
         $changedDeploymentPaths = @($changedDeploymentPaths | Where-Object { $_ -ne '' } | Sort-Object -Unique)
         $deploymentChanged = $changedDeploymentPaths.Count -gt 0
+    }
+
+    if ($baseCommit) {
+        $rangeBase = if ($trustedBaseCommit) { $trustedBaseCommit } else { $baseCommit }
+        $publications = @(Assert-Cf7PublicationSequence $rangeBase $headCommit $pathspecs)
+        if ($publications.Count -gt 0) {
+            $last = $publications[-1]
+            if ($last -ceq $headCommit -or ($isAuditMode -and -not $ForceDeploymentVerification)) {
+                $state = if ($Mode -eq 'Protected') { 'protected-coherent' } elseif ($last -ceq $headCommit) { 'promoted' } else { 'source-ahead' }
+                Write-Host "[RuntimeReleaseState] OK state=$state mode=$Mode manifest=v2 deploymentChanged=true verifiedPublications=$($publications.Count) lastPublication=$last base=$baseCommit head=$headCommit"
+                exit 0
+            }
+        }
     }
 
     if ($isAuditMode -and -not $deploymentChanged -and -not $ForceDeploymentVerification) {
@@ -1087,6 +1052,12 @@ try {
     $consensus = Invoke-Cf7Verifier -Label 'runtime release consensus verification' -Path $consensusVerifier -Arguments $commonArguments
     Assert-Cf7Passed $consensus
 
+    if ($ForceDeploymentVerification -and (Get-Cf7RevisionBlobOid $headCommit 'tools/invoke-runtime-publication.ps1' -Optional)) {
+        $deployed = Get-Cf7IndexedText $consensusRecordPath | ConvertFrom-Json
+        if ($deployed.PSObject.Properties['sourceCommitOid']) {
+            Assert-Cf7RuntimeReleaseAdmission $ProjectRoot $deployed.sourceCommitOid $deployed.releaseTreeOid $headCommit -AllowVerifiedDeploymentChanges
+        }
+    }
     $state = if ($Mode -eq 'Protected') {
         'protected-coherent'
     } elseif ($ForceDeploymentVerification -and -not $deploymentChanged) {

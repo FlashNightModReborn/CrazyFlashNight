@@ -68,7 +68,7 @@ push 后状态分三类理解：
 
 ## 正式 release：无需第二人在线
 
-正式发布者从已提交的最终 source commit 建立一次性、单路径段的 `runtime-build-v2/<release-id>` tag 和 immutable request，然后取得。cloud config、dispatch helper、envelope/attestation verifier 与主线准入审计都会拒绝任意其他 tag 命名空间或 `runtime-build-v2/a/b` 这类嵌套 tag，确保被证明的 `sourceRef` 必定落在 creation + immutability 两条远端规则覆盖内：
+正式发布者在干净的来源提交冻结 request，从返回的完整来源 SHA 派生受保护的单段 tag。历史列车保留原精确 tag。本地与云端独立构建可并行，晋升前核对最新主线父提交与已有部署。直推、保护规则、完整双签和事后审计沿用[当前发布协议](runtime-build-reproducibility.md#release-protocol)。
 
 1. 注册本地 X509 worker 的签名票；
 2. GitHub Hosted Windows 的 OIDC/Sigstore 签名票；

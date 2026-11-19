@@ -104,6 +104,7 @@ function New-TestFixture(
     [int]$CompleteAfterViews = 2,
     [string]$HeadBranch = 'runtime-build-v2/test-release',
     [string]$SourceRef = 'refs/tags/runtime-build-v2/test-release',
+    [switch]$CommitDerivedTag,
     [switch]$AnnotatedTag,
     [switch]$WrongTagTarget,
     [switch]$WrongListHeadSha,
@@ -118,11 +119,16 @@ function New-TestFixture(
     Copy-Item -LiteralPath (Join-Path $script:repoRoot 'tools\runtime-build-queue-common.ps1') `
         -Destination (Join-Path $projectRoot 'tools\runtime-build-queue-common.ps1')
 
+    Copy-Item -LiteralPath (Join-Path $script:repoRoot 'tools\runtime-build-attestation-v2-common.ps1') -Destination (Join-Path $projectRoot 'tools\runtime-build-attestation-v2-common.ps1')
     $cloudConfig = [ordered]@{
         schema='cf7-runtime-github-builder.v2';enabled=$true;repository='ExampleOrg/ExampleRepo'
         signerWorkflow='ExampleOrg/ExampleRepo/.github/workflows/runtime-cloud-builder.yml'
         sourceRef=$SourceRef;faultDomain='github-hosted-windows';runnerClass='github-hosted-windows'
         identityProvider='github-oidc-sigstore';longLivedPrivateKey=$false
+    }
+    if ($CommitDerivedTag) {
+        $cloudConfig.Remove('sourceRef')
+        $cloudConfig.sourceRefNamespace = 'refs/tags/runtime-build-v2/'
     }
     Set-TestFile (Join-Path $projectRoot 'config\build\runtime-github-builder.v2.json') (($cloudConfig | ConvertTo-Json -Depth 5) + "`n")
     Set-TestFile (Join-Path $projectRoot 'tools\verify-runtime-github-attestation.ps1') @'
@@ -279,6 +285,29 @@ exit /b %ERRORLEVEL%
     [void](Invoke-TestGit $projectRoot @('commit','-m','fixture'))
     $headLines = @(Invoke-TestGit $projectRoot @('rev-parse','HEAD'))
     $sourceCommit = ([string]$headLines[0]).Trim().ToLowerInvariant()
+    $requestId = $null
+    $queueRoot = Join-Path $controlRoot 'queue'
+    if ($CommitDerivedTag) {
+        . (Join-Path $projectRoot 'tools\runtime-build-queue-common.ps1')
+        $SourceRef = $cloudConfig.sourceRefNamespace + $sourceCommit
+        $HeadBranch = $SourceRef.Substring('refs/tags/'.Length)
+        $tree = @((Invoke-TestGit $projectRoot @('rev-parse','HEAD^{tree}')))[0]
+        $policyHash = 'B' * 64
+        $requestId = Get-Cf7RuntimeRequestId -ReleaseTreeOid $tree -PolicyHash $policyHash
+        $requestDir = Get-Cf7RuntimeRequestDirectory -QueueRoot $queueRoot -RequestId $requestId
+        New-Item -ItemType Directory -Path $requestDir -Force | Out-Null
+        $bundle = Join-Path $requestDir 'source.bundle'
+        [void](Invoke-TestGit $projectRoot @('bundle','create',$bundle,'HEAD'))
+        $request = [ordered]@{
+            schema='cf7-runtime-build-request.v2';requestId=$requestId;sourceKind='Treeish'
+            releaseTreeOid=$tree;sourceCommitOid=$sourceCommit;requestCommitOid=$sourceCommit;bundleTreeOid=$tree
+            artifactSourceHash=('1' * 64);producerRecipeHash=('2' * 64);toolchainLockHash=('3' * 64)
+            policyHash=$policyHash;buildIdentityHash=('4' * 64);bundleFile='source.bundle'
+            bundleSha256=(Get-Cf7QueueFileSha256 -Path $bundle);requiredQuorum=2;createdAtUtc='2026-01-01T00:00:00Z'
+        }
+        Set-TestFile (Join-Path $requestDir 'request.json') ($request | ConvertTo-Json)
+    }
+
 
     $candidatePath = Join-Path $artifactRoot 'runtime-candidate.v2.zip'
     $outerArchivePath = Join-Path $controlRoot 'runtime-cloud-artifact.zip'
@@ -312,6 +341,7 @@ exit /b %ERRORLEVEL%
     Set-TestFile $logPath ''
     return [pscustomobject]@{
         CaseRoot=$caseRoot; ProjectRoot=$projectRoot; ControlRoot=$controlRoot
+        RequestId=$requestId; QueueRoot=$queueRoot
         SourceCommit=$sourceCommit; FakeGh=(Join-Path $controlRoot 'fake-gh.cmd')
         StatePath=$statePath; LogPath=$logPath; MarkerPath=$markerPath; OutputRoot=(Join-Path $caseRoot 'output')
         ArtifactArchive=$outerArchivePath; AttestationArchive=$attestationArchivePath
@@ -322,11 +352,13 @@ function Invoke-TestHelper($Fixture, [switch]$ResumeRun, [switch]$AttestationOnl
     $preDownloaded = if ($AttestationOnly) { $Fixture.AttestationArchive } else { $Fixture.ArtifactArchive }
     $arguments = @(
         '-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $Fixture.ProjectRoot 'tools\invoke-runtime-github-build.ps1'),
-        '-ProjectRoot',$Fixture.ProjectRoot,'-SourceCommitOid',$Fixture.SourceCommit,
+        '-ProjectRoot',$Fixture.ProjectRoot,
         '-OutputRoot',$Fixture.OutputRoot,'-GitHubCliPath',$Fixture.FakeGh,
         '-PreDownloadedArtifactArchive',$preDownloaded,
         '-DiscoveryTimeoutSeconds','5','-RunTimeoutSeconds','30','-PollSeconds','1'
     )
+    if ($Fixture.RequestId) { $arguments += @('-RequestId',$Fixture.RequestId,'-QueueRoot',$Fixture.QueueRoot) }
+    else { $arguments += @('-SourceCommitOid',$Fixture.SourceCommit) }
     if ($ResumeRun) { $arguments += @('-ResumeRunId','4242') }
     if (-not $AttestationOnly) { $arguments += '-IncludeCandidateArchive' }
     if ($ExtraArguments) { $arguments += $ExtraArguments }
@@ -387,6 +419,16 @@ try {
         Assert-Test ($download.Count -eq 0) 'legacy gh run download transport must not be used'
     }
 
+    Run-Test 'dispatches the tag derived from the immutable request source' {
+        $fixture = New-TestFixture -CommitDerivedTag -CompleteAfterViews 1
+        $result = Invoke-TestHelper $fixture -AttestationOnly
+        Assert-Test ($result.ExitCode -eq 0) $result.Output
+        $calls = @(Get-TestCalls $fixture)
+        $dispatch = @($calls | Where-Object { $_[0] -eq 'workflow' -and $_[1] -eq 'run' })
+        Assert-Test ($dispatch.Count -eq 1) 'expected one request-derived dispatch'
+        $refIndex = [Array]::IndexOf([object[]]$dispatch[0], '--ref')
+        Assert-Test ($dispatch[0][$refIndex + 1] -ceq ('runtime-build-v2/' + $fixture.SourceCommit)) 'dispatch must use the full immutable request source OID'
+    }
     Run-Test 'rejects inner candidate ZIP traversal before calling the provenance verifier' {
         $fixture = New-TestFixture -MaliciousInnerTraversal -CompleteAfterViews 1
         $result = Invoke-TestHelper $fixture

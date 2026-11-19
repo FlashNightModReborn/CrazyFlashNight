@@ -257,7 +257,7 @@ try {
         Assert-Test ([string]$config.codeOwners.mode -ceq 'advisory') 'CODEOWNERS is not advisory'
         Assert-Test ($null -eq $config.codeOwners.PSObject.Properties['normalizedLfSha256']) 'CODEOWNERS is still hash-bound'
         $cloudBuilder = Get-Content -LiteralPath $cloudBuilderConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
-        Assert-Test ([string]$cloudBuilder.sourceRef -cmatch '^refs/tags/runtime-build-v2/[a-z0-9][a-z0-9._-]{1,80}$') `
+        Assert-Test ([string]$cloudBuilder.sourceRefNamespace -ceq 'refs/tags/runtime-build-v2/' -and $null -eq $cloudBuilder.PSObject.Properties['sourceRef']) `
             'formal cloud builder sourceRef escapes the protected single-segment runtime tag namespace'
     }
 

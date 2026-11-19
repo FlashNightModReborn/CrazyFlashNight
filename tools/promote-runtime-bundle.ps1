@@ -24,6 +24,39 @@ $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
 . (Join-Path $ProjectRoot 'tools\runtime-build-attestation-v2-common.ps1')
 . (Join-Path $ProjectRoot 'tools\runtime-build-queue-common.ps1')
 
+. (Join-Path $ProjectRoot 'tools\runtime-release-admission.ps1')
+
+function Assert-Cf7PromotionTargetClean {
+    param([string]$ProjectRoot, [string]$ExpectedHead)
+    if ((Get-Cf7ReleaseGitOid $ProjectRoot 'HEAD^{commit}') -cne $ExpectedHead) {
+        throw 'Publication parent changed during promotion. Recheck admission against the new parent.'
+    }
+    & git --no-optional-locks -C $ProjectRoot diff --cached --quiet --no-ext-diff $ExpectedHead --
+    if ($LASTEXITCODE -ne 0) { throw 'Publication index no longer matches the admitted parent.' }
+    & git --no-optional-locks -C $ProjectRoot diff --quiet --no-ext-diff --
+    if ($LASTEXITCODE -ne 0) { throw 'Tracked worktree bytes no longer match the admitted parent.' }
+    $changes = @(& git --no-optional-locks -C $ProjectRoot status --porcelain --untracked-files=all -- 'runtime' 'CRAZYFLASHER7MercenaryEmpire.exe' 'config/build/runtime-release-consensus.json')
+    if ($LASTEXITCODE -ne 0 -or $changes.Count -gt 0) { throw 'Live runtime deployment changed during promotion verification.' }
+}
+
+function Assert-Cf7PromotionPreviousBytes {
+    param([string]$ProjectRoot, [string]$HeadCommitOid, $Record)
+    $relative = 'config/build/runtime-release-consensus.json'
+    $expected = Get-Cf7ReleaseGitOid $ProjectRoot "$($HeadCommitOid):$relative"
+    $actual = @(& git -C $ProjectRoot hash-object "--path=$relative" -- $relative)
+    if ($LASTEXITCODE -ne 0 -or $actual.Count -ne 1 -or [string]$actual[0] -cne $expected) {
+        throw 'Installed consensus record differs from the verified publication parent.'
+    }
+    $manifest = Join-Path $ProjectRoot 'runtime\cf7-runtime-manifest.tsv'
+    if ((Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash -cne $Record.manifestSha256) {
+        throw 'Installed manifest differs from the verified preceding deployment.'
+    }
+    # This pass reads the actual directory and every payload file, independent of Git's
+    # worktree stat cache. The exact parent manifest above binds that inventory to D.
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ProjectRoot 'tools\verify-runtime-bundle-v2.ps1') -ProjectRoot $ProjectRoot -IntegrityOnly
+    if ($LASTEXITCODE -ne 0) { throw 'Installed files differ from the verified preceding deployment.' }
+}
+
 function Get-Cf7PromotionNormalizedPath {
     param([Parameter(Mandatory=$true)][string]$Path)
     $fullPath = [IO.Path]::GetFullPath($Path)
@@ -192,7 +225,7 @@ function Assert-Cf7PromotionVerificationWindowStable {
         [Parameter(Mandatory=$true)][string]$ProjectRoot,
         [Parameter(Mandatory=$true)][string]$QueueRoot,
         [Parameter(Mandatory=$true)][string]$RequestId,
-        [Parameter(Mandatory=$true)][string]$ReleaseTreeOid,
+        [Parameter(Mandatory=$true)][string]$HeadCommitOid,
         [Parameter(Mandatory=$true)][object]$ExpectedIdentity,
         [Parameter(Mandatory=$true)][string]$RequestPath,
         [Parameter(Mandatory=$true)][string]$RequestSha256,
@@ -227,21 +260,7 @@ function Assert-Cf7PromotionVerificationWindowStable {
             throw "Current worktree changed during promotion verification: $field"
         }
     }
-    & git -C $ProjectRoot diff --quiet --no-ext-diff $ReleaseTreeOid --
-    if ($LASTEXITCODE -eq 1) {
-        throw 'Tracked worktree bytes changed during promotion verification.'
-    }
-    if ($LASTEXITCODE -ne 0) {
-        throw 'Cannot recheck the immutable request tree during promotion verification.'
-    }
-    $deploymentChanges = @(& git -C $ProjectRoot status --porcelain -- `
-        'CRAZYFLASHER7MercenaryEmpire.exe' 'runtime' 'config/build/runtime-release-consensus.json')
-    if ($LASTEXITCODE -ne 0) {
-        throw 'Cannot recheck the live runtime deployment during promotion verification.'
-    }
-    if ($deploymentChanges.Count -gt 0) {
-        throw "Live runtime deployment changed during promotion verification:`n$($deploymentChanges -join "`n")"
-    }
+    Assert-Cf7PromotionTargetClean -ProjectRoot $ProjectRoot -ExpectedHead $HeadCommitOid
     $currentClosure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $ProjectRoot -DeploymentRoot $CandidateRoot
     Assert-Cf7PromotionClosureUnchanged -Expected $ExpectedCandidateClosure -Actual $currentClosure
     $currentManifestHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $CandidateManifestPath).Hash.ToUpperInvariant()
@@ -339,11 +358,26 @@ foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHas
     }
 }
 
-& git -C $ProjectRoot diff --quiet --no-ext-diff ([string]$request.releaseTreeOid) --
-if ($LASTEXITCODE -eq 1) {
-    throw 'Tracked worktree bytes no longer materialize the immutable request tree.'
+$publicationHead = Get-Cf7ReleaseGitOid $ProjectRoot 'HEAD^{commit}'
+Assert-Cf7PromotionTargetClean $ProjectRoot $publicationHead
+if ($publicationHead -cne $request.sourceCommitOid) {
+    $frozen = Get-Cf7RuntimeFrozenIdentity -ProjectRoot $ProjectRoot -SourceCommitOid $request.sourceCommitOid
+    foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
+        if ([string]$frozen.$field -cne [string]$request.$field) { throw "Immutable request does not match its frozen source: $field" }
+    }
 }
-if ($LASTEXITCODE -ne 0) { throw 'Cannot compare the worktree with the immutable request tree.' }
+$previousRecordBytes = Get-Cf7RuntimeFrozenBlobBytes $ProjectRoot $publicationHead 'config/build/runtime-release-consensus.json'
+$previousRecord = [Text.Encoding]::UTF8.GetString($previousRecordBytes).TrimStart([char]0xFEFF) | ConvertFrom-Json
+if ([string]$previousRecord.schema -cne 'cf7-runtime-release-consensus.v2') {
+    throw 'Publication requires a verifiable preceding v2 deployment.'
+}
+# Read the previous deployment from the exact parent even when the caller's index is replaced.
+# A historical verifier reads frozen Git data using the reviewed verifier from this workspace.
+Invoke-Cf7RuntimeRevisionIndex $ProjectRoot $publicationHead {
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ProjectRoot 'tools\verify-runtime-consensus.ps1') -ProjectRoot $ProjectRoot -Staged -HistoricalSource
+    if ($LASTEXITCODE -ne 0) { throw 'The preceding deployment failed independent historical verification.' }
+}
+Assert-Cf7RuntimeReleaseAdmission -ProjectRoot $ProjectRoot -SourceCommitOid $request.sourceCommitOid -ReleaseTreeOid $request.releaseTreeOid -HeadCommitOid $publicationHead -AllowVerifiedDeploymentChanges
 
 $PolicyReceiptPath = (Resolve-Path -LiteralPath $PolicyReceiptPath).Path
 $receiptBytes = [IO.File]::ReadAllBytes($PolicyReceiptPath)
@@ -566,6 +600,28 @@ if ($candidatePayloadHash -ne ([string]$consensus.payloadClosureHash).ToUpperInv
     throw 'Candidate payload does not match the independent builder consensus.'
 }
 $attestations = @($verifiedEntries | ForEach-Object { $_.proof })
+$sourceBinding = [pscustomobject]@{
+    schema='cf7-runtime-release-consensus.v2';sourceCommitOid=[string]$request.sourceCommitOid
+    releaseTreeOid=[string]$request.releaseTreeOid;attestations=$attestations
+}
+[void](Resolve-Cf7RuntimeRecordSource -ProjectRoot $ProjectRoot -Record $sourceBinding)
+Assert-Cf7RuntimeReleaseSuccessor -ProjectRoot $ProjectRoot -PreviousRecord $previousRecord -SourceCommitOid $request.sourceCommitOid -BuildIdentityHash $request.buildIdentityHash -PayloadClosureHash $candidatePayloadHash
+Assert-Cf7PromotionTargetClean $ProjectRoot $publicationHead
+if ((Resolve-Cf7RuntimeRecordSource $ProjectRoot $previousRecord) -ceq $request.sourceCommitOid) {
+    $previousProofs = @($previousRecord.attestations | ForEach-Object { Get-Cf7PromotionProofFingerprint $_ })
+    $selectedProofs = @($attestations | ForEach-Object { Get-Cf7PromotionProofFingerprint $_ })
+    if ($previousRecord.manifestSha256 -cne $candidateManifestSha256 -or
+            $previousRecord.policyReceiptSha256 -cne $policyReceiptSha256 -or
+            [string]::Join('|',$previousProofs) -cne [string]::Join('|',$selectedProofs)) {
+        throw 'Same-source deployment metadata differs. A metadata replacement is a separate release decision.'
+    }
+    if (-not $VerifyOnly) {
+        Assert-Cf7PromotionPreviousBytes $ProjectRoot $publicationHead $previousRecord
+        Assert-Cf7PromotionTargetClean $ProjectRoot $publicationHead
+        Write-Host "[RuntimePromotion] already-promoted source=$($request.sourceCommitOid) payload=$candidatePayloadHash"
+        return
+    }
+}
 
 $deploymentChanges = @(& git -C $ProjectRoot status --porcelain -- `
     'CRAZYFLASHER7MercenaryEmpire.exe' 'runtime' 'config/build/runtime-release-consensus.json')
@@ -579,7 +635,7 @@ if ($VerifyOnly) {
         ProjectRoot = $ProjectRoot
         QueueRoot = $QueueRoot
         RequestId = $RequestId
-        ReleaseTreeOid = [string]$request.releaseTreeOid
+        HeadCommitOid = $publicationHead
         ExpectedIdentity = $identity
         RequestPath = $requestPath
         RequestSha256 = $requestSha256
@@ -727,6 +783,7 @@ $manifestSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $manifestPath).Ha
 $orderedAttestations = @($attestations)
 $releaseRecord = [pscustomobject][ordered]@{
     schema = 'cf7-runtime-release-consensus.v2'
+    sourceCommitOid = ([string]$request.sourceCommitOid).ToLowerInvariant()
     requestId = ([string]$request.requestId).ToUpperInvariant()
     releaseTreeOid = ([string]$request.releaseTreeOid).ToLowerInvariant()
     artifactSourceHash = ([string]$identity.artifactSourceHash).ToUpperInvariant()
@@ -751,11 +808,17 @@ $consensusRecordPath = Join-Path $ProjectRoot 'config\build\runtime-release-cons
 $backupRuntime = Join-Path $backupRoot 'runtime'
 $backupBootstrap = Join-Path $backupRoot 'CRAZYFLASHER7MercenaryEmpire.exe'
 $backupConsensusRecord = Join-Path $backupRoot 'runtime-release-consensus.json'
-$hadConsensusRecord = Test-Path -LiteralPath $consensusRecordPath -PathType Leaf
+# OS sharing is bound to the physical file, including callers using directory aliases.
+# Keep the handle through verification and rollback; contenders can retry from admission.
+$targetLockPath = Join-Path $transactionBase 'deployment-writer.lock'
+$targetLock = [IO.File]::Open($targetLockPath,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+$hadConsensusRecord = $true
 $installedRuntime = $false
 $installedBootstrap = $false
 $installedConsensusRecord = $false
 try {
+    Assert-Cf7PromotionTargetClean $ProjectRoot $publicationHead
+    Assert-Cf7PromotionPreviousBytes $ProjectRoot $publicationHead $previousRecord
     Move-Item -LiteralPath $liveRuntime -Destination $backupRuntime
     Move-Item -LiteralPath $liveBootstrap -Destination $backupBootstrap
     if ($hadConsensusRecord) { Move-Item -LiteralPath $consensusRecordPath -Destination $backupConsensusRecord }
@@ -823,6 +886,13 @@ try {
     }
     if ($verifyTimedOut) { throw 'Promoted bootstrap verification timed out after 120 seconds.' }
     if ($verifyExitCode -ne 0) { throw "Promoted bootstrap rejected the runtime bundle (exitCode=$verifyExitCode)." }
+    if ((Get-Cf7ReleaseGitOid $ProjectRoot 'HEAD^{commit}') -cne $publicationHead) {
+        throw 'Publication parent changed during the installation transaction.'
+    }
+    & git --no-optional-locks -C $ProjectRoot diff --cached --quiet --no-ext-diff $publicationHead --
+    if ($LASTEXITCODE -ne 0) { throw 'Publication index changed during the installation transaction.' }
+    & git --no-optional-locks -C $ProjectRoot diff --quiet --no-ext-diff $publicationHead -- . ':(exclude)runtime' ':(exclude)CRAZYFLASHER7MercenaryEmpire.exe' ':(exclude)config/build/runtime-release-consensus.json'
+    if ($LASTEXITCODE -ne 0) { throw 'Tracked inputs changed outside the deployment during installation.' }
 } catch {
     $failure = $_
     $rollbackErrors = New-Object 'System.Collections.Generic.List[string]'
@@ -851,6 +921,8 @@ try {
     }
     $rollbackSuffix = if ($rollbackErrors.Count -eq 0) { '' } else { " Rollback errors: $([string]::Join(' | ', $rollbackErrors.ToArray()))" }
     throw "Runtime promotion rolled back: $($failure.Exception.Message)$rollbackSuffix"
+} finally {
+    $targetLock.Dispose()
 }
 
 Write-Host "[RuntimePromotion] OK request=$($request.requestId) signers=$($consensus.signerIdentities.Count) payload=$($consensus.payloadClosureHash)" -ForegroundColor Green

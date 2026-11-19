@@ -232,7 +232,7 @@ try {
     }
     foreach ($name in @(
         'runtime-build-common.ps1','runtime-build-v2-common.ps1','runtime-build-attestation-v2-common.ps1',
-        'runtime-build-queue-common.ps1','verify-runtime-bundle-v2.ps1','verify-runtime-consensus.ps1',
+        'runtime-build-queue-common.ps1','runtime-release-admission.ps1','verify-runtime-bundle-v2.ps1','verify-runtime-consensus.ps1',
         'verify-runtime-github-attestation.ps1','new-runtime-github-build-envelope.ps1','promote-runtime-bundle.ps1'
     )) {
         Copy-Item -LiteralPath (Join-Path (Join-Path $ProjectRoot 'tools') $name) -Destination (Join-Path (Join-Path $fixtureRoot 'tools') $name)
@@ -247,7 +247,7 @@ try {
 if defined CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH (
   >"%CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH%" echo replay-window-drift
 )
-echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"verifiedTimestamps":[],"statement":{"predicateType":"https://slsa.dev/provenance/v1"}}}]
+type "%~dp0verified-source.json"
 '@) -replace "`r?`n","`r`n")
     $env:PATH = $fakeBin + ';' + $originalPath
     $env:CF7_RUNTIME_TEST_REPLAY_MUTATION_PATH = $null
@@ -275,25 +275,29 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $githubConfig = [ordered]@{
         schema='cf7-runtime-github-builder.v2';enabled=$true;repository='FlashNightModReborn/CrazyFlashNight'
         signerWorkflow='FlashNightModReborn/CrazyFlashNight/.github/workflows/runtime-cloud-builder.yml'
-        sourceRef='refs/tags/runtime-build-v2/test-consensus';faultDomain='github-hosted-windows';runnerClass='github-hosted-windows'
+        sourceRef='refs/tags/runtime-build-v2/test-consensus-prior';faultDomain='github-hosted-windows';runnerClass='github-hosted-windows'
         identityProvider='github-oidc-sigstore';longLivedPrivateKey=$false
     }
     Write-Cf7FixtureJson -Path (Join-Path $fixtureRoot 'config\build\runtime-github-builder.v2.json') -Value $githubConfig
 
-    $certificate = New-SelfSignedCertificate -Type Custom `
-        -Subject ('CN=CF7 Release Fixture ' + [Guid]::NewGuid().ToString('N')) `
-        -CertStoreLocation 'Cert:\CurrentUser\My' -KeyAlgorithm RSA -KeyLength 2048 -HashAlgorithm SHA256 `
-        -KeyExportPolicy NonExportable -KeyUsage DigitalSignature -NotAfter ([DateTime]::UtcNow.AddDays(2))
-    $thumbprint = $certificate.Thumbprint.Replace(' ','').ToUpperInvariant()
-    $createdThumbprints.Add($thumbprint)
-    $builderEntry = [ordered]@{
-        builderId='fixture-local';keyId=Get-Cf7RuntimeV2BuilderKeyId -Certificate $certificate
-        certificateThumbprint=$thumbprint;certificateBase64=[Convert]::ToBase64String($certificate.RawData)
-        enabled=$true;epoch=1;faultDomain='fixture-local-machine'
-    }
-    $certificate.Dispose()
+    $builders = @(foreach ($number in @(1,2)) {
+        $certificate = New-SelfSignedCertificate -Type Custom `
+            -Subject ('CN=CF7 Release Fixture ' + [Guid]::NewGuid().ToString('N')) `
+            -CertStoreLocation 'Cert:\CurrentUser\My' -KeyAlgorithm RSA -KeyLength 2048 -HashAlgorithm SHA256 `
+            -KeyExportPolicy NonExportable -KeyUsage DigitalSignature -NotAfter ([DateTime]::UtcNow.AddDays(2))
+        $keyThumbprint = $certificate.Thumbprint.Replace(' ','').ToUpperInvariant()
+        $createdThumbprints.Add($keyThumbprint)
+        try {
+            [ordered]@{
+                builderId="fixture-local-$number";keyId=Get-Cf7RuntimeV2BuilderKeyId -Certificate $certificate
+                certificateThumbprint=$keyThumbprint;certificateBase64=[Convert]::ToBase64String($certificate.RawData)
+                enabled=$true;epoch=1;faultDomain="fixture-machine-$number"
+            }
+        } finally { $certificate.Dispose() }
+    })
+    $thumbprint = $createdThumbprints[0]
     $registryPath = Join-Path $fixtureRoot 'config\build\runtime-builders.v2.json'
-    Write-Cf7FixtureJson -Path $registryPath -Value ([ordered]@{schema='cf7-runtime-builders.v2';minimumConsensus=2;builders=@($builderEntry)})
+    Write-Cf7FixtureJson -Path $registryPath -Value ([ordered]@{schema='cf7-runtime-builders.v2';minimumConsensus=2;builders=$builders})
 
     & git -C $fixtureRoot init -q
     & git -C $fixtureRoot config user.name 'CF7 Runtime Release Fixture'
@@ -308,7 +312,71 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     & git -C $fixtureRoot add -- .
     & git -C $fixtureRoot commit -q -m 'fixture baseline'
     if ($LASTEXITCODE -ne 0) { throw 'Cannot commit runtime release fixture baseline.' }
+    # This legacy record has two local proofs. Its frozen exact tag is the only source anchor.
+    & git -C $fixtureRoot tag runtime-build-v2/test-consensus-prior
+    $priorTree = [string](& git -C $fixtureRoot rev-parse 'HEAD^{tree}')
+    $priorProofs = @($createdThumbprints | ForEach-Object {
+        New-Cf7RuntimeBuildAttestationV2 -ProjectRoot $fixtureRoot -DeploymentRoot $fixtureRoot -CertificateThumbprint $_ -RegistryPath $registryPath -Mode Worktree
+    } | Sort-Object { $_.payload.builderKeyId })
+    $priorReceipt = New-Cf7PolicyReceipt -Path (Join-Path $testRoot 'prior-receipt.json') -CandidateRoot $fixtureRoot -Identity $identity -ReleaseTreeOid $priorTree
+    $priorRecord = [ordered]@{
+        schema='cf7-runtime-release-consensus.v2';requestId=Get-Cf7RuntimeRequestId -ReleaseTreeOid $priorTree -PolicyHash $identity.policyHash
+        releaseTreeOid=$priorTree;artifactSourceHash=$identity.artifactSourceHash;producerRecipeHash=$identity.producerRecipeHash
+        toolchainLockHash=$identity.toolchainLockHash;policyHash=$identity.policyHash;buildIdentityHash=$identity.buildIdentityHash
+        payloadClosureHash=$priorProofs[0].payload.payloadClosureHash
+        manifestSha256=(Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $fixtureRoot 'runtime\cf7-runtime-manifest.tsv')).Hash
+        policyReceiptSha256=(Get-FileHash -Algorithm SHA256 -LiteralPath $priorReceipt).Hash
+        policyReceiptBase64=[Convert]::ToBase64String([IO.File]::ReadAllBytes($priorReceipt))
+        attestations=$priorProofs;promotedAtUtc=[DateTime]::UtcNow.ToString('o')
+    }
+    Write-Cf7FixtureJson -Path (Join-Path $fixtureRoot 'config\build\runtime-release-consensus.json') -Value $priorRecord
+    & git -C $fixtureRoot add -- config/build/runtime-release-consensus.json
+    & git -C $fixtureRoot commit -qm 'previous deployment'
+    $githubConfig.sourceRef = 'refs/tags/runtime-build-v2/test-consensus'
+    Write-Cf7FixtureJson -Path (Join-Path $fixtureRoot 'config\build\runtime-github-builder.v2.json') -Value $githubConfig
+    Write-Cf7FixtureText -Path (Join-Path $fixtureRoot 'source.txt') -Text "source-v2`n"
+    & git -C $fixtureRoot add -- source.txt config/build/runtime-github-builder.v2.json
+    & git -C $fixtureRoot commit -qm 'new candidate source'
+    & git -C $fixtureRoot tag runtime-build-v2/test-consensus
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot tag the current fixture source.' }
     $sourceCommit = ([string](& git -C $fixtureRoot rev-parse 'HEAD^{commit}')).Trim().ToLowerInvariant()
+    $verifiedStatement = @'
+[
+  {
+    "attestation": {},
+    "verificationResult": {
+      "signature": {
+        "certificate": {}
+      },
+      "verifiedTimestamps": [],
+      "statement": {
+        "predicateType": "https://slsa.dev/provenance/v1",
+        "predicate": {
+          "buildDefinition": {
+            "buildType": "https://actions.github.io/buildtypes/workflow/v1",
+            "externalParameters": {
+              "workflow": {
+                "path": ".github/workflows/runtime-cloud-builder.yml",
+                "ref": "refs/tags/runtime-build-v2/test-consensus",
+                "repository": "https://github.com/FlashNightModReborn/CrazyFlashNight"
+              }
+            },
+            "resolvedDependencies": [
+              {
+                "uri": "git+https://github.com/FlashNightModReborn/CrazyFlashNight@refs/tags/runtime-build-v2/test-consensus",
+                "digest": {
+                  "gitCommit": "FIXTURE_COMMIT"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+]
+'@
+    Write-Cf7FixtureText -Path (Join-Path $fakeBin 'verified-source.json') -Text ($verifiedStatement.Replace('FIXTURE_COMMIT', $sourceCommit))
     $releaseTree = ([string](& git -C $fixtureRoot rev-parse 'HEAD^{tree}')).Trim().ToLowerInvariant()
     $identity = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $fixtureRoot -Mode Worktree
 
@@ -335,6 +403,31 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $failedProofs = New-Cf7ProofSet -Name 'fail' -Candidate $failedCandidate -Identity $identity -SourceCommitOid $sourceCommit -RegistryPath $registryPath -Thumbprint $thumbprint
     $passedProofs = New-Cf7ProofSet -Name 'pass' -Candidate $passedCandidate -Identity $identity -SourceCommitOid $sourceCommit -RegistryPath $registryPath -Thumbprint $thumbprint
     $promotion = Join-Path $fixtureRoot 'tools\promote-runtime-bundle.ps1'
+    New-Item -ItemType Directory -Path (Join-Path $fixtureRoot 'docs\reports') -Force | Out-Null
+    Write-Cf7FixtureText -Path (Join-Path $fixtureRoot 'docs\reports\concurrent-release.md') -Text "independent report`n"
+    & git -C $fixtureRoot add -- docs/reports/concurrent-release.md
+    & git -C $fixtureRoot commit -qm 'documentation arrives after candidate freeze'
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot advance fixture parent.' }
+
+    & git -C $fixtureRoot switch -qc incompatible-head
+    try {
+        New-Item -ItemType Directory -Path (Join-Path $fixtureRoot 'launcher\web') -Force | Out-Null
+        Write-Cf7FixtureText -Path (Join-Path $fixtureRoot 'launcher\web\protocol.js') -Text 'const version = 2;'
+        & git -C $fixtureRoot add -- launcher/web/protocol.js
+        & git -C $fixtureRoot commit -qm 'new protocol needs a newer consumer'
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot prepare incompatible publication parent.' }
+        $incompatibleReport = Join-Path $fixtureRoot 'docs\evidence\incompatible.json'
+        try {
+            & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath) -VerifyOnly -ReportPath $incompatibleReport
+            throw 'Incompatible parent was accepted.'
+        } catch {
+            Assert-Cf7Fixture -Condition ($_.Exception.Message -match 'compatibility.*launcher/web/protocol.js') -Message "Wrong verdict for changed Web protocol: $($_.Exception.Message)"
+        }
+        Assert-Cf7Fixture -Condition (-not [IO.File]::Exists($incompatibleReport)) -Message 'Rejected parent produced a preflight receipt'
+    } finally {
+        & git -C $fixtureRoot switch -q -
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot return to the compatible publication parent.' }
+    }
 
     $preflightPath = Join-Path $fixtureRoot 'docs\evidence\preflight-pass.json'
     $preflightRepeatPath = Join-Path $fixtureRoot 'docs\evidence\preflight-pass-repeat.json'
@@ -685,12 +778,57 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $deploymentStatus = @(& git -C $fixtureRoot status --porcelain -- 'CRAZYFLASHER7MercenaryEmpire.exe' 'runtime' 'config/build/runtime-release-consensus.json')
     Assert-Cf7Fixture -Condition ($deploymentStatus.Count -eq 0) -Message 'rollback left the tracked deployment dirty'
 
-    & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId `
-        -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root `
-        -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.localPath,$passedProofs.cloudPath)
+    # Two Windows processes compete for the same physical installation. A successful
+    # writer leaves an uncommitted deployment, which prevents a late contender from reinstalling.
+    $raceDriver = Join-Path $testRoot 'race-promotion.ps1'
+    $raceInputs = Join-Path $testRoot 'race-inputs.json'
+    Write-Cf7FixtureJson -Path $raceInputs -Value ([ordered]@{
+        script=$promotion;root=$fixtureRoot;queue=$queueRoot;id=$requestId;receipt=$passedReceipt
+        candidate=$passedCandidate.root;local=$passedProofs.localPath;hosted=$passedProofs.cloudPath
+    })
+    Write-Cf7FixtureText -Path $raceDriver -Text @'
+param([string]$InputPath)
+$ErrorActionPreference = 'Stop'
+try {
+    $race = Get-Content -LiteralPath $InputPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    & $race.script -ProjectRoot $race.root -QueueRoot $race.queue -RequestId $race.id -PolicyReceiptPath $race.receipt -CandidateRoot $race.candidate -ExternalAttestationPath @($race.local,$race.local,$race.hosted)
+    exit 0
+} catch {
+    [Console]::Error.WriteLine($_.Exception.Message)
+    exit 1
+}
+'@
+    $processes = @()
+    try {
+        foreach ($number in @(1,2)) {
+            $outLog = Join-Path $testRoot "race-$number.out"
+            $errLog = Join-Path $testRoot "race-$number.err"
+            $arguments = @('-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',
+                ('"' + $raceDriver + '"'),'-InputPath',('"' + $raceInputs + '"'))
+            $child = Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput $outLog -RedirectStandardError $errLog
+            # Windows PowerShell drops the exit code for redirected processes unless their handle is retained.
+            [void]$child.Handle
+            $processes += [pscustomobject]@{ process=$child;errorPath=$errLog }
+        }
+        foreach ($entry in $processes) {
+            if (-not $entry.process.WaitForExit(120000)) { throw 'Concurrent test promotion exceeded two minutes.' }
+            $entry.process.WaitForExit()
+        }
+        $winners = @($processes | Where-Object { $_.process.ExitCode -eq 0 })
+        $refusals = @($processes | Where-Object { $_.process.ExitCode -ne 0 })
+        $raceErrors = @($refusals | ForEach-Object { [IO.File]::ReadAllText($_.errorPath) })
+        Assert-Cf7Fixture -Condition ($winners.Count -eq 1 -and $refusals.Count -eq 1) -Message "Concurrent publication did not produce exactly one winner: $($raceErrors -join ' / ')"
+        Assert-Cf7Fixture -Condition ($raceErrors[0] -match 'deployment|parent|another process|used by|writer|worktree|sharing|index') -Message "Unexpected concurrent refusal: $($raceErrors[0])"
+    } finally {
+        foreach ($entry in $processes) {
+            if (-not $entry.process.HasExited) { $entry.process.Kill(); [void]$entry.process.WaitForExit(10000) }
+            $entry.process.Dispose()
+        }
+    }
     $recordPath = Join-Path $fixtureRoot 'config\build\runtime-release-consensus.json'
     $recordOriginalBytes = [IO.File]::ReadAllBytes($recordPath)
     $record = [Text.Encoding]::UTF8.GetString($recordOriginalBytes) | ConvertFrom-Json
+    Assert-Cf7Fixture -Condition ($record.sourceCommitOid -ceq $sourceCommit) -Message 'new record did not preserve the immutable request source'
     Assert-Cf7Fixture -Condition (@($record.attestations).Count -eq 2) -Message 'duplicate local proof was not deterministically deduplicated'
     Assert-Cf7Fixture -Condition (@($record.attestations | Where-Object { $_.schema -eq 'cf7-runtime-build-attestation.v2' }).Count -eq 1) -Message 'release record lacks exactly one X509 proof'
     Assert-Cf7Fixture -Condition (@($record.attestations | Where-Object { $_.schema -eq 'cf7-runtime-github-build-attestation.v2' }).Count -eq 1) -Message 'release record lacks exactly one GitHub proof'
@@ -836,6 +974,25 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     $stagedVerification = Invoke-Cf7ConsensusProcess -Staged
     Assert-Cf7Fixture -Condition ($stagedVerification.exitCode -eq 0) `
         -Message "staged deployment consensus verification failed: $($stagedVerification.output)"
+
+    [IO.File]::WriteAllBytes($sourcePath,$sourceOriginalBytes)
+    & git -C $fixtureRoot commit -qm 'publish verified deployment'
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot commit the disposable test deployment.' }
+    & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId -PolicyReceiptPath $passedReceipt -CandidateRoot $passedCandidate.root -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath)
+    Assert-Cf7Fixture -Condition ([Convert]::ToBase64String([IO.File]::ReadAllBytes($recordPath)) -ceq [Convert]::ToBase64String($recordOriginalBytes)) -Message 'Exact publication retry rewrote the deployed record'
+    $metadataReceipt = New-Cf7PolicyReceipt -Path (Join-Path $testRoot 'renewed-receipt.json') -CandidateRoot $passedCandidate.root -Identity $identity -ReleaseTreeOid $releaseTree
+    try {
+        & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId -PolicyReceiptPath $metadataReceipt -CandidateRoot $passedCandidate.root -ExternalAttestationPath @($passedProofs.localPath,$passedProofs.cloudPath)
+        throw 'Unexpected promotion success.'
+    } catch {
+        Assert-Cf7Fixture -Condition ($_.Exception.Message -match 'metadata replacement') -Message "Wrong verdict for same-source metadata replacement: $($_.Exception.Message)"
+    }
+    try {
+        & $promotion -ProjectRoot $fixtureRoot -QueueRoot $queueRoot -RequestId $requestId -PolicyReceiptPath $failedReceipt -CandidateRoot $failedCandidate.root -ExternalAttestationPath @($failedProofs.localPath,$failedProofs.cloudPath)
+        throw 'Same-source payload fork was accepted.'
+    } catch {
+        Assert-Cf7Fixture -Condition ($_.Exception.Message -ceq 'The deployed build identity has a different payload closure.') -Message "Wrong verdict for same-source payload fork: $($_.Exception.Message)"
+    }
 
     Write-Host "[RuntimeReleaseConsensusV2Test] PASS assertions=$script:assertions" -ForegroundColor Green
 } finally {
