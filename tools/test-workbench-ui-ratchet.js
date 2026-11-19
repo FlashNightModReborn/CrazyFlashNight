@@ -687,14 +687,24 @@ check('long minified division prefixes remain bounded without hiding constructor
     longLexicalProbe.status === 0
     && /bounded lexical scan passed/.test(longLexicalProbe.stdout || ''));
 
-var auditExit = childProcess.spawnSync(
-    process.execPath,
-    [path.join(__dirname, 'audit-workbench-ui.js'), '--release-tree', '--text', '--strict-warnings'],
-    {cwd:path.resolve(__dirname, '..'), encoding:'utf8'}
-);
-check('release-tree audit is wired to a strict process exit code',
-    auditExit.status === 0
-    && /\[workbench-ui-audit\] errors=0 warnings=0/.test(auditExit.stdout || ''));
+// The production policy separately runs the strict audit against the full release tree.
+[
+    {label:'clean strict report', errors:0, warnings:0, strict:true, status:0},
+    {label:'advisory warning', errors:0, warnings:1, strict:false, status:0},
+    {label:'strict warning', errors:0, warnings:1, strict:true, status:1},
+    {label:'hard error', errors:1, warnings:0, strict:false, status:1}
+].forEach(function(example) {
+    var auditExit = childProcess.spawnSync(process.execPath, ['-e', [
+        "var example = JSON.parse(process.argv[2]);",
+        "var diagnostic = {level:'warning', code:'fixture', message:'probe'};",
+        "var args = example.strict ? ['--text', '--strict-warnings'] : ['--text'];",
+        "require(process.argv[1])(example.errors ? [diagnostic] : [],",
+        "    example.warnings ? [diagnostic] : [], {}, args);"
+    ].join('\n'), path.join(__dirname, 'audit-workbench-ui.js'), JSON.stringify(example)], {encoding:'utf8'});
+    var expected = '[workbench-ui-audit] errors=' + example.errors + ' warnings=' + example.warnings;
+    check('audit process exit for ' + example.label,
+        auditExit.status === example.status && auditExit.stdout.split(/\r?\n/)[0] === expected);
+});
 
 console.log('workbench ui ratchet tests: ' + passed + '/' + (passed + failed));
 if (failed) process.exit(1);

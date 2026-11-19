@@ -24,66 +24,31 @@ function Invoke-Cf7RequestGit {
     return @($output)
 }
 
-function Get-Cf7RequestV2Identity {
-    param([ValidateSet('Worktree','Index')][string]$Mode, [string]$Root)
-    if (Get-Command Get-Cf7RuntimeV2Identity -ErrorAction SilentlyContinue) {
-        return Get-Cf7RuntimeV2Identity -ProjectRoot $Root -Mode $Mode
-    }
-    foreach ($name in @('Get-Cf7RuntimeArtifactSourceHash','Get-Cf7RuntimeProducerRecipeHash','Get-Cf7RuntimeToolchainLockHashV2','Get-Cf7RuntimePolicyHash','Get-Cf7RuntimeV2BuildIdentityHash')) {
-        if (-not (Get-Command $name -ErrorAction SilentlyContinue)) { throw "runtime-build-v2-common.ps1 lacks required function: $name" }
-    }
-    $artifact = Get-Cf7RuntimeArtifactSourceHash -ProjectRoot $Root -Mode $Mode
-    $recipe = Get-Cf7RuntimeProducerRecipeHash -ProjectRoot $Root -Mode $Mode
-    $toolchain = Get-Cf7RuntimeToolchainLockHashV2 -ProjectRoot $Root -Mode $Mode
-    $policy = Get-Cf7RuntimePolicyHash -ProjectRoot $Root -Mode $Mode
-    $buildIdentity = Get-Cf7RuntimeV2BuildIdentityHash -ArtifactSourceHash $artifact -ProducerRecipeHash $recipe -ToolchainLockHash $toolchain
-    return [pscustomobject]@{
-        artifactSourceHash=$artifact; producerRecipeHash=$recipe; toolchainLockHash=$toolchain
-        policyHash=$policy; buildIdentityHash=$buildIdentity
-    }
-}
-
 function Get-Cf7RequestBundleEntries {
-    $paths = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    param([Parameter(Mandatory=$true)]$IndexSnapshot)
     foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
-        foreach ($path in Get-Cf7RuntimeV2DomainFiles -ProjectRoot $ProjectRoot -Domain $domain -Mode Index) {
-            [void]$paths.Add(([string]$path).Replace('\', '/'))
+        foreach ($path in Get-Cf7RuntimeV2DomainFiles -ProjectRoot $ProjectRoot -Domain $domain -Mode Index -IndexSnapshot $IndexSnapshot) {
+            $oid = $IndexSnapshot.Entries[$path]
+            $mode = $IndexSnapshot.Modes[$path]
+            if (-not $oid -or -not $mode) { throw "Missing stage-0 bundle entry: $path" }
+            "$mode $oid`t$path"
         }
     }
-    $sorted = [string[]]$paths
-    [Array]::Sort($sorted, [StringComparer]::Ordinal)
-    $entries = New-Object 'System.Collections.Generic.List[object]'
-    foreach ($path in $sorted) {
-        # Keep the path field literal even when a runtime identity domain contains
-        # non-ASCII names.  The machine/global default core.quotepath=true would
-        # otherwise return a C-style escaped path that cannot equal the canonical
-        # UTF-8 path emitted by Get-Cf7RuntimeV2DomainFiles.
-        $rows = @(Invoke-Cf7RequestGit -Arguments @('-c','core.quotepath=false','ls-files','-s','--',$path))
-        $stageZero = @($rows | Where-Object { $_ -match '^[0-9]+\s+[0-9a-fA-F]+\s+0\t' })
-        if ($stageZero.Count -ne 1 -or [string]$stageZero[0] -notmatch '^([0-9]+)\s+([0-9a-fA-F]+)\s+0\t(.+)$') {
-            throw "Runtime request bundle input has no unique stage-0 entry: $path"
-        }
-        if ([string]$Matches[3] -cne $path) { throw "Runtime request bundle path mismatch: $path" }
-        $entries.Add([pscustomobject]@{ mode=[string]$Matches[1]; oid=([string]$Matches[2]).ToLowerInvariant(); path=$path })
-    }
-    return $entries.ToArray()
 }
 
 function New-Cf7RequestBundleTree {
     param(
-        [Parameter(Mandatory=$true)][object[]]$Entries,
+        [Parameter(Mandatory=$true)][string[]]$Entries,
         [Parameter(Mandatory=$true)][string]$IndexPath
     )
     $savedIndex = $env:GIT_INDEX_FILE
     try {
         $env:GIT_INDEX_FILE = $IndexPath
         Invoke-Cf7RequestGit -Arguments @('read-tree','--empty') | Out-Null
-        foreach ($entry in $Entries) {
-            Invoke-Cf7RequestGit -Arguments @(
-                'update-index','--add','--cacheinfo',
-                [string]$entry.mode,[string]$entry.oid,[string]$entry.path
-            ) | Out-Null
-        }
+        # Git sorts the index independent of input order. NUL framing preserves
+        # literal paths, including Unicode and whitespace, and keeps the original mode.
+        $bytes = [Text.Encoding]::UTF8.GetBytes(([string]::Join([string][char]0, $Entries) + [char]0))
+        Invoke-Cf7RuntimeV2GitWithInput -ProjectRoot $ProjectRoot -Command 'update-index -z --index-info' -StdinBytes $bytes | Out-Null
         return ([string](Invoke-Cf7RequestGit -Arguments @('write-tree') | Select-Object -First 1)).Trim().ToLowerInvariant()
     } finally {
         $env:GIT_INDEX_FILE = $savedIndex
@@ -150,25 +115,23 @@ try {
     $sourceCommitOid = ([string](Invoke-Cf7RequestGit -Arguments @('rev-parse', "$Treeish^{commit}") | Select-Object -First 1)).Trim().ToLowerInvariant()
     if ($SourceKind -eq 'Index') {
         $releaseTreeOid = ([string](Invoke-Cf7RequestGit -Arguments @('write-tree') | Select-Object -First 1)).Trim().ToLowerInvariant()
-        $identity = Get-Cf7RequestV2Identity -Mode Index -Root $ProjectRoot
-        $bundleEntries = Get-Cf7RequestBundleEntries
     } else {
         $releaseTreeOid = ([string](Invoke-Cf7RequestGit -Arguments @('rev-parse', "$sourceCommitOid^{tree}") | Select-Object -First 1)).Trim().ToLowerInvariant()
-        # Compute a committed tree's identity through an isolated index.  A full temporary
-        # worktree is both wasteful and unsafe for CF7's intentionally deep Flash asset paths
-        # on Windows; v2 identity only needs Git blob identities, not materialized files.
-        $temporaryIndex = Join-Path $requestsRoot ('.identity.' + [Guid]::NewGuid().ToString('N') + '.index')
-        try {
-            $env:GIT_INDEX_FILE = $temporaryIndex
-            Invoke-Cf7RequestGit -Arguments @('read-tree',$sourceCommitOid) | Out-Null
-            $identity = Get-Cf7RequestV2Identity -Mode Index -Root $ProjectRoot
-            $bundleEntries = Get-Cf7RequestBundleEntries
-        } finally {
-            $env:GIT_INDEX_FILE = $previousGitIndexFile
-            if (Test-Path -LiteralPath $temporaryIndex) { Remove-Item -LiteralPath $temporaryIndex -Force }
-            if (Test-Path -LiteralPath ($temporaryIndex + '.lock')) { Remove-Item -LiteralPath ($temporaryIndex + '.lock') -Force }
-            $temporaryIndex = $null
-        }
+    }
+    # Freeze either source kind by its captured tree, including an arbitrary caller index.
+    # The four domain hashes and sparse tree then share one read of that exact index.
+    $temporaryIndex = Join-Path $requestsRoot ('.identity.' + [Guid]::NewGuid().ToString('N') + '.index')
+    try {
+        $env:GIT_INDEX_FILE = $temporaryIndex
+        Invoke-Cf7RequestGit -Arguments @('read-tree',$releaseTreeOid) | Out-Null
+        $snapshot = Get-Cf7RuntimeV2IndexSnapshot -ProjectRoot $ProjectRoot
+        $identity = Get-Cf7RuntimeV2Identity -Mode Index -ProjectRoot $ProjectRoot -IndexSnapshot $snapshot
+        $bundleEntries = @(Get-Cf7RequestBundleEntries -IndexSnapshot $snapshot)
+    } finally {
+        $env:GIT_INDEX_FILE = $previousGitIndexFile
+        if (Test-Path -LiteralPath $temporaryIndex) { Remove-Item -LiteralPath $temporaryIndex -Force }
+        if (Test-Path -LiteralPath ($temporaryIndex + '.lock')) { Remove-Item -LiteralPath ($temporaryIndex + '.lock') -Force }
+        $temporaryIndex = $null
     }
     $bundleIndex = Join-Path $requestsRoot ('.bundle.' + [Guid]::NewGuid().ToString('N') + '.index')
     $requestIdentityAtUtc = [DateTime]::UtcNow

@@ -481,11 +481,13 @@ try {
             -not $promotionScript.Contains('validate-emergency-owner-authorization.js') -and
             -not $promotionScript.Contains('h1-decision-manifest.v4.json') -and
             -not $promotionScript.Contains('nonH2Compliant'))
-    Assert-Equal 'promotion verification window remains bound to the exact immutable request tree' $true `
-        ($verificationWindowFunctionText.Contains('[string]$ReleaseTreeOid') -and
-            $verificationWindowFunctionText.Contains('diff --quiet --no-ext-diff $ReleaseTreeOid --') -and
+    Assert-Equal 'verification window binds the observed publication head and admission binds the frozen request' $true `
+        ($verificationWindowFunctionText.Contains('[string]$HeadCommitOid') -and
+            $verificationWindowFunctionText.Contains('Assert-Cf7PromotionTargetClean -ProjectRoot $ProjectRoot -ExpectedHead $HeadCommitOid') -and
             -not $verificationWindowFunctionText.Contains('[string]$WorktreeTreeish') -and
-            $promotionScript.Contains('ReleaseTreeOid = [string]$request.releaseTreeOid'))
+            $promotionScript.Contains('$publicationHead = Get-Cf7ReleaseGitOid $ProjectRoot ''HEAD^{commit}''') -and
+            $promotionScript.Contains('HeadCommitOid = $publicationHead') -and
+            $promotionScript.Contains('Assert-Cf7RuntimeReleaseAdmission -ProjectRoot $ProjectRoot -SourceCommitOid $request.sourceCommitOid -ReleaseTreeOid $request.releaseTreeOid -HeadCommitOid $publicationHead'))
     Assert-Equal 'bootstrap keeps runtime-only and full-install preflights separate' $true `
         ($bootstrapSource.Contains('static bool PreflightRuntimeFiles') -and $bootstrapSource.Contains('static bool PreflightCriticalFiles'))
     Assert-Equal 'bootstrap rejects ambiguous verification modes' $true `
@@ -575,6 +577,34 @@ try {
     $baseIndex = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Index -ConfigPath $configPath
     foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
         Assert-Equal "Worktree/Index baseline $field" $baseWorktree.$field $baseIndex.$field
+    }
+
+    # A snapshot retains the exact descriptor, stage-0 modes and OIDs under later index edits.
+    $savedIndexTree = [string](& git -C $testRoot write-tree)
+    $snapshot = Get-Cf7RuntimeV2IndexSnapshot -ProjectRoot $testRoot -ConfigPath $configPath
+    try {
+        $scopeOid = $snapshot.Entries['src/app.cs']
+        & git -C $testRoot update-index --force-remove -- 'src/app.cs'
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot prepare the missing input fixture.' }
+        Expect-Failure 'new index enumeration rejects a missing fixed input' {
+            Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -ConfigPath $configPath -Domain artifactSource -Mode Index | Out-Null
+        }
+        $frozenIdentity = Get-Cf7RuntimeV2Identity -ProjectRoot $testRoot -Mode Index -IndexSnapshot $snapshot
+        Assert-Equal 'a captured index snapshot cannot mix old and new bytes' $baseIndex.artifactSourceHash $frozenIdentity.artifactSourceHash
+
+        # Model an unresolved entry discovered only through a configured tree.
+        $conflict = "100644 $scopeOid 2`tsrc/unmerged.CS" + [char]0
+        Invoke-Cf7RuntimeV2GitWithInput -ProjectRoot $testRoot -Command 'update-index -z --index-info' -StdinBytes ([Text.Encoding]::UTF8.GetBytes($conflict)) | Out-Null
+        & git -C $testRoot update-index --add --cacheinfo "100644,$scopeOid,src/app.cs"
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot restore fixed index fixture input.' }
+        Expect-Failure 'in-scope unmerged tree member fails closed even with uppercase extension' {
+            Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -ConfigPath $configPath -Domain artifactSource -Mode Index | Out-Null
+        }
+        $policyPaths = @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -ConfigPath $configPath -Domain policy -Mode Index)
+        Assert-Equal 'unrelated unmerged path leaves other domain intact' 2 $policyPaths.Count
+    } finally {
+        & git -C $testRoot read-tree $savedIndexTree
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot restore the runtime index fixture.' }
     }
 
     # A clean Windows checkout may physically contain CRLF even when its Git identity is the

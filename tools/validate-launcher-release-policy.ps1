@@ -2,15 +2,16 @@
 # Binary producers must not run these checks as part of the payload identity: policy
 # evolves independently and is bound to the validation receipt by policyHash.
 
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName='Release')]
 param(
     [string]$ProjectRoot,
-    [string]$ReleaseTreeOid,
-    [ValidateSet('Worktree','Index')][string]$IdentityMode = 'Worktree',
-    [string]$CandidateRoot,
-    [string]$ReceiptPath,
-    [string]$TestCheckManifestPath,
-    [switch]$AllowTestManifest
+    [Parameter(ParameterSetName='Release')][string]$ReleaseTreeOid,
+    [Parameter(ParameterSetName='Release')][ValidateSet('Worktree','Index')][string]$IdentityMode = 'Worktree',
+    [Parameter(ParameterSetName='Release')][string]$CandidateRoot,
+    [Parameter(ParameterSetName='Release')][string]$ReceiptPath,
+    [Parameter(ParameterSetName='Release')][string]$TestCheckManifestPath,
+    [Parameter(ParameterSetName='Release')][switch]$AllowTestManifest,
+    [Parameter(Mandatory=$true,ParameterSetName='Preflight')][switch]$Preflight
 )
 
 $ErrorActionPreference = 'Stop'
@@ -102,10 +103,11 @@ function New-Cf7RequiredPathsCheck {
 }
 
 function New-Cf7CommandCheck {
-    param([string]$Name, [string]$FilePath, [string[]]$Arguments, [string]$WorkingDirectory)
+    param([string]$Name, [string]$FilePath, [string[]]$Arguments, [string]$WorkingDirectory, [switch]$IncludeInPreflight)
     return [pscustomobject]@{
         Name = $Name
         Kind = 'command'
+        IncludeInPreflight = [bool]$IncludeInPreflight
         FilePath = $FilePath
         Arguments = @($Arguments)
         WorkingDirectory = $WorkingDirectory
@@ -194,7 +196,7 @@ function Get-Cf7ProductionChecks {
         -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'task-condition-regression' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\test-derive-task-conditions.js')) -WorkingDirectory $ProjectRoot
-    $checks += New-Cf7CommandCheck -Name 'panel-cross-layer-contracts' -FilePath $node `
+    $checks += New-Cf7CommandCheck -Name 'panel-cross-layer-contracts' -IncludeInPreflight -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-panel-contracts.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'guidance-catalog-current' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\generate-guidance-catalog.js'), '--check') -WorkingDirectory $ProjectRoot
@@ -212,11 +214,11 @@ function Get-Cf7ProductionChecks {
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-equipment-mod-ui.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7RequiredPathsCheck -Name 'required-tooltip-runtime-assets' -Root $ProjectRoot `
         -Paths @('launcher\scripts\dist\tooltip-bundle.js', 'launcher\scripts\dist\tooltip-catalog-compiler.js', 'data\tooltip\tooltip-catalog.json', 'data\tooltip\tooltip-catalog.manifest.json')
-    $checks += New-Cf7CommandCheck -Name 'tooltip-bundle-current' -FilePath $node `
+    $checks += New-Cf7CommandCheck -Name 'tooltip-bundle-current' -IncludeInPreflight -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'launcher\tooltip-engine\build.cjs'), '--check') -WorkingDirectory $ProjectRoot
-    $checks += New-Cf7CommandCheck -Name 'tooltip-catalog-current' -FilePath $python `
+    $checks += New-Cf7CommandCheck -Name 'tooltip-catalog-current' -IncludeInPreflight -FilePath $python `
         -Arguments @((Join-Path $ProjectRoot 'tools\build-tooltip-catalog.py'), '--check') -WorkingDirectory $ProjectRoot
-    $checks += New-Cf7CommandCheck -Name 'material-catalog-current' -FilePath $python `
+    $checks += New-Cf7CommandCheck -Name 'material-catalog-current' -IncludeInPreflight -FilePath $python `
         -Arguments @((Join-Path $ProjectRoot 'tools\derive-material-catalog.py'), '--check') -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'combat-fx-assets-current' -FilePath $python `
         -Arguments @((Join-Path $ProjectRoot 'tools\combat-fx-assets\build.py'), '--check') -WorkingDirectory $ProjectRoot
@@ -415,7 +417,7 @@ function Get-Cf7ProductionChecks {
     )
     $checks += New-Cf7RequiredPathsCheck -Name 'required-web-runtime-assets' `
         -Root (Join-Path $ProjectRoot 'launcher\web') -Paths $requiredWebPaths
-    $checks += New-Cf7CommandCheck -Name 'workbench-css-closure' -FilePath $node `
+    $checks += New-Cf7CommandCheck -Name 'workbench-css-closure' -IncludeInPreflight -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\check-workbench-css-bundle.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'sleep-ui-art-and-runtime' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\test-sleep-runtime.js')) -WorkingDirectory $ProjectRoot
@@ -502,6 +504,22 @@ function Get-Cf7TestChecks {
     }
     if ($checks.Count -eq 0) { throw 'Test check manifest must contain at least one check.' }
     return @($checks)
+}
+
+# Optional worktree checks run before an immutable tree or candidate exists.
+# The release parameter set alone can reach the receipt writer below.
+if ($PSCmdlet.ParameterSetName -eq 'Preflight') {
+    $quickChecks = @(Get-Cf7ProductionChecks | Where-Object { $_.IncludeInPreflight })
+    if ($quickChecks.Count -eq 0) { throw 'No source preflight checks are defined.' }
+    $failures = @()
+    foreach ($check in $quickChecks) {
+        $result = Invoke-Cf7PolicyCheck -Check $check
+        Write-Host "[RuntimePolicyPreflight] $($result.name) passed=$($result.passed) durationMs=$($result.durationMs)"
+        if (-not $result.passed) { $failures += "$($result.name): $($result.detail)" }
+    }
+    if ($failures.Count) { throw "Source preflight failed: $($failures -join ', ')" }
+    Write-Host "[RuntimePolicyPreflight] OK checks=$($quickChecks.Count)"
+    return
 }
 
 $v2Common = Join-Path $ProjectRoot 'tools\runtime-build-v2-common.ps1'
