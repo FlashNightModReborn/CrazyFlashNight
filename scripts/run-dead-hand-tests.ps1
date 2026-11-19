@@ -39,7 +39,7 @@ if ($ReferencesOnly) {
     $focusedRun.SuiteRelativePaths=@('scripts/类定义/org/flashNight/arki/unit/UnitComponent/Dressup/DressupReferenceManagerTest.as')
     $focusedRun.SuiteFqns=@('org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest')
     $focusedRun.AdditionalAsRelativePaths=@('scripts/类定义/org/flashNight/arki/unit/UnitComponent/Dressup/DressupReferenceManager.as')
-    $focusedRun.ExpectedTracePatterns=@('(?m)^Result: 127/127 passed, 0 failed  \([0-9]+ ms\)\r?$')
+    $focusedRun.ExpectedTracePatterns=@('(?m)^Result: 148/148 passed, 0 failed  \([0-9]+ ms\)\r?$')
     $focusedRun.SuccessSummary='Dressup placement identity, same-path slot replacement and stale refresh isolation'
 }
 & (Join-Path $PSScriptRoot 'test-runners/run-focused-testloader.ps1') @focusedRun
