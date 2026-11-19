@@ -1,14 +1,14 @@
 # asLoader 启动架构 · 导览与待测
 
 **文档角色**：asLoader 启动子系统的**入口导览**（反直觉架构的心智地图 + 验证状态 + 测试入口）。深层细节下沉到设计 / 施工 doc，本文只回答「这是什么、为什么这么怪、验了什么、还要测什么」。
-**最后核对代码基线**：commit `56c697896f9a854fcb4fd81a8c47e3108e7b290e` + 2026-11-15 本地未提交三模块工作树。§5 保留 commit `b4d1267d51e5bdf4957fe56d21f6ee2c0a5049de` 后 2026-07-25 工作树的历史验证；历史计数和运行回执不代表现役产物，当前数值以重新生成、SWF 扫描及对应执行记录为准。
+**最后核对代码基线**：commit `6b83cc4ec22f204da2a997b69b217b751d7123b6` 及 2026-11-20 本地增量构建改动，本轮核对 §0 默认布局、发布与验收入口。三模块装载合同沿用 2026-11-15 工作树。§5 保留 2026-07-25 的历史验证，当前数值以对应源码和 SWF 的重新核验为准。
 **深层 doc**：[架构设计](asLoader重构-架构设计-2026-06-15.md)（为什么这么设计 + P0-P6 路线）· [BootSequencer 构建标准](asLoader-BootSequencer-构建标准-2026-06-16.md)（启动契约 + §5 边界 runbook）· [asLoader / TestLoader 维护性路线](asLoader-TestLoader维护性重构-架构路线-2026-07-24.md)（维护性施工路线；阶段状态以该文档为准，当前构建入口与门禁以本文为准）。
 
 ## 0. TL;DR（先读这段）
 
 asLoader 是游戏启动代码子系统。主影片仍从 `scripts/asLoader.swf` 导入同名 symbol；生产类按 `tools/asloader-modules.json` 分属原入口、共享库和启动逻辑三个 SWF，每个类只能有一个 owner。有界定义帧仍安装同一组函数，末帧才启动状态机，业务阶段顺序不变。
 
-### 编译模块与装载合同（2026-11-15 候选）
+### 编译模块与装载合同
 
 原入口只驻留 `SaveManager` 并装载代码（XFL 与输出 SWF 映射：`resident` = `scripts/asLoaderBootstrap/asLoaderBootstrap.xfl` → `scripts/asLoader.swf`；`shared` = `scripts/asLoaderShared/asLoaderShared.xfl` → `scripts/asLoaderShared.swf`；`boot` = `scripts/asLoader/asLoader.xfl` → `scripts/asLoaderLogic.swf`）。原入口通过主影片的 RSL 导入保持既有 `SharedObject.getLocal` 命名空间；不得把存档类直接移动到正常加载的另一个 SWF。共享库 `scripts/asLoaderShared.swf`、启动逻辑 `scripts/asLoaderLogic.swf` 由 `MovieClipLoader` 串行加载到 `_root.__asLoaderCode`（固定深度 `65531`）下的持久子影片，显式 `_lockroot=false`。这两个代码影片须存活到 AVM1 会话结束，handoff 只删除原公共入口和定义 host（定义 host 位于单帧时间轴负深度时先换至父影片的下一空闲非负深度，再执行 `removeMovieClip()`，避免 AVM1 负深度静默残留）。嵌套 RSL 曾出现共享服务读不到真实根对象，不能用类数量或编译成功代替根身份检查。
 
@@ -18,7 +18,9 @@ asLoader 是游戏启动代码子系统。主影片仍从 `scripts/asLoader.swf`
 
 只编辑 canonical 类源码、原 boot 输入及上述入口；`tools/build-asloader-modules.py` 从单一类归属表生成 XFL root、roots/exclude 文件和忽略目录 `tmp/asloader-modules` 中的完整编译路径镜像。非本模块的已登记类用 `intrinsic class` API 声明，仅保留签名，不产生替身实现；本模块和其他源码仍用原始字节。接口和实现切换时写入新时间戳，不能用 `copy2` 倒签日期而让 CS6 复用旧 ASO。类所有权表不持有 `BOOT_SOURCES` 或业务阶段表。
 
-标准 `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900` 自动生成并依次真实发布三个模块，使用跨阶段仓库锁、逐阶段机器锁及专用 `m1` 父锁身份，保留原 focused `v1` scratch 恢复规则。任一新鲜 Compiler、SWF刷新、零32K重试、函数尺寸、精确类归属、父类注册顺序或编译后输入检查失败都会停止；逐阶段诊断和 manifest 收据位于 `tmp/asloader-builds/`。类漏登记或跨模块重复必须修正源/归属，不能扩大排除列表掩盖。`--check` 可单独用于两个生成器。打包必须同时包含三个 SWF 和运行配给 JSON。`compiled` 收据不代表游戏已运行或已正式发布。
+标准 `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900` 在已绑定的原生 CS6 上默认使用 Overlay Stubs，逐模块决定是否发布。Overlay 在隔离目录只为外部登记类型生成声明，本模块实现和未登记源码从冻结的类目录读取。需要使用完整镜像时加 `-ModuleLayout Mirror`。每个模块的编译键涵盖自己的实现、外部声明、可见未登记类、类内与帧内的传递 include、XFL 及编译环境。首轮真实全编建立成功记录，后续复用须匹配原模块字节与原编译证据。`-PlanOnly` 显示原因，`-ForceFull` 沿相同流程重编三件。编译父任务持有仓库锁，每次调用 CS6 再取得机器锁。只核对仓库管理的 XFL、roots 和 exclude 时，可用 `python -B tools/build-asloader-modules.py --check-projects`。原来的 `--check` 还会核对独立生成器的完整临时镜像。
+
+候选集需通过函数尺寸、类归属、初始化顺序及输入核验。当前运行记录在 `tmp/asloader-p1/runs/`，整组安装与恢复状态在 `tmp/asloader-artifact-set/`。标准开发启动和工作树打包参与整组读取；直接双击其他程序的并发读取不在这个协议内。打包仍须同时包含三个 SWF 和运行配给 JSON。详细命令和故障恢复见 [CS6 操作说明](../scripts/FlashCS6自动化编译.md)。运行体验与发行部署分别取证。
 
 ⚠ **反直觉点（看到别"修"，都是有意为之）**：
 1. **定义装载分帧，业务由状态机执行**。唯一 `BOOT_SOURCES` 表机械派生 `_root.__boot.fN = function(){…}`；完整函数按源体积分到定义帧，最后一帧安装6个纯装配stage、停止播放，并调用一次 `BootSequencer.run(this)`。前置帧只安装定义。

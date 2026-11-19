@@ -49,6 +49,8 @@ function runHarness(options = {}) {
     [canonicalTargetURI, "PROXY-CS5"],
   ]);
   if (options.quitAfterPublish) files.set(quitCfg, "quit");
+  if (options.activeURI) files.delete(targetCfg);
+  if (options.setMarker) files.set(projectURI + "/tmp/asloader-artifact-set/" + options.setMarker, "{}");
   const controlCfg = `${projectURI}/scripts/testplayer_control.cfg`;
   const controlReceipt = `${projectURI}/scripts/testplayer_control.receipt`;
   if (options.controlRequest) files.set(controlCfg, options.controlRequest);
@@ -81,6 +83,7 @@ function runHarness(options = {}) {
       tested.push(this.name);
     },
   };
+  if (options.activeURI) document.pathURI = options.activeURI;
   if (options.testHostDocument) {
     document.name = "TestLoader.xfl";
     document.pathURI = `${projectURI}/scripts/TestLoader/TestLoader.xfl`;
@@ -390,3 +393,42 @@ function testFirst32KDiagnosticsAreSavedBeforeRetry() {
 }
 testFirst32KDiagnosticsAreSavedBeforeRetry();
 console.log("[OK] first 32K diagnostics survive an in-progress retry");
+
+function testManagedActiveDocumentAdmission() {
+  const catalog = JSON.parse(fs.readFileSync(path.join(root, "tools/asloader-modules.json"), "utf8"));
+  const targets = ["resident","shared","boot"].map(name => catalog[name].xfl);
+  const request = ["test", "managed-active-v1", ...targets].join("\r\n");
+  const project = "file:///C|/Program%20Files%20(x86)/CF7/resources/";
+  function checkBlocked(result) {
+    assert.ok(result.files.has(result.errorMarker));
+    assert.deepEqual(result.closed, []);
+    assert.deepEqual(result.opened, []);
+    assert.deepEqual(result.published, []);
+    assert.deepEqual(result.tested, []);
+    assert.equal(result.files.has(result.reopenMarker), false);
+  }
+  for (const [i, rel] of targets.entries()) {
+    const result = runHarness({activeURI: project + rel.toUpperCase(), compileMode: request,
+      setMarker: ["active.json", "pending.json", "last-good.json"][i]});
+    checkBlocked(result);
+    assert.match(result.files.get(result.errorMarker), /Managed asLoader module/);
+  }
+  for (const mode of ["test", "test\nmanaged-active-v1\n" + targets[0],
+    ["test", "managed-active-v1", targets[0], targets[0], targets[2]].join("\n"),
+    ["test", "managed-active-v1", targets[0], "scripts/a/../b.xfl", targets[2]].join("\n"),
+    "publish\nmanaged-active-v1"]) {
+    checkBlocked(runHarness({activeURI: project + targets[0], compileMode: mode, setMarker: "active.json"}));
+  }
+  for (const activeURI of [project + "scripts/TestLoader/TestLoader.xfl",
+    project + "tmp/candidate/" + targets[0], "file:///C|/other/" + targets[1]]) {
+    const result = runHarness({activeURI, compileMode: request, setMarker: "active.json"});
+    assert.deepEqual(result.closed, [activeURI]);
+    assert.equal(result.files.get(result.reopenMarker), activeURI + "\ntest");
+    assert.equal(result.files.has(result.errorMarker), false);
+  }
+  const unmanaged = runHarness({activeURI: project + targets[2], compileMode: "test"});
+  assert.deepEqual(unmanaged.closed, [project + targets[2]]);
+  assert.equal(unmanaged.files.has(unmanaged.errorMarker), false);
+}
+testManagedActiveDocumentAdmission();
+console.log("[OK] managed active module safety and unrelated active documents");
