@@ -59,7 +59,7 @@ try {
     const remote = path.join(scratch, 'remote.git');
     git(scratch, 'clone', '-q', '--bare', author, remote);
     git(author, 'remote', 'add', 'origin', remote);
-    git(scratch, '-c', 'core.autocrlf=true', 'clone', '-q', remote, tester);
+    git(scratch, 'clone', '-c', 'core.autocrlf=true', '-q', remote, tester);
     const input = path.join(scratch, 'inventory.jsonl');
     fs.writeFileSync(input, JSON.stringify(itemInput(catalog, product, { presentation: 'inventory' })) + '\n');
     const hostDir = path.join(root, 'launcher/tests/TooltipService.Host');
