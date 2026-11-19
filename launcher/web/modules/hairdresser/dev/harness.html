@@ -185,7 +185,7 @@ window.Panels=(function(){
   }
   async function reopenCurrent(){
     Panels.open('hairdresser');
-    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200)
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===__catalog.length&&!HairdresserPanel.debugState().snapshotBusy},2200)
   }
   async function closePath(name,action){
     var beforeWrites=writes().length,beforeClose=closeMessages().length;
@@ -207,7 +207,9 @@ window.Panels=(function(){
         name:row.querySelector('Name').textContent
       }
     });
-    ok('AS2 fixture contains exactly 77 source rows',__catalog.length===77,String(__catalog.length));
+    var maleCount=__catalog.filter(function(row){return row.identifier==='光头'||row.name.indexOf('发型-男式-')===0}).length;
+    var femaleCount=__catalog.filter(function(row){return row.identifier==='光头'||row.name.indexOf('发型-女式-')===0}).length;
+    ok('full fixture includes the sheriff style',__catalog.some(function(row){return row.identifier==='发型-男式-Codex-治安官'}),String(__catalog.length));
 
     await openDefault();
     await waitFor(function(){return HairdresserPanel.debugState().manifestReady},3200);
@@ -220,7 +222,7 @@ window.Panels=(function(){
       contentRect.width/panelRect.width>.999&&contentRect.height/panelRect.height>.999
       &&shellRect.width/contentRect.width>.997&&shellRect.height/contentRect.height>.997,
       JSON.stringify({panel:[panelRect.width,panelRect.height],content:[contentRect.width,contentRect.height],shell:[shellRect.width,shellRect.height]}));
-    ok('renders all 77 catalog rows without filtering',state.catalogCount===77&&document.querySelectorAll('.hairdresser-style-card').length===77,JSON.stringify(state.catalogCount));
+    ok('renders all source rows without filtering',state.catalogCount===__catalog.length&&document.querySelectorAll('.hairdresser-style-card').length===__catalog.length,JSON.stringify(state.catalogCount));
     var duplicates=state.catalog.filter(function(row){return row.identifier==='发型-男式-平头'});
     ok('preserves duplicate identifiers at AS2 source positions 20 and 32',
       duplicates.length===2&&state.catalog[20].identifier==='发型-男式-平头'
@@ -276,15 +278,15 @@ window.Panels=(function(){
       &&state.rendererMeta.strictFields===true&&state.rendererMeta.animated===false,
       JSON.stringify(state.rendererMeta));
     ok('duplicate rows remain independently selectable',
-      document.querySelectorAll('.hairdresser-style-card').length===77
+      document.querySelectorAll('.hairdresser-style-card').length===__catalog.length
       &&Array.prototype.filter.call(document.querySelectorAll('.hairdresser-style-copy small'),function(node){
         return node.textContent==='发型-男式-平头'
       }).length===2);
 
-    ok('compact icon grid renders 76 real artwork images plus the readable bald fallback',
+    ok('compact icon grid renders real artwork for each hairstyle plus the readable bald fallback',
       document.querySelector('.hairdresser-catalog').getAttribute('data-density')==='compact'
-      &&document.querySelectorAll('.hairdresser-catalog .hairdresser-style-icon').length===77
-      &&document.querySelectorAll('.hairdresser-catalog .hairdresser-style-icon-image').length===76
+      &&document.querySelectorAll('.hairdresser-catalog .hairdresser-style-icon').length===__catalog.length
+      &&document.querySelectorAll('.hairdresser-catalog .hairdresser-style-icon-image').length===__catalog.length-1
       &&document.querySelectorAll('.hairdresser-catalog .hairdresser-style-icon-fallback').length===1
       &&document.querySelector('.hairdresser-style-card[data-index="20"]').title==='发型-男式-平头',
       JSON.stringify({
@@ -308,14 +310,14 @@ window.Panels=(function(){
     });
     ok('gender tabs expose deterministic name-prefix groups with counts',
       tabLabels.join(',')==='全部,男式,女式'
-      &&tabButton('全部').querySelector('small').textContent==='77'
-      &&tabButton('男式').querySelector('small').textContent==='52'
-      &&tabButton('女式').querySelector('small').textContent==='26',
+      &&tabButton('全部').querySelector('small').textContent===String(__catalog.length)
+      &&tabButton('男式').querySelector('small').textContent===String(maleCount)
+      &&tabButton('女式').querySelector('small').textContent===String(femaleCount),
       JSON.stringify(tabLabels));
     tabButton('男式').click();
     await wait();
     ok('male tab keeps wire order with duplicates and the neutral bald row visible',
-      document.querySelectorAll('.hairdresser-style-card').length===52
+      document.querySelectorAll('.hairdresser-style-card').length===maleCount
       &&!!document.querySelector('.hairdresser-style-card[data-index="0"]')
       &&!!document.querySelector('.hairdresser-style-card[data-index="20"]')
       &&!!document.querySelector('.hairdresser-style-card[data-index="32"]')
@@ -325,7 +327,7 @@ window.Panels=(function(){
     await wait();
     state=HairdresserPanel.debugState();
     ok('switching tabs never drops the local trial selection',
-      document.querySelectorAll('.hairdresser-style-card').length===26
+      document.querySelectorAll('.hairdresser-style-card').length===femaleCount
       &&!!document.querySelector('.hairdresser-style-card[data-index="0"]')
       &&!document.querySelector('.hairdresser-style-card[data-index="32"]')
       &&state.selectedIndex===32&&state.selectedIdentifier==='发型-男式-平头'
@@ -336,7 +338,7 @@ window.Panels=(function(){
     tabButton('全部').click();
     await wait();
     ok('returning to the all tab restores the complete wire catalog with the trial intact',
-      document.querySelectorAll('.hairdresser-style-card').length===77
+      document.querySelectorAll('.hairdresser-style-card').length===__catalog.length
       &&document.querySelector('.hairdresser-style-card[data-index="32"]').getAttribute('aria-selected')==='true'
       &&HairdresserPanel.debugState().selectedIndex===32,
       String(document.querySelectorAll('.hairdresser-style-card').length));
@@ -345,13 +347,13 @@ window.Panels=(function(){
     await wait();
     ok('full density cards expose icon, short name, meta and identifier copy',
       document.querySelector('.hairdresser-catalog').getAttribute('data-density')==='full'
-      &&document.querySelectorAll('.hairdresser-style-card .hairdresser-style-copy b').length===77
+      &&document.querySelectorAll('.hairdresser-style-card .hairdresser-style-copy b').length===__catalog.length
       &&document.querySelector('.hairdresser-style-card[data-index="32"] .hairdresser-style-copy b').textContent==='平头'
       &&window.localStorage.getItem('cf7.hairdresser.catalog-density')==='full',
       document.querySelector('.hairdresser-catalog').getAttribute('data-density'));
     Panels.close();
     Panels.open('hairdresser');
-    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200);
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===__catalog.length&&!HairdresserPanel.debugState().snapshotBusy},2200);
     ok('density preference survives panel reopen',
       document.querySelector('.hairdresser-catalog').getAttribute('data-density')==='full'
       &&window.localStorage.getItem('cf7.hairdresser.catalog-density')==='full',
@@ -575,8 +577,8 @@ window.Panels=(function(){
       state.needsRefresh&&document.querySelector('.hairdresser-error').hidden===false
       &&document.querySelector('.hairdresser-retry').hidden===false,JSON.stringify(state));
     document.querySelector('.hairdresser-retry').click();
-    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().needsRefresh});
-    ok('snapshot retry restores the authoritative catalog',HairdresserPanel.debugState().catalogCount===77);
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===__catalog.length&&!HairdresserPanel.debugState().needsRefresh});
+    ok('snapshot retry restores the authoritative catalog',HairdresserPanel.debugState().catalogCount===__catalog.length);
 
     await closePath('X control',function(){document.querySelector('.hairdresser-close').click()});
     await openDefault();
@@ -623,7 +625,7 @@ window.Panels=(function(){
 
     __configureHairdresser({portrait:'畸形数据'});
     Panels.open('hairdresser');
-    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200);
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===__catalog.length&&!HairdresserPanel.debugState().snapshotBusy},2200);
     ok('malformed portrait degrades to bust-only without errors',
       document.querySelector('.hairdresser-preview-mode').hidden===true
       &&HairdresserPanel.debugState().previewMode==='bust'
@@ -634,7 +636,7 @@ window.Panels=(function(){
       equipment:{'头部装备':'黑色摩托头盔','上装装备':'黑色功夫装','下装装备':'咖啡色多包裤','脚部装备':'棕色皮鞋'},
       hair:'光头',face:'1'}});
     Panels.open('hairdresser');
-    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200);
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===__catalog.length&&!HairdresserPanel.debugState().snapshotBusy},2200);
     ok('portrait snapshot reveals the bust/full-body segmented control',
       document.querySelector('.hairdresser-preview-mode').hidden===false
       &&HairdresserPanel.debugState().portraitReady===true,
@@ -669,7 +671,7 @@ window.Panels=(function(){
     __configureHairdresser({currentHair:'光头',portrait:{
       equipment:{'上装装备':'不存在的装备XYZ'},hair:'光头',face:'1'}});
     Panels.open('hairdresser');
-    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200);
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===__catalog.length&&!HairdresserPanel.debugState().snapshotBusy},2200);
     document.querySelector('.hairdresser-preview-mode [data-preview-mode="full"]').click();
     await waitFor(function(){return HairdresserPanel.debugState().previewMode==='full'},1200);
     await wait();

@@ -17,10 +17,10 @@ $focusedRun = @{
         'org.flashNight.neur.Server.test.CharacterCreationServiceTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^CharacterCreationServiceTest Tests Passed: 48\r?$'
+        '(?m)^CharacterCreationServiceTest Tests Passed: 49\r?$'
         '(?m)^CharacterCreationServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = '48/48 assertions'
+    SuccessSummary = '49/49 assertions'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

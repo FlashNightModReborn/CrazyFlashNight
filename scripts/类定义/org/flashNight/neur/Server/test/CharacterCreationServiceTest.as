@@ -121,6 +121,7 @@ class org.flashNight.neur.Server.test.CharacterCreationServiceTest {
         _root.发型名称库[7] = "黑暴走头";
         _root.发型库[8] = "发型-女式-咖啡色中长马尾";
         _root.发型名称库[8] = "咖啡色中长马尾";
+        _root.发型库[19] = "发型-男式-盗贼风镜蒙面";
         _root.发型库[20] = "发型-男式-平头";
         _root.发型名称库[20] = "平头";
         _root.发型库[32] = "发型-男式-平头";
@@ -296,7 +297,7 @@ class org.flashNight.neur.Server.test.CharacterCreationServiceTest {
 
     private static function hasExactRichItemKeys(row:Object):Boolean {
         var expected:Array = [
-            "identifier", "name", "iconName", "itemType", "introHTML", "descHTML"
+            "identifier", "name", "iconName", "itemType", "introHTML", "descHTML", "tooltipInput"
         ];
         if (row == null || typeof row != "object" || row instanceof Array) return false;
         var count:Number = 0;
@@ -306,11 +307,14 @@ class org.flashNight.neur.Server.test.CharacterCreationServiceTest {
             count++;
         }
         if (count != expected.length) return false;
-        for (var i:Number = 0; i < expected.length; i++) {
-            var value = row[expected[i]];
-            if (typeof value != "string" || value == "") return false;
-        }
-        return true;
+        return typeof row.identifier == "string" && row.identifier != ""
+            && typeof row.name == "string" && row.name != ""
+            && typeof row.iconName == "string" && row.iconName != ""
+            && typeof row.itemType == "string" && row.itemType != ""
+            && row.introHTML === "" && row.descHTML === ""
+            && row.tooltipInput.version === 1 && row.tooltipInput.kind == "item"
+            && row.tooltipInput.itemName == row.identifier
+            && row.tooltipInput.projection.iconName == row.iconName;
     }
 
     private static function richCatalogMatches(rows:Array, expectedIdentifiers:Array):Boolean {
@@ -372,25 +376,27 @@ class org.flashNight.neur.Server.test.CharacterCreationServiceTest {
                 && upper.name == "黑色功夫装"
                 && upper.iconName == "黑色功夫装"
                 && upper.itemType == "防具"
-                && upper.introHTML.length > 0 && upper.descHTML.length > 0
                 && aliasedIcon.identifier == "咖啡色多包短裤"
                 && aliasedIcon.iconName == "咖啡色多包裤",
             "snapshot keeps strict rich rows, source order and the real item-data icon alias");
-        assert(response.hairCatalog.length == 77
-                && response.hairCatalog[0].identifier == "光头"
-                && response.hairCatalog[76].identifier == "目录发型-76",
-            "snapshot forwards all current Hairdresser rows in source order");
-        assert(response.hairCatalog[20].identifier == "发型-男式-平头"
-                && response.hairCatalog[32].identifier == "发型-男式-平头",
-            "snapshot preserves duplicate Hairdresser rows");
+        assert(response.hairCatalog.length == 5 && response.hairCatalog[0].identifier == "光头"
+                && response.hairCatalog[1].identifier == response.defaults.male.hairIdentifier
+                && response.hairCatalog[2].identifier == response.defaults.female.hairIdentifier,
+            "snapshot filters the starter rows in source order");
+        assert(response.hairCatalog[3].identifier == "发型-男式-平头"
+                && response.hairCatalog[4].identifier == "发型-男式-平头",
+            "starter rows preserve both matching source entries");
         _root.发型库.push("目录未来扩充发型");
         _root.发型名称库.push("未来扩充发型");
         _root.发型价格.push(0);
         CharacterCreationService.handle("snapshot", snapshotRequest(12));
         var expanded:Object = lastResponse();
-        assert(expanded.success && expanded.hairCatalog.length == 78
-                && expanded.hairCatalog[77].identifier == "目录未来扩充发型",
-            "production catalog accepts valid real Hairdresser expansion beyond current 77 rows");
+        var barber:Object = HairdresserPanelService.execute("snapshot", {v:1});
+        assert(expanded.success && expanded.hairCatalog.length == 5
+                && barber.success && barber.catalog.length == 78
+                && barber.catalog[19].identifier == "发型-男式-盗贼风镜蒙面"
+                && barber.catalog[77].identifier == "目录未来扩充发型",
+            "new and barber-only styles stay available at the barber");
         assert(response.difficulties.length == 3
                 && response.difficulties[0].identifier == "balanced"
                 && response.difficulties[0].recommended === true
@@ -451,6 +457,12 @@ class org.flashNight.neur.Server.test.CharacterCreationServiceTest {
             "create", createRequest(35, maleDraft("坏\n名字")));
         assert(lastResponse().error == "invalid_character_name",
             "character name rejects control characters");
+
+        var barberOnly:Object = maleDraft("新角色");
+        barberOnly.hairIdentifier = "发型-男式-盗贼风镜蒙面";
+        CharacterCreationService.handle("create", createRequest(37, barberOnly));
+        assert(lastResponse().error == "invalid_hair",
+            "create rejects a valid barber-only identifier before writing");
 
         var crossGender:Object = maleDraft("新角色");
         crossGender.upperIdentifier = "米色高腰背心";
