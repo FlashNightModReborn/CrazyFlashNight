@@ -187,6 +187,13 @@ try {
         Assert-Equal "AS2 ownership workflow and execution closure are policy-bound: $as2PolicyInput" 'policy' `
             $repositoryInputOwners[$as2PolicyInput]
     }
+    foreach ($blueprintInput in @(
+        '.github/workflows/weapon-blueprints.yml', 'tools/bake-armory-blueprints.js',
+        'tools/lib/armory-blueprint-coverage.js', 'tools/lib/blueprint-svg.js', 'tools/lib/item-icons.js'
+    )) {
+        Assert-Equal "Weapon blueprint coverage workflow and scripts are policy-bound: $blueprintInput" 'policy' `
+            $repositoryInputOwners[$blueprintInput]
+    }
     if ($InputClassificationOnly) {
         Write-Host "Runtime v2 input classification passed: $script:checks checks; no build, signatures or certificate writes." -ForegroundColor Green
         return

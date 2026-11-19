@@ -1,4 +1,5 @@
 name: 武器合成蓝图
+# 工作流及其读取蓝图的脚本登记在 config/build/runtime-inputs.v2.json 的 policy.fixedFiles。
 
 on:
   pull_request:
