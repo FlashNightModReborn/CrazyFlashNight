@@ -930,6 +930,7 @@ try {
         $deploymentChanged = $changedDeploymentPaths.Count -gt 0
     }
 
+    $publications = @()
     if ($baseCommit) {
         $rangeBase = if ($trustedBaseCommit) { $trustedBaseCommit } else { $baseCommit }
         $publications = @(Assert-Cf7PublicationSequence $rangeBase $headCommit $pathspecs)
@@ -1060,7 +1061,8 @@ try {
     }
     $state = if ($Mode -eq 'Protected') {
         'protected-coherent'
-    } elseif ($ForceDeploymentVerification -and -not $deploymentChanged) {
+    } elseif ($ForceDeploymentVerification -and (-not $deploymentChanged -or
+            ($publications.Count -gt 0 -and $publications[-1] -cne $headCommit))) {
         'release-ready'
     } else { 'promoted' }
     Write-Host "[RuntimeReleaseState] OK state=$state mode=$Mode manifest=$headHeader deploymentChanged=$($deploymentChanged.ToString().ToLowerInvariant()) forcedDeploymentVerification=$($ForceDeploymentVerification.ToString().ToLowerInvariant()) base=$(if ($baseCommit) {$baseCommit} else {'none'}) head=$headCommit" -ForegroundColor Green

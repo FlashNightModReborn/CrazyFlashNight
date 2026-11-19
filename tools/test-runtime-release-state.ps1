@@ -510,11 +510,14 @@ try {
         $s2 = Add-TestFilesCommit $f @{'docs/reports/second.md'='second source'; 'scripts/类定义/org/flashNight/arki/bullet/Example.as'='// later uncompiled edit'} 'advance source'
         $p1 = Add-TestCommit $f $recordPath (New-TestReleaseRecord $s1)
         $p2 = Add-TestCommit $f $recordPath (New-TestReleaseRecord $s2)
-        [void](Add-TestCommit $f 'docs/later.md' 'development continued after publication')
+        [void](Add-TestCommit $f 'docs/reports/later.md' 'development continued after publication')
         $result = Invoke-Classifier $f Audit $previous
         Assert-Test ($result.ExitCode -eq 0 -and $result.Output -match 'state=source-ahead' -and $result.Output -match 'verifiedPublications=2') $result.Output
         Assert-Test ($result.Output -match "publication=$p1 parent=$s2" -and $result.Output -match "publication=$p2 parent=$p1") $result.Output
         Assert-Test ((Get-TestCalls $f) -join ',' -eq 'consensus:history,consensus:strict,consensus:history,consensus:strict') 'each publication needs its previous and new deployment checked'
+        $forced = Invoke-Classifier $f Audit $previous -ExtraArguments @('-ForceDeploymentVerification')
+        Assert-Test ($forced.ExitCode -eq 0 -and $forced.Output -match 'state=release-ready' -and
+            $forced.Output -match 'deploymentChanged=true' -and $forced.Output -match 'forcedDeploymentVerification=true') $forced.Output
     }
 
     Run-Test 'Manual Audit release-readiness forces the complete verifier chain' {
