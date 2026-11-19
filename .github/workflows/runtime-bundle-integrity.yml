@@ -172,6 +172,7 @@ jobs:
             .github/workflows/runtime-bundle-integrity.yml
             config/build/
             tools/classify-runtime-release-state.ps1
+            tools/runtime-release-admission.ps1
             tools/runtime-build-attestation-v2-common.ps1
             tools/runtime-build-common.ps1
             tools/runtime-build-queue-common.ps1
@@ -231,6 +232,7 @@ jobs:
             config/build/main-branch-admission.v2.json
             config/build/runtime-builders.v2.json
             tools/classify-runtime-release-state.ps1
+            tools/runtime-release-admission.ps1
             tools/test-runtime-release-state.ps1
             tools/runtime-build-v2-common.ps1
             tools/runtime-build-attestation-v2-common.ps1

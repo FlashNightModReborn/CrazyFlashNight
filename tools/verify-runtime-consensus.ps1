@@ -4,6 +4,7 @@ param(
     [string]$RecordPath,
     [switch]$Staged,
     [switch]$IntegrityOnly,
+    [switch]$HistoricalSource,
     [string]$PreVerifiedGitHubProofPath
 )
 
@@ -19,7 +20,7 @@ if ($Staged -and ($DeploymentRoot -ne $ProjectRoot -or $RecordPath)) {
     throw '-Staged uses the indexed project deployment and canonical consensus record.'
 }
 
-. (Join-Path $ProjectRoot 'tools\runtime-build-common.ps1')
+. (Join-Path $PSScriptRoot 'runtime-build-common.ps1')
 $relativeRecord = 'config/build/runtime-release-consensus.json'
 if ($Staged) {
     $recordBytes = Get-Cf7GitBlobBytes -ProjectRoot $ProjectRoot -RelativePath $relativeRecord
@@ -103,18 +104,21 @@ function Test-Cf7LegacyConsensus {
     return $true
 }
 
+if ($HistoricalSource -and ($PreVerifiedGitHubProofPath -or $IntegrityOnly -or [string]$record.schema -ne 'cf7-runtime-release-consensus.v2')) {
+    throw 'Historical verification requires a v2 deployment record and fresh proof replay.'
+}
 if (Test-Cf7LegacyConsensus) { exit 0 }
 if ($IntegrityOnly) { throw '-IntegrityOnly is limited to the one-time legacy v1 migration bootstrap.' }
 if ([string]$record.schema -ne 'cf7-runtime-release-consensus.v2') {
     throw 'Unsupported runtime release consensus schema.'
 }
 
-. (Join-Path $ProjectRoot 'tools\runtime-build-v2-common.ps1')
-. (Join-Path $ProjectRoot 'tools\runtime-build-attestation-v2-common.ps1')
-. (Join-Path $ProjectRoot 'tools\runtime-build-queue-common.ps1')
+. (Join-Path $PSScriptRoot 'runtime-build-v2-common.ps1')
+. (Join-Path $PSScriptRoot 'runtime-build-attestation-v2-common.ps1')
+. (Join-Path $PSScriptRoot 'runtime-build-queue-common.ps1')
 
 $allowedFields = @(
-    'schema','requestId','releaseTreeOid','artifactSourceHash','producerRecipeHash',
+    'schema','requestId','sourceCommitOid','releaseTreeOid','artifactSourceHash','producerRecipeHash',
     'toolchainLockHash','policyHash','buildIdentityHash','payloadClosureHash',
     'manifestSha256','policyReceiptSha256','policyReceiptBase64','attestations','promotedAtUtc'
 )
@@ -140,25 +144,42 @@ if ($expectedRequestId -ne ([string]$record.requestId).ToUpperInvariant()) {
     throw 'Release consensus requestId does not match releaseTreeOid + policyHash.'
 }
 
-$bundleVerifier = Join-Path $ProjectRoot 'tools\verify-runtime-bundle-v2.ps1'
-if ($Staged) {
-    & $windowsPowerShell -NoProfile -ExecutionPolicy Bypass -File $bundleVerifier -ProjectRoot $ProjectRoot -Staged
-} else {
-    & $windowsPowerShell -NoProfile -ExecutionPolicy Bypass -File $bundleVerifier `
-        -ProjectRoot $ProjectRoot -DeploymentRoot $DeploymentRoot
+$sourceOid = $null
+if ($HistoricalSource -or $record.PSObject.Properties['sourceCommitOid']) {
+    . (Join-Path $PSScriptRoot 'runtime-release-admission.ps1')
+    $sourceOid = Resolve-Cf7RuntimeRecordSource -ProjectRoot $ProjectRoot -Record $record
+    if (-not $HistoricalSource) {
+        $frozen = Get-Cf7RuntimeFrozenIdentity -ProjectRoot $ProjectRoot -SourceCommitOid $sourceOid
+        foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
+            if ([string]$frozen.$field -cne [string]$record.$field) {
+                throw "Release record disagrees with the immutable source identity: $field"
+            }
+        }
+    }
 }
-if ($LASTEXITCODE -ne 0) { throw 'Release consensus deployment failed runtime bundle v2 verification.' }
-
+$bundleVerifier = Join-Path $PSScriptRoot 'verify-runtime-bundle-v2.ps1'
 $temporaryRegistry = $null
+$historicalInventory = $null
 try {
+    $bundleArgs = @('-NoProfile','-ExecutionPolicy','Bypass','-File',$bundleVerifier,'-ProjectRoot',$ProjectRoot)
+    if ($Staged) { $bundleArgs += '-Staged' }
+    else { $bundleArgs += @('-DeploymentRoot',$DeploymentRoot) }
+    if ($HistoricalSource) {
+        $historicalInventory = Join-Path ([IO.Path]::GetTempPath()) ('cf7-history-' + [Guid]::NewGuid().ToString('N') + '.json')
+        $bundleArgs += @('-FrozenSourceCommitOid',$sourceOid,'-FileInventoryPath',$historicalInventory)
+    }
+    & $windowsPowerShell @bundleArgs
+    if ($LASTEXITCODE -ne 0) { throw 'Release consensus deployment failed runtime bundle v2 verification.' }
+
     $registryPath = Join-Path $ProjectRoot 'config\build\runtime-builders.v2.json'
-    if ($Staged) {
-        $temporaryBase = Join-Path $ProjectRoot 'tmp\runtime-consensus-verify'
-        New-Item -ItemType Directory -Path $temporaryBase -Force | Out-Null
-        $temporaryRegistry = Join-Path $temporaryBase ([Guid]::NewGuid().ToString('N') + '.json')
-        [IO.File]::WriteAllBytes(
-            $temporaryRegistry,
-            (Get-Cf7GitBlobBytes -ProjectRoot $ProjectRoot -RelativePath 'config/build/runtime-builders.v2.json'))
+    if ($Staged -or $HistoricalSource) {
+        $temporaryRegistry = Join-Path ([IO.Path]::GetTempPath()) ('cf7-registry-' + [Guid]::NewGuid().ToString('N') + '.json')
+        $registryBytes = if ($HistoricalSource) {
+            ,(Get-Cf7RuntimeFrozenBlobBytes -ProjectRoot $ProjectRoot -SourceCommitOid $sourceOid -RelativePath 'config/build/runtime-builders.v2.json')
+        } else {
+            ,(Get-Cf7GitBlobBytes -ProjectRoot $ProjectRoot -RelativePath 'config/build/runtime-builders.v2.json')
+        }
+        [IO.File]::WriteAllBytes($temporaryRegistry,$registryBytes)
         $registryPath = $temporaryRegistry
     }
 
@@ -222,7 +243,7 @@ try {
             continue
         }
 
-        $cloudTemporaryRoot = Join-Path (Join-Path $ProjectRoot 'tmp\runtime-consensus-verify') ([Guid]::NewGuid().ToString('N'))
+        $cloudTemporaryRoot = Join-Path ([IO.Path]::GetTempPath()) ('cf7-consensus-replay-' + [Guid]::NewGuid().ToString('N'))
         New-Item -ItemType Directory -Path $cloudTemporaryRoot -Force | Out-Null
         try {
             $envelopePath = Join-Path $cloudTemporaryRoot 'envelope.json'
@@ -231,14 +252,14 @@ try {
                 [IO.File]::WriteAllBytes($envelopePath, [Convert]::FromBase64String([string]$attestation.envelopeBase64))
                 [IO.File]::WriteAllBytes($bundlePath, [Convert]::FromBase64String([string]$attestation.bundleBase64))
             } catch { throw 'Release consensus contains invalid embedded GitHub proof bytes.' }
-            $verifiedWrapper = & (Join-Path $ProjectRoot 'tools\verify-runtime-github-attestation.ps1') `
+            $verifiedWrapper = & (Join-Path $PSScriptRoot 'verify-runtime-github-attestation.ps1') `
                 -ProjectRoot $ProjectRoot `
                 -CandidateRoot $DeploymentRoot `
                 -EnvelopePath $envelopePath `
                 -BundlePath $bundlePath `
                 -ExpectedSourceCommitOid ([string]$attestation.payload.sourceCommitOid) `
                 -SourceMode $mode `
-                -ReplayFromReleaseRecord
+                -ReplayFromReleaseRecord -HistoricalSource:$HistoricalSource
             if ($null -eq $verifiedWrapper) { throw 'GitHub producer proof replay returned no normalized proof.' }
             Assert-Cf7RuntimeGitHubProofEquivalentV2 -Expected $attestation -Actual $verifiedWrapper | Out-Null
             if ([string]$verifiedWrapper.payload.releaseTreeOid -ne ([string]$record.releaseTreeOid).ToLowerInvariant()) {
@@ -295,8 +316,15 @@ try {
         if ($matches.Count -ne 1) { throw "Policy receipt lacks passed invariant: $requiredCheck" }
     }
 
-    $identity = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $ProjectRoot -Mode $mode
-    $closure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $ProjectRoot -DeploymentRoot $DeploymentRoot -Mode $mode
+    if ($HistoricalSource) {
+        $identity = Get-Cf7RuntimeFrozenIdentity -ProjectRoot $ProjectRoot -SourceCommitOid $sourceOid
+        $inventory = Get-Content -LiteralPath $historicalInventory -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ([string]$inventory.schema -cne 'cf7-runtime-bundle-file-inventory.v2') { throw 'Missing verified historical payload inventory.' }
+        $closure = @{ payloadClosureHash = Get-Cf7RuntimeV2CanonicalClosureHash -Files @($inventory.files) }
+    } else {
+        $identity = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $ProjectRoot -Mode $mode
+        $closure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $ProjectRoot -DeploymentRoot $DeploymentRoot -Mode $mode
+    }
     $manifestBytes = if ($Staged) {
         Get-Cf7GitBlobBytes -ProjectRoot $ProjectRoot -RelativePath 'runtime/cf7-runtime-manifest.tsv'
     } else {
@@ -330,8 +358,9 @@ try {
         exit 2
     }
 
-    Write-Host "[RuntimeConsensus] OK schema=v2 mode=$mode signers=$($consensus.signerIdentities.Count) faultDomains=$($consensus.faultDomains.Count) payload=$($closure.payloadClosureHash)" -ForegroundColor Green
+    Write-Host "[RuntimeConsensus] OK schema=v2 mode=$mode historical=$([bool]$HistoricalSource) source=$sourceOid signers=$($consensus.signerIdentities.Count) faultDomains=$($consensus.faultDomains.Count) payload=$($closure.payloadClosureHash)" -ForegroundColor Green
 } finally {
+    if ($historicalInventory -and [IO.File]::Exists($historicalInventory)) { [IO.File]::Delete($historicalInventory) }
     if ($temporaryRegistry -and (Test-Path -LiteralPath $temporaryRegistry)) {
         Remove-Item -LiteralPath $temporaryRegistry -Force
     }
