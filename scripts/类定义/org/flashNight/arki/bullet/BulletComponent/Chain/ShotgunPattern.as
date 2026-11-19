@@ -6,6 +6,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern {
     public static var MAX_AGE:Number = 180;
     public var age:Number = 0;
     public var hitCap:Number = 0;
+    // 普通单靶只存数字身份；第二个接触目标才需要字典。
+    public var firstUID:Number;
     private var contacts:Object;
 
     /** 横向组装时守门；穿刺、透明等特殊弹继续走原规则。 */
@@ -40,13 +42,18 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern {
     /** 在闪避、伤害和事件之前拒绝重复接触；只保存 dispatcher 数字身份。 */
     public function prepareContact(group:ChainGroup, target:Object, area:Object, zOffset:Number):Boolean {
         if (!hasBudget(group.bullet) || target.dispatcher == undefined) return false;
-        var uid:Number = target.dispatcher.__dictUID;
-        if (contacts != null && contacts[uid] === true) return false;
+        var dispatcher:Object = target.dispatcher;
+        var uid:Number = dispatcher.__dictUID;
+        if (uid !== undefined && (firstUID === uid || contacts[uid] === true)) return false;
         hitCap = calculateCap(group, area, zOffset);
         if (!(hitCap > 0)) return false;
-        if (contacts == null) contacts = {};
-        if (uid === undefined) uid = Dictionary.getStaticUID(target.dispatcher);
-        contacts[uid] = true;
+        if (uid === undefined) uid = Dictionary.getStaticUID(dispatcher);
+        if (firstUID === undefined) {
+            firstUID = uid;
+        } else {
+            if (contacts == null) contacts = {};
+            contacts[uid] = true;
+        }
         return true;
     }
 

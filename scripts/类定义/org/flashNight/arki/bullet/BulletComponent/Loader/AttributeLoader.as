@@ -6,6 +6,12 @@ import org.flashNight.arki.bullet.BulletComponent.Lifecycle.ExplosionScatterProf
 
 class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implements IComponentLoader {
 
+    public static function parseContinuationChance(raw):Number {
+        if (typeof raw != "number" && typeof raw != "string") return 0;
+        var chance:Number = Number(raw);
+        return (chance == 25 || chance == 50 || chance == 75 || chance == 100) ? chance : 0;
+    }
+
     public function AttributeLoader() {
         // 构造函数，可用于初始化参数
     }
@@ -36,6 +42,10 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
         if(attributeNode != undefined) {
             var attributeInfo:Object = {};
             var sf:Number = 0;  // 预置的 stateFlags
+
+            if (attributeNode.continuationChance !== undefined) {
+                attributeInfo.continuationChance = parseContinuationChance(attributeNode.continuationChance);
+            }
 
             if(attributeNode.pierceLimit != undefined) {
                 attributeInfo.pierceLimit = Number(attributeNode.pierceLimit);

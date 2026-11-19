@@ -1,4 +1,5 @@
-﻿import org.flashNight.gesh.xml.*;
+﻿import org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader;
+import org.flashNight.gesh.xml.*;
 import org.flashNight.gesh.xml.LoadXml.*;
 import org.flashNight.neur.Server.*;
 import org.flashNight.neur.ScheduleTimer.*;
@@ -123,7 +124,9 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.ChainBulletConfigResolve
                         if (ov != undefined) {
                             for (var ok:String in ov) {
                                 if (derived[ok] != undefined) {
-                                    derived[ok] = (typeof derived[ok] == "number") ? Number(ov[ok]) : ov[ok];
+                                    derived[ok] = ok == "continuationChance"
+                                        ? AttributeLoader.parseContinuationChance(ov[ok])
+                                        : ((typeof derived[ok] == "number") ? Number(ov[ok]) : ov[ok]);
                                 }
                             }
                         }

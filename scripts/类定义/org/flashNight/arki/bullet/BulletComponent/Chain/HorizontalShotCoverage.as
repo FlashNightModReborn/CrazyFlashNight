@@ -36,6 +36,10 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage {
 
     /** 队列只用扩大后的窗口查询单位，消弹、地图与预警仍使用弹体本身的碰撞盒。 */
     public function sample(g:ChainGroup, box:Object):Void {
+        sampleForQueue(g, box, false);
+    }
+
+    public function sampleForQueue(g:ChainGroup, box:Object, positionOnly:Boolean):Void {
         var now:Number = _root.帧计时器.当前帧数;
         var b:Object = g.bullet;
         if (AABBCollider.zoneFrame != now) AABBCollider.refreshChainZoneAffine(now);
@@ -56,13 +60,19 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.HorizontalShotCoverage {
         valid = axisLen > 0 && isFinite(axisLen) && isFinite(x+y);
         left = box.left; right = box.right; top = box.top; bottom = box.bottom;
         if (!valid) return;
+        // 无可结算目标时只延续扫掠起点。水平轴的法向长度由仿射的纵分量确定。
+        if (positionOnly && axisY == 0) {
+            var transverse:Number = zb*g.mc2 + zd*g.md;
+            valid = transverse != 0 && isFinite(transverse);
+            return;
+        }
         forwardX = axisX/axisLen; forwardY = axisY/axisLen;
         var vx:Number = za*b.xmov+zc*b.ymov, vy:Number = zb*b.xmov+zd*b.ymov;
         if (forwardX*vx + forwardY*vy < 0) { forwardX = -forwardX; forwardY = -forwardY; }
         normalX = -forwardY; normalY = forwardX;
         var normalScale:Number = (za*g.mc2+zc*g.md)*normalX + (zb*g.mc2+zd*g.md)*normalY;
         valid = normalScale != 0 && isFinite(normalScale);
-        if (!valid) return;
+        if (!valid || positionOnly) return;
         tip = g.盒宽 * axisLen * 0.5;
         var start:Number = g.盒y*normalScale;
         // 两端取弹心，厚度单独参与扫掠。

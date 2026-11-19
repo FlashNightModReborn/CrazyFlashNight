@@ -226,6 +226,8 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         // 挂载 AttributeLoader 解析的属性到子弹对象
         // 优化：单次哈希查找，pierceLimit 仅在有属性配置时才可能存在
         var attr:Object = attributeMap[Obj.子弹种类];
+        // 武器模式可复用同一属性袋；旧弹种的续穿资格不能跟到新弹种。
+        if (Obj.continuationChance !== undefined && attr.continuationChance === undefined) delete Obj.continuationChance;
         if (attr) {
             // 内联属性拷贝，避免函数调用开销
             for (var key:String in attr) {

@@ -345,6 +345,12 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 </Pickups>
 ```
 
+### 子弹首次有效命中后的续穿概率 `<continuationChance>`
+
+在 `data/items/bullets_cases.xml` 的 `<bullet><attribute>` 内填写百分数，允许值为 `0`、`25`、`50`、`75`、`100`。缺省或填 `0` 表示关闭续穿。其他值在加载时按关闭处理，专项测试会报告数据中的非法配置。联弹模板的 `attributeOverride` 使用相同的五档规则。普通直射弹和已对象化的枪式横纵联弹消费此字段；枪式联弹按最终全名使用既有的模板与单元体属性派生，显式组合属性优先。换弹种的配件和技能以发射时的最终弹种为准。
+
+每个有效首击段按概率保留一次命中其他目标的机会。护盾吸收计入有效首击，全 MISS 与无敌不发放续段。续段沿原剩余射程、地图碰撞和命中回调继续执行，命中使用原伤害管线。同一段最多续一次。专用穿刺弹的 `pierceLimit` 另由原生命周期处理。运行与配装回归入口为 `scripts/run-half-pierce-tests.ps1`。
+
 ### 实际命中终结 `<actualTerminal>`
 
 `data/items/bullets_cases.xml` 的 `<attribute><actualTerminal>true</actualTerminal>` 是极少数“完成实际命中分类后立即终结目标”的声明式能力。`AttributeLoader` 会在 MovieClip 创建前把它投影为子弹的 `实际命中强制击杀`，因此普通显示子弹、透明弹和无 MovieClip 的 settlement bullet 使用同一权威；素材时间轴不得再重复声明该能力或用通用 `击中时触发函数` 模拟。

@@ -153,7 +153,7 @@ _root.联弹系统.渲染组 = function(group:ChainGroup):Void {
     var u:ChainUnitData;
     var m:MovieClip;
     var tr:Number;
-    for (var i:Number = 0; i < n; i++) {
+    for (var i:Number = group.halfPierce.visualStart | 0; i < n; i++) {
         u = list[i];
         m = u.mc;
         m._x = bx + ma * u.x + mc2 * u.y;
@@ -369,7 +369,10 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
         if (uy > y_max) y_max = uy;
         if (uy < y_min) y_min = uy;
     }
-    if (sv != sv0) parentMC.霰弹值 = sv;
+    if (sv != sv0) {
+        parentMC.霰弹值 = sv;
+        if (group.halfPierce != null) group.halfPierce.trimTo(sv);
+    }
     if (keepPhysical && len == 0) {
         ChainUnitManager.removeGroup(group);
         parentMC.removeMovieClip();
@@ -407,6 +410,7 @@ _root.联弹系统.横向联弹组装 = function(group:ChainGroup):Void {
     group.最小盒高 = group.盒y * -2;   // 盒高下限（y_基准*-2），更新热路径免每帧乘算
     group.余弦值 = Math.cos(b._rotation * Math.PI / 180);
     group.子弹种类 = b.子弹种类.split("-")[1];
+    HalfPierceBudget.bind(group, false);
 
     // 根据霰弹值生成单元体（flag 已定义时跳过，与旧逻辑一致）
     var overloadSpread:Number = b.武器扩散倍率;
@@ -680,11 +684,17 @@ _root.联弹系统.横向拖尾联弹初始化 = function (clip:MovieClip):Void
 _root.联弹系统.纵向联弹更新 = function(group:ChainGroup):Void {
     var area:MovieClip = group.area;
     var parentMC:MovieClip = group.bullet;
-    var countTotal:Number = parentMC.霰弹值;
+    var halfPierce:HalfPierceBudget = group.halfPierce;
+    var countTotal:Number = halfPierce != null ? halfPierce.birthTotal : parentMC.霰弹值;
+    if (halfPierce != null && ++halfPierce.age > ShotgunPattern.MAX_AGE) {
+        parentMC.removeMovieClip();
+        return;
+    }
     var A:Number = parentMC.xmov * group.运动方向系数;   // 带方向轴速（X/Y 推进共用；u.sin/u.cos 为生成时缓存）
     if (group.nativeGroupOwned) {
-        ChainUnitManager.beginNativeStep(group, A, group.count < countTotal);
-        if (group.aggregate && !(group.count < countTotal)) {
+        var filling:Boolean = group.count < countTotal;
+        ChainUnitManager.beginNativeStep(group, A, filling);
+        if (group.aggregate && !filling) {
             ChainUnitManager.updateVerticalAggregate(group);
             var nativeRender:Function = group.render;
             nativeRender(group);
@@ -794,6 +804,7 @@ _root.联弹系统.纵向联弹更新 = function(group:ChainGroup):Void {
 
                 group.count++;
             }
+            if (halfPierce != null) parentMC.霰弹值 += n;
         }
         group.补弹累计 = acc - n * D;
         group.aggregateSafe = 0;
@@ -896,6 +907,7 @@ _root.联弹系统.纵向联弹组装 = function(group:ChainGroup):Void {
 
     // 创建第一个单元体
     _root.联弹系统.生成单元体(group, _root.随机偏移(b.子弹散射度) * group.武器扩散倍率);
+    HalfPierceBudget.bind(group, true);
     _root.联弹系统.渲染组(group);
 };
 

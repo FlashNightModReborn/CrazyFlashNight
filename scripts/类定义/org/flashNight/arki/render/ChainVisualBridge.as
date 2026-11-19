@@ -256,6 +256,7 @@ class org.flashNight.arki.render.ChainVisualBridge {
             group = groups[i];
             if (!group.nativeGroupOwned || group.__removed) continue;
             group.nativeDenseIndex = alive; groups[alive++] = group;
+            if (group.halfPierce.visualStart === group.单元体列表.length) continue;
             b = group.bullet;
             entries[entries.length] = "G," + group.nativeGroupId + "," + group.nativeStyle + ","
                 + group.nativeStep + "," + b._x + "," + b._y + "," + b._rotation + ","
@@ -276,7 +277,8 @@ class org.flashNight.arki.render.ChainVisualBridge {
         for (i = 0; i < deaths.length; i++) {
             event = deaths[i];
             group = event.group;
-            if (group.nativeGroupOwned && !group.__removed)
+            if (group.nativeGroupOwned && !group.__removed
+                    && group.halfPierce.visualStart !== group.单元体列表.length)
                 entries[entries.length] = "D," + group.nativeGroupId + "," + event.id;
         }
         births.length = 0;

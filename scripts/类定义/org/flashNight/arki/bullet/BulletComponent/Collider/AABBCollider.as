@@ -395,6 +395,23 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         var y0:Number = g.盒y;
         var y1:Number = y0 + g.盒高;
 
+        if (cb == 0 && cc == 0 && g.halfPierce.visualStart > 0) {
+            var firstX:Number = ca * x0 + ctx;
+            var lastX:Number = ca * x1 + ctx;
+            var firstY:Number = cd * y0 + cty;
+            var lastY:Number = cd * y1 + cty;
+            if ((firstX - firstX) + (lastX - lastX)
+                + (firstY - firstY) + (lastY - lastY) == 0) {
+                var swapX:Boolean = lastX < firstX;
+                var swapY:Boolean = lastY < firstY;
+                this.left = swapX ? lastX : firstX;
+                this.right = swapX ? firstX : lastX;
+                this.top = swapY ? lastY : firstY;
+                this.bottom = swapY ? firstY : lastY;
+                return;
+            }
+        }
+
         var ax0:Number = ca * x0;
         var ax1:Number = ca * x1;
         var cy0:Number = cc * y0;

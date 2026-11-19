@@ -1,0 +1,14 @@
+﻿import org.flashNight.arki.bullet.BulletComponent.Chain.*;
+import org.flashNight.gesh.depth.*;
+import org.flashNight.neur.ScheduleTimer.*;
+import org.flashNight.arki.component.Effect.*;
+import org.flashNight.arki.unit.*;
+import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
+_root.装备生命周期函数 = {};
+#include "逻辑/装备函数/GM6_LYNX.as"
+#include "逻辑/战斗系统/战斗系统_fs_联弹管理.as"
+_root.issue257BattleComplete = function():Void {
+    trace("FocusedTestRunId half-pierce Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId half-pierce Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.bullet.BulletComponent.Chain.HalfPierceBudgetTest.runAllTests();

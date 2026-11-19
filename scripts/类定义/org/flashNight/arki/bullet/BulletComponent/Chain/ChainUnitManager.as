@@ -5,6 +5,7 @@ import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 // 会对会话期间新建的同包类报"无法加载类或接口"；显式 import 走新鲜扫描（实测 2026-06-13）
 import org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup;
 import org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitData;
+import org.flashNight.arki.bullet.BulletComponent.Chain.HalfPierceBudget;
 
 /**
  * ChainUnitManager —— 联弹单元体共享层 / 对象池 / 统一帧更新管理器（P2 池化改造核心）
@@ -101,6 +102,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
             g.__removed = true;
             g.shotCoverage = null;
             g.shotgun = null;
+            g.halfPierce = null;
             g.pierceRemaining = null;
             g.horizontalPierce = false;
             pn = pool.length;
@@ -223,6 +225,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         group.__removed = true;
         group.shotCoverage = null;
         group.shotgun = null;
+        group.halfPierce = null;
         group.pierceRemaining = null;
         group.horizontalPierce = false;
         var list:Array = group.单元体列表;
@@ -506,6 +509,20 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         }
     }
 
+    public static function commitVerticalVisuals(group:ChainGroup, budget:HalfPierceBudget, live:Number):Void {
+        if (group.__removed) return;
+        var list:Array = group.单元体列表;
+        var end:Number = list.length - live;
+        var index:Number = budget.visualStart;
+        while (index < end) {
+            var unit:ChainUnitData = list[index++];
+            org.flashNight.arki.render.ChainVisualBridge.removeUnit(group, unit);
+            releaseUnit(unit.mc);
+            unit.mc = null;
+        }
+        budget.visualStart = index;
+    }
+
     private static function compareIndexDescending(a:ChainUnitData, b:ChainUnitData):Number {
         return b.aggregateIndex - a.aggregateIndex;
     }
@@ -589,7 +606,10 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
             materializeUnit(group, minUnit);
             if (maxUnit != minUnit) materializeUnit(group, maxUnit);
         }
-        if (sv != originalSv) b.霰弹值 = sv;
+        if (sv != originalSv) {
+            b.霰弹值 = sv;
+            if (group.halfPierce != null) group.halfPierce.trimTo(sv);
+        }
         group.盒y = minUnit.y;
         var height:Number = maxUnit.y - minUnit.y;
         // 旧单颗参照自 y 起仍有最小盒高。实际多颗外包围必须涵盖其厚度，
@@ -612,8 +632,20 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         var maxUnit:ChainUnitData = group.aggregateMax;
         var unit:ChainUnitData;
         if (group.aggregateSafe > 0 && advance == group.aggregateAdvance) {
-            materializeUnit(group, minUnit);
-            if (maxUnit != minUnit) materializeUnit(group, maxUnit);
+            var tail:Number = group.aggregateRuns.length - 1;
+            var previousCount:Number = group.aggregateRuns[tail].count - 1;
+            if (minUnit.aggregateRun == tail && minUnit.aggregateOffset == previousCount
+                && maxUnit.aggregateRun == tail && maxUnit.aggregateOffset == previousCount) {
+                minUnit.y += advance * minUnit.sin;
+                minUnit.aggregateOffset++;
+                if (maxUnit != minUnit) {
+                    maxUnit.y += advance * maxUnit.sin;
+                    maxUnit.aggregateOffset++;
+                }
+            } else {
+                materializeUnit(group, minUnit);
+                if (maxUnit != minUnit) materializeUnit(group, maxUnit);
+            }
             group.aggregateSafe--;
         } else {
             var minY:Number = Infinity;
