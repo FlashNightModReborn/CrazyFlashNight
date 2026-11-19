@@ -49,6 +49,13 @@ namespace TooltipEngine {
         }
         export function buildSynthesisMaterials(ctx: Context, item?: any): any[] {
             var result: any = [];
+            if (ctx.catalog.recipesUnavailable && as2NotEqual(item.synthesis, null)) {
+                var targets: any = ctx.catalog.recipeTargets;
+                if (!targets || targets[item.synthesis] || (item.name && targets[item.name])) {
+                    result.push(TooltipConstants.LBL_SYNTHESIS, "：合成材料暂不可用<BR>");
+                }
+                return result;
+            }
             var synthData: any = lookupRecipe(ctx, item.synthesis);
             if (as2NotEqual(item.synthesis, null) && synthData && synthData.materials) {
                 var requirements: any = synthData.materials;

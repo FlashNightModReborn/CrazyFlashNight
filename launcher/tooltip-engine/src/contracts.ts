@@ -4,6 +4,8 @@ namespace TooltipEngine {
     export interface TooltipCatalog {
         version: 1;
         contentVersion: string;
+        recipesUnavailable?: boolean;
+        recipeTargets?: Data;
         items: Data;
         mods: Data;
         levelStatList: any;

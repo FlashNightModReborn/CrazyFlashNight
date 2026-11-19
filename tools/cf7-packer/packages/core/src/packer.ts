@@ -7,12 +7,16 @@ import { OutputDirNotOwnedError } from "./types.js";
 import { isPathInsideRoot } from "./path-utils.js";
 import { getTagBlobInfo } from "./content-hash.js";
 import { spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
 import { validateGitRef, validateGitPath } from "./git-utils.js";
 import { createMinifyPathMatcher, minifyByExtension } from "./minify.js";
 import { applyEstimatedSizes } from "./summary.js";
 import { estimateEtaMs } from "./format.js";
 
 const OUTPUT_DIR_MARKER = ".cf7-packer-output";
+const tooltipCompiler = "launcher/scripts/dist/tooltip-catalog-compiler.js";
+const tooltipReceipt = "data/tooltip/tooltip-catalog.manifest.json";
+const preparedTooltips = new Set(["data/tooltip/tooltip-catalog.json", tooltipReceipt, "launcher/web/generated/archive-equipment.json"]);
 
 /**
  * 校验输出目录安全性。此校验无论 forceClean 如何，一律执行，不可跳过。
@@ -91,12 +95,15 @@ export async function pack(
 
   const resolvedOutputDir = path.resolve(outputDir);
   const shouldMinifyPath = createMinifyPathMatcher(config.output.minify);
+  const generatesTooltips = filterResult.included.some(entry => entry.path === tooltipCompiler);
 
   // 安全校验（无论 dryRun/forceClean 均执行）
   validateOutputDir(resolvedOutputDir, repoRoot);
 
   if (!dryRun) {
     prepareOutputDir(resolvedOutputDir, clean, forceClean ?? false);
+    // An interrupted incremental pack cannot advertise an older snapshot as ready.
+    if (generatesTooltips) fs.rmSync(path.join(resolvedOutputDir, tooltipReceipt), {force:true});
   }
 
   // git-tag 模式下预取文件大小（单次 git ls-tree -rl）
@@ -159,6 +166,8 @@ export async function pack(
       continue;
     }
 
+    // Prepared after all selected source files have been copied, including tag packs.
+    if (generatesTooltips && preparedTooltips.has(entry.path)) continue;
     // 实际复制
     const destPath = path.join(resolvedOutputDir, entry.path);
     const destDir = path.dirname(destPath);
@@ -213,6 +222,23 @@ export async function pack(
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       errors.push({ path: entry.path, error: message });
+    }
+  }
+
+  // Worktree and tag packs both derive from the files actually selected and copied.
+  // Old tags without the shared compiler keep their original launcher's assets.
+  if (!dryRun && !cancelled && !errors.length && generatesTooltips) {
+    try {
+      const producer = createRequire(import.meta.url)("../../../../tooltip-catalog.cjs");
+      const result = producer.preparePackage(resolvedOutputDir, packedEntries);
+      for (const file of Object.keys(producer.assets(result))) {
+        const size = fs.statSync(path.join(resolvedOutputDir, file)).size;
+        if (!packedEntries.has(file)) copiedFiles++;
+        totalSize += size - (packedEntries.get(file) ?? 0);
+        packedEntries.set(file, size);
+      }
+    } catch (err) {
+      errors.push({ path: "data/tooltip/tooltip-catalog.json", error: err instanceof Error ? err.message : String(err) });
     }
   }
 

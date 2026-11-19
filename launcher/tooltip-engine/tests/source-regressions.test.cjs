@@ -7,8 +7,9 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { load, catalog, input, repo } = require('./helpers.cjs');
+const { catalogText } = require('../fixtures.cjs');
 const E = load();
-const production = JSON.parse(fs.readFileSync(path.join(repo, 'data/tooltip/tooltip-catalog.json'), 'utf8'));
+const production = JSON.parse(catalogText());
 function context(c = production, projection = {}) {
     return { input: { version: 1, kind: 'item' }, catalog: c, projection };
 }

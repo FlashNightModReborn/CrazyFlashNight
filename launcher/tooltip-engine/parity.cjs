@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { isDeepStrictEqual } = require('node:util');
-const { repo, defaultCatalog } = require('./fixtures.cjs');
+const { repo, catalogText: loadDefaultCatalog } = require('./fixtures.cjs');
 function comparisonValues(record, actual, engine) {
     const values = { document: actual.document, introHTML: actual.introHTML,
         descHTML: actual.descHTML, details: actual.details };
@@ -20,7 +20,7 @@ function comparisonValues(record, actual, engine) {
     return values;
 }
 function main(args) {
-    let filename, current, catalogPath = defaultCatalog;
+    let filename, current, catalogPath = null;
     for (let i = 0; i < args.length; i++) {
         if (args[i] === '--current') current = args[++i];
         else if (args[i] === '--catalog') catalogPath = args[++i];
@@ -43,7 +43,7 @@ function main(args) {
     }
     if (current != null && !/^[a-f0-9]{40}$/i.test(current)) throw new Error('invalid --current source commit');
     if (!Array.isArray(corpus.records) || corpus.records.length === 0) throw new Error('oracle records must be nonempty');
-    const catalogText = fs.readFileSync(catalogPath, 'utf8');
+    const catalogText = catalogPath ? fs.readFileSync(catalogPath, 'utf8') : loadDefaultCatalog();
     const catalog = JSON.parse(catalogText);
     if (p.catalogContentVersion && p.catalogContentVersion !== catalog.contentVersion) throw new Error('oracle catalogContentVersion differs from supplied catalog');
     const context = vm.createContext({});

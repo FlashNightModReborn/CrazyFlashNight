@@ -32,6 +32,8 @@ namespace CF7Launcher.Guardian
 
         public event Action<string> OnJsMessage;
         public event Action InitialNavigationCompleted;
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        internal Func<string> CheckoutEquipmentReference { get; set; }
 
         /// <summary>
         /// WebView2 引擎初始化失败（fatal）。宿主 Form 订阅此事件调 ForceExit。
@@ -116,6 +118,13 @@ namespace CF7Launcher.Guardian
                     "bootstrap.local", _webDir,
                     CoreWebView2HostResourceAccessKind.Allow);
                 RuntimeFontCatalog.RegisterWebResources(_webView.CoreWebView2, "BootstrapPanel");
+                if (CheckoutEquipmentReference != null)
+                {
+                    _webView.CoreWebView2.AddWebResourceRequestedFilter(
+                        "https://bootstrap.local/generated/archive-equipment.json*",
+                        CoreWebView2WebResourceContext.All);
+                    _webView.CoreWebView2.WebResourceRequested += OnArchiveEquipmentRequested;
+                }
 
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
                 _webView.CoreWebView2.NavigationCompleted += OnNavigationCompleted;
@@ -204,6 +213,42 @@ namespace CF7Launcher.Guardian
                 StartupDiagnostics.Warn("bootstrap.webview2.user_data_not_writable",
                     ex.GetType().Name + ": " + ex.Message + " path=" + userDataDir);
                 PerfTrace.Duration("bootstrap.webview2.user_data_writable", start, "fail:" + ex.GetType().Name);
+            }
+        }
+
+        private async void OnArchiveEquipmentRequested(object sender, CoreWebView2WebResourceRequestedEventArgs args)
+        {
+            var func = CheckoutEquipmentReference;
+            if (func == null || !Uri.TryCreate(args.Request?.Uri, UriKind.Absolute, out var uri)
+                || !string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase)
+                || !string.Equals(uri.Host, "bootstrap.local", StringComparison.OrdinalIgnoreCase)
+                || !string.Equals(uri.AbsolutePath, "/generated/archive-equipment.json", StringComparison.Ordinal))
+                return;
+            CoreWebView2Deferral deferral;
+            try { deferral = args.GetDeferral(); }
+            catch { return; }
+            try
+            {
+                string reference;
+                try { reference = await System.Threading.Tasks.Task.Run(func); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[Bootstrap] Equipment reference unavailable: " + ex.GetBaseException().Message);
+                    reference = "{\"version\":1,\"items\":{}}";
+                }
+                if (_disposed || _webView?.CoreWebView2 == null) return;
+                // Do not dispose stream here; WebView2 reads it asynchronously when completing the deferral.
+                var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(reference), false);
+                args.Response = _webView.CoreWebView2.Environment.CreateWebResourceResponse(
+                    stream, 200, "OK", "Content-Type: application/json; charset=utf-8\r\nCache-Control: no-store\r\n");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Bootstrap] Equipment reference response failed: " + ex.Message);
+            }
+            finally
+            {
+                try { deferral.Complete(); } catch { }
             }
         }
 

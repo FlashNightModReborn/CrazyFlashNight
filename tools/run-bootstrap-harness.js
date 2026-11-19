@@ -143,7 +143,7 @@ function assertMagicBoard(board, original) {
 }
 
 async function main() {
-    require('./build-bootstrap-equipment-reference').verify();
+    const checkoutEquipment = JSON.parse(require('./tooltip-catalog.cjs').compile().archive);
     const args = parseArgs(process.argv.slice(2));
     if (!args) return;
     if (!fs.existsSync(playwrightModule)) {
@@ -174,6 +174,7 @@ async function main() {
     try {
         browser = await chromium.launch({ executablePath, headless: !args.headed });
         const page = await browser.newPage({ viewport });
+        await page.addInitScript(data => { window.CF7CheckoutEquipment = data; }, checkoutEquipment);
         await page.emulateMedia({ reducedMotion: 'reduce' });
         page.on('requestfailed', request => {
             const failure = request.failure();

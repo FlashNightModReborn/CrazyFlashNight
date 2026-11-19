@@ -18,6 +18,12 @@ reimplemented in this host.
 
 ## Commands
 
+Source trees (Git checkouts, linked worktrees, and source archives carrying tools/tooltip-catalog.cjs) compile the read-only item snapshot at launch. Editing source data does not require starting a generator. A prepared distribution reads its bundled snapshot. The packer runs the same compiler on the files actually copied, including when packing a Git tag. The source compiler and rendering engine have no filesystem bridge in V8.
+
+The compatibility commands and `--check` validate sources without writing tracked artifacts. The packer is the writer of prepared files in its output directory. The old checked-in assets keep the previous signed host usable during rollout. Run `node tools/test-tooltip-checkout-upgrade.cjs` to exercise a one-file commit, pull and inventory projection in disposable local repositories.
+
+Current packages also stamp the actual staged source bytes in the v1 receipt for compatibility with older signed launchers. The new package reader checks the output digest and schema. The Git path derives content identity from ordered display data and never reads the prepared receipt. A bad recipe in a checkout withholds recipe information, logs the file and field, and leaves other item descriptions available. Packaging rejects that input.
+
 Run from the repository root with the SDK selected by `global.json` (10.0.300):
 
 ```sh

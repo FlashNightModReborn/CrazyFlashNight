@@ -98,8 +98,8 @@ Invoke-Cf7PrepareCommand -Name 'compile Launcher V8 TypeScript bundle' -FilePath
 
 Invoke-Cf7PrepareCommand -Name 'compile isolated Tooltip Logic V8 bundle' -FilePath $nodePath `
     -Arguments @((Join-Path $ProjectRoot 'launcher\tooltip-engine\build.cjs')) -WorkingDirectory $ProjectRoot
-Invoke-Cf7PrepareCommand -Name 'derive Tooltip catalog and source manifest' -FilePath $pythonPath `
-    -Arguments @((Join-Path $ProjectRoot 'tools\build-tooltip-catalog.py')) -WorkingDirectory $ProjectRoot
+Invoke-Cf7PrepareCommand -Name 'validate Tooltip sources for staged package generation' -FilePath $pythonPath `
+    -Arguments @((Join-Path $ProjectRoot 'tools\build-tooltip-catalog.py'), '--check') -WorkingDirectory $ProjectRoot
 
 $nodeSteps = @(
     @{ Name = 'derive shared guidance and tutorial journeys'; Script = 'tools\generate-guidance-catalog.js' },
@@ -175,6 +175,7 @@ $generatedOutputs = @(
     'launcher/data/scene-transition/catalog.manifest.json',
     'launcher/scripts/dist/hit-number-bundle.js',
     'launcher/scripts/dist/tooltip-bundle.js',
+    'launcher/scripts/dist/tooltip-catalog-compiler.js',
     'data/tooltip/tooltip-catalog.json',
     'data/tooltip/tooltip-catalog.manifest.json',
     'launcher/web/modules/tasks/task-catalog.json',

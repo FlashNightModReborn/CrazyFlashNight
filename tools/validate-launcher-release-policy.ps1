@@ -211,7 +211,7 @@ function Get-Cf7ProductionChecks {
     $checks += New-Cf7CommandCheck -Name 'equipment-mod-ui' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-equipment-mod-ui.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7RequiredPathsCheck -Name 'required-tooltip-runtime-assets' -Root $ProjectRoot `
-        -Paths @('launcher\scripts\dist\tooltip-bundle.js', 'data\tooltip\tooltip-catalog.json', 'data\tooltip\tooltip-catalog.manifest.json')
+        -Paths @('launcher\scripts\dist\tooltip-bundle.js', 'launcher\scripts\dist\tooltip-catalog-compiler.js', 'data\tooltip\tooltip-catalog.json', 'data\tooltip\tooltip-catalog.manifest.json')
     $checks += New-Cf7CommandCheck -Name 'tooltip-bundle-current' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'launcher\tooltip-engine\build.cjs'), '--check') -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'tooltip-catalog-current' -FilePath $python `

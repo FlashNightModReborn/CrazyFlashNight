@@ -2,6 +2,8 @@
   "name": "cf7-v8-scripts",
   "private": true,
   "devDependencies": {
+    "esbuild": "0.27.4",
+    "saxes": "6.0.0",
     "typescript": "~5.8.2"
   }
 }

@@ -217,6 +217,7 @@
         ".github/workflows/runtime-cloud-builder.yml",
         ".github/workflows/as2-artifact-ownership.yml",
         ".github/workflows/healing-contract.yml",
+        ".github/workflows/tooltip-data.yml",
         "tools/heal-numbers/verify_assets.py",
         "tools/heal-numbers/asset-contract.json",
         "tools/audit-as2-class-embedding.js",
@@ -268,6 +269,10 @@
         "tools/new-runtime-github-build-envelope.ps1",
         "tools/prepare-launcher-release-assets.ps1",
         "tools/build-tooltip-catalog.py",
+        "tools/tooltip-catalog.cjs",
+        "tools/test-tooltip-catalog.cjs",
+        "tools/test-tooltip-checkout-upgrade.cjs",
+        "tools/build-bootstrap-equipment-reference.js",
         "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
         "scripts/类定义/org/flashNight/arki/item/equipment/ModRegistry.as",
         "scripts/类定义/org/flashNight/gesh/object/ObjectUtil.as",
@@ -658,7 +663,7 @@
         },
         {
           "path": "launcher/tooltip-engine",
-          "includeExtensions": [".ts", ".cjs", ".json"],
+          "includeExtensions": [".ts", ".cjs", ".json", ".txt"],
           "excludePaths": [],
           "excludePrefixes": []
         },

@@ -3476,6 +3476,13 @@ var TooltipEngine;
         TooltipTextBuilder.buildStoryTip = buildStoryTip;
         function buildSynthesisMaterials(ctx, item) {
             var result = [];
+            if (ctx.catalog.recipesUnavailable && TooltipEngine.as2NotEqual(item.synthesis, null)) {
+                var targets = ctx.catalog.recipeTargets;
+                if (!targets || targets[item.synthesis] || (item.name && targets[item.name])) {
+                    result.push(TooltipEngine.TooltipConstants.LBL_SYNTHESIS, "：合成材料暂不可用<BR>");
+                }
+                return result;
+            }
             var synthData = TooltipEngine.lookupRecipe(ctx, item.synthesis);
             if (TooltipEngine.as2NotEqual(item.synthesis, null) && synthData && synthData.materials) {
                 var requirements = synthData.materials;
@@ -3919,12 +3926,21 @@ var TooltipEngine;
 (function (TooltipEngine) {
     let UpgradePathBuilder;
     (function (UpgradePathBuilder) {
+        function isRecipeUnavailableForItem(ctx, item) {
+            if (!ctx.catalog.recipesUnavailable || !item)
+                return false;
+            var targets = ctx.catalog.recipeTargets;
+            if (!targets)
+                return true;
+            return Boolean((item.name && targets[item.name]) || (item.synthesis && targets[item.synthesis]));
+        }
         function build(ctx, item, baseItem) {
             var result = [];
-            var fromRecipe = TooltipEngine.lookupRecipe(ctx, item.synthesis);
-            var hasFrom = (TooltipEngine.as2NotEqual(fromRecipe, null) && TooltipEngine.as2NotEqual(fromRecipe.materials, null));
-            var toProducts = TooltipEngine.lookupRecipesUsing(ctx, item.name);
-            var hasTo = (toProducts && TooltipEngine.as2Greater(toProducts.length, 0));
+            var craftUnavailable = isRecipeUnavailableForItem(ctx, item);
+            var fromRecipe = craftUnavailable ? null : (TooltipEngine.lookupRecipe(ctx, item.synthesis) || TooltipEngine.lookupRecipe(ctx, item.name));
+            var hasFrom = (!craftUnavailable && TooltipEngine.as2NotEqual(fromRecipe, null) && TooltipEngine.as2NotEqual(fromRecipe.materials, null));
+            var toProducts = craftUnavailable ? null : TooltipEngine.lookupRecipesUsing(ctx, item.name);
+            var hasTo = (!craftUnavailable && toProducts && TooltipEngine.as2Greater(toProducts.length, 0));
             var supportedTiers = [];
             var rawTierOpts = ctx.projection.tierOptions;
             if (rawTierOpts) {
@@ -3934,12 +3950,16 @@ var TooltipEngine;
                 }
             }
             var hasTier = (TooltipEngine.as2Greater(supportedTiers.length, 0));
-            if (!hasFrom && !hasTo && !hasTier)
+            if (!craftUnavailable && !hasFrom && !hasTo && !hasTier)
                 return result;
             result.push(TooltipEngine.TooltipFormatter.br());
             result.push(TooltipEngine.TooltipFormatter.color(TooltipEngine.TooltipConstants.LBL_UPGRADE_PATH, TooltipEngine.TooltipConstants.COL_INFO));
             result.push(TooltipEngine.TooltipFormatter.br());
             var rendered = false;
+            if (craftUnavailable) {
+                result.push("  ", "合成材料暂不可用", TooltipEngine.TooltipFormatter.br());
+                rendered = true;
+            }
             if (hasFrom) {
                 renderFrom(ctx, result, fromRecipe);
                 rendered = true;
@@ -3963,37 +3983,43 @@ var TooltipEngine;
             if (TooltipEngine.as2Equal(html.length, 0))
                 return null;
             var rows = [];
-            var fromRecipe = TooltipEngine.lookupRecipe(ctx, item.synthesis);
-            if (TooltipEngine.as2NotEqual(fromRecipe, null) && TooltipEngine.as2NotEqual(fromRecipe.materials, null)) {
-                pushGroup(ctx, rows, TooltipEngine.TooltipConstants.TIP_UPGRADE_FROM, TooltipEngine.TooltipConstants.COL_CRAFT);
-                var requirements = fromRecipe.materials;
-                for (var i = 0; TooltipEngine.as2Less(i, requirements.length); i++) {
-                    var req = requirements[i];
-                    if (!req || !req.name)
-                        continue;
-                    var reqData = TooltipEngine.lookupItem(ctx, req.name);
-                    var reqName = (reqData && reqData.displayname) ? reqData.displayname : req.name;
-                    if (req.isQuantity)
-                        reqName += " x" + req.value;
-                    else if (TooltipEngine.isEquipment(ctx, req.name))
-                        reqName += " +" + req.value;
-                    else
-                        reqName += "：" + req.value;
-                    rows.push({ name: reqName, icon: iconFor(ctx, req.name), depth: 1 });
-                }
+            var craftUnavailable = isRecipeUnavailableForItem(ctx, item);
+            if (craftUnavailable) {
+                rows.push({ name: "合成材料暂不可用", depth: 0 });
             }
-            var toProducts = TooltipEngine.lookupRecipesUsing(ctx, item.name);
-            if (toProducts && TooltipEngine.as2Greater(toProducts.length, 0)) {
-                pushGroup(ctx, rows, TooltipEngine.TooltipConstants.TIP_UPGRADE_TO, TooltipEngine.TooltipConstants.COL_CRAFT);
-                var shown = Math.min(toProducts.length, TooltipEngine.TooltipConstants.UPGRADE_MAX_TO_PRODUCTS);
-                for (var p = 0; TooltipEngine.as2Less(p, shown); p++) {
-                    var prodName = toProducts[p];
-                    var prodData = TooltipEngine.lookupItem(ctx, prodName);
-                    rows.push({ name: (prodData && prodData.displayname) ? prodData.displayname : prodName,
-                        icon: iconFor(ctx, prodName), depth: 1 });
+            else {
+                var fromRecipe = TooltipEngine.lookupRecipe(ctx, item.synthesis) || TooltipEngine.lookupRecipe(ctx, item.name);
+                if (TooltipEngine.as2NotEqual(fromRecipe, null) && TooltipEngine.as2NotEqual(fromRecipe.materials, null)) {
+                    pushGroup(ctx, rows, TooltipEngine.TooltipConstants.TIP_UPGRADE_FROM, TooltipEngine.TooltipConstants.COL_CRAFT);
+                    var requirements = fromRecipe.materials;
+                    for (var i = 0; TooltipEngine.as2Less(i, requirements.length); i++) {
+                        var req = requirements[i];
+                        if (!req || !req.name)
+                            continue;
+                        var reqData = TooltipEngine.lookupItem(ctx, req.name);
+                        var reqName = (reqData && reqData.displayname) ? reqData.displayname : req.name;
+                        if (req.isQuantity)
+                            reqName += " x" + req.value;
+                        else if (TooltipEngine.isEquipment(ctx, req.name))
+                            reqName += " +" + req.value;
+                        else
+                            reqName += "：" + req.value;
+                        rows.push({ name: reqName, icon: iconFor(ctx, req.name), depth: 1 });
+                    }
                 }
-                if (TooltipEngine.as2Greater(toProducts.length, shown)) {
-                    rows.push({ name: "... " + TooltipEngine.TooltipConstants.TIP_ETC + "共 " + toProducts.length + " 项", depth: 1 });
+                var toProducts = TooltipEngine.lookupRecipesUsing(ctx, item.name);
+                if (toProducts && TooltipEngine.as2Greater(toProducts.length, 0)) {
+                    pushGroup(ctx, rows, TooltipEngine.TooltipConstants.TIP_UPGRADE_TO, TooltipEngine.TooltipConstants.COL_CRAFT);
+                    var shown = Math.min(toProducts.length, TooltipEngine.TooltipConstants.UPGRADE_MAX_TO_PRODUCTS);
+                    for (var p = 0; TooltipEngine.as2Less(p, shown); p++) {
+                        var prodName = toProducts[p];
+                        var prodData = TooltipEngine.lookupItem(ctx, prodName);
+                        rows.push({ name: (prodData && prodData.displayname) ? prodData.displayname : prodName,
+                            icon: iconFor(ctx, prodName), depth: 1 });
+                    }
+                    if (TooltipEngine.as2Greater(toProducts.length, shown)) {
+                        rows.push({ name: "... " + TooltipEngine.TooltipConstants.TIP_ETC + "共 " + toProducts.length + " 项", depth: 1 });
+                    }
                 }
             }
             var supportedTiers = [];

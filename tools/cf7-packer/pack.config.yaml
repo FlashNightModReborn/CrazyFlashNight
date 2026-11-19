@@ -31,7 +31,7 @@ output:
       # FontPackTask（manifest.sourceSha256）直接校验；压缩后会失配，
       # 字体目录与字体包双双降级。保留仓库原始字节。
       - "fonts/**"
-      # TooltipV8Engine 校验 catalog 与所有 data 来源的原始 SHA-256；致密化会使合法发行包失配。
+      # 兼容使用来源字节清单的旧 tag，并保留 XML 混合文本。新格式从实际打包输入生成快照。
       - "data/tooltip/**"
       - "data/items/**"
       - "data/crafting/**"

@@ -60,11 +60,10 @@ python -B -X utf8 tools/linkage_scanner/scan_linkage.py --xml-only
 node tools/derive-arena-unit-catalog.js
 node tools/derive-arena-unit-catalog.js --check
 node tools/derive-arena-unit-param-presets.js --check
-python -B -X utf8 tools/build-tooltip-catalog.py
 python -B -X utf8 tools/build-tooltip-catalog.py --check
 ```
 
-单位登记或敌人属性清单变化后也须执行以上派生目录检查；tooltip 清单绑定原始输入字节，不能因只新增敌人而沿用旧清单。重启消费者后另核对未再报告 `tooltip_catalog_stale`。
+单位登记或敌人属性清单变化后也须执行以上校验，确认装备注释源数据与敌人显示名解析通过。重启消费者后另核对未再报告 `tooltip_catalog_stale`。
 
 原生行为与图形：
 

@@ -48,10 +48,11 @@
 
   function prepare(stage) {
     if (catalog || pending || !stage.querySelector('.save-equip')) return;
-    const index = fetch('generated/archive-equipment.json').then(response => {
+    const source = window.CF7CheckoutEquipment ? Promise.resolve(window.CF7CheckoutEquipment) : fetch('generated/archive-equipment.json').then(response => {
       if (!response.ok) throw new Error('archive equipment reference unavailable');
       return response.json();
-    }).then(data => {
+    });
+    const index = source.then(data => {
       if (data.version === 1 && data.items && typeof data.items === 'object') catalog = data.items;
     }).catch(() => {}); // Old or incomplete installations can still inspect the exact saved name.
     pending = Promise.all([index, new Promise(resolve => window.Icons ? window.Icons.load(resolve) : resolve())])

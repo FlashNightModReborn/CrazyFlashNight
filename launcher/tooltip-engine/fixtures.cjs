@@ -6,6 +6,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const repo = path.resolve(__dirname, '../..');
 const defaultCatalog = path.join(repo, 'data/tooltip/tooltip-catalog.json');
+function catalogText() {
+    if (fs.existsSync(path.join(repo,'tools/tooltip-catalog.cjs'))) return require('../../tools/tooltip-catalog.cjs').compile(repo).catalog;
+    return fs.readFileSync(defaultCatalog,'utf8');
+}
 
 function itemInput(catalog, itemName, overrides = {}) {
     const item = catalog.items[itemName];
@@ -70,7 +74,7 @@ function createInputs(catalog) {
 if (require.main === module) {
     const args = process.argv.slice(2);
     if (args.length > 1) throw new Error('usage: node fixtures.cjs [output.jsonl]');
-    const inputs = createInputs(JSON.parse(fs.readFileSync(defaultCatalog, 'utf8')));
+    const inputs = createInputs(JSON.parse(catalogText()));
     const jsonl = inputs.map(x => JSON.stringify(x)).join('\n') + '\n';
     if (args[0]) {
         fs.mkdirSync(path.dirname(path.resolve(args[0])), { recursive: true });
@@ -78,4 +82,4 @@ if (require.main === module) {
         process.stderr.write(`synthetic-inputs: ${inputs.length}; not an AVM1 oracle; ${path.resolve(args[0])}\n`);
     } else process.stdout.write(jsonl);
 }
-module.exports = { createInputs, itemInput, defaultCatalog, repo };
+module.exports = { createInputs, itemInput, defaultCatalog, catalogText, repo };

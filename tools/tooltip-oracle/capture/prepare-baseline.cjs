@@ -78,7 +78,7 @@ function prepareBaseline(target, dryRun) {
     const collector = fs.readFileSync(path.join(__dirname, 'as2/org/flashNight/gesh/tooltip/test/TooltipPairedCapture.as'));
     const captureJson = fs.readFileSync(path.join(__dirname, 'as2/org/flashNight/gesh/tooltip/test/TooltipCaptureJson.as'));
     const captureControl = fs.readFileSync(path.join(__dirname, 'as2/org/flashNight/gesh/tooltip/test/TooltipCaptureControl.as'));
-    const catalog = JSON.parse(fs.readFileSync(path.join(repo, 'data/tooltip/tooltip-catalog.json'), 'utf8'));
+    const catalog = JSON.parse(require('../../../launcher/tooltip-engine/fixtures.cjs').catalogText());
     const captureControlUri = 'file:///' + target.replace(/\\/g, '/') + '/tmp/tooltip-paired-capture/output-control.xml';
     const identity = {sourceCommit: manifest.sourceCommit, projectionSha256: sha256(projection), catalogContentVersion: catalog.contentVersion, captureControlUri};
     const edits = [
