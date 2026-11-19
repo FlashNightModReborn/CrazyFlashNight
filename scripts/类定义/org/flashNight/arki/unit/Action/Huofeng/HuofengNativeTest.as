@@ -281,6 +281,9 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengNativeTest {
         }
     }
     private static function inputContract():Void {
+        // 刀技能搓招的模式门是严格「刀模式」：本组用例先在兵器模式下验指令裁决，
+        // 末尾再用其它模式验「一律不接招」。
+        var originalMode:String=u.攻击模式;u.攻击模式="兵器";
         var selected=_root.控制目标;_root.控制目标=u._name;
         var release:Function=QuickSkillInputService.releaseBySkillName;
         QuickSkillInputService.releaseBySkillName=function(unit:Object,name:String,key:Number):Object{
@@ -323,6 +326,20 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengNativeTest {
         }
         _root.兵器攻击路由.兵器攻击标签跳转=route;man.removeMovieClip();
         check(!HuofengInput.allowedPassive("双剑气") && !HuofengInput.allowedPassive("疾影剑气"),"dual-blade derivations remain outside the profile");
+        // 模式门：其它模式（空手/长枪/双枪/手雷/手枪）即使带着残留冷兵器指令、
+        // 即使来自技能容器末帧（技能末帧=true），也不允许搓出刀技能。
+        // 空手不列入：火凤五件套（profileActive）在空手模式下就是合法的刀模式，
+        // 这套用例的单位正穿着火凤装，所以空手是否算刀模式由 coldMode 决定，不在这轮流验。
+        var blocked:Array=["长枪","双枪","手雷","手枪","手枪2"];
+        for(i=0;i<blocked.length;i++){
+            u.攻击模式=blocked[i];u.动作B=true;u.上行=true;u.方向="右";
+            delete u.__黑猫技能B已消费;u.当前搓招名="迅斩";u.搓招缓冲名="";u.搓招缓冲已消费=true;
+            inputName="";inputCalls=0;
+            check(_root.技能函数.冷兵器主动技能搓招(u,6,30,true)==0,"cold combos stay off in "+blocked[i]+" mode");
+            check(inputCalls==0,"no release attempted in "+blocked[i]+" mode");
+            u.动作B=false;u.上行=false;
+        }
+        u.攻击模式=originalMode;
         _root.控制目标=selected;u.方向="右";u.动作A=true;u.动作B=false;u.当前搓招名="";u.搓招缓冲名="";
         delete u.__weaponSameFrameJump;delete u.__黑猫技能B已消费;
     }

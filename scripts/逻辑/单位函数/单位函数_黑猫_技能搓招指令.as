@@ -200,10 +200,13 @@ _root.技能函数.冷兵器主动技能搓招 = function(自机:MovieClip, 窗�
 		delete 自机.__黑猫技能B已消费;
 	}
 
-	// 模式门。武器类招式（平A / 冷兵器招式）要求「兵器」模式；
-	// 技能容器末帧来的那次显式放行 —— 技能由 状态改变("技能") 进入，
-	// 攻击模式仍是兵器，但个别技能会改写模式，且被动技能根本不需要持刀。
-	if (!org.flashNight.arki.unit.Action.Huofeng.HuofengRules.coldMode(自机) && 技能末帧 !== true) return 0;
+	// 模式门（严格）：刀技能搓招只在「刀模式」（coldMode：攻击模式=="兵器" 或火凤持械）生效。
+	//   ★ 2026-11-19 收紧：原先对「技能容器末帧」来的那次显式放行（技能末帧=true），
+	//     导致空手 / 双枪 / 长枪 / 手雷 / 手枪模式下放完技能，末帧通道照样能消费
+	//     残留的冷兵器 DFA 名字（这些模式的 推断动作模组 落到 lightWeapon），
+	//     表现为「放完技能莫名搓出一个刀技能」。现在任何来源都必须过这道门。
+	//   ★ 参数 技能末帧 保留只为兼容既有调用方，不再参与模式判定。
+	if (!org.flashNight.arki.unit.Action.Huofeng.HuofengRules.coldMode(自机)) return 0;
 
 	// 预输入窗口：默认沿用平A后摇的 黑猫预输入帧数；
 	// 招式容器末帧可传更大的窗口（招式演出可能比平A一段长得多）。
@@ -532,10 +535,10 @@ _root.技能函数._末帧技能容器搓招 = function(man:MovieClip, 自机:Mo
 	if (自机 == undefined || 自机 == null) return false;
 	if (自机._name != _root.控制目标) return false;
 	if (自机.倒地) return false;
-	// 手枪模式：本通道挂在 技能路由.动画完毕 上，手枪搓招容器末帧也走这里。
-	// 手枪模式下不存在任何冷兵器持械语义，DFA 也只会产出冷兵器名字；
-	// 这里硬拦一道，避免「手枪搓招打完接出一个瞬步斩/迅斩」。
-	if (自机.攻击模式 == "手枪" || 自机.攻击模式 == "手枪2") return false;
+	// 本通道挂在 技能路由.动画完毕 上，任何技能容器（被动技能 / 主动技能 /
+	// 手枪搓招容器 …）末帧都会走到这里。刀技能搓招只允许在刀模式下发生，
+	// 其余模式（空手 / 手枪 / 手枪2 / 双枪 / 长枪 / 手雷）一律不接招。
+	if (!org.flashNight.arki.unit.Action.Huofeng.HuofengRules.coldMode(自机)) return false;
 
 	var 原卸载:Function = undefined;
 	if (自机.man != undefined) 原卸载 = 自机.man.onUnload;
