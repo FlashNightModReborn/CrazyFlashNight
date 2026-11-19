@@ -344,10 +344,17 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
         plan.record=record;plan.numericSnapshot=captured;plan.stage="numeric_prepared";
         target.__playerStatNeedsNumericTail=false;
     }
-    public static function finishOuterAfterState(target:Object,label:String,scope:Object):Void {
+    public static function finishOuterAfterState(target:Object,label:String,scope:Object,endAction:Function):Void {
         if(!planCurrent(scope.plan)) throw new Error("lifecycle_state_identity_changed");
+        var complete:Function=stateCompletion(scope);
+        if(endAction!=null) {
+            // 普攻出口自己选择站立、死亡或落地路径，不能再用旧容器标签覆盖它。
+            endAction(target.man,target,false);
+            complete(target);
+            return;
+        }
         var routing:Object=org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntent;
-        routing.createStateTransitionJob(target,label,stateCompletion(scope));
+        routing.createStateTransitionJob(target,label,complete);
         target.gotoAndStop(label);
         routing.executeStateTransitionJob(target);
     }

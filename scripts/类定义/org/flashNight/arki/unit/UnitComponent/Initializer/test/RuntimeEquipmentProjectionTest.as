@@ -17,6 +17,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.RuntimeEquipmentPr
         testForwardAndReverseAliases();
         testIntentGuardsAndCleanup();
         testModeValidationAfterAliases();
+        testRocketPunchEquipmentOwner();
         trace("RuntimeEquipmentProjectionTest Tests Passed: " + _passed);
         trace("RuntimeEquipmentProjectionTest Tests Failed: " + _failed);
         trace("=== RuntimeEquipmentProjectionTest end ===");
@@ -106,6 +107,72 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.RuntimeEquipmentPr
         check(real.攻击模式 == "兵器","有真实刀时直接校验仍保持兵器模式");
         real.刀 = null; api.updateActions(real);
         check(real.攻击模式 == "空手","未请求延期的原入口仍即时处理卸装");
+    }
+
+    private static function testRocketPunchEquipmentOwner():Void {
+        var api = org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+        var oldPlayer = _root.控制目标;
+        var oldInventory = _root.物品栏;
+        var oldSave = _root.存档系统;
+        var writes:Object = {dirty:0};
+        var first:Object = equipment("末日铁拳", 1, "", []);
+        var second:Object = equipment("末日铁拳", 1, "", []);
+        var ordinary:Object = equipment("小型拳套", 1, "", []);
+        first.value.火箭重拳 = true;
+        var slot:Object = {item:first};
+        slot.getItem = function(key:String):Object { return this.item; };
+        var actor:Object = {_name:"rocketOwner", 攻击模式:"空手", 手部装备:first,
+            手部装备数据:{actiontype:"单臂巨拳"}};
+        try {
+            _root.控制目标 = actor._name;
+            _root.物品栏 = {装备栏:slot};
+            _root.存档系统 = {markDirty:function() { writes.dirty++; }};
+            api.updateActions(actor, true);
+            var keyHandler:Function = actor.更新火箭重拳按键;
+            check(actor.火箭重拳许可 && actor.火箭重拳 && actor.空手动作类型 == "单臂巨拳",
+                "末日铁拳装入时由当前物品恢复开启状态");
+            keyHandler(actor, first, false);
+            actor.火箭重拳蓄力中 = true;
+            check(!keyHandler(actor, first, true) && first.value.火箭重拳,
+                "蓄力期间按键不改物品形态");
+            actor.火箭重拳蓄力中 = false;
+            keyHandler(actor, first, false);
+            check(keyHandler(actor, first, true) && !first.value.火箭重拳 && writes.dirty == 1,
+                "有效的按键上升沿仅修改当前铁拳");
+            api.updateActions(actor, true);
+            check(!keyHandler(actor, first, true) && !first.value.火箭重拳 && writes.dirty == 1,
+                "同物品刷新或多个皮肤回调不重复消费按住的变形键");
+            keyHandler(actor, first, false);
+            slot.item = ordinary;
+            check(!keyHandler(actor, first, true) && writes.dirty == 1 && ordinary.value.火箭重拳 == undefined,
+                "库存先换装时旧视觉不能写入原铁拳或新拳套");
+            actor.手部装备 = ordinary;
+            actor.手部装备数据 = {actiontype:"拳击"};
+            actor.火箭重拳蓄力中 = true;
+            api.updateActions(actor, true);
+            check(actor.空手动作类型 == "拳击" && !actor.火箭重拳许可 && !actor.火箭重拳
+                    && !actor.火箭重拳蓄力中 && actor.更新火箭重拳按键 == undefined,
+                "换普通拳套同时清除专属动作许可、形态及蓄力");
+            slot.item = second;
+            actor.手部装备 = second;
+            api.updateActions(actor, true);
+            check(actor.火箭重拳许可 && !actor.火箭重拳,
+                "同名第二件铁拳按自身存档恢复，默认关闭");
+            keyHandler(actor, second, false);
+            check(!keyHandler(actor, first, true) && keyHandler(actor, second, true)
+                    && second.value.火箭重拳 && !first.value.火箭重拳 && writes.dirty == 2,
+                "旧实例迟到不消费新实例的输入，也不污染同名装备");
+            actor.手部装备 = null;
+            actor.手部装备数据 = null;
+            api.updateActions(actor, true);
+            check(!actor.火箭重拳许可 && !actor.火箭重拳 && !keyHandler(actor, second, true)
+                    && second.value.火箭重拳 && writes.dirty == 2,
+                "卸下时保留铁拳自身形态并拒绝迟到回调");
+        } finally {
+            _root.控制目标 = oldPlayer;
+            _root.物品栏 = oldInventory;
+            _root.存档系统 = oldSave;
+        }
     }
 
     private static function testCanonicalAndSemanticDrift():Void {

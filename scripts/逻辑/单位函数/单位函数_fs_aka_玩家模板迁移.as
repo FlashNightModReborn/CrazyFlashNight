@@ -190,6 +190,11 @@ _root.刷新人物装扮 = function(目标,属性重建凭据:Object) {
     }
     var 属性初始化范围:Object=属性协调器.beginOuterInitialization(目标人物,属性重建凭据);
     try {
+    var 兵器生命周期:Object = org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle;
+    var 旧兵器动作:Object;
+    if (属性重建凭据 != null) {
+        旧兵器动作 = 兵器生命周期.captureOrdinaryBladeAction(目标人物);
+    }
     目标人物.hasDressup = true;
     目标人物.enableShoot = true;
 
@@ -243,7 +248,11 @@ _root.刷新人物装扮 = function(目标,属性重建凭据:Object) {
     // 跳回安全帧：容器态必须回到"容器"，普通态回到对应状态
     // 优先级：__stateGotoLabel（容器="容器"） > 状态 > "空手站立"
     var safeFrame:String = 目标人物.__stateGotoLabel || 目标人物.状态 || "空手站立";
-    属性协调器.finishOuterAfterState(目标人物,safeFrame,属性初始化范围);
+    var 普攻出口:Function;
+    if (旧兵器动作 != null) {
+        普攻出口 = 兵器生命周期.incompatibleBladeExit(目标人物,旧兵器动作);
+    }
+    属性协调器.finishOuterAfterState(目标人物,safeFrame,属性初始化范围,普攻出口);
     } catch(属性初始化错误) {
         属性协调器.failOuterInitialization(属性初始化范围,属性初始化错误);
         throw 属性初始化错误;
