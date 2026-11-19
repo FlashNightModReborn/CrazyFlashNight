@@ -616,7 +616,7 @@
           "path": "launcher/tests",
           "includeExtensions": [".cs", ".csproj", ".json", ".ps1"],
           "excludePaths": [],
-          "excludePrefixes": ["launcher/tests/bin/", "launcher/tests/obj/"]
+          "excludePrefixes": ["launcher/tests/bin/", "launcher/tests/obj/", "launcher/tests/TooltipService.Host/bin/", "launcher/tests/TooltipService.Host/obj/"]
         },
         {
           "path": "launcher/perf/tooltip-parity",

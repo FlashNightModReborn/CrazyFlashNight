@@ -537,7 +537,10 @@ try {
             }
             producerRecipe = [pscustomobject][ordered]@{ fixedFiles = @('recipe.ps1'); trees = @() }
             toolchainLock = [pscustomobject][ordered]@{ fixedFiles = @('toolchain.json'); trees = @() }
-            policy = [pscustomobject][ordered]@{ fixedFiles = @('policy.ps1',$unicodePolicyFile); trees = @() }
+            policy = [pscustomobject][ordered]@{
+                fixedFiles = @('policy.ps1',$unicodePolicyFile)
+                trees = @($repositoryPolicyTrees | Where-Object { $_.path -ceq 'launcher/tests' })
+            }
         }
         payload = [pscustomobject][ordered]@{
             fixedRoots = @('CRAZYFLASHER7MercenaryEmpire.exe')
@@ -566,6 +569,12 @@ try {
     Write-TestText (Join-Path $testRoot 'runtime\attestations\old.json') 'old-attestation'
     Write-TestText (Join-Path $testRoot '.gitattributes') "*.cs text eol=lf`n"
 
+    $tooltipHost = 'launcher/tests/TooltipService.Host'
+    foreach ($name in @('Program.cs', 'TooltipService.Host.csproj')) {
+        $relative = "$tooltipHost/$name"
+        Write-TestText (Join-Path $testRoot $relative) ([IO.File]::ReadAllText((Join-Path $ProjectRoot $relative)))
+    }
+
     & git -C $testRoot init --quiet
     if ($LASTEXITCODE -ne 0) { throw 'Cannot initialize runtime v2 Git fixture.' }
     & git -C $testRoot config core.quotepath true
@@ -573,11 +582,36 @@ try {
     & git -C $testRoot add --all
     if ($LASTEXITCODE -ne 0) { throw 'Cannot stage runtime v2 Git fixture.' }
 
+    # These seven local outputs are present after a Release build of the standalone test host.
+    $tooltipOutputs = @(
+        'bin/Release/net10.0/TooltipService.Host.deps.json'
+        'bin/Release/net10.0/TooltipService.Host.runtimeconfig.json'
+        'obj/Release/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs'
+        'obj/Release/net10.0/TooltipService.Host.AssemblyInfo.cs'
+        'obj/Release/net10.0/TooltipService.Host.sourcelink.json'
+        'obj/TooltipService.Host.csproj.nuget.dgspec.json'
+        'obj/project.assets.json'
+    )
+    foreach ($output in $tooltipOutputs) { Write-TestText (Join-Path $testRoot "$tooltipHost/$output") 'generated' }
+
     $baseWorktree = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Worktree -ConfigPath $configPath
     $baseIndex = Get-Cf7RuntimeBuildIdentityV2 -ProjectRoot $testRoot -Mode Index -ConfigPath $configPath
     foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
         Assert-Equal "Worktree/Index baseline $field" $baseWorktree.$field $baseIndex.$field
     }
+
+    & git -C $testRoot add --force -- "$tooltipHost/bin" "$tooltipHost/obj"
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot stage generated test host output in fixture.' }
+    foreach ($mode in @('Worktree', 'Index')) {
+        $policyFiles = @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -ConfigPath $configPath -Domain policy -Mode $mode)
+        Assert-Equal "Test host policy keeps only sources and project in $mode" "$tooltipHost/Program.cs,$tooltipHost/TooltipService.Host.csproj" (
+            @($policyFiles | Where-Object { $_.StartsWith("$tooltipHost/", [StringComparison]::Ordinal) }) -join ',')
+    }
+    $newTestSource = Join-Path $testRoot "$tooltipHost/NewTest.cs"
+    Write-TestText $newTestSource 'class NewTest {}'
+    Assert-NotEqual 'new untracked test-host source invalidates the recorded policy' $baseIndex.policyHash (
+        Get-Cf7RuntimeV2DomainHash -ProjectRoot $testRoot -ConfigPath $configPath -Domain policy -Mode Worktree)
+    [IO.File]::Delete($newTestSource)
 
     # A snapshot retains the exact descriptor, stage-0 modes and OIDs under later index edits.
     $savedIndexTree = [string](& git -C $testRoot write-tree)
@@ -601,7 +635,7 @@ try {
             Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -ConfigPath $configPath -Domain artifactSource -Mode Index | Out-Null
         }
         $policyPaths = @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $testRoot -ConfigPath $configPath -Domain policy -Mode Index)
-        Assert-Equal 'unrelated unmerged path leaves other domain intact' 2 $policyPaths.Count
+        Assert-Equal 'unrelated unmerged path leaves other domain intact' 4 $policyPaths.Count
     } finally {
         & git -C $testRoot read-tree $savedIndexTree
         if ($LASTEXITCODE -ne 0) { throw 'Cannot restore the runtime index fixture.' }
