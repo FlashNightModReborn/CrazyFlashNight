@@ -44,7 +44,7 @@
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3"/>
-          <DOMFolderItem name="容器/兵器攻击容器/平A" itemID="696462ce-00000acc" isExpanded="true"/>
+          <DOMFolderItem name="容器/兵器攻击容器/平A" itemID="696462ce-00000acc"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板" itemID="699e0c3e-00001e05"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件" itemID="699e0c3e-00001e06"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="69949a8d-0000357a"/>
@@ -52,7 +52,7 @@
           <DOMFolderItem name="容器/兵器攻击容器/平A/主角肢体素材" itemID="699e0c3e-00001e0c"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09"/>
           <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
-          <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798"/>
+          <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798" isExpanded="true"/>
           <DOMFolderItem name="容器/手枪搓招容器" itemID="6afc777e-00000f8e" isExpanded="true"/>
           <DOMFolderItem name="容器/武器变形容器" itemID="69cb66ff-00000ab7" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79"/>
@@ -1703,7 +1703,7 @@
           <Include href="容器/技能容器/技能容器-时间停止.xml" itemID="694a6a88-0000242f" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-兽王崩拳.xml" itemID="695634c8-00000944" lastModified="1785626432"/>
           <Include href="容器/技能容器/技能容器-瞬步斩.xml" itemID="694ab8fd-0000419f" lastModified="1788970503"/>
-          <Include href="容器/技能容器/技能容器-死亡绽放.xml" itemID="694a1cc3-000010b6" lastModified="1794931683"/>
+          <Include href="容器/技能容器/技能容器-死亡绽放.xml" itemID="694a1cc3-000010b6" lastModified="1789397102"/>
           <Include href="容器/技能容器/技能容器-铁布衫.xml" itemID="694ac3d0-00004db0" lastModified="1789397050"/>
           <Include href="容器/技能容器/技能容器-王之财宝.xml" itemID="6aa808e4-00001311" lastModified="1789490570"/>
           <Include href="容器/技能容器/技能容器-小跳.xml" itemID="694ab970-0000421a" lastModified="1789397115"/>
@@ -1722,7 +1722,7 @@
           <Include href="容器/空手攻击容器/空手攻击容器-波动拳.xml" itemID="6963b380-0000111d" lastModified="1792325250"/>
           <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" itemID="6964d656-00002843" lastModified="1792287853"/>
           <Include href="容器/空手攻击容器/空手攻击容器-回旋踢.xml" itemID="699df8c4-00000bc2" lastModified="1785769021"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-连环踢.xml" itemID="699a5324-00000a8e" lastModified="1789824295"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-连环踢.xml" itemID="699a5324-00000a8e" lastModified="1795100167"/>
           <Include href="容器/空手攻击容器/空手攻击容器-能量喷泉.xml" itemID="6964d683-000028c1" lastModified="1788967208"/>
           <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" itemID="6964d6d2-0000293c" lastModified="1788892218"/>
           <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1792287869"/>
@@ -1730,7 +1730,7 @@
           <Include href="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招.xml" itemID="6967d527-00000a61" lastModified="1788974547"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1788973802"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-巨拳1连招.xml" itemID="6964c727-0000249e" lastModified="1788974553"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1785347801"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1795104210"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-强化1连招.xml" itemID="6964d172-0000273a" lastModified="1771683038"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-拳击1连招.xml" itemID="6964cdcf-00002588" lastModified="1771683047"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-兽王崩拳1连招.xml" itemID="6964d061-00002699" lastModified="1770225216"/>
@@ -1738,9 +1738,14 @@
           <Include href="容器/空手攻击容器/平A/空手攻击容器-腕刃1连招.xml" itemID="6963b211-00000fda" lastModified="1776198321"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-迅驰腿1连招.xml" itemID="69de9d91-00000d1f" lastModified="1781486423"/>
           <Include href="容器/容器.xml" loadImmediate="false" itemID="6957d2ea-0000091e" lastModified="1768414239"/>
-          <Include href="容器/手枪搓招容器/手枪搓招容器-后射.xml" itemID="6afc7be1-00001307" lastModified="1794931775"/><Include href="容器/手枪搓招容器/手枪搓招容器-后射2.xml" itemID="6afc7d01-00001401" lastModified="1795010000"/><Include href="容器/手枪搓招容器/手枪搓招容器-前冲射击2.xml" itemID="6afc7d01-00001402" lastModified="1795010000"/><Include href="容器/手枪搓招容器/手枪搓招容器-后跳射击2.xml" itemID="6afc7d01-00001403" lastModified="1795010000"/>
-          <Include href="容器/手枪搓招容器/手枪搓招容器-后跳射击.xml" itemID="6afc7c35-000013b3" lastModified="1794931879"/>
-          <Include href="容器/手枪搓招容器/手枪搓招容器-前冲射击.xml" itemID="6afc7ba4-000012a4" lastModified="1794931754"/>
+          <Include href="容器/手枪搓招容器/手枪搓招容器-后射.xml" itemID="6afc7be1-00001307" lastModified="1795100449"/>
+          <Include href="容器/手枪搓招容器/手枪搓招容器-后射2.xml" itemID="6afc7d01-00001401" lastModified="1795103976"/>
+          <Include href="容器/手枪搓招容器/手枪搓招容器-后跳射击.xml" itemID="6afc7c35-000013b3" lastModified="1795103988"/>
+          <Include href="容器/手枪搓招容器/手枪搓招容器-后跳射击2.xml" itemID="6afc7d01-00001403" lastModified="1795103981"/>
+          <Include href="容器/手枪搓招容器/手枪搓招容器-前冲射击.xml" itemID="6afc7ba4-000012a4" lastModified="1795103978"/>
+          <Include href="容器/手枪搓招容器/手枪搓招容器-前冲射击2.xml" itemID="6afc7d01-00001402" lastModified="1795103980"/>
+          <Include href="容器/手枪搓招容器/手枪搓招容器-瞬踢追射.xml" itemID="6aff1c80-00000dda" lastModified="1795104258"/>
+<Include href="容器/手枪搓招容器/手枪搓招容器-瞬踢追射2.xml" itemID="6aff24ae-000099a1" lastModified="1795105966"/>
           <Include href="容器/战技容器/！战技容器-逆暴雨.xml" loadImmediate="false" itemID="6993780a-00000b8f" lastModified="1771272354"/>
           <Include href="容器/战技容器/！战技容器-神杀枪.xml" itemID="6a2b7ab6-0000212b" lastModified="1781243064"/>
           <Include href="容器/战技容器/sprite/Symbol 8.xml" loadImmediate="false" itemID="695e92f4-00001514" lastModified="1767805684"/>

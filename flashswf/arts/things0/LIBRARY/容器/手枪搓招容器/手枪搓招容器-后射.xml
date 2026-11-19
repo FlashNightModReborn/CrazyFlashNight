@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/手枪搓招容器/手枪搓招容器-后射" itemID="6afc7be1-00001307" linkageExportForAS="true" linkageIdentifier="手枪搓招容器-后射" lastModified="1794931775">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/手枪搓招容器/手枪搓招容器-后射" itemID="6afc7be1-00001307" linkageExportForAS="true" linkageIdentifier="手枪搓招容器-后射" lastModified="1795100449">
   <timeline>
-    <DOMTimeline name="手枪搓招容器-后射">
+    <DOMTimeline name="手枪搓招容器-后射" currentFrame="12">
       <layers>
-        <DOMLayer name="as" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" name="后射" labelType="name" keyMode="9728">
               <elements/>
@@ -52,17 +52,16 @@ if (_parent.手枪属性.power)
 	//弹夹容量的最大射击间隔帧 = Math.floor(21 / (弹夹容量 - _parent.手枪.value.shot + 弹夹容量));
 	手枪射击间隔帧 = Math.max(手枪射击间隔帧, 1);
 	单发弹数  = 1;
-	if(手枪射击间隔帧<= 3 && 子弹种类.indexOf("横向") == -1){
-		原始霰弹值 = 霰弹值;
-		霰弹值 *= Math.ceil(5/手枪射击间隔帧);
-		if(子弹种类.indexOf("纵向") == -1){
-			子弹种类 = "纵向联弹-" + 子弹种类;
-			弹夹容量 = Math.floor(弹夹容量/霰弹值);
-		}else{
-			弹夹容量 = Math.floor(弹夹容量 * 原始霰弹值/霰弹值);
-		}
-		手枪射击间隔帧 = 5;
-	}
+	// ── 射击节奏：沿用 技能容器-死亡绽放 的做法 ──
+	// 不写死「打几发」的计数门，只给间隔帧，由「间隔帧 + 动画射击窗口」决定发数，
+	// 窗口走完自然停火（死亡绽放就是这套）。间隔帧由搓招入口按「技能 + 枪型」算好注入：
+	//   后射（窗口到 0 基帧 11）：冲锋枪 1 帧（9 发）/ 其余武器 9 帧（只 1 发）
+	//   后跳·前冲（窗口到 0 基帧 14）：冲锋枪 1 帧（封顶 9 发）/ 普通 2 帧（6 发）/
+	//                                  大威力 4 帧（3 发）/ 霰弹·发射器 12 帧（1 发）
+	手枪射击间隔帧 = _parent.__手枪搓招间隔1;
+	if (isNaN(手枪射击间隔帧) || 手枪射击间隔帧 < 1) 手枪射击间隔帧 = 2;
+	手枪发数上限 = _parent.__手枪搓招发数1;
+	if (isNaN(手枪发数上限) || 手枪发数上限 < 1) 手枪发数上限 = 0;
 }
 
 
@@ -94,17 +93,11 @@ if (_parent.手枪2属性.power)
 	手枪射击间隔帧_2 =Math.floor((射击速度_2 + 10) * 0.8 * 30 / 1000);
 	//弹夹容量的最大射击间隔帧_2 = Math.floor(21 / (弹夹容量_2 - _parent.手枪2.value.shot + 弹夹容量_2));
 	手枪射击间隔帧_2 = Math.max(手枪射击间隔帧_2, 1);
-	if(手枪射击间隔帧_2<= 3 && 子弹种类_2.indexOf("横向") == -1){
-		原始霰弹值_2 = 霰弹值_2;
-		霰弹值_2 *= Math.ceil(5/手枪射击间隔帧_2);
-		if(子弹种类_2.indexOf("纵向") == -1){
-			子弹种类_2 = "纵向联弹-" + 子弹种类_2;
-			弹夹容量_2 = Math.floor(弹夹容量_2/霰弹值_2);
-		}else{
-			弹夹容量_2 = Math.floor(弹夹容量_2 * 原始霰弹值_2/霰弹值_2);
-		}
-		手枪射击间隔帧_2 = 5;
-	}
+	// 手枪2 路同上：各自按自己的枪型与技能分配间隔帧（双枪各打各的额度）。
+	手枪射击间隔帧_2 = _parent.__手枪搓招间隔2;
+	if (isNaN(手枪射击间隔帧_2) || 手枪射击间隔帧_2 < 1) 手枪射击间隔帧_2 = 2;
+	手枪发数上限_2 = _parent.__手枪搓招发数2;
+	if (isNaN(手枪发数上限_2) || 手枪发数上限_2 < 1) 手枪发数上限_2 = 0;
 }
 
 
@@ -176,7 +169,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="11" keyMode="9728">
+            <DOMFrame index="2" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击代码" centerPoint3DX="177.55" centerPoint3DY="-195.85">
                   <matrix>
@@ -192,6 +185,10 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
     // 间隔帧与攻击点绑定统一延迟到 enterFrame 按需补读，避免 undefined 入参。
     手枪1已射击 = false;
     手枪2已射击 = false;
+    // 发数上限计数：冲锋枪有上限时封顶；上限 0 = 不封顶，仍由间隔帧 + 窗口收束
+    手枪1已发 = 0;
+    手枪2已发 = 0;
+    // 弹数主体仍由「间隔帧 + 射击窗口」收束；已发计数只用于冲锋枪的发数上限封顶。
     // 换向计时器（每5帧换向一次）
     换向计时器 = 0;
     换向间隔 = 5;
@@ -235,7 +232,8 @@ onClipEvent (enterFrame) {
     if (_parent.手枪射击许可 && 
         当前已持续帧1 >= _parent.手枪射击间隔帧 && 
         绑定攻击点1 != undefined &&
-        _parent._parent.手枪.value.shot < _parent.弹夹容量) {
+        _parent._parent.手枪.value.shot < _parent.弹夹容量 &&
+        (_parent.手枪发数上限 <= 0 || 手枪1已发 < _parent.手枪发数上限)) {
         
         _parent._parent.手枪.value.shot ++;
         
@@ -328,6 +326,7 @@ onClipEvent (enterFrame) {
         
         // 更新射击状态
         手枪1已射击 = true;
+        手枪1已发++;
 
     }
     
@@ -335,7 +334,8 @@ onClipEvent (enterFrame) {
     if (_parent.手枪2射击许可 && 
         当前已持续帧2 >= _parent.手枪射击间隔帧_2 && 
         绑定攻击点2 != undefined &&
-        _parent._parent.手枪2.value.shot < _parent.弹夹容量_2) {
+        _parent._parent.手枪2.value.shot < _parent.弹夹容量_2 &&
+        (_parent.手枪发数上限_2 <= 0 || 手枪2已发 < _parent.手枪发数上限_2)) {
         
         _parent._parent.手枪2.value.shot ++;
         
@@ -428,7 +428,9 @@ onClipEvent (enterFrame) {
         
         // 更新射击状态
         手枪2已射击 = true;
+        手枪2已发++;
     }
+
 }]]></script>
                   </Actionscript>
                   <filters>
@@ -438,6 +440,9 @@ onClipEvent (enterFrame) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -460,7 +465,8 @@ onClipEvent (enterFrame) {
                     <AdjustColorFilter brightness="-100" contrast="50" saturation="100" hue="-180"/>
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
-                </DOMSymbolInstance><DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点1" centerPoint3DX="325.6" centerPoint3DY="79.25">
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点1" centerPoint3DX="325.6" centerPoint3DY="79.25">
                   <matrix>
                     <Matrix a="0.511566162109375" d="0.49273681640625" tx="217.45" ty="-14.45"/>
                   </matrix>
@@ -475,7 +481,37 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="7" keyMode="9728">
+            <DOMFrame index="6" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点2" centerPoint3DX="325.6" centerPoint3DY="79.25">
+                  <matrix>
+                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="217.45" ty="-14.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-73.6" y="74.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8"/>
+                    <AdjustColorFilter brightness="-100" contrast="50" saturation="100" hue="-180"/>
+                    <BlurFilter blurX="30" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点1" centerPoint3DX="325.6" centerPoint3DY="79.25">
+                  <matrix>
+                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="217.45" ty="-14.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-73.6" y="74.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8"/>
+                    <AdjustColorFilter brightness="-100" contrast="50" saturation="100" hue="-180"/>
+                    <BlurFilter blurX="30" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -493,9 +529,80 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="469.95" centerPoint3DY="45.05">
+                  <matrix>
+                    <Matrix a="4.73867797851563" d="2.72964477539063" tx="-6" ty="61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-72.7" y="73.2"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	var 自机 = _parent._parent;
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  自机.空手攻击力 * 1+ 自机.内力 * 1;
+	
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	/*if (_parent._parent.mp攻击加成)
+	{
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}*/
+	/*if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.等级)
+	{
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 / 10;
+	}*/
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	子弹属性.不硬直 = true;
+	子弹属性.水平击退速度 = 20;
+	子弹属性.击中后子弹的效果 = "";
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
