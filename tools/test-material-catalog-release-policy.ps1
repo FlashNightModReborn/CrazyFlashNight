@@ -135,8 +135,13 @@ try {
     $passRun = Invoke-Cf7MaterialProducerCheck
     Assert-Cf7MaterialPolicy ($passRun.ExitCode -eq 0) `
         "current generated closure must pass; output=$($passRun.Output)"
-    Assert-Cf7MaterialPolicy ($passRun.Output -match '\[material-catalog\] check PASS materials=234 legacy=58') `
-        'passing check must report the current material/legacy closure'
+    $catalog = New-Object System.Xml.XmlDocument
+    $catalog.Load((Join-Path $fixtureRoot 'data\dictionaries\material_catalog.xml'))
+    $materials = $catalog.SelectNodes('/root/Material')
+    $legacyCount = @($materials | Where-Object { $_.legacyVisible.Trim() -ceq 'true' }).Count
+    $expectedCounts = "materials=$($materials.Count) legacy=$legacyCount"
+    Assert-Cf7MaterialPolicy ($passRun.Output -cmatch "(?m)^\[material-catalog\] check PASS $expectedCounts(?:\s|$)") `
+        "passing check must report $expectedCounts from the fixture catalog; output=$($passRun.Output)"
     Assert-Cf7MaterialPolicy ((Get-FileHash -Algorithm SHA256 -LiteralPath $dictionaryPath).Hash -eq $dictionaryHashBefore) `
         'passing --check must not rewrite the legacy dictionary'
     Assert-Cf7MaterialPolicy ((Get-FileHash -Algorithm SHA256 -LiteralPath $sidecarPath).Hash -eq $sidecarHashBefore) `
