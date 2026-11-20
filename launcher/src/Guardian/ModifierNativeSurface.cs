@@ -1012,6 +1012,7 @@ namespace CF7Launcher.Guardian
         {
             if (e.KeyCode != Keys.Enter) return;
             e.SuppressKeyPress = true;
+            _itemPageInput.Modified = false;
             int page;
             if (!int.TryParse((_itemPageInput.Text ?? "").Trim(), out page)) { SyncPageInputs(); return; }
             JumpItemPage(page);
@@ -1021,6 +1022,7 @@ namespace CF7Launcher.Guardian
         {
             if (e.KeyCode != Keys.Enter) return;
             e.SuppressKeyPress = true;
+            _unitPageInput.Modified = false;
             int page;
             if (!int.TryParse((_unitPageInput.Text ?? "").Trim(), out page)) { SyncPageInputs(); return; }
             JumpUnitPage(page);
@@ -1028,6 +1030,7 @@ namespace CF7Launcher.Guardian
 
         private void OnPageInputLeave(object sender, EventArgs e)
         {
+            ((TextBox)sender).Modified = false;
             SyncPageInputs();
         }
 
@@ -1069,6 +1072,8 @@ namespace CF7Launcher.Guardian
             input.BorderStyle = BorderStyle.FixedSingle;
             input.Cursor = Cursors.IBeam;
             input.TextAlign = HorizontalAlignment.Center;
+            input.TextChanged += delegate { Invalidate(); };
+            input.ModifiedChanged += delegate { Invalidate(); };
             input.GotFocus += delegate { input.SelectAll(); };
             input.Click += delegate { input.SelectAll(); };
         }
@@ -1483,7 +1488,7 @@ namespace CF7Launcher.Guardian
                     DrawText(graphics, "?", new Rectangle(cell.X, cell.Y + 6, cell.Width, 18), _smallFont, Gold, _ellipsis);
                 DrawText(graphics, "1", new Rectangle(cell.Right - 8, cell.Bottom - 9, 8, 8), _tinyFont, Gold, _ellipsis);
             }
-            DrawText(graphics, "共" + _itemTotal, ModifierNativeLayout.ItemPageLabel, _smallFont, Gold, _ellipsis);
+            DrawText(graphics, "页码", ModifierNativeLayout.ItemPageLabel, _smallFont, Gold, _ellipsis);
             DrawText(graphics, "/" + ModifierNativeLayout.PageCount(_itemTotal, _itemPageSize), ModifierNativeLayout.ItemPageTotal, _smallFont, Gold, _ellipsis);
         }
 
@@ -1532,7 +1537,7 @@ namespace CF7Launcher.Guardian
                     new RectangleF(row.X + 6, row.Y + 2, row.Width - 12, row.Height - 4), _smallFont, nameColor, _ellipsis);
                 graphics.Restore(rowState);
             }
-            DrawText(graphics, "共" + _unitTotal, ModifierNativeLayout.UnitPageLabel, _smallFont, Gold, _ellipsis);
+            DrawText(graphics, "页码", ModifierNativeLayout.UnitPageLabel, _smallFont, Gold, _ellipsis);
             DrawText(graphics, "/" + ModifierNativeLayout.PageCount(_unitTotal, _unitPageSize), ModifierNativeLayout.UnitPageTotal, _smallFont, Gold, _ellipsis);
             DrawHostile(graphics);
         }
@@ -1626,6 +1631,9 @@ namespace CF7Launcher.Guardian
 
         private void DrawStatus(Graphics graphics)
         {
+            if ((_activeTab == "items" && _itemPageInput.Focused && _itemPageInput.Modified)
+                || (_activeTab == "units" && _unitPageInput.Focused && _unitPageInput.Modified))
+                DrawText(graphics, "按回车键确认跳转具体页数", new Rectangle(330, 424, 310, 20), _smallFont, Gold, _ellipsis);
             if (_unresolvedToken != null)
             {
                 DrawButton(graphics, ModifierNativeLayout.Reconcile, "reconcile");
