@@ -43,7 +43,7 @@ var DressupDollRenderer = (function() {
     var Timeline = AssetTimeline;
 
     function loadManifest(url) {
-        return fetch(url).then(function(response) {
+        return fetch(url, { cache: 'no-store' }).then(function(response) {
             if (!response.ok) throw new Error('Failed to load dressup manifest: ' + response.status);
             return response.json();
         }).then(function(data) {

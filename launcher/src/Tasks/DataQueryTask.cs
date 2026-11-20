@@ -76,8 +76,8 @@ namespace CF7Launcher.Tasks
 
         /// <summary>
         /// NPC 对话查询。
-        /// 数据加载失败 → success:false（Flash 走 legacy fallback）。
-        /// NPC 不存在或无匹配条目 → success:true, result:[]（匹配 legacy 正常行为）。
+        /// 数据加载失败返回 success:false，Flash 保留已有快照，首次绑定可重试。
+        /// NPC 不存在或无符合进度的组时返回 success:true, result:[]。
         /// </summary>
         private string QueryNpcDialogue(JObject payload)
         {
@@ -86,7 +86,7 @@ namespace CF7Launcher.Tasks
 
             Dictionary<string, List<DialogueGroup>> index = _cache.GetNpcDialogues();
 
-            // 数据加载失败（缓存了错误状态）→ Flash 走 fallback
+            // 传播缓存记录的 NPC 数据错误。
             if (index == null)
                 return BuildError("NPC data unavailable: " + (_cache.GetNpcError() ?? "unknown"));
 

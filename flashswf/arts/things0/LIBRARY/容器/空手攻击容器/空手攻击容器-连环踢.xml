@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-连环踢" itemID="699a5324-00000a8e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-连环踢" lastModified="1789824295" lastUniqueIdentifier="843">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-连环踢" itemID="699a5324-00000a8e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-连环踢" lastModified="1795100167" lastUniqueIdentifier="843">
   <timeline>
-    <DOMTimeline name="空手攻击容器-连环踢" currentFrame="22">
+    <DOMTimeline name="空手攻击容器-连环踢" currentFrame="3">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -500,7 +500,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#73BC75" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#73BC75" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -510,7 +510,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
             <DOMFrame index="3" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="683.25" centerPoint3DY="14.05">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="683.25" centerPoint3DY="14.05">
                   <matrix>
                     <Matrix a="3.66082763671875" d="2.37677001953125" tx="128.85" ty="56.65"/>
                   </matrix>
@@ -1124,7 +1124,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#4FB28F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#4FB28F" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

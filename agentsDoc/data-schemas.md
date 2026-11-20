@@ -81,7 +81,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 ```
 data/items/list.xml          → 引用 54 个物品分类文件 + item_sets.xml 套装中心表
 data/enemy_properties/list.xml → 引用 14 个敌人定义文件
-data/dialogues/list.xml       → 引用 16 个对话文件
+data/dialogues/list.xml       → Launcher 读取静态 NPC 对白，按存档合并覆盖，再按进度返回给 Flash
 data/environment/             → scene_environment.xml、stage_environment.xml、color_engine_preset.xml、presentation_presets.v1.json
                                scene_lights.v1.json 提供场景灯预设，Lights/Light 保存逐场景覆盖
 data/stages/                  → 按地点组织的关卡数据
@@ -304,7 +304,6 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 | `ItemDataLoader` | `data/items/list.xml` | 并行加载 54 个物品分类文件与 `item_sets.xml`；合并数组附带中心套装元数据 |
 | `ArenaDropRulesLoader` | `data/arena/arena_drop_rules.xml` | 严格加载标准佣兵装备掉落规则，并为 `ItemObtainIndex` 提供静态竞技场来源投影 |
 | `EnemyPropertiesLoader` | `data/enemy_properties/list.xml` | 敌人属性（14 文件合并，按名称索引） |
-| `NpcDialogueLoader` | `data/dialogues/list.xml` | NPC 对话数据 |
 | `BulletsCasesLoader` | `data/items/bullets_cases.xml` | 弹药数据；联弹支持「模板×单元体」双层配置（`<chainTemplate>` + `<chainUnit>`，加载期由 `ChainBulletConfigResolver` 派生合并，显式条目优先） |
 | `MissileConfigLoader` | `data/items/missileConfigs.xml` | 投射物配置 |
 | `StageInfoLoader` | `data/stages/list.xml`（级联子目录） | 关卡元信息 |

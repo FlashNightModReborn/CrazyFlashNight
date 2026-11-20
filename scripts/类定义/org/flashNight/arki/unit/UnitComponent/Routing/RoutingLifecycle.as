@@ -155,6 +155,37 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
         RoutingRuntime.enableNaturalLanding(unit);
     }
 
+    /** 只在装备重建的栈上记住正在播放的普通兵器动作；同路径 man 可能在重建期间被替换。 */
+    public static function captureOrdinaryBladeAction(unit:MovieClip):Object {
+        var man:MovieClip = unit.man;
+        var name:String = unit.兵器攻击名;
+        // 普攻入口取“动作类型 + 1连招”（缺省为“1连招”）。派生入口另走 STATE_WEAPON_CONTAINER。
+        if (unit.兵种 !== "主角-男" || unit.攻击模式 !== "兵器" || unit.状态 !== RoutingIntent.STATE_WEAPON
+                || unit.__stateGotoLabel !== RoutingIntent.LABEL_CONTAINER || man._parent !== unit
+                || man.__isDynamicMan !== true || typeof man.onUnload != "function" || name.slice(-3) !== "1连招"
+                || man.__huofengColdSnapshot != null || unit.__deadHandOwner != null) return null;
+        return {name:name, endHook:man.onUnload};
+    }
+
+    /** 在 alias、装备变形和模式校验之后判定。其它招式及已进入下一动作的单位由原出口收尾。 */
+    public static function incompatibleBladeExit(unit:MovieClip, action:Object):Function {
+        var man:MovieClip = unit.man;
+        if (man.onUnload !== action.endHook || man._parent !== unit || man.__isDynamicMan !== true
+                || unit.兵器攻击名 !== action.name || unit.__stateGotoLabel !== RoutingIntent.LABEL_CONTAINER
+                || man.__huofengColdSnapshot != null || unit.__deadHandOwner != null
+                || org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(unit)) return null;
+
+        // validateAttackMode 在卸刀时已写空手站立；显示标签此时仍然是容器。
+        var unequipped:Boolean = !unit.刀 && unit.攻击模式 === "空手" && unit.状态 === "空手站立";
+        if (!unequipped && (unit.攻击模式 !== "兵器" || unit.状态 !== RoutingIntent.STATE_WEAPON)) return null;
+        // 烬灭长柄保留副剑配置，但隐藏这把三刀口副剑，整把武器按五刀口发射。
+        var hiddenSecondary:Boolean = unit.刀2_装扮 === "刀-烬灭裁决副剑" && unit.兵器动作类型 === "长柄";
+        var missingSecondary:Boolean = action.name === "双刀1连招" && (!unit.刀2_装扮 || hiddenSecondary);
+        var missingSheath:Boolean = action.name === "疾影1连招" && !unit.刀3_装扮;
+        // 强制退出没有自然末帧的预输入机会。直接复用收尾，不经过兵器动画完毕的搓招包装。
+        return !unit.刀 || missingSecondary || missingSheath ? RoutingLifecycle.completeAnimation : null;
+    }
+
     public static function completeAnimation(man:MovieClip, unit:MovieClip, enableDoubleJump:Boolean):Void {
         clearSkillFloatTask(unit);
 

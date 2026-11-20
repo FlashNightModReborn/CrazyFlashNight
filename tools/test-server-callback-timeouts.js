@@ -94,7 +94,7 @@ check('production bootstrap keeps its 60-second prewarm budget', () => {
 });
 
 const budgets = [
-  ['scripts/类定义/org/flashNight/arki/map/MapDomainBridge.as', [4000, 3000, 3000, 3000]],
+  ['scripts/类定义/org/flashNight/arki/map/MapDomainBridge.as', [4000, 3000, 5000, 3000, 3000]],
   ['scripts/类定义/org/flashNight/arki/item/RewardInboxService.as', [20000]],
   ['scripts/类定义/org/flashNight/arki/item/LootContainerService.as', [20000]]
 ];

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using CF7Launcher.Guardian.Dialogue;
 using CF7Launcher.Guardian.Hud.Dialogue;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json.Linq;
@@ -471,49 +470,33 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("oversize", ack.Value<string>("reason"));
         }
 
-        [Fact]
-        public void SourceBookWithoutAssemblerIsRejected()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void RetiredSourceBookIsRejectedWithoutConsumingSequenceOrReplacingInline(bool includeLines)
         {
             using var h = new Harness();
-            JObject ack = Ack(h.Task.AdoptV2(new JObject
+            h.Task.AdoptV2(Book(7, 2));
+            var frame = h.Widget.CurrentFrame;
+            JObject source = Book(8, 1);
+            source["kind"] = "source";
+            if (!includeLines) source.Remove("lines");
+            source["sourceRef"] = new JObject
             {
-                ["version"] = 2, ["op"] = "book", ["kind"] = "source",
-                ["requestId"] = "nd:7", ["sceneId"] = "scene.1",
-                ["mode"] = "ordinary", ["epoch"] = 1,
-                ["sourceRef"] = new JObject
-                {
-                    ["type"] = "npc_dialogue", ["key"] = "酒保",
-                    ["group"] = 0, ["contentVersion"] = "abc"
-                },
-                ["snapshot"] = new JObject { ["playerName"] = "p" }
-            }));
-            Assert.Equal("malformed", ack.Value<string>("reason"));
-            Assert.Null(h.Widget.CurrentFrame);
-        }
+                ["type"] = "npc_dialogue", ["key"] = "酒保", ["group"] = 0,
+                ["contentVersion"] = new string('a', 64)
+            };
+            source["snapshot"] = new JObject { ["playerName"] = "p" };
 
-        [Fact]
-        public void SourceBookAssemblesThroughRegisteredHook()
-        {
-            using var h = new Harness();
-            h.Task.SourceAssembler = new StubAssembler(new List<JObject>
-            {
-                (JObject)Line("装配行0").DeepClone(), (JObject)Line("装配行1").DeepClone()
-            });
-            JObject ack = Ack(h.Task.AdoptV2(new JObject
-            {
-                ["version"] = 2, ["op"] = "book", ["kind"] = "source",
-                ["requestId"] = "nd:7", ["sceneId"] = "scene.1",
-                ["mode"] = "ordinary", ["epoch"] = 1,
-                ["sourceRef"] = new JObject
-                {
-                    ["type"] = "npc_dialogue", ["key"] = "酒保",
-                    ["group"] = 0, ["contentVersion"] = "abc"
-                },
-                ["snapshot"] = new JObject { ["playerName"] = "p" }
-            }));
-            Assert.Equal("applied", ack.Value<string>("status"));
-            Assert.Equal(2, ack.Value<int>("rowCount"));   // source 型回传规范化行数
-            Assert.Equal("装配行0", h.Widget.CurrentFrame.Text);
+            JObject ack = Ack(h.Task.AdoptV2(source));
+            Assert.Equal("rejected", ack.Value<string>("status"));
+            Assert.Equal("malformed", ack.Value<string>("reason"));
+            Assert.Equal("nd:8", ack.Value<string>("requestId"));
+            Assert.Null(ack["rowCount"]);
+            Assert.Same(frame, h.Widget.CurrentFrame);
+            h.Advance();
+            Assert.Equal("第1行", h.Widget.CurrentFrame.Text);
+            Assert.Equal("applied", Ack(h.Task.AdoptV2(Book(8, 1))).Value<string>("status"));
         }
 
         [Fact]
@@ -528,18 +511,6 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("第1行", h.Widget.CurrentFrame.Text);
             Assert.Equal(4, h.Widget.CurrentFrame.LineCount);
             Assert.Equal(3, h.Widget.CurrentFrame.Revision);   // 本地 revision 不随 restart 回退
-        }
-
-        private sealed class StubAssembler : INativeDialogueSourceAssembler
-        {
-            private readonly List<JObject> _lines;
-            internal StubAssembler(List<JObject> lines) { _lines = lines; }
-            public bool TryAssemble(JObject sourceRef, JObject snapshot,
-                out List<JObject> lines, out int rowCount, out string rejectReason)
-            {
-                lines = _lines; rowCount = _lines.Count; rejectReason = null;
-                return true;
-            }
         }
     }
 }

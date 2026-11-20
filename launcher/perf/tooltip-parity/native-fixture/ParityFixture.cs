@@ -113,6 +113,9 @@ internal static class ParityFixture
         widget.Reset();
         JObject payload = BuildPayload(sample, scenario, cid);
         bool shown = payload != null && widget.Show(payload);
+        // Compare the fully visible widget. Show starts its entrance at zero alpha.
+        // Reset above guarantees this is the first tick of the new session.
+        if (shown && widget.WantsAnimationTick) widget.Tick(int.MaxValue);
         int scrollLines = (int)(scenario["scrollLines"] ?? 0);
         for (int i = 0; i < scrollLines; i++) widget.ScrollByLines(1);
 

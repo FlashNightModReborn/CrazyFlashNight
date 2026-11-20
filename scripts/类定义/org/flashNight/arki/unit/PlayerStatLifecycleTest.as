@@ -16,7 +16,7 @@ class org.flashNight.arki.unit.PlayerStatLifecycleTest {
             for(i=10;i<19;i++) _root[keys[i]]=0;
             _root.装备引用配置={刷新所有装扮:function(t:Object):Void {t.__testReferenceRefreshes++;}};
             testNestedScene();testTicketRecovery();testGrowthIntents();testGrowthEarlyRecovery();testPublicCompatibility();
-            testLegacyEquipment();
+            testLegacyEquipment();testOrdinaryBladeSwap();
             testConditionalInputsAndBuffTimer();testOrdinaryExtClone();testSkillCandidateGate();testContextDetach();testWarlordContext();
         } catch(error) {check(false,"suite exception: "+error);}
         finally {
@@ -48,6 +48,76 @@ class org.flashNight.arki.unit.PlayerStatLifecycleTest {
         PlayerStatRefreshCoordinator.activateInitialization(t);
         PlayerStatRefreshCoordinator.prepareFullNumeric(t,scope);
         PlayerStatRefreshCoordinator.finishOuterAfterState(t,"空手站立",scope);
+    }
+    private static function bladeFixture(name:String):MovieClip {
+        var t:MovieClip=fixture();
+        t.兵种="主角-男";t.攻击模式="兵器";t.状态="兵器攻击";t.__stateGotoLabel="容器";t.兵器攻击名=name;
+        t._y=100;t.Z轴坐标=100;t.__bladeEnds=0;t.__landings=0;
+        var man:MovieClip=t.createEmptyMovieClip("man",t.getNextHighestDepth());
+        man.__isDynamicMan=true;
+        org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntent.bindContainerEndState(man,t,"兵器攻击结束");
+        t.UpdateBigSmallState=function():Void {};
+        t.存储当前飞行状态=function():Void {};t.读取当前飞行状态=function():Void {};
+        t.动画完毕=function():Void {
+            this.__bladeEnds++;
+            org.flashNight.arki.unit.UnitComponent.Routing.StateTransition.apply(this,this.攻击模式+"站立");
+        };
+        return t;
+    }
+    private static function testOrdinaryBladeSwap():Void {
+        var api:Object=org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle;
+        var t:MovieClip=bladeFixture("双刀1连招");
+        var action:Object=api.captureOrdinaryBladeAction(t);
+        t.刀2_装扮="刀-烬灭裁决副剑";t.兵器动作类型="双刀";
+        check(action!=null && !api.incompatibleBladeExit(t,action),"same ordinary dual combo can keep the three-node secondary");
+        t.兵器动作类型="长柄";t.刀_刀口数=5;
+        check(api.incompatibleBladeExit(t,action),"hidden three-node secondary cannot serve the transformed five-node polearm");
+        t.兵器动作类型="刀剑";t.刀2_装扮="兼容副刀";
+        check(!api.incompatibleBladeExit(t,action),"different action type with a compatible secondary does not cancel");
+        action=api.captureOrdinaryBladeAction(t);t.刀2_装扮=null;
+        check(api.incompatibleBladeExit(t,action),"second swap still checks the playing dual combo after the first changed action type");
+        t.__deadHandOwner={};
+        check(api.captureOrdinaryBladeAction(t)==null && !api.incompatibleBladeExit(t,action),"Dead Hand owns its equipment teardown");
+        delete t.__deadHandOwner;t.man.__huofengColdSnapshot={};
+        check(api.captureOrdinaryBladeAction(t)==null && !api.incompatibleBladeExit(t,action),"native Huofeng action keeps its own termination");
+        delete t.man.__huofengColdSnapshot;t.状态="战技";
+        check(api.captureOrdinaryBladeAction(t)==null && !api.incompatibleBladeExit(t,action),"a battle skill taking over during rebuild cannot have its last frame cancelled");
+        t.状态="兵器攻击容器";
+        check(api.captureOrdinaryBladeAction(t)==null && !api.incompatibleBladeExit(t,action),"derived weapon route is outside the ordinary swap rule");
+        t.状态="兵器攻击";t.兵器攻击名="剑气释放";
+        check(api.captureOrdinaryBladeAction(t)==null,"derived action name cannot qualify even under the ordinary weapon state");
+        t.兵器攻击名="双刀1连招";t.man._name="__oldBlade";t.createEmptyMovieClip("man",t.getNextHighestDepth());
+        t.man.__isDynamicMan=true;
+        org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntent.bindContainerEndState(t.man,t,"兵器攻击结束");
+        check(!api.incompatibleBladeExit(t,action),"replacement at the same native path rejects the old unload hook");
+
+        t=bladeFixture("疾影1连招");action=api.captureOrdinaryBladeAction(t);
+        t.刀3_装扮="刀鞘";check(!api.incompatibleBladeExit(t,action),"sheathed combo keeps a configured scabbard");
+        t.刀3_装扮=null;check(api.incompatibleBladeExit(t,action),"sheathed combo loses its required scabbard");
+        t.兵器攻击名="刀剑1连招";action=api.captureOrdinaryBladeAction(t);t.刀_刀口数=5;
+        check(!api.incompatibleBladeExit(t,action),"ordinary single blade accepts a changed primary edge count");
+        t.刀=null;t.状态="空手站立";t.攻击模式="空手";
+        check(api.incompatibleBladeExit(t,action),"unequip recognizes the validated barehand state with the old container label");
+        t.__huofeng={isActive:function():Boolean {return true;}};
+        check(!api.incompatibleBladeExit(t,action),"new active Huofeng profile retains its own barehand transition");
+
+        var runtime:Object=org.flashNight.arki.unit.UnitComponent.Routing.RoutingRuntime;
+        runtime.setAirControllerForTest({启用自然落地:function(u:Object):Void {u.__landings++;}});
+        try {
+            for(var air:Number=0;air<2;air++) {
+                t=bladeFixture("双刀1连招");action=api.captureOrdinaryBladeAction(t);
+                t.刀2_装扮=null;t._y=100-10*air;
+                var scope:Object=PlayerStatRefreshCoordinator.beginOuterInitialization(t,null);
+                PlayerStatRefreshCoordinator.activateInitialization(t);PlayerStatRefreshCoordinator.prepareFullNumeric(t,scope);
+                var finish:Function=api.incompatibleBladeExit(t,action);
+                check(finish===api.completeAnimation,"structural exit bypasses the natural last-frame skill input handler "+air);
+                PlayerStatRefreshCoordinator.finishOuterAfterState(t,"容器",scope,finish);
+                check(t.__bladeEnds==1 && t.__landings==air && t.__stateGotoLabel=="兵器站立" && t.__preserveFloatFlagOnUnload==undefined,
+                    "ordinary exit retires the old action without a double jump; natural landing only in air "+air);
+                check(t.__testReferenceRefreshes==1 && scope.plan.open==0 && t.__playerStatFullReady===scope.plan.body,
+                    "state completion refreshes once and closes the original initialization scope "+air);
+            }
+        } finally {runtime.clearAirControllerForTest();}
     }
     private static function testNestedScene():Void {
         var t:MovieClip=fixture();_root.主角被动技能={独行者:{等级:3,启用:true}};

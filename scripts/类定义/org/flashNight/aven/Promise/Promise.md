@@ -3,7 +3,6 @@ import org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader;
 import org.flashNight.gesh.xml.LoadXml.ItemDataLoader;
 import org.flashNight.gesh.xml.LoadXml.EquipModListLoader;
 import org.flashNight.gesh.xml.LoadXml.StageInfoLoader;
-import org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader;
 import org.flashNight.gesh.json.LoadJson.TaskTextLoader;
 import org.flashNight.gesh.json.LoadJson.TaskDataLoader;
 import org.flashNight.gesh.json.LoadJson.CraftingListLoader;

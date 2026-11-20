@@ -17,7 +17,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
     /// <summary>
     /// 运行时纸娃娃胸像烘焙调度：loot feed 击杀事件到达时，若运行时缓存目录
-    /// （launcher/data/doll-portraits/&lt;hex&gt;.png）尚无该键落盘，则经 C#→WebView2 桥
+    /// （launcher/data/doll-portraits/&lt;renderVersion&gt;/&lt;hex&gt;.png）尚无该键落盘，则经 C#→WebView2 桥
     /// （WebOverlayForm.TryPostToWeb，type="dollBake"）请求常驻 overlay 的 doll-bake.js
     /// 用 dressup 渲染器烘焙 256×256 胸像；web 侧完成后经 task 桥回传 doll_bake_result，
     /// 由 DollBakeTask 先按 exact requestId claim，再在原子落盘终态清除对应在飞状态。
@@ -47,6 +47,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
             new Dictionary<string, InFlight>(StringComparer.Ordinal);
         private readonly HashSet<string> _validatedPortraits =
             new HashSet<string>(StringComparer.Ordinal);
+        internal string DirectoryPath => _dir;
         private long _seq;
         private bool _disposed;
 

@@ -102,6 +102,33 @@ namespace CF7Launcher.Tests.Bus
             Assert.Equal(body, got);
         }
 
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void SupplementaryScalar_AtEachInternal8KBoundary_RoundTrips(int bytesBeforeBoundary)
+        {
+            const string prefix = "{\"task\":\"utf8_round_trip\",\"payload\":\"";
+            string padding = new string('A', 8192 - prefix.Length - bytesBeforeBoundary);
+            string body = padding + "𠊎B";
+            SendJsonMessageInChunks(body, 8192);
+            Assert.Equal(body, WaitForNextPayload());
+        }
+
+        [Fact]
+        public void TruncatedSupplementaryUtf8_ReplacesOnlyInvalidSequence()
+        {
+            byte[] prefix = Encoding.UTF8.GetBytes("{\"task\":\"utf8_round_trip\",\"payload\":\"A");
+            byte[] suffix = Encoding.UTF8.GetBytes("B\"}\0");
+            byte[] frame = new byte[prefix.Length + 2 + suffix.Length];
+            prefix.CopyTo(frame, 0);
+            frame[prefix.Length] = 0xF0;
+            frame[prefix.Length + 1] = 0xA0;
+            suffix.CopyTo(frame, prefix.Length + 2);
+            SendBytes(frame);
+            Assert.Equal("A" + FffdChar + "B", WaitForNextPayload());
+        }
+
         [Fact]
         public void TwoMessagesBackToBack_BothDecoded()
         {

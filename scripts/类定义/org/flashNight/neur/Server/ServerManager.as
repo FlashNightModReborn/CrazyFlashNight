@@ -584,9 +584,7 @@ class org.flashNight.neur.Server.ServerManager {
     // 使用 try/catch 包住 FastJSON.parse 处理服务器返回的数据
     // 契约：热路径(frame)走快车道不经过此方法；冷路径(task 响应)用 try/catch 兜底
     private function onSocketData(data:String):Void {
-        // 移除 null 终止符
-        data = data.split('\0').join('');
-
+        // XMLSocket.onData 已剥除帧终止符。CS6 的 '\0' 是空串，split 会拆坏代理对。
         if (data.length == 0) return;
         var prefix:String = data.charAt(0);
 

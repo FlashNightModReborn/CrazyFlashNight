@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -51,10 +52,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     LogManager.Log(FormatStartupObservation(source,owner,GetAncestor(source,2),sourcePid,sourceThread,ownerPid,Environment.ProcessId,bridge._cookie)
                         +" brokerPath=\""+exe+"\"");
                 } catch { } // Observation must not grant or prevent broker admission.
-                bridge._broker=Process.Start(start);
+                bridge._broker=StartBroker(start,bridge._cookie);
                 _=bridge.ReadCompletion();
-                string ready=await bridge._ready.Task.WaitAsync(TimeSpan.FromSeconds(12));
-                if(ready==null || !ready.StartsWith("READY ",StringComparison.Ordinal))throw new InvalidOperationException("Input bridge initialization: "+ready);
+                string ready=await WaitForReady(bridge._ready.Task,bridge._broker,bridge._cookie,TimeSpan.FromSeconds(12));
                 string name="Local\\CF7.WorldPointer."+bridge._pid+"."+bridge._broker.Id;
                 bridge._state=SharedInputStateView.Open(name,InputMagic,ProtocolVersion);
                 if(bridge._state.Session!=bridge._cookie)throw new InvalidOperationException("Input session mismatch");
@@ -65,6 +65,52 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 throw;
             }
         }
+
+        internal static Process StartBroker(ProcessStartInfo start, ulong session)
+        {
+            long started = Stopwatch.GetTimestamp();
+            Process broker;
+            try {
+                broker = Process.Start(start);
+            } catch (Exception error) {
+                LogBrokerStage("create_failed", session, started, null, error);
+                throw;
+            }
+            LogBrokerStage(broker == null ? "create_no_process" : "created", session, started, broker);
+            return broker;
+        }
+
+        internal static async Task<string> WaitForReady(Task<string> firstLine, Process broker, ulong session, TimeSpan timeout)
+        {
+            long started = Stopwatch.GetTimestamp();
+            try {
+                string ready = await firstLine.WaitAsync(timeout);
+                if (ready == null || !ready.StartsWith("READY ", StringComparison.Ordinal))
+                    throw new InvalidOperationException("Input bridge initialization: " + ready);
+                LogBrokerStage("ready_wait_complete", session, started, broker);
+                return ready;
+            } catch (Exception error) {
+                LogBrokerStage(error is TimeoutException ? "ready_timeout" : "ready_wait_failed", session, started, broker, error);
+                throw;
+            }
+        }
+
+        private static void LogBrokerStage(string stage, ulong session, long started, Process broker, Exception error = null)
+        {
+            try {
+                double elapsed = Stopwatch.GetElapsedTime(started).TotalMilliseconds;
+                string message = FormattableString.Invariant($"event=world_pointer_bridge_{stage} session={session} elapsedMs={elapsed:F3}");
+                if (broker != null) message += FormattableString.Invariant($" brokerPid={broker.Id}");
+                if (error != null) {
+                    message += FormattableString.Invariant($" exception={error.GetType().FullName} hresult=0x{error.HResult:X8}");
+                    if (error is Win32Exception win32)
+                        message += FormattableString.Invariant($" win32={win32.NativeErrorCode}");
+                    message += " reason=" + error.Message.Replace('\r',' ').Replace('\n',' ');
+                }
+                LogManager.Log(message);
+            } catch { } // Diagnostics must not change admission or exception propagation.
+        }
+
         private async Task ReadCompletion()
         {
             int? code=null;
@@ -73,18 +119,18 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 string line;while((line=await _broker.StandardOutput.ReadLineAsync())!=null) {
                     stdoutObserved=true;
                     readyLineObserved|=line.StartsWith("READY ",StringComparison.Ordinal);
-                    _ready.TrySetResult(line);LogManager.Log("event=world_pointer_bridge "+line);
+                    _ready.TrySetResult(line);LogManager.Log("event=world_pointer_bridge "+line+" hostSession="+_cookie+" brokerPid="+_broker.Id);
                 }
                 _ready.TrySetException(new InvalidOperationException("Broker exited before READY"));
                 await _broker.WaitForExitAsync();code=_broker.ExitCode;
-            } catch(Exception e) {LogManager.Log("event=world_pointer_bridge_log "+e.Message);}
+            } catch(Exception e) {LogManager.Log("event=world_pointer_bridge_log session="+_cookie+" "+e.Message);}
             finally { _ready.TrySetException(new InvalidOperationException("Broker stream ended"));
                 try {await _broker.WaitForExitAsync();code=_broker.ExitCode;}catch {}
                 try {LogManager.Log(FormatExitObservation(_cookie,_broker.Id,code,stdoutObserved,readyLineObserved));}catch {}
                 lock(_gate)_ended=true;_exit.TrySetResult(code ?? -1);}
         }
         internal static string FormatStartupObservation(IntPtr source,IntPtr owner,IntPtr root,uint sourcePid,uint sourceThread,uint ownerPid,int hostPid,ulong session)
-            => FormattableString.Invariant($"event=world_pointer_bridge_start session={session} hostPid={hostPid} source=0x{source.ToInt64():X} sourcePid={sourcePid} sourceTid={sourceThread} owner=0x{owner.ToInt64():X} ownerPid={ownerPid} sourceRoot=0x{root.ToInt64():X} observationOnly=1");
+            => FormattableString.Invariant($"event=world_pointer_bridge_start session={session} hostPid={hostPid} source=0x{source.ToInt64():X} sourcePid={sourcePid} sourceTid={sourceThread} owner=0x{owner.ToInt64():X} ownerPid={ownerPid} sourceRoot=0x{root.ToInt64():X} observationOnly=1 phase=before_create");
         internal static string FormatExitObservation(ulong session,int brokerPid,int? code,bool stdoutObserved,bool readyLineObserved)
         {
             string exitCode=code?.ToString(CultureInfo.InvariantCulture) ?? "unknown";

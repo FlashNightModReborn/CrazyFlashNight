@@ -1285,10 +1285,46 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
     }
 
+    // 火箭重拳属于手部物品。右手皮肤随姿势重挂，旧皮肤的卸载不能撤销当前装备的许可。
+    private static function refreshRocketPunch(target:MovieClip):Void {
+        var item:Object = target.手部装备;
+        if (item.name === "末日铁拳") {
+            if (target.__rocketPunchItem !== item) {
+                target.火箭重拳蓄力中 = false;
+                target.__rocketPunchKeyDown = Key.isDown(_root.武器变形键);
+            }
+            target.__rocketPunchItem = item;
+            target.火箭重拳许可 = true;
+            target.火箭重拳 = target._name === _root.控制目标 && Boolean(item.value.火箭重拳);
+            target.更新火箭重拳按键 = updateRocketPunchKey;
+        } else if (target.__rocketPunchItem != null || target.火箭重拳许可 || target.火箭重拳 || target.火箭重拳蓄力中) {
+            target.火箭重拳许可 = false;
+            target.火箭重拳 = false;
+            target.火箭重拳蓄力中 = false;
+            delete target.__rocketPunchItem;
+            delete target.__rocketPunchKeyDown;
+            delete target.更新火箭重拳按键;
+        }
+    }
+
+    private static function updateRocketPunchKey(target:MovieClip, source:Object, pressed:Boolean):Boolean {
+        if (source == null || source.name !== "末日铁拳" || source !== target.__rocketPunchItem || source !== target.手部装备
+                || target._name !== _root.控制目标) return false;
+        var rising:Boolean = pressed && !target.__rocketPunchKeyDown;
+        target.__rocketPunchKeyDown = pressed;
+        if (!rising || target.攻击模式 !== "空手" || target.火箭重拳蓄力中
+                || _root.物品栏.装备栏.getItem("手部装备") !== source) return false;
+        target.火箭重拳 = !target.火箭重拳;
+        source.value.火箭重拳 = target.火箭重拳;
+        if (typeof _root.存档系统.markDirty == "function") _root.存档系统.markDirty();
+        return true;
+    }
+
     public static function updateActions(target:MovieClip, deferModeValidation:Boolean):Void{
         if (!deferModeValidation) validateAttackMode(target);
         // 更新装备动作类型
         target.空手动作类型 = target.手部装备数据.actiontype;
+        refreshRocketPunch(target);
         target.兵器动作类型 = target.刀数据.actiontype;
         target.长枪动作类型 = target.长枪数据.actiontype;
         target.手枪动作类型 = target.手枪数据.actiontype;

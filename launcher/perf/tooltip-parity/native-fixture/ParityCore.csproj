@@ -27,12 +27,14 @@
          重资产。Fixture 只编译接口同名占位（见 ProjectionInterfaceStub.cs，
          接口漂移会让编译立刻报错）。已给 parity-input 提案：把该接口拆独立文件。 -->
     <Compile Include="ProjectionInterfaceStub.cs" />
-    <Compile Include="..\..\..\src\Guardian\LogManager.cs" />
+    <!-- Fixture diagnostics go to stderr without loading the live Host telemetry. -->
+    <Compile Include="FixtureLogManager.cs" />
     <Compile Include="..\..\..\src\Guardian\FlashCoordinateMapper.cs" />
     <Compile Include="..\..\..\src\Guardian\Hud\INativeHudWidget.cs" />
     <Compile Include="..\..\..\src\Guardian\Hud\WidgetScaler.cs" />
     <Compile Include="..\..\..\src\Guardian\Hud\NativeHudTheme.cs" />
     <Compile Include="..\..\..\src\Guardian\Hud\NativeHudFonts.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\NativeTextElements.cs" />
     <Compile Include="..\..\..\src\Fonts\RuntimeFontCatalog.cs" />
     <Compile Include="..\..\..\src\Guardian\Hud\MapHudImageDecoder.cs" />
     <Compile Include="..\..\..\src\Guardian\Hud\BitmapLruCache.cs" />
@@ -40,6 +42,8 @@
     <Compile Include="..\..\..\src\Guardian\Hud\Loot\DollPortraitBakeService.cs" />
     <Compile Include="..\..\..\src\Guardian\Hud\Loot\DollPortraitPngValidator.cs" />
     <Compile Include="..\..\..\src\Guardian\Hud\Loot\LootIconCatalog.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\Loot\LootIconCatalog.Playback.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\Icons\IconTimeline.cs" />
   </ItemGroup>
 
   <ItemGroup>

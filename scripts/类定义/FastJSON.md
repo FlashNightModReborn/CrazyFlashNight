@@ -159,6 +159,8 @@ trace(jsonString);
 
 将 JSON 字符串解析为 AS2 对象。
 
+Flash Player 20 会在 `Array.join("")` 时将分处不同数组元素的高、低代理项分别转成 `U+FFFD`。解析器在拼接字符串值和对象键时保留合法代理对；字面字符 `𠊎` 与 JSON 转义 `\uD840\uDE8E` 应产生相同的两个 UTF-16 码元。孤立代理项显示为一个替代字符，相邻正文保留。
+
 **示例**：
 ```actionscript
 var jsonString:String = '{"quests":[{"id":201,"title":"Defeat Goblins","progress":{"current":5,"total":10}}],"inventory":[{"id":101,"name":"Health Potion","quantity":3},{"id":102,"name":"Mana Potion","quantity":2},{"id":103,"name":"Sword","quantity":1}],"stats":{"defense":8,"attack":15,"mp":50,"hp":100},"level":10,"userName":"Player1","userId":12345}';

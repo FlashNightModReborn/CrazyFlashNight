@@ -1190,4 +1190,18 @@
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
+    <Skill id="88">
+        <Name>瞬踢追射</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;手枪瞬踢追射&lt;/font&gt;：手枪站立、行走、奔跑中&lt;font color="#ffee00"&gt;→+B&lt;/font&gt;。向前瞬踢突进，接追射开火。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
+        <CD>0</CD>
+        <MP>0</MP>
+    </Skill>
 </Skills>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1785347801">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1795104210">
   <timeline>
-    <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="54">
+    <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="25">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -273,7 +273,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1199,7 +1199,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F" locked="true">
+        <DOMLayer name="图层 8" color="#FF4F4F" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>

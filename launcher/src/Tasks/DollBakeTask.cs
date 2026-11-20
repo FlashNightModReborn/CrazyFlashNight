@@ -12,7 +12,7 @@ namespace CF7Launcher.Tasks
     /// 渲染器把击杀斗士的外观元组烘焙成 256×256 PNG，经 Web→C# task 桥回传
     /// {task:"doll_bake_result", payload:{key, pngBase64, requestId, error?}}。
     /// requestId 必须与当前 key 的在飞请求 exact 匹配；本 task 完整解码并确认 256×256
-    /// 后才原子写入运行时缓存目录 launcher/data/doll-portraits/&lt;hex&gt;.png。
+    /// 后才原子写入运行时缓存目录 launcher/data/doll-portraits/&lt;renderVersion&gt;/&lt;hex&gt;.png。
     ///
     /// 这是运行时头像缓存：无位图分块传输（web 单次 toDataURL 回传）、
     /// 无 manifest（文件存在即注册，LootIconCatalog 第四源按 纸娃娃-&lt;hex&gt; ref 直读）。
@@ -31,7 +31,8 @@ namespace CF7Launcher.Tasks
         public DollBakeTask(string projectRoot, DollPortraitBakeService bakeService = null)
         {
             if (string.IsNullOrEmpty(projectRoot)) throw new ArgumentException("projectRoot required", nameof(projectRoot));
-            _dir = Path.Combine(projectRoot, "launcher", "data", "doll-portraits");
+            _dir = bakeService?.DirectoryPath ?? DressupRenderAssets.LootPortraitDirectory(
+                Path.Combine(projectRoot, "launcher", "web"));
             _bakeService = bakeService;
         }
 

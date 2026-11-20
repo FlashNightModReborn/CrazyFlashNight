@@ -2,7 +2,7 @@
 	var self:MovieClip = this._parent;
 	if (_root.gameworld.__combatAdmitted === false) return;
 	if(self.__cf6TraversalOwner!==undefined || self.__cf6ElevatorPoseOwner!==undefined || self.__cf6VehicleOwner!==undefined) return;
-	// 手枪搓招入口：→B / Shift→B / Shift←B（后射/前冲射击/后跳射击）。
+	// 手枪搓招入口：→B / Shift→B / Shift←B（后射/前冲射击/后跳射击/瞬踢追射）。
 	// 覆盖 手枪站立/行走/跑 与 手枪2站立/行走/跑 全部六个状态；命中即接管本帧，
 	// B 不再落到下方换弹/射击分支。函数未加载时跳过（守卫防 include 顺序问题）。
 	if (_root.技能函数.手枪搓招检查 && _root.技能函数.手枪搓招检查(self)) return;
