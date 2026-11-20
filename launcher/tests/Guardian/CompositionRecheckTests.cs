@@ -10,6 +10,36 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 namespace CF7Launcher.Tests.Guardian {
  [ResourceCaseGuard] public class CompositionRecheckTests {
+  [System.Runtime.InteropServices.DllImport("user32.dll")]
+  private static extern IntPtr SendMessage(IntPtr window, int message, IntPtr wParam, IntPtr lParam);
+
+  [Theory]
+  [InlineData("")]
+  [InlineData("loot.capture")]
+  public void LostRightCaptureDoesNotHoldSettlementHandoffAfterLeftClick(string instance) => Sta(() => {
+   using var owner = new Form();
+   using var surface = new CompositionHelpSurface(owner, "owned", "owned", transition: true);
+   Set(surface, "_ready", true);
+   Set(surface, "_active", true);
+   Set(surface, "_committed", new System.Drawing.Rectangle(0, 0, 200, 100));
+   Set(surface, "_panelInstance", instance);
+   IntPtr report = surface.Handle, other = owner.Handle;
+   const int leftDown = 0x201, leftUp = 0x202, rightDown = 0x204, rightUp = 0x205;
+   var point = new IntPtr((30 << 16) | 50);
+   SendMessage(report, rightDown, new IntPtr(2), point);
+   Assert.True(surface.Capture);
+   Assert.False(surface.TransitionInputReleased);
+
+   // Windows delivers WM_CAPTURECHANGED to the report and the right up to its new owner.
+   owner.Capture = true;
+   Assert.False(surface.Capture);
+   SendMessage(other, rightUp, IntPtr.Zero, point);
+   owner.Capture = false;
+   SendMessage(report, leftDown, new IntPtr(1), point);
+   SendMessage(report, leftUp, IntPtr.Zero, point);
+
+   Assert.True(surface.TransitionInputReleased, "The right button released on the other window still blocks report actions.");
+  });
   static void Set(object o,string field,object data)=>o.GetType().GetField(field,BindingFlags.NonPublic|BindingFlags.Instance).SetValue(o,data);
   static void Call(object o,string method,params object[] args){try{o.GetType().GetMethod(method,BindingFlags.NonPublic|BindingFlags.Instance).Invoke(o,args);}catch(TargetInvocationException e){ExceptionDispatchInfo.Capture(e.InnerException).Throw();}}
   static JObject Close(string instance,string reason=null){var p=new JObject{["type"]="panel",["panel"]="intelligence",["cmd"]="close"};if(instance!=null)p["panelInstanceId"]=instance;if(reason!=null)p["reason"]=reason;return p;}
