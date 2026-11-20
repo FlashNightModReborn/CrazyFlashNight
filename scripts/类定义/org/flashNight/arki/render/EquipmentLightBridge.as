@@ -105,6 +105,23 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         return true;
     }
 
+    /** A real, finite-lived shield supplies the identity. Its art may be on a different layer. */
+    public static function bindShieldLight(cast:Object, actor:MovieClip, shieldId:Number, effectKey:String):Boolean {
+        var world:MovieClip = _root.gameworld;
+        var binding:Object = lightProfiles.effect[effectKey];
+        if (!actor._parent || !world._parent || !(shieldId >= 0) || !actor.shield || !binding) return false;
+        if (!actor.__equipmentLightIdentity) actor.__equipmentLightIdentity = {};
+        if (!world.__equipmentLightIdentity) world.__equipmentLightIdentity = {};
+        var spec:Object = binding.spec;
+        var entry:Object = {owner:cast, actor:actor, actorIdentity:actor.__equipmentLightIdentity,
+            worldIdentity:world.__equipmentLightIdentity, shieldId:shieldId, shieldContainer:actor.shield,
+            kind:0, role:"body", channel:effectKey, slot:"shield" + shieldId, priority:1,
+            energy:spec.energy, length:spec.radius, r:spec.r, g:spec.g, b:spec.b,
+            strength:1, sampled:true, active:true, scene:-1, checked:-1};
+        cast.equipmentLight = entry;
+        return ensureEntry(entry);
+    }
+
     public static function modSignature(equipment:Object):String {
         var mods:Array = equipment.value.mods;
         if (!(mods instanceof Array)) return "";
@@ -157,8 +174,14 @@ class org.flashNight.arki.render.EquipmentLightBridge {
                 && _root.gameworld.__equipmentLightIdentity === entry.worldIdentity;
             version = actor.version;
         }
-        var result:Boolean = entry.active && identity && version === entry.version && actor[entry.slot] === entry.equipment;
-        if (result) {
+        var result:Boolean = entry.active && identity;
+        if (result && entry.shieldId != undefined) {
+            result = actor.hp > 0 && actor.shield === entry.shieldContainer
+                && actor.shield.getShieldById(entry.shieldId).getCapacity() > 0;
+        } else if (result) {
+            result = version === entry.version && actor[entry.slot] === entry.equipment;
+        }
+        if (result && entry.shieldId == undefined) {
             // Empty mod lists dominate armor. Still compare every nonempty name:
             // an in-place, same-length edit must invalidate even in the same tick.
             var names:Array = entry.modNames, mods:Array = entry.equipment.value.mods;
@@ -252,12 +275,13 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         peers.push(entry); entry.peers = peers; entry.context = context;
         entry.id = ++nextId; entry.scene = scene;
         if (entry.kind == 0) {
-            var group:Object = context.groups[entry.role];
+            var groupKey:String = entry.shieldId == undefined ? entry.role : "shield";
+            var group:Object = context.groups[groupKey];
             if (!group) {
                 group = {id:++nextId, actor:actor, context:context, kind:0, role:entry.role,
                     width:0, dx:0, dy:0, strength:1, nearRadius:0, nearEnergy:0, near:{x:0,y:0},
                     origin:{x:0,y:0}, members:[], dirty:true, build:-1, selected:false};
-                context.groups[entry.role] = group;
+                context.groups[groupKey] = group;
             }
             entry.lightGroup = group; group.members.push(entry); group.dirty = true;
         }
@@ -427,17 +451,29 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         var body:Object = context.groups.body, blade:Object = context.groups.blade;
         var hasBody:Boolean = body && body.build == serial;
         var hasBlade:Boolean = blade && blade.build == serial;
-        if (hasBody) {
+        var shield:Object = context.groups.shield;
+        var hasShield:Boolean = shield && shield.build == serial;
+        if (hasBody || hasShield) {
             var actor:MovieClip = context.actor, world:MovieClip = _root.gameworld;
+            var center:Object = hasBody ? body : shield;
             if (actor._parent === world) {
-                body.x = actor._x; body.y = actor._y;
+                center.x = actor._x; center.y = actor._y;
             } else {
-                var point:Object = body.origin; point.x = 0; point.y = 0;
+                var point:Object = center.origin; point.x = 0; point.y = 0;
                 actor.localToGlobal(point); world.globalToLocal(point);
-                body.x = point.x; body.y = point.y;
+                center.x = point.x; center.y = point.y;
             }
-            body.y -= UnitUtil.calculateCenterOffset(actor);
-            bodyParameters(body);
+            center.y -= UnitUtil.calculateCenterOffset(actor);
+            if (hasBody) bodyParameters(body);
+            if (hasShield) {
+                shield.x = center.x; shield.y = center.y;
+                bodyParameters(shield);
+                if (hasBody && compatible(body,shield)) {
+                    body.length = Math.max(body.length,shield.length);
+                    body.energy = Math.min(radialPeak,body.energy + shield.energy);
+                    shield.suppressed = true;
+                }
+            }
         }
         if (hasBody && hasBlade && compatible(body,blade)) {
             var dx:Number = blade.x - body.x, dy:Number = blade.y - body.y;
@@ -449,7 +485,7 @@ class org.flashNight.arki.render.EquipmentLightBridge {
             }
         }
         var torch:Object = context.coveringTorch;
-        if (hasBody && torch) {
+        if (hasBody && torch && !(hasShield && shield.suppressed)) {
             dx = body.x - torch.near.x; dy = body.y - torch.near.y;
             if (Math.sqrt(dx*dx + dy*dy) + body.length <= torch.nearRadius
                 && torch.nearEnergy > body.energy * 1.3) body.suppressed = true;
@@ -473,6 +509,19 @@ class org.flashNight.arki.render.EquipmentLightBridge {
                     body.energy *= gain; blade.energy *= gain;
                 }
             }
+        }
+        if (hasShield && !shield.suppressed) {
+            // Preserve a differently colored shield while sharing the actor's exposure ceiling.
+            var peak:Number = shield.energy;
+            if (hasBody && !body.suppressed) peak += body.energy;
+            if (hasBlade && !blade.suppressed) peak += blade.energy;
+            if (peak > radialPeak) {
+                var share:Number = radialPeak / peak;
+                shield.energy *= share;
+                if (hasBody && !body.suppressed) body.energy *= share;
+                if (hasBlade && !blade.suppressed) blade.energy *= share;
+            }
+            if (isFinite(shield.x+shield.y) && Math.abs(shield.x)<=1000000 && Math.abs(shield.y)<=1000000 && onScreen(shield)) candidates.push(shield);
         }
         if (hasBody && !body.suppressed && isFinite(body.x+body.y) && Math.abs(body.x)<=1000000 && Math.abs(body.y)<=1000000 && onScreen(body)) candidates.push(body);
         if (hasBlade && !blade.suppressed && onScreen(blade)) candidates.push(blade);

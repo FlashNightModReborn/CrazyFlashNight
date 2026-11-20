@@ -2,6 +2,7 @@
 import org.flashNight.arki.dialogue.NativeDialogueService;
 import org.flashNight.arki.interaction.NativeInteractionContext;
 import org.flashNight.gesh.depth.DepthManager;
+import org.flashNight.arki.render.SceneLightBridge;
 import org.flashNight.gesh.path.PathManager;
 
 /** Scene events own combat. A short-lived observer only waits for external art/units. */
@@ -174,6 +175,14 @@ class org.flashNight.arki.scene.BaseSiegeController {
                 DepthManager.instance.updateDepth(a,r.kind=="rhino"?385:340);
                 DepthManager.instance.updateDepth(b,r.kind=="rhino"?394.6:621.6);
                 if(r.animPhase==null)setCoilStatic(a,r.deployed);
+                // The outer SWF stays on frame 1. Sample visibility, position and
+                // discharge frames on the initialized child, including art recovery.
+                var power:MovieClip=a.effectPowered;
+                var key:String=r.manager.getRuntimeLightKey(0);
+                if(key && power._parent === a && power.__siegeLightOwner !== r.owner){
+                    SceneLightBridge.track(power,key);
+                    power.__siegeLightOwner=r.owner;
+                }
             }
             r.assetsReady=true;
             if(r.anchor!=null){r.anchor.enableInteractionKey=r.explained && !r.deployed;refreshInteraction(r);}

@@ -85,6 +85,7 @@
         <Profile id="金牛之力" radius="230" energy="1.3" color="#FFFF66" forwardOffset="0" offsetY="0" totalFrames="30" isExplosion="true" />
         <Profile id="狮子之力" radius="230" energy="1.3" color="#FF6655" forwardOffset="0" offsetY="0" totalFrames="30" isExplosion="true" />
         <Profile id="天秤之力" radius="230" energy="1.3" color="#66FF66" forwardOffset="0" offsetY="0" totalFrames="30" isExplosion="true" />
+        <Profile id="天秤之护" radius="180" energy="0.9" color="#66FF66" totalFrames="1" isExplosion="false" />
         <Profile id="火凤火攻" radius="190" energy="1.45" color="#FF7E2E" forwardOffset="0" offsetY="-25" totalFrames="10" isExplosion="true" />
         <Profile id="火凤回旋" radius="235" energy="1.65" color="#FF8C36" forwardOffset="0" offsetY="-45" totalFrames="20" isExplosion="true" />
         <Profile id="中火燃" radius="195" energy="1.45" color="#FF8430" forwardOffset="0" offsetY="-35" totalFrames="15" isExplosion="true" />
@@ -191,11 +192,12 @@
         <Binding kind="asset" key="腐蚀弹" profile="腐蚀弹" />
         <Binding kind="asset" key="剧毒弹" profile="剧毒弹" />
         <Binding kind="asset" key="异形酸液" profile="异形酸液" />
-        <!-- 按实际弹体名登记；直接挂载的星座护盾特效仍待补接线。 -->
+        <!-- 四种主体随弹体时间轴，天秤之护随角色的真实护盾。 -->
         <Binding kind="projectile" key="摩羯之力" profile="摩羯之力" />
         <Binding kind="projectile" key="金牛之力" profile="金牛之力" />
         <Binding kind="projectile" key="狮子之力" profile="狮子之力" />
         <Binding kind="projectile" key="天秤之力" profile="天秤之力" />
+        <Binding kind="effect" key="星座护盾特效" profile="天秤之护" />
         <Binding kind="asset" key="火凤火攻" profile="火凤火攻" />
         <Binding kind="asset" key="火凤回旋" profile="火凤回旋" />
         <Binding kind="asset" key="中火燃" profile="中火燃" />

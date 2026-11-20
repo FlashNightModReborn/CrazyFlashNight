@@ -89,6 +89,10 @@ def anchors(parent):
     result=set()
     for e in list(parent.findall('Instances/Instance'))+list(parent.findall('SpawnPoint/Point')):
         key=e.findtext('LightKey')
+        runtime_key=e.findtext('RuntimeLightKey')
+        if runtime_key is not None:
+            require(not key and e.tag=='Instance' and e.findtext('url'), 'runtime light requires an external instance with one anchor owner')
+            key=runtime_key
         if key:
             require(re.fullmatch(r'[A-Za-z][A-Za-z0-9_.-]{0,127}',key),'invalid anchor LightKey')
             require(key not in result,'duplicate anchor LightKey');result.add(key)
