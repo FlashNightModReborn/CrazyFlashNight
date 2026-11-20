@@ -8,15 +8,23 @@ import json,re,threading,sys
 
 parser=argparse.ArgumentParser(description='Collect exact native CF6 RLE frames over loopback')
 parser.add_argument('--output',type=Path,required=True)
-parser.add_argument('--capture-set',choices=('motion','close-combat'),default='motion')
+parser.add_argument('--capture-set',choices=('motion','close-combat','instructor-melee'),default='motion')
+parser.add_argument('--host',type=Path,default=ROOT/'scripts/Cf6SoldierNativeHost.swf',
+    help='Actual RSL consumer SWF being tested')
 args=parser.parse_args()
 out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
 images=out/'rle';images.mkdir()
 expected={f'r12scene-{mode}-{frame}' for mode in ('smoke','instructorLine','instructorBareLine','run','evasion','retreatBlocked') for frame in range(190,279,2)}
 if args.capture_set=='close-combat':
-    expected={f'r13scene-{mode}-{frame}' for mode,last in (('chargeNear',250),('instructorShieldClose',320),('instructorChargeClose',320)) for frame in range(190,last+1,2)}
+    expected={f'r13scene-{mode}-{frame}' for mode,last in (('chargeNear',250),('instructorShieldClose',345),('instructorChargeClose',320)) for frame in range(190,last+1,2)}
+width,height=960,430
+suite=ROOT/'scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as'
+if args.capture_set=='instructor-melee':
+    width,height=400,300
+    expected={f'instructor-{mode}-{frame}' for mode,last in (('A',34),('B',59)) for frame in range(1,last+1)}
+    suite=suite.with_name('Cf6InstructorMeleeTest.as')
 inputs={'assetSha256':sha(ROOT/'flashswf/arts/new/Codex特种兵素材.swf'),
-        'suiteSha256':sha(ROOT/'scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as'),
+        'suiteSha256':sha(suite),
         'expectedImages':len(expected),'runId':None}
 lock=threading.Lock()
 (out/'inputs.json').write_text(json.dumps(inputs,indent=2),encoding='utf-8')
@@ -31,10 +39,10 @@ class Handler(BaseHTTPRequestHandler):
             if not re.fullmatch('[0-9a-f]{32}',run) or key not in expected or (images/(key+'.txt')).exists():
                 self.send_error(409);return
             if inputs['runId'] is None:
-                inputs['runId']=run;inputs['hostSha256']=sha(ROOT/'scripts/Cf6SoldierNativeHost.swf')
+                inputs['runId']=run;inputs['hostSha256']=sha(args.host)
                 (out/'inputs.json').write_text(json.dumps(inputs,indent=2),encoding='utf-8')
             if run!=inputs['runId']:self.send_error(409);return
-            if not data.startswith(f'[SOLDIER_IMAGE_BEGIN] {key} 960 430\n') or not data.endswith(f'[SOLDIER_IMAGE_END] {key}\n'):
+            if not data.startswith(f'[SOLDIER_IMAGE_BEGIN] {key} {width} {height}\n') or not data.endswith(f'[SOLDIER_IMAGE_END] {key}\n'):
                 self.send_error(400);return
             (images/(key+'.txt')).write_text(data,encoding='utf-8')
             count=len(list(images.glob('*.txt')))

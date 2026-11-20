@@ -4,7 +4,7 @@ import argparse
 import re
 import base64
 import zlib
-from PIL import Image
+from PIL import Image, ImageDraw
 
 
 def read_trace(path):
@@ -151,6 +151,9 @@ def main():
             ('elite-retreat',2,44),('elite-slide',166,248),('instructor-run',1,24),
             ('instructor-throw',1,36),('instructor-bash',35,68),('instructor-charge',1,46),('instructor-retreat',2,44)]
         review={'r9review-'+name+'-'+str(frame) for name,first,last in specs for frame in range(first,last+1)}
+        # Historical R9 captures ended the shield bash at frame 68.
+        if r9_rows==[str(len(review)+25)]:
+            review.update('r9review-instructor-bash-'+str(frame) for frame in range(69,94))
         if any(value!=str(len(review)) for value in r9_rows):raise ValueError('Invalid R9 review capture declaration')
         review|={'r9scene-smoke-'+str(frame) for frame in range(190,361,2)}
         accepted_sets+=(review,)
@@ -172,8 +175,25 @@ def main():
         review={f'r13scene-{name}-{frame}' for name,last in
             (('chargeNear',250),('instructorShieldClose',320),('instructorChargeClose',320))
             for frame in range(190,last+1,2)}
+        # Accept frozen historical captures and the full longer authored recovery.
+        if 'r13scene-instructorShieldClose-344' in r13_http:
+            review.update(f'r13scene-instructorShieldClose-{frame}' for frame in range(322,346,2))
         if len(r13_http)!=len(review) or set(r13_http)!=review:
             raise ValueError('Incomplete or repeated R13 HTTP capture acknowledgements')
+        accepted_sets+=(review,)
+    instructor_rows=re.findall(r'\[INSTRUCTOR_MELEE_REVIEW\] (\d+)',trace_text)
+    instructor_boxes={}
+    if instructor_rows:
+        review={f'instructor-{mode}-{frame}' for mode,last in (('A',34),('B',59)) for frame in range(1,last+1)}
+        sent=re.findall(r'\[SOLDIER_IMAGE_HTTP\] (instructor-\S+)',trace_text)
+        if instructor_rows!=[str(len(review))] or len(sent)!=len(review) or set(sent)!=review:
+            raise ValueError('Incomplete or repeated instructor melee capture')
+        for key,x1,y1,x2,y2 in re.findall(r'^\[INSTRUCTOR_MELEE_OVERLAY\] (\S+) (\d+) (\d+) (\d+) (\d+)\r?$',trace_text,re.M):
+            if key in instructor_boxes:
+                raise ValueError('Duplicate projected contact box: '+key)
+            instructor_boxes[key]=tuple(map(int,(x1,y1,x2,y2)))
+        if set(instructor_boxes)!={'instructor-A-14','instructor-B-17'}:
+            raise ValueError('Missing live contact-frame projection')
         accepted_sets+=(review,)
     if (completed not in accepted_sets or set(captures) != completed) and not args.allow_partial:
         raise ValueError('Expected the complete selected fixed-scale Soldier capture set: ' + str(completed))
@@ -191,10 +211,22 @@ def main():
             raise ValueError('Decoded raster differs from native pixel coverage: ' + name)
         image = Image.new('RGBA', (item['width'], item['height']))
         image.putdata([pixel for y in range(item['height']) for pixel in item['rows'][y]])
+        if name in instructor_boxes:
+            x1,y1,x2,y2=instructor_boxes[name]
+            if not (0<=x1<x2<image.width and 0<=y1<y2<image.height):
+                raise ValueError('Invalid projected contact rectangle: '+name)
+            ink=(17,122,82,255)
+            ImageDraw.Draw(image).rectangle((x1,y1,x2,y2),outline=ink,width=2)
         target = args.output / (name + '.png')
         if target.exists():
             raise ValueError('Preserve the existing capture: ' + str(target))
         image.save(target)
+        if name in instructor_boxes:
+            with Image.open(target) as saved:
+                border=([(x,y) for x in range(x1,x2+1) for y in (y1,y2)]
+                        +[(x,y) for y in range(y1,y2+1) for x in (x1,x2)])
+                if any(saved.getpixel(pixel)!=ink for pixel in border):
+                    raise ValueError('PNG lacks the complete native contact outline: '+name)
     print('Decoded native Flash captures: ' + ', '.join(sorted(completed)))
 
 

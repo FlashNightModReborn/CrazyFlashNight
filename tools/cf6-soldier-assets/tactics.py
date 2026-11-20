@@ -5,6 +5,7 @@ import json
 import hashlib
 from lxml import etree as E
 import elite
+import instructor_melee
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
@@ -21,6 +22,7 @@ def smoke_sources():
 
 def input_paths():
     return [Path(__file__), HERE/'TacticalAI.as', HERE/'SoldierSubweapon.as', HERE/'tactical-profiles.json',
+            *instructor_melee.input_paths(),
             *[HERE/name for name in ('FixedActionRules.as','FixedActionTriggers.as','FixedActionAdapter.as','FixedNavigation.as','FixedActionWeapons.as')],
             *sorted(p for p in SOURCE.rglob('*') if p.is_file()), *smoke_sources()]
 
@@ -227,6 +229,8 @@ def install(b,symbols,parts):
             for attr in ('linkageIdentifier','linkageExportForAS','linkageExportForRS','linkageImportForRS','linkageURL'):
                 projected.attrib.pop(attr,None)
         symbols[projected.get('name')]=projected
+    instructor_parts = {part_id: mapping[name] for part_id, name in parts.items()}
+    instructor_melee.install(b, symbols, PREFIX, instructor_parts)
     # Both master parts and native atlas poses are provided by the artist.
     for folder in ('parts','variants'):
         for path in sorted((SOURCE/folder).glob('*.svg')):

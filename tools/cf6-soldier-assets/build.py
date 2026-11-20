@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import sys
+from tempfile import TemporaryDirectory
 from lxml import etree as E
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -95,7 +96,7 @@ def build_inputs():
     return rows
 
 
-def depth_layers(timeline, parts):
+def depth_layers(timeline, parts, layer_names=None):
     layers = []
     for depth in sorted({int(d) for f in timeline for d, row in f.items() if row['id'] in parts}, reverse=True):
         states = [f.get(str(depth)) if f.get(str(depth), {}).get('id') in parts else None for f in timeline]
@@ -128,7 +129,8 @@ def depth_layers(timeline, parts):
                 elements.append(inst)
             frames.append(native.frame(start, end-start, elements))
             start = end
-        layers.append(native.layer('原始深度_'+str(depth), frames))
+        name = layer_names[str(depth)] if layer_names is not None else '原始深度_'+str(depth)
+        layers.append(native.layer(name, frames))
     return layers
 
 
@@ -431,7 +433,8 @@ def import_assets():
             'grenadeActionFrames':36,'grenadeReleaseFrame':25,'legKnife':True,'waistGrenades':True},
         'eliteRole':{'shieldActions':['chargeShoot'],'chargeFrames':[10,24,12],
             'pairReloadFrames':[331,365],'pairReloadCommit':363,'legKnife':False,'waistGrenades':True,'reloadVisual':'smoke and authored run','slideEntry':'successful smoke reload only'},
-        'instructorRole':{'artSource':tactics.SOURCE.relative_to(ROOT).as_posix(),'strategy':'adaptive','sharedActions':True},
+        'instructorRole':{'artSource':tactics.SOURCE.relative_to(ROOT).as_posix(),'strategy':'adaptive','sharedActions':True,
+            **instructor_melee_receipt()},
         'tacticalProfiles':tactics.load_profiles(),
         'weaponSource':'Existing long-gun equipment and shared cadet pool; external primary wins',
         'weaponHolderPath':'man.枪.枪.装扮','outputs':outputs,
@@ -440,6 +443,88 @@ def import_assets():
     (HERE/'native-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf8',newline='\n')
     common.mount_shared_library()
     print(json.dumps({'symbols':len(outputs),'linkage':LINKAGE},ensure_ascii=False))
+
+
+def instructor_melee_receipt():
+    melee = tactics.instructor_melee
+    paths = [Path(__file__), Path(tactics.__file__), Path(native.__file__), Path(art_revision.__file__),
+             SHIELD_ARCHIVE/'reference/timelines.json', *melee.input_paths()]
+    identity = hashlib.sha256()
+    for path in sorted(paths):
+        identity.update(path.relative_to(ROOT).as_posix().encode('utf8') + b'\0')
+        identity.update(bytes.fromhex(sha(path)))
+    return {'meleeOverrides':[melee.KNIFE, melee.SHIELD+'/挥盾'], 'meleeInputsSha256':identity.hexdigest()}
+
+
+def instructor_melee_outputs():
+    melee = tactics.instructor_melee
+    names = [tactics.PREFIX+'动作/教官_'+action for action in (melee.KNIFE, melee.SHIELD)]
+    symbols, _, _ = build_symbols()
+    audio.apply(symbols, OWNER, native.make_sparse_layer)
+    # Both actions use the already installed instructor drawings, mounts and
+    # collision helpers. A changed dependency needs its own assembly.
+    pending = list(names)
+    seen = set()
+    outputs = {}
+    while pending:
+        name = pending.pop()
+        if name in seen:
+            continue
+        seen.add(name)
+        root = symbols[name]
+        path = OWNER/'LIBRARY'/(name+'.xml')
+        data = native.xml_bytes(root)
+        if name in names:
+            outputs[path] = data
+        elif path.read_bytes() != data:
+            raise ValueError('Instructor melee dependency differs from installed source: '+name)
+        pending.extend(x.get('libraryItemName') for x in root.findall('.//x:DOMSymbolInstance', NS))
+    return outputs
+
+
+def check_instructor_melee(write=False):
+    manifest_path = HERE/'native-manifest.json'
+    native.guard_overwrite_allowed(False)
+    prior = manifest_path.read_bytes()
+    manifest = json.loads(prior)
+    receipt = instructor_melee_receipt()
+    outputs = instructor_melee_outputs()
+    if instructor_melee_receipt() != receipt or manifest_path.read_bytes() != prior:
+        raise ValueError('Inputs or manifest changed during instructor melee assembly')
+    if not write:
+        if any(manifest['instructorRole'].get(key) != value for key, value in receipt.items()):
+            raise ValueError('Instructor melee inputs changed; run --import-instructor-melee')
+        if any(path.read_bytes() != data for path, data in outputs.items()):
+            raise ValueError('Instructor melee XFL differs from current source')
+    else:
+        rows = {row['path']:row for row in manifest['outputs']}
+        for path, data in outputs.items():
+            rows[path.relative_to(OWNER).as_posix()].update(sha256=hashlib.sha256(data).hexdigest(), bytes=len(data))
+        manifest['instructorRole'].update(receipt)
+        # Keep the full library's buildInputs bound to its own last rebuild.
+        outputs[manifest_path] = (json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode('utf8')
+        with TemporaryDirectory(dir=HERE) as temp:
+            staged = []
+            for index, (path, data) in enumerate(outputs.items()):
+                old = Path(temp)/f'{index}.before'
+                old.write_bytes(path.read_bytes())
+                new = Path(temp)/f'{index}.after'
+                new.write_bytes(data)
+                staged.append((new, old, path))
+            native.guard_overwrite_allowed(False)
+            if manifest_path.read_bytes() != prior:
+                raise ValueError('Manifest changed before instructor melee write')
+            replaced = []
+            try:
+                for new, old, path in staged:
+                    new.replace(path)
+                    replaced.append((old, path))
+                native.guard_overwrite_allowed(False)
+            except BaseException:
+                for old, path in reversed(replaced):
+                    old.replace(path)
+                raise
+    print(json.dumps({'ok':True, 'instructorMeleeSymbols':2, **receipt}, ensure_ascii=False))
 
 
 def check():
@@ -486,9 +571,17 @@ if __name__ == '__main__':
     if hasattr(sys.stdout,'reconfigure'):
         sys.stdout.reconfigure(encoding='utf8')
     parser = argparse.ArgumentParser()
-    parser.add_argument('--import-approved',action='store_true')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--import-approved',action='store_true')
+    mode.add_argument('--import-instructor-melee',action='store_true')
+    mode.add_argument('--check-instructor-melee',action='store_true')
     parser.add_argument('--check',action='store_true')
     args = parser.parse_args()
-    if args.import_approved:
-        import_assets()
-    check()
+    if args.import_instructor_melee or args.check_instructor_melee:
+        check_instructor_melee(write=args.import_instructor_melee)
+        if args.check:
+            check()
+    else:
+        if args.import_approved:
+            import_assets()
+        check()

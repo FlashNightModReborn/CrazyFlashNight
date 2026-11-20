@@ -1377,7 +1377,12 @@
   "instructorRole": {
     "artSource": "flashswf/arts/new/Codex素材源稿/CF6教官-R9",
     "strategy": "adaptive",
-    "sharedActions": true
+    "sharedActions": true,
+    "meleeOverrides": [
+      "匕首刺击",
+      "持盾匕首刺击/挥盾"
+    ],
+    "meleeInputsSha256": "c1ee43dbcd15dfb9918fd633c0209c0099cc94f05ef853f1f23b1cd0adc61151"
   },
   "tacticalProfiles": {
     "schema": "cf6-tactical-profiles.v1",
@@ -2917,8 +2922,8 @@
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_匕首刺击.xml",
-      "sha256": "eda331707b5dfb118e9afd63ccd69465f0e9c60021a9d5f0cc1c5dcaf47d5b26",
-      "bytes": 179618
+      "sha256": "cec6714000f52159cd7643d913533ef6e8f8ad45eab0b37e78832759ec446625",
+      "bytes": 179523
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_投掷手雷.xml",
@@ -2927,8 +2932,8 @@
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_持盾匕首刺击.xml",
-      "sha256": "46db8ed42490cc6685a4daec4baccaef89be9c0dd9206f67abcd5a1fd60f7c12",
-      "bytes": 419595
+      "sha256": "42e513c0adf1c874d90756ab7c881cb86d5ab069547df8cc28b428a26342654b",
+      "bytes": 671322
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_持盾点射与装填.xml",
