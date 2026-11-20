@@ -132,7 +132,8 @@ namespace CF7Launcher.Guardian
         private Point _pressPoint;
         private bool _trackingLeave;
 
-        internal ModifierNativeSurface(Form owner, string webRoot, string profileRoot, ModifierTask task)
+        internal ModifierNativeSurface(Form owner, string webRoot, string profileRoot, ModifierTask task,
+            string dollPortraitsDir = null)
             : base(owner, owner, ModifierNativeLayout.Width, ModifierNativeLayout.Height)
         {
             _webRoot = webRoot ?? throw new ArgumentNullException(nameof(webRoot));
@@ -140,7 +141,7 @@ namespace CF7Launcher.Guardian
             _art = new ModifierArtCatalog(webRoot);
             _iconCatalog = new LootIconCatalog(Path.Combine(webRoot, "icons"),
                 Path.Combine(webRoot, "assets", "enemy-portraits"),
-                dollPortraitsDir: Path.Combine(webRoot, "..", "data", "doll-portraits"),
+                dollPortraitsDir: dollPortraitsDir ?? DressupRenderAssets.LootPortraitDirectory(webRoot),
                 npcPortraitIconsDir: Path.Combine(webRoot, "..", "..", "flashswf", "portraits", "icons"));
             _tooltip = new NativeTooltipWidget(this, _iconCatalog, null,
                 () => ModifierNativeLayout.ScaleFor(ClientSize));

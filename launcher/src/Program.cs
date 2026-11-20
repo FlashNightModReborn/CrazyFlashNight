@@ -1713,6 +1713,7 @@ class Program
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
         StartupDiagnostics.Mark("webview2.runtime_check_ok", "version=" + wv2ver);
         string webDir = Path.Combine(projectRoot, "launcher", "web");
+        string dollPortraitsDir = DressupRenderAssets.LootPortraitDirectory(webDir);
         // 玩家启动不抢地图工作台恢复锁；地图定义与世界源进程内固定（作者应用后重启切换），
         // 任务目录层可按发布事件热重载，见 MapDomainTask 的 task_sync。
         var mapRuntimeContent = new CF7Launcher.Data.MapRuntimeContent(projectRoot, msg => LogManager.Log("[MapRuntimeContent] WARN: " + msg));
@@ -1965,7 +1966,7 @@ class Program
                 new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(
                     Path.Combine(projectRoot, "launcher", "web", "icons"),
                     Path.Combine(projectRoot, "launcher", "web", "assets", "enemy-portraits"),
-                    dollPortraitsDir: Path.Combine(projectRoot, "launcher", "data", "doll-portraits"),
+                    dollPortraitsDir: dollPortraitsDir,
                     npcPortraitIconsDir: Path.Combine(projectRoot, "flashswf", "portraits", "icons"));
             if (workerPolicy == null)
             {
@@ -2367,7 +2368,7 @@ class Program
 
         CF7Launcher.Guardian.Hud.Loot.DollPortraitBakeService dollBakeService =
             new CF7Launcher.Guardian.Hud.Loot.DollPortraitBakeService(
-                Path.Combine(projectRoot, "launcher", "data", "doll-portraits"),
+                dollPortraitsDir,
                 webOverlay.TryPostToWeb);
         // 烘焙成功 → widget 负缓存失效 + 重绘：存活期内的占位卡片原地升级为胸像
         playerHudRuntime?.SetPortraitBakeSink(dollBakeService);
@@ -2467,7 +2468,7 @@ class Program
         ModifierTask modifierTask = new ModifierTask(socketServer);
         ModifierOverlay modifierOverlay = new ModifierOverlay(form, webDir,
             Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile-modifier"),
-            modifierTask, () => webOverlay.SendModifierPanelClosed());
+            modifierTask, () => webOverlay.SendModifierPanelClosed(), dollPortraitsDir);
         commandRouter.SetModifierOverlay(modifierOverlay);
         webOverlay.SetModifierOverlay(modifierOverlay);
         if (form.BootstrapPanel != null)
