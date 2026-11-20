@@ -222,9 +222,11 @@ test 会按当前配方、物品 XML、icon/dressup manifest、renderer/inspecto
 <a id="suite-dialogue"></a>
 ### 现场对白与原生交互
 
-**现场对白门**：运行 `node tools/test-server-callback-timeouts.js`，再顺序运行 `scripts/run-native-dialogue-tests.ps1`、`scripts/run-map-domain-tests.ps1`（suite 与断言门以该 runner 为准）、`scripts/run-map-loot-tests.ps1`（机器钉死 Loot 189 + Planner 12 + StageRunSession 638，见 [持久写与恢复](#save)），最后 `scripts/compile_test.ps1 -Target publish`。
+**现场对白门** 先运行 `node tools/test-server-callback-timeouts.js`，再依次运行 `scripts/run-native-dialogue-tests.ps1`、`scripts/run-map-domain-tests.ps1`、`scripts/run-map-loot-tests.ps1`，最后运行 `scripts/compile_test.ps1 -Target publish`。各测试脚本核对各自套件的断言数、零失败和本轮运行记录。地图战利品另见[持久写与恢复](#save)。
 覆盖握手/地图/面板毫秒期限、查询发送范围、同时超时托管、旧行数保护、新 rid 回退及 4096 行窗口的内容/暂停/事件移交。人力执行 [三组游戏旅程](../docs/对白v2审阅修复-人力验收单-2026-09-16.md)。Host/绘制改动继续跑 Launcher `NativeDialogue|NativeHudInputRoutingTests`、`tools/run-native-dialogue-webview2-smoke.ps1` 与 [SVG 工具](../tools/xfl-ui-svg/README.md) 只读 `--verify`，覆盖属性解析、富文本、时钟、作者窗口/按钮与缓存失效；
 smoke 复用 exact SDK resolver。hidden WebView2/位图是 fixture，机器通过不代签实际游戏体验；历史发布与人验边界见 [专项交接](../docs/对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md#114-已有验证与准确边界)。
+
+**对白 Unicode 回归（#279）** 用同盟咖啡厅「四脚蛇」（对白显示名「四脚蛇型」）第一组的「阿姊，𠊎真的好中意倪啊！」核对整条路径。从 C# `DataQueryTask` 的有效正文开始，经真实 Flash `XMLSocket.onData`、生产 `ServerManager.onSocketData` 和 `FastJSON.parse` 进入查询回调，再核对 NPC 的 `默认对话`、点击后传回 C# 的正文和原生对白画面。FP20 的 XMLSocket 已去掉帧终止符，CS6 会将 AS2 字面量 `'\0'` 编译为空串，在这里调用 `split('\0').join('')` 会在解析前损坏四字节字符。分别用字面字符和 JSON 转义验证，最后从普通游戏入口点 NPC。`𠊎` 的 UTF-16 码元为 `D840 DE8E`，原句揭示共 12 拍。传输容量仍按 UTF-16 码元计算。用组合重音、跨色段代理对、ZWJ 序列和窄行补查对白与 Tooltip 的断行、裁剪及揭示。
 
 **原生交互（菜单/注释/鼠标兼容）**：focused AS2 runner、Launcher 定向测试和实际候选人验边界见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md#验证与人验边界)；源码测试与图片不能代签实际输入。runner 为 `scripts/run-native-interaction-tests.ps1`；
 C# 定向 `NativeInteraction` / `Tooltip` 系列（含 `TooltipInspectionFeedbackTests`、`NativeTooltipPointerFeedbackTests`、`NativeTooltipPlacementContractTests`、`NativeHudTooltipFlickerTests`、`NativeTooltipPlainFeedbackTests`）；`node tools/test-tooltip-document-consumers.js`；

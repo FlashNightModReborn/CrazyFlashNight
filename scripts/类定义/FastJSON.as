@@ -332,6 +332,55 @@ class FastJSON implements IJSON {
         return resultStr;
     }
 
+    // start 紧随开引号，at 返回闭引号后一位。FP20 会把分散在多个 Array 元素的代理项
+    // 分别编码为 U+FFFD。保留连续源切片；有转义时在同一 UTF-16 字符串中拼合，
+    // 最后仅用一个数组元素执行 FP20 原有的孤立代理项替换，保留合法代理对。
+    private function readQuotedString(start:Number):String {
+        var source:String = this.text;
+        var size:Number = this.textLength;
+        var quote:Number = source.indexOf('"', start);
+        if (quote < 0) quote = size;
+        var literal:String = source.slice(start, quote);
+        if (literal.indexOf("\\") == -1) {
+            this.at = quote < size ? quote + 1 : size;
+            return [literal].join("");
+        }
+
+        var decoded:String = "";
+        var rawStart:Number = start;
+        var pos:Number = start;
+        while (pos < size) {
+            var code:Number = source.charCodeAt(pos++);
+            if (code != 34 && code != 92) continue;
+            decoded += source.slice(rawStart, pos - 1);
+            if (code == 34) {
+                this.at = pos;
+                return [decoded].join("");
+            }
+            var escapeChar:String = source.charAt(pos++);
+            switch (escapeChar) {
+                case "b": decoded += "\b"; break;
+                case "f": decoded += "\f"; break;
+                case "n": decoded += "\n"; break;
+                case "r": decoded += "\r"; break;
+                case "t": decoded += "\t"; break;
+                case "u":
+                    var unit:Number = 0;
+                    for (var j:Number = 0; j < 4; j++) {
+                        var digit:Number = parseInt(source.charAt(pos++), 16);
+                        if (!isFinite(digit)) this.error("Invalid Unicode escape sequence");
+                        unit = unit * 16 + digit;
+                    }
+                    decoded += String.fromCharCode(unit);
+                    break;
+                default: decoded += escapeChar;
+            }
+            rawStart = pos;
+        }
+        this.at = size;
+        return [decoded + source.slice(rawStart)].join("");
+    }
+
     /**
      * 解析 FastJSON 文本
      * @param inputText 要解析的 FastJSON 字符串
@@ -369,8 +418,6 @@ class FastJSON implements IJSON {
         var numberStr:String;
         var word:String;
         var numValue:Number;
-        var unicodeValue:Number;
-        var hexDigit:Number;
         var currentCh:String = this.ch;
         var currentAt:Number = this.at;
         var currentTextLength:Number = this.textLength;
@@ -394,10 +441,6 @@ class FastJSON implements IJSON {
         var object:Object;
         var array:Array;
         var tempValue;
-        var keyStrParts:Array;
-        var resultStrParts:Array;
-        var i:Number;
-        var len:Number;
 
         while (stackPtr > 0) {
             // 弹出堆栈顶部元素
@@ -472,89 +515,9 @@ class FastJSON implements IJSON {
                     stackTypes[stackPtr] = 2; // ARRAY_BEGIN
                     stackData[stackPtr++] = array;
                 } else if (currentCh === "\"") {
-                    resultStrParts = [];
-                    // 内联 next() 方法，跳过开头的引号
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-                    while (currentCh) {
-                        if (currentCh == "\"") {
-                            // 内联 next() 方法，跳过结尾的引号
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                            break;
-                        }
-                        if (currentCh == "\\") {
-                            // 内联 next() 方法，处理转义字符
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                            switch (currentCh) {
-                                case "b":
-                                    resultStrParts.push("\b");
-                                    break;
-                                case "f":
-                                    resultStrParts.push("\f");
-                                    break;
-                                case "n":
-                                    resultStrParts.push("\n");
-                                    break;
-                                case "r":
-                                    resultStrParts.push("\r");
-                                    break;
-                                case "t":
-                                    resultStrParts.push("\t");
-                                    break;
-                                case "u":
-                                    unicodeValue = 0;
-                                    for (i = 0; i < 4; i++) {
-                                        if (currentAt >= currentTextLength) {
-                                            currentCh = "";
-                                        } else {
-                                            currentCh = currentCharArray[currentAt++];
-                                        }
-                                        hexDigit = parseInt(currentCh, 16);
-                                        if (!isFinite(hexDigit)) {
-                                            this.error("Invalid Unicode escape sequence");
-                                        }
-                                        unicodeValue = unicodeValue * 16 + hexDigit;
-                                    }
-                                    resultStrParts.push(String.fromCharCode(unicodeValue));
-                                    // 内联 next()：读取 \uXXXX 后的下一个字符
-                                    if (currentAt >= currentTextLength) {
-                                        currentCh = "";
-                                    } else {
-                                        currentCh = currentCharArray[currentAt++];
-                                    }
-                                    continue;
-                                default:
-                                    resultStrParts.push(currentCh);
-                                    break;
-                            }
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        } else {
-                            resultStrParts.push(currentCh);
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        }
-                    }
-                    tempValue = resultStrParts.join("");
+                    tempValue = readQuotedString(currentAt);
+                    currentAt = this.at;
+                    currentCh = currentAt < currentTextLength ? currentCharArray[currentAt++] : "";
                     currentDepthCounter -= 1;
                     continue;
                 } else if (currentCh === "-") {
@@ -748,89 +711,9 @@ class FastJSON implements IJSON {
                         this.error("Expected '\"' at the beginning of a key");
                     }
                     // 解析键
-                    keyStrParts = [];
-                    // 内联 next() 方法，跳过开头的引号
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-                    while (currentCh) {
-                        if (currentCh == "\"") {
-                            // 内联 next() 方法，跳过结尾的引号
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                            break;
-                        }
-                        if (currentCh == "\\") {
-                            // 内联 next() 方法，处理转义字符
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                            switch (currentCh) {
-                                case "b":
-                                    keyStrParts.push("\b");
-                                    break;
-                                case "f":
-                                    keyStrParts.push("\f");
-                                    break;
-                                case "n":
-                                    keyStrParts.push("\n");
-                                    break;
-                                case "r":
-                                    keyStrParts.push("\r");
-                                    break;
-                                case "t":
-                                    keyStrParts.push("\t");
-                                    break;
-                                case "u":
-                                    unicodeValue = 0;
-                                    for (i = 0; i < 4; i++) {
-                                        if (currentAt >= currentTextLength) {
-                                            currentCh = "";
-                                        } else {
-                                            currentCh = currentCharArray[currentAt++];
-                                        }
-                                        hexDigit = parseInt(currentCh, 16);
-                                        if (!isFinite(hexDigit)) {
-                                            this.error("Invalid Unicode escape sequence");
-                                        }
-                                        unicodeValue = unicodeValue * 16 + hexDigit;
-                                    }
-                                    keyStrParts.push(String.fromCharCode(unicodeValue));
-                                    // 内联 next()：读取 \uXXXX 后的下一个字符
-                                    if (currentAt >= currentTextLength) {
-                                        currentCh = "";
-                                    } else {
-                                        currentCh = currentCharArray[currentAt++];
-                                    }
-                                    continue;
-                                default:
-                                    keyStrParts.push(currentCh);
-                                    break;
-                            }
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        } else {
-                            keyStrParts.push(currentCh);
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        }
-                    }
-                    key = keyStrParts.join("");
+                    key = readQuotedString(currentAt);
+                    currentAt = this.at;
+                    currentCh = currentAt < currentTextLength ? currentCharArray[currentAt++] : "";
 
                     // 内联 white() 方法
                     while (currentCh <= " " && currentCh != "") {

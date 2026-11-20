@@ -738,6 +738,88 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        [Theory]
+        [InlineData(96)]
+        [InlineData(120)]
+        [InlineData(144)]
+        [InlineData(192)]
+        public void BodyPixels_RevealWholeTextElementsAndStayFixedAcrossTyping(int dpi)
+        {
+            // 覆盖真实 Widget、GDI+ 原生字体与透明合成。每一张图独立绘制在同一底色上。
+            var vp = new Vp(1024 * dpi / 96, 576 * dpi / 96);
+            using var widget = MakeWidget(vp);
+            widget.TypingClock = () => 0L;
+            widget.TypingIntervalMs = 24;
+            widget.ShowFrame(Frame(text: "𠊎<font color='#c00'>e</font>́👩‍🚀甲"));
+            Assert.Equal(4, widget.TotalGlyphsForTest);
+            Rectangle field = Rectangle.Intersect(vp.R, widget.ComputeLayoutForTest(vp.R).Text);
+            int[] Capture()
+            {
+                using var bmp = new Bitmap(vp.R.Width, vp.R.Height,
+                    System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                bmp.SetResolution(dpi, dpi);
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    g.Clear(Color.FromArgb(255, 64, 80, 96));
+                    widget.Paint(g, dpi / 96f, Point.Empty);
+                }
+                var pixels = new int[field.Width * field.Height];
+                var data = bmp.LockBits(field, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                    System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                try
+                {
+                    for (int y = 0; y < field.Height; y++)
+                        System.Runtime.InteropServices.Marshal.Copy(IntPtr.Add(data.Scan0, y * data.Stride),
+                            pixels, y * field.Width, field.Width);
+                }
+                finally { bmp.UnlockBits(data); }
+                return pixels;
+            }
+            int[] baseline = Capture(), previous = baseline;
+            for (int tick = 1; tick <= 4; tick++)
+            {
+                widget.Tick(24);
+                int[] next = Capture();
+                int added = 0, moved = 0;
+                for (int p = 0; p < next.Length; p++)
+                {
+                    if (previous[p] != baseline[p] && next[p] != previous[p]) moved++;
+                    if (previous[p] == baseline[p] && next[p] != previous[p]) added++;
+                }
+                Assert.Equal(0, moved);
+                Assert.True(added > 0, $"DPI {dpi}, 第 {tick} 个字素没有可见像素");
+                previous = next;
+            }
+            Assert.True(widget.TypingCompleteForTest);
+            widget.SetHostSuppressed(true);
+            widget.SetHostSuppressed(false);
+            Assert.Equal(previous, Capture());
+        }
+
+        [Fact]
+        public void GdiLimits_PreserveTextElementClockAndFollowingRevision()
+        {
+            var vp = new Vp(1024, 576);
+            using var widget = MakeWidget(vp);
+            using var bitmap = new Bitmap(vp.R.Width, vp.R.Height);
+            using var g = Graphics.FromImage(bitmap);
+            widget.TypingClock = () => 0;
+            foreach (var sample in new[] {
+                (1, "a" + new string('\u0301', 32767), 1),
+                (2, new string('\u200b', 32768), 32768),
+                (3, "甲" + new string('\u200b', 32766) + "乙", 32768),
+                (4, "𠊎", 1) })
+            {
+                Assert.True(widget.ShowFrame(Frame(rev: sample.Item1, text: sample.Item2)));
+                Assert.Equal(sample.Item3, widget.TotalGlyphsForTest);
+                widget.Tick(24);
+                widget.Paint(g, 1f, Point.Empty);
+                if (!widget.TypingCompleteForTest) widget.TryAdvance();
+                widget.Paint(g, 1f, Point.Empty);
+                Assert.True(widget.TypingCompleteForTest);
+            }
+        }
+
         // ──────────────── HTML 子集排版（注入确定性 measure）────────────────
 
         [Fact]
@@ -745,7 +827,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             NativeDialogueTextLayout.Plan plan = NativeDialogueTextLayout.Build(
                 "白色<font color='#FF0000'>红色</font><BR>第二行", 10000,
-                c => 10f);
+                run => 10f * run.Length);
             Assert.True(plan.Lines.Count >= 2);
             // 第 1 行含红色 run
             bool hasRed = false;
@@ -755,7 +837,7 @@ namespace CF7Launcher.Tests.Guardian
                         hasRed = true;
             Assert.True(hasRed);
             // glyph 总数 = 可见字 + '\n'（"白色"+"红色"+\n+"第二行"）
-            Assert.Equal(2 + 2 + 1 + 3, plan.TotalGlyphs);
+            Assert.Equal(2 + 2 + 1 + 3, plan.TotalElements);
         }
 
         [Fact]
@@ -763,7 +845,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             // 每字 10px、行宽 105：第 11 字触发折行
             NativeDialogueTextLayout.Plan plan = NativeDialogueTextLayout.Build(
-                "一二三四五六七八九十，不可断", 105, c => 10f);
+                "一二三四五六七八九十，不可断", 105, run => 10f * run.Length);
             // "，" 是闭标点不能行首 → "十" 被回溯到下行
             Assert.Equal(2, plan.Lines.Count);
             Assert.Equal("一二三四五六七八九", Concat(plan.Lines[0]));
@@ -774,7 +856,7 @@ namespace CF7Launcher.Tests.Guardian
         public void TextLayout_OpeningPunct_MovesDown()
         {
             NativeDialogueTextLayout.Plan plan = NativeDialogueTextLayout.Build(
-                "一二三四五六七八九（开元", 105, c => 10f);
+                "一二三四五六七八九（开元", 105, run => 10f * run.Length);
             Assert.Equal(2, plan.Lines.Count);
             Assert.Equal("一二三四五六七八九", Concat(plan.Lines[0]));
             Assert.Equal("（开元", Concat(plan.Lines[1]));
@@ -784,7 +866,7 @@ namespace CF7Launcher.Tests.Guardian
         public void TextLayout_LongLatinRun_HardWrapsNoOverflow()
         {
             NativeDialogueTextLayout.Plan plan = NativeDialogueTextLayout.Build(
-                new string('x', 25), 100, c => 10f);
+                new string('x', 25), 100, run => 10f * run.Length);
             Assert.Equal(3, plan.Lines.Count);
             foreach (NativeDialogueTextLayout.Line l in plan.Lines)
                 Assert.True(l.WidthF <= 100.5f);
@@ -793,8 +875,8 @@ namespace CF7Launcher.Tests.Guardian
         [Fact]
         public void TextLayout_EmptyAndTagOnly_ZeroGlyphs()
         {
-            Assert.Equal(0, NativeDialogueTextLayout.Build("", 100, c => 10f).TotalGlyphs);
-            Assert.Equal(0, NativeDialogueTextLayout.Build("<b></b>", 100, c => 10f).TotalGlyphs);
+            Assert.Equal(0, NativeDialogueTextLayout.Build("", 100, run => 10f * run.Length).TotalElements);
+            Assert.Equal(0, NativeDialogueTextLayout.Build("<b></b>", 100, run => 10f * run.Length).TotalElements);
         }
 
         private static string Concat(NativeDialogueTextLayout.Line line)
@@ -1110,12 +1192,12 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(DialogueUiSkin.CreateSpecOnly().Body.Html);
 
             NativeDialogueTextLayout.Plan raw = NativeDialogueTextLayout.Build(
-                "A<b>B</b>", 10000, c => 10f, null, false);
-            Assert.Equal(9, raw.TotalGlyphs);   // "A<b>B</b>" 全 9 字符都是可见 glyph
+                "A<b>B</b>", 10000, run => 10f * run.Length, null, false);
+            Assert.Equal(9, raw.TotalElements);   // "A<b>B</b>" 全 9 字符都是可见 glyph
             Assert.Equal("A<b>B</b>", Concat(raw.Lines[0]));
 
             NativeDialogueTextLayout.Plan html = NativeDialogueTextLayout.Build(
-                "A<b>B</b>", 10000, c => 10f, null, true);
+                "A<b>B</b>", 10000, run => 10f * run.Length, null, true);
             Assert.Equal("AB", Concat(html.Lines[0]));   // 对照：html 路径仍剥离
         }
 

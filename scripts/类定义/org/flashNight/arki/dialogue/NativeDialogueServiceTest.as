@@ -1,6 +1,8 @@
 ﻿import org.flashNight.arki.dialogue.NativeDialogueService;
 import org.flashNight.arki.pause.PauseManager;
 import org.flashNight.neur.Event.EventDispatcher;
+import org.flashNight.neur.Server.ServerManager;
+import FastJSON;
 
 /**
  * NativeDialogueServiceTest - native_dialogue 会话生命周期测试（focused runner 用）
@@ -340,6 +342,7 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         trace("--- NativeDialogueServiceTest ---");
         installMock();
 
+        test_socket_npc_dialogue_unicode();
         test_ordinary_noPause();
         test_append_sameRequest();
         test_overwrite_newSession();
@@ -387,6 +390,39 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         teardownMock();
         trace("NativeDialogueServiceTest Tests Passed: " + testsPassed);
         trace("NativeDialogueServiceTest Tests Failed: " + testsFailed);
+    }
+
+    private static function test_socket_npc_dialogue_unicode():Void {
+        resetCalls();
+        // 只跳过会探测端口的单例构造。空端口让 initXMLSocket 安装真实 onData 后直接返回。
+        var managerClass:Object = ServerManager;
+        var receiver:Object = {};
+        receiver.__proto__ = managerClass.prototype;
+        receiver.socketPort = null;
+        receiver.initXMLSocket();
+        receiver.isSocketConnected = true;
+        receiver.jsonParser = new FastJSON();
+        receiver._callIdCounter = 1;
+        receiver._pendingCallbacks = {};
+        receiver.sendSocketMessage = function(packet:String):Boolean { return true; };
+
+        var expected:String = "A" + String.fromCharCode(0xD840, 0xDE8E) + "中";
+        var wireTexts:Array = [expected, "A\\uD840\\uDE8E\\u4E2D"];
+        for (var i:Number = 0; i < wireTexts.length; i++) {
+            receiver.sendTaskWithCallback("data_query",
+                {dataType:"npc_dialogue", key:"四脚蛇", taskProgress:0}, null,
+                function(response:Object):Void {
+                    org.flashNight.arki.dialogue.NativeDialogueServiceTest.recorded.push(response);
+                });
+            var packet:String = '{"task":"data_query","success":true,"callId":' + (i + 1)
+                + ',"result":[[{"text":"' + wireTexts[i] + '"}]]}';
+            receiver.xmlSocket.onData(packet);
+        }
+        assertEq(2, recorded.length, "XMLSocket: both NPC query callbacks delivered");
+        assertEq(expected, recorded[0].result[0][0].text,
+            "XMLSocket: NPC query preserves raw supplementary text");
+        assertEq(expected, recorded[1].result[0][0].text,
+            "XMLSocket: NPC query decodes ASCII surrogate escapes");
     }
 
     private static function test_ordinary_noPause():Void {

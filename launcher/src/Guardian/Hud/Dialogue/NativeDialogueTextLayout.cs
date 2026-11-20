@@ -1,238 +1,272 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using CF7Launcher.Guardian;
+using System.Text;
 using CF7Launcher.Guardian.Hud.Tooltip;
 
 namespace CF7Launcher.Guardian.Hud.Dialogue
 {
-    /// <summary>
-    /// 对话正文的纯排版器：复用原生注释的受限 HTML 展开器 → 字形序列 → 贪心折行。
-    ///
-    /// 与渲染解耦：measure 由调用方注入（widget 用 GDI+ MeasureString，测试可注入
-    /// 确定性宽度函数）。折行规则贴近旧 Flash 文本域：
-    /// - '\n'（&lt;BR&gt; 展开产物）硬断行；
-    /// - CJK 逐字可断；开标点（（【《「『“‘）后不晚断、闭标点（，。：；！？、）】》”’…%）不前断
-    ///   ——折行边界落在禁断对时向前回溯一字；
-    /// - 连续超宽串（长拉丁/无标点）允许硬折，不允许行溢出。
-    ///
-    /// 字形序含 '\n' 占位（计 1 个打字节拍、宽 0），Line.Runs 只含可绘制段。
-    /// 打字显示按 glyph 序截断：visibleChars 是绝对 glyph 下标阈值。
-    /// </summary>
+    /// <summary>对白独有的段首缩进、中文禁断及硬换行。索引以显示串的扩展字素为单位。</summary>
     internal static class NativeDialogueTextLayout
     {
-        internal struct Glyph
-        {
-            internal char C;
-            internal Color Color;
-            internal bool Newline;
-        }
-
-        /// <summary>一行内同色连续段。GlyphStart 为段首在 glyph 序的绝对下标。</summary>
         internal sealed class Run
         {
+            internal const string MissingMark = "□";
             internal string Text;
+            internal bool GdiRefused;
+            internal string PaintText => GdiRefused ? MissingMark : Text;
             internal Color Color;
-            internal int GlyphStart;
-            /// <summary>段首在行内的序号（用于查 Line.PrefixW 得起始 x）。</summary>
-            internal int LineOffset;
+            internal int FirstElement;
+            internal int[] Offsets; // 相对于 Text 的 UTF-16 边界，包括末端
+            internal float X;
+            internal float Width;
         }
 
         internal sealed class Line
         {
-            internal readonly List<Run> Runs = new List<Run>();
-            /// <summary>行内前缀宽（物理 px 浮点），长度 = 行可绘制 glyph 数 + 1。</summary>
-            internal float[] PrefixW;
-            /// <summary>行首 glyph 的绝对下标（含此前 '\n' 占位）。</summary>
-            internal int GlyphStart = -1;
-            /// <summary>行末 glyph 的绝对下标 + 1（本行覆盖的 glyph 区间尾）。</summary>
-            internal int GlyphEnd;
-            internal int GlyphCount;
+            internal List<Run> Runs;
+            internal int FirstElement;
+            internal int EndElement;
             internal float WidthF;
-            /// <summary>段首行缩进（局部 px；非段首行=0）。Flash TextFormat.indent 语义。</summary>
-            internal float Indent;
-            /// <summary>true = 本行以硬断行收尾（&lt;BR&gt;/\n/流末）。</summary>
-            internal bool EndsLogicalLine;
         }
 
         internal sealed class Plan
         {
             internal readonly List<Line> Lines = new List<Line>();
-            /// <summary>打字总节拍数 = glyph 序长度（含 '\n' 占位）。</summary>
-            internal int TotalGlyphs;
-            internal string SourceKey;
-        }
+            internal int TotalElements;
+            internal IEnumerator<Line> Pending;
+            internal Action<Line> CreateRuns;
 
-        // 闭标点：不可出现在行首。
-        private const string ClosingPunct = "，。：；！？、）】》」』’”…‰％·—ˇ‖』";
-        // 开标点：不可出现在行尾。
-        private const string OpeningPunct = "（【《「『“‘〈《〖〔［｛";
-
-        internal static bool IsClosingPunct(char c)
-        {
-            if (ClosingPunct.IndexOf(c) >= 0) return true;
-            // ASCII 闭标点（逗句号等可直接断前的安全集合）
-            return c == ',' || c == '.' || c == '!' || c == '?' || c == ';' || c == ':'
-                || c == ')' || c == ']' || c == '}' || c == '%' || c == '>';
-        }
-
-        internal static bool IsOpeningPunct(char c)
-        {
-            if (OpeningPunct.IndexOf(c) >= 0) return true;
-            return c == '(' || c == '[' || c == '{' || c == '<';
-        }
-
-        /// <summary>prev→next 之间允许折行。</summary>
-        internal static bool CanBreakAfter(char prev, char next)
-        {
-            return !IsOpeningPunct(prev) && !IsClosingPunct(next);
-        }
-
-        /// <summary>
-        /// 解析 + 折行。rawText 为 AS2 正文（可含 &lt;font color&gt;/&lt;BR&gt;），
-        /// charWidth 返回单字物理 px 宽（浮点）。maxWidthPx ≤ 0 返回空 Plan。
-        /// </summary>
-        internal static Plan Build(string rawText, int maxWidthPx,
-            Func<char, float> charWidth, Color? defaultColor = null,
-            bool parseMarkup = true, float firstLineIndent = 0f)
-        {
-            Plan plan = new Plan();
-            if (charWidth == null || maxWidthPx <= 0) return plan;
-
-            Color baseColor = defaultColor ?? Color.White;
-            // parseMarkup=false：字段 html=false（如 人物名字），标签按字面渲染不剥离。
-            List<NativeTooltipRun> segs = parseMarkup
-                ? NativeTooltipMarkup.Flatten(rawText ?? "", baseColor, false)
-                : new List<NativeTooltipRun> { new NativeTooltipRun(rawText ?? "", baseColor, false) };
-
-            // 1) 展平成 glyph 序（'\n' 为占位 glyph）
-            List<Glyph> glyphs = new List<Glyph>();
-            for (int s = 0; s < segs.Count; s++)
+            internal Line GetDrawableLine(int index)
             {
-                string t = segs[s].Text;
-                if (string.IsNullOrEmpty(t)) continue;
-                Color color = segs[s].Color ?? baseColor;
-                for (int j = 0; j < t.Length; j++)
-                {
-                    char c = t[j];
-                    if (c == '\r') continue;
-                    glyphs.Add(new Glyph { C = c, Color = color, Newline = (c == '\n') });
-                }
+                var line = Lines[index];
+                if (line.Runs == null) CreateRuns(line);
+                return line;
             }
-            plan.TotalGlyphs = glyphs.Count;
-            if (glyphs.Count == 0) return plan;
 
-            // 2) 逐字宽度（'\n' 宽 0）
-            float[] widths = new float[glyphs.Count];
-            for (int j = 0; j < glyphs.Count; j++)
-                widths[j] = glyphs[j].Newline ? 0f : Math.Max(0f, charWidth(glyphs[j].C));
-
-            // 3) 贪心折行（回溯修禁断对）。curIndent = 段首行缩进（首行与逻辑断行后的行）。
-            List<int> cur = new List<int>();
-            float curW = 0f;
-            float curIndent = firstLineIndent;
-            int i = 0;
-            while (i < glyphs.Count)
+            internal bool PrepareLine(int index)
             {
-                Glyph g = glyphs[i];
-                if (g.Newline)
+                while (Lines.Count <= index && Pending != null)
                 {
-                    Flush(plan, glyphs, widths, cur, curW, true, curIndent);
-                    cur = new List<int>();
-                    curW = 0f;
-                    curIndent = firstLineIndent;
-                    i++;
-                    continue;
+                    if (Pending.MoveNext()) Lines.Add(Pending.Current);
+                    else { Pending.Dispose(); Pending = null; }
                 }
-                if (cur.Count > 0 && curW + widths[i] > maxWidthPx - curIndent)
-                {
-                    // 禁断回溯：若 (cur末, i) 禁断，把 cur 末字让给下一行，重试。
-                    List<int> carry = new List<int>();
-                    while (cur.Count > 1
-                        && !CanBreakAfter(glyphs[cur[cur.Count - 1]].C,
-                            carry.Count == 0 ? g.C : glyphs[carry[0]].C))
-                    {
-                        int last = cur.Count - 1;
-                        carry.Insert(0, cur[last]);
-                        curW -= widths[cur[last]];
-                        cur.RemoveAt(last);
-                    }
-                    Flush(plan, glyphs, widths, cur, curW, false, curIndent);
-                    cur = carry;
-                    curW = 0f;
-                    for (int k = 0; k < cur.Count; k++) curW += widths[cur[k]];
-                    curIndent = 0f;   // 软折行不产生新段首
-                    continue;   // 同一 glyph 在新行重试（carry 自身仍超宽时再折）
-                }
-                cur.Add(i);
-                curW += widths[i];
-                i++;
+                return index < Lines.Count;
             }
-            Flush(plan, glyphs, widths, cur, curW, true, curIndent);
+
+            internal void PrepareThrough(int visible)
+            {
+                while (Pending != null && (Lines.Count == 0 || Lines[^1].EndElement < visible))
+                    PrepareLine(Lines.Count);
+            }
+        }
+
+        private const string ClosingPunct = "，。：；！？、）】》」』’”…‰％·—ˇ‖,!.?;:)]}%>";
+        private const string OpeningPunct = "（【《「『“‘〈〖〔［｛([{<";
+
+        // 统一展开后分段，跨颜色的一个字素继承其首码元的颜色。保留原有 CR 忽略、LF 占一拍的语义。
+        private sealed class DisplayText
+        {
+            internal readonly string Text;
+            internal readonly int[] Offsets;
+            internal readonly Color[] Colors;
+            internal readonly int[] StyleEnds;
+
+            internal DisplayText(List<NativeTooltipRun> spans, Color defaultColor)
+            {
+                var text = new StringBuilder();
+                var ends = new List<int>();
+                var colors = new List<Color>();
+                foreach (var span in spans)
+                {
+                    if (string.IsNullOrEmpty(span.Text)) continue;
+                    text.Append(span.Text.Replace("\r", ""));
+                    ends.Add(text.Length);
+                    colors.Add(span.Color ?? defaultColor);
+                }
+                Text = NativeTextElements.NormalizeDisplay(text.ToString());
+                int[] starts = NativeTextElements.Starts(Text);
+                Colors = new Color[starts.Length];
+                StyleEnds = new int[starts.Length];
+                Offsets = new int[starts.Length + 1];
+                starts.CopyTo(Offsets, 0);
+                Offsets[starts.Length] = Text.Length;
+                int style = 0;
+                for (int i = 0; i < starts.Length; i++)
+                {
+                    while (starts[i] >= ends[style]) style++;
+                    Colors[i] = colors[style];
+                }
+                for (int i = starts.Length - 1; i >= 0; i--)
+                    StyleEnds[i] = i + 1 < starts.Length && Colors[i].ToArgb() == Colors[i + 1].ToArgb()
+                        ? StyleEnds[i + 1] : i + 1;
+            }
+
+            internal string Slice(int first, int end)
+            {
+                return Text.Substring(Offsets[first], Offsets[end] - Offsets[first]);
+            }
+
+            internal char LeadingChar(int element) => Text[Offsets[element]];
+        }
+
+        internal static Plan Build(string rawText, int maxWidthPx, Func<string, float> measure,
+            Color? defaultColor = null, bool parseMarkup = true, float firstLineIndent = 0f, bool deferLines = false)
+        {
+            var plan = new Plan();
+            if (measure == null || maxWidthPx <= 0) return plan;
+            var color = defaultColor ?? Color.White;
+            var spans = parseMarkup ? NativeTooltipMarkup.Flatten(rawText ?? "", color, false)
+                : new List<NativeTooltipRun> { new NativeTooltipRun(rawText ?? "", color, false) };
+            var source = new DisplayText(spans, color);
+            plan.TotalElements = source.Colors.Length;
+            if (plan.TotalElements == 0) return plan;
+
+            var widths = new RunMeasure(measure);
+            plan.Pending = Wrap(source, maxWidthPx, firstLineIndent, widths).GetEnumerator();
+            plan.CreateRuns = line => MakeDrawable(source, line, widths);
+            if (!deferLines)
+            {
+                plan.PrepareLine(int.MaxValue);
+                for (int i = 0; i < plan.Lines.Count; i++) plan.GetDrawableLine(i);
+            }
             return plan;
         }
 
-        private static void Flush(Plan plan, List<Glyph> glyphs, float[] widths,
-            List<int> lineIdx, float lineW, bool endsLogical, float indent)
+        // 索引在采用时一次冻结。长文只展开用户看到的行，已展开的几何随本句复用。
+        private static IEnumerable<Line> Wrap(DisplayText source, int maxWidthPx, float firstLineIndent, RunMeasure measure)
         {
-            if (lineIdx == null || lineIdx.Count == 0)
+            int paragraphStart = 0;
+            for (int i = 0; i <= source.Colors.Length; i++)
             {
-                // 空行（\n 连续或流末）保留占位：占一行高度，无 run。
-                if (endsLogical)
-                    plan.Lines.Add(new Line { PrefixW = new float[1] });
-                return;
-            }
-            Line line = new Line();
-            line.GlyphStart = lineIdx[0];
-            line.GlyphEnd = lineIdx[lineIdx.Count - 1] + 1;
-            line.GlyphCount = lineIdx.Count;
-            line.WidthF = lineW + indent;
-            line.Indent = indent;
-            line.EndsLogicalLine = endsLogical;
-
-            float[] prefix = new float[lineIdx.Count + 1];
-            for (int k = 0; k < lineIdx.Count; k++)
-                prefix[k + 1] = prefix[k] + widths[lineIdx[k]];
-            line.PrefixW = prefix;
-
-            // 同色聚合为 run
-            int segStart = 0;
-            while (segStart < lineIdx.Count)
-            {
-                Color color = glyphs[lineIdx[segStart]].Color;
-                int segEnd = segStart + 1;
-                while (segEnd < lineIdx.Count
-                    && glyphs[lineIdx[segEnd]].Color == color) segEnd++;
-                System.Text.StringBuilder sb = new System.Text.StringBuilder(segEnd - segStart);
-                for (int k = segStart; k < segEnd; k++)
-                    sb.Append(glyphs[lineIdx[k]].C);
-                line.Runs.Add(new Run
+                if (i < source.Colors.Length && source.LeadingChar(i) != '\n') continue;
+                if (i == paragraphStart)
+                    yield return new Line { FirstElement = i, EndElement = i };
+                int lineStart = paragraphStart;
+                while (lineStart < i)
                 {
-                    Text = sb.ToString(),
-                    Color = color,
-                    GlyphStart = lineIdx[segStart],
-                    LineOffset = segStart
-                });
-                segStart = segEnd;
+                    float indent = lineStart == paragraphStart ? firstLineIndent : 0;
+                    int end = FitLine(source, lineStart, i, maxWidthPx - indent, measure);
+                    if (end < i)
+                    {
+                        // 禁断标点向下行回退；一个超宽字素本身仍完整保留。
+                        while (end > lineStart + 1 && (OpeningPunct.IndexOf(source.LeadingChar(end - 1)) >= 0
+                            || ClosingPunct.IndexOf(source.LeadingChar(end)) >= 0))
+                            end--;
+                    }
+                    yield return new Line { FirstElement = lineStart, EndElement = end, WidthF = indent };
+                    lineStart = end;
+                }
+                paragraphStart = i + 1;
             }
-            plan.Lines.Add(line);
         }
 
-        /// <summary>
-        /// 打字可见窗口：visibleChars 阈值下最后一个需要显示的行下标。
-        /// 用于 Flash 式自动滚底（行数超容量时只画末 capacity 行）。
-        /// </summary>
-        internal static int LastNeededLine(Plan plan, int visibleChars)
+        // 仅布局期间保留本句的少量重复 run 宽度，完整字符串和同一 font/format 是键的含义。
+        // 估计值只选试量位置，折行必须由完整 run 的真实宽度决定。
+        private sealed class RunMeasure
         {
-            if (plan == null || plan.Lines.Count == 0) return 0;
-            if (visibleChars <= 0) return 0;
-            for (int i = plan.Lines.Count - 1; i >= 0; i--)
+            private readonly Func<string, float> _measure;
+            private readonly Dictionary<string, float> _recent = new Dictionary<string, float>(StringComparer.Ordinal);
+            internal float MeanAdvance = 12;
+            private string _refused;
+
+            internal RunMeasure(Func<string, float> measure) { _measure = measure; }
+            internal float Width(string text, int elements)
             {
-                Line l = plan.Lines[i];
-                if (l.GlyphStart >= 0 && l.GlyphStart < visibleChars) return i;
-                if (l.GlyphStart < 0 && i == 0) return 0;
+                if (text == _refused) return float.PositiveInfinity;
+                if (!_recent.TryGetValue(text, out float width))
+                {
+                    width = _measure(text);
+                    if (float.IsPositiveInfinity(width)) _refused = text;
+                    if (text.Length <= 128)
+                    {
+                        if (_recent.Count == 128) _recent.Clear();
+                        _recent.Add(text, width);
+                    }
+                }
+                if (width > 0 && float.IsFinite(width)) MeanAdvance = width / elements;
+                return width;
             }
-            return plan.Lines.Count - 1;
+        }
+
+        private static int FitLine(DisplayText source, int first, int end, float available, RunMeasure measure)
+        {
+            int start = first;
+            while (start < end)
+            {
+                int limit = Math.Min(source.StyleEnds[start], end) - start;
+                int fit = 0, over = limit + 1;
+                // 先按最近实际 advance 估算。在已知能容纳/不能容纳的数目之间缩小区间。
+                int trial = (int)Math.Clamp(available / measure.MeanAdvance, 1, limit);
+                float width = 0;
+                for (int tries = 0; over - fit > 1; tries++)
+                {
+                    width = measure.Width(source.Slice(start, start + trial), trial);
+                    if (width <= available) fit = trial;
+                    else over = trial;
+                    if (fit == limit || over - fit == 1) break;
+                    if (tries >= 2 && over <= limit)
+                        trial = fit + (over - fit) / 2;
+                    else
+                    {
+                        // 零宽字素串逐步倍增，不反复测整段剩余正文。
+                        float estimate = width > 0 ? trial * (available / width) : trial * 2f;
+                        int ceiling = over <= limit ? over - 1 : Math.Min(limit, trial + Math.Max(1, trial));
+                        trial = (int)Math.Clamp(estimate, fit + 1, ceiling);
+                    }
+                }
+                if (fit < limit) return Math.Max(first + 1, start + fit);
+                start += fit;
+                available -= width;
+            }
+            return end;
+        }
+
+        // 跳到末尾时，中间未浏览行只需确定断点；仅为实际可见行分配字符串、UTF-16 range 与绘制坐标。
+        private static void MakeDrawable(DisplayText source, Line line, RunMeasure measure)
+        {
+            int first = line.FirstElement, end = line.EndElement;
+            line.Runs = new List<Run>();
+            while (first < end)
+            {
+                int next = Math.Min(source.StyleEnds[first], end);
+                string text = source.Slice(first, next);
+                float width = measure.Width(text, next - first);
+                // GDI+ 可能拒绝很长的合法串。先缩短同色 run，但决不从一个 EGC 内部切分。
+                while (float.IsPositiveInfinity(width) && next - first > 1)
+                {
+                    next = first + (next - first) / 2;
+                    text = source.Slice(first, next);
+                    width = measure.Width(text, next - first);
+                }
+                bool refused = float.IsPositiveInfinity(width);
+                if (refused)
+                {
+                    width = measure.Width(Run.MissingMark, 1);
+                    if (!float.IsFinite(width)) throw new InvalidOperationException("GDI+ cannot measure the missing-glyph mark.");
+                }
+                int[] offsets = new int[next - first + 1];
+                for (int i = first; i <= next; i++) offsets[i - first] = source.Offsets[i] - source.Offsets[first];
+                line.Runs.Add(new Run { Text = text, GdiRefused = refused, FirstElement = first, Color = source.Colors[first],
+                    Offsets = offsets, X = line.WidthF, Width = width });
+                line.WidthF += width;
+                first = next;
+            }
+        }
+
+        internal static int LastNeededLine(Plan plan, int visibleElements)
+        {
+            if (plan == null || visibleElements <= 0) return 0;
+            plan.PrepareThrough(visibleElements);
+            if (plan.Lines.Count == 0) return 0;
+            int lo = 0, hi = plan.Lines.Count;
+            while (hi - lo > 1)
+            {
+                int mid = lo + (hi - lo) / 2;
+                if (plan.Lines[mid].FirstElement < visibleElements) lo = mid;
+                else hi = mid;
+            }
+            return lo;
         }
     }
 }
