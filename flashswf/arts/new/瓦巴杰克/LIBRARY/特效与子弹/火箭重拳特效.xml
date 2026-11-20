@@ -42,18 +42,7 @@
               <Actionscript>
                 <script><![CDATA[
 自机 = _root.获得父节点(this, 5);
-自机.火箭重拳许可 = true;
-this.onUnload = function()
-{
-	自机.火箭重拳许可 = false;
-};
-if (自机._name == _root.控制目标)
-{
-	//if(_root.装备切换状态.火箭重拳){
-	if(_root.物品栏.装备栏.getItem("手部装备").value.火箭重拳){
-		自机.火箭重拳 = true;
-	}
-}]]></script>
+铁拳物品 = 自机.手部装备;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -1243,44 +1232,26 @@ if (自机._name == _root.控制目标)
 	{
 		_parent.stop();
 	}
-	按键中 = false;
-}
+	}
 onClipEvent (enterFrame) {
+	var 切换成功 = typeof 自机.更新火箭重拳按键 == "function"
+		&& 自机.更新火箭重拳按键(自机, _parent.铁拳物品, Key.isDown(_root.武器变形键));
 	if (自机.火箭重拳蓄力中)
 	{
 		_parent.gotoAndPlay("充能状态");
 	}
-	else if (自机._name == _root.控制目标 && 自机.攻击模式 === "空手")
+	else if (切换成功)
 	{
-		if (Key.isDown(_root.武器变形键))
+		if (自机.火箭重拳)
 		{
-			if (!按键中)
-			{
-				if (自机.火箭重拳)
-				{
-					_root.发布消息("火箭重拳关闭！");
-					自机.火箭重拳 = false;
-					if (自机._name == _root.控制目标){
-						_root.物品栏.装备栏.getItem("手部装备").value.火箭重拳 = false;
-					}
-					_parent.gotoAndStop(2);
-				}
-				else
-				{
-					_root.播放音效("触电.wav");
-					_root.发布消息("火箭重拳开启！");
-					自机.火箭重拳 = true;
-					if (自机._name == _root.控制目标){
-						_root.物品栏.装备栏.getItem("手部装备").value.火箭重拳 = true;
-					}
-					_parent.gotoAndPlay(2);
-				}
-			}
-			按键中 = true;
+			_root.播放音效("触电.wav");
+			_root.发布消息("火箭重拳开启！");
+			_parent.gotoAndPlay(2);
 		}
 		else
 		{
-			按键中 = false;
+			_root.发布消息("火箭重拳关闭！");
+			_parent.gotoAndStop(2);
 		}
 	}
 }]]></script>

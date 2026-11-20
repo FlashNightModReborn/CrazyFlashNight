@@ -57,8 +57,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
     {
         // ── 版面常量的权威在 DialogueUiSkin（XFL 实测，与 layout.json 同源）。
         //    这里只保留排版行为参数。──
-        /// <summary>正文字段局部折行宽 = 字段宽 573 − 左右各 2 内边距（Flash 文本域惯例）。</summary>
-        internal const float BODY_WRAP_LOCAL = 569f;
         /// <summary>正文局部行距（em）：近似 Flash device 字段默认 leading。</summary>
         internal const float LINE_HEIGHT_EM = 1.2f;
         /// <summary>文本域局部内边距（Flash 文本域左 2px 惯例；顶部 1px）。</summary>
@@ -96,7 +94,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private NativeDialogueTextLayout.Plan _plan;
         private readonly Dictionary<string, Tuple<string, NativeDialogueTextLayout.Plan>> _headerPlans =
             new Dictionary<string, Tuple<string, NativeDialogueTextLayout.Plan>>();
-        private string _planKey;
+        private BodyWindow _bodyWindow;
+        private bool _reportedGdiRefusal;
         private int _manualFirstLine = -1;
         private bool _animActive;
         // 等待占位：固定括号，省略号在 … / …… 间轮换；括号位置由最长形态定死。
@@ -142,9 +141,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private Bitmap _measureBmp;
         private Graphics _measureG;
         private StringFormat _typoFormat;
-        private StringFormat _fieldFormat;
-        private readonly Dictionary<char, float> _charW =
-            new Dictionary<char, float>();
         // 文本画刷按 ARGB 缓存（UI 线程懒建，Dispose 统一释放）：
         // 打字期 ~30fps × 每 run 新建 SolidBrush 是 GC 压力源。
         private readonly Dictionary<int, SolidBrush> _brushCache =
@@ -287,6 +283,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 }
 
                 _frame = frame;
+                _reportedGdiRefusal = false;
                 _visibleChars = 0;
                 _manualFirstLine = -1;
                 _typingWallStartMs = TypingClock();
@@ -297,7 +294,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 _placeholderWideDots = false;
                 _placeholderNextToggleMs = TypingClock() + 480;
                 _plan = null;
-                _planKey = null;
+                DisposeBodyWindow();
                 DisarmGestureLocked();
                 _closeHover = false;
                 _dragHover = false;
@@ -376,6 +373,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 else
                     _typingWallStartMs = TypingClock();
                 _suppressed = suppressed;
+                if (suppressed) DisposeBodyWindow();
                 changed = _frame != null;
                 if (suppressed)
                 {
@@ -897,7 +895,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             if (_frame == null || _suppressed || _plan == null) return false;
             long wallMs = _typingWallElapsedMs + Math.Max(0, TypingClock() - _typingWallStartMs);
             long elapsed = Math.Max(wallMs, _typingTickElapsedMs);
-            int next = (int)Math.Min(_plan.TotalGlyphs, elapsed / Math.Max(8, _charMs));
+            int next = (int)Math.Min(_plan.TotalElements, elapsed / Math.Max(8, _charMs));
             if (next <= _visibleChars) return false;
             _visibleChars = next;
             return true;
@@ -1052,17 +1050,17 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 {
                     // html=false（人物名字）：原文直排，标签按字面渲染不剥离。
                     cached = Tuple.Create(text, NativeDialogueTextLayout.Build(text, (int)fieldWidth,
-                        c => _measureG.MeasureString(c.ToString(), font, int.MaxValue, _typoFormat).Width,
-                        fs.Color, fs.Html, fs.Indent));
+                        run => MeasureTextRun(run, font),
+                        fs.Color, fs.Html, fs.Indent, deferLines: true));
                     _headerPlans[fs.Id] = cached;
                 }
                 var plan = cached.Item2;
-                if (plan.Lines.Count > 0)
+                if (plan.PrepareLine(0))
                 {
-                    var line = plan.Lines[0];
+                    var line = plan.GetDrawableLine(0);
                     foreach (var run in line.Runs)
-                        g.DrawString(run.Text, font, BrushFor(run.Color),
-                            TEXT_INSET_LOCAL + line.Indent + line.PrefixW[run.LineOffset],
+                        g.DrawString(run.PaintText, font, BrushFor(run.Color),
+                            TEXT_INSET_LOCAL + run.X,
                             1f, _typoFormat);
                 }
             }
@@ -1118,65 +1116,202 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// <summary>
         /// 正文沿原字段宽高排版，使用与姓名相同的等比字形；折行宽反算到文字空间。
         /// </summary>
-        private void PaintBody(Graphics g, Layout L)
+        // 只缓存当前正文可视行。坐标均为局部位图像素，完整同色 run 仅在窗口重建时绘制。
+        private sealed class BodyWindow : IDisposable
         {
-            NativeDialogueTextLayout.Plan plan = _plan;
-            if (plan == null || plan.Lines.Count == 0) return;
-            Rectangle tr = L.Text;
-            if (tr.Width <= 0 || tr.Height <= 0 || _fontBody == null) return;
+            internal Bitmap Raster;
+            internal Region Revealed;
+            internal Rectangle DrawBounds;
+            internal readonly List<(int Index, RectangleF Bounds)> ElementBounds = new List<(int, RectangleF)>();
+            internal readonly List<(int End, RectangleF Bounds)> LineBands = new List<(int, RectangleF)>();
+            internal int FirstLine, EndElement, RevealedCount, CompletedLines;
+            private int _lastVisible;
+            internal float Scale, DpiX, DpiY;
+            internal PointF Origin;
 
-            DialogueUiSkin.FieldSpec fs = _skin.Body;
-            float lineH = Math.Max(1f, fs.FontSize * LINE_HEIGHT_EM);
-            int capacity = BodyCapacityLines;
-            int lastNeed = NativeDialogueTextLayout.LastNeededLine(plan, _visibleChars);
-            int firstLine = Math.Max(0, lastNeed - capacity + 1);
-            if (_manualFirstLine >= 0) firstLine = Math.Min(firstLine, _manualFirstLine);
+            internal void Reveal(int visible)
+            {
+                if (visible < _lastVisible)
+                {
+                    Revealed.MakeEmpty();
+                    DrawBounds = Rectangle.Empty;
+                    RevealedCount = CompletedLines = 0;
+                }
+                _lastVisible = visible;
+                while (RevealedCount < ElementBounds.Count && ElementBounds[RevealedCount].Index < visible)
+                    Include(ElementBounds[RevealedCount++].Bounds);
+                // 整行揭示时包含超出 advance 的边缘墨迹。之前显现的像素一直保留。
+                while (CompletedLines < LineBands.Count && LineBands[CompletedLines].End <= visible)
+                    Include(LineBands[CompletedLines++].Bounds);
+            }
 
-            GraphicsState st = g.Save();
+            private void Include(RectangleF rect)
+            {
+                Revealed.Union(rect);
+                var pixels = Rectangle.FromLTRB((int)Math.Floor(rect.Left), (int)Math.Floor(rect.Top),
+                    (int)Math.Ceiling(rect.Right), (int)Math.Ceiling(rect.Bottom));
+                DrawBounds = DrawBounds.IsEmpty ? pixels : Rectangle.Union(DrawBounds, pixels);
+            }
+
+            public void Dispose()
+            {
+                Revealed?.Dispose();
+                Raster?.Dispose();
+            }
+        }
+
+        private void DisposeBodyWindow()
+        {
+            _bodyWindow?.Dispose();
+            _bodyWindow = null;
+        }
+
+        private void PaintBody(Graphics g, Layout layout)
+        {
+            if (_plan == null || _visibleChars <= 0 || _plan.TotalElements == 0) return;
+            Rectangle tr = layout.Text;
+            if (tr.Width <= 0 || tr.Height <= 0) return;
+            var field = _skin.Body;
+            int last = NativeDialogueTextLayout.LastNeededLine(_plan, _visibleChars);
+            int first = Math.Max(0, last - BodyCapacityLines + 1);
+            if (_manualFirstLine >= 0) first = Math.Min(first, _manualFirstLine);
+            float scale = layout.Scale * field.TextScale;
+            PointF origin = LogicalToScreen(layout, (float)field.Matrix.Tx, (float)field.Matrix.Ty, true);
+            origin = new PointF(origin.X - tr.X, origin.Y - tr.Y);
+            if (_bodyWindow == null || _bodyWindow.FirstLine != first || _bodyWindow.Raster.Size != tr.Size
+                || _bodyWindow.Scale != scale || _bodyWindow.Origin != origin
+                || _bodyWindow.DpiX != g.DpiX || _bodyWindow.DpiY != g.DpiY)
+            {
+                DisposeBodyWindow();
+                _bodyWindow = BuildBodyWindow(tr.Size, origin, scale, first, g.DpiX, g.DpiY);
+            }
+            var window = _bodyWindow;
+            var state = g.Save();
             try
             {
-                g.SetClip(tr, CombineMode.Intersect);   // 屏幕空间裁剪在变换前
-                PointF o = LogicalToScreen(L, (float)fs.Matrix.Tx, (float)fs.Matrix.Ty, true);
-                g.TranslateTransform(o.X, o.Y);
-                g.ScaleTransform(L.Scale * fs.TextScale, L.Scale * fs.TextScale);
-                float y = 1f;
-                for (int i = firstLine; i < plan.Lines.Count && y + lineH <= fs.LocalH + 1f; i++)
+                g.TranslateTransform(tr.X, tr.Y);
+                if (_visibleChars < window.EndElement)
                 {
-                    NativeDialogueTextLayout.Line line = plan.Lines[i];
-                    float x = TEXT_INSET_LOCAL + line.Indent;   // Flash indent：段首行右移
-                    for (int r = 0; r < line.Runs.Count; r++)
+                    window.Reveal(_visibleChars);
+                    g.SetClip(window.Revealed, CombineMode.Intersect);
+                    var rect = Rectangle.Intersect(window.DrawBounds, new Rectangle(Point.Empty, tr.Size));
+                    if (rect.Width > 0 && rect.Height > 0)
+                        g.DrawImage(window.Raster, rect, rect, GraphicsUnit.Pixel);
+                }
+                else g.DrawImageUnscaled(window.Raster, 0, 0);
+            }
+            finally { g.Restore(state); }
+        }
+
+        private BodyWindow BuildBodyWindow(Size size, PointF origin, float scale, int firstLine,
+            float dpiX, float dpiY)
+        {
+            _plan.PrepareLine(firstLine + BodyCapacityLines - 1);
+            int lastLine = Math.Min(_plan.Lines.Count - 1, firstLine + BodyCapacityLines - 1);
+            var window = new BodyWindow { FirstLine = firstLine,
+                EndElement = _plan.Lines[lastLine].EndElement, Scale = scale, Origin = origin, DpiX = dpiX, DpiY = dpiY };
+            bool partial = _visibleChars < window.EndElement;
+            try
+            {
+                window.Raster = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppPArgb);
+                window.Raster.SetResolution(dpiX, dpiY);
+                if (partial)
+                {
+                    window.Revealed = new Region();
+                    window.Revealed.MakeEmpty();
+                }
+                float lineH = Math.Max(1f, _skin.Body.FontSize * LINE_HEIGHT_EM);
+                using (var canvas = Graphics.FromImage(window.Raster))
+                {
+                    canvas.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                    canvas.TranslateTransform(origin.X, origin.Y);
+                    canvas.ScaleTransform(scale, scale);
+                    for (int i = firstLine; i <= lastLine; i++)
                     {
-                        NativeDialogueTextLayout.Run run = line.Runs[r];
-                        if (run.GlyphStart >= _visibleChars) break;
-                        int remain = _visibleChars - run.GlyphStart;
-                        SolidBrush brush = BrushFor(run.Color.A == 0 ? fs.Color : run.Color);
-                        if (remain < run.Text.Length)
+                        var line = _plan.GetDrawableLine(i);
+                        float y = 1f + (i - firstLine) * lineH;
+                        foreach (var run in line.Runs)
                         {
-                            // 已打印段冻结：整串绘制 + 仅裁剪可见前缀，不再按子串重排版；
-                            // 串尾收尾、缺字回退与代理对整形不再回跳已打出字符的位置。
-                            int drawn = remain;
-                            if (drawn > 0 && drawn < run.Text.Length
-                                && char.IsHighSurrogate(run.Text[drawn - 1])) drawn++;
-                            float reveal = _measureG.MeasureString(
-                                run.Text.Substring(0, drawn), _fontBody,
-                                int.MaxValue, _typoFormat).Width;
-                            GraphicsState rs = g.Save();
-                            g.SetClip(new RectangleF(x - 2f, y - 2f,
-                                Math.Max(0f, reveal) + 3f, lineH + 4f),
-                                CombineMode.Intersect);
-                            g.DrawString(run.Text, _fontBody, brush, x, y, _typoFormat);
-                            g.Restore(rs);
-                            break;   // 之后的 run 必然整体不可见
+                            // U+200B 保留在原文与打字钟内。GDI 确认零宽的纯空格 run 没有墨迹需要绘制。
+                            if (run.Width == 0 && run.Text.AsSpan().IndexOfAnyExcept('\u200b') < 0) continue;
+                            var box = new RectangleF(TEXT_INSET_LOCAL + run.X, y,
+                                Math.Max(_skin.Body.TextLocalWidth, run.Width + 8), lineH * 4);
+                            Color color = run.Color.A == 0 ? _skin.Body.Color : run.Color;
+                            canvas.DrawString(run.PaintText, _fontBody, BrushFor(color), box, _typoFormat);
+                            if (partial) AddRangeBounds(canvas, window, run, box);
                         }
-                        g.DrawString(run.Text, _fontBody, brush, x, y, _typoFormat);
-                        // run 覆盖 glyph 区间 [GlyphStart, +Text.Length)，x 按实际串宽推进
-                        x += _measureG.MeasureString(run.Text, _fontBody,
-                            int.MaxValue, _typoFormat).Width;
+                        if (partial && line.Runs.Count > 0)
+                        {
+                            float top = i == firstLine ? 0 : origin.Y + scale * y;
+                            float bottom = origin.Y + scale * (y + lineH);
+                            window.LineBands.Add((line.EndElement,
+                                RectangleF.FromLTRB(0, top, size.Width, bottom)));
+                        }
                     }
-                    y += lineH;
+                }
+                return window;
+            }
+            catch { window.Dispose(); throw; }
+        }
+
+        // GDI+ 每次最多量 32 个区间；每一批都传入同一个最终 run 和绘制矩形。
+        // 这些矩形是可见性几何，不能据此推断字体回退身份或连字的 glyph 所有权。
+        private void AddRangeBounds(Graphics canvas, BodyWindow window, NativeDialogueTextLayout.Run run, RectangleF box)
+        {
+            int count = run.Offsets.Length - 1;
+            int[] indices = new int[Math.Min(32, count)];
+            var batch = new CharacterRange[indices.Length];
+            using (var format = (StringFormat)_typoFormat.Clone())
+            {
+                int next = 0;
+                while (next < count)
+                {
+                    int used = 0;
+                    while (next < count && used < batch.Length)
+                    {
+                        int element = next++;
+                        int start = run.Offsets[element], length = run.Offsets[element + 1] - start;
+                        if (length == 1 && run.Text[start] == '\u200b') continue;
+                        indices[used] = run.FirstElement + element;
+                        batch[used++] = run.GdiRefused ? new CharacterRange(0, 1) : new CharacterRange(start, length);
+                    }
+                    if (used == 0) continue;
+                    format.SetMeasurableCharacterRanges(used == batch.Length ? batch : batch[..used]);
+                    Region[] regions = canvas.MeasureCharacterRanges(run.PaintText, _fontBody, box, format);
+                    try
+                    {
+                        for (int j = 0; j < regions.Length; j++)
+                        {
+                            RectangleF range = regions[j].GetBounds(canvas);
+                            if (range.IsEmpty) continue;
+                            window.ElementBounds.Add((indices[j], RectangleF.FromLTRB(
+                                (float)Math.Floor(window.Origin.X + range.Left * window.Scale),
+                                (float)Math.Floor(window.Origin.Y + range.Top * window.Scale),
+                                (float)Math.Ceiling(window.Origin.X + range.Right * window.Scale),
+                                (float)Math.Ceiling(window.Origin.Y + range.Bottom * window.Scale))));
+                        }
+                    }
+                    finally { foreach (var region in regions) region.Dispose(); }
                 }
             }
-            finally { g.Restore(st); }
+        }
+
+        // GDI+ 对部分极长的合法字素返回 GenericError。保留原文/原始偏移和 EGC 时钟；
+        // 可分的片段按 EGC 重试，单 EGC 仍遭拒绝时由计划标注、显示缺字方框。
+        private float MeasureTextRun(string text, Font font)
+        {
+            try { return _measureG.MeasureString(text, font, int.MaxValue, _typoFormat).Width; }
+            catch (System.Runtime.InteropServices.ExternalException ex)
+            {
+                if (!_reportedGdiRefusal)
+                {
+                    _reportedGdiRefusal = true;
+                    LogManager.Log("[NativeDialogue] GDI+ refused a text run; retrying at text-element boundaries. "
+                        + "An unsupported single element uses a missing-glyph mark. utf16Length=" + text.Length
+                        + " hresult=" + ex.ErrorCode.ToString("X8"));
+                }
+                return float.PositiveInfinity;
+            }
         }
 
         /// <summary>立绘：外部 SWF 按作者取景矩形 1:1 落舞台；纸娃娃在内部窗
@@ -1384,7 +1519,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private bool TypingCompleteLocked()
         {
             EnsurePlanLocked();
-            int total = _plan != null ? _plan.TotalGlyphs : 0;
+            int total = _plan != null ? _plan.TotalElements : 0;
             return _visibleChars >= total;
         }
 
@@ -1394,7 +1529,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             {
                 if (_frame == null) return;
                 EnsurePlanLocked();
-                int total = _plan != null ? _plan.TotalGlyphs : 0;
+                int total = _plan != null ? _plan.TotalElements : 0;
                 if (_visibleChars >= total) { CheckTypingCompletedLocked(); return; }
                 _visibleChars = total;
                 CheckTypingCompletedLocked();
@@ -1404,38 +1539,17 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             UpdateAnim();
         }
 
-        /// <summary>锁内懒排版：原字段宽度换算到等比文字空间，与 viewport 无关；
-        /// key = 帧修订 + 文本。变才重排。</summary>
+        /// <summary>每帧只持有当前内容的计划。修订、清屏与字体重建显式失效。</summary>
         private void EnsurePlanLocked()
         {
-            NativeDialogueFrame f = _frame;
-            if (f == null) { _plan = null; _planKey = null; return; }
+            if (_frame == null || _plan != null) return;
             EnsureFontsLocked();
             EnsureMeasureLocked();
-            int textW = Math.Max(1,
-                (int)Math.Round(_skin.Body.TextLocalWidth - TEXT_INSET_LOCAL * 2));
-            string key = f.RequestId + "\x1" + f.Revision + "\x1" + textW + "\x1"
-                + (f.Text ?? "");
-            if (_plan != null && string.Equals(_planKey, key, StringComparison.Ordinal))
-                return;
-            _plan = NativeDialogueTextLayout.Build(f.Text, textW, CharWidthLocked,
-                _skin.Body.Color, _skin.Body.Html, _skin.Body.Indent);
-            _planKey = key;
-        }
-
-        private float CharWidthLocked(char c)
-        {
-            float w;
-            if (_charW.TryGetValue(c, out w)) return w;
-            if (_measureG == null || _fontBody == null) return DialogueUiSkin.BodyFont;
-            try
-            {
-                w = _measureG.MeasureString(c.ToString(), _fontBody,
-                    int.MaxValue, _typoFormat).Width;
-            }
-            catch { w = DialogueUiSkin.BodyFont; }
-            _charW[c] = w;
-            return w;
+            var field = _skin.Body;
+            int width = Math.Max(1, (int)Math.Round(field.TextLocalWidth - TEXT_INSET_LOCAL * 2));
+            _plan = NativeDialogueTextLayout.Build(_frame.Text, width,
+                run => MeasureTextRun(run, _fontBody),
+                field.Color, field.Html, field.Indent, deferLines: true);
         }
 
         /// <summary>字体按字段局部字号一次性创建（名 24 / 称号 14 / 正文 12，
@@ -1449,8 +1563,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 _skin.Title.FontSize, FontStyle.Regular, GraphicsUnit.Pixel);
             _fontBody = NativeHudFonts.CreateRoleFont("native.dialogue.body",
                 _skin.Body.FontSize, FontStyle.Regular, GraphicsUnit.Pixel);
-            _charW.Clear();
-            _plan = null; _planKey = null;
+            _headerPlans.Clear();
+            _plan = null; DisposeBodyWindow();
         }
 
         private void EnsureMeasureLocked()
@@ -1463,10 +1577,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             {
                 FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
                     | StringFormatFlags.MeasureTrailingSpaces,
-                Trimming = StringTrimming.None
-            };
-            _fieldFormat = new StringFormat(StringFormat.GenericTypographic)
-            {
                 Trimming = StringTrimming.None
             };
         }
@@ -1605,7 +1715,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _manualFirstLine = -1;
             _typingWallElapsedMs = _typingTickElapsedMs = 0;
             _plan = null;
-            _planKey = null;
+            DisposeBodyWindow();
             DisarmGestureLocked();
             _closeHover = false;
             _dragHover = false;
@@ -1653,7 +1763,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             bool placeholder = _frame != null && _frame.IsPlaceholder;
             bool typingLeft = placeholder || (_plan != null
-                ? _visibleChars < _plan.TotalGlyphs
+                ? _visibleChars < _plan.TotalElements
                 : !string.IsNullOrEmpty(_frame != null ? _frame.Text : null));
             bool want = _frame != null && !_suppressed && !_disposed && typingLeft;
             if (want == _animActive) return false;
@@ -1737,7 +1847,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             if (_typingNotified || _frame == null || _frame.IsPlaceholder) return;
             EnsurePlanLocked();
-            int total = _plan != null ? _plan.TotalGlyphs : 0;
+            int total = _plan != null ? _plan.TotalElements : 0;
             if (_visibleChars < total) return;
             _typingNotified = true;
             _typingDoneFrame = _frame;
@@ -1779,7 +1889,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 if (_measureG != null) { _measureG.Dispose(); _measureG = null; }
                 if (_measureBmp != null) { _measureBmp.Dispose(); _measureBmp = null; }
                 if (_typoFormat != null) { _typoFormat.Dispose(); _typoFormat = null; }
-                if (_fieldFormat != null) { _fieldFormat.Dispose(); _fieldFormat = null; }
                 foreach (SolidBrush b in _brushCache.Values) b.Dispose();
                 _brushCache.Clear();
                 if (_ownsSkin && _skin != null) _skin.Dispose();
@@ -1811,7 +1920,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         internal int TotalGlyphsForTest
         {
-            get { lock (_gate) { EnsurePlanLocked(); return _plan != null ? _plan.TotalGlyphs : 0; } }
+            get { lock (_gate) { EnsurePlanLocked(); return _plan != null ? _plan.TotalElements : 0; } }
         }
 
         internal bool HasPortraitForTest
@@ -1876,7 +1985,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         internal int PlanLineCountForTest
         {
-            get { lock (_gate) { EnsurePlanLocked(); return _plan != null ? _plan.Lines.Count : 0; } }
+            get { lock (_gate) { EnsurePlanLocked(); _plan?.PrepareLine(int.MaxValue); return _plan?.Lines.Count ?? 0; } }
         }
 
         /// <summary>测试：当前面板拖动偏移（舞台逻辑 px）。</summary>
@@ -1940,7 +2049,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             lock (_gate)
             {
                 EnsurePlanLocked();
-                if (_plan == null || _plan.Lines.Count == 0) return 0;
+                if (_plan == null || _plan.TotalElements == 0) return 0;
                 int last = NativeDialogueTextLayout.LastNeededLine(_plan, visibleChars);
                 int first = Math.Max(0, last - Math.Max(1, capacity) + 1);
                 return _manualFirstLine < 0 ? first : Math.Min(first, _manualFirstLine);

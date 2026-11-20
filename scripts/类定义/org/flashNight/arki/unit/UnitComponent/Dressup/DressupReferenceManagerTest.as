@@ -147,6 +147,77 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         assertEquals("attachMovie 被调用 1 次", 1, mc.attachLog.length);
     }
 
+    private static function test_refreshAll_巨拳下臂冷热切换(sex:String):Void {
+        var actor:MovieClip = _root.createEmptyMovieClip("dressupFistTransition", _root.getNextHighestDepth());
+        actor.性别 = sex;
+        actor.空手动作类型 = "拳击";
+        actor.右下臂 = "TestProbeSkin";
+        actor.syncRefs = {};
+        actor.events = [];
+        actor.dispatcher = {publish: function(key, u) { u.events.push(key); }};
+        var man:MovieClip = actor.createEmptyMovieClip("man", 1);
+        var outer:MovieClip = man.createEmptyMovieClip("arms", 1);
+        var warm:MovieClip = outer.createEmptyMovieClip("warm", 1);
+        warm.createEmptyMovieClip("基本款", 8);
+        var sleeve:MovieClip = DressupReferenceManager.attach(warm, actor.右下臂, "装扮", "右下臂_引用");
+        var entry:Object = actor.dressupRegistry["右下臂_引用@装扮"];
+        var owner:Object = entry.owner;
+        var identity:Object = entry.identity;
+        var version:Number = actor.dressupPlacementVersion;
+        assertTrue(sex + " 普通拳套穿上真实衣袖", sleeve._parent === warm && identity != undefined
+            && sleeve.__dressupPlacementIdentity === identity);
+
+        actor.空手动作类型 = "单臂巨拳";
+        actor.syncRefs["右下臂_引用"] = actor.syncRefs["右下臂_引用:ready"] = true;
+        actor.syncRefs["右下臂_引用#1"] = actor.syncRefs["右下臂_引用#1:ready"] = true;
+        actor.syncRefs["dressup:refreshed"] = true;
+        var cold:MovieClip = outer.createEmptyMovieClip("cold", 2);
+        cold.createEmptyMovieClip("基本款", 8);
+        assertNull(sex + " 巨拳首次挂同部位返回空",
+            DressupReferenceManager.attach(cold, actor.右下臂, "装扮", "右下臂_引用"));
+        var overflow:Object = actor.dressupRegistry["右下臂_引用#1@装扮"];
+        assertTrue(sex + " 冷建不创建皮肤身份或递增版本", overflow.identity == undefined
+            && actor.dressupPlacementVersion == version);
+        DressupReferenceManager.refreshAll(actor);
+        assertTrue(sex + " 原地排除移除旧衣袖并撤销身份", !warm.装扮 && entry.identity == undefined);
+        assertTrue(sex + " 热切与冷建基本款可见性一致", warm.基本款._visible == (sex != "女")
+            && cold.基本款._visible == (sex != "女"));
+        assertTrue(sex + " 规范与 #1 各指向自己的基本款", actor.右下臂_引用 === warm.基本款
+            && actor["右下臂_引用#1"] === cold.基本款);
+        assertTrue(sex + " 保留挂点登记和 owner", actor.dressupRegistry["右下臂_引用@装扮"] === entry
+            && warm.__dressupOwner_装扮 === owner && entry.owner === owner);
+        assertEquals(sex + " 只为原有衣袖撤销一次版本", version + 1, actor.dressupPlacementVersion);
+        DressupReferenceManager.refreshAll(actor);
+        assertEquals(sex + " 重复排除不再递增版本", version + 1, actor.dressupPlacementVersion);
+        assertEquals(sex + " 每次排除刷新仅发一个组事件", "dressup:refreshed,dressup:refreshed", actor.events.join(","));
+
+        actor.空手动作类型 = "拳击";
+        actor.syncRefs = {};
+        DressupReferenceManager.refreshAll(actor);
+        assertTrue(sex + " 换回拳击两条原登记都重挂", warm.装扮._parent === warm && cold.装扮._parent === cold
+            && actor.右下臂_引用 === warm.装扮 && actor["右下臂_引用#1"] === cold.装扮);
+        assertTrue(sex + " 重挂建立新身份并隐藏基本款", entry.identity != undefined && entry.identity !== identity
+            && warm.装扮.__dressupPlacementIdentity === entry.identity && !warm.基本款._visible && !cold.基本款._visible);
+        actor.removeMovieClip();
+    }
+
+    private static function test_refreshAll_巨拳不删除异主同名皮肤():Void {
+        var unit = makeMockUnit("拳击", "男");
+        var mc = makeMockMC();
+        wireParentChain(mc, unit);
+        delete mc.基本款;
+        DressupReferenceManager.attach(mc, null, "装扮", "左下臂_引用");
+        var version:Number = unit.dressupPlacementVersion;
+        var other = makeMockMC();
+        mc.装扮 = other.attachMovie("异主衣袖", "装扮", 1);
+        unit.空手动作类型 = "巨拳";
+        DressupReferenceManager.refreshAll(unit);
+        assertTrue("双臂巨拳排除左侧时保护异主同名皮肤", other.装扮 != undefined && other.装扮._parent === other);
+        assertTrue("无基本款的排除挂点回退本身", unit.左下臂_引用 === mc);
+        assertTrue("无自有皮肤仍撤销上一轮基本款登记身份", unit.dressupRegistry["左下臂_引用@装扮"].identity == undefined
+            && unit.dressupPlacementVersion == version + 1);
+    }
+
     private static function test_doConfig_refNameAliases_小腿1解析为小腿():Void {
         trace("--- doConfig: refNameAliases 小腿1_引用 → 小腿_引用 base ---");
         // 巨拳排除规则只对 baseRefName 检查；小腿1_引用 不应被巨拳排除
@@ -733,6 +804,9 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
 
         test_doConfig_巨拳模式排除右下臂();
         test_doConfig_单臂巨拳不排除左下臂();
+        test_refreshAll_巨拳下臂冷热切换("男");
+        test_refreshAll_巨拳下臂冷热切换("女");
+        test_refreshAll_巨拳不删除异主同名皮肤();
         test_doConfig_refNameAliases_小腿1解析为小腿();
         test_doConfig_女性fallback触发();
         test_doConfig_男性无fallback();

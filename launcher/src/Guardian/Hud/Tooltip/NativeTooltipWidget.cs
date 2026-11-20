@@ -138,8 +138,6 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         private Font _fontKeycap;
         private Font _fontClose;
         private float _lastFontScale = -1f;
-        private readonly Dictionary<string, int> _measureCache =
-            new Dictionary<string, int>(StringComparer.Ordinal);
         // run 级样式字体缓存（斜体/下划线/fontSize/fontFace），key=role|px|style
         private readonly Dictionary<string, Font> _styledFonts =
             new Dictionary<string, Font>(StringComparer.Ordinal);
@@ -964,7 +962,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                             if (aLegion || warlord) font.Underline = true;
                             using (SolidBrush brush = new SolidBrush(Fade(color)))
                             {
-                                g.DrawString(slice.Text, FontFor(font),
+                                g.DrawString(slice.PaintOverride ?? slice.Text, FontFor(font),
                                     brush, new PointF(cx, cy), _textFormat);
                             }
                             cx += slice.WidthF;
@@ -1564,7 +1562,6 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 PinnedKeycapFontBase * scale, FontStyle.Regular, GraphicsUnit.Pixel);
             _fontClose = NativeHudFonts.CreateRoleFont(TooltipFontRole,
                 PinnedCloseFontBase * scale, FontStyle.Regular, GraphicsUnit.Pixel);
-            _measureCache.Clear();
         }
 
         private void DisposeFonts()
@@ -1640,21 +1637,23 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             return font;
         }
 
-        private int MeasureText(string text, NativeTooltipLayout.RunFont font)
+        private Func<string, NativeTooltipLayout.RunFont, int> CreateLayoutMeasure()
         {
-            string key = (font.Bold ? "b" : "r")
-                + (font.Italic ? "i" : "")
-                + (font.Underline ? "u" : "")
-                + (font.FontSize.HasValue ? "s" + font.FontSize.Value : "")
-                + (font.FontFace != null ? "f" + font.FontFace : "")
-                + ":" + text;
-            int w;
-            if (_measureCache.TryGetValue(key, out w)) return w;
-            float mw = MeasureGraphics.MeasureString(text, FontFor(font),
-                PointF.Empty, _textFormat).Width;
-            w = (int)Math.Ceiling(mw);
-            _measureCache[key] = w;
-            return w;
+            // One computation can visit the same prefix several times. The Plan
+            // keeps only final widths, so no measured strings outlive this call.
+            var widths = new Dictionary<(string, bool, bool, bool, int?, string), int>();
+            return (text, style) =>
+            {
+                var key = (text, style.Bold, style.Italic, style.Underline,
+                    style.FontSize, style.FontFace);
+                if (!widths.TryGetValue(key, out int width))
+                {
+                    width = (int)Math.Ceiling(MeasureGraphics.MeasureString(text,
+                        FontFor(style), PointF.Empty, _textFormat).Width);
+                    if (text.Length <= 256 && widths.Count < 1024) widths.Add(key, width);
+                }
+                return width;
+            };
         }
 
         private void InvalidateLayout()
@@ -1745,7 +1744,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 float lineH = NativeTooltipLayout.FontPxBase
                     * NativeTooltipLayout.LineHeightEm * scale;
                 _plan = NativeTooltipLayout.ComputePlan(
-                    _doc, MeasureText, lineH, scale, vpWi, vpHi, _inspectionState, dpi);
+                    _doc, CreateLayoutMeasure(), lineH, scale, vpWi, vpHi, _inspectionState, dpi);
                 if (_scrollLine > (_plan != null ? _plan.MaxScrollLine : 0))
                     _scrollLine = _plan != null ? _plan.MaxScrollLine : 0;
                 SyncFadeElements();

@@ -4,10 +4,12 @@ import argparse
 import copy
 import hashlib
 import json
+import math
 import os
 import re
 import shutil
 import subprocess
+import struct
 import time
 import xml.etree.ElementTree as ET
 import zlib
@@ -98,6 +100,9 @@ BATTLE_FEMALE_FALLBACKS = {
 }
 
 DEFAULT_GENDERS = ("男", "女")
+# Only these two linkages have an approved isolated placement-effect bake.
+# Other nested assets keep their own display-list and preview contracts.
+REVIEWED_BODY_EFFECT_KEYS = {f"{gender}变装-A兵团精致战术背心身体" for gender in DEFAULT_GENDERS}
 IGNORED_ITEM_XML = {"asset_source_map.xml", "list.xml", "bullets_cases.xml", "missileConfigs.xml"}
 ASSET_MAP_OVERRIDE: Path | None = None
 # units.json still contains one historical Arena template whose four armor
@@ -2519,7 +2524,7 @@ def parse_xml_matrix(element: ET.Element | None) -> Matrix:
     return Matrix(a=a, b=b, c=c, d=d, tx=tx, ty=ty)
 
 
-def parse_sprite_graph(xml_path: Path) -> dict[int, dict[str, Any]]:
+def parse_sprite_graph(xml_path: Path, effect_roots: tuple[int, ...] = ()) -> dict[int, dict[str, Any]]:
     root = ET.parse(xml_path).getroot()
     graph: dict[int, dict[str, Any]] = {}
     for item in root.iter("item"):
@@ -2543,12 +2548,18 @@ def parse_sprite_graph(xml_path: Path) -> dict[int, dict[str, Any]]:
                 character_id = int(child_id)
                 children.append(character_id)
                 children_by_frame[frame].append(character_id)
-                instance: dict[str, int] = {"characterId": character_id, "frame": frame}
+                instance: dict[str, Any] = {"characterId": character_id, "frame": frame}
                 depth = child.get("depth")
                 if depth and depth.lstrip("-").isdigit():
                     instance["depth"] = int(depth)
                 matrix_node = first_child_named(child, "matrix")
                 instance["matrix"] = parse_xml_matrix(matrix_node)
+                boundary = [entry.get("type", "unknown") for entry in child.findall("./surfaceFilterList/item")]
+                for flag in ("HasColorTransform", "HasBlendMode", "HasClipDepth", "HasVisible"):
+                    if child.get("placeFlag" + flag) == "true":
+                        boundary.append(flag)
+                if boundary:
+                    instance["placementEffects"] = boundary
                 child_instances.append(instance)
             if child_type == "ShowFrameTag":
                 frame += 1
@@ -2561,7 +2572,75 @@ def parse_sprite_graph(xml_path: Path) -> dict[int, dict[str, Any]]:
             },
             "childInstances": child_instances,
         }
+        if sprite_id in effect_roots:
+            graph[sprite_id]["placementTags"] = list(sub_tags)
     return graph
+
+
+def reviewed_body_effect(
+    graph: dict[int, dict[str, Any]], root_id: int, layers: list[dict[str, Any]], source_digest: str,
+    controls: dict[int, dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Inspect the split boundary on this published parent, before removing the instance."""
+    parent = graph.get(root_id, {})
+    if parent.get("frameCount") != 1 or len(layers) != 1:
+        raise ValueError("expected a one-frame parent with one animated direct layer")
+    layer = layers[0]
+    child_id = layer["characterId"]
+    if layer["path"] != [root_id, child_id] or layer["layers"] or layer.get("compositedDescendants"):
+        raise ValueError("expected a complete, directly placed animated surface")
+    pending = [root_id]
+    seen = set()
+    while pending:
+        sprite_id = pending.pop()
+        if sprite_id in seen:
+            continue
+        seen.add(sprite_id)
+        scripts = controls.get(sprite_id, {})
+        if scripts.get("frameScripts") or scripts.get("clipActions"):
+            raise ValueError(f"script-controlled sprite {sprite_id} in the reviewed body")
+        pending.extend(graph.get(sprite_id, {}).get("children", []))
+    tags = parent.get("placementTags") or []
+    if not tags or tags[-1].get("type") != "ShowFrameTag":
+        raise ValueError("incomplete parent display list")
+    placements = tags[:-1]
+    depths = []
+    for tag in placements:
+        if tag.get("type") not in ("PlaceObject2Tag", "PlaceObject3Tag"):
+            raise ValueError(f"unsupported parent control tag {tag.get('type')}")
+        if tag.get("placeFlagMove") == "true" or tag.get("placeFlagHasCharacter") != "true":
+            raise ValueError("dynamic parent placement")
+        for flag in ("HasClipDepth", "HasClipActions", "HasBlendMode", "HasVisible", "OpaqueBackground"):
+            if tag.get("placeFlag" + flag) == "true":
+                raise ValueError(f"unsupported placement flag {flag} at depth {tag.get('depth')}")
+        depths.append(int(tag.attrib["depth"]))
+    targets = [tag for tag in placements if int(tag.attrib["characterId"]) == child_id]
+    if len(set(depths)) != len(depths) or len(targets) != 1:
+        raise ValueError(f"ambiguous placement for symbol {child_id}")
+    target = targets[0]
+    depth = int(target.attrib["depth"])
+    if depth not in (min(depths), max(depths)):
+        raise ValueError("target depth interleaves the static base")
+    for flag in ("HasColorTransform", "HasCacheAsBitmap", "HasRatio", "HasImage", "HasClassName"):
+        if target.get("placeFlag" + flag) == "true":
+            raise ValueError(f"unsupported {flag} on animated layer at depth {depth}")
+    filters = target.find("surfaceFilterList")
+    if target.get("placeFlagHasFilterList") != "true" and filters is None:
+        return None
+    if (target.get("placeFlagHasFilterList") != "true" or filters is None or len(filters) != 1
+            or filters[0].get("type") != "COLORMATRIXFILTER"):
+        raise ValueError("expected one ColorMatrix on the isolated child placement")
+    values = [float(item.text or "nan") for item in filters[0].findall("./matrix/item")]
+    if len(values) != 20 or not all(math.isfinite(value) for value in values):
+        raise ValueError("invalid SWF ColorMatrix")
+    # FFDec writes decimal round-trips of the published SWF's IEEE-754 float32 values.
+    matrix = list(struct.unpack("<20f", struct.pack("<20f", *values)))
+    if matrix[15:] != [0, 0, 0, 1, 0] or any(matrix[i] for i in (3, 8, 13)):
+        raise ValueError("ColorMatrix changes or mixes alpha")
+    if matrix == [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]:
+        return None
+    return {"recipe": "direct-placement-rgb-v1", "sourceSha256": source_digest,
+            "path": [root_id, child_id], "depth": depth, "matrix": matrix}
 
 
 def has_plain_frame1_stop(controls: dict[int, dict[str, Any]], character_id: int) -> bool:
@@ -2921,7 +3000,7 @@ def purge_unreferenced_frame_files(
     prefix = f"{file_prefix}_"
     for path in asset_dir.glob(f"{file_prefix}_*.png"):
         suffix = path.stem.removeprefix(prefix)
-        if not suffix.isdigit():
+        if not re.fullmatch(r"\d+(?:__[a-f0-9]{20})?", suffix):
             continue
         if path.name in referenced_file_names:
             continue
@@ -3157,17 +3236,39 @@ def exported_frame_entries(
     no_write: bool,
     origins: dict[int, tuple[float, float]] | None = None,
     dedupe_stats: dict[str, Any] | None = None,
+    placement_effect: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     frame_entries: list[dict[str, Any]] = []
     dedupe = FrameDedupeIndex()
+    if placement_effect:
+        if Image is None:
+            raise ValueError("Pillow is required for the placement ColorMatrix bake")
+        matrix = placement_effect["matrix"]
+        rgb_matrix = tuple(matrix[i] for i in (0, 1, 2, 4, 5, 6, 7, 9, 10, 11, 12, 14))
+        effect_identity = json.dumps(placement_effect, sort_keys=True, separators=(",", ":")).encode()
     for index, source in enumerate(frames, start=1):
-        digest = frame_pixel_digest(source)
-        frame_ref = dedupe.resolve(digest, index, f"{file_prefix}_{index}.png")
+        filtered = None
+        suffix = ""
+        if placement_effect:
+            with Image.open(source) as image:
+                rgba = image.convert("RGBA")
+            filtered = rgba.convert("RGB").convert("RGB", matrix=rgb_matrix)
+            filtered.putalpha(rgba.getchannel("A"))
+            hasher = hashlib.sha256(effect_identity + struct.pack("<II", *filtered.size))
+            hasher.update(filtered.tobytes())
+            digest = hasher.hexdigest()
+            suffix = "__" + digest[:20]
+        else:
+            digest = frame_pixel_digest(source)
+        frame_ref = dedupe.resolve(digest, index, f"{file_prefix}_{index}{suffix}.png")
         file_name = frame_ref.filename
         if not frame_ref.is_duplicate:
             destination = asset_dir / file_name
             if not no_write:
-                shutil.copy2(source, destination)
+                if filtered is None:
+                    shutil.copy2(source, destination)
+                else:
+                    filtered.save(destination, format="PNG")
             if dedupe_stats is not None:
                 dedupe_stats["uniqueFrameImages"] += 1
         else:
@@ -3474,8 +3575,13 @@ def attach_direct_layer_exports(
             export_report["missingNestedLayerFrame"].append(
                 {"characterId": character_id, "sourceParentId": layer.get("sourceParentId")}
             )
+            if layer.get("reviewedPlacement"):
+                raise ValueError(f"Missing animated surface for reviewed placement {layer['path']}")
             return None
         origins = svg_frame_origins(find_exported_svg_paths_in_dir(layer_svg_dir, character_id))
+        if layer.get("reviewedPlacement") and (
+                len(frames) != layer["sourceFrameCount"] or set(origins) != set(range(1, len(frames) + 1))):
+            raise ValueError(f"Incomplete PNG/SVG frames for reviewed placement {layer['path']}")
         layer_prefix = f"{file_prefix}_layer{character_id}"
         frame_entries = exported_frame_entries(
             frames,
@@ -3485,6 +3591,7 @@ def attach_direct_layer_exports(
             no_write,
             origins,
             export_report,
+            placement_effect=layer.get("placementEffect"),
         )
         referenced_file_names = {Path(entry["uri"]).name for entry in frame_entries}
         export_report["purgedStaleFrames"] += purge_unreferenced_frame_files(
@@ -3520,6 +3627,8 @@ def attach_direct_layer_exports(
             "export": layer_export,
             "frames": frame_entries,
         }
+        if layer.get("placementEffect"):
+            exported["bakedPlacementEffect"] = layer["placementEffect"]
         if len(timeline_entries) < len(frame_entries):
             exported["timelineFrames"] = timeline_entries
         if layer.get("compositeNote"):
@@ -3641,6 +3750,12 @@ def export_skin_assets(
     }
 
     keys = selected_skin_keys(manifest, names, limit, require_name_match=require_name_match)
+    reviewed_keys = set(keys) & REVIEWED_BODY_EFFECT_KEYS
+    unresolved = (names & REVIEWED_BODY_EFFECT_KEYS) - set(keys)
+    if unresolved and not limit:
+        raise ValueError(f"Missing or ambiguous source for requested body linkages: {sorted(unresolved)}")
+    if reviewed_keys and static_stop_policy == "off":
+        raise ValueError("The reviewed A-Corps body requires the nested animation export (static-stop-policy auto)")
     export_report["selectedSkinKeys"] = len(keys)
     by_swf: dict[str, list[tuple[str, int]]] = defaultdict(list)
 
@@ -3649,6 +3764,8 @@ def export_skin_assets(
         asset = manifest["skinKeys"][key]["asset"]
         swf_rel = asset.get("swf") or ""
         if not swf_rel:
+            if key in reviewed_keys:
+                raise ValueError(f"{key}: missing source SWF")
             export_report["missingSymbol"].append({"skinKey": key, "reason": "missing_swf"})
             continue
         if swf_rel not in symbol_maps:
@@ -3664,6 +3781,8 @@ def export_skin_assets(
                 export_report["symbolErrors"].append(error)
         symbol_map = symbol_maps[swf_rel]
         char_id = symbol_map.get(key)
+        if key in reviewed_keys and char_id is None:
+            raise ValueError(f"{swf_rel}: missing reviewed ExportAssets linkage {key}")
         if char_id is None and asset.get("symbolName"):
             char_id = symbol_map.get(asset["symbolName"])
         if char_id is None:
@@ -3679,6 +3798,8 @@ def export_skin_assets(
         export_report["resolvedSkinKeys"] += 1
 
     for swf_rel, targets in by_swf.items():
+        effect_roots = tuple(char_id for key, char_id in targets if key in reviewed_keys)
+        source_digest = hashlib.sha256((project_root / swf_rel).read_bytes()).hexdigest() if effect_roots else ""
         error, fallback = export_sprites(
             ffdec,
             project_root,
@@ -3710,6 +3831,8 @@ def export_skin_assets(
             script_error = export_scripts(ffdec, project_root, tmp_dir, swf_rel, timeout_seconds)
             if script_error:
                 export_report["timelineScriptErrors"].append(script_error)
+                if effect_roots:
+                    raise ValueError(f"{swf_rel}: unable to verify scripts for reviewed body placements")
             else:
                 timeline_controls = collect_timeline_scripts(tmp_dir, swf_rel)
             xml_path, graph_error = export_swf_xml(
@@ -3723,7 +3846,7 @@ def export_skin_assets(
                 export_report["spriteGraphErrors"].append(graph_error)
             elif xml_path:
                 try:
-                    sprite_graph = parse_sprite_graph(xml_path)
+                    sprite_graph = parse_sprite_graph(xml_path, effect_roots)
                 except Exception as exc:
                     export_report["spriteGraphErrors"].append(
                         {
@@ -3743,6 +3866,8 @@ def export_skin_assets(
         for key, char_id in targets:
             frames = find_exported_frame_paths(tmp_dir, swf_rel, char_id)
             if not frames:
+                if key in reviewed_keys:
+                    raise ValueError(f"{swf_rel}: missing complete parent sprite for {key} ({char_id})")
                 export_report["missingFrame"].append(
                     {"skinKey": key, "swf": swf_rel, "characterId": char_id}
                 )
@@ -3751,6 +3876,29 @@ def export_skin_assets(
             layer_plans, flat_layer_plans, removals, unsupported_layers, composited_layers = (
                 nested_layer_plans(sprite_graph, playback) if sprite_graph else ([], [], set(), 0, 0)
             )
+            if key in reviewed_keys:
+                try:
+                    if unsupported_layers or composited_layers:
+                        raise ValueError("unresolved nested placement")
+                    effect = reviewed_body_effect(sprite_graph, char_id, layer_plans, source_digest, timeline_controls)
+                    layer_plans[0]["reviewedPlacement"] = True
+                    layer_plans[0]["placementEffect"] = effect
+                except (ValueError, KeyError, OverflowError) as exc:
+                    raise ValueError(f"{key} ({swf_rel}, sprite {char_id}): {exc}") from exc
+            else:
+                for layer in flat_layer_plans:
+                    for parent_id, child_id in zip(layer["path"], layer["path"][1:]):
+                        placements = [p for p in sprite_graph[parent_id]["childInstances"]
+                                      if p["frame"] == 1 and p["characterId"] == child_id]
+                        risks = sorted({risk for p in placements for risk in p.get("placementEffects", [])})
+                        if len(placements) > 1:
+                            risks.append("multiple placements")
+                        if risks:
+                            diagnostic = {"skinKey": key, "swf": swf_rel, "path": layer["path"],
+                                          "parent": parent_id, "child": child_id, "unsupported": risks}
+                            if key in names:
+                                raise ValueError(f"Unreviewed nested placement: {diagnostic}")
+                            export_report.setdefault("unreviewedNestedPlacements", []).append(diagnostic)
             export_report["nestedLayerUnsupportedDescendants"] += unsupported_layers
             export_report["nestedLayerCompositedDescendants"] += composited_layers
             if unsupported_layers and playback.get("nestedAnimation"):
@@ -3926,6 +4074,12 @@ def export_skin_assets(
             layer_plans = context["layerPlans"]
             conditional_visibility = context.get("conditionalVisibility")
             frames = context["frames"]
+            if key in reviewed_keys and hashlib.sha256((project_root / swf_rel).read_bytes()).hexdigest() != source_digest:
+                raise ValueError(f"{swf_rel}: source changed during the placement bake")
+            if key in reviewed_keys and not (base_frame_dir and base_svg_dir and layer_frame_dir and layer_svg_dir
+                    and find_exported_frame_paths_in_dir(base_frame_dir, char_id)
+                    and find_exported_svg_paths_in_dir(base_svg_dir, char_id)):
+                raise ValueError(f"{key}: incomplete FFDec base/layer exports")
             origins = svg_frame_origins(find_exported_svg_paths(tmp_dir, swf_rel, char_id))
             if layer_plans and base_frame_dir:
                 base_frames = find_exported_frame_paths_in_dir(base_frame_dir, char_id)

@@ -755,7 +755,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
         }
 
         /// <summary>
-        /// 运行时纸娃娃胸像解析：ref = "纸娃娃-&lt;hex&gt;" → doll-portraits/&lt;hex&gt;.png
+        /// 运行时纸娃娃胸像解析：ref = "纸娃娃-&lt;hex&gt;" → doll-portraits/&lt;renderVersion&gt;/&lt;hex&gt;.png
         /// （DollBakeTask 原子落盘产物，无 manifest，文件存在即注册）→ 全尺寸解码 + 64px 缩略。
         /// 键非法/文件缺失/解码失败返回 null，由 TryGet 进 TTL 负缓存。
         /// </summary>

@@ -16,7 +16,7 @@
  * 合并策略：
  *   mergeFn(accumulator, childData, index, entry) → accumulator
  *   提供 3 个工厂方法覆盖常见模式：concatField / dictMerge / keyedMerge。
- *   复杂场景（NpcDialogueLoader、StageInfoLoader）传自定义函数。
+ *   复杂场景（如 StageInfoLoader）传自定义函数。
  */
 import org.flashNight.aven.Promise.Promise;
 import org.flashNight.aven.Promise.LoaderPromise;

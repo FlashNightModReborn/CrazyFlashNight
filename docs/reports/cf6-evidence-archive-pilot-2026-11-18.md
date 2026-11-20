@@ -28,3 +28,5 @@
 - `e/c17/` 约 825 MiB，既是历史斗兽证据，也是 C6 历史 verifier 的依赖。先按 `integrity.json`、源码快照与 `--source-root` 建立一批跨批读取验证。
 - 音频 `20261017-combat-audio/` 约 222 MiB。切换前验证 `original-cf6` 与 baseline 分片的重组，确认 `extract.py` 和 `audit.py` 收到原 SHA-256 的输入，以及 closeout 的旧链接仍可定位。
 - 早期老头交付与试玩证据仍有各自的归档脚本与文档入口，本轮继续原地保留。
+
+后续四批大型 CF6 历史证据（`e/c17/`、`evidence/20261017/`、`evidence/20261017-playtest/` 与 `20261017-combat-audio/`）已完成外置归档与双端复验并收口 #287，详见[收口报告](cf6-evidence-archive-closeout-2026-11-20.md)。

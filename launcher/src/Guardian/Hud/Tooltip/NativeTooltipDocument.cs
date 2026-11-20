@@ -538,9 +538,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             if (token.Type != JTokenType.String) return;
             string s = token.Value<string>();
             if (s == null) return;
-            s = s.Trim();
+            s = NativeTextElements.Truncate(s.Trim(), 24);
             if (s.Length == 0) return;
-            if (s.Length > 24) s = s.Substring(0, 24);
             texts.Add(s);
         }
 
@@ -551,9 +550,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             if (obj == null) return;
             string name = ReadString(obj, "name");
             if (name == null) return;
-            name = name.Trim();
+            name = NativeTextElements.Truncate(name.Trim(), 64);
             if (name.Length == 0) return;
-            if (name.Length > 64) name = name.Substring(0, 64);
             string icon = ReadString(obj, "icon");
             if (icon != null)
             {
@@ -563,9 +561,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             string ammo = ReadString(obj, "ammo");
             if (ammo != null)
             {
-                ammo = ammo.Trim();
+                ammo = NativeTextElements.Truncate(ammo.Trim(), 64);
                 if (ammo.Length == 0) ammo = null;
-                else if (ammo.Length > 64) ammo = ammo.Substring(0, 64);
             }
             Magazine = new NativeTooltipMagazine
             {

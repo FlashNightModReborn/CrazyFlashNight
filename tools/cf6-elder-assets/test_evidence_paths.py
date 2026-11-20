@@ -72,5 +72,17 @@ class EvidencePathsTests(unittest.TestCase):
         self.assertLess(text.index('validate_output(args.output)'), text.index('args.output.parent.mkdir'))
         self.assertLess(text.index('validate_output(args.output)'), text.index("args.output.open('x'"))
 
+    def test_archive_index_prefixes_are_retired(self):
+        index = json.loads((HERE / 'evidence-archive-index.json').read_text(encoding='utf-8'))
+        self.assertEqual(index['schema'], 1)
+        prefixes = [row['prefix'] for row in index['archives']]
+        self.assertEqual(len(prefixes), len(set(prefixes)))
+        for prefix in prefixes:
+            self.assertIn(prefix, p.OLD_PREFIXES)
+            with tempfile.TemporaryDirectory() as folder:
+                root = Path(folder)
+                with self.assertRaises(ValueError):
+                    p.validate_output(root / prefix / 'new.json', root)
+
 
 if __name__ == '__main__': unittest.main()

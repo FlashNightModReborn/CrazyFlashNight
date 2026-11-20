@@ -34,7 +34,7 @@ namespace CF7Launcher.Data
 
         /// <summary>
         /// 加载所有 NPC 对话数据，按 NPC 名分组。
-        /// 复刻 NpcDialogueLoader.mergeDialogues (AS2) 的输出结构。
+        /// 列表顺序决定同名 NPC 的组顺序，组 ID 供存档覆盖层定位。
         /// </summary>
         public static Dictionary<string, List<DialogueGroup>> LoadNpcDialogues(string projectRoot)
         {
@@ -44,7 +44,7 @@ namespace CF7Launcher.Data
             Dictionary<string, List<DialogueGroup>> index =
                 new Dictionary<string, List<DialogueGroup>>();
 
-            // list.xml 缺失 = 整体失败（匹配 AS2 Promise.all 语义）
+            // 缺少清单时无法构造完整索引。
             if (!File.Exists(listPath))
                 throw new FileNotFoundException("list.xml not found: " + listPath);
 
@@ -55,7 +55,7 @@ namespace CF7Launcher.Data
             if (items == null || items.Count == 0)
                 throw new InvalidOperationException("list.xml contains no <items> entries");
 
-            // 任一子文件缺失/解析失败 = 整体失败（匹配 AS2 NpcDialogueLoader 的 Promise.all 语义）
+            // 任一列出的文件缺失或解析失败，整个查询报告数据不可用。
             foreach (XmlNode item in items)
             {
                 string fileName = item.InnerText;

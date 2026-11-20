@@ -56,7 +56,7 @@ Wings、特种兵及光头保安的死亡片段从自然首帧进入时原先会
 | 方舟兽王 | 27.8% | 31.9% | 32.8% |
 | EXUSIAI 指挥官 | 25.0% | 36.0% | 43.0% |
 
-另保留大头碎片显示修正前的 18 场：13 胜、3 负、1 平、1 超时。其全部 DoAction 字节码与最终版一致，但图形 SWF 身份不同，不能替代最终六场。合计 84 场完整结果、所有失败与恢复材料均保留。四批实验的运行身份、资源不变、存档保护和清理检查通过；这不等于强度目标通过。本轮未自动追平旧数值定位，也未修改怪物面板 XML。逐场与分组数据见[斗兽汇总](evidence/20261017-combat-audio/arena-summary.json)。
+另保留大头碎片显示修正前的 18 场：13 胜、3 负、1 平、1 超时。其全部 DoAction 字节码与最终版一致，但图形 SWF 身份不同，不能替代最终六场。合计 84 场完整结果、所有失败与恢复材料均保留。四批实验的运行身份、资源不变、存档保护和清理检查通过；这不等于强度目标通过。本轮未自动追平旧数值定位，也未修改怪物面板 XML。逐场与分组数据见[斗兽汇总](#combat-audio-archive)。
 
 ## 重建与验证命令
 
@@ -87,4 +87,17 @@ python -X utf8 -B tools/cf6-audio/audit.py --source-swf <原CF6.swf> --baseline-
 
 四个旧 CF6 单位的实例闭包同样没有 StartSound。诺亚整库仍保留其他单位既有的 32 个声音定义和 84 个时间轴事件，本轮没有改动；不得把 CF6 闭包的零音轨结论扩大到整库。
 
-本轮全部成功、失败及恢复材料集中在[战斗与音效证据](evidence/20261017-combat-audio/summary.json)。45 份音效随八个新角色 SWF 和更新的诺亚素材库一起交付；完整退出游戏再启动以重新预载。主观音量、音色和战斗体验由玩家验收，正式 runtime 发布状态独立记录。
+本轮全部成功、失败及恢复材料集中在[战斗与音效证据](#combat-audio-archive)。45 份音效随八个新角色 SWF 和更新的诺亚素材库一起交付；完整退出游戏再启动以重新预载。主观音量、音色和战斗体验由玩家验收，正式 runtime 发布状态独立记录。
+
+<a id="combat-audio-archive"></a>
+## 历史证据按需归档
+
+`tools/cf6-audio/evidence/20261017-combat-audio/` 的 1,099 个历史文件（含原 CF6 SWF 分片、`before-source.zip`、冻结输入分片与 84 场斗兽明细）已迁出至独立归档 [cf6-combat-audio-20261017-v1](https://github.com/FlashNightModReborn/cf7-evidence/releases/tag/cf6-combat-audio-20261017-v1)（来源提交 `e4846cb1b69e974ac80f3793c618c06fd4110386`，ZIP SHA-256 `76ca5bb5f2cb4bac5d3ad25e069963abbeaa22cdcd9717171b8a0054dee4709f`）。主仓原地保留轻量化[收尾校验回执](evidence/20261017-combat-audio-closeout/summary.json)。
+
+按需恢复至仓库外短目录后，可重组 `original-cf6/source.swf.gz.part001..002`、`attempts/before-source.zip` 与 `current-source.zip.gz.part001..008` 供 `extract.py`、`audit.py` 按原哈希离线核验：
+
+```powershell
+python -X utf8 -B tools/cf6-elder-assets/restore_evidence.py 'tools/cf6-audio/evidence/20261017-combat-audio/summary.json' --output 'C:\cf6-combat-audio'
+```
+
+跨端回读与 `extract.py` / `audit.py` 实跑证明见[收口与双端验证记录](../../docs/reports/cf6-evidence-archive-closeout-2026-11-20.md)。

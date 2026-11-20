@@ -14,7 +14,7 @@ namespace CF7Launcher.Tests.Tasks
     /// <summary>
     /// data_query "npc_dialogue" 的覆盖层接入回归：AS2 零改动，所以断言点放在返回 JSON 的逐字形状上
     /// （result 是「组的数组」，每组是 SubDialogue 数组，字段全小写、顺序与 XmlDataLoader 一致）。
-    /// base XML 与覆盖层都写在临时目录，不碰仓库 data/。
+    /// 覆盖层用临时目录；清单冒烟测试只读随游戏提供的 NPC 数据。
     /// </summary>
     public sealed class DataQueryTaskDialogueOverlayTests : IDisposable
     {
@@ -136,6 +136,20 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(new[] { "id", "name", "title", "char", "text", "target", "imageurl" },
                 ((JObject)((JArray)result[2])[0]).Properties().Select(property => property.Name).ToArray());
             Assert.Equal("Andy Law", (string)((JObject)((JArray)result[2])[0])["name"]);
+        }
+
+        [Fact]
+        public void ShippedNpcListLoadsPlayableGroups()
+        {
+            // 承接旧 Flash ListLoader 的实数据检查，使用游戏查询实际依赖的 DataCache。
+            var root = new DirectoryInfo(AppContext.BaseDirectory);
+            while (root != null && !File.Exists(Path.Combine(root.FullName, "data", "dialogues", "list.xml")))
+                root = root.Parent;
+            Assert.NotNull(root);
+            var index = new DataCache(root.FullName).GetNpcDialogues();
+            Assert.NotNull(index);
+            Assert.True(index.Count >= 5);
+            Assert.Contains(index.Values, groups => groups.Any(group => group.SubDialogues.Count > 0));
         }
 
         [Fact]

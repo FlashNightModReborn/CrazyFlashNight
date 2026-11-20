@@ -131,17 +131,23 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
         var authoredRef:String = placement ? placement.baseReferenceName : referenceName;
         var baseRefName:String = refNameAliases[authoredRef] || authoredRef;
 
-        // 巨拳模式排除
+        // AVM1 同名属性有时指向其他挂点，只移除本挂点的旧装扮。
+        var previousSkin:MovieClip = mc[instanceName];
+        var hadOwnedSkin:Boolean = previousSkin._parent === mc;
+        if (hadOwnedSkin) previousSkin.removeMovieClip();
+
         if (unit.空手动作类型 == "巨拳" || unit.空手动作类型 == "单臂巨拳") {
             if (fistModeExclusions[unit.空手动作类型][baseRefName]) {
+                // 与男女下臂的首次 load 一致：男性显示基本款，女性由巨拳素材覆盖。
+                if (mc.基本款) mc.基本款._visible = unit.性别 != "女";
+                unit[referenceName] = mc.基本款 || mc;
+                // 保留登记供换回拳套时刷新。仅在撤销旧挂载时使 placement 索引失效。
+                if (placement && placement.mc === mc && (hadOwnedSkin || placement.identity != undefined)) {
+                    delete placement.identity;
+                    unit.dressupPlacementVersion = (Number(unit.dressupPlacementVersion) || 0) + 1;
+                }
                 return null;
             }
-        }
-
-        // 移除旧装扮
-        var previousSkin:MovieClip = mc[instanceName];
-        if (previousSkin._parent === mc) {
-            previousSkin.removeMovieClip();
         }
 
         // ============ Plan B-精准：deferred 通道 register-attach-unregister ============

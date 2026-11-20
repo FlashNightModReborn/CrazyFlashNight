@@ -7,12 +7,16 @@ $focusedRun = @{
     SuiteRelativePaths = @('scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueServiceTest.as')
     SuiteFqns = @('org.flashNight.arki.dialogue.NativeDialogueServiceTest')
     AdditionalAsRelativePaths = @(
+        'scripts/类定义/FastJSON.as'
+        'scripts/类定义/org/flashNight/neur/Server/ServerManager.as'
         'scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueService.as'
         'scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueAppearance.as'
         'scripts/类定义/org/flashNight/arki/pause/PauseManager.as'
         'scripts/类定义/org/flashNight/boot/BootSequencer.as'
     )
     ExpectedTracePatterns = @(
+        '(?m)^\[PASS\] XMLSocket: NPC query preserves raw supplementary text\r?$'
+        '(?m)^\[PASS\] XMLSocket: NPC query decodes ASCII surrogate escapes\r?$'
         '(?m)^NativeDialogueServiceTest Tests Passed: [1-9]\d*\r?$'
         '(?m)^NativeDialogueServiceTest Tests Failed: 0\r?$'
     )
