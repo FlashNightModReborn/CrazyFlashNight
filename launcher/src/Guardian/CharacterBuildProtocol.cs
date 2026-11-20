@@ -825,7 +825,7 @@ namespace CF7Launcher.Guardian
                         && IsEmergencyInjectionProjection(item["emergencyInjection"] as JObject)));
         }
 
-        private static bool IsEquipmentAppearance(JObject appearance)
+        internal static bool IsEquipmentAppearance(JObject appearance)
         {
             if (!IsExactObject(appearance, Set(
                     "dressup", "dressup1", "dressup2", "dressup3", "helmet", "hairAbove")))

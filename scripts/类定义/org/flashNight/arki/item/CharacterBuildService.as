@@ -3007,19 +3007,9 @@ class org.flashNight.arki.item.CharacterBuildService {
         }
         var result:Object = normalizeItemProjection(item, projection);
         if (_appearanceProjectionEnabled && SLOT_ALLOWLIST[result.use] === true) {
-            var effective:Object = getEffectiveItemData(item);
-            if (effective != null) {
-                // Display-only values from the same tier/mod calculation as gameplay.
-                // Keep item.name and every write selector unchanged.
-                result.appearance = {
-                    dressup:appearanceText(effective.data.dressup),
-                    dressup1:appearanceText(effective.data.dressup1),
-                    dressup2:appearanceText(effective.data.dressup2),
-                    dressup3:appearanceText(effective.data.dressup3),
-                    helmet:Boolean(effective.helmet),
-                    hairAbove:Boolean(effective.hairAbove)
-                };
-            }
+            var resolvedAppearance:Object = org.flashNight.arki.item.BaseItem
+                .projectEquipmentAppearance(getEffectiveItemData(item));
+            if (resolvedAppearance != null) result.appearance = resolvedAppearance;
         }
         if (_emergencyProjectionEnabled
                 && result.itemKind == "equipment"
@@ -3031,10 +3021,6 @@ class org.flashNight.arki.item.CharacterBuildService {
                     .snapshotItem(item, root());
         }
         return result;
-    }
-
-    private static function appearanceText(value):String {
-        return typeof value == "string" ? String(value) : "";
     }
 
     /**

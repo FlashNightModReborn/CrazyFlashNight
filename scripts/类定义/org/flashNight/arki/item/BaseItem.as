@@ -112,6 +112,24 @@ class org.flashNight.arki.item.BaseItem{
         };
     }
 
+    /** 角色构筑和健身预览共用；只复制实例有效数据中的显示字段。 */
+    public static function projectEquipmentAppearance(effective:Object):Object {
+        if (effective == null || effective.data == null) return null;
+        var data:Object = effective.data;
+        return {
+            dressup:appearanceText(data.dressup),
+            dressup1:appearanceText(data.dressup1),
+            dressup2:appearanceText(data.dressup2),
+            dressup3:appearanceText(data.dressup3),
+            helmet:Boolean(effective.helmet),
+            hairAbove:Boolean(effective.hairAbove)
+        };
+    }
+
+    private static function appearanceText(value):String {
+        return typeof value == "string" ? String(value) : "";
+    }
+
     public function getData():Object{
         // if(this.itemData) return this.itemData; // 如果有缓存的物品数据则直接返回
 

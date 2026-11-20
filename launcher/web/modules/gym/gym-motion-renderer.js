@@ -360,29 +360,31 @@
                 || !portrait.equipment || typeof portrait.equipment !== 'object'
                 || Array.isArray(portrait.equipment)) return null;
         var equipment = {};
+        var equipmentAppearance = {};
         Object.keys(portrait.equipment).sort().forEach(function(slot) {
+            // Older Flash snapshots also send the five weapons stowed during training.
+            if (STOWED_WEAPON_SLOTS[slot]) return;
             var itemName = portrait.equipment[slot];
-            if (typeof itemName === 'string' && itemName.trim()) equipment[slot] = itemName.trim();
+            if (typeof itemName !== 'string' || !itemName.trim()) return;
+            equipment[slot] = itemName.trim();
+            var look = portrait.equipmentAppearance && portrait.equipmentAppearance[slot];
+            if (look) {
+                // Knife linkages never contribute to an unarmed frame.
+                equipmentAppearance[slot] = {dressup:look.dressup, helmet:look.helmet, hairAbove:look.hairAbove};
+            }
         });
         return {
             gender:portrait.gender,
             hair:portrait.hair.trim(),
             face:portrait.face.trim(),
-            equipment:equipment
+            equipment:equipment,
+            equipmentAppearance:equipmentAppearance
         };
     }
 
     function portraitKey(portrait) {
         var normalized = readPortrait(portrait);
-        if (!normalized) return '';
-        return JSON.stringify([
-            normalized.gender,
-            normalized.face,
-            normalized.hair,
-            Object.keys(normalized.equipment).sort().map(function(slot) {
-                return [slot, normalized.equipment[slot]];
-            })
-        ]);
+        return normalized ? JSON.stringify(normalized) : '';
     }
 
     function allFieldsUsed(motionPackage) {
@@ -449,42 +451,37 @@
         var appearance = { '脸型':portrait.face, '发型':portrait.hair };
         var state = root.CharacterAppearancePreview.buildStateFromEquipment(
             motionPackage.dressup,
-            { gender:gender, equipment:portrait.equipment, appearance:appearance, rig:'battle', stateLabel:'空手站立' });
+            { gender:gender, equipment:portrait.equipment, equipmentAppearance:portrait.equipmentAppearance,
+                appearance:appearance, rig:'battle', stateLabel:'空手站立' });
         if (!state || !state.keyMap || state.keyMap['脸型'] !== portrait.face
                 || (state.hairHidden !== true && !state.keyMap['发型'])) return null;
 
-        var usedFields = allFieldsUsed(motionPackage);
+        var requiredFields = allFieldsUsed(motionPackage);
+        var equippedFields = {};
         var equipmentSlots = Object.keys(portrait.equipment);
         for (var equipmentIndex = 0; equipmentIndex < equipmentSlots.length; equipmentIndex++) {
             var slot = equipmentSlots[equipmentIndex];
             var itemName = portrait.equipment[slot];
-            var item = motionPackage.dressup.items[itemName];
-            if (!item || item.use !== slot) return null;
-            // 健身动作按空手姿态绘制；已装备武器收起。
-            if (STOWED_WEAPON_SLOTS[slot]) continue;
-            var genderFields = item && item.fieldsByGender && item.fieldsByGender[gender];
+            var catalogItem = motionPackage.dressup.items[itemName];
+            if (!catalogItem || catalogItem.use !== slot) return null;
+            if (catalogItem.fieldsByGender && Object.keys(catalogItem.fieldsByGender).length
+                    && !catalogItem.fieldsByGender[gender]) return null;
+            var look = portrait.equipmentAppearance[slot];
+            var item = root.DressupDollRenderer.resolvedEquipmentItem(motionPackage.dressup, itemName, look, gender, slot);
+            var genderFields = item.fieldsByGender && item.fieldsByGender[gender];
             if (!genderFields || !Object.keys(genderFields).length) {
-                // 目录明确无 dressup 的装备本来就没有可画分件，例如新手军牌。
-                if (item.dressup === '' && (!item.fieldsByGender
-                        || Object.keys(item.fieldsByGender).length === 0)) continue;
+                if (item.dressup === '') continue; // e.g. a non-visual dog tag
                 return null;
             }
             var itemFields = Object.keys(genderFields);
             for (var itemFieldIndex = 0; itemFieldIndex < itemFields.length; itemFieldIndex++) {
-                if (!usedFields[itemFields[itemFieldIndex]]) return null;
+                var field = itemFields[itemFieldIndex];
+                if (!requiredFields[field]) return null;
+                equippedFields[field] = true;
             }
         }
 
         var assetsByField = Object.create(null);
-        var requiredFields = Object.create(null);
-        Object.keys(motionPackage.motion.componentBindings).forEach(function(component) {
-            var binding = motionPackage.motion.componentBindings[component];
-            var fields = binding.fields || [];
-            fields.forEach(function(field) { requiredFields[field] = true; });
-            (binding.bindings || []).forEach(function(reference) {
-                if (reference && reference.field) requiredFields[reference.field] = true;
-            });
-        });
 
         var rigGender = gender;
         Object.keys(requiredFields).forEach(function(field) {
@@ -501,7 +498,7 @@
                 if (!assetsByField[field]) assetsByField[field] = null;
                 return;
             }
-            if (WEAPON_FIELDS[field] || field === '面具') {
+            if (field === '面具') {
                 assetsByField[field] = null;
                 return;
             }
@@ -511,6 +508,7 @@
                 : null;
         });
 
+        if (Object.keys(equippedFields).some(function(field) { return !assetsByField[field]; })) return null;
         for (var requiredIndex = 0; requiredIndex < REQUIRED_BODY_FIELDS.length; requiredIndex++) {
             var requiredField = REQUIRED_BODY_FIELDS[requiredIndex];
             if (!assetsByField[requiredField]) return null;
@@ -521,12 +519,24 @@
             var record = assetsByField[field];
             if (record) usedKeys[record.key] = true;
         });
+        var drawFields = {};
+        Object.keys(motionPackage.motion.componentBindings).forEach(function(component) {
+            var fields = motionPackage.motion.componentBindings[component].fields || [];
+            fields = fields.filter(function(field, index) { return fields.indexOf(field) === index; });
+            if (state.headHairAbove && fields.indexOf('面具') >= 0) {
+                fields = root.DressupDollRenderer.orderHeadLayers(fields.map(function(field) {
+                    return {field:field};
+                }), true).map(function(holder) { return holder.field; });
+            }
+            drawFields[component] = fields;
+        });
         return {
             key:portraitKey(portrait),
             gender:gender,
             portrait:portrait,
             state:state,
             assetsByField:assetsByField,
+            drawFields:drawFields,
             usedRecords:Object.keys(usedKeys).map(function(key) {
                 for (var field in assetsByField) {
                     if (Object.prototype.hasOwnProperty.call(assetsByField, field)
@@ -789,12 +799,9 @@
                 var componentName = name.slice(BODY_PREFIX.length);
                 var binding = stationPackage.motion.componentBindings[componentName];
                 if (!binding) continue;
-                var fields = Array.isArray(binding.fields) ? binding.fields : [];
-                var uniqueFields = Object.create(null);
+                var fields = portraitAssets.drawFields[componentName];
                 var wrapperMatrix = matrixOf(binding.wrapperMatrix) || identityMatrix();
                 fields.forEach(function(field) {
-                    if (uniqueFields[field]) return;
-                    uniqueFields[field] = true;
                     drawPortraitField(ctx, portraitAssets.assetsByField[field], elementMatrix, wrapperMatrix, elapsedMs);
                 });
                 if (!fields.length && stationPackage.vectorMap[name]) drawVector(ctx, stationPackage.vectorMap[name], elementMatrix);

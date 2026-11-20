@@ -619,9 +619,11 @@
             gender:'male', hair:'发型-男式-黑暴走头', face:'男变装-基本脸型',
             equipment:{
                 '颈部装备':'新手军牌', '脚部装备':'新手皮鞋', '手部装备':'黑色皮手套',
-                '头部装备':'新手面具', '刀':'锤子',
-                '下装装备':'咖啡色多包裤', '上装装备':'新手衣服'
-            }
+                '头部装备':'新手面具', '刀':'锤子', '手枪':'Glock 18', '手枪2':'MK23手枪',
+                '下装装备':'咖啡色多包裤', '上装装备':'绿色马甲'
+            },
+            equipmentAppearance:{'上装装备':{dressup:'变装-二阶绿色马甲',dressup1:'',dressup2:'',dressup3:'',
+                helmet:false,hairAbove:false}}
         };
         Panels.open('gym', equippedPortrait);
         await waitFor(function() {
@@ -629,7 +631,7 @@
                 && !!document.querySelector('.gym-motion-stage .gym-motion-canvas');
         }, 30000);
         check(GymPanel.debugState().motionMounted === true,
-            'complete live outfit renders its clothing, hair, mask, gloves and shoes with a stowed hammer');
+            'the panel mounts a same-name tier vest with a stowed offhand and main pistol');
         var equippedCanvas = document.querySelector('.gym-motion-stage .gym-motion-canvas');
         var equippedPixels = equippedCanvas.getContext('2d').getImageData(
             0, 0, equippedCanvas.width, equippedCanvas.height).data;

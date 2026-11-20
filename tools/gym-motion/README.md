@@ -24,6 +24,8 @@ node tools/gym-motion/verify-browser.js
 
 人物皮肤复用 `launcher/web/assets/dressup/manifest.json`。`GymMotionRenderer.preparePortrait(portrait, stationId)` 和 `canRenderPortrait(portrait, stationId)` 对具体站点、具体外观核验；省略 `stationId` 兼容木人桩先导。器材切换时销毁旧画布、建立新画布。
 
+健身开窗快照的 `portrait.equipment` 保存防具槽位和物品原名。Flash 在开窗请求顶层附带 `equipmentAppearance`，其中是各槽已算好的阶级、插件外观和头部显示标记。旧 Host 读取原有快照，继续显示基础外观。新版 Host 校验槽位后将外观交给网页选择分件并区分缓存。旧快照携带的武器在读取人物外观时统一过滤。
+
 ## 器材填充来源
 
 原 `xfl-ui-svg` 将同一填充面的不连续 Edge 片段直接拼接，造成器材主体透明缺口。H1 运行包改用锁定的 `things0.swf` 中 FFDec DefineShape 3209/3210/3211；同时用 XFL `shape/Symbol 621/622/623` 的摘要、填充色和尺寸绑定作者源。已发布 SWF 只作为编译参照，不代替可编辑 XFL。

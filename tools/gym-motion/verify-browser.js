@@ -37,6 +37,59 @@ function edgePath() {
     return found;
 }
 
+// Runs in the browser. Every comparison uses the same initial frame and canvas size.
+async function verifyEquipmentAppearance() {
+    const api = GymMotionRenderer;
+    const pkg = await api.ready();
+    const host = document.createElement('div');
+    host.style.cssText = 'position:fixed;top:0;left:0;width:300px;height:280px';
+    document.body.appendChild(host);
+    const look = dressup => ({dressup,dressup1:'',dressup2:'',dressup3:'',helmet:false,hairAbove:false});
+    const results = [];
+    try {
+        for (const gender of ['male','female']) for (const station of ['dummy','dumbbell','squat']) {
+            const prefix = gender === 'male' ? '男' : '女';
+            const base = {gender,face:prefix+'变装-基本脸型',
+                hair:Object.keys(pkg.dressup.skinKeys).find(key => key.startsWith('发型-'+prefix+'式-')),
+                equipment:{上装装备:'绿色马甲'}};
+            async function frame(portrait) {
+                if (!await api.preparePortrait(portrait,station)) return null;
+                const handle = api.create(host,{portrait,stationId:station});
+                try { return host.querySelector('canvas').toDataURL(); }
+                finally { handle.destroy(); }
+            }
+            const before = api.getDebugStats().preparedPortraitCount;
+            const unarmed = await frame(base);
+            if (!unarmed) throw Error('unarmed portrait missing: '+gender+'/'+station);
+            for (const weapons of [{手枪:'Glock 18'},{手枪2:'MK23手枪'},{手枪:'Glock 18',手枪2:'MK23手枪'},
+                    {长枪:'AK74',刀:'锤子',手雷:'未烘焙的收起武器'}]) {
+                if (await frame({...base,equipment:{...base.equipment,...weapons}}) !== unarmed)
+                    throw Error('stowed weapon changed the portrait');
+            }
+            if (api.getDebugStats().preparedPortraitCount !== before+1) throw Error('stowed weapon duplicated the cache');
+            const tier = {...base,equipmentAppearance:{上装装备:look('变装-二阶绿色马甲')}};
+            const upgraded = await frame(tier);
+            if (!upgraded || unarmed === upgraded || await frame(base) !== unarmed) throw Error('tier switch was lost');
+            const override = {...base,equipmentAppearance:{上装装备:look('变装-沙漠军装背心')}};
+            const expected = await frame({...base,equipment:{上装装备:'沙漠军装背心'}});
+            if (!expected || await frame(override) !== expected) throw Error('resolved override mismatch');
+            const missingMask = {...base,equipment:{头部装备:'新手面具'},
+                equipmentAppearance:{头部装备:look('缺失面具分件')}};
+            if (await frame(missingMask) !== null) throw Error('missing visible mask was accepted');
+            if (await frame({...base,equipmentAppearance:{上装装备:look('缺失上装分件')}}) !== null)
+                throw Error('missing tier skin fell back to base clothing');
+            const head = look(pkg.dressup.items['钢铁小熊头'].dressup);
+            const headPortrait = {...base,equipment:{头部装备:'钢铁小熊头'},equipmentAppearance:{头部装备:head}};
+            const underMask = await frame(headPortrait);
+            head.hairAbove = true;
+            const overMask = await frame(headPortrait);
+            if (!underMask || !overMask || underMask === overMask) throw Error('head layer override was lost');
+            results.push({gender,station,stowedCacheEntries:1,tierSwitch:true,override:true});
+        }
+    } finally { host.remove(); }
+    return results;
+}
+
 async function main() {
     const output = path.resolve(process.env.CF7_GYM_MOTION_OUTPUT
         || path.join(root, 'tmp', 'gym-motion-full'));
@@ -128,6 +181,8 @@ async function main() {
                 before:before.states.map(value => value.frameIndex),
                 after:after.map(value => value.frameIndex), screenshot, currentScreenshot });
         }
+        await page.emulateMedia({ reducedMotion:'reduce' });
+        const equipped = await page.evaluate(verifyEquipmentAppearance);
         const activeBeforeClose = await page.evaluate(() => GymMotionRenderer.getDebugStats().activeInstances);
         const activeAfterClose = await page.evaluate(() => {
             window.__gymMotionReviewHandles.forEach(handle => handle.destroy());
@@ -135,7 +190,7 @@ async function main() {
         });
         const report = { passed:results.every(result => result.passed)
             && activeBeforeClose === 2 && activeAfterClose === 0,
-            results, activeBeforeClose, activeAfterClose, errors };
+            results, equipped, activeBeforeClose, activeAfterClose, errors };
         process.stdout.write(JSON.stringify(report, null, 2) + '\n');
         if (!report.passed) process.exitCode = 1;
     } finally {

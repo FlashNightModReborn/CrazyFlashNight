@@ -106,7 +106,7 @@ var DressupDollRenderer = (function() {
         var fields = {};
         var use = item ? item.use : slot === '手枪2' ? '手枪' : slot;
         fields[gender] = appearanceFields(use, appearance, gender);
-        return {use:use, fieldsByGender:fields,
+        return {use:use, dressup:appearance.dressup, fieldsByGender:fields,
             helmet:appearance.helmet === true, hairAbove:appearance.hairAbove === true,
             rearAttachments:item && item.rearAttachments};
     }
@@ -1130,6 +1130,8 @@ var DressupDollRenderer = (function() {
     return {
         loadManifest: loadManifest,
         collectItemsByUse: collectItemsByUse,
+        resolvedEquipmentItem: resolvedEquipmentItem,
+        orderHeadLayers: orderHeadLayers,
         buildStateFromEquipment: buildStateFromEquipment,
         measureState: measureState,
         measureEnvelope: measureEnvelope,

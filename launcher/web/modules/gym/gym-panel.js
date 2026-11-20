@@ -85,7 +85,8 @@
     }
 
     function normalizePortrait(value) {
-        if (!hasExactKeys(value, ['gender','equipment','hair','face'])) return null;
+        if (!hasExactKeys(value, ['gender','equipment','hair','face']) &&
+                !hasExactKeys(value, ['gender','equipment','equipmentAppearance','hair','face'])) return null;
         var gender = readText(value.gender, 6, false);
         var hair = readText(value.hair, 160, true);
         var face = readText(value.face, 160, true);
@@ -97,10 +98,19 @@
         for (var i = 0; i < slots.length; i++) {
             var slot = readText(slots[i], 48, false);
             var item = readText(value.equipment[slots[i]], 160, false);
-            if (slot === null || !EQUIPMENT_SLOTS[slot] || item === null) return null;
+            if (slot === null || !Object.prototype.hasOwnProperty.call(EQUIPMENT_SLOTS, slot) || item === null) return null;
             equipment[slot] = item;
         }
-        return { gender:gender, equipment:equipment, hair:hair, face:face };
+        var looks = value.equipmentAppearance;
+        if (looks !== undefined && (!isRecord(looks) || !Object.keys(looks).every(function(slot) {
+            var look = looks[slot];
+            return Object.prototype.hasOwnProperty.call(equipment, slot)
+                && hasExactKeys(look, ['dressup','dressup1','dressup2','dressup3','helmet','hairAbove'])
+                && ['dressup','dressup1','dressup2','dressup3'].every(function(field) {
+                    return readText(look[field], 256, true) !== null;
+                }) && typeof look.helmet === 'boolean' && typeof look.hairAbove === 'boolean';
+        }))) return null;
+        return { gender:gender, equipment:equipment, equipmentAppearance:looks, hair:hair, face:face };
     }
 
     function normalizeProject(value, stationId, seenIds, seenIndexes) {
