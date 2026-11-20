@@ -513,6 +513,19 @@ namespace CF7Launcher.Tasks
                     _writeGate = WriteGateState.Idle;
                     _reconcileContainers.Clear();
                 }
+                // A valid read is not necessarily a recovery proof. Do not tell the Web it is
+                // ready when an early or partial snapshot left the Host write gate locked.
+                if (!malformed && entry.WebCmd == "snapshot"
+                    && webMessage.Value<bool?>("success") == true
+                    && _writeGate == WriteGateState.NeedsReconcile)
+                {
+                    webMessage = new JObject
+                    {
+                        ["success"] = false,
+                        ["error"] = "reconcile_required",
+                        ["requiresReconcile"] = true
+                    };
+                }
             }
 
             if (malformed)
@@ -1205,7 +1218,7 @@ namespace CF7Launcher.Tasks
                     || !HasExactString(message["operation"], "discard")
                     || source == null
                     || source.Value<string>("containerId") != "背包"
-                    || !TrySanitizeItem(message["discarded"] as JObject, out discarded)
+                    || !TrySanitizeInventoryResponseItem(message["discarded"] as JObject, out discarded)
                     || !TrySanitizeSnapshotBatch(
                         message["snapshots"] as JArray, null, false, out snapshots)
                     || !SnapshotBatchMatchesAffected(
@@ -1743,7 +1756,7 @@ namespace CF7Launcher.Tasks
                         "confirmProjection")) return false;
                 JObject item;
                 JObject confirm;
-                if (!TrySanitizeItem(slot["item"] as JObject, out item)
+                if (!TrySanitizeInventoryResponseItem(slot["item"] as JObject, out item)
                     || !TrySanitizeConfirm(
                         slot["confirmProjection"] as JObject, item, out confirm))
                     return false;
@@ -1757,6 +1770,20 @@ namespace CF7Launcher.Tasks
                 });
             }
             output = clean;
+            return true;
+        }
+
+        // Only inventory responses may quarantine this optional presentation field. The shared
+        // item validator remains strict for crafting receipts and reward-stash projections.
+        private static bool TrySanitizeInventoryResponseItem(JObject input, out JObject output)
+        {
+            if (TrySanitizeItem(input, out output)) return true;
+            if (input == null || input.Property("balanceSummary") == null) return false;
+            JObject withoutBalance = (JObject)input.DeepClone();
+            withoutBalance.Property("balanceSummary").Remove();
+            if (!TrySanitizeItem(withoutBalance, out output)) return false;
+            // Host-authored output only: AS2 cannot supply this marker to bypass validation.
+            output["displayIssue"] = "balance_summary_invalid";
             return true;
         }
 
@@ -1865,11 +1892,7 @@ namespace CF7Launcher.Tasks
                 JObject balance;
                 if (!TrySanitizeBalanceSummary(
                         input["balanceSummary"] as JObject, out balance))
-                {
-                    JObject withoutBalance = (JObject)input.DeepClone();
-                    withoutBalance.Property("balanceSummary").Remove();
-                    return TrySanitizeItem(withoutBalance, out output);
-                }
+                    return false;
                 clean["balanceSummary"] = balance;
             }
             output = clean;

@@ -134,7 +134,10 @@
                         if (!writable()) return;
                         if (!options.coordinator.discard(options.slotRef(containerId, slot), function(result) {
                             options.render();
-                            options.toast(result.success ? '物品已丢弃。' : options.error(result.error));
+                            options.toast(result.success
+                                ? (result.discarded && result.discarded.displayIssue === 'balance_summary_invalid'
+                                    ? '物品已丢弃。平衡摘要暂不可用。' : '物品已丢弃。')
+                                : options.error(result.error));
                         })) options.toast('库存正在处理另一项操作。');
                     }}]
             });

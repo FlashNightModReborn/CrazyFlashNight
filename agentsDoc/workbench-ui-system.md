@@ -204,9 +204,13 @@ Character Build 候选区以独立 `ChoiceGroup` 提供“兼容 / 背包”范�
 
 ### 3.1 武器加权徽标
 
+本节库存问题标记核对基线：commit `23ec828cd04c783c86abb016c1f080eb814d41ba` 加本轮源码候选；仅 Linux Node/Chromium 验证，未发布。
+
 武器标定摘要是购买引导层，不是普通描述字段：Web 只接受恰含 `{state:"confirmed",weightLayers:Number,formula:1,level:Number}` 的严格四字段摘要，其中 `weightLayers/level` 必须为真实有限 number；缺字段、多字段、公式版本不符、黄/红审计或任一畸形摘要都 fail-closed。通过后实体格图标左下显示加权徽标：完整目录为 `LvN ◆±N`，紧凑目录与 owned 格为 `◆±N`，零层必须显示 `◆0`；隐藏时完全不占位。该徽标优先于稀有度等装饰信息，但不能覆盖锁定、不可购买、数量与主动作等业务状态。
 
 `◆N` 的玩家语义固定为“同等级标准枪械之上的额外加权层”，不是全局战力、品质或价格。正/零/负同时用符号、数字和 ARIA 文案表达，颜色不能成为唯一编码。Tooltip 只增加一行“同级加权”摘要；WBR 条款号、SHA/digest、evidence 路径和内部 note 永不进入常态 UI。未来条款解释只能先映射为受控玩家短标签，最多三项；DPS 只有在全量标定和显示口径另行冻结后才能启用。
+
+库存响应中被 Host 隔离的坏摘要以互斥的 `displayIssue:"balance_summary_invalid"` 标记展示 `◆?`，ARIA/提示文字为“平衡摘要暂不可用”；它不代表 confirmed 或任何加权数值。成功丢弃的摘要问题附在“物品已丢弃”提示之后。正常无摘要物品继续不占位，原始坏摘要仍由 Web 严格拒绝。该展示标记不影响写权限或恢复资格，适配边界见[库存响应合同](as2-web-panel-migration.md#inventory-通用-owner未知写与响应证明)。
 
 ## 4. 排版、颜色与层级
 
