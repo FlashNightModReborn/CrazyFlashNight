@@ -617,8 +617,50 @@ static bool Utf8ToWidePath(const char* src, wchar_t* out, size_t cch)
     return MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, src, -1, out, (int)cch) > 0;
 }
 
-static bool ComputeFileSha256Hex(const wchar_t* path, char* outHex, size_t cch)
+// Keep the full trace on disk and only a small, deduplicated preview for the dialog.
+struct IntegrityFailures
 {
+    static const int limit = 4;
+    wchar_t paths[limit][MAX_PATH];
+    wchar_t lines[limit][512];
+    int shown;
+    bool overflow, hasMissing;
+
+    void Add(const wchar_t* relative, const wchar_t* reason, DWORD error = ERROR_SUCCESS)
+    {
+        wchar_t path[MAX_PATH];
+        StringCchCopyW(path, ARRAYSIZE(path), relative[0] == L'\\' ? relative + 1 : relative);
+        for (wchar_t* p = path; *p; ++p) if (*p == L'\\') *p = L'/';
+        wchar_t detail[224] = {};
+        if (error != ERROR_SUCCESS) {
+            wchar_t systemText[160] = {};
+            FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                NULL, error, 0, systemText, ARRAYSIZE(systemText), NULL);
+            systemText[wcscspn(systemText, L"\r\n")] = L'\0';
+            StringCchPrintfW(detail, ARRAYSIZE(detail), L"（Windows %lu %s）", error, systemText);
+        }
+        Logf("ERROR", L"[integrity] %s：%s%s", reason, path, detail);
+        for (int i = 0; i < shown; ++i) if (_wcsicmp(paths[i], path) == 0) return;
+        if (shown == limit) { overflow = true; return; }
+        StringCchCopyW(paths[shown], ARRAYSIZE(paths[shown]), path);
+        StringCchPrintfW(lines[shown], ARRAYSIZE(lines[shown]), L"%s：%s%s", reason, path, detail);
+        ++shown;
+    }
+
+    void FileError(const wchar_t* relative, DWORD error)
+    {
+        if (error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND) {
+            hasMissing = true;
+            Add(relative, L"缺失文件");
+        } else {
+            Add(relative, L"无法读取或校验", error);
+        }
+    }
+};
+
+static bool ComputeFileSha256Hex(const wchar_t* path, char* outHex, size_t cch, DWORD& error)
+{
+    error = ERROR_INVALID_PARAMETER;
     if (path == NULL || outHex == NULL || cch < 65) return false;
     outHex[0] = '\0';
 
@@ -626,7 +668,8 @@ static bool ComputeFileSha256Hex(const wchar_t* path, char* outHex, size_t cch)
         FILE_SHARE_READ,
         NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
     if (file == INVALID_HANDLE_VALUE) {
-        Logf("ERROR", L"[manifest] cannot open for hash path=%s GetLastError=%lu", path, GetLastError());
+        error = GetLastError();
+        Logf("ERROR", L"[manifest] cannot open for hash path=%s GetLastError=%lu", path, error);
         return false;
     }
 
@@ -634,12 +677,14 @@ static bool ComputeFileSha256Hex(const wchar_t* path, char* outHex, size_t cch)
     HCRYPTHASH hash = 0;
     bool ok = false;
     if (!CryptAcquireContextW(&provider, NULL, NULL, PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
-        Logf("ERROR", L"[manifest] CryptAcquireContext failed GetLastError=%lu", GetLastError());
+        error = GetLastError();
+        Logf("ERROR", L"[manifest] CryptAcquireContext failed GetLastError=%lu", error);
         CloseHandle(file);
         return false;
     }
     if (!CryptCreateHash(provider, CALG_SHA_256, 0, 0, &hash)) {
-        Logf("ERROR", L"[manifest] CryptCreateHash(SHA256) failed GetLastError=%lu", GetLastError());
+        error = GetLastError();
+        Logf("ERROR", L"[manifest] CryptCreateHash(SHA256) failed GetLastError=%lu", error);
         CryptReleaseContext(provider, 0);
         CloseHandle(file);
         return false;
@@ -649,25 +694,29 @@ static bool ComputeFileSha256Hex(const wchar_t* path, char* outHex, size_t cch)
     DWORD read = 0;
     for (;;) {
         if (!ReadFile(file, buffer, sizeof(buffer), &read, NULL)) {
-            Logf("ERROR", L"[manifest] hash read failed path=%s GetLastError=%lu", path, GetLastError());
+            error = GetLastError();
+            Logf("ERROR", L"[manifest] hash read failed path=%s GetLastError=%lu", path, error);
             break;
         }
         if (read == 0) {
             BYTE digest[32];
             DWORD digestLen = sizeof(digest);
-            if (CryptGetHashParam(hash, HP_HASHVAL, digest, &digestLen, 0) && digestLen == sizeof(digest)) {
+            BOOL gotDigest = CryptGetHashParam(hash, HP_HASHVAL, digest, &digestLen, 0);
+            if (gotDigest && digestLen == sizeof(digest)) {
                 for (DWORD i = 0; i < digestLen; i++) {
                     sprintf_s(outHex + (i * 2), cch - (i * 2), "%02X", digest[i]);
                 }
                 outHex[64] = '\0';
                 ok = true;
             } else {
-                Logf("ERROR", L"[manifest] CryptGetHashParam failed path=%s GetLastError=%lu", path, GetLastError());
+                error = gotDigest ? ERROR_INVALID_DATA : GetLastError();
+                Logf("ERROR", L"[manifest] CryptGetHashParam failed path=%s GetLastError=%lu", path, error);
             }
             break;
         }
         if (!CryptHashData(hash, buffer, read, 0)) {
-            Logf("ERROR", L"[manifest] CryptHashData failed path=%s GetLastError=%lu", path, GetLastError());
+            error = GetLastError();
+            Logf("ERROR", L"[manifest] CryptHashData failed path=%s GetLastError=%lu", path, error);
             break;
         }
     }
@@ -685,27 +734,32 @@ static bool ManifestContainsPath(wchar_t paths[][MAX_PATH], int count, const wch
 }
 
 static bool VerifyRuntimeClosureRecursive(const wchar_t* dir, const wchar_t* relativeDir,
-    wchar_t manifestPaths[][MAX_PATH], int manifestCount, int* actualCount)
+    wchar_t manifestPaths[][MAX_PATH], int manifestCount, int* actualCount, IntegrityFailures& failures)
 {
     wchar_t pattern[MAX_PATH];
-    if (FAILED(StringCchPrintfW(pattern, MAX_PATH, L"%s\\*", dir))) return false;
+    if (FAILED(StringCchPrintfW(pattern, MAX_PATH, L"%s\\*", dir))) {
+        failures.Add(relativeDir, L"目录路径过长"); return false;
+    }
     WIN32_FIND_DATAW fd;
     HANDLE find = FindFirstFileW(pattern, &fd);
-    if (find == INVALID_HANDLE_VALUE) return false;
+    if (find == INVALID_HANDLE_VALUE) {
+        failures.Add(relativeDir, L"无法列出目录", GetLastError()); return false;
+    }
     bool ok = true;
     do {
         if (wcscmp(fd.cFileName, L".") == 0 || wcscmp(fd.cFileName, L"..") == 0) continue;
         wchar_t full[MAX_PATH], relative[MAX_PATH];
         if (FAILED(StringCchPrintfW(full, MAX_PATH, L"%s\\%s", dir, fd.cFileName)) ||
             FAILED(StringCchPrintfW(relative, MAX_PATH, L"%s/%s", relativeDir, fd.cFileName))) {
-            ok = false; continue;
+            failures.Add(relativeDir, L"子项路径过长"); ok = false; continue;
         }
         if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-            ok = VerifyRuntimeClosureRecursive(full, relative, manifestPaths, manifestCount, actualCount) && ok;
+            ok = VerifyRuntimeClosureRecursive(full, relative, manifestPaths, manifestCount, actualCount, failures) && ok;
         } else if (_wcsicmp(relative, L"runtime/cf7-runtime-manifest.tsv") != 0) {
             (*actualCount)++;
             if (!ManifestContainsPath(manifestPaths, manifestCount, relative)) {
                 Logf("ERROR", L"[manifest] undeclared runtime file rel=%s", relative);
+                failures.Add(relative, L"清单未登记的文件");
                 ok = false;
             }
         }
@@ -730,14 +784,24 @@ static bool IsManifestSha256Value(const char* line, const char* prefix)
     return true;
 }
 
-static bool VerifyRuntimeManifest(const wchar_t* exeDir)
+static bool VerifyRuntimeManifest(const wchar_t* exeDir, IntegrityFailures& failures)
 {
     wchar_t manifestPath[MAX_PATH];
-    if (!BuildRootPath(exeDir, RUNTIME_MANIFEST_REL, manifestPath, MAX_PATH)) return false;
+    if (!BuildRootPath(exeDir, RUNTIME_MANIFEST_REL, manifestPath, MAX_PATH)) {
+        failures.Add(RUNTIME_MANIFEST_REL, L"路径过长"); return false;
+    }
+    _set_doserrno(0);
     FILE* fp = _wfsopen(manifestPath, L"rb", _SH_DENYNO);
-    if (fp == NULL) { Logf("ERROR", L"[manifest] missing runtime manifest path=%s", manifestPath); return false; }
+    if (fp == NULL) {
+        unsigned long error = 0;
+        _get_doserrno(&error);
+        Logf("ERROR", L"[manifest] %s runtime manifest path=%s win32=%lu",
+            error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND ? L"missing" : L"cannot open", manifestPath, error);
+        failures.FileError(RUNTIME_MANIFEST_REL, error); return false;
+    }
 
     bool ok = true;
+    bool manifestValid = true;
     bool manifestV2 = false;
     bool headerSeen = false, publishModeSeen = false, sourceSeen = false, toolchainSeen = false, baselineSeen = false;
     bool artifactSourceSeen = false, producerRecipeSeen = false, buildIdentitySeen = false, payloadClosureSeen = false;
@@ -749,71 +813,85 @@ static bool VerifyRuntimeManifest(const wchar_t* exeDir)
         if (!headerSeen) {
             headerSeen = true;
             if (strcmp(line, "cf7-runtime-manifest-v2") == 0) manifestV2 = true;
-            else if (strcmp(line, "cf7-runtime-manifest-v1") != 0) { Log("ERROR", L"[manifest] invalid schema header"); ok = false; }
+            else if (strcmp(line, "cf7-runtime-manifest-v1") != 0) { Log("ERROR", L"[manifest] invalid schema header"); manifestValid = false; }
             continue;
         }
         if (strncmp(line, "publishMode\t", 12) == 0) {
-            if (publishModeSeen || strcmp(line, "publishMode\tframework-dependent") != 0) ok = false;
+            if (publishModeSeen || strcmp(line, "publishMode\tframework-dependent") != 0) manifestValid = false;
             publishModeSeen = true; continue;
         }
         if (strncmp(line, "sourceTreeHash\t", 15) == 0) {
-            if (manifestV2 || sourceSeen || !IsManifestSha256Value(line, "sourceTreeHash\t")) ok = false;
+            if (manifestV2 || sourceSeen || !IsManifestSha256Value(line, "sourceTreeHash\t")) manifestValid = false;
             sourceSeen = true; continue;
         }
         if (strncmp(line, "artifactSourceHash\t", 19) == 0) {
-            if (!manifestV2 || artifactSourceSeen || !IsManifestSha256Value(line, "artifactSourceHash\t")) ok = false;
+            if (!manifestV2 || artifactSourceSeen || !IsManifestSha256Value(line, "artifactSourceHash\t")) manifestValid = false;
             artifactSourceSeen = true; continue;
         }
         if (strncmp(line, "producerRecipeHash\t", 19) == 0) {
-            if (!manifestV2 || producerRecipeSeen || !IsManifestSha256Value(line, "producerRecipeHash\t")) ok = false;
+            if (!manifestV2 || producerRecipeSeen || !IsManifestSha256Value(line, "producerRecipeHash\t")) manifestValid = false;
             producerRecipeSeen = true; continue;
         }
         if (strncmp(line, "buildIdentityHash\t", 18) == 0) {
-            if (!manifestV2 || buildIdentitySeen || !IsManifestSha256Value(line, "buildIdentityHash\t")) ok = false;
+            if (!manifestV2 || buildIdentitySeen || !IsManifestSha256Value(line, "buildIdentityHash\t")) manifestValid = false;
             buildIdentitySeen = true; continue;
         }
         if (strncmp(line, "payloadClosureHash\t", 19) == 0) {
-            if (!manifestV2 || payloadClosureSeen || !IsManifestSha256Value(line, "payloadClosureHash\t")) ok = false;
+            if (!manifestV2 || payloadClosureSeen || !IsManifestSha256Value(line, "payloadClosureHash\t")) manifestValid = false;
             payloadClosureSeen = true; continue;
         }
         if (strncmp(line, "toolchainLockHash\t", 18) == 0) {
-            if (toolchainSeen || !IsManifestSha256Value(line, "toolchainLockHash\t")) ok = false;
+            if (toolchainSeen || !IsManifestSha256Value(line, "toolchainLockHash\t")) manifestValid = false;
             toolchainSeen = true; continue;
         }
-        if (strncmp(line, "toolchainBaseline\t", 18) == 0) { if (baselineSeen) ok = false; baselineSeen = true; continue; }
-        if (strncmp(line, "file\t", 5) != 0) { Logf("ERROR", L"[manifest] unknown row=%S", line); ok = false; continue; }
+        if (strncmp(line, "toolchainBaseline\t", 18) == 0) { if (baselineSeen) manifestValid = false; baselineSeen = true; continue; }
+        if (strncmp(line, "file\t", 5) != 0) { Logf("ERROR", L"[manifest] unknown row=%S", line); manifestValid = false; continue; }
 
         char* rel = line + 5;
         char* sizeText = strchr(rel, '\t');
-        if (sizeText == NULL) { ok = false; continue; }
+        if (sizeText == NULL) { manifestValid = false; continue; }
         *sizeText++ = '\0';
         char* hashSep = strchr(sizeText, '\t');
-        if (hashSep == NULL) { ok = false; continue; }
+        if (hashSep == NULL) { manifestValid = false; continue; }
         *hashSep = '\0';
         char* hashText = hashSep + 1;
-        if (strchr(hashText, '\t') != NULL || strlen(hashText) != 64) { ok = false; continue; }
+        if (strchr(hashText, '\t') != NULL || strlen(hashText) != 64) { manifestValid = false; continue; }
 
         wchar_t relPathW[MAX_PATH], fullPath[MAX_PATH];
         if (!Utf8ToWidePath(rel, relPathW, MAX_PATH) || !BuildProjectPath(exeDir, relPathW, fullPath, MAX_PATH)) {
-            Logf("ERROR", L"[manifest] unsafe path rel=%S", rel); ok = false; continue;
+            Logf("ERROR", L"[manifest] unsafe path rel=%S", rel); manifestValid = false; continue;
         }
         if (fileCount >= 128 || ManifestContainsPath(manifestPaths, fileCount, relPathW)) {
-            Logf("ERROR", L"[manifest] duplicate/overflow path rel=%s", relPathW); ok = false; continue;
+            Logf("ERROR", L"[manifest] duplicate/overflow path rel=%s", relPathW); manifestValid = false; continue;
         }
         StringCchCopyW(manifestPaths[fileCount], MAX_PATH, relPathW);
 
         WIN32_FILE_ATTRIBUTE_DATA fad;
-        if (!GetFileAttributesExW(fullPath, GetFileExInfoStandard, &fad) || (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            Logf("ERROR", L"[manifest] listed file missing rel=%s", relPathW); ok = false; fileCount++; continue;
+        if (!GetFileAttributesExW(fullPath, GetFileExInfoStandard, &fad)) {
+            DWORD error = GetLastError();
+            if (error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND)
+                Logf("ERROR", L"[manifest] listed file missing rel=%s", relPathW);
+            failures.FileError(relPathW, error); ok = false; fileCount++; continue;
+        }
+        if (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            failures.Add(relPathW, L"应为文件，实际为文件夹"); ok = false; fileCount++; continue;
         }
         char* sizeEnd = NULL;
         ULONGLONG expectedSize = _strtoui64(sizeText, &sizeEnd, 10);
         ULONGLONG actualSize = (((ULONGLONG)fad.nFileSizeHigh) << 32) | fad.nFileSizeLow;
-        if (sizeEnd == sizeText || *sizeEnd != '\0' || expectedSize != actualSize) {
+        if (sizeEnd == sizeText || *sizeEnd != '\0') {
+            failures.Add(RUNTIME_MANIFEST_REL, L"清单中的文件长度无效"); ok = false; fileCount++; continue;
+        }
+        if (expectedSize != actualSize) {
+            failures.Add(relPathW, L"文件长度不符");
             Logf("ERROR", L"[manifest] size mismatch rel=%s", relPathW); ok = false; fileCount++; continue;
         }
         char actualHash[65];
-        if (!ComputeFileSha256Hex(fullPath, actualHash, sizeof(actualHash)) || _stricmp(hashText, actualHash) != 0) {
+        DWORD error;
+        if (!ComputeFileSha256Hex(fullPath, actualHash, sizeof(actualHash), error)) {
+            failures.FileError(relPathW, error); ok = false;
+        } else if (_stricmp(hashText, actualHash) != 0) {
+            failures.Add(relPathW, L"文件内容不符（SHA-256）");
             Logf("ERROR", L"[manifest] SHA256 mismatch rel=%s", relPathW); ok = false;
         }
         fileCount++;
@@ -823,26 +901,35 @@ static bool VerifyRuntimeManifest(const wchar_t* exeDir)
     bool identitySeen = manifestV2
         ? (artifactSourceSeen && producerRecipeSeen && buildIdentitySeen && payloadClosureSeen)
         : sourceSeen;
-    if (!headerSeen || !publishModeSeen || !identitySeen || !toolchainSeen || !baselineSeen || fileCount == 0) ok = false;
-    if (!ManifestContainsPath(manifestPaths, fileCount, L"CRAZYFLASHER7MercenaryEmpire.exe")) ok = false;
+    if (!manifestValid || !headerSeen || !publishModeSeen || !identitySeen || !toolchainSeen || !baselineSeen ||
+        fileCount == 0 || !ManifestContainsPath(manifestPaths, fileCount, L"CRAZYFLASHER7MercenaryEmpire.exe")) {
+        failures.Add(RUNTIME_MANIFEST_REL, L"清单格式或必填项无效");
+        ok = false;
+    }
     wchar_t runtimeDir[MAX_PATH];
     int actualCount = 1; // root bootstrap
     if (!BuildRootPath(exeDir, L"\\runtime", runtimeDir, MAX_PATH) ||
-        !VerifyRuntimeClosureRecursive(runtimeDir, L"runtime", manifestPaths, fileCount, &actualCount)) ok = false;
-    if (actualCount != fileCount) { Logf("ERROR", L"[manifest] closure count mismatch listed=%d actual=%d", fileCount, actualCount); ok = false; }
+        !VerifyRuntimeClosureRecursive(runtimeDir, L"runtime", manifestPaths, fileCount, &actualCount, failures)) ok = false;
+    if (actualCount != fileCount) {
+        if (ok) failures.Add(RUNTIME_MANIFEST_REL, L"清单与实际文件数不符");
+        Logf("ERROR", L"[manifest] closure count mismatch listed=%d actual=%d", fileCount, actualCount);
+        ok = false;
+    }
 
     Logf(ok ? "INFO" : "ERROR", L"[manifest] verification %s files=%d path=%s",
         ok ? L"OK" : L"FAILED", fileCount, manifestPath);
     return ok;
 }
 
-static bool LogPathProbe(const wchar_t* label, const wchar_t* path, bool required)
+static bool LogPathProbe(const wchar_t* label, const wchar_t* path, const wchar_t* rel, bool required, IntegrityFailures& failures)
 {
     WIN32_FILE_ATTRIBUTE_DATA fad;
     if (!GetFileAttributesExW(path, GetFileExInfoStandard, &fad)) {
         DWORD err = GetLastError();
+        if (required) failures.FileError(rel, err);
         Logf(required ? "ERROR" : "WARN",
-            L"[preflight] %s missing path=%s GetLastError=%lu", label, path, err);
+            L"[preflight] %s %s path=%s GetLastError=%lu", label,
+            err == ERROR_FILE_NOT_FOUND || err == ERROR_PATH_NOT_FOUND ? L"missing" : L"unavailable", path, err);
         return false;
     }
 
@@ -859,14 +946,15 @@ static bool LogPathProbe(const wchar_t* label, const wchar_t* path, bool require
     return true;
 }
 
-static bool LogRelativePathProbe(const wchar_t* exeDir, const wchar_t* label, const wchar_t* rel, bool required)
+static bool LogRelativePathProbe(const wchar_t* exeDir, const wchar_t* label, const wchar_t* rel, bool required, IntegrityFailures& failures)
 {
     wchar_t path[MAX_PATH];
     if (!BuildRootPath(exeDir, rel, path, MAX_PATH)) {
+        if (required) failures.Add(rel, L"路径过长");
         Logf(required ? "ERROR" : "WARN", L"[preflight] %s path overflow rel=%s", label, rel);
         return false;
     }
-    return LogPathProbe(label, path, required);
+    return LogPathProbe(label, path, rel, required, failures);
 }
 
 static void LogRuntimeInventory(const wchar_t* exeDir)
@@ -905,37 +993,37 @@ static void LogRuntimeInventory(const wchar_t* exeDir)
 // directories deliberately do not contain the game SWF, Flash Player or web assets,
 // so build automation must be able to exercise the same manifest verifier without
 // pretending that the candidate is already a complete installation.
-static bool PreflightRuntimeFiles(const wchar_t* exeDir)
+static bool PreflightRuntimeFiles(const wchar_t* exeDir, IntegrityFailures& failures)
 {
     bool ok = true;
 
-    ok = LogRelativePathProbe(exeDir, L"Core apphost", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"Core assembly", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"Core deps", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.deps.json", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"Core runtimeconfig", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"Runtime manifest", RUNTIME_MANIFEST_REL, true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"WebView2 loader", L"\\runtime\\WebView2Loader.dll", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"WebView2 managed", L"\\runtime\\Microsoft.Web.WebView2.Core.dll", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"ClearScript V8 native", L"\\runtime\\ClearScriptV8.win-x64.dll", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"miniaudio sidecar", L"\\runtime\\miniaudio.dll", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"sol_parser sidecar", L"\\runtime\\sol_parser.dll", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Core apphost", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Core assembly", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Core deps", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.deps.json", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Core runtimeconfig", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Runtime manifest", RUNTIME_MANIFEST_REL, true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"WebView2 loader", L"\\runtime\\WebView2Loader.dll", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"WebView2 managed", L"\\runtime\\Microsoft.Web.WebView2.Core.dll", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"ClearScript V8 native", L"\\runtime\\ClearScriptV8.win-x64.dll", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"miniaudio sidecar", L"\\runtime\\miniaudio.dll", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"sol_parser sidecar", L"\\runtime\\sol_parser.dll", true, failures) && ok;
     LogRuntimeInventory(exeDir);
-    ok = VerifyRuntimeManifest(exeDir) && ok;
+    ok = VerifyRuntimeManifest(exeDir, failures) && ok;
     Logf(ok ? "INFO" : "ERROR", L"[preflight] runtime payload check %s", ok ? L"OK" : L"FAILED");
     return ok;
 }
 
-static bool PreflightCriticalFiles(const wchar_t* exeDir)
+static bool PreflightCriticalFiles(const wchar_t* exeDir, IntegrityFailures& failures)
 {
-    bool ok = PreflightRuntimeFiles(exeDir);
+    bool ok = PreflightRuntimeFiles(exeDir, failures);
 
-    ok = LogRelativePathProbe(exeDir, L"Flash Player", L"\\Adobe Flash Player 20.exe", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"Game SWF", L"\\CRAZYFLASHER7MercenaryEmpire.swf", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"bootstrap HTML", L"\\launcher\\web\\bootstrap.html", true) && ok;
-    ok = LogRelativePathProbe(exeDir, L"crossdomain policy", L"\\crossdomain.xml", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Flash Player", L"\\Adobe Flash Player 20.exe", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Game SWF", L"\\CRAZYFLASHER7MercenaryEmpire.swf", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"bootstrap HTML", L"\\launcher\\web\\bootstrap.html", true, failures) && ok;
+    ok = LogRelativePathProbe(exeDir, L"crossdomain policy", L"\\crossdomain.xml", true, failures) && ok;
 
-    LogRelativePathProbe(exeDir, L"config.toml", L"\\config.toml", false);
-    LogRelativePathProbe(exeDir, L"hotkey guard", L"\\hotkey_guard.exe", false);
+    LogRelativePathProbe(exeDir, L"config.toml", L"\\config.toml", false, failures);
+    LogRelativePathProbe(exeDir, L"hotkey guard", L"\\hotkey_guard.exe", false, failures);
     Logf(ok ? "INFO" : "ERROR", L"[preflight] critical file check %s", ok ? L"OK" : L"FAILED");
     return ok;
 }
@@ -1076,6 +1164,21 @@ static int FatalExit(const wchar_t* code, const wchar_t* msg, const wchar_t* adv
     LogClose();
     ShowNativeDiagnosticDialog(code, msg, advice);
     return 1;
+}
+
+static int FatalIntegrityExit(const IntegrityFailures& failures)
+{
+    wchar_t message[2600] = L"以下项目未通过启动检查：";
+    for (int i = 0; i < failures.shown; ++i) {
+        StringCchCatW(message, ARRAYSIZE(message), L"\n");
+        StringCchCatW(message, ARRAYSIZE(message), failures.lines[i]);
+    }
+    if (!failures.shown) StringCchCatW(message, ARRAYSIZE(message), L"\n无法完成关键文件检查。");
+    if (failures.overflow) StringCchCatW(message, ARRAYSIZE(message), L"\n另有异常，完整列表见 logs/bootstrap.log。");
+    const wchar_t* advice = failures.hasMissing
+        ? L"请查看安全软件的保护历史，再通过最初安装此版本的渠道恢复配套文件。恢复后若再次出现，请将 logs/bootstrap.log 发给开发组。"
+        : L"请按上面的原因检查文件，必要时通过最初安装此版本的渠道恢复配套文件。若仍无法启动，请将 logs/bootstrap.log 发给开发组。";
+    return FatalExit(L"CF7-BOOT-FILE-INTEGRITY", message, advice);
 }
 
 // ---- 同步跑 installer（"runas" 触发 UAC，等其退出） ----
@@ -1222,6 +1325,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
     Logf("INFO", L"cmdLine = %s", (cmdLine && cmdLine[0]) ? cmdLine : L"(empty)");
     Logf("INFO", L"bootstrap pid=%lu", GetCurrentProcessId());
 
+    IntegrityFailures failures = {};
     const bool verifyRuntimeOnly = HasExactCommandLineArg(L"--verify-runtime-only");
     const bool verifyCompleteInstall = HasExactCommandLineArg(L"--verify-only");
     if (verifyRuntimeOnly && verifyCompleteInstall) {
@@ -1233,7 +1337,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
     // Candidate producer integrity probe: verify the isolated atomic runtime payload
     // without requiring unrelated files from a complete game installation.
     if (verifyRuntimeOnly) {
-        bool ok = PreflightRuntimeFiles(exeDir);
+        bool ok = PreflightRuntimeFiles(exeDir, failures);
         Log(ok ? "INFO" : "ERROR", ok ? L"verify-runtime-only succeeded" : L"verify-runtime-only failed");
         LogClose();
         return ok ? 0 : 2;
@@ -1242,7 +1346,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
     // Deployed-install integrity probe: verify both runtime and project-level assets
     // without requiring .NET, showing UI, or launching Core.
     if (verifyCompleteInstall) {
-        bool ok = PreflightCriticalFiles(exeDir);
+        bool ok = PreflightCriticalFiles(exeDir, failures);
         Log(ok ? "INFO" : "ERROR", ok ? L"verify-only succeeded" : L"verify-only failed");
         LogClose();
         return ok ? 0 : 2;
@@ -1257,10 +1361,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
     if (!hasRuntime) {
         // Installation/UAC must never precede full payload verification. An
         // already-installed runtime needs only the full check before Core launch.
-        if (!PreflightCriticalFiles(exeDir)) {
-            return FatalExit(L"CF7-BOOT-FILE-INTEGRITY",
-                L"启动器关键文件缺失或损坏。\n\n请验证游戏文件完整性，或重新下载完整安装包。",
-                L"请先恢复完整的启动器与 runtime 文件集，再重试。");
+        if (!PreflightCriticalFiles(exeDir, failures)) {
+            return FatalIntegrityExit(failures);
         }
         // 2. 用 glob 扫 tools\dotnet-runtime\windowsdesktop-runtime-10.*-win-x64.exe；
         //    版本 bump（10.0.8 → 10.0.9 → 10.1.x）不需要改源码 + 同步 build.ps1 / pack.config
@@ -1358,12 +1460,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
     }
 
     // 运行时和游戏关键文件预检：只做诊断与 fail-fast，不尝试修复。
-    if (!PreflightCriticalFiles(exeDir)) {
-        return FatalExit(L"CF7-BOOT-FILE-INTEGRITY",
-            L"启动器关键文件缺失或损坏。\n\n"
-            L"请在 Steam 中验证游戏文件完整性，或重新下载完整安装包。\n"
-            L"详细缺失项见 logs\\bootstrap.log 的 [preflight] 行。",
-            L"请通过 Steam 验证游戏文件完整性；如果不是 Steam 版本，请重新解压完整安装包。");
+    if (!PreflightCriticalFiles(exeDir, failures)) {
+        return FatalIntegrityExit(failures);
     }
 
     ConfigureCoreCrashDumps(exeDir);
