@@ -2,7 +2,7 @@
  * org.flashNight.aven.Promise.ListLoaderTest
  *
  * ListLoader / LoaderPromise 基础设施测试 + 迁移后 API 契约回归测试。
- * 24 个测试用例，覆盖基础设施、领域加载器契约、真实数据一致性与性能。
+ * 23 个测试用例，覆盖基础设施、领域加载器契约、真实数据一致性与性能。
  */
 import org.flashNight.aven.Promise.Promise;
 import org.flashNight.aven.Promise.LoaderPromise;
@@ -11,7 +11,6 @@ import org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader;
 import org.flashNight.gesh.xml.LoadXml.ItemDataLoader;
 import org.flashNight.gesh.xml.LoadXml.EquipModListLoader;
 import org.flashNight.gesh.xml.LoadXml.StageInfoLoader;
-import org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader;
 import org.flashNight.gesh.json.LoadJson.TaskTextLoader;
 import org.flashNight.gesh.json.LoadJson.TaskDataLoader;
 import org.flashNight.gesh.json.LoadJson.CraftingListLoader;
@@ -71,7 +70,7 @@ class org.flashNight.aven.Promise.ListLoaderTest {
         _total = 0;
         _timerSeq = 0;
         _reported = false;
-        _expectedTests = 24; // 基础设施 3 + ListLoader 7 + 契约回归 3 + 数据一致性 9 + 性能 2
+        _expectedTests = 23; // 基础设施 3 + ListLoader 7 + 契约回归 3 + 数据一致性 8 + 性能 2
 
         trace("=== ListLoader Infrastructure Tests ===");
 
@@ -422,22 +421,7 @@ class org.flashNight.aven.Promise.ListLoaderTest {
             assert("stage-data-consistency", false, "load failed");
         });
 
-        // 17. 数据一致性 — NpcDialogueLoader
-        //     13 个子 XML 文件，应产生多个 NPC key
-        var npcLoader:NpcDialogueLoader = NpcDialogueLoader.getInstance();
-        npcLoader.load(function(data:Object):Void {
-            var keyCount:Number = 0;
-            for (var k:String in data) {
-                keyCount++;
-            }
-            assert("npc-data-consistency",
-                keyCount >= 5,
-                "npcCount=" + keyCount + " (expected >=5)");
-        }, function():Void {
-            assert("npc-data-consistency", false, "load failed");
-        });
-
-        // 18. 数据一致性 — TaskTextLoader (JSON dictMerge)
+        // 17. 数据一致性 — TaskTextLoader (JSON dictMerge)
         //     11 个子 JSON 文件，应产生多个 text key
         var textLoader:TaskTextLoader = TaskTextLoader.getInstance();
         textLoader.load(function(data:Object):Void {
@@ -450,7 +434,7 @@ class org.flashNight.aven.Promise.ListLoaderTest {
             assert("tasktext-data-consistency", false, "load failed");
         });
 
-        // 19. 数据一致性 — TaskDataLoader (JSON concatField)
+        // 18. 数据一致性 — TaskDataLoader (JSON concatField)
         //     11 个子 JSON 文件，应产生多个 task
         var taskLoader:TaskDataLoader = TaskDataLoader.getInstance();
         taskLoader.load(function(data:Object):Void {
@@ -465,7 +449,7 @@ class org.flashNight.aven.Promise.ListLoaderTest {
             assert("taskdata-data-consistency", false, "load failed");
         });
 
-        // 20. 数据一致性 — CraftingListLoader (JSON keyedMerge + pathBuilder)
+        // 19. 数据一致性 — CraftingListLoader (JSON keyedMerge + pathBuilder)
         //     12 个 category，每个 category 是一个 key
         var craftLoader:CraftingListLoader = CraftingListLoader.getInstance();
         craftLoader.load(function(data:Object):Void {

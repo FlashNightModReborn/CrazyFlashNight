@@ -123,6 +123,7 @@ try{
     let baseline;
     test('closure includes layers, source-bound A21, XML children and recursive SWF imports',()=>{
         baseline=C.capture(root);C.verify(baseline);const names=new Set(baseline.files.map(x=>x.relativePath));
+        assert(names.has('launcher/src/Tasks/NativeDialogueBookSession.cs'));
         for(const ref of ['flashswf/overlay.swf','flashswf/backgrounds/cf6/CF6_A21_Transform.swf','flashswf/nested/child.swf','flashswf/leaf.swf','data/shops/fixture.json'])assert(names.has(ref),ref);
         assert(baseline.dependencies.some(x=>x.owner==='flashswf/nested/child.swf'&&x.target==='flashswf/leaf.swf'));
     });

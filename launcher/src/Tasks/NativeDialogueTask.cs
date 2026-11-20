@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Threading;
@@ -37,9 +36,6 @@ namespace CF7Launcher.Tasks
 
         /// <summary>代际绑定发送（caps 用）：生产 = XmlSocketServer.TrySendIfGen，测试注入。</summary>
         internal Func<string, int, bool> SendForGeneration;
-        /// <summary>source book 装配挂点（M3 接线；未注册时 source book 拒 malformed）。
-        /// 接口定义在 Guardian.Dialogue（并行任务接缝）。</summary>
-        internal CF7Launcher.Guardian.Dialogue.INativeDialogueSourceAssembler SourceAssembler;
         /// <summary>closing 重试调度器注入点：(delayMs, callback) → callback 回到采用队列执行；
         /// null = 生产默认 System.Threading.Timer → _dispatch。</summary>
         internal Action<long, Action> BookRetryScheduler;
@@ -337,7 +333,7 @@ namespace CF7Launcher.Tasks
             string mode, kind;
             if (!Text(p, "mode", 8, out mode) || (mode != "ordinary" && mode != "stage"))
                 return RejectAck(p, "malformed");
-            if (!Text(p, "kind", 8, out kind) || (kind != "inline" && kind != "source"))
+            if (!Text(p, "kind", 8, out kind) || kind != "inline")
                 return RejectAck(p, "malformed");
             int advanceKey = 13, startIndex = 0;
             if (p["advanceKey"] != null && !Int(p, "advanceKey", 1, 254, out advanceKey))
@@ -345,21 +341,8 @@ namespace CF7Launcher.Tasks
             if (p["startIndex"] != null && !Int(p, "startIndex", 0, int.MaxValue, out startIndex))
                 return RejectAck(p, "malformed");
 
-            JArray linesArray;
-            if (kind == "source")
-            {
-                string reason;
-                if (!TryAssembleSource(p, out linesArray, out reason))
-                {
-                    LogManager.Log("[NativeDialogue] source book rejected: " + reason);
-                    return RejectAck(p, "malformed");
-                }
-            }
-            else
-            {
-                linesArray = p["lines"] as JArray;
-                if (linesArray == null) return RejectAck(p, "malformed");
-            }
+            var linesArray = p["lines"] as JArray;
+            if (linesArray == null) return RejectAck(p, "malformed");
             if (linesArray.Count > 4096) return RejectAck(p, "oversize");
             if (linesArray.Count < 1
                 || startIndex >= linesArray.Count) return RejectAck(p, "malformed");
@@ -408,7 +391,7 @@ namespace CF7Launcher.Tasks
                 catch (Exception ex) { LogManager.Log("[NativeDialogue] BookSessionStarted throw: " + ex.Message); }
             }
             session.Begin(startIndex);
-            return AcceptAck(p, 1, kind == "source" ? (int?)lines.Length : null);
+            return AcceptAck(p, 1);
         }
 
         /// <summary>v2 append：同会话 + baseEpoch==已应用代际 + epoch==baseEpoch+1；
@@ -445,7 +428,7 @@ namespace CF7Launcher.Tasks
             if (restartIndex >= session.PlaybackCount + lines.Length)
                 return RejectAck(p, "malformed", applied);
             session.ApplyAppend(lines, restartIndex, (int)epoch);
-            return AcceptAck(p, (int)epoch, null);
+            return AcceptAck(p, (int)epoch);
         }
 
         /// <summary>v2 set：白名单字段（advanceKey）低频变更；不 bump epoch，
@@ -460,7 +443,7 @@ namespace CF7Launcher.Tasks
             if (session == null || session.RequestId != requestId || session.SceneId != sceneId)
                 return RejectAck(p, "wrong_session", applied);
             session.ApplySet(advanceKey);
-            return AcceptAck(p, session.AppliedEpoch, null);
+            return AcceptAck(p, session.AppliedEpoch);
         }
 
         /// <summary>v2 hide：墓碑语义与 v1 完全相同（同 rid hide 终止 closing）。</summary>
@@ -498,65 +481,6 @@ namespace CF7Launcher.Tasks
                 reply["rowCount"] = 0;
             }
             return reply.ToString(Formatting.None);
-        }
-
-        /// <summary>kind:"source" 的结构校验与装配挂点：sourceRef 限定类型/键/分组/内容版本，
-        /// snapshot 必须为对象；未注册装配器或装配失败 → 拒绝（ack 一律 malformed）。</summary>
-        private bool TryAssembleSource(JObject p, out JArray lines, out string reason)
-        {
-            lines = null;
-            reason = null;
-            var sourceRef = p["sourceRef"] as JObject;
-            var snapshot = p["snapshot"] as JObject;
-            if (sourceRef == null || snapshot == null)
-            {
-                reason = "missing sourceRef/snapshot";
-                return false;
-            }
-            string type, key, contentVersion;
-            int group;
-            if (!Text(sourceRef, "type", 32, out type)
-                || !Text(sourceRef, "key", 256, out key)
-                || !Text(sourceRef, "contentVersion", 64, out contentVersion))
-            {
-                reason = "bad sourceRef shape";
-                return false;
-            }
-            // group 可选（缺省=0 由装配器处理）；携带时必须是非负整数。
-            if (sourceRef["group"] != null
-                && !Int(sourceRef, "group", 0, int.MaxValue, out group))
-            {
-                reason = "bad sourceRef group";
-                return false;
-            }
-            var assembler = SourceAssembler;
-            if (assembler == null)
-            {
-                reason = "no assembler registered";
-                return false;
-            }
-            List<JObject> assembled;
-            int rowCount;
-            string rejectReason;
-            bool ok;
-            try
-            {
-                ok = assembler.TryAssemble(sourceRef, snapshot,
-                    out assembled, out rowCount, out rejectReason);
-            }
-            catch (Exception ex)
-            {
-                reason = "assembler exception: " + ex.Message;
-                return false;
-            }
-            if (!ok || assembled == null || assembled.Count < 1 || assembled.Count > 4096)
-            {
-                reason = rejectReason ?? "assembler returned no lines";
-                return false;
-            }
-            lines = new JArray();
-            foreach (var row in assembled) lines.Add(row);
-            return true;
         }
 
         /// <summary>book 会话呈现钩子（会话只准在采用队列调用）：组帧已完成，
@@ -633,9 +557,9 @@ namespace CF7Launcher.Tasks
 
         /// <summary>mutation ack（callId 回调）：requestedEpoch=报文 epoch 原样回显，
         /// appliedEpoch=采用后/当前已应用代际，reason∈协议枚举或 null。</summary>
-        private string AcceptAck(JObject p, int appliedEpoch, int? rowCount)
+        private string AcceptAck(JObject p, int appliedEpoch)
         {
-            return BuildAck(p, true, null, appliedEpoch, rowCount);
+            return BuildAck(p, true, null, appliedEpoch);
         }
 
         private string RejectAck(JObject p, string reason)
@@ -645,11 +569,10 @@ namespace CF7Launcher.Tasks
 
         private string RejectAck(JObject p, string reason, int appliedEpoch)
         {
-            return BuildAck(p, false, reason, appliedEpoch, null);
+            return BuildAck(p, false, reason, appliedEpoch);
         }
 
-        private static string BuildAck(JObject p, bool applied, string reason,
-            int appliedEpoch, int? rowCount)
+        private static string BuildAck(JObject p, bool applied, string reason, int appliedEpoch)
         {
             var ack = new JObject
             {
@@ -663,7 +586,6 @@ namespace CF7Launcher.Tasks
                 ["status"] = applied ? "applied" : "rejected",
                 ["reason"] = reason
             };
-            if (rowCount.HasValue) ack["rowCount"] = rowCount.Value;
             return ack.ToString(Formatting.None);
         }
 
