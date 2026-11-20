@@ -1,8 +1,10 @@
 import { dialog, ipcMain } from "electron";
+import { readdirSync } from "node:fs";
 import {
   currentEnvSnapshot,
   collectDiagnostics,
   installPluginSwf,
+  deletePluginSwf,
   clearCacheDir,
   applyJvmMemory,
   tightenSidebarFile,
@@ -13,6 +15,8 @@ import type { IpcContext } from "./ipc-context.js";
 import type {
   PickResult,
   InstallSwfRequest,
+  DeleteSwfRequest,
+  PluginDirectory,
   ClearCacheRequest,
   JvmMemoryRequest,
   TightenSidebarRequest,
@@ -26,6 +30,19 @@ function installAt(ctx: IpcContext, index: number) {
 }
 
 export function registerMaintenanceHandlers(ctx: IpcContext): void {
+  function pluginDirectory(target: PluginDirectory): string {
+    const dir = installAt(ctx, target.installIndex).windowSwfDir;
+    if (dir !== target.windowSwfDir) throw new Error("安装目录已变更，请重新运行体检。");
+    return dir;
+  }
+
+  function installedSwfs(dir: string): string[] {
+    return readdirSync(dir, { withFileTypes: true })
+      .filter(entry => entry.isFile() && entry.name.toLowerCase().endsWith(".swf"))
+      .map(entry => entry.name)
+      .sort((a, b) => a.localeCompare(b));
+  }
+
   // --- AN doctor: discover installs + cache them for index-addressed ops ---
   ipcMain.handle("ankit:doctor", (): Diagnostics => {
     const diag = collectDiagnostics(currentEnvSnapshot());
@@ -65,6 +82,17 @@ export function registerMaintenanceHandlers(ctx: IpcContext): void {
   ipcMain.handle("ankit:install-swf", (_e, req: InstallSwfRequest): OpResult => {
     const install = installAt(ctx, req.installIndex);
     return installPluginSwf(req.srcSwf, [install.windowSwfDir], { apply: req.apply });
+  });
+
+  ipcMain.handle("ankit:list-plugin-swfs", (_e, target: PluginDirectory) =>
+    installedSwfs(pluginDirectory(target)));
+
+  ipcMain.handle("ankit:delete-swf", (_e, req: DeleteSwfRequest): OpResult => {
+    const dir = pluginDirectory(req);
+    if (!installedSwfs(dir).includes(req.name)) {
+      throw new Error("所选插件已不在当前目录，请重新运行体检。");
+    }
+    return deletePluginSwf(req.name, [dir], { apply: req.apply === true, exactName: true });
   });
 
   // --- clear WindowSWF tmp cache ---

@@ -69,11 +69,11 @@ export function installPluginSwf(srcSwf: string, windowSwfDirs: string[], opts: 
 }
 
 /** Delete plugin .swf files matching `nameOrGlob` (single-* wildcard) from each dir. */
-export function deletePluginSwf(nameOrGlob: string, windowSwfDirs: string[], opts: ApplyOpts = {}): OpResult {
+export function deletePluginSwf(nameOrGlob: string, windowSwfDirs: string[], opts: ApplyOpts & { exactName?: boolean } = {}): OpResult {
   const apply = opts.apply ?? false;
   const changes: FileChange[] = [];
   const warnings: string[] = [];
-  const re = new RegExp(`^${nameOrGlob.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`, 'i');
+  const re = opts.exactName ? null : new RegExp(`^${nameOrGlob.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`, 'i');
   for (const dir of windowSwfDirs) {
     let entries: string[];
     try {
@@ -83,7 +83,7 @@ export function deletePluginSwf(nameOrGlob: string, windowSwfDirs: string[], opt
       continue;
     }
     for (const name of entries) {
-      if (!re.test(name)) continue;
+      if (re ? !re.test(name) : name !== nameOrGlob) continue;
       const target = path.join(dir, name);
       let backup: string | null = null;
       if (apply) {

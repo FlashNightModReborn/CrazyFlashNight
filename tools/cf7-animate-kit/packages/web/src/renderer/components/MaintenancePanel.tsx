@@ -3,6 +3,7 @@ import type { AnkitApi, Diagnostics, OpResult, JvmOpResult, AnimateInstall } fro
 import type { MotionLevel } from "./motion-utils.js";
 import type { LayoutController } from "../hooks/useLayoutResize.js";
 import OpResultView from "./OpResultView.js";
+import PluginRemovalCard from "./PluginRemovalCard.js";
 
 interface Props {
   api: AnkitApi;
@@ -198,6 +199,12 @@ export default function MaintenancePanel({ api }: Props) {
               </div>
               <OpResultView result={plans.install} />
             </section>
+
+            {installs[installIndex] && (
+              <PluginRemovalCard key={installs[installIndex].windowSwfDir} api={api} installIndex={installIndex}
+                install={installs[installIndex]}
+                latestInstall={plans.install?.applied ? plans.install : null} />
+            )}
 
             <section className="card motion-surface">
               <div className="card-head"><h2>JVM 内存 (-Xmx)</h2></div>
