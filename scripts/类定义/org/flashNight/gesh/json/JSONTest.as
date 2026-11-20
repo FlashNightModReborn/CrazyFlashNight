@@ -35,6 +35,7 @@ class org.flashNight.gesh.json.JSONTest {
         this.testParsePrimitives();
         this.testParseContainers();
         this.testParseEscapes();
+        this.testFastSupplementaryText();
         this.testParseNumbersAndWhitespace();
         this.testParseEdgeCases();
         this.testStringifyBasics();
@@ -414,6 +415,25 @@ class org.flashNight.gesh.json.JSONTest {
         this.assertEqual("JSON 连续转义序列", "\n\t\r\\", this.jsonParser.parse("\"\\n\\t\\r\\\\\""));
         this.assertEqual("LiteJSON 连续转义序列 raw", "\\n\\t\\r\\\\", this.liteParser.parse("\"\\n\\t\\r\\\\\""));
         this.assertEqual("FastJSON 连续转义序列", "\n\t\r\\", this.fastParser.parse("\"\\n\\t\\r\\\\\""));
+    }
+
+    private function testFastSupplementaryText():Void {
+        var pair:String = String.fromCharCode(0xD840, 0xDE8E);
+        var replacement:String = String.fromCharCode(0xFFFD);
+        var cases:Array = [
+            [pair, pair], ["\\uD840\\uDE8E", pair],
+            ["\\uD840B", replacement + "B"], ["A\\uDE8E", "A" + replacement],
+            ["\\uD840\\uD840\\uDE8E", replacement + pair],
+            [replacement + pair, replacement + pair],
+            ["\\uDBFF\\uDFFF", String.fromCharCode(0xDBFF, 0xDFFF)]
+        ];
+        for (var i:Number = 0; i < cases.length; i++) {
+            var token:String = cases[i][0];
+            var expected:String = cases[i][1];
+            var wire:String = '{"' + token + '":"' + token + '"}';
+            var parsed:Object = this.fastParser.parse(wire);
+            this.assertEqual("FastJSON 代理对键和值 #" + i, expected, parsed[expected]);
+        }
     }
 
     private function testParseNumbersAndWhitespace():Void {

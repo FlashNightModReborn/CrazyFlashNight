@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace CF7Launcher.Guardian.Hud.Tooltip
 {
@@ -165,16 +168,13 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         }
 
         /// <summary>字符权重：空格/tab=0.5，ASCII=1，CJK/全角=2。纯文本契约：标记按字面计。</summary>
-        internal static double CharWeight(char c)
+        private static double CharWeight(int scalar)
         {
-            if (c == ' ' || c == '\t') return 0.5;
-            if (c < 128) return 1;
-            if (IsWideChar(c)) return 2;
-            if (c < 256) return 1;
-            return 2;
+            if (scalar == ' ' || scalar == '\t') return 0.5;
+            return scalar < 256 ? 1 : 2;
         }
 
-        internal static bool IsWideChar(char c)
+        internal static bool IsWideChar(int c)
         {
             return (c >= 0x4E00 && c <= 0x9FFF)
                 || (c >= 0x3000 && c <= 0x33FF)
@@ -187,7 +187,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             TextScore sc = new TextScore { LineCount = 1 };
             if (string.IsNullOrEmpty(s)) { sc.LineCount = 1; return sc; }
             double line = 0;
-            for (int i = 0; i < s.Length; i++)
+            s = NativeTextElements.NormalizeDisplay(s);
+            for (int i = 0; i < s.Length;)
             {
                 char c = s[i];
                 if (c == '\n' || c == '\r')
@@ -198,11 +199,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     // \r\n / \n\r 计一次断行
                     if (i + 1 < s.Length
                         && (s[i + 1] == '\n' || s[i + 1] == '\r') && s[i + 1] != c) i++;
+                    i++;
                     continue;
                 }
-                double w = CharWeight(c);
+                // Size hints count a displayed element once, using its first scalar.
+                double w = CharWeight(char.ConvertToUtf32(s, i));
                 sc.Total += w;
                 line += w;
+                i += StringInfo.GetNextTextElementLength(s.AsSpan(i));
             }
             if (line > sc.MaxLine) sc.MaxLine = line;
             return sc;
@@ -295,6 +299,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             internal sealed class Slice
             {
                 internal string Text;
+                internal string PaintOverride;
                 internal Color? Color;
                 internal bool Bold;
                 internal bool Italic;
@@ -374,67 +379,78 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             float letterSpacingPx)
         {
             List<VisualLine> outLines = new List<VisualLine>();
-            if (runs == null || maxWidthPx <= 0) return outLines;
+            if (runs == null || runs.Count == 0 || maxWidthPx <= 0) return outLines;
 
-            // 行宽统一走浮点域：GDI+ 测宽 + letterSpacing×字符数（CSS letter-spacing
-            // 对每个字符追加），软折边界按含 ls 的整段宽判。
+            // Segment the complete inline stream. A cluster that crosses a style
+            // boundary takes the style of its first UTF-16 unit.
+            StringBuilder stream = new StringBuilder();
+            foreach (NativeTooltipRun run in runs) stream.Append(run?.Text);
+            string text = NativeTextElements.NormalizeDisplay(stream.ToString());
+            int[] starts = NativeTextElements.Starts(text);
             Func<string, RunFont, float> measureF =
-                delegate (string t, RunFont f)
-                { return measure(t, f) + t.Length * letterSpacingPx; };
+                (t, f) => measure(t, f) + (letterSpacingPx == 0f ? 0f
+                    : NativeTextElements.Starts(t).Length * letterSpacingPx);
 
             LineBuf cur = new LineBuf(lineHeightPx);
-            foreach (NativeTooltipRun run in runs)
+            int runIndex = 0;
+            int runEnd = runs[0]?.Text?.Length ?? 0;
+            for (int i = 0; i < starts.Length; i++)
             {
-                if (run == null || string.IsNullOrEmpty(run.Text)) continue;
-                string t = run.Text;
-                RunFont font = RunFont.Of(run);
-
-                // run 边界断点（web 内联流：span 边界可断，规则同窗内字符）：
-                // 前字符可断（空白/-/宽字符）或本 run 首字符为宽字符；
-                // 开符后/闭符前禁断。
-                if (cur.HasContent)
+                int start = starts[i];
+                int end = i + 1 < starts.Length ? starts[i + 1] : text.Length;
+                while (start >= runEnd) runEnd += runs[++runIndex]?.Text?.Length ?? 0;
+                NativeTooltipRun run = runs[runIndex];
+                int scalar = char.ConvertToUtf32(text, start);
+                if (scalar == '\r' || scalar == '\n')
                 {
-                    char next = t[0];
-                    if (next != '\n' && next != '\r'
-                        && !IsOpeningPunct(cur.LastChar) && !IsClosingPunct(next)
-                        && (cur.LastChar == ' ' || cur.LastChar == '-'
-                            || IsWideChar(cur.LastChar) || IsWideChar(next)))
-                    {
-                        MarkBreak(cur);
-                    }
+                    outLines.Add(cur.FlushLine());
+                    continue;
                 }
-
-                int i = 0;
-                while (i < t.Length)
+                bool space = end == start + 1 && (scalar == ' ' || scalar == '\t');
+                string paintOverride = null;
+                if (scalar == 0x200B && letterSpacingPx == 0f)
                 {
-                    char c = t[i];
-                    if (c == '\r' || c == '\n')
+                    // A sequence of zero-width spaces has no ink. Keep its source
+                    // span and break opportunity without shaping every prefix.
+                    while (end < runEnd && text[end] == '\u200B')
                     {
-                        if (c == '\r' && i + 1 < t.Length && t[i + 1] == '\n') i++;
-                        outLines.Add(cur.FlushLine());
                         i++;
-                        continue;
+                        end = i + 1 < starts.Length ? starts[i + 1] : text.Length;
                     }
-                    // CSS 空白折叠：行首（换行/软断后）空白不渲染；
-                    // 行内连续 space/tab 序列折叠为单个空格（white-space:normal）。
-                    if (c == ' ' || c == '\t')
+                    paintOverride = string.Empty;
+                }
+                string element = space ? " " : text.Substring(start, end - start);
+                RunFont font = RunFont.Of(run);
+                while (!space || (cur.HasContent && cur.LastChar != ' '))
+                {
+                    float delta;
+                    try
                     {
-                        if (!cur.HasContent || cur.LastChar == ' ') { i++; continue; }
-                        c = ' ';
+                        delta = paintOverride != null ? 0f : cur.TrialDelta(element, run, font, measureF);
                     }
-                    // span 级测量：可并入末 slice 时按"整段文本+c"量宽取增量，
-                    // 与 CSS 按完整 inline span 渲染的宽度一致（避免逐字累加的
-                    // 单次测量边距/舍入膨胀）。
-                    float cw = cur.TrialDelta(c, run, font, measureF);
-                    if (cur.HasContent && cur.WidthF + cw > maxWidthPx)
+                    catch (ExternalException)
                     {
-                        if (cur.BrkSlice >= 0) BreakAt(cur, outLines, measureF);
-                        else outLines.Add(cur.FlushLine());
-                        continue;   // 同一字符在新行重试
+                        if (cur.HasContent)
+                        {
+                            // Retry the complete element on a fresh line before
+                            // attributing a GDI+ run limit to that element.
+                            if (cur.BrkSlice >= 0) BreakAt(cur, outLines, measureF);
+                            else outLines.Add(cur.FlushLine(endsLogicalLine: false));
+                            continue;
+                        }
+                        paintOverride = "□";
+                        delta = measureF(paintOverride, font);
+                        LogManager.Log($"[NativeTooltip] GDI+ refused U+{scalar:X} at {start} ({end - start} UTF-16 units).");
                     }
-                    cur.Append(c, run, font, cw);
-                    if (CanBreakAfter(t, i)) MarkBreak(cur);
-                    i++;
+                    if (!cur.HasContent || cur.WidthF + delta <= maxWidthPx)
+                    {
+                        cur.Append(element, run, font, delta, paintOverride);
+                        int next = end < text.Length ? char.ConvertToUtf32(text, end) : -1;
+                        if (scalar == 0x200B || CanBreakAfter(scalar, next)) MarkBreak(cur);
+                        break;
+                    }
+                    if (cur.BrkSlice >= 0) BreakAt(cur, outLines, measureF);
+                    else outLines.Add(cur.FlushLine(endsLogicalLine: false));
                 }
             }
             if (cur.HasContent) outLines.Add(cur.FlushLine());
@@ -470,7 +486,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             private static bool SameStyle(VisualLine.Slice s, NativeTooltipRun run,
                 RunFont font)
             {
-                return s.Color == (run != null ? run.Color : null)
+                return s.PaintOverride == null && s.Color == (run != null ? run.Color : null)
                     && s.Bold == font.Bold && s.Italic == font.Italic
                     && s.Underline == font.Underline
                     && s.FontSize == font.FontSize && s.FontFace == font.FontFace;
@@ -478,23 +494,24 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
             /// <summary>追加字符的行宽增量（浮点，含 letter-spacing）：
             /// 可并入末 slice 时量整段文本取差。</summary>
-            internal float TrialDelta(char c, NativeTooltipRun run, RunFont font,
+            internal float TrialDelta(string element, NativeTooltipRun run, RunFont font,
                 Func<string, RunFont, float> measure)
             {
                 VisualLine.Slice last =
                     Slices.Count > 0 ? Slices[Slices.Count - 1] : null;
                 if (last != null && SameStyle(last, run, font))
-                    return measure(last.Text + c, font) - last.WidthF;
-                return measure(c.ToString(), font);
+                    return measure(last.Text + element, font) - last.WidthF;
+                return measure(element, font);
             }
 
-            internal void Append(char c, NativeTooltipRun run, RunFont font, float cw)
+            internal void Append(string element, NativeTooltipRun run, RunFont font, float cw,
+                string paintOverride)
             {
                 VisualLine.Slice last = Slices.Count > 0 ? Slices[Slices.Count - 1] : null;
                 Color? color = run != null ? run.Color : null;
-                if (last != null && SameStyle(last, run, font))
+                if (paintOverride == null && last != null && SameStyle(last, run, font))
                 {
-                    last.Text += c;
+                    last.Text += element;
                     last.WidthF += cw;
                     last.WidthPx = (int)Math.Round(last.WidthF);
                 }
@@ -502,7 +519,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 {
                     Slices.Add(new VisualLine.Slice
                     {
-                        Text = c.ToString(),
+                        Text = element,
+                        PaintOverride = paintOverride,
                         Color = color,
                         Bold = font.Bold,
                         Italic = font.Italic,
@@ -516,17 +534,17 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 if (font.FontSize.HasValue && font.FontSize.Value > MaxFontCss)
                     MaxFontCss = font.FontSize.Value;
                 WidthF += cw;
-                LastChar = c;
+                LastChar = element[element.Length - 1];
             }
 
-            internal VisualLine FlushLine()
+            internal VisualLine FlushLine(bool endsLogicalLine = true)
             {
                 float h = HeightF;
                 VisualLine l = new VisualLine
                 {
                     LineHeightF = h,
                     LineHeightPx = (int)Math.Round(h),
-                    EndsLogicalLine = true
+                    EndsLogicalLine = endsLogicalLine
                 };
                 l.Slices.AddRange(Slices);
                 l.IsBlank = Slices.Count == 0;
@@ -557,7 +575,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             {
                 VisualLine.Slice hs = CloneSlice(mid);
                 hs.Text = headText;
-                hs.WidthF = measure(headText, mid.FontOf());
+                hs.WidthF = cur.BrkLen == mid.Text.Length ? mid.WidthF : measure(headText, mid.FontOf());
                 hs.WidthPx = (int)Math.Round(hs.WidthF);
                 head.Slices.Add(hs);
             }
@@ -607,7 +625,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 {
                     VisualLine.Slice last = acc.Slices.Count > 0
                         ? acc.Slices[acc.Slices.Count - 1] : null;
-                    if (last != null && last.Color == s.Color
+                    if (last != null && last.PaintOverride == null && s.PaintOverride == null && last.Color == s.Color
                         && last.Bold == s.Bold && last.Italic == s.Italic
                         && last.Underline == s.Underline
                         && last.FontSize == s.FontSize && last.FontFace == s.FontFace)
@@ -655,28 +673,25 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         {
             return new VisualLine.Slice
             {
-                Text = s.Text, Color = s.Color, Bold = s.Bold, Italic = s.Italic,
+                Text = s.Text, PaintOverride = s.PaintOverride, Color = s.Color, Bold = s.Bold, Italic = s.Italic,
                 Underline = s.Underline, FontSize = s.FontSize, FontFace = s.FontFace,
                 WidthPx = s.WidthPx, WidthF = s.WidthF
             };
         }
 
         /// <summary>
-        /// 位置 i（刚追加的字符）之后是否可断——CSS line-break/UAX14 近似：
+        /// 当前字素之后是否可断——CSS line-break/UAX14 近似：
         /// 开标点后、闭标点前禁断；空白/'-' 后、宽字符后、西文→宽字符边界可断。
         /// </summary>
-        private static bool CanBreakAfter(string t, int i)
+        private static bool CanBreakAfter(int scalar, int next)
         {
-            char c = t[i];
-            if (IsOpeningPunct(c)) return false;
-            if (i + 1 < t.Length && IsClosingPunct(t[i + 1])) return false;
-            if (c == ' ' || c == '\t' || c == '-') return true;
-            if (IsWideChar(c)) return true;
-            return i + 1 < t.Length && IsWideChar(t[i + 1]);
+            if (IsOpeningPunct(scalar) || IsClosingPunct(next)) return false;
+            return scalar == ' ' || scalar == '\t' || scalar == '-'
+                || IsWideChar(scalar) || IsWideChar(next);
         }
 
         /// <summary>开标点（UAX14 OP 近似）：其后禁止断行。</summary>
-        private static bool IsOpeningPunct(char c)
+        private static bool IsOpeningPunct(int c)
         {
             switch (c)
             {
@@ -689,7 +704,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         }
 
         /// <summary>闭标点（UAX14 CL/IS 近似）：其前禁止断行。</summary>
-        private static bool IsClosingPunct(char c)
+        private static bool IsClosingPunct(int c)
         {
             switch (c)
             {
@@ -1919,7 +1934,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             // 先在宽度上限内排版；出现软折行就使用 cap，否则按最长逻辑行收缩。
             // 不做无界逐字测宽：长文本会使整段测量与缓存呈平方增长。
             List<VisualLine> lines = WrapRuns(runs, textCapW, measure, lh);
-            bool wrapped = lines.Count > PlainLogicalLineCount(runs);
+            bool wrapped = lines.Exists(line => !line.EndsLogicalLine);
             float maxContent = 0f;
             foreach (VisualLine l in lines)
             {
@@ -1938,29 +1953,6 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             plan.IntroLogicalLines = MergeLogicalLines(lines);
             plan.IntroContentLeftPx = padX;
             plan.IntroContentTopPx = padY;
-        }
-
-        private static int PlainLogicalLineCount(List<NativeTooltipRun> runs)
-        {
-            int count = 0;
-            bool hasText = false;
-            foreach (NativeTooltipRun run in runs)
-            {
-                if (run == null || string.IsNullOrEmpty(run.Text)) continue;
-                string t = run.Text;
-                for (int i = 0; i < t.Length; i++)
-                {
-                    char c = t[i];
-                    if (c == '\r' || c == '\n')
-                    {
-                        if (c == '\r' && i + 1 < t.Length && t[i + 1] == '\n') i++;
-                        count++;
-                        hasText = false;
-                    }
-                    else if (c != ' ' && c != '\t') hasText = true;
-                }
-            }
-            return count + (hasText ? 1 : 0);
         }
 
         /// <summary>逻辑行自然宽（max-content 语义）：slice 宽和；行尾可塌陷空白
