@@ -4,6 +4,7 @@ import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import { parseXmlDocument, type XmlDocumentNode } from "./document.js";
+import { readItemIdentityNames } from "./item-identity-names.js";
 
 const STRIPPABLE = new Set(["armor", "melee", "potion", "explosives"]);
 const SCHEMA = "cf7-nonweapon-runtime-projection.v1";
@@ -72,9 +73,10 @@ export function buildNonWeaponRuntimeProjection(
     const items = isObject(source.parsed.root) ? array(source.parsed.root.item) : [];
     if (nodes.length !== items.length) throw new Error(`Ambiguous item structure: ${entry}`);
     const occurrences = new Map<string, number>();
+    const names = readItemIdentityNames(source.source);
     source.rows = nodes.map((node, sourceOrdinal) => {
       const item = object(items[sourceOrdinal], `${entry} item ${sourceOrdinal}`);
-      const name = text(item.name, `${entry} item name`);
+      const name = text(names[sourceOrdinal], `${entry} item name`);
       const nameOccurrence = (occurrences.get(name) ?? 0) + 1;
       occurrences.set(name, nameOccurrence);
       const balance = isObject(item.balance) ? item.balance : null;

@@ -3,6 +3,7 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { XMLParser, XMLValidator } from "fast-xml-parser";
+import { readItemIdentityNames } from "./item-identity-names.js";
 import {
   derivePlayerWeaponBalanceProjection,
   validateWeaponBalanceRecord,
@@ -122,10 +123,12 @@ export function buildWeaponSummaryParityReport(repositoryRoot: string) {
     if (valid !== true) throw new Error(`${sourceFile}: ${valid.err.msg}`);
     const items = array(object(object(parser.parse(xml))?.root)?.item);
     const occurrences = new Map<string, number>();
+    const names = readItemIdentityNames(xml);
+    if (items.length !== names.length) throw new Error(`${sourceFile}: item identity count mismatch`);
     items.forEach((value, itemOrdinal) => {
       const item = object(value);
       if (!item) throw new Error(`${sourceFile}: non-object item ${itemOrdinal}`);
-      const itemName = String(item.name ?? "");
+      const itemName = names[itemOrdinal]!;
       const occurrence = (occurrences.get(itemName) ?? 0) + 1;
       occurrences.set(itemName, occurrence);
       const family = object(item.balance)?.formulaFamily;

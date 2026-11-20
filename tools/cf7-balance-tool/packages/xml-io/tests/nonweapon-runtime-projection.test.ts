@@ -19,6 +19,15 @@ function fixture(files: Record<string, string>, entries = Object.keys(files), it
 const outText = (projection: ReturnType<typeof buildNonWeaponRuntimeProjection>, file: string) => projection.files.get(`data/items/${file}`)!.toString("utf8");
 
 describe("offline nonweapon ItemDataLoader projection", () => {
+  it("preserves literal item keys when tracking duplicate names", () => {
+    const root = fixture({ "items.xml": `<root>${item("刀", balance("melee"))}${item("刀 ", balance("melee"))}${item("刀 ", balance("melee"))}</root>` });
+    const projection = buildNonWeaponRuntimeProjection(root, "identity-fixture");
+    expect(projection.manifest.items).toMatchObject([
+      { name: "刀", stripped: true, nameOccurrence: 1 },
+      { name: "刀 ", stripped: false, nameOccurrence: 1 },
+      { name: "刀 ", stripped: false, nameOccurrence: 2 }
+    ]);
+  });
   it("removes only the four known families, preserving BOM/CRLF/comments, identity and defaults input", () => {
     const content = "\ufeff<root>\r\n<!--作者注释不丢失-->\r\n" + ["armor", "melee", "potion", "explosives", "weapon", "future"].map((family) => item(family, balance(family))).join("\r\n") + "\r\n</root>\r\n";
     const root = fixture({ "items.xml": content });
