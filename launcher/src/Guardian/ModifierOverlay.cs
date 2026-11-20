@@ -28,12 +28,12 @@ namespace CF7Launcher.Guardian
         private bool _preparing, _disposed;
 
         internal ModifierOverlay(Form owner, string webRoot, string profileRoot,
-            ModifierTask task, Action sendClosed)
+            ModifierTask task, Action sendClosed, string dollPortraitsDir)
         {
             _owner = owner ?? throw new ArgumentNullException(nameof(owner));
             _task = task ?? throw new ArgumentNullException(nameof(task));
             _sendClosed = sendClosed;
-            _surface = new ModifierNativeSurface(owner, webRoot, profileRoot, task);
+            _surface = new ModifierNativeSurface(owner, webRoot, profileRoot, task, dollPortraitsDir);
             _surface.CloseRequested += OnNativeCloseRequested;
             _surface.Move += OnSurfaceMoved;
             _ownerLocation = _owner.Location;

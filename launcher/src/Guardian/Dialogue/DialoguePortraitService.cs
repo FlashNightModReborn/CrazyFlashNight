@@ -69,26 +69,8 @@ namespace CF7Launcher.Guardian.Dialogue
         /// </summary>
         internal static string ComputeRenderAssetVersion(string root)
         {
-            using (var sha = SHA256.Create())
-            {
-                HashFile(sha, Path.Combine(root, "launcher", "web", "assets", "dressup", "manifest.json"));
-                HashFile(sha, Path.Combine(root, "launcher", "web", "modules", "asset-timeline.js"));
-                HashFile(sha, Path.Combine(root, "launcher", "web", "modules", "dressup-doll-renderer.js"));
-                HashFile(sha, Path.Combine(root, "launcher", "web", "modules", "dialogue", "live-portrait.js"));
-                HashFile(sha, Path.Combine(root, "launcher", "web", "modules", "dialogue", "live-portrait-bake.js"));
-                sha.TransformFinalBlock(new byte[0], 0, 0);
-                return Convert.ToHexString(sha.Hash).ToLowerInvariant();
-            }
-        }
-
-        private static void HashFile(SHA256 sha, string path)
-        {
-            byte[] name = Encoding.UTF8.GetBytes(Path.GetFileName(path) + "\n");
-            sha.TransformBlock(name, 0, name.Length, null, 0);
-            byte[] data;
-            try { data = File.Exists(path) ? File.ReadAllBytes(path) : Encoding.UTF8.GetBytes("missing:" + Path.GetFileName(path)); }
-            catch { data = Encoding.UTF8.GetBytes("unreadable:" + Path.GetFileName(path)); }
-            sha.TransformBlock(data, 0, data.Length, null, 0);
+            return DressupRenderAssets.Version(Path.Combine(root, "launcher", "web"),
+                "dialogue/live-portrait.js", "dialogue/live-portrait-bake.js");
         }
 
         internal void LoadPortrait(NativeDialogueFrame frame, JObject appearance, Action<Bitmap> ready)

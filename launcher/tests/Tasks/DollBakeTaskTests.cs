@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud.Loot;
 using CF7Launcher.Tasks;
 
@@ -11,7 +12,7 @@ namespace CF7Launcher.Tests.Tasks
 {
     /// <summary>
     /// DollBakeTask：web 侧 doll-bake.js 烘焙回传 {key, requestId, pngBase64} → 校验 +
-    /// 原子写 launcher/data/doll-portraits/&lt;hex&gt;.png。覆盖落盘正确性、
+    /// 原子写 launcher/data/doll-portraits/&lt;renderVersion&gt;/&lt;hex&gt;.png。覆盖落盘正确性、
     /// exact 在飞关联、同字节跳过、坏 key（路径穿越防护）、完整 PNG/尺寸与 web 显式失败。
     /// </summary>
     public class DollBakeTaskTests
@@ -52,6 +53,92 @@ namespace CF7Launcher.Tests.Tasks
             var msg = new JObject();
             msg["payload"] = payload;
             return msg;
+        }
+
+        [Theory]
+        [InlineData("男")]
+        [InlineData("女")]
+        public void UpdatedRenderAssetsIgnoreOldPortraitAndReadNewPixelsAcrossLifetimes(string gender)
+        {
+            string root = CreateTempDir();
+            try
+            {
+                string web = Path.Combine(root, "launcher", "web");
+                string manifest = Path.Combine(web, "assets", "dressup", "manifest.json");
+                Directory.CreateDirectory(Path.GetDirectoryName(manifest));
+                var tuple = new System.Collections.Generic.Dictionary<string, string>
+                {
+                    { "gender", gender }, { "body", "A兵团精致战术背心" }
+                };
+                string key = DollPortraitKey.Compute(tuple);
+                string file = DollPortraitKey.ComputeHex(tuple) + ".png";
+                string legacy = Path.Combine(root, "launcher", "data", "doll-portraits");
+                byte[] oldPixels = CreatePng(225);
+                byte[] newPixels = CreatePng(49);
+                Directory.CreateDirectory(legacy);
+                File.WriteAllBytes(Path.Combine(legacy, file), oldPixels);
+                File.WriteAllText(manifest, "old layer URI");
+                string previous = DressupRenderAssets.LootPortraitDirectory(web);
+                Directory.CreateDirectory(previous);
+                File.WriteAllBytes(Path.Combine(previous, file), oldPixels);
+
+                File.WriteAllText(manifest, "new layer URI");
+                string current = DressupRenderAssets.LootPortraitDirectory(web);
+                Assert.NotEqual(previous, current);
+                string requestId = null;
+                using (var catalog = new LootIconCatalog(web, dollPortraitsDir: current))
+                using (var service = new DollPortraitBakeService(current, json =>
+                {
+                    requestId = JObject.Parse(json).Value<string>("requestId");
+                    return true;
+                }))
+                {
+                    Assert.False(catalog.TryGet(key, out _));
+                    service.EnsurePortrait(tuple, key);
+                    Assert.NotNull(requestId);
+                    var task = new DollBakeTask(root, service);
+                    var reply = JObject.Parse(task.Handle(Message(key, Convert.ToBase64String(newPixels), requestId)));
+                    Assert.True(reply.Value<bool>("success"));
+                }
+
+                Assert.Equal(oldPixels, File.ReadAllBytes(Path.Combine(legacy, file)));
+                Assert.Equal(oldPixels, File.ReadAllBytes(Path.Combine(previous, file)));
+                string reopened = DressupRenderAssets.LootPortraitDirectory(web);
+                Assert.Equal(current, reopened);
+                Assert.Equal(newPixels, File.ReadAllBytes(Path.Combine(reopened, file)));
+                int requests = 0;
+                using var nextService = new DollPortraitBakeService(reopened, _ => { requests++; return true; });
+                nextService.EnsurePortrait(tuple, key);
+                Assert.Equal(0, requests);
+                using var nextCatalog = new LootIconCatalog(web, dollPortraitsDir: reopened);
+                Assert.True(nextCatalog.TryGet(key, out var frames));
+                Assert.Equal(Color.FromArgb(255, 49, 206, 40).ToArgb(),
+                    frames.First.GetPixel(frames.First.Width / 2, frames.First.Height / 2).ToArgb());
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Theory]
+        [InlineData("asset-timeline.js")]
+        [InlineData("dressup-doll-renderer.js")]
+        [InlineData("merc-data.js")]
+        [InlineData("merc-portrait-renderer.js")]
+        [InlineData("doll-bake.js")]
+        public void LootPortraitGenerationChangesWithEachRenderModule(string module)
+        {
+            string web = CreateTempDir();
+            try
+            {
+                string modules = Directory.CreateDirectory(Path.Combine(web, "modules")).FullName;
+                string path = Path.Combine(modules, module);
+                File.WriteAllText(path, "first");
+                string original = DressupRenderAssets.LootPortraitDirectory(web);
+                File.WriteAllText(path, "other");
+                Assert.NotEqual(original, DressupRenderAssets.LootPortraitDirectory(web));
+                File.WriteAllText(path, "first");
+                Assert.Equal(original, DressupRenderAssets.LootPortraitDirectory(web));
+            }
+            finally { Directory.Delete(web, true); }
         }
 
         [Fact]
