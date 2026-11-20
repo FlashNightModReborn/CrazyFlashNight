@@ -715,10 +715,12 @@ namespace CF7Launcher.Guardian
                         MouseKeys(m.WParam), WheelDelta(m.WParam), PointToClient(MousePosition));
                     break;
                 case WmCaptureChanged:
-                    if (_capturedButton && !Capture && IsLeaseCurrent(_captureEndpointLease)) {
-                        // 捕获被外部夺走：不合成 up，直接请求关闭。
+                    if (_capturedButton && !Capture) {
+                        // The new capture owner receives the button-up, even for an unbound report preview.
+                        // Cancel this window's gesture; the physical-key check still gates transition actions.
+                        _pressedButtons = 0;
                         _capturedButton = false;
-                        RequestClose("capture_lost");
+                        if (IsLeaseCurrent(_captureEndpointLease)) RequestClose("capture_lost");
                     }
                     break;
             }

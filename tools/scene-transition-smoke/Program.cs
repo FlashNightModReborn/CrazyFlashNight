@@ -28,6 +28,7 @@ internal sealed class Probe : Form
     private Process peer;
     private readonly TextBox inputTarget=new() { Location=new Point(10,530),Width=160 };
     [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+    [DllImport("user32.dll")] private static extern IntPtr SendMessage(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam);
     [DllImport("user32.dll")] private static extern bool SetForegroundWindow(IntPtr hwnd);
     [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hwnd);
     [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd,out uint pid);
@@ -392,7 +393,19 @@ internal sealed class Probe : Form
             await js("document.querySelector('.item-grid-mode-option[data-layout-mode=full]').click();document.querySelector('[data-settlement-side-tab=materials]').click();document.querySelector('.loot-settlement-material-toolbar input').value='金属';");
             await waitScript("fixtureHeldReportCount===1&&fixtureHeldReport.revision===1","real page issues one report intent before display advancement");
             project(parallel("tr:4","loading",2));
+            // The preview has no loot instance yet. Deliver the real page's intent while its window
+            // owns a right press, then let Windows transfer capture and deliver the up to the new owner.
+            const int rightDown = 0x0204, rightUp = 0x0205;
+            var point = new IntPtr((30 << 16) | 50);
+            SendMessage(sameHandle, rightDown, new IntPtr(2), point);
+            if (!sameSurface.Capture) throw new Exception("Report preview did not take mouse capture");
             await js("fixtureReleaseReport();");
+            var pendingAction = controllerType.GetField("_pendingAction", BindingFlags.Instance | BindingFlags.NonPublic);
+            await Wait(() => pendingAction.GetValue(controller) != null, "report intent waits for the in-flight mouse press");
+            inputTarget.Capture = true;
+            if (sameSurface.Capture || !inputTarget.Capture) throw new Exception("Mouse capture did not transfer");
+            SendMessage(inputTarget.Handle, rightUp, IntPtr.Zero, point);
+            inputTarget.Capture = false;
             await Wait(()=>wire.Exists(p=>p.Value<string>("requestId")=="tr:4"&&p.Value<string>("verb")=="manageReport"),"covered report requests reward admission before scene capture");
             var admission=wire.FindAll(p=>p.Value<string>("requestId")=="tr:4"&&p.Value<string>("verb")=="manageReport");
             if(admission.Count!=1 || admission[0].Value<int>("revision")!=2)

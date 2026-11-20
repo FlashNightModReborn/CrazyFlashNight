@@ -480,6 +480,8 @@ Native 绘制变更检查 `NativeGuidanceVisualTests` 的实际像素、原场�
 
 报告接通/关闭必须覆盖两段异步时序：真实 WebView2 已发出的自动意图先被夹具截留，Host 的 loading/reveal 显示前进后原样释放；真实 AVM1 则在 Host 形成意图后推进加载/提示再交付 AS2。接通与提前/就绪/exact 业务关闭均须首次迟到消息就生效，不能由第二次发送掩盖。已经接受的 covered 证明可在同请求内保留，foreign/generation/未来或畸形 revision、无 coverage 与未知锁仍拒绝，失败导航和世界呈现维持 exact revision。实际游戏另验同一进程连续至少三次返回，不由夹具次数代签。
 
+`CompositionRecheckTests` 覆盖在战报预览和已绑定的结算窗口按下鼠标、由另一窗口接走捕获并收到松键的顺序。真实 WebView2 夹具另核对预览在捕获转移后会继续原有的接通请求。窗口取消本地手势，过场仍等待实际按键松开，同一请求只发送一次。
+
 本包 AS2 逻辑变更编译 `-Target publish`，main 时间轴变更才编译 `-Target main`，核对应 SWF 刷新；不重编原背景 SWF。只改 Host/Web 时不重编同哈希 AS2/SWF，应显式记录复用的既有证据。自动门覆盖严格身份、遮罩回执、揭幕许可、未知操作锁和真实合成测试窗口，不能代签基地/战斗/失败的实际游戏旅程或保存重启。合同与人验入口见 [U12 专项](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
 
 涉及关卡返回报告的等待/开窗时序，追加 `scripts/run-map-loot-tests.ps1` 与 `scripts/run-stage-return-tests.ps1`：覆盖胜利、战败、主动撤退报告、durable 暂存后提前绑定且不暂停、清场只保留 exact 空暂存报告、原权威提前关闭、失败重试复用会话、奖励不重放、教程优先级和重复就绪不重复投递；过场 focused 同时覆盖清场取消撤罩、取消/错误不伪造成功及重绑定世界拒绝旧揭幕，并覆盖已收到揭幕后再取消/失败/提前清理均不能越过成功终帧。Battle outcome 的 failure 不是加载失败页的真实旅程。
