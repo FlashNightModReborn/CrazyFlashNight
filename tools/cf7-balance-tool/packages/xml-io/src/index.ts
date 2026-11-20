@@ -10,3 +10,4 @@ export * from "./scanner.js";
 export * from "./weapon-balance.js";
 export * from "./weapon-balance-evidence.js";
 export * from "./nonweapon-runtime-projection.js";
+export * from "./weapon-summary-parity.js";
