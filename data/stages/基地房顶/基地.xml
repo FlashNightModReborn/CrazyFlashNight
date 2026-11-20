@@ -285,9 +285,24 @@
         </Door>
       </Environment>
     </BasicInformation>
+    <Lights>
+      <Light>
+        <Key>siege-coil-power</Key>
+        <Preset>spawn</Preset>
+        <AttachTo>siege-coil-powered</AttachTo>
+        <OffsetX>111</OffsetX>
+        <OffsetY>68</OffsetY>
+        <Radius>124</Radius>
+        <Energy>1.35</Energy>
+        <Color>#64DFFF</Color>
+        <BudgetPool>scene</BudgetPool>
+        <FrameCurve>1:0.52,8:0.52,9:0.6,12:0.65,13:0.76,15:0.78,16:1,17:0.62,18:1,19:1,20:0.74,22:0.54,23:0.52,28:0.52,29:0.96,30:0.52,36:0.52</FrameCurve>
+      </Light>
+    </Lights>
     <Instances>
       <Instance>
         <url>flashswf/backgrounds/base_siege_coil.swf</url>
+        <RuntimeLightKey>siege-coil-powered</RuntimeLightKey>
         <x>1060</x>
         <y>176.08</y>
         <Parameters>_xscale:40,_yscale:40</Parameters>
@@ -627,9 +642,24 @@
         </Door>
       </Environment>
     </BasicInformation>
+    <Lights>
+      <Light>
+        <Key>siege-coil-power</Key>
+        <Preset>spawn</Preset>
+        <AttachTo>siege-coil-powered</AttachTo>
+        <OffsetX>111</OffsetX>
+        <OffsetY>68</OffsetY>
+        <Radius>124</Radius>
+        <Energy>1.35</Energy>
+        <Color>#64DFFF</Color>
+        <BudgetPool>scene</BudgetPool>
+        <FrameCurve>1:0.52,8:0.52,9:0.6,12:0.65,13:0.76,15:0.78,16:1,17:0.62,18:1,19:1,20:0.74,22:0.54,23:0.52,28:0.52,29:0.96,30:0.52,36:0.52</FrameCurve>
+      </Light>
+    </Lights>
     <Instances>
       <Instance>
         <url>flashswf/backgrounds/base_siege_coil.swf</url>
+        <RuntimeLightKey>siege-coil-powered</RuntimeLightKey>
         <x>1015</x>
         <y>131.08</y>
         <Parameters>_xscale:40,_yscale:40</Parameters>

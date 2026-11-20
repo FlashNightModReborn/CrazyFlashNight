@@ -10,6 +10,8 @@ powershell -File scripts/run-scene-lighting-tests.ps1 -TimeoutSeconds 240
 
 检查器只读所有环境与关卡 XML，验证预设、字段、有限数值、稳定键、绑定、继承覆盖、曲线和容量。它不改关卡、存档、素材或运行库。Flash suite 验证真实 MovieClip 的坐标、镜像、显隐、替换与三种现役外部 SWF 的异步装载。
 
+自管加载的关卡实例可以用 `RuntimeLightKey` 声明绑定名。负责装载的控制器在素材就绪时调用 `SceneLightBridge.track`，传入要采样的子元件。基地外围线圈绑定 `effectPowered`，让亮度曲线跟随放电时间轴，隐藏时熄灭。
+
 基地环境用 `BasePowerProject` 声明「基地供电与照明」。参加供电分级的灯写整数 `BasePowerTier`（0–3），日间保留的信标另写 `BaseBeacon=true`。改稳定键后按原等级工作，关卡覆盖仍用原键匹配。非战斗基地进场由基建系统发现项目，灯具只读取等级。运行时会报告坏预设、曲线或挂点，其他灯按各自的原始位置继续更新。
 
 GPU 夹具在自己的来源窗口中验证 32 个缓存灯、像素复用、平移缩放、实时光变化隔离、夜视色向和清理：

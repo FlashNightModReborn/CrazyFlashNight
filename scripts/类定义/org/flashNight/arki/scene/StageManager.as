@@ -71,6 +71,12 @@ class org.flashNight.arki.scene.StageManager {
     private var preparedStageDropName:String = "";
     public var currentStage:Number = -1;
 
+    /** Keys for child clips whose external loader is owned by the stage callback. */
+    public function getRuntimeLightKey(index:Number):String {
+        var key = currentStageInfo.instanceInfo[index].RuntimeLightKey;
+        return typeof key == "string" ? key : null;
+    }
+
     public var spawnPoints:Array; // 出生点影片剪辑列表
 
     public var isActive = false;
