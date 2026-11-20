@@ -1340,4 +1340,39 @@ test('inventory writers bind every request response and close to the exact activ
         'NPC facade must expose exactly the diagnostic and owner-channel Bridge send ports');
 });
 
+test('discard presenters retain committed success while reporting an isolated summary issue', function() {
+    const Controls = require('../launcher/web/modules/inventory-workbench-storage-controls.js');
+    [false, true].forEach(function(withIssue) {
+        const messages = [];
+        const result = {success:true, discarded:withIssue ? {displayIssue:'balance_summary_invalid'} : {}};
+        let modal;
+        let writes = 0;
+        const shell = {openModal:value => { modal = value; }};
+        const slot = {physicalSlot:0,slotLease:'lease.toast',occupied:true,
+            item:{displayName:'测试物品',quantity:1},confirmProjection:{displayName:'测试物品',quantity:1}};
+        const controls = Controls.create({
+            state:() => ({ready:true}), view:() => 'storage', shell:() => shell,
+            slotRef:() => ({containerId:'背包',slot:0,expectedLease:'lease.toast'}),
+            coordinator:{discard:(_source, callback) => { writes++; callback(result); return true; }},
+            render:() => {},toast:value => messages.push(value),error:() => '失败'
+        });
+        controls.discard('背包',slot);
+        modal.actions.find(action => action.id === 'discard').onSelect();
+        const kshop = new KShopOwned.OwnedInventoryPresenter({
+            state:{getStatus:() => ({ready:true}),getWorkbenchShell:() => shell},
+            intent:{toast:value => messages.push(value),discard:(_source, callback) => {
+                writes++; callback(result); return true;
+            }}
+        });
+        kshop.render = () => {};
+        kshop.showDiscardConfirm('背包',slot);
+        modal.actions.find(action => action.id === 'discard').onSelect();
+        assert.deepStrictEqual(messages,[
+            withIssue ? '物品已丢弃。平衡摘要暂不可用。' : '物品已丢弃。',
+            withIssue ? '物品已丢弃。平衡摘要暂不可用。' : '物品已丢弃。'
+        ]);
+        assert.strictEqual(writes,2);
+    });
+});
+
 process.stdout.write('Inventory workbench modules: ' + passed + '/' + passed + ' passed\n');

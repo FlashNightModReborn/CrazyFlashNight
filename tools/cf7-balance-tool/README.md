@@ -5,6 +5,8 @@
 >
 > 当前已初始化 **npm workspace** 骨架；实际可运行命令见 [docs/bootstrap-status.md](./docs/bootstrap-status.md)。
 
+离线候选入口：`npm run nonweapon-runtime-projection -- --output <隔离目录> [--check]` 生成保守的非 weapon 物品 XML 投影；`npm run weapon-summary-parity -- --repo <游戏仓> --output <报告.json> [--check]` 比较当前 AS2 源码模型与工具摘要。两者均不切生产加载，复跑与未验证范围见 [#131 报告](../../docs/reports/issue-131-offline-projection.md)和 [#132 报告](../../docs/reports/issue-132-weapon-summary-parity.md)。
+
 ---
 
 ## 文档索引

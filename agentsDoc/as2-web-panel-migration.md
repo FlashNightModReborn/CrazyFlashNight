@@ -207,6 +207,8 @@ Skill 页切换把 `Bridge.send` 严格定义为本地 transport 投递结果：
 
 ### Inventory 通用 owner、未知写与响应证明
 
+本节库存摘要隔离与恢复响应核对基线：commit `23ec828cd04c783c86abb016c1f080eb814d41ba` 加本轮源码候选；Windows Host/WebView2 未验证，未发布。
+
 通用 inventory wire 的生产 owner 固定为 `workbench / kshop / npcshop / crafting`。四者发送的业务 envelope 顶层必须精确为 `{type,panel,domain,cmd,callId,panelInstanceId,payload}`，其中 `type=panel`、`domain=inventory`，`panel` 与非空 `panelInstanceId` 必须同时等于 Host 当前 active owner；response 还必须回显同一 `panel / panelInstanceId / cmd / callId`。ordinary close 也先复验当前 owner 与 exact instance，stale、foreign、缺实例或多余字段一律不得关闭当前面板或把旧回包交给新实例。`loot` organizer 和 Character candidate rich tooltip 继续走各自更窄的专用 validator；它们不能借通用四-owner gate 扩权，也不能把专用 payload 形状回落成普通 Inventory 请求。
 
 `InventoryTask` 对四个通用 owner 共用一个进程内三态写门：`idle → write_pending → needs_reconcile`。每次 `discard / move / merge / swap / autoTransfer / autoTransferBatch / sortAndMerge` 在投递前冻结实际受影响容器集合；明确成功或除 `commit_failed` 外的权威确定失败才回到 `idle`。send-false/抛异常、timeout、断线/导航、已接受的 owner close、畸形回包、`commit_failed` 或其他无法确定是否落盘的终态都把在途写收敛为 `needs_reconcile`，后续写只返回 `reconcile_required`，绝不自动重放原 mutation。只有进入未知态后新发起、覆盖全部受影响容器、且 Host 对 request/batch/容器/窗口/过滤/槽位递归验证全部通过的成功 snapshot 才能解除门；未知态之前的旧 snapshot、迟到回包、只覆盖部分容器或畸形投影均不得清水位。Web document 导航、accepted owner close 与 socket teardown 会清 transport pending，但必须保留上述未知写事实。
@@ -214,6 +216,8 @@ Skill 页切换把 `Bridge.send` 严格定义为本地 transport 投递结果：
 `autoTransferBatch` 请求固定为 exact `{v:1,sources:[{containerId,slot,expectedLease}],targetContainerId,policy:"mergeThenEmpty",windows}`：`sources` 必须为 1–50 项、同一来源容器、slot 唯一，并且只允许 `背包↔仓库/战备箱`。全成功回包固定 `requestedCount=N / completedCount=N / results.length=N` 且不得携 `failure`；目标在第 `j` 项满时只提交选择顺序的前缀，回包为 `success:true / completedCount=j / failure:{index:j,error:"target_full"}`；首项即满则 `success:false,error:"target_full"` 且零写。AS2 必须先验证全部来源 lease，再一次扫描目标、一次提交两个容器、一次 dirty/容器失效/窗口组重投影；目标侧提交失败必须用 receipt 精确恢复来源对象、数量、索引与 revision。Web 对 partial 只计已提交前缀并清空剩余选择，不跳项、不重放；`commit_failed`、timeout、断线或畸形 success 仍进入上述 reconcile。
 
 Host 不再把 AS2 snapshot 或写回包原对象浅传到 Web：容器、稀疏物理槽、item、`confirmProjection`、mod、递归 facets/filterSpec 与可选 `balanceSummary` 均按白名单重建；Web 再独立执行同构 strict proof，并在整批验证完成后递归 deep-copy，再原子替换窗口。任何额外键、类型强制转换、重复容器/槽、请求不匹配、item/confirm 不一致或嵌套对象别名都 fail closed。AS2 仍是背包和落位规则的唯一业务权威；Host/Web 只证明与重建投影。
+
+库存响应的唯一可降级字段是非法可选 `balanceSummary`：私有响应适配器去掉该字段后，必须通过公共 `TrySanitizeItem` 的全部其余校验，才保留 snapshots/discarded 的已确认结果，并由 Host 附加 `displayIssue:"balance_summary_invalid"`。公共入口仍严格拒绝坏摘要和输入的 displayIssue；该标记与 balanceSummary 互斥，仅供 Web 展示“平衡摘要暂不可用”。字段本来缺失不产生标记。恢复资格仍由未知态之后新发且覆盖全部受影响容器的原探针规则决定；旧/部分 snapshot 未解除写门时返回 `success:false,error:"reconcile_required",requiresReconcile:true`，不能让 Web 先报 ready。
 
 Crafting 的整理背包仍是 exact crafting instance 内的本地子路由：`CraftingInventoryOrganizer → InventoryStorageWorkbench → InventoryRuntime` 全程保留 `panel=crafting`、原 `panelInstanceId` 与同一 pause witness；KShop、NPCShop 和 standalone Workbench 同样把自己的 exact tuple 传入各自 mux。同步 `Bridge.send()` 的 `false`/throw 必须立即沿当前 owner callback 失败，不能吞掉返回值后伪装成已投递 timeout。KShop 在 cart 已权威保存、owner close transport 同步失败时必须保持页面并重新武装本地 `KShopWriteCoordinator`，让同一 exact instance 可再次关闭；不得停留在永久 `closing`，也不得因重试重复业务写。普通关闭、force close、lazy dependency 或 mount failure 都只退休 incoming exact owner，并清净 pending/observer/RAF；只有显式“返回合成”恢复原 crafting DOM。
 

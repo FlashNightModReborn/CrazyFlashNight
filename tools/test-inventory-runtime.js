@@ -1276,6 +1276,95 @@ test('optional balanceSummary accepts only the exact confirmed finite projection
     });
 });
 
+test('Host summary quarantine marker is exact and never relaxes item or confirm validation', function() {
+    const request = {containerId:'背包', offset:0, limit:2, filterKey:'all'};
+    const snapshot = makeSnapshot(request, 20);
+    const item = makeItem();
+    item.displayIssue = 'balance_summary_invalid';
+    occupy(snapshot, 0, item);
+    addFacetProjection(snapshot);
+    assert.strictEqual(InventoryRuntime.isValidSnapshot(snapshot, request), true);
+    const mutations = [
+        value => { value.slots[0].item.balanceSummary = {state:'confirmed',weightLayers:1,formula:1,level:30}; },
+        value => { value.slots[0].item.displayIssue = 'unknown'; },
+        value => { value.slots[0].item.displayName = ''; },
+        value => { value.slots[0].item.rarity = 1; },
+        value => { value.slots[0].item.quantity = '1'; },
+        value => { value.slots[0].slotLease = ''; },
+        value => { value.slots[0].confirmProjection.quantity = 2; },
+        value => { value.containerVersion = '20'; }
+    ];
+    mutations.forEach(mutate => {
+        const bad = clone(snapshot);
+        mutate(bad);
+        assert.strictEqual(InventoryRuntime.isValidSnapshot(bad, request), false);
+    });
+});
+
+['discard', 'transfer', 'autoTransfer'].forEach(function(kind) {
+    test(kind + ' keeps Host-confirmed result and versions with an isolated display issue', function() {
+        const transport = new DeferredTransport();
+        const coordinator = createCoordinator(transport);
+        coordinator.open();
+        transport.respond(0, exactResponse(transport.calls[0], 10));
+        const results = [];
+        const source = {containerId:'背包', slot:0, expectedLease:'lease.10.0', occupied:true, item:makeItem()};
+        let started;
+        if (kind === 'discard') started = coordinator.discard(source, result => results.push(result));
+        else if (kind === 'transfer') started = coordinator.transfer({operationId:'inventory.transfer',
+            sourceRef:source, targetRef:{containerId:'仓库', slot:0, expectedLease:'lease.11.0', occupied:false}
+        }, result => results.push(result));
+        else started = coordinator.autoTransfer(source, '仓库', result => results.push(result));
+        assert.strictEqual(started, true);
+        const response = {success:true, snapshots:[]};
+        const containers = kind === 'discard' ? ['背包'] : ['背包','仓库'];
+        containers.forEach((containerId, index) => {
+            const snapshot = makeSnapshot(coordinator.getRequest(containerId), 20 + index);
+            const item = makeItem();
+            item.displayIssue = 'balance_summary_invalid';
+            occupy(snapshot, 0, item);
+            addFacetProjection(snapshot);
+            response.snapshots.push(snapshot);
+        });
+        if (kind === 'discard') response.discarded = {displayIssue:'balance_summary_invalid'};
+        transport.respond(1, response);
+        assert.strictEqual(results[0].success, true);
+        assert.strictEqual(coordinator.isReady(), true);
+        assert.strictEqual(coordinator.getWindow('背包').containerVersion, 20);
+        assert.strictEqual(coordinator.getWindow('背包').slots[0].item.displayIssue, 'balance_summary_invalid');
+        assert.notStrictEqual(coordinator.getWindow('背包').slots[0].item, response.snapshots[0].slots[0].item);
+        response.snapshots[0].containerVersion = 500;
+        transport.respond(1, response);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(coordinator.getWindow('背包').containerVersion, 20);
+        assert.strictEqual(transport.calls.length, 2);
+    });
+});
+
+test('lost write stays blocked through a rejected probe and recovers on a fresh Host-normalized batch', function() {
+    const transport = new DeferredTransport();
+    const coordinator = createCoordinator(transport);
+    coordinator.open();
+    transport.respond(0, exactResponse(transport.calls[0], 10));
+    coordinator.discard({containerId:'背包', slot:0, expectedLease:'lease.10.0'});
+    transport.respond(1, {success:false,error:'timeout',requiresReconcile:true});
+    assert.strictEqual(transport.calls[2].cmd, 'snapshot');
+    transport.respond(2, {success:false,error:'reconcile_required',requiresReconcile:true});
+    assert.strictEqual(coordinator.isReady(), false);
+    assert.strictEqual(coordinator.debugState().refreshRequired, true);
+    assert.strictEqual(coordinator.discard({containerId:'背包',slot:0,expectedLease:'lease.10.0'}), false);
+    assert.strictEqual(coordinator.retryRefresh(), true);
+    const recovered = exactResponse(transport.calls[3], 30);
+    const item = makeItem();
+    item.displayIssue = 'balance_summary_invalid';
+    occupy(recovered.snapshots[0], 0, item);
+    addFacetProjection(recovered.snapshots[0]);
+    transport.respond(3, recovered);
+    assert.strictEqual(coordinator.isReady(), true);
+    assert.strictEqual(coordinator.getWindow('背包').containerVersion, 30);
+    assert.deepStrictEqual(transport.calls.map(call => call.cmd), ['snapshot','discard','snapshot','snapshot']);
+});
+
 test('facet projection rejects malformed recursive leaves', function() {
     invalidOccupiedBootstrapCase(function(snapshots) {
         const leaf = snapshots[0].filterFacets[0].children[0].children[0];
