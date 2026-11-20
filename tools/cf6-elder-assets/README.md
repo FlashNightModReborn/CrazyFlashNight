@@ -32,13 +32,13 @@
 | 80 | 69.92% | 70.85% | 34.58%–100.00% | 1／5 |
 | 100 | 60.05% | 64.07% | 30.97%–73.74% | 0／6 |
 
-逐场结果及判定见[当前三十六场](e/c17/history/r22-full-awake/acceptance-summary.json)。组内均值不代表每场都在区间内，有限重复也不保证所有随机局面。兽王自身濒死扣血与吸血会改变终场 HP，不能把其全部净削血归因于老头输出。
+逐场结果及判定见[当前三十六场](#cf6-elder-archives)。组内均值不代表每场都在区间内，有限重复也不保证所有随机局面。兽王自身濒死扣血与吸血会改变终场 HP，不能把其全部净削血归因于老头输出。
 
 完成强度校准时的主线源码下重新完成四组真实 CS6 回归，共 2,671 项通过、零失败：老头行为及护盾、音频、玩家瞄准、十二个原生绘制点。十二张当前图像与 R21 对应图像逐像素相同；这次没有重新执行 805 点完整扫描。另有当前 C5 公共加载器下的大头完整十八场全胜，以及当前合并源码的九组 Host 定向测试 508 项通过。Host 早先全量测试的 120 项资源窗口前置失败仍保留，不用定向通过替代全量通过。
 
 Host 测试另外封存实际源码与程序集。既有 C# 文件的 Git 换行差异单列，分别保留测试原件、提交对象和实际检出内容的哈希，并核对差异仅为换行；精确复现该次 Host 测试源码时使用封存原件，不把普通检出文件称为同一执行字节，也不扩改全仓格式。战斗资源、AS2 和原有执行绑定仍按实际检出字节严格核对。
 
-汇总入口：[C5 完整校准证据](e/c17/summary.json)。以上完整统计绑定冻结 C5 加载器与 R4 隔离 Host 候选，已在 `dabd11a895` 提交封存；原始失败、旧判定和每个文件均保留。
+汇总入口：[C5 完整校准证据](#cf6-elder-archives)。以上完整统计绑定冻结 C5 加载器与 R4 隔离 Host 候选，已在 `dabd11a895` 提交封存；原始失败、旧判定和每个文件均保留。
 
 随后修复 asLoader 通信启动函数超过既有 60,000 字节门槛的问题，当前交付为 C6。业务 include 保序拆成两段，最大函数体为 53,041 字节；727 个编译类动作与 C5 相同，唯一变化是此前主线合入的 ServerManager 只读终端状态白名单，Agent 终端兼容脚本也随本轮编译纳入。当前战斗资源、AI 和数值未变。新加载器完成 103 项启动／握手回归及 9 次实际启动事件顺序核对；另跑大头 6 场全胜、老头 12 场（0 胜／12 负），均自然完成，老头逐场恰好交接一次。该 18 场用于加载器集成，不重新宣称完整强度验收，详见 [C6 补充验证](#c6-loader-archive)。
 
@@ -131,14 +131,14 @@ scripts/run-cf6-elder-render-tests.ps1
 
 ## 历史证据
 
-R1–R22 的候选试验、失败、平局、超时、未执行草案、恢复和历次口径变更集中保存在[校准汇总](e/c17/summary.json)及其历史条目中；旧净削血分析保持原口径，当前兽王判定另存授权补充。详细施工前正文保存在[原文快照](e/c17/current-final-validation/documentation/elder-README-before-closeout.md.txt)，不作为现役参数说明。
+R1–R22 的候选试验、失败、平局、超时、未执行草案、恢复和历次口径变更集中保存在[校准汇总](#cf6-elder-archives)及其历史条目中；旧净削血分析保持原口径，当前兽王判定另存授权补充。详细施工前正文保存在[原文快照](#cf6-elder-archives)，不作为现役参数说明。
 
-更早记录分别见 [R15 交付](evidence/20261017/summary.json)、[试玩反馈](evidence/20261017-playtest/summary.json)及[音效与机器人对战](../cf6-audio/evidence/20261017-combat-audio/summary.json)。旧图像、行为通过与候选对战各自绑定原始源码和资源身份，不冒充当前版本重新执行。此前封存的完整性清单逐项复核保留。
+更早记录分别见 [R15 交付](#cf6-elder-archives)、[试玩反馈](#cf6-elder-archives)（主仓保留[试玩 closeout 摘要](evidence/20261017-playtest-closeout/summary.json)）及[音效与机器人对战](../cf6-audio/README.md#combat-audio-archive)。旧图像、行为通过与候选对战各自绑定原始源码和资源身份，不冒充当前版本重新执行。此前封存的完整性清单逐项复核保留。
 
 
 ## 证据短路径与旧回执
 
-20261017 校准使用 `e/c17/`。20261018 加载器补验使用 `e/l18/` 的逻辑路径，实体从[归档](#c6-loader-archive)恢复。
+20261017 校准使用 `e/c17/` 的逻辑路径（实体从[归档](#cf6-elder-archives)恢复）。20261018 加载器补验使用 `e/l18/` 的逻辑路径，实体从[归档](#c6-loader-archive)恢复。
 逐文件旧路径、新路径、Git blob 和 mode 见 `evidence-path-map.json`。迁移只改路径，
 64 位文件名和原始回执字节均保留；文件名不被当作内容哈希。旧回执中的路径是原执行现场身份，不能全局替换。
 
@@ -166,3 +166,24 @@ python -X utf8 -B tools/cf6-elder-assets/restore_evidence.py 'tools/cf6-elder-as
 输出目录须在游戏仓之外，且为新目录。恢复脚本先校验 ZIP 和包内逐件摘要，再按原目录结构写出整批，最后打印所请求文件的落点。
 已有 ZIP 时可追加 `--archive <本地 ZIP>`，使用同一索引核验。旧验证脚本需要对应的历史工作树和原 C5 输入。
 原历史说明和试迁回执分别见[冻结报告](https://github.com/FlashNightModReborn/CrazyFlashNight/blob/9f1192f1aa932eeac152f98e00882926e3dc3d65/tools/cf6-elder-assets/e/l18/README.md)与[读取点和回退记录](../../docs/reports/cf6-evidence-archive-pilot-2026-11-18.md)。
+
+<a id="cf6-elder-archives"></a>
+### C5 校准、R15 交付与试玩反馈归档
+
+`e/c17`、`evidence/20261017` 与 `evidence/20261017-playtest` 的历史大体积证据已由[归档索引](evidence-archive-index.json)接管并迁至独立 Release 仓库（来源提交 `e4846cb1b69e974ac80f3793c618c06fd4110386`），主仓仅保留轻量化伴生回执 [20261017-playtest-closeout](evidence/20261017-playtest-closeout/summary.json)：
+
+| 逻辑前缀 | 文件数 | ZIP 字节 | SHA-256 | 独立归档 |
+|---|---:|---:|---|---|
+| `tools/cf6-elder-assets/e/c17` | 4,774 | 506,354,595 | `1d4970eb42778e47f4a4bac5e294f336eadbf48d06d65a38d1c5606a06a7e87d` | [cf6-elder-calibration-c17-v1](https://github.com/FlashNightModReborn/cf7-evidence/releases/tag/cf6-elder-calibration-c17-v1) |
+| `tools/cf6-elder-assets/evidence/20261017` | 1,987 | 201,896,020 | `b116801ef2ce44cbce20be6832570c7531210c0e513504f96ee5bf7bf1b129d7` | [cf6-elder-delivery-20261017-v1](https://github.com/FlashNightModReborn/cf7-evidence/releases/tag/cf6-elder-delivery-20261017-v1) |
+| `tools/cf6-elder-assets/evidence/20261017-playtest` | 492 | 57,487,974 | `4229317b4b16b3ed71af0f9b9743f6caf639dcc9558b5e8539b0cabd3694f008` | [cf6-elder-playtest-20261017-v1](https://github.com/FlashNightModReborn/cf7-evidence/releases/tag/cf6-elder-playtest-20261017-v1) |
+
+按需恢复整批至仓库外短路径（支持直接传入 `e/c17/...` 或历史长路径 `20261017-calibration/...`）：
+
+```powershell
+python -X utf8 -B tools/cf6-elder-assets/restore_evidence.py 'tools/cf6-elder-assets/evidence/20261017-calibration/summary.json' --output 'C:\cf6-c17'
+python -X utf8 -B tools/cf6-elder-assets/restore_evidence.py 'tools/cf6-elder-assets/evidence/20261017/summary.json' --output 'C:\cf6-r15'
+python -X utf8 -B tools/cf6-elder-assets/restore_evidence.py 'tools/cf6-elder-assets/evidence/20261017-playtest/summary.json' --output 'C:\cf6-play'
+```
+
+Windows Server 2022 与 Ubuntu 24.04 双端回读、现役消费者复验与回退指引见[收口与双端验证记录](../../docs/reports/cf6-evidence-archive-closeout-2026-11-20.md)。

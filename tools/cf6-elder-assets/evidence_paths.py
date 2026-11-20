@@ -14,6 +14,10 @@ OLD_PREFIXES = (
     'tools/cf6-elder-assets/evidence/20261017-calibration',
     'tools/cf6-elder-assets/evidence/20261018-loader-size-followup',
     'tools/cf6-elder-assets/e/l18',
+    'tools/cf6-elder-assets/e/c17',
+    'tools/cf6-elder-assets/evidence/20261017',
+    'tools/cf6-elder-assets/evidence/20261017-playtest',
+    'tools/cf6-audio/evidence/20261017-combat-audio',
 )
 MAP_FILE = Path(__file__).with_name('evidence-path-map.json')
 
