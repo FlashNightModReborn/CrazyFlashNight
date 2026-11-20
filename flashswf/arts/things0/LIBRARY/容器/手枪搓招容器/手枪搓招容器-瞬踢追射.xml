@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/手枪搓招容器/手枪搓招容器-瞬踢追射" itemID="6aff1c80-00000dda" linkageExportForAS="true" linkageIdentifier="手枪搓招容器-瞬踢追射" lastModified="1795104258" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/手枪搓招容器/手枪搓招容器-瞬踢追射" itemID="6b00331c-00000d1b" linkageExportForAS="true" linkageIdentifier="手枪搓招容器-瞬踢追射" lastModified="1795175314" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="手枪搓招容器-瞬踢追射" currentFrame="17">
+    <DOMTimeline name="手枪搓招容器-瞬踢追射" currentFrame="3">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -152,7 +152,13 @@ if (手枪2射击许可 && _parent.手枪2.value.shot >= 弹夹容量_2)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="15" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.攻击呐喊();]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="17" keyMode="9728">
@@ -164,16 +170,16 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="15" keyMode="9728">
+            <DOMFrame index="8" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击代码" centerPoint3DX="177.55" centerPoint3DY="-195.85">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击代码" centerPoint3DX="568.55" centerPoint3DY="14.15">
                   <matrix>
-                    <Matrix a="0.610641479492188" d="0.508224487304688" tx="76.65" ty="-290.65"/>
+                    <Matrix a="0.610641479492188" d="0.508224487304688" tx="467.65" ty="-80.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-73.6" y="74.1"/>
@@ -446,16 +452,16 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="8" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点2" centerPoint3DX="325.6" centerPoint3DY="79.25">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点2" centerPoint3DX="568.5" centerPoint3DY="25.15">
                   <matrix>
-                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="217.45" ty="-14.45"/>
+                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="460.35" ty="-68.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-73.6" y="74.1"/>
@@ -466,9 +472,9 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点1" centerPoint3DX="325.6" centerPoint3DY="79.25">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点1" centerPoint3DX="568.5" centerPoint3DY="25.15">
                   <matrix>
-                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="217.45" ty="-14.45"/>
+                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="460.35" ty="-68.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-73.6" y="74.1"/>
@@ -483,9 +489,9 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="10" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点2" centerPoint3DX="325.6" centerPoint3DY="79.25">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点2" centerPoint3DX="568.5" centerPoint3DY="19.3">
                   <matrix>
-                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="217.45" ty="-14.45"/>
+                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="460.35" ty="-74.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-73.6" y="74.1"/>
@@ -496,9 +502,9 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点1" centerPoint3DX="325.6" centerPoint3DY="79.25">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点1" centerPoint3DX="568.5" centerPoint3DY="19.3">
                   <matrix>
-                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="217.45" ty="-14.45"/>
+                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="460.35" ty="-74.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-73.6" y="74.1"/>
@@ -514,7 +520,7 @@ onClipEvent (enterFrame) {
             <DOMFrame index="16" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-                                  </frames>
+          </frames>
         </DOMLayer>
         <DOMLayer name="攻击时移动" color="#808080" locked="true" autoNamed="false">
           <frames>
@@ -727,7 +733,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 12" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -744,7 +750,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="195.35" centerPoint3DY="35.75">
                   <matrix>
-                    <Matrix a="-0.12420654296875" b="-0.785171508789063" c="2.26472473144531" d="-0.358261108398438" tx="255.1" ty="20.4"/>
+                    <Matrix a="-0.12420654296875" b="-0.785171508789063" c="2.26470947265625" d="-0.358261108398438" tx="255.1" ty="20.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -852,7 +858,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1032,9 +1038,20 @@ onClipEvent (enterFrame) {
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="193.1" centerPoint3DY="-31.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="167.1" centerPoint3DY="-40.8">
                   <matrix>
-                    <Matrix a="0.923553466796875" b="0.37939453125" c="-0.37939453125" d="0.923553466796875" tx="143.15" ty="13.6"/>
+                    <Matrix a="0.923553466796875" b="0.37939453125" c="-0.37939453125" d="0.923553466796875" tx="117.15" ty="3.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="-0.25"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="167.1" centerPoint3DY="-40.8">
+                  <matrix>
+                    <Matrix a="0.923553466796875" b="0.37939453125" c="-0.37939453125" d="0.923553466796875" tx="117.15" ty="3.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.4" y="-0.25"/>
@@ -1246,6 +1263,17 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="60" blurY="4"/>
                   </filters>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="43.45" centerPoint3DY="12.1">
+                  <matrix>
+                    <Matrix a="0.300750732421875" b="0.9521484375" c="0.9521484375" d="-0.300750732421875" tx="92.25" ty="-33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="60" blurY="4"/>
+                  </filters>
+                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="113.2" centerPoint3DY="-75.2">
                   <matrix>
                     <Matrix a="0.283920288085938" b="0.78790283203125" c="0.78790283203125" d="-0.283920288085938" tx="86.05" ty="-51.6"/>
@@ -1438,7 +1466,18 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="58.75" blurY="4"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="32.4" centerPoint3DY="9.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="32.4" centerPoint3DY="9.1">
+                  <matrix>
+                    <Matrix a="0.24847412109375" b="0.967010498046875" c="0.967010498046875" d="-0.24847412109375" tx="83.6" ty="-33.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="58.75" blurY="4"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="32.4" centerPoint3DY="9.1">
                   <matrix>
                     <Matrix a="0.24847412109375" b="0.967010498046875" c="0.967010498046875" d="-0.24847412109375" tx="83.6" ty="-33.9"/>
                   </matrix>
@@ -1651,6 +1690,17 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="20" blurY="4"/>
                   </filters>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-222.35" centerPoint3DY="33.65">
+                  <matrix>
+                    <Matrix a="-0.98284912109375" b="0.162521362304688" c="0.162521362304688" d="0.98284912109375" tx="-183.75" ty="88.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.6" y="-0.25"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="20" blurY="4"/>
+                  </filters>
+                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-141.95" centerPoint3DY="118.15">
                   <matrix>
                     <Matrix a="-0.829742431640625" b="-0.0183868408203125" c="-0.0183868408203125" d="0.829742431640625" tx="-154" ty="84.65"/>
@@ -1843,6 +1893,17 @@ onClipEvent (enterFrame) {
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-201.7" centerPoint3DY="-62.35">
+                  <matrix>
+                    <Matrix a="-0.932220458984375" b="-0.35113525390625" c="-0.35113525390625" d="0.932220458984375" tx="-195.65" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.65" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="13.3334350585938" blurY="2.66668701171875"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-201.7" centerPoint3DY="-62.35">
                   <matrix>
                     <Matrix a="-0.932220458984375" b="-0.35113525390625" c="-0.35113525390625" d="0.932220458984375" tx="-195.65" ty="4.3"/>
                   </matrix>
@@ -2055,6 +2116,17 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="6.66656494140625" blurY="1.33331298828125"/>
                   </filters>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-159.2" centerPoint3DY="-139.1">
+                  <matrix>
+                    <Matrix a="-0.63153076171875" b="-0.77056884765625" c="-0.77056884765625" d="0.63153076171875" tx="-187.35" ty="-78.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.65" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="6.66656494140625" blurY="1.33331298828125"/>
+                  </filters>
+                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-207.1" centerPoint3DY="-35.75">
                   <matrix>
                     <Matrix a="-0.409591674804688" b="-0.72186279296875" c="-0.72186279296875" d="0.409591674804688" tx="-184.5" ty="-63.25"/>
@@ -2247,6 +2319,17 @@ onClipEvent (enterFrame) {
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-105.1" centerPoint3DY="-192.6">
+                  <matrix>
+                    <Matrix a="-0.16143798828125" b="-0.983444213867188" c="-0.983444213867188" d="0.16143798828125" tx="-160" ty="-153.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="-0.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-105.1" centerPoint3DY="-192.6">
                   <matrix>
                     <Matrix a="-0.16143798828125" b="-0.983444213867188" c="-0.983444213867188" d="0.16143798828125" tx="-160" ty="-153.35"/>
                   </matrix>
@@ -2459,6 +2542,17 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="40" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="72.6" centerPoint3DY="-171.4">
+                  <matrix>
+                    <Matrix a="-0.80938720703125" b="-0.581085205078125" c="-0.581085205078125" d="0.80938720703125" tx="61.5" ty="-104.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.3" y="-0.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="40" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="61.8" centerPoint3DY="-66.2">
                   <matrix>
                     <Matrix a="-0.635910034179688" b="-0.52984619140625" c="-0.52984619140625" d="0.635910034179688" tx="73.15" ty="-99.8"/>
@@ -2650,9 +2744,20 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="376.45" centerPoint3DY="-112.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="350.45" centerPoint3DY="-112.05">
                   <matrix>
-                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="346.55" ty="-51.3"/>
+                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="320.55" ty="-51.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.2" y="-0.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="350.45" centerPoint3DY="-112.05">
+                  <matrix>
+                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="320.55" ty="-51.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.2" y="-0.9"/>
@@ -2852,9 +2957,20 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="376.45" centerPoint3DY="-112.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="351.45" centerPoint3DY="-112.05">
                   <matrix>
-                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="346.55" ty="-51.3"/>
+                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="321.55" ty="-51.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.2" y="-0.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="351.45" centerPoint3DY="-112.05">
+                  <matrix>
+                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="321.55" ty="-51.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.2" y="-0.9"/>
@@ -3054,9 +3170,20 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="376.45" centerPoint3DY="-112.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="351.45" centerPoint3DY="-112.05">
                   <matrix>
-                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="346.55" ty="-51.3"/>
+                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="321.55" ty="-51.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.2" y="-0.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="351.45" centerPoint3DY="-112.05">
+                  <matrix>
+                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="321.55" ty="-51.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.2" y="-0.9"/>
@@ -3256,9 +3383,20 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="376.45" centerPoint3DY="-112.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="351.45" centerPoint3DY="-112.05">
                   <matrix>
-                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="346.55" ty="-51.3"/>
+                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="321.55" ty="-51.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.2" y="-0.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="351.45" centerPoint3DY="-112.05">
+                  <matrix>
+                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="321.55" ty="-51.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.2" y="-0.9"/>
@@ -3458,9 +3596,20 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="376.45" centerPoint3DY="-112.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="351.45" centerPoint3DY="-112.05">
                   <matrix>
-                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="346.55" ty="-51.3"/>
+                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="321.55" ty="-51.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.2" y="-0.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="351.45" centerPoint3DY="-112.05">
+                  <matrix>
+                    <Matrix a="0.996017456054688" b="0.00079345703125" c="-0.00079345703125" d="0.996017456054688" tx="321.55" ty="-51.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.2" y="-0.9"/>
@@ -3671,6 +3820,17 @@ onClipEvent (enterFrame) {
                     <BlurFilter blurX="40" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="239.3" centerPoint3DY="-79.15">
+                  <matrix>
+                    <Matrix a="0.996002197265625" b="0.0007781982421875" c="-0.0007781982421875" d="0.996002197265625" tx="209.35" ty="-18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.3" y="-0.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="40" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="186.1" centerPoint3DY="20.6">
                   <matrix>
                     <Matrix a="0.761825561523438" b="-0.3232421875" c="0.3232421875" d="0.761825561523438" tx="184.9" ty="-14.85"/>
@@ -3863,6 +4023,17 @@ onClipEvent (enterFrame) {
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="219.3" centerPoint3DY="-19.05">
+                  <matrix>
+                    <Matrix a="0.9847412109375" b="0.1611328125" c="-0.1611328125" d="0.9847412109375" tx="180.9" ty="35.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="40" blurY="4"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="219.3" centerPoint3DY="-19.05">
                   <matrix>
                     <Matrix a="0.9847412109375" b="0.1611328125" c="-0.1611328125" d="0.9847412109375" tx="180.9" ty="35.7"/>
                   </matrix>
@@ -4089,6 +4260,18 @@ onClipEvent (enterFrame) {
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="202.35" centerPoint3DY="-45.5">
+                  <matrix>
+                    <Matrix a="0.98333740234375" b="0.17156982421875" c="-0.17156982421875" d="0.98333740234375" tx="163.35" ty="8.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="20" blurY="2"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="26.9" centerPoint3DY="65.4">
                   <matrix>
                     <Matrix a="0.721527099609375" b="0.427597045898438" c="-0.427597045898438" d="0.721527099609375" tx="55.15" ty="43.1"/>
@@ -4292,6 +4475,17 @@ onClipEvent (enterFrame) {
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="185.25" centerPoint3DY="-72.2">
+                  <matrix>
+                    <Matrix a="0.9818115234375" b="0.18206787109375" c="-0.18206787109375" d="0.9818115234375" tx="145.7" ty="-18.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="115.5" centerPoint3DY="20.75">
                   <matrix>
                     <Matrix a="0.828231811523438" b="-0.135421752929688" c="0.135421752929688" d="0.828231811523438" tx="122.85" ty="-14.5"/>
@@ -4484,6 +4678,17 @@ onClipEvent (enterFrame) {
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="185.25" centerPoint3DY="-72.2">
+                  <matrix>
+                    <Matrix a="0.9818115234375" b="0.18206787109375" c="-0.18206787109375" d="0.9818115234375" tx="145.7" ty="-18.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="185.25" centerPoint3DY="-72.2">
                   <matrix>
                     <Matrix a="0.9818115234375" b="0.18206787109375" c="-0.18206787109375" d="0.9818115234375" tx="145.7" ty="-18.1"/>
                   </matrix>
