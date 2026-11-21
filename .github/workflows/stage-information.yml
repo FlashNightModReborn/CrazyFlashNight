@@ -1,0 +1,21 @@
+name: Stage information reward caps
+on:
+  push:
+    branches: [main]
+    paths: ['data/stages/**/*.xml', 'data/items/收集品_情报.xml', 'tools/check-stage-information.py', '.github/workflows/stage-information.yml']
+  pull_request:
+    paths: ['data/stages/**/*.xml', 'data/items/收集品_情报.xml', 'tools/check-stage-information.py', '.github/workflows/stage-information.yml']
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            data/stages
+            data/items
+            tools/check-stage-information.py
+          sparse-checkout-cone-mode: false
+      - run: python3 tools/check-stage-information.py

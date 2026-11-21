@@ -135,6 +135,41 @@ class org.flashNight.arki.render.EquipmentLightTest {
             EquipmentLightController.dispose(ref);
             var rejected:Object = refFor(actor, false);
             check(!EquipmentLightController.initialize(rejected, {kind:"laser", length:2000}), "非法光源参数拒绝");
+
+            var caps:Object = {worldLights:true, equipmentLights:2, equipmentRadialLights:1};
+            EquipmentLightBridge.configure(caps);
+            var spec:Object = {radius:180, energy:0.9, r:0.52, g:1, b:0.52};
+            EquipmentLightBridge.installLightProfiles({effect:{星座护盾特效:{spec:spec}}});
+            var layer:Object = {capacity:50, getCapacity:function():Number { return this.capacity; }};
+            var container:Object = {layer:layer, getShieldById:function(id:Number):Object { return id == 8 ? this.layer : null; }};
+            actor.shield = container;
+            var cast:Object = {};
+            check(EquipmentLightBridge.bindShieldLight(cast, actor, 8, "星座护盾特效") && count() == 1, "有效盾ID注册独立角色光");
+            var shieldPose:Array = first();
+            check(Number(shieldPose[3]) == actor._x && Number(shieldPose[4]) == actor._y - 75
+                && Number(shieldPose[7]) == 180 && Number(shieldPose[11]) == 1, "盾光以人物中心和配置颜色定位");
+            actor._x += 22;
+            check(Number(first()[3]) == actor._x, "盾光随人物移动");
+            var worn:Object = refFor(actor, false);
+            EquipmentLightBridge.bind(worn, 0, {group:"body", radius:80, energy:0.8, color:0xFF3030});
+            check(count() == 2, "盾光与异色常驻身体光共存");
+            EquipmentLightBridge.release(worn);
+            EquipmentLightBridge.resetScene();
+            check(count() == 1, "能力重连时保留存活的盾");
+            layer.capacity = 0;
+            check(count() == 0 && !EquipmentLightBridge.isValid(cast), "容量耗尽时熄灯");
+            EquipmentLightBridge.release(cast);
+            layer.capacity = 40;
+            EquipmentLightBridge.bindShieldLight(cast, actor, 8, "星座护盾特效");
+            actor.shield = {};
+            check(count() == 0, "盾容器被替换时旧光失效");
+            EquipmentLightBridge.release(cast);
+            actor.shield = container;
+            EquipmentLightBridge.bindShieldLight(cast, actor, 8, "星座护盾特效");
+            actor.hp = 0;
+            check(count() == 0, "死亡时清理盾光");
+            EquipmentLightBridge.release(cast);
+            EquipmentLightBridge.installLightProfiles(null);
         } catch (error:Error) { check(false, "意外异常 " + error); }
         EquipmentLightBridge.disconnect();
         world.removeMovieClip(); _root.gameworld = savedWorld; _root.帧计时器 = savedClock; _root.暂停 = savedPause;

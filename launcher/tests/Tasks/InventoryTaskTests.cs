@@ -2169,13 +2169,17 @@ namespace CF7Launcher.Tests.Tasks
                 }
             };
             task.HandleWebRequest("snapshot", partial);
+            JObject partialSnapshot = Snapshot("背包", 50, 0, 1, 23, true);
+            partialSnapshot["slots"][0]["item"]["balanceSummary"] = "broken";
             task.HandleFlashResponse(
                 SnapshotResponse(
                     sent[sent.Count - 1],
-                    Snapshot("背包", 50, 0, 1, 23)),
+                    partialSnapshot),
                 _ => { });
 
             Assert.Equal("needs_reconcile", task.WriteState);
+            Assert.False(posted[posted.Count - 1].Value<bool>("success"));
+            Assert.True(posted[posted.Count - 1].Value<bool>("requiresReconcile"));
             task.HandleWebRequest(
                 "merge", Request("merge", "inventory.write.partial-blocked"));
             Assert.Equal(
@@ -2187,9 +2191,11 @@ namespace CF7Launcher.Tests.Tasks
         public void SnapshotIssuedBeforeUnknownWaterlineCannotUnlockAfterMalformedWrite()
         {
             var sent = new List<JObject>();
+            var posted = new List<JObject>();
             var task = new InventoryTask(
                 () => true,
                 payload => { sent.Add(ParseSent(payload)); return true; });
+            task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
             task.HandleWebRequest(
                 "move", Request("move", "inventory.write.malformed.waterline"));
             JObject earlyProbe = Request(
@@ -2218,14 +2224,18 @@ namespace CF7Launcher.Tests.Tasks
                 ["operation"] = "move"
             }, _ => { });
             Assert.Equal("needs_reconcile", task.WriteState);
+            JObject earlySnapshot = Snapshot("背包", 50, 0, 1, 24, true);
+            earlySnapshot["slots"][0]["item"]["balanceSummary"] = "broken";
             task.HandleFlashResponse(
                 SnapshotResponse(
                     earlyFlash,
-                    Snapshot("背包", 50, 0, 1, 24),
+                    earlySnapshot,
                     Snapshot("仓库", 1200, 0, 1, 25)),
                 _ => { });
 
             Assert.Equal("needs_reconcile", task.WriteState);
+            Assert.False(posted[posted.Count - 1].Value<bool>("success"));
+            Assert.Equal("reconcile_required", posted[posted.Count - 1].Value<string>("error"));
         }
 
         [Fact]
@@ -2827,19 +2837,21 @@ namespace CF7Launcher.Tests.Tasks
             }
         }
 
-        [Fact]
-        public void BalanceSummary_InvalidOptionalFieldIsDroppedWithoutLosingItem()
+        [Theory]
+        [InlineData("null")]
+        [InlineData("\"broken\"")]
+        [InlineData("[]")]
+        [InlineData("{\"state\":\"confirmed\",\"weightLayers\":\"bad\",\"formula\":1,\"level\":30}")]
+        public void BalanceSummary_PublicItemValidatorRejectsInvalidOptionalField(string invalid)
         {
             JObject input = ItemProjection(true);
-            input["balanceSummary"]["weightLayers"] = "invalid";
+            input["balanceSummary"] = JToken.Parse(invalid);
 
             bool accepted = InventoryTask.TrySanitizeItem(input, out JObject clean);
 
-            Assert.True(accepted);
-            Assert.Null(clean.Property("balanceSummary"));
-            Assert.Equal("测试步枪", clean.Value<string>("displayName"));
-            Assert.Equal(1, clean.Value<int>("quantity"));
-            Assert.Equal("稀有", clean.Value<string>("rarity"));
+            Assert.False(accepted);
+            Assert.Null(clean);
+            Assert.NotNull(input.Property("balanceSummary"));
         }
 
         [Fact]
@@ -2885,7 +2897,142 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Single(posted);
             Assert.True(posted[0].Value<bool>("success"));
             Assert.Null(((JObject)posted[0]["discarded"]).Property("balanceSummary"));
+            Assert.Equal("balance_summary_invalid", posted[0]["discarded"].Value<string>("displayIssue"));
             Assert.Equal("idle", task.WriteState);
+        }
+
+        [Theory]
+        [InlineData("discard")]
+        [InlineData("move")]
+        [InlineData("merge")]
+        [InlineData("swap")]
+        [InlineData("autoTransfer")]
+        [InlineData("autoTransferBatch")]
+        [InlineData("sortAndMerge")]
+        public void InventoryResponseQuarantinesOnlySummaryAndPreservesCommittedProjection(string cmd)
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using var task = new InventoryTask(() => true, json => { sent.Add(ParseSent(json)); return true; });
+            task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+            task.HandleWebRequest(cmd, StrictWriteRequest(cmd, "balance.success." + cmd));
+            JObject response = StrictWriteSuccess(cmd, sent[0]);
+            var expected = (JArray)response["snapshots"].DeepClone();
+            foreach (JObject snapshot in (JArray)response["snapshots"])
+                snapshot["slots"][0]["item"]["balanceSummary"] = new JArray("broken");
+            foreach (JObject snapshot in expected)
+                snapshot["slots"][0]["item"]["displayIssue"] = "balance_summary_invalid";
+            JObject original = (JObject)response.DeepClone();
+
+            task.HandleFlashResponse(response, _ => { });
+
+            Assert.True(posted[0].Value<bool>("success"));
+            Assert.True(JToken.DeepEquals(expected, posted[0]["snapshots"]));
+            Assert.True(JToken.DeepEquals(original, response));
+            Assert.Equal("idle", task.WriteState);
+            task.HandleFlashResponse(response, _ => { });
+            task.HandleWebRequest(cmd, StrictWriteRequest(cmd, "balance.success." + cmd));
+            Assert.Single(posted);
+            Assert.Single(sent); // Neither the repeated response nor the repeated call replays a write.
+        }
+
+        [Theory]
+        [InlineData("displayName")]
+        [InlineData("rarity")]
+        [InlineData("quantity")]
+        [InlineData("slotLease")]
+        [InlineData("confirmProjection")]
+        [InlineData("containerVersion")]
+        [InlineData("displayIssue")]
+        public void QuarantinedSummaryDoesNotRelaxOtherInventoryProofs(string invalidField)
+        {
+            JObject sent = null;
+            JObject posted = null;
+            using var task = new InventoryTask(() => true, json => { sent = ParseSent(json); return true; });
+            task.SetPostToWeb(json => posted = JObject.Parse(json));
+            task.HandleWebRequest("move", StrictWriteRequest("move", "balance.core." + invalidField));
+            JObject response = StrictWriteSuccess("move", sent);
+            JToken snapshot = response["snapshots"][0];
+            JToken slot = snapshot["slots"][0];
+            slot["item"]["balanceSummary"] = "broken";
+            if (invalidField == "slotLease") slot[invalidField] = "invalid lease";
+            else if (invalidField == "confirmProjection") slot[invalidField]["quantity"] = 2;
+            else if (invalidField == "containerVersion") snapshot[invalidField] = "102";
+            else if (invalidField == "rarity") slot["item"][invalidField] = 1;
+            else if (invalidField == "displayIssue") slot["item"][invalidField] = "balance_summary_invalid";
+            else slot["item"][invalidField] = invalidField == "displayName" ? "" : "invalid";
+
+            task.HandleFlashResponse(response, _ => { });
+
+            Assert.False(posted.Value<bool>("success"));
+            Assert.Equal("malformed_response", posted.Value<string>("error"));
+            Assert.True(posted.Value<bool>("requiresReconcile"));
+            Assert.Equal("needs_reconcile", task.WriteState);
+        }
+
+        [Theory]
+        [InlineData("discard", "discard_forbidden")]
+        [InlineData("move", "stale_state")]
+        [InlineData("autoTransfer", "target_full")]
+        [InlineData("autoTransferBatch", "target_full")]
+        public void SummaryIsolationDoesNotChangeDefinitiveBusinessRejection(string cmd, string error)
+        {
+            JObject sent = null;
+            JObject posted = null;
+            using var task = new InventoryTask(() => true, json => { sent = ParseSent(json); return true; });
+            task.SetPostToWeb(json => posted = JObject.Parse(json));
+            task.HandleWebRequest(cmd, StrictWriteRequest(cmd, "balance.rejected." + cmd));
+            task.HandleFlashResponse(new JObject {
+                ["task"] = "inventory_response", ["callId"] = sent["callId"],
+                ["success"] = false, ["error"] = error
+            }, _ => { });
+            Assert.False(posted.Value<bool>("success"));
+            Assert.Equal(error, posted.Value<string>("error"));
+            Assert.Null(posted["requiresReconcile"]);
+            Assert.Equal("idle", task.WriteState);
+        }
+
+        [Theory]
+        [InlineData("discard")]
+        [InlineData("move")]
+        [InlineData("autoTransfer")]
+        public void LostResultRecoversWithQuarantinedSummaryOnlyThroughExistingCoveredProbe(string cmd)
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using var task = new InventoryTask(() => true, json => { sent.Add(ParseSent(json)); return true; });
+            task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+            task.HandleWebRequest(cmd, StrictWriteRequest(cmd, "balance.lost." + cmd));
+            JObject lost = StrictWriteSuccess(cmd, sent[0]);
+            task.ClearPending(); // Lost original result, socket teardown and reconnect.
+            task.HandleFlashResponse(lost, _ => { });
+            Assert.Empty(posted);
+            Assert.Equal("needs_reconcile", task.WriteState);
+            task.HandleWebRequest(cmd, StrictWriteRequest(cmd, "balance.blocked." + cmd));
+            Assert.Single(sent);
+            Assert.Equal("reconcile_required", posted[0].Value<string>("error"));
+
+            JObject probe = Request("snapshot", "balance.recover." + cmd);
+            var requests = new JArray(new JObject {
+                ["containerId"] = "背包", ["offset"] = 0, ["limit"] = 1, ["filterKey"] = "all"
+            });
+            var snapshots = new List<JObject> { Snapshot("背包", 50, 0, 1, 201, true) };
+            if (cmd != "discard")
+            {
+                requests.Add(new JObject { ["containerId"] = "仓库", ["offset"] = 0,
+                    ["limit"] = 1, ["filterKey"] = "all" });
+                snapshots.Add(Snapshot("仓库", 1200, 0, 1, 202, true));
+            }
+            probe["payload"]["requests"] = requests;
+            task.HandleWebRequest("snapshot", probe);
+            foreach (JObject snapshot in snapshots)
+                snapshot["slots"][0]["item"]["balanceSummary"] = JValue.CreateNull();
+            task.HandleFlashResponse(SnapshotResponse(sent[1], snapshots.ToArray()), _ => { });
+            Assert.True(posted[1].Value<bool>("success"));
+            Assert.Equal("idle", task.WriteState);
+            Assert.Equal(201, posted[1]["snapshots"][0].Value<int>("containerVersion"));
+            Assert.Equal("balance_summary_invalid", posted[1]["snapshots"][0]["slots"][0]["item"].Value<string>("displayIssue"));
+            Assert.Equal(2, sent.Count); // One mutation and one read; recovery never replays.
         }
     }
 }

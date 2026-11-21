@@ -412,6 +412,19 @@ test('balance tooltip projection accepts only the exact four-field v1 summary', 
     }), null);
 });
 
+test('quarantined inventory summary has a visible issue without a confirmed badge', () => withDocument(() => {
+    const item = {displayIssue:'balance_summary_invalid'};
+    const badge = Primitives.ItemCard.renderBalanceBadge(item);
+    assert.strictEqual(badge.textContent, '◆?');
+    assert.strictEqual(badge.getAttribute('data-balance-state'), 'unavailable');
+    assert.strictEqual(badge.getAttribute('aria-label'), '平衡摘要暂不可用');
+    assert.strictEqual(Primitives.ItemCard.normalizeBalanceSummary(item), null);
+    assert.match(Primitives.ItemCard.balanceTooltipMetaHtml(item), /平衡摘要暂不可用/);
+    assert.doesNotMatch(Primitives.ItemCard.balanceAriaLabel(item), /已确认/);
+    assert.strictEqual(Primitives.ItemCard.renderBalanceBadge({}), null);
+    assert.strictEqual(Primitives.ItemCard.renderBalanceBadge({displayIssue:'unknown'}), null);
+}));
+
 test('InteractionBroker keeps selection semantics and emits a neutral accepted intent', () => withDocument(document => {
     const sourceNode = document.createElement('article');
     const otherNode = document.createElement('article');

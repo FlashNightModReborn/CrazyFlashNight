@@ -589,7 +589,14 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             rec.stabs++;
             rec.contractOk=rec.contractOk && data.子弹种类=="近战子弹" && data.子弹速度==0 && data.击倒率==10 && data.Z轴攻击范围==24;
             var bounds:Object=data.区域定位area.getBounds(library);
-            rec.areaOk=rec.areaOk && Math.abs(bounds.xMax-bounds.xMin-135)<0.3 && Math.abs(bounds.yMax-bounds.yMin-135)<0.3;
+            if(u.soldierIsInstructor===true && u.soldierPhase==2){
+                var blade:Object={x:85,y:-75},beyond:Object={x:110,y:-75};
+                u.localToGlobal(blade);u.localToGlobal(beyond);
+                rec.areaOk=rec.areaOk && data.区域定位area.hitTest(blade.x,blade.y,true)
+                    && !data.区域定位area.hitTest(beyond.x,beyond.y,true);
+            }else{
+                rec.areaOk=rec.areaOk && Math.abs(bounds.xMax-bounds.xMin-135)<0.3 && Math.abs(bounds.yMax-bounds.yMin-135)<0.3;
+            }
             knifeDamageContract(data,u);
         }
     }
@@ -621,7 +628,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         for(var shift:Number=28;shift>=0;shift-=4)text+=digits.charAt((value>>>shift)&15);
         return text;
     }
-    private static function writeNativeCapture(bd:BitmapData,key:String):Void {
+    public static function writeNativeCapture(bd:BitmapData,key:String):Void {
         var readStart:Number=getTimer();
         var raster:Object=bd.getColorBoundsRect(0xffffffff,0xffe8e6e2,false);
         var left:Number=Math.max(0,raster.x),right:Number=Math.min(bd.width,raster.x+raster.width);
@@ -1596,8 +1603,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         var u:MovieClip=c.actor,target:MovieClip=c.target,label:String=c.mode+"/"+c.side;
         // Keep the fixture target through two completed attacks, as the real
         // targeting service does. Do not force any follow-up attack state.
+        c.record.sequence=[];
         u.动画完毕=function():Void {
             this.fixtureRecord.done++;this.倒地=false;
+            this.fixtureRecord.sequence.push("end@"+this.soldierClock+"#"+this.man._currentframe);
             if(this.fixtureRecord.done>=2)this.攻击目标="无";
             this.状态改变(this.hp>0?"长枪站立":"血腥死");
         };
@@ -1624,6 +1633,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         var u:MovieClip=c.actor,owner:Object=u.soldierAttackOwner,rec:Object=c.record;
         var label:String=c.mode+"/"+c.side,sign:Number=c.side==0?1:-1,config:Object=u.soldierTacticalConfig;
         var afterCharge:Boolean=c.mode.indexOf("instructorCharge")==0;
+        if(owner.action=="knife" && owner.token!=c.lastMeleeToken){
+            c.lastMeleeToken=owner.token;
+            rec.sequence.push((owner.bash?"bash":"knife")+"@"+u.soldierClock+"#"+u.man._currentframe);
+        }
         if(afterCharge && owner.charge && owner.age>=config.chargeWindupFrames+config.chargeActiveFrames && !c.closePrepared){
             c.closePrepared=true;c.target._x=u._x+sign*40;
             c.target._y=c.target.Z轴坐标=u.Z轴坐标;
@@ -1644,8 +1657,11 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     && u.soldierClock<u.soldierNextShootAt,"first AI decision can melee during charge shooting cooldown "+label);
             }
         }
-        if(ticks==320){
+        // The instructor's authored bash now occupies 59 frames, 25 longer than the old branch.
+        var shieldSequence:Boolean=c.mode.indexOf("instructorShield")==0;
+        if(ticks==(shieldSequence?345:320)){
             if(c.mode.indexOf("instructorShield")==0){
+                trace("[CF6_INSTRUCTOR_SEQUENCE] "+label+" "+rec.sequence.join(",")+" bashes="+rec.bashes+" stabs="+rec.stabs+" done="+rec.done+" shots="+rec.shots);
                 check(rec.bashes==1 && rec.stabs==1 && rec.done==2 && rec.shots==0,
                     "autonomous close sequence completes bash then knife while bash recharges "+label);
                 check(rec.bashData.水平击退速度==24 && rec.bashData.子弹威力==60,
@@ -1838,7 +1854,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             if(ticks>=190 && (c.mode.indexOf("instructorShield")==0 || c.mode.indexOf("instructorCharge")==0))instructorCloseTick(c);
             if(_root.soldierCloseCombatCapture===true && c.side==0 && ticks>=190 && ticks%2==0
                 && ((c.mode=="chargeNear" && ticks<=250)
-                    || ((c.mode=="instructorShieldClose" || c.mode=="instructorChargeClose") && ticks<=320)))
+                    || (c.mode=="instructorShieldClose" && ticks<=345) || (c.mode=="instructorChargeClose" && ticks<=320)))
                 captureTacticalScene(c,"r13scene-"+c.mode+"-"+ticks);
             if(_root.soldierTacticalCapture===true && _root.soldierTacticalSceneCapture!==false && c.mode=="smoke" && c.side==0 && ticks>=190 && ticks<=360 && ticks%2==0)
                 captureTacticalScene(c,"r9scene-smoke-"+ticks);
@@ -1996,7 +2012,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             ["elite-charge",1,181,1,46,1],["elite-reload",1,42,331,365,2],
             ["elite-retreat",1,42,2,44,2],["elite-slide",1,42,166,248,2],
             ["instructor-run",2,20,1,24,2],["instructor-throw",2,121,1,36,2],
-            ["instructor-bash",2,191,35,68,1],["instructor-charge",2,181,1,46,1],
+            ["instructor-bash",2,191,35,93,1],["instructor-charge",2,181,1,46,1],
             ["instructor-retreat",2,42,2,44,2]];
         for(var j:Number=0;j<specs.length;j++){
             var spec:Array=specs[j];

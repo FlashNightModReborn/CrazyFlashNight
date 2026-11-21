@@ -772,7 +772,9 @@ namespace CF7Launcher.Bus
                     // initData 是 panel-specific 额外字段，被 LauncherCommandRouter merge 到 base initData。
                     // 当前唯一用法：stage-select 角斗场重定向时携带 {difficulty:"冒险"}，让 arena enter
                     // 时能回传 difficulty 给 AS2，使任务系统 FinishStage 能匹配 stage#difficulty 规则。
-                    JToken initDataToken = request["initData"];
+                    JToken initDataToken = panel == "gym"
+                        ? GymPreviewOpenData.ReadRequestInitData(request)
+                        : request["initData"];
                     string initDataExtrasJson = initDataToken != null
                         ? initDataToken.ToString(Newtonsoft.Json.Formatting.None)
                         : null;

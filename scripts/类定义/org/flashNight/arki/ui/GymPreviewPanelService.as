@@ -18,13 +18,15 @@ class org.flashNight.arki.ui.GymPreviewPanelService {
         var preview:Object = org.flashNight.arki.ui.GymTrainingPanelService.prepareOpen(stationId);
         if (preview == null || preview.error != undefined) return false;
         var json:LiteJSON = new LiteJSON();
+        // Older Hosts read only initData and require the original four portrait fields.
+        var equipmentAppearance:Object = preview.portrait.equipmentAppearance;
+        delete preview.portrait.equipmentAppearance;
         var snapshotJson:String = json.stringifySafe(preview);
-        var payload:String = org.flashNight.arki.ui.PanelRequestEnvelope.build(
-            "gym", "world_gym", [], [
-                {name:"stationId", value:preview.stationId},
-                {name:"snapshotJson", value:snapshotJson}
-            ]
-        );
+        var payload:String = json.stringifySafe({
+            task:"panel_request", panel:"gym", source:"world_gym",
+            initData:{stationId:preview.stationId, snapshotJson:snapshotJson},
+            equipmentAppearance:equipmentAppearance
+        });
         if (_root.server.sendSocketMessage(payload) === false) {
             org.flashNight.arki.ui.GymTrainingPanelService.retireOpen(preview.openToken);
             return false;

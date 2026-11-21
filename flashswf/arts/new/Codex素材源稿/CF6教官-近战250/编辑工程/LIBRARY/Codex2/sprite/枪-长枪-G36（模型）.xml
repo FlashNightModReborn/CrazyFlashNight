@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex2/sprite/枪-长枪-G36（模型）" itemID="697b650f-0000321f" lastModified="1756118877" lastUniqueIdentifier="13">
+  <timeline>
+    <DOMTimeline name="枪-长枪-G36（模型）" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="Layer_1" color="#EEDFAD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex2/sprite/Symbol 6 副本" name="枪口位置" centerPoint3DX="155.6" centerPoint3DY="-34.65">
+                  <matrix>
+                    <Matrix tx="143.1" ty="-47.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#7F42FB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex2/shape/Symbol 4" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -88,7 +88,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseTest {
     private static function spawn(nirvana:Boolean):Void {
         trace("PhoenixPhaseTest Spawn: kind="+PhoenixPhaseController.KIND+" controller="+typeof PhoenixPhaseController+" root="+_root._url);
         u=world.attachMovie(PhoenixPhaseController.KIND,nirvana?"nirvana":"phoenix",world.getNextHighestDepth(),
-            {_x:0,_y:0,兵种:PhoenixPhaseController.KIND,等级:20,是否为敌人:true,名字:"火凤",身高:175,宠物属性:{涅槃重生:nirvana}});
+            {_x:0,_y:0,兵种:PhoenixPhaseController.KIND,等级:34,phoenixReviveShieldFrames:nirvana?undefined:150,是否为敌人:true,名字:"火凤",身高:175,宠物属性:{涅槃重生:nirvana}});
         check(u!=undefined,"real Phoenix linkage attaches");
         if(!u)finish();
     }
@@ -120,6 +120,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseTest {
             check(c.phase==0 && c.count==0,"ordinary actor starts in phase one");
             trace("PhoenixPhaseTest Profile: kind="+u.兵种+" level="+u.等级+" hpMin="+u.hp_min+" max="+u.hp满血值+" attack="+u.空手攻击力);
             check(u.hp满血值>=5000 && u.空手攻击力>=70,"real spawn kind selects the actual monster profile rather than defaults");
+            check(c.shieldId===-1 && u.shield.getShieldCount()==0,"no shield on spawn: "+c.shieldId+"/"+u.shield.getShieldCount());
             checkBehavior("phase-one");capture("standing");u.hp=1000;
             check(!c.transition && c.phase==0,"1500 HP no longer starts a transition");
             u._y=u.Z轴坐标-50;u.浮空=true;
@@ -145,6 +146,15 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseTest {
             }
             if(!c.transition && c.phase==1) {
                 checkBehavior("phase-two");capture("after-rise");
+                var layer:Object=u.shield.getShieldById(c.shieldId);
+                check(layer.getMaxCapacity()==marks.baseMax && layer.getStrength()==marks.baseMax,"first handoff uses original max HP and full single-hit strength");
+                var before:Number=u.shield.getCapacity();
+                _root.暂停=true;u.shield.update(40);_root.暂停=false;
+                check(u.shield.getCapacity()==before,"menu pause freezes the real enemy shield");
+                u.shield.update(30);
+                check(Math.abs(u.shield.getCapacity()-before+marks.baseMax/5)<0.01,"30 frames decay one fifth");
+                check(u.shield.absorbDamage(250,false,1)==0,"ordinary hit spends the shield");
+                marks.firstShield=c.shieldId;
                 check(marks.down && c.count==1 && c.impacts==1 && hits==1,"one full grounded phase-two transition and one real burst");
                 check(u.hp>marks.baseMax*.95 && !u.无敌 && deaths==0 && rewards==0,"phase two refills without early settlement or permanent invulnerability");
                 check(Math.abs(u.行走X速度-marks.speed*1.5)<.001,"phase-two speed is applied once through the existing derived speed");
@@ -155,6 +165,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseTest {
                 BulletQueueProcessor.injectHit(lethal,dummy,u,u._x,u._y-70,1);
                 check(c.transition && u.hp==1 && !u._killed && deaths==0 && c.thinker._parent===u,
                     "real melee direct-death producer cannot settle an intermediate life");
+                check(u.shield.getShieldById(marks.firstShield)==null,"bypass into next transition retires only the old layer");
                 marks.x=c.x;marks.z=c.z;step=2;
             }
             return;
@@ -184,6 +195,17 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseTest {
                 check(u.man._visible && c.aura!=undefined,"final handoff restores the standing body and its existing ember aura");
                 check(u.hp==1500 && u.hp满血值==1500 && !u.无敌 && !u.浮空,"final phase preserves existing HP and restores ordinary combat");
                 check(deaths==0 && rewards==0 && !u._killed,"neither intermediate life settles a kill");
+                check(u.shield.getShieldById(c.shieldId).getMaxCapacity()==marks.baseMax && c.shieldId!=marks.firstShield,"last handoff uses first-life HP, even at 1500 HP");
+                var original:Number=u.shield.getCapacity();
+                var elapsed:Number=0;
+                // Controlled sustained ordinary damage, 30% of opening HP per second.
+                while (elapsed<150 && u.hp>0) {
+                    u.shield.update(1);
+                    u.hp-=u.shield.absorbDamage(marks.baseMax*.01,false,1);
+                    elapsed++;
+                }
+                trace("PhoenixPhaseTest Shield: original="+marks.baseMax+" start="+original+" sustainedKillFrames="+elapsed+" rate=0.30H0/s without healing");
+                check(elapsed>=60 && elapsed<=90 && u.hp<=0,"controlled sustained pressure settles the last life between 2 and 3 seconds");
                 capture("phase-three");u.hp=0;u.dispatcher.publish("kill",u);u.dispatcher.publish("kill",u);
                 check(deaths==1 && u._killed,"final death settles once despite duplicate kill entry");
                 u.死亡检测();check(rewards==1,"final shared death awards experience once");
@@ -229,6 +251,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseTest {
             }
         }
         if(step==5 && !c.transition && c.phase==2) {
+            check(c.shieldId===-1 && u.shield.getShieldCount()==0,"unmarked alternate Phoenix receives no protection: "+c.shieldId+"/"+u.shield.getShieldCount());
             check(c.count==1 && c.impacts==1 && hits==3,"Nirvana shares the same final transition without a first-life replay");
             check(deaths==1 && rewards==1,"fused transition still has no early death settlement");
             trace("PhoenixPhaseTest Complete Transitions: 3");finish();

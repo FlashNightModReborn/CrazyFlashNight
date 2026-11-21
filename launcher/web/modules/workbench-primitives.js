@@ -516,6 +516,8 @@
     ItemCard.normalizeBalanceSummary = normalizeBalanceSummary;
 
     ItemCard.balanceAriaLabel = function(value) {
+        if (value && value.displayIssue === 'balance_summary_invalid'
+                && !Object.prototype.hasOwnProperty.call(value, 'balanceSummary')) return '平衡摘要暂不可用';
         var summary = normalizeBalanceSummary(value);
         if (!summary) return '';
         var parts = ['平衡标定已确认'];
@@ -525,6 +527,15 @@
     };
 
     ItemCard.renderBalanceBadge = function(value) {
+        if (value && value.displayIssue === 'balance_summary_invalid'
+                && !Object.prototype.hasOwnProperty.call(value, 'balanceSummary')) {
+            var issue = makeElement('span', 'balance-weight-badge balance-weight-neutral');
+            issue.setAttribute('data-balance-state', 'unavailable');
+            issue.setAttribute('aria-label', '平衡摘要暂不可用');
+            issue.setAttribute('title', '平衡摘要暂不可用');
+            issue.textContent = '◆?';
+            return issue;
+        }
         var summary = normalizeBalanceSummary(value);
         if (!summary) return null;
         var tone = summary.weightLayers > 0 ? 'positive'
@@ -543,6 +554,10 @@
     };
 
     ItemCard.balanceTooltipMetaHtml = function(value) {
+        if (value && value.displayIssue === 'balance_summary_invalid'
+                && !Object.prototype.hasOwnProperty.call(value, 'balanceSummary')) {
+            return '<div class="balance-tooltip-meta">平衡摘要暂不可用</div>';
+        }
         var summary = normalizeBalanceSummary(value);
         if (!summary) return '';
         var aria = ItemCard.balanceAriaLabel(summary);

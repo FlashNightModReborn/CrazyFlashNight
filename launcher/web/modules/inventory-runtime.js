@@ -250,6 +250,10 @@
     function isValidItemProjection(item) {
         var expectedKeys = ITEM_KEYS.slice(0);
         if (own(item, 'balanceSummary')) expectedKeys.push('balanceSummary');
+        if (own(item, 'displayIssue')) {
+            if (item.displayIssue !== 'balance_summary_invalid' || own(item, 'balanceSummary')) return false;
+            expectedKeys.push('displayIssue');
+        }
         if (!hasExactKeys(item, expectedKeys)) return false;
 
         var requiredText = ['name', 'displayName', 'icon'];

@@ -37,6 +37,12 @@
             moveButton.hidden = !selection || !!quick.mode;
             moveButton.disabled = !writable() || !!quick.committing || selectedQuantity() === 0
                 || batch.rightId() === 'stash' && id === '背包';
+            var clearable = id === 'stash' && selection.item.clearableOverflow;
+            if (clearable) {
+                moveButton.textContent = '清理历史超额';
+                moveButton.title = '持有量已满，查看超额数量并确认清理';
+                return;
+            }
             moveButton.textContent = id === 'stash' ? '领取' : id === '背包' ? '存入' : '取出';
             moveButton.title = id === 'stash' ? '按所选数量领取，自动放入适用位置'
                 : '按所选数量移动，优先合并堆叠，再寻找空格';
@@ -59,7 +65,7 @@
             }
             var item = selection && selection.item.item;
             var maximum = Number(item && item.quantity) || 1;
-            quantity.root.hidden = !item || item.itemKind !== 'stack' || maximum <= 1 || !!quick.mode;
+            quantity.root.hidden = !item || item.itemKind !== 'stack' || maximum <= 1 || !!quick.mode || selection.item.clearableOverflow;
             quantity.update({min:1, max:maximum, presetMax:maximum,
                 value:amount === undefined ? maximum : amount, disabled:!writable()});
             updateMove();
@@ -68,7 +74,20 @@
             if (!selection || !writable() || batch.controller.getMode()) return false;
             var value = selectedQuantity();
             if (value === 0) return false;
-            return batch.controller.enqueue(selection.view.containerId, selection.item, false, value);
+            var row = selection.item;
+            if (selection.view.containerId === 'stash' && row.clearableOverflow === true) {
+                var ref = options.slotRef('stash', row, row.quantity);
+                if (!ref) return false;
+                options.shell().openModal({kind:'discard', title:'清理历史超额情报？',
+                    message:String(row.item.displayName || row.item.name) + '：清理暂存中的 ' + row.quantity + ' 件。',
+                    detail:'已持有的情报和解锁资格保留。清理不折算金币，确认后无法撤销。',
+                    actions:[{id:'cancel',label:'取消',audioCue:'back'},
+                        {id:'clear',label:'确认清理',danger:true,audioCue:'destructive',onSelect:function() {
+                            if (!writable() || !options.clearOverflow(ref)) options.toast('暂存状态已变化，请重新选择。');
+                        }}]});
+                return true;
+            }
+            return batch.controller.enqueue(selection.view.containerId, row, false, value);
         }
         function selectPage() {
             if (!batch || !writable()) return;
@@ -134,7 +153,10 @@
                         if (!writable()) return;
                         if (!options.coordinator.discard(options.slotRef(containerId, slot), function(result) {
                             options.render();
-                            options.toast(result.success ? '物品已丢弃。' : options.error(result.error));
+                            options.toast(result.success
+                                ? (result.discarded && result.discarded.displayIssue === 'balance_summary_invalid'
+                                    ? '物品已丢弃。平衡摘要暂不可用。' : '物品已丢弃。')
+                                : options.error(result.error));
                         })) options.toast('库存正在处理另一项操作。');
                     }}]
             });

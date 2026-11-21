@@ -11,7 +11,7 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Dressup\EquipmentUtil\EquipmentLightController.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^EquipmentLightTest Tests Passed: 34\r?$',
+        '(?m)^EquipmentLightTest Tests Passed: 42\r?$',
         '(?m)^EquipmentLightTest Tests Failed: 0\r?$'
     )
     SuccessSummary = '装备光源：真实MovieClip锚点、姿态、常驻身份、内置去重与卸载'

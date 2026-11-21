@@ -914,7 +914,10 @@ class org.flashNight.arki.scene.StageRunSession {
             return false;
         }
         try {
-            if (!org.flashNight.arki.item.RewardStashService.admit(items, false, true, context)) {
+            var admitted:Boolean = _run.restoredSettlement === true
+                ? org.flashNight.arki.item.RewardStashService.admitRestoredSettlement(items, context)
+                : org.flashNight.arki.item.RewardStashService.admit(items, false, true, context);
+            if (!admitted) {
                 org.flashNight.arki.item.RewardStashService.cancel("invalid_stage_reward");
                 settlementDiag("stash", detail + " result=admit_failed");
                 return false;
@@ -1514,6 +1517,7 @@ class org.flashNight.arki.scene.StageRunSession {
             omittedItemFlowTypes:Number(report.omittedItemFlowTypes),
             omittedItemFlowKeys:{},
             rewardRollOmissions:Number(report.rewardRollOmissions),
+            restoredSettlement:true,
             settlement:"rewards_pending",
             settlementId:String(pending.settlementId),
             remainingRewards:Number(pending.remainingCount)

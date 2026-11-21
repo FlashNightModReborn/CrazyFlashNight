@@ -4,8 +4,7 @@
  */
 class org.flashNight.arki.ui.GymPreviewProjection {
     private static var EQUIPMENT_SLOTS:Array = [
-        "头部装备", "上装装备", "下装装备", "手部装备", "脚部装备", "颈部装备",
-        "长枪", "手枪", "手枪2", "刀", "手雷"
+        "头部装备", "上装装备", "下装装备", "手部装备", "脚部装备", "颈部装备"
     ];
     private static var MAX_SAFE_INTEGER:Number = 9007199254740991;
 
@@ -140,18 +139,31 @@ class org.flashNight.arki.ui.GymPreviewProjection {
 
     private static function buildPortrait(actor:Object, gender:String):Object {
         var equipment:Object = {};
+        var equipmentAppearance:Object = {};
         for (var i:Number = 0; i < EQUIPMENT_SLOTS.length; i++) {
             var slot:String = EQUIPMENT_SLOTS[i];
             var item:Object = actor[slot];
             if (item != undefined && item != null && typeof item.name == "string"
                     && item.name.length > 0) {
                 equipment[slot] = String(item.name);
+                // DressupInitializer stores the equipped instance's calculated tier/mod data here.
+                var effective:Object = actor[slot + "数据"];
+                if (effective == null || effective.name !== item.name) {
+                    // During a loadout refresh the instance can arrive before its actor cache.
+                    effective = null;
+                    if (typeof item.getData == "function") {
+                        try { effective = item.getData(); } catch (error:Error) {}
+                    }
+                }
+                var look:Object = org.flashNight.arki.item.BaseItem.projectEquipmentAppearance(effective);
+                if (look != null) equipmentAppearance[slot] = look;
             }
         }
 
         return {
             gender:gender,
             equipment:equipment,
+            equipmentAppearance:equipmentAppearance,
             hair:_root.发型 == undefined || _root.发型 == null ? "" : String(_root.发型),
             face:_root.脸型 == undefined || _root.脸型 == null ? "" : String(_root.脸型)
         };

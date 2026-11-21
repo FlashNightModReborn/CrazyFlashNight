@@ -32,6 +32,42 @@
  * - buff 效果永久累加，不随形态切换清除（原始设计意图）
  */
 
+_root.装备生命周期函数.光剑天秤清理护盾表现 = function(ref:Object):Void {
+    var cast:Object = ref.天秤护盾施放;
+    if (!cast) return;
+    ref.天秤护盾施放 = null;
+    org.flashNight.arki.render.EquipmentLightBridge.release(cast);
+    if (cast.visual.__libraShieldCast === cast) cast.visual.removeMovieClip();
+    cast.visual = null;
+};
+
+_root.装备生命周期函数.光剑天秤卸载 = function(ref:Object):Void {
+    _root.装备生命周期函数.光剑天秤清理护盾表现(ref);
+    if (ref.libraSkillHandler) ref.自机.dispatcher.unsubscribe("WeaponSkill", ref.libraSkillHandler, ref.自机);
+    ref.libraSkillHandler = null;
+};
+
+_root.装备生命周期函数.光剑天秤施盾 = function(ref:Object, capacity:Number, strength:Number, decay:Number):Number {
+    var target:MovieClip = ref.自机;
+    var cast:Object = {};
+    var id:Number = _root.护盾函数.添加衰减护盾(target, capacity, strength, decay, "天秤之护", {
+        onBreak:function(shield):Void {
+            if (shield.getId() !== cast.id || ref.天秤护盾施放 !== cast) return;
+            _root.装备生命周期函数.光剑天秤清理护盾表现(ref);
+            _root.发布消息("天秤之护消散……");
+        }
+    });
+    if (!(id >= 0)) return -1;
+    _root.装备生命周期函数.光剑天秤清理护盾表现(ref);
+    cast.id = id;
+    ref.天秤护盾施放 = cast;
+    var layer:MovieClip = target.底层背景;
+    cast.visual = layer.attachMovie("星座护盾特效", "星座护盾特效", layer.getNextHighestDepth());
+    if (cast.visual) cast.visual.__libraShieldCast = cast;
+    org.flashNight.arki.render.EquipmentLightBridge.bindShieldLight(cast, target, id, "星座护盾特效");
+    return id;
+};
+
 _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, param:Object):Void
 {
     EquipmentEmissionState.bind(ref, "libra");
@@ -104,18 +140,14 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         子弹模板.shootZ = 0;
         子弹模板.击中地图效果 = "";
     }
-    // 护盾回调对象（通过闭包引用ref来管理特效）
-    ref.护盾特效 = null; // 特效引用，在护盾启动时赋值
-    ref.护盾回调 = {
-        onBreak: function(s) {
-            _root.发布消息("天秤之护消散……");
-            // 通过闭包访问ref，移除护盾特效
-            if (ref.护盾特效) {
-                ref.护盾特效.removeMovieClip();
-                ref.护盾特效 = null;
-            }
-        }
-    };
+    if (ref.libraSkillHandler) _root.装备生命周期函数.光剑天秤卸载(ref);
+    if (!ref.生命周期函数列表) ref.生命周期函数列表 = [];
+    if (!ref.libraCleanup) ref.libraCleanup = {动作:_root.装备生命周期函数.光剑天秤卸载, 额外参数:ref};
+    var registered:Boolean = false;
+    for (var i:Number = 0; i < ref.生命周期函数列表.length; i++) {
+        if (ref.生命周期函数列表[i] === ref.libraCleanup) registered = true;
+    }
+    if (!registered) ref.生命周期函数列表.push(ref.libraCleanup);
 
     // 从 item.value 恢复形态状态
     var wv:Object = ref.自机[ref.装备类型].value;
@@ -154,7 +186,7 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
     // ─────────────────────────────────────────────────────────────────────
     PlacementVisual.hookVisualUpdate(target, "刀_引用", ref, _root.装备生命周期函数.光剑天秤视觉更新);
 
-    target.dispatcher.subscribe("WeaponSkill", function(mode:String) {
+    ref.libraSkillHandler = function(mode:String) {
         if (mode != "兵器") return;
 
         // 读取技能参数
@@ -213,20 +245,8 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
             var 护盾强度:Number = 100 + 切换次数 * 20;
             var 衰减速率:Number = 护盾容量 / 过渡帧数;
 
-            // 创建护盾特效（挂载在底层背景），并存储引用到ref
-            var 搭载层:MovieClip = target.底层背景;
-            ref.护盾特效 = 搭载层.attachMovie("星座护盾特效", "星座护盾特效", 搭载层.getNextHighestDepth());
-
-            // 复用预分配的回调对象
-            _root.护盾函数.添加衰减护盾(
-                target,
-                护盾容量,
-                护盾强度,
-                衰减速率,
-                "天秤之护",
-                ref.护盾回调
-            );
-            _root.发布消息("天秤之护启动！容量" + Math.floor(护盾容量) + "，强度" + 护盾强度);
+            var shieldId:Number = _root.装备生命周期函数.光剑天秤施盾(ref, 护盾容量, 护盾强度, 衰减速率);
+            if (shieldId >= 0) _root.发布消息("天秤之护启动！容量" + Math.floor(护盾容量) + "，强度" + 护盾强度);
         }
 
         // ─────────────────────────────────────────────────────────────────
@@ -236,7 +256,8 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         // - 默认形态：无需切换，直接清空 buff
         // ─────────────────────────────────────────────────────────────────
         _root.装备生命周期函数.光剑天秤战技重置(ref);
-    }, target);
+    };
+    target.dispatcher.subscribe("WeaponSkill", ref.libraSkillHandler, target);
 };
 
 
@@ -246,6 +267,10 @@ _root.装备生命周期函数.光剑天秤周期 = function(ref:Object, param:O
 
     var target:MovieClip = ref.自机;
     var currentFrame:Number = _root.帧计时器.当前帧数;
+    var cast:Object = ref.天秤护盾施放;
+    if (cast && (!(target.hp > 0) || !(target.shield.getShieldById(cast.id).getCapacity() > 0))) {
+        _root.装备生命周期函数.光剑天秤清理护盾表现(ref);
+    }
 
     // 0. 延迟恢复 buff + 持续同步累计值到 item.value
     {

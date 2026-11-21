@@ -9,6 +9,7 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
         passed = 0; failed = 0;
         var saved:Object = capture();
         try {
+            testAppearanceOnOpenWire();
             testStartCancelAndClock();
             testAttributeAndDuplicate();
             testSkillAndCapExperience();
@@ -27,6 +28,31 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
         }
         trace("GymTrainingPanelServiceTest Tests Passed: " + passed);
         trace("GymTrainingPanelServiceTest Tests Failed: " + failed);
+    }
+
+    private static function testAppearanceOnOpenWire():Void {
+        setup();
+        var actor:Object = _root.gameworld.hero;
+        actor.手枪2 = {name:"MK23手枪"};
+        actor.上装装备 = {name:"绿色马甲"};
+        actor.上装装备数据 = {name:"绿色马甲",data:{dressup:"变装-二阶绿色马甲"}};
+        var originalServer = _root.server;
+        var transport:Object = {sendSocketMessage:function(message:String):Boolean {
+            this.wire = message;
+            return true;
+        }};
+        try {
+            _root.server = transport;
+            check(org.flashNight.arki.ui.GymPreviewPanelService.openPanel("dumbbell"), "opens with tiered armor");
+            // snapshotJson is an escaped JSON string inside the outer request.
+            var json:FastJSON = new FastJSON();
+            var request:Object = json.parse(transport.wire);
+            var portrait:Object = json.parse(request.initData.snapshotJson).portrait;
+            check(portrait.equipment["上装装备"] == "绿色马甲" && portrait.equipment["手枪2"] == undefined
+                    && portrait.equipmentAppearance == undefined, "legacy Host receives the original portrait shape");
+            check(request.equipmentAppearance["上装装备"].dressup == "变装-二阶绿色马甲",
+                "current Host receives the resolved armor on the same open request");
+        } finally { _root.server = originalServer; }
     }
 
     private static function setup():Void {

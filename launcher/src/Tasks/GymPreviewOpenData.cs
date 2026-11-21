@@ -17,19 +17,36 @@ namespace CF7Launcher.Tasks
         private const long MaxSafeInteger = 9007199254740991L;
         private static readonly Regex SafeToken = new Regex("^[A-Za-z0-9._~-]{1,128}$", RegexOptions.Compiled);
 
+        // AS2 keeps the optional visual data alongside the legacy opener. The normal
+        // router still validates the snapshot and slot ownership before opening the panel.
+        internal static JObject ReadRequestInitData(JObject request)
+        {
+            var extras = request["initData"] as JObject;
+            if (!Exact(extras, "stationId", "snapshotJson")) return null;
+            var appearances = request["equipmentAppearance"];
+            return appearances == null ? extras : new JObject(extras) { ["equipmentAppearance"] = appearances };
+        }
+
         internal static JObject Build(string source, string extras)
         {
             if (source != "world_gym" || string.IsNullOrEmpty(extras) || extras.Length > 20000) return null;
             JObject outer;
             try { outer = JObject.Parse(extras, StrictJson); }
             catch (JsonException) { return null; }
-            if (!Exact(outer, "stationId", "snapshotJson")) return null;
+            if (!Exact(outer, "stationId", "snapshotJson")
+                && !Exact(outer, "stationId", "snapshotJson", "equipmentAppearance")) return null;
             string station = Text(outer["stationId"], 16);
             string raw = Text(outer["snapshotJson"], 16000);
             if (station == null || !Stations.Contains(station) || raw == null) return null;
             JObject snapshot;
             try { snapshot = JObject.Parse(raw, StrictJson); }
             catch (JsonException) { return null; }
+            if (outer.Property("equipmentAppearance") != null)
+            {
+                var portrait = snapshot["portrait"] as JObject;
+                if (portrait == null || portrait.Property("equipmentAppearance") != null) return null;
+                portrait["equipmentAppearance"] = outer["equipmentAppearance"];
+            }
             // Legacy v2 omits pendingProjection; current AS2 always emits it.
             // Keep both shapes closed so a recovery descriptor cannot smuggle
             // another write or bypass the exact station/project owner.
@@ -64,7 +81,8 @@ namespace CF7Launcher.Tasks
 
         private static bool ValidPortrait(JObject value)
         {
-            if (!Exact(value, "gender", "equipment", "hair", "face")) return false;
+            if (!Exact(value, "gender", "equipment", "hair", "face")
+                && !Exact(value, "gender", "equipment", "equipmentAppearance", "hair", "face")) return false;
             string gender = Text(value["gender"], 6);
             if ((gender != "male" && gender != "female")
                 || OptionalText(value["hair"], 160) == null || OptionalText(value["face"], 160) == null)
@@ -73,7 +91,11 @@ namespace CF7Launcher.Tasks
             if (equipment == null || equipment.Properties().Count() > EquipmentSlots.Count) return false;
             foreach (JProperty item in equipment.Properties())
                 if (!EquipmentSlots.Contains(item.Name) || Text(item.Value, 160) == null) return false;
-            return true;
+            if (value.Property("equipmentAppearance") == null) return true;
+            var appearances = value["equipmentAppearance"] as JObject;
+            return appearances != null && appearances.Properties().All(slot =>
+                equipment.Property(slot.Name, StringComparison.Ordinal) != null
+                && Guardian.CharacterBuildProtocol.IsEquipmentAppearance(slot.Value as JObject));
         }
 
         private static bool ValidProjects(JArray projects, string station)

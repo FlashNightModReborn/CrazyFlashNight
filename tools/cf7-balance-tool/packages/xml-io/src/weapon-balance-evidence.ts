@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { XMLParser } from "fast-xml-parser";
+import { XMLParser, XMLValidator } from "fast-xml-parser";
 
 import {
   WEAPON_BALANCE_BUDGET_CODES,
@@ -16,7 +16,10 @@ export interface WeaponAcquisitionIndex {
   repositoryRoot: string;
   craftingFilesByItem: ReadonlyMap<string, readonly string[]>;
   goldShopFilesByItem: ReadonlyMap<string, readonly string[]>;
+  goldShopRefsByItem: ReadonlyMap<string, readonly string[]>;
   kshopFilesByItem: ReadonlyMap<string, readonly string[]>;
+  rewardFiles: ReadonlySet<string>;
+  catalogFiles: ReadonlySet<string>;
 }
 
 export interface WeaponBalanceEvidenceIssue {
@@ -37,24 +40,49 @@ export function buildWeaponAcquisitionIndex(
   repositoryRoot: string
 ): WeaponAcquisitionIndex {
   const root = path.resolve(repositoryRoot);
+  const shops = listedJsonFiles(root, "data/shops", "shops");
+  const kshops = listedJsonFiles(root, "data/kshop", "kshop");
+  const recipes = listedJsonFiles(root, "data/crafting", "list", ".json");
   return {
     repositoryRoot: root,
-    craftingFilesByItem: indexJsonDirectory(
-      root,
-      "data/crafting",
-      extractCraftingNames
-    ),
-    goldShopFilesByItem: indexJsonDirectory(
-      root,
-      "data/shops/npcs",
-      extractNpcShopNames
-    ),
-    kshopFilesByItem: indexJsonDirectory(
-      root,
-      "data/kshop",
-      extractKshopNames
-    )
+    ...indexNpcShopShelves(root, shops),
+    craftingFilesByItem: indexCatalogs(root, recipes, extractCraftingNames),
+    kshopFilesByItem: indexCatalogs(root, kshops, extractKshopNames),
+    rewardFiles: new Set([
+      ...listedJsonFiles(root, "data/task", "task"),
+      ...listedJsonFiles(root, "data/achievement", "achievement")
+    ]),
+    catalogFiles: new Set([...shops, ...kshops, ...recipes])
   };
+}
+
+function indexNpcShopShelves(root: string, shops: string[]) {
+  const goldShopFilesByItem = new Map<string, string[]>();
+  const goldShopRefsByItem = new Map<string, string[]>();
+  const shopIds = new Set<string>();
+  for (const file of shops) {
+    const shop = readJson(root, file);
+    if (!isObject(shop)) throw new Error(`${file}: invalid NPC shop`);
+    const modern = shop.schema !== undefined;
+    if (modern && (shop.schema !== "npc-shop.v2" || typeof shop.shopId !== "string" || !shop.shopId)) {
+      throw new Error(`${file}: invalid NPC shop schema or identity`);
+    }
+    const catalogs = modern ? [[String(shop.shopId), shop.catalog] as const] : Object.entries(shop);
+    if (!catalogs.length) throw new Error(`${file}: missing NPC shop`);
+    for (const [id, catalog] of catalogs) {
+      if (!id || shopIds.has(id) || !isObject(catalog) || (!modern && !Object.keys(catalog).length)) {
+        throw new Error(`${file}: invalid or duplicate NPC shop ${id}`);
+      }
+      shopIds.add(id);
+      for (const [slot, entry] of Object.entries(catalog)) {
+        const name = typeof entry === "string" ? entry : isObject(entry) ? entry.name : undefined;
+        if (typeof name !== "string" || !/^(0|[1-9]\d*)$/.test(slot)) continue;
+        addReference(goldShopFilesByItem, name, file);
+        addReference(goldShopRefsByItem, name, `${file}#${modern ? "catalog" : id}.${slot}`);
+      }
+    }
+  }
+  return { goldShopFilesByItem, goldShopRefsByItem };
 }
 
 /**
@@ -74,12 +102,18 @@ export function validateWeaponBalanceEvidence(
   }
 
   record.ruleRefs.forEach((ref, refIndex) => {
-    validateEvidencePath(
+    const evidencePath = validateEvidencePath(
       ref.evidenceRef,
-        `weaponBalanceAudit.ruleRefs.ref[${refIndex}].evidenceRef`,
+      `weaponBalanceAudit.ruleRefs.ref[${refIndex}].evidenceRef`,
       index.repositoryRoot,
       issues
     );
+    if (evidencePath?.startsWith("data/shops/") && ref.evidenceRef &&
+        (ref.target === "input.weightLayers" || ref.evidenceRef.includes("#catalog.")) &&
+        !index.goldShopRefsByItem.get(itemName)?.includes(ref.evidenceRef)) {
+      addError(issues, "gold_shop_slot_mismatch", `weaponBalanceAudit.ruleRefs.ref[${refIndex}].evidenceRef`,
+        `NPC shop evidence must point to the active shelf for ${itemName}: ${ref.evidenceRef}`);
+    }
   });
 
   record.budgetBreakdown.forEach((entry, entryIndex) => {
@@ -130,12 +164,12 @@ export function validateWeaponBalanceEvidence(
           issuePath,
           `no active NPC gold shop contains exact item ${itemName}`
         );
-      } else if (evidencePath && !goldMatches.includes(evidencePath)) {
+      } else if (!entry.evidenceRef || !index.goldShopRefsByItem.get(itemName)?.includes(entry.evidenceRef)) {
         addError(
           issues,
           "gold_shop_evidence_mismatch",
           `${issuePath}.evidenceRef`,
-          `referenced file does not contain exact NPC shop item ${itemName}`
+          `evidence must name the active NPC shop file and shelf for ${itemName}: ${entry.evidenceRef}`
         );
       }
 
@@ -187,7 +221,7 @@ export function validateWeaponBalanceEvidence(
 
     if (entry.code === "acquisition.high-price") {
       validateHighPriceEvidence(itemName, record, index, priceContext,
-        entry.delta, evidencePath, issuePath, issues);
+        entry.delta, entry.evidenceRef, issuePath, issues);
     }
     if (entry.code === "mechanic.tactical-mod-lock") {
       validateTacticalModLockEvidence(itemName, record, index.repositoryRoot,
@@ -261,7 +295,7 @@ function validateHighPriceEvidence(
   index: WeaponAcquisitionIndex,
   context: WeaponPriceEvidenceContext | undefined,
   delta: number,
-  evidencePath: string | undefined,
+  evidenceRef: string | undefined,
   issuePath: string,
   issues: WeaponBalanceEvidenceIssue[]
 ): void {
@@ -280,17 +314,16 @@ function validateHighPriceEvidence(
     return;
   }
 
-  const goldFiles = index.goldShopFilesByItem.get(itemName) ?? [];
-  if (!evidencePath || !goldFiles.includes(evidencePath)) {
+  if (!evidenceRef || !index.goldShopRefsByItem.get(itemName)?.includes(evidenceRef)) {
     addError(issues, "high_price_gold_shop_mismatch", issuePath,
-      `evidence must name an NPC gold shop containing exact item ${itemName}`);
+      `evidence must name the active NPC shop file and shelf for ${itemName}: ${evidenceRef}`);
   }
   if ((index.craftingFilesByItem.get(itemName)?.length ?? 0) > 0 ||
       (index.kshopFilesByItem.get(itemName)?.length ?? 0) > 0) {
     addError(issues, "high_price_other_acquisition", issuePath,
       `${itemName} also has crafting or K-point acquisition; gold-only +1 cannot be confirmed`);
   }
-  const unreviewed = findUnreviewedItemReferences(index.repositoryRoot, itemName, goldFiles);
+  const unreviewed = findUnreviewedItemReferences(index, itemName);
   if (unreviewed.length > 0) {
     addError(issues, "high_price_unreviewed_acquisition", issuePath,
       `review named references outside the weapon definition and gold shops: ${unreviewed.join(", ")}`);
@@ -326,8 +359,14 @@ function validateHighPriceEvidence(
  * 不因它看似 NPC 预装就自动放行。动态拼接/通用随机池仍须规则证据说明。
  */
 function findUnreviewedItemReferences(
-  repositoryRoot: string, itemName: string, goldFiles: readonly string[]
+  index: WeaponAcquisitionIndex, itemName: string
 ): string[] {
+  const { repositoryRoot } = index;
+  const reviewed = new Set([
+    ...(index.goldShopFilesByItem.get(itemName) ?? []),
+    ...(index.kshopFilesByItem.get(itemName) ?? []),
+    ...(index.craftingFilesByItem.get(itemName) ?? [])
+  ]);
   const matches: string[] = [];
   const escapedItemName = itemName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const quotedItemName = new RegExp(`(["'])${escapedItemName}\\1`);
@@ -341,8 +380,8 @@ function findUnreviewedItemReferences(
       if (relative === "data/dictionaries") continue;
       if (entry.isDirectory()) { scan(absolute); continue; }
       const ext = path.extname(entry.name).toLowerCase();
-      if (![".xml", ".json", ".as"].includes(ext) || goldFiles.includes(relative) ||
-          relative === "data/items/asset_source_map.xml") continue;
+      if (![".xml", ".json", ".as"].includes(ext) || reviewed.has(relative) ||
+          relative === "data/items/asset_source_map.xml" || relative === "data/tooltip/tooltip-catalog.json") continue;
       const source = fs.readFileSync(absolute, "utf8").replace(/^\uFEFF/, "");
       if (ext === ".as") {
         // AS2 专项类只由 TestLoader 运行，不是正式获取入口；其他脚本仍逐名检查。
@@ -353,7 +392,10 @@ function findUnreviewedItemReferences(
         continue;
       }
       const parsed: unknown = ext === ".json" ? JSON.parse(source) : xmlParser.parse(source);
-      if (containsItemName(parsed, itemName, relative.startsWith("data/items/"))) {
+      if (!index.catalogFiles.has(relative) && isUnlistedCatalog(relative, parsed)) continue;
+      const hasEncodedRewards = index.rewardFiles.has(relative) ||
+        /^data\/rag\/agent_saves\/[^/]+\/(agent_tasks|task_reward_overrides)\.json$/.test(relative);
+      if (containsItemName(parsed, itemName, relative.startsWith("data/items/"), hasEncodedRewards)) {
         matches.push(relative);
       }
     }
@@ -362,12 +404,29 @@ function findUnreviewedItemReferences(
   return matches.sort();
 }
 
-function containsItemName(value: unknown, itemName: string, skipDefinition: boolean): boolean {
+// Only recognize the loaders' own catalog shapes here. Other files retain the generic reference check.
+function isUnlistedCatalog(file: string, value: unknown): boolean {
+  if (file.startsWith("data/shops/npcs/") && file.endsWith(".json") && isObject(value)) {
+    return value.schema === "npc-shop.v2" || (value.schema === undefined && Object.values(value).every(isObject));
+  }
+  if (!Array.isArray(value) || !file.endsWith(".json")) return false;
+  if (file.startsWith("data/kshop/")) return value.every(row => isObject(row) && typeof row.item === "string");
+  return file.startsWith("data/crafting/") && value.every(row => isObject(row) && typeof row.name === "string");
+}
+
+function containsItemName(value: unknown, itemName: string, skipDefinition: boolean, hasEncodedRewards: boolean): boolean {
   if (value === itemName) return true;
-  if (Array.isArray(value)) return value.some((part) => containsItemName(part, itemName, skipDefinition));
+  if (Array.isArray(value)) return value.some((part) => containsItemName(part, itemName, skipDefinition, hasEncodedRewards));
   if (!isObject(value)) return false;
   if (skipDefinition && value.name === itemName && value.type === "武器") return false;
-  return Object.values(value).some((part) => containsItemName(part, itemName, skipDefinition));
+  return Object.entries(value).some(([field, part]) => {
+    if (hasEncodedRewards && (field === "rewards" || field === "extra_rewards") && Array.isArray(part)) {
+      // ItemUtil.getRequirementFromTask splits on ## when present, otherwise on #.
+      if (part.some(entry => typeof entry === "string" &&
+          entry.split(entry.includes("##") ? "##" : "#", 1)[0] === itemName)) return true;
+    }
+    return containsItemName(part, itemName, skipDefinition, hasEncodedRewards);
+  });
 }
 
 function validateEvidencePath(
@@ -427,58 +486,41 @@ function validateEvidencePath(
   return toRepositoryPath(repositoryRoot, resolved);
 }
 
-function indexJsonDirectory(
-  repositoryRoot: string,
-  relativeDirectory: string,
-  extractNames: (value: unknown) => string[]
-): ReadonlyMap<string, readonly string[]> {
-  const directory = path.join(repositoryRoot, ...relativeDirectory.split("/"));
-  const mutable = new Map<string, string[]>();
+function readJson(root: string, file: string): unknown {
+  return JSON.parse(fs.readFileSync(path.join(root, file), "utf8").replace(/^\uFEFF/, ""));
+}
 
-  if (!fs.existsSync(directory)) {
-    return mutable;
+function listedJsonFiles(root: string, directory: string, tag: string, suffix = ""): string[] {
+  const manifest = `${directory}/list.xml`;
+  const source = fs.readFileSync(path.join(root, manifest), "utf8");
+  if (XMLValidator.validate(source) !== true) throw new Error(`${manifest}: invalid XML`);
+  const entries: unknown = new XMLParser({ parseTagValue: false }).parse(source).root?.[tag];
+  return (Array.isArray(entries) ? entries : [entries]).map((entry: unknown) => {
+    if (typeof entry !== "string" || !entry || entry.includes("\\") || entry.includes(":") ||
+        entry.split("/").some(part => !part || part === ".." || part === ".") ||
+        !(entry + suffix).endsWith(".json")) throw new Error(`${manifest}: invalid <${tag}> entry`);
+    return `${directory}/${entry}${suffix}`;
+  });
+}
+
+function addReference(index: Map<string, string[]>, name: string, reference: string): void {
+  const existing = index.get(name);
+  if (!existing) index.set(name, [reference]);
+  else if (!existing.includes(reference)) existing.push(reference);
+}
+
+function indexCatalogs(root: string, files: string[], extractNames: (value: unknown) => string[]) {
+  const result = new Map<string, string[]>();
+  for (const file of files) {
+    for (const name of extractNames(readJson(root, file))) addReference(result, name, file);
   }
-
-  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-    if (!entry.isFile() || !entry.name.toLowerCase().endsWith(".json")) {
-      continue;
-    }
-
-    const absolutePath = path.join(directory, entry.name);
-    const parsed = JSON.parse(
-      fs.readFileSync(absolutePath, "utf8").replace(/^\uFEFF/, "")
-    ) as unknown;
-    const repositoryPath = toRepositoryPath(repositoryRoot, absolutePath);
-
-    for (const itemName of extractNames(parsed)) {
-      const files = mutable.get(itemName) ?? [];
-      if (!files.includes(repositoryPath)) {
-        files.push(repositoryPath);
-      }
-      mutable.set(itemName, files);
-    }
-  }
-
-  return mutable;
+  return result;
 }
 
 function extractCraftingNames(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value
     .map((entry) => (isObject(entry) ? entry.name : undefined))
-    .filter((name): name is string => typeof name === "string");
-}
-
-function extractNpcShopNames(value: unknown): string[] {
-  if (!isObject(value) || !isObject(value.catalog)) return [];
-
-  return Object.values(value.catalog)
-    .map((entry) => {
-      if (typeof entry === "string") return entry;
-      return isObject(entry) && typeof entry.name === "string"
-        ? entry.name
-        : undefined;
-    })
     .filter((name): name is string => typeof name === "string");
 }
 

@@ -18,6 +18,7 @@ class org.flashNight.arki.ui.GymPreviewProjectionTest {
             testLevelBoundaries();
             testSourceValuesAndKpointMapping();
             testPortraitUsesExactSlotsAndRootIdentity();
+            testEffectiveArmorAppearance();
             testMalformedCatalogRestoresPriorReference();
             testUnsupportedStationHasNoCatalogEffect();
         } catch (error:Error) {
@@ -122,8 +123,8 @@ class org.flashNight.arki.ui.GymPreviewProjectionTest {
         check(result.portrait.gender == "female" && result.portrait.hair == "根级测试发型"
                 && result.portrait.face == "根级测试脸型",
             "portrait converts root gender and reads root hair and face");
-        check(keyCount == 11, "portrait projects the exact eleven allowed equipment slots");
-        for (var i:Number = 0; i < EQUIPMENT_SLOTS.length; i++) {
+        check(keyCount == 6 && equipment["手枪2"] == undefined, "training projects six non-weapon slots");
+        for (var i:Number = 0; i < 6; i++) {
             check(equipment[EQUIPMENT_SLOTS[i]] == "测试装备" + i,
                 "portrait maps equipment slot " + EQUIPMENT_SLOTS[i]);
         }
@@ -137,9 +138,36 @@ class org.flashNight.arki.ui.GymPreviewProjectionTest {
         equipment = result.portrait.equipment;
         keyCount = 0;
         for (var sparseKey:String in equipment) keyCount++;
-        check(keyCount == 9 && equipment["上装装备"] == undefined
+        check(keyCount == 5 && equipment["上装装备"] == undefined
                 && equipment["手枪"] == undefined,
             "portrait omits empty and non-string equipment names");
+    }
+
+    private static function testEffectiveArmorAppearance():Void {
+        prepareFixture(0, 34);
+        var actor:Object = _root.gameworld[_root.控制目标];
+        var catalog:Object = {name:"绿色马甲", use:"上装装备", data:{dressup:"变装-绿色马甲"},
+            data_2:{dressup:"变装-二阶绿色马甲"}};
+        var config:Object = {tierNameToKeyDict:{二阶:"data_2"}, defaultTierDataDict:{}, levelStatList:[]};
+        var mod:Object = {name:"测试外观", use:"上装装备", stats:{override:{dressup:"变装-沙漠军装背心"}}};
+        org.flashNight.arki.item.equipment.ModRegistry.validateModHitBehavior(mod, {});
+        var mods:Object = {测试外观:mod};
+        var value:Object = {level:1, tier:"二阶", mods:[]};
+        actor.上装装备 = {name:"绿色马甲"};
+        actor.上装装备数据 = org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(catalog,value,config,mods);
+        var portrait:Object = GymPreviewProjection.buildPreview("dumbbell").portrait;
+        check(portrait.equipment["上装装备"] == "绿色马甲"
+                && portrait.equipmentAppearance["上装装备"].dressup == "变装-二阶绿色马甲",
+            "tier keeps item name and projects the resolved vest");
+        value.mods = ["测试外观"];
+        var modified:Object = org.flashNight.arki.item.equipment.EquipmentCalculator.calculatePure(catalog,value,config,mods);
+        check(modified.data.dressup == "变装-沙漠军装背心", "registered mod overrides the tier's linkage");
+        actor.上装装备数据 = {name:"旧上装",data:{dressup:"过期外观"}};
+        actor.上装装备.getData = function():Object { return modified; };
+        portrait = GymPreviewProjection.buildPreview("squat").portrait;
+        check(portrait.equipmentAppearance["上装装备"].dressup == "变装-沙漠军装背心"
+                && catalog.data.dressup == "变装-绿色马甲",
+            "effective mod override wins after tier and does not change the catalog");
     }
 
     private static function testMalformedCatalogRestoresPriorReference():Void {

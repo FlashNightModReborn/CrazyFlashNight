@@ -61,6 +61,51 @@ namespace Launcher.Tests.Tasks
             Assert.Equal(JTokenType.Null, opened["snapshot"]["pendingProjection"].Type);
         }
 
+        [Fact]
+        public void AppearanceMustDescribeAnEquippedItemAndContainOnlyDisplayFields()
+        {
+            var snapshot = Snapshot();
+            var look = new JObject {
+                ["dressup"] = "变装-二阶绿色马甲", ["dressup1"] = "", ["dressup2"] = "", ["dressup3"] = "",
+                ["helmet"] = false, ["hairAbove"] = false
+            };
+            snapshot["portrait"]["equipment"]["上装装备"] = "绿色马甲";
+            var appearances = new JObject { ["上装装备"] = look };
+            snapshot["portrait"]["equipmentAppearance"] = appearances;
+            Assert.True(JToken.DeepEquals(GymPreviewOpenData.Build("world_gym", Extras(snapshot))
+                ["snapshot"]["portrait"]["equipmentAppearance"], appearances));
+            appearances["头部装备"] = look.DeepClone();
+            Assert.Null(GymPreviewOpenData.Build("world_gym", Extras(snapshot)));
+            appearances.Remove("头部装备");
+            look["mods"] = new JArray();
+            Assert.Null(GymPreviewOpenData.Build("world_gym", Extras(snapshot)));
+            look.Remove("mods");
+            look["helmet"] = "false";
+            Assert.Null(GymPreviewOpenData.Build("world_gym", Extras(snapshot)));
+        }
+
+        [Fact]
+        public void OutfitExtensionPreservesTheLegacyOpenAndUsesTheSameSlotValidation()
+        {
+            var snapshot = Snapshot();
+            var legacyInit = JObject.Parse(Extras(snapshot));
+            var request = new JObject { ["initData"] = legacyInit };
+            Assert.Same(legacyInit, GymPreviewOpenData.ReadRequestInitData(request));
+            var look = new JObject {
+                ["dressup"] = "变装-二阶绿色马甲", ["dressup1"] = "", ["dressup2"] = "", ["dressup3"] = "",
+                ["helmet"] = false, ["hairAbove"] = false
+            };
+            request["equipmentAppearance"] = new JObject { ["上装装备"] = look };
+            var current = GymPreviewOpenData.ReadRequestInitData(request);
+            var opened = GymPreviewOpenData.Build("world_gym", current.ToString(Formatting.None));
+            Assert.Equal("变装-二阶绿色马甲", (string)opened["snapshot"]["portrait"]["equipmentAppearance"]["上装装备"]["dressup"]);
+            Assert.Null(GymPreviewOpenData.Build("world_gym", legacyInit.ToString(Formatting.None))
+                ["snapshot"]["portrait"]["equipmentAppearance"]);
+            request["equipmentAppearance"] = new JObject { ["头部装备"] = look.DeepClone() };
+            Assert.Null(GymPreviewOpenData.Build("world_gym",
+                GymPreviewOpenData.ReadRequestInitData(request).ToString(Formatting.None)));
+        }
+
         [Theory]
         [InlineData("failed", "injected")]
         [InlineData("pending", "revision_pending")]

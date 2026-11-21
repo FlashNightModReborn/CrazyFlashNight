@@ -480,6 +480,8 @@ Native 绘制变更检查 `NativeGuidanceVisualTests` 的实际像素、原场�
 
 报告接通/关闭必须覆盖两段异步时序：真实 WebView2 已发出的自动意图先被夹具截留，Host 的 loading/reveal 显示前进后原样释放；真实 AVM1 则在 Host 形成意图后推进加载/提示再交付 AS2。接通与提前/就绪/exact 业务关闭均须首次迟到消息就生效，不能由第二次发送掩盖。已经接受的 covered 证明可在同请求内保留，foreign/generation/未来或畸形 revision、无 coverage 与未知锁仍拒绝，失败导航和世界呈现维持 exact revision。实际游戏另验同一进程连续至少三次返回，不由夹具次数代签。
 
+`CompositionRecheckTests` 覆盖在战报预览和已绑定的结算窗口按下鼠标、由另一窗口接走捕获并收到松键的顺序。真实 WebView2 夹具另核对预览在捕获转移后会继续原有的接通请求。窗口取消本地手势，过场仍等待实际按键松开，同一请求只发送一次。
+
 本包 AS2 逻辑变更编译 `-Target publish`，main 时间轴变更才编译 `-Target main`，核对应 SWF 刷新；不重编原背景 SWF。只改 Host/Web 时不重编同哈希 AS2/SWF，应显式记录复用的既有证据。自动门覆盖严格身份、遮罩回执、揭幕许可、未知操作锁和真实合成测试窗口，不能代签基地/战斗/失败的实际游戏旅程或保存重启。合同与人验入口见 [U12 专项](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
 
 涉及关卡返回报告的等待/开窗时序，追加 `scripts/run-map-loot-tests.ps1` 与 `scripts/run-stage-return-tests.ps1`：覆盖胜利、战败、主动撤退报告、durable 暂存后提前绑定且不暂停、清场只保留 exact 空暂存报告、原权威提前关闭、失败重试复用会话、奖励不重放、教程优先级和重复就绪不重复投递；过场 focused 同时覆盖清场取消撤罩、取消/错误不伪造成功及重绑定世界拒绝旧揭幕，并覆盖已收到揭幕后再取消/失败/提前清理均不能越过成功终帧。Battle outcome 的 failure 不是加载失败页的真实旅程。
@@ -669,7 +671,7 @@ AS2 覆盖三模式礼包、stale/满容量零写、回执查询、64-occurrence
 
 **书中返回与终战增援**：`scripts/run-bookshelf-tests.ps1` 覆盖旧世界销毁后换档、临时结算保存门、原角色 SP 单次回流、新编辑令牌、死亡升级/拾取保护及有限援军的间隔、上限、暂停、死亡取消和晚到加载；`scripts/run-map-loot-tests.ps1` 调用生产返回函数，区分书中直接换回原角色与普通关卡医务室路线。`node tools/run-bookshelf-flow-harness.js` 在三个视口验证核对后无需关窗重开、新快照失败重读、未知写仅查询与自动返回；与 `BookshelfTaskTests` 配合检查跨层回执。模拟存储和浏览器不代替实机完整旅程、保存重启或真人难度验收。
 
-**统一奖励暂存回归**：共享收纳工作树定向 Web/DOM/Host/AS2 入口与证据层级见 [本轮回归矩阵](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#103-定向回归与证据)。奖励回归：`scripts/run-reward-stash-tests.ps1`（当前机器钉值以 runner 为准，120/120），加 `-RunScale` 测隔离 SOL 的 0/64/256/1024/4096 条与实际字节/P95/P99/pack/flush/保存分段耗时；旧 root N+1/terminal ACK 和关卡继续跑 `scripts/run-map-loot-tests.ps1`。曝光后 false/pending/throw 保留同一候选；before/candidate/曝光副本须保留可序列化未知字段并切断别名；finalizer throw/重入不得再次 flush 或把已确认候选回滚。
+**统一奖励暂存回归**：共享收纳工作树定向 Web/DOM/Host/AS2 入口与证据层级见 [本轮回归矩阵](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#103-定向回归与证据)。奖励回归：`scripts/run-reward-stash-tests.ps1`（计数以 runner 为准；覆盖历史情报暂存部分领取及确认清理），加 `-RunScale` 测隔离 SOL 的 0/64/256/1024/4096 条与实际字节/P95/P99/pack/flush/保存分段耗时；旧 root N+1/terminal ACK 和关卡继续跑 `scripts/run-map-loot-tests.ps1`。曝光后 false/pending/throw 保留同一候选；before/candidate/曝光副本须保留可序列化未知字段并切断别名；finalizer throw/重入不得再次 flush 或把已确认候选回滚。
 Web/Host 入口、已替换的旧产品合同、20 样本的观测边界与候选验收状态见 [暂存 ADR](../docs/统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。
 
 保存故障夹具须明确曝光边界：验证 `not_committed` / HUD 原操作可重试时，在组包等曝光前步骤注入确定失败；

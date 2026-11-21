@@ -23,6 +23,7 @@ class org.flashNight.arki.merc.MercSpawnerTest {
         testWorldCopyOwnsItsMetadata();
         testWorldCopyFlowsBackWithRestoredIdentity();
         testHybridBaseLock();
+        testPeriodicScenePermission();
         trace("MercSpawnerTest Tests Passed: " + passed);
         trace("MercSpawnerTest Tests Failed: " + failed);
         trace("=== MercSpawnerTest end ===");
@@ -373,6 +374,51 @@ class org.flashNight.arki.merc.MercSpawnerTest {
         check(MercSpawner.isHybridBaseLocked(merc(52, "5652虎妙1234",
                 MercSpawner.copyMercMeta({是否杂交: false, 不可杂交: true}))) === true,
             "标记随 copyMercMeta 的元数据深拷保留");
+    }
+
+    private static function testPeriodicScenePermission():Void {
+        var oldWorld:MovieClip = _root.gameworld;
+        var oldGate:MovieClip = _root.门口佣兵刷新器;
+        var api:Object = MercSpawner;
+        var original:Function = api.spawnInWorld;
+        var calls:Array = [];
+        var hall:MovieClip = _root.createEmptyMovieClip("__testMercHall", _root.getNextHighestDepth());
+        var room:MovieClip = _root.createEmptyMovieClip("__testMercRoom", _root.getNextHighestDepth());
+        var gate:Object = {starts:0, stops:0};
+        gate.gotoAndPlay = function(frame:Number):Void { this.starts++; this.startFrame = frame; };
+        gate.stop = function():Void { this.stops++; };
+        try {
+            _root.门口佣兵刷新器 = gate;
+            api.spawnInWorld = function(count:Number, periodic:Boolean):Void { calls.push([count, periodic]); };
+            _root.gameworld = hall;
+            MercSpawner.configureGate(hall, 10);
+            MercSpawner.spawnAtGate(10);
+            check(gate.几率 == 10 && gate.starts == 1 && gate.startFrame == 2, "大厅按配置从循环起点播放");
+            check(calls.length == 1 && calls[0][0] == 1 && calls[0][1] === true, "已配置大厅可发起单次周期任务");
+
+            _root.gameworld = room;
+            MercSpawner.spawnAtGate(10);
+            check(calls.length == 1, "新世界尚未配置时即使旧刷新器仍有几率也不得调度");
+            var invalid:Array = [NaN, 0, -1, 0.5, Number.POSITIVE_INFINITY];
+            for (var i:Number = 0; i < invalid.length; i++) {
+                MercSpawner.configureGate(room, invalid[i]);
+                MercSpawner.spawnAtGate(10);
+            }
+            check(calls.length == 1 && gate.stops == invalid.length && gate.几率 === undefined,
+                "缺省或无效分母清值停播，强制周期调用也不调度");
+            MercSpawner.spawnInScene(8);
+            check(calls.length == 2 && calls[1][0] == 8 && calls[1][1] === false, "Initial 独立于周期许可");
+            _root.gameworld = hall;
+            MercSpawner.configureGate(hall, 7);
+            MercSpawner.spawnAtGate(10);
+            check(gate.starts == 2 && gate.几率 == 7 && calls.length == 3, "切回合法场景按新分母恢复");
+        } finally {
+            api.spawnInWorld = original;
+            _root.门口佣兵刷新器 = oldGate;
+            _root.gameworld = oldWorld;
+            room.removeMovieClip();
+            hall.removeMovieClip();
+        }
     }
 
     private static function check(condition:Boolean, message:String):Void {

@@ -39,6 +39,14 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengRules {
         }
         return true;
     }
+    public static function qualifiesForReviveShield(unit:Object):Boolean {
+        if (!hasFivePieces(unit)) return false;
+        for (var i:Number=0;i<SLOTS.length;i++) {
+            var level:Number=unit[SLOTS[i]].value.level;
+            if (!finite(level) || level<9 || level!=Math.floor(level) || level>EquipmentConfigManager.getMaxLevel()) return false;
+        }
+        return true;
+    }
     public static function profileActive(unit:Object):Boolean {
         return unit.攻击模式 === "空手" && unit.__huofeng != undefined && unit.__huofeng.isActive();
     }

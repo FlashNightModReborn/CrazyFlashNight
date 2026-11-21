@@ -5,10 +5,10 @@ import json
 import struct
 import subprocess
 import sys
-import zipfile
 import zlib
 from lxml import etree as E
 import build
+import instructor_melee_source
 
 
 def linkage_records(path):
@@ -265,6 +265,48 @@ def verify_elite_sidearm():
     return {'sidearmFrames': len(instances)}
 
 
+def verify_instructor_melee_art():
+    """Compare CS6 drawing order and transforms to every authored Animate pose."""
+    source = instructor_melee_source.load_poses()
+    library = build.OWNER / 'LIBRARY'
+    prefix = build.tactics.PREFIX
+    special_parts = {484: '装备/教官_腿挂匕首', 492: '武器/教官_可配置长枪'}
+    checked = {}
+    for name, offset in (('匕首刺击', 0), ('持盾匕首刺击', 34)):
+        poses = source[name]
+        path = library / (prefix + '动作/教官_' + name + '.xml')
+        layers = E.parse(str(path)).findall('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer', build.NS)
+        length = offset + len(poses)
+        drawings = [[] for _ in range(length)]
+        last = 0
+        for layer in layers:
+            for frame in layer.findall('x:frames/x:DOMFrame', build.NS):
+                start = int(frame.get('index'))
+                end = start + int(frame.get('duration', '1'))
+                last = max(last, end)
+                for item in frame.findall('x:elements/x:DOMSymbolInstance', build.NS):
+                    if item.get('name') == '攻击点':
+                        continue
+                    transform = item.find('x:matrix/x:Matrix', build.NS)
+                    attrs = {} if transform is None else transform.attrib
+                    matrix = tuple(float(attrs.get(key, default)) for key, default in
+                                   zip(('a', 'b', 'c', 'd', 'tx', 'ty'), (1, 0, 0, 1, 0, 0)))
+                    for index in range(max(offset, start), min(end, length)):
+                        drawings[index].append((item.get('libraryItemName'), matrix))
+        assert last == length, (name, 'incorrect total length', last, length)
+        for index, pose in enumerate(poses, offset):
+            authored = [pose[depth] for depth in sorted(pose, key=int, reverse=True)]
+            assert len(drawings[index]) == len(authored), (name, index + 1, 'different part count')
+            for (symbol, matrix), part in zip(drawings[index], authored):
+                part_id = part['id']
+                expected = prefix + special_parts.get(part_id, '分件/教官_' + str(part_id))
+                assert symbol == expected, (name, index + 1, 'part or drawing order', symbol, expected)
+                assert max(abs(a-b) for a, b in zip(matrix, part['matrix'])) < 1e-5, (
+                    name, index + 1, 'pose differs from Animate', symbol)
+        checked[name] = len(poses)
+    return checked
+
+
 def verify_library_index():
     entries=E.parse(str(build.OWNER/'DOMDocument.xml')).findall('x:symbols/x:Include',build.NS)
     position={entry.get('href'):i for i,entry in enumerate(entries)}
@@ -284,9 +326,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--runtime-root', type=Path, default=build.ROOT,
         help='Owned frozen combat checkout; the tested Soldier SWF must match the editable source checkout')
+    parser.add_argument('--instructor-melee', action='store_true',
+        help='Check the two instructor actions against their source before auditing the published library')
     args = parser.parse_args()
-    build.check()
+    if args.instructor_melee:
+        build.check_instructor_melee()
+    else:
+        build.check()
     library_index_checks=verify_library_index()
+    melee_art_checks = verify_instructor_melee_art()
     subprocess.run([sys.executable, '-X', 'utf8', '-B', str(build.HERE / 'balance.py')], check=True)
     relative = 'flashswf/arts/new/' + build.ANCHOR + '.swf'
     swf = build.ROOT / relative
@@ -301,13 +349,13 @@ def main():
     assert len(matching) == 1 and matching[0].get('swf') == relative
     shield_matching = [r for r in source_map if r.get('id') == build.SHIELD_LINKAGE]
     assert len(shield_matching) == 1 and shield_matching[0].get('swf') == relative
-    with zipfile.ZipFile(build.ROOT / 'flashswf/arts/things-new.fla') as archive:
-        declaration = E.fromstring(archive.read('LIBRARY/' + build.ANCHOR + '.xml'))
-        assert declaration.get('linkageImportForRS') == 'true'
-        assert declaration.get('linkageURL') == relative
-        entry = E.fromstring(archive.read('LIBRARY/things-new.xml'))
-        instances = entry.findall('.//x:DOMFrame[@index="3"]//x:DOMSymbolInstance', build.NS)
-        assert sum(r.get('libraryItemName') == build.ANCHOR for r in instances) == 1
+    members = build.common.read_fla_members(build.ROOT / 'flashswf/arts/things-new.fla')
+    declaration = E.fromstring(members['LIBRARY/' + build.ANCHOR + '.xml'])
+    assert declaration.get('linkageImportForRS') == 'true'
+    assert declaration.get('linkageURL') == relative
+    entry = E.fromstring(members['LIBRARY/things-new.xml'])
+    instances = entry.findall('.//x:DOMFrame[@index="3"]//x:DOMSymbolInstance', build.NS)
+    assert sum(r.get('libraryItemName') == build.ANCHOR for r in instances) == 1
     for path in [build.HERE / 'SoldierAI.as', build.HERE / 'EliteAI.as',
             build.ROOT / 'scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as',
             build.ROOT / 'scripts/逻辑/单位函数/单位函数_lsy_主角射击函数.as']:
@@ -326,7 +374,7 @@ def main():
         'bitmaps': pixels['bitmaps'], 'exports': exports, 'sharedImport': matching[0].get('swf'),
         'runtimeOwnershipRoot': str(runtime_root),'bodyTimelineChecks':body_checks,
         'sidearm':sidearm_checks,'libraryIndexChecks':library_index_checks,
-        'roleAppearanceChecks':appearance_checks}, ensure_ascii=False))
+        'roleAppearanceChecks':appearance_checks,'instructorMeleeArtFrames':melee_art_checks}, ensure_ascii=False))
 
 
 if __name__ == '__main__':

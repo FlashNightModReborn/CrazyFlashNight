@@ -39,7 +39,7 @@
         "sha256": "bc51fa0d2794e5fd3f74e60f154d08bab883429bf07d8036b0b7661af375122a",
         "sizeBytes": 6537,
         "r1Disposition": "published",
-        "r1Reason": "C3/C4 所属共享库仍被主时间轴的奖励物品界面实例导入；兼容产物须同步，不能据 Web loot 删除。"
+        "r1Reason": "R1 当时主时间轴仍导入 C3/C4 共享库。B07 候选已撤下导入和实例，独立 SWF 保留作历史产物。"
       },
       "flashswf/UI/系统设置UI.swf": {
         "sha256": "839e2f1f2e2268b455e99d49db86e856a642bc2d1f669c65296dc60d6cedffe7",
@@ -282,7 +282,7 @@
       "physicalId": "A4",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/item/ItemUseService.as",
-      "line": 1033,
+      "line": 1038,
       "frame": null,
       "legacyEntry": "apiFlushDurableNow",
       "legacyApi": "_root.存档系统.flushDurableNow(\"item_use.open_commit\")",
@@ -594,7 +594,7 @@
       "returnConsumed": false,
       "duplicateGroup": "C3",
       "pairRole": "live",
-      "liveState": "live",
+      "liveState": "dead",
       "dirtyGuard": false,
       "expectedSwf": "flashswf/UI/奖励物品界面.swf",
       "wrapper": null,
@@ -618,7 +618,7 @@
       "returnConsumed": false,
       "duplicateGroup": "C3",
       "pairRole": "mainCopy",
-      "liveState": "suspect_legacy",
+      "liveState": "dead",
       "dirtyGuard": false,
       "expectedSwf": "CRAZYFLASHER7MercenaryEmpire.swf",
       "wrapper": null,
@@ -642,7 +642,7 @@
       "returnConsumed": false,
       "duplicateGroup": null,
       "pairRole": "sole",
-      "liveState": "live",
+      "liveState": "dead",
       "dirtyGuard": false,
       "expectedSwf": "flashswf/UI/奖励物品界面.swf",
       "wrapper": null,
@@ -1322,7 +1322,7 @@
     },
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
-      "line": 2075,
+      "line": 2211,
       "api": "_root.存档系统.markDirty()",
       "liveState": "live",
       "notes": "同 SkillLoadoutService.as:839；typeof 守卫在 :1344。"

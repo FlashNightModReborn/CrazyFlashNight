@@ -160,7 +160,7 @@
                 operation.result = {success:false, error:'invalid_payload'}; finish(operation);
             });
         }
-        function take(refs, target, callback) {
+        function take(refs, target, callback, clearOverflow) {
             if (!available() || source !== 'stash' || !state(baseState()).ready) return false;
             var snapshot = getWindow('stash');
             if (!Array.isArray(refs) || refs.some(function(ref) { return !ref || ref.storeId !== snapshot.storeId; })) return false;
@@ -168,7 +168,7 @@
             var exactTarget = target == null ? null : {containerId:target.containerId, slot:target.slot, expectedLease:target.expectedLease};
             var operation = begin(callback);
             if (!operation) return false;
-            var started = adapter.take(entries, exactTarget, function(result, committed) { settle(operation, result, committed); });
+            var started = adapter.take(entries, exactTarget, function(result, committed) { settle(operation, result, committed); }, clearOverflow);
             if (!started) cancelUnsent(operation);
             return !!started;
         }

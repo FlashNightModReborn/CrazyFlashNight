@@ -85,6 +85,11 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             return itemData;
         }
 
+        // 1 级使用配表基础暴击，后续每级按本件装备成长，再交给配件覆盖规则。
+        if (data.criticalhitUpgrade > 0 && value.level > 1) {
+            data.criticalhit = Number(data.criticalhit) + (value.level - 1) * data.criticalhitUpgrade;
+        }
+
         // Step 2: 构建基础强化倍率
         var baseMultiplier:Object = buildBaseMultiplier(value.level, config.levelStatList);
 

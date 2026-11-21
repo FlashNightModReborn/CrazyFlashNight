@@ -107,12 +107,17 @@
         if (!accepted.length && !blocked.length) return '暂存与背包已同步。';
         var destinations = {}, reasons = {}, parts = [];
         accepted.forEach(function(row) {
+            if (row.clearedOverflow) {
+                parts.push('已清理 ' + row.quantity + ' 件历史超额情报');
+                return;
+            }
+            if (row.retainedOverflow) parts.push(row.retainedOverflow + ' 件超额情报仍在暂存');
             var target = typeof row.destination === 'string' ? row.destination : row.destination && row.destination.containerId;
             target = target || '对应位置';
             destinations[target] = (destinations[target] || 0) + Number(row.quantity || 0);
         });
         Object.keys(destinations).forEach(function(key) { parts.push(destinations[key] + ' 件已放入' + key); });
-        var labels = {inventory_full:'背包已满', target_full:'背包已满', target_stale:'目标格已变化',
+        var labels = {cap_reached:'情报持有量已满，可单独选择并清理历史超额', inventory_full:'背包已满', target_full:'背包已满', target_stale:'目标格已变化',
             target_occupied:'目标格已被占用', target_incompatible:'需自动归位，请选中后点击“领取”'};
         blocked.forEach(function(row) { reasons[labels[row.reason] || '当前无法领取'] = true; });
         if (blocked.length) parts.push(blocked.length + ' 项仍保留在暂存（' + Object.keys(reasons).join('、') + '）');

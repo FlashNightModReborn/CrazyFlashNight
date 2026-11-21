@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex2/特种兵/武器/可配置长枪" itemID="6af00000-84574dc8" lastModified="1792761696">
+  <timeline>
+    <DOMTimeline name="可配置长枪" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="标准长枪引用" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex2/特种兵/武器/长枪挂点" name="枪">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex2/sprite/Symbol 8" name="枪" selected="true" centerPoint3DX="147.85" centerPoint3DY="59.05">
+                  <matrix>
+                    <Matrix tx="7.45" ty="5.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

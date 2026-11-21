@@ -31,13 +31,13 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/特种兵/CF7/Symbol 195" name="攻击点">
                   <matrix>
-                    <Matrix a="5.4" d="5.4" tx="27.3" ty="-1.499893"/>
+                    <Matrix a="0.785922" d="1.24028" tx="55.287415" ty="-13.391421"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){ _parent._parent.soldierStab(_parent,this); }]]></script>
+                    <script><![CDATA[onClipEvent(load){_parent._parent.soldierStab(_parent,this);}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -50,7 +50,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_17" color="#4FFF4F">
+        <DOMLayer name="右下臂" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -306,7 +306,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_16" color="#4FFF4F">
+        <DOMLayer name="右手" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -562,7 +562,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_15" color="#4FFF4F">
+        <DOMLayer name="右上臂" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -818,7 +818,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_14" color="#4FFF4F">
+        <DOMLayer name="长枪" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1074,7 +1074,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_13" color="#4FFF4F">
+        <DOMLayer name="右小腿" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="7">
               <elements>
@@ -1210,7 +1210,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_12" color="#4FFF4F">
+        <DOMLayer name="右脚" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="34">
               <elements>
@@ -1226,7 +1226,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_11" color="#4FFF4F">
+        <DOMLayer name="左小腿" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="7">
               <elements>
@@ -1362,7 +1362,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_10" color="#4FFF4F">
+        <DOMLayer name="左脚" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="7">
               <elements>
@@ -1498,7 +1498,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_9" color="#4FFF4F">
+        <DOMLayer name="右大腿" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="7">
               <elements>
@@ -1634,7 +1634,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_8" color="#4FFF4F">
+        <DOMLayer name="腰胯" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="7">
               <elements>
@@ -1770,7 +1770,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_7" color="#4FFF4F">
+        <DOMLayer name="头" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="7">
               <elements>
@@ -1906,7 +1906,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_6" color="#4FFF4F">
+        <DOMLayer name="身体" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="7">
               <elements>
@@ -2042,7 +2042,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_5" color="#4FFF4F">
+        <DOMLayer name="左下臂" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2430,7 +2430,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_4" color="#4FFF4F">
+        <DOMLayer name="左手" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2818,7 +2818,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_3" color="#4FFF4F">
+        <DOMLayer name="左上臂" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3206,7 +3206,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_2" color="#4FFF4F">
+        <DOMLayer name="左大腿及拔刀变体" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="6">
               <elements>
@@ -3354,7 +3354,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原始深度_1" color="#4FFF4F">
+        <DOMLayer name="军刺" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="3">
               <elements>

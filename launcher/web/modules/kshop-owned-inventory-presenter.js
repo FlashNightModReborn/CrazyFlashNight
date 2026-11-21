@@ -341,7 +341,10 @@
                     if (!current.actionable) { self._intent.toast(current.reason); return; }
                     if (!self._intent.discard(ownedSlotRef(containerId, slot), function(result) {
                         self.render();
-                        self._intent.toast(result.success ? '物品已丢弃。' : '丢弃失败，请重试。');
+                        self._intent.toast(result.success
+                            ? (result.discarded && result.discarded.displayIssue === 'balance_summary_invalid'
+                                ? '物品已丢弃。平衡摘要暂不可用。' : '物品已丢弃。')
+                            : '丢弃失败，请重试。');
                     })) self._intent.toast('库存正在处理另一笔写入。');
                 }}
             ]
