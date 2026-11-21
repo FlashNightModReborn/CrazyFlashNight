@@ -175,4 +175,18 @@
         <description>镇暴用途的霰弹，牺牲对单威力，专攻对群控制。</description>
         <tag>弹药</tag>
     </mod>
+    <mod>
+        <name>独头弹</name>
+        <use>长枪</use>
+        <weapontype>霰弹枪</weapontype>
+        <tag>弹药</tag>
+        <installCondition scope="base">
+            <cond op="above" path="data.split" value="1"/>
+            <cond op="contains" path="data.bullet" value="横向联弹-"/>
+        </installCondition>
+        <stats>
+            <lockOverride><ammoConversion>slug</ammoConversion></lockOverride>
+        </stats>
+        <description>将横向多丸霰弹改为一枚独头弹。独头基础威力为原枪单丸基础威力乘以原弹丸数的四分之一，再结算强化和配件。独头弹基础弹速至少为80，再计入弹速配件。沿用原枪弹药与装填方式。</description>
+    </mod>
 </root>

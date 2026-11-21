@@ -2,6 +2,8 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
@@ -228,6 +230,62 @@ namespace Launcher.Tests.Guardian
             Assert.True(surface.OwnsFocus(inputs.Handle));
             Assert.True(surface.OwnsFocus(owner.Handle));
             Assert.False(surface.OwnsFocus(unrelated.Handle));
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        private static void ExpectForeground(IntPtr handle, bool activate)
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                if (activate) SetForegroundWindow(handle);
+                Application.DoEvents();
+                if (GetForegroundWindow() == handle) return;
+                Thread.Sleep(10);
+                activate = false;
+            }
+            Assert.Equal(handle, GetForegroundWindow());
+        }
+
+        [Fact]
+        public void ModifierMouseWorkflowPreservesGameKeyboardFocus()
+        {
+            using var owner = new Form { StartPosition = FormStartPosition.Manual };
+            owner.Location = new Point(-32000, -32000);
+            owner.Show();
+            owner.Activate();
+            using var task = new ModifierTask(() => true, _ => true);
+            using var surface = new ModifierNativeSurface(owner, "owned", "owned", task);
+            try
+            {
+                ExpectForeground(owner.Handle, true);
+                Assert.True((bool)typeof(ModifierNativeSurface).GetProperty("ShowWithoutActivation",
+                    BindingFlags.Instance | BindingFlags.NonPublic).GetValue(surface));
+                Assert.True(surface.ResumePanel(new Rectangle(-32000, -32000, 1016, 550)));
+                ExpectForeground(owner.Handle, false);
+
+                typeof(ModifierNativeSurface).GetMethod("SetTab", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(surface, new object[] { "items" });
+                bool? textInputActive = null;
+                surface.TextInputFocusChanged += active => textInputActive = active;
+                var input = (TextBox)typeof(ModifierNativeSurface).GetField(
+                    "_itemQuery", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(surface);
+                Assert.True(input.Focus());
+                Application.DoEvents();
+                Assert.True(textInputActive);
+
+                typeof(ModifierNativeSurface).GetMethod("OnMouseDown",
+                    BindingFlags.Instance | BindingFlags.NonPublic).Invoke(surface,
+                    new object[] { new MouseEventArgs(MouseButtons.Left, 1, 10, 10, 0) });
+                Application.DoEvents();
+                Assert.False(textInputActive);
+                ExpectForeground(owner.Handle, false);
+            }
+            finally { surface.SuspendPanel(); }
         }
 
         private sealed class CommitObserver : ILayeredWindowCommitObserver

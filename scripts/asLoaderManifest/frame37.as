@@ -86,6 +86,7 @@ _root.__boot.f37_5 = function() {
 };
 _root.__boot.f37_6 = function() {
     #include "../逻辑/装备函数/G1111.as"
+    #include "../逻辑/装备函数/双态870.as"
     #include "../逻辑/装备函数/XM214-CageFrame.as"
     #include "../逻辑/装备函数/M134.as"
     #include "../逻辑/装备函数/M134暴力版.as"

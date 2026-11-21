@@ -177,6 +177,7 @@ class org.flashNight.gesh.tooltip.TooltipInputProjection {
         var records:Array = index.getObtainRecords(name);
         var out:Array = [];
         for (var i:Number = 0; i < records.length; i++) {
+            if (isBookShop(records[i])) continue;
             var record:Object = select(records[i], OBTAIN_FIELDS);
             if (record.enemyType != undefined) {
                 var props:Object = _root.敌人属性表 == null ? null : _root.敌人属性表[record.enemyType];
@@ -186,6 +187,11 @@ class org.flashNight.gesh.tooltip.TooltipInputProjection {
             out.push(record);
         }
         return out;
+    }
+
+    private static function isBookShop(record:Object):Boolean {
+        var npc:String = String(record.npc || record.shopId || "");
+        return npc.indexOf("书中-") == 0;
     }
 
     private static function select(source:Object, fields:Array):Object {

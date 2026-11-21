@@ -4345,6 +4345,9 @@ var TooltipEngine;
                         result.push(TooltipEngine.TooltipConstants.LBL_IMPACT, " → ", Math.floor(500 / impactRaw), "<BR>");
                     }
                 }
+                if (statsObj.override.ammoConversion === "slug") {
+                    result.push(indent, TooltipEngine.TooltipConstants.LBL_BULLET_TYPE, " → 独头弹<BR>", indent, "独头基础威力 = 单丸基础威力 × 原弹丸数 ÷ 4<BR>", indent, TooltipEngine.TooltipConstants.LBL_PELLET_COUNT, " → 1<BR>", indent, "基础弹速至少为 80，再计入弹速配件<BR>");
+                }
                 if (statsObj.override.bullet || statsObj.override.bulletrename) {
                     var bulletDisplay = statsObj.override.bulletrename
                         ? statsObj.override.bulletrename

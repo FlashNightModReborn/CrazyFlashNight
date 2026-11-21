@@ -565,6 +565,9 @@
                 <NoCount>true</NoCount>
             </Point>
         </SpawnPoint>
+        <Trigger id="0">
+            <Xmin>600</Xmin>
+        </Trigger>
         <Event>
             <EventName>TriggerPressed</EventName>
             <Parameter>0</Parameter>
@@ -574,12 +577,13 @@
                 <Char>$PC_CHAR#严肃</Char>
                 <Text> </Text>
             </Dialogue>
+            <StageProgress>ForceFinishWave</StageProgress>
         </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
-                    <FinishRequirement>0</FinishRequirement>
+                    <FinishRequirement>-1</FinishRequirement>
                 </WaveInformation>
             </SubWave>
             <SubWave id="1">

@@ -230,7 +230,7 @@ smoke 复用 exact SDK resolver。hidden WebView2/位图是 fixture，机器通�
 
 **原生交互（菜单/注释/鼠标兼容）**：focused AS2 runner、Launcher 定向测试和实际候选人验边界见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md#验证与人验边界)；源码测试与图片不能代签实际输入。runner 为 `scripts/run-native-interaction-tests.ps1`；
 C# 定向 `NativeInteraction` / `Tooltip` 系列（含 `TooltipInspectionFeedbackTests`、`NativeTooltipPointerFeedbackTests`、`NativeTooltipPlacementContractTests`、`NativeHudTooltipFlickerTests`、`NativeTooltipPlainFeedbackTests`）；`node tools/test-tooltip-document-consumers.js`；
-双端绘制见 [tooltip-parity](../launcher/perf/tooltip-parity/README.md)：保持相同物理窗口，覆盖 100% / 125% / 150% 显示缩放及长文案滚动反例；分帧语料见 `scripts/run-tooltip-corpus-audit.ps1 -IncludeContext`。角色构筑须验证真实新增 document 回包；血剑须验证结构化战技名与冷却。离屏/模拟 DPI 证据不代替实际窗口悬停与遮挡人验。
+双端绘制见 [tooltip-parity](../launcher/perf/tooltip-parity/README.md)：保持相同物理窗口，覆盖 100% / 125% / 150% 显示缩放及长文案滚动反例；分帧语料见 `scripts/run-tooltip-corpus-audit.ps1 -IncludeContext`。角色构筑须验证真实新增 document 回包；血剑须验证结构化战技名与冷却。简介来源过滤追加 `scripts/run-tooltip-book-shop-filter-tests.ps1`，证明全部 `书中-` 商店隐藏而普通 NPC 保留。离屏/模拟 DPI 证据不代替实际窗口悬停与遮挡人验。
 
 <a id="suite-stage"></a>
 ### 选关、启动前门与关卡会话
