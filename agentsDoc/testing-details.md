@@ -983,6 +983,8 @@ Reward 未知写只按 `rootOperationId` exact query，不允许 projection 猜�
 <a id="stage-input"></a>
 ## 关卡、输入与战斗
 
+据点 M 控制室空首波回归固定运行 `python -X utf8 -B tools/test-stage-m-control-room.py` 与 `scripts/run-stage-m-control-room-tests.ps1`：XML 校验空首波满足生产结束阈值且保留实际战斗波，真实 AVM1 `WaveSpawner.clockTick()` 证明阈值 0 结束、旧阈值 -1 持续阻塞。静态与 AVM1 结果不代签普通玩家实机过门。
+
 ### 战斗地图绕行、复活与焦点门
 
 战斗/胜负结算中地图必须保持可读，但 `navigate/open_stage_select` 显示 lifecycle lock 并零发送；选关、任务/竞技场/外交/legacy/new-character 等入口统一先取得 `StageRunSession` exact reservation。`_root.返回基地` 的可选投影异常不阻断淡出，淡出失败回滚转场 globals 且可重试，成功才清 manager/battle；`_root.关卡结束` 的视觉异常不阻断真实 `FinishStage` 恰一次。
