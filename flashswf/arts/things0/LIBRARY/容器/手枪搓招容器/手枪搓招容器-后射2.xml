@@ -309,7 +309,7 @@ onClipEvent (enterFrame) {
         
         // 子弹威力计算
         var 自机 = _root.获得父节点(this, 2);
-        子弹属性.子弹威力 = _parent.子弹威力 * (1.2 + _parent._parent.技能等级 * 0.1);
+        子弹属性.子弹威力 = _parent.子弹威力 * 2 * (1.2 + _parent._parent.技能等级 * 0.1); // 2026-11-21 回射重铸：伤害倍率 x2
         
         // 子弹速度计算（根据绑定攻击点调整方向）
         子弹属性.子弹速度 = _parent.子弹速度 + 5 + _parent._parent.技能等级 * 0.5;
@@ -411,7 +411,7 @@ onClipEvent (enterFrame) {
         
         // 子弹威力计算
         var 自机 = _root.获得父节点(this, 2);
-        子弹属性.子弹威力 = _parent.子弹威力_2 * (1.2 + _parent._parent.技能等级 * 0.1);
+        子弹属性.子弹威力 = _parent.子弹威力_2 * 2 * (1.2 + _parent._parent.技能等级 * 0.1); // 2026-11-21 回射重铸：伤害倍率 x2
         
         // 子弹速度计算（根据绑定攻击点调整方向）
         子弹属性.子弹速度 = _parent.子弹速度_2 + 5 + _parent._parent.技能等级 * 0.5;
