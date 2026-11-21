@@ -983,7 +983,7 @@ Reward 未知写只按 `rootOperationId` exact query，不允许 projection 猜�
 <a id="stage-input"></a>
 ## 关卡、输入与战斗
 
-据点 M 控制室空首波回归固定运行 `python -X utf8 -B tools/test-stage-m-control-room.py` 与 `scripts/run-stage-m-control-room-tests.ps1`：XML 校验空首波满足生产结束阈值且保留实际战斗波，真实 AVM1 `WaveSpawner.clockTick()` 证明阈值 0 结束、旧阈值 -1 持续阻塞。静态与 AVM1 结果不代签普通玩家实机过门。
+据点 M 控制室回归固定运行 `python -X utf8 -B tools/test-stage-m-control-room.py` 与 `scripts/run-stage-m-control-room-tests.ps1`：XML 校验 `TriggerPressed(0)` 发布 `ForceFinishWave`、首波阈值 -1 且保留实际战斗波，真实 AVM1 证明无互动不结束、互动后结束首波。静态门同时读取 `竖直闸门.fla`，要求 `WaveFinished` 启动动画并调用 `_root.移除影片剪辑外框地图碰撞箱(this, true)`；资源改动后按独立 FLA `-PublishOnly -VerifySwf` 发布，`SceneCollisionManager` 专项负责证明强制移除当帧生效。静态、AVM1 与独立发布结果不代签普通玩家实机过门。
 
 ### 战斗地图绕行、复活与焦点门
 
@@ -1052,7 +1052,7 @@ AS2 另必须覆盖手雷/药剂同名装入 merge、异名 swap、卸下 merge-
 需要 Flash 行为证据时去掉 `-SkipCompile`，只接受专用 runId 包围的 `DeathEffectRendererTest` 15/15、7/7 cases、0 failed（机器钉死 15）与本轮 Compiler Errors 0/0；必须覆盖未标记屏外单位仍跳过、标记单位普通/旋转入口实际写入 `BitmapData`、同步 draw 后恢复隐藏状态、全局尸体开关优先。静态门或 `-SkipCompile` 不能声称 Flash 编译通过。
 
 **SceneCollisionManager 专项门**：改场景碰撞来源、重绘或卸载顺序时，先跑 `powershell -ExecutionPolicy Bypass -File tools/test-scene-collision-manager.ps1`；再跑 `powershell -ExecutionPolicy Bypass -File scripts/run-scene-collision-manager-tests.ps1 -SkipCompile` 验证 tracked suite/runner/BOM/恢复机制。
-需要行为证据时去掉 `-SkipCompile`，只接受专用 runId 包围的 `SceneCollisionManagerTest` 21/21、4/4 cases、0 failed（机器钉死 21）与本轮 Compiler Errors 0/0；静态门或 `-SkipCompile` 不能声称 Flash 编译通过。
+需要行为证据时去掉 `-SkipCompile`，只接受专用 runId 包围的 `SceneCollisionManagerTest` 42/42、5/5 cases、0 failed（机器钉死 42）与本轮 Compiler Errors 0/0；静态门或 `-SkipCompile` 不能声称 Flash 编译通过。
 
 ### 限时关卡 TimePool 回归门
 
