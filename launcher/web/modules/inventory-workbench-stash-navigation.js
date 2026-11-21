@@ -14,6 +14,7 @@
     // must never pull CharacterBuildView, the doll renderer or the manifest —
     // a storage-launched panel opens stash without any character asset.
     var STASH_DEPS = [
+        'modules/character-build/character-build-drug-controls.js',
         'modules/character-build/character-build-mutation.js',
         'modules/character-build/character-build-drug-layout.js',
         'modules/character-build/character-build-session-contract.js',

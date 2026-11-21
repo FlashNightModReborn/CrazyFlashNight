@@ -2884,6 +2884,7 @@ onClipEvent (enterFrame) {
 			_parent._parent.浮空 = true;
 			_parent._parent.垂直速度 = _parent._parent.起跳速度;
 			_parent._parent.起始Y = _parent._parent._y;
+			_root.空中控制器.启用跳跃浮空(_parent._parent, _parent);
 			_parent.gotoAndPlay("上勾拳");
 		}
 	}
@@ -2899,6 +2900,7 @@ onClipEvent (load) {
 			_parent._parent.浮空 = true;
 			_parent._parent.垂直速度 = _parent._parent.起跳速度;
 			_parent._parent.起始Y = _parent._parent._y;
+			_root.空中控制器.启用跳跃浮空(_parent._parent, _parent);
 			_parent.gotoAndPlay("上勾拳");
 		}
 	}

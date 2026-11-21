@@ -170,7 +170,7 @@ function deriveRecord(args: DeriveArgs): string {
   const ammoRef = ref("WBR-AMMO-001", "input.magPrice", ammoEvidence);
 
   // weightLayers（获取渠道）
-  const goldFiles = [...(args.acquisitionIndex.goldShopFilesByItem.get(itemName) ?? [])];
+  const goldRefs = args.acquisitionIndex.goldShopRefsByItem.get(itemName) ?? [];
   const kshopFiles = [...(args.acquisitionIndex.kshopFilesByItem.get(itemName) ?? [])];
   const craftFiles = [...(args.acquisitionIndex.craftingFilesByItem.get(itemName) ?? [])];
   const budget: Array<{ code: string; delta: number; ruleRef: string; evidenceRef?: string }> = [];
@@ -180,8 +180,8 @@ function deriveRecord(args: DeriveArgs): string {
   if (craftFiles.length > 0) {
     budget.push({ code: "acquisition.crafting", delta: 1, ruleRef: "WBR-WL-001", evidenceRef: craftFiles[0]! });
   }
-  if (goldFiles.length > 0) {
-    budget.push({ code: "acquisition.gold-standard", delta: 0, ruleRef: "WBR-WL-003", evidenceRef: goldFiles[0]! });
+  if (goldRefs.length > 0) {
+    budget.push({ code: "acquisition.gold-standard", delta: 0, ruleRef: "WBR-WL-003", evidenceRef: goldRefs[0]! });
   }
   if (budget.length === 0) {
     budget.push({
@@ -192,12 +192,12 @@ function deriveRecord(args: DeriveArgs): string {
     });
   }
   const weightLayers = budget.reduce((total, entry) => total + entry.delta, 0);
-  const multiPath = [goldFiles.length, kshopFiles.length, craftFiles.length].filter((n) => n > 0).length > 1;
+  const multiPath = [goldRefs.length, kshopFiles.length, craftFiles.length].filter((n) => n > 0).length > 1;
   const wlEvidence = multiPath
-    ? `UNRESOLVED: ${[...goldFiles, ...kshopFiles, ...craftFiles].filter(Boolean).join("；")}；多路径层级按 WBR-WL-005 待裁定`
+    ? `UNRESOLVED: ${[...goldRefs, ...kshopFiles, ...craftFiles].filter(Boolean).join("；")}；多路径层级按 WBR-WL-005 待裁定`
     : (budget[0]!.evidenceRef ?? `UNRESOLVED: 无获取路径`);
   const wlRef = ref(
-    multiPath ? "WBR-WL-005" : (goldFiles.length ? "WBR-WL-003" : "WBR-WL-001"),
+    multiPath ? "WBR-WL-005" : (goldRefs.length ? "WBR-WL-003" : "WBR-WL-001"),
     "input.weightLayers",
     wlEvidence
   );

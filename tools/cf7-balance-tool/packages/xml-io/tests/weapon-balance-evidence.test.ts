@@ -126,7 +126,7 @@ describe("weapon balance project evidence", () => {
   });
 
   function highPriceFixture(root: string) {
-    writeJson(root, "data/shops/npcs/Pig.json", { catalog: { "53": "QJZ171" } });
+    writeJson(root, "data/shops/npcs/Pig.json", { schema: "npc-shop.v2", shopId: "Pig", catalog: { "53": "QJZ171" } });
     const record = createRecord("acquisition.high-price", "data/shops/npcs/Pig.json#catalog.53");
     record.itemName = "QJZ171";
     record.priceLayers = 1;
@@ -173,17 +173,117 @@ describe("weapon balance project evidence", () => {
   });
 
   it.each([
-    ["data/crafting/recipe.json", [{ name: "QJZ171" }]],
-    ["data/kshop/shop.json", [{ item: "QJZ171" }]],
-    ["data/tasks/reward.json", { rewards: [["QJZ171", 1]] }],
-    ["data/items/gift.json", { name: "赠品包", type: "消耗品", items: ["QJZ171"] }]
-  ])("rejects other or unreviewed acquisition at %s", (file, value) => {
+    ["data/crafting/武器合成.json", [{ name: "QJZ171" }], "high_price_other_acquisition"],
+    ["data/kshop/shop.json", [{ item: "QJZ171" }], "high_price_other_acquisition"],
+    ["data/tasks/reward.json", { rewards: [["QJZ171", 1]] }, "high_price_unreviewed_acquisition"],
+    ["data/items/gift.json", { name: "赠品包", type: "消耗品", items: ["QJZ171"] }, "high_price_unreviewed_acquisition"]
+  ] as const)("rejects other or unreviewed acquisition at %s", (file, value, code) => {
     withFixtureRepository((root) => {
       const { record, context } = highPriceFixture(root);
       writeJson(root, file, value);
       const result = validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root), context);
       expect(result.displayEligible).toBe(false);
-      expect(result.issues.map((issue) => issue.code)).toContain("high_price_unreviewed_acquisition");
+      expect(result.issues.map((issue) => issue.code)).toContain(code);
+    });
+  });
+
+  it("accepts the display catalog, recipe input and task requirements while retaining other generated reward checks", () => {
+    withFixtureRepository(root => {
+      const { record, context } = highPriceFixture(root);
+      const check = () => validateWeaponBalanceEvidence(record.itemName, record, buildWeaponAcquisitionIndex(root), context);
+      writeJson(root, "data/tooltip/tooltip-catalog.json", {
+        items: { QJZ171: { name: "QJZ171" } },
+        recipes: { 钛合金QJZ171: { materials: [{ name: "QJZ171" }] } }
+      });
+      writeJson(root, "data/crafting/武器合成.json", [{ name: "钛合金QJZ171", materials: ["QJZ171#1"] }]);
+      writeJson(root, "data/task/active.json", { tasks: [{ finish_submit_items: ["QJZ171#1"], rewards: ["钛合金QJZ171#1"] }] });
+      writeJson(root, "data/task/retired.json", { tasks: [{ rewards: ["QJZ171#1"] }] });
+      expect(check().issues).toEqual([]);
+      writeJson(root, "data/rewards/choice-rewards.runtime.json", { bundles: [{ items: [{ name: "QJZ171" }] }] });
+      expect(check().issues).toContainEqual(expect.objectContaining({
+        code: "high_price_unreviewed_acquisition", message: expect.stringContaining("choice-rewards.runtime.json")
+      }));
+    });
+  });
+
+  it.each([
+    ["data/task/active.json", { tasks: [{ rewards: ["QJZ171#1"] }] }],
+    ["data/task/active.json", { tasks: [{ challenge: { rewards: ["QJZ171#2#二阶"] } }] }],
+    ["data/task/active.json", { tasks: [{ rewards: ["QJZ171##2"] }] }],
+    ["data/achievement/active.json", { achievements: [{ rewards: ["QJZ171#1"] }] }],
+    ["data/rag/agent_saves/test/agent_tasks.json", { tasks: [{ rewards: ["QJZ171#1"] }] }],
+    ["data/rag/agent_saves/test/task_reward_overrides.json", { "7": { extra_rewards: ["QJZ171#1"] } }]
+  ] as const)("requires review for a game-format reward in %s (%j)", (file, value) => {
+    withFixtureRepository(root => {
+      const { record, context } = highPriceFixture(root);
+      writeJson(root, file, value);
+      const result = validateWeaponBalanceEvidence(record.itemName, record, buildWeaponAcquisitionIndex(root), context);
+      expect(result.displayEligible).toBe(false);
+      expect(result.issues).toContainEqual(expect.objectContaining({
+        code: "high_price_unreviewed_acquisition", message: expect.stringContaining(file)
+      }));
+    });
+  });
+
+  it("binds purchase evidence to both the loaded NPC shop and the exact shelf", () => {
+    withFixtureRepository(root => {
+      const { record, context } = highPriceFixture(root);
+      const file = "data/shops/npcs/Pig.json";
+      const check = () => validateWeaponBalanceEvidence(record.itemName, record, buildWeaponAcquisitionIndex(root), context);
+      writeJson(root, file, { schema: "npc-shop.v2", shopId: "Pig", catalog: { "53": { name: "QJZ171" } } });
+      expect(check().issues).toEqual([]);
+      writeJson(root, file, { schema: "npc-shop.v2", shopId: "Pig", catalog: { "53": "另一把枪", "54": "QJZ171" } });
+      expect(check().issues.map(i => i.code)).toContain("high_price_gold_shop_mismatch");
+      record.budgetBreakdown[0]!.evidenceRef = file + "#catalog.54";
+      expect(check().issues.map(i => i.code)).toContain("gold_shop_slot_mismatch");
+      record.ruleRefs[0]!.evidenceRef = file + "#catalog.54";
+      expect(check().issues).toEqual([]);
+      record.budgetBreakdown[0]!.evidenceRef = file;
+      expect(check().issues.map(i => i.code)).toContain("high_price_gold_shop_mismatch");
+      record.budgetBreakdown[0]!.evidenceRef = file + "#catalog.54";
+      writeJson(root, "data/shops/npcs/Blue.json", { schema: "npc-shop.v2", shopId: "Blue", catalog: { "54": "QJZ171" } });
+      writeList(root, "shops", "shops", ["npcs/Blue.json"]);
+      expect(check().issues.map(i => i.code)).toContain("high_price_gold_shop_mismatch");
+    });
+  });
+
+  it("only counts listed K shops and crafting outputs", () => {
+    withFixtureRepository(root => {
+      const { record, context } = highPriceFixture(root);
+      const check = () => validateWeaponBalanceEvidence(record.itemName, record, buildWeaponAcquisitionIndex(root), context);
+      writeJson(root, "data/kshop/archive.json", [{ item: "QJZ171" }]);
+      writeJson(root, "data/crafting/archive.json", [{ name: "QJZ171" }]);
+      expect(check().issues).toEqual([]);
+      writeList(root, "kshop", "kshop", ["archive.json"]);
+      expect(check().issues.map(i => i.code)).toContain("high_price_other_acquisition");
+      writeList(root, "kshop", "kshop", ["shop.json"]);
+      writeList(root, "crafting", "list", ["archive"]);
+      expect(check().issues.map(i => i.code)).toContain("high_price_other_acquisition");
+    });
+  });
+
+  it("preserves legacy shop identities and distinct same-item shelves", () => {
+    withFixtureRepository(root => {
+      const { record, context } = highPriceFixture(root);
+      const file = "data/shops/npcs/Pig.json";
+      writeJson(root, file, { Pig: { "53": "QJZ171", "56": { name: "QJZ171" } }, Blue: { "53": "另一把枪" } });
+      const index = buildWeaponAcquisitionIndex(root);
+      expect(index.goldShopRefsByItem.get("QJZ171")).toEqual([file + "#Pig.53", file + "#Pig.56"]);
+      record.budgetBreakdown[0]!.evidenceRef = file + "#Pig.56";
+      record.ruleRefs[0]!.evidenceRef = file + "#Pig.53";
+      expect(validateWeaponBalanceEvidence("QJZ171", record, index, context).displayEligible).toBe(true);
+      record.budgetBreakdown[0]!.evidenceRef = file + "#Blue.53";
+      expect(validateWeaponBalanceEvidence("QJZ171", record, index, context).displayEligible).toBe(false);
+    });
+  });
+
+  it("rejects an incomplete listed shop or duplicate active shop identity", () => {
+    withFixtureRepository(root => {
+      const file = "data/shops/npcs/Blue.json";
+      writeList(root, "shops", "shops", ["npcs/Pig.json", "npcs/Blue.json"]);
+      expect(() => buildWeaponAcquisitionIndex(root)).toThrow(/Blue\.json/);
+      writeJson(root, file, { schema: "npc-shop.v2", shopId: "Pig", catalog: {} });
+      expect(() => buildWeaponAcquisitionIndex(root)).toThrow(/duplicate NPC shop/);
     });
   });
 
@@ -250,8 +350,10 @@ describe("weapon balance project evidence", () => {
       writeJson(root, "data/crafting/武器合成.json", [{ name: "多源步枪" }]);
       writeJson(root, "data/shops/npcs/shop.json", {
         schema: "npc-shop.v2",
+        shopId: "shop",
         catalog: { "0": "多源步枪" }
       });
+      writeList(root, "shops", "shops", ["npcs/shop.json"]);
       writeJson(root, "data/kshop/shop.json", [{ item: "多源步枪" }]);
 
       const index = buildWeaponAcquisitionIndex(root);
@@ -295,6 +397,7 @@ describe("weapon balance project evidence", () => {
     withFixtureRepository((root) => {
       writeJson(root, "data/kshop/exact.json", [{ item: "K点手枪" }]);
       writeJson(root, "data/kshop/other.json", [{ item: "别的手枪" }]);
+      writeList(root, "kshop", "kshop", ["exact.json", "other.json"]);
       const index = buildWeaponAcquisitionIndex(root);
 
       const exact = validateWeaponBalanceEvidence(
@@ -361,10 +464,25 @@ describe("weapon balance project evidence", () => {
 function withFixtureRepository(run: (root: string) => void): void {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-balance-evidence-"));
   try {
+    writeJson(root, "data/shops/npcs/Pig.json", { schema: "npc-shop.v2", shopId: "Pig", catalog: {} });
+    writeList(root, "shops", "shops", ["npcs/Pig.json"]);
+    writeJson(root, "data/kshop/shop.json", []);
+    writeList(root, "kshop", "kshop", ["shop.json"]);
+    writeJson(root, "data/crafting/武器合成.json", []);
+    writeList(root, "crafting", "list", ["武器合成"]);
+    writeJson(root, "data/task/active.json", { tasks: [] });
+    writeList(root, "task", "task", ["active.json"]);
+    writeJson(root, "data/achievement/active.json", { achievements: [] });
+    writeList(root, "achievement", "achievement", ["active.json"]);
     run(root);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
+}
+
+function writeList(root: string, directory: string, tag: string, entries: string[]): void {
+  const xml = entries.map(entry => `<${tag}>${entry}</${tag}>`).join("");
+  fs.writeFileSync(path.join(root, "data", directory, "list.xml"), `<root>${xml}</root>`, "utf8");
 }
 
 function writeJson(root: string, relativePath: string, value: unknown): void {

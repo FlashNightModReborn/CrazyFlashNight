@@ -94,6 +94,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testEarlyBoundReportClose();
         testZeroRewardOfflineSettlementSurvivesSceneExpiry();
         testSettlementRewardInformationCapFilter();
+        testRestoredInformationOverflow();
         testPreparedSettlementPersistsWithoutReroll();
         testReturnRequiresDurableSettlementFlush();
         testPersistedSettlementProgressAndRestartRestore();
@@ -3950,6 +3951,31 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "uncapped intel is stashed alongside the other reward");
         assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(),intel),
             "stashed intel remains available exactly once");
+    }
+
+    private static function testRestoredInformationOverflow():Void {
+        resetWorld(0);
+        var name:String = "历史结算情报";
+        addMeta(name, "收集品", "情报");
+        ItemUtil.informationMaxValueDict[name] = 1;
+        ItemUtil.itemDataDict[name].price = 40000;
+        _root.关卡可获得奖励品 = [[name, 1, 1]];
+        StageRunSession.begin("恢复旧结算", "简单");
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.prepareSettlement(), "fixture writes a valid pending stage manifest");
+        var pending:Object = _root._saveExt.stageSettlement.pending;
+        pending.manifest[0].item.value = 20;
+        pending.remainingManifest[0].item.value = 20;
+        var coins:Number = Number(_root.金钱);
+        StageRunSession.resetForRestart();
+        _root.关卡可获得奖励品 = [];
+        assertTrue(StageRunSession.restorePendingSettlement().restored === true, "frozen historical stage restores without reroll");
+        _root.当前为战斗地图 = false;
+        var world:Object = {场景名:"基地门口"};
+        _root.gameworld = world;
+        StageRunSession.onSceneReady(world, "", org.flashNight.arki.scene.StageReturnFlow.worldIdentity(world));
+        assertTrue(StageRunSession.isCurrentRewardStashed() && RewardStashStore.ownedQuantity(RewardStashService.peek(),name) == 20
+            && Number(_root.金钱) == coins, "historical priced information moves intact without selling excess");
     }
 
     private static function testZeroRewardOfflineSettlementSurvivesSceneExpiry():Void {

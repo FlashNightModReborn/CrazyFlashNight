@@ -272,13 +272,23 @@ class org.flashNight.arki.item.RewardStashService {
     /** 入账时执行情报持有上限；在同一候选里处理接受量与金币折算。 */
     public static function admit(items:Array, preferInventory:Boolean,
                                   acquired:Boolean, context:Object):Boolean {
+        return admitItems(items, preferInventory, acquired, context, false);
+    }
+
+    public static function admitRestoredSettlement(items:Array, context:Object):Boolean {
+        // 已保存的剩余清单取得暂存所有权时逐件保留，等待玩家领取或确认清理。
+        return admitItems(items, false, true, context, true);
+    }
+
+    private static function admitItems(items:Array, preferInventory:Boolean, acquired:Boolean,
+                                       context:Object, frozenSettlement:Boolean):Boolean {
         if (_pending == null || !(items instanceof Array)) return false;
         var appendItems:Array = [];
         for (var i:Number = 0; i < items.length; i++) {
             var item:Object = PersistedSnapshot.cloneData(items[i]);
             if (!RewardStashStore.validItem(item) || !ItemUtil.isItem(String(item.name))
                     || ItemUtil.isEquipment(String(item.name)) != (typeof item.value == "object")) return false;
-            if (ItemUtil.isInformation(String(item.name)) && acquired) {
+            if (acquired && !frozenSettlement && ItemUtil.isInformation(String(item.name))) {
                 var info:Object = ItemUtil.planInformationAcquire(String(item.name), Number(item.value));
                 if (!info.valid) return false;
                 if (info.money > 0 && !ItemUtil.acquire([{name:"金币", value:info.money}], context)) return false;
@@ -378,6 +388,7 @@ class org.flashNight.arki.item.RewardStashService {
 
     public static function takeFingerprint(params:Object):String {
         var rows:Array = ["take.v2", String(params.storeId), Number(params.expectedRevision)];
+        if (params.clearOverflow === true) rows.push("confirmed.intel.overflow");
         // 无 target 的旧请求指纹必须逐字节不变；仅在携带定点目标时附加规范化字段。
         if (params.target !== undefined) {
             rows.push(["target", String(params.target.containerId),
@@ -394,6 +405,8 @@ class org.flashNight.arki.item.RewardStashService {
         var store:Object = peek();
         if (!(params.entries instanceof Array) || params.entries.length < 1
                 || params.entries.length > RewardStashStore.TAKE_LIMIT) return {success:false, error:"invalid_payload"};
+        if (params.clearOverflow !== undefined && (params.clearOverflow !== true
+                || params.entries.length != 1 || params.target !== undefined)) return {success:false, error:"invalid_payload"};
         var target:Object = null;
         if (params.target !== undefined) {
             var rawTarget:Object = params.target;
@@ -447,13 +460,30 @@ class org.flashNight.arki.item.RewardStashService {
                         destination:String(placed.destination), slot:Number(placed.slot)});
                     continue;
                 }
+                var amount:Number = Number(request.quantity);
+                var room:Number = informationRoom(item);
+                if (params.clearOverflow === true) {
+                    if (room != 0 || amount != RewardStashStore.quantity(current.item)) return cancel("stale_entry");
+                    if (!RewardStashStore.removeQuantity(peek(), request.entryId, amount)) throw new Error("stash_source_changed");
+                    accepted.push({entryId:request.entryId, quantity:amount, clearedOverflow:true});
+                    continue;
+                }
+                if (room == 0) {
+                    blocked.push({entryId:request.entryId, reason:"cap_reached"});
+                    continue;
+                }
+                if (room > 0 && amount > room) {
+                    amount = room;
+                    item.value = amount;
+                }
                 var destination:String = moveIntoInventory(item, false, context);
                 if (destination == null) {
                     blocked.push({entryId:request.entryId, reason:"inventory_full"}); continue;
                 }
-                if (!RewardStashStore.removeQuantity(peek(), request.entryId, Number(request.quantity))) throw new Error("stash_source_changed");
-                accepted.push({entryId:request.entryId, quantity:Number(request.quantity),
-                    destination:destination});
+                if (!RewardStashStore.removeQuantity(peek(), request.entryId, amount)) throw new Error("stash_source_changed");
+                var received:Object = {entryId:request.entryId, quantity:amount, destination:destination};
+                if (amount < Number(request.quantity)) received.retainedOverflow = Number(request.quantity) - amount;
+                accepted.push(received);
             }
         } catch (transferError) { return cancel("stash_write_failed"); }
         var result:Object = {success:true, accepted:accepted, blocked:blocked};
@@ -556,12 +586,24 @@ class org.flashNight.arki.item.RewardStashService {
         return result;
     }
 
+    // 暂存转移已计持有；这里检查实际情报栏能接收的数量。缺失的权威不能授权清理。
+    private static function informationRoom(item:Object):Number {
+        if (typeof item.value != "number" || !ItemUtil.isInformation(String(item.name))) return -1;
+        var collection:Object = _root.收集品栏.情报;
+        if (collection == null || typeof collection.getValue != "function") return -1;
+        var maximum:Number = Number(ItemUtil.informationMaxValueDict[item.name]);
+        var held:Number = Number(collection.getValue(String(item.name)));
+        if (!RewardStashStore.whole(maximum) || maximum < 1 || !RewardStashStore.whole(held)) return -1;
+        return Math.max(0, maximum - held);
+    }
+
     private static function projectPageEntry(entry:Object):Object {
         if (!RewardStashStore.validItem(entry.item)) return {error:"reward_stash_quarantined"};
         var item:BaseItem = BaseItem.createFromObject(PersistedSnapshot.cloneData(entry.item));
         if (item == null) return {error:"unknown_stash_item"};
-        return {row:{entryId:String(entry.entryId), revision:Number(entry.revision),
-            quantity:RewardStashStore.quantity(entry.item),
-            item:InventoryPanelService.buildItemProjection(item)}};
+        var row:Object = {entryId:String(entry.entryId), revision:Number(entry.revision),
+            quantity:RewardStashStore.quantity(entry.item), item:InventoryPanelService.buildItemProjection(item)};
+        if (informationRoom(entry.item) == 0) row.clearableOverflow = true;
+        return {row:row};
     }
 }

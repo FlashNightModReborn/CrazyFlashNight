@@ -231,6 +231,24 @@ class org.flashNight.arki.merc.MercSpawner {
         }
     }
 
+    // 配置归属本次挂载的 gameworld。根时间轴上的 MovieClip 可跨图复用，只负责定时。
+    public static function configureGate(world:MovieClip, entrance:Number):Void {
+        var enabled:Boolean = entrance >= 1 && isFinite(entrance) && Math.floor(entrance) == entrance;
+        if (world != undefined) {
+            world.允许门口佣兵刷新 = enabled;
+            _global.ASSetPropFlags(world, "允许门口佣兵刷新", 1, false);
+        }
+        var gate:MovieClip = _root.门口佣兵刷新器;
+        if (gate == undefined) return;
+        if (enabled) {
+            gate.几率 = entrance;
+            gate.gotoAndPlay(2); // 与元件自身的循环起点一致，也能恢复此前停住的实例。
+        } else {
+            delete gate.几率;
+            gate.stop();
+        }
+    }
+
     /**
      * 周期门口刷新入口。Symbol 2396 frame 29 经 _root.门口刷可雇用玩家() 调入。
      * 每次触发 = 1 spawn 尝试（单步赤字驱动）；实际是否落地由 MercBudget.shouldSpawn 决定。
@@ -238,6 +256,7 @@ class org.flashNight.arki.merc.MercSpawner {
      * 做 random(几率)==0 触发频率门控；保留参数名为兼容旧调用 site。
      */
     public static function spawnAtGate(几率:Number):Void {
+        if (_root.gameworld.允许门口佣兵刷新 !== true) return;
         spawnInWorld(1, true);
     }
 

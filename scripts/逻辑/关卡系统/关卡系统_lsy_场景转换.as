@@ -855,6 +855,9 @@ _root.清除游戏世界组件 = function(清理请求:Object):Boolean{
 		return false;
 	}
 	
+	// 清场成功后立即停用根时间轴刷新器，下一张图完成环境配置时再启用。
+	org.flashNight.arki.merc.MercSpawner.configureGate(_root.gameworld, NaN);
+
 	// 清除游戏世界相关组件
 	CollisionLayerRenderer.clearAll();
 	// 定位器低槽由 SceneManager 成对归还；仅真正跳帧前显式退役。
