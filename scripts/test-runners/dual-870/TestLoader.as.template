@@ -1,0 +1,5 @@
+﻿if (!_root.装备生命周期函数) _root.装备生命周期函数 = {};
+#include "逻辑/装备函数/双态870.as"
+_root.dual870Complete = function():Void { trace("FocusedTestRunId dual-870 Complete: __FOCUSED_RUN_ID__"); };
+trace("FocusedTestRunId dual-870 Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.Dual870Test.runAllTests();

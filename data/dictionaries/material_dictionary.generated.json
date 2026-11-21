@@ -1,16 +1,16 @@
 {
   "catalog": {
     "archiveOrderFirst": 0,
-    "archiveOrderLast": 234,
+    "archiveOrderLast": 235,
     "authoredDirectPurposeReferenceCount": 27,
     "directPurposeCount": 2,
-    "entryCount": 235,
-    "equipmentTuningDistinctCount": 113,
-    "machineDerivedEquipmentTuningCount": 107,
+    "entryCount": 236,
+    "equipmentTuningDistinctCount": 114,
+    "machineDerivedEquipmentTuningCount": 108,
     "path": "data/dictionaries/material_catalog.xml",
     "schemaVersion": 1,
     "typeCounts": {
-      "equipment_mod": 107,
+      "equipment_mod": 108,
       "food": 50,
       "general": 78
     }
@@ -49,7 +49,7 @@
   "inputs": [
     {
       "path": "data/dictionaries/material_catalog.xml",
-      "sha256": "E66BBEF81E9A1F1E4C699A42FD4FA141AE9CFAAA9B0BC14585D74F149C3857C0"
+      "sha256": "98F29A8969337743193025EF21BAD3C0058CE44D0C714C7B33AE9F02754F3731"
     },
     {
       "path": "data/items/list.xml",
@@ -85,7 +85,7 @@
     },
     {
       "path": "data/items/收集品_材料_插件.xml",
-      "sha256": "17C2A1B9F20CCFC52F9E0C381BBB7646F64D80803C99CD0E83E9D83FDD71B856"
+      "sha256": "0A4AA93888307CB69D9FD760DEB8DC9D67F17627F0B700B79F6D9074BE77473A"
     },
     {
       "path": "data/items/消耗品_手雷.xml",
@@ -197,7 +197,7 @@
     },
     {
       "path": "data/items/武器_手枪_压制机枪.xml",
-      "sha256": "B0A9B29AD9FF628EB992591EEB1D2451296B832E31D7AD30BDBCFB3E0F07CA0F"
+      "sha256": "0FA7F4261E76B2A1C97B8695D4E66DB43B43255B03E5B7E23DB896F001A2A057"
     },
     {
       "path": "data/items/武器_手枪_反器材武器.xml",
@@ -217,7 +217,7 @@
     },
     {
       "path": "data/items/武器_手枪_特殊.xml",
-      "sha256": "EEAB6EE49F2182382565A3D89B280C87C0AE42D3F740C29DF79AD0749F2158DE"
+      "sha256": "4CCEBE7DDB14F9BCA1148B14C9FE06B90E2E8C563376B28F55A85388C49FA84F"
     },
     {
       "path": "data/items/武器_手枪_突击步枪.xml",
@@ -277,7 +277,7 @@
     },
     {
       "path": "data/items/武器_长枪_霰弹枪.xml",
-      "sha256": "B4DC9F11FFCD1B815B7BDA19D6C64CFF9238B0D1DAF323E1F427294FEF6FA925"
+      "sha256": "6F41FAF881BF0931AA94BBBC873AB00D96254EAD0A09C0A780DBD7730AFB7B07"
     },
     {
       "path": "data/items/消耗品_书中配给.xml",
@@ -329,7 +329,7 @@
     },
     {
       "path": "data/items/equipment_mods/中等材料_枪械专用.xml",
-      "sha256": "47ED98963A6F0BC59EC449B4ECF65A5234194DDD880E56161063C5B9BF2CF4B7"
+      "sha256": "0924FA7E51CDE22BA0FD5332D7FA51F8F4EA8287FA39EDC49F34D4F0E30D5880"
     },
     {
       "path": "data/items/equipment_mods/中等材料_刀专用.xml",
@@ -414,5 +414,5 @@
     "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
   },
   "schema": "cf7.material-dictionary-generated.v2",
-  "sourceDigest": "66400A7E064C24A9DEC12C57F25E36379006C8B749227E6E182B88EA3FD5C602"
+  "sourceDigest": "ACC53184F7CA9D75C561F56C7CFDF6180FB141C2ADB0803B99467978BF15AEBA"
 }

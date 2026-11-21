@@ -59,6 +59,10 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             data = itemData.data;
         }
 
+        // Capture the host's pellet count after tier replacement, before any accessory operators.
+        var originalPellets:Number = data.split;
+        var nativeSlug:Boolean = itemData.slugForm != undefined && value.slugMode === true;
+
         // An optional single-hand profile uses the same upgrade/mod operators.
         // Snapshot after tier selection; never persist derived values to item saves.
         var singleSource:Object;
@@ -80,7 +84,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
 
         // 若装备自带副武器，先规范化根层数据，供 tooltip / 初始化读取。
         SubweaponDataUtil.normalizeItemSubweapon(itemData);
-        if (value.level < 2 && (!value.mods || value.mods.length <= 0)) {
+        if (!nativeSlug && value.level < 2 && (!value.mods || value.mods.length <= 0)) {
             projectSingleHand(itemData, singleSource, singleValue, config, modRegistry);
             return itemData;
         }
@@ -101,8 +105,20 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             return null;
         }
 
-        // Step 4: 按顺序应用所有运算符
+        // Evaluate attachment conditions on the tier's original shotgun. Power and speed
+        // then become the slug's own base stats, so normal equipment operators run once.
+        var foldSlug:Boolean = (nativeSlug || modifiers.lockOverrider.ammoConversion == "slug") &&
+            itemData.use == "长枪" && itemData.weapontype == "霰弹枪" &&
+            data.bullet != undefined && String(data.bullet).indexOf("横向联弹-") == 0 &&
+            originalPellets > 1 && isFinite(originalPellets) && isFinite(data.power);
+        if (foldSlug) {
+            data.power = Math.round(data.power * originalPellets / 4);
+            var hostSpeed:Number = Number(data.velocity);
+            data.velocity = hostSpeed > SLUG_BASE_VELOCITY ? hostSpeed : SLUG_BASE_VELOCITY;
+        }
         applyOperatorsInOrder(data, baseMultiplier, modifiers);
+
+        if (foldSlug) applySlugProjectile(itemData, nativeSlug);
 
         // Step 5: 替换特殊槽。长枪副武器与普通战技互斥，由 TagManager 在安装时把关。
         if (modifiers.subweapon) {
@@ -119,6 +135,21 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
 
         projectSingleHand(itemData, singleSource, singleValue, config, modRegistry);
         return itemData;
+    }
+
+    // Reference velocity of the standalone 巴雷特子弹 in the M82A1 and QJZ171 data.
+    private static var SLUG_BASE_VELOCITY:Number = 80;
+
+    /** Keep a single slug even when equipment adds pellets or changes the projectile. */
+    private static function applySlugProjectile(item:Object, nativeForm:Boolean):Void {
+        var data:Object = item.data;
+        data.split = 1;
+        data.bullet = "巴雷特子弹";
+        data.bulletrename = "独头弹";
+        if (nativeForm) {
+            data.dressup = item.slugForm.dressup;
+            item.icon = item.slugForm.icon;
+        }
     }
 
     private static function projectSingleHand(itemData:Object, source:Object, value:Object, config:Object, mods:Object):Void {

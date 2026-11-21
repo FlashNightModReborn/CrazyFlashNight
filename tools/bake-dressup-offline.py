@@ -778,7 +778,7 @@ def load_items(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, 
             # runtime selection remains an AS2 instance projection.
             appearance_variants = {}
             for tier in item:
-                if not tier.tag.startswith("data_") or not any(
+                if not (tier.tag.startswith("data_") or tier.tag == "slugForm") or not any(
                     tier.find(field) is not None for field in ("dressup", *WEAPON_DRESSUP_FIELDS)
                 ):
                     continue

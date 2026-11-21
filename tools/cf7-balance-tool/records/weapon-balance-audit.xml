@@ -24558,6 +24558,74 @@
       <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
+      <auditRef>weapon:雷明登870双态型:data</auditRef>
+      <itemName>雷明登870双态型</itemName>
+      <profileKey>data</profileKey>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>8</shotgun>
+      <magPrice>150</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <status>unresolved</status>
+      <displayEligible>false</displayEligible>
+      <inputDigest>fnv1a32:db900efc</inputDigest>
+      <sourceDigest>sha256:646b00117ef57917854d267e40616bbe3bfb22c5f7a74034d6287278b6ef890c</sourceDigest>
+      <budgetBreakdown>
+        <entry>
+          <code>acquisition.gold-standard</code>
+          <delta>0</delta>
+          <ruleRef>WBR-WL-003</ruleRef>
+          <evidenceRef>data/shops/npcs/Pig.json</evidenceRef>
+        </entry>
+      </budgetBreakdown>
+      <ruleRefs>
+        <ref>
+          <id>WBR-DUAL-001</id>
+          <target>input.dualWield</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=雷明登870双态型/use=长枪</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PIERCE-001</id>
+          <target>input.pierce</target>
+          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=横向联弹-普通子弹；pierce=1 为默认占位</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DMG-001</id>
+          <target>input.damageType</target>
+          <evidenceRef>UNRESOLVED: data/items/武器_长枪_霰弹枪.xml#item=雷明登870双态型/data;无 damagetype/magictype，默认物理=1</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-SHOT-002</id>
+          <target>input.shotgun</target>
+          <evidenceRef>UNRESOLVED: data/items/武器_长枪_霰弹枪.xml#item=雷明登870双态型/data/split=8；横向/纵向/连发语义未裁定，按 split 直录待复核</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AMMO-001</id>
+          <target>input.magPrice</target>
+          <evidenceRef>data/items/消耗品_弹夹.xml#item=12号霰弹弹药/price=150</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-003</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>data/shops/npcs/Pig.json</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-CAT-001</id>
+          <target>input.category</target>
+          <evidenceRef>data/items/武器_长枪_霰弹枪.xml#item=雷明登870双态型;no-special-category-evidence</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AUTH-001</id>
+          <target>input.formula</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
+        </ref>
+      </ruleRefs>
+      <note>以警用型基础霰弹面板登记。独头基础威力取本枪进阶单丸基础威力乘原弹丸数的四分之一，基础弹速下限为80，再结算强化和配件。Q变形独立于战技槽。</note>
+    </record>
+    <record>
       <auditRef>weapon:XM1014:data</auditRef>
       <itemName>XM1014</itemName>
       <profileKey>data</profileKey>
