@@ -608,7 +608,7 @@ Team/Pet/Merc 的 exact 身份与迟到回包合同见 [持久写与恢复](#sav
 <a id="suite-stage-doors"></a>
 ### 地铁与彩蛋选关（U7）
 
-两个面板共用同一套进关链：AS2 `SubwaySelectPanelService` / `EggSelectPanelService` 在 `_root.加载外部UI` 顶部按 URL 转接 `flashswf/UI/地铁线路.swf` 与 `flashswf/UI/彩蛋地图关卡界面.swf`；目的地表、难度与门槛权威留在 AS2，enter 复用旧 `配置关卡属性` + `选关界面进入关卡`（内建 `StageRunSession.reserveStageStart` 奖励未领拒绝），不写存档。必跑 `scripts/run-subway-select-tests.ps1`、`scripts/run-egg-select-tests.ps1`（focused TestLoader 钉死门槛拒绝/进关/关闭语义）、`SubwaySelectTaskTests`、`EggStageSelectTaskTests`、`node tools/test-subway-select-runtime.js`、`node tools/test-egg-stage-select-runtime.js`，以及 `validate-panel-contracts`、`test-panel-contracts`、`check-workbench-css-bundle` 与 Launcher 全量门。真机人验（隧道据点按钮、彩蛋电脑、进关转场与返回）另记；两个旧 SWF/FLA 保留不删，通用 UI 宿主不退役。
+两个面板共用同一套进关链：AS2 `SubwaySelectPanelService` / `EggSelectPanelService` 在 `_root.加载外部UI` 顶部按 URL 转接 `flashswf/UI/地铁线路.swf` 与 `flashswf/UI/彩蛋地图关卡界面.swf`；目的地表、难度与门槛权威留在 AS2，enter 复用旧 `配置关卡属性` + `选关界面进入关卡`（内建 `StageRunSession.reserveStageStart` 奖励未领拒绝），不写存档。必跑 `scripts/run-subway-select-tests.ps1`、`scripts/run-egg-select-tests.ps1`（focused TestLoader 钉死门槛拒绝/进关/关闭语义）、`SubwaySelectTaskTests`、`EggStageSelectTaskTests`、`node tools/test-subway-select-runtime.js`、`node tools/test-egg-stage-select-runtime.js`，以及 `validate-panel-contracts`、`test-panel-contracts`、`check-workbench-css-bundle` 与 Launcher 全量门。地铁原线路与四帧站点由 `python -X utf8 -B tools/export-subway-art.py --check` 核对，`node tools/run-subway-select-harness.js` 覆盖生产 DOM、四视口原图加载、站点坐标/换帧、关联站点组合解锁后的路线原色、矢量白边、接触站名、JSON 介绍切换、无顶部栏布局、目的地右下角按钮无二级确认直接进关。真机人验（隧道据点按钮、彩蛋电脑、进关转场与返回）另记；两个旧 SWF/FLA 保留不删，通用 UI 宿主不退役。
 
 
 ### 理发与整形

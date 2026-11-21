@@ -706,6 +706,13 @@ class Renderer:
                       'alphaMultiplier'))
         off = tuple(float(color.get(k, '0')) for k in
                     ('redOffset', 'greenOffset', 'blueOffset', 'alphaOffset'))
+        tint_color = color.get('tintColor')
+        if tint_color:
+            tint = float(color.get('tintMultiplier', '0'))
+            value = int(tint_color.lstrip('#')[:6], 16)
+            channels = ((value >> 16) & 255, (value >> 8) & 255, value & 255)
+            mult = tuple(mult[i] * (1 - tint) for i in range(3)) + mult[3:]
+            off = tuple(off[i] * (1 - tint) + channels[i] * tint for i in range(3)) + off[3:]
         el_ct = mult + off
         # 组合：先内层后外层 c' = (c*im+io)*om+oo -> mult=im*om, off=io*om+oo
         im, io = el_ct[:4], el_ct[4:]
@@ -947,6 +954,9 @@ def selftest():
         '<Edge strokeStyle="1" edges="!0 0|200 0"/></edges></DOMShape>') % X)
     rendered_stroke = r.shape_to_svg(stroke_shape, '', 'selftest stroke')
     assert 'stroke="#CCCCCC"' in rendered_stroke and 'stroke-opacity="0.6000"' in rendered_stroke
+    tint = ET.fromstring('<Color tintMultiplier="1" tintColor="#6A6769"/>')
+    _, tint_ct = r.color_transform(tint, CT_IDENTITY)
+    assert ct_apply_rgb('#222A8C', tint_ct) == '#6A6769'
     gradient_stroke = ET.fromstring(('<StrokeStyle %s><SolidStroke><fill>'
         '<LinearGradient><matrix><Matrix/></matrix><GradientEntry color="#333333" ratio="0"/>'
         '<GradientEntry color="#EEEEEE" ratio="1"/></LinearGradient></fill></SolidStroke></StrokeStyle>') % X)
