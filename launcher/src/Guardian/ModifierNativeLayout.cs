@@ -49,10 +49,10 @@ namespace CF7Launcher.Guardian
         internal static readonly Rectangle UnitPrevious = new Rectangle(212, 377, 24, 25);
         internal static readonly Rectangle UnitNext = new Rectangle(243, 377, 24, 25);
         internal static readonly Rectangle UnitLast = new Rectangle(267, 377, 24, 25);
-        internal static readonly Rectangle UnitPage = new Rectangle(343, 379, 34, 22);
-        internal static readonly Rectangle UnitPageLabel = new Rectangle(293, 381, 46, 20);
-        internal static readonly Rectangle UnitPageTotal = new Rectangle(381, 381, 26, 20);
-        internal static readonly Rectangle UnitJump = new Rectangle(416, 375, 108, 30);
+        internal static readonly Rectangle UnitPage = new Rectangle(351, 379, 34, 22);
+        internal static readonly Rectangle UnitPageLabel = new Rectangle(293, 381, 54, 20);
+        internal static readonly Rectangle UnitPageTotal = new Rectangle(389, 381, 26, 20);
+        internal static readonly Rectangle UnitJump = new Rectangle(424, 375, 108, 30);
         internal static readonly Rectangle UnitGrid = new Rectangle(183, 139, 171, 225);
         internal static readonly Rectangle UnitFrame = new Rectangle(382, 138, 231, 138);
         internal static readonly Rectangle UnitLevel = new Rectangle(444, 326, 35, 22);
@@ -76,7 +76,7 @@ namespace CF7Launcher.Guardian
 
         internal static int UnitActionOffsetX(string action)
         {
-            if (action == "unit_jump") return 40;
+            if (action == "unit_jump") return 48;
             if (action == "unit_spawn" || action == "unit_merc") return 40;
             if (action == "level_minus" || action == "level_plus" || action == "count_minus" || action == "count_plus") return 16;
             if (action == "unit_first" || action == "unit_prev" || action == "unit_next") return -8;

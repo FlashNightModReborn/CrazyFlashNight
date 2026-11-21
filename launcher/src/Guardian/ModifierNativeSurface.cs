@@ -88,6 +88,7 @@ namespace CF7Launcher.Guardian
         private readonly Font _statusFont;
         private readonly StringFormat _clip;
         private readonly StringFormat _ellipsis;
+        private readonly StringFormat _center;
         private string _tooltipItem;
         private JObject _portraitManifest;
         private bool _portraitManifestLoaded;
@@ -167,6 +168,12 @@ namespace CF7Launcher.Guardian
             _statusFont = CreateFont(8f, FontStyle.Regular);
             _clip = new StringFormat(StringFormatFlags.NoWrap) { Trimming = StringTrimming.EllipsisCharacter };
             _ellipsis = new StringFormat(StringFormatFlags.NoWrap) { Trimming = StringTrimming.EllipsisCharacter };
+            _center = new StringFormat(StringFormatFlags.NoWrap)
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center,
+                Trimming = StringTrimming.EllipsisCharacter
+            };
             _armTimer = new Timer { Interval = 3000 };
             _armTimer.Tick += OnArmTimer;
             _animationTimer = new Timer { Interval = 33 };
@@ -1430,6 +1437,12 @@ namespace CF7Launcher.Guardian
                 graphics.DrawRectangle(pen, rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2);
         }
 
+        private void DrawButtonWithText(Graphics graphics, Rectangle rect, string action, string text)
+        {
+            DrawButton(graphics, rect, action);
+            DrawText(graphics, text, ArtRect(action, rect, true), _smallFont, Color.White, _center);
+        }
+
         private void DrawItemGrid(Graphics graphics)
         {
             Rectangle grid = ModifierNativeLayout.ItemGrid;
@@ -1498,9 +1511,9 @@ namespace CF7Launcher.Guardian
             DrawButton(graphics, ModifierNativeLayout.UnitLevelPlus, "level_plus");
             DrawButton(graphics, ModifierNativeLayout.UnitCountMinus, "count_minus");
             DrawButton(graphics, ModifierNativeLayout.UnitCountPlus, "count_plus");
-            DrawButton(graphics, ModifierNativeLayout.UnitSpawn, "unit_spawn");
-            DrawButton(graphics, ModifierNativeLayout.UnitMerc, "unit_merc");
-            DrawButton(graphics, ModifierNativeLayout.UnitJump, "unit_jump");
+            DrawButtonWithText(graphics, ModifierNativeLayout.UnitSpawn, "unit_spawn", "加载兵种");
+            DrawButtonWithText(graphics, ModifierNativeLayout.UnitMerc, "unit_merc", "添加佣兵");
+            DrawButtonWithText(graphics, ModifierNativeLayout.UnitJump, "unit_jump", "跳到指定页");
             if (_unitFrame != null && !string.Equals(_unitFrameSprite, null, StringComparison.Ordinal))
             {
                 RectangleF frame = _art.UnitFrameMask;
@@ -2102,6 +2115,7 @@ namespace CF7Launcher.Guardian
                 _statusFont.Dispose();
                 _clip.Dispose();
                 _ellipsis.Dispose();
+                _center.Dispose();
                 ClearCalls();
             }
             base.Dispose(disposing);
