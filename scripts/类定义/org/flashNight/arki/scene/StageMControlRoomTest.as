@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.scene.WaveSpawner;
 import org.flashNight.arki.scene.StageEvent;
+import org.flashNight.neur.Event.EventDispatcher;
 
 class org.flashNight.arki.scene.StageMControlRoomTest {
     private static var passed:Number = 0;
@@ -37,6 +38,7 @@ class org.flashNight.arki.scene.StageMControlRoomTest {
         var finishes:Number = 0;
         var world:MovieClip = _root.createEmptyMovieClip("StageMControlRoomTriggerWorld", 30010);
         _root.gameworld = world;
+        world.dispatcher = new EventDispatcher();
         world.地图 = {僵尸型敌人总个数:0};
         sp.gameworld = world;
         sp["waveInfo"] = [[{Duration:0, FinishRequirement:-1}], [{}]];
@@ -52,6 +54,8 @@ class org.flashNight.arki.scene.StageMControlRoomTest {
         world.dispatcher.subscribe("ForceFinishWave", sp.forceFinishWave, sp);
         var event:StageEvent = new StageEvent({EventName:"TriggerPressed", StageProgress:"ForceFinishWave"});
         event.execute();
+        trace("StageMControlRoomTest trigger requirement=" + sp.finishRequirement
+            + " active=" + sp.isActive + " enemies=" + sp.getEnemyCount());
         sp.clockTick();
         sp.isActive = false;
         world.removeMovieClip();
