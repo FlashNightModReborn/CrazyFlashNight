@@ -190,9 +190,6 @@ _root.配置场景环境信息 = function(){
 		if(!isNaN(环境信息.佣兵刷新数据.Initial)){
 			_root.场景刷可雇用玩家(环境信息.佣兵刷新数据.Initial);
 		}
-		if(_root.门口佣兵刷新器 && !isNaN(环境信息.佣兵刷新数据.Entrance)){
-			_root.门口佣兵刷新器.几率 = 环境信息.佣兵刷新数据.Entrance;
-		}
 		// 一次性场景加载快照，给标定看 area/mult/target
 		org.flashNight.arki.merc.MercBudget.emitLoad();
 		//播放场景bgm（支持单曲/专辑/序列两种模式）
@@ -223,6 +220,7 @@ _root.配置场景环境信息 = function(){
 		// 无环境信息时用 EnvironmentConfig 默认值标定
 		DepthManager.instance.calibrate(330, 600);
 	}
+	org.flashNight.arki.merc.MercSpawner.configureGate(游戏世界, Number(环境信息.佣兵刷新数据.Entrance));
 	_global.ASSetPropFlags(游戏世界, ["面积系数","出生点列表"], 1, false);
 
 	//完成并贴背景图
