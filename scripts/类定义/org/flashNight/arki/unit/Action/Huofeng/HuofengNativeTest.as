@@ -379,6 +379,9 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengNativeTest {
         check(runtime.getAction()==null,"scene transition retains pending presentation");
         runtime.dispose();hair.dispose();u.buffManager.destroy();u.removeMovieClip();
         createUnit();
+        u.shield=org.flashNight.arki.component.Shield.AdaptiveShield.acquireDormantFromPool("paidHuofeng");
+        for (var piece:Number=0;piece<HuofengRules.SLOTS.length;piece++)
+            u[HuofengRules.SLOTS[piece]].value.level=9;
         u.__resourceSpawn={resourcesReady:false};_root.场景转换中=false;
         runtime.tick(chest);check(runtime.getAction()==null && state.pendingNirvanaTier==1,"same-map replacement actor waits for resources");
         u.__resourceSpawn.resourcesReady=true;_root.暂停=true;
@@ -391,14 +394,26 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengNativeTest {
         check(runtime.getAction().kind==="nirvana","same-tick body replacement retries unshown presentation");
         _root.帧计时器.当前帧数++;HuofengAction.tick(u.man);
         check(state.presentedReviveSequence==1 && state.pendingNirvanaTier==0,"first live action frame consumes receipt once");
-        runtime.cancelAction(true);
+        check(!(u.shield.getCapacity()>0),"no shield during protected animation");
+        finishShieldAnimation();
+        check(u.hp满血值==700 && u.shield.getCapacity()==1000,"first +9 paid handoff grants normal max HP, not contracted max");
+        _root.暂停=true;u.shield.update(30);_root.暂停=false;
+        check(u.shield.getCapacity()==1000,"paused hero shield retains capacity");
+        u.shield.update(45);
+        check(Math.abs(u.shield.getCapacity()-500)<.01,"+9 shield halves at 45 active frames");
+        check(u.shield.absorbDamage(100,false,1)==0 && Math.abs(u.shield.getCapacity()-400)<.01,"damage also depletes the decaying shield");
+        u.shield.update(45);
+        check(!(u.shield.getCapacity()>0),"player shield expires in 90 active frames");
         for(var sequence:Number=2;sequence<=4;sequence++) {
             _root.帧计时器.当前帧数++;
             HuofengRunState.notifyPaidRevive(reviveRun,u,true,sequence);runtime.tick(chest);
             trace("HuofengNativeTest PaidState: seq="+sequence+" tier="+state.tier+" last="+state.lastPaidSequence+" pending="+state.pendingNirvanaTier+" receipt="+state.pendingReviveSequence+" shown="+state.presentedReviveSequence+" action="+runtime.getAction().tier+" frames="+u.man._totalframes+" hp="+u.hp+" max="+u.hp满血值);
             check(runtime.getAction().tier==2 && u.man._totalframes==113,"paid revive "+sequence+" uses full native animation");
             var oldUnload:Function=u.man.onUnload;
-            _root.帧计时器.当前帧数++;HuofengAction.tick(u.man);runtime.cancelAction(true);
+            u.脚部装备.value.level=sequence==2?8:10;
+            _root.帧计时器.当前帧数++;HuofengAction.tick(u.man);
+            finishShieldAnimation();
+            check(u.shield.getCapacity()==(sequence==2?0:1000),"one +8 denies; +9/+10 and repeat paid revives grant a single layer "+sequence);
             trace("HuofengNativeTest PaidShown: seq="+sequence+" shown="+state.presentedReviveSequence+" pending="+state.pendingNirvanaTier+" hpMax="+u.hp满血值);
             check(state.tier==2 && state.presentedReviveSequence==sequence && u.hp满血值==500,"paid revive "+sequence+" preserves capped contract");
         }
@@ -410,10 +425,18 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengNativeTest {
         check(runtime.getAction()===current && !current.cancelled,"late old-man unload cannot cancel replacement action");
         runtime.cancelAction(true);
         HuofengPresentationTest.mapReset(u,runtime,chest,reviveRun,world,check);
+        check(!(u.shield.getCapacity()>0),"map change clears owned revive shield");
+        u.shield.dispose();
         trace("HuofengNativeTest Revive: same-map replacements, map reset, old-map receipt rejection and new-map paid tier one checked");
         runtime.dispose();hair.dispose();u.buffManager.destroy();u.removeMovieClip();
         api.getReviveAuthority=authority;_root.控制目标=selected;_root.场景转换中=transitioning;reviveRun=null;
         createUnit();
+    }
+    private static function finishShieldAnimation():Void {
+        var active:Object=runtime.getAction();
+        // The normal 32-case matrix already plays both full clips; exercise their last handoff here.
+        active.frame=HuofengRules.NIRVANA_FRAMES[active.tier]-1;
+        _root.帧计时器.当前帧数++;HuofengAction.tick(u.man);
     }
     private static function lifecycleContract():Void {
         check(u.底层背景.getDepth()<0 && u.container==undefined,"fixture models a fresh actor with no high dynamic attachments");
