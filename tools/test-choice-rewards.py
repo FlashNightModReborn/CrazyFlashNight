@@ -213,6 +213,48 @@ class ChoiceCatalogTests(unittest.TestCase):
         self.assertTrue(all(p['respectSkillUnlock'] for p in styles))
         self.assertEqual([g['id'] for g in styles[0]['groups']], ['fist', 'blade', 'gun', 'general'])
 
+    def test_style_progression_compensates_single_level_skills(self):
+        pools = {p['id']: p for p in self.catalog['pools'] if p['id'].startswith('repair-campus.style.')}
+        bundles = {b['id']: b for b in self.catalog['bundles']}
+        style_grants = [grant['skillKey'] for b in self.catalog['bundles'] if b['id'].startswith('campus.style.')
+                        for grant in b.get('skills', [])]
+        self.assertNotIn('觉醒霸体', style_grants)
+        self.assertTrue(all(b['id'].startswith('campus.style.fist.') for b in self.catalog['bundles']
+                            if any(grant['skillKey'] == '波动拳' for grant in b.get('skills', []))))
+        skill_levels = {s.findtext('Name'): int(s.findtext('MaxLevel'))
+                        for s in ET.parse(ROOT / 'data/skills/skills.xml').findall('Skill') if s.findtext('Name')}
+        orders = {}
+        for style in ('fist', 'blade'):
+            late = next(g for g in pools['repair-campus.style.2']['groups'] if g['id'] == style)
+            orders[style] = [bundles[row['bundleId']]['skills'][0]['skillKey'] for row in late['entries']]
+        for stage in range(6):
+            groups = {g['id']: g for g in pools[f'repair-campus.style.{stage}']['groups']}
+            compensated = 0
+            for style, count in [('fist', 14), ('blade', 21)]:
+                entries = groups[style]['entries']
+                self.assertEqual(len(entries), count)
+                order = orders[style]
+                for index, row in enumerate(entries):
+                    skills = bundles[row['bundleId']]['skills']
+                    first, second = order[index], order[(index + 1) % len(order)]
+                    if stage < 2 and skill_levels[first] > 1:
+                        self.assertEqual(skills, [{'skillKey': first, 'level': 2}])
+                    else:
+                        self.assertEqual(skills, [{'skillKey': first, 'level': 1}, {'skillKey': second, 'level': 1}])
+                        compensated += stage < 2
+            if stage < 2:
+                self.assertEqual(compensated, 16)
+            self.assertTrue(all(len(bundles[row['bundleId']]['skills']) == 1
+                                and bundles[row['bundleId']]['skills'][0]['level'] == 2
+                                for row in groups['gun']['entries']))
+            if stage < 2:
+                general = [bundles[row['bundleId']]['skills'][0]['skillKey'] for row in groups['general']['entries']]
+                self.assertEqual(set(general), {'气动波', '聚气', '霸体', '震地', '地震'})
+                self.assertTrue(all(bundles[row['bundleId']]['title'].startswith('通用·')
+                                    for row in groups['general']['entries']))
+            else:
+                self.assertNotIn('general', groups)
+
     def test_skill_prices_and_scope_are_authoritative(self):
         for bad in [-1, True, 1201]:
             self.reject(lambda d: next(b for b in d['bundles'] if b.get('skills')).update(kCost=bad))
