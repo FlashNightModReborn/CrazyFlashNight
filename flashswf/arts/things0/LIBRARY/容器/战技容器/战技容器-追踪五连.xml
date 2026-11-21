@@ -20,9 +20,7 @@
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[X轴追踪移动 = _root.敌人二级函数.X轴追踪移动;
-Z轴追踪移动 = _root.敌人二级函数.Z轴追踪移动;
-轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
+                <script><![CDATA[轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
 大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;
 冷兵器攻击搓招 = _root.技能函数.冷兵器攻击搓招;]]></script>
               </Actionscript>
@@ -49,6 +47,7 @@ if(_root.控制目标 == _parent._name){
 	}
 }
 var 追踪目标 = _parent.按距离索敌(索敌距离, 是否强行重新索敌, 优先索敌属性, 优先索敌排序);
+追踪编号 = org.flashNight.arki.spatial.move.GroundTargetMotion.targetID(追踪目标);
 if(!追踪目标){
 	是否追踪 = false;
 }]]></script>
@@ -64,11 +63,12 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="16" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(!_parent.攻击目标 || !_root.gameworld[_parent.攻击目标].hp >0){
+                <script><![CDATA[if(!_parent.攻击目标 || !(_root.gameworld[_parent.攻击目标].hp > 0)){
 	for(var i = 敌人顺序 + 1; i < _parent.索敌目标列表.length; i++){
 		if(_parent.索敌目标列表[i].敌人.hp > 0){
 			追踪目标 = _parent.索敌目标列表[i].敌人;
 			_parent.攻击目标 = 追踪目标._name;
+			追踪编号 = org.flashNight.arki.spatial.move.GroundTargetMotion.targetID(追踪目标);
 			敌人顺序 = i;
 			break;
 		}
@@ -86,11 +86,12 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="24" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(!_parent.攻击目标 || !_root.gameworld[_parent.攻击目标].hp >0){
+                <script><![CDATA[if(!_parent.攻击目标 || !(_root.gameworld[_parent.攻击目标].hp > 0)){
 	for(var i = 敌人顺序 + 1; i < _parent.索敌目标列表.length; i++){
 		if(_parent.索敌目标列表[i].敌人.hp > 0){
 			追踪目标 = _parent.索敌目标列表[i].敌人;
 			_parent.攻击目标 = 追踪目标._name;
+			追踪编号 = org.flashNight.arki.spatial.move.GroundTargetMotion.targetID(追踪目标);
 			敌人顺序 = i;
 			break;
 		}
@@ -123,6 +124,7 @@ if(_root.控制目标 == _parent._name){
 	}
 }
 追踪目标 = _parent.按距离索敌(索敌距离, 是否强行重新索敌, 优先索敌属性, 优先索敌排序);
+追踪编号 = org.flashNight.arki.spatial.move.GroundTargetMotion.targetID(追踪目标);
 if(!追踪目标){
 	是否追踪 = false;
 }
@@ -151,11 +153,12 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="51" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(!_parent.攻击目标 || !_root.gameworld[_parent.攻击目标].hp >0){
+                <script><![CDATA[if(!_parent.攻击目标 || !(_root.gameworld[_parent.攻击目标].hp > 0)){
 	for(var i = 敌人顺序 + 1; i < _parent.索敌目标列表.length; i++){
 		if(_parent.索敌目标列表[i].敌人.hp > 0){
 			追踪目标 = _parent.索敌目标列表[i].敌人;
 			_parent.攻击目标 = 追踪目标._name;
+			追踪编号 = org.flashNight.arki.spatial.move.GroundTargetMotion.targetID(追踪目标);
 			敌人顺序 = i;
 			break;
 		}
@@ -739,8 +742,7 @@ _parent.攻击呐喊();]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(130);
-		_parent.Z轴追踪移动();
+		org.flashNight.arki.spatial.move.GroundTargetMotion.followSlash(_parent._parent, 130, _parent.追踪编号);
 	}
 }
 ]]></script>
@@ -765,8 +767,7 @@ _parent.攻击呐喊();]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(130);
-		_parent.Z轴追踪移动();
+		org.flashNight.arki.spatial.move.GroundTargetMotion.followSlash(_parent._parent, 130, _parent.追踪编号);
 	}
 }
 ]]></script>
@@ -791,8 +792,7 @@ _parent.攻击呐喊();]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(90);
-		_parent.Z轴追踪移动();
+		org.flashNight.arki.spatial.move.GroundTargetMotion.followSlash(_parent._parent, 90, _parent.追踪编号);
 	}
 }
 ]]></script>
@@ -817,8 +817,7 @@ _parent.攻击呐喊();]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(100);
-		_parent.Z轴追踪移动();
+		org.flashNight.arki.spatial.move.GroundTargetMotion.followSlash(_parent._parent, 100, _parent.追踪编号);
 	}
 }
 ]]></script>
@@ -843,8 +842,7 @@ _parent.攻击呐喊();]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(150);
-		_parent.Z轴追踪移动();
+		org.flashNight.arki.spatial.move.GroundTargetMotion.followSlash(_parent._parent, 150, _parent.追踪编号);
 	}
 }
 ]]></script>

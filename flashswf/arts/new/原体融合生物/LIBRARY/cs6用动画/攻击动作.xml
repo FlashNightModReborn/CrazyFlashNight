@@ -291,36 +291,7 @@ gotoAndPlay(_parent.近战招式);
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 45;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -335,39 +306,8 @@ else
 速度下限 = _parent.行走X速度 * 2;
 追踪持续帧 = 10;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-//
-
-// 如果打算给予Z轴变向追踪能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
-//]]></script>
+org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -2338,36 +2278,7 @@ else
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 8;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -2435,36 +2346,7 @@ else
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 8;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -2478,36 +2360,7 @@ else
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 8;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -2521,36 +2374,7 @@ else
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 3;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -2564,36 +2388,7 @@ else
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 2;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -2635,7 +2430,7 @@ else
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度);
+   org.flashNight.arki.spatial.move.GroundTargetMotion.advanceRush(_parent);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -2665,7 +2460,7 @@ onClipEvent(enterFrame){
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度);
+   org.flashNight.arki.spatial.move.GroundTargetMotion.advanceRush(_parent);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -2695,7 +2490,7 @@ onClipEvent(enterFrame){
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度);
+   org.flashNight.arki.spatial.move.GroundTargetMotion.advanceRush(_parent);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -2744,7 +2539,7 @@ onClipEvent(load){
 */
 //以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度);
+   org.flashNight.arki.spatial.move.GroundTargetMotion.advanceRush(_parent);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -2771,7 +2566,7 @@ onClipEvent(enterFrame){
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度);
+   org.flashNight.arki.spatial.move.GroundTargetMotion.advanceRush(_parent);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -2817,7 +2612,7 @@ onClipEvent(load){
 */
 //以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度);
+   org.flashNight.arki.spatial.move.GroundTargetMotion.advanceRush(_parent);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
