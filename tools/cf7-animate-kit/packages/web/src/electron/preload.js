@@ -12,6 +12,8 @@ contextBridge.exposeInMainWorld("ankit", {
   pickSwf: () => ipcRenderer.invoke("ankit:pick-swf"),
   pickDat: () => ipcRenderer.invoke("ankit:pick-dat"),
   installSwf: (req) => ipcRenderer.invoke("ankit:install-swf", req),
+  listPluginSwfs: (dir) => ipcRenderer.invoke("ankit:list-plugin-swfs", dir),
+  deleteSwf: (req) => ipcRenderer.invoke("ankit:delete-swf", req),
   clearCache: (req) => ipcRenderer.invoke("ankit:clear-cache", req),
   setJvmMemory: (req) => ipcRenderer.invoke("ankit:set-jvm-memory", req),
   tightenSidebar: (req) => ipcRenderer.invoke("ankit:tighten-sidebar", req),

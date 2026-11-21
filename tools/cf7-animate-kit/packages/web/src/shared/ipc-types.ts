@@ -78,6 +78,15 @@ export interface InstallTargetRequest {
   installIndex: number;
 }
 
+export interface PluginDirectory extends InstallTargetRequest {
+  windowSwfDir: string;
+}
+
+export interface DeleteSwfRequest extends PluginDirectory {
+  name: string;
+  apply: boolean;
+}
+
 export interface InstallSwfRequest extends InstallTargetRequest {
   /** Absolute path to the source .swf chosen via picker. */
   srcSwf: string;
@@ -225,6 +234,8 @@ export interface AnkitApi {
   pickSwf: () => Promise<PickResult>;
   pickDat: () => Promise<PickResult>;
   installSwf: (req: InstallSwfRequest) => Promise<OpResult>;
+  listPluginSwfs: (dir: PluginDirectory) => Promise<string[]>;
+  deleteSwf: (req: DeleteSwfRequest) => Promise<OpResult>;
   clearCache: (req: ClearCacheRequest) => Promise<OpResult>;
   setJvmMemory: (req: JvmMemoryRequest) => Promise<JvmOpResult>;
   tightenSidebar: (req: TightenSidebarRequest) => Promise<OpResult>;
