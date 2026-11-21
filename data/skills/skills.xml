@@ -1154,13 +1154,13 @@
         <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
 被动效果：
 解锁&lt;font color="#ffee00"&gt;手枪后射&lt;/font&gt;：手枪站立、行走、奔跑中&lt;font color="#ffee00"&gt;←+B&lt;/font&gt;。回身向后连续射击。
-2026-11-21 重铸：每次释放消耗&lt;font color="#ffee00"&gt;20 MP&lt;/font&gt;，冷却&lt;font color="#ffee00"&gt;3秒&lt;/font&gt;；射击伤害倍率 x2；保留自动换弹。</Description>
+2026-11-21 重铸：射击伤害倍率 x2；保留自动换弹。</Description>
         <UnlockLevel>5</UnlockLevel>
         <MaxLevel>1</MaxLevel>
         <UnlockSP>10</UnlockSP>
         <UpgradeSP>10</UpgradeSP>
-        <CD>3000</CD>
-        <MP>20</MP>
+        <CD>0</CD>
+        <MP>0</MP>
     </Skill>
     <Skill id="86">
         <Name>前冲射击</Name>

@@ -39,6 +39,7 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         testClaimFlushFailureRestoresAndReturnsCommitPending();
         testClaimFlushThrowRestoresAndReturnsCommitPending();
         testCheckoutFlushFailureRestoresAndReturnsCommitPending();
+        testCheckoutAndClaimCatalogFaultAfterCommit();
         testFingerprintVectorsAndSnapshotProjection();
         testSingleClaimFingerprintMismatchIsZeroWrite();
         testSingleClaimUnsupportedVersionIsZeroWrite();
@@ -684,6 +685,36 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
                 && receipts.length == 1 && _root.testKShopSaveCount == 2,
             "checkout commit_pending leaves the cart submittable for one exact retry");
         PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testCheckoutAndClaimCatalogFaultAfterCommit():Void {
+        resetState();
+        var preview:Object = requestPreview([{idx:0, qty:1}]);
+        var tokenBefore:String = currentToken();
+        var oldCatalog:Function = _root.UI系统.商城WebView.buildCatalog;
+        _root.UI系统.商城WebView.buildCatalog = function():Array {
+            throw "kshop_post_commit_catalog_failed";
+            return null;
+        };
+        try {
+            var checkout:Object = requestCommit(preview.checkoutToken);
+            check(checkout.success === true && checkout.refreshDeferred === true
+                    && checkout.catalog == undefined && checkout.newBalance == 960
+                    && checkout.delivered.length == 1 && checkout.cart.length == 0
+                    && checkout.purchasedView.length == 1 && checkout.purchasedToken == tokenBefore
+                    && _root.物品栏.背包.getItem(0).value == 1 && _root.testKShopSaveCount == 1,
+                "checkout catalog fault preserves confirmed delivery, balance and purchase list");
+            _root.gameCommands["shopClaim"]({callId:++callSeq, v:1, purchasedIdx:0,
+                expectedPurchasedToken:tokenBefore, expectedRowFingerprint:FP_POTION});
+            var claim:Object = lastResponse();
+            check(claim.success === true && claim.refreshDeferred === true && claim.catalog == undefined
+                    && claim.purchased.length == 0 && claim.purchasedView.length == 0
+                    && claim.purchasedToken != tokenBefore && claim.purchasedToken == currentToken()
+                    && _root.物品栏.背包.getItem(0).value == 2 && _root.testKShopSaveCount == 2,
+                "claim catalog fault preserves confirmed delivery, rotated token and removal");
+        } finally {
+            _root.UI系统.商城WebView.buildCatalog = oldCatalog;
+        }
     }
 
     // ==================== A② 行指纹 + shopClaimBatch（§7.2 矩阵） ====================

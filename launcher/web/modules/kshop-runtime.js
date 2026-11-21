@@ -718,10 +718,28 @@
             purchasedToken:business.purchasedToken,catalog:catalog};
     }
 
+    // ShopTask emits this small receipt only after validating the full Flash result.
+    // All directory and purchase rows used for display come from the next bulkQuery.
+    function sanitizeDeferredReceipt(cmd, payload, business) {
+        if (business.success !== true || business.refreshDeferred !== true
+                || !validToken(business.purchasedToken)) return null;
+        var keys = ['success','refreshDeferred','purchasedToken'];
+        if (cmd === 'checkoutCommit' || cmd === 'checkout') {
+            keys.push('newBalance');
+            if (!isFiniteNumber(business.newBalance) || business.newBalance < 0) return null;
+        } else if (cmd === 'claimBatch') {
+            keys.push('batchOperationId','replayed');
+            if (business.batchOperationId !== payload.batchOperationId
+                    || typeof business.replayed !== 'boolean') return null;
+        } else if (cmd !== 'claim') return null;
+        return exactKeys(business,keys) ? cloneJson(business) : null;
+    }
+
     function sanitizeResponse(cmd, payload, response, authority) {
         var business = businessPart(response);
         if (!business) return null;
         if (business.success === false) return sanitizeFailure(business);
+        if (business.refreshDeferred === true) return sanitizeDeferredReceipt(cmd,payload,business);
         if (cmd === 'bulkQuery') return sanitizeBulkBusiness(business);
         if (cmd === 'saveCart') return sanitizeSavedCartBusiness(
             business,payload,authority);
@@ -834,18 +852,10 @@
                 self._finishExclusive(saveResult, callback);
                 return;
             }
-            self._request('checkoutCommit', {
+            self._requestTrade('checkoutCommit', {
                 v: 1,
                 expectedCheckoutToken: String(expectedCheckoutToken || '')
-            }, function(response) {
-                if (self._isDefinitive('checkoutCommit', response)) {
-                    self._finishExclusive(response, callback);
-                } else {
-                    self._startReconcile('checkoutCommit', response, function(result) {
-                        self._finishExclusive(result, callback);
-                    });
-                }
-            });
+            }, callback);
         });
         return true;
     };
@@ -858,25 +868,12 @@
                 self._finishExclusive(saveResult, callback);
                 return;
             }
-            self._request('claim', {
+            self._requestTrade('claim', {
                 v: 1,
                 purchasedIdx: purchasedIdx,
                 expectedPurchasedToken: String(self._getPurchasedToken() || ''),
                 expectedRowFingerprint: String(expectedRowFingerprint || '')
-            }, function(response) {
-                if (response && response.success === false
-                        && (response.error === 'item_not_found' || response.error === 'stale_state')) {
-                    self._startReconcile('claim', response, function(result) {
-                        self._finishExclusive(result, callback);
-                    });
-                } else if (self._isDefinitive('claim', response)) {
-                    self._finishExclusive(response, callback);
-                } else {
-                    self._startReconcile('claim', response, function(result) {
-                        self._finishExclusive(result, callback);
-                    });
-                }
-            });
+            }, callback);
         });
         return true;
     };
@@ -891,27 +888,35 @@
                 self._finishExclusive(saveResult, callback);
                 return;
             }
-            self._request('claimBatch', {
+            self._requestTrade('claimBatch', {
                 v: 1,
                 batchOperationId: String(batchOperationId || ''),
                 expectedPurchasedToken: String(self._getPurchasedToken() || ''),
                 rows: rows.slice()
-            }, function(response) {
-                if (response && response.success === false
-                        && (response.error === 'stale_state' || response.error === 'unknown_row')) {
-                    self._startReconcile('claimBatch', response, function(result) {
-                        self._finishExclusive(result, callback);
-                    });
-                } else if (self._isDefinitive('claimBatch', response)) {
-                    self._finishExclusive(response, callback);
-                } else {
-                    self._startReconcile('claimBatch', response, function(result) {
-                        self._finishExclusive(result, callback);
-                    });
-                }
-            });
+            }, callback);
         });
         return true;
+    };
+
+    KShopWriteCoordinator.prototype._requestTrade = function(cmd, payload, callback) {
+        var self = this;
+        this._request(cmd, payload, function(response) {
+            if (response && response.refreshDeferred === true) {
+                var receipt = sanitizeDeferredReceipt(cmd, payload, response);
+                if (receipt) {
+                    self._startReconcile(cmd, receipt, function() { self._finishExclusive(); }, callback);
+                    return;
+                }
+                response = {success:false,error:'invalid_response'};
+            }
+            if (self._isDefinitive(cmd, response)) {
+                self._finishExclusive(response, callback);
+            } else {
+                self._startReconcile(cmd, response, function(result) {
+                    self._finishExclusive(result, callback);
+                });
+            }
+        });
     };
 
     KShopWriteCoordinator.prototype.close = function(callback) {
@@ -1030,28 +1035,38 @@
         });
     };
 
-    KShopWriteCoordinator.prototype._startReconcile = function(origin, originalResponse, continuation) {
+    KShopWriteCoordinator.prototype._startReconcile = function(origin, originalResponse, continuation, onCommitted) {
         var self = this;
         if (this._reconciling) return;
-        this._reconciling = { origin: origin };
+        var probe = { origin: origin, originalResponse: originalResponse };
+        this._reconciling = probe;
         this._emitState();
-        this._request('bulkQuery', {}, function(response) {
+        function blockRefresh(error) {
+            if (self._reconciling !== probe) return;
             self._reconciling = null;
+            self._reconcileBlocked = {
+                origin: origin, originalResponse: originalResponse,
+                continuation: continuation, lastError: error
+            };
+            self._emitState();
+        }
+        function acceptSnapshot(response) {
+            if (self._reconciling !== probe) return;
             if (!isValidBulkSnapshot(response)) {
-                self._reconcileBlocked = {
-                    origin: origin,
-                    originalResponse: originalResponse,
-                    continuation: continuation,
-                    lastError: response && response.success === false
-                        ? response
-                        : { success: false, error: 'invalid_response' }
-                };
-                self._emitState();
+                blockRefresh(response && response.success === false
+                    ? response : { success:false, error:'invalid_response' });
                 return;
             }
 
             var preserveCart = origin === 'saveCart';
-            self._applyBulkSnapshot(response, { reason: origin, preserveCart: preserveCart });
+            try {
+                self._applyBulkSnapshot(response, { reason: origin, preserveCart: preserveCart });
+            } catch (error) {
+                blockRefresh({success:false, error:'display_refresh_failed'});
+                return;
+            }
+            if (self._reconciling !== probe) return;
+            self._reconciling = null;
             if (preserveCart) {
                 if (cartEquals(response.cart, self._getCart())) {
                     self._savedRevision = self._revision;
@@ -1069,14 +1084,20 @@
                 self._revision += 1;
                 self._savedRevision = self._revision;
                 self._emitState();
-                continuation({
+                continuation(originalResponse && originalResponse.refreshDeferred === true ? originalResponse : {
                     success: false,
                     error: originalResponse && originalResponse.error ? originalResponse.error : 'reconciled_unknown_result',
                     reconciled: true,
                     snapshot: response
                 });
             }
-        });
+        }
+        // The read proceeds even if rendering the confirmed receipt throws.
+        try {
+            if (typeof onCommitted === 'function') onCommitted(originalResponse);
+        } finally {
+            if (this._reconciling === probe) this._request('bulkQuery', {}, acceptSnapshot);
+        }
     };
 
     KShopWriteCoordinator.prototype._isDefinitive = function(cmd, response) {
@@ -1140,6 +1161,7 @@
     };
 
     KShopWriteCoordinator.prototype._stateSnapshot = function() {
+        var recovery = this._reconciling || this._reconcileBlocked;
         return {
             opened: this._opened,
             closing: this._closing,
@@ -1147,6 +1169,7 @@
             saveInFlight: !!this._saveInFlight,
             reconciling: !!this._reconciling,
             reconcileBlocked: !!this._reconcileBlocked,
+            refreshDeferred: !!(recovery && recovery.originalResponse && recovery.originalResponse.refreshDeferred === true),
             dirty: this._savedRevision < this._revision,
             revision: this._revision,
             savedRevision: this._savedRevision,

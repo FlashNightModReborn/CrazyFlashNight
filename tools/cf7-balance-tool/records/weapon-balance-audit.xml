@@ -8105,19 +8105,25 @@
       <damageType>2</damageType>
       <shotgun>1</shotgun>
       <magPrice>300</magPrice>
-      <weightLayers>0</weightLayers>
+      <weightLayers>-1</weightLayers>
       <category>1</category>
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:a4b399a3</inputDigest>
-      <sourceDigest>sha256:ca03dbaab74940b050bbbbbaab9862e2405b49e55e0a604aff531c0663118912</sourceDigest>
+      <inputDigest>fnv1a32:95a0ca0e</inputDigest>
+      <sourceDigest>sha256:590abfdf2d5c928534804fd78010b570dbc335a32dffb55093a74ea5b86b671c</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
           <delta>0</delta>
           <ruleRef>WBR-WL-003</ruleRef>
           <evidenceRef>data/shops/npcs/Vanshuther.json</evidenceRef>
+        </entry>
+        <entry>
+          <code>mechanic.early-unlock</code>
+          <delta>-1</delta>
+          <ruleRef>WBR-WL-008</ruleRef>
+          <evidenceRef>data/items/武器_手枪_大威力手枪.xml#item=BOUNCER LEONE/data;level=36;interval=320;穿刺热属性慢射速对应40级门槛</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -8161,8 +8167,13 @@
           <target>input.formula</target>
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
+        <ref>
+          <id>WBR-WL-008</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>data/items/武器_手枪_大威力手枪.xml#item=BOUNCER LEONE/data;level=36;interval=320;穿刺热属性慢射速对应40级门槛</evidenceRef>
+        </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；全部输入待人工复核后方可 confirmed</note>
+      <note>Issue #313：保留36级穿刺热魔法定位，以6发与320ms控制持续性；超前机制扣1层，普通穿刺的系数证据仍待复核。</note>
     </record>
     <record>
       <auditRef>weapon:Desert Eagle改装版:data</auditRef>

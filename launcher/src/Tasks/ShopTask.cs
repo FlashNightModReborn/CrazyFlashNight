@@ -449,7 +449,13 @@ namespace CF7Launcher.Tasks
 
                 if (entry.IsWrite && _writeOwnerFid == fid)
                 {
-                    if (validResponse && IsDefinitiveWriteResponse(entry.WebCmd, sanitized))
+                    if (validResponse && sanitized.Value<bool?>("refreshDeferred") == true)
+                    {
+                        // This write is confirmed. Only a new bulk read may authorize the next write.
+                        ClearAuthorityLocked();
+                        EnterNeedsReconcileLocked();
+                    }
+                    else if (validResponse && IsDefinitiveWriteResponse(entry.WebCmd, sanitized))
                     {
                         _writeGate = WriteGateState.Idle;
                         _writeOwnerFid = 0;
@@ -935,6 +941,9 @@ namespace CF7Launcher.Tasks
             switch (entry.WebCmd)
             {
                 case "bulkQuery":
+                    if (entry.ReconcileEpoch != _reconcileEpoch
+                        || (entry.IsReconcileProbe && _writeGate != WriteGateState.NeedsReconcile))
+                        return false;
                     return TrySanitizeBulkSuccessLocked(message, out normalized);
                 case "tooltip":
                     return TrySanitizeTooltipSuccessLocked(
@@ -943,6 +952,7 @@ namespace CF7Launcher.Tasks
                     return TrySanitizeSaveCartSuccessLocked(
                         message, entry, out normalized);
                 case "checkoutPreview":
+                    if (entry.ReconcileEpoch != _reconcileEpoch) return false;
                     return TrySanitizePreviewSuccessLocked(
                         message, entry, out normalized);
                 case "checkoutCommit":
@@ -1196,11 +1206,12 @@ namespace CF7Launcher.Tasks
             out JObject output)
         {
             output = null;
-            if (!HasExactKeys(message,
+            if (!TryReadWriteCatalog(message, out JArray catalog, out var catalogByIndex,
                     "task", "callId", "success", "v", "newBalance",
                     "delivered", "cart", "purchased", "purchasedView",
-                    "purchasedToken", "catalog")
+                    "purchasedToken")
                 || !HasExactInteger(message["v"], 1)
+                || !IsStringToken(message["purchasedToken"], 160, false)
                 || entry.ExpectedLines == null || !entry.BalanceBefore.HasValue)
                 return false;
             JArray delivered;
@@ -1225,28 +1236,29 @@ namespace CF7Launcher.Tasks
                 ? entry.CommitAuthority.ProjectedBalance
                 : entry.BalanceBefore.Value - SumLineTotals(delivered);
             JArray cart = message["cart"] as JArray;
-            JArray catalog;
-            Dictionary<int, JObject> catalogByIndex;
             JArray purchased;
             JArray purchasedView;
             string token = message.Value<string>("purchasedToken");
             if (!TryReadNonNegativeNumber(message["newBalance"], out newBalance)
                 || newBalance != expectedBalance
                 || cart == null || cart.Count != 0
-                || !TrySanitizeCatalog(
-                    message["catalog"] as JArray, out catalog, out catalogByIndex)
-                || !CatalogMatchesDelivered(catalogByIndex, delivered)
+                || (catalog != null && !CatalogMatchesDelivered(catalogByIndex, delivered))
                 || !TrySanitizePurchased(
                     message["purchased"] as JArray,
                     message["purchasedView"] as JArray,
                     out purchased,
                     out purchasedView)
-                || !IsStringToken(message["purchasedToken"], 160, false)
                 || !IsValidToken(token)
                 || token != entry.PurchasedTokenBefore
                 || !JToken.DeepEquals(purchased, entry.PurchasedBefore)
                 || !JToken.DeepEquals(purchasedView, entry.PurchasedViewBefore))
                 return false;
+            if (catalog == null)
+            {
+                output = DeferredReceipt(token);
+                output["newBalance"] = newBalance;
+                return true;
+            }
             _catalogByIndex = catalogByIndex;
             _purchasedSnapshot = purchased;
             _purchasedViewSnapshot = purchasedView;
@@ -1369,30 +1381,31 @@ namespace CF7Launcher.Tasks
             out JObject output)
         {
             output = null;
-            if (!HasExactKeys(message,
+            if (!TryReadWriteCatalog(message, out JArray catalog, out var catalogByIndex,
                     "task", "callId", "success", "purchased", "purchasedView",
-                    "purchasedToken", "catalog")
+                    "purchasedToken")
+                || !IsStringToken(message["purchasedToken"], 160, false)
                 || entry.PurchasedBefore == null
                 || entry.PurchasedViewBefore == null
                 || entry.ClaimIndex < 0
                 || entry.ClaimIndex >= entry.PurchasedBefore.Count) return false;
-            JArray catalog;
-            Dictionary<int, JObject> catalogByIndex;
             JArray purchased;
             JArray purchasedView;
             string token = message.Value<string>("purchasedToken");
-            if (!TrySanitizeCatalog(
-                    message["catalog"] as JArray, out catalog, out catalogByIndex)
-                || !TrySanitizePurchased(
+            if (!TrySanitizePurchased(
                     message["purchased"] as JArray,
                     message["purchasedView"] as JArray,
                     out purchased,
                     out purchasedView)
-                || !IsStringToken(message["purchasedToken"], 160, false)
                 || !IsValidToken(token)
                 || token == entry.PurchasedTokenBefore
                 || !MatchesClaimPostcondition(entry, purchased, purchasedView))
                 return false;
+            if (catalog == null)
+            {
+                output = DeferredReceipt(token);
+                return true;
+            }
             _catalogByIndex = catalogByIndex;
             _purchasedSnapshot = purchased;
             _purchasedViewSnapshot = purchasedView;
@@ -1428,41 +1441,35 @@ namespace CF7Launcher.Tasks
             out JObject output)
         {
             output = null;
-            if (!HasExactKeys(message,
+            if (!TryReadWriteCatalog(message, out JArray catalog, out var catalogByIndex,
                     "task", "callId", "success", "v", "batchOperationId",
                     "policy", "replayed", "committedPurchasedToken", "resultRows",
-                    "purchased", "purchasedView", "purchasedToken", "catalog")
+                    "purchased", "purchasedView", "purchasedToken")
                 || !HasExactInteger(message["v"], 1)
+                || !IsStringToken(message["batchOperationId"], 96, false)
+                || !IsStringToken(message["purchasedToken"], 160, false)
+                || !IsStringToken(message["committedPurchasedToken"], 160, false)
                 || entry.PurchasedBefore == null
                 || entry.PurchasedViewBefore == null) return false;
             string operationId = message.Value<string>("batchOperationId");
-            string policy = message.Value<string>("policy");
             string committedToken = message.Value<string>("committedPurchasedToken");
             string token = message.Value<string>("purchasedToken");
             bool replayed;
             JArray resultRows = message["resultRows"] as JArray;
             JArray requestedRows = entry.NormalizedPayload["rows"] as JArray;
-            JArray catalog;
-            Dictionary<int, JObject> catalogByIndex;
             JArray purchased;
             JArray purchasedView;
-            if (!IsStringToken(message["batchOperationId"], 96, false)
-                || operationId != entry.NormalizedPayload.Value<string>("batchOperationId")
+            if (operationId != entry.NormalizedPayload.Value<string>("batchOperationId")
                 || !HasExactString(message["policy"], "atomic")
                 || !TryReadBoolean(message["replayed"], out replayed)
-                || !IsStringToken(
-                    message["committedPurchasedToken"], 160, false)
                 || !IsValidToken(committedToken)
                 || resultRows == null || requestedRows == null
                 || resultRows.Count != requestedRows.Count
-                || !TrySanitizeCatalog(
-                    message["catalog"] as JArray, out catalog, out catalogByIndex)
                 || !TrySanitizePurchased(
                     message["purchased"] as JArray,
                     message["purchasedView"] as JArray,
                     out purchased,
                     out purchasedView)
-                || !IsStringToken(message["purchasedToken"], 160, false)
                 || !IsValidToken(token)) return false;
             // resultRows 长度、顺序、fingerprint 必须与请求 exact 相同；atomic
             // 成功唯一合法 status 是 claimed。
@@ -1492,11 +1499,6 @@ namespace CF7Launcher.Tasks
                 if (expectedView == null
                     || !JToken.DeepEquals(purchased, expectedRaw)
                     || !JToken.DeepEquals(purchasedView, expectedView)) return false;
-                _catalogByIndex = catalogByIndex;
-                _purchasedSnapshot = purchased;
-                _purchasedViewSnapshot = purchasedView;
-                _purchasedToken = token;
-                _checkoutAuthority = null;
             }
             else
             {
@@ -1508,6 +1510,21 @@ namespace CF7Launcher.Tasks
                     || !JToken.DeepEquals(purchased, entry.PurchasedBefore)
                     || !JToken.DeepEquals(purchasedView, entry.PurchasedViewBefore))
                     return false;
+            }
+            if (catalog == null)
+            {
+                output = DeferredReceipt(token);
+                output["batchOperationId"] = operationId;
+                output["replayed"] = replayed;
+                return true;
+            }
+            if (!replayed)
+            {
+                _catalogByIndex = catalogByIndex;
+                _purchasedSnapshot = purchased;
+                _purchasedViewSnapshot = purchasedView;
+                _purchasedToken = token;
+                _checkoutAuthority = null;
             }
             output = new JObject
             {
@@ -1523,6 +1540,29 @@ namespace CF7Launcher.Tasks
                 ["catalog"] = catalog
             };
             return true;
+        }
+
+        // AS2 can lose the catalog after the durable fence. Every receipt field is
+        // still mandatory, including the raw and projected legacy purchase lists.
+        private static bool TryReadWriteCatalog(JObject message, out JArray catalog,
+            out Dictionary<int, JObject> byIndex, params string[] receiptFields)
+        {
+            catalog = null;
+            byIndex = null;
+            bool deferred = message.ContainsKey("refreshDeferred");
+            Array.Resize(ref receiptFields, receiptFields.Length + 1);
+            receiptFields[receiptFields.Length - 1] = deferred ? "refreshDeferred" : "catalog";
+            if (!HasExactKeys(message, receiptFields)) return false;
+            if (deferred)
+                return TryReadBoolean(message["refreshDeferred"], out bool flag) && flag;
+            return TrySanitizeCatalog(message["catalog"] as JArray, out catalog, out byIndex);
+        }
+
+        private static JObject DeferredReceipt(string purchasedToken)
+        {
+            return new JObject {
+                ["success"] = true, ["refreshDeferred"] = true, ["purchasedToken"] = purchasedToken
+            };
         }
 
         private static bool TrySanitizeCatalog(

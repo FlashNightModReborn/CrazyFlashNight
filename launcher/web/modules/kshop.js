@@ -443,6 +443,9 @@ var KShop = (function() {
                 _workbenchShell.setStatus('正在返回合成', 'busy');
             }
             else if (!_shopReady) _workbenchShell.setStatus(_loading ? '同步中' : '商城暂不可用', _loading ? 'busy' : 'warning');
+            else if (state && state.refreshDeferred) _workbenchShell.setStatus(
+                state.reconcileBlocked ? '交易已完成，商城目录待刷新' : '交易已完成，正在刷新商城目录',
+                state.reconcileBlocked ? 'warning' : 'busy');
             else if (_inventoryState.refreshRequired) _workbenchShell.setStatus('背包同步失败', 'warning');
             else if (_inventoryState.busyOwner) _workbenchShell.setStatus('处理中', 'busy');
             else if (state && state.reconcileBlocked) _workbenchShell.setStatus('同步失败', 'warning');
@@ -452,7 +455,8 @@ var KShop = (function() {
             else _workbenchShell.setStatus('已同步', 'ready');
         }
         if (state && state.reconcileBlocked) {
-            showSaveFailedDialog('商城对账失败，写操作保持锁定', true);
+            showSaveFailedDialog(state.refreshDeferred ? '交易已完成，商城目录刷新失败' : '商城对账失败，写操作保持锁定',
+                true, state.refreshDeferred);
         }
         _procurementNavigation.refreshControls();
     }
@@ -567,6 +571,7 @@ var KShop = (function() {
             toast:toast,
             messageForError:messageForError,
             applyResult:function(resp) {
+                if (resp.refreshDeferred) return;
                 _purchased = resp.purchased || [];
                 _purchasedToken = String(resp.purchasedToken || _purchasedToken);
                 applyWriteCatalog(resp.catalog);
@@ -853,13 +858,17 @@ var KShop = (function() {
             if (resp.success) {
                 _kpoints = resp.newBalance;
                 if (_balanceEl) _balanceEl.textContent = _kpoints;
-                _purchased = resp.purchased || [];
-                _purchasedToken = String(resp.purchasedToken || _purchasedToken);
-                _cart = resp.cart || [];
+                _cart = [];
                 _writeCoordinator.acceptAuthoritativeCart();
                 _cartController.closeSettlement();
-                applyWriteCatalog(resp.catalog);
-                renderClaimed();
+                if (resp.refreshDeferred) {
+                    _cartController.render();
+                } else {
+                    _purchased = resp.purchased;
+                    _purchasedToken = resp.purchasedToken;
+                    applyWriteCatalog(resp.catalog);
+                    renderClaimed();
+                }
             }
             if (!_inventoryCoordinator.completeExternalWrite(inventoryWrite, needsInventoryRefresh, function(refreshResult) {
                 if (!isKShopOpen()) return;
@@ -965,7 +974,7 @@ var KShop = (function() {
                 || (!!resp.reconciled && resp.error !== 'item_not_found' && resp.error !== 'stale_state');
             if (!_inventoryCoordinator.completeExternalWrite(inventoryWrite, needsInventoryRefresh, function(refreshResult) {
                 if (!isKShopOpen()) return;
-                if (resp.success) {
+                if (resp.success && !resp.refreshDeferred) {
                     _purchased = resp.purchased || [];
                     _purchasedToken = String(resp.purchasedToken || _purchasedToken);
                     applyWriteCatalog(resp.catalog);
@@ -1076,25 +1085,27 @@ var KShop = (function() {
         _tooltipPresenter.hide();
     }
 
-    function showSaveFailedDialog(msg, timeoutMode) {
+    function showSaveFailedDialog(msg, timeoutMode, committed) {
         var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
         if (A && typeof A.cue === 'function') A.cue('open');
         var actions = [
             {
-                id: 'retry', label: '重新对账', primary: true, audioCue: 'select',
+                id: 'retry', label: committed ? '重新刷新目录' : '重新对账', primary: true, audioCue: 'select',
                 onSelect: function() { if (!_writeCoordinator.retryReconcile()) requestClose(); }
             }
         ];
         if (!timeoutMode) {
             actions.push({ id: 'cancel', label: '继续购物', audioCue: 'back', onSelect: function() { _closing = false; } });
         }
-        actions.push({ id: 'force', label: '强制关闭', danger: true, audioCue: 'destructive', onSelect: doClose });
+        actions.push({ id: 'force', label: committed ? '关闭商城' : '强制关闭', danger: !committed,
+            audioCue: committed ? 'back' : 'destructive', onSelect: doClose });
         _workbenchShell.openModal({
             kind: 'reconcile',
             kicker: '',
             title: msg,
-            message: timeoutMode ? '购物车状态暂时无法确认。' : '可以重新同步，或返回继续购物。',
-            detail: '强制关闭可能丢失尚未保存的购物车修改。',
+            message: committed ? '刷新目录后可以继续购买或领取。' :
+                (timeoutMode ? '购物车状态暂时无法确认。' : '可以重新同步，或返回继续购物。'),
+            detail: committed ? '重新刷新只会读取最新商城状态。' : '强制关闭可能丢失尚未保存的购物车修改。',
             actions: actions
         });
     }

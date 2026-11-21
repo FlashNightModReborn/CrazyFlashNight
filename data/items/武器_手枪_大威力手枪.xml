@@ -1026,10 +1026,10 @@
         <level>36</level>
         <weight>2</weight>
         <dressup>枪-手枪-BOUNCER LEONE</dressup>
-        <capacity>15</capacity>
+        <capacity>6</capacity>
         <split>1</split>
         <diffusion>2</diffusion>
-        <interval>200</interval>
+        <interval>320</interval>
         <velocity>40</velocity>
         <bullet>穿刺子弹</bullet>
         <sound>usp_unsil-1.wav</sound>
@@ -1037,7 +1037,7 @@
         <bullethit>火花</bullethit>
         <clipname>马格南手枪弹药</clipname>
         <bulletsize>45</bulletsize>
-        <power>205</power>
+        <power>500</power>
         <impact>100</impact>
         <damagetype>魔法</damagetype>
         <magictype>热</magictype>
@@ -1054,12 +1054,12 @@
             <damageType>2</damageType>
             <shotgun>1</shotgun>
             <magPrice>300</magPrice>
-            <weightLayers>0</weightLayers>
+            <weightLayers>-1</weightLayers>
             <category>1</category>
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:a4b399a3</inputDigest>
+            <inputDigest>fnv1a32:95a0ca0e</inputDigest>
             <auditRef>weapon:BOUNCER LEONE:data</auditRef>
           </data>
         </profiles>

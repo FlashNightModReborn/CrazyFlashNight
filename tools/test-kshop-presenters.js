@@ -641,4 +641,74 @@ test('claimBatch write coordinator treats definitive failures without reconcile'
     coordinator.forceClose();
 });
 
+test('confirmed trades notify once before catalog recovery and only retry the read', () => {
+    for (const cmd of ['checkoutCommit','claim','claimBatch']) {
+        const wire = {success:true,refreshDeferred:true,purchasedToken:'shop.unit.2'};
+        if (cmd === 'checkoutCommit') wire.newBalance = 70;
+        if (cmd === 'claimBatch') Object.assign(wire, {batchOperationId:'kcb.unit.1',replayed:false});
+        const calls = [], reads = [], results = [], snapshots = [];
+        let displayUnavailable = true;
+        const coordinator = new Runtime.KShopWriteCoordinator({
+            getPurchasedToken:() => 'shop.unit.1',
+            applyBulkSnapshot(snapshot) {
+                if (displayUnavailable) { displayUnavailable = false; throw new Error('view unavailable'); }
+                snapshots.push(snapshot);
+            },
+            request(command, payload, done) {
+                calls.push(command);
+                if (command === 'bulkQuery') { reads.push(done); return; }
+                const clean = Runtime.KShopProtocol.sanitizeResponse(cmd,payload,wire,{});
+                assert.deepStrictEqual(clean,wire);
+                assert.strictEqual(Runtime.KShopProtocol.sanitizeResponse(cmd,payload,
+                    Object.assign({},wire,{catalog:[]}),{}),null);
+                assert.strictEqual(Runtime.KShopProtocol.sanitizeResponse(cmd,payload,
+                    Object.assign({},wire,{purchasedToken:null}),{}),null);
+                done(clean);
+            }
+        });
+        coordinator.open();
+        const complete = receipt => {
+            assert.strictEqual(coordinator.debugState().canStartWrite,false);
+            results.push(receipt);
+        };
+        if (cmd === 'checkoutCommit') coordinator.checkout('kcheckout.unit.1',complete);
+        if (cmd === 'claim') coordinator.claim(0,FP_A,complete);
+        if (cmd === 'claimBatch') coordinator.claimBatch('kcb.unit.1',[FP_A,FP_B],complete);
+        assert.deepStrictEqual(results,[wire]);
+        assert.deepStrictEqual(calls,[cmd,'bulkQuery']);
+        reads.shift()({success:false,error:'disconnected'});
+        assert.strictEqual(coordinator.debugState().refreshDeferred,true);
+        assert.strictEqual(coordinator.debugState().reconcileBlocked,true);
+        assert.strictEqual(coordinator.claim(0,FP_A,complete),false);
+        assert.strictEqual(coordinator.retryReconcile(),true);
+        reads.shift()(protocolBulk);
+        assert.strictEqual(coordinator.debugState().reconcileBlocked,true);
+        assert.strictEqual(coordinator.retryReconcile(),true);
+        reads.shift()(protocolBulk);
+        assert.deepStrictEqual(calls,[cmd,'bulkQuery','bulkQuery','bulkQuery']);
+        assert.deepStrictEqual(results,[wire]);
+        assert.deepStrictEqual(snapshots,[protocolBulk]);
+        assert.strictEqual(coordinator.debugState().canStartWrite,true);
+        assert.strictEqual(coordinator.debugState().refreshDeferred,false);
+    }
+});
+
+test('late catalog read from a closed shop cannot change the new session', () => {
+    let read, applied = 0;
+    const coordinator = new Runtime.KShopWriteCoordinator({
+        request(cmd, payload, done) {
+            if (cmd === 'bulkQuery') read = done;
+            else done({success:true,refreshDeferred:true,purchasedToken:'shop.unit.2'});
+        },
+        applyBulkSnapshot:() => { applied++; }
+    });
+    coordinator.open();
+    coordinator.claim(0,FP_A,() => {});
+    coordinator.forceClose();
+    coordinator.open();
+    read(protocolBulk);
+    assert.strictEqual(applied,0);
+    assert.strictEqual(coordinator.debugState().canStartWrite,true);
+});
+
 process.stdout.write(`KShop presenter tests passed: ${passed}/${passed}\n`);
