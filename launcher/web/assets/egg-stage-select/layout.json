@@ -6,7 +6,7 @@
     "frameRate": 24
   },
   "intro": {
-    "baseDurationMs": 1291.6666666666667,
+    "baseDurationMs": 500,
     "contentDurationMs": 333.3333333333333,
     "baseAlpha": 0.53
   },
@@ -16,9 +16,14 @@
   },
   "confirm": {
     "durationMs": 583.3333333333334,
-    "scale": 0.702301025390625,
-    "x": -37.15,
-    "y": 211.3
+    "scale": 0.62,
+    "y": 87.35,
+    "crop": [
+      285,
+      -5,
+      480,
+      315
+    ]
   },
   "previews": {
     "forest_depth": {

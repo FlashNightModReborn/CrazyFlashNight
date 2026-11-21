@@ -24,6 +24,7 @@ async function runViewport(browser,address,viewport){
     await page.goto(address+'/launcher/web/modules/egg-stage-select/dev/harness.html');
     await ready(page);
     check(await page.evaluate(()=>document.getAnimations().length>0),'normal motion runs the authored intro '+viewport.width);
+    check(await page.locator('.egg-base').evaluate(node=>parseFloat(getComputedStyle(node).animationDuration)===0.5),'left-to-right intro is shortened to 500ms');
     await page.waitForTimeout(1700);
     const initial=await page.evaluate(()=>{
         const state=EggStageSelectPanel.debugState(),panel=document.querySelector('.egg-panel').getBoundingClientRect();
@@ -41,7 +42,7 @@ async function runViewport(browser,address,viewport){
     check(initial.cards.every(card=>Math.abs(card.width-initial.layout.previews[Object.keys(initial.layout.previews).find(key=>card.id.endsWith(key+'.png'))].width)<0.1),'original preview widths '+viewport.width);
     check(initial.texts.includes('密林深处')&&initial.texts.includes('阴暗处似乎有神秘人士正在运货')&&initial.texts.includes('机器游荡区')&&initial.texts.includes('密林中央'),'original Chinese titles and descriptions');
     check(!initial.header&&initial.status===''&&!initial.overflow,'generic header/footer removed and no document overflow');
-    const expectedScale=Math.min(viewport.width/540,viewport.height/370);
+    const expectedScale=Math.min(viewport.width/540,viewport.height/370,1.6);
     check(Math.abs(initial.panel.width-540*expectedScale)<0.2&&Math.abs(initial.panel.height-370*expectedScale)<0.2,'panel uses the shared scale without distortion');
     await page.screenshot({path:path.join(OUT,'egg-'+viewport.width+'x'+viewport.height+'.png')});
     await page.locator('.egg-entry').first().click();
@@ -50,6 +51,15 @@ async function runViewport(browser,address,viewport){
     check(await page.locator('.egg-entry.selected').count()===1,'selected preview remains visible');
     await page.waitForTimeout(650);
     check(await page.locator('.egg-entry').evaluateAll(cards=>cards.every(card=>Number(getComputedStyle(card).opacity)>.9)),'confirmation does not replay or hide preview intro');
+    const confirmBounds=await page.evaluate(()=>{
+        const panel=document.querySelector('.egg-panel').getBoundingClientRect();
+        return {panel:{left:panel.left,right:panel.right,top:panel.top,bottom:panel.bottom},nodes:Array.from(document.querySelectorAll('.egg-dialog-art,#egg-confirm-text,#egg-confirm-enter,#egg-confirm-cancel')).map(node=>{
+            const rect=node.getBoundingClientRect();return {id:node.id||node.className,left:rect.left,right:rect.right,top:rect.top,bottom:rect.bottom};
+        }),viewport:{width:innerWidth,height:innerHeight}};
+    });
+    check(confirmBounds.nodes.every(rect=>rect.left>=confirmBounds.panel.left-1&&rect.right<=confirmBounds.panel.right+1&&rect.top>=confirmBounds.panel.top-1&&rect.bottom<=confirmBounds.panel.bottom+1&&rect.left>=0&&rect.top>=0&&rect.right<=confirmBounds.viewport.width+1&&rect.bottom<=confirmBounds.viewport.height+1),'confirm art, text and actions stay inside panel and viewport '+JSON.stringify(confirmBounds));
+    const dialogArt=confirmBounds.nodes.find(rect=>String(rect.id).includes('egg-dialog-art'));
+    check(Math.abs((dialogArt.left+dialogArt.right-confirmBounds.panel.left-confirmBounds.panel.right)/2)<1&&Math.abs((dialogArt.top+dialogArt.bottom-confirmBounds.panel.top-confirmBounds.panel.bottom)/2)<1,'confirmation is centered horizontally and vertically '+JSON.stringify(dialogArt));
     await page.screenshot({path:path.join(OUT,'egg-confirm-'+viewport.width+'x'+viewport.height+'.png')});
     await page.locator('#egg-confirm-cancel').click();
     await page.waitForFunction(()=>document.getElementById('egg-confirm').hidden);
@@ -89,9 +99,9 @@ async function main(){
     const executablePath=[process.env.CF7_BROWSER_EXE,'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe','C:/Program Files/Microsoft/Edge/Application/msedge.exe'].find(candidate=>candidate&&fs.existsSync(candidate));
     const browser=await chromium.launch({executablePath,headless:true});
     try{
-        for(const viewport of [{width:1024,height:576},{width:1366,height:768},{width:1920,height:1080}])await runViewport(browser,'http://127.0.0.1:'+server.address().port,viewport);
+        for(const viewport of [{width:1024,height:576},{width:1366,height:768},{width:1602,height:932},{width:1920,height:1080}])await runViewport(browser,'http://127.0.0.1:'+server.address().port,viewport);
         await runReduced(browser,'http://127.0.0.1:'+server.address().port);
-        const result={ok:true,passed,viewports:3,reducedMotion:true};fs.writeFileSync(path.join(OUT,'result.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+        const result={ok:true,passed,viewports:4,reducedMotion:true};fs.writeFileSync(path.join(OUT,'result.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));
     }finally{await browser.close();await new Promise(resolve=>server.close(resolve))}
 }
 main().catch(error=>{console.error(error.stack);process.exitCode=1});

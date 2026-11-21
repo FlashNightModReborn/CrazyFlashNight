@@ -70,7 +70,7 @@
             + '<button class="egg-dialog-button cancel" id="egg-confirm-cancel">取消</button></div>'
             + '<div class="egg-status" id="egg-status" role="status" aria-live="polite">正在读取关卡…</div></section>';
         element = host;
-        scale = window.PanelScale.attach(shell, 540, 370);
+        scale = window.PanelScale.attach(shell, 540, 370, {maxScale:1.6});
         mux = new Runtime.RequestMux({send:function(message) { return Bridge.send(message); }, panelInstanceId:instance});
         listen(byId('close'), 'click', requestClose);
         listen(byId('confirm-cancel'), 'click', cancelConfirm);
@@ -100,6 +100,9 @@
     }
     function textNode(text) { return document.createTextNode(text == null ? '' : String(text)); }
     function renderLayout() {
+        var dialogArt = byId('confirm').querySelector('.egg-dialog-art');
+        dialogArt.style.top = layout.confirm.y + 'px';
+        dialogArt.style.setProperty('--egg-dialog-scale', layout.confirm.scale);
         var texts = byId('texts');
         layout.texts.forEach(function(record, index) {
             var block = document.createElement('div');

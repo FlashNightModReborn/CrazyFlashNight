@@ -145,6 +145,9 @@ def generate():
         close.set("viewBox", "-6 -6 12 12")
         outputs["close.svg"] = ET.tostring(close, encoding="utf-8") + b"\n"
         confirm_report, confirm = export("弹出框整体", 14, (720, 320))
+        confirm.set("viewBox", "285 -5 480 315")
+        confirm.set("width", "480")
+        confirm.set("height", "315")
         outputs["confirm-dialog.svg"] = ET.tostring(confirm, encoding="utf-8") + b"\n"
         for report, allowed in ((report, {"blendMode=hardlight", "blendMode=add", "元素:DOMBitmapInstance", "stroke:DashedStroke"}),
                                 (confirm_report, {"stroke:DashedStroke"})):
@@ -177,9 +180,9 @@ def generate():
             text_layout.append({"runs": runs, "x": 323.85 + position[4], "y": 55.05 + position[5]})
         layout = {
             "version": 1, "stage": {"width": STAGE[0], "height": STAGE[1], "frameRate": 24},
-            "intro": {"baseDurationMs": 1000 * 31 / 24, "contentDurationMs": 1000 * 8 / 24, "baseAlpha": 0.53},
+            "intro": {"baseDurationMs": 500, "contentDurationMs": 1000 * 8 / 24, "baseAlpha": 0.53},
             "exit": {"durationMs": 1000 * 20 / 24, "contentDurationMs": 1000 * 8 / 24},
-            "confirm": {"durationMs": 1000 * 14 / 24, "scale": 0.702301025390625, "x": -37.15, "y": 211.3},
+            "confirm": {"durationMs": 1000 * 14 / 24, "scale": 0.62, "y": (370 - 315 * 0.62) / 2, "crop": [285, -5, 480, 315]},
             "previews": preview_layout, "texts": text_layout,
         }
         outputs["layout.json"] = (json.dumps(layout, ensure_ascii=False, indent=2) + "\n").encode("utf-8")

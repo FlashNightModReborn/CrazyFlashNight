@@ -174,29 +174,29 @@
 .egg-confirm { position: absolute; inset: 0; }
 .egg-dialog-art {
     position: absolute;
-    left: -37.15px;
-    top: 211.3px;
-    width: 720px;
-    height: 320px;
-    transform: scale(.7023010254);
-    transform-origin: left top;
+    left: 50%;
+    top: 87.35px;
+    width: 480px;
+    height: 315px;
+    transform: translateX(-50%) scale(var(--egg-dialog-scale, .62));
+    transform-origin: center top;
     pointer-events: none;
 }
 #egg-confirm-text {
     position: absolute;
-    left: 155px;
-    top: 260px;
+    left: 120px;
+    top: 127px;
     z-index: 1;
-    width: 310px;
+    width: 300px;
     margin: 0;
     color: var(--egg-text);
-    font-size: 25px;
+    font-size: 22px;
     font-weight: 700;
     text-align: center;
 }
 .egg-dialog-button {
     position: absolute;
-    top: 315px;
+    top: 214px;
     z-index: 2;
     width: 82px;
     height: 42px;
@@ -208,8 +208,8 @@
     font-weight: 700;
     cursor: pointer;
 }
-.egg-dialog-button.confirm { left: 253px; }
-.egg-dialog-button.cancel { left: 338px; }
+.egg-dialog-button.confirm { left: 175px; }
+.egg-dialog-button.cancel { left: 290px; }
 .egg-dialog-button:hover { filter: brightness(1.25); }
 .egg-dialog-button:focus-visible { outline: 2px solid var(--egg-text); outline-offset: -3px; }
 .egg-dialog-button:disabled { opacity: .5; cursor: wait; }
