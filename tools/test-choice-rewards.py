@@ -213,7 +213,7 @@ class ChoiceCatalogTests(unittest.TestCase):
         self.assertTrue(all(p['respectSkillUnlock'] for p in styles))
         self.assertEqual([g['id'] for g in styles[0]['groups']], ['fist', 'blade', 'gun', 'general'])
 
-    def test_style_progression_uses_early_single_and_late_paired_skills(self):
+    def test_style_progression_compensates_single_level_skills(self):
         pools = {p['id']: p for p in self.catalog['pools'] if p['id'].startswith('repair-campus.style.')}
         bundles = {b['id']: b for b in self.catalog['bundles']}
         style_grants = [grant['skillKey'] for b in self.catalog['bundles'] if b['id'].startswith('campus.style.')
@@ -223,25 +223,27 @@ class ChoiceCatalogTests(unittest.TestCase):
                             if any(grant['skillKey'] == '波动拳' for grant in b.get('skills', []))))
         skill_levels = {s.findtext('Name'): int(s.findtext('MaxLevel'))
                         for s in ET.parse(ROOT / 'data/skills/skills.xml').findall('Skill') if s.findtext('Name')}
-        early_orders = {}
+        orders = {}
+        for style in ('fist', 'blade'):
+            late = next(g for g in pools['repair-campus.style.2']['groups'] if g['id'] == style)
+            orders[style] = [bundles[row['bundleId']]['skills'][0]['skillKey'] for row in late['entries']]
         for stage in range(6):
             groups = {g['id']: g for g in pools[f'repair-campus.style.{stage}']['groups']}
+            compensated = 0
             for style, count in [('fist', 14), ('blade', 21)]:
                 entries = groups[style]['entries']
                 self.assertEqual(len(entries), count)
-                skills = [bundles[row['bundleId']]['skills'] for row in entries]
-                if stage < 2:
-                    early_orders[style] = [bundle_skills[0]['skillKey'] for bundle_skills in skills]
-                    self.assertTrue(all(len(bundle_skills) == 1 for bundle_skills in skills))
-                    self.assertTrue(all(bundle_skills[0]['level'] == min(2, skill_levels[bundle_skills[0]['skillKey']])
-                                        for bundle_skills in skills))
-                else:
-                    self.assertTrue(all(len(bundle_skills) == 2 for bundle_skills in skills))
-                    self.assertTrue(all(grant['level'] == 1 for bundle_skills in skills for grant in bundle_skills))
-                    for index, bundle_skills in enumerate(skills):
-                        order = early_orders[style]
-                        self.assertEqual([grant['skillKey'] for grant in bundle_skills],
-                                         [order[index], order[(index + 1) % len(order)]])
+                order = orders[style]
+                for index, row in enumerate(entries):
+                    skills = bundles[row['bundleId']]['skills']
+                    first, second = order[index], order[(index + 1) % len(order)]
+                    if stage < 2 and skill_levels[first] > 1:
+                        self.assertEqual(skills, [{'skillKey': first, 'level': 2}])
+                    else:
+                        self.assertEqual(skills, [{'skillKey': first, 'level': 1}, {'skillKey': second, 'level': 1}])
+                        compensated += stage < 2
+            if stage < 2:
+                self.assertEqual(compensated, 16)
             self.assertTrue(all(len(bundles[row['bundleId']]['skills']) == 1
                                 and bundles[row['bundleId']]['skills'][0]['level'] == 2
                                 for row in groups['gun']['entries']))
