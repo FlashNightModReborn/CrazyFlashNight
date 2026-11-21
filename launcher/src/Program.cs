@@ -2469,6 +2469,7 @@ class Program
         ModifierOverlay modifierOverlay = new ModifierOverlay(form, webDir,
             Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile-modifier"),
             modifierTask, () => webOverlay.SendModifierPanelClosed(), dollPortraitsDir);
+        modifierOverlay.TextInputFocusChanged += form.SetTextInputActive;
         commandRouter.SetModifierOverlay(modifierOverlay);
         webOverlay.SetModifierOverlay(modifierOverlay);
         if (form.BootstrapPanel != null)

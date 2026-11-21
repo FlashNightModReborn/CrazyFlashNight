@@ -132,6 +132,9 @@ namespace CF7Launcher.Guardian
         private Point _tooltipPoint;
         private Point _pressPoint;
         private bool _trackingLeave;
+        private bool _textInputActive;
+
+        internal event Action<bool> TextInputFocusChanged;
 
         internal ModifierNativeSurface(Form owner, string webRoot, string profileRoot, ModifierTask task,
             string dollPortraitsDir = null)
@@ -221,6 +224,13 @@ namespace CF7Launcher.Guardian
             _inputOverlay.Controls.Add(_unitLevel);
             _inputOverlay.Controls.Add(_unitCount);
             _inputOverlay.Controls.Add(_unitPageInput);
+            TextBox[] inputs = { _itemQuery, _itemQuantity, _itemPageInput, _taskId,
+                _unitLevel, _unitCount, _unitPageInput };
+            foreach (TextBox input in inputs)
+            {
+                input.GotFocus += OnTextInputFocusChanged;
+                input.Leave += OnTextInputFocusChanged;
+            }
             Application.AddMessageFilter(this);
             Visible = false;
         }
@@ -244,6 +254,7 @@ namespace CF7Launcher.Guardian
         }
 
         protected override bool IsClickThrough { get { return false; } }
+        protected override bool ShowWithoutActivation { get { return true; } }
 
         internal bool OwnsFocus(IntPtr foreground)
         {
@@ -291,7 +302,6 @@ namespace CF7Launcher.Guardian
             UpdateInputLayout();
             if (!Visible) Show();
             ShowOverlay();
-            if (CanRestoreGameFocus) Activate();
             UpdateInputVisibility();
             UpdateAnimationTimer();
             Invalidate();
@@ -311,6 +321,11 @@ namespace CF7Launcher.Guardian
             _tooltip.Reset();
             _tooltipItem = null;
             _armedAction = null;
+            if (_textInputActive)
+            {
+                _textInputActive = false;
+                TextInputFocusChanged?.Invoke(false);
+            }
             Capture = false;
             ClearCalls();
             _inputOverlay.Sync(false, Bounds);
@@ -1919,12 +1934,40 @@ namespace CF7Launcher.Guardian
             QueueTooltipPointer();
         }
 
+        private bool HasTextInputFocus()
+        {
+            return _itemQuery.Focused || _itemQuantity.Focused || _itemPageInput.Focused
+                || _taskId.Focused || _unitLevel.Focused || _unitCount.Focused || _unitPageInput.Focused;
+        }
+
+        private void SyncTextInputFocus()
+        {
+            bool active = HasTextInputFocus();
+            if (active == _textInputActive) return;
+            _textInputActive = active;
+            TextInputFocusChanged?.Invoke(active);
+        }
+
+        private void OnTextInputFocusChanged(object sender, EventArgs e)
+        {
+            if (_disposed) return;
+            try { BeginInvoke(new Action(SyncTextInputFocus)); } catch { }
+        }
+
+        private void ReleaseTextInputFocus()
+        {
+            if (!_textInputActive && !HasTextInputFocus()) return;
+            try { _owner.Activate(); } catch { }
+            SyncTextInputFocus();
+        }
+
         public bool PreFilterMessage(ref Message message)
         {
             if (_disposed || !Active) return false;
             bool move = message.Msg == 0x0200;
             bool down = message.Msg == 0x0201;
             if (!move && !down && message.Msg != 0x0202) return false;
+            if (down) ReleaseTextInputFocus();
             Point client;
             try { client = PointToClient(Cursor.Position); }
             catch { return false; }
@@ -2019,6 +2062,7 @@ namespace CF7Launcher.Guardian
         {
             base.OnMouseDown(e);
             if (!Active || e.Button != MouseButtons.Left) return;
+            ReleaseTextInputFocus();
             Point logical = ModifierNativeLayout.ToLogical(e.Location, ClientSize);
             _pressedAction = HitAction(logical);
             _pressPoint = e.Location;
@@ -2092,6 +2136,8 @@ namespace CF7Launcher.Guardian
         {
             if (disposing)
             {
+                if (_textInputActive) TextInputFocusChanged?.Invoke(false);
+                _textInputActive = false;
                 _disposed = true;
                 Application.RemoveMessageFilter(this);
                 _inputOverlay?.Dispose();
