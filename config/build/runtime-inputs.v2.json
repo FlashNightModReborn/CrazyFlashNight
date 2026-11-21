@@ -217,6 +217,8 @@
         ".github/workflows/runtime-cloud-builder.yml",
         ".github/workflows/as2-artifact-ownership.yml",
         ".github/workflows/healing-contract.yml",
+        ".github/workflows/stage-information.yml",
+        "tools/check-stage-information.py",
         ".github/workflows/tooltip-data.yml",
         ".github/workflows/weapon-blueprints.yml",
         "tools/bake-armory-blueprints.js",
