@@ -1,0 +1,160 @@
+{
+  "version": 1,
+  "authority": "flashswf/UI/地铁线路.fla",
+  "generator": "tools/export-subway-art.py",
+  "sources": {
+    "flashswf/UI/地铁线路.fla": "ab193f39273d879dbe117bfcaa456b1110527eb635fd5ce2538d35f2e92e290a",
+    "data/subway/descriptions.json": "9de8c941967b8bd1f654879c45c86ea994cfa78b2ca14adcda65a98c01958873",
+    "tools/xfl-ui-svg/xfl_to_svg.py": "2eb4157769df821b9e085c34a88aa316dbf2f236a4e37c27d08fc9791d1755ca",
+    "tools/export-subway-art.py": "77888d79428a5dcd17526fe3dbe12f03499560553c60894af5d9555e85bf7d42"
+  },
+  "route": {
+    "symbol": "地铁线路UI",
+    "frame": 0,
+    "stage": [
+      392,
+      352
+    ],
+    "excludedLayers": [
+      "执行按钮",
+      "按钮",
+      "按钮区域",
+      "站点",
+      "简介"
+    ],
+    "colorOverlays": [
+      "线路1",
+      "线路2",
+      "线路3",
+      "线路4",
+      "线路5",
+      "线路6",
+      "线路7",
+      "线路8",
+      "线路9",
+      "线路10",
+      "线路13",
+      "线路17",
+      "线路18",
+      "线路19",
+      "线路27",
+      "线路30",
+      "线路S3"
+    ],
+    "rules": {
+      "2": {
+        "requires": [
+          "总备处站",
+          "自由广场站"
+        ],
+        "contacts": [
+          "自由广场站"
+        ]
+      },
+      "4": {
+        "requires": [
+          "总备处站",
+          "新市场站"
+        ],
+        "contacts": [
+          "总备处站",
+          "新市场站"
+        ]
+      },
+      "6": {
+        "requires": [
+          "总备处站",
+          "自由广场站"
+        ],
+        "contacts": [
+          "总备处站"
+        ]
+      },
+      "7": {
+        "requires": [
+          "新市场站",
+          "环线东北站"
+        ],
+        "contacts": [
+          "新市场站",
+          "环线东北站"
+        ]
+      },
+      "8": {
+        "requires": [
+          "总备处站",
+          "新市场站",
+          "自由广场站",
+          "环线东北站"
+        ],
+        "contacts": [
+          "总备处站",
+          "新市场站",
+          "自由广场站",
+          "环线东北站"
+        ]
+      },
+      "17": {
+        "requires": [
+          "新市场站",
+          "环线东北站"
+        ],
+        "contacts": [
+          "环线东北站"
+        ]
+      }
+    }
+  },
+  "stations": {
+    "总备处站": {
+      "frame": 4,
+      "x": 247.05,
+      "y": 179.15
+    },
+    "新市场站": {
+      "frame": 3,
+      "x": 266.15,
+      "y": 179.2
+    },
+    "自由广场站": {
+      "frame": 2,
+      "x": 247,
+      "y": 192.35
+    },
+    "环线东北站": {
+      "frame": 3,
+      "x": 266.3,
+      "y": 156.55
+    }
+  },
+  "files": {
+    "route-map.svg": {
+      "sha256": "a58c241a383c4eebe64e32c4cb4244be5f86dd3f25141862665653479314bb94",
+      "bytes": 279446
+    },
+    "route-interactions.svg": {
+      "sha256": "9534e1d86269156f278d873bc4be03747473d8ef6082e7e7c2288def83ccca94",
+      "bytes": 21663
+    },
+    "descriptions.json": {
+      "sha256": "9de8c941967b8bd1f654879c45c86ea994cfa78b2ca14adcda65a98c01958873",
+      "bytes": 1374
+    },
+    "station-1.svg": {
+      "sha256": "1b90c31c05d088f5d7f9130bcc6f0576896780b98abca09abda3741d83023853",
+      "bytes": 2466
+    },
+    "station-2.svg": {
+      "sha256": "faf97167d417f8daf5fa77081afceea12d5ba7946bb1996dca382037079164ae",
+      "bytes": 2032
+    },
+    "station-3.svg": {
+      "sha256": "fe3a14c2e68df2d141bdc2353724dd3e30795875650e2c2915a5d44e59250f76",
+      "bytes": 1532
+    },
+    "station-4.svg": {
+      "sha256": "cc9512e7156c36224b812bc5f379d082f14717d7c5c157c86f255ce6ae72f208",
+      "bytes": 825
+    }
+  }
+}

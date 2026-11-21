@@ -72,6 +72,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 | `data/intelligence/` | 情报详情 legacy txt 文本；保留为 AS2 旧界面和 H5 迁移来源 |
 | `data/intelligence_h5/` | Launcher Web 情报面板 H5 JSON 组件树正文 |
 | `data/glossary/` | 情报面板「专有名词」词条（`glossary_index.json` + 每条 `<termName>.json`） |
+| `data/subway/` | 地铁站点与线路介绍 JSON 真源；由 `tools/export-subway-art.py` 同步到 Web 资源并校验身份闭包 |
 | `data/shops/` | NPC 金币商店清单、逐 NPC 商品目录与开发者分组 |
 | `data/arena/` | 竞技场标准/隐藏卡与标准佣兵装备掉落 XML 真源、势力元数据 JSON 真源与关卡派生 roster |
 | `config/` | 系统配置 |

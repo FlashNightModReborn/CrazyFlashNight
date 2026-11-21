@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><base href="/launcher/web/">
+<title>地铁线路选关验证</title>
+<link rel="stylesheet" href="css/overlay.css"><link rel="stylesheet" href="css/panels.css"><link rel="stylesheet" href="css/terminal.css">
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080b0e}</style></head><body>
+<div id="panel-container" style="display:none"><div id="panel-backdrop"></div><div id="panel-content"></div></div><div id="panel-tooltip"></div>
+<script>
+window.__sent=[];window.__handlers={};window.__sequence=0;window.__frames=[4,1,2,3];
+function clone(value){return JSON.parse(JSON.stringify(value))}
+window.__emit=function(value){(__handlers[value.type]||[]).slice().forEach(function(callback){callback(value)})};
+var names=['总备处站','新市场站','自由广场站','环线东北站'];
+var entries=[
+  {id:'clean_stationA',name:'清理总备处',description:'清理总备处站，尝试搜寻神秘士兵的据点。',stageName:'总备处站清理',difficulty:'简单',enterable:true,highlighted:true},
+  {id:'raid_stationB',name:'突袭新市场',description:'进入密林深处副本',stageName:'密林深处',difficulty:'简单',enterable:true,highlighted:false},
+  {id:'defend_stationC',name:'自由广场防守',description:'',stageName:'',difficulty:'',enterable:false,highlighted:false},
+  {id:'explore_stationD',name:'环线东北站探索',description:'探索环线东北站',stageName:'环线东北站',difficulty:'简单',enterable:true,highlighted:true}
+];
+window.Bridge={
+  on:function(type,callback){(__handlers[type]||(__handlers[type]=[])).push(callback)},
+  off:function(type,callback){var list=__handlers[type]||[],index=list.indexOf(callback);if(index>=0)list.splice(index,1)},
+  send:function(message){
+    __sent.push(clone(message));
+    if(message.cmd==='close')return true;
+    var result={type:'panel_resp',panel:'subway',domain:'subway',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,v:1,operation:message.cmd,success:true};
+    if(message.cmd==='snapshot'){
+      result.progress={main:67,egg:4};
+      result.stations=names.map(function(name,index){return {id:name,name:name,frame:__frames[index]}});
+      result.entries=clone(entries);
+    }else if(message.cmd==='enter'){
+      var entry=entries.find(function(item){return item.id===message.payload.entryId});
+      result.closePanel=true;result.entryId=entry.id;result.stageName=entry.stageName;result.difficulty=entry.difficulty;
+    }
+    setTimeout(function(){__emit(result)},5);return true;
+  }
+};
+window.BootstrapAudio={cue:function(){}};
+</script>
+<script src="modules/panels.js"></script><script src="modules/panel-scale.js"></script><script src="modules/panel-runtime.js"></script>
+<script src="modules/subway-select-runtime.js"></script><script src="modules/subway-select.js"></script>
+<script>
+Panels.init();
+window.__open=function(){Panels.open('subway',{panelInstanceId:'subway.panel.'+(++__sequence),source:'world_subway'})};
+__open();
+</script></body></html>

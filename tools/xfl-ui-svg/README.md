@@ -78,8 +78,8 @@ path），对应槽位 rec 的 `clip` 字段指向该键；该 XML 计入 manife
 - shape tween 取该帧基准 DOMShape（MorphShape 段不插值）。
 - mask 层→clipPath；fillStyle0 边自动反绕；`Edge@cubics` 冗余段忽略。
   fillStyle0==fillStyle1 同索引边为两侧同填充的内部边界，正/反两写抵消属正常语义。
-- ColorTransform：纯 alphaMultiplier→组 `opacity`；带 offset/rgb 的折算进各
-  fill/stop 与渐变 stop（逐通道精确、无渲染器依赖，但与"合成后整乘"在
+- ColorTransform：纯 alphaMultiplier→组 `opacity`；offset/rgb 与 tintColor/tintMultiplier
+  折算进各 fill/stop 与渐变 stop（逐通道精确、无渲染器依赖，但与"合成后整乘"在
   重叠半透明区有理论差异——本资产无此情形）。
 - DropShadowFilter→feDropShadow（stdDeviation=blur/2 近似）；Bevel/ Glow 等
   记录 unsupported 不丢基础美术；blendMode 写 `mix-blend-mode` 并记录。

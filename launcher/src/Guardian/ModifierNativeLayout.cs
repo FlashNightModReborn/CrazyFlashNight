@@ -45,27 +45,45 @@ namespace CF7Launcher.Guardian
         internal static readonly Rectangle GrantTask = new Rectangle(464, 158, 108, 31);
         internal static readonly Rectangle UnlockStages = new Rectangle(464, 215, 108, 31);
 
-        internal static readonly Rectangle UnitFirst = new Rectangle(191, 377, 24, 25);
-        internal static readonly Rectangle UnitPrevious = new Rectangle(220, 377, 24, 25);
-        internal static readonly Rectangle UnitNext = new Rectangle(251, 377, 24, 25);
-        internal static readonly Rectangle UnitLast = new Rectangle(280, 377, 24, 25);
-        internal static readonly Rectangle UnitPage = new Rectangle(346, 379, 34, 22);
-        internal static readonly Rectangle UnitPageLabel = new Rectangle(310, 381, 34, 20);
-        internal static readonly Rectangle UnitPageTotal = new Rectangle(382, 381, 40, 20);
+        internal static readonly Rectangle UnitFirst = new Rectangle(183, 377, 24, 25);
+        internal static readonly Rectangle UnitPrevious = new Rectangle(212, 377, 24, 25);
+        internal static readonly Rectangle UnitNext = new Rectangle(243, 377, 24, 25);
+        internal static readonly Rectangle UnitLast = new Rectangle(267, 377, 24, 25);
+        internal static readonly Rectangle UnitPage = new Rectangle(351, 379, 34, 22);
+        internal static readonly Rectangle UnitPageLabel = new Rectangle(293, 381, 54, 20);
+        internal static readonly Rectangle UnitPageTotal = new Rectangle(389, 381, 26, 20);
+        internal static readonly Rectangle UnitJump = new Rectangle(424, 375, 108, 30);
         internal static readonly Rectangle UnitGrid = new Rectangle(183, 139, 171, 225);
         internal static readonly Rectangle UnitFrame = new Rectangle(382, 138, 231, 138);
-        internal static readonly Rectangle UnitLevel = new Rectangle(428, 326, 35, 22);
-        internal static readonly Rectangle UnitCount = new Rectangle(429, 347, 35, 22);
-        internal static readonly Rectangle UnitLevelMinus = new Rectangle(415, 325, 20, 20);
-        internal static readonly Rectangle UnitLevelPlus = new Rectangle(480, 327, 20, 20);
-        internal static readonly Rectangle UnitCountMinus = new Rectangle(415, 346, 20, 20);
-        internal static readonly Rectangle UnitCountPlus = new Rectangle(480, 348, 20, 20);
-        internal static readonly Rectangle UnitHostile = new Rectangle(519, 306, 12, 12);
-        internal static readonly Rectangle UnitSpawn = new Rectangle(506, 329, 108, 31);
-        internal static readonly Rectangle UnitMerc = new Rectangle(506, 375, 108, 31);
+        internal static readonly Rectangle UnitLevel = new Rectangle(444, 326, 35, 22);
+        internal static readonly Rectangle UnitCount = new Rectangle(444, 347, 35, 22);
+        internal static readonly Rectangle UnitLevelMinus = new Rectangle(431, 325, 20, 20);
+        internal static readonly Rectangle UnitLevelPlus = new Rectangle(496, 327, 20, 20);
+        internal static readonly Rectangle UnitCountMinus = new Rectangle(431, 346, 20, 20);
+        internal static readonly Rectangle UnitCountPlus = new Rectangle(496, 348, 20, 20);
+        internal static readonly Rectangle UnitHostile = new Rectangle(510, 298, 12, 12);
+        internal static readonly Rectangle UnitSpawn = new Rectangle(546, 329, 108, 31);
+        internal static readonly Rectangle UnitMerc = new Rectangle(546, 375, 108, 31);
         internal static readonly Rectangle Reconcile = new Rectangle(704, 403, 42, 18);
         internal const int UnitRowHeight = 28;
         internal const int UnitRowsPerPage = 8;
+
+        internal static bool IsUnitPaginationAction(string action)
+        {
+            return action == "unit_first" || action == "unit_prev" || action == "unit_next" || action == "unit_last"
+                || action == "unit_page_label" || action == "unit_page_total";
+        }
+
+        internal static int UnitActionOffsetX(string action)
+        {
+            if (action == "unit_jump") return 48;
+            if (action == "unit_spawn" || action == "unit_merc") return 40;
+            if (action == "level_minus" || action == "level_plus" || action == "count_minus" || action == "count_plus") return 16;
+            if (action == "unit_first" || action == "unit_prev" || action == "unit_next") return -8;
+            if (action == "unit_last" || action == "unit_page_label") return -13;
+            if (action == "unit_page_total") return 5;
+            return 0;
+        }
 
         internal static int PageCount(int total, int pageSize)
         {

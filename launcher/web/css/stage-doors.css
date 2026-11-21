@@ -1,4 +1,4 @@
-/* U7 地铁线路与彩蛋选关共用的目的地面板布局；颜色只取 token。 */
+/* U7 地铁原图来自 flashswf/UI/地铁线路.fla；彩蛋选关共用目的地面板布局。 */
 #panel-container[data-panel="subway"] #panel-content,
 #panel-container[data-panel="egg-stage-select"] #panel-content {
     inset: 0;
@@ -15,6 +15,8 @@
     transform-origin: center;
 }
 .stage-door-panel { position: relative; }
+.subway-panel { grid-template-rows: minmax(0, 1fr) 76px; }
+.subway-panel > .appearance-service-close { position: absolute; top: 12px; right: 12px; z-index: 4; }
 .stage-door-body {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
@@ -22,35 +24,72 @@
     min-height: 0;
     padding: 20px 30px;
 }
-.subway-stations {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 10px;
-    margin: 0;
-    padding: 12px 16px;
-    list-style: none;
-    border: 1px solid var(--appearance-line-soft);
-    background: var(--appearance-pane-fill);
+.subway-panel .stage-door-body {
+    grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px 22px;
 }
+.subway-map {
+    position: relative;
+    align-self: center;
+    justify-self: center;
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    aspect-ratio: 49 / 44;
+    overflow: hidden;
+    border: 1px solid var(--appearance-line-soft);
+    background: #121823;
+}
+.subway-map-art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.subway-route-layer,
+.subway-route-interactions { position: absolute; inset: 0; width: 100%; height: 100%; }
+.subway-route { outline: none; }
+.subway-route-line { cursor: pointer; }
+.subway-route-outline { stroke-opacity: 0; }
+.subway-route.hovered .subway-route-outline,
+.subway-route.selected .subway-route-outline,
+.subway-route:focus .subway-route-outline { stroke-opacity: 1; }
+.subway-stations { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; pointer-events: none; }
+.subway-station { pointer-events: auto; }
 .subway-station {
+    position: absolute;
     display: flex;
     align-items: center;
-    gap: 8px;
-    min-width: 0;
-    font-size: 13px;
-    color: var(--appearance-text);
+    gap: 4px;
+    color: #dfdfdf;
+    font-size: 12px;
+    line-height: 14px;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px #000, 0 0 3px #000;
+    transform: translateY(-3px);
+    cursor: pointer;
+    outline: none;
 }
-.subway-station-dot {
-    width: 10px;
-    height: 10px;
-    flex: none;
-    border-radius: 50%;
-    background: var(--appearance-accent);
-    box-shadow: 0 0 6px var(--appearance-accent);
+.subway-station::before { content: ""; position: absolute; inset: -5px; }
+.subway-station[data-station="总备处站"] { left: 63.02%; top: 50.9%; }
+.subway-station[data-station="新市场站"] { left: 67.9%; top: 50.91%; }
+.subway-station[data-station="自由广场站"] { left: 63.01%; top: 54.65%; }
+.subway-station[data-station="环线东北站"] { left: 67.94%; top: 44.47%; }
+.subway-station[data-station="总备处站"],
+.subway-station[data-station="自由广场站"] {
+    flex-direction: row-reverse;
+    transform: translate(calc(-100% + 12px), -3px);
 }
-.subway-station.locked { color: var(--appearance-muted); }
-.subway-station.locked .subway-station-dot { background: var(--appearance-muted); box-shadow: none; }
-.subway-station-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.subway-station-dot { width: 12px; height: 8px; flex: none; }
+.subway-station.hovered .subway-station-dot,
+.subway-station.selected .subway-station-dot,
+.subway-station:focus .subway-station-dot { filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff); }
+.subway-station-name { display: none; }
+.subway-station.is-name-visible .subway-station-name { display: inline; }
+.subway-station.locked { color: #aaa; }
+.subway-destinations { min-width: 0; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.subway-destinations h2 { margin: 0 0 10px; padding-right: 40px; font-size: 14px; font-weight: 600; color: var(--appearance-secondary-text); }
+.subway-panel .stage-door-entries { grid-template-columns: minmax(0, 1fr); }
+.subway-panel .stage-door-entry { min-height: 78px; cursor: default; }
+.stage-door-entry-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.subway-entry-enter { min-width: 72px; height: 30px; margin-left: auto; padding: 3px 12px; }
 .stage-door-entries {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -106,4 +145,7 @@
 }
 .stage-door-confirm-actions { display: flex; gap: 12px; justify-content: center; }
 .stage-door-confirm .appearance-service-button { height: 40px; min-width: 108px; }
+.subway-feature-info { min-width: 0; max-height: 54px; overflow-y: auto; }
+.subway-feature-info h2 { margin: 0 0 4px; font-size: 13px; font-weight: 600; color: var(--appearance-secondary-text); }
+.subway-feature-info p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--appearance-muted); }
 .stage-door-status { margin: 0; font-size: 13px; color: var(--appearance-muted); }

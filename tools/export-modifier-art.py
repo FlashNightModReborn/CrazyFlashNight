@@ -11,6 +11,7 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from PIL import Image
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +49,8 @@ GENERIC_BUTTONS = {
     ("units", 340.95, 345.65): "unit_merc",
     ("units", 211.25, 345.65): "unit_jump",
 }
+UNIT_LEGACY_TEXT_RECTS = ((376, 375, 108, 30), (506, 329, 108, 31), (506, 375, 108, 31))
+
 SYMBOL_BUTTONS = {
     ("items", "button/Symbol 1756"): "item_first",
     ("items", "button/Symbol 1751"): "item_prev",
@@ -117,6 +120,13 @@ class ModifierRenderer(engine.Renderer):
                                 copied.remove(copied.find("./x:matrix", NS))
                         break
         return super().element_to_svg(element, where, ct)
+
+
+def erase_legacy_button_text(path):
+    with Image.open(path) as image:
+        for left, top, width, height in UNIT_LEGACY_TEXT_RECTS:
+            image.paste((0, 0, 0, 204), (left, top, left + width, top + height))
+        image.save(path)
 
 
 def digest(path):
@@ -267,6 +277,8 @@ def generate(directory):
         svg_path.write_text(svg, encoding="utf-8")
         background = "native-" + page + ".png"
         svg_renderer.render(str(svg_path), STAGE[0], str(directory / background))
+        if page == "units":
+            erase_legacy_button_text(directory / background)
         svg_path.unlink()
         for action, rec in buttons.items():
             for state, relative in list(rec["states"].items()):

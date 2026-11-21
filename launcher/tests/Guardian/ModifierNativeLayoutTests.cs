@@ -130,11 +130,32 @@ namespace Launcher.Tests.Guardian
             Assert.True(ModifierNativeLayout.UnitPageTotal.Right <= ModifierNativeLayout.Width);
         }
 
+        [Fact]
+        public void UnitPaginationLeavesTheJumpButtonUncovered()
+        {
+            Assert.True(ModifierNativeLayout.UnitFirst.Left >= ModifierNativeLayout.UnitGrid.Left);
+            Assert.True(ModifierNativeLayout.UnitPageLabel.Left >= ModifierNativeLayout.UnitLast.Right);
+            Assert.True(ModifierNativeLayout.UnitPageLabel.Right <= ModifierNativeLayout.UnitPage.Left);
+            Assert.True(ModifierNativeLayout.UnitPage.Right <= ModifierNativeLayout.UnitPageTotal.Left);
+            Assert.True(ModifierNativeLayout.UnitPageTotal.Right <= ModifierNativeLayout.UnitJump.Left - 8);
+            Assert.True(ModifierNativeLayout.UnitJump.Right <= ModifierNativeLayout.UnitMerc.Left - 8);
+            Assert.True(ModifierNativeLayout.UnitLevelPlus.Right <= ModifierNativeLayout.UnitSpawn.Left);
+            Assert.Equal(ModifierNativeLayout.UnitLevel.Left, ModifierNativeLayout.UnitCount.Left);
+        }
+
+        [Fact]
+        public void HostileCheckboxUsesTheAuthoredSquareCenter()
+        {
+            Assert.Equal(516, ModifierNativeLayout.UnitHostile.Left + ModifierNativeLayout.UnitHostile.Width / 2);
+            Assert.Equal(304, ModifierNativeLayout.UnitHostile.Top + ModifierNativeLayout.UnitHostile.Height / 2);
+        }
+
         private static void AssertNav(ModifierArtCatalog art, string page, string action, Rectangle expected)
         {
             RectangleF asset = art.AssetRect(page, action);
             Assert.False(asset.IsEmpty);
-            Assert.InRange(Math.Abs(asset.Left - expected.Left), 0f, 1.5f);
+            float offset = page == "units" ? ModifierNativeLayout.UnitActionOffsetX(action) : 0;
+            Assert.InRange(Math.Abs(asset.Left - (expected.Left - offset)), 0f, 1.5f);
             Assert.InRange(Math.Abs(asset.Top - expected.Top), 0f, 1.5f);
             Assert.InRange(Math.Abs(asset.Width - expected.Width), 0f, 1.5f);
             Assert.InRange(Math.Abs(asset.Height - expected.Height), 0f, 1.5f);

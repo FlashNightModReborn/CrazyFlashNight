@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId stage-m-control-room Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.StageMControlRoomTest.runAllTests();
+trace("FocusedTestRunId stage-m-control-room Complete: __FOCUSED_RUN_ID__");

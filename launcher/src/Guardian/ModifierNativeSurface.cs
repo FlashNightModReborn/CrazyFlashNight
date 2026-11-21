@@ -88,6 +88,7 @@ namespace CF7Launcher.Guardian
         private readonly Font _statusFont;
         private readonly StringFormat _clip;
         private readonly StringFormat _ellipsis;
+        private readonly StringFormat _center;
         private string _tooltipItem;
         private JObject _portraitManifest;
         private bool _portraitManifestLoaded;
@@ -167,6 +168,12 @@ namespace CF7Launcher.Guardian
             _statusFont = CreateFont(8f, FontStyle.Regular);
             _clip = new StringFormat(StringFormatFlags.NoWrap) { Trimming = StringTrimming.EllipsisCharacter };
             _ellipsis = new StringFormat(StringFormatFlags.NoWrap) { Trimming = StringTrimming.EllipsisCharacter };
+            _center = new StringFormat(StringFormatFlags.NoWrap)
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center,
+                Trimming = StringTrimming.EllipsisCharacter
+            };
             _armTimer = new Timer { Interval = 3000 };
             _armTimer.Tick += OnArmTimer;
             _animationTimer = new Timer { Interval = 33 };
@@ -1249,7 +1256,9 @@ namespace CF7Launcher.Guardian
         private RectangleF ArtRect(string action, Rectangle fallback, bool asset)
         {
             RectangleF rect = asset ? _art.AssetRect(_activeTab, action) : _art.HitRect(_activeTab, action);
-            return rect.IsEmpty ? new RectangleF(fallback.X, fallback.Y, fallback.Width, fallback.Height) : rect;
+            if (rect.IsEmpty) rect = new RectangleF(fallback.X, fallback.Y, fallback.Width, fallback.Height);
+            if (_activeTab == "units") rect.X += ModifierNativeLayout.UnitActionOffsetX(action);
+            return rect;
         }
 
         private bool ArtHit(Rectangle fallback, string action, Point logical)
@@ -1428,6 +1437,12 @@ namespace CF7Launcher.Guardian
                 graphics.DrawRectangle(pen, rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2);
         }
 
+        private void DrawButtonWithText(Graphics graphics, Rectangle rect, string action, string text)
+        {
+            DrawButton(graphics, rect, action);
+            DrawText(graphics, text, ArtRect(action, rect, true), _smallFont, Color.White, _center);
+        }
+
         private void DrawItemGrid(Graphics graphics)
         {
             Rectangle grid = ModifierNativeLayout.ItemGrid;
@@ -1481,7 +1496,6 @@ namespace CF7Launcher.Guardian
                 }
                 if (!DrawItemIcon(graphics, item, new Rectangle(cell.X + 2, cell.Y + 2, 24, 24)))
                     DrawText(graphics, "?", new Rectangle(cell.X, cell.Y + 6, cell.Width, 18), _smallFont, Gold, _ellipsis);
-                DrawText(graphics, "1", new Rectangle(cell.Right - 8, cell.Bottom - 9, 8, 8), _tinyFont, Gold, _ellipsis);
             }
             DrawText(graphics, "共" + _itemTotal, ModifierNativeLayout.ItemPageLabel, _smallFont, Gold, _ellipsis);
             DrawText(graphics, "/" + ModifierNativeLayout.PageCount(_itemTotal, _itemPageSize), ModifierNativeLayout.ItemPageTotal, _smallFont, Gold, _ellipsis);
@@ -1497,9 +1511,9 @@ namespace CF7Launcher.Guardian
             DrawButton(graphics, ModifierNativeLayout.UnitLevelPlus, "level_plus");
             DrawButton(graphics, ModifierNativeLayout.UnitCountMinus, "count_minus");
             DrawButton(graphics, ModifierNativeLayout.UnitCountPlus, "count_plus");
-            DrawButton(graphics, ModifierNativeLayout.UnitSpawn, "unit_spawn");
-            DrawButton(graphics, ModifierNativeLayout.UnitMerc, "unit_merc");
-            DrawButton(graphics, new Rectangle(376, 375, 108, 30), "unit_jump");
+            DrawButtonWithText(graphics, ModifierNativeLayout.UnitSpawn, "unit_spawn", "加载兵种");
+            DrawButtonWithText(graphics, ModifierNativeLayout.UnitMerc, "unit_merc", "添加佣兵");
+            DrawButtonWithText(graphics, ModifierNativeLayout.UnitJump, "unit_jump", "跳到指定页");
             if (_unitFrame != null && !string.Equals(_unitFrameSprite, null, StringComparison.Ordinal))
             {
                 RectangleF frame = _art.UnitFrameMask;
@@ -1532,8 +1546,8 @@ namespace CF7Launcher.Guardian
                     new RectangleF(row.X + 6, row.Y + 2, row.Width - 12, row.Height - 4), _smallFont, nameColor, _ellipsis);
                 graphics.Restore(rowState);
             }
-            DrawText(graphics, "共" + _unitTotal, ModifierNativeLayout.UnitPageLabel, _smallFont, Gold, _ellipsis);
-            DrawText(graphics, "/" + ModifierNativeLayout.PageCount(_unitTotal, _unitPageSize), ModifierNativeLayout.UnitPageTotal, _smallFont, Gold, _ellipsis);
+            DrawText(graphics, "共" + _unitTotal + "项", ModifierNativeLayout.UnitPageLabel, _smallFont, Gold, _clip);
+            DrawText(graphics, "/" + ModifierNativeLayout.PageCount(_unitTotal, _unitPageSize), ModifierNativeLayout.UnitPageTotal, _smallFont, Gold, _clip);
             DrawHostile(graphics);
         }
 
@@ -2101,6 +2115,7 @@ namespace CF7Launcher.Guardian
                 _statusFont.Dispose();
                 _clip.Dispose();
                 _ellipsis.Dispose();
+                _center.Dispose();
                 ClearCalls();
             }
             base.Dispose(disposing);
