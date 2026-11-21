@@ -81,9 +81,6 @@
           <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>XM556_H_Stinger初始化</initRoutines>
-            <initParam>
-              <criticalhitUpgrade>3</criticalhitUpgrade>
-            </initParam>
           </init>
           <cycle>
             <cycleRoutines>XM556_H_Stinger周期</cycleRoutines>
@@ -109,6 +106,7 @@
         <power>40</power>
         <impact>2</impact>
         <criticalhit>3</criticalhit>
+        <criticalhitUpgrade>3</criticalhitUpgrade>
         <evasion>-20</evasion>
         <accuracy>-20</accuracy>
       </data>
