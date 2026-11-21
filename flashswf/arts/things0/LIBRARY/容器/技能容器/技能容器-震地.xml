@@ -21,13 +21,29 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateBigSmallState("技能中","震地中");
-if(_parent.技能浮空 == true)
+var unit:MovieClip = _parent;
+var height:Number = unit.Z轴坐标 - unit._y;
+var sources:Object = unit.__air.sources;
+if (height > 0 || (height == 0 && sources.skillFloat != undefined && unit.垂直速度 < 0))
 {
-   if(_parent.Z轴坐标 - _parent._y >= 30)
-   {
-      // 使用空中控制器的快速下落模式
-      stop();
-      _root.空中控制器.启用快速下落(_parent, this, 20, 30);
+   // 接升龙时旧动作可能已经清了技能浮空，震地必须按脚点接管，包括低于 30 的起跳帧。
+   stop();
+   if (sources.fastFall == undefined || sources.fastFall !== this.__quakeFall) {
+      if (unit.垂直速度 < 0) unit.垂直速度 = 0;
+      var fall:Object = {man:this, gravity:20, minHeight:30};
+      this.__quakeFall = fall;
+      var prevUnload:Function = this.onUnload;
+      this.onUnload = function():Void {
+         // 同名 man 重建后旧剪辑引用可能重绑。只撤销本次登记的来源。
+         if (unit.__air.sources.fastFall === fall) {
+            _root.空中控制器.关闭快速下落(unit);
+            if (unit._parent != undefined && unit._y < unit.Z轴坐标 && !_root.空中控制器._hasAnySource(unit.__air)) {
+               _root.空中控制器.启用自然落地(unit);
+            }
+         }
+         if (prevUnload != undefined) prevUnload.apply(this);
+      };
+      _root.空中控制器.设置源(unit, "fastFall", fall);
    }
 }
 ]]></script>
@@ -36,8 +52,13 @@ if(_parent.技能浮空 == true)
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.联机2015发送角色数据();
-_parent.攻击呐喊();
+                <script><![CDATA[// 受击和动作恢复都可能提前 play()；脚点未着地时退回等待帧，避免进入攻击段。
+if (_parent._y < _parent.Z轴坐标) {
+   gotoAndStop(1);
+} else {
+   _parent.联机2015发送角色数据();
+   _parent.攻击呐喊();
+}
 ]]></script>
               </Actionscript>
               <elements/>
