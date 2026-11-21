@@ -170,6 +170,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
             testLegacyK(sm, so);
             testPacks(sm);
             testConstellations(sm);
+            testHistoricalKey(sm, so);
         } finally {
             if (RewardStashService.pendingOperationId() != "") {
                 sm._configureSaveFlowForTest({flushResult:true}); RewardStashService.resume(RewardStashService.pendingOperationId());
@@ -178,6 +179,76 @@ class org.flashNight.arki.item.RewardStashServiceTest {
             TaskUtil.tasks = tasksBefore; ItemUseService.setContextValidator(null); ItemUtil.itemDataDict = metadata; ItemUtil.equipmentDict = equipmentMetadata; ItemUtil.materialDict = material; ItemUtil.informationMaxValueDict = information;
             for (var j:Number = 0; j < keys.length; j++) _root[keys[j]] = previous[keys[j]];
             RewardInboxService.resetForTests();
+        }
+    }
+
+    private static function testHistoricalKey(sm:SaveManager, so:SharedObject):Void {
+        var name:String = "方舟秘钥";
+        ItemUtil.itemDataDict[name] = {name:name,type:"收集品",use:"情报",price:40000,maxvalue:1};
+        ItemUtil.informationMaxValueDict[name] = 1;
+        var money:Number = Number(_root.金钱);
+        for (var held:Number = 0; held <= 1; held++) {
+            var sizes:Array = [1, 10, 20];
+            for (var i:Number = 0; i < sizes.length; i++) {
+                var count:Number = sizes[i];
+                var prefix:String = "key." + held + "." + count;
+                _root.收集品栏.情报 = new org.flashNight.arki.item.itemCollection.InformationCollection(null);
+                if (held > 0) _root.收集品栏.情报.add(name, held);
+                delete _root._saveExt.rewardInbox;
+                var materialBefore:Number = _root.收集品栏.材料.getValue("暂存测试材料");
+                var legacy:Array = [{itemName:name,quantity:count},{itemName:"暂存测试材料",quantity:1}];
+                if (i % 2 == 1) legacy.reverse();
+                var batch:Object = RewardInboxService.appendRewardBatch("历史礼包", prefix, legacy);
+                var migrated:Object = RewardStashService.migrate(prefix+".migrate", "", 0);
+                var store:Object = RewardStashService.peek();
+                check(batch.success && migrated.success && RewardStashStore.ownedQuantity(store, name) == count,
+                    "legacy v1 migrates exact key quantity " + prefix);
+                var refs:Array = [];
+                var keyRef:Object;
+                for (var j:Number = 0; j < store.entries.length; j++) {
+                    var row:Object = store.entries[j];
+                    var ref:Object = {entryId:row.entryId, revision:row.revision, quantity:row.item.value};
+                    refs.push(ref);
+                    if (row.item.name == name) keyRef = ref;
+                }
+                if (held == 0) {
+                    var denied:Object = RewardStashService.take({operationId:prefix+".deny", storeId:store.storeId,
+                        expectedRevision:store.commitRevision, entries:[keyRef], clearOverflow:true});
+                    check(!denied.success && RewardStashStore.ownedQuantity(RewardStashService.peek(),name)==count,
+                        "cannot clear useful key " + prefix);
+                }
+                var request:Object = {storeId:store.storeId, expectedRevision:store.commitRevision,
+                    operationId:prefix+".take", entries:refs};
+                var result:Object = RewardStashService.take(request);
+                var left:Number = count - (1 - held);
+                store = RewardStashService.peek();
+                check(result.success && _root.收集品栏.情报.getValue(name) == 1
+                    && _root.收集品栏.材料.getValue("暂存测试材料") == materialBefore + 1
+                    && RewardStashStore.ownedQuantity(store,name) == left, "mixed batch preserves exact balance " + prefix);
+                check((held == 0 && result.blocked.length == 0 || held == 1 && result.blocked[0].reason == "cap_reached")
+                    && RewardStashService.take(request).success && RewardStashStore.ownedQuantity(store,name) == left,
+                    "cap and duplicate batch " + prefix);
+                var persisted:Object = PersistedSnapshot.clone(so.data[SaveManager.SAVE_KEY].ext.rewardInbox);
+                _root._saveExt.rewardInbox = persisted;
+                store = RewardStashService.peek();
+                check(RewardStashStore.ownedQuantity(store,name) == left, "reopened saved stash " + prefix);
+                if (left > 0) {
+                    row = RewardStashStore.find(store,keyRef.entryId);
+                    var clear:Object = {storeId:store.storeId, expectedRevision:store.commitRevision, operationId:prefix+".clear",
+                        entries:[{entryId:row.entryId,revision:row.revision,quantity:left}], clearOverflow:true};
+                    sm._configureSaveFlowForTest({flushResult:false});
+                    var pending:Object = RewardStashService.take(clear);
+                    sm._configureSaveFlowForTest({flushResult:true});
+                    check(pending.error == "commit_pending" && RewardStashService.resume(clear.operationId).success,
+                        "unknown clear resumes same operation " + prefix);
+                    var receipt:Object = RewardStashService.take(clear);
+                    check(receipt.success && receipt.accepted[0].clearedOverflow && receipt.accepted[0].quantity == left
+                        && RewardStashStore.ownedQuantity(RewardStashService.peek(), name) == 0
+                        && _root.收集品栏.情报.getValue(name) == 1 && _root.金钱 == money, "clear preserves unlock without cash " + prefix);
+                    delete clear.clearOverflow;
+                    check(!RewardStashService.take(clear).success, "clear and take fingerprints distinct " + prefix);
+                }
+            }
         }
     }
 

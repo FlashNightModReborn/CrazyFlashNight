@@ -12,14 +12,7 @@
  *   - 敌人掉落：UnitUtil.getUnitTypeKey(unit) 作 prdKeyPrefix
  *   - 资源箱（物品栏式 row*col 资源箱）："资源箱|" + presetName 作 prdKeyPrefix
  *
- * 备忘：通关奖励暂未接入
- * --------------------
- * 关卡通关奖励 (_root.奖励物品界面.生成关卡随机奖励品) 当前住在
- *   flashswf/UI/奖励物品界面.swf
- * 内，rolling 仍走 _root.成功率(AcquisitionProbability)，没有 PRD/逆向待遇。
- * 此 UI 计划随 launcher web overlay 迁移到 web 端，届时连同 rolling 一并改成
- *   DropLuckRoller.rollDrop("关卡|" + _root.当前关卡名, item)
- * key 前缀建议 "关卡|"，与现有 "兵种 typeKey" / "资源箱|presetName" 命名空间隔离。
+ * 关卡通关奖励由 StageRunSession.materializeRewards 处理，沿用关卡的独立随机规则。
  *
  * 设计原则
  * --------

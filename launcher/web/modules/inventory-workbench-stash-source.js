@@ -115,6 +115,7 @@
             occupied:true,
             containerId:CONTAINER_ID,
             entryId:entryId,
+            clearableOverflow:entry.clearableOverflow === true,
             revision:revision,
             quantity:quantity,
             item:item
@@ -294,7 +295,7 @@
             };
         }
 
-        function take(refs, target, callback) {
+        function take(refs, target, callback, clearOverflow) {
             if (_destroyed || !_snapshot) return null;
             if (!Array.isArray(refs) || !refs.length || refs.length > PAGE_SIZE) return null;
             var entries = [];
@@ -312,6 +313,12 @@
                 expectedRevision:Number(_snapshot.revision),
                 entries:entries
             };
+            if (clearOverflow === true) {
+                if (target != null || entries.length !== 1) return null;
+                var current = getRow(entries[0].entryId);
+                if (!current.clearableOverflow || current.quantity !== entries[0].quantity) return null;
+                fields.clearOverflow = true;
+            }
             if (target != null) {
                 if (entries.length !== 1) return null;
                 var normalizedTarget = normalizeTarget(target);

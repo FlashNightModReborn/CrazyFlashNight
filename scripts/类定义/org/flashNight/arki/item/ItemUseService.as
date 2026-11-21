@@ -190,6 +190,11 @@ class org.flashNight.arki.item.ItemUseService {
         if (commandName == "stashQuery" || commandName == "stashMigrate") return onlyKeys(params, keys);
         if (commandName == "stashTake") {
             keys.push("entries");
+            if (params.clearOverflow !== undefined) {
+                if (params.clearOverflow !== true || !(params.entries instanceof Array)
+                        || params.entries.length != 1 || params.target !== undefined) return false;
+                keys.push("clearOverflow");
+            }
             if (params.target !== undefined) keys.push("target");
             if (!onlyKeys(params, keys) || !(params.entries instanceof Array)
                     || params.entries.length < 1 || params.entries.length > 32) return false;

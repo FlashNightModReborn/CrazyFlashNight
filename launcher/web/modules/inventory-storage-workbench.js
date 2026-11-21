@@ -158,6 +158,11 @@ var InventoryStorageWorkbench = (function() {
         _sources = InventoryWorkbenchStorageSource.create({coordinator:_coordinator,onChange:syncSourceState});
         _storageControls = InventoryWorkbenchStorageControls.create({
             document:document,components:WorkbenchComponents,shell:function() { return _shell; },
+            clearOverflow:function(ref) {
+                var started = _sources.take([ref], null, reportStashResult, true);
+                if (started) clearSelection();
+                return started;
+            },
             state:function() { return _state; },view:function() { return _viewMode; },
             coordinator:_coordinator,slotRef:slotRef,render:renderInventories,toast:toast,error:errorMessage,
             beforeAction:function() { exitQuickMode(); clearSelection(); hideTooltip(); }

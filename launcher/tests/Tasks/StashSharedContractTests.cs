@@ -488,6 +488,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("target_stale")]
         [InlineData("target_occupied")]
         [InlineData("target_incompatible")]
+        [InlineData("cap_reached")]
         public void StashTake_BlockedReasonsAreEnumerable(string reason)
         {
             using (var h = new ItemUseHarness())
@@ -509,6 +510,29 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.True(web.Value<bool>("success"));
                 Assert.Equal(reason, web["data"]["blocked"][0].Value<string>("reason"));
                 Assert.Equal("idle", h.Task.WriteState);
+            }
+        }
+
+        [Theory]
+        [InlineData(false, false, 9, true)]
+        [InlineData(false, false, 8, false)]
+        [InlineData(false, true, 0, false)]
+        [InlineData(true, false, 9, false)]
+        [InlineData(true, true, 0, true)]
+        public void StashTake_OverflowReceiptMatchesExactIntent(bool confirm, bool cleared, int retained, bool valid)
+        {
+            using (var h = new ItemUseHarness())
+            {
+                var request = StashTakeRequest("stash.overflow", new JArray(TakeRow("stash.store.1.e1", 2, 10)), null);
+                if (confirm) request["payload"]["clearOverflow"] = true;
+                h.Task.HandleWebRequest("stashTake", request);
+                JObject sent = Assert.Single(h.Flash);
+                var row = new JObject { ["entryId"] = "stash.store.1.e1", ["quantity"] = cleared ? 10 : 1 };
+                if (cleared) row["clearedOverflow"] = true;
+                else { row["destination"] = "情报"; row["retainedOverflow"] = retained; }
+                h.Task.HandleFlashResponse(StashResponse(sent.Value<int>("callId"), "stashTake", TakeOperation,
+                    StashTakeData(new JArray(row), new JArray())), null);
+                Assert.Equal(valid, Assert.Single(h.Web).Value<bool>("success"));
             }
         }
 

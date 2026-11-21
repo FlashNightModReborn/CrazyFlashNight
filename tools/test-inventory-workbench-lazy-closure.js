@@ -144,6 +144,7 @@ async function main() {
     await stashLoader.loadFeature();
     assert.strictEqual(calls.length, 3);
     assert.deepStrictEqual(calls[2], [
+        'modules/character-build/character-build-drug-controls.js',
         'modules/character-build/character-build-mutation.js',
         'modules/character-build/character-build-drug-layout.js',
         'modules/character-build/character-build-session-contract.js',

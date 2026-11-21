@@ -22,7 +22,7 @@ function css(file){return fs.readFileSync(file,'utf8').replace(/@import url\("([
   window.Toast={add:message=>fixture.messages.push(message)};
   window.Bridge={on:()=>{},send:message=>{setTimeout(()=>fixture.respond(message),10);return true;}};
  });
- for(const name of ['panel-runtime','tooltip-document','tooltip','workbench-lifecycle','workbench-focus','workbench-primitives','workbench-profile','workbench','workbench-components','guidance-tutorials','item-filter','inventory-runtime','inventory-ui','inventory-workbench-config','inventory-workbench-quick-transfer','inventory-workbench-owned-view','inventory-workbench-stash-source','inventory-workbench-storage-source','inventory-workbench-storage-controls','inventory-storage-workbench','inventory-workbench-stash-navigation','character-build/character-build-stash-transport'])
+ for(const name of ['panel-runtime','tooltip-document','tooltip','workbench-lifecycle','workbench-focus','workbench-primitives','workbench-profile','workbench','workbench-components','guidance-tutorials','item-filter','inventory-runtime','grade-presentation','inventory-ui','inventory-workbench-config','inventory-workbench-quick-transfer','inventory-workbench-owned-view','inventory-workbench-stash-source','inventory-workbench-storage-source','inventory-workbench-storage-controls','inventory-storage-workbench','inventory-workbench-stash-navigation','character-build/character-build-stash-transport'])
   await page.addScriptTag({path:path.join(root,'launcher/web/modules',name+'.js')});
  await page.evaluate(entryRoute=>{
   const f=fixture;
@@ -57,6 +57,10 @@ function css(file){return fs.readFileSync(file,'utf8').replace(/@import url\("([
     cb({success:true,storeId:'s',revision:f.revision,offset,total:rows.length,entries:JSON.parse(JSON.stringify(rows.slice(offset,offset+32))),migrationRequired:false,pendingOperationId:'',filterSpec:specification,filterFacets:f.facets(all.map(r=>r.item)),filterItemCount:all.length,unfilteredTotal:all.length,setFacets:[],setFilterItemCount:0},{success:true});},10);return true;},
    invokeStash:(cmd,fields,cb)=>{if(f.state!=='idle')return false;f.writes.push({cmd,fields});f.state='write_pending';
     const settle=()=>{const accepted=[],blocked=[];for(const ref of fields.entries){const row=f.rows.find(r=>r.entryId===ref.entryId);if(f.full&&row.item.itemKind==='equipment'){blocked.push({entryId:ref.entryId,reason:'inventory_full'});continue;}
+     if (row.clearableOverflow) {
+      if (!fields.clearOverflow) {blocked.push({entryId:ref.entryId,reason:'cap_reached'});continue;}
+      accepted.push({entryId:ref.entryId,quantity:ref.quantity,clearedOverflow:true});row.quantity=0;continue;
+     }
      const destination=row.item.name==='普通hp药剂'?'药剂栏':row.item.majorType==='材料'?'材料':'背包';
      if(fields.target&&destination!=='背包'){blocked.push({entryId:ref.entryId,reason:'target_incompatible'});continue;}
      let slot;if(destination==='背包'){slot=fields.target?fields.target.slot:0;while(!fields.target&&f.bag[slot])slot++;f.bag[slot]={...row.item,quantity:ref.quantity};}
@@ -196,6 +200,22 @@ function css(file){return fs.readFileSync(file,'utf8').replace(/@import url\("([
  assert.strictEqual(await page.evaluate(()=>InventoryStorageWorkbench.prepareClose('close',()=>{})),false);
  const issued=await page.evaluate(()=>fixture.writes.length);await page.getByRole('button',{name:'核对领取结果',exact:true}).click();
  await page.waitForFunction(()=>fixture.state==='idle'&&!InventoryStorageWorkbench.debugState().coordinator.busyOwner);assert.strictEqual(await page.evaluate(()=>fixture.writes.length),issued);assert.strictEqual(await page.evaluate(()=>fixture.queries),1);
+ await page.evaluate(()=>{fixture.rows.unshift({entryId:'s.overflow',revision:1,quantity:9,
+  clearableOverflow:true,item:fixture.item('方舟秘钥','情报',9)});});
+ await page.locator('.inventory-source-action').click();await page.waitForFunction(()=>InventoryStorageWorkbench.getSource()==='container');
+ await page.locator('.inventory-source-action').click();
+ await page.locator('[data-entry-id="s.overflow"]').click();
+ const writesBeforeClear=await page.evaluate(()=>fixture.writes.length);
+ await page.getByRole('button',{name:'清理历史超额',exact:true}).click();
+ await page.getByRole('button',{name:'取消',exact:true}).click();
+ assert.strictEqual(await page.evaluate(()=>fixture.writes.length),writesBeforeClear);
+ await page.getByRole('button',{name:'清理历史超额',exact:true}).click();
+ await page.getByRole('button',{name:'确认清理',exact:true}).click();
+ await page.waitForFunction(()=>!fixture.rows.some(r=>r.entryId==='s.overflow')&&!InventoryStorageWorkbench.debugState().coordinator.busyOwner);
+ assert(await page.locator('.inventory-move-selected').isHidden(),'cleared selection must leave no action for the retired row');
+ const cleared=await page.evaluate(()=>fixture.writes.at(-1).fields);
+ assert.strictEqual(cleared.clearOverflow,true);
+ assert.deepStrictEqual(cleared.entries,[{entryId:'s.overflow',revision:1,quantity:9}]);
  assert.deepStrictEqual(errors,[]);const geometry=await page.evaluate(()=>({width:document.documentElement.scrollWidth,height:fixture.root.getBoundingClientRect().height}));assert(geometry.width<=1024&&geometry.height<=576,JSON.stringify(geometry));
  fs.mkdirSync(path.join(root,'tmp/stash-shared-20260912'),{recursive:true});await page.screenshot({path:path.join(root,'tmp/stash-shared-20260912/shared-storage.png')});
  await page.evaluate(()=>{fixture.stashNav.destroy();InventoryStorageWorkbench.deactivate();fixture.shell.destroy();fixture.density.destroy();});

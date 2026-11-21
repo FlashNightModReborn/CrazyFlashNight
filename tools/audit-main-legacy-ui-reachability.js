@@ -23,12 +23,14 @@ const DEFAULT_DOM = path.join(
 const DEFAULT_SWF = 'CRAZYFLASHER7MercenaryEmpire.swf';
 
 const FORBIDDEN_EXTERNAL_SWFS = Object.freeze([
+    '奖励物品界面.swf',
     '物品与技能相关界面.swf',
     '物品改装界面.swf'
 ]);
 
 const FORBIDDEN_UI_IDENTIFIERS = Object.freeze([
     '物品改装界面',
+    '奖励物品界面',
     '物品栏界面',
     '购买物品界面',
     '仓库界面',
@@ -40,6 +42,7 @@ const FORBIDDEN_UI_IDENTIFIERS = Object.freeze([
 // aliases explicit so re-placing an unnamed legacy symbol cannot bypass the
 // human-readable linkage/instance checks.
 const FORBIDDEN_LIBRARY_ITEMS = Object.freeze({
+    'sprite/奖励物品界面': '奖励物品界面',
     'import/UI组件/物品改装界面': '物品改装界面',
     'import/UI组件/新版物品栏界面': '物品栏界面',
     'import/UI组件/新版商店界面': '购买物品界面',

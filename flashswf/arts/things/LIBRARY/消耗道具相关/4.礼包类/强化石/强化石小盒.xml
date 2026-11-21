@@ -26,18 +26,7 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[奖励品 = [];
-奖励品.push(["强化石",50]);
-if(_root.奖励物品界面.奖励品 != undefined)
-{
-   _root.奖励物品界面.奖励品.push(["强化石",50]);
-}
-else
-{
-   _root.奖励物品界面.奖励品 = 奖励品;
-}
-_root.奖励物品界面.在线奖励刷新("强化石小盒");
-_root.效果("升级动画2",this._x,this._y,100);
+                <script><![CDATA[_root.效果("升级动画2",this._x,this._y,100);
 this.removeMovieClip();
 stop();
 ]]></script>

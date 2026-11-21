@@ -81,6 +81,12 @@ namespace CF7Launcher.Tasks
                             || !TryReadLongInteger(row["revision"], 1, MaxSafeInteger, out long rowRevision)
                             || !TryReadLongInteger(row["quantity"], 1, MaxSafeInteger, out long quantity)) return false;
                     }
+                    if (payload.Property("clearOverflow") != null)
+                    {
+                        if (rows.Count != 1 || payload.Property("target") != null
+                            || payload["clearOverflow"].Type != JTokenType.Boolean || !payload.Value<bool>("clearOverflow")) return false;
+                        keys.Add("clearOverflow");
+                    }
                     if (payload.Property("target") != null)
                     {
                         keys.Add("target");
@@ -127,7 +133,7 @@ namespace CF7Launcher.Tasks
         private static readonly HashSet<string> StashTakeBlockedReasons =
             new HashSet<string>(StringComparer.Ordinal)
             {
-                "inventory_full", "target_stale", "target_occupied", "target_incompatible"
+                "inventory_full", "target_stale", "target_occupied", "target_incompatible", "cap_reached"
             };
 
         /// <summary>
@@ -289,11 +295,18 @@ namespace CF7Launcher.Tasks
                 foreach (JToken token in accepted)
                 {
                     var row = token as JObject;
-                    if (!HasOnlyKeys(row, "entryId", "quantity", "destination", "slot")
+                    bool clearing = request.Value<bool?>("clearOverflow") == true;
+                    if (clearing && (!IsExactObject(row, "entryId", "quantity", "clearedOverflow")
+                        || row["clearedOverflow"]?.Type != JTokenType.Boolean || !row.Value<bool>("clearedOverflow"))) return false;
+                    if (!clearing && !HasOnlyKeys(row, "entryId", "quantity", "destination", "slot", "retainedOverflow")) return false;
+                    long retained = 0;
+                    if (row?["retainedOverflow"] != null && (requestTarget != null || ReadString(row["destination"]) != "情报"
+                        || !TryReadLongInteger(row["retainedOverflow"], 1, MaxSafeInteger, out retained))) return false;
+                    if (row == null
                         || row["entryId"] == null || row["quantity"] == null
                         || !StashEntryId(row["entryId"], out string id)
                         || !ids.Add(id) || !TryReadLongInteger(row["quantity"], 1, MaxSafeInteger, out long quantity)
-                        || !requested.OfType<JObject>().Any(r => r.Value<string>("entryId") == id && r.Value<long>("quantity") == quantity)
+                        || !requested.OfType<JObject>().Any(r => r.Value<string>("entryId") == id && r.Value<long>("quantity") - retained == quantity)
                         || !TryReadStashTakePlacement(row, requestTarget)) return false;
                 }
                 foreach (JToken token in blocked)
@@ -391,13 +404,18 @@ namespace CF7Launcher.Tasks
             foreach (JToken token in rows)
             {
                 var row = token as JObject;
-                if (!IsExactObject(row, "entryId", "revision", "quantity", "item")
+                bool clearable = row?.Property("clearableOverflow") != null;
+                if (clearable && (row["clearableOverflow"].Type != JTokenType.Boolean || !row.Value<bool>("clearableOverflow"))) return false;
+                if (!IsExactObject(row, clearable ? new[] {"entryId", "revision", "quantity", "item", "clearableOverflow"}
+                    : new[] {"entryId", "revision", "quantity", "item"})
                     || !StashEntryId(row["entryId"], out string id) || !ids.Add(id)
                     || !TryReadLongInteger(row["revision"], 1, MaxSafeInteger, out long entryRevision)
                     || !TryReadLongInteger(row["quantity"], 1, MaxSafeInteger, out long quantity)
                     || !InventoryTask.TrySanitizeItem(row["item"] as JObject, out JObject item)
                     || item.Value<long>("quantity") != quantity) return false;
-                projected.Add(new JObject { ["entryId"] = id, ["revision"] = entryRevision, ["quantity"] = quantity, ["item"] = item });
+                var projectedRow = new JObject { ["entryId"] = id, ["revision"] = entryRevision, ["quantity"] = quantity, ["item"] = item };
+                if (clearable) projectedRow["clearableOverflow"] = true;
+                projected.Add(projectedRow);
             }
             clean = (JObject)data.DeepClone(); clean["entries"] = projected;
             if (filtered)

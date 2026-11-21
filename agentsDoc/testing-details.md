@@ -671,7 +671,7 @@ AS2 覆盖三模式礼包、stale/满容量零写、回执查询、64-occurrence
 
 **书中返回与终战增援**：`scripts/run-bookshelf-tests.ps1` 覆盖旧世界销毁后换档、临时结算保存门、原角色 SP 单次回流、新编辑令牌、死亡升级/拾取保护及有限援军的间隔、上限、暂停、死亡取消和晚到加载；`scripts/run-map-loot-tests.ps1` 调用生产返回函数，区分书中直接换回原角色与普通关卡医务室路线。`node tools/run-bookshelf-flow-harness.js` 在三个视口验证核对后无需关窗重开、新快照失败重读、未知写仅查询与自动返回；与 `BookshelfTaskTests` 配合检查跨层回执。模拟存储和浏览器不代替实机完整旅程、保存重启或真人难度验收。
 
-**统一奖励暂存回归**：共享收纳工作树定向 Web/DOM/Host/AS2 入口与证据层级见 [本轮回归矩阵](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#103-定向回归与证据)。奖励回归：`scripts/run-reward-stash-tests.ps1`（当前机器钉值以 runner 为准，120/120），加 `-RunScale` 测隔离 SOL 的 0/64/256/1024/4096 条与实际字节/P95/P99/pack/flush/保存分段耗时；旧 root N+1/terminal ACK 和关卡继续跑 `scripts/run-map-loot-tests.ps1`。曝光后 false/pending/throw 保留同一候选；before/candidate/曝光副本须保留可序列化未知字段并切断别名；finalizer throw/重入不得再次 flush 或把已确认候选回滚。
+**统一奖励暂存回归**：共享收纳工作树定向 Web/DOM/Host/AS2 入口与证据层级见 [本轮回归矩阵](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#103-定向回归与证据)。奖励回归：`scripts/run-reward-stash-tests.ps1`（计数以 runner 为准；覆盖历史情报暂存部分领取及确认清理），加 `-RunScale` 测隔离 SOL 的 0/64/256/1024/4096 条与实际字节/P95/P99/pack/flush/保存分段耗时；旧 root N+1/terminal ACK 和关卡继续跑 `scripts/run-map-loot-tests.ps1`。曝光后 false/pending/throw 保留同一候选；before/candidate/曝光副本须保留可序列化未知字段并切断别名；finalizer throw/重入不得再次 flush 或把已确认候选回滚。
 Web/Host 入口、已替换的旧产品合同、20 样本的观测边界与候选验收状态见 [暂存 ADR](../docs/统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。
 
 保存故障夹具须明确曝光边界：验证 `not_committed` / HUD 原操作可重试时，在组包等曝光前步骤注入确定失败；
