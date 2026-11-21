@@ -6,13 +6,13 @@
                    pointer-events:auto; }
 
 /* ── Tooltip (rich Flash bridge) ──
-   缩放策略：只对 #panel-tooltip 应用 transform: scale(--cf7-overlay-scale)。
+   缩放策略：布局尺寸和图标按 --cf7-overlay-scale 缩放，文本始终原生绘制。
+   不再对 #panel-tooltip 整体应用 transform，避免小字号文本被光栅化后二次采样。
    panel layer 的 CSS px 布局保持不动（由 launcher panel 模式自身 layout 锚定
-   inset 百分比，window resize 自然跟随），只有 tooltip 需要按 vpH/864 微缩放
-   抵消大窗口下视觉过大的问题。
+   inset 百分比，window resize 自然跟随），tooltip 的内联宽度由 tooltip.js 同步换算。
    - 历史回滚记录：曾尝试 body { zoom } 整页联动，但破坏了 panel layer 一贯
      的 CSS px 布局行为（panel buttons 也被缩放），不符合"只调 tooltip 大小"
-     的实际需求，已回滚为 tooltip 局部 transform。
+     的实际需求，已回滚为 tooltip 局部尺寸缩放。
 
    ════════ 默认主题 = AS2 注释框 1:1 复刻 ════════
    一手资料：flashswf/UI/注释框/LIBRARY/sprite/Symbol 274.xml + 注释框.xml
@@ -79,11 +79,14 @@
        dense-inspect 在下方按 profile 覆盖为 pointer-events:none。 */
     position:fixed; z-index:1100; pointer-events:auto; display:none;
     background:var(--tt-bg); border:var(--tt-border); color:var(--tt-text);
-    padding:10px 14px; font-size:12px; max-width:480px; letter-spacing:0.3px;
+    padding:calc(10px * var(--cf7-overlay-scale, 1)) calc(14px * var(--cf7-overlay-scale, 1));
+    max-width:calc(480px * var(--cf7-overlay-scale, 1));
+    letter-spacing:0;
+    /* 只缩放布局和图标，不缩放文本。避免 transform 先光栅化再重采样造成模糊。 */
+    font-size:12px;
     line-height:1.5;
     box-shadow:var(--tt-shadow);
-    transform:scale(var(--cf7-overlay-scale, 1));
-    transform-origin:top left;
+    transform:none;
     /* isolation 给 mix-blend-mode 一个独立合成上下文，让 icon 跟自家 panel 渐变 blend，
        不会穿透到 body/viewport 上 */
     isolation: isolate;
@@ -123,7 +126,7 @@
 }
 
 /* flash-tt-rich 模式：外框透明，由内部两个面板独立承担视觉。
-   max-width 也要放开（默认 480 会把 intro(300) + desc(650) 压扁）。 */
+   max-width 也要放开（默认 480 会把 intro(300) + desc(420) 压扁）。 */
 #panel-tooltip:has(.flash-tt-rich) {
     background: transparent;
     border: none;
@@ -407,31 +410,25 @@
      就 override 这些变量，不要动结构
    - 旧 .kshop-tt-* 名字保留为 alias 以避免破坏既有 DOM
    - AS2 端常量参考：TooltipConstants.as
-       BASE_NUM=200, INTRO_MAX_W=300, MIN_W=150, MAX_W=650, RATIO_MIN=0.618
+       BASE_NUM=200, INTRO_MAX_W=300, MIN_W=150, MAX_W=420, RATIO_MIN=0.618
 */
 .flash-tt-rich,
 .kshop-tt-rich {
     /* === Layout primitives（锁死，对齐 AS2 TooltipConstants）=== */
-    --tt-icon-size: 192px;        /* ≈ BASE_NUM(200) - 内边距 4*2 = 192；AS2 端 icon 实际
-                                     渲染 ~185 px (BASE_SCALE 486.8% × XFL 38px box)，几乎填满 introBg */
-    --tt-intro-w: 200px;          /* = BASE_NUM，AS2 端 TooltipComposer.renderItemIcon R2
+    --tt-icon-size: calc(192px * var(--cf7-overlay-scale, 1)); /* ≈ BASE_NUM(200) - 内边距 4*2 = 192 */
+    --tt-intro-w: calc(200px * var(--cf7-overlay-scale, 1)); /* = BASE_NUM，AS2 端 TooltipComposer.renderItemIcon R2
                                      强制 measuredIntroW = BASE_NUM 锁死宽度，
                                      "避免图标左移导致的视觉断裂；换行损失由条目压缩补偿"。
                                      web 这里必须用 width（不是 max-width）才能复刻 — 否则
                                      长文字行会撑宽 panel，让 icon 在过宽容器里居中→出现左右空洞。
                                      merge / split 模式同等锁宽（AS2 端 merge 也走 measuredIntroW=BASE_NUM）；
                                      data-layout="narrow" 时被 override 成 120。 */
-    --tt-intro-min-h: 220px;      /* = BASE_NUM(200) + BG_HEIGHT_OFFSET(20)
-                                     AS2 端 applyIntroLayout 把 bgHeightOffset 固定为 220px，
-                                     避免短 intro 时面板被压扁；merge 模式同样保留（AS2 端 icon
-                                     在 merge mode 仍占 200×220 纵深，不应该被 0 override）。 */
-    --tt-desc-min-w: 160px;
-    --tt-desc-max-w: 650px;       /* = MAX_W */
+    --tt-intro-min-h: calc(220px * var(--cf7-overlay-scale, 1)); /* BASE_NUM + BG_HEIGHT_OFFSET */
+    --tt-desc-min-w: calc(160px * var(--cf7-overlay-scale, 1));
+    --tt-desc-max-w: calc(420px * var(--cf7-overlay-scale, 1)); /* 达到字数/行数门槛后的阅读宽度上限 */
     --tt-gap: 0px;                /* 对齐 AS2：两面板紧贴（introBg 右边缘 = mainBg 左边缘） */
-    --tt-panel-pad: 4px;          /* AS2 端 introBg/mainBg 自身没 padding，文字距边界 4px
-                                     来自 Flash TextField 内部 gutter；web 用 panel padding 4 复刻 */
-    --tt-icon-text-gap: 17px;     /* AS2 端 text._y(210) - icon 底部(~192.5) ≈ 17.5；
-                                     web 用 flex column gap 复刻 icon 与文字段的纵向间距 */
+    --tt-panel-pad: calc(4px * var(--cf7-overlay-scale, 1)); /* AS2 TextField 内部 gutter */
+    --tt-icon-text-gap: calc(17px * var(--cf7-overlay-scale, 1)); /* icon 与文字段的纵向间距 */
     /* line-height 1.25 = Playwright fixture sweep 命中的最佳值：
        introTH_diff p50=0、mean=-0.12 vs AS2 Flash TextField textHeight。
        1.6 是阅读友好默认，但跟 AS2 端 ~28% 偏高；1.25 对齐 Flash 原生行距。 */
@@ -743,6 +740,7 @@
    间隙只由列 gap 承担，不再给单个框加 margin。 */
 .flash-tt-side,
 .ntt-side {
+    --tt-sub-gap: calc(6px * var(--cf7-overlay-scale, 1));
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -1163,9 +1161,8 @@
 }
 .panel-tooltip-inspector-shell {
     width:100%;
-    /* #panel-tooltip 整体带 transform:scale(--cf7-overlay-scale)，物理高度 = 布局高度
-       × scale；cap 必须按 scale 折算，否则 scale>1（如 1080p=1.25）时物理像素溢出视口。 */
-    max-height:calc((100vh - 16px) / var(--cf7-overlay-scale, 1));
+    /* 外层不再做 transform，视口高度直接约束最终布局。 */
+    max-height:calc(100vh - 16px);
     display:flex;
     flex-direction:column;
     overflow:hidden;

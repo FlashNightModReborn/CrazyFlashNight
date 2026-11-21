@@ -618,8 +618,8 @@ var PanelTooltip = (function() {
     //
     // 1) htmlScoresBoth — 字符权重扫描得 {total, maxLine, lineCount}
     //    ASCII=1, CJK=2, Space=0.5, <BR>/换行 flushLine
-    // 2) estimateMainWidth — sqrt 公式：W = √(r × total × PIX_PER_UNIT × LINE_HEIGHT)
-    //    r 由 totalScore smoothstep 在 [0.618, 1.5] 插值；maxLine 约束 + clamp [150, 650]
+    // 2) estimateMainWidth — 默认沿用 sqrt 公式，但阅读宽度不超过 280；
+    //    总显示权重超过 900（约 450 个汉字）或默认窄栏实际折行超过 18 行才扩到 420。
     //
     // 不实现 AS2 balanceWidth modeA 二分（依赖 Flash TextField 实测）— 实测 Playwright
     // fixture (launcher/perf/tooltip-regression/) 显示 ppu=6.0 即可让 mainW 偏差 p50=9，
@@ -633,11 +633,14 @@ var PanelTooltip = (function() {
     //   TT_RATIO_SCORE_CAP  ↔ RATIO_SCORE_CAP                         (300)
     //   TT_MAX_LINES        ↔ MAX_RENDERED_LINES                      (32)
     //   TT_LINE_GUTTER      ↔ LINE_GUTTER                             (20)
-    //   TT_MIN_W / MAX_W    ↔ MIN_W / MAX_W                           (150 / 650)
+    //   TT_MIN_W          ↔ MIN_W                                    (150)
+    // 阅读宽度门槛与 NativeTooltipLayout 保持一致，不再沿用 AS2 的 MAX_W=650。
     var TT_PIX_PER_UNIT = 6.0;
     var TT_LINE_HEIGHT = 15;
     var TT_RATIO_MIN = 0.618, TT_RATIO_MAX = 1.5, TT_RATIO_SCORE_CAP = 300;
-    var TT_MAX_LINES = 32, TT_LINE_GUTTER = 20, TT_MIN_W = 150, TT_MAX_W = 650;
+    var TT_MAX_LINES = 32, TT_LINE_GUTTER = 20, TT_MIN_W = 150;
+    var TT_DEFAULT_W = 280, TT_MAX_W = 420;
+    var TT_EXPAND_SCORE = 900, TT_EXPAND_LINES = 18;
 
     function htmlScoresBoth(s) {
         if (!s) return { total: 0, maxLine: 0, lineCount: 1 };
@@ -678,8 +681,12 @@ var PanelTooltip = (function() {
         return { total: total, maxLine: maxLine, lineCount: lineCount };
     }
 
-    function estimateMainWidth(scores) {
+    function estimateMainWidth(scores, renderedLineCount) {
         if (scores.total <= 0) return TT_MIN_W;
+        if (scores.total > TT_EXPAND_SCORE
+                || Math.max(scores.lineCount, renderedLineCount || 0) > TT_EXPAND_LINES) {
+            return TT_MAX_W;
+        }
         var t = scores.total / TT_RATIO_SCORE_CAP;
         if (t > 1) t = 1;
         var ss = t * t * (3 - 2 * t);
@@ -691,7 +698,26 @@ var PanelTooltip = (function() {
             var maxLineW = scores.maxLine * TT_PIX_PER_UNIT + TT_LINE_GUTTER;
             if (sqrtW > maxLineW) sqrtW = maxLineW;
         }
-        return Math.max(TT_MIN_W, Math.min(sqrtW, TT_MAX_W));
+        return Math.max(TT_MIN_W, Math.min(sqrtW, TT_DEFAULT_W));
+    }
+
+    function overlayScale() {
+        var value = parseFloat(getComputedStyle(document.documentElement)
+            .getPropertyValue('--cf7-overlay-scale'));
+        return isFinite(value) && value > 0 ? value : 1;
+    }
+
+    function scaledWidth(value) {
+        return Math.max(1, Math.round(value * overlayScale()));
+    }
+
+    function renderedTextLineCount(panel) {
+        if (!panel) return 0;
+        var style = getComputedStyle(panel);
+        var lineHeight = parseFloat(style.lineHeight);
+        if (!(lineHeight > 0)) return 0;
+        var verticalPadding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+        return Math.max(1, Math.round((panel.scrollHeight - verticalPadding) / lineHeight));
     }
 
     // 侧栏宽度：有描述栏时整列与描述栏同宽（子框 stretch 到同一宽度）；只有
@@ -703,8 +729,10 @@ var PanelTooltip = (function() {
         var required = 0;
         for (var i = 0; i < panels.length; i++) {
             var panel = panels[i];
-            var overflow = panel.scrollWidth - panel.clientWidth;
-            var width = panel.offsetWidth + (overflow > 0 ? overflow + 1 : 0);
+            // 先由调用方把侧栏夹到预期宽度；scrollWidth 才是内容所需宽度。
+            // offsetWidth 单独包含 unconstrained 布局结果，不能直接当成内容需求。
+            var chromeWidth = panel.offsetWidth - panel.clientWidth;
+            var width = panel.scrollWidth + chromeWidth;
             if (width > required) required = width;
         }
         return required;
@@ -712,7 +740,18 @@ var PanelTooltip = (function() {
 
     function applySideWidth(side) {
         if (!side || side.querySelector('.flash-tt-desc')) return;
-        var w = estimateMainWidth(htmlScoresBoth(side.innerHTML));
+        var scores = htmlScoresBoth(side.innerHTML);
+        var w = scaledWidth(estimateMainWidth(scores));
+        side.style.width = w + 'px';
+        var renderedLines = 0;
+        var subPanels = side.querySelectorAll('.flash-tt-sub-panel');
+        for (var i = 0; i < subPanels.length; i++)
+            renderedLines += renderedTextLineCount(subPanels[i]);
+        var expandedW = scaledWidth(estimateMainWidth(scores, renderedLines));
+        if (expandedW > w) {
+            w = expandedW;
+            side.style.width = w + 'px';
+        }
         var required = requiredSubPanelWidth(side);
         if (required > w) w = required;
         side.style.width = w + 'px';
@@ -734,11 +773,17 @@ var PanelTooltip = (function() {
             return;
         }
         var scores = htmlScoresBoth(descPanel.innerHTML);
-        var w = estimateMainWidth(scores);
+        var w = scaledWidth(estimateMainWidth(scores));
         descPanel.style.width = w + 'px';
-        // 侧栏宽度取 desc 的实际 border-box（含 min-width 下限与 max-width 夹紧），
-        // 再让最宽子框强制加宽整列；子框 stretch 后不再需要横向滚动。
+        var expandedW = scaledWidth(estimateMainWidth(scores, renderedTextLineCount(descPanel)));
+        if (expandedW > w) {
+            w = expandedW;
+            descPanel.style.width = w + 'px';
+        }
+        // 侧栏先取 desc 的实际 border-box，再在这个约束下测量不可折行子框；
+        // 只有内容确实溢出时才加宽整列，不能把子框初始铺满宽度当成需求。
         var sideW = descPanel.offsetWidth || w;
+        if (side) side.style.width = sideW + 'px';
         var required = requiredSubPanelWidth(side);
         if (required > sideW) {
             sideW = required;
@@ -919,6 +964,12 @@ var PanelTooltip = (function() {
         }
         var x = clamp(best.x, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vw - tw - VIEWPORT_INSET));
         var y = clamp(best.y, VIEWPORT_INSET, Math.max(VIEWPORT_INSET, vh - th - VIEWPORT_INSET));
+        // 格子右缘通常带小数；直接继承会让整个浮层的文字落在亚像素上。
+        // 按 stage transform 与设备 DPI 的实际乘积对齐物理像素，位移不超过一个设备像素。
+        var deviceScale = (stage ? scale : 1) * (window.devicePixelRatio || 1);
+        if (!isFinite(deviceScale) || deviceScale <= 0) deviceScale = 1;
+        x = Math.round(x * deviceScale) / deviceScale;
+        y = Math.round(y * deviceScale) / deviceScale;
         _el.style.left = x + 'px';
         _el.style.top = y + 'px';
         _el.setAttribute('data-placement', best.name);

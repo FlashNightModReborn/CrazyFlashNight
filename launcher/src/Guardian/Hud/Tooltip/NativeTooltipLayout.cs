@@ -45,7 +45,10 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         internal const int IconTextGapNarrowBase = 11;    // narrow: 11px（text._y130 - icon底118.5）
         internal const int PanelPadBase = 4;              // --tt-panel-pad: 4px
         internal const int DescMinWBase = 160;            // --tt-desc-min-w: 160px
-        internal const int DescMaxWBase = 650;            // --tt-desc-max-w: 650px
+        internal const int DescDefaultWBase = 280;        // 未达到拓宽门槛时的阅读宽度上限
+        internal const int DescMaxWBase = 420;            // 达到字数/行数门槛后的阅读宽度上限
+        internal const double DescExpandScoreThreshold = 900; // 显示权重，约 450 个汉字
+        internal const int DescExpandLineThreshold = 18;  // 默认窄栏中的实际折行数
         internal const int DescMaxHBase = 520;            // .flash-tt-desc max-height: min(70vh,520px)
         internal const float DescMaxHViewportFrac = 0.70f;
         internal const int ScrollbarWBase = 6;            // ::-webkit-scrollbar width: 6px
@@ -141,7 +144,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         private const int MERGE_MAX_INTRO_LINES = 20;
         private const double MERGE_CHARS_PER_LINE = 33.0;
 
-        // ---- estimateMainWidth（TooltipConstants.as 同源 sqrt 公式）----
+        // ---- estimateMainWidth（sqrt 基础公式同源；阅读宽度门槛为原生布局合同）----
         private const double TT_PIX_PER_UNIT = 6.0;
         private const double TT_LINE_HEIGHT = 15.0;
         private const double TT_RATIO_MIN = 0.618;
@@ -228,13 +231,17 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             return sum;
         }
 
-        // ──────────── estimateMainWidth（sqrt 公式）────────────
+        // ──────────── estimateMainWidth（默认窄栏，过门槛后拓宽）────────────
 
-        /// <summary>W = sqrt(r*total*6*15)，r 由 total/300 smoothstep 到 [0.618,1.5]；
-        /// 下限 total*6/32，上限 maxLine*6+20，最终 clamp [minW,maxW]。</summary>
-        internal static int EstimateMainWidth(TextScore s, int minW, int maxW)
+        /// <summary>默认沿用 sqrt 公式，但宽度不超过 DescDefaultWBase；总显示权重、累计
+        /// 逻辑行数或默认窄栏实际折行数超过门槛后才使用 maxW。</summary>
+        internal static int EstimateMainWidth(TextScore s, int minW, int maxW,
+            int renderedLineCount = 0)
         {
             if (s.Total <= 0) return minW;
+            if (s.Total > DescExpandScoreThreshold
+                || Math.Max(s.LineCount, renderedLineCount) > DescExpandLineThreshold)
+                return Math.Max(minW, maxW);
             double t = s.Total / TT_RATIO_SCORE_CAP;
             if (t > 1) t = 1;
             double ss = t * t * (3 - 2 * t);
@@ -248,7 +255,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 if (sqrtW > maxLineW) sqrtW = maxLineW;
             }
             if (sqrtW < minW) sqrtW = minW;
-            if (sqrtW > maxW) sqrtW = maxW;
+            double defaultCap = Math.Min(maxW, DescDefaultWBase);
+            if (sqrtW > defaultCap) sqrtW = defaultCap;
             return (int)Math.Round(sqrtW);
         }
 
@@ -1319,6 +1327,17 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 descLines.AddRange(BuildUpgradeLines(descSecs, 0,
                     introPanelExists ? introPanelH : 0, descTextW, pad, scale, measure, lh,
                     descLines.Count > 0));
+                if (descLines.Count > DescExpandLineThreshold
+                    && descPanelW < Px(DescMaxWBase, scale))
+                {
+                    estCss = EstimateMainWidth(descScore, 150, DescMaxWBase, descLines.Count);
+                    descPanelW = Px(Math.Max(DescMinWBase, estCss), scale);
+                    descTextW = descPanelW - pad * 2 - sbW;
+                    descLines = WrapRuns(descRuns, descTextW, measure, lh);
+                    descLines.AddRange(BuildUpgradeLines(descSecs, 0,
+                        introPanelExists ? introPanelH : 0, descTextW, pad, scale, measure, lh,
+                        descLines.Count > 0));
+                }
                 int contentH = SumHeight(descLines, lh) + pad * 2;
                 // max-height:min(70vh,520px)：vh = 视口 CSS px（innerHeight 域，
                 // 不随 transform 缩放）→ 先在本地 CSS 域取 min，再整体 ×scale。

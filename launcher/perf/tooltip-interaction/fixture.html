@@ -82,6 +82,8 @@ body { padding:24px; box-sizing:border-box; }
         scrollHost.scrollTop = 0;
         scrollHost.scrollLeft = 0;
         var count = Number(options.count) || 25;
+        document.body.style.padding = options.fractionalGeometry ? '24.3px' : '';
+        grid.style.gap = options.fractionalGeometry ? '10.3px' : '';
         var longContent = options.longContent !== false;
         var richDelay = options.richDelay == null ? -1 : Number(options.richDelay);
         var inspectionDelay = options.inspectionDelay;
@@ -131,12 +133,14 @@ body { padding:24px; box-sizing:border-box; }
         var bar = getComputedStyle(node, '::-webkit-scrollbar');
         var thumb = getComputedStyle(node, '::-webkit-scrollbar-thumb');
         var button = getComputedStyle(node, '::-webkit-scrollbar-button');
+        var style = getComputedStyle(node);
+        var horizontalBorder = parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
         return {
             width:bar.width,
             thumbBackground:thumb.backgroundColor,
             buttonDisplay:button.display,
             buttonWidth:button.width,
-            gutterWidth:node.offsetWidth - node.clientWidth
+            gutterWidth:node.offsetWidth - node.clientWidth - horizontalBorder
         };
     }
 
@@ -156,13 +160,33 @@ body { padding:24px; box-sizing:border-box; }
             state:PanelTooltip.debugState(),
             text:tooltip ? tooltip.textContent.replace(/\s+/g, ' ').trim() : '',
             tooltipRect:rectOf(tooltip),
+            devicePixelRatio:window.devicePixelRatio || 1,
+            tooltipPixelPhase:tooltip ? (function() {
+                var rect = tooltip.getBoundingClientRect();
+                var ratio = window.devicePixelRatio || 1;
+                return {
+                    x:rect.left * ratio - Math.round(rect.left * ratio),
+                    y:rect.top * ratio - Math.round(rect.top * ratio)
+                };
+            })() : null,
             contentRect:rectOf(tooltipContent),
+            descRect:rectOf(desc),
+            sideWidth:tooltipContent && tooltipContent.querySelector('.flash-tt-side')
+                ? tooltipContent.querySelector('.flash-tt-side').offsetWidth : 0,
+            subWidths:tooltipContent
+                ? Array.prototype.map.call(tooltipContent.querySelectorAll('.flash-tt-sub-panel'),
+                    function(node) { return node.offsetWidth; }) : [],
             inspectionStatusRect:rectOf(inspectionStatus),
             inspectionStatusPosition:inspectionStatus ? getComputedStyle(inspectionStatus).position : '',
             inspectionStatusBackground:inspectionStatus ? getComputedStyle(inspectionStatus).backgroundColor : '',
             inspectionStatusBackgroundImage:inspectionStatus ? getComputedStyle(inspectionStatus).backgroundImage : '',
             tooltipPointerEvents:tooltip ? getComputedStyle(tooltip).pointerEvents : '',
+            tooltipFontSize:tooltip ? parseFloat(getComputedStyle(tooltip).fontSize) : 0,
+            tooltipTransform:tooltip ? getComputedStyle(tooltip).transform : '',
+            overlayScale:parseFloat(getComputedStyle(document.documentElement)
+                .getPropertyValue('--cf7-overlay-scale')) || 1,
             descScrollTop:desc ? desc.scrollTop : 0,
+            descWidth:desc ? desc.offsetWidth : 0,
             descScrollHeight:desc ? desc.scrollHeight : 0,
             descClientHeight:desc ? desc.clientHeight : 0,
             descScrollbar:scrollbarStyle(desc),
@@ -193,6 +217,27 @@ body { padding:24px; box-sizing:border-box; }
         return snapshot();
     }
 
+    function showRich(response) {
+        PanelTooltip.hide();
+        PanelTooltip.showAtMouse(richHtml('width-probe', response), {
+            clientX:400, clientY:180, target:grid, currentTarget:grid
+        }, null, {profile:'dense-inspect'});
+        return snapshot();
+    }
+
+    function showDocument(document) {
+        PanelTooltip.hide();
+        var html = PanelTooltip.buildItemRichHtml({
+            document:document,
+            rootClass:'fixture-rich-tooltip',
+            layoutType:'wide'
+        });
+        PanelTooltip.showAtMouse(html, {
+            clientX:400, clientY:180, target:grid, currentTarget:grid
+        }, null, {profile:'dense-inspect'});
+        return snapshot();
+    }
+
     function disposeScope() {
         if (!scope) return false;
         var result = scope.dispose();
@@ -206,6 +251,8 @@ body { padding:24px; box-sizing:border-box; }
         tileCenter:tileCenter,
         openPinned:openPinned,
         showSimple:showSimple,
+        showRich:showRich,
+        showDocument:showDocument,
         disposeScope:disposeScope,
         railRect:function() { return rectOf(rail); }
     };

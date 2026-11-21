@@ -257,6 +257,35 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
+        public void Width_Estimate_ExpandsOnlyAfterScoreOrLineThreshold()
+        {
+            var atScoreThreshold = new NativeTooltipLayout.TextScore
+                { Total = 900, MaxLine = 900, LineCount = 1 };
+            Assert.Equal(NativeTooltipLayout.DescDefaultWBase,
+                NativeTooltipLayout.EstimateMainWidth(atScoreThreshold, 150, 420));
+
+            var overScoreThreshold = new NativeTooltipLayout.TextScore
+                { Total = 900.5, MaxLine = 900.5, LineCount = 1 };
+            Assert.Equal(420,
+                NativeTooltipLayout.EstimateMainWidth(overScoreThreshold, 150, 420));
+
+            var atLineThreshold = new NativeTooltipLayout.TextScore
+                { Total = 100, MaxLine = 10, LineCount = 18 };
+            Assert.True(NativeTooltipLayout.EstimateMainWidth(atLineThreshold, 150, 420)
+                <= NativeTooltipLayout.DescDefaultWBase);
+
+            var overLineThreshold = new NativeTooltipLayout.TextScore
+                { Total = 100, MaxLine = 10, LineCount = 19 };
+            Assert.Equal(420,
+                NativeTooltipLayout.EstimateMainWidth(overLineThreshold, 150, 420));
+
+            var overRenderedLineThreshold = new NativeTooltipLayout.TextScore
+                { Total = 100, MaxLine = 10, LineCount = 1 };
+            Assert.Equal(420,
+                NativeTooltipLayout.EstimateMainWidth(overRenderedLineThreshold, 150, 420, 19));
+        }
+
+        [Fact]
         public void Split_Threshold_SmallStaysMerged_LargeSplits()
         {
             var small = new NativeTooltipLayout.TextScore { Total = 40, MaxLine = 40, LineCount = 2 };
@@ -711,6 +740,59 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             Assert.True(LineText(lines[idx]).StartsWith("乙段头部"),
                 "section 边界必须是硬换行，实际行=" + LineText(lines[idx]));
             Assert.DoesNotContain("乙段", LineText(lines[idx - 1]));
+        }
+
+        [Fact]
+        public void Plan_MediumDescriptionStaysNarrow()
+        {
+            string mediumText = new string('字', 200);
+            NativeTooltipDocument doc = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
+                'version':1,'title':'中等长度','profile':'dense',
+                'sections':[
+                  {'role':'intro','runs':[{'text':'测试物品'}]},
+                  {'role':'description','runs':[{'text':'" + mediumText + @"'}]},
+                  {'role':'description','kind':'upgrades','title':'升阶路线','rows':[
+                    {'name':'G111','depth':1,'runs':[{'text':'可升：G111'}]}
+                  ]}
+                ]}"));
+            var plan = NativeTooltipLayout.ComputePlan(doc, FixedMeasure, 15, 1f, 1024, 576);
+            Assert.NotNull(plan);
+            Assert.True(plan.Split);
+            Assert.True(plan.DescPanel.Width <= NativeTooltipLayout.Px(
+                    NativeTooltipLayout.DescDefaultWBase, plan.Scale),
+                "medium description must stay narrow, actual=" + plan.DescPanel.Width);
+            Assert.True(plan.DescLines.Count > 1, "narrow width must reflow text");
+        }
+
+        [Fact]
+        public void Plan_DescriptionExpandsAfterNarrowRenderExceedsLineThreshold()
+        {
+            string textAtScoreThreshold = new string('字', 450);
+            NativeTooltipDocument doc = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
+                'version':1,'title':'折行拓宽','profile':'dense',
+                'sections':[
+                  {'role':'intro','runs':[{'text':'测试物品'}]},
+                  {'role':'description','runs':[{'text':'" + textAtScoreThreshold + @"'}]}
+                ]}"));
+            var plan = NativeTooltipLayout.ComputePlan(doc, FixedMeasure, 15, 1f, 1024, 576);
+            Assert.NotNull(plan);
+            Assert.True(plan.Split);
+            Assert.Equal(NativeTooltipLayout.Px(NativeTooltipLayout.DescMaxWBase, plan.Scale),
+                plan.DescPanel.Width);
+            Assert.True(plan.DescLines.Count > 1);
+        }
+
+        [Fact]
+        public void Plan_DescriptionWidthStaysWithinReadableCap()
+        {
+            NativeTooltipDocument doc = NativeTooltipDocument.FromPayload(LongDensePayload());
+            var plan = NativeTooltipLayout.ComputePlan(doc, FixedMeasure, 15, 1f, 1024, 576);
+            Assert.NotNull(plan);
+            Assert.Equal(420, NativeTooltipLayout.DescMaxWBase);
+            Assert.True(plan.Split);
+            Assert.True(plan.DescPanel.Width <= NativeTooltipLayout.DescMaxWBase,
+                "description width must stay readable, actual=" + plan.DescPanel.Width);
+            Assert.True(plan.DescLines.Count > 1, "capped width must reflow text instead of hiding it");
         }
 
         [Fact]

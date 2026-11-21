@@ -45,6 +45,8 @@ function staticAudit() {
         [css.includes('::-webkit-scrollbar-button'), 'native scrollbar buttons are not suppressed'],
         [css.includes('--tt-scroll-thumb-inspect'), 'inspection scrollbar state token missing'],
         [source.includes("_profile === PROFILE_PINNED) return"), 'applyDescWidth must skip the pinned inspector'],
+        [source.includes('var TT_DEFAULT_W = 280, TT_MAX_W = 420'), 'readable description width tiers missing'],
+        [source.includes('var TT_EXPAND_SCORE = 900, TT_EXPAND_LINES = 18'), 'description expansion thresholds missing'],
         [source.includes("key === 'Escape' && _visible && _profile === PROFILE_DENSE"), 'pointer-path Escape exit from dense inspection missing'],
         [css.includes('.flash-tt-suffix'), 'suffix strip skin missing'],
         [css.includes('panel-tooltip-inspection-collapse'), 'inspect status collapse animation missing'],
@@ -98,6 +100,86 @@ async function runBrowserAudit(page) {
     const checks = [];
     const record = (name, evidence) => checks.push({name,pass:true,evidence});
 
+    const mediumWidth = await page.evaluate(() => window.__tooltipHarness.showRich({
+        introHTML:'<B>中等长度</B>',
+        descHTML:'字'.repeat(200)
+    }));
+    assert(mediumWidth.descWidth > 0 && mediumWidth.descWidth <= 280,
+        'medium description must stay within the narrow reading width', mediumWidth);
+    const wrappedWidth = await page.evaluate(() => window.__tooltipHarness.showRich({
+        introHTML:'<B>折行拓宽</B>',
+        descHTML:'字'.repeat(450)
+    }));
+    assert(Math.abs(wrappedWidth.descWidth - 420) <= 1,
+        'description over 18 rendered lines must expand to the wide tier', wrappedWidth);
+    const logicalLinesWidth = await page.evaluate(() => window.__tooltipHarness.showRich({
+        introHTML:'<B>多段拓宽</B>',
+        descHTML:Array(19).fill('短行内容内容内容内容内容').join('<BR>')
+    }));
+    assert(Math.abs(logicalLinesWidth.descWidth - 420) <= 1,
+        'description over 18 logical lines must expand to the wide tier', logicalLinesWidth);
+    const g11Width = await page.evaluate(() => window.__tooltipHarness.showRich({
+        introHTML:'<B>G11</B><BR>长枪 / 突击步枪',
+        descHTML:'H&K G11是GER国研发的革命性无壳弹药突击步枪，采用独特的4.73×33mm无壳弹药和创新的旋转枪机结构，极大减轻了枪械整体重量，并实现了枪身的高度紧凑化设计。其标志性的超高速三点射模式，可达到瞬时2000发每分钟的射速，使三发子弹在射手尚未感受到明显后坐力之前便已连续射出，形成紧密着弹的弹道，显著提升中远程精确命中率，将狙击枪的精度与自动武器的压制火力完美融合。虽因政治因素未能量产，但G11无疑代表了步枪技术的巅峰成就。<BR><BR>【升阶路线】<BR>可升：G111'
+    }));
+    assert(g11Width.descWidth > 0 && g11Width.descWidth <= 280,
+        'G11 description must stay within the narrow reading width', g11Width);
+    const subPanelWidths = await page.evaluate(() => window.__tooltipHarness.showDocument({
+        version:1,
+        title:'G11',
+        profile:'dense',
+        sections:[
+            {role:'intro',runs:[{text:'长枪 / 突击步枪'}]},
+            {role:'description',runs:[{text:'字'.repeat(200)}]},
+            {role:'sub',runs:[{text:'【主动战技】激发浮动枪机与旋转膛室的极限性能，以2000发每分钟的瞬时射速连续打出三发高速无壳穿甲弹，造成致命伤害。'}]},
+            {role:'sub',kind:'attachments',title:'已安装2个配件',rows:[
+                {name:'战术鱼骨零件',depth:1,runs:[{text:'导轨基座'}]},
+                {name:'透镜',depth:1,runs:[{text:'瞄具'}]}
+            ]},
+            {role:'sub',kind:'acquisition',title:'获取方式',rows:[
+                {name:'NPC商店'},
+                {name:'Boy',depth:1}
+            ]}
+        ]
+    }));
+    assert(subPanelWidths.subWidths.length === 3,
+        'skill, attachments and acquisition fixtures must all render', subPanelWidths);
+    for (const width of subPanelWidths.subWidths) {
+        assert(width === subPanelWidths.descWidth && width <= 280,
+            'every sub panel must share the narrow description width', subPanelWidths);
+    }
+    record('readable-width-tiers', {
+        medium:mediumWidth.descWidth,
+        g11:g11Width.descWidth,
+        wrapped:wrappedWidth.descWidth,
+        logicalLines:logicalLinesWidth.descWidth,
+        subPanels:subPanelWidths.subWidths
+    });
+
+    await page.evaluate(() => document.documentElement.style.setProperty('--cf7-overlay-scale', String(5 / 6)));
+    await reset(page, {inspectionDelay:1000,longContent:true,fractionalGeometry:true});
+    await moveToTile(page, 0, {wait:40});
+    const leftPixelPhase = await snapshot(page);
+    assert(leftPixelPhase.tooltipFontSize === 12 && leftPixelPhase.tooltipTransform === 'none',
+        'tooltip text must render natively without transform resampling', leftPixelPhase);
+    assert(Math.abs(leftPixelPhase.descWidth - 350) <= 1,
+        'description width must use the same overlay scale as the layout', leftPixelPhase);
+    assert(Math.abs(leftPixelPhase.tooltipPixelPhase.x) < 0.01
+            && Math.abs(leftPixelPhase.tooltipPixelPhase.y) < 0.01,
+        'left-side item tooltip origin must land on device pixels', leftPixelPhase);
+    await moveToTile(page, 4, {wait:40});
+    const rightPixelPhase = await snapshot(page);
+    assert(Math.abs(rightPixelPhase.tooltipPixelPhase.x) < 0.01
+            && Math.abs(rightPixelPhase.tooltipPixelPhase.y) < 0.01,
+        'right-side item tooltip origin must land on device pixels', rightPixelPhase);
+    record('device-pixel-aligned-placement', {
+        left:leftPixelPhase.tooltipPixelPhase,
+        right:rightPixelPhase.tooltipPixelPhase,
+        physicalFontSize:leftPixelPhase.tooltipFontSize,
+        descriptionWidth:leftPixelPhase.descWidth
+    });
+
+    await page.evaluate(() => document.documentElement.style.removeProperty('--cf7-overlay-scale'));
     await reset(page, {inspectionDelay:1000,longContent:true});
     await moveToTile(page, 0, {wait:80});
     let state = await snapshot(page);
