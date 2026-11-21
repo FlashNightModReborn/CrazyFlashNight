@@ -56,6 +56,92 @@ namespace Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void ItemCellsDoNotPaintSyntheticQuantity()
+        {
+            DirectoryInfo repository = new DirectoryInfo(AppContext.BaseDirectory);
+            while (repository != null && !File.Exists(Path.Combine(
+                repository.FullName, "launcher", "CRAZYFLASHER7MercenaryEmpire.csproj")))
+                repository = repository.Parent;
+            Assert.NotNull(repository);
+            using var owner = new Form();
+            using var task = new ModifierTask(() => true, _ => true);
+            using var surface = new ModifierNativeSurface(owner,
+                Path.Combine(repository.FullName, "launcher", "web"), "owned", task);
+            surface.ClientSize = new Size(1016, 550);
+            Assert.True(surface.ResumePanel(new Rectangle(-32000, -32000, 1016, 550)));
+            typeof(ModifierNativeSurface).GetMethod("SetTab", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(surface, new object[] { "items" });
+            typeof(ModifierNativeSurface).GetMethod("ApplyItems", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(surface, new object[] { new JObject
+                {
+                    ["success"] = true, ["page"] = 1, ["pageSize"] = 64, ["total"] = 1, ["revision"] = 1,
+                    ["items"] = new JArray(new JObject
+                    {
+                        ["id"] = 1, ["name"] = "测试物品", ["displayName"] = "测试物品",
+                        ["icon"] = "", ["type"] = "", ["use"] = ""
+                    })
+                } });
+            using var frame = surface.RenderFrame();
+            SaveModifierFrame(frame, "modifier-items.png");
+            Rectangle cell = ModifierNativeLayout.ToClient(ModifierNativeLayout.ItemCell(0), surface.ClientSize);
+            for (int y = Math.Max(0, cell.Bottom - 12); y < Math.Min(frame.Height, cell.Bottom); y++)
+                for (int x = Math.Max(0, cell.Right - 12); x < Math.Min(frame.Width, cell.Right); x++)
+                {
+                    Color pixel = frame.GetPixel(x, y);
+                    Assert.False(pixel.A > 0 && pixel.R > 200 && pixel.G > 150 && pixel.B < 80,
+                        $"Unexpected yellow quantity at {x},{y}: {pixel}");
+                }
+        }
+
+        [Fact]
+        public void UnitPageDoesNotPaintOverJumpButton()
+        {
+            DirectoryInfo repository = new DirectoryInfo(AppContext.BaseDirectory);
+            while (repository != null && !File.Exists(Path.Combine(
+                repository.FullName, "launcher", "CRAZYFLASHER7MercenaryEmpire.csproj")))
+                repository = repository.Parent;
+            Assert.NotNull(repository);
+            using var owner = new Form();
+            using var task = new ModifierTask(() => true, _ => true);
+            using var surface = new ModifierNativeSurface(owner,
+                Path.Combine(repository.FullName, "launcher", "web"), "owned", task);
+            surface.ClientSize = new Size(1016, 550);
+            Assert.True(surface.ResumePanel(new Rectangle(-32000, -32000, 1016, 550)));
+            typeof(ModifierNativeSurface).GetMethod("SetTab", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(surface, new object[] { "units" });
+            typeof(ModifierNativeSurface).GetMethod("ApplyUnits", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(surface, new object[] { new JObject
+                {
+                    ["success"] = true, ["page"] = 1, ["pageSize"] = 8, ["total"] = 32, ["revision"] = 1,
+                    ["units"] = new JArray(new JObject
+                    {
+                        ["id"] = 1, ["name"] = "测试兵种", ["spriteName"] = "", ["key"] = "",
+                        ["level"] = 1, ["hostile"] = false
+                    })
+                } });
+            using var frame = surface.RenderFrame();
+            SaveModifierFrame(frame, "modifier-units.png");
+            Rectangle boundary = ModifierNativeLayout.ToClient(new Rectangle(
+                ModifierNativeLayout.UnitJump.Left - 8, ModifierNativeLayout.UnitPageTotal.Top,
+                8, ModifierNativeLayout.UnitPageTotal.Height), surface.ClientSize);
+            for (int y = Math.Max(0, boundary.Top); y < Math.Min(frame.Height, boundary.Bottom); y++)
+                for (int x = Math.Max(0, boundary.Left); x < Math.Min(frame.Width, boundary.Right); x++)
+                {
+                    Color pixel = frame.GetPixel(x, y);
+                    Assert.False(pixel.A > 0 && pixel.R > 200 && pixel.G > 150 && pixel.B < 80,
+                        $"Unexpected page text over jump button at {x},{y}: {pixel}");
+                }
+        }
+
+        private static void SaveModifierFrame(Image frame, string name)
+        {
+            string root = Environment.GetEnvironmentVariable("CF7_EVIDENCE_ROOT");
+            if (string.IsNullOrWhiteSpace(root)) return;
+            Directory.CreateDirectory(root);
+            frame.Save(Path.Combine(root, name), System.Drawing.Imaging.ImageFormat.Png);
+        }
+
+        [Fact]
         public void TooltipKeepsModifierScaleAndResolvesNpcPortraits()
         {
             DirectoryInfo repository = new DirectoryInfo(AppContext.BaseDirectory);
