@@ -1,9 +1,16 @@
-# #132：武器摘要离线对照候选
+# #132 武器摘要对照与获取校验
 
-Refs #132。起点 main：`23ec828cd04c783c86abb016c1f080eb814d41ba`。
-本阶段仅增加可复跑探针和测试，保留全部作者 XML、台账、工作簿与生产读取；Issue 必须保持 Open。
+## 2026-11-21 结案验收
+
+获取校验已修复。QJZ171 对应 Pig 商店第 53 号货位。提示目录只供展示，任务、成就和存档任务的奖励按游戏语法复核，金币商店、K 点商城与合成按加载清单核对。金币证据还须与货位上的物品名一致。
+
+同一批 59 份物品 XML、612 个配置（含 44 个变体）中，严格校验放行数从 34 回到 35。真实 Flash 读取现役模块后，全部配置的可见性及四字段均与修复后的工具一致。Edge 中的库存、NPC 商店和 K 点商城卡片各显示 35 个摘要，另外 577 个均隐藏。新增 11 个回归用例，工具全套 939/939 通过。全库 `balance-check` 仍报告 8 个原已隐藏配置的 16 条数据错误。[逐项验收与现役模块指纹](../evidence/issue-132-weapon-summary-acceptance.json)
+
+本卡以获取校验修复和现役摘要验收结案，原议题的生产瘦身按“不再计划”归档。游戏继续从作者 XML 生成摘要。武器精简 XML、小摘要的同代绑定、消费端迁移和旧索引释放均留待另行立项。
 
 ## 对照方法与复跑
+
+离线探针起点为 `23ec828cd04c783c86abb016c1f080eb814d41ba`。
 
 `weapon-summary-as2-model.ts` 按现役 `InventoryPanelService.buildBalanceSummary` 及其私有 helper 建立独立 TS 模型，FNV 使用 AS2 的移位加法；工具侧直接调用现役 parser、`validateWeaponBalanceRecord`、`derivePlayerWeaponBalanceProjection`。
 另外输出 `balanceCheck` 列，保留现役 `balance-check` 的 evidence 和 use/dualWield 附加门，不用其更强规则替换 AS2 可见性。
@@ -11,7 +18,7 @@ Refs #132。起点 main：`23ec828cd04c783c86abb016c1f080eb814d41ba`。
 模型对 AS2 的 workbook/字段白名单常量和完整摘要 helper 区段做规范换行 SHA-256 检查：
 `2344e6ccba4014187045ce29a0a513d2b5b53129e3d002b7e335168b84fabf39`。
 锚点缺失或区段改变即报错，必须重新审阅模型，不能静默沿用。
-这不是 AVM1 实测：JS 与 AVM1 的数字/字符串转换、XMLParser、对象枚举和已发布 SWF 尚未直接对照。
+离线探针使用 JS 的数字和字符串转换、XMLParser 及对象枚举。上方结案验收另外使用了真实 AVM1。
 
 在 `tools/cf7-balance-tool` 执行（Windows PowerShell 先 `chcp.com 65001`）：
 
@@ -25,7 +32,7 @@ npm run weapon-summary-parity -- --repo ../.. --output ../../tmp/issue-132/weapo
 
 报告仅输出到 `tmp` 或仓外，包含每个输入的实际字节 SHA-256、HEAD、源文件/list ordinal/item ordinal/同文件同名 occurrence/profile key 和两层四字段结果。输入包含物品清单、台账、相关实现，以及 evidence 扫描的 `data/config/scripts` 文本边界与显式证据文件。`--check` 逐字节重算，HEAD 或输入改变后需重生成。大报告不进入 Git。
 
-## 现役数据结果
+## 获取校验修复前的数据结果
 
 Linux 源码候选的生成与 `--check` 均退出 0，仅证明报告可复现。没有 parser 错误，台账 orphan/重复 runtime join 均为 0；这不证明数据链通过。报告另外保留每条 validation 的 severity/code/path/message，防止“两个结果都为空”掩盖数据错误。完整逐 profile 明细见上述生成物。
 
@@ -44,7 +51,7 @@ Linux 源码候选的生成与 `--check` 均退出 0，仅证明报告可复现�
 
 44 个变体逐个枚举：`data_fire` 19、`data_ice` 19，`data_2`、`data_3`、`data_4`、`data_fire_gold_stolen`、`data_ice_gold_stolen`、`data_pilebunker_m7` 各 1。未找到的 profile 不回退 `data`。源记录顺序和重名均保留；本探针不宣称复现 `ItemUtil` 的反序枚举、自动 ID、默认 modslot 或同名覆盖结果。
 
-唯一现役残差为 `data/items/武器_长枪_机枪.xml` 的 `QJZ171/data`：AS2 模型与工具投影均为 `{state:"confirmed",weightLayers:1,formula:1,level:37}`；完整证据门返回 `high_price_unreviewed_acquisition`，唯一具名来源为 `data/tooltip/tooltip-catalog.json`。现役扫描把该派生目录引用纳入未复核获取来源。是否应排除它需要独立裁决；本轮不改判据、不改台账、不隐藏残差。
+修复前的唯一残差来自 `data/items/武器_长枪_机枪.xml` 中的 `QJZ171/data`。AS2 模型与工具投影均为 `{state:"confirmed",weightLayers:1,formula:1,level:37}`。严格校验返回 `high_price_unreviewed_acquisition`，命中的唯一文件为展示用的 `data/tooltip/tooltip-catalog.json`。
 
 原工具门仍为红灯：`balance-sync -- --check` 在 `AMML3/data: ledger record missing; base fallback is forbidden` 停止；`balance-check` 检查 373 个 weapon profile，返回 `ok=false`、17 条 failure（16 条 validation 加上上述 QJZ171 证据项）。这 16 条为：
 
@@ -78,6 +85,4 @@ Linux 源码候选的生成与 `--check` 均退出 0，仅证明报告可复现�
 
 当前最后读者仍是 Inventory、NPC 与 KShop 摘要出口；它们从 `ItemUtil` 独立 balance 索引读原容器。`ItemUtil.loadItemData` 虽已从常规物品对象删除 balance，仍保留 `balanceDataDict`，`getRawBalanceData` 仍供摘要出口使用。本阶段不删除任何树、字典、缓存或原始机制字段。
 
-生产切换为 **NO-GO**：须先完成 #131 的独立消费者闭包与单独裁决，明确采用 AS2 还是更强工具可见性语义，并在真实 AS2 中验证全 profile、同代绑定和运行输入变化。只有全部现役摘要出口改用被裁定的同代小摘要、旧 `getRawBalanceData` 可达读者归零、真实消费者和必要加载行为通过后，才能另行评估释放独立 balance 索引。武器有效 data/skill/lifecycle 的业务读者不由四字段等价探针证明闭包。
-
-Windows 最短验收可先复跑上述离线命令并审阅 `QJZ171` 残差；允许接收源码候选供合成，不能据此签署 AVM1 等价、生产加载切换或正式 Runtime 发布。真实 Flash/Host/WebView2、候选加载与生产消费均为本轮未验证范围；本轮未重编 SWF。
+若重启武器瘦身，需确定新产物的可见性规则，并在真实 AS2 中验证全 profile、同代绑定和运行输入变化。全部摘要出口切换到同代小摘要、`getRawBalanceData` 可达读者归零并通过实际加载验证后，才具备评估释放旧索引的条件。武器有效 data/skill/lifecycle 的业务读者仍须逐项核对。[#131 非 weapon 家族候选验收](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/131)

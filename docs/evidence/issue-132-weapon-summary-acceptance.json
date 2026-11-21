@@ -1,0 +1,620 @@
+{
+  "schema": "cf7.weapon-summary-acceptance.v1",
+  "date": "2026-11-21",
+  "gameInputCommit": "9d756cfc092ee1026252be1c6b3ce8280321ff40",
+  "verifiedBalanceToolBlobs": {
+    "tools/cf7-balance-tool/packages/xml-io/src/weapon-balance-evidence.ts": "dea1c9b2acff9035bd34c76c54c307d4d4790ccb",
+    "tools/cf7-balance-tool/packages/xml-io/tests/weapon-balance-evidence.test.ts": "6ddd2eacaebda58d52aec14821c64b691cb3bd3b",
+    "tools/cf7-balance-tool/scripts/weapon-seed-migration.ts": "07ebfa2f8da6cb40842ab57fe7319c4f0a82817b"
+  },
+  "tests": {
+    "passed": 939,
+    "total": 939,
+    "focused": {
+      "weapon-balance-evidence.test.ts": 35,
+      "weapon-summary-parity.test.ts": 22
+    },
+    "newRegressionCases": 11,
+    "typecheck": "pass",
+    "documentationCheck": "pass",
+    "gitDiffCheck": "pass"
+  },
+  "parity": {
+    "sameCommitAndInputFilesBeforeAndAfter": true,
+    "before": {
+      "itemFileCount": 59,
+      "profileCount": 612,
+      "weaponFamilyProfileCount": 373,
+      "dataVariantProfileCount": 44,
+      "as2ModelVisible": 35,
+      "toolVisible": 35,
+      "balanceCheckVisible": 34,
+      "projectionMismatchCount": 0,
+      "balanceCheckMismatchCount": 1,
+      "toolParseErrorCount": 0,
+      "validationErrorProfileCount": 8,
+      "validationErrorCount": 16,
+      "additionalEvidenceErrorProfileCount": 1
+    },
+    "after": {
+      "itemFileCount": 59,
+      "profileCount": 612,
+      "weaponFamilyProfileCount": 373,
+      "dataVariantProfileCount": 44,
+      "as2ModelVisible": 35,
+      "toolVisible": 35,
+      "balanceCheckVisible": 35,
+      "projectionMismatchCount": 0,
+      "balanceCheckMismatchCount": 0,
+      "toolParseErrorCount": 0,
+      "validationErrorProfileCount": 8,
+      "validationErrorCount": 16,
+      "additionalEvidenceErrorProfileCount": 0
+    },
+    "strictProjectionChangedFor": [
+      "QJZ171"
+    ],
+    "qjz171PriorIssue": [
+      {
+        "code": "high_price_unreviewed_acquisition",
+        "message": "review named references outside the weapon definition and gold shops: data/tooltip/tooltip-catalog.json"
+      }
+    ],
+    "qjz171VerifiedShop": {
+      "manifest": "data/shops/list.xml",
+      "shelf": "data/shops/npcs/Pig.json#catalog.53",
+      "itemName": "QJZ171"
+    },
+    "existingPlayerProjectionsChanged": 0,
+    "deterministicReportCheck": "pass"
+  },
+  "nativeFlash": {
+    "scope": "在独立 Adobe Flash Player 中运行此提交的 asLoaderShared.swf，用其 XMLParser 和 InventoryPanelService.buildBalanceSummary 读取原始物品 XML。",
+    "commit": "9d756cfc092ee1026252be1c6b3ce8280321ff40",
+    "filesServed": 59,
+    "player": "FlashPlayerDebugger.exe",
+    "sharedSwfSha256": "445367c7e827ad7e5713a9aa543237201b95eeee0d8bd53abc6a0362d63a18f5",
+    "probeSha256": "047e55da5a226a4e7f8cfa4e1c131444bec45bdc43ae8529e62ea24f99dd97d9",
+    "profiles": 612,
+    "visibleProfiles": 35,
+    "mismatchCount": 0
+  },
+  "edgeRendering": {
+    "scope": "将真实 Flash 摘要交给仓库中的库存货位和两种商店卡片组件，逐个检查可见徽标、等级、层数及无摘要时的隐藏行为。商店结果为卡片渲染测试。",
+    "inventory": 35,
+    "kshop": 35,
+    "npcshop": 35,
+    "hiddenEach": 577,
+    "mismatches": [],
+    "qjz": "Lv37◆+1"
+  },
+  "balanceCheck": {
+    "exitCode": 1,
+    "checked": 373,
+    "eligible": 35,
+    "existingErrors": 16,
+    "existingAffectedProfiles": [
+      {
+        "item": "钛合金P90",
+        "profile": "data",
+        "codes": [
+          "source_digest_mismatch"
+        ]
+      },
+      {
+        "item": "061ABSR",
+        "profile": "data",
+        "codes": [
+          "input_digest_mismatch",
+          "ledger_input_digest_mismatch",
+          "source_digest_mismatch"
+        ]
+      },
+      {
+        "item": "AMML3",
+        "profile": "data",
+        "codes": [
+          "audit_record_missing"
+        ]
+      },
+      {
+        "item": "HSR10",
+        "profile": "data",
+        "codes": [
+          "audit_record_missing"
+        ]
+      },
+      {
+        "item": "HSR10tac",
+        "profile": "data",
+        "codes": [
+          "audit_record_missing"
+        ]
+      },
+      {
+        "item": "HSR10S",
+        "profile": "data",
+        "codes": [
+          "inline_ledger_field_mismatch",
+          "inline_ledger_field_mismatch",
+          "inline_ledger_field_mismatch",
+          "inline_ledger_field_mismatch",
+          "input_digest_mismatch",
+          "ledger_input_digest_mismatch",
+          "source_digest_mismatch"
+        ]
+      },
+      {
+        "item": "NA45",
+        "profile": "data",
+        "codes": [
+          "source_digest_mismatch"
+        ]
+      },
+      {
+        "item": "AK47火麒麟",
+        "profile": "data",
+        "codes": [
+          "source_digest_mismatch"
+        ]
+      }
+    ]
+  },
+  "visibleProfiles": [
+    {
+      "item": "TMP",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 7
+      },
+      "file": "data/items/武器_手枪_冲锋枪.xml",
+      "listOrdinal": 33,
+      "itemOrdinal": 4
+    },
+    {
+      "item": "Mp5 pdw",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 8
+      },
+      "file": "data/items/武器_手枪_冲锋枪.xml",
+      "listOrdinal": 33,
+      "itemOrdinal": 5
+    },
+    {
+      "item": "M3SMG",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 10
+      },
+      "file": "data/items/武器_手枪_冲锋枪.xml",
+      "listOrdinal": 33,
+      "itemOrdinal": 6
+    },
+    {
+      "item": "MP7",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 11
+      },
+      "file": "data/items/武器_手枪_冲锋枪.xml",
+      "listOrdinal": 33,
+      "itemOrdinal": 7
+    },
+    {
+      "item": "P90",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 13
+      },
+      "file": "data/items/武器_手枪_冲锋枪.xml",
+      "listOrdinal": 33,
+      "itemOrdinal": 9
+    },
+    {
+      "item": "蝎式冲锋枪弹鼓版",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 15
+      },
+      "file": "data/items/武器_手枪_冲锋枪.xml",
+      "listOrdinal": 33,
+      "itemOrdinal": 10
+    },
+    {
+      "item": "APSstechkin",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 18
+      },
+      "file": "data/items/武器_手枪_冲锋枪.xml",
+      "listOrdinal": 33,
+      "itemOrdinal": 13
+    },
+    {
+      "item": "vactorPP-7400U",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 20
+      },
+      "file": "data/items/武器_手枪_冲锋枪.xml",
+      "listOrdinal": 33,
+      "itemOrdinal": 15
+    },
+    {
+      "item": "P90印花集",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 1,
+        "formula": 1,
+        "level": 33
+      },
+      "file": "data/items/武器_手枪_冲锋枪.xml",
+      "listOrdinal": 33,
+      "itemOrdinal": 29
+    },
+    {
+      "item": "转换者",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 45
+      },
+      "file": "data/items/武器_手枪_冲锋枪.xml",
+      "listOrdinal": 33,
+      "itemOrdinal": 31
+    },
+    {
+      "item": "韦森686改装版",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 1,
+        "formula": 1,
+        "level": 22
+      },
+      "file": "data/items/武器_手枪_大威力手枪.xml",
+      "listOrdinal": 38,
+      "itemOrdinal": 7
+    },
+    {
+      "item": "HKUSP9",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 8
+      },
+      "file": "data/items/武器_手枪_手枪.xml",
+      "listOrdinal": 39,
+      "itemOrdinal": 10
+    },
+    {
+      "item": "WaltherP99",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 12
+      },
+      "file": "data/items/武器_手枪_手枪.xml",
+      "listOrdinal": 39,
+      "itemOrdinal": 13
+    },
+    {
+      "item": "PMR3",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 18
+      },
+      "file": "data/items/武器_手枪_手枪.xml",
+      "listOrdinal": 39,
+      "itemOrdinal": 18
+    },
+    {
+      "item": "SIGP210",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 20
+      },
+      "file": "data/items/武器_手枪_手枪.xml",
+      "listOrdinal": 39,
+      "itemOrdinal": 19
+    },
+    {
+      "item": "Type92G",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 23
+      },
+      "file": "data/items/武器_手枪_手枪.xml",
+      "listOrdinal": 39,
+      "itemOrdinal": 20
+    },
+    {
+      "item": "QBZ-192",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 29
+      },
+      "file": "data/items/武器_手枪_突击步枪.xml",
+      "listOrdinal": 41,
+      "itemOrdinal": 1
+    },
+    {
+      "item": "战术-QBZ-192",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 52
+      },
+      "file": "data/items/武器_手枪_突击步枪.xml",
+      "listOrdinal": 41,
+      "itemOrdinal": 2
+    },
+    {
+      "item": "Origin12",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 26
+      },
+      "file": "data/items/武器_手枪_霰弹枪.xml",
+      "listOrdinal": 42,
+      "itemOrdinal": 12
+    },
+    {
+      "item": "KHAOS 12",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 17
+      },
+      "file": "data/items/武器_手枪_霰弹枪.xml",
+      "listOrdinal": 42,
+      "itemOrdinal": 15
+    },
+    {
+      "item": "PPSh41",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 10
+      },
+      "file": "data/items/武器_长枪_冲锋枪.xml",
+      "listOrdinal": 43,
+      "itemOrdinal": 1
+    },
+    {
+      "item": "汤姆逊冲锋枪",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 12
+      },
+      "file": "data/items/武器_长枪_冲锋枪.xml",
+      "listOrdinal": 43,
+      "itemOrdinal": 2
+    },
+    {
+      "item": "PP1901",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 21
+      },
+      "file": "data/items/武器_长枪_冲锋枪.xml",
+      "listOrdinal": 43,
+      "itemOrdinal": 9
+    },
+    {
+      "item": "M1915Chauchat",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 5
+      },
+      "file": "data/items/武器_长枪_机枪.xml",
+      "listOrdinal": 50,
+      "itemOrdinal": 0
+    },
+    {
+      "item": "QJZ171",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 1,
+        "formula": 1,
+        "level": 37
+      },
+      "file": "data/items/武器_长枪_机枪.xml",
+      "listOrdinal": 50,
+      "itemOrdinal": 8
+    },
+    {
+      "item": "G36",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 10
+      },
+      "file": "data/items/武器_长枪_突击步枪.xml",
+      "listOrdinal": 53,
+      "itemOrdinal": 5
+    },
+    {
+      "item": "AK200",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 15
+      },
+      "file": "data/items/武器_长枪_突击步枪.xml",
+      "listOrdinal": 53,
+      "itemOrdinal": 8
+    },
+    {
+      "item": "XM8",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 15
+      },
+      "file": "data/items/武器_长枪_突击步枪.xml",
+      "listOrdinal": 53,
+      "itemOrdinal": 9
+    },
+    {
+      "item": "AKS74U",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 18
+      },
+      "file": "data/items/武器_长枪_突击步枪.xml",
+      "listOrdinal": 53,
+      "itemOrdinal": 12
+    },
+    {
+      "item": "HK33KA3",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 25
+      },
+      "file": "data/items/武器_长枪_突击步枪.xml",
+      "listOrdinal": 53,
+      "itemOrdinal": 16
+    },
+    {
+      "item": "HK33A2",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 1,
+        "formula": 1,
+        "level": 30
+      },
+      "file": "data/items/武器_长枪_突击步枪.xml",
+      "listOrdinal": 53,
+      "itemOrdinal": 22
+    },
+    {
+      "item": "QBZ-191",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 30
+      },
+      "file": "data/items/武器_长枪_突击步枪.xml",
+      "listOrdinal": 53,
+      "itemOrdinal": 23
+    },
+    {
+      "item": "AK74M",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 35
+      },
+      "file": "data/items/武器_长枪_突击步枪.xml",
+      "listOrdinal": 53,
+      "itemOrdinal": 39
+    },
+    {
+      "item": "AA12",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 28
+      },
+      "file": "data/items/武器_长枪_霰弹枪.xml",
+      "listOrdinal": 55,
+      "itemOrdinal": 24
+    },
+    {
+      "item": "Vepr12",
+      "profile": "data",
+      "summary": {
+        "state": "confirmed",
+        "weightLayers": 0,
+        "formula": 1,
+        "level": 23
+      },
+      "file": "data/items/武器_长枪_霰弹枪.xml",
+      "listOrdinal": 55,
+      "itemOrdinal": 30
+    }
+  ]
+}
