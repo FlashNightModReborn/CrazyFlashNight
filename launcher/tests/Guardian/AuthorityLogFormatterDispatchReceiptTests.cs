@@ -18,6 +18,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("ShopTask", "shop", "kshop", "checkoutCommit", "shopCheckoutCommit", null)]
         [InlineData("ShopTask", "shop", "kshop", "checkout", "shopCheckout", null)]
         [InlineData("ShopTask", "shop", "kshop", "claim", "shopClaim", null)]
+        [InlineData("ShopTask", "shop", "kshop", "claimBatch", "shopClaimBatch", null)]
         [InlineData("CraftingTask", "crafting", "crafting", "snapshot", "craftingSnapshot", null)]
         [InlineData("CraftingTask", "crafting", "crafting", "materials", "craftingMaterials", null)]
         [InlineData("CraftingTask", "crafting", "crafting", "materialDetail", "craftingMaterialDetail", null)]

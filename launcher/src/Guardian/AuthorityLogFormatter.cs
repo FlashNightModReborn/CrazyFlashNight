@@ -75,7 +75,7 @@ namespace CF7Launcher.Guardian
                 "close", "snapshot", "candidates", "preview", "commit", "tooltip", "detach",
                 "open", "openMany", "consume", "query", "inboxSnapshot",
                 "bulkQuery", "saveCart", "checkoutPreview", "checkoutCommit",
-                "checkout", "claim", "materials", "materialDetail", "setPlan",
+                "checkout", "claim", "claimBatch", "materials", "materialDetail", "setPlan",
                 "open_npc_shop", "open_procurement_shop", "open_procurement_kshop",
                 "return_crafting_recipe",
                 "batchPreview", "tradePreview", "buy", "batchSell", "tradeCommit",
@@ -87,7 +87,7 @@ namespace CF7Launcher.Guardian
                 "equipmentTuningCommit", "equipmentTuningTooltip",
                 "equipmentTuningDetach",
                 "shopBulkQuery", "shopTooltip", "shopSaveCart",
-                "shopCheckoutPreview", "shopCheckoutCommit", "shopCheckout", "shopClaim",
+                "shopCheckoutPreview", "shopCheckoutCommit", "shopCheckout", "shopClaim", "shopClaimBatch",
                 "craftingSnapshot", "craftingMaterials", "craftingMaterialDetail",
                 "craftingPreview", "craftingTooltip", "craftingPlanSet", "craftingCommit",
                 "craftingMaterialShopAuthorize", "craftingProcurementShopAuthorize",
@@ -519,6 +519,7 @@ namespace CF7Launcher.Guardian
                         case "checkoutCommit": return "shopCheckoutCommit";
                         case "checkout": return "shopCheckout";
                         case "claim": return "shopClaim";
+                        case "claimBatch": return "shopClaimBatch";
                         default: return null;
                     }
                 case "CraftingTask":

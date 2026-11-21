@@ -565,6 +565,117 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("reconcile_required", (string)response["error"]);
         }
 
+        private static JObject BeginCatalogDeferredWrite(ShopTask task, List<string> sent,
+            string cmd, bool replay = false)
+        {
+            JObject response;
+            if (cmd == "claimBatch")
+            {
+                SeedBulk(task, sent);
+                task.HandleWebRequest(cmd, BatchRequest("receipt.write", "kcb.receipt.1",
+                    replay ? "shop.older" : "shop.test.1", FingerprintA));
+                response = BatchResponseFor(sent[^1], replay, new JArray(FingerprintA),
+                    replay ? PurchasedLegacy() : new JArray(), replay ? PurchasedView() : new JArray(),
+                    "shop.test.2", replay ? "shop.test.1" : "shop.test.2");
+            }
+            else
+            {
+                BeginWrite(task, sent, cmd);
+                response = ResponseFor(sent[^1], true);
+            }
+            response.Remove("catalog");
+            response["refreshDeferred"] = true;
+            return response;
+        }
+
+        [Theory]
+        [InlineData("checkoutCommit", false)]
+        [InlineData("checkout", false)]
+        [InlineData("claim", false)]
+        [InlineData("claimBatch", false)]
+        [InlineData("claimBatch", true)]
+        public void ConfirmedWriteWithoutCatalog_RequiresOnlyAFreshRead(string cmd, bool replay)
+        {
+            var sent = new List<string>();
+            JObject posted = null;
+            using var task = new ShopTask(() => true, wire => { sent.Add(wire); return true; });
+            task.SetPostToWeb(json => posted = JObject.Parse(json));
+            task.HandleWebRequest("bulkQuery", Request("{\"callId\":\"receipt.early\"}"));
+            var early = ResponseFor(sent[^1], true);
+            var write = BeginCatalogDeferredWrite(task, sent, cmd, replay);
+            task.HandleFlashResponse(write, _ => { });
+
+            AssertOwner(posted, cmd);
+            Assert.True((bool)posted["success"]);
+            Assert.True((bool)posted["refreshDeferred"]);
+            Assert.Equal((string)write["purchasedToken"], (string)posted["purchasedToken"]);
+            Assert.Null(posted["catalog"]);
+            Assert.Null(posted["purchased"]);
+            if (cmd.StartsWith("checkout")) Assert.Equal((double)write["newBalance"], (double)posted["newBalance"]);
+            if (cmd == "claimBatch")
+            {
+                Assert.Equal("kcb.receipt.1", (string)posted["batchOperationId"]);
+                Assert.Equal(replay, (bool)posted["replayed"]);
+            }
+
+            task.HandleFlashResponse(early, _ => { });
+            Assert.False((bool)posted["success"]);
+            task.HandleWebRequest("bulkQuery", Request("{\"callId\":\"receipt.incomplete\"}"));
+            var incomplete = ResponseFor(sent[^1], true);
+            incomplete.Remove("catalog");
+            task.HandleFlashResponse(incomplete, _ => { });
+            task.ClearPending();
+            int before = sent.Count;
+            task.HandleWebRequest("saveCart", Request("{\"callId\":\"receipt.blocked\",\"cart\":[]}", OwnerB));
+            Assert.Equal("reconcile_required", (string)posted["error"]);
+            Assert.Equal(before, sent.Count);
+            task.HandleWebRequest("bulkQuery", Request("{\"callId\":\"receipt.refresh\"}", OwnerB));
+            task.HandleFlashResponse(ResponseFor(sent[^1], true), _ => { });
+            Assert.True((bool)posted["success"]);
+            task.HandleWebRequest("saveCart", Request("{\"callId\":\"receipt.next\",\"cart\":[]}", OwnerB));
+            Assert.Equal(before + 2, sent.Count);
+        }
+
+        [Theory]
+        [InlineData("checkoutCommit", "newBalance")]
+        [InlineData("checkout", "delivered")]
+        [InlineData("claim", "purchasedView")]
+        [InlineData("claim", "purchasedToken")]
+        [InlineData("claimBatch", "purchased")]
+        [InlineData("claimBatch", "resultRows")]
+        [InlineData("claimBatch", "committedPurchasedToken")]
+        [InlineData("claimBatch", "batchTokenType")]
+        [InlineData("claim", "tokenType")]
+        [InlineData("claim", "catalog")]
+        [InlineData("claim", "flagType")]
+        [InlineData("claim", "flagFalse")]
+        [InlineData("checkoutCommit", "extra")]
+        public void DeferredMarkerCannotReplaceWriteProof(string cmd, string invalidField)
+        {
+            var sent = new List<string>();
+            JObject posted = null;
+            using var task = new ShopTask(() => true, wire => { sent.Add(wire); return true; });
+            task.SetPostToWeb(json => posted = JObject.Parse(json));
+            var write = BeginCatalogDeferredWrite(task, sent, cmd);
+            switch (invalidField)
+            {
+                case "catalog": write["catalog"] = new JArray(CatalogItem()); break;
+                case "flagType": write["refreshDeferred"] = "true"; break;
+                case "flagFalse": write["refreshDeferred"] = false; break;
+                case "tokenType": write["purchasedToken"] = new JArray(); break;
+                case "batchTokenType": write["committedPurchasedToken"] = new JObject(); break;
+                case "extra": write["extra"] = 1; break;
+                case "newBalance": write["newBalance"] = 100; break;
+                case "purchasedToken": write["purchasedToken"] = "shop.test.1"; break;
+                case "committedPurchasedToken": write["committedPurchasedToken"] = "shop.test.1"; break;
+                default: write.Remove(invalidField); break;
+            }
+            task.HandleFlashResponse(write, _ => { });
+            Assert.False((bool)posted["success"]);
+            Assert.Equal("reconcile_required", (string)posted["error"]);
+            Assert.Equal("invalid_response", (string)posted["cause"]);
+        }
+
         [Fact]
         public void MalformedBulkQuery_DoesNotUnlockReconcileGate()
         {

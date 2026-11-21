@@ -387,6 +387,8 @@ namespace CF7Launcher.Tests.Guardian
                 source,
                 "case \"bulkQuery\":",
                 "case \"snapshot\":");
+            Assert.Contains("case \"claimBatch\":", Slice(kshop, "case \"bulkQuery\":",
+                "if (!IsStrictDomainlessPanelEnvelope(parsed))"));
             Assert.True(
                 kshop.IndexOf(
                     "HasExactActivePanelOwnerBinding(parsed, \"kshop\")",

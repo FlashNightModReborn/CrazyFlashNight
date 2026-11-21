@@ -8809,6 +8809,7 @@ namespace CF7Launcher.Guardian
                 case "checkoutCommit":
                 case "checkout":
                 case "claim":
+                case "claimBatch":
                 case "saveCart":
                     if (!IsStrictDomainlessPanelEnvelope(parsed))
                     {

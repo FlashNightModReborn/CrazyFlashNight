@@ -438,6 +438,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         nextSaveAmbiguous: false,
         nextCheckoutAmbiguous: false,
         nextCheckoutMalformed: false,
+        nextCheckoutDeferred: false,
+        failNextCatalogRead: false,
         nextAutoTransferError: null,
         nextAutoTransferBatchError: null,
         leaseSeq: 0,
@@ -466,6 +468,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             this.nextSaveAmbiguous = false;
             this.nextCheckoutAmbiguous = false;
             this.nextCheckoutMalformed = false;
+            this.nextCheckoutDeferred = false;
+            this.failNextCatalogRead = false;
             this.nextAutoTransferError = null;
             this.nextAutoTransferBatchError = null;
             this.leaseSeq = 0;
@@ -1122,6 +1126,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 return;
             }
             if (message.cmd === 'bulkQuery') {
+                if (this.failNextCatalogRead) {
+                    this.failNextCatalogRead = false;
+                    this.respond(message, {success:false,error:'disconnected'}, delay);
+                    return;
+                }
                 this.rotatePurchasedToken();
                 var cartSnapshot=strictKShopCartSnapshot(this.state.cart,this.state.catalog);
                 this.respond(message, {
@@ -1218,7 +1227,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 }
                 this.inventoryVersions.背包 += 1;
                 this.state.cart = [];
-                if (this.nextCheckoutMalformed) {
+                if (this.nextCheckoutDeferred) {
+                    this.nextCheckoutDeferred = false;
+                    this.respond(message, {success:true,refreshDeferred:true,
+                        purchasedToken:this.state.purchasedToken,newBalance:this.state.kpoints}, delay);
+                } else if (this.nextCheckoutMalformed) {
                     this.nextCheckoutMalformed = false;
                     this.respond(message, {success:true}, delay);
                 } else if (this.nextCheckoutAmbiguous) {
@@ -2111,9 +2124,27 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         Host.nextCheckoutMalformed = true;
         await confirmCheckout();
         await waitFor(function(){ return countCmd('bulkQuery') >= 2 && !document.querySelector('.kshop-write-busy'); }, 1000);
-        assert('kshop-ui8','畸形成功 checkoutCommit 只 bulkQuery 对账且不重放提交',
-            countCmd('checkoutCommit') === 1 && countCmd('bulkQuery') === 2 && document.querySelectorAll('.kshop-cart-row').length === 0,
-            'checkoutCommit=' + countCmd('checkoutCommit') + ' bulk=' + countCmd('bulkQuery'));
+        var unknownReadBack = countCmd('checkoutCommit') === 1 && countCmd('bulkQuery') === 2
+            && document.querySelectorAll('.kshop-cart-row').length === 0;
+
+        await Host.open();
+        addEquipment();
+        await wait(120);
+        Host.nextCheckoutDeferred = true;
+        Host.failNextCatalogRead = true;
+        await confirmCheckout();
+        var retrySelector = '.workbench-modal[data-modal-kind="reconcile"] [data-action="retry"]';
+        await waitFor(function(){ return document.querySelector(retrySelector); }, 1000);
+        var retryRead = document.querySelector(retrySelector);
+        var confirmedMessage = retryRead && retryRead.closest('.workbench-modal').textContent.includes('交易已完成')
+            && retryRead.textContent.includes('刷新目录') && !!document.querySelector('.kshop-write-busy');
+        if (retryRead) retryRead.click();
+        await waitFor(function(){ return countCmd('bulkQuery') === 3 && !document.querySelector('.kshop-write-busy'); }, 1000);
+        assert('kshop-ui8','畸形回包对账；已确认的购买在目录读取失败后仍提示成功，重试只读目录',
+            unknownReadBack && confirmedMessage && countCmd('checkoutCommit') === 1 && countCmd('bulkQuery') === 3
+                && !document.querySelector('.kshop-write-busy') && document.querySelectorAll('.kshop-cart-row').length === 0,
+            'unknownReadBack=' + unknownReadBack + ' confirmed=' + confirmedMessage
+                + ' checkoutCommit=' + countCmd('checkoutCommit') + ' bulk=' + countCmd('bulkQuery'));
 
         await Host.open();
         addEquipment();
