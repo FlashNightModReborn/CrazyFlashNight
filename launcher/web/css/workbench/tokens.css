@@ -1365,3 +1365,17 @@
     --wb-semantic-meridian-leader-stroke: rgba(207, 194, 170, 0.5);
     --wb-semantic-meridian-leader-stroke-dim: rgba(207, 194, 170, 0.22);
 }
+
+
+:root {
+    --egg-panel-background: #170b11;
+    --egg-text: #fff;
+    --egg-shadow: #000;
+    --egg-intro-frame-ms: 1291.667ms;
+    --egg-intro-content-ms: 333.333ms;
+    --egg-confirm-ms: 583.333ms;
+    --egg-exit-base-ms: 833.333ms;
+    --egg-ease-in: ease-in;
+    --egg-ease-out: ease-out;
+    --egg-linear: linear;
+}

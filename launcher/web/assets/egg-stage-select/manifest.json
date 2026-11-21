@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "authority": "flashswf/UI/彩蛋地图关卡界面.fla",
+  "generator": "tools/export-egg-stage-art.py",
+  "sources": {
+    "flashswf/UI/彩蛋地图关卡界面.fla": "03a61d403fbdeb80dd517dd68aae9fed4ad92104d9889b892053fb32e90c1541",
+    "tools/xfl-ui-svg/xfl_to_svg.py": "2eb4157769df821b9e085c34a88aa316dbf2f236a4e37c27d08fc9791d1755ca",
+    "tools/export-egg-stage-art.py": "6213ae4d7c32cdf525fcad8b94e986a6abffc5e4780ac039cc16ca35e21ad670"
+  },
+  "timeline": {
+    "frames": 60,
+    "frameRate": 24,
+    "intro": [
+      31,
+      39
+    ],
+    "idle": 39,
+    "exit": [
+      40,
+      59
+    ]
+  },
+  "files": {
+    "panel-base.svg": {
+      "sha256": "736d17a969ac3697209540c2e2857664cfd3e9c85a3d228dd593e6816e700c6e",
+      "bytes": 3894
+    },
+    "close.svg": {
+      "sha256": "c4e1a3a33f8690363904ea126e8123c35331ff96eacfebe34f6005c4f63a44dd",
+      "bytes": 389
+    },
+    "confirm-dialog.svg": {
+      "sha256": "27f5afe2ae38f878d0a8c5e71afae0d9243a62cbf9593207cbaf83605bd77eee",
+      "bytes": 5013
+    },
+    "forest_depth.png": {
+      "sha256": "250c85c67493a360927627a3bd9b59a9ec48267686876f3b2f02f1cf9990dbad",
+      "bytes": 337355
+    },
+    "machine_zone.png": {
+      "sha256": "f228e150c6cbb83e5e9728166a711fd8e635e18364aa5a47ab5a8bedc9dd60e6",
+      "bytes": 402579
+    },
+    "forest_center.png": {
+      "sha256": "cb8a6a9baf4be01677c116c6c1bfd44459938b674f4aeb97d6367da5c89303f4",
+      "bytes": 402538
+    },
+    "panel-enter.wav": {
+      "sha256": "0f8cf7891296d2b34e6803396fff98f64704f8545782ffc12dc4afe2e6de3e63",
+      "bytes": 132344
+    },
+    "confirm-open.wav": {
+      "sha256": "495e83aebd655317b99ce4a54ce1084453a911f2a0934cf4365d05c77f7da27b",
+      "bytes": 132344
+    },
+    "confirm-cancel.wav": {
+      "sha256": "0adc69ad789c9b34ab1faa27f0ad5a9516b805981885ebe95123ba8e0c513abb",
+      "bytes": 176444
+    },
+    "layout.json": {
+      "sha256": "c0a63fdb39eb024a0996e5aae3f8d84f95c1f3e27f8359a86d006bbd27e8e9bc",
+      "bytes": 1568
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "stage": {
+    "width": 540,
+    "height": 370,
+    "frameRate": 24
+  },
+  "intro": {
+    "baseDurationMs": 1291.6666666666667,
+    "contentDurationMs": 333.3333333333333,
+    "baseAlpha": 0.53
+  },
+  "exit": {
+    "durationMs": 833.3333333333334,
+    "contentDurationMs": 333.3333333333333
+  },
+  "confirm": {
+    "durationMs": 583.3333333333334,
+    "scale": 0.702301025390625,
+    "x": -37.15,
+    "y": 211.3
+  },
+  "previews": {
+    "forest_depth": {
+      "file": "forest_depth.png",
+      "x": 8.7,
+      "y": 44.75,
+      "width": 250.994,
+      "height": 76.1389
+    },
+    "machine_zone": {
+      "file": "machine_zone.png",
+      "x": 9.1,
+      "y": 129.95,
+      "width": 250.9735,
+      "height": 76.0727
+    },
+    "forest_center": {
+      "file": "forest_center.png",
+      "x": 9.1,
+      "y": 215,
+      "width": 250.9798,
+      "height": 75.1147
+    }
+  },
+  "texts": [
+    {
+      "runs": [
+        "密林深处",
+        "\r",
+        "阴暗处似乎有神秘人士正在运货",
+        ""
+      ],
+      "x": 325.85,
+      "y": 58.65
+    },
+    {
+      "runs": [
+        "机器游荡区",
+        "\r",
+        "机械造物徘徊在生灵之间",
+        ""
+      ],
+      "x": 347.85,
+      "y": 143.39999999999998
+    },
+    {
+      "runs": [
+        "密林中央",
+        "\r",
+        "不明信号源来自于此",
+        ""
+      ],
+      "x": 356.35,
+      "y": 227.8
+    },
+    {
+      "runs": [
+        "请点击下方预览图选择关卡",
+        ""
+      ],
+      "x": 50.25,
+      "y": 15.25
+    }
+  ]
+}

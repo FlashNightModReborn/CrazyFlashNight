@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><base href="/launcher/web/">
+<title>彩蛋地图选关验证</title>
+<link rel="stylesheet" href="css/overlay.css"><link rel="stylesheet" href="css/panels.css"><link rel="stylesheet" href="css/terminal.css">
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080b0e}</style></head><body>
+<div id="panel-container" style="display:none"><div id="panel-backdrop"></div><div id="panel-content"></div></div><div id="panel-tooltip"></div>
+<script>
+window.__sent=[];window.__handlers={};window.__sequence=0;window.__locked=false;
+function clone(value){return JSON.parse(JSON.stringify(value))}
+window.__emit=function(value){(__handlers[value.type]||[]).slice().forEach(function(callback){callback(value)})};
+var destinations=[
+  {id:'forest_depth',name:'密林深处',stageName:'密林深处',difficulty:'简单',hintLocked:false},
+  {id:'machine_zone',name:'机器游荡区',stageName:'机器游荡区',difficulty:'简单',hintLocked:false},
+  {id:'forest_center',name:'密林中央',stageName:'密林中央',difficulty:'冒险',hintLocked:false}
+];
+window.Bridge={
+  on:function(type,callback){(__handlers[type]||(__handlers[type]=[])).push(callback)},
+  off:function(type,callback){var list=__handlers[type]||[],index=list.indexOf(callback);if(index>=0)list.splice(index,1)},
+  send:function(message){
+    __sent.push(clone(message));
+    if(message.cmd==='close')return true;
+    var result={type:'panel_resp',panel:'egg-stage-select',domain:'egg_stage_select',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,v:1,operation:message.cmd,success:true};
+    if(message.cmd==='snapshot'){
+      result.progress={main:67,egg:4};
+      result.destinations=destinations.map(function(destination){var row=clone(destination);row.unlocked=!__locked||destination.id!=='machine_zone';row.hintLocked=__locked&&destination.id==='machine_zone';row.lockReason=row.unlocked?'':'彩蛋进度达到 4，主线任务进度达到 67';return row});
+    }else if(message.cmd==='enter'){
+      var destination=destinations.find(function(item){return item.id===message.payload.destinationId});
+      result.closePanel=true;result.destinationId=destination.id;result.stageName=destination.stageName;result.difficulty=destination.difficulty;
+    }
+    setTimeout(function(){__emit(result)},5);return true;
+  }
+};
+window.BootstrapAudio={cue:function(){}};
+</script>
+<script src="modules/panels.js"></script><script src="modules/panel-scale.js"></script><script src="modules/panel-runtime.js"></script>
+<script src="modules/egg-stage-select-runtime.js"></script><script src="modules/egg-stage-select.js"></script>
+<script>
+Panels.init();
+window.__open=function(){Panels.open('egg-stage-select',{panelInstanceId:'egg.panel.'+(++__sequence),source:'world_egg_computer'})};
+__open();
+</script></body></html>
