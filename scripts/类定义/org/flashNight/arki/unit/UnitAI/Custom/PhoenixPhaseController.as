@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.arki.render.EquipmentLightBridge;
+import org.flashNight.arki.unit.Action.Huofeng.HuofengReviveShield;
 
 /** Unit-local phase ownership. Existing AI, attacks and final death stay shared. */
 class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
@@ -15,8 +16,12 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
     public static function initialize(u:MovieClip):Void {
         if(u.__phoenixPhase || u.NPC || u._parent!==_root.gameworld)return;
         var c:Object={unit:u,world:u._parent,hp:Number(u.hp),phase:0,transition:false,
-            nirvana:Boolean(u.宠物属性.涅槃重生),count:0,impacts:0,frame:0,
+            nirvana:Boolean(u.宠物属性.涅槃重生),count:0,impacts:0,frame:0,shieldId:-1,
             oldState:u.状态改变,externalInvincible:u.无敌===true};
+        if (u.是否为敌人 && Number(u.phoenixReviveShieldFrames)>0) {
+            c.shieldFrames=Number(u.phoenixReviveShieldFrames);
+            c.initialMaxHp=Number(u.hp满血值);
+        }
         u.__phoenixPhase=c;
         u.addProperty("hp",function():Number {return this.__phoenixPhase.hp;},
             function(value:Number):Void {PhoenixPhaseController.setHP(this,Number(value));});
@@ -78,6 +83,10 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
         if(c.phase<2 && value<=0) {
             // Zero never reaches shared kill/death consumers between lives.
             c.hp=1;c.transition=true;c.pending=true;c.count++;
+            if (c.shieldId>=0) {
+                u.shield.removeShieldById(c.shieldId);
+                c.shieldId=-1;
+            }
             c.x=u._x;c.z=u.Z轴坐标;
             c.lift=Math.min(0,(u._y-c.z)*100/u._yscale);
             // Original demo: stage ty 669.5 -> 460.55, a 208.95px rise.
@@ -224,6 +233,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
         if(c.step=="ready") {
             u.man._visible=true;u.man.play();
             c.visual.removeMovieClip();c.impactArea.removeMovieClip();
+            if (c.shieldFrames>0) c.shieldId=HuofengReviveShield.grant(u,c.initialMaxHp,c.shieldFrames);
             c.transition=false;c.externalInvincible=false;
             u.aabbCollider.updateFromUnitArea(u);
             return;
@@ -293,6 +303,10 @@ class org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController {
         var c:Object=u.__phoenixPhase;
         if(!c)return;
         c.cancelled=true;c.lightCast.cancelled=true;
+        if (c.shieldId>=0) {
+            u.shield.removeShieldById(c.shieldId);
+            c.shieldId=-1;
+        }
         c.visual.removeMovieClip();c.impactArea.removeMovieClip();c.aura.removeMovieClip();
         c.visual=null;c.impactArea=null;c.aura=null;
         delete c.thinker.onEnterFrame;

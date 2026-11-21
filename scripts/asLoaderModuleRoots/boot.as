@@ -122,6 +122,7 @@ org.flashNight.arki.component.Damage.DamageManager;
 org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor;
 org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue;
 org.flashNight.arki.bullet.BulletComponent.Collider.BandRayCollider;
+org.flashNight.arki.unit.Action.Huofeng.HuofengReviveShield;
 org.flashNight.arki.unit.Action.Huofeng.HuofengCombat;
 org.flashNight.arki.unit.Action.Huofeng.HuofengAction;
 org.flashNight.arki.unit.Action.Huofeng.HuofengSetRuntime;

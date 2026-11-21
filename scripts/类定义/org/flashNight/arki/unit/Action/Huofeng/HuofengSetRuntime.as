@@ -29,6 +29,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengSetRuntime {
     private var hudNirvana:MetaBuff;
     private var hudNirvanaId:String;
     private var hudTier:Number;
+    private var reviveShieldId:Number;
 
     public static function prepare(record:Object, unit:MovieClip):Object {
         if (!unit || !unit.buffManager || unit.__huofeng || !HuofengRules.hasFivePieces(unit)) return null;
@@ -48,6 +49,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengSetRuntime {
         runtime.healTicks=0;
         runtime.projectedTier=-1;
         runtime.hudTier=-1;
+        runtime.reviveShieldId=-1;
         return runtime;
     }
 
@@ -108,6 +110,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengSetRuntime {
         HuofengNative.cancel(target,false);
         if (visuals!=null) visuals.actionChanged();
         manager.clearHuofengHpContract(this);
+        clearReviveShield();
         state=next;
         projectedTier=-1;
         healTicks=0;
@@ -124,7 +127,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengSetRuntime {
 
     private function synchronizeHud(tier:Number):Void {
         if (hudSet==undefined) {
-            hudSet=makeStatus("火凤链锤","五件齐备：空手改用流星锤，按冷兵器加成结算。普攻五段30击，跑攻12击。焰链回旋36/48MP、冷却8秒，挥击消弹。成功付费复活触发涅槃。");
+            hudSet=makeStatus("火凤链锤","五件齐备：空手改用流星锤，按冷兵器加成结算。普攻五段30击，跑攻12击。焰链回旋36/48MP、冷却8秒，挥击消弹。成功付费复活触发涅槃。五件防具强化均达到9时，恢复行动后获得相当于正常生命上限的护盾，3秒内衰减。");
             var self:HuofengSetRuntime=this;
             hudSet.hudPresentation={activeLabel:"流星锤模式",inactiveLabel:"切换空手启用",activation:{
                 isActive:function():Boolean {return HuofengRules.profileActive(self.target);},
@@ -175,7 +178,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengSetRuntime {
         if (visuals!=null) visuals.tick();
         // HP can change after this frame's maintenance. Death cleanup must
         // run again even while paused or on the same frame number.
-        if (!(target.hp>0)) { cancelAction(false);HuofengNative.cancel(target,false);healTicks=0;return; }
+        if (!(target.hp>0)) { clearReviveShield();cancelAction(false);HuofengNative.cancel(target,false);healTicks=0;return; }
         var frame:Number=Number(_root.帧计时器.当前帧数);
         if (!HuofengRules.finite(frame) || frame===lastFrame) return;
         lastFrame=frame;
@@ -218,6 +221,21 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengSetRuntime {
         healTicks=0;
         cancelAction(false);
         HuofengAction.begin(this,"nirvana",tier);
+    }
+
+    public function finishPaidNirvana(value:Object):Void {
+        if (action!==value || !isActive() || !(value.paidSequence>0)
+            || value.paidSequence!==state.lastPaidSequence || value.paidSequence!==state.presentedReviveSequence
+            || state!==HuofengRunState.forUnit(target) || !HuofengRules.qualifiesForReviveShield(target)) return;
+        clearReviveShield();
+        reviveShieldId=HuofengReviveShield.grant(target,manager.getHuofengNormalMaxHp(),90);
+    }
+
+    private function clearReviveShield():Void {
+        if (reviveShieldId>=0) {
+            target.shield.removeShieldById(reviveShieldId);
+            reviveShieldId=-1;
+        }
     }
 
     public function startAttack(running:Boolean):Boolean {
@@ -271,6 +289,7 @@ class org.flashNight.arki.unit.Action.Huofeng.HuofengSetRuntime {
     public function dispose():Void {
         if (disposed) return;
         disposed=true;
+        clearReviveShield();
         cancelAction(true);
         HuofengNative.cancel(target,true);
         if (visuals!=null) visuals.dispose();
