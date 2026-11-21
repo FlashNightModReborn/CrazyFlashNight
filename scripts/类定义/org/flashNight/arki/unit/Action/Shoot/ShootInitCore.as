@@ -608,11 +608,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      *
      * @param parentRef   父级引用
      * @param weaponType  武器类型
-     * @param weaponData  武器数据数组
+     * @param weaponData  武器属性对象
      * @param extraParams 额外参数对象
      * @return 返回子弹属性对象
      */
-    public static function generateBulletProps(parentRef:Object, weaponType:String, weaponData:Array, extraParams:Object):Object {
+    public static function generateBulletProps(parentRef:Object, weaponType:String, weaponData:Object, extraParams:Object):Object {
         var bulletProps:Object = {};
 
         // 缓存常用的对象属性，减少重复查找

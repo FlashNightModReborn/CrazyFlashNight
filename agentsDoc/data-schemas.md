@@ -421,6 +421,10 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 `useSwitch` / `skillSwitch` 的无前缀 `name` 继续匹配宿主 `use` 与 `weapontype` 的联合集合。需要消除同名歧义时可写 `use:值` 或 `weapontype:值`：例如 `weapontype:手枪` 只命中精确子类，不会命中仅因 `use=手枪` 而共用装备槽的冲锋手枪和大威力手枪。`grantsUse` 同时进入无前缀集合与 `use:` 限定集合。Tooltip 必须隐藏内部限定符，显示为“装备类型：…”或“武器子类：…”。`stats.useSwitch.use` 分支除数值运算符外还可声明 `provideTags` 与 `requireTags`：前者仅在分支命中时提供结构，后者仅在分支命中时并入根层安装前置，并必须同时用于候选过滤、安装检查、缺失标签提示与拆卸依赖判定。
 
+### 独头弹与双态霰弹枪
+
+弹药插件通过 `stats.lockOverride.ammoConversion=slug` 选择独头弹，内置双态枪在根层 `slugForm` 声明独头外观，实例的 `value.slugMode` 保存目标形态。两者都按当前进阶的单丸基础威力 × 原分弹数 ÷ 4 取整，并把独头基础弹速提升至至少 80，再照常结算强化和配件。人物加成由射击流程处理。双态枪由武器变形键独立切换，开火即结束过渡，战技槽可安装其他插件。弹管、膛内弹和付费备弹继续归原长枪实例管理。专项回归见 `scripts/run-dual-870-tests.ps1`。
+
 ### 声明式子弹命中行为 `<hitBehavior>`
 
 钛合金专用行为：`titaniumFireControl`使用`peak/durationFrames`刷新目标易伤，直接伤害固定为单段100基础物伤；`titaniumBloodPact`由所属战技动作生成`directPower/crumble/execute`快照，保留联弹段数，允许人物固定增伤，隔离毒、吸血、暴击及其他百分比附伤。击溃和斩杀仍各按一次有效目标结算，不按霰弹数循环；二者继续执行真实命中与敌方盾强门槛。参数与玩法约定见[钛合金施工记录](../docs/钛合金61反馈调整-施工与验收-2026-09-10.md)。
@@ -457,7 +461,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 `data/items/equipment_mods/ui_presentation.xml` 是上述 ID 的受控标签/色号词典，以及插件格角色→符号、`tag`→默认角色的展示词典；它不得重新分配单个插件的档级或目录用途。`EquipModListLoader` 并行加载词典与子文件，向 `EquipmentUtil.modDict` 投影 `modGrade/catalogScope/uiGradeLabel/uiGradeColor/uiScopeLabel/uiRole/uiRoleLabel/uiSymbol`。角色符号采用 `形状-solid|outline` 受控 token；单个插件仅在 `tag` 默认角色不准确时声明 `<uiRole>` 覆盖，禁止填写任意 Unicode/HTML 符号。`EquipmentTuningService.modCandidates[]` 暴露档级/用途/定位/受控符号供候选树和紧凑瓦片展示，未知符号由 Web 白名单回退；`InventoryPanelService` 对松散插件材料附加 `modMeta`，安装规则和提交权威仍由 AS2 持有；wire 只携可用性 Boolean、数量、替换关系和有界原因文本，详见[装备配件规则](../docs/equipment-plugin-rules.md)。
 
-`data/items/收集品_材料_插件.xml` 与 `收集品_材料.xml` 只维护库存、经济、图标和说明，不复制档级/用途/定位。构建门 `node tools/validate-equipment-mod-ui.js` 固定校验 107 个 mod、四档、六种 scope、全部现役 `tag`/角色/符号，并要求每个 mod 名称在 `data/items/list.xml` 引用的物品文件中恰好出现一次；其中插件材料文件的 103 个条目必须全部映射到 mod。特殊档原图错色视为美术流程问题，不参与运行时取色或兼容逻辑。
+`data/items/收集品_材料_插件.xml` 与 `收集品_材料.xml` 只维护库存、经济、图标和说明，不复制档级/用途/定位。构建门 `node tools/validate-equipment-mod-ui.js` 校验全部 mod、四档、六种 scope、全部现役 `tag`/角色/符号，并要求每个 mod 名称在 `data/items/list.xml` 引用的物品文件中恰好出现一次；其中插件材料文件的所有条目必须全部映射到 mod。特殊档原图错色视为美术流程问题，不参与运行时取色或兼容逻辑。
 
 ### 材料档案 authored catalog 与 legacy 字典
 
@@ -465,8 +469,8 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 - `<DirectPurpose>` exact 子键为 `id/label/order/consumerEvidence`。当前受控 registry 包含 `system:equipment_tuning / 装备改装 / 0 / EquipmentTuningService` 与 `system:infrastructure_upgrade / 基建升级 / 1 / InfrastructureUpgradeUI`。未知 ID、重复 ID/order、非连续物理顺序或 consumer evidence 漂移均失败关闭。
 - `<Material>` exact 子键以 `Name/typeId/legacyVisible` 开头；`typeId` 只允许 `equipment_mod|food|general`。只有 `legacyVisible=true` 才必须带 `legacyInformation`，反之必须省略；`authoredDirectPurposeId` 可重复且必须命中同文件 registry。字段缺失必须保持省略，禁止序列化为字符串 `undefined`。
-- `<Material>` 物理位置就是 `archiveOrder`，不在 authored XML 重复保存第二个 order 字段。初始迁移严格保持旧字典 58 项原序，再追加 `data/items/list.xml` 中尚未出现的 166 项材料载入序；当前闭包为 `234/234`、连续 `0..233`。新增、删除或重排都必须先显式修改 catalog，不能由 Web、对象枚举或本地化名称自动决定。
-- `equipment_mod` 当前精确等于 `data/items/equipment_mods/list.xml` 的 107 个 mod identity；食材来自 `消耗品_材料_食材.xml` 的 50 项，其余 77 项为 `general`。107 项装备改装用途由 runtime mod metadata 机器派生，不在 catalog 重复 authored；只有 `强化石 / 二阶复合防御组件 / 三阶复合防御组件 / 四阶复合防御组件 / 墨冰战术涂料 / 狱火战术涂料` 六个经现役 consumer 证明的非 mod-metadata 例外 authored 同一个 `system:equipment_tuning`，且不得因此伪造 mod facets 或 `equipment_mod` type。
+- `<Material>` 物理位置就是 `archiveOrder`，不在 authored XML 重复保存第二个 order 字段。初始迁移严格保持旧字典 58 项原序，再追加 `data/items/list.xml` 中尚未出现的 166 项材料载入序；新材料追加在末尾以保留已发布的档案顺序。新增、删除或重排都必须先显式修改 catalog，不能由 Web、对象枚举或本地化名称自动决定。
+- `equipment_mod` 当前精确等于 `data/items/equipment_mods/list.xml` 的 mod identity；食材来自 `消耗品_材料_食材.xml`，其余为 `general`。装备改装用途由 runtime mod metadata 机器派生，不在 catalog 重复 authored；只有 `强化石 / 二阶复合防御组件 / 三阶复合防御组件 / 四阶复合防御组件 / 墨冰战术涂料 / 狱火战术涂料` 六个经现役 consumer 证明的非 mod-metadata 例外 authored 同一个 `system:equipment_tuning`，且不得因此伪造 mod facets 或 `equipment_mod` type。
 - `system:infrastructure_upgrade` 的材料集合只以 `data/infrastructure/infrastructure.xml` 中各级 `<Material><Name>` 为真源；当前为 67 个需求 occurrence、21 个 unique material identity。catalog 中这 21 项的 `authoredDirectPurposeId` 只是由 generator exact-check 约束的分类投影：集合必须与 XML 去重结果完全相等，所有 identity 必须命中材料 exact-set；连同装备改装六例外，当前 authored direct-purpose refs 总数为 27、registry 总数为 2。`flashswf/UI/平板电脑界面/LIBRARY/基建内容整体.xml` 只作为 `InfrastructureUpgradeUI` consumer evidence。sidecar 当前 schema 为 `cf7.material-dictionary-generated.v2`、producer 为 `material-catalog-producer.v2`；其顶层 `infrastructure` exact 为 `{path,consumerEvidencePath,materialOccurrenceCount,materialCount}`，并把两个输入的 digest 纳入闭包。
 - 含该 direct purpose 的 v2 `materialDetail` 条件增加 `infrastructureUses[]`；其他材料及历史不含该 registry 的 v2 response 必须省略此键。项目 exact 为 `{infrastructureName,projectOrder,currentLevel,maximumLevel,levels}`，等级 exact 为 `{levelIndex,targetLevel,required,owned,missing,status}`，其中 `status` 只允许 `completed|current|future`。配置与物理顺序在 catalog snapshot 时从已就绪的 `_root.基建系统.nameList/dict` 冻结，缺失或不闭合时局部失败关闭；`levelIndex/targetLevel=levelIndex+1` 只认 `Level[]` 数组位置，不信任历史 XML `id`。详情读取 live `infrastructure[name]`，只投影已有自有键的已发现项目；未发现项目不得泄露名称。`owned` 沿用材料 snapshot，完成级 `missing=0`，当前/后续级为 `max(required-owned,0)`。Web 用这些数据替换重复的泛化“基建升级”行，显示逐项目、逐等级需求与缺口；仍为纯只读信息，不提供“前往基建”。
 - 配方 category 的 authored order 仍只来自 `data/crafting/list.xml` 的物理 `<list>` 顺序，catalog 不复制第二真源。生成 sidecar 会绑定并列出该顺序，运行时 loader 必须在 keyed merge 前保存它。

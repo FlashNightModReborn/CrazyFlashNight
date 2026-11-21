@@ -371,6 +371,7 @@ org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.DeadHandVisual;
 org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentFireIntent;
 org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BladeSlot;
 org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.SheriffBatonController;
+org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.Dual870Controller;
 org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponAnimationTarget;
 org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.MuzzleWorldShoot;
 org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.ActivationGlowWindow;

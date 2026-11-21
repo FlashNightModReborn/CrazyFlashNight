@@ -277,6 +277,28 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         return coordinator.flush(reason);
     }
 
+    /** Update one form on the existing long gun; preserve the equipment and tube reload state. */
+    public static function applyLongGunShellForm(target:MovieClip, itemData:Object):Void {
+        var item:BaseItem = target.长枪;
+        var source:Object = itemData.data;
+        var live:Object = target.长枪属性;
+        target.长枪数据 = itemData;
+        recordNumericSource(target, "长枪", item, itemData);
+        live.bullet = source.bullet;
+        live.bulletrename = source.bulletrename;
+        live.split = source.split;
+        live.velocity = source.velocity;
+        live.dressup = source.dressup;
+        target.长枪_装扮 = source.dressup;
+        // The usual projection applies equipment flat bonuses, active buffs and passive firepower.
+        requestPersistentRefresh(target, "morph");
+        if (target.攻击模式 == "长枪" && target.man.子弹属性 != undefined) {
+            // A previously fired template has in-place chain/ray flags. Start from the new form.
+            target.man.子弹属性 = org.flashNight.arki.unit.Action.Shoot.ShootInitCore.generateBulletProps(
+                target, "长枪", live, {});
+        }
+    }
+
     public static function applyMusicModeCommand(ref:Object):Void {
         requestPersistentRefresh(ref.自机,"morph");
     }

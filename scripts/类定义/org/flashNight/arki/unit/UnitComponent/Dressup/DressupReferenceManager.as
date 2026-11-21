@@ -296,7 +296,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
     // 刷新所有已注册的装扮（换装后调用）
     // ====================================================================
 
-    public static function refreshAll(unit:MovieClip):Void {
+    public static function refreshAll(unit:MovieClip, onlySkinKey:String):Void {
 
         var registry:Object = unit.dressupRegistry;
         if (!registry) return;
@@ -315,6 +315,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
                 continue;
             }
 
+            if (onlySkinKey != undefined && entry.skinKeyName != onlySkinKey) continue;
             // 从 unit 获取最新 skinConfig，执行刷新配置
             doConfig(mc, unit[entry.skinKeyName], entry.instanceName, entry.referenceName, unit);
         }
