@@ -43,24 +43,9 @@
         this._onCandidateAuthorityReset =
             typeof options.onCandidateAuthorityReset === 'function'
                 ? options.onCandidateAuthorityReset : noop;
-        this._state = 'closed';
         this._candidateScope = 'compatible';
-        this._panelInstanceId = '';
-        this._sessionGeneration = null;
-        this._writeEpoch = 0;
-        this._loadoutRevision = 0;
-        this._liveRevision = 0;
-        this._drugRevision = 0;
-        this._liveRefreshDirty = false;
-        this._snapshot = null;
-        this._unknown = null;
-        this._openingCallId = '';
-        this._openingAttempts = 0;
-        this._reconcileCallId = '';
-        this._reconcileIntent = null;
-        this._loadoutTooltipPending = null;
-        this._candidateFailureCode = '';
         this._destroyed = false;
+        this._resetSessionState();
         this._hostEvents = options.hostEvents || hostEvents;
         this._onShutdownReturned = this.acceptShutdownRetry.bind(this);
         if (this._hostEvents) this._hostEvents.on('character_build_retry_available', this._onShutdownReturned);
@@ -681,9 +666,7 @@
         return this._state !== 'closed' && this._state !== 'finalized';
     };
 
-    CharacterBuildSession.prototype.close = function() {
-        this._cancelLoadoutTooltip('session_closed');
-        if (this._mux && this._mux.closeSession) this._mux.closeSession();
+    CharacterBuildSession.prototype._resetSessionState = function() {
         this._state = 'closed';
         this._panelInstanceId = '';
         this._sessionGeneration = null;
@@ -702,6 +685,12 @@
         this._candidateFailureCode = '';
     };
 
+    CharacterBuildSession.prototype.close = function() {
+        this._cancelLoadoutTooltip('session_closed');
+        if (this._mux && this._mux.closeSession) this._mux.closeSession();
+        this._resetSessionState();
+    };
+
     CharacterBuildSession.prototype.destroy = function() {
         if (this._destroyed) return false;
         this.close();
@@ -718,12 +707,8 @@
 
     CharacterBuildSession.prototype.getSnapshot = function() { return this._snapshot; };
     CharacterBuildSession.prototype.getState = function() { return this._state; };
-    CharacterBuildSession.prototype.getSessionGeneration = function() {
-        return this._sessionGeneration;
-    };
-    CharacterBuildSession.prototype.getLoadoutRevision = function() {
-        return this._loadoutRevision;
-    };
+    CharacterBuildSession.prototype.getSessionGeneration = function() { return this._sessionGeneration; };
+    CharacterBuildSession.prototype.getLoadoutRevision = function() { return this._loadoutRevision; };
     CharacterBuildSession.prototype.debugState = function() {
         return {
             state:this._state,
@@ -744,15 +729,8 @@
     };
 
     return {
-        CharacterBuildSession:CharacterBuildSession,
-        commands:COMMANDS.slice(),
-        targetKey:targetKey,
-        candidateScope:candidateScope,
-        validators:{
-            projection:validProjection,
-            candidates:validCandidates,
-            tooltip:validTooltip,
-            stats:validStats
-        }
+        CharacterBuildSession:CharacterBuildSession, commands:COMMANDS.slice(),
+        targetKey:targetKey, candidateScope:candidateScope,
+        validators:{projection:validProjection, candidates:validCandidates, tooltip:validTooltip, stats:validStats}
     };
 });

@@ -89,8 +89,8 @@ namespace CF7Launcher.Tests.Guardian
         [Theory]
         [InlineData("火花", "13,12,11,10,9")]
         [InlineData("击中金属", "8,7,6,5")]
-        [InlineData("拼刀火花", "530,531,532,533,534,535")]
-        [InlineData("战术巴雷特击中特效", "454")]
+        [InlineData("拼刀火花", "537,538,539,540,541,542")]
+        [InlineData("战术巴雷特击中特效", "461")]
         [InlineData("屎花", "4,3,2,1")]
         public void TimelineSoundsBindAllTwentyReviewedSwfEventsToFullSfxFilenames(string linkage, string sourceIds)
         {

@@ -26,11 +26,14 @@
        P2：浏览面迁入壳后由 .workbench-shell 覆盖，P1c 的 .arena-panel 整板扩域随之收窄） */
     .workbench-shell, .workbench-shell *, .workbench-shell .workbench-secondary-page,
     .workbench-shell *::before, .workbench-shell *::after,
-    .arena-xshell, .arena-xshell *, .arena-xshell *::before, .arena-xshell *::after,
-    #panel-feedback-banner, #panel-feedback-banner * {
+    .arena-xshell, .arena-xshell *, .arena-xshell *::before, .arena-xshell *::after {
         animation:none !important;
         scroll-behavior:auto !important;
         transition:none !important;
+    }
+    #panel-feedback-banner, #panel-feedback-banner * {
+        animation:none;
+        transition:none;
     }
     .workbench-secondary-page { transform:none; }
     #panel-container:is([data-panel="kshop"],[data-panel="workbench"],[data-panel="npcshop"],[data-panel="crafting"],[data-panel="skills"],[data-panel="loot"])

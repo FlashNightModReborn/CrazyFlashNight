@@ -99,8 +99,8 @@ class SourceRecipeTests(unittest.TestCase):
 
     def test_legacy_event_sounds_are_bound_to_each_variant_birth(self):
         expected = {'火花': [13, 12, 11, 10, 9], '击中金属': [8, 7, 6, 5],
-                    '拼刀火花': [530, 531, 532, 533, 534, 535],
-                    '战术巴雷特击中特效': [454], '屎花': [4, 3, 2, 1]}
+                    '拼刀火花': [537, 538, 539, 540, 541, 542],
+                    '战术巴雷特击中特效': [461], '屎花': [4, 3, 2, 1]}
         for name, ids in expected.items():
             plan = self.by_name[name]
             self.assertTrue(plan['soundAtBirth'])
@@ -110,7 +110,7 @@ class SourceRecipeTests(unittest.TestCase):
     def test_common_frame_zero_event_applies_to_every_selected_variant(self):
         root = ET.parse(recipes.ROOT / recipes.SOURCE_LIBRARIES[0]['libraryRoot'] /
                         '特效-击中效果组/战术巴雷特击中特效.xml').getroot()
-        self.assertEqual(['cfnfx-stock-454.wav'] * 3, recipes.timeline_cues(
+        self.assertEqual(['cfnfx-stock-461.wav'] * 3, recipes.timeline_cues(
             root, '战术巴雷特击中特效', [[1, 2], [4, 5], [8, 9]]))
 
     def test_timeline_sound_sync_or_delayed_event_is_not_ignored(self):
@@ -143,7 +143,7 @@ class SourceRecipeTests(unittest.TestCase):
                          ('sourceSeekSamples', 'sampleRate', 'sampleFrames')))
         self.assertEqual((1669, 11025, 3834), tuple(by_id[8][k] for k in
                          ('sourceSeekSamples', 'sampleRate', 'sampleFrames')))
-        self.assertEqual(0, by_id[530]['sourceSeekSamples'])
+        self.assertEqual(0, by_id[537]['sourceSeekSamples'])
         for sound in sounds:
             self.assertEqual('sounds/export/特效/' + sound['id'], sound['path'])
 

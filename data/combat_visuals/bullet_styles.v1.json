@@ -3,7 +3,7 @@
   "generator": "tools/combat-bullet-visuals/build.py",
   "generatorSha256": "961a8b3a08bf1bc33d2251e4558149bf26f068a0fb57277cf0934c8456a20ac9",
   "sourceSwf": "flashswf/arts/原版素材库-子弹.swf",
-  "sourceSwfSha256": "966d8c947ee9a2e2d267ef0f45044a167dddec611f5cd58d854ff3b06f6d4c1e",
+  "sourceSwfSha256": "8e2964ce92ba1f365f60543146276c0ddf095706afc7a8ffcc95c3229df0dfbf",
   "sources": [
     {
       "path": "flashswf/arts/原版素材库-子弹/LIBRARY/Symbol 721.xml",
@@ -97,7 +97,7 @@
     },
     {
       "path": "tools/combat-fx-assets/source_recipes.py",
-      "sha256": "f67c0fea23494974cbd4cda22fd50fdad3bda267beae617e3a727cef58b9eae1"
+      "sha256": "eddd57a2fe94107ce8f8711526c6a816a473053d56d067d409b919e84211f3a9"
     },
     {
       "path": "tools/combat-bullet-visuals/BulletSpriteExporter.java",
@@ -476,6 +476,6 @@
     "width": 1024,
     "height": 24,
     "scale": 2,
-    "pillowVersion": "12.1.0"
+    "pillowVersion": "12.2.0"
   }
 }
