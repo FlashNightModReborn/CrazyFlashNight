@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效-击中效果组/兽化碎裂烟雾" itemID="cf7a280a-00112233" linkageExportForAS="true" linkageIdentifier="兽化碎裂烟雾">
+  <timeline>
+    <DOMTimeline name="兽化碎裂烟雾">
+      <layers>
+        <DOMLayer name="Script Layer" color="#CEBA70">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="复用原小烟雾" color="#26CCA2">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/小烟雾" symbolType="movieClip" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" ty="1"/>
+                  </matrix>
+                  <color>
+                    <Color alphaMultiplier="0.5" redMultiplier="0" blueMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

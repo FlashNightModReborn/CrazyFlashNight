@@ -92,6 +92,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController {
         if (!isNaN(Number(target.Z轴坐标))) target._y = Number(target.Z轴坐标);
         target.状态 = "装甲破裂";
         target.gotoAndStop("装甲破裂");
+        if (typeof _root.效果 == "function") _root.效果("兽化碎裂烟雾", target._x, target._y, target._xscale, true);
         if (target.新版人物文字信息 != undefined) target.新版人物文字信息._visible = false;
         if (target.人物文字信息 != undefined) target.人物文字信息._visible = false;
         TargetCacheManager.removeUnit(target);
