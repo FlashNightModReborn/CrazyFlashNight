@@ -30,6 +30,7 @@ namespace CF7Launcher.Tasks
             public readonly Dictionary<string, int> Values = new Dictionary<string, int>();
             public int DecryptLevel;
             public string PcName = "";
+            public readonly Dictionary<string, int> KillCounts = new Dictionary<string, int>(StringComparer.Ordinal);
         }
 
         private sealed class IntelligencePage
@@ -263,6 +264,9 @@ namespace CF7Launcher.Tasks
                         break;
                     case "glossary_snapshot":
                         RespondGlossarySnapshot(webCallId, parsed);
+                        break;
+                    case "bestiary_catalog":
+                        RespondBestiaryCatalog(webCallId);
                         break;
                     default:
                         RespondError(webCallId, cmd, "unsupported_cmd");
@@ -576,6 +580,15 @@ namespace CF7Launcher.Tasks
             var state = new RuntimeState();
             state.DecryptLevel = ParseInt(msg["decryptLevel"], 0);
             state.PcName = msg.Value<string>("pcName") ?? "";
+            JObject rawKills = msg["kills"] as JObject;
+            if (rawKills != null)
+            {
+                foreach (JProperty property in rawKills.Properties())
+                {
+                    int count = ParseInt(property.Value, 0);
+                    if (count > 0) state.KillCounts[property.Name] = count;
+                }
+            }
 
             var items = new JArray();
             var values = new JObject();
@@ -596,6 +609,137 @@ namespace CF7Launcher.Tasks
             resp["decryptLevel"] = state.DecryptLevel;
             resp["pcName"] = state.PcName;
             PostToWeb(resp.ToString(Newtonsoft.Json.Formatting.None));
+        }
+
+        private void RespondBestiaryCatalog(string webCallId)
+        {
+            RuntimeState state;
+            lock (_lock) { state = _runtimeState; }
+            if (state == null)
+            {
+                RespondError(webCallId, "bestiary_catalog", "state_required");
+                return;
+            }
+            try
+            {
+                var entries = new Dictionary<string, JObject>(StringComparer.Ordinal);
+                string directory = Path.Combine(_projectRoot, "data", "enemy_properties");
+                string listPath = Path.Combine(directory, "list.xml");
+                var list = new XmlDocument();
+                list.Load(listPath);
+                foreach (XmlNode item in list.SelectNodes("/root/items"))
+                {
+                    string fileName = item.InnerText.Trim();
+                    if (fileName.Length == 0 || !string.Equals(Path.GetFileName(fileName), fileName, StringComparison.Ordinal)
+                        || !fileName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)) continue;
+                    string path = Path.Combine(directory, fileName);
+                    if (!File.Exists(path)) continue;
+                    var document = new XmlDocument();
+                    document.Load(path);
+                    foreach (XmlNode enemy in document.DocumentElement.ChildNodes)
+                    {
+                        if (enemy.NodeType != XmlNodeType.Element) continue;
+                        int kills;
+                        if (!state.KillCounts.TryGetValue(enemy.Name, out kills) || kills <= 0) continue;
+                        entries[enemy.Name] = BuildBestiaryEntry(enemy, kills);
+                    }
+                }
+                var ordered = new List<JObject>(entries.Values);
+                ordered.Sort(delegate(JObject left, JObject right)
+                {
+                    return StringComparer.CurrentCulture.Compare(left.Value<string>("displayName"), right.Value<string>("displayName"));
+                });
+                var items = new JArray();
+                foreach (JObject entry in ordered) items.Add(entry);
+                var resp = BaseResponse("bestiary_catalog", webCallId, true);
+                resp["items"] = items;
+                resp["unlockedCount"] = items.Count;
+                PostToWeb(resp.ToString(Newtonsoft.Json.Formatting.None));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[IntelligenceTask] bestiary catalog failed: " + ex.Message);
+                RespondError(webCallId, "bestiary_catalog", "parse_error");
+            }
+        }
+
+        private static JObject BuildBestiaryEntry(XmlNode enemy, int kills)
+        {
+            int minimum = ReadNonNegativeInt(enemy["基本防御力_min"]);
+            int maximum = ReadNonNegativeInt(enemy["基本防御力_max"]);
+            if (maximum < minimum)
+            {
+                int swap = minimum;
+                minimum = maximum;
+                maximum = swap;
+            }
+            var attributeResistances = new JObject();
+            var impactResistances = new JObject();
+            XmlNode resistanceNode = enemy["魔法抗性"];
+            if (resistanceNode != null)
+            {
+                foreach (XmlNode resistance in resistanceNode.ChildNodes)
+                {
+                    if (resistance.NodeType != XmlNodeType.Element) continue;
+                    var target = IsAttributeResistance(resistance.Name) ? attributeResistances : impactResistances;
+                    target[resistance.Name] = ReadDouble(resistance);
+                }
+            }
+            string displayName = enemy["displayname"] == null ? "" : enemy["displayname"].InnerText.Trim();
+            if (displayName.Length == 0) displayName = enemy.Name;
+            string category = "其他";
+            string[] categoryNames = { "机械", "生化", "人类", "凡俗", "精英", "首领" };
+            foreach (string name in categoryNames)
+                if (impactResistances[name] != null) { category = name; break; }
+            return new JObject
+            {
+                ["name"] = enemy.Name,
+                ["displayName"] = displayName,
+                ["portraitRef"] = enemy.Name,
+                ["category"] = category,
+                ["kills"] = kills,
+                ["defense"] = new JObject { ["min"] = minimum, ["max"] = maximum },
+                ["damageReduction"] = new JObject
+                {
+                    ["min"] = BaseDamageReduction(minimum),
+                    ["max"] = BaseDamageReduction(maximum)
+                },
+                ["attributeResistances"] = attributeResistances,
+                ["impactResistances"] = impactResistances
+            };
+        }
+
+        private static int ReadNonNegativeInt(XmlNode node)
+        {
+            return Math.Max(0, ReadInt(node));
+        }
+
+        private static int ReadInt(XmlNode node)
+        {
+            if (node == null) return 0;
+            int value;
+            return int.TryParse(node.InnerText.Trim(), NumberStyles.Integer,
+                CultureInfo.InvariantCulture, out value) ? value : 0;
+        }
+
+        private static bool IsAttributeResistance(string name)
+        {
+            return name == "电" || name == "热" || name == "冷" || name == "波"
+                || name == "蚀" || name == "毒" || name == "冲" || name == "基础" || name == "能";
+        }
+
+        private static double ReadDouble(XmlNode node)
+        {
+            if (node == null) return 0;
+            double value;
+            return double.TryParse(node.InnerText.Trim(), NumberStyles.Float,
+                CultureInfo.InvariantCulture, out value) && !double.IsNaN(value) && !double.IsInfinity(value) ? value : 0;
+        }
+
+        private static double BaseDamageReduction(int defense)
+        {
+            if (defense <= 0) return 0;
+            return Math.Floor((double)defense * 1000 / (defense + 300)) / 10;
         }
 
         private void ForwardPassThroughResponse(string webCallId, string webCmd, JObject msg)

@@ -37,10 +37,13 @@ var IntelligencePanel = (function() {
     var _glossaryLockedCount = 0;       // 因条件未满足仍隐藏的名词数
     var _glossaryPages = [];            // 当前名词已解锁页（{pageKey, blocks, unlocked:true}）
     var _glossaryLockedPages = 0;       // 当前名词仍未解锁的页数
-    var _currentViewMode = 'intel';    // 'intel' 或 'glossary'
+    var _currentViewMode = 'intel';    // 'intel'、'glossary' 或 'bestiary'
     var _currentGlossaryTerm = '';
     var _glossarySnapshot = null;      // 当前名词的快照数据
-    var _catalogTab = 'items';         // 右侧目录 tab：'items' 情报物品 / 'glossary' 专有名词
+    var _bestiaryCatalog = [];
+    var _bestiaryCollapsed = {};
+    var _currentBestiaryName = '';
+    var _catalogTab = 'items';         // 右侧目录 tab：'items' 情报物品 / 'glossary' 专有名词 / 'bestiary' 怪物图集
     var _scaleHandle = null;           // 共享 PanelScale.attach 句柄（T3）；不可用时回退自有实现
 
     // 沉浸全屏化（2026-06-11）：设计画布从 1180×790（aspect 1.494，宽屏下左右柱箱）
@@ -97,9 +100,11 @@ var IntelligencePanel = (function() {
                         '<div class="intel-catalog-tabs" role="tablist">' +
                             '<button class="intel-catalog-tab active" type="button" role="tab" data-tab="items" aria-selected="true">情报物品<span class="intel-catalog-count"></span></button>' +
                             '<button class="intel-catalog-tab" type="button" role="tab" data-tab="glossary" aria-selected="false">专有名词<span class="intel-glossary-count"></span></button>' +
+                            '<button class="intel-catalog-tab" type="button" role="tab" data-tab="bestiary" aria-selected="false">怪物图集<span class="intel-bestiary-count"></span></button>' +
                         '</div>' +
                         '<div class="intel-catalog-list" role="tabpanel"></div>' +
                         '<div class="intel-glossary-list" role="tabpanel" hidden></div>' +
+                        '<div class="intel-glossary-list intel-bestiary-list" role="tabpanel" hidden></div>' +
                     '</div>' +
                 '</aside>' +
                 '<footer class="intel-footer">' +
@@ -164,6 +169,8 @@ var IntelligencePanel = (function() {
             catalogCount: _el.querySelector('.intel-catalog-count'),
             glossaryList: _el.querySelector('.intel-glossary-list'),
             glossaryCount: _el.querySelector('.intel-glossary-count'),
+            bestiaryList: _el.querySelector('.intel-bestiary-list'),
+            bestiaryCount: _el.querySelector('.intel-bestiary-count'),
             shell: _el.querySelector('.intel-shell')
         };
 
@@ -203,7 +210,7 @@ var IntelligencePanel = (function() {
     }
 
     function setCatalogTab(tab) {
-        if (tab !== 'glossary') tab = 'items';
+        if (tab !== 'glossary' && tab !== 'bestiary') tab = 'items';
         _catalogTab = tab;
         Array.prototype.forEach.call(_refs.catalogTabs, function(el) {
             var active = el.getAttribute('data-tab') === tab;
@@ -212,8 +219,18 @@ var IntelligencePanel = (function() {
         });
         _refs.catalogList.hidden = tab !== 'items';
         _refs.glossaryList.hidden = tab !== 'glossary';
+        _refs.bestiaryList.hidden = tab !== 'bestiary';
         if (tab === 'glossary') {
+            if (_currentViewMode === 'bestiary' && _glossarySnapshot) {
+                _currentViewMode = 'glossary';
+                renderGlossaryContent();
+            }
             requestGlossaryCatalog();
+        } else if (tab === 'bestiary') {
+            requestBestiaryCatalog();
+        } else if (_currentViewMode === 'bestiary') {
+            _currentViewMode = 'intel';
+            if (_snapshot) renderSnapshot();
         }
     }
 
@@ -224,6 +241,9 @@ var IntelligencePanel = (function() {
         _selectedPage = 0;
         _showPlain = true;
         _currentViewMode = 'intel';
+        _bestiaryCatalog = [];
+        _bestiaryCollapsed = {};
+        _currentBestiaryName = '';
 
         initData = initData || {};
         _panelInstanceId = typeof initData.panelInstanceId === 'string'
@@ -281,6 +301,7 @@ var IntelligencePanel = (function() {
                 populateCatalog(true);
                 requestSnapshot();
                 requestGlossaryCatalog();
+                requestBestiaryCatalog();
             });
         } else {
             requestBundle(function() {
@@ -374,6 +395,26 @@ var IntelligencePanel = (function() {
             _glossaryCatalog = resp.items || [];
             _glossaryLockedCount = Number(resp.lockedCount) || 0;
             renderGlossaryList();
+        });
+    }
+
+    function requestBestiaryCatalog() {
+        if (_catalogTab === 'bestiary') showLoading('正在读取怪物图集…');
+        sendRequest('bestiary_catalog', {}, function(resp) {
+            if (!resp.success) {
+                if (_catalogTab === 'bestiary') showError('怪物图集加载失败：' + (resp.error || 'unknown'));
+                return;
+            }
+            _bestiaryCatalog = resp.items || [];
+            _refs.bestiaryCount.textContent = _bestiaryCatalog.length ? _bestiaryCatalog.length + ' 种' : '';
+            if (_currentBestiaryName && !_bestiaryCatalog.some(function(entry) {
+                return entry.name === _currentBestiaryName;
+            })) _currentBestiaryName = '';
+            if (_catalogTab === 'bestiary') {
+                _currentViewMode = 'bestiary';
+                renderBestiaryList();
+                renderBestiaryContent();
+            }
         });
     }
 
@@ -493,7 +534,7 @@ var IntelligencePanel = (function() {
             if (!Object.prototype.hasOwnProperty.call(_pending, callId)) continue;
             var cmd = _pending[callId] && _pending[callId].cmd;
             if (cmd === 'state' || cmd === 'bundle' || cmd === 'snapshot'
-                    || cmd === 'glossary_snapshot') return true;
+                    || cmd === 'glossary_snapshot' || cmd === 'bestiary_catalog') return true;
         }
         return false;
     }
@@ -571,6 +612,10 @@ var IntelligencePanel = (function() {
             renderGlossaryContent();
             return;
         }
+        if (_currentViewMode === 'bestiary') {
+            renderBestiaryContent();
+            return;
+        }
         var item = _snapshot.item || {};
         var pages = getPages();
         var unlockedPages = countUnlockedPages(pages);
@@ -613,6 +658,7 @@ var IntelligencePanel = (function() {
 
     function renderIcon() {
         if (!_refs || !_refs.icon) return;
+        _refs.icon.parentElement.removeAttribute('data-portrait-request');
         var iconKey = resolveIconKey(_bundleByName[_currentItemName] || _catalogByName[_currentItemName] || _currentItemName);
         var iconUrl = iconKey && typeof Icons !== 'undefined' && Icons.resolve ? Icons.resolve(iconKey) : null;
         if (iconUrl) {
@@ -669,6 +715,7 @@ var IntelligencePanel = (function() {
     
     function renderGlossaryContent() {
         var term = _glossarySnapshot;
+        _refs.icon.parentElement.removeAttribute('data-portrait-request');
         _refs.icon.style.display = 'none';           // 隐藏情报图标
         _refs.iconPlaceholder.style.display = 'none';
         _refs.name.textContent = term.displayName || term.termName;
@@ -725,6 +772,206 @@ var IntelligencePanel = (function() {
         _refs.toggleBtn.disabled = true;
         _refs.toggleBtn.textContent = '明文视图';
         _refs.toggleBtn.classList.remove('is-cipher-view');
+        _refs.content.scrollTop = 0;
+    }
+
+    function bestiaryRange(range, suffix) {
+        var minimum = Number(range && range.min) || 0;
+        var maximum = Number(range && range.max) || 0;
+        return (minimum === maximum ? String(minimum) : minimum + '–' + maximum) + (suffix || '');
+    }
+
+    function bestiarySection(title, value) {
+        var section = document.createElement('section');
+        section.className = 'intel-bestiary-stat';
+        var heading = document.createElement('h3');
+        heading.textContent = title;
+        var text = document.createElement('div');
+        text.className = 'intel-bestiary-stat-value';
+        text.textContent = value;
+        section.appendChild(heading);
+        section.appendChild(text);
+        return section;
+    }
+
+    function renderBestiaryResistanceGroup(title, values) {
+        var section = document.createElement('section');
+        section.className = 'intel-bestiary-resistances';
+        var heading = document.createElement('h3');
+        heading.textContent = title;
+        section.appendChild(heading);
+        var keys = Object.keys(values || {});
+        if (!keys.length) {
+            section.appendChild(emptyBlock('无已记录的基础抗性。'));
+            return section;
+        }
+        var list = document.createElement('dl');
+        for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            var dt = document.createElement('dt');
+            dt.textContent = key === '基础' || key === '能' ? '能量' : key;
+            var dd = document.createElement('dd');
+            dd.textContent = String(Number(values[key]) || 0) + '%';
+            list.appendChild(dt);
+            list.appendChild(dd);
+        }
+        section.appendChild(list);
+        return section;
+    }
+
+    function bestiaryCategoryIndex(category) {
+        var order = ['生化', '机械', '人类', '凡俗', '精英', '首领', '其他'];
+        var index = order.indexOf(category || '其他');
+        return index < 0 ? order.length : index;
+    }
+
+    function createBestiaryItem(entry) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'intel-glossary-item intel-bestiary-item'
+            + (entry.name === _currentBestiaryName ? ' active' : '');
+        btn.setAttribute('data-bestiary-name', entry.name);
+        btn.setAttribute('aria-label', (entry.displayName || entry.name) + '，累计击败 ' + entry.kills + ' 次');
+        var portrait = document.createElement('span');
+        portrait.className = 'intel-bestiary-thumb';
+        var img = document.createElement('img');
+        portrait.appendChild(img);
+        btn.appendChild(portrait);
+        var label = document.createElement('span');
+        label.className = 'intel-bestiary-label';
+        label.textContent = entry.displayName || entry.name;
+        var count = document.createElement('small');
+        count.textContent = '击败 ' + entry.kills;
+        label.appendChild(count);
+        btn.appendChild(label);
+        btn.addEventListener('click', function(e) {
+            _currentViewMode = 'bestiary';
+            _currentBestiaryName = e.currentTarget.getAttribute('data-bestiary-name');
+            renderBestiaryContent();
+            Array.prototype.forEach.call(_refs.bestiaryList.querySelectorAll('.intel-bestiary-item'), function(item) {
+                item.classList.toggle('active', item.getAttribute('data-bestiary-name') === _currentBestiaryName);
+            });
+        });
+        if (typeof EnemyPortraits !== 'undefined' && EnemyPortraits && EnemyPortraits.mount)
+            EnemyPortraits.mount(portrait, img, { portraitRef:entry.portraitRef || entry.name, consumer:'bestiary' });
+        return btn;
+    }
+
+    function renderBestiaryList() {
+        if (!_refs || !_refs.bestiaryList) return;
+        _refs.bestiaryList.innerHTML = '';
+        _refs.bestiaryCount.textContent = _bestiaryCatalog.length ? _bestiaryCatalog.length + ' 种' : '';
+        if (!_bestiaryCatalog.length) {
+            var empty = document.createElement('div');
+            empty.className = 'intel-glossary-empty';
+            empty.textContent = '击败敌人后，会在这里记录其基础资料';
+            _refs.bestiaryList.appendChild(empty);
+            return;
+        }
+        var groups = {};
+        for (var i = 0; i < _bestiaryCatalog.length; i++) {
+            var entry = _bestiaryCatalog[i];
+            var category = entry.category || '其他';
+            if (!groups[category]) groups[category] = [];
+            groups[category].push(entry);
+        }
+        var categories = Object.keys(groups).sort(function(left, right) {
+            return bestiaryCategoryIndex(left) - bestiaryCategoryIndex(right);
+        });
+        for (var g = 0; g < categories.length; g++) {
+            var categoryName = categories[g];
+            var collapsed = _bestiaryCollapsed[categoryName] === true;
+            var section = document.createElement('section');
+            section.className = 'intel-bestiary-group' + (collapsed ? ' is-collapsed' : '');
+            section.setAttribute('data-category', categoryName);
+            var toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'intel-bestiary-group-toggle';
+            toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+            toggle.setAttribute('aria-controls', 'bestiary-group-' + g);
+            var arrow = document.createElement('span');
+            arrow.className = 'intel-bestiary-group-arrow';
+            arrow.textContent = collapsed ? '▸' : '▾';
+            toggle.appendChild(arrow);
+            var title = document.createElement('strong');
+            title.textContent = categoryName;
+            toggle.appendChild(title);
+            var count = document.createElement('small');
+            count.textContent = groups[categoryName].length + ' 种';
+            toggle.appendChild(count);
+            section.appendChild(toggle);
+            var items = document.createElement('div');
+            items.className = 'intel-bestiary-group-items';
+            items.id = 'bestiary-group-' + g;
+            items.hidden = collapsed;
+            for (var j = 0; j < groups[categoryName].length; j++)
+                items.appendChild(createBestiaryItem(groups[categoryName][j]));
+            section.appendChild(items);
+            toggle.addEventListener('click', function(e) {
+                var group = e.currentTarget.parentElement;
+                var collapsed = group.classList.toggle('is-collapsed');
+                _bestiaryCollapsed[group.getAttribute('data-category')] = collapsed;
+                e.currentTarget.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+                e.currentTarget.querySelector('.intel-bestiary-group-arrow').textContent = collapsed ? '▸' : '▾';
+                group.querySelector('.intel-bestiary-group-items').hidden = collapsed;
+            });
+            _refs.bestiaryList.appendChild(section);
+        }
+    }
+
+    function renderBestiaryContent() {
+        var selected = null;
+        for (var i = 0; i < _bestiaryCatalog.length; i++) {
+            if (_bestiaryCatalog[i].name === _currentBestiaryName) { selected = _bestiaryCatalog[i]; break; }
+        }
+        if (!selected && _bestiaryCatalog.length) {
+            selected = _bestiaryCatalog[0];
+            _currentBestiaryName = selected.name;
+        }
+        _refs.progressBox.style.display = 'none';
+        _refs.content.setAttribute('data-content-mode', 'bestiary');
+        _refs.content.setAttribute('data-skin', 'dossier');
+        _refs.content.removeAttribute('data-writer-voice');
+        applyFontContext(_refs.content, 'dossier', '');
+        _refs.status.textContent = '';
+        _refs.pageCurrent.textContent = '1';
+        _refs.pageTotal.textContent = '1';
+        _refs.pageIndicator.disabled = true;
+        _refs.prevBtn.disabled = true;
+        _refs.nextBtn.disabled = true;
+        _refs.toggleBtn.disabled = true;
+        _refs.toggleBtn.textContent = '基础资料';
+        _refs.toggleBtn.classList.remove('is-cipher-view');
+        _refs.content.innerHTML = '';
+        if (!selected) {
+            _refs.name.textContent = '怪物图集';
+            _refs.meta.textContent = '暂无已解锁怪物';
+            _refs.icon.parentElement.removeAttribute('data-portrait-request');
+            _refs.icon.style.display = 'none';
+            _refs.iconPlaceholder.style.display = '';
+            _refs.content.appendChild(emptyBlock('尚未记录敌人。击败敌人后即可查阅其基础属性。'));
+            return;
+        }
+        _refs.name.textContent = selected.displayName || selected.name;
+        _refs.meta.textContent = '累计击败 ' + (Number(selected.kills) || 0) + ' 次';
+        _refs.icon.style.display = '';
+        _refs.iconPlaceholder.style.display = 'none';
+        if (typeof EnemyPortraits !== 'undefined' && EnemyPortraits && EnemyPortraits.mount)
+            EnemyPortraits.mount(_refs.icon.parentElement, _refs.icon,
+                { portraitRef:selected.portraitRef || selected.name, consumer:'bestiary' });
+
+        var grid = document.createElement('div');
+        grid.className = 'intel-bestiary-grid';
+        grid.appendChild(bestiarySection('基础防御', bestiaryRange(selected.defense, '')));
+        grid.appendChild(bestiarySection('基础减伤', bestiaryRange(selected.damageReduction, '%')));
+        grid.appendChild(bestiarySection('累计击败', String(Number(selected.kills) || 0) + ' 次'));
+        _refs.content.appendChild(grid);
+
+        var resistanceGroups = document.createElement('div');
+        resistanceGroups.className = 'intel-bestiary-resistance-groups';
+        resistanceGroups.appendChild(renderBestiaryResistanceGroup('基础属性抗性', selected.attributeResistances));
+        resistanceGroups.appendChild(renderBestiaryResistanceGroup('基础破击抗性', selected.impactResistances));
+        _refs.content.appendChild(resistanceGroups);
         _refs.content.scrollTop = 0;
     }
 

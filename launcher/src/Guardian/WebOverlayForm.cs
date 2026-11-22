@@ -8905,6 +8905,7 @@ namespace CF7Launcher.Guardian
                 case "open_lee_story":
                 case "glossary_catalog":
                 case "glossary_snapshot":
+                case "bestiary_catalog":
                 case "preview":
                 case "equip_tooltip":
                 case "custom_start":

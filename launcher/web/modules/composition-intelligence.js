@@ -10,7 +10,7 @@
  *        { type:'panel', panel:'intelligence', cmd:'close', panelInstanceId:<记录的实例> }
  *          ——reason 仅透传 navigate_character_build（返回装备），其余 reason 剥除；
  *        { type:'panel', panel:'intelligence', cmd:<只读查询>, callId:<string> }
- *          ——白名单：bundle/catalog/snapshot/state/tooltip/glossary_catalog/glossary_snapshot；
+ *          ——白名单：bundle/catalog/snapshot/state/tooltip/glossary_catalog/glossary_snapshot/bestiary_catalog；
  *        { type:'panel', panel:'intelligence', cmd:'open_lee_story', panelInstanceId:<当前实例>,
  *          itemName:'黑龙令', pageKey:'5', callId:<string> }
  *          ——仅申请 Lee 出发能力，资格仍由 Flash 校验；不透传页面伪造的权威字段；
@@ -35,7 +35,8 @@
     var _panelInstanceId = '';
     var READ_ONLY_COMMANDS = {
         bundle: true, catalog: true, snapshot: true, state: true,
-        tooltip: true, glossary_catalog: true, glossary_snapshot: true
+        tooltip: true, glossary_catalog: true, glossary_snapshot: true,
+        bestiary_catalog: true
     };
 
     // 先于 Panels 的 panel_cmd handler 执行（本脚本先加载、先 Bridge.on）。

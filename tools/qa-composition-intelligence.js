@@ -228,6 +228,76 @@ async function checkLeeStoryEntry(page, label, instanceId) {
             if (shotPath) await page.screenshot({path:shotPath.replace(/\.png$/, '-lee-' + label + '.png')});
         }
 
+async function checkBestiary(page, label) {
+    const catalog = {
+        unlockedCount: 2,
+        items: [{
+            name: '敌人-防爆服僵尸', displayName: '防暴僵尸', portraitRef: '敌人-防爆服僵尸', category: '生化', kills: 2,
+            defense: {min: 700, max: 1000}, damageReduction: {min: 70, max: 76.9},
+            attributeResistances: {热: 50, 蚀: -25}, impactResistances: {生化: 50, 首领: 20}
+        }, {
+            name: '敌人-盗贼瘦子', displayName: '杀手', portraitRef: '敌人-盗贼瘦子', category: '凡俗', kills: 9,
+            defense: {min: 10, max: 200}, damageReduction: {min: 3.2, max: 40},
+            attributeResistances: {}, impactResistances: {人类: 10, 凡俗: 10, 盗贼: 10}
+        }]
+    };
+    await answerQuery(page, 'bestiary_catalog', catalog);
+    await page.waitForFunction(() => document.querySelector('.intel-bestiary-count')?.textContent === '2 种');
+    check(await page.locator('.intel-catalog-tab[data-tab="bestiary"]').getAttribute('aria-selected') === 'false',
+        label + ' bestiary count preloads before opening its tab');
+    await page.click('.intel-catalog-tab[data-tab="bestiary"]');
+    await answerQuery(page, 'bestiary_catalog', catalog);
+    await page.waitForFunction(() => document.querySelector('.intel-name')?.textContent === '防暴僵尸');
+    const content = await page.locator('.intel-content').textContent();
+    check(content.includes('700–1000') && content.includes('70–76.9%')
+        && content.includes('基础属性抗性') && content.includes('基础破击抗性')
+        && content.includes('生化') && content.includes('首领') && content.includes('50%')
+        && content.includes('热') && content.includes('-25%') && !content.includes('不包含'),
+        label + ' bestiary shows base defense/reduction and resistances');
+    check(await page.locator('.intel-bestiary-item').count() === 2
+        && await page.locator('.intel-bestiary-item').first().getAttribute('data-bestiary-name') === '敌人-防爆服僵尸',
+        label + ' bestiary contains only unlocked entries');
+    await page.waitForFunction(() => {
+        const img = document.querySelector('.intel-bestiary-thumb img');
+        return img && img.complete && img.naturalWidth > 0;
+    });
+    check(true, label + ' bestiary portrait decodes from production manifest');
+    check(await page.evaluate(() => {
+        const reader = document.querySelector('.intel-reader');
+        const stat = document.querySelector('.intel-bestiary-stat');
+        return getComputedStyle(reader).backgroundImage === 'none'
+            && getComputedStyle(reader, '::after').backgroundColor === 'rgba(0, 0, 0, 0)'
+            && getComputedStyle(stat).backgroundColor !== getComputedStyle(reader).backgroundColor
+            && getComputedStyle(document.querySelector('.intel-shell')).gridTemplateColumns.endsWith('340px');
+    }), label + ' bestiary uses dark surfaces and a widened catalog rail');
+    check(await page.evaluate(() => {
+        const tabs = document.querySelector('.intel-catalog-tabs');
+        return tabs.scrollWidth <= tabs.clientWidth + 1;
+    }), label + ' three catalog tabs fit without horizontal overflow');
+    const categoryToggle = page.locator('[data-category="凡俗"] .intel-bestiary-group-toggle');
+    await categoryToggle.click();
+    check(await categoryToggle.getAttribute('aria-expanded') === 'false'
+        && await page.locator('[data-category="凡俗"] .intel-bestiary-item').first().isHidden(),
+        label + ' bestiary category collapses independently');
+    await page.click('[data-category="生化"] .intel-bestiary-item');
+    check(await categoryToggle.getAttribute('aria-expanded') === 'false'
+        && await page.locator('[data-category="凡俗"] .intel-bestiary-item').first().isHidden(),
+        label + ' selecting an enemy preserves collapsed categories');
+    await categoryToggle.click();
+    await page.click('[data-category="凡俗"] .intel-bestiary-item');
+    check((await page.locator('.intel-name').textContent()) === '杀手'
+        && (await page.locator('.intel-content').textContent()).includes('盗贼'),
+        label + ' category expands and selects its enemy');
+    await page.click('.intel-catalog-tab[data-tab="bestiary"]');
+    await answerQuery(page, 'bestiary_catalog', {unlockedCount: 0, items: []});
+    await page.waitForFunction(() => document.querySelector('.intel-name')?.textContent === '怪物图集');
+    check(await page.locator('.intel-bestiary-item').count() === 0
+        && (await page.locator('.intel-content').textContent()).includes('尚未记录敌人'),
+        label + ' empty bestiary clears the previous selection and details');
+    await page.click('.intel-catalog-tab[data-tab="items"]');
+    await page.waitForFunction(() => document.querySelector('.intel-name')?.textContent === '验收档案');
+}
+
         async function runViewport(browser, port, viewport, takeShot) {
             const [w, h] = viewport;
             const label = w + 'x' + h;
@@ -245,6 +315,7 @@ async function checkLeeStoryEntry(page, label, instanceId) {
                 await openIntelligence(page, 'intel-' + w + '-a', catalog);
                 check(true, label + ' prod open renders catalog+snapshot from panel_resp');
                 await checkItemIcons(page, label + ' cold open', catalog.length);
+                await checkBestiary(page, label);
 
                 const meta = await page.evaluate(() => document.querySelector('.intel-meta').textContent);
                 check(/已发现 1 \/ 1/.test(meta), label + ' unlocked page count renders', meta);
