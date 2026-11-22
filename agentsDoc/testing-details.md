@@ -1164,7 +1164,7 @@ layer frame 应包含裁剪元数据 `cropX/cropY/cropWidth/cropHeight/canvasWid
 重跑 `python tools/bake-dressup-offline.py --export-assets --export-missing-assets --prune-orphan-assets` 写 `launcher/web/assets/dressup/manifest.json + report.json + skins/*.png`；
 若只需要规范化既有 PNG/manifest 的连续 hold，可先跑 `python tools/normalize-dressup-timelines.py` 补 `timelineFrames[] + durationFrames`，不重新调用 FFDec。
 
-**固定合同**：离线映射必须保持 `auto_opposite_gender=0`：`opposite_gender_only` 保持 uncovered，由当前性别 holder 的 `basic` fallback 承担；人工 alias 仍允许，但每条必须显式登记 reason。battle rig 固定七种状态，并证明男女 `手雷站立` 各有且仅有一个真实 `手雷_装扮` holder。
+**固定合同**：离线映射必须保持 `auto_opposite_gender=0`：`opposite_gender_only` 保持 uncovered，由当前性别 holder 的 `basic` fallback 承担；人工 alias 仍允许，但每条必须显式登记 reason。battle rig 固定七种状态，并证明男女 `手雷站立` 各有且仅有一个真实 `手雷_装扮` holder。男女必须按各自站姿分别遍历，不得把男 holder 桶 deepcopy 给女：`空手站立` 的女版 holder 取自 `sprite/空手待机` 的 `站立-女` 帧（`holders[*].path` 出现 `sprite/空手待机@<站立-女 index>`，当前为 167），其余六种站姿由无性别标签的 `移动射击动画层/*` 共用，男女数据可相同。
 检查 `metadataErrors=0` / `timelineScriptErrors=0` / `spriteGraphErrors=0` / `nestedLayerUnsupportedDescendants=0` 且所有 `skinKeys[*].frames[]` / `holders[*].basic.frames[]` / `nestedAnimation.layers[*].frames[]` 都有 `originX/originY`，否则 Canvas 注册点不可信。
 `test-dressup-manifest-integrity.py` 固定检查真实 manifest 资源闭包、可导出 skinKey 均有 `export/frames`、`skins/*.png` 无孤儿文件、A 兵团背心父级冻结 + 子层播放、battle rig 状态/holder 字段闭包、`攻击模式` 条件可见性 `runtimeVariants.neutral`、matrix/origin 与压缩时间轴；
 `test-merc-dressup-coverage.py` 固定检查全量 `data/merc/mercenaries.json` 装备、脸型、发型到 dressup manifest 的运行时闭包，并只允许已确认源素材缺失且 Flash 会回退 holder `基本款` 的少量身体件；`test-merc-panel-appearance-fallback.js` 固定验证佣兵头像 `face/hair` 归一化、`helmet=true` 压发，以及一次性头像截图必须等待 `pendingImages=0` 后才缓存。
