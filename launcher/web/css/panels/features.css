@@ -1199,7 +1199,7 @@
 /* ── 双栏工作台家族对齐 pass（2026-07-17，T1+T2+T3）──
    T3：面板缩放迁入共享 PanelScale（JS attach 写 --panel-scale），自有 fitPanelToParent 仅作兜底；
        壳体几何保留本地 1404×790 设计画布（阅读面板，不套 1024×576 工作台几何）。
-   T2：专有名词从独立左栏并入右侧目录 tab（情报物品 | 专有名词），省下的 240px 还给阅读区；
+   T2：专有名词从独立左栏并入右侧目录 tab，怪物图集沿用同一目录；省下的 240px 还给阅读区；
        纯文本块行长收敛 40em 居中、行高提升、纸面纹理降对比。
    T1：chrome 全面 token 化——色板镜像工作台 --wb-* 暗部族，accent 用「档案金」#d8b656
        （独立身份，不并入工作台琥珀 #f0a43a）；选中态从反白改为 accent 描边/侧条；
@@ -1251,9 +1251,9 @@
 .intel-shell {
     position: relative;
     display: grid;
-    /* T2 后两栏：阅读区 1fr + 右侧目录 rail 276px（原 240px 名词栏已并入目录 tab）
+    /* 阅读区 + 右侧目录 rail；怪物图集分类与三页签共享同一宽度。
        行：88px 顶栏 / 1fr 内容 / 52px 底栏（顶栏 88px = 工作台 64px × 1404/1024 物理等效）*/
-    grid-template-columns: minmax(0,1fr) 276px;
+    grid-template-columns: minmax(0,1fr) 340px;
     grid-template-rows: 88px minmax(0,1fr) 52px;
     width: 1404px;
     height: 790px;
@@ -1628,10 +1628,10 @@
     display: none;
 }
 
-/* T2：tab 栏取代旧「情报物品」单标题——情报物品 | 专有名词 */
+/* 目录页签：情报物品 | 专有名词 | 怪物图集 */
 .intel-catalog-tabs {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     border-bottom: 1px solid var(--intel-line);
 }
 
@@ -1648,6 +1648,7 @@
     border-bottom: 2px solid transparent;
     font-size: 13px;
     font-weight: 600;
+    white-space: nowrap;
     cursor: pointer;
     transition: color 0.12s ease, border-color 0.12s ease;
 }
@@ -1662,7 +1663,8 @@
 }
 
 .intel-catalog-count,
-.intel-glossary-count {
+.intel-glossary-count,
+.intel-bestiary-count {
     color: var(--intel-muted);
     font-family: Consolas, monospace;
     font-size: 10px;
@@ -1670,7 +1672,8 @@
 }
 
 .intel-catalog-tab.active .intel-catalog-count,
-.intel-catalog-tab.active .intel-glossary-count {
+.intel-catalog-tab.active .intel-glossary-count,
+.intel-catalog-tab.active .intel-bestiary-count {
     color: var(--intel-accent);
 }
 
@@ -1851,6 +1854,145 @@
     color: var(--intel-muted);
     font-size: 12px;
     text-align: center;
+}
+
+.intel-bestiary-group + .intel-bestiary-group {
+    margin-top: 10px;
+}
+
+.intel-bestiary-group-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 8px;
+    border: 1px solid var(--intel-line);
+    color: var(--intel-text);
+    background: var(--intel-surface-2);
+    cursor: pointer;
+    text-align: left;
+}
+
+.intel-bestiary-group-toggle small {
+    margin-left: auto;
+    color: var(--intel-muted);
+}
+
+.intel-bestiary-group-arrow {
+    color: var(--intel-accent-strong);
+}
+
+.intel-bestiary-group-items {
+    margin-top: 5px;
+}
+
+.intel-bestiary-group-items[hidden] {
+    display: none;
+}
+
+.intel-bestiary-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-align: left;
+}
+
+.intel-bestiary-thumb {
+    display: block;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    overflow: hidden;
+    border: 1px solid var(--intel-line);
+    background: var(--intel-surface);
+}
+
+.intel-bestiary-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.intel-bestiary-label {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.intel-bestiary-label small {
+    color: var(--intel-muted);
+}
+
+.intel-bestiary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.intel-bestiary-stat,
+.intel-bestiary-resistances {
+    padding: 16px;
+    border: 1px solid var(--intel-line);
+    background: var(--intel-surface-2);
+}
+
+.intel-bestiary-stat h3,
+.intel-bestiary-resistances h3 {
+    margin: 0 0 9px;
+    color: var(--intel-muted);
+    font-size: 13px;
+}
+
+.intel-bestiary-stat-value {
+    color: var(--intel-accent-strong);
+    font-size: 22px;
+}
+
+.intel-bestiary-resistance-groups {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.intel-bestiary-resistances dl {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 7px 16px;
+    margin: 0;
+}
+
+.intel-bestiary-resistances .intel-empty {
+    display: block;
+    min-height: 0;
+    margin: 0;
+    padding: 8px 0;
+    border: 0;
+    color: var(--intel-muted);
+    background: transparent;
+    font-size: 12px;
+    text-align: left;
+}
+
+.intel-bestiary-resistances dt {
+    color: var(--intel-text);
+}
+
+.intel-bestiary-resistances dd {
+    margin: 0;
+    color: var(--intel-accent-strong);
+}
+
+.intel-reader:has(.intel-content[data-content-mode="bestiary"]) {
+    background: var(--intel-surface);
+    border-color: var(--intel-line);
+    box-shadow: none;
+}
+
+.intel-reader:has(.intel-content[data-content-mode="bestiary"])::after {
+    background: transparent;
 }
 
 .intel-glossary-locked {

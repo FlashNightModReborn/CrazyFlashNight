@@ -20,7 +20,7 @@ namespace CF7Launcher.Guardian
         private HostCloseContext _pendingHostClose;
         private EndpointLease _captureEndpointLease;
         private static bool IsIntelligenceQuery(string command) => command is "bundle" or "catalog" or "snapshot"
-            or "state" or "tooltip" or "glossary_catalog" or "glossary_snapshot";
+            or "state" or "tooltip" or "glossary_catalog" or "glossary_snapshot" or "bestiary_catalog";
         internal event Action<HostCloseContext> HostCloseRequested;
         internal void AttachHostLifetime(string lifetime) { _endpointHostLifetime=lifetime; }
         protected override void OnHandleCreated(EventArgs e)

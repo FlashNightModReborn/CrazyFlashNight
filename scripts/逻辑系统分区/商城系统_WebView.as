@@ -1095,7 +1095,7 @@ _root.gameCommands["shopTooltip"] = function(params) {
 };
 
 // ========== 情报 Web 面板运行态状态 ==========
-// 正式情报 Web panel 只向 Flash 读取收集值、解密等级和玩家名；正文仍由 Launcher/C# 读取 txt。
+// 正式情报 Web panel 向 Flash 读取收集值、解密等级、玩家名和已持久化击杀记录；正文与怪物基础属性由 Launcher/C# 读取。
 _root.gameCommands["intelligenceState"] = function(params) {
     var callId = params.callId;
     var values = {};
@@ -1114,13 +1114,22 @@ _root.gameCommands["intelligenceState"] = function(params) {
     var pcName = "";
     if (_root.角色名 != undefined) pcName = String(_root.角色名);
 
+    var kills = {};
+    if (_root.killStats != undefined && _root.killStats.byType != undefined) {
+        for (var unitKey:String in _root.killStats.byType) {
+            var killCount:Number = Number(_root.killStats.byType[unitKey]);
+            if (isFinite(killCount) && killCount > 0) kills[unitKey] = Math.floor(killCount);
+        }
+    }
+
     var resp = {
         task: "intelligence_response",
         callId: callId,
         success: true,
         values: values,
         decryptLevel: decryptLevel,
-        pcName: pcName
+        pcName: pcName,
+        kills: kills
     };
     _root.UI系统.商城WebView.sendResponse(resp);
 };

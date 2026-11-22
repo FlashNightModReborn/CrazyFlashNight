@@ -16,6 +16,11 @@ class org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest {
         if(ok)passed++;else{failed++;trace("[TEST_FAIL] DualGunReloadTimelineTest: "+current.name+" "+label);}
     }
     private static function data(side:Number):Object {
+        if (current.issue332) return {capacity:side==0?10:8,interval:300,singleshoot:false,
+            clipname:side==0?"手枪通用弹药":"马格南手枪弹药",split:1,diffusion:1,sound:"",muzzle:"",
+            bullet:side==0?"dual-main-probe":"dual-off-probe",velocity:30,bullethit:"",power:100,
+            bulletsize:50,impact:5,targethit:"",weapontype:side==0?"手枪":"大威力手枪",
+            reloadType:"tube",reloadPenalty:side==0?-15:17,overload:side==0?{chamber:1,ghost:0}:null};
         return {capacity:side==0?2:3,interval:side==0?150:210,singleshoot:false,
             clipname:side==0?"dual-main-mag":"dual-off-mag",split:1,diffusion:1,sound:"",muzzle:"",
             bullet:side==0?"dual-main-probe":"dual-off-probe",velocity:30,bullethit:"",power:100,
@@ -26,9 +31,9 @@ class org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest {
         u.存储当前飞行状态=function():Void {};
         u.读取当前飞行状态=function():Void {};
         u.攻击模式="双枪";u.状态="双枪站立";u.方向="右";u.hp=100;u.Z轴坐标=0;
-        u.手枪={name:"dual-main-probe",value:{shot:current.intent=="main"?0:2,level:1}};
-        u.手枪2={name:current.same?"dual-main-probe":"dual-off-probe",value:{shot:current.intent=="off"?0:3,level:1}};
-        u.手枪属性=data(0);u.手枪2属性=data(1);u.手枪弹匣容量=2;u.手枪2弹匣容量=3;
+        u.手枪={name:current.issue332?"中国54式手枪":"dual-main-probe",value:{shot:current.intent=="main"?0:2,level:1}};
+        u.手枪2={name:current.issue332?"韦森686":current.same?"dual-main-probe":"dual-off-probe",value:{shot:current.intent=="off"?0:3,level:1}};
+        u.手枪属性=data(0);u.手枪2属性=data(1);u.手枪弹匣容量=u.手枪属性.capacity;u.手枪2弹匣容量=u.手枪2属性.capacity;
         u.被动技能={冲击连携:{启用:current.impact,等级:10},枪械师:{启用:false,等级:1}};
         u.动作A=u.动作B=u.动作C=false;u.主手射击中=u.副手射击中=false;
         u.行走=function():Void {};u.操控编号=-1;u.移动射击=false;u.行走冷却帧=0;
@@ -113,7 +118,7 @@ class org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest {
             return;
         }
         var side:Number=props.子弹种类=="dual-off-probe"?1:0;
-        if(shots[0].length+shots[1].length==0&&!current.intent&&!current.noOffStock)
+        if(shots[0].length+shots[1].length==0&&!current.intent&&!current.noOffStock&&!current.issue332)
             check(reloads[0]>0&&reloads[1]>0,"held triggers wait for both initial magazine commits");
         shots[side].push(frame);
         trace("[DUAL_RELOAD_SHOT] case="+current.name+" hand="+side+" frame="+frame+" reloads="+reloads.join(","));
@@ -125,6 +130,7 @@ class org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest {
             {name:"fresh-main-press-interrupts",impact:true,intent:"main"},
             {name:"fresh-off-press-interrupts",impact:true,intent:"off"},
             {name:"offhand-out-of-stock-finishes",impact:false,noOffStock:true},
+            {name:"issue332-type54-686-full-auto-tube",impact:false,issue332:true},
             {name:"dual-main-upper-body-reload-continuity",impact:false,continuity:true,probeHand:"主手"},
             {name:"dual-off-upper-body-reload-continuity",impact:false,continuity:true,probeHand:"副手"}];
         cases.push({name:"hunter-full-no-prior", hunter:true}, {name:"hunter-last-main-queued-off", hunter:true, prior:true},
@@ -185,15 +191,15 @@ class org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest {
             if(age==2)check(shots[0].length+shots[1].length==0&&!!unit.man.换弹标签,"inherited hold does not cancel reload before a new press");
             if(age==10)check(!unit.man.换弹标签&&shots[current.intent=="main"?0:1].length>0,"one released and repressed hand can interrupt while the other stays held");
         }
-        var limit:Number=current.intent?50:240;
+        var limit:Number=current.intent?50:current.issue332?420:240;
         if(age<limit){if(unit.动作A)unit.man.主手开始射击();if(unit.动作B)unit.man.副手开始射击();}
         else {
             unit.动作A=unit.动作B=false;ShootCore.stopForReload(unit);
             trace("[DUAL_RELOAD_CASE] "+current.name+" shots="+shots[0].length+","+shots[1].length+" reloads="+reloads.join(","));
             if(!current.intent){
-                check(shots[0].length>=4&&reloads[0]>=2,"main hand continues through multiple reload cycles");
+                check(shots[0].length>=(current.issue332?20:4)&&reloads[0]>=2,"main hand continues through multiple reload cycles");
                 if(current.noOffStock)check(shots[1].length==0,"unavailable offhand stock does not grant free rounds");
-                else check(shots[1].length>=6&&reloads[1]>=2,"offhand continues through multiple reload cycles without starvation");
+                else check(shots[1].length>=(current.issue332?13:6)&&reloads[1]>=2,"offhand continues through multiple reload cycles without starvation");
             }
             nextCase();
         }

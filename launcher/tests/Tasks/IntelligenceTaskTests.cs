@@ -832,6 +832,58 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("term_missing", (string)respMissing["error"]);
         }
 
+        [Fact]
+        public void BestiaryCatalog_UsesAuthoritativeKillsAndBaseStats()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteEnemyProperties(
+                "<root>" +
+                "<敌人-甲><displayname>测试敌人甲</displayname><基本防御力_min>100</基本防御力_min><基本防御力_max>300</基本防御力_max><韧性系数>1.5</韧性系数><魔法抗性><生化>50</生化><蚀>-25</蚀><首领>20</首领><基础>88.5</基础></魔法抗性></敌人-甲>" +
+                "<敌人-乙><displayname>未解锁敌人</displayname><基本防御力_min>900</基本防御力_min><基本防御力_max>900</基本防御力_max></敌人-乙>" +
+                "</root>");
+            var posted = new List<string>();
+            var sent = new List<string>();
+            using var task = new IntelligenceTask(_root, () => true, sent.Add);
+            task.SetPostToWeb(posted.Add);
+            task.HandleWebRequest("bestiary_catalog", new JObject { ["callId"] = "bestiary-before-state" });
+            Assert.Equal("state_required", JObject.Parse(Assert.Single(posted)).Value<string>("error"));
+            task.HandleWebRequest("state", new JObject { ["callId"] = "state-bestiary" });
+            JObject command = JObject.Parse(Assert.Single(sent).TrimEnd('\0'));
+            task.HandleFlashResponse(new JObject
+            {
+                ["task"] = "intelligence_response", ["callId"] = command["callId"], ["success"] = true,
+                ["values"] = new JObject { ["资料"] = 1 }, ["decryptLevel"] = 0,
+                ["kills"] = new JObject { ["敌人-甲"] = 2, ["敌人-乙"] = 0, ["敌人-未登记"] = 9 }
+            }, _ => { });
+            task.HandleWebRequest("bestiary_catalog", new JObject { ["callId"] = "bestiary-ready" });
+            JObject response = JObject.Parse(posted[posted.Count - 1]);
+            Assert.True(response.Value<bool>("success"));
+            Assert.Equal(1, response.Value<int>("unlockedCount"));
+            JObject entry = (JObject)Assert.Single((JArray)response["items"]);
+            Assert.Equal("敌人-甲", entry.Value<string>("name"));
+            Assert.Equal("测试敌人甲", entry.Value<string>("displayName"));
+            Assert.Equal("生化", entry.Value<string>("category"));
+            Assert.Equal(2, entry.Value<int>("kills"));
+            Assert.Equal(100, entry["defense"].Value<int>("min"));
+            Assert.Equal(300, entry["defense"].Value<int>("max"));
+            Assert.Equal(25, entry["damageReduction"].Value<double>("min"));
+            Assert.Equal(50, entry["damageReduction"].Value<double>("max"));
+            Assert.Equal(50, entry["impactResistances"].Value<int>("生化"));
+            Assert.Equal(20, entry["impactResistances"].Value<int>("首领"));
+            Assert.Equal(-25, entry["attributeResistances"].Value<int>("蚀"));
+            Assert.Equal(88.5, entry["attributeResistances"].Value<double>("基础"));
+            Assert.Null(entry["impactResistance"]);
+            Assert.Null(entry["damageTakenMultiplier"]);
+        }
+
+        private void WriteEnemyProperties(string xml)
+        {
+            string directory = Path.Combine(_root, "data", "enemy_properties");
+            Directory.CreateDirectory(directory);
+            File.WriteAllText(Path.Combine(directory, "list.xml"), "<root><items>测试敌人.xml</items></root>", Encoding.UTF8);
+            File.WriteAllText(Path.Combine(directory, "测试敌人.xml"), xml, Encoding.UTF8);
+        }
+
         private void WriteGlossaryIndex(string json)
         {
             string dir = Path.Combine(_root, "data", "glossary");
