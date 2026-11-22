@@ -13,6 +13,8 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
     public static var WEAPON_SKILL_KEY:String = "weapon:shared";
 
     private static var states:Object = {};
+    private static var hudRevision:Number = 0;
+    public static function getHudRevision():Number { return hudRevision; }
     private static var renderers:Object = {};
     private static var schedulerForTests:Function = null;
     private static var nextGeneration:Number = 1;
@@ -53,6 +55,7 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
         var totalSteps:Number = Math.ceil(Number(durationMs) / FRAME_MS);
         if (isNaN(totalSteps) || totalSteps < 1) totalSteps = 1;
 
+        hudRevision++;
         state.ready = false;
         state.totalSteps = totalSteps;
         state.currentStep = 0;
@@ -73,6 +76,7 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
         state.ready = true;
         state.totalSteps = 0;
         state.currentStep = 0;
+        hudRevision++;
         state.generation = nextGeneration++;
         syncRenderer(key, state);
         return true;
@@ -150,6 +154,7 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
 
     /** 测试夹具复位：生产代码不得调用。 */
     public static function resetForTests():Void {
+        hudRevision++;
         states = {};
         renderers = {};
         schedulerForTests = null;
@@ -189,6 +194,7 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
         var state:Object = states[key];
         if (!state || state.ready === true || state.generation !== generation) return;
 
+        hudRevision++;
         state.currentStep++;
         if (state.currentStep >= state.totalSteps) {
             state.ready = true;

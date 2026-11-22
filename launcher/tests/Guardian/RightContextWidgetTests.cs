@@ -268,16 +268,17 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void PersistentActionRow_UsesSixPrimaryRoutes()
+        public void PersistentActionRow_UsesSevenSignedRoutes()
         {
             Capture c;
             RightContextWidget w = MakeWidget(out c);
             Assert.Equal("TASK_MAP", w.ResolveActionRoute(0));
             Assert.Equal("TASK_UI", w.ResolveActionRoute(1));
             Assert.Equal("EQUIP_UI", w.ResolveActionRoute(2));
-            Assert.Equal("GAMESETTINGS", w.ResolveActionRoute(3));
-            Assert.Equal("PAUSE", w.ResolveActionRoute(4));
-            Assert.Equal("SAFEEXIT", w.ResolveActionRoute(5));
+            Assert.Equal("SETTINGS", w.ResolveActionRoute(3));
+            Assert.Equal("GAMESETTINGS", w.ResolveActionRoute(4));
+            Assert.Equal("PAUSE", w.ResolveActionRoute(5));
+            Assert.Equal("SAFEEXIT", w.ResolveActionRoute(6));
         }
 
         [Fact]
@@ -717,7 +718,7 @@ namespace CF7Launcher.Tests.Guardian
                     Assert.Equal(
                         new[] { "复活", "医务室" },
                         right.StageActionLabelsForTest);
-                    Assert.True(right.StageDecisionBalanceUsesCompactFontForTest);
+                    Assert.False(right.StageDecisionBalanceUsesCompactFontForTest);
                     Assert.True(right.StageActionLabelFitsForTest(0));
                     Assert.Equal(
                         "9007.2万亿",
@@ -1041,18 +1042,18 @@ namespace CF7Launcher.Tests.Guardian
                     int boundsChanges = 0;
                     right.BoundsOrVisibilityChanged += delegate { boundsChanges++; };
                     Send("sv:1|sv:1|sv:2");
-                    Assert.Contains("1 次", right.ResolveActionHint(5));
+                    Assert.Contains("1 次", right.ResolveActionHint(6));
                     Send("sv:2"); // 最后值未变，仍须投递新的成功事件。
-                    Assert.Contains("2 次", right.ResolveActionHint(5));
+                    Assert.Contains("2 次", right.ResolveActionHint(6));
                     Assert.Equal(visual, right.ScreenBounds);
                     Assert.Equal(composite, right.CompositeBounds);
                     Assert.Equal(0, boundsChanges);
-                    Assert.Equal("SAFEEXIT", right.ResolveActionRoute(5));
+                    Assert.Equal("SAFEEXIT", right.ResolveActionRoute(6));
                     Assert.False(safeExit.IsArmed);
                     Assert.False(safeExit.TryAuthorizeExitConfirm());
                     Assert.True(right.WantsAnimationTick);
                     Send("sv:3");
-                    Assert.Contains("保存未确认", right.ResolveActionHint(5));
+                    Assert.Contains("保存未确认", right.ResolveActionHint(6));
                     Assert.False(right.WantsAnimationTick);
                     safeExit.Arm();
                     Send("sv:2");
@@ -1061,7 +1062,7 @@ namespace CF7Launcher.Tests.Guardian
                     Assert.True(safeExit.TryAuthorizeExitConfirm());
                     Assert.False(safeExit.TryAuthorizeExitConfirm());
                     Send("s:0|s:1");
-                    Assert.Equal("安全退出", right.ResolveActionHint(5));
+                    Assert.Equal("安全退出", right.ResolveActionHint(6));
                     Assert.False(right.WantsAnimationTick);
                 }
             }

@@ -63,11 +63,11 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
                 Close(); return;
             }
             focus = snapshot.TargetList[rowIndex];
-            var currentAnchor = PlayerHudFocusTargetWidget.RowBounds(snapshot.BuffCards.Length, rowIndex, snapshot.TargetList.Length);
+            var currentAnchor = PlayerHudFocusTargetWidget.RowBounds(0, rowIndex, snapshot.TargetList.Length, snapshot.Allies?.Rows.Length ?? 0);
             if (focus == _lastFocusTarget && _target.Anchor == currentAnchor) return;
             _target = _target with { Slot = rowIndex, Anchor = currentAnchor };
         }
-        else if (snapshot.Vitals==_lastVitals && _lastCombat?.Mode==snapshot.Combat.Mode
+        else if (snapshot.Vitals==_lastVitals && _lastCombat?.Deck==snapshot.Combat.Deck && _lastCombat?.Mode==snapshot.Combat.Mode
             && _lastCombat.Ammo.SequenceEqual(snapshot.Combat.Ammo)
             && (_lastCombat.AmmoDetails??Array.Empty<PlayerHudAmmoDetail?>())
                 .SequenceEqual(snapshot.Combat.AmmoDetails??Array.Empty<PlayerHudAmmoDetail?>())) return;
@@ -93,6 +93,21 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
     internal static JObject Build(PlayerHudSnapshot snapshot,PlayerHudTarget target,string requestId)
     {
         var result=Build(snapshot.Vitals,snapshot.Epoch,snapshot.Sequence,target,requestId);
+        if (target.Kind == "resources" && target.Key is "coating" or "stance")
+        {
+            var facts = snapshot.Combat.Deck;
+            var lines=(JArray)result["document"]!["sections"]![0]!["runs"]!;
+            lines.Clear();
+            string title = target.Key=="stance" ? snapshot.Combat.Mode : "武器淬毒";
+            string description = facts==null ? "当前游戏版本未提供此读数" : target.Key=="stance"
+                ? (facts?.Equipment is {Length:>0} item ? item : "未装备") + " · 威力 " + (facts is { Power:>=0 } ? PlayerHudNumberFormat.Full(facts.Power) : "—")
+                : facts is not {Points:>0} ? "当前无淬毒" : "剩余 " + PlayerHudNumberFormat.Full(facts.Points) + " 点 · " +
+                    (facts.Initial>0 ? "施加时 " + PlayerHudNumberFormat.Full(facts.Initial) + " 点" : "初值未知");
+            lines.Add(new JObject { ["text"]=title+"\n", ["bold"]=true });
+            lines.Add(new JObject { ["text"]=description });
+            result["placement"]="top";
+            return result;
+        }
         if (target.Kind == "focusTarget")
         {
             var lines = (JArray)result["document"]!["sections"]![0]!["runs"]!; lines.Clear();
@@ -111,8 +126,9 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
                 Add("生命："+PlayerHudFocusTargetWidget.HealthText(focus)+"（"+PlayerHudResourceStyle.Percent(focus.Hp,focus.HpMax)+"）");
                 if (focus.Hp > focus.HpMax) Add("超额：+"+Number(Math.Max(0,focus.Hp-focus.HpMax)));
                 if (focus.Hits > 0) Add("当前连击："+focus.Hits.ToString(CultureInfo.InvariantCulture)+" Hit");
-                if (focus.Hp > 0 && focus.Hp / focus.HpMax <= 0.25)
-                    Add(focus.Role == "protect" ? "状态：保护目标生命危急，请注意掩护" : "状态：目标生命危急");
+                var band = PlayerHudFocusTargetWidget.Band(focus);
+                if (focus.Role == "protect" && focus.Hp > 0 && band > 0)
+                    Add(band == 2 ? "状态：保护目标生命危急，请注意掩护" : "状态：保护目标生命偏低");
             }
             return result;
         }
@@ -120,7 +136,7 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
         {
             var lines = (JArray)result["document"]!["sections"]![0]!["runs"]!; lines.Clear();
             void Add(string text,bool bold=false) => lines.Add(new JObject{["text"]=text+"\n",["bold"]=bold});
-            result["placement"]="bottom";
+            result["placement"]="top";
             var buff = snapshot.BuffCards.FirstOrDefault(b=>b.Id==target.Key);
             if (buff != null)
             {
@@ -150,6 +166,7 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
             }
             return result;
         }
+        if (target.Kind == "resources" && target.Key == "shield") return result;
         var combat=snapshot.Combat;
         var ammoRuns=(JArray)result["document"]!["sections"]![0]!["runs"]!;
         if(target.Kind=="ammo")ammoRuns.Clear();
@@ -192,8 +209,13 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
             Line(name+"："+Number(value)+" / "+Number(maximum)+"（"+PlayerHudResourceStyle.Percent(value,maximum)+"）");
             Line("超额："+(maximum>0?"+"+Number(Math.Max(0,value-maximum)):"未就绪"));
         }
-        Line(v.Name.Length > 0 ? v.Name+" · 资源详情" : "资源详情",true);
-        Resource("生命",v.Hp,v.HpMax);Resource("魔力",v.Mp,v.MpMax);
+        var shieldOnly = target.Kind == "resources" && target.Key == "shield";
+        if (shieldOnly) Line("能量护盾",true);
+        else
+        {
+            Line(v.Name.Length > 0 ? v.Name+" · 资源详情" : "资源详情",true);
+            Resource("生命",v.Hp,v.HpMax); Resource("魔力",v.Mp,v.MpMax);
+        }
         if(!v.ShieldReady)Line("护盾：未就绪");
         else if(!v.ShieldPresent)Line("护盾：无护盾");
         else
@@ -205,25 +227,28 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
             Line(shield==null?"抗真伤：未就绪":shield.ResistsBypass?"可抵抗真伤，仍受强度与剩余盾量限制":"普通护盾：真伤可绕过");
             Line(RecoveryCaption(shield?.Recovery));
         }
-        Line("韧性",true);
-        Line(PlayerHudResourceStyle.Percent(v.Poise,1)+" · "+PlayerHudResourceStyle.PoiseCaption(v.PoiseDetail));
-        if(v.PoiseVisual is {Airborne:true,Rigid:true})Line("浮空与刚体同时存在；斜纹为浮空，金属槽底为刚体。");
-        else if(v.PoiseVisual is {Airborne:true} or {Down:true})Line("遮纹下的条形仅为韧性参考，当前不提供普通韧性保护。");
-        var detail=v.PoiseDetail;
-        Line(detail==null || detail.Phase=="unavailable" ? "踉跄分界：未就绪"
-            : !detail.HasStaggerBand ? "踉跄分界：无踉跄区间"
-            : "踉跄分界：约 "+(detail.Threshold*100).ToString("0.#",CultureInfo.InvariantCulture)+"%"
-                +(detail.Phase is "rigid" or "air" or "down" ? "（当前不适用）" : ""));
-        Line("等级与经验",true);
-        Line("等级："+v.Level.ToString(CultureInfo.InvariantCulture)+"    技能点："+Number(v.SkillPoints));
-        var (earned,required)=PlayerHudResourceStyle.LevelExperience(v);
-        if(required>0)
+        if (!shieldOnly)
         {
-            Line("本级经验："+Number(earned)+" / "+Number(required)+"（"+PlayerHudResourceStyle.Percent(earned,required)+"）");
-            Line("距升级："+Number(Math.Max(0,v.ExperienceEnd-v.Experience)));
+            Line("韧性",true);
+            Line(PlayerHudResourceStyle.Percent(v.Poise,1)+" · "+PlayerHudResourceStyle.PoiseCaption(v.PoiseDetail));
+            if(v.PoiseVisual is {Airborne:true,Rigid:true})Line("浮空与刚体同时存在；斜纹为浮空，金属槽底为刚体。");
+            else if(v.PoiseVisual is {Airborne:true} or {Down:true})Line("遮纹下的条形仅为韧性参考，当前不提供普通韧性保护。");
+            var detail=v.PoiseDetail;
+            Line(detail==null || detail.Phase=="unavailable" ? "踉跄分界：未就绪"
+                : !detail.HasStaggerBand ? "踉跄分界：无踉跄区间"
+                : "踉跄分界：约 "+(detail.Threshold*100).ToString("0.#",CultureInfo.InvariantCulture)+"%"
+                    +(detail.Phase is "rigid" or "air" or "down" ? "（当前不适用）" : ""));
+            Line("等级与经验",true);
+            Line("等级："+v.Level.ToString(CultureInfo.InvariantCulture)+"    技能点："+Number(v.SkillPoints));
+            var (earned,required)=PlayerHudResourceStyle.LevelExperience(v);
+            if(required>0)
+            {
+                Line("本级经验："+Number(earned)+" / "+Number(required)+"（"+PlayerHudResourceStyle.Percent(earned,required)+"）");
+                Line("距升级："+Number(Math.Max(0,v.ExperienceEnd-v.Experience)));
+            }
+            else { Line("本级经验：区间未就绪");Line("累计经验："+Number(v.Experience)+"    距升级：--"); }
+            // No title/icon selects the existing content-sized plain tooltip layout.
         }
-        else { Line("本级经验：区间未就绪");Line("累计经验："+Number(v.Experience)+"    距升级：--"); }
-        // No title/icon selects the existing content-sized plain tooltip layout.
         return new JObject { ["version"]=1,["requestId"]=requestId,["sceneId"]="player-hud:"+epoch,
             ["owner"]="player-hud-resources",["revision"]=sequence,["placement"]="top",
             ["x"]=target.Anchor.Left+target.Anchor.Width/2,["y"]=target.Anchor.Top,

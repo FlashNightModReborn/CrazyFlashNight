@@ -59,6 +59,12 @@ internal sealed class PlayerInfoSplitSurface :
         "CF7_PLAYER_INFO_FIXTURE_CASE";
     private const int AnimationPollMilliseconds = 16;
     private const uint SwpNoZOrder=0x0004, SwpNoOwnerZOrder=0x0200;
+    [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+    internal PlayerInfoPaintTrace? PaintTrace
+    {
+        get => Widget.PaintTrace;
+        set => Widget.PaintTrace = value;
+    }
     internal Action<double, double, int, int>? RenderTimingObserver;
 
     private PlayerHudState? _liveState;
@@ -87,6 +93,7 @@ internal sealed class PlayerInfoSplitSurface :
     private bool _zOrderDirty = true;
     private Task _drainTask = Task.CompletedTask;
     private long _lastAnimationTimestamp;
+    private long _lastLivePaintStart;
     private int _renderPostPending;
     private bool _ready;
     private bool _suspended;
@@ -521,7 +528,7 @@ internal sealed class PlayerInfoSplitSurface :
             plan = PlayerInfoRasterPlanner.Create(
                 AssetSet,
                 viewport,
-                dpiScale);
+                dpiScale, liveReadouts: _liveState != null);
         }
         catch (Exception ex)
         {
@@ -735,6 +742,7 @@ internal sealed class PlayerInfoSplitSurface :
         }
         var surfaceStart = Stopwatch.GetTimestamp();
         Bitmap? composed = null;
+        Rectangle? damage = null;
         Rectangle tight = Rectangle.Empty;
         var painted = false;
         var desired = _desiredBatchKey;
@@ -755,7 +763,13 @@ internal sealed class PlayerInfoSplitSurface :
                     composed = EnsureComposed(
                         plan.TightPhysicalBounds.Width,
                         plan.TightPhysicalBounds.Height);
-                    Widget.Paint(composed, batch, plan);
+                    // Authority can paint more frequently than the timer is allowed to post.
+                    // Carry due logical steps on this existing transaction as well.
+                    if (_liveState != null && AnimationTimer.Enabled && !_qualificationClockOwned &&
+                        _liveVitals?.Paused == false && Stopwatch.GetElapsedTime(_lastAnimationTimestamp, paintStart).TotalMilliseconds >=
+                            1000d / PlayerInfoAnimationModel.LogicalFramesPerSecond)
+                        AdvanceAnimationClock(paintStart);
+                    damage = Widget.PaintRetained(composed, batch, plan);
                     tight = plan.TightPhysicalBounds;
                     painted = true;
                 }))
@@ -777,6 +791,7 @@ internal sealed class PlayerInfoSplitSurface :
         }
 
         var paintMs = ElapsedMilliseconds(paintStart);
+        if (_liveState != null) _lastLivePaintStart = paintStart;
         lock (_metricsGate)
         {
             _paintCount++;
@@ -794,9 +809,14 @@ internal sealed class PlayerInfoSplitSurface :
         {
             var presentation=_sharedPresentation;
             var uploadStart=Stopwatch.GetTimestamp();
+            var trace = Widget.PaintTrace;
+            trace?.EndPass(ResourcePass.PublishSetup);
             if(!GdiFlush())throw new InvalidOperationException("Resource raster flush failed.");
+            trace?.EndPass(ResourcePass.GdiFlush);
             bool handled=presentation.TryPresent(preparedSurface.Pixels,
-                tight.Width,tight.Height,checked(preparedSurface.Width*4),tight.Location);
+                tight.Width,tight.Height,checked(preparedSurface.Width*4),tight.Location,
+                _sharedSubmitted && damage.HasValue ? new[] { damage.Value } : null);
+            trace?.EndPass(ResourcePass.Submit);
             if(!ReferenceEquals(presentation,_sharedPresentation))return;
             if(handled || !presentation.IsAvailable)
             {
@@ -805,6 +825,7 @@ internal sealed class PlayerInfoSplitSurface :
                 base.DismissOverlay();_sharedFallbackLogged=false;
                 // Submission acceptance is measured here; actual presentation is observed by the native fixture.
                 var uploadMs=ElapsedMilliseconds(uploadStart);
+                if (handled && _liveState != null) Widget.DecorationBudget.Observe(paintMs + uploadMs);
                 if(RenderTimingObserver is {} uploadObserver) {
                     try {uploadObserver(paintMs,uploadMs,tight.Width,tight.Height);}
                     catch {RenderTimingObserver=null;}
@@ -926,12 +947,30 @@ internal sealed class PlayerInfoSplitSurface :
             _shutdown ||
             _suspended ||
             !_ready ||
-            !_ownerVisible)
+            !_ownerVisible ||
+            _liveVitals?.Paused == true)
         {
             _animationTimer?.Stop();
             return;
         }
         var now = Stopwatch.GetTimestamp();
+        // Authority, presentation changes and recovery post immediately. A decorative timer
+        // that arrives behind one of those paints waits for the next player-resource sample.
+        // Leave the elapsed-time origin intact so a delayed message advances every due phase.
+        if (_liveState != null && RemainingLivePaintDelay(now) > 0)
+        {
+            UpdateAnimationTimer();
+            return;
+        }
+        if (AdvanceAnimationClock(now))
+        {
+            ScheduleRender();
+        }
+        UpdateAnimationTimer();
+    }
+
+    private bool AdvanceAnimationClock(long now)
+    {
         var elapsed = Math.Clamp(
             (long)Math.Round(
                 (now - _lastAnimationTimestamp) *
@@ -943,11 +982,7 @@ internal sealed class PlayerInfoSplitSurface :
         _lastAnimationTimestamp = now;
         var changed = Animation.Tick((int)elapsed);
         changed |= Widget.AdvanceLiveDecoration((int)elapsed);
-        if (changed)
-        {
-            ScheduleRender();
-        }
-        UpdateAnimationTimer();
+        return changed;
     }
 
     private void UpdateAnimationTimer()
@@ -957,6 +992,7 @@ internal sealed class PlayerInfoSplitSurface :
             _suspended ||
             !_ready ||
             !_ownerVisible ||
+            _liveVitals?.Paused == true ||
             _qualificationClockOwned ||
             (!Animation.WantsAnimationTick && !Widget.WantsLiveDecoration))
         {
@@ -966,8 +1002,27 @@ internal sealed class PlayerInfoSplitSurface :
         if (!AnimationTimer.Enabled)
         {
             _lastAnimationTimestamp = Stopwatch.GetTimestamp();
+            if (_liveState != null) AnimationTimer.Interval = LiveTimerInterval();
             AnimationTimer.Start();
         }
+        else if (_liveState != null)
+        {
+            var interval = LiveTimerInterval();
+            if (AnimationTimer.Interval != interval) AnimationTimer.Interval = interval;
+        }
+    }
+
+    private int RemainingLivePaintDelay(long now)
+    {
+        if (_lastLivePaintStart == 0) return 0;
+        double elapsedMs = (now - _lastLivePaintStart) * 1000d / Stopwatch.Frequency;
+        return Math.Max(0, (int)Math.Ceiling(1000d / PlayerInfoAnimationModel.LogicalFramesPerSecond - elapsedMs));
+    }
+
+    private int LiveTimerInterval()
+    {
+        var remaining = RemainingLivePaintDelay(Stopwatch.GetTimestamp());
+        return remaining > 0 ? remaining : AnimationPollMilliseconds;
     }
 
     private static double ElapsedMilliseconds(long startTimestamp) =>

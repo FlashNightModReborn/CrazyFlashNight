@@ -32,7 +32,7 @@ namespace CF7Launcher.Tests.Guardian
                 <= HudZoneLayout.EventBottomY - HudZoneLayout.EventCardsReserveHeight + 0.01f);
             Assert.Equal(worst.Bottom, PlayerHudFocusTargetWidget.TopLeftBottomFor(256, 4, false));
             Assert.Equal(0f, PlayerHudFocusTargetWidget.TopLeftBottomFor(256, 4, true));
-            Assert.Equal(PlayerHudBuffLayout.ContentHeight(3), PlayerHudFocusTargetWidget.TopLeftBottomFor(3, 0, false));
+            Assert.Equal(0f, PlayerHudFocusTargetWidget.TopLeftBottomFor(3, 0, false));
         }
 
         [Theory]

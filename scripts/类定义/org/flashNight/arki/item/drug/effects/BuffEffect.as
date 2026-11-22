@@ -119,6 +119,7 @@ class org.flashNight.arki.item.drug.effects.BuffEffect implements IDrugEffect {
 
         // 添加到BuffManager
         metaBuff.hudInfo = {name:ctx.itemName, description:"药剂效果，影响属性：" + property, polarity:"neutral", stacks:0};
+        if (ctx.hudSource != null) metaBuff.hudInfo.source = ctx.hudSource;
         var registeredId:String = buffManager.addBuff(metaBuff, buffId);
         ctx.registerDomainBuffId(registeredId);
         buffManager.update(0); // 立即生效

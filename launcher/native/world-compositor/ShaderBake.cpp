@@ -11,6 +11,7 @@
 #include <string>
 #include "ShaderSources.h"
 #include "NightVisionShader.h"
+#include "FocusFillShader.h"
 
 // Build-only tool. The absolute compiler path is hash-checked by the native
 // toolchain gate; loading it explicitly avoids the machine's DLL search order.
@@ -35,6 +36,7 @@ int wmain(int argc, wchar_t** argv) {
         {RayShader,"RVS","vs_4_0"},{RayShader,"RPS","ps_4_0"},
         {PointLightShader,"LVS","vs_4_0"},{PointLightShader,"LPS","ps_4_0"},
         {HudRasterShader,"HVS","vs_4_0"},{HudRasterShader,"HPS","ps_4_0"},
+        {FocusFillShader,"FocusVS","vs_4_0"},{FocusFillShader,"FocusPS","ps_4_0"},
         {NightVisionShader,"NVS","vs_4_0"},{NightVisionShader,"NEPS","ps_4_0"},
         {NightVisionShader,"NAPS","ps_4_0"},{NightVisionShader,"NHPS","ps_4_0"},
         {NightVisionShader,"NVPS","ps_4_0"},{NightVisionShader,"NJPS","ps_4_0"},

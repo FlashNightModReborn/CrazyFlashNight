@@ -32,25 +32,21 @@ public sealed class PlayerHudBuffLayoutTests
     [Theory]
     [InlineData(1)] [InlineData(10)] [InlineData(11)] [InlineData(13)]
     [InlineData(32)] [InlineData(80)] [InlineData(81)] [InlineData(256)]
-    public void EveryVisibleCardAndTargetStripStayInTheSharedLeftColumn(int count)
+    public void CardsShareTheDeckRailAndExpandIntoFourRows(int count)
     {
-        Assert.Equal(10, PlayerHudBuffLayout.Columns);
-        var bounds = PlayerHudBuffLayout.Bounds(count);
-        var notchLeft = (1024 - RightHudLayout.PreferredNotchMaxWidthBase) / 2f;
-        Assert.True(bounds.Right + RightHudLayout.NotchRightGapBase <= notchLeft);
-        for (int i = 0; i < Math.Min(count, PlayerHudBuffLayout.PageSize); i++)
-            Assert.True(bounds.Contains(PlayerHudBuffWidget.SlotRect(i)));
-        var targets = PlayerHudFocusTargetWidget.BoundsForBuffCount(count, 4);
-        Assert.True(targets.Top >= bounds.Bottom + 4);
-        // TL 状态列静态预算：即使 256 行线上限 + 4 条目标，也不进入 BL 事件卡保留区（ADR D5）。
-        Assert.True(targets.Bottom <= HudZoneLayout.TopLeftMaxBottom);
-        if (count > PlayerHudBuffLayout.PageSize)
+        foreach (bool cold in new[]{false,true})
         {
-            Assert.True(bounds.Contains(PlayerHudBuffLayout.PreviousPageRect(count)));
-            Assert.True(bounds.Contains(PlayerHudBuffLayout.NextPageRect(count)));
+            int shown=PlayerHudBuffLayout.RailCount(count,cold);
+            var bounds=PlayerHudBuffLayout.Bounds(count,cold);
+            for(int i=0;i<shown;i++)Assert.True(bounds.Contains(PlayerHudBuffLayout.SlotRect(i)));
+            Assert.True(bounds.Bottom<=513.5f);
+            if(shown<count)Assert.True(bounds.Contains(PlayerHudBuffLayout.Toggle(cold)));
         }
+        Assert.Equal(16,PlayerHudBuffLayout.RailCount(84,true));
+        Assert.Equal(31,PlayerHudBuffLayout.RailCount(84,false));
+        for(int i=0;i<56;i++)Assert.True(PlayerHudBuffLayout.Drawer.Contains(PlayerHudBuffLayout.DrawerSlot(i)));
+        Assert.Equal(2,PlayerHudBuffLayout.PageCount(84));
     }
-
     [Theory]
     [InlineData(1024, 576, 13)] [InlineData(1600, 900, 13)]
     [InlineData(1920, 1080, 32)] [InlineData(1024, 768, 256)]
@@ -76,7 +72,7 @@ public sealed class PlayerHudBuffLayoutTests
         using (var graphics = Graphics.FromImage(bitmap)) { graphics.Clear(Color.Transparent); widget.Paint(graphics, 1, origin); notch.Paint(graphics, 1, origin); }
         float scale = viewport.Height / 576f;
         var eleventh = PlayerHudBuffWidget.SlotRect(10);
-        Assert.Equal(35, eleventh.Top); // The reported thirteenth card must have wrapped before reaching the notch.
+        Assert.Equal(484.5f, eleventh.Top);
         Assert.True(bitmap.GetPixel(viewport.Left + (int)((eleventh.Left + 2) * scale), viewport.Top + (int)((eleventh.Top + 2) * scale)).A > 0);
         var output = Environment.GetEnvironmentVariable("CF7_UNIFIED61_HUD_REVIEW_DIR");
         if (!string.IsNullOrEmpty(output))
@@ -100,24 +96,29 @@ public sealed class PlayerHudBuffLayoutTests
         void Click(Point p) { Edge(p, MouseEventKind.Down); Edge(p, MouseEventKind.Up); Edge(p, MouseEventKind.Click); }
         var next = At(PlayerHudBuffLayout.NextPageRect(256));
         Assert.True(widget.NeedsPointerClick);
-        var initialNext = widget.CapturePointerTarget(next);
+        var toggle=At(PlayerHudBuffLayout.Toggle(false));
+        Assert.False(widget.TryHitTest(next));
+        Click(toggle);
+        Assert.NotNull(widget.CapturePointerTarget(next));
         Click(next);
-        Assert.Equal(1, widget.CurrentPage);
-        Assert.NotEqual(initialNext, widget.CapturePointerTarget(next));
-        Assert.Equal("buff040", Assert.IsType<PlayerHudTarget>(widget.CapturePointerTarget(At(PlayerHudBuffWidget.SlotRect(0)))).Key);
-        Click(next); Click(next); Click(next); Click(next); Click(next);
-        Assert.Equal(6, widget.CurrentPage);
-        Assert.Equal("buff255", Assert.IsType<PlayerHudTarget>(widget.CapturePointerTarget(At(PlayerHudBuffWidget.SlotRect(15)))).Key);
-        Assert.False(widget.TryHitTest(At(PlayerHudBuffWidget.SlotRect(16))));
-        Edge(next, MouseEventKind.Down);
-        controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Packet(256, 2)));
-        Edge(next, MouseEventKind.Up); Edge(next, MouseEventKind.Click);
-        Assert.Equal(0, widget.CurrentPage);
-        Click(next); widget.SetHostSuppressed(true);
-        Edge(next, MouseEventKind.Down); widget.SetHostSuppressed(false); Edge(next, MouseEventKind.Up); Edge(next, MouseEventKind.Click);
-        Assert.Equal(1, widget.CurrentPage);
-        controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Packet(2, 2, 2)));
-        Assert.Equal(0, widget.CurrentPage); Assert.False(widget.NeedsPointerClick);
+        Assert.Equal(1,widget.CurrentPage);
+        Assert.Equal("buff056",Assert.IsType<PlayerHudTarget>(widget.CapturePointerTarget(At(PlayerHudBuffLayout.DrawerSlot(0)))).Key);
+        Assert.Equal("buff000",Assert.IsType<PlayerHudTarget>(widget.CapturePointerTarget(At(PlayerHudBuffWidget.SlotRect(0)))).Key);
+        Click(next);Click(next);Click(next);
+        Assert.Equal(4,widget.CurrentPage);
+        Assert.Equal("buff255",Assert.IsType<PlayerHudTarget>(widget.CapturePointerTarget(At(PlayerHudBuffLayout.DrawerSlot(31)))).Key);
+        Assert.False(widget.TryHitTest(At(PlayerHudBuffLayout.DrawerSlot(32))));
+        var previous=At(PlayerHudBuffLayout.PreviousPageRect(256));
+        Edge(previous,MouseEventKind.Down);
+        controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Packet(256,2)));
+        Edge(previous,MouseEventKind.Up);Edge(previous,MouseEventKind.Click);
+        Assert.Equal(0,widget.CurrentPage);
+        Assert.False(widget.TryHitTest(next));
+        Click(toggle); widget.SetHostSuppressed(true);
+        Edge(next,MouseEventKind.Down);widget.SetHostSuppressed(false);Edge(next,MouseEventKind.Up);Edge(next,MouseEventKind.Click);
+        Assert.Equal(0,widget.CurrentPage);
+        controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Packet(2,2,2)));
+        Assert.False(widget.NeedsPointerClick);
         Assert.Empty(sent);
     });
 

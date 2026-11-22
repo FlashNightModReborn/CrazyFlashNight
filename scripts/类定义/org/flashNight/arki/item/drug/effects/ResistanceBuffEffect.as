@@ -135,6 +135,8 @@ class org.flashNight.arki.item.drug.effects.ResistanceBuffEffect implements IDru
 
         var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
         metaBuff.hudInfo = {name:ctx.itemName, description:"药剂效果，调整元素抗性；实际强度以角色属性为准。", polarity:"neutral", stacks:0};
+        if (ctx.hudSource != null) metaBuff.hudInfo.source = ctx.hudSource;
+        if (property == "基础") metaBuff.hudInfo.role = "eres";
         var registeredId:String = target.buffManager.addBuff(metaBuff, buffId);
         ctx.registerDomainBuffId(registeredId);
         target.buffManager.update(0);

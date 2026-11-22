@@ -192,11 +192,12 @@ public sealed class PlayerHudPresentationTests
             Assert.Equal("拔刀术",visible[0].Name);
             Assert.Equal("迅斩",visible[1].Name);
             Assert.Equal("瞬步斩",visible[2].Name);
-            Assert.Equal(474,bottom.ScreenBounds.Top-anchor.PointToScreen(Point.Empty).Y);
+            Assert.Equal(484.5f,PlayerHudBottomWidget.ColdSkillRect(0).Top);
+            Assert.Equal(483,bottom.ScreenBounds.Top-anchor.PointToScreen(Point.Empty).Y);
         });
     }
     [Fact]
-    public void BuffStyleSharesTopBarHeightAndClearsItsEmptyFrame()
+    public void BuffRailBoundsCoverTheCardsAndClearWhenTheLastBuffEnds()
     {
         Sta(()=>
         {
@@ -204,11 +205,15 @@ public sealed class PlayerHudPresentationTests
             form.Controls.Add(anchor);form.CreateControl();anchor.CreateControl();
             using var controller=new PlayerHudController(_=>true,()=>true,a=>a());
             using var buffs=new PlayerHudBuffWidget(anchor,controller);var packet=PlayerHudStateTests.Full();
-            Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(packet),1));
-            Assert.Equal(anchor.PointToScreen(Point.Empty).Y,buffs.ScreenBounds.Top);
-            Assert.Equal((int)Math.Ceiling(NativeHudTheme.TopBarHeightBase*1080d/576),buffs.ScreenBounds.Height);
+            controller.TakeUiData("pi:"+PlayerHudStateTests.Encode(packet));
+            Assert.True(controller.CanInteract);
+            var origin=anchor.PointToScreen(Point.Empty);
+            const double scale=1080d/576;
+            Assert.Equal(origin.Y+(int)Math.Floor(482.5*scale),buffs.ScreenBounds.Top);
+            Assert.Equal(origin.Y+(int)Math.Ceiling(512*scale),buffs.ScreenBounds.Bottom);
+            Assert.True(buffs.TryHitTest(new Point(origin.X+(int)(99*scale),origin.Y+(int)(497*scale))));
             Assert.False(buffs.TryHitTest(buffs.ScreenBounds.Location));
-            packet["seq"]=2;packet["groups"]["buffs"]=new JArray();Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(packet),2));
+            packet["seq"]=2;packet["groups"]["buffs"]=new JArray();controller.TakeUiData("pi:"+PlayerHudStateTests.Encode(packet));
             Assert.False(buffs.Visible);Assert.Equal(Rectangle.Empty,buffs.ScreenBounds);
         });
     }

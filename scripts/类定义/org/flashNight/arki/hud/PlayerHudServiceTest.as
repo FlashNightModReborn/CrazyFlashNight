@@ -25,6 +25,7 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
         testRealMovieClipGeneration();
         testAmmoOwnershipAndEncoding();
         testFrameEndCapture();
+        testMixedWire();
         testProjectionComparison();
         testPoiseProjection();
         testResourceFacts();
@@ -539,6 +540,38 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
         var strictThrows:Boolean = false;
         try { Base64.encode(String.fromCharCode(55357) + "B"); } catch (error) { strictThrows = true; }
         check(strictThrows, "strict Base64 callers keep their original rejection contract");
+    }
+    private static function testMixedWire():Void {
+        var service:Object = org.flashNight.arki.hud.PlayerHudService;
+        var priorHot:Boolean = service.unitHotEnabled, priorSeq:Number = service.sequence;
+        var priorEpoch:Number = service.epoch, priorCache:Object = service.wireGroups;
+        service.unitHotEnabled = true;
+        service.sequence = 11;
+        service.epoch = 5;
+        service.wireGroups = {};
+        var old:Array = [{id:4, name:"guard", role:"boss", hp:[100,100]}];
+        var next:Array = [{id:4, name:"guard", role:"boss", hp:[90,100]}];
+        var packet:Object = {v:1, epoch:5, seq:11, full:false, visible:true,
+            groups:{focusTarget:next, cooldowns:[1]}};
+        var segments:Array = service.encodeFrame(packet, 2, old, null).split("|pi:");
+        var codec:LiteJSON = new LiteJSON();
+        var head:Object = codec.parse(Base64.decode(segments[0].substr(3)));
+        check(segments.length == 2 && segments[1] == "~1,5,12;f,0,4,90,100,0" && service.sequence == 12,
+            "mixed numeric change emits adjacent hot sequence");
+        check(head.seq == 11 && head.groups.cooldowns[0] == 1 && !head.groups.hasOwnProperty("focusTarget"),
+            "JSON head retains the non-unit change alone");
+        next[0].name = "new guard";
+        packet.seq = ++service.sequence;
+        packet.groups.focusTarget = next;
+        var cold:String = service.encodeFrame(packet, 2, old, null);
+        head = codec.parse(Base64.decode(cold.substr(3)));
+        check(cold.indexOf("|") < 0 && head.seq == 13 && service.sequence == 13
+            && head.groups.focusTarget[0].name == "new guard" && head.groups.cooldowns[0] == 1,
+            "cold change keeps the complete mixed frame at one sequence");
+        service.epoch = priorEpoch;
+        service.sequence = priorSeq;
+        service.unitHotEnabled = priorHot;
+        service.wireGroups = priorCache;
     }
     private static function testFrameEndCapture():Void {
         var priorServer = _root.server;

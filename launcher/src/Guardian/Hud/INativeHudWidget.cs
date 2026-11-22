@@ -33,6 +33,15 @@ namespace CF7Launcher.Guardian.Hud
         Cancel
     }
 
+    // Physical screen rectangles, including all pixels changed since the preceding request.
+    // Receivers that do not retain a surface can continue to repaint the complete widget.
+    internal sealed class HudRepaintRegions(Rectangle[] bounds, bool authoritative = false) : EventArgs
+    {
+        internal Rectangle[] Bounds { get; } = bounds;
+        internal bool Authoritative { get; } = authoritative;
+        internal static readonly HudRepaintRegions AuthoritativeWidget = new(Array.Empty<Rectangle>(), true);
+    }
+
     /// <summary>
     /// NativeHudOverlay 内的渲染单元协议。
     ///

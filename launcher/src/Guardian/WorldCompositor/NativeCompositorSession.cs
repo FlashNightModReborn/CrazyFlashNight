@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace CF7Launcher.Guardian.WorldCompositor
 {
     // Explicit app-local world renderer module; never search PATH or another runtime for a substitute.
-    internal sealed class NativeCompositorSession : IDisposable
+    internal sealed partial class NativeCompositorSession : IDisposable
     {
         internal const string ModuleName = "FlashCompositorNative.dll";
         private IntPtr _module, _session;
@@ -15,6 +15,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly WorkReadDelegate _readWork;
         private readonly TimingReadDelegate _readTiming;
         private readonly HudRasterDelegate _hudRaster;
+        private readonly HudRasterRectsDelegate _hudRasterRects;
+        private readonly uint _hudRasterRectLayerMask;
         private readonly HudRasterReadDelegate _readHudRaster;
         private readonly HudCostSetDelegate _setHudCostSampling;
         private readonly HudCostReadDelegate _readHudCost;
@@ -69,6 +71,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _readWork=TryExport<WorkReadDelegate>("ProbeGetWorkStats");
                 _readTiming=TryExport<TimingReadDelegate>("ProbeGetTimingStats");
                 _hudRaster=TryExport<HudRasterDelegate>("ProbeSetHudRaster");
+                _stageFocus=TryExport<FocusStageDelegate>("ProbeStageFocusFills");
+                _readFocus=TryExport<FocusReadDelegate>("ProbeGetFocusFillStats");
+                _hudRasterRects=TryExport<HudRasterRectsDelegate>("ProbeSetHudRasterRects");
+                if (_hudRasterRects != null)
+                    _hudRasterRectLayerMask = TryExport<VersionDelegate>("ProbeGetHudRasterRectLayerMask")?.Invoke() ?? (1u << 3);
                 _readHudRaster=TryExport<HudRasterReadDelegate>("ProbeGetHudRasterStats");
                 _setHudCostSampling=TryExport<HudCostSetDelegate>("ProbeSetHudCostSampling");
                 _readHudCost=TryExport<HudCostReadDelegate>("ProbeGetHudCostStats");
@@ -172,6 +179,19 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_hudRaster(_session,layer,pixels,width,height,stride,x,y)!=1)
                 throw new ArgumentException("Opaque HUD raster rejected.");
         }
+        internal bool HudRasterDamageAvailable => _hudRasterRects != null;
+        internal bool SupportsRasterDamageFor(int layer) => (_hudRasterRectLayerMask & (1u << layer)) != 0;
+        internal bool TrySetHudRasterRects(int layer,IntPtr pixels,int width,int height,int stride,
+            int x,int y,int[] rectangles,int count)
+        {
+            if (_session==IntPtr.Zero) throw new ObjectDisposedException(nameof(NativeCompositorSession));
+            if (count < 1 || count > 16 || rectangles.Length < count * 4) throw new ArgumentOutOfRangeException(nameof(count));
+            int result=_hudRasterRects(_session,layer,pixels,width,height,stride,x,y,rectangles,count);
+            if(result==0) throw new ArgumentException("Opaque HUD raster damage rejected.");
+            return result==1;
+        }
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int HudRasterRectsDelegate(
+            IntPtr handle,int layer,IntPtr pixels,int width,int height,int stride,int x,int y,[In] int[] rectangles,int count);
         internal HudRasterStats ReadHudRaster()
         {
             var value=new HudRasterStats {Size=(uint)Marshal.SizeOf<HudRasterStats>()};

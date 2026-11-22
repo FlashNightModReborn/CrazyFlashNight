@@ -96,6 +96,9 @@ namespace CF7Launcher.Guardian.Hud
 
         private sealed class CurrencySlot
         {
+            public Bitmap Pixels;
+            public (Size,float,int,System.Drawing.Text.TextRenderingHint,SmoothingMode) PixelKey;
+
             public int Current;
             public int Target;
             public int From;
@@ -448,14 +451,27 @@ namespace CF7Launcher.Guardian.Hud
             }
 
             _stableRefreshElapsedMs += dt;
-            if (_stableRefreshElapsedMs >= StableRefreshMs)
-            {
-                _stableRefreshElapsedMs = 0;
-                needsPaint = true;
-            }
+            bool stableRefresh=_stableRefreshElapsedMs >= StableRefreshMs;
+            if (stableRefresh) _stableRefreshElapsedMs=0;
 
             if (boundsChanged) FireBounds();
             else if (needsPaint) FireRepaint();
+            else if (stableRefresh)
+            {
+                // Only the FPS/clock and scrolling information rows move between packets.
+                // Lighting changes recolour the entire plate and still require a full repaint.
+                if (_state==NotchState.Collapsed && _gameReady && !_chartVisible && !_otherMenuOpen
+                    && !_sparklineRect.IsEmpty && _plateImage!=null && ResolvePillColor().ToArgb()==_plateKey.Item3)
+                {
+                    var bounds=ScreenBounds;
+                    int left=_sparklineRect.Left-Px(CenterGap+CenterFpsMinW,_paintFontScale)-2;
+                    var top=Rectangle.FromLTRB(bounds.X+left,bounds.Top,bounds.X+_expandButtonRect.Right+2,
+                        bounds.Y+_sparklineRect.Bottom+1);
+                    var rows=Rectangle.FromLTRB(bounds.Left,top.Bottom-1,bounds.Right,bounds.Bottom);
+                    RepaintRequested?.Invoke(this,new HudRepaintRegions(rows.Height>0 ? [top,rows] : [top]));
+                }
+                else FireRepaint();
+            }
 
             // 上一个 tick 后 WantsAnimationTick 可能从 true 转 false（无 animating slot / 通知耗尽）
             // FireAnimationStateChanged 让 NativeHud 重新评估是否停 _animTick
@@ -468,6 +484,7 @@ namespace CF7Launcher.Guardian.Hud
             if (bounds.Width <= 0 || bounds.Height <= 0) return;
             int offX = bounds.X - hudOrigin.X;
             int offY = bounds.Y - hudOrigin.Y;
+            if (!g.IsVisible(new Rectangle(offX,offY,bounds.Width,bounds.Height))) return;
 
             float vpX, vpY, vpW, vpH;
             _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
@@ -498,19 +515,33 @@ namespace CF7Launcher.Guardian.Hud
                 g.SetClip(new Rectangle(0, 0, w, h), CombineMode.Intersect);
 
                 // v2 刘海板：下沿双切角 + 底部斜纹（ADR D3）；展开时斜纹让位工具栏。
-                NativeHudTheme.DrawNotchPlate(g, new Rectangle(0, 0, w, pillH), scale,
-                    ResolvePillColor(), toolbarH <= 2);
+                var plateRect=new Rectangle(0,0,w,pillH);
+                var pillColor=ResolvePillColor();
+                if (_state==NotchState.Collapsed && (long)w*pillH*4<=1024*1024)
+                {
+                    var key=(plateRect.Size,scale,pillColor.ToArgb(),g.SmoothingMode);
+                    if (_plateImage==null || _plateKey!=key)
+                    {
+                        _plateImage?.Dispose();
+                        _plateImage=new Bitmap(w,pillH,System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                        using var local=Graphics.FromImage(_plateImage);
+                        local.SmoothingMode=g.SmoothingMode;
+                        NativeHudTheme.DrawNotchPlate(local,plateRect,scale,pillColor,true);
+                        _plateKey=key;
+                    }
+                    g.DrawImageUnscaled(_plateImage,0,0);
+                }
+                else NativeHudTheme.DrawNotchPlate(g,plateRect,scale,pillColor,toolbarH<=2);
                 if (toolbarH > 2)
                 {
                     using (Pen separator = new Pen(NativeHudTheme.Separator, NativeHudTheme.StrokePx(scale)))
                         g.DrawLine(separator, Px(4, scale), row1H, w - Px(4, scale), row1H);
                 }
 
-                using (Font fpsFont = NativeHudFonts.CreateRoleFont("native.hud.mono", Pxf(13f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
-                using (Font textFont = NativeHudFonts.CreateUiFont(Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
-                using (Font monoFont = NativeHudFonts.CreateRoleFont("native.hud.mono", Pxf(12f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
+                EnsurePaintFonts(scale);
+                var textFont=_textFont;
                 {
-                    PaintRow1(g, row1H, scale, fpsFont, textFont, monoFont);
+                    PaintRow1(g, row1H, scale, _fpsFont, textFont, _monoFont);
                     if (_gameReady && toolbarH > 2)
                     {
                         byte buttonAlpha = (byte)(255 * Math.Min(1f, Math.Max(0f, (eased - 0.15f) / 0.85f)));
@@ -524,14 +555,14 @@ namespace CF7Launcher.Guardian.Hud
                 int scaledRowH = Px(RowH, scale);
                 int scaledRowGap = Px(RowGap, scale);
                 int rowsStartY = pillH + (_otherMenuOpen ? OtherMenuHeight(scale) : 0);
-                using (Font infoFont = CreateInfoRowFont(false, scale))
-                using (Font gameInfoFont = CreateInfoRowFont(true, scale))
+
                 {
                     for (int ri = 0; ri < _infoRows.Count; ri++)
                     {
                         NotchInfoRow row = _infoRows[ri];
-                        Font rowFont = row.IsGame ? gameInfoFont : infoFont;
+                        Font rowFont = row.IsGame ? _gameInfoFont : _infoFont;
                         int rowY = rowsStartY + ri * (scaledRowGap + scaledRowH) + scaledRowGap;
+                        if (!g.IsVisible(new Rectangle(0,rowY-2,w,scaledRowH+4))) continue;
                         float textY = rowY + Math.Max(0f, (scaledRowH - rowFont.GetHeight(g)) / 2f);
 
                         float rowAlpha = 1f;
@@ -1584,6 +1615,27 @@ namespace CF7Launcher.Guardian.Hud
 
         private void DrawCurrencyPanel(Graphics g, Rectangle rect, string icon, CurrencySlot slot, Color accent, Font font, bool leftAlign, float scale)
         {
+            if (!g.IsVisible(rect)) return;
+            if (!slot.Animating && (long)rect.Width*rect.Height*4<=512*1024 && rect.Width>0 && rect.Height>0)
+            {
+                var key=(rect.Size,scale,slot.Current,g.TextRenderingHint,g.SmoothingMode);
+                if (slot.Pixels==null || slot.PixelKey!=key)
+                {
+                    slot.Pixels?.Dispose();
+                    slot.Pixels=new Bitmap(rect.Width,rect.Height,System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                    using var local=Graphics.FromImage(slot.Pixels);
+                    local.TextRenderingHint=g.TextRenderingHint;
+                    local.SmoothingMode=g.SmoothingMode;
+                    DrawCurrencyInk(local,new Rectangle(Point.Empty,rect.Size),icon,slot,accent,font,leftAlign,scale);
+                    slot.PixelKey=key;
+                }
+                g.DrawImageUnscaled(slot.Pixels,rect.Location);
+            }
+            else DrawCurrencyInk(g,rect,icon,slot,accent,font,leftAlign,scale);
+        }
+
+        private void DrawCurrencyInk(Graphics g, Rectangle rect, string icon, CurrencySlot slot, Color accent, Font font, bool leftAlign, float scale)
+        {
             int iconW = Px(CurrencyIconW, scale);
             Rectangle iconR = leftAlign
                 ? new Rectangle(rect.X, (rect.Height - Px(18, scale)) / 2, iconW, Px(18, scale))
@@ -2405,7 +2457,37 @@ namespace CF7Launcher.Guardian.Hud
             return new Size(width, height);
         }
 
-        public void Dispose() { }
+        private Bitmap _plateImage;
+        private (Size,float,int,SmoothingMode) _plateKey;
+        private float _paintFontScale;
+        private Font _fpsFont,_textFont,_monoFont,_infoFont,_gameInfoFont;
+
+        private void EnsurePaintFonts(float scale)
+        {
+            if (_gameInfoFont != null && _paintFontScale==scale) return;
+            DisposePaintFonts();
+            _fpsFont=NativeHudFonts.CreateRoleFont("native.hud.mono",Pxf(13f,scale),FontStyle.Bold,GraphicsUnit.Pixel);
+            _textFont=NativeHudFonts.CreateUiFont(Pxf(12f,scale),FontStyle.Regular,GraphicsUnit.Pixel);
+            _monoFont=NativeHudFonts.CreateRoleFont("native.hud.mono",Pxf(12f,scale),FontStyle.Bold,GraphicsUnit.Pixel);
+            _infoFont=CreateInfoRowFont(false,scale);
+            _gameInfoFont=CreateInfoRowFont(true,scale);
+            _paintFontScale=scale;
+        }
+
+        private void DisposePaintFonts()
+        {
+            _fpsFont?.Dispose(); _textFont?.Dispose(); _monoFont?.Dispose();
+            _infoFont?.Dispose(); _gameInfoFont?.Dispose();
+            _fpsFont=_textFont=_monoFont=_infoFont=_gameInfoFont=null;
+        }
+
+        public void Dispose()
+        {
+            _plateImage?.Dispose(); _plateImage=null;
+            _gold.Pixels?.Dispose(); _gold.Pixels=null;
+            _kp.Pixels?.Dispose(); _kp.Pixels=null;
+            DisposePaintFonts();
+        }
     }
 
     /// <summary>

@@ -46,7 +46,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(result.RequiresDecision);
             Assert.Equal(NativeHudTopologyDecision.SplitRequired, result.Decision);
             Assert.Equal("split_required", result.DecisionValue);
-            Assert.Equal(1024L * 64L + 252L * 32L, result.ExactRectangleUnionPixels);
+            Assert.Equal(1024L * 64L + 294L * RightHudLayout.ToolBarHeightBase, result.ExactRectangleUnionPixels);
             Assert.Equal(
                 result.SubmittedSurfacePixels - result.ExactRectangleUnionPixels,
                 result.BridgeWastePixels);
@@ -78,9 +78,9 @@ namespace CF7Launcher.Tests.Guardian
                 6,
                 NativeHudTopologyDecision.SplitRequired);
 
-            Assert.Equal(new Rectangle(0, 0, 976, 555), result.RawOuterUnion);
-            Assert.Equal(new Rectangle(-6, -6, 988, 567), result.InflatedOuterUnion);
-            Assert.Equal(new Rectangle(0, 0, 982, 561), result.ClippedSurface);
+            Assert.Equal(new Rectangle(0, 0, 1018, 555), result.RawOuterUnion);
+            Assert.Equal(new Rectangle(-6, -6, 1030, 567), result.InflatedOuterUnion);
+            Assert.Equal(new Rectangle(0, 0, 1024, 561), result.ClippedSurface);
             Assert.Equal(2, result.Components);
             Assert.False(result.FullViewportBridge);
             Assert.True(result.NearFullBridge);

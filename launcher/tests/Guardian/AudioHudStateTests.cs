@@ -63,8 +63,8 @@ namespace CF7Launcher.Tests.Guardian
         {
             Assert.Equal("JUKEBOX_EXPAND", ResolveUtilityRoute(0));
             Assert.Equal("MAPHUD_TOGGLE", ResolveUtilityRoute(1));
-            Assert.Equal("SETTINGS", ResolveUtilityRoute(2));
-            Assert.Equal("HELP", ResolveUtilityRoute(3));
+            Assert.Equal("HELP", ResolveUtilityRoute(2));
+            Assert.Null(ResolveUtilityRoute(3));
         }
 
         private static string ResolveUtilityRoute(int index)

@@ -10,6 +10,14 @@ using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian.Hud.PlayerInfo;
 
+[Flags]
+internal enum PlayerHudGroups
+{
+    None = 0, Vitals = 1, Combat = 2, Loadout = 4, Cooldowns = 8, Buffs = 16,
+    Resources = 32, ColdSkills = 64, Focus = 128, Allies = 256,
+    All = Vitals | Combat | Loadout | Cooldowns | Buffs | Resources | ColdSkills | Focus | Allies
+}
+
 internal sealed record PlayerHudVitals(double Hp, double HpMax, double Mp, double MpMax,
     double Shield, double ShieldMax, bool ShieldPresent, double Poise,
     double Experience, double ExperienceStart, double ExperienceEnd, int Level,
@@ -27,7 +35,12 @@ internal sealed record PlayerHudLoadout(long Revision, long DrugRevision, int Ba
 internal sealed record PlayerHudCombat(string Mode, string[] Ammo, bool WeaponVisible,
     string WeaponName, string WeaponKey, double WeaponMp, double WeaponCooldown,
     string WeaponIconKey = "", string WeaponItemIconKey = "", string WeaponSourceItem = "",
-    PlayerHudAmmoDetail?[]? AmmoDetails = null);
+    PlayerHudAmmoDetail?[]? AmmoDetails = null)
+{
+    internal PlayerHudDeckFacts? Deck { get; init; }
+}
+internal sealed record PlayerHudDeckFacts(double Points, double Initial, string Equipment, double Power);
+internal sealed record PlayerHudEffectSource(string Kind, string Key, int Slot = -1);
 internal sealed record PlayerHudAmmoDetail(int Capacity, int Loaded, int Normal, int Chamber,
     int Ghost, int Reward, int Reserve, double Spread, int Overflow);
 internal readonly record struct PlayerHudCooldown(bool Ready, double Step, double Total)
@@ -41,30 +54,42 @@ internal sealed record PlayerHudBuffMod(string Property, string Calc, double Val
 internal sealed record PlayerHudBuff(string Id, bool Timed, double Total, double Remaining,
     string Name = "", string Description = "", string Polarity = "neutral", int Stacks = 0,
     string Incarnation = "", PlayerHudBuffGroup? Group = null,
-    PlayerHudBuffActivation? Activation = null, PlayerHudBuffMod[]? Mods = null);
+    PlayerHudBuffActivation? Activation = null, PlayerHudBuffMod[]? Mods = null)
+{
+    internal PlayerHudEffectSource? Source { get; init; }
+    internal string Role { get; init; } = "";
+}
 internal sealed record PlayerHudFocusTarget(long Id, string Role, string Name, double Hp, double HpMax,
     string Icon = "", IReadOnlyDictionary<string, string>? Doll = null, string PortraitKey = "", int Hits = 0, bool Compact = false);
 internal sealed record PlayerHudColdSkill(string Name, string Icon, string Key, int Level, PlayerHudCooldown Cooldown, bool Blocked);
 internal sealed record PlayerHudSnapshot(long Epoch, long Sequence, PlayerHudVitals Vitals,
     PlayerHudCombat Combat, PlayerHudLoadout Loadout, PlayerHudCooldown[] Cooldowns, PlayerHudBuff[] Buffs, PlayerHudResourceHints? Resources = null,
-    PlayerHudColdSkill[]? ColdSkills = null, PlayerHudFocusTarget? FocusTarget = null, PlayerHudFocusTarget[]? FocusTargets = null)
+    PlayerHudColdSkill[]? ColdSkills = null, PlayerHudFocusTarget? FocusTarget = null, PlayerHudFocusTarget[]? FocusTargets = null, PlayerHudAllyRoster? Allies = null)
 {
-    internal PlayerHudBuffCard[] BuffCards { get; } = PlayerHudBuffCard.Project(Buffs);
+    private PlayerHudBuffCard[]? _buffCards;
+    internal PlayerHudBuffCard[] BuffCards
+    {
+        get => _buffCards ??= PlayerHudBuffCard.Project(Buffs);
+        init => _buffCards = value;
+    }
     internal PlayerHudFocusTarget[] TargetList { get; } = FocusTargets is { Length: > 0 } ? FocusTargets
         : FocusTarget != null ? new[] { FocusTarget } : System.Array.Empty<PlayerHudFocusTarget>();
 }
 internal sealed record PlayerHudActionResult(string ActionId, bool Success, string Error, bool Changed);
 
 /// <summary>One atomic adoption point. Missing groups retain data only inside an established epoch.</summary>
-internal sealed class PlayerHudState
+internal sealed partial class PlayerHudState
 {
     internal const int MaximumEncodedLength = 131072;
     private static readonly UTF8Encoding StrictUtf8 = new(false, true);
     private readonly Dictionary<string, JToken> _groups = new(StringComparer.Ordinal);
     private long _epoch;
     private long _sequence;
+    // Both modes receive identical negotiated pi:~1 bytes. Capture the switch once per connection owner.
+    private readonly bool _typedUnitAdoption = Environment.GetEnvironmentVariable("CF7_HUD_HOT_ADOPTION") != "legacy";
     internal PlayerHudSnapshot? Snapshot { get; private set; }
     internal event Action? Changed;
+    internal PlayerHudGroups NotifyingGroups { get; private set; } = PlayerHudGroups.All;
     internal event Action<PlayerHudActionResult>? ActionResult;
     internal long LastReceivedMilliseconds { get; private set; }
     internal long AcceptedPackets { get; private set; }
@@ -73,20 +98,55 @@ internal sealed class PlayerHudState
 
     internal void Disconnect()
     {
-        _groups.Clear(); _epoch = 0; _sequence = 0; Snapshot = null;
-        Changed?.Invoke();
+        NeedsUnitSync = false; _groups.Clear(); _epoch = 0; _sequence = 0; Snapshot = null;
+        NotifyChanged(PlayerHudGroups.All);
+    }
+
+    private void NotifyChanged(PlayerHudGroups groups)
+    {
+        // Preserve subscriber order and the outer event's mask for a reentrant adoption.
+        var outer = NotifyingGroups;
+        NotifyingGroups = groups;
+        try { Changed?.Invoke(); }
+        finally { NotifyingGroups = outer; }
+    }
+
+    private static PlayerHudGroups GroupFor(string key) => key switch
+    {
+        "vitals" => PlayerHudGroups.Vitals, "combat" => PlayerHudGroups.Combat,
+        "loadout" => PlayerHudGroups.Loadout, "cooldowns" => PlayerHudGroups.Cooldowns,
+        "buffs" => PlayerHudGroups.Buffs, "resources" => PlayerHudGroups.Resources,
+        "allies" => PlayerHudGroups.Allies, "coldSkills" => PlayerHudGroups.ColdSkills, "focusTarget" => PlayerHudGroups.Focus,
+        _ => throw new FormatException("unknown_hud_group")
+    };
+
+    // JToken.DeepEquals compares floating point numbers with a tolerance. Buff timers
+    // distinguish zero from positive values and reject every negative value.
+    private static bool SameBuffData(JToken? previous, JToken current)
+    {
+        if (previous == null || previous.Type != current.Type) return false;
+        if (current is JObject obj && previous is JObject oldObject)
+            return obj.Count == oldObject.Count && obj.Properties().All(p => SameBuffData(oldObject[p.Name], p.Value));
+        if (current is JArray rows && previous is JArray oldRows)
+        {
+            if (rows.Count != oldRows.Count) return false;
+            for (int i = 0; i < rows.Count; i++)
+                if (!SameBuffData(oldRows[i], rows[i])) return false;
+            return true;
+        }
+        return current.Type == JTokenType.Float ? previous.Value<double>() == current.Value<double>()
+            : JToken.DeepEquals(previous, current);
     }
 
     internal bool Receive(string encoded, long now)
     {
+        bool hasAllyGroup = false;
         try
         {
             if (encoded.Length == 0 || encoded.Length > MaximumEncodedLength) throw new FormatException("payload_size");
-            var json = StrictUtf8.GetString(Convert.FromBase64String(encoded));
-            using var input = new StringReader(json);
-            using var reader = new JsonTextReader(input) { MaxDepth = 12, DateParseHandling = DateParseHandling.None };
-            var packet = JObject.Load(reader, new JsonLoadSettings { DuplicatePropertyNameHandling = DuplicatePropertyNameHandling.Error });
-            if (reader.Read()) throw new FormatException("trailing_json");
+            if (encoded[0] == '~' && _typedUnitAdoption) return ReceiveTypedHotPacket(encoded, now);
+            var packet = encoded[0] == '~' ? ExpandHotPacket(encoded) : DecodeJsonPacket(encoded);
+            if (packet == null) return false;
             if (Integer(packet["v"], 1, 1) != 1) throw new FormatException("version");
             if (packet["result"] is JObject result)
             {
@@ -107,20 +167,38 @@ internal sealed class PlayerHudState
             var full = Boolean(packet["full"]);
             var visible = Boolean(packet["visible"]);
             if (epoch < _epoch || (epoch == _epoch && sequence <= _sequence)) return false;
-            if (epoch != _epoch && !full) return false;
+            if (!full && _groups.ContainsKey("allies") && (epoch != _epoch || sequence != _sequence + 1))
+            {
+                NeedsUnitSync = true;
+                return false;
+            }
+            if ((epoch != _epoch || NeedsUnitSync) && !full) return false;
             if (!visible)
             {
                 if (!full || packet["groups"] != null) throw new FormatException("invalid_clear");
-                _epoch = epoch; _sequence = sequence; _groups.Clear(); Snapshot = null;
+                _epoch = epoch; _sequence = sequence; _groups.Clear(); Snapshot = null; NeedsUnitSync = false;
                 LastReceivedMilliseconds = now; AcceptedPackets++; ReceivedBytes += encoded.Length;
-                Changed?.Invoke(); return true;
+                NotifyChanged(PlayerHudGroups.All); return true;
             }
             var incoming = Object(packet["groups"]);
-            Keys(incoming, "vitals", "combat", "loadout", "cooldowns", "buffs", "resources", "coldSkills", "focusTarget");
+            hasAllyGroup = incoming.ContainsKey("allies");
+            Keys(incoming, "vitals", "combat", "loadout", "cooldowns", "buffs", "resources", "coldSkills", "focusTarget", "allies");
             var candidate = full ? new Dictionary<string, JToken>(StringComparer.Ordinal)
                 : new Dictionary<string, JToken>(_groups, StringComparer.Ordinal);
             foreach (var property in incoming.Properties()) candidate[property.Name] = property.Value;
             if (new[] { "vitals", "combat", "loadout", "cooldowns", "buffs" }.Any(key => !candidate.ContainsKey(key))) throw new FormatException("incomplete_full_state");
+            var changes = PlayerHudGroups.None;
+            if (Snapshot == null || epoch != _epoch) changes = PlayerHudGroups.All;
+            else
+            {
+                foreach (var entry in incoming.Properties())
+                    if (!_groups.TryGetValue(entry.Name,out var old) || !(entry.Name == "buffs"
+                        ? SameBuffData(old, entry.Value) : JToken.DeepEquals(old, entry.Value)))
+                        changes |= GroupFor(entry.Name);
+                // A same-epoch full snapshot also removes omitted optional groups.
+                if (full) foreach (var key in _groups.Keys)
+                    if (!candidate.ContainsKey(key)) changes |= GroupFor(key);
+            }
             // Missing groups retain their already validated typed projection. Parse all
             // incoming groups before committing any field, including on a full packet.
             var previous = full ? null : Snapshot;
@@ -130,27 +208,35 @@ internal sealed class PlayerHudState
             var primaryFocusTarget = previous != null && incoming["focusTarget"] == null
                 ? previous.FocusTarget
                 : focusTargets is { Length: > 0 } ? focusTargets[0] : null;
+            bool keepBuffs = (changes & PlayerHudGroups.Buffs) == 0;
+            var buffs = previous != null && incoming["buffs"] == null ? previous.Buffs : ReadBuffs(candidate["buffs"]);
             var next = new PlayerHudSnapshot(epoch, sequence,
                 previous != null && incoming["vitals"] == null ? previous.Vitals : ReadVitals(candidate["vitals"]),
                 previous != null && incoming["combat"] == null ? previous.Combat : ReadCombat(candidate["combat"]),
                 previous != null && incoming["loadout"] == null ? previous.Loadout : ReadLoadout(candidate["loadout"]),
                 previous != null && incoming["cooldowns"] == null ? previous.Cooldowns : ReadCooldowns(candidate["cooldowns"]),
-                previous != null && incoming["buffs"] == null ? previous.Buffs : ReadBuffs(candidate["buffs"]),
+                keepBuffs ? Snapshot!.Buffs : buffs,
                 previous != null && incoming["resources"] == null ? previous.Resources
                     : candidate.TryGetValue("resources", out var resources) ? ReadResources(resources) : null,
                 previous != null && incoming["coldSkills"] == null ? previous.ColdSkills
                     : candidate.TryGetValue("coldSkills", out var coldSkills) ? ReadColdSkills(coldSkills) : null,
                 primaryFocusTarget,
-                focusTargets);
-            var dirty = epoch != _epoch || Snapshot == null || candidate.Any(p => !_groups.TryGetValue(p.Key, out var old) || !JToken.DeepEquals(old, p.Value));
+                focusTargets,
+                previous != null && incoming["allies"] == null ? previous.Allies :
+                    candidate.TryGetValue("allies", out var allyRows) ? ReadAllies(allyRows) : null)
+            {
+                BuffCards = keepBuffs ? Snapshot!.BuffCards : PlayerHudBuffCard.Project(buffs)
+            };
             _groups.Clear(); foreach (var pair in candidate) _groups.Add(pair.Key, pair.Value);
+            if (full) NeedsUnitSync = false;
             Snapshot = next; _epoch = epoch; _sequence = sequence;
             LastReceivedMilliseconds = now; AcceptedPackets++; ReceivedBytes += encoded.Length;
-            if (dirty) Changed?.Invoke();
+            if (changes != PlayerHudGroups.None) NotifyChanged(changes);
             return true;
         }
         catch (Exception ex) when (ex is JsonException or FormatException or InvalidCastException or OverflowException or DecoderFallbackException)
         {
+            if (hasAllyGroup || encoded.Length > 0 && encoded[0] == '~') NeedsUnitSync = true;
             RejectedPackets++; return false;
         }
     }
@@ -231,14 +317,25 @@ internal sealed class PlayerHudState
 
     private static PlayerHudCombat ReadCombat(JToken token)
     {
-        var o = Object(token); Keys(o, "mode", "ammo", "weapon", "ammoDetails");
+        var o = Object(token); Keys(o, "mode", "ammo", "weapon", "ammoDetails", "deck");
         var mode = Text(o["mode"], 32);
         if (!new[] { "", "手枪", "手枪2", "长枪", "兵器", "手雷", "空手", "双枪", "长枪副武器" }.Contains(mode)) throw new FormatException("mode");
         var ammo = Array(o["ammo"], 4).Select(t => Text(t, 64)).ToArray();
         var weapon = Object(o["weapon"]); Keys(weapon, "visible", "name", "mp", "cooldownMs", "key", "iconKey", "itemIconKey", "sourceItem");
         return new(mode, ammo, Boolean(weapon["visible"]), Text(weapon["name"], 128), Text(weapon["key"], 32),
             Number(weapon["mp"]), Number(weapon["cooldownMs"]), OptionalText(weapon["iconKey"], 128),
-            OptionalText(weapon["itemIconKey"], 128), OptionalText(weapon["sourceItem"], 128), ReadAmmoDetails(o["ammoDetails"]));
+            OptionalText(weapon["itemIconKey"], 128), OptionalText(weapon["sourceItem"], 128), ReadAmmoDetails(o["ammoDetails"]))
+            { Deck = ReadDeck(o["deck"]) };
+    }
+    private static PlayerHudDeckFacts? ReadDeck(JToken? token)
+    {
+        if (token == null) return null;
+        var deck = Object(token);
+        Keys(deck, "points", "initial", "equipment", "power");
+        double points = Number(deck["points"]), initial = Number(deck["initial"]), power = Number(deck["power"]);
+        if (points < 0 || initial < 0 || initial > 0 && initial < points || power < 0 && power != -1)
+            throw new FormatException("deck facts");
+        return new(points, initial, Text(deck["equipment"], 128), power);
     }
 
     private static PlayerHudAmmoDetail?[]? ReadAmmoDetails(JToken? token)
@@ -344,7 +441,7 @@ internal sealed class PlayerHudState
         var ids = new HashSet<string>(StringComparer.Ordinal);
         return rows.Select(t =>
         {
-            var b = Object(t); Keys(b, "id", "timed", "total", "remaining", "info", "incarnation", "group", "activation", "mods");
+            var b = Object(t); Keys(b, "id", "timed", "total", "remaining", "info", "incarnation", "group", "activation", "mods", "source", "role");
             var id = Text(b["id"], 96); if (id.Length == 0 || !ids.Add(id)) throw new FormatException("buff_id");
             var total = Number(b["total"]); var remain = Number(b["remaining"]);
             if (total < 0 || remain < 0) throw new FormatException("buff_timer");
@@ -357,8 +454,21 @@ internal sealed class PlayerHudState
                 if (name.Length == 0 || polarity is not ("neutral" or "benefit" or "harm")) throw new FormatException("buff_info");
             }
             return new PlayerHudBuff(id, Boolean(b["timed"]), total, remain, name, description, polarity, stacks,
-                OptionalText(b["incarnation"], 96), ReadBuffGroup(b["group"]), ReadBuffActivation(b["activation"]), ReadBuffMods(b["mods"]));
+                OptionalText(b["incarnation"], 96), ReadBuffGroup(b["group"]), ReadBuffActivation(b["activation"]), ReadBuffMods(b["mods"]))
+                { Source = ReadEffectSource(b["source"]), Role = OptionalText(b["role"], 32) };
         }).ToArray();
+    }
+
+    private static PlayerHudEffectSource? ReadEffectSource(JToken? token)
+    {
+        if (token == null) return null;
+        var o = Object(token);
+        Keys(o, "kind", "key", "slot");
+        var kind = Text(o["kind"], 16);
+        var key = Text(o["key"], 128);
+        if (key.Length == 0 || kind is not ("skill" or "drug" or "inventory") || kind != "drug" && o["slot"] != null)
+            throw new FormatException("effect source");
+        return new(kind, key, kind == "drug" ? (int)Integer(o["slot"], 0, 7) : -1);
     }
 
     private static PlayerHudBuffGroup? ReadBuffGroup(JToken? token)

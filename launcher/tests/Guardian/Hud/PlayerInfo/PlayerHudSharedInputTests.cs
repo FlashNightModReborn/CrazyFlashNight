@@ -141,12 +141,20 @@ public sealed class PlayerHudSharedInputTests
     }
 
     [Fact]
-    public void OnlyTheAuthoredHeaderEntryOpensResourceDetails()
+    public void ShieldBayAndDetailsStripeAreSeparateReadOnlyTargets()
     {
         Sta(()=> {
             using var f=new Fixture();
-            Assert.Null(f.Widget.CapturePointerTarget(f.At(new RectangleF(278,514,18,22))));
-            Assert.Equal("resources",f.Widget.CapturePointerTarget(f.At(PlayerHudBottomWidget.DetailsRect)).Kind);
+            var shield = f.Widget.CapturePointerTarget(f.At(PlayerHudResourceLayout.ShieldPlaque));
+            Assert.NotNull(shield);
+            Assert.Equal("shield",shield.Key);
+            Assert.Equal(PlayerHudResourceLayout.ShieldPlaque,shield.Anchor);
+            Assert.Null(f.Widget.CapturePointerTarget(f.At(new RectangleF(166,493,10,8))));
+            Assert.Null(f.Widget.CapturePointerTarget(f.At(new RectangleF(294,515,4,11))));
+            var details = f.Widget.CapturePointerTarget(f.At(PlayerHudBottomWidget.DetailsRect));
+            Assert.Equal("resources",details.Kind);
+            Assert.NotEqual(shield.Key,details.Key);
+            f.Click(f.At(PlayerHudResourceLayout.ShieldPlaque));Assert.Empty(f.Writes);
             f.Click(f.At(PlayerHudBottomWidget.DetailsRect));Assert.Empty(f.Writes);
         });
     }

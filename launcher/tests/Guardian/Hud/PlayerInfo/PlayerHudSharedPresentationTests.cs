@@ -63,6 +63,9 @@ public sealed class PlayerHudSharedPresentationTests
                 using var commands=new PlayerHudController(_=>true,()=>true,a=>a());
                 var state=PlayerHudStateTests.Full();state["groups"]["vitals"]["hp"]=new JArray(0,1000);
                 state["groups"]["vitals"]["paused"]=true;
+                // The deck owns Buffs. Supply a live focus entry for the independently hosted upper column.
+                state["groups"]["focusTarget"]=new JArray(new JObject {
+                    ["id"]=1, ["role"]="boss", ["name"]="handoff", ["hp"]=new JArray(85,100) });
                 commands.TakeUiData("pi:"+PlayerHudStateTests.Encode(state));
                 using var resources=PlayerInfoSplitSurface.CreateLive(owner,owner,commands.State);
                 using var main=new NativeHudOverlay(owner,owner);

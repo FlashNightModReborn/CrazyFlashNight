@@ -37,7 +37,8 @@ internal sealed class PlayerHudProfiler : IDisposable
             if (rows.Count == 0) continue;
             var sorted = rows.OrderBy(x => x).ToArray();
             metrics.Add(name, new { count = sorted.Length, mean = sorted.Average(),
-                p50 = sorted[(sorted.Length - 1) / 2], p95 = sorted[(int)Math.Floor((sorted.Length - 1) * 0.95)], max = sorted[^1] });
+                p50 = sorted[(sorted.Length - 1) / 2], p95 = sorted[(int)Math.Floor((sorted.Length - 1) * 0.95)],
+                p99 = sorted[(int)Math.Floor((sorted.Length - 1) * 0.99)], max = sorted[^1] });
         }
         using var process = Process.GetCurrentProcess();
         LogManager.Log("[PlayerHudPerf] " + JsonConvert.SerializeObject(new {

@@ -252,6 +252,8 @@ org.flashNight.arki.scene.StageInfo;
 org.flashNight.arki.unit.UnitRegistry;
 org.flashNight.arki.scene.StageEvent;
 org.flashNight.arki.hud.FocusTargetHudService;
+org.flashNight.arki.hud.PlayerHudAllyRoster;
+org.flashNight.arki.hud.PlayerHudUnitHotWire;
 org.flashNight.arki.scene.Cf6SoldierRoster;
 org.flashNight.arki.scene.StageEventHandler;
 org.flashNight.arki.scene.StageTimePoolController;

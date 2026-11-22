@@ -111,7 +111,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData(1024, 576)]
         [InlineData(1600, 900)]
         [InlineData(1600, 1000)]
-        public void DeliveryHeightChangeKeepsMapAndMenuHitRegionsAligned(int width, int height)
+        public void DeliveryKeepsMapAndMenuHitRegionsAlignedInSharedStatusSlot(int width, int height)
         {
             using var owner = new Form { ClientSize = new Size(width, height) };
             var anchor = new Panel { Bounds = new Rectangle(0, 0, width, height) };
@@ -130,13 +130,10 @@ namespace CF7Launcher.Tests.Guardian
             Rectangle compactBounds = widget.ScreenBounds;
             task.HandleDeliveryState(DeliveryState());
             Rectangle deliveryBounds = widget.ScreenBounds;
-            Assert.True(deliveryBounds.Bottom > compactBounds.Bottom,
-                "ordinary=" + compactBounds + " delivery=" + deliveryBounds);
-            Assert.Equal(compactBounds.Top, deliveryBounds.Top);
-            Assert.Equal(compactBounds.Width, deliveryBounds.Width);
+            Assert.Equal(compactBounds, deliveryBounds);
             Assert.False(widget.ReturnFieldForTest.IntersectsWith(widget.DailyDeliveryActionForTest));
 
-            // 选择栏新增的下缘必须仍归选择器；弹层覆盖地图时先命中任务行。
+            // 选择栏的下缘仍归选择器；弹层覆盖地图时先命中任务行。
             Rectangle field = widget.ReturnFieldForTest;
             ReturnClick(widget, new Rectangle(field.Left + 2, field.Bottom - 3, field.Width - 4, 2));
             Assert.True(widget.ReturnMenuOpenForTest);
@@ -153,7 +150,7 @@ namespace CF7Launcher.Tests.Guardian
             task.SetDeliveryPresenter(null);
             widget.ResetDeliveryState();
             Assert.Equal(compactBounds, widget.ScreenBounds);
-            Assert.False(widget.TryHitTest(new Point(deliveryBounds.Left + 10, deliveryBounds.Bottom - 2)));
+            Assert.False(widget.TryHitTest(new Point(deliveryBounds.Left + 10, deliveryBounds.Bottom)));
             ReturnClick(widget, new Rectangle(compactBounds.Left + 4, compactBounds.Bottom - 4, compactBounds.Width - 8, 2));
             Assert.Equal("map", host.ActivePanelName);
         }

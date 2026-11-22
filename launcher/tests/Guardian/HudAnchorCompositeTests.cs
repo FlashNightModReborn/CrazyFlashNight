@@ -101,11 +101,9 @@ namespace CF7Launcher.Tests.Guardian
             var comboR = Rel(combo.ScreenBounds);
             var rightR = Rel(right.ScreenBounds);
 
-            if (buffs > 40) Assert.True(toastR.IsEmpty, "满载状态列与待显示行优先，fallback 无空间时整体隐藏");
-            else Assert.False(toastR.IsEmpty, "fallback messages must have room in the event column");
-            Assert.False(toastR.IntersectsWith(buffR), $"toast {toastR} vs buff {buffR}");
-            Assert.False(toastR.IntersectsWith(focusR), $"toast {toastR} vs focus {focusR}");
-            Assert.False(toastR.IntersectsWith(lootR), $"toast {toastR} vs loot {lootR}");
+            Assert.False(toastR.IsEmpty, "fallback messages must have room in the event column");
+            foreach (var other in new[] { buffR, focusR, lootR, comboR, rightR })
+                Assert.False(toastR.IntersectsWith(other), $"toast {toastR} vs {other}");
             Assert.False(focusR.IntersectsWith(lootR), $"focus {focusR} vs loot {lootR}");
             Assert.False(comboR.IsEmpty, "combo fixture should be visible");
             Assert.True(comboR.Top >= notchR.Bottom, $"combo {comboR} must sit below notch rows {notchR}");

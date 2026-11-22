@@ -326,7 +326,7 @@ _root.战宠UI函数.创建宠物单位 = function(id:Number, 地点X:Number, �
 				宠物属性:宠物属性,
 				是否为敌人:false,
 				延迟常驻淬毒结算:true,
-				__petResourceSettlement:资源结算,
+				__petResourceSettlement:资源结算, __hudAllyRole:"pet",
 				身高:宠物身高,
 				_x:地点X,
 				_y:地点Y

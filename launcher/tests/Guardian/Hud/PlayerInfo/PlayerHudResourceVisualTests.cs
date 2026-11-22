@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Reflection;
+using SkiaSharp;
 using System.Threading;
 using CF7Launcher.Fonts;
 using CF7Launcher.Guardian.Hud.PlayerInfo;
@@ -29,7 +31,7 @@ public sealed class PlayerHudResourceVisualTests
     private static Bitmap Resource(PlayerHudVitals value, int frame = 0)
     {
         var assets=PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster:false);
-        var plan=PlayerInfoRasterPlanner.Create(assets,new Rectangle(0,0,1024,576),1);
+        var plan=PlayerInfoRasterPlanner.Create(assets,new Rectangle(0,0,1024,576),1,liveReadouts:true);
         using var batch=new PlayerInfoSvgRasterizer().Bake(plan,CancellationToken.None);
         var model=new PlayerInfoAnimationModel();model.ApplyProduction(value);
         using var widget=new PlayerInfoWidget(assets,model){LiveVitals=value};
@@ -39,6 +41,81 @@ public sealed class PlayerHudResourceVisualTests
         var image=new Bitmap(1024,576,PixelFormat.Format32bppPArgb);
         using(var g=Graphics.FromImage(image))g.DrawImageUnscaled(crop,plan.TightPhysicalBounds.Location);
         return image;
+    }
+    [Theory]
+    [InlineData(null)]
+    [InlineData("on")]
+    public void RetainedHpMotionUsesCompleteBasesAndExactWarmPhasePixels(string phaseCache)
+    {
+        const string setting = "CF7_HUD_PHASE_CACHE";
+        string previous = Environment.GetEnvironmentVariable(setting);
+        try
+        {
+            Environment.SetEnvironmentVariable(setting, phaseCache);
+            VerifyRetainedHpMotion(phaseCache == "on");
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable(setting, previous);
+        }
+    }
+
+    private static void VerifyRetainedHpMotion(bool expectPhaseStorage)
+    {
+        var value = Vitals() with { Hp = 800, Shield = 0, ShieldDetail = null };
+        var assets = PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster: false);
+        var plan = PlayerInfoRasterPlanner.Create(assets, new Rectangle(7, 13, 1024, 576), 1, liveReadouts:true);
+        using var batch = new PlayerInfoSvgRasterizer().Bake(plan, CancellationToken.None);
+        var model = new PlayerInfoAnimationModel();
+        model.ApplyProduction(value);
+        using var retained = new PlayerInfoWidget(assets, model) { LiveVitals = value };
+        using var reference = new PlayerInfoWidget(assets, model) { LiveVitals = value };
+        using var output = new Bitmap(plan.TightPhysicalBounds.Width, plan.TightPhysicalBounds.Height, PixelFormat.Format32bppPArgb);
+        using var expected = new Bitmap(output.Width, output.Height, output.PixelFormat);
+        var bounds = new Rectangle(Point.Empty, output.Size);
+        Rectangle? PaintAt(int elapsedMilliseconds)
+        {
+            retained.AdvanceLiveDecoration(elapsedMilliseconds);
+            reference.AdvanceLiveDecoration(elapsedMilliseconds);
+            reference.Paint(expected, batch, plan);
+            var dirty = retained.PaintRetained(output, batch, plan);
+            Assert.Equal(0, Difference(expected, output, bounds));
+            return dirty;
+        }
+        Assert.Null(PaintAt(34));
+        Assert.Null(PaintAt(34));
+        Assert.NotNull(PaintAt(34));
+        // Repeat a stable motif with and without the 216-frame light. The 11-frame grid keeps moving.
+        foreach (int elapsed in new[] { 3333, 3334, 3333, 3333, 3334, 3333, 3333 })
+        {
+            var dirty = PaintAt(elapsed);
+            Assert.True(dirty.HasValue && bounds.Contains(dirty.Value) && dirty.Value.Width < bounds.Width);
+        }
+        // Verify the native images obey the budget even with the source DIB's larger stride.
+        var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+        var compositor = typeof(PlayerInfoWidget).GetField("_compositor", flags).GetValue(retained);
+        var phases = ((SKImage Image, Rectangle Bounds)[])typeof(PlayerInfoFrameCompositor)
+            .GetField("_unlitMotifs", flags).GetValue(compositor);
+        long retainedBytes = 0;
+        foreach (var phase in phases)
+        {
+            if (phase.Image == null) continue;
+            using var pixels = phase.Image.PeekPixels();
+            Assert.Equal(phase.Bounds.Width * 4, pixels.RowBytes);
+            retainedBytes += (long)pixels.RowBytes * phase.Bounds.Height;
+        }
+        if (expectPhaseStorage)
+            Assert.InRange(retainedBytes, 1L, 12L * 1024 * 1024);
+        else
+            Assert.Equal(0L, retainedBytes);
+        // A complete draw with the same background must never include previously composed foreground.
+        retained.ClearResourceFeedback();
+        Assert.Null(PaintAt(34));
+        value = value with { Hp = 600 };
+        retained.LiveVitals = reference.LiveVitals = value;
+        model.ApplyProduction(value);
+        Assert.Null(PaintAt(34));
+        Assert.All(phases, phase => Assert.Null(phase.Image));
     }
     private static Bitmap Poise(PlayerHudVitals value)
     {

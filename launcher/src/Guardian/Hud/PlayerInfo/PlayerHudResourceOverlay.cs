@@ -91,11 +91,14 @@ internal static class PlayerHudResourceOverlay
         if(!(value.MpMax>0) || !(value.Mp>value.MpMax)) return;
         var fraction = (float)Math.Clamp((value.Mp-value.MpMax)/value.MpMax,0,1);
         var bounds = PlayerHudResourceLayout.MpBar;
+        var source = PlayerHudBarArtData.MpBounds;
+        var sx = PlayerHudResourceLayout.MpScaleX;
+        var sy = PlayerHudResourceLayout.MpScaleY;
         using var cells = new SKPath();
         foreach(var cell in PlayerHudBarArtData.Cells)
         {
-            cells.MoveTo(cell[0].X+PlayerHudResourceLayout.ResourceOffsetX,cell[0].Y+PlayerHudResourceLayout.MpOffsetY);
-            for(var i=1;i<cell.Length;i++) cells.LineTo(cell[i].X+PlayerHudResourceLayout.ResourceOffsetX,cell[i].Y+PlayerHudResourceLayout.MpOffsetY);
+            cells.MoveTo(bounds.Left+(cell[0].X-source.Left)*sx,bounds.Top+(cell[0].Y-source.Top)*sy);
+            for(var i=1;i<cell.Length;i++) cells.LineTo(bounds.Left+(cell[i].X-source.Left)*sx,bounds.Top+(cell[i].Y-source.Top)*sy);
             cells.Close();
         }
         canvas.Save();canvas.ClipPath(cells);

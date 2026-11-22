@@ -106,6 +106,7 @@ namespace CF7Launcher.Guardian
         private int _composedW;
         private int _composedH;
         private readonly List<Rectangle> _dirtyRectangles = new List<Rectangle>();
+        private INativeHudWidget _exclusiveFocusDamage;
         private bool _fullRepaint = true;
         private bool _partialRepaintEnabled;
 
@@ -117,12 +118,18 @@ namespace CF7Launcher.Guardian
             get { return _partialRepaintEnabled; }
             set { _partialRepaintEnabled = value; InvalidateWholeBitmap(); }
         }
+        internal long DeckPaintEntries { get; private set; }
         internal int LastPaintedWidgetCount { get; private set; }
         internal long LastPaintedPixels { get; private set; }
 
         private Timer _animTick;
         private Timer _renderCoalesceTimer;
         private bool _renderPending;
+        private readonly bool _postFocusUpdates =
+            Environment.GetEnvironmentVariable("CF7_HUD_FOCUS_DISPATCH") != "timer";
+        private bool _authorityPosted;
+        private bool _authorityPending;
+        internal Action<string, int> DispatchObserver;
         private int _lastCommitTick;
         private const int RENDER_MIN_INTERVAL_MS = 33;
         private const int ANIM_TICK_MAX_DELTA_MS = 50;
@@ -193,6 +200,7 @@ namespace CF7Launcher.Guardian
             _lastTickMs = 0;
             if (_renderCoalesceTimer != null) _renderCoalesceTimer.Stop();
             _renderPending = false;
+            _authorityPending = false;
             DismissHudPresentation();
         }
 
@@ -341,12 +349,13 @@ namespace CF7Launcher.Guardian
             PerfTrace.Counter("nativeHud.repaintRequested");
             CounterByWidget("nativeHud.repaintSource", sender);
             string source = GetWidgetCounterName(sender);
+            var damage = e as HudRepaintRegions;
             if (this.IsHandleCreated && this.InvokeRequired)
             {
-                try { this.BeginInvoke(new Action(delegate { RequestRenderFromUi(source, sender as INativeHudWidget); })); } catch { }
+                try { this.BeginInvoke(new Action(delegate { RequestRenderFromUi(source, sender as INativeHudWidget, damage); })); } catch { }
                 return;
             }
-            RequestRenderFromUi(source, sender as INativeHudWidget);
+            RequestRenderFromUi(source, sender as INativeHudWidget, damage);
         }
 
         private void OnWidgetAnimationStateChanged(object sender, EventArgs e)
@@ -488,6 +497,7 @@ namespace CF7Launcher.Guardian
                     new { hudRect, shown = _shown, suspended = _suspendedForPanel, insertAfter = insertAfter.ToInt64() });
             }
             _renderPending = false;
+            _authorityPending = false;
             if (_renderCoalesceTimer != null) _renderCoalesceTimer.Stop();
             // ULW 一次提交新位图、位置和尺寸。提前 SetWindowPos 会把整层旧内容
             // 移到新原点；tooltip 显隐/避让改变 union 时，其余 HUD 就会短暂错位。
@@ -566,6 +576,7 @@ namespace CF7Launcher.Guardian
             if (previous != null) previous.Dispose();
         }
 
+        private bool _focusFillWasActive;
         private void RenderToBitmapAndCommit()
         {
             if (!_ready || FrontDoorVisible || _suspendedForPanel) return;
@@ -577,7 +588,26 @@ namespace CF7Launcher.Guardian
             lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
 
             int painted = 0, visible = 0;
-            using var dirty = TakeDirtyRegion();
+            CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudFocusTargetWidget focus=null;
+            if(_sharedPresentation?.SupportsFocus==true || _focusFillWasActive)
+            {
+                bool covered=false;
+                foreach(var w in snapshot)
+                {
+                    if(w is CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudFocusTargetWidget candidate)
+                        focus=candidate;
+                    else if(focus!=null && w.Visible && w.ScreenBounds.IntersectsWith(focus.ScreenBounds))
+                        covered=true; // e.g. a tooltip painted above the strip on this same layer
+                }
+                bool enabled=focus!=null && !covered && _sharedPresentation?.SupportsFocus==true;
+                if(enabled!=_focusFillWasActive)InvalidateWholeBitmap();
+                if(focus!=null)focus.PrepareGpuFill(_sharedPresentation,_hudOrigin,covered);
+                else if(_focusFillWasActive)_sharedPresentation?.StageFocus(null,0,0,Array.Empty<int>(),0);
+                _focusFillWasActive=enabled;
+            }
+            using var dirty = TakeDirtyRegion(out var uploadDamage,out var clearBounds);
+            if(_focusFillWasActive)
+                uploadDamage=focus.ResidualDamage(uploadDamage,new Rectangle(0,0,_composedW,_composedH));
             if (FocusTrace.Enabled) _focusPaintGeneration++;
             using (Graphics g = Graphics.FromImage(_composedBitmap))
             {
@@ -588,7 +618,7 @@ namespace CF7Launcher.Guardian
                     // Graphics.Clear ignores the clip. SourceCopy fill clears
                     // only damaged pixels, including formerly translucent ones.
                     g.SetClip(dirty, CombineMode.Intersect);
-                    g.FillRectangle(Brushes.Transparent, 0, 0, _composedW, _composedH);
+                    g.FillRectangle(Brushes.Transparent,clearBounds);
                 }
                 g.CompositingMode = CompositingMode.SourceOver;
                 g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -599,8 +629,21 @@ namespace CF7Launcher.Guardian
                     INativeHudWidget w = snapshot[i];
                     if (!w.Visible) continue;
                     visible++;
-                    if (dirty != null && !dirty.IsVisible(LocalPaintBounds(w))) continue;
+                    if (dirty != null)
+                    {
+                        if (w is Hud.PlayerInfo.PlayerHudBottomWidget deck && !TouchesDeckInk(dirty,deck)) continue;
+                        var paintBounds = LocalPaintBounds(w);
+                        if (w is Hud.PlayerInfo.PlayerHudBuffWidget)
+                        {
+                            // Buff slots and pager end inside ScreenBounds. Another widget's
+                            // damage in the bottom clearing margin does not touch their ink.
+                            int bottom = w.ScreenBounds.Bottom - _hudOrigin.Y + 1;
+                            paintBounds.Height = Math.Clamp(bottom - paintBounds.Top, 0, paintBounds.Height);
+                        }
+                        if (!dirty.IsVisible(paintBounds)) continue;
+                    }
                     painted++;
+                    if (w is Hud.PlayerInfo.PlayerHudBottomWidget) DeckPaintEntries++;
                     CounterByWidget("nativeHud.paintSource", w);
                     GraphicsState state = g.Save();
                     try { w.Paint(g, 1.0f, _hudOrigin); }
@@ -617,7 +660,7 @@ namespace CF7Launcher.Guardian
             }
             // 焦点观察只读取原有提交的结果，不切换 DC/提交实现。
             var commitStart = observer == null ? 0 : System.Diagnostics.Stopwatch.GetTimestamp();
-            if (!TryCommitSharedBitmap()) CommitBitmap(_composedBitmap, _hudOrigin.X, _hudOrigin.Y, 255);
+            if (!TryCommitSharedBitmap(uploadDamage)) CommitBitmap(_composedBitmap, _hudOrigin.X, _hudOrigin.Y, 255);
             if (observer != null)
             {
                 try { observer(System.Diagnostics.Stopwatch.GetElapsedTime(renderStart, commitStart).TotalMilliseconds,
@@ -634,6 +677,24 @@ namespace CF7Launcher.Guardian
         {
             _fullRepaint = true;
             _dirtyRectangles.Clear();
+            _exclusiveFocusDamage = null;
+        }
+
+        private bool TouchesDeckInk(Region dirty,Hud.PlayerInfo.PlayerHudBottomWidget deck)
+        {
+            var viewport=deck.InkViewport;
+            float scale=viewport.Height/576f;
+            bool Touches(int left,int top,int right,int bottom)
+            {
+                var ink=Rectangle.FromLTRB(viewport.X+(int)Math.Floor(left*scale),
+                    viewport.Y+(int)Math.Floor(top*scale),viewport.X+(int)Math.Ceiling(right*scale),
+                    viewport.Y+(int)Math.Ceiling(bottom*scale));
+                ink.Offset(-_hudOrigin.X,-_hudOrigin.Y);
+                var padded=Rectangle.Intersect(Rectangle.Inflate(ink,_padding,_padding),new Rectangle(0,0,_composedW,_composedH));
+                // Padding is needed for clearing, but is not painted across the empty rail/deck seam.
+                return dirty.IsVisible(padded) && dirty.IsVisible(ink);
+            }
+            return Touches(0,513,1024,576) || deck.HasColdRail && Touches(585,483,1024,513);
         }
 
         private Rectangle LocalPaintBounds(INativeHudWidget widget)
@@ -645,7 +706,7 @@ namespace CF7Launcher.Guardian
             return Rectangle.Intersect(bounds, new Rectangle(0, 0, _composedW, _composedH));
         }
 
-        private void InvalidateWidget(INativeHudWidget widget)
+        private void InvalidateWidget(INativeHudWidget widget, HudRepaintRegions damage)
         {
             if (_fullRepaint) return;
             bool member;
@@ -653,19 +714,69 @@ namespace CF7Launcher.Guardian
             if (!_partialRepaintEnabled || _sharedPresentation == null || !member || !widget.Visible)
             { InvalidateWholeBitmap(); return; }
             Rectangle bounds = LocalPaintBounds(widget);
-            if (bounds.Width < 1 || bounds.Height < 1 || _dirtyRectangles.Count >= 16)
-            { InvalidateWholeBitmap(); return; }
-            if (!_dirtyRectangles.Contains(bounds)) _dirtyRectangles.Add(bounds);
+            var focus = damage?.Bounds.Length > 0 ? widget as Hud.PlayerInfo.PlayerHudFocusTargetWidget : null;
+            if (_dirtyRectangles.Count == 0) _exclusiveFocusDamage = focus;
+            else if (!ReferenceEquals(_exclusiveFocusDamage, focus)) _exclusiveFocusDamage = null;
+            if (damage == null || damage.Bounds.Length == 0)
+            {
+                if (widget is Hud.PlayerInfo.PlayerHudBuffWidget)
+                {
+                    var rail=widget.ScreenBounds;
+                    bounds.Width=Math.Min(bounds.Right,rail.Right-_hudOrigin.X+1)-bounds.Left;
+                    bounds.Height=Math.Min(bounds.Bottom,rail.Bottom-_hudOrigin.Y)-bounds.Top;
+                }
+                AddDirtyRectangle(bounds);
+                return;
+            }
+            foreach (var screen in damage.Bounds)
+            {
+                var local = screen;
+                local.Offset(-_hudOrigin.X, -_hudOrigin.Y);
+                AddDirtyRectangle(Rectangle.Intersect(local, bounds));
+                if (_fullRepaint) return;
+            }
         }
 
-        private Region TakeDirtyRegion()
+        private void AddDirtyRectangle(Rectangle bounds)
         {
+            if (bounds.Width < 1 || bounds.Height < 1)
+            { InvalidateWholeBitmap(); return; }
+            if (_dirtyRectangles.Contains(bounds)) return;
+            if (_dirtyRectangles.Count >= 16)
+            {
+                if (_exclusiveFocusDamage == null) { InvalidateWholeBitmap(); return; }
+                // Several packets may update the same visible number widths before Paint.
+                // Collapse overlapping rectangles for this one known source only.
+                for (int i = _dirtyRectangles.Count - 1; i >= 0; i--)
+                {
+                    if (!_dirtyRectangles[i].IntersectsWith(bounds)) continue;
+                    bounds = Rectangle.Union(bounds, _dirtyRectangles[i]);
+                    _dirtyRectangles.RemoveAt(i);
+                }
+                if (_dirtyRectangles.Count == 16)
+                {
+                    foreach (var pending in _dirtyRectangles) bounds = Rectangle.Union(bounds, pending);
+                    _dirtyRectangles.Clear();
+                }
+            }
+            _dirtyRectangles.Add(bounds);
+        }
+
+        private Region TakeDirtyRegion(out Rectangle[] uploadDamage,out Rectangle clearBounds)
+        {
+            uploadDamage = null;
+            clearBounds = Rectangle.Empty;
             Region dirty = null;
             LastPaintedPixels = (long)_composedW * _composedH;
             if (_partialRepaintEnabled && _sharedPresentation != null && !_fullRepaint && _dirtyRectangles.Count > 0)
             {
                 dirty = new Region(Rectangle.Empty);
-                foreach (Rectangle rect in _dirtyRectangles) dirty.Union(rect);
+                foreach (Rectangle rect in _dirtyRectangles)
+                {
+                    dirty.Union(rect);
+                    clearBounds=clearBounds.IsEmpty ? rect : Rectangle.Union(clearBounds,rect);
+                }
+                if (_sharedPresentation.SupportsDamage) uploadDamage = _dirtyRectangles.ToArray();
                 if (RenderTimingObserver != null)
                 {
                     LastPaintedPixels = 0;
@@ -677,18 +788,40 @@ namespace CF7Launcher.Guardian
             // Consume before Paint: a painter may request the following frame.
             _fullRepaint = false;
             _dirtyRectangles.Clear();
+            _exclusiveFocusDamage = null;
             return dirty;
         }
 
-        private void RequestRenderFromUi(string source, INativeHudWidget widget)
+        private void RequestRenderFromUi(string source, INativeHudWidget widget, HudRepaintRegions damage)
         {
             if (!_ready || FrontDoorVisible || _suspendedForPanel) return;
             if (_composedBitmap == null) return;
-            InvalidateWidget(widget);
+            InvalidateWidget(widget, damage);
             if (!string.IsNullOrEmpty(source))
                 PerfTrace.Counter("nativeHud.renderQueued." + source);
 
             _renderPending = true;
+            if (damage?.Authoritative == true)
+            {
+                DispatchObserver?.Invoke("authority", 0);
+                if (_postFocusUpdates)
+                {
+                    _authorityPending = true;
+                    if (_authorityPosted) return;
+                    _authorityPosted = true;
+                    _renderCoalesceTimer?.Stop();
+                    try
+                    {
+                        BeginInvoke(new Action(FlushPostedAuthority));
+                        return;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        _authorityPending = _authorityPosted = false;
+                    }
+                }
+            }
+            if (_authorityPending) return;
             int now = Environment.TickCount;
             int elapsed = _lastCommitTick == 0 ? RENDER_MIN_INTERVAL_MS : unchecked(now - _lastCommitTick);
             int delay = elapsed >= RENDER_MIN_INTERVAL_MS ? 1 : RENDER_MIN_INTERVAL_MS - elapsed;
@@ -696,16 +829,30 @@ namespace CF7Launcher.Guardian
             if (_renderCoalesceTimer != null)
             {
                 _renderCoalesceTimer.Interval = delay;
+                DispatchObserver?.Invoke("timer-arm", delay);
                 if (!_renderCoalesceTimer.Enabled)
                     _renderCoalesceTimer.Start();
             }
         }
 
+        private void FlushPostedAuthority()
+        {
+            _authorityPosted = false;
+            if (!_authorityPending) return;
+            _authorityPending = false;
+            DispatchObserver?.Invoke("posted-wake", 0);
+            if (!_renderPending || !_ready || FrontDoorVisible || _suspendedForPanel || _composedBitmap == null || IsDisposed) return;
+            _renderPending = false;
+            DispatchObserver?.Invoke("posted-start", 0);
+            RenderToBitmapAndCommit();
+        }
+
         private void OnRenderCoalesceTick(object sender, EventArgs e)
         {
+            DispatchObserver?.Invoke("timer-wake", 0);
             if (_renderCoalesceTimer != null)
                 _renderCoalesceTimer.Stop();
-            if (!_renderPending) return;
+            if (!_renderPending || _authorityPending) return;
             if (!_ready || FrontDoorVisible || _suspendedForPanel || _composedBitmap == null)
             {
                 _renderPending = false;
@@ -726,6 +873,7 @@ namespace CF7Launcher.Guardian
             }
 
             _renderPending = false;
+            DispatchObserver?.Invoke("timer-start", 0);
             RenderToBitmapAndCommit();
         }
 

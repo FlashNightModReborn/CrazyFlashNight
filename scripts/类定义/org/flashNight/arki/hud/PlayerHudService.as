@@ -1,4 +1,6 @@
-﻿import org.flashNight.arki.hud.WeaponAmmoHudProjection;
+﻿import org.flashNight.arki.hud.PlayerHudUnitHotWire;
+import org.flashNight.arki.hud.PlayerHudAllyRoster;
+import org.flashNight.arki.hud.WeaponAmmoHudProjection;
 import org.flashNight.arki.hud.PlayerHudBuffProjection;
 import org.flashNight.arki.hud.FocusTargetHudService;
 import org.flashNight.arki.hud.PlayerHudShieldProjection;
@@ -39,8 +41,11 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static var poiseVisualsEnabled:Boolean = false;
     private static var resourceHintsEnabled:Boolean = false;
     private static var weaponVisualsEnabled:Boolean = false;
+    private static var deckDetailsEnabled:Boolean = false;
     private static var ammoDetailsEnabled:Boolean = false;
     private static var coldSkillsEnabled:Boolean = false;
+    private static var allyRosterEnabled:Boolean = false;
+    private static var unitHotEnabled:Boolean = false;
     private static var focusTargetEnabled:Boolean = false;
     private static var focusTargetsEnabled:Boolean = false;
     private static var focusTargetCapacity:Number = 4;
@@ -50,14 +55,39 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static var profileEnabled:Boolean = false;
     private static var profileId:String = "";
     private static var profileSamples:Array = [];
+    // Only allocated while profiling. Phases: context, loadout, vitals, combat,
+    // cooldowns, buffs, coldSkills, focus, resources, JSON, Base64, handoff.
+    private static var profileKind:Number;
+    private static var profileMarks:Array;
+    private static var profileDurations:Array;
+    private static var profileTotals:Array;
+    private static var profileSlow:Array;
+    private static var profileTickStart:Number;
     private static var profileStart:Number = 0;
     private static var profilePackets:Number = 0;
     private static var profileBytes:Number = 0;
+    private static var rosterTrace:Boolean = false;
+    private static var rosterBatch:Object;
+    private static var traceVitals:Object;
+    private static var traceAllies:Object;
+    private static var profileHotPackets:Number = 0;
+    private static var profileHotBytes:Number = 0;
+    private static var profileJsonUnitPackets:Number = 0;
+    private static var profileWireReasons:Object = {};
     private static var tickCount:Number = 0;
     private static var rawGroups:Object = {};
     private static var cooldownKeys:Array;
     private static var cooldownValues:Array = [];
+    private static var lastManualCooldownRevision:Number = -1;
+    private static var manualCooldownSnapshot:Array;
+    private static var wireGroups:Object = {};
+    private static var wireComma:Object;
+
     private static var loadout:Object;
+    private static var lastFrameSkills:Object;
+    private static var lastDrugSource:Object;
+    private static var lastDrugVersion:Number;
+    private static var drugNames:Array = [];
     private static var drugRevision:Number = 0;
     private static var drugSignature:String = "";
     private static var drugItems:Array = [];
@@ -104,6 +134,7 @@ class org.flashNight.arki.hud.PlayerHudService {
     }
     private static function captureSafely():Void {
         var started:Number = profileEnabled ? getTimer() : 0;
+        if (profileEnabled) { profileKind = 0; profileTickStart = started; profileMarks = []; }
         try { tick(); }
         catch (error) {
             // Projection failures must not cancel this frame's audio, camera or input packet.
@@ -122,10 +153,66 @@ class org.flashNight.arki.hud.PlayerHudService {
     }
     public static function setProfile(p:Object):Void {
         if (typeof p.enabled != "boolean" || text(p.profileId).substr(0, 4) != "php:" || length(text(p.profileId)) > 48) return;
+        flushRosterTrace();
         profileEnabled = p.enabled; profileId = p.profileId;
+        rosterTrace = p.enabled && p.rosterReplay === true;
+        resetDetailProfile();
         profileSamples = []; profileStart = getTimer(); profilePackets = profileBytes = 0;
     }
+    private static function flushRosterTrace():Void {
+        if (rosterBatch != null && rosterBatch.samples.length > 0)
+            _root.server.sendServerMessage("[RosterReplay] " + json().stringifySafe(rosterBatch));
+        rosterBatch = null; traceVitals = null; traceAllies = null;
+    }
+    // Opt-in diagnostic only. Reuse the immutable projection already produced by tick().
+    private static function recordRosterTrace():Void {
+        var stage:String = text(_root.当前关卡名);
+        if (rosterBatch != null && (rosterBatch.epoch != epoch || rosterBatch.stage != stage)) flushRosterTrace();
+        if (stage.length == 0 || rawGroups.vitals == null) return;
+        if (rosterBatch == null) rosterBatch = {stage:stage,epoch:epoch,vitals:[],allies:[],samples:[],sourceHp:[],mode:PlayerHudAllyRoster.currentMode()};
+        if (rawGroups.vitals !== traceVitals) {traceVitals=rawGroups.vitals; rosterBatch.vitals.push(traceVitals);}
+        if (rawGroups.allies != null && rawGroups.allies !== traceAllies) {
+            traceAllies=rawGroups.allies;
+            var slim:Array=[], r:Object, a:Array;
+            for(var group:Number=0;group<2;group++) {
+                a=group==0?traceAllies.rows:traceAllies.overflow;
+                for(var i:Number=0;i<a.length;i++) {
+                    r=a[i];slim.push([r.slot,r.id,r.generation,r.role,r.name,r.hp[0],r.hp[1],r.shield[0],r.shield[1],r.down,r["protected"]]);
+                }
+            }
+            rosterBatch.allies.push(slim);
+        }
+        var frame:Number=Number(_root.帧计时器.当前帧数);
+        var sourceUtc:Number = (new Date()).getTime();
+        var live:Array = PlayerHudAllyRoster.observeHp();
+        var source:Array = rosterBatch.sourceHp;
+        var prior:Array = source.length ? source[source.length-1] : null;
+        var changed:Boolean = prior == null || live.length != prior.length;
+        for (var j:Number=0; !changed && j<live.length; j++)
+            for (var c:Number=0; c<5; c++) if (live[j][c] !== prior[j][c]) {changed=true;break;}
+        if (changed) source.push(live);
+        rosterBatch.samples.push([tickCount,isFinite(frame)?frame:-1,getTimer(),rosterBatch.vitals.length-1,rosterBatch.allies.length-1,source.length-1,PlayerHudAllyRoster.sampled,sourceUtc]);
+        if (rosterBatch.samples.length >= 30 || rosterBatch.allies.length>=5 || source.length>=5) flushRosterTrace();
+    }
+    private static function resetDetailProfile():Void {
+        profileHotPackets = profileHotBytes = profileJsonUnitPackets = 0;
+        profileWireReasons = {};
+        profileDurations = [[], [], []]; profileTotals = [[], [], []]; profileSlow = [];
+    }
     private static function recordProfile(elapsed:Number):Void {
+        var times:Array = profileMarks;
+        var sums:Array = profileTotals[profileKind];
+        var previous:Number = profileTickStart;
+        for (var phase:Number = 0; phase < times.length; phase++) {
+            var end:Number = times[phase];
+            times[phase] = end - previous;
+            sums[phase] = (sums[phase] || 0) + times[phase];
+            previous = end;
+        }
+        profileDurations[profileKind].push(elapsed);
+        if (elapsed >= 50 && profileSlow.length < 24)
+            profileSlow.push([profileSamples.length, profileKind, elapsed, times]);
+
         profileSamples.push(Math.max(0, elapsed));
         if (profileSamples.length < 300) return;
         profileSamples.sort(Array.NUMERIC);
@@ -133,7 +220,20 @@ class org.flashNight.arki.hud.PlayerHudService {
         for (var i:Number = 0; i < profileSamples.length; i++) total += profileSamples[i];
         _root.server.sendServerMessage("[PlayerHudPerf] " + json().stringifySafe({id:profileId, source:"as2",
             samples:300, windowMs:getTimer()-profileStart, meanMs:total/300, p50Ms:profileSamples[149],
-            p95Ms:profileSamples[284], maxMs:profileSamples[299], packets:profilePackets, encodedBytes:profileBytes}));
+            p95Ms:profileSamples[284], maxMs:profileSamples[299], packets:profilePackets, encodedBytes:profileBytes,
+            unitHotV1:unitHotEnabled, hotPackets:profileHotPackets, hotBytes:profileHotBytes, jsonUnitPackets:profileJsonUnitPackets, wireReasons:profileWireReasons}));
+        var summary:Array = [];
+        for (var kind:Number = 0; kind < 3; kind++) {
+            var data:Array = profileDurations[kind];
+            data.sort(Array.NUMERIC);
+            var n:Number = data.length;
+            var sum:Number = 0;
+            for (var j:Number = 0; j < n; j++) sum += data[j];
+            summary.push(n ? [n,sum,data[Math.ceil(n*.5)-1],data[Math.ceil(n*.95)-1],data[Math.ceil(n*.99)-1],data[n-1]] : [0]);
+        }
+        _root.server.sendServerMessage("[PlayerHudCaptureDetail] " + json().stringifySafe({
+            id:profileId, lastTick:tickCount, byKind:summary, phaseTotals:profileTotals, slow:profileSlow}));
+        resetDetailProfile();
         profileSamples.length = 0; profileStart = getTimer(); profilePackets = profileBytes = 0;
     }
     private static function hero():Object { return TargetCacheManager.findHero(); }
@@ -146,6 +246,7 @@ class org.flashNight.arki.hud.PlayerHudService {
             actorId = unit.__nativePlayerHudActorId;
             epoch++;
             rawGroups = {};
+        wireGroups = {};
             loadout = null;
             drugSignature = "";
             ammo = ["", "", "", ""];
@@ -157,12 +258,14 @@ class org.flashNight.arki.hud.PlayerHudService {
         return true;
     }
     public static function clear():Void {
+        if (rosterTrace) flushRosterTrace();
         hideTooltip();
         if (buffProjection != null) buffProjection.deinitialize();
         worldToken = undefined;
         actorId = 0;
         loadout = null;
         rawGroups = {};
+        wireGroups = {};
         ammo = ["", "", "", ""]; ammoMode = "";
         primaryOwner = secondaryOwner = null; lastCombat = null;
         forceFull = true;
@@ -179,11 +282,14 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (p.poiseVisuals === true) poiseVisualsEnabled = true;
         if (p.resourceHints === true) resourceHintsEnabled = true;
         if (p.weaponVisuals === true) weaponVisualsEnabled = true;
+        if (p.deckDetails === true) { deckDetailsEnabled = true; buffProjection.setDeckDetails(true); }
         if (p.ammoDetails === true) ammoDetailsEnabled = true;
         // 冷兵器主动技能冷却面板（原生 C# 绘制）。只有认识这个组的 Launcher
         // 才会在 playerHudSync 里索取；老 Launcher 不索取、本端也不发，
         // 避免旧解析器的白名单 Keys() 因未知组名整包拒收。
         if (p.coldSkills === true) coldSkillsEnabled = true;
+        if (p.allyRoster === true) { allyRosterEnabled = true; PlayerHudAllyRoster.configure(p.allySampling); }
+        if (p.unitHotV1 === true) unitHotEnabled = true;
         if (p.focusTarget === true) focusTargetEnabled = true;
         if (p.focusTargets === true) {
             focusTargetsEnabled = true;
@@ -195,7 +301,7 @@ class org.flashNight.arki.hud.PlayerHudService {
     public static function tick():Void {
         if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("playerHud")) return;
         var online:Boolean = _root.server.isSocketConnected === true;
-        if (!online) { connected = false; weaponVisualsEnabled = false; ammoDetailsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; focusTargetEnabled = false; focusTargetsEnabled = false; focusTargetCapacity = 4; buffDetailsEnabled = false; buffProjection.setDetailsEnabled(false); forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
+        if (!online) { connected = false; deckDetailsEnabled = false; buffProjection.setDeckDetails(false); allyRosterEnabled = false; unitHotEnabled = false; weaponVisualsEnabled = false; ammoDetailsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; focusTargetEnabled = false; focusTargetsEnabled = false; focusTargetCapacity = 4; buffDetailsEnabled = false; buffProjection.setDetailsEnabled(false); forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
         if (!connected) { connected = true; forceFull = true; }
         var unit:Object = hero();
         // 热路径只观察外层屏障；重算仍由领域冷路及显式读取负责。
@@ -210,30 +316,130 @@ class org.flashNight.arki.hud.PlayerHudService {
         _root.UI系统.iconBar = buffProjection;
         tickCount++;
         var full:Boolean = forceFull || FrameBroadcaster.hasPlayerHudPending() || getTimer() - lastFull > 2000;
-        if (loadout == null || full || tickCount % 3 == 0) loadout = readLoadout();
+        if (profileEnabled) profileMarks[0] = getTimer();
+        refreshFrameLoadout(unit, full, tickCount % 3);
+        if (profileEnabled) profileMarks[1] = getTimer();
         var groups:Object = {};
         var count:Number = 0;
         if (addGroup(groups, "vitals", readVitals(unit), full)) count++;
+        if (profileEnabled) profileMarks[2] = getTimer();
         if (addGroup(groups, "combat", readCombat(unit), full)) count++;
         if (addGroup(groups, "loadout", loadout, full)) count++;
+        if (profileEnabled) profileMarks[3] = getTimer();
         if (addGroup(groups, "cooldowns", readCooldowns(), full)) count++;
+        if (profileEnabled) profileMarks[4] = getTimer();
         if (addGroup(groups, "buffs", buffProjection.snapshotFor(unit), full)) count++;
+        if (profileEnabled) profileMarks[5] = getTimer();
         if (coldSkillsEnabled && addGroup(groups, "coldSkills", readColdSkills(unit), full)) count++;
-        if ((focusTargetsEnabled || focusTargetEnabled) && addGroup(groups, "focusTarget", focusTargetsEnabled ? FocusTargetHudService.snapshotList(unit, focusTargetCapacity) : FocusTargetHudService.snapshot(), full)) count++;
+        if (profileEnabled) profileMarks[6] = getTimer();
+        var oldFocus = rawGroups.focusTarget;
+        var oldAllies = rawGroups.allies;
+        var focusRows = focusTargetsEnabled ? FocusTargetHudService.snapshotList(unit, focusTargetCapacity)
+            : (focusTargetEnabled ? FocusTargetHudService.snapshot() : null);
+        if ((focusTargetsEnabled || focusTargetEnabled) && addGroup(groups, "focusTarget", focusRows, full)) count++;
+        if (allyRosterEnabled && addGroup(groups, "allies", PlayerHudAllyRoster.snapshotAt(unit,focusRows,Number(_root.帧计时器.当前帧数),getTimer(),_root.暂停===true,forceFull), full)) count++;
+        if (profileEnabled) profileMarks[7] = getTimer();
         if (resourceHintsEnabled && addGroup(groups, "resources", SkillResourceService.snapshot(unit, loadout, rawGroups.resources), full)) count++;
+        if (profileEnabled) profileMarks[8] = getTimer();
         compat._pendingHpDisplayRefresh = false;
+        if (profileEnabled && rosterTrace) recordRosterTrace();
         if (count == 0) return;
         var packet:Object = {v:1, epoch:epoch, seq:++sequence, full:full, visible:true, groups:groups};
-        var encoded:String = Base64.encodeDisplay(json().stringifySafe(packet));
-        if (length(encoded) > 131072) { clear(); return; }
-        if (profileEnabled) { profilePackets++; profileBytes += length(encoded); }
+        if (profileEnabled) profileKind = full ? 2 : 1;
+        var wire:String = encodeFrame(packet, count, oldFocus, oldAllies);
+        if (wire == null) { clear(); return; }
         if (_root.暂停 === true) {
             FrameBroadcaster.setPlayerHudPayload(null);
-            _root.server.sendSocketMessage("Upi:" + encoded);
-        } else FrameBroadcaster.setPlayerHudPayload("pi:" + encoded);
+            _root.server.sendSocketMessage("U" + wire);
+        } else FrameBroadcaster.setPlayerHudPayload(wire);
         if (full) lastFull = getTimer();
         forceFull = false;
         wasVisible = true;
+        if (profileEnabled) profileMarks[11] = getTimer();
+    }
+    private static function encodeFrame(packet:Object, count:Number, oldFocus, oldAllies):String {
+        var groups:Object = packet.groups;
+        var hasFocus:Boolean = groups.hasOwnProperty("focusTarget");
+        var hasAllies:Boolean = groups.hasOwnProperty("allies");
+        var units:Number = Number(hasFocus) + Number(hasAllies);
+        var head:String = null, tail:String = null;
+        if (!packet.full && unitHotEnabled && units > 0) {
+            if (count == units) {
+                head = PlayerHudUnitHotWire.encode(epoch, sequence, groups, oldFocus, oldAllies);
+            } else {
+                tail = PlayerHudUnitHotWire.encodeUnitsOnly(epoch, sequence + 1, groups.focusTarget,
+                    hasFocus, groups.allies, hasAllies, oldFocus, oldAllies);
+                if (tail != null) {
+                    // Only the transient outgoing map changes. rawGroups owns the complete snapshots.
+                    delete groups.focusTarget;
+                    delete groups.allies;
+                }
+            }
+        }
+        if (head == null) head = encodeHudPacket(packet);
+        else if (profileEnabled) profileMarks[9] = profileMarks[10] = getTimer();
+        var wire:String = "pi:" + head;
+        if (tail != null) wire += "|pi:" + tail;
+        if (tail != null ? length(wire) > 131072 : length(head) > 131072) return null;
+        if (tail != null) sequence++;
+        if (profileEnabled) {
+            profilePackets++; profileBytes += length(head);
+            var why:String;
+            if (tail != null) {
+                profilePackets++; profileBytes += length(tail);
+                profileHotPackets++; profileHotBytes += length(tail);
+                why = "mixedHot";
+            } else if (head.charAt(0) == "~") {
+                profileHotPackets++; profileHotBytes += length(head);
+                why = "hot";
+            } else {
+                if (!packet.full && units > 0) profileJsonUnitPackets++;
+                why = packet.full ? "full" : PlayerHudUnitHotWire.fallbackReason(groups, oldFocus, oldAllies);
+            }
+            profileWireReasons[why] = (profileWireReasons[why] || 0) + 1;
+        }
+        return wire;
+    }
+    private static function encodeHudPacket(packet:Object):String {
+        var groups:Object = packet.groups;
+        // Let the existing codec emit the envelope in its normal member order.
+        // Only its groups:null placeholder is expanded with cached UTF-8 fragments.
+        packet.groups = null;
+        var header:String = json().stringifySafe(packet);
+        packet.groups = groups;
+        var marker:String = '"groups":null';
+        var at:Number = header.indexOf(marker) + marker.length - 4;
+        var prefix:String = header.substr(0,at) + "{";
+        var suffix:String = "}" + header.substr(at+4);
+        var parts:Array = [];
+        var row:Object;
+        for (var key:String in groups) {
+            if (!groups.hasOwnProperty(key)) continue;
+            row = wireGroups[key];
+            // A different but deeply equal object can have a different AVM1
+            // enumeration order. Re-encode it to preserve exact legacy wire bytes.
+            if (row == null || row.value !== groups[key]) {
+                // Only HUD-owned literal group names are inserted in the envelope.
+                row = {value:groups[key], text:'"' + key + '":' + json().stringifySafe(groups[key])};
+                wireGroups[key] = row;
+            }
+            parts.push(row);
+        }
+        if (profileEnabled) profileMarks[9] = getTimer();
+        if (wireComma == null) wireComma = Base64.displayPart(",");
+        var output:Array = [], carry:Array = [];
+        Base64.appendDisplayPart(output,carry,Base64.displayPart(prefix));
+        for (var i:Number = 0; i < parts.length; i++) {
+            row = parts[i];
+            if (i > 0) Base64.appendDisplayPart(output,carry,wireComma);
+            if (row.part == null) { row.part = Base64.displayPart(row.text); delete row.text; }
+            Base64.appendDisplayPart(output,carry,row.part);
+        }
+        Base64.appendDisplayPart(output,carry,Base64.displayPart(suffix));
+        if (carry.length) output.push(Base64.encodeBytes(carry));
+        var encoded:String = output.join("");
+        if (profileEnabled) profileMarks[10] = getTimer();
+        return encoded;
     }
     private static function addGroup(groups:Object, key:String, value:Object, full:Boolean):Boolean {
         // These are detached display DTOs. Compare values before serializing so an
@@ -380,8 +586,9 @@ class org.flashNight.arki.hud.PlayerHudService {
             var sourceData:Object = sourceItem == "" ? null : ItemUtil.getRawItemData(sourceItem);
             itemIconKey = text(sourceData.icon);
         }
+        var deck:Object = deckDetailsEnabled ? readDeck(unit, mode, lastCombat.deck) : null;
         var oldWeapon:Object = lastCombat.weapon;
-        if (lastCombat != null && lastCombat.mode === mode && lastCombat.ammo[0] === firstAmmo
+        if (lastCombat != null && (deckDetailsEnabled ? deck === lastCombat.deck : lastCombat.deck == undefined) && lastCombat.mode === mode && lastCombat.ammo[0] === firstAmmo
                 && lastCombat.ammo[1] === firstMagazine && lastCombat.ammo[2] === secondAmmo && lastCombat.ammo[3] === secondMagazine
                 && (ammoDetailsEnabled ? (oldDetails != null && oldDetails[0] === primaryDetail && oldDetails[1] === secondaryDetail)
                     : oldDetails == undefined)
@@ -391,6 +598,7 @@ class org.flashNight.arki.hud.PlayerHudService {
                     && oldWeapon.sourceItem === sourceItem) : oldWeapon.iconKey == undefined)) return lastCombat;
         lastCombat = {mode:mode, ammo:[firstAmmo, firstMagazine, secondAmmo, secondMagazine],
             weapon:{visible:visible, name:name, mp:mp, cooldownMs:cooldownMs, key:key}};
+        if (deck != null) lastCombat.deck = deck;
         if (ammoDetailsEnabled) lastCombat.ammoDetails = [primaryDetail, secondaryDetail];
         if (weaponVisualsEnabled) {
             lastCombat.weapon.iconKey = iconKey;
@@ -398,6 +606,27 @@ class org.flashNight.arki.hud.PlayerHudService {
             lastCombat.weapon.sourceItem = sourceItem;
         }
         return lastCombat;
+    }
+    private static function readDeck(unit:Object, mode:String, previous:Object):Object {
+        var current:Number = Number(unit.淬毒);
+        if (!isFinite(current) || current < 0) current = 0;
+        var application:Object = unit.__hudCoatingInitial;
+        var initial:Number = 0;
+        if (application != null) {
+            if (current <= 0 || current > application.last) delete unit.__hudCoatingInitial;
+            else { initial = application.value; application.last = current; }
+        }
+        var slot:String = mode == "空手" ? "手部装备" : (mode == "兵器" ? "刀" : (mode == "手雷" ? "手雷" : ""));
+        var equipped = unit[slot];
+        var name:String = slot == "" ? "" : (typeof equipped == "string" ? text(equipped) : text(equipped.name));
+        var power:Number = -1;
+        if (mode == "空手") power = org.flashNight.arki.unit.PlayerInfoProvider.getUnarmedPower(MovieClip(unit));
+        if (mode == "兵器") power = org.flashNight.arki.unit.PlayerInfoProvider.getMeleePower(MovieClip(unit));
+        if (mode == "手雷") power = org.flashNight.arki.unit.PlayerInfoProvider.getGrenadePower(MovieClip(unit));
+        if (!isFinite(power) || power < 0) power = -1;
+        if (previous != null && previous.points === current && previous.initial === initial
+            && previous.equipment === name && previous.power === power) return previous;
+        return {points:current, initial:initial, equipment:name, power:power};
     }
     private static function synchronizeAmmoOwners(unit:Object):Void {
         var mode:String = text(unit.攻击模式);
@@ -424,9 +653,44 @@ class org.flashNight.arki.hud.PlayerHudService {
         var code:Number = Number(_root[name]);
         return isFinite(code) && _root.keyshow != undefined ? text(_root.keyshow(code)) : "";
     }
-    private static function readLoadout():Object {
-        var nativeUnit:Object = hero();
-        var skills:Object = nativeUnit.__enemyActionRuntime.enabled === true
+    private static function refreshFrameLoadout(unit:Object, full:Boolean, phase:Number):Void {
+        var skills:Object;
+        var nativeSkills:Boolean = unit.__enemyActionRuntime.enabled === true;
+        if (!nativeSkills) skills = full ? SkillLoadoutService.getHudDescriptors() :
+            SkillLoadoutService.getHudDescriptorsForFrame(phase);
+        var source:Object = _root.物品栏.药剂栏;
+        var version:Number = source.getMutationRevision == undefined ? -1 : source.getMutationRevision();
+        var bank:Number = DrugInputService.getActiveBank();
+        if (full || loadout == null || lastFrameSkills !== skills || lastDrugSource !== source ||
+                lastDrugVersion !== version || loadout.drugRevision !== drugRevision || loadout.bank !== bank ||
+                (nativeSkills && phase == 0) || !drugSliceMatches(source, bank, phase)) {
+            loadout = readLoadout(unit, skills);
+            lastFrameSkills = skills;
+            lastDrugSource = source;
+            lastDrugVersion = version;
+        }
+    }
+
+    // Some legacy scripts edit item objects, display metadata or bindings in place.
+    // Check the eight physical slots within the original three capture interval.
+    private static function drugSliceMatches(source:Object, bank:Number, phase:Number):Boolean {
+        var end:Number = phase == 2 ? 8 : phase * 3 + 3;
+        for (var i:Number = phase * 3; i < end; i++) {
+            var item:Object = source.getItem(String(i));
+            if (item !== drugItems[i] || text(item.name) !== drugNames[i] ||
+                    (item == null ? 0 : finiteValue(item.value)) !== drugCounts[i]) return false;
+            var lane:Number = i - bank * 4;
+            if (lane < 0 || lane > 3) continue;
+            var row:Object = loadout.drugs[lane];
+            var icon:String = item == null ? "" : text(ItemUtil.getRawItemData(item.name).icon);
+            if (row.icon !== icon || row.key !== keyLabel(DrugInputService.getKeyName(lane))) return false;
+        }
+        return phase != 0 || loadout.switchKey === keyLabel(DrugInputService.getSwitchKeyName());
+    }
+
+    private static function readLoadout(nativeUnit:Object, skills:Object):Object {
+        if (nativeUnit == null) nativeUnit = hero();
+        if (skills == null) skills = nativeUnit.__enemyActionRuntime.enabled === true
             ? EnemyActionRuntime.hudDescriptors(nativeUnit) : SkillLoadoutService.getHudDescriptors();
         var bank:Number = DrugInputService.getActiveBank();
         var source:Object = _root.物品栏.药剂栏;
@@ -439,7 +703,8 @@ class org.flashNight.arki.hud.PlayerHudService {
             if (drugItems[i] !== item || drugCounts[i] != count) changed = true;
             drugItems[i] = item;
             drugCounts[i] = count;
-            signature += ";" + text(item.name) + ":" + count;
+            drugNames[i] = text(item.name);
+            signature += ";" + drugNames[i] + ":" + count;
         }
         if (changed || signature !== drugSignature) { drugSignature = signature; drugRevision++; }
         var previous:Object = rawGroups.loadout;
@@ -481,6 +746,8 @@ class org.flashNight.arki.hud.PlayerHudService {
             for (i = 0; i < 4; i++) cooldownKeys.push(ManualCooldownService.drugKey(i));
             cooldownKeys.push(ManualCooldownService.drugSwitchKey());
         }
+        var revision:Number = ManualCooldownService.getHudRevision();
+        if (manualCooldownSnapshot != null && revision === lastManualCooldownRevision) return manualCooldownSnapshot;
         var values:Array = cooldownValues;
         ManualCooldownService.writeHudSnapshot(cooldownKeys, values);
         var previous:Array = rawGroups.cooldowns;
@@ -498,13 +765,15 @@ class org.flashNight.arki.hud.PlayerHudService {
             }
         }
         // previous 是上次独立 DTO；scratch 永远不写入它。full 仍由 addGroup 强制发送。
-        if (unchanged) return previous;
+        lastManualCooldownRevision = revision;
+        if (unchanged) { manualCooldownSnapshot = previous; return previous; }
         var result:Array = [];
         offset = 0;
         for (i = 0; i < count; i++) {
             result.push([values[offset], values[offset + 1], values[offset + 2]]);
             offset += 3;
         }
+        manualCooldownSnapshot = result;
         return result;
     }
     /**
@@ -534,7 +803,7 @@ class org.flashNight.arki.hud.PlayerHudService {
         outcomeOrder.push(id);
         if (outcomeOrder.length > 128) delete outcomes[outcomeOrder.shift()];
         if (validContext(p) && typeof p.paused == "boolean" && p.paused === !!_root.暂停) {
-            var current:Object = readLoadout();
+            var current:Object = readLoadout(null, null);
             var slot:Number = Number(p.slot);
             if (p.kind == "skill" && slot > 0 && slot < 13 && Math.floor(slot) == slot
                     && Number(p.revision) == current.revision && text(p.key) == text(current.skills[slot - 1].skillKey)) {
@@ -581,7 +850,7 @@ class org.flashNight.arki.hud.PlayerHudService {
                 || !isFinite(Number(anchor.width)) || !isFinite(Number(anchor.height))
                 || anchor.width < 1 || anchor.height < 1 || anchor.x < 0 || anchor.y < 0
                 || anchor.x + anchor.width > 1024 || anchor.y + anchor.height > 576) return;
-        var current:Object = readLoadout();
+        var current:Object = readLoadout(null, null);
         var slot:Number = Number(p.slot);
         hideTooltip();
         hoverId = id;
@@ -665,6 +934,9 @@ class org.flashNight.arki.hud.PlayerHudService {
         hoverId = "";
     }
     /** Focused TestLoader probes; never called from production. */
+    public static function testOnlyUnitPacket(groups:Object, seq:Number, full:Boolean):String {
+        return encodeHudPacket({v:1,epoch:1,seq:seq,full:full,visible:true,groups:groups});
+    }
     public static function testOnlyReadVitals(unit:Object):Object { return readVitals(unit); }
     public static function testOnlyPoise(unit:Object):Object { return readPoiseDetail(unit); }
     public static function testOnlyConfigure(p:Object):Void { configureProjection(p); }
@@ -681,7 +953,7 @@ class org.flashNight.arki.hud.PlayerHudService {
     }
     public static function testOnlyWire(unit:Object):String {
         if (compat == null) compat = createCompatibility();
-        var currentLoadout:Object = readLoadout();
+        var currentLoadout:Object = readLoadout(null, null);
         var groups:Object = {vitals:readVitals(unit), combat:readCombat(unit), loadout:currentLoadout,
             cooldowns:readCooldowns(), buffs:[]};
         if (resourceHintsEnabled) groups.resources = SkillResourceService.snapshot(unit, currentLoadout);

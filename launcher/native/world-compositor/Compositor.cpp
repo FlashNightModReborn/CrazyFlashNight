@@ -149,10 +149,21 @@ struct CombatFxState {
     float cameraX=0,cameraY=0,cameraScale=1;float params[CombatFxCap*16]{},lights[PointLightCap*16]{};
 };
 
-struct HudRasterFrame {
+struct HudRasterPatch {
+    int x,y,width,height;
+    uint64_t version;
     std::shared_ptr<std::vector<uint8_t>> pixels;
+    bool Covers(const HudRasterPatch& old) const {
+        return x<=old.x && y<=old.y && x+width>=old.x+old.width && y+height>=old.y+old.height;
+    }
+};
+#include "FocusFillGpu.h"
+struct HudRasterFrame {
+    std::shared_ptr<const FocusFillFrame> focus;
+    std::shared_ptr<std::vector<uint8_t>> pixels;
+    std::shared_ptr<const std::vector<HudRasterPatch>> patches;
     int width=0,height=0,x=0,y=0;
-    uint64_t version=0;
+    uint64_t version=0,baseVersion=0;
 };
 // Fixed slots: damage, resources, bottom, buffs. Keep raster/cache ownership split;
 // only the final backbuffer is shared. No additional HWND or readback is created.
@@ -186,10 +197,12 @@ private:
     size_t retained_=0;
 };
 class HudRasterGpu {
+    FocusFillGpu focusGpu_;
 public:
     void Draw(ID3D11Device* device,ID3D11DeviceContext* context,
-        const std::array<HudRasterFrame,HudRasterLayerCount>& frames,int outputWidth,int outputHeight,ProbeHudRasterStats& stats) {
+        const std::array<HudRasterFrame,HudRasterLayerCount>& frames,int outputWidth,int outputHeight,ProbeHudRasterStats& stats,FocusCounts& focusStats) {
         stats.visibleLayers=0;
+        if(!frames[3].focus)focusGpu_.ClearAtlas();
         for(const auto& frame:frames)if(frame.pixels)++stats.visibleLayers;
         if(!stats.visibleLayers)return;
         if(!vertex) {
@@ -222,12 +235,23 @@ public:
                 layer.resource=nullptr;layer.texture=nullptr;
                 check_hresult(device->CreateTexture2D(&description,nullptr,layer.texture.put()));
                 check_hresult(device->CreateShaderResourceView(layer.texture.get(),nullptr,layer.resource.put()));
-                layer.version=0;
+                layer.version=0;layer.baseVersion=0;
             }
             if(layer.version!=frame.version) {
-                D3D11_BOX region{0,0,0,static_cast<UINT>(frame.width),static_cast<UINT>(frame.height),1};
-                context->UpdateSubresource(layer.texture.get(),0,&region,frame.pixels->data(),frame.width*4,0);
-                layer.version=frame.version;++stats.uploads;stats.uploadedBytes+=frame.pixels->size();
+                if(layer.baseVersion!=frame.baseVersion) {
+                    D3D11_BOX region{0,0,0,static_cast<UINT>(frame.width),static_cast<UINT>(frame.height),1};
+                    context->UpdateSubresource(layer.texture.get(),0,&region,frame.pixels->data(),frame.width*4,0);
+                    layer.baseVersion=frame.baseVersion;layer.version=frame.baseVersion;
+                    ++stats.uploads;stats.uploadedBytes+=frame.pixels->size();
+                }
+                if(frame.patches)for(const auto& patch:*frame.patches) {
+                    if(patch.version<=layer.version)continue;
+                    D3D11_BOX box{static_cast<UINT>(patch.x),static_cast<UINT>(patch.y),0,
+                        static_cast<UINT>(patch.x+patch.width),static_cast<UINT>(patch.y+patch.height),1};
+                    context->UpdateSubresource(layer.texture.get(),0,&box,patch.pixels->data(),patch.width*4,0);
+                    ++stats.uploads;stats.uploadedBytes+=patch.pixels->size();
+                }
+                layer.version=frame.version;
             }
             float values[8]{static_cast<float>(frame.x),static_cast<float>(frame.y),
                 static_cast<float>(frame.width),static_cast<float>(frame.height),
@@ -235,13 +259,18 @@ public:
             context->UpdateSubresource(parameters.get(),0,nullptr,values,0,0);
             auto resource=layer.resource.get();context->PSSetShaderResources(0,1,&resource);
             context->Draw(6,0);++stats.draws;
+            if(i==3 && frame.focus && frame.focus->count) {
+                focusGpu_.Draw(device,context,frame.focus,outputWidth,outputHeight,focusStats);
+                context->VSSetShader(vertex.get(),nullptr,0);context->PSSetShader(pixel.get(),nullptr,0);
+                context->VSSetConstantBuffers(0,1,&constant);
+            }
         }
         ID3D11ShaderResourceView* empty=nullptr;context->PSSetShaderResources(0,1,&empty);
         context->OMSetBlendState(nullptr,nullptr,0xffffffff);
     }
 private:
     struct Layer { com_ptr<ID3D11Texture2D> texture;com_ptr<ID3D11ShaderResourceView> resource;
-        int width=0,height=0;uint64_t version=0; };
+        int width=0,height=0;uint64_t version=0,baseVersion=0; };
     std::array<Layer,HudRasterLayerCount> layers;
     com_ptr<ID3D11VertexShader> vertex;com_ptr<ID3D11PixelShader> pixel;
     com_ptr<ID3D11Buffer> parameters;com_ptr<ID3D11BlendState> blending;
@@ -461,7 +490,12 @@ public:
                 static_cast<const uint8_t*>(pixels)+static_cast<size_t>(row)*stride,static_cast<size_t>(width)*4);
             if(measure) {allocated=copyStart-start;copied=QpcMs()-copyStart;}
         } else if(width || height || stride || x || y)return false;
-        { std::lock_guard guard(mutex_);frame.version=++hudVersion_;hudFrames_[layer]=frame;
+        { std::lock_guard guard(mutex_);
+            if(layer==3) {
+                if(frame.pixels)frame.focus=pendingFocus_;
+                else {pendingFocus_.reset();focusAtlas_.reset();}
+            }
+            frame.baseVersion=frame.version=++hudVersion_;hudFrames_[layer]=frame;
             if(!frame.pixels)hudPixelCache_.Clear(layer);
             ++hudStats_.accepted;if(frame.pixels) {
                 hudStats_.copiedBytes+=frame.pixels->size();
@@ -473,6 +507,83 @@ public:
             } }
         Signal();return true;
     }
+    int HudRasterRects(int layer,const void* pixels,int width,int height,int stride,int x,int y,const int* rectangles,int count) {
+        if((layer!=1 && layer!=3) || stop_ || !pixels || !rectangles || count<1 || count>16 || width<1 || height<1 ||
+            width>4096 || height>4096 || stride<width*4 || stride>16384 || stride%4 || x<0 || y<0 || x>16384 || y>16384)return 0;
+        const bool measure=hudCostSampling_.load();
+        const auto epoch=measure?hudCostEpoch_.load():0;
+        size_t bytes=0;
+        std::vector<HudRasterPatch> changes;
+        changes.reserve(count);
+        for(int i=0;i<count;++i) {
+            const int* r=rectangles+i*4;
+            if(r[0]<0 || r[1]<0 || r[2]<=0 || r[3]<=0 || r[2]>width-r[0] || r[3]>height-r[1])return 0;
+            bytes+=static_cast<size_t>(r[2])*r[3]*4;
+            changes.push_back({r[0],r[1],r[2],r[3],0,{}});
+        }
+        const size_t fullBytes=static_cast<size_t>(width)*height*4;
+        if(bytes>=fullBytes)return 2;
+        double allocateStart=measure?QpcMs():0;
+        for(auto& change:changes)
+            change.pixels=std::make_shared<std::vector<uint8_t>>(static_cast<size_t>(change.width)*change.height*4);
+        double copyStart=measure?QpcMs():0;
+        for(auto& change:changes) {
+            const auto* source=static_cast<const uint8_t*>(pixels)+size_t(change.y)*stride+size_t(change.x)*4;
+            size_t rowBytes=size_t(change.width)*4;
+            for(int row=0;row<change.height;++row)
+                std::memcpy(change.pixels->data()+size_t(row)*rowBytes,source+size_t(row)*stride,rowBytes);
+        }
+        double copied=measure?QpcMs()-copyStart:0;
+        {
+            std::lock_guard guard(mutex_);
+            auto& frame=hudFrames_[layer];
+            if(!frame.pixels || frame.width!=width || frame.height!=height || frame.x!=x || frame.y!=y)return 2;
+            // The GPU can skip any number of producer versions. Keep a complete immutable
+            // baseline and the latest still-visible edits in order, including transparent pixels.
+            auto patches=std::make_shared<std::vector<HudRasterPatch>>();
+            if(frame.patches)*patches=*frame.patches;
+            uint64_t version=hudVersion_+1;
+            for(auto& change:changes) {
+                patches->erase(std::remove_if(patches->begin(),patches->end(),
+                    [&](const HudRasterPatch& old) {return change.Covers(old);}),patches->end());
+                change.version=version;patches->push_back(std::move(change));
+            }
+            size_t retained=0;
+            for(const auto& patch:*patches)retained+=patch.pixels->size();
+            // Rebase from the caller's complete current image if fragmented damage builds up.
+            if(patches->size()>64 || retained>fullBytes)return 2;
+            frame.patches=std::move(patches);frame.version=++hudVersion_;
+            if (layer==3) frame.focus=pendingFocus_;
+            ++hudStats_.accepted;hudStats_.copiedBytes+=bytes;
+            if(measure && epoch==hudCostEpoch_) {
+                ++hudCostStats_.copySamples;hudCostStats_.copyBytes+=bytes;
+                hudCostStats_.allocationCpuMs+=copyStart-allocateStart;hudCostStats_.copyCpuMs+=copied;
+                hudCostStats_.poolAllocations+=count;
+            }
+        }
+        Signal();return 1;
+    }
+    bool StageFocus(const uint8_t* atlas,int w,int h,const int* items,int count) {
+        if(stop_ || count<0 || count>4 || (count && !items))return false;
+        std::lock_guard guard(mutex_);
+        if(!atlas && !w && !h && !count) {pendingFocus_.reset();focusAtlas_.reset();return true;}
+        std::shared_ptr<const FocusFillAtlas> material=focusAtlas_;
+        if(atlas) {
+            if(w<1 || h<1 || w>4096 || h>128)return false;
+            auto a=std::make_shared<FocusFillAtlas>();a->width=w;a->height=h;
+            a->pixels.assign(atlas,atlas+size_t(w)*h*4);material=a;
+        }
+        if(count && !material)return false;
+        FocusFillFrame frame{};frame.count=count;frame.atlas=material;
+        for(int i=0;i<count;++i) {
+            const auto r=items+i*8;
+            if(r[2]<1 || r[3]<1 || r[4]<0 || r[5]<0 || r[2]>material->width-r[4] || r[3]>material->height-r[5])return false;
+        }
+        if(count)std::memcpy(frame.items.data(),items,size_t(count)*8*sizeof(int));
+        if(pendingFocus_ && pendingFocus_->atlas==material && pendingFocus_->count==count && pendingFocus_->items==frame.items)return true;
+        focusAtlas_=material;pendingFocus_=std::make_shared<FocusFillFrame>(std::move(frame));++focusCounts_[0];return true;
+    }
+    void ReadFocus(uint64_t* values) {for(size_t i=0;i<focusCounts_.size();++i)values[i]=focusCounts_[i].load();}
     void HudRasterStats(ProbeHudRasterStats& result) {std::lock_guard guard(mutex_);result=hudStats_;}
     void TimingStats(ProbeTimingStats& result) {
         std::array<TimingSample,256> samples;
@@ -1731,7 +1842,7 @@ private:
             {std::lock_guard guard(mutex_);hudFrames=hudFrames_;appliedHudVersion=hudVersion_;}
             ProbeHudRasterStats hudDraw{sizeof(ProbeHudRasterStats)};
             if(measureHudGpu)hudCostSampler.WorldComplete(context.get());
-            if(!proof)hudGpu.Draw(device.get(),context.get(),hudFrames,w,h,hudDraw);
+            if(!proof)hudGpu.Draw(device.get(),context.get(),hudFrames,w,h,hudDraw,focusCounts_);
             if(measureHudGpu)hudCostSampler.Finish(context.get());
             {std::lock_guard guard(mutex_);hudStats_.visibleLayers=hudDraw.visibleLayers;
                 hudStats_.uploads+=hudDraw.uploads;hudStats_.uploadedBytes+=hudDraw.uploadedBytes;hudStats_.draws+=hudDraw.draws;}
@@ -1946,6 +2057,9 @@ private:
     ProbeCasStageStats casStageStats_{sizeof(ProbeCasStageStats)};
     ProbeWorkStats workStats_{sizeof(ProbeWorkStats)};
     std::array<HudRasterFrame,HudRasterLayerCount> hudFrames_;
+    std::shared_ptr<const FocusFillFrame> pendingFocus_;
+    std::shared_ptr<const FocusFillAtlas> focusAtlas_;
+    FocusCounts focusCounts_{};
     HudPixelCache hudPixelCache_;
     uint64_t hudVersion_=0;
     ProbeHudRasterStats hudStats_{sizeof(ProbeHudRasterStats)};
@@ -2131,6 +2245,20 @@ int __cdecl ProbeSetHudRaster(void* handle,int layer,const void* pixels,int widt
     if(!handle)return 0;
     try {return static_cast<Capture*>(handle)->HudRaster(layer,pixels,width,height,stride,x,y)?1:0;}
     catch (...) {return 0;}
+}
+uint32_t __cdecl ProbeGetHudRasterRectLayerMask() { return (1u << 1) | (1u << 3); }
+int __cdecl ProbeSetHudRasterRects(void* handle,int layer,const void* pixels,int width,int height,int stride,
+    int x,int y,const int* rectangles,int count) {
+    if(!handle)return 0;
+    try {return static_cast<Capture*>(handle)->HudRasterRects(layer,pixels,width,height,stride,x,y,rectangles,count);}
+    catch(...) {return 0;}
+}
+extern "C" __declspec(dllexport) int __cdecl ProbeStageFocusFills(void* handle,const uint8_t* atlas,int w,int h,const int* items,int count) {
+    if(!handle)return 0;
+    try{return static_cast<Capture*>(handle)->StageFocus(atlas,w,h,items,count)?1:0;}catch(...){return 0;}
+}
+extern "C" __declspec(dllexport) int __cdecl ProbeGetFocusFillStats(void* handle,uint64_t* values,int count) {
+    if(!handle || !values || count!=6)return 0;static_cast<Capture*>(handle)->ReadFocus(values);return 1;
 }
 int __cdecl ProbeGetHudRasterStats(void* handle,ProbeHudRasterStats* stats) {
     if(!handle || !stats || stats->size!=sizeof(ProbeHudRasterStats))return 0;

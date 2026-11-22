@@ -130,8 +130,11 @@ namespace CF7Launcher.Guardian.Hud
             public float SeqToNameGapBase;
         }
 
+        private readonly Dictionary<(string Family, FontStyle Style, float Size, string Text), VisualTextMetrics> _textShapes = new();
+
         private sealed class VisualTextMetrics
         {
+            public GraphicsPath Path;
             public float Left;
             public float Top;
             public float Width;
@@ -166,6 +169,9 @@ namespace CF7Launcher.Guardian.Hud
         private int _measuredWidthBase;       // 设计像素（基准坐标系），ScreenBounds 由其乘 Scale
         private bool _widthDirty = true;
         private bool _boundsMounted;
+        private Rectangle _animatedInk;
+        private Bitmap _barPlate;
+        private (Size,float,int,int,SmoothingMode) _barPlateKey;
         private string _lastLayoutTraceKey = "";
         private int _layoutTraceCount;
 
@@ -293,6 +299,8 @@ namespace CF7Launcher.Guardian.Hud
 
         private void DisposeScaledFonts()
         {
+            _barPlate?.Dispose(); _barPlate=null;
+            ClearTextShapes();
             if (_scaledTypedFont != null)  { _scaledTypedFont.Dispose();  _scaledTypedFont = null; }
             if (_scaledRemainFont != null) { _scaledRemainFont.Dispose(); _scaledRemainFont = null; }
             if (_scaledNameFont != null)   { _scaledNameFont.Dispose();   _scaledNameFont = null; }
@@ -373,7 +381,8 @@ namespace CF7Launcher.Guardian.Hud
                 FireBoundsIfMountChanged(wasMounted);
                 return;
             }
-            FireRepaint();
+            if (_animatedInk.IsEmpty) FireRepaint();
+            else RepaintRequested?.Invoke(this,new HudRepaintRegions([_animatedInk]));
         }
 
         public void Paint(Graphics g, float dpr, Point hudOrigin)
@@ -410,6 +419,11 @@ namespace CF7Launcher.Guardian.Hud
             int barW = Math.Min(r.Width, Math.Max(1, (int)Math.Ceiling(contentW + padForMode * 2f + borderPx * 2f)));
             int barH = WidgetScaler.Px(mode == BarMode.Hit ? HIT_BAR_H_BASE : INPUT_BAR_H_BASE, scale);
             Rectangle barRect = new Rectangle(localX + Math.Max(0, (r.Width - barW) / 2), localY, barW, Math.Min(r.Height, barH));
+            if (mode==BarMode.Hit)
+            {
+                _animatedInk=Rectangle.Inflate(barRect,2,2);
+                _animatedInk.Offset(hudOrigin);
+            }
             float alpha = 1f;
             if (mode == BarMode.Hit)
             {
@@ -429,7 +443,21 @@ namespace CF7Launcher.Guardian.Hud
                 barRect.Height);
             TraceLayoutIfChanged(mode, scale, r, barRect, contentRect, contentW, padForMode, borderPx);
 
-            DrawFlashFrameBar(g, barRect, scale, bgColor, borderColor, alpha);
+            if (alpha==1f && (long)barRect.Width*barRect.Height*4<512*1024)
+            {
+                var key=(barRect.Size,scale,bgColor.ToArgb(),borderColor.ToArgb(),g.SmoothingMode);
+                if (_barPlate==null || _barPlateKey!=key)
+                {
+                    _barPlate?.Dispose();
+                    _barPlate=new Bitmap(barRect.Width+4,barRect.Height+4,System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                    using var local=Graphics.FromImage(_barPlate);
+                    local.SmoothingMode=g.SmoothingMode;
+                    DrawFlashFrameBar(local,new Rectangle(2,2,barRect.Width,barRect.Height),scale,bgColor,borderColor,1f);
+                    _barPlateKey=key;
+                }
+                g.DrawImageUnscaled(_barPlate,barRect.X-2,barRect.Y-2);
+            }
+            else DrawFlashFrameBar(g, barRect, scale, bgColor, borderColor, alpha);
             GraphicsState clipState = g.Save();
             try
             {
@@ -775,26 +803,28 @@ namespace CF7Launcher.Guardian.Hud
             }
         }
 
-        private static VisualTextMetrics MeasurePathText(string text, Font font)
+        private void ClearTextShapes()
         {
-            VisualTextMetrics result = new VisualTextMetrics();
-            if (string.IsNullOrEmpty(text)) return result;
-
-            // P0 perf：复用静态 typographic format（线程安全：所有调用在 UI 线程）
-            StringFormat typographic = FMT_TYPOGRAPHIC;
-            using (GraphicsPath path = new GraphicsPath())
-            {
-                path.AddString(text, font.FontFamily, (int)font.Style, font.Size, PointF.Empty, typographic);
-                RectangleF bounds = path.GetBounds();
-                result.Left = bounds.Left;
-                result.Top = bounds.Top;
-                result.Width = bounds.Width;
-                result.Height = bounds.Height;
-            }
-            return result;
+            foreach (var shape in _textShapes.Values) shape.Path.Dispose();
+            _textShapes.Clear();
         }
 
-        private static SizeF MeasureVisualSpacedString(string text, Font font, float spacing, bool includeTrailingSpacing)
+        private VisualTextMetrics MeasurePathText(string text, Font font)
+        {
+            if (string.IsNullOrEmpty(text)) return new VisualTextMetrics();
+            var key = (font.Name, font.Style, font.Size, text);
+            if (_textShapes.TryGetValue(key, out var shape)) return shape;
+            if (_textShapes.Count >= 128) ClearTextShapes();
+            var path = new GraphicsPath();
+            path.AddString(text, font.FontFamily, (int)font.Style, font.Size, PointF.Empty, FMT_TYPOGRAPHIC);
+            RectangleF bounds = path.GetBounds();
+            shape = new VisualTextMetrics { Path = path, Left = bounds.Left, Top = bounds.Top,
+                Width = bounds.Width, Height = bounds.Height };
+            _textShapes.Add(key, shape);
+            return shape;
+        }
+
+        private SizeF MeasureVisualSpacedString(string text, Font font, float spacing, bool includeTrailingSpacing)
         {
             if (string.IsNullOrEmpty(text)) return SizeF.Empty;
             float w = 0f;
@@ -809,15 +839,12 @@ namespace CF7Launcher.Guardian.Hud
             return new SizeF(w, h);
         }
 
-        private static void DrawPathText(Graphics g, string text, Font font, Brush brush, float visualLeft, float centerY)
+        private void DrawPathText(Graphics g, string text, Font font, Brush brush, float visualLeft, float centerY)
         {
             if (string.IsNullOrEmpty(text)) return;
-            // P0 perf：复用静态 typographic format（线程安全：所有调用在 UI 线程）
-            StringFormat typographic = FMT_TYPOGRAPHIC;
-            using (GraphicsPath path = new GraphicsPath())
+            var bounds = MeasurePathText(text, font);
+            using (GraphicsPath path = (GraphicsPath)bounds.Path.Clone())
             {
-                path.AddString(text, font.FontFamily, (int)font.Style, font.Size, PointF.Empty, typographic);
-                RectangleF bounds = path.GetBounds();
                 using (Matrix m = new Matrix())
                 {
                     m.Translate(visualLeft - bounds.Left, centerY - (bounds.Top + bounds.Height / 2f));
@@ -827,7 +854,7 @@ namespace CF7Launcher.Guardian.Hud
             }
         }
 
-        private static void DrawVisualSpacedString(Graphics g, string text, Font font, Brush brush,
+        private void DrawVisualSpacedString(Graphics g, string text, Font font, Brush brush,
                                                    float x, float centerY, float spacing, bool includeTrailingSpacing)
         {
             if (string.IsNullOrEmpty(text)) return;
@@ -1396,11 +1423,13 @@ namespace CF7Launcher.Guardian.Hud
 
         private void FireBounds()
         {
+            _animatedInk=Rectangle.Empty;
             EventHandler h = BoundsOrVisibilityChanged;
             if (h != null) h(this, EventArgs.Empty);
         }
         private void FireRepaint()
         {
+            _animatedInk=Rectangle.Empty;
             EventHandler h = RepaintRequested;
             if (h != null) h(this, EventArgs.Empty);
         }

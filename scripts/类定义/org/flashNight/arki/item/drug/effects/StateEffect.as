@@ -71,6 +71,8 @@ class org.flashNight.arki.item.drug.effects.StateEffect implements IDrugEffect {
             target[key] = value;
         }
 
+        // Remember only an initial application witnessed at the authoritative write.
+        if (key == "淬毒") target.__hudCoatingInitial = {value:Number(target[key]),last:Number(target[key])};
         return true;
     }
 }

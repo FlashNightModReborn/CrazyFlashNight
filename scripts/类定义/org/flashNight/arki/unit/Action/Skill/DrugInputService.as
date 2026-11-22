@@ -32,9 +32,9 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
 
     public static function isApplyingDrugEffect():Boolean { return drugEffectDepth > 0; }
 
-    private static function applyDrugEffect(root:Object, itemName:String):Void {
+    private static function applyDrugEffect(root:Object, itemName:String, physicalSlot:Number):Void {
         drugEffectDepth++;
-        try { if (root.使用药剂) root.使用药剂(itemName); }
+        try { if (root.使用药剂) root.使用药剂(itemName, physicalSlot); }
         finally { drugEffectDepth--; }
     }
 
@@ -239,7 +239,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             // 药效、冷却与扣药组成既有领域顺序；存档系统缺失时在任何一步前失败。
             PlayerAssetTransaction.markDirtyRequired(root.存档系统);
             result.effectAttempted = true;
-            applyDrugEffect(root, itemName);
+            applyDrugEffect(root, itemName, physicalSlot);
             result.cooldownStarted = ManualCooldownService.start(cooldownKey, Number(root.吃药冷却时间));
             // addValue 会在数量写入后同步发布 ItemValueChanged/ItemRemoved；
             // dirty 必须先于监听器可见，异常路径再按 before/after 记录真实扣除。
@@ -382,7 +382,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         consumingLanes[lane] = true;
         try {
             PlayerAssetTransaction.markDirtyRequired(root.存档系统);
-            applyDrugEffect(root, itemName);
+            applyDrugEffect(root, itemName, -1);
             result.cooldownStarted = ManualCooldownService.start(
                 cooldownKey, Number(root.吃药冷却时间));
             if (!result.cooldownStarted) throw "cooldown_start_failed";

@@ -49,7 +49,7 @@ namespace CF7Launcher.Guardian
             DismissOverlay();
         }
 
-        private bool TryCommitSharedBitmap()
+        private bool TryCommitSharedBitmap(Rectangle[] damage)
         {
             var presentation=_sharedPresentation;
             if(presentation==null)return false;
@@ -65,7 +65,7 @@ namespace CF7Launcher.Guardian
                 locked=_composedBitmap.LockBits(new Rectangle(Point.Empty,_composedBitmap.Size),
                     ImageLockMode.ReadOnly,PixelFormat.Format32bppPArgb);
                 accepted=presentation.TryPresent(locked.Scan0,_composedBitmap.Width,_composedBitmap.Height,
-                    locked.Stride,_hudOrigin);
+                    locked.Stride,_hudOrigin,damage);
                 if(!accepted)failure=new InvalidOperationException("HUD raster extent is unsupported.");
             }
             catch(Exception error) { failure=error; }

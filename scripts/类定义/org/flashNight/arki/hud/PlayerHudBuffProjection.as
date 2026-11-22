@@ -10,6 +10,15 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
     private var detailsEnabled:Boolean = false;
     private var modsRemaining:Number = 0;
     public function PlayerHudBuffProjection() { entries = []; generation = 0; snapshotRows = []; }
+    private var deckDetails:Boolean = false;
+    private var energyBase:Array;
+    private var energyRows:Array;
+    private var energyBucket:Number;
+    private var energyTotal:Number;
+    private var energyOwner:Object;
+    public function setDeckDetails(value:Boolean):Void {
+        if (deckDetails != value) { deckDetails = value; snapshotRows = []; energyBase = null; energyRows = null; energyOwner = null; }
+    }
     public function setDetailsEnabled(value:Boolean):Void {
         value = value === true;
         if (detailsEnabled === value) return;
@@ -33,6 +42,7 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
             dispatcher.unsubscribe("add", addIcon, this);
             dispatcher.unsubscribe("remove", removeIcon, this);
         }
+        energyBase = null; energyRows = null; energyOwner = null;
         manager = null;
         entries.length = 0;
         metadataCost = 0;
@@ -174,6 +184,25 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
     private var overloadEnergy:Number;
 
     public function snapshotFor(unit:Object):Array {
+        var base:Array = snapshotWithOverload(unit);
+        var effect:Object = unit.__hudEnergyEffect;
+        if (!deckDetails || effect == null || base.length >= 256) return base;
+        var task:Object = effect.task;
+        if (effect.owner !== unit.buff || !(unit.buff.buff限时加算.魔法抗性 > 0) ||
+                !task.active || task.action !== effect.action || task.scope !== unit) return base;
+        var left:Number = task.state == 3 ? task.pendingFrames : task.due - Number(_root.帧计时器.ScheduleTimer.currentFrame);
+        var total:Number = Number(task.intervalFrames);
+        if (!isFinite(left) || !isFinite(total) || total <= 0 || left <= 0) return base;
+        left = Math.min(total, left);
+        // Sample at display precision. Each emitted row retains the actual scheduler frame count.
+        var bucket:Number = left > 90 ? Math.ceil(left / 30) * 10 : Math.round(left / 3);
+        if (energyBase === base && energyOwner === effect && energyBucket == bucket && energyTotal == total) return energyRows;
+        energyBase = base; energyOwner = effect; energyBucket = bucket; energyTotal = total;
+        energyRows = base.concat([{id:"hud:energy-resistance", timed:true, total:total, remaining:left, role:"eres",
+            source:{kind:"skill",key:"能量盾"}, info:{name:"能量抗性",description:"能量盾提供的限时抗性。",polarity:"benefit",stacks:0}}]);
+        return energyRows;
+    }
+    private function snapshotWithOverload(unit:Object):Array {
         var base:Array = snapshot();
         var ref:Object = unit.__deadHandOwner;
         if (!ref || ref.已卸载 || !ref.超载模式 || ref.武器条目 !== unit.刀 || ref.版本号 !== unit.version || base.length >= 256) {
@@ -223,6 +252,11 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
                 if (rows == null) rows = previous.slice(0, i);
                 row = {id:entry.wireId, timed:timed, total:total, remaining:remain};
                 if (entry.info != null) row.info = entry.info;
+                if (deckDetails) {
+                    var origin:Object = entry.buff.hudInfo.source;
+                    if (origin != null && (origin.kind == "drug" || origin.kind == "inventory" || origin.kind == "skill")) row.source = origin;
+                    if (entry.buff.hudInfo.role == "eres") row.role = "eres";
+                }
                 if (detailsEnabled) {
                     row.incarnation = incarnation;
                     if (entry.group != null) row.group = entry.group;

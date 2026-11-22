@@ -102,7 +102,87 @@ class org.flashNight.arki.hud.PlayerHudLoadoutResourceTest {
         drugApi.activeBank=0; rootInventory.药剂栏.rows[0]={name:"能量电池",value:1}; loadoutParity("restore resources");
         var full:Object={}; check(api.addGroup(full,"loadout",api.readLoadout(),true),"forced full includes unchanged loadout");
     }
+    private static function frame(full:Boolean, phase:Number):Object {
+        api.refreshFrameLoadout(actor, full, phase);
+        api.rawGroups.loadout = api.loadout;
+        return api.loadout;
+    }
+    private static function testFrameInvalidation():Void {
+        var inv:Object = rootInventory.药剂栏;
+        inv.revision = 0;
+        inv.getMutationRevision = function():Number { return this.revision; };
+        var prior:Object = frame(true, 0);
+        var row:Object = inv.rows[0];
+        var oldCount:Number = Number(row.value);
+        row.value = oldCount + 1;
+        inv.revision++;
+        var current:Object = frame(false, 2);
+        check(current !== prior && current.drugs[0].count == oldCount + 1,
+            "inventory mutation version invalidates outside the audited slice");
+        prior = current;
+        var startRevision:Number = SkillLoadoutService.getRevision();
+        var commit:Object = SkillLoadoutService.unequip(12, startRevision);
+        current = frame(false, 2);
+        check(commit.success && current.skills[11].skillKey != "能量盾" && current !== prior,
+            "domain skill write invalidates on the very next capture");
+        // Exercise all start alignments. A direct edit is visible in at most three captures.
+        var drugMax:Number = 0, skillMax:Number = 0, checks:Number = 0;
+        for (var start:Number = 0; start < 3; start++) {
+            for (var slot:Number = 0; slot < 8; slot++) {
+                var oldRevision:Number = api.drugRevision;
+                inv.rows[slot].value++;
+                for (var age:Number = 1; age <= 3; age++) {
+                    frame(false, (start + age - 1) % 3);
+                    if (api.drugRevision > oldRevision) break;
+                }
+                check(age <= 3, "legacy drug slot " + slot + " alignment " + start);
+                drugMax = Math.max(age, drugMax); checks++;
+            }
+            var nextMp:Number = ++skillRoot.技能表对象.能量盾.MP;
+            for (age = 1; age <= 3; age++) {
+                current = frame(false, (start + age - 1) % 3);
+                if (current.skills[0].mp == nextMp) break;
+            }
+            check(age <= 3, "legacy skill metadata alignment " + start);
+            skillMax = Math.max(age, skillMax);
+        }
+        prior = frame(true, 0);
+        inv.itemReads = 0;
+        for (var phase:Number = 0; phase < 3; phase++) current = frame(false, phase);
+        check(prior === current && inv.itemReads == 8,
+            "stable frame checks each drug slot once per three captures without rebuilding the group");
+        row.value++;
+        current = frame(true, 2);
+        check(current.drugs[0].count == row.value, "full overrides a pending legacy audit");
+        var bank:Object = org.flashNight.arki.unit.Action.Skill.DrugInputService;
+        bank.activeBank = 1; current = frame(false, 2);
+        check(current.bank == 1 && current.drugs[0].slot == 4, "immediate active bank switch");
+        inv.rows[4].name = "能量电池"; current = frame(false, 1);
+        check(current.drugs[0].name == "能量电池", "same identity drug rename");
+        ItemUtil.itemDataDict.能量电池.icon = "changed"; current = frame(false, 1);
+        check(current.drugs[0].icon == "changed", "direct item catalog icon edit");
+        _root.快捷物品栏键1 = 97; current = frame(false, 1);
+        check(current.drugs[0].key == "K97", "direct display key edit");
+        trace("[HUD_LOADOUT_DELAY] legacyDrugMaxCaptures="+drugMax+
+            " legacySkillMaxCaptures="+skillMax+" drugAlignments="+checks);
+    }
     private static function testResources():Void {
+        var table:Array = skillRoot.主角技能表;
+        var last:Object = SkillLoadoutService.getHudDescriptors();
+        // A newly populated sparse row in each third is detected by its phase.
+        var samples:Array = [10, 40, 70];
+        for (var phase:Number = 0; phase < 3; phase++) {
+            var slot:Number = samples[phase];
+            table[slot] = ["phase-test-" + phase, 1, true, "武术", true];
+            last = SkillLoadoutService.getHudDescriptors();
+            table[slot][1] = 2;
+            check(SkillLoadoutService.getHudDescriptorsForFrame(phase) !== last, "legacy in-place row detected " + phase);
+            last = SkillLoadoutService.getHudDescriptors();
+            check(SkillLoadoutService.getHudDescriptorsForFrame(phase) === last, "stable slice reuses descriptors " + phase);
+            delete table[slot];
+        }
+        table.length = 1;
+        SkillLoadoutService.getHudDescriptors();
         var first:Object=resourceParity("cold resources"), before:String=codec.stringifySafe(first);
         var mp:Array=[0,9,10,11,19,20,29,30,Number.NaN,Number.POSITIVE_INFINITY,null,undefined,"15"];
         for(var i:Number=0;i<mp.length;i++){actor.mp=mp[i];resourceParity("MP threshold "+i);}
@@ -155,14 +235,14 @@ class org.flashNight.arki.hud.PlayerHudLoadoutResourceTest {
     public static function runAllTests():Void {
         passed=failed=checksum=0;codec=new LiteJSON();api=org.flashNight.arki.hud.PlayerHudService;oldApi=org.flashNight.arki.hud.PlayerHudSnapshotLegacyFixture;
         var keys:Array=["物品栏","收集品栏","控制目标","暂停","主动战技函数","keyshow","快捷物品栏键1","快捷物品栏键2","快捷物品栏键3","快捷物品栏键4","药剂组切换键","gameworld"];
-        var fields:Array=["rawGroups","drugRevision","drugSignature","drugItems","drugCounts"];
+        var fields:Array=["rawGroups","drugRevision","drugSignature","drugItems","drugCounts","drugNames","loadout","lastFrameSkills","lastDrugSource","lastDrugVersion"];
         var saved:Object={},savedApi:Object={},savedData:Object=ItemUtil.itemDataDict,i:Number;
         for(i=0;i<keys.length;i++)saved[keys[i]]=_root[keys[i]];
         for(i=0;i<fields.length;i++)savedApi[fields[i]]=api[fields[i]];
         var drugApi:Object=org.flashNight.arki.unit.Action.Skill.DrugInputService;var savedBank:Number=drugApi.activeBank;
         var world:MovieClip=_root.createEmptyMovieClip("__loadoutResourceWorld",_root.getNextHighestDepth());_root.gameworld=world;
         try{
-            setup();testLoadout();testResources();
+            setup();testFrameInvalidation();setup();testLoadout();testResources();
             actor.mp=100;rootInventory.背包.rows[0].value=2;currentLoadout=api.readLoadout();
             bench("loadout",false);bench("loadout",true);bench("resources",false);bench("resources",true);
         }finally{

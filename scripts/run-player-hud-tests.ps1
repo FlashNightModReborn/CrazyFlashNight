@@ -4,8 +4,8 @@ $ErrorActionPreference='Stop'
 $focusedRun=@{
     DomainId='player-hud'
     TemplateRelativePath='scripts\test-runners\player-hud\TestLoader.as.template'
-    SuiteRelativePaths=@('scripts\类定义\org\flashNight\arki\hud\PlayerHudServiceTest.as','scripts\类定义\org\flashNight\arki\hud\PlayerHudHotPathTest.as')
-    SuiteFqns=@('org.flashNight.arki.hud.PlayerHudServiceTest','org.flashNight.arki.hud.PlayerHudHotPathTest')
+    SuiteRelativePaths=@('scripts\类定义\org\flashNight\arki\hud\PlayerHudServiceTest.as','scripts\类定义\org\flashNight\arki\hud\PlayerHudHotPathTest.as','scripts\类定义\org\flashNight\arki\hud\PlayerHudUnitHotWireTest.as','scripts\类定义\org\flashNight\arki\hud\PlayerHudAllyRosterTest.as')
+    SuiteFqns=@('org.flashNight.arki.hud.PlayerHudServiceTest','org.flashNight.arki.hud.PlayerHudHotPathTest','org.flashNight.arki.hud.PlayerHudUnitHotWireTest','org.flashNight.arki.hud.PlayerHudAllyRosterTest')
     AdditionalAsRelativePaths=@(
         'scripts\类定义\org\flashNight\arki\hud\PlayerHudService.as'
         'scripts\类定义\org\flashNight\arki\skill\SkillResourceService.as'
@@ -17,6 +17,8 @@ $focusedRun=@{
     ExpectedTracePatterns=@(
         '(?m)^--- PlayerHudServiceTest: ([1-9][0-9]*)/\1 passed, 0 failed ---\r?$'
         '(?m)^PlayerHudHotPathTest Tests Passed: [1-9][0-9]*\r?$'
+        '(?m)^ALLYTEST FINISH PASS cases=[1-9][0-9]* failures=0\r?$'
+        '(?m)^HOTTEST FINISH PASS\r?$'
         '(?m)^PlayerHudHotPathTest Tests Failed: 0\r?$'
     )
     SuccessSummary='PlayerHud state/wire, cooldown batching, immutable resync and hot-path A/B'

@@ -342,10 +342,38 @@ class org.flashNight.arki.hud.PlayerHudSnapshotTest {
         manager.eventDispatcher.destroy();
         bulk.eventDispatcher.destroy();
     }
+    private static function testPacketFragments():Void {
+        var groups:Object = {vitals:{name:"护盾\"测试", hp:[19,27]}, focusTarget:{targets:[]}};
+        var packet:Object = {v:1,epoch:9,seq:99,full:true,visible:true,groups:groups};
+        var values:Array = ["", "A", "AB", "ABC", "中", "A中", "🙂", String.fromCharCode(0xD800)];
+        for (var i:Number = 0; i < values.length; i++) {
+            // Group snapshots are detached. The next capture replaces its previous
+            // group; unchanged groups may keep a reference or be recreated.
+            packet.seq++;
+            groups.vitals = {name:values[i], hp:[19,27]};
+            check(api.encodeHudPacket(packet) === Base64.encodeDisplay(codec.stringifySafe(packet)),
+                "packet wire exact UTF-8, alignment and changed+cached groups " + i);
+            groups.focusTarget = {targets:[]};
+            check(api.encodeHudPacket(packet) === Base64.encodeDisplay(codec.stringifySafe(packet)),
+                "repeated full with equivalent detached group " + i);
+        }
+        var first:Object = {}, reverse:Object = {};
+        first.name = "order"; first.hp = 9;
+        reverse.hp = 9; reverse.name = "order";
+        packet.groups = {vitals:first};
+        var before:String = api.encodeHudPacket(packet);
+        packet.groups = {vitals:reverse};
+        check(before !== Base64.encodeDisplay(codec.stringifySafe(packet)), "fixture changes enumerated wire order");
+        check(api.encodeHudPacket(packet) === Base64.encodeDisplay(codec.stringifySafe(packet)),
+            "distinct same-value snapshot with reverse insertion order");
+        packet.groups = {focusTarget:{targets:[{hp:0}]}};
+        packet.full = false;
+        check(api.encodeHudPacket(packet) === Base64.encodeDisplay(codec.stringifySafe(packet)), "delta wire exact");
+    }
     public static function runAllTests():Void {
         passed = failed = checksum = 0; codec = new LiteJSON(); previous = {}; api = org.flashNight.arki.hud.PlayerHudService; oldApi = org.flashNight.arki.hud.PlayerHudSnapshotLegacyFixture;
         var rootKeys:Array = ["经验值", "上次升级需要经验值", "升级需要经验值", "等级", "角色名", "技能点数", "暂停", "__nativeHudDecorations", "帧计时器", "武器技能键", "keyshow"];
-        var fields:Array = ["rawGroups", "poiseDetailsEnabled", "shieldDetailsEnabled", "poiseVisualsEnabled", "ammo", "ammoMode", "primaryOwner", "secondaryOwner", "lastCombat", "compat"];
+        var fields:Array = ["wireGroups", "wireComma", "rawGroups", "poiseDetailsEnabled", "shieldDetailsEnabled", "poiseVisualsEnabled", "ammo", "ammoMode", "primaryOwner", "secondaryOwner", "lastCombat", "compat"];
         var savedRoot:Object = {}, savedApi:Object = {}, i:Number;
         for (i = 0; i < rootKeys.length; i++) savedRoot[rootKeys[i]] = _root[rootKeys[i]];
         for (i = 0; i < fields.length; i++) savedApi[fields[i]] = api[fields[i]];
@@ -359,7 +387,7 @@ class org.flashNight.arki.hud.PlayerHudSnapshotTest {
             actor = {hp:50, hp满血值:100, mp:70, mp满血值:100, nonlinearMappingResilience:0.9,
                 韧性上限:100, impactStaggerBoundary:25, remainingImpactForce:0, man:{}, 攻击模式:"空手", 主动战技:{}, 手枪:{}, 手枪2:{}, 长枪:{}};
             actor.主动战技.空手 = {名字:"重拳", 消耗mp:2, 冷却时间:500};
-            testReadOrder(); testVitals(); testCombat(); testBuffs(); testBuffMetadata(); testBuffDetails(); benchBuffCadence(1); benchBuffCadence(4);
+            api.wireGroups = {}; testPacketFragments(); testReadOrder(); testVitals(); testCombat(); testBuffs(); testBuffMetadata(); testBuffDetails(); benchBuffCadence(1); benchBuffCadence(4);
         } finally {
             for (i = 0; i < rootKeys.length; i++) _root[rootKeys[i]] = savedRoot[rootKeys[i]];
             for (i = 0; i < fields.length; i++) api[fields[i]] = savedApi[fields[i]];

@@ -46,7 +46,7 @@ public sealed class PlayerHudUsabilityTests
     }
 
     [Fact]
-    public void BuffReflowsUntimedLeftTimedRightAndCompactsWithoutEmptyGaps()
+    public void TimedCardsPrecedePermanentCardsAndCompactWithoutEmptyGaps()
     {
         Sta(() =>
         {
@@ -59,18 +59,17 @@ public sealed class PlayerHudUsabilityTests
             using var tooltip = new PlayerHudResourceTooltip(anchor, controller, true);
             Assert.False(tooltip.Widget.UseHudChrome);
             var packet = PlayerHudStateTests.Full();
-            // Even when a timed buff appears first in the wire array, untimed/permanent buffs sort to the left.
             packet["groups"]["buffs"] = new JArray(Buff("temp1", "临时护盾", timed: true), Buff("perm", "常驻被动", timed: false), Buff("temp2", "兴奋剂", timed: true));
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet)); sent.Clear();
-            Assert.Equal(new[] { "perm", "temp1", "temp2" }, controller.State.Snapshot.BuffCards.Select(c => c.Id));
+            Assert.Equal(new[] { "temp1", "temp2", "perm" }, controller.State.Snapshot.BuffCards.Select(c => c.Id));
             Point At(int slot) { var r = PlayerHudBuffWidget.SlotRect(slot); return anchor.PointToScreen(new Point((int)r.X + 10, (int)r.Y + 10)); }
             void Hover(int slot) { var p = At(slot); widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, p.X, p.Y, 0), MouseEventKind.Move); }
 
-            // Hovering the permanent buff on the left keeps its tooltip when a temporary buff on the right expires.
+            // The hovered timed card stays at slot zero when a later timed card expires.
             Hover(0); Assert.NotNull(tooltip.Widget.ActiveDocument);
-            packet["seq"] = 2; packet["groups"]["buffs"] = new JArray(Buff("perm", "常驻被动", timed: false), Buff("temp2", "兴奋剂", timed: true));
+            packet["seq"] = 2; packet["groups"]["buffs"] = new JArray(Buff("perm", "常驻被动", timed: false), Buff("temp1", "临时护盾", timed: true));
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
-            Assert.Equal(new[] { "perm", "temp2" }, controller.State.Snapshot.BuffCards.Select(c => c.Id));
+            Assert.Equal(new[] { "temp1", "perm" }, controller.State.Snapshot.BuffCards.Select(c => c.Id));
             Assert.True(widget.TryHitTest(At(0))); Assert.True(widget.TryHitTest(At(1))); Assert.False(widget.TryHitTest(At(2)));
             Assert.NotNull(tooltip.Widget.ActiveDocument);
 
@@ -151,7 +150,7 @@ public sealed class PlayerHudUsabilityTests
             Point At(int slot) { var r = PlayerHudBuffWidget.SlotRect(slot); return anchor.PointToScreen(new Point((int)r.X + 10, (int)r.Y + 10)); }
             void Hover(int slot) { var p = At(slot); widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, p.X, p.Y, 0), MouseEventKind.Move); }
             string Text() => string.Concat(tooltip.Widget.ActiveDocument.Sections.Select(section => section.PlainText));
-            Hover(0); var idle = tooltip.Widget.ActiveDocument;
+            Hover(1); var idle = tooltip.Widget.ActiveDocument;
             Assert.NotNull(idle); Assert.Contains("常态生效", Text()); Assert.Contains("空手攻击力：+30", Text());
             Assert.Contains("触发后持续约 3 秒", Text());
 

@@ -388,7 +388,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         private static double Percentile(List<double> values) {values.Sort();return values[(int)Math.Ceiling(values.Count*.95)-1];}
-        private static void Run(Action<NativeCompositorSession,CompositionSceneHost,Form,Form> action,Size? outputSize=null,TimeSpan? timeout=null)
+        private static void Run(Action<NativeCompositorSession,CompositionSceneHost,Form,Form> action,Size? outputSize=null,TimeSpan? timeout=null,bool requireWorldFrame=true)
         {
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             string candidate=Path.GetFullPath(Environment.GetEnvironmentVariable("CF7_TEST_SHARED_WORLD_CANDIDATE"));
@@ -419,8 +419,11 @@ namespace CF7Launcher.Tests.Guardian
                     using(world)
                     {
                         world.Mode(0);
-                        Pump(()=>world.Read().Received>0,scene,"source capture");
-                        PixelsUntil(world,scene,p=>Pixel(p,50,50,140,80,30),"baseline pixels");
+                        if (requireWorldFrame)
+                        {
+                            Pump(()=>world.Read().Received>0,scene,"source capture");
+                            PixelsUntil(world,scene,p=>Pixel(p,50,50,140,80,30),"baseline pixels");
+                        }
                         action(world,scene,output,source);
                         Console.WriteLine(JsonConvert.SerializeObject(new {nativeModule=module,nativeSha256=hash,
                             buildIdentity=metadata.Value<string>("buildIdentityHash"),closure=metadata.Value<string>("payloadClosureHash"),

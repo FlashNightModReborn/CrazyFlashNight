@@ -121,6 +121,13 @@ __declspec(dllexport) int __cdecl ProbeResetFeedback(void* handle);
 __declspec(dllexport) int __cdecl ProbeGetPostprocessStats(void* handle,ProbePostprocessStats* stats);
 __declspec(dllexport) int __cdecl ProbeSetHudRaster(void* handle, int layer, const void* pixels,
     int width, int height, int stride, int x, int y);
+// Each set bit names a HUD layer that can accept retained XYWH patches.
+// Earlier binaries with ProbeSetHudRasterRects only support the focus layer (3).
+__declspec(dllexport) uint32_t __cdecl ProbeGetHudRasterRectLayerMask();
+// Rectangles are relative to the visible source, in XYWH order.
+// 1 = patches accepted, 2 = a new full frame is needed, 0 = invalid or failed.
+__declspec(dllexport) int __cdecl ProbeSetHudRasterRects(void* handle,int layer,const void* pixels,
+    int width,int height,int stride,int x,int y,const int* rectangles,int count);
 __declspec(dllexport) int __cdecl ProbeGetHudRasterStats(void* handle, ProbeHudRasterStats* stats);
 // enabled=1 starts a new measurement epoch; enabled=0 stops new samples while
 // already queued GPU queries may finish. Neither operation resets scene state.

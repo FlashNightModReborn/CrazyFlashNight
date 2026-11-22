@@ -493,6 +493,41 @@ public sealed class PlayerInfoFrameCompositorTests
             compositor.Paint(destination, batch, plan, model.VisualState));
     }
 
+    [Fact]
+    public void RepeatedLiveGaugesMatchFreshCompositionAcrossValueAndViewportChanges()
+    {
+        var assets = PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster: false);
+        var state = new PlayerHudState();
+        Assert.True(state.Receive(PlayerHudStateTests.Encode(PlayerHudStateTests.Full()), 1));
+        var initial = state.Snapshot!.Vitals with { Hp = 800, HpMax = 1000, Mp = 500, MpMax = 600 };
+        using var retained = new PlayerInfoFrameCompositor(assets);
+
+        foreach (var viewport in new[] { new Rectangle(0, 0, 1024, 576), new Rectangle(13, 7, 1600, 900) })
+        {
+            var plan = PlayerInfoRasterPlanner.Create(assets, viewport, monitorDpiScale: 1);
+            using var batch = new PlayerInfoSvgRasterizer().Bake(plan, System.Threading.CancellationToken.None);
+            using var actual = NewDestination(plan);
+            using var expected = NewDestination(plan);
+            var model = new PlayerInfoAnimationModel();
+            int frame = 0;
+            foreach (var value in new[] { initial, initial with { Hp = 200 }, initial with { Mp = 800 },
+                         initial with { Hp = 1600, HpMax = 2000, Mp = 1000, MpMax = 1200 }, initial })
+            {
+                model.ApplyProduction(value);
+                // Exercise the transition, a repeated stable base and a changing ornament phase.
+                foreach (int elapsed in new[] { 34, 2000, 34, 34 })
+                {
+                    model.Tick(elapsed);
+                    frame += 3;
+                    using var fresh = new PlayerInfoFrameCompositor(assets);
+                    retained.Paint(actual, batch, plan, model.VisualState, value, frame);
+                    fresh.Paint(expected, batch, plan, model.VisualState, value, frame);
+                    Assert.Equal(HashBitmap(expected), HashBitmap(actual));
+                }
+            }
+        }
+    }
+
     private static Bitmap NewDestination(PlayerInfoRasterPlan plan) =>
         new(
             plan.TightPhysicalBounds.Width,

@@ -9,16 +9,16 @@ namespace CF7Launcher.Guardian.Hud
     /// 右上角常驻 HUD 的共享布局模型。
     ///
     /// Native HUD 右侧动作行与居中刘海共用的几何契约。
-    /// 右侧保留 right:48px；前三个双字入口各 50px、后三个图标入口各 34px，总宽 252px；
+    /// V3.8 右侧留 6px。三个 50px 文字入口和四个 36px 图标入口与左上区对称。
     /// 刘海与动作行之间至少保留 12px。所有值均以 1024×576 设计坐标为基准。
     /// </summary>
     public static class RightHudLayout
     {
-        public const int RightOffsetBase = 48;
-        public const int RightActionButtonCount = 6;
+        public const int RightOffsetBase = 6;
+        public const int RightActionButtonCount = 7;
         public const int PrimaryActionButtonCount = 3;
         public const int PrimaryActionButtonWidthBase = 50;
-        public const int UtilityActionButtonWidthBase = 34;
+        public const int UtilityActionButtonWidthBase = 36;
         public const int RightActionRowWidthBase =
             PrimaryActionButtonCount * PrimaryActionButtonWidthBase
             + (RightActionButtonCount - PrimaryActionButtonCount) * UtilityActionButtonWidthBase;
@@ -29,8 +29,10 @@ namespace CF7Launcher.Guardian.Hud
         public const int PreferredNotchMaxWidthBase = 400;
         public const int CompactMapHeightBase = 64;
         public const int ExpandedMapHeightBase = 112;
-        public const int StatusSlotHeightBase = 32;
-        public const int TaskDestinationHeightBase = 40;
+        public const int StatusSlotHeightBase = 38;
+        public const int TaskDestinationHeightBase = 38;
+        public const int ContextGapBase = 2;
+        public const int MapGapAfterStatusBase = 6;
 
         public const int SafeExitContentWidthBase = RightActionRowWidthBase - SafeExitPaddingXBase * 2;
         public const int SafeExitPaddingXBase = 10;
@@ -187,18 +189,21 @@ namespace CF7Launcher.Guardian.Hud
             if (tools.Width <= 0 || tools.Height <= 0) return Rectangle.Empty;
             int h = 0;
             if (showStatusSlot) h += WidgetScaler.Px(statusHeightBase, scale);
+            if (showStatusSlot && mapMode != EffectiveMapDisplayMode.Hidden)
+                h += WidgetScaler.Px(MapGapAfterStatusBase, scale);
             if (mapMode == EffectiveMapDisplayMode.Compact)
                 h += WidgetScaler.Px(CompactMapHeightBase, scale);
             else if (mapMode == EffectiveMapDisplayMode.Expanded)
                 h += WidgetScaler.Px(ExpandedMapHeightBase, scale);
             if (h <= 0) return Rectangle.Empty;
-            return new Rectangle(tools.X, tools.Bottom, tools.Width, h);
+            return new Rectangle(tools.X, tools.Bottom + WidgetScaler.Px(ContextGapBase, scale), tools.Width, h);
         }
 
         internal static Rectangle MapRectFromContext(Rectangle context, float scale, EffectiveMapDisplayMode mapMode, bool showStatusSlot, int statusHeightBase = StatusSlotHeightBase)
         {
             if (mapMode == EffectiveMapDisplayMode.Hidden || context.Width <= 0 || context.Height <= 0) return Rectangle.Empty;
-            int y = context.Y + (showStatusSlot ? WidgetScaler.Px(statusHeightBase, scale) : 0);
+            int y = context.Y + (showStatusSlot
+                ? WidgetScaler.Px(statusHeightBase, scale) + WidgetScaler.Px(MapGapAfterStatusBase, scale) : 0);
             int h = WidgetScaler.Px(
                 mapMode == EffectiveMapDisplayMode.Expanded ? ExpandedMapHeightBase : CompactMapHeightBase,
                 scale);
@@ -225,7 +230,7 @@ namespace CF7Launcher.Guardian.Hud
             int w = WidgetScaler.Px(SafeExitTotalWidthBase, scale);
             int rightOffset = WidgetScaler.Px(RightOffsetBase, scale);
             int x = viewport.X + Math.Max(0, viewport.Width - w - rightOffset);
-            int y = viewport.Y + WidgetScaler.Px(ToolBarHeightBase, scale);
+            int y = viewport.Y + WidgetScaler.Px(ToolBarHeightBase, scale) + WidgetScaler.Px(ContextGapBase, scale);
             return new Rectangle(x, y, w, totalHeight);
         }
     }

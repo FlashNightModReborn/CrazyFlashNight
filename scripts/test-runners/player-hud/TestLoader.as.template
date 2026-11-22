@@ -1,4 +1,6 @@
 ﻿trace("FocusedTestRunId player-hud Start: __FOCUSED_RUN_ID__");
 org.flashNight.arki.hud.PlayerHudServiceTest.runAllTests();
 org.flashNight.arki.hud.PlayerHudHotPathTest.runAllTests();
+org.flashNight.arki.hud.PlayerHudAllyRosterTest.runAllTests();
+org.flashNight.arki.hud.PlayerHudUnitHotWireTest.runAllTests();
 trace("FocusedTestRunId player-hud Complete: __FOCUSED_RUN_ID__");

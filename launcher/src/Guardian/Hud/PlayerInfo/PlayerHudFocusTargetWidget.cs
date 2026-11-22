@@ -7,123 +7,99 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using CF7Launcher.Guardian.Hud.Loot;
+using CF7Launcher.Guardian.Hud.UnitLife;
 
 namespace CF7Launcher.Guardian.Hud.PlayerInfo;
 
 /// <summary>Multi-target strip (protect / boss / combat) in the Buff surface with portraits, clock-driven damage trail &amp; heal preview, chamfered/slanted geometry, and Aero numerals.</summary>
-internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeHudPointerSnapshot
+internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeHudPointerSnapshot
 {
-    private const int MaxRows = 4;
+    private const float ColumnWidth = 294f;
     internal const float RowHeight = 30f;
-    internal const float RowGap = 3f;
-    internal const float BarSlant = 2.0f;
-    internal const int LossHoldMs = 90;
-    internal const int LossDecayMs = 230;
-    internal const int LossTotalMs = LossHoldMs + LossDecayMs;
-    internal const int CumulativeLossWindowMs = 260;
-    internal const int GainDurationMs = 360;
+    internal const float RowGap = 2f;
     internal const int ComboPulseDurationMs = 150;
-    internal const int CriticalBreathPeriodMs = 1300;
-    internal const double HealPreviewThreshold = 0.055;
+
     internal const float HpReadoutMaxWidth = 92f;
     internal const double ExactHpCompactThreshold = 1_000_000;
 
-    private static float SmoothStep(float t)
+    private sealed class TargetVisualState(UnitHealth health)
     {
-        t = Math.Clamp(t, 0f, 1f);
-        return t * t * (3f - 2f * t);
-    }
-
-    private sealed class TargetVisualState
-    {
-        internal double PreviousRatio;
-        internal double TrailAnchorRatio;
-        internal double TrailRatio;
-        internal double HealStartRatio;
-        internal int LossAgeMs = LossTotalMs;
-        internal int WindowLossAgeMs = CumulativeLossWindowMs;
-        internal int GainAgeMs = GainDurationMs;
+        internal FocusLifeState Life = new(health);
         internal int LastHits;
         internal int ComboPulseAgeMs = ComboPulseDurationMs;
-        internal bool Critical;
-
-        internal float LossAlpha => LossAgeMs >= LossTotalMs
-            ? 0f
-            : LossAgeMs <= LossHoldMs
-                ? 1f
-                : Math.Clamp(1f - (LossAgeMs - LossHoldMs) / (float)LossDecayMs, 0f, 1f);
-
-        internal float GainAlpha => GainAgeMs >= GainDurationMs
-            ? 0f
-            : Math.Clamp(1f - GainAgeMs / (float)GainDurationMs, 0f, 1f);
+        internal string? MeasuredName;
+        internal float MeasuredScale, NameWidth;
+        internal int MeasuredHits = -1;
+        internal float HitWidth, HitScale;
 
         internal float ComboPulse => ComboPulseAgeMs >= ComboPulseDurationMs
             ? 0f
             : Math.Clamp(1f - ComboPulseAgeMs / (float)ComboPulseDurationMs, 0f, 1f);
 
-        internal bool HasActiveTransition =>
-            (LossAgeMs < LossTotalMs && TrailRatio > PreviousRatio + 0.0005)
-            || (GainAgeMs < GainDurationMs && PreviousRatio > HealStartRatio + 0.0005)
-            || ComboPulseAgeMs < ComboPulseDurationMs;
+        internal bool HasActiveTransition => Life.HasActiveTransition || ComboPulseAgeMs < ComboPulseDurationMs;
     }
 
-    private readonly Font _font = NativeHudFonts.CreateUiFont(12, FontStyle.Regular, GraphicsUnit.Pixel);
+    private readonly Font _font = NativeHudFonts.CreateUiFont(11, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly Font _badgeFont = NativeHudFonts.CreateRoleFont("native.player-info.body", 9.5f, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly Font _initialFont = NativeHudFonts.CreateRoleFont("native.player-info.body", 11f, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly PlayerHudTextCache _numbers = new();
+    private readonly PlayerHudPortraitCache _portraits = new();
+    // Only three fixed logical plaques enter this table (wide primary, wide secondary, compact strip).
+    private readonly Dictionary<(RectangleF, int, int, int),LinearGradientBrush> _plateFills = new();
     private readonly Control _anchor;
     private readonly LootIconCatalog? _icons;
     private IDollBakeSink? _dollBake;
     private readonly Dictionary<long, TargetVisualState> _states = new();
+    private readonly HashSet<long> _activeIds = new();
     private readonly HashSet<string> _requestedDolls = new(StringComparer.Ordinal);
     private PlayerHudFocusTarget[] _lastTargets = Array.Empty<PlayerHudFocusTarget>();
     private RectangleF _lastLayout;
     private bool _lastSuppressed;
     private long _epoch;
     private string? _hoverKey;
-    private int _criticalClockMs;
+    private readonly Font _denseFont = NativeHudFonts.CreateUiFont(8, FontStyle.Bold, GraphicsUnit.Pixel);
+    private readonly Font _shortFont = NativeHudFonts.CreateUiFont(9, FontStyle.Bold, GraphicsUnit.Pixel);
+    private readonly StringFormat _label = new(StringFormat.GenericTypographic) { FormatFlags = StringFormatFlags.NoWrap, Trimming = StringTrimming.EllipsisCharacter };
+    private readonly StringFormat _center = new(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap };
+    private int AllyCount => Snapshot?.Allies?.Rows.Length ?? 0;
 
+    protected override PlayerHudGroups ConsumedGroups =>
+        PlayerHudGroups.Focus | PlayerHudGroups.Allies | PlayerHudGroups.Vitals;
     protected override bool HasContent => Snapshot is { TargetList.Length: > 0 };
-    protected override RectangleF LogicalBounds => BoundsForBuffCount(Snapshot?.BuffCards.Length ?? 0, Snapshot?.TargetList.Length ?? 0);
-    internal double TrailRatio => Snapshot?.FocusTarget is { } t && _states.TryGetValue(t.Id, out var st) ? st.TrailRatio : 0;
-    internal bool IsCritical => Snapshot?.FocusTarget is { } t && _states.TryGetValue(t.Id, out var st) && st.Critical;
-    internal double GetTrailRatio(long id) => _states.TryGetValue(id, out var st) ? st.TrailRatio : 0;
-    internal bool IsTargetCritical(long id) => _states.TryGetValue(id, out var st) && st.Critical;
-    internal float GetHealAlpha(long id) => _states.TryGetValue(id, out var st) ? st.GainAlpha : 0f;
+    protected override RectangleF LogicalBounds => BoundsForBuffCount(0, Snapshot?.TargetList.Length ?? 0, AllyCount);
+    internal double TrailRatio => Snapshot?.FocusTarget is { } t && _states.TryGetValue(t.Id, out var st) ? st.Life.TrailRatio : 0;
+    internal bool IsCritical => Snapshot?.FocusTarget is { } t && Band(t) == 2;
+    internal double GetTrailRatio(long id) => _states.TryGetValue(id, out var st) ? st.Life.TrailRatio : 0;
+    internal bool IsTargetCritical(long id) => Snapshot?.TargetList.FirstOrDefault(t => t.Id == id) is { } t && Band(t) == 2;
+    internal float GetHealAlpha(long id) => _states.TryGetValue(id, out var st) ? st.Life.GainAlpha : 0f;
     internal float GetComboPulse(long id) => _states.TryGetValue(id, out var st) ? st.ComboPulse : 0f;
 
-    public override bool WantsAnimationTick =>
-        Visible
-        && !PlayerHudMotionSettings.StaticFeedback
-        && Snapshot is { Vitals.Paused: false }
-        && _states.Values.Any(st => st.HasActiveTransition || (st.Critical && !PlayerHudMotionSettings.ReducedMotion));
-
-    // Keep the complete strip in the left column, clear of the widest centered
-    // notch and its wave/pause rows. Compact to y=4 when no Buffs are active.
-    internal static RectangleF BoundsForBuffCount(int count, int targetCount = 1)
+    public override bool WantsAnimationTick
     {
-        int rows = Math.Clamp(targetCount, 1, MaxRows);
-        float top = PlayerHudBuffLayout.ContentHeight(count) + 4;
-        float width = PlayerHudBuffLayout.ColumnWidth;
-        float height = rows * RowHeight + (rows - 1) * RowGap;
-        return new(6, top, width, height);
+        get
+        {
+            if (!Visible || PlayerHudMotionSettings.StaticFeedback || Snapshot is not { Vitals.Paused: false })
+                return false;
+            foreach (var state in _states.Values)
+                if (state.HasActiveTransition)
+                    return true;
+            return false;
+        }
     }
 
-    // 满四行后从末行开始分半，优先级高的目标尽量保留宽行。
-    private static int FullWidthCount(int targetCount) => Math.Min(targetCount, 2 * MaxRows - targetCount);
+    // The first focus is always wide. Further targets share one strip when the squad or focus list is dense.
+    private static bool Dense(int count, int allies) => count > 2 || allies > 3;
+    internal static RectangleF BoundsForBuffCount(int buffCount, int targetCount = 1) => BoundsForBuffCount(buffCount,targetCount,0);
+    internal static RectangleF BoundsForBuffCount(int buffCount, int targetCount, int allyCount) =>
+        new(6, 0, ColumnWidth, targetCount <= 1 ? 32 : Dense(targetCount, allyCount) ? 57 : 64);
 
-    internal static RectangleF RowBounds(int buffCount, int index, int targetCount)
+    internal static RectangleF RowBounds(int buffCount, int index, int targetCount) => RowBounds(buffCount,index,targetCount,0);
+    internal static RectangleF RowBounds(int buffCount, int index, int targetCount, int allyCount)
     {
-        var column = BoundsForBuffCount(buffCount, targetCount);
-        int fullRows = FullWidthCount(targetCount);
-        if (index < fullRows)
-            return new(column.X, column.Y + index * (RowHeight + RowGap), column.Width, RowHeight);
-
-        int halfIndex = index - fullRows;
-        const float gap = 4f;
-        float width = (column.Width - gap) * .5f;
-        return new(column.X + (halfIndex % 2) * (width + gap),
-            column.Y + (fullRows + halfIndex / 2) * (RowHeight + RowGap), width, RowHeight);
+        if (index == 0) return new(6, 0, ColumnWidth, 32);
+        if (!Dense(targetCount, allyCount)) return new(6, 34, ColumnWidth, 30);
+        float width = (ColumnWidth - 4) / (targetCount - 1);
+        return new(8 + (index - 1) * width, 34, width, 23);
     }
 
     internal PlayerHudFocusTargetWidget(Control anchor, PlayerHudController controller,
@@ -152,8 +128,15 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         }
         _icons?.InvalidateDoll(key);
         _requestedDolls.Remove(key);
-        if (Snapshot?.TargetList.Any(t => string.Equals(t.PortraitKey, key, StringComparison.Ordinal)) == true)
-            Repaint();
+        if (ContainsPortrait(Snapshot?.TargetList, key)) Repaint();
+    }
+
+    private static bool ContainsPortrait(PlayerHudFocusTarget[]? targets, string key)
+    {
+        if (targets == null) return false;
+        foreach (var target in targets)
+            if (target.PortraitKey == key) return true;
+        return false;
     }
 
     private void RequestPendingDollPortraits(PlayerHudFocusTarget[]? targets)
@@ -171,178 +154,226 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
     protected override void OnStateChanged()
     {
         var s = Snapshot;
-        if (s?.Epoch != _epoch)
+        bool epochChanged = (s?.Epoch ?? 0) != _epoch;
+        if (epochChanged)
         {
             _epoch = s?.Epoch ?? 0;
             _states.Clear();
             _requestedDolls.Clear();
-            _criticalClockMs = 0;
             CancelHover();
         }
         var targets = s?.TargetList ?? Array.Empty<PlayerHudFocusTarget>();
+        bool targetsChanged = epochChanged || !targets.SequenceEqual(_lastTargets);
+        bool stableRows = !epochChanged && targets.Length == _lastTargets.Length;
+        int changedHealth = 0, wholeRows = 0;
         if (_hoverKey != null && (s == null || !targets.Any(t => t.Id.ToString(CultureInfo.InvariantCulture) == _hoverKey)))
             CancelHover();
 
         if (targets.Length == 0)
         {
             _states.Clear();
-            _criticalClockMs = 0;
+            _requestedDolls.Clear();
         }
-        else if (!targets.SequenceEqual(_lastTargets))
+        else if (targetsChanged)
         {
-            var activeIds = new HashSet<long>();
-            int fullRows = FullWidthCount(targets.Length);
+            _activeIds.Clear();
+            int fullRows = Dense(targets.Length, AllyCount) ? 1 : 2;
             for (int i = 0; i < targets.Length; i++)
             {
                 var target = targets[i];
                 bool compact = i >= fullRows;
-                activeIds.Add(target.Id);
-                var ratio = Math.Clamp(target.Hp / target.HpMax, 0, 1);
+                _activeIds.Add(target.Id);
+                var health = new UnitHealth(target.Hp, target.HpMax);
                 if (!_states.TryGetValue(target.Id, out var st))
                 {
-                    st = new TargetVisualState
-                    {
-                        PreviousRatio = ratio,
-                        TrailAnchorRatio = ratio,
-                        TrailRatio = ratio,
-                        HealStartRatio = ratio,
-                        LossAgeMs = LossTotalMs,
-                        WindowLossAgeMs = CumulativeLossWindowMs,
-                        GainAgeMs = GainDurationMs,
-                        LastHits = target.Hits,
-                        ComboPulseAgeMs = !compact && target.Hits > 0 && !PlayerHudMotionSettings.StaticFeedback ? 0 : ComboPulseDurationMs,
-                        Critical = false
-                    };
-                    _states[target.Id] = st;
+                    stableRows = false;
+                    st = new TargetVisualState(health);
+                    _states.Add(target.Id, st);
                 }
                 else
                 {
-                    if (PlayerHudMotionSettings.StaticFeedback)
+                    st.Life.Apply(health, PlayerHudMotionSettings.StaticFeedback);
+                    if (stableRows)
                     {
-                        st.PreviousRatio = ratio;
-                        st.TrailAnchorRatio = ratio;
-                        st.TrailRatio = ratio;
-                        st.HealStartRatio = ratio;
-                        st.LossAgeMs = LossTotalMs;
-                        st.WindowLossAgeMs = CumulativeLossWindowMs;
-                        st.GainAgeMs = GainDurationMs;
-                        st.ComboPulseAgeMs = ComboPulseDurationMs;
+                        var old = _lastTargets[i];
+                        if (!SameRow(old, target))
+                            stableRows = false;
+                        else if (old.Hits != target.Hits || Band(old) != Band(target) ||
+                            (old.Hp > 0) != (target.Hp > 0))
+                            wholeRows |= 1 << i;
+                        else if (old.Hp != target.Hp || old.HpMax != target.HpMax)
+                            changedHealth |= 1 << i;
                     }
-                    else
-                    {
-                        if (ratio < st.PreviousRatio - 0.0005)
-                        {
-                            double anchor = st.LossAgeMs < LossTotalMs || st.WindowLossAgeMs < CumulativeLossWindowMs
-                                ? Math.Max(st.TrailAnchorRatio, Math.Max(st.TrailRatio, st.PreviousRatio))
-                                : Math.Max(st.TrailRatio, st.PreviousRatio);
-                            st.TrailAnchorRatio = anchor;
-                            st.TrailRatio = anchor;
-                            st.PreviousRatio = ratio;
-                            st.LossAgeMs = 0;
-                            st.WindowLossAgeMs = 0;
-                            st.GainAgeMs = GainDurationMs;
-                        }
-                        else if (ratio > st.PreviousRatio + 0.0005)
-                        {
-                            var gain = ratio - st.PreviousRatio;
-                            if (gain >= HealPreviewThreshold)
-                            {
-                                st.HealStartRatio = st.PreviousRatio;
-                                st.GainAgeMs = 0;
-                            }
-                            st.PreviousRatio = ratio;
-                            if (ratio >= st.TrailRatio)
-                            {
-                                st.TrailRatio = ratio;
-                                st.TrailAnchorRatio = ratio;
-                                st.LossAgeMs = LossTotalMs;
-                            }
-                        }
-
-                        if (!compact && target.Hits > st.LastHits && target.Hits > 0)
-                            st.ComboPulseAgeMs = 0;
-                        else if (compact || target.Hits <= 0)
-                            st.ComboPulseAgeMs = ComboPulseDurationMs;
-                    }
-                    st.LastHits = target.Hits;
                 }
-                st.Critical = target.Hp > 0 && target.HpMax > 0 && ratio <= (st.Critical ? 0.30 : 0.25);
+
+                if (PlayerHudMotionSettings.StaticFeedback || compact || target.Hits <= 0)
+                    st.ComboPulseAgeMs = ComboPulseDurationMs;
+                else if (target.Hits > st.LastHits)
+                    st.ComboPulseAgeMs = 0;
+                st.LastHits = target.Hits;
             }
-            var staleIds = _states.Keys.Where(id => !activeIds.Contains(id)).ToArray();
-            foreach (var staleId in staleIds) _states.Remove(staleId);
+            foreach (var old in _lastTargets)
+            {
+                if (!_activeIds.Contains(old.Id)) _states.Remove(old.Id);
+                if (old.Doll != null && _requestedDolls.Contains(old.PortraitKey) && !ContainsPortrait(targets, old.PortraitKey))
+                    _requestedDolls.Remove(old.PortraitKey);
+            }
             RequestPendingDollPortraits(targets);
         }
 
         var layout = LogicalBounds;
         // TL 状态列实际底边上报分区仲裁，BL fallback 消息据此让位（ADR D5）。
-        HudZoneLayout.ReportTopLeftBottom(TopLeftBottomFor(s?.BuffCards.Length ?? 0, targets.Length, Suppressed || s == null));
-        if (targets.SequenceEqual(_lastTargets) && layout == _lastLayout && Suppressed == _lastSuppressed) return;
+        HudZoneLayout.ReportTopLeftBottom(TopLeftBottomFor(0, targets.Length, Suppressed || s == null, AllyCount));
+        if (!targetsChanged && layout == _lastLayout && Suppressed == _lastSuppressed) return;
+        bool local = stableRows && (changedHealth | wholeRows) != 0 && layout == _lastLayout && !Suppressed && !_lastSuppressed;
+        var previous = _lastTargets;
         _lastTargets = targets; _lastLayout = layout; _lastSuppressed = Suppressed;
-        base.OnStateChanged();
+        if (local) NotifyVisualChange(TrackDamage(targets.Length, changedHealth | wholeRows, previous, wholeRows));
+        else NotifyVisualChange(targetsChanged ? HudRepaintRegions.AuthoritativeWidget : EventArgs.Empty);
     }
 
-    internal static float TopLeftBottomFor(int buffCount, int targetCount, bool hidden)
-    {
-        if (hidden) return 0f;
-        if (targetCount > 0) return BoundsForBuffCount(buffCount, targetCount).Bottom;
-        return buffCount > 0 ? PlayerHudBuffLayout.ContentHeight(buffCount) : 0f;
-    }
+    private static bool SameRow(PlayerHudFocusTarget old, PlayerHudFocusTarget next) =>
+        old.Id == next.Id && old.Role == next.Role && old.Name == next.Name && old.Icon == next.Icon &&
+        old.PortraitKey == next.PortraitKey && old.Compact == next.Compact &&
+        (ReferenceEquals(old.Doll, next.Doll) || (old.Doll != null && next.Doll != null &&
+            old.Doll.Count == next.Doll.Count && old.Doll.All(pair =>
+                next.Doll.TryGetValue(pair.Key, out var value) && value == pair.Value)));
+
+    internal static float TopLeftBottomFor(int buffCount, int targetCount, bool hidden) =>
+        TopLeftBottomFor(buffCount,targetCount,hidden,0);
+    internal static float TopLeftBottomFor(int buffCount, int targetCount, bool hidden, int allyCount) =>
+        hidden || targetCount == 0 ? 0f : BoundsForBuffCount(buffCount, targetCount, allyCount).Bottom;
+
+    // Screen warnings follow the art contract. The shared life core keeps its own trail and heal policy.
+    internal static int Band(PlayerHudFocusTarget target) =>
+        target.Role != "protect" || target.HpMax <= 0 ? 0 :
+        target.Hp < target.HpMax * .30 ? 2 : target.Hp <= target.HpMax * .60 ? 1 : 0;
 
     public override void Tick(int deltaMs)
     {
-        if (!Visible || Snapshot == null || deltaMs <= 0) return;
-        int step = Math.Max(0, deltaMs);
+        if (!Visible || Snapshot is not { Vitals.Paused: false } || PlayerHudMotionSettings.StaticFeedback || deltaMs <= 0) return;
+        int step = deltaMs;
         bool changed = false;
+        int wholeRows = 0;
+        int changedBars = 0;
+        var targets = Snapshot.TargetList;
 
-        foreach (var st in _states.Values)
+        for (int i = 0; i < targets.Length; i++)
         {
-            if (st.WindowLossAgeMs < CumulativeLossWindowMs)
-                st.WindowLossAgeMs = (int)Math.Min(CumulativeLossWindowMs, (long)st.WindowLossAgeMs + step);
-
-            if (st.LossAgeMs < LossTotalMs)
+            if (!_states.TryGetValue(targets[i].Id, out var st)) continue;
+            if (st.Life.Tick(step))
             {
-                st.LossAgeMs = (int)Math.Min(LossTotalMs, (long)st.LossAgeMs + step);
-                if (st.LossAgeMs >= LossTotalMs)
-                {
-                    st.TrailRatio = st.PreviousRatio;
-                    st.TrailAnchorRatio = st.PreviousRatio;
-                }
-                else if (st.LossAgeMs <= LossHoldMs)
-                {
-                    st.TrailRatio = st.TrailAnchorRatio;
-                }
-                else
-                {
-                    float t = SmoothStep((st.LossAgeMs - LossHoldMs) / (float)LossDecayMs);
-                    st.TrailRatio = st.TrailAnchorRatio + (st.PreviousRatio - st.TrailAnchorRatio) * t;
-                }
                 changed = true;
-            }
-
-            if (st.GainAgeMs < GainDurationMs)
-            {
-                int oldBucket = st.GainAgeMs / 25;
-                st.GainAgeMs = (int)Math.Min(GainDurationMs, (long)st.GainAgeMs + step);
-                if (st.GainAgeMs >= GainDurationMs) st.HealStartRatio = st.PreviousRatio;
-                changed |= st.GainAgeMs / 25 != oldBucket || st.GainAgeMs >= GainDurationMs;
+                changedBars |= 1 << i;
             }
 
             if (st.ComboPulseAgeMs < ComboPulseDurationMs)
             {
                 int oldBucket = st.ComboPulseAgeMs / 25;
                 st.ComboPulseAgeMs = (int)Math.Min(ComboPulseDurationMs, (long)st.ComboPulseAgeMs + step);
-                changed |= st.ComboPulseAgeMs / 25 != oldBucket || st.ComboPulseAgeMs >= ComboPulseDurationMs;
+                if (st.ComboPulseAgeMs / 25 != oldBucket || st.ComboPulseAgeMs >= ComboPulseDurationMs)
+                {
+                    wholeRows |= 1 << i;
+                    changed = true;
+                }
             }
         }
 
-        if (!PlayerHudMotionSettings.ReducedMotion && _states.Values.Any(st => st.Critical))
-        {
-            int oldWaveStep = _criticalClockMs / 33;
-            _criticalClockMs = (_criticalClockMs + step) % (CriticalBreathPeriodMs * 10);
-            if (_criticalClockMs / 33 != oldWaveStep) changed = true;
-        }
+        if (!changed) return;
+        NotifyVisualChange(TrackDamage(targets.Length, changedBars | wholeRows, wholeRows: wholeRows));
+    }
 
-        if (changed) base.OnStateChanged();
+    // A pure trail/fill animation only changes pixels inside the life track.
+    // The changing geometry is painted inside trackPath; its outer rim is static.
+    private EventArgs TrackDamage(int count, int changed, PlayerHudFocusTarget[]? previous = null, int wholeRows = 0)
+    {
+        var viewport = Viewport;
+        float scale = viewport.Height / 576f;
+        if (scale <= 0) return EventArgs.Empty;
+        var regions = new List<Rectangle>(previous == null ? count : count * 2);
+        int buffs = Snapshot!.BuffCards.Length;
+        for (int i = 0; i < count; i++)
+        {
+            if ((changed & (1 << i)) == 0) continue;
+            var row = RowBounds(buffs, i, count, AllyCount);
+            if ((wholeRows & (1 << i)) != 0)
+            {
+                // The critical glow, combo pulse, name layout and portrait can affect the
+                // whole card. The centered GDI stroke also covers the half-pixel sample
+                // fringe: the Boss lower edge changes a second pixel at 1080p.
+                regions.Add(ToPixels(row, viewport, scale, Math.Max(1, (int)Math.Ceiling(scale * 0.5f + 0.5f))));
+                continue;
+            }
+            regions.Add(ToPixels(LifeTrack(row), viewport, scale, 0));
+            if (previous != null)
+                regions.Add(ToPixels(ReadoutDamage(row, previous[i], _lastTargets[i], scale), viewport, scale, 2));
+        }
+        return new HudRepaintRegions(regions.ToArray(), authoritative: previous != null);
+    }
+
+    private static Rectangle ToPixels(RectangleF r, Rectangle viewport, float scale, int padding) =>
+        Rectangle.FromLTRB(viewport.Left + (int)Math.Floor(r.Left * scale) - padding,
+            viewport.Top + (int)Math.Floor(r.Top * scale) - padding,
+            viewport.Left + (int)Math.Ceiling(r.Right * scale) + padding,
+            viewport.Top + (int)Math.Ceiling(r.Bottom * scale) + padding);
+
+    private static bool Secondary(RectangleF row) => row.Height == 23f;
+    private static bool Stacked(RectangleF row) => row.Width <= (ColumnWidth - 4) / 4;
+
+    private static RectangleF Portrait(RectangleF row)
+    {
+        if (!Secondary(row))
+        {
+            bool first = row.Top == 0;
+            float pad = first ? 3.5f : 3f;
+            return new(row.X + 5.2f, row.Y + pad, first ? 24 : 22, row.Height - 2 * pad);
+        }
+        bool stacked = Stacked(row);
+        return new(row.X + (stacked ? 5.8f : 6.5f), row.Y + 3,
+            stacked ? (row.Width < 50 ? 11 : 14) : 17, stacked ? 14.3f : row.Height - 6);
+    }
+
+    private static RectangleF LifeTrack(RectangleF row)
+    {
+        var p = Portrait(row);
+        if (!Secondary(row))
+        {
+            bool first = row.Top == 0;
+            float x = p.Right + 4.8f;
+            return new(x,row.Bottom - (first ? 10.2f : 9.2f),row.Right - 6 - x,first ? 6.8f : 6.4f);
+        }
+        bool stacked = Stacked(row);
+        float left = stacked ? p.X : p.Right + 4.5f;
+        return new(left,row.Bottom - (stacked ? 4 : 7),row.Right - (stacked ? 3 : 5) - left,stacked ? 2.8f : 4.2f);
+    }
+
+    private float _digitAdvance, _slashAdvance;
+    private float ReservedWidth(PlayerHudFocusTarget target)
+    {
+        if (_digitAdvance == 0)
+        {
+            for (char digit = '0'; digit <= '9'; digit++)
+                _digitAdvance = Math.Max(_digitAdvance, _numbers.Width(digit.ToString(), 11, HpReadoutMaxWidth));
+            _slashAdvance = _numbers.Width("/", 11, HpReadoutMaxWidth);
+        }
+        int maxDigits = PlayerHudNumberFormat.Full(target.HpMax).Length;
+        int digits = Math.Max(maxDigits, PlayerHudNumberFormat.Full(target.Hp).Length) + maxDigits;
+        return Math.Min(HpReadoutMaxWidth, digits * _digitAdvance + _slashAdvance);
+    }
+
+    private RectangleF ReadoutDamage(RectangleF row, PlayerHudFocusTarget old, PlayerHudFocusTarget target, float scale)
+    {
+        if (Secondary(row))
+        {
+            var p = Portrait(row);
+            bool stacked = Stacked(row);
+            float tx = p.Right + (stacked ? 2.6f : 4.5f);
+            return RectangleF.FromLTRB(Math.Max(tx, row.Right - (stacked ? 3 : 5) - 26) - 2,
+                row.Y + (stacked ? 8 : 1),row.Right,row.Y + (stacked ? 19 : 15));
+        }
+        float reserve = ReservedWidth(target);
+        float left = reserve == ReservedWidth(old) ? row.Right - 6 - reserve : Portrait(row).Right;
+        return RectangleF.FromLTRB(left - 2, row.Top + 1, row.Right - 2, row.Top + 19);
     }
 
     protected override void PaintLogical(Graphics g)
@@ -350,13 +381,24 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         var s = Snapshot!;
         var targets = s.TargetList;
         var buffCount = s.BuffCards.Length;
+        float scale = Scale;
+        using var clip = g.Clip;
         var prevSmooth = g.SmoothingMode;
         g.SmoothingMode = SmoothingMode.AntiAlias;
         try
         {
+            if (targets.Length > 1 && Dense(targets.Length, AllyCount))
+            {
+                var strip = new RectangleF(6, 34, ColumnWidth, 23);
+                if (clip.IsVisible(RectangleF.Inflate(strip, 1, 1)))
+                    MetalPlate(g, strip, ChamferedPlaque(strip, 2, 5, 2, 2), 0x23282B, 0x111517, 0x090C0D,
+                        Color.FromArgb(102, 214, 217, 215), .8f);
+            }
             for (int i = 0; i < targets.Length; i++)
             {
-                PaintRow(g, targets[i], RowBounds(buffCount, i, targets.Length));
+                var row = RowBounds(buffCount, i, targets.Length, AllyCount);
+                if (clip.IsVisible(RectangleF.Inflate(row, 2f, 2f)))
+                    PaintRow(g, clip, targets[i], row, scale, i);
             }
         }
         finally
@@ -377,437 +419,208 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         new(r.Left, r.Top + tl)
     ];
 
-    private static PointF[] ShieldBadgePolygon(RectangleF r) =>
-    [
-        new(r.Left + 2f, r.Top),
-        new(r.Right - 3f, r.Top),
-        new(r.Right, r.Top + 3f),
-        new(r.Right, r.Bottom - 2f),
-        new(r.Right - 2f, r.Bottom),
-        new(r.Left, r.Bottom),
-        new(r.Left, r.Top + 2f)
-    ];
+    private static Color Rgb(int value) => Color.FromArgb(unchecked((int)0xff000000) | value);
 
-    private static PointF[] SlantedBarPolygon(RectangleF track, float slant = BarSlant) =>
-    [
-        new(track.Left + slant, track.Top),
-        new(track.Right, track.Top),
-        new(track.Right - slant, track.Bottom),
-        new(track.Left, track.Bottom)
-    ];
-
-    private void PaintRow(Graphics g, PlayerHudFocusTarget target, RectangleF bounds)
+    private void MetalPlate(Graphics g, RectangleF r, PointF[] points, int top, int middle, int bottom, Color rim, float rimWidth)
     {
-        var role = target.Role;
-        var isBoss = role == "boss";
-        var isCombat = role == "combat";
-        var isEnemy = isBoss || isCombat;
-        var isHovered = _hoverKey == target.Id.ToString(CultureInfo.InvariantCulture);
-        _states.TryGetValue(target.Id, out var st);
-        var critical = st?.Critical ?? false;
-        var ratio = Math.Clamp(target.Hp / target.HpMax, 0, 1);
-        var trailRatio = st?.TrailRatio ?? ratio;
-        var lossAlpha = st?.LossAlpha ?? 0f;
-        var gainAlpha = st?.GainAlpha ?? 0f;
-        var healStartRatio = st?.HealStartRatio ?? ratio;
-
-        float breathWave = !critical
-            ? 0f
-            : PlayerHudMotionSettings.ReducedMotion
-                ? 0.45f
-                : 0.5f + 0.5f * MathF.Sin(_criticalClockMs * MathF.PI * 2f / CriticalBreathPeriodMs);
-
-        var plaque = ChamferedPlaque(bounds);
-        // Align chassis background with PlayerInfo resource & shield plaques
-        var bgTop = isEnemy
-            ? (isBoss ? Color.FromArgb(248, 42, 34, 36) : Color.FromArgb(247, 36, 36, 38))
-            : Color.FromArgb(247, 24, 42, 46);
-        var bgBottom = isEnemy
-            ? (isBoss ? Color.FromArgb(248, 18, 14, 16) : Color.FromArgb(247, 16, 17, 19))
-            : Color.FromArgb(247, 10, 20, 23);
-        using (var bg = new LinearGradientBrush(bounds, bgTop, bgBottom, LinearGradientMode.Vertical))
-            g.FillPolygon(bg, plaque);
-
-        if (critical && target.Hp > 0)
+        using var transform=g.Transform;
+        var origin=new[]{new PointF(r.Left,r.Top)};
+        transform.TransformPoints(origin);
+        float scale=transform.Elements[0];
+        int left=(int)Math.Floor(origin[0].X)-3,topPx=(int)Math.Floor(origin[0].Y)-3;
+        float dx=origin[0].X-left,dy=origin[0].Y-topPx;
+        int w=(int)Math.Ceiling(r.Width*scale)+7,h=(int)Math.Ceiling(r.Height*scale)+7;
+        var stampKey=(r,top,middle,bottom,rim.ToArgb(),rimWidth,scale,dx,dy);
+        if ((long)w*h*4<=768*1024)
         {
-            int pulseAlpha = (int)Math.Clamp(Math.Round(16 + 34 * breathWave), 10, 56);
-            var pulseColor = isEnemy
-                ? Color.FromArgb(pulseAlpha, 220, 38, 28)
-                : Color.FromArgb(pulseAlpha, 242, 168, 52);
-            using var pulseBrush = new SolidBrush(pulseColor);
-            g.FillPolygon(pulseBrush, plaque);
-        }
-
-        Color edgeColor;
-        if (isHovered)
-        {
-            edgeColor = Color.FromArgb(236, 238, 232);
-        }
-        else if (critical)
-        {
-            int critEdgeAlpha = (int)Math.Clamp(Math.Round(195 + 55 * breathWave), 180, 255);
-            edgeColor = isEnemy
-                ? Color.FromArgb(critEdgeAlpha, 244, 112, 92)
-                : Color.FromArgb(critEdgeAlpha, 248, 192, 88);
-        }
-        else
-        {
-            // ADR D2 token：交战行银色描边、保护行锚点青，Boss 保留暖金属边区分首领。
-            edgeColor = isBoss
-                ? Color.FromArgb(210, 186, 104, 88)
-                : isCombat
-                    ? NativeHudTheme.AnchorRimMuted
-                    : NativeHudTheme.WithAlpha(NativeHudTheme.AnchorCyan, 185);
-        }
-
-        using (var edge = new Pen(edgeColor, isBoss ? 0.95f : 0.8f))
-            g.DrawPolygon(edge, plaque);
-        using (var topSheen = new Pen(isBoss
-            ? Color.FromArgb(68, 255, 208, 184)
-            : isEnemy
-                ? Color.FromArgb(42, 228, 232, 236)
-                : Color.FromArgb(56, 160, 248, 255), 0.7f))
-        {
-            g.DrawLine(topSheen, bounds.Left + 3f, bounds.Top + 1f, bounds.Right - 3.5f, bounds.Top + 1f);
-        }
-        using (var bevel = new Pen(Color.FromArgb(160, 10, 12, 14), 0.7f))
-            g.DrawLine(bevel, bounds.Left + 3f, bounds.Bottom - 1f, bounds.Right - 6f, bounds.Bottom - 1f);
-
-        bool compact = bounds.Width < PlayerHudBuffLayout.ColumnWidth;
-        var portraitRect = new RectangleF(bounds.X + 3f, bounds.Y + 3f, compact ? 17f : 22f, compact ? 21f : 24f);
-        PaintPortrait(g, portraitRect, target, isBoss, isCombat, critical);
-
-        var contentLeft = bounds.X + (compact ? 22f : 27.5f);
-        var badgeWidth = compact ? 15f : isBoss || isCombat ? 34f : 48f;
-        var badgeRect = new RectangleF(contentLeft, bounds.Y + 3f, badgeWidth, 13.5f);
-        var badgePoly = ShieldBadgePolygon(badgeRect);
-        var badgeTop = isBoss
-            ? Color.FromArgb(245, 104, 28, 28)
-            : isCombat
-                ? Color.FromArgb(240, 56, 46, 48)
-                : critical ? Color.FromArgb(245, 112, 64, 18) : Color.FromArgb(245, 33, 54, 58);
-        var badgeBot = isBoss
-            ? Color.FromArgb(245, 46, 11, 13)
-            : isCombat
-                ? Color.FromArgb(240, 25, 21, 23)
-                : critical ? Color.FromArgb(245, 48, 24, 8) : Color.FromArgb(245, 9, 23, 26);
-        var badgeEdge = isBoss
-            ? Color.FromArgb(220, 244, 152, 118)
-            : isCombat
-                ? Color.FromArgb(190, 196, 162, 156)
-                : critical ? Color.FromArgb(220, 246, 186, 88) : Color.FromArgb(200, 0, 230, 236);
-        var badgeInk = isBoss
-            ? Color.FromArgb(255, 238, 224)
-            : isCombat
-                ? Color.FromArgb(236, 226, 222)
-                : critical ? Color.FromArgb(255, 238, 192) : Color.FromArgb(214, 252, 255);
-        using (var bFill = new LinearGradientBrush(badgeRect, badgeTop, badgeBot, LinearGradientMode.Vertical))
-            g.FillPolygon(bFill, badgePoly);
-        using (var bPen = new Pen(badgeEdge, 0.7f))
-            g.DrawPolygon(bPen, badgePoly);
-        using (var bText = new SolidBrush(badgeInk))
-        using (var bFormat = new StringFormat(StringFormat.GenericTypographic)
-            { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap })
-        {
-            g.DrawString(compact ? (isBoss ? "首" : isCombat ? "战" : "护") : isBoss ? "Boss" : isCombat ? "交战" : "保护目标", _badgeFont, bText, badgeRect, bFormat);
-        }
-
-        // Slanted HP track (translating PlayerInfo MP/Poise slanted cell geometry + HP/Shield palette)
-        var track = new RectangleF(contentLeft, bounds.Y + (compact ? 25f : 19.5f), bounds.Right - 6f - contentLeft, compact ? 3f : 6.5f);
-        var trackPoly = SlantedBarPolygon(track);
-        using var trackPath = new GraphicsPath();
-        trackPath.AddPolygon(trackPoly);
-
-        var trackTop = isEnemy ? Color.FromArgb(244, 28, 14, 15) : Color.FromArgb(244, 14, 30, 34);
-        var trackBot = isEnemy ? Color.FromArgb(244, 14, 8, 9) : Color.FromArgb(244, 8, 18, 21);
-        using (var trackBg = new LinearGradientBrush(track, trackTop, trackBot, LinearGradientMode.Vertical))
-            g.FillPath(trackBg, trackPath);
-
-        float usableWidth = track.Width - BarSlant;
-        float eventStrength = PlayerHudMotionSettings.EventStrength;
-        var barClip = g.Save();
-        try
-        {
-            g.SetClip(trackPath, CombineMode.Intersect);
-
-            // 1. Damage trail (PlayerInfo DrawHpDamageTrail warm amber-crimson for enemies; ShieldRing ice-cyan for protect)
-            double trailEnd = Math.Clamp(trailRatio, ratio, 1);
-            if (trailEnd > ratio + 0.001 && eventStrength > 0f)
+            if (!_plates.TryGetValue(stampKey,out var tile))
             {
-                float trailAlphaScale = st is { LossAgeMs: < LossTotalMs } ? Math.Max(0.35f, lossAlpha) : 1f;
-                int trailAlpha = (int)Math.Clamp(Math.Round(195 * eventStrength * trailAlphaScale), 0, 255);
-                if (trailAlpha > 0)
-                {
-                    float startX = track.X + (float)(usableWidth * ratio);
-                    float endX = track.X + (float)(usableWidth * trailEnd) + BarSlant;
-                    var trailRect = new RectangleF(startX - 1f, track.Y, Math.Max(2f, endX - startX + 2f), track.Height);
-                    var trailTop = isEnemy
-                        ? Color.FromArgb(trailAlpha, 255, 196, 128)
-                        : Color.FromArgb(trailAlpha, 151, 194, 211);
-                    var trailBot = isEnemy
-                        ? Color.FromArgb(trailAlpha, 214, 72, 48)
-                        : Color.FromArgb(trailAlpha, 84, 142, 168);
-                    using var trailPolyPath = new GraphicsPath();
-                    trailPolyPath.AddPolygon(new PointF[]
-                    {
-                        new(track.X + BarSlant + (float)(usableWidth * ratio), track.Top),
-                        new(track.X + BarSlant + (float)(usableWidth * trailEnd), track.Top),
-                        new(track.X + (float)(usableWidth * trailEnd), track.Bottom),
-                        new(track.X + (float)(usableWidth * ratio), track.Bottom)
-                    });
-                    using var trailBrush = new LinearGradientBrush(trailRect, trailTop, trailBot, LinearGradientMode.Vertical);
-                    g.FillPath(trailBrush, trailPolyPath);
-                }
+                if (_plateBytes+(long)w*h*4>2*1024*1024) ClearPlates();
+                tile=new Bitmap(w,h,System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                using var local=Graphics.FromImage(tile);
+                local.SmoothingMode=g.SmoothingMode;
+                local.TranslateTransform(dx-r.Left*scale,dy-r.Top*scale);
+                local.ScaleTransform(scale,scale);
+                DrawPlate(local,r,points,top,middle,bottom,rim,rimWidth);
+                _plates.Add(stampKey,tile);
+                _plateBytes+=(long)w*h*4;
             }
-
-            // 2. Main authoritative fill (Boss & Combat share Player HP orb deep crimson; Protect uses Player Shield #00FFFF cyan)
-            if (ratio > 0)
-            {
-                float fillSpan = Math.Max(1.2f, (float)(usableWidth * ratio));
-                using var fillPath = new GraphicsPath();
-                fillPath.AddPolygon(new PointF[]
-                {
-                    new(track.X + BarSlant, track.Top),
-                    new(track.X + BarSlant + fillSpan, track.Top),
-                    new(track.X + fillSpan, track.Bottom),
-                    new(track.X, track.Bottom)
-                });
-                using (var fillBrush = new LinearGradientBrush(track, Color.White, Color.Black, LinearGradientMode.Vertical))
-                {
-                    fillBrush.InterpolationColors = isEnemy
-                        ? new ColorBlend(3)
-                        {
-                            Colors =
-                            [
-                                Color.FromArgb(255, 102, 86),
-                                Color.FromArgb(218, 28, 22),
-                                Color.FromArgb(124, 12, 14)
-                            ],
-                            Positions = [0f, 0.42f, 1f]
-                        }
-                        : new ColorBlend(3)
-                        {
-                            Colors =
-                            [
-                                Color.FromArgb(168, 255, 255),
-                                Color.FromArgb(0, 236, 240),
-                                Color.FromArgb(0, 142, 158)
-                            ],
-                            Positions = [0f, 0.42f, 1f]
-                        };
-                    g.FillPath(fillBrush, fillPath);
-                }
-
-                // 3. Heal preview segment (PlayerInfo DrawHpHealPreview emerald-mint #96FFC8 -> #34CD82)
-                if (gainAlpha > 0f && eventStrength > 0f && ratio > healStartRatio + 0.001)
-                {
-                    int healA = (int)Math.Clamp(Math.Round(195 * gainAlpha * eventStrength), 0, 255);
-                    if (healA > 0)
-                    {
-                        float hStart = (float)(usableWidth * Math.Clamp(healStartRatio, 0, ratio));
-                        using var healPath = new GraphicsPath();
-                        healPath.AddPolygon(new PointF[]
-                        {
-                            new(track.X + BarSlant + hStart, track.Top),
-                            new(track.X + BarSlant + fillSpan, track.Top),
-                            new(track.X + fillSpan, track.Bottom),
-                            new(track.X + hStart, track.Bottom)
-                        });
-                        using var healBrush = new LinearGradientBrush(
-                            track,
-                            Color.FromArgb(healA, 150, 255, 200),
-                            Color.FromArgb(healA, 52, 205, 130),
-                            LinearGradientMode.Vertical);
-                        g.FillPath(healBrush, healPath);
-                    }
-                }
-
-                // 4. Subtle dark diagonal mesh inside filled region (translating PlayerHudHpMotion.DrawGrid)
-                var meshClip = g.Save();
-                try
-                {
-                    g.SetClip(fillPath, CombineMode.Intersect);
-                    using var gridPen = new Pen(Color.FromArgb(30, 0, 0, 0), 0.65f);
-                    for (float gx = track.Left - track.Height; gx < track.Left + BarSlant + fillSpan + track.Height; gx += 5.2f)
-                    {
-                        g.DrawLine(gridPen, gx, track.Bottom, gx + BarSlant * 1.6f, track.Top);
-                    }
-                }
-                finally
-                {
-                    g.Restore(meshClip);
-                }
-
-                // 5. Top specular sheen + slanted leading blade
-                var sheenColor = critical && !isEnemy
-                    ? Color.FromArgb(225, 255, 198, 92)
-                    : isEnemy
-                        ? Color.FromArgb(105, 255, 224, 218)
-                        : Color.FromArgb(135, 206, 255, 255);
-                using (var sheen = new SolidBrush(sheenColor))
-                    g.FillRectangle(sheen, track.X + BarSlant, track.Y, fillSpan, 1.15f);
-
-                using (var bladePen = new Pen(isEnemy
-                    ? Color.FromArgb(242, 255, 220, 208)
-                    : Color.FromArgb(242, 220, 255, 255), 1.25f))
-                {
-                    g.DrawLine(bladePen,
-                        track.X + fillSpan, track.Bottom,
-                        track.X + BarSlant + fillSpan, track.Top);
-                }
-            }
-
-            // 6. Overflow (>100%): PlayerInfo HpOverflow coral-gold (#FFBF91 -> #E77A5B) + MpOverflow diagonal stripes
-            if (target.Hp > target.HpMax)
-            {
-                var overflowRatio = Math.Clamp((target.Hp - target.HpMax) / target.HpMax, 0, 1);
-                var overflowSpan = Math.Max(2f, (float)(usableWidth * overflowRatio));
-                using var overPath = new GraphicsPath();
-                overPath.AddPolygon(new PointF[]
-                {
-                    new(track.X + BarSlant, track.Top + 0.8f),
-                    new(track.X + BarSlant + overflowSpan, track.Top + 0.8f),
-                    new(track.X + overflowSpan, track.Bottom - 0.8f),
-                    new(track.X, track.Bottom - 0.8f)
-                });
-                using (var overBrush = new LinearGradientBrush(
-                    track,
-                    Color.FromArgb(235, 255, 191, 145),
-                    Color.FromArgb(235, 231, 122, 91),
-                    LinearGradientMode.Vertical))
-                {
-                    g.FillPath(overBrush, overPath);
-                }
-                var overClip = g.Save();
-                try
-                {
-                    g.SetClip(overPath, CombineMode.Intersect);
-                    using var stripePen = new Pen(Color.FromArgb(195, 255, 244, 218), 0.85f);
-                    for (float sx = track.Left - track.Height; sx < track.Left + BarSlant + overflowSpan + track.Height; sx += 4.5f)
-                        g.DrawLine(stripePen, sx, track.Bottom, sx + track.Height, track.Top);
-                }
-                finally
-                {
-                    g.Restore(overClip);
-                }
-                using var overBlade = new Pen(Color.FromArgb(250, 255, 248, 220), 1.3f);
-                g.DrawLine(overBlade,
-                    track.X + overflowSpan, track.Bottom,
-                    track.X + BarSlant + overflowSpan, track.Top);
-            }
-
-            // 7. 25% / 50% / 75% slanted tick dividers
-            using var tickDark = new Pen(Color.FromArgb(155, 8, 10, 12), 0.9f);
-            using var tickLight = new Pen(Color.FromArgb(42, 255, 255, 255), 0.55f);
-            foreach (float mark in new[] { 0.25f, 0.50f, 0.75f })
-            {
-                float mx = track.X + usableWidth * mark;
-                g.DrawLine(tickDark, mx, track.Bottom, mx + BarSlant, track.Top);
-                g.DrawLine(tickLight, mx + 0.8f, track.Bottom, mx + BarSlant + 0.8f, track.Top);
-            }
-        }
-        finally
-        {
-            g.Restore(barClip);
-        }
-
-        using (var trackRim = new Pen(isBoss
-            ? Color.FromArgb(175, 92, 42, 40)
-            : isEnemy
-                ? Color.FromArgb(165, 22, 16, 18)
-                : Color.FromArgb(175, 18, 62, 70), 0.65f))
-        {
-            g.DrawPolygon(trackRim, trackPoly);
-        }
-
-        // 8. Aero numerals (PlayerHudTextCache + PlayerHudNumberFormat): Percentage% + Compact Current/Max (6-digit exact HP budget)
-        var hpInk = critical
-            ? Color.FromArgb(255, 218, 138)
-            : Color.FromArgb(239, 238, 220);
-        var pctInk = critical
-            ? Color.FromArgb(255, 198, 96)
-            : isEnemy
-                ? Color.FromArgb(255, 182, 172)
-                : Color.FromArgb(132, 248, 255);
-        if (compact)
-        {
-            using var nameInk = new SolidBrush(NativeHudTheme.TextPrimary);
-            using var healthInk = new SolidBrush(hpInk);
-            using var percentInk = new SolidBrush(pctInk);
-            using var left = new StringFormat(StringFormat.GenericTypographic)
-                { FormatFlags = StringFormatFlags.NoWrap, Trimming = StringTrimming.EllipsisCharacter };
-            using var right = new StringFormat(left) { Alignment = StringAlignment.Far };
-            var title = new RectangleF(badgeRect.Right + 2f, bounds.Top + 2f,
-                bounds.Right - badgeRect.Right - 7f, 14f);
-            g.DrawString(target.Name.Replace('\r', ' ').Replace('\n', ' '), _font, nameInk, title, left);
-            var values = new RectangleF(contentLeft, bounds.Top + 14f, bounds.Right - contentLeft - 5f, 11f);
-            g.DrawString(DenseValue(target.Hp) + "/" + DenseValue(target.HpMax), _badgeFont, healthInk, values, left);
-            g.DrawString(DensePercent(target.Hp, target.HpMax), _badgeFont, percentInk, values, right);
+            var saved=g.Save();g.ResetTransform();
+            try {g.DrawImageUnscaled(tile,left,topPx);} finally {g.Restore(saved);}
             return;
         }
+        DrawPlate(g,r,points,top,middle,bottom,rim,rimWidth);
+    }
 
-        float readoutRight = bounds.Right - 6f;
-        float baseline = bounds.Y + 15.2f;
-        float hpWidth = _numbers.DrawRight(g, CompactHealthText(target), readoutRight, baseline, 11.2f, Scale, HpReadoutMaxWidth, hpInk, compactThreshold: ExactHpCompactThreshold);
-        float pctRight = readoutRight - hpWidth - 4.5f;
-        float pctWidth = _numbers.DrawRight(g, PlayerHudResourceStyle.Percent(target.Hp, target.HpMax), pctRight, baseline, 11.2f, Scale, 34f, pctInk);
+    private readonly Dictionary<(RectangleF,int,int,int,int,float,float,float,float),Bitmap> _plates=new();
+    private long _plateBytes;
+    private void ClearPlates()
+    {
+        foreach(var tile in _plates.Values) tile.Dispose();
+        _plates.Clear(); _plateBytes=0;
+    }
 
-        using var format = new StringFormat(StringFormat.GenericTypographic)
-            { FormatFlags = StringFormatFlags.NoWrap, Trimming = StringTrimming.EllipsisCharacter };
-        var nameLeft = badgeRect.Right + 5f;
+    private void DrawPlate(Graphics g, RectangleF r, PointF[] points, int top, int middle, int bottom, Color rim, float rimWidth)
+    {
+        var key = (r,top,middle,bottom);
+        if (!_plateFills.TryGetValue(key, out var gradient))
+        {
+            gradient = new LinearGradientBrush(r, Rgb(top), Rgb(bottom), LinearGradientMode.Vertical);
+            gradient.InterpolationColors = new ColorBlend(3) { Colors = [Rgb(top),Rgb(middle),Rgb(bottom)], Positions = [0f,.62f,1f] };
+            _plateFills.Add(key,gradient);
+        }
+        using var edge = new Pen(rim, rimWidth);
+        g.FillPolygon(gradient, points);
+        g.DrawPolygon(edge, points);
+        using var sheen = new Pen(Color.FromArgb(51,228,232,236), .75f);
+        g.DrawLine(sheen,r.Left + 3,r.Top + .9f,r.Right - 4.5f,r.Top + .9f);
+    }
+
+    private static Color Accent(PlayerHudFocusTarget t, int band) => Rgb(band == 2 ? 0xff6656 : band == 1 ? 0xe0b052 :
+        t.Role == "boss" ? 0xa83832 : t.Role == "combat" ? 0x8e9694 : 0x649aa2);
+
+    private static Color HealthInk(int band) => Rgb(band == 2 ? 0xff8a78 : band == 1 ? 0xf1c970 : 0xe8eeec);
+
+    private void PaintRow(Graphics g, Region clip, PlayerHudFocusTarget target, RectangleF row, float scale, int index)
+    {
+        bool compact = Secondary(row);
+        bool boss = target.Role == "boss", combat = target.Role == "combat";
+        int band = Band(target);
+        var portrait = Portrait(row);
+        var state = _states[target.Id];
+        if (!compact)
+        {
+            bool first = row.Top == 0;
+            var shape = ChamferedPlaque(row, first ? 0 : 2.5f, first ? 0 : 4, 6, first ? 4 : 2.5f);
+            var rim = _hoverKey == target.Id.ToString(CultureInfo.InvariantCulture) ? Color.White :
+                band == 2 ? Rgb(0xff6656) : band == 1 ? Color.FromArgb(189,224,180,92) : Color.FromArgb(133,182,190,188);
+            bool protect = !boss && !combat;
+            MetalPlate(g,row,shape,band == 2 ? 0x341717 : protect ? 0x1f2629 : 0x23272a,
+                band == 2 ? 0x180b0c : protect ? 0x101517 : 0x111416,band == 2 ? 0x0c0708 : 0x090c0d,rim,band == 2 ? 1.25f : .85f);
+        }
+        else if (index > 1)
+        {
+            using var divider = new Pen(Color.FromArgb(56,214,217,215),.8f);
+            g.DrawLine(divider,row.Left + 1.5f,row.Top + 2.5f,row.Left - 1.5f,row.Bottom - 2.5f);
+        }
+        using (var blade = new SolidBrush(Accent(target,band)))
+            g.FillRectangle(blade,row.X + (compact ? 2.5f : 1.3f),row.Y + (row.Top == 0 ? 1.5f : 3f),
+                compact ? 2.2f : 2.1f,row.Height - (row.Top == 0 ? 4.5f : 6f));
+        if (clip.IsVisible(RectangleF.Inflate(portrait,2,2)))
+        {
+            PaintPortrait(g,portrait,target,boss,combat,band == 2);
+            if (band == 2)
+            {
+                var tag = new RectangleF(portrait.Right - 7.5f,portrait.Top,9,9);
+                using var red = new SolidBrush(Rgb(0xb72b22));
+                g.FillRectangle(red,tag);
+                g.DrawString("!",_denseFont,Brushes.White,tag,_center);
+            }
+        }
+        var track = LifeTrack(row);
+        if (clip.IsVisible(RectangleF.Inflate(track,2,2)))
+        {
+            var visual = state.Life.Visual with { Critical = band == 2 };
+            var style = FillStyle(target.Role);
+            if (_gpuFill != null && !_gpuFill.Rectangles[index].IsEmpty)
+            {
+                var saved = g.Save();
+                try
+                {
+                    using var transform = g.Transform;
+                    g.ResetTransform();
+                    g.ExcludeClip(_gpuFill.Rectangles[index]);
+                    g.Transform = transform;
+                    UnitLifeBarPainter.Paint(g,track,visual,style,PlayerHudMotionSettings.EventStrength,focusV38:true);
+                }
+                finally { g.Restore(saved); }
+            }
+            else UnitLifeBarPainter.Paint(g,track,visual,style,PlayerHudMotionSettings.EventStrength,focusV38:true);
+        }
+        if (!clip.IsVisible(new RectangleF(row.X,row.Top,row.Width,compact && Stacked(row) ? 18.5f : 17.5f))) return;
+        if (compact) PaintSecondaryText(g,clip,target,row,portrait,band,scale);
+        else PaintPrimaryText(g,clip,target,state,row,portrait,band,scale);
+    }
+
+    private void PaintSecondaryText(Graphics g, Region clip, PlayerHudFocusTarget target, RectangleF row, RectangleF portrait, int band, float scale)
+    {
+        bool stacked = Stacked(row);
+        float left = portrait.Right + (stacked ? 2.6f : 4.5f);
+        float right = row.Right - (stacked ? 3 : 5);
+        float numberWidth = Math.Min(26,right - left);
+        float nameWidth = (stacked ? right : right - numberWidth - 3) - left - 1;
+        var nameBounds=new RectangleF(left,row.Y + (stacked ? 0 : 1),nameWidth,stacked ? 11 : 14);
+        if (nameWidth > 0 && clip.IsVisible(RectangleF.Inflate(nameBounds,2,2)))
+            g.DrawString(target.Name.Replace('\r',' ').Replace('\n',' '),stacked ? _denseFont : _shortFont,
+                Brushes.White,nameBounds,_label);
+        string percent = target.HpMax > 0 ? Math.Round(target.Hp / target.HpMax * 100,MidpointRounding.AwayFromZero).ToString("0",CultureInfo.InvariantCulture) + "%" : "--";
+        _numbers.DrawRight(g,percent,right,row.Y + (stacked ? 17.1f : 11.8f),
+            stacked ? 8f : row.Width >= 145 ? 9.6f : 8.4f,scale,Math.Max(1,numberWidth),HealthInk(band));
+    }
+
+    private void PaintPrimaryText(Graphics g, Region clip, PlayerHudFocusTarget target, TargetVisualState state,
+        RectangleF row, RectangleF portrait, int band, float scale)
+    {
+        float by = row.Top + (row.Top == 0 ? 4 : 3);
+        bool boss = target.Role == "boss", combat = target.Role == "combat";
+        var badge = new RectangleF(portrait.Right + 4.8f,by,boss ? 32 : combat ? 30 : 44,12);
+        var fill = Rgb(band == 2 ? 0x4d1715 : band == 1 ? 0x272013 : boss ? 0x1e2224 : combat ? 0x222628 : 0x172225);
+        var edge = band == 2 ? Rgb(0xff7a6b) : band == 1 ? Rgb(0xd8a84c) : boss ? Color.FromArgb(148,176,184,182) : combat ? Rgb(0x8a9290) : Rgb(0x769aa0);
+        if (clip.IsVisible(RectangleF.Inflate(badge,2,2)))
+            Chip(g,badge,fill,edge,boss ? "Boss" : combat ? "交战" : band == 2 ? "濒危" : "保护目标",boss);
+        float right = row.Right - 6;
+        if (clip.IsVisible(new RectangleF(right-HpReadoutMaxWidth-3,by-4,HpReadoutMaxWidth+6,20)))
+        {
+            string exact = PlayerHudNumberFormat.Full(target.Hp) + "/" + PlayerHudNumberFormat.Full(target.HpMax);
+            _numbers.DrawRight(g,exact,right,by + 10.2f,11,scale,HpReadoutMaxWidth,HealthInk(band),compactThreshold:double.PositiveInfinity);
+        }
+        float nameLeft = badge.Right + 4.5f;
+        float nameRight = right - ReservedWidth(target) - 4;
+        string name = target.Name.Replace('\r',' ').Replace('\n',' ');
+        if (state.MeasuredName != name || state.MeasuredScale != scale)
+        {
+            state.NameWidth = g.MeasureString(name,_font,PointF.Empty,_label).Width;
+            state.MeasuredName = name;
+            state.MeasuredScale = scale;
+        }
         if (target.Hits > 0)
         {
-            string comboText = target.Hits.ToString(CultureInfo.InvariantCulture) + " HIT";
-            float comboMeasured = g.MeasureString(comboText, _badgeFont, 200, format).Width;
-            float comboBaseWidth = Math.Clamp(comboMeasured + 9f, 36f, 64f);
-            var comboBaseRect = new RectangleF(badgeRect.Right + 3.5f, badgeRect.Y, comboBaseWidth, badgeRect.Height);
-            float comboPulse = Math.Clamp((st?.ComboPulse ?? 0f) * eventStrength, 0f, 1f);
-            float popX = 1.6f * comboPulse;
-            float popY = 0.9f * comboPulse;
-            var comboDrawRect = new RectangleF(
-                comboBaseRect.X - popX,
-                comboBaseRect.Y - popY,
-                comboBaseRect.Width + popX * 2f,
-                comboBaseRect.Height + popY * 2f);
-            var comboPoly = ShieldBadgePolygon(comboDrawRect);
-
-            int boost = (int)Math.Round(42f * comboPulse);
-            Color comboTop = target.Hits >= 30
-                ? Color.FromArgb(248, Math.Min(255, 156 + boost), Math.Min(255, 44 + boost), Math.Min(255, 24 + boost / 2))
-                : target.Hits >= 10
-                    ? Color.FromArgb(246, Math.Min(255, 128 + boost), Math.Min(255, 52 + boost), Math.Min(255, 20 + boost / 2))
-                    : Color.FromArgb(244, Math.Min(255, 96 + boost), Math.Min(255, 54 + boost), Math.Min(255, 22 + boost / 2));
-            Color comboBot = target.Hits >= 30
-                ? Color.FromArgb(248, Math.Min(255, 72 + boost / 2), 16, 12)
-                : target.Hits >= 10
-                    ? Color.FromArgb(246, Math.Min(255, 56 + boost / 2), 20, 10)
-                    : Color.FromArgb(244, Math.Min(255, 42 + boost / 2), 22, 10);
-            Color comboEdge = target.Hits >= 30
-                ? Color.FromArgb(242, 255, Math.Min(255, 206 + boost), Math.Min(255, 108 + boost))
-                : target.Hits >= 10
-                    ? Color.FromArgb(234, 252, Math.Min(255, 176 + boost), Math.Min(255, 92 + boost))
-                    : Color.FromArgb(220, Math.Min(255, 236 + boost), Math.Min(255, 164 + boost), Math.Min(255, 88 + boost));
-            Color comboInk = target.Hits >= 30
-                ? Color.FromArgb(255, 250, 218)
-                : Color.FromArgb(255, 240, 202);
-
-            using (var cFill = new LinearGradientBrush(comboDrawRect, comboTop, comboBot, LinearGradientMode.Vertical))
-                g.FillPolygon(cFill, comboPoly);
-            using (var cPen = new Pen(comboEdge, comboPulse > 0.05f ? 0.95f : 0.75f))
-                g.DrawPolygon(cPen, comboPoly);
-            using (var cText = new SolidBrush(comboInk))
-            using (var cFormat = new StringFormat(StringFormat.GenericTypographic)
-                { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap })
+            string hitText = target.Hits.ToString(CultureInfo.InvariantCulture) + " HIT";
+            if (state.MeasuredHits != target.Hits || state.HitScale != scale)
             {
-                g.DrawString(comboText, _badgeFont, cText, comboDrawRect, cFormat);
+                state.HitWidth = Math.Max(38,(float)Math.Ceiling(g.MeasureString(hitText,_badgeFont,PointF.Empty,_label).Width) + 8);
+                state.MeasuredHits = target.Hits;
+                state.HitScale = scale;
             }
-            nameLeft = comboBaseRect.Right + 4.5f;
+            float width = state.HitWidth;
+            if (width + 5 + state.NameWidth <= nameRight - nameLeft)
+            {
+                var hit = new RectangleF(nameLeft,by,width,12);
+                if (clip.IsVisible(RectangleF.Inflate(hit,2,2)))
+                    Chip(g,hit,Rgb(0x171c1e),Color.FromArgb(122 + (int)(64 * state.ComboPulse),186,194,192),hitText,false);
+                nameLeft += width + 5;
+            }
         }
+        if (nameRight > nameLeft && clip.IsVisible(new RectangleF(nameLeft-2,by-4,nameRight-nameLeft+4,20)))
+        {
+            using var ink = new SolidBrush(Rgb(band == 1 ? 0xf6e5bc : 0xf2f5f3));
+            g.DrawString(name,_font,ink,new RectangleF(nameLeft,by - 2,nameRight - nameLeft,16),_label);
+        }
+    }
 
-        using var labelBrush = new SolidBrush(NativeHudTheme.TextPrimary);
-        var nameRight = Math.Max(nameLeft + 24f, pctRight - pctWidth - 4f);
-        g.DrawString(target.Name.Replace('\r', ' ').Replace('\n', ' '), _font, labelBrush,
-            new RectangleF(nameLeft, bounds.Y + 2f, nameRight - nameLeft, 16f), format);
+    private void Chip(Graphics g, RectangleF r, Color fill, Color edge, string text, bool boss)
+    {
+        PointF[] poly = [new(r.Left + 2.4f,r.Top),new(r.Right,r.Top),new(r.Right - 2.4f,r.Bottom),new(r.Left,r.Bottom)];
+        using var brush = new SolidBrush(fill);
+        using var pen = new Pen(edge,.7f);
+        g.FillPolygon(brush,poly);
+        g.DrawPolygon(pen,poly);
+        if (boss)
+        {
+            using var red = new Pen(Rgb(0xb03932),2.3f);
+            g.DrawLine(red,r.Left + 4,r.Top + .8f,r.Left + 1.8f,r.Bottom - .8f);
+        }
+        g.DrawString(text,_badgeFont,Brushes.White,r,_center);
     }
 
     private void PaintPortrait(Graphics g, RectangleF rect, PlayerHudFocusTarget target, bool isBoss, bool isCombat, bool critical)
@@ -826,8 +639,7 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
                 using var clipPath = new GraphicsPath();
                 clipPath.AddPolygon(poly);
                 g.SetClip(clipPath, CombineMode.Intersect);
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.DrawImage(bmp, inner);
+                _portraits.Draw(g, bmp, inner, Scale);
             }
             finally
             {
@@ -921,7 +733,7 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
         var buffCount = s.BuffCards.Length;
         for (int i = 0; i < targets.Length; i++)
         {
-            var rowRect = RowBounds(buffCount, i, targets.Length);
+            var rowRect = RowBounds(buffCount, i, targets.Length, AllyCount);
             if (rowRect.Contains(pt))
             {
                 return new("focusTarget", i, targets[i].Id.ToString(CultureInfo.InvariantCulture),
@@ -965,9 +777,17 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
     {
         CancelHover();
         _numbers.Dispose();
+        _portraits.Dispose();
+        foreach (var fill in _plateFills.Values) fill.Dispose();
+        _plateFills.Clear();
         _font.Dispose();
         _badgeFont.Dispose();
         _initialFont.Dispose();
+        ClearPlates();
+        _shortFont.Dispose();
+        _denseFont.Dispose();
+        _label.Dispose();
+        _center.Dispose();
         base.Dispose();
     }
 }

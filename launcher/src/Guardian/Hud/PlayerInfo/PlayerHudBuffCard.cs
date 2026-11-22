@@ -11,6 +11,8 @@ internal sealed record PlayerHudBuffCard(string Id, bool Timed, double Total, do
     string Name, string Description, string Polarity, int Stacks,
     PlayerHudBuffActivation? Activation, PlayerHudBuffMod[]? Mods)
 {
+    internal PlayerHudEffectSource? Source { get; init; }
+    internal string Role { get; init; } = "";
     internal string PhaseLabel
     {
         get
@@ -41,13 +43,19 @@ internal sealed record PlayerHudBuffCard(string Id, bool Timed, double Total, do
             var primary = members.Single(member => member.Group!.Primary);
             var activation = members.SingleOrDefault(member => member.Activation != null)?.Activation;
             cards.Add(new PlayerHudBuffCard(primary.Id, primary.Timed, primary.Total, primary.Remaining,
-                primary.Name, primary.Description, primary.Polarity, primary.Stacks, activation, CombineMods(members)));
+                primary.Name, primary.Description, primary.Polarity, primary.Stacks, activation, CombineMods(members))
+                { Source = primary.Source, Role = primary.Role });
         }
-        return cards.OrderBy(card => card.Timed).ToArray();
+        // LINQ OrderBy preserves acquisition order inside each priority.
+        return cards.OrderBy(card => (card.Role.Length > 0 ? card.Role : card.Id) switch
+        {
+            "poison" => 0, "eres" => 1, _ when card.Polarity=="harm" => 2,
+            _ when card.Source != null => 3, _ when card.Timed => 4, _ => 5
+        }).ToArray();
     }
 
     private static PlayerHudBuffCard Single(PlayerHudBuff row) => new(row.Id, row.Timed, row.Total, row.Remaining,
-        row.Name, row.Description, row.Polarity, row.Stacks, row.Activation, row.Mods);
+        row.Name, row.Description, row.Polarity, row.Stacks, row.Activation, row.Mods) { Source = row.Source, Role = row.Role };
 
     private static PlayerHudBuffMod[]? CombineMods(IEnumerable<PlayerHudBuff> members)
     {
@@ -60,7 +68,7 @@ internal sealed record PlayerHudBuffCard(string Id, bool Timed, double Total, do
     {
         if (ReferenceEquals(left, right)) return true;
         if (left == null || right == null) return false;
-        return left.Id == right.Id && left.Name == right.Name && left.Description == right.Description &&
+        return left.Id == right.Id && left.Source == right.Source && left.Role == right.Role && left.Name == right.Name && left.Description == right.Description &&
             left.Polarity == right.Polarity && left.Stacks == right.Stacks &&
             left.Timed == right.Timed && Seconds(left.Total) == Seconds(right.Total) &&
             Seconds(left.Remaining) == Seconds(right.Remaining) && SameActivation(left.Activation, right.Activation) &&

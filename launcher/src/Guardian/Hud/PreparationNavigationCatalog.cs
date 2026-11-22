@@ -169,7 +169,6 @@ namespace CF7Launcher.Guardian.Hud
         {
             Action("点歌机", "JUKEBOX_EXPAND"),
             Action("地图开关", "MAPHUD_TOGGLE"),
-            Action("修改器", "SETTINGS"),
             Action("帮助", "HELP")
         };
 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -22,6 +23,8 @@ internal sealed class PlayerHudController : IDisposable
     private readonly object _gate = new();
     private readonly string _nonce = Guid.NewGuid().ToString("N");
     private bool _posted, _reset, _disposed;
+    private StreamWriter? _wireCapture;
+    private long _captureChars;
     private long _nextId, _lastQuery, _hoverSequence;
     private long _generation, _adoptedGeneration = -1;
     private long _profileGeneration = -1;
@@ -43,6 +46,33 @@ internal sealed class PlayerHudController : IDisposable
     {
         _send = send; _connected = connected; _dispatch = dispatch;
         State.ActionResult += OnResult;
+        var capturePath = Environment.GetEnvironmentVariable("CF7_HUD_WIRE_CAPTURE");
+        if (!string.IsNullOrWhiteSpace(capturePath))
+        {
+            try
+            {
+                _wireCapture = new StreamWriter(new FileStream(capturePath, FileMode.Append, FileAccess.Write, FileShare.Read));
+                CaptureWire("!session");
+            }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException) { _wireCapture = null; }
+        }
+    }
+
+    private void CaptureWire(string line)
+    {
+        if (_wireCapture == null) return;
+        try
+        {
+            _wireCapture.WriteLine(line);
+            _captureChars += line.Length + 2;
+            if (_captureChars >= 16 * 1024 * 1024)
+            {
+                _wireCapture.WriteLine("!limit");
+                _wireCapture.Dispose();
+                _wireCapture = null;
+            }
+        }
+        catch (IOException) { _wireCapture = null; }
     }
 
     /// <returns>Only unrelated data for the existing Web/NativeHud consumers.</returns>
@@ -51,22 +81,29 @@ internal sealed class PlayerHudController : IDisposable
         if (_disposed || string.IsNullOrEmpty(raw)) return raw;
         if (!raw.StartsWith("pi:", StringComparison.Ordinal) && !raw.Contains("|pi:", StringComparison.Ordinal)) return raw;
         var remaining = new List<string>();
+        var batch = new List<string>();
         foreach (var pair in raw.Split('|'))
         {
-            if (pair.StartsWith("pi:", StringComparison.Ordinal)) Enqueue(pair.Substring(3));
+            if (pair.StartsWith("pi:", StringComparison.Ordinal)) batch.Add(pair.Substring(3));
             else remaining.Add(pair);
         }
+        Enqueue(batch);
         return string.Join("|", remaining);
     }
 
-    private void Enqueue(string encoded)
+    private void Enqueue(List<string> batch)
     {
-        if (encoded.Length > PlayerHudState.MaximumEncodedLength) return;
+        bool admissible = batch.Count <= 64 && batch.TrueForAll(p => p.Length <= PlayerHudState.MaximumEncodedLength);
         lock (_gate)
         {
             if (_disposed) return;
-            if (_queue.Count >= 64) { _queue.Clear(); _reset = true; }
-            _queue.Enqueue((Generation, encoded, Profiler == null ? 0 : Stopwatch.GetTimestamp()));
+            if (!admissible || _queue.Count + batch.Count > 64) { _queue.Clear(); _reset = true; }
+            if (admissible)
+            {
+                var generation = Generation;
+                var enqueued = Profiler == null ? 0 : Stopwatch.GetTimestamp();
+                foreach (var payload in batch) _queue.Enqueue((generation, payload, enqueued));
+            }
             if (_posted) return;
             _posted = true;
         }
@@ -82,14 +119,16 @@ internal sealed class PlayerHudController : IDisposable
             packets = _queue.ToArray(); _queue.Clear(); _posted = false;
             reset = _reset; _reset = false;
         }
-        if (reset) { State.Disconnect(); Send(new JObject { ["action"] = "playerHudSync" }); }
+        if (reset) { CaptureWire("!reset"); State.Disconnect(); Send(new JObject { ["action"] = "playerHudSync" }); }
         foreach (var packet in packets)
         {
             if (packet.Generation != Generation) continue;
             var started = Profiler == null ? 0 : Stopwatch.GetTimestamp();
             if (Profiler != null) Profiler.Record("receive.queueMs", Stopwatch.GetElapsedTime(packet.Enqueued, started).TotalMilliseconds);
             var before = State.AcceptedPackets;
+            bool awaitingFull = State.NeedsUnitSync;
             State.Receive(packet.Payload, Environment.TickCount64);
+            if (!awaitingFull && State.NeedsUnitSync) Send(new JObject { ["action"] = "playerHudSync" });
             if (Profiler != null)
             {
                 Profiler.Record("receive.applyMs", Stopwatch.GetElapsedTime(started).TotalMilliseconds);
@@ -97,12 +136,13 @@ internal sealed class PlayerHudController : IDisposable
             }
             if (before != State.AcceptedPackets && State.Snapshot != null && packet.Generation == Generation)
                 _adoptedGeneration = packet.Generation;
+            if (_wireCapture != null) CaptureWire(packet.Payload);
         }
         if (CanInteract && _poiseRequestGeneration != Generation &&
-            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true, ["weaponVisuals"] = true, ["ammoDetails"] = true, ["coldSkills"] = true, ["focusTarget"] = true, ["focusTargets"] = true, ["focusTargetCapacity"] = 8, ["buffDetails"] = true }))
+            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true, ["weaponVisuals"] = true, ["ammoDetails"] = true, ["coldSkills"] = true, ["focusTarget"] = true, ["focusTargets"] = true, ["focusTargetCapacity"] = 8, ["allyRoster"] = true, ["allySampling"] = Environment.GetEnvironmentVariable("CF7_HUD_ALLY_BATCH") ?? "deadline", ["unitHotV1"] = Environment.GetEnvironmentVariable("CF7_HUD_UNIT_WIRE") != "json", ["buffDetails"] = true, ["deckDetails"] = true }))
             _poiseRequestGeneration = Generation;
         if (Profiler != null && CanInteract && _profileGeneration != Generation &&
-            Send(new JObject { ["action"] = "playerHudProfile", ["enabled"] = true, ["profileId"] = Profiler.Id }))
+            Send(new JObject { ["action"] = "playerHudProfile", ["enabled"] = true, ["rosterReplay"] = Environment.GetEnvironmentVariable("CF7_HUD_ROSTER_TRACE") == "1", ["profileId"] = Profiler.Id }))
             _profileGeneration = Generation;
         if (PerfTrace.PanelTimingEnabled && CanInteract && _panelTimingGeneration != Generation &&
             Send(new JObject { ["action"] = "panelTimingProfile", ["v"] = 1, ["enabled"] = true, ["profileId"] = _panelTimingId }))
@@ -115,7 +155,7 @@ internal sealed class PlayerHudController : IDisposable
         System.Threading.Interlocked.Increment(ref _generation);
         _adoptedGeneration = -1;
         lock (_gate) { _queue.Clear(); _reset = true; }
-        _dispatch(() => { if (!_disposed) { State.Disconnect(); HideTooltip(); } });
+        _dispatch(() => { if (!_disposed) { CaptureWire("!reset"); State.Disconnect(); HideTooltip(); } });
         // A connection/window/actor change does not resolve an unknown write.
     }
 
@@ -153,7 +193,7 @@ internal sealed class PlayerHudController : IDisposable
         else
         {
             _pendingId = null;
-            Message = result.Success ? "" : result.Error switch
+            Message = result.Success ? "操作已确认" : result.Error switch
             {
                 "bag_full" => "背包空间不足，请先腾出一个空格",
                 "cooldown" => "冷却尚未结束，请稍后再试",
@@ -205,6 +245,8 @@ internal sealed class PlayerHudController : IDisposable
     {
         HideTooltip(); _disposed = true; State.ActionResult -= OnResult;
         Profiler?.Dispose();
+        try { _wireCapture?.Dispose(); } catch (IOException) { }
+        _wireCapture = null;
         lock (_gate) _queue.Clear();
     }
 }

@@ -760,7 +760,7 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
             NativeHudTopologyDecision.SplitRequired);
 
         bool fullTopologyGeometry =
-            rightTop == new Rectangle(724, 0, 252, 32) &&
+            rightTop == new Rectangle(724, 0, 294, 32) &&
             fullPlayerInfo == new Rectangle(0, 512, 1024, 64) &&
             fullTopology.RawOuterUnion ==
                 new Rectangle(0, 0, 1024, 576) &&
@@ -776,11 +776,11 @@ public sealed class PlayerInfoB005RuntimeQualificationTests
             rawLayerEnvelope == new Rectangle(-3, 474, 285, 81) &&
             tightPlayerInfo == new Rectangle(0, 474, 282, 81) &&
             tightTopology.RawOuterUnion ==
-                new Rectangle(0, 0, 976, 555) &&
+                new Rectangle(0, 0, 1018, 555) &&
             tightTopology.InflatedOuterUnion ==
-                new Rectangle(-6, -6, 988, 567) &&
+                new Rectangle(-6, -6, 1030, 567) &&
             tightTopology.ClippedSurface ==
-                new Rectangle(0, 0, 982, 561) &&
+                new Rectangle(0, 0, 1024, 561) &&
             tightTopology.Components == 2 &&
             !tightTopology.FullViewportBridge &&
             tightTopology.NearFullBridge &&

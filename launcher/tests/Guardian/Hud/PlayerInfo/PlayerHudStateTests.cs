@@ -355,6 +355,26 @@ public sealed class PlayerHudStateTests
         ack["result"]["error"] = ""; controller.TakeUiData("pi:" + Encode(ack)); Assert.False(controller.WritePending);
     }
 
+    [Theory]
+    [InlineData(62)]
+    [InlineData(63)]
+    public void QueueCapacityKeepsTheWholeIncomingFrame(int pending)
+    {
+        var posted = new Queue<Action>();
+        using var controller = new PlayerHudController(_ => true, () => true, posted.Enqueue);
+        var full = Full(1, 100);
+        full["groups"]["focusTarget"] = new JArray(new JObject {
+            ["id"] = 1, ["role"] = "boss", ["name"] = "guard", ["hp"] = new JArray(100,100) });
+        for (int i = 0; i < pending; i++)
+            controller.TakeUiData("pi:" + Encode(Full(1, i + 1)));
+        controller.TakeUiData("pi:" + Encode(full) + "|pi:~1,1,101;f,0,1,75,100,0");
+        Assert.Single(posted);
+        posted.Dequeue()();
+        Assert.False(controller.State.NeedsUnitSync);
+        Assert.Equal(75, controller.State.Snapshot.TargetList[0].Hp);
+        Assert.Equal(pending == 62 ? 64 : 2, controller.State.AcceptedPackets);
+    }
+
     [Fact]
     public void HighFrequencyHudDoesNotReachUnrelatedUiConsumers()
     {

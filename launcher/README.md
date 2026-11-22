@@ -271,6 +271,7 @@ Runner 验证 exact SDK resolver 与串行 xUnit 策略，再从仓库根执行 
 | `Save/` | Protocol 2、SOL 定位、备份与 repair |
 | `Tasks/` | Flash/Host 领域任务及解析边界 |
 | `TooltipService.Host/` | Linux 可运行的生产 TooltipService / ClearScript、Fake Flash 协议与异步生命周期测试 |
+| `UnitLife.Portable/` | 使用普通 .NET 运行焦点与世界生命条状态轨迹，测试源码与 Guardian 分区共用 |
 <!-- launcher-test-taxonomy:end -->
 
 ### Web、Panel 与专项验证

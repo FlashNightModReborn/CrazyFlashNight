@@ -34,9 +34,10 @@ namespace CF7Launcher.Guardian.Hud
         /// <summary>Combo 最大宽度不超过刘海安全上限，避免侵入 TL 列与 TR 动作行。</summary>
         public const float ComboMaxWidth = RightHudLayout.PreferredNotchMaxWidthBase;
 
-        private static float _topLeftBottom;
+        private static float _topLeftBottom, _focusBottom, _allyBottom;
         private static float _eventCardsTop = EventBottomY;
         private static float _notchStableBottom = NativeHudTheme.TopBarHeightBase;
+        private static bool _receiptVisible;
 
         /// <summary>任一分区上报值变化时触发（UI 线程）。</summary>
         public static event EventHandler Changed;
@@ -47,7 +48,14 @@ namespace CF7Launcher.Guardian.Hud
 
         public static void ReportTopLeftBottom(float bottom)
         {
-            Set(ref _topLeftBottom, Math.Max(0f, bottom));
+            _focusBottom = Math.Max(0f, bottom);
+            Set(ref _topLeftBottom, Math.Max(_focusBottom, _allyBottom));
+        }
+
+        internal static void ReportAllyBottom(float bottom)
+        {
+            _allyBottom = Math.Max(0f, bottom);
+            Set(ref _topLeftBottom, Math.Max(_focusBottom, _allyBottom));
         }
 
         public static void ReportEventCardsTop(float top)
@@ -83,7 +91,14 @@ namespace CF7Launcher.Guardian.Hud
 
         public static float CurrentComboTop()
         {
-            return ComboTop(_notchStableBottom);
+            return ComboTop(_notchStableBottom) + (_receiptVisible ? 22f : 0f);
+        }
+
+        internal static void ReportReceiptVisible(bool visible)
+        {
+            if (_receiptVisible == visible) return;
+            _receiptVisible = visible;
+            Changed?.Invoke(null, EventArgs.Empty);
         }
 
         /// <summary>BL 事件卡顶边（设计坐标）。</summary>
@@ -96,9 +111,10 @@ namespace CF7Launcher.Guardian.Hud
 
         internal static void ResetForTests()
         {
-            _topLeftBottom = 0f;
+            _topLeftBottom = _focusBottom = _allyBottom = 0f;
             _eventCardsTop = EventBottomY;
             _notchStableBottom = NativeHudTheme.TopBarHeightBase;
+            _receiptVisible = false;
             Changed = null;
         }
 

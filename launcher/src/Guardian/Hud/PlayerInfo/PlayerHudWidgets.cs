@@ -18,6 +18,7 @@ internal abstract class PlayerHudWidgetBase : INativeHudWidget, INativeHudResuma
     private bool _lastVisible, _lastAnimation;
     protected PlayerHudSnapshot? Snapshot => Controller.State.Snapshot;
     protected abstract RectangleF LogicalBounds { get; }
+    protected virtual PlayerHudGroups ConsumedGroups => PlayerHudGroups.All;
     protected virtual bool HasContent => Snapshot != null;
     protected Rectangle Viewport => RightHudLayout.GetViewportRect(Anchor, _mapper);
     protected float Scale => Viewport.Height / 576f;
@@ -40,9 +41,14 @@ internal abstract class PlayerHudWidgetBase : INativeHudWidget, INativeHudResuma
     protected PlayerHudWidgetBase(Control anchor, PlayerHudController controller)
     {
         Anchor = anchor; Controller = controller; _mapper = new FlashCoordinateMapper(anchor, 1024, 576);
-        controller.State.Changed += OnStateChanged;
+        controller.State.Changed += OnPacketChanged;
     }
-    protected virtual void OnStateChanged()
+    private void OnPacketChanged()
+    {
+        if ((Controller.State.NotifyingGroups & ConsumedGroups) != 0) OnStateChanged();
+    }
+    protected virtual void OnStateChanged() => NotifyVisualChange(EventArgs.Empty);
+    protected void NotifyVisualChange(EventArgs damage)
     {
         var bounds = ScreenBounds; var visible = Visible; var animation = WantsAnimationTick;
         if (bounds != _lastBounds || visible != _lastVisible)
@@ -51,7 +57,7 @@ internal abstract class PlayerHudWidgetBase : INativeHudWidget, INativeHudResuma
             BoundsOrVisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
         if (animation != _lastAnimation) { _lastAnimation = animation; AnimationStateChanged?.Invoke(this, EventArgs.Empty); }
-        Repaint();
+        RepaintRequested?.Invoke(this, damage);
     }
     protected void Repaint() => RepaintRequested?.Invoke(this, EventArgs.Empty);
     public virtual void SetHostSuppressed(bool suppressed)
@@ -61,13 +67,15 @@ internal abstract class PlayerHudWidgetBase : INativeHudWidget, INativeHudResuma
     }
     public void Paint(Graphics g, float dpr, Point hudOrigin)
     {
-        if (!Visible || Scale <= 0) return;
+        if (!Visible) return;
+        var viewport = Viewport;
+        float scale = viewport.Height / 576f;
+        if (scale <= 0) return;
         var saved = g.Save();
         try
         {
-            var viewport = Viewport;
             g.TranslateTransform(viewport.X - hudOrigin.X, viewport.Y - hudOrigin.Y);
-            g.ScaleTransform(Scale, Scale);
+            g.ScaleTransform(scale, scale);
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             PaintLogical(g);
         }
@@ -78,7 +86,7 @@ internal abstract class PlayerHudWidgetBase : INativeHudWidget, INativeHudResuma
     public abstract bool TryHitTest(Point screenPt);
     public abstract void OnMouseEvent(MouseEventArgs e, MouseEventKind kind);
     public virtual void Tick(int deltaMs) { }
-    public virtual void Dispose() { Disposed = true; Controller.State.Changed -= OnStateChanged; }
+    public virtual void Dispose() { Disposed = true; Controller.State.Changed -= OnPacketChanged; }
 }
 
 internal static class PlayerHudResourceStyle
@@ -130,16 +138,20 @@ internal static class PlayerHudResourceStyle
         return required > 0 ? Math.Floor(earned).ToString("0", CultureInfo.InvariantCulture) + "/" + Math.Floor(required).ToString("0", CultureInfo.InvariantCulture)
             : Math.Floor(value.Experience).ToString("0", CultureInfo.InvariantCulture);
     }
+
+    internal static string ExperienceGaugeText(PlayerHudVitals value)
+    {
+        static string Group(double n) => Math.Floor(n).ToString("#,0", CultureInfo.InvariantCulture).Replace(',', '\u2009');
+        var (earned, required) = LevelExperience(value);
+        return required > 0 ? Group(earned) + " / " + Group(required) : Group(value.Experience);
+    }
 }
 
-internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
+internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
 {
     internal const float NameVisibleWidth = 126.6f;
     internal const int PoisePulseDurationMs = 260;
     internal const int BankSwitchPulseDurationMs = 180;
-    internal const int MessageHoldMs = 2100;
-    internal const int MessageFadeMs = 400;
-    internal const int MessageTotalMs = MessageHoldMs + MessageFadeMs;
 
     private readonly PlayerHudIconCache _icons;
     private readonly PlayerHudArtCache _art = new();
@@ -151,15 +163,18 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
     // Countdown strings change often; retain only the current caption for each lane (18 base + up to 12 coldSkills).
     private readonly Caption?[] _captions = new Caption?[30];
     private readonly Caption?[] _countdownCaptions = new Caption?[30];
+    private readonly Font _spLabel = NativeHudFonts.CreateRoleFont("native.player-info.body",9.3f,FontStyle.Bold|FontStyle.Italic,GraphicsUnit.Pixel);
     private readonly Font _body = NativeHudFonts.CreateRoleFont("native.player-info.body", 10, FontStyle.Regular, GraphicsUnit.Pixel);
     private readonly Font _small = NativeHudFonts.CreateRoleFont("native.player-info.body", 9, FontStyle.Bold, GraphicsUnit.Pixel);
-    private readonly Font _nameFont = NativeHudFonts.CreateRoleFont("native.player-info.body", 11, FontStyle.Regular, GraphicsUnit.Pixel);
+    private readonly Font _nameFont = NativeHudFonts.CreateRoleFont("native.player-info.body", 11, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly Font _hotkeyFont = NativeHudFonts.CreateRoleFont("native.player-info.body", 9, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly Font _poiseLabel = NativeHudFonts.CreateRoleFont("native.player-info.body", 10, FontStyle.Bold, GraphicsUnit.Pixel);
+    private readonly Font _experienceLabel = NativeHudFonts.CreateRoleFont("native.player-info.body", 7.4f, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly Font _slotMark = NativeHudFonts.CreateRoleFont("native.player-info.body", 12, FontStyle.Regular, GraphicsUnit.Pixel);
     private PlayerHudTarget? _hover, _down;
     private bool _upMatches;
     private int _resourceHintClock;
+    private readonly PlayerHudDeckArt _deck = new();
     private readonly PlayerHudDenialMotion _denial = new();
     private readonly int[] _readyFlash = new int[30];
     private readonly int[] _observedAmmoCapacity = new int[5];
@@ -170,14 +185,22 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
     private bool _poisePulseIsRisk;
     private int _lastBank = -1;
     private int _bankSwitchPulseMs = -1;
-    private int _messageAgeMs = -1;
     private static readonly float[] ReadyAlpha = [1, 0.828125f, 0.671875f, 0.5f, 0.328125f, 0.171875f, 0, 0];
     private long _epoch;
+    private PlayerHudVitals? _lastDeckVitals;
     private bool _criticalHp;
+    private static bool SameDeckVitals(PlayerHudVitals a,PlayerHudVitals b) =>
+        a.Name==b.Name && a.Level==b.Level && a.SkillPoints==b.SkillPoints &&
+        a.Experience==b.Experience && a.ExperienceStart==b.ExperienceStart && a.ExperienceEnd==b.ExperienceEnd &&
+        a.Poise==b.Poise && a.PoiseDetail==b.PoiseDetail && a.PoiseVisual==b.PoiseVisual &&
+        a.Paused==b.Paused && (a.Hp>0)==(b.Hp>0);
     private bool _feedbackSuspended;
+    private bool _lastStateSuppressed;
     private long _lastLoadoutRevision = -1;
+    protected override PlayerHudGroups ConsumedGroups => PlayerHudGroups.Vitals | PlayerHudGroups.Combat
+        | PlayerHudGroups.Loadout | PlayerHudGroups.Cooldowns | PlayerHudGroups.Resources | PlayerHudGroups.ColdSkills | PlayerHudGroups.Buffs;
     internal static RectangleF SkillRect(int index) => new(602.25f + index * 35.05f, 536.5f, 26, 26);
-    internal static RectangleF ColdSkillRect(int index) => new(602.25f + index * 35.05f, 478.5f, 26, 26);
+    internal static RectangleF ColdSkillRect(int index) => new(602.25f + index * 35.05f, 484.5f, 26, 26);
     internal static RectangleF DrugRect(int lane) => new(343.8f + lane * 34.9f, 535.35f, 26, 26);
     internal static RectangleF UnequipRect(int index) => new(623.4f + index * 35f, 532.3f, 10, 10);
     internal static RectangleF DrugUnequipRect(int lane) => new(DrugRect(lane).X + 21.15f, DrugRect(lane).Y - 4.2f, 10, 10);
@@ -199,8 +222,11 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
     internal static RectangleF CountRect(RectangleF slot) => new(slot.X+1,slot.Y+1,19,10);
     internal static readonly RectangleF WeaponRect = new(560.55f, 534.65f, 26, 26);
     protected override RectangleF LogicalBounds => VisibleColdSkills(Snapshot).Length > 0
-        ? new(0, 474, 1024, 102)
-        : new(0, 504, 1024, 72);
+        ? new(0, 483, 1024, 93)
+        : new(0, 512, 1024, 64);
+
+    internal Rectangle InkViewport => Viewport;
+    internal bool HasColdRail => VisibleColdSkills(Snapshot).Length != 0;
 
     internal static PlayerHudColdSkill[] VisibleColdSkills(PlayerHudSnapshot? snapshot)
     {
@@ -211,24 +237,34 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         (s.Vitals.Hp > 0 && !s.Vitals.Paused && (_denial.Active || Array.Exists(_readyFlash, t => t >= 0 && t < 180))
         || Array.Exists(_readyFlash, time => time >= 0 && time < 180)
         || (_poisePulseMs >= 0 && _poisePulseMs < PoisePulseDurationMs)
-        || (_bankSwitchPulseMs >= 0 && _bankSwitchPulseMs < BankSwitchPulseDurationMs)
-        || (Controller.Message.Length > 0 && !Controller.WritePending && _messageAgeMs >= 0 && _messageAgeMs < MessageTotalMs));
+        || (_bankSwitchPulseMs >= 0 && _bankSwitchPulseMs < BankSwitchPulseDurationMs));
 
     internal PlayerHudBottomWidget(Control anchor, PlayerHudController controller, string iconsRoot) : base(anchor, controller)
     {
         _icons = new PlayerHudIconCache(iconsRoot);
         Array.Fill(_readyFlash, -1);
-        controller.StatusChanged += OnStatusChanged;
-    }
-
-    private void OnStatusChanged()
-    {
-        _messageAgeMs = Controller.Message.Length > 0 && !Controller.WritePending ? 0 : -1;
-        base.OnStateChanged();
+        if (Snapshot!=null) OnStateChanged();
     }
 
     protected override void OnStateChanged()
     {
+        var groups = Controller.State.NotifyingGroups & ConsumedGroups;
+        bool samePresentation = Snapshot?.Epoch == _epoch && Suppressed == _lastStateSuppressed;
+        _lastStateSuppressed = Suppressed;
+        var vitals=Snapshot?.Vitals;
+        if (groups==PlayerHudGroups.Vitals && samePresentation && vitals!=null && _lastDeckVitals is {} previous &&
+            SameDeckVitals(previous,vitals) && PlayerHudMotionSettings.IsCritical(vitals,_criticalHp)==_criticalHp)
+        {
+            _lastDeckVitals=vitals;
+            return;
+        }
+        _lastDeckVitals=vitals;
+        if ((groups & (PlayerHudGroups.Buffs | PlayerHudGroups.Loadout)) != 0 || Snapshot?.Epoch != _epoch)
+        {
+            var next = SourceLights(Snapshot);
+            if (samePresentation && groups == PlayerHudGroups.Buffs && next == _lights) return;
+            _lights = next;
+        }
         if (Snapshot?.Epoch != _epoch)
         {
             _epoch = Snapshot?.Epoch ?? 0;
@@ -337,13 +373,6 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
             _bankSwitchPulseMs += stepMs;
             changed |= _bankSwitchPulseMs * 3 / 100 != oldBankPulse || _bankSwitchPulseMs >= BankSwitchPulseDurationMs;
         }
-        if (Controller.Message.Length > 0 && !Controller.WritePending && _messageAgeMs >= 0 && _messageAgeMs < MessageTotalMs)
-        {
-            var oldFadeFrame = _messageAgeMs >= MessageHoldMs ? (_messageAgeMs - MessageHoldMs) / 33 : -1;
-            _messageAgeMs += stepMs;
-            var newFadeFrame = _messageAgeMs >= MessageHoldMs ? (_messageAgeMs - MessageHoldMs) / 33 : -1;
-            changed |= newFadeFrame != oldFadeFrame || _messageAgeMs >= MessageTotalMs;
-        }
         if (changed) base.OnStateChanged();
     }
     protected override void PaintLogical(Graphics g)
@@ -354,17 +383,11 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         using var dim = new SolidBrush(muted);
         using var poise = new SolidBrush(PlayerHudResourceStyle.Poise);
         using var background = new SolidBrush(Color.FromArgb(200, 25, 30, 31));
+        var panel = g.Save();
+        g.SetClip(RectangleF.FromLTRB(298.5f,PlayerHudResourceLayout.DeckTop,1024,576),CombineMode.Intersect);
         DrawArt(g, "bottom-panel", 49.7f, 568.45f, 0.8472137451f, 0.8472137451f);
-        var resourcePanel = g.Save();
-        g.TranslateTransform(PlayerHudResourceLayout.ResourceOffsetX,0);
-        using (var raisedPanel=new LinearGradientBrush(new RectangleF(90,504,190,32),
-            Color.FromArgb(44,47,48),Color.FromArgb(17,20,21),LinearGradientMode.Vertical))
-            g.FillPolygon(raisedPanel,[new PointF(90,504),new PointF(271,504),new PointF(280,512),new PointF(280,537),new PointF(90,537)]);
-        g.Restore(resourcePanel);
-        var ornaments = g.Save();
-        g.SetClip(new RectangleF(86+PlayerHudResourceLayout.ResourceOffsetX,535,194,38),CombineMode.Exclude);
-        DrawArt(g, "bottom-ornaments", 49.7f, 568.45f, 0.8472137451f, 0.8472137451f);
-        g.Restore(ornaments);
+        g.Restore(panel);
+        _deck.Paint(g,Scale);
         var poiseState = PlayerHudResourceStyle.PoiseStateLabel(v.PoiseDetail);
         var poiseBar = PlayerHudResourceLayout.PoiseBar;
         if (poiseState.Length == 0) poiseState = "韧性";
@@ -383,19 +406,25 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         g.Restore(levelTransform);
         var (earned, required) = PlayerHudResourceStyle.LevelExperience(v);
         var xp = required > 0 ? Math.Clamp(earned / required, 0, 1) : 0;
-        var xpColor = Color.FromArgb(157, 166, 169);
-        _numbers.Draw(g, PlayerHudResourceStyle.Percent(earned, required), 90, 572, 14.5f, Scale, 36, xpColor);
-        _numbers.Draw(g, PlayerHudResourceStyle.ExperienceReadout(v), 132, 572, 14.5f, Scale, 166, xpColor);
-        var xpWidth = 293f;
-        g.FillRectangle(background, 5, 573, xpWidth, 3);
-        using (var xpBrush = new LinearGradientBrush(new RectangleF(5,573,xpWidth,3),
+        using (var label = new SolidBrush(Color.FromArgb(131,143,145)))
+            g.DrawString("EXP", _experienceLabel, label, 91.5f, 563.2f, StringFormat.GenericTypographic);
+        _numbers.Draw(g, PlayerHudResourceStyle.Percent(earned, required), 112, 571.1f, 9, Scale, 27, Color.FromArgb(174,184,186));
+        _numbers.DrawRight(g, PlayerHudResourceStyle.ExperienceGaugeText(v), 293, 571.1f, 9.2f, Scale, 152, Color.FromArgb(162,173,175));
+        const float xpWidth = 291;
+        g.FillRectangle(background, 5, 572.9f, xpWidth, 2.6f);
+        using (var xpBrush = new LinearGradientBrush(new RectangleF(5,572.9f,xpWidth,2.6f),
             PlayerHudResourceStyle.ExperienceDark,PlayerHudResourceStyle.ExperienceLight,LinearGradientMode.Vertical))
-            g.FillRectangle(xpBrush, 5, 573, (float)(xpWidth * xp), 3);
+            g.FillRectangle(xpBrush, 5, 572.9f, (float)(xpWidth * xp), 2.6f);
 
+        var skillBay = g.Save();
+        g.SetClip(RectangleF.FromLTRB(592,529.5f,1024,576),CombineMode.Intersect);
         DrawArt(g, "skill-panel", 592.9f, 528.9f);
-        DrawSizedArt(g, "skill-label", new RectangleF(598.9f, 511.2f, 2259f / 1024 * 18, 18));
-        DrawSizedArt(g, "sp-label", new RectangleF(649.7f, 512.35f, 1679f / 1024 * 15, 15));
-        _numbers.Draw(g, Number(v.SkillPoints), 677.15f, 525.2f, 14, Scale, 73.95f, muted);
+        g.Restore(skillBay);
+        DrawSizedArt(g, "skill-label", new RectangleF(598.8f,514.2f,35.24f,11.94f));
+        using (var spInk=new SolidBrush(Color.FromArgb(173,182,184)))
+            g.DrawString("SP",_spLabel,spInk,648.5f,515.8f,StringFormat.GenericTypographic);
+        _numbers.DrawRight(g,Number(v.SkillPoints),731.5f,525.2f,13.2f,Scale,62f,
+            v.SkillPoints>0?Color.FromArgb(245,248,246):Color.FromArgb(152,162,164));
         PaintDetailsEntry(g);
         DrawArt(g, "drug-panel", 301.4f, 541.8f);
         DrawArt(g, "name-background", 342.35f, 514.65f);
@@ -410,7 +439,15 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
 
         var visibleCold = VisibleColdSkills(s);
         if (visibleCold.Length > 0)
-            g.DrawString("搓招", _small, dim, 566, 486);
+        {
+            using var bed = new SolidBrush(Color.FromArgb(31,37,39));
+            using var rail = new Pen(Color.FromArgb(112,133,139,139),.75f);
+            PointF[] tabs=[new(588,484.5f),new(599,484.5f),new(599,510.5f),new(585.5f,510.5f),new(585.5f,487)];
+            g.FillPolygon(bed,tabs);g.DrawPolygon(rail,tabs);
+            g.DrawLine(rail,587.25f,487,587.25f,508);
+            g.DrawString("搓",_small,dim,589.2f,487.2f,StringFormat.GenericTypographic);
+            g.DrawString("招",_small,dim,589.2f,497.6f,StringFormat.GenericTypographic);
+        }
         for (var i = 0; i < Math.Min(12, visibleCold.Length); i++)
         {
             var cold = visibleCold[i];
@@ -435,27 +472,10 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         }
         DrawSlot(g, SwitchRect, "", s.Loadout.SwitchKey, "", s.Cooldowns[17], "switch", 0, s.Loadout.Bank);
         PaintCombat(g, s.Combat);
+        PaintCoating(g, s.Combat.Deck);
         if (HasWeaponSlot(s.Combat))
         {
             DrawSlot(g, WeaponRect, "", s.Combat.WeaponKey, "", s.Cooldowns[0], "weapon", 0);
-        }
-        if (Controller.Message.Length > 0)
-        {
-            var msgAlpha = 1f;
-            if (!Controller.WritePending && _messageAgeMs >= 0)
-            {
-                if (_messageAgeMs >= MessageTotalMs) msgAlpha = 0f;
-                else if (_messageAgeMs > MessageHoldMs) msgAlpha = 1f - (float)(_messageAgeMs - MessageHoldMs) / MessageFadeMs;
-            }
-            if (msgAlpha > 0.01f)
-            {
-                using var msgBg = new SolidBrush(Color.FromArgb((int)Math.Round(215 * msgAlpha), 25, 30, 31));
-                using var msgBorder = new Pen(Color.FromArgb((int)Math.Round(150 * msgAlpha), 210, 165, 95), 0.8f);
-                using var msgText = new SolidBrush(Color.FromArgb((int)Math.Round(255 * msgAlpha), 239, 238, 220));
-                g.FillRectangle(msgBg, 592, 506, 421, 23);
-                g.DrawRectangle(msgBorder, 592.4f, 506.4f, 420.2f, 22.2f);
-                g.DrawString(Controller.Message, _body, msgText, 596, 510);
-            }
         }
     }
 
@@ -548,21 +568,11 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
     {
         var mode = Array.IndexOf(new[] { "手枪", "手枪2", "长枪", "兵器", "手雷", "空手", "双枪", "长枪副武器" }, combat.Mode);
         if (mode < 0) return;
-        const float x = 506.95f, y = 522.45f;
         var hasWeaponSlot = HasWeaponSlot(combat);
 
-        if (mode is >= 3 and <= 5)
-        {
-            DrawArt(g, "mode-" + mode, x, y);
-        }
-        if ((mode is >= 3 and <= 5) || (mode < 3 && hasWeaponSlot))
-        {
-            DrawArt(g, "weapon-panel", x, y);
-            using var emptyMark = new SolidBrush(Color.FromArgb(229, 229, 229));
-            g.DrawString("+", _slotMark, emptyMark, x + 62.3f, y + 15.3f);
-        }
+        if (mode is >= 3 and <= 5) PaintStance(g, combat);
+        if (hasWeaponSlot || mode is 3 or 5) PaintWeaponColumn(g, hasWeaponSlot);
 
-        using var text = new SolidBrush(Color.FromArgb(204, 204, 204));
         float Measure(string s) => g.MeasureString(s, _nameFont, new SizeF(10000, 1000), StringFormat.GenericTypographic).Width;
         if (mode < 3)
         {
@@ -646,16 +656,6 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
                 PlayerHudAmmoPainter.PaintMagazineBar(g, new RectangleF(contentLeft, cardTop + PlayerHudAmmoPainter.BarOffsetY, barWidth, PlayerHudAmmoPainter.BarHeight), Scale, detail, loadedText, observedCap);
             }
         }
-        else if (mode == 4)
-        {
-            using var grenadeInk = new SolidBrush(AmmoColor(null, combat.Ammo[1], _observedAmmoCapacity[4]));
-            DrawAmmo(g,AmmoValue(combat.Ammo[1]),grenadeInk,new RectangleF(x+1.2f,y+17.65f,46,14),false);
-        }
-        if (mode is >= 3 and <= 5)
-        {
-            using var tiny = NativeHudFonts.CreateRoleFont("native.player-info.body", 4, FontStyle.Regular, GraphicsUnit.Pixel);
-            g.DrawString("+++++++++++++++++", tiny, text, x - 9.25f + (mode == 4 ? 9.2f : -1.5f), y + 5.6f);
-        }
     }
 
     private static int AmmoSlotIndex(string mode, int row) => (mode, row) switch
@@ -702,13 +702,19 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
 
     private void DrawBankDots(Graphics g, int bank)
     {
-        using var ink = new SolidBrush(Color.FromArgb(211,229,230));
-        g.DrawString(bank == 0 ? "A" : "B", _nameFont, ink, SwitchRect.Left+9, SwitchRect.Top+1);
+        PaintBankMatrix(g, bank);
     }
     private void DrawSlot(Graphics g, RectangleF r, string icon, string key, string badge, PlayerHudCooldown cooldown, string kind, int slot, int bank = -1, bool blockedOverride = false)
     {
-        if (kind != "weapon") DrawArt(g, "slot", r.X + 13, r.Y + 13.1f);
-        if (kind is "skill" or "coldSkill" or "drug")
+        if (kind == "coldSkill")
+        {
+            using var fill=new SolidBrush(Color.FromArgb(238,14,18,20));
+            using var border=new Pen(Color.FromArgb(130,58,66,68),.7f);
+            g.FillRectangle(fill,r.X+.5f,r.Y+.5f,r.Width-1,r.Height-1);
+            g.DrawRectangle(border,r.X+.5f,r.Y+.5f,r.Width-1,r.Height-1);
+        }
+        else if (kind != "weapon") DrawArt(g, "slot", r.X + 13, r.Y + 13.1f);
+        if (kind is "skill" or "drug")
         {
             using var authoredPlus = new SolidBrush(Color.FromArgb(229, 229, 229));
             g.DrawString("+", _slotMark, authoredPlus, r.X + 8.7f, r.Y + 4.3f);
@@ -717,8 +723,14 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         var bitmap = kind == "weapon" && Snapshot is { } snapshot
             ? _icons.GetWeapon(snapshot.Combat.WeaponIconKey, snapshot.Combat.WeaponItemIconKey, pixels)
             : _icons.Get(icon, pixels);
-        if (bitmap != null && kind != "weapon") g.DrawImage(bitmap, r.X + 1, r.Y + 1, r.Width - 2, r.Height - 2);
-        if (kind != "weapon") DrawArt(g, "slot-detail", r.X + 13, r.Y + 13.1f);
+        if (bitmap != null && kind != "weapon")
+        {
+            if (kind == "coldSkill")
+                g.DrawImage(bitmap, Rectangle.Round(new RectangleF(r.X+1,r.Y+1,r.Width-2,r.Height-2)),0,0,bitmap.Width,bitmap.Height,GraphicsUnit.Pixel,_quietCold);
+            else g.DrawImage(bitmap, r.X + 1, r.Y + 1, r.Width - 2, r.Height - 2);
+        }
+        if (kind == "coldSkill") NativeHudTheme.DrawSlotBrackets(g,r,Color.FromArgb(178,170,178,176),4.8f,1);
+        else if (kind != "weapon") DrawArt(g, "slot-detail", r.X + 13, r.Y + 13.1f);
         // All authored foreground belongs below cooldown feedback, including non-bitmap controls.
         if (kind == "switch") DrawBankDots(g, bank);
         else if (kind == "weapon")
@@ -805,6 +817,8 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         DrawHotkey(g, r, key, cooldown, cooldownIndex);
         if (!cooldown.Ready)
             DrawCooldownCountdown(g, r, cooldown, cooldownIndex);
+        if (kind == "skill" && (_lights.Skills & 1 << (slot-1)) != 0 ||
+            kind == "drug" && (_lights.VisibleDrugs & 1 << (slot%4)) != 0) PaintSourceLight(g,r);
     }
     internal void PaintCount(Graphics g, RectangleF bounds, string raw, int lane=0)
     {
@@ -900,6 +914,11 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         var point = Logical(screen);
         PlayerHudTarget Target(string kind, int slot, string key, long revision, RectangleF rect) =>
             new(kind, slot, key, s.Epoch, revision, s.Loadout.Bank, rect, Controller.Generation, s.Vitals.Paused);
+        if (PlayerHudResourceLayout.ShieldPlaque.Contains(point))
+            return Target("resources", 0, "shield", 0, PlayerHudResourceLayout.ShieldPlaque);
+        if (CoatingRect.Contains(point) && s.Combat.Deck != null) return Target("resources", 0, "coating", 0, CoatingRect);
+        if (s.Combat.Mode is "空手" or "兵器" or "手雷" && s.Combat.Deck != null && StanceArea(s.Combat).Contains(point))
+            return Target("resources", 0, "stance", 0, StanceArea(s.Combat));
         if (DetailsRect.Contains(point)) return Target("resources", 0, "", 0, DetailsRect);
         if (SwitchRect.Contains(point)) return Target("switch", 0, "", s.Loadout.DrugRevision, SwitchRect);
         var visibleCold = VisibleColdSkills(s);
@@ -963,207 +982,10 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
     public override void SetHostSuppressed(bool suppressed) { if (suppressed) { _denial.Clear(); _feedbackSuspended = true; Array.Fill(_readyFlash,-1); _poisePulseMs = _bankSwitchPulseMs = -1; Cancel(); } base.SetHostSuppressed(suppressed); }
     public override void Dispose()
     {
+        _quietCold.Dispose();
+        _experienceLabel.Dispose();
         foreach(var caption in _captions)caption?.Path.Dispose();Array.Clear(_captions);
         foreach(var caption in _countdownCaptions)caption?.Path.Dispose();Array.Clear(_countdownCaptions);
-        Cancel(); Controller.StatusChanged -= OnStatusChanged; _icons.Dispose(); _art.Dispose(); _numbers.Dispose(); _poiseCells.Dispose(); _body.Dispose(); _small.Dispose(); _nameFont.Dispose(); _hotkeyFont.Dispose(); _poiseLabel.Dispose(); _slotMark.Dispose(); base.Dispose();
+        Cancel(); _deck.Dispose(); _icons.Dispose(); _art.Dispose(); _numbers.Dispose(); _poiseCells.Dispose(); _spLabel.Dispose(); _body.Dispose(); _small.Dispose(); _nameFont.Dispose(); _hotkeyFont.Dispose(); _poiseLabel.Dispose(); _slotMark.Dispose(); base.Dispose();
     }
-}
-
-internal sealed class PlayerHudBuffWidget : PlayerHudWidgetBase, INativeHudPointerSnapshot
-{
-    private long _epoch;
-    private string? _hoverId;
-    private int _hoverSlot = -1;
-    private int _page, _lastSlotCount = -1;
-    private PlayerHudTarget? _pageDown;
-    private bool _pageUpMatches;
-    private readonly Font _label=NativeHudFonts.CreateRoleFont("native.player-info.body",10,FontStyle.Bold,GraphicsUnit.Pixel);
-    private readonly Font _small=NativeHudFonts.CreateRoleFont("native.player-info.body",8,FontStyle.Regular,GraphicsUnit.Pixel);
-    protected override bool HasContent => Snapshot?.BuffCards.Length>0;
-    private int SlotCount => Snapshot?.BuffCards.Length ?? 0;
-    internal static RectangleF SlotRect(int index) => PlayerHudBuffLayout.SlotRect(index);
-    protected override RectangleF LogicalBounds => PlayerHudBuffLayout.Bounds(SlotCount);
-    internal int CurrentPage => _page;
-    internal PlayerHudBuffWidget(Control anchor, PlayerHudController controller) : base(anchor, controller) { OnStateChanged(); }
-    protected override void OnStateChanged()
-    {
-        var s=Snapshot;
-        if(s?.Epoch!=_epoch) { _epoch=s?.Epoch??0;_page=0;CancelPagePress();CancelHover(); }
-        if (_lastSlotCount != SlotCount) { _lastSlotCount = SlotCount; CancelPagePress(); }
-        int page = Math.Clamp(_page, 0, PlayerHudBuffLayout.PageCount(SlotCount) - 1);
-        if (page != _page) { _page = page; CancelHover(); }
-        if(_hoverId!=null&&(s==null || _hoverSlot<0 || _hoverSlot>=s.BuffCards.Length || s.BuffCards[_hoverSlot].Id!=_hoverId))CancelHover();
-        base.OnStateChanged();
-    }
-    protected override void PaintLogical(Graphics g)
-    {
-        int first = _page * PlayerHudBuffLayout.PageSize;
-        int end = Math.Min(first + PlayerHudBuffLayout.PageSize, Snapshot!.BuffCards.Length);
-        for(var index=first;index<end;index++)
-        {
-            var b=Snapshot.BuffCards[index];
-            var r=SlotRect(index-first);
-            PaintBuffSlot(g, b, r, _hoverId==b.Id);
-        }
-        if (PlayerHudBuffLayout.PageCount(SlotCount) > 1)
-        {
-            var previous = PlayerHudBuffLayout.PreviousPageRect(SlotCount);
-            var next = PlayerHudBuffLayout.NextPageRect(SlotCount);
-            using var edge = new Pen(NativeHudTheme.AnchorRimMuted, .6f);
-            using var ink = new SolidBrush(Color.FromArgb(218, 222, 218));
-            using var muted = new SolidBrush(Color.FromArgb(103, 110, 110));
-            using var format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-            using (var pagerBg = new SolidBrush(Color.FromArgb(220, 10, 11, 12)))
-            {
-                g.FillRectangle(pagerBg, previous);
-                g.FillRectangle(pagerBg, next);
-            }
-            g.DrawRectangle(edge, previous.X, previous.Y, previous.Width, previous.Height);
-            g.DrawRectangle(edge, next.X, next.Y, next.Width, next.Height);
-            g.DrawString("<", _label, _page > 0 ? ink : muted, previous, format);
-            g.DrawString(">", _label, _page + 1 < PlayerHudBuffLayout.PageCount(SlotCount) ? ink : muted, next, format);
-            g.DrawString($"{_page + 1}/{PlayerHudBuffLayout.PageCount(SlotCount)} · {SlotCount}项状态", _small, ink,
-                RectangleF.FromLTRB(previous.Right, previous.Top, next.Left, previous.Bottom), format);
-        }
-    }
-    /// <summary>
-    /// Buff 基础框（ADR D7，不含图标美术）：技能槽式四角角标框；计时与技能冷却同语言
-    /// （自上而下的已过时长遮罩 + 琥珀分界线），右下剩余秒数，左上层数，底部 2px 极性轨，
-    /// 临近结束左上/右下框角红灯，组卡激活青色内框。图标位暂用名称首字占位。
-    /// </summary>
-    internal const double BuffExpiringFrames = 90;
-    internal static readonly Color BuffBenefitRail = NativeHudTheme.AnchorCyan;
-    internal static readonly Color BuffHarmRail = NativeHudTheme.AnchorCoral;
-    internal static readonly Color BuffNeutralRail = Color.FromArgb(255, 150, 154, 152);
-
-    private void PaintBuffSlot(Graphics g, PlayerHudBuffCard b, RectangleF r, bool hover)
-    {
-        var oldSmooth = g.SmoothingMode;
-        try
-        {
-            g.SmoothingMode = SmoothingMode.None;
-            using (var bg = new LinearGradientBrush(r, Color.FromArgb(244, 22, 24, 25), Color.FromArgb(248, 5, 6, 6), LinearGradientMode.Vertical))
-                g.FillRectangle(bg, r);
-            using (var outline = new Pen(Color.FromArgb(hover ? 150 : 72, 214, 217, 215), 0.6f))
-                g.DrawRectangle(outline, r.X, r.Y, r.Width, r.Height);
-
-            var label = b.Name.Length > 0 ? b.Name : "状态";
-            // Initial glyphs identify the effect without inventing a missing asset icon.
-            var elements = new System.Globalization.StringInfo(label);
-            if (elements.LengthInTextElements > 2) label = elements.SubstringByTextElements(0, 2);
-            using (var glyph = new SolidBrush(Color.FromArgb(hover ? 236 : 196, 214, 217, 215)))
-            using (var format = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap, Trimming = StringTrimming.EllipsisCharacter })
-                g.DrawString(label, _label, glyph, new RectangleF(r.X + 1, r.Y + 1, r.Width - 2, r.Height - 5), format);
-
-            var inner = RectangleF.FromLTRB(r.Left + 1.2f, r.Top + 1.2f, r.Right - 1.2f, r.Bottom - 3.5f);
-            bool expiring = false;
-            if (b.DisplayTimed)
-            {
-                var fraction = b.DisplayTotal > 0 ? Math.Clamp(b.DisplayRemaining / b.DisplayTotal, 0, 1) : 0;
-                float elapsedH = (float)(inner.Height * (1 - fraction));
-                if (elapsedH > 0.4f)
-                {
-                    using (var cover = new SolidBrush(Color.FromArgb(158, 0, 0, 0)))
-                        g.FillRectangle(cover, inner.X, inner.Y, inner.Width, elapsedH);
-                    using (var horizon = new Pen(NativeHudTheme.AnchorAmber, 0.8f))
-                        g.DrawLine(horizon, inner.Left, inner.Y + elapsedH, inner.Right, inner.Y + elapsedH);
-                }
-                expiring = b.DisplayRemaining <= BuffExpiringFrames;
-                var seconds = Math.Ceiling(b.DisplayRemaining * PlayerHudCooldownText.StepMilliseconds / 1000).ToString("0", CultureInfo.InvariantCulture);
-                var size = g.MeasureString(seconds, _small, PointF.Empty, StringFormat.GenericTypographic);
-                var secRect = new RectangleF(r.Right - size.Width - 2.4f, r.Bottom - size.Height - 3.4f, size.Width + 1.2f, size.Height);
-                using (var back = new SolidBrush(Color.FromArgb(196, 0, 0, 0)))
-                    g.FillRectangle(back, secRect);
-                using (var ink = new SolidBrush(expiring ? NativeHudTheme.AnchorAmber : Color.FromArgb(240, 244, 248, 244)))
-                    g.DrawString(seconds, _small, ink, secRect.X + 0.6f, secRect.Y, StringFormat.GenericTypographic);
-            }
-            if (b.Stacks > 1)
-            {
-                using (var back = new SolidBrush(Color.FromArgb(180, 0, 0, 0)))
-                using (var ink = new SolidBrush(Color.FromArgb(244, 248, 248, 244)))
-                {
-                    var stacks = b.Stacks.ToString(CultureInfo.InvariantCulture);
-                    var size = g.MeasureString(stacks, _small, PointF.Empty, StringFormat.GenericTypographic);
-                    g.FillRectangle(back, r.X + 1.2f, r.Y + 1.2f, size.Width + 1.4f, size.Height);
-                    g.DrawString(stacks, _small, ink, r.X + 1.8f, r.Y + 1.2f, StringFormat.GenericTypographic);
-                }
-            }
-
-            var bracket = hover ? Color.FromArgb(250, 246, 246, 242) : NativeHudTheme.AnchorRim;
-            if (b.Activation?.Active == true)
-            {
-                using (var groupPen = new Pen(NativeHudTheme.AnchorCyan, 0.8f))
-                    g.DrawRectangle(groupPen, r.X + 1, r.Y + 1, r.Width - 2, r.Height - 2);
-                bracket = NativeHudTheme.AnchorCyan;
-            }
-            NativeHudTheme.DrawSlotBrackets(g, r, bracket, 5f, 1.1f);
-
-            var rail = b.Polarity switch { "benefit" => BuffBenefitRail, "harm" => BuffHarmRail, _ => BuffNeutralRail };
-            using (var railBrush = new SolidBrush(rail))
-                g.FillRectangle(railBrush, r.X + 3, r.Bottom - 2.6f, r.Width - 6, 1.8f);
-
-            if (expiring)
-            {
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-                using (var lamp = new SolidBrush(NativeHudTheme.AnchorCoral))
-                {
-                    g.FillEllipse(lamp, r.X + 0.6f, r.Y + 0.6f, 2.8f, 2.8f);
-                    g.FillEllipse(lamp, r.Right - 3.4f, r.Bottom - 3.4f, 2.8f, 2.8f);
-                }
-            }
-        }
-        finally { g.SmoothingMode = oldSmooth; }
-    }
-
-    private PlayerHudTarget? Hit(Point screen)
-    {
-        if(!Visible || !Controller.CanInteract || Snapshot is not {} s || Scale<=0)return null;
-        var point=Logical(screen);
-        int first = _page * PlayerHudBuffLayout.PageSize;
-        int end = Math.Min(first + PlayerHudBuffLayout.PageSize, s.BuffCards.Length);
-        for(var slot=first;slot<end;slot++)
-            if(SlotRect(slot-first).Contains(point))
-                return new("buff",slot,s.BuffCards[slot].Id,s.Epoch,0,s.Loadout.Bank,SlotRect(slot-first),Controller.Generation,s.Vitals.Paused);
-        if (PlayerHudBuffLayout.PageCount(SlotCount) > 1)
-        {
-            var previous = PlayerHudBuffLayout.PreviousPageRect(SlotCount);
-            var next = PlayerHudBuffLayout.NextPageRect(SlotCount);
-            if (previous.Contains(point)) return PageTarget(Math.Max(0, _page - 1), previous, s);
-            if (next.Contains(point)) return PageTarget(Math.Min(PlayerHudBuffLayout.PageCount(SlotCount) - 1, _page + 1), next, s);
-        }
-        return null;
-    }
-    private PlayerHudTarget PageTarget(int page, RectangleF bounds, PlayerHudSnapshot snapshot) =>
-        new("buffPage", page, $"{_page}:{SlotCount}:{page}", snapshot.Epoch, 0, snapshot.Loadout.Bank,
-            bounds, Controller.Generation, snapshot.Vitals.Paused);
-    public override bool TryHitTest(Point screenPt) => Hit(screenPt)!=null;
-    // Shared-world routing validates this snapshot before delivering hover, just as it does for clicks.
-    public object? CapturePointerTarget(Point screen) => Hit(screen);
-    public bool NeedsPointerClick => PlayerHudBuffLayout.PageCount(SlotCount) > 1;
-    public override void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)
-    {
-        if(kind is MouseEventKind.Cancel or MouseEventKind.Leave) { CancelPagePress();CancelHover();return; }
-        var target=Hit(new Point(e.X,e.Y));
-        if (kind is MouseEventKind.Move or MouseEventKind.Enter)
-        {
-            if (target?.Kind != "buff") { CancelHover(); return; }
-            if(target.Key==_hoverId && target.Slot==_hoverSlot)return;
-            CancelHover();_hoverId=target.Key;_hoverSlot=target.Slot;Controller.ShowTooltip(target);Repaint();return;
-        }
-        if (e.Button != MouseButtons.Left) return;
-        if (kind == MouseEventKind.Down) { _pageDown = target?.Kind == "buffPage" ? target : null; _pageUpMatches = false; }
-        if (kind == MouseEventKind.Up) _pageUpMatches = _pageDown != null && _pageDown == target;
-        if (kind == MouseEventKind.Click)
-        {
-            if (_pageUpMatches && _pageDown != null && _pageDown == target)
-            {
-                CancelHover(); _page = _pageDown.Slot; Repaint();
-            }
-            CancelPagePress();
-        }
-    }
-    private void CancelPagePress() { _pageDown = null; _pageUpMatches = false; }
-    private void CancelHover() { if(_hoverId==null)return;_hoverId=null;_hoverSlot=-1;Controller.HideTooltip();Repaint(); }
-    public override void SetHostSuppressed(bool suppressed) { if(suppressed) { CancelPagePress();CancelHover(); } base.SetHostSuppressed(suppressed); }
-    public override void Dispose() { CancelHover();_label.Dispose();_small.Dispose();base.Dispose(); }
 }

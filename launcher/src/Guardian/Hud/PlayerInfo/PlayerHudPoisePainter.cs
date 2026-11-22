@@ -20,7 +20,10 @@ internal static class PlayerHudPoisePainter
         var source=PlayerHudBarArtData.MpBounds;
         var split=detail is {HasStaggerBand:true} && !inactive ? (float)detail.Threshold*source.Width : 0;
         var saved=g.Save();
-        g.TranslateTransform(PlayerHudResourceLayout.ResourceOffsetX+PlayerHudResourceLayout.PoiseOffsetX,PlayerHudResourceLayout.PoiseTop-source.Top);
+        var target = PlayerHudResourceLayout.PoiseBar;
+        g.TranslateTransform(target.Left,target.Top);
+        g.ScaleTransform(target.Width/source.Width,target.Height/source.Height);
+        g.TranslateTransform(-source.Left,-source.Top);
         using var track=new SolidBrush(Color.FromArgb(24,28,28));
         g.FillPath(track,cells);
         // Bottom: rigid chassis remains visible through cell gaps and the inner edges at full poise.

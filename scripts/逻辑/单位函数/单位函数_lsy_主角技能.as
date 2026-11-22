@@ -1351,6 +1351,11 @@ _root.技能函数.能量盾释放 = function(target:Object, 技能等级:Number
 
 	// === 应用Buff效果 ===
 	target.buff.限时赋值(持续毫秒, "魔法抗性", "加算", 增加值, "增益");
+    if (isPlayer) {
+        var timer:Object = _root.帧计时器;
+        var task:Object = timer.定位任务(target.taskLabel["主角限时倍率buff"]);
+        target.__hudEnergyEffect = task == null ? null : {owner:target.buff, task:task, action:task.action};
+    }
 
 	// === 添加衰减护盾（视觉提示+保底防御） ===
 	var 护盾容量:Number = (target.hp满血值 + 1000) * (10 + 技能等级);  // 等级1→11倍，等级10→20倍
@@ -1448,6 +1453,7 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
 	// 保守语义MULT_NEGATIVE会自动取所有减伤效果中的最小值（最强减伤）
 	var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
 	metaBuff.hudInfo = {name:"霸体减伤", description:"降低受到的伤害；同类减伤取最强效果。", polarity:"benefit", stacks:0};
+    if (来源ID == "觉醒霸体" || 来源ID == "霸体") metaBuff.hudInfo.source = {kind:"skill",key:来源ID};
 	target.buffManager.addBuff(metaBuff, buffId);
 
 };
@@ -1545,7 +1551,7 @@ _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number
 	);
 
 	// 使用 addBuffImmediate 立即应用，以便后续播报正确的防御力值
-	metaBuff.hudInfo = {name:"铁布衫", description:"提高防御力；同类防御倍率取最强效果。", polarity:"benefit", stacks:0};
+	metaBuff.hudInfo = {source:{kind:"skill",key:"铁布衫"}, name:"铁布衫", description:"提高防御力；同类防御倍率取最强效果。", polarity:"benefit", stacks:0};
 	target.buffManager.addBuffImmediate(metaBuff, "铁布衫");
 
 	// 计算并显示加成比例

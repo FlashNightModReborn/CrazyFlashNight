@@ -88,6 +88,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         target.dispatcher.publish("UnitInitialized", target);
         target.__unitInitializedVersion = target.version;
         org.flashNight.arki.hud.FocusTargetHudService.onUnitInitialized(target);
+        org.flashNight.arki.hud.PlayerHudAllyRoster.onUnitInitialized(target);
 
         // _root.发布消息("单位初始化完成: " + target._name);
         /*

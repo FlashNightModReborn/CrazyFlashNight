@@ -53,6 +53,31 @@ class Base64
     }
 
     /** Display projections replace isolated UTF-16 surrogates; strict encode callers keep their contract. */
+    // Keep UTF-8 bytes of detached HUD group snapshots. A group can start at any
+    // of three offsets in a Base64 stream. Its complete triplets can be reused;
+    // partial triplets are joined across groups, preserving the exact wire bytes.
+    public static function displayPart(input:String):Object {
+        return {bytes:stringToUTF8Bytes(input, true), blocks:[]};
+    }
+    public static function appendDisplayPart(output:Array, carry:Array, part:Object):Void {
+        var bytes:Array = part.bytes;
+        var len:Number = bytes.length;
+        var pos:Number = 0;
+        if (carry.length > 0) {
+            while (carry.length < 3 && pos < len) carry.push(bytes[pos++]);
+            if (carry.length == 3) { output.push(encodeBytes(carry)); carry.length = 0; }
+        }
+        var end:Number = len - ((len-pos) % 3);
+        if (end > pos) {
+            var block:String = part.blocks[pos];
+            if (block == undefined) {
+                block = encodeBytes(bytes.slice(pos,end));
+                part.blocks[pos] = block;
+            }
+            output.push(block);
+        }
+        while (end < len) carry.push(bytes[end++]);
+    }
     public static function encodeDisplay(input:String):String
     {
         return encodeBytes(stringToUTF8Bytes(input, true));

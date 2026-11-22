@@ -103,19 +103,16 @@ public sealed class FocusTargetHudTests
     }
 
     [Theory]
-    [InlineData(0, 4)]
-    [InlineData(1, 36)]
-    [InlineData(10, 36)]
-    [InlineData(11, 68)]
-    [InlineData(32, 132)]
-    [InlineData(33, 132)]
-    [InlineData(80, 152)]
-    [InlineData(81, 152)]
-    [InlineData(256, 152)]
-    public void FollowsBuffRowsAndCompactsToTopWhenNoBuffsExist(int buffs, float top)
+    [InlineData(0)]
+    [InlineData(10)]
+    [InlineData(84)]
+    [InlineData(256)]
+    public void FirstRowKeepsTheAuthoredAnchorWhenBuffCountChanges(int buffs)
     {
         var bounds = PlayerHudFocusTargetWidget.BoundsForBuffCount(buffs);
-        Assert.Equal(top, bounds.Top);
+        Assert.Equal(new RectangleF(6,0,294,32),bounds);
+        Assert.Equal(new RectangleF(6,34,294,30),PlayerHudFocusTargetWidget.RowBounds(buffs,1,2,3));
+        Assert.Equal(new RectangleF(8,34,290,23),PlayerHudFocusTargetWidget.RowBounds(buffs,1,2,4));
         Assert.True(bounds.Left >= 0 && bounds.Right <= 1024 && bounds.Bottom < 576);
         var notchLeft = (1024 - RightHudLayout.PreferredNotchMaxWidthBase) / 2f;
         Assert.True(bounds.Right + RightHudLayout.NotchRightGapBase <= notchLeft);
@@ -161,12 +158,12 @@ public sealed class FocusTargetHudTests
             float scale = viewport.Height / 576f;
             var logical = PlayerHudFocusTargetWidget.BoundsForBuffCount(buffs);
             int barY = (int)(viewport.Top + (logical.Top + 23) * scale);
-            var filled = bitmap.GetPixel((int)(viewport.Left + (logical.Left + 30) * scale), barY);
+            var filled = bitmap.GetPixel((int)(viewport.Left + (logical.Left + 52) * scale), barY);
             var empty = bitmap.GetPixel((int)(viewport.Left + (logical.Right - 12) * scale), barY);
             Assert.True(filled.A > 0 && empty.A > 0);
             Assert.True(role == "boss" ? filled.R > filled.G : filled.B > filled.R);
             Assert.True(empty.R < 60 && empty.G < 60 && empty.B < 60);
-            Assert.Equal(0, bitmap.GetPixel(viewport.Left + 10, viewport.Top + 2).A);
+            Assert.Equal(0, bitmap.GetPixel(viewport.Left + 2, viewport.Top + 2).A);
             // Exercise the actual widest notch and both persistent rows from the
             // reported paused Boss fight, not just the top toolbar rectangle.
             var fps = new FpsRingBuffer(600); fps.Push(30);
@@ -193,7 +190,7 @@ public sealed class FocusTargetHudTests
     }
 
     [Fact]
-    public void FocusTargetSupportsDamageTrailCriticalHysteresisOverflowAndUnifiedTooltip()
+    public void FocusTargetSupportsDamageTrailWarningBandsOverflowAndUnifiedTooltip()
     {
         Sta(() =>
         {
@@ -231,7 +228,7 @@ public sealed class FocusTargetHudTests
             var slightHeal = (JObject)hit.DeepClone();
             slightHeal["hp"] = new JArray(28, 100);
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(3, new JObject { ["focusTarget"] = slightHeal })));
-            Assert.True(widget.IsCritical); // 25% enter, >30% exit hysteresis
+            Assert.True(widget.IsCritical); // The protection row remains red below 30%.
             Assert.True(widget.GetHealAlpha(1) > 0f);
 
             var hoverPt = new Point(widget.ScreenBounds.Left + 20, widget.ScreenBounds.Top + 10);
@@ -254,6 +251,36 @@ public sealed class FocusTargetHudTests
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(5, new JObject { ["focusTarget"] = JValue.CreateNull() })));
             tooltip.Widget.Tick(2000); // 淡出窗口走完，会话才结束
             Assert.False(tooltip.Widget.Visible);
+        });
+    }
+
+    [Fact]
+    public void EqualTargetFactsInNewEpochReinitializeWithoutLosingCriticalStateOrInheritingDamage()
+    {
+        Sta(() =>
+        {
+            PlayerHudMotionSettings.Configure("full");
+            using var form = new Form { ClientSize = new Size(1024, 576) };
+            using var anchor = new Panel { Dock = DockStyle.Fill };
+            form.Controls.Add(anchor);
+            form.CreateControl();
+            anchor.CreateControl();
+            using var controller = new PlayerHudController(_ => true, () => true, action => action());
+            using var widget = new PlayerHudFocusTargetWidget(anchor, controller);
+
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Full()));
+            var low = Full(1, 2);
+            low["groups"]["focusTarget"]["hp"] = new JArray(25, 100);
+            low["groups"]["focusTarget"]["role"] = "protect";
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(low));
+            Assert.True(widget.IsCritical);
+            Assert.Equal(.7, widget.TrailRatio, 8);
+            low["epoch"] = 2;
+            low["seq"] = 1;
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(low));
+            Assert.True(widget.IsCritical);
+            Assert.Equal(.25, widget.TrailRatio, 8);
+            Assert.Equal(0f, widget.GetHealAlpha(1));
         });
     }
 
@@ -304,7 +331,7 @@ public sealed class FocusTargetHudTests
             Assert.Single(dollBake.Keys);
             Assert.StartsWith("纸娃娃-", list[0].PortraitKey, StringComparison.Ordinal);
             Assert.Equal(dollBake.Keys[0], list[0].PortraitKey);
-            Assert.True(widget.IsTargetCritical(30));
+            Assert.False(widget.IsTargetCritical(30));
             Assert.False(widget.IsTargetCritical(20));
 
             using var bitmap = new Bitmap(1024, 576, PixelFormat.Format32bppPArgb);
@@ -318,13 +345,13 @@ public sealed class FocusTargetHudTests
             Assert.True(hasBossPortraitPixel);
 
             // Hover row 2 (combat target)
-            var combatRowPt = new Point(widget.ScreenBounds.Left + 40, widget.ScreenBounds.Top + (int)(2 * 33) + 12);
+            var combatRowPt = new Point(widget.ScreenBounds.Left + 195, widget.ScreenBounds.Top + 45);
             widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, combatRowPt.X, combatRowPt.Y, 0), MouseEventKind.Move);
             Assert.True(tooltip.Widget.Visible);
             var combatText = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(r => r.Text));
             Assert.Contains("重盾骑士", combatText);
             Assert.Contains("当前交战目标", combatText);
-            Assert.Contains("状态：目标生命危急", combatText);
+            Assert.DoesNotContain("危急", combatText);
 
             // Duplicate IDs or >8 targets must be rejected fail-closed
             var dupPacket = PlayerHudStateTests.Full(1, 2);
@@ -337,7 +364,7 @@ public sealed class FocusTargetHudTests
     }
 
     [Fact]
-    public void EightDistinctTargetsRevertToWideRowsEvenWithLegacyCompactHints()
+    public void EightDistinctTargetsShareSevenSecondaryCellsEvenWithLegacyCompactHints()
     {
         var state = new PlayerHudState();
         var packet = Full();
@@ -346,13 +373,13 @@ public sealed class FocusTargetHudTests
         Assert.True(Receive(state, packet));
         Assert.Equal(8, state.Snapshot.TargetList.Length);
         Assert.All(state.Snapshot.TargetList, row => Assert.True(row.Compact));
-        Assert.Equal(new RectangleF(155, 103, 145, 30), PlayerHudFocusTargetWidget.RowBounds(0, 7, 8));
-        Assert.Equal(new RectangleF(6, 4, 294, 129), PlayerHudFocusTargetWidget.BoundsForBuffCount(0, 8));
+        Assert.Equal(new RectangleF(8 + 6 * (290f / 7),34,290f / 7,23), PlayerHudFocusTargetWidget.RowBounds(0, 7, 8));
+        Assert.Equal(new RectangleF(6,0,294,57), PlayerHudFocusTargetWidget.BoundsForBuffCount(0, 8));
         var fewer = new JArray(targets.Take(3).Select(t => t.DeepClone()));
         Assert.True(Receive(state, Delta(2, new JObject { ["focusTarget"] = fewer })));
         Assert.Equal(3, state.Snapshot.TargetList.Length);
         Assert.True(state.Snapshot.TargetList[0].Compact);
-        Assert.Equal(new RectangleF(6, 70, 294, 30), PlayerHudFocusTargetWidget.RowBounds(0, 2, 3));
+        Assert.Equal(new RectangleF(153,34,145,23), PlayerHudFocusTargetWidget.RowBounds(0, 2, 3));
         Assert.Equal("9999", PlayerHudFocusTargetWidget.DenseValue(9999));
         Assert.Equal("1万", PlayerHudFocusTargetWidget.DenseValue(10000));
         Assert.Equal("1.9万", PlayerHudFocusTargetWidget.DenseValue(19999));
@@ -368,13 +395,13 @@ public sealed class FocusTargetHudTests
     [Theory]
     [InlineData(1, 1)]
     [InlineData(2, 2)]
-    [InlineData(3, 3)]
-    [InlineData(4, 4)]
-    [InlineData(5, 3)]
-    [InlineData(6, 2)]
+    [InlineData(3, 1)]
+    [InlineData(4, 1)]
+    [InlineData(5, 1)]
+    [InlineData(6, 1)]
     [InlineData(7, 1)]
-    [InlineData(8, 0)]
-    public void OnlyNecessaryRowsSplitAndEveryCellPaintsAndHoversItsOwnTarget(int count, int wide)
+    [InlineData(8, 1)]
+    public void SecondaryTargetsShareOneRowAndEveryCellHoversItsOwnTarget(int count, int wide)
     {
         Sta(() =>
         {
@@ -417,9 +444,9 @@ public sealed class FocusTargetHudTests
             }
             for (int i = 0; i < count; i++)
             {
-                int row = i < wide ? i : wide + (i - wide) / 2;
-                int col = i < wide ? 0 : (i - wide) % 2;
-                var cell = new Point(66 + 149 * col, 17 + 33 * row);
+                var item = PlayerHudFocusTargetWidget.RowBounds(0,i,count);
+                Assert.Equal(i < wide, item.Width == 294);
+                var cell = new Point((int)(item.Left + item.Width/2),(int)(item.Top + item.Height/2));
                 Assert.NotEqual(0, bitmap.GetPixel(cell.X, cell.Y).A);
                 var screen = anchor.PointToScreen(cell);
                 widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, screen.X, screen.Y, 0), MouseEventKind.Move);
@@ -428,25 +455,22 @@ public sealed class FocusTargetHudTests
                 Assert.Contains(i + 1 == count ? "克隆兽" : protects[i], text);
                 Assert.Contains("15743 / 21800", text);
                 Assert.Equal(i < wide && i + 1 == count ? 1f : 0f, widget.GetComboPulse(i + 1));
-                var middle = new Point(153, cell.Y);
-                Assert.Equal(i < wide, bitmap.GetPixel(middle.X, middle.Y).A > 0);
-                Assert.Equal(i < wide, widget.TryHitTest(anchor.PointToScreen(middle)));
             }
             var bounds = PlayerHudFocusTargetWidget.BoundsForBuffCount(0, count);
-            Assert.Equal(4 + Math.Min(count, 4) * 33 - 3, bounds.Bottom);
+            Assert.Equal(count == 1 ? 32f : count == 2 ? 64f : 57f, bounds.Bottom);
             Assert.Equal(bounds.Bottom, PlayerHudFocusTargetWidget.TopLeftBottomFor(0, count, false));
 
             if (count == 5)
             {
                 var queue = (JArray)packet["groups"]["focusTarget"]!;
-                var wideOrHalf = anchor.PointToScreen(new Point(66, 116));
+                var wideOrHalf = anchor.PointToScreen(new Point(198, 45));
                 widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, wideOrHalf.X, wideOrHalf.Y, 0), MouseEventKind.Move);
                 var four = new JArray(queue.Take(4).Select(item => item.DeepClone()));
                 Assert.True(Receive(controller.State, Delta(2, new JObject { ["focusTarget"] = four })));
                 Assert.True(tooltip.Widget.Visible);
                 var current = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(run => run.Text));
                 Assert.Contains("黑龙", current);
-                var formerEnemyCell = anchor.PointToScreen(new Point(215, 116));
+                var formerEnemyCell = anchor.PointToScreen(new Point(280, 45));
                 widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, formerEnemyCell.X, formerEnemyCell.Y, 0), MouseEventKind.Move);
                 Assert.Contains("黑龙", string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(run => run.Text)));
                 Assert.True(Receive(controller.State, Delta(3, new JObject { ["focusTarget"] = queue.DeepClone() })));
@@ -516,6 +540,52 @@ public sealed class FocusTargetHudTests
             var badHits = Full(1, 2);
             badHits["groups"]["focusTarget"]["hits"] = 0;
             Assert.False(Receive(controller.State, badHits));
+        });
+    }
+
+    [Fact]
+    public void HealthRequestsTrackAndNumeralsWhileOnlyTrailTicksRequestJustTheTrack()
+    {
+        Sta(() =>
+        {
+            RuntimeFontCatalog.Configure(Root());
+            PlayerHudMotionSettings.Configure("full");
+            using var form = new Form();
+            using var anchor = new Panel { Size = new Size(1600, 900) };
+            form.Controls.Add(anchor);
+            form.CreateControl();
+            anchor.CreateControl();
+            using var controller = new PlayerHudController(_ => true, () => true, action => action());
+            using var widget = new PlayerHudFocusTargetWidget(anchor, controller);
+            EventArgs? damage = null;
+            widget.RepaintRequested += (_, e) => damage = e;
+            var target = Target();
+            void SetHp(int seq, int hp)
+            {
+                target["hp"] = new JArray(hp, 100);
+                var packet = Full(1, seq);
+                packet["groups"]["buffs"] = new JArray();
+                packet["groups"]["focusTarget"] = target.DeepClone();
+                controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
+            }
+
+            target["role"] = "protect";
+            SetHp(1, 58);
+            SetHp(2, 45);
+            var update = Assert.IsType<HudRepaintRegions>(damage).Bounds;
+            Assert.Equal(2, update.Length);
+            Assert.True(update[1].Top < update[0].Top);
+            damage = null;
+            widget.Tick(150);
+            var track = Assert.Single(Assert.IsType<HudRepaintRegions>(damage).Bounds);
+            Assert.True(widget.ScreenBounds.Contains(track));
+            Assert.True(track.Height < widget.ScreenBounds.Height / 2);
+            SetHp(3, 15);
+            var wholeRow = Rectangle.Inflate(widget.ScreenBounds, 2, 2); // 1600×900 centered stroke and AA fringe
+            Assert.Equal(wholeRow, Assert.Single(Assert.IsType<HudRepaintRegions>(damage).Bounds));
+            damage = null;
+            widget.Tick(33);
+            Assert.True(Assert.Single(Assert.IsType<HudRepaintRegions>(damage).Bounds).Height < wholeRow.Height / 2);
         });
     }
 

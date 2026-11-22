@@ -129,12 +129,12 @@ internal static class PlayerHudResourceHintPainter
     {
         if (alpha <= 0) return;
         var bar = PlayerHudResourceLayout.MpBar;
-        var left = 88 + PlayerHudResourceLayout.ResourceOffsetX;
+        var left = 90f;
         // Track and label stay visible even when the actual gauge is completely empty.
         using var wash = new SolidBrush(Color.FromArgb((int)(42 * alpha), 245, 104, 75));
-        g.FillRectangle(wash, left, bar.Top - 16, bar.Right - left, bar.Height + 16);
+        g.FillRectangle(wash, left, bar.Top - 12, bar.Right - left, bar.Height + 12);
         using var pen = new Pen(Color.FromArgb((int)(240 * alpha), 255, 115, 87), 1.4f);
-        g.DrawLines(pen, [new PointF(left, bar.Top - 14), new PointF(left, bar.Bottom + 0.5f),
+        g.DrawLines(pen, [new PointF(left, bar.Top - 11), new PointF(left, bar.Bottom + 0.5f),
             new PointF(bar.Right - 4, bar.Bottom + 0.5f), new PointF(bar.Right, bar.Bottom - 3)]);
         using var label = new Pen(Color.FromArgb((int)(255 * alpha), 255, 203, 153), 1.2f);
         g.DrawLine(label, left + 2, bar.Top - 0.5f, left + 24, bar.Top - 0.5f);

@@ -15,7 +15,7 @@
  *
  * @param 物品名 String 药剂物品名称
  */
-_root.使用药剂 = function(物品名:String):Void {
+_root.使用药剂 = function(物品名:String, physicalSlot:Number):Void {
     var 控制对象:Object = TargetCacheManager.findHero();
     if (!控制对象 || 控制对象.hp <= 0) {
         return;
@@ -40,6 +40,9 @@ _root.使用药剂 = function(物品名:String):Void {
 
     // 创建执行上下文，直接传入已获取的数据避免重复查询
     var context:DrugContext = DrugContext.createWithData(物品名, 控制对象, itemData);
+    if (physicalSlot != undefined && physicalSlot >= 0 && physicalSlot < 8 && physicalSlot == Math.floor(physicalSlot))
+        context.hudSource = {kind:"drug", slot:physicalSlot, key:物品名};
+    else if (physicalSlot === -1) context.hudSource = {kind:"inventory", key:物品名};
     if (!context.isValid()) {
         trace("[使用药剂] 上下文无效");
         return;

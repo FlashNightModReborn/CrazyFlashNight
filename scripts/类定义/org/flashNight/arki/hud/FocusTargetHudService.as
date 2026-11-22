@@ -59,7 +59,7 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         }
         return validLabel(out) ? out : "";
     }
-    private static function extractPortrait(unit:MovieClip):Object {
+    public static function extractPortrait(unit:MovieClip):Object {
         var key:String = cleanField(UnitUtil.getUnitTypeKey(unit), 128);
         var info:Object = _root.敌人属性表 != undefined ? _root.敌人属性表[key] : null;
         var fixedAppearance:Boolean = info != undefined && info.battleRecordAppearance == "fixed";
@@ -89,6 +89,16 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         }
         return {icon: icon, doll: null};
     }
+    /** Matches an active lease against the live clip and the published focus row id. */
+    public static function visitRosterBindings(world:MovieClip, visitor:Function):Void {
+        for (var i:Number = 0; i < bindings.length; i++) {
+            var entry:Object = bindings[i];
+            var unit:MovieClip = world[entry.name];
+            if (entry.worldIdentity === world.__stageReturnWorldIdentity && typeof unit == "movieclip"
+                    && unit._parent === world && unit[entry.identityKey] === entry.unitIdentity)
+                visitor(unit, entry.role, entry.id);
+        }
+    }
     private static function syncBindingsWithPrimary():Void {
         if (binding == null) {
             if (bindings.length > 0) bindings.length = 0;
@@ -116,10 +126,10 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         if (hero != null && hero.是否为敌人 === true) return target.是否为敌人 !== true;
         return target.是否为敌人 !== false;
     }
-    private static function unitLabel(unit:MovieClip, role:String):String {
+    public static function unitLabel(unit:MovieClip, role:String):String {
         var label:String = unit.名字 == undefined ? "" : String(unit.名字);
         if (!validLabel(label)) label = unit.兵种 == undefined ? "" : String(unit.兵种);
-        if (!validLabel(label)) label = role == "boss" ? "Boss" : (role == "protect" ? "保护目标" : "交战目标");
+        if (!validLabel(label)) label = role == "boss" ? "Boss" : (role == "protect" ? "保护目标" : (role == "ally" ? "友军" : "交战目标"));
         return label;
     }
 
@@ -137,6 +147,8 @@ class org.flashNight.arki.hud.FocusTargetHudService {
 
     /** Called after authored parameters are cloned, before attaching a marked unit. */
     public static function stampSpawn(world:MovieClip, params:Object):Void {
+        // Only the authored wave/event path calls this hook. Ambient and hireable NPCs bypass it.
+        if (params.是否为敌人 === false && !params.NPC && !params.element) params.__hudAllyRole = "map";
         if (params.focusHudRole != "protect" && params.focusHudRole != "boss") return;
         params.__stageFocusScope = activeScope != null && !activeScope.closed && activeScope.world === world
                 && world.__stageReturnWorldIdentity === activeScope.worldIdentity ? activeScope : null;

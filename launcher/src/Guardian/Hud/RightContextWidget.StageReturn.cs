@@ -364,7 +364,9 @@ namespace CF7Launcher.Guardian.Hud
         }
         private void PaintDailyDelivery(Graphics g, Rectangle slot, float scale)
         {
-            NativeHudTheme.DrawPanel(g, slot, scale, NativeHudTheme.PanelFillDense, NativeHudTheme.Cyan, true);
+            PaintMetalPlate(g,slot,scale,5,3,false);
+            using var blade=new SolidBrush(Color.FromArgb(220,154,162,160));
+            g.FillRectangle(blade,slot.X+1.5f*scale,slot.Y+2*scale,2*scale,slot.Height-4*scale);
             PaintReturnField(g, slot, scale);
             Rectangle action = DailyDeliveryActionRect(slot, scale);
             PaintDestinationControl(g, action, scale, _hover.Kind == HitKind.DeliveryAction,

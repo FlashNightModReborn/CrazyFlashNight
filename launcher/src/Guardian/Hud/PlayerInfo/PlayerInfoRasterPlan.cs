@@ -74,14 +74,14 @@ internal sealed class PlayerInfoRasterPlan(
     Rectangle stagePhysicalBounds,
     double physicalScale,
     float monitorDpiScale,
-    IReadOnlyList<PlayerInfoRasterLayerPlan> layers)
+    IReadOnlyList<PlayerInfoRasterLayerPlan> layers, bool liveReadouts = false)
 {
     internal Rectangle FlashViewportPhysical { get; } = flashViewportPhysical;
     internal Rectangle StagePhysicalBounds { get; } = stagePhysicalBounds;
     internal Rectangle TightPhysicalBounds { get; } =
         PlayerInfoRasterPlanner.ComputeTightPhysicalBounds(
             flashViewportPhysical,
-            layers);
+            layers, liveReadouts);
     internal double PhysicalScale { get; } = physicalScale;
 
     // Telemetry only. PMv2 viewport coordinates are already physical pixels.
@@ -99,10 +99,13 @@ internal static class PlayerInfoRasterPlanner
     // the PlayerInfo child placement at ty=512 in the 1024x576 main stage.
     internal const double PlayerInfoStageTopLogical = 512d;
 
+    internal static PlayerInfoRasterPlan Create(PlayerInfoSvgAssetSet assetSet, Rectangle flashViewportPhysical, float monitorDpiScale) =>
+        Create(assetSet,flashViewportPhysical,monitorDpiScale,false);
+
     internal static PlayerInfoRasterPlan Create(
         PlayerInfoSvgAssetSet assetSet,
         Rectangle flashViewportPhysical,
-        float monitorDpiScale)
+        float monitorDpiScale, bool liveReadouts)
     {
         ArgumentNullException.ThrowIfNull(assetSet);
         if (flashViewportPhysical.Width <= 0 || flashViewportPhysical.Height <= 0)
@@ -211,7 +214,7 @@ internal static class PlayerInfoRasterPlanner
             stageBounds,
             physicalScale,
             monitorDpiScale,
-            layers);
+            layers, liveReadouts);
     }
 
     private static void ValidateSourceToBitmap(
@@ -230,9 +233,12 @@ internal static class PlayerInfoRasterPlanner
         }
     }
 
+    internal static Rectangle ComputeTightPhysicalBounds(Rectangle flashViewportPhysical, IReadOnlyList<PlayerInfoRasterLayerPlan> layers) =>
+        ComputeTightPhysicalBounds(flashViewportPhysical,layers,false);
+
     internal static Rectangle ComputeTightPhysicalBounds(
         Rectangle flashViewportPhysical,
-        IReadOnlyList<PlayerInfoRasterLayerPlan> layers)
+        IReadOnlyList<PlayerInfoRasterLayerPlan> layers, bool liveReadouts)
     {
         if (flashViewportPhysical.Width <= 0 ||
             flashViewportPhysical.Height <= 0)
@@ -298,6 +304,13 @@ internal static class PlayerInfoRasterPlanner
         // timeline. Its authoring document's 1024x64 stage is placement
         // metadata, not a child clip rectangle. Clip only to the actual Flash
         // content viewport so negative-local-y HP artwork remains visible.
+        if (liveReadouts)
+        {
+            // The live shield plaque extends past the eight imported XFL layers.
+            var scale = flashViewportPhysical.Height / MainStageLogicalHeight;
+            unionRight = Math.Max(unionRight, viewportLeft + (long)Math.Ceiling((PlayerHudResourceLayout.ShieldPlaque.Right + 1) * scale));
+            unionBottom = Math.Max(unionBottom, viewportTop + (long)Math.Ceiling((PlayerHudResourceLayout.MpBar.Bottom + 2) * scale));
+        }
         var tightLeft = Math.Max(unionLeft, viewportLeft);
         var tightTop = Math.Max(unionTop, viewportTop);
         var tightRight = Math.Min(unionRight, viewportRight);

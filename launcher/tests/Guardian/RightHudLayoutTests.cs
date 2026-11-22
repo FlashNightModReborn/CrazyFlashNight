@@ -10,7 +10,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData(1024, 576)]
         [InlineData(1600, 900)]
         [InlineData(1920, 1080)]
-        public void TopTools_UsesWebRightOffsetAndWidth(int width, int height)
+        public void TopTools_UsesSignedRightOffsetAndWidth(int width, int height)
         {
             Rectangle viewport = new Rectangle(0, 0, width, height);
             float scale = RightHudLayout.ScaleForViewport(viewport);
@@ -37,13 +37,14 @@ namespace CF7Launcher.Tests.Guardian
             float scale = RightHudLayout.ScaleForViewport(viewport);
             Rectangle context = RightHudLayout.ContextPanelRectFromViewport(viewport, scale, mapMode, showNotice);
 
+            int mapGap = showNotice && mapMode != EffectiveMapDisplayMode.Hidden ? WidgetScaler.Px(6, scale) : 0;
             int expectedH = showNotice ? WidgetScaler.Px(RightHudLayout.StatusSlotHeightBase, scale) : 0;
             if (mapMode == EffectiveMapDisplayMode.Compact) expectedH += WidgetScaler.Px(RightHudLayout.CompactMapHeightBase, scale);
             if (mapMode == EffectiveMapDisplayMode.Expanded) expectedH += WidgetScaler.Px(RightHudLayout.ExpandedMapHeightBase, scale);
 
             Assert.Equal(WidgetScaler.Px(RightHudLayout.ClusterWidthBase, scale), context.Width);
-            Assert.Equal(WidgetScaler.Px(RightHudLayout.ToolBarHeightBase, scale), context.Y);
-            Assert.Equal(expectedH, context.Height);
+            Assert.Equal(WidgetScaler.Px(32, scale) + WidgetScaler.Px(2, scale), context.Y);
+            Assert.Equal(expectedH + mapGap, context.Height);
         }
 
         [Fact]
@@ -56,7 +57,8 @@ namespace CF7Launcher.Tests.Guardian
             Rectangle map = RightHudLayout.MapRectFromContext(context, scale, EffectiveMapDisplayMode.Expanded, true);
 
             Assert.Equal(context.Top, status.Top);
-            Assert.Equal(status.Bottom, map.Top);
+            Assert.Equal(34, status.Top);
+            Assert.Equal(78, map.Top);
             Assert.Equal(WidgetScaler.Px(RightHudLayout.ExpandedMapHeightBase, scale), map.Height);
         }
 
@@ -73,7 +75,7 @@ namespace CF7Launcher.Tests.Guardian
             Rectangle status = RightHudLayout.StatusSlotRectFromContext(context, scale, false);
 
             Assert.True(status.IsEmpty);
-            Assert.Equal(tools.Bottom, map.Top);
+            Assert.Equal(tools.Bottom + RightHudLayout.ContextGapBase, map.Top);
             Assert.Equal(context, map);
         }
 
@@ -124,7 +126,8 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Equal(WidgetScaler.Px(RightHudLayout.SafeExitTotalWidthBase, scale), safe.Width);
             Assert.Equal(1024 - WidgetScaler.Px(RightHudLayout.RightOffsetBase, scale), safe.Right);
-            Assert.Equal(WidgetScaler.Px(RightHudLayout.ToolBarHeightBase, scale), safe.Y);
+            Assert.Equal(WidgetScaler.Px(RightHudLayout.ToolBarHeightBase, scale)
+                + WidgetScaler.Px(RightHudLayout.ContextGapBase, scale), safe.Y);
             Assert.Equal(statusHeight, safe.Height);
             Assert.Equal(RightHudLayout.TopToolsRectFromViewport(viewport, scale).Left, safe.Left);
         }
@@ -138,7 +141,7 @@ namespace CF7Launcher.Tests.Guardian
             int notchWidth = RightHudLayout.SafeNotchMaxWidthFromViewport(viewport, scale, 280);
             int notchRight = viewport.Left + (viewport.Width + notchWidth) / 2;
 
-            Assert.Equal(252, actions.Width);
+            Assert.Equal(294, actions.Width);
             Assert.Equal(724, actions.Left);
             Assert.Equal(400, notchWidth);
             Assert.True(actions.Left - notchRight >= WidgetScaler.Px(RightHudLayout.NotchRightGapBase, scale));
@@ -147,17 +150,19 @@ namespace CF7Launcher.Tests.Guardian
         [Fact]
         public void ActionRow_UsesWideTextButtonsThenCompactIconButtons()
         {
-            Rectangle tools = new Rectangle(724, 0, 252, 32);
+            Rectangle tools = new Rectangle(724, 0, 294, 32);
             float scale = 1f;
 
             Assert.Equal(50, RightHudLayout.ActionButtonRectFromTools(tools, scale, 0).Width);
             Assert.Equal(50, RightHudLayout.ActionButtonRectFromTools(tools, scale, 2).Width);
-            Assert.Equal(34, RightHudLayout.ActionButtonRectFromTools(tools, scale, 3).Width);
-            Assert.Equal(34, RightHudLayout.ActionButtonRectFromTools(tools, scale, 5).Width);
+            Assert.Equal(36, RightHudLayout.ActionButtonRectFromTools(tools, scale, 3).Width);
+            Assert.Equal(36, RightHudLayout.ActionButtonRectFromTools(tools, scale, 5).Width);
             Assert.Equal(0, RightHudLayout.ActionButtonIndexAt(tools, scale, 724));
             Assert.Equal(2, RightHudLayout.ActionButtonIndexAt(tools, scale, 824));
             Assert.Equal(3, RightHudLayout.ActionButtonIndexAt(tools, scale, 874));
             Assert.Equal(5, RightHudLayout.ActionButtonIndexAt(tools, scale, 975));
+            Assert.Equal(6, RightHudLayout.ActionButtonIndexAt(tools, scale, 1017));
+            Assert.Equal(-1, RightHudLayout.ActionButtonIndexAt(tools, scale, 1018));
         }
 
         [Theory]

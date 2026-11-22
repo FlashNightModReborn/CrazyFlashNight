@@ -9,15 +9,58 @@ namespace CF7Launcher.Tests.Guardian
 {
     public sealed class WorldRasterPresentationTests
     {
-        private sealed class Scene : IWorldRasterScene
+        private sealed class Scene : IWorldRasterScene, IWorldRasterDamageScene
         {
             internal readonly List<(IntPtr Pixels, int Width, int Height, int Stride, int X, int Y)> Uploads = new();
             internal bool Fail;
+            public bool SupportsDamage { get; set; }
+            public bool AcceptDamage { get; set; } = true;
+            public readonly List<int[]> Damage = new();
+            public bool TryUploadDamage(IntPtr pixels,int width,int height,int stride,int x,int y,int[] rectangles,int count)
+            {
+                Damage.Add(rectangles[..(4*count)]);
+                return AcceptDamage;
+            }
             public void UploadHud(IntPtr pixels, int width, int height, int stride, int x, int y)
             {
                 if (Fail) throw new InvalidOperationException("fixture device loss");
                 Uploads.Add((pixels,width,height,stride,x,y));
             }
+        }
+
+        [Fact]
+        public void SparseSubmission_ClipsAtOutputAndRebasesAfterGeometryOrHide()
+        {
+            using var presenter = new WorldRasterPresentation();
+            var scene = new Scene { SupportsDamage=true };
+            presenter.Adopt(scene,new Rectangle(100,200,30,30),true);
+            var origin = new Point(95,195);
+            var damage = new[] { new Rectangle(2,3,10,5), new Rectangle(0,0,2,2) };
+            void Submit(Point at) => Assert.True(presenter.TryPresent(new IntPtr(4096),30,20,128,at,damage));
+            Submit(origin); Submit(origin);
+            Assert.Single(scene.Uploads);
+            Assert.Equal(new[] {0,0,7,3}, Assert.Single(scene.Damage));
+            Assert.Equal(25UL*15*4+7UL*3*4,presenter.UploadedBytes);
+            Submit(new Point(96,195));
+            Assert.Equal(2,scene.Uploads.Count);
+            presenter.Hide(); Submit(origin);
+            Assert.Equal(4,scene.Uploads.Count);
+            Assert.Single(scene.Damage);
+        }
+
+        [Fact]
+        public void SparseSubmission_RejectedBaselineUsesEntireCurrentImage()
+        {
+            using var presenter = new WorldRasterPresentation();
+            var scene = new Scene { SupportsDamage=true,AcceptDamage=false };
+            presenter.Adopt(scene,new Rectangle(0,0,100,100),true);
+            var source=new IntPtr(4096);
+            presenter.TryPresent(source,20,20,80,Point.Empty);
+            presenter.TryPresent(source,20,20,80,Point.Empty,new[]{new Rectangle(1,2,3,4)});
+            Assert.Single(scene.Damage);
+            Assert.Equal(2,scene.Uploads.Count);
+            Assert.Equal((source,20,20,80,0,0),scene.Uploads[1]);
+            Assert.Equal(3200UL,presenter.UploadedBytes);
         }
 
         [Fact]

@@ -13,7 +13,7 @@ using CF7Launcher.Tasks;
 namespace CF7Launcher.Guardian.Hud
 {
     /// <summary>
-    /// 收敛后的右侧组合 HUD：六入口常驻动作行 + 条件状态槽 + 可选地图预览。
+    /// 七入口常驻动作行、条件状态槽及可选地图预览共用绘制和输入几何。
     /// 业务命令仍全部通过 LauncherCommandRouter.Dispatch，不在 widget 内复制业务分支。
     /// </summary>
     public partial class RightContextWidget : INativeHudWidget, INativeHudPointerSnapshot, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IStageOutcomePresenter, IDisposable
@@ -36,8 +36,6 @@ namespace CF7Launcher.Guardian.Hud
         private const int STAGE_BALANCE_GAP_BASE = 2;
         private const int STAGE_BALANCE_GAP_COMPACT_BASE = 1;
         private const int MAP_BODY_INSET_BASE = 8;
-        private const int MAP_LABEL_PAD_X_BASE = 6;
-        private const int MAP_LABEL_PAD_Y_BASE = 2;
         private const int MAP_BEACON_R_BASE = 5;
         private const float MIN_BLOCK_PX = 4f;
 
@@ -49,20 +47,21 @@ namespace CF7Launcher.Guardian.Hud
         private const string ICON_STAGE_REWARDS = "◆";
         private const string REVIVE_COIN_ICON = "复活币";
 
-        private static readonly string[] TOOL_KEYS = { "TASK_MAP", "TASK_UI", "EQUIP_UI", "GAMESETTINGS", "PAUSE", "SAFEEXIT" };
-        private static readonly string[] TOOL_LABELS_DEFAULT = { "地图", "任务", "装备", "⚙", "Ⅱ", "×" };
-        private static readonly string[] TOOL_LABELS_PAUSED = { "地图", "任务", "装备", "⚙", "▶", "×" };
+        private static readonly string[] TOOL_KEYS = { "TASK_MAP", "TASK_UI", "EQUIP_UI", "SETTINGS", "GAMESETTINGS", "PAUSE", "SAFEEXIT" };
+        private static readonly string[] TOOL_LABELS = { "地图", "任务", "装备" };
         private static readonly string[] TOOL_TOOLTIPS =
         {
             "打开完整地图；显示模式在刘海",
             "打开任务面板",
             "打开角色构筑；其他整备功能在刘海或装备页",
+            "打开修改器",
             "打开系统设置",
             "暂停游戏",
             "安全退出"
         };
-        private const int IDX_PAUSE = 4;
-        private const int IDX_SAFEEXIT = 5;
+        private const int IDX_PAUSE = 5;
+        private const int IDX_SAFEEXIT = 6;
+        private readonly GraphicsPath _wrench = CreateWrenchPath();
         private readonly SaveFeedbackState _saveFeedback = new SaveFeedbackState();
 
         private static readonly string[] LEGACY_TYPES = { "task", "announce" };
@@ -220,9 +219,8 @@ namespace CF7Launcher.Guardian.Hud
         // 实例字段不能跨线程：Prewarm 走静态 base font，Paint 走实例 scaled font，二者互不触碰
         // —— 避免 PrewarmGdi (ThreadPool) 与 Paint (UI) 之间 EnsureFonts 重建期的 Font 竞争。
         private float _cachedFontScale = -1f;
-        private Font _fontTools15Bold;        // PaintTools 受控中文双字标签
-        private Font _fontToolsIcon15;        // 设置/暂停/退出受控符号字体
-        private Font _fontMapLabel115Bold;    // PaintMapLabel "Microsoft YaHei" 11.5 Bold
+        private Font _fontTools;        // PaintTools 受控中文双字标签
+        private Font _fontMapLabel;
         private Font _fontQuest12;            // 地图预览尺寸切换按钮
         private Font _fontNoticeJuke11;       // 条件状态槽 / hover tooltip
         private Font _fontDestinationDetail10;// 交付地点与状态的次级文字
@@ -287,11 +285,10 @@ namespace CF7Launcher.Guardian.Hud
 
         private void EnsureFonts(float scale)
         {
-            if (Math.Abs(scale - _cachedFontScale) < 0.001f && _fontTools15Bold != null) return;
+            if (Math.Abs(scale - _cachedFontScale) < 0.001f && _fontTools != null) return;
             DisposeFonts();
-            _fontTools15Bold     = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(14f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
-            _fontToolsIcon15     = NativeHudFonts.CreateRoleFont("native.hud.symbol", WidgetScaler.Pxf(14f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
-            _fontMapLabel115Bold = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11.5f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
+            _fontTools     = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11.4f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontMapLabel = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(8.4f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
             _fontQuest12         = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _fontNoticeJuke11    = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _fontDestinationDetail10 = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(10f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
@@ -302,9 +299,8 @@ namespace CF7Launcher.Guardian.Hud
 
         private void DisposeFonts()
         {
-            if (_fontTools15Bold != null)     { _fontTools15Bold.Dispose();     _fontTools15Bold = null; }
-            if (_fontToolsIcon15 != null)     { _fontToolsIcon15.Dispose();     _fontToolsIcon15 = null; }
-            if (_fontMapLabel115Bold != null) { _fontMapLabel115Bold.Dispose(); _fontMapLabel115Bold = null; }
+            if (_fontTools != null)     { _fontTools.Dispose();     _fontTools = null; }
+            if (_fontMapLabel != null) { _fontMapLabel.Dispose(); _fontMapLabel = null; }
             if (_fontQuest12 != null)         { _fontQuest12.Dispose();         _fontQuest12 = null; }
             if (_fontNoticeJuke11 != null)    { _fontNoticeJuke11.Dispose();    _fontNoticeJuke11 = null; }
             if (_fontDestinationDetail10 != null) { _fontDestinationDetail10.Dispose(); _fontDestinationDetail10 = null; }
@@ -321,6 +317,7 @@ namespace CF7Launcher.Guardian.Hud
         {
             DisposeReturnPortraits();
             DisposeFonts();
+            _wrench.Dispose();
         }
 
         public event EventHandler BoundsOrVisibilityChanged;
@@ -503,7 +500,8 @@ namespace CF7Launcher.Guardian.Hud
                     tools.X,
                     tools.Y,
                     tools.Width,
-                    tools.Height + WidgetScaler.Px(RightHudLayout.StatusSlotHeightBase, scale));
+                    tools.Height + WidgetScaler.Px(RightHudLayout.ContextGapBase, scale)
+                        + WidgetScaler.Px(RightHudLayout.StatusSlotHeightBase, scale));
                 return Rectangle.Union(visual, tooltipReserve);
             }
         }
@@ -614,17 +612,15 @@ namespace CF7Launcher.Guardian.Hud
         private void PaintTools(Graphics g, Rectangle r, float scale)
         {
             if (r.Width <= 0 || r.Height <= 0) return;
-            string[] labels = _paused ? TOOL_LABELS_PAUSED : TOOL_LABELS_DEFAULT;
             // v2 锚点（ADR D3）：整行一块右上切角金属板，入口以 12.5° 斜切分隔，
             // 导航组与系统组之间加粗分隔；hover/pressed/暂停/危险态只作用于入口内衬，不改外框。
-            NativeHudTheme.DrawPlate(g, r, scale, NativeHudTheme.PanelFillDense, NativeHudTheme.AnchorRim,
-                NativeHudTheme.PlateCorners.TopRight, NativeHudTheme.NotchChamferBase);
+            var plate = new Rectangle(r.X,r.Y,r.Width,WidgetScaler.Px(28,scale));
+            PaintMetalPlate(g,plate,scale,6,4,false);
             StringFormat fmt = FMT_CENTER;
-            int sepInset = WidgetScaler.Px(7, scale);
             for (int i = 0; i < TOOL_KEYS.Length; i++)
             {
                 Rectangle btn = RightHudLayout.ActionButtonRectFromTools(r, scale, i);
-                Font font = i < RightHudLayout.PrimaryActionButtonCount ? _fontTools15Bold : _fontToolsIcon15;
+                btn.Height=plate.Height;
                 bool hover = _hover.Kind == HitKind.Tool && _hover.Index == i;
                 bool pressed = _down.Kind == HitKind.Tool && _down.Index == i;
                 bool paused = _paused && i == IDX_PAUSE;
@@ -634,13 +630,89 @@ namespace CF7Launcher.Guardian.Hud
                 if (i > 0)
                 {
                     bool groupBreak = i == RightHudLayout.PrimaryActionButtonCount;
-                    NativeHudTheme.DrawSlantLine(g, btn.X, r.Y + sepInset, r.Bottom - sepInset,
-                        groupBreak ? NativeHudTheme.AnchorRim : NativeHudTheme.Separator,
-                        groupBreak ? Math.Max(2, NativeHudTheme.StrokePx(scale) + 1) : NativeHudTheme.StrokePx(scale));
+                    float inset=(groupBreak?3.5f:6.5f)*scale;
+                    using var divider=new Pen(groupBreak?Color.FromArgb(184,214,217,215):Color.FromArgb(72,168,176,178),
+                        (groupBreak?1.35f:.85f)*scale);
+                    g.DrawLine(divider,btn.X+1.1f*scale,plate.Top+inset,btn.X-1.1f*scale,plate.Bottom-inset);
                 }
                 if (i == IDX_SAFEEXIT) SaveFeedbackState.PaintAccent(g, btn, scale, _saveFeedback.Visual);
-                g.DrawString(labels[i], font, fgBrush, btn, fmt);
+                if (i < TOOL_LABELS.Length)
+                    g.DrawString(TOOL_LABELS[i], _fontTools, fgBrush, btn, fmt);
+                else
+                    PaintUtilityGlyph(g, btn, scale, i, fgBrush, paused);
             }
+        }
+
+        private static void PaintMetalPlate(Graphics g,Rectangle r,float scale,float br,float bl,bool hover)
+        {
+            float x=r.Left+.45f*scale,y=r.Top+.45f*scale,right=r.Right-.45f*scale,bottom=r.Bottom-.45f*scale;
+            PointF[] hull=[new(x,y),new(right,y),new(right,bottom-br*scale),new(right-br*scale,bottom),
+                new(x+bl*scale,bottom),new(x,bottom-bl*scale)];
+            using var fill=new LinearGradientBrush(r,Color.Black,Color.White,LinearGradientMode.Vertical);
+            fill.InterpolationColors=new ColorBlend { Positions=[0,.5f,1],Colors=[
+                hover?NativeHudTheme.ButtonHover:Color.FromArgb(38,43,45),Color.FromArgb(23,27,29),Color.FromArgb(13,16,18)] };
+            using var edge=new Pen(Color.FromArgb(158,214,217,215),.85f*scale);
+            g.FillPolygon(fill,hull);
+            g.DrawPolygon(edge,hull);
+            edge.Color=Color.FromArgb(36,255,255,255);
+            g.DrawLine(edge,x+scale,y+scale,right-scale,y+scale);
+            edge.Color=Color.FromArgb(217,0,0,0);
+            g.DrawLine(edge,x+bl*scale,bottom-scale,right-br*scale,bottom-scale);
+        }
+
+        private static GraphicsPath CreateWrenchPath()
+        {
+            var path = new GraphicsPath();
+            path.AddLine(-5.5f, -1, .2f, -1);
+            path.AddBezier(.2f, -1, 1.2f, -3.8f, 4.9f, -3.5f, 5.9f, -1.25f);
+            path.AddLines(new[] { new PointF(5.9f,-1.25f), new PointF(3.35f,-1.25f),
+                new PointF(2.35f,0), new PointF(3.35f,1.25f), new PointF(5.9f,1.25f) });
+            path.AddBezier(5.9f, 1.25f, 4.9f, 3.5f, 1.2f, 3.8f, .2f, 1);
+            path.AddLine(.2f, 1, -5.5f, 1);
+            path.AddArc(-6.5f, -1, 2, 2, 90, 180);
+            path.CloseFigure();
+            return path;
+        }
+
+        private void PaintUtilityGlyph(Graphics g, Rectangle button, float scale, int index, Brush ink, bool paused)
+        {
+            GraphicsState state = g.Save();
+            try
+            {
+                g.TranslateTransform(button.Left + button.Width / 2f, button.Top + button.Height / 2f);
+                g.ScaleTransform(scale, scale);
+                using var stroke = new Pen(ink, 1.2f);
+                switch (index)
+                {
+                    case 3:
+                        g.RotateTransform(-45);
+                        g.FillPath(ink, _wrench);
+                        g.FillEllipse(Brushes.Black, -5.8f, -.45f, .9f, .9f);
+                        break;
+                    case 4:
+                        g.DrawEllipse(stroke, -3.4f, -3.4f, 6.8f, 6.8f);
+                        g.FillEllipse(ink, -1.1f, -1.1f, 2.2f, 2.2f);
+                        for (int tooth = 0; tooth < 8; tooth++)
+                        {
+                            g.DrawLine(stroke, 3.6f, 0, 5.3f, 0);
+                            g.RotateTransform(45);
+                        }
+                        break;
+                    case IDX_PAUSE:
+                        if (paused) g.FillPolygon(ink, new[] { new PointF(-3.4f,-5f), new PointF(4f,0), new PointF(-3.4f,5f) });
+                        else
+                        {
+                            g.FillRectangle(ink, -3.3f,-4.8f, 2.1f,9.6f);
+                            g.FillRectangle(ink, 1.2f,-4.8f, 2.1f,9.6f);
+                        }
+                        break;
+                    case IDX_SAFEEXIT:
+                        g.DrawLine(stroke, -3.6f,-3.6f, 3.6f,3.6f);
+                        g.DrawLine(stroke, -3.6f,3.6f, 3.6f,-3.6f);
+                        break;
+                }
+            }
+            finally { g.Restore(state); }
         }
 
         /// <summary>动作行入口内衬：只在 hover/pressed/激活时出现，四角角标 + 激活青色短轨。</summary>
@@ -685,11 +757,15 @@ namespace CF7Launcher.Guardian.Hud
             bool hover = _hover.Kind == HitKind.MapCard;
             Color fill = NativeHudTheme.Blend(NativeHudTheme.PanelFillDense,
                 hover ? theme.StageB : theme.StageA, hover ? 0.20f : 0.12f, hover ? 244 : 232);
-            NativeHudTheme.DrawPanel(g, card, scale, fill, theme.Accent, true);
+            NativeHudTheme.DrawPlate(g, card, scale, fill, NativeHudTheme.AnchorRimMuted,
+                NativeHudTheme.PlateCorners.BottomLeft | NativeHudTheme.PlateCorners.BottomRight, 6);
 
             Rectangle body = Rectangle.Inflate(card, -WidgetScaler.Px(MAP_BODY_INSET_BASE, scale), -WidgetScaler.Px(MAP_BODY_INSET_BASE, scale));
+            int headerInset = WidgetScaler.Px(8, scale);
+            body.Y += headerInset;
+            body.Height -= headerInset;
             PaintMapBody(g, body, theme, scale);
-            PaintMapLabel(g, card, theme, scale);
+            PaintMapLabel(g, card, scale);
             PaintMapDisplayToggle(g, card, scale);
         }
 
@@ -699,8 +775,8 @@ namespace CF7Launcher.Guardian.Hud
             if (toggle.Width <= 0 || toggle.Height <= 0) return;
             bool hover = _hover.Kind == HitKind.MapDisplayToggle;
             bool pressed = _down.Kind == HitKind.MapDisplayToggle;
-            string glyph = _effectiveMapDisplayMode == EffectiveMapDisplayMode.Compact ? "＋" : "－";
-            NativeHudTheme.DrawButton(g, toggle, scale, hover, pressed, false, false);
+            string glyph = _effectiveMapDisplayMode == EffectiveMapDisplayMode.Compact ? "▾" : "▴";
+            if (hover || pressed) NativeHudTheme.DrawButton(g, toggle, scale, hover, pressed, false, false);
             using (SolidBrush fg = new SolidBrush(hover ? NativeHudTheme.TextPrimary : NativeHudTheme.TextSecondary))
             {
                 g.DrawString(glyph, _fontQuest12, fg, toggle, FMT_CENTER);
@@ -733,7 +809,7 @@ namespace CF7Launcher.Guardian.Hud
                 theme, scale, MIN_BLOCK_PX, WidgetScaler.Pxf(MAP_BEACON_R_BASE, scale));
         }
 
-        private void PaintMapLabel(Graphics g, Rectangle card, MapHudWidget.ThemeColors theme, float scale)
+        private void PaintMapLabel(Graphics g, Rectangle card, float scale)
         {
             string pageLabel = _mapEntry.Meta != null ? (_mapEntry.Meta.PageLabel ?? "") : "";
             string spotLabel = _mapEntry.Meta != null ? (_mapEntry.Meta.Label ?? "") : "";
@@ -743,23 +819,12 @@ namespace CF7Launcher.Guardian.Hud
             else text = pageLabel + " · " + spotLabel;
             if (string.IsNullOrEmpty(text)) return;
 
-            int padX = WidgetScaler.Px(MAP_LABEL_PAD_X_BASE, scale);
-            int padY = WidgetScaler.Px(MAP_LABEL_PAD_Y_BASE, scale);
-            int margin = WidgetScaler.Px(6, scale);
-            int maxW = Math.Max(1, card.Width - margin * 2);
-            // P0 perf：font + fmt + textBrush 复用静态/缓存。
-            Font font = _fontMapLabel115Bold;
-            StringFormat fmt = FMT_NEAR_NOWRAP_ELLIPSIS;
-            SizeF measured = g.MeasureString(text, font, maxW, fmt);
-            int pillW = Math.Min(maxW, (int)Math.Ceiling(measured.Width) + padX * 2);
-            int pillH = (int)Math.Ceiling(measured.Height) + padY * 2;
-            Rectangle pill = new Rectangle(card.X + margin, card.Y + margin, pillW, pillH);
-            NativeHudTheme.DrawPanel(g, pill, scale,
-                NativeHudTheme.Blend(NativeHudTheme.PanelFillDense, theme.StageA, 0.12f, 236),
-                theme.Accent, false);
-            Rectangle textRect = new Rectangle(pill.X + padX, pill.Y,
-                Math.Max(1, pill.Width - padX * 2), pill.Height);
-            g.DrawString(text, font, BR_LABEL_TEXT, textRect, fmt);
+            int margin = WidgetScaler.Px(8, scale);
+            text = (_effectiveMapDisplayMode == EffectiveMapDisplayMode.Compact ? "小地图 · 紧凑  " : "小地图 · 展开  ") + text;
+            int maxW = Math.Max(1, GetMapDisplayToggleRect(card, scale).Left - card.X - margin * 2);
+            Rectangle textRect = new Rectangle(card.X + margin, card.Y + WidgetScaler.Px(2, scale),
+                maxW, WidgetScaler.Px(14, scale));
+            g.DrawString(text, _fontMapLabel, BR_LABEL_TEXT, textRect, FMT_NEAR_NOWRAP_ELLIPSIS);
         }
 
         private void PaintNotice(Graphics g, Rectangle r, float scale)
@@ -783,8 +848,9 @@ namespace CF7Launcher.Guardian.Hud
                 : (mode == NoticeMode.Flash
                     ? NativeHudTheme.Warning
                     : (CanDeliver() ? NativeHudTheme.Cyan : NativeHudTheme.Gold));
-            Color noticeFill = hover ? NativeHudTheme.ButtonHover : NativeHudTheme.PanelFillDense;
-            NativeHudTheme.DrawPanel(g, r, scale, noticeFill, noticeAccent, true);
+            PaintMetalPlate(g,r,scale,5,3,hover);
+            using var blade=new SolidBrush(noticeAccent);
+            g.FillRectangle(blade,r.X+1.5f*scale,r.Y+2*scale,2*scale,r.Height-4*scale);
 
             Rectangle iconRect = new Rectangle(r.X, r.Y, iconW, r.Height);
             Rectangle textRect = new Rectangle(iconRect.Right + pad, r.Y,

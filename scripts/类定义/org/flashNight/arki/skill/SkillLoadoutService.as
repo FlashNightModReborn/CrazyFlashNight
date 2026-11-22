@@ -19,6 +19,8 @@ class org.flashNight.arki.skill.SkillLoadoutService {
     private static var _projectionStatus:Object;
     private static var _testProjection:Function;
     private static var _hudInputs:Array;
+    private static var _hudRowOffsets:Array;
+    private static var _hudRowKeys:Array = [];
     private static var _hudDescriptors:Object;
     private static var _hudMetadataKeys:Array = ["MaxLevel", "UnlockLevel", "UnlockSP", "UpgradeSP", "Type", "Passive", "Equippable", "MP", "CD"];
 
@@ -115,7 +117,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
     public static function getHudDescriptors():Object {
         // Display-only memoization. Writes and release gates still synchronize()
         // independently; legacy in-place edits are observed by copied scalar inputs.
-        if (hudInputsMatch()) return _hudDescriptors;
+        if (hudInputsMatch(0, SKILL_ROW_COUNT, true)) return _hudDescriptors;
         var inputs:Array = hudInputs();
         var sync:Object = synchronize();
         var slots:Array = [];
@@ -133,7 +135,15 @@ class org.flashNight.arki.skill.SkillLoadoutService {
      * Rows and metadata are still read on every call: legacy in-place edits cannot
      * hide behind a reference/revision cache. Misses retain the original full scan.
      */
-    private static function hudInputsMatch():Boolean {
+    // Live HUD checks each legacy row once per three captures, its previous
+    // loadout cadence. A detected edit immediately runs the complete existing
+    // descriptor scan. Synchronous readers and full resync still check every row.
+    public static function getHudDescriptorsForFrame(phase:Number):Object {
+        var first:Number = Math.floor(phase * SKILL_ROW_COUNT / 3);
+        var limit:Number = Math.floor((phase + 1) * SKILL_ROW_COUNT / 3);
+        return hudInputsMatch(first, limit, phase == 0) ? _hudDescriptors : getHudDescriptors();
+    }
+    private static function hudInputsMatch(first:Number, limit:Number, slots:Boolean):Boolean {
         var inputs:Array = _hudInputs;
         if (inputs == null || !isReady()) return false;
         var r:Object = root();
@@ -141,22 +151,33 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         if (table.length > SKILL_ROW_COUNT || inputs[0] !== r || inputs[1] !== _revision
                 || inputs[2] !== table || inputs[3] !== table.length || inputs[4] !== r.技能表对象
                 || inputs[5] !== r.等级 || inputs[6] !== r.技能点数) return false;
-        var cursor:Number = 7;
-        for (var i:Number = 0; i < SKILL_ROW_COUNT; i++) {
-            var exists:Boolean = table.hasOwnProperty(String(i));
+        var cursor:Number = _hudRowOffsets[first];
+        var catalog:Object = r.技能表对象;
+        // Length is in the header. Holes above the length cannot gain a row
+        // until that header changes; keep the original three-frame coverage.
+        limit = Math.min(limit, table.length);
+        for (var i:Number = first; i < limit; i++) {
+            var exists:Boolean = table.hasOwnProperty(_hudRowKeys[i]);
             var row = table[i];
             if (exists !== inputs[cursor++] || row !== inputs[cursor++]) return false;
             if (!exists) continue;
-            if (!(row instanceof Array) || row.length < 5 || row.length !== inputs[cursor++]) return false;
-            for (var j:Number = 0; j < 5; j++) if (row[j] !== inputs[cursor++]) return false;
-            var metadata:Object = r.技能表对象[normalizeRowName(row[0])];
+            // hudInputs admitted this exact array reference with at least five fields.
+            if (row.length !== inputs[cursor++]) return false;
+            var name = row[0];
+            if (name !== inputs[cursor++] || row[1] !== inputs[cursor++] || row[2] !== inputs[cursor++]
+                    || row[3] !== inputs[cursor++] || row[4] !== inputs[cursor++]) return false;
+            var metadata:Object = catalog[typeof name == "string" && name.length ? name : null];
             if (metadata !== inputs[cursor++]) return false;
             if (metadata != null) {
-                for (j = 0; j < _hudMetadataKeys.length; j++) {
-                    if (metadata[_hudMetadataKeys[j]] !== inputs[cursor++]) return false;
-                }
+                if (metadata.MaxLevel !== inputs[cursor++] || metadata.UnlockLevel !== inputs[cursor++] ||
+                        metadata.UnlockSP !== inputs[cursor++] || metadata.UpgradeSP !== inputs[cursor++] ||
+                        metadata.Type !== inputs[cursor++] || metadata.Passive !== inputs[cursor++] ||
+                        metadata.Equippable !== inputs[cursor++] || metadata.MP !== inputs[cursor++] ||
+                        metadata.CD !== inputs[cursor++]) return false;
             }
         }
+        if (!slots) return true;
+        cursor = _hudRowOffsets[SKILL_ROW_COUNT];
         for (i = 1; i <= QUICK_SLOT_COUNT; i++) {
             if (r["快捷技能栏" + i] !== inputs[cursor++] || keyLabel(i) !== inputs[cursor++]) return false;
         }
@@ -171,8 +192,11 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         // Corrupt/tail data keeps the existing full scan and fail-closed diagnostics.
         if (table.length > SKILL_ROW_COUNT) return null;
         var inputs:Array = [r, _revision, table, table.length, r.技能表对象, r.等级, r.技能点数];
+        _hudRowOffsets = [];
         for (var i:Number = 0; i < SKILL_ROW_COUNT; i++) {
-            var exists:Boolean = table.hasOwnProperty(String(i));
+            _hudRowOffsets[i] = inputs.length;
+            if (_hudRowKeys[i] == undefined) _hudRowKeys[i] = String(i);
+            var exists:Boolean = table.hasOwnProperty(_hudRowKeys[i]);
             var row = table[i];
             inputs.push(exists, row);
             if (!exists) continue;
@@ -193,6 +217,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
                 }
             }
         }
+        _hudRowOffsets[SKILL_ROW_COUNT] = inputs.length;
         for (i = 1; i <= QUICK_SLOT_COUNT; i++) {
             var slotValue = r["快捷技能栏" + i];
             if ((typeof slotValue == "object" && slotValue != null) || typeof slotValue == "function") return null;

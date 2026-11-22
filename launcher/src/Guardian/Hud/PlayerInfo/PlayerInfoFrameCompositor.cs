@@ -254,7 +254,30 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
     private PlayerHudHpMotion? _liveMotion;
     private PlayerHudNumberGlyphs? _hudNumbers;
     private PlayerHudNumberGlyphs HudNumbers => _hudNumbers ??= new PlayerHudNumberGlyphs();
+    private (PlayerInfoRasterBatch? Batch, PlayerInfoRasterPlan? Plan, int HpFrame, int MpFrame) _previousBase;
+    private SKImage? _liveBase;
+    private (PlayerInfoRasterBatch? Batch, PlayerInfoRasterPlan? Plan, int MpFrame) _backdropKey;
+    private SKImage? _backdrop;
+    private const long LiveMaterialByteLimit = 2 * 1024 * 1024;
+    // Each raw sample already includes the exact source-over operations against this gauge base.
+    private readonly (SKImage? Image, Rectangle Bounds)[] _unlitMotifs = new (SKImage?, Rectangle)[100];
+    private long _unlitBytes;
+    private readonly bool _useUnlitCache = Environment.GetEnvironmentVariable("CF7_HUD_PHASE_CACHE") == "on";
+    internal int UnlitHits { get; private set; }
+    internal int UnlitStores { get; private set; }
+    internal long UnlitBytes => _unlitBytes;
+    private int _firstSteadyFrame = -1;
+    private bool _warmUnlit;
+    private readonly SKPaint _replacePixels = new() { BlendMode = SKBlendMode.Src };
+    private (PlayerInfoRasterPlan Plan,double Hp,double Max) _hpReadoutKey;
+    private (PlayerInfoRasterPlan Plan,PlayerInfoPaletteState Palette,double Mp,double Max) _mpReadoutKey;
+    private SKPicture? _hpReadouts,_mpReadouts,_liveHpRule;
+    private PlayerInfoRasterPlan? _liveHpRulePlan;
+    private SKPicture? _settledShieldRing;
+    private (PlayerInfoRasterPlan Plan, float Fraction, float Presence) _ringKey;
     private bool _disposed;
+
+    internal PlayerInfoPaintTrace? Trace { get; set; }
 
     internal PlayerInfoFrameCompositor(PlayerInfoSvgAssetSet assetSet)
     {
@@ -306,7 +329,13 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         PlayerInfoVisualState visualState,
         PlayerHudVitals? live = null,
         int liveFrame = 0,
-        PlayerHudResourceMotion? resourceMotion = null)
+        PlayerHudResourceMotion? resourceMotion = null) =>
+        PaintRegion(destination, batch, plan, visualState, live, liveFrame, resourceMotion, null, null);
+
+    internal PlayerInfoFramePaintResult PaintRegion(
+        Bitmap destination, PlayerInfoRasterBatch batch, PlayerInfoRasterPlan plan,
+        PlayerInfoVisualState visualState, PlayerHudVitals? live, int liveFrame,
+        PlayerHudResourceMotion? resourceMotion, Rectangle? damage, Rectangle? published)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(destination);
@@ -351,6 +380,8 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             throw new InvalidDataException(
                 $"No cached MP rim for virtual frame {mpFrame}.");
 
+        var trace = Trace;
+        trace?.EndPass(ResourcePass.Masks);
         BitmapData? locked = null;
         try
         {
@@ -373,77 +404,139 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
                 throw new InvalidOperationException(
                     "Skia could not wrap the PlayerInfo PArgb destination.");
             var canvas = surface.Canvas;
+            if (damage is { } dirty)
+                canvas.ClipRect(new SKRect(dirty.Left, dirty.Top, dirty.Right, dirty.Bottom));
             canvas.Clear(SKColors.Transparent);
+            trace?.EndPass(ResourcePass.ClearAndWrap);
 
-            if (live != null)
-            {
-                canvas.Save();
-                var left = (float)(plan.FlashViewportPhysical.Left + (_mp.StageMatrix.Tx + PlayerHudResourceLayout.ResourceOffsetX) * plan.PhysicalScale - plan.TightPhysicalBounds.Left);
-                canvas.ClipRect(new SKRect(left, 0, destination.Width, destination.Height));
-                canvas.Translate(PlayerHudResourceLayout.ResourceOffsetX*(float)plan.PhysicalScale,PlayerHudResourceLayout.MpOffsetY*(float)plan.PhysicalScale);
-            }
-            DrawLayer(canvas, RequireLayer(layers, MpBackplate), plan);
-            if (mpFrame != _mp.FrameMap.EmptyVirtualFrame)
-            {
-                DrawMpFill(
-                    canvas,
-                    RequireLayer(layers, MpFill),
-                    plan,
-                    leftMask.Path,
-                    rightMask.Path);
-            }
-            DrawLayer(canvas, RequireLayer(layers, rimAssetId), plan);
-            if (live != null) canvas.Restore();
-            if (live != null)
-            {
-                canvas.Save();
-                canvas.Translate(plan.FlashViewportPhysical.Left-plan.TightPhysicalBounds.Left,plan.FlashViewportPhysical.Top-plan.TightPhysicalBounds.Top);
-                canvas.Scale((float)plan.PhysicalScale);
-                PlayerHudResourceOverlay.MpOverflow(canvas,live,liveFrame);
-                canvas.Restore();
-                canvas.Save();canvas.Translate(PlayerHudResourceLayout.HpOffsetX*(float)plan.PhysicalScale,0);
-            }
-
-            DrawLayer(canvas, RequireLayer(layers, HpBackplate), plan);
             var targetHpFrame = visualState.Hp.TargetVirtualFrame;
-            if (live != null && hpFrame < targetHpFrame)
+            // A settled gauge can still be animating the cutouts over its unchanged base.
+            // Snapshot only a repeated base and cap the one retained raster at 2 MiB.
+            var baseKey = (batch, plan, hpFrame, mpFrame);
+            bool cacheable = live != null && hpFrame == targetHpFrame && live.Mp <= live.MpMax &&
+                (long)info.Width * info.Height * 4 <= 2 * 1024 * 1024;
+            bool repeated = cacheable && _previousBase == baseKey;
+            if (!repeated)
             {
-                ValidateVirtualFrame(_hp, targetHpFrame);
-                if (!PlayerHudMotionSettings.StaticFeedback) DrawHpDamageTrail(canvas, plan, targetHpFrame, hpFrame);
-                DrawHpFill(canvas, plan, targetHpFrame);
+                _liveBase?.Dispose();
+                _liveBase = null;
+                ClearUnlitMotifs();
+                _previousBase = cacheable ? baseKey : default;
             }
-            else if (live != null && hpFrame > targetHpFrame)
+            if (trace != null) trace.ReusedBase = _liveBase != null;
+            if (_liveBase != null)
             {
-                ValidateVirtualFrame(_hp, targetHpFrame);
-                DrawHpFill(canvas, plan, targetHpFrame);
-                if (!PlayerHudMotionSettings.StaticFeedback) DrawHpHealPreview(canvas, plan, targetHpFrame, hpFrame);
+                canvas.DrawImage(_liveBase, 0, 0);
             }
             else
             {
-                DrawHpFill(canvas, plan, hpFrame);
+                var backdropKey = (batch, plan, mpFrame);
+                // MP and the HP backplate sit below the changing HP fill and trail.
+                // Keep one actual premultiplied background even through HP transitions.
+                bool staticBackdrop = live != null && live.Mp <= live.MpMax &&
+                    (long)info.Width * info.Height * 4 <= LiveMaterialByteLimit;
+                bool repeatedBackdrop = staticBackdrop && _backdropKey == backdropKey;
+                if (!staticBackdrop || _backdropKey != backdropKey)
+                {
+                    _backdrop?.Dispose();
+                    _backdrop = null;
+                    _backdropKey = staticBackdrop ? backdropKey : default;
+                }
+                if (_backdrop != null)
+                    canvas.DrawImage(_backdrop, 0, 0);
+                else
+                {
+                    DrawBackdrop(canvas, plan, layers, mpFrame, leftMask, rightMask, rimAssetId, live, liveFrame);
+                    // A clipped scratch frame has undefined pixels outside its paint region.
+                    if (repeatedBackdrop && !damage.HasValue)
+                    {
+                        using var pixels = new SKPixmap(info, locked.Scan0, locked.Stride);
+                        _backdrop = SKImage.FromPixelCopy(pixels);
+                    }
+                }
+                DrawHpGauge(canvas, plan, hpFrame, targetHpFrame, live != null);
+                if (repeated)
+                {
+                    using var pixels = new SKPixmap(info, locked.Scan0, locked.Stride);
+                    _liveBase = SKImage.FromPixelCopy(pixels);
+                }
             }
+
+            trace?.EndPass(ResourcePass.BaseReuseOrStore);
             if (live == null) DrawLayer(canvas, RequireLayer(layers, HpRim), plan);
             else
             {
+                canvas.Save();
+                canvas.Translate(PlayerHudResourceLayout.HpOffsetX * (float)plan.PhysicalScale, 0);
                 _liveMotion ??= new PlayerHudHpMotion();
                 var rimPlan = FindLayerPlan(plan, HpRim);
+                var rimBounds = ToLocalRect(rimPlan.PhysicalBounds, plan.TightPhysicalBounds);
                 var critical = resourceMotion?.CriticalHp ?? PlayerHudMotionSettings.IsCritical(live,false);
                 var quiet = PlayerHudMotionSettings.ReducedMotion || critical || live.Hp >= live.HpMax;
                 var motionFrame = quiet ? 0 : liveFrame;
                 // Extra vitality supplies only the color behind the original moving cutouts.
                 DrawHpOverflow(canvas,plan,live);
                 DrawLowHpPulse(canvas, plan, live, liveFrame, critical);
-                if (!quiet && hpFrame != _hp.FrameMap.EmptyVirtualFrame)
-                    DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawLight(canvas, motionFrame));
-                DrawBitmap(canvas, _liveMotion.Raster("hp-motion-base", plan, rimPlan), HpRim, plan);
-                DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawMotifs(canvas, motionFrame));
-                DrawBitmap(canvas, _liveMotion.Raster("hp-motion-center", plan, rimPlan), HpRim, plan);
+                int phase = motionFrame % 100;
+                if (trace != null)
+                {
+                    trace.HasLight = !quiet && hpFrame != _hp.FrameMap.EmptyVirtualFrame && _liveMotion.HasLight(motionFrame);
+                    trace.MotionFrame = motionFrame;
+                }
+                trace?.EndPass(ResourcePass.OverflowAndPulse);
+                // A short-lived base cannot reuse a motif before its 100-frame loop repeats.
+                if (_useUnlitCache && damage.HasValue && !_warmUnlit)
+                {
+                    if (_firstSteadyFrame < 0 || motionFrame < _firstSteadyFrame) _firstSteadyFrame = motionFrame;
+                    _warmUnlit = motionFrame - _firstSteadyFrame >= _unlitMotifs.Length;
+                }
+                bool cacheUnlit = _warmUnlit && published.HasValue && !_liveMotion.HasLight(motionFrame);
+                var saved = _unlitMotifs[phase];
+                if (cacheUnlit && saved.Image != null && saved.Bounds.Contains(published!.Value))
+                {
+                    UnlitHits++;
+                    canvas.Save();
+                    canvas.ResetMatrix();
+                    canvas.DrawImage(saved.Image, saved.Bounds.X, saved.Bounds.Y, _replacePixels);
+                    canvas.Restore();
+                }
+                else
+                {
+                    if (!quiet && hpFrame != _hp.FrameMap.EmptyVirtualFrame)
+                        DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawLight(canvas, motionFrame));
+                    trace?.EndPass(ResourcePass.Light);
+                    canvas.DrawImage(_liveMotion.Raster("hp-motion-base", plan, rimPlan), rimBounds);
+                    DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawMotifs(canvas, motionFrame));
+                    canvas.DrawImage(_liveMotion.Raster("hp-motion-center", plan, rimPlan), rimBounds);
+                    if (cacheUnlit && saved.Image == null)
+                    {
+                        var region = damage!.Value;
+                        long bytes = (long)region.Width * region.Height * 4;
+                        if (_unlitBytes + bytes <= 8 * 1024 * 1024)
+                        {
+                            // Copy into tightly packed storage. A pixmap with the DIB's row stride would
+                            // retain row padding many times wider than the published HP damage.
+                            var crop = new SKImageInfo(region.Width, region.Height, info.ColorType, info.AlphaType);
+                            using var compact = new SKBitmap(crop);
+                            using var pixels = new SKPixmap(info, locked.Scan0, locked.Stride);
+                            if (pixels.ReadPixels(crop, compact.GetPixels(), compact.RowBytes, region.X, region.Y))
+                            {
+                                compact.SetImmutable();
+                                _unlitMotifs[phase] = (SKImage.FromBitmap(compact), region);
+                                _unlitBytes += compact.ByteCount;
+                                UnlitStores++;
+                            }
+                        }
+                    }
+                }
+                trace?.EndPass(ResourcePass.MotifsAndRim);
                 DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawGrid(canvas, motionFrame));
-                DrawInGaugeCoordinates(canvas, plan, _hp, () => PlayerHudResourceOverlay.ShieldRing(canvas,live,motionFrame,resourceMotion?.Shield,
-                    (float)_hp.Clip!.StartAngleDegrees));
+                trace?.EndPass(ResourcePass.Grid);
+                DrawShieldRing(canvas,plan,live,motionFrame,resourceMotion?.Shield);
                 canvas.Restore();
             }
 
+            trace?.EndPass(ResourcePass.ShieldRing);
             if (live == null)
             {
                 DrawText(canvas, plan, visualState, palette);
@@ -451,9 +544,9 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             }
             else
             {
-                DrawLiveText(canvas, plan, visualState, palette, live);
-                DrawHpHorizontalLine(canvas, plan, live: true);
+                DrawLiveReadouts(canvas, plan, palette, live);
             }
+            trace?.EndPass(ResourcePass.Readouts);
             surface.Flush();
         }
         finally
@@ -464,6 +557,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             }
         }
 
+        trace?.EndPass(ResourcePass.FlushAndUnlock);
         return new PlayerInfoFramePaintResult(
             hpFrame,
             mpFrame,
@@ -473,6 +567,140 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             palette.StartVirtualFrame.ToString(CultureInfo.InvariantCulture));
     }
 
+    internal Rectangle? HpMotionDamage(PlayerInfoRasterPlan plan, int previousFrame, int frame, int hpVirtualFrame)
+    {
+        // The backing image was captured before any foreground pass. A replaced plan or
+        // gauge frame must first build that image from a complete, uncleared surface.
+        if (_liveBase == null || _liveMotion == null) return null;
+        bool light = hpVirtualFrame != _hp.FrameMap.EmptyVirtualFrame;
+        var bounds = SKRect.Union(_liveMotion.MovingCoverage(previousFrame, light),
+            _liveMotion.MovingCoverage(frame, light));
+        float scale = (float)(plan.PhysicalScale * _hp.StageMatrix.A);
+        double x = plan.FlashViewportPhysical.Left - plan.TightPhysicalBounds.Left
+            + (_hp.StageMatrix.Tx + PlayerHudResourceLayout.HpOffsetX) * plan.PhysicalScale;
+        double y = plan.FlashViewportPhysical.Top - plan.TightPhysicalBounds.Top
+            + (PlayerInfoRasterPlanner.PlayerInfoStageTopLogical + _hp.StageMatrix.Ty) * plan.PhysicalScale;
+        var pixels = Rectangle.FromLTRB((int)Math.Floor(x + bounds.Left * scale) - 2,
+            (int)Math.Floor(y + bounds.Top * scale) - 2, (int)Math.Ceiling(x + bounds.Right * scale) + 2,
+            (int)Math.Ceiling(y + bounds.Bottom * scale) + 2);
+        var clipped = Rectangle.Intersect(new Rectangle(Point.Empty, plan.TightPhysicalBounds.Size), pixels);
+        return clipped.Width > 0 && clipped.Height > 0 ? clipped : null;
+    }
+
+    private void DrawBackdrop(SKCanvas canvas, PlayerInfoRasterPlan plan, IReadOnlyList<PlayerInfoRasterLayer> layers,
+        int mpFrame, MpMaskResult leftMask, MpMaskResult rightMask,
+        string rimAssetId, PlayerHudVitals? live, int liveFrame)
+    {
+        if (live != null)
+        {
+            canvas.Save();
+            var left = (float)(plan.FlashViewportPhysical.Left + (_mp.StageMatrix.Tx + PlayerHudResourceLayout.MpOffsetX) * plan.PhysicalScale - plan.TightPhysicalBounds.Left);
+            canvas.ClipRect(new SKRect(left, 0, plan.TightPhysicalBounds.Width, plan.TightPhysicalBounds.Height));
+            var original = PlayerHudBarArtData.MpBounds;
+            var destination = PlayerHudResourceLayout.MpBar;
+            var scale = (float)plan.PhysicalScale;
+            var originX = plan.FlashViewportPhysical.Left - plan.TightPhysicalBounds.Left;
+            var originY = plan.FlashViewportPhysical.Top - plan.TightPhysicalBounds.Top;
+            canvas.Translate(originX+destination.Left*scale,originY+destination.Top*scale);
+            canvas.Scale(PlayerHudResourceLayout.MpScaleX,PlayerHudResourceLayout.MpScaleY);
+            canvas.Translate(-originX-original.Left*scale,-originY-original.Top*scale);
+        }
+        DrawLayer(canvas, RequireLayer(layers, MpBackplate), plan);
+        if (mpFrame != _mp.FrameMap.EmptyVirtualFrame)
+        {
+            DrawMpFill(
+                canvas,
+                RequireLayer(layers, MpFill),
+                plan,
+                leftMask.Path,
+                rightMask.Path);
+        }
+        DrawLayer(canvas, RequireLayer(layers, rimAssetId), plan);
+        if (live != null)
+        {
+            canvas.Restore();
+            canvas.Save();
+            canvas.Translate(plan.FlashViewportPhysical.Left-plan.TightPhysicalBounds.Left,plan.FlashViewportPhysical.Top-plan.TightPhysicalBounds.Top);
+            canvas.Scale((float)plan.PhysicalScale);
+            PlayerHudResourceOverlay.MpOverflow(canvas,live,liveFrame);
+            canvas.Restore();
+            canvas.Save();canvas.Translate(PlayerHudResourceLayout.HpOffsetX*(float)plan.PhysicalScale,0);
+        }
+
+        Trace?.EndPass(ResourcePass.MpBase);
+        DrawLayer(canvas, RequireLayer(layers, HpBackplate), plan);
+        if (live != null) canvas.Restore();
+    }
+
+    private void DrawHpGauge(SKCanvas canvas, PlayerInfoRasterPlan plan, int hpFrame, int targetHpFrame, bool live)
+    {
+        if (live)
+        {
+            canvas.Save();
+            canvas.Translate(PlayerHudResourceLayout.HpOffsetX * (float)plan.PhysicalScale, 0);
+        }
+        if (live && hpFrame < targetHpFrame)
+        {
+            ValidateVirtualFrame(_hp, targetHpFrame);
+            if (!PlayerHudMotionSettings.StaticFeedback) DrawHpDamageTrail(canvas, plan, targetHpFrame, hpFrame);
+            DrawHpFill(canvas, plan, targetHpFrame);
+        }
+        else if (live && hpFrame > targetHpFrame)
+        {
+            ValidateVirtualFrame(_hp, targetHpFrame);
+            DrawHpFill(canvas, plan, targetHpFrame);
+            if (!PlayerHudMotionSettings.StaticFeedback) DrawHpHealPreview(canvas, plan, targetHpFrame, hpFrame);
+        }
+        else
+        {
+            DrawHpFill(canvas, plan, hpFrame);
+        }
+        if (live) canvas.Restore();
+        Trace?.EndPass(ResourcePass.HpBase);
+    }
+
+    private void DrawShieldRing(SKCanvas canvas, PlayerInfoRasterPlan plan, PlayerHudVitals live,
+        int frame, PlayerHudResourceMotion.Channel? motion)
+    {
+        void Paint(SKCanvas target) => DrawInGaugeCoordinates(target, plan, _hp,
+            () => PlayerHudResourceOverlay.ShieldRing(target, live, frame, motion, (float)_hp.Clip!.StartAngleDegrees));
+
+        if (!live.ShieldPresent || motion?.Active == true || live.ShieldDetail?.Recovery.State == "charging")
+        {
+            Paint(canvas);
+            return;
+        }
+
+        // Between shield events every segment, gradient and endpoint is stationary.
+        // Record in device coordinates so a regional repaint uses the same sampling origin.
+        var key = (plan, PlayerHudResourceMotion.ShieldFraction(live), motion?.Presence ?? 1f);
+        if (_settledShieldRing == null || _ringKey != key)
+        {
+            using var recorder = new SKPictureRecorder();
+            var size = plan.TightPhysicalBounds.Size;
+            var recording = recorder.BeginRecording(new SKRect(0,0,size.Width,size.Height), true);
+            recording.SetMatrix(canvas.TotalMatrix);
+            Paint(recording);
+            _settledShieldRing?.Dispose();
+            _settledShieldRing = FreezeMaterial(recorder);
+            _ringKey = key;
+        }
+        canvas.Save();
+        canvas.ResetMatrix();
+        canvas.DrawPicture(_settledShieldRing);
+        canvas.Restore();
+    }
+
+    private void ClearUnlitMotifs()
+    {
+        _firstSteadyFrame = -1;
+        _warmUnlit = false;
+        if (_unlitBytes == 0) return;
+        foreach (var phase in _unlitMotifs) phase.Image?.Dispose();
+        Array.Clear(_unlitMotifs);
+        _unlitBytes = 0;
+    }
+
     public void Dispose()
     {
         if (_disposed)
@@ -480,6 +708,16 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             return;
         }
         _disposed = true;
+        ClearUnlitMotifs();
+        _replacePixels.Dispose();
+        _liveBase?.Dispose();
+        _backdrop?.Dispose();
+        _hpReadouts?.Dispose();
+        _liveHpRule?.Dispose();
+        _settledShieldRing?.Dispose();
+        _mpReadouts?.Dispose();
+        _previousBase = default;
+
         _hpHorizontalLine?.Dispose();
         _hpHorizontalLine = null;
         _hpPaint?.Dispose();
@@ -998,22 +1236,89 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         }
     }
 
-    private void DrawLiveText(SKCanvas canvas, PlayerInfoRasterPlan plan, PlayerInfoVisualState state, PlayerInfoPaletteState palette, PlayerHudVitals live)
+    private void DrawLiveReadouts(SKCanvas canvas, PlayerInfoRasterPlan plan, PlayerInfoPaletteState palette, PlayerHudVitals live)
+    {
+        var hpKey=(plan,live.Hp,live.HpMax);
+        var mpKey=(plan,palette,live.Mp,live.MpMax);
+        var size=plan.TightPhysicalBounds.Size;
+        var bounds=new SKRect(0,0,size.Width,size.Height);
+        if (_mpReadouts==null || mpKey!=_mpReadoutKey)
+        {
+            using var recorder=new SKPictureRecorder();
+            DrawLiveMp(recorder.BeginRecording(bounds,true),plan,palette,live);
+            _mpReadouts?.Dispose();
+            _mpReadouts=recorder.EndRecording();
+            _mpReadoutKey=mpKey;
+        }
+        if (_hpReadouts==null || hpKey!=_hpReadoutKey)
+        {
+            using var recorder=new SKPictureRecorder();
+            var recording=recorder.BeginRecording(bounds,true);
+            DrawLiveHp(recording,plan,live);
+            _hpReadouts?.Dispose();
+            _hpReadouts=recorder.EndRecording();
+            _hpReadoutKey=hpKey;
+        }
+        if (_liveHpRule==null || _liveHpRulePlan!=plan)
+        {
+            using var recorder=new SKPictureRecorder();
+            DrawHpHorizontalLine(recorder.BeginRecording(bounds,true),plan,live:true);
+            _liveHpRule?.Dispose();
+            _liveHpRule=FreezeMaterial(recorder);
+            _liveHpRulePlan=plan;
+        }
+        canvas.DrawPicture(_mpReadouts);
+        canvas.DrawPicture(_hpReadouts);
+        canvas.DrawPicture(_liveHpRule);
+    }
+
+    // A picture of the authored separator still replays its blur on every animation tick.
+    // Collapse the tightly culled readout to a single premultiplied image at the physical scale.
+    private static SKPicture FreezeMaterial(SKPictureRecorder recorder)
+    {
+        using var paths=recorder.EndRecording();
+        var rect=SKRectI.Ceiling(paths.CullRect);
+        var bounds=paths.CullRect;
+        rect.Left=(int)Math.Floor(bounds.Left);
+        rect.Top=(int)Math.Floor(bounds.Top);
+        using var result=new SKPictureRecorder();
+        var replay=result.BeginRecording(rect);
+        if (rect.Width>0 && rect.Height>0 && (long)rect.Width*rect.Height*4<=LiveMaterialByteLimit/4)
+        {
+            using var tile=new SKBitmap(rect.Width,rect.Height);
+            using (var layer=new SKCanvas(tile))
+            {
+                layer.Clear(SKColors.Transparent);
+                layer.Translate(-rect.Left,-rect.Top);
+                layer.DrawPicture(paths);
+            }
+            tile.SetImmutable();
+            replay.DrawBitmap(tile,rect.Left,rect.Top);
+        }
+        else replay.DrawPicture(paths);
+        return result.EndRecording();
+    }
+
+    private void DrawLiveMp(SKCanvas canvas,PlayerInfoRasterPlan plan,PlayerInfoPaletteState palette,PlayerHudVitals live)
     {
         var mpAnchor = Math.Max(live.Mp,live.MpMax);
         var mpCompact = PlayerHudNumberFormat.RequiresCompact(mpAnchor,
             t=>HudNumbers.Measure(PlayerInfoPathGlyphAtlas.Aero,t,PlayerInfoCompositionRecipe.MpCurrent.FontPixels),43);
+        DrawInGaugeCoordinates(canvas,plan,_mp,()=>
+        {
+            DrawLiveCaption(canvas,PlayerInfoCompositionRecipe.MpLabel,"MP",40,ParseColor(palette.Label));
+            DrawLiveNumber(canvas,PlayerInfoCompositionRecipe.MpCurrent with { BaselineY=PlayerInfoCompositionRecipe.MpCurrent.BaselineY+.93f },live.Mp,43,ParseColor(palette.Current),mpAnchor,mpCompact);
+            DrawLiveNumber(canvas,PlayerInfoCompositionRecipe.MpMaximum with { BaselineY=PlayerInfoCompositionRecipe.MpMaximum.BaselineY+.93f },live.MpMax,88,ParseColor(palette.Max),mpAnchor,mpCompact);
+            DrawLiveCaption(canvas,PlayerInfoCompositionRecipe.MpPercent with {AnchorX=13.8f,Alignment=PlayerInfoPathTextAlignment.Center,FontPixels=11.9808f},
+                PlayerHudResourceStyle.Percent(live.Mp,live.MpMax),26,ParseColor(palette.Percent));
+        },PlayerHudResourceLayout.MpOffsetY,PlayerHudResourceLayout.MpOffsetX);
+    }
+
+    private void DrawLiveHp(SKCanvas canvas,PlayerInfoRasterPlan plan,PlayerHudVitals live)
+    {
         var hpAnchor = Math.Max(live.Hp,live.HpMax);
         var hpCompact = PlayerHudNumberFormat.RequiresCompact(hpAnchor,
             t=>HudNumbers.Measure(PlayerInfoPathGlyphAtlas.LcdStd,t,PlayerInfoCompositionRecipe.HpCurrent.FontPixels),45);
-        DrawInGaugeCoordinates(canvas,plan,_mp,()=>
-        {
-            DrawPathText(canvas,PlayerInfoCompositionRecipe.MpLabel,"MP",ParseColor(palette.Label));
-            DrawLiveNumber(canvas,PlayerInfoCompositionRecipe.MpCurrent,live.Mp,43,ParseColor(palette.Current),mpAnchor,mpCompact);
-            DrawLiveNumber(canvas,PlayerInfoCompositionRecipe.MpMaximum,live.MpMax,88,ParseColor(palette.Max),mpAnchor,mpCompact);
-            DrawLiveCaption(canvas,PlayerInfoCompositionRecipe.MpPercent with {AnchorX=13.8f,Alignment=PlayerInfoPathTextAlignment.Center,FontPixels=11.9808f},
-                PlayerHudResourceStyle.Percent(live.Mp,live.MpMax),26,ParseColor(palette.Percent));
-        },PlayerHudResourceLayout.MpOffsetY,PlayerHudResourceLayout.ResourceOffsetX);
         canvas.Save();canvas.Translate(PlayerHudResourceLayout.HpOffsetX*(float)plan.PhysicalScale,0);
         DrawInGaugeCoordinates(canvas,plan,_hp,()=>
         {
@@ -1035,7 +1340,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
     {
         var measured=HudNumbers.Measure(layout.FontId,text,layout.FontPixels);
         var size=measured>width?layout.FontPixels*width/measured:layout.FontPixels;
-        HudNumbers.Draw(canvas,layout.FontId,text,size,layout.AnchorX,layout.BaselineY,layout.Alignment,color,layout.GlowSigmaPixels,layout.GlowColor);
+        HudNumbers.DrawLive(canvas,layout.FontId,text,size,layout.AnchorX,layout.BaselineY,layout.Alignment,color,layout.GlowSigmaPixels,layout.GlowColor??SKColors.Transparent,LiveMaterialByteLimit/2);
     }
 
     private void DrawText(

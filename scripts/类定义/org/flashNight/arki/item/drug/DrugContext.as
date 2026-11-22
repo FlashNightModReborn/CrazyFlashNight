@@ -20,6 +20,7 @@ class org.flashNight.arki.item.drug.DrugContext {
 
     /** 物品名称 */
     public var itemName:String;
+    public var hudSource:Object;
 
     /** 完整物品数据 */
     public var itemData:Object;

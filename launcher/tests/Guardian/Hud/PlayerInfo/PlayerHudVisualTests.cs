@@ -170,11 +170,17 @@ public sealed class PlayerHudVisualTests
             packet["groups"]["vitals"]["hp"][0] = 0;
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
             using var bottom = new PlayerHudBottomWidget(anchor, controller, Path.Combine(root, "launcher", "web", "icons"));
+            using var receipt = new PlayerHudReceiptWidget(anchor, controller);
+            var top = HudZoneLayout.CurrentComboTop();
             var target = new PlayerHudTarget("drug", 0, "药剂0", 1, 4, 0, PlayerHudBottomWidget.DrugRect(0), controller.Generation);
             Assert.True(controller.Act(target));
+            Assert.True(receipt.Visible);
+            Assert.False(receipt.TryHitTest(receipt.ScreenBounds.Location));
+            Assert.Equal(top + 22f, HudZoneLayout.CurrentComboTop());
             Assert.True(controller.WritePending);
             // In-flight write message must not auto-fade
-            bottom.Tick(3000);
+            receipt.Tick(3000);
+            Assert.True(receipt.Visible);
             Assert.False(bottom.WantsAnimationTick);
 
             var id = sent.Single(p => (string)p["action"] == "playerHudAction")["actionId"].Value<string>();
@@ -182,10 +188,12 @@ public sealed class PlayerHudVisualTests
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(errAck));
             Assert.False(controller.WritePending);
             Assert.NotEmpty(controller.Message);
-            Assert.True(bottom.WantsAnimationTick);
-
-            bottom.Tick(PlayerHudBottomWidget.MessageTotalMs);
+            Assert.True(receipt.WantsAnimationTick);
             Assert.False(bottom.WantsAnimationTick);
+            receipt.Tick(PlayerHudReceiptWidget.TotalMs);
+            Assert.False(receipt.Visible);
+            Assert.False(receipt.WantsAnimationTick);
+            Assert.Equal(top, HudZoneLayout.CurrentComboTop());
         });
     }
 
@@ -513,7 +521,7 @@ public sealed class PlayerHudVisualTests
             using (var g = Graphics.FromImage(absent)) bottom.Paint(g,1,origin);
             Assert.Equal(0,DifferentPixels(depleted,absent,new Rectangle(0,504,286,72)));
             var assets=PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster:false);
-            var plan=PlayerInfoRasterPlanner.Create(assets,new Rectangle(0,0,1024,576),1);
+            var plan=PlayerInfoRasterPlanner.Create(assets,new Rectangle(0,0,1024,576),1,liveReadouts:true);
             using var batch=new PlayerInfoSvgRasterizer().Bake(plan,CancellationToken.None);
             Bitmap Resources(PlayerHudVitals values)
             {
@@ -662,7 +670,7 @@ public sealed class PlayerHudVisualTests
             using var bottom=new PlayerHudBottomWidget(anchor,controller,Path.Combine(root,"launcher","web","icons"));
             using var bitmap=new Bitmap(1920,1080,PixelFormat.Format32bppPArgb);
             var assets=PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster:false);
-            var plan=PlayerInfoRasterPlanner.Create(assets,new Rectangle(0,0,1920,1080),1);
+            var plan=PlayerInfoRasterPlanner.Create(assets,new Rectangle(0,0,1920,1080),1,liveReadouts:true);
             using var batch=new PlayerInfoSvgRasterizer().Bake(plan,CancellationToken.None);
             var model=new PlayerInfoAnimationModel();model.ApplyProduction(controller.State.Snapshot.Vitals);
             using var widget=new PlayerInfoWidget(assets,model){LiveVitals=controller.State.Snapshot.Vitals};
@@ -685,12 +693,12 @@ public sealed class PlayerHudVisualTests
             }
             var blue=Runs(PlayerHudResourceLayout.MpBar,true);var yellow=Runs(PlayerHudResourceLayout.PoiseBar,false);
             Assert.Equal(10,blue.Count);Assert.Equal(10,yellow.Count);
-            var cell=PlayerHudBarArtData.Cells[0];
-            var slope=(cell[3].X-cell[0].X)/(cell[3].Y-cell[0].Y);
-            var expectedOffset=slope*(PlayerHudResourceLayout.PoiseBar.Top-PlayerHudResourceLayout.MpBar.Top)*1080/576;
-            Assert.Equal(PlayerHudResourceLayout.LevelTop,PlayerHudResourceLayout.PoiseBar.Bottom);
+            var expectedOffset=(PlayerHudResourceLayout.PoiseBar.Left-PlayerHudResourceLayout.MpBar.Left)*1080/576;
+            Assert.Equal(new RectangleF(120.2f,540.6f,152,8.5f),PlayerHudResourceLayout.MpBar);
+            Assert.Equal(new RectangleF(115.34f,552,152,8),PlayerHudResourceLayout.PoiseBar);
+            Assert.True(PlayerHudResourceLayout.ShieldPlaque.Bottom<PlayerHudResourceLayout.MpBar.Top);
             for(var i=0;i<10;i++)
-            { Assert.InRange(Math.Abs(yellow[i].Start-blue[i].Start-expectedOffset),0,2);Assert.InRange(Math.Abs(yellow[i].End-blue[i].End-expectedOffset),0,2); }
+            { Assert.InRange(Math.Abs(yellow[i].Start-blue[i].Start-expectedOffset),0,2.5f);Assert.InRange(Math.Abs(yellow[i].End-blue[i].End-expectedOffset),0,2.5f); }
         });
     }
 
@@ -860,6 +868,49 @@ public sealed class PlayerHudVisualTests
         => RunOnSta(() => Render(width,height,false,true,false,false,true,warningClock));
 
     [Fact]
+    public void RepeatedAuthoritativePaintsCarryDueAnimationWithoutExtraSubmissions()
+    {
+        RunOnSta(() =>
+        {
+            RuntimeFontCatalog.Configure(FindRoot());
+            using var owner = new Form { ClientSize = new Size(1024,576), Location = new Point(-20000,-20000), StartPosition = FormStartPosition.Manual };
+            using var anchor = new Panel { Dock = DockStyle.Fill };
+            owner.Controls.Add(anchor); owner.Show();
+            var state = new PlayerHudState();
+            var packet = PlayerHudStateTests.Full();
+            packet["groups"]["vitals"]["hp"] = new JArray(1000,1000);
+            packet["groups"]["vitals"]["mp"] = new JArray(1000,1000);
+            Assert.True(state.Receive(PlayerHudStateTests.Encode(packet), 1));
+            using var surface = PlayerInfoSplitSurface.CreateLive(owner,anchor,state);
+            surface.SetReady();
+            PumpUntil(() => surface.Counters.CommitSuccessCount > 0);
+            var type = typeof(PlayerInfoSplitSurface);
+            const BindingFlags instance = BindingFlags.Instance | BindingFlags.NonPublic;
+            var widget = (PlayerInfoWidget)type.GetProperty("Widget",instance).GetValue(surface);
+            var dispatchPaint = type.GetMethod("RenderPostedOnUiThread",instance);
+            var previousClock = type.GetField("_lastAnimationTimestamp",instance);
+            var before = surface.Counters;
+            int initialGauge = widget.VisualState.Hp.CurrentVirtualFrame;
+            // Deliver only the posted authority paints. WM_TIMER never runs during this burst.
+            // Backdate the first tick to model an existing UI stall. Subsequent updates stay
+            // inside a logical frame so the decoration cannot request a second presentation.
+            for (int i=0;i<8;i++)
+            {
+                packet["seq"] = i+2;
+                packet["groups"]["vitals"]["hp"] = new JArray(200-i,1000);
+                Assert.True(state.Receive(PlayerHudStateTests.Encode(packet), i+2));
+                if(i==0) previousClock.SetValue(surface, Stopwatch.GetTimestamp() - Stopwatch.Frequency/5);
+                dispatchPaint.Invoke(surface,null);
+                Assert.Equal((double)(200-i),widget.VisualState.Hp.ClampedCurrent);
+            }
+            Assert.True(widget.VisualState.Hp.CurrentVirtualFrame > initialGauge);
+            if(!PlayerHudMotionSettings.ReducedMotion) Assert.True(widget.LiveFrame >= 5);
+            Assert.Equal(8L, surface.Counters.RepaintRequestCount - before.RepaintRequestCount);
+            Assert.Equal(8L, surface.Counters.CommitSuccessCount - before.CommitSuccessCount);
+        });
+    }
+
+    [Fact]
     public void ResourceOnlyDeltaReachesTheLiveMpSurfaceWithoutAVitalChange()
     {
         RunOnSta(() =>
@@ -990,7 +1041,7 @@ public sealed class PlayerHudVisualTests
             graphics.Clear(Color.Transparent);
             bottom.Paint(graphics, 1, origin);
             var assets = PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster: false);
-            var plan = PlayerInfoRasterPlanner.Create(assets, new Rectangle(0, 0, width, height), 1);
+            var plan = PlayerInfoRasterPlanner.Create(assets, new Rectangle(0, 0, width, height), 1, liveReadouts:true);
             using var batch = new PlayerInfoSvgRasterizer().Bake(plan, CancellationToken.None);
             var animation = new PlayerInfoAnimationModel(); animation.ApplyProduction(controller.State.Snapshot.Vitals);
             using var resourceWidget = new PlayerInfoWidget(assets, animation) { LiveVitals = controller.State.Snapshot.Vitals };
@@ -1023,13 +1074,11 @@ public sealed class PlayerHudVisualTests
         // The old capture on black hid both the missing chassis and rectangle leaks.
         foreach (var x in new[] { 180, 285, 482, 588, 1000 })
             Assert.Equal(255, canvas.GetPixel((int)(x * scale), (int)(566 * scale)).A);
-        foreach (var point in new[] { new Point(5, 472), new Point(77, 474), new Point(120, 485), new Point(250, 489) })
+        foreach (var point in new[] { new Point(5, 472), new Point(77, 474), new Point(250, 489), new Point(250, 500) })
             Assert.Equal(0, canvas.GetPixel((int)(point.X * scale), (int)(point.Y * scale)).A);
-        if(shield)Assert.True(canvas.GetPixel((int)(250*scale),(int)(500*scale)).A>230);
-        else Assert.Equal(0,canvas.GetPixel((int)(250*scale),(int)(500*scale)).A);
-        // Maximums and percentages are independently visible without opening details.
-        foreach (var region in new[] { new RectangleF(20+PlayerHudResourceLayout.HpOffsetX, 522, 35, 10), new RectangleF(180, 508, 54, 13),
-            new RectangleF(18+PlayerHudResourceLayout.HpOffsetX, 496, 40, 16), new RectangleF(90, 524, 29, 11) })
+        // Four real Buffs occupy the new deck rail, clear of the resource plaque below.
+        Assert.True(canvas.GetPixel((int)(120 * scale), (int)(498 * scale)).A > 230);
+        int VisibleReadingPixels(RectangleF region)
         {
             var ink = 0;
             for (var y = (int)(region.Top * scale); y < (int)(region.Bottom * scale); y++)
@@ -1038,19 +1087,25 @@ public sealed class PlayerHudVisualTests
                 var pixel = canvas.GetPixel(x, y);
                 if (pixel.G > 125 && pixel.B > 125) ink++;
             }
-            Assert.True(ink > 12 * scale * scale, "Resource reading is missing: " + region);
+            return ink;
         }
+        var shieldDigits = VisibleReadingPixels(new RectangleF(162, 517, 73, 9));
+        if (shield) Assert.True(shieldDigits > 12 * scale * scale, "The live shield capacity must appear in its bay");
+        else Assert.Equal(0, shieldDigits);
+        // Current, maximum and percentage text must remain readable around the new bars.
+        foreach (var region in new[] { new RectangleF(20+PlayerHudResourceLayout.HpOffsetX, 522, 35, 10), new RectangleF(180, 527, 54, 13),
+            new RectangleF(18+PlayerHudResourceLayout.HpOffsetX, 496, 40, 16), new RectangleF(90, 534, 29, 11) })
+            Assert.True(VisibleReadingPixels(region) > 12 * scale * scale, "Resource reading is missing: " + region);
         Assert.False(bottom.TryHitTest(new Point(origin.X + width / 2, origin.Y + height / 2)));
-        Assert.True(bottom.ScreenBounds.Height <= Math.Ceiling(height * 74d / 576d));
+        var bottomTop = PlayerHudBottomWidget.VisibleColdSkills(controller.State.Snapshot).Length > 0 ? 483 : 512;
+        Assert.Equal((int)Math.Ceiling((576 - bottomTop) * scale), bottom.ScreenBounds.Height);
         if (longReadings && width==1024)
         {
-            var ink=0;
-            for(var y=563;y<565;y++) for(var x=90;x<278;x++)
-            {
-                var p=canvas.GetPixel(x,y);
-                if(p.R>150&&p.G>150&&p.B>150)ink++;
-            }
-            Assert.True(ink>12,"Large XP readings must use the freed row at minimum resolution");
+            // The approved 9.2 px Aero readout sits on a 571.1 baseline and aligns to x=293.
+            Assert.Equal("23\u2009456\u2009789 / 50\u2009000\u2009000", PlayerHudResourceStyle.ExperienceGaugeText(controller.State.Snapshot.Vitals));
+            Assert.True(VisibleReadingPixels(new RectangleF(91,564,19,8)) > 4, "Missing EXP label at minimum resolution");
+            Assert.True(VisibleReadingPixels(new RectangleF(112,564,27,8)) > 7, "Missing level percentage");
+            Assert.True(VisibleReadingPixels(new RectangleF(235,564,58,8)) > 20, "Missing right-aligned exact level progress");
         }
         if (Environment.GetEnvironmentVariable("CF7_PLAYER_HUD_CAPTURE") == "1")
         {

@@ -572,6 +572,16 @@ Bar reducer 只按已接受的 game/presentation frame 推进，不使用独立 
 
 以上时钟约束针对世界头顶条。现役玩家 HUD 中暂停时仍运行的装饰动效保持原合同，不把所有 UI Timer 统一改为 gameplay frame。
 
+**#304 共享生命显示的首个接入点**。现役焦点 widget 按焦点绑定号持有 [FocusLifeState](../launcher/src/Guardian/Hud/UnitLife/FocusLifeState.cs)，把 HP 事实交给 `Apply`，现有装饰时钟调用 `Tick`。切换 epoch 时重新建立状态。布局、头像、HIT、悬停和失效请求仍由 widget 管理。[UnitHealth](../launcher/src/Guardian/Hud/UnitLife/UnitHealth.cs) 保留当前值和上限；绘制比例限制在 0–1，另外给出超额比例。无效上限或非有限数不能作为新的世界样本采用。[UnitLifeBarPainter.Paint](../launcher/src/Guardian/Hud/UnitLife/UnitLifeBarPainter.cs) 接受调用方当前画布、逻辑矩形、条形状态、样式与动效强度，服从调用方裁剪。
+
+**供 P1-HEAD 离线复验的接口**。[WorldLifeState](../launcher/src/Guardian/Hud/UnitLife/WorldLifeState.cs) 按场景 epoch、流 epoch、handle、generation 绑定单个实例。出生时残余条从完整逻辑宽度起步；重连小样显式选择 `Resync`，从当前 HP 起步。生产切流时仍需裁决重连策略。场景、流或代际更换后销毁旧状态并用完整事实重建。相同源帧先 `Apply` 快照，再按事件序号调用 `Hit`；迟到、重复与错代输入均被拒绝。暂停时重复采样同一帧不会推进世界动效。
+
+当前离线策略按单位自己的四帧时间轮相位追进。HP 变化后，第 15–38 次更新做二次缓出，剩差小于 5 个逻辑像素时贴合；第 53–75 次更新渐隐。仅最大 HP 变化沿用旧条原有显隐。实现直接按帧差取值，补帧成本有界。每次命中使用已有抖动种子。亮度取样可缺省，只有旧端实际取过亮度才传入 25、50 或 75；同帧连击仍会抖动，无亮度时保留原色。生产端仍需冻结世界锚点、天气与登场显隐、时间线、联网缺口恢复和共享随机数消耗等价性，并接入共享世界合成；本次保持 Flash 头顶条为现役显示者。
+
+可复用的[状态轨迹与边界用例](../launcher/tests/Guardian/Hud/UnitLife/UnitLifePolicyTests.cs) 给出 100 像素世界条逐帧和合帧的期望值，覆盖暂停、换代、最大 HP 单独改变、隐藏期间受伤、空盾、韧性与刚体；[焦点宿主回归](../launcher/tests/Guardian/Hud/PlayerInfo/FocusTargetHudTests.cs) 另验现役布局与交互。
+
+从仓库根目录运行 `dotnet test launcher/tests/UnitLife.Portable/UnitLife.Portable.csproj -c Release` 即可单独复验上述状态轨迹。该入口使用普通 .NET 10，在无窗口环境下直接编译生产状态代码和同一份测试。
+
 首期产品边界：
 
 - 语义/可读性等价，不要求 Flash 字体与 blend mode 像素等价；
