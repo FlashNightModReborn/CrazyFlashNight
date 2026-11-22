@@ -101,7 +101,9 @@ _root.帧计时器.初始化任务栈 = function():Void {
     this.eventBus.subscribe("frameUpdate", function(frameToken:Number):Void {
         org.flashNight.neur.Server.Issue205SourceProbe.mark(0);
         _root.帧计时器.taskManager.updateFrame(frameToken);
-        _root.帧计时器.unitUpdateWheel.tick(); // 单位的 update 事件发布后于调度器执行
+        if (_root.server.gameFrameAdvanced) {
+            _root.帧计时器.unitUpdateWheel.tick();
+        }
         SceneManager.instance.update(); // 场景管理器 update 函数
         WaveSpawner.instance.tick(); // 暂时把刷怪挂在这边
         org.flashNight.arki.camera.HorizontalScroller.observeDriver();

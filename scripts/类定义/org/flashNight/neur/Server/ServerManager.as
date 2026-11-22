@@ -44,6 +44,8 @@ class org.flashNight.neur.Server.ServerManager {
     public var currentPort:Number;
     private var frameClip:MovieClip;
     public var currentFrame:Number;
+    public var gameFrame:Number;
+    public var gameFrameAdvanced:Boolean;
 
     // ==================== 连接状态机 ====================
     private var _state:Number;
@@ -121,6 +123,8 @@ class org.flashNight.neur.Server.ServerManager {
         portIndex = 0;
         currentPort = null;
         currentFrame = 0;
+        gameFrame = 0;
+        gameFrameAdvanced = false;
         _state = S_DISCONNECTED;
         _stateEnteredFrame = 0;
         _retryCount = 0;
@@ -408,6 +412,9 @@ class org.flashNight.neur.Server.ServerManager {
 
     public function onEnterFrameHandler():Void {
         currentFrame++;
+        // 本拍只采样一次。分发中取得或释放的暂停租约从下一拍生效。
+        gameFrameAdvanced = (_root.暂停 !== true);
+        if (gameFrameAdvanced) gameFrame++;
         eventBus.publish("frameUpdate", currentFrame);
         hasSentThisFrame = false;
     }
