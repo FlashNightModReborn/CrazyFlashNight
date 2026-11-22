@@ -135,6 +135,42 @@ namespace Launcher.Tests.Guardian
                 }
         }
 
+        [Fact]
+        public void UnitJumpButtonUsesTheTypedPage()
+        {
+            DirectoryInfo repository = new DirectoryInfo(AppContext.BaseDirectory);
+            while (repository != null && !File.Exists(Path.Combine(
+                repository.FullName, "launcher", "CRAZYFLASHER7MercenaryEmpire.csproj")))
+                repository = repository.Parent;
+            Assert.NotNull(repository);
+            using var owner = new Form();
+            using var task = new ModifierTask(() => true, _ => true);
+            using var surface = new ModifierNativeSurface(owner,
+                Path.Combine(repository.FullName, "launcher", "web"), "owned", task);
+            surface.ClientSize = new Size(1016, 550);
+            Assert.True(surface.ResumePanel(new Rectangle(-32000, -32000, 1016, 550)));
+            typeof(ModifierNativeSurface).GetMethod("SetTab", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(surface, new object[] { "units" });
+            typeof(ModifierNativeSurface).GetMethod("ApplyUnits", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(surface, new object[] { new JObject
+                {
+                    ["success"] = true, ["page"] = 1, ["pageSize"] = 8, ["total"] = 32, ["revision"] = 1,
+                    ["units"] = new JArray()
+                } });
+            var input = (TextBox)typeof(ModifierNativeSurface).GetField(
+                "_unitPageInput", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(surface);
+            input.Text = "2";
+            Point center = new Point(ModifierNativeLayout.UnitJump.X + ModifierNativeLayout.UnitJump.Width / 2,
+                ModifierNativeLayout.UnitJump.Y + ModifierNativeLayout.UnitJump.Height / 2);
+            string hit = (string)typeof(ModifierNativeSurface).GetMethod("HitAction",
+                BindingFlags.Instance | BindingFlags.NonPublic).Invoke(surface, new object[] { center });
+            Assert.Equal("unit_jump", hit);
+            typeof(ModifierNativeSurface).GetMethod("ExecuteAction", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(surface, new object[] { hit });
+            Assert.Equal(2, typeof(ModifierNativeSurface).GetField(
+                "_unitPage", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(surface));
+        }
+
         private static void SaveModifierFrame(Image frame, string name)
         {
             string root = Environment.GetEnvironmentVariable("CF7_EVIDENCE_ROOT");

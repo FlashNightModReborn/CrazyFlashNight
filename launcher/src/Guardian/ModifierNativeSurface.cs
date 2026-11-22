@@ -1744,6 +1744,7 @@ namespace CF7Launcher.Guardian
                 if (ArtHit(ModifierNativeLayout.UnitHostile, "hostile", logical)) return "hostile";
                 if (ArtHit(ModifierNativeLayout.UnitSpawn, "unit_spawn", logical)) return "unit_spawn";
                 if (ArtHit(ModifierNativeLayout.UnitMerc, "unit_merc", logical)) return "unit_merc";
+                if (ArtHit(ModifierNativeLayout.UnitJump, "unit_jump", logical)) return "unit_jump";
                 int index = UnitIndexAt(logical);
                 if (index >= 0) return "unit:" + index;
             }
@@ -1790,6 +1791,11 @@ namespace CF7Launcher.Guardian
                 case "hostile": ToggleHostile(); break;
                 case "unit_spawn": SpawnUnit(); break;
                 case "unit_merc": SpawnMerc(); break;
+                case "unit_jump":
+                    int page;
+                    if (!int.TryParse((_unitPageInput.Text ?? "").Trim(), out page)) { SyncPageInputs(); break; }
+                    JumpUnitPage(page);
+                    break;
             }
         }
 
