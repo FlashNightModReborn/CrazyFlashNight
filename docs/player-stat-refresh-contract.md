@@ -45,7 +45,7 @@ context/body 是不可复用的普通 Object；world 复用 StageReturnFlow.worl
 
 角色 generation 由 SaveManager 的真实输入替换及临时玩法 owner 显式更新；普通奖励事务的 ext 克隆不换角色。经脉以该 generation 隔离回执，ext 克隆只令收益缓存重读。同槽重读仍须走显式 reset，不能以槽名相同跳过。reset 先安装已 detach 的新身份和水位，再释放自己旧的暂停租约，确保同步订阅者不能恢复写旧体。
 
-首次出生、模板、Static、模式组件、状态跳转和转场资源共同拥有外层初始化范围。开始即撤销 ready；UnitInitialized 和 SceneReady 保持原阶段含义。只有外层、转场资源及必要模式组件完成、数值/派生后验成立，才设置最终 ready。Dominator 的独立 SWF 用捕获的 body 通知模式组件就绪，不能以延迟若干帧代替。
+首次出生、模板、Static、状态跳转和转场资源共同拥有外层初始化范围。外层、转场资源和数值后验全部完成后，协调器设置最终 ready。主手 Dominator 的当前模式由同步装备逻辑恢复，普通刷新只计算派生值。真实切换和折叠完成须核对原挂点、身体、装备实例和预期模式，每次受理只换算一次弹药。
 
 每个 bit 记录 requested/completed 水位。flush 只接纳所捕获的工作；同 bit 的再失效仍留下工作。同步最多四轮，重入只返回 pending，不递归或每帧轮询。读取没有变化时为 unchanged，零投影写。
 
@@ -117,8 +117,10 @@ tools/player-stat-refresh/check-writes.js 默认检查 HEAD 到当前树新增/�
 
 子能力的偏好在领域提交后进入 SKILLS 投影，具体存档和消费者合同见[技能子能力](skill-subfeatures.md)。`refreshPersistentWeaponCaches` 仅在携带已提交 `passiveInput` 时检查已装备枪械的幽灵弹上限，沿用既有规范化将超限付费幽灵弹退回拆包余额；普通 STATS 刷新不拥有弹药写权限。
 
-## 2026-10-28 模式组件等待修订
+## Dominator 换装和失败恢复
 
-源码对完整装备重建的 `waiting_mode_component` 保留原 ticket/body/world/context，要求 open=0、未失败且身份仍一致；协调器保持动作屏障并返回pending。角色构筑的 finalize/flushLive 线协议最多等待2秒的真实模式回执，期间拒绝新写和替换会话。只有原ticket完成且装备证明仍有效才继续一次收尾，首次调用尚未进入持久写。
+装备投影可以在武器素材尚未加载时完成。首次换装从角色的运行期模式偏好恢复，保留已保存的射击计数。属性和技能刷新不发出模式命令。旧 placement、旧身体及已被换走的物品都失去切换能力，真实切换继续使用原有弹容倍率与向上取整。
 
-超时返回已知失败，不自动重建或保存；后续显式recoverProjection才允许原owner恢复重建。迟到旧组件不能完成新身体，跨会话回调拒绝，既有未知写锁保持原归属。真实CS6专项已覆盖这些边界；候选中的Dominator首次换装收尾和保存已通过，新进程也已加载该测试槽且磁盘装备保持一致。重启后的新鲜装备面板快照尚未取得。该候选随后遇到画面捕获超时，旧主程序与旧Flash产物对照同样失败，因此开箱和完整游戏旅程尚未完成验收；具体身份、原始失败和剩余范围见[本轮报告](reports/cf6-instructor-save-rebalance-2026-10-28.json)。没有据此认定测试员未提供的稳定故障档已被完整覆盖，也没有正式部署。
+角色构筑只允许原会话显式恢复已中断的装备重建。有尾部检查点时继续尾部，保留已经结算的 HP、MP 和 Buff。正常返回战斗仍要求角色投影完整、必要的保存完成、原面板退场和原暂停租约释放。
+
+10 月的限时视觉等待及当时的验收条件见[原修补记录](reports/cf6-instructor-save-rebalance-2026-10-28.json)。其后的隔离候选完成了真实换装、保存与新进程读回，见[10 月 29 日记录](reports/cf6-a05-door-and-save-recheck-2026-10-29.json)。

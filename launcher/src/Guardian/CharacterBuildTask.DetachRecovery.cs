@@ -24,6 +24,9 @@ namespace CF7Launcher.Guardian
         private int _detachRecoveryTransportGeneration;
         private int _detachRecoveryClosedGeneration;
         private int _detachRecoveryCallSequence;
+        private Func<string, bool> _isCurrentRetryPanel;
+        internal void SetShutdownRetryPanel(Func<string, bool> isCurrentPanel) =>
+            _isCurrentRetryPanel = isCurrentPanel;
         private string _detachRecoveryReason;
         private string _detachRecoveryStatus = "idle";
         private string _detachRecoveryFailure;
@@ -91,7 +94,11 @@ namespace CF7Launcher.Guardian
                 {
                     return false;
                 }
-                if (_detachRecoveryRequired) return true;
+                if (_detachRecoveryRequired)
+                {
+                    _detachRecoveryReason = "web_navigation";
+                    return true;
+                }
             }
             return RequireDetachRecovery(
                 "web_navigation", 0, 0, true);
@@ -125,7 +132,11 @@ namespace CF7Launcher.Guardian
                     {
                         return false;
                     }
-                    if (_detachRecoveryRequired) return true;
+                    if (_detachRecoveryRequired)
+                    {
+                        _detachRecoveryReason = "normal_close";
+                        return true;
+                    }
                 }
                 return RequireDetachRecovery(
                     "normal_close", 0, 0, true);
@@ -195,7 +206,11 @@ namespace CF7Launcher.Guardian
                     {
                         return false;
                     }
-                    if (_detachRecoveryRequired) return true;
+                    if (_detachRecoveryRequired)
+                    {
+                        _detachRecoveryReason = "normal_close";
+                        return true;
+                    }
                 }
                 return RequireDetachRecovery(
                     "normal_close", 0, readyGeneration, false);
@@ -407,6 +422,8 @@ namespace CF7Launcher.Guardian
                             "recovery_settled",
                             out outcome);
                     }
+                    if (!_detachRecoveryRequired && _writeState == "flush_failed")
+                        return LogHostShutdownFence(false, "recovery_flush_failed", out outcome);
                     if (_detachRecoveryStatus
                         == "fatal_blocked")
                     {
@@ -703,6 +720,7 @@ namespace CF7Launcher.Guardian
             }
 
             bool forceCapturedTransport = false;
+            bool retryOriginalPanel = false;
             bool notifyBlocked = false;
             bool notifySettled = false;
             lock (_bindingGate)
@@ -744,13 +762,16 @@ namespace CF7Launcher.Guardian
                                 message.Value<long>("loadoutRevision"),
                                 message.Value<long>("liveRevision"),
                                 message.Value<bool>("liveRefreshDirty"));
-                        forceCapturedTransport =
-                            TryReserveAutomaticDetachRecoveryRetireLocked();
-                        _detachRecoveryStatus = forceCapturedTransport
-                            ? "awaiting_reconnect"
-                            : "fatal_blocked";
-                        _detachRecoveryFailure =
-                            failureCode ?? "unknown";
+                        bool knownFlush = failureCode == "flush_failed" && message.Value<bool>("active")
+                            && entry.SessionGeneration == message.Value<long>("sessionGeneration")
+                            && entry.ExpectedLoadoutRevision == message.Value<long>("loadoutRevision")
+                            && entry.ExpectedDrugRevision == message.Value<long>("drugRevision")
+                            && entry.ExpectedLiveRevision <= message.Value<long>("liveRevision");
+                        retryOriginalPanel = knownFlush && _detachRecoveryReason == "host_shutdown"
+                            && _isCurrentRetryPanel != null;
+                        forceCapturedTransport = !knownFlush && TryReserveAutomaticDetachRecoveryRetireLocked();
+                        _detachRecoveryStatus = forceCapturedTransport ? "awaiting_reconnect" : "fatal_blocked";
+                        _detachRecoveryFailure = failureCode ?? "unknown";
                         notifyBlocked = !forceCapturedTransport;
                     }
                     System.Threading.Monitor.PulseAll(
@@ -775,7 +796,14 @@ namespace CF7Launcher.Guardian
                     + (failureCode ?? "unknown")
                     + " generation=" + entry.TransportGeneration);
             }
-            if (notifyBlocked)
+            if (retryOriginalPanel)
+            {
+                // The UI thread can be waiting in the shutdown fence. Check the visual after it unwinds.
+                Action handBack = () => ReturnFailedShutdownToPanel(entry, message.Value<long>("liveRevision"));
+                if (_invokeOnUI != null) _invokeOnUI(handBack);
+                else handBack();
+            }
+            else if (notifyBlocked)
                 NotifyDetachRecoveryBlocked();
 
             if (notifySettled)
@@ -785,6 +813,41 @@ namespace CF7Launcher.Guardian
                     + entry.RecoveryEpoch);
                 NotifyCoordinatorSettledIfReady();
             }
+        }
+
+        private void ReturnFailedShutdownToPanel(PendingRequest entry, long liveRevision)
+        {
+            if (!_isCurrentRetryPanel(entry.PanelInstanceId))
+            {
+                NotifyDetachRecoveryBlocked();
+                return;
+            }
+            lock (_bindingGate)
+            lock (_gate)
+            {
+                if (_disposed || _bindingChanging || !_detachRecoveryRequired || _detachRecoveryInFlight
+                    || _detachRecoveryAwaitingVisualRetire || _detachRecoveryReason != "host_shutdown"
+                    || _detachRecoveryStatus != "fatal_blocked" || _detachRecoveryFailure != "flush_failed"
+                    || _detachRecoveryEpoch != entry.RecoveryEpoch || _bindingEpoch != entry.BindingEpoch
+                    || _panelInstanceId != entry.PanelInstanceId || _sessionGeneration != entry.SessionGeneration
+                    || _writeEpoch != entry.WriteEpoch || _pendingCount != 0 || _unknownKind != UnknownKind.None
+                    || _initialSnapshotOutcomeUnknown || _detachRecoveryTransportGeneration != entry.TransportGeneration
+                    || SafeReadyGeneration() != entry.TransportGeneration) return;
+                ResetDetachRecoveryLocked();
+                InvalidateFinalizeProofLocked();
+                ApplySnapshotLocked(entry.ExpectedLoadoutRevision, liveRevision, entry.ExpectedDrugRevision,
+                    liveRevision != entry.ExpectedLoadoutRevision);
+                _writeState = "flush_failed";
+                System.Threading.Monitor.PulseAll(_gate);
+            }
+            PostToWeb(new JObject {
+                ["type"] = "character_build_retry_available", ["panelInstanceId"] = entry.PanelInstanceId,
+                ["sessionGeneration"] = entry.SessionGeneration.Value, ["writeEpoch"] = entry.WriteEpoch,
+                ["loadoutRevision"] = entry.ExpectedLoadoutRevision, ["liveRevision"] = liveRevision,
+                ["drugRevision"] = entry.ExpectedDrugRevision
+            }.ToString(Newtonsoft.Json.Formatting.None));
+            LogManager.Log("event=character_build_shutdown_returned panelInstanceId=" + entry.PanelInstanceId
+                + " generation=" + entry.TransportGeneration + " recoveryEpoch=" + entry.RecoveryEpoch);
         }
 
         private static bool TryValidateDetachRecoveryResponse(

@@ -5143,6 +5143,9 @@ namespace CF7Launcher.Guardian
             _characterBuildTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+            task.SetShutdownRetryPanel(instance => CanAcceptPanelDocumentMessages
+                && _panelHost != null && _panelHost.IsPanelOpen && _panelHost.ActivePanelName == "workbench"
+                && _panelHost.ActivePanelInstanceId == instance);
             task.SetDetachRecoveryBlocked(delegate(string status, string error)
             {
                 if (_commandRouter != null)

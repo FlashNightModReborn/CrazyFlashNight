@@ -68,6 +68,12 @@ BATTLE_RIG_STATES = (
     "手雷站立",
 )
 BATTLE_RIG_DEFAULT_CHILD_LABELS = ("空闲", "站立")
+# 空手待机 等符号在时间轴上按性别分流：男 站姿/格斗架势 在前，女 在后。
+# 女 角色必须从 站立-女 取分件变换，不能复用 男 站姿（#333 建角预览右肩错位）。
+BATTLE_STANCE_LABELS = {
+    "男": ("站立-男", "格斗架势-男"),
+    "女": ("站立-女", "格斗架势-女"),
+}
 BATTLE_RIG_REQUIRED_FIELDS = {
     "空手站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具"),
     "长枪站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "长枪_装扮"),
@@ -81,9 +87,9 @@ BATTLE_RIG_REQUIRED_FIELDS = {
 BATTLE_SIDE_SPECIFIC_FIELDS = ("左下臂", "右下臂", "左手", "右手", "左大腿", "右大腿")
 
 # P1#5/P1#6: 女性裸体兜底是 AS2 DressupReferenceManager.femaleFallbacks 的唯一真相
-# （keys 原为 X_引用，此处按战斗占位器 field 名重键，去掉 _引用 后缀）。战斗 rig 仅
-# 遍历 男 几何后 deepcopy 到 女 桶，故需在合成 女 桶时把 基本款（裸体*）连接与脸型从
-# 男变装-* 替换成 女变装-*，否则女角色会显示男性素材。
+# （keys 原为 X_引用，此处按战斗占位器 field 名重键，去掉 _引用 后缀）。男女虽按各自
+# 站姿分别遍历，但占位器连接与基本款仍是同一批 男变装-* 连接名，故需在 女 桶上把
+# 基本款（裸体*）连接与脸型替换成 女变装-*，否则女角色会显示男性素材。
 BATTLE_FEMALE_FALLBACKS = {
     "身体": "女变装-裸体身体",
     "上臂": "女变装-裸体上臂",
@@ -1221,10 +1227,10 @@ def symbol_label_index(symbol: dict[str, Any], label: str) -> int | None:
     return None
 
 
-def default_battle_child_frame(symbol: dict[str, Any]) -> int:
-    # DB-5: build_battle_rig 只以 男 几何遍历（女 桶由 P1#5 替换合成），故此处恒为
-    # 男 标签，原 gender 形参已是死参，移除。
-    gender_labels = ("站立-男", "格斗架势-男")
+def default_battle_child_frame(symbol: dict[str, Any], gender: str = "男") -> int:
+    # 男女共用 主角-男 外层模板，但子符号（如 空手待机）内部按性别分流。
+    # 遍历时按 gender 取对应站姿标签；无性别标签的子符号仍回落到 空闲/站立。
+    gender_labels = BATTLE_STANCE_LABELS.get(gender, BATTLE_STANCE_LABELS["男"])
     for label in gender_labels + BATTLE_RIG_DEFAULT_CHILD_LABELS:
         index = symbol_label_index(symbol, label)
         if index is not None:
@@ -1346,7 +1352,7 @@ def traverse_battle_holders(
                     gender,
                     state_label,
                     child_name,
-                    default_battle_child_frame(child),
+                    default_battle_child_frame(child, gender),
                     matrix,
                     holders,
                     path + [f"{symbol_name}@{frame_index}"],
@@ -1437,60 +1443,64 @@ def build_battle_rig(project_root: Path) -> dict[str, Any]:
     if template is None:
         return {"error": "missing_battle_player_template"}
 
-    states: dict[str, Any] = {}
     audit_errors: list[dict[str, Any]] = []
-    for state_label in BATTLE_RIG_STATES:
-        frame_index = symbol_label_index(template, state_label)
-        if frame_index is None:
-            audit_errors.append({"stateLabel": state_label, "error": "missing_state_label"})
-            continue
-        holders: list[dict[str, Any]] = []
-        traverse_battle_holders(
-            symbols,
-            "男",
-            state_label,
-            "主角-男",
-            frame_index,
-            IDENTITY,
-            holders,
-            [],
-            set(),
-        )
-        fields = Counter(holder["field"] for holder in holders)
-        required = BATTLE_RIG_REQUIRED_FIELDS.get(state_label, ())
-        missing_required = [field for field in required if fields.get(field, 0) <= 0]
-        if missing_required:
-            audit_errors.append(
-                {
-                    "stateLabel": state_label,
-                    "error": "missing_required_fields",
-                    "fields": missing_required,
-                }
+    genders: dict[str, Any] = {}
+    # 男女各自遍历：外层模板同为 主角-男，子符号按 gender 落到 站立-男 / 站立-女。
+    # #333：原先只遍历 男 几何再 deepcopy 给 女，女角色因此沿用 男 站姿分件变换，
+    # 建角预览出现右肩连接错位（局内播 站立-女 正常）。
+    for gender in DEFAULT_GENDERS:
+        states: dict[str, Any] = {}
+        for state_label in BATTLE_RIG_STATES:
+            frame_index = symbol_label_index(template, state_label)
+            if frame_index is None:
+                audit_errors.append(
+                    {"gender": gender, "stateLabel": state_label, "error": "missing_state_label"}
+                )
+                continue
+            holders: list[dict[str, Any]] = []
+            traverse_battle_holders(
+                symbols,
+                gender,
+                state_label,
+                "主角-男",
+                frame_index,
+                IDENTITY,
+                holders,
+                [],
+                set(),
             )
-        audit_errors.extend(audit_battle_holder_sides(state_label, holders))
-        reorder_battle_head_holders_for_draw(holders)
-        states[state_label] = {
-            "frame": frame_index,
-            "templateSymbol": "主角-男",
-            "matrix": IDENTITY.to_json(),
-            "holders": holders,
-            "fieldCounts": dict(sorted(fields.items())),
-            "missingRequiredFields": missing_required,
-        }
-
-    genders = {
-        gender: {
-            "templateSymbol": "主角-男",
-            "states": copy.deepcopy(states),
-        }
-        for gender in DEFAULT_GENDERS
-    }
-    for gender, gender_data in genders.items():
-        for state_label, state in gender_data["states"].items():
-            for holder in state["holders"]:
+            fields = Counter(holder["field"] for holder in holders)
+            required = BATTLE_RIG_REQUIRED_FIELDS.get(state_label, ())
+            missing_required = [field for field in required if fields.get(field, 0) <= 0]
+            if missing_required:
+                audit_errors.append(
+                    {
+                        "gender": gender,
+                        "stateLabel": state_label,
+                        "error": "missing_required_fields",
+                        "fields": missing_required,
+                    }
+                )
+            for error in audit_battle_holder_sides(state_label, holders):
+                error.setdefault("gender", gender)
+                audit_errors.append(error)
+            reorder_battle_head_holders_for_draw(holders)
+            for holder in holders:
                 holder["gender"] = gender
                 if gender == "女":
                     apply_female_battle_fallbacks(holder)
+            states[state_label] = {
+                "frame": frame_index,
+                "templateSymbol": "主角-男",
+                "matrix": IDENTITY.to_json(),
+                "holders": holders,
+                "fieldCounts": dict(sorted(fields.items())),
+                "missingRequiredFields": missing_required,
+            }
+        genders[gender] = {
+            "templateSymbol": "主角-男",
+            "states": states,
+        }
 
     result = {
         "source": "flashswf/arts/things0/LIBRARY/主角-男.xml",
