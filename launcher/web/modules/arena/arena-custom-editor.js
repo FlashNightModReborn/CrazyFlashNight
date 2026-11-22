@@ -2548,8 +2548,9 @@
             ArenaResult.applyCustomRunStatus(data);
             if (data.success === false) {
                 cue('rejected'); // 权威回包明确失败（契约 §2 结果音）
-                ArenaCore.showToast(data.message || data.error || '委托启动失败');
-                setCustomConfirmError(data.message || data.error || '委托启动失败');
+                var errMsg = ArenaCore.errorMessage(data.message || data.error, '委托启动失败');
+                ArenaCore.showToast(errMsg);
+                setCustomConfirmError(errMsg);
                 return;
             }
             cue('success'); // 权威回包接受：定制赛委托已启动
@@ -2577,8 +2578,9 @@
             refreshCustomMatchCard();
             if (!data.success) {
                 cue('rejected'); // 权威回包明确失败（契约 §2 结果音）
-                ArenaCore.showToast(data.error || '挑战发起失败');
-                setCustomConfirmError(data.error || '挑战发起失败');
+                var errMsg = ArenaCore.errorMessage(data.error, '挑战发起失败');
+                ArenaCore.showToast(errMsg);
+                setCustomConfirmError(errMsg);
                 return;
             }
             cue('success'); // 权威回包接受：玩家对怪物挑战已开始
@@ -2609,7 +2611,7 @@
             S._busy = false;
             ArenaResult.applyCustomRunStatus(data);
             cue(data.success === false ? 'rejected' : 'success'); // 中止请求的权威回包（契约 §2 结果音）
-            ArenaCore.showToast(data.success === false ? (data.message || data.error || '中止失败') : '已请求中止');
+            ArenaCore.showToast(data.success === false ? ArenaCore.errorMessage(data.message || data.error, '中止失败') : '已请求中止');
             if (ArenaResult.customRunActive()) ArenaResult.scheduleCustomStatusPoll();
         });
     }

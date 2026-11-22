@@ -43,6 +43,11 @@
                 moveButton.title = '持有量已满，查看超额数量并确认清理';
                 return;
             }
+            if (batch.rightId() === 'stash' && id === '背包') {
+                moveButton.textContent = '不可存入';
+                moveButton.title = '暂存物资只支持取出，不能存入';
+                return;
+            }
             moveButton.textContent = id === 'stash' ? '领取' : id === '背包' ? '存入' : '取出';
             moveButton.title = id === 'stash' ? '按所选数量领取，自动放入适用位置'
                 : '按所选数量移动，优先合并堆叠，再寻找空格';

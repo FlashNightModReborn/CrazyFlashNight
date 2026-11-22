@@ -320,5 +320,20 @@ check('tuning target projects neutral backpack without inventing a wearing slot'
     assert.strictEqual(Projection.tuningTarget({kind:'drug', drugSlot:0}, 'backpack', {key:'bag'}), null);
 });
 
+check('mutationErrorCopy and itemUseErrorCopy map server error codes to actionable Chinese copy', function() {
+    const Eligibility = require('../launcher/web/modules/character-build/character-build-candidate-eligibility.js');
+    assert(Eligibility.mutationErrorCopy('backpack_full', 'unequipEquipment').indexOf('背包已满（50/50）') >= 0);
+    assert(Eligibility.mutationErrorCopy('backpack_full', 'unequipDrug').indexOf('无法卸下药剂') >= 0);
+    assert(Eligibility.mutationErrorCopy('level_locked', 'equipEquipment').indexOf('等级不足') >= 0);
+    assert(Eligibility.mutationErrorCopy('cooldown_active', 'unequipDrug').indexOf('冷却中') >= 0);
+    assert(Eligibility.mutationErrorCopy('stale_state', 'equipEquipment').indexOf('已变化') >= 0);
+    assert(Eligibility.mutationErrorCopy('write_busy', 'unequipEquipment').indexOf('另一项操作') >= 0);
+    assert(Eligibility.mutationErrorCopy('not_sent', 'unequipEquipment').indexOf('连接不可用') >= 0);
+    assert(Eligibility.mutationErrorCopy('unrecognized_error_code', 'unequipEquipment').indexOf('unrecognized_error_code') < 0);
+    assert(Eligibility.itemUseErrorCopy('inventory_full').indexOf('背包已满') >= 0);
+    assert(Eligibility.itemUseErrorCopy('no_available_lane').indexOf('四条药剂通道') >= 0);
+    assert(Eligibility.itemUseErrorCopy('unrecognized_use_error').indexOf('unrecognized_use_error') < 0);
+});
+
 process.stdout.write(
     'Character Build projection: ' + passed + '/' + passed + ' passed\n');

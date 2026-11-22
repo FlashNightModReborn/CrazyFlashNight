@@ -14,9 +14,7 @@ var InventoryWorkbench = (function() {
     var _preparationNavigationV1 = false;
     var _featureGate = null, _stashNav = null;
 
-    function toast(message) {
-        if (typeof Toast !== 'undefined') Toast.add(message);
-    }
+    function toast(message, severity, opts) { if (typeof Toast !== 'undefined') Toast.add(message, severity, opts); }
 
     function active() {
         return Panels.getActive
@@ -131,7 +129,7 @@ var InventoryWorkbench = (function() {
             onTuningSwitch:function(next, opener) {
                 requestView(next, {origin:'header', opener:opener});
             },
-            onBlocked:toast
+            onBlocked:function(reason) { toast(reason, 'warning', {silent:true}); }
         });
         _storageActions = header.storageActions;
         _buildActions = header.buildActions;
@@ -220,10 +218,11 @@ var InventoryWorkbench = (function() {
                 if (_preparationMenu) _preparationMenu.close(false);
                 return _shell.openModal(spec);
             },
-            toast:function(message, command) {
-                if (command === 'snapshot') rejectBuildMount(
-                    _panelInstanceId, activationEpoch);
-                toast(message);
+            toast:function(message, cmdOrSev, respOrOpts) {
+                if (cmdOrSev === 'snapshot') rejectBuildMount(_panelInstanceId, activationEpoch);
+                var sev = /^(error|warning|success|info)$/.test(String(cmdOrSev || '')) ? cmdOrSev
+                    : (respOrOpts && respOrOpts.success === false || cmdOrSev === 'finalize' || cmdOrSev === 'snapshot' ? 'error' : undefined);
+                toast(message, sev, respOrOpts && respOrOpts.persistAfterClose ? respOrOpts : undefined);
             }
         }, stashNav);
     }
@@ -518,7 +517,7 @@ var InventoryWorkbench = (function() {
         onClose:teardown,
         onRequestClose:requestClose,
         onForceClose:function() {
-            toast('连接断开，物品工作台已关闭');
+            toast('连接断开，物品工作台已关闭', 'error', {persistAfterClose:true});
         }
     });
 

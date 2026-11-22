@@ -158,6 +158,7 @@
         if (entry.stateHealth !== 'ok' || entry.writeBlocked) return '异常';
         if (view === 'trainer') return trainerState(entry, player).label;
         if (entry.passive && !entry.equippable) return entry.enabled ? '被动 ON' : '被动 OFF';
+        if (!entry.equippable) return '不可配置';
         return entry.equippedSlots && entry.equippedSlots.length ? '槽 ' + entry.equippedSlots.join('/') : '可装备';
     }
 

@@ -141,6 +141,7 @@ function() {
                 scrollTop:scroll ? scroll.scrollTop : 0
             };
             var previousCandidate = this._candidateByKey(previous.selectedCandidateKey);
+            this._stickyNotice = null;
             this._candidateScope = scope;
             if (scope === 'backpack') {
                 this._selectedSlotKey = '';
@@ -284,7 +285,11 @@ function() {
                 var node = this._lockedFocusKey && this.root.querySelector(
                     '[data-roving-key="' + this._lockedFocusKey.replace(/"/g, '\\"') + '"]');
                 this._lockedFocusKey = '';
-                this._showBrowsingNotice(texts.interactionRestored);
+                if (this._stickyNotice) {
+                    this._showStatusNotice(this._stickyNotice.kind, this._stickyNotice.message);
+                } else {
+                    this._showBrowsingNotice(texts.interactionRestored);
+                }
                 if (node && !node.disabled) {
                     try { node.focus({preventScroll:true}); } catch (_) { node.focus(); }
                 }
@@ -337,6 +342,7 @@ function() {
                 candidates:this._candidateState.getCandidates()
             };
             var previousCandidate = this._candidateByKey(previous.selectedCandidateKey);
+            if (changed) this._stickyNotice = null;
             this._candidateScope = 'compatible';
             this._selectedSlotKey = nextKey;
             this._syncSlotSelection();
@@ -418,6 +424,7 @@ function() {
             if (!key || this._interactionState !== 'idle') return false;
             var candidate = this._candidateByKey(key);
             if (!candidate || candidate.blocked === true && candidate.tunable !== true) return false;
+            this._stickyNotice = null;
             this._selectedCandidateKey = String(key);
             this._syncCandidateSelection();
             this._onCandidateSelect(candidate, {

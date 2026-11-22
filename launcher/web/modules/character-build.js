@@ -30,12 +30,15 @@
         ? require('./character-build/character-build-item-use-channel.js')
         : root && root.CharacterBuildItemUseChannel;
     var stashAuthority = typeof module !== 'undefined' && module.exports
-        ? require('./character-build/character-build-stash-authority.js')
-        : root && root.CharacterBuildStashAuthority;
+        ? require('./character-build/character-build-stash-authority.js') : root && root.CharacterBuildStashAuthority;
+    var eligibility = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-candidate-eligibility.js') : root && root.CharacterBuildCandidateEligibility;
+    var facetCounts = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-facet-counts.js') : root && root.CharacterBuildFacetCounts;
     var api = factory(
         session, view, tuning, mutation, pose, projection, candidateTooltip,
         transport, candidateChannel, itemUse, itemUseChannel, stashAuthority,
-        root);
+        eligibility, facetCounts, root);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -45,7 +48,7 @@
 })(typeof window !== 'undefined' ? window : globalThis,
 function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         CandidateTooltipModule, Transport, CandidateChannel, ItemUseModule,
-        ItemUseChannel, StashAuthority, global) {
+        ItemUseChannel, StashAuthority, Eligibility, FacetCounts, global) {
     'use strict';
     if (!SessionModule || !SessionModule.CharacterBuildSession) throw new Error('CharacterBuildSession is required');
     if (!ViewModule || !ViewModule.CharacterBuildView) throw new Error('CharacterBuildView is required');
@@ -211,17 +214,16 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         if (this._ports.onSessionState) this._ports.onSessionState(state, reason, debug);
     };
     CharacterBuildController.prototype._error = function(response, command) {
+        if (command === 'candidates' || command === 'tooltip') return;
         var error = response && response.error;
-        // Candidate failures already render in the Web candidate pane, including
-        // stale-state recovery. Repeating them in the Flash HUD is both delayed
-        // and can outlive a successful tuning commit during close/finalize.
-        if (command === 'candidates') return;
-        // Tooltip 是悬浮/焦点触发的展示增强；失败时保留本地紧凑摘要，
-        // 不用 toast 打断玩家当前的构筑操作。
-        if (command === 'tooltip') return;
-        if (this._ports.toast) this._ports.toast(command === 'finalize'
-            ? '当前构筑尚未完成应用与保存，请重试关闭。'
-            : error === 'not_sent' ? '角色构筑连接不可用。' : '角色构筑同步失败，请重试。', command, response);
+        var message = Eligibility && typeof Eligibility.mutationErrorCopy === 'function'
+            ? Eligibility.mutationErrorCopy(error, command)
+            : (command === 'finalize' ? '当前构筑尚未完成应用与保存，请重试关闭。'
+                : error === 'not_sent' ? '角色构筑连接不可用。' : '角色构筑同步失败，请重试。');
+        if (this._view && typeof this._view.showActionNotice === 'function') {
+            this._view.showActionNotice('error', message);
+        }
+        if (this._ports.toast) this._ports.toast(message, command, response);
     };
     CharacterBuildController.prototype._loadManifest = function() {
         if (this._ports.loadManifest) return this._ports.loadManifest();
@@ -416,6 +418,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         }
         var projected = Projection.viewSnapshot(payload);
         this._createView().setSnapshot(projected);
+        if (FacetCounts && FacetCounts.syncShellMetric) FacetCounts.syncShellMetric(this._ports.shell, projected.candidateFacets);
         this._itemUseCooldownFromSnapshot(projected);
         if (this._tuning) this._tuning.refreshCustomization();
         this._view.setItemUseCandidate(null);

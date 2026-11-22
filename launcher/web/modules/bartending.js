@@ -19,7 +19,7 @@ var BartendingPanel = (function() {
         _shakerEl = null, _timerFillEl = null, _shakerStateEl = null,
         _shakerHintEl = null, _shakerKickerEl = null, _mixBtnEl = null;
     var _snapshot = null, _spec = null, _specFailed = false,
-        _materials = null, _materialsBusy = false;
+        _materials = null, _materialsBusy = false, _materialsFailed = false;
     var _filter = {tab:'name', value:''};
     var _inspectedIndex = null;
     var _unlockedSecrets = {};
@@ -280,7 +280,7 @@ var BartendingPanel = (function() {
         _generation++;
         stopShakeTimerOnly();
         _snapshot = null; _spec = null; _specFailed = false;
-        _materials = null; _materialsBusy = false;
+        _materials = null; _materialsBusy = false; _materialsFailed = false;
         _filter = {tab:'name', value:''};
         _inspectedIndex = null;
         _unlockedSecrets = {};
@@ -478,13 +478,14 @@ var BartendingPanel = (function() {
         });
         if (!callId) {
             setStatus('发送失败', 'error');
-            toast('合成通道不可用，请关闭后重试。');
+            toast('合成通道不可用，请关闭后重试。', 'error');
         }
     }
 
     function loadMaterials() {
         if (_materialsBusy) return;
         _materialsBusy = true;
+        _materialsFailed = false;
         var generation = _generation;
         _host.request('materials', {v:1}, function(response) {
             if (generation !== _generation || !_el) return;
@@ -496,6 +497,10 @@ var BartendingPanel = (function() {
                     index[row.name] = row;
                 }
                 _materials = index;
+                _materialsFailed = false;
+            } else {
+                _materialsFailed = true;
+                toast('原料库存同步失败，请稍后重试。', 'error');
             }
             renderList();
             renderStation();
@@ -700,7 +705,7 @@ var BartendingPanel = (function() {
         if (_matched && isSecretRecipe(_matched.recipe) && !_unlockedSecrets[_matched.recipe.recipeId]) {
             _unlockedSecrets[_matched.recipe.recipeId] = true;
             newlyUnlockedSecret = true;
-            toast('★ 破译隐藏酒单：「' + _matched.recipe.title + '」已收录至手册！');
+            toast('★ 破译隐藏酒单：「' + _matched.recipe.title + '」已收录至手册！', 'success', {silent:true});
         }
         if (_revealed && !_matched && mixHasAnyPour()) {
             playRevealSound(null, false, diagnoseMolotov());
@@ -752,7 +757,7 @@ var BartendingPanel = (function() {
             _busy = false;
             if (response && response.success) {
                 toast('已上酒：' + (response.crafted && response.crafted.displayName
-                    ? response.crafted.displayName : craftedName));
+                    ? response.crafted.displayName : craftedName), 'success', {silent:true});
                 playGlassServe();
                 cue('success');
                 _commitFeedback = null;
@@ -760,9 +765,10 @@ var BartendingPanel = (function() {
                 resetMix(); _matched = null;
                 refresh(); return;
             }
+            var errMsg = errorMessage(response && response.error);
             cue('rejected');
-            toast(errorMessage(response && response.error));
-            _commitFeedback = errorMessage(response && response.error);
+            toast(errMsg, 'error', {silent:true});
+            _commitFeedback = errMsg;
             _preview = null;
             renderStation();
             if (_matched) requestPreview();
@@ -844,7 +850,7 @@ var BartendingPanel = (function() {
     function startShake() {
         if (_busy || _shaking) return;
         if (!mixHasAnyPour()) {
-            toast('调酒壶为空——请先投放至少 1 份提取物。');
+            toast('调酒壶为空——请先投放至少 1 份提取物。', 'warning', {silent:true});
             cue('rejected');
             return;
         }
@@ -921,7 +927,7 @@ var BartendingPanel = (function() {
     function directReveal() {
         if (_busy) return;
         if (!mixHasAnyPour()) {
-            toast('调酒壶为空——请先投放至少 1 份提取物。');
+            toast('调酒壶为空——请先投放至少 1 份提取物。', 'warning', {silent:true});
             cue('rejected');
             return;
         }
@@ -1845,7 +1851,7 @@ var BartendingPanel = (function() {
 
         var stock = document.createElement('span');
         stock.className = 'bart-slot-stock';
-        stock.textContent = owned === null ? '…' : '剩余 ' + owned;
+        stock.textContent = owned === null ? (_materialsFailed ? '库存未知' : '…') : '剩余 ' + owned;
 
         slot.appendChild(codeEl);
         slot.appendChild(icon);
@@ -1917,7 +1923,7 @@ var BartendingPanel = (function() {
         return messages[error] || '调酒操作失败，请重试。';
     }
 
-    function toast(message) { if (_host && _host.toast) _host.toast(message); }
+    function toast(message, severity, opts) { if (_host && _host.toast) _host.toast(message, severity, opts); }
     function cue(name) { if (_host && _host.cue) _host.cue(name); }
 
     return {

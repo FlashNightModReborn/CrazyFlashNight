@@ -298,7 +298,7 @@
                         actionable:function() { return self._interaction.actionable; },
                         reason:function() { return self._interaction.reason; },
                         reasonNode:reasonNode,
-                        onBlocked:function() { self._ports.toast(self._interaction.reason); },
+                        onBlocked:function() { self._ports.toast(self._interaction.reason, 'warning'); },
                         onActivate:function() { self.transfer(sourceContainer,sourceSlot); }
                     });
                     sourceNode.__lootOrganizerInteractionRefresh = function() {
@@ -316,7 +316,7 @@
                         button.addEventListener('click',function(event) {
                             event.stopPropagation();
                             if (!self._interaction.actionable) {
-                                self._ports.toast(self._interaction.reason);
+                                self._ports.toast(self._interaction.reason, 'warning');
                                 return;
                             }
                             self._ports.onRequestDiscard(discardSlot);
@@ -356,7 +356,7 @@
         var target = containerId === '背包' ? '战备箱' : '背包';
         var key = containerId + ':' + source.slot + ':' + source.expectedLease + '>' + target;
         if (!this.transferPane.quickTransfer(source,target,{key:key})) {
-            this._ports.toast('库存正在处理另一项操作。');
+            this._ports.toast('库存正在处理另一项操作。', 'warning');
             return false;
         }
         this.render(this._state);

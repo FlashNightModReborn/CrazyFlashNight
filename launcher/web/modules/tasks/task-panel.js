@@ -593,11 +593,34 @@
 
     function sendPanelMsg(cmd, extra, cb) {
         var callId = 'task_' + (++_reqSeq) + '_' + Date.now();
-        if (cb) _pendingReq[callId] = cb;
+        var timer = null;
+        if (cb) {
+            _pendingReq[callId] = function(data) {
+                if (timer !== null) { clearTimeout(timer); timer = null; }
+                cb(data);
+            };
+        }
         var msg = { type: 'panel', panel: 'tasks', cmd: cmd, callId: callId };
         if (_returnContext) msg.panelInstanceId = _returnContext.panelInstanceId;
         if (extra) { for (var k in extra) if (extra.hasOwnProperty(k)) msg[k] = extra[k]; }
-        Bridge.send(msg);
+        if (Bridge.send(msg) === false) {
+            if (cb && _pendingReq[callId]) {
+                var failHandler = _pendingReq[callId];
+                delete _pendingReq[callId];
+                failHandler({ success: false, error: 'disconnected' });
+            }
+            return callId;
+        }
+        if (cb) {
+            timer = setTimeout(function() {
+                timer = null;
+                var timeoutHandler = _pendingReq[callId];
+                if (timeoutHandler) {
+                    delete _pendingReq[callId];
+                    timeoutHandler({ success: false, error: 'client_timeout' });
+                }
+            }, 15000);
+        }
         return callId;
     }
 
@@ -637,8 +660,8 @@
             if (snapSession !== _session) return;
             if (_activeIndex !== index) return; // 已切走
             if (!data.success) {
-                _rightEl.innerHTML = '<div class="task-empty-hint">加载任务详情失败: ' + escHtml(data.error || '未知错误') + '</div>';
-                toast('加载任务详情失败', 'error');
+                _rightEl.innerHTML = '<div class="task-empty-hint">加载任务详情失败，请重试</div>';
+                toast(writeErrorMsg('加载任务详情失败', data), 'error');
                 return;
             }
             if (data.taskData) _detailCache[task.taskId] = data.taskData;
@@ -761,7 +784,7 @@
         if (!task || !task.satisfied) return;     // 客户端预门控；AS2 端 taskCompleteCheck 二次硬门控
         // 远程交付门控（防御）：非远程任务即便绕过禁用态也不发请求；AS2 端 requires_npc 兜底
         var det = _detailCache[task.taskId];
-        if (!det || det.finishRemote !== true) { toast('该任务需前往交付NPC处提交'); return; }
+        if (!det || det.finishRemote !== true) { toast('该任务需前往交付NPC处提交', 'warning'); return; }
         var taskId = task.taskId;
         beginOp(btn);
         var reqSession = _session;
@@ -792,7 +815,7 @@
         var task = _tasks[_activeIndex];
         if (!task) return;
         var det = _detailCache[task.taskId];
-        if (!det || det.finishNavigable !== true) { toast(det && det.finishNavigationReason || '该人物暂不可一键前往，请刷新任务详情'); return; }
+        if (!det || det.finishNavigable !== true) { toast(det && det.finishNavigationReason || '该人物暂不可一键前往，请刷新任务详情', 'warning'); return; }
         beginOp(btn);
         var reqSession = _session;
         sendPanelMsg('navigateFinish', { taskId: task.taskId }, function(data) {
@@ -810,8 +833,8 @@
                 else if (data && ['map_facts_stale','stale_facts','invalid_session'].indexOf(data.error) >= 0) msg = '地图或任务状态已变化，请刷新后重试';
                 else if (data && data.error === 'navigation_busy') msg = '正在切换场景，请等待当前跳转完成';
                 else if (data && data.error === 'npc_absent') msg = '该人物当前不在目标驻点，请查看任务或剧情条件';
-                else if (data && data.error === 'ambiguous_placement') msg = '该人物当前有多个驻点，请在内容工作台指定固定目标';
-                else if (data && data.error === 'world_binding_required') msg = '该人物的真实场景接入尚未就绪，请检查内容绑定';
+                else if (data && data.error === 'ambiguous_placement') msg = '该人物当前有多个驻点，请在大地图中手动前往';
+                else if (data && data.error === 'world_binding_required') msg = '该人物的对应场景暂未开放一键前往';
                 toast(msg, 'error');
             }
         });
@@ -821,7 +844,7 @@
         if (_busy || _activeIndex < 0) return;
         var task = _tasks[_activeIndex];
         if (!task) return;
-        if (task.type === '主线') { toast('主线任务无法放弃'); return; }
+        if (task.type === '主线') { toast('主线任务无法放弃', 'warning'); return; }
         _pendingAbandonId = task.taskId;
         var body = _el.querySelector('#task-confirm-body');
         if (body) body.innerHTML = '确认放弃 <strong>' + escHtml(task.title || '') + '</strong> 吗？该任务将从列表移除，已收集/通关进度会清空，需重新接取。';
@@ -867,12 +890,16 @@
             case 'commit_pending': return '奖励正在确认保存，请稍后查看任务和暂存区。';
             case 'save_not_committed': return '本次保存未完成，任务和物品已保留，可以重试。';
             case 'save_unavailable': return '当前暂时无法保存，任务和奖励已保留。';
-            case 'inventory_full': return '本次物品操作未完成，请刷新后重试。';
+            case 'inventory_full': return '背包已满，无法领取任务物品，请先清理背包后重试。';
             case 'cannot_delete_main':return '主线任务无法放弃';
             case 'task_not_found':    return '任务已不存在，已刷新列表';
             case 'disconnected':      return '游戏连接已断开';
-            case 'timeout':           return prefix + '：操作超时';
-            default:                  return data.error ? (prefix + '：' + data.error) : prefix;
+            case 'timeout':
+            case 'client_timeout':    return prefix + '：操作超时，请重试';
+            case 'busy':              return '正在处理另一项任务操作，请稍候';
+            case 'not_ready':         return '任务数据尚未就绪，请稍后重试';
+            case 'stale_state':       return '任务状态已变化，请刷新后重试';
+            default:                  return prefix + '，请重试';
         }
     }
 
@@ -2276,9 +2303,10 @@
             '<span class="task-item-count">' + escHtml(itemCount == null ? '' : String(itemCount)) + '</span></div>';
     }
 
-    // severity 透传 Toast.add（契约 §6）：'success'/'error' 播对应结果音，缺省静默
-    function toast(msg, severity) {
-        try { if (typeof Toast !== 'undefined' && Toast && Toast.add) Toast.add(escHtml(msg), severity); } catch (e) {}
+    // severity 透传 Toast.add（契约 §6）：'success'/'error'/'warning' 播对应结果音，缺省静默；
+    // Toast.add 面板期用 textContent、离场期经 FlashHtmlParser 提纯文本，不传 escHtml 避免 &quot; 实体泄漏。
+    function toast(msg, severity, opts) {
+        try { if (typeof Toast !== 'undefined' && Toast && Toast.add) Toast.add(msg, severity, opts); } catch (e) {}
     }
 
     var ASSETS_BASE = 'https://cfn-assets.local/portraits/profiles/';

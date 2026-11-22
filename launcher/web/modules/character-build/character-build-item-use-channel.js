@@ -8,10 +8,12 @@
         ? require('./character-build-choice-rewards.js') : root && root.CharacterBuildChoiceRewards;
     var reveal = typeof module !== 'undefined' && module.exports
         ? require('./character-build-item-use-reveal.js') : root && root.CharacterBuildItemUseReveal;
-    var api = factory(cooldown, choices, reveal);
+    var eligibility = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-candidate-eligibility.js') : root && root.CharacterBuildCandidateEligibility;
+    var api = factory(cooldown, choices, reveal, eligibility);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.CharacterBuildItemUseChannel = api;
-})(typeof window !== 'undefined' ? window : globalThis, function(Cooldown, Choices, Reveal) {
+})(typeof window !== 'undefined' ? window : globalThis, function(Cooldown, Choices, Reveal, Eligibility) {
     'use strict';
 
     function finiteWhole(value) {
@@ -180,17 +182,15 @@
                 // replacing inventory refs and advancing the live loadout revision.
                 // Refresh authority before another equip/close; never replay item use.
                 this._candidateCache = null;
+                var failMsg = Eligibility && typeof Eligibility.itemUseErrorCopy === 'function'
+                    ? Eligibility.itemUseErrorCopy(response && response.error)
+                    : '物品使用失败，请重试。';
                 this._session.refreshSnapshot(function(snapshot, accepted) {
                     if (accepted && self._view) self._applySnapshot(snapshot.payload, false);
+                    if (self._view && self._view.showActionNotice) self._view.showActionNotice('error', failMsg);
                 });
-                if (this._ports.toast) this._ports.toast(
-                    response && response.error === 'not_committed'
-                        ? '刚才的使用未执行，可重新点击。'
-                        : response && response.error === 'invalid_source'
-                            ? '物品来源已变化，请刷新后重试。'
-                            : response && response.error === 'no_eligible_choices'
-                                ? '请先保留一件可安装候选插件的装备，再开启这个箱子。箱子尚未消耗。'
-                            : '物品使用失败，请重试。');
+                if (this._view && this._view.showActionNotice) this._view.showActionNotice('error', failMsg);
+                if (this._ports.toast) this._ports.toast(failMsg, 'error');
                 return;
             }
             var receipt = response && response.receipt || response || {};

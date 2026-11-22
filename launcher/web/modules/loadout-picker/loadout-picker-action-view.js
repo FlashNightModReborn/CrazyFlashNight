@@ -181,6 +181,17 @@
         }
         this._unequipButton.disabled = this._state !== 'idle'
             || !slot || slot.getAttribute('data-empty') === 'true';
+        var slotId = slot ? String(slot.getAttribute('data-slot-id') || '') : '';
+        var fullBlocked = !this._unequipButton.disabled
+            && this._root.getAttribute('data-backpack-full') === 'true'
+            && !drug && slotId !== '手雷';
+        if (fullBlocked) {
+            this._unequipButton.setAttribute('data-capacity-blocked', 'true');
+            this._unequipButton.setAttribute('title', '背包已满（50/50），无法卸下；请先整理背包');
+        } else {
+            this._unequipButton.removeAttribute('data-capacity-blocked');
+            this._unequipButton.removeAttribute('title');
+        }
     };
     ActionView.prototype.syncCandidateSelection = function(key) {
         var buttons = this._candidateList.querySelectorAll('[data-candidate-key]');

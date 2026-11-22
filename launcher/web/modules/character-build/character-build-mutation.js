@@ -183,7 +183,7 @@
             this._onApplied(response);
             if (this._ports.toast) this._ports.toast(response.cmd === 'snapshot'
                 ? '角色构筑写入结果已确认。'
-                : response.changed ? '角色构筑已更新。' : '当前构筑已是目标状态。');
+                : response.changed ? '角色构筑已更新。' : '当前构筑已是目标状态。', 'success');
             return;
         }
         if (unknown) {
@@ -191,7 +191,7 @@
                 this._pending.reconcileAttempted = true;
                 this._session.reconcileMutation(this._result.bind(this));
             } else if (this._ports.toast) {
-                this._ports.toast('写入结果仍未确认，请使用“重新确认结果”。');
+                this._ports.toast('写入结果仍未确认，请使用“重新确认结果”。', 'warning');
             }
             return;
         }
@@ -203,7 +203,7 @@
         var operation = this._ports.beginExternalWrite
             ? this._ports.beginExternalWrite('character-build.' + intent.cmd) : {local:true};
         if (!operation) {
-            if (this._ports.toast) this._ports.toast('背包正在处理另一项操作。');
+            if (this._ports.toast) this._ports.toast('背包正在处理另一项操作。', 'warning');
             return false;
         }
         this._inventoryWrite = operation;
@@ -228,7 +228,7 @@
     };
     MutationCoordinator.prototype.equip = function(target, candidate) {
         var intent = equipIntent(target, candidate);
-        if (!intent && this._ports.toast) this._ports.toast('该候选当前不可装备。');
+        if (!intent && this._ports.toast) this._ports.toast('该候选当前不可装备。', 'warning');
         return intent ? this.start(intent) : false;
     };
     MutationCoordinator.prototype.unequip = function(target) {

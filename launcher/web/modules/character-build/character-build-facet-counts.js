@@ -171,13 +171,41 @@
         return activeKey;
     }
 
+    function backpackCapacity(model) {
+        if (!model || model.known !== true || !whole(model.total, 0, MAX_ITEMS)) {
+            return {
+                known:false, used:null, capacity:MAX_ITEMS, remaining:null, full:false, nearFull:false,
+                state:'unknown', label:'背包', value:'— / ' + MAX_ITEMS, detail:'背包容量暂不可用'
+            };
+        }
+        var used = model.total, remaining = MAX_ITEMS - used, full = remaining <= 0;
+        var nearFull = !full && used >= 45;
+        return {
+            known:true, used:used, capacity:MAX_ITEMS, remaining:remaining, full:full, nearFull:nearFull,
+            state:full ? 'full' : nearFull ? 'near-full' : 'normal',
+            label:full ? '背包（已满）' : '背包',
+            value:used + ' / ' + MAX_ITEMS,
+            detail:full ? '背包已满（' + used + '/' + MAX_ITEMS + '），卸下装备前请先整理背包'
+                : '背包已用 ' + used + '/' + MAX_ITEMS + ' 格，剩余 ' + remaining + ' 格'
+        };
+    }
+
+    function syncShellMetric(shell, rawProjection) {
+        if (!shell || typeof shell.setMetric !== 'function') return null;
+        var cap = backpackCapacity(normalize(rawProjection));
+        var valueNode = shell.setMetric('backpack', cap.label, cap.value);
+        var metric = valueNode && valueNode.parentNode;
+        if (metric) {
+            metric.setAttribute('data-capacity-state', cap.state);
+            metric.title = cap.detail;
+            metric.setAttribute('aria-label', cap.detail);
+        }
+        return cap;
+    }
+
     return {
-        normalize:normalize,
-        countForTarget:countForTarget,
-        badgeText:badgeText,
-        accessibleText:accessibleText,
-        decorateSlot:decorateSlot,
-        focusSummary:focusSummary,
-        syncFocusSummary:syncFocusSummary
+        normalize:normalize, backpackCapacity:backpackCapacity, syncShellMetric:syncShellMetric,
+        countForTarget:countForTarget, badgeText:badgeText, accessibleText:accessibleText,
+        decorateSlot:decorateSlot, focusSummary:focusSummary, syncFocusSummary:syncFocusSummary
     };
 });

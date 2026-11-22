@@ -634,7 +634,7 @@ var EquipmentTuningView = (function() {
         this._previewPendingGeneration = 0;
         this._quickCommitIntent = null;
         this._modIntent = null;
-        this._status = reconcileAfterCallId ? '正在对账未知提交' : '正在同步调制状态';
+        this._status = this._stickyErrorStatus || (reconcileAfterCallId ? '正在对账未知提交' : '正在同步调制状态');
         this._readPending = true;
         this.render();
         var callId = this._mux.request('snapshot', payload, function(response, entry) {
@@ -664,11 +664,11 @@ var EquipmentTuningView = (function() {
                 self._needsReconcile = false;
                 if (reconcileAfterCallId) self._lastCommitCallId = '';
                 self._targetLevel = nextEnhancementLevel(response.snapshot);
-                self._status = '装备状态已同步';
+                self._status = self._stickyErrorStatus || '装备状态已同步'; self._stickyErrorStatus = '';
             } else {
                 self._needsReconcile = !!reconcileAfterCallId || !!(response && response.requiresReconcile);
                 self._status = reconcileAfterCallId && response && response.success === true
-                    ? '权威快照尚未越过未知提交' : errorMessage(response && response.error);
+                    ? '权威快照尚未越过未知提交' : errorMessage(response && response.error, response);
             }
             if (reconcileAfterCallId) {
                 self._recordDiagnostic('reconcile_adopted', {
@@ -704,7 +704,7 @@ var EquipmentTuningView = (function() {
                 });
             }
         } : null);
-        if (!callId && this._readPending) { this._readPending = false; this.render(); }
+        if (!callId && this._readPending) { this._readPending = false; this._status = errorMessage('not_sent'); this.render(); }
         return !!callId;
     };
 
@@ -863,9 +863,10 @@ var EquipmentTuningView = (function() {
         var inventoryWrite = this._beginWrite('equipment_tuning.commit');
         if (!inventoryWrite) {
             this._setModIntentPhase('preview_ready');
-            this._toast('背包正在执行其他操作，请稍候。');
+            this._toast('背包正在执行其他操作，请稍候。', 'warning');
             return false;
         }
+        this._stickyErrorStatus = '';
         this._inventoryWriteHandle = inventoryWrite;
         var self = this;
         var committedOperation = String(this._preview.operation || '');
@@ -910,7 +911,7 @@ var EquipmentTuningView = (function() {
                         committedSnapshot
                     );
                 })) return;
-                self._toast(noOp ? '两件装备强化度相同，无需写入。' : '装备调制已提交。');
+                self._toast(noOp ? '两件装备强化度相同，无需写入。' : '装备调制已提交。', noOp ? 'info' : 'success');
                 return;
             }
             self._preview = null;
@@ -927,7 +928,7 @@ var EquipmentTuningView = (function() {
             } else {
                 self._lastCommitCallId = '';
                 self._modIntent = null;
-                self._status = errorMessage(response && response.error);
+                self._status = self._stickyErrorStatus = errorMessage(response && response.error, response); self._toast(self._status, 'error');
                 var staleLease = response && (response.error === 'stale_state' || response.error === 'stale_lease');
                 if (!self._finishInventoryWrite(inventoryWrite, !!staleLease, function(refreshResult) {
                     if (staleLease) self._afterInventoryRefresh('', false, refreshResult);

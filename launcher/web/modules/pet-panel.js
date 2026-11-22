@@ -2262,10 +2262,12 @@
                 renderAdvance();
                 TeamShared.toast('体力已恢复至 ' + data.stamina, 'success');
             } else {
-                var msg = '恢复失败';
+                var msg = '恢复失败，请重试';
                 if (data.error === 'insufficient_gold') msg = '金币不足，需要1000金币';
                 else if (data.error === 'stamina_full') msg = '体力已满';
-                else if (data.error) msg = data.error;
+                else if (data.error === 'in_combat') msg = '战斗中无法恢复体力';
+                else if (data.error === 'disconnected') msg = '连接已断开';
+                else if (data.error === 'timeout' || data.error === 'client_timeout') msg = '响应超时，请重试';
                 TeamShared.toast(msg, 'error');
             }
         });
@@ -2283,10 +2285,12 @@
                 var levelSuffix = data.refreshDeferred ? '；出战实体将在下次重建时更新等级' : '';
                 TeamShared.toast(meta().noun + '升级！战宠灵石 -' + data.stoneCost + levelSuffix, 'success');
             } else {
-                var msg = '升级失败';
+                var msg = '升级失败，请重试';
                 if (data.error === 'level_maxed') msg = '已达等级上限';
                 else if (data.error === 'insufficient_stones') msg = '战宠灵石不足，需要' + (data.cost || '?') + '个';
-                else if (data.error) msg = data.error;
+                else if (data.error === 'in_combat') msg = '战斗中无法升级';
+                else if (data.error === 'disconnected') msg = '连接已断开';
+                else if (data.error === 'timeout' || data.error === 'client_timeout') msg = '响应超时，请重试';
                 TeamShared.toast(msg, 'error');
             }
         });
@@ -2693,7 +2697,7 @@
     function guardBlocked(btn) {
         var reason = btn.getAttribute('data-blocked-reason');
         // 锁定/禁用拦截（契约 §2 illegal）：aria-disabled 已抑制声明式 cue，这里命令式补拦截音
-        if (reason) { cue('illegal'); TeamShared.toast(reason); return true; }
+        if (reason) { cue('illegal'); TeamShared.toast(reason, 'warning', { silent: true }); return true; }
         return false;
     }
 

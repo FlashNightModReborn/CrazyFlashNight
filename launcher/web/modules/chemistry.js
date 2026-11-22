@@ -164,8 +164,10 @@ var ChemistryPanel = (function() {
             _previewBusy = false;
             if (_selectedIndex !== recipeIndex || _craftCount !== craftCount) return;
             if (!response || !response.success) {
+                var errMsg = errorMessage(response && response.error);
                 _preview = null;
-                toast(errorMessage(response && response.error));
+                _commitFeedback = errMsg;
+                toast(errMsg, 'error');
             } else {
                 _preview = response;
             }
@@ -185,15 +187,16 @@ var ChemistryPanel = (function() {
             _busy = false;
             if (response && response.success) {
                 toast('已合成 ' + (response.crafted && response.crafted.displayName
-                    ? response.crafted.displayName : craftedName));
+                    ? response.crafted.displayName : craftedName), 'success', {silent:true});
                 cue('success');
                 _commitFeedback = null;
                 _preview = null;
                 refresh(); return;
             }
+            var errMsg = errorMessage(response && response.error);
             cue('rejected');
-            toast(errorMessage(response && response.error));
-            _commitFeedback = errorMessage(response && response.error);
+            toast(errMsg, 'error', {silent:true});
+            _commitFeedback = errMsg;
             _preview = null;
             renderBlueprint();
             requestPreview();
@@ -309,10 +312,11 @@ var ChemistryPanel = (function() {
                 ? '等待核算结果…' : availabilityLabel(_selectedRecipe);
             _matsEl.appendChild(idle);
         }
-        if (_commitFeedback && !_previewBusy) {
+        var noticeText = _commitFeedback || previewBlockingNote();
+        if (noticeText && !_previewBusy) {
             var feedback = document.createElement('div');
             feedback.className = 'chem-blueprint-note warn';
-            feedback.textContent = _commitFeedback;
+            feedback.textContent = noticeText;
             _matsEl.appendChild(feedback);
         }
     }
@@ -477,7 +481,11 @@ var ChemistryPanel = (function() {
         confirm.textContent = _busy ? '合成中…' : '确认合成';
         var committable = !!_preview && _preview.canCommit && !_busy && !_previewBusy;
         confirm.disabled = !committable;
-        if (!committable) confirm.setAttribute('aria-disabled', 'true');
+        if (!committable) {
+            confirm.setAttribute('aria-disabled', 'true');
+            var blockNote = _commitFeedback || previewBlockingNote();
+            if (blockNote) confirm.title = blockNote;
+        }
         confirm.setAttribute('data-audio-cue', 'activate');
         confirm.addEventListener('click', commit);
         _footEl.appendChild(confirm);
@@ -533,18 +541,31 @@ var ChemistryPanel = (function() {
         return availability === 'ready' ? 'is-ready' : 'is-blocked';
     }
 
+    function previewBlockingNote() {
+        if (!_preview || _preview.canCommit) return '';
+        if (_preview.blockingError) return errorMessage(_preview.blockingError);
+        if (_preview.enoughSpace === false) return errorMessage('inventory_full');
+        if (_preview.enoughMoney === false) return errorMessage('insufficient_money');
+        if (_preview.enoughKpoints === false) return errorMessage('insufficient_kpoint');
+        if (_preview.levelAllowed === false) return errorMessage('level_locked');
+        if (_preview.enoughMaterials === false) return errorMessage('material_missing');
+        return '当前暂不满足合成条件，请检查材料、费用与背包空间。';
+    }
+
     function maxCount() {
-        if (_preview && Number.isInteger(_preview.maxCraftCount)
-                && _preview.maxCraftCount > 0) return _preview.maxCraftCount;
+        if (_preview && Number.isInteger(_preview.maxCraftCount)) {
+            return Math.max(1, _preview.maxCraftCount);
+        }
         return 99;
     }
 
     function setCraftCount(next) {
         var value = Math.floor(Number(next));
         if (isNaN(value)) value = 1;
-        value = Math.max(1, Math.min(99, value));
+        value = Math.max(1, Math.min(maxCount(), value));
         if (value === _craftCount) { renderBlueprint(); return; }
         _craftCount = value;
+        _commitFeedback = null;
         renderBlueprint(); requestPreview();
     }
 
@@ -582,7 +603,7 @@ var ChemistryPanel = (function() {
         return messages[error] || '合成操作失败，请重试。';
     }
 
-    function toast(message) { if (_host && _host.toast) _host.toast(message); }
+    function toast(message, severity, opts) { if (_host && _host.toast) _host.toast(message, severity, opts); }
     function cue(name) { if (_host && _host.cue) _host.cue(name); }
     // 工作台合同：节点脱离 DOM 前释放域内 tooltip binding。
     function releaseTooltipTree(node) {

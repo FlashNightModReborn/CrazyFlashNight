@@ -731,13 +731,27 @@
         if (S._shell) S._shell.setStatus('签约中', Workbench.WorkbenchState.PENDING);
 
         var reqId = 'arena_ent_' + (++S._reqSeq) + '_' + S._session;
+        var enterTimer = setTimeout(function() {
+            if (!S._pendingReq[reqId]) return;
+            delete S._pendingReq[reqId];
+            S._busy = false;
+            updateCardStates();
+            if (S._shell) S._shell.setStatus('接单中', Workbench.WorkbenchState.IDLE);
+            cue('rejected');
+            ArenaCore.showToast(ArenaCore.errorMessage('client_timeout', '挑战发起超时'));
+        }, 12000);
         S._pendingReq[reqId] = function(data) {
+            clearTimeout(enterTimer);
             S._busy = false;
             updateCardStates();
             if (S._shell) S._shell.setStatus('接单中', Workbench.WorkbenchState.IDLE);
             if (!data.success) {
                 cue('rejected'); // 权威回包明确失败（契约 §2 结果音）
-                ArenaCore.showToast(data.error || '挑战发起失败');
+                var errMsg = ArenaCore.errorMessage(data.error, '挑战发起失败');
+                ArenaCore.showToast(errMsg);
+                if (S._commitBar && typeof S._commitBar.update === 'function') {
+                    S._commitBar.update({ status: errMsg, state: 'error' });
+                }
                 return;
             }
             cue('success'); // 权威回包接受：挑战发起成功（AS2 接管跳关）

@@ -68,11 +68,27 @@
     }
 
     function errorMessage(error) {
-        if (error === 'slot_locked') return '该容器槽位尚未解锁。';
-        if (error === 'stale_state') return '库存已经变化，请重试。';
-        if (error === 'client_timeout' || error === 'timeout') return '库存响应超时，请重试。';
-        if (error === 'inventory_refresh_failed') return '库存同步失败，请重试。';
-        return '操作失败，请重试。';
+        var map = {
+            target_full:'目标容器已满，请先整理空间。',
+            backpack_full:'背包已满（50/50），请先整理背包。',
+            inventory_full:'背包空间不足，请先整理背包。',
+            source_full:'来源容器已满，无法交换。',
+            slot_locked:'该容器槽位尚未解锁，请先扩容或切换容器。',
+            stash_locked:'暂存区当前不可操作，请稍后再试。',
+            stale_state:'库存已经变化，请重试。',
+            stale_lease:'物品位置已变化，请重试。',
+            stale_container:'容器内容已变化，请重试。',
+            mode_not_supported:'当前容器不支持该操作模式。',
+            write_busy:'库存正在处理另一项操作，请稍候。',
+            busy:'库存正在处理另一项操作，请稍候。',
+            invalid_slot:'目标槽位无效或已变化。',
+            insufficient_quantity:'物品数量不足，无法转移。',
+            client_timeout:'库存响应超时，请重试。',
+            timeout:'库存响应超时，请重试。',
+            disconnected:'连接已断开，请重试。',
+            inventory_refresh_failed:'库存同步失败，请重试。'
+        };
+        return map[String(error || '')] || '操作失败，请重试。';
     }
 
     function resolveExactSourceSlot(item, source, resolveSlot) {
@@ -180,9 +196,11 @@
         if (containerId === '战备箱' && snapshot && Number(snapshot.accessibleCapacity) <= 0) {
             emptyText = '战备箱尚未解锁';
         }
+        var used = snapshot ? countOccupied(snapshot.slots) : 0;
+        var cap = snapshot ? Number(snapshot.accessibleCapacity || snapshot.capacity) : 0;
         var meta = !snapshot ? '同步中'
             : containerId === '战备箱' && Number(snapshot.accessibleCapacity) <= 0 ? '未解锁'
-            : containerId === '背包' ? countOccupied(snapshot.slots) + ' / ' + Number(snapshot.accessibleCapacity || snapshot.capacity) : '';
+            : containerId === '背包' ? used + ' / ' + cap + (!filtered && cap > 0 && used >= cap ? '（已满）' : '') : '';
         return {emptyText:emptyText, meta:meta};
     }
 

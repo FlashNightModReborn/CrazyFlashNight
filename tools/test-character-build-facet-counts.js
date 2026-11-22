@@ -121,6 +121,57 @@ check('normalization does not mutate authority payload', function() {
     FacetCounts.normalize(value);
     assert.strictEqual(JSON.stringify(value), before);
 });
+check('backpackCapacity classifies normal, near-full, full and unknown states cleanly', function() {
+    const unknown = FacetCounts.backpackCapacity(FacetCounts.normalize(null));
+    assert.strictEqual(unknown.known, false);
+    assert.strictEqual(unknown.state, 'unknown');
+    assert.strictEqual(unknown.value, '— / 50');
+
+    const normal = FacetCounts.backpackCapacity({ known: true, total: 9, useCounts: {} });
+    assert.strictEqual(normal.known, true);
+    assert.strictEqual(normal.state, 'normal');
+    assert.strictEqual(normal.full, false);
+    assert.strictEqual(normal.nearFull, false);
+    assert.strictEqual(normal.value, '9 / 50');
+    assert.strictEqual(normal.remaining, 41);
+
+    const nearFull = FacetCounts.backpackCapacity({ known: true, total: 45, useCounts: {} });
+    assert.strictEqual(nearFull.state, 'near-full');
+    assert.strictEqual(nearFull.nearFull, true);
+    assert.strictEqual(nearFull.full, false);
+    assert.strictEqual(nearFull.value, '45 / 50');
+
+    const full = FacetCounts.backpackCapacity({ known: true, total: 50, useCounts: {} });
+    assert.strictEqual(full.state, 'full');
+    assert.strictEqual(full.full, true);
+    assert.strictEqual(full.label, '背包（已满）');
+    assert.strictEqual(full.value, '50 / 50');
+    assert(full.detail.indexOf('背包已满（50/50）') >= 0);
+});
+check('syncShellMetric updates workbench backpack metric and attributes', function() {
+    const attrs = Object.create(null);
+    const metricEl = {
+        title: '',
+        setAttribute(k, v) { attrs[k] = String(v); }
+    };
+    const calls = [];
+    const fakeShell = {
+        setMetric(key, label, value) {
+            calls.push({ key, label, value });
+            return { parentNode: metricEl };
+        }
+    };
+    const fullProjection = {
+        scope: 'all',
+        filterFacets: [facet('weapon', 50, [facet('刀', 50)])],
+        filterItemCount: 50
+    };
+    const cap = FacetCounts.syncShellMetric(fakeShell, fullProjection);
+    assert.strictEqual(cap.full, true);
+    assert.deepStrictEqual(calls, [{ key: 'backpack', label: '背包（已满）', value: '50 / 50' }]);
+    assert.strictEqual(attrs['data-capacity-state'], 'full');
+    assert(metricEl.title.indexOf('卸下装备前请先整理背包') >= 0);
+});
 
 process.stdout.write(
     'Character Build facet counts: ' + passed + '/' + passed + ' passed\n');

@@ -8,7 +8,7 @@ var CraftingPanel = (function() {
     var _category = '', _snapshot = null, _preview = null, _previewCheckpoint = null, _selectedIndex = -1, _craftCount = 1;
     var _busy = false, _previewBusy = false, _planBusy = false,
         _organizerBusy = false, _organizerMounted = false;
-    var _planFocusRecipeId = '', _planFocusAction = '', _planFeedback = null;
+    var _planFocusRecipeId = '', _planFocusAction = '', _planFeedback = null, _commitError = '';
     var _needsReconcile = false, _needsRefresh = false, _reconcileEpoch = 0, _generation = 0;
     var _previewFlight = null, _previewQueued = null, _checkpointRetryIntent = null;
     var _scaleHandle = null, _retryButton = null, _organizerButton = null, _craftableToggle = null, _tooltipCache = {};
@@ -361,7 +361,7 @@ var CraftingPanel = (function() {
     function selectRecipe(recipeIndex) {
         if (_busy || _planBusy || _procurementNavigation || _nestedRecipeNavigation
                 || recipeIndex < 0) return;
-        _selectedIndex = recipeIndex; _craftCount = 1; _preview = null; clearPreviewCheckpoint();
+        _selectedIndex = recipeIndex; _craftCount = 1; _preview = null; _commitError = ''; clearPreviewCheckpoint();
         if (_catalogRenderer) _catalogRenderer.setSelectedKey(String(recipeIndex));
         cue('select');
         renderDetail({preserveScroll:false}); requestPreview();
@@ -488,7 +488,8 @@ var CraftingPanel = (function() {
             && !_needsReconcile && !_needsRefresh
             && previewCurrent && preview.canCommit === true && !!preview.craftToken;
         var commitStatus = detailCommitStatus(selected, preview, previewCurrent);
-        var commitState = canCommit ? 'ready'
+        var commitState = _commitError ? 'error'
+            : canCommit ? 'ready'
             : _needsReconcile || _needsRefresh || preview && preview.blockingError ? 'error'
                 : _previewBusy || _busy ? 'busy' : 'blocked';
         var previewState = _needsReconcile || _needsRefresh ? 'error'
@@ -816,6 +817,7 @@ var CraftingPanel = (function() {
             return '上次核算为 ' + Number(preview.craftCount || 1)
                 + ' 份；当前 ' + _craftCount + ' 份尚未核算';
         }
+        if (_commitError) return _commitError;
         return preview.canCommit
             ? '条件满足，可安全提交 ' + _craftCount + ' 份'
             : errorMessage(preview.blockingError);
@@ -1095,7 +1097,7 @@ var CraftingPanel = (function() {
                 || _nestedRecipeNavigation
                 || _needsReconcile || _needsRefresh || !previewMatchesCurrent()
                 || !_preview.canCommit || !_preview.craftToken || !_preview.acceptedPlan) return;
-        _busy = true; refreshControls(); renderDetail();
+        _busy = true; _commitError = ''; refreshControls(); renderDetail();
         var preferred = _selectedIndex, preferredCount = _craftCount;
         var expectedAcceptedPlan = _preview.acceptedPlan;
         var issuing = true;
@@ -1106,23 +1108,24 @@ var CraftingPanel = (function() {
             if (response.success) {
                 if (!sameJson(response.acceptedPlan, expectedAcceptedPlan)) {
                     enterNeedsReconcile();
-                    toast('提交回包与权威预览不一致，正在向 Flash 对账。');
+                    toast('提交回包与权威预览不一致，正在向 Flash 对账。', 'warning', {silent:true});
                     cue('unknown');
                     requestPreview(); return;
                 }
-                toast('已合成 ' + response.crafted.displayName);
+                toast('已合成 ' + response.crafted.displayName, 'success', {silent:true});
                 cue('success');
                 _preview = null; clearPreviewCheckpoint(); refreshSnapshot(preferred, preferredCount); return;
             }
             if (isWriteAmbiguous(response, dispatched)) {
-                enterNeedsReconcile(); toast('提交结果不明确，正在向 Flash 对账。');
+                enterNeedsReconcile(); toast('提交结果不明确，正在向 Flash 对账。', 'warning', {silent:true});
                 cue('unknown');
                 requestPreview();
             } else if (requiresAuthorityRefresh(response)) {
-                toast(errorMessage(response.error)); cue('rejected'); _preview = null; clearPreviewCheckpoint();
+                toast(errorMessage(response.error), 'error', {silent:true}); cue('rejected'); _preview = null; clearPreviewCheckpoint();
                 _needsRefresh = true; refreshSnapshot(preferred, preferredCount); return;
             } else {
-                toast(errorMessage(response.error)); cue('rejected');
+                _commitError = errorMessage(response.error);
+                toast(_commitError, 'error', {silent:true}); cue('rejected');
             }
             renderDetail(); refreshControls();
         });
@@ -2747,7 +2750,7 @@ var CraftingPanel = (function() {
         return parts.length ? parts.join(' / ') : '无货币消耗';
     }
     function availabilityText(code) {
-        var labels = {ready:'可合成', level_locked:'等级不足', material_missing:'材料不足',
+        var labels = {ready:'可合成', infrastructure_locked:'基建不足', level_locked:'等级不足', material_missing:'材料不足',
             insufficient_money:'金币不足', insufficient_kpoint:'K点不足', inventory_full:'空间不足'};
         return labels[code] || '暂不可合成';
     }
@@ -2766,7 +2769,7 @@ var CraftingPanel = (function() {
     }
     function formatNumber(value) { var number = Number(value || 0); return isNaN(number) ? '0' : number.toLocaleString(); }
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function toast(message) { if (typeof Toast !== 'undefined') Toast.add(message); }
+    function toast(message, severity, opts) { if (typeof Toast !== 'undefined') Toast.add(message, severity, opts); }
     // 语义音效命令式入口（契约 §8）：仅本地校验 / 权威结果路径使用，静态元素走 data-audio-cue
     function cue(name) {
         var A = window.BootstrapAudio;

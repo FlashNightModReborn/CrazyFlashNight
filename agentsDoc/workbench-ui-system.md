@@ -256,6 +256,14 @@ hover/focus 反馈只走 paint（阴影、边框、背景、光晕），不用 `
 
 工作台运行状态固定为 `idle/loading/ready/pending/success/warning/error`。routine ready 可折叠为稳定小状态点；warning/error 必须使用可读玩家文案和恢复动作，不能只改变颜色。
 
+面板交互反馈按空间与生命周期收敛为三层，避免同类信息散落各处：
+
+1. **L1 瞬时操作回执（全局面板浮条）**：由 `launcher/web/modules/toast.js` 承载。Web 面板打开期间 `NativeHudOverlay` 被 `SW_HIDE` 挂起，`Toast.add(msg, severity, opts)` 必须在当前面板顶部居中（紧贴顶栏下方、`#panel-feedback-banner`、`pointer-events:none`、单行 upsert 覆盖、纯文本防 XSS、`prefers-reduced-motion` 静态呈现）即时展示 `error | warning | success | info` 四态，不得把面板内操作报错延迟堆积到关窗后的刘海；关窗瞬间经 `Panels.close()` 自动清除。无面板打开或显式声明 `opts.persistAfterClose === true`（关窗/强关回执）时继续经 `panel-toast` 上送刘海 `NotchWidget`。音频严格遵循单响合同：`error → rejected`、`warning → illegal`、`success → success`、缺省或 `opts.silent === true` 静默；已有显式 `cue()` 的阻断入口必须传 `silent: true` 保留视觉级别而不双响。各面板本地 `toast(...)` 包装器不得吞掉 `severity` / `opts`，也不得预做 `escHtml` 导致原生刘海显示 HTML 实体。
+2. **L2 持续阻断原因（就地可见）**：主动作不可用或权威写失败的原因必须在决策区/状态条持久呈现，不得仅藏在 `title` 属性，也不得在写失败回弹 `idle` 或紧接的同对象快照刷新中被自动覆盖为隐藏/默认引导文案。
+3. **L3 硬约束资源标尺（顶栏常驻 Metric）**：涉及背包写入/取回的工作台在顶栏 `workbench-metrics` 呈现真实物理占用 `已用 / 50`（不受局部筛选影响；近满使用 `warning`，满包 `50 / 50` 使用 `danger` 标明“已满”），让玩家事前可见硬约束。
+
+> **当前实现状态**：已完成全站 L1 面板期统一浮条基础设施（`toast.js` / `panels.js` / `components.css` / `motion.css`）、Character Build 的 L3 背包容量标尺（直接消费已下发的 `candidateFacets.filterItemCount`）与完整 mutation/item-use 错误码映射、`LoadoutPicker` 写失败 `_stickyNotice` 持久保护（Character Build 与 Merc Loadout 共享），并已推广至五大独立工坊（Armory / Chemistry / Commune / Cooking / Ironspear 的阻断说明与步进器收敛）、调酒/合成/战利品、收纳工作台与装备调制、KShop/NPCShop、技能/任务/成就/战队、大地图/选关/竞技场/情报/健身房/理发店/整形等生产面板的错误码中文化、`severity` 透传、错误防冲刷与关键传输防永挂。当前为 Web 源码与自动门验证闭环，不涉及 AS2/Host/正式 runtime 字节变更。
+
 ### 5.2 权威交互阶段
 
 写操作遵循：

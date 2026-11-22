@@ -91,7 +91,7 @@ var SkillsPanel = (function() {
         onRebind: onRebind,
         onClose: cleanup,
         onRequestClose: requestClose,
-        onForceClose: function() { cleanup(); toast('连接已断开，技能面板已关闭。'); }
+        onForceClose: function() { cleanup(); toast('连接已断开，技能面板已关闭。', 'error', {persistAfterClose:true}); }
     });
 
     function createDOM() {
@@ -109,7 +109,7 @@ var SkillsPanel = (function() {
     function onRebind(el, initData) {
         var result = _coordinator.queueRebind(initData || {}, beginOpen);
         if (result === 'queued') {
-            toast('上一个操作仍在确认，页面会稍后自动切换。');
+            toast('上一个操作仍在确认，页面会稍后自动切换。', 'warning');
             refreshStateControls();
         }
     }
@@ -471,7 +471,7 @@ var SkillsPanel = (function() {
     function reorderTo(entry, target) {
         if (!target) return;
         var reason = reorderBlockReason(entry, 'source') || reorderBlockReason(target, 'target');
-        if (reason) { toast(dragRejectMessage(reason)); cue('illegal'); return; }
+        if (reason) { toast(dragRejectMessage(reason), 'warning', {silent:true}); cue('illegal'); return; }
         writeCommand('reorder', {skillKey:entry.skillKey, targetIndex:Number(target.orderIndex),
             expectedRevision:Number(_snapshot.revision)});
     }
@@ -619,6 +619,7 @@ var SkillsPanel = (function() {
         var entry = selectedEntry();
         if (entry && entry.equippable && !entry.writeBlocked) proposeEquip(entry, slot);
         else if (slot.skillKey) selectSkill(slot.skillKey);
+        else if (entry) toast(entry.writeBlocked ? '该技能数据异常，当前只读不可写入。' : '纯被动或不可配置技能不能放入快捷槽。', 'warning');
     }
 
     function onSlotKeyDown(event, slot) {
@@ -631,7 +632,8 @@ var SkillsPanel = (function() {
     }
 
     function moveQuickSlot(source, target, focusKey) {
-        if (Loadout.moveBlockReason(source, target, _coordinator.isWriteBlocked())) return;
+        var blockReason = Loadout.moveBlockReason(source, target, _coordinator.isWriteBlocked());
+        if (blockReason) { toast(dragRejectMessage(blockReason), 'warning'); return; }
         if (focusKey) _pendingFocusKey = focusKey;
         var callId = writeCommand('moveSlot', {sourceSlot:Number(source.slot), targetSlot:Number(target.slot),
             expectedRevision:Number(_snapshot.revision)});
@@ -740,12 +742,12 @@ var SkillsPanel = (function() {
             if (response.error === 'trainer_session_expired') return;
             // 权威结果音在响应回调播放，附带的 toast 保持静默（契约 §5.3/§6）
             if (response.success !== true) {
-                toast(Presenter.errorMessage(response.error)); cue('rejected');
+                toast(Presenter.errorMessage(response.error), 'error', {silent:true}); cue('rejected');
                 if (response.error === 'stale_state' || response.error === 'not_learned' || response.error === 'skill_not_found') requestSnapshot();
-            } else { toast(response.changed === false ? '状态未变化。' : Presenter.successMessage(cmd)); cue('success'); }
+            } else { toast(response.changed === false ? '状态未变化。' : Presenter.successMessage(cmd), 'success', {silent:true}); cue('success'); }
         });
         // 本地拦截（协调器忙）保持静默 toast：调用方已播意图音（activate/toggle），避免同手势双响（契约 §5.2）
-        if (!callId) toast('当前暂时不能修改技能，请稍后重试。');
+        if (!callId) toast('当前暂时不能修改技能，请稍后重试。', 'warning', {silent:true});
         return callId;
     }
 
@@ -753,7 +755,7 @@ var SkillsPanel = (function() {
         if (_coordinator.getState() !== 'idle') return false;
         return !!_coordinator.requestSnapshot(function(response) {
             if (response.error === 'trainer_session_expired') return;
-            if (response.success !== true) toast(Presenter.errorMessage(response.error));
+            if (response.success !== true) toast(Presenter.errorMessage(response.error), 'error');
             refreshStateControls();
         });
     }
@@ -847,8 +849,8 @@ var SkillsPanel = (function() {
             _schemaError = response.validationError;
             renderAll();
         }
-        if (source === 'write_unknown') toast('操作结果尚未确认，正在自动核对。');
-        else if (source === 'reconcile' && response && response.error) toast('暂时无法确认操作结果，请重试。');
+        if (source === 'write_unknown') toast('操作结果尚未确认，正在自动核对。', 'warning');
+        else if (source === 'reconcile' && response && response.error) toast('暂时无法确认操作结果，请重试。', 'error');
         refreshStateControls();
     }
 
@@ -858,7 +860,7 @@ var SkillsPanel = (function() {
         _trainerExpired = true;
         _lastDiagnostic = {source:String(source || 'unknown'), error:'trainer_session_expired',
             callId:String(response.callId || ''), validationError:''};
-        toast('教师连接已失效，请返回游戏后重新与教师对话。');
+        toast('教师连接已失效，请返回游戏后重新与教师对话。', 'warning');
         renderDetail(); refreshStateControls();
         return true;
     }
@@ -940,7 +942,7 @@ var SkillsPanel = (function() {
             },
             onReject:function(result) {
                 if (result && result.reason && result.reason !== 'invalid_skill') {
-                    toast(dragRejectMessage(result.reason)); cue('illegal');
+                    toast(dragRejectMessage(result.reason), 'warning', {silent:true}); cue('illegal');
                 }
             }
         });
@@ -1082,7 +1084,7 @@ var SkillsPanel = (function() {
         var panelInstanceId = _coordinator.getPanelInstanceId() || String(_initData && _initData.panelInstanceId || '');
         if (Bridge.send({type:'panel', panel:'skills', cmd:'close',
                 panelInstanceId:panelInstanceId}) === false) {
-            toast('启动器连接不可用，技能面板保持打开。');
+            toast('启动器连接不可用，技能面板保持打开。', 'error');
             return false;
         }
         Panels.close();
@@ -1211,7 +1213,7 @@ var SkillsPanel = (function() {
         var nodes = _scaleEl.querySelectorAll('[data-focus-key]');
         for (var i=0;i<nodes.length;i++) if (nodes[i].getAttribute('data-focus-key') === key) { nodes[i].focus(); return; }
     }
-    function toast(message) { if (typeof Toast !== 'undefined' && Toast.add) Toast.add(message); }
+    function toast(message, severity, opts) { if (typeof Toast !== 'undefined' && Toast.add) Toast.add(message, severity, opts); }
     // 语义音效命令式入口（契约 §8）：仅本地拦截 / 权威结果路径使用，静态元素走 data-audio-cue
     function cue(name) {
         var A = (typeof window !== 'undefined') ? window.BootstrapAudio : null;

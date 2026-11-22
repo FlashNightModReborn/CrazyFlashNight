@@ -324,7 +324,14 @@
                 _ctx.toast('背包已满，无法领取，请清理背包后重试', 'error');
                 return;   // 保持 unlocked 可重试（服务端未置 claimed）
             }
-            _ctx.toast(err === 'timeout' ? '领取超时，请重试' : (err === 'disconnected' ? '游戏连接已断开' : '领取失败' + (err ? '：' + err : '')), 'error');
+            var errMap = {
+                timeout: '领取超时，请重试',
+                client_timeout: '领取超时，请重试',
+                disconnected: '游戏连接已断开',
+                busy: '正在处理另一项操作，请稍候',
+                stale_state: '成就状态已变化，请刷新后重试'
+            };
+            _ctx.toast(errMap[err] || '领取失败，请重试', 'error');
         });
     }
 

@@ -166,6 +166,27 @@
         return { tier: 6, label: ARENA_DIFFICULTY_LABELS[ARENA_DIFFICULTY_LABELS.length - 1].label };
     }
 
+    function errorMessage(code, fallback) {
+        var raw = String(code || '').trim();
+        if (raw && /[\u4e00-\u9fa5]/.test(raw)) return raw;
+        var map = {
+            insufficient_money: '金钱不足，无法支付挑战押金。',
+            not_enough_money: '金钱不足，无法支付挑战押金。',
+            busy: '竞技场正在处理另一项请求，请稍候。',
+            not_ready: '竞技场数据尚未就绪，请稍后重试。',
+            in_combat: '当前处于战斗中，无法发起挑战。',
+            invalid_roster: '对手阵容配置无效，请重新检查。',
+            invalid_schedule: '赛程代码无效，请检查格式。',
+            invalid_payload: '请求参数无效，请重试。',
+            stale_state: '竞技场状态已变化，请刷新后重试。',
+            not_found: '未找到目标挑战或委托。',
+            disconnected: '与游戏连接已断开，请重试。',
+            timeout: '等待游戏响应超时，请重试。',
+            client_timeout: '等待游戏响应超时，请重试。'
+        };
+        return map[raw] || raw || fallback || '操作失败，请重试。';
+    }
+
     function escapeHtml(text) {
         var div = document.createElement('div');
         div.textContent = text;
@@ -186,6 +207,7 @@
         normalizeSearchText: normalizeSearchText,
         showToast: showToast,
         hideToast: hideToast,
+        errorMessage: errorMessage,
         formatMoney: formatMoney,
         difficultyOf: difficultyOf,
         escapeHtml: escapeHtml,
