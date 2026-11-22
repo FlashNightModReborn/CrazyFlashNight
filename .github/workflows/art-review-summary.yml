@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           repository: FlashNightModReborn/cf7-evidence
-          ref: c95bdac91a6e47d7e83e61513f2b837a61d9f7ba
+          ref: f038a55fb04ce5a4fb9ee4da3baa8d4d4d36dd59
           sparse-checkout-cone-mode: false
           sparse-checkout: /review/tools/round_summary.py
           persist-credentials: false
