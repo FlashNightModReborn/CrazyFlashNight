@@ -109,6 +109,7 @@ org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest.runAllTests();
 org.flashNight.arki.key.KeyManagerTest.runAllTests();
 _root.主角函数=_root.__prodHeroFunctions;
 org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest.runMovementAndAdmissionTests();
+org.flashNight.arki.unit.UnitComponent.Routing.AirHandoffTest.runAllTests();
 org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionPlanTest.runAll();
 org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionTest.runAll();
 org.flashNight.arki.scene.StageIntroServiceTest.runAllTests();

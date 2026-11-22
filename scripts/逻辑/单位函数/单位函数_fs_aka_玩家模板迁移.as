@@ -843,33 +843,39 @@ _root.主角函数.启动跳跃浮空 = function(man:MovieClip):Void {
         unit.__技能浮空任务ID = null;
     }
 
+    // 卸载钩子标识这一轮跳跃。同一 man 内重新登记来源仍归这次卸载处理。
+    if (man.onUnload == undefined || man.onUnload !== unit.__jumpUnload) {
+        var unitRef:MovieClip = unit;
+
+        // 设置 onUnload 清理
+        var prevOnUnload:Function = man.onUnload;
+        var unloadJump:Function = function() {
+            if (prevOnUnload) prevOnUnload.apply(this);
+            if (unitRef.__jumpUnload !== unloadJump) return;
+            delete unitRef.__jumpUnload;
+            this.坠地中 = false;
+            unitRef.浮空 = false;
+            unitRef.刚体 = false;
+            // 清理跳跃浮空（控制器）
+            if (_root.空中控制器 != undefined) {
+                _root.空中控制器.关闭跳跃浮空(unitRef);
+            }
+            // 清理跳跃浮空旧任务（兼容）
+            if (unitRef.__跳跃浮空任务ID != null) {
+                EnhancedCooldownWheel.I().removeTask(unitRef.__跳跃浮空任务ID);
+                unitRef.__跳跃浮空任务ID = null;
+            }
+        };
+        unit.__jumpUnload = unloadJump;
+        man.onUnload = unloadJump;
+    }
+
     // 接入单位级空中控制器：统一纵向物理
     if (_root.空中控制器 != undefined) {
         // 跳跃状态应接管自然落地
         _root.空中控制器.关闭自然落地(unit);
         _root.空中控制器.启用跳跃浮空(unit, man);
     }
-
-    var manRef:MovieClip = man;
-    var unitRef:MovieClip = unit;
-
-    // 设置 onUnload 清理
-    var prevOnUnload:Function = man.onUnload;
-    man.onUnload = function() {
-        if (prevOnUnload) prevOnUnload.apply(this);
-        manRef.坠地中 = false;
-        unitRef.浮空 = false;
-        unitRef.刚体 = false;
-        // 清理跳跃浮空（控制器）
-        if (_root.空中控制器 != undefined) {
-            _root.空中控制器.关闭跳跃浮空(unitRef);
-        }
-        // 清理跳跃浮空旧任务（兼容）
-        if (unitRef.__跳跃浮空任务ID != null) {
-            EnhancedCooldownWheel.I().removeTask(unitRef.__跳跃浮空任务ID);
-            unitRef.__跳跃浮空任务ID = null;
-        }
-    };
 };
 
 
@@ -921,6 +927,12 @@ _root.主角函数.动画完毕 = function() {
     this.技能名 = null;
     if (this.hp <= 0) {
         this.状态改变("血腥死");
+        return;
+    }
+    // 跳跃时间轴可能提前发出结束通知。仍由 jumpFloat 推进时，等它贴地后再进入跑／站立。
+    if ((this.状态 === "空手跳" || this.状态 === "兵器跳") && !this.技能浮空
+            && this.__air.sources.jumpFloat != undefined
+            && isFinite(this.Z轴坐标) && this._y < this.Z轴坐标 - _root.空中控制器._TOL) {
         return;
     }
     if (this.状态 === this.攻击模式 + "跳" && 跳横移速度 === 跑X速度 && (this.左行 || this.右行 || this.上行 || this.下行)) {

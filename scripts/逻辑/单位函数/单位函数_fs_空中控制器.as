@@ -56,7 +56,7 @@ _root.空中控制器.启动 = function(unit:MovieClip, scheduleOnly:Boolean):Vo
     // 装备回调接手本次物理步时，只登记后续定时任务。
     if (!scheduleOnly) {
         _root.空中控制器._tick(unit);
-        if (!air.running) return;
+        if (unit.__air !== air || !air.running) return;
     }
 
     EnhancedCooldownWheel.I().addOrUpdateTask(
@@ -82,6 +82,8 @@ _root.空中控制器.设置源 = function(unit:MovieClip, name:String, data:Obj
 /** 清除来源 */
 _root.空中控制器.清除源 = function(unit:MovieClip, name:String):Void {
     if (!unit || !unit.__air || !unit.__air.sources) return;
+    // 清理本来就没有的来源不能中断落地回调中的交接。
+    if (unit.__air.sources[name] == undefined) return;
     delete unit.__air.sources[name];
     if (!_root.空中控制器._hasAnySource(unit.__air)) {
         _root.空中控制器.停止(unit);
@@ -366,14 +368,14 @@ _root.空中控制器._tick = function(unit:MovieClip, jetImpulse:Number):Void {
             if (unit.flySpeed > 0) {
                 unit.flySpeed = 0;
             }
+            delete air.sources.fastFall;
             if (ff.man) {
                 ff.man.落地 = true;
                 ff.man.play(); // 继续播放技能动画
             }
-            delete air.sources.fastFall;
         }
         // 快速下落时不执行其他物理逻辑
-        if (!_root.空中控制器._hasAnySource(air)) {
+        if (unit.__air === air && !_root.空中控制器._hasAnySource(air)) {
             _root.空中控制器.停止(unit);
         }
         return;
@@ -398,6 +400,7 @@ _root.空中控制器._tick = function(unit:MovieClip, jetImpulse:Number):Void {
                 // 否则 temp_y 残留正值会让下一次击飞误走"已在空中"分支而拿不到上升初速（放大本 bug）。
                 unit.temp_y = 0;
                 unit.浮空 = false;
+                delete air.sources.knockback;
                 if (kb.man) {
                     kb.man.落地 = true;
                     // 受身反制时触发动画完毕，否则触发倒地状态
@@ -407,12 +410,11 @@ _root.空中控制器._tick = function(unit:MovieClip, jetImpulse:Number):Void {
                         unit.状态改变("倒地");
                     }
                 }
-                delete air.sources.knockback;
             }
         }
 
         // 被击飞时不执行其他物理逻辑
-        if (!_root.空中控制器._hasAnySource(air)) {
+        if (unit.__air === air && !_root.空中控制器._hasAnySource(air)) {
             _root.空中控制器.停止(unit);
         }
         return;
@@ -506,7 +508,8 @@ _root.空中控制器._tick = function(unit:MovieClip, jetImpulse:Number):Void {
         unit.temp_y = 0;
         unit.浮空 = false;
 
-        // 统一落地收尾
+        // 先提交本次落地的来源和标记，再通知可能开启下一动作的动画。
+        var finishAnimation:Boolean = false;
         if (air.sources.skillFloat != undefined) {
             sf = air.sources.skillFloat;
             if (sf.floatFlag) unit[sf.floatFlag] = false;
@@ -515,15 +518,12 @@ _root.空中控制器._tick = function(unit:MovieClip, jetImpulse:Number):Void {
         }
 
         if (air.sources.naturalFall != undefined) {
-            var 需要动画完毕:Boolean = (unit.__自然落地接管 == true);
+            finishAnimation = (unit.__自然落地接管 == true);
             delete unit.__自然落地接管;
             unit.技能浮空 = false;
             _root.效果("灰尘1", unit._x, unit._y, unit._xscale);
             _root.播放音效("soundland.wav");
             delete air.sources.naturalFall;
-            if (需要动画完毕) {
-                unit.动画完毕();
-            }
         }
 
         if (air.sources.jumpFloat != undefined) {
@@ -534,11 +534,10 @@ _root.空中控制器._tick = function(unit:MovieClip, jetImpulse:Number):Void {
                 if (!manRef.坠地中 || manRef._currentframe < 77) {
                     _root.效果("灰尘1", unit._x, unit._y, unit._xscale);
                     _root.播放音效("soundland.wav");
-                    unit.动画完毕();
+                    finishAnimation = true;
                 }
             } else {
-                // 无 man 引用时，保守触发动画完毕
-                unit.动画完毕();
+                finishAnimation = true;
             }
             delete air.sources.jumpFloat;
         }
@@ -562,10 +561,11 @@ _root.空中控制器._tick = function(unit:MovieClip, jetImpulse:Number):Void {
             _root.播放音效("soundland.wav");
             delete air.sources.jetpack;
         }
+        if (finishAnimation) unit.动画完毕();
     }
 
     // 无来源则停止
-    if (!_root.空中控制器._hasAnySource(air)) {
+    if (unit.__air === air && !_root.空中控制器._hasAnySource(air)) {
         _root.空中控制器.停止(unit);
     }
 };
