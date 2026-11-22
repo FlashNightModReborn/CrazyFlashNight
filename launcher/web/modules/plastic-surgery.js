@@ -175,7 +175,7 @@
             if (state.phase === 'applied') {
                 setStatus('整形已生效并保存。');
                 if (fromWrite) cue('success');
-                if (typeof Toast !== 'undefined') Toast.add('整形已生效并保存。');
+                if (typeof Toast !== 'undefined') Toast.add('整形已生效并保存。', 'success', { persistAfterClose: true, silent: true });
                 requestClose(true);
             } else {
                 if (fromWrite && state.phase === 'save_pending') cue('unknown');
@@ -219,7 +219,13 @@
         var accepted = false;
         try { accepted = Bridge.send({type:'panel', cmd:'close', panel:'surgery', panelInstanceId:instance}) !== false; }
         catch (error) { accepted = false; }
-        if (!accepted) { setStatus('关闭请求未能发送，请再试一次。'); return false; }
+        if (!accepted) {
+            errorText = '关闭请求未能发送，请再试一次。';
+            setStatus(errorText);
+            render();
+            if (typeof Toast !== 'undefined' && Toast.add) Toast.add(errorText, 'error');
+            return false;
+        }
         if (silent !== true) cue('back');
         Panels.close();
         return true;

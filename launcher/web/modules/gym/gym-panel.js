@@ -1337,6 +1337,7 @@
         keyHandler = function(event) {
             if (event.key === 'Escape') {
                 event.preventDefault();
+                if (switchArm) { clearSwitchArm(); return; }
                 requestClose();
             }
         };

@@ -135,17 +135,34 @@
 
     function showError(error) {
         S._lastError = error || 'unknown_error';
+        var messages = {
+            pending_stage_settlement: '上一关结算尚未完成，请关闭面板查看结算状态。',
+            stage_state_changed: '场景或角色进度已变化，请重新打开选关。',
+            stage_catalog_mismatch: '启动器与游戏加载的关卡目录不同，请重启游戏。',
+            stage_facts_unavailable: '角色或结算数据尚未就绪，请稍后重新打开选关。',
+            stage_delivery_unknown: '正在确认转场结果。请先查看当前游戏场景，再重新打开选关。',
+            locked: '尚未达到该关卡的开放条件。',
+            bridge_unavailable: '启动器连接暂不可用，请稍后重试。',
+            send_failed: '请求发送失败，请重试。',
+            jump_frame_failed: '切换场景页失败，请重试。',
+            enter_failed: '进入关卡失败，请重试。',
+            timeout: '等待游戏响应超时，请重试。',
+            client_timeout: '等待游戏响应超时，请重试。',
+            disconnected: '与游戏连接已断开，请重新打开选关。',
+            busy: '正在处理上一项操作，请稍候。',
+            not_ready: '选关数据尚未就绪，请稍候。',
+            stage_not_found: '未找到该关卡，请重新打开选关。',
+            invalid_stage: '关卡参数无效，请重新选择。',
+            invalid_difficulty: '所选难度当前不可用。',
+            in_combat: '当前处于战斗中，无法切换关卡。'
+        };
+        var msg = messages[S._lastError] || (/[\u4e00-\u9fa5]/.test(String(S._lastError)) ? String(S._lastError) : '选关操作失败，请重试。');
         if (S._logEl) {
             S._logEl.classList.add('is-error');
-            var messages = {
-                pending_stage_settlement: '上一关结算尚未完成，请关闭面板查看结算状态。',
-                stage_state_changed: '场景或角色进度已变化，请重新打开选关。',
-                stage_catalog_mismatch: '启动器与游戏加载的关卡目录不同，请重启游戏。',
-                stage_facts_unavailable: '角色或结算数据尚未就绪，请稍后重新打开选关。',
-                stage_delivery_unknown: '正在确认转场结果。请先查看当前游戏场景，再重新打开选关。',
-                locked: '尚未达到该关卡的开放条件。'
-            };
-            S._logEl.textContent = messages[S._lastError] || S._lastError;
+            S._logEl.textContent = msg;
+        }
+        if (typeof Toast !== 'undefined' && Toast && typeof Toast.add === 'function' && S._lastError !== 'locked') {
+            Toast.add(msg, 'error');
         }
     }
 

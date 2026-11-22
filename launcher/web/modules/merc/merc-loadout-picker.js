@@ -210,6 +210,7 @@ function(LoadoutPickerModule, WorkbenchComponents, WorkbenchFocus, DropPolicyMod
         this._loadoutSlots = {};
         this._operateReason = '';
         this._writePending = false;
+        this._stickyNotice = null;
         this._destroyed = false;
         this._listeners = [];
         this._armorDefs = defsOf(this, ARMOR_IDS);
@@ -478,13 +479,23 @@ function(LoadoutPickerModule, WorkbenchComponents, WorkbenchFocus, DropPolicyMod
     };
 
     // picker 面板状态条（aria-live 唯一复读出口；kind = browsing/blocked/error/write/...）
+    MercLoadoutPickerView.prototype.showActionNotice = function(kind, message) {
+        if (this._destroyed || !message) return false;
+        this._stickyNotice = { kind: kind || 'error', message: String(message) };
+        this._showStatusNotice(this._stickyNotice.kind, this._stickyNotice.message);
+        return true;
+    };
     MercLoadoutPickerView.prototype._showStatusNotice = function(kind, message) {
+        if (kind !== 'success' && (!this._stickyNotice || this._stickyNotice.message !== message)) {
+            this._stickyNotice = null;
+        }
         this._notice.textContent = message;
         this._notice.setAttribute('data-notice-kind', kind || 'error');
     };
     MercLoadoutPickerView.prototype._showBrowsingNotice = function(message) {
-        this._notice.textContent = message;
-        this._notice.setAttribute('data-notice-kind', 'browsing');
+        var sticky = this._stickyNotice;
+        this._notice.textContent = sticky ? sticky.message : message;
+        this._notice.setAttribute('data-notice-kind', sticky ? sticky.kind : 'browsing');
     };
 
     MercLoadoutPickerView.prototype._slotStateOf = function(id) {
@@ -546,6 +557,9 @@ function(LoadoutPickerModule, WorkbenchComponents, WorkbenchFocus, DropPolicyMod
             ? text(merc.id, '') + ':' + String(merc.slotIndex) + ':' + String(loadoutRevision)
             : '';
         var authorityChanged = authorityKey !== this._loadoutAuthorityKey;
+        var prevIdentity = this._merc ? text(this._merc.id, '') + ':' + String(this._merc.slotIndex) : '';
+        var nextIdentity = merc ? text(merc.id, '') + ':' + String(merc.slotIndex) : '';
+        if (prevIdentity !== nextIdentity) this._stickyNotice = null;
         this._loadoutAuthorityKey = authorityKey;
         this._merc = merc || null;
         var reason = merc ? text(this._operateReasonOf(merc), '') : '装备托管数据不可用，请重新同步';

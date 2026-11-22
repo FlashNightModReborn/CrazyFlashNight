@@ -11,7 +11,7 @@ var LootPanel = (function() {
     var _preview = null, _activeSession = null;
     var _reportPaintGeneration = -1;
     var _claimAllTimer = null, _terminalCloseTimer = null, _closingVisual = false;
-    var _claimAllQueue = [], _claimAllBlockedSlots = {}, _claimAllBlockedReason = '';
+    var _claimAllQueue = [], _claimAllBlockedSlots = {}, _claimAllBlockedReason = '', _claimAllError = '';
     var _materials = {items:null,busy:false,error:'',requestedRevision:null,dirty:false};
     var _runtimeConfig = typeof window !== 'undefined' && window.__LOOT_PANEL_CONFIG__ || {};
     // Bounded lifecycle observability for the settlement/report path. Every record
@@ -591,7 +591,11 @@ var LootPanel = (function() {
                 requestMaterials();
                 toast('已收取所有可放入物品；仍有 '
                 +state.remainingCount+' 个物品因背包或容量限制保留。','success');
-            } else toast('箱内仍有未遍历物品，已停止全部收取，请人工核对。','error');
+            } else {
+                _claimAllError = '箱内仍有未遍历物品，已停止全部收取，请人工核对。';
+                toast(_claimAllError,'error');
+                render();
+            }
             return;
         }
         var checkpoint={
@@ -630,8 +634,10 @@ var LootPanel = (function() {
                 }
                 stopClaimAll();
                 if (/^(target_full|inventory_full|capacity_reached|cap_reached)$/.test(String(error)))
-                    toast('容量拒绝未满足零写证明，已停止全部收取，请人工核对。','error');
-                else toast(writeFailureMessage(response),'error');
+                    _claimAllError = '容量拒绝未满足零写证明，已停止全部收取，请人工核对。';
+                else _claimAllError = writeFailureMessage(response);
+                toast(_claimAllError,'error');
+                render();
                 return;
             }
             // A syntactically valid success is insufficient for a batch loop. Require exact
@@ -641,7 +647,9 @@ var LootPanel = (function() {
                 ? rewardRootOutcome : claimAllBatchAdvanced(checkpoint);
             if (!advance) {
                 stopClaimAll();
-                toast('领取结果没有变化，已停止全部收取，请人工核对。','error');
+                _claimAllError = '领取结果没有变化，已停止全部收取，请人工核对。';
+                toast(_claimAllError,'error');
+                render();
                 return;
             }
             if (advance.retained.length) {
@@ -655,7 +663,7 @@ var LootPanel = (function() {
             scheduleClaimAllDrain();
         })) {
             stopClaimAll();
-            toast('当前无法继续全部收取，请先完成正在进行的操作。');
+            toast('当前无法继续全部收取，请先完成正在进行的操作。','warning');
         }
     }
     function stopClaimAll(preserveOutcome) {
@@ -668,6 +676,7 @@ var LootPanel = (function() {
         if (!preserveOutcome) {
             _claimAllBlockedSlots={};
             _claimAllBlockedReason='';
+            _claimAllError='';
         }
         render();
     }
@@ -867,6 +876,7 @@ var LootPanel = (function() {
         if (_claimAllBlockedReason) state.blockReason=_claimAllBlockedReason;
         state.claimAllBlockedReason=_claimAllBlockedReason;
         state.claimAllBlockedCount=claimAllBlockedCount();
+        state.claimAllError=_claimAllError;
         _view.setMaterials(_materials.items,_materials.busy,_materials.error);
         _view.render(state,projection(),_claimAll,_organizerActive||_organizerReturning);
         if (_runtimeConfig.externalScale && !_runtimeConfig.sceneReady && state.phase === 'active')
@@ -997,8 +1007,8 @@ var LootPanel = (function() {
     function isOpen() {
         return Panels.getActive ? Panels.getActive()==='loot' : Panels.isOpen();
     }
-    function toast(message,severity) {
-        if (typeof Toast!=='undefined'&&Toast.add) Toast.add(message,severity);
+    function toast(message,severity,opts) {
+        if (typeof Toast!=='undefined'&&Toast.add) Toast.add(message,severity,opts);
     }
     function iconHtml(name,cls) {
         return typeof Icons!=='undefined'&&Icons.html ? Icons.html(name,cls||'') : '';
@@ -1006,8 +1016,9 @@ var LootPanel = (function() {
     function inventoryErrorMessage(result) {
         var error=result&&result.error||'inventory_failed';
         if (result&&result.refreshError) return '库存写入结果无法重新核对，请重试同步。';
-        if (error==='target_full') return '目标容器没有可用空间。';
-        if (error==='slot_locked'||error==='stale_lease') return '物品状态已变化，请重新同步。';
+        if (error==='target_full'||error==='backpack_full'||error==='inventory_full') return '目标容器没有可用空间。';
+        if (error==='slot_locked') return '目标栏位尚未解锁，请先扩容战备箱或切换容器。';
+        if (error==='stale_lease'||error==='stale_state') return '物品状态已变化，请重新同步。';
         if (error==='client_timeout'||error==='disconnected') return '库存操作结果未知，正在重新核对。';
         return '库存操作未完成，请重试。';
     }

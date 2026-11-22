@@ -235,9 +235,11 @@ var CookingPanel = (function() {
             _previewBusy = false;
             if (_selectedIndex !== recipeIndex || _craftCount !== craftCount) return;
             if (!response || !response.success) {
-                // 核算失败：收卡留选中（照片保留），toast 说明原因。
-                _preview = null; _cardOpen = false;
-                toast(errorMessage(response && response.error));
+                // 核算失败：保留配方卡并内联展示原因，同时给 L1 报错浮条，不让卡片凭空消失。
+                var errMsg = errorMessage(response && response.error);
+                _preview = null;
+                _commitFeedback = errMsg;
+                toast(errMsg, 'error');
             } else {
                 _preview = response;
             }
@@ -257,15 +259,16 @@ var CookingPanel = (function() {
             _busy = false;
             if (response && response.success) {
                 toast('已烹饪 ' + (response.crafted && response.crafted.displayName
-                    ? response.crafted.displayName : craftedName));
+                    ? response.crafted.displayName : craftedName), 'success', {silent:true});
                 cue('success');
                 _commitFeedback = null;
                 _preview = null;
                 refresh(); return;
             }
+            var errMsg = errorMessage(response && response.error);
             cue('rejected');
-            toast(errorMessage(response && response.error));
-            _commitFeedback = errorMessage(response && response.error);
+            toast(errMsg, 'error', {silent:true});
+            _commitFeedback = errMsg;
             _preview = null;
             renderRight();
             requestPreview();
@@ -514,10 +517,12 @@ var CookingPanel = (function() {
                 ? '等待核算结果…' : availabilityLabel(recipe);
             body.appendChild(wait);
         }
-        if (_commitFeedback) {
+        var blockingText = previewBlockingNote();
+        var noticeText = _commitFeedback || blockingText;
+        if (noticeText) {
             var feedback = document.createElement('div');
             feedback.className = 'cooking-recipe-note warn';
-            feedback.textContent = _commitFeedback;
+            feedback.textContent = noticeText;
             body.appendChild(feedback);
         }
         card.appendChild(body);
@@ -564,7 +569,10 @@ var CookingPanel = (function() {
         confirm.textContent = _busy ? '烹饪中…' : '确认烹饪';
         var committable = !!_preview && _preview.canCommit && !_busy && !_previewBusy;
         confirm.disabled = !committable;
-        if (!committable) confirm.setAttribute('aria-disabled', 'true');
+        if (!committable) {
+            confirm.setAttribute('aria-disabled', 'true');
+            if (noticeText) confirm.title = noticeText;
+        }
         confirm.setAttribute('data-audio-cue', 'activate');
         confirm.addEventListener('click', commit);
         footer.appendChild(confirm);
@@ -620,18 +628,31 @@ var CookingPanel = (function() {
         }
     }
 
+    function previewBlockingNote() {
+        if (!_preview || _preview.canCommit) return '';
+        if (_preview.blockingError) return errorMessage(_preview.blockingError);
+        if (_preview.enoughSpace === false) return errorMessage('inventory_full');
+        if (_preview.enoughMoney === false) return errorMessage('insufficient_money');
+        if (_preview.enoughKpoints === false) return errorMessage('insufficient_kpoint');
+        if (_preview.levelAllowed === false) return errorMessage('level_locked');
+        if (_preview.enoughMaterials === false) return errorMessage('material_missing');
+        return '当前暂不满足烹饪条件，请检查材料、费用与背包空间。';
+    }
+
     function maxCount() {
-        if (_preview && Number.isInteger(_preview.maxCraftCount)
-                && _preview.maxCraftCount > 0) return _preview.maxCraftCount;
+        if (_preview && Number.isInteger(_preview.maxCraftCount)) {
+            return Math.max(1, _preview.maxCraftCount);
+        }
         return 99;
     }
 
     function setCraftCount(next) {
         var value = Math.floor(Number(next));
         if (isNaN(value)) value = 1;
-        value = Math.max(1, Math.min(99, value));
+        value = Math.max(1, Math.min(maxCount(), value));
         if (value === _craftCount) { renderRight(); return; }
         _craftCount = value;
+        _commitFeedback = null;
         // 重核期间保留旧 preview：卡不塌、控件禁用，回来就地刷新。
         renderRight(); requestPreview();
     }
@@ -670,7 +691,7 @@ var CookingPanel = (function() {
         return messages[error] || '烹饪操作失败，请重试。';
     }
 
-    function toast(message) { if (_host && _host.toast) _host.toast(message); }
+    function toast(message, severity, opts) { if (_host && _host.toast) _host.toast(message, severity, opts); }
     function cue(name) { if (_host && _host.cue) _host.cue(name); }
     // 工作台合同：节点脱离 DOM 前释放域内 tooltip binding。
     function releaseTooltipTree(node) {

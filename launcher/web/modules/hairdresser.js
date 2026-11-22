@@ -1275,11 +1275,12 @@ var HairdresserPanel = (function() {
 
     function requestClose(silent) {
         if (_busy) {
-            toast('发型更换结果正在确认，请稍候。');
+            toast('发型更换结果正在确认，请稍候。', 'warning');
             return false;
         }
-        // audio: 关闭/取消；commit 成功路径传 silent（已播 success，一动作一声）
-        if (!silent && window.BootstrapAudio) window.BootstrapAudio.cue('back');
+        // audio: 关闭/取消；commit 成功路径显式传 true 保持静默（已播 success，一动作一声），
+        // 避免作为 click 回调直接传入 MouseEvent 时被 truthy 误判为静音。
+        if (silent !== true && window.BootstrapAudio) window.BootstrapAudio.cue('back');
         Panels.close();
         Bridge.send({type: 'panel', cmd: 'close', panel: 'hairdresser', panelInstanceId: _closePanelInstanceId});
         return true;
@@ -1377,8 +1378,8 @@ var HairdresserPanel = (function() {
         return value < 10 ? '0' + value : String(value);
     }
 
-    function toast(message) {
-        if (typeof Toast !== 'undefined' && Toast.add) Toast.add(message);
+    function toast(message, severity, opts) {
+        if (typeof Toast !== 'undefined' && Toast.add) Toast.add(message, severity, opts);
     }
 
     function errorMessage(error) {

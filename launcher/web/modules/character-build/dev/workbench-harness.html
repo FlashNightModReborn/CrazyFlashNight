@@ -101,6 +101,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         };
     }
     function candidateFacetProjection() {
+        var extraConsumables = window.__routeHarness && window.__routeHarness.backpackFull ? 24 : 0;
         return {
             scope:'all',
             filterFacets:[
@@ -116,9 +117,9 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                     facet('手枪2', 1),
                     facet('手雷', 5)
                 ]),
-                facet('consumable', 7, [facet('药剂', 7)])
+                facet('consumable', 7 + extraConsumables, [facet('药剂', 7 + extraConsumables)])
             ],
-            filterItemCount:26
+            filterItemCount:26 + extraConsumables
         };
     }
     window.__routeHarness = {
@@ -372,11 +373,13 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         var harness = window.__routeHarness;
         var mutation = /^(equip|unequip)(Equipment|Drug)$/.test(message.cmd)
             || message.cmd === 'configureEmergencyInjection';
-        if (mutation && harness.rejectNextMutation) {
+        if (mutation && (harness.rejectNextMutation || harness.rejectNextMutationError)) {
+            var rejectError = harness.rejectNextMutationError || 'stale_source';
             harness.rejectNextMutation = false;
+            harness.rejectNextMutationError = '';
             var rejected = responseBase(message);
             rejected.success = false;
-            rejected.error = 'stale_source';
+            rejected.error = rejectError;
             return rejected;
         }
         if (mutation && harness.unknownNextMutation) {
@@ -1132,7 +1135,10 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         emit('panel_resp', response);
         return true;
     };
-    window.Toast = {messages:[], add:function(message) { this.messages.push(String(message)); }};
+    window.Toast = {messages:[], entries:[], add:function(message, severity, opts) {
+        this.messages.push(String(message));
+        this.entries.push({message:String(message), severity:severity || null, opts:opts || null});
+    }};
     window.Notch = {reportRect:function() {}};
     var rejectFirstManifest = null;
     var nativeLoadManifest = DressupDollRenderer.loadManifest;
@@ -6133,6 +6139,52 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             commandCount('candidates') === sameCompatibleBase
             && candidateProjectionReady(
                 InventoryWorkbench.debugState().build, 'drug:drug3', 1));
+        var backpackMetric = document.querySelector('.workbench-metric[data-metric="backpack"]');
+        check('topbar backpack metric reflects normal capacity before full-backpack check',
+            !!backpackMetric && !backpackMetric.hidden
+            && backpackMetric.getAttribute('data-capacity-state') === 'normal'
+            && backpackMetric.textContent.indexOf('26 / 50') >= 0);
+        window.__routeHarness.backpackFull = true;
+        var fullRefreshBase = commandCount('unequipDrug');
+        document.querySelector('[data-build-action="unequip"]').click();
+        check('full backpack snapshot updates topbar capacity badge to full state',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var metric = document.querySelector('.workbench-metric[data-metric="backpack"]');
+                var rootEl = document.querySelector('.character-build-workbench');
+                return state && state.session.state === 'idle'
+                    && commandCount('unequipDrug') === fullRefreshBase + 1
+                    && metric && metric.getAttribute('data-capacity-state') === 'full'
+                    && metric.textContent.indexOf('50 / 50') >= 0
+                    && metric.textContent.indexOf('背包（已满）') >= 0
+                    && rootEl && rootEl.getAttribute('data-backpack-full') === 'true';
+            }));
+        document.querySelector('[data-roving-key="armor:头部装备"]').click();
+        check('selecting occupied armor while backpack is full marks unequip button capacity-blocked yet clickable',
+            await until(function() {
+                var btn = document.querySelector('[data-build-action="unequip"]');
+                return candidateProjectionReady(InventoryWorkbench.debugState().build, 'armor:头部装备', 1)
+                    && !!btn && !btn.disabled
+                    && btn.getAttribute('data-capacity-blocked') === 'true';
+            }));
+        window.__routeHarness.rejectNextMutationError = 'backpack_full';
+        var toastBeforeFullReject = window.Toast.entries.length;
+        var fullUnequipBase = commandCount('unequipEquipment');
+        document.querySelector('[data-build-action="unequip"]').click();
+        check('backpack_full unequip rejection surfaces persistent inline error and error toast across idle transition',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var notice = document.querySelector('[data-build-notice]');
+                var lastToast = window.Toast.entries[window.Toast.entries.length - 1];
+                return state && state.session.state === 'idle'
+                    && commandCount('unequipEquipment') === fullUnequipBase + 1
+                    && !!notice && notice.getAttribute('data-notice-kind') === 'error'
+                    && notice.textContent.indexOf('背包已满（50/50）') >= 0
+                    && window.Toast.entries.length > toastBeforeFullReject
+                    && !!lastToast && lastToast.severity === 'error'
+                    && lastToast.message.indexOf('背包已满（50/50）') >= 0;
+            }));
+        window.__routeHarness.backpackFull = false;
         document.querySelector('[data-roving-key="weapon:长枪"]').click();
         check('destroy drag probe obtains one fresh filtered candidate',
             await until(function() {

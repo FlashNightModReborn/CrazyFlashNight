@@ -23,7 +23,7 @@
 
 <!-- 常驻 HUD（刘海/通知/toast/右上工具/地图/搓招/安全退出/点歌标题栏）已全部迁移到 C# NativeHud； -->
 <!-- 本页面只承载 panel 体系 + cursor 反馈 + tooltip + 后台服务（doll-bake 等）。 -->
-<!-- 面板模块的 Toast.add 经 panel-toast 桥接上送 Host，由 NativeHud ToastWidget 渲染。 -->
+<!-- 面板模块的 Toast.add 按上下文分流：面板打开期渲染顶部统一 #panel-feedback-banner，离场/无面板态经 panel-toast 上送 NativeHud 刘海。 -->
 
 <!-- 游戏帮助已迁移至 Panel 系统 (help-panel.js) -->
 

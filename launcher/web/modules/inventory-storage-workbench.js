@@ -76,18 +76,18 @@ var InventoryStorageWorkbench = (function() {
                 queue_full:'本批最多选择 ' + (_rightContainerId === 'stash' ? 32 : 50) + ' 项。',
                 no_mode:'请先选择批量存入或批量取出。',
                 nothing_selected:'请先选择至少一件物品。', selection_cleared:'来源已切换，未执行的选择已清空。',
-                withdraw_only:'暂存物资只支持取出。', invalid_quantity:'请填写所选物品范围内的整数数量。'
+                withdraw_only:'暂存物资只支持取出。', invalid_quantity:'请填写所选物品范围内的整数数量。', mode_not_supported:'当前来源不支持该批量模式。'
             };
             blockedCue();
-            toast(messages[reason] || '库存正在处理另一项操作。');
+            toast(messages[reason] || '库存正在处理另一项操作。', 'warning', {silent:true});
         },
         onError:function(result) {
             var error = result && result.error;
             if (error === 'stash_blocked') return;
-            if (error === 'target_full') toast('目标容器已满，快速转移已停止。');
-            else if (error === 'slot_locked') toast('目标容器尚未解锁，快速转移已停止。');
-            else if (result && result.reconciled) toast('库存状态已变化；已重新同步并停止队列。');
-            else toast(errorMessage(error));
+            if (error === 'target_full') toast('目标容器已满，快速转移已停止。', 'error');
+            else if (error === 'slot_locked') toast('目标容器尚未解锁，快速转移已停止。', 'error');
+            else if (result && result.reconciled) toast('库存状态已变化；已重新同步并停止队列。', 'warning');
+            else toast(errorMessage(error), 'error');
         }
     });
     var _tutorialPage = null;
@@ -241,7 +241,7 @@ var InventoryStorageWorkbench = (function() {
             if (callback) callback(true);
         });
     }
-    function reportStashResult(result) { toast(InventoryWorkbenchOwnedView.stashResultMessage(result)); }
+    function reportStashResult(r) { var b = r && r.success && ((r.data && r.data.blocked) || r.blocked); toast(InventoryWorkbenchOwnedView.stashResultMessage(r), !r || !r.success ? 'error' : b && b.length ? 'warning' : 'success'); }
     function switchView(nextView, preferredSlot, callback) {
         var onComplete = typeof callback === 'function' ? callback : function() {};
         var completed = false;
@@ -502,15 +502,12 @@ var InventoryStorageWorkbench = (function() {
             actionable:function() { return getInteraction().actionable; },
             reason:function() { return getInteraction().reason; },
             reasonNode:reasonNode,
-            onBlocked:function() { toast(getInteraction().reason); },
+            onBlocked:function() { toast(getInteraction().reason, 'warning'); },
             onActivate:function(event, context) {
                 if (consumeDragClick()) return;
                 if (_viewMode === 'tuning' && containerId === '背包') {
                     if (_state.busyOwner || _state.refreshRequired) return;
-                    if (!slot.occupied || !slot.item || slot.item.itemKind !== 'equipment') {
-                        toast('装备调制只接受背包内武器与防具。');
-                        return;
-                    }
+                    if (!slot.occupied || !slot.item || slot.item.itemKind !== 'equipment') { toast('装备调制只接受背包内武器与防具。', 'warning'); return; }
                     clearSelection();
                     _tuningView.handleInventorySelection(slot);
                     return;
@@ -532,7 +529,7 @@ var InventoryStorageWorkbench = (function() {
             discardButton.addEventListener('click', function(event) {
                 event.stopPropagation();
                 var interaction = InventoryWorkbenchOwnedView.authorityInteraction(_state, false);
-                if (!interaction.actionable) { blockedCue(); toast(interaction.reason); return; }
+                if (!interaction.actionable) { blockedCue(); toast(interaction.reason, 'warning', {silent:true}); return; }
                 confirmDiscard(containerId, slot);
             });
         }
@@ -549,21 +546,21 @@ var InventoryStorageWorkbench = (function() {
         _broker = new Workbench.InteractionBroker({
             onIntent:function(intent) {
                 if (intent.sourceRef && intent.sourceRef.kind === 'stash') {
-                    if (!_sources.take([intent.sourceRef], intent.targetRef, reportStashResult)) toast('暂存操作尚未完成。');
+                    if (!_sources.take([intent.sourceRef], intent.targetRef, reportStashResult)) toast('暂存操作尚未完成。', 'warning');
                     return;
                 }
                 if (!_coordinator.transfer(intent, function(result) {
                     renderInventories();
                     if (result.success) toast(result.operation === 'merge' ? '物品已合并。'
-                        : result.operation === 'swap' ? '物品已交换。' : '物品已移动。');
-                    else toast(result.reconciled ? '操作失败，库存已刷新。' : errorMessage(result.error));
-                })) toast('库存正在处理另一项操作。');
+                        : result.operation === 'swap' ? '物品已交换。' : '物品已移动。', 'success');
+                    else toast(errorMessage(result.error) + (result.reconciled ? '（库存已刷新）' : ''), 'error');
+                })) toast('库存正在处理另一项操作。', 'warning');
             },
             onReject:function(result) {
                 if (result && result.reason === 'same_slot') clearSelection();
-                else if (result && result.reason === 'withdraw_only') toast('暂存物资只支持取出。');
-                else if (result && result.reason === 'target_incompatible') toast('该物品需要自动归位，请点击下方“领取”，或 Ctrl 单击。');
-                else if (result && result.reason === 'target_occupied') toast('目标格已有其他物品，请选择空格或同物堆叠。');
+                else if (result && result.reason === 'withdraw_only') toast('暂存物资只支持取出。', 'warning');
+                else if (result && result.reason === 'target_incompatible') toast('该物品需要自动归位，请点击下方“领取”，或 Ctrl 单击。', 'warning');
+                else if (result && result.reason === 'target_occupied') toast('目标格已有其他物品，请选择空格或同物堆叠。', 'warning');
             },
             onSelectionChange:function(selection) {
                 if (_storageControls) _storageControls.setSelection(selection);
@@ -893,7 +890,7 @@ var InventoryStorageWorkbench = (function() {
     function clearSelection() { if (_broker) _broker.clearSelection(); }
     function hideTooltip() { if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide(); }
     function isOpen() { return _ports.isPanelActive ? _ports.isPanelActive() : false; }
-    function toast(message, severity) { if (typeof Toast !== 'undefined') Toast.add(message, severity); }
+    function toast(message, severity, opts) { if (typeof Toast !== 'undefined') Toast.add(message, severity, opts); }
     function blockedCue() {
         if (typeof BootstrapAudio !== 'undefined' && BootstrapAudio
                 && typeof BootstrapAudio.cue === 'function') BootstrapAudio.cue('illegal');

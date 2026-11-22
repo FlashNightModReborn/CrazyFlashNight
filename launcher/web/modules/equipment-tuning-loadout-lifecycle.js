@@ -130,7 +130,8 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                     self._loadoutBarrier = null;
                     self._lastCommitCallId = '';
                     self._modIntent = null;
-                    self._status = errorMessage(response && response.error);
+                    self._status = self._stickyErrorStatus = errorMessage(response && response.error, response);
+                    self._toast(self._status, 'error');
                     var staleTarget = operation === 'convert' && response
                         && (response.error === 'stale_state'
                             || response.error === 'stale_lease');

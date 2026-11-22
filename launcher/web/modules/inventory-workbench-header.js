@@ -317,6 +317,8 @@
                 view === 'build' || statsMode);
             state.storageActions.hidden = view === 'build' || statsMode;
             state.buildActions.hidden = view !== 'build' && !statsMode;
+            var backpackMetric = state.root.querySelector('.workbench-metric[data-metric="backpack"]');
+            if (backpackMetric) backpackMetric.hidden = view !== 'build' || statsMode;
             if (statsMode) {
                 state.shell.setTitle('个人信息', '角色档案 · 已应用构筑');
             } else if (view === 'build') {

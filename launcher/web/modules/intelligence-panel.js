@@ -354,7 +354,7 @@ var IntelligencePanel = (function() {
             pcName: _pcName
         }, function(resp) {
             if (!resp.success) {
-                showError('全量情报加载失败：' + (resp.error || 'unknown'));
+                showError('全量情报加载失败：' + friendlyIntelError(resp.error));
                 return;
             }
             ingestBundle(resp.items || []);
@@ -381,7 +381,7 @@ var IntelligencePanel = (function() {
         showLoading('正在同步情报状态…');
         sendRequest('state', {}, function(resp) {
             if (!resp.success) {
-                showError('运行态情报状态加载失败：' + (resp.error || 'unknown'));
+                showError('运行态情报状态加载失败：' + friendlyIntelError(resp.error));
                 return;
             }
             _catalog = resp.items || [];
@@ -408,7 +408,7 @@ var IntelligencePanel = (function() {
         }
         sendRequest('snapshot', payload, function(resp) {
             if (!resp.success) {
-                showError('文本加载失败：' + (resp.error || 'unknown'));
+                showError('文本加载失败：' + friendlyIntelError(resp.error));
                 return;
             }
             _snapshot = resp;
@@ -1221,11 +1221,29 @@ var IntelligencePanel = (function() {
         target.appendChild(el);
     }
 
+    function friendlyIntelError(code) {
+        var map = {
+            timeout: '响应超时，请重试',
+            client_timeout: '响应超时，请重试',
+            disconnected: '连接已断开',
+            not_ready: '档案数据尚未就绪，请稍候',
+            not_found: '未找到对应情报条目',
+            invalid_session: '会话已更新，请重新打开档案',
+            busy: '正在处理另一项读取，请稍候'
+        };
+        var key = String(code || '');
+        if (/[\u4e00-\u9fa5]/.test(key)) return key;
+        return map[key] || '请重试';
+    }
+
     function doClose(accepted) {
         if (accepted !== true && _leeStory && _leeStory.blocked()) return false;
         var instance = _panelInstanceId;
+        if (Bridge.send({ type: 'panel', cmd: 'close', panel: 'intelligence', panelInstanceId: instance }) === false) {
+            if (typeof Toast !== 'undefined') Toast.add('启动器连接不可用，情报档案保持打开。', 'error');
+            return false;
+        }
         if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭
-        if (Bridge.send({ type: 'panel', cmd: 'close', panel: 'intelligence', panelInstanceId: instance }) === false) return false;
         Panels.close(); return true;
     }
 

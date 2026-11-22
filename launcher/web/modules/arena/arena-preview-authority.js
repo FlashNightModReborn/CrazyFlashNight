@@ -167,7 +167,7 @@
             delete S._previewPending[cardIdx];
 
             if (!data.success || !data.opponents) {
-                S._previewError[cardIdx] = data.error || '抽取失败';
+                S._previewError[cardIdx] = ArenaCore.errorMessage(data.error, '抽取失败');
                 ArenaChallengeBrowser.renderCardSummary(cardIdx);
                 ArenaChallengeBrowser.updateCardStates(); // 失败 → 选中该卡时 CommitBar 给 error 原因且禁用
                 if (S._selectedCardIdx === cardIdx) {

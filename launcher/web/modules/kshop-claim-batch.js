@@ -97,6 +97,11 @@
 
         function setBlocked(blocked) {
             if (_button) _button.disabled = !!blocked || _selectionSize < 2;
+            if (_hint && multiActive()) {
+                _hint.textContent = blocked ? '当前有写入或同步进行中，暂不可批量领取'
+                    : _selectionSize > 0 ? '已勾选 ' + _selectionSize + ' 项，整批一次领取'
+                    : '勾选至少 2 项后可整批领取';
+            }
         }
 
         function nextOperationId() {
@@ -107,7 +112,7 @@
         function onClaimBatch() {
             if (!multiActive()) return;
             if (!_canStartWrite()) {
-                _toast('商城尚未同步，请稍后再领取。');
+                _toast('商城尚未同步，请稍后再领取。', 'warning');
                 return;
             }
             var purchased = _getPurchased();
@@ -117,7 +122,7 @@
                 if (fingerprint && _selection[fingerprint]) frozenRows.push(fingerprint);
             }
             if (frozenRows.length < 2) {
-                _toast('请至少勾选两项待领取商品。');
+                _toast('请至少勾选两项待领取商品。', 'warning');
                 return;
             }
             var operationId = nextOperationId();
@@ -127,7 +132,7 @@
             updateBar();
             var inventoryWrite = _inventoryCoordinator.beginExternalWrite('shop.claimBatch');
             if (!inventoryWrite) {
-                _toast('背包尚未同步或正在处理另一笔写入。');
+                _toast('背包尚未同步或正在处理另一笔写入。', 'warning');
                 return;
             }
             if (!_coordinator.claimBatch(operationId, frozenRows, function(resp) {
@@ -140,22 +145,22 @@
                     if (resp.success) _applyResult(resp);
                     _renderOwned();
                     if (resp.success && resp.replayed === true) {
-                        _toast('该批次此前已领取，结果已核对。');
+                        _toast('该批次此前已领取，结果已核对。', 'success', {silent:true});
                         _cue('success');
                     } else if (resp.success && refreshResult.success) {
-                        _toast('批量领取成功，背包已刷新！');
+                        _toast('批量领取成功，背包已刷新！', 'success', {silent:true});
                         _cue('success');
                     } else if (resp.success) {
-                        _toast('批量领取已成功，但背包刷新失败；请点击“重试库存同步”。');
+                        _toast('批量领取已成功，但背包刷新失败；请点击“重试库存同步”。', 'warning', {silent:true});
                         _cue('success');
                     } else {
-                        _toast(_messageForError('claimBatch', resp.error));
+                        _toast(_messageForError('claimBatch', resp.error), 'error', {silent:true});
                         _cueForError(resp.error);
                     }
                 })) return;
             })) {
                 _inventoryCoordinator.completeExternalWrite(inventoryWrite, false);
-                _toast('商城正在处理另一笔写入，请稍后再领取。');
+                _toast('商城正在处理另一笔写入，请稍后再领取。', 'warning');
             }
         }
 

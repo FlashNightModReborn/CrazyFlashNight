@@ -165,6 +165,7 @@
         this._mode = mode;
         this._completed = 0;
         this._accepted = 0;
+        this._haltError = '';
         this._emit();
         return true;
     };
@@ -185,6 +186,7 @@
         this._entries = {};
         this._completed = 0;
         this._accepted = 0;
+        this._haltError = '';
         this._emit();
         return true;
     };
@@ -514,6 +516,7 @@
         return !!started;
     };
     QuickTransferController.prototype._halt = function(result) {
+        this._haltError = result && result.error ? String(result.error) : 'invalid_response';
         if (this._inFlight) delete this._entries[this._inFlight.key];
         this._inFlight = null;
         for (var i = 0; i < this._batchInFlight.length; i++) {
@@ -561,6 +564,7 @@
             committing:this._committing,
             completed:this._completed,
             accepted:this._accepted,
+            haltError:this._haltError || '',
             limit:this._limit,
             entries:entries
         };
@@ -649,6 +653,12 @@
                 statusNode.textContent += ' · 待处理 ' + state.queued + ' · 已完成 ' + state.completed;
             } else if (state.staged) {
                 statusNode.textContent += ' · 已选 ' + state.staged;
+            } else if (state.haltError) {
+                var haltLabel = state.haltError === 'target_full' ? '目标容器已满，已停止'
+                    : state.haltError === 'slot_locked' ? '目标栏位未解锁，已停止'
+                    : state.haltError === 'stash_blocked' ? '部分物品因背包已满保留'
+                    : '转移中断，已停止';
+                statusNode.textContent += (state.completed ? ' · 已完成 ' + state.completed : '') + ' · ' + haltLabel;
             } else if (state.completed) {
                 statusNode.textContent += ' · 已完成 ' + state.completed;
             }

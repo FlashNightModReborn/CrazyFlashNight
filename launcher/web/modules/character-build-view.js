@@ -157,7 +157,7 @@ function(WorkbenchFocus, WorkbenchComponents,
         this._itemUseState = 'idle';
         this._selectedUseCandidate = null;
         this._inboxSummary = null;
-        this._itemUseResultNotice = '';
+        this._stickyNotice = null;
         this._createDOM();
         LoadoutPickerModule.createScopeGroup(this);
         this.setDensity(this._density);
@@ -399,7 +399,7 @@ function(WorkbenchFocus, WorkbenchComponents,
 
     CharacterBuildView.prototype._selectUserSlot = function(key, reason) {
         if (this._interactionState !== 'idle') return false;
-        this._itemUseResultNotice = '';
+        this._stickyNotice = null;
         // Re-selecting the same worn slot is an explicit source choice, not
         // a request to keep the backpack candidate selected.
         if (key === this._selectedSlotKey) {
@@ -511,11 +511,14 @@ function(WorkbenchFocus, WorkbenchComponents,
         return this._syncItemUseActions();
     };
 
-    CharacterBuildView.prototype.showItemUseResult = function(message) {
+    CharacterBuildView.prototype.showActionNotice = function(kind, message) {
         if (this._destroyed || !message) return false;
-        this._itemUseResultNotice = String(message);
-        this._showStatusNotice('success', this._itemUseResultNotice);
+        this._stickyNotice = {kind:kind || 'error', message:String(message)};
+        this._showStatusNotice(this._stickyNotice.kind, this._stickyNotice.message);
         return true;
+    };
+    CharacterBuildView.prototype.showItemUseResult = function(message) {
+        return CharacterBuildView.prototype.showActionNotice.call(this, 'success', message);
     };
 
     CharacterBuildView.prototype.mount = function(host) {
@@ -587,19 +590,14 @@ function(WorkbenchFocus, WorkbenchComponents,
     };
 
     CharacterBuildView.prototype._showStatusNotice = function(kind, message) {
-        if (kind !== 'success') this._itemUseResultNotice = '';
+        if (kind !== 'success' && (!this._stickyNotice || this._stickyNotice.message !== message)) this._stickyNotice = null;
         this._notice.textContent = message;
         this._notice.setAttribute('data-notice-kind', kind || 'error');
     };
-
     CharacterBuildView.prototype._showBrowsingNotice = function(message) {
-        if (this._itemUseResultNotice) {
-            this._notice.textContent = this._itemUseResultNotice;
-            this._notice.setAttribute('data-notice-kind', 'success');
-            return;
-        }
-        this._notice.textContent = message;
-        this._notice.setAttribute('data-notice-kind', 'browsing');
+        var sticky = this._stickyNotice;
+        this._notice.textContent = sticky ? sticky.message : message;
+        this._notice.setAttribute('data-notice-kind', sticky ? sticky.kind : 'browsing');
     };
 
     CharacterBuildView.prototype.setSnapshot = function(snapshot) {
@@ -607,9 +605,10 @@ function(WorkbenchFocus, WorkbenchComponents,
         this._loadoutTooltipEpoch++;
         this._loadoutTooltipCache = {};
         this._snapshot = snapshot || {};
-        this._itemUseResultNotice = '';
-        this._facetCounts =
-            FacetCountsModule.normalize(this._snapshot.candidateFacets);
+        this._stickyNotice = null;
+        this._facetCounts = FacetCountsModule.normalize(this._snapshot.candidateFacets);
+        this.root.setAttribute('data-backpack-full',
+            FacetCountsModule.backpackCapacity(this._facetCounts).full ? 'true' : 'false');
         if (this.root.getAttribute('data-build-subview') !== 'tuning') this._selectedSlotKey = '';
         this._selectedCandidateKey = '';
         this._candidateRequestKey = '';

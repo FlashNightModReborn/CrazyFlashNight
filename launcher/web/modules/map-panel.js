@@ -1062,13 +1062,23 @@ var MapPanel = (function() {
         // hotspot 按钮本身带 data-audio-cue='navigate'，overlay click 代理已播一次 cue
         var reqId = 'map-nav-' + (++_reqSeq);
         var currentSession = _session;
+        var navTimeout = setTimeout(function() {
+            if (!_pendingReq[reqId]) return;
+            delete _pendingReq[reqId];
+            if (currentSession !== _session) return;
+            setHotspotBusy(hotspot.id, false);
+            if (typeof Toast !== 'undefined' && Toast) {
+                Toast.add(normalizeError('timeout'), 'error');
+            }
+        }, 10000);
         _pendingReq[reqId] = function(resp) {
+            clearTimeout(navTimeout);
             delete _pendingReq[reqId];
             if (currentSession !== _session) return;
 
             if (!resp.success) {
                 if (typeof Toast !== 'undefined') {
-                    Toast.add(normalizeError(resp.error));
+                    Toast.add(normalizeError(resp.error), 'error');
                 }
                 setHotspotBusy(hotspot.id, false);
                 return;
@@ -1083,14 +1093,21 @@ var MapPanel = (function() {
         };
 
         setHotspotBusy(hotspot.id, true);
-        Bridge.send({
+        if (Bridge.send({
             type: 'panel',
             panel: 'map',
             cmd: 'navigate',
             callId: reqId,
             targetId: hotspot.id,
             targetType: 'scene'
-        });
+        }) === false) {
+            clearTimeout(navTimeout);
+            delete _pendingReq[reqId];
+            setHotspotBusy(hotspot.id, false);
+            if (typeof Toast !== 'undefined' && Toast) {
+                Toast.add(normalizeError('disconnected'), 'error');
+            }
+        }
     }
 
     function requestOpenStageSelect(hotspot, event) {
@@ -1107,7 +1124,7 @@ var MapPanel = (function() {
 
         var entry = resolveStageSelectEntryForHotspot(hotspot);
         if (!entry) {
-            if (typeof Toast !== 'undefined' && Toast) Toast.add('该区域没有对应的选关入口。');
+            if (typeof Toast !== 'undefined' && Toast) Toast.add('该区域没有对应的选关入口。', 'warning');
             return;
         }
         if (!_enabledLookup[hotspot.id]) {
@@ -1117,7 +1134,7 @@ var MapPanel = (function() {
         if (_stageSelectBusyHotspotId) return;
 
         if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
-            if (typeof Toast !== 'undefined' && Toast) Toast.add('选关面板暂不可用。');
+            if (typeof Toast !== 'undefined' && Toast) Toast.add('选关面板暂不可用。', 'error');
             return;
         }
 
@@ -1133,7 +1150,7 @@ var MapPanel = (function() {
                 syncHotspotStates();
             }
             if (typeof Toast !== 'undefined' && Toast) {
-                Toast.add('打开选关超时, 请重试。');
+                Toast.add('打开选关超时，请重试。', 'error');
             }
         }, 5000);
         _pendingReq[reqId] = function(resp) {
@@ -1145,7 +1162,7 @@ var MapPanel = (function() {
             syncHotspotStates();
             if (!resp.success) {
                 if (typeof Toast !== 'undefined' && Toast) {
-                    Toast.add('打开选关失败: ' + (resp.error || 'unknown_error'));
+                    Toast.add('打开选关失败：' + normalizeError(resp.error), 'error');
                 }
             }
         };
@@ -1203,7 +1220,7 @@ var MapPanel = (function() {
             _returnBusy = false;
             if (resp.success === true && resp.closePanel === true) { finishClose(true); return; }
             if (applyReturnBaseState(resp.returnBase)) return;
-            if (typeof Toast !== 'undefined' && Toast) Toast.add(normalizeError(resp.error || 'outcome_unknown'));
+            if (typeof Toast !== 'undefined' && Toast) Toast.add(normalizeError(resp.error || 'outcome_unknown'), 'error');
             syncNavigationLockNotice();
             // 超时只补一次只读查询；没有权威结果时保留查询入口，不自动重发撤退。
             if (_returnPendingToken) requestSnapshot('refresh');
@@ -1215,7 +1232,7 @@ var MapPanel = (function() {
                 _returnBusy = false;
                 _returnPendingToken = '';
                 syncNavigationLockNotice();
-                if (typeof Toast !== 'undefined' && Toast) Toast.add(normalizeError('disconnected'));
+                if (typeof Toast !== 'undefined' && Toast) Toast.add(normalizeError('disconnected'), 'error');
             }
         } catch (sendError) {
             if (_pendingReq[reqId]) _pendingReq[reqId]({success:false, error:'outcome_unknown'});
@@ -1224,7 +1241,7 @@ var MapPanel = (function() {
 
     function pushNavigationLockedReason() {
         if (typeof Toast === 'undefined' || !Toast) return;
-        Toast.add(getNavigationLockMessage());
+        Toast.add(getNavigationLockMessage(), 'warning', {silent:true});
     }
 
     function getNavigationLockMessage() {
@@ -1646,7 +1663,7 @@ var MapPanel = (function() {
             if (isLocked) {
                 // 锁定 filter 只显示原因, 不切换状态; cue 已由 overlay click 代理按 data-audio-cue='illegal' 播过
                 if (filterMeta && filterMeta.lockedReason && typeof Toast !== 'undefined' && Toast && typeof Toast.add === 'function') {
-                    Toast.add(filterMeta.lockedReason);
+                    Toast.add(filterMeta.lockedReason, 'warning', {silent:true});
                 }
                 return;
             }
@@ -2019,7 +2036,7 @@ var MapPanel = (function() {
         var hotspotState = getHotspotState(hotspotId);
         if (!hotspotState.lockedReason) return;
         if (typeof Toast !== 'undefined' && Toast && typeof Toast.add === 'function') {
-            Toast.add(hotspotState.lockedReason);
+            Toast.add(hotspotState.lockedReason, 'warning', {silent:true});
         }
     }
 
@@ -3182,8 +3199,8 @@ var MapPanel = (function() {
             case 'invalid_session': return '地图或任务状态已变化，请刷新后重试。';
             case 'navigation_busy': return '正在切换场景，请等待当前跳转完成。';
             case 'npc_absent': return '该人物当前不在目标驻点，请查看剧情条件。';
-            case 'ambiguous_placement': return '该人物当前有多个驻点，需要在内容工作台指定固定目标。';
-            case 'world_binding_required': return '该人物的真实场景接入尚未就绪，请检查内容绑定。';
+            case 'ambiguous_placement': return '该人物当前有多个驻点，请直接在大地图中手动前往。';
+            case 'world_binding_required': return '该人物对应的场景暂未开放一键前往。';
             case 'not_navigable': return '当前暂不能前往，请刷新地图查看地点和人物条件。';
             case 'stage_run_active':
             case 'combat_active': return '当前仍在战斗流程中，请先按正常流程返回。';

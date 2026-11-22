@@ -1834,10 +1834,22 @@ var LootView = (function() {
             : this.isSettlement ? '本次奖励已全部处理' : '箱内已无可领取内容';
         if (this.backpackPane) this.backpackPane.update(projection && projection.backpack || null,{});
         if (this.lootPane) this.lootPane.update(projection && projection.loot || null,{});
-        if (this.leftGrid) this.leftGrid.chrome.setMeta(projection && projection.backpack
-            ? '窗口 '+(projection.backpack.offset+1)+'–'
-                +(projection.backpack.offset+projection.backpack.limit)+' / '+projection.backpack.capacity
-            : '等待背包内容');
+        if (this.leftGrid) {
+            var bp = projection && projection.backpack;
+            if (bp) {
+                var bpUsed = 0, bpSlots = Array.isArray(bp.slots) ? bp.slots : [];
+                for (var bi = 0; bi < bpSlots.length; bi++) {
+                    if (bpSlots[bi] && bpSlots[bi].occupied) bpUsed++;
+                }
+                var fullBp = bp.offset === 0 && bp.limit >= bp.capacity;
+                this.leftGrid.chrome.setMeta(fullBp
+                    ? ('已用 ' + bpUsed + ' / ' + bp.capacity + (bpUsed >= bp.capacity ? '（已满）' : ''))
+                    : ('已用 ' + bpUsed + ' · 窗口 ' + (bp.offset + 1) + '–'
+                        + (bp.offset + bp.limit) + ' / ' + bp.capacity));
+            } else {
+                this.leftGrid.chrome.setMeta('等待背包内容');
+            }
+        }
         if (this.rightGrid) this.rightGrid.chrome.setMeta(projection && projection.loot
             ? (this.isSettlement ? '待领取 '+state.remainingCount+' 项奖励'
                 : '箱内 '+state.remainingCount+' 个非空槽位')
@@ -2061,6 +2073,11 @@ var LootView = (function() {
             label:'兼容只读',
             status:'当前回滚模式不接纳新的领取事务；既有根仍可重新核对并安全收束。',
             state:'blocked',disabled:true
+        };
+        if (state.claimAllError) return {
+            label:'全部收取',
+            status:state.claimAllError,
+            state:'error',canCommit:true
         };
         return {
             label:'全部收取',

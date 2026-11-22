@@ -265,7 +265,7 @@ var KShop = (function() {
             ? icon
             : '<div class="' + (cls||'kshop-icon') + ' kshop-icon-placeholder"></div>';
     }
-    function toast(msg) { if (typeof Toast !== 'undefined') Toast.add(msg); }
+    function toast(msg, severity, opts) { if (typeof Toast !== 'undefined') Toast.add(msg, severity, opts); }
     // 契约 §2 unknown: 超时/对账必需/断线 = 权威结果不可知, 与明确失败 (rejected) 区分
     function isUncertainResult(error) {
         return error === 'timeout' || error === 'client_timeout' || error === 'reconcile_required' || error === 'disconnected';
@@ -316,6 +316,11 @@ var KShop = (function() {
             if (code === 'disconnected') return '商城连接已断开，批量领取不会自动重试。';
             if (typeof console !== 'undefined' && console.warn) console.warn('[KShop claimBatch]', code);
             return '批量领取失败，请重试。';
+        }
+        if (scope === 'load') {
+            if (code === 'timeout' || code === 'client_timeout') return '连接响应超时，请稍后重试';
+            if (code === 'disconnected') return '连接已断开，请重新打开商城';
+            return '读取商城数据失败，请重试';
         }
         if (scope === 'save') {
             if (code === 'busy') return '商城正在处理另一笔写入';
@@ -818,7 +823,7 @@ var KShop = (function() {
             } else {
                 _shopReady = false;
                 refreshWriteControls(_writeCoordinator.debugState());
-                toast('商城加载失败：' + messageForError('save', resp.error || 'invalid_response'));
+                toast('商城加载失败：' + messageForError('load', resp.error || 'invalid_response'), 'error');
             }
         });
     }
@@ -839,7 +844,7 @@ var KShop = (function() {
         }
         if (intent.operationId === 'inventory.transfer') {
             if (!_ownedPresenter.quickTransfer(intent)) {
-                toast('库存正在处理另一笔写入。');
+                toast('库存正在处理另一笔写入。', 'warning');
             }
         }
     }
@@ -848,7 +853,7 @@ var KShop = (function() {
     function commitCheckout(token) {
         var inventoryWrite = _inventoryCoordinator.beginExternalWrite('shop.checkoutCommit');
         if (!inventoryWrite) {
-            toast('背包尚未同步或正在处理另一笔写入。');
+            toast('背包尚未同步或正在处理另一笔写入。', 'warning');
             _cartController.requestPreview();
             return;
         }
@@ -874,23 +879,26 @@ var KShop = (function() {
                 if (!isKShopOpen()) return;
                 _ownedPresenter.render();
                 if (resp.success && refreshResult.success) {
-                    toast('购买成功，商品已直接交付！');
+                    toast('购买成功，商品已直接交付！', 'success', {silent:true});
                     var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
                     if (A && typeof A.cue === 'function') A.cue('success');
                 } else if (resp.success) {
-                    toast('购买已成功，但背包刷新失败；请点击“重试库存同步”。');
+                    toast('购买已成功，但背包刷新失败；请点击“重试库存同步”。', 'warning', {silent:true});
                     var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
                     if (A && typeof A.cue === 'function') A.cue('success');
                 } else {
-                    toast(messageForError('checkout', resp.error));
+                    var errText = messageForError('checkout', resp.error);
+                    toast(errText, isUncertainResult(resp.error) ? 'warning' : 'error', {silent:true});
                     var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
                     if (A && typeof A.cue === 'function') A.cue(isUncertainResult(resp.error) ? 'unknown' : 'rejected');
-                    if (_cartController.getSettlement().isActive()) _cartController.requestPreview();
+                    if (_cartController.getSettlement().isActive()) {
+                        _cartController.getSettlement().setError(errText);
+                    }
                 }
             })) return;
         })) {
             _inventoryCoordinator.completeExternalWrite(inventoryWrite, false);
-            toast('商城正在处理另一笔写入，请稍后再结账。');
+            toast('商城正在处理另一笔写入，请稍后再结账。', 'warning');
             _cartController.requestPreview();
         }
     }
@@ -958,13 +966,13 @@ var KShop = (function() {
     function onClaim(e) {
         e.stopPropagation();
         if (!canStartShopWrite()) {
-            toast('商城尚未同步，请稍后再领取。');
+            toast('商城尚未同步，请稍后再领取。', 'warning');
             return;
         }
         var pidx = Number(e.target.getAttribute('data-pidx'));
         var inventoryWrite = _inventoryCoordinator.beginExternalWrite('shop.claim');
         if (!inventoryWrite) {
-            toast('背包尚未同步或正在处理另一笔写入。');
+            toast('背包尚未同步或正在处理另一笔写入。', 'warning');
             return;
         }
         var claimRow = _purchased[pidx] || {};
@@ -982,22 +990,22 @@ var KShop = (function() {
                 }
                 _ownedPresenter.render();
                 if (resp.success && refreshResult.success) {
-                    toast('领取成功，背包已刷新！');
+                    toast('领取成功，背包已刷新！', 'success', {silent:true});
                     var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
                     if (A && typeof A.cue === 'function') A.cue('success');
                 } else if (resp.success) {
-                    toast('领取已成功，但背包刷新失败；请点击“重试库存同步”。');
+                    toast('领取已成功，但背包刷新失败；请点击“重试库存同步”。', 'warning', {silent:true});
                     var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
                     if (A && typeof A.cue === 'function') A.cue('success');
                 } else {
-                    toast(messageForError('claim', resp.error));
+                    toast(messageForError('claim', resp.error), isUncertainResult(resp.error) ? 'warning' : 'error', {silent:true});
                     var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
                     if (A && typeof A.cue === 'function') A.cue(isUncertainResult(resp.error) ? 'unknown' : 'rejected');
                 }
             })) return;
         })) {
             _inventoryCoordinator.completeExternalWrite(inventoryWrite, false);
-            toast('商城正在处理另一笔写入，请稍后再领取。');
+            toast('商城正在处理另一笔写入，请稍后再领取。', 'warning');
         }
     }
 
@@ -1132,7 +1140,7 @@ var KShop = (function() {
         _panelInstanceId = '';
         _procurementNavigation.cleanup();
         _protocolCheckoutPreview = null;
-        toast('连接断开，商城已关闭');
+        toast('连接断开，商城已关闭', 'error', {persistAfterClose:true});
     }
 
     return {

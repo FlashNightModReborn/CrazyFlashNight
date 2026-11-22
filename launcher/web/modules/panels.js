@@ -463,6 +463,9 @@ var Panels = (function() {
         _content.removeAttribute('data-panel');
         _active = null;
         _activePanelInstanceId = null;
+        if (typeof Toast !== 'undefined' && Toast && typeof Toast.dismissPanel === 'function') {
+            Toast.dismissPanel();
+        }
         audioExitPanel(closedId);
         // onClose：任何关闭路径（C# close / finishClose / 切换面板）都要触发，
         // 用于 observer/listener/rAF 清理。onForceClose 仍在 force_close 分支额外触发，

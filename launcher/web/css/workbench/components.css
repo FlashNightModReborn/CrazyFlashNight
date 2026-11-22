@@ -383,6 +383,78 @@
     border-color:#b45b62;
     background:#211315;
 }
+
+/* 全站 L1 面板期瞬时反馈浮条：固定于面板顶栏正中下方，不挡交互，四态语义色轨+图标。 */
+.panel-feedback-banner {
+    --feedback-accent:var(--wb-semantic-info);
+    --wb-role-reject:var(--feedback-accent);
+    --wb-text:var(--appearance-text);
+    position:fixed;
+    left:var(--panel-feedback-left,50%);
+    top:var(--panel-feedback-top,52px);
+    z-index:2147482000;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    max-width:min(640px,calc(100vw - 32px));
+    padding:7px 14px 7px 11px;
+    box-sizing:border-box;
+    pointer-events:none;
+    color:var(--appearance-text);
+    background:color-mix(in srgb,var(--appearance-bg) 95%,transparent);
+    border:1px solid color-mix(in srgb,var(--feedback-accent) 68%,var(--appearance-line));
+    border-left:3px solid var(--feedback-accent);
+    box-shadow:0 8px 24px color-mix(in srgb,var(--launcher-bg-0) 78%,transparent),
+        0 0 0 1px color-mix(in srgb,var(--feedback-accent) 18%,transparent);
+    font:600 12px/1.4 "Microsoft YaHei","Segoe UI",sans-serif;
+    opacity:0;
+    transform:translateX(-50%) scale(var(--panel-feedback-scale,1));
+    transform-origin:top center;
+    transition:opacity var(--wb-motion-standard) var(--wb-ease-standard);
+}
+.panel-feedback-banner[hidden] { display:none; }
+.panel-feedback-banner.is-visible { opacity:1; }
+.panel-feedback-banner[data-severity="error"] {
+    --feedback-accent:var(--wb-semantic-danger);
+    color:color-mix(in srgb,var(--wb-semantic-danger) 24%,var(--appearance-text));
+    background:color-mix(in srgb,var(--wb-semantic-danger) 12%,var(--appearance-bg));
+}
+.panel-feedback-banner[data-severity="warning"] {
+    --feedback-accent:var(--wb-semantic-warning);
+    color:color-mix(in srgb,var(--wb-semantic-warning) 20%,var(--appearance-text));
+    background:color-mix(in srgb,var(--wb-semantic-warning) 10%,var(--appearance-bg));
+}
+.panel-feedback-banner[data-severity="success"] {
+    --feedback-accent:var(--wb-semantic-success);
+    color:color-mix(in srgb,var(--wb-semantic-success) 18%,var(--appearance-text));
+    background:color-mix(in srgb,var(--wb-semantic-success) 10%,var(--appearance-bg));
+}
+.panel-feedback-banner[data-severity="info"] {
+    --feedback-accent:var(--wb-semantic-info);
+}
+.panel-feedback-banner.is-pulsing {
+    outline:1px solid var(--feedback-accent);
+    animation:wb-reject-pulse var(--wb-motion-reject) var(--wb-ease-standard) 1;
+}
+.panel-feedback-icon {
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:18px;
+    height:18px;
+    color:var(--appearance-bg);
+    background:var(--feedback-accent);
+    font:700 11px/1 "Consolas","Microsoft YaHei",monospace;
+}
+.panel-feedback-text {
+    min-width:0;
+    overflow:hidden;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    word-break:break-word;
+}
 }
 .procurement-needed,
 .procurement-relocate {

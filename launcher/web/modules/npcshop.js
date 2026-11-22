@@ -299,7 +299,7 @@ var NpcShop = (function() {
                 || !item || item.locked) return;
         var maximum = Number(item.maxQuantity);
         // 本地可拒绝：不挂声明式 cue，按结果播 illegal/activate（契约 §5.2）
-        if (isFinite(maximum) && maximum <= 0) { toast('该情报已达持有上限。'); cue('illegal'); return; }
+        if (isFinite(maximum) && maximum <= 0) { toast((item.itemKind === 'intelligence' || item.majorType === '情报') ? '该情报已达持有上限。' : '该商品已达持有上限。', 'warning', {silent:true}); cue('illegal'); return; }
         var key = String(item.catalogIndex);
         if (_purchaseIntents[key]) delete _purchaseIntents[key];
         else _purchaseIntents[key] = {catalogIndex:Number(item.catalogIndex), quantity:1,
@@ -881,7 +881,7 @@ var NpcShop = (function() {
         if (_materialNavigation.isReturning() || _busy || _owner.needsReconcile
                 || inventoryWriteUnavailable()) {
             toast(_owner.needsReconcile || _inventoryState.refreshRequired || !_inventoryState.ready
-                ? '请先重新同步商店状态。' : '正在处理上一项交易。');
+                ? '请先重新同步商店状态。' : '正在处理上一项交易。', 'warning');
             return false; }
         _busy = true; refreshControls();
         return !!request(cmd, payload, function(response) { _busy = false; refreshControls(); callback(response); });
@@ -892,10 +892,10 @@ var NpcShop = (function() {
                 || error === 'reconcile_required' || error === 'malformed_response') {
             _owner.enterNeedsReconcile(); refreshControls(); refreshSnapshot(); return;
         }
-        if (error === 'stale_state') { toast('物品状态已经变化，正在重新同步。'); refreshSnapshot(); return; }
-        handleError(response); if (_settlementPresenter && _settlementPresenter.isActive()) requestTradePreview();
+        if (error === 'stale_state') { toast('物品状态已经变化，正在重新同步。', 'warning'); refreshSnapshot(); return; }
+        handleError(response); if (_settlementPresenter && _settlementPresenter.isActive()) _settlementPresenter.renderFailure(error, false);
     }
-    function handleError(response) { toast(NpcShopSecondaryPages.errorMessage(response && response.error)); }
+    function handleError(response) { toast(NpcShopSecondaryPages.errorMessage(response && response.error), 'error'); }
     function refreshControls() {
         if (!_shell) return;
         var returning = _materialNavigation.isReturning();
@@ -990,12 +990,12 @@ var NpcShop = (function() {
     // 不得复用 requestClose（会被 presenter/modal 检查拦截成只关二级页）。
     function commitPanelClose(reason) {
         if (_materialNavigation.isReturning()) {
-            toast('正在返回材料档案，请稍候。'); return false;
+            toast('正在返回材料档案，请稍候。', 'warning'); return false;
         }
-        if (_busy) { toast('交易正在确认，请稍候。'); return false; }
+        if (_busy) { toast('交易正在确认，请稍候。', 'warning'); return false; }
         var closeMessage = _owner.closeMessage(reason);
         if (!closeMessage || Bridge.send(closeMessage) === false) {
-            toast('启动器连接不可用，NPC 商店保持打开。');
+            toast('启动器连接不可用，NPC 商店保持打开。', 'error');
             return false;
         }
         return true;
@@ -1016,7 +1016,7 @@ var NpcShop = (function() {
         return html || '<span class="kshop-icon-placeholder"></span>';
     }
     function escapeHtml(value) { return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function toast(message) { if (typeof Toast !== 'undefined') Toast.add(message); }
+    function toast(message, severity, opts) { if (typeof Toast !== 'undefined') Toast.add(message, severity, opts); }
     // 语义音效命令式入口（契约 §8）：仅本地可拒绝 / 权威结果路径使用，静态元素走 data-audio-cue
     function cue(name) {
         var A = window.BootstrapAudio;

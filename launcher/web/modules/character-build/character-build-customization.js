@@ -168,7 +168,7 @@
             if (!row || !row.occupied || !row.item) {
                 if (options.toast) {
                     var info = DrugControls.slotPresentation(snap, slot);
-                    options.toast('药剂槽 ' + info.shortcutLabel + ' 当前为空，请先在左侧放入药剂或点右侧其他有药槽位。');
+                    options.toast('药剂槽 ' + info.shortcutLabel + ' 当前为空，请先在左侧放入药剂或点右侧其他有药槽位。', 'warning');
                 }
                 return false;
             }

@@ -271,6 +271,11 @@
             entryKind: entryKind
         };
         StageSelectCore.logDev((entryKind === 'difficulty' ? 'difficulty' : entryKind) + ' enter request: ' + stageName + (difficulty ? ' / ' + difficulty : ''));
+        var accepted = StageSelectBridge.requestEnter(stageName, difficulty, entryKind);
+        if (!accepted) {
+            if (!S._lastError) StageSelectCore.showError('stage_facts_unavailable');
+            return;
+        }
         StageSelectCore.cue('activate'); // 进入关卡 = 核心提交动作：本地校验已过，播意图音（契约 §2 activate；权威回包不再补结果音）
         if (pressedTarget && pressedTarget.classList && (pressedTarget.classList.contains('stage-select-difficulty') || pressedTarget.classList.contains('stage-select-map-action'))) {
             pressedTarget.classList.add('is-pressed');
@@ -278,7 +283,6 @@
                 pressedTarget.classList.remove('is-pressed');
             }, 180);
         }
-        StageSelectBridge.requestEnter(stageName, difficulty, entryKind);
     }
 
     // 导出：被 renderer / bridge / facade 引用的名字

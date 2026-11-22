@@ -83,9 +83,9 @@
         function storage() {
             return options.storage || root.InventoryStorageWorkbench;
         }
-        function toast(message) {
-            if (typeof options.toast === 'function') options.toast(message);
-            else if (root.Toast) root.Toast.add(message);
+        function toast(message, severity, opts) {
+            if (typeof options.toast === 'function') options.toast(message, severity, opts);
+            else if (root.Toast) root.Toast.add(message, severity, opts);
         }
         function isActive() {
             if (typeof options.active === 'function') return options.active();

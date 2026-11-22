@@ -207,12 +207,19 @@
                 if (result && result.success) {
                     var label = result.operation === 'merge' ? '物品已合并。'
                         : result.operation === 'swap' ? '物品已交换。' : '物品已移动。';
-                    self._intent.toast(label);
+                    self._intent.toast(label, 'success', {silent:true});
                     var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
                     if (A && typeof A.cue === 'function') A.cue('success');
                 } else {
-                    if (typeof console !== 'undefined' && console.warn) console.warn('[KShop inventory transfer]', result && result.error || 'unknown');
-                    self._intent.toast(result && result.reconciled ? '移动失败，库存已刷新。' : '移动失败，请重试。');
+                    var errCode = result && result.error || 'unknown';
+                    if (typeof console !== 'undefined' && console.warn) console.warn('[KShop inventory transfer]', errCode);
+                    var errText = errCode === 'target_full' || errCode === 'backpack_full' || errCode === 'inventory_full'
+                        ? '目标容器已满，请先整理空间。'
+                        : errCode === 'slot_locked' ? '目标栏位尚未解锁，请先扩容或切换容器。'
+                        : errCode === 'stale_state' || errCode === 'stale_lease' ? '库存状态已变化，请重试。'
+                        : errCode === 'client_timeout' || errCode === 'timeout' ? '库存响应超时，请重试。'
+                        : '移动失败，请重试。';
+                    self._intent.toast(errText + (result && result.reconciled ? '（库存已刷新）' : ''), 'error', {silent:true});
                     var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
                     if (A && typeof A.cue === 'function') A.cue('rejected');
                 }
@@ -235,7 +242,7 @@
             actionable:function() { return self._interaction.actionable; },
             reason:function() { return self._interaction.reason; },
             reasonNode:reasonNode,
-            onBlocked:function() { self._intent.toast(self._interaction.reason); },
+            onBlocked:function() { self._intent.toast(self._interaction.reason, 'warning'); },
             onActivate:function(event, context) {
                 var broker = self._broker();
                 if (!broker || self.consumedClick()) return;

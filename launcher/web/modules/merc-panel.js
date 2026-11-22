@@ -1585,7 +1585,7 @@
                 if (_commitBar) _commitBar.update({ busy: false, state: 'error', status: '佣兵列表已变化 · 数据已重新同步' });
                 resetHireList();
             } else {
-                var msg = '雇佣失败：' + (data.error || '未知错误');
+                var msg = '雇佣失败：' + hireErrorText(data.error);
                 TeamShared.toast(msg, 'error');
                 if (_commitBar) _commitBar.update({ busy: false, state: 'error',
                     status: hasActiveReconcile()
@@ -2186,7 +2186,6 @@
     // 右栏 scrollTop 保持、活跃候选随新 revision 重拉），不再整列重建/关闭候选栏。
     function handleLoadoutWriteResponse(merc, slotKey, operation, btn, data) {
         endOp(btn);
-        if (_loadoutPicker) _loadoutPicker.setWritePending(false);
         var slotName = MercData.SLOT_NAMES[slotKey] || slotKey;
         if (data && data.success) {
             if (data.loadout) merc.loadout = data.loadout;
@@ -2196,18 +2195,45 @@
                 : operation === 'replace'
                     ? slotName + ' 托管装备已替换，原托管物已放回来源背包格'
                     : slotName + ' 托管装备已取回，该槽回落预设';
+            if (_loadoutPicker) {
+                _loadoutPicker.showActionNotice('success', okText);
+                _loadoutPicker.setWritePending(false);
+            }
             TeamShared.toast(okText, 'success');
             renderDetailPage();
             requestSnapshot();   // 有效装备投影与背包 lease 已随写变化，重拉权威
             return;
         }
         var opLabel = operation === 'deliver' ? '交付' : operation === 'replace' ? '替换' : '取回';
-        TeamShared.toast(opLabel + '失败：' + loadoutErrorText(data), 'error');
+        var failText = opLabel + '失败：' + loadoutErrorText(data);
+        if (_loadoutPicker) {
+            _loadoutPicker.showActionNotice('error', failText);
+            _loadoutPicker.setWritePending(false);
+        }
+        TeamShared.toast(failText, 'error');
         // stale_state 等确定失败同样刷新本地投影；锁存期间由对账链负责重拉
         if (hasActiveReconcile()) {
             // 锁存接管：picker 整区转 locked（对账锁可读原因），候选栏不销毁
             if (_loadoutPicker && _loadoutPickerMerc === _detailSlot) _loadoutPicker.setMerc(merc);
         } else requestSnapshot();
+    }
+
+    // 雇佣错误码 → 可读文案
+    function hireErrorText(code) {
+        var map = {
+            slots_full: '佣兵栏位已满',
+            insufficient_gold: '金币不足',
+            insufficient_kpoint: 'K 点不足',
+            merc_not_found: '该佣兵已不在雇佣市场',
+            invalid_index: '雇佣目标索引无效，请刷新列表',
+            pool_changed: '佣兵列表已变化，请重新确认',
+            busy: '上一项操作尚未结束',
+            disconnected: '游戏连接已断开',
+            timeout: '请求结果未知，正在重新同步',
+            delivery_unknown: '请求投递结果未知，正在重新同步',
+            client_timeout: '等待响应超时，正在重新同步'
+        };
+        return map[code] || '雇佣未完成，请重试';
     }
 
     // 错误码 → 可读文案（与 AS2/Host 契约逐字对齐，含锁存三件套）
@@ -2226,6 +2252,7 @@
             unsupported_container: '仅支持背包装备',
             level_locked: '佣兵等级不足，无法装备',
             item_incompatible: '装备与槽位不匹配',
+            invalid_item: '该物品无法用于佣兵托管',
             custody_exists: '该槽位已有托管装备，请改用替换',
             no_custody: '该槽位没有托管装备',
             custody_corrupt: '托管快照异常，已失败关闭',
@@ -2239,7 +2266,33 @@
             delivery_unknown: '请求投递结果未知，正在重新同步',
             client_timeout: '等待响应超时，正在重新同步'
         };
-        return map[code] || code || '未知错误';
+        return map[code] || '操作未完成，请重试';
+    }
+    function mercActionErrorText(code) {
+        var map = {
+            custody_not_empty: '请先取回全部托管装备',
+            no_revive_coin: '复活币不足',
+            slots_full: '佣兵已满，请先解雇腾位',
+            deploy_full: '出战名额已满，请先让其他佣兵休息',
+            max_deployed: '出战名额已满，请先让其他佣兵休息',
+            insufficient_gold: '金币不足',
+            level_gap: '低等级时无法雇佣等级过高的佣兵',
+            npc_gone: 'NPC 已离开，雇佣取消',
+            in_combat: '战斗中无法执行此操作',
+            dead: '阵亡佣兵无法出战，请先复活',
+            merc_dead: '阵亡佣兵无法出战，请先复活',
+            not_dead: '该佣兵无需复活',
+            busy: '正在处理另一项操作，请稍候',
+            not_ready: '佣兵数据尚未就绪，请稍后重试',
+            not_found: '佣兵状态已变化，请刷新后重试',
+            invalid_slot: '佣兵栏位已变化，请刷新后重试',
+            stale_state: '佣兵状态已变化，请刷新后重试',
+            disconnected: '连接已断开',
+            timeout: '等待响应超时，请稍后重试',
+            client_timeout: '等待响应超时，请稍后重试',
+            delivery_unknown: '请求结果未知，正在重新同步'
+        };
+        return map[String(code || '')] || '操作未完成，请重试';
     }
 
     // 解雇：共享 modal（danger 主按钮），替代自绘 confirm overlay
@@ -2272,8 +2325,7 @@
                 TeamShared.toast('已解雇 ' + data.mercName, 'success');
                 requestSnapshot();
             } else {
-                TeamShared.toast('解雇失败：' + (data.error === 'custody_not_empty'
-                    ? '请先取回全部托管装备' : (data.error || '未知错误')), 'error');
+                TeamShared.toast('解雇失败：' + mercActionErrorText(data && data.error), 'error');
             }
         });
     }
@@ -2296,7 +2348,7 @@
                 renderDetailPage();
                 TeamShared.toast(merc.deployed ? '已出战' : '已休息', 'success');
             } else {
-                TeamShared.toast('操作失败：' + (data.error || '未知错误'), 'error');
+                TeamShared.toast('操作失败：' + mercActionErrorText(data && data.error), 'error');
             }
         });
     }
@@ -2311,7 +2363,7 @@
             endOp(btn);
             if (typeof data.reviveCoins === 'number' && _snapshot) _snapshot.reviveCoins = data.reviveCoins;
             if (!data.success) {
-                TeamShared.toast('复活失败：' + (data.error === 'no_revive_coin' ? '复活币不足' : (data.error || '未知错误')), 'error');
+                TeamShared.toast('复活失败：' + mercActionErrorText(data && data.error), 'error');
                 updateHeaderMetrics();
                 if (_selectedSlot === slotIndex) renderDetail();
                 renderDetailPage();
@@ -2338,14 +2390,7 @@
                 requestClose();   // 已 spawn + 删 NPC，关面板交还 Flash
                 return;
             }
-            var err = (data && data.error) || 'unknown';
-            TeamShared.toast(({
-                insufficient_gold: '金币不足',
-                slots_full: '佣兵已满，请先解雇腾位',
-                level_gap: '低等级时无法雇佣等级过高的佣兵',
-                npc_gone: 'NPC 已离开，雇佣取消',
-                disconnected: '连接已断开'
-            })[err] || ('雇佣失败：' + err), 'error');
+            TeamShared.toast('雇佣失败：' + mercActionErrorText(data && data.error), 'error');
         });
     }
 
@@ -2723,7 +2768,7 @@
     function guardBlocked(btn) {
         var reason = btn.getAttribute('data-blocked-reason');
         // 锁定/禁用拦截（契约 §2 illegal）：aria-disabled 已抑制声明式 cue，这里命令式补拦截音
-        if (reason) { cue('illegal'); TeamShared.toast(reason); return true; }
+        if (reason) { cue('illegal'); TeamShared.toast(reason, 'warning', { silent: true }); return true; }
         return false;
     }
 
