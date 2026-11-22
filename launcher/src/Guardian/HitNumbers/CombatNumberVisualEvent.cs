@@ -10,6 +10,7 @@ namespace CF7Launcher.Guardian.HitNumbers
         internal double Born, Published, RecoveryStarted;
         internal float RecoveryFrom = 1f;
         internal float Alpha = 1f;
+        internal bool IsEnemy;
         internal string LifecycleKey => Anchor.LifecycleKey;
         internal string PresentationTargetKey => Anchor.PresentationTargetKey;
         internal float Opacity(double now)

@@ -186,24 +186,24 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void ContinuousWindowsKeepEntranceMotionAndFollowEveryInputFrame()
+        public void ContinuousWindowsKeepCalmSecondaryChannelAndFollowEveryInputFrame()
         {
             var accumulator = new HealNumberAccumulator();
             accumulator.Add(new HealNumberEvent("u", 10, 512, 360), 0);
             accumulator.Advance(0.16);
             // 第二个窗口尚未发布时，锚点就必须跟随新坐标。
             accumulator.Add(new HealNumberEvent("u", 10, 518, 360), 0.2);
-            var moving = new HitNumberLayoutFrame();
-            moving = HealingFrame(accumulator, 0.2, 24);
+            var moving = HealingFrame(accumulator, 0.2, 24);
             Assert.Equal(518, Assert.Single(moving.Items).SourceTargetX);
             accumulator.Advance(0.36);
-            var after = new HitNumberLayoutFrame();
-            after = HealingFrame(accumulator, 0.36, 24);
+            var after = HealingFrame(accumulator, 0.36, 24);
             var item = Assert.Single(after.Items);
-            Assert.Equal(HitNumberLayoutEngine.ImpactScale(0.36 - 0.15), item.CombinedScale, 4);
+            // #303 治疗彻底退出冲击层：无 1.46×/1.62× 脉冲，固定二级字号与右肩平静通道。
+            Assert.Equal(1.0f, item.CombinedScale, 4);
+            Assert.Equal(HitNumberLayoutEngine.HealingFontSize, item.FontSizeOverride);
             Assert.Equal(360, item.SourceTargetY);
-            Assert.True(item.StageY < item.SourceTargetY); // 与伤害共用策略锚点，不再固定脚边偏移。
-            Assert.True(item.CombinedScale < 1.01); // 没有重放1.46倍的入场峰值。
+            Assert.True(item.StageX > item.SourceTargetX);
+            Assert.True(item.StageY < item.SourceTargetY);
         }
 
         [Fact]
@@ -213,30 +213,110 @@ namespace CF7Launcher.Tests.Guardian
             accumulator.Add(new HealNumberEvent("u", 10, 512, 360), 0);
             accumulator.Advance(0.16);
             accumulator.Add(new HealNumberEvent("u", 10, 512, 360), 0.98);
-            var before = new HitNumberLayoutFrame();
-            before = HealingFrame(accumulator, 1.13, 24);
+            var before = HealingFrame(accumulator, 1.13, 24);
             accumulator.Advance(1.13);
-            var refreshed = new HitNumberLayoutFrame();
-            refreshed = HealingFrame(accumulator, 1.13, 24);
+            var refreshed = HealingFrame(accumulator, 1.13, 24);
             Assert.Equal(Assert.Single(before.Items).Alpha, Assert.Single(refreshed.Items).Alpha, 4);
             Assert.Equal(before.Items[0].StageY, refreshed.Items[0].StageY);
-            var recovered = new HitNumberLayoutFrame();
-            recovered = HealingFrame(accumulator, 1.22, 24);
-            Assert.Equal(1f, Assert.Single(recovered.Items).Alpha);
+            var recovered = HealingFrame(accumulator, 1.22, 24);
+            Assert.Equal(HitNumberLayoutEngine.HealingAlphaScale, Assert.Single(recovered.Items).Alpha, 4);
         }
 
         [Fact]
-        public void DelayedWindowDoesNotResurrectAndNewCycleGetsItsOwnEntrance()
+        public void DelayedWindowDoesNotResurrectAndNewCycleStartsFreshGentleLift()
         {
             var accumulator = new HealNumberAccumulator();
             accumulator.Add(new HealNumberEvent("u", 10, 512, 360), 0);
+            accumulator.Advance(0.95);
+            var lateFirstCycle = Assert.Single(HealingFrame(accumulator, 0.95, 24).Items);
             accumulator.Advance(3);
             Assert.False(accumulator.HasState);
             accumulator.Add(new HealNumberEvent("u", 10, 512, 360), 3);
             accumulator.Advance(3.16);
-            var frame = new HitNumberLayoutFrame();
-            frame = HealingFrame(accumulator, 3.16, 24);
-            Assert.True(Assert.Single(frame.Items).CombinedScale > 1.3f);
+            var newCycle = Assert.Single(HealingFrame(accumulator, 3.16, 24).Items);
+            Assert.Equal(1.0f, newCycle.CombinedScale, 4);
+            Assert.Equal(HitNumberLayoutEngine.HealingAlphaScale, newCycle.Alpha, 4);
+            Assert.True(newCycle.StageY > lateFirstCycle.StageY);
+        }
+
+        [Fact]
+        public void EnemyAndAllyHealingWireBitsRouteToDistinctH1VisualStyles()
+        {
+            var parser = new HitNumberBatchParser();
+            var damages = new List<HitNumberSegment>();
+            var heals = new List<HealNumberEvent>();
+            int seq = 0;
+            string wire = "12|420|360|4194304|||0|0|ally.1.heal.0||1;"
+                + "25|620|360|4194432|||0|0|enemy.2.heal.0||1;"
+                + "5|500|360|4194305|||0|0|bad.3.heal.0||1";
+            Assert.Equal(0, parser.ParseBatch(wire, 0, damages, ref seq, heals));
+            Assert.Equal(1, parser.RejectedEntryCount);
+            Assert.Equal(2, heals.Count);
+            Assert.False(heals[0].IsEnemy);
+            Assert.True(heals[1].IsEnemy);
+
+            double now = 0;
+            var runtime = new HitNumberRuntime(() => now);
+            runtime.ProcessFrame("0|0|1", "12|420|360|4194304|||0|0|ally.1.heal.0||1;25|620|360|4194432|||0|0|enemy.2.heal.0||1");
+            now = 0.16;
+            var frame = runtime.ProcessFrame("", "").Frame;
+            var allyItem = Assert.Single(frame.Items, i => i.SourceTargetId == "ally.1.heal.0");
+            var enemyItem = Assert.Single(frame.Items, i => i.SourceTargetId == "enemy.2.heal.0");
+            Assert.Equal(HitNumberLayoutEngine.AllyHealingColor, allyItem.MainColorOverride);
+            Assert.Equal(HitNumberLayoutEngine.AllyHealingOutlineColor, allyItem.OutlineColorOverride);
+            Assert.Equal(HitNumberLayoutEngine.AllyHealingBlur, allyItem.CombinedBlur);
+            Assert.Equal(HitNumberLayoutEngine.EnemyHealingColor, enemyItem.MainColorOverride);
+            Assert.Equal(HitNumberLayoutEngine.EnemyHealingOutlineColor, enemyItem.OutlineColorOverride);
+            Assert.Equal(HitNumberLayoutEngine.EnemyHealingBlur, enemyItem.CombinedBlur);
+        }
+
+        [Theory]
+        [InlineData((int)HitNumberDisplayMode.Total)]
+        [InlineData((int)HitNumberDisplayMode.Detail)]
+        public void ContinuousHealingInTotalAndDetailNeverPulsesOrDrawsTargetArrow(int modeValue)
+        {
+            var mode = (HitNumberDisplayMode)modeValue;
+            double now = 0;
+            var runtime = new HitNumberRuntime(() => now);
+            runtime.Configure(new HitNumberRuntimeOptions(mode, 24));
+            HitNumberLayoutFrame latest = null;
+            for (int tick = 0; tick < 8; tick++)
+            {
+                now = tick * 0.15;
+                var snap = runtime.ProcessFrame("0|0|1", "30|512|360|4194432|||0|0|boss.heal.0||1");
+                if (snap?.Frame != null && snap.Frame.Items.Count > 0) latest = snap.Frame;
+            }
+            Assert.NotNull(latest);
+            Assert.All(latest.Items, item =>
+            {
+                Assert.Equal(CombatNumberKind.HealHp, item.Kind);
+                Assert.Equal(1.0f, item.CombinedScale, 4);
+                Assert.Equal(HitNumberLayoutEngine.HealingFontSize, item.FontSizeOverride);
+            });
+            using var scenePainter = new HitNumberScenePainter();
+            using var bitmap = new Bitmap(1024, 576);
+            using Graphics graphics = Graphics.FromImage(bitmap);
+            graphics.Clear(Color.Transparent);
+            scenePainter.DrawWorldRows(graphics, new RectangleF(0, 0, 1024, 576), latest.WorldRows, mode);
+            for (int y = 0; y < bitmap.Height; y += 2)
+                for (int x = 0; x < bitmap.Width; x += 2)
+                    Assert.Equal(0, bitmap.GetPixel(x, y).A);
+        }
+
+        [Fact]
+        public void HealingFallsBackToLeftShoulderBeforeVerticalDisplacement()
+        {
+            double now = 0;
+            var runtime = new HitNumberRuntime(() => now);
+            runtime.Configure(new HitNumberRuntimeOptions(HitNumberDisplayMode.Balanced, 24));
+            // 在目标右侧近邻位置放置一条伤害行占住右肩，使目标治疗优先切向左肩而非纵向远跳。
+            runtime.ProcessFrame("0|0|1", "1234|615|386|28672|||0|0|right-blocker|b0|1;" + Heal("45", "target.1.heal.0"));
+            now = 0.16;
+            var frame = runtime.ProcessFrame("", "").Frame;
+            var heal = Assert.Single(frame.Items, i => i.Kind == CombatNumberKind.HealHp);
+            var damage = Assert.Single(frame.Items, i => i.Kind == CombatNumberKind.Damage);
+            Assert.False(HitNumberLayoutEngine.EstimateItemBounds(heal).IntersectsWith(HitNumberLayoutEngine.EstimateItemBounds(damage)));
+            Assert.True(heal.StageX < heal.SourceTargetX);
         }
 
         [Theory]

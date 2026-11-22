@@ -95,6 +95,31 @@ class org.flashNight.arki.unit.Action.Regeneration.HealNumberContractTest {
         HitNumberBatchProcessor.clear();
         check(HitNumberBatchProcessor.getQueueLength() === 0 && HitNumberBatchProcessor.getHealQueueLength() === 0,
             "场景清理同时清两类缓冲");
+
+        // 敌我治疗 bit 7 (128) 阵营契约：友方=4194304，敌方/中立敌对=4194432，retire 保持 SoA 对齐
+        var enemyUnit:MovieClip = world.createEmptyMovieClip("enemyHeal", 3);
+        enemyUnit._x = 620; enemyUnit._y = 360; enemyUnit.hp满血值 = 200; enemyUnit.hp = 100; enemyUnit.是否为敌人 = true;
+        var neutralUnit:MovieClip = world.createEmptyMovieClip("neutralHeal", 4);
+        neutralUnit._x = 700; neutralUnit._y = 360; neutralUnit.hp满血值 = 200; neutralUnit.hp = 100; neutralUnit.是否为敌人 = null;
+        unit.是否为敌人 = false; unit.hp = 50;
+        HealApplier.applyHpCapped(unit, 15, 100);
+        HealApplier.applyHpCapped(enemyUnit, 25, 200);
+        HealApplier.applyHpCapped(neutralUnit, 35, 200);
+        HitNumberBatchProcessor.flush();
+        var factionEntries:Array = bridge._hnPayload.split(";");
+        check(factionEntries.length === 3 && Number(factionEntries[0].split("|")[3]) === 4194304,
+            "友方治疗 packed 为 4194304");
+        check(Number(factionEntries[1].split("|")[3]) === 4194432,
+            "敌方治疗 packed 为 4194432 (bit22|bit7)");
+        check(Number(factionEntries[2].split("|")[3]) === 4194432,
+            "中立敌对治疗 packed 为 4194432");
+        HealApplier.applyHpCapped(unit, 10, 100);
+        HealApplier.applyHpCapped(enemyUnit, 10, 200);
+        HitNumberBatchProcessor.retireHealTarget(UnitBattleRecord.healDisplayId(unit));
+        HitNumberBatchProcessor.flush();
+        check(Number(bridge._hnPayload.split("|")[3]) === 4194432,
+            "retireHealTarget 压实后保留剩余敌方治疗 packed");
+
         HitNumberBatchProcessor.setHostEnabled(false);HitNumberBatchProcessor.setHealHostEnabled(false);
         FrameBroadcaster.setHnPayload(null);
         _root.server=oldServer; _root.gameworld=oldWorld; world.removeMovieClip();

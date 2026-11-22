@@ -80,6 +80,7 @@ namespace CF7Launcher.Guardian.HitNumbers
         internal double LastArrivalSeconds;
         internal string AttributeSummary = string.Empty;
         internal float Alpha = 1f;
+        internal bool SuppressTargetAnchor;
         internal List<HitNumberSegment> Segments { get; } = new List<HitNumberSegment>();
     }
 
@@ -221,6 +222,18 @@ namespace CF7Launcher.Guardian.HitNumbers
                 throw new ArgumentOutOfRangeException(nameof(sourceStartIndex));
             if (worldRowLimit < 0) throw new ArgumentOutOfRangeException(nameof(worldRowLimit));
             if (lifetimeSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(lifetimeSeconds));
+
+            if (candidate == HitNumberLayoutCandidate.BalancedSummary)
+            {
+                return BuildStatelessBalancedFrame(
+                    source,
+                    sourceStartIndex,
+                    nowSeconds,
+                    camera,
+                    worldRowLimit,
+                    lifetimeSeconds,
+                    includeDiagnostics);
+            }
 
             var frame = new HitNumberLayoutFrame { Candidate = candidate };
             var groups = new Dictionary<string, List<ActiveSegment>>(StringComparer.Ordinal);
@@ -747,11 +760,296 @@ namespace CF7Launcher.Guardian.HitNumbers
             }, segment, classic: true);
         }
 
+        internal static HitNumberLayoutFrame BuildBalancedFrame(
+            IReadOnlyList<HitNumberBalancedLane> source,
+            double nowSeconds,
+            HitNumberCamera camera,
+            int worldRowLimit,
+            bool includeDiagnostics = false)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (worldRowLimit < 0) throw new ArgumentOutOfRangeException(nameof(worldRowLimit));
+
+            var frame = new HitNumberLayoutFrame { Candidate = HitNumberLayoutCandidate.BalancedSummary };
+            var byTarget = new Dictionary<string, List<HitNumberBalancedLane>>(StringComparer.Ordinal);
+            var targetOrder = new List<string>();
+            var visible = new List<HitNumberBalancedLane>(source.Count);
+
+            for (int i = 0; i < source.Count; i++)
+            {
+                HitNumberBalancedLane lane = source[i];
+                int segWeight = lane.HitCount > 0 ? lane.HitCount : 1;
+                frame.InputActiveSegmentCount = SaturatingCountAdd(frame.InputActiveSegmentCount, segWeight);
+
+                float stageX = camera.ToStageX(lane.TargetX);
+                float stageY = camera.ToStageY(lane.TargetY);
+                if (!IsTargetOnscreen(stageX, stageY))
+                {
+                    frame.OffscreenCulledSegmentCount = SaturatingCountAdd(frame.OffscreenCulledSegmentCount, segWeight);
+                    continue;
+                }
+                visible.Add(lane);
+            }
+
+            if (worldRowLimit > 0 && visible.Count > worldRowLimit)
+            {
+                visible.Sort(delegate(HitNumberBalancedLane left, HitNumberBalancedLane right)
+                {
+                    int arrival = right.LastArrivalSeconds.CompareTo(left.LastArrivalSeconds);
+                    return arrival != 0 ? arrival : right.LastSequence.CompareTo(left.LastSequence);
+                });
+                frame.WorldRowOmittedCount += visible.Count - worldRowLimit;
+                for (int i = worldRowLimit; i < visible.Count; i++)
+                {
+                    int segWeight = visible[i].HitCount > 0 ? visible[i].HitCount : 1;
+                    frame.WorldSegmentOmittedCount = SaturatingCountAdd(frame.WorldSegmentOmittedCount, segWeight);
+                }
+                visible.RemoveRange(worldRowLimit, visible.Count - worldRowLimit);
+            }
+
+            for (int i = 0; i < visible.Count; i++)
+            {
+                HitNumberBalancedLane lane = visible[i];
+                if (!byTarget.TryGetValue(lane.TargetId, out List<HitNumberBalancedLane> group))
+                {
+                    group = new List<HitNumberBalancedLane>(HitNumberBalancedAccumulator.LanesPerTarget);
+                    byTarget.Add(lane.TargetId, group);
+                    targetOrder.Add(lane.TargetId);
+                }
+                group.Add(lane);
+            }
+
+            // 最新受击目标最后绘制（Z-top），不引入邻居驱动方向变化。
+            targetOrder.Sort(delegate(string leftId, string rightId)
+            {
+                HitNumberBalancedLane leftNewest = NewestBalancedLane(byTarget[leftId]);
+                HitNumberBalancedLane rightNewest = NewestBalancedLane(byTarget[rightId]);
+                int arrival = leftNewest.LastArrivalSeconds.CompareTo(rightNewest.LastArrivalSeconds);
+                return arrival != 0 ? arrival : leftNewest.LastSequence.CompareTo(rightNewest.LastSequence);
+            });
+
+            for (int g = 0; g < targetOrder.Count; g++)
+            {
+                List<HitNumberBalancedLane> lanes = byTarget[targetOrder[g]];
+                HitNumberBalancedLane newest = NewestBalancedLane(lanes);
+                float targetX = camera.ToStageX(newest.TargetX);
+                float targetY = camera.ToStageY(newest.TargetY);
+                float baseY = Clamp(targetY - 72f, 60f, StageHeight - 24f);
+
+                // 目标内部按固定 SlotIndex 从底到顶排列（0 贴近目标，存活期内绝不互换槽位）。
+                lanes.Sort(delegate(HitNumberBalancedLane left, HitNumberBalancedLane right)
+                {
+                    int slot = left.SlotIndex.CompareTo(right.SlotIndex);
+                    return slot != 0 ? slot : left.FirstSequence.CompareTo(right.FirstSequence);
+                });
+
+                var rows = new List<HitNumberBurstRow>(lanes.Count);
+                var items = new List<HitNumberPaintItem>(lanes.Count);
+                for (int i = 0; i < lanes.Count; i++)
+                {
+                    HitNumberBalancedLane lane = lanes[i];
+                    double age = Math.Max(0.0, nowSeconds - lane.LastArrivalSeconds);
+                    float alpha;
+                    if (lane.IsMissLane)
+                    {
+                        alpha = age <= 0.35
+                            ? 0.88f
+                            : Clamp((float)((HitNumberBalancedAccumulator.MissLaneLifetimeSeconds - age) / 0.30), 0f, 1f) * 0.88f;
+                    }
+                    else
+                    {
+                        alpha = age <= HitNumberBalancedAccumulator.QuietSeconds
+                            ? 1f
+                            : Clamp(
+                                1f - (float)((age - HitNumberBalancedAccumulator.QuietSeconds)
+                                    / HitNumberBalancedAccumulator.FadeSeconds),
+                                0f,
+                                1f);
+                    }
+
+                    float rowTop = baseY + lane.VisualOffsetY;
+                    float rowWidth = 148f;
+                    float rowHeight = 35f;
+                    float left = Clamp(
+                        targetX - rowWidth / 2f,
+                        StageMarginForTests,
+                        StageWidth - StageMarginForTests - rowWidth);
+                    var bounds = new RectangleF(left, rowTop, rowWidth, rowHeight);
+
+                    float lift = lane.IsMissLane
+                        ? -(float)(age * 12.0)
+                        : (age < 0.08 ? Lerp(0f, -4f, (float)(age / 0.08)) : -4f);
+                    float slideInY = lane.ComputeSlideInOffsetY(nowSeconds);
+                    lane.ComputeShake(nowSeconds, out float shakeX, out float shakeY);
+                    float fontSize = lane.ComputeFontSize();
+                    float scale = lane.ComputeScale();
+                    float blur = lane.ComputeBlur();
+                    Color mainColor = lane.ComputeDisplayMainColor(nowSeconds);
+                    Color effectColor = lane.IsMissLane
+                        ? mainColor
+                        : HitNumberPainter.ResolveColorId(lane.EffectTextColorId);
+
+                    var row = new HitNumberBurstRow
+                    {
+                        Kind = CombatNumberKind.Damage,
+                        TargetId = lane.TargetId,
+                        BurstId = lane.LaneId,
+                        TargetX = targetX,
+                        TargetY = targetY,
+                        Bounds = bounds,
+                        AttachmentX = bounds.Left + bounds.Width / 2f,
+                        AttachmentY = bounds.Bottom,
+                        GrowthDirection = 0,
+                        TotalDamage = lane.IsMissLane ? 0 : lane.TotalDamage,
+                        HitCount = lane.IsMissLane ? 0 : lane.HitCount,
+                        ExpectedHitCount = lane.ExpectedHitCount,
+                        FirstSequence = lane.FirstSequence,
+                        FirstArrivalSeconds = lane.FirstArrivalSeconds,
+                        LastArrivalSeconds = lane.LastArrivalSeconds,
+                        AttributeSummary = BuildBalancedAttributeSummary(lane, 4),
+                        Alpha = alpha,
+                        SuppressTargetAnchor = lane.IsMissLane
+                    };
+                    rows.Add(row);
+
+                    items.Add(new HitNumberPaintItem
+                    {
+                        Kind = CombatNumberKind.Damage,
+                        StageX = bounds.Left + bounds.Width / 2f + shakeX,
+                        StageY = rowTop + slideInY + lift + shakeY,
+                        CombinedScale = scale,
+                        Alpha = alpha,
+                        CombinedBlur = blur,
+                        Value = lane.IsMissLane ? 0 : ClampLongToInt(lane.DisplayDamage),
+                        Packed = lane.Packed,
+                        FontSizeOverride = fontSize,
+                        EffectText = lane.IsMissLane ? string.Empty : lane.EffectText,
+                        CrushText = lane.IsMissLane ? string.Empty : lane.CrushText,
+                        CrushEmoji = lane.IsMissLane ? string.Empty : lane.CrushEmoji,
+                        LifeSteal = lane.IsMissLane ? 0f : lane.LifeSteal,
+                        ShieldAbsorb = lane.IsMissLane ? 0f : lane.ShieldAbsorb,
+                        HitCount = lane.IsMissLane ? 0 : lane.DisplayHitCount,
+                        FlagScales = lane.IsMissLane ? "000000000" : lane.FlagScales,
+                        SemanticDensityScale = HitNumberBalancedAccumulator.SemanticDensityScale,
+                        MainColorOverride = mainColor,
+                        EffectTextColorOverride = effectColor,
+                        SourceSequence = -1,
+                        SourceBurstId = lane.LaneId,
+                        SourceTargetId = lane.TargetId,
+                        SourceTargetX = targetX,
+                        SourceTargetY = targetY,
+                        VisualRole = HitNumberVisualRole.Summary
+                    });
+                }
+
+                TranslateStackIntoStage(rows, items);
+                for (int i = 0; i < rows.Count; i++) frame.WorldRows.Add(rows[i]);
+                for (int i = 0; i < items.Count; i++)
+                {
+                    frame.Items.Add(items[i]);
+                    frame.SummaryItemCount++;
+                }
+            }
+
+            if (includeDiagnostics)
+            {
+                frame.EstimatedOverlapRatio = EstimateOverlapRatio(frame.Items);
+                EvaluateStructuredMetrics(frame);
+            }
+            return frame;
+        }
+
+        private static HitNumberLayoutFrame BuildStatelessBalancedFrame(
+            IReadOnlyList<HitNumberSegment> source,
+            int sourceStartIndex,
+            double nowSeconds,
+            HitNumberCamera camera,
+            int worldRowLimit,
+            double lifetimeSeconds,
+            bool includeDiagnostics)
+        {
+            var active = new List<HitNumberSegment>();
+            int activeCount = 0;
+            int offscreenCount = 0;
+            for (int i = sourceStartIndex; i < source.Count; i++)
+            {
+                HitNumberSegment seg = source[i];
+                double age = nowSeconds - seg.ArrivalSeconds;
+                if (age < 0 || age >= lifetimeSeconds) continue;
+                activeCount++;
+                if (!IsTargetOnscreen(camera.ToStageX(seg.TargetX), camera.ToStageY(seg.TargetY)))
+                    offscreenCount++;
+                active.Add(seg);
+            }
+            if (active.Count > 1)
+            {
+                active.Sort(delegate(HitNumberSegment left, HitNumberSegment right)
+                {
+                    int arrival = left.ArrivalSeconds.CompareTo(right.ArrivalSeconds);
+                    return arrival != 0 ? arrival : left.Sequence.CompareTo(right.Sequence);
+                });
+            }
+            var accumulator = new HitNumberBalancedAccumulator();
+            if (active.Count > 0) accumulator.AddRange(active, 0, active.Count);
+            HitNumberLayoutFrame frame = BuildBalancedFrame(
+                accumulator.Snapshot(nowSeconds),
+                nowSeconds,
+                camera,
+                worldRowLimit,
+                includeDiagnostics);
+            frame.InputActiveSegmentCount = activeCount;
+            frame.OffscreenCulledSegmentCount = offscreenCount;
+            return frame;
+        }
+
+        private static HitNumberBalancedLane NewestBalancedLane(List<HitNumberBalancedLane> lanes)
+        {
+            HitNumberBalancedLane newest = lanes[0];
+            for (int i = 1; i < lanes.Count; i++)
+            {
+                HitNumberBalancedLane candidate = lanes[i];
+                if (candidate.LastArrivalSeconds > newest.LastArrivalSeconds
+                    || (candidate.LastArrivalSeconds == newest.LastArrivalSeconds
+                        && candidate.LastSequence > newest.LastSequence))
+                {
+                    newest = candidate;
+                }
+            }
+            return newest;
+        }
+
+        private static string BuildBalancedAttributeSummary(HitNumberBalancedLane lane, int maximumLabels)
+        {
+            if (lane.IsMissLane) return string.Empty;
+            int flags = lane.Flags;
+            var labels = new List<string>(7);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            if ((flags & 8) != 0 && !string.IsNullOrWhiteSpace(lane.EffectText))
+                AddLabel(labels, seen, lane.EffectText.Trim());
+            if ((flags & 16) != 0)
+            {
+                string crush = string.IsNullOrWhiteSpace(lane.CrushText) ? "粉" : lane.CrushText.Trim();
+                AddLabel(labels, seen, crush);
+            }
+            if ((flags & 2) != 0) AddLabel(labels, seen, "毒");
+            if ((flags & 1) != 0) AddLabel(labels, seen, "溃");
+            if ((flags & 4) != 0) AddLabel(labels, seen, "斩");
+            if ((flags & 32) != 0 && lane.LifeSteal > 0) AddLabel(labels, seen, "汲");
+            if ((flags & 256) != 0 && lane.ShieldAbsorb > 0) AddLabel(labels, seen, "盾");
+            if (labels.Count == 0) return string.Empty;
+            int take = Math.Min(maximumLabels, labels.Count);
+            string value = string.Join("·", labels.GetRange(0, take));
+            if (take < labels.Count)
+                value += "＋" + (labels.Count - take).ToString(CultureInfo.InvariantCulture);
+            return value;
+        }
+
         internal static HitNumberLayoutFrame BuildTotalFrame(
             IReadOnlyList<HitNumberTotalEntry> source,
             double nowSeconds,
             HitNumberCamera camera,
-            int worldRowLimit)
+            int worldRowLimit,
+            IReadOnlyList<HitNumberMissFlash> missFlashes = null)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (worldRowLimit < 0) throw new ArgumentOutOfRangeException(nameof(worldRowLimit));
@@ -875,6 +1173,91 @@ namespace CF7Launcher.Guardian.HitNumbers
                     VisualRole = HitNumberVisualRole.Summary
                 });
                 frame.SummaryItemCount++;
+            }
+
+            // 总伤模式下：若目标当前没有活跃总伤却收到了 MISS，显示轻量短寿命 MISS 提示，避免高闪避目标静默无反馈。
+            if (missFlashes != null && missFlashes.Count > 0)
+            {
+                var activeDamageTargets = new HashSet<string>(StringComparer.Ordinal);
+                for (int i = 0; i < visible.Count; i++) activeDamageTargets.Add(visible[i].TargetId);
+
+                var pendingMiss = new List<HitNumberMissFlash>();
+                for (int i = 0; i < missFlashes.Count; i++)
+                {
+                    HitNumberMissFlash flash = missFlashes[i];
+                    if (activeDamageTargets.Contains(flash.TargetId)) continue;
+                    double age = nowSeconds - flash.ArrivalSeconds;
+                    if (age < 0 || age >= HitNumberTotalAccumulator.MissFlashLifetimeSeconds) continue;
+                    float sx = camera.ToStageX(flash.TargetX);
+                    float sy = camera.ToStageY(flash.TargetY);
+                    if (!IsTargetOnscreen(sx, sy)) continue;
+                    pendingMiss.Add(flash);
+                }
+                pendingMiss.Sort(delegate(HitNumberMissFlash left, HitNumberMissFlash right)
+                {
+                    int arrival = right.ArrivalSeconds.CompareTo(left.ArrivalSeconds);
+                    return arrival != 0 ? arrival : right.Sequence.CompareTo(left.Sequence);
+                });
+                int remaining = worldRowLimit > 0 ? Math.Max(0, worldRowLimit - frame.WorldRows.Count) : pendingMiss.Count;
+                if (pendingMiss.Count > remaining)
+                {
+                    frame.WorldRowOmittedCount += pendingMiss.Count - remaining;
+                    pendingMiss.RemoveRange(remaining, pendingMiss.Count - remaining);
+                }
+                for (int i = pendingMiss.Count - 1; i >= 0; i--)
+                {
+                    HitNumberMissFlash flash = pendingMiss[i];
+                    float sx = camera.ToStageX(flash.TargetX);
+                    float sy = camera.ToStageY(flash.TargetY);
+                    float age = (float)Math.Max(0.0, nowSeconds - flash.ArrivalSeconds);
+                    float alpha = age <= 0.42f
+                        ? 0.85f
+                        : Clamp(1f - (age - 0.42f) / 0.30f, 0f, 1f) * 0.85f;
+                    float left = Clamp(sx - 44f, StageMarginForTests, StageWidth - StageMarginForTests - 88f);
+                    float top = Clamp(sy - 72f - age * 14f, StageMarginForTests, StageHeight - StageMarginForTests - 22f);
+                    frame.WorldRows.Add(new HitNumberBurstRow
+                    {
+                        Kind = CombatNumberKind.Damage,
+                        TargetId = flash.TargetId,
+                        BurstId = "#miss",
+                        TargetX = sx,
+                        TargetY = sy,
+                        Bounds = new RectangleF(left, top, 88f, 22f),
+                        AttachmentX = sx,
+                        AttachmentY = top + 22f,
+                        GrowthDirection = 0,
+                        TotalDamage = 0,
+                        HitCount = 0,
+                        ExpectedHitCount = 0,
+                        FirstSequence = flash.Sequence,
+                        FirstArrivalSeconds = flash.ArrivalSeconds,
+                        LastArrivalSeconds = flash.ArrivalSeconds,
+                        Alpha = alpha,
+                        SuppressTargetAnchor = true
+                    });
+                    frame.Items.Add(new HitNumberPaintItem
+                    {
+                        Kind = CombatNumberKind.Damage,
+                        StageX = left + 44f,
+                        StageY = top,
+                        CombinedScale = 1f,
+                        Alpha = alpha,
+                        CombinedBlur = 1.8f,
+                        Value = 0,
+                        Packed = HitNumberPacking.Create(0, true, 13, 0),
+                        FontSizeOverride = 13f,
+                        HitCount = 0,
+                        FlagScales = "000000000",
+                        MainColorOverride = Color.FromArgb(0xD8, 0xE2, 0xEC),
+                        SourceSequence = -1,
+                        SourceBurstId = "#miss",
+                        SourceTargetId = flash.TargetId,
+                        SourceTargetX = sx,
+                        SourceTargetY = sy,
+                        VisualRole = HitNumberVisualRole.Summary
+                    });
+                    frame.SummaryItemCount++;
+                }
             }
             return frame;
         }
@@ -1393,7 +1776,8 @@ namespace CF7Launcher.Guardian.HitNumbers
                 item.HitCount,
                 item.FlagScales,
                 item.SemanticDensityScale,
-                item.Kind == CombatNumberKind.HealHp);
+                item.Kind == CombatNumberKind.HealHp,
+                item.FontSizeOverride);
         }
 
         private static RectangleF EstimateDetailBounds(
@@ -1436,9 +1820,10 @@ namespace CF7Launcher.Guardian.HitNumbers
             int hitCount,
             string flagScales,
             float semanticDensityScale,
-            bool positiveSign = false)
+            bool positiveSign = false,
+            float fontSizeOverride = 0f)
         {
-            int size = HitNumberPacking.FontSize(packed);
+            float size = fontSizeOverride > 0f ? fontSizeOverride : HitNumberPacking.FontSize(packed);
             // Painter 使用 point 字体；在常见 96-120 DPI 下，字形像素高于同值的
             // Flash 舞台像素。这里以保守 em 估算完整数字、标签、hit 上标和描边，
             // 避免 tight layered-window surface 把真实字形裁掉。

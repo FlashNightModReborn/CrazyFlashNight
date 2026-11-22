@@ -43,7 +43,7 @@
  *   bit  9        (1 bit):  isMISS（闪避状态）
  *   bits 10-17    (8 bits): damageSize（字体大小，0-255）
  *   bits 18-21    (4 bits): colorId（颜色 ID，索引 COLOR_TABLE，0-10）
- *   bit 22: HealHp（仅空 Burst 且严格治疗 schema）；Damage 的 bits22-31 恒为0
+ *   bit 22: HealHp（仅空 Burst 且严格治疗 schema；可组合 bit 7=128 标示敌方/中立敌对回血）；Damage 的 bits22-31 恒为0
  *
  * @version 2.0 - 移除遗留 enqueue/force/负索引机制
  * @author FlashNight
@@ -104,6 +104,7 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     private static var _healXs:Array = [];
     private static var _healYs:Array = [];
     private static var _healIds:Array = [];
+    private static var _healPacked:Array = [];
     private static var _healLength:Number = 0;
 
     /** 场景内单调 Burst 序列；Number 精确整数范围足够覆盖单场景生命周期。 */
@@ -170,6 +171,9 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         _healXs[idx] = x;
         _healYs[idx] = y;
         _healIds[idx] = org.flashNight.arki.unit.UnitBattleRecord.healDisplayId(target);
+        // 复用 bit 7 (128 = isEnemy)：敌对与中立敌对单位均为敌方回血，我方/缺省 mock 保持 4194304。
+        var isEnemyUnit = target.是否为敌人;
+        _healPacked[idx] = (isEnemyUnit === true || isEnemyUnit === null) ? 4194432 : 4194304;
     }
 
     /** 仅特殊复活/阶段切换调用，保留同帧其他单位与伤害记录。 */
@@ -178,16 +182,19 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         for (var i:Number = 0; i < _healLength; i++) {
             if (_healIds[i] == identity) continue;
             _healValues[dest] = _healValues[i]; _healXs[dest] = _healXs[i];
-            _healYs[dest] = _healYs[i]; _healIds[dest] = _healIds[i]; dest++;
+            _healYs[dest] = _healYs[i]; _healIds[dest] = _healIds[i];
+            _healPacked[dest] = _healPacked[i]; dest++;
         }
         _healLength = dest;
         _healValues.length = dest; _healXs.length = dest;
         _healYs.length = dest; _healIds.length = dest;
+        _healPacked.length = dest;
     }
 
     private static function resetHeals():Void {
         _healValues.length = 0; _healXs.length = 0;
-        _healYs.length = 0; _healIds.length = 0; _healLength = 0;
+        _healYs.length = 0; _healIds.length = 0;
+        _healPacked.length = 0; _healLength = 0;
     }
 
     public static function getHealQueueLength():Number { return _healLength; }
@@ -278,9 +285,9 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         }
         i = 0;
         while (i < hn && _healHostEnabled) {
-            // 11字段：空效果槽、零吸血/护盾、空Burst、计数1。
+            // 11字段：空效果槽、零吸血/护盾、空Burst、计数1；packed 仅 4194304(友) 或 4194432(敌)。
             entry = _healValues[i] + "|" + _healXs[i] + "|" + _healYs[i]
-                + "|4194304|||0|0|" + _healIds[i] + "||1";
+                + "|" + _healPacked[i] + "|||0|0|" + _healIds[i] + "||1";
             if (length(buf) == 0) buf = entry;
             else buf += ";" + entry;
             ++i;

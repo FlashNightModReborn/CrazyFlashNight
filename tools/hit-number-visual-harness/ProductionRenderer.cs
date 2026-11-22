@@ -111,7 +111,9 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 new Spec("P31", "S23", "平衡 · 治疗与伤害", HitNumberDisplayMode.Balanced, 24, 1600, 900),
                 new Spec("P32", "S23", "逐发 · 治疗与伤害", HitNumberDisplayMode.Detail, 24, 1600, 900),
                 new Spec("P33", "S23", "经典 · 治疗与伤害", HitNumberDisplayMode.Classic, 0, 1600, 900),
-                new Spec("P34", "S23", "总计 · 治疗与伤害", HitNumberDisplayMode.Total, 24, 1600, 900)
+                new Spec("P34", "S23", "总计 · 治疗与伤害", HitNumberDisplayMode.Total, 24, 1600, 900),
+                new Spec("P35", "S23", "平衡 · 敌我治疗小窗", HitNumberDisplayMode.Balanced, 24, 1024, 576),
+                new Spec("P36", "S22", "总计 · 敌我治疗小窗", HitNumberDisplayMode.Total, 24, 1024, 576)
             };
 
             var results = new List<ProductionRenderResult>(specs.Length);
@@ -223,14 +225,15 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                     float y = 390 + target % 2 * 35;
                     actors.Add(new HitNumberSegment { TargetId = "actor-" + target,
                         TargetX = x, TargetY = y, ArrivalSeconds = now });
-                    // 30Hz治疗，150ms聚合后约为用户现场的353.056和2836.528。
+                    // 30Hz治疗，150ms聚合后约为用户现场的353.056和2836.528；target 2 用敌方回血位(4194432)。
                     if (frameIndex >= 3 && frameIndex < 108)
                     {
                         if (payload.Length > 0) payload.Append(';');
                         payload.Append(target == 2 ? "567.3056|" : "70.6112|")
                             .Append(x.ToString(CultureInfo.InvariantCulture)).Append('|')
                             .Append(y.ToString(CultureInfo.InvariantCulture))
-                            .Append("|4194304|||0|0|heal-").Append(target).Append("||1");
+                            .Append(target == 2 ? "|4194432|||0|0|heal-" : "|4194304|||0|0|heal-")
+                            .Append(target).Append("||1");
                     }
                     if (frameIndex < 108 && frameIndex % 9 == target * 3)
                     {
@@ -281,9 +284,21 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 framesPerSecond * 5 / 2,
                 framesPerSecond * 7 / 2
             };
+            var sorted = segments.OrderBy(s => s.ArrivalSeconds).ThenBy(s => s.Sequence).ToList();
+            var accumulator = new HitNumberBalancedAccumulator();
+            int cursor = 0;
             for (int frameIndex = 0; frameIndex < frameCount; frameIndex++)
             {
                 double now = frameIndex / (double)framesPerSecond;
+                int batchStart = cursor;
+                while (cursor < sorted.Count && sorted[cursor].ArrivalSeconds <= now) cursor++;
+                if (cursor > batchStart)
+                    accumulator.AddRange(sorted, batchStart, cursor - batchStart);
+                HitNumberLayoutFrame prepared = HitNumberLayoutEngine.BuildBalancedFrame(
+                    accumulator.Snapshot(now),
+                    now,
+                    HitNumberCamera.Identity,
+                    24);
                 string framePath = Path.Combine(
                     frameRoot,
                     "frame-" + frameIndex.ToString("0000", CultureInfo.InvariantCulture) + ".png");
@@ -291,7 +306,8 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                     segments,
                     now,
                     framePath,
-                    title);
+                    title,
+                    prepared);
                 if (Array.IndexOf(storyboardIndices, frameIndex) >= 0)
                     storyboardFrames.Add(framePath);
             }

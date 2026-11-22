@@ -211,14 +211,14 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                 1);
             scenarios.Add(s21);
 
-            var healOnly = New("S22", "治疗独立显示", "整数钳制、满额与多目标绿字，共用生产解析/聚合/绘制。");
+            var healOnly = New("S22", "治疗敌我分色独立显示", "友方暗墨描边绿芯(4194304)与敌方暗红描边浅绿芯(4194432)同屏对比，校验 12.5pt 二级通道与整数钳制。");
             healOnly.Segments.AddRange(s08.Segments);
             healOnly.HealOnly = true;
-            healOnly.HealPayload = "353.056|270|330|4194304|||0|0|h1||1;353.056|510|330|4194304|||0|0|h2||1;2836.528|750|330|4194304|||0|0|h3||1";
+            healOnly.HealPayload = "353.056|270|330|4194304|||0|0|ally-h1||1;353.056|510|330|4194432|||0|0|enemy-h2||1;2836.528|750|330|4194432|||0|0|enemy-h3||1";
             scenarios.Add(healOnly);
-            var mixed = New("S23", "伤害治疗混流", "同目标治疗与受击同时存在，伤害分组/序号保持隔离。");
+            var mixed = New("S23", "伤害治疗敌我混流", "同目标敌我回血与混伤并存：校验右肩/左肩避让、零遮挡、无治疗箭头与 B1 语义分轨。");
             mixed.Segments.AddRange(s15.Segments);
-            mixed.HealPayload = "353.056|438|390|4194304|||0|0|h4||1;2836.528|586|378|4194304|||0|0|h5||1";
+            mixed.HealPayload = "353.056|438|390|4194304|||0|0|ally-h4||1;2836.528|586|378|4194432|||0|0|enemy-h5||1";
             scenarios.Add(mixed);
 
             return scenarios;

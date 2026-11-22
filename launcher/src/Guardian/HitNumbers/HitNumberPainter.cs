@@ -39,7 +39,9 @@ namespace CF7Launcher.Guardian.HitNumbers
         // 与 FlagScales 的“贡献可见度”正交：各显示模式可在不伪造贡献档位的
         // 前提下压缩属性标签，逐发矩阵因此能保持密度且沿用同一语义算法。
         internal float SemanticDensityScale = 1f;
+        internal float FontSizeOverride;
         internal Color? MainColorOverride;
+        internal Color? OutlineColorOverride;
         internal Color? EffectTextColorOverride;
         internal int SourceSequence;
         internal string SourceBurstId = string.Empty;
@@ -150,11 +152,14 @@ namespace CF7Launcher.Guardian.HitNumbers
             float bmpY = context.Viewport.Top + (item.StageY / 576f) * context.Viewport.Height;
 
             bool isMiss = ((item.Packed >> 9) & 1) != 0;
-            int fontSize = (item.Packed >> 10) & 255;
+            float fontSize = item.FontSizeOverride > 0f
+                ? item.FontSizeOverride
+                : ((item.Packed >> 10) & 255);
             int flags = item.Packed & 511;
-            if (fontSize == 0) fontSize = 28;
+            if (fontSize <= 0f) fontSize = 28f;
 
             Color mainColor = item.MainColorOverride ?? ResolveMainColor(item.Packed);
+            Color outlineColor = item.OutlineColorOverride ?? Color.Black;
             Color labelColor = item.EffectTextColorOverride ?? mainColor;
             byte alpha = (byte)(255 * Math.Max(0f, Math.Min(1f, item.Alpha)));
 
@@ -243,6 +248,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             {
                 RenderRun run = _runs[i];
                 Color foreground = Color.FromArgb(alpha, run.Color.R, run.Color.G, run.Color.B);
+                Color runOutline = run.FontIndex == FontIndexNumber ? outlineColor : Color.Black;
                 DrawCachedGlyph(
                     graphics,
                     run.Glyph,
@@ -250,7 +256,8 @@ namespace CF7Launcher.Guardian.HitNumbers
                     drawY,
                     penWidth,
                     alpha,
-                    foreground);
+                    foreground,
+                    runOutline);
                 drawX += run.MeasuredWidth;
             }
 
@@ -497,13 +504,15 @@ namespace CF7Launcher.Guardian.HitNumbers
             float y,
             float outlineWidth,
             byte alpha,
-            Color foreground)
+            Color foreground,
+            Color? outlineColor = null)
         {
             GraphicsState state = graphics.Save();
             try
             {
                 graphics.TranslateTransform(x, y);
-                _outlinePen.Color = Color.FromArgb(alpha, 0, 0, 0);
+                Color stroke = outlineColor ?? Color.Black;
+                _outlinePen.Color = Color.FromArgb(alpha, stroke.R, stroke.G, stroke.B);
                 _outlinePen.Width = outlineWidth;
                 _glyphBrush.Color = foreground;
                 graphics.DrawPath(_outlinePen, glyph.Path);

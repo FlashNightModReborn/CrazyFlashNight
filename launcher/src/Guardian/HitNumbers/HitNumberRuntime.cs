@@ -78,11 +78,13 @@ namespace CF7Launcher.Guardian.HitNumbers
         private readonly HitNumberBatchParser _batchParser = new HitNumberBatchParser();
         private readonly List<HitNumberSegment> _segments = new List<HitNumberSegment>(256);
         private readonly HitNumberLedgerStore _ledger = new HitNumberLedgerStore();
+        private readonly HitNumberBalancedAccumulator _balanced = new HitNumberBalancedAccumulator();
         private readonly HitNumberTotalAccumulator _totals = new HitNumberTotalAccumulator();
         private readonly HealNumberAccumulator _heals = new HealNumberAccumulator();
         private readonly List<HealNumberEvent> _newHeals = new List<HealNumberEvent>();
         internal int PendingHealCountForTests => _heals.PendingCount;
         internal int VisibleHealCountForTests => _heals.VisibleCount;
+        internal int BalancedTargetCountForTests => _balanced.ActiveTargetCountForTests;
         private HitNumberRuntimeOptions _options = new HitNumberRuntimeOptions(
             HitNumberDisplayMode.Balanced,
             24);
@@ -122,6 +124,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             {
                 ClearEvents();
                 _heals.Clear(); _newHeals.Clear();
+                _balanced.Clear();
                 _totals.Clear();
                 _hasPublishedVisuals = false;
                 return new HitNumberRuntimeSnapshot(
@@ -159,6 +162,7 @@ namespace CF7Launcher.Guardian.HitNumbers
                 if (accepted > 0)
                 {
                     _ledger.AddRange(_segments, firstNewSegment, accepted);
+                    _balanced.AddRange(_segments, firstNewSegment, accepted);
                     _totals.AddRange(_segments, firstNewSegment, accepted);
                 }
             }
@@ -171,6 +175,7 @@ namespace CF7Launcher.Guardian.HitNumbers
         {
             ClearEvents();
             _heals.Clear(); _newHeals.Clear();
+            _balanced.Clear();
             _totals.Clear();
             _ledger.Reset();
             _generation++;
@@ -195,12 +200,19 @@ namespace CF7Launcher.Guardian.HitNumbers
         {
             PruneExpired(now);
             _heals.Advance(now);
+            var balancedLanes = _options.Mode == HitNumberDisplayMode.Balanced ? _balanced.Snapshot(now) : null;
             var totals = _options.Mode == HitNumberDisplayMode.Total ? _totals.Snapshot(now) : null;
+            var totalMissFlashes = _options.Mode == HitNumberDisplayMode.Total ? _totals.SnapshotMissFlashes(now) : null;
             var healing = _heals.Snapshot(now, _options.Mode == HitNumberDisplayMode.Detail || _options.Mode == HitNumberDisplayMode.Classic);
-            if (_head == _segments.Count && !_heals.HasState && (totals == null || totals.Count == 0))
+            bool hasDamageState = _head < _segments.Count
+                || (balancedLanes != null && balancedLanes.Count > 0)
+                || (totals != null && totals.Count > 0)
+                || (totalMissFlashes != null && totalMissFlashes.Count > 0);
+            if (!hasDamageState && !_heals.HasState)
                 return TakeDismissSnapshotIfNeeded();
             HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildCombatFrame(
-                _segments, _head, totals, healing, _options.Mode, _camera, now, _options.WorldRowLimit);
+                _segments, _head, balancedLanes, totals, totalMissFlashes, healing,
+                _options.Mode, _camera, now, _options.WorldRowLimit);
             bool hasVisuals = frame.WorldRows.Count > 0 || frame.Items.Count > 0;
             if (!hasVisuals) return TakeDismissSnapshotIfNeeded();
             _hasPublishedVisuals = true;
@@ -347,17 +359,19 @@ namespace CF7Launcher.Guardian.HitNumbers
             }
 
             // 旧生产端字号可能溢出到bit22：非空Burst始终走Damage。
-            // 空Burst只接纳唯一HealHp schema；不能先截断packed再判断类型。
+            // 空Burst只接纳严格HealHp schema：4194304(友/旧包) 或 4194432(敌方/中立敌对 bit22|bit7)。
             if (Field(entry, bounds, 9).IsEmpty)
             {
                 ReadOnlySpan<char> target = Field(entry, bounds, 8);
-                if (!allowHeals || packedValue != 4194304 || !(damageValue > 0) ||
+                bool isAllyHeal = packedValue == 4194304;
+                bool isEnemyHeal = packedValue == 4194432;
+                if (!allowHeals || (!isAllyHeal && !isEnemyHeal) || !(damageValue > 0) ||
                     expectedHitCount != 1 || lifeSteal != 0 || shieldAbsorb != 0 ||
                     !Field(entry, bounds, 4).IsEmpty || !Field(entry, bounds, 5).IsEmpty ||
                     target.IsEmpty || target.Length > 192) return false;
                 for (int i = 0; i < target.Length; i++)
                     if (target[i] < 32 || target[i] > 126) return false;
-                heal = new HealNumberEvent(Canonical(target), damageValue, worldX, worldY);
+                heal = new HealNumberEvent(Canonical(target), damageValue, worldX, worldY, isEnemyHeal);
                 return true;
             }
 

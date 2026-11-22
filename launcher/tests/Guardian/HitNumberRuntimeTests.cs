@@ -145,6 +145,54 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void BalancedAccumulatorPrunesHistoricalTargetsWhileTotalModeRuns()
+        {
+            double now = 0.0;
+            var runtime = new HitNumberRuntime(() => now);
+            runtime.Configure(new HitNumberRuntimeOptions(HitNumberDisplayMode.Total, 24));
+
+            for (int i = 0; i < 40; i++)
+            {
+                runtime.ProcessFrame(
+                    "0|0|1",
+                    Entry("burst-" + i, 1, 100, "target-" + i));
+                now += HitNumberBalancedAccumulator.LifetimeSeconds + 0.02;
+            }
+
+            Assert.Equal(HitNumberDisplayMode.Total, runtime.Options.Mode);
+            Assert.Equal(1, runtime.BalancedTargetCountForTests);
+        }
+
+        [Fact]
+        public void TotalModeEmptyTargetMissFlashAppearsWithoutPollutingTotalsAndClearsOnHit()
+        {
+            double now = 1.0;
+            var runtime = new HitNumberRuntime(() => now);
+            runtime.Configure(new HitNumberRuntimeOptions(HitNumberDisplayMode.Total, 24));
+
+            // packed = isMiss(512) | fontSize(24<<10 = 24576) = 25088
+            HitNumberRuntimeSnapshot missSnap = runtime.ProcessFrame(
+                "0|0|1",
+                "0|512|330|25088|||0|0|evader|m1|1");
+            Assert.NotNull(missSnap);
+            Assert.Equal(0, runtime.TotalTargetCountForTests);
+            HitNumberPaintItem missItem = Assert.Single(missSnap.Frame.Items);
+            Assert.True(HitNumberPacking.IsMiss(missItem.Packed));
+            Assert.Equal("#miss", missItem.SourceBurstId);
+            Assert.True(Assert.Single(missSnap.Frame.WorldRows).SuppressTargetAnchor);
+
+            // 命中后立刻顶掉 MISS 提示并转为正式总伤。
+            now += 0.10;
+            HitNumberRuntimeSnapshot hitSnap = runtime.ProcessFrame(
+                "0|0|1",
+                Entry("h1", 1, 240, "evader"));
+            Assert.Equal(1, runtime.TotalTargetCountForTests);
+            HitNumberPaintItem hitItem = Assert.Single(hitSnap.Frame.Items);
+            Assert.False(HitNumberPacking.IsMiss(hitItem.Packed));
+            Assert.Equal(240, hitItem.Value);
+        }
+
+        [Fact]
         public void ClassicModeUsesShortFlashLifetimeAndPublishesOneDismiss()
         {
             double now = 1.0;

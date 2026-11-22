@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace CF7Launcher.Guardian.HitNumbers
 {
     internal enum CombatNumberKind { Damage, HealHp }
-    internal readonly record struct HealNumberEvent(string TargetId, double Amount, float WorldX, float WorldY);
+    internal readonly record struct HealNumberEvent(string TargetId, double Amount, float WorldX, float WorldY, bool IsEnemy = false);
 
     /// <summary>固定 150ms 数值窗口、小数结转与独立治疗周期。只输出类型化表现候选，不做布局。</summary>
     internal sealed class HealNumberAccumulator
@@ -44,6 +44,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             if (double.IsPositiveInfinity(window.Due)) window.Due = now + WindowSeconds;
             window.Amount += value.Amount;
             window.LastInput = now;
+            window.IsEnemy = value.IsEnemy;
             // 所有窗口共用实例锚点，逐帧跟随无需遍历历史窗口，也不分配伤害 Segment。
             window.Anchor.WorldX = value.WorldX; window.Anchor.WorldY = value.WorldY;
         }
@@ -105,11 +106,13 @@ namespace CF7Launcher.Guardian.HitNumbers
             value.Value = amount;
             value.TotalValue = (int)Math.Min(int.MaxValue, (long)value.TotalValue + amount);
             value.Published = published; value.RecoveryStarted = now;
+            value.IsEnemy = window.IsEnemy;
             if (_windows.Count >= MaximumWindowEvents) _windows.RemoveAt(0);
             _windows.Add(new CombatNumberVisualEvent
             {
                 Anchor = window.Anchor, Value = amount, TotalValue = amount,
-                Born = published, Published = published, RecoveryStarted = now, Sequence = NextSequence()
+                Born = published, Published = published, RecoveryStarted = now, Sequence = NextSequence(),
+                IsEnemy = window.IsEnemy
             });
         }
 
@@ -132,6 +135,7 @@ namespace CF7Launcher.Guardian.HitNumbers
             internal string TargetId;
             internal CombatNumberTargetAnchor Anchor;
             internal double Amount, LastInput, Due = double.PositiveInfinity;
+            internal bool IsEnemy;
         }
     }
 }

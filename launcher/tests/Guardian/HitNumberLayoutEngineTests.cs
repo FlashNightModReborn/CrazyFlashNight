@@ -27,22 +27,35 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void BalancedSummaryProjectsOneCompactTotalWithoutWorldDetailCells()
+        public void BalancedSummaryProjectsCompactSemanticLanesWithoutWorldDetailCells()
         {
-            List<HitNumberSegment> segments = BuildBurst(120, 512, 400, "boss");
+            List<HitNumberSegment> singleType = BuildBurst(120, 512, 400, "boss");
+            foreach (HitNumberSegment seg in singleType)
+                seg.Packed = HitNumberPacking.Create(0, false, 28, 1);
 
-            HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildFrame(
-                segments,
+            HitNumberLayoutFrame uniformFrame = HitNumberLayoutEngine.BuildFrame(
+                singleType,
                 2.0,
                 HitNumberLayoutCandidate.BalancedSummary);
 
-            Assert.Equal(120, frame.InputActiveSegmentCount);
-            Assert.Equal(0, frame.DetailItemCount);
-            Assert.Equal(1, frame.SummaryItemCount);
-            HitNumberBurstRow row = Assert.Single(frame.WorldRows);
+            Assert.Equal(120, uniformFrame.InputActiveSegmentCount);
+            Assert.Equal(0, uniformFrame.DetailItemCount);
+            Assert.Equal(1, uniformFrame.SummaryItemCount);
+            HitNumberBurstRow row = Assert.Single(uniformFrame.WorldRows);
             Assert.Equal(148f, row.Bounds.Width);
-            Assert.Equal(29f, row.Bounds.Height);
-            Assert.Single(frame.Items);
+            Assert.Equal(35f, row.Bounds.Height);
+            Assert.Single(uniformFrame.Items);
+
+            // 混伤输入按语义分轨并有界截断为每目标最多 3 轨，绝不展开为逐段格。
+            List<HitNumberSegment> mixed = BuildBurst(120, 512, 400, "boss");
+            HitNumberLayoutFrame mixedFrame = HitNumberLayoutEngine.BuildFrame(
+                mixed,
+                2.0,
+                HitNumberLayoutCandidate.BalancedSummary);
+            Assert.Equal(120, mixedFrame.InputActiveSegmentCount);
+            Assert.Equal(0, mixedFrame.DetailItemCount);
+            Assert.Equal(HitNumberBalancedAccumulator.LanesPerTarget, mixedFrame.WorldRows.Count);
+            Assert.Equal(HitNumberBalancedAccumulator.LanesPerTarget, mixedFrame.SummaryItemCount);
         }
 
         [Theory]
@@ -53,6 +66,8 @@ namespace CF7Launcher.Tests.Guardian
             var candidate = (HitNumberLayoutCandidate)candidateValue;
             List<HitNumberSegment> segments = BuildBurst(10, 512, 400, "visible");
             segments.AddRange(BuildBurst(6, 1300, 400, "offscreen", 100));
+            foreach (HitNumberSegment seg in segments)
+                seg.Packed = HitNumberPacking.Create(0, false, 28, 1);
 
             HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildFrame(
                 segments,
@@ -92,7 +107,12 @@ namespace CF7Launcher.Tests.Guardian
         {
             var candidate = (HitNumberLayoutCandidate)candidateValue;
             List<HitNumberSegment> segments = BuildBurst(12, 512, 400, "boss");
-            foreach (HitNumberSegment segment in segments) segment.BurstId = "linked-shot-1";
+            foreach (HitNumberSegment segment in segments)
+            {
+                segment.BurstId = "linked-shot-1";
+                if (candidate == HitNumberLayoutCandidate.BalancedSummary)
+                    segment.Packed = HitNumberPacking.Create(0, false, 28, 1);
+            }
 
             HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildFrame(
                 segments,
@@ -100,9 +120,16 @@ namespace CF7Launcher.Tests.Guardian
                 candidate);
 
             HitNumberBurstRow row = Assert.Single(frame.WorldRows);
-            Assert.Equal("linked-shot-1", row.BurstId);
             Assert.Equal(12, row.HitCount);
-            Assert.Equal(12, row.Segments.Count);
+            if (candidate == HitNumberLayoutCandidate.FixedBurstStack)
+            {
+                Assert.Equal("linked-shot-1", row.BurstId);
+                Assert.Equal(12, row.Segments.Count);
+            }
+            else
+            {
+                Assert.StartsWith("#lane:1:", row.BurstId);
+            }
         }
 
         [Fact]
@@ -110,6 +137,8 @@ namespace CF7Launcher.Tests.Guardian
         {
             List<HitNumberSegment> segments = BuildBurst(8, 470, 390, "left");
             segments.AddRange(BuildBurst(9, 555, 390, "right", 50));
+            foreach (HitNumberSegment seg in segments)
+                seg.Packed = HitNumberPacking.Create(0, false, 28, 1);
 
             HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildFrame(
                 segments,
@@ -118,6 +147,8 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Equal(2, frame.WorldRows.Count);
             Assert.Equal(2, frame.WorldRows.Select(row => row.TargetId).Distinct().Count());
+            Assert.Equal(8, frame.WorldRows.Single(row => row.TargetId == "left").HitCount);
+            Assert.Equal(9, frame.WorldRows.Single(row => row.TargetId == "right").HitCount);
         }
 
         [Theory]
@@ -153,6 +184,11 @@ namespace CF7Launcher.Tests.Guardian
             List<HitNumberSegment> left = BuildBurst(6, 438, 390, "left");
             List<HitNumberSegment> crowded = new List<HitNumberSegment>(left);
             crowded.AddRange(BuildBurst(6, 586, 378, "right", 100));
+            if (candidate == HitNumberLayoutCandidate.BalancedSummary)
+            {
+                foreach (HitNumberSegment seg in crowded)
+                    seg.Packed = HitNumberPacking.Create(0, false, 28, 1);
+            }
 
             HitNumberLayoutFrame isolated = HitNumberLayoutEngine.BuildFrame(left, 2.0, candidate);
             HitNumberLayoutFrame withNeighbor = HitNumberLayoutEngine.BuildFrame(crowded, 2.0, candidate);
@@ -166,12 +202,9 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(isolatedLeft.AttachmentX, crowdedLeft.AttachmentX);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        public void NewAttackMovesOlderRowOnlyAlongVerticalAxis(int candidateValue)
+        [Fact]
+        public void NewAttackMovesOlderRowOnlyAlongVerticalAxisInDetailStack()
         {
-            var candidate = (HitNumberLayoutCandidate)candidateValue;
             List<HitNumberSegment> oldOnly = BuildBurst(4, 512, 390, "boss");
             foreach (HitNumberSegment segment in oldOnly) segment.BurstId = "old";
             var withNew = new List<HitNumberSegment>(oldOnly);
@@ -184,9 +217,9 @@ namespace CF7Launcher.Tests.Guardian
             withNew.AddRange(newer);
 
             HitNumberBurstRow before = Assert.Single(
-                HitNumberLayoutEngine.BuildFrame(oldOnly, 2.0, candidate).WorldRows);
+                HitNumberLayoutEngine.BuildFrame(oldOnly, 2.0, HitNumberLayoutCandidate.FixedBurstStack).WorldRows);
             HitNumberBurstRow after = Assert.Single(
-                HitNumberLayoutEngine.BuildFrame(withNew, 2.0, candidate).WorldRows,
+                HitNumberLayoutEngine.BuildFrame(withNew, 2.0, HitNumberLayoutCandidate.FixedBurstStack).WorldRows,
                 row => row.BurstId == "old");
 
             Assert.Equal(before.Bounds.X, after.Bounds.X);
@@ -194,12 +227,9 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(after.Bounds.Y < before.Bounds.Y);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        public void NewAttackImmediatelyReservesStableNonOverlappingSlot(int candidateValue)
+        [Fact]
+        public void NewAttackImmediatelyReservesStableNonOverlappingSlotInDetailStack()
         {
-            var candidate = (HitNumberLayoutCandidate)candidateValue;
             List<HitNumberSegment> segments = BuildBurst(4, 512, 390, "boss");
             foreach (HitNumberSegment segment in segments) segment.BurstId = "old";
             List<HitNumberSegment> newer = BuildBurst(3, 512, 390, "boss", 100);
@@ -211,10 +241,10 @@ namespace CF7Launcher.Tests.Guardian
             segments.AddRange(newer);
 
             HitNumberBurstRow early = Assert.Single(
-                HitNumberLayoutEngine.BuildFrame(segments, 1.82, candidate).WorldRows,
+                HitNumberLayoutEngine.BuildFrame(segments, 1.82, HitNumberLayoutCandidate.FixedBurstStack).WorldRows,
                 row => row.BurstId == "old");
             HitNumberBurstRow settled = Assert.Single(
-                HitNumberLayoutEngine.BuildFrame(segments, 1.92, candidate).WorldRows,
+                HitNumberLayoutEngine.BuildFrame(segments, 1.92, HitNumberLayoutCandidate.FixedBurstStack).WorldRows,
                 row => row.BurstId == "old");
 
             Assert.Equal(early.Bounds.X, settled.Bounds.X);
@@ -280,7 +310,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void TargetStackOrdersNewestAttackFirstAndKeepsSegmentOrder()
+        public void TargetStackOrdersNewestAttackFirstAndKeepsSegmentOrderInDetailStack()
         {
             List<HitNumberSegment> segments = BuildBurst(3, 512, 390, "boss");
             foreach (HitNumberSegment segment in segments) segment.BurstId = "old";
@@ -295,7 +325,7 @@ namespace CF7Launcher.Tests.Guardian
             HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildFrame(
                 segments,
                 2.0,
-                HitNumberLayoutCandidate.BalancedSummary);
+                HitNumberLayoutCandidate.FixedBurstStack);
 
             Assert.Equal("new", frame.WorldRows[0].BurstId);
             Assert.Equal("old", frame.WorldRows[1].BurstId);
@@ -314,18 +344,27 @@ namespace CF7Launcher.Tests.Guardian
             segments[1].Packed = HitNumberPacking.Create(32, false, 31, 5);
             segments[1].LifeSteal = 96;
 
-            HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildFrame(
+            HitNumberLayoutFrame detail = HitNumberLayoutEngine.BuildFrame(
+                segments,
+                2.0,
+                HitNumberLayoutCandidate.FixedBurstStack);
+            HitNumberBurstRow detailRow = Assert.Single(detail.WorldRows);
+
+            Assert.Equal(431, detailRow.Segments[0].Damage);
+            Assert.Equal("火", detailRow.Segments[0].EffectText);
+            Assert.Equal(372, detailRow.Segments[1].Damage);
+            Assert.Equal(96, detailRow.Segments[1].LifeSteal);
+            Assert.Contains("火", detailRow.AttributeSummary);
+            Assert.Contains("汲", detailRow.AttributeSummary);
+
+            // 平衡语义分轨：异色异属性分离为独立轨道，同轨异效（火+汲）聚合保留。
+            HitNumberLayoutFrame balanced = HitNumberLayoutEngine.BuildFrame(
                 segments,
                 2.0,
                 HitNumberLayoutCandidate.BalancedSummary);
-            HitNumberBurstRow row = Assert.Single(frame.WorldRows);
-
-            Assert.Equal(431, row.Segments[0].Damage);
-            Assert.Equal("火", row.Segments[0].EffectText);
-            Assert.Equal(372, row.Segments[1].Damage);
-            Assert.Equal(96, row.Segments[1].LifeSteal);
-            Assert.Contains("火", row.AttributeSummary);
-            Assert.Contains("汲", row.AttributeSummary);
+            Assert.Equal(2, balanced.WorldRows.Count);
+            Assert.Contains(balanced.WorldRows, r => r.TotalDamage == 431 && r.AttributeSummary.Contains("火"));
+            Assert.Contains(balanced.WorldRows, r => r.TotalDamage == 372 && r.AttributeSummary.Contains("汲"));
         }
 
         [Fact]
@@ -347,6 +386,8 @@ namespace CF7Launcher.Tests.Guardian
             List<HitNumberSegment> segments = BuildBurst(2, 512, 390, "boss");
             segments[0].Damage = int.MaxValue;
             segments[1].Damage = int.MaxValue;
+            segments[0].Packed = HitNumberPacking.Create(0, false, 28, 1);
+            segments[1].Packed = HitNumberPacking.Create(0, false, 28, 1);
 
             HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildFrame(
                 segments,
@@ -564,11 +605,20 @@ namespace CF7Launcher.Tests.Guardian
             segments[0].ShieldAbsorb = 20;
             segments[1].ShieldAbsorb = 22;
 
-            HitNumberLayoutFrame frame = HitNumberLayoutEngine.BuildFrame(
+            // 冲击白闪峰值期间：属性字保持冻结来源色，主数字出现自适应提亮；75ms 稳态后完全回归来源色。
+            HitNumberLayoutFrame impactFrame = HitNumberLayoutEngine.BuildFrame(
                 segments,
-                1.25,
+                1.22,
                 HitNumberLayoutCandidate.BalancedSummary);
-            HitNumberPaintItem item = Assert.Single(frame.Items);
+            HitNumberPaintItem impactItem = Assert.Single(impactFrame.Items);
+            Assert.Equal(Color.FromArgb(0x00, 0x99, 0xFF), impactItem.EffectTextColorOverride);
+            Assert.True(impactItem.MainColorOverride.GetValueOrDefault().R > 0);
+
+            HitNumberLayoutFrame settledFrame = HitNumberLayoutEngine.BuildFrame(
+                segments,
+                1.35,
+                HitNumberLayoutCandidate.BalancedSummary);
+            HitNumberPaintItem item = Assert.Single(settledFrame.Items);
 
             Assert.Equal(flags, HitNumberPacking.Flags(item.Packed));
             Assert.Equal("热", item.EffectText);
@@ -577,36 +627,39 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(30f, item.LifeSteal);
             Assert.Equal(42f, item.ShieldAbsorb);
             Assert.Equal("999999099", item.FlagScales);
-            Assert.Equal(4f / 9f, item.SemanticDensityScale, 4);
+            Assert.Equal(HitNumberBalancedAccumulator.SemanticDensityScale, item.SemanticDensityScale, 4);
             Assert.Equal(Color.FromArgb(0x00, 0x99, 0xFF), item.MainColorOverride);
             Assert.Equal(Color.FromArgb(0x00, 0x99, 0xFF), item.EffectTextColorOverride);
         }
 
         [Fact]
-        public void BalancedSummaryFlashesLatestColorThenReturnsTowardBurstDominantColor()
+        public void BalancedSummarySeparatesMixedColorsIntoPureSemanticLanesWithAdaptiveWhiteFlash()
         {
-            HitNumberSegment dominant = Segment(1, "mixed-color", 1.0, 1000);
-            dominant.Packed = HitNumberPacking.Create(0, false, 28, 1);
-            HitNumberSegment latest = Segment(2, "mixed-color", 1.3, 100);
-            latest.Packed = HitNumberPacking.Create(0, false, 28, 6);
-            var source = new[] { dominant, latest };
+            HitNumberSegment red = Segment(1, "mixed-color", 1.0, 1000);
+            red.Packed = HitNumberPacking.Create(0, false, 28, 1);
+            HitNumberSegment blue = Segment(2, "mixed-color", 1.3, 100);
+            blue.Packed = HitNumberPacking.Create(0, false, 28, 6);
+            var source = new[] { red, blue };
 
-            HitNumberPaintItem impact = Assert.Single(
-                HitNumberLayoutEngine.BuildFrame(
-                    source,
-                    1.3,
-                    HitNumberLayoutCandidate.BalancedSummary).Items);
-            HitNumberPaintItem settled = Assert.Single(
-                HitNumberLayoutEngine.BuildFrame(
-                    source,
-                    1.6,
-                    HitNumberLayoutCandidate.BalancedSummary).Items);
+            HitNumberLayoutFrame impact = HitNumberLayoutEngine.BuildFrame(
+                source,
+                1.31,
+                HitNumberLayoutCandidate.BalancedSummary);
+            HitNumberLayoutFrame settled = HitNumberLayoutEngine.BuildFrame(
+                source,
+                1.50,
+                HitNumberLayoutCandidate.BalancedSummary);
 
-            Color impactColor = impact.MainColorOverride.GetValueOrDefault();
-            Color settledColor = settled.MainColorOverride.GetValueOrDefault();
-            Assert.Equal(Color.FromArgb(0x00, 0x99, 0xFF), impactColor);
-            Assert.True(settledColor.R > impactColor.R);
-            Assert.True(settledColor.B < impactColor.B);
+            Assert.Equal(2, impact.Items.Count);
+            Assert.Equal(2, settled.Items.Count);
+            HitNumberPaintItem blueImpact = Assert.Single(impact.Items, i => i.SourceBurstId == "#lane:6:");
+            HitNumberPaintItem blueSettled = Assert.Single(settled.Items, i => i.SourceBurstId == "#lane:6:");
+            HitNumberPaintItem redSettled = Assert.Single(settled.Items, i => i.SourceBurstId == "#lane:1:");
+
+            // 蓝轨在受击瞬间做自适应白闪，稳态回归纯源色；红轨始终维持纯红，不互相混色。
+            Assert.True(blueImpact.MainColorOverride.GetValueOrDefault().R > blueSettled.MainColorOverride.GetValueOrDefault().R);
+            Assert.Equal(Color.FromArgb(0x00, 0x99, 0xFF).ToArgb(), blueSettled.MainColorOverride.GetValueOrDefault().ToArgb());
+            Assert.Equal(Color.FromArgb(0xFF, 0x00, 0x00).ToArgb(), redSettled.MainColorOverride.GetValueOrDefault().ToArgb());
         }
 
         [Fact]
@@ -733,7 +786,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void BalancedHighRateStreamKeepsOnlyThreeNewestRowsPerTarget()
+        public void BalancedHighRateStreamKeepsAtMostThreeNonOverlappingSemanticLanesPerTarget()
         {
             var segments = new List<HitNumberSegment>();
             for (int burst = 0; burst < 20; burst++)
@@ -767,11 +820,8 @@ namespace CF7Launcher.Tests.Guardian
                 .OrderBy(value => value.Top)
                 .ToList();
 
-            Assert.Equal(3, bounds.Count);
-            Assert.Equal(
-                new[] { "stream-19", "stream-18", "stream-17" },
-                frame.WorldRows.Select(row => row.BurstId));
-            Assert.Equal(17, frame.WorldRowOmittedCount);
+            Assert.Equal(HitNumberBalancedAccumulator.LanesPerTarget, bounds.Count);
+            Assert.All(frame.WorldRows, row => Assert.StartsWith("#lane:", row.BurstId));
             Assert.All(bounds, value =>
             {
                 Assert.True(value.Top >= HitNumberLayoutEngine.StageMarginForTests);
@@ -786,19 +836,21 @@ namespace CF7Launcher.Tests.Guardian
         public void BalancedPerTargetCapDoesNotStarveAnotherTargetBeforeGlobalLimit()
         {
             var segments = new List<HitNumberSegment>();
-            for (int burst = 0; burst < 5; burst++)
+            for (int lane = 0; lane < 5; lane++)
             {
                 HitNumberSegment segment = Segment(
-                    burst,
-                    "boss-" + burst,
-                    1.20 + burst * 0.10,
-                    100 + burst);
+                    lane,
+                    "boss-" + lane,
+                    1.20 + lane * 0.10,
+                    100 + lane * 20);
                 segment.TargetId = "boss";
+                segment.Packed = HitNumberPacking.Create(0, false, 28, lane);
                 segments.Add(segment);
             }
             HitNumberSegment mob = Segment(10, "mob-0", 1.15, 80);
             mob.TargetId = "mob";
             mob.TargetX = 680;
+            mob.Packed = HitNumberPacking.Create(0, false, 28, 1);
             segments.Insert(0, mob);
 
             HitNumberLayoutFrame fast = HitNumberLayoutEngine.BuildFrame(
@@ -823,10 +875,9 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(4, reference.WorldRows.Count);
             Assert.Equal(3, reference.WorldRows.Count(row => row.TargetId == "boss"));
             Assert.Single(reference.WorldRows, row => row.TargetId == "mob");
-            Assert.Equal(2, reference.WorldRowOmittedCount);
             Assert.Equal(
-                reference.WorldRows.Select(row => row.BurstId),
-                fast.WorldRows.Select(row => row.BurstId));
+                reference.WorldRows.Select(row => (row.TargetId, row.BurstId)),
+                fast.WorldRows.Select(row => (row.TargetId, row.BurstId)));
             Assert.Equal(reference.WorldRowOmittedCount, fast.WorldRowOmittedCount);
             Assert.Equal(reference.WorldSegmentOmittedCount, fast.WorldSegmentOmittedCount);
         }
@@ -973,14 +1024,174 @@ namespace CF7Launcher.Tests.Guardian
                 Segment(3, "attack-a", 1.10, 101)
             };
 
-            HitNumberLayoutFrame fast = BuildLimitedFrame(segments, false);
-            HitNumberLayoutFrame reference = BuildLimitedFrame(segments, true);
+            HitNumberLayoutFrame fast = HitNumberLayoutEngine.BuildFrame(
+                segments, 0, 2.0, HitNumberLayoutCandidate.FixedBurstStack,
+                HitNumberCamera.Identity, 1, HitNumberLayoutEngine.DefaultLifetimeSeconds, false);
+            HitNumberLayoutFrame reference = HitNumberLayoutEngine.BuildFrame(
+                segments, 0, 2.0, HitNumberLayoutCandidate.FixedBurstStack,
+                HitNumberCamera.Identity, 1, HitNumberLayoutEngine.DefaultLifetimeSeconds, true);
 
             Assert.Equal("attack-a", Assert.Single(reference.WorldRows).BurstId);
             Assert.Equal(
                 reference.WorldRows.Select(row => row.BurstId),
                 fast.WorldRows.Select(row => row.BurstId));
             Assert.Equal(reference.WorldSegmentOmittedCount, fast.WorldSegmentOmittedCount);
+        }
+
+        [Fact]
+        public void BalancedB1_FixedSlotsNeverSwapWhenHigherSlotOvertakesDamageAndCompactsOnlyOnExpiry()
+        {
+            var acc = new HitNumberBalancedAccumulator();
+            HitNumberSegment phys = Segment(1, "b1", 1.00, 200);
+            phys.Packed = HitNumberPacking.Create(0, false, 26, 1);
+            HitNumberSegment thermal = Segment(2, "b2", 1.05, 80);
+            thermal.Packed = HitNumberPacking.Create(8, false, 26, 6);
+            thermal.EffectText = "热";
+            acc.AddRange(new[] { phys, thermal }, 0, 2);
+
+            var initial = acc.Snapshot(1.06);
+            HitNumberBalancedLane physLane = Assert.Single(initial, l => l.MainColorId == 1);
+            HitNumberBalancedLane thermalLane = Assert.Single(initial, l => l.MainColorId == 6);
+            Assert.Equal(0, physLane.SlotIndex);
+            Assert.Equal(1, thermalLane.SlotIndex);
+
+            // 热伤轨道反超总伤，槽位绝不互换。
+            HitNumberSegment bigThermal = Segment(3, "b3", 1.25, 1500);
+            bigThermal.Packed = HitNumberPacking.Create(8, false, 32, 6);
+            bigThermal.EffectText = "热";
+            acc.AddRange(new[] { bigThermal }, 0, 1);
+            var overtaken = acc.Snapshot(1.26);
+            Assert.Equal(0, Assert.Single(overtaken, l => l.MainColorId == 1).SlotIndex);
+            Assert.Equal(1, Assert.Single(overtaken, l => l.MainColorId == 6).SlotIndex);
+
+            // 物理轨在 1.00 + 1.08s 过期后，热伤轨收敛到槽 0。
+            var compacted = acc.Snapshot(2.15);
+            HitNumberBalancedLane remaining = Assert.Single(compacted);
+            Assert.Equal(6, remaining.MainColorId);
+            Assert.Equal(0, remaining.SlotIndex);
+        }
+
+        [Fact]
+        public void BalancedB1_SlideInOvershootAppliesToNewHigherSlotWithoutOverlappingBounds()
+        {
+            var acc = new HitNumberBalancedAccumulator();
+            HitNumberSegment phys = Segment(1, "b1", 1.00, 120);
+            phys.Packed = HitNumberPacking.Create(0, false, 26, 1);
+            HitNumberSegment fire = Segment(2, "b2", 1.02, 90);
+            fire.Packed = HitNumberPacking.Create(8, false, 26, 2);
+            fire.EffectText = "火";
+            acc.AddRange(new[] { phys, fire }, 0, 2);
+
+            HitNumberLayoutFrame birth = HitNumberLayoutEngine.BuildBalancedFrame(
+                acc.Snapshot(1.02), 1.02, HitNumberCamera.Identity, 24);
+            HitNumberLayoutFrame midOvershoot = HitNumberLayoutEngine.BuildBalancedFrame(
+                acc.Snapshot(1.115), 1.115, HitNumberCamera.Identity, 24);
+            HitNumberLayoutFrame settled = HitNumberLayoutEngine.BuildBalancedFrame(
+                acc.Snapshot(1.20), 1.20, HitNumberCamera.Identity, 24);
+
+            // Bounds 从第 0 帧即严格不重叠。
+            Assert.False(birth.WorldRows[0].Bounds.IntersectsWith(birth.WorldRows[1].Bounds));
+            HitNumberPaintItem physBirth = Assert.Single(birth.Items, i => i.SourceBurstId == "#lane:1:");
+            HitNumberPaintItem fireBirth = Assert.Single(birth.Items, i => i.SourceBurstId == "#lane:2:火");
+            HitNumberPaintItem fireOver = Assert.Single(midOvershoot.Items, i => i.SourceBurstId == "#lane:2:火");
+            HitNumberPaintItem fireSettled = Assert.Single(settled.Items, i => i.SourceBurstId == "#lane:2:火");
+            // 出生即保持 >=26px 纵向安全间距，出生在稳态槽位下方、中段过冲略高于稳态槽位、140ms 后落稳。
+            Assert.True(physBirth.StageY - fireBirth.StageY >= 26f);
+            Assert.True(fireBirth.StageY > fireSettled.StageY);
+            Assert.True(fireOver.StageY < fireSettled.StageY);
+        }
+
+        [Fact]
+        public void BalancedB1_TieredImpactEnergyAccumulatesAndTriggersMicroShakeOnTier3()
+        {
+            var acc = new HitNumberBalancedAccumulator();
+            HitNumberSegment first = Segment(1, "s1", 1.00, 100);
+            first.Packed = HitNumberPacking.Create(0, false, 24, 1);
+            acc.AddRange(new[] { first }, 0, 1);
+            HitNumberBalancedLane lane = Assert.Single(acc.Snapshot(1.00));
+            Assert.Equal(2, lane.LastHitTier); // 冷启动首击默认 T2
+            float coldScale = lane.ComputeScale();
+            Assert.True(coldScale > 1.30f);
+
+            // 衰减后用大字号/斩杀触发 T3：冲击缩放更高、描边更厚且触发微震颤。
+            acc.Snapshot(1.30);
+            HitNumberSegment heavy = Segment(2, "s2", 1.32, 850);
+            heavy.Packed = HitNumberPacking.Create(4, false, 36, 1);
+            acc.AddRange(new[] { heavy }, 0, 1);
+            // 斩杀轨与普通物理轨分轨：新轨应直接 T3。
+            HitNumberBalancedLane execLane = Assert.Single(acc.Snapshot(1.32), l => (l.Flags & 4) != 0);
+            Assert.Equal(3, execLane.LastHitTier);
+            Assert.True(execLane.ComputeScale() > coldScale);
+            Assert.True(execLane.ComputeBlur() > 3.5f);
+            execLane.ComputeShake(1.34, out float sx, out float sy);
+            Assert.True(Math.Abs(sx) > 0.01f || Math.Abs(sy) > 0.01f);
+            execLane.ComputeShake(1.50, out float settledX, out float settledY);
+            Assert.Equal(0f, settledX);
+            Assert.Equal(0f, settledY);
+        }
+
+        [Fact]
+        public void BalancedB1_AdaptiveWhiteFlashProtectsPaleBlockColorsFromWashingOut()
+        {
+            Color red = Color.FromArgb(0xFF, 0x00, 0x00);
+            Color paleYellow = Color.FromArgb(0xFF, 0xE7, 0x70); // 挡拆过穿浅黄
+            Color palePink = Color.FromArgb(0xFF, 0x7F, 0x7F);   // 敌方过穿浅粉
+
+            Color flashedRed = HitNumberBalancedLane.BlendTowardsWhiteAdaptive(red, 0.55f);
+            Color flashedYellow = HitNumberBalancedLane.BlendTowardsWhiteAdaptive(paleYellow, 0.55f);
+            Color flashedPink = HitNumberBalancedLane.BlendTowardsWhiteAdaptive(palePink, 0.55f);
+
+            // 饱和红白闪提亮幅度远大于浅黄挡拆色，保护浅黄不洗白撞脸 MISS。
+            int redDelta = (flashedRed.G - red.G) + (flashedRed.B - red.B);
+            int yellowDelta = (flashedYellow.G - paleYellow.G) + (flashedYellow.B - paleYellow.B);
+            Assert.True(redDelta > yellowDelta * 2);
+            Assert.True(flashedYellow.B < 200);
+            Assert.True(flashedPink.G < 205);
+        }
+
+        [Fact]
+        public void BalancedB1_DamageSizeWeightsFontSizeAndEvictionProtectsExecuteLane()
+        {
+            var acc = new HitNumberBalancedAccumulator();
+            HitNumberSegment exec = Segment(1, "e1", 1.00, 50);
+            exec.Packed = HitNumberPacking.Create(4, false, 36, 1);
+            HitNumberSegment small = Segment(2, "e2", 1.01, 40);
+            small.Packed = HitNumberPacking.Create(0, false, 18, 2);
+            HitNumberSegment mid = Segment(3, "e3", 1.02, 400);
+            mid.Packed = HitNumberPacking.Create(0, false, 28, 3);
+            HitNumberSegment fourth = Segment(4, "e4", 1.03, 500);
+            fourth.Packed = HitNumberPacking.Create(0, false, 30, 5);
+            acc.AddRange(new[] { exec, small, mid, fourth }, 0, 4);
+
+            var lanes = acc.Snapshot(1.03);
+            Assert.Equal(3, lanes.Count);
+            Assert.Contains(lanes, l => (l.Flags & 4) != 0);
+            Assert.DoesNotContain(lanes, l => l.MainColorId == 2); // 最低优先级的 40 伤害小轨被淘汰
+
+            HitNumberBalancedLane execLane = Assert.Single(lanes, l => (l.Flags & 4) != 0);
+            HitNumberBalancedLane midLane = Assert.Single(lanes, l => l.MainColorId == 3);
+            Assert.True(execLane.ComputeFontSize() > midLane.ComputeFontSize());
+        }
+
+        [Fact]
+        public void BalancedB1_MissLaneSuppressedDuringActiveHitsAndShownOnEmptyTarget()
+        {
+            var acc = new HitNumberBalancedAccumulator();
+            HitNumberSegment missEmpty = Segment(1, "m1", 1.00, 0);
+            missEmpty.Packed = HitNumberPacking.Create(0, true, 24, 0);
+            acc.AddRange(new[] { missEmpty }, 0, 1);
+            Assert.True(Assert.Single(acc.Snapshot(1.10)).IsMissLane);
+
+            // 命中后立刻清掉 MISS 轨；活跃命中后 0.35s 内的 MISS 被抑制。
+            HitNumberSegment hit = Segment(2, "h1", 1.15, 220);
+            hit.Packed = HitNumberPacking.Create(0, false, 28, 1);
+            HitNumberSegment suppressedMiss = Segment(3, "m2", 1.25, 0);
+            suppressedMiss.Packed = HitNumberPacking.Create(0, true, 24, 0);
+            acc.AddRange(new[] { hit, suppressedMiss }, 0, 2);
+
+            var active = acc.Snapshot(1.26);
+            Assert.DoesNotContain(active, l => l.IsMissLane);
+            Assert.Single(active);
         }
 
         [Theory]
@@ -1056,21 +1267,6 @@ namespace CF7Launcher.Tests.Guardian
                 Damage = damage,
                 Packed = HitNumberPacking.Create(0, false, 28, 0)
             };
-        }
-
-        private static HitNumberLayoutFrame BuildLimitedFrame(
-            IReadOnlyList<HitNumberSegment> segments,
-            bool includeDiagnostics)
-        {
-            return HitNumberLayoutEngine.BuildFrame(
-                segments,
-                0,
-                2.0,
-                HitNumberLayoutCandidate.BalancedSummary,
-                HitNumberCamera.Identity,
-                1,
-                HitNumberLayoutEngine.DefaultLifetimeSeconds,
-                includeDiagnostics);
         }
 
         private static List<HitNumberSegment> BuildIndependentBursts(
