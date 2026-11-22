@@ -5087,18 +5087,6 @@
           }
         },
         {
-          "type": "兵种67",
-          "name": "火凤",
-          "spritename": "敌人-粉红头发御姐",
-          "isHostile": true,
-          "minLevel": 34,
-          "maxLevel": 50,
-          "weight": 5,
-          "Parameters": {
-            "称号": "火凤堂赤旌"
-          }
-        },
-        {
           "type": "兵种268",
           "name": "黑铁流锤",
           "spritename": "敌人-黑铁精英流锤兵",
@@ -5240,6 +5228,18 @@
           "weight": 4,
           "Parameters": {
             "称号": "翅虎堂司暗"
+          }
+        },
+        {
+          "type": "兵种67",
+          "name": "火凤",
+          "spritename": "敌人-粉红头发御姐",
+          "isHostile": true,
+          "minLevel": 40,
+          "maxLevel": 50,
+          "weight": 4,
+          "Parameters": {
+            "称号": "火凤堂赤旌"
           }
         },
         {
@@ -5834,6 +5834,19 @@
           }
         },
         {
+          "type": "兵种67",
+          "name": "火凤",
+          "spritename": "敌人-粉红头发御姐",
+          "isHostile": true,
+          "minLevel": 34,
+          "maxLevel": 34,
+          "weight": 1,
+          "Parameters": {
+            "phoenixReviveShieldFrames": 150,
+            "称号": "火凤堂赤旌"
+          }
+        },
+        {
           "type": "兵种66",
           "name": "翅虎",
           "spritename": "敌人-飞刀小子",
@@ -5918,7 +5931,7 @@
           }
         }
       ],
-      "unitCount": 86
+      "unitCount": 87
     },
     "铁血": {
       "teamCount": 101,
@@ -135398,6 +135411,7 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "phoenixReviveShieldFrames": 150,
             "称号": "火凤堂赤旌"
           }
         },
