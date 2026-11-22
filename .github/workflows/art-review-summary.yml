@@ -29,7 +29,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: 取已核验的汇总程序
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           repository: FlashNightModReborn/cf7-evidence
           ref: c95bdac91a6e47d7e83e61513f2b837a61d9f7ba
