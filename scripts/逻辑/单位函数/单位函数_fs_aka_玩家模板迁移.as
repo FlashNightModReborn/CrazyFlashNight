@@ -6,8 +6,8 @@ _root.玩家属性投影.允许遗留装备变更 = function():Boolean {
 _root.玩家属性投影.刷新当前模式 = function(target:Object):Object {
     return org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.requestPersistentRefresh(target,"morph");
 };
-_root.玩家属性投影.模式组件就绪 = function(target:Object,body:Object):Void {
-    org.flashNight.arki.unit.PlayerStatRefreshCoordinator.notifyModeComponentReady(target,body);
+_root.玩家属性投影.变形手枪命令 = function(skin:Object,proof:Object,expected:String,fold:Boolean):Boolean {
+    return org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.commandDominatorMode(skin,proof,expected,fold);
 };
 _root.玩家属性投影.恢复遗留装备 = function():Object {
     var result:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.recoverLegacyEquipment(_root.gameworld[_root.控制目标]);
@@ -236,10 +236,6 @@ _root.刷新人物装扮 = function(目标,属性重建凭据:Object) {
     // remainingImpactForce / lastHitTime / 绝对衰减基线都留在同一个 MovieClip 上，
     // 无需重投影；装备属性变化后只重建依赖当前 HP/防御/韧性的派生显示。
     org.flashNight.arki.component.StatHandler.ImpactHandler.refreshImpactDerived(目标人物);
-
-    if (目标人物.变形手枪) {
-        目标人物.变形手枪.切换武器形态为当前模式();
-    }
 
     // 修复：不进入"刷新装扮"帧（避免播放到frame 500导致hp归零）
     // 直接在脚本中完成"刷新装扮"帧的意图：清除格斗架势
@@ -1893,16 +1889,11 @@ _root.主角函数.读取被动效果 = function() {
     if (this.被动技能.枪械师 && this.被动技能.枪械师.启用 && this.被动技能.枪械师.等级) {
         this.buff.赋值("手枪威力", "加算", this.被动技能.枪械师.等级 * 5, "增益");
         this.buff.赋值("手枪2威力", "加算", this.被动技能.枪械师.等级 * 5, "增益");
-        if (this.变形手枪) {
-            this.变形手枪.切换武器形态为当前模式();
-        }
     } else {
         this.buff.删除("手枪威力", "加算");
         this.buff.删除("手枪2威力", "加算");
-        if (this.变形手枪) {
-            this.变形手枪.切换武器形态为当前模式();
-        }
     }
+    if (this.手枪.name == "dominator") _root.玩家属性投影.刷新当前模式(this);
 
 
     if (this.man.初始化长枪射击函数) {

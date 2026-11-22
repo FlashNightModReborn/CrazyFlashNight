@@ -5269,6 +5269,55 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task KnownShutdownFailureKeepsTransportAndOnlyReturnsToOriginalVisual(bool sameVisual)
+        {
+            using (var harness = new RecoveryHarness())
+            {
+                harness.OpenKnownSession();
+                harness.Task.SetShutdownRetryPanel(instance => sameVisual && instance == Panel);
+                var fence = System.Threading.Tasks.Task.Run(() =>
+                    harness.Task.TryCompleteHostShutdownPersistence(2000, out _));
+                Assert.True(SpinWait.SpinUntil(() => harness.RecoveryFlash.Count == 1, 2000));
+                JObject recovery = harness.RecoveryFlash[0];
+                harness.Task.HandleFlashResponse(RecoveryResponse(recovery, "unsettled",
+                    Generation, 3, 3, InitialDrugRevision, success: false, error: "flush_failed"), null);
+                Assert.False(await fence);
+                Assert.Empty(harness.ForcedGenerations);
+                Assert.True(harness.Task.HasBoundPanel);
+                Assert.Equal(!sameVisual, harness.Task.RequiresDetachRecovery);
+                Assert.Equal(sameVisual, harness.Web.Exists(msg =>
+                    msg.Value<string>("type") == "character_build_retry_available"
+                    && msg.Value<string>("panelInstanceId") == Panel));
+                if (sameVisual) Assert.Equal("flush_failed", harness.Task.WriteState);
+            }
+        }
+
+        [Fact]
+        public async Task NavigationBeforeQueuedShutdownHandbackKeepsOrphanFenced()
+        {
+            using (var harness = new RecoveryHarness())
+            {
+                harness.OpenKnownSession();
+                var queued = new Queue<Action>();
+                harness.Task.SetInvoker(queued.Enqueue);
+                harness.Task.SetShutdownRetryPanel(instance => true);
+                var fence = System.Threading.Tasks.Task.Run(() =>
+                    harness.Task.TryCompleteHostShutdownPersistence(2000, out _));
+                Assert.True(SpinWait.SpinUntil(() => harness.RecoveryFlash.Count == 1, 2000));
+                harness.Task.HandleFlashResponse(RecoveryResponse(harness.RecoveryFlash[0], "unsettled",
+                    Generation, 3, 3, InitialDrugRevision, success: false, error: "flush_failed"), null);
+                Assert.False(await fence);
+                Assert.True(harness.Task.BeginWebViewDetachBarrier());
+                while (queued.Count > 0) queued.Dequeue()();
+                Assert.True(harness.Task.RequiresDetachRecovery);
+                Assert.Empty(harness.ForcedGenerations);
+                Assert.False(harness.Web.Exists(msg => msg.Value<string>("type") == "character_build_retry_available"));
+            }
+        }
+
         [Fact]
         public void RecoveryFailureAttemptsOncePerGenerationAndCapsAutomaticReconnect()
         {
@@ -5289,7 +5338,7 @@ namespace CF7Launcher.Tests.Guardian
                     3,
                     InitialDrugRevision,
                     success: false,
-                    error: "flush_failed");
+                    error: "invalid_payload");
                 harness.Task.HandleFlashResponse(
                     failed, null);
 
@@ -5363,7 +5412,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(harness.Task.BeginWebViewDetach(31));
             JObject first = Assert.Single(harness.RecoveryFlash);
             harness.Task.HandleFlashResponse(RecoveryResponse(first, "unsettled",
-                Generation, 3, 3, InitialDrugRevision, success: false, error: error), null);
+                Generation, 3, 3, InitialDrugRevision, success: false, error: "invalid_payload"), null);
             harness.ReadyGeneration = 0;
             harness.Task.HandleDisconnect(31);
             harness.ReadyGeneration = 32;

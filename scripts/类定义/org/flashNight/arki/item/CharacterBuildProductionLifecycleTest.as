@@ -28,7 +28,7 @@ class org.flashNight.arki.item.CharacterBuildProductionLifecycleTest {
         "性别","脸型","发型","等级","getItemData","itemCatalog","itemUses","_webPanelPauseLease",
         "快捷物品栏键1","快捷物品栏键2","快捷物品栏键3","快捷物品栏键4","药剂组切换键","keyshow",
         "__statCoordinatorForTests","帧计时器","装备引用配置","UI系统","玩家信息界面","敌人函数",
-        "主角被动技能","暂停","当前为战斗地图","最大等级","当前玩家总数","发布消息","服务器",
+        "武器类型:dominator","主角被动技能","暂停","当前为战斗地图","最大等级","当前玩家总数","发布消息","服务器",
         "全局健身HP加成","全局健身MP加成","全局健身空攻加成","全局健身防御加成","全局健身内力加成",
         "经脉HP加成","经脉MP加成","经脉防御加成","经脉内力加成","主角是否在地上","server"];
     private static function check(value:Boolean, label:String):Boolean {
@@ -47,12 +47,12 @@ class org.flashNight.arki.item.CharacterBuildProductionLifecycleTest {
         fixture=org.flashNight.arki.item.CharacterBuildServiceTest;
         try {
             setup(); runJointCase(); if(failed==0) runMultiSlotCase();
-            var modes:Array=["ready","timeout","stale"];
+            var modes:Array=["visual_absent","mode_commands","host_recovery","host_tail"];
             for(i=0;i<modes.length && failed==0;i++) {
                 CharacterBuildService.testOnlyReset();
                 coordinator.resetContext(null,"fixture_between_cases",null);
                 DepthManager.instance.dispose();world.removeMovieClip();
-                setup();runModeWaitCase(modes[i]);
+                setup();runDominatorCase(modes[i]);
             }
             var recoveryCases:Array=["floor","unequip","swap","resources","identity","corrected_resources","spawn_floor","spawn_bad_seed"];
             for(i=0;i<recoveryCases.length;i++) {
@@ -207,17 +207,18 @@ class org.flashNight.arki.item.CharacterBuildProductionLifecycleTest {
         check(hero.hp==600 && hero.mp==200,"multi-slot close preserves current HP and MP");
         check(_root.savePath=="isolated-character-production-fixture","multi-slot case never adopts a player save");
     }
-    /** The renderer is inert here: only this component receipt is simulated.
-     * The actual owner, rebuild, final barriers and persistence count stay real. */
-    private static function runModeWaitCase(mode:String):Void {
-        phase="mode_wait_"+mode;
-        _root.刷新人物装扮(hero._name);coordinator.flush("mode_wait_baseline");
+    /** Real projection and session with an inert renderer and isolated persistence port. */
+    private static function runDominatorCase(mode:String):Void {
+        phase="dominator_"+mode;
+        _root["武器类型:dominator"]="击杀模式";
+        _root.刷新人物装扮(hero._name);coordinator.flush("dominator_baseline");
         var item:Object=fixture.equipment("dominator",1,"",[],20);
         _root.物品栏.背包.items["9"]=item;
         fixture.setCatalogData(_root,item.name,{type:"武器",use:"手枪",actiontype:"普通",
             data:{level:1,weight:1,power:30,capacity:20,interval:120,velocity:20,
                 split:1,bullet:"普通子弹",diffusion:0,damage:0,gunpower:0}});
-        var panel:String="workbench.mode-wait."+mode;
+        item.value.shot=11;
+        var panel:String="workbench.dominator."+mode;
         var opened:Object=CharacterBuildService.execute("snapshot",fixture.wireParams(panel,panel+".open"));
         if(!check(opened.success===true,mode+" opens before Dominator mutation")) return;
         var changed:Object=CharacterBuildService.execute("equipEquipment",
@@ -225,57 +226,59 @@ class org.flashNight.arki.item.CharacterBuildProductionLifecycleTest {
         if(!check(changed.success===true && changed.changed===true,mode+" equips Dominator")) return;
         var params:Object=fixture.wireParams(panel,panel+".finalize");
         params.sessionGeneration=changed.sessionGeneration;params.expectedLoadoutRevision=changed.loadoutRevision;
-        var replies:Array=[];var codec:LiteJSON=new LiteJSON();
-        _root.server={sendSocketMessage:function(message:String):Boolean {replies.push(codec.parse(message));return true;}};
-        var api:Object=org.flashNight.arki.item.CharacterBuildService;
-        api.handle("finalize",params);
-        var ticket:Object=api._statTicket;var body:Object=hero.__playerStatBody;
-        diagnostic("mode_wait_"+mode,null);
-        if(!check(api._modeFinalizeWait!=null && coordinator.awaitingEquipmentComponent(ticket)
-                && replies.length==0 && callbacks.state.saveCalls==0,
-                mode+" defers response and persistence for the original component")) return;
-        api.pollModeFinalization();
-        check(replies.length==0 && hero.__playerStatBody===body && callbacks.state.saveCalls==0,
-            mode+" repeated wait neither rebuilds nor saves");
-        check(CharacterBuildService.execute("snapshot",fixture.wireParams(panel,panel+".busy")).error=="write_busy",
-            mode+" cannot replace the active session during wait");
-        if(mode=="ready") {
-            hero.变形手枪={属性投影身体:{}};
-            PlayerStatRefreshCoordinator.notifyModeComponentReady(hero,hero.变形手枪.属性投影身体);
-            check(coordinator.awaitingEquipmentComponent(ticket),"stale component receipt cannot finish current body");
-            hero.变形手枪.属性投影身体=body;
-            PlayerStatRefreshCoordinator.notifyModeComponentReady(hero,body);
-        } else if(mode=="timeout") api._modeFinalizeWait.deadline=0;
-        else coordinator.resetContext(_root.存档系统,"replacement_context",_root._saveExt);
-        api.pollModeFinalization();api.pollModeFinalization();
-        trace("CHARACTER_MODE_WAIT_RESULT "+codec.stringifySafe({mode:mode,reply:replies[0],
-            saveCalls:callbacks.state.saveCalls,dirty:_root.存档系统.dirtyMark,
-            ticketStatus:ticket.status,planStage:hero.__playerStatInitPlan.stage}));
-        check(api._modeFinalizeWait==null && replies.length==1,mode+" produces one terminal reply");
-        if(mode=="ready") {
-            check(replies[0].success===true && replies[0].closed===true && callbacks.state.saveCalls==1,
-                "actual ready receipt finalizes once with one persistence call");
-            check(hero.__playerStatBody===body && hero.hp==600 && hero.mp==200,
-                "component completion preserves body HP and MP");
-        } else check(replies[0].success===false && replies[0].error==(mode=="timeout" ? "flush_failed" : "stale_session")
-                && callbacks.state.saveCalls==0,mode+" remains a known failure without persistence");
-        if(mode=="timeout") {
-            check(hero.__playerStatBody===body,"timeout alone cannot rebuild the body");
-            params.recoverProjection=true;params.requestCallId=panel+".recover";
-            api.handle("finalize",params);
-            var retryBody:Object=hero.__playerStatBody;
-            check(api._modeFinalizeWait!=null && retryBody!==body && replies.length==1 && callbacks.state.saveCalls==0,
-                "explicit recovery after known timeout rebuilds once and still waits before saving");
-            hero.变形手枪={属性投影身体:body};
-            PlayerStatRefreshCoordinator.notifyModeComponentReady(hero,body);
-            api.pollModeFinalization();
-            check(replies.length==1,"old component cannot complete recovered body");
-            hero.变形手枪.属性投影身体=retryBody;
-            PlayerStatRefreshCoordinator.notifyModeComponentReady(hero,retryBody);
-            api.pollModeFinalization();
-            check(replies.length==2 && replies[1].success===true && callbacks.state.saveCalls==1,
-                "explicit recovery persists only after its own component receipt");
+        var api:Object=org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+        if (mode=="host_recovery" || mode=="host_tail") {
+            var tail:Boolean=mode=="host_tail";
+            var debugCoordinator:Object=coordinator;
+            var injection:Object=tail ? debugCoordinator.adapter : api;
+            var step:String=tail ? "derive" : "buildPersistentSnapshot";
+            var original:Function=injection[step];
+            injection[step]=function() {throw new Error("fixture_projection_failure");};
+            var rejected:Object;
+            try {rejected=CharacterBuildService.execute("finalize",params);}
+            finally {injection[step]=original;}
+            var plan:Object=hero.__playerStatInitPlan;
+            var failedBody:Object=hero.__playerStatBody;
+            var hp:Number=hero.hp;var mp:Number=hero.mp;
+            if (!check(rejected.error=="flush_failed" && plan.stage==(tail ? "final_numeric" : "prepare_numeric")
+                    && (plan.tailCheckpoint!=undefined)==tail && callbacks.state.saveCalls==0,
+                    "real started projection fails at its intended checkpoint before saving")) return;
+            var recovery:Object=fixture.wireParams(panel,"host.recover.1.1");
+            recovery.knownGeneration=opened.sessionGeneration;
+            var settled:Object=CharacterBuildService.recoverDetach(recovery);
+            check(settled.success && settled.pauseReleased && settled.recoveryState=="settled"
+                && callbacks.state.saveCalls==1,"exact Host recovery restarts the original failed plan and saves once");
+            check((hero.__playerStatBody===failedBody)==tail && hero.hp==hp && hero.mp==mp,
+                "tail recovery keeps its body and resources; pre-checkpoint recovery rebuilds once");
+            var replay:Object=CharacterBuildService.recoverDetach(recovery);
+            check(replay.success && callbacks.state.saveCalls==1,"repeated Host recovery replays the terminal proof");
+        } else {
+            var finalized:Object=CharacterBuildService.execute("finalize",params);
+            if (!check(finalized.success && finalized.closed && callbacks.state.saveCalls==1
+                    && hero.__playerStatFullReady===hero.__playerStatBody,"missing renderer allows synchronous close/save")) return;
+            check(hero["武器类型:dominator"]=="击杀模式" && item.value.shot==11,
+                "initial mode restores without converting saved shots");
+            if (mode=="mode_commands") {
+                var proof:Object={world:world,actor:hero,item:item,body:hero.__playerStatBody,key:"hand"};
+                var skin:Object={__dressupPlacementIdentity:proof};
+                hero.dressupRegistry={hand:{identity:proof}};
+                check(api.commandDominatorMode(skin,proof,"击杀模式",false) && item.value.shot==1,
+                    "real decomposition command converts shots once");
+                check(!api.commandDominatorMode(skin,proof,"击杀模式",false) && item.value.shot==1,
+                    "replayed mode intent cannot convert twice");
+                hero.攻击模式="空手";hero.dominator动画帧=1;
+                check(api.commandDominatorMode(skin,proof,"分解模式",true) && item.value.shot==17
+                    && _root["武器类型:dominator"]=="分解模式","fold restores stun but retains the selected world mode");
+                check(api.commandDominatorMode(skin,proof,"麻醉模式",false) && item.value.shot==11,
+                    "stun to lethal uses original rounding");
+                api.requestPersistentRefresh(hero,"morph");
+                check(item.value.shot==11,"ordinary refresh never repeats the conversion");
+                hero.dressupRegistry.hand.identity={};
+                check(!api.commandDominatorMode(skin,proof,"击杀模式",false) && item.value.shot==11,
+                    "replaced placement cannot write the live item");
+            }
         }
+        diagnostic("dominator_"+mode,null);
     }
     private static function diagnostic(label:String,result:Object):Void {
         var api:Object=org.flashNight.arki.item.CharacterBuildService;

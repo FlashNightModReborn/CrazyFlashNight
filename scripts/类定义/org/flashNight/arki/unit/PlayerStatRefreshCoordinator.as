@@ -316,8 +316,6 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
         target.__playerStatProjectionBlocked=false;
         delete target.__playerStatShootBeforeFault;
         delete target.__persistentStatBase;
-        delete target.变形手枪;
-        delete target.__dominatorModeReadyBody;
     }
     public function detachHeroBinding():Void {
         actor=null;world=null;body=null;ready=false;appliedBody=null;checkpoint=null;
@@ -388,18 +386,6 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
             c.fail(c.capture(),"lifecycle:"+plan.stage,error);
         } else if(spawnFailedHook!=undefined) spawnFailedHook(plan.actor,plan.body,error);
     }
-    public static function notifyModeComponentReady(target:Object,capturedBody:Object):Void {
-        if(capturedBody==null || target.__playerStatBody!==capturedBody || target.变形手枪.属性投影身体!==capturedBody) return;
-        var plan:Object=target.__playerStatInitPlan;
-        if(plan==undefined || !planCurrent(plan)) return;
-        target.__dominatorModeReadyBody=capturedBody;
-        if(plan.open==0) finishFullPlan(plan);
-    }
-    private static function modeComponentsReady(plan:Object):Boolean {
-        var target:Object=plan.actor;
-        var projection:Object=org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection;
-        return projection.numericSourceRef(target,"手枪").name!="dominator" || target.__dominatorModeReadyBody===plan.body;
-    }
     private static function canonicalCurrent(target:Object):Boolean {
         var api:Object=org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
         var projection:Object=org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection;
@@ -415,7 +401,6 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
         if(plan.complete===true) return {status:"unchanged",reason:""};
         if(!planCurrent(plan)) return {status:"failed",reason:"stale_lifecycle"};
         if(plan.open>0 || scenePending(plan)) return {status:"pending",reason:"outer_initialization"};
-        if(!modeComponentsReady(plan)) {plan.stage="waiting_mode_component";return {status:"pending",reason:"mode_component"};}
         if(plan.failed===true) return {status:"failed",reason:"lifecycle_owner_recovery_required"};
         var target:Object=plan.actor;var c:PlayerStatRefreshCoordinator=plan.coordinator;
         var api:Object=org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
@@ -613,16 +598,6 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
             owner:owner,status:"planned",stage:"planned"};
         transition=ticket; return ticket;
     }
-    /** 已受理装备重建的真实异步组件等待；不是失败，也不允许重新建身体。 */
-    public function awaitingEquipmentComponent(ticket:Object):Boolean {
-        if(ticket==null || ticket!==transition || ticket.status!="started" || ticket.context!==context
-                || ticket.actor!==actor || ticket.world!==world || ticket.targetBody!==body
-                || !current(capture(),false)) return false;
-        var plan:Object=actor.__playerStatInitPlan;
-        return plan!=undefined && plan.ticket===ticket && plan.actor===actor && plan.body===body
-            && plan.context===context && plan.world===world && plan.open==0 && plan.failed!==true
-            && plan.complete!==true && plan.stage=="waiting_mode_component";
-    }
     public function startEquipmentTransition(ticket:Object,value:Object):Object {
         if(ticket!==transition || ticket.context!==context || ticket.status!="planned"
                 || actor!==value || ticket.actor!==actor || ticket.world!==world
@@ -694,10 +669,6 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
         if(flushing) return result("pending","reentrant");
         if(actor==null || body==null || world==null) return result("pending","pending_actor");
         if((dirtyMask() & 4)!=0 && transition!=null && transition.status=="started") {
-            if(awaitingEquipmentComponent(transition)) {
-                if(typeof adapter.block=="function") adapter.block(capture(),"visibility","mode_component");
-                return result("pending","mode_component");
-            }
             return fail(capture(),"equipment_owner_recovery",new Error("equipment_owner_recovery_required"));
         }
         if(!current(capture(),false)) return fail(capture(),"identity",new Error("identity_changed"));
@@ -751,10 +722,6 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
                             stage="equipment_preflight";
                             if(typeof adapter.verifyEquipmentInput!="function" || adapter.verifyEquipmentInput(ticket)!==true) throw new Error("equipment_proof_rejected");
                             stage="equipment_rebuild"; adapter.rebuild(ticket);
-                        }
-                        if(awaitingEquipmentComponent(ticket)) {
-                            if(typeof adapter.block=="function") adapter.block(capture(),"visibility","mode_component");
-                            return result("pending","mode_component");
                         }
                         if(ticket!==transition || ticket.status!="completed" || ticket.context!==context
                                 || ticket.world!==world || ticket.actor!==actor || body!==ticket.targetBody

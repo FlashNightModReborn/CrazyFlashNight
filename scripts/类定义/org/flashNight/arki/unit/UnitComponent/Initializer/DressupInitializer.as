@@ -377,6 +377,43 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         return {weapon:output,cache:cache,baseProps:baseProps};
     }
 
+    /** 换场/首次装入只恢复模式，不换算已保存的射击计数。 */
+    private static function initializeDominatorMode(target:Object):Void {
+        var item:Object = target.手枪;
+        if (item.name != "dominator") {
+            delete target.__dominatorItem;
+            return;
+        }
+        if (target.__dominatorItem === item) return;
+        target.__dominatorItem = item;
+        var mode:String = target._name === _root.控制目标 ? _root["武器类型:dominator"] : undefined;
+        if (mode != "击杀模式" && mode != "分解模式") mode = "麻醉模式";
+        target["武器类型:dominator"] = mode;
+        target.dominator动画帧 = mode == "击杀模式" ? 50 : (mode == "分解模式" ? 95 : 1);
+    }
+
+    /** 动作只提交当前 placement 观察到的模式。装备、身体或模式变化后旧意图失效。 */
+    public static function commandDominatorMode(skin:Object, proof:Object, expected:String, fold:Boolean):Boolean {
+        if (proof == undefined || skin.__dressupPlacementIdentity !== proof) return false;
+        var target:Object = proof.actor;
+        var item:Object = proof.item;
+        if (target == undefined || proof.world !== _root.gameworld || target._parent !== proof.world
+                || proof.world[target._name] !== target || target.__playerStatBody !== proof.body
+                || target.dressupRegistry[proof.key].identity !== proof || target.__dominatorItem !== item
+                || item.name != "dominator" || target.手枪 !== item
+                || (target._name === _root.控制目标 && _root.物品栏.装备栏.getItem("手枪") !== item)
+                || target["武器类型:dominator"] !== expected) return false;
+        if (expected != "麻醉模式" && expected != "击杀模式" && expected != "分解模式") return false;
+        if (fold && (expected == "麻醉模式" || target.dominator动画帧 != 1 || target.攻击模式 == "手枪")) return false;
+        var next:String = fold || expected == "分解模式" ? "麻醉模式" : (expected == "麻醉模式" ? "击杀模式" : "分解模式");
+        var shot:Number = Number(item.value.shot);
+        target["武器类型:dominator"] = next;
+        item.value.shot = Math.ceil(next == "麻醉模式" ? shot / 0.06 : shot * (next == "击杀模式" ? 0.6 : 0.06));
+        if (!fold && target._name === _root.控制目标) _root["武器类型:dominator"] = next;
+        requestPersistentRefresh(target,"morph");
+        return true;
+    }
+
     public static function calculateDominatorMode(raw:Object,mode:String,gunBonus:Number,gunsmithBonus:Number):Object {
         var output:Object=copyNumericInput(raw);
         var coefficient:Number=mode=="分解模式" ? 28 : (mode=="击杀模式" ? 7 : 1);
@@ -1458,6 +1495,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         // 冻结权威装备栏输入；后续 lifecycle 只能通过 RuntimeEquipmentProjection
         // 申请有所有权的运行态空槽借用，不能污染 CharacterBuild 的 canonical 判定。
         RuntimeEquipmentProjection.beginCanonical(target);
+        initializeDominatorMode(target);
         org.flashNight.arki.unit.Action.Huofeng.HuofengRunState.reconcileEquipment(target);
 
         // 更新装扮数据

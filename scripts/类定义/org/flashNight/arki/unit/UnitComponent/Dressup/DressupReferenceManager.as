@@ -201,6 +201,14 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
         if (placement && placement.mc === mc) {
             placement.identity = {};
             if (skin) skin.__dressupPlacementIdentity = placement.identity;
+            if (skin && baseRefName == "手枪_引用" && skinConfig == "枪-手枪-dominator") {
+                // 捕获 attach 时的实例。迟到的 load 不能重新认领后继装备或身体。
+                placement.identity.actor = unit;
+                placement.identity.body = unit.__playerStatBody;
+                placement.identity.item = unit.手枪;
+                placement.identity.world = _root.gameworld;
+                placement.identity.key = referenceName + "@" + instanceName;
+            }
             unit.dressupPlacementVersion = (Number(unit.dressupPlacementVersion) || 0) + 1;
         }
 

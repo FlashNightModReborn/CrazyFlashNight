@@ -469,6 +469,8 @@ Character Build 内的 loadout source 现支持与 exact `{sourceKind:"inventory
 
 ### 2.5 角色构筑会话、默认入口与双向导航屏障（复核至 2026-07-29 工作树）
 
+原生退出收到同会话、同装备与药剂版本的已知 `flush_failed` 时保留连接。Host 核对本次接管、绑定、传输代次和仍然可见的原工作台，把显式重试交回该面板。普通快照不解除失败态。真正的断连、导航和投递结果未知仍由原有恢复流程接管，暂停只在现役终态证明成立后释放。
+
 物品服用确认提交后，Web 必须先采用 fresh snapshot，再按同一物理槽与同一内部物品名恢复选择及原候选格/服用按钮焦点；旧 lease 只用于已完成的写请求，绝不能带入下一次服用。物品耗尽、换位、换物或玩家已选择其他槽时不恢复。
 
 角色构筑使用顶层 `panel=workbench`，以 `profile=battlebox,view=build` 进入同一 PanelHost instance；`build ↔ storage` 是实例内部切页，不重开 panel、不换 pause lease。Native HUD `EQUIP_UI` 先做 AS2 opener preflight，再进入 Character Build；该入口已冻结为 Web-only，preflight、发送或挂载失败只给出可见错误，不再回退完整旧装备 Hub。业务 wire 独立为 `domain=loadout`：只读/收束命令为 `snapshot/candidates/tooltip/flushLive/statsSnapshot/finalize`，写命令为 `equipEquipment/unequipEquipment/equipDrug/unequipDrug`。AS2 `sessionGeneration`、Host binding epoch、browser generation 与 transport ready generation 是不同水位，任何一层都不得互相替代；旧回包、旧 ready 或 foreign instance 不能清当前 pending/dirty/reconcile。candidate 资格、11 个装备槽、4 个药剂槽、三条 revision 与写后签名均由 AS2 投影和复核，Web 不复制物品规则。已持有装备的候选投影、facet 复扫和 mutation preflight 必须统一读取当前实例的 `BaseItem.getData()` 有效数据，使强化、进阶/战术涂层与插件修正后的需求等级成为唯一资格事实；不得回落基础 catalog，也不得信任实例 value 中可漂移的影子等级。实例有效数据不可取得或形状非法时 fail closed。生产回归固定覆盖普通 M4A1、三阶沙漠军装、墨冰/狱火 M4A1、普通牙狼及电脑芯片巨兽，并由 runner 同时锁定物品 XML、插件 XML 与 `equipment_config.xml` 的 TierMapping。

@@ -61,7 +61,6 @@ class org.flashNight.arki.item.CharacterBuildService {
     private static var _statTicket:Object;
     // 已知早期数值失败后换装，沿用原 owner 的资源窗口，不能重采半成品上限。
     private static var _equipmentRecoveryResources:Object;
-    private static var _modeFinalizeWait:Object;
     private static var _writeInProgress:Boolean = false;
     private static var _writeAuthorityTouched:Boolean = false;
     private static var _capturedPauseLease = undefined;
@@ -128,53 +127,8 @@ class org.flashNight.arki.item.CharacterBuildService {
 
     private static function handle(commandName:String, params:Object):Void {
         var response:Object = execute(commandName, params);
-        if((commandName=="finalize" || commandName=="flushLive") && response.error=="flush_failed"
-                && deferModeFinalization(commandName,params,response)) return;
         response.task = "loadout_response";
         sendResponse(response);
-    }
-
-    /** 只等原装备重建的真实模式组件；首次调用尚未进入持久化。 */
-    private static function deferModeFinalization(commandName:String,params:Object,response:Object):Boolean {
-        var c:Object=statCoordinator();
-        if(_modeFinalizeWait!=null || c==null || typeof c.awaitingEquipmentComponent!="function"
-                || !c.awaitingEquipmentComponent(_statTicket) || !_active || _stale) return false;
-        var captured:Object={};for(var key:String in params) captured[key]=params[key];
-        var wait:Object={commandName:commandName,params:captured,response:response,ticket:_statTicket,
-            generation:_sessionGeneration,revision:_loadoutRevision,panel:_panelInstanceId,
-            context:c.contextToken(),deadline:getTimer()+2000};
-        wait.clip=_root.createEmptyMovieClip("__characterBuildModeWait",_root.getNextHighestDepth());
-        if(wait.clip==undefined) return false;
-        _modeFinalizeWait=wait;
-        wait.clip.onEnterFrame=function():Void {CharacterBuildService.pollModeFinalization();};
-        return true;
-    }
-    private static function retireModeFinalization(wait:Object):Void {
-        if(_modeFinalizeWait!==wait) return;
-        _modeFinalizeWait=null;
-        if(wait.clip!=undefined) {wait.clip.onEnterFrame=null;wait.clip.removeMovieClip();}
-    }
-    private static function pollModeFinalization():Void {
-        var wait:Object=_modeFinalizeWait;if(wait==null) return;
-        var c:Object=statCoordinator();var ticket:Object=wait.ticket;
-        var exact:Boolean=_active && !_stale && _statTicket===ticket && c!=null
-            && c.contextToken()===wait.context && _sessionGeneration==wait.generation
-            && _loadoutRevision==wait.revision && _panelInstanceId===wait.panel
-            && equipmentProofCurrent(ticket.proof);
-        var pending:Boolean=exact && c.awaitingEquipmentComponent(ticket);
-        if(pending && getTimer()<wait.deadline) return;
-        // A known component timeout permits the owner's next explicit recovery.
-        // It does not itself retry a rebuild or enter persistence.
-        if(pending) ticket.modeWaitExpired=true;
-        retireModeFinalization(wait);
-        var response:Object=wait.response;
-        if(exact && ticket.status=="completed") {
-            // 原调用未做保存；此处只收束一次已完成的投影，不重放换装。
-            response=execute(wait.commandName,wait.params);
-        } else if(!exact) {
-            response.success=false;response.error="stale_session";
-        }
-        response.task="loadout_response";sendResponse(response);
     }
 
     /**
@@ -191,9 +145,7 @@ class org.flashNight.arki.item.CharacterBuildService {
      */
     public static function execute(commandName:String, params:Object):Object {
         var result:Object;
-        if (_modeFinalizeWait != null) {
-            result = fail("write_busy");
-        } else if (params == undefined || Number(params.v) != 1) {
+        if (params == undefined || Number(params.v) != 1) {
             result = fail("unsupported_version");
         } else if (commandName == "snapshot") {
             result = executeSnapshot(params);
@@ -258,7 +210,7 @@ class org.flashNight.arki.item.CharacterBuildService {
                                                   expectedGeneration:Number):Object {
         var identity:Object = panelGate(panelInstanceId);
         if (!identity.success) return identity;
-        if (_writeInProgress || _modeFinalizeWait!=null) return fail("service_not_ready");
+        if (_writeInProgress) return fail("service_not_ready");
         if (!_active || _stale) return fail("service_not_ready");
         if (isNaN(expectedGeneration)
                 || Math.floor(expectedGeneration) != expectedGeneration
@@ -506,29 +458,29 @@ class org.flashNight.arki.item.CharacterBuildService {
         }
         if (!_liveRefreshDirty && _liveRevision == _loadoutRevision) {
             var cleanProjection:Object=statCoordinator();
-            if(cleanProjection==null) return liveFailure();
+            if(cleanProjection==null) return liveFailure("coordinator");
             var cleanBarrier:Object=cleanProjection.flush("character_clean");
-            if(cleanBarrier.status!="applied" && cleanBarrier.status!="unchanged") return liveFailure();
+            if(cleanBarrier.status!="applied" && cleanBarrier.status!="unchanged") return liveFailure("clean_projection");
             return liveResult(false);
         }
-        if (!_liveRefreshDirty) return liveFailure();
-        var c:Object=statCoordinator();if(c==null) return liveFailure();
+        if (!_liveRefreshDirty) return liveFailure("dirty_state");
+        var c:Object=statCoordinator();if(c==null) return liveFailure("coordinator");
         try {
             if(_statTicket!=null && _statTicket.context!==c.contextToken()) _statTicket=null;
             if(_statTicket!=null && _statTicket.status=="aborted") _statTicket=null;
             if(_statTicket==null) {
                 var context:Object=liveContext(root(),_slotRefs);
-                if(context==null) return liveFailure();
+                if(context==null) return liveFailure("live_context");
                 var recovery:Object=_equipmentRecoveryResources;
                 if(recovery!=null && (recovery.context!==c.contextToken() || recovery.actor!==context.hero
                         || recovery.body!==context.hero.__playerStatBody
                         || Number(context.hero.hp)!==recovery.resources.hp
-                        || Number(context.hero.mp)!==recovery.resources.mp)) return liveFailure();
+                        || Number(context.hero.mp)!==recovery.resources.mp)) return liveFailure("resource_window");
                 var proof:Object={context:c.contextToken(),generation:_sessionGeneration,revision:_loadoutRevision,
                     signature:_signature,inventory:_equipmentInventory,refs:_slotRefs.concat(),live:context};
                 var owner:Object=equipmentProjectionOwner(proof);
                 _statTicket=c.prepareEquipmentTransition(proof,owner);
-                if(_statTicket==null) return liveFailure();
+                if(_statTicket==null) return liveFailure("prepare_ticket");
                 if(recovery!=null) {
                     _statTicket.recoveryResources=recovery.resources;
                     _equipmentRecoveryResources=null;
@@ -536,31 +488,28 @@ class org.flashNight.arki.item.CharacterBuildService {
                 declareEquipmentProjection();
             }
             var ticket:Object=_statTicket;
-            if(ticket.status=="started" && typeof c.awaitingEquipmentComponent=="function"
-                    && c.awaitingEquipmentComponent(ticket)
-                    && !(recover===true && ticket.modeWaitExpired===true)) return liveFailure();
             if(ticket.status=="started" || (ticket.actor.__playerStatInitPlan.ticket===ticket
                     && ticket.actor.__playerStatInitPlan.failed===true)) {
-                if(recover!==true) return liveFailure();
+                if(recover!==true) return liveFailure("recovery_intent");
                 if(ticket.actor.__playerStatInitPlan.tailCheckpoint!=undefined) {
                     var tail:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.resumeFullInitialization(ticket,ticket.owner);
-                    if(tail.status!="applied" && tail.status!="unchanged") return liveFailure();
+                    if(tail.status!="applied" && tail.status!="unchanged") return liveFailure("tail_resume");
                 } else {
                     var resources:Object=c.fullRecoveryResources(ticket,ticket.owner);
-                    if(resources==null || !c.abortEquipmentTransition(ticket,ticket.owner)) return liveFailure();
+                    if(resources==null || !c.abortEquipmentTransition(ticket,ticket.owner)) return liveFailure("recovery_resources");
                     refreshEquipmentAttemptProof(ticket.proof);
                     _statTicket=c.prepareEquipmentTransition(ticket.proof,ticket.owner);
-                    if(_statTicket==null) return liveFailure();
+                    if(_statTicket==null) return liveFailure("prepare_ticket");
                     _statTicket.recoveryResources=resources;ticket=_statTicket;
                     declareEquipmentProjection();
                 }
             }
             var result:Object=c.flush("character_equipment");
-            if(result.status!="applied" && result.status!="unchanged") return liveFailure();
+            if(result.status!="applied" && result.status!="unchanged") return liveFailure("projection_barrier");
             if(ticket.status!="completed" || ticket.actor.__playerStatFullReady!==ticket.targetBody
-                    || !equipmentProofCurrent(ticket.proof) || !livePostcondition(ticket.proof.live)) return liveFailure();
+                    || !equipmentProofCurrent(ticket.proof) || !livePostcondition(ticket.proof.live)) return liveFailure("postcondition");
         } catch (error) {
-            return liveFailure();
+            return liveFailure("exception");
         }
         _liveRevision = _loadoutRevision;
         _liveRefreshDirty = false;
@@ -881,7 +830,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             };
         }
 
-        var resolved:Object = resolvePauseFinalizeProof(reason);
+        var resolved:Object = resolvePauseFinalizeProof(reason,true);
         if (!resolved.success) return resolved;
         var proof:Object = resolved.proof;
         if (r._webPanelPauseLease !== captured) {
@@ -927,7 +876,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             };
         }
 
-        var resolved:Object = resolvePauseFinalizeProof(reason);
+        var resolved:Object = resolvePauseFinalizeProof(reason,false);
         if (!resolved.success) {
             resolved.pauseRetained = true;
             return resolved;
@@ -952,7 +901,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     private static function resolvePauseFinalizeProof(
-        reason:String):Object {
+        reason:String, recover:Boolean):Object {
         var proof:Object;
         if (_active) {
             var sync:Object = synchronize(_sessionGeneration);
@@ -965,7 +914,7 @@ class org.flashNight.arki.item.CharacterBuildService {
                 };
             }
             proof = finalize(
-                _sessionGeneration, sync.loadoutRevision);
+                _sessionGeneration, sync.loadoutRevision, recover);
         } else if (_finalizeReceipt != null) {
             proof = replayFinalizeReceipt(
                 _finalizeReceipt.generation,
@@ -3427,7 +3376,21 @@ class org.flashNight.arki.item.CharacterBuildService {
         result.changed = changed;
         return result;
     }
-    private static function liveFailure():Object {
+    private static function liveFailure(reason:String):Object {
+        // Keep diagnostic fields off the exact response schema. Stage and ticket are bounded enums.
+        var server:Object=root().server;
+        if (typeof server.sendServerMessage=="function") {
+            var plan:Object=_statTicket.actor.__playerStatInitPlan;
+            var stage:String=plan.ticket===_statTicket ? plan.stage : undefined;
+            if (stage!="planned" && stage!="initializing" && stage!="prepare_numeric"
+                    && stage!="numeric_prepared" && stage!="final_numeric" && stage!="completed") stage="none";
+            var status:String=_statTicket.status;
+            if (status!="planned" && status!="started" && status!="completed" && status!="aborted") status="none";
+            try {
+                server.sendServerMessage("event=character_build_projection_failed reason="+reason
+                    +" stage="+stage+" ticket="+status+" session="+_sessionGeneration+" revision="+_loadoutRevision);
+            } catch (ignored) {}
+        }
         _liveRefreshRetryRequired = true;
         var result:Object = fail("flush_failed");
         result.operation = "flushLive";
@@ -3675,7 +3638,6 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     private static function clearSession():Void {
-        if(_modeFinalizeWait!=null) retireModeFinalization(_modeFinalizeWait);
         _statTicket=null;
         _equipmentRecoveryResources=null;
         _appearanceProjectionEnabled = false;

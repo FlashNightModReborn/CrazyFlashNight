@@ -1201,7 +1201,7 @@ test('legacy persistenceSucceeded cannot substitute the nested persistence proof
     assert.strictEqual(fixture.session.getState(), 'flush_failed');
 });
 
-test('fresh ordinary snapshot recovers a deterministic flush failure after view suspension', () => {
+test('ordinary reads preserve a known flush failure and an explicit retry carries recovery authority', () => {
     const fixture = createFixture();
     openClean(fixture);
     fixture.session.finalize();
@@ -1212,12 +1212,27 @@ test('fresh ordinary snapshot recovers a deterministic flush failure after view 
         active:true
     }));
     assert.strictEqual(fixture.session.getState(), 'flush_failed');
-    const refreshCallId = fixture.session.refreshSnapshot();
-    assert(refreshCallId);
-    const refresh = fixture.messages[2];
-    assert.strictEqual(refresh.cmd, 'snapshot');
-    fixture.mux.handleResponse(responseFor(refresh, {payload:projection()}));
-    assert.strictEqual(fixture.session.getState(), 'idle');
+    assert.strictEqual(fixture.session.refreshSnapshot(), null);
+    assert.strictEqual(fixture.messages.length, 2);
+    assert.strictEqual(fixture.session.getState(), 'flush_failed');
+    fixture.session.finalize();
+    assert.strictEqual(fixture.messages[2].payload.recoverProjection, true);
+});
+
+test('native shutdown hands an idle exact panel its explicit retry without sending another write', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const returned = {panelInstanceId:'panel.workbench.fixture', sessionGeneration:7,
+        writeEpoch:0, loadoutRevision:3, liveRevision:3, drugRevision:2};
+    for (const change of [{panelInstanceId:'successor'}, {sessionGeneration:8}, {liveRevision:4},
+            {writeEpoch:-1}, {drugRevision:3}]) {
+        assert.strictEqual(fixture.session.acceptShutdownRetry({...returned, ...change}), false);
+    }
+    assert.strictEqual(fixture.session.acceptShutdownRetry(returned), true);
+    assert.strictEqual(fixture.messages.length, 1);
+    assert.strictEqual(fixture.session.getState(), 'flush_failed');
+    fixture.session.finalize();
+    assert.strictEqual(fixture.messages[1].payload.recoverProjection, true);
 });
 
 test('four mutations emit only the frozen revision and lease-bound payload shapes', () => {

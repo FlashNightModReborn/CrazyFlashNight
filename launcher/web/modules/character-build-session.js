@@ -8,14 +8,14 @@
     var contract = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-session-contract.js')
         : root && root.CharacterBuildSessionContract;
-    var api = factory(mutation, contract);
+    var api = factory(mutation, contract, root && root.Bridge);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
         root.CF7.CharacterBuildSession = api;
         root.CharacterBuildSession = api;
     }
-})(typeof window !== 'undefined' ? window : globalThis, function(Mutation, Contract) {
+})(typeof window !== 'undefined' ? window : globalThis, function(Mutation, Contract, hostEvents) {
     'use strict';
 
     if (!Mutation) throw new Error('CharacterBuildMutation is required');
@@ -61,7 +61,26 @@
         this._loadoutTooltipPending = null;
         this._candidateFailureCode = '';
         this._destroyed = false;
+        this._hostEvents = options.hostEvents || hostEvents;
+        this._onShutdownReturned = this.acceptShutdownRetry.bind(this);
+        if (this._hostEvents) this._hostEvents.on('character_build_retry_available', this._onShutdownReturned);
     }
+    CharacterBuildSession.prototype.acceptShutdownRetry = function(message) {
+        if (this._destroyed || !message || (this._state !== 'idle' && this._state !== 'flush_failed')
+                || this._unknown || message.panelInstanceId !== this._panelInstanceId
+                || message.sessionGeneration !== this._sessionGeneration || this._sessionGeneration === null
+                || !Number.isSafeInteger(message.writeEpoch) || message.writeEpoch < this._writeEpoch
+                || message.loadoutRevision !== this._loadoutRevision || message.drugRevision !== this._drugRevision
+                || !Number.isSafeInteger(message.liveRevision) || message.liveRevision < this._liveRevision
+                || message.liveRevision > this._loadoutRevision) return false;
+        this._writeEpoch = message.writeEpoch;
+        this._liveRevision = message.liveRevision;
+        this._liveRefreshDirty = this._liveRevision !== this._loadoutRevision;
+        this._state = 'flush_failed';
+        this._emit('shutdown_retry_available');
+        return true;
+    };
+
     CharacterBuildSession.prototype._emit = function(reason) {
         this._onState(this._state, reason || '', this.debugState());
     };
@@ -196,8 +215,7 @@
     CharacterBuildSession.prototype.refreshSnapshot = function(options, callback) {
         if (typeof options === 'function') { callback = options; options = {}; }
         options = options || {};
-        var ordinaryRefresh = !options.reconcile
-            && (this._state === 'idle' || this._state === 'flush_failed');
+        var ordinaryRefresh = !options.reconcile && this._state === 'idle';
         if (!ordinaryRefresh
                 && !(this._state === 'needs_reconcile' && options.reconcile)) return null;
         this._cancelLoadoutTooltip('snapshot_refresh');
@@ -687,6 +705,7 @@
     CharacterBuildSession.prototype.destroy = function() {
         if (this._destroyed) return false;
         this.close();
+        if (this._hostEvents) this._hostEvents.off('character_build_retry_available', this._onShutdownReturned);
         if (this._mux && this._mux.destroy) this._mux.destroy();
         this._destroyed = true;
         return true;
