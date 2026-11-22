@@ -43,6 +43,8 @@ namespace CF7Launcher.Guardian.HitNumbers
             for (int i = 0; i < rows.Count; i++)
             {
                 HitNumberBurstRow row = rows[i];
+                // 治疗和空靶 MISS 不绘制伤害目标指向箭头。
+                if (row.Kind != CombatNumberKind.Damage || row.SuppressTargetAnchor) continue;
                 if (!_anchors.TryGetValue(row.TargetId, out TargetAnchor existing)
                     || row.LastArrivalSeconds > existing.LastArrivalSeconds)
                 {

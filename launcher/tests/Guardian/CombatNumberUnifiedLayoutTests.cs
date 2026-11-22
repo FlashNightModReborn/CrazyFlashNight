@@ -58,15 +58,22 @@ namespace CF7Launcher.Tests.Guardian
             var reference = new HitNumberRuntime(() => now);
             reference.Configure(new HitNumberRuntimeOptions(mode, 24));
             var damageItem = Assert.Single(reference.ProcessFrame("0|0|1", Damage(0)).Frame.Items);
-            Assert.Equal(HitNumberPacking.FontSize(damageItem.Packed), HitNumberPacking.FontSize(item.Packed));
+            Assert.Equal(HitNumberLayoutEngine.HealingPackedFontSize, HitNumberPacking.FontSize(item.Packed));
+            Assert.Equal(HitNumberLayoutEngine.HealingFontSize, item.FontSizeOverride);
             Assert.Equal(damageItem.VisualRole, item.VisualRole);
             Assert.Equal(0, item.HitCount);
             if (mode == HitNumberDisplayMode.Classic)
             {
                 Assert.Equal(1.3176f, item.CombinedScale, 4);
-                Assert.Equal(4f, item.CombinedBlur);
+                Assert.Equal(HitNumberLayoutEngine.AllyHealingBlur, item.CombinedBlur);
                 now = .15 + HitNumberLayoutEngine.ClassicLifetimeSeconds + .001;
                 Assert.True(runtime.ProcessFrame("", "").IsDismiss);
+            }
+            else
+            {
+                Assert.Equal(1.0f, item.CombinedScale, 4);
+                Assert.Equal(HitNumberLayoutEngine.AllyHealingBlur, item.CombinedBlur);
+                Assert.InRange(item.Alpha, 0.01f, HitNumberLayoutEngine.HealingAlphaScale + 0.001f);
             }
         }
 

@@ -9,6 +9,6 @@ $ErrorActionPreference = 'Stop'
     -SuiteFqns @('org.flashNight.arki.unit.Action.Regeneration.HealApplierTest',
         'org.flashNight.arki.unit.Action.Regeneration.HealNumberContractTest') `
     -ExpectedTracePatterns @('(?m)^===== HealApplier 汇总: run=\d+ pass=\d+ fail=0 =====\r?$',
-        '(?m)^HealNumberContract Tests Passed: 24\r?$', '(?m)^HealNumberContract Tests Failed: 0\r?$') `
-    -SuccessSummary 'HealApplier + HealNumberContract 24 assertions' `
+        '(?m)^HealNumberContract Tests Passed: 28\r?$', '(?m)^HealNumberContract Tests Failed: 0\r?$') `
+    -SuccessSummary 'HealApplier + HealNumberContract 28 assertions' `
     -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile

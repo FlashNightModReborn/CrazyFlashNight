@@ -674,7 +674,7 @@
             '本机全局偏好；世界表达与精确对账分离，不占用任何战斗键。');
         var hitGrid = node('div', 'settings-grid two');
         hitGrid.appendChild(hostSelect('hitNumberMode', '显示行为',
-            [['off','彻底关闭'],['balanced','平衡 · 目标锚定摘要'],
+            [['off','彻底关闭'],['balanced','平衡 · 语义分轨摘要'],
              ['total','总伤 · 每目标连段累计'],['classic','经典 · Flash 逐段散开'],
              ['detail','逐发 · Burst 完整矩阵']]));
         hitGrid.appendChild(hostNumber(

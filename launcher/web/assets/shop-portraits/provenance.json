@@ -72,8 +72,8 @@
       },
       {
         "path": "data/shops/npcs/Pig.json",
-        "sha256": "b92e84e52620ef2b927c5c9150e348af6a97227090129535f31b3ee5b0b71106",
-        "bytes": 1320
+        "sha256": "859110c42c2d5598fcfa1ca46fe528940f2d311df0b8e7c8a37a8552dcb7f090",
+        "bytes": 1376
       },
       {
         "path": "data/shops/npcs/King.json",
@@ -1493,5 +1493,14 @@
         "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
       }
     }
+  },
+  "shopSourceRefresh": {
+    "mode": "shop-id-metadata-only",
+    "tool": {
+      "path": "tools/refresh-shop-portrait-sources.py",
+      "sha256": "9604d32c42147990b2720237bc9b3aaf261b2b4dd5fe8c51f9fdc4ea3367e949",
+      "bytes": 12118
+    },
+    "previousActiveSourceSha256": "872d85a9e1dae89d74c2fdb030b68a501d2d7b986bc4445f140cc570447c66e0"
   }
 }

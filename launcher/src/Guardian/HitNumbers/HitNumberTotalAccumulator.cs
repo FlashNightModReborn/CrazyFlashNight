@@ -4,6 +4,15 @@ using System.Drawing;
 
 namespace CF7Launcher.Guardian.HitNumbers
 {
+    internal sealed class HitNumberMissFlash
+    {
+        internal string TargetId = string.Empty;
+        internal float TargetX;
+        internal float TargetY;
+        internal double ArrivalSeconds;
+        internal int Sequence;
+    }
+
     /// <summary>
     /// “总伤”兼容模式的每目标标量状态。它不保存逐段数组；精确逐段由独立有界
     /// LedgerStore 承担，因此持续连射只增长数值而不会增长对象图。
@@ -13,12 +22,18 @@ namespace CF7Launcher.Guardian.HitNumbers
         internal const double QuietSeconds = 1.25;
         internal const double FadeSeconds = 0.36;
         internal const double LifetimeSeconds = QuietSeconds + FadeSeconds;
+        internal const double MissFlashLifetimeSeconds = 0.72;
+        private const int MaximumMissFlashes = 64;
 
         private readonly Dictionary<string, HitNumberTotalEntry> _byTarget =
             new Dictionary<string, HitNumberTotalEntry>(StringComparer.Ordinal);
+        private readonly Dictionary<string, HitNumberMissFlash> _missFlashes =
+            new Dictionary<string, HitNumberMissFlash>(StringComparer.Ordinal);
         private readonly List<string> _expiredKeys = new List<string>();
+        private readonly List<HitNumberMissFlash> _missSnapshot = new List<HitNumberMissFlash>();
 
         internal int ActiveTargetCountForTests => _byTarget.Count;
+        internal bool HasActiveMissFlashes => _missFlashes.Count > 0;
 
         internal void AddRange(
             IReadOnlyList<HitNumberSegment> source,
@@ -57,22 +72,42 @@ namespace CF7Launcher.Guardian.HitNumbers
             return result;
         }
 
+        internal IReadOnlyList<HitNumberMissFlash> SnapshotMissFlashes(double nowSeconds)
+        {
+            PruneMissFlashes(nowSeconds);
+            _missSnapshot.Clear();
+            foreach (HitNumberMissFlash flash in _missFlashes.Values)
+                _missSnapshot.Add(flash);
+            return _missSnapshot;
+        }
+
         internal void Clear()
         {
             _byTarget.Clear();
+            _missFlashes.Clear();
             _expiredKeys.Clear();
+            _missSnapshot.Clear();
         }
 
         private void Add(HitNumberSegment segment)
         {
             if (segment == null) return;
-            // 旧总伤聚合器从不让 MISS 建立或刷新累计项；精确逐段事实仍已进入
-            // LedgerStore，因此这里只恢复其视觉语义，不丢失对账信息。
-            if (HitNumberPacking.IsMiss(segment.Packed)) return;
             string targetId = string.IsNullOrEmpty(segment.TargetId)
                 ? "@" + segment.TargetX.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
                     + ":" + segment.TargetY.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
                 : segment.TargetId;
+            // 旧总伤聚合器从不让 MISS 建立或刷新累计项；仅在目标当前没有活跃总伤时
+            // 记录短寿命空靶 MISS 轻提示，避免对高闪避目标连续打空时完全无世界反馈。
+            if (HitNumberPacking.IsMiss(segment.Packed))
+            {
+                if (!_byTarget.TryGetValue(targetId, out HitNumberTotalEntry live)
+                    || segment.ArrivalSeconds - live.LastArrivalSeconds >= LifetimeSeconds)
+                {
+                    RecordMissFlash(targetId, segment);
+                }
+                return;
+            }
+            _missFlashes.Remove(targetId);
             if (!_byTarget.TryGetValue(targetId, out HitNumberTotalEntry entry)
                 || segment.ArrivalSeconds - entry.LastArrivalSeconds >= LifetimeSeconds)
             {
@@ -80,6 +115,32 @@ namespace CF7Launcher.Guardian.HitNumbers
                 _byTarget[targetId] = entry;
             }
             entry.Add(segment);
+        }
+
+        private void RecordMissFlash(string targetId, HitNumberSegment segment)
+        {
+            if (!_missFlashes.ContainsKey(targetId) && _missFlashes.Count >= MaximumMissFlashes)
+            {
+                string oldestKey = null;
+                double oldestTime = double.PositiveInfinity;
+                foreach (KeyValuePair<string, HitNumberMissFlash> pair in _missFlashes)
+                {
+                    if (pair.Value.ArrivalSeconds < oldestTime)
+                    {
+                        oldestTime = pair.Value.ArrivalSeconds;
+                        oldestKey = pair.Key;
+                    }
+                }
+                if (oldestKey != null) _missFlashes.Remove(oldestKey);
+            }
+            _missFlashes[targetId] = new HitNumberMissFlash
+            {
+                TargetId = targetId,
+                TargetX = segment.TargetX,
+                TargetY = segment.TargetY,
+                ArrivalSeconds = segment.ArrivalSeconds,
+                Sequence = segment.Sequence
+            };
         }
 
         private void Prune(double nowSeconds)
@@ -92,6 +153,20 @@ namespace CF7Launcher.Guardian.HitNumbers
             }
             for (int i = 0; i < _expiredKeys.Count; i++)
                 _byTarget.Remove(_expiredKeys[i]);
+            PruneMissFlashes(nowSeconds);
+        }
+
+        private void PruneMissFlashes(double nowSeconds)
+        {
+            if (_missFlashes.Count == 0) return;
+            _expiredKeys.Clear();
+            foreach (KeyValuePair<string, HitNumberMissFlash> pair in _missFlashes)
+            {
+                if (nowSeconds - pair.Value.ArrivalSeconds >= MissFlashLifetimeSeconds)
+                    _expiredKeys.Add(pair.Key);
+            }
+            for (int i = 0; i < _expiredKeys.Count; i++)
+                _missFlashes.Remove(_expiredKeys[i]);
         }
     }
 
