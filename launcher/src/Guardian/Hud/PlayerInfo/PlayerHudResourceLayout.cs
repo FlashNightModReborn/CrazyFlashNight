@@ -16,14 +16,14 @@ internal static class PlayerHudResourceLayout
     internal const float MpOffsetX = 120.2f - 119.56701607f;
     internal const float MpOffsetY = 540.6f - 531.42717092f;
     internal const float LevelTop = 553;
-    internal static RectangleF MpBar => new(120.2f,540.6f,152,8.5f);
+    internal static RectangleF MpBar => PlayerInfoRasterPlanner.LiveMpBar;
     internal static float MpScaleX => MpBar.Width / PlayerHudBarArtData.MpBounds.Width;
     internal static float MpScaleY => MpBar.Height / PlayerHudBarArtData.MpBounds.Height;
     internal static float PoiseTop => 552;
     internal static RectangleF PoiseBar => new(115.34f, PoiseTop, 152, 8);
     internal static float PoisePercentX => 83;
     internal const float PoisePercentWidth = 29;
-    internal static readonly RectangleF ShieldPlaque = new(83.5f, 515.3f, 209, 10.2f);
+    internal static readonly RectangleF ShieldPlaque = PlayerInfoRasterPlanner.LiveShieldPlaque;
     internal static readonly RectangleF ShieldStrengthPlaque = new(83.5f, 515.3f, 50, 10.2f);
     internal static readonly RectangleF ShieldCapacityPlaque = new(136.5f, 515.3f, 156, 10.2f);
 }

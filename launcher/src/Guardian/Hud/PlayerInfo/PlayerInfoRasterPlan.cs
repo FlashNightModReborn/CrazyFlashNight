@@ -98,6 +98,8 @@ internal static class PlayerInfoRasterPlanner
     // CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml:5654-5657 freezes
     // the PlayerInfo child placement at ty=512 in the 1024x576 main stage.
     internal const double PlayerInfoStageTopLogical = 512d;
+    internal static readonly RectangleF LiveMpBar = new(120.2f, 540.6f, 152f, 8.5f);
+    internal static readonly RectangleF LiveShieldPlaque = new(83.5f, 515.3f, 209f, 10.2f);
 
     internal static PlayerInfoRasterPlan Create(PlayerInfoSvgAssetSet assetSet, Rectangle flashViewportPhysical, float monitorDpiScale) =>
         Create(assetSet,flashViewportPhysical,monitorDpiScale,false);
@@ -308,8 +310,8 @@ internal static class PlayerInfoRasterPlanner
         {
             // The live shield plaque extends past the eight imported XFL layers.
             var scale = flashViewportPhysical.Height / MainStageLogicalHeight;
-            unionRight = Math.Max(unionRight, viewportLeft + (long)Math.Ceiling((PlayerHudResourceLayout.ShieldPlaque.Right + 1) * scale));
-            unionBottom = Math.Max(unionBottom, viewportTop + (long)Math.Ceiling((PlayerHudResourceLayout.MpBar.Bottom + 2) * scale));
+            unionRight = Math.Max(unionRight, viewportLeft + (long)Math.Ceiling((LiveShieldPlaque.Right + 1) * scale));
+            unionBottom = Math.Max(unionBottom, viewportTop + (long)Math.Ceiling((LiveMpBar.Bottom + 2) * scale));
         }
         var tightLeft = Math.Max(unionLeft, viewportLeft);
         var tightTop = Math.Max(unionTop, viewportTop);
