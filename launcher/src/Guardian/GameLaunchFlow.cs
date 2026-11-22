@@ -189,6 +189,7 @@ namespace CF7Launcher.Guardian
         private System.Threading.Timer _flashRevealWatchdog;
         internal const int FLASH_REVEAL_WATCHDOG_DEFAULT_MS = 45000;
         private readonly int _flashRevealWatchdogMs;
+        private BootstrapRevealCurtain _revealCurtain;
 
         // Startup frontdoor: title readiness is only the second reveal gate.
         // The final gate is an exact-attempt UiData scene receipt (s:1 + ga).
@@ -2252,6 +2253,7 @@ namespace CF7Launcher.Guardian
             NewSettingsRecoveryRequest();
             LogManager.Log("[LaunchFlow] Reset requested reason=" + (reason ?? "(none)"));
             CF7Launcher.Tasks.AudioTask.CancelBootstrapBgmGate();
+            DismissRevealCurtain();
             List<Action> idleFlushIfAlready = null;
             Process oldProcess = null;
             Action<string> heldCbForReset = null;   // prewarm 拆除时取走的 held callback
@@ -2696,10 +2698,23 @@ namespace CF7Launcher.Guardian
             using (PerfTrace.Scope("reveal.panel_swap"))
             {
                 long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                BootstrapRevealCurtain curtain = null;
                 try
                 {
                     if (_form != null)
                     {
+                        if (!_form.ArenaWorkerMode && _form.FlashHostPanel != null)
+                        {
+                            DismissRevealCurtain();
+                            BootstrapRevealCurtain created = null;
+                            created = BootstrapRevealCurtain.TryCover(
+                                _form,
+                                _form.FlashHostPanel,
+                                delegate { System.Threading.Interlocked.CompareExchange(ref _revealCurtain, null, created); });
+                            curtain = created;
+                            if (curtain != null) _revealCurtain = curtain;
+                        }
+
                         long tBoot = System.Diagnostics.Stopwatch.GetTimestamp();
                         if (_form.BootstrapPanel != null) _form.BootstrapPanel.SetPanelVisible(false);
                         LogManager.Log("[RevealProbe] panel_swap.bootstrap_hide " + ElapsedMs(tBoot).ToString("0.0") + "ms");
@@ -2711,9 +2726,19 @@ namespace CF7Launcher.Guardian
                         long tAct = System.Diagnostics.Stopwatch.GetTimestamp();
                         if (!_form.ArenaWorkerMode) _form.Activate();
                         LogManager.Log("[RevealProbe] panel_swap.activate " + ElapsedMs(tAct).ToString("0.0") + "ms");
+
+                        if (curtain != null)
+                        {
+                            curtain.SyncBoundsAndOrder();
+                            curtain.BeginFadeOut();
+                        }
                     }
                 }
-                catch (Exception ex) { LogManager.Log("[LaunchFlow] panel swap error: " + ex.Message); }
+                catch (Exception ex)
+                {
+                    DismissRevealCurtain();
+                    LogManager.Log("[LaunchFlow] panel swap error: " + ex.Message);
+                }
                 LogManager.Log("[RevealProbe] panel_swap.total " + ElapsedMs(t).ToString("0.0") + "ms");
             }
             using (PerfTrace.Scope("reveal.release_bgm"))
@@ -2735,6 +2760,25 @@ namespace CF7Launcher.Guardian
             }
             LogManager.Log("[RevealProbe] DoPerformReveal.total " + ElapsedMs(revealStart).ToString("0.0") + "ms");
             PerfTrace.Mark("launch.reveal_done");
+        }
+
+        private void DismissRevealCurtain()
+        {
+            BootstrapRevealCurtain curtain = System.Threading.Interlocked.Exchange(ref _revealCurtain, null);
+            if (curtain == null) return;
+            try
+            {
+                if (curtain.IsDisposed) return;
+                if (curtain.InvokeRequired)
+                {
+                    curtain.BeginInvoke(new Action(curtain.CancelAndDispose));
+                }
+                else
+                {
+                    curtain.CancelAndDispose();
+                }
+            }
+            catch { }
         }
 
         private static double ElapsedMs(long startTimestamp)

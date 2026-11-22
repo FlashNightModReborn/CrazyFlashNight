@@ -4,11 +4,11 @@
 // 阶段行是"走到哪一步"的足迹不是会过期的新闻；头部 state 行驻留计时每秒跳动。
 // 过渡时长随队列静默时长自适应：沉寂十几秒的慢机屏幕不容 600ms 闪烁，
 // 洪水期仍按地板值保持节奏。
-const FADE_MIN_MS = 600, FADE_MAX_MS = 2600, ENTER_MIN_MS = 240, ENTER_MAX_MS = 900;
+const FADE_MIN_MS = 220, FADE_MAX_MS = 380, ENTER_MIN_MS = 220, ENTER_MAX_MS = 640;
 const HOLD_MS = 8000, TICK_MS = 1000;
 const FLOOD_WINDOW_MS = 500, FLOOD_LIMIT = 3;
 // 头亮尾暗的余烬带（自头向尾），队列停顿时也保持完整踪迹。
-const OPACITIES = [1, .62, .45, .34, .26];
+const OPACITIES = [1, .72, .46, .24];
 const FLAVOR = {
   Spawning: 'θ-FLOOD 载波建立 · 进程拉起',
   WaitingConnect: '等待渲染进程连接…',
@@ -30,9 +30,27 @@ const EVENT_FLAVOR = {
 };
 const EVENT_TONE = { 'sync-done': 'ok' };
 const EVENT_SUFFIX = { 'degraded-reveal': 'degraded:true' };
-// boot 行纯信号 token 过滤：S2_ENTER 类节拍与全大写蛇形名都不是玩家文案。
+// boot 行纯信号 token 过滤：S2_ENTER、全大写蛇形名及 key=value 内部事件都不是玩家文案。
 const BOOT_SIGNAL = /^S\d+_[A-Z_]+$/;
 const BOOT_TOKEN = /^[A-Z][A-Z0-9_]{3,}$/;
+const BOOT_KV_INTERNAL = /^[a-z][a-z0-9_.-]*=[^\s]+(?:\s+[a-z][a-z0-9_.-]*=[^\s]+)*$/i;
+// BootstrapAS 英文引导日志转玩家可读中文叙事（与 bootstrap-main.js 首页读数保持同一口径）。
+const BOOT_LABELS = {
+  'socket ready, firing handshake': '信道就绪 · 发起握手',
+  'handshake hs=Success': '双向握手通过',
+  'firing preload': '预载核心资源…',
+  'sending ready ack': '发送就绪回执',
+  'bootstrap complete, jumping boot_check': '引导链完成 · 切入主场景',
+  'shim missing, stopped': '启动组件缺失 · 流程中止',
+};
+function localizeBoot(value) {
+  if (BOOT_LABELS[value]) return BOOT_LABELS[value];
+  if (value.indexOf('handshake stage entered,') === 0) return '进入握手阶段';
+  if (value.indexOf('socket timeout after ') === 0) return '等待连接超时';
+  if (value.indexOf('handshake FAILED = ') === 0) return '握手校验失败';
+  if (value.indexOf('HALT: ') === 0) return '启动流程中止';
+  return value;
+}
 const REDUCED = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
 
 export function mountLore(options) {
@@ -56,29 +74,32 @@ export function mountLore(options) {
     const d = new Date(), p = n => String(n).padStart(2, '0');
     return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
   }
-  function lineCap() { return window.matchMedia('(max-height:700px)').matches ? 3 : 5; }
+  function lineCap() { return window.matchMedia('(max-height:620px)').matches ? 3 : 4; }
   function applyVisible() { root.classList.toggle('visible', wanted || errorHold); }
-  // 位置渐隐：按自头距离重排透明度；transition 让队列整体流动而不是跳变。
+  // 位置渐隐：按自头距离重排透明度（只统计活跃行），过渡平滑而不跳变。
   function restyle() {
-    for (let i = 0; i < records.length; i++) {
-      const fromHead = records.length - 1 - i;
-      records[i].el.style.transition = 'opacity .8s';
+    let fromHead = 0;
+    for (let i = records.length - 1; i >= 0; i--) {
+      if (records[i].fading) continue;
+      records[i].el.style.transition = 'opacity .55s, max-height .22s cubic-bezier(.2,.8,.2,1)';
       records[i].el.style.opacity = OPACITIES[Math.min(fromHead, OPACITIES.length - 1)];
+      fromHead++;
     }
   }
   function drop(rec) {
     const i = records.indexOf(rec);
     if (i >= 0) { records.splice(i, 1); rec.el.remove(); restyle(); }
   }
-  // 淡出时长取"本行写入前的队列静默间隔"的六分之一，夹在 0.6–2.6s：
-  // 慢机长停顿后老行从容消散，快机洪水维持 0.6s 地板节奏。
+  // 超限老行立即折叠高度并短促淡出，防止实机爆发期幽灵行占满高度遮挡中心仪器。
   function retireLine(rec) {
     if (rec.fading) return;
     rec.fading = true;
-    const fade = Math.min(FADE_MAX_MS, Math.max(FADE_MIN_MS, Math.round(lastGapMs / 6)));
-    rec.el.style.transition = `opacity ${fade}ms`;
+    rec.el.classList.add('is-retiring');
+    if (REDUCED.matches) { drop(rec); return; }
+    const fade = Math.min(FADE_MAX_MS, Math.max(FADE_MIN_MS, Math.round(lastGapMs / 8)));
+    rec.el.style.transition = `opacity ${fade}ms ease, max-height ${fade}ms cubic-bezier(.2,.8,.2,1)`;
     rec.el.style.opacity = '0';
-    later(fade, () => drop(rec));
+    later(fade + 20, () => drop(rec));
   }
   // 洪水抑制：窗口内已写满限额时本行省略技术后缀，风味文本不受影响。
   function flooded(now) {
@@ -131,16 +152,28 @@ export function mountLore(options) {
     const ts = document.createElement('span');
     ts.className = 'ts';
     ts.textContent = stamp();
+    const msg = document.createElement('span');
+    msg.className = 'msg';
+    msg.textContent = text;
     el.appendChild(ts);
-    el.appendChild(document.createTextNode(text));
+    el.appendChild(msg);
     root.appendChild(el);
     const rec = { ts: ts.textContent, text, suffix: shown, tone: tone || '', el, dimEl: null, stateMeta: null, fading: false };
     if (shown) setDim(rec, shown);
     records.push(rec);
-    let over = records.length - lineCap();
-    for (const old of records) {
+    const cap = lineCap();
+    let activeCount = 0;
+    for (const item of records) if (!item.fading) activeCount++;
+    let over = activeCount - cap;
+    for (const old of records.slice()) {
       if (over <= 0) break;
       if (!old.fading) { retireLine(old); over--; }
+    }
+    // 爆发洪水硬上限：并发淡出节点至多留 1 条，杜绝实机瞬间连刷撑爆容器。
+    while (records.length > cap + 1) {
+      const oldestFading = records.find(item => item.fading);
+      if (!oldestFading) break;
+      drop(oldestFading);
     }
     restyle();
     return rec;
@@ -182,13 +215,13 @@ export function mountLore(options) {
     const flavor = EVENT_FLAVOR[name];
     if (flavor) add(flavor, EVENT_TONE[name] || '', EVENT_SUFFIX[name] || '');
   }
-  // 返回是否采纳为玩家文案；纯信号 token 与冻结期都不采纳，调用方据此决定是否点亮足迹行。
+  // 返回是否采纳为玩家文案；纯信号 token、内部 key=value 事件与冻结期都不采纳，调用方据此决定是否点亮足迹行。
   function boot(text, meta) {
     if (frozen || disposed) return false;
-    const value = String(text == null ? '' : text);
-    if (!value || BOOT_SIGNAL.test(value) || BOOT_TOKEN.test(value)) return false;
+    const value = String(text == null ? '' : text).trim();
+    if (!value || BOOT_SIGNAL.test(value) || BOOT_TOKEN.test(value) || BOOT_KV_INTERNAL.test(value)) return false;
     const frame = meta && meta.frame;
-    add(value, '', frame == null ? 'boot' : 'boot · 批次 f' + frame);
+    add(localizeBoot(value), '', frame == null ? 'boot' : 'boot · 批次 f' + frame);
     return true;
   }
   function error(msg) {

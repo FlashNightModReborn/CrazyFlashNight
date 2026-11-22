@@ -21,7 +21,7 @@ let time = 0, previousNow = 0, nextCycle = CYCLE_MS;
 let timer = 0, raf = 0, layoutDirty = true, paintDirty = true;
 let cue = null, firstList = false, hostState = null, userIntent = false;
 let commits = 0, cycles = 0, callbacks = 0, cues = 0;
-let lore = null, attempts = 0, loadingSince = 0, unfreezeCommits = 0, sigmaSent = false;
+let lore = null, attempts = 0, loadingSince = 0, loadingStartedAt = -1, unfreezeCommits = 0, sigmaSent = false;
 // state 捎带通信字段：最新值或 null（宿主不带字段时保持 null，陈旧值可接受）。
 const comm = { socketPort: null, httpPort: null, flashConnected: null };
 let logSinkDead = false, orbitCenters = null, orbitMagicSum = 0;
@@ -29,8 +29,10 @@ let logSinkDead = false, orbitCenters = null, orbitMagicSum = 0;
 let orbitIndex = -1, seedValues = null;
 const footprints = [];
 let footprintCursor = 0;
-const unsubs = [], observers = [], disposers = [];
-const state = { kind: 'quiet', progress: 0, still: false, footprints: [] };
+const pulses = [];
+let orbitLockFired = false, primeLockFired = false;
+const unsubs = [], observers = [], disposers = [], motionListeners = new Set();
+const state = { kind: 'quiet', progress: 0, still: false, footprints: [], loadingAge: 0, slotLine: null, pulses: [] };
 
 function listen(target, name, fn, options) {
   if (!target) return;
@@ -58,6 +60,7 @@ function motionChanged() {
   previousNow = 0;
   paintDirty = true;
   reconcile();
+  notifyMotionListeners();
 }
 function visualKind() {
   if (preparingCharacter()) return 'loading';
@@ -93,16 +96,112 @@ function measure() {
   add('.hero-copy, .hero-extra', 18, .72);
   add('.hud-line', 10);
   add('.topbar, .bottom', 8);
-  // 加载核心（中心格）用压暗玻璃（erase .68）+ 大羽化：数字幽灵透出，不是挖空黑洞。
-  add('#intro-ov.on.loading .loading-indicator', 72, .68);
+  // 加载核心（中心格）用压暗玻璃（erase .78）+ 大羽化：数字幽灵自然过渡，绝无硬矩形洞。
+  add('#intro-ov.on.loading .loading-indicator', 88, .78);
   add('#save-shell', 10);
   // Slot cards have opaque backing; masking the scrolling grid also keeps light
   // out of card gaps when reading an unfamiliar or corrupt save.
-  // lore 事件流容器也进遮罩；小字号文字保持全遮罩，无 .visible 时自然跳过。
-  add('#bg-gl-log', 16);
+  // lore 事件流容器也进遮罩；无框光学羽化，无 .visible 时自然跳过。
+  add('#bg-gl-log', 24, .84);
   renderer.resize(canvas.clientWidth, canvas.clientHeight, masks);
   layoutDirty = false;
 }
+function activeLaunchSlotLine() {
+  const indicator = document.getElementById('loading-indicator');
+  const key = indicator && indicator.dataset ? indicator.dataset.launchSlot : '';
+  if (!key || !seedValues) return null;
+  const sig = signature(key);
+  return sig ? sig.line : null;
+}
+
+function setTelemetryText(el, text, lockState) {
+  if (!el) return;
+  if (el.textContent !== text) el.textContent = text;
+  if (lockState && el.dataset.lockState !== lockState) el.dataset.lockState = lockState;
+}
+
+function pushPulse(kind) {
+  pulses.push({ at: time, kind });
+  if (pulses.length > 6) pulses.shift();
+}
+
+function updateLoadingTelemetry(loadingAge, still) {
+  if (!board || orbitIndex < 0) return;
+  const indicator = document.getElementById('loading-indicator');
+  const orbitEl = document.getElementById('core-orbit');
+  const primeEl = document.getElementById('core-prime');
+  const sigmaEl = document.getElementById('core-sigma');
+  if (!orbitEl && !primeEl && !sigmaEl) return;
+
+  const finalOrbit = '轨道 #' + (orbitIndex + 1);
+  const center = board[9 * N + 9];
+  const finalPrime = center.toLocaleString('en-US');
+  const finalSigma = orbitMagicSum.toLocaleString('en-US');
+
+  if (still || !loading()) {
+    setTelemetryText(orbitEl, finalOrbit, 'anchored');
+    setTelemetryText(primeEl, finalPrime, 'anchored');
+    setTelemetryText(sigmaEl, finalSigma, 'anchored');
+    if (indicator) indicator.classList.toggle('is-locked', loading());
+    return;
+  }
+
+  // 1. 轨道寻址：0..440ms 在 8 轨间模糊滚选，随后精确锚定并向幻方发青色共鸣
+  if (loadingAge < 440) {
+    const rollIdx = (Math.floor(loadingAge / 55) + orbitIndex + 3) % (seedValues ? seedValues.length : 8);
+    setTelemetryText(orbitEl, '轨道 #' + (rollIdx + 1), 'rolling');
+  } else {
+    setTelemetryText(orbitEl, finalOrbit, 'anchored');
+    if (!orbitLockFired) { orbitLockFired = true; pushPulse('orbit'); }
+  }
+
+  // 2. 中心不动点质数：0..1240ms 对称由外向内逐对锚定，锁定瞬间点亮准星菱形并向幻方发暖金波纹
+  if (loadingAge < 1240) {
+    const digits = String(center);
+    const len = digits.length;
+    const half = Math.ceil(len / 2);
+    const lockP = Math.max(0, (loadingAge - 340) / 900);
+    const lockedPairs = Math.floor(lockP * (half + 1));
+    const tick = Math.floor(loadingAge / 42);
+    const sampleVal = String(board[((tick * 13 + orbitIndex * 7) % (N * N))]);
+    let raw = '';
+    for (let i = 0; i < len; i++) {
+      const distFromEdge = Math.min(i, len - 1 - i);
+      if (distFromEdge < lockedPairs) raw += digits[i];
+      else raw += sampleVal[(i + tick) % sampleVal.length] || '9';
+    }
+    const formatted = Number(raw).toLocaleString('en-US');
+    setTelemetryText(primeEl, formatted, lockedPairs > 0 ? 'settling' : 'rolling');
+    if (indicator) indicator.classList.remove('is-locked');
+  } else {
+    setTelemetryText(primeEl, finalPrime, 'anchored');
+    if (!primeLockFired) { primeLockFired = true; pushPulse('prime'); }
+    if (indicator) indicator.classList.add('is-locked');
+  }
+
+  // 3. 实时等和校验 Σ：随当前活跃等和线逐格累加真实质数局部和，第 19 格咬合锁定 190,000,361 并触发共鸣
+  const latestFp = footprints.length ? footprints[footprints.length - 1] : null;
+  const fpAge = latestFp ? Math.max(0, time - latestFp.at) : -1;
+  if (latestFp && !latestFp.locked && fpAge >= 680) {
+    latestFp.locked = true;
+    pushPulse('sigma');
+  }
+  if (latestFp && fpAge >= 0 && fpAge < 700) {
+    const count = Math.min(N, Math.max(1, Math.ceil((fpAge / 680) * N)));
+    let sum = 0;
+    const base = latestFp.row * N;
+    for (let c = 0; c < count; c++) sum += board[base + c];
+    setTelemetryText(sigmaEl, sum.toLocaleString('en-US'), count >= N ? 'anchored' : 'summing');
+  } else if (loadingAge >= 360 && loadingAge < 1360) {
+    const count = Math.min(N, Math.max(1, Math.ceil(((loadingAge - 360) / 960) * N)));
+    let sum = 0;
+    for (let i = 0; i < count; i++) sum += board[i * N + i];
+    setTelemetryText(sigmaEl, sum.toLocaleString('en-US'), count >= N ? 'anchored' : 'summing');
+  } else {
+    setTelemetryText(sigmaEl, finalSigma, 'anchored');
+  }
+}
+
 function paint() {
   if (!renderer || retired) return;
   if (layoutDirty) measure();
@@ -111,6 +210,11 @@ function paint() {
   state.progress = cue ? Math.min(1, (time - cue.at) / cue.duration) : 0;
   state.footprints = loading() ? footprints.map(fp => ({ row: fp.row, age: Math.max(0, time - fp.at) })) : [];
   state.magicSum = orbitMagicSum;
+  state.loadingAge = loading() && loadingStartedAt >= 0 ? Math.max(0, time - loadingStartedAt) : 0;
+  state.slotLine = loading() ? activeLaunchSlotLine() : null;
+  updateLoadingTelemetry(state.loadingAge, state.still);
+  while (pulses.length && time - pulses[0].at > 950) pulses.shift();
+  state.pulses = loading() ? pulses.map(p => ({ kind: p.kind, age: Math.max(0, time - p.at) })) : [];
   renderer.render(time / 1000, state);
   paintDirty = false;
 }
@@ -179,10 +283,10 @@ function frame(now) {
 }
 function schedule() {
   if (retired || failed || blocked || isStatic() || !renderer || timer || raf) return;
-  // A timeout sleeps BETWEEN useful frames. Unlike the original, it does not
-  // pump 144/240-Hz rAF merely to discard almost all callbacks.
-  const period = cue || loading() ? 1000 / 24 : 1000 / 12;
-  const delay = Math.max(0, period - (performance.now() - previousNow) - 5);
+  // A timeout sleeps BETWEEN useful frames. Active loading/cues run smoothly (~30fps);
+  // quiet welcome stays low-power (~12fps); covered/static sleeps completely.
+  const period = cue || loading() ? 1000 / 30 : 1000 / 12;
+  const delay = Math.max(0, period - (performance.now() - previousNow) - 4);
   timer = setTimeout(() => {
     timer = 0;
     if (retired || blocked) return;
@@ -197,8 +301,26 @@ function reconcile() {
   const wasBlocked = blocked;
   blocked = covered();
   // loading 计时锚点用 frame 时钟；lore 可见性跟随真实 DOM 相位而非 hostState。
-  if (loading() && !loadingSince) { loadingSince = time; footprints.length = 0; footprintCursor = 0; }
-  else if (!loading()) { loadingSince = 0; sigmaSent = false; footprints.length = 0; footprintCursor = 0; }
+  if (loading() && loadingStartedAt < 0) {
+    loadingStartedAt = time;
+    loadingSince = time;
+    footprints.length = 0;
+    footprintCursor = 0;
+    pulses.length = 0;
+    orbitLockFired = false;
+    primeLockFired = false;
+    document.getElementById('loading-indicator')?.classList.remove('is-locked');
+  } else if (!loading()) {
+    loadingStartedAt = -1;
+    loadingSince = 0;
+    sigmaSent = false;
+    footprints.length = 0;
+    footprintCursor = 0;
+    pulses.length = 0;
+    orbitLockFired = false;
+    primeLockFired = false;
+    document.getElementById('loading-indicator')?.classList.remove('is-locked');
+  }
   if (lore) {
     const modalOpen = !!(modalHost && modalHost.style.display !== 'none');
     // 建角准备/进行时是游戏内流程，不归启动叙事：lore 不显眼也不抢"正在准备角色"。
@@ -225,20 +347,38 @@ function onLayout() {
   // Resize in static mode repaints ONCE with the same committed board.
   reconcile();
 }
+function notifyMotionListeners() {
+  for (const fn of motionListeners) {
+    try { fn(); } catch (_) {}
+  }
+}
+function orbitSummaryCopy() {
+  const idx = engine && renderer && orbitCenters ? orbitIndex : -1;
+  return idx >= 0
+    ? `轨道 #${idx + 1} · 中心质数 ${orbitCenters[idx]} · Σ=${orbitMagicSum.toLocaleString()} · 单轨 743,178,240 态`
+    : '轨道引擎未就绪';
+}
+function motionNoteCopy() {
+  return failed ? '背景已静态回退；启动与存档操作不受影响。'
+    : media.matches ? '系统已启用减少动态，背景保持静止。'
+    : '仅本次启动生效；不改变音频和显示设置。';
+}
 function pauseBackground(value) {
   if (retired) return;
   userPaused = !!value;
   previousNow = 0;
   paintDirty = true;
   reconcile();
+  notifyMotionListeners();
 }
 function updatePauseControl() {
   const checkbox = document.getElementById('pm19-pause');
-  if (!checkbox) return;
-  checkbox.checked = userPaused;
-  checkbox.disabled = failed;
+  if (checkbox) {
+    if (checkbox.checked !== userPaused) checkbox.checked = userPaused;
+    if (checkbox.disabled !== failed) checkbox.disabled = failed;
+  }
   const text = document.getElementById('pm19-motion-note');
-  const copy = failed ? '背景已静态回退；启动与存档操作不受影响。' : media.matches ? '系统已启用减少动态，背景保持静止。' : '仅本次启动生效；不改变音频和显示设置。';
+  const copy = motionNoteCopy();
   if (text && text.textContent !== copy) text.textContent = copy;
   updateOrbitReadout();
 }
@@ -246,12 +386,22 @@ function updatePauseControl() {
 function updateOrbitReadout() {
   const el = document.getElementById('pm19-orbit');
   if (!el) return;
-  const idx = engine && renderer && orbitCenters ? orbitIndex : -1;
-  const copy = idx >= 0
-    ? `轨道 #${idx + 1} · 中心质数 ${orbitCenters[idx]} · Σ=${orbitMagicSum.toLocaleString()} · 单轨 743,178,240 态`
-    : '轨道引擎未就绪';
+  const copy = orbitSummaryCopy();
   if (el.textContent !== copy) el.textContent = copy;
 }
+window.PM19Motion = {
+  isPaused: () => userPaused,
+  isFailed: () => failed,
+  isReduced: () => media.matches,
+  setPaused: value => pauseBackground(value),
+  getNote: () => motionNoteCopy(),
+  getOrbitSummary: () => orbitSummaryCopy(),
+  subscribe: fn => {
+    if (typeof fn !== 'function') return () => {};
+    motionListeners.add(fn);
+    return () => motionListeners.delete(fn);
+  }
+};
 function mountPauseControl() {
   if (retired) return;
   const parent = document.querySelector('#about-pane-document .audio-toggles');
@@ -275,6 +425,7 @@ function fail(error) {
   if (canvas) canvas.hidden = true;
   document.body.dataset.bgGlLifecycle = 'static-fallback';
   updatePauseControl();
+  notifyMotionListeners();
 }
 function retire(reason = 'retired') {
   if (retired) return;
@@ -283,6 +434,7 @@ function retire(reason = 'retired') {
   for (const observer of observers) observer.disconnect();
   for (const dispose of disposers.splice(0)) dispose();
   for (const off of unsubs.splice(0)) off();
+  motionListeners.clear();
   if (renderer) renderer.dispose();
   renderer = engine = board = scratch = null;
   cue = null;
@@ -327,8 +479,10 @@ function publishDecor() {
   const center = board[9 * N + 9];
   const orbitEl = document.getElementById('core-orbit');
   const primeEl = document.getElementById('core-prime');
-  if (orbitEl) orbitEl.textContent = '轨道 #' + (orbitIndex + 1);
-  if (primeEl) primeEl.textContent = center.toLocaleString('en-US');
+  const sigmaEl = document.getElementById('core-sigma');
+  if (orbitEl) { orbitEl.textContent = '轨道 #' + (orbitIndex + 1); orbitEl.dataset.lockState = 'anchored'; }
+  if (primeEl) { primeEl.textContent = center.toLocaleString('en-US'); primeEl.dataset.lockState = 'anchored'; }
+  if (sigmaEl) { sigmaEl.textContent = orbitMagicSum.toLocaleString('en-US'); sigmaEl.dataset.lockState = 'anchored'; }
   window.PM19Decor = Object.freeze({
     ready: true, signature, magicSum: orbitMagicSum,
     orbit: Object.freeze({ index: orbitIndex, center, seeds: seedValues.length })
@@ -459,7 +613,7 @@ async function main() {
     if (event.currentTarget.disabled || event.repeat || retired || covered() || loading()) return;
     if (event.currentTarget.id === 'btn-confirm-start' && document.getElementById('welcome-slot')?.dataset.state === 'empty') return;
     userIntent = true; attempts++;
-    beginCue('confirm', 1200);
+    beginCue('confirm', 900);
     if (lore) try { lore.event('confirm'); } catch (_) {}
     safePaint();
     // Original handler continues immediately, including video/loading coverage.

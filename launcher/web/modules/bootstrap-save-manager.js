@@ -336,6 +336,14 @@
       var button = event.target.closest('.save-row');
       if (button) choose(rows.findIndex(function (slot) { return slot.slot === button.dataset.slot; }), false);
     };
+    list.ondblclick = function (event) {
+      var button = event.target.closest('.save-row');
+      if (!button || event.target.closest('.save-equip')) return;
+      var i = rows.findIndex(function (slot) { return slot.slot === button.dataset.slot; });
+      if (i < 0) return;
+      choose(i, false);
+      if (!isDeleted(rows[i]) && !rows[i].corrupt) buttons.querySelector('.btn-start').click();
+    };
     list.onkeydown = function (event) {
       if (!event.target.closest('.save-row')) return;
       var i = rows.findIndex(function (row) { return row.slot === selectedKey; });

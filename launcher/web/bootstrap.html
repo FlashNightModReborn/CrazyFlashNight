@@ -53,15 +53,21 @@
         <div class="hr-rune" id="rune-divider"></div>
         <p class="greet" id="welcome-greet">欢迎您，尊敬的闪客玩家</p>
 
-        <!-- 启动卡：存档铭牌与主按钮同宽同轴，铭牌 kicker 压在上边框上不占高度。 -->
+        <!-- 启动卡：角色胸像 + 存档铭牌 + 主按钮同宽同轴 -->
         <div class="launch-panel">
           <div class="slot-plate" id="welcome-slot" data-state="live">
-            <span class="slot-kicker" id="welcome-slot-kicker">继续上次</span>
+            <span class="save-avatar welcome-slot-avatar" id="welcome-slot-avatar" aria-hidden="true" hidden></span>
             <div class="meta">
-              <div class="name" id="welcome-slot-name">&mdash;</div>
+              <div class="slot-head">
+                <div class="name" id="welcome-slot-name">&mdash;</div>
+                <span class="slot-level" id="welcome-slot-level" hidden></span>
+              </div>
               <div class="time" id="welcome-slot-time">&mdash;</div>
             </div>
-            <span class="slot-sig" id="welcome-slot-sig" aria-hidden="true"></span>
+            <div class="slot-side">
+              <span class="slot-kicker" id="welcome-slot-kicker">继续上次</span>
+              <span class="slot-sig" id="welcome-slot-sig" aria-hidden="true"></span>
+            </div>
           </div>
 
           <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>可重试或查看日志。</span><button type="button" class="feedback-link" data-open-logs>诊断日志</button></div>
@@ -85,26 +91,17 @@
 
       </div>
 
-      <!-- 电子空间读数条：替代旧两侧栏；只陈述真实事件与设定口径，悬停/聚焦展开 -->
+      <!-- 世界观截获条：默认常驻展示当前阵营/环境基底的真实切片，点击即切台并联动符文分割线；
+           启动异常（Error）时自动转为故障提示并直达诊断日志，平时零工程术语干扰。 -->
       <div class="hud" id="welcome-hud">
-        <div class="hud-more" id="hud-detail" hidden>
-          <div class="hud-col">
-            <div class="lbl">信道日志 &middot; CHANNEL</div>
-            <ol class="hud-chan" id="hud-chan"></ol>
-          </div>
-          <div class="hud-col">
-            <div class="lbl">派系口径 &middot; FACTIONS</div>
-            <div id="faction-list"></div>
-            <div id="active-brand"></div>
-            <div class="lbl">BUILD</div>
-            <div class="val-build mono-num" id="build-val">v&mdash;</div>
-          </div>
-        </div>
-        <button type="button" class="hud-line" id="hud-toggle" aria-label="电子空间读数" aria-controls="hud-detail" aria-expanded="false">
-          <span class="hud-echo"><i class="hud-echo-dot"></i>回响 1.3s</span>
-          <span class="hud-sep" aria-hidden="true">│</span><span class="mono-num" id="hud-orbit">轨道 &mdash;</span>
-          <span class="hud-sep" aria-hidden="true">│</span><span id="hud-faction"></span>
-          <span class="hud-sep" aria-hidden="true">│</span><span class="hud-last" id="hud-last">&mdash;</span>
+        <ol class="hud-chan" id="hud-chan" hidden aria-hidden="true"></ol>
+        <button type="button" class="hud-line" id="hud-toggle" aria-label="切换世界观频道">
+          <span class="hud-source"><i class="hud-source-dot" aria-hidden="true"></i><span id="hud-faction-name">诺亚</span></span>
+          <span class="hud-sep" aria-hidden="true">│</span>
+          <span class="hud-quote" id="hud-faction"></span>
+          <span class="hud-err-dot" aria-hidden="true"></span>
+          <span class="hud-last" id="hud-last">&mdash;</span>
+          <span class="mono-num" id="hud-orbit" hidden></span>
         </button>
       </div>
     </main>
@@ -153,19 +150,22 @@
           <section id="save-detail" aria-label="所选存档" hidden>
             <div class="save-selection">
               <span class="save-avatar" id="save-detail-portrait" aria-hidden="true"></span>
-              <div class="save-identity"><strong id="save-title"></strong><span id="save-alias"></span></div>
+              <div class="save-identity">
+                <strong id="save-title"></strong>
+                <span id="save-alias"></span>
+                <p id="save-progress-detail"></p>
+                <p id="save-history"></p>
+              </div>
             </div>
-            <p id="save-progress-detail"></p>
             <div class="save-detail-gear" id="save-equipment" role="group" aria-label="已穿戴装备" hidden></div>
             <p id="save-character-meta" hidden></p>
-            <p id="save-history"></p>
             <details id="save-technical"><summary>技术信息</summary><div>槽位 <code id="save-key"></code></div><div>本地副本 <span id="save-size"></span></div></details>
             <div id="save-actions">
               <button type="button" class="term-btn btn-start front-primary" data-action="start">进入游戏</button>
               <button type="button" class="term-btn btn-rebuild front-primary" data-action="rebuild">在原位置新建</button>
               <button type="button" class="term-btn btn-repair front-primary" data-action="repair">检查修复</button>
-              <button type="button" class="term-btn btn-edit" data-action="edit">编辑</button>
               <button type="button" class="term-btn btn-undo" data-action="undo">撤销上次编辑</button>
+              <button type="button" class="term-btn btn-edit" data-action="edit">编辑</button>
               <button type="button" class="term-btn btn-rename" data-action="rename">重命名</button>
               <button type="button" class="term-btn btn-export" data-action="export">导出</button>
               <button type="button" class="term-btn btn-delete archive-danger" data-action="delete">删除</button>
@@ -230,16 +230,62 @@
 <div class="intro-ov" id="intro-ov">
   <video id="intro-video" src="assets/intro.mp4" playsinline preload="none"></video>
   <div class="loading-indicator" id="loading-indicator">
+    <svg class="loading-reticle" viewBox="0 0 460 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <linearGradient id="lr-h" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#3dd5ff" stop-opacity="0"/>
+          <stop offset="18%" stop-color="#3dd5ff" stop-opacity=".36"/>
+          <stop offset="50%" stop-color="#ebd5a2" stop-opacity=".24"/>
+          <stop offset="82%" stop-color="#3dd5ff" stop-opacity=".36"/>
+          <stop offset="100%" stop-color="#3dd5ff" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="lr-diag" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#3dd5ff" stop-opacity="0"/>
+          <stop offset="50%" stop-color="#ebd5a2" stop-opacity=".26"/>
+          <stop offset="100%" stop-color="#3dd5ff" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <line x1="6" y1="106" x2="144" y2="106" stroke="url(#lr-h)" stroke-width=".75"/>
+      <line x1="316" y1="106" x2="454" y2="106" stroke="url(#lr-h)" stroke-width=".75"/>
+      <circle cx="144" cy="106" r="1.4" fill="#3dd5ff" opacity=".56"/>
+      <circle cx="316" cy="106" r="1.4" fill="#3dd5ff" opacity=".56"/>
+      <line x1="168" y1="44" x2="292" y2="168" stroke="url(#lr-diag)" stroke-width=".7"/>
+      <line x1="292" y1="44" x2="168" y2="168" stroke="url(#lr-diag)" stroke-width=".7"/>
+      <polygon class="lr-diamond" points="230,42 294,106 230,170 166,106" fill="none" stroke="rgba(235,213,162,.16)" stroke-width=".8"/>
+      <polygon class="lr-diamond-inner" points="230,57 279,106 230,155 181,106" fill="none" stroke="rgba(61,213,255,.12)" stroke-width=".6"/>
+      <g class="lr-brackets" fill="none" stroke="rgba(61,213,255,.46)" stroke-width="1">
+        <path d="M16,24 L16,10 L34,10"/>
+        <path d="M444,24 L444,10 L426,10"/>
+        <path d="M16,196 L16,210 L34,210"/>
+        <path d="M444,196 L444,210 L426,210"/>
+      </g>
+      <line x1="46" y1="10" x2="414" y2="10" stroke="url(#lr-h)" stroke-width=".6" opacity=".62"/>
+      <line x1="46" y1="210" x2="414" y2="210" stroke="url(#lr-h)" stroke-width=".6" opacity=".62"/>
+      <g class="lr-pips" fill="#ebd5a2" opacity=".72">
+        <rect x="14.5" y="8.5" width="3" height="3"/>
+        <rect x="442.5" y="8.5" width="3" height="3"/>
+        <rect x="14.5" y="208.5" width="3" height="3"/>
+        <rect x="442.5" y="208.5" width="3" height="3"/>
+      </g>
+    </svg>
+    <div class="loading-sig-wrap" aria-hidden="true">
+      <span class="loading-sig-rail"></span>
+      <span class="slot-sig loading-sig" id="loading-sig"></span>
+      <span class="loading-sig-rail"></span>
+    </div>
     <div class="loading-copy" role="status" aria-live="polite" aria-atomic="true">
       <h2 class="loading-title">正在进入游戏</h2>
       <div class="loading-text">正在启动游戏</div>
     </div>
     <div id="loading-stages" aria-hidden="true"><i></i><i></i><i></i></div>
-    <button type="button" class="loading-hint" id="loading-cancel">取消 <kbd>Esc</kbd></button>
-    <div id="loading-slow" hidden>仍在等待游戏画面 <button type="button" class="feedback-link" data-open-logs>诊断日志</button></div>
+    <div class="loading-actions">
+      <button type="button" class="loading-hint" id="loading-cancel">取消 <kbd>Esc</kbd></button>
+      <div id="loading-slow" hidden><span class="loading-slow-note">响应较慢</span><button type="button" class="feedback-link" data-open-logs>诊断日志</button></div>
+    </div>
     <div class="core-cell" aria-hidden="true">
-      <span class="core-orbit mono-num" id="core-orbit">轨道 &mdash;</span>
-      <span class="core-label">中心质数</span> <span class="core-prime mono-num" id="core-prime">&mdash;</span>
+      <span class="core-chip core-orbit mono-num" id="core-orbit">轨道 &mdash;</span>
+      <span class="core-chip core-prime-wrap"><span class="core-label">不动点</span> <span class="core-prime mono-num" id="core-prime">&mdash;</span></span>
+      <span class="core-chip core-sigma-wrap"><span class="core-label">&Sigma;</span> <span class="core-sigma mono-num" id="core-sigma">190,000,361</span></span>
     </div>
   </div>
 </div>
@@ -282,7 +328,7 @@
 <script>
   (function () {
     if (window.Factions) {
-      window.__factionIds = { dividerId: 'rune-divider', listId: 'faction-list', activeBrandId: 'active-brand' };
+      window.__factionIds = { dividerId: 'rune-divider', activeBrandId: 'welcome-hud' };
       window.Factions.init(window.__factionIds);
     }
   })();

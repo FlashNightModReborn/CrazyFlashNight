@@ -105,7 +105,13 @@
             + ' </header>'
             + ' <div class="cc-main">'
             + '  <aside class="cc-preview term-card" aria-label="角色预览">'
-            + '   <div class="cc-canvas-wrap"><div class="cc-pad" aria-hidden="true"><div class="cc-pad-deck"></div><i></i><i></i><i></i></div><canvas id="cc-preview-canvas" role="img" aria-label="当前角色外观预览"></canvas>'
+            + '   <div class="cc-tryon-badge" id="cc-tryon-badge" hidden aria-live="polite"></div>'
+            + '   <div class="cc-canvas-wrap">'
+            + '    <div class="cc-height-ruler" id="cc-height-ruler" aria-hidden="true">'
+            + '     <span class="cc-ruler-mark">200</span><span class="cc-ruler-mark">175</span><span class="cc-ruler-mark">150</span>'
+            + '     <i class="cc-ruler-needle"></i>'
+            + '    </div>'
+            + '    <div class="cc-pad" aria-hidden="true"><div class="cc-pad-deck"></div><i></i><i></i><i></i></div><canvas id="cc-preview-canvas" role="img" aria-label="当前角色外观预览"></canvas>'
             + '    <p id="cc-preview-fallback" class="cc-preview-fallback" aria-live="polite">正在准备角色预览...</p></div>'
             + '   <strong id="cc-nameplate">未命名</strong>'
             + '   <div class="cc-preview-tools"><button type="button" class="term-btn" id="cc-random-look">随机外观</button>'
@@ -162,9 +168,40 @@
             + '  </form>'
             + ' </div>'
             + '</section>';
+        var nameInput = byId('cc-character-name');
+        if (nameInput) {
+            nameInput.placeholder = '输入佣兵代号（1–15 字符）';
+            var labelSpan = nameInput.previousElementSibling;
+            if (labelSpan && !byId('cc-name-counter')) {
+                var counter = document.createElement('span');
+                counter.className = 'cc-name-counter';
+                counter.id = 'cc-name-counter';
+                counter.setAttribute('aria-hidden', 'true');
+                counter.textContent = '0 / 15';
+                labelSpan.appendChild(counter);
+            }
+        }
         bindEvents();
         bindHelp();
         refreshUi();
+    }
+
+    function updateNameCounter(value) {
+        var counter = byId('cc-name-counter');
+        if (!counter) return;
+        var text = String(value || '');
+        var len = text.length;
+        counter.textContent = len + ' / 15';
+        counter.dataset.state = len > 15 ? 'over' : (text.trim() ? 'ok' : 'empty');
+    }
+
+    function updateTryOnBadge() {
+        var badge = byId('cc-tryon-badge');
+        if (!badge) return;
+        var active = !!(previewChoice && previewChoice.button && previewChoice.button.isConnected
+            && step === 1 && model && model.draft[previewChoice.key] !== previewChoice.value);
+        badge.hidden = !active;
+        badge.textContent = active ? ('试穿预览 · ' + (previewChoice.label || '')) : '';
     }
 
     function bindHelp() {
@@ -290,6 +327,7 @@
         }
         clearFieldError('displayName');
         clearFieldError('characterName');
+        updateNameCounter(characterName);
         refreshProgress();
         setText('cc-nameplate', characterName.trim() || '未命名');
         refreshReview();
@@ -325,6 +363,7 @@
         byId('cc-hair-list').classList.toggle('item-grid-compact', compact);
         var button = rootEl.querySelector('[data-density-view="hair"]');
         button.textContent = compact ? '显示名称' : '显示图标';
+        button.setAttribute('aria-pressed', String(compact));
     }
 
     function ensureAppearanceTooltipScope() {
@@ -441,10 +480,10 @@
         return row && row.sourceIndex !== undefined ? row.sourceIndex : fallback;
     }
 
-    function bindTryOn(button, key, value) {
+    function bindTryOn(button, key, value, label) {
         function preview() {
             if (!model || isDraftLocked()) return;
-            previewChoice = {button:button, key:key, value:value};
+            previewChoice = {button:button, key:key, value:value, label:label || ''};
             renderPreview();
         }
         function restore() {
@@ -503,7 +542,7 @@
             var marker = document.createElement('span'); marker.className = 'cc-item-marker';
             marker.setAttribute('aria-hidden', 'true');
             marker.textContent = selected ? '◆' : ''; button.appendChild(marker);
-            bindTryOn(button, picker.key, row.identifier);
+            bindTryOn(button, picker.key, row.identifier, picker.label + ' · ' + row.name);
             button.addEventListener('click', function() { chooseEquipment(picker, index, true); });
             button.addEventListener('keydown', function(event) { onChoiceKeydown(event, picker); });
             host.appendChild(button);
@@ -679,7 +718,7 @@
             marker.textContent = index === model.hairIndex ? '◆' : '';
             button.appendChild(copy);
             button.appendChild(marker);
-            bindTryOn(button, 'hairIdentifier', row.identifier);
+            bindTryOn(button, 'hairIdentifier', row.identifier, '发型 · ' + display.name);
             button.addEventListener('click', function() { chooseHair(index, true); });
             button.addEventListener('keydown', function(event) { onChoiceKeydown(event, 'hair'); });
             list.appendChild(button);
@@ -756,6 +795,9 @@
             var button = document.createElement('button');
             button.type = 'button';
             button.className = 'cc-difficulty';
+            button.dataset.tier = (row.recommended || (row.name && row.name.indexOf('平衡') >= 0))
+                ? 'balanced'
+                : (row.name && row.name.indexOf('逆天') >= 0 ? 'classic' : 'challenge');
             button.setAttribute('role', 'radio');
             button.setAttribute('data-index', String(index));
             var selected = row.identifier === model.draft.difficulty;
@@ -1113,6 +1155,7 @@
         if (model) {
             byId('cc-display-name').value = model.displayName;
             byId('cc-character-name').value = model.draft.characterName;
+            updateNameCounter(model.draft.characterName);
             var gender = rootEl.querySelector('input[name="cc-gender"][value="' + model.draft.gender + '"]');
             if (gender) gender.checked = true;
             byId('cc-height').value = String(model.draft.height);
@@ -1123,7 +1166,9 @@
         } else {
             byId('cc-display-name').value = pendingNames.displayName;
             byId('cc-character-name').value = pendingNames.characterName;
+            updateNameCounter(pendingNames.characterName);
         }
+        updateTryOnBadge();
     }
 
     function refreshPreviewMeta() {
@@ -1132,6 +1177,11 @@
         setText('cc-preview-gender', model.draft.gender === 'female' ? '女性' : '男性');
         byId('cc-height').setAttribute('aria-valuetext', model.draft.height + ' 厘米');
         setText('cc-height-value', model.draft.height + ' cm');
+        var ruler = byId('cc-height-ruler');
+        if (ruler) {
+            var pct = Math.max(0, Math.min(100, (Number(model.draft.height) - 150) / 50 * 100));
+            ruler.style.setProperty('--cc-height-pct', pct.toFixed(1) + '%');
+        }
         var hair = snapshot.hairCatalog[model.hairIndex];
         var hairName = hair ? hairDisplayParts(hair).name : '未知发型';
         setText('cc-preview-hair', hairName);
@@ -1300,6 +1350,7 @@
     }
 
     function renderPreview() {
+        updateTryOnBadge();
         if (!renderer || !manifest || !model) { updatePreviewFallback(); return; }
         try {
             var draft = model.draft;

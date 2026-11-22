@@ -26,13 +26,17 @@
     : "STSong, SimSun, serif";
   const FACTIONS = {
     iron: {
-      terms: { 回响周期: "天息 · 余响 · 钟鸣", 信号: "天息 / 地脉之声", 虚渊: "虚渊 / 彼岸" },
       name: '黑铁会',
       enName: 'IRON SOCIETY',
       baseStatus: 'standby',
-      color: '#b83a2e',
+      color: '#d45848',
       colorDim: '#7d2418',
       slogan: '天地有呼吸 · 政教合一',
+      quotes: [
+        '“那不是电波，是天地这口大钟的呼吸。”',
+        '“此剑有余响，非风声，非剑鸣——乃回声也。”',
+        '“经脉有时候嗡嗡响。管它呢，不影响砍人。”'
+      ],
       rune: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 24" preserveAspectRatio="none" style="width:100%;height:100%">
         <g stroke="#b83a2e" stroke-width=".9" fill="none">
           <path d="M 0 12 L 218 12 M 282 12 L 500 12"/>
@@ -49,13 +53,17 @@
     },
 
     noah: {
-      terms: { 回响周期: "重锁周期 / 同步拍频", 信号: "耦合信号 · 三平面协议栈", 虚渊: "深层意识分区" },
       name: '诺亚',
       enName: 'NOAH',
       baseStatus: 'standby',
       color: '#3dd5ff',
       colorDim: '#1e90b3',
       slogan: '半张地图',
+      quotes: [
+        '“导波网络重锁周期约 1.3 秒，耦合超出预期。”',
+        '“‘自我’不过是真空里的皱褶，我只是把它抹平。”',
+        '“高阶耦合出现目标静止；建议增加环境屏蔽。”'
+      ],
       rune: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 24" preserveAspectRatio="none" style="width:100%;height:100%">
         <g stroke="#3dd5ff" stroke-width=".9" fill="none">
           <path d="M 0 12 L 215 12 M 285 12 L 500 12"/>
@@ -70,18 +78,32 @@
     },
 
     univ: {
-      name: '联合大学', enName: 'UNITED UNIV.', baseStatus: 'standby',
-      color: '#cbba93', colorDim: '#85775e', slogan: '网络意识生态',
-      terms: { 回响周期: '共振拍频', 信号: '分层信号架构', 虚渊: '网络意识生态' },
+      name: '联合大学',
+      enName: 'UNITED UNIV.',
+      baseStatus: 'standby',
+      color: '#cbba93',
+      colorDim: '#85775e',
+      slogan: '网络意识生态',
+      quotes: [
+        '“一切能量屏障都只是有待求解的方程式。”',
+        '“玩弄认知能像塑造物质一样精确地塑造现实。”',
+        '“掌握蓝图，就等于掌握通往所有造物的后门。”'
+      ],
       rune: '<span class="univ-divider" aria-hidden="true"></span>'
     },
+
     mercenary: {
       name: 'A兵团',
       enName: 'A-CORPS',
       baseStatus: 'standby',
-      color: '#c8b28a',
+      color: '#d4be8e',
       colorDim: '#6a5f48',
       slogan: '打出去有效果就行',
+      quotes: [
+        '“别问原理，知道这东西是真的、会越来越多就行。”',
+        '“别看那根蓝柱子，那玩意儿早断了。”',
+        '“那一拳打出去，空气好像变硬了——有效就行。”'
+      ],
       rune: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 24" preserveAspectRatio="none" style="width:100%;height:100%">
         <g fill="none">
           <path d="M 0 12 L 222 12 M 278 12 L 500 12" stroke="#c8b28a" stroke-width=".9"/>
@@ -100,13 +122,18 @@
     },
 
     skynet: {
-      terms: { 回响周期: "周期性异常信号", 信号: "异常频率信号", 虚渊: "未注册网络空间" },
-      name: '天网',
-      enName: 'SKYNET',
+      name: '天网残余',
+      enName: 'SKYNET SUBSTRATE',
       baseStatus: 'offline',
-      color: '#7a9a5a',
+      color: '#88ad64',
       colorDim: '#3d4d2d',
-      slogan: '(无口号)',
+      isLog: true,
+      slogan: '环境基底残余日志',
+      quotes: [
+        '[WARNING] 异常能量波动：超出白名单阈值',
+        '[UNKNOWN] 非注册信息结构 · 匹配率 < 12%',
+        '[ERROR] 中枢响应超时 · 基站维持 1.3s 同步'
+      ],
       rune: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 24" preserveAspectRatio="none" style="width:100%;height:100%">
         <g stroke="#7a9a5a" fill="none">
           <path d="M 0 12 L 215 12 M 285 12 L 500 12" stroke-width=".7" stroke-dasharray="6 3" opacity=".75"/>
@@ -121,17 +148,21 @@
         </g>
       </svg>`
     }
-
-    // ── 未来扩展示例（保留模板）────────────────
-    // university: { name: '联合大学', enName: 'JOINT UNIV.', baseStatus: 'standby',
-    //   color: '#d8b06c', colorDim: '#6a5430', slogan: '验真之塔', rune: `<svg ...>` },
-    // mutant:     { name: '变异节点', enName: 'MUTANT NODE', baseStatus: 'offline',
-    //   color: '#b45bd8', colorDim: '#5a2d6e', slogan: '协议冲突', rune: `<svg ...>` },
-    // wings:      { name: 'WINGS',    enName: 'WINGS',       baseStatus: 'offline',
-    //   color: '#e0e0e0', colorDim: '#444',    slogan: '(身份待揭露)', rune: `<svg ...>` },
   };
 
   const STATUS_LABEL = { sync: '同步中', standby: '待机', offline: '离线' };
+  const quoteCursor = {};
+
+  function pickQuote(key) {
+    const f = FACTIONS[key];
+    if (!f || !Array.isArray(f.quotes) || !f.quotes.length) return f ? f.slogan : '';
+    if (quoteCursor[key] === undefined) {
+      quoteCursor[key] = Math.floor(Math.random() * f.quotes.length);
+    } else {
+      quoteCursor[key] = (quoteCursor[key] + 1) % f.quotes.length;
+    }
+    return f.quotes[quoteCursor[key]];
+  }
 
   function pickActive() {
     const keys = Object.keys(FACTIONS);
@@ -142,6 +173,7 @@
     const el = document.getElementById(containerId);
     if (!el || !FACTIONS[key]) return;
     el.innerHTML = FACTIONS[key].rune;
+    el.dataset.faction = key;
   }
 
   function renderList(activeKey, containerId) {
@@ -153,25 +185,39 @@
       const glow = status === 'sync' ? `box-shadow:0 0 6px ${f.color}` : '';
       const nameStyle = k === activeKey ? ' style="color:#d4d8dc"' : '';
       const statStyle = status === 'sync' ? ` style="color:${f.color}"` : '';
-      const terms = Object.entries(f.terms || {});
-      const reading = terms.map(([topic, term]) => topic + ' · ' + term).join(' / ');
-      return '<div class="f" title="' + reading + '">'
+      const sample = (f.quotes && f.quotes[0]) || f.slogan;
+      return '<div class="f" title="' + sample + '">'
            +   '<span class="dot" style="background:' + dotColor + ';' + glow + '"></span>'
            +   '<span class="f-name"' + nameStyle + '>' + f.name + '</span>'
            +   '<span class="f-sep">·</span>'
-            +   '<span class="f-term"' + statStyle + '>' + (terms.length ? terms[0][1] : f.slogan) + '</span>'
+           +   '<span class="f-term"' + statStyle + '>' + sample + '</span>'
            + '</div>';
     }).join('');
   }
 
   function renderActiveBrand(key, containerId) {
-    const el = document.getElementById(containerId);
-    if (!el || !FACTIONS[key]) return;
     const f = FACTIONS[key];
+    if (!f) return;
+    const quote = pickQuote(key);
+    const hud = document.getElementById('welcome-hud');
+    const nameEl = document.getElementById('hud-faction-name');
     const summary = document.getElementById('hud-faction');
-    if (summary) summary.textContent = f.name + ' · ' + (f.terms ? Object.values(f.terms)[0] : f.slogan);
-    el.textContent = f.terms ? Object.entries(f.terms).map(([topic, term]) => topic + ' · ' + term).join(' / ') : f.enName + ' · ' + f.slogan;
-    el.style.color = f.color;
+    const toggle = document.getElementById('hud-toggle');
+    if (hud) {
+      hud.style.setProperty('--faction-color', f.color);
+      hud.dataset.faction = key;
+      hud.dataset.logStyle = f.isLog ? '1' : '0';
+    }
+    if (nameEl) nameEl.textContent = f.name;
+    if (summary) summary.textContent = quote;
+    if (toggle && (!hud || hud.dataset.tone !== 'error')) {
+      toggle.title = f.name + ' · ' + quote + '（点击切换频道）';
+    }
+    const el = containerId ? document.getElementById(containerId) : null;
+    if (el && el !== hud) {
+      el.textContent = f.name + ' · ' + quote;
+      el.style.setProperty('--faction-color', f.color);
+    }
   }
 
   function init(ids) {

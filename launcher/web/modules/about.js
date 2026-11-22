@@ -168,7 +168,8 @@
       var article = document.createElement('article');
       article.className = 'about-version-entry';
       article.setAttribute('aria-label', start.heading.label);
-      nodes.slice(start.index, end).forEach(function (node) { article.appendChild(node); });
+      // 首个节点即版本标题，已在 stageHeader 显示，避免重复呈现两遍同标题。
+      nodes.slice(start.index + 1, end).forEach(function (node) { article.appendChild(node); });
       articles.appendChild(article);
 
       var button = document.createElement('button');
@@ -303,7 +304,7 @@
     var meta = window.APP_META || {};
     _container.innerHTML =
       '<div class="modal-header term-heading-rule">' +
-        '<h2>ABOUT · 关于与版本</h2>' +
+        '<h2>关于与帮助</h2>' +
         '<button class="modal-close" id="about-close" aria-label="关闭">×</button>' +
       '</div>' +
       '<div class="about-modal">' +
@@ -313,18 +314,18 @@
           '<button type="button" id="about-tab-versions" role="tab" data-about-tab="versions" aria-controls="about-pane-versions" aria-selected="false" tabindex="-1">版本记录</button>' +
         '</div>' +
         '<section id="about-pane-document" role="tabpanel" aria-labelledby="about-tab-document" data-about-pane="document">' +
-          '<h3>DOCUMENT</h3>' +
+          '<h3>项目说明</h3>' +
           '<p>1. 本游戏会在游戏过程中将数据存储在本地，请勿设置禁止储存数据。</p>' +
           '<p>2. 本游戏为无网单机版。无充值系统，无与网络相关的功能。如果要体验完整联机功能，请选择《闪客快打 7 佣兵帝国》网络版。</p>' +
           '<p>3. 然而网络版已经停服，你现在玩到的是玩家重置的单机版 MOD。</p>' +
           '<p>4. 请首先在 Steam 平台购买正版游戏，按照指南覆盖 MOD 文件包。本 MOD 为免费开源项目，如果您不慎支付购买，请保留交易证据并联系我们。</p>' +
           '<p>5. 加入我们的 QQ 群：<span class="qq">562130873</span><span class="b">（将满）</span>、<span class="qq">149188029</span><span class="b">（将满）</span>、<span class="qq">307710279</span> 参与讨论，关注 B 站账号 <span class="qq">黑月雾人</span> / <span class="qq">无名的低谷</span> / <span class="qq">crazyfs</span> 获取最新信息。</p>' +
-          '<h3>AUDIO</h3>' +
+          '<h3>音频与动态</h3>' +
           '<div class="audio-toggles">' +
             '<label class="audio-toggle"><input type="checkbox" id="about-sfx"' + (sfxOn ? ' checked' : '') + '> <span>UI 音效 · hover / click / confirm / error</span></label>' +
             '<label class="audio-toggle"><input type="checkbox" id="about-ambient"' + (ambOn ? ' checked' : '') + '> <span>环境 hum · θ-FLOOD 背景低频</span></label>' +
           '</div>' +
-          '<h3>DIAGNOSTICS</h3>' +
+          '<h3>诊断日志</h3>' +
           '<div class="about-diagnostics">' +
             '<p>启动失败或卡住时，可查看启动诊断日志，反馈问题时请一并附上。</p>' +
             '<button type="button" class="term-btn" id="about-open-logs" data-open-logs>查看诊断日志</button>' +

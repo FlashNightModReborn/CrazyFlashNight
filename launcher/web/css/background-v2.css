@@ -21,26 +21,39 @@
   border-left:3px solid var(--rust);background:#211010;color:#e2bab1;font-size:var(--fs-sm);line-height:1.5; }
 .launch-feedback[hidden] { display:none; }
 .launch-feedback strong { color:#ffa994; }
-.launch-error .slot-plate { border-color:var(--rust); }
+.launch-error .slot-plate { border-color:rgba(223,102,91,.52); }
 .topbar .state-badge { min-width:0;max-width:210px;overflow:hidden;text-overflow:ellipsis; }
 #pm19-motion { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--dls-dim); }
 #pm19-motion .audio-toggle { display:flex;align-items:center;gap:8px;cursor:pointer; }
 #pm19-motion p { margin:6px 0 0;font-size:var(--fs-xs);color:#a4afb4; }
 #pm19-motion input { accent-color:var(--dls); }
 
-/* PM19 V3 lore: loading 相限定的双音区事件流；容器非 visible 不显示。 */
-#bg-gl-log{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:44px;z-index:3;
-  max-width:450px;pointer-events:none;user-select:none;
-  font:11px/1.7 "JetBrains Mono",Consolas,monospace;letter-spacing:.08em;color:rgba(178,200,205,.62);
-  text-shadow:0 0 6px rgba(61,213,255,.22)}
-#bg-gl-log.visible{display:block}
+/* PM19 V4.3 lore: loading 相无框光学播报带；顶部羽化 + 严格定高上限，永不侵入中心仪器区。 */
+#bg-gl-log{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:102;
+  width:min(510px,84%);max-height:92px;box-sizing:border-box;padding:8px 20px 6px;overflow:hidden;
+  pointer-events:none;user-select:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(4,9,13,.66) 10%,rgba(4,9,13,.76) 50%,rgba(4,9,13,.66) 90%,transparent 100%);
+  border:0;border-top:1px solid transparent;
+  border-image:linear-gradient(90deg,transparent 4%,rgba(61,213,255,.26) 24%,rgba(220,198,148,.24) 50%,rgba(61,213,255,.26) 76%,transparent 96%) 1;
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.42) 0%,#000 32%,#000 100%);
+          mask-image:linear-gradient(180deg,rgba(0,0,0,.42) 0%,#000 32%,#000 100%);
+  font:11px/1.7 "Segoe UI","Microsoft YaHei",sans-serif;letter-spacing:.04em;color:rgba(220,234,240,.92)}
+#bg-gl-log.visible{display:flex;flex-direction:column;justify-content:flex-end}
 /* lore 流只属于加载相；失败后回到首页/存档库时，由读数条与失败提示承接叙事，避免与前景控件叠字。
    隐藏后不产生遮罩矩形（measure 跳过无 client rect 的节点）。 */
 body:not(.intro-playing) #bg-gl-log.visible{display:none}
-#bg-gl-log .ln{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:bgGlLogIn var(--ln-in,.24s) ease-out}
-#bg-gl-log .ln .ts{color:rgba(106,98,88,.85);margin-right:8px}
-#bg-gl-log .ln .dim{opacity:.55;margin-left:10px}
-#bg-gl-log .ln.ok{color:rgba(200,178,138,.85)}
-#bg-gl-log .ln.err{color:rgba(224,120,100,.85)}
-@keyframes bgGlLogIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+#bg-gl-log .ln{position:relative;display:flex;align-items:baseline;gap:9px;min-width:0;max-height:22px;padding-left:10px;overflow:hidden;
+  animation:bgGlLogIn var(--ln-in,.24s) cubic-bezier(.16,1,.3,1)}
+#bg-gl-log .ln.is-retiring{max-height:0;opacity:0 !important}
+#bg-gl-log .ln::before{content:"";position:absolute;left:0;top:50%;width:3px;height:3px;transform:translateY(-50%) rotate(45deg);
+  background:rgba(130,174,190,.35);transition:background-color .3s,box-shadow .3s}
+#bg-gl-log .ln:not(.is-retiring):last-child::before{background:#5ee0ff;box-shadow:0 0 7px rgba(61,213,255,.85)}
+#bg-gl-log .ln.ok:not(.is-retiring):last-child::before{background:#e8cf96;box-shadow:0 0 7px rgba(232,207,150,.85)}
+#bg-gl-log .ln.err:not(.is-retiring):last-child::before{background:#f08876;box-shadow:0 0 7px rgba(240,136,118,.85)}
+#bg-gl-log .ln .ts{flex:none;color:rgba(134,160,172,.66);font:10px/1 "JetBrains Mono",Consolas,monospace;font-variant-numeric:tabular-nums}
+#bg-gl-log .ln .msg{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#bg-gl-log .ln .dim{margin-left:auto;padding-left:12px;opacity:.62;font:10px/1 "JetBrains Mono",Consolas,monospace;color:#8cb0bf;flex:none;white-space:nowrap}
+#bg-gl-log .ln.ok{color:#ead5a2}
+#bg-gl-log .ln.err{color:#f08876}
+@keyframes bgGlLogIn{from{opacity:0;filter:blur(2px);transform:translateY(3px)}to{opacity:1;filter:blur(0);transform:none}}
 @media (prefers-reduced-motion: reduce){#bg-gl-log .ln{animation:none;transition:none !important}}

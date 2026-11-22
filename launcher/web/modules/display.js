@@ -1,10 +1,11 @@
-// Display 设置：把字号入口放到顶栏，避免用户为了看清文字去开 Windows 高 DPI 覆盖。
+// Display 设置：集中提供字号、片头、音频、背景动态与字体扩展入口。
 
 (function () {
   'use strict';
 
   var _container = null;
   var _unsubConfigResp = null;
+  var _unsubMotion = null;
 
   function scaleEq(a, b) { return Math.abs(a - b) < 0.001; }
 
@@ -18,7 +19,8 @@
       var active = scaleEq(p.value, currentScale) ? ' active' : '';
       html += '<button type="button" class="fs-preset-btn' + active + '" ' +
               'aria-pressed="' + !!active + '" data-scale="' + p.value.toFixed(2) + '">' +
-              p.label + '<span class="fs-preset-x">' + p.value.toFixed(2) + 'x</span>' +
+              '<span class="fs-preset-label">' + p.label + '</span>' +
+              '<span class="fs-preset-x">' + p.value.toFixed(2) + 'x</span>' +
               '</button>';
     }
     return html;
@@ -28,6 +30,12 @@
     _container = containerEl;
     var currentScale = (window.BootstrapApp && window.BootstrapApp.getUiFontScale)
       ? window.BootstrapApp.getUiFontScale() : 1.35;
+    var sfxOn = !!(window.BootstrapAudio && window.BootstrapAudio.isSfxEnabled && window.BootstrapAudio.isSfxEnabled());
+    if (!window.BootstrapAudio) sfxOn = true;
+    var ambOn = !!(window.BootstrapAudio && window.BootstrapAudio.isAmbientEnabled && window.BootstrapAudio.isAmbientEnabled());
+    var motion = window.PM19Motion || null;
+    var paused = !!(motion && motion.isPaused());
+    var motionDisabled = !!(motion && motion.isFailed());
 
     _container.innerHTML =
       '<div class="modal-header term-heading-rule">' +
@@ -35,13 +43,26 @@
         '<button class="modal-close" id="display-close" aria-label="关闭">×</button>' +
       '</div>' +
       '<div class="about-modal display-modal">' +
-        '<h3>界面字号</h3>' +
-        '<div class="fs-preset-row" id="display-fs-row">' + buildFontScaleButtons(currentScale) + '</div>' +
-        '<p class="fs-hint">字号立即生效，也会在下次启动时沿用。</p>' +
-        '<h3>启动选项</h3>' +
+        '<section class="display-section">' +
+          '<h3>界面字号</h3>' +
+          '<div class="fs-preset-row" id="display-fs-row">' + buildFontScaleButtons(currentScale) + '</div>' +
+          '<p class="fs-hint">字号立即生效，并在下次启动时沿用。</p>' +
+        '</section>' +
+        '<section class="display-section">' +
+          '<h3>音频与动态</h3>' +
+          '<div class="display-toggle-grid">' +
+            '<label class="audio-toggle"><input type="checkbox" id="display-sfx"' + (sfxOn ? ' checked' : '') + '> <span>UI 交互音效</span></label>' +
+            '<label class="audio-toggle"><input type="checkbox" id="display-ambient"' + (ambOn ? ' checked' : '') + '> <span>θ-FLOOD 环境低频</span></label>' +
+            '<label class="audio-toggle"><input type="checkbox" id="display-pm19-pause"' + (paused ? ' checked' : '') + (motionDisabled ? ' disabled' : '') + '> <span>暂停背景动态</span></label>' +
+          '</div>' +
+          '<p class="fs-hint" id="display-motion-note">' + (motion ? motion.getNote() : '背景动态仅本次启动生效。') + '</p>' +
+        '</section>' +
+        '<section class="display-section" id="display-options-slot">' +
+          '<h3>启动选项</h3>' +
+        '</section>' +
       '</div>';
 
-    _container.querySelector('.display-modal').appendChild(document.getElementById('display-options'));
+    _container.querySelector('#display-options-slot').appendChild(document.getElementById('display-options'));
     document.getElementById('display-close').onclick = function () {
       window.BootstrapApp.tryCloseModal();
     };
@@ -72,9 +93,60 @@
       syncFsHighlight();
     };
 
+    var sfxChk = document.getElementById('display-sfx');
+    var ambChk = document.getElementById('display-ambient');
+    var pauseChk = document.getElementById('display-pm19-pause');
+    var motionNote = document.getElementById('display-motion-note');
+
+    function applySfx(v) {
+      if (typeof v !== 'boolean') return;
+      if (sfxChk) sfxChk.checked = v;
+      if (window.BootstrapAudio) window.BootstrapAudio.setSfxEnabled(v);
+    }
+    function applyAmb(v) {
+      if (typeof v !== 'boolean') return;
+      if (ambChk) ambChk.checked = v;
+      if (window.BootstrapAudio) window.BootstrapAudio.setAmbientEnabled(v);
+    }
+    function syncMotion() {
+      var m = window.PM19Motion;
+      if (!m) return;
+      var pausedNow = m.isPaused();
+      var failedNow = m.isFailed();
+      if (pauseChk && pauseChk.checked !== pausedNow) pauseChk.checked = pausedNow;
+      if (pauseChk && pauseChk.disabled !== failedNow) pauseChk.disabled = failedNow;
+      var note = m.getNote();
+      if (motionNote && motionNote.textContent !== note) motionNote.textContent = note;
+    }
+
+    if (sfxChk) {
+      sfxChk.onchange = function () {
+        var desired = sfxChk.checked;
+        if (window.BootstrapAudio) window.BootstrapAudio.setSfxEnabled(desired);
+        window.BootstrapApp.sendConfigSet('sfxEnabled', desired, applySfx);
+      };
+    }
+    if (ambChk) {
+      ambChk.onchange = function () {
+        var desired = ambChk.checked;
+        if (window.BootstrapAudio) window.BootstrapAudio.setAmbientEnabled(desired);
+        window.BootstrapApp.sendConfigSet('ambientEnabled', desired, applyAmb);
+      };
+    }
+    if (pauseChk) {
+      pauseChk.onchange = function () {
+        if (window.PM19Motion) window.PM19Motion.setPaused(pauseChk.checked);
+      };
+    }
+    if (motion && motion.subscribe) {
+      _unsubMotion = motion.subscribe(syncMotion);
+    }
+
     if (window.BootstrapApp && window.BootstrapApp.onMessage) {
       _unsubConfigResp = window.BootstrapApp.onMessage('config_set_resp', function(msg) {
         if (msg.key === 'uiFontScale') syncFsHighlight();
+        else if (msg.key === 'sfxEnabled' && typeof msg.currentValue === 'boolean') applySfx(msg.currentValue);
+        else if (msg.key === 'ambientEnabled' && typeof msg.currentValue === 'boolean') applyAmb(msg.currentValue);
       });
     }
   }
@@ -83,6 +155,10 @@
     if (_unsubConfigResp) {
       _unsubConfigResp();
       _unsubConfigResp = null;
+    }
+    if (_unsubMotion) {
+      _unsubMotion();
+      _unsubMotion = null;
     }
     document.getElementById('display-options-home').appendChild(document.getElementById('display-options'));
     _container = null;
