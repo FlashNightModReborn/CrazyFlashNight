@@ -245,24 +245,13 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingEndToEndTest {
     private static function testBlackbox_HandleFloat_UndefinedMan_TempYPositive_PollutesUnit():Void {
         trace("\n--- testBlackbox_HandleFloat_UndefinedMan_TempYPositive_PollutesUnit ---");
         var unit = makeMockUnit("hero");
-        unit.temp_y = 30;  // 浮空触发 → shouldApplyFloat=true → 走到 unit[flag] = true 等写入
-
-        // 此分支会走到：
-        //   man.落地 = true;     (undefined silent no-op)
-        //   unit[floatFlag] = true;     ← AS2 unit 是真对象，写入生效 → unit 被污染
-        //   unit._y = unit.temp_y;
-        //   unit.起始Y = unit.Z轴坐标;
-        //   man.落地 = false;    (undefined silent no-op)
-        //   unit.浮空 = true;
-        //   RoutingRuntime.closeNaturalLanding/closeJumpFloat/enableSkillFloat
-        //     —— 这些通过 getAirController()，无 air controller 时 silent no-op
+        unit.temp_y = 30;
+        unit._y = 30;  // 当前离地；直接裸调时 AS2 对 undefined man 的写入静默跳过。
         RoutingLifecycle.handleFloat(undefined, unit, "技能浮空");
-        assertTrue("handleFloat(undefined, unit, ...) tempy>0 不崩", true);
-
-        // 黑箱观察：unit 字段被污染 — 这正是生产路径短路掉的原因
-        assertEquals("unit.浮空 被设为 true (污染)", true, unit.浮空);
-        assertEquals("unit.技能浮空 flag 被设为 true (污染)", true, unit.技能浮空);
-        assertEquals("unit._y 被改为 temp_y(30) (污染)", 30, unit._y);
+        assertTrue("离地裸调正常返回", true);
+        assertEquals("离地 unit.浮空", true, unit.浮空);
+        assertEquals("离地 unit.技能浮空", true, unit.技能浮空);
+        assertEquals("保持现役坐标", 30, unit._y);
     }
 
     // ════════════════════════════════════════════════════════════════════
@@ -310,7 +299,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingEndToEndTest {
         trace("\n--- testProduction_MissingSkill_ShortCircuits_NoUnitPollution ---");
         var unit = makeMockUnit("hero");
         unit.技能名 = "升龙拳";
-        unit.temp_y = 30;  // tempy>0 — 若误调 handleFloat 会污染
+        unit.Z轴坐标 = 130;  // 当前离地，若误调 handleFloat 会污染
         unit.__setMissingSymbol("技能容器-升龙拳");
 
         var ret:Object = runSkillRouteEntry(unit, {});
@@ -333,7 +322,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingEndToEndTest {
         trace("\n--- testProduction_MissingBattleSkill_ShortCircuits_NoUnitPollution ---");
         var unit = makeMockUnit("hero");
         unit.技能名 = "双刀变长柄";
-        unit.temp_y = 30;  // tempy>0 — 若误调 handleFloat 会污染
+        unit.Z轴坐标 = 130;  // 当前离地，若误调 handleFloat 会污染
         unit.__setMissingSymbol("战技容器-双刀变长柄");
 
         var ret:Object = runBattleSkillRouteEntry(unit, {});
@@ -351,7 +340,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingEndToEndTest {
         // 正向断言：短路只在 STATUS !== OK 触发，happy 路径不变 — 仍 attach + handleFloat + bindEndCleanup
         var unit = makeMockUnit("hero");
         unit.技能名 = "升龙拳";
-        unit.temp_y = 30;  // 浮空 → handleFloat 会执行所有写入
+        unit._y = 30;      // 当前离地，走实际浮空接管
 
         var ret:Object = runSkillRouteEntry(unit, {});
 

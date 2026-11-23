@@ -694,7 +694,10 @@ _root.主角函数.被击移动 = function(移动方向, 速度, 摩擦力) {
 _root.主角函数.拾取 = function() {
     if (_root.gameworld.__combatAdmitted === false) return;
     if (this.hp > 0 && this.状态 != "技能" && this.状态 != "战技") {
-        状态改变("拾取");
+        // 物品已由拾取管理器到账。离地时保留当前动作及其下落来源，地面拾取继续播放原姿势。
+        var risingJump:Boolean = this.__air.sources.jumpFloat != undefined && this.垂直速度 < 0;
+        if (org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleCore.shouldApplyFloat(this._y, this.Z轴坐标, risingJump)) return;
+        this.状态改变("拾取");
     }
 };
 

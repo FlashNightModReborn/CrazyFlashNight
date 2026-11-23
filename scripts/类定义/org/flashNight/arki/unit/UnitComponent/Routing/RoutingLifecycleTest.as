@@ -210,6 +210,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleTest {
         testBindEndCleanup_NoDispatcher();
         testBindEndCleanup_PrevOnUnloadChained();
         testHandleFloat_MockRuntime();
+        testHandleFloat_ReentrantSuccessor();
         testHandleFloat_NoTempYSkipsRuntime();
         testClearNaturalLandingTask_MockRuntime();
         testStartNaturalLandingTask_MockRuntime();
@@ -235,7 +236,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleTest {
         u._y = 80;
         u.浮空 = true;
         RoutingLifecycle.ensureTempY(u);
-        assertEquals("temp_y 保留 50（早退）", 50, u.temp_y);
+        assertEquals("快照采现役坐标", 80, u.temp_y);
     }
 
     private static function testEnsureTempY_FloatingFlag():Void {
@@ -476,6 +477,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleTest {
         try {
             var u = makeUnit("hf1");
             var man = makeClip();
+            u.__air = {sources:{jumpFloat:{}, naturalFall:{}}};
             u.temp_y = 240;
             u._y = 320;
             u.Z轴坐标 = 360;
@@ -485,10 +487,10 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleTest {
 
             assertEquals("man.落地 = false", false, man.落地);
             assertEquals("unit.技能浮空 = true", true, u.技能浮空);
-            assertEquals("unit._y 回到 temp_y", 240, u._y);
+            assertEquals("接管保持现役坐标", 320, u._y);
             assertEquals("unit.起始Y = Z", 360, u.起始Y);
             assertEquals("unit.浮空 = true", true, u.浮空);
-            assertEquals("关闭技能浮空 1 次", 1, spy.closeSkillFloatCount);
+            assertEquals("接管前不撤掉技能来源", 0, spy.closeSkillFloatCount);
             assertEquals("关闭自然落地 1 次", 1, spy.closeNaturalLandingCount);
             assertEquals("关闭跳跃浮空 1 次", 1, spy.closeJumpFloatCount);
             assertEquals("启用技能浮空 1 次", 1, spy.enableSkillFloatCount);
@@ -497,6 +499,24 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleTest {
             assertEquals("旧任务 remove 1 次", 1, spy.removeTaskCount);
             assertEquals("旧任务 id 77", 77, spy.lastRemovedTask);
             assertEquals("unit.__技能浮空任务ID 清空", null, u.__技能浮空任务ID);
+        } finally {
+            clearRuntimeSpy();
+        }
+    }
+
+    private static function testHandleFloat_ReentrantSuccessor():Void {
+        var spy = makeRuntimeSpy();
+        var u = makeUnit("reentrantFloat");
+        u._y = -30;
+        u.__air = {sources:{jumpFloat:{}, naturalFall:{}}};
+        spy.air.启用技能浮空 = function(unit, flag, man):Void {
+            unit.__air.sources = {jumpFloat:{}, naturalFall:{}};
+        };
+        installRuntimeSpy(spy);
+        try {
+            RoutingLifecycle.handleFloat(makeClip(), u, "技能浮空");
+            assertEquals("同步换代后的跳跃来源保留", 0, spy.closeJumpFloatCount);
+            assertEquals("同步换代后的自然下落保留", 0, spy.closeNaturalLandingCount);
         } finally {
             clearRuntimeSpy();
         }

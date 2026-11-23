@@ -119,17 +119,111 @@ class org.flashNight.arki.unit.UnitComponent.Routing.AirHandoffTest {
         u.removeMovieClip();
     }
 
+    private static function routeHandoff(y:Number, fromJump:Boolean):Void {
+        var u:MovieClip = unit("空手");
+        var air:Object = _root.空中控制器;
+        u._y = y;
+        u.Z轴坐标 = y + 40;
+        u.垂直速度 = 3;
+        air.启动(u, true);
+        if (fromJump) air.启用跳跃浮空(u, u.man);
+        else air.启用自然落地(u);
+        u.状态 = "技能";
+        u.temp_y = 90;
+        RoutingLifecycle.ensureTempY(u);
+        RoutingLifecycle.handleFloat(u.man, u, "技能浮空");
+        check(u._y == y && u.temp_y == y && u.__air.sources.skillFloat.man === u.man && !u.man.落地,
+              "live coordinate and source survive handoff at y=" + y);
+        air._tick(u);
+        check(u._y == y + 3 && u.__air.running && u.__air.sources.jumpFloat == undefined && u.__air.sources.naturalFall == undefined,
+              "first successor physics step at y=" + y);
+        air.关闭技能浮空(u);
+        u.removeMovieClip();
+    }
+
+    private static function groundedRoute():Void {
+        var u:MovieClip = unit("空手");
+        var air:Object = _root.空中控制器;
+        u._y = u.Z轴坐标 = 10;
+        u.temp_y = 70;
+        u.垂直速度 = -6;
+        u.状态 = "技能";
+        RoutingLifecycle.handleFloat(u.man, u, "技能浮空");
+        check(u._y == 10 && u.man.落地 && u.__air.sources.skillFloat == undefined,
+              "stale position and negative speed cannot launch a grounded unit");
+        air.启动(u, true);
+        air.启用跳跃浮空(u, u.man);
+        RoutingLifecycle.handleFloat(u.man, u, "技能浮空");
+        var source:Object = u.__air.sources.skillFloat;
+        check(source != undefined && u.垂直速度 == -6 && !u.man.落地, "registered takeoff at ground is handed over");
+        air.设置技能浮空悬停(u, true);
+        RoutingLifecycle.handleFloat(u.man, u, "技能浮空");
+        check(u.__air.sources.skillFloat === source && source.hover && u._y == 10, "owned hover is not replaced");
+        air.关闭技能浮空(u);
+        u.removeMovieClip();
+    }
+
+    private static function cancelFastFall():Void {
+        var u:MovieClip = unit("空手");
+        var air:Object = _root.空中控制器;
+        var next:MovieClip = u.createEmptyMovieClip("next", 2);
+        u.状态 = "技能";
+        u._y = -80;
+        u.垂直速度 = 3;
+        u.man.onUnload = function():Void { air.启用技能浮空(u, "技能浮空", next); };
+        air.启动(u, true);
+        air.启用快速下落(u, u.man, 20, 30);
+        var fall:Object = u.__air.sources.fastFall;
+        var hook:Function = u.man.onUnload;
+        air.启用快速下落(u, u.man, 20, 30);
+        check(fall === u.__air.sources.fastFall && u.man.onUnload === hook, "waiting reuses registration and unload");
+        hook.call(u.man);
+        check(u.__air.sources.fastFall == undefined && u.__air.sources.skillFloat.man === next && u._y == -80,
+              "cancel releases only its fall without a second immediate integration");
+        air._tick(u);
+        check(u._y == -77 && u.__air.running, "successor advances on its own physics step");
+        air.关闭技能浮空(u);
+        delete u.man.onUnload;
+        u.removeMovieClip();
+    }
+
+    private static function pickupPose():Void {
+        var u:MovieClip = unit("空手");
+        u.状态改变 = function(state:String):Void { this.状态 = state; };
+        u.拾取 = _root.主角函数.拾取;
+        u._y = -12;
+        u.拾取();
+        check(u.状态 == "空手跳", "airborne pickup preserves its action");
+        u._y = 0;
+        u.垂直速度 = -8;
+        u.__air = {sources:{jumpFloat:{man:u.man}}};
+        u.拾取();
+        check(u.状态 == "空手跳", "pickup cannot cancel a registered takeoff");
+        delete u.__air.sources.jumpFloat;
+        u.拾取();
+        check(u.状态 == "拾取", "grounded pickup keeps its pose");
+        u.removeMovieClip();
+    }
+
     public static function runAllTests():Void {
         passed = failed = 0;
         var oldGravity:Object = _root.重力加速度;
         _root.重力加速度 = 4;
         earlyFinish("兵器", true);
         earlyFinish("空手", false);
+        earlyFinish("兵器", false);
+        earlyFinish("空手", true);
         sameMan();
         oldUnload();
         replaceOnLanding("jumpFloat");
         replaceOnLanding("fastFall");
         replaceOnLanding("knockback");
+        routeHandoff(-30, true);
+        routeHandoff(0, false);
+        routeHandoff(30, true);
+        groundedRoute();
+        cancelFastFall();
+        pickupPose();
         _root.重力加速度 = oldGravity;
         trace("AirHandoffTest: " + passed + " passed, " + failed + " failed");
     }

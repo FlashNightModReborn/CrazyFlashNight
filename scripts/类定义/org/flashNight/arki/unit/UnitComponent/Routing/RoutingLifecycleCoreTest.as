@@ -50,7 +50,6 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleCoreTest {
         failedTests = 0;
 
         testResolveBonusMode();
-        testResolveTempY();
         testFloatPredicates();
         testEndCleanupPredicate();
         testAnimationPredicates();
@@ -69,20 +68,13 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleCoreTest {
         assertEquals("非拳系 → 技能", "技能", RoutingLifecycleCore.resolveBonusMode(false));
     }
 
-    private static function testResolveTempY():Void {
-        trace("\n--- testResolveTempY ---");
-        assertEquals("已有正 temp_y 保留", 50, RoutingLifecycleCore.resolveTempY(50, true, 80, 320));
-        assertEquals("浮空标记命中 → y", 280, RoutingLifecycleCore.resolveTempY(0, true, 280, 320));
-        assertEquals("y < Z 兜底 → y", 250, RoutingLifecycleCore.resolveTempY(0, false, 250, 320));
-        assertEquals("站立 → 0", 0, RoutingLifecycleCore.resolveTempY(0, false, 320, 320));
-        assertEquals("Z 为 NaN → 0", 0, RoutingLifecycleCore.resolveTempY(0, false, 250, Number("nan")));
-    }
-
     private static function testFloatPredicates():Void {
         trace("\n--- testFloatPredicates ---");
-        assertTrue("temp_y > 0 可应用浮空", RoutingLifecycleCore.shouldApplyFloat(1));
-        assertFalse("temp_y = 0 不应用浮空", RoutingLifecycleCore.shouldApplyFloat(0));
-        assertFalse("temp_y NaN 不应用浮空", RoutingLifecycleCore.shouldApplyFloat(Number("nan")));
+        assertTrue("负坐标仍可接管", RoutingLifecycleCore.shouldApplyFloat(-20, 40, false));
+        assertTrue("零坐标仍可接管", RoutingLifecycleCore.shouldApplyFloat(0, 40, false));
+        assertFalse("贴地且没有起飞来源", RoutingLifecycleCore.shouldApplyFloat(40, 40, false));
+        assertTrue("合法起飞来源尚在容差带内", RoutingLifecycleCore.shouldApplyFloat(40, 40, true));
+        assertFalse("非有限地面", RoutingLifecycleCore.shouldApplyFloat(40, Number.POSITIVE_INFINITY, true));
         assertTrue("y 小于 Z-0.5 → inAir", RoutingLifecycleCore.isInAir(299, 300));
         assertFalse("y 在容差内 → not inAir", RoutingLifecycleCore.isInAir(299.7, 300));
     }

@@ -26,12 +26,10 @@
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.技能浮空 == true)
-{
-   if(_parent.Z轴坐标 - _parent._y >= 30)
-   {
-      // 使用空中控制器的快速下落模式
-      stop();
+                <script><![CDATA[if (_root.空中控制器.震地仍需下落(_parent, this)) {
+   stop();
+   if (this.__fastFallBinding.source == undefined || _parent.__air.sources.fastFall !== this.__fastFallBinding.source) {
+      if (_parent.垂直速度 < 0) _parent.垂直速度 = 0;
       _root.空中控制器.启用快速下落(_parent, this, 20, 30);
    }
 }
@@ -40,6 +38,11 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="46" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// 受击也会续播等待帧，先复核脚点再进入第 9 帧的攻击段。
+if (_root.空中控制器.震地仍需下落(_parent, this)) gotoAndStop(5);
+]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="51" keyMode="9728">

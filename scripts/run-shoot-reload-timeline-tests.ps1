@@ -63,7 +63,7 @@ $focusedRun=@{
         'scripts/类定义/org/flashNight/arki/scene/BookRunClock.as',
         'scripts/类定义/org/flashNight/arki/scene/StageRunSession.as')
     ExpectedTracePatterns=@(
-        '(?m)^AirHandoffTest: 13 passed, 0 failed\r?$',
+        '(?m)^AirHandoffTest: 32 passed, 0 failed\r?$',
         '(?m)^--- ShootReloadTimelineTest: (?<native>[1-9][0-9]*)/\k<native> passed, 0 failed ---\r?$',
         '(?m)^\[COUPLED_RELOAD\] case=primary-first mainPacks=1 subPacks=1 resumedMain=[1-9][0-9]* resumedSub=[1-9][0-9]*\r?$',
         '(?m)^\[COUPLED_RELOAD\] case=secondary-first mainPacks=0 subPacks=1 resumedMain=[1-9][0-9]* resumedSub=[1-9][0-9]*\r?$',

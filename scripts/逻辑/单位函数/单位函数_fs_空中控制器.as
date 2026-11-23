@@ -106,7 +106,9 @@ _root.空中控制器.启用技能浮空 = function(unit:MovieClip, floatFlag:St
     if (unit && unit.__pendingSkillFloatHover != undefined) {
         delete unit.__pendingSkillFloatHover;
     }
-    _root.空中控制器.设置源(unit, "skillFloat", { floatFlag: floatFlag, man: man, hover: hover });
+    var source:Object = { floatFlag: floatFlag, man: man, hover: hover };
+    if (man) man.__skillFloatSource = source;
+    _root.空中控制器.设置源(unit, "skillFloat", source);
 };
 
 /**
@@ -191,13 +193,44 @@ _root.空中控制器.关闭跳跃浮空 = function(unit:MovieClip):Void {
  * @param minHeight:Number 最小高度阈值，低于此高度视为落地（默认30）
  */
 _root.空中控制器.启用快速下落 = function(unit:MovieClip, man:MovieClip, gravity:Number, minHeight:Number):Void {
+    if (!unit) return;
     if (gravity == undefined || isNaN(gravity)) gravity = 20;
     if (minHeight == undefined || isNaN(minHeight)) minHeight = 30;
-    _root.空中控制器.设置源(unit, "fastFall", {
-        man: man,
-        gravity: gravity,
-        minHeight: minHeight
-    });
+    var air:Object = _root.空中控制器.确保(unit);
+    var binding:Object = man.__fastFallBinding;
+    if (man && (binding == undefined || binding.air !== air)) {
+        binding = {air:air};
+        man.__fastFallBinding = binding;
+        var previous:Function = man.onUnload;
+        man.onUnload = function():Void {
+            var owns:Boolean = unit.__air === air && binding.source != undefined && air.sources.fastFall === binding.source;
+            if (owns) delete air.sources.fastFall;
+            if (previous != undefined) previous.apply(this);
+            // 前任卸载可以登记新来源。保留运行中的物理步，等同步交接结束后再决定是否停轮。
+            if (owns && unit.__air === air && unit._parent != undefined && !_root.空中控制器._hasAnySource(air)) {
+                if (unit.Z轴坐标 - unit._y > _root.空中控制器._TOL) _root.空中控制器.启用自然落地(unit);
+                else _root.空中控制器.停止(unit);
+            }
+        };
+    }
+    if (binding.source != undefined && air.sources.fastFall === binding.source) return;
+    var fall:Object = {man:man, gravity:gravity, minHeight:minHeight};
+    if (binding != undefined) binding.source = fall;
+    _root.空中控制器.设置源(unit, "fastFall", fall);
+};
+
+/** 地震、觉醒震地的等待帧和攻击前复核使用同一脚点。30px 只在快落积分时使用。 */
+_root.空中控制器.震地仍需下落 = function(unit:MovieClip, man:MovieClip):Boolean {
+    var height:Number = unit.Z轴坐标 - unit._y;
+    var tol:Number = _root.空中控制器._TOL;
+    var sources:Object = unit.__air.sources;
+    if (sources.fastFall != undefined && sources.fastFall === man.__fastFallBinding.source) return true;
+    if (height > tol) return true;
+    if (Math.abs(height) <= tol) {
+        if ((sources.skillFloat != undefined || sources.jumpFloat != undefined) && unit.垂直速度 < 0) return true;
+        if (height != 0) unit._y = unit.Z轴坐标;
+    }
+    return false;
 };
 
 /** 关闭快速下落 */

@@ -35,12 +35,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
     }
 
     public static function ensureTempY(unit:MovieClip):Void {
-        unit.temp_y = RoutingLifecycleCore.resolveTempY(
-            unit.temp_y,
-            unit.浮空,
-            unit._y,
-            unit.Z轴坐标
-        );
+        unit.temp_y = RoutingLifecycleCore.isInAir(unit._y, unit.Z轴坐标) ? unit._y : 0;
     }
 
     public static function bindMovement(man:MovieClip):Void {
@@ -116,26 +111,37 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
     }
 
     public static function handleFloat(man:MovieClip, unit:MovieClip, floatFlag:String):Void {
-        man.落地 = true;
-        if (!RoutingLifecycleCore.shouldApplyFloat(unit.temp_y)) {
+        var sources:Object = unit.__air.sources;
+        var skill:Object = sources.skillFloat;
+        var oldJump:Object = sources.jumpFloat;
+        var oldNatural:Object = sources.naturalFall;
+        var owns:Boolean = skill != undefined && skill === man.__skillFloatSource;
+        var rising:Boolean = unit.垂直速度 < 0 && (skill != undefined || oldJump != undefined
+            || sources.knockback != undefined || sources.jetpack.active == true);
+        if (!owns && !RoutingLifecycleCore.shouldApplyFloat(unit._y, unit.Z轴坐标, rising)) {
+            man.落地 = true;
             return;
         }
 
         unit[floatFlag] = true;
-        unit._y = unit.temp_y;
+        unit.temp_y = unit._y;
         unit.起始Y = unit.Z轴坐标;
         man.落地 = false;
         unit.浮空 = true;
 
-        clearSkillFloatTask(unit);
-
-        RoutingRuntime.closeNaturalLanding(unit);
-        RoutingRuntime.closeJumpFloat(unit);
-        RoutingRuntime.enableSkillFloat(unit, floatFlag, man);
+        // 先接管再让出旧来源，停轮后重启会在同一帧额外积分。容器自行登记的初速和悬停也要保留。
+        clearLegacySkillFloatTask(unit);
+        if (!owns) RoutingRuntime.enableSkillFloat(unit, floatFlag, man);
+        if (oldNatural != undefined && unit.__air.sources.naturalFall === oldNatural) RoutingRuntime.closeNaturalLanding(unit);
+        if (oldJump != undefined && unit.__air.sources.jumpFloat === oldJump) RoutingRuntime.closeJumpFloat(unit);
     }
 
     public static function clearSkillFloatTask(unit:MovieClip):Void {
         RoutingRuntime.closeSkillFloat(unit);
+        clearLegacySkillFloatTask(unit);
+    }
+
+    private static function clearLegacySkillFloatTask(unit:MovieClip):Void {
         if (unit.__技能浮空任务ID != null) {
             RoutingRuntime.removeTask(unit.__技能浮空任务ID);
             unit.__技能浮空任务ID = null;

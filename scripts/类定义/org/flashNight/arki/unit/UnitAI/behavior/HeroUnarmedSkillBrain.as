@@ -567,11 +567,8 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
         // 释放前先面向目标（背对时出招会打空）
         _faceTarget();
 
-        // 空中出招时补齐 技能浮空 旗标（修复"屏幕边缘卡死+反复震地"）：
-        //   震地/地震/觉醒震地 容器第一帧以 `技能浮空 == true` 决定是否 启用快速下落(重力20)；
-        //   而上一技能结束时容器 onUnload 会清掉该旗标（人仍在天上）→ 不启用 fastFall。
-        //   人确实在浮空物理下，置 true 与物理语义一致；fastFall 落地时会自动清回 false。
-        //   注意：不动 垂直速度 —— 上升/下降速度一律交还给空中控制器物理积分。
+        // 旧容器卸载可能清除技能浮空旗标，为仍在空中的 AI 补齐动作标记。
+        // 震地类容器另外核对当前脚点。垂直速度仍由空中控制器推进。
         if (self.浮空 == true && self.技能浮空 != true) {
             self.技能浮空 = true;
         }

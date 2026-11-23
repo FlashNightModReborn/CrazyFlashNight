@@ -14,27 +14,12 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleCore {
         return isFistSkill ? BONUS_MODE_BAREHAND : BONUS_MODE_SKILL;
     }
 
-    public static function resolveTempY(currentTempY:Number, isFloating:Boolean, y:Number, z:Number):Number {
-        if (currentTempY > 0) {
-            return currentTempY;
-        }
-        if (isFloating === true) {
-            return y;
-        }
-        // 与 isInAir 的 0.5 容差对齐：[z-0.5, z) 带内视为贴地（返回 0），
-        // 防止定时器时序下亚像素残留把单位误判为“在空中”而触发幽灵浮空。
-        if (!isNaN(z) && y < z - 0.5) {
-            return y;
-        }
-        return 0;
-    }
-
-    public static function shouldApplyFloat(tempY:Number):Boolean {
-        return (tempY > 0) == true;
+    public static function shouldApplyFloat(y:Number, z:Number, risingSource:Boolean):Boolean {
+        return isFinite(y) && isFinite(z) && (y < z - 0.5 || (risingSource && Math.abs(z - y) <= 0.5));
     }
 
     public static function isInAir(y:Number, z:Number):Boolean {
-        return (y < z - 0.5) == true;
+        return isFinite(y) && isFinite(z) && y < z - 0.5;
     }
 
     public static function shouldResetOnEndCleanup(state:String, excludeState:String):Boolean {
