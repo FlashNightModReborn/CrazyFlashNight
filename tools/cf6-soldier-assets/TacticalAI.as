@@ -4,6 +4,7 @@ soldierTacticalStats={wallEscapes:0,slideBlocks:0,slideStalls:0,smokes:0,smokeRe
 soldierNextEvasionAt=0;soldierNextEvasionAttemptAt=0;soldierPendingEvasion=null;soldierThreatOwned=false;
 soldierSmokeNextAt=0;soldierSlidePermit=null;soldierRecentDamageUntil=0;
 soldierStrategy="line";soldierStrategyUntil=0;soldierBlockedUntil=0;
+soldierLineVolleys=0;soldierMobileVolleys=0;
 soldierConfigureTactics=function():Void {
     var role:String=this.soldierIsInstructor===true?"instructor":this.soldierIsElite===true?"elite":"ordinary";
     var defaults:Object=cf6TacticalDefaults[role],limits:Object=cf6TacticalLimits;
@@ -74,13 +75,25 @@ soldierSelectStrategy=function(dx:Number,dz:Number):String {
     if(this.soldierClock<this.soldierStrategyUntil)return this.soldierStrategy;
     var target:MovieClip=_root.gameworld[this.攻击目标];
     var pressure:Boolean=this.soldierClock<this.soldierRecentDamageUntil;
+    var rifleLoaded:Boolean=this.长枪.value.shot<this.长枪弹匣容量;
+    var pistolLoaded:Boolean=this.elitePrimaryPistolEnabled();
     var lineScore:Number=(dx>180 && dz<=24?4:0)+(pressure?0:2);
     var mobileScore:Number=(dx<180?5:0)+(pressure?4:0)+(dz>36?2:0);
-    var rifleLoaded:Boolean=this.长枪.value.shot<this.长枪弹匣容量;
-    var pistolLoaded:Boolean=this.手枪.value.shot<this.手枪弹匣容量
-        || (this.eliteSidearmEnabled() && this.手枪2.value.shot<this.手枪2弹匣容量);
     if(!rifleLoaded && pistolLoaded)mobileScore+=4;
-    if(rifleLoaded && !pistolLoaded)lineScore+=4;
+    // Tempo rotation: after 1+ positional volleys, push with elite maneuvers
+    // (shield charge in Phase 1; charge-slide/run-fire at range or dual-retreat at close).
+    var lineVolleys:Number=this.soldierLineVolleys || 0;
+    var mobileVolleys:Number=this.soldierMobileVolleys || 0;
+    if(lineVolleys>=1){
+        var rushReady:Boolean=this.soldierPhase==1
+            ?(dx>=this.soldierTacticalConfig.chargeMinRange && dx<=this.soldierTacticalConfig.chargeRange)
+            :((dx<this.soldierTacticalConfig.retreatTrigger && pistolLoaded)
+                || (dx>280 && rifleLoaded && ((this.特种兵烟雾弹!==false && !(this.soldierClock<this.soldierSmokeNextAt)) || dx>this.soldierTacticalConfig.runTrigger)));
+        mobileScore+=rushReady?8:5;
+    }else if(mobileVolleys>=1 && dx>220 && !pressure && rifleLoaded){
+        lineScore+=4;
+    }
+    if(pressure && dx>180 && (this.soldierPhase==1 || (rifleLoaded && !(this.soldierClock<this.soldierSmokeNextAt))))mobileScore+=2;
     if(this.soldierClock<this.soldierBlockedUntil)mobileScore-=4;
     var next:String=mobileScore>lineScore+1?"mobile":"line";
     if(next!=this.soldierStrategy)this.soldierTacticalStats.strategyChanges++;
@@ -128,9 +141,18 @@ soldierTacticalChoose=function(dx:Number,dz:Number,height:Number):String {
         }
     }
     if(dx>tune.shootRange || dz>tune.laneRange || this.soldierClock<this.soldierNextShootAt)return "none";
-    this.eliteNextAction=this.soldierIsInstructor===true && strategy=="line"?"line":
-        strategy=="mobile" && !(this.soldierClock<this.soldierBlockedUntil)?(dx<config.retreatTrigger?"retreat":
-            dx>config.runTrigger?"run":"stand"):"stand";
+    if(this.soldierIsInstructor===true && strategy=="line"){
+        this.eliteNextAction="line";
+    }else if(strategy=="mobile" && !(this.soldierClock<this.soldierBlockedUntil)){
+        var slideReady:Boolean=this.特种兵烟雾弹!==false && !(this.soldierClock<this.soldierSmokeNextAt)
+            && this.长枪.value.shot<this.长枪弹匣容量;
+        if(dx<config.retreatTrigger)this.eliteNextAction="retreat";
+        else if(dx>config.runTrigger || (this.soldierIsInstructor===true && dx>280 && slideReady)){
+            this.eliteNextAction=slideReady?"slide":"run";
+        }else this.eliteNextAction="stand";
+    }else{
+        this.eliteNextAction="stand";
+    }
     if(this.soldierIsElite===true && (!this.eliteTactics || !this.eliteMobility))this.eliteNextAction="stand";
     return "shoot";
 };
@@ -270,9 +292,9 @@ soldierTryEvasion=function(dx:Number,dz:Number):Boolean {
     if(pending!=null && (pending.target!==target || this.soldierClock>pending.until)){
         this.soldierPendingEvasion=null;pending=null;
     }
-    var wallEscape:Boolean=pending!=null && pending.noFire===true
-        && (pending.reason=="slide_blocked" || pending.reason=="slide_stalled");
-    if((this.硬直中 || this.soldierClock<this.soldierNextEvasionAt) && !wallEscape)return false;
+    var wallEscape:Boolean=pending!=null && pending.noFire===true && pending.reason=="slide_blocked";
+    var slideStallEscape:Boolean=pending!=null && pending.reason=="slide_stalled";
+    if((this.硬直中 && !wallEscape) || (this.soldierClock<this.soldierNextEvasionAt && !wallEscape && !slideStallEscape))return false;
     var age:Number=_root.帧计时器.当前帧数-this._btFrame;
     var fresh:Boolean=isFinite(age) && age>=0 && age<=1 && this._btCount>0
         && this._btMinETA>=0 && this._btMinETA<config.evasionETA;

@@ -27,9 +27,10 @@ syncHolsters=function():Void {
     var active:Boolean=owner.elite===true && owner.active===true && body===unit.man
         && unit.状态=="长枪攻击";
     var primary:Boolean=false,secondary:Boolean=false;
-    if(active){
-        if(owner.reload){primary=!owner.smokePrepared && (owner.reloadPair===true || owner.reloadSlot=="手枪");secondary=!owner.smokePrepared && (owner.reloadPair===true || owner.reloadSlot=="手枪2");}
-        else if(owner.kind=="retreat"){
+    if(active && !owner.reload){
+        var drawn:Boolean=(owner.fixed && owner.mode=="dual")
+            || (owner.kind=="retreat" && body._currentframe>=15 && body._currentframe<=75);
+        if(drawn){
             primary=true;secondary=unit.eliteSidearmAllowed===true;
         }
     }

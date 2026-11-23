@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/特种兵/烟雾/烟雾" linkageIdentifier="CF6战术烟雾" linkageExportForAS="true" linkageExportInFirstFrame="true">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/特种兵/烟雾/烟雾" linkageIdentifier="CF6战术烟雾" linkageExportForAS="true" linkageExportInFirstFrame="true">
   <timeline>
     <DOMTimeline name="烟雾">
       <layers>
@@ -27,9 +27,9 @@ onEnterFrame=function():Void {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="翅虎烟雾生命周期" color="#4FFF4F">
+        <DOMLayer name="翅虎烟雾生命周期" color="#4FFF4F" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="25">
+            <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="25" keyMode="9728">
@@ -271,7 +271,7 @@ onEnterFrame=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" keyMode="9728" duration="1">
+            <DOMFrame index="24" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

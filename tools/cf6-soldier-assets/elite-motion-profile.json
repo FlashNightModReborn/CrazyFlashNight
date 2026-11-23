@@ -1,201 +1,189 @@
 {
-  "schema": "cf6-soldier.elite-motion.v1",
+  "schema": "cf6-soldier.elite-motion.v2",
   "frameRate": 30,
-  "sourceBindFrame": 53,
-  "sidearmBindFrame": 22,
-  "targetStandBind": {
-    "sequence": "507",
-    "frame": 1
-  },
+  "motionSource": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术Alter/native-alter-samples.json",
+  "handoffFrame": 181,
+  "reloadStartFrame": 182,
+  "reloadEndFrame": 216,
   "actions": {
     "retreat": {
-      "first": 2,
-      "last": 44,
+      "first": 1,
+      "last": 89,
+      "loopFirst": 28,
+      "loopLast": 51,
+      "drawnFirst": 15,
+      "drawnLast": 75,
       "weaponMode": "dual",
       "phases": [
         {
-          "name": "close",
-          "first": 2,
-          "last": 20
+          "name": "draw",
+          "first": 1,
+          "last": 27
         },
         {
           "name": "withdraw",
-          "first": 21,
-          "last": 44
+          "first": 28,
+          "last": 51
+        },
+        {
+          "name": "holster",
+          "first": 52,
+          "last": 89
         }
       ],
       "fireEvents": [
         {
-          "frame": 21,
-          "weapon": "primary"
-        },
-        {
-          "frame": 22,
-          "weapon": "secondary"
-        },
-        {
-          "frame": 27,
-          "weapon": "primary"
-        },
-        {
           "frame": 28,
-          "weapon": "secondary"
+          "weapon": "primary"
         },
         {
-          "frame": 33,
-          "weapon": "primary"
+          "frame": 29,
+          "weapon": "secondary"
         },
         {
           "frame": 34,
-          "weapon": "secondary"
-        },
-        {
-          "frame": 39,
           "weapon": "primary"
         },
         {
+          "frame": 35,
+          "weapon": "secondary"
+        },
+        {
           "frame": 40,
+          "weapon": "primary"
+        },
+        {
+          "frame": 41,
+          "weapon": "secondary"
+        },
+        {
+          "frame": 46,
+          "weapon": "primary"
+        },
+        {
+          "frame": 47,
           "weapon": "secondary"
         }
       ]
     },
-    "stand": {
-      "first": 46,
-      "last": 77,
+    "run": {
+      "first": 90,
+      "last": 129,
+      "loopFirst": 100,
+      "loopLast": 124,
       "weaponMode": "primary",
       "phases": [
         {
-          "name": "engage",
-          "first": 46,
-          "last": 77
+          "name": "windup",
+          "first": 90,
+          "last": 99
+        },
+        {
+          "name": "run",
+          "first": 100,
+          "last": 129
         }
       ],
       "fireEvents": [
         {
-          "frame": 54,
+          "frame": 100,
           "weapon": "primary"
         },
         {
-          "frame": 58,
+          "frame": 104,
           "weapon": "primary"
         },
         {
-          "frame": 62,
+          "frame": 108,
           "weapon": "primary"
         },
         {
-          "frame": 66,
+          "frame": 112,
           "weapon": "primary"
         },
         {
-          "frame": 70,
+          "frame": 116,
+          "weapon": "primary"
+        },
+        {
+          "frame": 120,
+          "weapon": "primary"
+        },
+        {
+          "frame": 124,
+          "weapon": "primary"
+        },
+        {
+          "frame": 128,
           "weapon": "primary"
         }
       ]
     },
     "slide": {
-      "first": 206,
-      "last": 248,
+      "first": 90,
+      "last": 180,
+      "loopFirst": 100,
+      "loopLast": 124,
+      "slideStartFrame": 133,
+      "slideEndFrame": 165,
       "weaponMode": "primary",
       "phases": [
         {
-          "name": "smokeWindup",
-          "first": 206,
-          "last": 211
+          "name": "windup",
+          "first": 90,
+          "last": 99
+        },
+        {
+          "name": "chargeRun",
+          "first": 100,
+          "last": 132
         },
         {
           "name": "low",
-          "first": 212,
-          "last": 228
+          "first": 133,
+          "last": 165
         },
         {
           "name": "recover",
-          "first": 229,
-          "last": 248
+          "first": 166,
+          "last": 180
         }
       ],
       "fireEvents": [
         {
-          "frame": 212,
+          "frame": 102,
           "weapon": "primary"
         },
         {
-          "frame": 216,
+          "frame": 112,
           "weapon": "primary"
         },
         {
-          "frame": 220,
+          "frame": 122,
           "weapon": "primary"
         },
         {
-          "frame": 224,
+          "frame": 136,
           "weapon": "primary"
         },
         {
-          "frame": 228,
+          "frame": 142,
           "weapon": "primary"
         }
-      ],
-      "entryFrame": 212
+      ]
     },
     "reload": {
-      "first": 78,
-      "last": 121,
+      "first": 182,
+      "last": 216,
       "weaponMode": "primary",
       "phases": [
         {
           "name": "reload",
-          "first": 78,
-          "last": 121
+          "first": 182,
+          "last": 216
         }
       ],
       "fireEvents": []
-    },
-    "run": {
-      "first": 166,
-      "last": 205,
-      "weaponMode": "primary",
-      "phases": [
-        {
-          "name": "run",
-          "first": 166,
-          "last": 205
-        }
-      ],
-      "fireEvents": [
-        {
-          "frame": 174,
-          "weapon": "primary"
-        },
-        {
-          "frame": 178,
-          "weapon": "primary"
-        },
-        {
-          "frame": 182,
-          "weapon": "primary"
-        },
-        {
-          "frame": 186,
-          "weapon": "primary"
-        },
-        {
-          "frame": 190,
-          "weapon": "primary"
-        },
-        {
-          "frame": 194,
-          "weapon": "primary"
-        },
-        {
-          "frame": 198,
-          "weapon": "primary"
-        },
-        {
-          "frame": 202,
-          "weapon": "primary"
-        }
-      ]
     }
   },
   "fireGraceFrames": 2,
@@ -205,17 +193,8 @@
       "speedMultiplier": 1.0,
       "laneStrafe": false,
       "keepDistance": 430,
-      "firstMovingFrame": 8,
-      "lastMovingFrame": 44
-    },
-    "slide": {
-      "direction": "forward-locked-at-entry",
-      "stopRangeAuthority": "soldierTuning.knifeRange",
-      "runSpeedMultiplier": 1.0,
-      "lowSpeedMultiplier": 1.0,
-      "laneStrafe": true,
-      "firstMovingFrame": 212,
-      "lastMovingFrame": 228
+      "firstMovingFrame": 17,
+      "lastMovingFrame": 67
     },
     "run": {
       "direction": "forward-locked-at-entry",
@@ -223,8 +202,17 @@
       "runSpeedMultiplier": 1.0,
       "lowSpeedMultiplier": 1.0,
       "laneStrafe": true,
-      "firstMovingFrame": 166,
-      "lastMovingFrame": 205
+      "firstMovingFrame": 96,
+      "lastMovingFrame": 129
+    },
+    "slide": {
+      "direction": "forward-locked-at-entry",
+      "stopRangeAuthority": "soldierTuning.knifeRange",
+      "runSpeedMultiplier": 1.0,
+      "lowSpeedMultiplier": 1.4,
+      "laneStrafe": true,
+      "firstMovingFrame": 96,
+      "lastMovingFrame": 165
     }
   }
 }

@@ -2,7 +2,7 @@
   "schema": "cf6-instructor.panel-balance.v2",
   "attributeBoost": true,
   "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
-  "tuningSha256": "0dbfdc89643a59b0b660b7d603e7de5bb74c802d69c1655b8d807b64e96d4e53",
+  "tuningSha256": "05d2c65708f27e5cf444fd9d48fda15a6f997eccd65eaec8762e1f1c5ac7ecd8",
   "tuning": {
     "schema": "cf6-instructor.panel-tuning.v1",
     "baseStage": 7,
@@ -10,7 +10,8 @@
     "tierFactor": 9,
     "classification": "mini_boss",
     "bossResistance": 20,
-    "basis": "2026-10-28: instructor advances one stage above the stage-7 soldier baseline, uses tier coefficient 9, and is a boss target rather than an elite target. Other observed panel coefficients and authored behavior remain inherited."
+    "toughnessCoefficient": 50,
+    "basis": "2026-10-28: instructor advances one stage above the stage-7 soldier baseline, uses tier coefficient 9, and is a boss target rather than an elite target. 2026-11-23: user-authorized toughness synchronized to 50 (matching elite) so phase-2 instructor actions are not trivially interrupted."
   },
   "pairs": [
     {
@@ -51,6 +52,7 @@
         "基本防御力_min": 334,
         "基本防御力_max": 786
       },
+      "toughnessCoefficient": 50,
       "classification": "mini_boss",
       "eliteDamageEligible": false,
       "bossDamageEligible": true,
@@ -99,6 +101,7 @@
         "基本防御力_min": 334,
         "基本防御力_max": 786
       },
+      "toughnessCoefficient": 50,
       "classification": "mini_boss",
       "eliteDamageEligible": false,
       "bossDamageEligible": true,

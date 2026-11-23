@@ -237,6 +237,7 @@ soldierRemoveShieldBuff=function():Void {
 soldierCancelAttack=function():Void {
     if(this.soldierAttackOwner!=null) this.soldierAttackOwner.active=false;
     this.soldierAttackOwner=null;this.动作A=false;
+    delete this.standardShotMoving;
     _root.主角函数.清理射击任务(this);
 };
 
@@ -261,11 +262,15 @@ soldierCanShieldGuard=function():Boolean {
     this.soldierCancelAttack();
     this.状态=next;
     var pose:String=this.soldierPhase==1?this.soldierShieldStates[next]:next;
+    var wantStandBody:Boolean=this.eliteNextAction=="line" || (this.soldierPhase==2
+        && (this.eliteNextAction=="stand" || !this.eliteTactics || !this.eliteMobility));
     if(next=="长枪攻击" && typeof this.cf6UnitIdentity=="string" && this.cf6ExpectedPose=="dual")
         pose="固定双枪攻击";
-    else if(next=="长枪攻击" && this.soldierIsInstructor===true && this.eliteNextAction=="line")
+    else if(next=="长枪攻击" && this.soldierIsInstructor===true && wantStandBody)
         pose=this.soldierPhase==1?"教官持盾阵地攻击":"教官阵地攻击";
-    else if(next=="长枪攻击" && this.soldierIsElite===true && typeof this.cf6UnitIdentity=="string" && this.eliteNextAction=="line")
+    else if(next=="长枪攻击" && this.soldierIsElite===true
+        && ((this.soldierPhase==2 && wantStandBody)
+            || (this.soldierPhase==1 && typeof this.cf6UnitIdentity=="string" && this.eliteNextAction=="line")))
         pose=this.soldierPhase==1?"固定持盾阵地攻击":"固定阵地攻击";
     this.gotoAndStop(pose);
 };
@@ -351,13 +356,40 @@ soldierFinishBreak=function(body:MovieClip):Void {
     this.状态改变("长枪站立");
 };
 
+soldierStepMovingShoot=function(body:MovieClip,moving:Boolean):Void {
+    if(body==null)return;
+    var owner:Object=this.soldierAttackOwner;
+    if(owner!=null && owner.reload)return;
+    if(moving){
+        if(this.cf6StrideStep==undefined)this.cf6StrideStep=0;
+        this.cf6StrideStep=(this.cf6StrideStep+1)%21;
+        body.gotoAndStop(50+this.cf6StrideStep);
+        if(owner!=null && owner.recoilUntil>owner.age && body.枪!=null)body.枪._x-=2;
+    }else if(body._currentframe>=50){
+        body.gotoAndStop("空闲");
+    }
+};
+
 soldierBeginAttack=function(body:MovieClip,action:String):Void {
     this.soldierCancelAttack();
     if(!(this.hp>0)){body.stop();return;}
     var token:Object={};body.soldierToken=token;
+    var unifiedStand:Boolean=action=="shoot" && this.soldierIsElite===true && this.soldierPhase==2
+        && this.eliteNextAction=="stand" && typeof this.cf6UnitIdentity!="string";
+    var standLimit:Number=unifiedStand?(this.eliteTactics?this.soldierTacticalConfig.eliteStandShots:3):this.soldierTuning.burstShots;
     this.soldierAttackOwner={token:token,action:action,active:true,lastHitFrame:0,
-        target:this.攻击目标,weapon:this.长枪,version:this.version,age:0,shots:0,recovery:0,reload:false};
+        target:this.攻击目标,weapon:this.长枪,version:this.version,age:0,shots:0,recovery:0,reload:false,
+        shotLimit:standLimit,standUnified:unifiedStand,recoilUntil:0,recoilWeapon:""};
+    if(unifiedStand){
+        this.soldierAttackOwner.pistol=this.手枪;
+        this.soldierAttackOwner.sidearm=this.手枪2;
+        if(this.eliteActionCounts!=null)this.eliteActionCounts.stand++;
+    }
     if(action=="shoot") {
+        if(this.soldierIsInstructor===true && !unifiedStand && typeof this.cf6UnitIdentity!="string"
+            && this.eliteNextAction=="line"){
+            this.soldierLineVolleys=(this.soldierLineVolleys||0)+1;this.soldierMobileVolleys=0;
+        }
         if(this.soldierClock<this.soldierNextShootAt){this.soldierFinishAttack(body);return;}
         if(!(this.长枪弹匣容量>0) || !(this.长枪属性.interval>0)
             || typeof _root.主角函数.初始化长枪射击函数!="function") {
@@ -367,8 +399,18 @@ soldierBeginAttack=function(body:MovieClip,action:String):Void {
         }
         // The unit owns the deadline across pose changes, hits and target swaps.
         // No new attack or cancelled scheduler may reset the mandatory ceasefire.
-        this.soldierAttackOwner.fireDeadline=this.soldierClock+this.soldierTuning.maximumFireFrames;
-        this.soldierNextShootAt=this.soldierAttackOwner.fireDeadline+this.soldierTuning.shootRestFrames;
+        var fireBudget:Number=unifiedStand?Math.max(this.soldierTuning.maximumFireFrames,36):this.soldierTuning.maximumFireFrames;
+        var restBudget:Number=unifiedStand && this.soldierTacticalConfig!=null?this.soldierTacticalConfig.eliteRestFrames:this.soldierTuning.shootRestFrames;
+        this.soldierAttackOwner.fireDeadline=this.soldierClock+fireBudget;
+        this.soldierNextShootAt=this.soldierAttackOwner.fireDeadline+restBudget;
+        body.prepareStandardShotPose=function(frame:String):Void {
+            var unit:MovieClip=this._parent,own:Object=unit.soldierAttackOwner;
+            if(unit.standardShotMoving===true){
+                if(own!=null){own.recoilUntil=own.age+2;own.recoilWeapon="primary";}
+                return;
+            }
+            this.gotoAndPlay(frame);
+        };
         body.初始化长枪射击函数=_root.主角函数.初始化长枪射击函数;
         body.初始化长枪射击函数();
     }
@@ -406,7 +448,7 @@ soldierMuzzle=function(body:MovieClip):Object {
 // ShootCore chooses cadence and WeaponFireCore commits ammunition and bullet properties.
 长枪射击=function(marker:MovieClip,props:Object):Boolean {
     var body:MovieClip=this.man,owner:Object=this.soldierAttackOwner;
-    var limit:Number=owner.charge?owner.shotLimit:this.soldierTuning.burstShots;
+    var limit:Number=(owner.charge || owner.standUnified)?owner.shotLimit:this.soldierTuning.burstShots;
     if(!this.soldierCanAct(body) || owner.action!="shoot" || owner.reload
         || owner.shots>=limit
         || !(this.soldierClock<owner.fireDeadline))return false;
@@ -419,23 +461,51 @@ soldierMuzzle=function(body:MovieClip):Object {
 soldierReloadStart=function(body:MovieClip):Void {
     if(!this.soldierCanAct(body)){body.stop();return;}
     this.动作A=false;this.soldierAttackOwner.reload=true;this.soldierReloadCount++;
+    delete this.standardShotMoving;
     _root.主角函数.初始化换弹负担(body,15,35,18,49,[35,47]);
 };
 
 soldierReloadEnd=function(body:MovieClip):Void {
     if(!this.soldierCanAct(body)){body.stop();return;}
+    if(this.soldierAttackOwner.standUnified)this.soldierAttackOwner.completed=true;
     body.结束换弹();this.soldierFinishAttack(body);
 };
 
 soldierDriveShooting=function(body:MovieClip):Void {
     var owner:Object=this.soldierAttackOwner;owner.age++;
     if(owner.reload){_root.主角函数.换弹帧率控制(body);return;}
-    if(!(this.soldierClock<owner.fireDeadline)){this.soldierFinishAttack(body);return;}
-    if(owner.shots>=this.soldierTuning.burstShots){
-        if(++owner.recovery>=this.soldierTuning.recoveryFrames)this.soldierFinishAttack(body);
+    if(!(this.soldierClock<owner.fireDeadline)){
+        if(owner.standUnified)owner.completed=true;
+        this.soldierFinishAttack(body);return;
+    }
+    var limit:Number=owner.standUnified?owner.shotLimit:this.soldierTuning.burstShots;
+    if(owner.shots>=limit){
+        this.standardShotMoving=false;this.soldierStepMovingShoot(body,false);
+        if(++owner.recovery>=this.soldierTuning.recoveryFrames){
+            if(owner.standUnified)owner.completed=true;
+            this.soldierFinishAttack(body);
+        }
         return;
     }
     if(owner.age<3)return;
+    if(!owner.standUnified && !owner.charge && !owner.fixed
+        && (this.soldierIsElite!==true || (this.soldierIsInstructor===true && this.soldierTacticalPolicy=="adaptive"))
+        && this.soldierTacticalPolicy!="line" && !this.倒地 && !this.浮空){
+        var moveTarget:MovieClip=_root.gameworld[owner.target];
+        var moved:Number=0;
+        if(moveTarget.hp>0 && moveTarget.area!=null){
+            var mdx:Number=moveTarget._x-this._x,adx:Number=Math.abs(mdx);
+            var stopAt:Number=this.soldierTuning.keepDistance+60;
+            if(adx>stopAt && adx<=this.soldierTuning.shootRange){
+                var mdir:String=mdx<0?"左":"右";this.方向改变(mdir);
+                var mstep:Number=Math.min(this.行走X速度*0.75,adx-stopAt);
+                if(typeof this.soldierTacticalMove=="function")moved=this.soldierTacticalMove(mdir,mstep);
+                else {var mx0:Number=this._x;this.移动(mdir,mstep);moved=Math.abs(this._x-mx0);}
+            }
+        }
+        this.standardShotMoving=moved>0.1;
+        this.soldierStepMovingShoot(body,moved>0.1);
+    }
     if(this.soldierMuzzleMarker(body)==null){
         if(owner.age>30){this.soldierWeaponError="长枪外观或枪口引用缺失";
             trace("[CF6Soldier] "+this._name+" "+this.soldierWeaponError);this.soldierFinishAttack(body);}
@@ -695,7 +765,7 @@ soldierBeginMelee=function(body:MovieClip):Void {
     var owner:Object=this.soldierAttackOwner;
     if(owner==null)return;
     owner.bash=this.soldierMeleeKind=="bash";
-    this.soldierNextMeleeAt=this.soldierClock+34+this.soldierTuning.meleeRestFrames;
+    this.soldierNextMeleeAt=this.soldierClock+(owner.bash?59:34)+this.soldierTuning.meleeRestFrames;
     if(owner.bash){this.soldierNextBashAt=this.soldierClock+this.soldierTuning.bashRestFrames;body.gotoAndPlay("挥盾");}
 };
 soldierMeleeHit=function(body:MovieClip,point:MovieClip):Void {
@@ -724,6 +794,7 @@ soldierBeginGrenade=function(body:MovieClip):Void {
     var target:MovieClip=_root.gameworld[this.攻击目标];
     this.soldierAttackOwner={token:token,action:"grenade",active:true,version:this.version,
         itemName:this.特种兵投掷物,targetX:target._x,sign:this.方向=="左"?-1:1,thrown:false,age:0};
+    if(this.soldierIsInstructor===true){this.soldierLineVolleys=(this.soldierLineVolleys||0)+1;this.soldierMobileVolleys=0;}
     this.soldierNextGrenadeAt=this.soldierClock+this.soldierGrenadeRest;body.stop();
 };
 soldierDriveGrenade=function(body:MovieClip):Void {
@@ -764,14 +835,20 @@ soldierBeginCharge=function(body:MovieClip):Void {
     var owner:Object=this.soldierAttackOwner;
     if(owner==null)return;
     if(this.soldierIsElite!==true || this.soldierPhase!=1){this.soldierFinishAttack(body);return;}
-    owner.charge=!this.soldierShieldCoverFire;owner.coverFire=this.soldierShieldCoverFire===true;owner.age=0;owner.distance=0;owner.blockedFrames=0;owner.lastChargeX=this._x;
+    owner.charge=!this.soldierShieldCoverFire;owner.coverFire=this.soldierShieldCoverFire===true;owner.age=0;owner.distance=0;owner.blockedFrames=0;owner.lastChargeX=this._x;owner.chargeBlocked=false;owner.chargeBaseStep=0;
     owner.sign=this.方向=="左"?-1:1;
     var config:Object=this.soldierTacticalConfig;
     owner.shotLimit=config.chargeShots;owner.turns=0;owner.chargeMovedZ=0;
     owner.fireDeadline=this.soldierClock+(owner.coverFire?config.rifleFireFrames:config.chargeWindupFrames+config.chargeActiveFrames);
     this.soldierNextShootAt=owner.fireDeadline+(owner.coverFire?config.rifleRestFrames:config.chargeRestFrames);
     if(owner.charge)this.soldierChargeCount++;
-    body.prepareStandardShotPose=function(frame:String):Void {};
+    if(this.soldierIsInstructor===true && owner.charge){
+        this.soldierMobileVolleys=(this.soldierMobileVolleys||0)+1;this.soldierLineVolleys=0;
+    }
+    body.prepareStandardShotPose=function(frame:String):Void {
+        var own:Object=this._parent.soldierAttackOwner;
+        if(own!=null)own.recoilUntil=own.age+2;
+    };
     body.stop();
 };
 soldierDriveShooting=function(body:MovieClip):Void {
@@ -782,12 +859,30 @@ soldierDriveShooting=function(body:MovieClip):Void {
     var config:Object=this.soldierTacticalConfig;
     var windup:Number=config.chargeWindupFrames,active:Number=config.chargeActiveFrames;
     if(owner.age>=windup+active+config.chargeRecoveryFrames){this.soldierFinishAttack(body);return;}
-    if(owner.age<windup){body.gotoAndStop(1+Math.floor(owner.age*9/windup));return;}
+    if(owner.age<windup){body.gotoAndStop(1+Math.min(19,Math.floor(owner.age*20/windup)));return;}
+    var blurRecoverFrames:Number=Math.ceil(15*config.chargeRecoveryFrames/40);
     if(owner.age>=windup+active){
-        body.gotoAndStop(Math.min(46,35+Math.floor((owner.age-windup-active)*11/config.chargeRecoveryFrames)));
-        this.动作A=false;_root.主角函数.清理射击任务(this);return;
+        var poseFrame:Number=Math.min(84,45+Math.floor((owner.age-windup-active)*40/config.chargeRecoveryFrames));
+        body.gotoAndStop(poseFrame);
+        this.动作A=false;_root.主角函数.清理射击任务(this);
+        // Decelerate proportionally to Alter motion blur across f45-59 (20 -> 0.9), settling to 0 at f60 (blur=0).
+        if(!owner.chargeBlocked && poseFrame<60 && owner.distance<config.chargeMaxDistance && owner.chargeBaseStep>0){
+            var brakeFactor:Number=poseFrame<=47?0.9:poseFrame<=50?0.64:poseFrame<=53?0.34:poseFrame<=56?0.15:0.05;
+            var brakeStep:Number=Math.min(owner.chargeBaseStep*brakeFactor,config.chargeMaxDistance-owner.distance);
+            if(brakeStep>=0.15){
+                var brakeMoved:Number=this.soldierTacticalMove(owner.sign<0?"左":"右",brakeStep);
+                owner.distance+=brakeMoved;
+                if(brakeMoved<0.1){
+                    owner.chargeBlocked=true;
+                    owner.age=windup+active+blurRecoverFrames;
+                    body.gotoAndStop(60);
+                }
+            }
+        }
+        return;
     }
-    body.gotoAndStop(11+Math.min(23,Math.floor((owner.age-windup)*24/active)));
+    body.gotoAndStop(21+((owner.age-windup)%24));
+    if(owner.recoilUntil>owner.age && body.枪!=null)body.枪._x-=2;
     var target:MovieClip=_root.gameworld[owner.target];
     owner.lastChargeX=this._x;
     this.soldierChargeContact(owner);
@@ -798,13 +893,17 @@ soldierDriveShooting=function(body:MovieClip):Void {
         this.方向改变(owner.sign<0?"左":"右");
     }
     if(owner.distance>=config.chargeMaxDistance || owner.blockedFrames>=3){
-        owner.age=windup+active;body.gotoAndStop(35);
+        owner.chargeBlocked=true;
+        owner.age=windup+active+blurRecoverFrames;body.gotoAndStop(60);
         this.动作A=false;_root.主角函数.清理射击任务(this);return;
     }
     if(owner.distance<config.chargeMaxDistance && owner.blockedFrames<3){
-        var speed:Number=Math.min(12,Math.max(2,Number(this.跑X速度)*config.chargeSpeed));
-        if(!isFinite(speed))speed=7;
-        speed=Math.min(speed,config.chargeMaxDistance-owner.distance);
+        var rawSpeed:Number=Math.min(12,Math.max(2,Number(this.跑X速度)*config.chargeSpeed));
+        if(!isFinite(rawSpeed))rawSpeed=7;
+        var brakeWeightSum:Number=6.24*(config.chargeRecoveryFrames/40);
+        var baseStep:Number=Math.min(rawSpeed,config.chargeMaxDistance/(active+brakeWeightSum));
+        owner.chargeBaseStep=baseStep;
+        var speed:Number=Math.min(baseStep,config.chargeMaxDistance-owner.distance);
         var moved:Number=this.soldierTacticalMove(owner.sign<0?"左":"右",speed);
         owner.distance+=moved;
         if(target.hp>0 && owner.chargeMovedZ<config.chargeZBudget){
@@ -817,7 +916,7 @@ soldierDriveShooting=function(body:MovieClip):Void {
         }
         if(moved<0.1)owner.blockedFrames++;else owner.blockedFrames=0;
         this.soldierChargeContact(owner);
-        if(moved<0.1){owner.age=windup+active;body.gotoAndStop(35);this.动作A=false;_root.主角函数.清理射击任务(this);return;}
+        if(moved<0.1){owner.chargeBlocked=true;owner.age=windup+active+blurRecoverFrames;body.gotoAndStop(60);this.动作A=false;_root.主角函数.清理射击任务(this);return;}
     }
     if(owner.shots<owner.shotLimit && this.soldierMuzzleMarker(body)!=null){
         this.动作A=true;body.开始射击();
@@ -828,7 +927,7 @@ soldierReloadStart=function(body:MovieClip):Void {
     if(!owner.charge && !owner.coverFire){this.soldierRoleReload(body);return;}
     if(!this.soldierCanAct(body)){body.stop();return;}
     this.动作A=false;owner.reload=true;this.soldierReloadCount++;
-    _root.主角函数.初始化换弹负担(body,47,67,50,81,[67,79]);
+    _root.主角函数.初始化换弹负担(body,85,105,88,119,[105,117]);
 };
 soldierUpdateMovement=function():Void {
     if(this.soldierIsElite!==true || this.soldierPhase!=1){this.soldierRoleMove();return;}
@@ -871,7 +970,7 @@ soldierFinishBreak=function(body:MovieClip):Void {
 
 _root.敌人函数.配置音效("人类",this);
 初始化敌人模板=_root.初始化敌人模板;初始化敌人模板();
-var cf6TacticalDefaults:Object={ordinary:{rifleShots:6,rifleFireFrames:36,rifleRestFrames:18,eliteRestFrames:30,eliteStandShots:4,retreatTrigger:220,retreatDistance:220,smokeRestFrames:90,smokeMoveFrames:24,smokeMoveSpeed:0.55,smokeMoveX:64,smokeMoveZ:42,slidePermitFrames:40,slideTrackFrames:12,slideZSpeed:0.6,slideZBudget:60,slideStopRange:95,chargeMinRange:0,chargeRange:560,chargeStopRange:28,chargeMaxDistance:300,chargeSpeed:1.25,chargeContactReach:70,chargePower:1.25,chargePush:10,chargeRestFrames:72,chargeWindupFrames:10,chargeActiveFrames:24,chargeRecoveryFrames:12,strategyHoldFrames:36,chargeShots:8,chargeMaxTurns:0,chargeTurnDistance:75,chargeZBudget:48,chargeZSpeed:0.65,evasionETA:12,evasionRestFrames:90,retreatZBudget:56,retreatZSpeed:0.8,evasionRetreatX:64,retreatKeepRange:340,runTrigger:380,runStopRange:280,evasionRetryFrames:12,slidePassDistance:140,slideMaxTravel:620,slideSpeedLimit:3},elite:{rifleShots:3,rifleFireFrames:24,rifleRestFrames:30,eliteRestFrames:30,eliteStandShots:4,retreatTrigger:220,retreatDistance:220,smokeRestFrames:90,smokeMoveFrames:24,smokeMoveSpeed:0.55,smokeMoveX:64,smokeMoveZ:42,slidePermitFrames:40,slideTrackFrames:12,slideZSpeed:0.6,slideZBudget:60,slideStopRange:95,chargeMinRange:0,chargeRange:560,chargeStopRange:28,chargeMaxDistance:300,chargeSpeed:1.25,chargeContactReach:70,chargePower:1.25,chargePush:10,chargeRestFrames:72,chargeWindupFrames:10,chargeActiveFrames:24,chargeRecoveryFrames:12,strategyHoldFrames:36,chargeShots:8,chargeMaxTurns:0,chargeTurnDistance:75,chargeZBudget:48,chargeZSpeed:0.65,evasionETA:12,evasionRestFrames:90,retreatZBudget:56,retreatZSpeed:0.8,evasionRetreatX:64,retreatKeepRange:340,runTrigger:380,runStopRange:280,evasionRetryFrames:12,slidePassDistance:140,slideMaxTravel:620,slideSpeedLimit:3},instructor:{rifleShots:6,rifleFireFrames:36,rifleRestFrames:18,eliteRestFrames:30,eliteStandShots:5,retreatTrigger:220,retreatDistance:220,smokeRestFrames:90,smokeMoveFrames:24,smokeMoveSpeed:0.55,smokeMoveX:64,smokeMoveZ:42,slidePermitFrames:40,slideTrackFrames:12,slideZSpeed:0.6,slideZBudget:60,slideStopRange:95,chargeMinRange:0,chargeRange:560,chargeStopRange:28,chargeMaxDistance:300,chargeSpeed:1.25,chargeContactReach:70,chargePower:1.25,chargePush:10,chargeRestFrames:72,chargeWindupFrames:10,chargeActiveFrames:24,chargeRecoveryFrames:12,strategyHoldFrames:36,chargeShots:8,chargeMaxTurns:0,chargeTurnDistance:75,chargeZBudget:48,chargeZSpeed:0.65,evasionETA:12,evasionRestFrames:90,retreatZBudget:56,retreatZSpeed:0.8,evasionRetreatX:64,retreatKeepRange:340,runTrigger:380,runStopRange:280,evasionRetryFrames:12,slidePassDistance:140,slideMaxTravel:620,slideSpeedLimit:3}};
+var cf6TacticalDefaults:Object={ordinary:{rifleShots:6,rifleFireFrames:36,rifleRestFrames:18,eliteRestFrames:30,eliteStandShots:4,retreatTrigger:220,retreatDistance:220,smokeRestFrames:90,smokeMoveFrames:24,smokeMoveSpeed:0.55,smokeMoveX:64,smokeMoveZ:42,slidePermitFrames:40,slideTrackFrames:12,slideZSpeed:0.6,slideZBudget:60,slideStopRange:95,chargeMinRange:0,chargeRange:560,chargeStopRange:28,chargeMaxDistance:300,chargeSpeed:1.25,chargeContactReach:70,chargePower:1.25,chargePush:10,chargeRestFrames:72,chargeWindupFrames:20,chargeActiveFrames:24,chargeRecoveryFrames:40,strategyHoldFrames:36,chargeShots:8,chargeMaxTurns:0,chargeTurnDistance:75,chargeZBudget:48,chargeZSpeed:0.65,evasionETA:12,evasionRestFrames:90,retreatZBudget:56,retreatZSpeed:0.8,evasionRetreatX:64,retreatKeepRange:340,runTrigger:380,runStopRange:280,evasionRetryFrames:12,slidePassDistance:140,slideMaxTravel:620,slideSpeedLimit:3},elite:{rifleShots:3,rifleFireFrames:24,rifleRestFrames:30,eliteRestFrames:30,eliteStandShots:4,retreatTrigger:220,retreatDistance:220,smokeRestFrames:90,smokeMoveFrames:24,smokeMoveSpeed:0.55,smokeMoveX:64,smokeMoveZ:42,slidePermitFrames:40,slideTrackFrames:12,slideZSpeed:0.6,slideZBudget:60,slideStopRange:95,chargeMinRange:0,chargeRange:560,chargeStopRange:28,chargeMaxDistance:300,chargeSpeed:1.25,chargeContactReach:70,chargePower:1.25,chargePush:10,chargeRestFrames:72,chargeWindupFrames:20,chargeActiveFrames:24,chargeRecoveryFrames:40,strategyHoldFrames:36,chargeShots:8,chargeMaxTurns:0,chargeTurnDistance:75,chargeZBudget:48,chargeZSpeed:0.65,evasionETA:12,evasionRestFrames:90,retreatZBudget:56,retreatZSpeed:0.8,evasionRetreatX:64,retreatKeepRange:340,runTrigger:380,runStopRange:280,evasionRetryFrames:12,slidePassDistance:140,slideMaxTravel:620,slideSpeedLimit:3},instructor:{rifleShots:6,rifleFireFrames:36,rifleRestFrames:18,eliteRestFrames:30,eliteStandShots:5,retreatTrigger:220,retreatDistance:220,smokeRestFrames:90,smokeMoveFrames:24,smokeMoveSpeed:0.55,smokeMoveX:64,smokeMoveZ:42,slidePermitFrames:40,slideTrackFrames:12,slideZSpeed:0.6,slideZBudget:60,slideStopRange:95,chargeMinRange:0,chargeRange:560,chargeStopRange:28,chargeMaxDistance:300,chargeSpeed:1.25,chargeContactReach:70,chargePower:1.25,chargePush:10,chargeRestFrames:72,chargeWindupFrames:20,chargeActiveFrames:24,chargeRecoveryFrames:40,strategyHoldFrames:36,chargeShots:8,chargeMaxTurns:0,chargeTurnDistance:75,chargeZBudget:48,chargeZSpeed:0.65,evasionETA:12,evasionRestFrames:90,retreatZBudget:56,retreatZSpeed:0.8,evasionRetreatX:64,retreatKeepRange:340,runTrigger:380,runStopRange:280,evasionRetryFrames:12,slidePassDistance:140,slideMaxTravel:620,slideSpeedLimit:3}};
 var cf6TacticalLimits:Object={rifleShots:[1,12],rifleFireFrames:[1,300],rifleRestFrames:[1,300],eliteRestFrames:[1,300],eliteStandShots:[1,5],retreatTrigger:[0,1000],retreatDistance:[0,1000],smokeRestFrames:[1,300],smokeMoveFrames:[1,300],smokeMoveSpeed:[0.05,3],smokeMoveX:[0,1000],smokeMoveZ:[0,1000],slidePermitFrames:[1,300],slideTrackFrames:[1,300],slideZSpeed:[0.05,3],slideZBudget:[0,120],slideStopRange:[0,1000],chargeMinRange:[0,1000],chargeRange:[0,1000],chargeStopRange:[0,1000],chargeMaxDistance:[0,1000],chargeSpeed:[0.05,3],chargeContactReach:[20,100],chargePower:[0.05,3],chargePush:[0,20],chargeRestFrames:[1,300],chargeWindupFrames:[1,300],chargeActiveFrames:[1,300],chargeRecoveryFrames:[1,300],strategyHoldFrames:[1,300],chargeShots:[1,16],chargeMaxTurns:[0,2],chargeTurnDistance:[40,160],chargeZBudget:[0,120],chargeZSpeed:[0.05,2],evasionETA:[1,30],evasionRestFrames:[30,300],retreatZBudget:[0,120],retreatZSpeed:[0.05,2],evasionRetreatX:[0,160],retreatKeepRange:[220,460],runTrigger:[250,600],runStopRange:[120,400],evasionRetryFrames:[6,30],slidePassDistance:[60,240],slideMaxTravel:[240,900],slideSpeedLimit:[1,4]};
 // Shared CF6 tactical parameters are copied once at spawn. External scalar
 // overrides use 特种兵战术_<key>; changing a test case never mutates another unit.
@@ -879,6 +978,7 @@ soldierTacticalStats={wallEscapes:0,slideBlocks:0,slideStalls:0,smokes:0,smokeRe
 soldierNextEvasionAt=0;soldierNextEvasionAttemptAt=0;soldierPendingEvasion=null;soldierThreatOwned=false;
 soldierSmokeNextAt=0;soldierSlidePermit=null;soldierRecentDamageUntil=0;
 soldierStrategy="line";soldierStrategyUntil=0;soldierBlockedUntil=0;
+soldierLineVolleys=0;soldierMobileVolleys=0;
 soldierConfigureTactics=function():Void {
     var role:String=this.soldierIsInstructor===true?"instructor":this.soldierIsElite===true?"elite":"ordinary";
     var defaults:Object=cf6TacticalDefaults[role],limits:Object=cf6TacticalLimits;
@@ -949,13 +1049,25 @@ soldierSelectStrategy=function(dx:Number,dz:Number):String {
     if(this.soldierClock<this.soldierStrategyUntil)return this.soldierStrategy;
     var target:MovieClip=_root.gameworld[this.攻击目标];
     var pressure:Boolean=this.soldierClock<this.soldierRecentDamageUntil;
+    var rifleLoaded:Boolean=this.长枪.value.shot<this.长枪弹匣容量;
+    var pistolLoaded:Boolean=this.elitePrimaryPistolEnabled();
     var lineScore:Number=(dx>180 && dz<=24?4:0)+(pressure?0:2);
     var mobileScore:Number=(dx<180?5:0)+(pressure?4:0)+(dz>36?2:0);
-    var rifleLoaded:Boolean=this.长枪.value.shot<this.长枪弹匣容量;
-    var pistolLoaded:Boolean=this.手枪.value.shot<this.手枪弹匣容量
-        || (this.eliteSidearmEnabled() && this.手枪2.value.shot<this.手枪2弹匣容量);
     if(!rifleLoaded && pistolLoaded)mobileScore+=4;
-    if(rifleLoaded && !pistolLoaded)lineScore+=4;
+    // Tempo rotation: after 1+ positional volleys, push with elite maneuvers
+    // (shield charge in Phase 1; charge-slide/run-fire at range or dual-retreat at close).
+    var lineVolleys:Number=this.soldierLineVolleys || 0;
+    var mobileVolleys:Number=this.soldierMobileVolleys || 0;
+    if(lineVolleys>=1){
+        var rushReady:Boolean=this.soldierPhase==1
+            ?(dx>=this.soldierTacticalConfig.chargeMinRange && dx<=this.soldierTacticalConfig.chargeRange)
+            :((dx<this.soldierTacticalConfig.retreatTrigger && pistolLoaded)
+                || (dx>280 && rifleLoaded && ((this.特种兵烟雾弹!==false && !(this.soldierClock<this.soldierSmokeNextAt)) || dx>this.soldierTacticalConfig.runTrigger)));
+        mobileScore+=rushReady?8:5;
+    }else if(mobileVolleys>=1 && dx>220 && !pressure && rifleLoaded){
+        lineScore+=4;
+    }
+    if(pressure && dx>180 && (this.soldierPhase==1 || (rifleLoaded && !(this.soldierClock<this.soldierSmokeNextAt))))mobileScore+=2;
     if(this.soldierClock<this.soldierBlockedUntil)mobileScore-=4;
     var next:String=mobileScore>lineScore+1?"mobile":"line";
     if(next!=this.soldierStrategy)this.soldierTacticalStats.strategyChanges++;
@@ -1003,9 +1115,18 @@ soldierTacticalChoose=function(dx:Number,dz:Number,height:Number):String {
         }
     }
     if(dx>tune.shootRange || dz>tune.laneRange || this.soldierClock<this.soldierNextShootAt)return "none";
-    this.eliteNextAction=this.soldierIsInstructor===true && strategy=="line"?"line":
-        strategy=="mobile" && !(this.soldierClock<this.soldierBlockedUntil)?(dx<config.retreatTrigger?"retreat":
-            dx>config.runTrigger?"run":"stand"):"stand";
+    if(this.soldierIsInstructor===true && strategy=="line"){
+        this.eliteNextAction="line";
+    }else if(strategy=="mobile" && !(this.soldierClock<this.soldierBlockedUntil)){
+        var slideReady:Boolean=this.特种兵烟雾弹!==false && !(this.soldierClock<this.soldierSmokeNextAt)
+            && this.长枪.value.shot<this.长枪弹匣容量;
+        if(dx<config.retreatTrigger)this.eliteNextAction="retreat";
+        else if(dx>config.runTrigger || (this.soldierIsInstructor===true && dx>280 && slideReady)){
+            this.eliteNextAction=slideReady?"slide":"run";
+        }else this.eliteNextAction="stand";
+    }else{
+        this.eliteNextAction="stand";
+    }
     if(this.soldierIsElite===true && (!this.eliteTactics || !this.eliteMobility))this.eliteNextAction="stand";
     return "shoot";
 };
@@ -1145,9 +1266,9 @@ soldierTryEvasion=function(dx:Number,dz:Number):Boolean {
     if(pending!=null && (pending.target!==target || this.soldierClock>pending.until)){
         this.soldierPendingEvasion=null;pending=null;
     }
-    var wallEscape:Boolean=pending!=null && pending.noFire===true
-        && (pending.reason=="slide_blocked" || pending.reason=="slide_stalled");
-    if((this.硬直中 || this.soldierClock<this.soldierNextEvasionAt) && !wallEscape)return false;
+    var wallEscape:Boolean=pending!=null && pending.noFire===true && pending.reason=="slide_blocked";
+    var slideStallEscape:Boolean=pending!=null && pending.reason=="slide_stalled";
+    if((this.硬直中 && !wallEscape) || (this.soldierClock<this.soldierNextEvasionAt && !wallEscape && !slideStallEscape))return false;
     var age:Number=_root.帧计时器.当前帧数-this._btFrame;
     var fresh:Boolean=isFinite(age) && age>=0 && age<=1 && this._btCount>0
         && this._btMinETA>=0 && this._btMinETA<config.evasionETA;
@@ -1670,6 +1791,14 @@ cf6FixedBeginAttack=function(body:MovieClip,action:String):Void {
         this.cf6LegacyBegin(body,action);return;
     }
     var owner:Object=this.cf6FixedOwner(body,this.cf6ExpectedPose);
+    body.prepareStandardShotPose=function(frame:String):Void {
+        var unit:MovieClip=this._parent,own:Object=unit.soldierAttackOwner;
+        if(unit.standardShotMoving===true){
+            if(own!=null){own.recoilUntil=own.age+2;own.recoilWeapon="primary";}
+            return;
+        }
+        this.gotoAndPlay(frame);
+    };
     body.初始化长枪射击函数=_root.主角函数.初始化长枪射击函数;body.初始化长枪射击函数();
     this.soldierWrapReloadCommit(body);
     body.gotoAndStop("空闲");
@@ -1679,14 +1808,12 @@ cf6FixedBeginDual=function(body:MovieClip):Void {
     var owner:Object=this.cf6FixedOwner(body,"dual");
     body.初始化长枪射击函数=_root.主角函数.初始化长枪射击函数;
     body.初始化混合双枪=_root.主角函数.初始化混合双枪;
-    body.开始混合手枪换弹=_root.主角函数.开始混合手枪换弹;
-    body.混合手枪换弹匣=_root.主角函数.混合手枪换弹匣;
     body.初始化长枪射击函数();body.初始化混合双枪();
     body.prepareStandardShotPose=function(frame:String):Void {
         var owner:Object=this._parent.soldierAttackOwner;
         owner.recoilUntil=owner.poseAge+2;owner.recoilWeapon=frame=="射击2"?"secondary":"primary";
     };
-    body.腰挂.syncHolsters();body.gotoAndStop(21);
+    body.腰挂.syncHolsters();body.gotoAndStop(28);
 };
 cf6FixedBeginCharge=function(body:MovieClip):Void {
     this.cf6PoseSwitch=true;this.cf6LegacyCharge(body);this.cf6PoseSwitch=false;
@@ -1743,8 +1870,10 @@ cf6FixedDrivePose=function():Void {
     if(!owner.fixed || !this.cf6FixedCanAct(body) || owner.reload)return;
     owner.age++;owner.poseAge++;
     if(owner.mode=="dual"){
-        var frame:Number=21;
-        if(body._currentframe!=frame)body.gotoAndStop(frame);
+        if(this.standardShotMoving!==true){
+            var frame:Number=28;
+            if(body._currentframe!=frame)body.gotoAndStop(frame);
+        }
         if(body.枪2!=null)body.枪2._visible=true;
         if(owner.recoilUntil>owner.poseAge)this.eliteApplyRecoil(body);
     }
@@ -1874,11 +2003,25 @@ cf6FixedTrack=function(armed:Boolean):Void {
         var travelSign:Number=run && Math.abs(travelledX)>.1?(travelledX<0?-1:1):sign;
         this.cf6FixedWalkPose(sign,travelled>.1,run,travelSign);return;
     }
-    var legs:MovieClip=this.man.cf6Stride;
-    if(legs!=null){
-        if(travelled>.1)this.cf6StrideStep=(this.cf6StrideStep+1)%(legs._totalframes-1);
-        var desiredFrame:Number=travelled>.1?2+this.cf6StrideStep:1;
-        if(legs._currentframe!=desiredFrame)legs.gotoAndStop(desiredFrame);
+    var body:MovieClip=this.man,own:Object=this.soldierAttackOwner;
+    if(body!=null && (own==null || !own.reload)){
+        if(own!=null && own.mode=="dual"){
+            if(travelled>.1){
+                this.cf6StrideStep=(this.cf6StrideStep+1)%24;
+                body.gotoAndStop(28+this.cf6StrideStep);
+                if(own.recoilUntil>own.poseAge)this.eliteApplyRecoil(body);
+            }else if(body._currentframe!=28){
+                body.gotoAndStop(28);
+            }
+        }else{
+            if(travelled>.1){
+                this.cf6StrideStep=(this.cf6StrideStep+1)%21;
+                body.gotoAndStop(50+this.cf6StrideStep);
+                if(own!=null && own.recoilUntil>own.age && body.枪!=null)body.枪._x-=2;
+            }else if(body._currentframe>=50){
+                body.gotoAndStop("空闲");
+            }
+        }
     }
 };
 cf6FixedIdleMove=function():Void {
@@ -2168,7 +2311,11 @@ cf6FixedOffFire=function(marker:MovieClip,props:Object):Boolean {return this.cf6
 cf6FixedFireSlot=function(slot:String,bit:Number):Void {
     if(!this.cf6FixedSlotReady(slot))return;
     if(this[slot].value.shot>=this[slot+"弹匣容量"]){
-        this.cf6FixedCancel("empty_magazine");this.cf6ReloadRequested=slot;return;
+        if(slot=="手枪" || slot=="手枪2"){
+            this[slot].value.shot=0;
+        }else{
+            this.cf6FixedCancel("empty_magazine");this.cf6ReloadRequested=slot;return;
+        }
     }
     this.cf6CurrentFireBit=bit;
     var body:MovieClip=this.man,interval:Number=this[slot+"属性"].interval;
@@ -2203,26 +2350,26 @@ cf6FixedIdleReload=function():Void {
     if(this.soldierAttackOwner!=null || this.cf6Observation.interrupted)return;
     if(this.长枪.value.shot>=this.长枪弹匣容量)this.cf6ReloadRequested="长枪";
     else if(this.soldierPhase==2 && this.soldierIsElite){
-        if(this.手枪.value.shot>=this.手枪弹匣容量)this.cf6ReloadRequested="手枪";
-        else if(this.手枪2.value.shot>=this.手枪2弹匣容量)this.cf6ReloadRequested="手枪2";
+        if(this.手枪.value.shot>=this.手枪弹匣容量)this.手枪.value.shot=0;
+        if(this.手枪2.value.shot>=this.手枪2弹匣容量)this.手枪2.value.shot=0;
     }
 };
 cf6FixedReload=function(slot:String):Void {
     if(this.cf6Observation.interrupted || !(this.hp>0) || this.soldierPhase==0){this.cf6ReloadRequested="";return;}
-    var mode:String=slot=="长枪"?"primary":"dual";
-    this.cf6FixedEnsurePose(mode);this.cf6FixedDrivePose();
-    if(!this.cf6FixedModeReady(mode))return;
+    if(slot!="长枪"){
+        if(this[slot]!=null && this[slot].value!=null)this[slot].value.shot=0;
+        this.cf6ReloadRequested="";return;
+    }
+    this.cf6FixedEnsurePose("primary");this.cf6FixedDrivePose();
+    if(!this.cf6FixedModeReady("primary"))return;
     var owner:Object=this.soldierAttackOwner;
     this.cf6ReloadRequested="";owner.reloadReceiptCommitted=false;
     this.standardShotMoving=false;
-    if(this.man.cf6Stride!=null)this.man.cf6Stride.gotoAndStop(1);
+    if(this.man._currentframe>=50)this.man.gotoAndStop("空闲");
     this.cf6Signals.event(this,"reload");
-    if(mode=="dual")this.eliteBeginReload(this.man,slot);
-    else{
-        owner.reload=true;owner.reloadSlot="长枪";this.动作A=false;this.动作B=false;
-        if(this.cf6Profile.program.trigger=="relocate_then_flush")this.soldierBeginSmokeReload(this.man);
-        this.man.开始换弹();
-    }
+    owner.reload=true;owner.reloadSlot="长枪";this.动作A=false;this.动作B=false;
+    if(this.cf6Profile.program.trigger=="relocate_then_flush")this.soldierBeginSmokeReload(this.man);
+    this.man.开始换弹();
 };
 cf6FixedMoveReload=function(owner:Object):Void {
     if(!owner.smokeUsed || owner.reloadMoveBlocked || owner.reloadMovedX>=120
@@ -2245,8 +2392,7 @@ cf6FixedReloadEnd=function(body:MovieClip):Void {
     }
     if(!this.cf6FixedCanAct(body) || !owner.reload)return;
     this.soldierSubweaponReloadCommitted(body);
-    if(owner.elite)_root.主角函数.取消混合换弹.call(body);
-    else body.结束换弹();
+    body.结束换弹();
     if(this.cf6Profile.program.trigger=="relocate_then_flush"){
         // The actual ammo commit supplies the token. Reveal begins only after
         // the old smoke's bounded fade; the program then holds 18 clear frames.

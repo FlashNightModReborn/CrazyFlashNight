@@ -207,7 +207,7 @@ def verify_body_timelines(path, scanner):
                     if not flags&1:drawing.pop(depth,None)
                     if flags&2:drawing[depth]=struct.unpack_from('<H',data,bits.byte)[0]
                 elif code==1:visible.append(sum(cid in shapes for cid in drawing.values()))
-            assert len(visible)==365 and all(visible), (link,'Missing combined-action body drawings',visible)
+            assert len(visible)==build.elite.TOTAL_FRAMES and all(visible), (link,'Missing combined-action body drawings',len(visible),visible)
         checked[link]=len(expected)
         body_id=body_ids[min(body_ids)]
         colors=drawing_colors(body_id,set())
@@ -238,20 +238,37 @@ def verify_elite_sidearm():
     for frame in motion.findall('.//x:DOMLayer/x:frames/x:DOMFrame', build.NS):
         sidearms = frame.findall('x:elements/x:DOMSymbolInstance[@name="枪2"]', build.NS)
         assert len(sidearms) <= 1, 'Duplicate sidearm holder at frame '+frame.get('index')
+        start = int(frame.get('index')) + 1
+        duration = int(frame.get('duration', '1'))
         for item in sidearms:
             assert item.get('libraryItemName') == 'Codex/特种兵/精英/武器/可配置副手枪'
-            instances.append(int(frame.get('index'))+1)
-    assert sorted(instances) == list(range(2,45)), instances
+            instances.extend(range(start, start + duration))
+    assert sorted(instances) == list(range(15, 76)), instances
     root = E.parse(str(owner/'Codex/特种兵/敌人-CF6特种精英.xml'))
     text = '\n'.join(node.text or '' for node in root.findall('.//x:script', build.NS))
-    for marker in ('eliteMotionConfig', '初始化混合双枪', '开始混合手枪换弹', 'eliteReloadGate', '手枪射击=function', '手枪2射击=function'):
+    for marker in ('eliteMotionConfig', '初始化混合双枪', 'eliteReloadGate', '手枪射击=function', '手枪2射击=function'):
         assert marker in text, 'Missing mixed weapon marker: '+marker
+    assert '开始混合手枪换弹' not in text, 'Removed pistol reload marker still present'
     ordinary = E.parse(str(owner/'Codex/特种兵/敌人-CF6特种兵.xml'))
     ordinary_text = '\n'.join(node.text or '' for node in ordinary.findall('.//x:script', build.NS))
     verify_ordinary_sidearm_scope(ordinary_text)
-    assert motion.find('.//x:DOMFrame[@index="295"][@name="双枪换弹匣"]',build.NS) is not None
+    assert motion.find('.//x:DOMFrame[@name="双枪换弹匣"]',build.NS) is None, 'Pistol reload label must be removed'
+    assert motion.find('.//x:DOMFrame[@index="181"][@name="换弹匣"]',build.NS) is not None
     primary = motion.findall('.//x:DOMSymbolInstance[@libraryItemName="Codex/特种兵/精英/武器/可配置主手枪"]',build.NS)
     assert primary, 'Retreat must use the primary pistol instead of the long gun'
+    slung = motion.findall('.//x:DOMSymbolInstance[@libraryItemName="Codex/特种兵/精英/武器/背负长枪"]',build.NS)
+    assert slung, 'Retreat must mount the slung long gun on its separate back visual'
+    assert motion.findall('.//x:DOMSymbolInstance[@libraryItemName="Codex/特种兵/特效/smoke17"]',build.NS), 'Missing slide smoke17 FX'
+    assert motion.findall('.//x:DOMSymbolInstance[@libraryItemName="Codex/特种兵/特效/速度线"]',build.NS), 'Missing slide speed-lines FX'
+    for action_name in ('长枪点射与装填', '持盾点射与装填'):
+        shoot_xml = E.parse(str(owner/('Codex/特种兵/动作/'+action_name+'.xml')))
+        assert shoot_xml.find('.//x:DOMFrame[@index="49"][@name="移动射击"]', build.NS) is not None, action_name
+    charge_xml = E.parse(str(owner/'Codex/特种兵/动作/盾冲射击.xml'))
+    assert charge_xml.find('.//x:DOMFrame[@index="20"][@name="循环开始"]', build.NS) is not None
+    assert charge_xml.find('.//x:DOMFrame[@index="84"][@name="换弹匣"]', build.NS) is not None
+    hit_xml = E.parse(str(owner/'Codex/特种兵/动作/被击.xml'))
+    assert hit_xml.find('.//x:DOMFrame[@index="0"][@name="a0"]', build.NS) is not None
+    assert hit_xml.find('.//x:DOMFrame[@index="8"][@name="a1"]', build.NS) is not None
     for path in (owner/'Codex/特种兵/动作').glob('*.xml'):
         tree = E.parse(str(path))
         for waist in tree.findall('.//x:DOMSymbolInstance[@libraryItemName="Codex/特种兵/分件/489"]',build.NS):
@@ -307,6 +324,22 @@ def verify_instructor_melee_art():
     return checked
 
 
+def verify_instructor_audio():
+    library = build.OWNER / 'LIBRARY'
+    mirrored = 0
+    for src in sorted((library / 'Codex/特种兵/动作').glob('*.xml')):
+        src_layer = E.parse(str(src)).find('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer[@name="原生SFX调用"]', build.NS)
+        if src_layer is None:
+            continue
+        dst = library / 'Codex/教官/动作' / ('教官_' + src.name)
+        dst_layer = E.parse(str(dst)).find('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer[@name="原生SFX调用"]', build.NS)
+        assert dst_layer is not None, 'Missing mirrored instructor SFX layer: ' + dst.name
+        assert E.tostring(src_layer) == E.tostring(dst_layer), 'Instructor SFX layer differs from soldier: ' + dst.name
+        mirrored += sum(1 for node in dst_layer.findall('.//x:script', build.NS) if node.text)
+    assert mirrored == 9, f'Expected 9 mirrored instructor SFX cues, found {mirrored}'
+    return mirrored
+
+
 def verify_library_index():
     entries=E.parse(str(build.OWNER/'DOMDocument.xml')).findall('x:symbols/x:Include',build.NS)
     position={entry.get('href'):i for i,entry in enumerate(entries)}
@@ -335,7 +368,9 @@ def main():
         build.check()
     library_index_checks=verify_library_index()
     melee_art_checks = verify_instructor_melee_art()
+    instructor_audio_checks = verify_instructor_audio()
     subprocess.run([sys.executable, '-X', 'utf8', '-B', str(build.HERE / 'balance.py')], check=True)
+    subprocess.run([sys.executable, '-X', 'utf8', '-B', str(build.HERE / 'instructor-register.py')], check=True)
     relative = 'flashswf/arts/new/' + build.ANCHOR + '.swf'
     swf = build.ROOT / relative
     exports, imports = linkage_records(swf)
@@ -374,7 +409,8 @@ def main():
         'bitmaps': pixels['bitmaps'], 'exports': exports, 'sharedImport': matching[0].get('swf'),
         'runtimeOwnershipRoot': str(runtime_root),'bodyTimelineChecks':body_checks,
         'sidearm':sidearm_checks,'libraryIndexChecks':library_index_checks,
-        'roleAppearanceChecks':appearance_checks,'instructorMeleeArtFrames':melee_art_checks}, ensure_ascii=False))
+        'roleAppearanceChecks':appearance_checks,'instructorMeleeArtFrames':melee_art_checks,
+        'instructorAudioCues':instructor_audio_checks}, ensure_ascii=False))
 
 
 if __name__ == '__main__':

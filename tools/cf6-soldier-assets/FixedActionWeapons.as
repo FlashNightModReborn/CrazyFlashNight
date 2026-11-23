@@ -120,7 +120,11 @@ cf6FixedOffFire=function(marker:MovieClip,props:Object):Boolean {return this.cf6
 cf6FixedFireSlot=function(slot:String,bit:Number):Void {
     if(!this.cf6FixedSlotReady(slot))return;
     if(this[slot].value.shot>=this[slot+"弹匣容量"]){
-        this.cf6FixedCancel("empty_magazine");this.cf6ReloadRequested=slot;return;
+        if(slot=="手枪" || slot=="手枪2"){
+            this[slot].value.shot=0;
+        }else{
+            this.cf6FixedCancel("empty_magazine");this.cf6ReloadRequested=slot;return;
+        }
     }
     this.cf6CurrentFireBit=bit;
     var body:MovieClip=this.man,interval:Number=this[slot+"属性"].interval;
@@ -155,26 +159,26 @@ cf6FixedIdleReload=function():Void {
     if(this.soldierAttackOwner!=null || this.cf6Observation.interrupted)return;
     if(this.长枪.value.shot>=this.长枪弹匣容量)this.cf6ReloadRequested="长枪";
     else if(this.soldierPhase==2 && this.soldierIsElite){
-        if(this.手枪.value.shot>=this.手枪弹匣容量)this.cf6ReloadRequested="手枪";
-        else if(this.手枪2.value.shot>=this.手枪2弹匣容量)this.cf6ReloadRequested="手枪2";
+        if(this.手枪.value.shot>=this.手枪弹匣容量)this.手枪.value.shot=0;
+        if(this.手枪2.value.shot>=this.手枪2弹匣容量)this.手枪2.value.shot=0;
     }
 };
 cf6FixedReload=function(slot:String):Void {
     if(this.cf6Observation.interrupted || !(this.hp>0) || this.soldierPhase==0){this.cf6ReloadRequested="";return;}
-    var mode:String=slot=="长枪"?"primary":"dual";
-    this.cf6FixedEnsurePose(mode);this.cf6FixedDrivePose();
-    if(!this.cf6FixedModeReady(mode))return;
+    if(slot!="长枪"){
+        if(this[slot]!=null && this[slot].value!=null)this[slot].value.shot=0;
+        this.cf6ReloadRequested="";return;
+    }
+    this.cf6FixedEnsurePose("primary");this.cf6FixedDrivePose();
+    if(!this.cf6FixedModeReady("primary"))return;
     var owner:Object=this.soldierAttackOwner;
     this.cf6ReloadRequested="";owner.reloadReceiptCommitted=false;
     this.standardShotMoving=false;
-    if(this.man.cf6Stride!=null)this.man.cf6Stride.gotoAndStop(1);
+    if(this.man._currentframe>=50)this.man.gotoAndStop("空闲");
     this.cf6Signals.event(this,"reload");
-    if(mode=="dual")this.eliteBeginReload(this.man,slot);
-    else{
-        owner.reload=true;owner.reloadSlot="长枪";this.动作A=false;this.动作B=false;
-        if(this.cf6Profile.program.trigger=="relocate_then_flush")this.soldierBeginSmokeReload(this.man);
-        this.man.开始换弹();
-    }
+    owner.reload=true;owner.reloadSlot="长枪";this.动作A=false;this.动作B=false;
+    if(this.cf6Profile.program.trigger=="relocate_then_flush")this.soldierBeginSmokeReload(this.man);
+    this.man.开始换弹();
 };
 cf6FixedMoveReload=function(owner:Object):Void {
     if(!owner.smokeUsed || owner.reloadMoveBlocked || owner.reloadMovedX>=120
@@ -197,8 +201,7 @@ cf6FixedReloadEnd=function(body:MovieClip):Void {
     }
     if(!this.cf6FixedCanAct(body) || !owner.reload)return;
     this.soldierSubweaponReloadCommitted(body);
-    if(owner.elite)_root.主角函数.取消混合换弹.call(body);
-    else body.结束换弹();
+    body.结束换弹();
     if(this.cf6Profile.program.trigger=="relocate_then_flush"){
         // The actual ammo commit supplies the token. Reveal begins only after
         // the old smoke's bounded fade; the program then holds 18 clear frames.

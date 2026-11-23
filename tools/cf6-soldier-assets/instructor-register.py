@@ -31,6 +31,9 @@ def main():
     if tuning['schema']!='cf6-instructor.panel-tuning.v1' or tuning['classification']!='mini_boss' \
             or tuning['stage']!=tuning['baseStage']+1 or tuning['stage']!=8 or tuning['tierFactor']!=9:
         raise ValueError('Instructor stage/tier differs from the authorized stage-8 tier-9 inputs')
+    toughness=tuning['toughnessCoefficient']
+    if type(toughness) not in (int,float) or not 50<=toughness<=100:
+        raise ValueError('Instructor toughness differs from authorized range: '+str(toughness))
     receipt={'schema':'cf6-instructor.panel-balance.v2','attributeBoost':True,
         'formula':'tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts',
         'tuningSha256':hashlib.sha256(tuning_path.read_bytes()).hexdigest(),'tuning':tuning,'pairs':[]}
@@ -52,6 +55,7 @@ def main():
         values=json.loads(subprocess.check_output(node_cmd,cwd=ROOT,text=True,encoding='utf-8'))
         for key,value in flags.items():entry.find('标识/'+key).text=f'{value:g}'
         for key,formula in balance.common.FIELDS.items():entry.find(key).text=str(math.floor(values[formula]+0.5))
+        entry.find('韧性系数').text=str(toughness)
         resistance=entry.find('魔法抗性')
         for tag in ('精英','首领'):
             for child in list(resistance.findall(tag)):resistance.remove(child)
@@ -76,6 +80,7 @@ def main():
         assert next(x for x in json.loads(unit_text) if x['id']==unit_id)==unit
         receipt['pairs'].append({'ordinary':base_id,'instructor':unit_id,'panelEqualExceptDisplayName':False,
             'input':inputs,'flags':flags,'integerPanel':{key:int(entry.find(key).text) for key in balance.common.FIELDS},
+            'toughnessCoefficient':toughness,
             'classification':'mini_boss','eliteDamageEligible':False,'bossDamageEligible':True,
             'sidearms':['FR506','FR506'],'strategyParameter':'特种兵策略','defaultStrategy':'adaptive'})
     outputs=((properties,text),(units_path,unit_text),(map_path,map_text),

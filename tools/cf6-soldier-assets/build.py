@@ -339,6 +339,33 @@ def verify_shield_input():
             raise ValueError('Frozen shield input changed: '+row['path'])
 
 
+def apply_audio(symbols):
+    audio_receipt=audio.apply(symbols,OWNER,native.make_sparse_layer)
+    mirrored=0
+    for name,root in list(symbols.items()):
+        if not name.startswith(PREFIX+'动作/'):
+            continue
+        sfx_layer=root.find('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer[@name="原生SFX调用"]',NS)
+        if sfx_layer is None:
+            continue
+        target_name=tactics.PREFIX+'动作/教官_'+name[len(PREFIX+'动作/'):]
+        target=symbols.get(target_name)
+        if target is None:
+            raise ValueError('Missing instructor audio consumer '+target_name)
+        src_frames=root.findall('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer/x:frames/x:DOMFrame',NS)
+        dst_frames=target.findall('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer/x:frames/x:DOMFrame',NS)
+        src_len=max(int(f.get('index','0'))+int(f.get('duration','1')) for f in src_frames)
+        dst_len=max(int(f.get('index','0'))+int(f.get('duration','1')) for f in dst_frames)
+        if src_len!=dst_len:
+            raise ValueError(f'Instructor audio frame count mismatch: {target_name} ({dst_len} != {src_len})')
+        target.find('x:timeline/x:DOMTimeline/x:layers',NS).insert(0,copy.deepcopy(sfx_layer))
+        mirrored+=sum(1 for node in sfx_layer.findall('.//x:script',NS) if node.text)
+    if mirrored!=audio_receipt['timelineCalls']:
+        raise ValueError(f'Instructor mirrored audio mismatch: {mirrored} != {audio_receipt["timelineCalls"]}')
+    audio_receipt['instructorMirroredCalls']=mirrored
+    return audio_receipt
+
+
 def import_assets():
     native.guard_overwrite_allowed(False)
     prior_path = HERE/'native-manifest.json'
@@ -366,7 +393,7 @@ def import_assets():
             if target.exists() and sha(target)!=row['sha256']:
                 raise ValueError('Obsolete symbol archive differs')
             target.write_bytes(source.read_bytes())
-    audio_receipt=audio.apply(symbols,OWNER,native.make_sparse_layer)
+    audio_receipt=apply_audio(symbols)
     outputs = common.write_workspace(symbols,root_name)
     # List children before their users and keep each Include identity equal to
     # the referenced symbol. Preserve lazy loading to bound CS6 memory use.
@@ -424,15 +451,16 @@ def import_assets():
         'buildInputs':build_inputs(),'parts':stats,'groundShift':GROUND_SHIFT,
         'sourceOffsets':{str(k):v for k,v in OFFSETS.items()},'ordinaryRoot':559,
         'legacySourceBodyFrames':378,'motionInput':art_revision.SOURCE.relative_to(ROOT).as_posix(),
+        'alterMotionInput':art_revision.ALTER_SOURCE.relative_to(ROOT).as_posix(),
         'motionEvaluation':'Animate 24 native keyframes with parenting matrices',
         'shootingAuthority':'ShootInitCore / ShootCore / WeaponFireCore',
-        'shootingPoseFrame':3,'burstShots':tactics.load_profiles()['roles']['ordinary']['rifleShots'],'reloadFrames':[15,49],'knifeHitFrame':14,
+        'shootingPoseFrame':3,'burstShots':tactics.load_profiles()['roles']['ordinary']['rifleShots'],'reloadFrames':[15,49],'movingShootFrames':[50,70],'knifeHitFrame':14,
         'deathBranches':[[1,58],[59,104],[105,139]],'airborneFrames':29,'landedFrames':78,
         'deathThirdBranch':'New fall frames 1-14 followed by 21 settled hold frames',
-        'ordinaryRole':{'shieldActions':['standShoot','stab','bash'],'grenadeDefault':'高爆手雷',
+        'ordinaryRole':{'shieldActions':['standShoot','stab','bash'],'bashFrames':59,'grenadeDefault':'高爆手雷',
             'grenadeActionFrames':36,'grenadeReleaseFrame':25,'legKnife':True,'waistGrenades':True},
-        'eliteRole':{'shieldActions':['chargeShoot'],'chargeFrames':[10,24,12],
-            'pairReloadFrames':[331,365],'pairReloadCommit':363,'legKnife':False,'waistGrenades':True,'reloadVisual':'smoke and authored run','slideEntry':'successful smoke reload only'},
+        'eliteRole':{'shieldActions':['chargeShoot'],'chargeFrames':[20,24,40],
+            'legKnife':False,'waistGrenades':True,'reloadVisual':'standing rifle reload; pistol reload removed','slideEntry':'cooldown-gated authored charge slide'},
         'instructorRole':{'artSource':tactics.SOURCE.relative_to(ROOT).as_posix(),'strategy':'adaptive','sharedActions':True,
             **instructor_melee_receipt()},
         'tacticalProfiles':tactics.load_profiles(),
@@ -441,7 +469,18 @@ def import_assets():
         'projectFiles':[{'path':p,'sha256':sha(OWNER/p),'bytes':(OWNER/p).stat().st_size} for p in native.PROJECT_FILES]}
     manifest['audio']=audio_receipt
     (HERE/'native-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf8',newline='\n')
-    common.mount_shared_library()
+    fla_members = common.read_fla_members(ROOT/'flashswf/arts/things-new.fla')
+    member_key = 'LIBRARY/'+ANCHOR+'.xml'
+    if member_key in fla_members:
+        existing = E.fromstring(fla_members[member_key], PARSER)
+        if (existing.get('linkageIdentifier') != ANCHOR
+                or existing.get('linkageImportForRS') != 'true'
+                or existing.get('linkageURL') != 'flashswf/arts/new/'+ANCHOR+'.swf'):
+            raise ValueError('Existing shared-library import differs')
+        if (ANCHOR+'.xml') not in fla_members['DOMDocument.xml'].decode('utf-8') or ('libraryItemName="'+ANCHOR+'"') not in fla_members['LIBRARY/things-new.xml'].decode('utf-8'):
+            raise ValueError('Existing shared-library mount is incomplete')
+    else:
+        common.mount_shared_library()
     print(json.dumps({'symbols':len(outputs),'linkage':LINKAGE},ensure_ascii=False))
 
 
@@ -460,7 +499,7 @@ def instructor_melee_outputs():
     melee = tactics.instructor_melee
     names = [tactics.PREFIX+'动作/教官_'+action for action in (melee.KNIFE, melee.SHIELD)]
     symbols, _, _ = build_symbols()
-    audio.apply(symbols, OWNER, native.make_sparse_layer)
+    apply_audio(symbols)
     # Both actions use the already installed instructor drawings, mounts and
     # collision helpers. A changed dependency needs its own assembly.
     pending = list(names)

@@ -25,7 +25,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6InstructorMeleeTest {
             spawn("cancelA","敌人-CF6特种教官",side,false,34,14,34);
             spawn("cancelB","敌人-CF6持盾特种教官",side,true,93,51,93);
             spawn("soldier","敌人-CF6特种兵",side,false,34,14,34);
-            spawn("soldierShield","敌人-CF6持盾特种兵",side,true,68,50,68);
+            spawn("soldierShield","敌人-CF6持盾特种兵",side,true,93,51,93);
             spawn("elite","敌人-CF6特种精英",side,false,0,0,0);
         }
         driver=_root.createEmptyMovieClip("instructorMeleeDriver",_root.getNextHighestDepth());

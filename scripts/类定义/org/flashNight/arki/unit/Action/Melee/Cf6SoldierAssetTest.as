@@ -37,6 +37,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
     private static var grenadeXml:XML;
     private static var completionCases:Array;
     private static var reviewQueue:Array,reviewUnits:Array,reviewIndex:Number,reviewStage:Number,reviewDone:Boolean;
+    private static var instructorAudioQueue:Array,instructorAudioIndex:Number,instructorAudioStage:Number,instructorAudioAge:Number;
+    private static var instructorAudioActor:MovieClip,instructorAudioRecording:Boolean,instructorAudioCalls:Array,instructorAudioDone:Boolean;
     private static var fullChainUnits:Array,tacticalPanelLogs:Array;
     private static var link:String="敌人-CF6特种兵";
     private static var preparedWorldHandler:Function;
@@ -63,7 +65,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             +" count="+u.soldierReloadCount+" error="+u.soldierWeaponError);
     }
     public static function runAllTests():Void {
-        passed=failed=ticks=0;ready=finished=false;reviewDone=false;cases=[];probes=[];images={};phases=[];elites=[];lanes=[];pairs=[];roles=[];tactics=[];completionCases=[];fullChainUnits=[];tacticalPanelLogs=[];
+        passed=failed=ticks=0;ready=finished=false;reviewDone=false;instructorAudioDone=false;instructorAudioRecording=false;instructorAudioCalls=[];cases=[];probes=[];images={};phases=[];elites=[];lanes=[];pairs=[];roles=[];tactics=[];completionCases=[];fullChainUnits=[];tacticalPanelLogs=[];
         _root.cf6InventoryReads=0;_root.cf6InventoryWrites=0;
         ItemUtil.singleContain=function():Object {_root.cf6InventoryReads++;return null;};
         ItemUtil.getTotal=function():Number {_root.cf6InventoryReads++;return 0;};
@@ -76,7 +78,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         library._visible=false;_root.gameworld=library;_root.暂停=false;
         library.createEmptyMovieClip("deadbody",library.getNextHighestDepth()).layers=[null,null,{}];
         _root.控制目标="__no_player";_root.控制目标全自动=false;_root.是否阴影=true;
-        _root.播放音效=function():Void {};_root.发布消息=function():Void {};
+        _root.播放音效=function(name:String):Void {if(Cf6SoldierAssetTest.instructorAudioRecording)Cf6SoldierAssetTest.instructorAudioCalls.push(name);};_root.发布消息=function():Void {};
         _root.add2map=function():Void {};_root.add2map2=function():Void {};
         _root.fixtureCrit=false;_root.重力加速度=1;
         _root.成功率=function(chance:Number):Boolean {_root.fixtureChance=chance;return _root.fixtureCrit;};
@@ -395,8 +397,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 library.getNextHighestDepth(),{fixtureRecord:overrideRec,长枪:"M4A1战术版",特种兵初始阶段:ov+1,特种兵持盾减伤率:40});
             phases.push({actor:overrideUnit,record:overrideRec,side:ov,move:"override",expectedPhase:ov+1,overrideReduction:40});
         }
-        var eliteMoves:Array=["stand","retreat","slide","reload","interrupt","break","mobilityStiff","sidearmReload","sidearmInterrupt","noSidearm",
-            "primaryReload","primaryInterrupt","externalPair","identityLong","identityMain","identityOff"];
+        var eliteMoves:Array=["stand","retreat","run","slide","reload","interrupt","break","mobilityStiff","pistolAutoRefill","noSidearm",
+            "externalPair","identityLong","identityMain","identityOff"];
         for(var es:Number=0;es<2;es++)for(var em:Number=0;em<eliteMoves.length;em++){
             var er:Object=record();er.elite=true;
             var init:Object={fixtureRecord:er,特种兵烟雾弹:false,长枪:"M4A1战术版",手枪:eliteMoves[em]=="externalPair"?"短HK53":"FR506",手枪2:"FR506"};
@@ -557,7 +559,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         var u:MovieClip=library[data.发射者],rec:Object=u.fixtureRecord;
         if(rec==undefined)return;
         var shot:Boolean=data.子弹种类!="近战子弹";
-        rec.contractOk=rec.contractOk && data.shootZ==u.Z轴坐标 && data.百分比伤害==undefined && data.血量上限击溃==undefined;
+        rec.contractOk=rec.contractOk && data.shootZ==u.Z轴坐标 && data.百分比伤害==undefined && (data.血量上限击溃==undefined || data.血量上限击溃==0);
         if(shot){
             var owner:Object=u.soldierAttackOwner;
             var sidearm:Boolean=rec.elite && owner.currentWeapon=="secondary";
@@ -1064,11 +1066,11 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         target.hp=1000;target.area=target.createEmptyMovieClip("area",1);
         u.攻击目标=target._name;u.硬直中=false;u.eliteMobility=true;
         var sign:Number=side==0?1:-1;
-        var owner:Object={kind:"run",first:166,last:205,logicalFrame:180,advanceSign:sign,faceSign:sign,target:target._name,motionFrames:0,strafeSign:1,slideMovedZ:0,slideZSign:0,shots:0,shotLimit:5,fireGrace:2,restFrames:30};
+        var owner:Object={kind:"run",first:90,last:129,logicalFrame:105,advanceSign:sign,faceSign:sign,target:target._name,motionFrames:0,strafeSign:1,slideMovedZ:0,slideZSign:0,shots:0,shotLimit:8,fireGrace:2,restFrames:30};
         target._x=u._x+sign*430;target.Z轴坐标=u.Z轴坐标;
         var before:Number=u._x;u.eliteMove(owner,u.man);
         check((u._x-before)*sign>0,"rifle running fire advances in entry direction "+side);
-        target._x=u._x+sign*350;owner.kind="slide";owner.first=212;owner.last=248;owner.logicalFrame=214;owner.slideTravelBudget=620;owner.slideStepSpeed=16;owner.slideMovedX=0;owner.slideStalledFrames=0;
+        target._x=u._x+sign*350;owner.kind="slide";owner.first=90;owner.last=180;owner.logicalFrame=136;owner.slideTravelBudget=620;owner.slideBaseStep=9;owner.slideMovedX=0;owner.slideStalledFrames=0;
         before=u._x;u.eliteMove(owner,u.man);
         check((u._x-before)*sign>0,"rifle low slide advances toward its safe firing band "+side);
         target._x=u._x+sign*40;
@@ -1076,10 +1078,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         check((u._x-before)*sign>0 && owner.kind=="slide","close target does not brake a committed slide "+side);
         target._x=u._x-sign*50;before=u._x;u.eliteMove(owner,u.man);
         check((u._x-before)*sign>0 && u.方向==(sign>0?"右":"左"),"crossing target does not reverse the sliding body "+side);
-        target._x=u._x-sign*430;owner.logicalFrame=229;before=u._x;
+        target._x=u._x-sign*430;owner.logicalFrame=176;before=u._x;
         var beforeZ:Number=u.Z轴坐标;u.eliteMove(owner,u.man);
-        check(u._x==before && u.Z轴坐标==beforeZ && owner.kind=="stand"
-            && u.方向==(sign>0?"左":"右"),"completed slide stops and faces back in a standing pose "+side);
+        check(u._x==before && u.Z轴坐标==beforeZ && owner.kind=="slide"
+            && u.方向==(sign>0?"左":"右"),"completed slide stops and faces back during authored stand-up recovery "+side);
         u._x=saved.x;u._y=u.Z轴坐标=saved.z;u.方向改变(saved.direction);u.攻击目标=saved.target;
         u.硬直中=saved.hard;u.eliteMobility=saved.mobility;u.eliteMoveDistance=saved.distance;u.eliteMoveFrames=saved.frames;u.soldierNextShootAt=saved.nextShoot;
         delete u.standardShotMoving;target.removeMovieClip();
@@ -1102,27 +1104,21 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 }else{
                     var target:MovieClip=library.createEmptyMovieClip("eliteTarget"+i,library.getNextHighestDepth());
                     target.hp=1000;target.Z轴坐标=target._y=u.Z轴坐标;
-                    target._x=u._x+(c.side==0?1:-1)*((c.move=="retreat" || c.move=="mobilityStiff")?180:c.move=="slide"?430:320);
+                    target._x=u._x+(c.side==0?1:-1)*((c.move=="retreat" || c.move=="mobilityStiff" || c.move=="pistolAutoRefill")?180:(c.move=="slide" || c.move=="run")?430:320);
                     target.area=target.createEmptyMovieClip("area",1);u.攻击目标=target._name;
                     var retreatMove:Boolean=(c.move=="retreat" || c.move=="mobilityStiff"
-                        || c.move=="sidearmReload" || c.move=="sidearmInterrupt" || c.move=="noSidearm"
-                        || c.move=="primaryReload" || c.move=="primaryInterrupt" || c.move=="externalPair"
-                        || c.move.indexOf("identity")==0);
-                    u.eliteNextAction=retreatMove?"retreat":c.move=="slide"?"slide":"stand";
-                    if(c.move=="slide"){
-                        u.soldierPendingSlide=true; // Direct action fixture; genuine smoke transition is exercised below.
-                    }
+                        || c.move=="pistolAutoRefill" || c.move=="noSidearm"
+                        || c.move=="externalPair" || c.move.indexOf("identity")==0);
+                    u.eliteNextAction=retreatMove?"retreat":c.move=="slide"?"slide":c.move=="run"?"run":"stand";
                     if(c.move=="reload")u.长枪.value.shot=u.长枪弹匣容量;
-                    if(c.move=="sidearmReload" || c.move=="sidearmInterrupt" || c.move=="primaryReload" || c.move=="primaryInterrupt"){
-                        c.reloadSlot=c.move.indexOf("primary")==0?"手枪":"手枪2";
-                        u[c.reloadSlot].value.shot=c.move.indexOf("Interrupt")<0?u[c.reloadSlot+"弹匣容量"]-2:3;
-                        c.initialSidearmShot=u[c.reloadSlot].value.shot;
+                    if(c.move=="pistolAutoRefill"){
+                        u.手枪.value.shot=u.手枪弹匣容量;u.手枪2.value.shot=u.手枪2弹匣容量;
                     }
                     if((_root.soldierCaptureMotion===true || _root.soldierCaptureTravel===true) && c.side==0
-                        && (c.move=="stand" || c.move=="retreat" || c.move=="slide")){
+                        && (c.move=="retreat" || c.move=="slide")){
                         u.eliteCaptureFirstFrame=function(body:MovieClip,owner:Object):Void {
                             var unit:MovieClip=this;
-                            var first:Number=owner.kind=="stand"?46:owner.kind=="retreat"?2:212;
+                            var first:Number=owner.kind=="retreat"?1:90;
                             var valid:Boolean=owner.age==0 && owner.logicalFrame==first
                                 && body===unit.man && body._currentframe==first;
                             Cf6SoldierAssetTest.check(valid,"elite settled first capture "+owner.kind);
@@ -1132,70 +1128,29 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                             }
                         };
                     }
-                    if(c.move=="sidearmReload" || c.move=="sidearmInterrupt")reloadDiag(u,"before");
                     u.状态改变("长枪攻击");
                 }
             }
-            if(c.reloadSlot!=undefined && !c.reloadRequested
-                && u.soldierAttackOwner!=null && u.soldierAttackOwner.elite && !u.soldierAttackOwner.reload
-                && u.soldierCanAct(u.man)){
-                c.reloadRequested=true;u.eliteBeginReload(u.man,c.reloadSlot);reloadDiag(u,"begin");
-            }
-            if(ticks==201 && c.move=="mobilityStiff"){
+            if(ticks==212 && c.move=="mobilityStiff"){
                 c.owner=u.soldierAttackOwner;c.frozenFrame=u.man._currentframe;c.travel=u.eliteMoveDistance;
                 u.硬直中=true;
             }
-            if(ticks==205 && c.move=="mobilityStiff"){
+            if(ticks==217 && c.move=="mobilityStiff"){
                 check(u.soldierAttackOwner===c.owner && c.owner.active,"movement hitstop keeps elite owner "+i);
                 check(u.man._currentframe>c.frozenFrame,"movement hitstop does not stop the attack pose "+i);
                 check(u.eliteMoveDistance>c.travel,"committed running pose retains displacement through light stagger "+i);
             }
-            if(ticks==224 && c.move=="mobilityStiff"){
+            if(ticks==240 && c.move=="mobilityStiff"){
                 check(rec.shots>0 && u.eliteMoveDistance>c.travel,"light stagger retains bounded moving fire "+i);
             }
-            if(ticks==225 && c.move=="mobilityStiff")u.硬直中=false;
+            if(ticks==242 && c.move=="mobilityStiff")u.硬直中=false;
             if(ticks==201 && c.move=="interrupt"){
                 c.allowed=rec.shots;check(c.allowed>0,"elite interrupt follows real fire "+i);
                 u.状态改变("被击");u.man.gotoAndPlay("a0");
             }
-            if(ticks==201 && (c.move=="sidearmReload" || c.move=="sidearmInterrupt"))reloadDiag(u,"201");
-            if(c.reloadSlot!=undefined && c.initialSidearmShot!=undefined
-                && u[c.reloadSlot].value.shot<c.initialSidearmShot && u[c.reloadSlot].value.shot>=0){
-                c.sawTubeProgress=true;
-                if(c.move.indexOf("Interrupt")>=0 && !c.interruptedTube){
-                    c.partialShot=u[c.reloadSlot].value.shot;
-                    check(c.partialShot>0 && c.partialShot<c.initialSidearmShot && c.partialShot<u[c.reloadSlot+"弹匣容量"],
-                        "FR506 interrupt follows a real partial tube commit "+i);
-                    c.interruptedTube=true;u.状态改变("被击");u.man.gotoAndPlay("a0");
-                }
-            }
-            if(c.fullEmpty && u.man.换弹标签===true && c.emptyBranch!==true)
-                c.emptyBranch=u.man.perRoundReload===false && u.man.reloadCanSelectTube===true;
-            if(ticks==230 && (c.move=="sidearmReload" || c.move=="primaryReload")){
-                reloadDiag(u,"230");
-                check(c.sawTubeProgress && u[c.reloadSlot].value.shot==0 && u.soldierReloadCount==1,
-                    "FR506 partial tube completes before empty reload "+i);
-                u[c.reloadSlot].value.shot=u[c.reloadSlot+"弹匣容量"];c.fullEmpty=true;c.reloadRequested=false;u.状态改变("长枪攻击");
-            }
-            if(ticks==230 && (c.move=="sidearmInterrupt" || c.move=="primaryInterrupt")){
-                c.partialRetained=c.interruptedTube===true && u[c.reloadSlot].value.shot==c.partialShot
-                    && rec.shots==0 && rec.sidearmShots==0 && u.soldierAttackOwner==null;
-                check(c.partialRetained,"partial hand reload interruption preserves committed ammunition "+i);
-                u[c.reloadSlot].value.shot=u[c.reloadSlot+"弹匣容量"];
-                c.startedEmptyInterrupt=true;c.reloadRequested=false;u.状态改变("长枪攻击");
-            }
-            if(ticks==240 && c.startedEmptyInterrupt){
-                check(u.man.换弹标签===true && u.man.perRoundReload===false
-                    && u.soldierAttackOwner.reloadSlot==c.reloadSlot && u.man._currentframe<328,
-                    "interrupt actual full-empty hand transaction before commit "+i);
-                c.interruptedEmpty=true;u.状态改变("被击");u.man.gotoAndPlay("a0");
-            }
-            if(ticks==205 && (c.move=="stand" || c.move=="retreat" || c.move=="slide" || c.move=="reload"
-                || c.move=="sidearmReload" || c.move=="sidearmInterrupt" || c.move=="noSidearm"))
+            if(ticks==205 && (c.move=="stand" || c.move=="retreat" || c.move=="slide" || c.move=="reload" || c.move=="noSidearm"))
                 render(u,"elite-"+c.move+"-"+c.side);
-            if(ticks==205 && c.move=="primaryReload")render(u,"holster-primaryReload-"+c.side);
             if(ticks==228 && c.move=="retreat")render(u,"elite-retreat-fire-"+c.side);
-            if(ticks==242 && c.move=="primaryInterrupt")render(u,"holster-interrupted-"+c.side);
             if(ticks==246 && c.move=="slide")render(u,"elite-slide-low-"+c.side);
             if(ticks==268 && c.move=="slide")render(u,"elite-slide-tail-"+c.side);
             if(c.move=="slide" && u.soldierAttackOwner.elite && !u.soldierAttackOwner.reload){
@@ -1203,10 +1158,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 c.forwardPreviousX=u._x;
             }
             if((_root.soldierCaptureMotion===true || _root.soldierCaptureTravel===true) && c.side==0
-                && (c.move=="stand" || c.move=="retreat" || c.move=="slide") && u.soldierAttackOwner.elite){
+                && (c.move=="retreat" || c.move=="slide") && u.soldierAttackOwner.elite){
                 var mf:Number=u.man._currentframe;
-                var firstFrame:Number=c.move=="stand"?46:c.move=="retreat"?2:212;
-                var lastFrame:Number=c.move=="stand"?77:c.move=="retreat"?44:248;
+                var firstFrame:Number=c.move=="retreat"?1:90;
+                var lastFrame:Number=c.move=="retreat"?89:180;
                 if(mf>=firstFrame && mf<=lastFrame){
                     travelTrace(u,u.man,u.soldierAttackOwner);
                     if(_root.soldierCaptureMotion===true)render(u,"elite-motion-"+c.move+"-0-"+mf);
@@ -1214,7 +1169,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             }
             if(ticks==207)c.pausedFrame=u.man._currentframe;
             if(ticks==210 && c.move=="slide")check(u.man._currentframe==c.pausedFrame,"elite motion pauses with controller "+i);
-            if(ticks==221 && c.move.indexOf("identity")==0){
+            if(ticks==230 && c.move.indexOf("identity")==0){
                 c.allowedTotal=rec.shots+rec.sidearmShots;
                 check(c.allowedTotal>0,"identity replacement follows actual dual fire "+i);
                 var identitySlot:String=c.move=="identityLong"?"长枪":c.move=="identityMain"?"手枪":"手枪2";
@@ -1236,20 +1191,12 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 render(u,"elite-break-"+c.side);
             }
             if(ticks==300 && c.move!="break"){
-                if(c.move=="sidearmReload" || c.move=="sidearmInterrupt")reloadDiag(u,"300");
                 check(rec.powerOk && rec.contractOk && rec.muzzleOk,"elite standard bullet and live muzzle "+i);
                 check(!u.刚体 && !u.无敌 && u.soldierInvalidMuzzleCount==0,"elite no extra armor or invalid muzzle "+i);
                 if(c.move=="reload")check(u.长枪.value.shot==0 && u.soldierReloadCount==1,"elite standard reload commits once "+i);
-                else if(c.move=="sidearmReload" || c.move=="primaryReload"){
-                    check(u.手枪.value.shot==0 && u.手枪2.value.shot==0 && u.长枪.value.shot==0 && u.soldierReloadCount==2
-                        && c.sawTubeProgress && c.emptyBranch && u.soldierWeaponError=="",
-                        "FR506 partial tube and empty reload commit only their own ammunition "+i);
-                }else if(c.move=="sidearmInterrupt" || c.move=="primaryInterrupt"){
-                    check(c.partialRetained===true && c.sawTubeProgress && c.interruptedEmpty===true
-                        && u[c.reloadSlot].value.shot==u[c.reloadSlot+"弹匣容量"]
-                        && u[c.reloadSlot=="手枪"?"手枪2":"手枪"].value.shot==0
-                        && rec.shots==0 && rec.sidearmShots==0 && u.soldierAttackOwner==null,
-                        "both partial and full-empty hand interruptions grant no free refill "+i);
+                else if(c.move=="pistolAutoRefill"){
+                    check(rec.shots==4 && rec.sidearmShots==4 && u.soldierReloadCount==0 && u.soldierWeaponError=="",
+                        "emptied pistols maintain ammo silently without entering removed pistol reload "+i);
                 }else if(c.move=="noSidearm"){
                     check(rec.shots==4 && rec.sidearmShots==0 && u.长枪.value.shot==0 && u.手枪.value.shot==4 && u.手枪2.value.shot==0,
                         "noSidearm keeps identical equipment but disables only sidearm behavior "+i);
@@ -1257,7 +1204,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     check(c.identityInvalidated===true && rec.shots+rec.sidearmShots==c.allowedTotal,"replaced slot rejects all late callbacks "+i);
                 }else if(c.move=="interrupt")check(rec.shots==c.allowed,"elite stale shots rejected "+i);
                 else{
-                    var expectedPrimary:Number=c.move=="slide"?5:c.move=="stand"?5:4;
+                    var expectedPrimary:Number=c.move=="slide"?5:c.move=="stand"?5:c.move=="run"?8:4;
                     var isRetreat:Boolean=c.move=="retreat" || c.move=="mobilityStiff" || c.move=="externalPair";
                     var expectedSidearm:Number=isRetreat?4:0;
                     check(rec.slotShots.长枪==(isRetreat?0:expectedPrimary)
@@ -1278,7 +1225,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                         check(rec.sidearmTicks[k]-rec.sidearmTicks[k-1]>=sideGap,"elite FR506 independent cadence "+i);
                 }
                 check(u.soldierAttackOwner==null,"elite action releases ownership "+i);
-                if(c.move=="slide" || c.move=="retreat" || c.move=="stand" || c.move=="mobilityStiff")check(u.eliteCompletedActions==1 && u.eliteInterruptedActions==0,"elite natural action audit "+i);
+                if(c.move=="slide" || c.move=="retreat" || c.move=="run" || c.move=="stand" || c.move=="mobilityStiff")check(u.eliteCompletedActions==1 && u.eliteInterruptedActions==0,"elite natural action audit "+i);
                 if(c.move=="slide")eliteForwardContract(u,c.side);
                 if(c.move=="interrupt")check(u.eliteInterruptedActions==1,"elite interrupt audit "+i);
             }
@@ -1313,19 +1260,20 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 var picked:String=u.soldierChooseAttack(Math.abs(target._x-u._x),0,0);
                 check(picked=="shoot" && u.eliteNextAction==(c.kind=="retreat"?"retreat":"run"),
                     "native AI offers regular moving fire from aligned target "+label);
-                u.eliteNextAction=c.kind;if(c.kind=="slide")u.soldierPendingSlide=true;
+                u.eliteNextAction=c.kind;
                 u.状态改变("长枪攻击");
             }
             var owner:Object=u.soldierAttackOwner;
-            if(owner.elite && !c.departed && (c.early || rec.shots>0)){
+            var laneActive:Boolean=owner.elite || owner.standUnified;
+            if(laneActive && !c.departed && (c.early || rec.shots>0)){
                 c.departed=true;c.beforeShots=rec.shots+rec.sidearmShots;c.owner=owner;
                 check(c.early?c.beforeShots<2:c.beforeShots>0,"departure occurs at requested firing phase "+label);
             }
-            if(c.departed && owner.elite && owner.active){
+            if(c.departed && laneActive && owner.active){
                 // A continuously strafing target stays outside the firing lane, including during the slide.
                 c.target.Z轴坐标=c.target._y=u.Z轴坐标+(c.side==0?96:-96);
                 if(c.kind=="run")c.target._x=u._x+(c.side==0?430:-430);
-                if(owner.burstOpen && c.deadline==undefined){c.deadline=owner.fireDeadline;c.nextShoot=u.soldierNextShootAt;}
+                if((owner.burstOpen || owner.standUnified) && c.deadline==undefined){c.deadline=owner.fireDeadline;c.nextShoot=u.soldierNextShootAt;}
             }
             if(c.departed && rec.done==1 && !c.completed){
                 c.completed=true;c.endShots=rec.shots+rec.sidearmShots;
@@ -1342,7 +1290,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     && u.eliteCompletedActions==1 && u.eliteInterruptedActions==0,"suppression ends naturally and releases owner "+label);
                 check(c.owner.fireDeadline==c.deadline && u.soldierNextShootAt==c.nextShoot
                     && u.soldierClock<c.nextShoot,"lane departure cannot extend fire deadline or erase rest "+label);
-                var gap:Number=Math.ceil(u[c.kind=="retreat"?"手枪属性":"长枪属性"].interval*30/1000);
+                var gap:Number=c.kind=="stand"?Math.floor(u.长枪属性.interval/(1000/30)):Math.ceil(u[c.kind=="retreat"?"手枪属性":"长枪属性"].interval*30/1000);
                 for(var j:Number=1;j<rec.shotTicks.length;j++)check(rec.shotTicks[j]-rec.shotTicks[j-1]>=gap,
                     "suppression respects standard primary cadence "+label);
                 var otherGap:Number=Math.ceil(u.手枪2属性.interval*30/1000);
@@ -1369,100 +1317,76 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         }
     }
     private static function createPairCases():Void {
-        var modes:Array=["empty","uneven","partial","mixed","slowOffhand","interruptBefore","interruptAfter","interruptBoth","identity"];
+        // Alter presentation & no-pistol-reload contract checks: distinct hit branches,
+        // 21-frame moving shoot (unshielded & shielded), holster draw/sheath sync, and inert pistol reload.
+        var modes:Array=["hitBranchA0","hitBranchA1","movingShoot","movingShootShield","holsterSync","noPistolReload"];
         for(var side:Number=0;side<2;side++)for(var m:Number=0;m<modes.length;m++){
-            var rec:Object=record();rec.elite=true;
-            var unit:MovieClip=library.attachMovie("敌人-CF6特种精英","pairCase"+pairs.length,
-                library.getNextHighestDepth(),{fixtureRecord:rec,特种兵烟雾弹:false,长枪:"M4A1战术版",手枪:modes[m]=="mixed"?"短HK53":"FR506",手枪2:"FR506"});
-            check(unit!=null,"attach paired reload "+modes[m]+" "+side);
-            pairs.push({actor:unit,record:rec,mode:modes[m],side:side,seen:{},captureFrames:[]});
+            var mode:String=modes[m],rec:Object=record();
+            rec.elite=(mode=="holsterSync" || mode=="noPistolReload");
+            var lnk:String=mode=="movingShootShield"?"敌人-CF6持盾特种兵":rec.elite?"敌人-CF6特种精英":link;
+            var unit:MovieClip=library.attachMovie(lnk,"pairCase"+pairs.length,
+                library.getNextHighestDepth(),{fixtureRecord:rec,特种兵烟雾弹:false,长枪:"M4A1战术版",手枪:"FR506",手枪2:"FR506"});
+            check(unit!=null,"attach alter contract "+mode+" "+side);
+            pairs.push({actor:unit,record:rec,mode:mode,side:side});
         }
     }
     private static function pairTick():Void {
         for(var i:Number=0;i<pairs.length;i++){
             var c:Object=pairs[i],u:MovieClip=c.actor,rec:Object=c.record;
-            var label:String=c.mode+" side="+c.side;
+            var label:String=c.mode+" side="+c.side,sign:Number=c.side==0?1:-1;
             if(ticks==190){
-                u.方向改变(c.side==0?"右":"左");u.eliteNextAction="retreat";
-                var pairTarget:MovieClip=library.createEmptyMovieClip("pairTarget"+i,library.getNextHighestDepth());
-                pairTarget.hp=1000;pairTarget._x=u._x+(c.side==0?180:-180);pairTarget.Z轴坐标=u.Z轴坐标;
-                pairTarget.area=pairTarget.createEmptyMovieClip("area",1);u.攻击目标=pairTarget._name;
-                u.长枪.value.shot=3;u.手枪.value.shot=u.手枪弹匣容量;u.手枪2.value.shot=u.手枪2弹匣容量;
-                if(c.mode=="uneven")u.手枪2.value.shot=2;
-                if(c.mode=="partial"){u.手枪.value.shot=4;u.手枪2.value.shot=2;}
-                if(c.mode=="slowOffhand" || c.mode=="interruptBoth")u.手枪2属性.reloadPenalty=100;
-                c.beforeMain=u.手枪.value.shot;c.beforeOff=u.手枪2.value.shot;
-                c.main=u.手枪;c.off=u.手枪2;c.startClock=u.soldierClock;
-                u.状态改变("长枪攻击");u.eliteBeginReload(u.man,"手枪");
-            }
-            var owner:Object=u.soldierAttackOwner;
-            // The transaction fixture enters after AVM1 has installed the destination body.
-            // Empty-magazine movement is tested independently by emptyEvade/blockedEvade.
-            if(owner.elite && !owner.reload && !c.started){
-                c.startClock=u.soldierClock;u.eliteBeginReload(u.man,"手枪");owner=u.soldierAttackOwner;
-            }
-            if(owner.reload && !c.started){
-                c.started=true;c.owner=owner;
-                check(owner.reloadPair===true && owner.reloadEndFrame==365,"paired reload selects one shared animation "+label);
-            }
-            if(owner.reloadPair){
-                var frame:Number=u.man._currentframe;
-                if(frame>=331 && u.soldierReloadCount==1 && !c.burdenChecked){
-                    c.burdenChecked=true;c.burden=u.man.reloadBurden;
-                    check(c.burden==((c.mode=="slowOffhand" || c.mode=="interruptBoth")?200:117),"paired reload waits for slower configured hand "+label);
-                    check(u.man.perRoundReload===false && !u.man.reloadCanSelectTube,"paired full-cycle reload cannot loop a hand "+label);
-                }
-                var mainCommitted:Boolean=owner.reloadMainCommitted===true;
-                var offCommitted:Boolean=owner.reloadOffCommitted===true;
-                check(mainCommitted==offCommitted,"both hands commit atomically "+label);
-                check(u.手枪.value.shot==(mainCommitted?0:c.beforeMain)
-                    && u.手枪2.value.shot==(offCommitted?0:c.beforeOff),"each hand waits for its own commit anchor "+label);
-                check((!mainCommitted || frame>=363) && (!offCommitted || frame>=363),"paired ammunition cannot commit before authored anchor "+label);
-                // AVM1 runs the destination frame script after the current enterFrame handler returns.
-                if(frame>363)check(mainCommitted,"main commit runs before leaving its anchor "+label);
-                if(frame>363)check(offCommitted,"offhand commit runs before leaving its anchor "+label);
-                if(mainCommitted)c.sawMainCommit=true;
-                if(offCommitted)c.sawCommit=true;
-                if((mainCommitted && !c.repeatedMain && owner.reloadSlot=="手枪") || (offCommitted && !c.repeatedOff)){
-                    u.eliteReloadCommit(u.man);
-                    check(u.手枪.value.shot==0 && u.手枪2.value.shot==(offCommitted?0:c.beforeOff),"repeated hand commit is inert "+label);
-                    if(offCommitted)c.repeatedOff=true;else c.repeatedMain=true;
-                }
-                if(_root.soldierCaptureOnlyPairReload===true && c.mode=="empty" && frame>=331 && frame<365
-                    && (c.side==0 || c.captureFrames.length==0 || frame==351 || frame==363 || frame==364)){
-                    if(!c.seen[frame]){c.seen[frame]=true;c.captureFrames.push(frame);}
-                    render(u,"elite-pair-motion-"+c.side+"-"+frame);
-                }
-                if(_root.soldierCaptureOnlyPairReload===true && frame==351 && c.mode=="mixed")render(u,"elite-pair-mixed-"+c.side);
-                if((c.mode=="interruptBefore" && frame>=350) || (c.mode=="interruptAfter" && mainCommitted) || (c.mode=="interruptBoth" && offCommitted)){
-                    c.interrupted=true;u.状态改变("被击");u.man.gotoAndPlay("a0");
-                }
-                if(c.mode=="identity" && frame>=355 && !c.replaced){
-                    c.replaced=true;u.手枪2=new BaseItem(c.off.name,{level:c.off.value.level,shot:c.off.value.shot},c.off.lastUpdate);
-                    check(!u.soldierCanAct(u.man),"paired reload rejects changed equipment identity "+label);
+                u.方向改变(sign>0?"右":"左");
+                if(c.mode=="hitBranchA0" || c.mode=="hitBranchA1"){
+                    u.状态改变("被击");
+                    u.man.gotoAndPlay(c.mode=="hitBranchA0"?"a0":"a1");
+                    c.startFrame=u.man._currentframe;
+                }else if(c.mode=="movingShoot" || c.mode=="movingShootShield"){
+                    var mt:MovieClip=library.createEmptyMovieClip("moveShootTarget"+i,library.getNextHighestDepth());
+                    mt.hp=1000;mt._x=u._x+sign*400;mt._y=mt.Z轴坐标=u.Z轴坐标;
+                    mt.area=mt.createEmptyMovieClip("area",1);u.攻击目标=mt._name;c.target=mt;
+                    c.startX=u._x;u.soldierReadyAt=0;u.soldierNextShootAt=0;
+                    u.状态改变("长枪攻击");
+                }else if(c.mode=="holsterSync" || c.mode=="noPistolReload"){
+                    var rt:MovieClip=library.createEmptyMovieClip("retreatProbeTarget"+i,library.getNextHighestDepth());
+                    rt.hp=1000;rt._x=u._x+sign*180;rt._y=rt.Z轴坐标=u.Z轴坐标;
+                    rt.area=rt.createEmptyMovieClip("area",1);u.攻击目标=rt._name;c.target=rt;
+                    u.eliteNextAction="retreat";
+                    if(c.mode=="noPistolReload"){u.手枪.value.shot=u.手枪弹匣容量;u.手枪2.value.shot=u.手枪2弹匣容量;}
+                    u.状态改变("长枪攻击");
                 }
             }
-            if(c.started && !c.finished && u.soldierAttackOwner==null){
-                c.finished=true;c.elapsed=u.soldierClock-c.startClock;
-                if(_root.soldierCaptureOnlyPairReload===true && c.mode=="empty")
-                    trace("[ELITE_PAIR_CAPTURE_SEQUENCE] side="+c.side+" frames="+c.captureFrames.join(","));
-                trace("[ELITE_PAIR_RELOAD] "+label+" elapsed="+c.elapsed+" animations="+u.soldierReloadCount
-                    +" burden="+c.burden+" ammo="+u.手枪.value.shot+"/"+u.手枪2.value.shot+" committed="+c.sawCommit);
+            if(ticks==191 && (c.mode=="hitBranchA0" || c.mode=="hitBranchA1")){
+                u.man.gotoAndPlay(c.mode=="hitBranchA0"?"a0":"a1");
+                check(u.man._totalframes==18,"distinct hit timeline has 18 authored frames "+label);
+                check(c.mode=="hitBranchA0"?(u.man._currentframe>=1 && u.man._currentframe<=8):(u.man._currentframe>=9 && u.man._currentframe<=18),
+                    "hit branch enters its own authored range "+label+" f="+u.man._currentframe);
+            }
+            if((c.mode=="movingShoot" || c.mode=="movingShootShield") && u.soldierAttackOwner!=null && u.man._currentframe>=50 && u.man._currentframe<=70){
+                c.sawMovingFrame=true;
+            }
+            if(c.mode=="holsterSync" && u.soldierAttackOwner.elite && u.man.腰挂!=null){
+                var f:Number=u.man._currentframe;
+                if(f>=2 && f<=14)c.holsteredBefore=(c.holsteredBefore!==false) && u.man.腰挂.主手._visible===true && u.man.腰挂.副手._visible===true;
+                if(f>=20 && f<=70)c.hiddenDuringDraw=(c.hiddenDuringDraw!==false) && u.man.腰挂.主手._visible===false && u.man.腰挂.副手._visible===false;
+                if(f>=77 && f<=88)c.holsteredAfter=(c.holsteredAfter!==false) && u.man.腰挂.主手._visible===true && u.man.腰挂.副手._visible===true;
+            }
+            if(c.mode=="noPistolReload" && ticks==200 && u.soldierAttackOwner!=null){
+                u.eliteBeginReload(u.man,"手枪");
+                u.eliteBeginReload(u.man,"手枪2");
+                check(!u.soldierAttackOwner.reload && u.soldierReloadCount==0,"explicit pistol reload request stays inert "+label);
             }
             if(ticks==300){
-                check(c.finished===true && u.soldierReloadCount==1 && u.soldierAttackOwner==null,"one animation releases paired ownership "+label);
-                var cancelled:Boolean=c.mode=="interruptBefore" || c.mode=="interruptAfter" || c.mode=="interruptBoth" || c.mode=="identity";
-                check(u.手枪.value.shot==((c.mode=="interruptBefore" || c.mode=="identity")?c.beforeMain:0)
-                    && u.手枪2.value.shot==((c.mode=="interruptBefore" || c.mode=="identity")?c.beforeOff:0),
-                    "pair cancellation preserves exactly committed ammunition "+label);
-                check(u.长枪.value.shot==3 && rec.shots==0 && rec.sidearmShots==0,"paired reload never fires or touches rifle ammunition "+label);
-                if(c.mode.indexOf("interrupt")==0)check(c.interrupted===true,"requested cancellation actually executes "+label);
-                if(c.mode!="interruptBefore" && c.mode!="identity")check(c.repeatedOff===true,"main duplicate commit probe executes "+label);
-                if(c.mode=="slowOffhand" || c.mode=="interruptBoth")check(c.repeatedOff===true,"offhand duplicate commit probe executes "+label);
-                if(!cancelled){
-                    check(c.elapsed>=34*c.burden/100 && c.elapsed<=Math.ceil(34*c.burden/100)+7,
-                        "one simultaneous gesture uses the slower configured hand "+label);
-                    check(u.eliteCompletedActions==1 && u.eliteInterruptedActions==0,"paired reload completes naturally once "+label);
+                if(c.mode=="hitBranchA0" || c.mode=="hitBranchA1"){
+                    check(rec.done==1,"authored hit branch finishes once "+label);
+                }else if(c.mode=="movingShoot" || c.mode=="movingShootShield"){
+                    check(c.sawMovingFrame===true && Math.abs(u._x-c.startX)>10 && rec.shots>0 && rec.muzzleOk,
+                        "authored 21-frame moving shoot advances body and fires from live muzzle "+label);
+                }else if(c.mode=="holsterSync"){
+                    check(c.holsteredBefore===true && c.hiddenDuringDraw===true && c.holsteredAfter===true,
+                        "waist holsters stay visible until draw f15, hide through f75, and return on sheath "+label);
+                }else if(c.mode=="noPistolReload"){
+                    check(rec.shots==4 && rec.sidearmShots==4 && u.soldierReloadCount==0 && u.soldierAttackOwner==null,
+                        "no pistol reload ever occurs during retreat "+label);
                 }
             }
         }
@@ -1519,7 +1443,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 render(u,"r8-"+c.mode+"-"+ticks);
             if(ticks==270 && c.mode=="bash")u.hp=0;
             if(ticks==290 && c.mode=="bash")check(u.soldierDebrisStampCount==1,"broken shield stamps independently once "+label);
-            if(ticks==250){
+            var roleCheckTick:Number=(c.mode=="charge" || c.mode=="chargeReload")?290:250;
+            if(ticks==roleCheckTick){
                 u.攻击目标="无";u.soldierClearMovement();
                 if(c.mode=="bash"){
                     check(rec.bashes==1 && rec.stabs==0 && rec.bashData.水平击退速度==24,"one stronger horizontal shield impulse "+label);
@@ -1575,10 +1500,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         writeNativeCapture(bd,key);bd.dispose();
     }
     private static function createTacticalCases():Void {
-        var modes:Array=["smoke","smokeCancel","chargeNear","chargeBlocked","modernLine",
+        var modes:Array=["smoke","chargeNear","chargeBlocked","modernLine",
             "instructorLine","instructorMobile","instructorAdaptive","overrides","noSmoke",
             "evasion","evasionDisabled","evasionStale","evasionBlocked","instructorBareLine",
-            "run","retreatBlocked","smokeTargetGone","smokeNoRifle","smokeOutside",
+            "run","retreatBlocked","smokeNoRifle",
             "chargeTurn","instructorShieldClose","instructorShieldMobile",
             "instructorChargeClose","instructorChargeGone","instructorChargeOfflane"];
         for(var side:Number=0;side<2;side++)for(var m:Number=0;m<modes.length;m++){
@@ -1592,7 +1517,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             if(mode=="overrides"){
                 init.特种兵策略="line";init.特种兵战术_eliteStandShots=2;init.特种兵战术_chargeSpeed=99;init.特种兵战术_chargePower=1.1;
             }
-            if(mode=="noSmoke")init.特种兵烟雾弹=false;
+            if(mode=="noSmoke" || mode=="run")init.特种兵烟雾弹=false;
             if(mode=="evasionDisabled")init.特种兵避弹=false;
             var unit:MovieClip=library.attachMovie(name,"tacticalCase"+tactics.length,library.getNextHighestDepth(),init);
             check(unit!=null,"attach R9 "+mode+" "+side);
@@ -1653,13 +1578,13 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             if(afterCharge){
                 check(c.closePrepared && c.chargeOwner.age>=config.chargeWindupFrames+config.chargeActiveFrames+config.chargeRecoveryFrames
                     && !c.chargeOwner.active,"close follow-up preserves complete charge recovery "+label);
-                check(c.chargeDoneClock!=undefined && u.soldierClock-c.chargeDoneClock<=4
+                check(c.chargeDoneClock!=undefined && u.soldierClock-c.chargeDoneClock<=5
                     && u.soldierClock<u.soldierNextShootAt,"first AI decision can melee during charge shooting cooldown "+label);
             }
         }
-        // The instructor's authored bash now occupies 59 frames, 25 longer than the old branch.
+        // Authored shield charge is 84 frames and authored bash is 59 frames.
         var shieldSequence:Boolean=c.mode.indexOf("instructorShield")==0;
-        if(ticks==(shieldSequence?345:320)){
+        if(ticks==(shieldSequence?345:365)){
             if(c.mode.indexOf("instructorShield")==0){
                 trace("[CF6_INSTRUCTOR_SEQUENCE] "+label+" "+rec.sequence.join(",")+" bashes="+rec.bashes+" stabs="+rec.stabs+" done="+rec.done+" shots="+rec.shots);
                 check(rec.bashes==1 && rec.stabs==1 && rec.done==2 && rec.shots==0,
@@ -1692,14 +1617,21 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 check(u.soldierTacticalConfigErrors==(c.mode=="overrides"?1:0),"spawn configuration validated "+label);
                 check(u.soldierTacticalConfig.chargeSpeed==1.25,"invalid overrides cannot leak to other units "+label);
                 if(c.mode=="overrides")check(u.soldierTacticalConfig.chargePower==1.1,"valid scalar override retained "+label);
-                if(c.mode.indexOf("smoke")==0 || c.mode=="noSmoke"){
-                    target.动作A=true;target.攻击模式="长枪";
-                    check(u.soldierChooseAttack(400,0,0)=="shoot" && u.eliteNextAction=="run","regular run fire does not require smoke "+label);
-                    u.手枪.value.shot=u.手枪弹匣容量;u.手枪2.value.shot=u.手枪2弹匣容量;
-                    u.eliteNextAction="retreat";u.状态改变("长枪攻击");u.eliteBeginReload(u.man,"手枪");
+                if(c.mode=="smoke"){
+                    check(u.soldierChooseAttack(400,0,0)=="shoot" && u.eliteNextAction=="slide",
+                        "ready cooldown selects authored charge slide directly without smoke reload "+label);
                     c.slideZ=u.Z轴坐标;
-                    if(c.mode=="smoke")c.target._y=c.target.Z轴坐标=u.Z轴坐标+sign*48;
-                    if(c.mode=="smokeNoRifle")u.长枪.value.shot=u.长枪弹匣容量;
+                    c.target._y=c.target.Z轴坐标=u.Z轴坐标+sign*48;
+                    u.状态改变("长枪攻击");
+                }else if(c.mode=="noSmoke"){
+                    check(u.soldierChooseAttack(400,0,0)=="shoot" && u.eliteNextAction=="run",
+                        "disabled slide option falls back to regular running fire "+label);
+                    u.状态改变("长枪攻击");
+                }else if(c.mode=="smokeNoRifle"){
+                    u.长枪.value.shot=u.长枪弹匣容量;
+                    check(u.soldierChooseAttack(400,0,0)=="shoot" && u.eliteNextAction=="run",
+                        "empty rifle does not enter charge slide and reloads standing "+label);
+                    u.状态改变("长枪攻击");
                 }else if(c.mode=="retreatBlocked"){
                     u.eliteNextAction="retreat";u.状态改变("长枪攻击");
                 }else if(c.mode.indexOf("instructorShield")==0 || c.mode.indexOf("instructorCharge")==0){
@@ -1715,7 +1647,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 }else if(c.mode.indexOf("evasion")==0){
                     u._btFrame=_root.帧计时器.当前帧数-(c.mode=="evasionStale"?5:0);u._btCount=2;u._btMinETA=6;
                     var shouldEvade:Boolean=c.mode=="evasion" || c.mode=="evasionBlocked";
-                    check(u.soldierChooseAttack(400,0,0)=="shoot" && u.eliteNextAction==(shouldEvade?"retreat":"run"),
+                    check(u.soldierChooseAttack(400,0,0)=="shoot" && (shouldEvade?u.eliteNextAction=="retreat":u.eliteNextAction!="retreat"),
                         "existing bullet warning selects only enabled fresh reactive withdrawal "+label);
                     if(c.mode=="evasionBlocked"){
                         u.soldierPendingEvasion.zSign=-1;u.fixtureOriginalMove=u.移动;
@@ -1740,6 +1672,29 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     check(u.soldierSelectStrategy(100,0)=="mobile","pressure and close range release mobile strategy "+label);
                     check(u.长枪===c.weapon && u.手枪2===c.offhand && u.长枪.value.shot==2
                         && u.version===c.version && u.soldierNextGrenadeAt==777,"strategy switch preserves equipment ammo and cooldown authority "+label);
+                    // Tempo rotation checks (restore state before executing the close mobile attack below).
+                    var savedRecent:Number=u.soldierRecentDamageUntil;
+                    u.soldierRecentDamageUntil=0;u.soldierStrategyUntil=0;u.soldierLineVolleys=1;u.soldierMobileVolleys=0;
+                    check(u.soldierChooseAttack(400,0,0)=="shoot" && u.soldierStrategy=="mobile" && u.eliteNextAction=="slide",
+                        "adaptive instructor rotates into authored slide after a positional volley "+label);
+                    u.soldierStrategyUntil=0;u.soldierSmokeNextAt=u.soldierClock+60;
+                    check(u.soldierChooseAttack(400,0,0)=="shoot" && u.soldierStrategy=="mobile" && u.eliteNextAction=="run",
+                        "adaptive instructor falls back to running fire during slide cooldown "+label);
+                    u.soldierStrategyUntil=0;u.soldierSmokeNextAt=0;
+                    check(u.soldierChooseAttack(200,0,0)=="shoot" && u.soldierStrategy=="mobile" && u.eliteNextAction=="retreat",
+                        "adaptive instructor rotates into dual-pistol retreat at close-mid range "+label);
+                    u.soldierPhase=1;u.soldierStrategyUntil=0;u.soldierLineVolleys=0;u.soldierMobileVolleys=0;
+                    check(u.soldierChooseAttack(360,0,0)=="shoot" && u.soldierStrategy=="line" && u.soldierShieldCoverFire===true,
+                        "shielded adaptive instructor opens with cover fire "+label);
+                    u.soldierStrategyUntil=0;u.soldierLineVolleys=1;u.soldierMobileVolleys=0;
+                    check(u.soldierChooseAttack(360,0,0)=="shoot" && u.soldierStrategy=="mobile" && u.soldierShieldCoverFire===false,
+                        "shielded adaptive instructor rotates into shield charge after cover fire "+label);
+                    u.soldierPhase=2;u.soldierShieldCoverFire=false;
+                    u.soldierStrategyUntil=0;u.soldierLineVolleys=0;u.soldierMobileVolleys=1;u.soldierSmokeNextAt=0;
+                    check(u.soldierSelectStrategy(400,0)=="line",
+                        "adaptive instructor re-establishes positional fire after a mobile maneuver "+label);
+                    u.soldierLineVolleys=0;u.soldierMobileVolleys=0;u.soldierRecentDamageUntil=savedRecent;u.soldierStrategyUntil=0;
+                    check(u.soldierSelectStrategy(100,0)=="mobile","restored pressure and close range stay mobile "+label);
                     target._x=u._x+sign*180;
                     u.soldierChooseAttack(180,0,0);u.状态改变("长枪攻击");
                 }else{
@@ -1751,85 +1706,80 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     check(u.名字.indexOf("教官")>=0,"instructor identity survives phase initialization "+label);
                 }
             }
-            if(ticks>190 && (c.mode.indexOf("smoke")==0 || c.mode=="noSmoke") && !c.forcedReload
-                && u.soldierAttackOwner.elite && !u.soldierAttackOwner.reload){
-                c.forcedReload=true;u.eliteBeginReload(u.man,"手枪");
-            }
-            if(ticks>190 && ticks<250 && (c.mode=="chargeNear" || c.mode=="chargeTurn")){
+            if(ticks>190 && ticks<290 && (c.mode=="chargeNear" || c.mode=="chargeTurn" || c.mode=="chargeBlocked")){
                 if(c.mode=="chargeNear"){
+                    var cf:Number=u.soldierAttackOwner.charge?u.man._currentframe:0;
                     check((u._x-c.x)*sign>=((c.previousChargeX==undefined?c.x:c.previousChargeX)-c.x)*sign,
                         "default charge never reverses its travelled direction "+label);
-                    c.previousChargeX=u._x;
+                    if(!_root.暂停 && c.previousChargeX!=undefined){
+                        if(cf>=45 && cf<60 && c.previousChargeFrame>=45 && c.previousChargeFrame<60)
+                            c.blurBrakeDelta=(c.blurBrakeDelta || 0)+Math.abs(u._x-c.previousChargeX);
+                        if(cf>=60 && cf<=84 && c.previousChargeFrame>=60 && c.previousChargeFrame<=84)
+                            check(Math.abs(u._x-c.previousChargeX)<0.01,"charge skid brace f60-84 stays stationary after blur ends "+label);
+                    }
+                    c.previousChargeX=u._x;c.previousChargeFrame=cf;
                 }
-                c.furthest=Math.max(c.furthest==undefined?0:c.furthest,(u._x-c.x)*sign);
-                if(ticks==205 && c.side==1){u.硬直中=true;u.状态改变("被击");}
-                if(ticks==210 && c.side==1)u.硬直中=false;
+                if(c.mode=="chargeBlocked" && u.soldierAttackOwner.charge && u.soldierAttackOwner.chargeBlocked===true){
+                    c.blockedClearSeen=true;
+                    check(u.man._currentframe>=60,"blocked charge skips blurred f45-59 straight to clear skid brace "+label);
+                }
+                if(c.mode!="chargeBlocked"){
+                    c.furthest=Math.max(c.furthest==undefined?0:c.furthest,(u._x-c.x)*sign);
+                    if(ticks==218 && c.side==1){u.硬直中=true;u.状态改变("被击");}
+                    if(ticks==223 && c.side==1)u.硬直中=false;
+                }
             }
-            if(ticks==200 && c.mode=="smokeTargetGone")c.target.hp=0;
-            if(ticks==200 && c.mode=="smokeOutside")c.target._x=u._x+sign*1200;
-            if(ticks==210 && c.mode=="retreatBlocked")u.移动=function():Void {};
-            if(ticks==200 && c.mode=="smokeCancel"){
-                c.oldBody=u.man;u.状态改变("被击");u.man.gotoAndPlay("a0");u.eliteReloadEnd(c.oldBody);
-            }
+            if(ticks==214 && c.mode=="retreatBlocked")u.移动=function():Void {};
             if(ticks>190 && rec.done>0 && c.doneTick==undefined)c.doneTick=ticks;
             var active:Object=u.soldierAttackOwner;
-            if(active!=null && c.mode.indexOf("smoke")==0){
-                if(active.reload){
-                    check(u._x==c.x && u.Z轴坐标==c.z,"concealed reload uses a planted pose "+label);
-                    c.reloadOwner=active;c.reloadFrame=ticks;
-                }else if(c.mode=="smoke" && active.kind=="slide" && c.slideStart==undefined){
-                    c.slideStart=ticks;
-                    trace("[R12_SMOKE_TRANSITION] "+label+" tick="+ticks+" reloadTick="+c.reloadFrame
-                        +" start="+active.startedAt+" complete="+c.reloadOwner.completedAt+" first="+active.first+" actual="+u.man._currentframe);
-                    check(active!==c.reloadOwner && c.reloadOwner.completed && !c.reloadOwner.active,
-                        "smoke hands ownership directly to a fresh slide token "+label);
-                    check(active.startedAt==c.reloadOwner.completedAt && active.first==212 && u.man._currentframe>=212 && u.man._currentframe<=214,
-                        "smoke enters low slide without run frame or idle gap "+label);
-                    check(c.reloadOwner.smokeCloud.sourceOwner===active && c.reloadOwner.smokeCloud.coverSlideFrames==6,
-                        "same smoke cloud covers the slide windup handoff "+label);
-                    check(u.手枪.value.shot==0 && u.手枪2.value.shot==0 && u.soldierReloadCount==1,
-                        "both pistol commits finish before immediate slide "+label);
-                }
-            }
             if(active!=null && !active.reload && (active.kind=="retreat" || active.kind=="run")){
-                if(c.motionOwner===active && c.motionFrame!=active.logicalFrame && !_root.暂停
-                    && active.logicalFrame>9 && active.logicalFrame!=166 && ticks!=210){
+                var inMove:Boolean=active.kind=="retreat"?(active.logicalFrame>17 && active.logicalFrame<=67):(active.logicalFrame>96 && active.logicalFrame<=129);
+                if(c.motionOwner===active && c.motionFrame!=active.logicalFrame && !_root.暂停 && inMove && ticks!=214){
                     check(Math.abs(u._x-c.motionX)+Math.abs(u.Z轴坐标-c.motionZ)>0.1,
                         "advancing running frames have real displacement "+label+"/"+active.logicalFrame);
                     check(u.方向==(active.faceSign>0?"右":"左"),"committed motion preserves its facing "+label);
                 }
                 c.motionOwner=active;c.motionFrame=active.logicalFrame;c.motionX=u._x;c.motionZ=u.Z轴坐标;
             }
-            if(c.mode=="smoke" && c.slideStart!=undefined && ticks==c.slideStart+15){
+            if(c.mode=="smoke" && ticks==215){
                 c.frozenZ=u.Z轴坐标;c.target._y=c.target.Z轴坐标=u.Z轴坐标-sign*96;
             }
-            if(ticks==260){
-                if(c.mode=="smoke" || c.mode=="noSmoke"){
-                    check(u.手枪.value.shot==0 && u.手枪2.value.shot==0 && u.soldierReloadCount==1,
-                        "smoke movement retains one standard dual reload commit "+label);
-                    check(u.soldierTacticalStats.smokes==(c.mode=="smoke"?1:0)
-                        && u.soldierTacticalStats.smokeReloads==(c.mode=="smoke"?1:0),"configured smoke capability is respected "+label);
-                    if(c.mode=="smoke")check(c.slideStart!=undefined && u.soldierTacticalStats.slideExits==1
-                        && u.soldierSlidePermit==null && Math.abs(u._x-c.x)>0,"successful reload immediately slides "+label);
-                    else check(u.soldierSlidePermit==null && u._x==c.x && u.soldierTacticalStats.slideExits==0,"disabled smoke grants no exit "+label);
-                }else if(c.mode=="smokeCancel"){
-                    check(u.手枪.value.shot==6 && u.手枪2.value.shot==6 && u.soldierSlidePermit==null
-                        && u.soldierTacticalStats.smokeReloads==0,"interrupted reload cannot refill or grant exit "+label);
+            var tacticalCheckTick:Number=(c.mode=="chargeNear" || c.mode=="chargeTurn" || c.mode=="chargeBlocked" || c.mode=="smoke" || c.mode=="evasion" || c.mode=="evasionBlocked" || c.mode=="instructorMobile" || c.mode=="instructorAdaptive")?295:260;
+            if(ticks==tacticalCheckTick){
+                if(c.mode=="smoke"){
+                    check(u.soldierTacticalStats.slideExits==1 && Math.abs(u._x-c.x)>200 && u.soldierAttackOwner==null,
+                        "cooldown-gated charge slide executes and finishes cleanly "+label);
+                    check((c.frozenZ-c.slideZ)*sign>0 && Math.abs(c.frozenZ-c.slideZ)<=u.soldierTacticalConfig.slideZBudget,
+                        "slide front segment tracks Z within its total budget "+label);
+                    check(u.Z轴坐标==c.frozenZ,"late target reversal cannot bend the slide "+label);
+                    u.soldierNextShootAt=0;u.soldierReadyAt=0;
+                    // On slide cooldown, regular running fire is selected instead of repeating slide.
+                    u.soldierSmokeNextAt=u.soldierClock+60;
+                    check(u.soldierChooseAttack(400,0,0)=="shoot" && u.eliteNextAction=="run",
+                        "slide cooldown throttles charge slide into regular running fire "+label);
+                }else if(c.mode=="noSmoke"){
+                    check(u.soldierTacticalStats.slideExits==0 && rec.shots>0,"disabled slide never executes slide "+label);
+                }else if(c.mode=="smokeNoRifle"){
+                    check(u.soldierTacticalStats.slideExits==0 && u.长枪.value.shot==0 && u.soldierReloadCount==1,
+                        "empty rifle reloads standing instead of sliding "+label);
                 }else if(c.mode=="chargeNear" || c.mode=="chargeTurn"){
                     check(rec.contacts==1 && u.soldierTacticalStats.chargeContacts==1,"one real collision payload per close charge "+label);
                     check(rec.contactData.水平击退速度==10 && rec.contactData.子弹威力==125 && rec.contactData.斩杀==0,
                         "charge has configured knockback without knife execution "+label);
                     check(rec.contactAreaWasLive && rec.contactData.发射者==u._name,"charge emits a world-fixed live area and shooter "+label);
-                    check(c.furthest>150 && c.doneTick>=235 && rec.shots>=6,
+                    check(c.furthest>150 && c.doneTick>=270 && rec.shots>=6,
                         "contact does not stop passage or consume the remaining firing window "+label);
                     check(u.soldierTacticalStats.chargeTurns==(c.mode=="chargeTurn"?1:0),"turning requires an explicit external override "+label);
-                    if(c.mode=="chargeNear")check((u._x-c.target._x)*sign>u.soldierTuning.knifeRange
-                        && Math.abs((u._x-c.x)*sign-c.furthest)<0.01,"straight charge leaves usable firing distance "+label);
+                    if(c.mode=="chargeNear"){
+                        check((u._x-c.target._x)*sign>u.soldierTuning.knifeRange
+                            && Math.abs((u._x-c.x)*sign-c.furthest)<0.01,"straight charge leaves usable firing distance "+label);
+                        check(c.blurBrakeDelta>25,"charge continues decelerating across blurred f45-59 before stopping at f60 "+label);
+                    }
                 }else if(c.mode=="chargeBlocked"){
                     check(u._x==c.x && rec.contacts==0 && u.soldierTacticalStats.blockedMoves==1
-                        && c.doneTick<230,"wall blockage ends charge early without phantom contact "+label);
+                        && c.doneTick<265 && c.blockedClearSeen,"wall blockage ends charge early without phantom contact "+label);
                 }else if(c.mode.indexOf("instructorShield")==0 || c.mode.indexOf("instructorCharge")==0){
-                    // These cases continue through their real melee timelines to tick 320.
+                    // These cases continue through their real melee timelines.
                 }else if(c.mode=="modernLine" || c.mode=="instructorLine" || c.mode=="instructorBareLine"){
                     check(rec.shots==6 && rec.powerOk && rec.muzzleOk,"six standard positional shots with unchanged weapon power "+label);
                     if(c.mode=="instructorLine")check(u._x==c.x && u.soldierChargeCount==0,"instructor line policy does not masquerade as a charge "+label);
@@ -1845,34 +1795,22 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     }else check(u.Z轴坐标==c.z,"disabled or stale threat cannot cause drift "+label);
                 }else if(c.mode=="overrides")check(rec.shots==2,"external tactical override changes real emission budget "+label);
                 else if(c.mode=="run")check(rec.shots>0 && u.eliteMoveDistance>0 && u.soldierTacticalStats.smokes==0,"ordinary selection executes moving rifle fire "+label);
-                else if(c.mode=="retreatBlocked")check(c.doneTick<=212 && u.soldierAttackOwner==null,"blocked backstep exits moving pose immediately "+label);
-                else if(c.mode.indexOf("smoke")==0)check(u.soldierTacticalStats.slideExits==0 && u.soldierSlidePermit==null
-                    && u.手枪.value.shot==0 && u.手枪2.value.shot==0,"invalid exit target or empty rifle cannot start a slide "+label);
-                else check(rec.sidearmShots>0 && rec.powerOk && rec.muzzleOk,"instructor mobile strategy uses standard independent pistols "+label);
+                else if(c.mode=="retreatBlocked")check(c.doneTick<=216 && u.soldierAttackOwner==null,"blocked backstep exits moving pose immediately "+label);
+                else check(rec.shots==4 && rec.sidearmShots==4 && rec.powerOk && rec.muzzleOk,"instructor mobile strategy fires all 4+4 shots from both independent pistols "+label);
             }
 
             if(ticks>=190 && (c.mode.indexOf("instructorShield")==0 || c.mode.indexOf("instructorCharge")==0))instructorCloseTick(c);
             if(_root.soldierCloseCombatCapture===true && c.side==0 && ticks>=190 && ticks%2==0
-                && ((c.mode=="chargeNear" && ticks<=250)
-                    || (c.mode=="instructorShieldClose" && ticks<=345) || (c.mode=="instructorChargeClose" && ticks<=320)))
+                && ((c.mode=="chargeNear" && ticks<=285)
+                    || (c.mode=="instructorShieldClose" && ticks<=345) || (c.mode=="instructorChargeClose" && ticks<=365)))
                 captureTacticalScene(c,"r13scene-"+c.mode+"-"+ticks);
-            if(_root.soldierTacticalCapture===true && _root.soldierTacticalSceneCapture!==false && c.mode=="smoke" && c.side==0 && ticks>=190 && ticks<=360 && ticks%2==0)
+            if(_root.soldierTacticalCapture===true && _root.soldierTacticalSceneCapture!==false && c.mode=="smoke" && c.side==0 && ticks>=190 && ticks<=300 && ticks%2==0)
                 captureTacticalScene(c,"r9scene-smoke-"+ticks);
-            if(_root.soldierChargeEvasionCapture===true && c.side==0 && (c.mode=="chargeNear" || c.mode=="evasion") && ticks>=190 && ticks<=270 && ticks%2==0)
+            if(_root.soldierChargeEvasionCapture===true && c.side==0 && (c.mode=="chargeNear" || c.mode=="evasion") && ticks>=190 && ticks<=285 && ticks%2==0)
                 captureTacticalScene(c,"r10scene-"+c.mode+"-"+ticks);
-            if(_root.soldierMotionCapture===true && _root.soldierCloseCombatCapture!==true && c.side==0 && ticks>=190 && ticks<=278 && ticks%2==0
+            if(_root.soldierMotionCapture===true && _root.soldierCloseCombatCapture!==true && c.side==0 && ticks>=190 && ticks<=285 && ticks%2==0
                 && (c.mode=="smoke" || c.mode=="instructorLine" || c.mode=="instructorBareLine" || c.mode=="run" || c.mode=="evasion" || c.mode=="retreatBlocked"))
                 captureTacticalScene(c,"r12scene-"+c.mode+"-"+ticks);
-            if(ticks==400 && c.mode=="smoke"){
-                check(u.soldierTacticalStats.slideExits==1 && u.soldierSlidePermit==null,"smoke exit cannot repeat itself "+label);
-                check((c.frozenZ-c.slideZ)*sign>0 && Math.abs(c.frozenZ-c.slideZ)<=u.soldierTacticalConfig.slideZBudget,
-                    "slide front segment tracks Z within its total budget "+label);
-                check(u.Z轴坐标==c.frozenZ,"late target reversal cannot bend the slide "+label);
-                u.攻击目标=c.target._name;u.soldierNextShootAt=0;u.soldierReadyAt=0;
-                check(u.soldierChooseAttack(400,0,0)=="shoot" && u.eliteNextAction=="run",
-                    "running fire remains available without another smoke reload "+label);
-                u.攻击目标="无";
-            }
         }
     }
 
@@ -2002,18 +1940,20 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         reviewQueue=[];
         var specs:Array=[
             ["ordinary-run",0,20,1,24,2],["elite-run",1,20,1,24,2],
-            ["ordinary-throw",0,121,1,36,2],["ordinary-bash",0,191,35,68,1],
+            ["ordinary-throw",0,121,1,36,2],["ordinary-bash",0,191,35,93,1],
             ["ordinary-stab",0,191,1,34,1],["shield-cover",0,195,1,20,1],
-            ["elite-charge",1,181,1,46,1],["elite-pair",1,42,331,365,2],
+            ["ordinary-move-shoot",0,42,50,70,2],["shield-move-shoot",0,181,50,70,1],
+            ["elite-charge",1,181,1,84,1],["elite-reload",1,42,182,216,2],
             ["death-new",0,105,105,139,2],["shield-break",0,203,1,11,0]];
         if(_root.soldierTacticalCapture===true)specs=[
             ["ordinary-run",0,20,1,24,2],["ordinary-throw",0,121,1,36,2],
-            ["ordinary-bash",0,191,35,68,1],["ordinary-stab",0,191,1,34,1],["shield-cover",0,195,1,20,1],
-            ["elite-charge",1,181,1,46,1],["elite-reload",1,42,331,365,2],
-            ["elite-retreat",1,42,2,44,2],["elite-slide",1,42,166,248,2],
+            ["ordinary-bash",0,191,35,93,1],["ordinary-stab",0,191,1,34,1],["shield-cover",0,195,1,20,1],
+            ["ordinary-move-shoot",0,42,50,70,2],["shield-move-shoot",0,181,50,70,1],
+            ["elite-charge",1,181,1,84,1],["elite-reload",1,42,182,216,2],
+            ["elite-retreat",1,42,1,89,2],["elite-slide",1,42,90,180,2],
             ["instructor-run",2,20,1,24,2],["instructor-throw",2,121,1,36,2],
-            ["instructor-bash",2,191,35,93,1],["instructor-charge",2,181,1,46,1],
-            ["instructor-retreat",2,42,2,44,2]];
+            ["instructor-bash",2,191,35,93,1],["instructor-charge",2,181,1,84,1],
+            ["instructor-retreat",2,42,1,89,2],["instructor-slide",2,42,90,180,2]];
         for(var j:Number=0;j<specs.length;j++){
             var spec:Array=specs[j];
             for(var f:Number=spec[3];f<=spec[4];f++)reviewQueue.push({key:spec[0],actor:spec[1],rootFrame:spec[2],frame:f,phase:spec[5]});
@@ -2061,10 +2001,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             addCompletionCase("default",links[a],guns[g],side);
         }
         var modes:Array=["disabled","interrupt","dead","stale","replaced","lane","close","guard","cooldown","noSub",
-            "reloadLinked","reloadCancel","pistolReload","emptyEvade","blockedEvade","stationary","handoff","slidePass","slideBlocked","slideClose","slideDry","slideStalled","slideBlockedHard","slideTrapped","instructorClose","instructorAmmo"];
+            "reloadLinked","reloadCancel","pistolReload","emptyEvade","blockedEvade","stationary","handoff","slidePass","slideBlocked","slideClose","slideDry","slideStalled","slideBlockedHard","slideTrapped","instructorClose","instructorAmmo","retreatXBlocked"];
         for(var m:Number=0;m<modes.length;m++)for(var side2:Number=0;side2<2;side2++){
             var mode:String=modes[m];
-            addCompletionCase(mode,mode=="instructorClose" || mode=="instructorAmmo"?"敌人-CF6特种教官":
+            addCompletionCase(mode,mode=="instructorClose" || mode=="instructorAmmo" || mode=="retreatXBlocked"?"敌人-CF6特种教官":
                 mode=="pistolReload" || mode=="emptyEvade" || mode=="blockedEvade" || mode=="stationary" || mode=="handoff" || mode.indexOf("slide")==0?"敌人-CF6特种精英":"敌人-CF6特种兵",
                 mode=="noSub"?"AK47":"M4A1战术版",side2);
         }
@@ -2103,8 +2043,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     target._x=u._x+sign*400;check(u.soldierChooseAttack(400,0,0)=="shoot" && u.eliteNextAction=="run","far band starts run "+label);
                 }else if(mode.indexOf("slide")==0){
                     target._x=u._x+sign*(mode=="slideClose"?40:430);
-                    check(u.soldierCanSlideExit(target),"smoke slide remains available at its real entry distance "+label);
-                    u.eliteNextAction="slide";u.soldierPendingSlide=true;
+                    check(u.soldierCanSlideExit(target),"authored slide remains available at its real entry distance "+label);
+                    u.eliteNextAction="slide";
                     if(mode=="slideDry")u.长枪.value.shot=u.长枪弹匣容量-1;
                     if(mode=="slideBlocked" || mode=="slideBlockedHard"){
                         u.fixtureOriginalMove=u.移动;
@@ -2124,9 +2064,19 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     u.soldierStrategy="mobile";u.soldierStrategyUntil=9999;target._x=u._x+sign*60;
                     check(u.soldierChooseAttack(60,0,0)=="knife","mobile instructor retains point blank knife "+label);
                 }else if(mode=="instructorAmmo"){
-                    u.手枪.value.shot=u.手枪弹匣容量;u.手枪2.value.shot=u.手枪2弹匣容量;u.soldierStrategyUntil=0;
-                    check(u.soldierSelectStrategy(160,0)=="line","loaded rifle wins over empty pistols at medium-close range "+label);
+                    u.soldierStrategyUntil=0;
+                    check(u.soldierSelectStrategy(180,0)=="line","loaded rifle selects line strategy at medium range "+label);
+                    u.长枪.value.shot=u.长枪弹匣容量;u.soldierStrategyUntil=0;
+                    check(u.soldierSelectStrategy(180,0)=="mobile","empty rifle prefers mobile strategy "+label);
+                    u.长枪.value.shot=0;
                     u.eliteNextAction="line";
+                }else if(mode=="retreatXBlocked"){
+                    target._x=u._x+sign*180;
+                    u.fixtureOriginalMove=u.移动;
+                    u.移动=function(direction:String,speed:Number):Void {
+                        if(direction=="上" || direction=="下")this.fixtureOriginalMove.call(this,direction,speed);
+                    };
+                    u.eliteNextAction="retreat";
                 }else u.eliteNextAction="stand";
                 if(mode=="reloadLinked" || mode=="reloadCancel" || mode=="pistolReload"){
                     LongGunSubWeaponCore.setFiredCount(u,1);
@@ -2159,12 +2109,12 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 c.handoff=true;
                 check(owner.kind=="stand" && u.standardShotMoving!==true,"stopped motion uses stationary controller "+label);
             }
-            if((mode=="slidePass" || mode=="slideClose" || mode=="slideDry") && owner.kind=="slide" && owner.logicalFrame>212
-                && owner.logicalFrame<=228 && c.motionFrame!=undefined && owner.logicalFrame!=c.motionFrame && !_root.暂停){
+            if((mode=="slidePass" || mode=="slideClose" || mode=="slideDry") && owner.kind=="slide" && owner.logicalFrame>96
+                && owner.logicalFrame<=165 && c.motionFrame!=undefined && owner.logicalFrame!=c.motionFrame && !_root.暂停){
                 check(Math.abs(u._x-c.motionX)+Math.abs(u.Z轴坐标-c.motionZ)>0.1,"every advancing slide pose has actual movement "+label);
             }
             if(mode.indexOf("slide")==0 && owner.kind=="slide"){
-                check(u.方向==(sign>0?"右":"左"),"sliding body holds entry facing until it stops "+label);
+                if(owner.logicalFrame<=165)check(u.方向==(sign>0?"右":"左"),"sliding body holds entry facing until stand-up recovery "+label);
                 if((u._x-c.target._x)*sign>0)c.crossed=true;
                 if(mode=="slideDry" && u.长枪.value.shot>=u.长枪弹匣容量){
                     check(!owner.reload,"empty rifle cannot freeze the active slide into reload "+label);
@@ -2175,18 +2125,14 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 c.slideReloadObserved=true;
                 check(c.crossed && Math.abs(u._x-c.startX)>500,"slide completes traversal before rifle reload "+label);
             }
-            if(mode=="slideStalled" && ticks>=194 && ticks<=198 && owner.kind=="slide")u._x=c.startX;
-            if(mode=="slideStalled" && u.soldierPendingEvasion.reason=="slide_stalled")c.stallQueued=true;
-            if(mode=="slideTrapped" && ticks==195){
+            if(mode=="slideStalled" && ticks>=198 && ticks<=203 && owner.kind=="slide")u._x=c.startX;
+            if(mode=="slideStalled" && u.soldierPendingEvasion.reason=="slide_stalled"){c.stallQueued=true;c.stallNoFire=u.soldierPendingEvasion.noFire;}
+            if(mode=="slideTrapped" && ticks==200){
                 u.攻击目标=c.target._name;
                 check(u.soldierTryEvasion(430,0),"blocked slide queues a bounded movement-only escape "+label);
                 u.状态改变("长枪攻击");
             }
             c.motionFrame=owner.logicalFrame;c.motionX=u._x;c.motionZ=u.Z轴坐标;
-            if(mode=="emptyEvade" && owner.reload && !c.reloadObserved){
-                c.reloadObserved=true;c.travelBeforeReload=Math.abs(u._x-c.startX)+Math.abs(u.Z轴坐标-c.startZ);
-                check(c.travelBeforeReload>100 && u.soldierTacticalStats.evasions==1,"both empty hands withdraw before reload "+label);
-            }
             if(ticks==400){
                 if(mode=="default"){
                     check(rec.subshots==1 && u.soldierSubweaponShots==1,"default rifle fires exactly one secondary "+label+" got="+rec.subshots);
@@ -2195,15 +2141,15 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 }else if(mode=="reloadLinked")check(u.长枪.value.shot==0 && u.soldierSubweaponReloads==1
                     && LongGunSubWeaponCore.getFiredCount(u)==0,"real primary commit refills secondary once "+label);
                 else if(mode=="reloadCancel" || mode=="pistolReload")check(LongGunSubWeaponCore.getFiredCount(u)==1
-                    && u.soldierSubweaponReloads==0,"cancel or pistol reload cannot refill secondary "+label);
-                else if(mode=="emptyEvade")check(c.reloadObserved && u.手枪.value.shot==0 && u.手枪2.value.shot==0
-                    && u.soldierReloadCount==1,"empty withdrawal completes one real dual reload "+label);
+                    && u.soldierSubweaponReloads==0,"cancel or inert pistol reload cannot refill secondary "+label);
+                else if(mode=="emptyEvade")check(u.soldierTacticalStats.evasions==1 && u.soldierReloadCount==0 && rec.shots>0,
+                    "empty withdrawal maintains pistols silently without pistol reload "+label);
                 else if(mode=="blockedEvade")check(u._x==c.startX && u.Z轴坐标==c.startZ && u.soldierTacticalStats.evasions==0
                     && u.soldierNextEvasionAt==0 && u.soldierNextEvasionAttemptAt>200,"blocked attempt spends only retry delay "+label);
                 else if(mode=="stationary")check(u.eliteMoveDistance==0 && rec.shots>0 && u.soldierTacticalStats.evasions==0,"stationary baseline retains fire "+label);
                 else if(mode=="handoff")check(c.handoff && rec.shots>0 && rec.shots<=8
                     && Math.abs(Math.abs(c.target._x-u._x)-280)<0.2,"run hands same shot budget to stand at 280px "+label);
-                else if(mode=="slidePass" || mode=="slideClose")check(c.handoff && c.crossed && rec.shots>0 && rec.shots<=5
+                else if(mode=="slidePass" || mode=="slideClose")check(c.crossed && rec.shots>0 && rec.shots<=5
                     && (u._x-c.target._x)*sign>130 && (u._x-c.target._x)*sign<150,
                     "slide crosses target and ends beyond it without extra fire budget "+label);
                 else if(mode=="slideBlocked" || mode=="slideBlockedHard")check(u._x==c.startX
@@ -2212,13 +2158,16 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     "wall blockage releases slide and leaves the lane without bonus shots "+label);
                 else if(mode=="slideDry")check(c.dryMotion && c.crossed && c.slideReloadObserved && u.soldierReloadCount==1
                     && u.长枪.value.shot==0,"mid-slide empty rifle defers exactly one reload until safe traversal "+label);
-                else if(mode=="slideStalled")check(c.stallQueued && u.soldierTacticalStats.slideStalls==1 && u.soldierAttackOwner==null,
-                    "opposing displacement cannot hold an advancing slide pose indefinitely "+label);
+                else if(mode=="slideStalled")check(c.stallQueued && c.stallNoFire===false && u.soldierTacticalStats.slideStalls==1 && u.soldierAttackOwner==null,
+                    "opposing displacement releases stalled slide into live-fire dual retreat "+label);
                 else if(mode=="slideTrapped")check(u._x==c.startX && u.Z轴坐标==c.startZ && u.soldierTacticalStats.wallEscapes==0
                     && u.soldierNextEvasionAt==0 && rec.shots==0 && rec.sidearmShots==0 && u.soldierAttackOwner==null,
                     "fully trapped escape respects collision and spends no full evasion cooldown "+label);
                 else if(mode=="instructorClose")check(rec.stabs==1,"mobile instructor executes native knife "+label);
                 else if(mode=="instructorAmmo")check(rec.shots>0 && rec.sidearmShots==0,"ammo-aware instructor fires loaded rifle "+label);
+                else if(mode=="retreatXBlocked")check(u._x==c.startX && Math.abs(u.Z轴坐标-c.startZ)>24
+                    && rec.shots==4 && rec.sidearmShots==4 && u.soldierAttackOwner==null,
+                    "wall-blocked retreat sidesteps Z and fires all 4+4 dual-pistol shots "+label);
                 else check(rec.subshots==0,"secondary rejects invalid or disabled context "+label+" got="+rec.subshots);
                 trace("[CF6_COMPLETION] "+label+" primary="+rec.shots+" sub="+rec.subshots+" moved="+Math.abs(u._x-c.startX)
                     +" evasions="+u.soldierTacticalStats.evasions+" reload="+u.soldierReloadCount);
@@ -2226,7 +2175,84 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         }
         if(ticks==400)check(_root.cf6InventoryReads==0 && _root.cf6InventoryWrites==0,"NPC fixture has zero player inventory reads/writes");
     }
+    private static function beginInstructorAudio():Void {
+        var deathSounds:Array=["CF6_1123.mp3","CF6_1137.mp3","CF6_1146.mp3","CF6_1151.mp3","CF6_1154.mp3","CF6_1157.mp3"];
+        var voiceSounds:Array=["CF6_1121.mp3","CF6_1135.mp3","CF6_1144.mp3"];
+        instructorAudioQueue=[
+            {name:"knife",link:"敌人-CF6特种教官",rootFrame:38,frame:14,quiet:2,once:false,sounds:["CF6_0513.mp3"]},
+            {name:"shieldKnife",link:"敌人-CF6持盾特种教官",rootFrame:191,frame:14,quiet:2,once:false,sounds:["CF6_0513.mp3"]},
+            {name:"shieldBreak",link:"敌人-CF6持盾特种教官",rootFrame:203,frame:2,quiet:3,once:false,sounds:["CF6_0576.mp3"]},
+            {name:"thrown",link:"敌人-CF6特种教官",rootFrame:96,frame:2,quiet:3,once:false,sounds:voiceSounds},
+            {name:"knockdown",link:"敌人-CF6特种教官",rootFrame:80,frame:1,quiet:2,once:false,sounds:voiceSounds},
+            {name:"land",link:"敌人-CF6特种教官",rootFrame:89,frame:1,quiet:2,once:false,sounds:["CF6_0303.mp3"]},
+            {name:"deathA0",link:"敌人-CF6特种教官",rootFrame:105,frame:1,quiet:2,once:true,sounds:deathSounds},
+            {name:"deathA1",link:"敌人-CF6特种教官",rootFrame:105,frame:59,quiet:2,once:true,sounds:deathSounds},
+            {name:"deathA2",link:"敌人-CF6特种教官",rootFrame:105,frame:105,quiet:2,once:true,sounds:deathSounds}
+        ];
+        instructorAudioIndex=0;instructorAudioStage=0;instructorAudioAge=0;instructorAudioActor=null;
+        driver.onEnterFrame=function():Void {Cf6SoldierAssetTest.instructorAudioTick();};
+    }
+    private static function instructorAudioTick():Void {
+        instructorAudioAge++;
+        if(instructorAudioIndex>=instructorAudioQueue.length){
+            instructorAudioRecording=false;_root.暂停=false;
+            if(instructorAudioActor!=null){instructorAudioActor.removeMovieClip();instructorAudioActor=null;}
+            instructorAudioDone=true;finish();return;
+        }
+        var row:Object=instructorAudioQueue[instructorAudioIndex];
+        if(instructorAudioStage==0){
+            instructorAudioRecording=false;_root.暂停=false;
+            if(instructorAudioActor!=null)instructorAudioActor.removeMovieClip();
+            instructorAudioActor=library.attachMovie(row.link,"instructorAudioProbe"+instructorAudioIndex,
+                library.getNextHighestDepth(),{fixtureRecord:record(),长枪:"M4A1战术版",手枪:"FR506",手枪2:"FR506"});
+            check(instructorAudioActor!=null,"attach instructor audio probe "+row.name);
+            instructorAudioStage=1;instructorAudioAge=0;return;
+        }
+        if(instructorAudioStage==1 && instructorAudioAge>=2){
+            var noop:Function=function():Void {};
+            var a:MovieClip=instructorAudioActor;
+            a.soldierTick=a.行走=a.动画完毕=a.死亡检测=a.击飞浮空=a.击飞倒地=a.soldierBeginAttack=a.soldierBeginMelee=noop;
+            a.状态改变=function(s:String):Void {this.状态=s;};
+            instructorAudioRecording=false;instructorAudioCalls=[];
+            a.gotoAndStop(row.rootFrame);
+            instructorAudioStage=2;instructorAudioAge=0;return;
+        }
+        if(instructorAudioStage==2 && instructorAudioAge>=2){
+            var body:MovieClip=instructorAudioActor.man;
+            check(body!=null && body._totalframes>=row.frame,"instructor audio body ready "+row.name);
+            if(body==null){instructorAudioIndex++;instructorAudioStage=0;return;}
+            body.stop();instructorAudioRecording=false;body.gotoAndStop(row.quiet);
+            if(row.once)body.cf6DeathVoicePlayed=false;
+            instructorAudioCalls=[];_root.暂停=true;instructorAudioRecording=true;
+            body.gotoAndStop(row.frame);
+            instructorAudioStage=3;instructorAudioAge=0;return;
+        }
+        if(instructorAudioStage==3 && instructorAudioAge>=1){
+            var body2:MovieClip=instructorAudioActor.man;body2.stop();
+            check(instructorAudioCalls.length==0,"paused instructor audio cue is silent "+row.name);
+            instructorAudioRecording=false;_root.暂停=false;body2.gotoAndStop(row.quiet);
+            if(row.once)body2.cf6DeathVoicePlayed=false;
+            instructorAudioCalls=[];instructorAudioRecording=true;
+            body2.gotoAndStop(row.frame);
+            instructorAudioStage=4;instructorAudioAge=0;return;
+        }
+        if(instructorAudioStage==4 && instructorAudioAge>=1){
+            var body3:MovieClip=instructorAudioActor.man;body3.stop();
+            if(row.once){
+                var before:Number=instructorAudioCalls.length;
+                var branches:Array=[1,59,105];
+                for(var b:Number=0;b<branches.length;b++)body3.gotoAndStop(branches[b]);
+                check(instructorAudioCalls.length==before,"instructor death voice deduplicates across branches "+row.name);
+            }
+            instructorAudioRecording=false;
+            var matched:Boolean=false;
+            for(var s:Number=0;s<row.sounds.length;s++)if(instructorAudioCalls[0]==row.sounds[s])matched=true;
+            check(instructorAudioCalls.length==1 && matched,"instructor native SFX fires "+row.name+" got="+instructorAudioCalls);
+            instructorAudioIndex++;instructorAudioStage=0;instructorAudioAge=0;
+        }
+    }
     private static function finish():Void {
+        if(!instructorAudioDone){beginInstructorAudio();return;}
         if(_root.soldierReviewCapture===true && !reviewDone){beginReview();return;}
         if(_root.cf6CapturePending>0){
             _root.cf6CaptureWait++;

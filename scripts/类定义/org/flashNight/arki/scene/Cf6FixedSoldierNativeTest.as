@@ -394,14 +394,14 @@ class org.flashNight.arki.scene.Cf6FixedSoldierNativeTest {
             if(partner!=null){
                 partner.攻击目标="fixedTarget";
                 if(label=="reserve_gate"){
-                    partner.手枪.value.shot=partner.手枪弹匣容量;partner.手枪2.value.shot=partner.手枪2弹匣容量;
+                    partner.长枪.value.shot=partner.长枪弹匣容量;
                 }
             }
             if(label=="final_phase_guard")externalActor=external("human");
         }
         if(label=="ordinary_line" && age>=16 && age<=40){
             var state:Object=current.cf6ActionState;
-            if(state.active && current.man.cf6Stride._currentframe>1)currentScenario.sawStride=true;
+            if(state.active && current.man._currentframe>=50)currentScenario.sawStride=true;
             if(current.soldierShotCount>0 && currentScenario.firstNativeShotAge===undefined)currentScenario.firstNativeShotAge=age;
         }
         if(currentScenario.cancelAfterShots!=undefined && !currentScenario.lossInjected){

@@ -5,5 +5,6 @@
   "tierFactor": 9,
   "classification": "mini_boss",
   "bossResistance": 20,
-  "basis": "2026-10-28: instructor advances one stage above the stage-7 soldier baseline, uses tier coefficient 9, and is a boss target rather than an elite target. Other observed panel coefficients and authored behavior remain inherited."
+  "toughnessCoefficient": 50,
+  "basis": "2026-10-28: instructor advances one stage above the stage-7 soldier baseline, uses tier coefficient 9, and is a boss target rather than an elite target. 2026-11-23: user-authorized toughness synchronized to 50 (matching elite) so phase-2 instructor actions are not trivially interrupted."
 }

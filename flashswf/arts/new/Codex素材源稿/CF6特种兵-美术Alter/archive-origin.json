@@ -1,0 +1,47 @@
+{
+  "schema": "cf6-soldier-alter-origin.v1",
+  "issue": 335,
+  "archive": {
+    "filename": "特种兵alter.rar",
+    "fileIds": [
+      2737,
+      2738
+    ],
+    "bytes": 5642900,
+    "sha256": "18d67edb76a1516fe895be9fa71b8cb9fa7abb45c243f6b5f0d7481b672b1e6b"
+  },
+  "animate": "WIN 24,0,3,19",
+  "frameRate": 30,
+  "members": [
+    {
+      "path": "actions/持盾点射与装填.xml",
+      "bytes": 510707,
+      "sha256": "d9dde4905468bbc354b4d26fc546d923003cf8937b26bbdb3779285ffda0d1d6"
+    },
+    {
+      "path": "actions/长枪点射与装填.xml",
+      "bytes": 1623826,
+      "sha256": "61a1949659ea33d3869d4ad4f98d68a47b7bad6f4e75452377ed546d2c2f1242"
+    },
+    {
+      "path": "fx/smoke17.xml",
+      "bytes": 140649,
+      "sha256": "37253e7f7063123941f2e212397884b303761911e5050afd5377b26c1d102c8c"
+    },
+    {
+      "path": "fx/速度线.xml",
+      "bytes": 22633,
+      "sha256": "3cd0738f8a9dcf56ab7680137c010351aa75c92aa058a7001400bd4f2369fb14"
+    },
+    {
+      "path": "sample-alter.jsfl",
+      "bytes": 6509,
+      "sha256": "825604b4bffe0524686ce7a2e7bff6d95fd1203255542112f74451f4f7f0407d"
+    },
+    {
+      "path": "native-alter-samples.json",
+      "bytes": 2077559,
+      "sha256": "37a450ab2839231a3022a0ea9de9d77ebf600a701b2380550a3e0cf74eb6b30f"
+    }
+  ]
+}

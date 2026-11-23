@@ -21,7 +21,7 @@ function walk({targetX=100,goalX=1100,armed=false,blocked=false}={}) {
         跑X速度:16,跑Y速度:8,行走X速度:8,行走Y速度:4,soldierPhase:2,cf6Closing:false,cf6NavStalls:0,
         cf6Observation:{targetValid:true,interrupted:false,controlled:false,visible:true},
         cf6Profile:{roleClass:'ordinary',program:{stopDistance:300,maxDistance:900,lane:24,trigger:'ordinary'}},
-        man:{_x:25.6,_xscale:100,cf6Stride:{_totalframes:8,_currentframe:1,gotoAndStop(frame){this._currentframe=frame;}}},cf6StrideStep:0,
+        man:{_x:25.6,_xscale:100,_currentframe:14,gotoAndStop(frame){this._currentframe=frame;}},cf6StrideStep:0,
         soldierTacticalStats:{blockedMoves:0},soldierClock:100,
         新版人物文字信息:{_xscale:100},
         cf6NavWaypoint(){return {x:goalX,z:300};},soldierEvasionZSign(){return 1;},
@@ -61,7 +61,7 @@ test('backward walking keeps its target-facing pose and original walk speed',()=
 test('armed movement retains its body and muzzle pose while keeping walk speed',()=>{
     const {actor,motions}=walk({armed:true});
     assert.equal(actor._x,808);assert.equal(actor.状态,'长枪站立');assert.equal(actor.方向,'右');
-    assert.deepEqual(motions,[['右',8]]);assert.equal(actor.man.cf6Stride._currentframe,3);
+    assert.deepEqual(motions,[['右',8]]);assert.equal(actor.man._currentframe,51);
 });
 test('a blocked detour retains its existing lane escape and movement budgets',()=>{
     const {actor,motions}=walk({blocked:true});
