@@ -161,7 +161,7 @@ $bundleVerifier = Join-Path $PSScriptRoot 'verify-runtime-bundle-v2.ps1'
 $temporaryRegistry = $null
 $historicalInventory = $null
 try {
-    $bundleArgs = @('-NoProfile','-ExecutionPolicy','Bypass','-File',$bundleVerifier,'-ProjectRoot',$ProjectRoot)
+    $bundleArgs = @('-NoProfile','-InputFormat','None','-ExecutionPolicy','Bypass','-File',$bundleVerifier,'-ProjectRoot',$ProjectRoot)
     if ($Staged) { $bundleArgs += '-Staged' }
     else { $bundleArgs += @('-DeploymentRoot',$DeploymentRoot) }
     if ($HistoricalSource) {

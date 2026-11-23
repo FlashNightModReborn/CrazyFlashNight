@@ -117,7 +117,7 @@ for ($attempt = 1; $attempt -le 3; $attempt++) {
     $checkout = Join-Path $PublicationRoot "attempt-$attempt"
     & git -C $ProjectRoot worktree add --quiet --detach $checkout $parent
     if ($LASTEXITCODE -ne 0) { throw "Failed to create private publication checkout for $parent." }
-    $run = @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $checkout 'tools/promote-runtime-bundle.ps1'),
+    $run = @('-NoProfile','-InputFormat','None','-ExecutionPolicy','Bypass','-File',(Join-Path $checkout 'tools/promote-runtime-bundle.ps1'),
         '-ProjectRoot',$checkout,'-QueueRoot',$QueueRoot,'-RequestId',$RequestId,'-PolicyReceiptPath',$PolicyReceiptPath)
     if ($CandidateRoot) { $run += @('-CandidateRoot',$CandidateRoot) }
     if ($ExternalAttestationPath) { $run += @('-ExternalAttestationPath',$ExternalAttestationPath) }
@@ -139,7 +139,7 @@ for ($attempt = 1; $attempt -le 3; $attempt++) {
     & git -C $checkout commit --quiet -m "晋升 Runtime v2 双签候选 $($request.sourceCommitOid.Substring(0,12))，回归标准启动与完整闭包"
     if ($LASTEXITCODE -ne 0) { throw 'Cannot construct the publication commit.' }
     $publication = Get-Cf7ReleaseGitOid $checkout 'HEAD^{commit}'
-    $verified = @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $checkout 'tools/classify-runtime-release-state.ps1'),
+    $verified = @('-NoProfile','-InputFormat','None','-ExecutionPolicy','Bypass','-File',(Join-Path $checkout 'tools/classify-runtime-release-state.ps1'),
         '-ProjectRoot',$checkout,'-Mode','Audit','-BaseRevision',$parent,'-HeadRevision',$publication)
     & powershell.exe @verified | Out-Host
     if ($LASTEXITCODE -ne 0) { throw "Private publication commit failed independent audit: $publication" }

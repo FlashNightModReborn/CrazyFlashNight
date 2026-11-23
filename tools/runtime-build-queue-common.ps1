@@ -386,7 +386,7 @@ function Copy-Cf7CandidateIntoCas {
     if (Test-Path -LiteralPath $destination -PathType Container) {
         $existingClosure = Get-Cf7QueuePayloadClosure -ProjectRoot $ProjectRoot -CandidateRoot $destination
         if ([string]$existingClosure.payloadClosureHash -ne $PayloadClosureHash) { throw 'Existing CAS candidate does not match its address.' }
-        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $verifier -ProjectRoot $ProjectRoot -DeploymentRoot $destination -IntegrityOnly | Out-Null
+        & powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -File $verifier -ProjectRoot $ProjectRoot -DeploymentRoot $destination -IntegrityOnly | Out-Null
         if ($LASTEXITCODE -ne 0) { throw 'Existing CAS candidate failed runtime v2 integrity verification.' }
         return $destination
     }
@@ -410,7 +410,7 @@ function Copy-Cf7CandidateIntoCas {
         if ([string]$copiedClosure.payloadClosureHash -ne $PayloadClosureHash) {
             throw 'CAS staging copy changed the payload closure.'
         }
-        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $verifier -ProjectRoot $ProjectRoot -DeploymentRoot $temporary -IntegrityOnly | Out-Null
+        & powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -File $verifier -ProjectRoot $ProjectRoot -DeploymentRoot $temporary -IntegrityOnly | Out-Null
         if ($LASTEXITCODE -ne 0) { throw 'CAS staging candidate failed runtime v2 integrity verification.' }
         if (-not (Publish-Cf7QueueDirectory -TemporaryDirectory $temporary -DestinationDirectory $destination)) {
             if (-not (Test-Path -LiteralPath $destination -PathType Container)) { throw 'CAS publication race did not produce a candidate.' }

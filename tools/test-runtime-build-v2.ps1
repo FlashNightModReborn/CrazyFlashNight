@@ -488,6 +488,46 @@ try {
             $promotionScript.Contains('$publicationHead = Get-Cf7ReleaseGitOid $ProjectRoot ''HEAD^{commit}''') -and
             $promotionScript.Contains('HeadCommitOid = $publicationHead') -and
             $promotionScript.Contains('Assert-Cf7RuntimeReleaseAdmission -ProjectRoot $ProjectRoot -SourceCommitOid $request.sourceCommitOid -ReleaseTreeOid $request.releaseTreeOid -HeadCommitOid $publicationHead'))
+    $publicationScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\invoke-runtime-publication.ps1'))
+    $releaseScriptTopLevelInputRefs = New-Object 'System.Collections.Generic.List[string]'
+    foreach ($releaseScriptRel in @(
+        'tools\promote-runtime-bundle.ps1',
+        'tools\invoke-runtime-publication.ps1',
+        'tools\verify-runtime-consensus.ps1',
+        'tools\verify-runtime-bundle-v2.ps1',
+        'tools\verify-runtime-github-attestation.ps1',
+        'tools\classify-runtime-release-state.ps1',
+        'tools\validate-launcher-release-policy.ps1'
+    )) {
+        $scriptTokens = $null
+        $scriptParseErrors = $null
+        $scriptAst = [Management.Automation.Language.Parser]::ParseInput(
+            [IO.File]::ReadAllText((Join-Path $ProjectRoot $releaseScriptRel)),
+            [ref]$scriptTokens, [ref]$scriptParseErrors)
+        Assert-Equal "release script parses cleanly ($releaseScriptRel)" 0 @($scriptParseErrors).Count
+        $topLevelHits = @($scriptAst.FindAll({
+            param($node)
+            if ($node -isnot [Management.Automation.Language.VariableExpressionAst]) { return $false }
+            if ($node.VariablePath.UserPath -ine 'input') { return $false }
+            $ancestor = $node.Parent
+            while ($null -ne $ancestor) {
+                if ($ancestor -is [Management.Automation.Language.FunctionDefinitionAst]) { return $false }
+                $ancestor = $ancestor.Parent
+            }
+            return $true
+        }, $true))
+        if ($topLevelHits.Count -gt 0) {
+            $releaseScriptTopLevelInputRefs.Add("$releaseScriptRel`:L$($topLevelHits[0].Extent.StartLineNumber)")
+        }
+    }
+    Assert-Equal 'release entry scripts never shadow top-level automatic pipeline variable under open stdin pipes' '' `
+        ([string]::Join(',', $releaseScriptTopLevelInputRefs.ToArray()))
+    Assert-Equal 'publication orchestrator shields nested powershell.exe invocations with -InputFormat None' $true `
+        ($publicationScript.Contains("'-NoProfile','-InputFormat','None','-ExecutionPolicy','Bypass','-File',(Join-Path `$checkout 'tools/promote-runtime-bundle.ps1')") -and
+            $publicationScript.Contains("'-NoProfile','-InputFormat','None','-ExecutionPolicy','Bypass','-File',(Join-Path `$checkout 'tools/classify-runtime-release-state.ps1')"))
+    Assert-Equal 'promotion shields nested powershell.exe invocations with -InputFormat None' $true `
+        (-not $promotionScript.Contains('powershell.exe -NoProfile -ExecutionPolicy') -and
+            -not $promotionScript.Contains("'-NoProfile','-ExecutionPolicy','Bypass','-File'"))
     Assert-Equal 'bootstrap keeps runtime-only and full-install preflights separate' $true `
         ($bootstrapSource.Contains('static bool PreflightRuntimeFiles') -and $bootstrapSource.Contains('static bool PreflightCriticalFiles'))
     Assert-Equal 'bootstrap rejects ambiguous verification modes' $true `

@@ -83,6 +83,9 @@ try {
     Write-Text (Join-Path $repo 'tools/promote-runtime-bundle.ps1') @'
 param($ProjectRoot,$QueueRoot,$RequestId,$PolicyReceiptPath,$CandidateRoot)
 $ErrorActionPreference = 'Stop'
+# Regression guard: even an unreachable top-level $input reference stalls Windows
+# PowerShell 5.1 before line 1 on an open stdin pipe unless invoked with -InputFormat None.
+if ($false) { foreach ($input in @()) {} }
 . (Join-Path $PSScriptRoot 'runtime-build-queue-common.ps1')
 . (Join-Path $PSScriptRoot 'runtime-release-admission.ps1')
 . (Join-Path $PSScriptRoot 'runtime-build-attestation-v2-common.ps1')
@@ -219,7 +222,40 @@ done
     $wrongTag = $false
     try { $null = Invoke-Publication 'different-remote-tag' $otherRequest } catch { $wrongTag = $_.Exception.Message -like '*remote tag does not match*' }
     Assert-Expected ($wrongTag -and (Invoke-Git $origin @('rev-parse','refs/heads/main')) -ceq $result.head) 'Remote tag target must match the request exactly.'
-    Write-Host '[RuntimePublicationTest] PASS remote tag binding, annotated tag peeling, same-parent race, original request retry, remote descendant, idempotency, and stale source'
+    # Open-stdin-pipe regression: non-PTY agent hosts keep stdin open for the full
+    # process lifetime. Publication and its nested PowerShell children must finish
+    # without waiting on stdin EOF.
+    $openStdinPub = Join-Path $fixture 'open-stdin'
+    $openStdinPsi = New-Object System.Diagnostics.ProcessStartInfo
+    $openStdinPsi.FileName = (Join-Path $PSHOME 'powershell.exe')
+    $openStdinPsi.Arguments = ('-NoProfile -ExecutionPolicy Bypass -File "{0}" -ProjectRoot "{1}" -PublicationRoot "{2}" -QueueRoot "{3}" -RequestId "{4}" -PolicyReceiptPath "{5}" -CandidateRoot "{6}"' -f `
+        (Join-Path $repo 'tools/invoke-runtime-publication.ps1'), $repo, $openStdinPub, $queue, $request, $receipt, $candidate)
+    $openStdinPsi.WorkingDirectory = $repo
+    $openStdinPsi.UseShellExecute = $false
+    $openStdinPsi.RedirectStandardInput = $true
+    $openStdinPsi.RedirectStandardOutput = $true
+    $openStdinPsi.RedirectStandardError = $true
+    $openStdinProc = [System.Diagnostics.Process]::Start($openStdinPsi)
+    try {
+        $openOutTask = $openStdinProc.StandardOutput.ReadToEndAsync()
+        $openErrTask = $openStdinProc.StandardError.ReadToEndAsync()
+        $openExited = $openStdinProc.WaitForExit(60000)
+        if (-not $openExited) {
+            Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $openStdinProc.Id } | ForEach-Object {
+                Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
+            }
+            $openStdinProc.Kill()
+            [void]$openStdinProc.WaitForExit(5000)
+            throw 'Publication hung under an open stdin pipe (missing -InputFormat None or top-level stdin drain).'
+        }
+        $openOut = $openOutTask.GetAwaiter().GetResult()
+        $openErr = $openErrTask.GetAwaiter().GetResult()
+        Assert-Expected ($openStdinProc.ExitCode -eq 0 -and $openOut -like '*already-deployed*') `
+            "Publication failed under an open stdin pipe (exit=$($openStdinProc.ExitCode)): $openErr"
+    } finally {
+        $openStdinProc.Dispose()
+    }
+    Write-Host '[RuntimePublicationTest] PASS remote tag binding, annotated tag peeling, same-parent race, original request retry, remote descendant, idempotency, stale source, and open-stdin pipe'
 } finally {
     $resolved = [IO.Path]::GetFullPath($fixture)
     $prefix = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\') + '\cf7-publication-'

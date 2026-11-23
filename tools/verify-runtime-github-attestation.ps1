@@ -229,7 +229,7 @@ if (-not $WithoutCandidateArchive) {
         # and identity of this proof are still verified here.
         $inventoryPath = Join-Path ([IO.Path]::GetTempPath()) ('cf7-historical-cloud-' + [guid]::NewGuid().ToString('N') + '.json')
         try {
-            $argsForBundle = @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $PSScriptRoot 'verify-runtime-bundle-v2.ps1'),
+            $argsForBundle = @('-NoProfile','-InputFormat','None','-ExecutionPolicy','Bypass','-File',(Join-Path $PSScriptRoot 'verify-runtime-bundle-v2.ps1'),
                 '-ProjectRoot',$ProjectRoot,'-DeploymentRoot',$CandidateRoot,'-IntegrityOnly','-FileInventoryPath',$inventoryPath)
             if ($SourceMode -eq 'Index') { $argsForBundle += '-Staged' }
             & powershell.exe @argsForBundle | Out-Host

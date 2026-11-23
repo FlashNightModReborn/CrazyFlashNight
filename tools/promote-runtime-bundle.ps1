@@ -53,7 +53,7 @@ function Assert-Cf7PromotionPreviousBytes {
     }
     # This pass reads the actual directory and every payload file, independent of Git's
     # worktree stat cache. The exact parent manifest above binds that inventory to D.
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ProjectRoot 'tools\verify-runtime-bundle-v2.ps1') -ProjectRoot $ProjectRoot -IntegrityOnly
+    & powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -File (Join-Path $ProjectRoot 'tools\verify-runtime-bundle-v2.ps1') -ProjectRoot $ProjectRoot -IntegrityOnly
     if ($LASTEXITCODE -ne 0) { throw 'Installed files differ from the verified preceding deployment.' }
 }
 
@@ -374,7 +374,7 @@ if ([string]$previousRecord.schema -cne 'cf7-runtime-release-consensus.v2') {
 # Read the previous deployment from the exact parent even when the caller's index is replaced.
 # A historical verifier reads frozen Git data using the reviewed verifier from this workspace.
 Invoke-Cf7RuntimeRevisionIndex $ProjectRoot $publicationHead {
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ProjectRoot 'tools\verify-runtime-consensus.ps1') -ProjectRoot $ProjectRoot -Staged -HistoricalSource
+    & powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -File (Join-Path $ProjectRoot 'tools\verify-runtime-consensus.ps1') -ProjectRoot $ProjectRoot -Staged -HistoricalSource
     if ($LASTEXITCODE -ne 0) { throw 'The preceding deployment failed independent historical verification.' }
 }
 Assert-Cf7RuntimeReleaseAdmission -ProjectRoot $ProjectRoot -SourceCommitOid $request.sourceCommitOid -ReleaseTreeOid $request.releaseTreeOid -HeadCommitOid $publicationHead -AllowVerifiedDeploymentChanges
@@ -516,7 +516,7 @@ if ($VerifyOnly) {
 $verifyBundle = Join-Path $ProjectRoot 'tools\verify-runtime-bundle-v2.ps1'
 $candidateInventoryPath = Join-Path ([IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')) ('cf7-runtime-candidate-inventory-' + [Guid]::NewGuid().ToString('N') + '.json')
 try {
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $verifyBundle `
+    & powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -File $verifyBundle `
         -ProjectRoot $ProjectRoot -DeploymentRoot $CandidateRoot -FileInventoryPath $candidateInventoryPath
     if ($LASTEXITCODE -ne 0) { throw 'Candidate runtime bundle v2 verification failed.' }
     if (-not (Test-Path -LiteralPath $candidateInventoryPath -PathType Leaf)) {
@@ -549,7 +549,7 @@ $verifiedEntries = @($verifiedEntries | Where-Object {
     ([string]$_.payload.payloadClosureHash).ToUpperInvariant() -eq $candidatePayloadHash
 })
 
-foreach ($input in $githubWrapperInputs) {
+foreach ($githubInput in $githubWrapperInputs) {
     $temporaryBase = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')
     $temporaryRoot = Join-Path $temporaryBase ('cf7-runtime-github-replay-' + [Guid]::NewGuid().ToString('N'))
     if ((Test-Cf7PromotionPathWithin -Path $temporaryRoot -Root $ProjectRoot) -or
@@ -562,9 +562,9 @@ foreach ($input in $githubWrapperInputs) {
         $envelopePath = Join-Path $temporaryRoot 'envelope.json'
         $bundlePath = Join-Path $temporaryRoot 'bundle.json'
         try {
-            [IO.File]::WriteAllBytes($envelopePath, [Convert]::FromBase64String([string]$input.wrapper.envelopeBase64))
-            [IO.File]::WriteAllBytes($bundlePath, [Convert]::FromBase64String([string]$input.wrapper.bundleBase64))
-        } catch { throw "Invalid embedded GitHub attestation bytes: $($input.path)" }
+            [IO.File]::WriteAllBytes($envelopePath, [Convert]::FromBase64String([string]$githubInput.wrapper.envelopeBase64))
+            [IO.File]::WriteAllBytes($bundlePath, [Convert]::FromBase64String([string]$githubInput.wrapper.bundleBase64))
+        } catch { throw "Invalid embedded GitHub attestation bytes: $($githubInput.path)" }
         $verifiedWrapper = & (Join-Path $ProjectRoot 'tools\verify-runtime-github-attestation.ps1') `
             -ProjectRoot $ProjectRoot `
             -CandidateRoot $CandidateRoot `
@@ -573,15 +573,15 @@ foreach ($input in $githubWrapperInputs) {
             -ExpectedSourceCommitOid ([string]$request.sourceCommitOid) `
             -ReplayFromReleaseRecord
         if ($null -eq $verifiedWrapper -or [string]$verifiedWrapper.schema -ne 'cf7-runtime-github-build-attestation.v2') {
-            throw "GitHub attestation verifier returned no normalized proof: $($input.path)"
+            throw "GitHub attestation verifier returned no normalized proof: $($githubInput.path)"
         }
-        Assert-Cf7RuntimeGitHubProofEquivalentV2 -Expected $input.wrapper -Actual $verifiedWrapper | Out-Null
+        Assert-Cf7RuntimeGitHubProofEquivalentV2 -Expected $githubInput.wrapper -Actual $verifiedWrapper | Out-Null
         if ([string]$verifiedWrapper.payload.releaseTreeOid -ne ([string]$request.releaseTreeOid).ToLowerInvariant()) {
-            throw "GitHub proof releaseTreeOid does not match the immutable request: $($input.path)"
+            throw "GitHub proof releaseTreeOid does not match the immutable request: $($githubInput.path)"
         }
         foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','buildIdentityHash')) {
             if (([string]$verifiedWrapper.payload.$field).ToUpperInvariant() -ne ([string]$request.$field).ToUpperInvariant()) {
-                throw "GitHub proof does not match request: $field ($($input.path))"
+                throw "GitHub proof does not match request: $field ($($githubInput.path))"
             }
         }
         $verifiedEntries += [pscustomobject]@{ proof=$verifiedWrapper; payload=$verifiedWrapper.payload }
@@ -774,7 +774,7 @@ Copy-Item -LiteralPath (Join-Path $CandidateRoot 'CRAZYFLASHER7MercenaryEmpire.e
 # were already proven against the immutable request above and the worktree is pinned by the
 # release-tree diff; the final live consensus verification recomputes them anyway, so this
 # pass skips only the domain-hash recompute, never the payload bytes.
-& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $verifyBundle `
+& powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -File $verifyBundle `
     -ProjectRoot $ProjectRoot -DeploymentRoot $stageRoot -IntegrityOnly
 if ($LASTEXITCODE -ne 0) { throw 'Staged promotion copy failed bundle verification.' }
 
@@ -829,7 +829,7 @@ try {
     Move-Item -LiteralPath $nextConsensusRecord -Destination $consensusRecordPath
     $installedConsensusRecord = $true
 
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $verifyBundle -ProjectRoot $ProjectRoot -IntegrityOnly
+    & powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -File $verifyBundle -ProjectRoot $ProjectRoot -IntegrityOnly
     if ($LASTEXITCODE -ne 0) { throw 'Promoted runtime bundle failed final verification.' }
     # The GitHub proofs inside the consensus record were fully verified in this process
     # moments ago (Sigstore replay against the candidate above). Hand the exact verified
@@ -857,7 +857,7 @@ try {
         }
         Write-Cf7QueueJsonAtomic -Path $preVerifiedProofsPath -Value $preVerifiedRecord -Depth 30
     }
-    $consensusArguments = @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $ProjectRoot 'tools\verify-runtime-consensus.ps1'),'-ProjectRoot',$ProjectRoot)
+    $consensusArguments = @('-NoProfile','-InputFormat','None','-ExecutionPolicy','Bypass','-File',(Join-Path $ProjectRoot 'tools\verify-runtime-consensus.ps1'),'-ProjectRoot',$ProjectRoot)
     if ($preVerifiedProofsPath) { $consensusArguments += @('-PreVerifiedGitHubProofPath',$preVerifiedProofsPath) }
     & powershell.exe @consensusArguments
     if ($LASTEXITCODE -ne 0) { throw 'Promoted runtime consensus record failed final verification.' }

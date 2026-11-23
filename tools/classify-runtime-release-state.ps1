@@ -680,7 +680,7 @@ function Invoke-Cf7Verifier(
     [bool]$EchoOutput = $true
 ) {
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { throw "$Label script is missing: $Path" }
-    $commandArguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $Path) + $Arguments
+    $commandArguments = @('-NoProfile', '-InputFormat', 'None', '-ExecutionPolicy', 'Bypass', '-File', $Path) + $Arguments
     $previousErrorAction = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     try {
