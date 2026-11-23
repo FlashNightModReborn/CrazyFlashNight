@@ -22,28 +22,42 @@
               <Actionscript>
                 <script><![CDATA[_parent.UpdateBigSmallState("技能中","震地中");
 var unit:MovieClip = _parent;
-var height:Number = unit.Z轴坐标 - unit._y;
-var sources:Object = unit.__air.sources;
-if (height > 0 || (height == 0 && sources.skillFloat != undefined && unit.垂直速度 < 0))
-{
-   // 接升龙时旧动作可能已经清了技能浮空，震地必须按脚点接管，包括低于 30 的起跳帧。
+if (this.__quakeWait == undefined) {
+   // 两帧共用同一落脚判定。Flash 的显示坐标只精确到 twip，写回后仍可能有正微差。
+   this.__quakeWait = function():Boolean {
+      var u:MovieClip = this._parent;
+      var height:Number = u.Z轴坐标 - u._y;
+      var tol:Number = _root.空中控制器._TOL;
+      var sources:Object = u.__air.sources;
+      if (this.__quakeFall != undefined && sources.fastFall === this.__quakeFall) return true;
+      if (height > tol) return true;
+      if (Math.abs(height) <= tol) {
+         if (sources.skillFloat != undefined && u.垂直速度 < 0) return true;
+         if (height != 0) u._y = u.Z轴坐标;
+      }
+      return false;
+   };
+}
+if (this.__quakeWait()) {
    stop();
-   if (sources.fastFall == undefined || sources.fastFall !== this.__quakeFall) {
-      if (unit.垂直速度 < 0) unit.垂直速度 = 0;
+   if (this.__quakeFall == undefined) {
+      var air:Object = _root.空中控制器.确保(unit);
       var fall:Object = {man:this, gravity:20, minHeight:30};
       this.__quakeFall = fall;
       var prevUnload:Function = this.onUnload;
       this.onUnload = function():Void {
-         // 同名 man 重建后旧剪辑引用可能重绑。只撤销本次登记的来源。
-         if (unit.__air.sources.fastFall === fall) {
-            _root.空中控制器.关闭快速下落(unit);
-            if (unit._parent != undefined && unit._y < unit.Z轴坐标 && !_root.空中控制器._hasAnySource(unit.__air)) {
-               _root.空中控制器.启用自然落地(unit);
-            }
-         }
+         var owns:Boolean = unit.__air === air && air.sources.fastFall === fall;
+         if (owns) delete air.sources.fastFall;
          if (prevUnload != undefined) prevUnload.apply(this);
+         if (owns && unit._parent != undefined && unit.__air === air && !_root.空中控制器._hasAnySource(air)) {
+            if (unit.Z轴坐标 - unit._y > _root.空中控制器._TOL) _root.空中控制器.启用自然落地(unit);
+            else _root.空中控制器.停止(unit);
+         }
       };
-      _root.空中控制器.设置源(unit, "fastFall", fall);
+   }
+   if (unit.__air.sources.fastFall !== this.__quakeFall) {
+      if (unit.垂直速度 < 0) unit.垂直速度 = 0;
+      _root.空中控制器.设置源(unit, "fastFall", this.__quakeFall);
    }
 }
 ]]></script>
@@ -53,7 +67,7 @@ if (height > 0 || (height == 0 && sources.skillFloat != undefined && unit.垂直
             <DOMFrame index="1" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 受击和动作恢复都可能提前 play()；脚点未着地时退回等待帧，避免进入攻击段。
-if (_parent._y < _parent.Z轴坐标) {
+if (this.__quakeWait()) {
    gotoAndStop(1);
 } else {
    _parent.联机2015发送角色数据();
