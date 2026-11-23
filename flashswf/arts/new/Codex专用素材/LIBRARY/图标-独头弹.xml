@@ -1,0 +1,14 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="图标-独头弹" itemID="6bba6b00-7f50fd8d" linkageExportForAS="true" linkageIdentifier="图标-独头弹"><timeline><DOMTimeline name="图标-独头弹"><layers><DOMLayer name="动作" color="#7799AA"><frames><DOMFrame index="0" duration="1" keyMode="9728"><elements /><Actionscript><script>stop();</script></Actionscript></DOMFrame></frames></DOMLayer><DOMLayer name="档位框" color="#7799AA"><frames><DOMFrame index="0" duration="1" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="Codex/中等边框" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements></DOMFrame></frames></DOMLayer><DOMLayer name="主体" color="#7799AA"><frames><DOMFrame index="0" duration="2" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="Codex/独头弹图稿" symbolType="graphic" loop="single frame"><matrix><Matrix a="0.1953125" d="0.1953125" /></matrix></DOMSymbolInstance></elements></DOMFrame></frames></DOMLayer><DOMLayer name="底板" color="#7799AA"><frames><DOMFrame index="0" duration="1" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="Codex/插件底板" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.11" tintColor="#FFFF00" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements></DOMFrame></frames></DOMLayer></layers></DOMTimeline></timeline></DOMSymbolItem>

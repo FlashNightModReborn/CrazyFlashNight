@@ -8,7 +8,7 @@ $focusedRun = @{
     AdditionalAsRelativePaths = @('scripts/逻辑/装备函数/装备光源.as', 'scripts/逻辑/单位函数/单位函数_fs_装备生命周期配置.as')
     ExpectedTracePatterns = @(
         '(?m)^EquipmentLightAssetTest Fixtures Completed: 4\r?$',
-        '(?m)^EquipmentLightAssetTest Tests Passed: 81\r?$',
+        '(?m)^EquipmentLightAssetTest Tests Passed: 83\r?$',
         '(?m)^EquipmentLightAssetTest Tests Failed: 0\r?$'
     )
     SuccessSummary = '实际 XML/素材经生产装载器：三把手电枪与激光插件、灯头镜像/持枪/换弹/死亡/卸载'

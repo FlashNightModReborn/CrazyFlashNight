@@ -182,6 +182,13 @@ class org.flashNight.arki.render.EquipmentLightAssetTest {
         var cfg:Object = {levelStatList:[1,1],tierNameToKeyDict:{},defaultTierDataDict:{}};
         var data:Object = EquipmentCalculator.calculatePure(item,{level:1,mods:["战术手电"]},cfg,ModRegistry.getModDict());
         check(data.data.weight == item.data.weight + 0.5,"actual calculator applies flashlight weight");
+        check(data.data.switchstrike.weightCoefficient == 5 && data.data.switchstrike.impactMultiplier == 5,
+              "long gun receives flashlight switch strike coefficients");
+        var pistol:Object = org.flashNight.gesh.object.ObjectUtil.clone(item);
+        pistol.use = "手枪";
+        var pistolResult:Object = EquipmentCalculator.calculatePure(pistol,{level:1,mods:["战术手电"]},cfg,ModRegistry.getModDict());
+        check(pistolResult.data.weight == pistol.data.weight + 0.5 && pistolResult.data.switchstrike == undefined,
+              "pistol receives flashlight weight without long gun switch strike");
         check(data.data.evasion == undefined,"conditional evasion is not a permanent inventory stat");
         var rail:String = item.inherentTags; item.inherentTags = "";
         check(TagManager.checkModAvailability(equipment,item,"战术手电") == -16,"missing side rail rejects flashlight");
