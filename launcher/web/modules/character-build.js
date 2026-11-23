@@ -35,8 +35,10 @@
         ? require('./character-build/character-build-candidate-eligibility.js') : root && root.CharacterBuildCandidateEligibility;
     var facetCounts = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-facet-counts.js') : root && root.CharacterBuildFacetCounts;
+    var debug = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-debug.js') : root && root.CharacterBuildDebug;
     var api = factory(
-        session, view, tuning, mutation, pose, projection, candidateTooltip,
+        debug, session, view, tuning, mutation, pose, projection, candidateTooltip,
         transport, candidateChannel, itemUse, itemUseChannel, stashAuthority,
         eligibility, facetCounts, root);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -46,7 +48,7 @@
         root.CharacterBuild = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
+function(Debug, SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         CandidateTooltipModule, Transport, CandidateChannel, ItemUseModule,
         ItemUseChannel, StashAuthority, Eligibility, FacetCounts, global) {
     'use strict';
@@ -614,27 +616,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         this._mutations.destroy();
         return true;
     };
-    CharacterBuildController.prototype.debugState = function() {
-        return {
-            mounted:!!this._view,
-            rendererCount:this._renderer ? 1 : 0,
-            selectedTarget:this._selectedTarget,
-            selectedSlotKey:this._selectedSlotKey,
-            mutationPending:this._mutations.isPending(),
-            tuning:this._tuning ? this._tuning.debugState() : null,
-            candidateTooltip:this._candidateTooltip
-                ? this._candidateTooltip.debugState() : null,
-            candidateCacheCount:this._candidateCache ? 1 : 0,
-            itemUseResumeSelection:this._itemUseResumeSelection ? {
-                physicalSlot:this._itemUseResumeSelection.physicalSlot,
-                itemName:this._itemUseResumeSelection.itemName,
-                requestKey:this._itemUseResumeSelection.requestKey || ''
-            } : null,
-            itemUse:this._itemUse.debugState(),
-            session:this._session.debugState(),
-            view:this._view ? this._view.debugState() : null
-        };
-    };
+    CharacterBuildController.prototype.debugState = Debug.controllerState;
 
     ItemUseChannel.install(CharacterBuildController.prototype);
     CandidateChannel.install(CharacterBuildController.prototype);

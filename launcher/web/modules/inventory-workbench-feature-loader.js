@@ -28,6 +28,7 @@
         'modules/character-build/character-build-mutation.js',
         'modules/character-build/character-build-drug-layout.js',
         'modules/character-build/character-build-session-contract.js',
+        'modules/character-build/character-build-debug.js',
         'modules/character-build-session.js',
         'modules/loadout-picker/loadout-picker-action-view.js',
         'modules/character-build/character-build-tuning-adapter.js',
@@ -75,7 +76,8 @@
                 && typeof root.CharacterBuild.CharacterBuildController === 'function');
     }
 
-    function loadClosure(deps, ready, label) {
+    function loadFeature(feature) {
+        var ready = feature.ready;
         if (ready()) return Promise.resolve();
         var loader = root.LazyLoader;
         if (!loader || typeof loader.load !== 'function') {
@@ -83,15 +85,15 @@
         }
         var pending;
         try {
-            pending = loader.load(deps);
+            pending = loader.load(feature.deps);
         } catch (error) {
             return Promise.reject(error);
         }
         if (!pending || typeof pending.then !== 'function') {
-            return Promise.reject(new Error(label + ' load returned a non-thenable'));
+            return Promise.reject(new Error(feature.label + ' load returned a non-thenable'));
         }
         return pending.then(function() {
-            if (!ready()) throw new Error(label + ' closure did not initialize');
+            if (!ready()) throw new Error(feature.label + ' closure did not initialize');
         });
     }
 
@@ -102,10 +104,6 @@
             deps:tuning ? TUNING_DEPS : BUILD_DEPS,
             ready:tuning ? tuningReady : buildReady,
             label:tuning ? 'tuning feature' : 'character-build feature'};
-    }
-
-    function loadFeature(feature) {
-        return loadClosure(feature.deps, feature.ready, feature.label);
     }
 
     function FeatureGate(options) {

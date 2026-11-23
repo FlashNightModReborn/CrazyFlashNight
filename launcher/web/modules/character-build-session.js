@@ -8,14 +8,16 @@
     var contract = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-session-contract.js')
         : root && root.CharacterBuildSessionContract;
-    var api = factory(mutation, contract, root && root.Bridge);
+    var debug = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-debug.js') : root && root.CharacterBuildDebug;
+    var api = factory(debug, mutation, contract, root && root.Bridge);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
         root.CF7.CharacterBuildSession = api;
         root.CharacterBuildSession = api;
     }
-})(typeof window !== 'undefined' ? window : globalThis, function(Mutation, Contract, hostEvents) {
+})(typeof window !== 'undefined' ? window : globalThis, function(Debug, Mutation, Contract, hostEvents) {
     'use strict';
 
     if (!Mutation) throw new Error('CharacterBuildMutation is required');
@@ -724,24 +726,7 @@
     CharacterBuildSession.prototype.getState = function() { return this._state; };
     CharacterBuildSession.prototype.getSessionGeneration = function() { return this._sessionGeneration; };
     CharacterBuildSession.prototype.getLoadoutRevision = function() { return this._loadoutRevision; };
-    CharacterBuildSession.prototype.debugState = function() {
-        return {
-            state:this._state,
-            panelInstanceId:this._panelInstanceId,
-            sessionGeneration:this._sessionGeneration,
-            writeEpoch:this._writeEpoch,
-            loadoutRevision:this._loadoutRevision,
-            liveRevision:this._liveRevision,
-            drugRevision:this._drugRevision,
-            candidateScope:this._candidateScope,
-            candidateFailureCode:this._candidateFailureCode,
-            liveRefreshDirty:this._liveRefreshDirty,
-            unknown:this._unknown ? {kind:this._unknown.kind, callId:this._unknown.callId} : null,
-            openingAttempts:this._openingAttempts,
-            hasSnapshot:!!this._snapshot,
-            mux:this._mux && this._mux.debugState ? this._mux.debugState() : null
-        };
-    };
+    CharacterBuildSession.prototype.debugState = Debug.sessionState;
 
     return {
         CharacterBuildSession:CharacterBuildSession, commands:COMMANDS.slice(),

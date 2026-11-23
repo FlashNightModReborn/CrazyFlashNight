@@ -743,6 +743,7 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
         'modules/character-build/character-build-mutation.js',
         'modules/character-build/character-build-drug-layout.js',
         'modules/character-build/character-build-session-contract.js',
+        'modules/character-build/character-build-debug.js',
         'modules/character-build-session.js',
         'modules/loadout-picker/loadout-picker-action-view.js',
         'modules/character-build/character-build-tuning-adapter.js',

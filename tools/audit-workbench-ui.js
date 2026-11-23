@@ -143,6 +143,7 @@ var REQUIRED_FILES = [
     'launcher/web/modules/character-build/character-build-item-use.js',
     'launcher/web/modules/character-build/character-build-item-use-channel.js',
     'launcher/web/modules/character-build/character-build-candidate-channel.js',
+    'launcher/web/modules/character-build/character-build-debug.js',
     'launcher/web/modules/character-build-session.js',
     'launcher/web/modules/character-build/character-build-item-use-openmany-view.js',
     'launcher/web/modules/character-build-view.js',
@@ -920,6 +921,7 @@ var moduleThresholds = {
     'launcher/web/modules/character-build/character-build-item-use-reveal.js':340,
     'launcher/web/modules/grade-presentation.js':80,
     'launcher/web/modules/character-build/character-build-candidate-channel.js':360,
+    'launcher/web/modules/character-build/character-build-debug.js':100,
     'launcher/web/modules/character-build-session.js':740,
     // openMany 按钮生命周期拆出：view 回落至 760 阈值内，本模块只承载按钮同步/构造。
     'launcher/web/modules/character-build/character-build-item-use-openmany-view.js':100,
@@ -1165,6 +1167,7 @@ if (exists(registryRel)) {
         'modules/character-build/character-build-mutation.js',
         'modules/character-build/character-build-drug-layout.js',
         'modules/character-build/character-build-session-contract.js',
+        'modules/character-build/character-build-debug.js',
         'modules/character-build-session.js',
         'modules/loadout-picker/loadout-picker-action-view.js',
         'modules/character-build/character-build-tuning-adapter.js',
