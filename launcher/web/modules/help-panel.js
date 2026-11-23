@@ -20,11 +20,13 @@ var HelpPanel = (function() {
     TAB_LABELS.tutorials = '操作教程';
     var TAB_ORDER = ['tutorials', 'controls', 'worldview', 'easter-eggs'];
 
-    var _el, _tabBar, _content, _skipBar, _disableButton, _skipNote;
+    var _el, _headerBadge, _titleEl, _modeBtn, _tabBar, _content, _skipBar, _disableButton, _skipNote;
     var _cache = {};
     var _currentTab = '';
     var _tutorials = null;
     var _guidance = null;
+    var _mode = 'full';
+    var _scaleHandle = null;
     var _instanceId = '', _disableCall = '', _preferenceTimer = null, _preferenceSeq = 0;
     var SKIP_NOTE = '关闭教程弹窗后，所有自动教程改为顶部通知提醒；仍可随时从帮助页查看。';
 
@@ -33,32 +35,74 @@ var HelpPanel = (function() {
         _preferenceTimer = null; _disableCall = ''; _instanceId = '';
     }
 
+    function detachScale() {
+        if (_scaleHandle) {
+            _scaleHandle.detach();
+            _scaleHandle = null;
+        }
+    }
+
+    function attachScale() {
+        detachScale();
+        if (_el && typeof PanelScale !== 'undefined' && PanelScale && typeof PanelScale.attach === 'function') {
+            _scaleHandle = PanelScale.attach(_el, 1024, 576);
+        }
+    }
+
+    function findGuideTitle(guideId) {
+        var list = window.GuidanceCatalog && window.GuidanceCatalog.guides;
+        if (!list) return '操作教程';
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].id === guideId) return list[i].title;
+        }
+        return '操作教程';
+    }
+
     Panels.register('help', {
         create: createDOM,
         onOpen: onOpen,
-        onClose: function() { disposeTutorials(); resetPreferenceRequest(); _currentTab = ''; _guidance = null; _skipBar.hidden = true; },
+        onClose: function() {
+            detachScale();
+            disposeTutorials();
+            resetPreferenceRequest();
+            _currentTab = '';
+            _guidance = null;
+            _mode = 'full';
+            if (_el) _el.setAttribute('data-help-mode', 'full');
+            if (_skipBar) _skipBar.hidden = true;
+        },
         onRebind: function(el, initData) { return onOpen(el, initData); },
         onRequestClose: function() { doClose(); }
     });
 
     function createDOM() {
         _el = document.createElement('div');
-        _el.className = 'help-panel';
+        _el.className = 'help-panel panel-scale-shell';
+        _el.setAttribute('data-help-mode', 'full');
         _el.innerHTML =
             '<div class="help-header">' +
-                '<span class="help-title">游戏帮助</span>' +
-                '<button class="help-close-btn" aria-label="关闭帮助">×</button>' +
+                '<div class="help-header-brand">' +
+                    '<span class="help-header-badge" hidden>新手引导</span>' +
+                    '<span class="help-title">游戏帮助</span>' +
+                '</div>' +
+                '<div class="help-header-actions">' +
+                    '<button class="help-mode-toggle" type="button" hidden>查看全部帮助</button>' +
+                    '<button class="help-close-btn" type="button" aria-label="关闭帮助">×</button>' +
+                '</div>' +
             '</div>' +
-            '<div class="help-tabs" id="help-tab-bar"></div>' +
+            '<div class="help-tabs" id="help-tab-bar" role="tablist" aria-label="帮助分类"></div>' +
             '<div class="help-content" id="help-content"></div>' +
             '<div class="guidance-skip-bar" hidden>' +
                 '<span class="guidance-skip-note" role="status" aria-live="polite"></span>' +
                 '<div class="guidance-skip-actions">' +
-                    '<button class="guidance-skip-btn" type="button">跳过本次</button>' +
                     '<button class="guidance-disable-btn" type="button">关闭教程弹窗</button>' +
+                    '<button class="guidance-skip-btn" type="button">跳过本次</button>' +
                 '</div>' +
             '</div>';
 
+        _headerBadge = _el.querySelector('.help-header-badge');
+        _titleEl = _el.querySelector('.help-title');
+        _modeBtn = _el.querySelector('.help-mode-toggle');
         _tabBar = _el.querySelector('#help-tab-bar');
         _content = _el.querySelector('#help-content');
         _skipBar = _el.querySelector('.guidance-skip-bar');
@@ -67,19 +111,51 @@ var HelpPanel = (function() {
         _el.querySelector('.help-close-btn').addEventListener('click', function() { doClose(); });
         _el.querySelector('.guidance-skip-btn').addEventListener('click', function() { doClose(); });
         _disableButton.addEventListener('click', disableAutomaticTutorials);
+        _modeBtn.addEventListener('click', toggleHelpMode);
 
         // 构建 tab 按钮
         for (var i = 0; i < TAB_ORDER.length; i++) {
             var id = TAB_ORDER[i];
             var btn = document.createElement('button');
+            btn.type = 'button';
             btn.className = 'help-tab-btn';
             btn.textContent = TAB_LABELS[id];
             btn.setAttribute('data-tab', id);
+            btn.setAttribute('role', 'tab');
+            btn.setAttribute('aria-selected', 'false');
             btn.addEventListener('click', onTabClick);
             _tabBar.appendChild(btn);
         }
 
         return _el;
+    }
+
+    function applyMode(mode) {
+        var briefing = mode === 'briefing' && !!_guidance;
+        _mode = briefing ? 'briefing' : 'full';
+        _el.setAttribute('data-help-mode', _mode);
+        _tabBar.hidden = briefing;
+        _headerBadge.hidden = !briefing;
+        _titleEl.textContent = briefing ? findGuideTitle(_guidance.guideId) : '游戏帮助';
+        _modeBtn.hidden = !_guidance;
+        _modeBtn.textContent = briefing ? '查看全部帮助' : '返回当前引导';
+        if (_tutorials && typeof _tutorials.setBriefing === 'function') {
+            _tutorials.setBriefing(briefing);
+        }
+    }
+
+    function toggleHelpMode() {
+        if (!_guidance) return;
+        if (_mode === 'briefing') {
+            applyMode('full');
+        } else {
+            if (_currentTab !== 'tutorials') {
+                switchTab('tutorials');
+            } else if (_tutorials && typeof _tutorials.selectGuide === 'function') {
+                _tutorials.selectGuide(_guidance.guideId);
+            }
+            applyMode('briefing');
+        }
     }
 
     function readGuidance(data) {
@@ -101,7 +177,9 @@ var HelpPanel = (function() {
         _disableButton.textContent = '关闭教程弹窗'; _skipNote.textContent = SKIP_NOTE;
         _skipBar.hidden = !_guidance;
         _currentTab = '';
+        applyMode(_guidance ? 'briefing' : 'full');
         switchTab('tutorials');
+        attachScale();
         return true;
     }
 
@@ -145,28 +223,32 @@ var HelpPanel = (function() {
         // 更新 tab 高亮
         var btns = _tabBar.querySelectorAll('.help-tab-btn');
         for (var i = 0; i < btns.length; i++) {
-            if (btns[i].getAttribute('data-tab') === tabId)
-                btns[i].classList.add('active');
-            else
-                btns[i].classList.remove('active');
+            var active = btns[i].getAttribute('data-tab') === tabId;
+            btns[i].classList.toggle('active', active);
+            btns[i].setAttribute('aria-selected', active ? 'true' : 'false');
         }
+
+        _content.setAttribute('data-help-tab', tabId);
 
         if (tabId === 'tutorials') {
             _content.innerHTML = '';
-            _tutorials = GuidanceTutorials.mount(_content, _guidance || {});
+            var mountOptions = _guidance
+                ? { guideId: _guidance.guideId, keys: _guidance.keys, briefing: _mode === 'briefing' }
+                : { briefing: false };
+            _tutorials = GuidanceTutorials.mount(_content, mountOptions);
             _content.scrollTop = 0;
             return;
         }
         // 从缓存或网络加载
         if (_cache[tabId]) {
-            _content.innerHTML = _cache[tabId];
+            _content.innerHTML = '<article class="help-markdown">' + _cache[tabId] + '</article>';
             _content.scrollTop = 0;
         } else {
-            _content.innerHTML = '<p class="help-loading">加载中…</p>';
+            _content.innerHTML = '<article class="help-markdown"><p class="help-loading">加载中…</p></article>';
             fetchMd(TAB_FILES[tabId], function(html) {
                 _cache[tabId] = html;
                 if (_currentTab === tabId) {
-                    _content.innerHTML = html;
+                    _content.innerHTML = '<article class="help-markdown">' + html + '</article>';
                     _content.scrollTop = 0;
                 }
             });

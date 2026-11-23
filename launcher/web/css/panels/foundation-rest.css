@@ -199,17 +199,14 @@
 #panel-container[data-panel="help"] #panel-content {
     inset: 0;
 }
-/* help 全屏态：去切角/边框/卡片感，兜底不透明底防 backdrop 透色，正文列宽收敛防超宽行宽过长 */
+#panel-container[data-panel="help"] #panel-backdrop {
+    background: var(--launcher-bg-0);
+}
+/* help 统一采用 1024×576 .panel-scale-shell + PanelScale 等比铺满全 16:9 anchor */
 #panel-container[data-panel="help"] .help-panel {
     clip-path: none;
     border: none;
-    background: #0a0c12;
-}
-#panel-container[data-panel="help"] .help-content {
-    max-width: 980px;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
+    background: var(--launcher-bg-0);
 }
 
 #panel-container[data-panel="dressup"] #panel-content {

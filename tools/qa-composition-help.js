@@ -13,7 +13,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const WEB = path.join(ROOT, 'launcher', 'web');
 const PLAYWRIGHT = path.join(ROOT, 'launcher', 'perf', 'node_modules', 'playwright');
-const VIEWPORTS = [[720, 540], [960, 720]];
+const VIEWPORTS = [[720, 540], [960, 720], [1024, 576], [1808, 1017]];
 const shotArg = process.argv.find(a => a.startsWith('--screenshot'));
 const shotPath = shotArg ? process.argv[process.argv.indexOf(shotArg) + 1] : null;
 const checks = [];
@@ -160,7 +160,20 @@ async function runViewport(browser, port, viewport, takeShot) {
             label + ' close bound to current instance', JSON.stringify(closeA));
 
         await openHelp(page, 'inst-' + w + '-b');
-        if (takeShot) await page.screenshot({path: takeShot});
+        check(await page.locator('.help-panel').getAttribute('data-help-mode') === 'full',
+            label + ' manual help opens in full mode');
+        check(!await page.locator('.help-mode-toggle').isVisible(),
+            label + ' manual help hides briefing mode toggle');
+        if (takeShot) {
+            await page.screenshot({path: takeShot, animations: 'disabled'});
+            await page.click('.help-tab-btn[data-tab="controls"]');
+            await page.waitForFunction(() => document.querySelector('.help-content h1')?.textContent === '基本操作');
+            await page.screenshot({path: takeShot.replace(/\.png$/, '.controls.png'), animations: 'disabled'});
+            await page.click('.help-tab-btn[data-tab="tutorials"]');
+            await page.getByRole('button', {name: '快速存入一件物品', exact: true}).click();
+            await page.waitForSelector('.guidance-demo-grid');
+            await page.screenshot({path: takeShot.replace(/\.png$/, '.demo.png'), animations: 'disabled'});
+        }
         await page.click('.help-close-btn');
         box0 = await outbox(page);
         const closeB = box0.filter(m => m.type === 'panel' && m.cmd === 'close').pop();
@@ -171,16 +184,29 @@ async function runViewport(browser, port, viewport, takeShot) {
         for (const guideId of ['start','map']) {
             const instanceId = 'inst-' + w + '-' + guideId;
             await openHelp(page, instanceId, {guideId,keys});
+            check(await page.locator('.help-panel').getAttribute('data-help-mode') === 'briefing',
+                label + ' automatic tutorial opens in focused briefing mode ' + guideId);
+            check(!await page.locator('.help-tabs').isVisible() && !await page.locator('.guidance-menu').isVisible(),
+                label + ' briefing mode hides tabs and full directory ' + guideId);
+            check(await page.locator('.help-mode-toggle').isVisible()
+                && (await page.locator('.help-mode-toggle').textContent()) === '查看全部帮助',
+                label + ' briefing mode offers full-help switch ' + guideId);
             const selected = await page.evaluate(() => ({
                 menu:document.querySelector('.guidance-menu [aria-current="page"]').textContent,
                 title:document.querySelector('.guidance-page h2').textContent,
+                dupHeading:Array.from(document.querySelectorAll('.guidance-page h3')).some(n => n.textContent === document.querySelector('.guidance-page h2').textContent),
+                hasKeyBadge:!!document.querySelector('.guidance-key-badge'),
                 keys:Array.from(document.querySelectorAll('.guidance-copy kbd')).map(n=>n.textContent)
             }));
             check(selected.title === (guideId === 'start' ? '开始游戏' : '地图与任务') && selected.menu === selected.title,
                 label + ' automatic tutorial selects exact ' + guideId);
+            check(!selected.dupHeading, label + ' no duplicate h3 heading ' + guideId);
+            check(selected.hasKeyBadge === (guideId === 'start'),
+                label + ' key binding badge matches actual placeholder usage ' + guideId);
             check(await page.locator('.guidance-skip-bar').isVisible(), label + ' automatic tutorial offers explicit skip ' + guideId);
             const skipBounds = await page.locator('.guidance-skip-btn').boundingBox();
-            check(skipBounds.y >= 0 && skipBounds.y + skipBounds.height <= h,
+            check(skipBounds.y >= 0 && skipBounds.y + skipBounds.height <= h
+                && skipBounds.x >= 0 && skipBounds.x + skipBounds.width <= w,
                 label + ' skip remains in the viewport while tutorial scrolls ' + guideId);
             const disableBounds = await page.locator('.guidance-disable-btn').boundingBox();
             check(disableBounds.x >= 0 && disableBounds.x + disableBounds.width <= w
@@ -188,16 +214,37 @@ async function runViewport(browser, port, viewport, takeShot) {
                 label + ' global disable remains in viewport ' + guideId);
             if (guideId === 'start') check(selected.keys.includes('Z') && selected.keys.includes('T') && !selected.keys.includes('E'),
                 label + ' automatic tutorial uses opening key bindings');
+            const briefingFit = await page.evaluate(() => {
+                const p = document.querySelector('.guidance-page');
+                return p && p.scrollWidth <= p.clientWidth + 1 && p.scrollHeight <= p.clientHeight + 1;
+            });
+            check(briefingFit, label + ' briefing page fits cleanly without scroll clipping ' + guideId);
+            if (takeShot) await page.screenshot({path:takeShot.replace(/\.png$/,'.'+guideId+'.briefing.png'), animations: 'disabled'});
+
+            await page.click('.help-mode-toggle');
+            check(await page.locator('.help-panel').getAttribute('data-help-mode') === 'full'
+                && await page.locator('.help-tabs').isVisible()
+                && await page.locator('.guidance-menu').isVisible(),
+                label + ' briefing expands cleanly to full help ' + guideId);
+            const menuFits = await page.evaluate(() => {
+                const m = document.querySelector('.guidance-menu');
+                return m && m.scrollHeight <= m.clientHeight + 1;
+            });
+            check(menuFits, label + ' grouped tutorial menu fits without clipping ' + guideId);
+            if (takeShot && guideId === 'map') await page.screenshot({path:takeShot.replace(/\.png$/,'.'+guideId+'.full.png'), animations: 'disabled'});
             await page.getByRole('button',{name:'移动与战斗',exact:true}).click();
             const diagram = await page.locator('.guidance-diagram').textContent();
             check(diagram.includes('←') && diagram.includes('↑') && diagram.includes('Z') && diagram.includes('X'),
                 label + ' shared combat diagram binds current keys');
-            if (takeShot && guideId === 'start') await page.screenshot({path:takeShot.replace(/\.png$/,'.combat.png')});
+            if (takeShot && guideId === 'start') await page.screenshot({path:takeShot.replace(/\.png$/,'.combat.png'), animations: 'disabled'});
             await page.click('.help-tab-btn[data-tab="worldview"]');
             await page.click('.help-tab-btn[data-tab="tutorials"]');
             check(await page.locator('.guidance-page h2').textContent() === selected.title,
                 label + ' tutorial context survives tabs ' + guideId);
-            if (takeShot) await page.screenshot({path:takeShot.replace(/\.png$/,'.'+guideId+'.png')});
+            await page.click('.help-mode-toggle');
+            check(await page.locator('.help-panel').getAttribute('data-help-mode') === 'briefing'
+                && await page.locator('.guidance-page h2').textContent() === selected.title,
+                label + ' returns to focused briefing for triggered guide ' + guideId);
             await page.locator('.guidance-skip-btn').focus();
             await page.keyboard.press('Enter');
             const close = (await outbox(page)).filter(m=>m.type==='panel' && m.cmd==='close').pop();

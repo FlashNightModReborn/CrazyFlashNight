@@ -1,81 +1,173 @@
 
 /* ═══════════════════════════════════════════════════════
-   Help Panel — Cyberpunk 2077 Style
+   Help Panel — Unified Dark Terminal / DLS Reading Shell
    ═══════════════════════════════════════════════════════ */
 .help-panel {
-    flex:1; display:flex; flex-direction:column; overflow:hidden;
-    background:var(--cp-bg);
-    border:1px solid var(--cp-border);
-    clip-path:polygon(0 0, calc(100% - var(--cp-cut)) 0, 100% var(--cp-cut), 100% 100%,
-                      var(--cp-cut) 100%, 0 calc(100% - var(--cp-cut)));
+    display:flex; flex-direction:column; overflow:hidden;
+    background:var(--launcher-bg-0);
+    color:var(--appearance-text);
+    font-family:var(--cf7-font-web-workbench-body);
 }
 .help-header {
-    display:flex; align-items:center; padding:10px 18px;
-    border-bottom:1px solid var(--cp-border);
-    background:linear-gradient(90deg, rgba(0,240,255,0.06) 0%, transparent 60%);
+    flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    height:44px; padding:0 16px 0 18px;
+    border-bottom:1px solid var(--appearance-line-soft);
+    background:linear-gradient(90deg, color-mix(in srgb, var(--dls-crystal) 8%, var(--appearance-surface)) 0%, var(--appearance-surface) 48%);
 }
+.help-header-brand {
+    display:flex; align-items:center; gap:10px; min-width:0;
+}
+.help-header-badge {
+    flex-shrink:0; display:inline-flex; align-items:center;
+    padding:2px 8px; border-radius:3px;
+    border:1px solid color-mix(in srgb, var(--dls-crystal) 48%, transparent);
+    background:var(--dls-crystal-soft);
+    color:var(--dls-crystal-bright);
+    font-size:11px; font-weight:700; letter-spacing:1px;
+}
+.help-header-badge[hidden] { display:none; }
 .help-title {
-    flex:1; color:var(--cp-cyan); font-size:15px; font-weight:700;
-    letter-spacing:2px; text-transform:uppercase;
+    color:var(--appearance-strong-text); font-size:15px; font-weight:700;
+    letter-spacing:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
+.help-header-actions {
+    flex-shrink:0; display:flex; align-items:center; gap:8px;
+}
+.help-mode-toggle {
+    padding:5px 12px; border-radius:4px;
+    border:1px solid var(--appearance-line);
+    background:var(--appearance-button-fill);
+    color:var(--appearance-secondary-text);
+    font:inherit; font-size:12px; cursor:pointer;
+    transition:border-color var(--wb-motion-micro) var(--wb-ease-standard),
+               background var(--wb-motion-micro) var(--wb-ease-standard),
+               color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.help-mode-toggle:hover {
+    border-color:var(--dls-crystal);
+    background:var(--dls-crystal-soft);
+    color:var(--appearance-strong-text);
+}
+.help-mode-toggle[hidden] { display:none; }
 .help-close-btn {
-    background:none; border:1px solid rgba(255,0,60,0.3); color:var(--cp-red);
-    width:28px; height:28px; font-size:18px; cursor:pointer; transition:all 0.15s;
-    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    display:inline-flex; align-items:center; justify-content:center;
+    width:28px; height:28px; border-radius:4px;
+    background:transparent;
+    border:1px solid var(--appearance-line);
+    color:var(--appearance-secondary-text);
+    font-size:17px; line-height:1; cursor:pointer;
+    transition:border-color var(--wb-motion-micro) var(--wb-ease-standard),
+               background var(--wb-motion-micro) var(--wb-ease-standard),
+               color var(--wb-motion-micro) var(--wb-ease-standard);
 }
-.help-close-btn:hover { background:rgba(255,0,60,0.15); border-color:var(--cp-red); }
+.help-close-btn:hover {
+    background:color-mix(in srgb, var(--wb-semantic-danger) 18%, transparent);
+    border-color:var(--wb-semantic-danger);
+    color:var(--appearance-strong-text);
+}
 
 /* Tabs */
 .help-tabs {
-    display:flex; flex-wrap:wrap; gap:2px; padding:6px 14px;
-    border-bottom:1px solid var(--cp-border);
-    background:rgba(0,0,0,0.2);
+    flex-shrink:0; display:flex; flex-wrap:wrap; align-items:center; gap:4px;
+    height:36px; padding:0 16px;
+    border-bottom:1px solid var(--appearance-line-soft);
+    background:var(--appearance-surface-deep);
 }
+.help-tabs[hidden] { display:none; }
 .help-tab-btn {
-    background:rgba(0,240,255,0.04); border:1px solid var(--cp-border2);
-    color:var(--cp-dim); padding:5px 16px; cursor:pointer; font-family:inherit;
-    font-size:12px; letter-spacing:1px; transition:all 0.15s;
-    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    position:relative; height:28px; padding:0 14px; border-radius:4px;
+    background:transparent; border:1px solid transparent;
+    color:var(--appearance-muted); cursor:pointer; font-family:inherit;
+    font-size:12px; font-weight:600; letter-spacing:0.5px;
+    transition:color var(--wb-motion-micro) var(--wb-ease-standard),
+               background var(--wb-motion-micro) var(--wb-ease-standard),
+               border-color var(--wb-motion-micro) var(--wb-ease-standard);
 }
-.help-tab-btn:hover { color:var(--cp-text); border-color:rgba(0,240,255,0.2); }
+.help-tab-btn:hover {
+    color:var(--appearance-text);
+    background:var(--appearance-tint);
+    border-color:var(--appearance-line-soft);
+}
 .help-tab-btn.active {
-    background:rgba(0,240,255,0.1); border-color:var(--cp-cyan);
-    color:var(--cp-cyan); box-shadow:0 0 6px rgba(0,240,255,0.15);
+    background:var(--dls-crystal-soft);
+    border-color:color-mix(in srgb, var(--dls-crystal) 55%, transparent);
+    color:var(--dls-crystal-bright);
 }
 
 /* Content area */
 .help-content {
-    flex:1; padding:16px 24px; overflow-y:auto; color:var(--cp-text);
-    font-size:13px; line-height:1.7;
+    flex:1; min-height:0; overflow-y:auto; overflow-x:hidden;
+    color:var(--appearance-text); font-size:13px; line-height:1.7;
+    background:var(--launcher-bg-0);
 }
-.help-content h1, .help-content h2, .help-content h3 {
-    color:var(--cp-cyan); margin:16px 0 8px; letter-spacing:1px;
+.help-content[data-help-tab="tutorials"] {
+    display:flex; flex-direction:column; overflow:hidden;
 }
-.help-content h1 { font-size:18px; border-bottom:1px solid var(--cp-border); padding-bottom:6px; }
-.help-content h2 { font-size:15px; }
-.help-content h3 { font-size:13px; color:var(--cp-yellow); }
-.help-content p { margin:6px 0; }
-.help-content ul, .help-content ol { margin:6px 0; padding-left:20px; }
-.help-content li { margin:3px 0; }
-.help-content code {
-    background:rgba(0,240,255,0.08); border:1px solid var(--cp-border2);
-    padding:1px 5px; font-size:12px; color:var(--cp-yellow);
+.help-markdown {
+    max-width:780px; margin:0 auto; padding:22px 28px 30px;
 }
-.help-content pre {
-    background:rgba(0,0,0,0.4); border:1px solid var(--cp-border);
-    padding:10px 14px; overflow-x:auto; font-size:12px; line-height:1.5;
+.help-markdown h1, .help-markdown h2, .help-markdown h3 {
+    color:var(--appearance-strong-text); margin:18px 0 8px; letter-spacing:0.5px;
 }
-.help-content pre code { background:none; border:none; padding:0; }
-.help-content strong { color:#fff; }
-.help-content em { color:var(--cp-dim); }
-.help-loading { color:var(--cp-dim); font-style:italic; }
-.help-error { color:var(--cp-red); }
+.help-markdown h1 {
+    font-size:18px; margin-top:0; padding-bottom:8px;
+    border-bottom:1px solid var(--appearance-line);
+}
+.help-markdown h2 { font-size:15px; color:var(--dls-crystal-bright); }
+.help-markdown h3 { font-size:13px; color:var(--wb-semantic-warning); }
+.help-markdown p { margin:8px 0; color:var(--appearance-secondary-text); }
+.help-markdown ul, .help-markdown ol { margin:8px 0; padding-left:20px; }
+.help-markdown li { margin:4px 0; color:var(--appearance-secondary-text); }
+.help-markdown hr {
+    border:0; border-top:1px solid var(--appearance-line-soft); margin:16px 0;
+}
+.help-markdown blockquote {
+    margin:12px 0; padding:8px 14px; border-radius:4px;
+    border-left:3px solid var(--dls-crystal);
+    background:var(--appearance-surface);
+    color:var(--appearance-text);
+}
+.help-markdown blockquote p { margin:0; }
+.help-markdown table {
+    width:100%; border-collapse:collapse; margin:12px 0;
+    background:var(--appearance-surface); border:1px solid var(--appearance-line-soft);
+    font-size:12px;
+}
+.help-markdown th, .help-markdown td {
+    padding:7px 10px; text-align:left;
+    border-bottom:1px solid var(--appearance-line-soft);
+    vertical-align:top;
+}
+.help-markdown th {
+    background:var(--appearance-surface-raised);
+    color:var(--appearance-pane-heading); font-weight:700;
+}
+.help-markdown td { color:var(--appearance-secondary-text); }
+.help-markdown code {
+    background:var(--appearance-surface-raised);
+    border:1px solid var(--appearance-line);
+    border-radius:3px; padding:1px 5px;
+    font-family:var(--cf7-font-web-workbench-mono);
+    font-size:12px; color:var(--dls-crystal-bright);
+}
+.help-markdown pre {
+    background:var(--appearance-surface);
+    border:1px solid var(--appearance-line);
+    border-radius:4px; padding:10px 14px; overflow-x:auto;
+    font-size:12px; line-height:1.5;
+}
+.help-markdown pre code { background:none; border:none; padding:0; }
+.help-markdown strong { color:var(--appearance-strong-text); }
+.help-markdown em { color:var(--appearance-muted); }
+.help-loading { color:var(--appearance-muted); font-style:italic; }
+.help-error { color:var(--wb-semantic-danger); }
 
 /* Scrollbar */
 .help-content::-webkit-scrollbar { width:6px; }
-.help-content::-webkit-scrollbar-track { background:rgba(0,0,0,0.2); }
-.help-content::-webkit-scrollbar-thumb { background:rgba(0,240,255,0.2); border-radius:3px; }
-.help-content::-webkit-scrollbar-thumb:hover { background:rgba(0,240,255,0.4); }
+.help-content::-webkit-scrollbar-button { display:none; }
+.help-content::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); }
+.help-content::-webkit-scrollbar-thumb { background:var(--wb-scrollbar-thumb); border-radius:3px; }
+.help-content::-webkit-scrollbar-thumb:hover { background:var(--wb-scrollbar-thumb-hover); }
 
 /* ═══════════════════════════════════════════════════════
    Jukebox Panel (Phase 5：折叠态由 C# JukeboxTitlebarWidget 接管，本面板仅承载展开内容)
