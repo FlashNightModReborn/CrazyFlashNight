@@ -56,4 +56,23 @@ class org.flashNight.aven.Promise.LoaderPromise {
             );
         });
     }
+
+    /** Boot owns these reads. They publish no game state until the normal consumer asks. */
+    public static function primeBootJSON(owner:Object, path:String, parser:String):Promise {
+        if (owner == undefined || owner !== _root.__boot) return Promise.resolve(null);
+        var cache:Object = owner.catalogReads;
+        var key:String = parser + ":" + path;
+        if (cache[key] == undefined) cache[key] = LoaderPromise.loadJSON(path, parser);
+        return cache[key];
+    }
+
+    public static function loadBootJSON(path:String, parser:String):Promise {
+        var cache:Object = _root.__boot.catalogReads;
+        var key:String = parser + ":" + path;
+        var pending:Promise = cache[key];
+        if (pending == null) return LoaderPromise.loadJSON(path, parser);
+        delete cache[key];
+        // An unsuccessful speculative read must not prevent the normal request.
+        return pending.onCatch(function(reason):Promise { return LoaderPromise.loadJSON(path, parser); });
+    }
 }

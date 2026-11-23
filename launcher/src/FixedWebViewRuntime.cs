@@ -68,8 +68,8 @@ namespace CF7Launcher
             // Existing immutable engines may be shared read-only. A Worker
             // never quarantines or repairs the ordinary user's cache.
             string existing = SafePath(SafePath(shared, specification.Version + "-" + specification.CabSha256), "engine");
-            try { VerifyTree(existing, specification.Files); return existing; }
-            catch (Exception ex) when (ex is IOException || ex is InvalidDataException || ex is UnauthorizedAccessException) { }
+            try { VerifyTree(existing, specification.Files, cachedEngine: true); return existing; }
+            catch (Exception ex) when (IsRecoverableCacheError(ex)) { }
             return Prepare(payload, privateCache, specification, verified);
         }
 
@@ -227,23 +227,46 @@ namespace CF7Launcher
             }
         }
 
-        internal static void VerifyTree(string root, Entry[] entries)
+        internal static void VerifyTree(string root, Entry[] entries, bool cachedEngine = false)
         {
             long started = Stopwatch.GetTimestamp();
             RejectReparseAncestors(root);
             if (!Directory.Exists(root)) throw new DirectoryNotFoundException(root);
             var expected = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            byte[] buffer = ArrayPool<byte>.Shared.Rent(256 * 1024);
+            var paths = new string[entries.Length];
             long bytes = 0;
             bool verified = false;
             try
             {
-                foreach (var item in entries)
+                for (int i = 0; i < entries.Length; i++)
                 {
-                    string path = SafePath(root, item.Path);
-                    if (!expected.Add(path)) throw new InvalidDataException("Duplicate WebView2 file: " + item.Path);
-                    VerifyFile(path, item.Size, item.Sha256, buffer);
-                    bytes += item.Size;
+                    paths[i] = SafePath(root, entries[i].Path);
+                    if (!expected.Add(paths[i])) throw new InvalidDataException("Duplicate WebView2 file: " + entries[i].Path);
+                }
+                void CheckFile(int i)
+                {
+                    VerifyFile(paths[i], entries[i].Size, entries[i].Sha256);
+                    Interlocked.Add(ref bytes, entries[i].Size);
+                }
+                int readers = cachedEngine ? Math.Clamp(Environment.ProcessorCount / 2, 1, 4) : 1;
+                if (readers > 1 && entries.Length > 1)
+                {
+                    var ordered = Enumerable.Range(0, entries.Length).OrderByDescending(i => entries[i].Size);
+                    try
+                    {
+                        Parallel.ForEach(ordered, new ParallelOptions { MaxDegreeOfParallelism = readers }, CheckFile);
+                    }
+                    catch (AggregateException e)
+                    {
+                        // Restoration and worker fallback handle the same exceptions as serial verification.
+                        var failures = e.Flatten().InnerExceptions;
+                        if (!failures.All(IsRecoverableCacheError)) throw;
+                        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failures[0]).Throw();
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < entries.Length; i++) CheckFile(i);
                 }
                 foreach (string file in EnumerateFiles(root))
                     if (!expected.Remove(file)) throw new InvalidDataException("Unexpected WebView2 file: " + file);
@@ -252,12 +275,14 @@ namespace CF7Launcher
             }
             finally
             {
-                ArrayPool<byte>.Shared.Return(buffer);
                 PerfTrace.Duration("webview2.verify_tree", started,
                     "files=" + entries.Length + " bytes=" + bytes + " verified=" + verified
                     + " tree=" + new DirectoryInfo(root).Name);
             }
         }
+
+        private static bool IsRecoverableCacheError(Exception error) =>
+            error is IOException || error is InvalidDataException || error is UnauthorizedAccessException;
 
         internal static void VerifyFile(string path, long size, string hash)
         {
@@ -309,11 +334,11 @@ namespace CF7Launcher
                 {
                     try
                     {
-                        VerifyTree(engine, specification.Files);
+                        VerifyTree(engine, specification.Files, cachedEngine: true);
                         PerfTrace.Mark("webview2.cache_verified", "bundleAdmissionReused=" + runtimeBundleVerified);
                         return engine;
                     }
-                    catch (Exception error) when (error is IOException || error is InvalidDataException || error is UnauthorizedAccessException)
+                    catch (Exception error) when (IsRecoverableCacheError(error))
                     {
                         // Keep evidence and any active browser's files; never recursively delete a suspect tree.
                         RejectReparseAncestors(entryRoot);

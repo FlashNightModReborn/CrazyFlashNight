@@ -20,11 +20,18 @@ namespace CF7Launcher.Data
         private readonly HashSet<string> taskIds;
         private readonly HashSet<string> structuredIds;
         private readonly Dictionary<string, string> worldHashes;
+        internal static byte[] ReadDefinitionAfterRecovery(string root)
+        {
+            MapAuthoringStore.RecoverIfPending(root);
+            return MapProjectFiles.Read(root, MapDefinition.RelativePath);
+        }
+
         public MapRuntimeContent(string root, Action<string> warn = null)
+            : this(root, warn, ReadDefinitionAfterRecovery(root)) { }
+
+        internal MapRuntimeContent(string root, Action<string> warn, byte[] bytes)
         {
             this.warn = warn;
-            MapAuthoringStore.RecoverIfPending(root);
-            byte[] bytes = MapProjectFiles.Read(root, MapDefinition.RelativePath);
             Definition = MapDefinition.Parse(bytes);
             MapRuleEvaluator.Need(Definition.Value<int>("version") == 2, "地图内容尚未完成第二阶段迁移。");
             MapAssetCandidates.WarnPublishedDrift(root, Definition, warn);

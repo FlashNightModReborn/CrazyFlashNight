@@ -23,6 +23,8 @@
             }
             return null;
         });
+        // 只给本次 XML 实例签收，所有二级 GetFileByPath 已在上面登记。
+        if (success === true && this.lastChild != null) this.__bootChildrenIssued = true;
     };
 
     this.merc_jsons_list.load("data/merc/list.xml");

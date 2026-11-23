@@ -4,7 +4,7 @@
 HeroUtil.loadHeroConfig(
     function():Void {
         trace("主程序：主角称号配置加载成功！");
-        _root.发布消息("主角称号配置加载完毕");
+        _root.server.sendServerMessage("[BootstrapAS] 主角称号配置加载完毕");
     },
     function():Void {
         trace("主程序：主角称号配置加载失败，使用默认配置！");
@@ -18,7 +18,7 @@ var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getIn
 材料大全loader.loadMaterialDictionary(
     function(data:Object):Void {
         trace("主程序：材料大全数据加载成功！");
-		_root.发布消息("材料数据加载完毕");
+		_root.server.sendServerMessage("[BootstrapAS] 材料数据加载完毕");
 		if(!_root.图鉴信息) _root.图鉴信息 = new Object();
 		_root.图鉴信息.材料大全 = data.Material;
 		_root.__boot.legacyMaterialDictionaryReady = true;

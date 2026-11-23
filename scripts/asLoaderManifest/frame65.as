@@ -5,7 +5,7 @@ var 情报信息loader:InformationDictionaryLoader = InformationDictionaryLoader
 情报信息loader.loadInformationDictionary(
     function(data:Object):Void {
         trace("主程序：情报信息数据加载成功！");
-		_root.发布消息("情报数据加载完毕");
+		_root.server.sendServerMessage("[BootstrapAS] 情报数据加载完毕");
 		if(!_root.图鉴信息) _root.图鉴信息 = new Object();
 		_root.图鉴信息.情报信息 = new Object();
 		_root.图鉴信息.情报显示位置表 = new Object();

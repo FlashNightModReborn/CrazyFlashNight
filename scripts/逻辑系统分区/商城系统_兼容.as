@@ -49,6 +49,8 @@
             _root.GetFileByPath("data/kshop/" + files[i], _root.preloaders.kshop_strarrs[i]);
         }
         _root.preloaders.kshop_list_loaded = true;
+        // 只给本次 XML 实例签收，所有二级 GetFileByPath 已在上面登记。
+        if (success === true && this.lastChild != null) this.__bootChildrenIssued = true;
     };
 
     this.kshop_jsons_list.load("data/kshop/list.xml");

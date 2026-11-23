@@ -391,7 +391,6 @@
   fillBuildMeta();
 
   // The character and archive workbenches share the launcher scene behind their surfaces.
-  loadRandomBackground();
 
   // 首页读数条默认展示世界观切片，仅在异常态切为宿主故障提示；#hud-chan / #hud-last 持续保底真实宿主回执。
   function channelEvent(label, detail, tone) {
@@ -560,25 +559,6 @@
     showWelcome();
   }
 
-  function loadRandomBackground() {
-    var art = document.getElementById('bg-art');
-    function paint(portrait) {
-      document.body.dataset.artSide = portrait.side;
-      art.dataset.side = portrait.side;
-      art.style.backgroundImage = 'url("assets/bg/' + portrait.file + '")';
-    }
-    paint({file:'remake-andy.png', side:'left'});
-    fetch('assets/bg/portraits.json').then(function (response) {
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-      return response.json();
-    }).then(function (catalog) {
-      var entries = catalog.portraits.filter(function (p) {
-        return p && /^(left|right)$/.test(p.side) && /^remake-[a-z0-9-]+\.png$/.test(p.file);
-      });
-      if (entries.length) paint(entries[Math.floor(Math.random() * entries.length)]);
-    }).catch(function (error) { logLine('tag-err', '[bg] ' + error.message); });
-  }
-
   // ── 片头视频 / 加载 overlay (Phase 2b-ext: 并行 Flash 加载) ──
   // 两相 overlay:
   //   [video 相] ov.on (无 loading 类): 视频播放, 跳过按钮可见, ESC=跳过→onVideoDone
@@ -674,9 +654,8 @@
     var skipBtn = document.getElementById('intro-skip');
     resetLoadingCopy();
     _introActive = true;
-    document.body.classList.remove('launch-handoff');
     document.body.classList.add('intro-playing', 'intro-video');
-    ov.classList.remove('loading', 'is-handoff');
+    ov.classList.remove('loading');
     ov.classList.add('on');
     skipBtn.style.display = '';
     try {
@@ -724,9 +703,7 @@
     var skipBtn = document.getElementById('intro-skip');
     resetLoadingCopy();
     _introActive = true;
-    document.body.classList.remove('launch-handoff');
     document.body.classList.add('intro-playing');
-    ov.classList.remove('is-handoff');
     ov.classList.add('on', 'loading');
     watchLoadingDelay();
     skipBtn.onclick = null;
@@ -767,8 +744,8 @@
     if (_currentModal === 'diagnostic-log' && loadingSlow.contains(_modalReturnFocus)) closeModal();
     loadingSlow.hidden = true;
     try { vid.pause(); vid.onended = null; vid.onerror = null; } catch (e) {}
-    ov.classList.remove('on', 'loading', 'is-handoff');
-    document.body.classList.remove('intro-playing', 'intro-video', 'launch-handoff');
+    ov.classList.remove('on', 'loading');
+    document.body.classList.remove('intro-playing', 'intro-video');
     skipBtn.onclick = null;
     skipBtn.style.display = '';
     // 复位 flash-ready 样式 (下一 attempt 全新开始)
@@ -886,8 +863,8 @@
   var launchLabels = {
     Idle: '就绪', Spawning: '正在启动', WaitingConnect: '正在连接',
     WaitingHandshake: '正在连接', PrewarmHandshakeHeld: '准备就绪',
-    Embedding: '正在载入画面', RepairPending: '等待修复存档', WaitingGameReady: '等待游戏就绪',
-    Ready: '游戏就绪', Error: '启动失败', Resetting: '正在重置'
+    Embedding: '正在载入画面', RepairPending: '等待修复存档', WaitingGameReady: '正在连接游戏',
+    Ready: '正在准备场景', Error: '启动失败', Resetting: '正在重置'
   };
   function applyState(state, msg) {
     var label = launchLabels[state] || state;
@@ -1276,13 +1253,9 @@
       sk.textContent = '进入游戏 · ESC';
       // Flash 封面就绪: 同步响一次就绪和弦, 并关掉环境 hum 让位给 Flash BGM.
       if (Audio) { Audio.playReady(); Audio.stopAmbient(); }
-      // 仅在加载进入游戏态且非降级/非建角预热时，提前把加载幕收敛至玄黑 #06090c，
-      // 与 Host 侧原生 Reveal Curtain 同色衔接，避免 WebView2 → Flash 退场硬切。
-      var ovReady = document.getElementById('intro-ov');
-      if (_introActive && !_characterCreatePrepToken && !msg.degraded && !_reducedMotion
-          && ovReady && ovReady.classList.contains('loading')) {
-        ovReady.classList.add('is-handoff');
-        document.body.classList.add('launch-handoff');
+      if (_introActive && !_characterCreatePrepToken && !msg.degraded
+          && document.getElementById('intro-ov').classList.contains('loading')) {
+        setLoadingStage(3, '正在进入游戏场景');
       }
     }
     else if (msg.cmd === 'delete_resp' || msg.cmd === 'reset_resp') {
@@ -1829,14 +1802,14 @@
   initAudioBindings();
   showWelcome();   // 默认欢迎视图
   document.getElementById('btn-welcome-new').onclick = handleNewCharacterClick;
-  window.BootstrapApp.onMessage('flash_ready', function () { channelEvent('游戏就绪'); });
+  window.BootstrapApp.onMessage('flash_ready', function () { channelEvent('游戏连接成功'); });
   // Keep the original Flash event available on hover and in the diagnostic log.
   var bootLabels = {
     'socket ready, firing handshake': '连接就绪，开始握手',
     'handshake hs=Success': '握手成功',
     'firing preload': '开始预载资源',
     'sending ready ack': '已发送就绪回执',
-    'bootstrap complete, jumping boot_check': '启动引导完成',
+    'bootstrap complete, jumping boot_check': '正在载入游戏数据',
     'shim missing, stopped': '启动组件缺失'
   };
   function bootLabel(line) {

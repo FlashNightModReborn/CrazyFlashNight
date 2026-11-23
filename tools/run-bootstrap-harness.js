@@ -440,7 +440,7 @@ async function main() {
             try {
                 await page.setViewportSize({ width:1066, height:600 });
                 await page.evaluate(() => {
-                    for (const [state, label] of [['Idle', '就绪'], ['RepairPending', '等待修复存档'], ['Ready', '游戏就绪']]) {
+                    for (const [state, label] of [['Idle', '就绪'], ['RepairPending', '等待修复存档'], ['Ready', '正在准备场景']]) {
                         window.__bootstrapHarnessEmit({ cmd:'state', state, msg:'host-detail' });
                         const badge = document.getElementById('state-badge');
                         if (badge.textContent !== label || !badge.title.includes('host-detail')

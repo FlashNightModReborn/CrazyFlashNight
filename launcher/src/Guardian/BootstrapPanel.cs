@@ -65,7 +65,7 @@ namespace CF7Launcher.Guardian
             this.AutoScaleMode = AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(24, 24, 26);
 
-            _webView = new WebView2();
+            _webView = new WebView2 { DefaultBackgroundColor = this.BackColor };
             _webView.Dock = DockStyle.Fill;
             this.Controls.Add(_webView);
 

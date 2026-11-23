@@ -6,6 +6,7 @@ class org.flashNight.gesh.json.JSONLoader {
     private var onLoadHandler:Function;
     private var onErrorHandler:Function;
     private var parsedData:Object;
+    private var catalogLenient:Boolean;
     private var parseType:String = "JSON"; // JSON, LiteJSON, FastJSON
 
     /**
@@ -20,6 +21,11 @@ class org.flashNight.gesh.json.JSONLoader {
         this.onLoadHandler = onLoadHandler;
         this.onErrorHandler = onErrorHandler;
         switch(_parseType){
+            case "CatalogJSON":
+                this.parseType = "CatalogJSON";
+                this.catalogLenient = lenientMode != undefined ? lenientMode : true;
+                this.json = new LiteJSON();
+                break;
             case "LiteJSON":
                 this.parseType = "LiteJSON";
                 this.json = new LiteJSON();
@@ -61,9 +67,20 @@ class org.flashNight.gesh.json.JSONLoader {
      * @param rawData The raw JSON string data.
      */
     private function handleLoadSuccess(rawData:String):Void {
+        var boot:Object = _root.__boot;
+        var started:Number = boot != undefined ? getTimer() : 0;
         try {
-            this.parsedData = this.json.parse(rawData);
+            if (this.parseType == "CatalogJSON") {
+                this.parsedData = LiteJSON(this.json).tryParseCatalog(rawData);
+                if (this.parsedData === undefined) {
+                    this.json = new JSON(this.catalogLenient);
+                    this.parsedData = this.json.parse(rawData);
+                }
+            } else {
+                this.parsedData = this.json.parse(rawData);
+            }
             
+            var parsedAt:Number = boot != undefined ? getTimer() : 0;
             var errors = this.json["errors"];
             if (errors.length > 0) {
                 // Log parsing errors
@@ -74,6 +91,9 @@ class org.flashNight.gesh.json.JSONLoader {
 
             if (this.onLoadHandler != null) {
                 this.onLoadHandler(this.parsedData);
+            }
+            if (boot != undefined && boot === _root.__boot && boot.recordLoad != undefined) {
+                boot.recordLoad(this.url, parsedAt - started, getTimer() - parsedAt);
             }
         } catch (e:Object) {
             this.handleLoadError("JSON parsing error: " + e.message);

@@ -19,6 +19,8 @@
             _root.preloaders.units_strarrs.push([]);
             _root.GetFileByPath("data/units/" + files[i], _root.preloaders.units_strarrs[i]);
         }
+        // 只给本次 XML 实例签收，所有二级 GetFileByPath 已在上面登记。
+        if (success === true && this.lastChild != null) this.__bootChildrenIssued = true;
     };
 
     this.units_jsons_list.load("data/units/list.xml");

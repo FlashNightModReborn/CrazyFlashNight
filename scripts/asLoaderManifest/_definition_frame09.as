@@ -192,7 +192,7 @@ _root.__boot.f62 = function() {
                 return;
             }
             trace("主程序：物品数据加载成功！");
-            _root.发布消息("物品数据加载完毕");
+            _root.server.sendServerMessage("[BootstrapAS] 物品数据加载完毕");
             // equipment-config 与 item-data 同属 S8 并发。先保存 raw payload，
             // 由 BootSequencer 在 config settled 后唯一调用 ItemUtil.loadItemData，
             // 避免 multiTierDict 固化旧 tierDataList。
@@ -219,7 +219,7 @@ _root.__boot.f63 = function() {
                 return;
             }
             trace("主程序：敌人属性数据加载成功！");
-            _root.发布消息("敌人属性数据加载完毕");
+            _root.server.sendServerMessage("[BootstrapAS] 敌人属性数据加载完毕");
             //trace("合并后的数据: " + ObjectUtil.toString(combinedData));
             // 在此处处理合并后的敌人属性数据
             _root.敌人属性表 = combinedData;
@@ -236,7 +236,7 @@ _root.__boot.f64 = function() {
     HeroUtil.loadHeroConfig(
         function():Void {
             trace("主程序：主角称号配置加载成功！");
-            _root.发布消息("主角称号配置加载完毕");
+            _root.server.sendServerMessage("[BootstrapAS] 主角称号配置加载完毕");
         },
         function():Void {
             trace("主程序：主角称号配置加载失败，使用默认配置！");
@@ -248,7 +248,7 @@ _root.__boot.f64 = function() {
     材料大全loader.loadMaterialDictionary(
         function(data:Object):Void {
             trace("主程序：材料大全数据加载成功！");
-            _root.发布消息("材料数据加载完毕");
+            _root.server.sendServerMessage("[BootstrapAS] 材料数据加载完毕");
             if(!_root.图鉴信息) _root.图鉴信息 = new Object();
             _root.图鉴信息.材料大全 = data.Material;
             _root.__boot.legacyMaterialDictionaryReady = true;
@@ -268,7 +268,7 @@ _root.__boot.f65 = function() {
     情报信息loader.loadInformationDictionary(
         function(data:Object):Void {
             trace("主程序：情报信息数据加载成功！");
-            _root.发布消息("情报数据加载完毕");
+            _root.server.sendServerMessage("[BootstrapAS] 情报数据加载完毕");
             if(!_root.图鉴信息) _root.图鉴信息 = new Object();
             _root.图鉴信息.情报信息 = new Object();
             _root.图鉴信息.情报显示位置表 = new Object();
@@ -295,7 +295,7 @@ _root.__boot.f66 = function() {
     StageInfoLoader.loadStageInfo(
         function(combinedData:Object):Void {
             trace("主程序：关卡信息加载成功！");
-            _root.发布消息("关卡信息加载完毕");
+            _root.server.sendServerMessage("[BootstrapAS] 关卡信息加载完毕");
             _root.StageInfoDict = combinedData;
         },
         function():Void {

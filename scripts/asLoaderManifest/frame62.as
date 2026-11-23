@@ -13,7 +13,7 @@ ItemDataLoader.loadItemData(
 			return;
 		}
         trace("主程序：物品数据加载成功！");
-		_root.发布消息("物品数据加载完毕");
+		_root.server.sendServerMessage("[BootstrapAS] 物品数据加载完毕");
 		// equipment-config 与 item-data 同属 S8 并发。先保存 raw payload，
 		// 由 BootSequencer 在 config settled 后唯一调用 ItemUtil.loadItemData，
 		// 避免 multiTierDict 固化旧 tierDataList。

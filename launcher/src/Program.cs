@@ -1716,7 +1716,16 @@ class Program
         string dollPortraitsDir = DressupRenderAssets.LootPortraitDirectory(webDir);
         // 玩家启动不抢地图工作台恢复锁；地图定义与世界源进程内固定（作者应用后重启切换），
         // 任务目录层可按发布事件热重载，见 MapDomainTask 的 task_sync。
-        var mapRuntimeContent = new CF7Launcher.Data.MapRuntimeContent(projectRoot, msg => LogManager.Log("[MapRuntimeContent] WARN: " + msg));
+        // Recovery stays on its original owner before any reader. The web overlay and
+        // the world-content worker read the same snapshot without sharing a mutable JObject.
+        byte[] mapDefinitionBytes = CF7Launcher.Data.MapRuntimeContent.ReadDefinitionAfterRecovery(projectRoot);
+        var overlayMapDefinition = CF7Launcher.Data.MapDefinition.Parse(mapDefinitionBytes);
+        var mapRuntimeLoad = Task.Run(() =>
+        {
+            using (PerfTrace.Scope("startup.map_world_content"))
+                return new CF7Launcher.Data.MapRuntimeContent(projectRoot,
+                    msg => LogManager.Log("[MapRuntimeContent] WARN: " + msg), mapDefinitionBytes);
+        });
         // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）。提前到 WebOverlay 构造前，
         // 因为后续 PanelHostController 也复用同一份。WebOverlay 自身的焦点回推走 flashFocusRestorer。
         Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
@@ -1746,7 +1755,7 @@ class Program
                 config.WebView2DeveloperMode,
                 workerPolicy == null && harnessPolicy == null && config.WebOverlayPanelTakeForeground,
                 workerPolicy == null && config.WebOverlayHotReload,
-                flashFocusRestorer, mapRuntimeContent.Definition,
+                flashFocusRestorer, overlayMapDefinition,
                 windowManager.HandoffFlashFocusBeforePanelHide);
         }
         StartupDiagnostics.Mark("web_overlay.construct_ok");
@@ -2712,6 +2721,9 @@ class Program
             }
         });
         MapTask mapTask = new MapTask(socketServer);
+        CF7Launcher.Data.MapRuntimeContent mapRuntimeContent;
+        using (PerfTrace.Scope("startup.map_world_join"))
+            mapRuntimeContent = mapRuntimeLoad.GetAwaiter().GetResult();
         MapDomainTask mapDomainTask = new MapDomainTask(socketServer, mapRuntimeContent, mapCatalog, projectRoot);
         webOverlay.SetMapDomain(mapDomainTask);
         ArenaTask arenaTask = new ArenaTask(socketServer, projectRoot);

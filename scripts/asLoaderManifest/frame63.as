@@ -12,7 +12,7 @@ enemyPropertiesLoader.loadEnemyProperties(
 			return;
 		}
         trace("主程序：敌人属性数据加载成功！");
-		_root.发布消息("敌人属性数据加载完毕");
+		_root.server.sendServerMessage("[BootstrapAS] 敌人属性数据加载完毕");
         //trace("合并后的数据: " + ObjectUtil.toString(combinedData));
         // 在此处处理合并后的敌人属性数据
         _root.敌人属性表 = combinedData;

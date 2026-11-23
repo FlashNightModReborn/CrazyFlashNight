@@ -38,6 +38,21 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void CachedEngineRequiresTheExactInventoryAndKeepsTamperErrorsRecoverable()
+        {
+            var main = Write("engine.dll", new byte[] { 1, 2 });
+            var locale = Write("locales/zh-CN.pak", new byte[] { 3 });
+            var entries = new[] { main, locale };
+            FixedWebViewRuntime.VerifyTree(_root, entries, cachedEngine: true);
+            Assert.Throws<InvalidDataException>(() => FixedWebViewRuntime.VerifyTree(_root, new[] { main, main }, cachedEngine: true));
+            Assert.Throws<InvalidDataException>(() => FixedWebViewRuntime.VerifyTree(_root, new[] { main }, cachedEngine: true));
+            File.WriteAllBytes(Path.Combine(_root, main.Path), new byte[] { 2, 1 });
+            Assert.Throws<InvalidDataException>(() => FixedWebViewRuntime.VerifyTree(_root, entries, cachedEngine: true));
+            File.Delete(Path.Combine(_root, main.Path));
+            Assert.Throws<InvalidDataException>(() => FixedWebViewRuntime.VerifyTree(_root, entries, cachedEngine: true));
+        }
+
+        [Fact]
         public void TamperedSameLengthFile_IsRejected()
         {
             var entry = Write("engine.dll", new byte[] { 1, 2 });

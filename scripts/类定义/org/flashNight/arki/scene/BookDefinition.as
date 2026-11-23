@@ -32,6 +32,13 @@ class org.flashNight.arki.scene.BookDefinition {
         return _data;
     }
     public static function ready(id:String, route:String):Boolean { return selected(id) === "cf6-sting" ? org.flashNight.arki.scene.BookDefinition.get(id,route) != null : selected(id) === "repair-campus" && _loaded; }
+    /** Read slot-independent definition bytes while the front door is waiting. Validation
+     *  and published route state are still owned by load(), after reward rules are ready. */
+    public static function primeRoutes(owner:Object):Void {
+        org.flashNight.aven.Promise.LoaderPromise.primeBootJSON(owner, "data/stages/books/cf6-sting.runtime.json", "LiteJSON").onCatch(function(reason) { return null; });
+        org.flashNight.aven.Promise.LoaderPromise.primeBootJSON(owner, "data/stages/books/cf6-type61.runtime.json", "LiteJSON").onCatch(function(reason) { return null; });
+    }
+
     public static function load(id:String, route:String):Void {
         id = selected(id);
         if (id === "cf6-sting") {
@@ -40,17 +47,13 @@ class org.flashNight.arki.scene.BookDefinition {
             if (route === "type61") {
                 if (_type61Loading || _type61 != null) return;
                 _type61Loading=true;
-                var type61Loader:org.flashNight.gesh.json.LoadJson.BaseJSONLoader = new org.flashNight.gesh.json.LoadJson.BaseJSONLoader(
-                    "data/stages/books/cf6-type61.runtime.json", "LiteJSON");
-                type61Loader.load(function(data:Object):Void { org.flashNight.arki.scene.BookDefinition.acceptFor("cf6-sting",data,"type61"); },
+                org.flashNight.aven.Promise.LoaderPromise.loadBootJSON("data/stages/books/cf6-type61.runtime.json", "LiteJSON").then(function(data:Object):Void { org.flashNight.arki.scene.BookDefinition.acceptFor("cf6-sting",data,"type61"); },
                     function(error:String):Void { org.flashNight.arki.scene.BookDefinition.loadFailedFor("cf6-sting","type61"); });
                 return;
             }
             if (_cf6Loading || _cf6 != null) return;
             _cf6Loading = true;
-            var cf6Loader:org.flashNight.gesh.json.LoadJson.BaseJSONLoader = new org.flashNight.gesh.json.LoadJson.BaseJSONLoader(
-                "data/stages/books/cf6-sting.runtime.json", "LiteJSON");
-            cf6Loader.load(function(data:Object):Void { org.flashNight.arki.scene.BookDefinition.acceptFor("cf6-sting", data,"historical"); },
+            org.flashNight.aven.Promise.LoaderPromise.loadBootJSON("data/stages/books/cf6-sting.runtime.json", "LiteJSON").then(function(data:Object):Void { org.flashNight.arki.scene.BookDefinition.acceptFor("cf6-sting", data,"historical"); },
                 function(error:String):Void { org.flashNight.arki.scene.BookDefinition.loadFailedFor("cf6-sting","historical"); });
             return;
         }

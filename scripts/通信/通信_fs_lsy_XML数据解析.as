@@ -417,6 +417,8 @@ _root.加载并配置发型库 = function(xml文件地址:String):Void
 	var 发型:XML = new XML();
 	发型.ignoreWhite = true;
 	发型.onLoad = function(加载成功:Boolean){
+        var bootStarted:Number = getTimer();
+
 		if (加载成功){
 			var hairstyle = _root.解析XML节点(this.firstChild)
 			var hairNodes:Array = hairstyle.Hair;
@@ -435,7 +437,9 @@ _root.加载并配置发型库 = function(xml文件地址:String):Void
 		}else{
 			//_root.服务器.发布服务器消息("无法加载 XML 文件: " + xml文件地址);
 		}
-	};
+
+        if (_root.__boot.recordLoad != undefined) _root.__boot.recordLoad("发型", 0, getTimer() - bootStarted);
+    };
 	发型.load(xml文件地址);
 };
 
@@ -485,6 +489,8 @@ _root.色彩引擎.加载并配置色彩预设 = function(xml文件地址:String
 
     colorEngineXML.onLoad = function(success:Boolean)
 	{
+        var bootStarted:Number = getTimer();
+
 		if (success) 
 		{
             _root.色彩引擎.光照等级映射表 = {};
@@ -530,6 +536,8 @@ _root.色彩引擎.加载并配置色彩预设 = function(xml文件地址:String
 		{
             _root.服务器.发布服务器消息("无法加载XML文件: " + xml文件地址);
         }
+
+        if (_root.__boot.recordLoad != undefined) _root.__boot.recordLoad("colorEngineXML", 0, getTimer() - bootStarted);
     };
 	
     colorEngineXML.load(xml文件地址);
@@ -540,6 +548,8 @@ _root.加载并配置宠物信息 = function(xml文件地址:String):Void
 	var 宠物XML:XML = new XML();
 	宠物XML.ignoreWhite = true;
 	宠物XML.onLoad = function(加载成功:Boolean){
+        var bootStarted:Number = getTimer();
+
 		if (加载成功){
 			var 宠物数据 = _root.解析XML节点(this.firstChild);
 			_root.宠物库 = 宠物数据.Pet;
@@ -550,7 +560,9 @@ _root.加载并配置宠物信息 = function(xml文件地址:String):Void
 		}else{
 			//_root.服务器.发布服务器消息("无法加载 XML 文件: " + xml文件地址);
 		}
-	};
+
+        if (_root.__boot.recordLoad != undefined) _root.__boot.recordLoad("宠物XML", 0, getTimer() - bootStarted);
+    };
 	宠物XML.load(xml文件地址);
 };
 
@@ -561,6 +573,8 @@ _root.加载过场背景与文本 = function(xml文件地址:String):Void
 	var 背景XML:XML = new XML();
 	背景XML.ignoreWhite = true;
 	背景XML.onLoad = function(加载成功:Boolean){
+        var bootStarted:Number = getTimer();
+
 		if (加载成功){
 			var 加载背景列表 = new Object();
 			var loading = _root.解析XML节点(this.firstChild);
@@ -572,7 +586,9 @@ _root.加载过场背景与文本 = function(xml文件地址:String):Void
 		}else{
 			//_root.服务器.发布服务器消息("无法加载 XML 文件: " + xml文件地址);
 		}
-	};
+
+        if (_root.__boot.recordLoad != undefined) _root.__boot.recordLoad("背景XML", 0, getTimer() - bootStarted);
+    };
 	背景XML.load(xml文件地址);
 };
 

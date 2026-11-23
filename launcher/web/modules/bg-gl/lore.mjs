@@ -14,8 +14,8 @@ const FLAVOR = {
   WaitingConnect: '等待渲染进程连接…',
   WaitingHandshake: '诺亚终端握手…',
   Embedding: 'AVM1 沙箱嵌入…',
-  WaitingGameReady: '等待游戏就绪信号…',
-  Ready: '游戏就绪 · 矩阵同步',
+  WaitingGameReady: '等待游戏连接…',
+  Ready: '连接就绪 · 矩阵同步',
   Idle: '轨道重置 · 回到监听态',
   Resetting: '轨道重置 · 回到监听态',
   RepairPending: '存档修复待确认',
@@ -40,7 +40,7 @@ const BOOT_LABELS = {
   'handshake hs=Success': '双向握手通过',
   'firing preload': '预载核心资源…',
   'sending ready ack': '发送就绪回执',
-  'bootstrap complete, jumping boot_check': '引导链完成 · 切入主场景',
+  'bootstrap complete, jumping boot_check': '正在载入游戏数据',
   'shim missing, stopped': '启动组件缺失 · 流程中止',
 };
 function localizeBoot(value) {

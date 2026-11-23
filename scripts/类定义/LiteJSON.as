@@ -170,11 +170,32 @@
     }
 
     /**
+     * Read the simple subset used by startup catalogs. Return undefined so the
+     * caller can reparse the untouched source with JSON's original recovery,
+     * number conversion, depth limit and UTF-16 behavior on other documents.
+     */
+    public function tryParseCatalog(text:String) {
+        if (text.indexOf("\\") >= 0 || text.indexOf("\"__") >= 0) return undefined;
+        // escape() runs in FP20 native code. Four-byte UTF-8 leads and replacement
+        // characters identify strings whose legacy charAt behavior must be preserved.
+        var encoded:String = escape(text);
+        if (encoded.indexOf("%F0") >= 0 || encoded.indexOf("%F1") >= 0
+                || encoded.indexOf("%F2") >= 0 || encoded.indexOf("%F3") >= 0
+                || encoded.indexOf("%F4") >= 0 || encoded.indexOf("%EF%BF%") >= 0
+                || encoded.indexOf("%00") >= 0) return undefined;
+        return parseDocument(text, true);
+    }
+
+    /**
      * 解析 LiteJSON 文本
      * @param inputText 要解析的 LiteJSON 字符串
      * @return 解析后的 AS2 对象
      */
     public function parse(inputText:String) {
+        return parseDocument(inputText, false);
+    }
+
+    private function parseDocument(inputText:String, catalog:Boolean) {
         var text:String = inputText;
         var textLength:Number = length(text);
         var chars:Array = text.split("");
@@ -406,6 +427,7 @@
             }
 
             if (currentCh === "{") {
+                if (catalog && stackPtr >= 64) { failed = true; break; }
                 // 保持普通 Object，避免把 proto-null 对象暴露给通用加载链。
                 object = {};
                 at++;
@@ -416,6 +438,7 @@
             }
 
             if (currentCh === "[") {
+                if (catalog && stackPtr >= 64) { failed = true; break; }
                 array = [];
                 at++;
                 tRef[tKey] = array;
@@ -497,6 +520,8 @@
                     numValue = -numValue;
                 }
 
+                // Long numeric tokens go through the legacy Number(string) implementation.
+                if (catalog && at - numberStart > 15) { failed = true; break; }
                 tRef[tKey] = numValue;
                 continue;
             }

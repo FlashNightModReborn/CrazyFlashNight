@@ -46,6 +46,17 @@ class org.flashNight.boot.BootSequencer {
     var hsPhase:Number;     // S_HANDSHAKE 子相位: 1=socket 2=handshake 3=wait-main-resume
     var hsStart:Number;     // socket 等待起始 getTimer()
     var sysPhase:Number;    // S_SYNCSYS 子相位: 0=pre 1=等异步preload落地 2=逐tick抽干 _root.loaders
+    private var phaseStarted:Number;
+    private var phaseWall:Array;
+    private var phaseWork:Array;
+    private var workMax:Array;
+    private var systemWaitStarted:Number;
+    private var systemWaitMs:Number;
+    private var systemLoadWork:Array;
+    private var syncLogicMs:Number;
+    private var miscStartMs:Number;
+    private var itemIndexMs:Number;
+    private var acquireIndexMs:Number;
     var sysWait:Number;     // S_SYNCSYS 相位1 等待计帧（等 GetFileByPath/LoadVars 异步加载落地）
     var sawPending:Boolean; // S_SYNCSYS 相位1: 是否曾观测到 __pendingFileLoads>0（二级文件加载已起飞）——
                             //   防「首层 list.xml 慢加载、GetFileByPath 尚未起飞」时 pending==0 被误判为「已加载完」提前放行
@@ -66,6 +77,31 @@ class org.flashNight.boot.BootSequencer {
         this.sysPhase = 0;
         this.sysWait = 0;
         this.sawPending = false;
+        this.phaseWall = [];
+        this.phaseWork = [];
+        this.workMax = [];
+        this.systemLoadWork = [];
+        // Bounds the evidence retained during startup; the boot object disappears at handoff.
+        this.b.slowLoads = [];
+        this.b.recordLoad = function(path:String, parseMs:Number, handlerMs:Number):Void {
+            var total:Number = parseMs + handlerMs;
+            this.totalParseMs += parseMs;
+            this.totalHandlerMs += handlerMs;
+            if (total < 25) return;
+            var at:Number = 0;
+            while (at < this.slowLoads.length && this.slowLoads[at].total >= total) at++;
+            if (at < 12) {
+                this.slowLoads.splice(at, 0, {total:total, name:path.substr(path.lastIndexOf("/") + 1),
+                    parse:parseMs, handler:handlerMs});
+                if (this.slowLoads.length > 12) this.slowLoads.pop();
+            }
+        };
+        this.b.totalParseMs = 0;
+        this.b.totalHandlerMs = 0;
+        for (var phase:Number = S_TASKDATA; phase <= S_CRAFTING; phase++) {
+            this.phaseWork[phase - S_TASKDATA] = 0;
+            this.workMax[phase - S_TASKDATA] = 0;
+        }
     }
 
     function start():Void {
@@ -78,6 +114,8 @@ class org.flashNight.boot.BootSequencer {
     }
 
     function step():Void {
+        var previous:Number = this.state;
+        var started:Number = getTimer();
         switch (this.state) {
             case S_INIT:      org.flashNight.gesh.init.GlobalInitializer.initialize(); this.state = S_SYNCCODE; break;
             case S_SYNCCODE:  this.b.s1_syncCode();    this.state = S_HANDSHAKE; this.hsPhase = 1; this.hsStart = getTimer(); this.bslog("handshake stage entered, _bootstrap=" + (_root._bootstrap != undefined) + " server=" + (_root.server != undefined)); break;
@@ -92,6 +130,20 @@ class org.flashNight.boot.BootSequencer {
             case S_HANDOFF:   this.handoff();          break;
             case S_HALT:      break; // 停在加载画面（fail-closed）
         }
+        if (previous >= S_HANDSHAKE && previous <= S_CRAFTING) this.recordStep(previous, started);
+    }
+
+    // Wall includes inter-frame callbacks. Work is only synchronous time inside step().
+    private function recordStep(previous:Number, started:Number):Void {
+        var now:Number = getTimer();
+        if (previous >= S_TASKDATA && previous <= S_CRAFTING) {
+            var index:Number = previous - S_TASKDATA;
+            var elapsed:Number = now - started;
+            this.phaseWork[index] += elapsed;
+            if (elapsed > this.workMax[index]) this.workMax[index] = elapsed;
+            if (this.state != previous) this.phaseWall[index] = now - this.phaseStarted;
+        }
+        if (this.state != previous) this.phaseStarted = now;
     }
 
     // === 诊断 + 终止辅助 ===
@@ -141,6 +193,13 @@ class org.flashNight.boot.BootSequencer {
                 this.host.打印加载内容("握手启动器……");
                 this.bslog("socket ready, firing handshake");
                 sm.startHandshake();
+                if (this.tickClip != undefined && this.b.catalogReads == undefined) {
+                    this.b.catalogReads = {};
+                    this.b.catalogDemand = {};
+                    org.flashNight.aven.Promise.ListLoader.primeBootList(this.b, "data/task/", "task", "agent_tasks.json");
+                    org.flashNight.aven.Promise.ListLoader.primeBootList(this.b, "data/task/text/", "text", "agent_text.json");
+                    org.flashNight.arki.scene.BookDefinition.primeRoutes(this.b);
+                }
                 this.hsPhase = 2;
             }
             return;
@@ -186,7 +245,7 @@ class org.flashNight.boot.BootSequencer {
             if (this.b.choiceRewardsFired != true) {
                 this.b.choiceRewardsFired = true;
                 var self:BootSequencer = this;
-                var loader:BaseJSONLoader = new BaseJSONLoader("data/rewards/choice-rewards.runtime.json", "JSON");
+                var loader:BaseJSONLoader = new BaseJSONLoader("data/rewards/choice-rewards.runtime.json", "CatalogJSON");
                 loader.load(function(data:Object):Void {
                     if (self.state != BootSequencer.S_SYNCLOGIC) return;
                     if (!ChoiceRewardDefinition.accept(data)) {
@@ -201,9 +260,13 @@ class org.flashNight.boot.BootSequencer {
             }
             if (this.state == S_HALT || !ChoiceRewardDefinition.ready()) return;
         }
+        var codeStarted:Number = getTimer();
         this.b.s7_syncLogic();
+        this.syncLogicMs = getTimer() - codeStarted;
         this.host.打印加载内容("加载杂项数据……");
+        var miscStarted:Number = getTimer();
         this.b.s7_miscLoaders();
+        this.miscStartMs = getTimer() - miscStarted;
         org.flashNight.arki.interaction.NativeMenuBridge.install();
         org.flashNight.arki.dialogue.NativeDialogueService.install();
         org.flashNight.arki.hud.PlayerHudService.install();
@@ -218,7 +281,7 @@ class org.flashNight.boot.BootSequencer {
             var self:BootSequencer = this;
             TaskDataLoader.getInstance().loadTaskData(
                 function(data:Object):Void {
-                    _root.发布消息("任务数据加载完毕");        // 移植 f5:14（事件总线副作用，C1 必留）
+                    self.bslog("任务数据加载完毕");
                     self.host.rawTaskData = data; self.b.taskDataReady = true;
                 },
                 function():Void {});
@@ -232,7 +295,7 @@ class org.flashNight.boot.BootSequencer {
             var self:BootSequencer = this;
             TaskTextLoader.getInstance().loadTaskText(
                 function(data:Object):Void {
-                    _root.发布消息("任务文本加载完毕");        // 移植 f6:11
+                    self.bslog("任务文本加载完毕");
                     self.host.rawTextData = data; self.b.taskTextReady = true;
                 },
                 function():Void {});
@@ -313,7 +376,9 @@ class org.flashNight.boot.BootSequencer {
         }
         if (this.b.itemDataLoaded == true && this.b.equipmentConfigSettled == true
                 && this.b.itemDataReady != true && this.b.itemDataFailed != true) {
+            var itemStarted:Number = getTimer();
             org.flashNight.arki.item.ItemUtil.loadItemData(this.b.itemDataPayload);
+            this.itemIndexMs = getTimer() - itemStarted;
             delete this.b.itemDataPayload;
             if (org.flashNight.arki.item.ItemUtil.itemDataDict == undefined
                     || org.flashNight.arki.item.ItemUtil.materialDict == undefined) {
@@ -389,11 +454,13 @@ class org.flashNight.boot.BootSequencer {
                 return;
             }
             if (this.b.materialSourceIndexReady != true) {
+                var indexStarted:Number = getTimer();
                 var obtainIndex = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
                 obtainIndex.buildIndex(_root.改装清单, _root.shops,
                     _root.kshop_list, _root.竞技场掉落规则);
                 obtainIndex.rehydrateDiscoveredRecordsFromCurrentConfig();
                 this.b.materialSourceIndexReady = true;
+                this.acquireIndexMs = getTimer() - indexStarted;
             }
             this.state = S_HANDOFF;
         }
@@ -407,6 +474,7 @@ class org.flashNight.boot.BootSequencer {
         if (this.sysPhase == 0) {       // pre：建队列 + 入队 + 跑 preloaders（fire 异步 XML.load / GetFileByPath）
             this.b.s6_pre();            // = f9() + f10() + f18()
             this.sysPhase = 1;
+            this.systemWaitStarted = getTimer();
             this.sysWait = 0;
             return;
         }
@@ -414,12 +482,23 @@ class org.flashNight.boot.BootSequencer {
             this.sysWait++;
             var pending:Number = (_root.__pendingFileLoads == undefined) ? 0 : _root.__pendingFileLoads;
             if (pending > 0) this.sawPending = true;             // 二级文件加载已起飞（GetFileByPath ++）
-            if (this.sysWait < 30) return;                       // 最少 30 帧：让首发 XML.load 的 onLoad 触发 + GetFileByPath 起飞
-            // pending==0 二义：① 全加载完  ② 首层 list.xml 还没 onLoad、GetFileByPath 尚未起飞（__pendingFileLoads 只计二级 LoadVars，不计一级 XML.load）。
-            // 仅当**曾观测到 pending>0**（loads 确已开始、现已清零）才放行；否则等 GetFileByPath 起飞或 150 帧兜底——
-            //   修复「首层 list.xml 慢加载 → 帧30 时 pending 仍 0 → 提前抽空 loader → 佣兵/兵种/商城/商店数据缺载」的残余 race。
-            if (this.sawPending != true && this.sysWait < 150) return;   // 还没起飞过任何二级加载 → 继续等（慢 list.xml）
-            if (pending > 0 && this.sysWait < 150) return;               // 二级加载仍在途 → 继续等；150 帧兜底防卡（加载失败 onData 不回）
+            // 每个受管 list 的 onLoad 在发出全部子请求后才封口；不能只看二级计数偶然为零。
+            // 兼容外部扩展的旧 preload 队列，未知生产者仍使用原来的等待门。
+            var lists:Array = _root.preloaders;
+            var tracked:Boolean = lists.length == 4 && lists.merc_jsons_list != undefined
+                && lists.units_jsons_list != undefined && lists.kshop_jsons_list != undefined
+                && lists.shops_jsons_list != undefined;
+            if (tracked) {
+                var issued:Boolean = lists.merc_jsons_list.__bootChildrenIssued === true
+                    && lists.units_jsons_list.__bootChildrenIssued === true
+                    && lists.kshop_jsons_list.__bootChildrenIssued === true
+                    && lists.shops_jsons_list.__bootChildrenIssued === true;
+                if ((!issued || pending > 0) && this.sysWait < 150) return;
+            } else {
+                if (this.sysWait < 30) return;
+                if ((!this.sawPending || pending > 0) && this.sysWait < 150) return;
+            }
+            this.systemWaitMs = getTimer() - this.systemWaitStarted;
             this.sysPhase = 2;
             return;
         }
@@ -432,12 +511,28 @@ class org.flashNight.boot.BootSequencer {
             this.state = S_SYNCLOGIC;
             return;
         }
+        var loadStarted:Number = getTimer();
         _root.loaders[_root.loaders.current]();
+        this.systemLoadWork.push(getTimer() - loadStarted);
         _root.loaders.current++;
     }
 
     // === S10 handoff（顺序铁律: _root.play() 必先于卸载） ===
     function handoff():Void {
+        if (_root.server != undefined) {
+            var top:Array = [];
+            for (var j:Number = 0; j < this.b.slowLoads.length; j++) {
+                var load:Object = this.b.slowLoads[j];
+                top.push(load.name + ":" + load.parse + "/" + load.handler);
+            }
+            _root.server.sendServerMessage("[BootTiming] observedParseMs=" + this.b.totalParseMs
+                + " observedHandlerMs=" + this.b.totalHandlerMs + " slowParseHandlerMs=" + top.join(","));
+            _root.server.sendServerMessage("[BootTiming] phases=3,4,5,6,7,8,9 wallMs=" + this.phaseWall.join(",")
+                + " workMs=" + this.phaseWork.join(",") + " maxStepMs=" + this.workMax.join(",")
+                + " systemWaitFrames=" + this.sysWait + " systemWaitMs=" + this.systemWaitMs
+                + " systemLoadWorkMs=" + this.systemLoadWork.join(",") + " syncLogicMs=" + this.syncLogicMs
+                + " miscStartMs=" + this.miscStartMs + " itemIndexMs=" + this.itemIndexMs + " obtainIndexMs=" + this.acquireIndexMs);
+        }
         this.bslog("event=handoff");   // S10 handoff 事件 → trace-diff HANDOFF_PLAY。原 f91 无 SA-可见事件 → gate 对 S10 盲；_root.server 在自删后仍存活，先于卸载发。
         if (this.tickClip != undefined) this.tickClip.onEnterFrame = null;   // 判空：单测可不经 start() 直驱到 handoff（halt() 已同款判空）
         delete _root.__boot;   // 收尾：回收引导脚手架（staged 函数容器），boot 后即死代码，避免常驻 _root

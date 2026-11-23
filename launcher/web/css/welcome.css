@@ -373,27 +373,6 @@ body[data-art-side="right"] .art-figure-mask{right:0}
   from { opacity:0; transform:translateY(-50%) scale(.968); }
   to { opacity:1; transform:translateY(-50%); }
 }
-/* Flash 就绪交接相：必须在 .intro-ov.loading .loading-indicator 与 .is-entering 之后声明并清除动画填充态，
-   平滑收敛中心准星并沉入与 Host 原生遮幕一致的玄黑 #06090c，消除 WebView2 → Flash 硬切。
-   若场景入场罕见超时触发 #loading-slow，自动重新浮出诊断与取消入口。 */
-.intro-ov.loading.is-handoff {
-  background:#06090c;
-  transition:background-color 280ms cubic-bezier(.4,0,.2,1);
-}
-.intro-ov.loading.is-handoff .loading-indicator {
-  animation:none;
-  opacity:0;
-  transform:translateY(-50%) scale(.965);
-  transition:opacity 220ms ease-out, transform 240ms ease-out;
-}
-.intro-ov.loading.is-handoff .loading-indicator:has(#loading-slow:not([hidden])) {
-  opacity:1;
-  transform:translateY(-50%);
-}
-body.launch-handoff #bg-gl-log {
-  opacity:0;
-  transition:opacity 180ms ease-out;
-}
 .loading-sig-wrap {
   display:flex; align-items:center; justify-content:center; gap:10px; width:min(256px,76%); min-height:18px;
 }

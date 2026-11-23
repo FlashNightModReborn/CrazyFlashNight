@@ -63,6 +63,7 @@ class org.flashNight.gesh.json.LoadJson.CraftingListLoader extends BaseXMLLoader
                 entries:      entries,
                 basePath:     path,
                 childType:    "json",
+                parseType:    "CatalogJSON",
                 pathBuilder:  CraftingListLoader.buildJsonPath,
                 mergeFn:      ListLoader.keyedMerge(),
                 initialValue: {}

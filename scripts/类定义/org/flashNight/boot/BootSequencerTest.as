@@ -54,6 +54,7 @@ class org.flashNight.boot.BootSequencerTest {
             this.test_handoff_emitsEvent();
             this.test_handoff_negativeDepthHostSwapsBeforeRemove();
             this.test_run_idempotent();
+            this.test_s6_knownListReceipts();
             this.test_s6_waitGateThenDrain();
             this.test_s6_ceilingRelease();
             this.test_s6_loaderQueueCurrentDefaults();
@@ -857,6 +858,35 @@ class org.flashNight.boot.BootSequencerTest {
     // ====== 边界 (e) 逻辑：S6 等待门（含首层 list.xml 慢加载 race 防护）→ 逐 tick 抽干 → s6_post ======
     // 覆盖 sawPending 修复：pending==0 二义（全加载完 vs 二级加载尚未起飞）→ 仅当曾观测到 pending>0 才放行，
     //   否则即使过了 30 帧也继续等（防慢 list.xml 提前抽空 loader → 佣兵/兵种/商城/商店数据缺载）。
+    private function test_s6_knownListReceipts():Void {
+        var host = this.freshEnv();
+        var inst:BootSequencer = new BootSequencer(host);
+        inst.state = BootSequencer.S_SYNCSYS;
+        inst.step();
+        var saved = _root.preloaders;
+        var list:Array = new Array(4);
+        _root.preloaders = list;
+        list.merc_jsons_list = {__bootChildrenIssued:true};
+        list.units_jsons_list = {__bootChildrenIssued:true};
+        list.kshop_jsons_list = {__bootChildrenIssued:true};
+        list.shops_jsons_list = {};
+        _root.__pendingFileLoads = 1;
+        inst.step();
+        _root.__pendingFileLoads = 0;
+        inst.sysWait = 30;
+        inst.step();
+        this.assert(inst.sysPhase == 1, "另一个 list 尚未返回时不能被短暂的零在途计数放行");
+        inst.sysWait = 2;
+        list.shops_jsons_list.__bootChildrenIssued = true;
+        _root.__pendingFileLoads = 1;
+        inst.step();
+        this.assert(inst.sysPhase == 1, "四个 list 签收仍须等待最后一个子请求");
+        _root.__pendingFileLoads = 0;
+        inst.step();
+        this.assert(inst.sysPhase == 2 && inst.sysWait < 30, "正向回执与全部子请求齐备可提前通过");
+        _root.preloaders = saved;
+    }
+
     private function test_s6_waitGateThenDrain():Void {
         var host = this.freshEnv();
         var inst:BootSequencer = new BootSequencer(host);

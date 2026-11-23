@@ -757,12 +757,20 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 bool projectileReady = CanGrantProjectileCapability(ready, _frame?.Ready == true,
                     _lighting.WaitingForCapture, _frame?.Scene ?? 0, _lighting.ReadyScene);
                 PublishRayCapability(projectileReady);
-                if (ready && !_surface.Visible) { _surface.Show(); PlaceBelowHud(); PresentationShown?.Invoke(); _surface.RefreshPointer(); }
-                RefreshHudPresentations();
-                if (!_compositionSceneCommitted && stats.Received>0) {
+                // The directly rendered Flash window remains visible while DWM accepts the
+                // new tree. Showing the black surface before this first commit causes a flash.
+                if (!_compositionSceneCommitted && ready && stats.Presented > 0) {
                     _compositionScene.Commit();
-                    _compositionSceneCommitted=true;
+                    _compositionSceneCommitted = true;
+                    PerfTrace.Mark("world.first_scene_committed");
                 }
+                if (ready && _compositionSceneCommitted && !_surface.Visible) {
+                    _surface.Show();
+                    PlaceBelowHud();
+                    PresentationShown?.Invoke();
+                    _surface.RefreshPointer();
+                }
+                RefreshHudPresentations();
                 if (ready && !_weatherCapabilityAdvertised && NowMs()-_lastWeatherCapAttemptMs>=500) {
                     _lastWeatherCapAttemptMs=NowMs();
                     try { _weatherCapabilityAdvertised=WeatherCapabilityChanged?.Invoke(true)==true; }

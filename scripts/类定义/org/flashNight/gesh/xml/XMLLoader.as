@@ -7,6 +7,7 @@ class org.flashNight.gesh.xml.XMLLoader
     private var onLoadHandler:Function;
     private var onErrorHandler:Function;
     private var parsedData:Object;
+    private var sourcePath:String;
 
     /**
      * 构造函数，初始化 XMLLoader
@@ -16,6 +17,7 @@ class org.flashNight.gesh.xml.XMLLoader
      */
     public function XMLLoader(xmlFilePath:String, onLoadHandler:Function, onErrorHandler:Function)
     {
+        this.sourcePath = xmlFilePath;
         this.xml = new XML();
         this.xml.ignoreWhite = true;
         this.onLoadHandler = onLoadHandler;
@@ -40,6 +42,8 @@ class org.flashNight.gesh.xml.XMLLoader
      */
     private function handleXMLLoad():Void
     {
+        var boot:Object = _root.__boot;
+        var started:Number = boot != undefined ? getTimer() : 0;
         var root:XMLNode = this.xml.firstChild;
         if (root == null)
         {
@@ -50,9 +54,13 @@ class org.flashNight.gesh.xml.XMLLoader
         {
             this.parsedData = XMLParser.parseXMLNode(root);
         }
+        var parsedAt:Number = boot != undefined ? getTimer() : 0;
         if (this.onLoadHandler != null)
         {
             this.onLoadHandler(this.parsedData);
+        }
+        if (boot != undefined && boot === _root.__boot && boot.recordLoad != undefined) {
+            boot.recordLoad(this.sourcePath, parsedAt - started, getTimer() - parsedAt);
         }
     }
 

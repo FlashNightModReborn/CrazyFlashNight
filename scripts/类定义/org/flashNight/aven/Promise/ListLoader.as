@@ -63,7 +63,10 @@ class org.flashNight.aven.Promise.ListLoader {
 
         // 选择加载函数
         var loaderFn:Function;
-        if (childType == "json") {
+        if (childType == "json" && config.bootReadAhead === true && _root.__boot.catalogReads != undefined) {
+            _root.__boot.catalogDemand[basePath] = true;
+            loaderFn = ListLoader._bootJSONReader(parseType);
+        } else if (childType == "json") {
             loaderFn = ListLoader._makeJSONLoader(parseType);
         } else {
             loaderFn = LoaderPromise.loadXML;
@@ -264,6 +267,31 @@ class org.flashNight.aven.Promise.ListLoader {
      * 创建 JSON 加载函数（绑定 parseType）。
      * 分离为静态方法以避免 IIFE（AS2 约束）。
      */
+    private static function _bootJSONReader(parser:String):Function {
+        return function(path:String):Promise { return LoaderPromise.loadBootJSON(path, parser); };
+    }
+
+    /** Prime only public base files. The consumer rereads its authoritative list, keeps
+     *  its authored merge order, and applies slot overlays after the handshake. */
+    public static function primeBootList(owner:Object, folder:String, field:String, optional:String):Void {
+        LoaderPromise.loadXML(folder + "list.xml").then(function(list:Object) {
+            if (owner !== _root.__boot || owner.catalogDemand[folder] === true) return;
+            var names:Array = ListLoader.normalizeToArray(list[field]);
+            var entries:Array = [];
+            for (var i:Number = 0; i < names.length; i++) {
+                var name = names[i];
+                if (typeof name == "string" && name != optional && name.substr(-5) == ".json"
+                        && name.indexOf("/") < 0 && name.indexOf("\\") < 0 && name.indexOf("..") < 0) entries.push(name);
+            }
+            var load:Function = function(path:String):Promise {
+                if (owner !== _root.__boot || owner.catalogDemand[folder] === true) return Promise.resolve(null);
+                return LoaderPromise.primeBootJSON(owner, path, "CatalogJSON");
+            };
+            return ListLoader._chainBatches(entries, folder, ListLoader.DEFAULT_CONCURRENCY, load,
+                function(acc, data, index, entry) { return acc; }, null, null, 0, null);
+        }).onCatch(function(reason) { return null; }); // the normal load retains its own error path
+    }
+
     private static function _makeJSONLoader(parseType:String):Function {
         return function(relativePath:String):Promise {
             return LoaderPromise.loadJSON(relativePath, parseType);

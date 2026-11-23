@@ -8,7 +8,7 @@ var StageInfoLoader:StageInfoLoader = StageInfoLoader.getInstance();
 StageInfoLoader.loadStageInfo(
     function(combinedData:Object):Void {
         trace("主程序：关卡信息加载成功！");
-		_root.发布消息("关卡信息加载完毕");
+		_root.server.sendServerMessage("[BootstrapAS] 关卡信息加载完毕");
         _root.StageInfoDict = combinedData;
     },
     function():Void {

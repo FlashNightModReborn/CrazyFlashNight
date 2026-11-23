@@ -460,7 +460,7 @@ def validate_cf6_boss(stage, units, items, successor=False):
 
 def generated_cf6(data):
     name = 'cf6-type61' if data['routeId'] == 'type61' else 'cf6-sting'
-    options={'separators':(',',':')} if data.get('type61',{}).get('soldiers') else {'indent':2}
+    options={'separators':(',',':')}
     return {ROOT/('data/stages/books/'+name+'.runtime.json'): (json.dumps(data,ensure_ascii=False,**options)+'\n').encode('utf-8')}
 
 
