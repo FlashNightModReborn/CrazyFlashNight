@@ -69,6 +69,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     private static var _testFailNextWornPostcondition:Boolean = false;
     // 最近一次成功终态；失败不覆盖，下一次成功 open 使其失效。
     private static var _finalizeReceipt:Object = null;
+    private static var _exitOwner:Object;
     private static function root():Object {
         return _testRoot == null ? _root : _testRoot;
     }
@@ -119,6 +120,10 @@ class org.flashNight.arki.item.CharacterBuildService {
         r.gameCommands["characterBuildFinalize"] = function(params) {
             org.flashNight.arki.item.CharacterBuildService.handle("finalize", params);
         };
+        r.gameCommands["characterBuildPersistedExit"] = function(params) {
+            org.flashNight.arki.item.CharacterBuildService.sendResponse(
+                org.flashNight.arki.item.CharacterBuildService.persistedExit(params));
+        };
         r.gameCommands["characterBuildRecoverDetach"] = function(params) {
             org.flashNight.arki.item.CharacterBuildService.handleRecoverDetach(params);
         };
@@ -144,6 +149,7 @@ class org.flashNight.arki.item.CharacterBuildService {
      * 同步生产协议入口，同时供 focused TestLoader 验证 envelope。
      */
     public static function execute(commandName:String, params:Object):Object {
+        if (root().__characterExitSeal != null) return commonResponse(commandName, params, fail("exit_pending"));
         var result:Object;
         if (params == undefined || Number(params.v) != 1) {
             result = fail("unsupported_version");
@@ -224,6 +230,7 @@ class org.flashNight.arki.item.CharacterBuildService {
      * 建立新的观察基线。重复 open 必须铸造新 generation，旧命令立即失效。
      */
     public static function open():Object {
+        if (root().__characterExitSeal != null) return fail("exit_pending");
         // A temporary presentation refusal cannot retire an existing recovery/session owner.
         if (org.flashNight.arki.scene.Cf6ActorRefreshPolicy.blocks(root())) return fail("live_unavailable");
         var resolved:Object = resolveContainers();
@@ -271,6 +278,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         _liveRefreshDirty = !liveAligned;
         _liveRefreshRetryRequired = false;
         _capturedPauseLease = pauseLease;
+        _exitOwner = org.flashNight.arki.item.CharacterBuildExit.capture(root(), _sessionGeneration);
         _hostPauseReleaseProven = false;
         return state(true, false, false);
     }
@@ -582,6 +590,7 @@ class org.flashNight.arki.item.CharacterBuildService {
      */
     public static function finalize(expectedGeneration:Number,
                                     expectedLoadoutRevision:Number,recover:Boolean):Object {
+        if (root().__characterExitSeal != null) return fail("exit_pending");
         var replay:Object = replayFinalizeReceipt(
             expectedGeneration, expectedLoadoutRevision);
         if (replay != null) return replay;
@@ -638,6 +647,7 @@ class org.flashNight.arki.item.CharacterBuildService {
      * Host visual 是否已经退场；真正释放必须等待重连后的 Host-only recoverDetach。
      */
     public static function reconcileSocketDetach():Object {
+        if (root().__characterExitSeal != null) return recoveryFailure("exit_pending");
         if (!blocksGenericPauseRelease()) {
             return {handled:false, success:true};
         }
@@ -651,6 +661,7 @@ class org.flashNight.arki.item.CharacterBuildService {
      * 下释放遗留的全局 web pause lease。
      */
     public static function recoverDetach(params:Object):Object {
+        if (root().__characterExitSeal != null) return commonRecoveryResponse(params, recoveryFailure("exit_pending"));
         if (params == undefined || Number(params.v) != 1) {
             return commonRecoveryResponse(params,
                 recoveryFailure("invalid_payload"));
@@ -1935,7 +1946,51 @@ class org.flashNight.arki.item.CharacterBuildService {
         return buildMutationSuccess(commandName, backpackSlot, false, true);
     }
 
+    // Keep the last committed image of each touched endpoint. A later legitimate
+    // swap replaces that endpoint's witness; rollback and poison cannot mint one.
+    private static function rememberExitEndpoint(container:Object, slot, item:Object, signature:String, firearm:Boolean):Void {
+        var prefix:String = container === _equipmentInventory ? "equipment." :
+            (container === _drugInventory ? "drug." : "backpack.");
+        var endpoint:Object = {container:container, slot:slot, item:item, signature:signature, firearm:firearm};
+        if (item != null && typeof item.value == "object" && item.value != null) {
+            try { endpoint.savedValue = org.flashNight.gesh.object.PersistedSnapshot.cloneData(item.value); }
+            catch (error) { endpoint.unreadable = true; }
+        }
+        _exitOwner.endpoints[prefix + slot] = endpoint;
+    }
+
+    private static function exitEligible(params:Object):Boolean {
+        var r:Object = root();
+        if (!_active || _stale || _writeInProgress || !_liveRefreshDirty || !_liveRefreshRetryRequired
+                || _panelInstanceId == "" || params.panelInstanceId !== _panelInstanceId
+                || params.sessionGeneration !== _sessionGeneration || params.loadoutRevision !== _loadoutRevision
+                || params.drugRevision !== _drugRevision || params.liveRevision !== _liveRevision
+                || _capturedPauseLease == undefined || r._webPanelPauseLease !== _capturedPauseLease) return false;
+        var containers:Object = resolveContainers();
+        if (!containers.success || containers.equipment !== _equipmentInventory || containers.drugs !== _drugInventory
+                || containers.backpack !== _backpackInventory || readRevision(_drugInventory) !== _drugRawRevision) return false;
+        var scan:Object = scanLoadout(_equipmentInventory);
+        if (!scan.success || !sameRefs(scan.refs, _slotRefs) || scan.signature !== _signature) return false;
+        var any:Boolean = false;
+        for (var key:String in _exitOwner.endpoints) {
+            var e:Object = _exitOwner.endpoints[key];
+            if (e.unreadable === true || !slotMatches(e.container, e.slot, e.item, e.signature)
+                    || (e.savedValue != null && !org.flashNight.gesh.object.PersistedSnapshot.sameData(e.savedValue, e.item.value))) return false;
+            any = true;
+        }
+        var affinity:Object = DrugSlotAffinityService.previewNormalized(r, _drugInventory);
+        return any && affinity.ok === true && affinity.changed !== true;
+    }
+
+    public static function persistedExit(params:Object):Object {
+        return org.flashNight.arki.item.CharacterBuildExit.handle(_exitOwner, root(), params, exitEligible);
+    }
+
     private static function publishCommittedPlan(plan:Object):Void {
+        var slot = plan.source === _equipmentInventory ? plan.sourceSlot : plan.targetSlot;
+        var firearm:Boolean = slot == "手枪" || slot == "手枪2" || slot == "长枪";
+        rememberExitEndpoint(plan.source, plan.sourceSlot, plan.sourceAfter, plan.sourceAfterSignature, firearm);
+        rememberExitEndpoint(plan.target, plan.targetSlot, plan.targetAfter, plan.targetAfterSignature, firearm);
         try {
             plan.target.publishTransactionChange(
                 plan.targetSlot, String(plan.targetChange));
@@ -3638,6 +3693,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     private static function clearSession():Void {
+        _exitOwner = null;
         _statTicket=null;
         _equipmentRecoveryResources=null;
         _appearanceProjectionEnabled = false;

@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Bus;
+using CF7Launcher.Save;
 using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Guardian
@@ -60,6 +61,7 @@ namespace CF7Launcher.Guardian
             public bool IsDetachRecovery;
             public int RecoveryEpoch;
             public int TransportGeneration;
+            public SettingsSaveContext OpeningSaveContext;
             public long CandidateTooltipEpoch;
         }
 
@@ -519,6 +521,12 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
+            if (command == "persistAndExit")
+            {
+                RequestPersistedExit(parsed, requestedPanel, callId);
+                return;
+            }
+
             string flashAction;
             if (!TryResolveProductionCommand(command, out flashAction))
             {
@@ -909,6 +917,11 @@ namespace CF7Launcher.Guardian
                     error = "session_finalized";
                     return false;
                 }
+                if (_exitOperation != null)
+                {
+                    error = "exit_operation_pending";
+                    return false;
+                }
                 if (_pendingCount >= MaxPending)
                 {
                     error = "busy";
@@ -1034,6 +1047,8 @@ namespace CF7Launcher.Guardian
                     NormalizedPayload = normalizedPayload != null
                         ? (JObject)normalizedPayload.DeepClone() : null,
                     PostToWeb = postToWeb,
+                    OpeningSaveContext = noGenerationSnapshot ? _physicalExitContext?.Invoke() : null,
+                    TransportGeneration = SafeReadyGeneration(),
                     IsInitialSnapshot = initialSnapshot,
                     IsInitialRetry = initialRetry,
                     IsReconcileSnapshot = reconcileSnapshot,
@@ -1197,6 +1212,7 @@ namespace CF7Launcher.Guardian
 
                 if (entry.IsInitialSnapshot)
                 {
+                    _originalExitContext = entry.OpeningSaveContext;
                     _sessionGeneration = sessionGeneration;
                     _initialSnapshotOutcomeUnknown = false;
                     ApplySnapshotLocked(
@@ -1491,6 +1507,7 @@ namespace CF7Launcher.Guardian
                         loadoutRevision, liveRevision, liveRefreshDirty);
                     InvalidateFinalizeProofLocked();
                     ClearUnknownLocked();
+                    _exitFailureTransport = entry.TransportGeneration;
                     _writeState = "flush_failed";
                     return true;
                 }
@@ -1857,6 +1874,9 @@ namespace CF7Launcher.Guardian
         {
             InvalidateCandidateTooltipsLocked();
             ResetDetachRecoveryLocked();
+            _exitOperation = null;
+            _exitFailureTransport = 0;
+            _originalExitContext = null;
             _sessionGeneration = null;
             _initialSnapshotOutcomeUnknown = false;
             _writeState = "idle";

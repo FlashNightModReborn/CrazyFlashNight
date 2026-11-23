@@ -353,6 +353,95 @@ class org.flashNight.neur.Server.SaveManager {
     private var _dirtyGeneration:Number = 0;
     private var _fullSaveAttempt:Object;
     private var _fullSaveSerial:Number = 0;
+
+    /**
+     * flush SharedObject 并检查结果。
+     * flush() 返回值：true=成功, "pending"=等待用户授权, false/其他=失败
+     * 只有 true 才算成功落盘，"pending" 视为未完成（不清 dirtyMark）。
+     */
+    // lane 闭集：full / shop_partial / delete_tombstone / preload_tombstone / read_migration。
+    // lane 只增不改：物理八分桶 flushAttempt/flushSuccess/flushPending/flushFalse 原样累计。
+    private function flushSO(so:SharedObject, lane:String):Boolean {
+        var exactAttempt:Object = lane == "full" && _fullSaveAttempt != null && _fullSaveAttempt.so === so ? _fullSaveAttempt : null;
+        var exactSettings:Object = exactAttempt == null ? null : exactAttempt.settings;
+        var exactReward:Object = _rewardCandidate;
+        var stats:Object = savePhysicalStats();
+        stats.flushAttempt++;
+        var laneStats:Object = saveApiStats().flushLane[lane];
+        if (laneStats == null) {
+            ServerManager.getInstance().sendServerMessage(
+                "[SaveManager.flushSO] unknown flush lane clamped to full: " + lane);
+            laneStats = saveApiStats().flushLane.full;
+        }
+        laneStats.attempt++;
+        if (_rewardCandidate != null) {
+            _rewardPhysicalStarted = true;
+            _rewardPhysicalResult = undefined;
+        }
+        if (_root.__characterExitSeal != null) {
+            var terminal:Object = _root.__characterExitSeal;
+            if (terminal.flushing !== true || exactAttempt == null || terminal.attempt !== exactAttempt) return false;
+            terminal.physicalStarted = true;
+        }
+        var result:Object = _flushResultOverrideForTests !== undefined
+            ? _flushResultOverrideForTests
+            : so.flush();
+        // raw true 的锁存前不得读取统计、日志、getter 或调用通知。
+        if (result === true && exactAttempt != null) exactAttempt.rawConfirmed = true;
+        if (result === true && exactSettings != null) exactSettings.rawConfirmed = true;
+        if (terminal != null && result === false) terminal.rawFailed = true;
+        if (exactReward != null && exactReward === _rewardCandidate) {
+            if (_rewardPhysicalResult !== true) _rewardPhysicalResult = result;
+            if (result === true) exactReward.phase = "confirmed";
+        }
+        if (result === true && exactSettings != null) {
+            try { exactSettings.authority.confirmPacked(exactSettings.projection, exactSettings.receipt); }
+            catch (settingsConfirmError) { trace("[SaveManager] settings confirmation bookkeeping failed"); }
+        }
+        try {
+        if (result === true) {
+            stats.flushSuccess++;
+            laneStats.success++;
+            return true;
+        }
+        if (result == "pending") {
+            stats.flushPending++;
+            laneStats.pending++;
+        } else {
+            stats.flushFalse++;
+            laneStats["false"]++;
+        }
+        var msg:String = (result == "pending")
+            ? "SaveManager: flush pending (awaiting user authorization) for "
+            : "SaveManager: flush failed (result=" + result + ") for ";
+        ServerManager.getInstance().sendServerMessage(msg + _root.savePath);
+        } catch (statsOrNoticeError) { trace("[SaveManager] post-flush diagnostics failed"); }
+        return result === true;
+    }
+
+    private function settleConfirmedSave(attempt:Object):Void {
+        if (attempt == null || attempt.rawConfirmed !== true || attempt.owner !== _root.存档系统
+                || attempt.slot !== String(_root.savePath) || attempt.role !== String(_root.角色名)
+                || attempt.generation !== _dirtyGeneration) return;
+        if (attempt.settings != null && (attempt.settings.authority !== _settingsAuthority
+                || attempt.settings.projection.stateToken !== _settingsAuthority.stateToken())) return;
+        _dirtyMark = false;
+        try { _root.存档系统.dirtyMark = false; } catch (dirtyCleanupError) {}
+        try { _root.存盘标志 = 1; } catch (saveFlagError) {}
+        _settingsMigrationPending = false;
+        _drugLoadoutMigrationPending = false;
+        _rewardInboxMigrationPending = false;
+        try { KeyManager.clearPendingKeySettingsMigration(); } catch (keyCleanupError) {}
+        try { _absorbPendingRequest(); } catch (pendingCleanupError) {}
+    }
+
+    public function exitAttemptCurrent(a:Object):Boolean {
+        return a != null && a === _fullSaveAttempt && a.so === getSO() && a.generation === _dirtyGeneration
+            && !_saveInFlight && _pendingSaveOrigin == undefined
+            && (a.settings == null || (a.settings.authority === _settingsAuthority
+                && a.settings.projection.stateToken === _settingsAuthority.stateToken()));
+    }
+
     public function fullSaveSerial():Number { return _fullSaveSerial; }
     public function fullSaveConfirmedAfter(serial:Number, owner:Object, slot:String):Boolean {
         return _fullSaveAttempt != null && _fullSaveAttempt.serial > serial
@@ -1398,6 +1487,11 @@ class org.flashNight.neur.Server.SaveManager {
             _beforeLocalCommitHookForTests();
         }
         rewardPhaseStart = getTimer();
+        var exitCapture:Object = _root.__characterExitSeal;
+        if (exitCapture != null && exitCapture.flushing === true && origin == "transition") {
+            exitCapture.attempt = exactAttempt;
+            exitCapture.image = org.flashNight.gesh.object.PersistedSnapshot.cloneData(soData);
+        }
         var ok:Boolean = flushSO(so, "full");
         if (_rewardCandidate != null) _rewardTiming.flushMs = getTimer()-rewardPhaseStart;
         if (ok) {
@@ -3791,81 +3885,6 @@ class org.flashNight.neur.Server.SaveManager {
 
     private function getSO():SharedObject {
         return SharedObject.getLocal(_root.savePath);
-    }
-
-    /**
-     * flush SharedObject 并检查结果。
-     * flush() 返回值：true=成功, "pending"=等待用户授权, false/其他=失败
-     * 只有 true 才算成功落盘，"pending" 视为未完成（不清 dirtyMark）。
-     */
-    // lane 闭集：full / shop_partial / delete_tombstone / preload_tombstone / read_migration。
-    // lane 只增不改：物理八分桶 flushAttempt/flushSuccess/flushPending/flushFalse 原样累计。
-    private function flushSO(so:SharedObject, lane:String):Boolean {
-        var exactAttempt:Object = lane == "full" && _fullSaveAttempt != null && _fullSaveAttempt.so === so ? _fullSaveAttempt : null;
-        var exactSettings:Object = exactAttempt == null ? null : exactAttempt.settings;
-        var exactReward:Object = _rewardCandidate;
-        var stats:Object = savePhysicalStats();
-        stats.flushAttempt++;
-        var laneStats:Object = saveApiStats().flushLane[lane];
-        if (laneStats == null) {
-            ServerManager.getInstance().sendServerMessage(
-                "[SaveManager.flushSO] unknown flush lane clamped to full: " + lane);
-            laneStats = saveApiStats().flushLane.full;
-        }
-        laneStats.attempt++;
-        if (_rewardCandidate != null) {
-            _rewardPhysicalStarted = true;
-            _rewardPhysicalResult = undefined;
-        }
-        var result:Object = _flushResultOverrideForTests !== undefined
-            ? _flushResultOverrideForTests
-            : so.flush();
-        // raw true 的锁存前不得读取统计、日志、getter 或调用通知。
-        if (result === true && exactAttempt != null) exactAttempt.rawConfirmed = true;
-        if (result === true && exactSettings != null) exactSettings.rawConfirmed = true;
-        if (exactReward != null && exactReward === _rewardCandidate) {
-            if (_rewardPhysicalResult !== true) _rewardPhysicalResult = result;
-            if (result === true) exactReward.phase = "confirmed";
-        }
-        if (result === true && exactSettings != null) {
-            try { exactSettings.authority.confirmPacked(exactSettings.projection, exactSettings.receipt); }
-            catch (settingsConfirmError) { trace("[SaveManager] settings confirmation bookkeeping failed"); }
-        }
-        try {
-        if (result === true) {
-            stats.flushSuccess++;
-            laneStats.success++;
-            return true;
-        }
-        if (result == "pending") {
-            stats.flushPending++;
-            laneStats.pending++;
-        } else {
-            stats.flushFalse++;
-            laneStats["false"]++;
-        }
-        var msg:String = (result == "pending")
-            ? "SaveManager: flush pending (awaiting user authorization) for "
-            : "SaveManager: flush failed (result=" + result + ") for ";
-        ServerManager.getInstance().sendServerMessage(msg + _root.savePath);
-        } catch (statsOrNoticeError) { trace("[SaveManager] post-flush diagnostics failed"); }
-        return result === true;
-    }
-
-    private function settleConfirmedSave(attempt:Object):Void {
-        if (attempt == null || attempt.rawConfirmed !== true || attempt.owner !== _root.存档系统
-                || attempt.slot !== String(_root.savePath) || attempt.role !== String(_root.角色名)
-                || attempt.generation !== _dirtyGeneration) return;
-        if (attempt.settings != null && (attempt.settings.authority !== _settingsAuthority
-                || attempt.settings.projection.stateToken !== _settingsAuthority.stateToken())) return;
-        _dirtyMark = false;
-        try { _root.存档系统.dirtyMark = false; } catch (dirtyCleanupError) {}
-        try { _root.存盘标志 = 1; } catch (saveFlagError) {}
-        _settingsMigrationPending = false;
-        _drugLoadoutMigrationPending = false;
-        _rewardInboxMigrationPending = false;
-        try { KeyManager.clearPendingKeySettingsMigration(); } catch (keyCleanupError) {}
-        try { _absorbPendingRequest(); } catch (pendingCleanupError) {}
     }
 
     private function ensureShopNode(soData:Object):Object {

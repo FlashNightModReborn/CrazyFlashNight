@@ -610,7 +610,10 @@ namespace CF7Launcher.Bus
             // 角色构筑 loadout domain 回包。Web ingress 只由 WebOverlayForm exact-instance
             // 路由进入，不能把它注册成通用 socket/http request task。
             if (characterBuildTask != null)
+            {
                 router.RegisterAsync("loadout_response", characterBuildTask.HandleFlashResponse);
+                router.RegisterAsync("loadout_exit_response", characterBuildTask.HandlePersistedExitResponse);
+            }
 
             // 背包礼包/药剂使用回包。Web ingress 仅允许 exact CharacterBuild workbench，
             // 不能注册成通用 socket/http request task。

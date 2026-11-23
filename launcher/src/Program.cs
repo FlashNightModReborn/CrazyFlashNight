@@ -3209,6 +3209,13 @@ class Program
         webOverlay.SetGymTrainingTask(gymTrainingTask);
         webOverlay.SetSettingsTask(settingsTask);
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
+        characterBuildTask.SetPersistedExit(
+            form.TryExitAfterCharacterSave,
+            () => inventoryTask.WriteState == "idle" && itemUseTask.WriteState == "idle"
+                && skillTask.CanRebind && equipmentTuningTask.CanClose
+                && !settingsTask.HasUnresolvedAuthority && !gymTrainingTask.HasUnsettledTraining
+                && lootPanelCoordinator.ActiveBinding == null,
+            () => settingsTask.CurrentSaveContext);
         webOverlay.SetCharacterBuildTask(characterBuildTask);
         webOverlay.SetItemUseTask(itemUseTask);
         webOverlay.SetSkillTask(skillTask);

@@ -59,6 +59,7 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
      * @param value 要增减的数量（正数增加，负数减少）
      */
     public function addValue(key:String,value:Number):Void{
+        if (rejectsExitWrite()) return;
         if(isNaN(value)) return;
         var item = items[key];
         item.value += value;  // 注意：此处假定item.value为Number类型
@@ -72,6 +73,7 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
 
     //移动物品至另一空格
     public function move(target:Inventory, key:String, targetKey:String):Boolean{
+        if (rejectsExitWrite() || target.rejectsExitWrite()) return false;
         var item = items[key];
         if(!item || !target.isEmpty(targetKey)) return false;
         var result = target.add(targetKey,item);
@@ -82,6 +84,7 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
 
     //合并两个格子的物品
     public function merge(target:Inventory, key:String, targetKey:String):Boolean{
+        if (rejectsExitWrite() || target.rejectsExitWrite()) return false;
         var item = items[key];
         var targetItem = target.getItem(targetKey);
         if(item.name != targetItem.name || isNaN(item.value) || isNaN(targetItem.value)) return false;
@@ -92,6 +95,7 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
 
     //交换两个格子的物品
     public function swap(target:Inventory, key:String, targetKey:String):Boolean{
+        if (rejectsExitWrite() || target.rejectsExitWrite()) return false;
         var item = this.getItem(key);
         var targetItem = target.getItem(targetKey);
         if(!item || !targetItem || !this.isAddable(key,targetItem) || !target.isAddable(targetKey,item)) return false;

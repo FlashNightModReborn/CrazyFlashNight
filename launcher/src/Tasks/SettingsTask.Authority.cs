@@ -48,6 +48,7 @@ namespace CF7Launcher.Tasks
 #endif
         private Func<Action<string>> _authoritySinkProvider;
         private readonly Dictionary<int,AuthorityCall> _authorityCalls=new();
+        internal SettingsSaveContext CurrentSaveContext { get { lock (_lock) return _settingsContext; } }
         internal bool HasUnresolvedAuthority { get { lock(_lock)return _requiresReconcile || _metadataBlocked || _authorityBusy || _authorityControlPending; } }
         internal void ConfigureAuthority(SettingsWriteJournal journal,SettingsRecoveryGate recovery)
         { _settingsJournal=journal;_settingsRecovery=recovery;_authorityConfigured=true; }

@@ -200,6 +200,7 @@ org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery;
 org.flashNight.arki.scene.Cf6EconomyRules;
 org.flashNight.arki.item.ChoiceRewardDefinition;
 org.flashNight.arki.item.CharacterBuildService;
+org.flashNight.arki.item.CharacterBuildExit;
 org.flashNight.arki.item.ItemUseService;
 org.flashNight.arki.item.ChoiceRewardService;
 org.flashNight.arki.skill.SkillLoadoutService;

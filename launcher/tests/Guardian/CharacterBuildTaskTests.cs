@@ -70,6 +70,7 @@ namespace CF7Launcher.Tests.Guardian
             public readonly CharacterBuildTask Task;
             public int ReadyGeneration = 31;
             public bool RecoverySendSucceeds = true;
+            public Action<JObject> OnGenerationSend;
 
             public RecoveryHarness(
                 int timeoutMs = 1000)
@@ -97,6 +98,7 @@ namespace CF7Launcher.Tests.Guardian
                         RecoveryFlash.Add(
                             JObject.Parse(
                                 payload.TrimEnd('\0')));
+                        OnGenerationSend?.Invoke(RecoveryFlash[RecoveryFlash.Count - 1]);
                         return RecoverySendSucceeds;
                     },
                     delegate(int generation)
@@ -121,7 +123,7 @@ namespace CF7Launcher.Tests.Guardian
                     Task.TryBindPanelInstance(Panel));
             }
 
-            public void OpenKnownSession()
+            public void OpenKnownSession(bool dirty = false)
             {
                 Task.HandleWebRequest(
                     "snapshot",
@@ -137,9 +139,9 @@ namespace CF7Launcher.Tests.Guardian
                         "snapshot",
                         Generation,
                         3,
-                        3,
+                        dirty ? 2 : 3,
                         InitialDrugRevision,
-                        false),
+                        dirty),
                     null);
                 Assert.Equal(
                     Generation,
@@ -5293,6 +5295,131 @@ namespace CF7Launcher.Tests.Guardian
                     && msg.Value<string>("panelInstanceId") == Panel));
                 if (sameVisual) Assert.Equal("flush_failed", harness.Task.WriteState);
             }
+        }
+
+        private static void OpenFailedProjection(RecoveryHarness harness)
+        {
+            harness.OpenKnownSession(dirty: true);
+            harness.Task.SetShutdownRetryPanel(panel => panel == Panel);
+            harness.OnGenerationSend = wire => harness.Task.HandleFlashResponse(
+                RecoveryResponse(wire, "unsettled", Generation, 3, 2, InitialDrugRevision,
+                    success: false, error: "flush_failed"), null);
+            Assert.False(harness.Task.TryCompleteHostShutdownPersistence(1000, out _));
+            Assert.Equal("flush_failed", harness.Task.WriteState);
+            harness.RecoveryFlash.Clear();
+        }
+
+        private static JObject ExitReply(JObject wire, string state)
+        {
+            var response = (JObject)wire.DeepClone();
+            response.Remove("action");
+            response.Remove("phase");
+            response["task"] = "loadout_exit_response";
+            response["state"] = state;
+            response["role"] = "fixture-player";
+            response["context"] = "fixture-owner";
+            response["saveSerial"] = state == "terminate" ? 3 : 0;
+            return response;
+        }
+
+        [Fact]
+        public void RetriedPlayerExitQueriesOnlyTheOriginalPhysicalAttemptAndCannotFinalizeOrReplay()
+        {
+            using var harness = new RecoveryHarness();
+            var physical = new CF7Launcher.Save.SettingsSaveContext(@"C:\game", "game.swf", "cf7_agent_exit");
+            bool ownersReady = false;
+            int processExits = 0;
+            harness.Task.SetPersistedExit(consume =>
+            {
+                if (!consume()) return false;
+                processExits++;
+                return true;
+            }, () => ownersReady, () => physical);
+            OpenFailedProjection(harness);
+            bool TryExit() => harness.Task.TryConsumePersistedExit(Panel, Generation, 3, InitialDrugRevision, 35, out _);
+            Assert.False(TryExit());
+            Assert.Empty(harness.RecoveryFlash);
+            ownersReady = true;
+            var originalContext = physical;
+            physical = new CF7Launcher.Save.SettingsSaveContext(@"C:\other", "game.swf", originalContext.Slot);
+            Assert.False(TryExit());
+            Assert.Empty(harness.RecoveryFlash);
+            physical = originalContext;
+            harness.OnGenerationSend = wire =>
+            {
+                if ((string)wire["phase"] == "prepare")
+                    harness.Task.HandlePersistedExitResponse(ExitReply(wire, "prepared"), null);
+            };
+            Assert.False(TryExit()); // Flash might already have written the SOL.
+            Assert.Equal("exit_pending", harness.Task.WriteState);
+            Assert.False(harness.Task.TryCompleteHostShutdownPersistence(35, out _));
+            Assert.False(harness.Task.TryConsumePersistedExit(Panel, Generation + 1, 3, InitialDrugRevision, 35, out _));
+            physical = new CF7Launcher.Save.SettingsSaveContext(@"C:\game", "other.swf", originalContext.Slot);
+            Assert.False(TryExit());
+            physical = originalContext;
+            harness.ReadyGeneration++;
+            Assert.False(TryExit());
+            harness.ReadyGeneration--;
+            harness.OnGenerationSend = wire =>
+            {
+                var result = ExitReply(wire, "terminate");
+                foreach (var key in new[] { "operationId", "panelInstanceId", "slot", "role", "context" })
+                {
+                    var foreign = (JObject)result.DeepClone();
+                    foreign[key] = "foreign";
+                    harness.Task.HandlePersistedExitResponse(foreign, null);
+                }
+                harness.Task.HandlePersistedExitResponse(ExitReply(harness.RecoveryFlash[1], "terminate"), null);
+            };
+            Assert.False(TryExit());
+            harness.OnGenerationSend = wire => harness.Task.HandlePersistedExitResponse(ExitReply(wire, "terminate"), null);
+            var player = WebRequest("persistAndExit", "player.exit.334", new JObject
+                { ["v"]=1, ["sessionGeneration"]=Generation, ["loadoutRevision"]=3, ["drugRevision"]=InitialDrugRevision });
+            harness.Task.HandleWebRequest("persistAndExit", player);
+            harness.Task.HandleWebRequest("persistAndExit", player);
+            Assert.Equal(1, processExits);
+            Assert.Collection(harness.RecoveryFlash,
+                wire => Assert.Equal("prepare", (string)wire["phase"]),
+                wire => Assert.Equal("persist", (string)wire["phase"]),
+                wire => Assert.Equal("query", (string)wire["phase"]),
+                wire => Assert.Equal("query", (string)wire["phase"]));
+            Assert.All(harness.RecoveryFlash, wire => Assert.Equal((string)harness.RecoveryFlash[0]["operationId"], (string)wire["operationId"]));
+            Assert.False(TryExit());
+            Assert.False(harness.Task.TryCompleteHostShutdownPersistence(35, out _));
+            Assert.Equal("exit_pending", harness.Task.WriteState);
+        }
+
+        [Fact]
+        public void OutstandingAndUnknownMutationMustReconcileWithItsOwnRequest()
+        {
+            using var harness = new RecoveryHarness(150);
+            var physical = new CF7Launcher.Save.SettingsSaveContext(@"C:\game", "game.swf", "cf7_agent_exit");
+            harness.Task.SetPersistedExit(consume => consume(), () => true, () => physical);
+            harness.OpenKnownSession(dirty: true);
+            harness.Task.HandleWebRequest("equipDrug", WebRequest("equipDrug", "unknown.drug.change", MutationPayload("equipDrug")));
+            Assert.Equal(1, harness.Task.PendingCount);
+            bool TryExit() => harness.Task.TryConsumePersistedExit(Panel, Generation, 3, InitialDrugRevision, 10, out _);
+            Assert.False(TryExit());
+            Assert.True(SpinWait.SpinUntil(() => harness.Task.WriteState == "needs_reconcile", 2500));
+            Assert.False(TryExit());
+            Assert.Equal("unknown.drug.change", harness.Task.ReconcileAfterCallId);
+            Assert.Empty(harness.RecoveryFlash);
+        }
+
+        [Fact]
+        public void AnOwnerRejectionKeepsTheOriginalProjectionPaused()
+        {
+            using var harness = new RecoveryHarness();
+            var physical = new CF7Launcher.Save.SettingsSaveContext(@"C:\game", "game.swf", "cf7_agent_exit");
+            harness.Task.SetPersistedExit(consume => consume(), () => true, () => physical);
+            OpenFailedProjection(harness);
+            Assert.False(harness.Task.TryConsumePersistedExit("wrong-panel", Generation, 3, InitialDrugRevision, 35, out _));
+            harness.OnGenerationSend = wire => harness.Task.HandlePersistedExitResponse(ExitReply(wire, "blocked"), null);
+            Assert.False(harness.Task.TryConsumePersistedExit(Panel, Generation, 3, InitialDrugRevision, 35, out string error));
+            Assert.Equal("exit_not_settled", error);
+            Assert.Equal("flush_failed", harness.Task.WriteState);
+            Assert.Single(harness.RecoveryFlash);
+            Assert.True(harness.Task.HasBoundPanel);
         }
 
         [Fact]

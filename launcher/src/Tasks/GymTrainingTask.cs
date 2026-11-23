@@ -80,6 +80,15 @@ namespace CF7Launcher.Tasks
                 _timer = new Timer(_ => Tick(), null, 200, 200);
         }
 
+        internal bool HasUnsettledTraining
+        {
+            get
+            {
+                lock (_gate) return _inFlight != null || (_session != null
+                    && _session.Phase != "applied" && _session.Phase != "cancelled");
+            }
+        }
+
         public void SetPostToWeb(Action<string> post) { _post = post; }
         public void SetInvoker(Action<Action> invoke) { _invoke = invoke; }
         public void SetActivityProbe(Func<bool> active)

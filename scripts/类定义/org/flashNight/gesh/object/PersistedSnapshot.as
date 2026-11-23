@@ -4,6 +4,27 @@
  * candidate is published; this is deliberately not a general runtime-object clone.
  */
 class org.flashNight.gesh.object.PersistedSnapshot {
+    /** Exact equality for the bounded acyclic AMF image produced by cloneData. */
+    public static function sameData(a:Object, b:Object):Boolean {
+        if (a === b) return true;
+        if (typeof a == "number" && typeof b == "number" && isNaN(Number(a)) && isNaN(Number(b))) return true;
+        if (a == null || b == null || typeof a != "object" || typeof b != "object") return false;
+        if (a instanceof Date || b instanceof Date)
+            return a instanceof Date && b instanceof Date && a.getTime() === b.getTime();
+        if (a instanceof XML || b instanceof XML)
+            return a instanceof XML && b instanceof XML && a.toString() === b.toString();
+        if ((a instanceof Array) != (b instanceof Array) || (a instanceof Array && a.length !== b.length)) return false;
+        var owns:Function = Object.prototype.hasOwnProperty;
+        for (var key:String in a) {
+            if (owns.call(a,key) && typeof a[key] != "function"
+                    && (!owns.call(b,key) || !sameData(a[key],b[key]))) return false;
+        }
+        for (var other:String in b) {
+            if (owns.call(b,other) && typeof b[other] != "function" && !owns.call(a,other)) return false;
+        }
+        return true;
+    }
+
     public static function clone(value:Object):Object {
         return copyValue(value,0,{remaining:524288});
     }

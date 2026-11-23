@@ -60,6 +60,7 @@
             + '      <div class="character-build-candidate-scope-row character-build-pane-tools"><span>浏览方式</span><div data-build-candidate-scope-mount></div></div>'
             + '      <div class="character-build-candidate-focus-summary" data-candidate-focus-summary>背包总览 · 拖到高亮槽位，或选择栏位进入筛选</div>'
             + '      <div class="character-build-candidate-actions" role="toolbar" aria-label="当前槽位与候选操作">'
+            + '        <button type="button" data-persist-and-exit hidden>保留已确认改动并退出</button>'
             + '        <button type="button" data-build-action="inbox" aria-label="领取待领取物品" hidden disabled>待领取</button>'
             + '        <button type="button" data-build-action="use" aria-label="使用所选物品" hidden disabled>使用</button>'
             + '        <button type="button" data-build-action="useMany" aria-label="打开全部所选礼包" hidden disabled>全部打开</button>'

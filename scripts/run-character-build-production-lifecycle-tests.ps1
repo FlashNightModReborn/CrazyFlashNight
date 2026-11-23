@@ -7,6 +7,8 @@ $focusedRun=@{
     SuiteRelativePaths=@('scripts/类定义/org/flashNight/arki/item/CharacterBuildProductionLifecycleTest.as')
     SuiteFqns=@('org.flashNight.arki.item.CharacterBuildProductionLifecycleTest')
     AdditionalAsRelativePaths=@(
+        'scripts/类定义/org/flashNight/arki/item/CharacterBuildExit.as'
+        'scripts/类定义/org/flashNight/arki/item/CharacterBuildExitTest.as'
         'scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as'
         'scripts/类定义/org/flashNight/arki/item/CharacterBuildServiceTest.as'
         'scripts/类定义/org/flashNight/arki/item/CharacterBuildHpRecoveryTest.as'
@@ -26,6 +28,7 @@ $focusedRun=@{
         '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"dominator_mode_commands"'
         '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"dominator_host_recovery"'
         '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"dominator_host_tail"'
+        '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"dominator_exit_matrix"'
         '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"blood_sword_hp_floor"'
         '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"numeric_correction_unequip"'
         '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"numeric_correction_swap"'

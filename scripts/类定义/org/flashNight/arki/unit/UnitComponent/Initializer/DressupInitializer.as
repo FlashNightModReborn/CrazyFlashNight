@@ -394,6 +394,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
     /** 动作只提交当前 placement 观察到的模式。装备、身体或模式变化后旧意图失效。 */
     public static function commandDominatorMode(skin:Object, proof:Object, expected:String, fold:Boolean):Boolean {
+        if (_root.__characterExitSeal != null) {
+            _root.__characterExitSeal.attemptedWrite = true;
+            return false;
+        }
         if (proof == undefined || skin.__dressupPlacementIdentity !== proof) return false;
         var target:Object = proof.actor;
         var item:Object = proof.item;

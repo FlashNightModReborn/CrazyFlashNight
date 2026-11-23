@@ -28,7 +28,9 @@ class org.flashNight.arki.item.CharacterBuildProductionLifecycleTest {
         "性别","脸型","发型","等级","getItemData","itemCatalog","itemUses","_webPanelPauseLease",
         "快捷物品栏键1","快捷物品栏键2","快捷物品栏键3","快捷物品栏键4","药剂组切换键","keyshow",
         "__statCoordinatorForTests","帧计时器","装备引用配置","UI系统","玩家信息界面","敌人函数",
-        "武器类型:dominator","主角被动技能","暂停","当前为战斗地图","最大等级","当前玩家总数","发布消息","服务器",
+        "基础身价值","身高","金钱","虚拟币","经验值","技能点数","键值设定","玩家称号","difficultyMode","easterEgg",
+        "佣兵是否出战信息","同伴数据","同伴数","主角技能表","主线任务进度","商城已购买物品","商城购物车","tasks_to_do","tasks_finished",
+        "task_chains_progress","基建系统","宠物信息","宠物领养限制","角色名","允许存档","UpdateTaskProgress","收集品栏","武器类型:dominator","主角被动技能","暂停","当前为战斗地图","最大等级","当前玩家总数","发布消息","服务器",
         "全局健身HP加成","全局健身MP加成","全局健身空攻加成","全局健身防御加成","全局健身内力加成",
         "经脉HP加成","经脉MP加成","经脉防御加成","经脉内力加成","主角是否在地上","server"];
     private static function check(value:Boolean, label:String):Boolean {
@@ -47,7 +49,7 @@ class org.flashNight.arki.item.CharacterBuildProductionLifecycleTest {
         fixture=org.flashNight.arki.item.CharacterBuildServiceTest;
         try {
             setup(); runJointCase(); if(failed==0) runMultiSlotCase();
-            var modes:Array=["visual_absent","mode_commands","host_recovery","host_tail"];
+            var modes:Array=["visual_absent","mode_commands","host_recovery","host_tail","exit_matrix"];
             for(i=0;i<modes.length && failed==0;i++) {
                 CharacterBuildService.testOnlyReset();
                 coordinator.resetContext(null,"fixture_between_cases",null);
@@ -210,6 +212,10 @@ class org.flashNight.arki.item.CharacterBuildProductionLifecycleTest {
     /** Real projection and session with an inert renderer and isolated persistence port. */
     private static function runDominatorCase(mode:String):Void {
         phase="dominator_"+mode;
+        if (mode=="exit_matrix") {
+            org.flashNight.arki.item.CharacterBuildExitTest.setup();
+            coordinator.resetContext(_root.存档系统,String(_root.savePath),_root._saveExt);
+        }
         _root["武器类型:dominator"]="击杀模式";
         _root.刷新人物装扮(hero._name);coordinator.flush("dominator_baseline");
         var item:Object=fixture.equipment("dominator",1,"",[],20);
@@ -227,7 +233,7 @@ class org.flashNight.arki.item.CharacterBuildProductionLifecycleTest {
         var params:Object=fixture.wireParams(panel,panel+".finalize");
         params.sessionGeneration=changed.sessionGeneration;params.expectedLoadoutRevision=changed.loadoutRevision;
         var api:Object=org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
-        if (mode=="host_recovery" || mode=="host_tail") {
+        if (mode=="host_recovery" || mode=="host_tail" || mode=="exit_matrix") {
             var tail:Boolean=mode=="host_tail";
             var debugCoordinator:Object=coordinator;
             var injection:Object=tail ? debugCoordinator.adapter : api;
@@ -243,6 +249,11 @@ class org.flashNight.arki.item.CharacterBuildProductionLifecycleTest {
             if (!check(rejected.error=="flush_failed" && plan.stage==(tail ? "final_numeric" : "prepare_numeric")
                     && (plan.tailCheckpoint!=undefined)==tail && callbacks.state.saveCalls==0,
                     "real started projection fails at its intended checkpoint before saving")) return;
+            if (mode=="exit_matrix") {
+                org.flashNight.arki.item.CharacterBuildExitTest.run(panel,changed,rejected,check);
+                diagnostic("dominator_exit_matrix",null);
+                return;
+            }
             var recovery:Object=fixture.wireParams(panel,"host.recover.1.1");
             recovery.knownGeneration=opened.sessionGeneration;
             var settled:Object=CharacterBuildService.recoverDetach(recovery);

@@ -181,6 +181,9 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
                 : state === 'write_pending' ? '正在写入构筑'
                 : state === 'flush_pending' ? '正在应用并保存'
                 : state === 'needs_reconcile' ? '等待结果确认'
+                : state === 'exit_pending' ? '正在保存并退出'
+                : state === 'exit_query' ? '退出结果待确认'
+                : reason === 'exit_blocked' ? '尚有改动待确认，已保留整备暂停'
                 : state === 'flush_failed' ? '应用或保存失败'
                 : debug && debug.liveRefreshDirty ? '构筑待应用' : '已同步';
             this._ports.setStatus(label, itemUseUnknown
@@ -195,11 +198,17 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
                 : state === 'needs_reconcile' && debug && debug.unknown
                     && debug.unknown.kind === 'mutation' ? 'mutation_reconcile' : state);
             this._view.setItemUseState(itemUseState);
+            if (this._view.exitButton) {
+                var query = state === 'exit_query';
+                this._view.exitButton.hidden = !(query || (state === 'flush_failed' && debug && debug.liveRefreshDirty))
+                    || itemUsePending || itemUseUnknown || tuningLocked;
+                this._view.exitButton.textContent = query ? '查询本次退出结果' : '保留已确认改动并退出';
+            }
         }
         if (this._ports.setInteractionLocked) {
             var locked = tuningLocked || itemUsePending || itemUseUnknown
                 || state === 'write_pending'
-                || state === 'needs_reconcile' || state === 'flush_pending';
+                || state === 'needs_reconcile' || state === 'flush_pending' || state === 'exit_pending' || state === 'exit_query';
             this._ports.setInteractionLocked(locked, itemUseUnknown
                 ? '物品使用结果尚待确认；只会查询结果，不会自动重放使用。'
                 : itemUsePending ? '物品使用正在处理，完成后才能切换整备目标。'
@@ -281,6 +290,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             onTune:function() { return self._enterTuning(); },
             onUnequip:function() { return self._mutations.unequip(self._selectedTarget); },
             onReconcile:function() { return self._mutations.reconcile(); },
+            onPersistAndExit:function() { return self._session.persistAndExit(); },
             onCustomizationDrugClick:function(slot) { return !!(self._tuning && self._tuning.handleCustomizationDrugSlot(slot)); },
             renderOwnedSlot:global.InventoryUI && global.InventoryUI.renderOwnedSlot,
             iconHtml:function(name, className) {

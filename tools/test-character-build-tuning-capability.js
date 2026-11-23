@@ -59,6 +59,8 @@ equal(TuningModule.findEquipment(payload, '手雷'), null,
 equal(TuningModule.findLoadoutItem(payload, '手雷').quantity, 168,
     'raw loadout lookup preserves the untunable destination item');
 
+// The normal build view has no customization-mode attribute.
+const emptyBuildRoot = {getAttribute:() => null, querySelectorAll:() => []};
 const reboundSources = [];
 const rebindAdapter = new TuningModule.CharacterBuildTuning({
     session:{
@@ -66,7 +68,7 @@ const rebindAdapter = new TuningModule.CharacterBuildTuning({
         getState:function() { return 'idle'; }
     },
     view:{
-        root:{querySelectorAll:function() { return []; }},
+        root:emptyBuildRoot,
         refreshSlotNavigation:function() {}
     }
 });
@@ -122,7 +124,7 @@ const candidateAdapter = new TuningModule.CharacterBuildTuning({
         getState:function() { return 'idle'; }
     },
     view:{
-        root:{querySelectorAll:function() { return []; }},
+        root:emptyBuildRoot,
         refreshSlotNavigation:function() {}
     }
 });
@@ -260,6 +262,7 @@ const commitButton = fakeElement({'data-build-action':'commit'});
 const tuneButton = fakeElement({'data-build-action':'tune'});
 const unequipButton = fakeElement({'data-build-action':'unequip'});
 const root = {
+    getAttribute:emptyBuildRoot.getAttribute,
     querySelector:function(selector) {
         if (selector === '[data-build-action="commit"]') return commitButton;
         if (selector === '[data-build-action="tune"]') return tuneButton;

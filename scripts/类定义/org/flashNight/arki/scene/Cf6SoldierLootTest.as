@@ -79,6 +79,8 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
         check(Cf6SoldierLoot.combatDeath(unit),"capture native combat death");unit.长枪.value.shot=99;
         check(!Cf6SoldierLoot.prepareForTransition(),"durable decision alone blocks transition");
         check(!sawSaveSuccess() && Cf6SoldierLoot.blocksSaveSuccess(),"partial decision save cannot emit exit-authorizing sv2");
+        var exitOwner:Object=org.flashNight.arki.item.CharacterBuildExit;
+        check(!exitOwner.domainsReady(sm),"saved DECIDED_HIT without item admission also blocks CharacterBuild exit");
         check(packet("exact").state=="DECIDED_HIT" && RewardStashService.peek().entries.length==0,"decision precedes asset admission");
         check(storage.data.test.ext.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"].items[0].value.shot==4,"first save contains frozen actual equipment");
         drain();check(sawSaveSuccess() && !Cf6SoldierLoot.blocksSaveSuccess(),"completed admission permits save-success projection");

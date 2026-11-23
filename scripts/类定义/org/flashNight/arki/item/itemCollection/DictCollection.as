@@ -25,6 +25,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
 
     //添加键值对
     public function add(key:String,value:Number):Boolean{
+        if (rejectsExitWrite()) return false;
         if(!isPositiveSafeInteger(value)) return false;
         if(isEmpty(key) && isAddable(key,value)){
             items[key] = value;
@@ -50,6 +51,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
 
     //改变键值对的值
     public function addValue(key:String,value:Number):Void{
+        if (rejectsExitWrite()) return;
         if(!isSafeInteger(value)) return;
         var before:Number = getValue(key);
         var after:Number = before + value;
@@ -105,6 +107,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
      * 返回的 changes 供调用方在装备与材料均已提交后统一派发事件。
      */
     public function transactionApplyDeltas(deltas:Object):Object {
+        if (rejectsExitWrite()) return {success:false, rollbackComplete:true};
         if (!canApplyTransactionDeltas(deltas)) return {success: false};
         var changes:Array = [];
         var beforeRevision:Number = getMutationRevision();
@@ -141,6 +144,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
      * post-state 的材料批次；先完整验证后一次恢复，期间不派发事件。
      */
     public function rollbackTransactionDeltas(receipt:Object):Boolean {
+        if (rejectsExitWrite()) return false;
         if (receipt == null || receipt.success !== true
                 || !(receipt.changes instanceof Array)
                 || getMutationRevision() != Number(receipt.revision)) {
@@ -197,6 +201,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
 
     // 重写设置物品集合功能
     public function setItems(_items:Object):Void{
+        if (rejectsExitWrite()) return;
         var newItems = {};
         var newQuarantinedItems:Object = {};
         var newQuarantinedEntryCount:Number = 0;

@@ -159,6 +159,8 @@ function(WorkbenchFocus, WorkbenchComponents,
         this._inboxSummary = null;
         this._stickyNotice = null;
         this._createDOM();
+        this.exitButton = this.root.querySelector('[data-persist-and-exit]');
+        if (this.exitButton && options.onPersistAndExit) this.exitButton.onclick = options.onPersistAndExit;
         LoadoutPickerModule.createScopeGroup(this);
         this.setDensity(this._density);
         this._statsView = new StatsViewModule.StatsView({

@@ -543,6 +543,21 @@
         return this._recoverUnknownFlush('leave', callback);
     };
 
+    CharacterBuildSession.prototype.persistAndExit = function() {
+        if ((this._state !== 'flush_failed' && this._state !== 'exit_query') || !this._liveRefreshDirty) return null;
+        var self = this;
+        this._state = 'exit_pending';
+        this._emit('exit_pending');
+        return this._mux.request('persistAndExit', {sessionGeneration:this._sessionGeneration,
+            loadoutRevision:this._loadoutRevision, drugRevision:this._drugRevision}, {
+            kind:'persistAndExit', singleFlight:true, write:true
+        }, function(response) {
+            var uncertain = !response || response.error === 'client_timeout' || response.error === 'exit_query_required';
+            self._state = uncertain ? 'exit_query' : 'flush_failed';
+            self._emit(uncertain ? 'exit_query' : 'exit_blocked');
+        });
+    };
+
     CharacterBuildSession.prototype._requestFlush = function(callback) {
         if (this._state !== 'idle' && this._state !== 'flush_failed') return null;
         var recoverProjection = this._state === 'flush_failed';

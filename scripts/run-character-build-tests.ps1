@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [ValidateRange(1, 3600)]
     [int]$TimeoutSeconds = 240,
@@ -146,6 +146,7 @@ $expectedWebActions = @(
     'characterBuildFinalize'
 )
 $expectedHostOnlyActions = @(
+    'characterBuildPersistedExit'
     'characterBuildRecoverDetach'
 )
 $expectedActions = @($expectedWebActions + $expectedHostOnlyActions)
@@ -153,7 +154,7 @@ $registeredActionSet = @($registeredActions | Sort-Object) -join '|'
 $expectedActionSet = @($expectedActions | Sort-Object) -join '|'
 if ((@($registeredActions).Count -ne $expectedActions.Count) -or
         ($registeredActionSet -ne $expectedActionSet)) {
-    throw 'CharacterBuild actions must be the exact eleven Web actions plus one Host-only recovery action.'
+    throw 'CharacterBuild actions must match the eleven Web actions and the two Host-owned recovery and exit actions.'
 }
 $characterBuildHostSource = Get-RepoText `
     'launcher\src\Guardian\CharacterBuildTask.cs'
@@ -199,9 +200,13 @@ if (($productionResolver -notmatch
             (@($expectedWebCommands | Sort-Object) -join '|'))) {
     throw 'CharacterBuild Web resolver must remain the exact eleven-command/eleven-action set.'
 }
-if (($combinedResolvers -match 'RecoverDetach') -or
-        ($combinedResolvers -match 'recoverDetach')) {
-    throw 'Host-only characterBuildRecoverDetach must not enter the Web command resolver.'
+if ($combinedResolvers -match 'RecoverDetach|PersistedExit') {
+    throw 'The generic Web command resolver cannot send a Host-owned recovery or exit action.'
+}
+if ($characterBuildSource -notmatch
+        'characterBuildPersistedExit"\]\s*=\s*function\(params\)[\s\S]{0,240}\.persistedExit\(params\)' -or
+        $characterBuildHostSource -notmatch 'command == "persistAndExit"[\s\S]{0,150}RequestPersistedExit\(') {
+    throw 'A player exit request must enter Host admission and use the separate Flash persisted-exit handler.'
 }
 if ($characterBuildSource -notmatch
         'characterBuildRecoverDetach"\]\s*=\s*function\(params\)[\s\S]{0,240}handleRecoverDetach') {

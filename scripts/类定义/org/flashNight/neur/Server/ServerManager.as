@@ -781,6 +781,7 @@ class org.flashNight.neur.Server.ServerManager {
 
     // 处理从服务器推送来的控制台命令
     private function handleConsoleCommand(command:String,qualificationSlot:String):Void {
+        if (_root.__characterExitSeal != null) return;
         command = unescape(command);
         if (qualificationSlot!=undefined && qualificationSlot!=""
             && !org.flashNight.neur.Server.QualificationConsoleScope.allows(qualificationSlot,command,
@@ -834,6 +835,7 @@ class org.flashNight.neur.Server.ServerManager {
 
     // C#→AS2 游戏命令分发器
     private function handleGameCommand(action:String, params:Object):Void {
+        if (_root.__characterExitSeal != null && action != "characterBuildPersistedExit") return;
         if (action == undefined || action == "") {
             trace("[GameCmd] Missing action");
             return;

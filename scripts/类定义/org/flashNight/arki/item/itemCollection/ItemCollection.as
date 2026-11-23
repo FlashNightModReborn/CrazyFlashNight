@@ -13,6 +13,14 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
 
     private var dispatcher:LifecycleEventDispatcher; //事件分发器实例
 
+    // Only the exact player containers participating in a terminal save are sealed.
+    public var exitWriteSeal:Object;
+    public function rejectsExitWrite():Boolean {
+        if (exitWriteSeal == null) return false;
+        exitWriteSeal.attemptedWrite = true;
+        return true;
+    }
+
     public function ItemCollection(_items:Object) {
         if(!_items) this.items = new Object();
         else setItems(_items);
@@ -50,6 +58,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     // 设置物品集合数据。工厂只在运行期查找，避免基础容器经 BaseItem → 装备服务
     // 回连其派生容器，导致 CS6 先注册子类、后注册父类而永久丢失继承方法。
     public function setItems(_items:Object):Void{
+        if (rejectsExitWrite()) return;
         var newItems = {};
         for(var key in _items){
             newItems[key] = _global.org.flashNight.arki.item.BaseItem.createFromObject(_items[key]);
@@ -69,6 +78,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
 
     //添加物品
     public function add(key:String,item):Boolean{
+        if (rejectsExitWrite()) return false;
         if(isEmpty(key) && isAddable(key,item)){
             items[key] = item;
             if(hasDispatcher()) dispatcher.publish("ItemAdded", this, key); // 发布ItemAdded事件
@@ -79,6 +89,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
 
     //移除物品
     public function remove(key:String):Void{
+        if (rejectsExitWrite()) return;
         delete items[key];
         if(hasDispatcher()) dispatcher.publish("ItemRemoved", this, key); // 发布ItemRemoved事件
     }

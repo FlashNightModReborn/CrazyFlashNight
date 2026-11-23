@@ -274,6 +274,8 @@ namespace CF7Launcher.Guardian
             {
                 lock (_gate)
                 {
+                    if (_exitOperation != null)
+                        return LogHostShutdownFence(false, "exit_operation_pending", out outcome);
                     if (_disposed)
                         return LogHostShutdownFence(
                             false, "disposed", out outcome);
@@ -837,6 +839,7 @@ namespace CF7Launcher.Guardian
                 InvalidateFinalizeProofLocked();
                 ApplySnapshotLocked(entry.ExpectedLoadoutRevision, liveRevision, entry.ExpectedDrugRevision,
                     liveRevision != entry.ExpectedLoadoutRevision);
+                _exitFailureTransport = entry.TransportGeneration;
                 _writeState = "flush_failed";
                 System.Threading.Monitor.PulseAll(_gate);
             }

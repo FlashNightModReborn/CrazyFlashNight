@@ -43,6 +43,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
 
     //重构add函数，填写-1时自动寻找可用的索引
     public function add(key:Number, item:Object):Boolean {
+        if (rejectsExitWrite()) return false;
         if(item == null || item.name == undefined || item.name == "" || item.value == undefined || item.value == null) return false;
         if(typeof item.value == "number" && (isNaN(item.value) || item.value <= 0)) return false;
         if (key == -1) key = getFirstVacancy();
@@ -71,6 +72,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
 
 
     public function remove(key:Number):Void {
+        if (rejectsExitWrite()) return;
         if(isNaN(key) || Math.floor(key) != key || key < 0 || key >= capacity) return;
         if(items[key] == null) return;
         var beforeIndexes:Array = getValidatedIndexes();
@@ -94,6 +96,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
      * 事件可见；若本次归零又触发 remove()，版本可能再推进一次，调用方只依赖单调性。
      */
     public function addValue(key:String, value:Number):Void {
+        if (rejectsExitWrite()) return;
         if (isNaN(value)) return;
         var current:Object = getItem(key);
         if (current == null) {
@@ -140,6 +143,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
      * 不能用它替代普通 add/remove；普通业务仍应走原生命周期方法。
      */
     public function transactionWrite(key:Number, item:Object):Boolean {
+        if (rejectsExitWrite()) return false;
         if (isNaN(key) || Math.floor(key) != key || key < 0 || key >= capacity) return false;
         if (item != null) {
             if (item.name == undefined || item.name == "" || item.value == undefined || item.value == null) return false;
@@ -274,6 +278,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
      * 热路径不捕获异常；所有可预期失败都必须在任何写入前返回 false receipt。
      */
     public function transactionApplySlotChangesWithReceipt(changes:Array):Object {
+        if (rejectsExitWrite()) return {success:false, rollbackComplete:true};
         if (!canApplySlotTransaction(changes)) return {success:false, rollbackComplete:true};
         var receipt:Object = buildSlotTransactionReceipt(changes);
         applySlotTransactionReceipt(receipt);
@@ -313,6 +318,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
 
     /** 只回滚本容器刚签发且未被后续写覆盖的多槽 receipt。 */
     public function rollbackSlotTransaction(receipt:Object):Boolean {
+        if (rejectsExitWrite()) return false;
         if (receipt == null || receipt.success !== true || receipt.owner !== this
                 || !(receipt.changes instanceof Array)
                 || getMutationRevision() != Number(receipt.revision)
@@ -360,6 +366,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
      * 新调用方可在另一容器提交失败时恢复 value、lastUpdate 与 raw revision。
      */
     public function transactionApplyValueChangesWithReceipt(changes:Array):Object {
+        if (rejectsExitWrite()) return {success:false, rollbackComplete:true};
         if (!canApplyValueTransaction(changes)) {
             return {success:false, rollbackComplete:true};
         }
@@ -417,6 +424,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
 
     /** 只回滚本容器刚签发且未被后续写覆盖的 receipt。 */
     public function rollbackValueTransaction(receipt:Object):Boolean {
+        if (rejectsExitWrite()) return false;
         if (receipt == null || receipt.success !== true
                 || !(receipt.changes instanceof Array)
                 || getMutationRevision() != Number(receipt.revision)) {
@@ -475,6 +483,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
      * 才一次替换底层 items，因而不会把半份 setItems 暴露给同步事件回调。
      */
     public function transactionReplaceAll(orderedItems:Array):Boolean {
+        if (rejectsExitWrite()) return false;
         if (!(orderedItems instanceof Array) || orderedItems.length > capacity) return false;
         var replacement:Object = {};
         for (var i:Number = 0; i < orderedItems.length; i++) {
@@ -498,6 +507,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
      * 避免 400 槽存档保留区被排序或压缩。
      */
     public function transactionReplacePrefix(orderedItems:Array, prefixCapacity:Number):Boolean {
+        if (rejectsExitWrite()) return false;
         if (!(orderedItems instanceof Array)
             || isNaN(prefixCapacity)
             || Math.floor(prefixCapacity) != prefixCapacity
@@ -557,6 +567,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
 
     //覆写setItems，批量替换items后索引需要重建
     public function setItems(_items:Object):Void{
+        if (rejectsExitWrite()) return;
         super.setItems(_items);
         indexesDirty = true;
         rebuildIndexesFromItems();
@@ -731,6 +742,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
      * @param sortFunction 排序函数(null则保持原序)
      */
     public function rebuildOrder(sortFunction:Function):Void {
+        if (rejectsExitWrite()) return;
         // 阶段1：准备数据
         var oldItems:Array = this.getItemArray(); // 获取当前有序物品数组
         var maxItems:Number = Math.min(oldItems.length, this.capacity);

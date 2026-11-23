@@ -1219,6 +1219,29 @@ test('ordinary reads preserve a known flush failure and an explicit retry carrie
     assert.strictEqual(fixture.messages[2].payload.recoverProjection, true);
 });
 
+test('only a player with a known dirty projection can request exit or query a lost receipt', () => {
+    const fixture = createFixture();
+    openClean(fixture, {loadout:4, live:3, dirty:true});
+    assert.strictEqual(fixture.session.persistAndExit(), null);
+    fixture.session.acceptShutdownRetry({panelInstanceId:'panel.workbench.fixture', sessionGeneration:7,
+        writeEpoch:0, loadoutRevision:4, liveRevision:3, drugRevision:2});
+    assert(fixture.session.persistAndExit());
+    const sent = fixture.messages[1];
+    assert.strictEqual(sent.cmd, 'persistAndExit');
+    assert.deepStrictEqual(sent.payload, {v:1, sessionGeneration:7, loadoutRevision:4, drugRevision:2});
+    assert.strictEqual(fixture.session.persistAndExit(), null);
+    assert.strictEqual(fixture.session.canClose(), false);
+    fixture.mux.handleResponse(responseFor(sent, {success:false, error:'exit_query_required'}));
+    assert.strictEqual(fixture.session.getState(), 'exit_query');
+    assert(fixture.session.persistAndExit());
+    const query = fixture.messages[2];
+    assert.notStrictEqual(query.callId, sent.callId);
+    assert.deepStrictEqual(query.payload, sent.payload);
+    fixture.mux.handleResponse(responseFor(query, {success:false, error:'exit_not_settled'}));
+    assert.strictEqual(fixture.session.getState(), 'flush_failed');
+    assert.strictEqual(fixture.session.canClose(), false);
+});
+
 test('native shutdown hands an idle exact panel its explicit retry without sending another write', () => {
     const fixture = createFixture();
     openClean(fixture);

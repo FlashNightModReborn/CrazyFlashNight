@@ -41,6 +41,7 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
      * legacy add 仍保留原有 use 规则；11 槽白名单只约束新的事务入口。
      */
     public function add(key:String, item:Object):Boolean {
+        if (rejectsExitWrite()) return false;
         if (!isEmpty(key) || !isAddable(key, item)) return false;
         bumpMutationRevision();
         if (!super.add(key, item)) {
@@ -51,6 +52,7 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
     }
 
     public function remove(key:String):Void {
+        if (rejectsExitWrite()) return;
         if (isEmpty(key)) return;
         bumpMutationRevision();
         super.remove(key);
@@ -61,6 +63,7 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
      * 归零时基类会再动态派发 remove，版本与 ArrayInventory 一样允许再次推进。
      */
     public function addValue(key:String, value:Number):Void {
+        if (rejectsExitWrite()) return;
         if (isNaN(value) || value == 0) return;
         var item:Object = getItem(key);
         if (item == null || typeof item.value != "number") return;
@@ -69,6 +72,7 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
     }
 
     public function setItems(_items:Object):Void {
+        if (rejectsExitWrite()) return;
         super.setItems(_items);
         bumpMutationRevision();
     }
@@ -90,6 +94,7 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
      * 调用方必须先完成跨容器预检，全部写成功后再统一 publish。
      */
     public function transactionWrite(key:String, item:Object):Boolean {
+        if (rejectsExitWrite()) return false;
         if (TRANSACTION_KEYS[key] !== true) return false;
 
         var current:Object = getItem(key);
@@ -157,6 +162,7 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
      * 任一赋值异常会在返回前恢复 value、lastUpdate 与 revision。
      */
     public function transactionApplyWornValueChanges(changes:Array):Object {
+        if (rejectsExitWrite()) return {success:false, rollbackComplete:true};
         if (!canApplyWornValueTransaction(changes)) {
             return {success:false, rollbackComplete:true};
         }
@@ -204,6 +210,7 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
      * 先完整验证 post-state，再恢复全部 authority；失败时绝不做部分回滚。
      */
     public function rollbackWornValueTransaction(receipt:Object):Boolean {
+        if (rejectsExitWrite()) return false;
         if (receipt == null || receipt.success !== true
                 || !(receipt.changes instanceof Array)
                 || receipt.changes.length != 1

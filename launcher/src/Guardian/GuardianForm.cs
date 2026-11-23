@@ -1814,6 +1814,26 @@ namespace CF7Launcher.Guardian
             return true;
         }
 
+        // Consume the current CharacterBuild proof synchronously on the UI thread.
+        // Reset, panel close and ordinary shutdown have their own admission paths.
+        internal bool TryExitAfterCharacterSave(Func<bool> consumeReceipt)
+        {
+            if (InvokeRequired || IsShutdownAdmissionClosed || IsDisposed || consumeReceipt == null)
+                return false;
+            _closeAlreadyInProgress = true;
+            bool exiting = false;
+            try
+            {
+                if (!consumeReceipt()) return false;
+                exiting = DoExit(false, null, shutdownFenceAlreadyPassed: true);
+                return exiting;
+            }
+            finally
+            {
+                if (!exiting) _closeAlreadyInProgress = false;
+            }
+        }
+
         private bool DoExit()
         {
             return DoExit(

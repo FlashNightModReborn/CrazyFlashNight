@@ -1,0 +1,137 @@
+{
+  "issue": 334,
+  "date": "2026-11-23",
+  "baseline": "79bf620f28d4ffb13a9c1881329d91f3154703d0",
+  "platform": "Windows, Flash CS6 / AVM1, WebView2, isolated native candidate",
+  "nativeCandidate": {
+    "buildIdentity": "BF780D81AC635C2A4E50B4B6371F573E7B2B95A3A3CE0C000373741E0624263B",
+    "payloadClosure": "6065AECF0F6F99A68F8FA47009A01B55E3635098E9734897C62DE57C318F043D",
+    "coreSha256": "D0B9316A6F51BAED18FFDE1DB53F985610E55087B41B2F1817259C24DAE43AB2"
+  },
+  "productionSwfSha256": {
+    "scripts/asLoader.swf": "c19e295825eee7d41533d2a57feefbd73b17bd6b5e70681755959688a9a964cc",
+    "scripts/asLoaderShared.swf": "5f6627e4cf4cf682f07ba76bf00dfb61f3dbb257fc1b0d58d604f64c6a74ab89",
+    "scripts/asLoaderLogic.swf": "87b3a969e5e8b3996cf40cf55e79bef24311d949071f943a77a738c27be7b035"
+  },
+  "reproduction": [
+    "从隔离的复制档开始。主手为 Glock 18，背包第 0 格为 dominator，档中含八个药剂槽和带数组的扩展字段。",
+    "仅在写档进程的临时装备数据中给 dominator 加入 MP 修正 -9999999。两个游戏进程均使用本提交的游戏 SWF，冷启动前还原装备 XML。",
+    "在整备台选择主手、预览并装备 dominator。关闭面板时真实角色模板在 prepare_numeric 返回 stat_output_invalid:resources，普通关闭得到 flush_failed。此时 loadoutRevision=1、liveRevision=0、liveRefreshDirty=true。",
+    "点击「保留已确认改动并退出」。等待原进程正常结束，用原生 AMF 解析器读取物理 SOL，再核对这次保存只消费了一张退出回执。",
+    "移走 JSON 影子存档，另起进程读同一路径的 SOL。确认来源为 sol，重开整备台，并逐项比较五个库存容器、技能表及快捷键、药剂槽及原槽绑定和完整 ext。"
+  ],
+  "writer": {
+    "pid": 13344,
+    "slot": "cf7_agent_i334_1123b",
+    "physicalSaveSerial": 2,
+    "receiptConsumptions": 1,
+    "soleReceipt": "event=character_build_exit_consumed operation=7b29adaf8a954059b8b8affa80babb21 saveSerial=2",
+    "beforeSolSha256": "75D96E9C0F7A7775D69544677492E4995D43FCC0EB196259ECD7D8C6AFE5C092",
+    "solSha256": "412B96AD54754A706789770B3473FB305E07E20729AB25FFFA59657EB6CF2520"
+  },
+  "coldRead": {
+    "pid": 21704,
+    "source": "sol",
+    "shadowPresentAtLaunch": false,
+    "samePhysicalSol": true,
+    "afterColdAutosaveSha256": "6C53E9E239F019BCE034A4D418AE9732BF8D0469A79DAE294C6A2CE667B7E220",
+    "equipment": {
+      "primaryHand": {
+        "name": "dominator",
+        "shot": 11.0,
+        "lastUpdate": 1795426467296.0
+      },
+      "backpackSlot0": {
+        "name": "Glock 18",
+        "shot": 4.0,
+        "reloadCount": 3.0,
+        "lastUpdate": 1781621704777.0
+      },
+      "comparison": "Both complete serialized instances including mods and nested ammunition state. The legacy Glock initializes its capacity-33 ammunition state at spawn."
+    },
+    "skillTableEntries": 80,
+    "drugSlots": 8,
+    "extensionKeys": [
+      "bookshelf",
+      "drugLoadout",
+      "issue334Probe",
+      "meridians",
+      "rewardInbox",
+      "stageSettlement",
+      "成就"
+    ],
+    "compared": [
+      "all five inventory containers",
+      "complete skill table",
+      "all skill hotkeys",
+      "drug quantities and slot affinity",
+      "complete ext object including nested sentinel"
+    ]
+  },
+  "regression": {
+    "hostPassed": 716,
+    "hostScope": "整备、设置、退出、健身、技能、装备调校、物品使用及关联面板",
+    "webSuitesPassed": 10,
+    "webSessionPassed": 50,
+    "productionLifecyclePassed": 142,
+    "cf6SoldierLootPassed": 207,
+    "rewardStashPassed": 179,
+    "flashBuild": {
+      "compiledModules": 3,
+      "cs6Errors": 0,
+      "cs6Warnings": 0,
+      "branch32kRetries": 0
+    },
+    "as2Runs": {
+      "lifecycle": "50d67d62e7d24676b1b089ff2cc86550",
+      "cf6Loot": "45bf1611a4da487196ff517b772ae5ba",
+      "characterBuildDomain": "cbfa072b5ea04b2995017da62d49ec57"
+    },
+    "entryPoints": [
+      "scripts/run-character-build-production-lifecycle-tests.ps1",
+      "scripts/run-cf6-soldier-loot-tests.ps1",
+      "scripts/run-character-build-tests.ps1",
+      "tools/run-focus-sol-recheck.ps1",
+      "tools/test-character-build-*.js"
+    ],
+    "characterBuildDomainSuitesPassed": {
+      "EquipmentInventoryTest": 28,
+      "InventoryPanelServiceTest": 194,
+      "CharacterBuildTransactionSpikeTest": 19,
+      "RuntimeEquipmentProjectionTest": 36,
+      "CharacterBuildServiceTest": 241,
+      "PlayerInfoProviderTest": 29,
+      "PlayerStatLifecycleTest": 75,
+      "SaveManagerTest": 396
+    }
+  },
+  "runtimeRelease": "原生 Launcher 已在隔离候选中完成实机验证。正式 runtime 的发布状态独立记录。",
+  "integrationBase": "93e1b87b11294a06a3ca6dd66b3a40643d2daf12",
+  "realPending": {
+    "pid": 15348,
+    "slot": "cf7_agent_i334_1123b",
+    "physicalFlush": "pending",
+    "persistState": "unconfirmed",
+    "queryState": "unconfirmed",
+    "originalProcessAndPausedPanelRetained": true,
+    "additionalPhysicalSavesOnQuery": 0,
+    "receiptConsumptions": 0,
+    "launcherTraceSha256": "5f84335ee51904cf66107b976c38ec174efbfbfef5ecbf6a714f6138061a3957",
+    "gameSourceBase": "79bf620f28d4ffb13a9c1881329d91f3154703d0",
+    "nativeBuildIdentity": "BF780D81AC635C2A4E50B4B6371F573E7B2B95A3A3CE0C000373741E0624263B"
+  },
+  "baselineReproduction": {
+    "checkpoint": "prepare_numeric",
+    "error": "flush_failed",
+    "coordinatorReason": "stat_output_invalid:resources",
+    "productionLifecyclePassed": 104
+  },
+  "negativeCoverage": [
+    "Host 原写进行中或结果未知、原连接/面板/存档上下文被替换、旧回执或重复回包均不能放行。",
+    "装备交换另一端变化、药剂槽绑定需要修复、设置 hold、健身待存、CF6 已决定掉落但尚未入账、地面领取进行中均被阻止。",
+    "奖励物理 flush 已返回 true，但原奖励结算回调仍返回 false 时退出被拦截。只有奖励 owner 自行完成结算后才能重新申请。",
+    "换下的旧枪在申请前被改写会使交换核对失败。保存期间，旧回调无法改写其背包弹药。新脏标、扩展字段和迟到的武器模式或弹药写入会使退出证明失效。",
+    "原暂停和独立暂停都保留。普通 finalize 不能用退出回执，原操作查询不增加保存序号。"
+  ],
+  "restoredItemDataSha256": "4ccebe7ddb14f9bca1148b14c9fe06b90e2e8c563376b28f55a85388c49fa84f"
+}
