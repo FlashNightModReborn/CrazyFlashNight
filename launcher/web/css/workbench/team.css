@@ -1589,8 +1589,8 @@
 }
 .team-workbench .team-combat-summary {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 6px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 10px;
     margin-top: 8px;   /* Phase F 排版收紧：12→8 */
     padding: 8px;
     box-sizing: border-box;
@@ -1598,17 +1598,62 @@
     border: 1px solid var(--wb-line-soft);
 }
 .team-workbench .team-combat-cell {
-    display: grid;
-    gap: 2px;
-    text-align: center;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px;
+    min-width: 0;
+}
+.team-workbench .team-combat-cell[data-stat-key="speed"] {
+    grid-column: 1 / -1;
 }
 .team-workbench .team-combat-label {
     color: var(--wb-muted);
     font-size: 10px;
+    white-space: nowrap;
 }
 .team-workbench .team-combat-value {
     color: var(--wb-text);
     font: 11px "Consolas", monospace;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+.team-workbench .team-combat-state {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+.team-workbench .team-combat-state-compact {
+    margin-top: 8px;
+    padding: 8px;
+    box-sizing: border-box;
+    background: var(--team-stone-soft, var(--wb-surface));
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-combat-state-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+}
+.team-workbench .team-combat-state-title {
+    color: var(--wb-text);
+    font-size: 11px;
+    font-weight: 600;
+}
+.team-workbench .team-combat-state-detail {
+    color: var(--wb-muted);
+    font-size: 10px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+.team-workbench .team-combat-refresh {
+    flex: 0 0 auto;
+    min-height: 24px;
+    padding: 2px 8px;
+    font-size: 10px;
 }
 
 /* ── 动作按钮（直接动作：pending 走 TeamShared.setPending；blocked 可读原因）──
@@ -1837,13 +1882,9 @@
     line-height: 1.5;
     text-align: center;
 }
-/* 窄栏紧凑排布：战斗属性条带改单列，Lv.1 / 满级标注改上下两行小字 */
+/* 窄栏紧凑排布：培养页左栏实时属性与基础进度单列呈现 */
 .team-workbench .team-pet-advance-left .team-stats-grid {
     grid-template-columns: minmax(0, 1fr);
-}
-.team-workbench .team-pet-advance-left .team-growth-ends {
-    flex-direction: column;
-    gap: 1px;
 }
 .team-workbench .team-advance-section {
     margin-bottom: 10px;   /* Phase F 排版收紧：section 间距 14→10 */
@@ -1885,10 +1926,7 @@
     margin-top: 3px;
     color: var(--wb-muted);
     font-size: 10px;
-}
-.team-workbench .team-growth-ends {
-    display: flex;
-    justify-content: space-between;
+    line-height: 1.45;
 }
 
 /* ── T800 / 后续非主角通用托管长枪投影 ── */

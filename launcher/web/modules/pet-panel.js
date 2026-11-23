@@ -6,9 +6,9 @@
  *    「＋ 领养」入口、世界内候选卡置顶），
  *    右栏决策面（详情 / 出战 · 休息 / 恢复体力 / 快捷进阶开关 / 「培养 →」）；
  *  - store（领养）：左栏分类 tabs + 可领养目录 + 骨架，右栏候选预览 + CommitBar（唯一主 CTA 确认领养）；
- *  - advance（培养）：SecondaryPage 覆盖 body（两栏：左栏 属性信息 / 战斗属性（窄栏紧凑排布，
- *    旧 SWF 缺 combat 字段仍整块隐藏），右栏 托管长枪候选 / 进阶方案纵向滚动列；
- *    出战 · 恢复 · 强化 · 删除在 header）。
+ *  - advance（培养）：SecondaryPage 覆盖 body（两栏：左栏 属性信息 / 当前实时战斗属性，
+ *    仅展示已就绪出战实例的真实数值，未出战/刷新中/不可用明确呈现状态，不显示 Lv.1/满级预测条；
+ *    右栏 托管长枪候选 / 进阶方案纵向滚动列；出战 · 恢复 · 强化 · 删除在 header）。
  *
  * AS2 为数据权威，JS 纯展示层：panel='pets'；cmd 全集为
  * snapshot / pet_lib / adopt_list / adopt / deploy / restore_stamina / level_up /
@@ -1842,6 +1842,7 @@
         var statSection = advanceSection('属性信息');
         var statGrid = document.createElement('div');
         statGrid.className = 'team-stats-grid';
+        statGrid.appendChild(statRow('等级', 'Lv.' + pet.level + ' / ' + levelLimit, 'level'));
         statGrid.appendChild(meterRow('体力', staminaTone(pet.stamina), ratioOf(pet.stamina, maxSt),
             pet.stamina + '/' + maxSt));
         if (pet.level >= levelLimit) {
@@ -1860,23 +1861,28 @@
         } else if (pet.level >= levelLimit) {
             var maxSub = document.createElement('div');
             maxSub.className = 'team-stat-sub';
-            maxSub.textContent = 'Lv.' + pet.level + ' 已达上限';
+            maxSub.textContent = 'Lv.' + pet.level + ' 已达等级上限';
             statSection.appendChild(maxSub);
         }
         _advanceLeftEl.appendChild(statSection);
 
-        // 战斗属性成长（AS2 snapshot.combat：敌人属性表插值；旧 SWF 缺字段时整块隐藏）
-        var combatGrid = document.createElement('div');
-        combatGrid.className = 'team-stats-grid';
-        if (renderCombatStats(pet, levelLimit, combatGrid)) {
-            var combatSection = advanceSection('战斗属性');
+        // 当前实时战斗属性（消费 AS2 snapshot.liveCombat 只读投影；不再渲染 Lv.1/满级预测条）
+        var combatSection = advanceSection('战斗属性');
+        var liveState = resolveLiveCombat(pet);
+        if (liveState.status === 'ready') {
+            var combatGrid = document.createElement('div');
+            combatGrid.className = 'team-stats-grid team-live-combat-grid';
+            combatGrid.setAttribute('data-live-status', 'ready');
+            renderCombatStats(liveState, combatGrid);
             combatSection.appendChild(combatGrid);
             var note = document.createElement('div');
             note.className = 'team-stat-sub';
-            note.textContent = '已计入进阶方案加成；出战实体按当前难度与等级初始化，数值随难度档位变化。';
+            note.textContent = '当前出战实例实时读数（随场景难度与当前状态变化）；空手攻击力不含持枪/兵器实际伤害。';
             combatSection.appendChild(note);
-            _advanceLeftEl.appendChild(combatSection);
+        } else {
+            combatSection.appendChild(buildLiveCombatPlaceholder(liveState, false));
         }
+        _advanceLeftEl.appendChild(combatSection);
 
         if (pet.managedLongGun && pet.managedLongGun.supported) {
             _advanceRightEl.appendChild(renderManagedLongGun(pet));
@@ -1919,49 +1925,32 @@
         return n;
     }
 
-    // 战斗属性成长条（起点 Lv.1 → 当前 → 满级）：数据来自 AS2 snapshot.combat。
-    // 返回是否有数据；无数据时调用方整块隐藏（旧 SWF 缺字段降级）。
-    function renderCombatStats(pet, levelLimit, gridEl) {
-        var combat = pet.combat;
-        if (!combat || !combat.hp || typeof combat.hp !== 'object') return false;
-        var maxLv = combat.maxLevel || levelLimit;
-        var startLv = combat.startLevel || 1;
-        var defs = [
-            { label: '生命', d: combat.hp },
-            { label: '攻击', d: combat.attack },
-            { label: '防御', d: combat.defense },
-            { label: '速度', d: combat.speed }
-        ];
-        for (var i = 0; i < defs.length; i++) {
-            var d = defs[i].d || {};
-            var span = (d.max || 0) - (d.start || 0);
-            var pctv = span > 0 ? Math.max(0, Math.min(1, ((d.cur || 0) - (d.start || 0)) / span)) : 1;
-            var cell = document.createElement('div');
-            cell.className = 'team-stat';
-            var head = document.createElement('div');
-            head.className = 'team-stat-head';
-            var lab = document.createElement('span');
-            lab.className = 'team-stat-label';
-            lab.textContent = defs[i].label;
-            var val = document.createElement('span');
-            val.className = 'team-stat-value';
-            val.textContent = d.cur != null ? Number(d.cur).toLocaleString() : '--';
-            head.appendChild(lab);
-            head.appendChild(val);
-            cell.appendChild(head);
-            cell.appendChild(meterNode('', pctv));
-            var ends = document.createElement('div');
-            ends.className = 'team-stat-sub team-growth-ends';
-            var start = document.createElement('span');
-            start.textContent = 'Lv.' + startLv + ' · ' + Number(d.start != null ? d.start : 0).toLocaleString();
-            var end = document.createElement('span');
-            end.textContent = '满级 Lv.' + maxLv + ' · ' + Number(d.max != null ? d.max : 0).toLocaleString();
-            ends.appendChild(start);
-            ends.appendChild(end);
-            cell.appendChild(ends);
-            gridEl.appendChild(cell);
+    // 当前实时战斗属性逐项渲染：仅消费已验证的 liveState（无 Lv.1/满级伪精确端点与预测条）。
+    function renderCombatStats(liveState, gridEl) {
+        if (!liveState || liveState.status !== 'ready') return false;
+        var rows = liveCombatRows(liveState);
+        for (var i = 0; i < rows.length; i++) {
+            gridEl.appendChild(statRow(rows[i].label, rows[i].value, rows[i].key));
         }
         return true;
+    }
+
+    function statRow(label, valueText, statKey) {
+        var cell = document.createElement('div');
+        cell.className = 'team-stat';
+        if (statKey) cell.setAttribute('data-stat-key', statKey);
+        var head = document.createElement('div');
+        head.className = 'team-stat-head';
+        var lab = document.createElement('span');
+        lab.className = 'team-stat-label';
+        lab.textContent = label;
+        var val = document.createElement('span');
+        val.className = 'team-stat-value';
+        val.textContent = valueText;
+        head.appendChild(lab);
+        head.appendChild(val);
+        cell.appendChild(head);
+        return cell;
     }
 
     function renderManagedLongGun(pet) {
@@ -2231,6 +2220,11 @@
             if (finishMutationOp(btn, data)) return;
             if (data.success) {
                 pet.deployed = data.deployed;
+                // 出战/休息切换后立即失效旧 liveCombat，绝不复用上一次的实时数值冒充当前；
+                // 新出战时主动请求 snapshot 读取已就绪场景实例（若尚未 flush 则展示 pending 并支持手动刷新）。
+                pet.liveCombat = data.deployed
+                    ? { status: 'pending', reason: 'initializing' }
+                    : { status: 'not_deployed' };
                 if (_snapshot) _snapshot.currentDeployCount = data.currentDeployCount;
                 updateHeaderMetrics();
                 reflowCardAfterMutation(slotIndex);
@@ -2238,6 +2232,7 @@
                 if (_selectedSlot === slotIndex || _selectedSlot === CANDIDATE_SLOT) renderDetail();
                 renderAdvance();
                 TeamShared.toast(pet.deployed ? '已出战' : '已休息', 'success');
+                if (data.deployed) requestSnapshot();
             } else {
                 TeamShared.toast('操作失败：' + (data.error || '未知错误'), 'error');
             }
@@ -2645,27 +2640,138 @@
         return row;
     }
 
-    function combatSummary(pet) {
-        var combat = pet.combat;
-        if (!combat || !combat.hp || typeof combat.hp !== 'object') return null;
-        var defs = [
-            { label: '生命', d: combat.hp },
-            { label: '攻击', d: combat.attack },
-            { label: '防御', d: combat.defense },
-            { label: '速度', d: combat.speed }
+    function isFiniteNum(v) {
+        return typeof v === 'number' && isFinite(v);
+    }
+
+    function formatLiveSpeed(state) {
+        if (!state || !isFiniteNum(state.speed) || state.speed < 0) return '--';
+        return state.speed.toFixed(1) + ' ' + (state.speedUnit || 'm/s');
+    }
+
+    // 统一归一化 AS2 liveCombat 只读投影：仅接受已出战且全字段有限的 ready 读数；
+    // 未出战/刷新中/不可用绝不回退旧 live 值或伪精确 combat 插值表。
+    function resolveLiveCombat(pet) {
+        if (!pet || !pet.deployed) {
+            return { status: 'not_deployed', reason: 'not_deployed' };
+        }
+        var lc = pet.liveCombat;
+        if (!lc || typeof lc !== 'object') {
+            return { status: 'unavailable', reason: 'missing_projection' };
+        }
+        if (lc.status === 'ready'
+                && isFiniteNum(lc.hp) && lc.hp >= 0
+                && isFiniteNum(lc.maxHp) && lc.maxHp > 0
+                && isFiniteNum(lc.unarmedAttack)
+                && isFiniteNum(lc.defense)
+                && isFiniteNum(lc.speed) && lc.speed >= 0) {
+            return {
+                status: 'ready',
+                hp: Math.floor(lc.hp),
+                maxHp: Math.floor(lc.maxHp),
+                unarmedAttack: Math.floor(lc.unarmedAttack),
+                defense: Math.floor(lc.defense),
+                speed: lc.speed,
+                speedUnit: lc.speedUnit || 'm/s'
+            };
+        }
+        if (lc.status === 'not_deployed') {
+            return { status: 'not_deployed', reason: 'not_deployed' };
+        }
+        if (lc.status === 'pending') {
+            return { status: 'pending', reason: lc.reason || 'initializing' };
+        }
+        return { status: 'unavailable', reason: lc.reason || 'unavailable' };
+    }
+
+    function liveCombatRows(state) {
+        return [
+            { key: 'hp',            label: '当前 HP',   value: state.hp.toLocaleString() },
+            { key: 'maxHp',         label: '最大 HP',   value: state.maxHp.toLocaleString() },
+            { key: 'unarmedAttack', label: '空手攻击力', value: state.unarmedAttack.toLocaleString() },
+            { key: 'defense',       label: '最终防御力', value: state.defense.toLocaleString() },
+            { key: 'speed',         label: '移动速度',   value: formatLiveSpeed(state) }
         ];
+    }
+
+    function liveCombatStatusCopy(state) {
+        if (state.status === 'not_deployed') {
+            return {
+                title: '未出战 · 暂无实时属性',
+                detail: '出战并加载完成后将读取当前场景实例的真实 HP、空手攻击力、防御力与速度。',
+                canRefresh: false
+            };
+        }
+        if (state.status === 'pending') {
+            if (state.reason === 'refresh_deferred') {
+                return {
+                    title: '属性待刷新',
+                    detail: '最新升级/进阶/装备变更尚未同步到场景实例，下次重建或换图后更新。',
+                    canRefresh: true
+                };
+            }
+            return {
+                title: '正在刷新实时属性',
+                detail: '出战实例正在初始化，可稍候点击刷新读取最终属性。',
+                canRefresh: true
+            };
+        }
+        return {
+            title: '暂无实时属性',
+            detail: '当前场景未找到已就绪的出战实例（可能尚未生成、已退场或本场景限制同行）。',
+            canRefresh: true
+        };
+    }
+
+    function buildLiveCombatPlaceholder(state, compact) {
+        var copy = liveCombatStatusCopy(state);
+        var box = document.createElement('div');
+        box.className = 'team-combat-state' + (compact ? ' team-combat-state-compact' : '');
+        box.setAttribute('data-live-status', state.status);
+        if (state.reason) box.setAttribute('data-live-reason', state.reason);
+
+        var head = document.createElement('div');
+        head.className = 'team-combat-state-head';
+        var title = document.createElement('span');
+        title.className = 'team-combat-state-title';
+        title.textContent = copy.title;
+        head.appendChild(title);
+        if (copy.canRefresh) {
+            var refreshBtn = button('刷新', 'team-pane-btn team-combat-refresh', function() {
+                if (guardBusy()) return;
+                requestSnapshot();
+            });
+            refreshBtn.setAttribute('aria-label', '刷新当前实时属性');
+            head.appendChild(refreshBtn);
+        }
+        box.appendChild(head);
+
+        var detail = document.createElement('div');
+        detail.className = 'team-combat-state-detail';
+        detail.textContent = copy.detail;
+        box.appendChild(detail);
+        return box;
+    }
+
+    function combatSummary(pet) {
+        var state = resolveLiveCombat(pet);
+        if (state.status !== 'ready') {
+            return buildLiveCombatPlaceholder(state, true);
+        }
+        var rows = liveCombatRows(state);
         var grid = document.createElement('div');
         grid.className = 'team-combat-summary';
-        for (var i = 0; i < defs.length; i++) {
+        grid.setAttribute('data-live-status', 'ready');
+        for (var i = 0; i < rows.length; i++) {
             var cell = document.createElement('div');
             cell.className = 'team-combat-cell';
+            cell.setAttribute('data-stat-key', rows[i].key);
             var lab = document.createElement('span');
             lab.className = 'team-combat-label';
-            lab.textContent = defs[i].label;
+            lab.textContent = rows[i].label;
             var val = document.createElement('span');
             val.className = 'team-combat-value';
-            var d = defs[i].d || {};
-            val.textContent = d.cur != null ? Number(d.cur).toLocaleString() : '--';
+            val.textContent = rows[i].value;
             cell.appendChild(lab);
             cell.appendChild(val);
             grid.appendChild(cell);

@@ -1,0 +1,8 @@
+﻿trace("FocusedTestRunId pet-live-combat Start: __FOCUSED_RUN_ID__");
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+
+#include "引擎/引擎_lsy_战宠系统.as"
+
+org.flashNight.arki.merc.PetLiveCombatProjectionTest.runAllTests();
+trace("FocusedTestRunId pet-live-combat Complete: __FOCUSED_RUN_ID__");

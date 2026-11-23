@@ -92,8 +92,16 @@ var PET_LIB = [
   {id:66,identifier:'敌人-终结者T800',rosterType:'mechanical',promotions:['终结者武器扩展','终结者全武装']}
 ];
 function pet(id,name,slot,lv,dep){
+  var liveOverride = MockHost.liveCombatOverride && MockHost.liveCombatOverride[slot];
+  var liveCombat = liveOverride !== undefined ? liveOverride : (dep
+    ? {status:'ready',hp:2800,maxHp:3500,unarmedAttack:90,defense:550,speed:6.4,speedUnit:'m/s'}
+    : {status:'not_deployed'});
   var out={petId:id,name:name,slotIndex:slot,level:lv,deployed:!!dep,stamina:100,maxStamina:200,xp:10,xpNeeded:100,schemeStatus:{},
-    combat:{hp:{start:520,cur:3500,max:13000},attack:{start:12,cur:90,max:270},defense:{start:150,cur:550,max:900},speed:{start:8,cur:9,max:10},startLevel:1,maxLevel:100,difficulty:1}};
+    liveCombat:liveCombat};
+  if(MockHost.legacyCombatOnly && MockHost.legacyCombatOnly[slot]){
+    delete out.liveCombat;
+    out.combat={hp:{start:520,cur:3500,max:13000},attack:{start:12,cur:90,max:270},defense:{start:150,cur:550,max:900},speed:{start:8,cur:9,max:10},startLevel:1,maxLevel:100,difficulty:1};
+  }
   if(id===0){
     out.dogForm=MockHost.dogForm||'zombie';
     out.canChangeDogForm=!MockHost.dogCombat;
@@ -320,8 +328,9 @@ var MockHost = {
       if(this.failSnapshot){ resp.success=false; resp.error='模拟快照故障'; }
       else{
       var snapshotPartnerDeployed=this.snapshotUsesPetDeployState?!!this.deployState[3]:true;
-      resp.snapshot={pets:this.emptyPets?[]:[pet(1,'伙伴甲',0,100,false),pet(1,'伙伴乙',3,5,snapshotPartnerDeployed),pet(2,'战宠甲',1,20,false),pet(66,'终结者-x',2,10,false)],
-        gold:999999,kpoint:999,currentDeployCount:snapshotPartnerDeployed?1:0,maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:this.playerTask,
+      var snapshotPartner0Deployed=this.snapshotUsesPetDeployState?!!this.deployState[0]:false;
+      resp.snapshot={pets:this.emptyPets?[]:[pet(1,'伙伴甲',0,100,snapshotPartner0Deployed),pet(1,'伙伴乙',3,5,snapshotPartnerDeployed),pet(2,'战宠甲',1,20,!!this.deployState[1]),pet(66,'终结者-x',2,10,!!this.deployState[2])],
+        gold:999999,kpoint:999,currentDeployCount:(snapshotPartnerDeployed?1:0)+(snapshotPartner0Deployed?1:0),maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:this.playerTask,
         schemes:{'淬毒':{gold:500,desc:'攻击附带毒素',type:'开关',unlockLevel:1,buttonText:'进阶'},
           '终结者武器扩展':{gold:100000,desc:'开放全部长枪',type:'',unlockLevel:30,buttonText:'扩展武器接口'},
           '终结者全武装':{gold:300000,desc:'移除固定等级上限',type:'',unlockLevel:50,buttonText:'完成全武装'}},priceOverrides:{}};
@@ -878,17 +887,28 @@ var MockHost = {
     var headerSuppressed=wb.querySelector('.workbench-header-actions').hasAttribute('hidden');
     assert('team-p14','培养页 SecondaryPage 打开（覆盖 body + header 抑制）',
       secPage && secPage.getAttribute('aria-hidden')==='false' && headerSuppressed);
-    var combatStats=secPage.querySelectorAll('.team-stats-grid .team-stat');
+    // 伙伴甲（slot 0, Lv.100）当前未出战：不显示虚假数值；在培养页出战后自动重拉 snapshot 呈现当前实时属性
+    var restBeforeLive=!!secPage.querySelector('.team-pet-advance-left .team-combat-state[data-live-status="not_deployed"]') &&
+      !secPage.querySelector('.team-live-combat-grid');
+    MockHost.snapshotUsesPetDeployState=true;
+    secPage.querySelector('.team-advance-actions .team-act-deploy').click();
+    await waitFor(function(){ return !!secPage.querySelector('.team-live-combat-grid .team-stat'); },2000);
+    var liveCombatStats=secPage.querySelectorAll('.team-live-combat-grid .team-stat');
     var growthEnds=secPage.querySelectorAll('.team-growth-ends');
-    assert('team-p15','培养页战斗属性成长（起点/当前/满级）',
-      combatStats.length===4 && growthEnds.length===4 &&
-      growthEnds[0].textContent.indexOf('Lv.1')>=0,
-      combatStats.length+' stats');
+    var liveStatLabels=Array.from(liveCombatStats).map(function(x){return x.querySelector('.team-stat-label').textContent;});
+    var liveStatValues=Array.from(liveCombatStats).map(function(x){return x.querySelector('.team-stat-value').textContent;});
+    var levelStat=secPage.querySelector('.team-pet-advance-left .team-stat[data-stat-key="level"] .team-stat-value');
+    assert('team-p15','培养页当前实时战斗属性（未出战不显示假值，出战后区分当前/最大 HP、空手攻击力、防御、m/s 速度，且无 Lv.1/满级预测条）',
+      restBeforeLive && liveCombatStats.length===5 && growthEnds.length===0 &&
+      liveStatLabels.join(',')==='当前 HP,最大 HP,空手攻击力,最终防御力,移动速度' &&
+      liveStatValues[0]==='2,800' && liveStatValues[1]==='3,500' && liveStatValues[4]==='6.4 m/s' &&
+      !!levelStat && levelStat.textContent==='Lv.100 / 100',
+      'restBefore='+restBeforeLive+' | '+liveStatLabels.join(',')+' | '+liveStatValues.join(','));
     var promoNames=Array.from(secPage.querySelectorAll('.team-promo-name')).map(function(x){return x.textContent;});
     assert('team-p16','进阶方案渲染（淬毒 + 进阶按钮）',
       promoNames.join(',')==='淬毒' &&
       !!Array.from(secPage.querySelectorAll('.team-promo-btn')).find(function(b){return b.textContent==='进阶' && !b.disabled;}));
-    // ── H1：战宠培养页两栏（左 属性+战斗属性 / 右 进阶方案滚动列）──
+    // ── H1：战宠培养页两栏（左 属性+实时战斗属性 / 右 进阶方案滚动列）──
     var pLeftCol=secPage.querySelector('.team-pet-advance-left');
     var pRightCol=secPage.querySelector('.team-pet-advance-right');
     var pLeftTitles=pLeftCol?Array.from(pLeftCol.querySelectorAll('.team-advance-section-title')).map(function(x){return x.textContent;}):[];
@@ -899,12 +919,14 @@ var MockHost = {
       pRightCol.querySelector('.team-advance-section-title').textContent==='进阶方案 · 1' &&
       pRightCol.querySelectorAll('.team-promo').length===1,
       pLeftTitles.join(','));
-    var pCombatGrid=pLeftCol.querySelectorAll('.team-stats-grid')[1];
-    assert('team-h1b','H1：战斗属性窄栏紧凑（单列 + Lv/满级两行小字 + 左栏零横向溢出）',
+    var pCombatGrid=pLeftCol.querySelector('.team-live-combat-grid');
+    assert('team-h1b','H1：实时战斗属性窄栏紧凑（单列 + 无虚假端点 + 左栏零横向溢出）',
       !!pCombatGrid && getComputedStyle(pCombatGrid).gridTemplateColumns.split(' ').length===1 &&
-      getComputedStyle(pLeftCol.querySelector('.team-growth-ends')).flexDirection==='column' &&
+      pLeftCol.querySelectorAll('.team-growth-ends').length===0 &&
       pLeftCol.scrollWidth<=pLeftCol.clientWidth,
       pLeftCol.scrollWidth+'<='+pLeftCol.clientWidth);
+    // 复原伙伴甲出战夹具，避免污染后续 team-i3 对 slot 0 首次出战的断言
+    MockHost.deployState[0]=false; MockHost.snapshotUsesPetDeployState=false;
     // 进阶方案列滚动机制：克隆方案卡撑高验证 scrollHeight>clientHeight 且可滚，随后复原
     var pPromoList=pRightCol.querySelector('.team-promos');
     var pPromoNode=pPromoList.querySelector('.team-promo');
@@ -2555,6 +2577,8 @@ var MockHost = {
         +', tooltipInstance='+(MockHost.lastMercLoadoutTooltip&&MockHost.lastMercLoadoutTooltip.panelInstanceId)
         +', cardTip='+ttBindings(kaCard0).length);
     // ── I2：pet 卡内直操 deploy（未选中卡零选中副作用）+ I3 徽标对样例（伙伴甲 满级+出战）──
+    var iPrevDeploy3=MockHost.deployState[3];
+    MockHost.deployState[3]=true; MockHost.snapshotUsesPetDeployState=true;
     click('partner');
     await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===2; },3000);
     document.querySelector('.team-pet-child .item-grid-mode-toggle button[data-layout-mode="full"]').click(); await wait(20);
@@ -2633,6 +2657,7 @@ var MockHost = {
       'top='+iSCs.top+'/'+iMCs.top+', h='+iPairStatus.offsetHeight+'/'+iPairMax.offsetHeight+
       ', rectΔ='+iTopDelta.toFixed(1)+'/'+iRightDelta.toFixed(1)+' @scale'+iScale.toFixed(2));
     // ── I2：merc 卡内直操 deploy（未选中卡零选中副作用）──
+    MockHost.deployState[0]=false; MockHost.deployState[3]=iPrevDeploy3; MockHost.snapshotUsesPetDeployState=false;
     click('mercenary');
     await waitFor(function(){ return document.querySelectorAll('.team-merc-child .team-merc-grid .team-merc-card').length===3; },3000);
     mercCards()[0].click(); await wait(10);   // 选中佣兵甲作为对照（i1 段落已保 full 密度）
@@ -3428,6 +3453,53 @@ var MockHost = {
       MockHost.petRequestCounts.change_dog_form===dogWrites+1 &&
       document.querySelector('[data-dog-form="thief"]').getAttribute('aria-pressed')==='true');
     Panels.close();await wait(20);MockHost.dogFixture=false;
+    // ── #155：实时战斗属性只读投影态验证（ready/not_deployed/pending/unavailable/旧字段拒用/大数值零溢出）──
+    MockHost.deployState={0:false,1:true,2:true,3:true};
+    MockHost.snapshotUsesPetDeployState=true;
+    MockHost.liveCombatOverride={
+      1:{status:'ready',hp:1850420,maxHp:3770762,unarmedAttack:2480,defense:1119,speed:11.6,speedUnit:'m/s'},
+      2:{status:'pending',reason:'refresh_deferred'},
+      3:{status:'ready',hp:NaN,maxHp:3500,unarmedAttack:90,defense:550,speed:6.4,speedUnit:'m/s'}
+    };
+    MockHost.legacyCombatOnly={0:true};
+    Panels.open('team',{initialTab:'pet',panelInstanceId:'panel.team.harness.live-combat'});
+    await waitFor(function(){return !!document.querySelector('.team-pet-detail .team-combat-summary');},2000);
+    var jkSummary=document.querySelector('.team-pet-detail .team-combat-summary');
+    var jkHpCell=jkSummary.querySelector('[data-stat-key="hp"] .team-combat-value');
+    var jkMaxHpCell=jkSummary.querySelector('[data-stat-key="maxHp"] .team-combat-value');
+    var jkAtkLabel=jkSummary.querySelector('[data-stat-key="unarmedAttack"] .team-combat-label');
+    var jkSpdCell=jkSummary.querySelector('[data-stat-key="speed"] .team-combat-value');
+    var jkSummaryNoOverflow=jkSummary.scrollWidth<=jkSummary.clientWidth+1;
+    // 切休息后立即清掉 live 数值，不复用旧读数
+    document.querySelector('.team-pet-detail .team-act-deploy').click();
+    await wait(30);
+    var jkRestState=document.querySelector('.team-pet-detail .team-combat-state[data-live-status="not_deployed"]');
+    var jkNoStaleSummary=!document.querySelector('.team-pet-detail .team-combat-summary');
+    // 切换到机械 tab（slot 2 = pending refresh_deferred，可点刷新按钮重读 snapshot）
+    click('mechanical');
+    await waitFor(function(){return !!document.querySelector('.team-pet-detail .team-combat-state[data-live-status="pending"]');},2000);
+    var pendingBox=document.querySelector('.team-pet-detail .team-combat-state[data-live-status="pending"]');
+    var snapBeforeRefresh=MockHost.petRequestCounts.snapshot||0;
+    pendingBox.querySelector('.team-combat-refresh').click();
+    await wait(30);
+    var refreshSent=(MockHost.petRequestCounts.snapshot||0)===snapBeforeRefresh+1;
+    // 切换到伙伴 tab：slot 3 注入了 NaN HP，前端必须 fail-closed 降级为 unavailable；slot 0 未出战且仅有旧 combat，不回退假成长条
+    click('partner');
+    await waitFor(function(){return !!document.querySelector('.team-pet-detail .team-combat-state[data-live-status="unavailable"]');},2000);
+    var invalidFailClosed=!!document.querySelector('.team-pet-detail .team-combat-state[data-live-status="unavailable"]') &&
+      !document.querySelector('.team-pet-detail .team-combat-summary');
+    document.querySelector('.team-pet-grid .team-pet-card[data-slot="0"]').click(); await wait(20);
+    var legacyIgnored=!!document.querySelector('.team-pet-detail .team-combat-state[data-live-status="not_deployed"]') &&
+      document.querySelectorAll('.team-growth-ends').length===0;
+    assert('team-live-combat-states','#155：实时属性区分当前/最大 HP 与空手攻击力；休息清旧值、pending 支持手动刷新、非有限/旧字段 fail-closed',
+      jkHpCell.textContent==='1,850,420' && jkMaxHpCell.textContent==='3,770,762' &&
+      jkAtkLabel.textContent==='空手攻击力' && jkSpdCell.textContent==='11.6 m/s' &&
+      jkSummaryNoOverflow && !!jkRestState && jkNoStaleSummary &&
+      pendingBox.getAttribute('data-live-reason')==='refresh_deferred' && refreshSent &&
+      invalidFailClosed && legacyIgnored,
+      'jkHp='+jkHpCell.textContent+', rest='+!!jkRestState+', refresh='+refreshSent+', invalid='+invalidFailClosed+', legacy='+legacyIgnored);
+    Panels.close();await wait(20);
+    MockHost.liveCombatOverride=null; MockHost.legacyCombatOnly=null; MockHost.snapshotUsesPetDeployState=false;
     var failed=results.filter(function(x){return !x.pass;}).length;
     window.__qaResult={qa:{total:results.length,passed:results.length-failed,failed:failed,results:results}};
     document.getElementById('qa').textContent=(results.length-failed)+'/'+results.length+' passed';

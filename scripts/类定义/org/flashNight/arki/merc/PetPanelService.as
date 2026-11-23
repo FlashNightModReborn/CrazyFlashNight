@@ -29,6 +29,7 @@ import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.merc.ManagedLongGunService;
 import org.flashNight.arki.merc.DogFormService;
+import org.flashNight.arki.unit.PlayerInfoProvider;
 import org.flashNight.gesh.object.ObjectUtil;
 
 class org.flashNight.arki.merc.PetPanelService {
@@ -170,10 +171,9 @@ class org.flashNight.arki.merc.PetPanelService {
             petEntry.xpNeeded = xpNeededFromAttr > 0 ? xpNeededFromAttr : calcXpForLevel(String(petDef.Identifier), info[1]);
             petEntry.maxStamina = 200;
 
-            // 战斗数值成长展示（敌人属性表插值 + 已达成进阶方案重放，三点采样：
-            // 起点 Lv.1 / 当前 / 满级）；属性缺失时不下发，JS 隐藏区块
-            var combat:Object = buildCombatStats(String(petEntry.identifier), Number(info[1]), attrs);
-            if (combat != undefined) petEntry.combat = combat;
+            // 当前真实出战单位只读实时属性投影：仅对已就绪实例读最终数值，不重算离线成长表。
+            petEntry.liveCombat = buildLiveCombatStats(
+                i, Number(info[0]), String(petEntry.identifier), Number(info[1]), petEntry.deployed);
 
             // 每方案权威完成/锁定状态（替代 JS 端按方案名查 次数 的错误推断；
             // 三件套共用 基础训练.次数 计数，布尔方案查自身标志）
@@ -285,6 +285,7 @@ class org.flashNight.arki.merc.PetPanelService {
                 gold: Number(_root.金钱) || 0,
                 kpoint: Number(_root.虚拟币) || 0,
                 playerLevel: Number(_root.等级) || 1,
+                levelLimit: Number(_root.等级限制) || 100,
                 playerTask: Number(_root.主线任务进度) || 0,
                 maxDeploy: calcMaxDeploy(),
                 maxSlots: Number(_root.宠物领养限制) || 5,
@@ -1621,81 +1622,132 @@ class org.flashNight.arki.merc.PetPanelService {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // buildCombatStats — 战斗数值成长展示（仅展示，非战斗权威）
-    // 三点采样（起点 Lv.1 / 当前等级 / 满级 _root.等级限制），每点 = 基线插值
-    // + 已达成进阶方案加成，供 JS 渲染「起点→当前→终点」成长条。
-    // 兵种缺属性表时返回 undefined，snapshot 不下发，JS 隐藏区块。
+    // buildLiveCombatStats — 已就绪真实出战实例只读实时属性投影
+    // 仅做低频只读扫描：绝不创建/重建 MC、不调用 PlayerStatRefreshCoordinator.flush()、
+    // 不重放任何进阶函数、不修改权威状态或标脏。
     // ═══════════════════════════════════════════════════════════
-    private static function buildCombatStats(identifier:String, level:Number, petAttrs:Object):Object {
-        var ep:Object = _root.敌人属性表[identifier];
-        if (ep == undefined || _root.根据等级计算值 == undefined) return undefined;
-        if (isNaN(Number(ep.hp_min))) return undefined;
+    public static function buildLiveCombatStats(
+        slotIndex:Number,
+        petId:Number,
+        expectedIdentifier:String,
+        expectedLevel:Number,
+        deployed:Boolean
+    ):Object {
+        if (deployed !== true) {
+            return { status: "not_deployed" };
+        }
+        if (_root.战宠UI函数 != undefined
+                && _root.战宠UI函数._宠物刷新待处理 != undefined
+                && _root.战宠UI函数._宠物刷新待处理[slotIndex] != undefined) {
+            return { status: "pending", reason: "refresh_deferred" };
+        }
+        var world:MovieClip = _root.gameworld;
+        var petUnits:Array = _root.宠物mc库;
+        if (world == undefined || !(petUnits instanceof Array)) {
+            return { status: "unavailable", reason: "world_unavailable" };
+        }
 
-        var maxLevel:Number = Number(_root.等级限制) || 100;
-        var startP:Object = statsAtLevel(ep, 1, petAttrs);
-        var curP:Object   = statsAtLevel(ep, level, petAttrs);
-        var maxP:Object   = statsAtLevel(ep, maxLevel, petAttrs);
+        var matchedUnit:MovieClip = null;
+        var matchCount:Number = 0;
+        for (var i:Number = 0; i < petUnits.length; i++) {
+            var candidate:MovieClip = petUnits[i];
+            if (candidate == undefined || candidate == null) continue;
+            if (candidate._parent !== world) continue;
+            var candidateName:String = candidate._name;
+            if (typeof candidateName != "string" || candidateName == "" || world[candidateName] !== candidate) continue;
+            var unitAttrs:Object = candidate.宠物属性;
+            if (unitAttrs == undefined || typeof unitAttrs != "object") continue;
+            if (unitAttrs.宠物信息数组号 == undefined || Number(unitAttrs.宠物信息数组号) != slotIndex) continue;
+            matchedUnit = candidate;
+            matchCount++;
+            if (matchCount > 1) {
+                return { status: "unavailable", reason: "ambiguous_instance" };
+            }
+        }
+        if (matchedUnit == null) {
+            return { status: "unavailable", reason: "instance_missing" };
+        }
+
+        // 核对实例身份与槽位权威一致，防止槽位复用、升级/换形态后残旧实例冒充当前。
+        var matchedAttrs:Object = matchedUnit.宠物属性;
+        if (matchedAttrs.宠物库数组号 != undefined && Number(matchedAttrs.宠物库数组号) != petId) {
+            return { status: "unavailable", reason: "identity_mismatch" };
+        }
+        if (typeof matchedUnit.兵种 != "string" || matchedUnit.兵种 != expectedIdentifier) {
+            return { status: "unavailable", reason: "identity_mismatch" };
+        }
+        var unitLevel:Number = Number(matchedUnit.等级);
+        if (matchedUnit.等级 == undefined || matchedUnit.等级 == null
+                || !isFiniteNumber(unitLevel) || unitLevel != expectedLevel) {
+            return { status: "unavailable", reason: "level_mismatch" };
+        }
+
+        // 真实 FP20 attachMovie 同步栈返回时尚未执行第 0 帧（undefined），或 StaticInitializer 正在执行（null）。
+        if (typeof matchedUnit.__unitInitializedVersion == "undefined"
+                || matchedUnit.__unitInitializedVersion === null) {
+            return { status: "pending", reason: "initializing" };
+        }
+        if (!isLivePetUnitReady(matchedUnit)) {
+            return { status: "unavailable", reason: "not_ready" };
+        }
+
+        // 只读读取最终属性：先校验原始字段显式存在且有限，避免 undefined/布尔值被隐式转 0。
+        var rawHp = matchedUnit.hp;
+        var rawMaxHp = PlayerInfoProvider.getMaxHP(matchedUnit);
+        var rawUnarmed = PlayerInfoProvider.getUnarmedAttack(matchedUnit);
+        var rawDefense = matchedUnit.防御力;
+        var rawWalkSpeed = matchedUnit.行走X速度;
+        if (!isFiniteNumber(rawHp) || !isFiniteNumber(rawMaxHp)
+                || !isFiniteNumber(rawUnarmed) || !isFiniteNumber(rawDefense)
+                || !isFiniteNumber(rawWalkSpeed)) {
+            return { status: "unavailable", reason: "invalid_stats" };
+        }
+        if (rawMaxHp <= 0 || rawHp < 0 || rawWalkSpeed < 0) {
+            return { status: "unavailable", reason: "invalid_stats" };
+        }
+
+        var totalDefense:Number = PlayerInfoProvider.getTotalDefense(matchedUnit);
+        var speedValue:Number = PlayerInfoProvider.getMovementSpeedValue(matchedUnit);
+        if (!isFiniteNumber(totalDefense) || !isFiniteNumber(speedValue) || speedValue < 0) {
+            return { status: "unavailable", reason: "invalid_stats" };
+        }
 
         return {
-            hp:      { start: startP.hp,      cur: curP.hp,      max: maxP.hp },
-            attack:  { start: startP.attack,  cur: curP.attack,  max: maxP.attack },
-            defense: { start: startP.defense, cur: curP.defense, max: maxP.defense },
-            speed:   { start: startP.speed,   cur: curP.speed,   max: maxP.speed },
-            startLevel: 1,
-            maxLevel: maxLevel,
-            difficulty: Number(_root.难度等级) || 1
+            status: "ready",
+            hp: Math.floor(rawHp),
+            maxHp: Math.floor(rawMaxHp),
+            unarmedAttack: Math.floor(rawUnarmed),
+            defense: totalDefense,
+            speed: speedValue,
+            speedUnit: "m/s"
         };
     }
 
-    // 经逐一审计确认"纯数值"的进阶方案白名单：其 单位进阶执行 只读 this.宠物属性、
-    // 只写 this 上的数值字段，无任何 _root / 全局副作用，可安全在纯对象 sim 上重放。
-    // 常驻淬毒 被刻意排除——它的 单位进阶执行 是"进图扣费上毒"运行时逻辑：战斗地图上会
-    // 真实扣 _root.金钱（500/次，三点采样 = 每次快照每只宠最多误扣 1500）并 发布消息。
-    // 它也不影响 hp/攻击/防御/速度 展示，排除零损失。
-    // 新增方案默认不重放（成长条少算加成，纯展示损失），审计确认无副作用后再加入。
-    private static var PURE_ADVANCE_SCHEMES:Object = {
-        基础训练: true, 强化药剂: true, 超级血清: true,
-        弹射弧光斩: true, 广域裂空斩: true, 导弹烈炎炮: true,
-        冲腿龙息: true, 晶能者: true, 复仇者: true, 抱头嘲讽: true,
-        涅槃重生: true, 影子刺客: true, 追踪飞弹: true, 驯鹰者: true,
-        美洲狮: true, 追猎: true, 战马血清: true, 钙化: true,
-        终结者步枪: true, 净化治疗: true, 溢出治疗: true,
-        能量子弹: true, 剧毒子弹: true
-    };
+    private static function isFiniteNumber(v):Boolean {
+        return typeof v == "number" && (v - v) == 0;
+    }
 
-    // 在指定等级模拟出战实体的最终数值：
-    // 1) 基线 = 敌人函数.根据等级初始数值 同构插值（hp/攻击 × _root.难度等级，防御/速度不随）；
-    // 2) 进阶 = 敌人函数.宠物属性初始化 同构地重放 已达成方案的 单位进阶执行——
-    //    仅限 PURE_ADVANCE_SCHEMES 白名单内方案（见上），写入只落在 sim 上，
-    //    绝不回写真实 宠物属性。
-    private static function statsAtLevel(ep:Object, level:Number, petAttrs:Object):Object {
-        var diff:Number = Number(_root.难度等级) || 1;
-        var sim:Object = {
-            hp满血值:   Math.floor(_root.根据等级计算值(ep.hp_min, ep.hp_max, level) * diff),
-            空手攻击力: Math.floor(_root.根据等级计算值(ep.空手攻击力_min, ep.空手攻击力_max, level) * diff),
-            防御力:     Number(_root.根据等级计算值(ep.基本防御力_min, ep.基本防御力_max, level)),
-            行走X速度:  Number(_root.根据等级计算值(ep.速度_min, ep.速度_max, level)) / 10,
-            韧性系数:   0,
-            hp:         0,
-            已有称号:   true,
-            宠物属性:   (petAttrs != undefined) ? petAttrs : {}
-        };
-        if (petAttrs != undefined && _root.战宠进阶函数 != undefined) {
-            for (var key:String in petAttrs) {
-                if (PURE_ADVANCE_SCHEMES[key] != true) continue; // 只重放审计过的纯数值方案
-                var schemeDef:Object = _root.战宠进阶函数[key];
-                if (schemeDef != undefined && typeof schemeDef.单位进阶执行 == "function") {
-                    sim.单位进阶执行 = schemeDef.单位进阶执行;
-                    sim.单位进阶执行();
-                }
-            }
+    private static function isLivePetUnitReady(unit:MovieClip):Boolean {
+        if (_root.战宠UI函数 != undefined
+                && typeof _root.战宠UI函数.验证宠物初始化完成 == "function") {
+            return _root.战宠UI函数.验证宠物初始化完成(unit) === true;
         }
-        return {
-            hp:      Math.floor(sim.hp满血值),
-            attack:  Math.floor(sim.空手攻击力),
-            defense: Math.floor(sim.防御力),
-            speed:   Math.round(sim.行走X速度 * 10)
-        };
+        // 兼容未挂载帧脚本的隔离环境：与 引擎_lsy_战宠系统.验证宠物初始化完成 同构。
+        if (!unit) return false;
+        if (!unit.dispatcher || typeof unit.dispatcher.publish != "function") return false;
+        if (!unit.aabbCollider || !unit.unitAI || !unit.shield) return false;
+        if (!isFiniteNumber(unit.version) || unit.__unitInitializedVersion !== unit.version) return false;
+        if (!isFiniteNumber(unit.hp满血值) || unit.hp满血值 <= 0) return false;
+        if (!isFiniteNumber(unit.hp) || unit.hp < 0) return false;
+        var noMp:Boolean = unit.mp满血值 == undefined && unit.mp == undefined;
+        var mpReady:Boolean = noMp || (isFiniteNumber(unit.mp满血值) && unit.mp满血值 >= 0
+            && isFiniteNumber(unit.mp) && unit.mp >= 0);
+        if (!mpReady) return false;
+        var dressupReady:Boolean = unit.hasDressup !== true
+            || (typeof unit.装载生命周期函数 == "function"
+                && typeof unit.完成生命周期函数装载 == "function"
+                && unit.生命周期函数列表 instanceof Array);
+        return dressupReady;
     }
 
     // 解析 pets.xml 的 <Promotion><Item>方案名</Item></Promotion>。通用 XML 解析器
