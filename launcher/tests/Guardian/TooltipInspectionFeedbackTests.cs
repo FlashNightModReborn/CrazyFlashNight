@@ -53,6 +53,159 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void LongSubOnly_DwellAndWheelReachPaintedTail_ReleaseAtExit()
+        {
+            RunOnSta(delegate
+            {
+                using var anchor = new Control { Size = new Size(960, 540) };
+                using var widget = new NativeTooltipWidget(anchor, null, () => 1f);
+                Point pointer = new Point(320, 240);
+                using var controller = new TooltipInspectionController(
+                    new NativeTooltipSurfaceAdapter(widget), null, () => pointer, null);
+                var payload = DensePayload("sub", "equipment", 1);
+                var sections = (JArray)payload["document"]["sections"];
+                sections.RemoveAt(1);
+                string preceding = string.Join("\n", System.Linq.Enumerable.Range(1, 70));
+                sections.Add(new JObject { ["role"] = "sub", ["runs"] = new JArray(
+                    new JObject { ["text"] = preceding + "\n" },
+                    new JObject { ["text"] = "TAIL-71", ["color"] = "#FF00FF" }) });
+                payload["x"] = 1420;
+                payload["placement"] = "left";
+                NativeInteractionWheelRoute.AttachInspection(controller, widget);
+                try
+                {
+                    widget.Show(payload);
+                    widget.Tick(2000);
+                    controller.Sync();
+                    Assert.Equal(TooltipInspectionPhase.Pending, controller.CurrentPhase);
+                    Assert.False(NativeInteractionWheelRoute.Dispatch(widget, pointer.X, pointer.Y, -120));
+                    Assert.Equal(NativeTooltipLayout.ReadingTarget.Side, widget.ActivePlan.Target);
+                    Assert.True(widget.ActivePlan.Mirrored);
+                    Assert.Equal(71, widget.ActivePlan.Subs[0].Lines.Count);
+                    bool TailPainted()
+                    {
+                        using var bitmap = new Bitmap(anchor.Width, anchor.Height);
+                        using var graphics = Graphics.FromImage(bitmap);
+                        widget.Paint(graphics, 1f, Point.Empty);
+                        var visible = widget.ActivePlan.ScrollViewportRect;
+                        visible.Offset(widget.PlacedRect.Location);
+                        Assert.True(new Rectangle(Point.Empty, anchor.Size).Contains(visible));
+                        for (int y = visible.Top; y < visible.Bottom; y++)
+                            for (int x = visible.Left; x < visible.Right; x++)
+                            {
+                                var pixel = bitmap.GetPixel(x, y);
+                                if (pixel.R > 140 && pixel.B > 140 && pixel.G < 70) return true;
+                            }
+                        return false;
+                    }
+                    Assert.False(TailPainted());
+                    var timeout = System.Diagnostics.Stopwatch.StartNew();
+                    while (controller.CurrentPhase != TooltipInspectionPhase.Inspect && timeout.ElapsedMilliseconds < 4000)
+                    {
+                        Application.DoEvents();
+                        Thread.Sleep(8);
+                    }
+                    Assert.Equal(TooltipInspectionPhase.Inspect, controller.CurrentPhase);
+                    for (int i = 0; i < 100 && widget.ScrollOffsetPx < widget.MaxScrollOffsetPx; i++)
+                        Assert.True(NativeInteractionWheelRoute.Dispatch(widget, pointer.X, pointer.Y, -120));
+                    Assert.Equal(widget.MaxScrollOffsetPx, widget.ScrollOffsetPx);
+                    Assert.True(TailPainted(), "最后一行应在实际 GDI 裁剪区内绘出");
+                    Assert.True(NativeInteractionWheelRoute.Dispatch(widget, pointer.X, pointer.Y, -120));
+
+                    int bottom = widget.ScrollOffsetPx;
+                    payload["revision"] = 2;
+                    widget.Show(payload);
+                    Assert.Equal(bottom, widget.ScrollOffsetPx);
+                    Assert.True(TailPainted());
+                    var next = (JObject)payload.DeepClone();
+                    next["requestId"] = "next";
+                    widget.Show(next);
+                    controller.Sync();
+                    Assert.Equal(0, widget.ScrollOffsetPx);
+                    Assert.False(NativeInteractionWheelRoute.Dispatch(widget, pointer.X, pointer.Y, -120));
+                    widget.Hide("next");
+                    controller.Sync();
+                    Assert.False(NativeInteractionWheelRoute.Dispatch(widget, pointer.X, pointer.Y, -120));
+                }
+                finally { NativeInteractionWheelRoute.DetachInspection(); }
+            });
+        }
+
+        [Fact]
+        public void ResizeAtRest_ReconcilesReadingAbilityInBothDirections()
+        {
+            RunOnSta(delegate
+            {
+                using var anchor = new Control { Size = new Size(1600, 900) };
+                using var widget = new NativeTooltipWidget(anchor, null, () => 1f, () => 1f);
+                using var controller = new TooltipInspectionController(new NativeTooltipSurfaceAdapter(widget),
+                    null, () => new Point(320, 240), null);
+                NativeInteractionWheelRoute.AttachInspection(controller, widget);
+                try
+                {
+                    widget.Show(DensePayload("resize", "scene", 40));
+                    controller.Sync();
+                    Assert.False(widget.Scrollable);
+                    Assert.Equal(TooltipInspectionPhase.Scan, controller.CurrentPhase);
+                    anchor.Size = new Size(960, 540);
+                    Assert.True(widget.Scrollable);
+                    Assert.Equal(TooltipInspectionPhase.Pending, controller.CurrentPhase);
+                    var timeout = System.Diagnostics.Stopwatch.StartNew();
+                    while (controller.CurrentPhase != TooltipInspectionPhase.Inspect && timeout.ElapsedMilliseconds < 4000)
+                    {
+                        Application.DoEvents();
+                        Thread.Sleep(8);
+                    }
+                    Assert.True(NativeInteractionWheelRoute.Dispatch(widget, 320, 240, -120));
+                    anchor.Size = new Size(1600, 900);
+                    Assert.False(widget.Scrollable);
+                    Assert.Equal(TooltipInspectionPhase.Scan, controller.CurrentPhase);
+                    Assert.Equal(0, widget.ScrollOffsetPx);
+                    Assert.False(NativeInteractionWheelRoute.Dispatch(widget, 320, 240, -120));
+                }
+                finally { NativeInteractionWheelRoute.DetachInspection(); }
+            });
+        }
+
+        [Fact]
+        public void DpiChangeAtRest_ReconcilesControllerAgainstTheDefaultViewportBudget()
+        {
+            RunOnSta(delegate
+            {
+                using var anchor = new Control { Size = new Size(1500, 600) };
+                float dpi = 1f;
+                using var widget = new NativeTooltipWidget(anchor, null, () => dpi, () => 1f);
+                using var controller = new TooltipInspectionController(new NativeTooltipSurfaceAdapter(widget),
+                    null, () => new Point(320, 240), null);
+                NativeInteractionWheelRoute.AttachInspection(controller, widget);
+                try
+                {
+                    Assert.True(widget.Show(DensePayload("dpi-budget", "scene", 35)));
+                    controller.Sync();
+                    var initial = widget.ActivePlan;
+                    Assert.Equal(533, initial.ContentHeightPx);
+                    Assert.False(widget.Scrollable);
+                    Assert.Equal(TooltipInspectionPhase.Scan, controller.CurrentPhase);
+
+                    dpi = 2.5f;
+                    Assert.False(widget.ScreenBounds.IsEmpty);
+                    Assert.NotSame(initial, widget.ActivePlan);
+                    Assert.Equal(530, widget.ActivePlan.ScrollViewportRect.Height);
+                    Assert.True(widget.Scrollable);
+                    Assert.Equal(TooltipInspectionPhase.Pending, controller.CurrentPhase);
+
+                    dpi = 1f;
+                    Assert.False(widget.ScreenBounds.IsEmpty);
+                    Assert.False(widget.Scrollable);
+                    Assert.Equal(TooltipInspectionPhase.Scan, controller.CurrentPhase);
+                    Assert.Equal(0, widget.ScrollOffsetPx);
+                    Assert.False(NativeInteractionWheelRoute.Dispatch(widget, 320, 240, -120));
+                }
+                finally { NativeInteractionWheelRoute.DetachInspection(); }
+            });
+        }
+
+        [Fact]
         public void RealTimer_ProductionRoute_PendingToInspect_WheelConsumes()
         {
             RunOnSta(delegate
@@ -70,7 +223,7 @@ namespace CF7Launcher.Tests.Guardian
                         try
                         {
                             NativeInteractionWheelRoute.AttachInspection(ctl, widget);
-                            Assert.True(widget.Show(DensePayload("ni:1", "s1", 40)));
+                            Assert.True(widget.Show(DensePayload("ni:1", "s1", 64)));
                             Assert.True(widget.Scrollable, "长 desc 应可滚");
                             // owner 兜底：未手工赋值时返回 anchor 客户区（旧 bug 为 null）
                             Assert.Equal(new Rectangle(0, 0, 1500, 900), widget.OwnerScreenBounds);
@@ -125,7 +278,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         /// <summary>
-        /// 滚条 thumb 越界位图回归：29 行 desc 产生部分可见行
+        /// 滚条 thumb 越界位图回归：60 行 desc 产生部分可见行
         /// （MaxScrollLine > total-visible），旧 DrawScrollbar 按 total-visible 做除数
         /// 会把滑块画出 DescPanel/PlacedRect 下缘。修复后按 plan.MaxScrollLine 分压并钳位。
         /// 断言：滚到底重绘后，滚条 x 带内 PlacedRect.Bottom 以下无任何非透明像素。
@@ -137,8 +290,8 @@ namespace CF7Launcher.Tests.Guardian
             using (NativeTooltipWidget widget =
                 new NativeTooltipWidget(anchor, null, () => 1.5f))
             {
-                Assert.True(widget.Show(DensePayload("ni:2", "s1", 29)));
-                Assert.True(widget.Scrollable, "29 行 desc 应可滚");
+                Assert.True(widget.Show(DensePayload("ni:2", "s1", 60)));
+                Assert.True(widget.Scrollable, "60 行 desc 应可滚");
                 NativeTooltipLayout.Plan plan = widget.ActivePlan;
                 Assert.NotNull(plan);
                 // 需处于「部分可见行」区间，否则旧除数也恰好正确、回归无意义

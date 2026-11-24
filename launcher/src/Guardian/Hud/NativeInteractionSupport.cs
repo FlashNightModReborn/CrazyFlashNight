@@ -26,14 +26,22 @@ namespace CF7Launcher.Guardian.Hud
             DetachInspection();
             _inspection = controller;
             _inspectionWidget = widget;
-            if (controller != null && widget != null) widget.PointerMoved += controller.Tick;
+            if (controller != null && widget != null)
+            {
+                widget.PointerMoved += controller.Tick;
+                widget.ReadingGeometryChanged += controller.Sync;
+            }
         }
 
         internal static void DetachInspection()
         {
             TooltipInspectionController controller = _inspection;
             NativeTooltipWidget widget = _inspectionWidget;
-            if (controller != null && widget != null) widget.PointerMoved -= controller.Tick;
+            if (controller != null && widget != null)
+            {
+                widget.PointerMoved -= controller.Tick;
+                widget.ReadingGeometryChanged -= controller.Sync;
+            }
             _inspection = null;
             _inspectionWidget = null;
         }

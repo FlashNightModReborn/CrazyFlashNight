@@ -136,7 +136,9 @@ html, body { margin:0; width:100%; height:100%; overflow:hidden; background:#181
         node.scrollTop = 1e9;
         var reached = node.scrollTop;
         node.scrollTop = prev;
-        return { scrollable: max > 1, scrollHeight: node.scrollHeight,
+        return { target: node.getAttribute("data-tooltip-reading-viewport") || "legacy",
+            offset: prev, contentHeight: node.scrollHeight, viewportHeight: node.clientHeight,
+            scrollable: max > 1, scrollHeight: node.scrollHeight,
             clientHeight: node.clientHeight, maxScrollTop: reached,
             reachBottom: reached >= max - 1 };
     }
@@ -167,6 +169,7 @@ html, body { margin:0; width:100%; height:100%; overflow:hidden; background:#181
             tooltipRect: rectOf(el),
             introPanelRect: rectOf(introPanel),
             descPanelRect: rectOf(desc),
+            scrollViewportRect: rectOf(el.querySelector('[data-tooltip-reading-viewport]') || desc || inspBody),
             iconRect: rectOf(iconBox),
             iconImgRect: rectOf(iconImg),
             iconNatural: (iconImg && iconImg.tagName === 'IMG')
@@ -176,7 +179,8 @@ html, body { margin:0; width:100%; height:100%; overflow:hidden; background:#181
                 split: !!desc,
                 merge: !!(rich && rich.classList.contains('flash-tt-rich--merge')),
                 stacked: !!(rich && rich.classList.contains('flash-tt-rich--stacked')),
-                narrow: !!(rich && rich.getAttribute('data-layout') === 'narrow')
+                narrow: !!(rich && rich.getAttribute('data-layout') === 'narrow'),
+                sideColumns: dbg.sideColumns || 1
             },
             text: {
                 title: (el.querySelector('.ntt-title') || {}).innerText || null,
@@ -187,7 +191,7 @@ html, body { margin:0; width:100%; height:100%; overflow:hidden; background:#181
                 introStatus: introVL === null ? 'unknown' : 'ok',
                 descStatus: !(desc || inspBody) ? 'absent' : (descVL === null ? 'unknown' : 'ok')
             },
-            scroll: scrollInfo(desc || inspBody),
+            scroll: scrollInfo(el.querySelector("[data-tooltip-reading-viewport]") || desc || inspBody),
             fonts: {
                 tooltip: cs.fontFamily, size: cs.fontSize, lineHeight: cs.lineHeight
             },
@@ -228,6 +232,11 @@ html, body { margin:0; width:100%; height:100%; overflow:hidden; background:#181
     // 非 16:9 视口保留 letterbox，不能按整窗独立拉伸 X/Y。
     function show(sample, scenario, mode) {
         var st = scenario || {};
+        var layoutPreset = st.layoutPreset || window.__tooltipLayoutPreset
+            || new URLSearchParams(window.location.search).get('layout-preset');
+        if (typeof PanelTooltip.setLayoutPreset === 'function') {
+            PanelTooltip.setLayoutPreset(layoutPreset || 'tier14');
+        }
         var vw = window.innerWidth, vh = window.innerHeight;
         var stageScale = Math.min(vw / 1024, vh / 576);
         var cx = (vw - 1024 * stageScale) / 2
@@ -273,7 +282,7 @@ html, body { margin:0; width:100%; height:100%; overflow:hidden; background:#181
 
     function applyScroll(lines) {
         var el = PanelTooltip.getElement();
-        var desc = el.querySelector('.flash-tt-desc') || el.querySelector('.panel-tooltip-inspector-body');
+        var desc = el.querySelector('[data-tooltip-reading-viewport]') || el.querySelector('.flash-tt-desc,.panel-tooltip-inspector-body');
         if (!desc) return;
         // 模拟真实滚动：走模块 wheel 语义等价路径——直接设 scrollTop，
         // 每“行”= computed line-height 像素。

@@ -39,6 +39,7 @@
    bg 由 .flash-tt-intro-panel / .flash-tt-desc 各自渲染一份渐变，对齐 AS2 端
    introBg + mainBg 两个独立 MovieClip。 */
 #panel-tooltip   {
+    --tt-text-scale: var(--cf7-overlay-scale, 1);
     /* === AS2 复刻主题 token（默认，源自 Symbol 274 XFL） === */
     /* 2026-10 视觉合同改版（用户口径，对齐卡牌项目注释框）：面板底 = 深灰 76%，
        描边 = 1px 白；C# NativeTooltipWidget PanelBg/PanelBorder 同步。
@@ -413,7 +414,7 @@
 .kshop-tt-rich {
     /* === Layout primitives（锁死，对齐 AS2 TooltipConstants）=== */
     --tt-icon-size: calc(192px * var(--cf7-overlay-scale, 1)); /* ≈ BASE_NUM(200) - 内边距 4*2 = 192 */
-    --tt-intro-w: calc(200px * var(--cf7-overlay-scale, 1)); /* = BASE_NUM，AS2 端 TooltipComposer.renderItemIcon R2
+    --tt-intro-w: calc(200px * var(--tt-text-scale, var(--cf7-overlay-scale, 1))); /* = BASE_NUM，AS2 端 TooltipComposer.renderItemIcon R2
                                      强制 measuredIntroW = BASE_NUM 锁死宽度，
                                      "避免图标左移导致的视觉断裂；换行损失由条目压缩补偿"。
                                      web 这里必须用 width（不是 max-width）才能复刻 — 否则
@@ -421,8 +422,8 @@
                                      merge / split 模式同等锁宽（AS2 端 merge 也走 measuredIntroW=BASE_NUM）；
                                      data-layout="narrow" 时被 override 成 120。 */
     --tt-intro-min-h: calc(220px * var(--cf7-overlay-scale, 1)); /* BASE_NUM + BG_HEIGHT_OFFSET */
-    --tt-desc-min-w: calc(160px * var(--cf7-overlay-scale, 1));
-    --tt-desc-max-w: calc(420px * var(--cf7-overlay-scale, 1)); /* 达到字数/行数门槛后的阅读宽度上限 */
+    --tt-desc-min-w: calc(160px * var(--tt-text-scale, var(--cf7-overlay-scale, 1)));
+    --tt-desc-max-w: calc(420px * var(--tt-text-scale, var(--cf7-overlay-scale, 1))); /* 常规估宽上限。 */
     --tt-gap: 0px;                /* 对齐 AS2：两面板紧贴（introBg 右边缘 = mainBg 左边缘） */
     --tt-panel-pad: calc(4px * var(--cf7-overlay-scale, 1)); /* AS2 TextField 内部 gutter */
     --tt-icon-text-gap: calc(17px * var(--cf7-overlay-scale, 1)); /* icon 与文字段的纵向间距 */
@@ -446,6 +447,7 @@
     --tt-mag-icon-text-gap: 5px;    /* MagIconTextGapBase：图标与弹夹名间距 */
     --tt-attach-icon-size: 20px;    /* AttachIconBase：插件图标边长 */
     --tt-attach-icon-gap: 5px;      /* AttachIconGapBase：插件图标与名称间距 */
+    --tt-attach-row-indent: 8px;
     --tt-attach-row-gap: 3px;       /* AttachRowGapBase：插件行间距 */
     --tt-attach-title-gap: 2px;     /* AttachTitleGapBase：标题与首行间距 */
     /* === Visual tokens（继承自 #panel-tooltip 主题层；arena-tt-rich / intel-tt-rich
@@ -500,6 +502,27 @@
     --tt-icon-size: 111px;        /* ≈ 38 × BASE_SCALE × RATE / 100 */
     --tt-intro-min-h: 140px;      /* = BG_HEIGHT_OFFSET + RATE × BASE_NUM */
     --tt-icon-text-gap: 11px;     /* ≈ text._y(130) - icon 底部(118.5) = 11.5 */
+}
+
+#panel-tooltip[data-tt-no-sub-one-width-shrink]:not([data-tooltip-profile="pinned-inspector"]) {
+    --tt-text-scale: max(1, var(--cf7-overlay-scale, 1));
+}
+#panel-tooltip[data-tt-no-sub-one-width-shrink]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-rich {
+    --tt-icon-base: 192px;
+    --tt-icon-size: min(calc(var(--tt-icon-base) * var(--cf7-overlay-scale, 1)),
+        calc(var(--tt-intro-w) - 2 * var(--tt-panel-pad)));
+}
+#panel-tooltip[data-tt-no-sub-one-width-shrink]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-rich[data-layout="narrow"] {
+    --tt-intro-w: calc(120px * var(--tt-text-scale));
+    --tt-icon-base: 111px;
+}
+
+#panel-tooltip[data-tt-compact-intro][data-tt-short-viewport]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-rich:not([data-layout="narrow"]) {
+    --tt-icon-base: 144px;
+    --tt-icon-size: min(calc(var(--tt-icon-base) * var(--cf7-overlay-scale, 1)),
+        calc(var(--tt-intro-w) - 2 * var(--tt-panel-pad)));
+    --tt-intro-min-h: calc(164px * var(--cf7-overlay-scale, 1));
+    --tt-icon-text-gap: calc(10px * var(--cf7-overlay-scale, 1));
 }
 
 /* 左面板：icon 在上，intro 文字在下（垂直堆叠，对齐 AS2 introBg 结构）
@@ -588,6 +611,28 @@
 .kshop-tt-intro {
     flex: 1 1 auto;
     line-height: var(--tt-intro-line-height);
+}
+
+.flash-tt-intro-lines--measuring,
+.flash-tt-intro-lines--2col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: round(calc(6px * var(--tt-text-scale)), 1px);
+}
+.flash-tt-intro-lines--measuring .flash-tt-intro-line {
+    width: max-content;
+    white-space: nowrap;
+}
+.flash-tt-intro-line {
+    min-width: 0;
+    min-height: 1lh;
+    overflow-wrap: anywhere;
+}
+.flash-tt-intro-line--full {
+    grid-column: 1 / -1;
+}
+.flash-tt-intro-line br {
+    display: none;
 }
 
 /* ── 书签式插条（document.rail，2026-10 三轮）──
@@ -745,13 +790,74 @@
     min-width: 0;
     flex: 0 1 auto;
     align-self: flex-start;
-    /* 整列高度夹取：描述栏 + 若干子注释框竖排不超出屏幕；超高时子框
-       （overflow:auto + flex 可缩）各自内部滚动，列本身不再撑出视口。 */
-    max-height: calc(100vh - 16px);
+    max-width: var(--tt-reading-width, calc(100vw - 16px));
+}
+.flash-tt-side.flash-tt-side--2col {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--tt-side-column-gap);
+}
+.flash-tt-side-col {
+    min-width: 0;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--tt-side-column-gap);
 }
 .flash-tt-side > .flash-tt-desc,
 .flash-tt-side > .flash-tt-sub-panel {
     margin-top: 0;
+}
+
+/* A structured document has one reading surface. Inner cards keep their natural height. */
+#panel-tooltip .flash-tt-side .flash-tt-desc,
+#panel-tooltip[data-reading-target="whole"] .flash-tt-desc {
+    max-height: none;
+    min-width: 0;
+    overflow: visible;
+    scrollbar-gutter: auto;
+}
+#panel-tooltip .flash-tt-side .flash-tt-desc {
+    width: 100%;
+    max-width: none;
+}
+#panel-tooltip[data-tt-measure-side]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-side .flash-tt-desc,
+#panel-tooltip[data-tt-measure-side]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-intro,
+#panel-tooltip[data-tt-measure-side]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-suffix {
+    overflow-wrap: anywhere;
+}
+/* A lone description keeps the text inset of the original six-pixel scrollbar gutter. */
+#panel-tooltip .flash-tt-side > .flash-tt-desc:only-child {
+    padding-inline-end: calc(var(--tt-panel-pad) + 6px);
+}
+#panel-tooltip[data-reading-target="side"] .flash-tt-side,
+#panel-tooltip[data-reading-target="whole"] .panel-tooltip-reading-body {
+    max-height: var(--tt-reading-height);
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+}
+#panel-tooltip[data-reading-target="whole"] .panel-tooltip-reading-body {
+    max-width: var(--tt-reading-width);
+}
+#panel-tooltip[data-reading-target="description"] .panel-tooltip-reading-body .flash-tt-desc {
+    max-height: min(70vh, 520px, var(--tt-reading-height, 100vh));
+}
+#panel-tooltip[data-reading-target="pinned"] .flash-tt-side {
+    width: 100%;
+    max-height: none;
+}
+#panel-tooltip:not([data-reading-target="measure"]) .flash-tt-sub-panel--acquisition .flash-tt-attach-name,
+#panel-tooltip[data-tt-measure-side] .flash-tt-side:not(.flash-tt-side--measuring-acquisition) .flash-tt-sub-panel--acquisition .flash-tt-attach-name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+.flash-tt-side--measuring-acquisition .flash-tt-sub-panel--acquisition :is(.flash-tt-attach-row, .flash-tt-sub-title) {
+    width: max-content;
+}
+.panel-tooltip-reading-body .flash-tt-rich--stacked > * {
+    min-width: 0;
+    max-width: var(--tt-reading-width);
 }
 
 /* ── 子注释框（role:"sub"）──
@@ -764,10 +870,9 @@
     box-shadow: var(--tt-shadow);
     padding: var(--tt-panel-pad);
     box-sizing: border-box;
-    max-height: min(70vh, 520px);
-    overflow: auto;
-    overscroll-behavior: contain;
-    scrollbar-gutter: stable;
+    flex: none;
+    min-width: 0;
+    overflow-wrap: anywhere;
     isolation: isolate;
 }
 .flash-tt-sub-panel::-webkit-scrollbar,
@@ -802,7 +907,7 @@
 }
 .flash-tt-attach-row--child,
 .ntt-attach-row--child {
-    margin-left: 8px;
+    margin-left: var(--tt-attach-row-indent, 8px);
 }
 .flash-tt-attach-row--category > .flash-tt-attach-icon,
 .ntt-attach-row--category > .ntt-attach-icon {
@@ -856,6 +961,44 @@
     flex-basis: 22px;
     width: 22px;
     height: 22px;
+}
+
+#panel-tooltip[data-tt-compact-rows]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-side {
+    --tt-sub-gap: round(calc(4px * var(--tt-text-scale)), 1px);
+    --tt-attach-row-gap: 2px;
+    --tt-attach-title-gap: 1px;
+}
+#panel-tooltip[data-tt-compact-rows]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-sub-panel--modinfo {
+    --tt-attach-row-gap: 1px;
+}
+#panel-tooltip[data-tt-compact-rows]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-attach-row--inline-effect .flash-tt-attach-name,
+#panel-tooltip[data-tt-compact-rows]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-attach-row--inline-effect .flash-tt-attach-effect {
+    display: inline;
+    margin-left: 0;
+}
+#panel-tooltip[data-tt-compact-rows]:not([data-tooltip-profile="pinned-inspector"]) .flash-tt-attach-row--inline-effect .flash-tt-attach-name::after {
+    content: "：";
+}
+.flash-tt-attach-rows--measuring > .flash-tt-attach-row {
+    width: max-content;
+    white-space: nowrap;
+}
+.flash-tt-attach-rows--2col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: round(calc(8px * var(--tt-text-scale)), 1px);
+    row-gap: var(--tt-attach-row-gap);
+    padding-left: var(--tt-attach-row-indent);
+}
+.flash-tt-attach-rows--2col > .flash-tt-attach-row {
+    margin-top: 0;
+    margin-left: 0;
+}
+.flash-tt-attach-rows--2col > .flash-tt-attach-row--category {
+    margin-left: calc(-1 * var(--tt-attach-row-indent));
+}
+.flash-tt-attach-row--full {
+    grid-column: 1 / -1;
 }
 
 /* A兵团 / 军阀行高徽标：只参与当前行内排版。 */
@@ -936,15 +1079,21 @@
 
 /* WebView2 / Edge 保留原生 scrollTop、wheel 与键盘语义，只替换系统白色滚动条皮肤。
    dense 浮层不参与 hit-test，故这里没有 thumb hover：它是阅读位置指示器而非可拖控件。 */
+.flash-tt-side::-webkit-scrollbar,
+.panel-tooltip-reading-body::-webkit-scrollbar,
 .flash-tt-desc::-webkit-scrollbar,
 .kshop-tt-desc::-webkit-scrollbar {
     width:6px;
     height:6px;
 }
+.flash-tt-side::-webkit-scrollbar-track,
+.panel-tooltip-reading-body::-webkit-scrollbar-track,
 .flash-tt-desc::-webkit-scrollbar-track,
 .kshop-tt-desc::-webkit-scrollbar-track {
     background:var(--tt-scroll-track);
 }
+.flash-tt-side::-webkit-scrollbar-thumb,
+.panel-tooltip-reading-body::-webkit-scrollbar-thumb,
 .flash-tt-desc::-webkit-scrollbar-thumb,
 .kshop-tt-desc::-webkit-scrollbar-thumb {
     min-height:28px;
@@ -960,12 +1109,16 @@
     .flash-tt-desc--scrollable::-webkit-scrollbar-thumb {
     background:var(--tt-scroll-thumb-inspect);
 }
+.flash-tt-side::-webkit-scrollbar-button,
+.panel-tooltip-reading-body::-webkit-scrollbar-button,
 .flash-tt-desc::-webkit-scrollbar-button,
 .kshop-tt-desc::-webkit-scrollbar-button {
     display:none;
     width:0;
     height:0;
 }
+.flash-tt-side::-webkit-scrollbar-corner,
+.panel-tooltip-reading-body::-webkit-scrollbar-corner,
 .flash-tt-desc::-webkit-scrollbar-corner,
 .kshop-tt-desc::-webkit-scrollbar-corner {
     background:var(--tt-scroll-track);

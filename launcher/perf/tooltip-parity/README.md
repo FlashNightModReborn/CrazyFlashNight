@@ -68,3 +68,5 @@ Web CSS 视口；不得独立拉伸 X/Y，否则居中样本会掩盖边缘样�
 元素的鼠标点输入匹配 Native 点锚；不得用 1px 元素冒充零面积鼠标点。
 
 可选 `scenario.anchorRect:{x,y,width,height}` 使用 Flash 逻辑坐标，两端均按同一留边映射生成真实元素矩形；`anchor` 仍为独立鼠标坐标。该输入用于图标范围避让，不能用矩形中心替代鼠标评分点。
+
+当前引擎语料可用 node ../tooltip-interaction/reading.js 输出为 --samples JSON，并选 --mode doc。历史冻结基线单独保留。两端 scroll 导出阅读目标、内容高度、视口高度及当前像素偏移。Web 记录 CSS 像素，Native 记录设备像素。物理滚轮及尾行可见性由 tooltip-interaction 和 Launcher.Tests 覆盖。

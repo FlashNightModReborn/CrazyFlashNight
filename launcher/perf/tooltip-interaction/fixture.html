@@ -54,6 +54,11 @@ body { padding:24px; box-sizing:border-box; }
     }
 
     function richHtml(id, response) {
+        if (response.document) {
+            return PanelTooltip.buildItemRichHtml(Object.assign({
+                document:response.document, rootClass:'fixture-rich-tooltip'
+            }, response.chrome));
+        }
         return PanelTooltip.buildItemRichHtml({
             iconHtml:'<div style="width:72px;height:72px;background:#26394d"></div>',
             introHTML:response.introHTML,
@@ -98,7 +103,7 @@ body { padding:24px; box-sizing:border-box; }
                 node.setAttribute('data-tile-index', String(index));
                 grid.appendChild(node);
                 var cache = {};
-                if (richDelay < 0) cache[id] = responseFor(id, longContent);
+                if (richDelay < 0) cache[id] = options.projection || responseFor(id, longContent);
                 var bindingOptions = {
                     key:id,
                     item:{id:id},
@@ -225,16 +230,21 @@ body { padding:24px; box-sizing:border-box; }
         return snapshot();
     }
 
-    function showDocument(document) {
+    function showDocument(document, options) {
+        options = options || {};
         PanelTooltip.hide();
-        var html = PanelTooltip.buildItemRichHtml({
+        var html = PanelTooltip.buildItemRichHtml(Object.assign({
             document:document,
             rootClass:'fixture-rich-tooltip',
-            layoutType:'wide'
-        });
-        PanelTooltip.showAtMouse(html, {
-            clientX:400, clientY:180, target:grid, currentTarget:grid
-        }, null, {profile:'dense-inspect'});
+            layoutType:document.layoutType || 'wide'
+        }, options.chrome));
+        if (options.pinned) {
+            PanelTooltip.showPinned(html, rail, {owner:pinnedOwner, placement:'right'});
+        } else {
+            PanelTooltip.showAtMouse(html, options.point || {
+                clientX:400, clientY:180, target:grid, currentTarget:grid
+            }, null, {profile:'dense-inspect', placement:options.placement});
+        }
         return snapshot();
     }
 

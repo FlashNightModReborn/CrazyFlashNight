@@ -27,6 +27,7 @@ window.Icons = {
     resolve:function() { return ''; }
 };
 </script>
+<script src="/launcher/web/modules/tooltip-document.js"></script>
 <script src="/launcher/web/modules/tooltip.js"></script>
 <script src="/launcher/web/modules/skills-trainer.js"></script>
 <script src="/launcher/web/modules/skills-render.js"></script>
@@ -169,7 +170,8 @@ window.Icons = {
                 && tooltipRect.right <= innerWidth - 7 && tooltipRect.bottom <= innerHeight - 7,
             stacked:!!(rich && rich.classList.contains('flash-tt-rich--stacked')),
             split:!!desc,
-            scrollable:!!(desc && desc.scrollHeight > desc.clientHeight + 1),
+            scrollable:debug.scrollable, readingTarget:debug.readingTarget,
+            contentHeight:debug.contentHeight, viewportHeight:debug.viewportHeight, offset:debug.offset,
             descScrollHeight:desc ? desc.scrollHeight : 0,
             descClientHeight:desc ? desc.clientHeight : 0,
             overlapTiles:overlapTiles,
@@ -264,6 +266,11 @@ window.Icons = {
     window.__tooltipAudit = {
         configure:function(density) { rebuildAnchors(density); return anchors.length; },
         measureItems:measureItems,
+        measureDocuments:function(samples) {
+            return samples.map(function(sample, i) {
+                return measureHtml(sample.id, PanelTooltip.buildDocumentHtml(sample.document), i);
+            });
+        },
         measurePinnedItems:measurePinnedItems,
         measureSkills:measureSkills,
         skills:function() { return skillEntries.slice(); },

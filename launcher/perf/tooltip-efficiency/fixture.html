@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<base href="/launcher/web/">
+<link rel="stylesheet" href="css/game-ui-behavior.css">
+<link rel="stylesheet" href="css/overlay.css">
+<link rel="stylesheet" href="css/panels.css">
+<style>
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #181a1c; }
+</style>
+</head>
+<body>
+<div id="panel-tooltip" aria-hidden="true"></div>
+<script src="generated/font-catalog.js"></script>
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/icons.js"></script>
+<script src="modules/tooltip.js"></script>
+<script src="modules/tooltip-document.js"></script>
+<script>
+'use strict';
+const owner = {};
+const tip = document.getElementById('panel-tooltip');
+const iconsReady = new Promise(resolve => Icons.load(resolve));
+
+function setScale() {
+    document.documentElement.style.setProperty('--cf7-overlay-scale', String(Math.max(0.25, innerHeight / 864)));
+}
+window.addEventListener('resize', setScale);
+setScale();
+
+function penalty(ratio) {
+    if (ratio < 0.5) return 3;
+    if (ratio < 0.8) return 1;
+    if (ratio < 1.5) return 0;
+    if (ratio < 2.5) return 0.5;
+    return 2;
+}
+
+function measure() {
+    const rect = tip.getBoundingClientRect();
+    const intro = tip.querySelector('.flash-tt-intro-panel')?.getBoundingClientRect();
+    const side = tip.querySelector('.flash-tt-side')?.getBoundingClientRect();
+    const state = PanelTooltip.debugState();
+    const contentH = state.contentHeight;
+    const viewH = state.viewportHeight;
+    const whRatio = rect.width / rect.height;
+    if (!Number.isFinite(whRatio) || whRatio <= 0) throw new Error('Tooltip has invalid dimensions');
+    return {
+        x: rect.left, y: rect.top, tipW: rect.width, tipH: rect.height,
+        introW: intro?.width || 0, introH: intro?.height || 0, sideW: side?.width || 0,
+        sideColumns: state.sideColumns || 1, contentH, viewH,
+        scrollable: state.scrollable, overflowPx: Math.max(0, contentH - viewH),
+        insideViewport: rect.left >= 7 && rect.top >= 7 && rect.right <= innerWidth - 7 && rect.bottom <= innerHeight - 7,
+        readingTarget: state.readingTarget, whRatio, whPenalty: penalty(whRatio)
+    };
+}
+
+function show(sample) {
+    const html = PanelTooltipDocument.buildHtml(sample.document, { layoutType: sample.document.layoutType });
+    if (!html || !PanelTooltip.showAtMouse(html, { clientX: innerWidth / 2, clientY: innerHeight / 2 }, owner, {
+        profile: sample.document.profile === 'simple' ? 'simple-tooltip' : 'dense-inspect'
+    })) throw new Error('Tooltip show rejected: ' + sample.id);
+}
+
+window.efficiency = {
+    async prepare(probe) {
+        setScale();
+        await iconsReady;
+        if (!Icons.entry(probe.document.icon?.name)) throw new Error('Production icon manifest probe failed');
+        show(probe);
+        await document.fonts.ready;
+        PanelTooltip.hide(owner);
+        return { width: innerWidth, height: innerHeight, dpr: devicePixelRatio, scale: Math.max(0.25, innerHeight / 864) };
+    },
+    setPreset(name) {
+        if (typeof PanelTooltip.setLayoutPreset === 'function') {
+            PanelTooltip.setLayoutPreset(name);
+            return true;
+        }
+        return name === 'legacy339';
+    },
+    batch(samples) {
+        return samples.map(sample => {
+            try {
+                show(sample);
+                return { id: sample.id, ...measure() };
+            } catch (error) {
+                return { id: sample.id, error: error.message };
+            }
+        });
+    },
+    async capture(sample) {
+        show(sample);
+        await Promise.all([...tip.querySelectorAll('img[src]')].map(img => new Promise((resolve, reject) => {
+            function finish() {
+                if (img.style.display === 'none') return resolve();
+                if (img.naturalWidth > 0) return img.decode().then(resolve, resolve);
+                if (img.dataset.fb) return resolve();
+                reject(new Error(sample.id + ': 图标无法解码 ' + img.src));
+            }
+            if (img.complete && (img.naturalWidth > 0 || img.style.display === 'none')) return finish();
+            let done = false;
+            const timer = setTimeout(() => { if (!done) { done = true; resolve(); } }, 1500);
+            const onLoad = () => { if (!done) { done = true; clearTimeout(timer); finish(); } };
+            const onErr = () => {
+                // Production portrait onerror swaps to 无头像.webp or hides itself.
+                setTimeout(() => {
+                    if (done) return;
+                    if (img.style.display === 'none' || img.naturalWidth > 0) {
+                        done = true; clearTimeout(timer); resolve();
+                    }
+                }, 80);
+            };
+            img.addEventListener('load', onLoad, { once: true });
+            img.addEventListener('error', onErr);
+        })));
+        await document.fonts.ready;
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        return measure();
+    }
+};
+</script>
+</body>
+</html>

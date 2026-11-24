@@ -40,9 +40,10 @@ document.documentElement.style.setProperty('--cf7-overlay-scale',
     String(Math.max(0.25, window.innerHeight / 864)));
 
 var tt = document.getElementById('panel-tooltip');
+var geometryOwner = {};
 
 function mount(html) {
-    tt.innerHTML = html == null ? '' : String(html);
+    PanelTooltip.showAtMouse(html, {clientX:420, clientY:300}, geometryOwner, {profile:'dense-inspect'});
     return tt;
 }
 
@@ -146,6 +147,17 @@ window.__tdgMount = function(which, spec) {
     }
     mount(html);
     return html.length;
+};
+
+window.__tdgCurrentDocument = function(sample) {
+    var owner = {};
+    PanelTooltip.showDocumentAtMouse(sample.document, {clientX:400,clientY:300}, owner);
+    var state = PanelTooltip.debugState();
+    var result = {id:sample.id, target:state.readingTarget, contentHeight:state.contentHeight,
+        viewportHeight:state.viewportHeight, offset:state.offset, scrollable:state.scrollable,
+        subs:tt.querySelectorAll('.flash-tt-sub-panel').length};
+    PanelTooltip.hide(owner);
+    return result;
 };
 
 window.__tdgReady = !!(window.PanelTooltip && window.PanelTooltipDocument);

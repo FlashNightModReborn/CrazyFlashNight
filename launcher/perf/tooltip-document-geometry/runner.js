@@ -340,6 +340,7 @@ async function main() {
     if (!fs.existsSync(FIXTURE_FILE)) { console.error('fixture 缺失: ' + FIXTURE_FILE); process.exit(1); }
     fs.mkdirSync(path.join(OUT_DIR, 'shots'), { recursive: true });
 
+    const currentReading = [];
     /* 用例集：合成 + corpus */
     var cases = SYNTH.map(function(s) {
         var spec = Object.assign({}, s);
@@ -379,6 +380,14 @@ async function main() {
             if ((i + 1) % 500 === 0) console.log('[geometry] ' + (i + 1) + '/' + cases.length);
         }
 
+        for (const sample of require('../tooltip-interaction/reading').currentSamples()) {
+            const geometry = await page.evaluate(s => window.__tdgCurrentDocument(s), sample);
+            const expectedSubs = sample.document.sections.filter(s => s.role === 'sub').length;
+            if (!geometry.target || geometry.subs !== expectedSubs || geometry.offset !== 0
+                    || geometry.viewportHeight <= 0 || geometry.contentHeight < geometry.viewportHeight)
+                throw Error('当前文档几何不完整 ' + JSON.stringify(geometry));
+            currentReading.push(geometry);
+        }
         /* 截图证据：失败样本优先，再补最大 diff */
         var shotPick = failures.slice(0, SHOTS).map(function(f) { return f.id; });
         rows.slice().sort(function(a, b) { return b.maxAbsDiff - a.maxAbsDiff; })
@@ -416,7 +425,7 @@ async function main() {
         }
     };
     fs.writeFileSync(path.join(OUT_DIR, 'raw.json'), JSON.stringify({
-        summary: summary, corpus: CORPUS_PATH, rows: rows,
+        summary: summary, corpus: CORPUS_PATH, rows: rows, currentReading: currentReading,
         failures: failures.map(function(f) { return { id: f.id, fails: f.fails }; }),
         splitWarns: splitWarns
     }, null, 2), 'utf8');

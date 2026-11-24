@@ -600,15 +600,22 @@
             if (!kind) return null;
             var rowsNode = secNode.rows;
             if (!Array.isArray(rowsNode)) return null;
-            var maxRows = kind === 'modinfo' ? 64 : MAX_ATTACHMENT_ROWS;
+            var maxRows = kind === 'modinfo' || kind === 'upgrades' ? 64 : MAX_ATTACHMENT_ROWS;
             var out = [];
             for (var ri = 0; ri < rowsNode.length; ri++) {
                 var rowNode = rowsNode[ri];
                 if (!rowNode || typeof rowNode !== 'object') continue;
                 var rowName = readPlainTextStrict(
                     rowNode.name, MAX_ATTACHMENT_NAME_CHARS);
+                if (isBlankText(rowName) && kind !== 'modinfo') continue;
+                var charsBeforeRow = totalChars;
                 var rowRuns = parseRuns(rowNode.runs, MAX_ATTACHMENT_RUNS);
-                if (isBlankText(rowName) && (kind !== 'modinfo' || rowRuns.length === 0)) continue;
+                if (isBlankText(rowName) && rowRuns.length === 0) continue;
+                if (out.length === maxRows) {
+                    totalChars = charsBeforeRow;
+                    doc.truncated = true;
+                    break;
+                }
                 var rowIcon = readPlainTextStrict(rowNode.icon, MAX_ICON_NAME_CHARS);
                 var cleanRow = {
                     name: isBlankText(rowName) ? '' : rowName,
@@ -617,7 +624,6 @@
                 };
                 if (Number(rowNode.depth) === 1) cleanRow.depth = 1;
                 out.push(cleanRow);
-                if (out.length >= maxRows) break;
             }
             return out.length ? out : null;
         }
@@ -976,6 +982,7 @@
         var isAcquisition = section.kind === 'acquisition';
         var isModInfo = section.kind === 'modinfo';
         var isUpgrade = section.kind === 'upgrades';
+        out += '<div class="flash-tt-attach-rows" data-row-kind="' + section.kind + '">';
         for (var i = 0; i < section.rows.length; i++) {
             var row = section.rows[i];
             var icon = '';
@@ -988,6 +995,10 @@
                 + (row.depth === 1 ? ' flash-tt-attach-row--child ntt-attach-row--child'
                     : (isAcquisition || isModInfo || isUpgrade
                         ? ' flash-tt-attach-row--category ntt-attach-row--category' : ''));
+            if (section.kind === 'attachments' && row.name && row.runs.length
+                    && !row.runs.some(function(run) { return /[\r\n]/.test(run.text); })) {
+                rowClass += ' flash-tt-attach-row--inline-effect';
+            }
             var nameRuns = isUpgrade && row.depth !== 1 && row.runs.length
                 ? row.runs : (row.name ? [{ text: row.name, color: null, bold: true }] : []);
             if (isAcquisition || isUpgrade && row.depth === 1) {
@@ -1008,7 +1019,7 @@
             }
             out += '</span></div>';
         }
-        return out;
+        return out + '</div>';
     }
 
     /**
@@ -1050,7 +1061,8 @@
 
         var titleHtml = doc.titleRuns.length
             ? '<div class="ntt-title">' + runsHtml(doc.titleRuns) + '</div>' : '';
-        var introColumn = titleHtml + columnHtml(doc, { intro: true });
+        var introText = columnHtml(doc, { intro: true });
+        var introColumn = titleHtml + introText;
         var descColumn = columnHtml(doc, { description: true, body: true });
         var meta = opts.metaHTML || '';
 
@@ -1063,7 +1075,8 @@
 
         var introContent;
         if (doSplit) {
-            introContent = introColumn + meta;
+            introContent = titleHtml + (introText
+                ? '<span class="flash-tt-intro-lines">' + introText + '</span>' : '') + meta;
         } else {
             // merge：desc 段拼到 intro 末尾，对齐 AS2 <BR> 合并与既有 merge 分隔
             var sep = (introColumn || meta) && descColumn ? '<br><br>' : '';

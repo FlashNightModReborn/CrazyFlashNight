@@ -35,6 +35,36 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
     /// </summary>
     internal static class NativeTooltipLayout
     {
+        internal sealed class LayoutOptions
+        {
+            internal bool WholeSideWidth { get; init; }
+            // Preset parity with Web. Native fonts and text boxes already scale together.
+            internal bool NoSubOneWidthShrink { get; init; }
+            internal bool UnclampSingleSideHeight { get; init; }
+            internal bool BalanceWidth { get; init; }
+            internal bool CompactRows { get; init; }
+            internal bool CompactIntro { get; init; }
+            internal bool TwoColumnSide { get; init; }
+
+            internal static readonly LayoutOptions Legacy339 = new LayoutOptions();
+            internal static readonly LayoutOptions Tier12 = CreateTier(false, false);
+            internal static readonly LayoutOptions Tier13 = CreateTier(true, false);
+            internal static readonly LayoutOptions Tier14 = CreateTier(true, true);
+            internal static readonly LayoutOptions Default = Tier14;
+
+            private static LayoutOptions CreateTier(bool compact, bool twoColumns) =>
+                new LayoutOptions
+                {
+                    WholeSideWidth = true,
+                    NoSubOneWidthShrink = true,
+                    UnclampSingleSideHeight = true,
+                    BalanceWidth = true,
+                    CompactRows = compact,
+                    CompactIntro = compact,
+                    TwoColumnSide = twoColumns
+                };
+        }
+
         // ---- Web token（css/panels/foundation-top.css :root --tt-*）----
         internal const int BaseNum = 200;                 // --tt-intro-w: 200px（R2 锁宽）
         internal const int IntroMinHWideBase = 220;       // --tt-intro-min-h: 220px
@@ -47,6 +77,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         internal const int DescMinWBase = 160;            // --tt-desc-min-w: 160px
         internal const int DescDefaultWBase = 280;        // 未达到拓宽门槛时的阅读宽度上限
         internal const int DescMaxWBase = 420;            // 达到字数/行数门槛后的阅读宽度上限
+        internal const int DescBalanceMaxWBase = 560;
         internal const double DescExpandScoreThreshold = 900; // 显示权重，约 450 个汉字
         internal const int DescExpandLineThreshold = 18;  // 默认窄栏中的实际折行数
         internal const int DescMaxHBase = 520;            // .flash-tt-desc max-height: min(70vh,520px)
@@ -340,8 +371,17 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             /// false=软换行产生的续行。与 web innerText 语义对应（软折不产生 \n）。</summary>
             internal bool EndsLogicalLine;
             internal string IconName;
+            // 行内图标相对该行的文本原点，纵向在绘制时按真实行高居中。
             internal Rectangle IconRect;
             internal int TextOffsetPx;
+            internal VisualLine RightHalf;
+            internal int RightHalfOffsetPx;
+
+            internal float Height(float fallback) => LineHeightF > 0 ? LineHeightF
+                : LineHeightPx > 0 ? LineHeightPx : fallback;
+
+            internal float RowHeight(float fallback) => RightHalf == null
+                ? Height(fallback) : Math.Max(Height(fallback), RightHalf.Height(fallback));
         }
 
         /// <summary>
@@ -626,7 +666,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         {
             List<VisualLine> outp = new List<VisualLine>();
             VisualLine acc = null;
-            foreach (VisualLine l in lines)
+            foreach (VisualLine l in InReadingOrder(lines))
             {
                 if (acc == null) acc = new VisualLine();
                 foreach (VisualLine.Slice s in l.Slices)
@@ -665,6 +705,60 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 outp.Add(acc);
             }
             return outp;
+        }
+
+        internal static IEnumerable<VisualLine> InReadingOrder(IEnumerable<VisualLine> lines)
+        {
+            foreach (VisualLine line in lines)
+            {
+                yield return line;
+                if (line.RightHalf != null) yield return line.RightHalf;
+            }
+        }
+
+        private static void PairShortLines(List<VisualLine> lines, int halfW, int gap,
+            Func<VisualLine, bool> eligible)
+        {
+            int write = 0;
+            for (int read = 0; read < lines.Count; read++)
+            {
+                VisualLine left = lines[read];
+                if (read + 1 < lines.Count && eligible(left) && eligible(lines[read + 1]))
+                {
+                    left.RightHalf = lines[++read];
+                    left.RightHalfOffsetPx = halfW + gap;
+                }
+                lines[write++] = left;
+            }
+            lines.RemoveRange(write, lines.Count - write);
+        }
+
+        private static List<VisualLine> BuildIntroLines(List<NativeTooltipRun> runs,
+            int textW, float scale, Func<string, RunFont, int> measure, float lh, bool compact)
+        {
+            List<VisualLine> lines = WrapRuns(runs, textW, measure, lh);
+            if (!compact) return lines;
+            int gap = Px(6, scale);
+            int halfW = (textW - gap) / 2;
+            var eligible = new HashSet<VisualLine>();
+            bool startsLogicalLine = true;
+            foreach (VisualLine line in lines)
+            {
+                if (startsLogicalLine && line.EndsLogicalLine && !line.IsBlank
+                    && RenderedLineWidth(line, measure) <= halfW)
+                {
+                    var text = new StringBuilder();
+                    foreach (var slice in line.Slices) text.Append(slice.Text);
+                    string value = text.ToString();
+                    if ((value.Contains('：') || value.Contains(':'))
+                        && !value.StartsWith("固有结构", StringComparison.Ordinal)
+                        && !value.StartsWith("禁止挂点", StringComparison.Ordinal))
+                        eligible.Add(line);
+                }
+                startsLogicalLine = line.EndsLogicalLine;
+            }
+            PairShortLines(lines, halfW, gap, eligible.Contains);
+            return lines;
         }
 
         /// <summary>由 slice 集合求行高（断行后头行/余行各自重算，同 CSS line box）。</summary>
@@ -762,18 +856,16 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// section 计一个空行（web: `if (!inner) inner = '&lt;br&gt;'`）。
         /// </summary>
         private static List<VisualLine> BuildUpgradeLines(
-            IList<NativeTooltipSection> sections, int panelX, int panelY, int textW,
-            int pad, float scale, Func<string, RunFont, int> measure, float lh,
-            bool leadingBlank)
+            IList<NativeTooltipSection> sections, int textW, float scale, Func<string, RunFont, int> measure, float lh,
+            bool leadingBlank, bool compactRows)
         {
             List<VisualLine> lines = new List<VisualLine>();
             if (sections == null) return lines;
             int iconPx = Px(22, scale);
             int iconGap = Px(AttachIconGapBase, scale);
-            int cursor = panelY + pad;
             foreach (NativeTooltipSection sec in sections)
             {
-                if (sec == null || sec.Kind != "upgrades") continue;
+                if (sec == null || sec.Kind != "upgrades" || !sec.IsAttachments) continue;
                 if (leadingBlank)
                 {
                     lines.Add(new VisualLine
@@ -781,24 +873,24 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                         IsBlank = true, LineHeightF = lh,
                         LineHeightPx = (int)Math.Round(lh), EndsLogicalLine = true
                     });
-                    cursor += (int)Math.Round(lh);
                 }
                 if (!string.IsNullOrEmpty(sec.Title))
                 {
                     List<NativeTooltipRun> titleRuns = new List<NativeTooltipRun>();
                     titleRuns.Add(new NativeTooltipRun(sec.Title, null, true));
                     List<VisualLine> titleLines = WrapRuns(titleRuns, textW, measure, lh);
-                    for (int t = 0; t < titleLines.Count; t++)
-                    {
-                        lines.Add(titleLines[t]);
-                        cursor += titleLines[t].LineHeightPx;
-                    }
+                    lines.AddRange(titleLines);
                 }
+                VisualLine previousShort = null;
+                int childIndent = Px(8, scale);
+                int columnGap = Px(8, scale);
+                int halfW = (textW - childIndent - columnGap) / 2;
+                bool pair = compactRows && textW >= Px(300, scale);
                 for (int i = 0; i < sec.Rows.Count; i++)
                 {
                     NativeTooltipAttachmentRow row = sec.Rows[i];
                     bool child = row.Depth == 1;
-                    int indent = child ? Px(8, scale) : 0;
+                    int indent = child ? childIndent : 0;
                     List<NativeTooltipRun> content = new List<NativeTooltipRun>();
                     if (child || row.Runs.Count == 0)
                         content.Add(new NativeTooltipRun(row.Name, null, true));
@@ -812,15 +904,28 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                         VisualLine line = wrapped[j];
                         if (child)
                         {
-                            line.IconName = row.IconName;
                             line.TextOffsetPx = indent + iconPx + iconGap;
-                            line.LineHeightF = Math.Max(line.LineHeightF, iconPx);
-                            line.LineHeightPx = Math.Max(line.LineHeightPx, iconPx);
-                            line.IconRect = new Rectangle(panelX + pad + indent,
-                                cursor + (line.LineHeightPx - iconPx) / 2, iconPx, iconPx);
+                            if (j == 0)
+                            {
+                                line.IconName = row.IconName;
+                                line.LineHeightF = Math.Max(line.LineHeightF, iconPx);
+                                line.LineHeightPx = Math.Max(line.LineHeightPx, iconPx);
+                                line.IconRect = new Rectangle(indent, 0, iconPx, iconPx);
+                            }
                         }
-                        lines.Add(line);
-                        cursor += line.LineHeightPx;
+                    }
+                    bool shortChild = pair && child && wrapped.Count == 1 && !HasHardBreak(content)
+                        && RenderedLineWidth(wrapped[0], measure) - indent <= halfW;
+                    if (shortChild && previousShort != null)
+                    {
+                        previousShort.RightHalf = wrapped[0];
+                        previousShort.RightHalfOffsetPx = halfW + columnGap;
+                        previousShort = null;
+                    }
+                    else
+                    {
+                        lines.AddRange(wrapped);
+                        previousShort = shortChild ? wrapped[0] : null;
                     }
                 }
                 leadingBlank = false;
@@ -835,7 +940,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             if (sections == null) return runs;
             foreach (NativeTooltipSection s in sections)
             {
-                if (s == null || (s.Kind == "upgrades" && !includeUpgradeText)) continue;
+                if (s == null || (s.Kind == "upgrades" && s.IsAttachments && !includeUpgradeText)) continue;
                 bool empty = true;
                 if (s.Runs != null)
                 {
@@ -902,12 +1007,15 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
         // ──────────── Plan ────────────
 
+        internal enum ReadingTarget { None, Side, WholeRich, PinnedBody }
+
         internal sealed class Plan
         {
             /// <summary>整 tip 尺寸（物理 px）。</summary>
             internal Size TipSize;
             /// <summary>true=拆分（desc 独立侧栏）；false=合并单面板。</summary>
             internal bool Split;
+            internal int SideColumns = 1;
             /// <summary>true=stacked 降级（并排放不下→竖排）。</summary>
             internal bool Stacked;
             /// <summary>true=pinned 检视器（壳+header+body 滚动）。</summary>
@@ -993,6 +1101,15 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 internal List<VisualLine> TitleLines = new List<VisualLine>();
                 internal int TitleTopPx;
                 internal List<SubRow> Rows = new List<SubRow>();
+
+                internal void Offset(int dx, int dy)
+                {
+                    Panel.Offset(dx, dy);
+                    ContentLeftPx += dx;
+                    ContentTopPx += dy;
+                    TitleTopPx += dy;
+                    foreach (SubRow row in Rows) row.Offset(dx, dy);
+                }
             }
 
             /// <summary>结构子框内一行：名称 Lines 与附属 EffectLines 分行绘制。</summary>
@@ -1001,12 +1118,28 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 internal Rectangle IconRect;
                 internal string IconName;
                 internal bool IconIsNpc;
+                internal int RowTopPx;
+                internal int RowBottomPx;
+                internal int RowLeftPx;
+                internal int RowWidthPx;
                 internal int TextLeftPx;
                 internal int TextTopPx;
                 internal List<VisualLine> Lines = new List<VisualLine>();
                 internal int EffectLeftPx;
                 internal int EffectTopPx;
                 internal List<VisualLine> EffectLines = new List<VisualLine>();
+
+                internal void Offset(int dx, int dy)
+                {
+                    if (!IconRect.IsEmpty) IconRect.Offset(dx, dy);
+                    TextLeftPx += dx;
+                    EffectLeftPx += dx;
+                    RowLeftPx += dx;
+                    TextTopPx += dy;
+                    EffectTopPx += dy;
+                    RowTopPx += dy;
+                    RowBottomPx += dy;
+                }
             }
 
             /// <summary>intro 文本起点（tip 相对）。</summary>
@@ -1037,11 +1170,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             /// 的 row-reverse）。widget 在 SolvePlacement 后按 Side 幂等回写。</summary>
             internal bool Mirrored;
 
-            /// <summary>desc/pinned body 可滚动。</summary>
-            internal bool DescScrollable;
+            /// <summary>当前唯一阅读视口及其完整内容高度，使用物理像素。</summary>
+            internal ReadingTarget Target;
+            internal int ContentHeightPx;
+            internal int MaxOffsetPx => Math.Max(0, ContentHeightPx - ScrollViewportRect.Height);
+            internal bool DescScrollable => MaxOffsetPx > 0;
             internal int DescVisibleLines;
             internal int DescTotalLines;
-            internal int MaxScrollLine;
+            internal int MaxScrollLine => (int)Math.Ceiling(MaxOffsetPx / (double)Math.Max(1, LineHeightPx));
             /// <summary>滚动文本可视区（tip 相对）。</summary>
             internal Rectangle ScrollViewportRect;
 
@@ -1074,10 +1210,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 bool hasIntro = !IntroPanel.IsEmpty;
                 bool hasDesc = !DescPanel.IsEmpty;
                 int introOff = hasIntro ? IntroContentLeftPx - IntroPanel.X : 0;
-                int descOff = hasDesc ? DescContentLeftPx - DescPanel.X : 0;
                 int iconOff = hasIntro && !IconRect.IsEmpty ? IconRect.X - IntroPanel.X : 0;
-                int scrollOff = hasDesc && !ScrollViewportRect.IsEmpty
-                    ? ScrollViewportRect.X - DescPanel.X : 0;
                 int magRowOff = hasIntro && !MagazineRow.IsEmpty
                     ? MagazineRow.X - IntroPanel.X : 0;
                 int magIconOff = !MagazineRow.IsEmpty && !MagazineIconRect.IsEmpty
@@ -1087,46 +1220,24 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
                 foreach (RailBlock rb in RailBlocks) rb.Rect = MirrorX(rb.Rect, w);
                 if (hasIntro) IntroPanel = MirrorX(IntroPanel, w);
+                Rectangle sideBounds = SideBounds();
+                int sideDx = w - sideBounds.Right - sideBounds.X;
                 if (hasDesc)
                 {
-                    int oldDescX = DescPanel.X;
-                    DescPanel = MirrorX(DescPanel, w);
-                    foreach (VisualLine line in DescLines)
-                    {
-                        if (line.IconRect.IsEmpty) continue;
-                        line.IconRect = new Rectangle(
-                            DescPanel.X + line.IconRect.X - oldDescX,
-                            line.IconRect.Y, line.IconRect.Width, line.IconRect.Height);
-                    }
+                    DescPanel.Offset(sideDx, 0);
+                    DescContentLeftPx += sideDx;
                 }
-                foreach (SubBox sb in Subs)
-                {
-                    int off = sb.ContentLeftPx - sb.Panel.X;
-                    int oldX = sb.Panel.X;
-                    sb.Panel = MirrorX(sb.Panel, w);
-                    sb.ContentLeftPx = sb.Panel.X + off;
-                    foreach (SubRow row in sb.Rows)
-                    {
-                        int rowIconOff = row.IconRect.X - oldX;
-                        int rowTextOff = row.TextLeftPx - oldX;
-                        int rowEffectOff = row.EffectLeftPx - oldX;
-                        if (!row.IconRect.IsEmpty)
-                            row.IconRect = new Rectangle(sb.Panel.X + rowIconOff, row.IconRect.Y,
-                                row.IconRect.Width, row.IconRect.Height);
-                        row.TextLeftPx = sb.Panel.X + rowTextOff;
-                        row.EffectLeftPx = sb.Panel.X + rowEffectOff;
-                    }
-                }
+                foreach (SubBox sb in Subs) sb.Offset(sideDx, 0);
 
                 if (hasIntro) IntroContentLeftPx = IntroPanel.X + introOff;
-                if (hasDesc) DescContentLeftPx = DescPanel.X + descOff;
                 if (hasIntro && !IconRect.IsEmpty)
                     IconRect = new Rectangle(IntroPanel.X + iconOff, IconRect.Y,
                         IconRect.Width, IconRect.Height);
-                if (hasDesc && !ScrollViewportRect.IsEmpty)
-                    ScrollViewportRect = new Rectangle(DescPanel.X + scrollOff,
-                        ScrollViewportRect.Y, ScrollViewportRect.Width,
-                        ScrollViewportRect.Height);
+                if (!ScrollViewportRect.IsEmpty)
+                {
+                    if (Target == ReadingTarget.Side) ScrollViewportRect.Offset(sideDx, 0);
+                    else ScrollViewportRect = MirrorX(ScrollViewportRect, w);
+                }
                 if (hasIntro && !MagazineRow.IsEmpty)
                 {
                     MagazineRow = new Rectangle(IntroPanel.X + magRowOff, MagazineRow.Y,
@@ -1138,6 +1249,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     MagazineTextLeftPx = MagazineRow.X + magTextOff;
                 }
                 Mirrored = !Mirrored;
+            }
+
+            internal Rectangle SideBounds()
+            {
+                Rectangle bounds = DescPanel;
+                foreach (SubBox sub in Subs)
+                    bounds = bounds.IsEmpty ? sub.Panel : Rectangle.Union(bounds, sub.Panel);
+                return bounds;
             }
 
             private static Rectangle MirrorX(Rectangle r, int width)
@@ -1172,12 +1291,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             int viewportWidthPx,
             int viewportHeightPx,
             string inspectionState = null,
-            float dpiScale = 1f)
+            float dpiScale = 1f,
+            LayoutOptions options = null,
+            int clearWidthPx = 0)
         {
             return ComputePlan(doc,
                 delegate (string t, RunFont f) { return measure(t, f.Bold); },
                 lineHeightPx, scale, viewportWidthPx, viewportHeightPx,
-                inspectionState, dpiScale);
+                inspectionState, dpiScale, options, clearWidthPx);
         }
 
         internal static Plan ComputePlan(
@@ -1188,8 +1309,11 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             int viewportWidthPx,
             int viewportHeightPx,
             string inspectionState = null,
-            float dpiScale = 1f)
+            float dpiScale = 1f,
+            LayoutOptions options = null,
+            int clearWidthPx = 0)
         {
+            options ??= LayoutOptions.Default;
             if (doc == null) throw new ArgumentNullException("doc");
             if (measure == null) throw new ArgumentNullException("measure");
             scale = Math.Max(0.25f, scale);
@@ -1198,7 +1322,6 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 dpiScale = 1f;
             // CSS px 视口（=Web innerWidth/innerHeight）：vh/vw 媒体规则与
             // 视口域常量都在此域求值，再按各自目标域换算物理 px。
-            float vwCss = viewportWidthPx / dpiScale;
             float vhCss = viewportHeightPx / dpiScale;
 
             Plan plan = new Plan();
@@ -1264,22 +1387,122 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             bool wide = plan.LayoutWide;
             int pad = Px(PanelPadBase, scale);
             int introW = Px(wide ? BaseNum : 120, scale);
-            int introMinH = Px(wide ? IntroMinHWideBase : IntroMinHNarrowBase, scale);
-            int iconBox = Px(wide ? IconBoxWideBase : IconBoxNarrowBase, scale);
-            int iconGap = Px(wide ? IconTextGapWideBase : IconTextGapNarrowBase, scale);
+            bool compactIcon = options.CompactIntro && wide && vhCss < 660;
+            int introMinH = Px(compactIcon ? 164 : wide ? IntroMinHWideBase : IntroMinHNarrowBase, scale);
+            int iconBox = Px(compactIcon ? 144 : wide ? IconBoxWideBase : IconBoxNarrowBase, scale);
+            int iconGap = Px(compactIcon ? 10 : wide ? IconTextGapWideBase : IconTextGapNarrowBase, scale);
             int sbW = Px(ScrollbarWBase, scale);
 
             // 定位/降级判定域 = 视口 CSS px（Web innerWidth/innerHeight + transform 后
             // getBoundingClientRect 域）：inset(8)/stacked margin(32) 是 CSS px 常量，
             // 与物理 client 之间差 dpi 因子；元素自身尺寸仍走 scale。
-            int insetClient = ViewportInsetBase;
-
-            // intro-panel 存在条件：iconBlock || introInner（merge 时 desc 拼入 introInner）
+            int inset = (int)Math.Round(ViewportInsetBase * dpiScale);
+            int availableWidth = Math.Max(1, viewportWidthPx - inset * 2);
+            int heightBudget = Math.Max(1, viewportHeightPx - inset * 2
+                - (doc.Profile == NativeTooltipProfile.Dense
+                    ? Px(InspMinHBase, scale) + Px(InspMarginBase, scale) : 0));
             bool introPanelExists = hasIcon || hasIntro || (!plan.Split && hasDesc);
+            int railWidth = 0;
+            if (introPanelExists && doc.Rail != null)
+                foreach (var label in doc.Rail.Texts)
+                    railWidth = Math.Max(railWidth, RailBlockWidth(label, scale, measure));
+            int railAttachX = (hasIcon ? (introW - iconBox) / 2 : pad) + Px(1, scale);
+            int railShift = Math.Max(0, railWidth - railAttachX);
+            int mainWidthPx = (introPanelExists ? introW : 0) + railShift;
+            int sideAvail = availableWidth - mainWidthPx;
+            bool useClearWidth = clearWidthPx > 0
+                && (options.WholeSideWidth || options.BalanceWidth || options.TwoColumnSide);
+            int minReadableSide = Px(200, scale);
+            int effectiveSideAvail = useClearWidth
+                ? Math.Min(sideAvail, Math.Max(minReadableSide, clearWidthPx - mainWidthPx))
+                : sideAvail;
+            int subGap = Px(options.CompactRows ? 4 : SubGapBase, scale);
+            int cut = 0;
+            SideLayout sideLayout = null;
+            if (plan.Split || subSecs.Count > 0)
+            {
+                int requiredAcqW = 0;
+                foreach (var sec in subSecs)
+                    if (sec.Kind == "acquisition" && sec.Rows.Count > 0)
+                        requiredAcqW = Math.Max(requiredAcqW, RequiredAcquisitionWidth(sec, pad, scale, measure) + sbW);
+
+                var descRuns = plan.Split ? BuildColumnRuns(descSecs, false) : null;
+                SideLayout MeasureSide(int width) => new SideLayout(width, subGap,
+                    descRuns, descSecs, subSecs, measure, lh, scale, pad, sbW, options.CompactRows);
+                TextScore sideScore = options.WholeSideWidth
+                    ? ScoreSide(plan.Split ? descSecs : null, subSecs, options.CompactRows)
+                    : plan.Split ? descScore : ScoreSections(subSecs);
+                int minW = Px(DescMinWBase, scale);
+                int widthBase = Math.Max(DescMinWBase, EstimateMainWidth(sideScore, 150, DescMaxWBase));
+                if (options.WholeSideWidth && (subSecs.Count > 0 || sideScore.Total >= 120))
+                    widthBase = Math.Max(200, widthBase);
+                int expansionBase = options.BalanceWidth
+                    ? Math.Max(DescDefaultWBase, (int)Math.Min(DescMaxWBase, sideScore.MaxLine * 6 + 28))
+                    : DescMaxWBase;
+                int normalCap = Px(DescMaxWBase, scale);
+                int width = Math.Max(requiredAcqW, Px(Math.Min(widthBase, expansionBase), scale));
+                if (!options.WholeSideWidth && plan.Split && width < normalCap)
+                {
+                    int probeWidth = Math.Max(1, width - pad * 2 - sbW);
+                    int count = WrapRuns(descRuns, probeWidth, measure, lh).Count
+                        + BuildUpgradeLines(descSecs, probeWidth, scale, measure, lh,
+                            descRuns.Count > 0, options.CompactRows).Count;
+                    width = Math.Max(width,
+                        Px(EstimateMainWidth(sideScore, 150, expansionBase, count), scale));
+                }
+                plan.Stacked = sideAvail < (options.BalanceWidth || options.WholeSideWidth ? minW : width);
+                int stackedCap = Math.Max(1, availableWidth - sbW);
+                int sideCap = plan.Stacked ? stackedCap : Math.Max(minW, effectiveSideAvail);
+                int effectiveMax = Math.Min(sideCap,
+                    Px(options.BalanceWidth ? DescBalanceMaxWBase : DescMaxWBase, scale));
+                int initW = options.BalanceWidth || options.WholeSideWidth
+                    ? Math.Min(effectiveMax, width) : Math.Min(sideCap, width);
+                sideLayout = MeasureSide(initW);
+                if (options.WholeSideWidth && Math.Round(sideLayout.Height / lh, MidpointRounding.AwayFromZero)
+                    > DescExpandLineThreshold)
+                {
+                    int expandedW = Math.Min(effectiveMax, Math.Max(initW, Px(expansionBase, scale)));
+                    if (expandedW > initW) sideLayout = MeasureSide(expandedW);
+                }
+
+                if (options.BalanceWidth)
+                    sideLayout = BalanceSideWidth(sideLayout, MeasureSide, effectiveMax,
+                        heightBudget, requiredAcqW, minW, scale, pad * 2 + sbW, measure);
+
+                int panelCount = sideLayout.Heights.Count;
+                if (options.TwoColumnSide && !plan.Stacked && panelCount >= 2
+                    && sideLayout.Height > heightBudget)
+                {
+                    int maxTooltipW = Math.Min(availableWidth,
+                        Math.Max(Px(860, scale), (int)Math.Round(availableWidth * 0.82, MidpointRounding.AwayFromZero)));
+                    if (useClearWidth) maxTooltipW = Math.Min(maxTooltipW, clearWidthPx);
+                    int twoColBudget = maxTooltipW - mainWidthPx;
+                    if (twoColBudget >= Px(540, scale))
+                    {
+                        int colW = Math.Min(Px(380, scale), (twoColBudget - subGap) / 2);
+                        SideLayout twoColumns = MeasureSide(colW);
+                        int bestCut = BestSideCut(twoColumns, subGap, out int bestHeight);
+                        if (bestHeight <= heightBudget || bestHeight < sideLayout.Height - Px(48, scale))
+                        {
+                            cut = bestCut;
+                            sideLayout = twoColumns;
+                            plan.SideColumns = 2;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                plan.Stacked = (introPanelExists ? introW : 0) + railShift > availableWidth;
+            }
+
+            int columnCap = plan.Stacked ? Math.Max(1, availableWidth - sbW) : availableWidth;
+            introW = Math.Min(introW, columnCap);
+            iconBox = Math.Min(iconBox, Math.Max(1, introW - pad * 2));
             // rich 浮动主框标题独立排版；正文与 merge desc 保持原有拼装规则。
             List<NativeTooltipRun> introRuns = IntroColumnRuns(doc, introSecs, false);
             if (!plan.Split && hasDesc) AppendMergedDesc(introRuns, descSecs);
-            List<NativeTooltipRun> descRuns = BuildColumnRuns(descSecs, false);
+
 
             List<VisualLine> introLines = new List<VisualLine>();
             int introTextX = pad, introTextY = pad, introTextW = 0, introPanelH = 0;
@@ -1300,80 +1523,15 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     }
                     plan.IntroTitleTopPx = introTextY;
                     plan.IntroTitleLines = WrapRuns(titleRuns, introTextW, measure, lh);
-                    if (plan.IntroTitleLines.Count > MaxRenderedLines)
-                        plan.IntroTitleLines = plan.IntroTitleLines.GetRange(0, MaxRenderedLines);
                     introTextY += SumHeight(plan.IntroTitleLines, lh);
                 }
-                introLines = WrapRuns(introRuns, introTextW, measure, lh);
-                if (introLines.Count > MaxRenderedLines)
-                    introLines = introLines.GetRange(0, MaxRenderedLines);
+                introLines = BuildIntroLines(introRuns, introTextW, scale, measure, lh,
+                    options.CompactIntro && wide && plan.Split);
                 plan.IntroBodyLines = introLines;
                 plan.IntroLines.AddRange(plan.IntroTitleLines);
                 plan.IntroLines.AddRange(introLines);
                 int textH = SumHeight(introLines, lh);
-                introPanelH = Math.Max(introMinH, introTextY + textH + pad);
-            }
-
-            // desc 面板（split）：inline width = estimateMainWidth 的 CSS px 结果
-            // 叠加 min-width:160（均在 CSS 域），再整体 ×scale → 物理 px。
-            List<VisualLine> descLines = new List<VisualLine>();
-            int descPanelW = 0, descPanelH = 0, descTextW = 0;
-            if (plan.Split && hasDesc)
-            {
-                int estCss = EstimateMainWidth(descScore, 150, DescMaxWBase);
-                descPanelW = Px(Math.Max(DescMinWBase, estCss), scale);
-                descTextW = descPanelW - pad * 2 - sbW;   // scrollbar-gutter:stable 恒占
-                descLines = WrapRuns(descRuns, descTextW, measure, lh);
-                descLines.AddRange(BuildUpgradeLines(descSecs, 0,
-                    introPanelExists ? introPanelH : 0, descTextW, pad, scale, measure, lh,
-                    descLines.Count > 0));
-                if (descLines.Count > DescExpandLineThreshold
-                    && descPanelW < Px(DescMaxWBase, scale))
-                {
-                    estCss = EstimateMainWidth(descScore, 150, DescMaxWBase, descLines.Count);
-                    descPanelW = Px(Math.Max(DescMinWBase, estCss), scale);
-                    descTextW = descPanelW - pad * 2 - sbW;
-                    descLines = WrapRuns(descRuns, descTextW, measure, lh);
-                    descLines.AddRange(BuildUpgradeLines(descSecs, 0,
-                        introPanelExists ? introPanelH : 0, descTextW, pad, scale, measure, lh,
-                        descLines.Count > 0));
-                }
-                int contentH = SumHeight(descLines, lh) + pad * 2;
-                // max-height:min(70vh,520px)：vh = 视口 CSS px（innerHeight 域，
-                // 不随 transform 缩放）→ 先在本地 CSS 域取 min，再整体 ×scale。
-                int maxH = Px(Math.Min(DescMaxHBase,
-                    vhCss * DescMaxHViewportFrac), scale);
-                descPanelH = Math.Max(lhInt + pad * 2, Math.Min(contentH, maxH));
-            }
-
-            // stacked 降级：post-transform CSS px 并排总宽 > vw - 2*8 → 竖排。
-            // native totalW 是物理 px（=本地×overlayScale×dpi），判定式两边 ×dpi
-            // → 物理域 availW = vw_css×dpi - 16×dpi = vpW - 16×dpi。
-            int availW = viewportWidthPx - (int)Math.Round(insetClient * 2 * dpiScale);
-            int totalW = (introPanelExists ? introW : 0) + descPanelW;
-            if (plan.Split && descPanelW > 0 && introPanelExists && totalW > availW)
-            {
-                plan.Stacked = true;
-                // calc(100vw - 32px) 作为本地单位参与 min/max-width → 物理 ×scale。
-                int colCap = Px(vwCss - StackedMarginBase, scale);
-                // intro-panel: width:min(200/120, vw-32)；min-height→0
-                introW = Math.Min(introW, colCap);
-                introTextW = introW - pad * 2;
-                introLines = WrapRuns(introRuns, Math.Max(1, introTextW), measure, lh);
-                if (introLines.Count > MaxRenderedLines)
-                    introLines = introLines.GetRange(0, MaxRenderedLines);
-                introPanelH = introTextY + SumHeight(introLines, lh) + pad;
-                // desc: inline est width 仍生效，max-width:vw-32 截顶（min-width 160 兜底）
-                descPanelW = Math.Min(descPanelW, colCap);
-                descPanelW = Math.Max(Px(DescMinWBase, scale), descPanelW);
-                descTextW = descPanelW - pad * 2 - sbW;
-                descLines = WrapRuns(descRuns, descTextW, measure, lh);
-                descLines.AddRange(BuildUpgradeLines(descSecs, introW, 0,
-                    descTextW, pad, scale, measure, lh, descLines.Count > 0));
-                int contentH = SumHeight(descLines, lh) + pad * 2;
-                int maxH = Px(Math.Min(DescMaxHBase,
-                    vhCss * DescMaxHViewportFrac), scale);
-                descPanelH = Math.Max(lhInt + pad * 2, Math.Min(contentH, maxH));
+                introPanelH = Math.Max(plan.Stacked ? 0 : introMinH, introTextY + textH + pad);
             }
 
             // ── 弹夹独立行：接在 intro 正文底部，白线分隔，行高=小图标高 ──
@@ -1391,75 +1549,44 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             plan.IntroContentLeftPx = introPanelExists ? introTextX : 0;
             plan.IntroContentTopPx = introTextY;
 
-            if (plan.Split && hasDesc)
+            if (introPanelExists)
             {
-                int tipW, tipH;
-                if (plan.Stacked)
-                {
-                    tipW = Math.Max(introPanelExists ? introW : 0, descPanelW);
-                    tipH = (introPanelExists ? introPanelH : 0) + descPanelH;
-                    plan.IntroPanel = introPanelExists
-                        ? new Rectangle(0, 0, introW, introPanelH) : Rectangle.Empty;
-                    plan.DescPanel = new Rectangle(0,
-                        introPanelExists ? introPanelH : 0, descPanelW, descPanelH);
-                }
-                else
-                {
-                    tipW = (introPanelExists ? introW : 0) + descPanelW;
-                    tipH = Math.Max(introPanelExists ? introPanelH : 0, descPanelH);
-                    plan.IntroPanel = introPanelExists
-                        ? new Rectangle(0, 0, introW, introPanelH) : Rectangle.Empty;
-                    plan.DescPanel = new Rectangle(
-                        introPanelExists ? introW : 0, 0, descPanelW, descPanelH);
-                }
-                plan.TipSize = new Size(Math.Max(1, tipW), Math.Max(1, tipH));
-                plan.DescLines = descLines;
-                plan.DescLogicalLines = MergeLogicalLines(descLines);
-                plan.DescTotalLines = descLines.Count;
-                int viewH = descPanelH - pad * 2;
-                plan.DescVisibleLines = VisibleLineCount(descLines, viewH);
-                plan.MaxScrollLine = MaxStartLine(descLines, viewH);
-                plan.DescScrollable = plan.MaxScrollLine > 0;
-                plan.DescContentLeftPx = plan.DescPanel.X + pad;
-                plan.DescContentTopPx = plan.DescPanel.Y + pad;
-                plan.ScrollViewportRect = new Rectangle(
-                    plan.DescPanel.X + pad, plan.DescPanel.Y + pad,
-                    Math.Max(1, descTextW), Math.Max(1, viewH));
-                if (hasIcon && !plan.IntroPanel.IsEmpty)
-                {
-                    int ix = plan.IntroPanel.X + pad
-                        + (introW - pad * 2 - iconBox) / 2;
-                    plan.IconRect = new Rectangle(ix, pad, iconBox, iconBox);
-                }
+                plan.IntroPanel = new Rectangle(0, 0, introW, introPanelH);
+                if (hasIcon)
+                    plan.IconRect = new Rectangle((introW - iconBox) / 2, pad, iconBox, iconBox);
             }
-            else
-            {
-                // merge：单 intro 面板（Web 不滚动）
-                plan.IntroPanel = introPanelExists
-                    ? new Rectangle(0, 0, introW, introPanelH) : Rectangle.Empty;
-                plan.TipSize = new Size(
-                    Math.Max(1, introPanelExists ? introW : Px(BaseNum, scale)),
-                    Math.Max(1, introPanelH));
-                plan.DescLines = new List<VisualLine>();
-                plan.DescLogicalLines = new List<VisualLine>();
-                plan.DescTotalLines = 0;
-                plan.DescVisibleLines = plan.IntroLines.Count;
-                plan.DescScrollable = false;
-                plan.MaxScrollLine = 0;
-                if (hasIcon && !plan.IntroPanel.IsEmpty)
-                {
-                    int ix = pad + (introW - pad * 2 - iconBox) / 2;
-                    plan.IconRect = new Rectangle(ix, pad, iconBox, iconBox);
-                }
-            }
+            int sideWidth = sideLayout == null ? 0
+                : cut > 0 ? sideLayout.Width * 2 + subGap : sideLayout.Width;
+            int mainW = plan.IntroPanel.Width;
+            int tipW = plan.Stacked ? Math.Max(mainW, sideWidth) : mainW + sideWidth;
+            plan.TipSize = new Size(Math.Max(1, tipW), Math.Max(1, introPanelH));
 
-            // ── 左侧书签插条：列宽并入 tip、面板右移；stacked 时横排于上方并下移 ──
             ApplyRail(plan, doc, scale, measure);
+            if (sideLayout != null)
+            {
+                int x = plan.Stacked ? 0 : plan.IntroPanel.Right;
+                int y = plan.Stacked ? (introPanelExists ? plan.TipSize.Height : 0) : 0;
+                PlaceSideColumn(plan, sideLayout, x, y, pad, subGap, cut);
+            }
 
-            // ── 侧栏子注释框：desc 之下同列同宽堆叠（2026-10 三轮，对齐 Web .flash-tt-side）──
-            if (subSecs.Count > 0)
-                ComputeSideColumn(plan, subSecs, ScoreSections(subSecs), measure, lh,
-                    scale, pad, vhCss);
+            Rectangle side = plan.SideBounds();
+            if (!side.IsEmpty)
+                plan.TipSize = new Size(plan.TipSize.Width, Math.Max(plan.TipSize.Height, side.Bottom));
+            bool whole = plan.Stacked || plan.IntroPanel.Height > heightBudget || side.IsEmpty;
+            plan.Target = whole ? ReadingTarget.WholeRich : ReadingTarget.Side;
+            var content = whole ? new Rectangle(Point.Empty, plan.TipSize) : side;
+            plan.ContentHeightPx = content.Height;
+            int limit = heightBudget;
+            // A single side panel retains the established reading height; grouped panels share the window budget.
+            if (!whole && !options.UnclampSingleSideHeight && subSecs.Count + (plan.Split ? 1 : 0) == 1)
+                limit = Math.Min(limit, Math.Max(1, Px(Math.Min(DescMaxHBase, vhCss * DescMaxHViewportFrac), scale)));
+            content.Height = Math.Min(content.Height, limit);
+            plan.ScrollViewportRect = content;
+            plan.TipSize = new Size(plan.TipSize.Width,
+                whole ? content.Height : Math.Max(plan.IntroPanel.Height, content.Bottom));
+            plan.DescVisibleLines = plan.Split
+                ? VisibleLineCount(plan.DescLines, Math.Max(0, content.Bottom - plan.DescContentTopPx - pad))
+                : plan.IntroLines.Count;
 
             // ── dense 检视状态条（status 为 _el 首子节点，位于全部面板上方）──
             if (doc.Profile == NativeTooltipProfile.Dense)
@@ -1467,55 +1594,241 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             return plan;
         }
 
-        /// <summary>
-        /// 侧栏子注释框（role:"sub"）：与描述栏同列 —— 并排时在主面板右侧一列，
-        /// desc 在最上、子框按文档序接在下方，框间间隙 Px(SubGapBase)；stacked
-        /// 降级时整列落到主面板下方，框内仍按 desc → sub 排列。列宽 = desc 宽，
-        /// 但任一子框被不可折行内容强制撑宽时以最宽子框为准（无 desc 时按内容估宽，
-        /// 下限 DescMinW，对齐 Web applySideWidth）。
-        /// 高 = pad*2 + 内容高，上限沿用 desc max-height；TipSize 随之加宽/加高，
-        /// SolvePlacement 的避让/夹取自动覆盖整个组合。
-        /// </summary>
-        private static void ComputeSideColumn(Plan plan,
-            List<NativeTooltipSection> subSecs, TextScore subScore,
-            Func<string, RunFont, int> measure, float lh, float scale,
-            int pad, float vhCss)
+        private static TextScore ScoreSide(List<NativeTooltipSection> desc,
+            List<NativeTooltipSection> subs, bool compactRows)
         {
-            int gap = Px(SubGapBase, scale);
-            int maxH = Px(Math.Min(DescMaxHBase, vhCss * DescMaxHViewportFrac), scale);
-            bool hasDesc = plan.Split && !plan.DescPanel.IsEmpty;
-
-            int w;
-            if (hasDesc) w = plan.DescPanel.Width;
-            else
+            TextScore score = new TextScore();
+            void Add(TextScore part)
             {
-                int estCss = EstimateMainWidth(subScore, 150, DescMaxWBase);
-                w = Px(Math.Max(DescMinWBase, estCss), scale);
+                score.Total += part.Total;
+                score.MaxLine = Math.Max(score.MaxLine, part.MaxLine);
+                score.LineCount += part.LineCount;
             }
-            // 列起点：并排时紧随主面板右缘（含插条占位，已在 ApplyRail 计入 TipSize）；
-            // stacked 降级时 desc 面板本身已在主面板下方，子框继续接在其底缘。
-            int x = hasDesc ? plan.DescPanel.X : plan.TipSize.Width;
-            int y = hasDesc ? plan.DescPanel.Bottom + gap : 0;
-            if (hasDesc && w > plan.DescPanel.Width) plan.DescPanel.Width = w;
-
-            foreach (NativeTooltipSection sec in subSecs)
+            void AddSection(NativeTooltipSection section)
             {
-                if (sec.Rows.Count > 0)
-                    w = Math.Max(w, RequiredAcquisitionWidth(sec, pad, scale, measure));
+                if (!section.IsAttachments)
+                {
+                    Add(ScoreText(section.PlainText));
+                    return;
+                }
+                if (!string.IsNullOrEmpty(section.Title)) Add(ScoreText(section.Title));
+                foreach (var row in section.Rows)
+                {
+                    string effects = RunsText(row.Runs);
+                    string name = row.Name ?? "";
+                    if (name.Length > 0 && effects.Length > 0
+                        && (section.Kind == "modinfo" || section.Kind == "attachments"))
+                    {
+                        string separator = compactRows && section.Kind == "attachments" && !HasHardBreak(row.Runs)
+                            ? "：" : "\n";
+                        Add(ScoreText(name + separator + effects));
+                    }
+                    else
+                    {
+                        if (section.Kind == "upgrades" && row.Depth != 1 && effects.Length > 0) name = "";
+                        Add(ScoreText(name + effects));
+                    }
+                }
             }
-            if (hasDesc && w > plan.DescPanel.Width) plan.DescPanel.Width = w;
 
-            foreach (NativeTooltipSection sec in subSecs)
+            if (desc != null)
+                foreach (var section in desc) AddSection(section);
+            foreach (var section in subs) AddSection(section);
+            score.LineCount += 2 * Math.Max(0, subs.Count + (desc == null ? 0 : 1) - 1);
+            return score;
+        }
+
+        private static string RunsText(IList<NativeTooltipRun> runs)
+        {
+            var text = new StringBuilder();
+            foreach (var run in runs) text.Append(run.Text);
+            return text.ToString();
+        }
+
+        private static bool HasHardBreak(IList<NativeTooltipRun> runs)
+        {
+            foreach (var run in runs)
+                if (run?.Text?.Contains('\n') == true || run?.Text?.Contains('\r') == true) return true;
+            return false;
+        }
+
+        /// <summary>一次宽度探测的自然布局，最终选中的探测直接用于绘制。</summary>
+        private sealed class SideLayout
+        {
+            internal readonly int Width;
+            internal readonly int Height;
+            internal readonly List<int> Heights = new List<int>();
+            internal readonly List<VisualLine> Desc;
+            internal readonly List<Plan.SubBox> Subs = new List<Plan.SubBox>();
+
+            internal SideLayout(int width, int gap, List<NativeTooltipRun> descRuns,
+                List<NativeTooltipSection> descSecs, List<NativeTooltipSection> subSecs,
+                Func<string, RunFont, int> measure, float lh, float scale, int pad, int gutter,
+                bool compactRows)
             {
-                Plan.SubBox box = sec.IsAttachments
-                    ? BuildAttachmentsBox(sec, x, y, w, pad, scale, measure, lh, maxH)
-                    : BuildTextSubBox(sec, x, y, w, pad, scale, measure, lh, maxH);
-                plan.Subs.Add(box);
-                y += box.Panel.Height + gap;
+                Width = width;
+                if (descRuns != null)
+                {
+                    int textW = Math.Max(1, width - pad * 2 - gutter);
+                    Desc = WrapRuns(descRuns, textW, measure, lh);
+                    Desc.AddRange(BuildUpgradeLines(descSecs, textW, scale, measure, lh,
+                        Desc.Count > 0, compactRows));
+                    Heights.Add(SumHeight(Desc, lh) + pad * 2);
+                }
+                else Desc = new List<VisualLine>();
+                foreach (var sec in subSecs)
+                {
+                    var box = sec.IsAttachments
+                        ? BuildAttachmentsBox(sec, width, pad, scale, measure, lh, gutter, compactRows)
+                        : BuildTextSubBox(sec, 0, 0, width, pad, scale, measure, lh, gutter);
+                    Subs.Add(box);
+                    Heights.Add(box.Panel.Height);
+                }
+                Height = Math.Max(0, Heights.Count - 1) * gap;
+                foreach (int h in Heights) Height += h;
             }
-            plan.TipSize = new Size(
-                Math.Max(plan.TipSize.Width, x + w),
-                Math.Max(plan.TipSize.Height, y - gap));
+
+            internal int MaxLineWidth(int pad, Func<string, RunFont, int> measure)
+            {
+                float max = 0;
+                void Include(List<VisualLine> lines, int left)
+                {
+                    foreach (VisualLine line in lines)
+                    {
+                        max = Math.Max(max, left + RenderedLineWidth(line, measure));
+                        if (line.RightHalf != null)
+                            max = Math.Max(max, left + line.RightHalfOffsetPx
+                                + RenderedLineWidth(line.RightHalf, measure));
+                    }
+                }
+                Include(Desc, 0);
+                foreach (var sub in Subs)
+                {
+                    Include(sub.Lines, 0);
+                    Include(sub.TitleLines, 0);
+                    foreach (var row in sub.Rows)
+                    {
+                        if (!row.IconRect.IsEmpty) max = Math.Max(max, row.IconRect.Right - pad);
+                        Include(row.Lines, row.TextLeftPx - pad);
+                        Include(row.EffectLines, row.EffectLeftPx - pad);
+                    }
+                }
+                return (int)Math.Ceiling(max);
+            }
+        }
+
+        private static float RenderedLineWidth(VisualLine line, Func<string, RunFont, int> measure)
+        {
+            float width = line.TextOffsetPx + NaturalLineWidth(line, measure);
+            int markWidth = Math.Max(1, (int)Math.Round(line.Height(1))) + 2;
+            foreach (var slice in line.Slices)
+            {
+                if (IsALegionSlice(slice)) width += markWidth;
+                if (IsWarlordSlice(slice)) width += markWidth;
+            }
+            return Math.Max(line.IconRect.Right, width);
+        }
+
+        private static readonly System.Text.RegularExpressions.Regex ANamePattern =
+            new System.Text.RegularExpressions.Regex(
+                @"A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase
+                | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+        private static readonly System.Text.RegularExpressions.Regex WarlordNamePattern =
+            new System.Text.RegularExpressions.Regex(
+                @"军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase
+                | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        internal static bool IsALegionSlice(VisualLine.Slice slice)
+        {
+            if (slice.Color.HasValue && slice.Color.Value.R == 255
+                && slice.Color.Value.G == 0 && slice.Color.Value.B == 0) return true;
+            return ANamePattern.IsMatch(slice.Text ?? "");
+        }
+
+        internal static bool IsWarlordSlice(VisualLine.Slice slice)
+        {
+            return WarlordNamePattern.IsMatch(slice.Text ?? "");
+        }
+
+
+        private static SideLayout BalanceSideWidth(SideLayout initial, Func<int, SideLayout> probe,
+            int effectiveMax, int heightBudget, int requiredAcqW, int minW, float scale,
+            int chromeW, Func<string, RunFont, int> measure)
+        {
+            int tolerance = Px(16, scale);
+            if (initial.Height > heightBudget)
+            {
+                if (initial.Width >= effectiveMax) return initial;
+                SideLayout best = probe(effectiveMax);
+                if (best.Height > heightBudget) return best;
+                int low = initial.Width;
+                for (int i = 0; i < 4 && best.Width - low > tolerance; i++)
+                {
+                    SideLayout candidate = probe(low + (best.Width - low) / 2);
+                    if (candidate.Height <= heightBudget) best = candidate;
+                    else low = candidate.Width;
+                }
+                return best;
+            }
+
+            int fit = Math.Max(Math.Max(minW, requiredAcqW),
+                initial.MaxLineWidth(Px(PanelPadBase, scale), measure) + chromeW);
+            if (initial.Width - fit < tolerance) return initial;
+            SideLayout shrink = probe(fit);
+            return shrink.Height <= initial.Height ? shrink : initial;
+        }
+
+        private static int BestSideCut(SideLayout side, int gap, out int bestHeight)
+        {
+            int bestCut = 1, bestLeft = 0, bestRight = 0, left = -gap;
+            bestHeight = int.MaxValue;
+            for (int cut = 1; cut < side.Heights.Count; cut++)
+            {
+                left += side.Heights[cut - 1] + gap;
+                int right = side.Height - left - gap;
+                int height = Math.Max(left, right);
+                if (height < bestHeight || (height == bestHeight && left >= right
+                    && (bestLeft < bestRight || left - right < bestLeft - bestRight)))
+                {
+                    bestCut = cut;
+                    bestHeight = height;
+                    bestLeft = left;
+                    bestRight = right;
+                }
+            }
+            return bestCut;
+        }
+
+        private static void PlaceSideColumn(Plan plan, SideLayout side, int x, int y,
+            int pad, int gap, int cut)
+        {
+            int startY = y;
+            int panel = 0;
+            if (plan.Split)
+            {
+                plan.DescPanel = new Rectangle(x, y, side.Width, side.Heights[0]);
+                plan.DescLines = side.Desc;
+                plan.DescLogicalLines = MergeLogicalLines(side.Desc);
+                plan.DescTotalLines = side.Desc.Count;
+                plan.DescContentLeftPx = x + pad;
+                plan.DescContentTopPx = y + pad;
+                y += side.Heights[0] + gap;
+                panel++;
+            }
+            foreach (var sub in side.Subs)
+            {
+                if (cut > 0 && panel == cut)
+                {
+                    x += side.Width + gap;
+                    y = startY;
+                }
+                sub.Offset(x, y);
+                plan.Subs.Add(sub);
+                y += sub.Panel.Height + gap;
+                panel++;
+            }
         }
 
         private static int RequiredAcquisitionWidth(NativeTooltipSection sec,
@@ -1533,26 +1846,23 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 bool showIcon = depth == 1 || !string.IsNullOrEmpty(row.IconName);
                 int textW = measure(row.Name, new RunFont { Bold = true });
                 for (int r = 0; r < row.Runs.Count; r++)
-                    textW += measure(row.Runs[r].Text, new RunFont { Bold = false });
+                    textW += measure(row.Runs[r].Text, RunFont.Of(row.Runs[r]));
                 required = Math.Max(required, pad * 2 + rowIndent
                     + (showIcon ? iconPx + iconGap : 0) + textW);
             }
             return required;
         }
 
-        /// <summary>普通子注释框：整段 runs 折行，整框高度上限沿用 desc max-height。</summary>
+        /// <summary>普通子注释框：按最终宽度折行，完整高度用于外层视口。</summary>
         private static Plan.SubBox BuildTextSubBox(NativeTooltipSection sec,
             int x, int y, int w, int pad, float scale,
-            Func<string, RunFont, int> measure, float lh, int maxH)
+            Func<string, RunFont, int> measure, float lh, int gutter)
         {
             List<NativeTooltipRun> runs = BuildColumnRuns(
                 new List<NativeTooltipSection> { sec });
             List<VisualLine> lines = WrapRuns(runs,
-                Math.Max(1, w - pad * 2), measure, lh);
-            if (lines.Count > MaxRenderedLines)
-                lines = lines.GetRange(0, MaxRenderedLines);
-            int h = Math.Max(1, Math.Min(
-                SumHeight(lines, lh) + pad * 2, maxH));
+                Math.Max(1, w - pad * 2 - gutter), measure, lh);
+            int h = Math.Max(1, SumHeight(lines, lh) + pad * 2);
             Plan.SubBox box = new Plan.SubBox();
             box.Panel = new Rectangle(x, y, w, h);
             box.Lines = lines;
@@ -1561,102 +1871,166 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             return box;
         }
 
-        /// <summary>
-        /// attachments/acquisition/modinfo 子框：名称独占一行，效果在下一行并继续缩进；
-        /// Depth=1 的来源/插件条目再缩进一级；modinfo 纯效果子行不占图标列。
-        /// 图标与名称首行对齐，整框高度同 desc 上限。
-        /// </summary>
         private static Plan.SubBox BuildAttachmentsBox(NativeTooltipSection sec,
-            int x, int y, int w, int pad, float scale,
-            Func<string, RunFont, int> measure, float lh, int maxH)
+            int w, int pad, float scale, Func<string, RunFont, int> measure, float lh,
+            int gutter, bool compactRows)
         {
-            int contentW = Math.Max(1, w - pad * 2);
+            int contentW = Math.Max(1, w - pad * 2 - gutter);
             int iconPx = Px(AttachIconBase, scale);
             int iconGap = Px(AttachIconGapBase, scale);
-            int titleGap = Px(AttachTitleGapBase, scale);
-            int rowGap = Px(AttachRowGapBase, scale);
-            int effectGap = Math.Max(1, Px(1, scale));
+            int titleGap = Px(compactRows ? 1 : AttachTitleGapBase, scale);
+            bool acquisition = sec.Kind == "acquisition";
+            bool modInfo = sec.Kind == "modinfo";
+            int rowGap = Px(compactRows ? (modInfo ? 1 : 2) : AttachRowGapBase, scale);
+            int effectGap = Px(1, scale);
+            int childIndent = Px(8, scale);
+            int columnGap = Px(8, scale);
+            int halfW = (contentW - childIndent - columnGap) / 2;
+            bool canPair = compactRows && (acquisition || modInfo) && contentW >= Px(300, scale);
 
-            Plan.SubBox box = new Plan.SubBox();
-            box.Attachments = true;
-            box.ContentLeftPx = x + pad;
-            box.ContentTopPx = y + pad;
-
-            int cursor = box.ContentTopPx;
+            Plan.SubBox box = new Plan.SubBox
+            {
+                Attachments = true,
+                ContentLeftPx = pad,
+                ContentTopPx = pad
+            };
+            int cursor = pad;
             if (!string.IsNullOrEmpty(sec.Title))
             {
-                List<NativeTooltipRun> titleRuns = new List<NativeTooltipRun>();
-                titleRuns.Add(new NativeTooltipRun(sec.Title, null, true));
+                var titleRuns = new[] { new NativeTooltipRun(sec.Title, null, true) };
                 box.TitleLines = WrapRuns(titleRuns, contentW, measure, lh);
-                if (box.TitleLines.Count > MaxRenderedLines)
-                    box.TitleLines = box.TitleLines.GetRange(0, MaxRenderedLines);
                 box.TitleTopPx = cursor;
                 cursor += SumHeight(box.TitleLines, lh) + titleGap;
             }
 
+            bool acquisitionNoWrap = acquisition && w - gutter >= RequiredAcquisitionWidth(sec, pad, scale, measure);
+            Plan.SubRow previousShort = null;
+            int previousShortIndent = -1;
             for (int i = 0; i < sec.Rows.Count; i++)
             {
                 NativeTooltipAttachmentRow row = sec.Rows[i];
-                bool modInfo = sec.Kind == "modinfo";
-                if (string.IsNullOrEmpty(row.Name) && (!modInfo || row.Runs.Count == 0)) continue;
-                int depth = row.Depth == 1 ? 1 : 0;
-                int rowIndent = depth == 0 ? 0 : Px(8, scale);
-                int effectIndent = Px(12, scale);
-                bool acquisition = sec.Kind == "acquisition";
-                bool acquisitionNoWrap = acquisition
-                    && w >= RequiredAcquisitionWidth(sec, pad, scale, measure);
-                bool showIconColumn = (!acquisition && !modInfo)
-                    || (acquisition && (depth == 1 || !string.IsNullOrEmpty(row.IconName)));
-                int nameTextW = Math.Max(1, contentW - rowIndent
-                    - (showIconColumn ? iconPx + iconGap : 0));
-
-                List<NativeTooltipRun> nameRuns = new List<NativeTooltipRun>();
-                if (!string.IsNullOrEmpty(row.Name))
-                    nameRuns.Add(new NativeTooltipRun(row.Name, null, true));
-                if (acquisition) nameRuns.AddRange(row.Runs);
-                List<VisualLine> nameLines = nameRuns.Count > 0
-                    ? WrapRuns(nameRuns,
-                        acquisition && acquisitionNoWrap ? int.MaxValue / 4 : nameTextW, measure, lh)
-                    : new List<VisualLine>();
-                if (nameLines.Count > MaxRenderedLines)
-                    nameLines = nameLines.GetRange(0, MaxRenderedLines);
-                int nameH = SumHeight(nameLines, lh);
-
-                List<VisualLine> effectLines = new List<VisualLine>();
-                int effectH = 0;
-                if (!acquisition && row.Runs.Count > 0)
+                bool hasName = !string.IsNullOrEmpty(row.Name);
+                if (!hasName && (!(modInfo || acquisition) || row.Runs.Count == 0))
                 {
-                    effectLines = WrapRuns(row.Runs,
-                        Math.Max(1, nameTextW - (modInfo ? 0 : effectIndent)), measure, lh);
-                    if (effectLines.Count > MaxRenderedLines)
-                        effectLines = effectLines.GetRange(0, MaxRenderedLines);
-                    effectH = SumHeight(effectLines, lh);
+                    previousShort = null;
+                    previousShortIndent = -1;
+                    continue;
                 }
-                int textH = nameH + (effectH > 0 ? (nameH > 0 ? effectGap : 0) + effectH : 0);
-                int rowH = Math.Max(modInfo ? 0 : iconPx, textH);
+                bool child = row.Depth == 1;
+                int rowIndent = child ? childIndent : 0;
+                int effectIndent = modInfo ? 0 : Px(12, scale);
+                bool showIcon = (!acquisition && !modInfo)
+                    || (acquisition && (child || !string.IsNullOrEmpty(row.IconName)));
+                int iconW = showIcon ? iconPx + iconGap : 0;
+                int nameTextW = Math.Max(1, contentW - rowIndent - iconW);
+                bool inlineEffect = compactRows && sec.Kind == "attachments" && hasName
+                    && row.Runs.Count > 0 && !HasHardBreak(row.Runs);
+                bool singleFlow = acquisition || inlineEffect;
 
-                Plan.SubRow subRow = new Plan.SubRow();
-                subRow.IconName = row.IconName;
-                subRow.IconIsNpc = showIconColumn && acquisition && !string.IsNullOrEmpty(row.IconName);
-                if (showIconColumn)
-                    subRow.IconRect = new Rectangle(x + pad + rowIndent,
-                        cursor + (rowH - iconPx) / 2, iconPx, iconPx);
-                subRow.TextLeftPx = showIconColumn
-                    ? subRow.IconRect.Right + iconGap : x + pad + rowIndent;
-                subRow.TextTopPx = cursor + Math.Max(0, (rowH - textH) / 2);
-                subRow.Lines = nameLines;
-                subRow.EffectLines = effectLines;
-                subRow.EffectLeftPx = subRow.TextLeftPx + (modInfo ? 0 : effectIndent);
-                subRow.EffectTopPx = subRow.TextTopPx + nameH
-                    + (effectH > 0 && nameH > 0 ? effectGap : 0);
+                var nameRuns = new List<NativeTooltipRun>();
+                if (hasName)
+                    nameRuns.Add(new NativeTooltipRun(inlineEffect ? row.Name + "：" : row.Name, null, true));
+                if (singleFlow) nameRuns.AddRange(row.Runs);
+                var nameLines = WrapRuns(nameRuns,
+                    acquisitionNoWrap ? int.MaxValue / 4 : nameTextW, measure, lh);
+                var effectLines = singleFlow ? new List<VisualLine>()
+                    : WrapRuns(row.Runs, Math.Max(1, nameTextW - effectIndent), measure, lh);
+                int nameH = SumHeight(nameLines, lh);
+                int effectH = SumHeight(effectLines, lh);
+                int blockGap = nameH > 0 && effectH > 0 ? effectGap : 0;
+                int textH = nameH + blockGap + effectH;
+                int rowH = Math.Max(!modInfo ? iconPx : 0, textH);
+
+                int left = pad + rowIndent;
+                int top = Math.Max(0, (rowH - textH) / 2);
+                var subRow = new Plan.SubRow
+                {
+                    IconName = row.IconName,
+                    IconIsNpc = showIcon && acquisition && !string.IsNullOrEmpty(row.IconName),
+                    IconRect = showIcon ? new Rectangle(left, (rowH - iconPx) / 2, iconPx, iconPx) : Rectangle.Empty,
+                    RowBottomPx = rowH,
+                    RowLeftPx = left,
+                    RowWidthPx = contentW - rowIndent,
+                    TextLeftPx = left + iconW,
+                    TextTopPx = top,
+                    Lines = nameLines,
+                    EffectLeftPx = left + iconW + effectIndent,
+                    EffectTopPx = top + nameH + blockGap,
+                    EffectLines = effectLines
+                };
+                var pairLines = modInfo ? effectLines : nameLines;
+                int currentIndent = modInfo ? LeadingIndentCount(RowPlainText(row.Runs)) : 0;
+                bool modInfoBlocked = modInfo && IsModInfoHeadingOrParent(sec.Rows, i);
+                bool shortChild = canPair && child && (!modInfo || !hasName) && !modInfoBlocked
+                    && pairLines.Count == 1 && !HasHardBreak(modInfo ? row.Runs : nameRuns)
+                    && RenderedLineWidth(pairLines[0], measure) + iconW <= halfW;
+                if (shortChild && previousShort != null && (!modInfo || currentIndent == previousShortIndent))
+                {
+                    previousShort.RowWidthPx = halfW;
+                    subRow.RowWidthPx = halfW;
+                    subRow.Offset(halfW + columnGap, previousShort.RowTopPx);
+                    cursor = Math.Max(previousShort.RowBottomPx, subRow.RowBottomPx) + rowGap;
+                    previousShort = null;
+                    previousShortIndent = -1;
+                }
+                else
+                {
+                    subRow.Offset(0, cursor);
+                    cursor = subRow.RowBottomPx + rowGap;
+                    previousShort = shortChild ? subRow : null;
+                    previousShortIndent = shortChild ? currentIndent : -1;
+                }
                 box.Rows.Add(subRow);
-                cursor += rowH + rowGap;
             }
             if (box.Rows.Count > 0) cursor -= rowGap;
 
-            int h = Math.Max(1, Math.Min(cursor + pad - y, maxH));
-            box.Panel = new Rectangle(x, y, w, h);
+            box.Panel = new Rectangle(0, 0, w, Math.Max(1, cursor + pad));
             return box;
+        }
+
+        private static string RowPlainText(IList<NativeTooltipRun> runs)
+        {
+            if (runs == null || runs.Count == 0) return string.Empty;
+            var sb = new StringBuilder();
+            for (int i = 0; i < runs.Count; i++)
+                if (runs[i] != null && !string.IsNullOrEmpty(runs[i].Text))
+                    sb.Append(runs[i].Text);
+            return sb.ToString();
+        }
+
+        private static int LeadingIndentCount(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return 0;
+            int count = 0;
+            for (int i = 0; i < text.Length; i++)
+            {
+                char ch = text[i];
+                if (ch == ' ' || ch == '\u00a0') count++;
+                else if (ch == '\u3000') count += 2;
+                else break;
+            }
+            return count;
+        }
+
+        private static bool IsModInfoHeadingOrParent(IList<NativeTooltipAttachmentRow> rows, int index)
+        {
+            if (rows == null || index < 0 || index >= rows.Count) return true;
+            string raw = RowPlainText(rows[index].Runs);
+            string trimmed = raw.Trim();
+            if (string.IsNullOrEmpty(trimmed)) return true;
+            if (trimmed[0] == '【') return true;
+            char last = trimmed[trimmed.Length - 1];
+            if (last == '：' || last == ':') return true;
+            int indent = LeadingIndentCount(raw);
+            if (index + 1 < rows.Count)
+            {
+                var next = rows[index + 1];
+                if (next != null && next.Depth == 1 && string.IsNullOrEmpty(next.Name))
+                {
+                    if (LeadingIndentCount(RowPlainText(next.Runs)) > indent) return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -1709,6 +2083,12 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// 并排时整列（宽 = 最宽块 + 间距）并入 TipSize，面板/图标/子框整体右移；
         /// stacked 降级时书签横排（超出换行）在 intro 面板上方，整组下移。
         /// </summary>
+        private static int RailBlockWidth(string text, float scale, Func<string, RunFont, int> measure)
+        {
+            int labelWidth = string.IsNullOrEmpty(text) ? 0 : measure(text, new RunFont { Bold = true });
+            return Math.Max(Px(24, scale), Math.Min(Px(RailMaxWBase, scale), labelWidth + 2 * Px(RailTextPadXBase, scale)));
+        }
+
         private static void ApplyRail(Plan plan, NativeTooltipDocument doc, float scale,
             Func<string, RunFont, int> measure)
         {
@@ -1719,28 +2099,24 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             int blockH = Px(RailBlockHBase, scale);
             int gap = Px(RailBlockGapBase, scale);
             int padX = Px(RailTextPadXBase, scale);
-            int maxW = Px(RailMaxWBase, scale);
-            int minW = Px(24, scale);
 
             List<int> widths = new List<int>();
             int widest = 0;
             for (int i = 0; i < doc.Rail.Texts.Count; i++)
             {
                 string text = doc.Rail.Texts[i];
-                int textW = string.IsNullOrEmpty(text)
-                    ? 0 : measure(text, new RunFont { Bold = true });
-                int w = Math.Max(minW, Math.Min(maxW, textW + padX * 2));
+                int w = RailBlockWidth(text, scale, measure);
                 widths.Add(w);
                 if (w > widest) widest = w;
             }
 
             if (plan.Stacked)
             {
-                int rowW = Math.Max(1, Math.Max(plan.TipSize.Width, widest));
+                int rowW = Math.Max(1, plan.TipSize.Width);
                 int x = 0, y = 0;
                 for (int i = 0; i < doc.Rail.Texts.Count; i++)
                 {
-                    int w = widths[i];
+                    int w = Math.Min(widths[i], rowW);
                     if (x > 0 && x + w > rowW) { x = 0; y += blockH + gap; }
                     Plan.RailBlock block = new Plan.RailBlock();
                     block.Rect = new Rectangle(x, y, w, blockH);
@@ -1759,20 +2135,20 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             int top = !plan.IconRect.IsEmpty
                 ? plan.IconRect.Y
                 : plan.IntroPanel.Y + Px(PanelPadBase, scale);
-            // 2026-10-30 用户口径：书签块宽随字数、彼此右缘对齐，且最宽块的右缘
-            // 恰好落在图标左缘上（压过 intro 面板的 1px 描边 + 4px gutter，
-            // 与 Web .flash-tt-rail 的负 margin-right 同几何）。
-            int overlap = Px(PanelPadBase, scale) + Px(1, scale);
+            // 书签右缘贴合图标左缘。矮视口缩图标后，贴合点随图标居中位置移动。
+            int attachX = (!plan.IconRect.IsEmpty ? plan.IconRect.X : Px(PanelPadBase, scale))
+                + Px(1, scale);
+            int dx = Math.Max(0, widest - attachX);
+            int right = attachX + dx;
             for (int i = 0; i < doc.Rail.Texts.Count; i++)
             {
                 Plan.RailBlock block = new Plan.RailBlock();
-                block.Rect = new Rectangle(widest - widths[i], top + i * (blockH + gap), widths[i], blockH);
+                block.Rect = new Rectangle(right - widths[i], top + i * (blockH + gap), widths[i], blockH);
                 block.Text = doc.Rail.Texts[i];
                 block.FontPx = fontPx;
                 block.PadX = padX;
                 plan.RailBlocks.Add(block);
             }
-            int dx = Math.Max(0, widest - overlap);
             ShiftPanelsRight(plan, dx);
             plan.RailShift = dx;
             plan.TipSize = new Size(plan.TipSize.Width + dx, plan.TipSize.Height);
@@ -1792,6 +2168,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             if (plan.MagazineDividerY > 0) plan.MagazineDividerY += dy;
             if (plan.MagazineNameTopPx > 0) plan.MagazineNameTopPx += dy;
             if (plan.MagazineAmmoTopPx > 0) plan.MagazineAmmoTopPx += dy;
+            plan.IntroTitleTopPx += dy;
             plan.IntroContentTopPx += dy;
             plan.DescContentTopPx += dy;
         }
@@ -1844,23 +2221,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             if (!plan.DescPanel.IsEmpty) plan.DescPanel.Offset(0, off);
             if (!plan.IconRect.IsEmpty) plan.IconRect.Offset(0, off);
             if (!plan.ScrollViewportRect.IsEmpty) plan.ScrollViewportRect.Offset(0, off);
-            foreach (Plan.SubBox sb in plan.Subs)
-            {
-                sb.Panel.Offset(0, off);
-                sb.ContentTopPx += off;
-                sb.TitleTopPx += off;
-                foreach (Plan.SubRow row in sb.Rows)
-                {
-                    row.TextTopPx += off;
-                    if (!row.IconRect.IsEmpty) row.IconRect.Offset(0, off);
-                }
-            }
+            foreach (Plan.SubBox sb in plan.Subs) sb.Offset(0, off);
             foreach (Plan.RailBlock rb in plan.RailBlocks) rb.Rect.Offset(0, off);
             if (!plan.MagazineRow.IsEmpty) plan.MagazineRow.Offset(0, off);
             if (!plan.MagazineIconRect.IsEmpty) plan.MagazineIconRect.Offset(0, off);
             if (plan.MagazineDividerY > 0) plan.MagazineDividerY += off;
             if (plan.MagazineNameTopPx > 0) plan.MagazineNameTopPx += off;
             if (plan.MagazineAmmoTopPx > 0) plan.MagazineAmmoTopPx += off;
+            plan.IntroTitleTopPx += off;
             plan.IntroContentTopPx += off;
             plan.DescContentTopPx += off;
             plan.TipSize = new Size(Math.Max(plan.TipSize.Width, w),
@@ -1876,7 +2244,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         {
             float h = 0;
             foreach (VisualLine l in lines)
-                h += l.LineHeightF > 0 ? l.LineHeightF : fallbackLh;
+                h += l.RowHeight(fallbackLh);
             // 内容包围盒须向外取整：312.5px 不能装进312px视口，
             // 否则本可完整显示的短注释会凭空获得一行滚动和检视等待。
             return (int)Math.Ceiling(h);
@@ -1886,34 +2254,16 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// （web 末行可部分可见，截断由绘制层 clip 负责）。</summary>
         private static int VisibleLineCount(IList<VisualLine> lines, int viewH)
         {
-            if (lines == null || lines.Count == 0) return 0;
+            if (lines == null || lines.Count == 0 || viewH <= 0) return 0;
             float acc = 0;
             int n = 0;
             foreach (VisualLine l in lines)
             {
                 if (acc >= viewH) break;
-                acc += l.LineHeightF > 0 ? l.LineHeightF : l.LineHeightPx;
+                acc += l.RowHeight(0);
                 n++;
             }
             return Math.Max(1, n);
-        }
-
-        /// <summary>变行高下保证末行可见的最大起始行：自尾向前浮点累加，
-        /// 取首个使剩余行总高 ≤ viewH 的行索引（空列/单行超高兜底 Count-1）。</summary>
-        private static int MaxStartLine(IList<VisualLine> lines, int viewH)
-        {
-            if (lines == null || lines.Count == 0) return 0;
-            int maxStart = lines.Count;
-            float acc = 0;
-            for (int i = lines.Count - 1; i >= 0; i--)
-            {
-                VisualLine l = lines[i];
-                acc += l.LineHeightF > 0 ? l.LineHeightF : l.LineHeightPx;
-                if (acc > viewH) break;
-                maxStart = i;
-            }
-            if (maxStart >= lines.Count) maxStart = lines.Count - 1;
-            return Math.Max(0, maxStart);
         }
 
         // ── plain 短提示（#panel-tooltip 原生框）──
@@ -2088,6 +2438,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             plan.BodyRect = new Rectangle(border, border + headerH,
                 shellW - border * 2, bodyViewH);
             plan.ScrollViewportRect = plan.BodyRect;
+            plan.Target = ReadingTarget.PinnedBody;
+            plan.ContentHeightPx = contentH;
 
             // body 滚动单元：intro 行 + desc 行（各自行高）
             plan.DescLines = new List<VisualLine>();
@@ -2098,9 +2450,6 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             plan.DescLogicalLines = MergeLogicalLines(plan.DescLines);
             plan.DescTotalLines = plan.DescLines.Count;
 
-            // MaxScrollLine：保证末行可见的最大起始行（变行高浮点累加）
-            plan.MaxScrollLine = MaxStartLine(plan.DescLines, bodyViewH);
-            plan.DescScrollable = contentH > bodyViewH && plan.MaxScrollLine > 0;
             plan.DescVisibleLines = VisibleLineCount(plan.DescLines, bodyViewH);
             plan.DescContentLeftPx = 0;
             plan.DescContentTopPx = 0;

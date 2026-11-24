@@ -120,10 +120,23 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         private Point _pendingPointer;
         private string _pendingPointerRequest;
         private readonly Timer _pointerMoveTimer;
-        private int _scrollLine;
+        private int _offsetPx;
         private bool _closePressed;
         private float _lastLayoutScale = -1f;
         private float _lastDpiScale = -1f;
+        private NativeTooltipLayout.LayoutOptions _layoutOptions = NativeTooltipLayout.LayoutOptions.Default;
+
+        internal NativeTooltipLayout.LayoutOptions LayoutOptions
+        {
+            get => _layoutOptions;
+            set
+            {
+                var next = value ?? NativeTooltipLayout.LayoutOptions.Default;
+                if (ReferenceEquals(_layoutOptions, next)) return;
+                _layoutOptions = next;
+                InvalidateLayout();
+            }
+        }
         private int _lastVpW, _lastVpH;
         private Rectangle? _ownerBounds;
 
@@ -164,6 +177,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         private float _paintAlpha = 1f;
 
         internal event Action PointerMoved;
+        internal event Action ReadingGeometryChanged;
+        private bool _notifyingReadingGeometry;
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
         public event EventHandler AnimationStateChanged;
@@ -219,7 +234,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         public long CurrentRevision { get { return SessionLive ? _doc.Revision : 0; } }
         public NativeTooltipDocument ActiveDocument { get { return SessionLive ? _doc : null; } }
         public bool Scrollable { get { return _plan != null && _plan.DescScrollable; } }
-        public int ScrollLineOffset { get { return _scrollLine; } }
+        public int ScrollOffsetPx => _offsetPx;
+        public int MaxScrollOffsetPx => _plan?.MaxOffsetPx ?? 0;
+        public int ScrollLineOffset => (int)Math.Ceiling(_offsetPx / (double)Math.Max(1, _plan?.LineHeightPx ?? 1));
         public int MaxScrollLine { get { return _plan != null ? _plan.MaxScrollLine : 0; } }
         /// <summary>测试/诊断用：当前排版计划（内部类型，经 InternalsVisibleTo 暴露给 Launcher.Tests）。</summary>
         internal NativeTooltipLayout.Plan ActivePlan { get { return _plan; } }
@@ -268,13 +285,15 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
             bool sameInstance = _doc != null
                 && doc.RequestId != null
+                && string.Equals(_doc.SceneId, doc.SceneId, StringComparison.Ordinal)
+                && string.Equals(_doc.Owner, doc.Owner, StringComparison.Ordinal)
                 && string.Equals(_doc.RequestId, doc.RequestId, StringComparison.Ordinal);
             if (sameInstance && doc.Revision < _doc.Revision) return false; // 迟到 revision
 
             _doc = doc;
             if (!sameInstance)
             {
-                _scrollLine = 0;
+                _offsetPx = 0;
                 _livePointer = null;
                 CancelPointerMove();
             }
@@ -381,9 +400,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         public bool ScrollByLines(int delta)
         {
             if (_plan == null || !_plan.DescScrollable) return false;
-            int next = Math.Max(0, Math.Min(_plan.MaxScrollLine, _scrollLine + delta));
-            if (next == _scrollLine) return false;
-            _scrollLine = next;
+            return ScrollToOffset((long)_offsetPx + (long)delta * Math.Max(1, _plan.LineHeightPx));
+        }
+
+        internal bool ScrollToOffset(long offset)
+        {
+            int next = (int)Math.Clamp(offset, 0L, MaxScrollOffsetPx);
+            if (next == _offsetPx) return false;
+            _offsetPx = next;
             FireRepaint();
             return true;
         }
@@ -577,87 +601,74 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 PaintInspectionStrip(g, Offset(plan.InspStrip, ox, oy),
                     plan.InspState, scale);
 
-            // intro 面板（plain 模式 = 单文本框；rich = icon+文字列）
-            if (!plan.IntroPanel.IsEmpty)
-                DrawGradientPanel(g, Offset(plan.IntroPanel, ox, oy));
-
-            if (!plan.IconRect.IsEmpty)
-                DrawIcon(g, Offset(plan.IconRect, ox, oy), plan.IconName);
-
-            // 书签插条（默认在图标左侧，整组镜像后在右侧；块内文字朝图片一侧对齐）
-            if (plan.RailBlocks.Count > 0) PaintRail(g, plan, ox, oy);
-            // 弹夹独立行（intro 面板内，白线分隔，小图标 + 名称）
-            if (!plan.MagazineRow.IsEmpty) PaintMagazine(g, plan, ox, oy);
-            PaintFloatingTitle(g, plan, ox, oy);
-
             if (plan.Plain)
             {
-                Rectangle clip = Offset(plan.IntroPanel, ox, oy);
-                clip.Inflate(-1, -1);
-                PaintLines(g, plan.IntroLines, 0, plan.IntroLines.Count,
-                    ox + plan.IntroContentLeftPx, oy + plan.IntroContentTopPx,
-                    plan.LineHeightPx, clip);
+                PaintFloatingMain(g, plan, ox, oy);
                 return;
             }
-
-            if (plan.Split && !plan.DescPanel.IsEmpty)
+            bool whole = plan.Target == NativeTooltipLayout.ReadingTarget.WholeRich;
+            if (!whole) PaintFloatingMain(g, plan, ox, oy);
+            Rectangle viewport = Offset(plan.ScrollViewportRect, ox, oy);
+            GraphicsState reading = g.Save();
+            try
             {
-                // intro 面板：文字裁到面板内缘
-                Rectangle introClip = Offset(plan.IntroPanel, ox, oy);
-                PaintLines(g, plan.IntroBodyLines, 0, plan.IntroBodyLines.Count,
-                    ox + plan.IntroContentLeftPx, oy + plan.IntroContentTopPx,
-                    plan.LineHeightIntroPx, introClip);
-            }
-            else
-            {
-                // merge：intro 面板内文字（含拼入的 desc），Web 不滚动
-                Rectangle clip = Offset(plan.IntroPanel, ox, oy);
-                PaintLines(g, plan.IntroBodyLines, 0, plan.IntroBodyLines.Count,
-                    ox + plan.IntroContentLeftPx, oy + plan.IntroContentTopPx,
-                    plan.LineHeightIntroPx, clip);
-            }
-
-            // 侧栏第 1 框 = 描述栏（Web .flash-tt-desc，675ms）：与主框同列、
-            // 独立淡入元素；框体渐变与正文同用这一层透明度。
-            if (plan.Split && !plan.DescPanel.IsEmpty)
-            {
-                _paintAlpha = AlphaFor(DescElement());
-                if (_paintAlpha > 0f)
+                g.SetClip(viewport, CombineMode.Intersect);
+                int contentY = oy - _offsetPx;
+                if (whole) PaintFloatingMain(g, plan, ox, contentY);
+                Rectangle desc = Offset(plan.DescPanel, ox, contentY);
+                if (!plan.DescPanel.IsEmpty && g.IsVisible(desc))
                 {
-                    DrawGradientPanel(g, Offset(plan.DescPanel, ox, oy));
-                    Rectangle descTextClip = Offset(plan.ScrollViewportRect, ox, oy);
-                    // 行数不预截：clip 负责边界（末行可部分可见，同 web overflow）。
-                    PaintLines(g, plan.DescLines, _scrollLine,
-                        plan.DescLines.Count - _scrollLine,
-                        ox + plan.DescContentLeftPx, oy + plan.DescContentTopPx,
-                        plan.LineHeightDescPx, descTextClip);
-                    if (plan.DescScrollable)
-                        DrawScrollbar(g, Offset(plan.DescPanel, ox, oy),
-                            plan.DescTotalLines, plan.DescVisibleLines, _scrollLine,
-                            plan.MaxScrollLine, scale,
-                            NativeTooltipLayout.Px(
-                                NativeTooltipLayout.ScrollbarWBase, scale));
+                    _paintAlpha = AlphaFor(DescElement());
+                    if (_paintAlpha > 0f)
+                    {
+                        DrawGradientPanel(g, desc);
+                        PaintLines(g, plan.DescLines, 0, plan.DescLines.Count,
+                            ox + plan.DescContentLeftPx, contentY + plan.DescContentTopPx,
+                            plan.LineHeightDescPx, desc);
+                    }
+                }
+                for (int i = 0; i < plan.Subs.Count; i++)
+                {
+                    var sub = plan.Subs[i];
+                    Rectangle rect = Offset(sub.Panel, ox, contentY);
+                    if (!g.IsVisible(rect)) continue;
+                    _paintAlpha = AlphaFor(SubElement(i));
+                    if (_paintAlpha <= 0f) continue;
+                    DrawGradientPanel(g, rect);
+                    if (sub.Attachments)
+                        PaintSubAttachments(g, sub, rect, ox, contentY, plan.LineHeightPx);
+                    else
+                        PaintLines(g, sub.Lines, 0, sub.Lines.Count, ox + sub.ContentLeftPx,
+                            contentY + sub.ContentTopPx, plan.LineHeightPx, rect);
                 }
             }
-
-            // 子注释框：侧栏内 desc 之下的独立小框（超出的行裁掉，首版不滚动）。
-            // 每个子框是独立淡入元素（2..n），淡出时与主框同刻归零。
-            for (int i = 0; i < plan.Subs.Count; i++)
+            finally { g.Restore(reading); }
+            if (plan.MaxOffsetPx > 0)
             {
-                NativeTooltipLayout.Plan.SubBox sub = plan.Subs[i];
-                Rectangle sr = Offset(sub.Panel, ox, oy);
-                _paintAlpha = AlphaFor(SubElement(i));
-                if (_paintAlpha <= 0f) continue;
-                DrawGradientPanel(g, sr);
-                if (sub.Attachments)
-                {
-                    PaintSubAttachments(g, sub, sr, ox, oy, plan.LineHeightPx);
-                    continue;
-                }
-                PaintLines(g, sub.Lines, 0, sub.Lines.Count,
-                    ox + sub.ContentLeftPx, oy + sub.ContentTopPx,
-                    plan.LineHeightPx, sr);
+                _paintAlpha = AlphaFor(0);
+                DrawScrollbar(g, viewport, plan.ContentHeightPx, viewport.Height,
+                    _offsetPx, plan.MaxOffsetPx, scale, NativeTooltipLayout.Px(NativeTooltipLayout.ScrollbarWBase, scale));
             }
+        }
+
+        private void PaintFloatingMain(Graphics g, NativeTooltipLayout.Plan plan, int ox, int oy)
+        {
+            var rect = Offset(plan.IntroPanel, ox, oy);
+            bool showPanel = !plan.IntroPanel.IsEmpty && g.IsVisible(rect);
+            if (showPanel)
+            {
+                DrawGradientPanel(g, rect);
+                if (!plan.IconRect.IsEmpty && g.IsVisible(Offset(plan.IconRect, ox, oy)))
+                    DrawIcon(g, Offset(plan.IconRect, ox, oy), plan.IconName);
+            }
+            if (plan.RailBlocks.Count > 0) PaintRail(g, plan, ox, oy);
+            if (!showPanel) return;
+            if (!plan.MagazineRow.IsEmpty && g.IsVisible(Offset(plan.MagazineRow, ox, oy)))
+                PaintMagazine(g, plan, ox, oy);
+            PaintFloatingTitle(g, plan, ox, oy);
+            var lines = plan.Plain ? plan.IntroLines : plan.IntroBodyLines;
+            PaintLines(g, lines, 0, lines.Count, ox + plan.IntroContentLeftPx,
+                oy + plan.IntroContentTopPx, plan.LineHeightIntroPx, rect);
         }
 
         /// <summary>rich 主框标题：按每行实际宽度居中，保留 run 的 16px 字号与样式。</summary>
@@ -669,9 +680,13 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             int pad = NativeTooltipLayout.Px(NativeTooltipLayout.PanelPadBase, plan.Scale);
             int contentW = Math.Max(1, plan.IntroPanel.Width - pad * 2);
             float cy = oy + plan.IntroTitleTopPx;
+            var visible = g.VisibleClipBounds;
             for (int i = 0; i < plan.IntroTitleLines.Count; i++)
             {
                 NativeTooltipLayout.VisualLine line = plan.IntroTitleLines[i];
+                float height = line.LineHeightF > 0 ? line.LineHeightF : line.LineHeightPx;
+                if (cy >= visible.Bottom) break;
+                if (cy + height <= visible.Top) { cy += height; continue; }
                 float lineWidth = 0f;
                 foreach (NativeTooltipLayout.VisualLine.Slice slice in line.Slices)
                     lineWidth += slice.WidthF;
@@ -679,13 +694,13 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 int x = ox + plan.IntroPanel.X + pad + (contentW - lineW) / 2;
                 PaintLines(g, plan.IntroTitleLines, i, 1, x, (int)cy,
                     plan.LineHeightIntroPx, clip);
-                cy += line.LineHeightF > 0 ? line.LineHeightF : line.LineHeightPx;
+                cy += height;
             }
         }
 
         /// <summary>
         /// attachments/acquisition 子框：标题 + 名称行 + 缩进附属效果行。
-        /// 全部绘制裁到框体内缘（超出 desc max-height 的部分不画）。
+        /// 只绘制落入阅读视口和框体内缘的内容。
         /// </summary>
         private void PaintSubAttachments(Graphics g,
             NativeTooltipLayout.Plan.SubBox sub, Rectangle panelRect,
@@ -697,13 +712,16 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 Rectangle clip = panelRect;
                 clip.Inflate(-1, -1);
                 g.SetClip(clip, CombineMode.Intersect);
+                clip = Rectangle.Ceiling(g.VisibleClipBounds);
                 if (sub.TitleLines.Count > 0)
                     PaintLines(g, sub.TitleLines, 0, sub.TitleLines.Count,
                         ox + sub.ContentLeftPx, oy + sub.TitleTopPx,
                         lineHeightPx, clip);
-                foreach (NativeTooltipLayout.Plan.SubRow row in sub.Rows)
+                for (int i = 0; i < sub.Rows.Count; i++)
                 {
-                    if (!row.IconRect.IsEmpty)
+                    var row = sub.Rows[i];
+                    if (oy + row.RowTopPx >= clip.Bottom || oy + row.RowBottomPx <= clip.Top) continue;
+                    if (!row.IconRect.IsEmpty && g.IsVisible(Offset(row.IconRect, ox, oy)))
                         DrawIcon(g, Offset(row.IconRect, ox, oy), row.IconName, row.IconIsNpc);
                     PaintLines(g, row.Lines, 0, row.Lines.Count,
                         ox + row.TextLeftPx, oy + row.TextTopPx,
@@ -823,7 +841,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 g.SetClip(body, CombineMode.Intersect);
                 int bodyPad = NativeTooltipLayout.Px(
                     NativeTooltipLayout.PinnedBodyPadBase, scale);
-                int scrollY = ScrollOffsetPx(plan, _scrollLine);
+                int scrollY = _offsetPx;
 
                 // intro 面板（grid：icon 列 + 文本列）
                 Rectangle intro = Offset(plan.PinnedIntroRect, body.X, body.Y - scrollY);
@@ -854,23 +872,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             finally { g.Restore(bodyState); }
 
             if (plan.DescScrollable)
-                DrawScrollbar(g, body, plan.DescTotalLines,
-                    plan.DescVisibleLines, _scrollLine, plan.MaxScrollLine, scale,
+                DrawScrollbar(g, body, plan.ContentHeightPx, body.Height, _offsetPx, plan.MaxOffsetPx, scale,
                     NativeTooltipLayout.Px(NativeTooltipLayout.PinnedScrollbarWBase, scale));
-        }
-
-        /// <summary>pinned body 的行偏移 → 像素（变行高浮点累加：intro 1.4 /
-        /// desc 1.45，行内大字号 run 再按 line box 抬高；出口取整一次）。</summary>
-        private static int ScrollOffsetPx(NativeTooltipLayout.Plan plan, int startLine)
-        {
-            float y = 0;
-            int n = Math.Min(startLine, plan.DescLines.Count);
-            for (int i = 0; i < n; i++)
-            {
-                NativeTooltipLayout.VisualLine l = plan.DescLines[i];
-                y += l.LineHeightF > 0 ? l.LineHeightF : l.LineHeightPx;
-            }
-            return (int)Math.Round(y);
         }
 
         /// <summary>浮动/子注释框面板：黑底 80%（204,0,0,0）+ 1px 白描边（2026-10 改版）。
@@ -907,94 +910,80 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             try
             {
                 if (clip.HasValue) g.SetClip(clip.Value, CombineMode.Intersect);
+                var visible = g.VisibleClipBounds;
                 int count = Math.Min(lines.Count - startLine, maxLines);
                 float cy = y;
+                float fallback = Math.Max(1, lineH);
                 for (int i = 0; i < count; i++)
                 {
                     NativeTooltipLayout.VisualLine vl = lines[startLine + i];
-                    // 逐行真实高优先（CSS line box：行内最大 run 字号×em——
-                    // 大字行物理高 25×scale，不再被常量 15×scale 压叠）；
-                    // 外部常量只在行无高度数据时兜底。
-                    float lh = vl.LineHeightF > 0 ? vl.LineHeightF
-                        : (lineH > 0 ? lineH
-                            : (vl.LineHeightPx > 0 ? vl.LineHeightPx : 1));
-                    if (!vl.IsBlank)
+                    float rowH = vl.RowHeight(fallback);
+                    if (cy >= visible.Bottom) break;
+                    if (cy + rowH > visible.Top)
                     {
-                        if (!vl.IconRect.IsEmpty)
-                        {
-                            Rectangle iconRect = vl.IconRect;
-                            iconRect.Y = (int)cy + (int)Math.Round((lh - iconRect.Height) / 2f);
-                            DrawIcon(g, iconRect, vl.IconName);
-                        }
-                        float cx = x + vl.TextOffsetPx;
-                        for (int s = 0; s < vl.Slices.Count; s++)
-                        {
-                            NativeTooltipLayout.VisualLine.Slice slice = vl.Slices[s];
-                            if (string.IsNullOrEmpty(slice.Text)) continue;
-                            bool aLegion = IsALegionSlice(slice);
-                            bool warlord = IsWarlordSlice(slice);
-                            int markSize = Math.Max(1, (int)Math.Round(lh));
-                            if (aLegion)
-                            {
-                                DrawIcon(g, new Rectangle((int)cx, (int)cy,
-                                    markSize, markSize), null, false, true);
-                                cx += markSize + 2;
-                            }
-                            if (warlord)
-                            {
-                                DrawIcon(g, new Rectangle((int)cx, (int)cy,
-                                    markSize, markSize), null, false, false, true);
-                                cx += markSize + 2;
-                            }
-                            Color color = warlord ? Color.FromArgb(255, 255, 224)
-                                : aLegion ? Color.FromArgb(255, 0, 0)
-                                : IsZombieSlice(slice) ? TextDefault
-                                : slice.Color.HasValue ? slice.Color.Value : TextDefault;
-                            if (!aLegion && !warlord && slice.Color.HasValue
-                                && slice.Color.Value.R == 0 && slice.Color.Value.G == 0 && slice.Color.Value.B == 0)
-                            {
-                                using (SolidBrush backdrop = new SolidBrush(Fade(Color.White)))
-                                {
-                                    g.FillRectangle(backdrop, cx - 1, cy, slice.WidthF + 2, lh);
-                                }
-                            }
-                            NativeTooltipLayout.RunFont font = slice.FontOf();
-                            if (aLegion || warlord) font.Underline = true;
-                            using (SolidBrush brush = new SolidBrush(Fade(color)))
-                            {
-                                g.DrawString(slice.PaintOverride ?? slice.Text, FontFor(font),
-                                    brush, new PointF(cx, cy), _textFormat);
-                            }
-                            cx += slice.WidthF;
-                        }
+                        PaintLine(g, vl, x, cy, vl.Height(fallback), visible.Top);
+                        if (vl.RightHalf != null)
+                            PaintLine(g, vl.RightHalf, x + vl.RightHalfOffsetPx, cy,
+                                vl.RightHalf.Height(fallback), visible.Top);
                     }
-                    cy += lh;
+                    cy += rowH;
                 }
             }
             finally { g.Restore(state); }
         }
 
-        private static readonly System.Text.RegularExpressions.Regex ANamePattern =
-            new System.Text.RegularExpressions.Regex(
-                @"A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase
-                | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
-        private static readonly System.Text.RegularExpressions.Regex WarlordNamePattern =
-            new System.Text.RegularExpressions.Regex(
-                @"军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase
-                | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
-
-        private static bool IsALegionSlice(NativeTooltipLayout.VisualLine.Slice slice)
+        private void PaintLine(Graphics g, NativeTooltipLayout.VisualLine vl,
+            int x, float cy, float lh, float clipTop)
         {
-            if (slice.Color.HasValue && slice.Color.Value.R == 255
-                && slice.Color.Value.G == 0 && slice.Color.Value.B == 0) return true;
-            return ANamePattern.IsMatch(slice.Text ?? "");
-        }
-
-        private static bool IsWarlordSlice(NativeTooltipLayout.VisualLine.Slice slice)
-        {
-            return WarlordNamePattern.IsMatch(slice.Text ?? "");
+            if (vl.IsBlank || cy + lh <= clipTop) return;
+            if (!vl.IconRect.IsEmpty)
+            {
+                Rectangle iconRect = vl.IconRect;
+                iconRect.X += x;
+                iconRect.Y = (int)cy + (int)Math.Round((lh - iconRect.Height) / 2f);
+                DrawIcon(g, iconRect, vl.IconName);
+            }
+            float cx = x + vl.TextOffsetPx;
+            for (int s = 0; s < vl.Slices.Count; s++)
+            {
+                NativeTooltipLayout.VisualLine.Slice slice = vl.Slices[s];
+                if (string.IsNullOrEmpty(slice.Text)) continue;
+                bool aLegion = NativeTooltipLayout.IsALegionSlice(slice);
+                bool warlord = NativeTooltipLayout.IsWarlordSlice(slice);
+                int markSize = Math.Max(1, (int)Math.Round(lh));
+                if (aLegion)
+                {
+                    DrawIcon(g, new Rectangle((int)cx, (int)cy,
+                        markSize, markSize), null, false, true);
+                    cx += markSize + 2;
+                }
+                if (warlord)
+                {
+                    DrawIcon(g, new Rectangle((int)cx, (int)cy,
+                        markSize, markSize), null, false, false, true);
+                    cx += markSize + 2;
+                }
+                Color color = warlord ? Color.FromArgb(255, 255, 224)
+                    : aLegion ? Color.FromArgb(255, 0, 0)
+                    : IsZombieSlice(slice) ? TextDefault
+                    : slice.Color.HasValue ? slice.Color.Value : TextDefault;
+                if (!aLegion && !warlord && slice.Color.HasValue
+                    && slice.Color.Value.R == 0 && slice.Color.Value.G == 0 && slice.Color.Value.B == 0)
+                {
+                    using (SolidBrush backdrop = new SolidBrush(Fade(Color.White)))
+                    {
+                        g.FillRectangle(backdrop, cx - 1, cy, slice.WidthF + 2, lh);
+                    }
+                }
+                NativeTooltipLayout.RunFont font = slice.FontOf();
+                if (aLegion || warlord) font.Underline = true;
+                using (SolidBrush brush = new SolidBrush(Fade(color)))
+                {
+                    g.DrawString(slice.PaintOverride ?? slice.Text, FontFor(font),
+                        brush, new PointF(cx, cy), _textFormat);
+                }
+                cx += slice.WidthF;
+            }
         }
 
         private static bool IsZombieSlice(NativeTooltipLayout.VisualLine.Slice slice)
@@ -1374,7 +1363,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             _livePointer = null;
             _doc = null;
             _plan = null;
-            _scrollLine = 0;
+            _offsetPx = 0;
             _closePressed = false;
             _lockedSide = null;
             _anchorValid = false;
@@ -1650,7 +1639,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 {
                     width = (int)Math.Ceiling(MeasureGraphics.MeasureString(text,
                         FontFor(style), PointF.Empty, _textFormat).Width);
-                    if (text.Length <= 256 && widths.Count < 1024) widths.Add(key, width);
+                    if (text.Length <= 256 && widths.Count < 2048) widths.Add(key, width);
                 }
                 return width;
             };
@@ -1690,6 +1679,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             Rectangle viewport = new Rectangle(vpOrigin.X, vpOrigin.Y, vpWi, vpHi);
 
             bool anchorChanged = false;
+            bool readingChanged = false;
             if (_livePointer.HasValue)
             {
                 Point pointer = _livePointer.Value;
@@ -1727,30 +1717,6 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 anchorChanged = true;
             }
 
-            // DPI 变化不改变 scale（同一物理高下 scale 不变），必须独立跟踪：
-            // vh/vw 与定位常量的 CSS px 域 = 物理视口 / dpi。
-            bool scaleChanged = Math.Abs(scale - _lastLayoutScale) > 0.001f
-                || Math.Abs(dpi - _lastDpiScale) > 0.001f
-                || vpWi != _lastVpW || vpHi != _lastVpH;
-            if (force || _plan == null || scaleChanged)
-            {
-                EnsureFonts(scale);
-                _lastLayoutScale = scale;
-                _lastDpiScale = dpi;
-                _lastVpW = vpWi;
-                _lastVpH = vpHi;
-                // 基准行高保持浮点（12×1.25×scale，如 576 高 → 10，864 高 → 15）——
-                // 行内更大 run 字号按 CSS line box 逐行抬高，取整只发生在矩形上。
-                float lineH = NativeTooltipLayout.FontPxBase
-                    * NativeTooltipLayout.LineHeightEm * scale;
-                _plan = NativeTooltipLayout.ComputePlan(
-                    _doc, CreateLayoutMeasure(), lineH, scale, vpWi, vpHi, _inspectionState, dpi);
-                if (_scrollLine > (_plan != null ? _plan.MaxScrollLine : 0))
-                    _scrollLine = _plan != null ? _plan.MaxScrollLine : 0;
-                SyncFadeElements();
-                anchorChanged = true;
-            }
-            if (_plan == null) return;
             Rectangle placementAnchor = new Rectangle(_anchorScreen, Size.Empty);
             if (_doc.AnchorRect.HasValue)
             {
@@ -1774,6 +1740,40 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             }
             if (placementAnchor != _placementAnchorRect) anchorChanged = true;
             _placementAnchorRect = placementAnchor;
+
+            // DPI 变化不改变 scale（同一物理高下 scale 不变），必须独立跟踪：
+            // vh/vw 与定位常量的 CSS px 域 = 物理视口 / dpi。
+            bool scaleChanged = Math.Abs(scale - _lastLayoutScale) > 0.001f
+                || Math.Abs(dpi - _lastDpiScale) > 0.001f
+                || vpWi != _lastVpW || vpHi != _lastVpH;
+            if (force || _plan == null || scaleChanged)
+            {
+                EnsureFonts(scale);
+                _lastLayoutScale = scale;
+                _lastDpiScale = dpi;
+                _lastVpW = vpWi;
+                _lastVpH = vpHi;
+                // 基准行高保持浮点（12×1.25×scale，如 576 高 → 10，864 高 → 15）——
+                // 行内更大 run 字号按 CSS line box 逐行抬高，取整只发生在矩形上。
+                float lineH = NativeTooltipLayout.FontPxBase
+                    * NativeTooltipLayout.LineHeightEm * scale;
+                int insetPx = Math.Max(1, (int)Math.Round(NativeTooltipLayout.ViewportInsetBase * dpi));
+                int gapPx = (int)Math.Round(NativeTooltipLayout.AnchorGapBase * dpi);
+                int leftClear = placementAnchor.Left - gapPx - (viewport.Left + insetPx);
+                int rightClear = (viewport.Right - insetPx) - placementAnchor.Right - gapPx;
+                int clearWidthPx = Math.Max(0, Math.Max(leftClear, rightClear));
+                var previous = _plan;
+                _plan = NativeTooltipLayout.ComputePlan(
+                    _doc, CreateLayoutMeasure(), lineH, scale, vpWi, vpHi,
+                    _inspectionState, dpi, _layoutOptions, clearWidthPx);
+                _offsetPx = previous?.Target == _plan.Target ? Math.Min(_offsetPx, _plan.MaxOffsetPx) : 0;
+                readingChanged = previous != null && (previous.Target != _plan.Target
+                    || previous.MaxOffsetPx != _plan.MaxOffsetPx
+                    || previous.ScrollViewportRect.Size != _plan.ScrollViewportRect.Size);
+                SyncFadeElements();
+                anchorChanged = true;
+            }
+            if (_plan == null) return;
             if (anchorChanged || _placedRect.IsEmpty)
             {
                 string side;
@@ -1791,6 +1791,12 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     bool wantMirror = !_plan.Stacked && side == "left";
                     if (wantMirror != _plan.Mirrored) _plan.MirrorHorizontally();
                 }
+            }
+            if (readingChanged && !_notifyingReadingGeometry)
+            {
+                _notifyingReadingGeometry = true;
+                try { ReadingGeometryChanged?.Invoke(); }
+                finally { _notifyingReadingGeometry = false; }
             }
         }
 

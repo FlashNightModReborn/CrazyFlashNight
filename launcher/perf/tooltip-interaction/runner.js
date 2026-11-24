@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const {chromium} = require('playwright');
 const {startServer, stopServer} = require('../lib/server.js');
+const {currentSamples, runReading} = require('./reading');
 
 const ROOT = path.resolve(__dirname, '..', '..', '..');
 const LAUNCHER = path.join(ROOT, 'launcher');
@@ -97,6 +98,7 @@ async function trajectory(page, name, indices, waitMs) {
 }
 
 async function runBrowserAudit(page) {
+    await page.evaluate(() => PanelTooltip.setLayoutPreset('legacy339'));
     const checks = [];
     const record = (name, evidence) => checks.push({name,pass:true,evidence});
 
@@ -180,6 +182,7 @@ async function runBrowserAudit(page) {
     });
 
     await page.evaluate(() => document.documentElement.style.removeProperty('--cf7-overlay-scale'));
+    await page.evaluate(() => PanelTooltip.setLayoutPreset('tier14'));
     await reset(page, {inspectionDelay:1000,longContent:true});
     await moveToTile(page, 0, {wait:80});
     let state = await snapshot(page);
@@ -402,6 +405,407 @@ async function runBrowserAudit(page) {
     return {passed:checks.length,total:checks.length,checks};
 }
 
+function layoutSnapshot() {
+    const el = PanelTooltip.getElement();
+    const rich = el.querySelector('.flash-tt-rich');
+    const side = el.querySelector('.flash-tt-side');
+    const intro = el.querySelector('.flash-tt-intro-panel');
+    const rail = el.querySelector('.flash-tt-rail');
+    const icon = el.querySelector('.flash-tt-icon');
+    const viewports = [...el.querySelectorAll('[data-tooltip-reading-viewport]')];
+    const viewport = viewports[0];
+    const panels = [...el.querySelectorAll('.flash-tt-intro-panel,.flash-tt-desc,.flash-tt-sub-panel,.flash-tt-suffix')];
+    const columns = [...el.querySelectorAll('.flash-tt-side-col')];
+    const scrollers = [...el.querySelectorAll('*')].filter(node =>
+        /^(auto|scroll)$/.test(getComputedStyle(node).overflowY) && node.scrollHeight > node.clientHeight + 1);
+    const shell = el.getBoundingClientRect();
+    const bounds = viewport && viewport.getBoundingClientRect();
+    const state = PanelTooltip.debugState();
+    const inset = el.dataset.layoutPreset === 'legacy339' || state.pinned ? 7.5 : 8 - 1 / 64;
+    const offset = viewport ? viewport.scrollTop : 0;
+    const max = viewport ? viewport.scrollHeight - viewport.clientHeight : 0;
+    const tails = panels.map(panel => {
+        const walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT);
+        let last = null;
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            if (node.textContent.trim()) last = node;
+        }
+        if (!last) return {seen:true};
+        const range = document.createRange();
+        const end = last.textContent.trimEnd().length;
+        range.setStart(last, end - 1);
+        range.setEnd(last, end);
+        return {range, clip:viewport && viewport.contains(last) ? bounds : shell, seen:false};
+    });
+    function visitTails() {
+        for (const tail of tails) {
+            if (tail.seen) continue;
+            const box = tail.range.getBoundingClientRect();
+            tail.seen = box.height > 0 && box.top >= tail.clip.top - 1 && box.bottom <= tail.clip.bottom + 1
+                && box.left >= tail.clip.left - 1 && box.right <= tail.clip.right + 1;
+        }
+    }
+    if (viewport) {
+        const step = Math.max(1, Math.floor(viewport.clientHeight * 0.65));
+        for (let top = 0; top < max; top += step) {
+            viewport.scrollTop = top;
+            visitTails();
+        }
+        viewport.scrollTop = max;
+    }
+    visitTails();
+    const bottom = viewport ? viewport.scrollTop : 0;
+    if (viewport) viewport.scrollTop = offset;
+    const introLines = [...el.querySelectorAll('.flash-tt-intro-line')].map(node => ({
+        text:node.textContent, full:node.classList.contains('flash-tt-intro-line--full'),
+        top:node.offsetTop, left:node.offsetLeft
+    }));
+    const rowGroups = [...el.querySelectorAll('.flash-tt-attach-rows')].map(group => ({
+        kind:group.dataset.rowKind, packed:group.classList.contains('flash-tt-attach-rows--2col'),
+        gap:getComputedStyle(group).rowGap,
+        rows:[...group.children].map(row => ({
+            full:row.classList.contains('flash-tt-attach-row--full'),
+            top:row.offsetTop, left:row.offsetLeft,
+            effect:row.querySelector('.flash-tt-attach-effect')
+                ? getComputedStyle(row.querySelector('.flash-tt-attach-effect')).display : null
+        }))
+    }));
+    return {
+        preset:el.dataset.layoutPreset, state, pointer:getComputedStyle(el).pointerEvents,
+        width:side ? side.offsetWidth : 0, introWidth:intro ? intro.offsetWidth : 0,
+        iconWidth:icon ? icon.firstElementChild.getBoundingClientRect().width : 0,
+        introText:intro ? intro.textContent : '', text:rich ? rich.textContent : el.textContent,
+        introLines, rowGroups,
+        columnLeft:columns.map(col => col.getBoundingClientRect().left),
+        columnCounts:columns.map(col => col.children.length),
+        introLeft:intro && intro.getBoundingClientRect().left, railLeft:rail && rail.getBoundingClientRect().left,
+        stacked:!!(rich && rich.classList.contains('flash-tt-rich--stacked')),
+        scrollBox:viewport && viewport.className, viewportCount:viewports.length,
+        nested:scrollers.filter(node => node !== viewport).length,
+        height:viewport && viewport.clientHeight, max, bottom,
+        unseen:tails.flatMap((tail, i) => tail.seen ? [] : [panels[i].textContent.slice(-26)]),
+        inside:shell.left >= inset && shell.top >= inset
+            && shell.right <= innerWidth - inset && shell.bottom <= innerHeight - inset
+    };
+}
+
+async function runLayoutAudit(page) {
+    const keys = ['wholeSideWidth','noSubOneWidthShrink','unclampSingleSideHeight',
+        'balanceWidth','compactRows','compactIntro','twoColumnSide'];
+    const presets = {legacy339:0,tier12:4,tier13:6,tier14:7};
+    const section = (role, text) => ({role,runs:[{text}]});
+    const lines = (prefix, count) => Array.from({length:count}, (_, i) => prefix + (i + 1)).join('\n');
+    const child = name => ({name,depth:1});
+    const effect = text => ({depth:1,runs:[{text}]});
+    const doc = (title, sections, extra = {}) => ({version:1, title, profile:'dense', layoutType:'wide', sections, ...extra});
+    const read = () => page.evaluate(layoutSnapshot);
+    const preset = name => page.evaluate(name => PanelTooltip.setLayoutPreset(name), name);
+    async function viewport(width, height) {
+        await page.setViewportSize({width,height});
+        await page.evaluate(() => {
+            document.documentElement.style.setProperty('--cf7-overlay-scale', String(innerHeight / 864));
+            window.dispatchEvent(new Event('resize'));
+        });
+    }
+    async function show(document, options = {}) {
+        await page.evaluate(({document,options}) => window.__tooltipHarness.showDocument(document, options), {document,options});
+        return read();
+    }
+    function assertReading(snapshot, target) {
+        assert(snapshot.state.readingTarget === target && snapshot.viewportCount === 1
+            && snapshot.nested === 0 && snapshot.inside && snapshot.unseen.length === 0
+            && Math.abs(snapshot.max - snapshot.bottom) <= 1,
+        'single closed reading viewport with every panel tail reachable', snapshot);
+    }
+    const defaults = await page.evaluate(() => PanelTooltip.getLayoutOptions());
+    assert(keys.every(key => defaults[key] === true), 'production defaults to tier14', defaults);
+    const samples = currentSamples().filter(sample => ['战术手电','三蝶手稿'].includes(sample.id));
+    const sampleWidths = [];
+    for (const [w,h] of [[1024,576],[1067,600]]) {
+        await viewport(w,h);
+        for (const sample of samples) {
+            await preset('legacy339');
+            const legacy = await show(sample.document);
+            await preset('tier12');
+            const next = await read();
+            assert(next.width >= 200 && next.width > legacy.width && next.text === legacy.text,
+                sample.id + ' side width and full text', {legacy,next});
+            assertReading(next, 'side');
+            sampleWidths.push({id:sample.id,viewport:[w,h],legacy:legacy.width,tier12:next.width});
+        }
+    }
+
+    await viewport(1024, 576);
+    const single = doc('单框', [section('intro','短内容'),section('description',lines('短句',32))]);
+    const split = {chrome:{splitMode:'split'}};
+    await preset('legacy339');
+    const clamped = await show(single, split);
+    await preset('tier12');
+    const unclamped = await read();
+    assert(clamped.max > 0 && clamped.height <= 576 * .7 && unclamped.max === 0,
+        'single side can use the full height budget', {clamped,unclamped});
+    assert(unclamped.width === 280, 'short logical lines stay at the default width', unclamped);
+    assertReading(unclamped, 'side');
+    const subOnly = await show(doc('纯子框', [section('intro','简介'),section('sub','短子框')]));
+    assert(subOnly.width === 200, 'sub-only side preserves the readable width floor', subOnly);
+    const balanced = await show(doc('二分扩宽', [
+        section('intro','压缩验证'), section('description','字'.repeat(1200))
+    ]), {chrome:{splitMode:'split'}, point:{clientX:40, clientY:180}});
+    assert(balanced.width > 420 && balanced.width < 560 && balanced.max === 0,
+        'Mode A chooses an intermediate width that fits the height budget', balanced);
+    const belowBalance = await page.$eval('.flash-tt-side', side => {
+        const width = side.style.width;
+        side.style.width = (side.offsetWidth - 16) + 'px';
+        const overflows = side.scrollHeight > side.clientHeight;
+        side.style.width = width;
+        return overflows;
+    });
+    assert(belowBalance, 'Mode A converges within 16 px of a width that overflows', balanced);
+    assertReading(balanced, 'side');
+    const acquisition = await show(doc('来源估宽', [
+        section('intro','简介'),
+        {role:'sub',kind:'acquisition',title:'商店',rows:[child('W'.repeat(38))]}
+    ]), {point:{clientX:40, clientY:180}});
+    const acquisitionFits = await page.$eval('.flash-tt-attach-name', node => {
+        return node.offsetHeight <= parseFloat(getComputedStyle(node).lineHeight) + 1;
+    });
+    assert(acquisition.width > 420 && acquisition.width <= 560 && acquisitionFits,
+        'acquisition can use the wider tier to fit its longest unbroken row', acquisition);
+
+    // 锚点感知无碰撞宽度预算（W_clear）：中段悬停大注释不得撑破两翼走廊导致 clamp 盖回鼠标/当前格
+    const midArmorDoc = doc('中段防具避让', [
+        section('intro', '防具 下装装备\n$200000\n强化等级：13 (+204%)\n等级限制：45\n重量：12kg\n防御：1520'),
+        section('description', '【五件套组件】' + '高功率机动组件与承力框架说明文案。'.repeat(28)),
+        {role:'sub', kind:'acquisition', title:'获取方式', rows:[
+            {name:'合成'}, child('书中配给 ($100000 + 9000K)'), {name:'K点商城'}, child('A兵团官方周边直营店(6000K)')
+        ]}
+    ]);
+    const midRailGunDoc = doc('中段带书签霰弹枪', [
+        section('intro', '$163800\n等级限制：21\n重量：8.5kg\n弹夹容量：8\n射速：4发/秒'),
+        section('description', '第一防线留下的封闭改装方案。'.repeat(16)),
+        section('sub', lines('【主动战技】将霰弹枪展开为枪盾冲撞推进，期间获得减伤与抗打断。', 12)),
+        {role:'sub', kind:'acquisition', title:'获取方式', rows:[{name:'合成'}, child('铁枪会 ($1000)')]}
+    ], {rail:['长枪','霰弹枪']});
+    await preset('tier14');
+    const midCheck = await page.evaluate(({midArmorDoc, midRailGunDoc}) => {
+        function makeSlot(left, top, width, height) {
+            var el = document.createElement('button');
+            el.type = 'button';
+            el.style.cssText = 'position:fixed;margin:0;padding:0;border:0;left:' + left + 'px;top:' + top
+                + 'px;width:' + width + 'px;height:' + height + 'px;z-index:1;';
+            document.body.appendChild(el);
+            return el;
+        }
+        var armorSlot = makeSlot(460, 200, 55, 54);
+        var bagSlot = makeSlot(595, 210, 50, 50);
+        try {
+            var armorHtml = PanelTooltip.buildItemRichHtml({document:midArmorDoc, layoutType:'wide'});
+            PanelTooltip.showAtMouse(armorHtml, {
+                clientX:488, clientY:227, target:armorSlot, currentTarget:armorSlot
+            }, null, {profile:'dense-inspect', placement:'left'});
+            var armorState = PanelTooltip.debugState();
+            var armorRect = PanelTooltip.getElement().getBoundingClientRect();
+
+            var gunHtml = PanelTooltip.buildItemRichHtml({document:midRailGunDoc, layoutType:'wide'});
+            PanelTooltip.showAtMouse(gunHtml, {
+                clientX:620, clientY:235, target:bagSlot, currentTarget:bagSlot
+            }, null, {profile:'dense-inspect', placement:'left'});
+            var gunState = PanelTooltip.debugState();
+            var gunRect = PanelTooltip.getElement().getBoundingClientRect();
+
+            // 模拟异步 basic → rich updateContent 刷新：先小占位锁左，再换完整文档应自动避让右侧不盖鼠标
+            var asyncOwner = {};
+            PanelTooltip.showAtMouse('<div class="kshop-tt-header"><b>加载中</b></div>', {
+                clientX:488, clientY:227, target:armorSlot, currentTarget:armorSlot
+            }, asyncOwner, {profile:'dense-inspect', placement:'left'});
+            PanelTooltip.updateContentDocument(midArmorDoc, asyncOwner, {layoutType:'wide'});
+            var asyncState = PanelTooltip.debugState();
+            var asyncRect = PanelTooltip.getElement().getBoundingClientRect();
+
+            return {
+                armor:{state:armorState, width:armorRect.width, left:armorRect.left, right:armorRect.right},
+                gun:{state:gunState, width:gunRect.width, left:gunRect.left, right:gunRect.right},
+                async:{state:asyncState, width:asyncRect.width, left:asyncRect.left, right:asyncRect.right}
+            };
+        } finally {
+            armorSlot.remove();
+            bagSlot.remove();
+        }
+    }, {midArmorDoc, midRailGunDoc});
+    assert(midCheck.armor.state.lastPlacement.pointerOverlap === 0
+        && midCheck.armor.state.lastPlacement.anchorOverlap === 0
+        && midCheck.armor.state.lastPlacement.insideViewport
+        && midCheck.armor.state.lastPlacement.placement === 'right'
+        && midCheck.armor.width <= 491.5 && midCheck.armor.state.sideColumns === 1,
+    'mid-screen armor slot shrinks to right W_clear corridor with zero pointer/anchor overlap', midCheck.armor);
+    assert(midCheck.gun.state.lastPlacement.pointerOverlap === 0
+        && midCheck.gun.state.lastPlacement.anchorOverlap === 0
+        && midCheck.gun.state.lastPlacement.insideViewport
+        && midCheck.gun.state.lastPlacement.placement === 'left'
+        && midCheck.gun.width <= 577.5,
+    'mid-screen rail gun backpack slot shrinks to left W_clear corridor with zero pointer/anchor overlap', midCheck.gun);
+    assert(midCheck.async.state.lastPlacement.pointerOverlap === 0
+        && midCheck.async.state.lastPlacement.anchorOverlap === 0
+        && midCheck.async.state.lastPlacement.insideViewport
+        && midCheck.async.state.lastPlacement.placement === 'right',
+    'async basic-to-rich updateContent preserves zero pointer/anchor overlap', midCheck.async);
+
+    await viewport(1280, 600);
+    const subject = doc('满改多子框', [
+        section('intro','等级：40\n重量:8kg\n固有结构：加长导轨\n威力：50\n射速：3.7\n$460000\n命中：20%\n禁止挂点：枪口'),
+        {role:'description',kind:'upgrades',title:'升阶路线',rows:[
+            {name:'升自'},child('元件甲'),child('元件乙'),child('元件丙'),child('很长材料'.repeat(12)),child('升阶尾行')
+        ],runs:[{text:'回退内容不可双显'}]},
+        {role:'sub',kind:'attachments',title:'已安装配件',rows:[
+            {name:'灯具',runs:[{text:'短效果'}]}, {name:'镜头',runs:[{text:'多行效果\n配件尾行'}]}
+        ]},
+        {role:'sub',kind:'modinfo',title:'配件信息',rows:[
+            {name:'属性'},effect('威力 +5'),effect('重量 -2'),effect('落单一'),
+            {name:'说明'},effect('长行描述'.repeat(15)),effect('短行一\n短行二'),effect('插件信息尾行')
+        ]},
+        section('sub',lines('战技效果 ',44)),
+        {role:'sub',kind:'acquisition',title:'获取方式',rows:[
+            {name:'商店'}, child('市集'), child('工坊'), child('很长来源'.repeat(12)), child('来源尾行')
+        ]},
+        section('sub',lines('安装限制 ',43))
+    ], {rail:['长枪','狙击步枪'],magazine:{name:'专用弹夹',ammo:'穿甲弹'}});
+    const chrome = {splitMode:'split', iconPlaceholder:'<div class="flash-tt-icon-placeholder"></div>',
+        iconFootHTML:'图标尾注', suffix:'底条尾行'};
+    const options = {chrome,point:{clientX:1260,clientY:220},placement:'left'};
+    await preset('tier14');
+    const tied = await show(doc('三块等高', [
+        section('intro','简介'), ...['甲','乙','丙'].map(name => section('sub',lines(name,26)))
+    ]));
+    assert(tied.state.sideColumns === 2 && tied.columnCounts.join() === '2,1',
+        'an equal-height cut keeps the heavier column on the left', tied);
+    const noGain = await show(doc('双列收益不足', [
+        section('intro','简介'),section('sub','字'.repeat(3200)),section('sub','很短')
+    ]));
+    assert(noGain.state.sideColumns === 1 && noGain.max > 0, 'an unbalanced split must retain one column', noGain);
+    assertReading(noGain, 'side');
+    const wide = await show(subject, options);
+    assertReading(wide, 'side');
+    assert(wide.state.sideColumns === 2 && wide.max > 0 && wide.pointer === 'none'
+        && wide.state.lastPlacement.placement === 'left'
+        && wide.columnLeft[0] < wide.columnLeft[1] && wide.columnLeft[1] < wide.introLeft
+        && wide.introLeft < wide.railLeft,
+    'full mod overflow has one two-column viewport and retains left-mirror reading order', wide);
+    assert(wide.introLines.length === 8 && wide.introLines.map(line => line.full).join() === 'false,false,true,false,false,true,true,true'
+        && wide.introLines[0].top === wide.introLines[1].top && wide.introLines[0].left < wide.introLines[1].left,
+    'intro only pairs consecutive short attributes', wide.introLines);
+    const rowMasks = {
+        upgrades:'true,false,false,true,true,true',
+        modinfo:'true,false,false,true,true,true,true,true',
+        acquisition:'true,false,false,true,true'
+    };
+    for (const group of wide.rowGroups.filter(group => group.kind !== 'attachments')) {
+        assert(group.packed && group.rows.map(row => row.full).join() === rowMasks[group.kind]
+            && group.rows[1].top === group.rows[2].top && group.rows[1].left < group.rows[2].left,
+        'structured rows pair only when both consecutive children fit', group);
+    }
+    assert(wide.rowGroups.find(group => group.kind === 'attachments').rows.map(row => row.effect).join() === 'inline,block',
+        'single-line attachment effect flows inline and multiline stays block', wide.rowGroups);
+    assert(!wide.text.includes('回退内容不可双显') && wide.text.includes('专用弹夹') && wide.text.includes('图标尾注'),
+        'chrome and structured body stay complete without fallback duplication', wide.text);
+
+    const modHierarchy = await show(doc('配件层级', [
+        section('intro', '等级：40'),
+        section('description', lines('用于撑开侧框宽度以触发双列子行打包的常规描述文案，确保净宽超过双列门槛。', 4)),
+        {role:'sub', kind:'modinfo', title:'配件信息', rows:[
+            {name:'【基础效果】'}, effect('威力 +5'), effect('重量 -2'),
+            effect('【按装备类型追加效果】'), effect('对 装备类型：长枪：'),
+            effect('  切手技重量系数 → 5'), effect('  切手技冲击力 ×5'),
+            effect('  【技能效果】'), effect('  灰蛊蚀刻'),
+            effect('    18格，每格易伤+1%'), effect('    持续5秒')
+        ]}
+    ]), split);
+    const modGroup = modHierarchy.rowGroups.find(group => group.kind === 'modinfo');
+    assert(modGroup && modGroup.packed
+        && modGroup.rows.map(row => row.full).join() === 'true,false,false,true,true,false,false,true,true,false,false'
+        && modGroup.rows[1].top === modGroup.rows[2].top && modGroup.rows[1].left < modGroup.rows[2].left
+        && modGroup.rows[5].top === modGroup.rows[6].top && modGroup.rows[5].left < modGroup.rows[6].left
+        && modGroup.rows[9].top === modGroup.rows[10].top && modGroup.rows[9].left < modGroup.rows[10].left,
+    'modinfo keeps headings, colon branches, and parent rows full width while pairing same-indent siblings', modGroup);
+    // Restore subject so subsequent preset-switch assertions verify against `wide`.
+    await show(subject, options);
+
+    for (const name of Object.keys(presets).concat('tier14','tier13','tier14')) {
+        await preset(name);
+        const next = await read();
+        assert(next.preset === name && keys.every((key,i) => next.state.layoutOptions[key] === (i < presets[name])),
+            'preset flags round trip', next.state);
+        assert(next.introText === wide.introText && next.text === wide.text
+            && next.state.sideColumns === (name === 'tier14' ? 2 : 1)
+            && next.columnCounts.join() === (name === 'tier14' ? wide.columnCounts.join() : '')
+            && (name === 'tier14' || name === 'tier13' ? next.introLines.length === 8 : next.introLines.length === 0),
+        'preset switching restores DOM and then recomputes layout', next);
+        assertReading(next, 'side');
+    }
+    const legacyAt600 = await (async () => { await preset('legacy339'); return read(); })();
+    assert(Math.abs(wide.iconWidth - 144 * 600 / 864) <= 1
+        && Math.abs(legacyAt600.iconWidth - 192 * 600 / 864) <= 1 && wide.introWidth > legacyAt600.introWidth,
+    'short viewport shrinks the wide icon with no text-width shrink', {wide,legacyAt600});
+    await preset('tier14');
+    await page.evaluate(() => {
+        const copy = PanelTooltip.getLayoutOptions();
+        copy.compactRows = false;
+        if (!PanelTooltip.getLayoutOptions().compactRows || PanelTooltip.setLayoutPreset('invalid')) throw Error('layout API');
+        PanelTooltip.setLayoutOptions({twoColumnSide:false,compactIntro:false});
+    });
+    const custom = await read();
+    assert(custom.preset === 'custom' && custom.state.sideColumns === 1 && custom.introLines.length === 0,
+        'independent boolean overrides', custom);
+    await preset('tier14');
+    await viewport(390,600);
+    const narrow = await read();
+    assert(narrow.stacked && narrow.state.sideColumns === 1 && narrow.text === wide.text, 'resize restores stacked DOM', narrow);
+    assertReading(narrow, 'whole');
+    await viewport(1280,600);
+    await page.evaluate(({subject,chrome}) => PanelTooltip.updateContentDocument(subject, null, chrome), {subject,chrome});
+    const restored = await read();
+    assert(restored.columnCounts.join() === wide.columnCounts.join() && restored.text === wide.text
+        && restored.introLines.length === wide.introLines.length, 'resize and updateContent recreate the same packing', restored);
+    assertReading(restored, 'side');
+    await viewport(1280,660);
+    const tall = await read();
+    assert(Math.abs(tall.iconWidth - 192 * 660 / 864) <= 1, 'wide icon restored at 660 CSS px', tall);
+
+    await reset(page, {inspectionDelay:60,projection:{document:subject,chrome}});
+    await moveToTile(page, 0);
+    await page.waitForFunction(() => PanelTooltip.debugState().inspectionState === 'inspect');
+    const wheelPosition = () => page.evaluate(() => ({
+        offset:PanelTooltip.debugState().offset,
+        top:[...document.querySelectorAll('.flash-tt-side-col')].map(node => node.getBoundingClientRect().top),
+        host:document.querySelector('#scroll-host').scrollTop
+    }));
+    const beforeWheel = await wheelPosition();
+    await page.mouse.wheel(0, 180);
+    await page.waitForFunction(offset => PanelTooltip.debugState().offset > offset, beforeWheel.offset);
+    const afterWheel = await wheelPosition();
+    const movement = afterWheel.offset - beforeWheel.offset;
+    assert(afterWheel.top.length === 2 && afterWheel.top.every((top,i) => Math.abs(beforeWheel.top[i] - top - movement) <= 1)
+        && afterWheel.host === beforeWheel.host, 'owner wheel scrolls both columns by the same offset', {beforeWheel,afterWheel});
+
+    const pinned = await show(subject, {chrome,pinned:true});
+    assert(pinned.state.sideColumns === 1 && !pinned.introLines.length && pinned.pointer === 'auto',
+        'pinned uses its usual flow and accepts input', pinned);
+    assertReading(pinned, 'pinned');
+    await page.evaluate(() => {
+        PanelTooltip.hide();
+        window.__tooltipHarness.showSimple();
+    });
+    const simple = await read();
+    assert(simple.state.profile === 'simple-tooltip' && simple.pointer === 'auto' && simple.viewportCount === 0,
+        'simple stays a short composite-hover tooltip', simple);
+    await viewport(1366,768);
+    await page.evaluate(() => {
+        PanelTooltip.hide();
+        document.documentElement.style.removeProperty('--cf7-overlay-scale');
+    });
+    return {sampleWidths, fullHeight:unclamped.height, balancedWidth:balanced.width,
+        fullMod:{columns:wide.columnCounts, scrollRange:wide.max}, presets:Object.keys(presets), pinned:true,simple:true};
+}
+
 async function run() {
     const staticResult = staticAudit();
     const executablePath = edgePath();
@@ -414,9 +818,11 @@ async function run() {
     try {
         await page.goto(server.url + 'perf/tooltip-interaction/fixture.html', {waitUntil:'load'});
         await page.waitForFunction(() => window.__tooltipHarnessReady === true);
+        const layout = await runLayoutAudit(page);
         const browserResult = await runBrowserAudit(page);
+        const reading = await runReading(browser, server.url);
         assert(pageErrors.length === 0, 'browser page errors', pageErrors);
-        return {browser:'edge',executablePath,static:staticResult,browserResult,pageErrors};
+        return {browser:'edge',executablePath,static:staticResult,layout,browserResult,reading,pageErrors};
     } finally {
         await browser.close();
         await stopServer(server);

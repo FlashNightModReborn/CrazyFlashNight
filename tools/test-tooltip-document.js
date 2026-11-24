@@ -1001,4 +1001,68 @@ test('describe：诊断串含 rail 与 magazine 身份', () => {
     assert(s.indexOf('11 号弹夹') >= 0, '弹夹名进诊断：' + s);
 });
 
+test('升阶路线保留第 17 到 64 行，仅实际超限时标记截断', () => {
+    function normalized(count, extra) {
+        const rows = Array.from({length:count}, (_, i) => ({name:'升阶材料' + (i + 1)}));
+        return Doc.normalize({version:1, sections:[{role:'description',kind:'upgrades',rows:rows.concat(extra || [])}]});
+    }
+    const exact = normalized(64, [{name:' '}]);
+    assert.strictEqual(exact.sections[0].rows[16].name, '升阶材料17');
+    assert.strictEqual(exact.sections[0].rows[63].name, '升阶材料64');
+    assert(!exact.truncated);
+    const overflow = normalized(65);
+    assert.strictEqual(overflow.sections[0].rows.length, 64);
+    assert(overflow.truncated);
+    const rows = Array.from({length:64}, (_, i) => ({
+        name:'材料-' + i + '-尾', depth:1, runs:[{text:'效果-' + i + '-尾'}]
+    }));
+    const html = Doc.buildHtml({version:1, title:'升阶',
+        sections:[{role:'description', kind:'upgrades', rows, runs:[{text:'回退正文'}]}]});
+    for (const i of [16, 63]) {
+        assert(html.includes(rows[i].name));
+        assert.strictEqual(html.split(rows[i].runs[0].text).length - 1, 1);
+    }
+    assert(!html.includes('回退正文'));
+});
+
+test('排版骨架：结构化小节分组，短配件效果可同行，多行效果保留换行', () => {
+    const html = Doc.buildHtml({version:1, sections:[
+        {role:'description', kind:'upgrades', rows:[{name:'零件', depth:1}]},
+        {role:'sub', kind:'attachments', title:'已安装配件', rows:[
+            {name:'短效果', runs:[{text:'单行增益'}]},
+            {name:'长效果', runs:[{text:'多行首行\n多行尾行'}]}
+        ], runs:[{text:'不可双显'}]},
+        {role:'sub', kind:'modinfo', rows:[{name:'限制'}, {depth:1,runs:[{text:'侧导轨'}]}]},
+        {role:'sub', kind:'acquisition', rows:[{name:'商店'}, {name:'前治安官', depth:1}]}
+    ]}, {splitMode:'split'});
+    for (const kind of ['upgrades', 'attachments', 'modinfo', 'acquisition']) {
+        assert(html.includes('class="flash-tt-attach-rows" data-row-kind="' + kind + '"'));
+    }
+    assert.strictEqual((html.match(/flash-tt-attach-row--inline-effect/g) || []).length, 1);
+    assert(/flash-tt-attach-row--inline-effect[^>]*>[\s\S]*?短效果[\s\S]*?单行增益/.test(html));
+    assert(html.includes('多行首行<br>多行尾行'));
+    assert(!html.includes('不可双显'));
+});
+
+test('排版骨架：split 主栏属性独立于标题、扩展内容和弹夹，merge 原序保留', () => {
+    const doc = {
+        version:1, title:'主栏标题', magazine:{name:'测试弹夹'},
+        sections:[
+            {role:'intro', runs:[{text:'等级：40\n重量：8kg\n固有结构：延长导轨', bold:true}]},
+            {role:'description', runs:[{text:'描述尾行'}]}
+        ]
+    };
+    const opts = {splitMode:'split', metaHTML:'<div>扩展内容</div>', iconFootHTML:'图标尾注', suffix:'底条'};
+    const html = Doc.buildHtml(doc, opts);
+    assert(/class="ntt-title">[^]*?主栏标题[^]*?<\/div><span class="flash-tt-intro-lines">/.test(html));
+    assert(html.includes('<b>等级：40<br>重量：8kg<br>固有结构：延长导轨</b>'));
+    assert(html.indexOf('固有结构') < html.indexOf('扩展内容'));
+    assert(html.indexOf('扩展内容') < html.indexOf('测试弹夹'));
+    assert(html.indexOf('图标尾注') < html.indexOf('主栏标题'));
+    assert(html.indexOf('描述尾行') < html.indexOf('底条'));
+    const merged = Doc.buildHtml(doc, {...opts, splitMode:'merge'});
+    assert(!merged.includes('flash-tt-intro-lines'));
+    assert(merged.indexOf('扩展内容') < merged.indexOf('描述尾行'));
+});
+
 console.log('\n' + passed + ' tests passed');

@@ -27,6 +27,14 @@ internal static class ParityFixture
         string outDir = Arg(args, "--out", true);
         string repo = Arg(args, "--repo", false)
             ?? Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", ".."));
+        var layoutOptions = (Arg(args, "--layout-preset", false) ?? "tier14") switch
+        {
+            "legacy339" => NativeTooltipLayout.LayoutOptions.Legacy339,
+            "tier12" => NativeTooltipLayout.LayoutOptions.Tier12,
+            "tier13" => NativeTooltipLayout.LayoutOptions.Tier13,
+            "tier14" => NativeTooltipLayout.LayoutOptions.Tier14,
+            _ => throw new ArgumentException("--layout-preset must be legacy339, tier12, tier13 or tier14")
+        };
         Directory.CreateDirectory(outDir);
 
         RuntimeFontCatalog.Configure(repo);
@@ -68,6 +76,7 @@ internal static class ParityFixture
             float scenarioDpiScale = 1f;
             using (NativeTooltipWidget widget = new NativeTooltipWidget(anchor, icons, () => scenarioDpiScale))
             {
+                widget.LayoutOptions = layoutOptions;
                 foreach (JObject sample in samples)
                 {
                     foreach (JObject scenario in scenarios)
@@ -120,17 +129,16 @@ internal static class ParityFixture
         for (int i = 0; i < scrollLines; i++) widget.ScrollByLines(1);
 
         // 滚动可达性：逐项推进到底，验证 MaxScrollLine 真实可达。
-        int requestedScrollOffset = widget.ScrollLineOffset;
+        int requestedScrollOffset = widget.ScrollOffsetPx;
         bool reachBottom = true;
-        int guard = 0;
         if (widget.Scrollable)
         {
-            while (widget.ScrollLineOffset < widget.MaxScrollLine && guard++ < 512)
+            while (widget.ScrollOffsetPx < widget.MaxScrollOffsetPx)
                 if (!widget.ScrollByLines(1)) break;
-            reachBottom = widget.ScrollLineOffset == widget.MaxScrollLine;
+            reachBottom = widget.ScrollOffsetPx == widget.MaxScrollOffsetPx;
             // 与 Web 的读后恢复一致：可达性探针不得改变待截图的请求滚动位置。
-            widget.ScrollByLines(requestedScrollOffset - widget.ScrollLineOffset);
-            if (widget.ScrollLineOffset != requestedScrollOffset)
+            widget.ScrollToOffset(requestedScrollOffset);
+            if (widget.ScrollOffsetPx != requestedScrollOffset)
                 throw new InvalidOperationException("Scroll reachability probe did not restore the requested offset");
         }
 
@@ -167,7 +175,8 @@ internal static class ParityFixture
                 ["stacked"] = plan.Stacked,
                 ["pinned"] = plan.Pinned,
                 ["plain"] = plan.Plain,
-                ["wide"] = plan.LayoutWide
+                ["wide"] = plan.LayoutWide,
+                ["sideColumns"] = plan.SideColumns
             },
             ["text"] = new JObject
             {
@@ -178,6 +187,11 @@ internal static class ParityFixture
             ["scroll"] = new JObject
             {
                 ["scrollable"] = widget.Scrollable,
+                ["target"] = plan?.Target.ToString(),
+                ["contentHeight"] = plan?.ContentHeightPx ?? 0,
+                ["viewportHeight"] = plan?.ScrollViewportRect.Height ?? 0,
+                ["offset"] = widget.ScrollOffsetPx,
+                ["maxOffset"] = widget.MaxScrollOffsetPx,
                 ["totalLines"] = plan != null ? plan.DescTotalLines : 0,
                 ["visibleLines"] = plan != null ? plan.DescVisibleLines : 0,
                 ["scrollLine"] = widget.ScrollLineOffset,
@@ -260,7 +274,7 @@ internal static class ParityFixture
     {
         var arr = new JArray();
         if (lines == null) return arr;
-        foreach (var vl in lines)
+        foreach (var vl in NativeTooltipLayout.InReadingOrder(lines))
         {
             if (vl.IsBlank) continue;
             var sb = new StringBuilder();

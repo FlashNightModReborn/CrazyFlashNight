@@ -23,3 +23,5 @@ pinned inspector chrome (default title, Esc hint chip, description filling the s
 width instead of a per-item estimated inline width), and suppression of native arrow
 buttons and the 15px system gutter. The
 fixture uses production DOM/CSS; it does not mock `PanelTooltip`.
+
+运行 runner.js 还会用装备配件格的生产绑定检查当前引擎样本和分栏、堆叠、长主框。浏览器发送实际滚轮和键盘事件，逐段核对最后一个字符进入视口。战术手电的两条商店发现记录由 fixture 注入。

@@ -75,3 +75,5 @@ node launcher/perf/tooltip-audit/runner.js
 浏览器审计可用 `node launcher/perf/tooltip-audit/runner.js --corpus <本轮新鲜语料.json> --out <独立证据目录>` 指定输入与输出；无参数保留历史默认路径。指定独立输出避免覆盖较早审计证据。
 
 需要真实升阶与获取方式文案时，在导出命令加 `-IncludeContext`：额外加载正式 crafting、shops、kshop 与 arena 静态目录，构建 SynthesisIndex / ItemObtainIndex 后再进入相同分帧泵。默认不开启，便于与历史基础语料复验。该模式不读取玩家存档、不伪造动态掉落/任务发现记录；任一必需目录失败即终止导出。
+
+浮动注释的可读性字段来自当前阅读视口。readingTarget、contentHeight、viewportHeight 和 offset 以 CSS 像素描述整列或整框。历史物品变体语料沿用原生成口径。

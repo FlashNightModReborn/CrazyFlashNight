@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><base href="/web/">
+<link rel="stylesheet" href="css/game-ui-behavior.css"><link rel="stylesheet" href="css/overlay.css">
+<link rel="stylesheet" href="css/panels.css"><style>
+html,body {margin:0;height:100%}
+#outer {position:fixed;left:65%;top:66%;width:120px;height:150px;overflow:auto;pointer-events:auto}
+#owner {width:80px;height:70px;display:block}
+#more {height:900px}
+</style></head><body>
+<div id="outer"><button id="owner">配件</button><div id="more"></div></div>
+<!-- reading.js locks the #339 baseline, including the original flashlight overflow. -->
+<div id="panel-tooltip" data-layout-preset="legacy339" style="display:none" aria-hidden="true"></div>
+<script>document.documentElement.style.setProperty('--cf7-overlay-scale', String(Math.max(.25, innerHeight/864)));</script>
+<script src="modules/asset-timeline.js"></script><script src="modules/icons.js"></script>
+<script src="modules/tooltip-document.js"></script><script src="modules/tooltip.js"></script>
+<script src="modules/item-filter.js"></script><script src="modules/equipment-tuning-model.js"></script>
+<script src="modules/equipment-tuning-render.js"></script></body></html>
+

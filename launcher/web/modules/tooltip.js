@@ -23,6 +23,75 @@ var PanelTooltip = (function() {
     var DEFAULT_INSPECTION_MOVE_TOLERANCE = 8;
     var DEFAULT_INSPECTION_SPEED = 0.45;
 
+    var LAYOUT_TIERS = {
+        wholeSideWidth: 1,
+        noSubOneWidthShrink: 1,
+        unclampSingleSideHeight: 1,
+        balanceWidth: 2,
+        compactRows: 3,
+        compactIntro: 3,
+        twoColumnSide: 4
+    };
+    var LAYOUT_PRESETS = {legacy339: 0, tier12: 2, tier13: 3, tier14: 4};
+    var _layoutPreset = 'tier14';
+    var _layoutOptions = optionsForPreset(_layoutPreset);
+    var _layoutExplicit = false;
+    var _sideColumns = 1;
+    var _introOriginalNodes = new WeakMap();
+
+    function optionsForPreset(name) {
+        var options = {};
+        Object.keys(LAYOUT_TIERS).forEach(function(key) {
+            options[key] = LAYOUT_TIERS[key] <= LAYOUT_PRESETS[name];
+        });
+        return options;
+    }
+
+    function getLayoutOptions() {
+        return Object.assign({}, _layoutOptions);
+    }
+
+    function applyLayoutOptions() {
+        if (!_el) return;
+        _el.setAttribute('data-layout-preset', _layoutPreset);
+        ['noSubOneWidthShrink', 'compactRows', 'compactIntro'].forEach(function(key) {
+            var attr = 'data-tt-' + key.replace(/[A-Z]/g, function(c) { return '-' + c.toLowerCase(); });
+            if (_layoutOptions[key]) _el.setAttribute(attr, '');
+            else _el.removeAttribute(attr);
+        });
+        if (_layoutOptions.wholeSideWidth || _layoutOptions.balanceWidth) {
+            _el.setAttribute('data-tt-measure-side', '');
+        } else {
+            _el.removeAttribute('data-tt-measure-side');
+        }
+        refreshReadingGeometry();
+        if (_visible && _lastAnchor) positionAnchored(_lastAnchor);
+        else if (_visible && _lastEvt) positionAtMouse(_lastEvt);
+    }
+
+    function setLayoutPreset(name) {
+        if (!Object.prototype.hasOwnProperty.call(LAYOUT_PRESETS, name)) return false;
+        _layoutExplicit = true;
+        _layoutPreset = name;
+        _layoutOptions = optionsForPreset(name);
+        applyLayoutOptions();
+        return true;
+    }
+
+    function setLayoutOptions(partial) {
+        if (!partial) return getLayoutOptions();
+        Object.keys(LAYOUT_TIERS).forEach(function(key) {
+            if (typeof partial[key] === 'boolean') _layoutOptions[key] = partial[key];
+        });
+        _layoutExplicit = true;
+        _layoutPreset = Object.keys(LAYOUT_PRESETS).find(function(name) {
+            var preset = optionsForPreset(name);
+            return Object.keys(preset).every(function(key) { return preset[key] === _layoutOptions[key]; });
+        }) || 'custom';
+        applyLayoutOptions();
+        return getLayoutOptions();
+    }
+
     var _el = null;
     var _visible = false;
     // Optional ownership token used by async/focus bindings. It prevents a
@@ -204,10 +273,13 @@ var PanelTooltip = (function() {
         return _interactionOwner != null && _interactionOwner === _owner ? _interactionHandlers : null;
     }
 
-    function scrollableDescription() {
+    var _readingNode = null;
+    var _readingKind = '';
+
+    function scrollableViewport() {
         if (!_el) return null;
-        var desc = _el.querySelector('.flash-tt-desc, .kshop-tt-desc');
-        return desc && desc.scrollHeight > desc.clientHeight + 1 ? desc : null;
+        return _visible && _readingNode && _readingNode.scrollHeight > _readingNode.clientHeight + 1
+            ? _readingNode : null;
     }
 
     function inspectionLabel(state) {
@@ -276,7 +348,8 @@ var PanelTooltip = (function() {
     function replaceTooltipContent(html) {
         if (!_el) return;
         if (_profile !== PROFILE_PINNED) {
-            _el.innerHTML = html;
+            _el.innerHTML = html && html.indexOf('flash-tt-rich') >= 0
+                ? '<div class="panel-tooltip-reading-body">' + html + '</div>' : html;
             ensureInspectionStatus();
             return;
         }
@@ -319,25 +392,132 @@ var PanelTooltip = (function() {
         body.innerHTML = html;
     }
 
-    function scrollDescriptionBy(delta, consumeAtBoundary) {
-        var desc = scrollableDescription();
+    function scrollReadingBy(delta, consumeAtBoundary) {
+        var desc = scrollableViewport();
         if (!desc || !isFinite(Number(delta)) || Number(delta) === 0) return false;
         var before = desc.scrollTop;
         desc.scrollTop += Number(delta);
         return consumeAtBoundary || desc.scrollTop !== before;
     }
 
-    function refreshScrollableState() {
-        if (!_el) return false;
-        var desc = _el.querySelector('.flash-tt-desc, .kshop-tt-desc');
-        var scrollable = !!(desc && desc.scrollHeight > desc.clientHeight + 1);
-        _el.classList.toggle('panel-tooltip-scrollable', scrollable);
-        if (desc) {
-            desc.classList.toggle('flash-tt-desc--scrollable', scrollable);
-            if (scrollable) desc.setAttribute('aria-label', '完整物品说明，可用滚轮或 PageUp、PageDown 滚动');
-            else desc.removeAttribute('aria-label');
+    function layoutReading(previousKind, previousOffset) {
+        if (!_el || !_visible) return;
+        var oldNode = _readingNode;
+        if (previousKind == null) {
+            previousKind = _readingKind;
+            previousOffset = oldNode ? oldNode.scrollTop : 0;
         }
-        return scrollable;
+        var rich = _el.querySelector('.flash-tt-rich');
+        var body = _el.querySelector('.panel-tooltip-reading-body');
+        var desc = _el.querySelector('.flash-tt-desc, .kshop-tt-desc');
+        _sideColumns = 1;
+        var node = desc, kind = 'description';
+        if (_pinned) {
+            node = _el.querySelector('.panel-tooltip-inspector-body');
+            kind = 'pinned';
+        } else if (rich && body) {
+            var stage = _el.closest && _el.closest('[data-tooltip-viewport]');
+            var bounds = stage && stage.getBoundingClientRect();
+            var stageScale = stage ? bounds.width / stage.clientWidth || 1 : 1;
+            var vw = stage ? stage.clientWidth : window.innerWidth;
+            var width = Math.max(1, vw - 2 * VIEWPORT_INSET);
+            var viewportHeight = stage ? stage.clientHeight : window.innerHeight;
+            var height = Math.max(1, viewportHeight - 2 * VIEWPORT_INSET
+                - (_profile === PROFILE_DENSE ? 30 : 0)); // 状态条最大高度 23px，底部间距 7px。
+            if (viewportHeight < 660) _el.setAttribute('data-tt-short-viewport', '');
+            else _el.removeAttribute('data-tt-short-viewport');
+            _el.style.setProperty('--tt-reading-width', width + 'px');
+            _el.setAttribute('data-reading-target', 'measure');
+            rich.classList.remove('flash-tt-rich--stacked');
+            var side = rich.querySelector('.flash-tt-side');
+            var intro = rich.querySelector('.flash-tt-intro-panel');
+            var rail = rich.querySelector('.flash-tt-rail');
+            unwrapSideColumns(side);
+            resetIntroRows(intro);
+            var rowGroups = collectSideRows(side);
+            var railStyle = rail && getComputedStyle(rail);
+            var railMargins = rail
+                ? (parseFloat(railStyle.marginRight) || 0)
+                    + (_layoutPreset !== 'legacy339' ? (parseFloat(railStyle.marginLeft) || 0) : 0)
+                : 0;
+            var railWidth = rail ? rail.offsetWidth + railMargins : 0;
+            var richGap = parseFloat(getComputedStyle(rich).columnGap) || 0;
+            var mainWidth = railWidth + (intro ? intro.offsetWidth : 0) + richGap;
+            var mainExactWidth = (rail ? rail.getBoundingClientRect().width / stageScale + railMargins : 0)
+                + (intro ? intro.getBoundingClientRect().width / stageScale : 0) + richGap;
+            var clearTotalW = activeClearWidth(vw, stage, bounds, stageScale);
+            var viewportSideAvail = Math.floor(width - mainWidth);
+            var sideBudgetAvail = clearTotalW != null
+                ? Math.min(viewportSideAvail, Math.max(scaledWidth(200), Math.floor(clearTotalW - Math.ceil(mainExactWidth))))
+                : viewportSideAvail;
+            var measureSuffix = function() { return Math.max(0, body.offsetHeight - rich.offsetHeight); };
+            var layoutSide = side && (_layoutOptions.wholeSideWidth || _layoutOptions.balanceWidth);
+            if (layoutSide) {
+                sizeSide(side, desc, rowGroups, sideBudgetAvail,
+                    function() { return Math.max(1, height - measureSuffix()); });
+            } else {
+                applyDescWidth();
+                packSideRows(rowGroups);
+            }
+            var naturalWidth = mainWidth + (side ? side.offsetWidth : desc ? desc.offsetWidth : 0);
+            var stacked = naturalWidth > width;
+            rich.classList.toggle('flash-tt-rich--stacked', stacked);
+            if (stacked) packSideRows(rowGroups);
+            if (_layoutOptions.compactIntro && intro && rich.getAttribute('data-layout') !== 'narrow'
+                    && !rich.classList.contains('flash-tt-rich--merge')) packIntroRows(intro);
+            var suffixHeight = measureSuffix();
+            var mainHeight = Math.max(intro ? intro.offsetHeight : 0, rail ? rail.offsetHeight : 0);
+            var heightBudget = Math.max(1, height - suffixHeight);
+            if (_layoutOptions.twoColumnSide && side && !stacked && mainHeight <= heightBudget) {
+                var maxTooltipW = Math.min(width, Math.max(scaledWidth(860), Math.round(width * 0.82)));
+                if (clearTotalW != null) maxTooltipW = Math.min(maxTooltipW, clearTotalW);
+                _sideColumns = packSideColumns(side, rowGroups, heightBudget, Math.floor(maxTooltipW - Math.ceil(mainExactWidth)));
+                suffixHeight = measureSuffix();
+                heightBudget = Math.max(1, height - suffixHeight);
+            }
+            if (stacked || mainHeight + suffixHeight > height || (!side && !desc)) {
+                node = body;
+                kind = 'whole';
+            } else if (side) {
+                node = side;
+                kind = 'side';
+                height = heightBudget;
+                if (!_layoutOptions.unclampSingleSideHeight && side.children.length === 1) {
+                    height = Math.min(height, 520, window.innerHeight * 0.7);
+                }
+            } else {
+                height = heightBudget;
+            }
+            _el.style.setProperty('--tt-reading-height', height + 'px');
+        }
+        _readingKind = node ? kind : '';
+        _readingNode = node;
+        _el.setAttribute('data-reading-target', _readingKind);
+        // A classic scrollbar can reduce the final column width by a few pixels.
+        if (rowGroups) packSideRows(rowGroups);
+        if (oldNode && oldNode !== node) {
+            oldNode.removeAttribute('data-tooltip-reading-viewport');
+            oldNode.classList.remove('flash-tt-desc--scrollable');
+            oldNode.removeAttribute('aria-label');
+            oldNode.scrollTop = 0;
+        }
+        if (node) node.scrollTop = previousKind === kind ? (previousOffset || 0) : 0;
+        var scrollable = !!scrollableViewport();
+        _el.classList.toggle('panel-tooltip-scrollable', scrollable);
+        if (node) {
+            node.setAttribute('data-tooltip-reading-viewport', kind);
+            node.classList.toggle('flash-tt-desc--scrollable', scrollable);
+            if (scrollable) node.setAttribute('aria-label', '完整物品说明，可用滚轮或 PageUp、PageDown 滚动');
+            else node.removeAttribute('aria-label');
+        }
+    }
+
+    function refreshReadingGeometry() {
+        if (!_visible) return;
+        var couldScroll = _el.classList.contains('panel-tooltip-scrollable');
+        layoutReading();
+        var interaction = activeInteraction();
+        if (couldScroll !== !!scrollableViewport() && interaction && interaction.contentChanged) interaction.contentChanged();
     }
 
     // ── COMMON native_interaction tooltip document 适配 ──
@@ -469,6 +649,12 @@ var PanelTooltip = (function() {
         ensureDocumentModule();
         _el = document.getElementById('panel-tooltip');
         if (_el) {
+            var initialPreset = _el.getAttribute('data-layout-preset');
+            if (!_layoutExplicit && Object.prototype.hasOwnProperty.call(LAYOUT_PRESETS, initialPreset)) {
+                _layoutPreset = initialPreset;
+                _layoutOptions = optionsForPreset(initialPreset);
+            }
+            applyLayoutOptions();
             _el.setAttribute('role', 'tooltip');
             _el.setAttribute('aria-hidden', _visible ? 'false' : 'true');
             // enter 只能表示几何命中发生变化；必须等 move 真正落在浮层上才确认交互。
@@ -487,7 +673,7 @@ var PanelTooltip = (function() {
                 scheduleHoverHide();
             });
             _el.addEventListener('wheel', function(event) {
-                if (scrollDescriptionBy(event.deltaY, _profile === PROFILE_PINNED)) {
+                if (scrollReadingBy(event.deltaY, _profile === PROFILE_PINNED)) {
                     event.preventDefault();
                     event.stopPropagation();
                 }
@@ -500,6 +686,12 @@ var PanelTooltip = (function() {
                 document.addEventListener('mousedown', notePointerInput, true);
             }
             document.addEventListener('keydown', noteKeyboardInput, true);
+            window.addEventListener('resize', function() {
+                if (!_visible) return;
+                refreshReadingGeometry();
+                if (_lastAnchor) positionAnchored(_lastAnchor);
+                else if (_lastEvt) positionAtMouse(_lastEvt);
+            });
         }
     }
 
@@ -551,20 +743,19 @@ var PanelTooltip = (function() {
         _el.setAttribute('aria-hidden', 'false');
         _visible = true;
         _lastAnchor = null;
-        // 双面板模式：给 desc 写 inline width（port AS2 estimateMainWidth）。
-        // 内容只在 setText 时变，鼠标移动不需要重算 → 放 showAtMouse 阶段。
-        applyDescWidth();
-        refreshScrollableState();
-        if (e) {
-            _lastEvt = {
-                clientX: e.clientX,
-                clientY: e.clientY,
-                anchor: opts.anchor || e.currentTarget || e.target || null
-            };
+        _lastEvt = e ? {
+            clientX: e.clientX,
+            clientY: e.clientY,
+            anchor: opts.anchor || e.currentTarget || e.target || null
+        } : null;
+        // 双面板模式：结合当前锚点无碰撞走廊宽与文本估宽排版；
+        // 内容只在 show/updateContent/resize 时变化，鼠标移动不重算。
+        layoutReading('', 0);
+        if (_lastEvt) {
             positionAtMouse(_lastEvt);
             // Safety net：覆盖 async 加载源（字体 swap / icon 图加载 / 外部资源）
             var pointerPosition = _lastEvt;
-            scheduleReposition(function() { positionAtMouse(pointerPosition); }, _showGen);
+            scheduleReposition(function() { if (_lastEvt) positionAtMouse(_lastEvt); }, _showGen);
         }
         return true;
     }
@@ -583,7 +774,7 @@ var PanelTooltip = (function() {
     function scheduleReposition(reposition, gen) {
         function alive() { return _visible && _showGen === gen; }
         function run() {
-            if (alive()) reposition();
+            if (alive()) { refreshReadingGeometry(); reposition(); }
         }
         // Tier 0: 字体 ready
         if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === 'function') {
@@ -621,11 +812,6 @@ var PanelTooltip = (function() {
     // 2) estimateMainWidth — 默认沿用 sqrt 公式，但阅读宽度不超过 280；
     //    总显示权重超过 900（约 450 个汉字）或默认窄栏实际折行超过 18 行才扩到 420。
     //
-    // 不实现 AS2 balanceWidth modeA 二分（依赖 Flash TextField 实测）— 实测 Playwright
-    // fixture (launcher/perf/tooltip-regression/) 显示 ppu=6.0 即可让 mainW 偏差 p50=9，
-    // mainBgH 偏差 p50=42（box-model 系统偏移 12 + 字号渲染偏差），比改前 mainW=+381 巨大改善。
-    // 后续如需精细，可在 fixture 跑 --sweep-ppu 重新调 ppu 常量。
-    //
     // ⚠️ 跨语言常量同步：以下数值与 TooltipConstants.as 一一对应，AS2 端改了 web 端必须同步：
     //   TT_PIX_PER_UNIT     ↔ TooltipConstants.PIX_PER_UNIT          (6.0)
     //   TT_LINE_HEIGHT      ↔ TooltipConstants.LINE_HEIGHT            (15)
@@ -640,15 +826,16 @@ var PanelTooltip = (function() {
     var TT_RATIO_MIN = 0.618, TT_RATIO_MAX = 1.5, TT_RATIO_SCORE_CAP = 300;
     var TT_MAX_LINES = 32, TT_LINE_GUTTER = 20, TT_MIN_W = 150;
     var TT_DEFAULT_W = 280, TT_MAX_W = 420;
+    var TT_BALANCE_MAX_W = 560;
     var TT_EXPAND_SCORE = 900, TT_EXPAND_LINES = 18;
 
-    function htmlScoresBoth(s) {
+    function htmlScoresBoth(s, plainText) {
         if (!s) return { total: 0, maxLine: 0, lineCount: 1 };
         var i = 0, n = s.length;
         var total = 0, lineScore = 0, maxLine = 0, lineCount = 1;
         while (i < n) {
             var c = s.charCodeAt(i);
-            if (c === 60) {  // '<'
+            if (!plainText && c === 60) {  // '<'
                 var c1 = s.charCodeAt(i + 1);
                 var c2 = s.charCodeAt(i + 2);
                 if ((c1 === 66 || c1 === 98) && (c2 === 82 || c2 === 114)) {
@@ -685,6 +872,9 @@ var PanelTooltip = (function() {
         if (scores.total <= 0) return TT_MIN_W;
         if (scores.total > TT_EXPAND_SCORE
                 || Math.max(scores.lineCount, renderedLineCount || 0) > TT_EXPAND_LINES) {
+            if (_layoutOptions.balanceWidth) {
+                return Math.max(TT_DEFAULT_W, Math.min(TT_MAX_W, scores.maxLine * TT_PIX_PER_UNIT + 28));
+            }
             return TT_MAX_W;
         }
         var t = scores.total / TT_RATIO_SCORE_CAP;
@@ -707,8 +897,13 @@ var PanelTooltip = (function() {
         return isFinite(value) && value > 0 ? value : 1;
     }
 
+    function textScale() {
+        var scale = overlayScale();
+        return _layoutOptions.noSubOneWidthShrink ? Math.max(1, scale) : scale;
+    }
+
     function scaledWidth(value) {
-        return Math.max(1, Math.round(value * overlayScale()));
+        return Math.max(1, Math.round(value * textScale()));
     }
 
     function renderedTextLineCount(panel) {
@@ -718,6 +913,264 @@ var PanelTooltip = (function() {
         if (!(lineHeight > 0)) return 0;
         var verticalPadding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
         return Math.max(1, Math.round((panel.scrollHeight - verticalPadding) / lineHeight));
+    }
+
+    function markRowPairs(rows, fits, fullClass, canPairWith) {
+        var paired = false;
+        for (var i = 0; i < rows.length; i++) {
+            if (i + 1 < rows.length && fits(rows[i], i) && fits(rows[i + 1], i + 1)
+                    && (!canPairWith || canPairWith(rows[i], rows[i + 1], i))) {
+                rows[i].classList.remove(fullClass);
+                rows[++i].classList.remove(fullClass);
+                paired = true;
+            } else {
+                rows[i].classList.add(fullClass);
+            }
+        }
+        return paired;
+    }
+
+    function leadingIndentCount(text) {
+        if (!text) return 0;
+        var count = 0;
+        for (var i = 0; i < text.length; i++) {
+            var ch = text.charAt(i);
+            if (ch === ' ' || ch === '\u00a0') count++;
+            else if (ch === '\u3000') count += 2;
+            else break;
+        }
+        return count;
+    }
+
+    function isModInfoHeadingOrParent(rows, index) {
+        var row = rows[index];
+        var raw = row ? (row.textContent || '') : '';
+        var trimmed = raw.trim();
+        if (!trimmed || trimmed.charAt(0) === '【' || /[：:]$/.test(trimmed)) return true;
+        var indent = leadingIndentCount(raw);
+        var next = index + 1 < rows.length ? rows[index + 1] : null;
+        if (next && next.classList.contains('flash-tt-attach-row--child')
+                && !next.querySelector('.flash-tt-attach-name')) {
+            if (leadingIndentCount(next.textContent || '') > indent) return true;
+        }
+        return false;
+    }
+
+    function resetIntroRows(intro) {
+        var source = intro && intro.querySelector('.flash-tt-intro-lines');
+        var original = source && _introOriginalNodes.get(source);
+        if (!original) return;
+        source.classList.remove('flash-tt-intro-lines--2col');
+        source.replaceChildren.apply(source, original);
+        _introOriginalNodes.delete(source);
+    }
+
+    function packIntroRows(intro) {
+        var source = intro.querySelector('.flash-tt-intro-lines');
+        if (!source || !/[：:]/.test(source.textContent) || !source.querySelector('br')) return;
+        // Legacy Web HTML can contain block components and controls. Only split styled inline text.
+        if (source.querySelector(':not(span, b, strong, i, em, u, s, br, svg, svg *)')) return;
+        var halfW = Math.floor((source.parentNode.clientWidth - scaledWidth(6)) / 2);
+        var original = Array.from(source.childNodes);
+        var range = document.createRange();
+        range.selectNodeContents(source);
+        var lines = [];
+        function addLine() {
+            var line = document.createElement('span');
+            line.className = 'flash-tt-intro-line';
+            line.appendChild(range.cloneContents());
+            lines.push(line);
+        }
+        source.querySelectorAll('br').forEach(function(br) {
+            range.setEndAfter(br);
+            addLine();
+            range.setEnd(source, original.length);
+            range.setStartAfter(br);
+        });
+        if (!range.collapsed) addLine();
+        source.classList.add('flash-tt-intro-lines--measuring');
+        source.replaceChildren.apply(source, lines);
+        var paired = markRowPairs(lines, function(line) {
+            var text = line.textContent.trim();
+            return /[：:]/.test(text) && !/^(固有结构|禁止挂点)/.test(text)
+                && parseFloat(getComputedStyle(line).width) <= halfW;
+        }, 'flash-tt-intro-line--full');
+        source.classList.remove('flash-tt-intro-lines--measuring');
+        if (paired) {
+            _introOriginalNodes.set(source, original);
+            source.classList.add('flash-tt-intro-lines--2col');
+        } else {
+            source.replaceChildren.apply(source, original);
+        }
+    }
+
+    function collectSideRows(side) {
+        if (!side) return [];
+        var groups = [];
+        side.querySelectorAll('.flash-tt-attach-rows').forEach(function(group) {
+            var kind = group.getAttribute('data-row-kind');
+            if (kind !== 'modinfo' && kind !== 'upgrades' && kind !== 'acquisition') return;
+            group.classList.remove('flash-tt-attach-rows--2col');
+            var rows = Array.from(group.children);
+            rows.forEach(function(row) { row.classList.remove('flash-tt-attach-row--full'); });
+            if (_layoutOptions.compactRows) groups.push({group: group, kind: kind, rows: rows, widths: null});
+        });
+        return groups;
+    }
+
+    function packSideRows(groups) {
+        if (!groups.length) return;
+        var minWidth = 300 * textScale();
+        var gap = scaledWidth(8);
+        groups.forEach(function(info) {
+            var group = info.group;
+            var innerW = group.clientWidth;
+            if (innerW < minWidth) {
+                group.classList.remove('flash-tt-attach-rows--2col');
+                info.rows.forEach(function(row) { row.classList.remove('flash-tt-attach-row--full'); });
+                return;
+            }
+            if (!info.widths) {
+                group.classList.remove('flash-tt-attach-rows--2col');
+                group.classList.add('flash-tt-attach-rows--measuring');
+                info.widths = new Map();
+                info.rows.forEach(function(row) {
+                    if (!row.classList.contains('flash-tt-attach-row--child') || row.querySelector('br')) return;
+                    if (info.kind === 'modinfo' && row.querySelector('.flash-tt-attach-name')) return;
+                    info.widths.set(row, parseFloat(getComputedStyle(row).width));
+                });
+                group.classList.remove('flash-tt-attach-rows--measuring');
+            }
+            var indent = parseFloat(getComputedStyle(group).getPropertyValue('--tt-attach-row-indent')) || 0;
+            var halfW = Math.floor((innerW - indent - gap) / 2);
+            var paired = markRowPairs(info.rows, function(row, idx) {
+                if (!(info.widths.get(row) <= halfW)) return false;
+                if (info.kind === 'modinfo' && isModInfoHeadingOrParent(info.rows, idx)) return false;
+                return true;
+            }, 'flash-tt-attach-row--full', info.kind === 'modinfo' ? function(a, b) {
+                return leadingIndentCount(a.textContent || '') === leadingIndentCount(b.textContent || '');
+            } : null);
+            group.classList.toggle('flash-tt-attach-rows--2col', paired);
+        });
+    }
+
+    function setSideWidth(side, width, groups) {
+        side.style.width = width + 'px';
+        packSideRows(groups);
+    }
+
+    function scoreSide(panels) {
+        var score = {total: 0, maxLine: 0, lineCount: (panels.length - 1) * 2};
+        panels.forEach(function(panel) {
+            var current = htmlScoresBoth(panel.innerText, true);
+            score.total += current.total;
+            score.lineCount += current.lineCount;
+            score.maxLine = Math.max(score.maxLine, current.maxLine);
+        });
+        return score;
+    }
+
+    function requiredAcquisitionWidth(side) {
+        var required = 0;
+        side.classList.add('flash-tt-side--measuring-acquisition');
+        side.querySelectorAll('.flash-tt-sub-panel--acquisition').forEach(function(panel) {
+            var style = getComputedStyle(panel);
+            var chrome = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
+                + parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
+            panel.querySelectorAll('.flash-tt-attach-row, .flash-tt-sub-title').forEach(function(row) {
+                var rowStyle = getComputedStyle(row);
+                required = Math.max(required, parseFloat(rowStyle.width) + parseFloat(rowStyle.marginLeft) + chrome);
+            });
+        });
+        side.classList.remove('flash-tt-side--measuring-acquisition');
+        return Math.ceil(required);
+    }
+
+    function sizeSide(side, desc, groups, availableSideWidth, getHeightBudget) {
+        var panels = Array.from(side.children);
+        if (!panels.length) return;
+        var scores = _layoutOptions.wholeSideWidth ? scoreSide(panels) : htmlScoresBoth((desc || side).innerHTML);
+        var minBase = _layoutOptions.wholeSideWidth && (panels.length > (desc ? 1 : 0) || scores.total >= 120)
+            ? 200 : TT_MIN_W;
+        // If the readable minimum cannot fit beside the intro, the caller switches to stacked.
+        var sideMaxAvail = Math.max(scaledWidth(minBase), availableSideWidth);
+        var normalCap = Math.min(scaledWidth(TT_MAX_W), sideMaxAvail);
+        var effectiveMax = _layoutOptions.balanceWidth
+            ? Math.min(scaledWidth(TT_BALANCE_MAX_W), sideMaxAvail) : normalCap;
+        var width = Math.min(normalCap, scaledWidth(Math.max(minBase, estimateMainWidth(scores))));
+        var required = requiredAcquisitionWidth(side);
+        side.style.width = Math.max(width, Math.min(effectiveMax, required)) + 'px';
+        var lineHeight = parseFloat(getComputedStyle(panels[0]).lineHeight) || TT_LINE_HEIGHT;
+        var renderedLines = _layoutOptions.wholeSideWidth ? Math.round(side.offsetHeight / lineHeight)
+            : desc ? renderedTextLineCount(desc) : panels.reduce(function(count, panel) {
+                return count + renderedTextLineCount(panel);
+            }, 0);
+        width = Math.max(width, Math.min(normalCap, scaledWidth(estimateMainWidth(scores, renderedLines))),
+            Math.min(effectiveMax, required));
+        setSideWidth(side, width, groups);
+        if (!_layoutOptions.balanceWidth || width >= effectiveMax || side.offsetHeight <= getHeightBudget()) return;
+        setSideWidth(side, effectiveMax, groups);
+        if (side.offsetHeight > getHeightBudget()) return;
+        var low = width, high = effectiveMax;
+        var tolerance = scaledWidth(16);
+        for (var probe = 0; probe < 4 && high - low > tolerance; probe++) {
+            var mid = Math.floor((low + high) / 2);
+            setSideWidth(side, mid, groups);
+            if (side.offsetHeight > getHeightBudget()) low = mid;
+            else high = mid;
+        }
+        setSideWidth(side, high, groups);
+    }
+
+    function unwrapSideColumns(side) {
+        if (!side || !side.classList.contains('flash-tt-side--2col')) return;
+        Array.from(side.children).forEach(function(column) {
+            while (column.firstChild) side.insertBefore(column.firstChild, column);
+            column.remove();
+        });
+        side.classList.remove('flash-tt-side--2col');
+        side.style.removeProperty('--tt-side-column-gap');
+    }
+
+    function packSideColumns(side, groups, heightBudget, twoColBudgetW) {
+        var panels = Array.from(side.children);
+        var singleColH = side.offsetHeight;
+        if (panels.length < 2 || singleColH <= heightBudget || twoColBudgetW < scaledWidth(540)) return 1;
+        var singleWidth = side.style.width;
+        var gap = scaledWidth(_layoutOptions.compactRows ? 4 : 6);
+        var colW = Math.min(scaledWidth(380), Math.floor((twoColBudgetW - gap) / 2));
+        setSideWidth(side, colW, groups);
+        var heights = panels.map(function(panel) { return panel.offsetHeight; });
+        var total = heights.reduce(function(sum, h) { return sum + h; }, 0);
+        var prefix = 0, bestCut = 1, bestHeight = Infinity, bestLeftHeavy = false, bestDiff = Infinity;
+        for (var cut = 1; cut < panels.length; cut++) {
+            prefix += heights[cut - 1];
+            var h1 = prefix + (cut - 1) * gap;
+            var h2 = total - prefix + (panels.length - cut - 1) * gap;
+            var height = Math.max(h1, h2), diff = Math.abs(h1 - h2), leftHeavy = h1 >= h2;
+            if (height < bestHeight || height === bestHeight
+                    && (leftHeavy === bestLeftHeavy ? diff < bestDiff : leftHeavy)) {
+                bestCut = cut;
+                bestHeight = height;
+                bestLeftHeavy = leftHeavy;
+                bestDiff = diff;
+            }
+        }
+        if (bestHeight > heightBudget && bestHeight >= singleColH - scaledWidth(48)) {
+            side.style.width = singleWidth;
+            packSideRows(groups);
+            return 1;
+        }
+        side.style.width = (2 * colW + gap) + 'px';
+        side.style.setProperty('--tt-side-column-gap', gap + 'px');
+        side.classList.add('flash-tt-side--2col');
+        [panels.slice(0, bestCut), panels.slice(bestCut)].forEach(function(items) {
+            var column = document.createElement('div');
+            column.className = 'flash-tt-side-col';
+            side.appendChild(column);
+            items.forEach(function(panel) { column.appendChild(panel); });
+        });
+        return 2;
     }
 
     // 侧栏宽度：有描述栏时整列与描述栏同宽（子框 stretch 到同一宽度）；只有
@@ -774,20 +1227,20 @@ var PanelTooltip = (function() {
         }
         var scores = htmlScoresBoth(descPanel.innerHTML);
         var w = scaledWidth(estimateMainWidth(scores));
-        descPanel.style.width = w + 'px';
+        (side || descPanel).style.width = w + 'px';
         var expandedW = scaledWidth(estimateMainWidth(scores, renderedTextLineCount(descPanel)));
         if (expandedW > w) {
             w = expandedW;
-            descPanel.style.width = w + 'px';
+            (side || descPanel).style.width = w + 'px';
         }
         // 侧栏先取 desc 的实际 border-box，再在这个约束下测量不可折行子框；
         // 只有内容确实溢出时才加宽整列，不能把子框初始铺满宽度当成需求。
-        var sideW = descPanel.offsetWidth || w;
+        var sideW = (side || descPanel).offsetWidth || w;
         if (side) side.style.width = sideW + 'px';
         var required = requiredSubPanelWidth(side);
         if (required > sideW) {
             sideW = required;
-            descPanel.style.width = sideW + 'px';
+            if (!side) descPanel.style.width = sideW + 'px';
         }
         if (side) side.style.width = sideW + 'px';
     }
@@ -827,6 +1280,13 @@ var PanelTooltip = (function() {
         return Math.max(minimum, Math.min(value, maximum));
     }
 
+    function clampToPixelInset(value, extent, size, scale) {
+        var max = Math.max(VIEWPORT_INSET, extent - size - VIEWPORT_INSET);
+        var firstPixel = Math.ceil(VIEWPORT_INSET * scale) / scale;
+        var lastPixel = Math.floor(max * scale) / scale;
+        return firstPixel <= lastPixel ? clamp(value, firstPixel, lastPixel) : clamp(value, VIEWPORT_INSET, max);
+    }
+
     function overlapArea(a, b) {
         var width = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
         var height = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
@@ -844,6 +1304,25 @@ var PanelTooltip = (function() {
         var x = Number(pointer && pointer.clientX) || 0;
         var y = Number(pointer && pointer.clientY) || 0;
         return {left:x, right:x, top:y, bottom:y, width:0, height:0};
+    }
+
+    // 锚点感知的无碰撞单侧走廊宽度：保证 Tier 1–4 扩宽与双侧列不会把浮层撑破
+    // 锚点左右两翼空间而被视口 clamp 推回鼠标/当前格上方；legacy339 与 pinned 不启用。
+    function activeClearWidth(vw, stage, bounds, scale) {
+        if (_pinned || _layoutPreset === 'legacy339') return null;
+        if (!(_layoutOptions.wholeSideWidth || _layoutOptions.balanceWidth || _layoutOptions.twoColumnSide)) return null;
+        if (!_lastAnchor && !_lastEvt) return null;
+        var pointer = _lastAnchor ? null : _lastEvt;
+        var anchorEl = _lastAnchor || (_lastEvt && _lastEvt.anchor) || null;
+        var anchorRect = anchorRectOf(anchorEl, pointer);
+        if (stage && bounds) {
+            anchorRect = rectAt((anchorRect.left - bounds.left) / scale, (anchorRect.top - bounds.top) / scale,
+                anchorRect.width / scale, anchorRect.height / scale);
+        }
+        var leftClear = Math.floor(anchorRect.left - ANCHOR_GAP - VIEWPORT_INSET);
+        var rightClear = Math.floor(vw - VIEWPORT_INSET - anchorRect.right - ANCHOR_GAP);
+        var clear = Math.max(leftClear, rightClear);
+        return clear > 0 ? clear : 0;
     }
 
     function normalizePlacement(value) {
@@ -899,18 +1378,6 @@ var PanelTooltip = (function() {
         var vw = stage ? stage.clientWidth : window.innerWidth;
         var vh = stage ? stage.clientHeight : window.innerHeight;
         var rich = _el.querySelector('.flash-tt-rich');
-        if (rich) {
-            var descPanel = rich.querySelector('.flash-tt-desc');
-            if (descPanel) {
-                descPanel.style.marginTop = '';
-                descPanel.style.height = '';
-            }
-            rich.classList.remove('flash-tt-rich--stacked');
-            var wideRect = _el.getBoundingClientRect();
-            if (wideRect.width / scale > vw - VIEWPORT_INSET * 2) {
-                rich.classList.add('flash-tt-rich--stacked');
-            }
-        }
         var tooltipRect = _el.getBoundingClientRect();
         var tw = tooltipRect.width / scale || 1;
         var th = tooltipRect.height / scale || 1;
@@ -970,6 +1437,11 @@ var PanelTooltip = (function() {
         if (!isFinite(deviceScale) || deviceScale <= 0) deviceScale = 1;
         x = Math.round(x * deviceScale) / deviceScale;
         y = Math.round(y * deviceScale) / deviceScale;
+        // Pixel alignment at the viewport edge must round toward the available area.
+        if (rich && !_pinned && _layoutPreset !== 'legacy339') {
+            x = clampToPixelInset(x, vw, tw, deviceScale);
+            y = clampToPixelInset(y, vh, th, deviceScale);
+        }
         _el.style.left = x + 'px';
         _el.style.top = y + 'px';
         _el.setAttribute('data-placement', best.name);
@@ -1040,8 +1512,7 @@ var PanelTooltip = (function() {
         // anchored 调用方传 rich html 时 desc 退回 CSS max-width:650 横铺。
         // 注意：anchored 不跑 positionAtMouse 的 desc marginTop/height 公式（依赖 mouseY），
         // desc 高度由内容自然撑开。
-        applyDescWidth();
-        refreshScrollableState();
+        layoutReading('', 0);
 
         // 定位：使用 transform 后的物理尺寸，并覆盖字体/图片迟到导致的尺寸变化。
         if (_lastAnchor) {
@@ -1099,9 +1570,10 @@ var PanelTooltip = (function() {
      */
     function updateContent(html, owner) {
         if (!_el || !_visible || (owner != null && _owner !== owner)) return false;
+        var previousKind = _readingKind;
+        var previousOffset = _readingNode ? _readingNode.scrollTop : 0;
         replaceTooltipContent(html);
-        applyDescWidth();
-        refreshScrollableState();
+        layoutReading(previousKind, previousOffset);
         var interaction = activeInteraction();
         if (interaction && interaction.contentChanged) interaction.contentChanged();
         if (_lastEvt) {
@@ -1110,7 +1582,7 @@ var PanelTooltip = (function() {
             // DOM 的额外回调；都用同一个 _lastEvt 跑 positionAtMouse，幂等。
             var pointerPosition = _lastEvt;
             positionAtMouse(pointerPosition);
-            scheduleReposition(function() { positionAtMouse(pointerPosition); }, _showGen);
+            scheduleReposition(function() { if (_lastEvt) positionAtMouse(_lastEvt); }, _showGen);
         } else if (_lastAnchor) {
             var anchoredElement = _lastAnchor;
             positionAnchored(anchoredElement);
@@ -1171,6 +1643,9 @@ var PanelTooltip = (function() {
         resetTooltipHover(true);
         clearInteraction(owner);
         _visible = false;
+        _readingNode = null;
+        _readingKind = '';
+        _sideColumns = 1;
         _owner = null;
         _pinned = false;
         _showGen++;                  // 让所有未 fire 的 reposition 回调失效
@@ -1414,7 +1889,7 @@ var PanelTooltip = (function() {
 
         var introContent;
         if (doSplit) {
-            introContent = intro + meta;
+            introContent = (intro ? '<span class="flash-tt-intro-lines">' + intro + '</span>' : '') + meta;
         } else {
             // merge 模式：把 desc 拼到 intro 末尾，对齐 AS2 用 <BR> 分隔的合并方式
             var sep = (intro || meta) && desc ? '<br><br>' : '';
@@ -1567,7 +2042,10 @@ var PanelTooltip = (function() {
             profile: _profile,
             inspectionState: _inspectionState,
             pinned: _pinned,
-            scrollable: !!scrollableDescription()
+            layoutOptions: getLayoutOptions(), sideColumns: _sideColumns,
+            readingTarget: _readingKind, contentHeight: _readingNode ? _readingNode.scrollHeight : 0,
+            viewportHeight: _readingNode ? _readingNode.clientHeight : 0, offset: _readingNode ? _readingNode.scrollTop : 0,
+            scrollable: !!scrollableViewport()
         };
     }
 
@@ -1840,7 +2318,7 @@ var PanelTooltip = (function() {
         function activateInspection(force) {
             if (profile !== PROFILE_DENSE || !isVisible(owner)
                     || (!force && !canOwnPointer(lastPointerEvent, true))) return false;
-            if (!scrollableDescription()) {
+            if (!scrollableViewport()) {
                 resetInspectionProjection();
                 return false;
             }
@@ -1857,7 +2335,7 @@ var PanelTooltip = (function() {
                     || !canOwnPointer(lastPointerEvent, true)) return;
             // basic 态尚未溢出时不播空进度；rich 回包替换 DOM 后 contentChanged 会按
             // 原始进入时刻补算剩余时间，已经停够 1s 则直接进入检视。
-            if (!scrollableDescription()) {
+            if (!scrollableViewport()) {
                 projectOwnerInspection('scan');
                 projectTooltipInspection('scan');
                 return;
@@ -1899,7 +2377,7 @@ var PanelTooltip = (function() {
 
         function onInspectionContentChanged() {
             if (profile !== PROFILE_DENSE || !isVisible(owner)) return;
-            if (inspecting && !scrollableDescription()) resetInspectionProjection();
+            if (inspecting && !scrollableViewport()) resetInspectionProjection();
             else refreshInspectionDwell();
         }
 
@@ -1911,7 +2389,7 @@ var PanelTooltip = (function() {
             else if (event.deltaMode === 2) delta *= Math.max(40, window.innerHeight * 0.8);
             // 检视态把整段 wheel gesture 明确归给说明文本；即使已经到边界也不把
             // 同一手势漏给宿主滚动区，避免一个滚轮动作同时滚两层。
-            if (scrollDescriptionBy(delta, true)) {
+            if (scrollReadingBy(delta, true)) {
                 event.preventDefault();
                 event.stopPropagation();
             }
@@ -2307,17 +2785,17 @@ var PanelTooltip = (function() {
                 }
             }
             if (!isVisible(owner)) return;
-            var desc = scrollableDescription();
+            var desc = scrollableViewport();
             if (!desc) return;
-            if (profile === PROFILE_DENSE) activateInspection(true);
-            var handled = true;
+            var beforeScroll = desc.scrollTop;
             var page = Math.max(40, Math.floor(desc.clientHeight * 0.8));
             if (e.key === 'PageDown') desc.scrollTop += page;
             else if (e.key === 'PageUp') desc.scrollTop -= page;
             else if (e.altKey && e.key === 'ArrowDown') desc.scrollTop += 40;
             else if (e.altKey && e.key === 'ArrowUp') desc.scrollTop -= 40;
-            else handled = false;
-            if (handled) {
+            else return;
+            if (profile === PROFILE_DENSE) activateInspection(true);
+            if (profile !== PROFILE_SIMPLE || beforeScroll !== desc.scrollTop) {
                 e.preventDefault();
                 e.stopPropagation();
             }
@@ -2477,6 +2955,9 @@ var PanelTooltip = (function() {
         createScope: createScope,
         releaseTree: releaseTree,
         debugState: debugState,
+        setLayoutPreset: setLayoutPreset,
+        setLayoutOptions: setLayoutOptions,
+        getLayoutOptions: getLayoutOptions,
         bindAsync: bindAsync,
         bindAsyncHover: bindAsyncHover,
         convertAS2Html: convertAS2Html,

@@ -45,6 +45,36 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
+        public void Dense_TwoColumnPointerMovesReusePlanAcrossMirroring()
+        {
+            using var anchor = new Control { Size = new Size(2200, 700) };
+            using var widget = new NativeTooltipWidget(anchor, null, () => 1f, () => 1f);
+            var payload = Payload("two-columns");
+            payload["x"] = 275;
+            var sections = (JArray)payload["document"]["sections"];
+            string rows = string.Join("\n", System.Linq.Enumerable.Repeat("Long subsection line", 52));
+            for (int i = 0; i < 4; i++)
+                sections.Add(new JObject { ["role"] = "sub", ["runs"] = new JArray(rows) });
+
+            Assert.True(widget.Show(payload));
+            var plan = widget.ActivePlan;
+            Assert.Equal(2, plan.SideColumns);
+            Assert.False(plan.Mirrored);
+            Assert.True(widget.ScrollToOffset(37));
+            for (int x = 300; x <= 2050; x += 250)
+            {
+                var pointer = new Point(x, 380);
+                widget.QueuePointerMove(pointer.X, pointer.Y);
+                widget.FlushPointerMove();
+                Assert.Same(plan, widget.ActivePlan);
+                Assert.True(plan.Subs[0].Panel.X < plan.Subs[2].Panel.X);
+                Assert.Equal(37, widget.ScrollOffsetPx);
+                Assert.False(widget.TryHitTest(pointer));
+            }
+            Assert.True(plan.Mirrored);
+        }
+
+        [Fact]
         public void RealIconRect_StaysClearAndStableDuringCellHover()
         {
             using var anchor = new Control { Size = new Size(1024, 576) };

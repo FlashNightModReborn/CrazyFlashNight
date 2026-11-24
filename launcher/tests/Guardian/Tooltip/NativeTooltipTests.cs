@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using CF7Launcher.Guardian.Hud;
 using CF7Launcher.Guardian.Hud.Tooltip;
 using Newtonsoft.Json.Linq;
+using LayoutOptions = CF7Launcher.Guardian.Hud.Tooltip.NativeTooltipLayout.LayoutOptions;
 using Xunit;
 
 namespace CF7Launcher.Tests.Guardian.Tooltip
@@ -569,7 +571,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         {
             // 长正文 dense：分栏 + 滚动视口
             string longText = "";
-            for (int i = 0; i < 80; i++) longText += "第" + i + "行装备属性明细描述说明文字，";
+            for (int i = 0; i < 80; i++) longText += "第" + i + "行装备属性明细描述说明文字，\n";
             JObject p = JObject.Parse(@"{
               'version':1,'requestId':'tt-long','x':500,'y':200,
               'document':{'version':1,'title':'密集检视','profile':'dense',
@@ -588,7 +590,6 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
 
                 int maxScroll = w.MaxScrollLine;
                 Assert.True(maxScroll > 0);
-                // web max-height:min(70vh,520px) 下本例溢出仅 ~2 行——步进按实际余量
                 int step = Math.Max(1, maxScroll / 2);
                 Assert.True(w.ScrollByLines(step));
                 Assert.Equal(step, w.ScrollLineOffset);
@@ -711,7 +712,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         private static JObject LongDensePayload()
         {
             string longText = "";
-            for (int i = 0; i < 80; i++) longText += "第" + i + "行装备属性明细描述说明文字，";
+            for (int i = 0; i < 80; i++) longText += "第" + i + "行装备属性明细描述说明文字，\n";
             return JObject.Parse(@"{
               'version':1,'requestId':'tt-long','x':500,'y':200,
               'document':{'version':1,'title':'密集检视','profile':'dense',
@@ -790,8 +791,8 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             Assert.NotNull(plan);
             Assert.Equal(420, NativeTooltipLayout.DescMaxWBase);
             Assert.True(plan.Split);
-            Assert.True(plan.DescPanel.Width <= NativeTooltipLayout.DescMaxWBase,
-                "description width must stay readable, actual=" + plan.DescPanel.Width);
+            Assert.InRange(plan.DescPanel.Width, NativeTooltipLayout.DescMinWBase,
+                NativeTooltipLayout.DescBalanceMaxWBase);
             Assert.True(plan.DescLines.Count > 1, "capped width must reflow text instead of hiding it");
         }
 
@@ -910,7 +911,13 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                         // 描边不得有 2px 宽（Web border-box 也是 1px 线）
                         Color second = bmp.GetPixel(x, dp.Y + 1);
                         if (second.R >= 200 && second.G >= 200 && second.B >= 200) bleedHit++;
-                        Color bottom = bmp.GetPixel(x, dp.Bottom - 1);
+                    }
+                    // The bottom border belongs to the full panel and appears when the reader reaches it.
+                    w.ScrollToOffset(w.MaxScrollOffsetPx);
+                    w.Paint(g, 1.0f, Point.Empty);
+                    for (int x = dp.X + 8; x < dp.Right - 8; x += 7)
+                    {
+                        Color bottom = bmp.GetPixel(x, dp.Bottom - w.ScrollOffsetPx - 1);
                         Assert.True(bottom.R >= 200 && bottom.G >= 200 && bottom.B >= 200,
                             "desc 面板底边应为白描边，实际=" + bottom);
                     }
@@ -969,8 +976,8 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         private static string MainTipText(NativeTooltipLayout.Plan plan)
         {
             var sb = new System.Text.StringBuilder();
-            foreach (var l in plan.IntroLines) sb.Append(LineText(l));
-            foreach (var l in plan.DescLines) sb.Append(LineText(l));
+            foreach (var l in NativeTooltipLayout.InReadingOrder(plan.IntroLines)) sb.Append(LineText(l));
+            foreach (var l in NativeTooltipLayout.InReadingOrder(plan.DescLines)) sb.Append(LineText(l));
             return sb.ToString();
         }
 
@@ -980,7 +987,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             var plan = NativeTooltipLayout.ComputePlan(
                 SubBoxDoc("dense", true), FixedMeasure, 15, 1f, 1024, 576);
             Assert.Equal(2, plan.Subs.Count);
-            int gap = NativeTooltipLayout.Px(NativeTooltipLayout.SubGapBase, 1f);
+            int gap = NativeTooltipLayout.Px(4, 1f);
             // 该样本未过 split 阈值：没有独立 desc，子框自成侧栏，紧随主面板右缘、顶对齐
             Assert.False(plan.Split);
             Assert.Equal(plan.IntroPanel.Right, plan.Subs[0].Panel.X);
@@ -1019,7 +1026,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                     {'role':'sub','runs':[{'text':'夜视\n战技'}]}]}"));
             var plan = NativeTooltipLayout.ComputePlan(
                 doc, FixedMeasure, 15, 1f, 1024, 576);
-            int gap = NativeTooltipLayout.Px(NativeTooltipLayout.SubGapBase, 1f);
+            int gap = NativeTooltipLayout.Px(4, 1f);
             Assert.True(plan.Split, "长 desc 应分栏");
             Assert.Equal(2, plan.Subs.Count);
             // desc 是侧栏第 1 框：与主面板并排、子框同列接在其下、同宽
@@ -1166,9 +1173,6 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                 NativeTooltipLayout.RailBlockGapBase, 1f);
             int padX = NativeTooltipLayout.Px(
                 NativeTooltipLayout.RailTextPadXBase, 1f);
-            int overlap = NativeTooltipLayout.Px(
-                NativeTooltipLayout.PanelPadBase, 1f)
-                + NativeTooltipLayout.Px(1, 1f);
 
             Assert.Equal(2, plan.RailBlocks.Count);
             var first = plan.RailBlocks[0];
@@ -1187,7 +1191,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             Assert.Equal(plan.IconRect.Y, first.Rect.Y);
             Assert.Equal(first.Rect.Bottom + gap, last.Rect.Y);
             // 列宽扣除与图标的重叠后并入 tip，书签右缘以 1px 重叠贴合图标左缘
-            Assert.Equal(last.Rect.Width - overlap, plan.RailShift);
+            Assert.Equal(last.Rect.Width - (plan.IconRect.Left - plan.IntroPanel.X + 1), plan.RailShift);
             Assert.Equal(plan.RailShift, plan.IntroPanel.X);
             Assert.Equal(plan.IconRect.Left + 1, first.Rect.Right);
             Assert.Equal(plan.IconRect.Left + 1, last.Rect.Right);
@@ -1273,7 +1277,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                         {'name':'扩容','runs':[{'text':' +5'}]}],
                      'runs':[{'text':'回退文本'}]}]}"));
             var plan = NativeTooltipLayout.ComputePlan(
-                doc, FixedMeasure, 15, 1f, 1024, 576);
+                doc, FixedMeasure, 15, 1f, 1024, 576, options: LayoutOptions.Legacy339);
 
             Assert.Single(plan.Subs);
             NativeTooltipLayout.Plan.SubBox box = plan.Subs[0];
@@ -1427,10 +1431,10 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             Assert.Equal(8 + 22 + NativeTooltipLayout.AttachIconGapBase, iconLine.TextOffsetPx);
             Assert.Equal("G11 x1", LineText(iconLine));
             Assert.True(iconLine.LineHeightPx >= 22);
-            int oldPanelX = plan.DescPanel.X;
+            int inset = plan.DescContentLeftPx + iconLine.IconRect.X - plan.DescPanel.Left;
             Rectangle before = iconLine.IconRect;
             plan.MirrorHorizontally();
-            Assert.Equal(plan.DescPanel.X + before.X - oldPanelX, iconLine.IconRect.X);
+            Assert.Equal(plan.DescPanel.Left + inset, plan.DescContentLeftPx + iconLine.IconRect.X);
             plan.MirrorHorizontally();
             Assert.Equal(before, iconLine.IconRect);
         }
@@ -1924,7 +1928,9 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                     IconDoc(lt), FixedMeasure, 15, 1f, 1024, 576);
                 Assert.True(plan.LayoutWide, "layoutType=" + (lt ?? "null"));
                 Assert.Equal(200, plan.IntroPanel.Width);
-                Assert.Equal(192, plan.IconRect.Width);
+                Assert.Equal(144, plan.IconRect.Width);
+                var tall = NativeTooltipLayout.ComputePlan(IconDoc(lt), FixedMeasure, 15, 1f, 1024, 660);
+                Assert.Equal(192, tall.IconRect.Width);
             }
         }
 
@@ -2167,13 +2173,41 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             Assert.Equal(68, plan.IntroPanel.Height);
         }
 
-        [Fact]
-        public void Plan_SplitScroll_VariableHeights_BackAccumulatesMaxScroll()
+        [Theory]
+        [InlineData(1024, 576, 2, false)]
+        [InlineData(1024, 576, 70, true)]
+        [InlineData(220, 400, 2, true)]
+        public void GroupedRichReading_ContainsAllSectionsAtFinalWidth(int width, int height, int introCount, bool whole)
         {
-            // 变行高滚动几何：vpH=183 → maxH=round(min(520,128.1))=128 →
-            // descPanelH=128、viewH=120。11 行×15 自尾累加 8 行=120 顶格 →
-            // MaxScrollLine=3；末行换 20px run（行高 25）→ 尾部只能装 7 行 →
-            // MaxScrollLine=4。旧实现按常量行高 Count-Visible 算，两种情形同值。
+            string Text(string prefix, int count) => string.Join("\n",
+                System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(1, count), i => prefix + i));
+            JObject Section(string role, string prefix, int count) => new JObject {
+                ["role"] = role, ["runs"] = new JArray(new JObject { ["text"] = Text(prefix, count) })
+            };
+            var document = new JObject { ["version"] = 1, ["profile"] = "dense", ["title"] = "物品",
+                ["rail"] = new JArray("长枪", "步枪"), ["magazine"] = new JObject { ["name"] = "弹夹" },
+                ["sections"] = new JArray(Section("intro", "I", introCount), Section("description", "长正文行D", 41),
+                    Section("sub", "A", 41), Section("sub", "B", 41), Section("sub", "C", 41)) };
+            var plan = NativeTooltipLayout.ComputePlan(NativeTooltipDocument.FromDocument(document),
+                FixedMeasure, 15f, 1f, width, height, "pending");
+            Assert.Equal(whole ? NativeTooltipLayout.ReadingTarget.WholeRich : NativeTooltipLayout.ReadingTarget.Side, plan.Target);
+            Assert.InRange(plan.TipSize.Width, 1, width - 16);
+            Assert.InRange(plan.TipSize.Height, 1, height - 16);
+            Assert.True(new Rectangle(Point.Empty, plan.TipSize).Contains(plan.ScrollViewportRect));
+            Assert.Equal(2, plan.RailBlocks.Count);
+            Assert.False(plan.MagazineRow.IsEmpty);
+            Assert.Equal("I" + introCount, LineText(plan.IntroBodyLines[plan.IntroBodyLines.Count - 1]));
+            Assert.Equal("长正文行D41", LineText(plan.DescLines[plan.DescLines.Count - 1]));
+            Assert.Equal(3, plan.Subs.Count);
+            var bottom = plan.Subs[2];
+            Assert.Equal("C41", LineText(bottom.Lines[bottom.Lines.Count - 1]));
+            Assert.Equal(bottom.Panel.Bottom, plan.ScrollViewportRect.Bottom + plan.MaxOffsetPx);
+        }
+
+        [Fact]
+        public void Plan_SideScroll_VariableHeights_IncludeEntireLastLine()
+        {
+            // 128px 侧栏减上下各 4px 留下 120px，最后一个大字额外占 10px。
             const string lineText = "第N行描述说明文字啊"; // 9 字 ≈102px < descTextW 146
             var parts = new List<string>();
             for (int i = 0; i < 11; i++)
@@ -2184,22 +2218,25 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             }
             string runsJson = string.Join(",", parts.ToArray());
             var docBig = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
-                'version':1,'title':'滚动','profile':'dense',
+                'version':1,'profile':'dense',
                 'sections':[{'role':'description','runs':[" + runsJson + "]}]}"));
             var planBig = NativeTooltipLayout.ComputePlan(
-                docBig, FixedMeasure, 15f, 1f, 1024, 183);
+                docBig, FixedMeasure, 15f, 1f, 1024, 183, options: LayoutOptions.Legacy339);
             Assert.True(planBig.Split);
             Assert.Equal(11, planBig.DescTotalLines);
+            Assert.Equal(NativeTooltipLayout.ReadingTarget.Side, planBig.Target);
+            Assert.Equal(55, planBig.MaxOffsetPx);
             Assert.Equal(8, planBig.DescVisibleLines);
             Assert.Equal(4, planBig.MaxScrollLine);
             Assert.True(planBig.DescScrollable);
 
             string runsPlain = runsJson.Replace(",'fontSize':20", "");
             var docNorm = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
-                'version':1,'title':'滚动','profile':'dense',
+                'version':1,'profile':'dense',
                 'sections':[{'role':'description','runs':[" + runsPlain + "]}]}"));
             var planNorm = NativeTooltipLayout.ComputePlan(
-                docNorm, FixedMeasure, 15f, 1f, 1024, 183);
+                docNorm, FixedMeasure, 15f, 1f, 1024, 183, options: LayoutOptions.Legacy339);
+            Assert.Equal(45, planNorm.MaxOffsetPx);
             Assert.Equal(3, planNorm.MaxScrollLine);
         }
 
@@ -2286,13 +2323,13 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             // 同一物理视口 1500×900、同一 scale：仅 CSS 视口随 dpi 变化。
             var plan = NativeTooltipLayout.ComputePlan(
                 DpiParityDoc(), FixedMeasure, 15.625f, 900f / 864f, 1500, 900,
-                null, dpiScale);
+                null, dpiScale, LayoutOptions.Legacy339);
             Assert.True(plan.Split, "desc 足够长应分栏");
             Assert.Equal(expectScrollable, plan.DescScrollable);
         }
 
         [Fact]
-        public void Widget_DpiProvider_SamePhysicalViewport_FlipsScrollAt150()
+        public void Widget_Legacy339_DpiProvider_SamePhysicalViewport_FlipsScrollAt150()
         {
             // 注入式 provider：同一物理 client 1500×900，dpi 1.5/1.0 决定滚与不滚。
             var parts = new List<string>();
@@ -2313,6 +2350,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             {
                 using (var w150 = new NativeTooltipWidget(a, null, () => 1.5f))
                 {
+                    w150.LayoutOptions = LayoutOptions.Legacy339;
                     Assert.True(w150.Show(p));
                     Assert.True(w150.ActivePlan.DescScrollable,
                         "150% DPI：cssH=600 → 70vh=420 < 正文物理高 → 应滚动");
@@ -2320,11 +2358,620 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                 }
                 using (var w100 = new NativeTooltipWidget(a, null, () => 1.0f))
                 {
+                    w100.LayoutOptions = LayoutOptions.Legacy339;
                     Assert.True(w100.Show(p));
                     Assert.False(w100.ActivePlan.DescScrollable,
                         "100% DPI：cssH=900 → 70vh=630 顶 520px cap → 不滚动");
                 }
             }
         }
+        private static JObject LayoutDocument(params JObject[] sections) => new JObject
+        {
+            ["version"] = 1, ["profile"] = "dense", ["title"] = "排版",
+            ["sections"] = new JArray(sections)
+        };
+
+        private static JObject TextSection(string role, string text) => new JObject
+        {
+            ["role"] = role, ["runs"] = new JArray(new JObject { ["text"] = text })
+        };
+
+        private static string RepeatLines(string text, int count) =>
+            string.Join("\n", Enumerable.Repeat(text, count));
+
+        private static JObject LayoutPayload(JObject document) => new JObject
+        {
+            ["version"] = 1, ["requestId"] = "layout-tiers", ["sceneId"] = "test",
+            ["x"] = 500, ["y"] = 200, ["document"] = document
+        };
+
+        [Fact]
+        public void LayoutPresets_FreezeSevenOptions_AndUseTier14ByDefault()
+        {
+            Assert.Same(LayoutOptions.Tier14, LayoutOptions.Default);
+            foreach (var (preset, width, compact, twoColumns) in new[]
+            {
+                (LayoutOptions.Legacy339, false, false, false),
+                (LayoutOptions.Tier12, true, false, false),
+                (LayoutOptions.Tier13, true, true, false),
+                (LayoutOptions.Tier14, true, true, true)
+            })
+            {
+                Assert.Equal(width, preset.WholeSideWidth);
+                Assert.Equal(width, preset.NoSubOneWidthShrink);
+                Assert.Equal(width, preset.UnclampSingleSideHeight);
+                Assert.Equal(width, preset.BalanceWidth);
+                Assert.Equal(compact, preset.CompactRows);
+                Assert.Equal(compact, preset.CompactIntro);
+                Assert.Equal(twoColumns, preset.TwoColumnSide);
+            }
+        }
+
+        [Fact]
+        public void WholeSideWidth_UsesLongStructuredSubBesideShortDescription()
+        {
+            var sub = JObject.Parse(@"{
+                'role':'sub','kind':'modinfo','title':'配件效果',
+                'rows':[],'runs':[{'text':'旧版回退'}]}");
+            for (int i = 0; i < 10; i++)
+                ((JArray)sub["rows"]).Add(new JObject { ["depth"] = 1,
+                    ["runs"] = new JArray(new string('效', 50)) });
+            var doc = NativeTooltipDocument.FromDocument(LayoutDocument(
+                TextSection("intro", new string('介', 78)), TextSection("description", new string('述', 25)), sub));
+            var legacy = NativeTooltipLayout.ComputePlan(doc, FixedMeasure, 15, 1f, 1200, 700,
+                options: LayoutOptions.Legacy339);
+            var modern = NativeTooltipLayout.ComputePlan(doc, FixedMeasure, 15, 1f, 1200, 700,
+                options: LayoutOptions.Tier12);
+            Assert.True(modern.Split);
+            Assert.Equal(160, legacy.DescPanel.Width);
+            Assert.Equal(420, modern.DescPanel.Width);
+            Assert.Equal(modern.DescPanel.Width, Assert.Single(modern.Subs).Panel.Width);
+            Assert.Equal(10, modern.Subs[0].Rows.Count);
+            Assert.All(legacy.Subs[0].Rows, row => Assert.Equal(5, row.EffectLines.Count));
+            Assert.All(modern.Subs[0].Rows, row => Assert.Equal(2, row.EffectLines.Count));
+            Assert.Empty(modern.Subs[0].Lines);
+        }
+
+        [Fact]
+        public void WholeSideWidth_UsesActualWrappingOfPureSub_AndRemovesSingleSideCap()
+        {
+            var pure = NativeTooltipDocument.FromDocument(LayoutDocument(TextSection("sub", new string('A', 72))));
+            var legacy = NativeTooltipLayout.ComputePlan(pure, (string t, bool b) => t.Length * 55,
+                15, 1f, 1200, 700, options: LayoutOptions.Legacy339);
+            var modern = NativeTooltipLayout.ComputePlan(pure, (string t, bool b) => t.Length * 55,
+                15, 1f, 1200, 700, options: new LayoutOptions { WholeSideWidth = true, UnclampSingleSideHeight = true });
+            Assert.False(modern.Split);
+            Assert.Equal(160, legacy.Subs[0].Panel.Width);
+            Assert.Equal(420, modern.Subs[0].Panel.Width);
+            Assert.Equal(11, modern.Subs[0].Lines.Count);
+
+            var tiny = NativeTooltipDocument.FromDocument(LayoutDocument(TextSection("sub", "短")));
+            var readable = NativeTooltipLayout.ComputePlan(tiny, FixedMeasure, 15, 1f, 1200, 700,
+                options: new LayoutOptions { WholeSideWidth = true });
+            Assert.Equal(200, readable.Subs[0].Panel.Width);
+
+            var tall = NativeTooltipDocument.FromDocument(LayoutDocument(TextSection("sub", RepeatLines("条目", 70))));
+            var tallLegacy = NativeTooltipLayout.ComputePlan(tall, FixedMeasure, 15, 1f, 1200, 700,
+                options: LayoutOptions.Legacy339);
+            var tallDefault = NativeTooltipLayout.ComputePlan(tall, FixedMeasure, 15, 1f, 1200, 700);
+            Assert.Equal(490, tallLegacy.ScrollViewportRect.Height);
+            Assert.Equal(700 - 2 * 8 - 23 - 7, tallDefault.ScrollViewportRect.Height);
+            Assert.Equal(70 * 15 + 8, tallDefault.ContentHeightPx);
+        }
+
+        [Fact]
+        public void BalanceWidth_ModeA_BisectsToWithinSixteenPixelsOfFit()
+        {
+            var doc = NativeTooltipDocument.FromDocument(LayoutDocument(
+                TextSection("description", RepeatLines(new string('A', 78), 16))));
+            var initial = NativeTooltipLayout.ComputePlan(doc, FixedMeasure, 15, 1f, 1200, 400,
+                options: new LayoutOptions { WholeSideWidth = true, UnclampSingleSideHeight = true });
+            var balanced = NativeTooltipLayout.ComputePlan(doc, FixedMeasure, 15, 1f, 1200, 400,
+                options: LayoutOptions.Tier12);
+            Assert.Equal(420, initial.DescPanel.Width);
+            Assert.Equal(32, initial.DescTotalLines);
+            Assert.True(initial.DescScrollable);
+            const int exactFit = 78 * 6 + 2 * 4 + 6;
+            Assert.InRange(balanced.DescPanel.Width, exactFit, exactFit + 16);
+            Assert.Equal(16, balanced.DescTotalLines);
+            Assert.False(balanced.DescScrollable);
+        }
+
+        [Fact]
+        public void BalanceWidth_ModeB_ShrinksShortLists_AndRespectsAcquisitionWidth()
+        {
+            var doc = NativeTooltipDocument.FromDocument(LayoutDocument(TextSection("sub", RepeatLines("条目", 25))));
+            var modern = NativeTooltipLayout.ComputePlan(doc, FixedMeasure, 15, 1f, 1200, 700);
+            Assert.Equal(160, modern.Subs[0].Panel.Width);
+            Assert.Equal(25, modern.Subs[0].Lines.Count);
+            Assert.False(modern.DescScrollable);
+
+            var acquisition = JObject.Parse(
+                "{'role':'sub','kind':'acquisition','rows':[{'name':'Vendor','depth':1,'runs':[]}]}");
+            acquisition["rows"][0]["runs"] = new JArray(new string('X', 30));
+            var acqDoc = NativeTooltipDocument.FromDocument(LayoutDocument(
+                TextSection("sub", RepeatLines("条目", 25)), acquisition));
+            var plan = NativeTooltipLayout.ComputePlan(acqDoc, FixedMeasure, 15, 1f, 1200, 700);
+            Assert.Equal(2 * 4 + 6 + 8 + 20 + 5 + 36 * 6, plan.Subs[1].Panel.Width);
+            Assert.Single(Assert.Single(plan.Subs[1].Rows).Lines);
+        }
+
+        [Fact]
+        public void CompactAttachments_ShortEffectsFlowAndMultilineEffectsKeepTheirIndent()
+        {
+            var section = JObject.Parse(@"{
+                'role':'sub','kind':'attachments','title':'已安装',
+                'rows':[{'name':'夜视','runs':[{'text':'效果','color':'#FF00FF'}]},
+                        {'name':'弹夹','runs':[{'text':'容量\n重量','color':'#00FFFF'}]}]}");
+            var document = LayoutDocument(section);
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeTooltipWidget(anchor, null, () => 1f, () => 1f);
+            Assert.True(widget.Show(LayoutPayload(document)));
+            widget.Tick(2000);
+            var plan = widget.ActivePlan;
+            var box = Assert.Single(plan.Subs);
+            var left = box.Rows[0];
+            var multi = box.Rows[1];
+            var inline = Assert.Single(left.Lines);
+            Assert.Equal("夜视：效果", LineText(inline));
+            Assert.True(inline.Slices[0].Bold);
+            Assert.Empty(left.EffectLines);
+            Assert.Equal(new[] { "容量", "重量" }, multi.EffectLines.Select(LineText));
+            Assert.Equal(multi.TextLeftPx + 12, multi.EffectLeftPx);
+            Assert.Equal(left.RowBottomPx + 2, multi.RowTopPx);
+            Assert.Equal(box.TitleTopPx + 15 + 1, left.RowTopPx);
+
+            using var bitmap = PaintLayout(widget, anchor.Size);
+            AssertColorPainted(bitmap, widget, new Rectangle(left.TextLeftPx, left.TextTopPx, left.RowWidthPx - 25, 15), IsMagenta);
+            AssertColorPainted(bitmap, widget, new Rectangle(multi.EffectLeftPx, multi.EffectTopPx, multi.RowWidthPx - 37, 30), IsCyan);
+        }
+
+        [Fact]
+        public void CompactIntro_ShortPairsRetainLogicalTextAtHighDpiWithCenteredSmallIcon()
+        {
+            var intro = TextSection("intro", "");
+            intro["runs"] = new JArray(new JObject { ["text"] = "重量:8kg", ["color"] = "#FF00FF" },
+                "\n", new JObject { ["text"] = "射速:3", ["color"] = "#00FFFF" },
+                "\n$460000\n固有结构:槽\n禁止挂点:枪托\n等级:40");
+            var document = LayoutDocument(intro, TextSection("description", new string('述', 170)));
+            document["icon"] = new JObject { ["kind"] = "item", ["name"] = "test-icon" };
+            using var anchor = new Control { Size = new Size(1500, 900) };
+            using var widget = new NativeTooltipWidget(anchor, null, () => 1.5f, () => 1f);
+            Assert.Same(LayoutOptions.Tier14, widget.LayoutOptions);
+            Assert.True(widget.Show(LayoutPayload(document)));
+            widget.Tick(2000);
+            var plan = widget.ActivePlan;
+            Assert.True(plan.Split);
+            Assert.Equal(144, plan.IconRect.Width);
+            Assert.Equal((plan.IntroPanel.Width - 144) / 2, plan.IconRect.X - plan.IntroPanel.X);
+            Assert.Equal(10, plan.IntroTitleTopPx - plan.IconRect.Bottom);
+            var line = plan.IntroBodyLines[0];
+            Assert.Equal(99, line.RightHalfOffsetPx);
+            Assert.Equal("射速:3", LineText(line.RightHalf));
+            Assert.Equal(new[] { "排版", "重量:8kg", "射速:3", "$460000", "固有结构:槽", "禁止挂点:枪托", "等级:40" },
+                plan.IntroLogicalLines.Select(LineText));
+            Assert.All(plan.IntroBodyLines.Skip(1), row => Assert.Null(row.RightHalf));
+
+            using var bitmap = PaintLayout(widget, anchor.Size);
+            AssertColorPainted(bitmap, widget,
+                new Rectangle(plan.IntroContentLeftPx, plan.IntroContentTopPx, 93, 15), IsMagenta, false);
+            AssertColorPainted(bitmap, widget,
+                new Rectangle(plan.IntroContentLeftPx + 99, plan.IntroContentTopPx, 93, 15), IsCyan, false);
+
+            widget.LayoutOptions = LayoutOptions.Tier12;
+            Assert.NotSame(plan, widget.ActivePlan);
+            Assert.Equal(192, widget.ActivePlan.IconRect.Width);
+            Assert.All(widget.ActivePlan.IntroBodyLines, row => Assert.Null(row.RightHalf));
+        }
+
+        [Theory]
+        [InlineData("modinfo")]
+        [InlineData("acquisition")]
+        [InlineData("upgrades")]
+        public void CompactStructuredRows_PaintBothHalvesWhenScrolledPartlyPastTop(string kind)
+        {
+            var structured = new JObject
+            {
+                ["role"] = kind == "upgrades" ? "description" : "sub",
+                ["kind"] = kind, ["title"] = "Structured",
+                ["runs"] = new JArray("FALLBACK"),
+                ["rows"] = new JArray()
+            };
+            var rows = (JArray)structured["rows"];
+            rows.Add(new JObject { ["name"] = "Header" });
+            JObject Child(string name, string text, string color, string icon)
+            {
+                var row = new JObject { ["depth"] = 1,
+                    ["runs"] = new JArray(new JObject { ["text"] = text, ["color"] = color }) };
+                if (kind != "modinfo") row["name"] = name;
+                if (icon != null && kind != "modinfo") row["icon"] = icon;
+                return row;
+            }
+            rows.Add(Child("L", "MMMM", "#FF00FF", "green"));
+            rows.Add(Child("R", "WWWW", "#00FFFF", "orange"));
+            rows.Add(Child("Orphan", "orphan", "#FFFFFF", null));
+            rows.Add(Child("Long", new string('宽', 28), "#FFFFFF", null));
+            for (int i = 0; i < 45; i++) rows.Add(new JObject { ["name"] = "Full-width header" });
+
+            var document = LayoutDocument(TextSection("description",
+                RepeatLines("A long description line makes the side panel wide enough for the compact rows below.", 50)),
+                structured);
+            using var anchor = new Control { Size = new Size(1500, 600) };
+            var dir = Directory.CreateTempSubdirectory("tt-pairs-");
+            string manifest = Path.Combine(dir.FullName, "manifest.json");
+            string green = Path.Combine(dir.FullName, "green.png");
+            string orange = Path.Combine(dir.FullName, "orange.png");
+            string greenNpc = Path.Combine(dir.FullName, "green.webp");
+            string orangeNpc = Path.Combine(dir.FullName, "orange.webp");
+            try
+            {
+                SolidIcon(green, Color.Lime);
+                SolidIcon(orange, Color.Orange);
+                File.WriteAllText(manifest, "{\"green\":{\"f1\":\"green.png\"},\"orange\":{\"f1\":\"orange.png\"}}");
+                // NPC catalog resolves by suffix; the decoder identifies the test PNG by its bytes.
+                File.Copy(green, greenNpc);
+                File.Copy(orange, orangeNpc);
+                using var icons = new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(dir.FullName,
+                    npcPortraitIconsDir: dir.FullName);
+                using var widget = new NativeTooltipWidget(anchor, icons, () => 1f, () => 1f)
+                    { LayoutOptions = LayoutOptions.Tier13 };
+                Assert.True(widget.Show(LayoutPayload(document)));
+                widget.Tick(2000);
+                var plan = widget.ActivePlan;
+                Assert.Equal(NativeTooltipLayout.ReadingTarget.Side, plan.Target);
+                Rectangle left, right, leftIcon = Rectangle.Empty, rightIcon = Rectangle.Empty;
+                int rowBottom;
+                if (kind == "upgrades")
+                {
+                    var pair = Assert.Single(plan.DescLines, row => row.RightHalf != null);
+                    Assert.Equal("LMMMM", LineText(pair));
+                    Assert.Equal("RWWWW", LineText(pair.RightHalf));
+                    Assert.DoesNotContain("FALLBACK", MainTipText(plan));
+                    Assert.Contains(plan.DescLogicalLines, row => LineText(row) == "RWWWW");
+                    int top = plan.DescContentTopPx + (int)plan.DescLines.TakeWhile(row => row != pair)
+                        .Sum(row => row.RowHeight(15));
+                    left = new Rectangle(plan.DescContentLeftPx + pair.TextOffsetPx, top, 100, 15);
+                    right = new Rectangle(left.X + pair.RightHalfOffsetPx, top, 100, 15);
+                    leftIcon = new Rectangle(plan.DescContentLeftPx + pair.IconRect.X, top, 22, 22);
+                    rightIcon = new Rectangle(leftIcon.X + pair.RightHalfOffsetPx, top, 22, 22);
+                    rowBottom = top + 22;
+                }
+                else
+                {
+                    var box = Assert.Single(plan.Subs);
+                    Assert.Empty(box.Lines);
+                    var a = box.Rows[1];
+                    var b = box.Rows[2];
+                    var orphan = box.Rows[3];
+                    Assert.Equal(a.RowTopPx, b.RowTopPx);
+                    Assert.Equal(a.RowLeftPx + a.RowWidthPx + 8, b.RowLeftPx);
+                    Assert.Equal(a.RowWidthPx, b.RowWidthPx);
+                    Assert.Equal(a.RowLeftPx, orphan.RowLeftPx);
+                    Assert.InRange(orphan.RowWidthPx - (2 * a.RowWidthPx + 8), 0, 1);
+                    Assert.Equal(Math.Max(a.RowBottomPx, b.RowBottomPx) + (kind == "modinfo" ? 1 : 2),
+                        orphan.RowTopPx);
+                    left = kind == "modinfo" ? new Rectangle(a.EffectLeftPx, a.EffectTopPx, 100, 15)
+                        : new Rectangle(a.TextLeftPx, a.TextTopPx, 100, 15);
+                    right = kind == "modinfo" ? new Rectangle(b.EffectLeftPx, b.EffectTopPx, 100, 15)
+                        : new Rectangle(b.TextLeftPx, b.TextTopPx, 100, 15);
+                    rowBottom = Math.Max(a.RowBottomPx, b.RowBottomPx);
+                    if (kind == "acquisition")
+                    {
+                        Assert.Equal(20, a.IconRect.Width);
+                        Assert.Equal(20, b.IconRect.Width);
+                        Assert.True(a.IconIsNpc);
+                        Assert.True(b.IconIsNpc);
+                        leftIcon = a.IconRect;
+                        rightIcon = b.IconRect;
+                    }
+                }
+
+                int offset = left.Top + 4 - plan.ScrollViewportRect.Top;
+                Assert.InRange(offset, 1, widget.MaxScrollOffsetPx - 20);
+                Assert.True(widget.ScrollToOffset(offset));
+                using var clipped = PaintLayout(widget, anchor.Size);
+                AssertColorPainted(clipped, widget, left, IsMagenta);
+                AssertColorPainted(clipped, widget, right, IsCyan);
+                var view = ScreenRect(widget, plan.ScrollViewportRect, false);
+                Assert.Equal(view.Top - 4, ScreenRect(widget, left, true).Top);
+                var above = Rectangle.FromLTRB(view.Left, view.Top - 4, view.Right, view.Top);
+                Assert.False(HasColor(clipped, above, IsMagenta));
+                Assert.False(HasColor(clipped, above, IsCyan));
+                if (kind != "modinfo")
+                {
+                    AssertColorPainted(clipped, widget, leftIcon, c => c.G > 200 && c.R < 40 && c.B < 40);
+                    AssertColorPainted(clipped, widget, rightIcon, c => c.R > 200 && c.G > 100 && c.B < 40);
+                }
+
+                Assert.True(widget.ScrollToOffset(rowBottom - plan.ScrollViewportRect.Top));
+                using var passed = PaintLayout(widget, anchor.Size);
+                Assert.False(HasColor(passed, view, IsMagenta));
+                Assert.False(HasColor(passed, view, IsCyan));
+            }
+            finally
+            {
+                File.Delete(manifest);
+                File.Delete(green);
+                File.Delete(orange);
+                File.Delete(greenNpc);
+                File.Delete(orangeNpc);
+                dir.Delete();
+            }
+        }
+
+        [Theory]
+        [InlineData("right")]
+        [InlineData("left")]
+        public void TwoColumnSide_BalancesContinuousCut_MirrorsRigidly_AndPaintsBothTails(string placement)
+        {
+            JObject Tail(string color)
+            {
+                JObject section = TextSection("sub", "");
+                section["runs"] = new JArray(RepeatLines("Normal line", 59) + "\n",
+                    new JObject { ["text"] = "TAIL", ["color"] = color });
+                return section;
+            }
+
+            var structured = new JObject
+            {
+                ["role"] = "sub", ["kind"] = "attachments",
+                ["rows"] = new JArray(Enumerable.Range(1, 41).Select(i =>
+                    new JObject { ["name"] = "Item " + i, ["runs"] = new JArray(" +1") }))
+            };
+            var doc = LayoutDocument(TextSection("description", RepeatLines("Description detail", 60)),
+                structured, Tail("#FF00FF"), TextSection("sub", RepeatLines("Right column", 60)), Tail("#00FFFF"));
+            doc["rail"] = new JArray("Example");
+            doc["icon"] = new JObject { ["name"] = "layout-icon", ["kind"] = "item" };
+            var fixedDoc = NativeTooltipDocument.FromDocument(doc);
+            var single = NativeTooltipLayout.ComputePlan(fixedDoc, FixedMeasure, 15, 1f, 1800, 700,
+                options: LayoutOptions.Tier13);
+            var two = NativeTooltipLayout.ComputePlan(fixedDoc, FixedMeasure, 15, 1f, 1800, 700);
+            Assert.Equal(1, single.SideColumns);
+            Assert.Equal(2, two.SideColumns);
+            const int panelH = 60 * 15 + 8;
+            Assert.Equal(3 * panelH + 2 * 4, two.ContentHeightPx);
+            Assert.Equal(2 * 380 + 4, two.ScrollViewportRect.Width);
+            Assert.Equal(700 - 16 - 30, two.ScrollViewportRect.Height);
+            Assert.Equal(two.DescPanel.X, two.Subs[0].Panel.X);
+            Assert.Equal(two.DescPanel.X, two.Subs[1].Panel.X);
+            Assert.Equal(two.DescPanel.Right + 4, two.Subs[2].Panel.X);
+            Assert.Equal(two.Subs[2].Panel.X, two.Subs[3].Panel.X);
+            Assert.Equal(two.DescPanel.Top, two.Subs[2].Panel.Top);
+            Assert.True(single.ContentHeightPx - two.ContentHeightPx > 48);
+
+            Rectangle before = two.SideBounds();
+            Rectangle left = two.DescPanel, right = two.Subs[2].Panel;
+            var row = two.Subs[0].Rows[0];
+            var rowIcon = row.IconRect;
+            int textX = row.TextLeftPx, effectX = row.EffectLeftPx, rowX = row.RowLeftPx;
+            int delta = two.TipSize.Width - before.Right - before.X;
+            two.MirrorHorizontally();
+            Assert.Equal(left.X + delta, two.DescPanel.X);
+            Assert.Equal(right.X + delta, two.Subs[2].Panel.X);
+            Assert.Equal(rowIcon.X + delta, row.IconRect.X);
+            Assert.Equal(textX + delta, row.TextLeftPx);
+            Assert.Equal(effectX + delta, row.EffectLeftPx);
+            Assert.Equal(rowX + delta, row.RowLeftPx);
+            Assert.True(two.DescPanel.Left < two.Subs[2].Panel.Left);
+            Assert.Equal(two.Subs[2].Panel.Right, two.IntroPanel.Left);
+            Assert.Equal(two.DescPanel.Left, two.ScrollViewportRect.Left);
+            two.MirrorHorizontally();
+            Assert.Equal(before, two.SideBounds());
+            Assert.Equal(rowIcon, row.IconRect);
+
+            using var anchor = new Control { Size = new Size(2200, 700) };
+            using var widget = new NativeTooltipWidget(anchor, null, () => 1f, () => 1f);
+            var payload = LayoutPayload(doc);
+            payload["x"] = placement == "left" ? 1700 : 300;
+            payload["placement"] = placement;
+            Assert.True(widget.Show(payload));
+            widget.Tick(2000);
+            var plan = widget.ActivePlan;
+            Assert.Equal(2, plan.SideColumns);
+            Assert.Equal(placement == "left", plan.Mirrored);
+            Assert.Equal(NativeTooltipLayout.ReadingTarget.Side, plan.Target);
+            Assert.True(new Rectangle(8, 8, anchor.Width - 16, anchor.Height - 16).Contains(widget.PlacedRect));
+            Assert.True(plan.DescPanel.X < plan.Subs[2].Panel.X);
+            var view = ScreenRect(widget, plan.ScrollViewportRect, false);
+            using var start = PaintLayout(widget, anchor.Size);
+            Assert.False(HasColor(start, view, IsMagenta));
+            Assert.False(HasColor(start, view, IsCyan));
+            Rectangle TailRect(NativeTooltipLayout.Plan.SubBox box) =>
+                new Rectangle(box.ContentLeftPx, box.Panel.Bottom - 4 - 15, 100, 15);
+
+            int showRightTail = plan.Subs[3].Panel.Bottom - plan.ScrollViewportRect.Bottom;
+            Assert.InRange(showRightTail, 1, widget.MaxScrollOffsetPx - 1);
+            Assert.True(widget.ScrollToOffset(showRightTail));
+            using var rightTail = PaintLayout(widget, anchor.Size);
+            AssertColorPainted(rightTail, widget, TailRect(plan.Subs[3]), IsCyan);
+            Assert.False(HasColor(rightTail, view, IsMagenta));
+
+            Assert.True(widget.ScrollToOffset(widget.MaxScrollOffsetPx));
+            Assert.Equal(plan.Subs[1].Panel.Bottom, plan.ScrollViewportRect.Bottom + widget.ScrollOffsetPx);
+            using var bottom = PaintLayout(widget, anchor.Size);
+            AssertColorPainted(bottom, widget, TailRect(plan.Subs[1]), IsMagenta);
+            Assert.False(HasColor(bottom, view, IsCyan));
+        }
+
+        [Fact]
+        public void TwoColumnSide_RequiresOverflowHorizontalBudgetAndNetHeightSavings()
+        {
+            NativeTooltipLayout.Plan PlanFor(JObject doc, int width) =>
+                NativeTooltipLayout.ComputePlan(NativeTooltipDocument.FromDocument(doc),
+                    FixedMeasure, 15, 1f, width, 700);
+
+            var shortDoc = LayoutDocument(TextSection("sub", "短甲"), TextSection("sub", "短乙"));
+            var taut = PlanFor(shortDoc, 1800);
+            Assert.Equal(1, taut.SideColumns);
+            Assert.False(taut.DescScrollable);
+
+            var tallDoc = LayoutDocument(TextSection("sub", RepeatLines("Tall A", 50)),
+                TextSection("sub", RepeatLines("Tall B", 50)));
+            var narrow = PlanFor(tallDoc, 740);
+            Assert.False(narrow.Stacked);
+            Assert.Equal(1, narrow.SideColumns);
+            Assert.True(narrow.DescScrollable);
+            Assert.Equal(2, PlanFor(tallDoc, 1800).SideColumns);
+
+            var lopsided = LayoutDocument(TextSection("sub", new string('长', 2400)), TextSection("sub", "短"));
+            var noGain = PlanFor(lopsided, 1800);
+            Assert.Equal(1, noGain.SideColumns);
+            Assert.Equal(560, noGain.Subs[0].Panel.Width);
+            Assert.True(noGain.DescScrollable);
+        }
+
+        [Fact]
+        public void CompactModInfoRows_KeepHeadingsBranchesAndParentsFullWidth_WhilePairingSameIndentSiblings()
+        {
+            JObject ModRow(string text) => new JObject
+            {
+                ["depth"] = 1,
+                ["runs"] = new JArray(new JObject { ["text"] = text })
+            };
+
+            var modinfo = new JObject
+            {
+                ["role"] = "sub",
+                ["kind"] = "modinfo",
+                ["title"] = "配件信息",
+                ["rows"] = new JArray
+                {
+                    new JObject { ["name"] = "【基础效果】" },
+                    ModRow("威力 +5"),
+                    ModRow("重量 -2"),
+                    ModRow("【按装备类型追加效果】"),
+                    ModRow("对 装备类型：长枪："),
+                    ModRow("  切手技重量系数 → 5"),
+                    ModRow("  切手技冲击力 ×5"),
+                    ModRow("  【技能效果】"),
+                    ModRow("  灰蛊蚀刻"),
+                    ModRow("    18格，每格易伤+1%"),
+                    ModRow("    持续5秒")
+                }
+            };
+            var document = LayoutDocument(
+                TextSection("description", RepeatLines("A long description line makes the side panel wide enough for the compact rows below.", 6)),
+                modinfo);
+            var plan = NativeTooltipLayout.ComputePlan(
+                NativeTooltipDocument.FromDocument(document),
+                FixedMeasure, 15, 1f, 1500, 700, options: LayoutOptions.Tier13);
+
+            var box = Assert.Single(plan.Subs);
+            Assert.Equal(11, box.Rows.Count);
+            // 同缩进短子行正常配对
+            Assert.Equal(box.Rows[1].RowTopPx, box.Rows[2].RowTopPx);
+            Assert.True(box.Rows[1].RowLeftPx < box.Rows[2].RowLeftPx);
+            Assert.Equal(box.Rows[5].RowTopPx, box.Rows[6].RowTopPx);
+            Assert.True(box.Rows[5].RowLeftPx < box.Rows[6].RowLeftPx);
+            Assert.Equal(box.Rows[9].RowTopPx, box.Rows[10].RowTopPx);
+            Assert.True(box.Rows[9].RowLeftPx < box.Rows[10].RowLeftPx);
+
+            // 【小节标题】、冒号分支头、带更深缩进子行的父项均保持独占整行
+            int fullW = box.Rows[0].RowWidthPx - (box.Rows[3].RowLeftPx - box.Rows[0].RowLeftPx);
+            Assert.Equal(fullW, box.Rows[3].RowWidthPx);
+            Assert.Equal(fullW, box.Rows[4].RowWidthPx);
+            Assert.Equal(fullW, box.Rows[7].RowWidthPx);
+            Assert.Equal(fullW, box.Rows[8].RowWidthPx);
+            Assert.True(box.Rows[3].RowTopPx < box.Rows[4].RowTopPx);
+            Assert.True(box.Rows[4].RowTopPx < box.Rows[5].RowTopPx);
+            Assert.True(box.Rows[6].RowTopPx < box.Rows[7].RowTopPx);
+            Assert.True(box.Rows[7].RowTopPx < box.Rows[8].RowTopPx);
+            Assert.True(box.Rows[8].RowTopPx < box.Rows[9].RowTopPx);
+        }
+
+        [Fact]
+        public void AnchorAwareClearWidth_PreventsMidScreenPointerOverlap_WhilePreservingWideTwoColumn()
+        {
+            var heavyDoc = LayoutDocument(
+                TextSection("description", RepeatLines("用于测试中段悬停避让约束与宽走廊双侧列的说明正文内容。", 28)),
+                TextSection("sub", RepeatLines("副属性与战技详情说明条目内容。", 20)),
+                TextSection("sub", RepeatLines("来源途径与合成路线补充信息。", 12)));
+            heavyDoc["rail"] = new JArray("长枪", "霰弹枪");
+            heavyDoc["icon"] = new JObject { ["name"] = "layout-icon", ["kind"] = "item" };
+
+            var parsed = NativeTooltipDocument.FromDocument(heavyDoc);
+            // 1. 直接排版：受限走廊（491px）把总宽严格压在走廊内，避免被视口 clamp 拽回鼠标上方；宽走廊保留双侧列
+            var constrained = NativeTooltipLayout.ComputePlan(
+                parsed, FixedMeasure, 15, 1f, 1024, 576, clearWidthPx: 491);
+            Assert.Equal(1, constrained.SideColumns);
+            Assert.False(constrained.Stacked);
+            Assert.True(constrained.TipSize.Width <= 491, $"Expected <= 491, got {constrained.TipSize.Width}");
+            Assert.True(constrained.DescPanel.Width >= 200);
+
+            var unconstrained = NativeTooltipLayout.ComputePlan(
+                parsed, FixedMeasure, 15, 1f, 1600, 600, clearWidthPx: 0);
+            Assert.Equal(2, unconstrained.SideColumns);
+
+            // 2. 完整 Widget 集成：1024×576 模拟角色构筑中段槽位与带书签背包格，验证放置后完全不与锚点或光标相交
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeTooltipWidget(anchor, null, () => 1f, () => 1f);
+
+            var armorPayload = LayoutPayload(heavyDoc);
+            armorPayload["x"] = 488;
+            armorPayload["y"] = 227;
+            armorPayload["placement"] = "left";
+            armorPayload["anchorRect"] = new JObject { ["x"] = 460, ["y"] = 200, ["width"] = 55, ["height"] = 54 };
+            Assert.True(widget.Show(armorPayload));
+            widget.Tick(2000);
+            var armorSlot = new Rectangle(460, 200, 55, 54);
+            Assert.True(new Rectangle(8, 8, 1024 - 16, 576 - 16).Contains(widget.PlacedRect));
+            Assert.False(widget.PlacedRect.IntersectsWith(armorSlot));
+            Assert.False(widget.PlacedRect.Contains(new Point(488, 227)));
+            Assert.Equal("right", widget.ActivePlan.Side);
+            Assert.Equal(1, widget.ActivePlan.SideColumns);
+
+            var bagPayload = LayoutPayload(heavyDoc);
+            bagPayload["requestId"] = "req-bag-mid";
+            bagPayload["x"] = 620;
+            bagPayload["y"] = 235;
+            bagPayload["placement"] = "left";
+            bagPayload["anchorRect"] = new JObject { ["x"] = 595, ["y"] = 210, ["width"] = 50, ["height"] = 50 };
+            Assert.True(widget.Show(bagPayload));
+            widget.Tick(2000);
+            var bagSlot = new Rectangle(595, 210, 50, 50);
+            Assert.True(new Rectangle(8, 8, 1024 - 16, 576 - 16).Contains(widget.PlacedRect));
+            Assert.False(widget.PlacedRect.IntersectsWith(bagSlot));
+            Assert.False(widget.PlacedRect.Contains(new Point(620, 235)));
+            Assert.Equal("left", widget.ActivePlan.Side);
+        }
+
+        private static void SolidIcon(string path, Color color)
+        {
+            using var bitmap = new Bitmap(12, 12);
+            using var g = Graphics.FromImage(bitmap);
+            g.Clear(color);
+            bitmap.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+        }
+
+        private static Bitmap PaintLayout(NativeTooltipWidget widget, Size size)
+        {
+            var bitmap = new Bitmap(size.Width, size.Height);
+            using var g = Graphics.FromImage(bitmap);
+            widget.Paint(g, 1f, Point.Empty);
+            return bitmap;
+        }
+
+        private static Rectangle ScreenRect(NativeTooltipWidget widget, Rectangle rect, bool scroll)
+        {
+            rect.Offset(widget.PlacedRect.X, widget.PlacedRect.Y - (scroll ? widget.ScrollOffsetPx : 0));
+            return rect;
+        }
+
+        private static void AssertColorPainted(Bitmap bitmap, NativeTooltipWidget widget, Rectangle rect,
+            Func<Color, bool> matches, bool scroll = true) =>
+            Assert.True(HasColor(bitmap, ScreenRect(widget, rect, scroll), matches), $"Missing text or icon in {rect}");
+
+        private static bool HasColor(Bitmap bitmap, Rectangle rect, Func<Color, bool> matches)
+        {
+            rect.Intersect(new Rectangle(Point.Empty, bitmap.Size));
+            for (int y = rect.Top; y < rect.Bottom; y++)
+                for (int x = rect.Left; x < rect.Right; x++)
+                    if (matches(bitmap.GetPixel(x, y))) return true;
+            return false;
+        }
+
+        private static bool IsMagenta(Color c) => c.R > 140 && c.B > 140 && c.G < 90;
+        private static bool IsCyan(Color c) => c.G > 140 && c.B > 140 && c.R < 90;
+
     }
 }

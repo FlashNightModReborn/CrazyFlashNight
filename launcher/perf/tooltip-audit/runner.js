@@ -171,7 +171,7 @@ function concise(row) {
         identity:row.identity,id:row.id,name:row.name,variant:row.variant,type:row.type,
         use:row.use,suffix:row.suffix,width:Number(row.width.toFixed(2)),
         height:Number(row.height.toFixed(2)),scrollable:row.scrollable,
-        descScrollHeight:row.descScrollHeight,descClientHeight:row.descClientHeight,
+        readingTarget:row.readingTarget,contentHeight:row.contentHeight,viewportHeight:row.viewportHeight,offset:row.offset,
         overlapTiles:row.overlapTiles,overlapPixels:Number(row.overlapPixels.toFixed(2)),
         anchorOverlap:Number(row.anchorOverlap.toFixed(2)),placement:row.placement
     };
@@ -187,7 +187,7 @@ function createBucket(meta) {
     return Object.assign({
         count:0,insideViewportFailures:0,pointerHitFailures:0,pointerEventFailures:0,
         profileFailures:0,scrollable:0,stacked:0,split:0,overlapCases:0,
-        anchorOverlapCases:0,widths:[],heights:[],descHeights:[],worstHeight:[],
+        anchorOverlapCases:0,widths:[],heights:[],contentHeights:[],worstHeight:[],
         worstOverlap:[],failureExamples:[]
     }, meta);
 }
@@ -196,7 +196,7 @@ function absorb(bucket, row) {
     bucket.count += 1;
     bucket.widths.push(row.width);
     bucket.heights.push(row.height);
-    bucket.descHeights.push(row.descScrollHeight);
+    bucket.contentHeights.push(row.contentHeight);
     if (!row.insideViewport) bucket.insideViewportFailures += 1;
     if (!row.pointerHitsAnchor) bucket.pointerHitFailures += 1;
     if (row.pointerEvents !== 'none') bucket.pointerEventFailures += 1;
@@ -218,11 +218,11 @@ function finishBucket(bucket) {
     const result = Object.assign({}, bucket, {
         width:{p50:percentile(bucket.widths,.5),p90:percentile(bucket.widths,.9),p99:percentile(bucket.widths,.99),max:percentile(bucket.widths,1)},
         height:{p50:percentile(bucket.heights,.5),p90:percentile(bucket.heights,.9),p99:percentile(bucket.heights,.99),max:percentile(bucket.heights,1)},
-        descScrollHeight:{p50:percentile(bucket.descHeights,.5),p90:percentile(bucket.descHeights,.9),p99:percentile(bucket.descHeights,.99),max:percentile(bucket.descHeights,1)}
+        contentHeight:{p50:percentile(bucket.contentHeights,.5),p90:percentile(bucket.contentHeights,.9),p99:percentile(bucket.contentHeights,.99),max:percentile(bucket.contentHeights,1)}
     });
     delete result.widths;
     delete result.heights;
-    delete result.descHeights;
+    delete result.contentHeights;
     return result;
 }
 
@@ -348,6 +348,8 @@ async function run() {
     const server = await startServer(ROOT);
     const browser = await chromium.launch({executablePath,headless:true});
     const matrices = [];
+    const currentDocuments = require('../tooltip-interaction/reading').currentSamples();
+    const currentReading = [];
     const globalBucket = createBucket({kind:'all',viewport:'all',density:'all',suffix:'all'});
     const pinnedMatrices = [];
     const pinnedGlobalBucket = createPinnedBucket({kind:'pinned',viewport:'all',suffix:PINNED_SUFFIX});
@@ -370,6 +372,12 @@ async function run() {
             assert(currentSkillCount === skillSourceCount && currentSkillCount > 0,
                 'Skill corpus is empty or unstable', {skillSourceCount,currentSkillCount});
 
+            const current = await page.evaluate(items => window.__tooltipAudit.measureDocuments(items), currentDocuments);
+            for (const item of current) {
+                assert(item.readingTarget && item.insideViewport && item.viewportHeight > 0,
+                    'Current document reading viewport is missing or outside the window', item);
+            }
+            currentReading.push({viewport:viewport.id, items:current});
             for (const density of DENSITIES) {
                 await page.evaluate(value => window.__tooltipAudit.configure(value), density);
                 for (const suffix of suffixes) {
@@ -415,7 +423,7 @@ async function run() {
         viewports:VIEWPORTS,densities:DENSITIES,suffixes:suffixes.map(entry => entry.id),
         coverage:{expectedItems,measuredItems,expectedSkills,measuredSkills,skillSourceCount,
             expectedPinnedItems,measuredPinnedItems},
-        global,pinned,matrices,pinnedMatrices,pageErrors
+        global,pinned,matrices,pinnedMatrices,currentReading,pageErrors
     };
     fs.mkdirSync(REPORT_DIR, {recursive:true});
     fs.writeFileSync(REPORT_JSON, JSON.stringify(report, null, 2), 'utf8');
