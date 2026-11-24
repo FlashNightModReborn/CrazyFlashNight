@@ -172,7 +172,7 @@ class org.flashNight.neur.Server.SaveManager {
     //   REPAIR_DICT_SKILLS      → mydata[5][N][0] 技能名
     //   REPAIR_DICT_TASK_CHAINS → mydata.tasks.task_chains_progress 的 key
     //   REPAIR_DICT_STAGES      → mydata.others.物品来源缓存.discoveredStages[N]
-    // 与 data/skills/skills.xml <Name> 字段权威同步 (88 项).
+    // 与 data/skills/skills.xml <Name> 字段权威同步 (91 项).
     // 修这个数组时同步改 launcher/data/save_repair_dict.json 的 skills 字段.
     public static var REPAIR_DICT_SKILLS:Array = [
         // 空手 / 武术 / 内力
@@ -185,7 +185,7 @@ class org.flashNight.neur.Server.SaveManager {
         // 空手搓招独立被动
         "波动拳", "诛杀步", "后撤步", "燃烧指节", "能量喷泉", "连环踢", "回旋踢",
         // 手枪搓招独立被动
-        "后射", "前冲射击", "后跳射击", "瞬踢追射",
+        "后射", "前冲射击", "后跳射击", "瞬踢追射", "后撩上射", "换弹打击",
         // 刀剑
         "刀剑攻击", "刀剑空中连招", "上挑", "下劈",
         "拔刀术", "凶斩", "龙斩", "瞬步斩", "迅斩", "空间斩",

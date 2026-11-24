@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/手枪搓招容器/手枪搓招容器-前冲射击" itemID="6afc7ba4-000012a4" linkageExportForAS="true" linkageIdentifier="手枪搓招容器-前冲射击" lastModified="1795103978">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/手枪搓招容器/手枪搓招容器-前冲射击" itemID="6afc7ba4-000012a4" linkageExportForAS="true" linkageIdentifier="手枪搓招容器-前冲射击" lastModified="1795529853">
   <timeline>
-    <DOMTimeline name="手枪搓招容器-前冲射击">
+    <DOMTimeline name="手枪搓招容器-前冲射击" currentFrame="15">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -531,7 +531,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="1" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>

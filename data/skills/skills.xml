@@ -1204,4 +1204,32 @@
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
+    <Skill id="89">
+        <Name>后撩上射</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;手枪后撩上射&lt;/font&gt;：手枪站立、行走、奔跑中&lt;font color="#ffee00"&gt;↑+K&lt;/font&gt;。枪口撩向头顶，向正上方连续射击（射击次数参照前冲射击的比例）。不可自动换弹，弹匣打空即停火。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
+        <CD>0</CD>
+        <MP>0</MP>
+    </Skill>
+    <Skill id="90">
+        <Name>换弹打击</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;手枪换弹打击&lt;/font&gt;：手枪站立、行走、奔跑中裸按&lt;font color="#ffee00"&gt;K&lt;/font&gt;释放（指令优先级最低，方向搓招优先）。打击时向前开一枪（射击比例参照回射），该技能可自动换弹。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
+        <CD>0</CD>
+        <MP>0</MP>
+    </Skill>
 </Skills>

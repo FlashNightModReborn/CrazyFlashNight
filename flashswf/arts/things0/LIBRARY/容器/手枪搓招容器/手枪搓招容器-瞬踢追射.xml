@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/手枪搓招容器/手枪搓招容器-瞬踢追射" itemID="6b00331c-00000d1b" linkageExportForAS="true" linkageIdentifier="手枪搓招容器-瞬踢追射" lastModified="1795175314" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/手枪搓招容器/手枪搓招容器-瞬踢追射" itemID="6b00331c-00000d1b" linkageExportForAS="true" linkageIdentifier="手枪搓招容器-瞬踢追射" lastModified="1795529392" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="手枪搓招容器-瞬踢追射" currentFrame="3">
+    <DOMTimeline name="手枪搓招容器-瞬踢追射" currentFrame="15">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -126,7 +126,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -400,7 +400,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="攻击点" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -806,7 +806,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
